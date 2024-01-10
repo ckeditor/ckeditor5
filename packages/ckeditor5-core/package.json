@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-core",
-  "version": "38.1.0",
+  "version": "40.2.0",
   "description": "The core architecture of CKEditor 5 – the best browser-based rich text editor.",
   "keywords": [
     "wysiwyg",
@@ -21,34 +21,31 @@
     "ckeditor5-lib",
     "ckeditor5-dll"
   ],
+  "type": "module",
   "main": "src/index.ts",
   "dependencies": {
-    "@ckeditor/ckeditor5-engine": "38.1.0",
-    "@ckeditor/ckeditor5-utils": "38.1.0",
-    "lodash-es": "^4.17.15"
+    "@ckeditor/ckeditor5-engine": "40.2.0",
+    "@ckeditor/ckeditor5-utils": "40.2.0",
+    "lodash-es": "4.17.21"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-autoformat": "38.1.0",
-    "@ckeditor/ckeditor5-basic-styles": "38.1.0",
-    "@ckeditor/ckeditor5-block-quote": "38.1.0",
-    "@ckeditor/ckeditor5-editor-classic": "38.1.0",
-    "@ckeditor/ckeditor5-essentials": "38.1.0",
-    "@ckeditor/ckeditor5-heading": "38.1.0",
-    "@ckeditor/ckeditor5-image": "38.1.0",
-    "@ckeditor/ckeditor5-indent": "38.1.0",
-    "@ckeditor/ckeditor5-link": "38.1.0",
-    "@ckeditor/ckeditor5-list": "38.1.0",
-    "@ckeditor/ckeditor5-media-embed": "38.1.0",
-    "@ckeditor/ckeditor5-paragraph": "38.1.0",
-    "@ckeditor/ckeditor5-table": "38.1.0",
-    "@ckeditor/ckeditor5-ui": "38.1.0",
-    "typescript": "^4.8.4",
+    "@ckeditor/ckeditor5-autoformat": "40.2.0",
+    "@ckeditor/ckeditor5-basic-styles": "40.2.0",
+    "@ckeditor/ckeditor5-block-quote": "40.2.0",
+    "@ckeditor/ckeditor5-editor-classic": "40.2.0",
+    "@ckeditor/ckeditor5-essentials": "40.2.0",
+    "@ckeditor/ckeditor5-heading": "40.2.0",
+    "@ckeditor/ckeditor5-image": "40.2.0",
+    "@ckeditor/ckeditor5-indent": "40.2.0",
+    "@ckeditor/ckeditor5-link": "40.2.0",
+    "@ckeditor/ckeditor5-list": "40.2.0",
+    "@ckeditor/ckeditor5-media-embed": "40.2.0",
+    "@ckeditor/ckeditor5-paragraph": "40.2.0",
+    "@ckeditor/ckeditor5-table": "40.2.0",
+    "@ckeditor/ckeditor5-ui": "40.2.0",
+    "typescript": "5.0.4",
     "webpack": "^5.58.1",
     "webpack-cli": "^4.9.0"
-  },
-  "engines": {
-    "node": ">=16.0.0",
-    "npm": ">=5.7.1"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "GPL-2.0-or-later",

@@ -9,12 +9,12 @@ import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 
 import { Code, Strikethrough } from '@ckeditor/ckeditor5-basic-styles';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
 import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
-import { ImageUpload, PictureEditing } from '@ckeditor/ckeditor5-image';
+import { ImageUpload, ImageInsert, PictureEditing, AutoImage } from '@ckeditor/ckeditor5-image';
 import { TodoList } from '@ckeditor/ckeditor5-list';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 
@@ -23,20 +23,29 @@ import { Markdown } from '@ckeditor/ckeditor5-markdown-gfm';
 ClassicEditor
 	.create( document.querySelector( '#snippet-markdown' ), {
 		plugins: [
-			ArticlePluginSet, SourceEditing, CKBox, ImageUpload, PictureEditing, CloudServices, Markdown,
-			Code, CodeBlock, TodoList, Strikethrough, HorizontalLine
+			ArticlePluginSet, SourceEditing, CKBox, CKBoxImageEdit, ImageInsert, ImageUpload, PictureEditing, AutoImage,
+			CloudServices, Markdown, Code, CodeBlock, TodoList, Strikethrough, HorizontalLine
 		],
 		toolbar: {
 			items: [
 				'undo', 'redo', '|', 'sourceEditing', '|', 'heading',
 				'|', 'bold', 'italic', 'strikethrough', 'code',
-				'-', 'link', 'uploadImage', 'insertTable', 'mediaEmbed', 'blockQuote', 'codeBlock', 'horizontalLine',
+				'-', 'link', 'insertImage', 'insertTable', 'mediaEmbed', 'blockQuote', 'codeBlock', 'horizontalLine',
 				'|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
 			],
 			shouldNotGroupWhenFull: true
 		},
 		image: {
-			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ]
+			toolbar: [
+				'imageStyle:inline',
+				'imageStyle:wrapText',
+				'imageStyle:breakText',
+				'|',
+				'toggleImageCaption',
+				'imageTextAlternative',
+				'|',
+				'ckboxImageEdit'
+			]
 		},
 		codeBlock: {
 			languages: [
@@ -51,6 +60,10 @@ ClassicEditor
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
 			}
+		},
+		ckbox: {
+			allowExternalImagesEditing: [ /^data:/, 'origin' ],
+			forceDemoLabel: true
 		}
 	} )
 	.then( editor => {

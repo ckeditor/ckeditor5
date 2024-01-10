@@ -7,18 +7,18 @@
  * @module engine/model/document
  */
 
-import Differ from './differ';
-import DocumentSelection from './documentselection';
-import History from './history';
-import RootElement from './rootelement';
+import Differ from './differ.js';
+import DocumentSelection from './documentselection.js';
+import History from './history.js';
+import RootElement from './rootelement.js';
 
-import type { SelectionChangeEvent } from './selection';
-import type { default as Model, ModelApplyOperationEvent } from './model';
-import type { MarkerCollectionUpdateEvent, MarkerChangeEvent } from './markercollection';
-import type Batch from './batch';
-import type Position from './position';
-import type Range from './range';
-import type Writer from './writer';
+import type { SelectionChangeEvent } from './selection.js';
+import type { default as Model, ModelApplyOperationEvent } from './model.js';
+import type { MarkerCollectionUpdateEvent, MarkerChangeEvent } from './markercollection.js';
+import type Batch from './batch.js';
+import type Position from './position.js';
+import type Range from './range.js';
+import type Writer from './writer.js';
 
 import {
 	CKEditorError,
@@ -276,12 +276,21 @@ export default class Document extends EmitterMixin() {
 	 * on the document data know which roots are still a part of the document and should be processed.
 	 *
 	 * @param includeDetached Specified whether detached roots should be returned as well.
-	 * @returns Roots names.
 	 */
 	public getRootNames( includeDetached = false ): Array<string> {
-		return Array.from( this.roots )
-			.filter( root => root.rootName != graveyardName && ( includeDetached || root.isAttached() ) )
-			.map( root => root.rootName );
+		return this.getRoots( includeDetached ).map( root => root.rootName );
+	}
+
+	/**
+	 * Returns an array with all roots added to the document (except the {@link #graveyard graveyard root}).
+	 *
+	 * Detached roots **are not** returned by this method by default. This is to make sure that all features or algorithms that operate
+	 * on the document data know which roots are still a part of the document and should be processed.
+	 *
+	 * @param includeDetached Specified whether detached roots should be returned as well.
+	 */
+	public getRoots( includeDetached = false ): Array<RootElement> {
+		return this.roots.filter( root => root != this.graveyard && ( includeDetached || root.isAttached() ) && root._isLoaded );
 	}
 
 	/**
@@ -391,13 +400,9 @@ export default class Document extends EmitterMixin() {
 	 * @returns The default root for this document.
 	 */
 	protected _getDefaultRoot(): RootElement {
-		for ( const root of this.roots ) {
-			if ( root !== this.graveyard ) {
-				return root;
-			}
-		}
+		const roots = this.getRoots();
 
-		return this.graveyard;
+		return roots.length ? roots[ 0 ] : this.graveyard;
 	}
 
 	/**

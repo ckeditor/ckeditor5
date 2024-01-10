@@ -24,6 +24,7 @@ module.exports = function getCKEditor5PackageJson() {
 		keywords: pkgJson.keywords,
 		description: 'A set of ready-to-use rich text editors created with a powerful framework.' +
 			' Made with real-time collaborative editing in mind.',
+		type: 'module',
 		dependencies: getCKEditor5Dependencies( pkgJson.dependencies ),
 		engines: pkgJson.engines,
 		author: pkgJson.author,

@@ -5,9 +5,9 @@
 
 /* global window, document, Text */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { stubGeometry, assertScrollPosition } from '../_utils/scroll';
-import { scrollViewportToShowTarget, scrollAncestorsToShowTarget } from '../../src/dom/scroll';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { stubGeometry, assertScrollPosition } from '../_utils/scroll.js';
+import { scrollViewportToShowTarget, scrollAncestorsToShowTarget } from '../../src/dom/scroll.js';
 
 describe( 'scrollAncestorsToShowTarget()', () => {
 	let target, element, firstAncestor, secondAncestor;
@@ -115,6 +115,15 @@ describe( 'scrollAncestorsToShowTarget()', () => {
 			assertScrollPosition( document.body, { scrollLeft: 1000, scrollTop: 1000 } );
 		} );
 
+		it( 'should not change the scroll of the ancestors of the given limiter', () => {
+			stubGeometry( testUtils, target, { top: 25, right: 75, bottom: 75, left: 25, width: 50, height: 50 } );
+
+			scrollAncestorsToShowTarget( target, 0, firstAncestor );
+
+			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 100 } );
+			assertScrollPosition( secondAncestor, { scrollTop: 100, scrollLeft: 100 } );
+		} );
+
 		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (above)', () => {
 			stubGeometry( testUtils, target, { top: -100, right: 75, bottom: 0, left: 25, width: 50, height: 100 } );
 
@@ -169,6 +178,15 @@ describe( 'scrollAncestorsToShowTarget()', () => {
 
 			scrollAncestorsToShowTarget( target, ancestorOffset );
 			assertScrollPosition( document.body, { scrollLeft: 1000, scrollTop: 1000 } );
+		} );
+
+		it( 'should not change the scroll of the ancestors of the given limiter', () => {
+			stubGeometry( testUtils, target, { top: 25, right: 75, bottom: 75, left: 25, width: 50, height: 50 } );
+
+			scrollAncestorsToShowTarget( target, 20, firstAncestor );
+
+			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 100 } );
+			assertScrollPosition( secondAncestor, { scrollTop: 100, scrollLeft: 100 } );
 		} );
 
 		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (above)', () => {

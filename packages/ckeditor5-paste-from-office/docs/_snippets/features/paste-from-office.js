@@ -5,7 +5,7 @@
 
 /* globals ClassicEditor, console, window, document, ListProperties */
 
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-paste-from-office' ), {
@@ -15,7 +15,7 @@ ClassicEditor
 				'undo', 'redo', '|', 'heading',
 				'|', 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor',
 				'|', 'bold', 'italic', 'underline', 'strikethrough',
-				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed',
 				'|', 'alignment',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
@@ -25,6 +25,10 @@ ClassicEditor
 				top: window.getViewportTopOffsetConfig()
 			}
 		},
+		ckbox: {
+			allowExternalImagesEditing: [ /^data:/, 'origin' ],
+			forceDemoLabel: true
+		},
 		image: {
 			toolbar: [
 				'imageStyle:inline',
@@ -32,7 +36,9 @@ ClassicEditor
 				'imageStyle:breakText',
 				'|',
 				'toggleImageCaption',
-				'imageTextAlternative'
+				'imageTextAlternative',
+				'|',
+				'ckboxImageEdit'
 			]
 		},
 		heading: {

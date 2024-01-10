@@ -7,11 +7,10 @@
  * @module engine/model/operation/rootoperation
  */
 
-import Operation from './operation';
+import Operation from './operation.js';
 
-import type Document from '../document';
-import { CKEditorError } from '@ckeditor/ckeditor5-utils';
-import type { Selectable } from '../selection';
+import type Document from '../document.js';
+import type { Selectable } from '../selection.js';
 
 /**
  * Operation that creates (or attaches) or detaches a root element.
@@ -97,36 +96,6 @@ export default class RootOperation extends Operation {
 	 */
 	public override getReversed(): RootOperation {
 		return new RootOperation( this.rootName, this.elementName, !this.isAdd, this._document, this.baseVersion! + 1 );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public override _validate(): void {
-		// Keep in mind that at this point the root will always exist as it was created in the `constructor()`, even for detach operation.
-		const root = this._document.getRoot( this.rootName )!;
-
-		if ( root.isAttached() && this.isAdd ) {
-			/**
-			 * Trying to attach a root that is already attached.
-			 *
-			 * @error root-operation-root-attached
-			 */
-			throw new CKEditorError(
-				'root-operation-root-attached',
-				this
-			);
-		} else if ( !root.isAttached() && !this.isAdd ) {
-			/**
-			 * Trying to detach a root that is already detached.
-			 *
-			 * @error root-operation-root-detached
-			 */
-			throw new CKEditorError(
-				'root-operation-root-detached',
-				this
-			);
-		}
 	}
 
 	/**

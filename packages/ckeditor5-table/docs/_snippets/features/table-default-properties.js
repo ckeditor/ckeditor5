@@ -36,13 +36,19 @@ ClassicEditor
 				'imageStyle:block',
 				'imageStyle:side',
 				'|',
-				'imageTextAlternative'
+				'imageTextAlternative',
+				'|',
+				'ckboxImageEdit'
 			]
 		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
 			}
+		},
+		ckbox: {
+			allowExternalImagesEditing: [ /^data:/, 'origin' ],
+			forceDemoLabel: true
 		},
 		placeholder: 'Insert the new table with the default styles applied.'
 	} )

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 /* globals ClassicEditor, console, window, document */
 ClassicEditor
@@ -15,15 +15,25 @@ ClassicEditor
 				'|', 'fontColor', 'fontBackgroundColor',
 				'|',
 				'|', 'bold', 'italic',
-				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			],
 			shouldNotGroupWhenFull: true
+		},
+		image: {
+			toolbar: [
+				'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|',
+				'toggleImageCaption', 'imageTextAlternative', 'ckboxImageEdit'
+			]
 		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
 			}
+		},
+		ckbox: {
+			allowExternalImagesEditing: [ /^data:/, 'origin' ],
+			forceDemoLabel: true
 		},
 		fontBackgroundColor: {
 			colors: [

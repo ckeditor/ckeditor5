@@ -7,8 +7,8 @@
  * @module table/tableutils
  */
 
-import { CKEditorError } from 'ckeditor5/src/utils';
-import { Plugin } from 'ckeditor5/src/core';
+import { CKEditorError } from 'ckeditor5/src/utils.js';
+import { Plugin } from 'ckeditor5/src/core.js';
 import type {
 	DocumentSelection,
 	Element,
@@ -17,11 +17,12 @@ import type {
 	Range,
 	Selection,
 	Writer
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
-import TableWalker, { type TableWalkerOptions } from './tablewalker';
-import { createEmptyTableCell, updateNumericAttribute } from './utils/common';
-import { removeEmptyColumns, removeEmptyRows } from './utils/structure';
+import TableWalker, { type TableWalkerOptions } from './tablewalker.js';
+import { createEmptyTableCell, updateNumericAttribute } from './utils/common.js';
+import { removeEmptyColumns, removeEmptyRows } from './utils/structure.js';
+import { getTableColumnElements } from './tablecolumnresize/utils.js';
 
 type Cell = { cell: Element; rowspan: number };
 type CellsToMove = Map<number, Cell>;
@@ -471,6 +472,7 @@ export default class TableUtils extends Plugin {
 
 		model.change( writer => {
 			adjustHeadingColumns( table, { first, last }, writer );
+			const tableColumns = getTableColumnElements( table );
 
 			for ( let removedColumnIndex = last; removedColumnIndex >= first; removedColumnIndex-- ) {
 				for ( const { cell, column, cellWidth } of [ ...new TableWalker( table ) ] ) {
@@ -481,6 +483,22 @@ export default class TableUtils extends Plugin {
 						// The cell in removed column has colspan of 1.
 						writer.remove( cell );
 					}
+				}
+
+				// If table has `tableColumn` elements, we need to update it manually.
+				// See https://github.com/ckeditor/ckeditor5/issues/14521#issuecomment-1662102889 for details.
+				if ( tableColumns[ removedColumnIndex ] ) {
+					// If the removed column is the first one then we need to add its width to the next column.
+					// Otherwise we add it to the previous column.
+					const adjacentColumn = removedColumnIndex === 0 ? tableColumns[ 1 ] : tableColumns[ removedColumnIndex - 1 ];
+
+					const removedColumnWidth = parseFloat( tableColumns[ removedColumnIndex ].getAttribute( 'columnWidth' ) as string );
+					const adjacentColumnWidth = parseFloat( adjacentColumn.getAttribute( 'columnWidth' ) as string );
+
+					writer.remove( tableColumns[ removedColumnIndex ] );
+
+					// Add the removed column width (in %) to the adjacent column.
+					writer.setAttribute( 'columnWidth', removedColumnWidth + adjacentColumnWidth + '%', adjacentColumn );
 				}
 			}
 

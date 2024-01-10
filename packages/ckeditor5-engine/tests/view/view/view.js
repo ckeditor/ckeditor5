@@ -3,36 +3,36 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, console, setTimeout */
+/* globals document, console, setTimeout, FocusEvent */
 
-import View from '../../../src/view/view';
-import Observer from '../../../src/view/observer/observer';
-import KeyObserver from '../../../src/view/observer/keyobserver';
-import TabObserver from '../../../src/view/observer/tabobserver';
-import InputObserver from '../../../src/view/observer/inputobserver';
-import FakeSelectionObserver from '../../../src/view/observer/fakeselectionobserver';
-import MutationObserver from '../../../src/view/observer/mutationobserver';
-import SelectionObserver from '../../../src/view/observer/selectionobserver';
-import FocusObserver from '../../../src/view/observer/focusobserver';
-import CompositionObserver from '../../../src/view/observer/compositionobserver';
-import ArrowKeysObserver from '../../../src/view/observer/arrowkeysobserver';
-import ViewRange from '../../../src/view/range';
-import ViewElement from '../../../src/view/element';
-import ViewContainerElement from '../../../src/view/containerelement';
-import ViewText from '../../../src/view/text';
-import ViewPosition from '../../../src/view/position';
-import ViewSelection from '../../../src/view/selection';
-import { StylesProcessor } from '../../../src/view/stylesmap';
+import View from '../../../src/view/view.js';
+import Observer from '../../../src/view/observer/observer.js';
+import KeyObserver from '../../../src/view/observer/keyobserver.js';
+import TabObserver from '../../../src/view/observer/tabobserver.js';
+import InputObserver from '../../../src/view/observer/inputobserver.js';
+import FakeSelectionObserver from '../../../src/view/observer/fakeselectionobserver.js';
+import MutationObserver from '../../../src/view/observer/mutationobserver.js';
+import SelectionObserver from '../../../src/view/observer/selectionobserver.js';
+import FocusObserver from '../../../src/view/observer/focusobserver.js';
+import CompositionObserver from '../../../src/view/observer/compositionobserver.js';
+import ArrowKeysObserver from '../../../src/view/observer/arrowkeysobserver.js';
+import ViewRange from '../../../src/view/range.js';
+import ViewElement from '../../../src/view/element.js';
+import ViewContainerElement from '../../../src/view/containerelement.js';
+import ViewText from '../../../src/view/text.js';
+import ViewPosition from '../../../src/view/position.js';
+import ViewSelection from '../../../src/view/selection.js';
+import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
-import count from '@ckeditor/ckeditor5-utils/src/count';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import createViewRoot from '../_utils/createroot';
-import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { stubGeometry, assertScrollPosition } from '@ckeditor/ckeditor5-utils/tests/_utils/scroll';
-import env from '@ckeditor/ckeditor5-utils/src/env';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import count from '@ckeditor/ckeditor5-utils/src/count.js';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import createViewRoot from '../_utils/createroot.js';
+import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { stubGeometry, assertScrollPosition } from '@ckeditor/ckeditor5-utils/tests/_utils/scroll.js';
+import env from '@ckeditor/ckeditor5-utils/src/env.js';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 
 describe( 'view', () => {
 	const DEFAULT_OBSERVERS_COUNT = 9;
@@ -941,6 +941,93 @@ describe( 'view', () => {
 
 			view.destroy();
 			domRoot.remove();
+		} );
+
+		describe( 'DOM selection clearing on editable blur', () => {
+			let view, viewDocument, domDiv, domOtherDiv;
+
+			function setupTest() {
+				domDiv = createElement( document, 'div', { id: 'editor' } );
+				domOtherDiv = createElement( document, 'div' );
+
+				document.body.appendChild( domDiv );
+				document.body.appendChild( domOtherDiv );
+
+				view = new View( new StylesProcessor() );
+				viewDocument = view.document;
+
+				createViewRoot( viewDocument, 'div', 'main' );
+				view.attachDomRoot( domDiv );
+
+				const viewText = new ViewText( viewDocument, 'foobar' );
+				const viewP = new ViewContainerElement( viewDocument, 'p', null, viewText );
+
+				viewDocument.getRoot()._appendChild( viewP );
+				viewDocument.selection._setTo( viewText, 3 );
+				viewDocument.isFocused = true;
+
+				view.forceRender();
+			}
+
+			afterEach( () => {
+				view.destroy();
+				domDiv.remove();
+				domOtherDiv.remove();
+			} );
+
+			it( 'should clear DOM selection on editor blur on iOS', () => {
+				sinon.stub( env, 'isiOS' ).value( true );
+
+				setupTest();
+
+				expect( document.getSelection().focusNode ).to.equal( domDiv.childNodes[ 0 ].childNodes[ 0 ] );
+				expect( document.getSelection().focusOffset ).to.equal( 3 );
+
+				domDiv.dispatchEvent( new FocusEvent( 'blur' ) );
+
+				expect( document.getSelection().rangeCount ).to.equal( 0 );
+			} );
+
+			it( 'should not clear DOM selection on editor blur on non-iOS browser', () => {
+				setupTest();
+
+				expect( document.getSelection().focusNode ).to.equal( domDiv.childNodes[ 0 ].childNodes[ 0 ] );
+				expect( document.getSelection().focusOffset ).to.equal( 3 );
+
+				domDiv.dispatchEvent( new FocusEvent( 'blur' ) );
+
+				expect( document.getSelection().rangeCount ).to.equal( 1 );
+				expect( document.getSelection().focusNode ).to.equal( domDiv.childNodes[ 0 ].childNodes[ 0 ] );
+				expect( document.getSelection().focusOffset ).to.equal( 3 );
+			} );
+
+			it( 'should clear DOM selection on editor blur on iOS (focus to some other element outside editor)', () => {
+				sinon.stub( env, 'isiOS' ).value( true );
+
+				setupTest();
+
+				expect( document.getSelection().focusNode ).to.equal( domDiv.childNodes[ 0 ].childNodes[ 0 ] );
+				expect( document.getSelection().focusOffset ).to.equal( 3 );
+
+				domDiv.dispatchEvent( new FocusEvent( 'blur', { relatedTarget: domOtherDiv } ) );
+
+				expect( document.getSelection().rangeCount ).to.equal( 0 );
+			} );
+
+			it( 'should not clear DOM selection on editor blur on iOS (focus to the editor editable)', () => {
+				sinon.stub( env, 'isiOS' ).value( true );
+
+				setupTest();
+
+				expect( document.getSelection().focusNode ).to.equal( domDiv.childNodes[ 0 ].childNodes[ 0 ] );
+				expect( document.getSelection().focusOffset ).to.equal( 3 );
+
+				domDiv.dispatchEvent( new FocusEvent( 'blur', { relatedTarget: domDiv } ) );
+
+				expect( document.getSelection().rangeCount ).to.equal( 1 );
+				expect( document.getSelection().focusNode ).to.equal( domDiv.childNodes[ 0 ].childNodes[ 0 ] );
+				expect( document.getSelection().focusOffset ).to.equal( 3 );
+			} );
 		} );
 	} );
 

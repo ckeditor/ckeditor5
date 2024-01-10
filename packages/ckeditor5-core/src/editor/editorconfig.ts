@@ -7,9 +7,9 @@
  * @module core/editor/editorconfig
  */
 
-import type Context from '../context';
-import type { PluginConstructor } from '../plugin';
-import type Editor from './editor';
+import type Context from '../context.js';
+import type { PluginConstructor } from '../plugin.js';
+import type Editor from './editor.js';
 
 /**
  * CKEditor configuration options.
@@ -375,7 +375,7 @@ export interface EditorConfig {
 	 *	* **Selecting an icon**
 	 *
 	 *		You can use one of the common icons provided by the editor (`'bold'`, `'plus'`, `'text'`, `'importExport'`, `'alignLeft'`,
-	 *		`'paragraph'`, `'threeVerticalDots'`):
+	 *		`'paragraph'`, `'threeVerticalDots'`, `'dragIndicator'`, `'pilcrow'`):
 	 *
 	 *		```ts
 	 *		{
@@ -581,6 +581,7 @@ export type ToolbarConfig = Array<ToolbarConfigItem> | {
 	items?: Array<ToolbarConfigItem>;
 	removeItems?: Array<string>;
 	shouldNotGroupWhenFull?: boolean;
+	icon?: string;
 };
 
 export type ToolbarConfigItem = string | {

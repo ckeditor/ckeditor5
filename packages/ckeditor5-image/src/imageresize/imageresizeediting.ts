@@ -7,10 +7,11 @@
  * @module image/imageresize/imageresizeediting
  */
 
-import type { ViewElement } from 'ckeditor5/src/engine';
-import { type Editor, Plugin } from 'ckeditor5/src/core';
-import ImageUtils from '../imageutils';
-import ResizeImageCommand from './resizeimagecommand';
+import type { ViewElement } from 'ckeditor5/src/engine.js';
+import { type Editor, Plugin } from 'ckeditor5/src/core.js';
+import ImageUtils from '../imageutils.js';
+import ResizeImageCommand from './resizeimagecommand.js';
+import { widthAndHeightStylesAreBothSet } from '../image/utils.js';
 
 /**
  * The image resize editing feature.
@@ -82,11 +83,11 @@ export default class ImageResizeEditing extends Plugin {
 
 	private _registerSchema(): void {
 		if ( this.editor.plugins.has( 'ImageBlockEditing' ) ) {
-			this.editor.model.schema.extend( 'imageBlock', { allowAttributes: 'width' } );
+			this.editor.model.schema.extend( 'imageBlock', { allowAttributes: [ 'resizedWidth', 'resizedHeight' ] } );
 		}
 
 		if ( this.editor.plugins.has( 'ImageInlineEditing' ) ) {
-			this.editor.model.schema.extend( 'imageInline', { allowAttributes: 'width' } );
+			this.editor.model.schema.extend( 'imageInline', { allowAttributes: [ 'resizedWidth', 'resizedHeight' ] } );
 		}
 	}
 
@@ -97,23 +98,55 @@ export default class ImageResizeEditing extends Plugin {
 	 */
 	private _registerConverters( imageType: 'imageBlock' | 'imageInline' ) {
 		const editor = this.editor;
+		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 
 		// Dedicated converter to propagate image's attribute to the img tag.
 		editor.conversion.for( 'downcast' ).add( dispatcher =>
-			dispatcher.on( `attribute:width:${ imageType }`, ( evt, data, conversionApi ) => {
+			dispatcher.on( `attribute:resizedWidth:${ imageType }`, ( evt, data, conversionApi ) => {
 				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 					return;
 				}
 
 				const viewWriter = conversionApi.writer;
-				const figure = conversionApi.mapper.toViewElement( data.item );
+				const viewImg = conversionApi.mapper.toViewElement( data.item );
 
 				if ( data.attributeNewValue !== null ) {
-					viewWriter.setStyle( 'width', data.attributeNewValue, figure );
-					viewWriter.addClass( 'image_resized', figure );
+					viewWriter.setStyle( 'width', data.attributeNewValue, viewImg );
+					viewWriter.addClass( 'image_resized', viewImg );
 				} else {
-					viewWriter.removeStyle( 'width', figure );
-					viewWriter.removeClass( 'image_resized', figure );
+					viewWriter.removeStyle( 'width', viewImg );
+					viewWriter.removeClass( 'image_resized', viewImg );
+				}
+			} )
+		);
+
+		editor.conversion.for( 'dataDowncast' ).attributeToAttribute( {
+			model: {
+				name: imageType,
+				key: 'resizedHeight'
+			},
+			view: modelAttributeValue => ( {
+				key: 'style',
+				value: {
+					'height': modelAttributeValue
+				}
+			} )
+		} );
+
+		editor.conversion.for( 'editingDowncast' ).add( dispatcher =>
+			dispatcher.on( `attribute:resizedHeight:${ imageType }`, ( evt, data, conversionApi ) => {
+				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
+					return;
+				}
+
+				const viewWriter = conversionApi.writer;
+				const viewImg = conversionApi.mapper.toViewElement( data.item );
+				const target = imageType === 'imageInline' ? imageUtils.findViewImgElement( viewImg ) : viewImg;
+
+				if ( data.attributeNewValue !== null ) {
+					viewWriter.setStyle( 'height', data.attributeNewValue, target );
+				} else {
+					viewWriter.removeStyle( 'height', target );
 				}
 			} )
 		);
@@ -127,8 +160,34 @@ export default class ImageResizeEditing extends Plugin {
 					}
 				},
 				model: {
-					key: 'width',
-					value: ( viewElement: ViewElement ) => viewElement.getStyle( 'width' )
+					key: 'resizedWidth',
+					value: ( viewElement: ViewElement ) => {
+						if ( widthAndHeightStylesAreBothSet( viewElement ) ) {
+							return null;
+						}
+
+						return viewElement.getStyle( 'width' );
+					}
+				}
+			} );
+
+		editor.conversion.for( 'upcast' )
+			.attributeToAttribute( {
+				view: {
+					name: imageType === 'imageBlock' ? 'figure' : 'img',
+					styles: {
+						height: /.+/
+					}
+				},
+				model: {
+					key: 'resizedHeight',
+					value: ( viewElement: ViewElement ) => {
+						if ( widthAndHeightStylesAreBothSet( viewElement ) ) {
+							return null;
+						}
+
+						return viewElement.getStyle( 'height' );
+					}
 				}
 			} );
 	}

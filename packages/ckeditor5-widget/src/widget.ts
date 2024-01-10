@@ -11,6 +11,7 @@ import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import {
 	MouseObserver,
+	TreeWalker,
 	type DomEventData,
 	type DowncastSelectionEvent,
 	type DowncastWriter,
@@ -19,7 +20,9 @@ import {
 	type ViewDocumentArrowKeyEvent,
 	type ViewDocumentFragment,
 	type ViewDocumentMouseDownEvent,
-	type ViewElement
+	type ViewElement,
+	type Schema,
+	type Position
 } from '@ckeditor/ckeditor5-engine';
 
 import { Delete, type ViewDocumentDeleteEvent } from '@ckeditor/ckeditor5-typing';
@@ -31,9 +34,9 @@ import {
 	type KeystrokeInfo
 } from '@ckeditor/ckeditor5-utils';
 
-import WidgetTypeAround from './widgettypearound/widgettypearound';
-import verticalNavigationHandler from './verticalnavigation';
-import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils';
+import WidgetTypeAround from './widgettypearound/widgettypearound.js';
+import verticalNavigationHandler from './verticalnavigation.js';
+import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils.js';
 
 import '../theme/widget.css';
 
@@ -202,24 +205,17 @@ export default class Widget extends Plugin {
 		const viewDocument = view.document;
 		let element: ViewElement | null = domEventData.target;
 
-		// Do nothing for single or double click inside nested editable.
-		if ( isInsideNestedEditable( element ) ) {
-			// But at least triple click inside nested editable causes broken selection in Safari.
-			// For such event, we select the entire nested editable element.
-			// See: https://github.com/ckeditor/ckeditor5/issues/1463.
-			if ( ( env.isSafari || env.isGecko ) && domEventData.domEvent.detail >= 3 ) {
-				const mapper = editor.editing.mapper;
-				const viewElement = element.is( 'attributeElement' ) ?
-					element.findAncestor( element => !element.is( 'attributeElement' ) )! : element;
-				const modelElement = mapper.toModelElement( viewElement )!;
-
+		// If triple click should select entire paragraph.
+		if ( domEventData.domEvent.detail >= 3 ) {
+			if ( this._selectBlockContent( element ) ) {
 				domEventData.preventDefault();
-
-				this.editor.model.change( writer => {
-					writer.setSelection( modelElement, 'in' );
-				} );
 			}
 
+			return;
+		}
+
+		// Do nothing for single or double click inside nested editable.
+		if ( isInsideNestedEditable( element ) ) {
 			return;
 		}
 
@@ -247,6 +243,38 @@ export default class Widget extends Plugin {
 		const modelElement = editor.editing.mapper.toModelElement( element );
 
 		this._setSelectionOverElement( modelElement! );
+	}
+
+	/**
+	 * Selects entire block content, e.g. on triple click it selects entire paragraph.
+	 */
+	private _selectBlockContent( element: ViewElement ): boolean {
+		const editor = this.editor;
+		const model = editor.model;
+		const mapper = editor.editing.mapper;
+		const schema = model.schema;
+
+		const viewElement = mapper.findMappedViewAncestor( this.editor.editing.view.createPositionAt( element, 0 ) );
+		const modelElement = findTextBlockAncestor( mapper.toModelElement( viewElement )!, model.schema );
+
+		if ( !modelElement ) {
+			return false;
+		}
+
+		model.change( writer => {
+			const nextTextBlock = !schema.isLimit( modelElement ) ?
+				findNextTextBlock( writer.createPositionAfter( modelElement ), schema ) :
+				null;
+
+			const start = writer.createPositionAt( modelElement, 0 );
+			const end = nextTextBlock ?
+				writer.createPositionAt( nextTextBlock, 0 ) :
+				writer.createPositionAt( modelElement, 'end' );
+
+			writer.setSelection( writer.createRange( start, end ) );
+		} );
+
+		return true;
 	}
 
 	/**
@@ -478,4 +506,41 @@ function isChild( element: ViewElement, parent: ViewElement | null ) {
 	}
 
 	return Array.from( element.getAncestors() ).includes( parent );
+}
+
+/**
+ * Returns nearest text block ancestor.
+ */
+function findTextBlockAncestor( modelElement: Element, schema: Schema ): Element | null {
+	for ( const element of modelElement.getAncestors( { includeSelf: true, parentFirst: true } ) ) {
+		if ( schema.checkChild( element as Element, '$text' ) ) {
+			return element as Element;
+		}
+
+		// Do not go beyond nested editable.
+		if ( schema.isLimit( element ) && !schema.isObject( element ) ) {
+			break;
+		}
+	}
+
+	return null;
+}
+
+/**
+ * Returns next text block where could put selection.
+ */
+function findNextTextBlock( position: Position, schema: Schema ): Element | null {
+	const treeWalker = new TreeWalker( { startPosition: position } );
+
+	for ( const { item } of treeWalker ) {
+		if ( schema.isLimit( item ) || !item.is( 'element' ) ) {
+			return null;
+		}
+
+		if ( schema.checkChild( item, '$text' ) ) {
+			return item;
+		}
+	}
+
+	return null;
 }

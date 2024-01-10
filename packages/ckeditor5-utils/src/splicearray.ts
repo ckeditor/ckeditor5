@@ -30,7 +30,7 @@ const BIG_CHUNK_SIZE = 10000;
  *
  * @returns New spliced array.
  */
-export default function spliceArray<T>( target: Array<T>, source: Array<T>, start: number, count: number ): Array<T> {
+export default function spliceArray<T>( target: ReadonlyArray<T>, source: ReadonlyArray<T>, start: number, count: number ): Array<T> {
 	// In case of performance problems, see: https://github.com/ckeditor/ckeditor5/pull/12429/files#r965850568
 	if ( Math.max( source.length, target.length ) > BIG_CHUNK_SIZE ) {
 		return target.slice( 0, start ).concat( source ).concat( target.slice( start + count, target.length ) );

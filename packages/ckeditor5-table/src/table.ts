@@ -7,15 +7,15 @@
  * @module table/table
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { Widget } from 'ckeditor5/src/widget';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { Widget } from 'ckeditor5/src/widget.js';
 
-import TableEditing from './tableediting';
-import TableUI from './tableui';
-import TableSelection from './tableselection';
-import TableClipboard from './tableclipboard';
-import TableKeyboard from './tablekeyboard';
-import TableMouse from './tablemouse';
+import TableEditing from './tableediting.js';
+import TableUI from './tableui.js';
+import TableSelection from './tableselection.js';
+import TableClipboard from './tableclipboard.js';
+import TableKeyboard from './tablekeyboard.js';
+import TableMouse from './tablemouse.js';
 
 import '../theme/table.css';
 

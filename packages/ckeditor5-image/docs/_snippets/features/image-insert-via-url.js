@@ -13,7 +13,7 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-image-insert-via-url' ), {
-		removePlugins: [ 'ImageToolbar', 'ImageCaption', 'ImageStyle', 'ImageResize', 'LinkImage', 'AutoImage' ],
+		removePlugins: [ 'ArticlePluginSet', 'ImageCaption', 'LinkImage', 'AutoImage' ],
 		toolbar: {
 			items: [
 				'undo', 'redo',
@@ -26,6 +26,22 @@ ClassicEditor
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
+			}
+		},
+		ckbox: {
+			allowExternalImagesEditing: [ /^data:/, 'origin' ],
+			forceDemoLabel: true
+		},
+		image: {
+			toolbar: [
+				'imageStyle:inline',
+				'imageStyle:wrapText',
+				'imageStyle:breakText',
+				'|',
+				'ckboxImageEdit'
+			],
+			insert: {
+				integrations: [ 'url' ]
 			}
 		},
 		cloudServices: CS_CONFIG

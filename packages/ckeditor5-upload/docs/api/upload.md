@@ -2,11 +2,11 @@
 category: api-reference
 ---
 
-# CKEditor 5 file upload utilities
+# CKEditor&nbsp;5 file upload utilities
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-upload.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload)
 
-This package implements various file upload utilities for CKEditor 5.
+This package implements various file upload utilities for CKEditor&nbsp;5.
 
 ## Documentation
 

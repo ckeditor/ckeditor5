@@ -8,7 +8,7 @@
  */
 
 import { logWarning } from '@ckeditor/ckeditor5-utils';
-import type Operation from './operation/operation';
+import type Operation from './operation/operation.js';
 
 /**
  * A batch instance groups model changes ({@link module:engine/model/operation/operation~Operation operations}). All operations
@@ -24,7 +24,7 @@ import type Operation from './operation/operation';
  * @see module:engine/model/model~Model#enqueueChange
  * @see module:engine/model/model~Model#change
  */
-export default class Batch {
+export default class Batch implements BatchType {
 	/**
 	 * An array of operations that compose this batch.
 	 */

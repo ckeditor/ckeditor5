@@ -7,9 +7,9 @@
  * @module table/tablecaption
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import TableCaptionEditing from './tablecaption/tablecaptionediting';
-import TableCaptionUI from './tablecaption/tablecaptionui';
+import { Plugin } from 'ckeditor5/src/core.js';
+import TableCaptionEditing from './tablecaption/tablecaptionediting.js';
+import TableCaptionUI from './tablecaption/tablecaptionui.js';
 
 import '../theme/tablecaption.css';
 

@@ -7,17 +7,23 @@
  * @module ui/panel/sticky/stickypanelview
  */
 
-import View from '../../view';
-import Template from '../../template';
+import View from '../../view.js';
+import Template from '../../template.js';
 
-import type ViewCollection from '../../viewcollection';
+import type ViewCollection from '../../viewcollection.js';
 
 import {
+	type Locale,
+	type ObservableChangeEvent,
 	global,
 	toUnit,
-	type Locale,
-	type ObservableChangeEvent
+	Rect
 } from '@ckeditor/ckeditor5-utils';
+
+// @if CK_DEBUG_STICKYPANEL // const {
+// @if CK_DEBUG_STICKYPANEL // 	default: RectDrawer,
+// @if CK_DEBUG_STICKYPANEL // 	diagonalStylesBlack
+// @if CK_DEBUG_STICKYPANEL // } = require( '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer' );
 
 import '../../../theme/components/panel/stickypanel.css';
 
@@ -107,29 +113,26 @@ export default class StickyPanelView extends View {
 	 * @readonly
 	 * @observable
 	 */
-	declare public _isStickyToTheLimiter: boolean;
+	declare public _isStickyToTheBottomOfLimiter: boolean;
 
 	/**
-	 * Set `true` if the sticky panel uses the {@link #viewportTopOffset},
-	 * i.e. not {@link #_isStickyToTheLimiter} and the {@link #viewportTopOffset}
-	 * is not `0`.
+	 * The `top` CSS position of the panel when it is sticky to the top of the viewport or scrollable
+	 * ancestors of the {@link #limiterElement}.
 	 *
 	 * @private
 	 * @readonly
 	 * @observable
 	 */
-	declare public _hasViewportTopOffset: boolean;
+	declare public _stickyTopOffset: number | null;
 
 	/**
-	 * The DOM bounding client rect of the {@link module:ui/view~View#element} of the panel.
+	 * The `bottom` CSS position of the panel when it is sticky to the bottom of the {@link #limiterElement}.
+	 *
+	 * @private
+	 * @readonly
+	 * @observable
 	 */
-	private _panelRect?: DOMRect;
-
-	/**
-	 * The DOM bounding client rect of the {@link #limiterElement}
-	 * of the panel.
-	 */
-	private _limiterRect?: DOMRect;
+	declare public _stickyBottomOffset: number | null;
 
 	/**
 	 * A dummy element which visually fills the space as long as the
@@ -158,8 +161,10 @@ export default class StickyPanelView extends View {
 		this.set( 'viewportTopOffset', 0 );
 
 		this.set( '_marginLeft', null );
-		this.set( '_isStickyToTheLimiter', false );
-		this.set( '_hasViewportTopOffset', false );
+		this.set( '_isStickyToTheBottomOfLimiter', false );
+
+		this.set( '_stickyTopOffset', null );
+		this.set( '_stickyBottomOffset', null );
 
 		this.content = this.createCollection();
 
@@ -173,7 +178,7 @@ export default class StickyPanelView extends View {
 				style: {
 					display: bind.to( 'isSticky', isSticky => isSticky ? 'block' : 'none' ),
 					height: bind.to( 'isSticky', isSticky => {
-						return isSticky ? toPx( this._panelRect!.height ) : null;
+						return isSticky ? toPx( this._contentPanelRect.height ) : null;
 					} )
 				}
 			}
@@ -188,20 +193,15 @@ export default class StickyPanelView extends View {
 					'ck-sticky-panel__content',
 					// Toggle class of the panel when "sticky" state changes in the view.
 					bind.if( 'isSticky', 'ck-sticky-panel__content_sticky' ),
-					bind.if( '_isStickyToTheLimiter', 'ck-sticky-panel__content_sticky_bottom-limit' )
+					bind.if( '_isStickyToTheBottomOfLimiter', 'ck-sticky-panel__content_sticky_bottom-limit' )
 				],
 				style: {
 					width: bind.to( 'isSticky', isSticky => {
 						return isSticky ? toPx( this._contentPanelPlaceholder.getBoundingClientRect().width ) : null;
 					} ),
 
-					top: bind.to( '_hasViewportTopOffset', _hasViewportTopOffset => {
-						return _hasViewportTopOffset ? toPx( this.viewportTopOffset ) : null;
-					} ),
-
-					bottom: bind.to( '_isStickyToTheLimiter', _isStickyToTheLimiter => {
-						return _isStickyToTheLimiter ? toPx( this.limiterBottomOffset ) : null;
-					} ),
+					top: bind.to( '_stickyTopOffset', value => value ? toPx( value ) : value ),
+					bottom: bind.to( '_stickyBottomOffset', value => value ? toPx( value ) : value ),
 
 					marginLeft: bind.to( '_marginLeft' )
 				}
@@ -232,56 +232,161 @@ export default class StickyPanelView extends View {
 		super.render();
 
 		// Check if the panel should go into the sticky state immediately.
-		this._checkIfShouldBeSticky();
+		this.checkIfShouldBeSticky();
 
-		// Update sticky state of the panel as the window is being scrolled.
-		this.listenTo( global.window, 'scroll', () => {
-			this._checkIfShouldBeSticky();
-		} );
+		// Update sticky state of the panel as the window and ancestors are being scrolled.
+		this.listenTo( global.document, 'scroll', () => {
+			this.checkIfShouldBeSticky();
+		}, { useCapture: true } );
 
 		// Synchronize with `model.isActive` because sticking an inactive panel is pointless.
 		this.listenTo<ObservableChangeEvent>( this, 'change:isActive', () => {
-			this._checkIfShouldBeSticky();
+			this.checkIfShouldBeSticky();
 		} );
 	}
 
 	/**
-	 * Analyzes the environment to decide whether the panel should
-	 * be sticky or not.
+	 * Analyzes the environment to decide whether the panel should be sticky or not.
+	 * Then handles the positioning of the panel.
 	 */
-	private _checkIfShouldBeSticky(): void {
-		const panelRect = this._panelRect = this._contentPanel.getBoundingClientRect();
-		let limiterRect: DOMRect;
+	public checkIfShouldBeSticky(): void {
+		// @if CK_DEBUG_STICKYPANEL // RectDrawer.clear();
 
-		if ( !this.limiterElement ) {
-			this.isSticky = false;
+		if ( !this.limiterElement || !this.isActive ) {
+			this._unstick();
+
+			return;
+		}
+
+		const limiterRect = new Rect( this.limiterElement );
+
+		let visibleLimiterRect = limiterRect.getVisible();
+
+		if ( visibleLimiterRect ) {
+			const windowRect = new Rect( global.window );
+
+			windowRect.top += this.viewportTopOffset;
+			windowRect.height -= this.viewportTopOffset;
+
+			visibleLimiterRect = visibleLimiterRect.getIntersection( windowRect );
+		}
+
+		// @if CK_DEBUG_STICKYPANEL // if ( visibleLimiterRect ) {
+		// @if CK_DEBUG_STICKYPANEL // 	RectDrawer.draw( visibleLimiterRect,
+		// @if CK_DEBUG_STICKYPANEL // 		{ outlineWidth: '3px', opacity: '.8', outlineColor: 'red', outlineOffset: '-3px' },
+		// @if CK_DEBUG_STICKYPANEL // 		'Visible anc'
+		// @if CK_DEBUG_STICKYPANEL // 	);
+		// @if CK_DEBUG_STICKYPANEL // }
+		// @if CK_DEBUG_STICKYPANEL //
+		// @if CK_DEBUG_STICKYPANEL // RectDrawer.draw( limiterRect,
+		// @if CK_DEBUG_STICKYPANEL // 	{ outlineWidth: '3px', opacity: '.8', outlineColor: 'green', outlineOffset: '-3px' },
+		// @if CK_DEBUG_STICKYPANEL // 	'Limiter'
+		// @if CK_DEBUG_STICKYPANEL // );
+
+		// Stick the panel only if
+		// * the limiter's ancestors are intersecting with each other so that some of their rects are visible,
+		// * and the limiter's top edge is above the visible ancestors' top edge.
+		if ( visibleLimiterRect && limiterRect.top < visibleLimiterRect.top ) {
+			// @if CK_DEBUG_STICKYPANEL // RectDrawer.draw( visibleLimiterRect,
+			// @if CK_DEBUG_STICKYPANEL // 	{ outlineWidth: '3px', opacity: '.8', outlineColor: 'fuchsia', outlineOffset: '-3px',
+			// @if CK_DEBUG_STICKYPANEL // 		backgroundColor: 'rgba(255, 0, 255, .3)' },
+			// @if CK_DEBUG_STICKYPANEL // 	'Visible limiter'
+			// @if CK_DEBUG_STICKYPANEL // );
+
+			const visibleLimiterTop = visibleLimiterRect.top;
+
+			// Check if there's a change the panel can be sticky to the bottom of the limiter.
+			if ( visibleLimiterTop + this._contentPanelRect.height + this.limiterBottomOffset > visibleLimiterRect.bottom ) {
+				const stickyBottomOffset = Math.max( limiterRect.bottom - visibleLimiterRect.bottom, 0 ) + this.limiterBottomOffset;
+				// @if CK_DEBUG_STICKYPANEL // const stickyBottomOffsetRect = new Rect( {
+				// @if CK_DEBUG_STICKYPANEL // 	top: limiterRect.bottom - stickyBottomOffset, left: 0, right: 2000,
+				// @if CK_DEBUG_STICKYPANEL // 	bottom: limiterRect.bottom - stickyBottomOffset, width: 2000, height: 1
+				// @if CK_DEBUG_STICKYPANEL // } );
+				// @if CK_DEBUG_STICKYPANEL // RectDrawer.draw( stickyBottomOffsetRect,
+				// @if CK_DEBUG_STICKYPANEL // 	{ outlineWidth: '1px', opacity: '.8', outlineColor: 'black' },
+				// @if CK_DEBUG_STICKYPANEL // 	'Sticky bottom offset'
+				// @if CK_DEBUG_STICKYPANEL // );
+
+				// Check if sticking the panel to the bottom of the limiter does not cause it to suddenly
+				// move upwards if there's not enough space for it.
+				if ( limiterRect.bottom - stickyBottomOffset > limiterRect.top + this._contentPanelRect.height ) {
+					this._stickToBottomOfLimiter( stickyBottomOffset );
+				} else {
+					this._unstick();
+				}
+			} else {
+				if ( this._contentPanelRect.height + this.limiterBottomOffset < limiterRect.height ) {
+					this._stickToTopOfAncestors( visibleLimiterTop );
+				} else {
+					this._unstick();
+				}
+			}
 		} else {
-			limiterRect = this._limiterRect = this.limiterElement.getBoundingClientRect();
-
-			// The panel must be active to become sticky.
-			this.isSticky = this.isActive &&
-				// The limiter's top edge must be beyond the upper edge of the visible viewport (+the viewportTopOffset).
-				limiterRect.top < this.viewportTopOffset &&
-				// The model#limiterElement's height mustn't be smaller than the panel's height and model#limiterBottomOffset.
-				// There's no point in entering the sticky mode if the model#limiterElement is very, very small, because
-				// it would immediately set model#_isStickyToTheLimiter true and, given model#limiterBottomOffset, the panel
-				// would be positioned before the model#limiterElement.
-				this._panelRect.height + this.limiterBottomOffset < limiterRect.height;
+			this._unstick();
 		}
 
-		// Stick the panel to the top edge of the viewport simulating CSS position:sticky.
-		// TODO: Possibly replaced by CSS in the future http://caniuse.com/#feat=css-sticky
-		if ( this.isSticky ) {
-			this._isStickyToTheLimiter =
-				limiterRect!.bottom < panelRect.height + this.limiterBottomOffset + this.viewportTopOffset;
-			this._hasViewportTopOffset = !this._isStickyToTheLimiter && !!this.viewportTopOffset;
-			this._marginLeft = this._isStickyToTheLimiter ? null : toPx( -global.window.scrollX );
-		}
-		// Detach the panel from the top edge of the viewport.
-		else {
-			this._isStickyToTheLimiter = false;
-			this._hasViewportTopOffset = false;
-			this._marginLeft = null;
-		}
+		// @if CK_DEBUG_STICKYPANEL // console.clear();
+		// @if CK_DEBUG_STICKYPANEL // console.log( 'isSticky', this.isSticky );
+		// @if CK_DEBUG_STICKYPANEL // console.log( '_isStickyToTheBottomOfLimiter', this._isStickyToTheBottomOfLimiter );
+		// @if CK_DEBUG_STICKYPANEL // console.log( '_stickyTopOffset', this._stickyTopOffset );
+		// @if CK_DEBUG_STICKYPANEL // console.log( '_stickyBottomOffset', this._stickyBottomOffset );
+		// @if CK_DEBUG_STICKYPANEL // if ( visibleLimiterRect ) {
+		// @if CK_DEBUG_STICKYPANEL // 	RectDrawer.draw( visibleLimiterRect,
+		// @if CK_DEBUG_STICKYPANEL // 		{ ...diagonalStylesBlack,
+		// @if CK_DEBUG_STICKYPANEL // 			outlineWidth: '3px', opacity: '.8', outlineColor: 'orange', outlineOffset: '-3px',
+		// @if CK_DEBUG_STICKYPANEL // 			backgroundColor: 'rgba(0, 0, 255, .2)' },
+		// @if CK_DEBUG_STICKYPANEL // 		'visibleLimiterRect'
+		// @if CK_DEBUG_STICKYPANEL // 	);
+		// @if CK_DEBUG_STICKYPANEL // }
+	}
+
+	/**
+	 * Sticks the panel at the given CSS `top` offset.
+	 *
+	 * @private
+	 * @param topOffset
+	 */
+	private _stickToTopOfAncestors( topOffset: number ) {
+		this.isSticky = true;
+		this._isStickyToTheBottomOfLimiter = false;
+		this._stickyTopOffset = topOffset;
+		this._stickyBottomOffset = null;
+		this._marginLeft = toPx( -global.window.scrollX );
+	}
+
+	/**
+	 * Sticks the panel at the bottom of the limiter with a given CSS `bottom` offset.
+	 *
+	 * @private
+	 * @param stickyBottomOffset
+	 */
+	private _stickToBottomOfLimiter( stickyBottomOffset: number ) {
+		this.isSticky = true;
+		this._isStickyToTheBottomOfLimiter = true;
+		this._stickyTopOffset = null;
+		this._stickyBottomOffset = stickyBottomOffset;
+		this._marginLeft = toPx( -global.window.scrollX );
+	}
+
+	/**
+	 * Unsticks the panel putting it back to its original position.
+	 *
+	 * @private
+	 */
+	private _unstick() {
+		this.isSticky = false;
+		this._isStickyToTheBottomOfLimiter = false;
+		this._stickyTopOffset = null;
+		this._stickyBottomOffset = null;
+		this._marginLeft = null;
+	}
+
+	/**
+	 * Returns the bounding rect of the {@link #_contentPanel}.
+	 *
+	 * @private
+	 */
+	private get _contentPanelRect(): Rect {
+		return new Rect( this._contentPanel );
 	}
 }

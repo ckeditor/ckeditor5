@@ -17,15 +17,15 @@ import {
 	type ToolbarView,
 	type View,
 	type ColorPickerConfig
-} from 'ckeditor5/src/ui';
+} from 'ckeditor5/src/ui.js';
 
-import { Collection, type LocaleTranslate } from 'ckeditor5/src/utils';
-import { isColor, isLength, isPercentage } from 'ckeditor5/src/engine';
+import { Collection, type LocaleTranslate } from 'ckeditor5/src/utils.js';
+import { isColor, isLength, isPercentage } from 'ckeditor5/src/engine.js';
 
-import type TableCellPropertiesView from '../../tablecellproperties/ui/tablecellpropertiesview';
-import type TablePropertiesView from '../../tableproperties/ui/tablepropertiesview';
+import type TableCellPropertiesView from '../../tablecellproperties/ui/tablecellpropertiesview.js';
+import type TablePropertiesView from '../../tableproperties/ui/tablepropertiesview.js';
 
-import ColorInputView from '../../ui/colorinputview';
+import ColorInputView from '../../ui/colorinputview.js';
 
 const isEmpty = ( val: string ) => val === '';
 
@@ -77,7 +77,7 @@ export function getLocalizedLengthErrorText( t: LocaleTranslate ): string {
  * See {@link module:engine/view/styles/utils~isColor}.
  */
 export function colorFieldValidator( value: string ): boolean {
-	value = value.trim();
+	value = value.trim().toLowerCase();
 
 	return isEmpty( value ) || isColor( value );
 }

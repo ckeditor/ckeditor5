@@ -1,5 +1,6 @@
 ---
 title: Basic text styles
+meta-title: Basic text styles | CKEditor 5 Documentation
 category: features
 ---
 
@@ -55,15 +56,15 @@ By default, each feature can upcast more than one type of content. Here is the f
 
 ## Typing around inline code
 
-CKEditor 5 allows for typing both at the inner and outer boundaries of code to make editing easier for the users.
+CKEditor&nbsp;5 allows for typing both at the inner and outer boundaries of code to make editing easier for the users.
 
 **To type inside a code element**, move the caret to its (start or end) boundary. As long as the code remains highlighted (by default: less transparent gray), typing and applying formatting will be done within its boundaries:
 
-{@img assets/img/typing-inside-code.gif 770 The animation showing typing inside the code element in CKEditor 5 rich text editor.}
+{@img assets/img/typing-inside-code.gif 770 The animation showing typing inside the code element in CKEditor&nbsp;5 rich text editor.}
 
 **To type before or after a code element**, move the caret to its boundary, then press the Arrow key (<kbd>→</kbd> or <kbd>←</kbd>) once. The code is no longer highlighted and whatever text you type or formatting you apply will not be enclosed by the code element:
 
-{@img assets/img/typing-after-code.gif 770 The animation showing typing after the code element in CKEditor 5 rich text editor.}
+{@img assets/img/typing-after-code.gif 770 The animation showing typing after the code element in CKEditor&nbsp;5 rich text editor.}
 
 ## Installation
 
@@ -99,10 +100,11 @@ ClassicEditor
 
 ## Related features
 
-Check out also these CKEditor 5 features to gain better control over your content style and format:
+Check out also these CKEditor&nbsp;5 features to gain better control over your content style and format:
 * {@link features/font Font styles} &ndash; Easily and efficiently control the font {@link features/font#configuring-the-font-family-feature family}, {@link features/font#configuring-the-font-size-feature size}, {@link features/font#configuring-the-font-color-and-font-background-color-features text or background color}.
 * {@link features/style Styles} &ndash; Apply pre-configured styles to existing elements in the editor content.
 * {@link features/text-alignment Text alignment} &ndash; Because it does matter whether the content is left, right, centered, or justified.
+* {@link features/case-change Case change} &ndash; Quickly turn a word or a passage into uppercase, lower case or title case.
 * {@link features/code-blocks Code blocks}  &ndash; Insert longer, multiline code listings, expanding the inline code style greatly.
 * {@link features/highlight Highlight} &ndash; Mark important words and passages, aiding a review or drawing attention to specific parts of the content.
 * {@link features/format-painter Format painter} &ndash; Easily copy text formatting and apply it in a different place in the edited document.
@@ -122,7 +124,7 @@ editor.execute( 'bold' );
 ```
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Contribute

@@ -10,7 +10,7 @@ import type {
 	GeneralHtmlSupportConfig,
 	CodeBlockElementSupport,
 	CustomElementSupport,
-	DocumentListElementSupport,
+	ListElementSupport,
 	DualContentModelElementSupport,
 	HeadingElementSupport,
 	ImageElementSupport,
@@ -20,7 +20,7 @@ import type {
 	TableElementSupport,
 	HtmlComment,
 	FullPage
-} from './index';
+} from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface EditorConfig {
@@ -40,7 +40,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ DataSchema.pluginName ]: DataSchema;
 		[ CodeBlockElementSupport.pluginName ]: CodeBlockElementSupport;
 		[ CustomElementSupport.pluginName ]: CustomElementSupport;
-		[ DocumentListElementSupport.pluginName ]: DocumentListElementSupport;
+		[ ListElementSupport.pluginName ]: ListElementSupport;
 		[ DualContentModelElementSupport.pluginName ]: DualContentModelElementSupport;
 		[ HeadingElementSupport.pluginName ]: HeadingElementSupport;
 		[ ImageElementSupport.pluginName ]: ImageElementSupport;

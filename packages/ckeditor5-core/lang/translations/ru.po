@@ -15,10 +15,15 @@ msgstr ""
 "Language-Team: Russian (https://app.transifex.com/ckeditor/teams/11143/ru/)\n"
 "Language: ru\n"
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Label for the Cancel button."
 msgid "Cancel"
 msgstr "Отмена"
+
+msgctxt "Label for the Clear button."
+msgid "Clear"
+msgstr "Очистить"
 
 msgctxt "The label used by a button next to the color palette in the color picker that removes the color (resets it to an empty value, example usages in font color or table properties)."
 msgid "Remove color"
@@ -47,3 +52,19 @@ msgstr "Невозможно загрузить файл"
 msgctxt "Accessible label of the specific editing area of the editor acting as a root of the entire application."
 msgid "Rich Text Editor. Editing area: %0"
 msgstr "Редактор форматированного текста. Область редактирования: %0"
+
+msgctxt "The label for the insert image with the file manager toolbar button with visible label in insert image dropdown."
+msgid "Insert with file manager"
+msgstr "Вставка с помощью файлового менеджера"
+
+msgctxt "The label for the replace image with the file manager toolbar button with visible label in insert image dropdown."
+msgid "Replace with file manager"
+msgstr "Заменить с помощью файлового менеджера"
+
+msgctxt "The label for the insert image with the file manager toolbar button."
+msgid "Insert image with file manager"
+msgstr "Вставить изображение с помощью файлового менеджера"
+
+msgctxt "The label for the replace image with the file manager toolbar button."
+msgid "Replace image with file manager"
+msgstr "Заменить изображение с помощью файлового менеджера"

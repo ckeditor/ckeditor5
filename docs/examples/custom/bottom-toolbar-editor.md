@@ -3,17 +3,18 @@ category: examples-builds-custom
 order: 70
 classes: main__content--no-toc
 toc: false
+meta-title: Bottom toolbar with button grouping example | CKEditor 5 Documentation
 menu-title: Bottom toolbar with button grouping
 modified_at: 2021-12-09
 ---
 
 # Editor with a bottom toolbar and button grouping
 
-The following custom editor example showcases an editor instance with the main toolbar displayed at the bottom of the editing window. To make it possible, the {@link module:editor-decoupled/decouplededitor~DecoupledEditor `DecoupledEditor`} was used with the {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#toolbar main toolbar} injected after the editing root into the DOM. Learn more about the {@link framework/document-editor decoupled UI in CKEditor 5} to find out the details of this process.
+The following custom editor example showcases an editor instance with the main toolbar displayed at the bottom of the editing window. To make it possible, this example uses the {@link module:editor-decoupled/decouplededitor~DecoupledEditor `DecoupledEditor`} with the {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#toolbar main toolbar} injected after the editing root into the DOM. Learn more about the {@link framework/document-editor decoupled UI in CKEditor&nbsp;5} to find out the details of this process.
 
-Additionally, thanks to the flexibility offered by the {@link framework/architecture/ui-library CKEditor 5 UI framework}, the main toolbar has been uncluttered by moving buttons related to text formatting into the custom "Formatting options" dropdown. All remaining dropdown and (button) tooltips have been tuned to open upward for the best user experience. Similar effect can also be achieved by using the {@link features/toolbar#grouping-toolbar-items-in-drop-downs-nested-toolbars built-in toolbar grouping option}.
+Additionally, thanks to the flexibility offered by the {@link framework/architecture/ui-library CKEditor&nbsp;5 UI framework}, the main toolbar was uncluttered by moving buttons related to text formatting into the custom "Formatting options" dropdown. All remaining dropdown and (button) tooltips were tuned to open upward for the best user experience. You can also achieve a similar effect by using the {@link features/toolbar#grouping-toolbar-items-in-dropdowns-nested-toolbars built-in toolbar grouping option}.
 
-The presented combination of the UI and editor's features works best for integrations where text creation comes first and formatting is applied occasionally, for example in email applications, (forum) post editors, chats or instant messaging. You can probably recognize this UI setup from some popular applications such as Gmail, Slack or Zendesk.
+The presented combination of the UI and editor's features works best for integrations where text creation comes first and formatting is applied occasionally. Some examples are email applications, (forum) post editors, chats, or instant messaging. You can probably recognize this UI setup from popular applications such as Gmail, Slack, or Zendesk.
 
 {@snippet examples/bottom-toolbar-editor}
 

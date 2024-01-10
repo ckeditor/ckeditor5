@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Editor from '../../src/editor/editor';
-import VirtualTestEditor from '../../tests/_utils/virtualtesteditor';
+import Editor from '../../src/editor/editor.js';
+import VirtualTestEditor from '../../tests/_utils/virtualtesteditor.js';
 
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
-import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
+import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import testUtils from '../../tests/_utils/utils';
+import testUtils from '../../tests/_utils/utils.js';
 
 describe( 'VirtualTestEditor', () => {
 	testUtils.createSinonSandbox();

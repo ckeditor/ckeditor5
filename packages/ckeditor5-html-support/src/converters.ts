@@ -7,7 +7,7 @@
  * @module html-support/converters
  */
 
-import type { Editor } from 'ckeditor5/src/core';
+import type { Editor } from 'ckeditor5/src/core.js';
 import type {
 	AttributeElement,
 	DowncastAttributeEvent,
@@ -19,18 +19,19 @@ import type {
 	UpcastConversionApi,
 	UpcastDispatcher,
 	UpcastElementEvent,
-	ViewElement
-} from 'ckeditor5/src/engine';
-import { toWidget } from 'ckeditor5/src/widget';
+	ViewElement,
+	Item
+} from 'ckeditor5/src/engine.js';
+import { toWidget } from 'ckeditor5/src/widget.js';
 import {
 	setViewAttributes,
 	mergeViewElementAttributes,
 	updateViewAttributes,
 	getHtmlAttributeName,
 	type GHSViewAttributes
-} from './utils';
-import type DataFilter from './datafilter';
-import type { DataSchemaBlockElementDefinition, DataSchemaDefinition, DataSchemaInlineElementDefinition } from './dataschema';
+} from './utils.js';
+import type DataFilter from './datafilter.js';
+import type { DataSchemaBlockElementDefinition, DataSchemaDefinition, DataSchemaInlineElementDefinition } from './dataschema.js';
 
 /**
  * View-to-model conversion helper for object elements.
@@ -100,10 +101,10 @@ export function createObjectView( viewName: string, modelElement: Element, write
  * @returns Returns a conversion callback.
 */
 export function viewToAttributeInlineConverter(
-	{ view: viewName, model: attributeKey }: DataSchemaInlineElementDefinition,
+	{ view: viewName, model: attributeKey, allowEmpty }: DataSchemaInlineElementDefinition,
 	dataFilter: DataFilter
-) {
-	return ( dispatcher: UpcastDispatcher ): void => {
+): ( dispatcher: UpcastDispatcher ) => void {
+	return dispatcher => {
 		dispatcher.on<UpcastElementEvent>( `element:${ viewName }`, ( evt, data, conversionApi ) => {
 			let viewAttributes = dataFilter.processViewAttributes( data.viewItem, conversionApi );
 
@@ -125,18 +126,67 @@ export function viewToAttributeInlineConverter(
 				data = Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
 			}
 
+			// Convert empty inline element if allowed and has any attributes.
+			if ( allowEmpty && data.modelRange!.isCollapsed && Object.keys( viewAttributes ).length ) {
+				const modelElement = conversionApi.writer.createElement( 'htmlEmptyElement' );
+
+				if ( !conversionApi.safeInsert( modelElement, data.modelCursor ) ) {
+					return;
+				}
+
+				const parts = conversionApi.getSplitParts( modelElement );
+
+				data.modelRange = conversionApi.writer.createRange(
+					data.modelRange!.start,
+					conversionApi.writer.createPositionAfter( parts[ parts.length - 1 ] )
+				);
+
+				conversionApi.updateConversionResult( modelElement, data );
+				setAttributeOnItem( modelElement, viewAttributes, conversionApi );
+
+				return;
+			}
+
 			// Set attribute on each item in range according to the schema.
 			for ( const node of data.modelRange!.getItems() ) {
-				if ( conversionApi.schema.checkAttribute( node, attributeKey ) ) {
-					// Node's children are converted recursively, so node can already include model attribute.
-					// We want to extend it, not replace.
-					const nodeAttributes = node.getAttribute( attributeKey );
-					const attributesToAdd = mergeViewElementAttributes( viewAttributes, nodeAttributes || {} );
-
-					conversionApi.writer.setAttribute( attributeKey, attributesToAdd, node );
-				}
+				setAttributeOnItem( node, viewAttributes, conversionApi );
 			}
 		}, { priority: 'low' } );
+	};
+
+	function setAttributeOnItem( node: Item, viewAttributes: GHSViewAttributes, conversionApi: UpcastConversionApi ): void {
+		if ( conversionApi.schema.checkAttribute( node, attributeKey ) ) {
+			// Node's children are converted recursively, so node can already include model attribute.
+			// We want to extend it, not replace.
+			const nodeAttributes = node.getAttribute( attributeKey );
+			const attributesToAdd = mergeViewElementAttributes( viewAttributes, nodeAttributes || {} );
+
+			conversionApi.writer.setAttribute( attributeKey, attributesToAdd, node );
+		}
+	}
+}
+
+/**
+ * Conversion helper converting an empty inline model element to an HTML element or widget.
+ */
+export function emptyInlineModelElementToViewConverter(
+	{ model: attributeKey, view: viewName }: DataSchemaInlineElementDefinition,
+	asWidget?: boolean
+): ElementCreatorFunction {
+	return ( item, { writer, consumable } ) => {
+		if ( !item.hasAttribute( attributeKey ) ) {
+			return null;
+		}
+
+		const viewElement = writer.createContainerElement( viewName! );
+		const attributeValue = item.getAttribute( attributeKey ) as GHSViewAttributes;
+
+		consumable.consume( item, `attribute:${ attributeKey }` );
+		setViewAttributes( writer, attributeValue, viewElement );
+
+		viewElement.getFillerOffset = () => null;
+
+		return asWidget ? toWidget( viewElement, writer ) : viewElement;
 	};
 }
 

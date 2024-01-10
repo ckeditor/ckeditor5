@@ -7,11 +7,16 @@
  * @module list/listproperties/liststartcommand
  */
 
-import { Command } from 'ckeditor5/src/core';
-import { getSelectedListItems } from '../list/utils';
+import { Command } from 'ckeditor5/src/core.js';
+import { first } from 'ckeditor5/src/utils.js';
+import {
+	expandListBlocksToCompleteList,
+	isListItemBlock
+} from '../list/utils/model.js';
 
 /**
- * The list start index command. It changes the `listStart` attribute of the selected list items.
+ * The list start index command. It changes the `listStart` attribute of the selected list items,
+ * letting the user to choose the starting point of an ordered list.
  * It is used by the {@link module:list/listproperties~ListProperties list properties feature}.
  */
 export default class ListStartCommand extends Command {
@@ -25,6 +30,7 @@ export default class ListStartCommand extends Command {
 	 */
 	public override refresh(): void {
 		const value = this._getValue();
+
 		this.value = value;
 		this.isEnabled = value != null;
 	}
@@ -37,12 +43,16 @@ export default class ListStartCommand extends Command {
 	 */
 	public override execute( { startIndex = 1 }: { startIndex?: number } = {} ): void {
 		const model = this.editor.model;
-		const listItems = getSelectedListItems( model )
-			.filter( item => item.getAttribute( 'listType' ) == 'numbered' );
+		const document = model.document;
+
+		let blocks = Array.from( document.selection.getSelectedBlocks() )
+			.filter( block => isListItemBlock( block ) && block.getAttribute( 'listType' ) == 'numbered' );
+
+		blocks = expandListBlocksToCompleteList( blocks );
 
 		model.change( writer => {
-			for ( const item of listItems ) {
-				writer.setAttribute( 'listStart', startIndex >= 0 ? startIndex : 1, item );
+			for ( const block of blocks ) {
+				writer.setAttribute( 'listStart', startIndex >= 0 ? startIndex : 1, block );
 			}
 		} );
 	}
@@ -53,10 +63,13 @@ export default class ListStartCommand extends Command {
 	 * @returns The current value.
 	 */
 	private _getValue() {
-		const listItem = this.editor.model.document.selection.getFirstPosition()!.parent;
+		const model = this.editor.model;
+		const document = model.document;
 
-		if ( listItem && listItem.is( 'element', 'listItem' ) && listItem.getAttribute( 'listType' ) == 'numbered' ) {
-			return listItem.getAttribute( 'listStart' ) as number;
+		const block = first( document.selection.getSelectedBlocks() );
+
+		if ( block && isListItemBlock( block ) && block.getAttribute( 'listType' ) == 'numbered' ) {
+			return block.getAttribute( 'listStart' ) as number;
 		}
 
 		return null;

@@ -7,8 +7,6 @@
  * @module clipboard/dragdropblocktoolbar
  */
 
-/* istanbul ignore file -- @preserve */
-
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import {
@@ -21,10 +19,10 @@ import {
 
 import type { BlockToolbar } from '@ckeditor/ckeditor5-ui';
 
-import ClipboardObserver from './clipboardobserver';
+import ClipboardObserver from './clipboardobserver.js';
 
 /**
- * Integration of an experimental block Drag and drop support with the block toolbar.
+ * Integration of a block Drag and Drop support with the block toolbar.
  *
  * @internal
  */
@@ -69,12 +67,18 @@ export default class DragDropBlockToolbar extends Plugin {
 			const blockToolbar: BlockToolbar = editor.plugins.get( 'BlockToolbar' );
 			const element = blockToolbar.buttonView.element!;
 
-			element.setAttribute( 'draggable', 'true' );
-
 			this._domEmitter.listenTo( element, 'dragstart', ( evt, data ) => this._handleBlockDragStart( data ) );
 			this._domEmitter.listenTo( global.document, 'dragover', ( evt, data ) => this._handleBlockDragging( data ) );
 			this._domEmitter.listenTo( global.document, 'drop', ( evt, data ) => this._handleBlockDragging( data ) );
 			this._domEmitter.listenTo( global.document, 'dragend', () => this._handleBlockDragEnd(), { useCapture: true } );
+
+			if ( this.isEnabled ) {
+				element.setAttribute( 'draggable', 'true' );
+			}
+
+			this.on<ObservableChangeEvent<boolean>>( 'change:isEnabled', ( evt, name, isEnabled ) => {
+				element.setAttribute( 'draggable', isEnabled ? 'true' : 'false' );
+			} );
 		}
 	}
 
@@ -97,6 +101,7 @@ export default class DragDropBlockToolbar extends Plugin {
 
 		const model = this.editor.model;
 		const selection = model.document.selection;
+		const view = this.editor.editing.view;
 
 		const blocks = Array.from( selection.getSelectedBlocks() );
 		const draggedRange = model.createRange(
@@ -108,7 +113,8 @@ export default class DragDropBlockToolbar extends Plugin {
 
 		this._isBlockDragging = true;
 
-		this.editor.editing.view.getObserver( ClipboardObserver )!.onDomEvent( domEvent );
+		view.focus();
+		view.getObserver( ClipboardObserver )!.onDomEvent( domEvent );
 	}
 
 	/**
@@ -119,15 +125,16 @@ export default class DragDropBlockToolbar extends Plugin {
 			return;
 		}
 
-		const clientX = domEvent.clientX + 100;
+		const clientX = domEvent.clientX + ( this.editor.locale.contentLanguageDirection == 'ltr' ? 100 : -100 );
 		const clientY = domEvent.clientY;
 		const target = document.elementFromPoint( clientX, clientY );
+		const view = this.editor.editing.view;
 
 		if ( !target || !target.closest( '.ck-editor__editable' ) ) {
 			return;
 		}
 
-		this.editor.editing.view.getObserver( ClipboardObserver )!.onDomEvent( {
+		view.getObserver( ClipboardObserver )!.onDomEvent( {
 			...domEvent,
 			type: domEvent.type,
 			dataTransfer: domEvent.dataTransfer,
@@ -146,4 +153,3 @@ export default class DragDropBlockToolbar extends Plugin {
 		this._isBlockDragging = false;
 	}
 }
-

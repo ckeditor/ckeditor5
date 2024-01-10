@@ -1,5 +1,6 @@
 ---
 title: Watchdog
+meta-title: Watchdog | CKEditor 5 Documentation
 category: features
 ---
 
@@ -9,13 +10,13 @@ The watchdog utility protects you from data loss in case the editor crashes. It 
 
 ## Additional feature information
 
-Every non-trivial piece of software has bugs. Despite our high-quality standards like 100% code coverage, regression testing, and manual tests before every release, CKEditor 5 is not free of bugs. Neither is the browser used by the user, your application in which CKEditor 5 is integrated, or any third-party add-ons that you used.
+Every non-trivial piece of software has bugs. Despite our high-quality standards like 100% code coverage, regression testing, and manual tests before every release, CKEditor&nbsp;5 is not free of bugs. Neither is the browser used by the user, your application in which CKEditor&nbsp;5 is integrated, or any third-party add-ons that you used.
 
 To limit the effect of an editor crash on the user experience, you can automatically restart the WYSIWYG editor with the content saved just before the crash.
 
 The watchdog utility allows you to do exactly that. It ensures that an editor instance is running, despite a potential crash. It works by detecting that an editor crashed, destroying it, and automatically creating a new instance of that editor with the content of the previous editor.
 
-Note that the most "dangerous" places in the CKEditor 5 API, like `editor.model.change()`, `editor.editing.view.change()` or emitters, are covered with checks and `try-catch` blocks that can detect unknown errors and restart the editor when they occur.
+Note that the most "dangerous" places in the CKEditor&nbsp;5 API, like `editor.model.change()`, `editor.editing.view.change()` or emitters, are covered with checks and `try-catch` blocks that can detect unknown errors and restart the editor when they occur.
 
 There are two available types of watchdogs:
 
@@ -347,4 +348,4 @@ const editorWatchdog = new EditorWatchdog( ClassicEditor, {
 
 ## Limitations
 
-The watchdogs do not handle errors thrown during the editor or context initialization (e.g. in `Editor.create()`) and editor destruction (e.g. in `Editor#destroy()`). Errors thrown at these stages mean that there is a problem in the code integrating the editor with your application and such a problem cannot be fixed by restarting the editor.
+The watchdog does not handle errors thrown during the editor or context initialization (for example, in `Editor.create()`) and editor destruction (for example, in `Editor#destroy()`). Errors thrown at these stages mean that there is a problem in the code integrating the editor with your application and such a problem cannot be fixed by restarting the editor.

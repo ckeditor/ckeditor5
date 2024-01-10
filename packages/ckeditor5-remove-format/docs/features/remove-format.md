@@ -1,6 +1,7 @@
 ---
 title: Removing text formatting
 menu-title: Remove formatting
+meta-title: Removing text formatting | CKEditor 5 Documentation
 category: features
 ---
 
@@ -34,7 +35,7 @@ In order for the remove formatting feature to work with custom content, you need
 
 This is already done for most inline elements supported by the {@link features/general-html-support General HTML Support} plugin and its derivatives such as the {@link features/style Style} plugin.
 
-By default, formatting is not removed from the {@link features/link link} elements. To remove formatting from them as well, you need to create a {@link installation/getting-started/configuration#adding-simple-standalone-features plugin} that extends the schema and tells the editor that the `linkHref` text attribute produced by the link feature is a formatting attribute:
+By default, formatting is not removed from the {@link features/link link} elements. To remove formatting from them as well, you need to create a {@link installation/getting-started/extending-features plugin} that extends the schema and tells the editor that the `linkHref` text attribute produced by the link feature is a formatting attribute:
 
 ```js
 // A simple plugin that extends the remove format feature to consider links.
@@ -99,7 +100,7 @@ ClassicEditor
 
 ## Related features
 
-CKEditor 5 has more features that can help you format your content:
+CKEditor&nbsp;5 has more features that can help you format your content:
 * {@link features/basic-styles Basic text styles} &ndash; The essentials, like **bold**, *italic*, and others.
 * {@link features/font Font styles} &ndash; Easily and efficiently control the font {@link features/font#configuring-the-font-family-feature family}, {@link features/font#configuring-the-font-size-feature size}, {@link features/font#configuring-the-font-color-and-font-background-color-features text or background color}.
 * {@link features/format-painter Format painter} &ndash; Easily copy text formatting and apply it in a different place in the edited document.
@@ -109,7 +110,7 @@ CKEditor 5 has more features that can help you format your content:
 
 The {@link module:remove-format/removeformat~RemoveFormat} plugin registers the `'removeFormat'` UI button component and a command of the same name implemented by {@link module:remove-format/removeformatcommand~RemoveFormatCommand}.
 
-The command can be executed using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
+You can execute the command using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
 
 ```js
 // Removes all the formatting in the selection.
@@ -117,7 +118,7 @@ editor.execute( 'removeFormat' );
 ```
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Contribute

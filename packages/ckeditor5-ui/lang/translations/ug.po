@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Uyghur (https://app.transifex.com/ckeditor/teams/11143/ug/)\n"
 "Language: ug\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Title of the CKEditor5 editor."
 msgid "Rich Text Editor"
@@ -22,71 +23,79 @@ msgstr "تېكىست تەھرىرلىگۈچ"
 
 msgctxt "Accessible label of the specific editing area belonging to a container with an ARIA application role."
 msgid "Editor editing area: %0"
-msgstr ""
+msgstr "تەھرىرلىگۈچ تەھرىرلەش رايونى: %0"
 
 msgctxt "Label of the block toolbar icon (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
 msgid "Edit block"
-msgstr ""
+msgstr "بۆلەك تەھرىر"
+
+msgctxt "First part of the label of the block toolbar icon when functionality of drag and drop is available (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
+msgid "Click to edit block"
+msgstr "چېكىلسە بۆلەك تەھرىرلىنىدۇ"
+
+msgctxt "Second part of the label of the block toolbar icon when functionality of drag and drop is available (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
+msgid "Drag to move"
+msgstr "يۆتكەشتە سۆرىلىدۇ"
 
 msgctxt "Label for a button showing the next thing (tab, page, etc.)."
 msgid "Next"
-msgstr ""
+msgstr "كېيىنكى"
 
 msgctxt "Label for a button showing the previous thing (tab, page, etc.)."
 msgid "Previous"
-msgstr ""
+msgstr "ئالدىنقى"
 
 msgctxt "Label used by assistive technologies describing a generic editor toolbar."
 msgid "Editor toolbar"
-msgstr ""
+msgstr "تەھرىرلىگۈچ قورال بالداق"
 
 msgctxt "Label used by assistive technologies describing a toolbar displayed inside a dropdown."
 msgid "Dropdown toolbar"
-msgstr ""
+msgstr "سىرىلما قورال بالداق"
 
 msgctxt "Label of a button that applies a black color in color pickers."
 msgid "Black"
-msgstr ""
+msgstr "قارا"
 
 msgctxt "Label of a button that applies a dim grey color in color pickers."
 msgid "Dim grey"
-msgstr ""
+msgstr "سۇس كۈلرەڭ"
 
 msgctxt "Label of a button that applies a grey color in color pickers."
 msgid "Grey"
-msgstr ""
+msgstr "كۈلرەڭ"
 
 msgctxt "Label of a button that applies a light grey color in color pickers."
 msgid "Light grey"
-msgstr ""
+msgstr "ئوچۇق كۈلرەڭ"
 
 msgctxt "Label of a button that applies a white color in color pickers."
 msgid "White"
-msgstr ""
+msgstr "ئاق"
 
 msgctxt "Label of a button that applies a red color in color pickers."
 msgid "Red"
-msgstr ""
+msgstr "قىزىل"
 
 msgctxt "Label of a button that applies a orange color in color pickers."
 msgid "Orange"
-msgstr ""
+msgstr "قىزغۇچ سېرىق"
 
 msgctxt "Label of a button that applies a yellow color in color pickers."
 msgid "Yellow"
-msgstr ""
+msgstr "سېرىق"
 
 msgctxt "Label of a button that applies a light green color in color pickers."
 msgid "Light green"
-msgstr ""
+msgstr "ئوچۇق يېشىل"
 
 msgctxt "Label of a button that applies a green color in color pickers."
 msgid "Green"
-msgstr ""
+msgstr "يېشىل"
 
 msgctxt "Label of a button that applies a aquamarine color in color pickers."
 msgid "Aquamarine"
-msgstr ""
+msgstr "دېڭىز كۆكى"
 
 msgctxt "Label of a button that applies a turquoise color in color pickers."
 msgid "Turquoise"
@@ -94,24 +103,36 @@ msgstr ""
 
 msgctxt "Label of a button that applies a light blue color in color pickers."
 msgid "Light blue"
-msgstr ""
+msgstr "ئوچۇق كۆك"
 
 msgctxt "Label of a button that applies a blue color in color pickers."
 msgid "Blue"
-msgstr ""
+msgstr "كۆك"
 
 msgctxt "Label of a button that applies a purple color in color pickers."
 msgid "Purple"
-msgstr ""
+msgstr "بىنەپشە"
 
 msgctxt "Accessible label of a toolbar that shows up next to the blocks of content (e.g. headings, paragraphs)."
 msgid "Editor block content toolbar"
-msgstr ""
+msgstr "تەھرىرلىگۈچ بۆلىكى مەزمۇن قورال بالداق"
 
 msgctxt "Accessible label of a balloon toolbar that shows up right next to the user selection (the caret)."
 msgid "Editor contextual toolbar"
-msgstr ""
+msgstr "تەھرىرلىگۈچ مەزمۇن قورال بالداق"
 
 msgctxt "Label of an input field for typing colors in the HEX color format."
 msgid "HEX"
 msgstr ""
+
+msgctxt "Label of the button closing the color picker and confirming the changes done in the color selector component."
+msgid "Accept"
+msgstr "قوشۇل"
+
+msgctxt "The main text of the message shown to the user when given query does not match any results."
+msgid "No results found"
+msgstr "ھېچقانداق نەتىجە تېپىلمىدى"
+
+msgctxt "The main text of the message shown to the user when no results are available."
+msgid "No searchable items"
+msgstr "ئىزدىگۈدەك تۈر يوق"

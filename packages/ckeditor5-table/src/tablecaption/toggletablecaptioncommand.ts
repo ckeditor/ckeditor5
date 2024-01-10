@@ -7,11 +7,12 @@
 * @module table/tablecaption/toggletablecaptioncommand
 */
 
-import { Command } from 'ckeditor5/src/core';
-import type { Writer } from 'ckeditor5/src/engine';
-import type TableCaptionEditing from './tablecaptionediting';
+import { Command } from 'ckeditor5/src/core.js';
+import type { Writer } from 'ckeditor5/src/engine.js';
+import type TableCaptionEditing from './tablecaptionediting.js';
 
-import { getCaptionFromTableModelElement, getSelectionAffectedTable } from './utils';
+import { getCaptionFromTableModelElement } from './utils.js';
+import { getSelectionAffectedTable } from '../utils/common.js';
 
 /**
  * The toggle table caption command.

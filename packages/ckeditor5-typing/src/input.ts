@@ -10,8 +10,8 @@
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { env } from '@ckeditor/ckeditor5-utils';
 
-import InsertTextCommand from './inserttextcommand';
-import InsertTextObserver, { type ViewDocumentInsertTextEvent } from './inserttextobserver';
+import InsertTextCommand from './inserttextcommand.js';
+import InsertTextObserver, { type ViewDocumentInsertTextEvent } from './inserttextobserver.js';
 
 import type { Model } from '@ckeditor/ckeditor5-engine';
 
@@ -101,6 +101,8 @@ export default class Input extends Plugin {
 			}
 
 			editor.execute( 'insertText', insertTextCommandData );
+
+			view.scrollToTheSelection();
 		} );
 
 		if ( env.isAndroid ) {

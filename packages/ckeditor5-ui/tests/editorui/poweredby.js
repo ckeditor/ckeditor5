@@ -6,17 +6,17 @@
 /* global document, Event, window, HTMLElement, getComputedStyle  */
 
 import { Editor } from '@ckeditor/ckeditor5-core';
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import EditorUI from '../../src/editorui/editorui';
-import { BalloonPanelView } from '../../src';
-import View from '../../src/view';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import EditorUI from '../../src/editorui/editorui.js';
+import { BalloonPanelView } from '../../src/index.js';
+import View from '../../src/view.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { Rect } from '@ckeditor/ckeditor5-utils';
-import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { Rect, global } from '@ckeditor/ckeditor5-utils';
+import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'PoweredBy', () => {
 	let editor, element;
@@ -45,6 +45,9 @@ describe( 'PoweredBy', () => {
 			width: 1000,
 			height: 1000
 		} );
+
+		sinon.stub( global.window, 'innerWidth' ).value( 1000 );
+		sinon.stub( global.window, 'innerHeight' ).value( 1000 );
 	} );
 
 	afterEach( async () => {
@@ -479,14 +482,13 @@ describe( 'PoweredBy', () => {
 			balloonRect = new Rect( { top: 0, left: 0, width: 20, right: 20, bottom: 10, height: 10 } );
 		} );
 
-		it( 'should not show the balloon if the root is not visible', async () => {
+		it( 'should not show the balloon if the root is not visible vertically', async () => {
 			const domRoot = editor.editing.view.getDomRoot();
 			const parentWithOverflow = document.createElement( 'div' );
+
 			parentWithOverflow.style.overflow = 'scroll';
-			parentWithOverflow.style.height = '0px';
-			parentWithOverflow.style.width = '0px';
-			domRoot.style.marginTop = '1000px';
-			domRoot.style.marginLeft = '1000px';
+			// Is not enough height to be visible vertically.
+			parentWithOverflow.style.height = '99px';
 
 			document.body.appendChild( parentWithOverflow );
 			parentWithOverflow.appendChild( domRoot );
@@ -494,7 +496,26 @@ describe( 'PoweredBy', () => {
 			focusEditor( editor );
 
 			expect( editor.ui.poweredBy._balloonView.isVisible ).to.be.true;
-			expect( editor.ui.poweredBy._balloonView.position ).to.equal( 'invalid' );
+			expect( editor.ui.poweredBy._balloonView.position ).to.equal( 'arrowless' );
+
+			parentWithOverflow.remove();
+		} );
+
+		it( 'should not show the balloon if the root is not visible horizontally', async () => {
+			const domRoot = editor.editing.view.getDomRoot();
+			const parentWithOverflow = document.createElement( 'div' );
+
+			parentWithOverflow.style.overflow = 'scroll';
+			// Is not enough width to be visible horizontally.
+			parentWithOverflow.style.width = '399px';
+
+			document.body.appendChild( parentWithOverflow );
+			parentWithOverflow.appendChild( domRoot );
+
+			focusEditor( editor );
+
+			expect( editor.ui.poweredBy._balloonView.isVisible ).to.be.true;
+			expect( editor.ui.poweredBy._balloonView.position ).to.equal( 'arrowless' );
 
 			parentWithOverflow.remove();
 		} );
@@ -502,6 +523,15 @@ describe( 'PoweredBy', () => {
 		it( 'should position the to the left side if the UI language is RTL and no side was configured', async () => {
 			const editor = await createEditor( element, {
 				language: 'ar'
+			} );
+
+			testUtils.sinon.stub( editor.ui.getEditableElement( 'main' ), 'getBoundingClientRect' ).returns( {
+				top: 0,
+				left: 0,
+				right: 400,
+				width: 400,
+				bottom: 100,
+				height: 100
 			} );
 
 			focusEditor( editor );
@@ -566,6 +596,15 @@ describe( 'PoweredBy', () => {
 				}
 			} );
 
+			testUtils.sinon.stub( editor.ui.getEditableElement( 'main' ), 'getBoundingClientRect' ).returns( {
+				top: 0,
+				left: 0,
+				right: 400,
+				width: 400,
+				bottom: 100,
+				height: 100
+			} );
+
 			focusEditor( editor );
 
 			const pinSpy = testUtils.sinon.spy( editor.ui.poweredBy._balloonView, 'pin' );
@@ -602,6 +641,15 @@ describe( 'PoweredBy', () => {
 				}
 			} );
 
+			testUtils.sinon.stub( editor.ui.getEditableElement( 'main' ), 'getBoundingClientRect' ).returns( {
+				top: 0,
+				left: 0,
+				right: 400,
+				width: 400,
+				bottom: 100,
+				height: 100
+			} );
+
 			focusEditor( editor );
 
 			const pinSpy = testUtils.sinon.spy( editor.ui.poweredBy._balloonView, 'pin' );
@@ -636,6 +684,15 @@ describe( 'PoweredBy', () => {
 						position: 'inside'
 					}
 				}
+			} );
+
+			testUtils.sinon.stub( editor.ui.getEditableElement( 'main' ), 'getBoundingClientRect' ).returns( {
+				top: 0,
+				left: 0,
+				right: 400,
+				width: 400,
+				bottom: 100,
+				height: 100
 			} );
 
 			focusEditor( editor );
@@ -689,14 +746,7 @@ describe( 'PoweredBy', () => {
 			const positioningFunction = pinArgs.positions[ 0 ];
 
 			expect( pinArgs.target ).to.equal( domRoot );
-			expect( positioningFunction( rootRect, balloonRect ) ).to.deep.equal( {
-				top: -99999,
-				left: -99999,
-				name: 'invalid',
-				config: {
-					withArrow: false
-				}
-			} );
+			expect( positioningFunction( rootRect, balloonRect ) ).to.equal( null );
 
 			await editor.destroy();
 		} );
@@ -729,14 +779,7 @@ describe( 'PoweredBy', () => {
 			const positioningFunction = pinArgs.positions[ 0 ];
 
 			expect( pinArgs.target ).to.equal( domRoot );
-			expect( positioningFunction( rootRect, balloonRect ) ).to.deep.equal( {
-				top: -99999,
-				left: -99999,
-				name: 'invalid',
-				config: {
-					withArrow: false
-				}
-			} );
+			expect( positioningFunction( rootRect, balloonRect ) ).to.equal( null );
 
 			await editor.destroy();
 		} );
@@ -773,14 +816,7 @@ describe( 'PoweredBy', () => {
 			const positioningFunction = pinArgs.positions[ 0 ];
 
 			expect( pinArgs.target ).to.equal( domRoot );
-			expect( positioningFunction( rootRect, balloonRect ) ).to.deep.equal( {
-				top: -99999,
-				left: -99999,
-				name: 'invalid',
-				config: {
-					withArrow: false
-				}
-			} );
+			expect( positioningFunction( rootRect, balloonRect ) ).to.equal( null );
 
 			await editor.destroy();
 		} );
@@ -793,6 +829,15 @@ describe( 'PoweredBy', () => {
 						horizontalOffset: 10
 					}
 				}
+			} );
+
+			testUtils.sinon.stub( editor.ui.getEditableElement( 'main' ), 'getBoundingClientRect' ).returns( {
+				top: 0,
+				left: 0,
+				right: 400,
+				width: 400,
+				bottom: 100,
+				height: 100
 			} );
 
 			focusEditor( editor );
@@ -852,7 +897,7 @@ describe( 'PoweredBy', () => {
 			const pinSpy = testUtils.sinon.spy( editor.ui.poweredBy._balloonView, 'pin' );
 
 			expect( editor.ui.poweredBy._balloonView.isVisible ).to.be.true;
-			expect( editor.ui.poweredBy._balloonView.position ).to.equal( 'invalid' );
+			expect( editor.ui.poweredBy._balloonView.position ).to.equal( 'arrowless' );
 
 			domRoot.getBoundingClientRect.returns( {
 				top: 0,
@@ -877,7 +922,7 @@ describe( 'PoweredBy', () => {
 			expect( pinArgs.target ).to.equal( editor.editing.view.getDomRoot() );
 			expect( positioningFunction( rootRect, balloonRect ) ).to.deep.equal( {
 				top: 95,
-				left: 375,
+				left: 325,
 				name: 'position_border-side_right',
 				config: {
 					withArrow: false
@@ -915,7 +960,7 @@ describe( 'PoweredBy', () => {
 			const pinSpy = testUtils.sinon.spy( editor.ui.poweredBy._balloonView, 'pin' );
 
 			expect( editor.ui.poweredBy._balloonView.isVisible ).to.be.true;
-			expect( editor.ui.poweredBy._balloonView.position ).to.equal( 'invalid' );
+			expect( editor.ui.poweredBy._balloonView.position ).to.equal( 'arrowless' );
 
 			domRoot.getBoundingClientRect.returns( {
 				top: 0,
@@ -939,8 +984,8 @@ describe( 'PoweredBy', () => {
 
 			expect( pinArgs.target ).to.equal( editor.editing.view.getDomRoot() );
 			expect( positioningFunction( rootRect, balloonRect ) ).to.deep.equal( {
-				top: 95,
-				left: 375,
+				top: 45,
+				left: 975,
 				name: 'position_border-side_right',
 				config: {
 					withArrow: false

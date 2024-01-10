@@ -1,5 +1,6 @@
 ---
 menu-title: Paste plain text
+meta-title: Paste plain text | CKEditor 5 Documentation
 category: features-pasting
 order: 30
 ---
@@ -24,7 +25,7 @@ Copy some text from one of the styled paragraphs below and press <kbd>Ctrl</kbd>
 
 The plain text pasting feature is implemented by the `PastePlainText` plugin which is a part of the `Clipboard` plugin.
 
-It detects the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> keystroke during the paste and causes the pasted text to inherit the styles of the content it was pasted into. In this sense, the feature can also be described as "pasting without formatting" &mdash; the source formatting of the pasted text gets replaced with the target formatting of the text it was pasted into.
+It detects the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> keystroke during the paste and causes the pasted text to inherit the styles of the content it was pasted into. In this sense, the feature can also be described as "pasting without formatting" &ndash; the source formatting of the pasted text gets replaced with the target formatting of the text it was pasted into.
 
 Pasting plain text with a double line break will turn the break into a paragraph. A single line break will instead be turned into a soft break upon pasting.
 
@@ -69,8 +70,9 @@ Feel free to open a [new feature request](https://github.com/ckeditor/ckeditor5/
 
 ## Related features
 
-CKEditor 5 supports a wider range of paste features, including:
-* {@link features/paste-from-word Paste from Word} &ndash; Paste content from Microsoft Word and maintain the original structure and formatting.
+CKEditor&nbsp;5 supports a wider range of paste features, including:
+* {@link features/paste-markdown Paste Markdown} &ndash; Paste Markdown formatted content straight into the editor.
+* {@link features/paste-from-office Paste from Office} &ndash; Paste content from Microsoft Word and maintain the original structure and formatting.
 * {@link features/paste-from-google-docs Paste from Google Docs} &ndash; Paste content from Google Docs, maintaining the original formatting and structure.
 * {@link features/import-word Import from Word} &ndash; Convert Word files directly into HTML content.
 

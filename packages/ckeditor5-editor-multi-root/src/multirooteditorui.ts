@@ -9,17 +9,17 @@
 
 import {
 	type Editor
-} from 'ckeditor5/src/core';
+} from 'ckeditor5/src/core.js';
 
 import {
 	EditorUI,
 	type EditorUIReadyEvent,
 	type InlineEditableUIView
-} from 'ckeditor5/src/ui';
+} from 'ckeditor5/src/ui.js';
 
-import { enablePlaceholder } from 'ckeditor5/src/engine';
+import { enablePlaceholder } from 'ckeditor5/src/engine.js';
 
-import type MultiRootEditorUIView from './multirooteditoruiview';
+import type MultiRootEditorUIView from './multirooteditoruiview.js';
 
 /**
  * The multi-root editor UI class.
@@ -189,7 +189,7 @@ export default class MultiRootEditorUI extends EditorUI {
 	}
 
 	/**
-	 * Enables the placeholder text on a given editable, if the placeholder was configured.
+	 * Enables the placeholder text on a given editable.
 	 *
 	 * @param editable Editable on which the placeholder should be set.
 	 * @param placeholder Placeholder for the editable element. If not set, placeholder value from the
@@ -204,17 +204,16 @@ export default class MultiRootEditorUI extends EditorUI {
 			}
 		}
 
-		if ( !placeholder ) {
-			return;
-		}
-
 		const editingView = this.editor.editing.view;
 		const editingRoot = editingView.document.getRoot( editable.name! )!;
+
+		if ( placeholder ) {
+			editingRoot.placeholder = placeholder;
+		}
 
 		enablePlaceholder( {
 			view: editingView,
 			element: editingRoot,
-			text: placeholder,
 			isDirectHost: false,
 			keepOnFocus: true
 		} );

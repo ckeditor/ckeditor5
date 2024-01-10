@@ -9,21 +9,30 @@ import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 
 import { Code, Strikethrough } from '@ckeditor/ckeditor5-basic-styles';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
-import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { Highlight } from '@ckeditor/ckeditor5-highlight';
 import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
-import { Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar, ImageUpload } from '@ckeditor/ckeditor5-image';
+import {
+	PictureEditing,
+	Image,
+	ImageCaption,
+	ImageInsert,
+	ImageResize,
+	ImageStyle,
+	ImageToolbar,
+	ImageUpload
+} from '@ckeditor/ckeditor5-image';
 import { Style } from '@ckeditor/ckeditor5-style';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-styles' ), {
 		plugins: [
-			ArticlePluginSet, CloudServices, EasyImage,
-			Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar, ImageUpload,
+			ArticlePluginSet, CloudServices, CKBox, CKBoxImageEdit,
+			PictureEditing, Image, ImageCaption, ImageInsert, ImageResize, ImageStyle, ImageToolbar, ImageUpload,
 			Code, CodeBlock, Strikethrough, HorizontalLine, GeneralHtmlSupport, Style, Highlight
 		],
 		toolbar: {
@@ -31,7 +40,7 @@ ClassicEditor
 				'undo', 'redo',
 				'|', 'style', '|', 'heading',
 				'|', 'bold', 'italic', 'strikethrough', 'code',
-				'-', 'link', 'uploadImage', 'insertTable', 'highlight', 'codeBlock',
+				'-', 'link', 'insertImage', 'insertTable', 'highlight', 'codeBlock',
 				'blockQuote', 'mediaEmbed', 'codeBlock', 'horizontalLine',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			],
@@ -88,7 +97,10 @@ ClassicEditor
 			]
 		},
 		image: {
-			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ]
+			toolbar: [
+				'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|',
+				'toggleImageCaption', 'imageTextAlternative', 'ckboxImageEdit'
+			]
 		},
 		codeBlock: {
 			languages: [
@@ -103,6 +115,10 @@ ClassicEditor
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
 			}
+		},
+		ckbox: {
+			allowExternalImagesEditing: [ /^data:/, 'origin' ],
+			forceDemoLabel: true
 		}
 	} )
 	.then( editor => {

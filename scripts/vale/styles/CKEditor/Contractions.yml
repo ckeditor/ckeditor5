@@ -1,0 +1,60 @@
+---
+extends: substitution
+ignorecase: true
+level: error
+link: https://redhat-documentation.github.io/vale-at-red-hat/docs/main/reference-guide/contractions/
+message: "Avoid contractions. Use '%s' rather than '%s.'"
+# source: "https://redhat-documentation.github.io/supplementary-style-guide/#contractions"
+action:
+  name: replace
+swap:
+  aren't: are not
+  can't: cannot
+  couldn't: could not
+  could've: could have
+  didn't: did not
+  doesn't: does not
+  don't: do not
+  hasn't: has not
+  haven't: have not
+  he'll: he will
+  he's: he is
+  how'll: how will
+  how's: how is
+  I'll: I will
+  I'm: I am
+  I've: I have
+  isn't: is not
+  it'll: it will
+  it's: it is
+  she'll: she will
+  she's: she is
+  shouldn't: should not
+  should've: should have
+  that'll: that will
+  that's: that is
+  there're: there are
+  there's: there is
+  they'll: they will
+  they're: they are
+  they've: they have
+  wasn't: was not
+  we'll: we will
+  we're: we are
+  we've: we have
+  weren't: were not
+  what'll: what will
+  when'll: when will
+  when's: when is
+  where'll: where will
+  where's: where is
+  who'll: who will
+  who's: who is
+  why'll: why will
+  why's: why is
+  won't: will not
+  wouldn't: would not
+  would've: would have
+  you'll: you will
+  you're: you are
+  you've: you have

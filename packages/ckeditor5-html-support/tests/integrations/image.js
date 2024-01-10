@@ -5,16 +5,16 @@
 
 import { range } from 'lodash-es';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
-import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
-import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting';
-import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Image from '@ckeditor/ckeditor5-image/src/image.js';
+import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption.js';
+import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
+import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting.js';
+import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import { getModelDataWithAttributes } from '../_utils/utils';
-import GeneralHtmlSupport from '../../src/generalhtmlsupport';
+import { getModelDataWithAttributes } from '../_utils/utils.js';
+import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
 
 /* global document */
 
@@ -345,6 +345,58 @@ describe( 'ImageElementSupport', () => {
 
 			expect( marker.getStart().path ).to.deep.equal( [ 0 ] );
 			expect( marker.getEnd().path ).to.deep.equal( [ 1 ] );
+		} );
+
+		describe( 'BlockImage without LinkImage', () => {
+			let editor, model, editorElement, dataFilter;
+
+			beforeEach( () => {
+				editorElement = document.createElement( 'div' );
+				document.body.appendChild( editorElement );
+
+				return ClassicTestEditor
+					.create( editorElement, {
+						plugins: [ Image, ImageCaption, Paragraph, GeneralHtmlSupport ]
+					} )
+					.then( newEditor => {
+						editor = newEditor;
+						model = editor.model;
+
+						dataFilter = editor.plugins.get( 'DataFilter' );
+					} );
+			} );
+
+			afterEach( () => {
+				editorElement.remove();
+
+				return editor.destroy();
+			} );
+
+			it( 'should not upcast `href` attribute if LinkImage plugin is not available', () => {
+				dataFilter.loadAllowedConfig( [ {
+					name: /.*/,
+					attributes: true
+				} ] );
+
+				editor.setData(
+					'<figure class="image">' +
+						'<a href="www.example.com">' +
+							'<img src="/assets/sample.png">' +
+						'</a>' +
+					'</figure>'
+				);
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<imageBlock src="/assets/sample.png"></imageBlock>',
+					attributes: {}
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<figure class="image">' +
+						'<img src="/assets/sample.png">' +
+					'</figure>'
+				);
+			} );
 		} );
 
 		// it( 'should allow modifying styles, classes and attributes', () => {
@@ -882,20 +934,37 @@ describe( 'ImageElementSupport', () => {
 			);
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data: '<imageBlock htmlLinkAttributes="(1)" src="/assets/sample.png"></imageBlock>',
-				attributes: {
-					1: {
-						attributes: {
-							href: 'www.example.com'
-						}
-					}
-				}
+				data: '<imageBlock linkHref="www.example.com" src="/assets/sample.png"></imageBlock>',
+				attributes: {}
 			} );
 
 			const marker = model.markers.get( 'commented:foo:id' );
 
 			expect( marker.getStart().path ).to.deep.equal( [ 0 ] );
 			expect( marker.getEnd().path ).to.deep.equal( [ 1 ] );
+		} );
+
+		it( 'should upcast `href` attribute if LinkImage plugin is available', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /.*/,
+				attributes: true
+			} ] );
+
+			const expectedHtml =
+				'<figure class="image">' +
+					'<a href="www.example.com">' +
+						'<img src="/assets/sample.png">' +
+					'</a>' +
+				'</figure>';
+
+			editor.setData( expectedHtml );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<imageBlock linkHref="www.example.com" src="/assets/sample.png"></imageBlock>',
+				attributes: {}
+			} );
+
+			expect( editor.getData() ).to.equal( expectedHtml );
 		} );
 
 		// it( 'should allow modifying styles, classes and attributes', () => {
@@ -2405,6 +2474,9 @@ describe( 'ImageElementSupport', () => {
 						'alt',
 						'src',
 						'srcset',
+						'width',
+						'height',
+						'placeholder',
 						'linkHref',
 						'htmlImgAttributes',
 						'htmlFigureAttributes',
@@ -2440,6 +2512,9 @@ describe( 'ImageElementSupport', () => {
 						'alt',
 						'src',
 						'srcset',
+						'width',
+						'height',
+						'placeholder',
 						'htmlA',
 						'htmlImgAttributes'
 					] );

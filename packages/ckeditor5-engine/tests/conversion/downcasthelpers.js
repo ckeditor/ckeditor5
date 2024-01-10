@@ -5,42 +5,42 @@
 
 /* globals console */
 
-import EditingController from '../../src/controller/editingcontroller';
-import DataController from '../../src/controller/datacontroller';
+import EditingController from '../../src/controller/editingcontroller.js';
+import DataController from '../../src/controller/datacontroller.js';
 
-import Model from '../../src/model/model';
-import ModelElement from '../../src/model/element';
-import ModelText from '../../src/model/text';
+import Model from '../../src/model/model.js';
+import ModelElement from '../../src/model/element.js';
+import ModelText from '../../src/model/text.js';
 
-import ViewElement from '../../src/view/element';
-import ViewAttributeElement from '../../src/view/attributeelement';
-import ViewContainerElement from '../../src/view/containerelement';
-import ViewUIElement from '../../src/view/uielement';
-import ViewText from '../../src/view/text';
-import ViewDocument from '../../src/view/document';
+import ViewElement from '../../src/view/element.js';
+import ViewAttributeElement from '../../src/view/attributeelement.js';
+import ViewContainerElement from '../../src/view/containerelement.js';
+import ViewUIElement from '../../src/view/uielement.js';
+import ViewText from '../../src/view/text.js';
+import ViewDocument from '../../src/view/document.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import DowncastHelpers, {
-	clearAttributes,
+	cleanSelection,
 	convertCollapsedSelection,
 	convertRangeSelection,
 	createViewElementFromHighlightDescriptor,
 	insertAttributesAndChildren,
 	insertText
-} from '../../src/conversion/downcasthelpers';
+} from '../../src/conversion/downcasthelpers.js';
 
-import Mapper from '../../src/conversion/mapper';
-import DowncastDispatcher from '../../src/conversion/downcastdispatcher';
-import { stringify as stringifyView } from '../../src/dev-utils/view';
-import View from '../../src/view/view';
-import createViewRoot from '../view/_utils/createroot';
-import { setData as setModelData } from '../../src/dev-utils/model';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-import { StylesProcessor } from '../../src/view/stylesmap';
-import DowncastWriter from '../../src/view/downcastwriter';
+import Mapper from '../../src/conversion/mapper.js';
+import DowncastDispatcher from '../../src/conversion/downcastdispatcher.js';
+import { stringify as stringifyView } from '../../src/dev-utils/view.js';
+import View from '../../src/view/view.js';
+import createViewRoot from '../view/_utils/createroot.js';
+import { setData as setModelData } from '../../src/dev-utils/model.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
+import { StylesProcessor } from '../../src/view/stylesmap.js';
+import DowncastWriter from '../../src/view/downcastwriter.js';
 
-import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
+import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils.js';
 
 describe( 'DowncastHelpers', () => {
 	let model, modelRoot, viewRoot, downcastHelpers, controller, modelRootStart;
@@ -5004,7 +5004,7 @@ describe( 'downcast selection converters', () => {
 		downcastHelpers.markerToHighlight( { model: 'marker', view: { classes: 'marker' }, converterPriority: 1 } );
 
 		// Default selection converters.
-		dispatcher.on( 'selection', clearAttributes(), { priority: 'high' } );
+		dispatcher.on( 'cleanSelection', cleanSelection() );
 		dispatcher.on( 'selection', convertRangeSelection(), { priority: 'low' } );
 		dispatcher.on( 'selection', convertCollapsedSelection(), { priority: 'low' } );
 	} );
@@ -5380,7 +5380,7 @@ describe( 'downcast selection converters', () => {
 			} );
 		} );
 
-		describe( 'clearAttributes', () => {
+		describe( 'cleanSelection', () => {
 			it( 'should remove all ranges before adding new range', () => {
 				testSelection(
 					[ 3, 3 ],

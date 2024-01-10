@@ -7,14 +7,14 @@
  * @module image/imagecaption/imagecaptionediting
  */
 
-import { type Editor, Plugin, type CommandExecuteEvent } from 'ckeditor5/src/core';
-import { Element, enablePlaceholder, type DocumentChangeEvent, type DiffItemAttribute } from 'ckeditor5/src/engine';
-import { toWidgetEditable } from 'ckeditor5/src/widget';
-import type { GetCallback } from 'ckeditor5/src/utils';
+import { type Editor, Plugin, type CommandExecuteEvent } from 'ckeditor5/src/core.js';
+import { Element, enablePlaceholder, type DocumentChangeEvent, type DiffItemAttribute } from 'ckeditor5/src/engine.js';
+import { toWidgetEditable } from 'ckeditor5/src/widget.js';
+import type { GetCallback } from 'ckeditor5/src/utils.js';
 
-import ToggleImageCaptionCommand from './toggleimagecaptioncommand';
-import ImageUtils from '../imageutils';
-import ImageCaptionUtils from './imagecaptionutils';
+import ToggleImageCaptionCommand from './toggleimagecaptioncommand.js';
+import ImageUtils from '../imageutils.js';
+import ImageCaptionUtils from './imagecaptionutils.js';
 
 /**
  * The image caption engine plugin. It is responsible for:
@@ -122,10 +122,10 @@ export default class ImageCaptionEditing extends Plugin {
 				const figcaptionElement = writer.createEditableElement( 'figcaption' );
 				writer.setCustomProperty( 'imageCaption', true, figcaptionElement );
 
+				figcaptionElement.placeholder = t( 'Enter image caption' );
 				enablePlaceholder( {
 					view,
 					element: figcaptionElement,
-					text: t( 'Enter image caption' ),
 					keepOnFocus: true
 				} );
 

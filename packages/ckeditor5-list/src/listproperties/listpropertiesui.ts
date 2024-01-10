@@ -7,7 +7,7 @@
  * @module list/listproperties/listpropertiesui
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
+import { icons, Plugin, type Editor } from 'ckeditor5/src/core.js';
 
 import {
 	ButtonView,
@@ -15,21 +15,18 @@ import {
 	createDropdown,
 	focusChildOnDropdownOpen,
 	type DropdownView
-} from 'ckeditor5/src/ui';
+} from 'ckeditor5/src/ui.js';
 
-import type { Locale } from 'ckeditor5/src/utils';
+import type { Locale } from 'ckeditor5/src/utils.js';
 
-import ListPropertiesView from './ui/listpropertiesview';
+import ListPropertiesView from './ui/listpropertiesview.js';
 
-import type ListStyleCommand from './liststylecommand';
-import type DocumentListStyleCommand from '../documentlistproperties/documentliststylecommand';
-import type ListStartCommand from './liststartcommand';
-import type DocumentListStartCommand from '../documentlistproperties/documentliststartcommand';
-import type ListReversedCommand from './listreversedcommand';
-import type DocumentListReversedCommand from '../documentlistproperties/documentlistreversedcommand';
-
-import bulletedListIcon from '../../theme/icons/bulletedlist.svg';
-import numberedListIcon from '../../theme/icons/numberedlist.svg';
+import type LegacyListStyleCommand from '../legacylistproperties/legacyliststylecommand.js';
+import type ListStyleCommand from '../listproperties/liststylecommand.js';
+import type LegacyListStartCommand from '../legacylistproperties/legacyliststartcommand.js';
+import type ListStartCommand from '../listproperties/liststartcommand.js';
+import type LegacyListReversedCommand from '../legacylistproperties/legacylistreversedcommand.js';
+import type ListReversedCommand from '../listproperties/listreversedcommand.js';
 
 import listStyleDiscIcon from '../../theme/icons/liststyledisc.svg';
 import listStyleCircleIcon from '../../theme/icons/liststylecircle.svg';
@@ -71,7 +68,7 @@ export default class ListPropertiesUI extends Plugin {
 				editor,
 				parentCommandName: 'bulletedList',
 				buttonLabel: t( 'Bulleted List' ),
-				buttonIcon: bulletedListIcon,
+				buttonIcon: icons.bulletedList,
 				styleGridAriaLabel: t( 'Bulleted list styles toolbar' ),
 				styleDefinitions: [
 					{
@@ -104,7 +101,7 @@ export default class ListPropertiesUI extends Plugin {
 				editor,
 				parentCommandName: 'numberedList',
 				buttonLabel: t( 'Numbered List' ),
-				buttonIcon: numberedListIcon,
+				buttonIcon: icons.numberedList,
 				styleGridAriaLabel: t( 'Numbered list styles toolbar' ),
 				styleDefinitions: [
 					{
@@ -239,7 +236,7 @@ function getStyleButtonCreator( {
 	parentCommandName
 }: {
 	editor: Editor;
-	listStyleCommand: ListStyleCommand | DocumentListStyleCommand;
+	listStyleCommand: LegacyListStyleCommand | ListStyleCommand;
 	parentCommandName: string;
 } ) {
 	const locale = editor.locale;
@@ -312,7 +309,7 @@ function createListPropertiesView( {
 	}
 
 	if ( enabledProperties.styles ) {
-		const listStyleCommand: ListStyleCommand | DocumentListStyleCommand = editor.commands.get( 'listStyle' )!;
+		const listStyleCommand: LegacyListStyleCommand | ListStyleCommand = editor.commands.get( 'listStyle' )!;
 
 		const styleButtonCreator = getStyleButtonCreator( {
 			editor,
@@ -342,7 +339,7 @@ function createListPropertiesView( {
 	}
 
 	if ( enabledProperties.startIndex ) {
-		const listStartCommand: ListStartCommand | DocumentListStartCommand = editor.commands.get( 'listStart' )!;
+		const listStartCommand: LegacyListStartCommand | ListStartCommand = editor.commands.get( 'listStart' )!;
 
 		listPropertiesView.startIndexFieldView!.bind( 'isEnabled' ).to( listStartCommand );
 		listPropertiesView.startIndexFieldView!.fieldView.bind( 'value' ).to( listStartCommand as any );
@@ -350,7 +347,7 @@ function createListPropertiesView( {
 	}
 
 	if ( enabledProperties.reversed ) {
-		const listReversedCommand: ListReversedCommand | DocumentListReversedCommand = editor.commands.get( 'listReversed' )!;
+		const listReversedCommand: LegacyListReversedCommand | ListReversedCommand = editor.commands.get( 'listReversed' )!;
 
 		listPropertiesView.reversedSwitchButtonView!.bind( 'isEnabled' ).to( listReversedCommand );
 		listPropertiesView.reversedSwitchButtonView!.bind( 'isOn' ).to( listReversedCommand, 'value', value => !!value );

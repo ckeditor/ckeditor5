@@ -1,0 +1,17 @@
+extends: metric
+message: "Try to keep the LIX score (%s) below 35."
+
+link: https://en.wikipedia.org/wiki/Lix_(readability_test)
+# Very Easy: 20 - 25
+#
+# Easy: 30 - 35
+#
+# Medium: 40 - 45
+#
+# Difficult: 50 - 55
+#
+# Very Difficult: 60+
+formula: |
+  (words / sentences) + ((long_words * 100) / words)
+
+condition: "> 35"

@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Finnish (https://app.transifex.com/ckeditor/teams/11143/fi/)\n"
 "Language: fi\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Toolbar button tooltip for the HTML embed feature."
 msgid "Insert HTML"
@@ -22,7 +23,7 @@ msgstr "Liitä HTML"
 
 msgctxt "The HTML snippet."
 msgid "HTML snippet"
-msgstr "HMTL-pätkä"
+msgstr "HTML-pätkä"
 
 msgctxt "A placeholder that will be displayed in the raw HTML textarea field."
 msgid "Paste raw HTML here..."

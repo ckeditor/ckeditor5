@@ -1,17 +1,18 @@
 ---
 menu-title: Predefined builds
+meta-title: Predefined builds | CKEditor 5 documentation
 category: getting-started
 order: 20
 modified_at: 2022-07-12
 ---
 
-# Predefined CKEditor 5 builds
+# Predefined CKEditor&nbsp;5 builds
 
 ## Overview
 
-Predefined CKEditor 5 builds are a set of ready-to-use rich text editors. Every "build" provides a single type of editor with a set of features and a default configuration. They provide convenient solutions that can be installed with no effort and that satisfy the most common editing use cases.
+Predefined CKEditor&nbsp;5 builds are a set of ready-to-use rich text editors. Every "build" provides a single type of editor with a set of features and a default configuration. They provide convenient solutions that can be installed with no effort and that satisfy the most common editing use cases.
 
-The following CKEditor 5 builds are currently available:
+The following CKEditor&nbsp;5 builds are currently available:
 
  * [Classic editor](#classic-editor)
  * [Inline editor](#inline-editor)
@@ -28,14 +29,14 @@ Each build was designed to satisfy as many use cases as possible. They differ in
 
 ### When NOT to use predefined builds?
 
-{@link framework/index CKEditor 5 Framework} or a {@link installation/getting-started/quick-start-other custom build} should be used, instead of predefined builds, in the following cases:
+{@link framework/index CKEditor&nbsp;5 Framework} or a {@link installation/getting-started/quick-start-other custom build} should be used, instead of predefined builds, in the following cases:
 
 * When you want to create your own text editor and have full control over its every aspect, from UI to features.
 * When the solution proposed by the builds does not fit your specific use case.
 
 ### Download options
 
-There are several options to download predefined CKEditor 5 builds:
+There are several options to download predefined CKEditor&nbsp;5 builds:
 
 * [CDN](#cdn)
 * [npm](#npm)
@@ -44,9 +45,9 @@ There are several options to download predefined CKEditor 5 builds:
 
 #### CDN
 
-Predefined CKEditor 5 builds {@link installation/getting-started/quick-start can be loaded inside pages} directly from [CKEditor CDN](https://cdn.ckeditor.com/#ckeditor5), which is optimized for worldwide super-fast content delivery. When using CDN no download is actually needed.  CKEditor is hosted on servers spread across the globe &ndash; the scripts are loaded faster because they are served from the nearest locations to the end user. If the same version of CKEditor has already been downloaded (even on a different website), it is loaded from cache. Using CDN reduces the number of HTTP requests handled by your server so it speeds it up as well.
+Predefined CKEditor&nbsp;5 builds {@link installation/getting-started/quick-start can be loaded inside pages} directly from [CKEditor CDN](https://cdn.ckeditor.com/#ckeditor5), which is optimized for worldwide super-fast content delivery. When using CDN no download is actually needed. CKEditor is hosted on servers spread across the globe &ndash; the scripts are loaded faster because they are served from the nearest locations to the end user. If the same version of CKEditor has already been downloaded (even on a different website), it is loaded from cache. Using CDN reduces the number of HTTP requests handled by your server so it speeds it up as well.
 
-However, CDN only offers ready-to-use, predefined packages (CKEditor 5 builds). This limits its customization capabilities.
+However, CDN only offers ready-to-use, predefined packages (CKEditor&nbsp;5 builds). This limits its customization capabilities.
 
 #### npm
 
@@ -66,17 +67,17 @@ npm install --save @ckeditor/ckeditor5-build-balloon-block
 npm install --save @ckeditor/ckeditor5-build-decoupled-document
 ```
 
-CKEditor 5 will then be available at `node_modules/@ckeditor/ckeditor5-build-[name]/build/ckeditor.js`. It can also be imported directly to your code by `require( '@ckeditor/ckeditor5-build-[name]' )`.
+CKEditor&nbsp;5 will then be available at `node_modules/@ckeditor/ckeditor5-build-[name]/build/ckeditor.js`. It can also be imported directly to your code by `require( '@ckeditor/ckeditor5-build-[name]' )`.
 
 #### Online builder
 
-The [online builder](https://ckeditor.com/ckeditor-5/online-builder/) lets you download CKEditor 5 builds and also allows you to create your own, customized builds (with a different set of plugins) in a few easy steps, through a simple and intuitive UI.
+The [online builder](https://ckeditor.com/ckeditor-5/online-builder/) lets you download CKEditor&nbsp;5 builds and also allows you to create your own, customized builds (with a different set of plugins) in a few easy steps, through a simple and intuitive UI.
 
 #### Zip download
 
-Go to the [CKEditor 5 download page](https://ckeditor.com/ckeditor-5/download/) and download your preferred build. For example, you may download the `ckeditor5-build-classic-32.0.0.zip` file for the classic editor build.
+Go to the [CKEditor&nbsp;5 download page](https://ckeditor.com/ckeditor-5/download/) and download your preferred build. For example, you may download the `ckeditor5-build-classic-32.0.0.zip` file for the classic editor build.
 
-Extract the `.zip` file into a dedicated directory inside your project. It is recommended to include the editor version in the directory name to ensure proper cache invalidation once a new version of CKEditor 5 is installed.
+Extract the `.zip` file into a dedicated directory inside your project. It is recommended to include the editor version in the directory name to ensure proper cache invalidation once a new version of CKEditor&nbsp;5 is installed.
 
 ##### Included files
 
@@ -87,7 +88,7 @@ Extract the `.zip` file into a dedicated directory inside your project. It is re
 
 ### Loading the API
 
-After downloading and installing a predefined CKEditor 5 build in your application, it is time to make the editor API available in your pages. For that purpose, it is enough to load the API entry point script:
+After downloading and installing a predefined CKEditor&nbsp;5 build in your application, it is time to make the editor API available in your pages. For that purpose, it is enough to load the API entry point script:
 
 ```html
 <script src="[ckeditor-build-path]/ckeditor.js"></script>
@@ -103,14 +104,14 @@ Once the CKEditor script is loaded, you can {@link installation/getting-started/
 
 ### Classic editor
 
-Classic editor is what most users traditionally learnt to associate with a rich-text editor &mdash; a toolbar with an editing area placed in a specific position on the page, usually as a part of a form that you use to submit some content to the server.
+Classic editor is what most users traditionally learnt to associate with a rich-text editor &ndash; a toolbar with an editing area placed in a specific position on the page, usually as a part of a form that you use to submit some content to the server.
 
 During its initialization the editor hides the used editable element on the page and renders "instead" of it. This is why it is usually used to replace `<textarea>` elements.
 
-In CKEditor 5 the concept of the "boxed" editor was reinvented:
+In CKEditor&nbsp;5 the concept of the "boxed" editor was reinvented:
 
  * The toolbar is now always visible when the user scrolls the page down.
- * The editor content is now placed inline in the page (without the surrounding `<iframe>` element) &mdash; it is now much easier to style it.
+ * The editor content is now placed inline in the page (without the surrounding `<iframe>` element). It is now much easier to style it.
  * By default the editor now grows automatically with the content.
 
 {@img assets/img/editor-classic.png 778 Screenshot of a classic editor.}
@@ -119,7 +120,7 @@ To try it out online, check the {@link examples/builds/classic-editor classic ed
 
 #### Installation example
 
-In your HTML page add an element that CKEditor 5 should replace:
+In your HTML page add an element that CKEditor&nbsp;5 should replace:
 
 ```html
 <div id="editor"></div>
@@ -131,7 +132,7 @@ Load the classic editor build (here, the [CDN](https://cdn.ckeditor.com/) locati
 <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/classic/ckeditor.js"></script>
 ```
 
-Alternatively, you may install CKEditor 5 from `npm`:
+Alternatively, you may install CKEditor&nbsp;5 from `npm`:
 
 ```bash
 npm install --save @ckeditor/ckeditor5-build-classic
@@ -179,7 +180,7 @@ Full code example:
 
 ### Inline editor
 
-Inline editor comes with a floating toolbar that becomes visible when the editor is focused (e.g. by clicking it). Unlike classic editor, inline editor does not render *instead* of the given element, it simply makes it editable. As a consequence the styles of the edited content will be exactly the same before and after the editor is created.
+Inline editor comes with a floating toolbar that becomes visible when the editor is focused (for example, by clicking it). Unlike classic editor, inline editor does not render *instead* of the given element, it simply makes it editable. As a consequence the styles of the edited content will be exactly the same before and after the editor is created.
 
 A common scenario for using inline editor is offering users the possibility to edit content in its real location on a web page instead of doing it in a separate administration section.
 
@@ -189,7 +190,7 @@ To try it out online, check the {@link examples/builds/inline-editor inline edit
 
 #### Installation example
 
-In your HTML page add an element that CKEditor 5 should make editable:
+In your HTML page add an element that CKEditor&nbsp;5 should make editable:
 
 ```html
 <div id="editor"></div>
@@ -201,7 +202,7 @@ Load the inline editor build (here, the [CDN](https://cdn.ckeditor.com/) locatio
 <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/inline/ckeditor.js"></script>
 ```
 
-Alternatively, you may install CKEditor 5 from `npm`:
+Alternatively, you may install CKEditor&nbsp;5 from `npm`:
 
 ```bash
 npm install --save @ckeditor/ckeditor5-build-inline
@@ -249,7 +250,7 @@ Full code example:
 
 ### Balloon editor
 
-Balloon editor is very similar to inline editor. The difference between them is that the toolbar appears in a balloon next to the selection (when the selection is not empty):
+Balloon editor is similar to inline editor. The difference between them is that the toolbar appears in a balloon next to the selection (when the selection is not empty):
 
 {@img assets/img/editor-balloon.png 789 Screenshot of a balloon toolbar editor.}
 
@@ -257,7 +258,7 @@ To try it out online, check the {@link examples/builds/balloon-editor balloon ed
 
 #### Installation example
 
-In your HTML page add an element that CKEditor 5 should make editable:
+In your HTML page add an element that CKEditor&nbsp;5 should make editable:
 
 ```html
 <div id="editor"></div>
@@ -269,7 +270,7 @@ Load the balloon editor build (here [CDN](https://cdn.ckeditor.com/) location is
 <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/balloon/ckeditor.js"></script>
 ```
 
-Alternatively, you may install CKEditor 5 from `npm`:
+Alternatively, you may install CKEditor&nbsp;5 from `npm`:
 
 ```bash
 npm install --save @ckeditor/ckeditor5-build-balloon
@@ -325,7 +326,7 @@ To try it out online, check the {@link examples/builds/balloon-block-editor ball
 
 #### Installation example
 
-In your HTML page add an element that CKEditor 5 should make editable:
+In your HTML page add an element that CKEditor&nbsp;5 should make editable:
 
 ```html
 <div id="editor"></div>
@@ -337,7 +338,7 @@ Load the balloon block editor build (here, the [CDN](https://cdn.ckeditor.com/) 
 <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/balloon-block/ckeditor.js"></script>
 ```
 
-Alternatively, you may install CKEditor 5 from `npm`:
+Alternatively, you may install CKEditor&nbsp;5 from `npm`:
 
 ```bash
 npm install --save @ckeditor/ckeditor5-build-balloon-block
@@ -401,7 +402,7 @@ Load the document editor build (here, the [CDN](https://cdn.ckeditor.com/) locat
 <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/decoupled-document/ckeditor.js"></script>
 ```
 
-Alternatively, you may install CKEditor 5 from `npm`:
+Alternatively, you may install CKEditor&nbsp;5 from `npm`:
 
 ```bash
 npm install --save @ckeditor/ckeditor5-build-decoupled-document
@@ -409,10 +410,10 @@ npm install --save @ckeditor/ckeditor5-build-decoupled-document
 
 Then bundle it together with your app.
 
-Call the {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`} method. The decoupled editor requires you to inject the toolbar into the DOM and the best place to do that is somewhere in the promise chain (e.g. one of the `then( () => { ... } )` blocks).
+Call the {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`} method. The decoupled editor requires you to inject the toolbar into the DOM and the best place to do that is somewhere in the promise chain (for example, one of the `then( () => { ... } )` blocks).
 
 <info-box>
-	The following snippet will run the document editor but to make the most of it check out the {@link framework/document-editor comprehensive tutorial} which explains step—by—step how to configure and style the application for the best editing experience.
+	The following snippet will run the document editor but to make the most of it check out the {@link framework/document-editor comprehensive tutorial} which explains step by step how to configure and style the application for the best editing experience.
 </info-box>
 
 ```html
@@ -479,7 +480,7 @@ To try it out online, check the {@link examples/builds/multi-root-editor multi-r
 
 #### Installation example
 
-In your HTML page add an element that CKEditor 5 should make editable:
+In your HTML page add an element that CKEditor&nbsp;5 should make editable:
 
 ```html
 <div id="editor"></div>
@@ -491,7 +492,7 @@ Load the multi-root editor build (here, the [CDN](https://cdn.ckeditor.com/) loc
 <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/multi-root/ckeditor.js"></script>
 ```
 
-Alternatively, you may install CKEditor 5 from `npm`:
+Alternatively, you may install CKEditor&nbsp;5 from `npm`:
 
 ```bash
 npm install --save @ckeditor/ckeditor5-build-multi-root
@@ -676,10 +677,10 @@ Full code example:
 
 ### Superbuild
 
-The superbuild, available instantly from the CDN, is a preconfigured package that offers access to almost all available plugins and all predefined editor types.
+The superbuild, available instantly from the CDN, is a pre-configured package that offers access to almost all available plugins and all predefined editor types.
 
 <info-box>
-	Keep in mind that the superbuild contains a lot of code. You may not need all of it for your use case. It's best to use the superbuild for testing and evaluation purposes rather than in a production environment.
+	Keep in mind that the superbuild contains a lot of code. You may not need all of it for your use case. It is best to use the superbuild for testing and evaluation purposes rather than in a production environment.
 
 	For customized and efficient solutions in a production environment, we strongly advise using the {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder online builder} approach or {@link installation/getting-started/quick-start-other#building-the-editor-from-source building the editor from source}. You can also try out other predefined builds instead.
 </info-box>
@@ -688,7 +689,7 @@ The superbuild, available instantly from the CDN, is a preconfigured package tha
 
  To learn how to use the superbuild, refer to the {@link installation/getting-started/quick-start#running-a-full-featured-editor-from-cdn CDN installation quick start guide}.
 
-## List of plugins included in the CKEditor 5 predefined builds
+## List of plugins included in the CKEditor&nbsp;5 predefined builds
 
 The table below presents the list of all plugins included in various builds. <!-- update each release -->
 
@@ -876,7 +877,16 @@ The table below presents the list of all plugins included in various builds. <!-
 				<td style="text-align:center; width:70px">✅</td>
 			</tr>
 			<tr>
-				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/api/essentials.html">Essentials</a> *</td>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/api/essentials.html">Essentials</a> *<br />
+				Includes:</br />
+				<ul>
+				<li><a href="https://ckeditor.com/docs/ckeditor5/latest/api/clipboard.html">Clipboard</a></li>
+				<li><a href="https://ckeditor.com/docs/ckeditor5/latest/api/enter.html">Enter/ShiftEnter</a></li>
+				<li><a href="https://ckeditor.com/docs/ckeditor5/latest/api/select-all.html">SelectAll</a></li>
+				<li><a href="https://ckeditor.com/docs/ckeditor5/latest/api/typing.html">Typing</a></li>
+				<li><a href="https://ckeditor.com/docs/ckeditor5/latest/api/undo.html">Undo</a></li>
+				</ul>
+				</td>
 				<td style="text-align:center; width:70px">✅</td>
 				<td style="text-align:center; width:70px">✅</td>
 				<td style="text-align:center; width:70px">✅</td>
@@ -1205,13 +1215,23 @@ The table below presents the list of all plugins included in various builds. <!-
 				<td style="text-align:center; width:70px">✅</td>
 			</tr>
 			<tr>
-				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-word.html">PasteFromOffice</a></td>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-office.html">PasteFromOffice</a></td>
 				<td style="text-align:center; width:70px">✅</td>
 				<td style="text-align:center; width:70px">✅</td>
 				<td style="text-align:center; width:70px">✅</td>
 				<td style="text-align:center; width:70px">✅</td>
 				<td style="text-align:center; width:70px">✅</td>
 				<td style="text-align:center; width:70px">✅</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-office-enhanced.html">PasteFromOfficeEnhanced</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
 				<td style="text-align:center; width:70px">✅</td>
 			</tr>
 			<tr>
@@ -1455,9 +1475,9 @@ The document lists feature is required by the import from Word plugin to run cor
 
 Because builds are distributed as [UMD modules](https://github.com/umdjs/umd), editor classes can be retrieved in various ways:
 
-* by a [CommonJS](http://wiki.commonjs.org/wiki/CommonJS)-compatible loader (e.g. [webpack](https://webpack.js.org) or [Browserify](http://browserify.org/)),
-* by [RequireJS](http://requirejs.org/) (or any other AMD library),
-* from the global namespace if none of the above loaders is available.
+* By a [CommonJS](http://wiki.commonjs.org/wiki/CommonJS)-compatible loader (like [webpack](https://webpack.js.org) or [Browserify](http://browserify.org/)).
+* By [RequireJS](http://requirejs.org/) (or any other AMD library).
+* From the global namespace if none of these loaders is available.
 
 For example:
 

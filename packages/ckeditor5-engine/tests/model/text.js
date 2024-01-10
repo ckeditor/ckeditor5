@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Text from '../../src/model/text';
-import Node from '../../src/model/node';
+import Text from '../../src/model/text.js';
+import Node from '../../src/model/node.js';
 
 describe( 'Text', () => {
 	describe( 'constructor()', () => {

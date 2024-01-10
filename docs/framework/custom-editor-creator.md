@@ -1,12 +1,13 @@
 ---
 menu-title: Creating custom editor
 category: framework-deep-dive-ui
+meta-title: Implementing a custom editor creator | CKEditor 5 Framework Documentation
 order: 40
 ---
 
 # Implementing a custom editor creator
 
-The flexible architecture of CKEditor 5 allows creating completely custom editors. Not only the {@link examples/theme-customization theme styling can be changed} or the {@link examples/custom-ui UI redesigned} but also the entire editor initialization process can be modified allowing to create new editor types. Thanks to that, apart from the standard editors (like {@link examples/builds/classic-editor classic}, {@link examples/builds/inline-editor inline}, {@link examples/builds/balloon-editor balloon} or {@link examples/builds/document-editor document}), custom types like a {@link examples/builds/multi-root-editor **multi-root editor**} can be created.
+The flexible architecture of CKEditor&nbsp;5 allows creating completely custom editors. Not only the {@link examples/theme-customization theme styling can be changed} or the {@link examples/custom-ui UI redesigned} but also the entire editor initialization process can be modified allowing to create new editor types. Thanks to that, apart from the standard editors (like {@link examples/builds/classic-editor classic}, {@link examples/builds/inline-editor inline}, {@link examples/builds/balloon-editor balloon} or {@link examples/builds/document-editor document}), custom types like a {@link examples/builds/multi-root-editor **multi-root editor**} can be created.
 
 This guide goes through the process of implementing a custom, multi-root editor. You can check out the {@link examples/builds/multi-root-editor demo of the multi-root editor} too.
 
@@ -278,10 +279,11 @@ class MultirootEditorUI extends EditorUI {
 				sourceElement && sourceElement.tagName.toLowerCase() === 'textarea' && sourceElement.getAttribute( 'placeholder' );
 
 			if ( placeholderText ) {
+				editingRoot.placeholder = placeholderText;
+
 				enablePlaceholder( {
 					view: editingView,
 					element: editingRoot,
-					text: placeholderText,
 					isDirectHost: false,
 					keepOnFocus: true
 				} );

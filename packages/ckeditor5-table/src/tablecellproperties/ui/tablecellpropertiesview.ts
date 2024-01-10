@@ -22,25 +22,27 @@ import {
 	ViewCollection,
 	type FocusableView,
 	type NormalizedColorOption,
-	type ColorPickerConfig
-} from 'ckeditor5/src/ui';
+	type ColorPickerConfig,
+	type FocusCyclerBackwardCycleEvent,
+	type FocusCyclerForwardCycleEvent
+} from 'ckeditor5/src/ui.js';
 import {
 	KeystrokeHandler,
 	FocusTracker,
 	type Locale,
 	type ObservableChangeEvent
-} from 'ckeditor5/src/utils';
-import { icons } from 'ckeditor5/src/core';
+} from 'ckeditor5/src/utils.js';
+import { icons } from 'ckeditor5/src/core.js';
 
 import {
 	fillToolbar,
 	getBorderStyleDefinitions,
 	getBorderStyleLabels,
 	getLabeledColorInputCreator
-} from '../../utils/ui/table-properties';
-import FormRowView from '../../ui/formrowview';
-import type ColorInputView from '../../ui/colorinputview';
-import type { TableCellPropertiesOptions } from '../../tableconfig';
+} from '../../utils/ui/table-properties.js';
+import FormRowView from '../../ui/formrowview.js';
+import type ColorInputView from '../../ui/colorinputview.js';
+import type { TableCellPropertiesOptions } from '../../tableconfig.js';
 
 import '../../../theme/form.css';
 import '../../../theme/tableform.css';
@@ -390,13 +392,24 @@ export default class TableCellPropertiesView extends View {
 			view: this
 		} );
 
+		// Maintain continuous focus cycling over views that have focusable children and focus cyclers themselves.
+		[ this.borderColorInput, this.backgroundInput ].forEach( view => {
+			view.fieldView.focusCycler.on<FocusCyclerForwardCycleEvent>( 'forwardCycle', evt => {
+				this._focusCycler.focusNext();
+				evt.stop();
+			} );
+
+			view.fieldView.focusCycler.on<FocusCyclerBackwardCycleEvent>( 'backwardCycle', evt => {
+				this._focusCycler.focusPrevious();
+				evt.stop();
+			} );
+		} );
+
 		[
 			this.borderStyleDropdown,
 			this.borderColorInput,
-			this.borderColorInput.fieldView.dropdownView.buttonView,
 			this.borderWidthInput,
 			this.backgroundInput,
-			this.backgroundInput.fieldView.dropdownView.buttonView,
 			this.widthInput,
 			this.heightInput,
 			this.paddingInput,

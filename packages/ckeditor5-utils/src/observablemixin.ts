@@ -9,9 +9,9 @@
  * @module utils/observablemixin
  */
 
-import EmitterMixin, { type Emitter } from './emittermixin';
-import CKEditorError from './ckeditorerror';
-import type { Constructor, Mixed } from './mix';
+import EmitterMixin, { type Emitter } from './emittermixin.js';
+import CKEditorError from './ckeditorerror.js';
+import type { Constructor, Mixed } from './mix.js';
 
 import { isObject } from 'lodash-es';
 
@@ -1360,6 +1360,44 @@ interface SingleBindChain<TKey extends string, TVal> {
 		observable4: O4,
 		key4: K4,
 		callback: ( value1: O1[ K1 ], value2: O2[ K2 ], value3: O3[ K3 ], value4: O4[ K4 ] ) => TVal
+	): void;
+	to<
+		O1 extends ObservableWithProperty<TKey>,
+		O2 extends ObservableWithProperty<TKey>,
+		O3 extends ObservableWithProperty<TKey>,
+		O4 extends ObservableWithProperty<TKey>,
+		O5 extends ObservableWithProperty<TKey>
+	>(
+		observable1: O1,
+		observable2: O2,
+		observable3: O3,
+		observable4: O4,
+		observable5: O5,
+		callback: ( value1: O1[ TKey ], value2: O2[ TKey ], value3: O3[ TKey ], value4: O4[ TKey ], value5: O5[ TKey ] ) => TVal
+	): void;
+	to<
+		O1 extends Observable,
+		K1 extends keyof O1,
+		O2 extends Observable,
+		K2 extends keyof O2,
+		O3 extends Observable,
+		K3 extends keyof O3,
+		O4 extends Observable,
+		K4 extends keyof O4,
+		O5 extends Observable,
+		K5 extends keyof O5
+	>(
+		observable1: O1,
+		key1: K1,
+		observable2: O2,
+		key2: K2,
+		observable3: O3,
+		key3: K3,
+		observable4: O4,
+		key4: K4,
+		observable5: O5,
+		key5: K5,
+		callback: ( value1: O1[ K1 ], value2: O2[ K2 ], value3: O3[ K3 ], value4: O4[ K4 ], value5: O5[ K5 ] ) => TVal
 	): void;
 }
 

@@ -14,19 +14,21 @@ import {
 	secureSourceElement,
 	type EditorConfig,
 	type EditorReadyEvent
-} from 'ckeditor5/src/core';
+} from 'ckeditor5/src/core.js';
 
 import {
 	CKEditorError,
 	getDataFromElement,
 	setDataInElement,
-	type CollectionAddEvent
-} from 'ckeditor5/src/utils';
+	logWarning,
+	type CollectionAddEvent,
+	type DecoratedMethodEvent
+} from 'ckeditor5/src/utils.js';
 
-import { ContextWatchdog, EditorWatchdog } from 'ckeditor5/src/watchdog';
+import { ContextWatchdog, EditorWatchdog } from 'ckeditor5/src/watchdog.js';
 
-import MultiRootEditorUI from './multirooteditorui';
-import MultiRootEditorUIView from './multirooteditoruiview';
+import MultiRootEditorUI from './multirooteditorui.js';
+import MultiRootEditorUIView from './multirooteditoruiview.js';
 
 import { isElement as _isElement } from 'lodash-es';
 import {
@@ -34,7 +36,7 @@ import {
 	type ViewRootEditableElement,
 	type Writer,
 	type ModelCanEditAtEvent
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
 /**
  * The {@glink installation/getting-started/predefined-builds#multi-root-editor multi-root editor} implementation.
@@ -103,7 +105,7 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 		const rootNames = Object.keys( sourceElementsOrData );
 		const sourceIsData = rootNames.length === 0 || typeof sourceElementsOrData[ rootNames[ 0 ] ] === 'string';
 
-		if ( sourceIsData && config.initialData !== undefined ) {
+		if ( sourceIsData && config.initialData !== undefined && Object.keys( config.initialData ).length > 0 ) {
 			// Documented in core/editor/editorconfig.jsdoc.
 			// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
 			throw new CKEditorError( 'editor-create-initial-data', null );
@@ -161,11 +163,19 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 			this.model.document.createRoot( '$root', rootName );
 		}
 
+		if ( this.config.get( 'lazyRoots' ) ) {
+			for ( const rootName of this.config.get( 'lazyRoots' )! ) {
+				const root = this.model.document.createRoot( '$root', rootName );
+
+				root._isLoaded = false;
+			}
+		}
+
 		if ( this.config.get( 'rootsAttributes' ) ) {
 			const rootsAttributes = this.config.get( 'rootsAttributes' )!;
 
 			for ( const [ rootName, attributes ] of Object.entries( rootsAttributes ) ) {
-				if ( !rootNames.includes( rootName ) ) {
+				if ( !this.model.document.getRoot( rootName ) ) {
 					/**
 					 * Trying to set attributes on a non-existing root.
 					 *
@@ -178,7 +188,7 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 				}
 
 				for ( const key of Object.keys( attributes ) ) {
-					this._registeredRootsAttributesKeys.add( key );
+					this.registerRootAttribute( key );
 				}
 			}
 
@@ -240,9 +250,9 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 			let selectionInReadOnlyRoot = false;
 
 			for ( const range of selection.getRanges() ) {
-				const rootName = range.root.rootName!;
+				const root = range.root as RootElement;
 
-				if ( this._readOnlyRootLocks.has( rootName ) ) {
+				if ( this._readOnlyRootLocks.has( root.rootName ) ) {
 					selectionInReadOnlyRoot = true;
 
 					break;
@@ -256,6 +266,31 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 				evt.stop();
 			}
 		}, { priority: 'high' } );
+
+		this.decorate( 'loadRoot' );
+		this.on<LoadRootEvent>( 'loadRoot', ( evt, [ rootName ] ) => {
+			const root = this.model.document.getRoot( rootName )!;
+
+			if ( !root ) {
+				/**
+				 * The root to load does not exist.
+				 *
+				 * @error multi-root-editor-load-root-no-root
+				 */
+				throw new CKEditorError( 'multi-root-editor-load-root-no-root', this, { rootName } );
+			}
+
+			if ( root._isLoaded ) {
+				/**
+				 * The root to load was already loaded before. The `loadRoot()` call has no effect.
+				 *
+				 * @error multi-root-editor-load-root-already-loaded
+				 */
+				logWarning( 'multi-root-editor-load-root-already-loaded' );
+
+				evt.stop();
+			}
+		}, { priority: 'highest' } );
 	}
 
 	/**
@@ -351,9 +386,10 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	 * editor.addRoot( 'myRoot', { attributes: { isCollapsed: true, index: 4 } } );
 	 * ```
 	 *
-	 * See also {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes `rootsAttributes` configuration option}.
+	 * Note that attributes added together with a root are automatically registered.
 	 *
-	 * Note that attributes keys of attributes added in `attributes` option are also included in {@link #getRootsAttributes} return value.
+	 * See also {@link ~MultiRootEditor#registerRootAttribute `MultiRootEditor#registerRootAttribute()`} and
+	 * {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes `config.rootsAttributes` configuration option}.
 	 *
 	 * By setting `isUndoable` flag to `true`, you can allow for detaching the root using the undo feature.
 	 *
@@ -379,26 +415,23 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 		rootName: string,
 		{ data = '', attributes = {}, elementName = '$root', isUndoable = false }: AddRootOptions = {}
 	): void {
-		const dataController = this.data;
-		const registeredKeys = this._registeredRootsAttributesKeys;
+		const _addRoot = ( writer: Writer ) => {
+			const root = writer.addRoot( rootName, elementName );
+
+			if ( data ) {
+				writer.insert( this.data.parse( data, root ), root, 0 );
+			}
+
+			for ( const key of Object.keys( attributes ) ) {
+				this.registerRootAttribute( key );
+				writer.setAttribute( key, attributes[ key ], root );
+			}
+		};
 
 		if ( isUndoable ) {
 			this.model.change( _addRoot );
 		} else {
 			this.model.enqueueChange( { isUndoable: false }, _addRoot );
-		}
-
-		function _addRoot( writer: Writer ) {
-			const root = writer.addRoot( rootName, elementName );
-
-			if ( data ) {
-				writer.insert( dataController.parse( data, root ), root, 0 );
-			}
-
-			for ( const key of Object.keys( attributes ) ) {
-				registeredKeys.add( key );
-				writer.setAttribute( key, attributes[ key ], root );
-			}
 		}
 	}
 
@@ -501,6 +534,59 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	}
 
 	/**
+	 * Loads a root that has previously been declared in {@link module:core/editor/editorconfig~EditorConfig#lazyRoots `lazyRoots`}
+	 * configuration option.
+	 *
+	 * Only roots specified in the editor config can be loaded. A root cannot be loaded multiple times. A root cannot be unloaded and
+	 * loading a root cannot be reverted using the undo feature.
+	 *
+	 * When a root becomes loaded, it will be treated by the editor as though it was just added. This, among others, means that all
+	 * related events and mechanisms will be fired, including {@link ~MultiRootEditor#event:addRoot `addRoot` event},
+	 * {@link module:engine/model/document~Document#event:change `model.Document` `change` event}, model post-fixers and conversion.
+	 *
+	 * Until the root becomes loaded, all above mechanisms are suppressed.
+	 *
+	 * This method is {@link module:utils/observablemixin~Observable#decorate decorated}.
+	 *
+	 * Note that attributes loaded together with a root are automatically registered.
+	 *
+	 * See also {@link ~MultiRootEditor#registerRootAttribute `MultiRootEditor#registerRootAttribute()`} and
+	 * {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes `config.rootsAttributes` configuration option}.
+	 *
+	 * When this method is used in real-time collaboration environment, its effects become asynchronous as the editor will first synchronize
+	 * with the remote editing session, before the root is added to the editor.
+	 *
+	 * If the root has been already loaded by any other client, the additional data passed in `loadRoot()` parameters will be ignored.
+	 *
+	 * @param rootName Name of the root to load.
+	 * @param options Additional options for the loaded root.
+	 * @fires loadRoot
+	 */
+	public loadRoot(
+		rootName: string,
+		{ data = '', attributes = {} as Record<string, unknown> }: LoadRootOptions = {}
+	): void {
+		// `root` will be defined as it is guaranteed by a check in a higher priority callback.
+		const root = this.model.document.getRoot( rootName )!;
+
+		this.model.enqueueChange( { isUndoable: false }, writer => {
+			if ( data ) {
+				writer.insert( this.data.parse( data, root ), root, 0 );
+			}
+
+			for ( const key of Object.keys( attributes ) ) {
+				this.registerRootAttribute( key );
+
+				writer.setAttribute( key, attributes[ key ], root );
+			}
+
+			root._isLoaded = true;
+
+			this.model.document.differ._bufferRootLoad( root );
+		} );
+	}
+
+	/**
 	 * Returns the document data for all attached roots.
 	 *
 	 * @param options Additional configuration for the retrieved data.
@@ -521,26 +607,57 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	}
 
 	/**
-	 * Returns currently set roots attributes for attributes specified in
-	 * {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes `rootsAttributes`} configuration option.
+	 * Returns attributes for all attached roots.
+	 *
+	 * Note: all and only {@link ~MultiRootEditor#registerRootAttribute registered} roots attributes will be returned.
+	 * If a registered root attribute is not set for a given root, `null` will be returned.
 	 *
 	 * @returns Object with roots attributes. Keys are roots names, while values are attributes set on given root.
 	 */
 	public getRootsAttributes(): Record<string, RootAttributes> {
 		const rootsAttributes: Record<string, RootAttributes> = {};
-		const keys = Array.from( this._registeredRootsAttributesKeys );
 
 		for ( const rootName of this.model.document.getRootNames() ) {
-			rootsAttributes[ rootName ] = {};
-
-			const root = this.model.document.getRoot( rootName )!;
-
-			for ( const key of keys ) {
-				rootsAttributes[ rootName ][ key ] = root.hasAttribute( key ) ? root.getAttribute( key ) : null;
-			}
+			rootsAttributes[ rootName ] = this.getRootAttributes( rootName );
 		}
 
 		return rootsAttributes;
+	}
+
+	/**
+	 * Returns attributes for the specified root.
+	 *
+	 * Note: all and only {@link ~MultiRootEditor#registerRootAttribute registered} roots attributes will be returned.
+	 * If a registered root attribute is not set for a given root, `null` will be returned.
+	 */
+	public getRootAttributes( rootName: string ): RootAttributes {
+		const rootAttributes: RootAttributes = {};
+		const root = this.model.document.getRoot( rootName )!;
+
+		for ( const key of this._registeredRootsAttributesKeys ) {
+			rootAttributes[ key ] = root.hasAttribute( key ) ? root.getAttribute( key ) : null;
+		}
+
+		return rootAttributes;
+	}
+
+	/**
+	 * Registers given string as a root attribute key. Registered root attributes are added to
+	 * {@link module:engine/model/schema~Schema schema}, and also returned by
+	 * {@link ~MultiRootEditor#getRootAttributes `getRootAttributes()`} and
+	 * {@link ~MultiRootEditor#getRootsAttributes `getRootsAttributes()`}.
+	 *
+	 * Note: attributes passed in {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes `config.rootsAttributes`} are
+	 * automatically registered as the editor is initialized. However, registering the same attribute twice does not have any negative
+	 * impact, so it is recommended to use this method in any feature that uses roots attributes.
+	 */
+	public registerRootAttribute( key: string ): void {
+		if ( this._registeredRootsAttributesKeys.has( key ) ) {
+			return;
+		}
+
+		this._registeredRootsAttributesKeys.add( key );
+		this.editing.model.schema.extend( '$root', { allowAttributes: key } );
 	}
 
 	/**
@@ -901,6 +1018,17 @@ export type DetachRootEvent = {
 };
 
 /**
+ * Event fired when {@link ~MultiRootEditor#loadRoot} method is called.
+ *
+ * The {@link ~MultiRootEditor#loadRoot default action of that method} is implemented as a
+ * listener to this event, so it can be fully customized by the features.
+ *
+ * @eventName ~MultiRootEditor#loadRoot
+ * @param args The arguments passed to the original method.
+ */
+export type LoadRootEvent = DecoratedMethodEvent<MultiRootEditor, 'loadRoot'>;
+
+/**
  * Additional options available when adding a root.
  */
 export type AddRootOptions = {
@@ -925,6 +1053,11 @@ export type AddRootOptions = {
 	 */
 	isUndoable?: boolean;
 };
+
+/**
+ * Additional options available when loading a root.
+ */
+export type LoadRootOptions = Omit<AddRootOptions, 'elementName' | 'isUndoable'>;
 
 /**
  * Attributes set on a model root element.

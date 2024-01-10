@@ -7,20 +7,19 @@
  * @module ui/colorselector/colorpickerfragmentview
  */
 
-import View from '../view';
-import ButtonView from '../button/buttonview';
-import type ViewCollection from '../viewcollection';
+import View from '../view.js';
+import ButtonView from '../button/buttonview.js';
+import type ViewCollection from '../viewcollection.js';
 import {
 	default as ColorPickerView,
 	type ColorPickerColorSelectedEvent
-} from '../colorpicker/colorpickerview';
+} from '../colorpicker/colorpickerview.js';
 
 import type { FocusTracker, KeystrokeHandler, Locale } from '@ckeditor/ckeditor5-utils';
-import type { ColorPickerViewConfig } from '../colorpicker/utils';
-import type { ColorSelectorColorPickerCancelEvent, ColorSelectorExecuteEvent } from './colorselectorview';
+import type { ColorPickerViewConfig } from '../colorpicker/utils.js';
+import type { ColorSelectorColorPickerCancelEvent, ColorSelectorExecuteEvent } from './colorselectorview.js';
 
-import checkButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
-import cancelButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
+import { icons } from '@ckeditor/ckeditor5-core';
 
 /**
  * One of the fragments of {@link module:ui/colorselector/colorselectorview~ColorSelectorView}.
@@ -282,7 +281,7 @@ export default class ColorPickerFragmentView extends View {
 		const cancelButtonView = new ButtonView( locale );
 
 		saveButtonView.set( {
-			icon: checkButtonIcon,
+			icon: icons.check,
 			class: 'ck-button-save',
 			type: 'button',
 			withText: false,
@@ -290,7 +289,7 @@ export default class ColorPickerFragmentView extends View {
 		} );
 
 		cancelButtonView.set( {
-			icon: cancelButtonIcon,
+			icon: icons.cancel,
 			class: 'ck-button-cancel',
 			type: 'button',
 			withText: false,

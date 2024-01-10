@@ -7,16 +7,26 @@
  * @module image/imageinsert/imageinsertui
  */
 
-import { Plugin, icons, type Command } from 'ckeditor5/src/core';
-import type { Locale } from 'ckeditor5/src/utils';
-import { SplitButtonView, createDropdown, type DropdownView, type LabeledFieldView } from 'ckeditor5/src/ui';
+import {
+	Plugin,
+	type Editor
+} from 'ckeditor5/src/core.js';
+import {
+	logWarning,
+	type Locale,
+	type Observable
+} from 'ckeditor5/src/utils.js';
+import {
+	createDropdown,
+	SplitButtonView,
+	type ButtonView,
+	type DropdownButtonView,
+	type DropdownView,
+	type FocusableView
+} from 'ckeditor5/src/ui.js';
 
-import ImageInsertPanelView from './ui/imageinsertpanelview';
-import { prepareIntegrations } from './utils';
-import type ImageUtils from '../imageutils';
-import type ReplaceImageSourceCommand from '../image/replaceimagesourcecommand';
-import type UploadImageCommand from '../imageupload/uploadimagecommand';
-import type InsertImageCommand from '../image/insertimagecommand';
+import ImageInsertFormView from './ui/imageinsertformview.js';
+import ImageUtils from '../imageutils.js';
 
 /**
  * The image insert dropdown plugin.
@@ -36,18 +46,57 @@ export default class ImageInsertUI extends Plugin {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public static get requires() {
+		return [ ImageUtils ] as const;
+	}
+
+	/**
 	 * The dropdown view responsible for displaying the image insert UI.
 	 */
 	public dropdownView?: DropdownView;
+
+	/**
+	 * Observable property used to alter labels while some image is selected and when it is not.
+	 *
+	 * @observable
+	 */
+	declare public isImageSelected: boolean;
+
+	/**
+	 * Registered integrations map.
+	 */
+	private _integrations = new Map<string, IntegrationData>();
+
+	/**
+	 * @inheritDoc
+	 */
+	constructor( editor: Editor ) {
+		super( editor );
+
+		editor.config.define( 'image.insert.integrations', [
+			'upload',
+			'assetManager',
+			'url'
+		] );
+	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public init(): void {
 		const editor = this.editor;
-		const componentCreator = ( locale: Locale ) => {
-			return this._createDropdownView( locale );
-		};
+		const selection = editor.model.document.selection;
+		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
+
+		this.set( 'isImageSelected', false );
+
+		this.listenTo( editor.model.document, 'change', () => {
+			this.isImageSelected = imageUtils.isImage( selection.getSelectedElement() );
+		} );
+
+		const componentCreator = ( locale: Locale ) => this._createToolbarComponent( locale );
 
 		// Register `insertImage` dropdown and add `imageInsert` dropdown as an alias for backward compatibility.
 		editor.ui.componentFactory.add( 'insertImage', componentCreator );
@@ -55,124 +104,154 @@ export default class ImageInsertUI extends Plugin {
 	}
 
 	/**
-	 * Creates the dropdown view.
-	 *
-	 * @param locale The localization services instance.
+	 * Registers the insert image dropdown integration.
 	 */
-	private _createDropdownView( locale: Locale ): DropdownView {
-		const editor = this.editor;
-		const t = locale.t;
-
-		const uploadImageCommand: UploadImageCommand | undefined = editor.commands.get( 'uploadImage' );
-		const insertImageCommand: InsertImageCommand = editor.commands.get( 'insertImage' )!;
-
-		this.dropdownView = createDropdown( locale, uploadImageCommand ? SplitButtonView : undefined );
-
-		const buttonView = this.dropdownView.buttonView;
-		const panelView = this.dropdownView.panelView;
-
-		buttonView.set( {
-			label: t( 'Insert image' ),
-			icon: icons.image,
-			tooltip: true
-		} );
-
-		panelView.extendTemplate( {
-			attributes: {
-				class: 'ck-image-insert__panel'
-			}
-		} );
-
-		if ( uploadImageCommand ) {
-			const splitButtonView = this.dropdownView.buttonView as SplitButtonView;
-
-			// We are injecting custom button replacement to readonly field.
-			( splitButtonView as any ).actionView = editor.ui.componentFactory.create( 'uploadImage' );
-			// After we replaced action button with `uploadImage` component,
-			// we have lost a proper styling and some minor visual quirks have appeared.
-			// Brining back original split button classes helps fix the button styling
-			// See https://github.com/ckeditor/ckeditor5/issues/7986.
-			splitButtonView.actionView.extendTemplate( {
-				attributes: {
-					class: 'ck ck-button ck-splitbutton__action'
-				}
-			} );
+	public registerIntegration( {
+		name,
+		observable,
+		buttonViewCreator,
+		formViewCreator,
+		requiresForm
+	}: {
+		name: string;
+		observable: Observable & { isEnabled: boolean };
+		buttonViewCreator: ( isOnlyOne: boolean ) => ButtonView;
+		formViewCreator: ( isOnlyOne: boolean ) => FocusableView;
+		requiresForm?: boolean;
+} ): void {
+		if ( this._integrations.has( name ) ) {
+			/**
+			 * There are two insert-image integrations registered with the same name.
+			 *
+			 * Make sure that you do not load multiple asset manager plugins.
+			 *
+			 * @error image-insert-integration-exists
+			 */
+			logWarning( 'image-insert-integration-exists', { name } );
 		}
 
-		return this._setUpDropdown( uploadImageCommand || insertImageCommand );
+		this._integrations.set( name, {
+			observable,
+			buttonViewCreator,
+			formViewCreator,
+			requiresForm: !!requiresForm
+		} );
 	}
 
 	/**
-	 * Sets up the dropdown view.
-	 *
-	 * @param command An uploadImage or insertImage command.
+	 * Creates the toolbar component.
 	 */
-	private _setUpDropdown( command: Command ): DropdownView {
+	private _createToolbarComponent( locale: Locale ): DropdownView | FocusableView {
 		const editor = this.editor;
-		const t = editor.t;
-		const dropdownView = this.dropdownView!;
-		const panelView = dropdownView.panelView;
-		const imageUtils: ImageUtils = this.editor.plugins.get( 'ImageUtils' );
-		const replaceImageSourceCommand: ReplaceImageSourceCommand = editor.commands.get( 'replaceImageSource' )!;
+		const t = locale.t;
 
-		let imageInsertView: ImageInsertPanelView;
+		const integrations = this._prepareIntegrations();
 
-		dropdownView.bind( 'isEnabled' ).to( command );
+		if ( !integrations.length ) {
+			return null as any;
+		}
+
+		let dropdownButton: SplitButtonView | DropdownButtonView | undefined;
+		const firstIntegration = integrations[ 0 ];
+
+		if ( integrations.length == 1 ) {
+			// Do not use dropdown for a single integration button (integration that does not require form view).
+			if ( !firstIntegration.requiresForm ) {
+				return firstIntegration.buttonViewCreator( true );
+			}
+
+			dropdownButton = firstIntegration.buttonViewCreator( true ) as DropdownButtonView;
+		} else {
+			const actionButton = firstIntegration.buttonViewCreator( false ) as ButtonView & FocusableView;
+
+			dropdownButton = new SplitButtonView( locale, actionButton );
+			dropdownButton.tooltip = true;
+
+			dropdownButton.bind( 'label' ).to( this, 'isImageSelected', isImageSelected => isImageSelected ?
+				t( 'Replace image' ) :
+				t( 'Insert image' )
+			);
+		}
+
+		const dropdownView = this.dropdownView = createDropdown( locale, dropdownButton );
+		const observables = integrations.map( ( { observable } ) => observable );
+
+		dropdownView.bind( 'isEnabled' ).toMany( observables, 'isEnabled', ( ...isEnabled ) => (
+			isEnabled.some( isEnabled => isEnabled )
+		) );
 
 		dropdownView.once( 'change:isOpen', () => {
-			imageInsertView = new ImageInsertPanelView( editor.locale, prepareIntegrations( editor ) );
+			const integrationViews = integrations.map( ( { formViewCreator } ) => formViewCreator( integrations.length == 1 ) );
+			const imageInsertFormView = new ImageInsertFormView( editor.locale, integrationViews );
 
-			imageInsertView.delegate( 'submit', 'cancel' ).to( dropdownView );
-			panelView.children.add( imageInsertView );
+			dropdownView.panelView.children.add( imageInsertFormView );
 		} );
-
-		dropdownView.on( 'change:isOpen', () => {
-			const selectedElement = editor.model.document.selection.getSelectedElement()!;
-			const insertButtonView = imageInsertView.insertButtonView;
-			const insertImageViaUrlForm = imageInsertView.getIntegration( 'insertImageViaUrl' ) as LabeledFieldView;
-
-			if ( dropdownView.isOpen ) {
-				if ( imageUtils.isImage( selectedElement ) ) {
-					imageInsertView.imageURLInputValue = replaceImageSourceCommand.value!;
-					insertButtonView.label = t( 'Update' );
-					insertImageViaUrlForm.label = t( 'Update image URL' );
-				} else {
-					imageInsertView.imageURLInputValue = '';
-					insertButtonView.label = t( 'Insert' );
-					insertImageViaUrlForm.label = t( 'Insert image via URL' );
-				}
-			}
-		// Note: Use the low priority to make sure the following listener starts working after the
-		// default action of the drop-down is executed (i.e. the panel showed up). Otherwise, the
-		// invisible form/input cannot be focused/selected.
-		}, { priority: 'low' } );
-
-		this.delegate( 'cancel' ).to( dropdownView );
-
-		dropdownView.on( 'submit', () => {
-			closePanel();
-			onSubmit();
-		} );
-
-		dropdownView.on( 'cancel', () => {
-			closePanel();
-		} );
-
-		function onSubmit() {
-			const selectedElement = editor.model.document.selection.getSelectedElement()!;
-
-			if ( imageUtils.isImage( selectedElement ) ) {
-				editor.execute( 'replaceImageSource', { source: imageInsertView.imageURLInputValue } );
-			} else {
-				editor.execute( 'insertImage', { source: imageInsertView.imageURLInputValue } );
-			}
-		}
-
-		function closePanel() {
-			editor.editing.view.focus();
-			dropdownView.isOpen = false;
-		}
 
 		return dropdownView;
 	}
+
+	/**
+	 * Validates the integrations list.
+	 */
+	private _prepareIntegrations(): Array<IntegrationData> {
+		const editor = this.editor;
+		const items = editor.config.get( 'image.insert.integrations' )!;
+		const result: Array<IntegrationData> = [];
+
+		if ( !items.length ) {
+			/**
+			 * The insert image feature requires a list of integrations to be provided in the editor configuration.
+			 *
+			 * The default list of integrations is `upload`, `assetManager`, `url`. Those integrations are included
+			 * in the insert image dropdown if the given feature plugin is loaded. You should omit the `integrations`
+			 * configuration key to use the default set or provide a selected list of integrations that should be used.
+			 *
+			 * @error image-insert-integrations-not-specified
+			 */
+			logWarning( 'image-insert-integrations-not-specified' );
+
+			return result;
+		}
+
+		for ( const item of items ) {
+			if ( !this._integrations.has( item ) ) {
+				if ( ![ 'upload', 'assetManager', 'url' ].includes( item ) ) {
+					/**
+					 * The specified insert image integration name is unknown or the providing plugin is not loaded in the editor.
+					 *
+					 * @error image-insert-unknown-integration
+					 */
+					logWarning( 'image-insert-unknown-integration', { item } );
+				}
+
+				continue;
+			}
+
+			result.push( this._integrations.get( item )! );
+		}
+
+		if ( !result.length ) {
+			/**
+			 * The image insert feature requires integrations to be registered by separate features.
+			 *
+			 * The `insertImage` toolbar button requires integrations to be registered by other features.
+			 * For example {@link module:image/imageupload~ImageUpload ImageUpload},
+			 * {@link module:image/imageinsert~ImageInsert ImageInsert},
+			 * {@link module:image/imageinsertviaurl~ImageInsertViaUrl ImageInsertViaUrl},
+			 * {@link module:ckbox/ckbox~CKBox CKBox}
+			 *
+			 * @error image-insert-integrations-not-registered
+			 */
+			logWarning( 'image-insert-integrations-not-registered' );
+		}
+
+		return result;
+	}
 }
+
+type IntegrationData = {
+	observable: Observable & { isEnabled: boolean };
+	buttonViewCreator: ( isOnlyOne: boolean ) => ButtonView;
+	formViewCreator: ( isOnlyOne: boolean ) => FocusableView;
+	requiresForm: boolean;
+};

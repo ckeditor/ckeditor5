@@ -7,10 +7,10 @@
  * @module code-block/codeblock
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 
-import CodeBlockEditing from './codeblockediting';
-import CodeBlockUI from './codeblockui';
+import CodeBlockEditing from './codeblockediting.js';
+import CodeBlockUI from './codeblockui.js';
 
 /**
  * The code block plugin.

@@ -2,11 +2,11 @@
 category: api-reference
 ---
 
-# GitHub Flavored Markdown support for CKEditor 5
+# GitHub Flavored Markdown support for CKEditor&nbsp;5
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-markdown-gfm.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-markdown-gfm)
 
-This package implements the GitHub Flavored Markdown data processor for CKEditor 5.
+This package implements the GitHub Flavored Markdown data processor for CKEditor&nbsp;5.
 
 ## Demo
 

@@ -15,10 +15,15 @@ msgstr ""
 "Language-Team: English (Australia) (https://app.transifex.com/ckeditor/teams/11143/en_AU/)\n"
 "Language: en_AU\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Label for the Cancel button."
 msgid "Cancel"
 msgstr "Cancel"
+
+msgctxt "Label for the Clear button."
+msgid "Clear"
+msgstr "Clear"
 
 msgctxt "The label used by a button next to the color palette in the color picker that removes the color (resets it to an empty value, example usages in font color or table properties)."
 msgid "Remove color"
@@ -47,3 +52,19 @@ msgstr "Cannot upload file:"
 msgctxt "Accessible label of the specific editing area of the editor acting as a root of the entire application."
 msgid "Rich Text Editor. Editing area: %0"
 msgstr "Rich Text Editor. Editing area: %0"
+
+msgctxt "The label for the insert image with the file manager toolbar button with visible label in insert image dropdown."
+msgid "Insert with file manager"
+msgstr ""
+
+msgctxt "The label for the replace image with the file manager toolbar button with visible label in insert image dropdown."
+msgid "Replace with file manager"
+msgstr ""
+
+msgctxt "The label for the insert image with the file manager toolbar button."
+msgid "Insert image with file manager"
+msgstr ""
+
+msgctxt "The label for the replace image with the file manager toolbar button."
+msgid "Replace image with file manager"
+msgstr ""

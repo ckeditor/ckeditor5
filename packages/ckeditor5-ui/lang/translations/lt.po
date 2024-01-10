@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Lithuanian (https://app.transifex.com/ckeditor/teams/11143/lt/)\n"
 "Language: lt\n"
 "Plural-Forms: nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < 11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? 1 : n % 1 != 0 ? 2: 3);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Title of the CKEditor5 editor."
 msgid "Rich Text Editor"
@@ -27,6 +28,14 @@ msgstr "Redaktoriaus redagavimo sritis: %0"
 msgctxt "Label of the block toolbar icon (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
 msgid "Edit block"
 msgstr "Redaguoti bloką"
+
+msgctxt "First part of the label of the block toolbar icon when functionality of drag and drop is available (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
+msgid "Click to edit block"
+msgstr "Spustelėkite norėdami redaguoti bloką"
+
+msgctxt "Second part of the label of the block toolbar icon when functionality of drag and drop is available (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
+msgid "Drag to move"
+msgstr "Vilkite, kad perkeltumėte"
 
 msgctxt "Label for a button showing the next thing (tab, page, etc.)."
 msgid "Next"
@@ -114,4 +123,16 @@ msgstr "Redaktoriaus kontekstinė įrankių juosta"
 
 msgctxt "Label of an input field for typing colors in the HEX color format."
 msgid "HEX"
-msgstr ""
+msgstr "Šešioliktainė reikšmė (angl. HEX)"
+
+msgctxt "Label of the button closing the color picker and confirming the changes done in the color selector component."
+msgid "Accept"
+msgstr "Priimti"
+
+msgctxt "The main text of the message shown to the user when given query does not match any results."
+msgid "No results found"
+msgstr "Nieko nerasta"
+
+msgctxt "The main text of the message shown to the user when no results are available."
+msgid "No searchable items"
+msgstr "Nėra paieškos elementų"

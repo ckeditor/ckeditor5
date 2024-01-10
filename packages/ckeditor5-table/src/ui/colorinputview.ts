@@ -18,10 +18,11 @@ import {
 	type DropdownView,
 	type ColorPickerConfig,
 	type ColorSelectorExecuteEvent,
-	type ColorSelectorColorPickerCancelEvent
-} from 'ckeditor5/src/ui';
+	type ColorSelectorColorPickerCancelEvent,
+	type FocusableView
+} from 'ckeditor5/src/ui.js';
 
-import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
+import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
 
 import '../../theme/colorinput.css';
 
@@ -38,7 +39,7 @@ export type ColorInputViewOptions = {
  *
  * @internal
  */
-export default class ColorInputView extends View {
+export default class ColorInputView extends View implements FocusableView {
 	/**
 	 * The value of the input.
 	 *
@@ -88,6 +89,11 @@ export default class ColorInputView extends View {
 	public readonly focusTracker: FocusTracker;
 
 	/**
+	 * Helps cycling over focusable children in the input view.
+	 */
+	public readonly focusCycler: FocusCycler;
+
+	/**
 	 * A collection of views that can be focused in the view.
 	 */
 	protected readonly _focusables: ViewCollection;
@@ -115,11 +121,6 @@ export default class ColorInputView extends View {
 	protected _stillTyping: boolean;
 
 	/**
-	 * Helps cycling over focusable items in the view.
-	 */
-	protected readonly _focusCycler: FocusCycler;
-
-	/**
 	 * Creates an instance of the color input view.
 	 *
 	 * @param locale The locale instance.
@@ -145,7 +146,7 @@ export default class ColorInputView extends View {
 		this.keystrokes = new KeystrokeHandler();
 		this._stillTyping = false;
 
-		this._focusCycler = new FocusCycler( {
+		this.focusCycler = new FocusCycler( {
 			focusables: this._focusables,
 			focusTracker: this.focusTracker,
 			keystrokeHandler: this.keystrokes,
@@ -181,15 +182,23 @@ export default class ColorInputView extends View {
 	public override render(): void {
 		super.render();
 
-		// Start listening for the keystrokes coming from the dropdown panel view.
-		this.keystrokes.listenTo( this.dropdownView.panelView.element! );
+		[ this.inputView, this.dropdownView.buttonView ].forEach( view => {
+			this.focusTracker.add( view.element! );
+			this._focusables.add( view );
+		} );
+
+		this.keystrokes.listenTo( this.element! );
 	}
 
 	/**
-	 * Focuses the input.
+	 * Focuses the view.
 	 */
-	public focus(): void {
-		this.inputView.focus();
+	public focus( direction: 1 | -1 ): void {
+		if ( direction === -1 ) {
+			this.focusCycler.focusLast();
+		} else {
+			this.focusCycler.focusFirst();
+		}
 	}
 
 	/**
@@ -249,10 +258,6 @@ export default class ColorInputView extends View {
 		dropdown.panelPosition = locale.uiLanguageDirection === 'rtl' ? 'se' : 'sw';
 		dropdown.panelView.children.add( colorSelector );
 		dropdown.bind( 'isEnabled' ).to( this, 'isReadOnly', value => !value );
-
-		this._focusables.add( colorSelector );
-
-		this.focusTracker.add( colorSelector.element! );
 
 		dropdown.on( 'change:isOpen', ( evt, name, isVisible ) => {
 			if ( isVisible ) {

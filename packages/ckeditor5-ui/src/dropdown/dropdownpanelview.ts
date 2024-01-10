@@ -7,9 +7,9 @@
  * @module ui/dropdown/dropdownpanelview
  */
 
-import View from '../view';
-import type ViewCollection from '../viewcollection';
-import type DropdownPanelFocusable from './dropdownpanelfocusable';
+import View from '../view.js';
+import type ViewCollection from '../viewcollection.js';
+import type DropdownPanelFocusable from './dropdownpanelfocusable.js';
 
 import { logWarning, type Locale } from '@ckeditor/ckeditor5-utils';
 
@@ -69,7 +69,8 @@ export default class DropdownPanelView extends View implements DropdownPanelFocu
 					'ck-dropdown__panel',
 					bind.to( 'position', value => `ck-dropdown__panel_${ value }` ),
 					bind.if( 'isVisible', 'ck-dropdown__panel-visible' )
-				]
+				],
+				tabindex: '-1'
 			},
 
 			children: this.children,

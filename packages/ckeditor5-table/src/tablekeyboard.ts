@@ -7,17 +7,17 @@
  * @module table/tablekeyboard
  */
 
-import TableSelection from './tableselection';
-import TableWalker from './tablewalker';
-import TableUtils from './tableutils';
+import TableSelection from './tableselection.js';
+import TableWalker from './tablewalker.js';
+import TableUtils from './tableutils.js';
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 import {
 	getLocalizedArrowKeyCodeDirection,
 	type EventInfo,
 	type ArrowKeyCodeDirection,
 	type KeystrokeInfo
-} from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/utils.js';
 
 import type {
 	BubblingEventInfo,
@@ -27,7 +27,7 @@ import type {
 	Selection,
 	ViewDocumentArrowKeyEvent,
 	ViewDocumentTabEvent
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
 /**
  * This plugin enables keyboard navigation for tables.

@@ -2,12 +2,13 @@
 category: examples-framework
 order: 90
 toc: false
+meta-title: Theme customization example | CKEditor 5 Documentation
 classes: main__content--no-toc
 ---
 
 # Theme customization
 
-The [default theme](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark) of CKEditor 5 can be customized to match most visual integration requirements.
+The [default theme](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark) of CKEditor&nbsp;5 can be customized to match most visual integration requirements.
 
 Below, you can see an editor with the dark theme as a result of customizations described in a {@link framework/theme-customization dedicated guide}.
 
@@ -16,7 +17,7 @@ Below, you can see an editor with the dark theme as a result of customizations d
 ## Editor example configuration
 
 <details>
-<summary>View editor configuration script</summary>
+<summary>View the editor configuration script</summary>
 
 ```js
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
@@ -86,7 +87,7 @@ ClassicEditor
 </details>
 
 <details>
-<summary>View editor css style listing</summary>
+<summary>View the editor CSS style listing</summary>
 
 ```css
 :root {

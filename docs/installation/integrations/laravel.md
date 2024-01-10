@@ -1,22 +1,23 @@
 ---
 category: integrations
+meta-title: Compatibility with Laravel | CKEditor 5 documentation
 order: 60
 menu-title: Laravel
 ---
 
 # Compatibility with Laravel
 
-As a pure JavaScript/TypeScript application, CKEditor 5 will work inside any environment that supports such components. While we do not offer official integrations for any non-JavaScript frameworks, you can include a custom build of CKEditor 5 in a non-JS framework of your choice, for example, the PHP-based [Laravel](https://laravel.com/).
+As a pure JavaScript/TypeScript application, CKEditor&nbsp;5 will work inside any environment that supports such components. While we do not offer official integrations for any non-JavaScript frameworks, you can include a custom build of CKEditor&nbsp;5 in a non-JS framework of your choice, for example, the PHP-based [Laravel](https://laravel.com/).
 
-To integrate CKEditor 5 with Laravel, we will create a custom CKEditor 5 build using the [online builder](https://ckeditor.com/ckeditor-5/online-builder/), and then import it into the Laravel project.
+To integrate CKEditor&nbsp;5 with Laravel, we will create a custom CKEditor&nbsp;5 build using the [online builder](https://ckeditor.com/ckeditor-5/online-builder/), and then import it into the Laravel project.
 
 ## Preparing a build
 
-In this guide, we will use the [online builder](https://ckeditor.com/ckeditor-5/online-builder/). It is a web interface that lets you create a custom build of CKEditor 5 and download the code as a zip package.
+In this guide, we will use the [online builder](https://ckeditor.com/ckeditor-5/online-builder/). It is a web interface that lets you create a custom build of CKEditor&nbsp;5 and download the code as a zip package.
 
 The online builder is a powerful tool that lets you effortlessly create a rich text editor that is custom-tailored to your needs. With the online builder, you can choose the desired editor type, and plugins, configure the toolbar, and choose the UI language for your editor.
 
-You can learn more about creating custom builds of CKEditor 5 with the online builder in our {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder Customized installation} guide.
+You can learn more about creating custom builds of CKEditor&nbsp;5 with the online builder in our {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder Customized installation} guide.
 
 ## Setting up the project
 
@@ -69,7 +70,7 @@ Once you have your custom editor build ready and the Laravel project has been se
     Note that the name of the original `.zip` folder from the online builder has been shortened here to `ckeditor5`.
 </info-box>
 
-Then, modify the `welcome.blade.php` file contained in the `resources/views` directory to include the CKEditor 5 script. You can use this HTML boilerplate as a starting point:
+Then, modify the `welcome.blade.php` file contained in the `resources/views` directory to include the CKEditor&nbsp;5 script. You can use this HTML boilerplate as a starting point:
 
 ```html
 <!DOCTYPE html>
@@ -80,7 +81,7 @@ Then, modify the `welcome.blade.php` file contained in the `resources/views` dir
   <title>CKE5 in Laravel</title>
 </head>
 <body>
-    <h1>Welcome to CKEditor 5 in Laravel</h1>
+    <h1>Welcome to CKEditor&nbsp;5 in Laravel</h1>
     <div id="editor"></div>
     <script>
         ClassicEditor

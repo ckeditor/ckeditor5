@@ -7,16 +7,16 @@
  * @module style/stylecommand
  */
 
-import type { DocumentSelection, Element } from 'ckeditor5/src/engine';
-import { Command, type Editor } from 'ckeditor5/src/core';
-import { logWarning, first } from 'ckeditor5/src/utils';
+import type { DocumentSelection, Element } from 'ckeditor5/src/engine.js';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
+import { logWarning, first } from 'ckeditor5/src/utils.js';
 import type { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 
 import StyleUtils, {
 	type BlockStyleDefinition,
 	type NormalizedStyleDefinition,
 	type NormalizedStyleDefinitions
-} from './styleutils';
+} from './styleutils.js';
 
 /**
  * Style command.
@@ -132,7 +132,7 @@ export default class StyleCommand extends Command {
 	}
 
 	/**
-	 * Executes the command &mdash; applies the style classes to the selection or removes it from the selection.
+	 * Executes the command &ndash; applies the style classes to the selection or removes it from the selection.
 	 *
 	 * If the command value already contains the requested style, it will remove the style classes. Otherwise, it will set it.
 	 *

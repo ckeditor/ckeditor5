@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: German (https://app.transifex.com/ckeditor/teams/11143/de/)\n"
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Toolbar button tooltip for the Unlink feature."
 msgid "Unlink"
@@ -26,7 +27,7 @@ msgstr "Link"
 
 msgctxt "Label for the URL input in the Link URL editing balloon."
 msgid "Link URL"
-msgstr "Link Adresse"
+msgstr "Linkadresse"
 
 msgctxt "Label for the image link button."
 msgid "Link image"

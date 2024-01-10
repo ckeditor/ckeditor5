@@ -1,5 +1,6 @@
 ---
 title: Find and replace
+meta-title: Find and replace | CKEditor 5 Documentation
 category: features
 modified_at: 2021-06-29
 ---
@@ -57,7 +58,7 @@ ClassicEditor
 
 The {@link module:find-and-replace/findandreplace~FindAndReplace} plugin registers the `'findAndReplace'` UI button component and the {@link module:find-and-replace/findcommand~FindCommand `'find'`}, {@link module:find-and-replace/findnextcommand~FindNextCommand `'findNext'`}, {@link module:find-and-replace/findpreviouscommand~FindPreviousCommand `'findPrevious'`}, {@link module:find-and-replace/replacecommand~ReplaceCommand `'replace'`} and {@link module:find-and-replace/replaceallcommand~ReplaceAllCommand `'replaceAll'`} commands.
 
-The commands can be executed using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
+You can execute the commands using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
 
 ```js
 // Find all occurrences of a given text.
@@ -78,7 +79,7 @@ editor.execute( 'replaceAll', 'diesel', 'steam' );
 ```
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Contribute

@@ -7,7 +7,7 @@
  * @module table/tableproperties/tablepropertiesui
  */
 
-import { type Editor, Plugin } from 'ckeditor5/src/core';
+import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 import {
 	ButtonView,
 	ContextualBalloon,
@@ -15,11 +15,11 @@ import {
 	getLocalizedColorOptions,
 	normalizeColorOptions,
 	type LabeledFieldView
-} from 'ckeditor5/src/ui';
+} from 'ckeditor5/src/ui.js';
 
 import { debounce } from 'lodash-es';
 
-import TablePropertiesView from './ui/tablepropertiesview';
+import TablePropertiesView from './ui/tablepropertiesview.js';
 import tableProperties from './../../theme/icons/table-properties.svg';
 import {
 	colorFieldValidator,
@@ -28,14 +28,14 @@ import {
 	lengthFieldValidator,
 	lineWidthFieldValidator,
 	defaultColors
-} from '../utils/ui/table-properties';
-import { getTableWidgetAncestor } from '../utils/ui/widget';
-import { getBalloonTablePositionData, repositionContextualBalloon } from '../utils/ui/contextualballoon';
-import { getNormalizedDefaultProperties, type NormalizedDefaultProperties } from '../utils/table-properties';
-import type { Batch } from 'ckeditor5/src/engine';
-import type { EventInfo, ObservableChangeEvent } from 'ckeditor5/src/utils';
+} from '../utils/ui/table-properties.js';
+import { getSelectionAffectedTableWidget } from '../utils/ui/widget.js';
+import { getBalloonTablePositionData, repositionContextualBalloon } from '../utils/ui/contextualballoon.js';
+import { getNormalizedDefaultProperties, type NormalizedDefaultProperties } from '../utils/table-properties.js';
+import type { Batch } from 'ckeditor5/src/engine.js';
+import type { EventInfo, ObservableChangeEvent } from 'ckeditor5/src/utils.js';
 
-import type TableBorderStyleCommand from './commands/tableborderstylecommand';
+import type TableBorderStyleCommand from './commands/tableborderstylecommand.js';
 
 const ERROR_TEXT_TIMEOUT = 500;
 
@@ -357,7 +357,7 @@ export default class TablePropertiesUI extends Plugin {
 		const editor = this.editor;
 		const viewDocument = editor.editing.view.document;
 
-		if ( !getTableWidgetAncestor( viewDocument.selection ) ) {
+		if ( !getSelectionAffectedTableWidget( viewDocument.selection ) ) {
 			this._hideView();
 		} else if ( this._isViewVisible ) {
 			repositionContextualBalloon( editor, 'table' );

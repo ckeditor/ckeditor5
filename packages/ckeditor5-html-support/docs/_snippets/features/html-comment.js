@@ -15,7 +15,8 @@ ClassicEditor
 				'imageStyle:breakText',
 				'|',
 				'toggleImageCaption',
-				'imageTextAlternative'
+				'imageTextAlternative',
+				'ckboxImageEdit'
 			]
 		},
 		table: {
@@ -25,6 +26,10 @@ ClassicEditor
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
 			}
+		},
+		ckbox: {
+			allowExternalImagesEditing: [ /^data:/, 'origin' ],
+			forceDemoLabel: true
 		}
 	} )
 	.then( editor => {

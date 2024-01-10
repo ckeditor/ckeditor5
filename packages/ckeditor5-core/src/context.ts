@@ -15,10 +15,10 @@ import {
 	type LocaleTranslate
 } from '@ckeditor/ckeditor5-utils';
 
-import PluginCollection from './plugincollection';
-import type Editor from './editor/editor';
-import type { LoadedPlugins, PluginConstructor } from './plugin';
-import type { EditorConfig } from './editor/editorconfig';
+import PluginCollection from './plugincollection.js';
+import type Editor from './editor/editor.js';
+import type { LoadedPlugins, PluginConstructor } from './plugin.js';
+import type { EditorConfig } from './editor/editorconfig.js';
 
 /**
  * Provides a common, higher-level environment for solutions that use multiple {@link module:core/editor/editor~Editor editors}
@@ -271,7 +271,7 @@ export default class Context {
 	/**
 	 * Returns the context configuration which will be copied to the editors created using this context.
 	 *
-	 * The configuration returned by this method has the plugins configuration removed &mdash; plugins are shared with all editors
+	 * The configuration returned by this method has the plugins configuration removed &ndash; plugins are shared with all editors
 	 * through another mechanism.
 	 *
 	 * This method should only be used by the editor.

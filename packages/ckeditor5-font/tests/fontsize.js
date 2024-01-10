@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import FontSize from './../src/fontsize';
-import FontSizeEditing from './../src/fontsize/fontsizeediting';
-import FontSizeUI from './../src/fontsize/fontsizeui';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import FontSize from './../src/fontsize.js';
+import FontSizeEditing from './../src/fontsize/fontsizeediting.js';
+import FontSizeUI from './../src/fontsize/fontsizeui.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 /* global document */
 

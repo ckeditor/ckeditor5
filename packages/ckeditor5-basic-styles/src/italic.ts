@@ -7,9 +7,9 @@
  * @module basic-styles/italic
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import ItalicEditing from './italic/italicediting';
-import ItalicUI from './italic/italicui';
+import { Plugin } from 'ckeditor5/src/core.js';
+import ItalicEditing from './italic/italicediting.js';
+import ItalicUI from './italic/italicui.js';
 
 /**
  * The italic feature.

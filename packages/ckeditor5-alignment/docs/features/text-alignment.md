@@ -1,5 +1,6 @@
 ---
 title: Text alignment
+meta-title: Text alignment | CKEditor 5 Documentation
 category: features
 ---
 
@@ -21,13 +22,13 @@ Click inside a paragraph or a header and use the toolbar dropdown {@icon @ckedit
 
 ### Defining available options
 
-It is possible to configure which alignment options are available in the editor by setting the {@link module:alignment/alignmentconfig~AlignmentConfig#options `alignment.options`} configuration option. You can choose from `'left'`, `'right'`, `'center'` and `'justify'`.
+It is possible to configure which alignment options are available in the editor by setting the {@link module:alignment/alignmentconfig~AlignmentConfig#options `alignment.options`} configuration option. You can choose from `'left'`, `'right'`, `'center'`, and `'justify'`.
 
 <info-box>
-	Note that the `'left'` option should always be included for the <abbr title="left–to–right">LTR</abbr> content. Similarly, the `'right'` option should always be included for the <abbr title="right-to-left">RTL</abbr> content. Learn more about {@link features/ui-language#setting-the-language-of-the-content configuring language of the editor content}.
+	You should always include the `'left'` option for the <abbr title="left–to–right">LTR</abbr> content. Similarly, you should always include the `'right'` option for the <abbr title="right-to-left">RTL</abbr> content. Learn more about {@link features/ui-language#setting-the-language-of-the-content configuring language of the editor content}.
 </info-box>
 
-For example, the following editor will support only two alignment options: to the left and to the right:
+For example, the following editor will support two alignment options: to the left and to the right:
 
 ```js
 ClassicEditor
@@ -47,7 +48,7 @@ ClassicEditor
 
 ### Using classes instead of inline style
 
-By default, alignment is set inline using the `text-align` CSS property. If you wish the feature to output more semantic content that uses classes instead of inline styles, you can specify class names by using the `className` property in `config.alignment.options` and style them by using a stylesheet.
+By default, alignment is set inline using the `text-align` CSS property. If you wish the feature to output more semantic content that uses classes instead of inline styles, you can specify class names by using the `className` property in `config.alignment.options` and style them by using a style sheet.
 
 <info-box>
 	Once you decide to use classes for the alignment, you must define `className` for **all** alignment entries in {@link module:alignment/alignmentconfig~AlignmentConfig#options `config.alignment.options`}.
@@ -121,7 +122,7 @@ ClassicEditor
 
 ## Related features
 
-CKEditor 5 has more features that can help you organize your content:
+CKEditor&nbsp;5 has more features that can help you organize your content:
 * {@link features/title Document title} &ndash; Clearly divide your content into a title and body.
 * {@link features/headings Headings} &ndash; Split your content into logical sections.
 * {@link features/indent Block indentation} &ndash; Organize your content into visually separated blocks, indent crucial paragraphs, etc.
@@ -135,7 +136,7 @@ The {@link module:alignment/alignment~Alignment} plugin registers:
 * Dropdown: `'alignment'`.
 * Buttons: `'alignment:left'`, `'alignment:right'`, `'alignment:center'`, `'alignment:justify'`.
 
-	The number of options and their names are based on the {@link module:alignment/alignmentconfig~AlignmentConfig#options `alignment.options`} configuration option).
+	The number of options and their names are based on the {@link module:alignment/alignmentconfig~AlignmentConfig#options `alignment.options`} configuration option.
 
 * Command: `'alignment'`:
 
@@ -146,7 +147,7 @@ The {@link module:alignment/alignment~Alignment} plugin registers:
 	```
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Content compatibility

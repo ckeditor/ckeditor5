@@ -15,7 +15,7 @@ ClassicEditor
 				'|', 'sourceEditing',
 				'|', 'heading',
 				'|', 'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', 'code',
-				'-', 'link', 'uploadImage', 'insertTable', 'blockQuote', 'mediaEmbed', 'codeBlock',
+				'-', 'link', 'insertImage', 'insertTable', 'blockQuote', 'mediaEmbed', 'codeBlock',
 				'|', 'alignment',
 				'|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
 			],
@@ -35,7 +35,9 @@ ClassicEditor
 				'imageStyle:side',
 				'|',
 				'imageTextAlternative',
-				'toggleImageCaption'
+				'toggleImageCaption',
+				'|',
+				'ckboxImageEdit'
 			]
 		},
 		htmlSupport: {
@@ -62,6 +64,10 @@ ClassicEditor
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
 			}
+		},
+		ckbox: {
+			allowExternalImagesEditing: [ /^data:/, 'origin' ],
+			forceDemoLabel: true
 		}
 	} )
 	.then( editor => {

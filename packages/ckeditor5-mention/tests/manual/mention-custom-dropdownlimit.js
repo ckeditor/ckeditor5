@@ -5,13 +5,13 @@
 
 /* global console, window */
 
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Mention from '../../src/mention';
-import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import Font from '@ckeditor/ckeditor5-font/src/font';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import Mention from '../../src/mention.js';
+import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import Font from '@ckeditor/ckeditor5-font/src/font.js';
 
 ClassicEditor
 	.create( global.document.querySelector( '#editor' ), {

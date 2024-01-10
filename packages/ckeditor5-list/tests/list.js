@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import List from '../src/list';
-import ListEditing from '../src/list/listediting';
-import ListUI from '../src/list/listui';
+import List from '../src/list.js';
+import ListUI from '../src/list/listui.js';
+import ListEditing from '../src/list/listediting.js';
 
 describe( 'List', () => {
 	it( 'should be named', () => {

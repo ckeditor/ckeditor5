@@ -1,36 +1,39 @@
 ---
 menu-title: DLL builds
+meta-title: CKEditor 5 DLL builds | CKEditor 5 documentation
 category: alternative-setups
 order: 20
 modified_at: 2022-02-22
 ---
 
+{@snippet installation/advanced/dll-builds}
+
 # CKEditor 5 DLL builds
 
 The purpose of a DLL build is to allow adding plugins to an editor build without having to rebuild (recompile) the build itself.
 
-So far, the two most common integration methods included:
+Currently, the two most common integration methods included:
 
 * Using pre-compiled builds. This can be either one of the official builds or a custom build. In this case, adding a plugin requires recompiling the entire build.
 * Integrating the editor from source. In this case, if you want to add a plugin, your application needs to be recompiled.
 
-In some advanced use cases, the list of available plugins cannot be limited &mdash; it should be possible to add plugins without any access to Node.js. In other words, plugins should be built (compiled) separately from the editor's core.
+In some advanced use cases, the list of available plugins cannot be limited &ndash; it should be possible to add plugins without any access to Node.js. In other words, plugins should be built (compiled) separately from the editor's core.
 
 This is where the DLL builds come to the rescue.
 
-DLL builds are based on the [DLL webpack](https://webpack.js.org/plugins/dll-plugin/) plugin that provides a CKEditor 5 **base DLL** and a set of **[DLL consumer plugins](https://webpack.js.org/plugins/dll-plugin/#dllreferenceplugin)**.
+DLL builds are based on the [DLL webpack](https://webpack.js.org/plugins/dll-plugin/) plugin that provides a CKEditor&nbsp;5 **base DLL** and a set of **[DLL consumer plugins](https://webpack.js.org/plugins/dll-plugin/#dllreferenceplugin)**.
 
-CKEditor 5 comes with ready-to-use DLL builds. These builds are added to the NPM packages and they are available inside the `/build` directory of each package.
+CKEditor&nbsp;5 comes with ready-to-use DLL builds. These builds are added to the NPM packages and they are available inside the `/build` directory of each package.
 
 <info-box>
-	For simplicity reasons, this guide does not include any collaboration features. If you are interested in adding these features, please check the {@link installation/advanced/dll-builds-collaboration-features DLL builds for CKEditor 5 Collaboration Features} guide after reading this one.
+	For simplicity reasons, this guide does not include any collaboration features. If you are interested in adding these features, please check the {@link installation/advanced/dll-builds-collaboration-features DLL builds for CKEditor&nbsp;5 Collaboration Features} guide after reading this one.
 </info-box>
 
 ## Anatomy of a DLL build
 
 A DLL build of the editor consists of two parts:
 
-* **Base DLL build**. It is a single JavaScript file that combines the contents of several core CKEditor 5 packages: `utils`, `core`, `engine`, `ui`, `clipboard`, `enter`, `paragraph`, `select-all`, `typing`, `undo`, `upload`, `widget`, and `watchdog`. These packages are either the framework core, or are features used by nearly all editor installations. The build is available on NPM in `ckeditor5` package.
+* **Base DLL build**. It is a single JavaScript file that combines the contents of several core CKEditor&nbsp;5 packages: `utils`, `core`, `engine`, `ui`, `clipboard`, `enter`, `paragraph`, `select-all`, `typing`, `undo`, `upload`, `widget`, and `watchdog`. These packages are either the framework core, or are features used by nearly all editor installations. The build is available on NPM in `ckeditor5` package.
 * **DLL-compatible package builds**. Every package that is not part of the base DLL build is built into a DLL-compatible JavaScript file. These DLLs are available on NPM in `@ckeditor/ckeditor5-[FEATURE_NAME]` packages.
 
 In order to load an editor, you need to use the base DLL build plus several DLL-compatible package builds. You will see how to do that later on.
@@ -151,18 +154,18 @@ For example:
 
 ## Live implementation sample
 
-Presented below is a working sample editor using the DLL mechanism. Observe the source and then click **"Result"** to switch to the live view of the working CKEditor 5 instance.
+Presented below is a working sample editor using the DLL mechanism. Observe the source and then click **"Result"** to switch to the live view of the working CKEditor&nbsp;5 instance.
 
 <iframe width="100%" height="850" src="//jsfiddle.net/ckeditor/q7L8rd40/embedded/html,result/dark/" allowfullscreen="allowfullscreen" allowpaymentrequest frameborder="0"></iframe>
 
 ## Localization
 
-All DLL builds use the default (English) translation files. However, a localized version of the the editor can be easily configured.
+All DLL builds use the default (English) translation files. However, a localized version of the editor can be easily configured.
 
 The base DLL build produces translation files for several core packages. The DLL-compatible package builds contain their own translations files per package.
 
 <info-box info>
-	Some of the CKEditor 5 features do not provide translation files as they do not offer UI elements or toolbar items.
+	Some of the CKEditor&nbsp;5 features do not provide translation files as they do not offer UI elements or toolbar items.
 </info-box>
 
 To create an editor with a localized UI, you need to load the necessary translation files (similar to loading DLL builds).

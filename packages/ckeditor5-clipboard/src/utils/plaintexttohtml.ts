@@ -15,6 +15,8 @@
  */
 export default function plainTextToHtml( text: string ): string {
 	text = text
+		// Encode &.
+		.replace( /&/g, '&amp;' )
 		// Encode <>.
 		.replace( /</g, '&lt;' )
 		.replace( />/g, '&gt;' )

@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Galician (https://app.transifex.com/ckeditor/teams/11143/gl/)\n"
 "Language: gl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Name of the special characters plugins, visible in a dropdown and as a button tooltip."
 msgid "Special characters"
@@ -22,51 +23,51 @@ msgstr "Caracteres especiais"
 
 msgctxt "A category name is displayed in a special characters dropdown representing all available symbols."
 msgid "All"
-msgstr ""
+msgstr "Todos"
 
 msgctxt "A category name is displayed in a special characters dropdown representing arrow symbols."
 msgid "Arrows"
-msgstr ""
+msgstr "Frechas"
 
 msgctxt "A category name is displayed in a special characters dropdown representing currency symbols."
 msgid "Currency"
-msgstr ""
+msgstr "Moedas"
 
 msgctxt "A category name is displayed in a special characters dropdown representing latin symbols."
 msgid "Latin"
-msgstr ""
+msgstr "Latinos"
 
 msgctxt "A category name is displayed in a special characters dropdown representing mathematical symbols."
 msgid "Mathematical"
-msgstr ""
+msgstr "Matemáticos"
 
 msgctxt "A category name is displayed in a special characters dropdown representing text symbols."
 msgid "Text"
-msgstr ""
+msgstr "Texto"
 
 msgctxt "A label for the \"leftwards simple arrow\" symbol."
 msgid "leftwards simple arrow"
-msgstr ""
+msgstr "frecha simple cara a esquerda"
 
 msgctxt "A label for the \"rightwards simple arrow\" symbol."
 msgid "rightwards simple arrow"
-msgstr ""
+msgstr "frecha simple cara a dereita"
 
 msgctxt "A label for the \"upwards simple arrow\" symbol."
 msgid "upwards simple arrow"
-msgstr ""
+msgstr "frecha simple cara arriba"
 
 msgctxt "A label for the \"downwards simple arrow\" symbol."
 msgid "downwards simple arrow"
-msgstr ""
+msgstr "frecha simple cara abaixo"
 
 msgctxt "A label for the \"leftwards double arrow\" symbol."
 msgid "leftwards double arrow"
-msgstr "frecha dobre cara á esquerda"
+msgstr "frecha dobre cara a esquerda"
 
 msgctxt "A label for the \"rightwards double arrow\" symbol."
 msgid "rightwards double arrow"
-msgstr "frecha dobre cara á dereita"
+msgstr "frecha dobre cara a dereita"
 
 msgctxt "A label for the \"upwards double arrow\" symbol."
 msgid "upwards double arrow"
@@ -78,11 +79,11 @@ msgstr "frecha dobre cara abaixo"
 
 msgctxt "A label for the \"leftwards dashed arrow\" symbol."
 msgid "leftwards dashed arrow"
-msgstr "frecha de guións cara á esquerda"
+msgstr "frecha de guións cara a esquerda"
 
 msgctxt "A label for the \"rightwards dashed arrow\" symbol."
 msgid "rightwards dashed arrow"
-msgstr "frecha de guións cara á dereita"
+msgstr "frecha de guións cara a dereita"
 
 msgctxt "A label for the \"upwards dashed arrow\" symbol."
 msgid "upwards dashed arrow"
@@ -94,11 +95,11 @@ msgstr "frecha de guións cara abaixo"
 
 msgctxt "A label for the \"leftwards arrow to bar\" symbol."
 msgid "leftwards arrow to bar"
-msgstr "frecha cara á esquerda con tope"
+msgstr "frecha cara a esquerda con tope"
 
 msgctxt "A label for the \"rightwards arrow to bar\" symbol."
 msgid "rightwards arrow to bar"
-msgstr "frecha cara á dereita con tope"
+msgstr "frecha cara a dereita con tope"
 
 msgctxt "A label for the \"upwards arrow to bar\" symbol."
 msgid "upwards arrow to bar"
@@ -114,11 +115,11 @@ msgstr "frecha arriba-abaixo con base"
 
 msgctxt "A label for the \"back with leftwards arrow above\" symbol."
 msgid "back with leftwards arrow above"
-msgstr "cara atrás, coa frecha cara á esquerda enriba"
+msgstr "cara atrás, coa frecha cara a esquerda enriba"
 
 msgctxt "A label for the \"end with leftwards arrow above\" symbol."
 msgid "end with leftwards arrow above"
-msgstr "final, coa frecha cara á esquerda enriba"
+msgstr "final, coa frecha cara a esquerda enriba"
 
 msgctxt "A label for the \"on with exclamation mark with left right arrow above\" symbol."
 msgid "on with exclamation mark with left right arrow above"
@@ -126,7 +127,7 @@ msgstr "activado, con signo de exclamación coa frecha esquerda-dereita enrriba"
 
 msgctxt "A label for the \"soon with rightwards arrow above\" symbol."
 msgid "soon with rightwards arrow above"
-msgstr "logo, coa frecha cara á dereita enriba"
+msgstr "logo, coa frecha cara a dereita enriba"
 
 msgctxt "A label for the \"top with upwards arrow above\" symbol."
 msgid "top with upwards arrow above"

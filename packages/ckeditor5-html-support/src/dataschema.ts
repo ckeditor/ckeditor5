@@ -7,11 +7,11 @@
  * @module html-support/dataschema
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { toArray } from 'ckeditor5/src/utils';
-import defaultConfig from './schemadefinitions';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { toArray } from 'ckeditor5/src/utils.js';
+import defaultConfig from './schemadefinitions.js';
 import { mergeWith } from 'lodash-es';
-import type { AttributeProperties, SchemaItemDefinition } from 'ckeditor5/src/engine';
+import type { AttributeProperties, SchemaItemDefinition } from 'ckeditor5/src/engine.js';
 
 /**
  * Holds representation of the extended HTML document type definitions to be used by the
@@ -302,4 +302,9 @@ export interface DataSchemaInlineElementDefinition extends DataSchemaDefinition 
 	 * in the `htmlTbodyAttributes` model attribute of the `table` model element.
 	 */
 	appliesToBlock?: boolean | string;
+
+	/**
+	 * Indicates that an element should be preserved even if it has no content.
+	 */
+	allowEmpty?: boolean;
 }

@@ -1,12 +1,13 @@
 ---
 category: framework-deep-dive
+meta-title: Observables | CKEditor 5 Framework Documentation
 ---
 
 # Observables
 
 {@link module:utils/observablemixin~Observable Observables} are objects which have properties that can be observed. That means when the value of such property changes, an event is fired by the observable and the change can be reflected in other pieces of the code that listen to that event.
 
-Observables are common building blocks of the {@link framework/index CKEditor 5 Framework}. They are particularly popular in the UI, the {@link module:ui/view~View `View`} class and its subclasses  benefiting from the observable interface the most: it is the {@link framework/architecture/ui-library#interaction templates bound to the observables} what makes the user interface dynamic and interactive. Some of the basic classes like {@link module:core/editor/editor~Editor `Editor`} or {@link module:core/command~Command `Command`} are observables too.
+Observables are common building blocks of the {@link framework/index CKEditor&nbsp;5 Framework}. They are particularly popular in the UI, the {@link module:ui/view~View `View`} class and its subclasses  benefiting from the observable interface the most: it is the {@link framework/architecture/ui-library#interaction templates bound to the observables} what makes the user interface dynamic and interactive. Some of the basic classes like {@link module:core/editor/editor~Editor `Editor`} or {@link module:core/command~Command `Command`} are observables too.
 
 Any class can become observable; all you need to do is mix the {@link module:utils/observablemixin~Observable} into it:
 
@@ -154,15 +155,15 @@ button.isEnabled = false;  // <button class="ck-off ck-disabled" type="button">B
 
 ## Property bindings
 
-One observable can also propagate its state (or part of it) to another observable to simplify the code, e.g. to avoid numerous `change:property` event listeners. To start binding object properties, make sure both objects (classes) mix the {@link module:utils/observablemixin~Observable}, then use the {@link module:utils/observablemixin~Observable#bind `bind()`} method to create the binding.
+One observable can also propagate its state (or part of it) to another observable to simplify the code, for example, to avoid many `change:property` event listeners. To start binding object properties, make sure both objects (classes) mix the {@link module:utils/observablemixin~Observable}, then use the {@link module:utils/observablemixin~Observable#bind `bind()`} method to create the binding.
 
 ### Simple bindings
 
-Let's use our bold button instance from the previous chapter and bind it to the bold command. That will let the button use certain command properties and automate the user interface in just a couple of lines.
+Use the bold button instance from the previous section and bind it to the bold command. That will let the button use certain command properties and automate the user interface in just a couple of lines.
 
 The bold command is an actual command of the editor (registered by the {@link module:basic-styles/bold/boldediting~BoldEditing `BoldEditing`}) and offers two observable properties: `value` and `isEnabled`. To get the command, use `editor.commands.get( 'bold' )`.
 
-Note that both `Button` and {@link module:core/command~Command `Command`} classes are {@link module:utils/observablemixin~Observable observable}, which is why we can bind their properties.
+Note that both `Button` and {@link module:core/command~Command `Command`} classes are {@link module:utils/observablemixin~Observable observable}, which is why you can bind their properties.
 
 ```js
 const button = new Button();
@@ -275,11 +276,11 @@ button.bind( 'isEnabled' ).toMany( commands, 'isEnabled', ( ...areEnabled ) => {
 } );
 ```
 
-This kind of binding can be useful e.g. when a button opens a dropdown containing a number of other commands' buttons and it should be disabled when none of the commands is enabled.
+This kind of binding can be useful, for example, when a button opens a dropdown containing some other commands' buttons and it should be disabled when none of the commands is enabled.
 
 ### Releasing the bindings
 
-If you don't want your object's properties to be bound any longer, you can use the {@link module:utils/observablemixin~Observable#unbind `unbind()`} method.
+If you do not want your object's properties to be bound any longer, you can use the {@link module:utils/observablemixin~Observable#unbind `unbind()`} method.
 
 You can specify the names of the properties to selectively unbind them
 
@@ -316,9 +317,9 @@ button.unbind();
 
 Decorating object methods transforms them into event–driven ones without changing their original behavior.
 
-When a method is decorated, an event of the same name is created and fired each time the method is executed. By listening to the event it is possible to cancel the execution, change the arguments or the value returned by the method. This offers an additional flexibility, e.g. giving a third–party code some way to interact with core classes that decorate their methods.
+When a method is decorated, an event of the same name is created and fired each time the method is executed. By listening to the event it is possible to cancel the execution, change the arguments or the value returned by the method. This offers an additional flexibility, for example, giving a third–party code some way to interact with core classes that decorate their methods.
 
-Decorating is possible using the {@link module:utils/observablemixin~Observable#decorate `decorate()`} method. Let's decorate a `focus` method of a `Button` class we created in the [previous chapters](#making-properties-observable) and see what if offers:
+Decorating is possible using the {@link module:utils/observablemixin~Observable#decorate `decorate()`} method. Decorate a `focus` method of a `Button` class you created in the [previous sections](#making-properties-observable) and see what if offers:
 
 ```js
 class Button extends View {
@@ -353,7 +354,7 @@ class Button extends View {
 
 ### Cancelling the execution
 
-Because the `focus()` method is now event–driven, it can be controlled externally. E.g. the focusing could be stopped for certain arguments. Note the `high` listener {@link module:utils/priorities~PriorityString priority} used to intercept the default action:
+Because the `focus()` method is now event–driven, it can be controlled externally. For example, the focusing could be stopped for certain arguments. Note the `high` listener {@link module:utils/priorities~PriorityString priority} used to intercept the default action:
 
 ```js
 const button = new Button();

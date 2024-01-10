@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Portuguese (Brazil) (https://app.transifex.com/ckeditor/teams/11143/pt_BR/)\n"
 "Language: pt_BR\n"
 "Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "The label used by assistive technologies describing a toolbar attached to a widget."
 msgid "Widget toolbar"

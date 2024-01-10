@@ -1,0 +1,37 @@
+<div class="ck ck-content" id="snippet-abbreviation-plugin">
+    <h2>Abbreviation plugin</h2>
+    <p>CKEditor 5 is a modern, feature-rich, world-class <abbr title="What You See Is What You Get">WYSIWYG</abbr> editor.</p>
+</div>
+
+<style>
+	.formatted abbr:hover::before,
+	.formatted abbr:hover::after {
+		display: none;
+	}
+
+	.ck.ck-abbr-form {
+		padding: var(--ck-spacing-large);
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		grid-template-rows: repeat(3, 1fr);
+		grid-column-gap: 0px;
+		grid-row-gap: var(--ck-spacing-standard);
+	}
+
+	.ck.ck-abbr-form .ck.ck-labeled-field-view:nth-of-type(1) {
+		grid-area: 1 / 1 / 2 / 3;
+	}
+
+	.ck.ck-abbr-form .ck.ck-labeled-field-view:nth-of-type(2) {
+		grid-area: 2 / 1 / 3 / 3;
+	}
+
+	.ck.ck-abbr-form .ck-button:nth-of-type(1) {
+		grid-area: 3 / 1 / 4 / 2;
+	}
+
+	.ck.ck-abbr-form .ck-button:nth-of-type(2) {
+		grid-area: 3 / 2 / 4 / 3;
+	}
+
+</style>

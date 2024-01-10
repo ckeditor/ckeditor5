@@ -7,24 +7,24 @@
  * @module engine/model/documentselection
  */
 
-import TypeCheckable from './typecheckable';
-import LiveRange from './liverange';
+import TypeCheckable from './typecheckable.js';
+import LiveRange from './liverange.js';
 import Selection, {
 	type SelectionChangeAttributeEvent,
 	type SelectionChangeRangeEvent
-} from './selection';
-import Text from './text';
-import TextProxy from './textproxy';
+} from './selection.js';
+import Text from './text.js';
+import TextProxy from './textproxy.js';
 
-import type { default as Document, DocumentChangeEvent } from './document';
-import type { default as Model, ModelApplyOperationEvent } from './model';
-import type { Marker, MarkerCollectionUpdateEvent } from './markercollection';
-import type Batch from './batch';
-import type Element from './element';
-import type Item from './item';
-import type { default as Position, PositionOffset } from './position';
-import type Range from './range';
-import type Schema from './schema';
+import type { default as Document, DocumentChangeEvent } from './document.js';
+import type { default as Model, ModelApplyOperationEvent } from './model.js';
+import type { Marker, MarkerCollectionUpdateEvent } from './markercollection.js';
+import type Batch from './batch.js';
+import type Element from './element.js';
+import type Item from './item.js';
+import type { default as Position, PositionOffset } from './position.js';
+import type Range from './range.js';
+import type Schema from './schema.js';
 
 import {
 	CKEditorError,
@@ -1127,6 +1127,10 @@ class LiveSelection extends Selection {
 		const position = this.getFirstPosition()!;
 		const schema = this._model.schema;
 
+		if ( position.root.rootName == '$graveyard' ) {
+			return null;
+		}
+
 		let attrs = null;
 
 		if ( !this.isCollapsed ) {
@@ -1135,8 +1139,10 @@ class LiveSelection extends Selection {
 
 			// ...look for a first character node in that range and take attributes from it.
 			for ( const value of range ) {
-				// If the item is an object, we don't want to get attributes from its children.
+				// If the item is an object, we don't want to get attributes from its children...
 				if ( value.item.is( 'element' ) && schema.isObject( value.item ) ) {
+					// ...but collect attributes from inline object.
+					attrs = getTextAttributes( value.item, schema );
 					break;
 				}
 
@@ -1237,7 +1243,10 @@ function getTextAttributes( node: Item | null, schema: Schema ): Iterable<[strin
 
 	// Collect all attributes that can be applied to the text node.
 	for ( const [ key, value ] of node.getAttributes() ) {
-		if ( schema.checkAttribute( '$text', key ) ) {
+		if (
+			schema.checkAttribute( '$text', key ) &&
+			schema.getAttributeProperties( key ).copyFromObject !== false
+		) {
 			attributes.push( [ key, value ] );
 		}
 	}

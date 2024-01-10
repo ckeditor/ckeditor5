@@ -5,8 +5,8 @@
 
 /* globals document */
 
-import getAncestors from '../../src/dom/getancestors';
-import createElement from '../../src/dom/createelement';
+import getAncestors from '../../src/dom/getancestors.js';
+import createElement from '../../src/dom/createelement.js';
 
 describe( 'getAncestors', () => {
 	it( 'should return all parents of given node and the node itself, starting from top-most parent', () => {

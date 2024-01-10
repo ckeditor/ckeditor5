@@ -2,11 +2,11 @@
 category: api-reference
 ---
 
-# CKEditor 5 image feature
+# CKEditor&nbsp;5 image feature
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-image.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)
 
-This package implements the image feature for CKEditor 5. The feature is introduced in a granular form implemented by a couple of plugins.
+This package implements the image feature for CKEditor&nbsp;5. The feature is introduced in a granular form implemented by a couple of plugins.
 
 ## Demo
 

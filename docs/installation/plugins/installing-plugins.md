@@ -1,280 +1,251 @@
 ---
 menu-title: Installing plugins
+meta-title: Installing plugins | CKEditor 5 documentation
 category: plugins
 order: 30
 ---
 
 # Installing plugins
 
-CKEditor 5 plugins, responsible for various features, are distributed through [npm](https://www.npmjs.com) packages and are implemented in a modular way, which means that a single plugin may consist of multiple JavaScript files. Don't hesitate and {@link features/index explore available CKEditor 5 features}, they are waiting to be installed!
-
-In this guide you can learn how to add plugins to your editor in the two most common scenarios:
-
-* When you use a {@link installation/getting-started/predefined-builds predefined editor build}.
-* When you {@link framework/quick-start build your editor from source}.
+CKEditor&nbsp;5 plugins, responsible for various features, are distributed through [npm](https://www.npmjs.com) packages. We implemented them modularly. It means a single plugin may contain multiple JavaScript files. Do not hesitate and explore available CKEditor&nbsp;5 features - they are waiting for you to install them!
 
 <info-box hint>
-	If you are looking for an easy way to create a custom build of CKEditor 5 without installing anything, check the [online builder](https://ckeditor.com/ckeditor-5/online-builder/), which allows you to create a build with a custom set of plugins through a simple and intuitive UI.
+	If you are looking for an easy way to create a custom build of CKEditor&nbsp;5 without installing anything, check the [online builder](https://ckeditor.com/ckeditor-5/online-builder/), which allows you to create a build with a custom set of plugins through a simple and intuitive UI.
 </info-box>
 
 ## Requirements
 
-In order to start developing CKEditor 5 you will require:
+To enrich the CKEditor&nbsp;5 by installing plugins, you will require:
 
-* [Node.js](https://nodejs.org/en/) 16.0.0+
-* npm 5.7.1+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
+* [Node.js](https://nodejs.org/en/) 18.0.0+
+* [npm](https://www.npmjs.com/) 5.7.1+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
 
 <info-box warning>
-	When installing CKEditor 5 Framework packages, you need to make sure their versions match the version of the base editor package. For example: if you would like to install the `@ckeditor/ckeditor5-alignment` package and your other packages are outdated, e.g. at version `18.0.0`, you should consider updating your editor and other packages to the latest version or install the alignment package at version `18.0.0`. Otherwise, this will result in [`ckeditor-duplicated-modules error`](https://ckeditor.com/docs/ckeditor5/latest/support/error-codes.html#error-ckeditor-duplicated-modules).
+	When installing CKEditor&nbsp;5 Framework packages, you need to make sure their versions match the version of the base editor package. For example: if you would like to install the `@ckeditor/ckeditor5-alignment` package and your other packages are outdated, like at version `38.0.0`, you should consider updating your editor and all other packages to the latest `{@var ckeditor5-version}` version. You might also install the alignment package at version `38.0.0` (which is not advised, actually). Otherwise, if package versions are different, this will result in an [`ckeditor-duplicated-modules error`](https://ckeditor.com/docs/ckeditor5/latest/support/error-codes.html#error-ckeditor-duplicated-modules).
 
-	The simplest way to avoid such situations is to always use the latest versions of the official packages. If you already stumbled upon this error, you can use [`npm-check-updates`](https://www.npmjs.com/package/npm-check-updates), which is a handy tool for keeping your packages up to date.
+	The simplest way to avoid such situations is to always use the latest `{@var ckeditor5-version}` versions of the official packages. If you already stumbled upon this error, you can use [`npm-check-updates`](https://www.npmjs.com/package/npm-check-updates), which is a handy tool for keeping your packages up to date.
 
-	**NOTE:** The above rule rule does not apply to packages named `@ckeditor/ckeditor5-dev-*`.
+	**NOTE:** The above rule does not apply to packages named `@ckeditor/ckeditor5-dev-*`.
 </info-box>
 
-## Adding a plugin to a build
+If you are here looking for a way to install plugins, there is a chance you have the CKEditor already installed. But if you do not, you have two options: create a custom build with an {@link installation/getting-started/quick-start-other online builder} or {@link installation/advanced/integrating-from-source-webpack integrate the editor from the source}.
 
-Adding plugins to existing, predefined builds is done through their customization. {@link installation/getting-started/predefined-builds Predefined editor builds} are maintained in their respective GitHub repositories. Therefore, assuming that you want to customize the [classic editor build](https://npmjs.com/package/@ckeditor/ckeditor5-build-classic), you need to:
+## Adding a plugin to an editor
 
-1. Clone the build repository.
-2. Install the plugin package.
-3. Add it to the build configuration.
-4. Bundle the build.
+You can start adding plugins if you are in a directory with the CKEditor&nbsp;5 build or the root folder of your application if you are integrating the editor from the source. Every plugin has its corresponding npm package. To install any plugin, you can use this template in a terminal:
 
 ```bash
-git clone -b stable https://github.com/ckeditor/ckeditor5
-
-cd ckeditor5/packages/ckeditor5-build-classic
-npm install
+npm install <plugin-name>
 ```
 
-Now, install the plugin package:
+### Installing a package
+
+Let's say we want to install the alignment package. It adds text alignment functionality to your editor. We can install it using the following command:
 
 ```bash
-npm install --save-dev @ckeditor/ckeditor5-alignment
+npm install @ckeditor/ckeditor5-alignment
 ```
 
-Edit the `src/ckeditor.js` file to add your plugin to the list of plugins which will be included in the build and to add your feature's button to the toolbar:
+The command will install the package and add it to `package.json`. You can also edit `package.json` manually. But remember that all packages (excluding `@ckeditor/ckeditor5-dev-*`) {@link installation/plugins/installing-plugins#requirements must have the same version as the base editor package}.
 
-```js
+<info-box hint>
+	Due to the non-deterministic way how npm installs packages, it is recommended to run `rm -rf node_modules && npm install` when in doubt. This will prevent some packages from getting installed more than once in `node_modules/` (which might lead to broken builds).
+
+	You can also give [Yarn](https://yarnpkg.com/lang/en/) a try.
+</info-box>
+
+### Updating the editor's configuration
+
+To add a plugin to your editor, you need to follow three steps:
+
+1. Import the installed package in the file with the CKEditor configuration.
+2. Add the imported plugin to the list of plugins. There are two ways to achieve that: using the {@link module:core/editor/editor~Editor.builtinPlugins `builtinPlugins`} property or passing a plugin to the {@link module:core/editor/editor~Editor.create `create()`} method. Adding a plugin through the property lets you automatically enable it in all editor instances using this editor class. Passing the plugin to the method will affect only one instance.
+3. Configure the toolbar if the installed plugin requires UI.
+
+```ts
+// <path-to-your-build>/src/ckeditor.ts or file containing editor configuration if you are integrating an editor from source.
+
 // The editor creator to use.
-import { ClassicEditor as ClassicEditorBase } from '@ckeditor/ckeditor5-editor-classic';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 
-import { UploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
+import { Alignment } from '@ckeditor/ckeditor5-alignment';  // Importing the package.
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
-import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Heading } from '@ckeditor/ckeditor5-heading';
-import { Image, ImageCaption, ImageStyle, ImageToolbar, ImageUpload } from '@ckeditor/ckeditor5-image';
-import { Link } from '@ckeditor/ckeditor5-link';
-import { List } from '@ckeditor/ckeditor5-list';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-
-import { Alignment } from '@ckeditor/ckeditor5-alignment'; // <--- ADDED
-
-export default class ClassicEditor extends ClassicEditorBase {}
-
-// Plugins to include in the build.
-ClassicEditor.builtinPlugins = [
-	Essentials,
-	UploadAdapter,
-	Autoformat,
-	Bold,
-	Italic,
-	BlockQuote,
-	EasyImage,
-	Heading,
+import {
 	Image,
 	ImageCaption,
 	ImageStyle,
 	ImageToolbar,
-	ImageUpload,
-	Link,
-	List,
-	Paragraph,
-	Alignment                                                            // <--- ADDED
-];
+	ImageUpload
+} from '@ckeditor/ckeditor5-image';
+import { Indent } from '@ckeditor/ckeditor5-indent';
+import { Link } from '@ckeditor/ckeditor5-link';
+import { List } from '@ckeditor/ckeditor5-list';
+import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office';
+import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
+import { TextTransformation } from '@ckeditor/ckeditor5-typing';
 
-// Editor configuration.
-ClassicEditor.defaultConfig = {
-	toolbar: {
-		items: [
-			'heading',
-			'|',
-			'alignment',                                                 // <--- ADDED
-			'bold',
-			'italic',
-			'link',
-			'bulletedList',
-			'numberedList',
-			'uploadImage',
-			'blockQuote',
-			'undo',
-			'redo'
-		]
-	},
-	image: {
-		toolbar: [
-			'imageStyle:inline',
-			'imageStyle:block',
-			'imageStyle:side',
-			'|',
-			'toggleImageCaption',
-			'imageTextAlternative'
-		]
-	},
-	// This value must be kept in sync with the language defined in webpack.config.js.
-	language: 'en'
-};
+
+
+class Editor extends ClassicEditor {
+	public static override builtinPlugins = [
+		Alignment,  // Adding the package to the list of plugins.
+		Autoformat,
+		BlockQuote,
+		Bold,
+		CloudServices,
+		Essentials,
+		Heading,
+		Image,
+		ImageCaption,
+		ImageStyle,
+		ImageToolbar,
+		ImageUpload,
+		Indent,
+		Italic,
+		Link,
+		List,
+		MediaEmbed,
+		Paragraph,
+		PasteFromOffice,
+		Table,
+		TableToolbar,
+		TextTransformation
+	];
+
+	// Editor configuration.
+	public static override defaultConfig = {
+		toolbar: {
+			items: [
+				'alignment',  // Displaying the proper UI element in the toolbar.
+				'heading',
+				'|',
+				'bold',
+				'italic',
+				'link',
+				'bulletedList',
+				'numberedList',
+				'|',
+				'outdent',
+				'indent',
+				'|',
+				'imageUpload',
+				'blockQuote',
+				'insertTable',
+				'mediaEmbed',
+				'undo',
+				'redo'
+			]
+		},
+		language: 'en',
+		image: {
+			toolbar: [
+				'imageTextAlternative',
+				'toggleImageCaption',
+				'imageStyle:inline',
+				'imageStyle:block',
+				'imageStyle:side'
+			]
+		},
+		table: {
+			contentToolbar: [
+				'tableColumn',
+				'tableRow',
+				'mergeTableCells'
+			]
+		}
+	};
+}
+
+export default Editor;
 ```
 
-Finally, bundle the build:
+### Building an editor
+
+If you are using builds you need to rebuild your editor. To do that, call the `webpack` executable in a folder containing your build:
 
 ```bash
-yarn run build
+./node_modules/.bin/webpack --mode development
 ```
 
-If everything worked, the editor build (which is available in the `build/` directory) should be updated.
+You can also install `webpack-cli` globally (using `npm install -g`) and run it via a globally available `webpack`.
 
-You can open the `sample/index.html` file in your browser to see whether the plugin was installed correctly.
+Alternatively, you can add it as an [npm script](https://docs.npmjs.com/misc/scripts):
 
-This was a quick version of how a build can be customized. Read more about {@link installation/getting-started/quick-start-other customizing existing editor builds} in a separate guide.
+```json
+// package.json
 
-## Adding a plugin to an editor
+"scripts": {
+	"build": "webpack --mode development"
+}
+```
 
-If you {@link framework/quick-start build the editor from source}, then the process of installing a new plugin boils down to these three steps:
-
-1. Installing the plugin package.
-2. Adding it to your editor's configuration.
-3. Building your project.
-
-For example, if you wish to install the text alignment feature:
+And use it with:
 
 ```bash
-npm install --save-dev @ckeditor/ckeditor5-alignment
+npm run build
 ```
 
-Edit the code that initializes the editor:
+If you are integrating an editor from the source into your application, then this step should be handled by build scripts used in your project.
 
-```js
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+## Adding an unofficial JavaScript plugin
 
-import { Alignment } from '@ckeditor/ckeditor5-alignment';     // <--- ADDED
+The CKEditor&nbsp;5 is a TypeScript project, and all plugins provided by CKEditor&nbsp;5 also use TypeScript. However, there are ways to use JavaScript packages with the editor.
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Essentials, Paragraph, Bold, Italic, Alignment ],     // <--- MODIFIED
-		toolbar: [ 'bold', 'italic', 'alignment' ]                       // <--- MODIFIED
-	} )
-	.then( editor => {
-		console.log( 'Editor was initialized', editor );
-	} )
-	.catch( error => {
-		console.error( error.stack );
-	} );
+### Community types
+
+Even if the package you want to use is in JavaScript, there is a chance there are already types you can use. [Definitely Typed](https://github.com/DefinitelyTyped/DefinitelyTyped) is a central repository of TypeScript definitions for non-typed npm packages. To install community types for your JavaScript package, try the following command:
+
+```bash
+npm install --save-dev @types/<package-name>
 ```
 
-After rebuilding your project, the new feature will be available in the editor.
+If you successfully installed those types, there is nothing more to do. You should no longer see TypeScript compiler errors, and your project should be ready to be built.
 
-<info-box warning>
-	One of the possible mistakes is trying to add a plugin in this way to an existing (bundled) editor build. Installing an existing build and then trying to add a plugin to it may not work if that plugin needs to import any of the source editor modules.
+### Custom declarations
 
-	The reason why this method will not work is that dependencies of the added plugin may duplicate the code already bundled in the used editor build. In the best scenario, this is going to raise the overall code size. In the worst scenario, an application built this way may be unstable.
-</info-box>
+If you create a custom plugin, community types will not be available. In that case, you need to add your custom definitions.
 
-## Difference between both methods
+First, create a declaration file `.d.ts` in your project. For example, you can place it in `types/index.d.ts`. Then inside the file, define the module as shown in the example below.
 
-What is the difference between adding a plugin to an editor build and adding a plugin by passing the `config.plugins` option to the static `create()` method?
+```ts
+// index.d.ts
 
-The first method builds the plugin into the editor class. This means that you can then initialize the editor without passing `config.plugins` at all and the editor will automatically enable all built-in plugins:
-
-```js
-// Assuming you use e.g. webpack which can load UMD modules by using ES6 syntax.
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		// Look, ma! No plugins!
-	} )
-	.then( editor => {
-		console.log( 'Editor was initialized', editor );
-	} )
-	.catch( error => {
-		console.error( error.stack );
-	} );
+declare module 'path' { // Module name.
+  export function normalize( p: string ): string; // API exposed by the module.
+  export function join( ...paths: any[] ): string;
+}
 ```
 
-All this works because a typical `src/ckeditor.js` module that you can find in every editor build repository (see for example [`@ckeditor/ckeditor5-build-classic`](https://github.com/ckeditor/ckeditor5-build-classic/blob/stable/src/ckeditor.js)) looks like this:
+Finally, make sure the TypeScript compiler is aware of your declarations. Put the path to the directory with your file inside the `include` array.
 
-```js
-import { ClassicEditor as ClassicEditorBase } from '@ckeditor/ckeditor5-editor-classic';
-import { UploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
-import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
-import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
-import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-// Rest of the imports.
-// ...
+```json
+// tsconfig.json
 
-export default class ClassicEditor extends ClassicEditorBase {}
-
-ClassicEditor.builtinPlugins = [
-	Essentials,
-	UploadAdapter,
-	Autoformat,
-	Bold,
-	Italic,
-	BlockQuote,
-	// Rest of plugins to include in the build.
+{
+	"include": [ "./src", "./types" ],
+	"compilerOptions": {
+		// Compiler options.
+		// ...
+	}
+	// More options.
 	// ...
-];
-
-ClassicEditor.defaultConfig = {
-	toolbar: {
-		items: [
-			'heading',
-			'bold',
-			// Remaining toolbar items.
-			// ...
-		]
-	},
-	// Rest of classic editor configuration. 
-	// ...
-};
+}
 ```
 
-This code imports the source of the classic editor and extends it with a static `builtinPlugins` and `defaultConfig` properties where it defines a set of plugins and configuration to be used by this editor class.
+### Suppressing errors
 
-In this approach, all editor instances created by using this editor build will by default load all these built-in plugins and configuration.
+If there are no community types and creating declarations is not an option, there is still a way to build a TypeScript project with a JavaScript package. Just add a reserved TypeScript comment above the JavaScript package.
 
-<info-box>
-	You can still use the {@link module:core/editor/editorconfig~EditorConfig#removePlugins `config.removePlugins`} and {@link module:core/editor/editorconfig~EditorConfig#plugins `config.plugins`} options to override the default configuration.
-</info-box>
-
-When building the editor from source and not using a build as a base, you can also use the static `builtinPlugins` and `defaultConfig` properties of editor classes. However, in this situation it is usually more convenient to simply pass all the plugins directly to the static `create()` method:
-
-```js
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Essentials, Paragraph, Bold, Italic ],
-		toolbar: [ 'bold', 'italic' ]
-	} )
-	.then( editor => {
-		console.log( 'Editor was initialized', editor );
-	} )
-	.catch( error => {
-		console.error( error.stack );
-	} );
+```ts
+// @ts-ignore
+import { foo } from 'javascript-package';
 ```
 
-So, in short, both methods use very similar mechanisms. However, adding a plugin through the static `builtinPlugins` property (which happens in editor builds) lets you automatically enable it in all editor instances created using this editor class, while passing a plugin to `create()` will naturally affect only one instance.
+This comment suppresses all errors that originate on the following line.

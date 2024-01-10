@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Command from '../src/command';
-import ModelTestEditor from './_utils/modeltesteditor';
+import Command from '../src/command.js';
+import ModelTestEditor from './_utils/modeltesteditor.js';
 
 describe( 'Command', () => {
 	let editor, command;
@@ -70,7 +70,7 @@ describe( 'Command', () => {
 			expect( spy.calledOnce ).to.be.true;
 		} );
 
-		it( 'is falsy when the editor is in read-only mode and command affects data', () => {
+		it( 'is false when the editor is in read-only mode and command affects data', () => {
 			command.affectsData = true;
 			command.isEnabled = true;
 
@@ -110,7 +110,7 @@ describe( 'Command', () => {
 			expect( command.isEnabled ).to.true;
 		} );
 
-		it( 'should disable commands when selection is in non-editable place and _isEnabledBasedOnSelection is true', () => {
+		it( 'should disable command when selection is in non-editable place and `isEnabled` bases on selection', () => {
 			command.isEnabled = true;
 			command.affectsData = true;
 			command._isEnabledBasedOnSelection = true;
@@ -121,13 +121,37 @@ describe( 'Command', () => {
 			expect( command.isEnabled ).to.be.false;
 		} );
 
-		it( 'should not disable commands when selection is in non-editable place, but _isEnabledBasedOnSelection is false', () => {
+		it( 'should not disable command when selection is in non-editable place and `isEnabled` bases on selection', () => {
 			command.isEnabled = true;
 			command.affectsData = true;
 			command._isEnabledBasedOnSelection = false;
 
 			editor.model.document.isReadOnly = true;
 			command.refresh();
+
+			expect( command.isEnabled ).to.be.true;
+		} );
+
+		it( 'should disable command if the selection is in graveyard and and `isEnabled` bases on selection', () => {
+			command.isEnabled = true;
+			command.affectsData = true;
+			command._isEnabledBasedOnSelection = true;
+
+			editor.model.change( writer => {
+				writer.detachRoot( 'main' );
+			} );
+
+			expect( command.isEnabled ).to.be.false;
+		} );
+
+		it( 'should not disable command if the selection is in graveyard and and `isEnabled` bases on selection', () => {
+			command.isEnabled = true;
+			command.affectsData = true;
+			command._isEnabledBasedOnSelection = false;
+
+			editor.model.change( writer => {
+				writer.detachRoot( 'main' );
+			} );
 
 			expect( command.isEnabled ).to.be.true;
 		} );

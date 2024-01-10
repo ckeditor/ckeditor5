@@ -7,9 +7,9 @@
  * @module basic-styles/bold
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import BoldEditing from './bold/boldediting';
-import BoldUI from './bold/boldui';
+import { Plugin } from 'ckeditor5/src/core.js';
+import BoldEditing from './bold/boldediting.js';
+import BoldUI from './bold/boldui.js';
 
 /**
  * The bold feature.

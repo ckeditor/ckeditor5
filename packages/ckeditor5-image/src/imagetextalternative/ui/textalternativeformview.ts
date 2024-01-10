@@ -16,9 +16,9 @@ import {
 	createLabeledInputText,
 	submitHandler,
 	type InputView
-} from 'ckeditor5/src/ui';
-import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
-import { icons } from 'ckeditor5/src/core';
+} from 'ckeditor5/src/ui.js';
+import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
+import { icons } from 'ckeditor5/src/core.js';
 
 import '../../../theme/textalternativeform.css';
 
@@ -195,3 +195,23 @@ export default class TextAlternativeFormView extends View {
 		return labeledInput;
 	}
 }
+
+/**
+ * Fired when the form view is submitted.
+ *
+ * @eventName ~TextAlternativeFormView#submit
+ */
+export type TextAlternativeFormViewSubmitEvent = {
+	name: 'submit';
+	args: [];
+};
+
+/**
+ * Fired when the form view is canceled.
+ *
+ * @eventName ~TextAlternativeFormView#cancel
+ */
+export type TextAlternativeFormViewCancelEvent = {
+	name: 'cancel';
+	args: [];
+};

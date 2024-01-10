@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Chinese (China) (https://app.transifex.com/ckeditor/teams/11143/zh_CN/)\n"
 "Language: zh_CN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Title of the CKEditor5 editor."
 msgid "Rich Text Editor"
@@ -27,6 +28,14 @@ msgstr "编辑器编辑区域：%0"
 msgctxt "Label of the block toolbar icon (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
 msgid "Edit block"
 msgstr "编辑框"
+
+msgctxt "First part of the label of the block toolbar icon when functionality of drag and drop is available (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
+msgid "Click to edit block"
+msgstr "单击以编辑块"
+
+msgctxt "Second part of the label of the block toolbar icon when functionality of drag and drop is available (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
+msgid "Drag to move"
+msgstr "拖拽以移动"
 
 msgctxt "Label for a button showing the next thing (tab, page, etc.)."
 msgid "Next"
@@ -114,4 +123,16 @@ msgstr "编辑器上下文工具栏"
 
 msgctxt "Label of an input field for typing colors in the HEX color format."
 msgid "HEX"
-msgstr ""
+msgstr "十六进制"
+
+msgctxt "Label of the button closing the color picker and confirming the changes done in the color selector component."
+msgid "Accept"
+msgstr "接受"
+
+msgctxt "The main text of the message shown to the user when given query does not match any results."
+msgid "No results found"
+msgstr "未找到结果"
+
+msgctxt "The main text of the message shown to the user when no results are available."
+msgid "No searchable items"
+msgstr "没有可搜索的项目"

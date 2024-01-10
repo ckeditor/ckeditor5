@@ -1,6 +1,7 @@
 ---
 category: features-image-upload
 menu-title: Simple upload adapter
+meta-title: Simple upload adapter | CKEditor 5 Documentation
 order: 60
 ---
 
@@ -74,18 +75,18 @@ ClassicEditor
 
 The allowed file types that can be uploaded should be configured in two places:
 
-* On the client side, in CKEditor 5, restricting image upload through the CKEditor 5 UI and commands.
+* On the client side, in CKEditor&nbsp;5, restricting image upload through the CKEditor&nbsp;5 UI and commands.
 * On the server side, in your server-side application configuration.
 
 #### Client-side configuration
 
-Use the {@link module:image/imageconfig~ImageUploadConfig#types `image.upload.types`} configuration option to define the allowed image MIME types that can be uploaded to CKEditor 5.
+Use the {@link module:image/imageconfig~ImageUploadConfig#types `image.upload.types`} configuration option to define the allowed image MIME types that can be uploaded to CKEditor&nbsp;5.
 
 By default, users are allowed to upload `jpeg`, `png`, `gif`, `bmp`, `webp`, and `tiff` files, but you can customize this behavior to accept, for example, SVG files.
 
 #### Server-side configuration
 
-It is up to you to implement any filtering mechanisms on your server in order to restrict the types of images that are allowed to be uploaded.
+It is up to you to implement any filtering mechanisms on your server to restrict the types of images that are allowed to be uploaded.
 
 ## Server-side configuration
 
@@ -95,9 +96,9 @@ To use this upload adapter, you must provide a server-side application that will
 
 When the image upload process is initiated, the adapter sends a [`POST`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST) request under {@link module:upload/uploadconfig~SimpleUploadConfig#uploadUrl `config.simpleUpload.uploadUrl`}.
 
-You can send additional [headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers) along with the `XMLHttpRequest` to the upload server, e.g. to authenticate the user, using the {@link module:upload/uploadconfig~SimpleUploadConfig#uploadUrl `config.simpleUpload.headers`} object.
+You can send additional [headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers) along with the `XMLHttpRequest` to the upload server, for example, to authenticate the user, using the {@link module:upload/uploadconfig~SimpleUploadConfig#uploadUrl `config.simpleUpload.headers`} object.
 
-If you use the {@link module:upload/uploadconfig~SimpleUploadConfig#withCredentials `config.simpleUpload.withCredentials`} configuration, you may need some [extra HTTP headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) for the cross-site request to work properly.
+If you use the {@link module:upload/uploadconfig~SimpleUploadConfig#withCredentials `config.simpleUpload.withCredentials`} configuration, you may need some [extra HTTP headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) for the cross-site request to work.
 
 The [`responseType`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/responseType) of the request is always `json`. See the [Successful upload](#successful-upload) and [Error handling](#error-handling) sections to learn more.
 
@@ -135,7 +136,7 @@ The URL(s) in the server response are used:
 
 ### Error handling
 
-If something went wrong, the server must return an object that contains the `error` property. This will terminate the upload in the editor, e.g. allowing the user to select another image if the previous one was too big or did not meet some other validation criteria.
+If something went wrong, the server must return an object that contains the `error` property. This will cancel the upload in the editor, for example, allowing the user to select another image if the previous one was too big or did not meet some other validation criteria.
 
 If the `error` object contains a `message`, it will be passed to the {@link module:ui/notification/notification~Notification#showWarning editor notification system} and displayed to the user. For the convenience of the users, use clear and possibly specific error messages.
 
@@ -147,7 +148,7 @@ If the `error` object contains a `message`, it will be passed to the {@link modu
 }
 ```
 
-If the `message` property is missing in the `error` object, the {@link module:ui/notification/notification~Notification#showWarning editor notification system} will display the default "Couldn't upload file: `[filename]`." message.
+If the `message` property is missing in the `error` object, the {@link module:ui/notification/notification~Notification#showWarning editor notification system} will display the default "Could not upload file: `[filename]`." message.
 
 ### Upload progress
 
@@ -155,9 +156,9 @@ This upload adapter will notify users about the [file upload progress](https://d
 
 ## What's next?
 
-Check out the comprehensive {@link features/image-upload Image upload overview} to learn more about different ways of uploading images in CKEditor 5.
+Check out the comprehensive {@link features/image-upload Image upload overview} to learn more about different ways of uploading images in CKEditor&nbsp;5.
 
-See the {@link features/images-overview Image feature guide} to find out more about handling images in CKEditor 5 WYSIWYG editor.
+See the {@link features/images-overview Image feature guide} to find out more about handling images in CKEditor&nbsp;5 WYSIWYG editor.
 
 ## Contribute
 

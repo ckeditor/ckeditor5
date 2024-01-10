@@ -8,29 +8,34 @@
 import { Superscript } from '@ckeditor/ckeditor5-basic-styles';
 import { IndentBlock } from '@ckeditor/ckeditor5-indent';
 import { TableProperties, TableCellProperties, TableCaption, TableColumnResize } from '@ckeditor/ckeditor5-table';
-import { FontSize, FontFamily } from '@ckeditor/ckeditor5-font';
+import { FontSize, FontFamily, FontColor } from '@ckeditor/ckeditor5-font';
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
-import { PictureEditing, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
+import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
+import { PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
 import { LinkImage } from '@ckeditor/ckeditor5-link';
 
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
-import ClassicEditor from '../build-classic';
+import ClassicEditor from '../build-classic.js';
 
-ClassicEditor.builtinPlugins.push( FontFamily, FontSize, Alignment, IndentBlock, PictureEditing, ImageResize, AutoImage, LinkImage, CKBox );
+ClassicEditor.builtinPlugins.push( FontFamily, FontSize, FontColor, Alignment, IndentBlock, PictureEditing,
+	ImageResize, ImageInsert, AutoImage, LinkImage, CKBox, CKBoxImageEdit );
 ClassicEditor.defaultConfig = {
 	cloudServices: CS_CONFIG,
 	toolbar: {
 		items: [
 			'undo', 'redo',
-			'|', 'heading', '|', 'fontFamily', 'fontSize',
+			'|', 'heading', '|', 'fontFamily', 'fontSize', 'fontColor',
 			'|', 'bold', 'italic',
-			'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+			'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed',
 			'|', 'alignment',
 			'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 		]
+	},
+	ckbox: {
+		allowExternalImagesEditing: [ /^data:/, 'origin' ],
+		forceDemoLabel: true
 	},
 	ui: {
 		viewportOffset: {

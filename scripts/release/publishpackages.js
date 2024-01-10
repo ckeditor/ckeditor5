@@ -16,6 +16,7 @@ const { Listr } = require( 'listr2' );
 const validateDependenciesVersions = require( './utils/validatedependenciesversions' );
 const parseArguments = require( './utils/parsearguments' );
 const { CKEDITOR5_ROOT_PATH, RELEASE_DIRECTORY } = require( './utils/constants' );
+const getListrOptions = require( './utils/getlistroptions' );
 
 const cliArguments = parseArguments( process.argv.slice( 2 ) );
 
@@ -43,7 +44,7 @@ const tasks = new Listr( [
 				npmTag: cliArguments.npmTag,
 				listrTask: task,
 				confirmationCallback: () => {
-					if ( cliArguments.nightly ) {
+					if ( cliArguments.ci ) {
 						return true;
 					}
 
@@ -71,7 +72,11 @@ const tasks = new Listr( [
 						// Like in defaults, this package does not define features.
 						'ckeditor5-metadata.json'
 					]
-				}
+				},
+				requireEntryPoint: true,
+				optionalEntryPointPackages: [
+					'ckeditor5'
+				]
 			} );
 		},
 		retry: 3
@@ -84,6 +89,7 @@ const tasks = new Listr( [
 				version: latestVersion
 			} );
 		},
+		// Nightly releases are not stored in the repository.
 		skip: cliArguments.nightly
 	},
 	{
@@ -100,13 +106,16 @@ const tasks = new Listr( [
 		options: {
 			persistentOutput: true
 		},
+		// Nightly releases are not described in the changelog.
 		skip: cliArguments.nightly
 	}
-] );
+], getListrOptions( cliArguments ) );
 
 ( async () => {
 	try {
-		if ( !cliArguments.nightly ) {
+		if ( process.env.CKE5_RELEASE_TOKEN ) {
+			githubToken = process.env.CKE5_RELEASE_TOKEN;
+		} else if ( !cliArguments.nightly ) {
 			githubToken = await provideToken();
 		}
 

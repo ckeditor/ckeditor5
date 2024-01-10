@@ -7,20 +7,20 @@
  * @module engine/model/schema
  */
 
-import Element from './element';
-import Position from './position';
-import Range from './range';
-import Text from './text';
-import TreeWalker from './treewalker';
+import Element from './element.js';
+import Position from './position.js';
+import Range from './range.js';
+import Text from './text.js';
+import TreeWalker from './treewalker.js';
 
-import type DocumentFragment from './documentfragment';
-import type DocumentSelection from './documentselection';
-import type Item from './item';
-import type Node from './node';
-import type Selection from './selection';
-import type Writer from './writer';
+import type DocumentFragment from './documentfragment.js';
+import type DocumentSelection from './documentselection.js';
+import type Item from './item.js';
+import type Node from './node.js';
+import type Selection from './selection.js';
+import type Writer from './writer.js';
 
-import { CKEditorError, ObservableMixin } from '@ckeditor/ckeditor5-utils';
+import { CKEditorError, first, ObservableMixin } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The model's schema. It defines the allowed and disallowed structures of nodes as well as nodes' attributes.
@@ -375,7 +375,7 @@ export default class Schema extends ObservableMixin() {
 	 * ```
 	 *
 	 * Note: When verifying whether the given node can be a child of the given context, the
-	 * schema also verifies the entire context &mdash; from its root to its last element. Therefore, it is possible
+	 * schema also verifies the entire context &ndash; from its root to its last element. Therefore, it is possible
 	 * for `checkChild()` to return `false` even though the context's last element can contain the checked child.
 	 * It happens if one of the context's elements does not allow its child.
 	 *
@@ -421,7 +421,7 @@ export default class Schema extends ObservableMixin() {
 	/**
 	 * Checks whether the given element (`elementToMerge`) can be merged with the specified base element (`positionOrBaseElement`).
 	 *
-	 * In other words &mdash; whether `elementToMerge`'s children {@link #checkChild are allowed} in the `positionOrBaseElement`.
+	 * In other words &ndash; whether `elementToMerge`'s children {@link #checkChild are allowed} in the `positionOrBaseElement`.
 	 *
 	 * This check ensures that elements merged with {@link module:engine/model/writer~Writer#merge `Writer#merge()`}
 	 * will be valid.
@@ -760,6 +760,12 @@ export default class Schema extends ObservableMixin() {
 	 * @returns Nearest selection range or `null` if one cannot be found.
 	 */
 	public getNearestSelectionRange( position: Position, direction: 'both' | 'forward' | 'backward' = 'both' ): Range | null {
+		if ( position.root.rootName == '$graveyard' ) {
+			// No valid selection range in the graveyard.
+			// This is important when getting the document selection default range.
+			return null;
+		}
+
 		// Return collapsed range if provided position is valid.
 		if ( this.checkChild( position, '$text' ) ) {
 			return new Range( position );
@@ -1007,6 +1013,63 @@ export default class Schema extends ObservableMixin() {
 		if ( !start.isEqual( end ) ) {
 			yield new Range( start, end );
 		}
+	}
+
+	/**
+	 * Returns a model range which is optimal (in terms of UX) for inserting a widget block.
+	 *
+	 * For instance, if a selection is in the middle of a paragraph, the collapsed range before this paragraph
+	 * will be returned so that it is not split. If the selection is at the end of a paragraph,
+	 * the collapsed range after this paragraph will be returned.
+	 *
+	 * Note: If the selection is placed in an empty block, the range in that block will be returned. If that range
+	 * is then passed to {@link module:engine/model/model~Model#insertContent}, the block will be fully replaced
+	 * by the inserted widget block.
+	 *
+	 * @internal
+	 * @param selection The selection based on which the insertion position should be calculated.
+	 * @param place The place where to look for optimal insertion range.
+	 * The `auto` value will determine itself the best position for insertion.
+	 * The `before` value will try to find a position before selection.
+	 * The `after` value will try to find a position after selection.
+	 * @returns The optimal range.
+	 */
+	public findOptimalInsertionRange(
+		selection: Selection | DocumentSelection,
+		place?: 'auto' | 'before' | 'after'
+	): Range {
+		const selectedElement = selection.getSelectedElement();
+
+		if ( selectedElement && this.isObject( selectedElement ) && !this.isInline( selectedElement ) ) {
+			if ( place == 'before' || place == 'after' ) {
+				return new Range( Position._createAt( selectedElement, place ) );
+			}
+
+			return Range._createOn( selectedElement );
+		}
+
+		const firstBlock = first( selection.getSelectedBlocks() );
+
+		// There are no block elements within ancestors (in the current limit element).
+		if ( !firstBlock ) {
+			return new Range( selection.focus! );
+		}
+
+		// If inserting into an empty block – return position in that block. It will get
+		// replaced with the image by insertContent(). #42.
+		if ( firstBlock.isEmpty ) {
+			return new Range( Position._createAt( firstBlock, 0 ) );
+		}
+
+		const positionAfter = Position._createAfter( firstBlock );
+
+		// If selection is at the end of the block - return position after the block.
+		if ( selection.focus!.isTouching( positionAfter ) ) {
+			return new Range( positionAfter );
+		}
+
+		// Otherwise, return position before the block.
+		return new Range( Position._createBefore( firstBlock ) );
 	}
 }
 
@@ -1484,7 +1547,7 @@ interface SchemaCompiledItemDefinitionInternal {
 type TypeNames = Array<'isBlock' | 'isContent' | 'isInline' | 'isLimit' | 'isObject' | 'isSelectable'>;
 
 /**
- * A schema context &mdash; a list of ancestors of a given position in the document.
+ * A schema context &ndash; a list of ancestors of a given position in the document.
  *
  * Considering such position:
  *
@@ -1764,12 +1827,24 @@ export interface AttributeProperties {
 	 */
 	copyOnEnter?: boolean;
 
+	/**
+	 * Indicates that given attribute should be preserved while replacing the element.
+	 */
+	copyOnReplace?: boolean;
+
+	/**
+	 * Indicates that given text attribute should be copied from an inline object to the next inserted inline content.
+	 *
+	 * @default true
+	 */
+	copyFromObject?: boolean;
+
 	[ name: string ]: unknown;
 }
 
-export type SchemaAttributeCheckCallback = ( context: SchemaContext, attributeName: string ) => unknown;
+export type SchemaAttributeCheckCallback = ( context: SchemaContext, attributeName: string ) => boolean | undefined;
 
-export type SchemaChildCheckCallback = ( ctx: SchemaContext, def: SchemaCompiledItemDefinition ) => unknown;
+export type SchemaChildCheckCallback = ( context: SchemaContext, definition: SchemaCompiledItemDefinition ) => boolean | undefined;
 
 function compileBaseItemRule( sourceItemRules: Array<SchemaItemDefinition>, itemName: string ): SchemaCompiledItemDefinitionInternal {
 	const itemRule = {

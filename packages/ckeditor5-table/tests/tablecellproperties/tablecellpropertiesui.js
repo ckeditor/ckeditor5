@@ -5,24 +5,24 @@
 
 /* globals document, Event */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import { getData as getModelData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import { getData as getModelData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import Undo from '@ckeditor/ckeditor5-undo/src/undo';
-import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
+import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
+import Batch from '@ckeditor/ckeditor5-engine/src/model/batch.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon.js';
 
-import Table from '../../src/table';
-import TableCellPropertiesEditing from '../../src/tablecellproperties/tablecellpropertiesediting';
-import TableCellWidthEditing from '../../src/tablecellwidth/tablecellwidthediting';
-import TableCellPropertiesUI from '../../src/tablecellproperties/tablecellpropertiesui';
-import TableCellPropertiesUIView from '../../src/tablecellproperties/ui/tablecellpropertiesview';
-import { defaultColors } from '../../src/utils/ui/table-properties';
-import { modelTable } from '../_utils/utils';
+import Table from '../../src/table.js';
+import TableCellPropertiesEditing from '../../src/tablecellproperties/tablecellpropertiesediting.js';
+import TableCellWidthEditing from '../../src/tablecellwidth/tablecellwidthediting.js';
+import TableCellPropertiesUI from '../../src/tablecellproperties/tablecellpropertiesui.js';
+import TableCellPropertiesUIView from '../../src/tablecellproperties/ui/tablecellpropertiesview.js';
+import { defaultColors } from '../../src/utils/ui/table-properties.js';
+import { modelTable } from '../_utils/utils.js';
 
 describe( 'table cell properties', () => {
 	describe( 'TableCellPropertiesUI', () => {

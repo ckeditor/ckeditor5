@@ -20,13 +20,17 @@ ClassicEditor
 				top: window.getViewportTopOffsetConfig()
 			}
 		},
+		ckbox: {
+			allowExternalImagesEditing: [ /^data:/, 'origin' ],
+			forceDemoLabel: true
+		},
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
 				'undo', 'redo',
 				'|', 'heading',
 				'|', 'bold', 'italic',
-				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
@@ -70,7 +74,7 @@ ClassicEditor
 				title: 'Style',
 				items: [ 'imageStyle:block', 'imageStyle:side' ],
 				defaultItem: 'imageStyle:block'
-			}, '|', 'toggleImageCaption', 'linkImage'
+			}, '|', 'toggleImageCaption', 'linkImage', '|', 'ckboxImageEdit'
 			]
 		}
 	} )

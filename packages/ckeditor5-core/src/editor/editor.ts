@@ -26,13 +26,13 @@ import {
 
 import type { EditorUI } from '@ckeditor/ckeditor5-ui';
 
-import Context from '../context';
-import PluginCollection from '../plugincollection';
-import CommandCollection, { type CommandsMap } from '../commandcollection';
-import EditingKeystrokeHandler from '../editingkeystrokehandler';
+import Context from '../context.js';
+import PluginCollection from '../plugincollection.js';
+import CommandCollection, { type CommandsMap } from '../commandcollection.js';
+import EditingKeystrokeHandler from '../editingkeystrokehandler.js';
 
-import type { LoadedPlugins, PluginConstructor } from '../plugin';
-import type { EditorConfig } from './editorconfig';
+import type { LoadedPlugins, PluginConstructor } from '../plugin.js';
+import type { EditorConfig } from './editorconfig.js';
 
 /**
  * The class representing a basic, generic editor.
@@ -564,7 +564,7 @@ export default abstract class Editor extends ObservableMixin() {
 	 * * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`}
 	 * * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`}
 	 */
-	public static create( ...args: Array<unknown> ): void {
+	public static create( ...args: Array<unknown> ): void { // eslint-disable-line @typescript-eslint/no-unused-vars
 		throw new Error( 'This is an abstract method.' );
 	}
 }

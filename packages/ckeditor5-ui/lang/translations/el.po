@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Greek (https://app.transifex.com/ckeditor/teams/11143/el/)\n"
 "Language: el\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Title of the CKEditor5 editor."
 msgid "Rich Text Editor"
@@ -27,6 +28,14 @@ msgstr "Περιοχή επεξεργασίας προγράμματος επε�
 msgctxt "Label of the block toolbar icon (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
 msgid "Edit block"
 msgstr "Επεξεργασία τμήματος"
+
+msgctxt "First part of the label of the block toolbar icon when functionality of drag and drop is available (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
+msgid "Click to edit block"
+msgstr "Κάντε κλικ για να επεξεργαστείτε το μπλοκ"
+
+msgctxt "Second part of the label of the block toolbar icon when functionality of drag and drop is available (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
+msgid "Drag to move"
+msgstr "Σύρετε για μετακίνηση"
 
 msgctxt "Label for a button showing the next thing (tab, page, etc.)."
 msgid "Next"
@@ -114,4 +123,16 @@ msgstr "Γραμμή εργαλείων επεξεργασίας συμφραζ�
 
 msgctxt "Label of an input field for typing colors in the HEX color format."
 msgid "HEX"
-msgstr ""
+msgstr "Δεκαεξαδική μορφή χρωμάτων"
+
+msgctxt "Label of the button closing the color picker and confirming the changes done in the color selector component."
+msgid "Accept"
+msgstr "Αποδοχή"
+
+msgctxt "The main text of the message shown to the user when given query does not match any results."
+msgid "No results found"
+msgstr "Δεν βρέθηκαν αποτελέσματα"
+
+msgctxt "The main text of the message shown to the user when no results are available."
+msgid "No searchable items"
+msgstr "Δεν υπάρχει δυνατότητα αναζήτησης στοιχείων"

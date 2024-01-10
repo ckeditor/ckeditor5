@@ -1,6 +1,7 @@
 ---
 category: features
 menu-title: UI language
+meta-title: Setting the UI language | CKEditor 5 Documentation
 ---
 
 {@snippet features/build-ui-language-source}
@@ -25,7 +26,7 @@ See the demo of the editor in Spanish:
 
 ## Right–to–left (RTL) languages support
 
-CKEditor 5 supports right–to–left languages out–of–the–box. When one of <abbr title="right–to–left">RTL</abbr> languages is used, the WYSIWYG editor adapts its UI for the best editing experience, for instance, mirroring various elements like toolbars, dropdowns, buttons, etc.
+CKEditor&nbsp;5 supports right–to–left languages out–of–the–box. When one of <abbr title="right–to–left">RTL</abbr> languages is used, the WYSIWYG editor adapts its UI for the best editing experience, for instance, mirroring various elements like toolbars, dropdowns, buttons, etc.
 
 ### Demo
 
@@ -41,7 +42,7 @@ We are doing our best to deliver the best RTL support to our users and we consta
 
 ## Loading additional languages from CDN, npm, and a zip file
 
- By default, the editor will display in English. This is the language built into the `ckeditor.js` files. In order to change the language of the editor UI, you need to load additional language file(s). Check out the following sections to see how to do that:
+ By default, the editor will display in English. This is the language built into the `ckeditor.js` files. To change the language of the editor UI, you need to load additional language file(s). Check out the following sections to see how to do that:
 
 * [CDN](#cdn),
 * [npm](#npm),
@@ -85,7 +86,7 @@ See the {@link installation/getting-started/predefined-builds#cdn CDN installati
 
 After installing the build from npm, languages will be available in `node_modules/@ckeditor/ckeditor5-build-[name]/build/translations/[lang].js`.
 
-A single language can be loaded directly to your code by importing e.g. `'@ckeditor/ckeditor5-build-classic/build/translations/de.js'`.
+You can load a single language directly to your code by importing, for example, `'@ckeditor/ckeditor5-build-classic/build/translations/de.js'`.
 
 See the {@link installation/getting-started/predefined-builds#npm npm installation guide} for more information.
 
@@ -102,11 +103,11 @@ See the {@link installation/getting-started/predefined-builds#zip-download zip i
 
 ## Building the editor using a specific language
 
-Currently, it is possible to change the UI language at the build stage and after the build. A single build of the editor supports the language which was defined in the [CKEditor 5 translations plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations)'s configuration. Check the whole translation process to see how you can change the language later.
+Currently, it is possible to change the UI language at the build stage and after the build. A single build of the editor supports the language which was defined in the [CKEditor&nbsp;5 translations plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations)'s configuration. Check the whole translation process to see how you can change the language later.
 
 If you use one of the {@link installation/index predefined editor builds}, refer to {@link installation/getting-started/quick-start-other#building-the-editor-from-source Creating custom builds} to learn how to change the language of your build.
 
-If you build CKEditor 5 from scratch or integrate it directly into your application, then all you need to do is to:
+If you build CKEditor&nbsp;5 from scratch or integrate it directly into your application, then all you need to do is to:
 
 1. Install the [`@ckeditor/ckeditor5-dev-translations`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations) package:
 
@@ -116,7 +117,7 @@ If you build CKEditor 5 from scratch or integrate it directly into your applicat
 
 2. Add it to your webpack configuration:
 
-	Note: The language code is defined in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) standard.
+	Note: The language code is defined in the [ISO 639–1](https://en.wikipedia.org/wiki/ISO_639-1) standard.
 
 	```js
 	const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-translations' );
@@ -124,7 +125,7 @@ If you build CKEditor 5 from scratch or integrate it directly into your applicat
 	module.exports = {
 		// Define webpack plugins.
 		// ...
-		
+
 		plugins: [
 			new CKEditorTranslationsPlugin( {
 				// The main language that will be built into the main bundle.
@@ -147,7 +148,7 @@ If you build CKEditor 5 from scratch or integrate it directly into your applicat
 	}
 	```
 
-3. Run webpack. The CKEditor 5 plugin for webpack will emit additional files for each language specified in the `additionalLanguages` option. They will contain translations for messages from the {@link module:utils/locale~Locale#t `t()` function} calls. The files will be created in the `translations` directory (or another one if the `outputDirectory` option is specified). Translations from the language specified in the `language` option will be automatically included in the build.
+3. Run webpack. The CKEditor&nbsp;5 plugin for webpack will emit additional files for each language specified in the `additionalLanguages` option. They will contain translations for messages from the {@link module:utils/locale~Locale#t `t()` function} calls. The files will be created in the `translations` directory (or another one if the `outputDirectory` option is specified). Translations from the language specified in the `language` option will be automatically included in the build.
 
 4. If you want to change the language after the build ends, you will need to edit the `index.html` file, add the translation file, and set the UI language to the target one.
 
@@ -169,12 +170,12 @@ If you build CKEditor 5 from scratch or integrate it directly into your applicat
 	```
 
 <info-box>
-	We are aware that the current localization method is not sufficient for some needs. It does not support different bundlers (e.g. Rollup or Browserify). We will be extending the localization possibilities in the future.
+	We are aware that the current localization method is not sufficient for some needs. It does not support different bundlers (for example, Rollup or Browserify). We will be extending the localization possibilities in the future.
 </info-box>
 
 ## Setting the language of the content
 
-In CKEditor 5 you can separately configure the language of the UI and the language of the content. This means you can use the English UI of the editor but type your content in Arabic or Hebrew. The language of the content has an impact on the editing experience, for instance it affects screen readers and spell checkers. It is also particularly useful for typing in certain languages (e.g. [right–to–left](#righttoleft-rtl-languages-support) ones) because it changes the default alignment of the text.
+In CKEditor&nbsp;5 you can separately configure the language of the UI and the language of the content. This means you can use the English UI of the editor but type your content in Arabic or Hebrew. The language of the content has an impact on the editing experience, for instance it affects screen readers and spell checkers. It is also particularly useful for typing in certain languages (like [right–to–left](#righttoleft-rtl-languages-support) ones) because it changes the default alignment of the text.
 
 Configure {@link module:core/editor/editorconfig~EditorConfig#language `config.language`} to change the language of the content. In this example, the UI of the editor will be English but the content will be Arabic:
 
@@ -354,12 +355,12 @@ ClassicEditor
 </table>
 
 <info-box>
-	If you want to help translate CKEditor 5 into your native language, join the [CKEditor 5 project on Transifex](https://www.transifex.com/ckeditor/ckeditor5/). Your help will be much appreciated!
+	If you want to help translate CKEditor&nbsp;5 into your native language, join the [CKEditor&nbsp;5 project on Transifex](https://www.transifex.com/ckeditor/ckeditor5/). Your help will be much appreciated!
 </info-box>
 
 ## Related features
 
-CKEditor 5 has other features that will help you control the content language:
+CKEditor&nbsp;5 has other features that will help you control the content language:
 
 * {@link features/language Text part Language}  &ndash; Set the language of the selected content part to support multilingual texts.
 

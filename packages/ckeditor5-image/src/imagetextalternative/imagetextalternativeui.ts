@@ -7,20 +7,22 @@
  * @module image/imagetextalternative/imagetextalternativeui
  */
 
-import { Plugin, icons } from 'ckeditor5/src/core';
+import { Plugin, icons } from 'ckeditor5/src/core.js';
 import {
 	ButtonView,
 	ContextualBalloon,
 	clickOutsideHandler,
 	CssTransitionDisablerMixin,
 	type ViewWithCssTransitionDisabler
-} from 'ckeditor5/src/ui';
+} from 'ckeditor5/src/ui.js';
 
-import TextAlternativeFormView from './ui/textalternativeformview';
-import { repositionContextualBalloon, getBalloonPositionData } from '../image/ui/utils';
-import type { CancelEvent, SubmitEvent } from '../imageinsert/ui/imageinsertpanelview';
-import type ImageTextAlternativeCommand from './imagetextalternativecommand';
-import type ImageUtils from '../imageutils';
+import TextAlternativeFormView, {
+	type TextAlternativeFormViewCancelEvent,
+	type TextAlternativeFormViewSubmitEvent
+} from './ui/textalternativeformview.js';
+import { repositionContextualBalloon, getBalloonPositionData } from '../image/ui/utils.js';
+import type ImageTextAlternativeCommand from './imagetextalternativecommand.js';
+import type ImageUtils from '../imageutils.js';
 
 /**
  * The image text alternative UI plugin.
@@ -85,7 +87,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 
 			view.set( {
 				label: t( 'Change image text alternative' ),
-				icon: icons.lowVision,
+				icon: icons.textAlternative,
 				tooltip: true
 			} );
 
@@ -117,7 +119,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 		// Render the form so its #element is available for clickOutsideHandler.
 		this._form.render();
 
-		this.listenTo<SubmitEvent>( this._form, 'submit', () => {
+		this.listenTo<TextAlternativeFormViewSubmitEvent>( this._form, 'submit', () => {
 			editor.execute( 'imageTextAlternative', {
 				newValue: this._form!.labeledInput.fieldView.element!.value
 			} );
@@ -125,7 +127,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 			this._hideForm( true );
 		} );
 
-		this.listenTo<CancelEvent>( this._form, 'cancel', () => {
+		this.listenTo<TextAlternativeFormViewCancelEvent>( this._form, 'cancel', () => {
 			this._hideForm( true );
 		} );
 

@@ -7,8 +7,9 @@
  * @module paste-from-office
  */
 
-export { default as PasteFromOffice } from './pastefromoffice';
-export { Normalizer, type NormalizerData } from './normalizer';
-export { parseHtml } from './filters/parse';
+export { default as PasteFromOffice } from './pastefromoffice.js';
+export { Normalizer, type NormalizerData } from './normalizer.js';
+export { default as MSWordNormalizer } from './normalizers/mswordnormalizer.js';
+export { parseHtml } from './filters/parse.js';
 
-import './augmentation';
+import './augmentation.js';

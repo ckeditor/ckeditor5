@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Bulgarian (https://app.transifex.com/ckeditor/teams/11143/bg/)\n"
 "Language: bg\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Title of the CKEditor5 editor."
 msgid "Rich Text Editor"
@@ -27,6 +28,14 @@ msgstr "Зона за редактиране на редактора: %0"
 msgctxt "Label of the block toolbar icon (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
 msgid "Edit block"
 msgstr "Редактирай блок"
+
+msgctxt "First part of the label of the block toolbar icon when functionality of drag and drop is available (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
+msgid "Click to edit block"
+msgstr "Кликнете, за да редактирате блок"
+
+msgctxt "Second part of the label of the block toolbar icon when functionality of drag and drop is available (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
+msgid "Drag to move"
+msgstr "Плъзнете за преместване"
 
 msgctxt "Label for a button showing the next thing (tab, page, etc.)."
 msgid "Next"
@@ -114,4 +123,16 @@ msgstr "Контекстна лента с инструменти на реда�
 
 msgctxt "Label of an input field for typing colors in the HEX color format."
 msgid "HEX"
-msgstr ""
+msgstr "НЕХ"
+
+msgctxt "Label of the button closing the color picker and confirming the changes done in the color selector component."
+msgid "Accept"
+msgstr "Приемане"
+
+msgctxt "The main text of the message shown to the user when given query does not match any results."
+msgid "No results found"
+msgstr "Няма намерени резултати"
+
+msgctxt "The main text of the message shown to the user when no results are available."
+msgid "No searchable items"
+msgstr "Няма елементи за търсене"

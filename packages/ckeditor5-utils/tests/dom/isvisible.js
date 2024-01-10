@@ -5,7 +5,7 @@
 
 /* global document */
 
-import isVisible from '../../src/dom/isvisible';
+import isVisible from '../../src/dom/isvisible.js';
 
 describe( 'isVisible()', () => {
 	let ancestor, element;

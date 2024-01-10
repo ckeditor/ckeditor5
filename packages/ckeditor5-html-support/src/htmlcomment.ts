@@ -7,9 +7,9 @@
  * @module html-support/htmlcomment
  */
 
-import type { Marker, Position, Range, Element } from 'ckeditor5/src/engine';
-import { Plugin } from 'ckeditor5/src/core';
-import { uid } from 'ckeditor5/src/utils';
+import type { Marker, Position, Range, Element } from 'ckeditor5/src/engine.js';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { uid } from 'ckeditor5/src/utils.js';
 
 /**
  * The HTML comment feature. It preserves the HTML comments (`<!-- -->`) in the editor data.
@@ -218,7 +218,6 @@ export default class HtmlComment extends Plugin {
 	 * Gets the HTML comment data for the comment with a given ID.
 	 *
 	 * Returns `null` if the comment does not exist.
-	 *
 	 */
 	public getHtmlCommentData( commentID: string ): HtmlCommentData | null {
 		const editor = this.editor;
@@ -229,10 +228,11 @@ export default class HtmlComment extends Plugin {
 		}
 
 		let content = '';
-		for ( const rootName of this.editor.model.document.getRootNames() ) {
-			const root = editor.model.document.getRoot( rootName )!;
+
+		for ( const root of this.editor.model.document.getRoots() ) {
 			if ( root.hasAttribute( commentID ) ) {
 				content = root.getAttribute( commentID ) as string;
+
 				break;
 			}
 		}
@@ -246,7 +246,7 @@ export default class HtmlComment extends Plugin {
 	/**
 	 * Gets all HTML comments in the given range.
 	 *
-	 * By default it includes comments at the range boundaries.
+	 * By default, it includes comments at the range boundaries.
 	 *
 	 * @param range
 	 * @param options.skipBoundaries When set to `true` the range boundaries will be skipped.

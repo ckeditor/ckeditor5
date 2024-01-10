@@ -2,11 +2,11 @@
 category: api-reference
 ---
 
-# CKEditor 5 utilities
+# CKEditor&nbsp;5 utilities
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-utils.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)
 
-Various utilities used by CKEditor 5 and its features. This is a sort of  CKEditor 5's standard library.
+Various utilities used by CKEditor&nbsp;5 and its features. This is a sort of  CKEditor&nbsp;5's standard library.
 
 ## Documentation
 

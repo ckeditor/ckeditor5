@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Bengali (https://app.transifex.com/ckeditor/teams/11143/bn/)\n"
 "Language: bn\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Title of the CKEditor5 editor."
 msgid "Rich Text Editor"
@@ -27,6 +28,14 @@ msgstr "সম্পাদক সম্পাদনার ক্ষেত্র:
 msgctxt "Label of the block toolbar icon (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
 msgid "Edit block"
 msgstr "এডিট ব্লক"
+
+msgctxt "First part of the label of the block toolbar icon when functionality of drag and drop is available (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
+msgid "Click to edit block"
+msgstr "ব্লক এডিট করতে ক্লিক করুন"
+
+msgctxt "Second part of the label of the block toolbar icon when functionality of drag and drop is available (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
+msgid "Drag to move"
+msgstr "সরানোর জন্য টেনে আনুন"
 
 msgctxt "Label for a button showing the next thing (tab, page, etc.)."
 msgid "Next"
@@ -114,4 +123,16 @@ msgstr "সম্পাদক প্রাসঙ্গিক টুলবার"
 
 msgctxt "Label of an input field for typing colors in the HEX color format."
 msgid "HEX"
-msgstr ""
+msgstr "HEX"
+
+msgctxt "Label of the button closing the color picker and confirming the changes done in the color selector component."
+msgid "Accept"
+msgstr "গ্রহণ করুন"
+
+msgctxt "The main text of the message shown to the user when given query does not match any results."
+msgid "No results found"
+msgstr "কোন ফলাফল পাওয়া যায়নি"
+
+msgctxt "The main text of the message shown to the user when no results are available."
+msgid "No searchable items"
+msgstr "কোনো অনুসন্ধানযোগ্য আইটেম নেই"

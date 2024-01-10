@@ -83,7 +83,7 @@
 		&.ck-off:active,
 		&.ck-on:active {
 			box-shadow: none;
-			
+
 			&:focus {
 				@mixin ck-box-shadow var(--ck-focus-outer-shadow);
 			}
@@ -118,5 +118,9 @@
 
 	&.ck-dropdown__panel_nw {
 		border-bottom-right-radius: 0;
+	}
+
+	&:focus {
+		outline: none;
 	}
 }

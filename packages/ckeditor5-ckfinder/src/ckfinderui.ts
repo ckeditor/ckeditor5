@@ -7,12 +7,11 @@
  * @module ckfinder/ckfinderui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { ButtonView } from 'ckeditor5/src/ui';
+import { icons, Plugin } from 'ckeditor5/src/core.js';
+import { ButtonView } from 'ckeditor5/src/ui.js';
+import type { ImageInsertUI } from '@ckeditor/ckeditor5-image';
 
-import type CKFinderCommand from './ckfindercommand';
-
-import browseFilesIcon from '../theme/icons/browse-files.svg';
+import type CKFinderCommand from './ckfindercommand.js';
 
 /**
  * The CKFinder UI plugin. It introduces the `'ckfinder'` toolbar button.
@@ -40,7 +39,7 @@ export default class CKFinderUI extends Plugin {
 
 			button.set( {
 				label: t( 'Insert image or file' ),
-				icon: browseFilesIcon,
+				icon: icons.browseFiles,
 				tooltip: true
 			} );
 
@@ -53,5 +52,44 @@ export default class CKFinderUI extends Plugin {
 
 			return button;
 		} );
+
+		if ( editor.plugins.has( 'ImageInsertUI' ) ) {
+			const imageInsertUI: ImageInsertUI = editor.plugins.get( 'ImageInsertUI' );
+			const command: CKFinderCommand = editor.commands.get( 'ckfinder' )!;
+
+			imageInsertUI.registerIntegration( {
+				name: 'assetManager',
+				observable: command,
+
+				buttonViewCreator: () => {
+					const button = this.editor.ui.componentFactory.create( 'ckfinder' ) as ButtonView;
+
+					button.icon = icons.imageAssetManager;
+					button.bind( 'label' ).to( imageInsertUI, 'isImageSelected', isImageSelected => isImageSelected ?
+						t( 'Replace image with file manager' ) :
+						t( 'Insert image with file manager' )
+					);
+
+					return button;
+				},
+
+				formViewCreator: () => {
+					const button = this.editor.ui.componentFactory.create( 'ckfinder' ) as ButtonView;
+
+					button.icon = icons.imageAssetManager;
+					button.withText = true;
+					button.bind( 'label' ).to( imageInsertUI, 'isImageSelected', isImageSelected => isImageSelected ?
+						t( 'Replace with file manager' ) :
+						t( 'Insert with file manager' )
+					);
+
+					button.on( 'execute', () => {
+						imageInsertUI.dropdownView!.isOpen = false;
+					} );
+
+					return button;
+				}
+			} );
+		}
 	}
 }

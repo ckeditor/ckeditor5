@@ -7,15 +7,15 @@
  * @module font/fontfamily/fontfamilyui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { Collection } from 'ckeditor5/src/utils';
-import { Model, createDropdown, addListToDropdown, type ListDropdownItemDefinition } from 'ckeditor5/src/ui';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { Collection } from 'ckeditor5/src/utils.js';
+import { Model, createDropdown, addListToDropdown, type ListDropdownItemDefinition } from 'ckeditor5/src/ui.js';
 
-import { normalizeOptions } from './utils';
-import { FONT_FAMILY } from '../utils';
+import { normalizeOptions } from './utils.js';
+import { FONT_FAMILY } from '../utils.js';
 
-import type { FontFamilyOption } from '../fontconfig';
-import type FontFamilyCommand from './fontfamilycommand';
+import type { FontFamilyOption } from '../fontconfig.js';
+import type FontFamilyCommand from './fontfamilycommand.js';
 
 import fontFamilyIcon from '../../theme/icons/font-family.svg';
 

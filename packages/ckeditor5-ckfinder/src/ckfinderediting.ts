@@ -7,11 +7,11 @@
  * @module ckfinder/ckfinderediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { Notification } from 'ckeditor5/src/ui';
-import { CKEditorError } from 'ckeditor5/src/utils';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { Notification } from 'ckeditor5/src/ui.js';
+import { CKEditorError } from 'ckeditor5/src/utils.js';
 
-import CKFinderCommand from './ckfindercommand';
+import CKFinderCommand from './ckfindercommand.js';
 
 /**
  * The CKFinder editing feature. It introduces the {@link module:ckfinder/ckfindercommand~CKFinderCommand CKFinder command}.

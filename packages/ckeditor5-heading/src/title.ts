@@ -7,8 +7,8 @@
  * @module heading/title
  */
 
-import { Plugin, type Editor, type ElementApi } from 'ckeditor5/src/core';
-import { first, type GetCallback } from 'ckeditor5/src/utils';
+import { Plugin, type Editor, type ElementApi } from 'ckeditor5/src/core.js';
+import { first, type GetCallback } from 'ckeditor5/src/utils.js';
 import {
 	DowncastWriter,
 	enablePlaceholder,
@@ -23,10 +23,11 @@ import {
 	type UpcastConversionApi,
 	type UpcastConversionData,
 	type UpcastElementEvent,
-	type View,
+	type EditingView,
 	type ViewElement,
-	type Writer
-} from 'ckeditor5/src/engine';
+	type Writer,
+	type PlaceholderableElement
+} from 'ckeditor5/src/engine.js';
 
 // A list of element names that should be treated by the Title plugin as title-like.
 // This means that an element of a type from this list will be changed to a title element
@@ -246,9 +247,7 @@ export default class Title extends Plugin {
 		let changed = false;
 		const model = this.editor.model;
 
-		for ( const rootName of this.editor.model.document.getRootNames() ) {
-			const modelRoot = model.document.getRoot( rootName )!;
-
+		for ( const modelRoot of this.editor.model.document.getRoots() ) {
 			const titleElements = Array.from( modelRoot.getChildren() as IterableIterator<Element> ).filter( isTitle );
 			const firstTitleElement = titleElements[ 0 ];
 			const firstRootChild = modelRoot.getChild( 0 ) as Element;
@@ -354,10 +353,13 @@ export default class Title extends Plugin {
 
 		// Attach placeholder to the view title element.
 		editor.editing.downcastDispatcher.on<DowncastInsertEvent<Element>>( 'insert:title-content', ( evt, data, conversionApi ) => {
+			const element: PlaceholderableElement = conversionApi.mapper.toViewElement( data.item )!;
+
+			element.placeholder = titlePlaceholder;
+
 			enablePlaceholder( {
 				view,
-				element: conversionApi.mapper.toViewElement( data.item )!,
-				text: titlePlaceholder,
+				element,
 				keepOnFocus: true
 			} );
 		} );
@@ -497,7 +499,7 @@ function dataViewModelH1Insertion( evt: unknown, data: UpcastConversionData<View
  * <title>^<title-content>Foo</title-content></title> -> <h1>^Foo</h1>
  * ```
  */
-function mapModelPositionToView( editingView: View ): GetCallback<MapperModelToViewPositionEvent> {
+function mapModelPositionToView( editingView: EditingView ): GetCallback<MapperModelToViewPositionEvent> {
 	return ( evt, data ) => {
 		const positionParent = data.modelPosition.parent;
 

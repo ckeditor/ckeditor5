@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import View from '../../src/view';
-import LabeledFieldView from '../../src/labeledfield/labeledfieldview';
-import LabelView from '../../src/label/labelview';
-import ViewCollection from '../../src/viewcollection';
+import View from '../../src/view.js';
+import LabeledFieldView from '../../src/labeledfield/labeledfieldview.js';
+import LabelView from '../../src/label/labelview.js';
+import ViewCollection from '../../src/viewcollection.js';
 
 describe( 'LabeledFieldView', () => {
 	const locale = {};
@@ -210,6 +210,14 @@ describe( 'LabeledFieldView', () => {
 			labeledField.focus();
 
 			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'should pass down the focus direction parameter', () => {
+			const spy = sinon.spy( fieldView, 'focus' );
+
+			labeledField.focus( -1 );
+
+			sinon.assert.calledOnceWithExactly( spy, -1 );
 		} );
 	} );
 } );

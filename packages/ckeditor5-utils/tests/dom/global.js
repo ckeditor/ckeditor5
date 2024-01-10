@@ -5,8 +5,8 @@
 
 /* global window, document */
 
-import global from '../../src/dom/global';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import global from '../../src/dom/global.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'global', () => {
 	testUtils.createSinonSandbox();

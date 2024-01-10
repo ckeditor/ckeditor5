@@ -1,12 +1,11 @@
-CKEditor 5 restricted editing feature
+CKEditor&nbsp;5 restricted editing feature
 ===========================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-restricted-editing.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-restricted-editing)
 [![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5?branch=master)
 [![Build Status](https://travis-ci.com/ckeditor/ckeditor5.svg?branch=master)](https://app.travis-ci.com/github/ckeditor/ckeditor5)
-![Dependency Status](https://img.shields.io/librariesio/release/npm/@ckeditor/ckeditor5-restricted-editing)
 
-This package implements the restricted editing feature for CKEditor 5.
+This package implements the restricted editing feature for CKEditor&nbsp;5.
 
 ## Demo
 
@@ -14,7 +13,7 @@ Check out the demo in the [restricted editing feature guide](https://ckeditor.co
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-restricted-editing` package](https://ckeditor.com/docs/ckeditor5/latest/api/restricted-editing.html) page as well as the [restricted editing feature](https://ckeditor.com/docs/ckeditor5/latest/features/restricted-editing.html) guide in the [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-restricted-editing` package](https://ckeditor.com/docs/ckeditor5/latest/api/restricted-editing.html) page as well as the [restricted editing feature](https://ckeditor.com/docs/ckeditor5/latest/features/restricted-editing.html) guide in the [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
 
 ## License
 

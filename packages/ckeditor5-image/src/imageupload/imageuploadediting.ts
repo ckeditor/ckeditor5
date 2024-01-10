@@ -7,19 +7,27 @@
  * @module image/imageupload/imageuploadediting
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 
-import { UpcastWriter, type Element, type Item, type Writer, type DataTransfer, type ViewElement } from 'ckeditor5/src/engine';
+import {
+	UpcastWriter,
+	type Element,
+	type Item,
+	type Writer,
+	type DataTransfer,
+	type ViewElement,
+	type NodeAttributes
+} from 'ckeditor5/src/engine.js';
 
-import { Notification } from 'ckeditor5/src/ui';
-import { ClipboardPipeline, type ViewDocumentClipboardInputEvent } from 'ckeditor5/src/clipboard';
-import { FileRepository, type UploadResponse, type FileLoader } from 'ckeditor5/src/upload';
-import { env } from 'ckeditor5/src/utils';
+import { Notification } from 'ckeditor5/src/ui.js';
+import { ClipboardPipeline, type ViewDocumentClipboardInputEvent } from 'ckeditor5/src/clipboard.js';
+import { FileRepository, type UploadResponse, type FileLoader } from 'ckeditor5/src/upload.js';
+import { env } from 'ckeditor5/src/utils.js';
 
-import ImageUtils from '../imageutils';
-import UploadImageCommand from './uploadimagecommand';
-import { fetchLocalImage, isLocalImage } from '../../src/imageupload/utils';
-import { createImageTypeRegExp } from './utils';
+import ImageUtils from '../imageutils.js';
+import UploadImageCommand from './uploadimagecommand.js';
+import { fetchLocalImage, isLocalImage } from '../../src/imageupload/utils.js';
+import { createImageTypeRegExp } from './utils.js';
 
 /**
  * The editing part of the image upload feature. It registers the `'uploadImage'` command
@@ -125,10 +133,7 @@ export default class ImageUploadEditing extends Plugin {
 					writer.setSelection( data.targetRanges.map( viewRange => editor.editing.mapper.toModelRange( viewRange ) ) );
 				}
 
-				// Upload images after the selection has changed in order to ensure the command's state is refreshed.
-				editor.model.enqueueChange( () => {
-					editor.execute( 'uploadImage', { file: images } );
-				} );
+				editor.execute( 'uploadImage', { file: images } );
 			} );
 		} );
 
@@ -225,12 +230,14 @@ export default class ImageUploadEditing extends Plugin {
 		} );
 
 		// Set the default handler for feeding the image element with `src` and `srcset` attributes.
+		// Also set the natural `width` and `height` attributes (if not already set).
 		this.on<ImageUploadCompleteEvent>( 'uploadComplete', ( evt, { imageElement, data } ) => {
 			const urls = data.urls ? data.urls as Record<string, unknown> : data;
 
 			this.editor.model.change( writer => {
 				writer.setAttribute( 'src', urls.default, imageElement );
 				this._parseAndSetSrcsetAttributeOnImage( urls, imageElement, writer );
+				imageUtils.setImageNaturalSizeAttributes( imageElement );
 			} );
 		}, { priority: 'low' } );
 	}
@@ -396,10 +403,15 @@ export default class ImageUploadEditing extends Plugin {
 			.join( ', ' );
 
 		if ( srcsetAttribute != '' ) {
-			writer.setAttribute( 'srcset', {
-				data: srcsetAttribute,
-				width: maxWidth
-			}, image );
+			const attributes: NodeAttributes = {
+				srcset: srcsetAttribute
+			};
+
+			if ( !image.hasAttribute( 'width' ) && !image.hasAttribute( 'height' ) ) {
+				attributes.width = maxWidth;
+			}
+
+			writer.setAttributes( attributes, image );
 		}
 	}
 }

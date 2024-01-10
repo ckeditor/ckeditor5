@@ -1,6 +1,7 @@
 ---
 category: licensing
 order: 30
+meta-title: Managing the "Powered by CKEditor" logo | CKEditor 5 Documentation
 meta-description: Managing the "Powered by CKEditor" logo
 ---
 
@@ -8,13 +9,13 @@ meta-description: Managing the "Powered by CKEditor" logo
 
 ## Why the "Powered by CKEditor" logo?
 
-Starting from version v38.0.0 onwards, all **open-source** installations of CKEditor 5 display a small “Powered by CKEditor” logo in the bottom-right corner of the editing area. The label links directly to the [CKEditor website](https://ckeditor.com/). The new branding approach is designed to make sure the entire community knows who is powering and modernizing their rich text editor.
+Starting from version v38.0.0 onwards, all **open-source** installations of CKEditor&nbsp;5 display a small “Powered by CKEditor” logo in the bottom-right corner of the editing area. The label links directly to the [CKEditor website](https://ckeditor.com/). The new branding approach is designed to make sure the entire community knows who is powering and modernizing their rich text editor.
 
 {@img assets/img/powered-by-ckeditor.png Placement of the "Powered by CKEditor" logo within the editor}
 
 This logo is only visible when the editor is focused and only in the editable. The editor needs to have a minimum size of 350px x 50px to display the logo. It will be shown in all editor types. You can observe this behavior in practice in the demo editors further in this guide.
 
-The logo **will not be displayed for customers with commercial licenses**, but please read on as certain actions need to be taken to white-label your CKEditor 5 installation. You can [reach out to our Technical Support team](https://ckeditor.com/contact/) if you have any questions.
+The logo **will not be displayed for customers with commercial licenses**, but please read on as certain actions need to be taken to white-label your CKEditor&nbsp;5 installation. You can [reach out to our Technical Support team](https://ckeditor.com/contact/) if you have any questions.
 
 However, even as a paid customer, you can [keep the logo](#how-to-keep-the-powered-by-ckeditor-logo) if you wish.
 

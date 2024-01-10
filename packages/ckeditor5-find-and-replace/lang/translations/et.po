@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Estonian (https://app.transifex.com/ckeditor/teams/11143/et/)\n"
 "Language: et\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "The tooltip of a find and replace button in the toolbar. Also, the title of the find and replace form."
 msgid "Find and replace"

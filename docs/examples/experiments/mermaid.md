@@ -3,16 +3,16 @@ category: experiments
 order: 20
 classes: main__content--no-toc
 toc: false
-meta-title: Flowcharts and diagrams in a Mermaid-enabled editor
+meta-title: Mermaid flowcharts and diagrams example | CKEditor 5 Documentation
 menu-title: Flowcharts and diagrams
 modified_at: 2023-06-14
 ---
 
 # Creating flowcharts and diagrams using Mermaid
 
-You can create flowcharts and diagrams in CKEditor 5 thanks to the experimental integration with the [Mermaid](https://mermaid.js.org/) library. Mermaid uses a Markdown-inspired syntax to create and dynamically modify flowcharts, Gantt diagrams, pie or quadrant charts, graphs, mindmaps, and more.
+You can create flowcharts and diagrams in CKEditor&nbsp;5 thanks to the experimental integration with the [Mermaid](https://mermaid.js.org/) library. Mermaid uses a Markdown-inspired syntax to create and dynamically modify flowcharts, Gantt diagrams, pie or quadrant charts, graphs, mindmaps, and more.
 
-The example below lets you test creating diagrams and flowcharts right during the content creation &mdash; no more screenshots that need to be re-created and re-uploaded each time something needs a change! You can also check out a live implementation in [GitHub Writer](https://ckeditor.com/blog/github-writer-now-available-with-mermaid-support/).
+The example below lets you test creating diagrams and flowcharts right during the content creation &ndash; no more screenshots that need to be re-created and re-uploaded each time something needs a change! You can also check out a live implementation in [GitHub Writer](https://ckeditor.com/blog/github-writer-now-available-with-mermaid-support/).
 
 {@snippet examples/mermaid}
 
@@ -24,7 +24,7 @@ Mermaid offers an extensive and flexible syntax allowing users to create a varie
 
 ## Editor example configuration
 
-This example uses our own Mermaid plugin, [available on GitHub](https://github.com/ckeditor/ckeditor5-mermaid). You need to import it before CKEditor 5 can use the Mermaid syntax. Look at the sample configuration to learn how to add the plugin and the toolbar button.
+This example uses our own Mermaid plugin, [available on GitHub](https://github.com/ckeditor/ckeditor5-mermaid). You need to import it before CKEditor&nbsp;5 can use the Mermaid syntax. Look at the sample configuration to learn how to add the plugin and the toolbar button.
 
 <details>
 <summary>Editor configuration script</summary>
@@ -43,7 +43,7 @@ ClassicEditor
 			items: [
 				'undo', 'redo', '|', 'heading',
 				'|', 'bold', 'italic',
-				'|', 'link', 'uploadImage', 'insertTable', 'blockQuote', 'mediaEmbed', 'mermaid',
+				'|', 'link', 'insertImage', 'insertTable', 'blockQuote', 'mediaEmbed', 'mermaid',
 				'|', 'bulletedList', 'numberedList', 'todolist', 'outdent', 'indent'
 			]
 		},

@@ -14,6 +14,5 @@ module.exports = {
 	PACKAGES_DIRECTORY: 'packages',
 	RELEASE_DIRECTORY: 'release',
 	CKEDITOR5_ROOT_PATH,
-	CKEDITOR5_INTERNAL_PATH: upath.resolve( CKEDITOR5_ROOT_PATH, 'external', 'ckeditor5-internal' ),
-	COLLABORATION_FEATURES_PATH: upath.resolve( CKEDITOR5_ROOT_PATH, 'external', 'collaboration-features' )
+	CKEDITOR5_COMMERCIAL_PATH: upath.resolve( CKEDITOR5_ROOT_PATH, 'external', 'ckeditor5-commercial' )
 };

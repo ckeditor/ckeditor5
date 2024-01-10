@@ -3,21 +3,21 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Schema, { SchemaContext } from '../../src/model/schema';
+import Schema, { SchemaContext } from '../../src/model/schema.js';
 
-import Model from '../../src/model/model';
+import Model from '../../src/model/model.js';
 
-import DocumentFragment from '../../src/model/documentfragment';
-import Element from '../../src/model/element';
-import Text from '../../src/model/text';
-import TextProxy from '../../src/model/textproxy';
-import Position from '../../src/model/position';
-import Range from '../../src/model/range';
+import DocumentFragment from '../../src/model/documentfragment.js';
+import Element from '../../src/model/element.js';
+import Text from '../../src/model/text.js';
+import TextProxy from '../../src/model/textproxy.js';
+import Position from '../../src/model/position.js';
+import Range from '../../src/model/range.js';
 
-import { getData, setData, stringify, parse } from '../../src/dev-utils/model';
+import { getData, setData, stringify, parse } from '../../src/dev-utils/model.js';
 
-import AttributeOperation from '../../src/model/operation/attributeoperation';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import AttributeOperation from '../../src/model/operation/attributeoperation.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'Schema', () => {
 	let schema, root1, r1p1, r1p2, r1bQ, r1bQp, root2;
@@ -1653,6 +1653,16 @@ describe( 'Schema', () => {
 			'<paragraph></paragraph><paragraph>[]</paragraph>'
 		);
 
+		it( 'should return null for a position in graveyard even if there is a paragraph there', () => {
+			model.enqueueChange( { isUndoable: false }, writer => {
+				writer.insertElement( 'paragraph', model.document.graveyard, 0 );
+			} );
+
+			const range = schema.getNearestSelectionRange( model.createPositionFromPath( model.document.graveyard, [ 0 ] ) );
+
+			expect( range ).to.be.null;
+		} );
+
 		describe( 'in case of objects which do not allow text inside', () => {
 			test(
 				'should select nearest object (o[]o) - both',
@@ -2052,6 +2062,21 @@ describe( 'Schema', () => {
 				expect( getData( model, { withoutSelection: true } ) )
 					.to.equal( '<div><$text a="1">foo</$text>bar<$text a="1">biz</$text></div>' );
 			} );
+		} );
+
+		// Related to https://github.com/ckeditor/ckeditor5/issues/15246.
+		it( 'should filter out only non-allowed root attributes', () => {
+			schema.extend( '$root', { allowAttributes: 'allowed' } );
+
+			model.change( writer => {
+				writer.setAttribute( 'allowed', 'value', root );
+				writer.setAttribute( 'other', true, root );
+
+				schema.removeDisallowedAttributes( [ root ], writer );
+			} );
+
+			expect( root.getAttribute( 'allowed' ) ).to.equal( 'value' );
+			expect( root.getAttribute( 'other' ) ).to.be.undefined;
 		} );
 	} );
 

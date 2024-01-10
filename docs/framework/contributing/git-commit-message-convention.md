@@ -1,17 +1,18 @@
 ---
 category: framework-contributing
+meta-title: Git commit message convention | CKEditor 5 Framework Documentation
 order: 50
 modified_at: 2021-09-07
 ---
 
 # Git commit message convention
 
-Every commit made *directly* to the `master` branch must follow the convention below. Based on commits in the `master` branch CKEditor 5 release tools will generate changelog entries for the current release.
+Every commit made *directly* to the `master` branch must follow the convention below. Based on commits in the `master` branch CKEditor&nbsp;5 release tools will generate changelog entries for the current release.
 
 <info-box>
-	Commits in the ticket branches are not analyzed for the changelog and do not have to follow any specific convention (other than finishing sentences with periods). In case of ticket branches, **only merge commits are analyzed**.
+	Commits in the ticket branches are not analyzed for the changelog and do not have to follow any specific convention (other than finishing sentences with periods). In the case of ticket branches, **only merge commits are analyzed**.
 
-	Therefore, this guide is mainly targeted at core team members. However, it may help you understand how to write a suggested commit message when creating a pull request for CKEditor 5.
+	Therefore, this guide is mainly targeted at core team members. However, it may help you understand how to write a suggested commit message when creating a pull request for CKEditor&nbsp;5.
 </info-box>
 
 ## Convention
@@ -35,7 +36,7 @@ MINOR BREAKING CHANGE (package-name): Another breaking change if needed. Closes 
 | --- | --- | --- | --- |
 | Feature | `minor` | A new feature. | Visible |
 | Fix | `patch` | A bug fix. Should also be used for enhancements if they do not introduce new features at the same time. | Visible |
-| Other | `patch` | An enhancement &mdash; when it is neither a bug fix nor a feature. Example: public API refactoring. Use it also if you do not want to admit that it was a bug ;). | Visible |
+| Other | `patch` | An enhancement &ndash; when it is neither a bug fix nor a feature. Example: public API refactoring. Use it also if you do not want to admit that it was a bug ;). | Visible |
 | Docs | `patch` | Updated documentation. | Hidden |
 | Internal | `patch` | Other kinds of internal changes. | Hidden |
 | Tests | `patch` | Changes in test files. | Hidden |
@@ -194,7 +195,7 @@ Changelog
 
 ### Fixing errors
 
-If the commit message was wrong but it was already too late to fix (e.g. already merged into `master`), you can push an empty commit with the correct message straight to `master`:
+If the commit message was wrong but it was already too late to fix (for example, already merged into `master`), you can push an empty commit with the correct message straight to `master`:
 
 ```
 git checkout master
@@ -222,7 +223,7 @@ Things like:
 
 should be checked and added if missing.
 
-As a reviewer, remember that the message will end up in the changelog and must be understandable in a broad context of the entire editor. It is not for you &mdash; it is for other developers.
+As a reviewer, remember that the message will end up in the changelog and must be understandable in a broad context of the entire editor. It is not for you &ndash; it is for other developers.
 
 When closing a PR, remember to copy the source of the message to the textarea with the merge commit message:
 

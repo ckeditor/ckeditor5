@@ -2,6 +2,7 @@
 category: examples-framework
 order: 120
 toc: false
+meta-title: Data from an external source example | CKEditor 5 Documentation
 classes: main__content--no-toc
 modified_at: 2022-11-15
 ---
@@ -14,7 +15,7 @@ The editor below contains a widget that fetches data from an external source and
 
 ## Detailed guide
 
-If you would like to create such a widget on your own, take a look at the {@link framework/tutorials/data-from-external-source dedicated tutorial} which shows how to achieve this step by step with the source code provided. 
+If you would like to create such a widget on your own, take a look at the {@link tutorials/widgets/data-from-external-source dedicated tutorial} which shows how to achieve this step by step with the source code provided.
 
 ## Editor example configuration
 

@@ -7,23 +7,24 @@
  * @module engine/conversion/downcastdispatcher
  */
 
-import Consumable from './modelconsumable';
-import Range from '../model/range';
+import Consumable from './modelconsumable.js';
+import Range from '../model/range.js';
 
 import { EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
-import type { default as Differ, DiffItem } from '../model/differ';
-import type { default as MarkerCollection, Marker } from '../model/markercollection';
-import type { TreeWalkerValue } from '../model/treewalker';
-import type DocumentSelection from '../model/documentselection';
-import type DowncastWriter from '../view/downcastwriter';
-import type Element from '../model/element';
-import type Item from '../model/item';
-import type Mapper from './mapper';
-import type Position from '../model/position';
-import type Schema from '../model/schema';
-import type Selection from '../model/selection';
-import type ViewElement from '../view/element';
+import type { default as Differ, DiffItem } from '../model/differ.js';
+import type { default as MarkerCollection, Marker } from '../model/markercollection.js';
+import type { TreeWalkerValue } from '../model/treewalker.js';
+import type DocumentSelection from '../model/documentselection.js';
+import type DowncastWriter from '../view/downcastwriter.js';
+import type RootElement from '../model/rootelement.js';
+import type Element from '../model/element.js';
+import type Item from '../model/item.js';
+import type Mapper from './mapper.js';
+import type Position from '../model/position.js';
+import type Schema from '../model/schema.js';
+import type Selection from '../model/selection.js';
+import type ViewElement from '../view/element.js';
 
 /**
  * The downcast dispatcher is a central point of downcasting (conversion from the model to the view), which is a process of reacting
@@ -187,6 +188,10 @@ export default class DowncastDispatcher extends EmitterMixin() {
 			}
 		}
 
+		// Remove mappings for all removed view elements.
+		// Remove these mappings as soon as they are not needed (https://github.com/ckeditor/ckeditor5/issues/15411).
+		conversionApi.mapper.flushDeferredBindings();
+
 		for ( const markerName of conversionApi.mapper.flushUnboundMarkerNames() ) {
 			const markerRange = markers.get( markerName )!.getRange();
 
@@ -198,9 +203,6 @@ export default class DowncastDispatcher extends EmitterMixin() {
 		for ( const change of differ.getMarkersToAdd() ) {
 			this._convertMarkerAdd( change.name, change.range, conversionApi );
 		}
-
-		// Remove mappings for all removed view elements.
-		conversionApi.mapper.flushDeferredBindings();
 
 		// Verify if all insert consumables were consumed.
 		conversionApi.consumable.verifyAllConsumed( 'insert' );
@@ -252,9 +254,20 @@ export default class DowncastDispatcher extends EmitterMixin() {
 		markers: MarkerCollection,
 		writer: DowncastWriter
 	): void {
-		const markersAtSelection = Array.from( markers.getMarkersAtPosition( selection.getFirstPosition()! ) );
-
 		const conversionApi = this._createConversionApi( writer );
+
+		// First perform a clean-up at the current position of the selection.
+		this.fire<DowncastCleanSelectionEvent>( 'cleanSelection', { selection }, conversionApi );
+
+		// Don't convert selection if it is in a model root that does not have a view root (for now this is only the graveyard root).
+		const modelRoot = selection.getFirstPosition()!.root as RootElement;
+
+		if ( !conversionApi.mapper.toViewElement( modelRoot ) ) {
+			return;
+		}
+
+		// Now, perform actual selection conversion.
+		const markersAtSelection = Array.from( markers.getMarkersAtPosition( selection.getFirstPosition()! ) );
 
 		this._addConsumablesForSelection( conversionApi.consumable, selection, markersAtSelection );
 
@@ -265,35 +278,36 @@ export default class DowncastDispatcher extends EmitterMixin() {
 		}
 
 		for ( const marker of markersAtSelection ) {
-			const markerRange = marker.getRange();
-
-			if ( !shouldMarkerChangeBeConverted( selection.getFirstPosition()!, marker, conversionApi.mapper ) ) {
-				continue;
-			}
-
-			const data = {
-				item: selection,
-				markerName: marker.name,
-				markerRange
-			};
-
+			// Do not fire event if the marker has been consumed.
 			if ( conversionApi.consumable.test( selection, 'addMarker:' + marker.name ) ) {
+				const markerRange = marker.getRange();
+
+				if ( !shouldMarkerChangeBeConverted( selection.getFirstPosition()!, marker, conversionApi.mapper ) ) {
+					continue;
+				}
+
+				const data = {
+					item: selection,
+					markerName: marker.name,
+					markerRange
+				};
+
 				this.fire<DowncastAddMarkerEvent>( `addMarker:${ marker.name }`, data, conversionApi );
 			}
 		}
 
 		for ( const key of selection.getAttributeKeys() ) {
-			const data = {
-				item: selection,
-				range: selection.getFirstRange()!,
-				attributeKey: key,
-				attributeOldValue: null,
-				attributeNewValue: selection.getAttribute( key )
-			};
-
 			// Do not fire event if the attribute has been consumed.
-			if ( conversionApi.consumable.test( selection, 'attribute:' + data.attributeKey ) ) {
-				this.fire<DowncastAttributeEvent>( `attribute:${ data.attributeKey }:$text`, data, conversionApi );
+			if ( conversionApi.consumable.test( selection, 'attribute:' + key ) ) {
+				const data = {
+					item: selection,
+					range: selection.getFirstRange()!,
+					attributeKey: key,
+					attributeOldValue: null,
+					attributeNewValue: selection.getAttribute( key )
+				};
+
+				this.fire<DowncastAttributeEvent>( `attribute:${ key }:$text`, data, conversionApi );
 			}
 		}
 	}
@@ -318,7 +332,7 @@ export default class DowncastDispatcher extends EmitterMixin() {
 	): void {
 		if ( !options.doNotAddConsumables ) {
 			// Collect a list of things that can be consumed, consisting of nodes and their attributes.
-			this._addConsumablesForInsert( conversionApi.consumable, Array.from( range ) );
+			this._addConsumablesForInsert( conversionApi.consumable, range );
 		}
 
 		// Fire a separate insert event for each node and text fragment contained in the range.
@@ -696,6 +710,9 @@ type EventMap<TItem = Item> = {
 		attributeOldValue: unknown;
 		attributeNewValue: unknown;
 	};
+	cleanSelection: {
+		selection: Selection | DocumentSelection;
+	};
 	selection: {
 		selection: Selection | DocumentSelection;
 	};
@@ -788,6 +805,19 @@ export type DowncastAttributeEvent<TItem = Item | Selection | DocumentSelection>
  * to be used by callback, passed in `DowncastDispatcher` constructor.
  */
 export type DowncastSelectionEvent = DowncastEvent<'selection'>;
+
+/**
+ * Fired at the beginning of selection conversion, before
+ * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:selection selection} events.
+ *
+ * Should be used to clean up the view state at the current selection position, before the selection is moved to another place.
+ *
+ * @eventName ~DowncastDispatcher#cleanSelection
+ * @param {module:engine/model/selection~Selection} selection Selection that is converted.
+ * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
+ * to be used by callback, passed in `DowncastDispatcher` constructor.
+ */
+export type DowncastCleanSelectionEvent = DowncastEvent<'cleanSelection'>;
 
 /**
  * Fired when a new marker is added to the model. Also fired when a collapsed model selection that is inside a marker is converted.

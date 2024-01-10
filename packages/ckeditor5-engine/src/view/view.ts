@@ -7,43 +7,44 @@
  * @module engine/view/view
  */
 
-import Document, { type ViewDocumentLayoutChangedEvent } from './document';
-import DowncastWriter from './downcastwriter';
-import Renderer from './renderer';
-import DomConverter from './domconverter';
-import Position, { type PositionOffset } from './position';
-import Range from './range';
+import Document, { type ViewDocumentLayoutChangedEvent } from './document.js';
+import DowncastWriter from './downcastwriter.js';
+import Renderer from './renderer.js';
+import DomConverter from './domconverter.js';
+import Position, { type PositionOffset } from './position.js';
+import Range from './range.js';
 import Selection, {
 	type PlaceOrOffset,
 	type Selectable,
 	type SelectionOptions
-} from './selection';
+} from './selection.js';
 
-import type { default as Observer, ObserverConstructor } from './observer/observer';
-import type { ViewDocumentSelectionChangeEvent } from './documentselection';
-import type { StylesProcessor } from './stylesmap';
-import type Element from './element';
-import type Node from './node';
-import type Item from './item';
+import type { default as Observer, ObserverConstructor } from './observer/observer.js';
+import type { ViewDocumentSelectionChangeEvent } from './documentselection.js';
+import type { StylesProcessor } from './stylesmap.js';
+import type Element from './element.js';
+import type { default as Node, ViewNodeChangeEvent } from './node.js';
+import type Item from './item.js';
 
-import KeyObserver from './observer/keyobserver';
-import FakeSelectionObserver from './observer/fakeselectionobserver';
-import MutationObserver from './observer/mutationobserver';
-import SelectionObserver from './observer/selectionobserver';
-import FocusObserver from './observer/focusobserver';
-import CompositionObserver from './observer/compositionobserver';
-import InputObserver from './observer/inputobserver';
-import ArrowKeysObserver from './observer/arrowkeysobserver';
-import TabObserver from './observer/tabobserver';
+import KeyObserver from './observer/keyobserver.js';
+import FakeSelectionObserver from './observer/fakeselectionobserver.js';
+import MutationObserver from './observer/mutationobserver.js';
+import SelectionObserver from './observer/selectionobserver.js';
+import FocusObserver, { type ViewDocumentBlurEvent } from './observer/focusobserver.js';
+import CompositionObserver from './observer/compositionobserver.js';
+import InputObserver from './observer/inputobserver.js';
+import ArrowKeysObserver from './observer/arrowkeysobserver.js';
+import TabObserver from './observer/tabobserver.js';
 
 import {
 	CKEditorError,
+	env,
 	ObservableMixin,
 	scrollViewportToShowTarget,
 	type ObservableChangeEvent
 } from '@ckeditor/ckeditor5-utils';
-import { injectUiElementHandling } from './uielement';
-import { injectQuirksHandling } from './filler';
+import { injectUiElementHandling } from './uielement.js';
+import { injectQuirksHandling } from './filler.js';
 
 import { cloneDeep } from 'lodash-es';
 
@@ -181,6 +182,7 @@ export default class View extends ObservableMixin() {
 		this._writer = new DowncastWriter( this.document );
 
 		// Add default observers.
+		// Make sure that this list matches AlwaysRegisteredObservers type.
 		this.addObserver( MutationObserver );
 		this.addObserver( FocusObserver );
 		this.addObserver( SelectionObserver );
@@ -215,6 +217,19 @@ export default class View extends ObservableMixin() {
 		this.listenTo<ObservableChangeEvent>( this.document, 'change:isFocused', () => {
 			this._hasChangedSinceTheLastRendering = true;
 		} );
+
+		// Remove ranges from DOM selection if editor is blurred.
+		// See https://github.com/ckeditor/ckeditor5/issues/5753.
+		if ( env.isiOS ) {
+			this.listenTo<ViewDocumentBlurEvent>( this.document, 'blur', ( evt, data ) => {
+				const relatedViewElement = this.domConverter.mapDomToView( data.domEvent.relatedTarget as HTMLElement );
+
+				// Do not modify DOM selection if focus is moved to other editable of the same editor.
+				if ( !relatedViewElement ) {
+					this.domConverter._clearDomSelection();
+				}
+			} );
+		}
 	}
 
 	/**
@@ -280,10 +295,10 @@ export default class View extends ObservableMixin() {
 		this._renderer.markToSync( 'attributes', viewRoot );
 		this._renderer.domDocuments.add( domRoot.ownerDocument );
 
-		viewRoot.on( 'change:children', ( evt, node ) => this._renderer.markToSync( 'children', node ) );
-		viewRoot.on( 'change:attributes', ( evt, node ) => this._renderer.markToSync( 'attributes', node ) );
-		viewRoot.on( 'change:text', ( evt, node ) => this._renderer.markToSync( 'text', node ) );
-		viewRoot.on( 'change:isReadOnly', () => this.change( updateContenteditableAttribute ) );
+		viewRoot.on<ViewNodeChangeEvent>( 'change:children', ( evt, node ) => this._renderer.markToSync( 'children', node ) );
+		viewRoot.on<ViewNodeChangeEvent>( 'change:attributes', ( evt, node ) => this._renderer.markToSync( 'attributes', node ) );
+		viewRoot.on<ViewNodeChangeEvent>( 'change:text', ( evt, node ) => this._renderer.markToSync( 'text', node ) );
+		viewRoot.on<ObservableChangeEvent>( 'change:isReadOnly', () => this.change( updateContenteditableAttribute ) );
 
 		viewRoot.on( 'change', () => {
 			this._hasChangedSinceTheLastRendering = true;
@@ -363,6 +378,9 @@ export default class View extends ObservableMixin() {
 
 		return observer;
 	}
+
+	public getObserver<T extends ObserverConstructor>( ObserverConstructor: T ):
+		T extends AlwaysRegisteredObservers ? InstanceType<T> : InstanceType<T> | undefined;
 
 	/**
 	 * Returns observer of the given type or `undefined` if such observer has not been added yet.
@@ -568,7 +586,7 @@ export default class View extends ObservableMixin() {
 	 */
 	public forceRender(): void {
 		this._hasChangedSinceTheLastRendering = true;
-		this.getObserver( FocusObserver )!.flush();
+		this.getObserver( FocusObserver ).flush();
 		this.change( () => {} );
 	}
 
@@ -833,3 +851,17 @@ export type ViewScrollToTheSelectionEventData = {
 	alignToTop?: boolean;
 	forceScroll?: boolean;
 };
+
+/**
+ * Observers that are always registered.
+ */
+export type AlwaysRegisteredObservers =
+	| typeof MutationObserver
+	| typeof FocusObserver
+	| typeof SelectionObserver
+	| typeof KeyObserver
+	| typeof FakeSelectionObserver
+	| typeof CompositionObserver
+	| typeof ArrowKeysObserver
+	| typeof InputObserver
+	| typeof TabObserver;

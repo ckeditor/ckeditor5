@@ -9,13 +9,14 @@
 
 /* globals console */
 
-import ComponentFactory from '../componentfactory';
-import TooltipManager from '../tooltipmanager';
-import PoweredBy from './poweredby';
+import ComponentFactory from '../componentfactory.js';
+import TooltipManager from '../tooltipmanager.js';
+import PoweredBy from './poweredby.js';
+import AriaLiveAnnouncer from '../arialiveannouncer.js';
 
-import type EditorUIView from './editoruiview';
-import type ToolbarView from '../toolbar/toolbarview';
-import type { UIViewRenderEvent } from '../view';
+import type EditorUIView from './editoruiview.js';
+import type ToolbarView from '../toolbar/toolbarview.js';
+import type { UIViewRenderEvent } from '../view.js';
 
 import {
 	ObservableMixin,
@@ -57,6 +58,12 @@ export default abstract class EditorUI extends ObservableMixin() {
 	 * A helper that enables the "powered by" feature in the editor and renders a link to the project's webpage.
 	 */
 	public readonly poweredBy: PoweredBy;
+
+	/**
+	 * A helper that manages the content of an `aria-live` regions used by editor features to announce status changes
+	 * to screen readers.
+	 */
+	public readonly ariaLiveAnnouncer: AriaLiveAnnouncer;
 
 	/**
 	 * Indicates the UI is ready. Set `true` after {@link #event:ready} event is fired.
@@ -130,6 +137,7 @@ export default abstract class EditorUI extends ObservableMixin() {
 		this.focusTracker = new FocusTracker();
 		this.tooltipManager = new TooltipManager( editor );
 		this.poweredBy = new PoweredBy( editor );
+		this.ariaLiveAnnouncer = new AriaLiveAnnouncer( editor );
 
 		this.set( 'viewportOffset', this._readViewportOffsetFromConfig() );
 

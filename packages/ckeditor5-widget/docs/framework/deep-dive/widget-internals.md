@@ -1,25 +1,26 @@
 ---
 category: framework-deep-dive-ui
 menu-title: Widget internals
+meta-title: Widget internals | CKEditor 5 Framework Documentation
 ---
 
 # Deep dive into widget internals
 
 ## Disabling the widget type around feature
 
-The {@link module:widget/widgettypearound/widgettypearound~WidgetTypeAround `WidgetTypeAround`} plugin allows users to type around the widgets, in places where it is normally impossible to place the caret due to limitations of the web browsers. Although this feature boosts the productivity and ease of typing, some integrations may not want or need it, for instance:
+The {@link module:widget/widgettypearound/widgettypearound~WidgetTypeAround `WidgetTypeAround`} plugin allows users to type around the widgets, in places where it is normally impossible to place the caret due to limitations of the web browsers. Although this feature boosts productivity and ease of typing, some integrations may not want or need it, for instance:
 
 * When the UI of the feature collides with the integration.
 * When typing outside widgets should be impossible (content made exclusively of widgets).
 * When certain widgets have a fixed location in the document that should never change.
 
-In the sections that follow, you will learn how to configure CKEditor 5 WYSIWYG editor to address these specific needs.
+In the sections that follow, you will learn how to configure CKEditor&nbsp;5 WYSIWYG editor to address these specific needs.
 
 ### Hiding the buttons that insert paragraphs around widgets
 
 {@img assets/img/framework-deep-dive-widget-type-around-buttons.gif A screenshot showing the location of the buttons that insert paragraphs around widgets.}
 
-The easiest way to get rid of the type around widget buttons is to hide them using CSS. Put the following code snippet anywhere in your application and the buttons will no longer be displayed:
+The easiest way to get rid of the type-around widget buttons is to hide them using CSS. Put the following code snippet anywhere in your application and the buttons will no longer be displayed:
 
 ```css
 .ck.ck-editor__editable .ck-widget .ck-widget__type-around__button {

@@ -7,13 +7,13 @@
  * @module heading
  */
 
-export { default as Heading } from './heading';
-export type { HeadingOption } from './headingconfig';
-export { default as HeadingEditing } from './headingediting';
-export { default as HeadingUI } from './headingui';
-export { default as HeadingButtonsUI } from './headingbuttonsui';
-export { default as Title, type TitleConfig } from './title';
-export type { HeadingConfig } from './headingconfig';
-export type { default as HeadingCommand } from './headingcommand';
+export { default as Heading } from './heading.js';
+export type { HeadingOption, HeadingElementOption } from './headingconfig.js';
+export { default as HeadingEditing } from './headingediting.js';
+export { default as HeadingUI } from './headingui.js';
+export { default as HeadingButtonsUI } from './headingbuttonsui.js';
+export { default as Title, type TitleConfig } from './title.js';
+export type { HeadingConfig } from './headingconfig.js';
+export type { default as HeadingCommand } from './headingcommand.js';
 
-import './augmentation';
+import './augmentation.js';

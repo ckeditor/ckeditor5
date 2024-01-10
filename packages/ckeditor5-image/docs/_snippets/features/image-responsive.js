@@ -14,7 +14,7 @@ ClassicEditor
 				'undo', 'redo',
 				'|', 'heading',
 				'|', 'bold', 'italic',
-				'|', 'link', 'uploadImage', 'ckbox', 'insertTable', 'mediaEmbed',
+				'|', 'link', 'insertImage', 'ckbox', 'insertTable', 'mediaEmbed',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
@@ -34,7 +34,9 @@ ClassicEditor
 				'|',
 				'resizeImage:100',
 				'resizeImage:200',
-				'resizeImage:original'
+				'resizeImage:original',
+				'|',
+				'ckboxImageEdit'
 			],
 			resizeOptions: [
 				{
@@ -61,6 +63,10 @@ ClassicEditor
 				'tableRow',
 				'mergeTableCells'
 			]
+		},
+		ckbox: {
+			forceDemoLabel: true,
+			allowExternalImagesEditing: [ /^data:/, 'origin' ]
 		},
 		cloudServices: CS_CONFIG
 	} )

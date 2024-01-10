@@ -15,10 +15,15 @@ msgstr ""
 "Language-Team: Vietnamese (https://app.transifex.com/ckeditor/teams/11143/vi/)\n"
 "Language: vi\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Label for the Cancel button."
 msgid "Cancel"
 msgstr "Hủy"
+
+msgctxt "Label for the Clear button."
+msgid "Clear"
+msgstr "Xóa"
 
 msgctxt "The label used by a button next to the color palette in the color picker that removes the color (resets it to an empty value, example usages in font color or table properties)."
 msgid "Remove color"
@@ -47,3 +52,19 @@ msgstr "Không thể tải file:"
 msgctxt "Accessible label of the specific editing area of the editor acting as a root of the entire application."
 msgid "Rich Text Editor. Editing area: %0"
 msgstr "Trình chỉnh sửa Văn bản dạng RTF. Vùng chỉnh sửa:  %0"
+
+msgctxt "The label for the insert image with the file manager toolbar button with visible label in insert image dropdown."
+msgid "Insert with file manager"
+msgstr "Chèn bằng trình quản lý tập tin"
+
+msgctxt "The label for the replace image with the file manager toolbar button with visible label in insert image dropdown."
+msgid "Replace with file manager"
+msgstr "Thay thế bằng trình quản lý tập tin"
+
+msgctxt "The label for the insert image with the file manager toolbar button."
+msgid "Insert image with file manager"
+msgstr "Chèn hình ảnh bằng trình quản lý tập tin"
+
+msgctxt "The label for the replace image with the file manager toolbar button."
+msgid "Replace image with file manager"
+msgstr "Thay thế hình ảnh bằng trình quản lý tập tin"

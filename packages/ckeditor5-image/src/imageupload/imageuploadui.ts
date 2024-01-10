@@ -7,11 +7,12 @@
  * @module image/imageupload/imageuploadui
  */
 
-import type { Locale } from 'ckeditor5/src/utils';
-import { Plugin, icons } from 'ckeditor5/src/core';
-import { FileDialogButtonView } from 'ckeditor5/src/upload';
-import { createImageTypeRegExp } from './utils';
-import type UploadImageCommand from './uploadimagecommand';
+import type { Locale } from 'ckeditor5/src/utils.js';
+import { Plugin, icons } from 'ckeditor5/src/core.js';
+import { FileDialogButtonView } from 'ckeditor5/src/upload.js';
+import { createImageTypeRegExp } from './utils.js';
+import type UploadImageCommand from './uploadimagecommand.js';
+import type ImageInsertUI from '../imageinsert/imageinsertui.js';
 
 /**
  * The image upload button plugin.
@@ -35,6 +36,7 @@ export default class ImageUploadUI extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 		const t = editor.t;
+
 		const componentCreator = ( locale: Locale ) => {
 			const view = new FileDialogButtonView( locale );
 			const command: UploadImageCommand = editor.commands.get( 'uploadImage' )!;
@@ -43,16 +45,13 @@ export default class ImageUploadUI extends Plugin {
 
 			view.set( {
 				acceptedType: imageTypes.map( type => `image/${ type }` ).join( ',' ),
-				allowMultipleFiles: true
-			} );
-
-			view.buttonView.set( {
-				label: t( 'Insert image' ),
-				icon: icons.image,
+				allowMultipleFiles: true,
+				label: t( 'Upload image from computer' ),
+				icon: icons.imageUpload,
 				tooltip: true
 			} );
 
-			view.buttonView.bind( 'isEnabled' ).to( command );
+			view.bind( 'isEnabled' ).to( command );
 
 			view.on( 'done', ( evt, files: FileList ) => {
 				const imagesToUpload = Array.from( files ).filter( file => imageTypesRegExp.test( file.type ) );
@@ -70,5 +69,42 @@ export default class ImageUploadUI extends Plugin {
 		// Setup `uploadImage` button and add `imageUpload` button as an alias for backward compatibility.
 		editor.ui.componentFactory.add( 'uploadImage', componentCreator );
 		editor.ui.componentFactory.add( 'imageUpload', componentCreator );
+
+		if ( editor.plugins.has( 'ImageInsertUI' ) ) {
+			const imageInsertUI: ImageInsertUI = editor.plugins.get( 'ImageInsertUI' );
+			const command: UploadImageCommand = editor.commands.get( 'uploadImage' )!;
+
+			imageInsertUI.registerIntegration( {
+				name: 'upload',
+				observable: command,
+
+				buttonViewCreator: () => {
+					const uploadImageButton = editor.ui.componentFactory.create( 'uploadImage' ) as FileDialogButtonView;
+
+					uploadImageButton.bind( 'label' ).to( imageInsertUI, 'isImageSelected', isImageSelected => isImageSelected ?
+						t( 'Replace image from computer' ) :
+						t( 'Upload image from computer' )
+					);
+
+					return uploadImageButton;
+				},
+
+				formViewCreator: () => {
+					const uploadImageButton = editor.ui.componentFactory.create( 'uploadImage' ) as FileDialogButtonView;
+
+					uploadImageButton.withText = true;
+					uploadImageButton.bind( 'label' ).to( imageInsertUI, 'isImageSelected', isImageSelected => isImageSelected ?
+						t( 'Replace from computer' ) :
+						t( 'Upload from computer' )
+					);
+
+					uploadImageButton.on( 'execute', () => {
+						imageInsertUI.dropdownView!.isOpen = false;
+					} );
+
+					return uploadImageButton;
+				}
+			} );
+		}
 	}
 }

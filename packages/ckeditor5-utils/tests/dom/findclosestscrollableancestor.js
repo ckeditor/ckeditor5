@@ -5,8 +5,8 @@
 
 /* globals document */
 
-import findClosestScrollableAncestor from '../../src/dom/findclosestscrollableancestor';
-import createElement from '../../src/dom/createelement';
+import findClosestScrollableAncestor from '../../src/dom/findclosestscrollableancestor.js';
+import createElement from '../../src/dom/createelement.js';
 
 describe( 'findClosestScrollableAncestor', () => {
 	const overflowAutoStyleAttribute = { style: 'overflow-y: auto;' };

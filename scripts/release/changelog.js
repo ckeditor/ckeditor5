@@ -10,60 +10,18 @@
 'use strict';
 
 const fs = require( 'fs' );
+const getChangelogOptions = require( './getchangelogoptions' );
 const { generateChangelogForMonoRepository } = require( '@ckeditor/ckeditor5-dev-release-tools' );
-const { PACKAGES_DIRECTORY, CKEDITOR5_ROOT_PATH, CKEDITOR5_INTERNAL_PATH, COLLABORATION_FEATURES_PATH } = require( './utils/constants' );
+const { CKEDITOR5_COMMERCIAL_PATH } = require( './utils/constants' );
 const parseArguments = require( './utils/parsearguments' );
 
 const cliArguments = parseArguments( process.argv.slice( 2 ) );
 
-if ( !fs.existsSync( CKEDITOR5_INTERNAL_PATH ) ) {
-	throw new Error( `The script assumes that the directory "${ CKEDITOR5_INTERNAL_PATH }" exists.` );
+if ( !fs.existsSync( CKEDITOR5_COMMERCIAL_PATH ) ) {
+	throw new Error( `The script assumes that the directory "${ CKEDITOR5_COMMERCIAL_PATH }" exists.` );
 }
 
-if ( !fs.existsSync( COLLABORATION_FEATURES_PATH ) ) {
-	throw new Error( `The script assumes that the directory "${ COLLABORATION_FEATURES_PATH }" exists.` );
-}
-
-const changelogOptions = {
-	cwd: CKEDITOR5_ROOT_PATH,
-	packages: PACKAGES_DIRECTORY,
-	releaseBranch: cliArguments.branch,
-	transformScope: name => {
-		if ( name === 'ckeditor5' ) {
-			return 'https://www.npmjs.com/package/ckeditor5';
-		}
-
-		if ( name === 'build-*' ) {
-			return 'https://www.npmjs.com/search?q=keywords%3Ackeditor5-build%20maintainer%3Ackeditor';
-		}
-
-		if ( name === 'editor-*' ) {
-			return 'https://www.npmjs.com/search?q=keywords%3Ackeditor5-editor%20maintainer%3Ackeditor';
-		}
-
-		if ( name === 'letters' ) {
-			return 'https://www.npmjs.com/package/@ckeditor/letters';
-		}
-
-		return 'https://www.npmjs.com/package/@ckeditor/ckeditor5-' + name;
-	},
-	externalRepositories: [
-		{
-			cwd: CKEDITOR5_INTERNAL_PATH,
-			packages: PACKAGES_DIRECTORY,
-			skipLinks: true
-		},
-		{
-			cwd: COLLABORATION_FEATURES_PATH,
-			packages: PACKAGES_DIRECTORY,
-			skipLinks: true
-		}
-	]
-};
-
-if ( cliArguments.from ) {
-	changelogOptions.from = cliArguments.from;
-}
+const changelogOptions = getChangelogOptions( cliArguments );
 
 generateChangelogForMonoRepository( changelogOptions )
 	.then( () => {

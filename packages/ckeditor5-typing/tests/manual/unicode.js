@@ -5,10 +5,10 @@
 
 /* globals console, window, document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import Typing from '../../src/typing';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
+import Typing from '../../src/typing.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

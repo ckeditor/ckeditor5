@@ -5,11 +5,11 @@
 
 /* globals console, window, document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 
-import Indent from '../../src/indent';
-import IndentBlock from '../../src/indentblock';
+import Indent from '../../src/indent.js';
+import IndentBlock from '../../src/indentblock.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

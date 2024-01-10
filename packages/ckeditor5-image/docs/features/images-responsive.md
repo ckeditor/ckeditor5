@@ -1,7 +1,7 @@
 ---
 category: features-images
 menu-title: Responsive images
-meta-title: Responsive images in CKEditor 5
+meta-title: Responsive images | CKEditor 5 Documentation
 meta-description: Learn how responsive images can make your content better.
 order: 55
 modified_at: 2023-06-30
@@ -14,14 +14,13 @@ The ability to have responsive images in the rich-text editor content is a great
 
 ## Demo
 
-Observe the responsive image in the demo. You can also add another one with the CKBox toolbar button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/browse-files.svg}. Change the demo viewport and observe how the editor automatically serves the size-adjusted image. Resize your browser window to change the editor viewport and see the service feed the right optimized image.
+Observe the responsive image in the demo. You can also add another one with the CKBox toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/browse-files.svg}. Resize your browser window to change the editor viewport and observe how the editor automatically serves the size-adjusted, optimized image.
 
 {@snippet features/image-responsive}
 
 <info-box info>
 	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
-
 
 ## Why responsive images?
 
@@ -31,7 +30,7 @@ Responsive images have two main advantages over "traditional" image delivery:
 * **They load faster**. Because only the image matching the size of the screen is transferred, in most cases it can be loaded and displayed much faster than a "regular" full–scale image. The faster it loads, the sooner the users can see it, which greatly improves the user experience of your application. You no longer need to wait for ages for high–resolution photos to load on a tiny smartphone screen.
 * **Accessibility**. By catering to different user devices, you may better address the users' different needs. Paired with the {@link features/images-text-alternative text alternative} it makes your content more accessible.
 
-{@img assets/img/responsive-images.svg 550 The visualization of the responsive images approach for CKEditor 5 WYSIWYG editor.}
+{@img assets/img/responsive-images.svg 550 The visualization of the responsive images approach for CKEditor&nbsp;5 WYSIWYG editor.}
 
 ## Responsive images in the markup
 
@@ -74,7 +73,6 @@ Regardless of the original file format, the responsive versions will be served a
 </info-box>
 
 For detailed information on how to configure and use CKBox, please refer to the {@link features/ckbox#installation CKBox file manager} installation guide.
-
 
 ## Contribute
 

@@ -15,7 +15,6 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import {
-	findOptimalInsertionRange as engineFindOptimalInsertionRange,
 	type AddHighlightCallback,
 	type HighlightDescriptor,
 	type RemoveHighlightCallback,
@@ -33,8 +32,8 @@ import {
 
 import { IconView } from '@ckeditor/ckeditor5-ui';
 
-import HighlightStack, { type HighlightStackChangeEvent } from './highlightstack';
-import { getTypeAroundFakeCaretPosition } from './widgettypearound/utils';
+import HighlightStack, { type HighlightStackChangeEvent } from './highlightstack.js';
+import { getTypeAroundFakeCaretPosition } from './widgettypearound/utils.js';
 
 import dragHandleIcon from '../theme/icons/drag-handle.svg';
 
@@ -345,7 +344,7 @@ export function findOptimalInsertionRange(
 		}
 	}
 
-	return engineFindOptimalInsertionRange( selection, model );
+	return model.schema.findOptimalInsertionRange( selection );
 }
 
 /**

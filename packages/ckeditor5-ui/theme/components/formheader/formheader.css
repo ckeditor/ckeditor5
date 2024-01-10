@@ -9,4 +9,8 @@
 	flex-wrap: nowrap;
 	align-items: center;
 	justify-content: space-between;
+
+	& h2.ck-form__header__label {
+		flex-grow: 1;
+	}
 }

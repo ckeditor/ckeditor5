@@ -7,12 +7,12 @@
  * @module engine/view/editableelement
  */
 
-import ContainerElement from './containerelement';
+import ContainerElement from './containerelement.js';
 import { ObservableMixin } from '@ckeditor/ckeditor5-utils';
-import type { ViewSelectionChangeEvent } from './selection';
-import type { ElementAttributes } from './element';
-import type Document from './document';
-import type Node from './node';
+import type { ViewSelectionChangeEvent } from './selection.js';
+import type { ElementAttributes } from './element.js';
+import type Document from './document.js';
+import type Node from './node.js';
 
 /**
  * Editable element which can be a {@link module:engine/view/rooteditableelement~RootEditableElement root}
@@ -43,6 +43,17 @@ export default class EditableElement extends ObservableMixin( ContainerElement )
 	declare public isFocused: boolean;
 
 	/**
+	 * Placeholder of editable element.
+	 *
+	 * ```ts
+	 * editor.editing.view.document.getRoot( 'main' ).placeholder = 'New placeholder';
+	 * ```
+	 *
+	 * @observable
+	 */
+	declare public placeholder?: string;
+
+	/**
 	 * Creates an editable element.
 	 *
 	 * @see module:engine/view/downcastwriter~DowncastWriter#createEditableElement
@@ -62,6 +73,7 @@ export default class EditableElement extends ObservableMixin( ContainerElement )
 
 		this.set( 'isReadOnly', false );
 		this.set( 'isFocused', false );
+		this.set( 'placeholder', undefined );
 
 		this.bind( 'isReadOnly' ).to( document );
 

@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-editor-balloon",
-  "version": "38.1.0",
+  "version": "40.2.0",
   "description": "Balloon editor implementation for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -9,33 +9,30 @@
     "ckeditor5-editor",
     "ckeditor5-dll"
   ],
+  "type": "module",
   "main": "src/index.ts",
   "dependencies": {
-    "ckeditor5": "38.1.0",
-    "lodash-es": "^4.17.15"
+    "ckeditor5": "40.2.0",
+    "lodash-es": "4.17.21"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "38.1.0",
-    "@ckeditor/ckeditor5-core": "38.1.0",
-    "@ckeditor/ckeditor5-dev-utils": "^38.0.0",
-    "@ckeditor/ckeditor5-engine": "38.1.0",
-    "@ckeditor/ckeditor5-enter": "38.1.0",
-    "@ckeditor/ckeditor5-heading": "38.1.0",
-    "@ckeditor/ckeditor5-image": "38.1.0",
-    "@ckeditor/ckeditor5-paragraph": "38.1.0",
-    "@ckeditor/ckeditor5-theme-lark": "38.1.0",
-    "@ckeditor/ckeditor5-typing": "38.1.0",
-    "@ckeditor/ckeditor5-ui": "38.1.0",
-    "@ckeditor/ckeditor5-undo": "38.1.0",
-    "@ckeditor/ckeditor5-utils": "38.1.0",
-    "@ckeditor/ckeditor5-watchdog": "38.1.0",
-    "typescript": "^4.8.4",
+    "@ckeditor/ckeditor5-basic-styles": "40.2.0",
+    "@ckeditor/ckeditor5-core": "40.2.0",
+    "@ckeditor/ckeditor5-dev-utils": "^39.0.0",
+    "@ckeditor/ckeditor5-engine": "40.2.0",
+    "@ckeditor/ckeditor5-enter": "40.2.0",
+    "@ckeditor/ckeditor5-heading": "40.2.0",
+    "@ckeditor/ckeditor5-image": "40.2.0",
+    "@ckeditor/ckeditor5-paragraph": "40.2.0",
+    "@ckeditor/ckeditor5-theme-lark": "40.2.0",
+    "@ckeditor/ckeditor5-typing": "40.2.0",
+    "@ckeditor/ckeditor5-ui": "40.2.0",
+    "@ckeditor/ckeditor5-undo": "40.2.0",
+    "@ckeditor/ckeditor5-utils": "40.2.0",
+    "@ckeditor/ckeditor5-watchdog": "40.2.0",
+    "typescript": "5.0.4",
     "webpack": "^5.58.1",
     "webpack-cli": "^4.9.0"
-  },
-  "engines": {
-    "node": ">=16.0.0",
-    "npm": ">=5.7.1"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "GPL-2.0-or-later",

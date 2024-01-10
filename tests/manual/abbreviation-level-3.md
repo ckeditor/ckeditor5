@@ -5,7 +5,7 @@ order: 25
 
 # Abbreviation plugin tutorial - part 3
 
-This guide will show you how to create a simple abbreviation plugin for CKEditor 5. We’ll create a toolbar button that lets the users insert abbreviations into their document through a dialog box.  The abbreviations will use the `<abbr>` <abbr title="HyperText Markup Language"> HTML </abbr> element, with a ‘title’ property that will show up in a tooltip when the user hovers over the element.
+This guide will show you how to create a simple abbreviation plugin for CKEditor&nbsp;5. We’ll create a toolbar button that lets the users insert abbreviations into their document through a dialog box.  The abbreviations will use the `<abbr>` <abbr title="HyperText Markup Language"> HTML </abbr> element, with a ‘title’ property that will show up in a tooltip when the user hovers over the element.
 
 <info-box>
 	If you want to see the final product of this tutorial before you plunge in, check out the [demo](#demo).
@@ -15,7 +15,7 @@ This guide will show you how to create a simple abbreviation plugin for CKEditor
 
 This guide assumes that you are familiar with npm. If not, see the [npm documentation](https://docs.npmjs.com/getting-started/what-is-npm) or call `npm init` in an empty directory and keep your fingers crossed.
 
-First, install packages needed to build and set up a basic CKEditor 5 instance. On top of that, we will need:
+First, install packages needed to build and set up a basic CKEditor&nbsp;5 instance. On top of that, we will need:
 
 * The [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckeditor5-core) package which contains the {@link module:core/plugin~Plugin} and {@link module:core/command~Command} classes.
 * The [`@ckeditor/ckeditor5-ui`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui) package which contains the UI library and framework.
@@ -255,7 +255,7 @@ SCREENSHOT
 
 ## The model and the view layers
 
-CKEditor 5 implements its custom data model, which does not map to the DOM 1:1. Inline elements, such as `<abbr>`, are represented as attributes in the model, not as separate elements. In order for our plugin to work, we will need to make sure that we can add abbreviation attribute to the text node.
+CKEditor&nbsp;5 implements its custom data model, which does not map to the DOM 1:1. Inline elements, such as `<abbr>`, are represented as attributes in the model, not as separate elements. In order for our plugin to work, we will need to make sure that we can add abbreviation attribute to the text node.
 
 ### Defining the schema
 

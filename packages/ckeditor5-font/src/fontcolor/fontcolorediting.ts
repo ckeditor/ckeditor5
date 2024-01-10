@@ -7,10 +7,10 @@
  * @module font/fontcolor/fontcolorediting
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
-import FontColorCommand from './fontcolorcommand';
-import type { ViewElement } from 'ckeditor5/src/engine';
-import { FONT_COLOR, renderDowncastElement, renderUpcastAttribute } from '../utils';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import FontColorCommand from './fontcolorcommand.js';
+import type { ViewElement } from 'ckeditor5/src/engine.js';
+import { FONT_COLOR, renderDowncastElement, renderUpcastAttribute } from '../utils.js';
 
 /**
  * The font color editing feature.

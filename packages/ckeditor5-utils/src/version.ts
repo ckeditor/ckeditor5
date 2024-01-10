@@ -7,19 +7,14 @@
  * @module utils/version
  */
 
-/* globals window, global */
+import CKEditorError from './ckeditorerror.js';
 
-import CKEditorError from './ckeditorerror';
-
-const version = '38.1.0';
+const version = '40.2.0';
 
 export default version;
 
 // The second argument is not a month. It is `monthIndex` and starts from `0`.
-export const releaseDate = new Date( 2023, 5, 28 );
-
-/* istanbul ignore next -- @preserve */
-const windowOrGlobal = typeof window === 'object' ? window : global;
+export const releaseDate = new Date( 2023, 11, 12 );
 
 declare global {
 	// eslint-disable-next-line no-var
@@ -27,7 +22,7 @@ declare global {
 }
 
 /* istanbul ignore next -- @preserve */
-if ( windowOrGlobal.CKEDITOR_VERSION ) {
+if ( globalThis.CKEDITOR_VERSION ) {
 	/**
 	 * This error is thrown when due to a mistake in how CKEditor 5 was installed or initialized, some
 	 * of its modules were duplicated (evaluated and executed twice). Module duplication leads to inevitable runtime
@@ -51,7 +46,7 @@ if ( windowOrGlobal.CKEDITOR_VERSION ) {
 	 * that it contains all the necessary code from e.g. `@ckeditor/ckeditor5-engine` and `@ckeditor/ckeditor5-utils`.
 	 *
 	 * However, the `Highlight` plugin imports some of the modules from these packages, too. If you ask webpack to
-	 * build such a project, you will end up with the modules being included (and run) twice &mdash; first, because they are
+	 * build such a project, you will end up with the modules being included (and run) twice &ndash; first, because they are
 	 * included inside the build package, and second, because they are required by the `Highlight` plugin.
 	 *
 	 * Therefore, **you must never add plugins to an existing build** unless your plugin has no dependencies.
@@ -136,7 +131,7 @@ if ( windowOrGlobal.CKEDITOR_VERSION ) {
 	 * asking the author of the third-party package to upgrade its depdendencies (or forking their project and doing this yourself).
 	 *
 	 * **Note:** All official CKEditor 5 packages (excluding integrations and `ckeditor5-dev-*` packages) are released in the
-	 * same major version. This is &mdash; in the `x.y.z`, the `x` is the same for all packages. This is the simplest way to check
+	 * same major version. This means that in the `x.y.z` version, the `x` is the same for all packages. This is the simplest way to check
 	 * whether you use packages coming from the same CKEditor 5 version. You can read more about versioning in the
 	 * {@glink updating/versioning-policy Versioning policy} guide.
 	 *
@@ -167,5 +162,5 @@ if ( windowOrGlobal.CKEDITOR_VERSION ) {
 		null
 	);
 } else {
-	windowOrGlobal.CKEDITOR_VERSION = version;
+	globalThis.CKEDITOR_VERSION = version;
 }

@@ -8,8 +8,18 @@
 /* config { "additionalLanguages": [ "ar", "es" ] } */
 
 import { Superscript } from '@ckeditor/ckeditor5-basic-styles';
-import ClassicEditor from '../build-classic';
+import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
+import { PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
+import ClassicEditor from '../build-classic.js';
 
 ClassicEditor.builtinPlugins.push( Superscript );
+ClassicEditor.builtinPlugins.push( PictureEditing );
+ClassicEditor.builtinPlugins.push( ImageInsert );
+ClassicEditor.builtinPlugins.push( Superscript );
+ClassicEditor.builtinPlugins.push( CKBox );
+ClassicEditor.builtinPlugins.push( CKBoxImageEdit );
+ClassicEditor.builtinPlugins.push( PictureEditing );
+ClassicEditor.builtinPlugins.push( ImageResize );
+ClassicEditor.builtinPlugins.push( AutoImage );
 
 window.ClassicEditor = ClassicEditor;

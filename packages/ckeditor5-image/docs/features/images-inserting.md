@@ -1,7 +1,7 @@
 ---
 category: features-images
 menu-title: Inserting images via URL
-meta-title: Inserting images into content in CKEditor 5 via URL
+meta-title: Inserting images into content via URL | CKEditor 5 Documentation
 meta-description: Learn how to insert your images into the content.
 order: 75
 ---
@@ -9,12 +9,13 @@ order: 75
 
 # Inserting images
 
-You can insert images by uploading them directly from your disk, but you can also configure CKEditor 5 to let you insert images using URLs. This way you can save time by adding images that are already online.
+You can insert images by uploading them directly from your disk, but you can also configure CKEditor&nbsp;5 to let you insert images using URLs. This way you can save time by adding images that are already online.
 
 ## Inserting images via a source URL
+
 ### Demo
 
-To upload an image, use the image toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Image}. If you want to add an image through a URL, click the arrow next to the image button and paste the URL in the dropdown panel. To update an existing image, select it and paste a new URL in the dropdown panel.
+To upload an image, use the image toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/image-upload.svg Image}. If you want to add an image through a URL, click the arrow next to the image button and paste the URL in the dropdown panel. To update an existing image, select it and paste a new URL in the dropdown panel.
 
 {@snippet features/image-insert-via-url}
 
@@ -40,7 +41,7 @@ ClassicEditor
 	} )
 ```
 
-This will add a new **Insert image** dropdown {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Insert image} in the toolbar. 
+This will add a new **Insert image** dropdown {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Insert image} in the toolbar.
 
 ## Inserting images via pasting a URL into the editor
 
@@ -75,7 +76,7 @@ If the automatic embedding was unexpected, for instance when the link was meant 
 
 The {@link module:image/image~Image} plugin registers:
 
-* The {@link module:image/image/insertimagecommand~InsertImageCommand `'insertImage'` command} that accepts a source (e.g. a URL) of an image to insert.
+* The {@link module:image/image/insertimagecommand~InsertImageCommand `'insertImage'` command} that accepts a source (for example a URL) of an image to insert.
 
 The {@link module:image/imageupload~ImageUpload} plugin registers:
 
@@ -83,7 +84,7 @@ The {@link module:image/imageupload~ImageUpload} plugin registers:
 * The {@link module:image/imageupload/uploadimagecommand~UploadImageCommand `'uploadImage'` command} that accepts the file to upload.
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Contribute

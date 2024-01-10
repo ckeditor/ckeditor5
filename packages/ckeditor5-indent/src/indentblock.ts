@@ -7,12 +7,12 @@
  * @module indent/indentblock
  */
 
-import { Plugin, type Editor, type MultiCommand } from 'ckeditor5/src/core';
-import { addMarginRules, type AttributeDescriptor, type ViewElement } from 'ckeditor5/src/engine';
+import { Plugin, type Editor, type MultiCommand } from 'ckeditor5/src/core.js';
+import { addMarginRules, type AttributeDescriptor, type ViewElement } from 'ckeditor5/src/engine.js';
 
-import IndentBlockCommand from './indentblockcommand';
-import IndentUsingOffset from './indentcommandbehavior/indentusingoffset';
-import IndentUsingClasses from './indentcommandbehavior/indentusingclasses';
+import IndentBlockCommand from './indentblockcommand.js';
+import IndentUsingOffset from './indentcommandbehavior/indentusingoffset.js';
+import IndentUsingClasses from './indentcommandbehavior/indentusingclasses.js';
 import type { HeadingOption } from '@ckeditor/ckeditor5-heading';
 
 const DEFAULT_ELEMENTS = [ 'paragraph', 'heading1', 'heading2', 'heading3', 'heading4', 'heading5', 'heading6' ];
@@ -125,7 +125,12 @@ export default class IndentBlock extends Plugin {
 			},
 			model: {
 				key: 'blockIndent',
-				value: ( viewElement: ViewElement ) => viewElement.getStyle( marginProperty )
+				value: ( viewElement: ViewElement ) => {
+					// Do not indent block elements in Document Lists. See https://github.com/ckeditor/ckeditor5/issues/12466.
+					if ( !viewElement.is( 'element', 'li' ) ) {
+						return viewElement.getStyle( marginProperty );
+					}
+				}
 			}
 		} );
 

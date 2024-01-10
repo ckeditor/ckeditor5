@@ -22,8 +22,7 @@ module.exports = async function isCKEditor5PackageFactory() {
 	const allPathsToPackageJson = await glob( [
 		'package.json',
 		'packages/*/package.json',
-		'external/ckeditor5-internal/packages/*/package.json',
-		'external/collaboration-features/packages/*/package.json'
+		'external/ckeditor5-commercial/packages/*/package.json'
 	], {
 		cwd: pathToCKEditor5,
 		nodir: true,

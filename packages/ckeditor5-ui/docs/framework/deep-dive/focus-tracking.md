@@ -1,12 +1,13 @@
 ---
 category: framework-deep-dive-ui
 menu-title: Focus tracking
+meta-title: Deep dive into focus tracking | CKEditor 5 Framework Documentation
 classes: focus-tracking
 ---
 
 # Deep dive into focus tracking
 
-**Focus is where all the keyboard interactions (events) take place.** It is an essential concept for any piece of a web page operated with a keyboard, be it a physical keyboard of your laptop or a software keyboard of your smartphone. And CKEditor 5 being a rich text editor is no exception here.
+**Focus is where all the keyboard interactions (events) take place.** It is an essential concept for any piece of a web page operated with a keyboard, be it a physical keyboard of your laptop or a software keyboard of your smartphone. And CKEditor&nbsp;5 being a rich text editor is no exception here.
 
 ## What is focus and why it matters for CKEditor?
 
@@ -14,17 +15,17 @@ classes: focus-tracking
 
 Every time you click a text field or an editor, it automatically prepares to accept your text. It is no longer just a static container for letters but something you can interact with using your keyboard. And you know it because you can see the familiar blinking caret somewhere inside of it. This subtle action called a **focus change** takes place hundreds of times every day as you navigate web pages, type your search queries, chat with your friends and fill in checkout forms when online shopping.
 
-{@img assets/img/framework-deep-dive-focus-form-example.gif 578 The animation showing the focus moving from one field to another when filling in the form.}
+{@img assets/img/framework-deep-dive-focus-form-example.gif 578 The animation shows the focus moving from one field to another when filling in the form.}
 
-Focusing text fields feels so natural we usually do not give it much thought. But if it wasn't for that simple action... there would be no way to type text. Where would it go if there was no focused field? Focus informs the software about your intentions and it is synonymous with the **context**.
+Focusing text fields feels so natural we usually do not give it much thought. But without this simple action, there would be no way to type text. Where would it go if there was no focused field? Focus informs the software about your intentions and it is synonymous with the **context**.
 
 ### Focus in CKEditor
 
-But CKEditor is more than a simple text field. Yes, it has the main space where you type your text but other places also allow you to type, for instance, a link URL field or a form with plenty of inputs allowing you to configure the look of a table.
+CKEditor is more than a simple text field. Yes, it has the main space where you type your text but other places also allow you to type, for instance, a link URL field or a form with plenty of inputs allowing you to configure the look of a table.
 
-{@img assets/img/framework-deep-dive-focus-link-blinking-caret.gif 606 The animation showing the focused link URL input in CKEditor 5 with a blinking caret.}
+{@img assets/img/framework-deep-dive-focus-link-blinking-caret.gif 606 The animation showing the focused link URL input in CKEditor&nbsp;5 with a blinking caret.}
 
-And when many places accept focus, there must be some systems out there to discover and manage it. These systems work, for instance, so you will not find yourself in a situation where CKEditor 5 loses focus (or gets **blurred**) and you cannot type your text. Or they make sure you can see and use the editor toolbar as long as you keep editing. These are just a few examples of why focus management systems are necessary. Now it should also be clear that they are essential for the editing experience.
+And when many places accept focus, there must be some systems out there to discover and manage it. These systems work, for instance, so you will not find yourself in a situation where CKEditor&nbsp;5 loses focus (or gets **blurred**) and you cannot type your text. Or they make sure you can see and use the editor toolbar as long as you keep editing. These are just a few examples of why focus management systems are necessary. Now it should also be clear that they are essential for the editing experience.
 
 In the following chapters of this guide, we will explain how these systems work, what makes CKEditor "focusable", and how to develop new editor features so they fit into the existing focus management systems and patterns:
 
@@ -38,12 +39,12 @@ In the following chapters of this guide, we will explain how these systems work,
 	Keep in mind that information in this chapter concerns the editor **engine layer only**. To learn about focus in the user interface, check out the [next section](#focus-in-the-editor-ui) of this guide.
 </info-box>
 
-The main editable area of CKEditor 5 WYSIWYG editor can be focused thanks to the [`contenteditable`](https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Editable_content) DOM attribute. This attribute tells the web browser that a web page element can be edited like any other text field, which also means it must be able to receive focus.
+The main editable area of CKEditor&nbsp;5 WYSIWYG editor can be focused thanks to the [`contenteditable`](https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Editable_content) DOM attribute. This attribute tells the web browser that a web page element can be edited like any other text field, which also means it must be able to receive focus.
 
 Each root of the editing view has the `contenteditable` attribute. The editing view uses the {@link module:engine/view/observer/focusobserver~FocusObserver `FocusObserver`} (learn more about {@link framework/architecture/editing-engine#observers view observers}) to track focus in editables by listening to native DOM `focus` and `blur` events coming from them.
 
 <info-box>
-	Already confused? Take a look at our {@link framework/architecture/editing-engine#observers editing engine guide} that explains what the editing view, editables and other building blocks of CKEditor 5 are.
+	Already confused? Take a look at our {@link framework/architecture/editing-engine#observers editing engine guide} that explains what the editing view, editables and other building blocks of CKEditor&nbsp;5 are.
 </info-box>
 
 ### Checking if the view document is focused
@@ -54,9 +55,9 @@ You can check if the view document is focused using its {@link framework/deep-di
 console.log( editor.editing.view.document.isFocused );
 ```
 
-If you run this snippet from the web browser's developer console, it should return `false` unless you managed to keep the editor focused (e.g. by running a debugger and freezing the DOM). This happens because the editor loses focus the moment you switch to developer tools to execute the snippet.
+If you run this snippet from the web browser's developer console, it should return `false` unless you managed to keep the editor focused (for example, by running a debugger and freezing the DOM). This happens because the editor loses focus the moment you switch to developer tools to execute the snippet.
 
-So how do I know `isFocused` actually works? Since it is observable you can see how it changes live:
+How do you know `isFocused` actually works? Since it is observable, you can see how it changes live:
 
 ```js
 editor.editing.view.document.on( 'change:isFocused', ( evt, data, isFocused ) => {
@@ -64,21 +65,21 @@ editor.editing.view.document.on( 'change:isFocused', ( evt, data, isFocused ) =>
 } );
 ```
 
-Click the editable area of the editor and then click somewhere else &mdash; the `isFocused` property will change its value when you do that. The same will also happen if you run an editor with {@link examples/builds/multi-root-editor **multiple editing roots**} and navigate across them.
+Click the editable area of the editor and then click somewhere else &ndash; the `isFocused` property will change its value when you do that. The same will also happen if you run an editor with {@link examples/builds/multi-root-editor **multiple editing roots**} and navigate across them.
 
-To spice things up even more, you should also know `isFocused` will change when you focus any {@link framework/tutorials/implementing-a-block-widget **nested editable**} in the content (take, for example, a {@link features/images-captions caption of an image}). Sounds weird, right? This is because every nested editable in the content has the `contenteditable` attribute, too, and for the web browser moving your caret inside it means the main editable element is blurred and the nested one is focused.
+To spice things up even more, you should also know `isFocused` will change when you focus any {@link tutorials/widgets/implementing-a-block-widget **nested editable**} in the content (take, for example, a {@link features/images-captions caption of an image}). Sounds weird, right? This is because every nested editable in the content has the `contenteditable` attribute, too, and for the web browser moving your caret inside it means the main editable element is blurred and the nested one is focused.
 
 ### How to focus the editor?
 
 The simplest way to focus the editor is to call the {@link module:core/editor/editor~Editor#focus `editor.focus()`} method.
 
-However, you may wish to explicitly focus the editable area of CKEditor 5 when a certain action is executed (e.g. a button is clicked). To do that, use the {@link module:engine/view/view~View#focus `focus()`} method of the editing view:
+However, you may wish to explicitly focus the editable area of CKEditor&nbsp;5 when a certain action is executed (for example, a button is clicked). To do that, use the {@link module:engine/view/view~View#focus `focus()`} method of the editing view:
 
 ```js
 editor.editing.view.focus();
 ```
 
-This snippet focuses the editable that has the selection. If the editor has not been focused yet, this will focus the very first editable. If an editor has multiple editing roots and the user was editing content, focus will be brought back where the user left off.
+This snippet focuses the editable that has the selection. If the editor has not been focused yet, this will focus the first editable. If an editor has many editing roots and the user was editing content, focus will be brought back where the user left off.
 
 <info-box>
 	Focusing the editor does not change its selection. If you want to focus the editor and move the caret to a specific position, you should call `editor.editing.view.focus()` first and then use the {@link module:engine/model/writer~Writer#setSelection `setSelection()`} method of the {@link framework/architecture/editing-engine#model model writer} to change the selection.
@@ -88,10 +89,10 @@ This snippet focuses the editable that has the selection. If the editor has not 
 
 If you read the [previous section](#focus-in-the-editor-engine) of this guide you should know that there is already a layer responsible for tracking focus implemented in the {@link framework/architecture/editing-engine editor engine}. But because the {@link framework/architecture/intro editor framework is modular}, this layer is only concerned by the focus in editable roots of the editor and it knows nothing of the user interface. This granularity makes it possible, for instance, to create a fully–functioning editor without the UI.
 
-As for the user interface of CKEditor 5, it is a composition of multiple components {@link framework/architecture/ui-library#view-collections-and-the-ui-tree organized as a tree}. This tree determines not only the logical structure of the UI (a toolbar has a dropdown, a dropdown has a button, a button has an icon, etc.) but also its behavior, and that includes tracking and maintaining focus as the user navigates and interacts with various pieces of the interface.
+As for the user interface of CKEditor&nbsp;5, it is a composition of multiple components {@link framework/architecture/ui-library#view-collections-and-the-ui-tree organized as a tree}. This tree determines not only the logical structure of the UI (a toolbar has a dropdown, a dropdown has a button, a button has an icon, etc.) but also its behavior, and that includes tracking and maintaining focus as the user navigates and interacts with various pieces of the interface.
 
 <info-box>
-	Feeling overwhelmed? Take a look at the {@link framework/architecture/ui-library UI library guide} and learn some basics about how the UI of CKEditor 5 works and what its main building blocks are.
+	Feeling overwhelmed? Take a look at the {@link framework/architecture/ui-library UI library guide} and learn some basics about how the UI of CKEditor&nbsp;5 works and what its main building blocks are.
 </info-box>
 
 To sum up, there are two main reasons why focus is being tracked separately on the UI level:
@@ -215,7 +216,7 @@ class MyListItemView extends View {
 }
 ```
 
-If a view has many focusable children (e.g. a list), the `focus()` method should focus the first child:
+If a view has many focusable children (like a list), the `focus()` method should focus the first child:
 
 ```js
 import { View } from '@ckeditor/ckeditor5-ui';
@@ -251,7 +252,7 @@ Focusable views are what make it possible to navigate the interface of CKEditor 
 
 ### Using the `FocusTracker` class
 
-One of the key focus management helpers in the CKEditor 5 UI is the {@link module:utils/focustracker~FocusTracker `FocusTracker`} class and its instances. They work at the DOM level and offer a fairly simple API:
+One of the key focus management helpers in the CKEditor&nbsp;5 UI is the {@link module:utils/focustracker~FocusTracker `FocusTracker`} class and its instances. They work at the DOM level and offer a fairly simple API:
 
 - Methods to {@link module:utils/focustracker~FocusTracker#add `add()`} and {@link module:utils/focustracker~FocusTracker#remove `remove()`} tracked DOM elements.
 - An observable {@link module:utils/focustracker~FocusTracker#isFocused `isFocused`} property telling the world that one of the tracked elements has focus in the DOM.
@@ -358,9 +359,9 @@ The `MyListView` can now track focused children, and it is time to help the user
 
 ### Using the `KeystrokeHandler` class
 
-The {@link module:utils/keystrokehandler~KeystrokeHandler} helper class allows registering callbacks for the keystrokes. It is used in many views across the UI of the editor for many purposes. For instance, it is responsible for focusing the toolbar on the <kbd>Alt</kbd>+<kbd>F10</kbd> keypress or it opens the link popup form when you hit <kbd>Ctrl</kbd>+<kbd>L</kbd> on a selected text.
+The {@link module:utils/keystrokehandler~KeystrokeHandler} helper class allows registering callbacks for the keystrokes. It is used in many views across the UI of the editor for many purposes. For instance, it is responsible for focusing the toolbar on the <kbd>Alt</kbd>+<kbd>F10</kbd> keypress or it opens the link pop-up form when you hit <kbd>Ctrl</kbd>+<kbd>L</kbd> on a selected text.
 
-But in the context of focus management, it is used by the [focus cycler](#using-the-focuscycler-class) you will get familiar with in the next section. You can learn more about the {@link module:utils/keystrokehandler~KeystrokeHandler} class in the API documentation but for now, you should only know how to create and initialize it before moving forward:
+However, in the context of focus management, it is used by the [focus cycler](#using-the-focuscycler-class) you will get familiar with in the next section. You can learn more about the {@link module:utils/keystrokehandler~KeystrokeHandler} class in the API documentation but for now, you should only know how to create and initialize it before moving forward:
 
 ```js
 import { FocusCycler, View } from '@ckeditor/ckeditor5-ui';
@@ -776,7 +777,7 @@ Let's see how they react to the user actions (states were recorded **after** eac
 ### Conclusions
 
 * The [global focus tracker](#a-note-about-the-global-focus-tracker) (the one you can access via `editor.ui.focusTracker`) is always aware of the focus state, even when the focus is in the farthest regions of the UI.
-	* It does not know which element is focused on deeper layers (for instance the "Edit link" button), though. All it knows is where the focus went (e.g. from the editable to the balloon panel).
+	* It does not know which element is focused on deeper layers (for instance the "Edit link" button), though. All it knows is where the focus went (for example, from the editable to the balloon panel).
 	* It lacks precise information about the focus in the link UI because this is the responsibility of the focus tracker of the link UI layer.
 	* All editor features **can always depend on the global focus tracker** when necessary. For instance, the main editor toolbar is displayed as long as the global focus tracker knows the focus is somewhere in the editor.
 * You can see that the focus management is modular: `LinkActionsView` and `LinkFormView` only know about the focus as long as one of their children has it.

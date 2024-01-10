@@ -12,17 +12,15 @@ import {
 	EditorUIView,
 	InlineEditableUIView,
 	ToolbarView
-} from 'ckeditor5/src/ui';
+} from 'ckeditor5/src/ui.js';
 import {
 	Rect,
 	ResizeObserver,
 	toUnit,
 	type PositioningFunction,
 	type Locale
-} from 'ckeditor5/src/utils';
-import type {
-	View
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/utils.js';
+import type { EditingView } from 'ckeditor5/src/engine.js';
 
 const toPx = toUnit( 'px' );
 
@@ -136,7 +134,7 @@ export default class InlineEditorUIView extends EditorUIView {
 	 */
 	constructor(
 		locale: Locale,
-		editingView: View,
+		editingView: EditingView,
 		editableElement?: HTMLElement,
 		options: {
 			shouldToolbarGroupWhenFull?: boolean;

@@ -9,11 +9,11 @@
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
-import type Element from '../view/element';
-import type Node from '../view/node';
-import type Text from '../view/text';
-import type DocumentFragment from '../view/documentfragment';
-import type { Match } from '../view/matcher';
+import type Element from '../view/element.js';
+import type Node from '../view/node.js';
+import type Text from '../view/text.js';
+import type DocumentFragment from '../view/documentfragment.js';
+import type { Match } from '../view/matcher.js';
 
 import { isArray } from 'lodash-es';
 
@@ -570,11 +570,15 @@ export class ViewElementConsumables {
 				 *
 				 * What you have done is trying to use:
 				 *
-				 *		consumables.add( { attributes: [ 'class', 'style' ] } );
+				 * ```ts
+				 * consumables.add( { attributes: [ 'class', 'style' ] } );
+				 * ```
 				 *
 				 * While each class and style should be registered separately:
 				 *
-				 *		consumables.add( { classes: 'some-class', styles: 'font-weight' } );
+				 * ```ts
+				 * consumables.add( { classes: 'some-class', styles: 'font-weight' } );
+				 * ```
 				 *
 				 * @error viewconsumable-invalid-attribute
 				 */

@@ -1,6 +1,7 @@
 ---
 category: features
 menu-title: Horizontal line
+meta-title: Horizontal line | CKEditor 5 Documentation
 ---
 
 # Horizontal line
@@ -9,7 +10,7 @@ The horizontal line feature lets you visually divide your content into sections 
 
 ## Demo
 
-To insert a horizontal line in the demo below, use the toolbar button {@icon @ckeditor/ckeditor5-horizontal-line/theme/icons/horizontalline.svg Horizontal line}. Alternatively, start a new line with `---`. The {@link features/autoformat autoformatting feature} will turn it into a horizontal line.
+To insert a horizontal line in the demo below, use the toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/horizontalline.svg Horizontal line}. Alternatively, start a new line with `---`. The {@link features/autoformat autoformatting feature} will turn it into a horizontal line.
 
 {@snippet features/horizontal-line}
 
@@ -49,7 +50,7 @@ ClassicEditor
 
 ## Related features
 
-CKEditor 5 has more features that can help you better organize your document content:
+CKEditor&nbsp;5 has more features that can help you better organize your document content:
 * {@link features/headings Headings} &ndash; Organize your content into thematic sections.
 * {@link features/page-break Page break} &ndash; Divide your document into pages.
 * {@link features/title Document title} &ndash; Clearly separate the title from the body.
@@ -62,7 +63,7 @@ The {@link module:horizontal-line/horizontalline~HorizontalLine} plugin register
 * the UI button component (`'horizontalLine'`),
 * the `'horizontalLine'` command implemented by {@link module:horizontal-line/horizontallinecommand~HorizontalLineCommand}.
 
-The command can be executed using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
+You can execute the command using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
 
 ```js
 // Inserts a horizontal line into the selected content.
@@ -70,7 +71,7 @@ editor.execute( 'horizontalLine' );
 ```
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Contribute

@@ -13,7 +13,9 @@
 // @ts-ignore
 import { default as parse } from 'color-parse';
 import * as convert from 'color-convert';
-import type { RGB, HSL, HSV, HWB, CMYK, XYZ, LAB, LCH, HEX, KEYWORD, ANSI16, ANSI256, HCG, APPLE, GRAY } from 'color-convert/conversions';
+import type {
+	RGB, HSL, HSV, HWB, CMYK, XYZ, LAB, LCH, HEX, KEYWORD, ANSI16, ANSI256, HCG, APPLE, GRAY
+} from 'color-convert/conversions.js';
 
 /**
  * Color formats handled by color converter.

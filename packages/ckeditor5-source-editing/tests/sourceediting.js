@@ -5,24 +5,24 @@
 
 /* globals document, Event, console */
 
-import SourceEditing from '../src/sourceediting';
+import SourceEditing from '../src/sourceediting.js';
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
-import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions';
-import Markdown from '@ckeditor/ckeditor5-markdown-gfm/src/markdown';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview.js';
+import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions.js';
+import Markdown from '@ckeditor/ckeditor5-markdown-gfm/src/markdown.js';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { _getEmitterListenedTo, _getEmitterId } from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { _getEmitterListenedTo, _getEmitterId } from '@ckeditor/ckeditor5-utils/src/emittermixin.js';
+import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 
 describe( 'SourceEditing', () => {
 	let editor, editorElement, plugin, button;
@@ -487,6 +487,66 @@ describe( 'SourceEditing', () => {
 			button.fire( 'execute' );
 
 			expect( setDataSpy.calledTwice ).to.be.true;
+			expect( setDataSpy.firstCall.args[ 1 ] ).to.deep.equal( [
+				{ main: 'foo' },
+				{ batchType: { isUndoable: true } }
+			] );
+			expect( setDataSpy.secondCall.args[ 1 ] ).to.deep.equal( [
+				{ main: 'bar' },
+				{ batchType: { isUndoable: true } }
+			] );
+			expect( editor.data.get() ).to.equal( '<p>bar</p>' );
+		} );
+
+		it( 'should not overwrite the editor data after calling editor.getData() if value has not been changed', () => {
+			const setData = sinon.stub( editor.data, 'set' ).callThrough();
+
+			button.fire( 'execute' );
+
+			const domRoot = editor.editing.view.getDomRoot();
+			const wrapper = domRoot.nextSibling;
+			const textarea = wrapper.children[ 0 ];
+
+			// The same value as the initial one.
+			textarea.value = wrapper.dataset.value;
+
+			textarea.dispatchEvent( new Event( 'input' ) );
+
+			// Trigger getData() while in the source editing mode.
+			expect( editor.getData() ).to.equal( '<p>Foo</p>' );
+
+			expect( setData.callCount ).to.equal( 0 );
+			expect( editor.data.get() ).to.equal( '<p>Foo</p>' );
+		} );
+
+		it( 'should not overwrite the editor data after subsequent calls of editor.getData()', () => {
+			const setDataSpy = sinon.spy();
+
+			editor.data.on( 'set', setDataSpy );
+
+			// Trigger getData() during the execution of `editor.data.set()`.
+			editor.model.document.once( 'change:data', () => {
+				editor.getData();
+			} );
+
+			button.fire( 'execute' );
+
+			const domRoot = editor.editing.view.getDomRoot();
+			const textarea = domRoot.nextSibling.children[ 0 ];
+
+			textarea.value = 'foo';
+			textarea.dispatchEvent( new Event( 'input' ) );
+
+			// Trigger getData() while in the source editing mode.
+			expect( editor.getData() ).to.equal( '<p>foo</p>' );
+
+			textarea.value = 'bar';
+			textarea.dispatchEvent( new Event( 'input' ) );
+
+			// Exit source editing mode.
+			button.fire( 'execute' );
+
+			expect( setDataSpy.callCount ).to.equal( 2 );
 			expect( setDataSpy.firstCall.args[ 1 ] ).to.deep.equal( [
 				{ main: 'foo' },
 				{ batchType: { isUndoable: true } }

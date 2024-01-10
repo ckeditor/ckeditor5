@@ -1,12 +1,13 @@
 ---
 category: framework-contributing
+meta-title: Development environment | CKEditor 5 Framework Documentation
 order: 10
 modified_at: 2022-09-29
 ---
 
 # Development environment
 
-The CKEditor 5 codebase is divided into multiple [npm](http://npmjs.com/) packages. The main package is [`ckeditor5`](https://github.com/ckeditor/ckeditor5) which installs all project dependencies and various development-related resources such as:
+The CKEditor&nbsp;5 codebase is divided into multiple [npm](http://npmjs.com/) packages. The main package is [`ckeditor5`](https://github.com/ckeditor/ckeditor5) which installs all project dependencies and various development-related resources such as:
 
 * the testing environment setup,
 * configuration for [Yarn](https://yarnpkg.com/),
@@ -16,17 +17,17 @@ The CKEditor 5 codebase is divided into multiple [npm](http://npmjs.com/) packag
 
 The main package's GitHub repository also [hosts all other CKEditor5 sub-packages](https://github.com/ckeditor/ckeditor5/tree/master/packages).
 
-You can find all the official packages listed in the [CKEditor 5 repository's README](https://github.com/ckeditor/ckeditor5#packages).
+You can find all the official packages listed in the [CKEditor&nbsp;5 repository's README](https://github.com/ckeditor/ckeditor5#packages).
 
 <info-box info>
-	Prior to version **19.0.0** CKEditor 5 was developed in a multi-repository architecture. If you would like to work with an older multi-repository release, please refer to the <a href="https://ckeditor.com/docs/ckeditor5/19.0.0/framework/guides/contributing/development-environment.html" data-cke-crawler-skip>older Development environment guide</a> for multi-repository oriented instructions.
+	Prior to version **19.0.0** CKEditor&nbsp;5 was developed in a multi-repository architecture. If you would like to work with an older multi-repository release, please refer to the <a href="https://ckeditor.com/docs/ckeditor5/19.0.0/framework/guides/contributing/development-environment.html" data-cke-crawler-skip>older Development environment guide</a> for multi-repository oriented instructions.
 </info-box>
 
 ## Requirements
 
-In order to start developing CKEditor 5 you will require:
+In order to start developing CKEditor&nbsp;5 you will require:
 
-* [Node.js](https://nodejs.org/en/) 16.0.0+
+* [Node.js](https://nodejs.org/en/) 18.0.0+
 * [Git](https://git-scm.com/)
 
 ## Setting up the CKEditor development environment
@@ -41,14 +42,14 @@ npm install -g yarn
 
 **Note:** [Read how to avoid using `sudo` to install packages globally](https://github.com/sindresorhus/guides/blob/master/npm-global-without-sudo.md) or use [nvm](https://github.com/creationix/nvm).
 
-Then clone the [CKEditor 5 repository](https://github.com/ckeditor/ckeditor5):
+Then clone the [CKEditor&nbsp;5 repository](https://github.com/ckeditor/ckeditor5):
 
 ```
 git clone https://github.com/ckeditor/ckeditor5.git
 cd ckeditor5
 ```
 
-And install all CKEditor 5 packages from the [npm registry](http://npmjs.com/).
+And install all CKEditor&nbsp;5 packages from the [npm registry](http://npmjs.com/).
 
 ```
 yarn install
@@ -129,7 +130,7 @@ This task accepts the following arguments:
 	```
 
 * `--watch` &ndash; Runs the documentation generator in a watch mode. It covers guides but it does not cover API docs.
-* `--production` &ndash; Minifies the assets and performs other actions which are unnecessary during CKEditor 5 development.
+* `--production` &ndash; Minifies the assets and performs other actions which are unnecessary during CKEditor&nbsp;5 development.
 * `--verbose` &ndash; Prints out more information.
 
 ```
@@ -236,7 +237,7 @@ In addition to the possibility of defining exclusions in the `<meta>` tag, it is
 
 ## Generating content styles
 
-It is possible to generate a stylesheet containing content styles brought by all CKEditor 5 features. In order to do that, execute:
+It is possible to generate a stylesheet containing content styles brought by all CKEditor&nbsp;5 features. In order to do that, execute:
 
 ```
 yarn docs:content-styles
@@ -250,7 +251,7 @@ To learn more, refer to the {@link installation/advanced/content-styles Content 
 
 ### SVG icons
 
-By default, CKEditor 5 supports SVG icons found in the `ckeditor5-*/theme/icons` folders. Unfortunately, most of the SVG editing software produces the output with comments, obsolete tags, and complex paths, which bloats the DOM and makes the builds heavy for no good reason.
+By default, CKEditor&nbsp;5 supports SVG icons found in the `ckeditor5-*/theme/icons` folders. Unfortunately, most of the SVG editing software produces the output with comments, obsolete tags, and complex paths, which bloats the DOM and makes the builds heavy for no good reason.
 
 To remove the excess data and prevent [certain issues](https://github.com/ckeditor/ckeditor5-ui/issues/245), **all new icons should be optimized before joining the code base**. To do that, you can use the `clean-up-svg-icons` script in the [root of the project](#setting-up-the-ckeditor-development-environment), a wrapper for the [SVGO](https://github.com/svg/svgo) tool:
 

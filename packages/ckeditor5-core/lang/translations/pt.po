@@ -15,10 +15,15 @@ msgstr ""
 "Language-Team: Portuguese (https://app.transifex.com/ckeditor/teams/11143/pt/)\n"
 "Language: pt\n"
 "Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Label for the Cancel button."
 msgid "Cancel"
 msgstr "Cancelar"
+
+msgctxt "Label for the Clear button."
+msgid "Clear"
+msgstr "Limpar"
 
 msgctxt "The label used by a button next to the color palette in the color picker that removes the color (resets it to an empty value, example usages in font color or table properties)."
 msgid "Remove color"
@@ -47,3 +52,19 @@ msgstr "Não foi possível carregar o ficheiro:"
 msgctxt "Accessible label of the specific editing area of the editor acting as a root of the entire application."
 msgid "Rich Text Editor. Editing area: %0"
 msgstr "Editor de Texto Formatado. Área de edição: %0"
+
+msgctxt "The label for the insert image with the file manager toolbar button with visible label in insert image dropdown."
+msgid "Insert with file manager"
+msgstr "Inserir com o gestor de ficheiros"
+
+msgctxt "The label for the replace image with the file manager toolbar button with visible label in insert image dropdown."
+msgid "Replace with file manager"
+msgstr "Substituir com o gestor de ficheiros"
+
+msgctxt "The label for the insert image with the file manager toolbar button."
+msgid "Insert image with file manager"
+msgstr "Inserir imagem com o gestor de ficheiros"
+
+msgctxt "The label for the replace image with the file manager toolbar button."
+msgid "Replace image with file manager"
+msgstr "Substituir imagem com o gestor de ficheiros"

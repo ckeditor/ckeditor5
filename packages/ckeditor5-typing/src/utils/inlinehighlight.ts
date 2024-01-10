@@ -7,7 +7,7 @@
  * @module typing/utils/inlinehighlight
  */
 
-import findAttributeRange from './findattributerange';
+import findAttributeRange from './findattributerange.js';
 import type { Editor } from '@ckeditor/ckeditor5-core';
 import type { ViewElement } from '@ckeditor/ckeditor5-engine';
 

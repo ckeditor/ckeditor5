@@ -7,10 +7,12 @@
  * @module utils/dom/rect
  */
 
-import isRange from './isrange';
-import isWindow from './iswindow';
-import getBorderWidths from './getborderwidths';
-import isText from './istext';
+import isRange from './isrange.js';
+import isWindow from './iswindow.js';
+import getBorderWidths from './getborderwidths.js';
+import isText from './istext.js';
+import getPositionedAncestor from './getpositionedancestor.js';
+import global from './global.js';
 
 const rectProperties: Array<keyof RectLike> = [ 'top', 'right', 'bottom', 'left', 'width', 'height' ];
 
@@ -202,7 +204,11 @@ export default class Rect {
 		if ( rect.width < 0 || rect.height < 0 ) {
 			return null;
 		} else {
-			return new Rect( rect );
+			const newRect = new Rect( rect );
+
+			newRect._source = this._source;
+
+			return newRect;
 		}
 	}
 
@@ -229,7 +235,7 @@ export default class Rect {
 	}
 
 	/**
-	 * Returns a new rect, a part of the original rect, which is actually visible to the user,
+	 * Returns a new rect, a part of the original rect, which is actually visible to the user and is relative to the,`body`,
 	 * e.g. an original rect cropped by parent element rects which have `overflow` set in CSS
 	 * other than `"visible"`.
 	 *
@@ -261,16 +267,53 @@ export default class Rect {
 
 		// Check the ancestors all the way up to the <body>.
 		while ( parent && !isBody( parent ) ) {
+			const isParentOverflowVisible = getElementOverflow( parent as HTMLElement ) === 'visible';
+
 			if ( child instanceof HTMLElement && getElementPosition( child ) === 'absolute' ) {
 				absolutelyPositionedChildElement = child;
 			}
 
+			const parentElementPosition = getElementPosition( parent );
+
 			// The child will be cropped only if it has `position: absolute` and the parent has `position: relative` + some overflow.
 			// Otherwise there's no chance of visual clipping and the parent can be skipped
 			// https://github.com/ckeditor/ckeditor5/issues/14107.
+			//
+			// condition: isParentOverflowVisible
+			// 		+---------------------------+
+			//		| #parent					|
+			//		| (overflow: visible)		|
+			//		|				+-----------+---------------+
+			//		|				| child						|
+			//		|				+-----------+---------------+
+			//		+---------------------------+
+			//
+			// condition: absolutelyPositionedChildElement && parentElementPosition === 'relative' && isParentOverflowVisible
+			// 		+---------------------------+
+			//		| parent					|
+			//		| (position: relative;)		|
+			//		| (overflow: visible;)		|
+			//		|				+-----------+---------------+
+			//		|				| child  					|
+			//		|				| (position: absolute;)		|
+			//		|				+-----------+---------------+
+			//		+---------------------------+
+			//
+			// condition: absolutelyPositionedChildElement && parentElementPosition !== 'relative'
+			// 		+---------------------------+
+			//		| parent					|
+			//		| (position: static;)		|
+			//		|				+-----------+---------------+
+			//		|				| child  					|
+			//		|				| (position: absolute;)		|
+			//		|				+-----------+---------------+
+			//		+---------------------------+
 			if (
-				absolutelyPositionedChildElement &&
-				( getElementPosition( parent as HTMLElement ) !== 'relative' || getElementOverflow( parent as HTMLElement ) === 'visible' )
+				isParentOverflowVisible ||
+				absolutelyPositionedChildElement && (
+					( parentElementPosition === 'relative' && isParentOverflowVisible ) ||
+					parentElementPosition !== 'relative'
+				)
 			) {
 				child = parent;
 				parent = parent.parentNode;
@@ -325,6 +368,24 @@ export default class Rect {
 		const intersectRect = this.getIntersection( anotherRect );
 
 		return !!( intersectRect && intersectRect.isEqual( anotherRect ) );
+	}
+
+	/**
+	 * Recalculates screen coordinates to coordinates relative to the positioned ancestor offset.
+	 */
+	public toAbsoluteRect(): Rect {
+		const { scrollX, scrollY } = global.window;
+		const absoluteRect = this.clone().moveBy( scrollX, scrollY );
+
+		if ( isDomElement( absoluteRect._source ) ) {
+			const positionedAncestor = getPositionedAncestor( absoluteRect._source );
+
+			if ( positionedAncestor ) {
+				shiftRectToCompensatePositionedAncestor( absoluteRect, positionedAncestor );
+			}
+		}
+
+		return absoluteRect;
 	}
 
 	/**
@@ -495,13 +556,54 @@ function isDomElement( value: any ): value is Element {
 /**
  * Returns the value of the `position` style of an `HTMLElement`.
  */
-function getElementPosition( element: HTMLElement ): string {
-	return element.ownerDocument.defaultView!.getComputedStyle( element ).position;
+function getElementPosition( element: HTMLElement | Node ): string {
+	return element instanceof HTMLElement ? element.ownerDocument.defaultView!.getComputedStyle( element ).position : 'static';
 }
 
 /**
- * Returns the value of the `overflow` style of an `HTMLElement`.
+ * Returns the value of the `overflow` style of an `HTMLElement` or a `Range`.
  */
-function getElementOverflow( element: HTMLElement ): string {
-	return element.ownerDocument.defaultView!.getComputedStyle( element ).overflow;
+function getElementOverflow( element: HTMLElement | Range ): string {
+	return element instanceof HTMLElement ? element.ownerDocument.defaultView!.getComputedStyle( element ).overflow : 'visible';
+}
+
+/**
+ * For a given absolute Rect coordinates object and a positioned element ancestor, it updates its
+ * coordinates that make up for the position and the scroll of the ancestor.
+ *
+ * This is necessary because while Rects (and DOMRects) are relative to the browser's viewport, their coordinates
+ * are used in real–life to position elements with `position: absolute`, which are scoped by any positioned
+ * (and scrollable) ancestors.
+ */
+function shiftRectToCompensatePositionedAncestor( rect: Rect, positionedElementAncestor: HTMLElement ): void {
+	const ancestorPosition = new Rect( positionedElementAncestor );
+	const ancestorBorderWidths = getBorderWidths( positionedElementAncestor );
+
+	let moveX = 0;
+	let moveY = 0;
+
+	// (https://github.com/ckeditor/ckeditor5-ui-default/issues/126)
+	// If there's some positioned ancestor of the panel, then its `Rect` must be taken into
+	// consideration. `Rect` is always relative to the viewport while `position: absolute` works
+	// with respect to that positioned ancestor.
+	moveX -= ancestorPosition.left;
+	moveY -= ancestorPosition.top;
+
+	// (https://github.com/ckeditor/ckeditor5-utils/issues/139)
+	// If there's some positioned ancestor of the panel, not only its position must be taken into
+	// consideration (see above) but also its internal scrolls. Scroll have an impact here because `Rect`
+	// is relative to the viewport (it doesn't care about scrolling), while `position: absolute`
+	// must compensate that scrolling.
+	moveX += positionedElementAncestor.scrollLeft;
+	moveY += positionedElementAncestor.scrollTop;
+
+	// (https://github.com/ckeditor/ckeditor5-utils/issues/139)
+	// If there's some positioned ancestor of the panel, then its `Rect` includes its CSS `borderWidth`
+	// while `position: absolute` positioning does not consider it.
+	// E.g. `{ position: absolute, top: 0, left: 0 }` means upper left corner of the element,
+	// not upper-left corner of its border.
+	moveX -= ancestorBorderWidths.left;
+	moveY -= ancestorBorderWidths.top;
+
+	rect.moveBy( moveX, moveY );
 }

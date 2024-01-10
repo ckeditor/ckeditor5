@@ -8,12 +8,11 @@
 import { BalloonEditor as BalloonEditorBase } from '@ckeditor/ckeditor5-editor-balloon';
 
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { UploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
+import { CKFinderUploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
-import { CKFinder } from '@ckeditor/ckeditor5-ckfinder';
+import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
 import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
 import { Heading, HeadingButtonsUI } from '@ckeditor/ckeditor5-heading';
 import {
@@ -23,6 +22,7 @@ import {
 	ImageToolbar,
 	ImageUpload,
 	PictureEditing,
+	ImageInsert,
 	ImageResize,
 	AutoImage
 } from '@ckeditor/ckeditor5-image';
@@ -36,19 +36,19 @@ import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
 import { TextTransformation } from '@ckeditor/ckeditor5-typing';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import { BlockToolbar } from '@ckeditor/ckeditor5-ui';
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 class BalloonEditor extends BalloonEditorBase {}
 
 BalloonEditor.builtinPlugins = [
 	Essentials,
-	UploadAdapter,
+	CKFinderUploadAdapter,
 	Autoformat,
 	Bold,
 	Italic,
 	BlockQuote,
 	CKBox,
-	CKFinder,
+	CKBoxImageEdit,
 	CloudServices,
 	EasyImage,
 	Heading,
@@ -57,6 +57,7 @@ BalloonEditor.builtinPlugins = [
 	ImageStyle,
 	ImageToolbar,
 	ImageUpload,
+	ImageInsert,
 	ImageResize,
 	AutoImage,
 	PictureEditing,
@@ -87,7 +88,7 @@ BalloonEditor.defaultConfig = {
 			'outdent',
 			'indent',
 			'|',
-			'uploadImage',
+			'insertImage',
 			'blockQuote',
 			'insertTable',
 			'mediaEmbed',
@@ -102,7 +103,9 @@ BalloonEditor.defaultConfig = {
 			'imageStyle:side',
 			'|',
 			'toggleImageCaption',
-			'imageTextAlternative'
+			'imageTextAlternative',
+			'|',
+			'ckboxImageEdit'
 		]
 	},
 	table: {
@@ -127,12 +130,16 @@ BalloonEditor
 				top: window.getViewportTopOffsetConfig()
 			}
 		},
+		ckbox: {
+			allowExternalImagesEditing: [ /^data:/, 'origin' ],
+			forceDemoLabel: true
+		},
 		blockToolbar: [
 			'undo', 'redo',
 			'|',
 			'paragraph', 'heading1', 'heading2', 'heading3',
 			'|',
-			'uploadImage', 'blockQuote',
+			'insertImage', 'blockQuote',
 			'|',
 			'bulletedList', 'numberedList',
 			'|',

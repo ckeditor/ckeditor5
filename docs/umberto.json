@@ -13,13 +13,19 @@
 			"**/index.html"
 		]
 	},
+	"permalinkDisableDomains": [
+		"ckeditor5.github.io",
+		"fake.ckeditor.com",
+		"localhost",
+		"127.0.0.1"
+	],
 	"hexo-config": "docs/hexo-custom-config.json",
 	"extraStyles": "assets/styles.css",
 	"extraScripts": "assets/buildwarningbanner.js",
 	"packagesDir": [
 		"packages/*",
-		"external/@(ckeditor5-internal|collaboration-features)/",
-		"external/@(ckeditor5-internal|collaboration-features)/packages/*"
+		"external/ckeditor5-commercial/",
+		"external/ckeditor5-commercial/packages/*"
 	],
 	"path": "docs",
 	"observablesdocs": "module:utils/observablemixin~Observable",
@@ -75,7 +81,7 @@
 		"builds/guides/development/dll-builds-collaboration-features.html": "installation/advanced/alternative-setups/dll-builds-collaboration-features.html",
 		"builds/guides/development/installing-plugins.html": "installation/plugins/installing-plugins.html",
 		"builds/guides/development/plugins.html": "installation/plugins/plugins.html",
-		"builds/guides/faq.html": "support/faq.html",
+		"builds/guides/faq.html": "tutorials/index.html",
 		"builds/guides/integration/advanced-setup.html": "installation/getting-started/quick-start-other.html",
 		"builds/guides/integration/advanced-setup.html#creating-super-builds": "installation/advanced/using-two-editors.html#creating-super-builds",
 		"builds/guides/integration/basic-api.html": "installation/getting-started/editor-lifecycle.html",
@@ -93,9 +99,10 @@
 		"builds/guides/integration/installation.html": "installation/getting-started/quick-start.html",
 		"builds/guides/integration/installing-plugins.html": "installation/pluginsinstalling-plugins.html",
 		"builds/guides/integration/saving-data.html": "installation/getting-started/getting-and-setting-data.html",
+		"installation/integrations/drupal.html": "installation/integrations/drupal-real-time-collaboration.html",
 		"builds/guides/license-and-legal.html": "support/license-and-legal.html",
 		"builds/guides/migrate.html": "updating/ckeditor4/migration-from-ckeditor-4.html",
-		"builds/guides/migration/migration-from-ckeditor-4.html": "updating/migration-from-ckeditor-4.html",
+		"builds/guides/migration/migration-from-ckeditor-4.html": "updating/ckeditor4/migration-from-ckeditor-4.html",
 		"builds/guides/migration/migration-to-25.html": "updating/guides/update-to-25.html",
 		"builds/guides/migration/migration-to-25.0.0.html": "updating/guides/update-to-25.html",
 		"builds/guides/migration/migration-to-26.html": "updating/guides/update-to-26.html",
@@ -166,20 +173,26 @@
 		"features/import-word/import-word.html": "features/converters/import-word/import-word.html",
 		"features/import-word/features-comparison.html": "features/converters/import-word/features-comparison.html",
 		"features/lists.html": "features/lists/lists.html",
+		"features/todo-lists.html": "features/lists/todo-lists.html",
+		"features/lists/document-lists.html": "features/lists/lists.html",
+		"features/lists/lists.html#installation": "features/lists/lists-installation.html",
+		"features/lists/document-lists.html#list-merging": "features/lists/lists-editing.html#adjacent-lists-merging",
+		"features/lists/lists.html#list-indentation": "features/lists/lists-editing.html#indenting-lists",
 		"features/mathtype.html": "features/math-equations.html",
 		"features/overview.html": "features/index.html",
 		"features/pasting/drag-drop.html": "features/drag-drop.html",
 		"features/pagination.html": "features/pagination/pagination.html",
-		"features/paste-from-word.html": "features/pasting/paste-from-word.html",
-		"features/paste-from-office.html": "features/pasting/paste-from-word.html",
+		"features/paste-from-word.html": "features/pasting/paste-from-office.html",
+		"features/pasting/paste-from-word.html": "features/pasting/paste-from-office.html",
+		"features/paste-from-office.html": "features/pasting/paste-from-office.html",
 		"features/revision-history/revision-history.html": "features/collaboration/revision-history/revision-history.html",
 		"features/revision-history/revision-history-integration.htm": "features/collaboration/revision-history/revision-history-integration.html",
 		"features/spell-checker.html": "features/spelling-and-grammar-checking.html",
 		"features/table.html": "features/tables/tables.html",
-		"features/todo-lists.html": "features/lists/todo-lists.html",
 		"features/toolbar.html": "features/toolbar/toolbar.html",
 		"features/video.html": "features/media-embed.html",
 		"features/video-upload.html": "features/media-embed.html",
+		"features/ai-assistant.html": "features/ai-assistant/ai-assistant-overview.html",
 		"framework/guides/architecture/core-editor-architecture.html": "framework/architecture/core-editor-architecture.html",
 		"framework/guides/architecture/editing-engine.html": "framework/architecture/editing-engine.html",
 		"framework/guides/architecture/intro.html": "framework/architecture/intro.html",
@@ -210,29 +223,38 @@
 		"framework/guides/deep-dive/ui/localization.html": "framework/deep-dive/ui/localization.html",
 		"framework/guides/deep-dive/ui/widget-internals.html": "framework/deep-dive/ui/widget-internals.html",
 		"framework/guides/deep-dive/upload-adapter.html": "framework/deep-dive/upload-adapter.html",
-		"framework/guides/development-tools.html": "framework/development-tools.html",
+		"framework/guides/development-tools.html": "framework/develpment-tools/inspector.html",
+		"framework/development-tools.html": "framework/develpment-tools/inspector.html",
 		"framework/guides/overview.html": "framework/index.html",
-		"framework/guides/plugins/creating-simple-plugin.html": "framework/plugins/creating-simple-plugin-timestamp.html",
 		"framework/guides/plugins/package-generator.html": "framework/plugins/package-generator/using-package-generator.html",
 		"framework/guides/plugins/package-generator/javascript-package.html": "framework/plugins/package-generator/javascript-package.html",
 		"framework/guides/plugins/package-generator/typescript-package.html": "framework/plugins/package-generator/typescript-package.html",
-		"framework/guides/plugins/simple-plugin/abbreviation-plugin-level-1.html": "framework/plugins/abbreviation-plugin/abbreviation-plugin-level-1.html",
-		"framework/guides/plugins/simple-plugin/abbreviation-plugin-level-2.html": "framework/plugins/abbreviation-plugin/abbreviation-plugin-level-2.html",
-		"framework/guides/plugins/simple-plugin/abbreviation-plugin-level-3.html": "framework/plugins/abbreviation-plugin/abbreviation-plugin-level-3.html",
+		"framework/guides/plugins/simple-plugin/abbreviation-plugin-level-1.html": "tutorials/abbreviation-plugin/abbreviation-plugin-level-1.html",
+		"framework/guides/plugins/simple-plugin/abbreviation-plugin-level-2.html": "tutorials/abbreviation-plugin/abbreviation-plugin-level-2.html",
+		"framework/guides/plugins/simple-plugin/abbreviation-plugin-level-3.html": "tutorials/abbreviation-plugin/abbreviation-plugin-level-3.html",
+		"framework/plugins/abbreviation-plugin/abbreviation-plugin-level-1.html": "tutorials/abbreviation-plugin/abbreviation-plugin-level-1.html",
+		"framework/plugins/abbreviation-plugin/abbreviation-plugin-level-2.html": "tutorials/abbreviation-plugin/abbreviation-plugin-level-2.html",
+		"framework/plugins/abbreviation-plugin/abbreviation-plugin-level-3.html": "tutorials/abbreviation-plugin/abbreviation-plugin-level-3.html",
 		"framework/guides/support/browser-compatibility.html": "support/browser-compatibility.html",
 		"framework/guides/support/error-codes.html": "support/error-codes.html",
 		"framework/guides/support/getting-support.html": "support/getting-support.html",
 		"framework/guides/support/license-and-legal.html": "support/license-and-legal.html",
 		"framework/guides/support/reporting-issues.html": "support/reporting-issues.html",
 		"framework/guides/support/versioning-policy.html": "updating/versioning-policy.html",
-		"framework/guides/tutorials/data-from-external-source.html": "framework/tutorials/data-from-external-source.html",
-		"framework/guides/tutorials/implementing-a-block-widget.html": "framework/tutorials/implementing-a-block-widget.html",
-		"framework/guides/tutorials/implementing-an-inline-widget.html": "framework/tutorials/implementing-an-inline-widget.html",
-		"framework/guides/tutorials/using-react-in-a-widget.html": "framework/tutorials/using-react-in-a-widget.html",
+		"framework/guides/tutorials/data-from-external-source.html": "tutorials/widgets/data-from-external-source.html",
+		"framework/guides/tutorials/implementing-a-block-widget.html": "tutorials/widgets/implementing-a-block-widget.html",
+		"framework/guides/tutorials/implementing-an-inline-widget.html": "tutorials/widgets/implementing-an-inline-widget.html",
+		"framework/guides/tutorials/using-react-in-a-widget.html": "tutorials/widgets/using-react-in-a-widget.html",
+		"framework/tutorials/data-from-external-source.html": "tutorials/widgets/data-from-external-source.html",
+		"framework/tutorials/implementing-a-block-widget.html": "tutorials/widgets/implementing-a-block-widget.html",
+		"framework/tutorials/implementing-an-inline-widget.html": "tutorials/widgets/implementing-an-inline-widget.html",
+		"framework/tutorials/using-react-in-a-widget.html": "tutorials/widgets/using-react-in-a-widget.html",
 		"framework/guides/ui/document-editor.html": "framework/deep-dive/ui/document-editor.html",
 		"framework/guides/ui/external-ui.html": "framework/deep-dive/ui/external-ui.html",
 		"framework/guides/ui/theme-customization.html": "framework/deep-dive/ui/theme-customization.html",
 		"framework/guides/quick-start.html": "framework/quick-start.html",
+		"framework/plugins/creating-simple-plugin-timestamp.html": "tutorials/crash-course/plugins.html",
+		"framework/guides/plugins/creating-simple-plugin.html": "tutorials/crash-course/plugins.html",
 		"installation/advanced/advanced-setup.html": "installation/getting-started/quick-start-other.html",
 		"installation/advanced/alternative-setups/integrating-from-source.html": "installation/advanced/alternative-setups/integrating-from-source-webpack.html",
 		"installation/advanced/alternative-setups/predefined-builds.html": "installation/getting-started/predefined-builds.html",
@@ -256,14 +278,17 @@
 		"installation/getting-started/getting-and-setting-data.html#autosave-feature": "features/autosave.html",
 		"installation/getting-started/installing-plugins.html": "installation/plugins/installing-plugins.html",
 		"installation/getting-started/maintenance.html": "updating/maintaining.html",
+		"installation/getting-started/migration-from-ckeditor-4.html": "updating/ckeditor4/migration-from-ckeditor-4.html",
 		"installation/getting-started/predefined-builds.html#build-customization": "installation/getting-started/quick-start-other.html#build-customization",
 		"installation/getting-started/quick-start.html#building-the-editor-from-source": "installation/getting-started/quick-start-other.html#building-the-editor-from-source",
 		"installation/getting-started/quick-start.html#creating-custom-builds-with-online-builder": "installation/getting-started/quick-start-other.html#creating-custom-builds-with-online-builder",
 		"installation/overview.html": "installation/index.html",
+		"installation/getting-started/configuration.html#adding-simple-standalone-features": "installation/getting-started/extending-features.html",
 		"support/getting-support.html": "support/index.html",
 		"support/versioning-policy.html": "updating/versioning-policy.html",
 		"support/license-and-legal.html": "support/licensing/license-and-legal.html",
 		"support/managing-ckeditor-logo.html": "support/licensing/managing-ckeditor-logo.html",
+		"support/faq.html": "examples/how-tos.html",
 		"updating/changelog.html": "updating/guides/changelog.html",
 		"updating/migration-from-ckeditor-4.html": "updating/ckeditor4/migration-from-ckeditor-4.html",
 		"updating/migration-from-ckeditor-4.html#migration-from-ckeditor-4-faq": "updating/ckeditor4/ckeditor4-troubleshooting.html",
@@ -322,8 +347,7 @@
 			"ckeditor5.github.io"
 		],
 		"config": {
-			"trackingId": "UA-271067-19",
-			"cookieDomain": "ckeditor5.github.io"
+			"trackingId": "G-H2PK3PSE3F"
 		}
 	},
 	"og": {
@@ -376,6 +400,14 @@
 			"slug": "features",
 			"navigationIncludeIndex": true,
 			"categories": [
+				{
+					"name": "AI Assistant",
+					"id": "features-ai-assistant",
+					"slug": "ai-assistant",
+					"badges": [
+						"premium"
+					]
+				},
 				{
 					"name": "Collaboration",
 					"id": "features-collaboration",
@@ -508,6 +540,7 @@
 			"name": "Examples",
 			"id": "examples",
 			"slug": "examples",
+			"navigationIncludeIndex": true,
 			"categories": [
 				{
 					"name": "Predefined builds",
@@ -534,6 +567,104 @@
 					"order": 400
 				}
 			]
+		},
+		{
+			"name": "Framework",
+			"id": "framework",
+			"slug": "framework",
+			"navigationIncludeIndex": true,
+			"categories": [
+				{
+					"name": "Architecture",
+					"id": "framework-architecture",
+					"slug": "architecture",
+					"order": 100
+				},
+				{
+					"name": "Deep dive",
+					"id": "framework-deep-dive",
+					"slug": "deep-dive",
+					"order": 300,
+					"categories": [
+						{
+							"name": "Conversion",
+							"id": "framework-deep-dive-conversion",
+							"slug": "conversion",
+							"order": 100,
+							"folded": true,
+							"categories": [
+								{
+									"name": "Conversion helpers",
+									"id": "framework-deep-dive-conversion-helpers",
+									"slug": "helpers",
+									"order": 100
+								}
+							]
+						},
+						{
+							"name": "User interface",
+							"id": "framework-deep-dive-ui",
+							"slug": "ui",
+							"order": 110,
+							"folded": true
+						}
+					]
+				},
+				{
+					"name": "Development tools",
+					"id": "development-tools",
+					"slug": "develpment-tools",
+					"order": 200,
+					"categories": [
+						{
+							"name": "Package Generator",
+							"id": "package-generator",
+							"slug": "package-generator",
+							"order": 3,
+							"folded": true
+						}
+					]
+				},
+				{
+					"name": "Contributing",
+					"id": "framework-contributing",
+					"slug": "contributing",
+					"order": 400
+				}
+			]
+		},
+		{
+			"name": "Tutorials",
+			"id": "tutorials",
+			"navigationIncludeIndex": true,
+			"slug": "tutorials",
+			"categories": [
+				{
+					"name": "Crash course",
+					"id": "crash-course",
+					"slug": "crash-course",
+					"order": 10
+				},
+				{
+					"name": "Creating an advanced plugin",
+					"id": "abbreviation-plugin",
+					"slug": "abbreviation-plugin",
+					"order": 20
+				},
+				{
+					"name": "Using widgets",
+					"id": "widget-tutorials",
+					"slug": "widgets",
+					"order": 30
+				}
+			]
+		},
+		{
+			"name": "API",
+			"id": "api-reference",
+			"sourceDir": "api",
+			"slug": "api",
+			"type": "typedoc"
 		},
 		{
 			"name": "Updating",
@@ -568,91 +699,6 @@
 					"order": 20
 				}
 			]
-		},
-		{
-			"name": "Framework",
-			"id": "framework",
-			"slug": "framework",
-			"navigationIncludeIndex": true,
-			"categories": [
-				{
-					"name": "Architecture",
-					"id": "framework-architecture",
-					"slug": "architecture",
-					"order": 100
-				},
-				{
-					"name": "Developing custom plugins",
-					"id": "framework-plugins",
-					"slug": "plugins",
-					"order": 200,
-					"categories": [
-						{
-							"name": "Creating an abbreviation plugin",
-							"id": "abbreviation-plugin",
-							"slug": "abbreviation-plugin",
-							"order": 20,
-							"folded": true
-						},
-						{
-							"name": "Package Generator",
-							"id": "package-generator",
-							"slug": "package-generator",
-							"order": 40,
-							"folded": true
-						}
-					]
-				},
-				{
-					"name": "Advanced tutorials",
-					"id": "framework-tutorials",
-					"slug": "tutorials",
-					"order": 250
-				},
-				{
-					"name": "Deep dive",
-					"id": "framework-deep-dive",
-					"slug": "deep-dive",
-					"order": 300,
-					"categories": [
-						{
-							"name": "Conversion",
-							"id": "framework-deep-dive-conversion",
-							"slug": "conversion",
-							"order": 100,
-							"folded": true,
-							"categories": [
-								{
-									"name": "Conversion helpers",
-									"id": "framework-deep-dive-conversion-helpers",
-									"slug": "helpers",
-									"order": 100
-								}
-							]
-						},
-						{
-							"name": "User interface",
-							"id": "framework-deep-dive-ui",
-							"slug": "ui",
-							"order": 110,
-							"folded": true
-						}
-					]
-				},
-				{
-					"name": "Contributing",
-					"id": "framework-contributing",
-					"slug": "contributing",
-					"order": 400
-				}
-			]
-		},
-		{
-			"name": "API",
-			"id": "api-reference",
-			"sourceDir": "api",
-			"slug": "api",
-			"type": "typedoc"
 		}
 	]
 }
