@@ -15,20 +15,19 @@ import {
 	LabeledFieldView,
 	createLabeledInputNumber,
 	addKeyboardHandlingForGrid,
+	CollapsibleView,
 	type ButtonView,
 	type InputNumberView
-} from 'ckeditor5/src/ui';
+} from 'ckeditor5/src/ui.js';
 
 import {
 	FocusTracker,
 	KeystrokeHandler,
 	global,
 	type Locale
-} from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/utils.js';
 
-import CollapsibleView from './collapsibleview';
-
-import type { ListPropertiesConfig } from '../../listconfig';
+import type { ListPropertiesConfig } from '../../listconfig.js';
 
 import '../../../theme/listproperties.css';
 
@@ -211,13 +210,6 @@ export default class ListPropertiesView extends View {
 		if ( this.startIndexFieldView ) {
 			this.focusables.add( this.startIndexFieldView );
 			this.focusTracker.add( this.startIndexFieldView.element! );
-
-			// Intercept the `selectstart` event, which is blocked by default because of the default behavior
-			// of the DropdownView#panelView.
-			// TODO: blocking `selectstart` in the #panelView should be configurable per–drop–down instance.
-			this.listenTo( this.startIndexFieldView.element!, 'selectstart', ( evt, domEvt ) => {
-				domEvt.stopPropagation();
-			}, { priority: 'high' } );
 
 			const stopPropagation = ( data: Event ) => data.stopPropagation();
 

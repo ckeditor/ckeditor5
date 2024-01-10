@@ -5,32 +5,32 @@
 
 /* globals document, window, NodeFilter, MutationObserver, HTMLImageElement, console */
 
-import View from '../../src/view/view';
-import ViewElement from '../../src/view/element';
-import ViewEditableElement from '../../src/view/editableelement';
-import ViewContainerElement from '../../src/view/containerelement';
-import ViewAttributeElement from '../../src/view/attributeelement';
-import ViewRawElement from '../../src/view/rawelement';
-import ViewUIElement from '../../src/view/uielement';
-import ViewText from '../../src/view/text';
-import ViewRange from '../../src/view/range';
-import ViewPosition from '../../src/view/position';
-import DocumentSelection from '../../src/view/documentselection';
-import DomConverter from '../../src/view/domconverter';
-import Renderer from '../../src/view/renderer';
-import DocumentFragment from '../../src/view/documentfragment';
-import ViewDocument from '../../src/view/document';
-import DowncastWriter from '../../src/view/downcastwriter';
+import View from '../../src/view/view.js';
+import ViewElement from '../../src/view/element.js';
+import ViewEditableElement from '../../src/view/editableelement.js';
+import ViewContainerElement from '../../src/view/containerelement.js';
+import ViewAttributeElement from '../../src/view/attributeelement.js';
+import ViewRawElement from '../../src/view/rawelement.js';
+import ViewUIElement from '../../src/view/uielement.js';
+import ViewText from '../../src/view/text.js';
+import ViewRange from '../../src/view/range.js';
+import ViewPosition from '../../src/view/position.js';
+import DocumentSelection from '../../src/view/documentselection.js';
+import DomConverter from '../../src/view/domconverter.js';
+import Renderer from '../../src/view/renderer.js';
+import DocumentFragment from '../../src/view/documentfragment.js';
+import ViewDocument from '../../src/view/document.js';
+import DowncastWriter from '../../src/view/downcastwriter.js';
 
-import { parse, stringify, setData as setViewData, getData as getViewData } from '../../src/dev-utils/view';
-import { BR_FILLER, INLINE_FILLER, INLINE_FILLER_LENGTH } from '../../src/view/filler';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import createViewRoot from './_utils/createroot';
-import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
-import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
-import env from '@ckeditor/ckeditor5-utils/src/env';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-import { StylesProcessor } from '../../src/view/stylesmap';
+import { parse, stringify, setData as setViewData, getData as getViewData } from '../../src/dev-utils/view.js';
+import { BR_FILLER, INLINE_FILLER, INLINE_FILLER_LENGTH } from '../../src/view/filler.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import createViewRoot from './_utils/createroot.js';
+import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
+import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
+import env from '@ckeditor/ckeditor5-utils/src/env.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
+import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'Renderer', () => {
 	let selection, domConverter, renderer, viewDocument;
@@ -326,6 +326,34 @@ describe( 'Renderer', () => {
 
 			expect( domRoot.childNodes.length ).to.equal( 1 );
 			expect( domRoot.childNodes[ 0 ] ).to.equal( domImg );
+		} );
+
+		it( 'should change element if it is the same but requested to not reuse', () => {
+			const viewImg = new ViewElement( viewDocument, 'img' );
+			viewRoot._appendChild( viewImg );
+
+			// This should not be changed during the render.
+			const domImg = document.createElement( 'img' );
+			domRoot.appendChild( domImg );
+
+			domConverter.bindElements( domImg, viewImg );
+
+			viewImg._setCustomProperty( 'editingPipeline:doNotReuseOnce', true );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ] ).to.not.equal( domImg );
+
+			// Verify if only once.
+			const newDomImg = domRoot.childNodes[ 0 ];
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ] ).to.equal( newDomImg );
 		} );
 
 		it( 'should remove any comment from the DOM element', () => {
@@ -2226,17 +2254,11 @@ describe( 'Renderer', () => {
 		describe( 'similar selection', () => {
 			// Use spies to check selection updates. Some selection positions are not achievable in some
 			// browsers (e.g. <p>Foo<b>{}Bar</b></p> in Chrome) so asserting dom selection after rendering would fail.
-			let selectionCollapseSpy, selectionExtendSpy;
+			let selectionSpy, selectionCollapseSpy, selectionExtendSpy;
 
 			afterEach( () => {
-				if ( selectionCollapseSpy ) {
-					selectionCollapseSpy.restore();
-					selectionCollapseSpy = null;
-				}
-
-				if ( selectionExtendSpy ) {
-					selectionExtendSpy.restore();
-					selectionExtendSpy = null;
+				if ( selectionSpy ) {
+					selectionSpy.restore();
 				}
 			} );
 
@@ -2263,8 +2285,7 @@ describe( 'Renderer', () => {
 				expect( domSelection.getRangeAt( 0 ).endContainer ).to.equal( domP.childNodes[ 0 ] );
 				expect( domSelection.getRangeAt( 0 ).endOffset ).to.equal( 3 );
 
-				selectionCollapseSpy = sinon.spy( window.Selection.prototype, 'collapse' );
-				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
+				selectionSpy = sinon.spy( window.Selection.prototype, 'setBaseAndExtent' );
 
 				// <container:p>foo<attribute:b>{}bar</attribute:b></container:p>
 				selection._setTo( [
@@ -2274,10 +2295,8 @@ describe( 'Renderer', () => {
 				renderer.markToSync( 'children', viewP );
 				renderer.render();
 
-				expect( selectionCollapseSpy.calledOnce ).to.true;
-				expect( selectionCollapseSpy.calledWith( domB.childNodes[ 0 ], 0 ) ).to.true;
-				expect( selectionExtendSpy.calledOnce ).to.true;
-				expect( selectionExtendSpy.calledWith( domB.childNodes[ 0 ], 0 ) ).to.true;
+				expect( selectionSpy.calledOnce ).to.true;
+				expect( selectionSpy.calledWith( domB.childNodes[ 0 ], 0, domB.childNodes[ 0 ], 0 ) ).to.true;
 			} );
 
 			it( 'should always render collapsed selection even if it is similar (with empty element)', () => {
@@ -2302,8 +2321,7 @@ describe( 'Renderer', () => {
 				expect( domSelection.getRangeAt( 0 ).endContainer ).to.equal( domB.childNodes[ 0 ] );
 				expect( domSelection.getRangeAt( 0 ).endOffset ).to.equal( INLINE_FILLER_LENGTH );
 
-				selectionCollapseSpy = sinon.spy( window.Selection.prototype, 'collapse' );
-				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
+				selectionSpy = sinon.spy( window.Selection.prototype, 'setBaseAndExtent' );
 
 				// <container:p>foo{}<attribute:b></attribute:b></container:p>
 				selection._setTo( [
@@ -2313,10 +2331,8 @@ describe( 'Renderer', () => {
 				renderer.markToSync( 'children', viewP );
 				renderer.render();
 
-				expect( selectionCollapseSpy.calledOnce ).to.true;
-				expect( selectionCollapseSpy.calledWith( domP.childNodes[ 0 ], 3 ) ).to.true;
-				expect( selectionExtendSpy.calledOnce ).to.true;
-				expect( selectionExtendSpy.calledWith( domP.childNodes[ 0 ], 3 ) ).to.true;
+				expect( selectionSpy.calledOnce ).to.true;
+				expect( selectionSpy.calledWith( domP.childNodes[ 0 ], 3, domP.childNodes[ 0 ], 3 ) ).to.true;
 			} );
 
 			it( 'should always render non-collapsed selection if it not is similar', () => {
@@ -2342,8 +2358,7 @@ describe( 'Renderer', () => {
 				expect( domSelection.getRangeAt( 0 ).endContainer ).to.equal( domP.childNodes[ 0 ] );
 				expect( domSelection.getRangeAt( 0 ).endOffset ).to.equal( 3 );
 
-				selectionCollapseSpy = sinon.spy( window.Selection.prototype, 'collapse' );
-				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
+				selectionSpy = sinon.spy( window.Selection.prototype, 'setBaseAndExtent' );
 
 				// <container:p>fo{o<attribute:b>b}ar</attribute:b></container:p>
 				selection._setTo( [
@@ -2353,10 +2368,8 @@ describe( 'Renderer', () => {
 				renderer.markToSync( 'children', viewP );
 				renderer.render();
 
-				expect( selectionCollapseSpy.calledOnce ).to.true;
-				expect( selectionCollapseSpy.calledWith( domP.childNodes[ 0 ], 2 ) ).to.true;
-				expect( selectionExtendSpy.calledOnce ).to.true;
-				expect( selectionExtendSpy.calledWith( domB.childNodes[ 0 ], 1 ) ).to.true;
+				expect( selectionSpy.calledOnce ).to.true;
+				expect( selectionSpy.calledWith( domP.childNodes[ 0 ], 2, domB.childNodes[ 0 ], 1 ) ).to.true;
 			} );
 
 			it( 'should always render selection (even if it is same in view) if current dom selection is in incorrect place', () => {
@@ -2425,6 +2438,7 @@ describe( 'Renderer', () => {
 
 				selectionCollapseSpy = sinon.spy( window.Selection.prototype, 'collapse' );
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
+				selectionSpy = sinon.spy( window.Selection.prototype, 'setBaseAndExtent' );
 
 				// <container:p>foo{<attribute:b>ba}r</attribute:b></container:p>
 				selection._setTo( [
@@ -2436,6 +2450,7 @@ describe( 'Renderer', () => {
 
 				expect( selectionCollapseSpy.notCalled ).to.true;
 				expect( selectionExtendSpy.notCalled ).to.true;
+				expect( selectionSpy.notCalled ).to.be.true;
 			} );
 
 			it( 'should not render non-collapsed selection it is similar (element end)', () => {
@@ -2463,6 +2478,7 @@ describe( 'Renderer', () => {
 
 				selectionCollapseSpy = sinon.spy( window.Selection.prototype, 'collapse' );
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
+				selectionSpy = sinon.spy( window.Selection.prototype, 'setBaseAndExtent' );
 
 				// <container:p>foo<attribute:b>b{ar</attribute:b>}baz</container:p>
 				selection._setTo( [
@@ -2474,6 +2490,7 @@ describe( 'Renderer', () => {
 
 				expect( selectionCollapseSpy.notCalled ).to.true;
 				expect( selectionExtendSpy.notCalled ).to.true;
+				expect( selectionSpy.notCalled ).to.be.true;
 			} );
 
 			it( 'should not render non-collapsed selection it is similar (element start - nested)', () => {
@@ -2501,6 +2518,7 @@ describe( 'Renderer', () => {
 
 				selectionCollapseSpy = sinon.spy( window.Selection.prototype, 'collapse' );
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
+				selectionSpy = sinon.spy( window.Selection.prototype, 'setBaseAndExtent' );
 
 				// <container:p>foo{<attribute:b><attribute:i>ba}r</attribute:i></attribute:b></container:p>
 				selection._setTo( [
@@ -2512,6 +2530,7 @@ describe( 'Renderer', () => {
 
 				expect( selectionCollapseSpy.notCalled ).to.true;
 				expect( selectionExtendSpy.notCalled ).to.true;
+				expect( selectionSpy.notCalled ).to.true;
 			} );
 
 			it( 'should not render non-collapsed selection it is similar (element end - nested)', () => {
@@ -2538,6 +2557,7 @@ describe( 'Renderer', () => {
 
 				selectionCollapseSpy = sinon.spy( window.Selection.prototype, 'collapse' );
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
+				selectionSpy = sinon.spy( window.Selection.prototype, 'setBaseAndExtent' );
 
 				// <container:p>f{oo<attribute:b><attribute:i>bar</attribute:i></attribute:b>}baz</container:p>
 				selection._setTo( [
@@ -2549,6 +2569,7 @@ describe( 'Renderer', () => {
 
 				expect( selectionCollapseSpy.notCalled ).to.true;
 				expect( selectionExtendSpy.notCalled ).to.true;
+				expect( selectionSpy.notCalled ).to.true;
 			} );
 		} );
 
@@ -5695,6 +5716,7 @@ describe( 'Renderer', () => {
 
 				const selectionCollapseSpy = sinon.spy( window.Selection.prototype, 'collapse' );
 				const selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
+				const selectionSpy = sinon.spy( window.Selection.prototype, 'setBaseAndExtent' );
 
 				selection._setTo( [
 					new ViewRange( new ViewPosition( viewP.getChild( 0 ), 3 ), new ViewPosition( viewP.getChild( 0 ), 3 ) )
@@ -5706,6 +5728,7 @@ describe( 'Renderer', () => {
 
 				expect( selectionCollapseSpy.notCalled ).to.true;
 				expect( selectionExtendSpy.notCalled ).to.true;
+				expect( selectionSpy.notCalled ).to.true;
 			} );
 
 			it( 'should not modify selection on Android', () => {
@@ -5732,6 +5755,7 @@ describe( 'Renderer', () => {
 
 				const selectionCollapseSpy = sinon.spy( window.Selection.prototype, 'collapse' );
 				const selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
+				const selectionSpy = sinon.spy( window.Selection.prototype, 'setBaseAndExtent' );
 
 				selection._setTo( [
 					new ViewRange( new ViewPosition( viewP.getChild( 0 ), 3 ), new ViewPosition( viewP.getChild( 0 ), 3 ) )
@@ -5743,6 +5767,7 @@ describe( 'Renderer', () => {
 
 				expect( selectionCollapseSpy.notCalled ).to.true;
 				expect( selectionExtendSpy.notCalled ).to.true;
+				expect( selectionSpy.notCalled ).to.true;
 			} );
 		} );
 	} );

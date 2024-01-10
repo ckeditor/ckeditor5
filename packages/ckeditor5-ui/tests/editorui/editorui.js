@@ -3,18 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import EditorUI from '../../src/editorui/editorui';
+import EditorUI from '../../src/editorui/editorui.js';
 
-import ComponentFactory from '../../src/componentfactory';
-import ToolbarView from '../../src/toolbar/toolbarview';
-import TooltipManager from '../../src/tooltipmanager';
-
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import ComponentFactory from '../../src/componentfactory.js';
+import ToolbarView from '../../src/toolbar/toolbarview.js';
+import TooltipManager from '../../src/tooltipmanager.js';
+import PoweredBy from '../../src/editorui/poweredby.js';
+import AriaLiveAnnouncer from '../../src/arialiveannouncer.js';
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 
 import { Editor } from '@ckeditor/ckeditor5-core';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 /* global document, console */
 
@@ -47,6 +49,14 @@ describe( 'EditorUI', () => {
 
 		it( 'should create #tooltipManager', () => {
 			expect( ui.tooltipManager ).to.be.instanceOf( TooltipManager );
+		} );
+
+		it( 'should create #poweredBy', () => {
+			expect( ui.poweredBy ).to.be.instanceOf( PoweredBy );
+		} );
+
+		it( 'should create the aria live announcer instance', () => {
+			expect( ui.ariaLiveAnnouncer ).to.be.instanceOf( AriaLiveAnnouncer );
 		} );
 
 		it( 'should have #element getter', () => {
@@ -160,6 +170,14 @@ describe( 'EditorUI', () => {
 
 			sinon.assert.calledOnce( destroySpy );
 			sinon.assert.calledWithExactly( destroySpy, editor );
+		} );
+
+		it( 'should destroy #poweredBy', () => {
+			const destroySpy = sinon.spy( ui.poweredBy, 'destroy' );
+
+			ui.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
 		} );
 	} );
 
@@ -377,6 +395,85 @@ describe( 'EditorUI', () => {
 
 			expect( ui.viewportOffset ).to.deep.equal( { top: 200 } );
 			sinon.assert.calledWithMatch( consoleStub, 'editor-ui-deprecated-viewport-offset-config' );
+		} );
+	} );
+
+	describe( 'View#scrollToTheSelection integration', () => {
+		it( 'should listen to View#scrollToTheSelection and inject the offset values into the event', async () => {
+			const editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			const editor = await ClassicTestEditor.create( editorElement, {
+				ui: {
+					viewportOffset: {
+						top: 10,
+						bottom: 20,
+						left: 30,
+						right: 40
+					}
+				}
+			} );
+
+			editor.editing.view.on( 'scrollToTheSelection', ( evt, data ) => {
+				const range = editor.editing.view.document.selection.getFirstRange();
+
+				expect( data ).to.deep.equal( {
+					target: editor.editing.view.domConverter.viewRangeToDom( range ),
+					viewportOffset: {
+						top: 110,
+						bottom: 120,
+						left: 130,
+						right: 140
+					},
+					ancestorOffset: 20,
+					alignToTop: undefined,
+					forceScroll: undefined
+				} );
+			} );
+
+			editor.editing.view.scrollToTheSelection( { viewportOffset: 100 } );
+
+			editorElement.remove();
+			await editor.destroy();
+		} );
+
+		it( 'should listen to View#scrollToTheSelection and inject the offset values into the event as they change', async () => {
+			const editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			const editor = await ClassicTestEditor.create( editorElement, {
+				ui: {
+					viewportOffset: {
+						top: 10,
+						bottom: 20,
+						left: 30,
+						right: 40
+					}
+				}
+			} );
+
+			editor.editing.view.on( 'scrollToTheSelection', ( evt, data ) => {
+				const range = editor.editing.view.document.selection.getFirstRange();
+
+				expect( data ).to.deep.equal( {
+					target: editor.editing.view.domConverter.viewRangeToDom( range ),
+					viewportOffset: {
+						top: 300,
+						bottom: 120,
+						left: 130,
+						right: 140
+					},
+					ancestorOffset: 20,
+					alignToTop: undefined,
+					forceScroll: undefined
+				} );
+			} );
+
+			editor.ui.viewportOffset.top = 200;
+			editor.editing.view.scrollToTheSelection( { viewportOffset: 100 } );
+
+			editorElement.remove();
+			await editor.destroy();
 		} );
 	} );
 

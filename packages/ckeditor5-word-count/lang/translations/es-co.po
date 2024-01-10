@@ -12,9 +12,10 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Spanish (Colombia) (https://www.transifex.com/ckeditor/teams/11143/es_CO/)\n"
+"Language-Team: Spanish (Colombia) (https://app.transifex.com/ckeditor/teams/11143/es_CO/)\n"
 "Language: es_CO\n"
 "Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Label showing the number of words in the editor content."
 msgid "Words: %0"

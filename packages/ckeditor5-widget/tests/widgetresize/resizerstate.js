@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import ResizerState from '../../src/widgetresize/resizerstate';
+import ResizerState from '../../src/widgetresize/resizerstate.js';
 
 describe( 'ResizerState', () => {
 	describe( 'constructor', () => {

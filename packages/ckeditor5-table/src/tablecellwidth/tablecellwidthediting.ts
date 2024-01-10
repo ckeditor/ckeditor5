@@ -7,12 +7,12 @@
  * @module table/tablecellwidth/tablecellwidthediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 
-import TableEditing from './../tableediting';
-import TableCellWidthCommand from './commands/tablecellwidthcommand';
-import { getNormalizedDefaultProperties } from '../utils/table-properties';
-import { enableProperty } from '../utils/common';
+import TableEditing from './../tableediting.js';
+import TableCellWidthCommand from './commands/tablecellwidthcommand.js';
+import { getNormalizedDefaultProperties } from '../utils/table-properties.js';
+import { enableProperty } from '../utils/common.js';
 
 /**
  * The table cell width editing feature.
@@ -24,8 +24,8 @@ export default class TableCellWidthEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TableCellWidthEditing' {
-		return 'TableCellWidthEditing';
+	public static get pluginName() {
+		return 'TableCellWidthEditing' as const;
 	}
 
 	/**

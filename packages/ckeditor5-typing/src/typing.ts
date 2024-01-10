@@ -8,8 +8,8 @@
  */
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
-import Input from './input';
-import Delete from './delete';
+import Input from './input.js';
+import Delete from './delete.js';
 
 /**
  * The typing feature. It handles typing.
@@ -25,7 +25,7 @@ export default class Typing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Typing' {
-		return 'Typing';
+	public static get pluginName() {
+		return 'Typing' as const;
 	}
 }

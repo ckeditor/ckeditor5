@@ -16,9 +16,9 @@ import {
 	ViewCollection,
 	createLabeledInputText,
 	submitHandler
-} from 'ckeditor5/src/ui';
-import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
-import { icons } from 'ckeditor5/src/core';
+} from 'ckeditor5/src/ui.js';
+import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
+import { icons } from 'ckeditor5/src/core.js';
 
 // See: #8833.
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
@@ -181,13 +181,6 @@ export default class MediaFormView extends View {
 		this.keystrokes.set( 'arrowleft', stopPropagation );
 		this.keystrokes.set( 'arrowup', stopPropagation );
 		this.keystrokes.set( 'arrowdown', stopPropagation );
-
-		// Intercept the `selectstart` event, which is blocked by default because of the default behavior
-		// of the DropdownView#panelView.
-		// TODO: blocking `selectstart` in the #panelView should be configurable per–drop–down instance.
-		this.listenTo( this.urlInputView.element!, 'selectstart', ( evt, domEvt ) => {
-			domEvt.stopPropagation();
-		}, { priority: 'high' } );
 	}
 
 	/**

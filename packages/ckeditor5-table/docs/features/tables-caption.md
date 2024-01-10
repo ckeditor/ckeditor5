@@ -1,5 +1,6 @@
 ---
 menu-title: Table caption
+meta-title: Table caption | CKEditor 5 Documentation
 category: tables
 order: 50
 modified_at: 2022-05-19
@@ -18,7 +19,7 @@ In the demo below, click the table caption to edit it. Once you click the captio
 {@snippet features/table-caption}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Installation
@@ -36,9 +37,7 @@ npm install --save @ckeditor/ckeditor5-table
 Then add the `Table`, `TableToolbar`, and **`TableCaption`** plugins to your plugin list and configure the table toolbar:
 
 ```js
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
-import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption';
+import { Table, TableCaption, TableToolbar } from '@ckeditor/ckeditor5-table';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -92,7 +91,7 @@ The {@link module:table/tablecaption~TableCaption} plugin registers the followin
 </table>
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Contribute

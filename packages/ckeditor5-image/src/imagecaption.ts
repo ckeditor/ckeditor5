@@ -7,9 +7,9 @@
  * @module image/imagecaption
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import ImageCaptionEditing from './imagecaption/imagecaptionediting';
-import ImageCaptionUI from './imagecaption/imagecaptionui';
+import { Plugin } from 'ckeditor5/src/core.js';
+import ImageCaptionEditing from './imagecaption/imagecaptionediting.js';
+import ImageCaptionUI from './imagecaption/imagecaptionui.js';
 
 import '../theme/imagecaption.css';
 
@@ -29,7 +29,7 @@ export default class ImageCaption extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ImageCaption' {
-		return 'ImageCaption';
+	public static get pluginName() {
+		return 'ImageCaption' as const;
 	}
 }

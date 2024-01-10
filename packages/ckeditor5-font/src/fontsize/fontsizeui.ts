@@ -7,21 +7,21 @@
  * @module font/fontsize/fontsizeui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 import {
 	Model,
 	createDropdown,
 	addListToDropdown,
 	type ListDropdownItemDefinition
-} from 'ckeditor5/src/ui';
-import { Collection } from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/ui.js';
+import { Collection } from 'ckeditor5/src/utils.js';
 
-import { normalizeOptions } from './utils';
-import { FONT_SIZE } from '../utils';
+import { normalizeOptions } from './utils.js';
+import { FONT_SIZE } from '../utils.js';
 
 import '../../theme/fontsize.css';
-import type { FontSizeOption } from '../fontconfig';
-import type FontSizeCommand from './fontsizecommand';
+import type { FontSizeOption } from '../fontconfig.js';
+import type FontSizeCommand from './fontsizecommand.js';
 
 import fontSizeIcon from '../../theme/icons/font-size.svg';
 
@@ -32,8 +32,8 @@ export default class FontSizeUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'FontSizeUI' {
-		return 'FontSizeUI';
+	public static get pluginName() {
+		return 'FontSizeUI' as const;
 	}
 
 	/**

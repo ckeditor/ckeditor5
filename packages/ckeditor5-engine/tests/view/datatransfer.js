@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import DataTransfer from '../../src/view/datatransfer';
+import DataTransfer from '../../src/view/datatransfer.js';
 
 describe( 'DataTransfer', () => {
 	describe( 'constructor', () => {
@@ -244,6 +244,21 @@ describe( 'DataTransfer', () => {
 			dt.dropEffect = 'bar';
 
 			expect( spy.calledWithExactly( 'bar' ) ).to.be.true;
+		} );
+	} );
+
+	describe( '#setDragImage()', () => {
+		it( 'should call the native data transfer', () => {
+			const spy = sinon.spy();
+			const dt = new DataTransfer( {
+				setDragImage( element, x, y ) {
+					spy( element, x, y );
+				}
+			} );
+
+			dt.setDragImage( 'foo', 123, 789 );
+
+			expect( spy.calledWithExactly( 'foo', 123, 789 ) ).to.be.true;
 		} );
 	} );
 

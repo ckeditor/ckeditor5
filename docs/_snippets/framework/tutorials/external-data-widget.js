@@ -5,18 +5,15 @@
 
 /* globals console, window, document, fetch, setInterval, setTimeout, clearInterval */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
-import { ButtonView } from '@ckeditor/ckeditor5-ui/src';
-import Command from '@ckeditor/ckeditor5-core/src/command';
-import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import List from '@ckeditor/ckeditor5-list/src/list';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { Command, Plugin } from '@ckeditor/ckeditor5-core';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { List } from '@ckeditor/ckeditor5-list';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { ButtonView } from '@ckeditor/ckeditor5-ui/src/index.js';
+import { Widget, toWidget } from '@ckeditor/ckeditor5-widget';
 
 import BitcoinLogoIcon from '../../../assets/img/bitcoin-logo.svg';
 

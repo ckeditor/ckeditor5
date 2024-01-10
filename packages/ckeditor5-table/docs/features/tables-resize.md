@@ -1,5 +1,6 @@
 ---
 menu-title: Table column resizing
+meta-title: Table column resizing | CKEditor 5 Documentation
 category: tables
 order: 40
 modified_at: 2022-05-19
@@ -17,7 +18,7 @@ To resize a column, simply hover your pointer over the column edge until it gets
 {@snippet features/table-column-resize}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 The column resize feature is compatible with the {@link features/export-word Export to Word} feature. The converter will respect the column width set in the editor and retain it in the created .DOCX file.
@@ -37,8 +38,7 @@ npm install --save @ckeditor/ckeditor5-table
 Then add the `Table` and **`TableColumnResize`** plugins to your plugin list and configure the table toolbar:
 
 ```js
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize';
+import { Table, TableColumnResize } from '@ckeditor/ckeditor5-table';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -56,7 +56,7 @@ The {@link module:table/tablecolumnresize~TableColumnResize} plugin does not reg
 <!-- Only drag handle, so this needs to be checked. No commands, tho. -->
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Contribute

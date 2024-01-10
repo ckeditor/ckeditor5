@@ -7,7 +7,7 @@
  * @module ui/colorgrid/colortileview
  */
 
-import ButtonView from '../button/buttonview';
+import ButtonView from '../button/buttonview.js';
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 
@@ -46,7 +46,7 @@ export default class ColorTileView extends ButtonView {
 				class: [
 					'ck',
 					'ck-color-grid__tile',
-					bind.if( 'hasBorder', 'ck-color-table__color-tile_bordered' )
+					bind.if( 'hasBorder', 'ck-color-selector__color-tile_bordered' )
 				]
 			}
 		} );

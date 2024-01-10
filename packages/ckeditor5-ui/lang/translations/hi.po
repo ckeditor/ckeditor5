@@ -12,9 +12,10 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Hindi (https://www.transifex.com/ckeditor/teams/11143/hi/)\n"
+"Language-Team: Hindi (https://app.transifex.com/ckeditor/teams/11143/hi/)\n"
 "Language: hi\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Title of the CKEditor5 editor."
 msgid "Rich Text Editor"
@@ -27,6 +28,14 @@ msgstr "संपादक संपादन क्षेत्र: %0"
 msgctxt "Label of the block toolbar icon (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
 msgid "Edit block"
 msgstr "Edit block"
+
+msgctxt "First part of the label of the block toolbar icon when functionality of drag and drop is available (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
+msgid "Click to edit block"
+msgstr "ब्लॉक एडिट करने के लिए क्लिक करें"
+
+msgctxt "Second part of the label of the block toolbar icon when functionality of drag and drop is available (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
+msgid "Drag to move"
+msgstr "मूव करने के लिए ड्रैग करें"
 
 msgctxt "Label for a button showing the next thing (tab, page, etc.)."
 msgid "Next"
@@ -111,3 +120,19 @@ msgstr "एडीटर ब्लॉक कंटेंट टूलबार"
 msgctxt "Accessible label of a balloon toolbar that shows up right next to the user selection (the caret)."
 msgid "Editor contextual toolbar"
 msgstr "एडीटर कॉन्टेक्स्टूअल टूलबार"
+
+msgctxt "Label of an input field for typing colors in the HEX color format."
+msgid "HEX"
+msgstr "HEX"
+
+msgctxt "Label of the button closing the color picker and confirming the changes done in the color selector component."
+msgid "Accept"
+msgstr "स्वीकार करें"
+
+msgctxt "The main text of the message shown to the user when given query does not match any results."
+msgid "No results found"
+msgstr "कोई रिजल्ट नहीं"
+
+msgctxt "The main text of the message shown to the user when no results are available."
+msgid "No searchable items"
+msgstr "कोई खोजने लायक आइटम नहीं"

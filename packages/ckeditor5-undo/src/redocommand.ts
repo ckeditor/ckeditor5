@@ -7,7 +7,7 @@
  * @module undo/redocommand
  */
 
-import BaseCommand from './basecommand';
+import BaseCommand from './basecommand.js';
 
 /**
  * The redo command stores {@link module:engine/model/batch~Batch batches} that were used to undo a batch by

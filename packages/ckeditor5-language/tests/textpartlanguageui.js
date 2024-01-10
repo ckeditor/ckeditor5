@@ -5,14 +5,14 @@
 
 /* globals document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import TextPartLanguageEditing from '../src/textpartlanguageediting';
-import TextPartLanguageUI from '../src/textpartlanguageui';
+import TextPartLanguageEditing from '../src/textpartlanguageediting.js';
+import TextPartLanguageUI from '../src/textpartlanguageui.js';
 
 describe( 'TextPartLanguageUI', () => {
 	let editor, editorElement, dropdown, command;
@@ -54,6 +54,8 @@ describe( 'TextPartLanguageUI', () => {
 			expect( dropdown.buttonView.isOn ).to.be.false;
 			expect( dropdown.buttonView.label ).to.equal( 'Choose language' );
 			expect( dropdown.buttonView.tooltip ).to.equal( 'Language' );
+			expect( dropdown.buttonView.ariaLabel ).to.equal( 'Language' );
+			expect( dropdown.buttonView.ariaLabelledBy ).to.be.undefined;
 			expect( dropdown.listView ).to.be.undefined;
 		} );
 
@@ -110,6 +112,18 @@ describe( 'TextPartLanguageUI', () => {
 			dropdown.render();
 
 			expect( dropdown.element.classList.contains( 'ck-text-fragment-language-dropdown' ) ).to.be.true;
+		} );
+
+		describe( 'listview', () => {
+			it( 'should have properties set', () => {
+				// Trigger lazy init.
+				dropdown.isOpen = true;
+
+				const listView = dropdown.listView;
+
+				expect( listView.element.role ).to.equal( 'menu' );
+				expect( listView.element.ariaLabel ).to.equal( 'Language' );
+			} );
 		} );
 
 		describe( 'model to command binding', () => {

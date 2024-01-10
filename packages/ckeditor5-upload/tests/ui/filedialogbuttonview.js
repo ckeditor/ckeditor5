@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import FileDialogButtonView from '../../src/ui/filedialogbuttonview';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import View from '@ckeditor/ckeditor5-ui/src/view';
+import FileDialogButtonView from '../../src/ui/filedialogbuttonview.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import View from '@ckeditor/ckeditor5-ui/src/view.js';
 
 describe( 'FileDialogButtonView', () => {
 	let view, localeMock;
@@ -24,14 +24,13 @@ describe( 'FileDialogButtonView', () => {
 	describe( 'child views', () => {
 		describe( 'button view', () => {
 			it( 'should be rendered', () => {
-				expect( view.buttonView ).to.instanceof( ButtonView );
-				expect( view.buttonView ).to.equal( view.template.children[ 0 ] );
+				expect( view ).to.instanceof( ButtonView );
 			} );
 
 			it( 'should open file dialog on execute', () => {
 				const spy = sinon.spy( view._fileInputView, 'open' );
 				const stub = sinon.stub( view._fileInputView.element, 'click' );
-				view.buttonView.fire( 'execute' );
+				view.fire( 'execute' );
 
 				sinon.assert.calledOnce( spy );
 				stub.restore();
@@ -41,7 +40,7 @@ describe( 'FileDialogButtonView', () => {
 		describe( 'file dialog', () => {
 			it( 'should be rendered', () => {
 				expect( view._fileInputView ).to.instanceof( View );
-				expect( view._fileInputView ).to.equal( view.template.children[ 1 ] );
+				expect( view._fileInputView ).to.equal( view.children.get( 1 ) );
 			} );
 
 			it( 'should be bound to view#acceptedType', () => {
@@ -66,16 +65,6 @@ describe( 'FileDialogButtonView', () => {
 				sinon.assert.calledOnce( spy );
 				expect( spy.lastCall.args[ 1 ] ).to.equal( files );
 			} );
-		} );
-	} );
-
-	describe( 'focus()', () => {
-		it( 'should focus view#buttonView', () => {
-			const spy = sinon.spy( view.buttonView, 'focus' );
-
-			view.focus();
-
-			sinon.assert.calledOnce( spy );
 		} );
 	} );
 } );

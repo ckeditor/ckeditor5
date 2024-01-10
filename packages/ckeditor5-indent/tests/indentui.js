@@ -5,15 +5,13 @@
 
 /* global document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import { icons } from 'ckeditor5/src/core.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
 
-import IndentEditing from '../src/indentediting';
-import IndentUI from '../src/indentui';
-
-import indentIcon from '../theme/icons/indent.svg';
-import outdentIcon from '../theme/icons/outdent.svg';
+import IndentEditing from '../src/indentediting.js';
+import IndentUI from '../src/indentui.js';
 
 describe( 'IndentUI', () => {
 	let editor, element;
@@ -66,13 +64,13 @@ describe( 'IndentUI', () => {
 			it( 'should display the right icon for indent', () => {
 				const indentButton = editor.ui.componentFactory.create( 'indent' );
 
-				expect( indentButton.icon ).to.equal( indentIcon );
+				expect( indentButton.icon ).to.equal( icons.indent );
 			} );
 
 			it( 'should display the right icon for outdent', () => {
 				const outdentButton = editor.ui.componentFactory.create( 'outdent' );
 
-				expect( outdentButton.icon ).to.equal( outdentIcon );
+				expect( outdentButton.icon ).to.equal( icons.outdent );
 			} );
 		} );
 
@@ -89,7 +87,7 @@ describe( 'IndentUI', () => {
 					.then( newEditor => {
 						const indentButton = newEditor.ui.componentFactory.create( 'indent' );
 
-						expect( indentButton.icon ).to.equal( outdentIcon );
+						expect( indentButton.icon ).to.equal( icons.outdent );
 
 						return newEditor.destroy();
 					} )
@@ -110,7 +108,7 @@ describe( 'IndentUI', () => {
 					.then( newEditor => {
 						const outdentButton = newEditor.ui.componentFactory.create( 'outdent' );
 
-						expect( outdentButton.icon ).to.equal( indentIcon );
+						expect( outdentButton.icon ).to.equal( icons.indent );
 
 						return newEditor.destroy();
 					} )

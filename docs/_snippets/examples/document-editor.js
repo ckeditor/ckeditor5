@@ -6,9 +6,9 @@
 /* globals console, window, document */
 
 import { TableColumnResize } from '@ckeditor/ckeditor5-table';
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
-import DecoupledEditor from '../build-decoupled-document';
+import DecoupledEditor from '../build-decoupled-document.js';
 
 DecoupledEditor
 	.create( document.querySelector( '.document-editor__editable' ), {
@@ -21,7 +21,7 @@ DecoupledEditor
 				'undo', 'redo',
 				'|', 'heading',
 				'|', 'bold', 'italic',
-				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},

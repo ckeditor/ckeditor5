@@ -9,8 +9,8 @@
 
 import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
 
-import UndoCommand, { type UndoCommandRevertEvent } from './undocommand';
-import RedoCommand from './redocommand';
+import UndoCommand, { type UndoCommandRevertEvent } from './undocommand.js';
+import RedoCommand from './redocommand.js';
 
 import type {
 	Batch,
@@ -43,8 +43,8 @@ export default class UndoEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'UndoEditing' {
-		return 'UndoEditing';
+	public static get pluginName() {
+		return 'UndoEditing' as const;
 	}
 
 	/**

@@ -14,11 +14,11 @@ jobs:
             - name: Setup Node
               uses: actions/setup-node@v3
               with:
-                  node-version: 16
+                  node-version: 18
                   registry-url: "https://npm.pkg.github.com"
                   scope: "@ftrprf"
             - name: Build editor
-              run: cd ./packages/ckeditor5-build-decoupled-document && pwd && npm install && npm run build 
+              run: cd ./packages/ckeditor5-build-decoupled-document && pwd && npm install && npm run build
               env:
                   NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
             - name: upload to storage

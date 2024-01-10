@@ -7,7 +7,7 @@
  * @module image/imageresize/imageresizebuttons
  */
 
-import { Plugin, icons, type Editor } from 'ckeditor5/src/core';
+import { Plugin, icons, type Editor } from 'ckeditor5/src/core.js';
 import {
 	ButtonView,
 	DropdownButtonView,
@@ -15,12 +15,12 @@ import {
 	createDropdown,
 	addListToDropdown,
 	type ListDropdownItemDefinition
-} from 'ckeditor5/src/ui';
-import { CKEditorError, Collection, type Locale } from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/ui.js';
+import { CKEditorError, Collection, type Locale } from 'ckeditor5/src/utils.js';
 
-import ImageResizeEditing from './imageresizeediting';
-import type ResizeImageCommand from './resizeimagecommand';
-import type { ImageResizeOption } from '../imageconfig';
+import ImageResizeEditing from './imageresizeediting.js';
+import type ResizeImageCommand from './resizeimagecommand.js';
+import type { ImageResizeOption } from '../imageconfig.js';
 
 const RESIZE_ICONS = {
 	small: icons.objectSizeSmall,
@@ -45,8 +45,8 @@ export default class ImageResizeButtons extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ImageResizeButtons' {
-		return 'ImageResizeButtons';
+	public static get pluginName() {
+		return 'ImageResizeButtons' as const;
 	}
 
 	/**
@@ -149,15 +149,18 @@ export default class ImageResizeButtons extends Plugin {
 			const command: ResizeImageCommand = editor.commands.get( 'resizeImage' )!;
 			const dropdownView = createDropdown( locale, DropdownButtonView );
 			const dropdownButton: typeof dropdownView.buttonView & { commandValue?: string | null } = dropdownView.buttonView;
+			const accessibleLabel = t( 'Resize image' );
 
 			dropdownButton.set( {
-				tooltip: t( 'Resize image' ),
+				tooltip: accessibleLabel,
 				commandValue: originalSizeOption.value,
 				icon: RESIZE_ICONS.medium,
 				isToggleable: true,
 				label: this._getOptionLabelValue( originalSizeOption ),
 				withText: true,
-				class: 'ck-resize-image-button'
+				class: 'ck-resize-image-button',
+				ariaLabel: accessibleLabel,
+				ariaLabelledBy: undefined
 			} );
 
 			dropdownButton.bind( 'label' ).to( command, 'value', commandValue => {
@@ -170,7 +173,8 @@ export default class ImageResizeButtons extends Plugin {
 			dropdownView.bind( 'isEnabled' ).to( this );
 
 			addListToDropdown( dropdownView, () => this._getResizeDropdownListItemDefinitions( options, command ), {
-				ariaLabel: t( 'Image resize list' )
+				ariaLabel: t( 'Image resize list' ),
+				role: 'menu'
 			} );
 
 			// Execute command when an item from the dropdown is selected.
@@ -236,6 +240,7 @@ export default class ImageResizeButtons extends Plugin {
 					commandName: 'resizeImage',
 					commandValue: optionValueWithUnit,
 					label: this._getOptionLabelValue( option ),
+					role: 'menuitemradio',
 					withText: true,
 					icon: null
 				} )

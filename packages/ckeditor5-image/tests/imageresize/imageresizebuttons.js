@@ -5,19 +5,19 @@
 
 /* global document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Image from '../../src/image';
-import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import View from '@ckeditor/ckeditor5-ui/src/view';
-import ImageResizeButtons from '../../src/imageresize/imageresizebuttons';
-import ImageStyle from '../../src/imagestyle';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo';
-import Table from '@ckeditor/ckeditor5-table/src/table';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Image from '../../src/image.js';
+import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import View from '@ckeditor/ckeditor5-ui/src/view.js';
+import ImageResizeButtons from '../../src/imageresize/imageresizebuttons.js';
+import ImageStyle from '../../src/imagestyle.js';
+import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
+import Table from '@ckeditor/ckeditor5-table/src/table.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 import iconSmall from '@ckeditor/ckeditor5-core/theme/icons/object-size-small.svg';
 import iconMedium from '@ckeditor/ckeditor5-core/theme/icons/object-size-medium.svg';
@@ -143,6 +143,13 @@ describe( 'ImageResizeButtons', () => {
 			expect( dropdownView.buttonView.tooltip ).to.equal( 'Resize image' );
 		} );
 
+		it( 'should be created with proper aria attributes for dropdown button', () => {
+			const dropdownView = editor.ui.componentFactory.create( 'resizeImage' );
+
+			expect( dropdownView.buttonView.ariaLabel ).to.equal( 'Resize image' );
+			expect( dropdownView.buttonView.ariaLabelledBy ).to.be.undefined;
+		} );
+
 		it( 'should be created with a proper aria-label', () => {
 			const dropdownView = editor.ui.componentFactory.create( 'resizeImage' );
 
@@ -153,6 +160,18 @@ describe( 'ImageResizeButtons', () => {
 			dropdownView.isOpen = true;
 
 			expect( dropdownView.listView.ariaLabel ).to.equal( 'Image resize list' );
+		} );
+
+		it( 'should be created with a proper role', () => {
+			const dropdownView = editor.ui.componentFactory.create( 'resizeImage' );
+
+			// Make sure that list view is not created before first dropdown open.
+			expect( dropdownView.listView ).to.be.undefined;
+
+			// Trigger list view creation (lazy init).
+			dropdownView.isOpen = true;
+
+			expect( dropdownView.listView.role ).to.equal( 'menu' );
 		} );
 
 		it( 'should execute resize command with a proper value', () => {

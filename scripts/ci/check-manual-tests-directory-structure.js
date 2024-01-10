@@ -11,7 +11,7 @@
 
 const glob = require( 'glob' );
 const path = require( 'path' );
-const { red } = require( './ansi-colors' );
+const { red } = require( 'chalk' );
 const ROOT_DIRECTORY = path.join( __dirname, '..', '..' );
 
 // This script ensures that the "manual/" test directories are only located in the root

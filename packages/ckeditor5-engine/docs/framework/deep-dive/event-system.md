@@ -1,5 +1,6 @@
 ---
 category: framework-deep-dive
+meta-title: Event system | CKEditor 5 Framework Documentation
 ---
 # Event system
 
@@ -10,8 +11,7 @@ Emitters are heavily used throughout the entire editor architecture. They are th
 Any class can become an event emitter. All you need to do is mix the {@link module:utils/emittermixin~Emitter} into it:
 
 ```js
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import { EmitterMixin, mix } from '@ckeditor/ckeditor5-utils';
 
 class AnyClass {
 	// Class's code.
@@ -35,7 +35,7 @@ However, a function object is needed if you want to be able to remove the event 
 emitter.off( 'eventName', handler );
 ```
 
-There is also another way to add an event listener &mdash; by using {@link module:utils/emittermixin~Emitter#listenTo `listenTo()`}. This way one emitter can listen to events on another emitter:
+There is also another way to add an event listener &ndash; by using {@link module:utils/emittermixin~Emitter#listenTo `listenTo()`}. This way one emitter can listen to events on another emitter:
 
 ```js
 foo.listenTo( bar, 'eventName', ( eventInfo, ...args ) => { /* ... */ } );
@@ -129,7 +129,7 @@ this.on( 'foo:bar:baz', () => { /* ... */ } );
 
 This way you can have more general events, listening to a broader event (`'foo'` in this case), or more detailed callbacks listening to specified events (`'foo:bar'` or `'foo:bar:baz'`).
 
-This mechanism is used for instance in the conversion, where thanks to events named as `'insert:<elementName>'` you can listen to the insertion of a specific element (e.g. `'insert:p'`) or all elements insertion (`'insert'`).
+This mechanism is used for instance in the conversion, where thanks to events named `'insert:<elementName>'` you can listen to the insertion of a specific element (like `'insert:p'`) or all elements insertion (`'insert'`).
 
 **Note**: Listeners registered on the same priority will be fired in the order of the registration (no matter if listening to a whole namespace or to a specific event).
 
@@ -150,7 +150,7 @@ All passed arguments will be available in all listeners that are added to the ev
 It is sometimes useful to know if an event was stopped by any of the listeners. There is an alternative way of firing an event just for that:
 
 ```js
-import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
+import { EventInfo } from '@ckeditor/ckeditor5-utils';
 
 // Prepare the event info...
 const eventInfo = new EventInfo( this, 'eventName' );
@@ -287,7 +287,7 @@ this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
 Listeners registered in the context of a custom callback function:
 
 ```js
-import { isWidget } from '@ckeditor/ckeditor5-widget/src/utils';
+import { isWidget } from '@ckeditor/ckeditor5-widget';
 
 this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
 	// Listener's code.
@@ -306,7 +306,7 @@ this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
 
 Bubbling always starts from the virtual `'$capture'` context. All listeners attached to this context are triggered first (and in the order of their priorities).
 
-Then, the real bubbling starts from the selection position (either its anchor or focus &mdash; depending on what is deeper).
+Then, the real bubbling starts from the selection position (either its anchor or focus &ndash; depending on what is deeper).
 
 If text nodes are allowed at the selection position, then the first context is `'$text'`. Then the event bubbles through all elements up to the `'$root'` and finally `'$document'`.
 

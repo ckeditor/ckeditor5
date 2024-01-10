@@ -12,9 +12,9 @@ import type {
 	Element,
 	Mapper,
 	Model
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
-import { isSingleParagraphWithoutAttributes } from './downcast';
+import { isSingleParagraphWithoutAttributes } from './downcast.js';
 
 /**
  * A table cell refresh handler which marks the table cell in the differ to have it re-rendered.

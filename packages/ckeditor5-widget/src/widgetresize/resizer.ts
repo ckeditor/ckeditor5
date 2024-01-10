@@ -16,10 +16,10 @@ import {
 	type DecoratedMethodEvent
 } from '@ckeditor/ckeditor5-utils';
 
-import ResizeState from './resizerstate';
-import SizeView from './sizeview';
+import ResizeState from './resizerstate.js';
+import SizeView from './sizeview.js';
 
-import type { ResizerOptions } from '../widgetresize';
+import type { ResizerOptions } from '../widgetresize.js';
 import type { ViewElement } from '@ckeditor/ckeditor5-engine';
 
 /**

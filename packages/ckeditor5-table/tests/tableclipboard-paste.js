@@ -5,25 +5,26 @@
 
 /* globals document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import HorizontalLineEditing from '@ckeditor/ckeditor5-horizontal-line/src/horizontallineediting';
-import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting';
-import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting';
-import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Input from '@ckeditor/ckeditor5-typing/src/input';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { assertSelectedCells, modelTable, viewTable } from './_utils/utils';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
+import HorizontalLineEditing from '@ckeditor/ckeditor5-horizontal-line/src/horizontallineediting.js';
+import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting.js';
+import LegacyListEditing from '@ckeditor/ckeditor5-list/src/legacylist/legacylistediting.js';
+import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Input from '@ckeditor/ckeditor5-typing/src/input.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { assertSelectedCells, modelTable, viewTable } from './_utils/utils.js';
 
-import TableEditing from '../src/tableediting';
-import TableCellPropertiesEditing from '../src/tablecellproperties/tablecellpropertiesediting';
-import TableCellWidthEditing from '../src/tablecellwidth/tablecellwidthediting';
-import TableWalker from '../src/tablewalker';
+import TableEditing from '../src/tableediting.js';
+import TableCellPropertiesEditing from '../src/tablecellproperties/tablecellpropertiesediting.js';
+import TableCellWidthEditing from '../src/tablecellwidth/tablecellwidthediting.js';
+import TableWalker from '../src/tablewalker.js';
 
-import TableClipboard from '../src/tableclipboard';
+import TableClipboard from '../src/tableclipboard.js';
+import TableColumnResize from '../src/tablecolumnresize.js';
 
 describe( 'table clipboard', () => {
 	let editor, model, modelRoot, tableSelection, viewDocument, element;
@@ -181,6 +182,75 @@ describe( 'table clipboard', () => {
 					[ '30', '31', '32', '33' ]
 				] )
 			);
+		} );
+
+		it( 'should adjust `<colgroup>` element while normalizing pasted table', async () => {
+			const editorWithColumnResize = await ClassicTestEditor.create( element, {
+				plugins: [ TableEditing, TableClipboard, Paragraph, Clipboard, TableColumnResize ]
+			} );
+
+			model = editorWithColumnResize.model;
+			modelRoot = model.document.getRoot();
+			viewDocument = editorWithColumnResize.editing.view.document;
+			tableSelection = editorWithColumnResize.plugins.get( 'TableSelection' );
+
+			model.change( writer => {
+				writer.insertElement( 'paragraph', modelRoot.getChild( 0 ), 'before' );
+				writer.setSelection( modelRoot.getChild( 0 ), 'before' );
+			} );
+
+			const table =
+				'<table>' +
+					'<colgroup>' +
+						'<col span="2" style="width:20%">' +
+						'</col>' +
+						'<col style="width:60%">' +
+						'</col>' +
+					'</colgroup>' +
+					'<tbody>' +
+						'<tr>' +
+							'<td colspan="3">foo</td>' +
+						'</tr>' +
+						'<tr>' +
+							'<td colspan="2">bar</td>' +
+							'<td>baz</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>';
+
+			const data = {
+				dataTransfer: createDataTransfer(),
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+
+			data.dataTransfer.setData( 'text/html', table );
+			viewDocument.fire( 'paste', data );
+
+			expect( getModelData( model ) ).to.equalMarkup(
+				'[<table>' +
+					'<tableRow>' +
+						'<tableCell colspan="2">' +
+							'<paragraph>foo</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>bar</paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>baz</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<tableColumnGroup>' +
+						'<tableColumn columnWidth="40%"></tableColumn>' +
+						'<tableColumn columnWidth="60%"></tableColumn>' +
+					'</tableColumnGroup>' +
+				'</table>]' +
+				'<paragraph></paragraph>'
+			);
+
+			await editorWithColumnResize.destroy();
 		} );
 
 		it( 'should not alter model.insertContent if no table pasted', () => {
@@ -3811,7 +3881,7 @@ describe( 'table clipboard', () => {
 		} );
 
 		it( 'handles mixed nested content in table cell', async () => {
-			await createEditor( [ ImageBlockEditing, ImageCaptionEditing, BlockQuoteEditing, HorizontalLineEditing, ListEditing ] );
+			await createEditor( [ ImageBlockEditing, ImageCaptionEditing, BlockQuoteEditing, HorizontalLineEditing, LegacyListEditing ] );
 
 			setModelData( model, modelTable( [
 				[ '00', '01', '02' ],

@@ -28,7 +28,7 @@ import type {
 	FONT_COLOR,
 	FONT_FAMILY,
 	FONT_SIZE
-} from './index';
+} from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface EditorConfig {

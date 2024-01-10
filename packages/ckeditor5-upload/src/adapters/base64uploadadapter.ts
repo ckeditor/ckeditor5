@@ -10,7 +10,7 @@
 /* globals window */
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
-import FileRepository, { type UploadResponse, type FileLoader, type UploadAdapter } from '../filerepository';
+import FileRepository, { type UploadResponse, type FileLoader, type UploadAdapter } from '../filerepository.js';
 
 type DomFileReader = globalThis.FileReader;
 
@@ -35,8 +35,8 @@ export default class Base64UploadAdapter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Base64UploadAdapter' {
-		return 'Base64UploadAdapter';
+	public static get pluginName() {
+		return 'Base64UploadAdapter' as const;
 	}
 
 	/**

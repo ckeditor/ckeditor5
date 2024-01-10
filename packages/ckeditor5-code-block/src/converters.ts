@@ -7,10 +7,10 @@
  * @module code-block/converters
  */
 
-import type { GetCallback } from 'ckeditor5/src/utils';
-import type { DowncastInsertEvent, Element, Model, UpcastElementEvent, UpcastTextEvent, View } from 'ckeditor5/src/engine';
-import type { CodeBlockLanguageDefinition } from './codeblockconfig';
-import { getPropertyAssociation } from './utils';
+import type { GetCallback } from 'ckeditor5/src/utils.js';
+import type { DowncastInsertEvent, Element, Model, UpcastElementEvent, UpcastTextEvent, EditingView } from 'ckeditor5/src/engine.js';
+import type { CodeBlockLanguageDefinition } from './codeblockconfig.js';
+import { getPropertyAssociation } from './utils.js';
 
 /**
  * A model-to-view (both editing and data) converter for the `codeBlock` element.
@@ -147,7 +147,7 @@ export function modelToDataViewSoftBreakInsertion( model: Model ): GetCallback<D
  * @returns Returns a conversion callback.
  */
 export function dataViewToModelCodeBlockInsertion(
-	editingView: View,
+	editingView: EditingView,
 	languageDefs: Array<CodeBlockLanguageDefinition>
 ): GetCallback<UpcastElementEvent> {
 	// Language names associated with CSS classes:

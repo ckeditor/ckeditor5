@@ -7,9 +7,9 @@
  * @module basic-styles/bold/boldui
  */
 
-import { Plugin, icons } from 'ckeditor5/src/core';
-import { ButtonView } from 'ckeditor5/src/ui';
-import type AttributeCommand from '../attributecommand';
+import { Plugin, icons } from 'ckeditor5/src/core.js';
+import { ButtonView } from 'ckeditor5/src/ui.js';
+import type AttributeCommand from '../attributecommand.js';
 
 const BOLD = 'bold';
 
@@ -20,8 +20,8 @@ export default class BoldUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'BoldUI' {
-		return 'BoldUI';
+	public static get pluginName() {
+		return 'BoldUI' as const;
 	}
 
 	/**

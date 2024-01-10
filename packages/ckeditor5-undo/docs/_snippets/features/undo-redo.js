@@ -5,26 +5,24 @@
 
 /* globals console, window, document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting';
-import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
-
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
-import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { ImageUpload, ImageInsert, PictureEditing } from '@ckeditor/ckeditor5-image';
+import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 ClassicEditor
 	.create( document.querySelector( '#undo-redo' ), {
-		plugins: [ ArticlePluginSet, PictureEditing, CKBox, ImageUpload, CloudServices ],
+		plugins: [ ArticlePluginSet, PictureEditing, CKBox, ImageInsert, CKBoxImageEdit, ImageUpload, CloudServices ],
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
 				'undo', 'redo',
 				'|', 'heading',
 				'|', 'bold', 'italic',
-				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
@@ -36,14 +34,18 @@ ClassicEditor
 		image: {
 			toolbar: [
 				'imageStyle:inline',
-				'imageStyle:wrapText',
-				'imageStyle:breakText',
+				'imageStyle:block',
+				'imageStyle:side',
 				'|',
 				'toggleImageCaption',
-				'imageTextAlternative'
+				'imageTextAlternative',
+				'|',
+				'ckboxImageEdit'
 			]
 		},
 		ckbox: {
+			allowExternalImagesEditing: [ /^data:/, 'origin' ],
+			forceDemoLabel: true,
 			tokenUrl: TOKEN_URL
 		},
 		table: {

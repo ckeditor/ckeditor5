@@ -7,10 +7,10 @@
  * @module heading/heading
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 
-import HeadingEditing from './headingediting';
-import HeadingUI from './headingui';
+import HeadingEditing from './headingediting.js';
+import HeadingUI from './headingui.js';
 
 import '../theme/heading.css';
 
@@ -36,7 +36,7 @@ export default class Heading extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Heading' {
-		return 'Heading';
+	public static get pluginName() {
+		return 'Heading' as const;
 	}
 }

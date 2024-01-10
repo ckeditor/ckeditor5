@@ -7,10 +7,10 @@
  * @module highlight/highlightediting
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 
-import HighlightCommand from './highlightcommand';
-import type { HighlightOption } from './highlightconfig';
+import HighlightCommand from './highlightcommand.js';
+import type { HighlightOption } from './highlightconfig.js';
 
 /**
  * The highlight editing feature. It introduces the {@link module:highlight/highlightcommand~HighlightCommand command} and the `highlight`
@@ -22,8 +22,8 @@ export default class HighlightEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'HighlightEditing' {
-		return 'HighlightEditing';
+	public static get pluginName() {
+		return 'HighlightEditing' as const;
 	}
 
 	/**

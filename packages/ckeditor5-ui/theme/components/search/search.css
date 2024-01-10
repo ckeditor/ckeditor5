@@ -1,0 +1,43 @@
+/*
+ * Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
+
+.ck.ck-search {
+	& > .ck-labeled-field-view {
+		& > .ck-labeled-field-view__input-wrapper > .ck-icon {
+			position: absolute;
+			top: 50%;
+			transform: translateY(-50%);
+
+			@mixin ck-dir ltr {
+				left: var(--ck-spacing-medium);
+			}
+
+			@mixin ck-dir rtl {
+				right: var(--ck-spacing-medium);
+			}
+		}
+
+		& .ck-search__reset {
+			position: absolute;
+			top: 50%;
+			transform: translateY(-50%);
+		}
+	}
+
+	& > .ck-search__results {
+		& > .ck-search__info {
+			& > span:first-child {
+				display: block;
+			}
+
+			/* Hide the filtered view when nothing was found */
+			&:not(.ck-hidden) ~ * {
+				display: none;
+			}
+		}
+	}
+}

@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import FontCommand from '../src/fontcommand';
+import FontCommand from '../src/fontcommand.js';
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import Command from '@ckeditor/ckeditor5-core/src/command.js';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'FontCommand', () => {
 	let editor, model, doc, root, command;
@@ -234,6 +234,15 @@ describe( 'FontCommand', () => {
 			} );
 
 			expect( getData( model ) ).to.equal( '<paragraph>a[<$text font="foo">bcfo]obar</$text>xyz</paragraph>' );
+		} );
+
+		it( 'should use provided batch', () => {
+			setData( model, '<paragraph>a[bc<$text font="foo">fo]obar</$text>xyz</paragraph>' );
+			const batch = model.createBatch();
+			const spy = sinon.spy( model, 'enqueueChange' );
+
+			command.execute( { value: '#f00', batch } );
+			sinon.assert.calledWith( spy, batch );
 		} );
 
 		describe( 'should cause firing model change event', () => {

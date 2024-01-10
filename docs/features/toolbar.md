@@ -1,13 +1,14 @@
 ---
 title: Editor toolbar
 category: features-toolbar
+meta-title: Editor toolbar | CKEditor 5 Documentation
 order: 10
 ---
 {@snippet features/build-toolbar-source}
 
 # Editor toolbar
 
-The toolbar is the most basic user interface element of CKEditor 5 that gives you convenient access to all its features. It has buttons and dropdowns that you can use to format, manage, insert, and change elements of your content.
+The toolbar is the most basic user interface element of CKEditor&nbsp;5 that gives you convenient access to all its features. It has buttons and dropdowns that you can use to format, manage, insert, and change elements of your content.
 
 ## Demo
 
@@ -16,18 +17,18 @@ Below is a sample toolbar with a basic set of features. Toolbar items can be eas
 {@snippet features/toolbar-basic}
 
 <info-box info>
-	All demos in this guide only present a limited set of features for clarity. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	For clarity, all demos in this guide present a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Basic toolbar configuration
 
 <info-box hint>
-	Toolbar configuration is a strict UI-related setting. Removing a toolbar item does not remove the feature from the editor internals. If your goal with the toolbar configuration is to remove features, the right solution is to also remove their respective plugins. Check {@link installation/getting-started/configuration#removing-features removing features} for more information.
+	Toolbar configuration is a strict UI-related setting. Removing a toolbar item does not remove the feature from the editor internals. If your goal with the toolbar configuration is to remove features, the right solution is to also remove their plugins. Check {@link installation/getting-started/configuration#removing-features removing features} for more information.
 </info-box>
 
-In the builds that contain toolbars, an optimal default tollbar set is defined for it. You may need a different toolbar arrangement, though, and this can be achieved through configuration.
+In the builds that contain toolbars, an optimal default toolbar set is defined for it. You may need a different toolbar arrangement, though, and you can achieve this through configuration.
 
-Each editor may have a different toolbar configuration scheme, so it is recommended to check its documentation. In any case, the following example may give you a general idea:
+Each editor may have a different toolbar configuration scheme, so check its documentation. In any case, the following example may give you a general idea:
 
 ```js
 ClassicEditor
@@ -51,7 +52,7 @@ Below you can find an example of a simple toolbar with button grouping. The grou
 
 There are two available toolbar configuration formats:
 
-Basic, as presented above:
+Basic:
 
 ```js
 toolbar: [ 'bold', 'italic', '|', 'undo', 'redo', '|', 'numberedList', 'bulletedList' ]
@@ -81,22 +82,22 @@ toolbar: {
 }
 ```
 
- * **`items`** &ndash; An array of toolbar item names. Most of the components (buttons, dropdowns, etc.) which can be used as toolbar items are described under the {@link features/index Features} tab. A full list is defined in {@link module:ui/componentfactory~ComponentFactory editor.ui.componentFactory} and can be listed using the following snippet: `Array.from( editor.ui.componentFactory.names() )`. Besides button names, you can also use the dedicated separators for toolbar groups (`'|'`) and toolbar lines (`'-'`).
+ * **`items`** &ndash; An array of toolbar item names. Most of the components (buttons, dropdowns, etc.) that you can use as toolbar items are described in the {@link features/index Features} section. A full list is defined in {@link module:ui/componentfactory~ComponentFactory `editor.ui.componentFactory`} and can be listed using the following snippet: `Array.from( editor.ui.componentFactory.names() )`. Besides button names, you can also use the dedicated separators for toolbar groups (`'|'`) and toolbar lines (`'-'`).
 
- * **`removeItems`** &ndash; An array of toolbar item names. With this setting you can modify the default toolbar configuration without the need of defining the entire list (you can specify a couple of buttons that you want to remove instead of specifying all the buttons you want to keep). If, after removing an item, toolbar will have two or more consecutive separators (`'|'`), the duplicates will be removed automatically.
+ * **`removeItems`** &ndash; An array of toolbar item names. With this setting, you can change the default toolbar configuration without the need to define the entire list. You can specify a couple of buttons that you want to remove instead of specifying all the buttons you want to keep. If, after removing an item, the toolbar will have two or more consecutive separators (`'|'`), the duplicates will be removed automatically.
 
- * **`shouldNotGroupWhenFull`** &ndash; When set to `true`, the toolbar will stop grouping items and let them wrap to the next line when there is not enough space to display them in a single row. This setting is `false` by default, which enables items grouping.
+ * **`shouldNotGroupWhenFull`** &ndash; When set to `true`, the toolbar will stop grouping items and let them wrap to the next line when there is not enough space to display them in a single row. This setting is `false` by default, which enables item grouping.
 
-The demo below presents the "regular" toolbar look with `shouldNotGroupWhenFull` set to `false`. If there are more toolbar items than can fit in the toolbar in the current display width, some of the items get hidden. You can access them by clicking the show more items button {@icon @ckeditor/ckeditor5-core/theme/icons/three-vertical-dots.svg Show more items}.
+The demo below presents the "regular" toolbar look with `shouldNotGroupWhenFull` set to `false`. If there are more toolbar items than can fit in the toolbar in the current display width, some items get hidden. You can access them by clicking the show more items button {@icon @ckeditor/ckeditor5-core/theme/icons/three-vertical-dots.svg Show more items}.
 
 {@snippet features/toolbar-grouping}
 
 ## Multiline (wrapping) toolbar
 
-In the [extended toolbar configuration format](#extended-toolbar-configuration-format) it is also possible to arrange toolbar items into multiple lines. Here is how to achieve this:
+In the [extended toolbar configuration format](#extended-toolbar-configuration-format), it is also possible to arrange toolbar items into multiple lines. Here is how to achieve this:
 
-* Set the `shouldNotGroupWhenFull` option to `true`, so items will not be grouped when the toolbar overflows but will wrap to the new line instead.
-* Additionally, the `'-'` separator can be used inside the items list to set the breaking point explicitly.
+* Set the `shouldNotGroupWhenFull` option to `true`, so items will not be grouped when the toolbar overflows. They will wrap to the new line instead.
+* Additionally, you can use the `'-'` separator inside the item list to set the breaking point explicitly.
 
 ```js
 toolbar: {
@@ -107,7 +108,7 @@ toolbar: {
 
 ### Automatic toolbar wrapping
 
-When `shouldNotGroupWhenFull` is set to `true`, by default the toolbar items are automatically wrapped into a new line once they do not fit the editor width. The mechanism is automatic and only wraps excess items. Notice that while the toolbar group separators `'|'` are preserved, the groups may be split when they overflow.
+When you set `shouldNotGroupWhenFull` to `true`, by default the toolbar items are automatically wrapped into a new line once they do not fit the editor width. The mechanism is automatic and only wraps excess items. Notice that while the toolbar group separators `'|'` are preserved, the groups may be split when they overflow.
 
 ```js
 toolbar: {
@@ -150,7 +151,7 @@ toolbar: {
 
 {@snippet features/toolbar-breakpoint}
 
-## Grouping toolbar items in drop-downs (nested toolbars)
+## Grouping toolbar items in dropdowns (nested toolbars)
 
 To save space in your toolbar or arrange the features thematically, you can group several items into a dropdown. For instance, check out the following configuration:
 
@@ -161,7 +162,7 @@ toolbar: [
 				icon: 'threeVerticalDots',
 				items: [ 'strikethrough', 'superscript', 'subscript' ]
 			},
-// More of toolbar's config.
+// More of toolbar's configuration.
 // ...
 ]
 ```
@@ -172,11 +173,11 @@ It will create a "Basic styles" dropdown with a three vertical dots icon {@icon 
 
 ### Customization
 
-You can customize the look of the dropdown by configuring additional properties, such as the icon, label or tooltip text.
+You can customize the look of the dropdown by configuring additional properties, such as the icon, label, or tooltip text.
 
 #### Displaying the label
 
-You can control the way the UI element is displayed. For instance, to hide the icon and to display the label only, you can use the following configuration:
+You can control the way the UI element is displayed. For instance, to hide the icon and to display the label, you can use the following configuration:
 
 ```js
 {
@@ -205,11 +206,13 @@ You can use one of the icons listed below for your dropdown:
 | `'paragraph'`     | {@icon @ckeditor/ckeditor5-core/theme/icons/paragraph.svg Paragraph}        |
 | `'text'`          | {@icon @ckeditor/ckeditor5-core/theme/icons/text.svg Text}                  |
 | `'plus'`          | {@icon @ckeditor/ckeditor5-core/theme/icons/plus.svg Plus}                  |
+| `'dragIndicator'` | {@icon @ckeditor/ckeditor5-core/theme/icons/drag-indicator.svg Drag indicator} |
+| `'pilcrow'`       | {@icon @ckeditor/ckeditor5-core/theme/icons/pilcrow.svg Pilcrow}            |
 
 * The default icons are loaded from the `ckeditor5-core` package.
 * If no icon is specified, `'threeVerticalDots'` will be used as a default.
 * If `icon: false` is configured, no icon will be displayed and the text label will show up instead.
-* You can set a custom icon for the drop-down by passing an SVG string.
+* You can set a custom icon for the dropdown by passing an SVG string.
 
 Here is an example:
 
@@ -217,14 +220,14 @@ Here is an example:
 toolbar: [
 	'undo', 'redo', '|',
 	{
-		// This drop-down uses a default icon because none was specified.
+		// This dropdown uses a default icon because none was specified.
 		label: 'Fonts',
 		items: [ 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor' ]
 	},
 	'|',
 	{
 		label: 'A drop-down with a custom icon',
-		// If you want your icon to change the color dynamically (e.g. when opened)
+		// If you want your icon to change the color dynamically (for example, when opened)
 		// avoid fill="..." and stroke="..." styling attributes.
 		// Use solid shapes and avoid paths with strokes.
 		// eslint-disable-next-line max-len
@@ -240,7 +243,7 @@ toolbar: [
 	},
 	'|',
 	{
-		// This drop-down has the icon disabled and a text label instead.
+		// This dropdown has the icon disabled and a text label instead.
 		label: 'Lists',
 		icon: false,
 		items: [ 'bulletedList', 'numberedList', 'todoList' ]
@@ -253,7 +256,7 @@ And here is the effect:
 
 #### Customizing the tooltip
 
-By default, the tooltip of the button shares its text with the label. You can customize it to better describe your dropdown and make it more accessible by using the `tooltip` property ({@link module:ui/button/buttonview~ButtonView#tooltip learn more}):
+By default, the tooltip of the button shares its text with the label. You can customize it to better describe your dropdown and make it more accessible by using the {@link module:ui/button/buttonview~ButtonView#tooltip `tooltip`} property:
 
 ```js
 toolbar: [
@@ -279,12 +282,12 @@ Array.from( editor.ui.componentFactory.names() );
 
 ## Adding a custom button
 
-Refer to the {@link framework/creating-simple-plugin-timestamp Creating a simple plugin} guide to learn how to build your own plugin, register its button and add it to the toolbar configuration.
+Refer to the {@link tutorials/crash-course/editor step-by-step tutorial} to learn how to build a custom plugin, register its button, and add it to the toolbar configuration.
 
 ## Block toolbar
 
-The {@link features/blocktoolbar BlockToolbar} feature provides an additional configurable toolbar on the left-hand side of the content area, useful when the main toolbar is not accessible (e.g. in certain {@link installation/getting-started/predefined-builds#balloon-block-editor balloon block editor} scenarios).
+The {@link features/blocktoolbar BlockToolbar} feature provides an additional configurable toolbar on the left-hand side of the content area. It is useful when the main toolbar is not accessible (for example, in certain {@link installation/getting-started/predefined-builds#balloon-block-editor balloon block editor} scenarios).
 
 ## Contribute
 
-The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-ui](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-ui).
+The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-ui](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-ui).

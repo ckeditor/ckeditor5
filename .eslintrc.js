@@ -23,11 +23,17 @@ module.exports = {
 				' * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license',
 				' */'
 			]
-		} ]
+		} ],
+		'ckeditor5-rules/require-file-extensions-in-imports': [
+			'error',
+			{
+				extensions: [ '.ts', '.js', '.json' ]
+			}
+		]
 	},
 	overrides: [
 		{
-			files: [ '**/tests/**/*.js' ],
+			files: [ '**/tests/**/*.@(js|ts)' ],
 			rules: {
 				'no-unused-expressions': 'off',
 				'ckeditor5-rules/ckeditor-imports': 'off',

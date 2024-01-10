@@ -33,7 +33,7 @@
 		transition: unset;
 	}
 
-	&.ck-color-table__color-tile_bordered {
+	&.ck-color-selector__color-tile_bordered {
 		box-shadow: 0 0 0 1px var(--ck-color-base-border);
 	}
 

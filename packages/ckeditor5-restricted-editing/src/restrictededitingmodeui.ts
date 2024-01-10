@@ -10,15 +10,15 @@
 import {
 	Plugin,
 	type Command
-} from 'ckeditor5/src/core';
+} from 'ckeditor5/src/core.js';
 import {
 	Model,
 	createDropdown,
 	addListToDropdown,
 	type ButtonExecuteEvent,
 	type ListDropdownItemDefinition
-} from 'ckeditor5/src/ui';
-import { Collection } from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/ui.js';
+import { Collection } from 'ckeditor5/src/utils.js';
 
 import lockIcon from '../theme/icons/contentlock.svg';
 
@@ -32,8 +32,8 @@ export default class RestrictedEditingModeUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'RestrictedEditingModeUI' {
-		return 'RestrictedEditingModeUI';
+	public static get pluginName() {
+		return 'RestrictedEditingModeUI' as const;
 	}
 
 	/**

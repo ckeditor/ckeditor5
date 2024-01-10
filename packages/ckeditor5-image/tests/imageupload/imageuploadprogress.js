@@ -5,21 +5,21 @@
 
 /* globals window */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ImageBlockEditing from '../../src/image/imageblockediting';
-import ImageUploadEditing from '../../src/imageupload/imageuploadediting';
-import ImageUploadProgress from '../../src/imageupload/imageuploadprogress';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
-import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
+import ImageBlockEditing from '../../src/image/imageblockediting.js';
+import ImageUploadEditing from '../../src/imageupload/imageuploadediting.js';
+import ImageUploadProgress from '../../src/imageupload/imageuploadprogress.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository.js';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
 
-import { createNativeFileMock, NativeFileReaderMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import ImageInlineEditing from '../../src/image/imageinlineediting';
+import { createNativeFileMock, NativeFileReaderMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import ImageInlineEditing from '../../src/image/imageinlineediting.js';
 
 describe( 'ImageUploadProgress', () => {
 	// eslint-disable-next-line max-len
@@ -52,7 +52,8 @@ describe( 'ImageUploadProgress', () => {
 				plugins: [
 					ImageBlockEditing, ImageInlineEditing, Paragraph, ImageUploadEditing,
 					ImageUploadProgress, UploadAdapterPluginMock, ClipboardPipeline
-				]
+				],
+				image: { insert: { type: 'auto' } }
 			} )
 			.then( newEditor => {
 				editor = newEditor;

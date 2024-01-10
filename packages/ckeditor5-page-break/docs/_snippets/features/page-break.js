@@ -7,13 +7,24 @@
 
 import { PageBreak } from '@ckeditor/ckeditor5-page-break';
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
+import { PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
+import { LinkImage } from '@ckeditor/ckeditor5-link';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
-import ClassicEditor from '../build-classic';
+import ClassicEditor from '../build-classic.js';
 
-ClassicEditor.builtinPlugins.push( Alignment );
-ClassicEditor.builtinPlugins.push( PageBreak );
+ClassicEditor.builtinPlugins.push(
+	Alignment,
+	PageBreak,
+	PictureEditing,
+	ImageInsert,
+	ImageResize,
+	AutoImage,
+	LinkImage,
+	CKBox,
+	CKBoxImageEdit );
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-page-break' ), {
@@ -21,7 +32,7 @@ ClassicEditor
 			items: [
 				'undo', 'redo', '|', 'heading',
 				'|', 'bold', 'italic',
-				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed', 'pageBreak',
+				'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed', 'pageBreak',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
@@ -30,6 +41,10 @@ ClassicEditor
 				top: window.getViewportTopOffsetConfig()
 			}
 		},
+		ckbox: {
+			allowExternalImagesEditing: [ /^data:/, 'origin' ],
+			forceDemoLabel: true
+		},
 		image: {
 			toolbar: [
 				'imageStyle:inline',
@@ -37,7 +52,9 @@ ClassicEditor
 				'imageStyle:breakText',
 				'|',
 				'toggleImageCaption',
-				'imageTextAlternative'
+				'imageTextAlternative',
+				'|',
+				'ckboxImageEdit'
 			]
 		},
 		table: {

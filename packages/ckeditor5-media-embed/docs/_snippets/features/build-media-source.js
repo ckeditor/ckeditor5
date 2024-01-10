@@ -5,12 +5,14 @@
 
 /* globals window */
 
-import { AutoImage } from '@ckeditor/ckeditor5-image';
 import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
+import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
+import { PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
+import { LinkImage } from '@ckeditor/ckeditor5-link';
 
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
-import ClassicEditor from '../build-classic';
+import ClassicEditor from '../build-classic.js';
 
-ClassicEditor.builtinPlugins.push( MediaEmbed, AutoImage );
+ClassicEditor.builtinPlugins.push( MediaEmbed, PictureEditing, ImageInsert, ImageResize, AutoImage, LinkImage, CKBox, CKBoxImageEdit );
 
 window.ClassicEditor = ClassicEditor;

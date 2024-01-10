@@ -5,9 +5,9 @@
 
 /* global document */
 
-import Rect from '../../src/dom/rect';
-import createElement from '../../src/dom/createelement';
-import RectDrawer from '../../tests/_utils/rectdrawer';
+import Rect from '../../src/dom/rect.js';
+import createElement from '../../src/dom/createelement.js';
+import RectDrawer from '../../tests/_utils/rectdrawer.js';
 
 const DEFAULT_STYLES = 'position: fixed; ' +
 	'outline: blue solid 1px; ' +

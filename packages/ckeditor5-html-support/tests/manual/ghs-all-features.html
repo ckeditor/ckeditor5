@@ -15,6 +15,12 @@
 		.text-italic {
 			font-style: italic;
 		}
+		i.inline-icon {
+			display: inline-block;
+			width: 1em;
+			height: 1em;
+			background: red;
+		}
 	</style>
 </head>
 <div style="display: flex">
@@ -135,6 +141,10 @@
 			<div style="border: 1px solid blue" class="raw-html-embed">HTML snippet</div>
 
 			<div data-foo class="page-break" style="page-break-after:always;"><span style="display:none;">&nbsp;</span></div>
+
+			<p><i class="inline-icon"></i> empty inline at start</p>
+			<p>Text with <i class="inline-icon"></i> empty inline inside</p>
+			<p>Text with empty inline at the end <i class="inline-icon"></i></p>
 		</div>
 	</div>
 

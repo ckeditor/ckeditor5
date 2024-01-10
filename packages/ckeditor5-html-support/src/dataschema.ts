@@ -7,11 +7,11 @@
  * @module html-support/dataschema
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
-import { toArray } from 'ckeditor5/src/utils';
-import defaultConfig from './schemadefinitions';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { toArray } from 'ckeditor5/src/utils.js';
+import defaultConfig from './schemadefinitions.js';
 import { mergeWith } from 'lodash-es';
-import type { AttributeProperties, SchemaItemDefinition } from 'ckeditor5/src/engine';
+import type { AttributeProperties, SchemaItemDefinition } from 'ckeditor5/src/engine.js';
 
 /**
  * Holds representation of the extended HTML document type definitions to be used by the
@@ -49,19 +49,13 @@ export default class DataSchema extends Plugin {
 	/**
 	 * A map of registered data schema definitions.
 	 */
-	private readonly _definitions: Map<string, DataSchemaDefinition>;
-
-	constructor( editor: Editor ) {
-		super( editor );
-
-		this._definitions = new Map();
-	}
+	private readonly _definitions: Array<DataSchemaDefinition> = [];
 
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'DataSchema' {
-		return 'DataSchema';
+	public static get pluginName() {
+		return 'DataSchema' as const;
 	}
 
 	/**
@@ -81,14 +75,14 @@ export default class DataSchema extends Plugin {
 	 * Add new data schema definition describing block element.
 	 */
 	public registerBlockElement( definition: DataSchemaBlockElementDefinition ): void {
-		this._definitions.set( definition.model, { ...definition, isBlock: true } );
+		this._definitions.push( { ...definition, isBlock: true } );
 	}
 
 	/**
 	 * Add new data schema definition describing inline element.
 	 */
 	public registerInlineElement( definition: DataSchemaInlineElementDefinition ): void {
-		this._definitions.set( definition.model, { ...definition, isInline: true } );
+		this._definitions.push( { ...definition, isInline: true } );
 	}
 
 	/**
@@ -137,11 +131,17 @@ export default class DataSchema extends Plugin {
 	}
 
 	/**
+	 * Returns definitions matching the given model name.
+	 */
+	public getDefinitionsForModel( modelName: string ): Array<DataSchemaDefinition> {
+		return this._definitions.filter( definition => definition.model == modelName );
+	}
+
+	/**
 	 * Returns definitions matching the given view name.
 	 */
 	private _getMatchingViewDefinitions( viewName: string | RegExp ): Array<DataSchemaDefinition> {
-		return Array.from( this._definitions.values() )
-			.filter( def => def.view && testViewName( viewName, def.view ) );
+		return this._definitions.filter( def => def.view && testViewName( viewName, def.view ) );
 	}
 
 	/**
@@ -150,21 +150,31 @@ export default class DataSchema extends Plugin {
 	 * @param modelName Data schema model name.
 	 */
 	private* _getReferences( modelName: string ): Iterable<DataSchemaDefinition> {
-		const { modelSchema } = this._definitions.get( modelName )!;
+		const inheritProperties = [
+			'inheritAllFrom',
+			'inheritTypesFrom',
+			'allowWhere',
+			'allowContentOf',
+			'allowAttributesOf'
+		] as const;
 
-		if ( !modelSchema ) {
-			return;
-		}
+		const definitions = this._definitions.filter( definition => definition.model == modelName );
 
-		const inheritProperties = [ 'inheritAllFrom', 'inheritTypesFrom', 'allowWhere', 'allowContentOf', 'allowAttributesOf' ];
+		for ( const { modelSchema } of definitions ) {
+			if ( !modelSchema ) {
+				continue;
+			}
 
-		for ( const property of inheritProperties ) {
-			for ( const referenceName of toArray( ( modelSchema as any )[ property ] || [] ) ) {
-				const definition = this._definitions.get( referenceName );
+			for ( const property of inheritProperties ) {
+				for ( const referenceName of toArray( modelSchema[ property ] || [] ) ) {
+					const definitions = this._definitions.filter( definition => definition.model == referenceName );
 
-				if ( referenceName !== modelName && definition ) {
-					yield* this._getReferences( definition.model );
-					yield definition;
+					for ( const definition of definitions ) {
+						if ( referenceName !== modelName ) {
+							yield* this._getReferences( definition.model );
+							yield definition;
+						}
+					}
 				}
 			}
 		}
@@ -179,13 +189,20 @@ export default class DataSchema extends Plugin {
 	 * @param definition Definition update.
 	 */
 	private _extendDefinition( definition: DataSchemaDefinition ): void {
-		const currentDefinition = this._definitions.get( definition.model );
+		const currentDefinitions = Array.from( this._definitions.entries() )
+			.filter( ( [ , currentDefinition ] ) => currentDefinition.model == definition.model );
 
-		const mergedDefinition = mergeWith( {}, currentDefinition, definition, ( target, source ) => {
-			return Array.isArray( target ) ? target.concat( source ) : undefined;
-		} );
+		if ( currentDefinitions.length == 0 ) {
+			this._definitions.push( definition );
 
-		this._definitions.set( definition.model, mergedDefinition );
+			return;
+		}
+
+		for ( const [ idx, currentDefinition ] of currentDefinitions ) {
+			this._definitions[ idx ] = mergeWith( {}, currentDefinition, definition, ( target, source ) => {
+				return Array.isArray( target ) ? target.concat( source ) : undefined;
+			} );
+		}
 	}
 }
 
@@ -274,7 +291,20 @@ export interface DataSchemaInlineElementDefinition extends DataSchemaDefinition 
 	/**
 	 * The name of the model attribute that generates the same view element. GHS inline attribute
 	 * will be removed from the model tree as soon as the coupled attribute is removed. See
-	 * {@link module:html-support/datafilter~DataFilter#_registerModelPostFixer GHS post-fixer} for more details.
+	 * {@link module:html-support/datafilter~DataFilter#_registerCoupledAttributesPostFixer GHS post-fixer} for more details.
 	 */
 	coupledAttribute?: string;
+
+	/**
+	 * Indicates that element should not be converted as a model text attribute.
+	 * It is used to map view elements that do not have a separate model element but their data is stored in a model attribute.
+	 * For example `<tbody>` element does not have a dedicated model element and GHS stores attributes of `<tbody>`
+	 * in the `htmlTbodyAttributes` model attribute of the `table` model element.
+	 */
+	appliesToBlock?: boolean | string;
+
+	/**
+	 * Indicates that an element should be preserved even if it has no content.
+	 */
+	allowEmpty?: boolean;
 }

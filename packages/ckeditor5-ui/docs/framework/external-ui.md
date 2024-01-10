@@ -1,11 +1,12 @@
 ---
 category: framework-deep-dive-ui
+meta-title: Third party UI | CKEditor 5 Framework Documentation
 order: 20
 ---
 
-# Third–party UI
+# Third-party UI
 
-CKEditor 5 is a modular editing framework that allows various flexible configurations. This includes the usage of a third–party user interface on top of the base editor classes.
+CKEditor&nbsp;5 is a modular editing framework that allows various flexible configurations. This includes the usage of a third–party user interface on top of the base editor classes.
 
 In this guide, a [classic–like](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic) editor will be bound to a completely separate, existing UI created in [Bootstrap](http://getbootstrap.com/), providing the basic structure and toolbar items necessary to start editing.
 
@@ -17,48 +18,41 @@ The ready–to–use builds of CKEditor like {@link examples/builds/classic-edit
 
 ```js
 // Basic classes to create an editor.
-import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
-import EditorUI from '@ckeditor/ckeditor5-ui/src/editorui/editorui';
-import EditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/editoruiview';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
-import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
-import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
+import { Editor } from '@ckeditor/ckeditor5-core';
+import { ComponentFactory, EditorUI, EditorUIView, InlineEditableUIView } from '@ckeditor/ckeditor5-ui';
+import { ElementReplacer, FocusTracker } from '@ckeditor/ckeditor5-utils';
 
 // Interfaces to extend the basic Editor API.
-import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin';
-import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementapimixin';
+import { DataApiMixin, ElementApiMixin } from '@ckeditor/ckeditor5-core';
 
 // Helper function for adding interfaces to the Editor class.
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import { mix } from '@ckeditor/ckeditor5-utils';
 
 // Helper function that gets the data from an HTML element that the Editor is attached to.
-import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
+import { getDataFromElement } from '@ckeditor/ckeditor5-utils';
 
 // Helper function that binds the editor with an HTMLForm element.
-import attachToForm from '@ckeditor/ckeditor5-core/src/editor/utils/attachtoform';
+import { attachToForm } from '@ckeditor/ckeditor5-core';
 
 // Basic features that every editor should enable.
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoengine';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
+import { Enter } from '@ckeditor/ckeditor5-enter';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Typing } from '@ckeditor/ckeditor5-typing';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo';
 
 // Basic features associated with the edited content.
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
-import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting';
-import UnderlineEditing from '@ckeditor/ckeditor5-basic-styles/src/underline/underlineediting';
-import HeadingEditing from '@ckeditor/ckeditor5-heading/src/heading/headingediting';
+import { BoldEditing, ItalicEditing, UnderlineEditing } from '@ckeditor/ckeditor5-basic-styles';
+import { HeadingEditing } from '@ckeditor/ckeditor5-heading';
 ```
 
 <info-box info>
 	Note that instead of {@link module:basic-styles/bold~Bold}, which loads the default bold UI and bold editing feature, just the {@link module:basic-styles/bold/boldediting~BoldEditing} is imported. It provides the [engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine) features associated with editing any bold text but does not come with the actual UI.
 
-	Respectively, `ItalicEditing`, `UnderlineEditing`, `HeadingEditing` and `UndoEditing` are also imported.
+	Respectively, `ItalicEditing`, `UnderlineEditing`, `HeadingEditing`, and `UndoEditing` are also imported.
 </info-box>
 
-Having imported the very basic editor components, you can define the custom `BootstrapEditor` class that extends the {@link module:core/editor/editor~Editor `Editor`}:
+After importing the basic editor components, you can define the custom `BootstrapEditor` class that extends the {@link module:core/editor/editor~Editor `Editor`}:
 
 ```js
 // Extending the Editor class, which brings the base editor API.
@@ -115,7 +109,7 @@ mix( BootstrapEditor, ElementApiMixin );
 
 ## Creating the Bootstrap UI
 
-Although the editor is ready to use, it is just a bare editable area &mdash; which is not much use to the users. You need to give it an actual interface with the toolbar and buttons.
+Although the editor is ready to use, it is just a bare editable area &ndash; that is not of much use to the users. You need to give it an actual interface with the toolbar and buttons.
 
 <info-box hint>
 	Refer to the Bootstrap [Getting started](https://getbootstrap.com/docs/4.0/getting-started/introduction/) guide to learn how to include Bootstrap in your web page.
@@ -219,7 +213,7 @@ as different headings are selected. */
 
 ## Binding the UI with the editor
 
-At this stage, you should bind the editor created at the very beginning of this guide with the Bootstrap UI defined in HTML. All the UI logic will be wrapped into a separate class matching the `EditorUI` {@link module:ui/editorui/editorui~EditorUI interface}. You may have noticed this line in the constructor of the `BootstrapEditor`:
+At this stage, you should bind the editor created at the beginning of this guide with the Bootstrap UI defined in HTML. All the UI logic will be wrapped into a separate class matching the `EditorUI` {@link module:ui/editorui/editorui~EditorUI interface}. You may have noticed this line in the constructor of the `BootstrapEditor`:
 
 ```js
 this.ui = new BootstrapEditorUI( this );
@@ -333,13 +327,13 @@ class BootstrapEditorUI extends EditorUI {
 }
 ```
 
-Almost every feature in the editor defines some command, e.g. {@link module:heading/headingcommand~HeadingCommand} or {@link module:undo/undocommand~UndoCommand}. Commands can be executed:
+Almost every feature in the editor defines some command, for example, {@link module:heading/headingcommand~HeadingCommand} or {@link module:undo/undocommand~UndoCommand}. Commands can be executed:
 
 ```js
 editor.execute( 'undo' );
 ```
 
-But they also come with default observable properties like `value` and `isEnabled`. These are the entry points when it comes to creating a custom user interface because their values represent the actual state of the editor and can be followed in simple event listeners:
+They also come with default observable properties like `value` and `isEnabled`. These are the entry points when it comes to creating a custom user interface because their values represent the actual state of the editor. You can follow them in simple event listeners:
 
 ```js
 const command = editor.commands.get( 'undo' );

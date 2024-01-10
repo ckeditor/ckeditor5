@@ -4,14 +4,14 @@
  */
 
 /* globals document */
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
 import { Image, ImageUpload } from '@ckeditor/ckeditor5-image';
-import CKFinderUploadAdapter from '../src/uploadadapter';
-import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
-import { createNativeFileMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import CKFinderUploadAdapter from '../src/uploadadapter.js';
+import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository.js';
+import { createNativeFileMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'CKFinderUploadAdapter', () => {
 	let editor, sinonXHR, fileRepository, editorElement;

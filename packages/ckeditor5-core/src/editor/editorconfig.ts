@@ -7,9 +7,9 @@
  * @module core/editor/editorconfig
  */
 
-import type Context from '../context';
-import type { PluginConstructor } from '../plugin';
-import type Editor from './editor';
+import type Context from '../context.js';
+import type { PluginConstructor } from '../plugin.js';
+import type Editor from './editor.js';
 
 /**
  * CKEditor configuration options.
@@ -375,7 +375,7 @@ export interface EditorConfig {
 	 *	* **Selecting an icon**
 	 *
 	 *		You can use one of the common icons provided by the editor (`'bold'`, `'plus'`, `'text'`, `'importExport'`, `'alignLeft'`,
-	 *		`'paragraph'`, `'threeVerticalDots'`):
+	 *		`'paragraph'`, `'threeVerticalDots'`, `'dragIndicator'`, `'pilcrow'`):
 	 *
 	 *		```ts
 	 *		{
@@ -458,39 +458,76 @@ export interface EditorConfig {
 	 * 	.catch( ... );
 	 * ```
 	 *
-	 * Options which can be set using the UI config:
+	 * Options which can be set using the UI configuration:
 	 *
-	 * * **`ui.viewportOffset`** &ndash; The offset (in pixels) of the viewport from every direction used when positioning a sticky toolbar
-	 * or other absolutely positioned UI elements.
+	 * * **`ui.viewportOffset`** &ndash; The offset (in pixels) of the viewport from every direction. It is
+	 * used when positioning a sticky toolbar or other absolutely positioned UI elements.
 	 * Useful when a page with which the editor is being integrated has some other sticky or fixed elements
-	 * (e.g. the top menu). Thanks to setting the UI viewport offset the toolbar and other contextual balloons will not be positioned
+	 * (e.g. the top menu). Thanks to setting the UI viewport offset, the toolbar and other contextual balloons will not be positioned
 	 * underneath or above the page's UI.
 	 *
-	 * ```ts
-	 * ui: {
-	 * 	viewportOffset: { top: 10, right: 10, bottom: 10, left: 10 }
-	 * }
-	 * ```
+	 * 	```ts
+	 * 	ui: {
+	 * 		viewportOffset: { top: 10, right: 10, bottom: 10, left: 10 }
+	 * 	}
+	 * 	```
 	 *
-	 * 	**Note:** If you want to modify the viewport offset in runtime (after editor was created), you can do that by overriding
-	 * {@link module:ui/editorui/editorui~EditorUI#viewportOffset `editor.ui.viewportOffset`}.
+	 * 	**Note:** If you want to modify the viewport offset in runtime (after the editor was created), you can do that by overriding
+	 * 	{@link module:ui/editorui/editorui~EditorUI#viewportOffset `editor.ui.viewportOffset`}.
+	 *
+	 * * **`ui.poweredBy`** &ndash; The configuration of the project logo displayed over the editor's editing area in
+	 *  open-source integrations. It allows customizing the position of the logo to minimize the risk of collision with the
+	 *  editor content and UI.
+	 *
+	 * 	The following configuration properties are supported:
+	 *
+	 * 	* **`position`** &ndash; The position of the project's logo (default: `'border'`).
+	 * 		* When `'inside'`, the logo will be displayed within the boundaries of the editing area.
+	 * 		* When `'border'`, the logo will be displayed over the bottom border of the editing area.
+	 *
+	 * 	* **`side`** (`'left'` or `'right'`, default: `'right'`) &ndash; The side of the editing area where the
+	 * 	logo will be displayed.
+	 *
+	 * 		**Note**: If {@link module:core/editor/editorconfig~EditorConfig#language `config.language`} is set to an RTL (right-to-left)
+	 * 		language, the side switches to `'left'` by default.
+	 *
+	 * 	* **`label`** (default: `'Powered by'`) &ndash; The label displayed next to the project's logo.
+	 *
+	 * 		**Note**: Set the value to `null` to display the logo without any text.
+	 *
+	 * 	* **`verticalOffset`** (default: `5`) &ndash; The vertical distance the logo can be moved away from its default position.
+	 *
+	 * 		**Note**: If `position` is `'border'`, the offset is measured from the (vertical) center of the logo.
+	 *
+	 * 	* **`horizontalOffset`** (default: `5`) &ndash; The horizontal distance between the side of the editing root and the
+	 * 	nearest side of the logo.
+	 *
+	 * 	```ts
+	 * 	ui: {
+	 * 		poweredBy: {
+	 * 			position: 'border',
+	 * 			side: 'left',
+	 * 			verticalOffset: 2,
+	 * 			horizontalOffset: 30
+	 * 		}
+	 * 	}
 	 */
 	ui?: UiConfig;
 
 	/**
-	 * Enables updating the source element after the editor destroy.
+	 * Enables updating the source element after the editor is destroyed.
 	 *
 	 * Enabling this option might have some security implications, as the editor doesn't have control over all data
 	 * in the output.
 	 *
-	 * Be careful, especially while using
-	 * {@glink features/markdown Markdown}, {@glink features/html/general-html-support General HTML Support} or
+	 * Be careful, especially while using the
+	 * {@glink features/markdown Markdown}, {@glink features/html/general-html-support General HTML Support}, or
 	 * {@glink features/html/html-embed HTML embed} features.
 	 */
 	updateSourceElementOnDestroy?: boolean;
 
 	/**
-	 * The license key for the CKEditor 5 premium features.
+	 * The license key for the CKEditor 5 commercial license and the premium features.
 	 *
 	 * If you do not have a key yet, please [contact us](https://ckeditor.com/contact/) or
 	 * [order a trial](https://orders.ckeditor.com/trial/premium-features).
@@ -499,7 +536,7 @@ export interface EditorConfig {
 }
 
 /**
- * The `config.initialData` option cannot be used together with initial data passed as the first parameter of
+ * The `config.initialData` option cannot be used together with the initial data passed as the first parameter of
  * {@link module:core/editor/editor~Editor.create `Editor.create()`}.
  *
  * @error editor-create-initial-data
@@ -511,7 +548,7 @@ export interface EditorConfig {
  * ```ts
  * ClassicEditor
  * 	.create( document.querySelector( '#editor' ), {
- * 		language: ... // Editor language configuration.
+ * 		language: ... // The editor language configuration.
  * 	} )
  * 	.then( editor => {
  * 		console.log( editor );
@@ -526,14 +563,14 @@ export interface EditorConfig {
 export interface LanguageConfig {
 
 	/**
-	 * Allows to use different language for the editor UI.
+	 * Allows to use a different language for the editor UI.
 	 *
 	 * The language codes are defined in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) standard.
 	 */
 	ui?: string;
 
 	/**
-	 * Allows to use different language of the editor content.
+	 * Allows to use a different language of the editor content.
 	 *
 	 * The language codes are defined in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) standard.
 	 */
@@ -544,6 +581,7 @@ export type ToolbarConfig = Array<ToolbarConfigItem> | {
 	items?: Array<ToolbarConfigItem>;
 	removeItems?: Array<string>;
 	shouldNotGroupWhenFull?: boolean;
+	icon?: string;
 };
 
 export type ToolbarConfigItem = string | {
@@ -554,11 +592,105 @@ export type ToolbarConfigItem = string | {
 	tooltip?: boolean | string | ( ( label: string, keystroke: string | undefined ) => string );
 };
 
+/**
+ * The “Powered by CKEditor” logo configuration options.
+ **/
+export interface PoweredByConfig {
+
+	/**
+	 * The position of the project's logo.
+	 *
+	 * * When `'inside'`, the logo will be displayed within the boundaries of the editing area.
+	 * * When `'border'`, the logo will be displayed over the bottom border of the editing area.
+	 *
+	 * @default 'border'
+	 */
+	position: 'inside' | 'border';
+
+	/**
+	 * Allows choosing the side of the editing area where the logo will be displayed.
+	 *
+	 * **Note:** If {@link module:core/editor/editorconfig~EditorConfig#language `config.language`} is set to an RTL (right-to-left)
+	 * language, the side switches to `'left'` by default.
+	 *
+	 * @default 'right'
+	 */
+	side: 'left' | 'right';
+
+	/**
+	 * Allows changing the label displayed next to the CKEditor logo.
+	 *
+	 * **Note:** Set the value to `null` to hide the label.
+	 *
+	 * @default 'Powered by'
+	 */
+	label: string | null;
+
+	/**
+	 * The vertical distance the logo can be moved away from its default position.
+	 *
+	 * **Note:** If `position` is `'border'`, the offset is measured from the (vertical) center of the logo.
+	 *
+	 * @default 5
+	 */
+	verticalOffset: number;
+
+	/**
+	 * The horizontal distance between the side of the editing root and the nearest side of the logo.
+	 *
+	 * @default 5
+	 */
+	horizontalOffset: number;
+
+	/**
+	 * Allows to show the logo even if the valid commercial license is configured using
+	 * the {@link module:core/editor/editorconfig~EditorConfig#licenseKey `config.licenseKey`} setting.
+	 *
+	 * @default false
+	 */
+	forceVisible?: boolean;
+}
+
+/**
+ * The offset (in pixels) of the viewport from every direction used when positioning a sticky toolbar or other
+ * absolutely positioned UI elements.
+ */
+export interface ViewportOffsetConfig {
+
+	/**
+	 * The bottom offset in pixels.
+	 */
+	bottom?: number;
+
+	/**
+	 * The left offset in pixels.
+	 */
+	left?: number;
+
+	/**
+	 * The right offset in pixels.
+	 */
+	right?: number;
+
+	/**
+	 * The top offset in pixels.
+	 */
+	top?: number;
+}
+
 export interface UiConfig {
-	viewportOffset?: {
-		bottom?: number;
-		left?: number;
-		right?: number;
-		top?: number;
-	};
+
+	/**
+	 * The viewport offset used for positioning various absolutely positioned UI elements.
+	 *
+	 * Read more in {@link module:core/editor/editorconfig~ViewportOffsetConfig}.
+	 **/
+	viewportOffset?: ViewportOffsetConfig;
+
+	/**
+	 * The configuration of the “Powered by CKEditor” logo.
+	 *
+	 * Read more in {@link module:core/editor/editorconfig~PoweredByConfig}.
+	 **/
+	poweredBy?: PoweredByConfig;
 }

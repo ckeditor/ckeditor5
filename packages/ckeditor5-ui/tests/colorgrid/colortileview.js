@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ColorTileView from '../../src/colorgrid/colortileview';
-import ButtonView from '../../src/button/buttonview';
+import ColorTileView from '../../src/colorgrid/colortileview.js';
+import ButtonView from '../../src/button/buttonview.js';
 import checkIcon from '../../theme/icons/color-tile-check.svg';
 
 describe( 'ColorTileView', () => {
@@ -23,10 +23,10 @@ describe( 'ColorTileView', () => {
 		expect( colorTile.color ).to.equal( 'green' );
 		expect( colorTile.element.style.backgroundColor ).to.equal( 'green' );
 		expect( colorTile.element.classList.contains( 'ck-color-grid__tile' ) ).to.be.true;
-		expect( colorTile.element.classList.contains( 'ck-color-table__color-tile_bordered' ) ).to.be.false;
+		expect( colorTile.element.classList.contains( 'ck-color-selector__color-tile_bordered' ) ).to.be.false;
 
 		colorTile.set( 'hasBorder', true );
-		expect( colorTile.element.classList.contains( 'ck-color-table__color-tile_bordered' ) ).to.be.true;
+		expect( colorTile.element.classList.contains( 'ck-color-selector__color-tile_bordered' ) ).to.be.true;
 	} );
 
 	it( 'has a check icon', () => {

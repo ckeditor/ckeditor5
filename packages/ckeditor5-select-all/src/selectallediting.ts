@@ -9,7 +9,7 @@
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { getCode, parseKeystroke } from '@ckeditor/ckeditor5-utils';
-import SelectAllCommand from './selectallcommand';
+import SelectAllCommand from './selectallcommand.js';
 import type { ViewDocumentKeyDownEvent } from '@ckeditor/ckeditor5-engine';
 
 const SELECT_ALL_KEYSTROKE = parseKeystroke( 'Ctrl+A' );
@@ -24,8 +24,8 @@ export default class SelectAllEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'SelectAllEditing' {
-		return 'SelectAllEditing';
+	public static get pluginName() {
+		return 'SelectAllEditing' as const;
 	}
 
 	/**

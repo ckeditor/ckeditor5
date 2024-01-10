@@ -7,16 +7,15 @@
  * @module code-block/codeblockui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { Collection } from 'ckeditor5/src/utils';
-import { Model, SplitButtonView, createDropdown, addListToDropdown, type ListDropdownItemDefinition } from 'ckeditor5/src/ui';
+import { icons, Plugin } from 'ckeditor5/src/core.js';
+import { Collection } from 'ckeditor5/src/utils.js';
+import { Model, SplitButtonView, createDropdown, addListToDropdown, type ListDropdownItemDefinition } from 'ckeditor5/src/ui.js';
 
-import { getNormalizedAndLocalizedLanguageDefinitions } from './utils';
+import { getNormalizedAndLocalizedLanguageDefinitions } from './utils.js';
 
-import type { CodeBlockLanguageDefinition } from './codeblockconfig';
-import type CodeBlockCommand from './codeblockcommand';
+import type { CodeBlockLanguageDefinition } from './codeblockconfig.js';
+import type CodeBlockCommand from './codeblockcommand.js';
 
-import codeBlockIcon from '../theme/icons/codeblock.svg';
 import '../theme/codeblock.css';
 
 /**
@@ -28,8 +27,8 @@ export default class CodeBlockUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'CodeBlockUI' {
-		return 'CodeBlockUI';
+	public static get pluginName() {
+		return 'CodeBlockUI' as const;
 	}
 
 	/**
@@ -45,11 +44,12 @@ export default class CodeBlockUI extends Plugin {
 			const command: CodeBlockCommand = editor.commands.get( 'codeBlock' )!;
 			const dropdownView = createDropdown( locale, SplitButtonView );
 			const splitButtonView = dropdownView.buttonView;
+			const accessibleLabel = t( 'Insert code block' );
 
 			splitButtonView.set( {
-				label: t( 'Insert code block' ),
+				label: accessibleLabel,
 				tooltip: true,
-				icon: codeBlockIcon,
+				icon: icons.codeBlock,
 				isToggleable: true
 			} );
 
@@ -75,7 +75,10 @@ export default class CodeBlockUI extends Plugin {
 			dropdownView.class = 'ck-code-block-dropdown';
 			dropdownView.bind( 'isEnabled' ).to( command );
 
-			addListToDropdown( dropdownView, () => this._getLanguageListItemDefinitions( normalizedLanguageDefs ) );
+			addListToDropdown( dropdownView, () => this._getLanguageListItemDefinitions( normalizedLanguageDefs ), {
+				role: 'menu',
+				ariaLabel: accessibleLabel
+			} );
 
 			return dropdownView;
 		} );
@@ -98,6 +101,7 @@ export default class CodeBlockUI extends Plugin {
 				model: new Model( {
 					_codeBlockLanguage: languageDef.language,
 					label: languageDef.label,
+					role: 'menuitemradio',
 					withText: true
 				} )
 			};

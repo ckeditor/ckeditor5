@@ -5,13 +5,16 @@
 
 /* globals ClassicEditor, console, document, window */
 
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
+
 ClassicEditor
 	.create( document.querySelector( '#snippet-heading-buttons' ), {
+		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
 				'undo', 'redo', '|', 'paragraph', 'heading1', 'heading2', 'heading3',
 				'|', 'bold', 'italic',
-				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
@@ -23,10 +26,26 @@ ClassicEditor
 				{ model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' }
 			]
 		},
+		image: {
+			toolbar: [
+				'imageStyle:inline',
+				'imageStyle:block',
+				'imageStyle:side',
+				'|',
+				'toggleImageCaption',
+				'imageTextAlternative',
+				'|',
+				'ckboxImageEdit'
+			]
+		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
 			}
+		},
+		ckbox: {
+			allowExternalImagesEditing: [ /^data:/, 'origin' ],
+			forceDemoLabel: true
 		}
 	} )
 	.then( editor => {

@@ -3,19 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import Model from '../../src/model/model';
-import ModelText from '../../src/model/text';
-import ModelElement from '../../src/model/element';
-import ModelRange from '../../src/model/range';
-import ModelPosition from '../../src/model/position';
-import ModelSelection from '../../src/model/selection';
-import ModelDocumentFragment from '../../src/model/documentfragment';
-import Batch from '../../src/model/batch';
-import NoOperation from '../../src/model/operation/nooperation';
-import { getData, setData, stringify } from '../../src/dev-utils/model';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin.js';
+import Model from '../../src/model/model.js';
+import ModelText from '../../src/model/text.js';
+import ModelElement from '../../src/model/element.js';
+import ModelRange from '../../src/model/range.js';
+import ModelPosition from '../../src/model/position.js';
+import ModelSelection from '../../src/model/selection.js';
+import ModelDocumentFragment from '../../src/model/documentfragment.js';
+import Batch from '../../src/model/batch.js';
+import NoOperation from '../../src/model/operation/nooperation.js';
+import { getData, setData, stringify } from '../../src/dev-utils/model.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 
 describe( 'Model', () => {
 	let model, schema, changes;
@@ -728,6 +728,22 @@ describe( 'Model', () => {
 					expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>foo</paragraph><paragraph>bar[x]</paragraph>' );
 				} );
 			} );
+
+			it( 'should be able to insert content at given root', () => {
+				model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+
+				setData( model, '<paragraph>foo[]</paragraph><paragraph>bar</paragraph>' );
+
+				model.change( writer => {
+					const paragraph = writer.createElement( 'paragraph' );
+					writer.insertText( 'abc', paragraph, 0 );
+
+					const affectedRange = model.insertContent( paragraph, doc.getRoot() );
+
+					expect( getData( model ) ).to.equal( '<paragraph>[]abc</paragraph>' );
+					expect( stringify( root, affectedRange ) ).to.equal( '[<paragraph>abc</paragraph>]' );
+				} );
+			} );
 		} );
 	} );
 
@@ -1339,6 +1355,20 @@ describe( 'Model', () => {
 			const range = new ModelRange( ModelPosition._createAt( root, 6 ), ModelPosition._createAt( root, 7 ) );
 
 			expect( model.hasContent( range ) ).to.be.true;
+		} );
+	} );
+
+	describe( 'canEditAt()', () => {
+		it( 'should return true if model document is not in read-only mode', () => {
+			model.document.isReadOnly = false;
+
+			expect( model.canEditAt( model.document.selection ) ).to.be.true;
+		} );
+
+		it( 'should return fasle if model document is not in read-only mode', () => {
+			model.document.isReadOnly = true;
+
+			expect( model.canEditAt( model.document.selection ) ).to.be.false;
 		} );
 	} );
 

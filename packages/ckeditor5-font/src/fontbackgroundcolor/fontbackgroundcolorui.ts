@@ -7,9 +7,9 @@
  * @module font/fontbackgroundcolor/fontbackgroundcolorui
  */
 
-import ColorUI from '../ui/colorui';
-import { FONT_BACKGROUND_COLOR } from '../utils';
-import type { Editor } from 'ckeditor5/src/core';
+import ColorUI from '../ui/colorui.js';
+import { FONT_BACKGROUND_COLOR } from '../utils.js';
+import type { Editor } from 'ckeditor5/src/core.js';
 
 import fontBackgroundColorIcon from '../../theme/icons/font-background.svg';
 
@@ -34,7 +34,7 @@ export default class FontBackgroundColorUI extends ColorUI {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'FontBackgroundColorUI' {
-		return 'FontBackgroundColorUI';
+	public static get pluginName() {
+		return 'FontBackgroundColorUI' as const;
 	}
 }

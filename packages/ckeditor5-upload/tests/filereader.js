@@ -5,9 +5,9 @@
 
 /* globals window */
 
-import FileReader from '../src/filereader';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { NativeFileReaderMock, createNativeFileMock } from './_utils/mocks';
+import FileReader from '../src/filereader.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { NativeFileReaderMock, createNativeFileMock } from './_utils/mocks.js';
 
 describe( 'FileReader', () => {
 	let reader, fileMock, nativeReaderMock;

@@ -5,7 +5,7 @@
 
 /* globals ClassicEditor, console, window, document */
 
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-mention' ), {
@@ -14,8 +14,14 @@ ClassicEditor
 			items: [
 				'undo', 'redo', '|', 'heading',
 				'|', 'bold', 'italic',
-				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+			]
+		},
+		image: {
+			toolbar: [
+				'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|',
+				'toggleImageCaption', 'imageTextAlternative', 'ckboxImageEdit'
 			]
 		},
 		ui: {
@@ -23,12 +29,16 @@ ClassicEditor
 				top: window.getViewportTopOffsetConfig()
 			}
 		},
+		ckbox: {
+			allowExternalImagesEditing: [ /^data:/, 'origin' ],
+			forceDemoLabel: true
+		},
 		mention: {
 			feeds: [
 				{
 					marker: '@',
 					feed: [ '@Barney', '@Lily', '@Marry Ann', '@Marshall', '@Robin', '@Ted' ],
-					minimumCharacters: 1
+					minimumCharacters: 0
 				}
 			]
 		}

@@ -7,13 +7,13 @@
  * @module special-characters/specialcharactersessentials
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 
-import SpecialCharactersCurrency from './specialcharacterscurrency';
-import SpecialCharactersMathematical from './specialcharactersmathematical';
-import SpecialCharactersArrows from './specialcharactersarrows';
-import SpecialCharactersLatin from './specialcharacterslatin';
-import SpecialCharactersText from './specialcharacterstext';
+import SpecialCharactersCurrency from './specialcharacterscurrency.js';
+import SpecialCharactersMathematical from './specialcharactersmathematical.js';
+import SpecialCharactersArrows from './specialcharactersarrows.js';
+import SpecialCharactersLatin from './specialcharacterslatin.js';
+import SpecialCharactersText from './specialcharacterstext.js';
 
 /**
  * A plugin combining a basic set of characters for the special characters plugin.
@@ -31,8 +31,8 @@ export default class SpecialCharactersEssentials extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'SpecialCharactersEssentials' {
-		return 'SpecialCharactersEssentials';
+	public static get pluginName() {
+		return 'SpecialCharactersEssentials' as const;
 	}
 
 	/**

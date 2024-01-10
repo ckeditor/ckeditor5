@@ -7,10 +7,22 @@
 
 import { Underline } from '@ckeditor/ckeditor5-basic-styles';
 import { FindAndReplace } from '@ckeditor/ckeditor5-find-and-replace';
+import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
+import { PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
+import { LinkImage } from '@ckeditor/ckeditor5-link';
 
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
-import ClassicEditor from '../build-classic';
+import ClassicEditor from '../build-classic.js';
 
-ClassicEditor.builtinPlugins.push( FindAndReplace, Underline );
+ClassicEditor.builtinPlugins.push(
+	FindAndReplace,
+	Underline,
+	PictureEditing,
+	ImageInsert,
+	ImageResize,
+	AutoImage,
+	LinkImage,
+	CKBox,
+	CKBoxImageEdit );
 
 window.ClassicEditor = ClassicEditor;

@@ -7,8 +7,8 @@
  * @module engine/view/observer/domeventobserver
  */
 
-import Observer from './observer';
-import DomEventData from './domeventdata';
+import Observer from './observer.js';
+import DomEventData from './domeventdata.js';
 
 import type { EventInfo } from '@ckeditor/ckeditor5-utils';
 

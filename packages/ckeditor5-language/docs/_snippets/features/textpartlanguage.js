@@ -7,12 +7,16 @@
 
 import { Superscript } from '@ckeditor/ckeditor5-basic-styles';
 import { TextPartLanguage } from '@ckeditor/ckeditor5-language';
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
+import { PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
+import { LinkImage } from '@ckeditor/ckeditor5-link';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
-import ClassicEditor from '../build-classic';
+import ClassicEditor from '../build-classic.js';
 
-ClassicEditor.builtinPlugins.push( TextPartLanguage, Superscript );
+ClassicEditor.builtinPlugins.push( TextPartLanguage, Superscript, PictureEditing,
+	ImageInsert, ImageResize, AutoImage, LinkImage, CKBox, CKBoxImageEdit );
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-text-part-language' ), {
@@ -31,14 +35,24 @@ ClassicEditor
 				'|', 'heading',
 				'|', 'bold', 'italic',
 				'|', 'textPartLanguage',
-				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+			]
+		},
+		image: {
+			toolbar: [
+				'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|',
+				'toggleImageCaption', 'imageTextAlternative', 'ckboxImageEdit'
 			]
 		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
 			}
+		},
+		ckbox: {
+			allowExternalImagesEditing: [ /^data:/, 'origin' ],
+			forceDemoLabel: true
 		}
 	} )
 	.then( editor => {

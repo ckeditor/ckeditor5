@@ -12,9 +12,10 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: German (https://www.transifex.com/ckeditor/teams/11143/de/)\n"
+"Language-Team: German (https://app.transifex.com/ckeditor/teams/11143/de/)\n"
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Toolbar button tooltip for the Undo feature."
 msgid "Undo"

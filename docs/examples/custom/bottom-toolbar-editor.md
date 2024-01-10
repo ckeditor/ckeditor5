@@ -3,17 +3,18 @@ category: examples-builds-custom
 order: 70
 classes: main__content--no-toc
 toc: false
+meta-title: Bottom toolbar with button grouping example | CKEditor 5 Documentation
 menu-title: Bottom toolbar with button grouping
 modified_at: 2021-12-09
 ---
 
-# Editor with bottom toolbar and button grouping
+# Editor with a bottom toolbar and button grouping
 
-The following custom editor example showcases an editor instance with the main toolbar displayed at the bottom of the editing window. To make it possible, the {@link module:editor-decoupled/decouplededitor~DecoupledEditor `DecoupledEditor`} was used with the {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#toolbar main toolbar} injected after the editing root into the DOM. Learn more about the {@link framework/document-editor decoupled UI in CKEditor 5} to find out the details of this process.
+The following custom editor example showcases an editor instance with the main toolbar displayed at the bottom of the editing window. To make it possible, this example uses the {@link module:editor-decoupled/decouplededitor~DecoupledEditor `DecoupledEditor`} with the {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#toolbar main toolbar} injected after the editing root into the DOM. Learn more about the {@link framework/document-editor decoupled UI in CKEditor&nbsp;5} to find out the details of this process.
 
-Additionally, thanks to the flexibility offered by the {@link framework/architecture/ui-library CKEditor 5 UI framework}, the main toolbar has been uncluttered by moving buttons related to text formatting into the custom "Formatting options" dropdown. All remaining dropdown and (button) tooltips have been tuned to open upward for the best user experience. Similar effect can also be achieved by using the {@link features/toolbar#grouping-toolbar-items-in-drop-downs-nested-toolbars built-in toolbar grouping option}.
+Additionally, thanks to the flexibility offered by the {@link framework/architecture/ui-library CKEditor&nbsp;5 UI framework}, the main toolbar was uncluttered by moving buttons related to text formatting into the custom "Formatting options" dropdown. All remaining dropdown and (button) tooltips were tuned to open upward for the best user experience. You can also achieve a similar effect by using the {@link features/toolbar#grouping-toolbar-items-in-dropdowns-nested-toolbars built-in toolbar grouping option}.
 
-The presented combination of the UI and editor's features works best for integrations where text creation comes first and formatting is applied occasionally, for example in email applications, (forum) post editors, chats or instant messaging. You can probably recognize this UI setup from some popular applications such as Gmail, Slack or Zendesk.
+The presented combination of the UI and editor's features works best for integrations where text creation comes first and formatting is applied occasionally. Some examples are email applications, (forum) post editors, chats, or instant messaging. You can probably recognize this UI setup from popular applications such as Gmail, Slack, or Zendesk.
 
 {@snippet examples/bottom-toolbar-editor}
 
@@ -25,43 +26,29 @@ The presented combination of the UI and editor's features works best for integra
 ```js
 
 import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document/src/ckeditor';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
-import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
-import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import DropdownButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/dropdownbuttonview';
-import DropdownPanelView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownpanelview';
-import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Font from '@ckeditor/ckeditor5-font/src/font';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
-import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
-import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
-import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
-import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
-import Indent from '@ckeditor/ckeditor5-indent/src/indent';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import Link from '@ckeditor/ckeditor5-link/src/link';
-import List from '@ckeditor/ckeditor5-list/src/list';
-import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
-import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
-import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript';
-import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
-import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
-import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
+import { Alignment } from '@ckeditor/ckeditor5-alignment';
+import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
+import { Bold, Italic, Strikethrough, Subscript, Superscript, Underline } from '@ckeditor/ckeditor5-basic-styles';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Font } from '@ckeditor/ckeditor5-font';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
+import { Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar, ImageUpload } from '@ckeditor/ckeditor5-image';
+import { Indent } from '@ckeditor/ckeditor5-indent';
+import { Link } from '@ckeditor/ckeditor5-link';
+import { List } from '@ckeditor/ckeditor5-list';
+import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
+import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
+import { DropdownButtonView, DropdownPanelView, DropdownView, ToolbarView } from '@ckeditor/ckeditor5-ui';
 
-import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
 import fontColorIcon from '@ckeditor/ckeditor5-font/theme/icons/font-color.svg';
+import { clickOutsideHandler } from '@ckeditor/ckeditor5-ui';
 
 class FormattingOptions extends Plugin {
 	/**

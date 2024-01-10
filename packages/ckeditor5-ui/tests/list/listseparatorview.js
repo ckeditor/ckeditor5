@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ListSeparatorView from '../../src/list/listseparatorview';
+import ListSeparatorView from '../../src/list/listseparatorview.js';
 
 describe( 'ListSeparatorView', () => {
 	let view;

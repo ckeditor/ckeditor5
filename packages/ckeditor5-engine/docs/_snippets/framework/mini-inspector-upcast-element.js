@@ -20,7 +20,8 @@ function Example( editor ) {
 }
 
 DecoupledEditor.create( document.querySelector( '#mini-inspector-upcast-element' ), {
-	plugins: [ Essentials, Example ]
+	plugins: [ Essentials, Example ],
+	toolbar: []
 } )
 	.then( editor => {
 		MiniCKEditorInspector.attach(

@@ -7,11 +7,11 @@
  * @module page-break/pagebreak
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { Widget } from 'ckeditor5/src/widget';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { Widget } from 'ckeditor5/src/widget.js';
 
-import PageBreakEditing from './pagebreakediting';
-import PageBreakUI from './pagebreakui';
+import PageBreakEditing from './pagebreakediting.js';
+import PageBreakUI from './pagebreakui.js';
 
 /**
  * The page break feature.
@@ -31,7 +31,7 @@ export default class PageBreak extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'PageBreak' {
-		return 'PageBreak';
+	public static get pluginName() {
+		return 'PageBreak' as const;
 	}
 }

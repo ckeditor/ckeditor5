@@ -23,7 +23,7 @@
 				{
 					"type": "Button",
 					"name": "imageTextAlternative",
-					"iconPath": "",
+					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/text-alternative.svg",
 					"toolbars": [
 						"image.toolbar"
 					]
@@ -38,6 +38,7 @@
 					"elements": "img",
 					"attributes": [
 						"alt",
+						"height",
 						"sizes",
 						"src",
 						"srcset",
@@ -56,7 +57,7 @@
 				{
 					"type": "Button",
 					"name": "imageTextAlternative",
-					"iconPath": "",
+					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/text-alternative.svg",
 					"toolbars": [
 						"image.toolbar"
 					]
@@ -67,6 +68,7 @@
 					"elements": "img",
 					"attributes": [
 						"alt",
+						"height",
 						"sizes",
 						"src",
 						"srcset",
@@ -95,7 +97,7 @@
 				{
 					"type": "Button",
 					"name": "toggleImageCaption",
-					"iconPath": "",
+					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/caption.svg",
 					"toolbars": [
 						"image.toolbar"
 					]
@@ -124,6 +126,16 @@
 					"elements": "figure",
 					"classes": "image_resized",
 					"styles": [
+						"height",
+						"width"
+					]
+				},
+				{
+					"elements": "img",
+					"classes": "image_resized",
+					"styles": [
+						"aspect-ratio",
+						"height",
 						"width"
 					]
 				}

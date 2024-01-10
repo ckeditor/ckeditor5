@@ -2,55 +2,69 @@
 category: installation
 order: 10
 menu-title: Overview
-meta-title: CKEditor 5 installation documentation
+meta-title: Getting started with CKEditor 5 | CKEditor 5 documentation
 meta-description: Learn how to install, integrate, configure, and develop CKEditor 5. Browse through the API documentation and online samples.
 ---
 
-# Getting started with CKEditor 5
+# Getting started with CKEditor&nbsp;5
 
-CKEditor 5 provides every type of WYSIWYG editing solution imaginable. From editors similar to Google Docs and Medium to Slack or Twitter-like applications, all is possible within a single editing framework. It is an ultra-modern JavaScript rich-text editor with MVC architecture, custom data model, and virtual DOM, written from scratch in TypeScript with excellent webpack and Vite support. Find out the most convenient way to start using it!
+CKEditor&nbsp;5 provides every type of WYSIWYG editing solution imaginable. From editors similar to Google Docs and Medium to Slack or Twitter-like applications, all is possible within a single editing framework. It is an ultra-modern JavaScript rich-text editor with MVC architecture, custom data model, and virtual DOM, written from scratch in TypeScript with excellent webpack and Vite support. Find out the most convenient way to start using it!
 
 <span class="navigation-hint_mobile">
-<info-box>
-	Use the **main menu button in the upper-left corner** to navigate through the documentation.
-</info-box>
+	<info-box>
+		Use the **main menu button in the upper-left corner** to navigate through the documentation.
+	</info-box>
 </span>
 
+<!-- the wrapper class should be transformed into an additional infobox class if we will want to use it on other pages-->
+<div class="info-cta">
 <info-box>
-	**Not sure which installation method is best for you?** <button type="button" class="quiz-button quiz-button_start">Take a short quiz!</button>
+	**Migrating from CKEditor 4?** {@link updating/migration-from-ckeditor-4 Check the migration section}
 </info-box>
 
-## Migrating from CKEditor 4
+<info-box>
+	**Want to remove the "Powered by CKEditor" logo?** {@link support/managing-ckeditor-logo Check the dedicated guide}
+</info-box>
+</div>
 
-If you are an existing CKEditor 4 user who wants to migrate to CKEditor 5, refer to the {@link updating/migration-from-ckeditor-4 CKEditor 4 migration section} for tips about such an installation. The "Getting started" section is an introduction to CKEditor 5 and is mostly aimed at new users who want to install and configure their WYSIWYG editor. You may want to get familiar with these guides before the migration, too.
+<!--
+<info-box>
+    **Not sure which installation method is best for you?** <button type="button" class="quiz-button quiz-button_start">Take a short quiz!</button>
+</info-box>
+-->
 
-## Start using CKEditor 5 instantly with CDN
+## Start using CKEditor&nbsp;5 instantly with CDN
 
-Start using CKEditor 5 instantly thanks to the power of our CDN. Check out the {@link installation/getting-started/quick-start Quick start guide}.
+Start using CKEditor&nbsp;5 instantly thanks to the power of our CDN. Check out the {@link installation/getting-started/quick-start Quick start guide}.
 
-## Installing predefined CKEditor 5 builds
+## Installing predefined CKEditor&nbsp;5 builds
 
-Predefined CKEditor 5 builds are ready-to-use distributions aimed at specific needs that you can simply download and use out of the box. Learn more about the {@link installation/getting-started/predefined-builds available predefined builds} and choose the right one for you. This is the fastest way to kick off your CKEditor 5 installation.
+Predefined CKEditor&nbsp;5 builds are ready-to-use distributions aimed at specific needs that you can simply download and use out of the box. Learn more about the {@link installation/getting-started/predefined-builds available predefined builds} and choose the right one for you. This is the fastest way to kick off your CKEditor&nbsp;5 installation.
 
-## Customizing the CKEditor 5 installation
+## Customizing the CKEditor&nbsp;5 installation
 
-Learn how to install a custom CKEditor 5 build easily with the use of {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder online builder} or {@link installation/getting-started/quick-start-other#building-the-editor-from-source build the editor from scratch}, and learn to {@link installation/getting-started/configuration configure it}.
+Learn how to install a custom CKEditor&nbsp;5 build easily with the use of {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder online builder} or {@link installation/getting-started/quick-start-other#building-the-editor-from-source build the editor from scratch}, and learn to {@link installation/getting-started/configuration configure it}.
 
 ## Integration with frameworks
 
-Get to know the supported {@link installation/frameworks/overview integrations with popular JavaScript frameworks} such as React, Angular, or Vue, and learn to use them and integrate CKEditor 5 with your software.
+Get to know the supported {@link installation/integrations/overview integrations with popular JavaScript frameworks} such as React, Angular, or Vue, and learn to use them and integrate CKEditor&nbsp;5 with your software.
+
+## Tutorial
+
+To learn how to use, configure and extend CKEditor, see our {@link tutorials/crash-course/editor step-by-step tutorial}.
 
 ## Advanced installation concepts
 
-Find out more about the {@link installation/plugins/plugins plugin development}, how to {@link installation/getting-started/getting-and-setting-data handle and save the data}, and what the {@link installation/plugins/features-html-output-overview features' HTML output} is for each plugin. Learn about alternative setups such as {@link installation/advanced/dll-builds DLL builds} or integrating CKEditor 5 from source {@link installation/advanced/integrating-from-source-webpack using webpack} or {@link installation/advanced/integrating-from-source-vite Vite}.
+Find out more about the {@link installation/plugins/plugins plugin development}, how to {@link installation/getting-started/getting-and-setting-data handle and save the data}, and what the {@link installation/plugins/features-html-output-overview features' HTML output} is for each plugin. Learn about alternative setups such as {@link installation/advanced/dll-builds DLL builds} or integrating CKEditor&nbsp;5 from source {@link installation/advanced/integrating-from-source-webpack using webpack} or {@link installation/advanced/integrating-from-source-vite Vite}.
 
 **Related links**
 
- * {@link updating/updating-ckeditor-5 Updating CKEditor 5} &ndash; Find out how to keep you installation up-to-date at all times.
- * {@link features/index Features} &ndash; Learn more about the CKEditor 5 features.
+ * {@link updating/updating-ckeditor-5 Updating CKEditor&nbsp;5} &ndash; Find out how to keep you installation up-to-date at all times.
+ * {@link features/index Features} &ndash; Learn more about the CKEditor&nbsp;5 features.
  * {@link examples/index Examples} &ndash; Try live demos of available predefined builds and custom solutions.
- * {@link framework/index CKEditor 5 Framework} &ndash; Learn how to work with CKEditor 5 Framework, customize it, create your own plugins or custom editors, change the UI, or even bring your own UI to the editor.
+ * {@link framework/index CKEditor&nbsp;5 Framework} &ndash; Learn how to work with CKEditor&nbsp;5 Framework, customize it, create your own plugins or custom editors, change the UI, or even bring your own UI to the editor.
 
+<!--
 <script type="text/javascript">
 	const QUIZ_DEFAULT_HEADER = 'Installation method quiz';
 	const QUIZ_RESOLUTION_BUTTON_DEFINITIONS = [
@@ -76,7 +90,7 @@ Find out more about the {@link installation/plugins/plugins plugin development},
 
 		'quiz-question-usingCDN': {
 			content: 'Do you need an immediate pre-made solution?',
-			hint: 'CKEditor 5 can be instantly run from <a href="#start-using-ckeditor-5-instantly-with-cdn">CDN</a> providing working editor in seconds. This is the fastest way to start.',
+			hint: 'CKEditor&nbsp;5 can be instantly run from <a href="#start-using-ckeditor-5-instantly-with-cdn">CDN</a> providing working editor in seconds. This is the fastest way to start.',
 			buttons: [
 				getDecisionButtonDefinition( true, 'quiz-resolution-usingCDN' ),
 				getDecisionButtonDefinition( false, 'quiz-question-usingBuilds' ),
@@ -85,7 +99,7 @@ Find out more about the {@link installation/plugins/plugins plugin development},
 
 		'quiz-question-usingBuilds': {
 			content: 'Do you need a working, out-of-the box solution?',
-			hint: 'CKEditor 5 comes with ready-to-use <a href="#installing-predefined-ckeditor-5-builds">predefined builds</a> that offer working solutions for different use cases. This is a quick way to start.',
+			hint: 'CKEditor&nbsp;5 comes with ready-to-use <a href="#installing-predefined-ckeditor-5-builds">predefined builds</a> that offer working solutions for different use cases. This is a quick way to start.',
 			buttons: [
 				getDecisionButtonDefinition( true, 'quiz-resolution-usingBuilds' ),
 				getDecisionButtonDefinition( false, 'quiz-question-onlineBuilder' ),
@@ -94,7 +108,7 @@ Find out more about the {@link installation/plugins/plugins plugin development},
 
 		'quiz-question-onlineBuilder': {
 			content: 'Do you need a ready-to-use, custom solution?',
-			hint: 'CKEditor 5 online builder allows users to create a downloadable working copy with custom set of features. This is the easiest way to prepare a custom editor',
+			hint: 'CKEditor&nbsp;5 online builder allows users to create a downloadable working copy with custom set of features. This is the easiest way to prepare a custom editor',
 			buttons: [
 				getDecisionButtonDefinition( true, 'quiz-resolution-onlineBuilder' ),
 				getDecisionButtonDefinition( false, 'quiz-question-fromSource' ),
@@ -103,7 +117,7 @@ Find out more about the {@link installation/plugins/plugins plugin development},
 
 		'quiz-question-fromSource': {
 			content: 'Do you want to configure your own custom-tailored installation?',
-			hint: 'Building CKEditor 5 from source allows you to fully control the building process and every aspect of the final editor.',
+			hint: 'Building CKEditor&nbsp;5 from source allows you to fully control the building process and every aspect of the final editor.',
 			buttons: [
 				getDecisionButtonDefinition( true, 'quiz-resolution-fromSource' ),
 				getDecisionButtonDefinition( false, 'quiz-question-usingFrameworks' ),
@@ -112,7 +126,7 @@ Find out more about the {@link installation/plugins/plugins plugin development},
 
 		'quiz-question-usingFrameworks': {
 			content: 'Do you want to integrate CKEditor into an existing React, Vue.js or Angular project?',
-			hint: 'CKEditor 5 comes with ready-to-use <a href="#integration-with-frameworks">adapters</a> for popular frontend frameworks. You can use them to quickly bootstrap your project.',
+			hint: 'CKEditor&nbsp;5 comes with ready-to-use <a href="#integration-with-frameworks">adapters</a> for popular frontend frameworks. You can use them to quickly bootstrap your project.',
 			buttons: [
 				getDecisionButtonDefinition( true, 'quiz-resolution-usingFrameworks' ),
 				getDecisionButtonDefinition( false, 'quiz-question-usingDLL' ),
@@ -121,7 +135,7 @@ Find out more about the {@link installation/plugins/plugins plugin development},
 
 		'quiz-question-usingDLL': {
 			content: 'Do you want to design and maintain your installation without the need to recompile each time on update?',
-			hint: 'CKEditor 5 DLL build allows adding plugins to an editor build without having to rebuild the build itself.',
+			hint: 'CKEditor&nbsp;5 DLL build allows adding plugins to an editor build without having to rebuild the build itself.',
 			buttons: [
 				getDecisionButtonDefinition( true, 'quiz-resolution-usingDLL' ),
 				getDecisionButtonDefinition( false, 'quiz-question-migrateFromV4' ),
@@ -154,12 +168,12 @@ Find out more about the {@link installation/plugins/plugins plugin development},
 		},
 
 		'quiz-resolution-fromSource': {
-			content: 'Based on your answers, you should check out the {@link installation/getting-started/quick-start-other#building-the-editor-from-source building CKEditor 5 from source}. You can also browse other installation methods listed below.',
+			content: 'Based on your answers, you should check out the {@link installation/getting-started/quick-start-other#building-the-editor-from-source building CKEditor&nbsp;5 from source}. You can also browse other installation methods listed below.',
 			buttons: QUIZ_RESOLUTION_BUTTON_DEFINITIONS
 		},
 
 		'quiz-resolution-usingFrameworks': {
-			content: 'Based on your answers, you should check out official {@link installation/frameworks/overview integrations with popular JavaScript frameworks}. You can also browse other installation methods listed below.',
+			content: 'Based on your answers, you should check out official {@link installation/integrations/overview integrations with popular JavaScript frameworks}. You can also browse other installation methods listed below.',
 			buttons: QUIZ_RESOLUTION_BUTTON_DEFINITIONS
 		},
 
@@ -360,5 +374,18 @@ div.quiz-pane[id="quiz-start"] p {
 	flex-direction: row;
 	flex-wrap: nowrap;
 	align-items: center;
+}
+</style>
+-->
+<style>
+.info-cta .info-box p{
+	display: flex;
+    justify-content: space-between;
+}
+
+@media only screen and (max-device-width: 960px) {
+	.info-cta .info-box p{
+		flex-direction: column;
+	}
 }
 </style>

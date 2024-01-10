@@ -1,6 +1,8 @@
 ---
 category: features-images
 menu-title: Image captions
+meta-title: Image captions | CKEditor 5 Documentation
+meta-description: Utilizing image captions to enhance your rich content.
 order: 30
 ---
 {@snippet features/build-image-source}
@@ -16,7 +18,7 @@ Click one of the images below and use the contextual image toolbar {@icon @ckedi
 {@snippet features/image-caption}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 <info-box hint>
@@ -48,7 +50,7 @@ The {@link module:image/imagecaption~ImageCaption} plugin registers:
 * The {@link module:image/imagecaption/toggleimagecaptioncommand~ToggleImageCaptionCommand `'toggleImageCaption'` command}
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Contribute

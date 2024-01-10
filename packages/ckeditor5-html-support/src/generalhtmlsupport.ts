@@ -7,27 +7,25 @@
  * @module html-support/generalhtmlsupport
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { toArray, type ArrayOrItem } from 'ckeditor5/src/utils';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { toArray, type ArrayOrItem } from 'ckeditor5/src/utils.js';
 
-import DataFilter from './datafilter';
-import CodeBlockElementSupport from './integrations/codeblock';
-import DualContentModelElementSupport from './integrations/dualcontent';
-import HeadingElementSupport from './integrations/heading';
-import ImageElementSupport from './integrations/image';
-import MediaEmbedElementSupport from './integrations/mediaembed';
-import ScriptElementSupport from './integrations/script';
-import TableElementSupport from './integrations/table';
-import StyleElementSupport from './integrations/style';
-import DocumentListElementSupport from './integrations/documentlist';
-import CustomElementSupport from './integrations/customelement';
-import type { DataSchemaInlineElementDefinition } from './dataschema';
-import type { DocumentSelection, Item, Model, Range, Selectable, Writer } from 'ckeditor5/src/engine';
-import { modifyGhsAttribute } from './utils';
+import DataFilter from './datafilter.js';
+import CodeBlockElementSupport from './integrations/codeblock.js';
+import DualContentModelElementSupport from './integrations/dualcontent.js';
+import HeadingElementSupport from './integrations/heading.js';
+import ImageElementSupport from './integrations/image.js';
+import MediaEmbedElementSupport from './integrations/mediaembed.js';
+import ScriptElementSupport from './integrations/script.js';
+import TableElementSupport from './integrations/table.js';
+import StyleElementSupport from './integrations/style.js';
+import ListElementSupport from './integrations/list.js';
+import CustomElementSupport from './integrations/customelement.js';
+import type { DataSchemaInlineElementDefinition } from './dataschema.js';
+import type { DocumentSelection, Item, Model, Range, Selectable } from 'ckeditor5/src/engine.js';
+import { getHtmlAttributeName, modifyGhsAttribute } from './utils.js';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { GeneralHtmlSupportConfig } from './generalhtmlsupportconfig';
-
-type LimitedSelectable = Exclude<Selectable, Iterable<Range> | null>;
+import type { GeneralHtmlSupportConfig } from './generalhtmlsupportconfig.js';
 
 /**
  * The General HTML Support feature.
@@ -39,8 +37,8 @@ export default class GeneralHtmlSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'GeneralHtmlSupport' {
-		return 'GeneralHtmlSupport';
+	public static get pluginName() {
+		return 'GeneralHtmlSupport' as const;
 	}
 
 	/**
@@ -57,7 +55,7 @@ export default class GeneralHtmlSupport extends Plugin {
 			ScriptElementSupport,
 			TableElementSupport,
 			StyleElementSupport,
-			DocumentListElementSupport,
+			ListElementSupport,
 			CustomElementSupport
 		] as const;
 	}
@@ -69,6 +67,10 @@ export default class GeneralHtmlSupport extends Plugin {
 		const editor = this.editor;
 		const dataFilter = editor.plugins.get( DataFilter );
 
+		// Load the allowed empty inline elements' configuration.
+		// Note that this modifies DataSchema so must be loaded before registering filtering rules.
+		dataFilter.loadAllowedEmptyElementsConfig( editor.config.get( 'htmlSupport.allowEmpty' ) || [] );
+
 		// Load the filtering configuration.
 		dataFilter.loadAllowedConfig( editor.config.get( 'htmlSupport.allow' ) || [] );
 		dataFilter.loadDisallowedConfig( editor.config.get( 'htmlSupport.disallow' ) || [] );
@@ -77,22 +79,22 @@ export default class GeneralHtmlSupport extends Plugin {
 	/**
 	 * Returns a GHS model attribute name related to a given view element name.
 	 *
+	 * @internal
 	 * @param viewElementName A view element name.
 	 */
-	private getGhsAttributeNameForElement( viewElementName: string ): string {
+	public getGhsAttributeNameForElement( viewElementName: string ): string {
 		const dataSchema = this.editor.plugins.get( 'DataSchema' );
 		const definitions = Array.from( dataSchema.getDefinitionsForView( viewElementName, false ) );
 
-		if (
-			definitions &&
-			definitions.length &&
-			( definitions[ 0 ] as DataSchemaInlineElementDefinition ).isInline &&
-			!definitions[ 0 ].isObject
-		) {
-			return definitions[ 0 ].model;
+		const inlineDefinition = definitions.find( definition => (
+			( definition as DataSchemaInlineElementDefinition ).isInline && !definitions[ 0 ].isObject
+		) );
+
+		if ( inlineDefinition ) {
+			return inlineDefinition.model;
 		}
 
-		return 'htmlAttributes';
+		return getHtmlAttributeName( viewElementName );
 	}
 
 	/**
@@ -103,7 +105,7 @@ export default class GeneralHtmlSupport extends Plugin {
 	 * @param className The css class to add.
 	 * @param selectable The selection or element to update.
 	 */
-	public addModelHtmlClass( viewElementName: string, className: ArrayOrItem<string>, selectable: LimitedSelectable ): void {
+	public addModelHtmlClass( viewElementName: string, className: ArrayOrItem<string>, selectable: Selectable ): void {
 		const model = this.editor.model;
 		const ghsAttributeName = this.getGhsAttributeNameForElement( viewElementName );
 
@@ -126,7 +128,7 @@ export default class GeneralHtmlSupport extends Plugin {
 	 * @param className The css class to remove.
 	 * @param selectable The selection or element to update.
 	 */
-	public removeModelHtmlClass( viewElementName: string, className: ArrayOrItem<string>, selectable: LimitedSelectable ): void {
+	public removeModelHtmlClass( viewElementName: string, className: ArrayOrItem<string>, selectable: Selectable ): void {
 		const model = this.editor.model;
 		const ghsAttributeName = this.getGhsAttributeNameForElement( viewElementName );
 
@@ -148,7 +150,7 @@ export default class GeneralHtmlSupport extends Plugin {
 	 * @param attributes The object with attributes to set.
 	 * @param selectable The selection or element to update.
 	 */
-	private setModelHtmlAttributes( viewElementName: string, attributes: Record<string, unknown>, selectable: LimitedSelectable ) {
+	private setModelHtmlAttributes( viewElementName: string, attributes: Record<string, unknown>, selectable: Selectable ) {
 		const model = this.editor.model;
 		const ghsAttributeName = this.getGhsAttributeNameForElement( viewElementName );
 
@@ -170,7 +172,7 @@ export default class GeneralHtmlSupport extends Plugin {
 	 * @param attributeName The attribute name (or names) to remove.
 	 * @param selectable The selection or element to update.
 	 */
-	private removeModelHtmlAttributes( viewElementName: string, attributeName: ArrayOrItem<string>, selectable: LimitedSelectable ) {
+	private removeModelHtmlAttributes( viewElementName: string, attributeName: ArrayOrItem<string>, selectable: Selectable ) {
 		const model = this.editor.model;
 		const ghsAttributeName = this.getGhsAttributeNameForElement( viewElementName );
 
@@ -192,7 +194,7 @@ export default class GeneralHtmlSupport extends Plugin {
 	 * @param styles The object with styles to set.
 	 * @param selectable The selection or element to update.
 	 */
-	private setModelHtmlStyles( viewElementName: string, styles: Record<string, string>, selectable: LimitedSelectable ) {
+	private setModelHtmlStyles( viewElementName: string, styles: Record<string, string>, selectable: Selectable ) {
 		const model = this.editor.model;
 		const ghsAttributeName = this.getGhsAttributeNameForElement( viewElementName );
 
@@ -214,7 +216,7 @@ export default class GeneralHtmlSupport extends Plugin {
 	 * @param properties The style (or styles list) to remove.
 	 * @param selectable The selection or element to update.
 	 */
-	private removeModelHtmlStyles( viewElementName: string, properties: ArrayOrItem<string>, selectable: LimitedSelectable ) {
+	private removeModelHtmlStyles( viewElementName: string, properties: ArrayOrItem<string>, selectable: Selectable ) {
 		const model = this.editor.model;
 		const ghsAttributeName = this.getGhsAttributeNameForElement( viewElementName );
 
@@ -235,10 +237,14 @@ export default class GeneralHtmlSupport extends Plugin {
  */
 function* getItemsToUpdateGhsAttribute(
 	model: Model,
-	selectable: LimitedSelectable,
+	selectable: Selectable,
 	ghsAttributeName: string
 ): IterableIterator<Item | DocumentSelection> {
-	if ( selectable.is( 'documentSelection' ) && selectable.isCollapsed ) {
+	if ( !selectable ) {
+		return;
+	}
+
+	if ( !( Symbol.iterator in selectable ) && selectable.is( 'documentSelection' ) && selectable.isCollapsed ) {
 		if ( model.schema.checkAttributeInSelection( selectable, ghsAttributeName ) ) {
 			yield selectable;
 		}
@@ -254,10 +260,17 @@ function* getItemsToUpdateGhsAttribute(
  */
 function getValidRangesForSelectable(
 	model: Model,
-	selectable: LimitedSelectable,
+	selectable: NonNullable<Selectable>,
 	ghsAttributeName: string
 ): Iterable<Range> {
-	if ( selectable.is( 'node' ) || selectable.is( '$text' ) || selectable.is( '$textProxy' ) ) {
+	if (
+		!( Symbol.iterator in selectable ) &&
+		(
+			selectable.is( 'node' ) ||
+			selectable.is( '$text' ) ||
+			selectable.is( '$textProxy' )
+		)
+	) {
 		if ( model.schema.checkAttribute( selectable, ghsAttributeName ) ) {
 			return [ model.createRangeOn( selectable ) ];
 		} else {

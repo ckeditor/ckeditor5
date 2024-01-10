@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ButtonView from '../../src/button/buttonview';
-import ListItemView from '../../src/list/listitemview';
-import ViewCollection from '../../src/viewcollection';
+import ButtonView from '../../src/button/buttonview.js';
+import ListItemView from '../../src/list/listitemview.js';
+import ViewCollection from '../../src/viewcollection.js';
 
 describe( 'ListItemView', () => {
 	let view;
@@ -53,6 +53,12 @@ describe( 'ListItemView', () => {
 
 			view.focus();
 			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'should not throw if there is no child view', () => {
+			expect( () => {
+				view.focus();
+			} ).to.not.throw();
 		} );
 	} );
 } );

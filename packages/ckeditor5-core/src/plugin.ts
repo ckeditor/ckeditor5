@@ -11,7 +11,7 @@
 
 import { ObservableMixin, type ObservableSetEvent, type EventInfo } from '@ckeditor/ckeditor5-utils';
 
-import type Editor from './editor/editor';
+import type Editor from './editor/editor.js';
 
 /**
  * The base class for CKEditor plugin classes.
@@ -211,7 +211,7 @@ export interface PluginInterface {
 	 *
 	 * **Note:** This method is optional. A plugin instance does not need to have it defined.
 	 */
-	destroy(): Promise<unknown> | null | undefined | void;
+	destroy?(): Promise<unknown> | null | undefined | void;
 }
 
 /**

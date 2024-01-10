@@ -7,8 +7,8 @@
  * @module page-break/pagebreakui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { ButtonView } from 'ckeditor5/src/ui';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { ButtonView } from 'ckeditor5/src/ui.js';
 
 import pageBreakIcon from '../theme/icons/pagebreak.svg';
 
@@ -19,8 +19,8 @@ export default class PageBreakUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'PageBreakUI' {
-		return 'PageBreakUI';
+	public static get pluginName() {
+		return 'PageBreakUI' as const;
 	}
 
 	/**

@@ -9,9 +9,9 @@
  * @module utils/focustracker
  */
 
-import DomEmitterMixin from './dom/emittermixin';
-import ObservableMixin from './observablemixin';
-import CKEditorError from './ckeditorerror';
+import DomEmitterMixin from './dom/emittermixin.js';
+import ObservableMixin from './observablemixin.js';
+import CKEditorError from './ckeditorerror.js';
 
 /**
  * Allows observing a group of `Element`s whether at least one of them is focused.
@@ -48,8 +48,10 @@ export default class FocusTracker extends DomEmitterMixin( ObservableMixin() ) {
 
 	/**
 	 * List of registered elements.
+	 *
+	 * @internal
 	 */
-	private _elements: Set<Element> = new Set();
+	public _elements: Set<Element> = new Set();
 
 	/**
 	 * Event loop timeout.

@@ -9,10 +9,10 @@
 
 /* global console */
 
-import { type Editor, Plugin, PendingActions } from 'ckeditor5/src/core';
-import { ButtonView } from 'ckeditor5/src/ui';
-import { createElement, ElementReplacer } from 'ckeditor5/src/utils';
-import { formatHtml } from './utils/formathtml';
+import { type Editor, Plugin, PendingActions } from 'ckeditor5/src/core.js';
+import { ButtonView } from 'ckeditor5/src/ui.js';
+import { createElement, ElementReplacer } from 'ckeditor5/src/utils.js';
+import { formatHtml } from './utils/formathtml.js';
 
 import '../theme/sourceediting.css';
 import sourceEditingIcon from '../theme/icons/source-editing.svg';
@@ -31,8 +31,8 @@ export default class SourceEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'SourceEditing' {
-		return 'SourceEditing';
+	public static get pluginName() {
+		return 'SourceEditing' as const;
 	}
 
 	/**
@@ -202,6 +202,7 @@ export default class SourceEditing extends Plugin {
 			// This prevents empty undo steps after switching to the normal editor.
 			if ( oldData !== newData ) {
 				data[ rootName ] = newData;
+				this._dataFromRoots.set( rootName, newData );
 			}
 		}
 
@@ -257,6 +258,8 @@ export default class SourceEditing extends Plugin {
 			// wrapper's `data-value` property.
 			domSourceEditingElementTextarea.addEventListener( 'input', () => {
 				domSourceEditingElementWrapper.dataset.value = domSourceEditingElementTextarea.value;
+
+				editor.ui.update();
 			} );
 
 			editingView.change( writer => {

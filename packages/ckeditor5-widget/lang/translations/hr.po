@@ -12,9 +12,10 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Croatian (https://www.transifex.com/ckeditor/teams/11143/hr/)\n"
+"Language-Team: Croatian (https://app.transifex.com/ckeditor/teams/11143/hr/)\n"
 "Language: hr\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "The label used by assistive technologies describing a toolbar attached to a widget."
 msgid "Widget toolbar"
@@ -30,4 +31,4 @@ msgstr "Umetni odlomak poslije bloka"
 
 msgctxt "Information to be read by screen reader about shortcuts to type around a widget"
 msgid "Press Enter to type after or press Shift + Enter to type before the widget"
-msgstr ""
+msgstr "Pritisnite Enter za upisivanje nakon ili pritisnite Shift + Enter za upisivanje prije widgeta"

@@ -12,9 +12,10 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: English (Australia) (https://www.transifex.com/ckeditor/teams/11143/en_AU/)\n"
+"Language-Team: English (Australia) (https://app.transifex.com/ckeditor/teams/11143/en_AU/)\n"
 "Language: en_AU\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "The label used by assistive technologies describing a toolbar attached to a widget."
 msgid "Widget toolbar"
@@ -30,4 +31,4 @@ msgstr "Insert paragraph after block"
 
 msgctxt "Information to be read by screen reader about shortcuts to type around a widget"
 msgid "Press Enter to type after or press Shift + Enter to type before the widget"
-msgstr ""
+msgstr "Press Enter to type after or press Shift + Enter to type before the widget"

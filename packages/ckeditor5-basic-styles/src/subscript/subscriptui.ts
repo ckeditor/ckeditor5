@@ -7,9 +7,9 @@
  * @module basic-styles/subscript/subscriptui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { ButtonView } from 'ckeditor5/src/ui';
-import type AttributeCommand from '../attributecommand';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { ButtonView } from 'ckeditor5/src/ui.js';
+import type AttributeCommand from '../attributecommand.js';
 
 import subscriptIcon from '../../theme/icons/subscript.svg';
 
@@ -22,8 +22,8 @@ export default class SubscriptUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'SubscriptUI' {
-		return 'SubscriptUI';
+	public static get pluginName() {
+		return 'SubscriptUI' as const;
 	}
 
 	/**

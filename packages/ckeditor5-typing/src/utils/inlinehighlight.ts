@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import findAttributeRange from './findattributerange';
-import type { Editor } from '@ckeditor/ckeditor5-core';
-import type { ViewElement } from '@ckeditor/ckeditor5-engine';
-
 /**
  * @module typing/utils/inlinehighlight
  */
+
+import findAttributeRange from './findattributerange.js';
+import type { Editor } from '@ckeditor/ckeditor5-core';
+import type { ViewElement } from '@ckeditor/ckeditor5-engine';
 
 /**
  * Adds a visual highlight style to an attribute element in which the selection is anchored.

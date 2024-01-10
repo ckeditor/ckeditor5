@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import MentionCommand from '../src/mentioncommand';
+import MentionCommand from '../src/mentioncommand.js';
 
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'MentionCommand', () => {
 	let editor, command, model, doc, selection;
@@ -66,6 +66,20 @@ describe( 'MentionCommand', () => {
 			} );
 
 			assertMention( doc.getRoot().getChild( 0 ).getChild( 1 ), '@John' );
+		} );
+
+		it( 'should not execute if selectable is not editable', () => {
+			setData( model, '<paragraph>foo @Jo[]bar</paragraph>' );
+
+			model.document.isReadOnly = true;
+
+			command.execute( {
+				marker: '@',
+				mention: '@John',
+				range: model.createRange( selection.focus.getShiftedBy( -3 ), selection.focus )
+			} );
+
+			expect( doc.getRoot().getChild( 0 ).getChild( 1 ) ).to.be.null;
 		} );
 
 		it( 'inserts mention object with data if mention was passed as object', () => {

@@ -3,9 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals ClassicEditor, console, window, document */
+/* globals console, window, document */
 
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import { Underline } from '@ckeditor/ckeditor5-basic-styles';
+import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
+import { PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
+import { LinkImage } from '@ckeditor/ckeditor5-link';
+
+// Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
+import ClassicEditor from '../build-classic.js';
+
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
+
+ClassicEditor.builtinPlugins.push( Underline, PictureEditing, ImageInsert, ImageResize, AutoImage, LinkImage, CKBox, CKBoxImageEdit );
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -14,14 +24,24 @@ ClassicEditor
 			items: [
 				'undo', 'redo', '|', 'selectAll', '|', 'heading',
 				'|', 'bold', 'italic',
-				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+			]
+		},
+		image: {
+			toolbar: [
+				'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|',
+				'toggleImageCaption', 'imageTextAlternative', 'ckboxImageEdit'
 			]
 		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
 			}
+		},
+		ckbox: {
+			allowExternalImagesEditing: [ /^data:/, 'origin' ],
+			forceDemoLabel: true
 		}
 	} )
 	.then( editor => {

@@ -7,10 +7,10 @@
  * @module indent/indent
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 
-import IndentEditing from './indentediting';
-import IndentUI from './indentui';
+import IndentEditing from './indentediting.js';
+import IndentUI from './indentui.js';
 
 /**
  * The indent feature.
@@ -36,8 +36,8 @@ export default class Indent extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Indent' {
-		return 'Indent';
+	public static get pluginName() {
+		return 'Indent' as const;
 	}
 
 	/**

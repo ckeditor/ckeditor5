@@ -7,9 +7,9 @@
  * @module image/image
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import ImageBlock from './imageblock';
-import ImageInline from './imageinline';
+import { Plugin } from 'ckeditor5/src/core.js';
+import ImageBlock from './imageblock.js';
+import ImageInline from './imageinline.js';
 
 import '../theme/image.css';
 
@@ -37,7 +37,7 @@ export default class Image extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Image' {
-		return 'Image';
+	public static get pluginName() {
+		return 'Image' as const;
 	}
 }

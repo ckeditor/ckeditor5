@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import SpecialCharactersNavigationView from '../../src/ui/specialcharactersnavigationview';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import FormHeaderView from '@ckeditor/ckeditor5-ui/src/formheader/formheaderview';
-import View from '@ckeditor/ckeditor5-ui/src/view';
-import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
+import SpecialCharactersNavigationView from '../../src/ui/specialcharactersnavigationview.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import FormHeaderView from '@ckeditor/ckeditor5-ui/src/formheader/formheaderview.js';
+import View from '@ckeditor/ckeditor5-ui/src/view.js';
+import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
 
 describe( 'SpecialCharactersNavigationView', () => {
 	let view, locale;
@@ -122,12 +122,23 @@ describe( 'SpecialCharactersNavigationView', () => {
 				expect( groupDropdownView.buttonView.isOn ).to.be.true;
 				expect( groupDropdownView.buttonView.withText ).to.be.true;
 				expect( groupDropdownView.buttonView.tooltip ).to.equal( 'Character categories' );
+				expect( groupDropdownView.buttonView.ariaLabel ).to.equal( 'Character categories' );
+				expect( groupDropdownView.buttonView.ariaLabelledBy ).to.be.undefined;
 			} );
 
 			it( 'should have class "ck-dropdown__button_label-width_auto"', () => {
 				const element = groupDropdownView.buttonView.element;
 
 				expect( element.classList.contains( 'ck-dropdown__button_label-width_auto' ) ).to.be.true;
+			} );
+		} );
+
+		describe( 'character group list', () => {
+			it( 'should have properties set', () => {
+				const listView = groupDropdownView.listView;
+
+				expect( listView.element.role ).to.equal( 'menu' );
+				expect( listView.element.ariaLabel ).to.equal( 'Character categories' );
 			} );
 		} );
 

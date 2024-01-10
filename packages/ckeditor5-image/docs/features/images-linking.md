@@ -1,6 +1,8 @@
 ---
 category: features-images
 menu-title: Linking images
+meta-title: Linking images | CKEditor 5 Documentation
+meta-description: Learn how to use your images as link anchors.
 order: 70
 ---
 {@snippet features/build-image-source}
@@ -16,7 +18,7 @@ Click one of the images to open the contextual toolbar. Use the link icon {@icon
 {@snippet features/image-link}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Additional feature information
@@ -64,7 +66,7 @@ The {@link module:link/linkimage~LinkImage} plugin registers:
 * The {@link module:link/linkcommand~LinkCommand `'linkImage'` command}.
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Contribute

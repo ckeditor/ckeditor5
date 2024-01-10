@@ -7,11 +7,11 @@
  * @module restricted-editing/standardeditingmodeui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { ButtonView } from 'ckeditor5/src/ui';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { ButtonView } from 'ckeditor5/src/ui.js';
 
 import unlockIcon from '../theme/icons/contentunlock.svg';
-import type RestrictedEditingExceptionCommand from './restrictededitingexceptioncommand';
+import type RestrictedEditingExceptionCommand from './restrictededitingexceptioncommand.js';
 
 /**
  * The standard editing mode UI feature.
@@ -22,8 +22,8 @@ export default class StandardEditingModeUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'StandardEditingModeUI' {
-		return 'StandardEditingModeUI';
+	public static get pluginName() {
+		return 'StandardEditingModeUI' as const;
 	}
 
 	/**

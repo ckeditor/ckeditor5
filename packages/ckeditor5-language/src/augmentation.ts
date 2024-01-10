@@ -6,9 +6,10 @@
 import type {
 	TextPartLanguageOption,
 	TextPartLanguage,
+	TextPartLanguageEditing,
 	TextPartLanguageUI,
 	TextPartLanguageCommand
-} from './index';
+} from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface LanguageConfig {
@@ -47,6 +48,7 @@ declare module '@ckeditor/ckeditor5-core' {
 
 	interface PluginsMap {
 		[ TextPartLanguage.pluginName ]: TextPartLanguage;
+		[ TextPartLanguageEditing.pluginName ]: TextPartLanguageEditing;
 		[ TextPartLanguageUI.pluginName ]: TextPartLanguageUI;
 	}
 

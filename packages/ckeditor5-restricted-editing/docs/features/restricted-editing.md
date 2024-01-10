@@ -1,6 +1,7 @@
 ---
 title: Restricted editing
 menu-title: Restricted editing
+meta-title: Restricted editing | CKEditor 5 Documentation
 category: features
 ---
 
@@ -21,19 +22,19 @@ Then switch to the restricted editing mode to see how the editable and non-edita
 {@snippet features/restricted-editing}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Additional feature information
 
 The restricted editing feature enables two editing modes:
 
-* **Standard editing mode** &ndash; In this mode the user can freely edit the content and choose regions that should be editable in the restricted editing mode.
-* **Restricted editing mode** &ndash; When the editor is initialized in this mode, the user can only edit the content within the regions chosen by the user in the standard editing mode.
+* **Standard editing mode** &ndash; In this mode the user can edit the content and choose regions that should be editable in the restricted editing mode.
+* **Restricted editing mode** &ndash; When you initialize the editor in this mode, the user can edit the content only within the regions chosen by the user in the standard editing mode.
 
-You can imagine a workflow in which a certain group of users is responsible for creating templates of documents while a second group of users can only fill the gaps (for example, fill the missing data, like names, dates, product names, etc.).
+You can imagine a workflow where a certain group of users is responsible for creating templates of documents. At the same time, a second group of users can only fill the gaps (for example, fill in the missing data, like names, dates, product names, etc.).
 
-By using this feature, the users of your application will be able to create template documents. In a certain way, this feature could be used to generate forms with rich-text capabilities. This kind of practical application is shown in the [How to create ready-to-print documents with CKEditor 5 pagination feature](https://ckeditor.com/blog/How-to-create-ready-to-print-documents-with-page-structure-in-WYSIWYG-editor---CKEditor-5-pagination-feature/) blog post.
+By using this feature, the users of your application will be able to create template documents. In a certain way, you can use this feature to generate forms with rich-text capabilities. This kind of practical application is shown in the [How to create ready-to-print documents with CKEditor&nbsp;5 pagination feature](https://ckeditor.com/blog/How-to-create-ready-to-print-documents-with-page-structure-in-WYSIWYG-editor---CKEditor-5-pagination-feature/) blog post.
 
 <info-box>
 	See also the {@link features/read-only read-only feature} that lets you turn the entire WYSIWYG editor into read-only mode. You can also read the [dedicated blog post](https://ckeditor.com/blog/feature-of-the-month-restricted-editing-modes/) about write-restricted editor modes.
@@ -41,11 +42,11 @@ By using this feature, the users of your application will be able to create temp
 
 ## Configuration
 
-It is possible to configure which features should be available in the restricted mode. For instance, the following configuration will not only allow typing and deleting but also bolding text.
+You can configure which features should be available in the restricted mode. For instance, the following configuration allows the users to type, delete but also to bold text.
 
 ```js
-import RestrictedEditingMode from '@ckeditor/ckeditor5-restricted-editing/src/restrictededitingmode';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import { RestrictedEditingMode } from '@ckeditor/ckeditor5-restricted-editing';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -63,10 +64,10 @@ ClassicEditor
 
 ### Enabling commands in the restricted editing mode
 
-The restricted editing mode allows modifying the editor content only in designated regions. Outside these regions, most of the editor commands are disabled by default. If you wish to enable some commands outside the restricted editing regions you can use the {@link module:restricted-editing/restrictededitingmodeediting~RestrictedEditingModeEditing#enableCommand `RestrictedEditingModeEditing.enableCommand()`} method. This method must be executed in the {@link module:core/plugin~PluginInterface#afterInit `afterInit()`} callback of an editor plugin.
+The restricted editing mode allows modifying the editor content only in designated regions. Outside these regions, most of the editor commands are turned off by default. If you wish to enable some commands outside the restricted editing regions, you can use the {@link module:restricted-editing/restrictededitingmodeediting~RestrictedEditingModeEditing#enableCommand `RestrictedEditingModeEditing.enableCommand()`} method. You must execute this method in the {@link module:core/plugin~PluginInterface#afterInit `afterInit()`} callback of an editor plugin.
 
 ```js
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 class MyPlugin extends Plugin {
 	afterInit() {
@@ -89,10 +90,10 @@ npm install --save @ckeditor/ckeditor5-restricted-editing
 
 ### Running the standard editing mode
 
-In order to initialize the editor in the standard editing mode, add the {@link module:restricted-editing/standardeditingmode~StandardEditingMode} plugin and add the `'restrictedEditingException'` button to the toolbar:
+To initialize the editor in the standard editing mode, add the {@link module:restricted-editing/standardeditingmode~StandardEditingMode} plugin and add the `'restrictedEditingException'` button to the toolbar:
 
 ```js
-import StandardEditingMode from '@ckeditor/ckeditor5-restricted-editing/src/standardeditingmode';
+import { StandardEditingMode } from '@ckeditor/ckeditor5-restricted-editing';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -105,10 +106,10 @@ ClassicEditor
 
 ### Running the restricted editing mode
 
-In order to initialize the editor in the restricted editing mode, add the {@link module:restricted-editing/restrictededitingmode~RestrictedEditingMode} plugin and add the `'restrictedEditing'` button to the toolbar:
+To initialize the editor in the restricted editing mode, add the {@link module:restricted-editing/restrictededitingmode~RestrictedEditingMode} plugin and add the `'restrictedEditing'` button to the toolbar:
 
 ```js
-import RestrictedEditingMode from '@ckeditor/ckeditor5-restricted-editing/src/restrictededitingmode';
+import { RestrictedEditingMode } from '@ckeditor/ckeditor5-restricted-editing';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -125,14 +126,14 @@ ClassicEditor
 
 ## Related features
 
-CKEditor 5 has more features that help you control user permissions:
+CKEditor&nbsp;5 has more features that help you control user permissions:
 
 * {@link features/read-only Read-only} &ndash; Turn the entire content of the editor read-only.
-* {@link features/track-changes Track changes} &ndash; User changes are marked in the content and shown as suggestions in the sidebar for acceptance or rejection.
+* {@link features/track-changes Track changes} &ndash; Mark user changes in the content and show them as suggestions in the sidebar for acceptance or rejection.
 * {@link features/comments Comments} &ndash; Users can add comments to any part of the content instead of editing it directly.
 
 <info-box>
-	Read this [CKEditor Ecosystem blog post](https://ckeditor.com/blog/How-to-create-ready-to-print-documents-with-page-structure-in-WYSIWYG-editor---CKEditor-5-pagination-feature/) on how to couple restricted editing with other features to create editable document templates.
+	Read this [CKEditor blog post](https://ckeditor.com/blog/How-to-create-ready-to-print-documents-with-page-structure-in-WYSIWYG-editor---CKEditor-5-pagination-feature/) on how to couple restricted editing with other features to create editable document templates.
 </info-box>
 
 ## Common API
@@ -148,12 +149,12 @@ The {@link module:restricted-editing/restrictededitingmode~RestrictedEditingMode
 * The {@link module:restricted-editing/restrictededitingmodenavigationcommand~RestrictedEditingModeNavigationCommand `'goToPreviousRestrictedEditingException'`} and `'goToNextRestrictedEditingException'` commands that allow navigating between editable regions.
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Real-time collaboration
 
-When using [real-time collaboration](https://ckeditor.com/collaboration/real-time-collaborative-editing/), all the connected users should always be in the same mode. It is not possible to have a different list of plugins enabled among users of a single collaborative session.
+When using [real-time collaboration](https://ckeditor.com/collaboration/real-time-collaborative-editing/), all the connected users should always be in the same mode. You cannot have a different list of plugins enabled among users of a single collaborative session.
 
 ## Contribute
 

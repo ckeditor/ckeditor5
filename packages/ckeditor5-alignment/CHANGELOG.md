@@ -5,19 +5,19 @@ All changes in the package are documented in the main repository. See: https://g
 
 Changes for the past releases are available below.
 
-## [19.0.0](https://github.com/ckeditor/ckeditor5-alignment/compare/v18.0.0...v19.0.0) (2020-04-29)
+## [19.0.0](https://github.com/ckeditor/ckeditor5-alignment/compare/v18.0.0...v19.0.0) (April 29, 2020)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [18.0.0](https://github.com/ckeditor/ckeditor5-alignment/compare/v17.0.0...v18.0.0) (2020-03-19)
+## [18.0.0](https://github.com/ckeditor/ckeditor5-alignment/compare/v17.0.0...v18.0.0) (March 19, 2020)
 
 ### Other changes
 
 * Updated translations. ([f1beaaa](https://github.com/ckeditor/ckeditor5-alignment/commit/f1beaaa))
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-alignment/compare/v16.0.0...v17.0.0) (2020-02-18)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-alignment/compare/v16.0.0...v17.0.0) (February 18, 2020)
 
 ### MAJOR BREAKING CHANGES
 
@@ -29,14 +29,14 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([288672f](https://github.com/ckeditor/ckeditor5-alignment/commit/288672f))
 
 
-## [16.0.0](https://github.com/ckeditor/ckeditor5-alignment/compare/v15.0.0...v16.0.0) (2019-12-04)
+## [16.0.0](https://github.com/ckeditor/ckeditor5-alignment/compare/v15.0.0...v16.0.0) (December 4, 2019)
 
 ### Other changes
 
 * Updated translations. ([9085f7b](https://github.com/ckeditor/ckeditor5-alignment/commit/9085f7b))
 
 
-## [15.0.0](https://github.com/ckeditor/ckeditor5-alignment/compare/v11.2.0...v15.0.0) (2019-10-23)
+## [15.0.0](https://github.com/ckeditor/ckeditor5-alignment/compare/v11.2.0...v15.0.0) (October 23, 2019)
 
 ### Other changes
 
@@ -44,7 +44,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Added `pluginName` to the editor plugin part of the feature. ([3b42798](https://github.com/ckeditor/ckeditor5-alignment/commit/3b42798))
 
 
-## [11.2.0](https://github.com/ckeditor/ckeditor5-alignment/compare/v11.1.3...v11.2.0) (2019-08-26)
+## [11.2.0](https://github.com/ckeditor/ckeditor5-alignment/compare/v11.1.3...v11.2.0) (August 26, 2019)
 
 ### Features
 
@@ -61,26 +61,26 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([feb4ab3](https://github.com/ckeditor/ckeditor5-alignment/commit/feb4ab3))
 
 
-## [11.1.3](https://github.com/ckeditor/ckeditor5-alignment/compare/v11.1.2...v11.1.3) (2019-07-10)
+## [11.1.3](https://github.com/ckeditor/ckeditor5-alignment/compare/v11.1.2...v11.1.3) (July 10, 2019)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [11.1.2](https://github.com/ckeditor/ckeditor5-alignment/compare/v11.1.1...v11.1.2) (2019-07-04)
+## [11.1.2](https://github.com/ckeditor/ckeditor5-alignment/compare/v11.1.1...v11.1.2) (July 4, 2019)
 
 ### Other changes
 
 * Updated translations. ([bb7f494](https://github.com/ckeditor/ckeditor5-alignment/commit/bb7f494))
 
 
-## [11.1.1](https://github.com/ckeditor/ckeditor5-alignment/compare/v11.1.0...v11.1.1) (2019-06-05)
+## [11.1.1](https://github.com/ckeditor/ckeditor5-alignment/compare/v11.1.0...v11.1.1) (June 6, 2019)
 
 ### Other changes
 
 * Updated translations. ([32c32c1](https://github.com/ckeditor/ckeditor5-alignment/commit/32c32c1))
 
 
-## [11.1.0](https://github.com/ckeditor/ckeditor5-alignment/compare/v11.0.0...v11.1.0) (2019-04-10)
+## [11.1.0](https://github.com/ckeditor/ckeditor5-alignment/compare/v11.0.0...v11.1.0) (April 4, 2019)
 
 ### Features
 
@@ -91,7 +91,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([78bfc40](https://github.com/ckeditor/ckeditor5-alignment/commit/78bfc40))
 
 
-## [11.0.0](https://github.com/ckeditor/ckeditor5-alignment/compare/v10.0.4...v11.0.0) (2019-02-28)
+## [11.0.0](https://github.com/ckeditor/ckeditor5-alignment/compare/v10.0.4...v11.0.0) (February 28, 2019)
 
 ### Other changes
 
@@ -102,7 +102,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Upgraded minimal versions of Node to `8.0.0` and npm to `5.7.1`. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([612ea3c](https://github.com/ckeditor/ckeditor5-cloud-services/commit/612ea3c))
 
 
-## [10.0.4](https://github.com/ckeditor/ckeditor5-alignment/compare/v10.0.3...v10.0.4) (2018-12-05)
+## [10.0.4](https://github.com/ckeditor/ckeditor5-alignment/compare/v10.0.3...v10.0.4) (December 5, 2018)
 
 ### Other changes
 
@@ -110,28 +110,28 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([547f8d8](https://github.com/ckeditor/ckeditor5-alignment/commit/547f8d8)) ([43d8225](https://github.com/ckeditor/ckeditor5-alignment/commit/43d8225))
 
 
-## [10.0.3](https://github.com/ckeditor/ckeditor5-alignment/compare/v10.0.2...v10.0.3) (2018-10-08)
+## [10.0.3](https://github.com/ckeditor/ckeditor5-alignment/compare/v10.0.2...v10.0.3) (October 8, 2018)
 
 ### Other changes
 
 * Updated translations. ([5b30202](https://github.com/ckeditor/ckeditor5-alignment/commit/5b30202))
 
 
-## [10.0.2](https://github.com/ckeditor/ckeditor5-alignment/compare/v10.0.1...v10.0.2) (2018-07-18)
+## [10.0.2](https://github.com/ckeditor/ckeditor5-alignment/compare/v10.0.1...v10.0.2) (July 18, 2018)
 
 ### Other changes
 
 * Updated translations. ([33c281c](https://github.com/ckeditor/ckeditor5-alignment/commit/33c281c))
 
 
-## [10.0.1](https://github.com/ckeditor/ckeditor5-alignment/compare/v10.0.0...v10.0.1) (2018-06-21)
+## [10.0.1](https://github.com/ckeditor/ckeditor5-alignment/compare/v10.0.0...v10.0.1) (June 21, 2018)
 
 ### Other changes
 
 * Updated translations.
 
 
-## [10.0.0](https://github.com/ckeditor/ckeditor5-alignment/compare/v1.0.0-beta.4...v10.0.0) (2018-04-25)
+## [10.0.0](https://github.com/ckeditor/ckeditor5-alignment/compare/v1.0.0-beta.4...v10.0.0) (April 25, 2018)
 
 ### Other changes
 
@@ -140,22 +140,22 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### BREAKING CHANGES
 
-* The license under which CKEditor 5 is released has been changed from a triple GPL, LGPL and MPL license to a GPL2+ only. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
+* The license under which CKEditor&nbsp;5 is released has been changed from a triple GPL, LGPL and MPL license to a GPL2+ only. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
 
 
-## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-alignment/compare/v1.0.0-beta.2...v1.0.0-beta.4) (2018-04-19)
+## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-alignment/compare/v1.0.0-beta.2...v1.0.0-beta.4) (April 19, 2018)
 
 ### Other changes
 
 * Updated translations. ([586ae62](https://github.com/ckeditor/ckeditor5-alignment/commit/586ae62))
 
 
-## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-alignment/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2018-04-10)
+## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-alignment/compare/v1.0.0-beta.1...v1.0.0-beta.2) (April 10, 2018)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-alignment/compare/v0.0.1...v1.0.0-beta.1) (2018-03-15)
+## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-alignment/compare/v0.0.1...v1.0.0-beta.1) (March 15, 2018)
 
 ### Features
 

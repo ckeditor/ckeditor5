@@ -6,7 +6,7 @@
 import { ButtonView, View } from '@ckeditor/ckeditor5-ui';
 import { Locale } from '@ckeditor/ckeditor5-utils';
 
-import StyleGridButtonView from '../../src/ui/stylegridbuttonview';
+import StyleGridButtonView from '../../src/ui/stylegridbuttonview.js';
 
 describe( 'StyleGridButtonView', () => {
 	let locale, button;
@@ -16,7 +16,16 @@ describe( 'StyleGridButtonView', () => {
 		button = new StyleGridButtonView( locale, {
 			name: 'Red heading',
 			element: 'h2',
-			classes: [ 'red-heading', 'foo' ]
+			classes: [ 'red-heading', 'foo' ],
+			previewTemplate: {
+				tag: 'h2',
+				attributes: {
+					class: [ 'red-heading', 'foo' ]
+				},
+				children: [
+					{ text: 'AaBbCcDdEeFfGgHhIiJj' }
+				]
+			}
 		} );
 	} );
 
@@ -33,7 +42,16 @@ describe( 'StyleGridButtonView', () => {
 			expect( button.styleDefinition ).to.deep.equal( {
 				name: 'Red heading',
 				element: 'h2',
-				classes: [ 'red-heading', 'foo' ]
+				classes: [ 'red-heading', 'foo' ],
+				previewTemplate: {
+					tag: 'h2',
+					attributes: {
+						class: [ 'red-heading', 'foo' ]
+					},
+					children: [
+						{ text: 'AaBbCcDdEeFfGgHhIiJj' }
+					]
+				}
 			} );
 		} );
 
@@ -76,21 +94,40 @@ describe( 'StyleGridButtonView', () => {
 				expect( previewElement.textContent ).to.equal( 'AaBbCcDdEeFfGgHhIiJj' );
 			} );
 
-			it( 'should render the inner preview as a DIV if non-previewable', () => {
+			it( 'should render the inner preview based on custom template', () => {
 				const button = new StyleGridButtonView( locale, {
-					name: 'Non-previewable',
-					element: 'td',
-					classes: [ 'a', 'b' ]
+					name: 'Custom preview',
+					element: 'li',
+					classes: [ 'a', 'b' ],
+					previewTemplate: {
+						tag: 'ol',
+						children: [
+							{
+								tag: 'li',
+								attributes: {
+									class: [ 'a', 'b' ]
+								},
+								children: [
+									{ text: 'AaBbCcDdEeFfGgHhIiJj' }
+								]
+							}
+						]
+					}
 				} );
 
 				button.render();
 
 				const previewElement = button.previewView.element.firstChild;
+				const childElement = previewElement.firstChild;
 
-				expect( previewElement.tagName ).to.equal( 'DIV' );
-				expect( previewElement.classList.contains( 'a' ) ).to.be.true;
-				expect( previewElement.classList.contains( 'b' ) ).to.be.true;
-				expect( previewElement.textContent ).to.equal( 'AaBbCcDdEeFfGgHhIiJj' );
+				expect( previewElement.tagName ).to.equal( 'OL' );
+				expect( previewElement.classList.contains( 'a' ) ).to.be.false;
+				expect( previewElement.classList.contains( 'b' ) ).to.be.false;
+
+				expect( childElement.tagName ).to.equal( 'LI' );
+				expect( childElement.classList.contains( 'a' ) ).to.be.true;
+				expect( childElement.classList.contains( 'b' ) ).to.be.true;
+				expect( childElement.textContent ).to.equal( 'AaBbCcDdEeFfGgHhIiJj' );
 
 				button.destroy();
 			} );

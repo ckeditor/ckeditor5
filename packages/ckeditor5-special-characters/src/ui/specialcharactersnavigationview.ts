@@ -7,7 +7,7 @@
  * @module special-characters/ui/specialcharactersnavigationview
  */
 
-import { Collection, type Locale } from 'ckeditor5/src/utils';
+import { Collection, type Locale } from 'ckeditor5/src/utils.js';
 import {
 	addListToDropdown,
 	createDropdown,
@@ -15,7 +15,7 @@ import {
 	FormHeaderView,
 	type DropdownView,
 	type ListDropdownButtonDefinition
-} from 'ckeditor5/src/ui';
+} from 'ckeditor5/src/ui.js';
 
 /**
  * A class representing the navigation part of the special characters UI. It is responsible
@@ -70,6 +70,7 @@ export default class SpecialCharactersNavigationView extends FormHeaderView {
 		const t = locale!.t;
 		const dropdown = createDropdown( locale ) as GroupDropdownView;
 		const groupDefinitions = this._getCharacterGroupListItemDefinitions( dropdown, groupNames );
+		const accessibleLabel = t( 'Character categories' );
 
 		dropdown.set( 'value', groupDefinitions.first!.model.name as string );
 
@@ -78,8 +79,10 @@ export default class SpecialCharactersNavigationView extends FormHeaderView {
 		dropdown.buttonView.set( {
 			isOn: false,
 			withText: true,
-			tooltip: t( 'Character categories' ),
-			class: [ 'ck-dropdown__button_label-width_auto' ]
+			tooltip: accessibleLabel,
+			class: [ 'ck-dropdown__button_label-width_auto' ],
+			ariaLabel: accessibleLabel,
+			ariaLabelledBy: undefined
 		} );
 
 		dropdown.on( 'execute', evt => {
@@ -88,7 +91,10 @@ export default class SpecialCharactersNavigationView extends FormHeaderView {
 
 		dropdown.delegate( 'execute' ).to( this );
 
-		addListToDropdown( dropdown, groupDefinitions );
+		addListToDropdown( dropdown, groupDefinitions, {
+			ariaLabel: accessibleLabel,
+			role: 'menu'
+		} );
 
 		return dropdown;
 	}
@@ -110,7 +116,8 @@ export default class SpecialCharactersNavigationView extends FormHeaderView {
 			const model = new Model( {
 				name,
 				label,
-				withText: true
+				withText: true,
+				role: 'menuitemradio'
 			} );
 
 			model.bind( 'isOn' ).to( dropdown, 'value', value => value === model.name );

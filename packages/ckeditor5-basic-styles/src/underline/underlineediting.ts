@@ -7,8 +7,8 @@
  * @module basic-styles/underline/underlineediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import AttributeCommand from '../attributecommand';
+import { Plugin } from 'ckeditor5/src/core.js';
+import AttributeCommand from '../attributecommand.js';
 
 const UNDERLINE = 'underline';
 
@@ -22,8 +22,8 @@ export default class UnderlineEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'UnderlineEditing' {
-		return 'UnderlineEditing';
+	public static get pluginName() {
+		return 'UnderlineEditing' as const;
 	}
 
 	/**

@@ -7,8 +7,8 @@
  * @module special-characters/specialcharactersarrows
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import type SpecialCharacters from './specialcharacters';
+import { Plugin } from 'ckeditor5/src/core.js';
+import type SpecialCharacters from './specialcharacters.js';
 
 /**
  * A plugin that provides special characters for the "Arrows" category.
@@ -26,8 +26,8 @@ export default class SpecialCharactersArrows extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'SpecialCharactersArrows' {
-		return 'SpecialCharactersArrows';
+	public static get pluginName() {
+		return 'SpecialCharactersArrows' as const;
 	}
 
 	/**

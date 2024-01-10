@@ -5,7 +5,7 @@
 
 /* globals ClassicEditor, console, window, document */
 
-import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config';
+import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-ckbox' ), {
@@ -14,7 +14,7 @@ ClassicEditor
 				'undo', 'redo',
 				'|', 'heading',
 				'|', 'bold', 'italic',
-				'|', 'link', 'uploadImage', 'ckbox', 'insertTable', 'mediaEmbed',
+				'|', 'link', 'uploadImage', 'ckbox', 'ckboxImageEdit', 'insertTable', 'mediaEmbed',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
@@ -29,7 +29,9 @@ ClassicEditor
 				'|',
 				'resizeImage:25',
 				'resizeImage:50',
-				'resizeImage:original'
+				'resizeImage:original',
+				'|',
+				'ckboxImageEdit'
 			],
 			resizeOptions: [
 				{
@@ -56,7 +58,9 @@ ClassicEditor
 			}
 		},
 		ckbox: {
-			tokenUrl: TOKEN_URL
+			tokenUrl: TOKEN_URL,
+			forceDemoLabel: true,
+			allowExternalImagesEditing: [ /^data:/, 'origin' ]
 		}
 	} )
 	.then( editor => {

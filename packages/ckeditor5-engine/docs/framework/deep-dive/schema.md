@@ -1,6 +1,7 @@
 ---
 category: framework-deep-dive
 classes: schema-deep-dive
+meta-title: Schema | CKEditor 5 Framework Documentation
 ---
 
 # Schema
@@ -355,7 +356,7 @@ schema.register( 'myCaption', {
 The engine and various features then check it via {@link module:engine/model/schema~Schema#isLimit `Schema#isLimit()`} and can act accordingly.
 
 <info-box>
-	"Limit element" does not mean "editable element". The concept of "editability" is reserved for the view and expressed by the {@link module:engine/view/editableelement~EditableElement `EditableElement` class}.
+	"Limit element" does not mean "editable element." The concept of "editability" is reserved for the view and expressed by the {@link module:engine/view/editableelement~EditableElement `EditableElement` class}.
 </info-box>
 
 ### Object elements
@@ -372,7 +373,7 @@ schema.register( 'myImage', {
 The {@link module:engine/model/schema~Schema#isObject `Schema#isObject()`} can later be used to check this property.
 
 <info-box>
-	There are also the `$blockObject` and the `$inlineObject` generic items which have the `isObject` property set to `true`. Most object type items will inherit from `$blockObject` or `$inlineObject` (through `inheritAllFrom`).
+	There are also the `$blockObject` and the `$inlineObject` generic items which have the `isObject` property set to `true`. Most object-type items will inherit from `$blockObject` or `$inlineObject` (through `inheritAllFrom`).
 </info-box>
 
 <info-box>
@@ -392,7 +393,7 @@ Schema items with the `isBlock` property set are (among others) affecting the {@
 It is important to remember that a block should not allow another block inside. Container elements like `<blockQuote>`, which can contain other block elements, should not be marked as blocks.
 
 <info-box>
-	There are also the `$block` and the `$blockObject` generic items which have the `isBlock` property set to `true`. Most block type items will inherit from `$block` or `$blockObject` (through `inheritAllFrom`).
+	There are also the `$block` and the `$blockObject` generic items which have the `isBlock` property set to `true`. Most block-type items will inherit from `$block` or `$blockObject` (through `inheritAllFrom`).
 
 	Note that every item that inherits from `$block` has `isBlock` set, but not every item with `isBlock` set has to be a `$block`.
 </info-box>
@@ -401,9 +402,9 @@ It is important to remember that a block should not allow another block inside. 
 
 In the editor, all HTML formatting elements such as `<strong>` or `<code>` are represented by text attributes. Therefore, inline model elements are not supposed to be used for these scenarios.
 
-Currently, the {@link module:engine/model/schema~SchemaItemDefinition#isInline `isInline`} property is used for the `$text` token (so, text nodes) and elements such as `<softBreak>`, `<imageInline>` or placeholder elements such as described in the {@link framework/tutorials/implementing-an-inline-widget Implementing an inline widget} tutorial.
+Currently, the {@link module:engine/model/schema~SchemaItemDefinition#isInline `isInline`} property is used for the `$text` token (so, text nodes) and elements such as `<softBreak>`, `<imageInline>` or placeholder elements such as described in the {@link tutorials/widgets/implementing-an-inline-widget Implementing an inline widget} tutorial.
 
-The support for inline elements in CKEditor 5 is so far limited to self-contained elements. Because of this, all elements marked with `isInline` should also be marked with `isObject`.
+The support for inline elements in CKEditor&nbsp;5 is so far limited to self-contained elements. Because of this, all elements marked with `isInline` should also be marked with `isObject`.
 
 <info-box>
 	There is also the `$inlineObject` generic item which has the `isInline` property set to `true`. Most inline object type items will inherit from `$inlineObject` (through `inheritAllFrom`).
@@ -439,7 +440,7 @@ schema.register( 'myImage', {
 
 The {@link module:engine/model/schema~Schema#isContent `Schema#isContent()`} method can later be used to check this property.
 
-At the same time, elements like paragraphs, list items, or headings **are not** content elements because they are skipped in the editor output when they are empty. From the data perspective they are transparent unless they contain other content elements (an empty paragraph is as good as no paragraph).
+At the same time, elements like paragraphs, list items, or headings **are not** content elements because they are skipped in the editor output when they are empty. From the data perspective, they are transparent unless they contain other content elements (an empty paragraph is as good as no paragraph).
 
 <info-box>
 	[Object elements](#object-elements) and [`$text`](#generic-items) are content by default.
@@ -504,10 +505,10 @@ schema.register( 'paragraph', {
 
 And this can be read as:
 
-* The `<paragraph>` element will be allowed in elements in which `<$block>` is allowed (e.g. in `<$root>`).
-* The `<paragraph>` element will allow all nodes that are allowed in `<$block>` (e.g. `$text`).
+* The `<paragraph>` element will be allowed in elements in which `<$block>` is allowed (like in `<$root>`).
+* The `<paragraph>` element will allow all nodes that are allowed in `<$block>` (like `$text`).
 * The `<paragraph>` element will allow all attributes allowed in `<$block>`.
-* The `<paragraph>` element will inherit all `is*` properties of `<$block>` (e.g. `isBlock`).
+* The `<paragraph>` element will inherit all `is*` properties of `<$block>` (like `isBlock`).
 
 Thanks to the fact that the `<paragraph>` definition is inherited from `<$block>` other features can use the `<$block>` type to indirectly extend the `<paragraph>` definition. For example, the {@link module:block-quote/blockquote~BlockQuote} feature does this:
 
@@ -638,7 +639,7 @@ TODO
 
 ## Implementing additional constraints
 
-Schema's capabilities are limited to simple (and atomic) {@link module:engine/model/schema~Schema#checkChild `Schema#checkChild()`} and {@link module:engine/model/schema~Schema#checkAttribute `Schema#checkAttribute()`} checks on purpose. One may imagine that the schema should support defining more complex rules such as "element `<x>` must be always followed by `<y>`". While it is feasible to create an API that would enable feeding the schema with such definitions, it is unfortunately unrealistic to then expect that every editing feature will consider these rules when processing the model. It is also unrealistic to expect that it will be done automatically by the schema and the editing engine themselves.
+Schema's capabilities are limited to simple (and atomic) {@link module:engine/model/schema~Schema#checkChild `Schema#checkChild()`} and {@link module:engine/model/schema~Schema#checkAttribute `Schema#checkAttribute()`} checks on purpose. One may imagine that the schema should support defining more complex rules such as "element `<x>` must be always followed by `<y>`." While it is feasible to create an API that would enable feeding the schema with such definitions, it is unfortunately unrealistic to then expect that every editing feature will consider these rules when processing the model. It is also unrealistic to expect that it will be done automatically by the schema and the editing engine themselves.
 
 For instance, let's get back to the "element `<x>` must be always followed by `<y>`" rule and this initial content:
 
@@ -662,36 +663,34 @@ Now imagine that the user presses the "Block quote" button. Normally it would wr
 </$root>
 ```
 
-But it turns out that this creates an incorrect structure &mdash; `<x>` is not followed by `<y>` anymore.
+However, it turns out that this creates an incorrect structure &ndash; `<x>` is not followed by `<y>` anymore.
 
 What should happen instead? There are at least 4 possible solutions: the block quote feature should not be applicable in such a context, someone should create a new `<y>` right after `<x>`, `<x>` should be moved inside `<blockQuote>` together with `<y>` or vice versa.
 
 While this is a relatively simple scenario (unlike most real-time collaborative editing scenarios), it turns out that it is already hard to say what should happen and who should react to fix this content.
 
-Therefore, if your editor needs to implement such rules, you should do that through {@link module:engine/model/document~Document#registerPostFixer model's post-fixers} fixing incorrect content or actively prevent such situations (e.g. by disabling certain features). It means that these constraints will be defined specifically for your scenario by your code which makes their implementation much easier.
+Therefore, if your editor needs to implement such rules, you should do that through {@link module:engine/model/document~Document#registerPostFixer model's post-fixers} fixing incorrect content or actively prevent such situations (for example, by disabling certain features). It means that these constraints will be defined specifically for your scenario by your code which makes their implementation much easier.
 
-To sum up, the answer to who and how should implement additional constraints is: your features or your editor through the CKEditor 5 API.
+To sum up, the answer to who and how should implement additional constraints is: your features or your editor through the CKEditor&nbsp;5 API.
 
 ## Who checks the schema?
 
-The CKEditor 5 API exposes many ways to work on (change) the model. It can be done {@link framework/architecture/editing-engine#changing-the-model through the writer}, via methods like {@link module:engine/model/model~Model#insertContent `Model#insertContent()`}, via commands and so on.
+The CKEditor&nbsp;5 API exposes many ways to work on (change) the model. It can be done {@link framework/architecture/editing-engine#changing-the-model through the writer}, via methods like {@link module:engine/model/model~Model#insertContent `Model#insertContent()`}, via commands, and so on.
 
 ### Low-level APIs
 
-The lowest-level API is the writer (to be precise, there are also raw operations below, but they are used for very special cases only). It allows applying atomic changes to the content like inserting, removing, moving or splitting nodes, setting and removing an attribute, etc. It is important to know that the **writer does not prevent from applying changes that violate rules defined in the schema**.
+The lowest-level API is the writer (to be precise, there are also raw operations below, but they are used for special cases only). It allows applying atomic changes to the content like inserting, removing, moving or splitting nodes, setting and removing an attribute, etc. It is important to know that the **writer does not prevent from applying changes that violate rules defined in the schema**.
 
 The reason for this is that when you implement a command or any other feature you may need to perform multiple operations to do all the necessary changes. The state in the meantime (between these atomic operations) may be incorrect. The writer must allow that.
 
 For instance, you need to move `<foo>` from `<$root>` to `<bar>` and (at the same time) rename it to `<oof>`. But the schema defines that `<oof>` is not allowed in `<$root>` and `<foo>` is disallowed in `<bar>`. If the writer checked the schema, it would complain regardless of the order of `rename` and `move` operations.
 
-You can argue that the engine could handle this by checking the schema at the end of a {@link module:engine/model/model~Model#change `Model#change()` block} (it works like a transaction &mdash; the state needs to be correct at the end of it). In fact, we [plan to strip disallowed attributes](https://github.com/ckeditor/ckeditor5-engine/issues/1228) at the end of these blocks.
+You can argue that the engine could handle this by checking the schema at the end of a {@link module:engine/model/model~Model#change `Model#change()` block} (it works like a transaction &ndash; the state needs to be correct at the end of it). This approach, however, was not adopted, as there are the following problems:
 
-There are problems, though:
+* How to fix the content after a transaction is committed? It is impossible to implement a reasonable heuristic that would not break the content from the user's perspective.
+* The model can become invalid during real-time collaborative changes. Operational Transformation, while implemented by us in a rich form (with 11 types of operations instead of the base 3), ensures conflict resolution and eventual consistency, but not the model's validity.
 
-* How to fix the content after a transaction is committed? It is impossible to implement a reasonable heuristic that would not break the content from the user perspective.
-* The model can become invalid during real-time collaborative changes. Operational Transformation, while implemented by us in a very rich form (with 11 types of operations instead of the base 3), ensures conflict resolution and eventual consistency, but not the model's validity.
-
-Therefore, we chose to handle such situations on a case-by-case basis, using more expressive and flexible {@link module:engine/model/document~Document#registerPostFixer model's post-fixers}. Additionally, we moved the responsibility to check the schema to features. They can make a lot better decisions a priori, before doing changes. You can read more about this in the ["Implementing additional constraints"](#implementing-additional-constraints) section above.
+Therefore, we chose to handle such situations on a case-by-case basis, using more expressive and flexible {@link module:engine/model/document~Document#registerPostFixer model's post-fixers}. Additionally, we moved the responsibility of checking the schema to features. They can make a lot better decisions a priori, before making changes. You can read more about this in the ["Implementing additional constraints"](#implementing-additional-constraints) section above.
 
 ### High-level APIs
 
@@ -699,7 +698,7 @@ What about other, higher-level methods? **We recommend that all APIs built on to
 
 For instance, the {@link module:engine/model/model~Model#insertContent `Model#insertContent()`} method will make sure that inserted nodes are allowed in the place of their insertion. It may also attempt to split the insertion container (if allowed by the schema) if that will make the element to insert allowed, and so on.
 
-Similarly, commands &mdash; if implemented correctly &mdash; {@link module:core/command~Command#isEnabled get disabled} if they should not be executed in the current place.
+Similarly, commands &ndash; if implemented correctly &ndash; {@link module:core/command~Command#isEnabled get disabled} if they should not be executed in the current place.
 
 Finally, the schema plays a crucial role during the conversion from the view to the model (also called "upcasting"). During this process converters decide whether they can convert specific view elements or attributes to the given positions in the model. Thanks to that if you tried to load incorrect data to the editor or when you paste content copied from another website, the structure and attributes of the data get adjusted to the current schema rules.
 

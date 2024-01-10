@@ -1,0 +1,60 @@
+<style>
+	.fancy-editor-wrapper figure {
+		padding: 20px;
+	}
+
+	.ck.ck-content .image,
+	.ck.ck-content .image-inline {
+		outline: 2px dashed red;
+	}
+</style>
+
+<div id="editor-width-height-attributes">
+	<h2>Just <code>width</code> and <code>height</code> attributes</h2>
+
+	<figure class="image" width="200" height="60">
+		<img src="sample.jpg" alt="Foo" />
+	</figure>
+
+	<p>
+		Lorem ipsum
+		<img src="sample.jpg" alt="Bar" width="200" height="60" />
+		dolor sit amet.
+	</p>
+
+	<h2><code>width</code> and <code>height</code> + <code>sizes</code></h2>
+
+	<figure class="image" width="200" height="60">
+		<img src="sample.jpg" srcset="sample.jpg, sample.jpg 2x" sizes="100vw" alt="Foo" />
+	</figure>
+
+	<p>
+		Lorem ipsum
+		<img src="sample.jpg" srcset="sample.jpg, sample.jpg 2x" sizes="100vw" alt="Bar" width="200" height="60" />
+		dolor sit amet.
+	</p>
+
+	<h2><code>width</code> and <code>height</code> attributes + <code>ImageResize</code> (px)</h2>
+
+	<figure class="image" width="200" height="60" style="width: 450px">
+		<img src="sample.jpg" alt="Foo" />
+	</figure>
+
+	<p>
+		Lorem ipsum
+		<img src="sample.jpg" alt="Bar" width="200" height="60" style="width: 450px" />
+		dolor sit amet.
+	</p>
+
+	<h2><code>width</code> and <code>height</code> attributes + <code>ImageResize</code> (%)</h2>
+
+	<figure class="image" width="200" height="60" style="width: 75%">
+		<img src="sample.jpg" alt="Foo" />
+	</figure>
+
+	<p>
+		Lorem ipsum
+		<img src="sample.jpg" alt="Bar" width="200" height="60" style="width: 75%" />
+		dolor sit amet.
+	</p>
+</div>

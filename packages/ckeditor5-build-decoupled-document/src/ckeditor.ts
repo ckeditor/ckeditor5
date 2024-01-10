@@ -6,17 +6,12 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 
 // The editor creator to use.
-import DecoupledEditorBase from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
+import { DecoupledEditor as DecoupledEditorBase } from '@ckeditor/ckeditor5-editor-decoupled';
 
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
-import {
-	FontSize,
-	FontFamily,
-	FontColor,
-	FontBackgroundColor,
-} from '@ckeditor/ckeditor5-font';
-import { UploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
+import { FontSize, FontFamily, FontColor, FontBackgroundColor } from '@ckeditor/ckeditor5-font';
+import { CKFinderUploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
 import {
 	Bold,
@@ -24,7 +19,7 @@ import {
 	Strikethrough,
 	Underline,
 	Superscript,
-	Subscript,
+	Subscript
 } from '@ckeditor/ckeditor5-basic-styles';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { CKBox } from '@ckeditor/ckeditor5-ckbox';
@@ -40,7 +35,7 @@ import {
 	ImageToolbar,
 	ImageUpload,
 	PictureEditing,
-	AutoImage,
+	AutoImage
 } from '@ckeditor/ckeditor5-image';
 import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
 import { Link } from '@ckeditor/ckeditor5-link';
@@ -54,23 +49,26 @@ import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import { FindAndReplace } from '@ckeditor/ckeditor5-find-and-replace';
 import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
 
-import ClickObserver from '../../ckeditor5-engine/src/view/observer/clickobserver';
-import { GeneralHtmlSupport } from '../../ckeditor5-html-support/src/index';
+// eslint-disable-next-line ckeditor5-rules/allow-imports-only-from-main-package-entry-point
+import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver.js';
+// eslint-disable-next-line ckeditor5-rules/allow-imports-only-from-main-package-entry-point
+import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support/src/index.js';
 // @ts-ignore
-import { Iframe } from '@ftrprf/ckeditor5-iframe/src/index';
+import { Iframe } from '@ftrprf/ckeditor5-iframe/src/index.js';
 // @ts-ignore
-import { ScratchBlocks } from '@ftrprf/ckeditor5-scratch-blocks/src/index';
+import { ScratchBlocks } from '@ftrprf/ckeditor5-scratch-blocks/src/index.js';
 // @ts-ignore
-import { contentTemplates as ContentTemplates } from '@ftrprf/ckeditor5-content-templates/src/index';
+import { contentTemplates as ContentTemplates } from '@ftrprf/ckeditor5-content-templates/src/index.js';
 // @ts-ignore
-import { Exercise } from './plugins/exercise/index';
+import { Exercise } from './plugins/exercise/index.js';
 // @ts-ignore
-import { Modal } from './plugins/modal';
+import { Modal } from './plugins/modal/index.js';
 // @ts-ignore
-import { StyledLink } from './plugins/styledLink/index';
+import { StyledLink } from './plugins/styledLink/index.js';
 // @ts-ignore
-import { FullScreen } from './plugins/fullScreen/index';
-import { Source } from './plugins/source/index';
+import { FullScreen } from './plugins/fullScreen/index.js';
+import { Source } from './plugins/source/index.js';
+import { Image as OwnImagePlugin } from './plugins/image/index.js';
 
 export default class DecoupledEditor extends DecoupledEditorBase {
 	public static override builtinPlugins = [
@@ -82,7 +80,7 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 		FontFamily,
 		FontColor,
 		FontBackgroundColor,
-		UploadAdapter,
+		CKFinderUploadAdapter,
 		Autoformat,
 		Bold,
 		Italic,
@@ -126,6 +124,7 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 		StyledLink,
 		FullScreen,
 		Source,
+		OwnImagePlugin
 	];
 
 	public static override defaultConfig = {
@@ -154,8 +153,7 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				'indent',
 				'|',
 				'link',
-				'uploadImage',
-				'insertImage',
+				'ownImagePlugin',
 				'insertTable',
 				'mediaEmbed',
 				'|',
@@ -173,11 +171,69 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				'modal',
 				'styledLink',
 				'fullScreen',
-				'source',
-			],
+				'source'
+			]
 		},
 		image: {
 			resizeUnit: 'px' as const,
+			// Full available size of a slide = 1366px - 2x3rem padding = 1266px
+			resizeOptions: [
+				{
+					name: 'resizeImage:original',
+					value: null,
+					label: 'Original'
+				},
+				{
+					name: 'resizeImage:10',
+					value: '126',
+					label: '10%'
+				},
+				{
+					name: 'resizeImage:20',
+					value: '253',
+					label: '20%'
+				},
+				{
+					name: 'resizeImage:30',
+					value: '380',
+					label: '30%'
+				},
+				{
+					name: 'resizeImage:40',
+					value: '506',
+					label: '40%'
+				},
+				{
+					name: 'resizeImage:50',
+					value: '633',
+					label: '50%'
+				},
+				{
+					name: 'resizeImage:60',
+					value: '760',
+					label: '60%'
+				},
+				{
+					name: 'resizeImage:70',
+					value: '886',
+					label: '70%'
+				},
+				{
+					name: 'resizeImage:80',
+					value: '1013',
+					label: '80%'
+				},
+				{
+					name: 'resizeImage:90',
+					value: '1139',
+					label: '90%'
+				},
+				{
+					name: 'resizeImage:100',
+					value: '1266',
+					label: '100%'
+				}
+			],
 			toolbar: [
 				'imageStyle:inline',
 				'imageStyle:wrapText',
@@ -185,20 +241,26 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				'|',
 				'toggleImageCaption',
 				'imageTextAlternative',
+				'imageResize'
 			],
+			insert: {
+				integrations: [
+					'url'
+				]
+			}
 		},
 		table: {
-			contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells'],
+			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 		},
 		list: {
 			properties: {
 				styles: true,
 				startIndex: true,
-				reversed: true,
-			},
+				reversed: true
+			}
 		},
 
 		// This value must be kept in sync with the language defined in webpack.config.js.
-		language: 'en',
+		language: 'en'
 	};
 }

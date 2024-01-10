@@ -7,9 +7,9 @@
  * @module basic-styles/strikethrough/strikethroughui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { ButtonView } from 'ckeditor5/src/ui';
-import type AttributeCommand from '../attributecommand';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { ButtonView } from 'ckeditor5/src/ui.js';
+import type AttributeCommand from '../attributecommand.js';
 
 import strikethroughIcon from '../../theme/icons/strikethrough.svg';
 
@@ -22,8 +22,8 @@ export default class StrikethroughUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'StrikethroughUI' {
-		return 'StrikethroughUI';
+	public static get pluginName() {
+		return 'StrikethroughUI' as const;
 	}
 
 	/**

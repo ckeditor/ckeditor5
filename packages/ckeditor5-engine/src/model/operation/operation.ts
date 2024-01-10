@@ -5,12 +5,13 @@
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import type Batch from '../batch';
-import type Document from '../document';
-
 /**
  * @module engine/model/operation/operation
  */
+
+import type Batch from '../batch.js';
+import type Document from '../document.js';
+import type { Selectable } from '../selection.js';
 
 /**
  * Abstract base operation class.
@@ -51,6 +52,13 @@ export default abstract class Operation {
 		this.isDocumentOperation = this.baseVersion !== null;
 		this.batch = null;
 	}
+
+	/**
+	 * A selectable that will be affected by the operation after it is executed.
+	 *
+	 * The exact returned parameter differs between operation types.
+	 */
+	public abstract get affectedSelectable(): Selectable;
 
 	/**
 	 * Creates and returns an operation that has the same parameters as this operation.

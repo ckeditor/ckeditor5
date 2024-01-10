@@ -5,7 +5,7 @@ All changes in the package are documented in the main repository. See: https://g
 
 Changes for the past releases are available below.
 
-## [19.0.0](https://github.com/ckeditor/ckeditor5-media-embed/compare/v18.0.0...v19.0.0) (2020-04-29)
+## [19.0.0](https://github.com/ckeditor/ckeditor5-media-embed/compare/v18.0.0...v19.0.0) (April 29, 2020)
 
 ### Other changes
 
@@ -13,33 +13,33 @@ Changes for the past releases are available below.
 * Updated translations. ([8ac4d13](https://github.com/ckeditor/ckeditor5-media-embed/commit/8ac4d13))
 
 
-## [18.0.0](https://github.com/ckeditor/ckeditor5-media-embed/compare/v17.0.0...v18.0.0) (2020-03-19)
+## [18.0.0](https://github.com/ckeditor/ckeditor5-media-embed/compare/v17.0.0...v18.0.0) (March 19, 2020)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-media-embed/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-media-embed/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 ### Other changes
 
 * Updated translations. ([7c9dca4](https://github.com/ckeditor/ckeditor5-media-embed/commit/7c9dca4))
 
 
-## [16.0.0](https://github.com/ckeditor/ckeditor5-media-embed/compare/v15.0.0...v16.0.0) (2019-12-04)
+## [16.0.0](https://github.com/ckeditor/ckeditor5-media-embed/compare/v15.0.0...v16.0.0) (December 4, 2019)
 
 ### Other changes
 
 * Updated translations. ([47b693f](https://github.com/ckeditor/ckeditor5-media-embed/commit/47b693f))
 
 
-## [15.0.0](https://github.com/ckeditor/ckeditor5-media-embed/compare/v11.1.4...v15.0.0) (2019-10-23)
+## [15.0.0](https://github.com/ckeditor/ckeditor5-media-embed/compare/v11.1.4...v15.0.0) (October 23, 2019)
 
 ### Other changes
 
 * Updated translations. ([dd2b7aa](https://github.com/ckeditor/ckeditor5-media-embed/commit/dd2b7aa)) ([f3ef359](https://github.com/ckeditor/ckeditor5-media-embed/commit/f3ef359))
 
 
-## [11.1.4](https://github.com/ckeditor/ckeditor5-media-embed/compare/v11.1.3...v11.1.4) (2019-08-26)
+## [11.1.4](https://github.com/ckeditor/ckeditor5-media-embed/compare/v11.1.3...v11.1.4) (August 26, 2019)
 
 ### Other changes
 
@@ -48,12 +48,12 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([bc7f4eb](https://github.com/ckeditor/ckeditor5-media-embed/commit/bc7f4eb))
 
 
-## [11.1.3](https://github.com/ckeditor/ckeditor5-media-embed/compare/v11.1.2...v11.1.3) (2019-07-10)
+## [11.1.3](https://github.com/ckeditor/ckeditor5-media-embed/compare/v11.1.2...v11.1.3) (July 10, 2019)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [11.1.2](https://github.com/ckeditor/ckeditor5-media-embed/compare/v11.1.1...v11.1.2) (2019-07-04)
+## [11.1.2](https://github.com/ckeditor/ckeditor5-media-embed/compare/v11.1.1...v11.1.2) (July 4, 2019)
 
 ### Bug fixes
 
@@ -64,14 +64,14 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([dee6c82](https://github.com/ckeditor/ckeditor5-media-embed/commit/dee6c82)) ([404ae2f](https://github.com/ckeditor/ckeditor5-media-embed/commit/404ae2f))
 
 
-## [11.1.1](https://github.com/ckeditor/ckeditor5-media-embed/compare/v11.1.0...v11.1.1) (2019-06-05)
+## [11.1.1](https://github.com/ckeditor/ckeditor5-media-embed/compare/v11.1.0...v11.1.1) (June 6, 2019)
 
 ### Other changes
 
 * Updated translations. ([075d13f](https://github.com/ckeditor/ckeditor5-media-embed/commit/075d13f))
 
 
-## [11.1.0](https://github.com/ckeditor/ckeditor5-media-embed/compare/v11.0.0...v11.1.0) (2019-04-10)
+## [11.1.0](https://github.com/ckeditor/ckeditor5-media-embed/compare/v11.0.0...v11.1.0) (April 4, 2019)
 
 ### Features
 
@@ -83,7 +83,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([53e6137](https://github.com/ckeditor/ckeditor5-media-embed/commit/53e6137))
 
 
-## [11.0.0](https://github.com/ckeditor/ckeditor5-media-embed/compare/v10.1.0...v11.0.0) (2019-02-28)
+## [11.0.0](https://github.com/ckeditor/ckeditor5-media-embed/compare/v10.1.0...v11.0.0) (February 28, 2019)
 
 ### Bug fixes
 
@@ -94,7 +94,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 ### Other changes
 
 * Aligned to the new `WidgetToolbarRepository` API. Replaced the `isMediaWidgetSelected()` utility with `getSelectedMediaViewWidget()`. Renamed `getSelectedMediaElement()` to `getSelectedMediaModelWidget()`. (see [ckeditor/ckeditor5-widget#60](https://github.com/ckeditor/ckeditor5-widget/issues/60)). ([dc89e45](https://github.com/ckeditor/ckeditor5-media-embed/commit/dc89e45))
-* The help text under the media URL input should be displayed when it's empty. The quick insertion tip should pop out when the user started typing in the input (see [#5](https://github.com/ckeditor/ckeditor5-media-embed/issues/5)). ([55396b5](https://github.com/ckeditor/ckeditor5-media-embed/commit/55396b5))
+* The help text under the media URL input should be displayed when it is empty. The quick insertion tip should pop out when the user starts typing in the input (see [#5](https://github.com/ckeditor/ckeditor5-media-embed/issues/5)). ([55396b5](https://github.com/ckeditor/ckeditor5-media-embed/commit/55396b5))
 * Updated translations. ([a07783b](https://github.com/ckeditor/ckeditor5-media-embed/commit/a07783b)) ([f7942b5](https://github.com/ckeditor/ckeditor5-media-embed/commit/f7942b5)) ([5315b1a](https://github.com/ckeditor/ckeditor5-media-embed/commit/5315b1a))
 
 ### BREAKING CHANGES
@@ -104,7 +104,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `getSelectedMediaElement()` utility has been renamed to `getSelectedMediaModelWidget()`.
 
 
-## [10.1.0](https://github.com/ckeditor/ckeditor5-media-embed/compare/v10.0.0...v10.1.0) (2018-12-05)
+## [10.1.0](https://github.com/ckeditor/ckeditor5-media-embed/compare/v10.0.0...v10.1.0) (December 5, 2018)
 
 ### Features
 
@@ -124,6 +124,6 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([58614b0](https://github.com/ckeditor/ckeditor5-media-embed/commit/58614b0)) ([120912c](https://github.com/ckeditor/ckeditor5-media-embed/commit/120912c)) ([e1b4206](https://github.com/ckeditor/ckeditor5-media-embed/commit/e1b4206)) ([c376e7f](https://github.com/ckeditor/ckeditor5-media-embed/commit/c376e7f))
 
 
-## [10.0.0](https://github.com/ckeditor/ckeditor5-media-embed/tree/v10.0.0) (2018-10-08)
+## [10.0.0](https://github.com/ckeditor/ckeditor5-media-embed/tree/v10.0.0) (October 8, 2018)
 
 Initial implementation of the media embed feature.

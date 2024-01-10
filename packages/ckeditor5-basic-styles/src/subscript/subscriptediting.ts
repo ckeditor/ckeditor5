@@ -7,8 +7,8 @@
  * @module basic-styles/subscript/subscriptediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import AttributeCommand from '../attributecommand';
+import { Plugin } from 'ckeditor5/src/core.js';
+import AttributeCommand from '../attributecommand.js';
 
 const SUBSCRIPT = 'subscript';
 
@@ -22,8 +22,8 @@ export default class SubscriptEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'SubscriptEditing' {
-		return 'SubscriptEditing';
+	public static get pluginName() {
+		return 'SubscriptEditing' as const;
 	}
 
 	/**

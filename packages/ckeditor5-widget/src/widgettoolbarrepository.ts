@@ -31,7 +31,7 @@ import {
 	type RectSource
 } from '@ckeditor/ckeditor5-utils';
 
-import { isWidget } from './utils';
+import { isWidget } from './utils.js';
 
 /**
  * Widget toolbar repository plugin. A central point for registering widget toolbars. This plugin handles the whole
@@ -77,8 +77,8 @@ export default class WidgetToolbarRepository extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'WidgetToolbarRepository' {
-		return 'WidgetToolbarRepository';
+	public static get pluginName() {
+		return 'WidgetToolbarRepository' as const;
 	}
 
 	/**

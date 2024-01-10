@@ -7,7 +7,8 @@
  * @module font/fontcommand
  */
 
-import { Command, type Editor } from 'ckeditor5/src/core';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
+import { type Batch, type Writer } from 'ckeditor5/src/engine.js';
 
 /**
  * The base font command.
@@ -57,14 +58,15 @@ export default abstract class FontCommand extends Command {
 	 * @param options.value The value to apply.
 	 * @fires execute
 	 */
-	public override execute( options: { value?: string } = {} ): void {
+	public override execute( options: { value?: string; batch?: Batch } = {} ): void {
 		const model = this.editor.model;
 		const document = model.document;
 		const selection = document.selection;
 
 		const value = options.value;
+		const batch = options.batch;
 
-		model.change( writer => {
+		const updateAttribute = ( writer: Writer ) => {
 			if ( selection.isCollapsed ) {
 				if ( value ) {
 					writer.setSelectionAttribute( this.attributeKey, value );
@@ -82,6 +84,17 @@ export default abstract class FontCommand extends Command {
 					}
 				}
 			}
-		} );
+		};
+
+		// In some scenarios, you may want to use a single undo step for multiple changes (e.g. in color picker).
+		if ( batch ) {
+			model.enqueueChange( batch, writer => {
+				updateAttribute( writer );
+			} );
+		} else {
+			model.change( writer => {
+				updateAttribute( writer );
+			} );
+		}
 	}
 }

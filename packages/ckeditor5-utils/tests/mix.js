@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import mix from '../src/mix';
+import mix from '../src/mix.js';
 
 describe( 'utils', () => {
 	describe( 'mix', () => {

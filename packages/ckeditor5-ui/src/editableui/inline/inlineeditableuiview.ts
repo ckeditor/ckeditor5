@@ -7,9 +7,9 @@
  * @module ui/editableui/inline/inlineeditableuiview
  */
 
-import EditableUIView from '../editableuiview';
+import EditableUIView from '../editableuiview.js';
 
-import type { View } from '@ckeditor/ckeditor5-engine';
+import type { EditingView } from '@ckeditor/ckeditor5-engine';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 /**
@@ -37,7 +37,7 @@ export default class InlineEditableUIView extends EditableUIView {
 	 */
 	constructor(
 		locale: Locale,
-		editingView: View,
+		editingView: EditingView,
 		editableElement?: HTMLElement,
 		options: { label?: ( view: InlineEditableUIView ) => string } = {}
 	) {

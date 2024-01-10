@@ -7,16 +7,10 @@
  * @module style/ui/stylegridbuttonview
  */
 
-import type { Locale } from 'ckeditor5/src/utils';
-import { ButtonView, View } from 'ckeditor5/src/ui';
+import type { Locale } from 'ckeditor5/src/utils.js';
+import { ButtonView, View } from 'ckeditor5/src/ui.js';
 
-import type { StyleDefinition } from '../styleconfig';
-
-// These are intermediate element names that can't be rendered as style preview because they don't make sense standalone.
-const NON_PREVIEWABLE_ELEMENT_NAMES = [
-	'caption', 'colgroup', 'dd', 'dt', 'figcaption', 'legend', 'li', 'optgroup', 'option', 'rp',
-	'rt', 'summary', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr'
-];
+import type { NormalizedStyleDefinition } from '../styleutils.js';
 
 /**
  * A class representing an individual button (style) in the grid. Renders a rich preview of the style.
@@ -25,7 +19,7 @@ export default class StyleGridButtonView extends ButtonView {
 	/**
 	 * Definition of the style the button will apply when executed.
 	 */
-	public readonly styleDefinition: StyleDefinition;
+	public readonly styleDefinition: NormalizedStyleDefinition;
 
 	/**
 	 * The view rendering the preview of the style.
@@ -38,7 +32,7 @@ export default class StyleGridButtonView extends ButtonView {
 	 * @param locale The localization services instance.
 	 * @param styleDefinition Definition of the style.
 	 */
-	constructor( locale: Locale, styleDefinition: StyleDefinition ) {
+	constructor( locale: Locale, styleDefinition: NormalizedStyleDefinition ) {
 		super( locale );
 
 		this.styleDefinition = styleDefinition;
@@ -63,7 +57,6 @@ export default class StyleGridButtonView extends ButtonView {
 	 * Creates the view representing the preview of the style.
 	 */
 	private _createPreview(): View {
-		const { element, classes } = this.styleDefinition;
 		const previewView = new View( this.locale );
 
 		previewView.setTemplate( {
@@ -81,29 +74,10 @@ export default class StyleGridButtonView extends ButtonView {
 			},
 
 			children: [
-				{
-					tag: this._isPreviewable( element ) ? element : 'div',
-					attributes: {
-						class: classes
-					},
-					children: [
-						{ text: 'AaBbCcDdEeFfGgHhIiJj' }
-					]
-				}
+				this.styleDefinition.previewTemplate
 			]
 		} );
 
 		return previewView;
-	}
-
-	/**
-	 * Decides whether an element should be created in the preview or a substitute `<div>` should
-	 * be used instead. This avoids previewing a standalone `<td>`, `<li>`, etc. without a parent.
-	 *
-	 * @param elementName Name of the element
-	 * @returns Boolean indicating whether the element can be rendered.
-	 */
-	private _isPreviewable( elementName: string ): boolean {
-		return !NON_PREVIEWABLE_ELEMENT_NAMES.includes( elementName );
 	}
 }

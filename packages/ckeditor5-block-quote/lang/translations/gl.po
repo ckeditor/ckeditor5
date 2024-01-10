@@ -12,9 +12,10 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Galician (https://www.transifex.com/ckeditor/teams/11143/gl/)\n"
+"Language-Team: Galician (https://app.transifex.com/ckeditor/teams/11143/gl/)\n"
 "Language: gl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Toolbar button tooltip for the Block quote feature."
 msgid "Block quote"

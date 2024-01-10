@@ -6,8 +6,8 @@
 import { LabelView } from '@ckeditor/ckeditor5-ui';
 import { Locale } from '@ckeditor/ckeditor5-utils';
 
-import StyleGridView from '../../src/ui/stylegridview';
-import StyleGroupView from '../../src/ui/stylegroupview';
+import StyleGridView from '../../src/ui/stylegridview.js';
+import StyleGroupView from '../../src/ui/stylegroupview.js';
 
 describe( 'StyleGroupView', () => {
 	let locale, group;
@@ -18,12 +18,30 @@ describe( 'StyleGroupView', () => {
 			{
 				name: 'Red heading',
 				element: 'h2',
-				classes: [ 'red-heading' ]
+				classes: [ 'red-heading' ],
+				previewTemplate: {
+					tag: 'h2',
+					attributes: {
+						class: 'red-heading'
+					},
+					children: [
+						{ text: 'AaBbCcDdEeFfGgHhIiJj' }
+					]
+				}
 			},
 			{
 				name: 'Large heading',
 				element: 'h2',
-				classes: [ 'large-heading' ]
+				classes: [ 'large-heading' ],
+				previewTemplate: {
+					tag: 'h2',
+					attributes: {
+						class: 'large-heading'
+					},
+					children: [
+						{ text: 'AaBbCcDdEeFfGgHhIiJj' }
+					]
+				}
 			}
 		] );
 	} );

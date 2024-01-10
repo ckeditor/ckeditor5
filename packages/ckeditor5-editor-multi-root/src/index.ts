@@ -7,6 +7,8 @@
  * @module editor-multi-root
  */
 
-export { default as MultiRootEditor } from './multirooteditor';
+export { default as MultiRootEditor } from './multirooteditor.js';
 
-import './augmentation';
+export type { RootAttributes } from './multirooteditor.js';
+
+import './augmentation.js';

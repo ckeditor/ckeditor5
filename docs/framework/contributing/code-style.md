@@ -1,12 +1,13 @@
 ---
 category: framework-contributing
+meta-title: Code style | CKEditor 5 Framework Documentation
 order: 30
 modified_at: 2022-11-03
 ---
 
 # Code style
 
-{@link framework/contributing/development-environment CKEditor 5 development environment} has ESLint enabled both as a pre-commit hook and on CI. This means that code style issues are detected automatically. Additionally, `.editorconfig` files are present in every repository to automatically adjust your IDEs settings (if it is configured to read them).
+{@link framework/contributing/development-environment CKEditor&nbsp;5 development environment} has ESLint enabled both as a pre-commit hook and on CI. This means that code style issues are detected automatically. Additionally, `.editorconfig` files are present in every repository to automatically adjust your IDEs settings (if it is configured to read them).
 
 Here comes a quick summary of these rules.
 
@@ -342,13 +343,13 @@ foo();
 
 ## Linting
 
-CKEditor 5 development environment uses [ESLint](https://eslint.org) and [stylelint](https://stylelint.io/).
+CKEditor&nbsp;5 development environment uses [ESLint](https://eslint.org) and [stylelint](https://stylelint.io/).
 
 A couple of useful links:
 
 * [Disabling ESLint with inline comments](https://eslint.org/docs/latest/use/configure/).
-* [CKEditor 5 ESLint preset](https://github.com/ckeditor/ckeditor5-linters-config/blob/master/packages/eslint-config-ckeditor5/.eslintrc.js) (npm: [`eslint-config-ckeditor5`](http://npmjs.com/package/eslint-config-ckeditor5)).
-* [CKEditor 5 stylelint preset](https://github.com/ckeditor/ckeditor5-linters-config/blob/master/packages/stylelint-config-ckeditor5/.stylelintrc) (npm: [`stylelint-config-ckeditor5`](https://www.npmjs.com/package/stylelint-config-ckeditor5)).
+* [CKEditor&nbsp;5 ESLint preset](https://github.com/ckeditor/ckeditor5-linters-config/blob/master/packages/eslint-config-ckeditor5/.eslintrc.js) (npm: [`eslint-config-ckeditor5`](http://npmjs.com/package/eslint-config-ckeditor5)).
+* [CKEditor&nbsp;5 stylelint preset](https://github.com/ckeditor/ckeditor5-linters-config/blob/master/packages/stylelint-config-ckeditor5/.stylelintrc) (npm: [`stylelint-config-ckeditor5`](https://www.npmjs.com/package/stylelint-config-ckeditor5)).
 
 <info-box>
 	Avoid using automatic code formatters on existing code. It is fine to automatically format code that you are editing, but you should not be changing the formatting of the code that is already written to not pollute your PRs. You should also not rely solely on automatic corrections.
@@ -356,13 +357,13 @@ A couple of useful links:
 
 ## Visibility levels
 
-Each class property (including methods, symbols, getters or setters) can be public, protected or private. The default visibility is public, so you should not document that a property is public &mdash; there is no need to do this.
+Each class property (including methods, symbols, getters, or setters) can be public, protected, or private. The default visibility is public, so you should not document that a property is public &ndash; there is no need to do this.
 
 Additional rules apply to private properties:
 
 * The names of private and protected properties that are exposed in a class prototype (or in any other way) should be prefixed with an underscore.
 * When documenting a private variable that is not added to a class prototype (or exposed in any other way), `//` comments should be used and using `@private` is not necessary.
-* A symbol property (e.g. `this[ Symbol( 'symbolName' ) ]`) should be documented as `@property {Type} _symbolName`.
+* A symbol property (like `this[ Symbol( 'symbolName' ) ]`) should be documented as `@property {Type} _symbolName`.
 
 Example:
 
@@ -511,20 +512,20 @@ There are some special rules and tips for tests.
 	```
 
 	Using titles like *"utils"* is not fine as there are multiple utils in the entire project. *"Table utils"* would be better.
-* Test descriptions (`it()`) should be written like documentation (what you do and what should happen), e.g. *"the foo dialog closes when the X button is clicked"*. Also, *"...case 1"*, *"...case 2"* in test descriptions are not helpful.
-* Avoid test descriptions like *"does not crash when two ranges get merged"* &mdash; instead explain what is actually expected to happen. For instance: *"leaves 1 range when two ranges get merged"*.
-* Most often, using words like "correctly", "works fine" is a code smell. Thing about the requirements &mdash; when writing them you do not say that feature X should "work fine". You document how it should work.
+* Test descriptions (`it()`) should be written like documentation (what you do and what should happen), for example, *"the foo dialog closes when the X button is clicked"*. Also, *"...case 1"*, *"...case 2"* in test descriptions are not helpful.
+* Avoid test descriptions like *"does not crash when two ranges get merged."* Instead, explain what is actually expected to happen. For instance: *"leaves 1 range when two ranges get merged."*
+* Most often, using words like "correctly," "works fine" is a code smell. Think about the requirements &ndash; when writing them you do not say that feature X should "work fine." You document how it should work.
 * Ideally, it should be possible to recreate an algorithm just by reading the test descriptions.
-* Avoid covering multiple cases under one `it()`. It is OK to have multiple assertions in one test, but not to test e.g. how method `foo()` works when it is called with 1, then with 2, then 3, etc. There should be a separate test for each case.
+* Avoid covering multiple cases under one `it()`. It is OK to have multiple assertions in one test, but not to test, for example, how method `foo()` works when it is called with 1, then with 2, then 3, etc. There should be a separate test for each case.
 * Every test should clean after itself, including destroying all editors and removing all elements that have been added.
 
 ### Test implementation
 
 * Avoid using real timeouts. Use [fake timers](https://sinonjs.org/releases/latest/fake-timers/) instead **when possible**. Timeouts make tests really slow.
-* However &mdash; do not overoptimize (especially that performance is not a priority in tests). In most cases it is completely fine (and hence recommended) to create a separate editor for every `it()`.
-* We aim at having 100% coverage of *all distinctive scenarios*. Covering 100% branches in the code is not the goal here &mdash; it is a byproduct of covering real scenarios.
+* However, do not overoptimize (especially that performance is not a priority in tests). In most cases it is completely fine (and hence recommended) to create a separate editor for every `it()`.
+* We aim at having 100% coverage of *all distinctive scenarios*. Covering 100% branches in the code is not the goal here &ndash; it is a by-product of covering real scenarios.
 
-	Think about this &mdash; when you fix a bug by adding a parameter to an existing function call you do not affect code coverage (that line was called anyway). However, you had a bug, meaning that your test suite did not cover it. Therefore, a test must be created for that code change.
+	Think about this: when you fix a bug by adding a parameter to an existing function call, you do not affect code coverage (that line was called anyway). However, you had a bug, meaning that your test suite did not cover it. Therefore, a test must be created for that code change.
 * It should be `expect( x ).to.equal( y )`. **NOT**: ~~`expect( x ).to.be.equal( y )`~~.
 * When using Sinon spies, pay attention to the readability of assertions and failure messages.
    * Use named spies, for example:
@@ -692,7 +693,7 @@ this.env;
 
 ### Acronyms and proper names
 
-Acronyms and, partially, proper names are naturally written in uppercase. This may stand against code style rules described above &mdash; especially when there is a need to include an acronym or a proper name in a variable or class name. In such case, one should follow the following rules:
+Acronyms and, partially, proper names are naturally written in uppercase. This may stand against code style rules described above &ndash; especially when there is a need to include an acronym or a proper name in a variable or class name. In such case, one should follow these rules:
 
 * Acronyms:
 	* All lowercase if at the beginning of the variable name: `let domError`.
@@ -703,7 +704,7 @@ Acronyms and, partially, proper names are naturally written in uppercase. This m
 	* Original case if at the beginning of the class name: `class CKEditorError`.
 	* Original case inside the variable or class name: `function getCKEditorError()`.
 
-However, two-letter acronyms and proper names (if originally written uppercase) should be uppercase. So e.g. `getUI` (not `getUi`).
+However, two-letter acronyms and proper names (if originally written uppercase) should be uppercase. For example: `getUI`, not `getUi`.
 
 <info-box>
 	Two most frequently used acronyms which cause problems:
@@ -794,9 +795,9 @@ Widely used standard files do not obey the above rules:
 * `.gitignore` and all standard "dot-files"
 * `node_modules`
 
-## CKEditor 5 custom ESLint rules
+## CKEditor&nbsp;5 custom ESLint rules
 
-In addition to the rules provided by ESLint, CKEditor 5 uses a few custom rules described below.
+In addition to the rules provided by ESLint, CKEditor&nbsp;5 uses a few custom rules described below.
 
 ### Importing between packages: `ckeditor5-rules/no-relative-imports`
 
@@ -826,7 +827,7 @@ Even if the import statement works locally, it will throw an error when develope
 ```js
 // Assume we edit a file located in the path: `packages/ckeditor5-engine/src/model/model.js`
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 ```
 
 [History of the change.](https://github.com/ckeditor/ckeditor5/issues/7128)
@@ -872,11 +873,11 @@ throw new CKEditorError( 'editor-wrong-element', this );
 
 ### DLL Builds: `ckeditor5-rules/ckeditor-imports`
 
-To make CKEditor 5 plugins compatible with each other, we needed to introduce limitations when importing files from packages.
+To make CKEditor&nbsp;5 plugins compatible with each other, we needed to introduce limitations when importing files from packages.
 
 Packages marked as "Base DLL build" can import between themselves without any restrictions. Names of these packages are specified in the {@link installation/advanced/dll-builds#anatomy-of-a-dll-build DLL builds} guide.
 
-The other CKEditor 5 features (non-DLL) can import "Base DLL" packages using the `ckeditor5` package.
+The other CKEditor&nbsp;5 features (non-DLL) can import "Base DLL" packages using the `ckeditor5` package.
 
 When importing modules from the `ckeditor5` package, all imports must come from the `src/` directory. Other directories are not published on npm, so such imports will not work.
 
@@ -885,11 +886,11 @@ When importing modules from the `ckeditor5` package, all imports must come from 
 ```js
 // Assume we edit a file located in the path: `packages/ckeditor5-basic-styles/src/bold.js`
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 // The import uses the `ckeditor5` package, but the specified path does not exist when installing the package from npm.
 
-import Plugin from 'ckeditor5/packages/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/packages/ckeditor5-core';
 ```
 
 👍&nbsp; Examples of correct code for this rule:
@@ -907,7 +908,7 @@ Also, non-DLL packages should not import between non-DLL packages to avoid code 
 ```js
 // Assume we edit a file located in the path: `packages/ckeditor5-link/src/linkimage.js`
 
-import { createImageViewElement } from '@ckeditor/ckeditor5-image/src/image/utils.js'
+import { createImageViewElement } from '@ckeditor/ckeditor5-image'
 ```
 
 To use the `createImageViewElement()` function, consider implementing a utils plugin that will expose the required function in the `ckeditor5-image` package.
@@ -927,7 +928,7 @@ import { Plugin } from 'ckeditor5/src/core';
 ```js
 // Assume we edit a file located in the path: `packages/ckeditor5-widget/src/widget.js`
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 ```
 
 History of changes:
@@ -944,7 +945,7 @@ It is allowed to import modules from other packages:
 import { toArray } from 'ckeditor5/src/utils';
 ```
 
-However, some packages cannot import modules from CKEditor 5 as it could lead to code duplication and errors in runtime. Hence, the rule disables this kind of import.
+However, some packages cannot import modules from CKEditor&nbsp;5 as it could lead to code duplication and errors in runtime. Hence, the rule disables this kind of import.
 
 Currently, it applies to the `@ckeditor/ckeditor5-watchdog` package.
 
@@ -955,7 +956,6 @@ Currently, it applies to the `@ckeditor/ckeditor5-watchdog` package.
 
 import { toArray } from 'ckeditor5/src/utils';
 import { toArray } from '@ckeditor/ckeditor5-utils';
-import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 ```
 
 [History of the change.](https://github.com/ckeditor/ckeditor5/issues/9318)
@@ -1006,7 +1006,9 @@ To create a code executed only in the debug mode, follow the description of the 
 
 ### Non public members marked as @internal : `ckeditor5-rules/non-public-members-as-internal`
 
-**This rule should only be used on `.ts` files.**
+<info-box warning>
+  This rule should only be used on `.ts` files.
+</info-box>
 
 In order to remove non public members from typings, the `@internal` tag has to be used in member's JSDoc.
 
@@ -1045,7 +1047,7 @@ While importing a predefined build, only this build is allowed to be imported, l
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 ```
 
-Importing anything from the `src` directory, in order to extend a CKEditor 5 build, is not allowed. Other directories from a predefined build are not published on npm, so such imports will not work.
+Importing anything from the `src` directory, in order to extend a CKEditor&nbsp;5 build, is not allowed. Other directories from a predefined build are not published on npm, so such imports will not work.
 
 👎&nbsp; Examples of an incorrect code for this rule:
 
@@ -1062,3 +1064,110 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 ```
 
 [History of the change.](https://github.com/ckeditor/ckeditor5/issues/13689)
+
+### Declaring module augmentation for the core package: `ckeditor5-rules/allow-declare-module-only-in-augmentation-file`
+
+<info-box warning>
+  This rule should only be used on `.ts` files.
+</info-box>
+
+The main entry points (`index.ts` files) in most modules have a side effect import `import './augmentation'` which uses module augmentation to populate the editor types with information about available plugins, configurations and commands.
+
+This rule forces all `declare module '@ckeditor/ckeditor5-core'` to be defined in this `augmentation.ts` file.
+
+### Importing from modules: `ckeditor5-rules/allow-imports-only-from-main-package-entry-point`
+
+<info-box warning>
+  This rule should only be used on `.ts` files.
+</info-box>
+
+As explained in the description of the `allow-declare-module-only-in-augmentation-file` rule, information about available plugins, configuration and commands is only available in the editor types when data from modules is imported from the main entry point.
+
+This rule forces all imports from `@ckeditor/*` packages to be done through the main entry point.
+
+👎&nbsp; Example of an incorrect code for this rule:
+
+```ts
+// Importing from the `/src/` folder is not allowed.
+import Table from '@ckeditor/ckeditor5-table/src/table';
+```
+
+👍&nbsp; Examples of correct code for this rule:
+
+```ts
+// ✔️ Importing from the main entry point is allowed.
+import { Table } from '@ckeditor/ckeditor5-table';
+```
+
+### Require `as const`: `ckeditor5-rules/require-as-const-returns-in-methods`
+
+<info-box warning>
+  This rule should only be used on `.ts` files.
+</info-box>
+
+In TypeScript, the types inferred from some values are simplified. For example, the type of `const test = [1, 2, 3];` is `number[]`, but in some cases a more specific type may be needed. Using `as const` can help with this. For example, the type of `const test1 = [1, 2, 3] as const;` is `readonly [1, 2, 3]`.
+
+The `require-as-const-returns-in-methods` rule requires some methods that depend on the exact type of returned data (for example, `'delete'` literal string instead of the generic `string` in the `pluginName` method, or `readonly [typeof Table]` instead of `[]` in the `requires` method) to have all return statements with `as const`.
+
+👎&nbsp; Examples of an incorrect code for this rule:
+
+```ts
+export default class Delete extends Plugin {
+	public static get pluginName(): string {
+		return 'Delete';
+	}
+}
+```
+
+```ts
+export default class Delete extends Plugin {
+	public static get pluginName(): 'Delete' {
+		return 'Delete';
+	}
+}
+```
+
+👍&nbsp; Examples of correct code for this rule:
+
+```ts
+export default class Delete extends Plugin {
+	public static get pluginName() {
+		return 'Delete' as const;
+	}
+}
+```
+
+### Imports within a package: `ckeditor5-rules/no-scoped-imports-within-package`
+
+All imports defined in every package, that point to a file from the same package, must be relative. You cannot use the scoped imports, if the target file is located in the same package as the import declaration. The resolved scoped import points to the package inside the `node_modules`, but not to the current working directory, and the source code in these two places may differ from each other.
+
+👎&nbsp; Examples of incorrect code for this rule:
+
+```ts
+// Assume we edit a file located in the path: `packages/ckeditor5-alignment/src/alignment.ts`.
+
+// Both imports are incorrect.
+import { AlignmentEditing } from '@ckeditor/ckeditor5-alignment';
+import AlignmentEditing from '@ckeditor/ckeditor5-alignment/src/alignmentediting';
+```
+
+👍&nbsp; Examples of correct code for this rule:
+
+```ts
+// Assume we edit a file located in the path: `packages/ckeditor5-alignment/src/alignment.ts`.
+
+import AlignmentEditing from './alignmentediting';
+```
+
+[History of the change.](https://github.com/ckeditor/ckeditor5/issues/14329)
+
+### Mandatory file extensions in imports: `ckeditor5-rules/require-file-extensions-in-imports`
+
+As required by the [ESM](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) standard, all imports must include a file extension. If the import doesn't include it, this rule will try to automatically detect the correct file extension, but in two cases this is not possible:
+
+* the imported file has an extension other than `.ts`, `.js` or `.json`,
+* the imported file doesn't exist in the file system.
+
+The second case is common in documentation, because its pieces are in different directories and repositories. These pieces are merged during the build step, but before that the imports are technically invalid.
+
+In such cases, the file extension must be added manually. Imports with file extensions are not validated.

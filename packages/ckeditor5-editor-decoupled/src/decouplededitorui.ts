@@ -8,18 +8,17 @@
  */
 
 import {
-	type Editor,
-	type ElementApi
-} from 'ckeditor5/src/core';
+	type Editor
+} from 'ckeditor5/src/core.js';
 
 import {
 	EditorUI,
 	type EditorUIReadyEvent
-} from 'ckeditor5/src/ui';
+} from 'ckeditor5/src/ui.js';
 
-import { enablePlaceholder } from 'ckeditor5/src/engine';
+import { enablePlaceholder } from 'ckeditor5/src/engine.js';
 
-import type DecoupledEditorUIView from './decouplededitoruiview';
+import type DecoupledEditorUIView from './decouplededitoruiview.js';
 
 /**
  * The decoupled editor UI class.
@@ -112,28 +111,27 @@ export default class DecoupledEditorUI extends EditorUI {
 	}
 
 	/**
-	 * Enable the placeholder text on the editing root, if any was configured.
+	 * Enable the placeholder text on the editing root.
 	 */
 	private _initPlaceholder(): void {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 		const editingRoot = editingView.document.getRoot()!;
-		const sourceElement = ( editor as Editor & ElementApi ).sourceElement;
-
 		const placeholder = editor.config.get( 'placeholder' );
 
 		if ( placeholder ) {
 			const placeholderText = typeof placeholder === 'string' ? placeholder : placeholder[ editingRoot.rootName ];
 
 			if ( placeholderText ) {
-				enablePlaceholder( {
-					view: editingView,
-					element: editingRoot,
-					text: placeholderText,
-					isDirectHost: false,
-					keepOnFocus: true
-				} );
+				editingRoot.placeholder = placeholderText;
 			}
 		}
+
+		enablePlaceholder( {
+			view: editingView,
+			element: editingRoot,
+			isDirectHost: false,
+			keepOnFocus: true
+		} );
 	}
 }

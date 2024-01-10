@@ -9,9 +9,9 @@
 
 /* globals XMLHttpRequest, FormData, Blob, atob */
 
-import type { UploadResponse } from 'ckeditor5/src/upload';
-import { EmitterMixin, CKEditorError } from 'ckeditor5/src/utils';
-import type { InitializedToken } from '../token/token';
+import type { UploadResponse } from 'ckeditor5/src/upload.js';
+import { EmitterMixin, CKEditorError } from 'ckeditor5/src/utils.js';
+import type { InitializedToken } from '../token/token.js';
 
 const BASE64_HEADER_REG_EXP = /^data:(\S*?);base64,/;
 

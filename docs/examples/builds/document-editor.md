@@ -1,5 +1,6 @@
 ---
 category: examples-builds
+meta-title: Document editor build example | CKEditor 5 Documentation
 order: 50
 toc: false
 classes: 'main__content-wide main__content--no-toc'
@@ -31,7 +32,7 @@ DecoupledEditor
 				'undo', 'redo',
 				'|', 'heading',
 				'|', 'bold', 'italic',
-				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},

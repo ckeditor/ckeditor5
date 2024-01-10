@@ -5,10 +5,10 @@
 
 /* global document, Event */
 
-import submitHandler from '../../src/bindings/submithandler';
+import submitHandler from '../../src/bindings/submithandler.js';
 
-import View from '../../src/view';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import View from '../../src/view.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'submitHandler', () => {
 	let view;

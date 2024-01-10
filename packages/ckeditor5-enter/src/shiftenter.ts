@@ -7,8 +7,8 @@
  * @module enter/shiftenter
  */
 
-import ShiftEnterCommand from './shiftentercommand';
-import EnterObserver, { type ViewDocumentEnterEvent } from './enterobserver';
+import ShiftEnterCommand from './shiftentercommand.js';
+import EnterObserver, { type ViewDocumentEnterEvent } from './enterobserver.js';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
 /**
@@ -22,8 +22,8 @@ export default class ShiftEnter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ShiftEnter' {
-		return 'ShiftEnter';
+	public static get pluginName() {
+		return 'ShiftEnter' as const;
 	}
 
 	public init(): void {

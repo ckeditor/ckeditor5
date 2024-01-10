@@ -80,6 +80,80 @@ describe( 'transform', () => {
 				expect( john.document.getRoot( 'new' ).isAttached() ).to.be.false;
 				expect( kate.document.getRoot( 'new' ).isAttached() ).to.be.false;
 			} );
+
+			it( 'with the same name, then undo one', () => {
+				john.addRoot( 'new' );
+				kate.addRoot( 'new' );
+
+				syncClients();
+
+				john.detachRoot( 'new' );
+
+				kate.detachRoot( 'new' );
+				kate.undo();
+
+				syncClients();
+
+				expect( john.document.getRoot( 'new' ).isAttached() ).to.be.true;
+				expect( kate.document.getRoot( 'new' ).isAttached() ).to.be.true;
+			} );
+
+			it( 'with the same name, then undo both', () => {
+				john.addRoot( 'new' );
+				kate.addRoot( 'new' );
+
+				syncClients();
+
+				john.detachRoot( 'new' );
+				john.undo();
+
+				kate.detachRoot( 'new' );
+				kate.undo();
+
+				syncClients();
+
+				expect( john.document.getRoot( 'new' ).isAttached() ).to.be.true;
+				expect( kate.document.getRoot( 'new' ).isAttached() ).to.be.true;
+			} );
+
+			it( 'with the same name, then undo both, then redo one', () => {
+				john.addRoot( 'new' );
+				kate.addRoot( 'new' );
+
+				syncClients();
+
+				john.detachRoot( 'new' );
+				john.undo();
+				john.redo();
+
+				kate.detachRoot( 'new' );
+				kate.undo();
+
+				syncClients();
+
+				expect( john.document.getRoot( 'new' ).isAttached() ).to.be.false;
+				expect( kate.document.getRoot( 'new' ).isAttached() ).to.be.false;
+			} );
+
+			it( 'with the same name, then undo both, then redo both', () => {
+				john.addRoot( 'new' );
+				kate.addRoot( 'new' );
+
+				syncClients();
+
+				john.detachRoot( 'new' );
+				john.undo();
+				john.redo();
+
+				kate.detachRoot( 'new' );
+				kate.undo();
+				john.redo();
+
+				syncClients();
+
+				expect( john.document.getRoot( 'new' ).isAttached() ).to.be.false;
+				expect( kate.document.getRoot( 'new' ).isAttached() ).to.be.false;
+			} );
 		} );
 	} );
 } );

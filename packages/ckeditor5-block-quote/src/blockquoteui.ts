@@ -7,9 +7,9 @@
  * @module block-quote/blockquoteui
  */
 
-import { Plugin, icons } from 'ckeditor5/src/core';
-import { ButtonView } from 'ckeditor5/src/ui';
-import type BlockQuoteCommand from './blockquotecommand';
+import { Plugin, icons } from 'ckeditor5/src/core.js';
+import { ButtonView } from 'ckeditor5/src/ui.js';
+import type BlockQuoteCommand from './blockquotecommand.js';
 
 import '../theme/blockquote.css';
 
@@ -24,8 +24,8 @@ export default class BlockQuoteUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'BlockQuoteUI' {
-		return 'BlockQuoteUI';
+	public static get pluginName() {
+		return 'BlockQuoteUI' as const;
 	}
 
 	/**

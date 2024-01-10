@@ -14,7 +14,7 @@ ClassicEditor
 				'undo', 'redo',
 				'|', 'heading',
 				'|', 'bold', 'italic',
-				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'link', 'insertImage', 'ckbox', 'ckboxImageEdit', 'insertTable', 'mediaEmbed',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
@@ -22,6 +22,10 @@ ClassicEditor
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
 			}
+		},
+		ckbox: {
+			allowExternalImagesEditing: [ /^data:/, 'origin' ],
+			forceDemoLabel: true
 		},
 		image: {
 			toolbar: [
@@ -34,7 +38,9 @@ ClassicEditor
 				'|',
 				'resizeImage:100',
 				'resizeImage:200',
-				'resizeImage:original'
+				'resizeImage:original',
+				'|',
+				'ckboxImageEdit'
 			],
 			resizeOptions: [
 				{

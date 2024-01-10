@@ -7,10 +7,10 @@
  * @module basic-styles/code/codeui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { ButtonView } from 'ckeditor5/src/ui';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { ButtonView } from 'ckeditor5/src/ui.js';
 
-import type AttributeCommand from '../attributecommand';
+import type AttributeCommand from '../attributecommand.js';
 
 import codeIcon from '../../theme/icons/code.svg';
 
@@ -25,8 +25,8 @@ export default class CodeUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'CodeUI' {
-		return 'CodeUI';
+	public static get pluginName() {
+		return 'CodeUI' as const;
 	}
 
 	/**

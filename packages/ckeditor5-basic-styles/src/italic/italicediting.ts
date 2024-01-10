@@ -7,8 +7,8 @@
  * @module basic-styles/italic/italicediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import AttributeCommand from '../attributecommand';
+import { Plugin } from 'ckeditor5/src/core.js';
+import AttributeCommand from '../attributecommand.js';
 
 const ITALIC = 'italic';
 
@@ -22,8 +22,8 @@ export default class ItalicEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ItalicEditing' {
-		return 'ItalicEditing';
+	public static get pluginName() {
+		return 'ItalicEditing' as const;
 	}
 
 	/**

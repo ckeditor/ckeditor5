@@ -7,9 +7,9 @@
  * @module image/image/insertimagecommand
  */
 
-import { Command, type Editor } from 'ckeditor5/src/core';
-import { logWarning, toArray, type ArrayOrItem } from 'ckeditor5/src/utils';
-import type ImageUtils from '../imageutils';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
+import { logWarning, toArray, type ArrayOrItem } from 'ckeditor5/src/utils.js';
+import type ImageUtils from '../imageutils.js';
 
 /**
  * Insert image command.

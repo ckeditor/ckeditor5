@@ -9,9 +9,9 @@
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
-import ClipboardPipeline from './clipboardpipeline';
-import DragDrop from './dragdrop';
-import PastePlainText from './pasteplaintext';
+import ClipboardPipeline from './clipboardpipeline.js';
+import DragDrop from './dragdrop.js';
+import PastePlainText from './pasteplaintext.js';
 
 /**
  * The clipboard feature.
@@ -27,8 +27,8 @@ export default class Clipboard extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Clipboard' {
-		return 'Clipboard';
+	public static get pluginName() {
+		return 'Clipboard' as const;
 	}
 
 	/**

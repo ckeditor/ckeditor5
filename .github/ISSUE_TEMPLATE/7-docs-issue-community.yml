@@ -1,7 +1,7 @@
 name: "User-generated documentation issue report"
 description: "Semi-automated documentation issue template for user-generated reports. To be invoked from within the docs guides only."
 title: "Docs issue report from '...' guide"
-labels: [ "squad:ccx", "type:docs" ]
+labels: [ "squad:core", "type:docs" ]
 body:
   - type: markdown
     attributes:

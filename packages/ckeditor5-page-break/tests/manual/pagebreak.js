@@ -5,13 +5,13 @@
 
 /* globals console, window, document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
-import PageBreak from '../../src/pagebreak';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload.js';
+import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage.js';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
+import PageBreak from '../../src/pagebreak.js';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

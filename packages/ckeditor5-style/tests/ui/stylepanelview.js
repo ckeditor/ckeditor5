@@ -7,10 +7,10 @@
 
 import { FocusCycler, ViewCollection } from '@ckeditor/ckeditor5-ui';
 import { FocusTracker, KeystrokeHandler, Locale } from '@ckeditor/ckeditor5-utils';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 
-import StyleGroupView from '../../src/ui/stylegroupview';
-import StylePanelView from '../../src/ui/stylepanelview';
+import StyleGroupView from '../../src/ui/stylegroupview.js';
+import StylePanelView from '../../src/ui/stylepanelview.js';
 
 describe( 'StylePanelView', () => {
 	let locale, panel;
@@ -22,29 +22,74 @@ describe( 'StylePanelView', () => {
 				{
 					name: 'Red heading',
 					element: 'h2',
-					classes: [ 'red-heading' ]
+					classes: [ 'red-heading' ],
+					previewTemplate: {
+						tag: 'h2',
+						attributes: {
+							class: 'red-heading'
+						},
+						children: [
+							{ text: 'AaBbCcDdEeFfGgHhIiJj' }
+						]
+					}
 				},
 				{
 					name: 'Large heading',
 					element: 'h2',
-					classes: [ 'large-heading' ]
+					classes: [ 'large-heading' ],
+					previewTemplate: {
+						tag: 'h2',
+						attributes: {
+							class: 'large-heading'
+						},
+						children: [
+							{ text: 'AaBbCcDdEeFfGgHhIiJj' }
+						]
+					}
 				}
 			],
 			inline: [
 				{
 					name: 'Deleted text',
 					element: 'span',
-					classes: [ 'deleted' ]
+					classes: [ 'deleted' ],
+					previewTemplate: {
+						tag: 'span',
+						attributes: {
+							class: 'deleted'
+						},
+						children: [
+							{ text: 'AaBbCcDdEeFfGgHhIiJj' }
+						]
+					}
 				},
 				{
 					name: 'Cited work',
 					element: 'span',
-					classes: [ 'cited', 'another-class' ]
+					classes: [ 'cited', 'another-class' ],
+					previewTemplate: {
+						tag: 'span',
+						attributes: {
+							class: [ 'cited', 'another-class' ]
+						},
+						children: [
+							{ text: 'AaBbCcDdEeFfGgHhIiJj' }
+						]
+					}
 				},
 				{
 					name: 'Small text',
 					element: 'span',
-					classes: [ 'small' ]
+					classes: [ 'small' ],
+					previewTemplate: {
+						tag: 'span',
+						attributes: {
+							class: 'small'
+						},
+						children: [
+							{ text: 'AaBbCcDdEeFfGgHhIiJj' }
+						]
+					}
 				}
 			]
 		} );
@@ -111,7 +156,16 @@ describe( 'StylePanelView', () => {
 						{
 							name: 'Deleted text',
 							element: 'span',
-							classes: [ 'deleted' ]
+							classes: [ 'deleted' ],
+							previewTemplate: {
+								tag: 'span',
+								attributes: {
+									class: 'deleted'
+								},
+								children: [
+									{ text: 'AaBbCcDdEeFfGgHhIiJj' }
+								]
+							}
 						}
 					]
 				} );
@@ -128,7 +182,16 @@ describe( 'StylePanelView', () => {
 						{
 							name: 'Large heading',
 							element: 'h2',
-							classes: [ 'large-heading' ]
+							classes: [ 'large-heading' ],
+							previewTemplate: {
+								tag: 'h2',
+								attributes: {
+									class: 'large-heading'
+								},
+								children: [
+									{ text: 'AaBbCcDdEeFfGgHhIiJj' }
+								]
+							}
 						}
 					],
 					inline: []
@@ -295,14 +358,32 @@ describe( 'StylePanelView', () => {
 					{
 						name: 'Red heading',
 						element: 'h2',
-						classes: [ 'red-heading' ]
+						classes: [ 'red-heading' ],
+						previewTemplate: {
+							tag: 'h2',
+							attributes: {
+								class: 'red-heading'
+							},
+							children: [
+								{ text: 'AaBbCcDdEeFfGgHhIiJj' }
+							]
+						}
 					}
 				],
 				inline: [
 					{
 						name: 'Deleted text',
 						element: 'span',
-						classes: [ 'deleted' ]
+						classes: [ 'deleted' ],
+						previewTemplate: {
+							tag: 'span',
+							attributes: {
+								class: 'deleted'
+							},
+							children: [
+								{ text: 'AaBbCcDdEeFfGgHhIiJj' }
+							]
+						}
 					}
 				]
 			} );

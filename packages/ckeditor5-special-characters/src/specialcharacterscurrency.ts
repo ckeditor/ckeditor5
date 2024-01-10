@@ -7,8 +7,8 @@
  * @module special-characters/specialcharacterscurrency
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import type SpecialCharacters from './specialcharacters';
+import { Plugin } from 'ckeditor5/src/core.js';
+import type SpecialCharacters from './specialcharacters.js';
 
 /**
  * A plugin that provides special characters for the "Currency" category.
@@ -26,8 +26,8 @@ export default class SpecialCharactersCurrency extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'SpecialCharactersCurrency' {
-		return 'SpecialCharactersCurrency';
+	public static get pluginName() {
+		return 'SpecialCharactersCurrency' as const;
 	}
 
 	/**

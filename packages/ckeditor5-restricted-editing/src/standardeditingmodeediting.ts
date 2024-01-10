@@ -7,9 +7,9 @@
  * @module restricted-editing/standardeditingmodeediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 
-import RestrictedEditingExceptionCommand from './restrictededitingexceptioncommand';
+import RestrictedEditingExceptionCommand from './restrictededitingexceptioncommand.js';
 
 /**
  * The standard editing mode editing feature.
@@ -22,8 +22,8 @@ export default class StandardEditingModeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'StandardEditingModeEditing' {
-		return 'StandardEditingModeEditing';
+	public static get pluginName() {
+		return 'StandardEditingModeEditing' as const;
 	}
 
 	/**

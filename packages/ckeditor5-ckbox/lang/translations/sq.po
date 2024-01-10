@@ -1,0 +1,46 @@
+# Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language-Team: Albanian (https://app.transifex.com/ckeditor/teams/11143/sq/)\n"
+"Language: sq\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgctxt "A toolbar button tooltip for opening the file browser that allows inserting an image or a file to the editor."
+msgid "Open file manager"
+msgstr "Hap menaxhuesin e skedarëve"
+
+msgctxt "A message is displayed when CKEditor 5 cannot associate an image with any of the categories defined in CKBox while uploading an asset."
+msgid "Cannot determine a category for the uploaded file."
+msgstr "Nuk mund të përcaktohet kategori për skedarin e ngarkuar."
+
+msgctxt "A message is displayed when the user is not authorised to access the CKBox workspace configured as default one."
+msgid "Cannot access default workspace."
+msgstr ""
+
+msgctxt "Image toolbar button tooltip for opening a dialog to manipulate the image."
+msgid "Edit image"
+msgstr ""
+
+msgctxt "A message stating that image editing is in progress."
+msgid "Processing the edited image."
+msgstr ""
+
+msgctxt "A message is displayed when the server fails to process an image or doesn't respond."
+msgid "Server failed to process the image."
+msgstr ""
+
+msgctxt "A message is displayed when category of the image user wants to edit can't be determined."
+msgid "Failed to determine category of edited image."
+msgstr ""

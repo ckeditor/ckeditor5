@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import FontBackgroundColorCommand from '../../src/fontbackgroundcolor/fontbackgroundcolorcommand';
-import FontCommand from '../../src/fontcommand';
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
+import FontBackgroundColorCommand from '../../src/fontbackgroundcolor/fontbackgroundcolorcommand.js';
+import FontCommand from '../../src/fontcommand.js';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 
 describe( 'FontBackgroundColorCommand', () => {
 	let editor, command;

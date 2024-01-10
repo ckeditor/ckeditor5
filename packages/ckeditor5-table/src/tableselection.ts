@@ -7,8 +7,8 @@
  * @module table/tableselection
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { type EventInfo, first } from 'ckeditor5/src/utils';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { type EventInfo, first } from 'ckeditor5/src/utils.js';
 
 import type {
 	Element,
@@ -17,17 +17,17 @@ import type {
 	DowncastWriter,
 	ViewElement,
 	ModelDeleteContentEvent
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
 import type {
 	ViewDocumentInsertTextEvent,
 	InsertTextEventData
-} from 'ckeditor5/src/typing';
+} from 'ckeditor5/src/typing.js';
 
-import TableWalker from './tablewalker';
-import TableUtils from './tableutils';
+import TableWalker from './tablewalker.js';
+import TableUtils from './tableutils.js';
 
-import { cropTableToDimensions, adjustLastRowIndex, adjustLastColumnIndex } from './utils/structure';
+import { cropTableToDimensions, adjustLastRowIndex, adjustLastColumnIndex } from './utils/structure.js';
 
 import '../theme/tableselection.css';
 
@@ -39,8 +39,8 @@ export default class TableSelection extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TableSelection' {
-		return 'TableSelection';
+	public static get pluginName() {
+		return 'TableSelection' as const;
 	}
 
 	/**
@@ -90,7 +90,6 @@ export default class TableSelection extends Plugin {
 		}
 
 		// This should never happen, but let's know if it ever happens.
-		// @if CK_DEBUG //	/* istanbul ignore next -- @preserve */
 		// @if CK_DEBUG //	if ( selectedCells.length != selection.rangeCount ) {
 		// @if CK_DEBUG //		console.warn( 'Mixed selection warning. The selection contains table cells and some other ranges.' );
 		// @if CK_DEBUG //	}

@@ -7,8 +7,9 @@
  * @module image/imageinsertviaurl
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import ImageInsertUI from './imageinsert/imageinsertui';
+import { Plugin } from 'ckeditor5/src/core.js';
+import ImageInsertUI from './imageinsert/imageinsertui.js';
+import ImageInsertViaUrlUI from './imageinsert/imageinsertviaurlui.js';
 
 /**
  * The image insert via URL plugin.
@@ -25,14 +26,14 @@ export default class ImageInsertViaUrl extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ImageInsertViaUrl' {
-		return 'ImageInsertViaUrl';
+	public static get pluginName() {
+		return 'ImageInsertViaUrl' as const;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ ImageInsertUI ] as const;
+		return [ ImageInsertViaUrlUI, ImageInsertUI ] as const;
 	}
 }

@@ -3,32 +3,32 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import InsertOperation from './insertoperation';
-import AttributeOperation from './attributeoperation';
-import RenameOperation from './renameoperation';
-import MarkerOperation from './markeroperation';
-import MoveOperation from './moveoperation';
-import RootAttributeOperation from './rootattributeoperation';
-import RootOperation from './rootoperation';
-import MergeOperation from './mergeoperation';
-import SplitOperation from './splitoperation';
-import NoOperation from './nooperation';
-import Range from '../range';
-import Position from '../position';
+/**
+ * @module engine/model/operation/transform
+ */
 
-import type Operation from './operation';
-import type Document from '../document';
-import type History from '../history';
+import InsertOperation from './insertoperation.js';
+import AttributeOperation from './attributeoperation.js';
+import RenameOperation from './renameoperation.js';
+import MarkerOperation from './markeroperation.js';
+import MoveOperation from './moveoperation.js';
+import RootAttributeOperation from './rootattributeoperation.js';
+import RootOperation from './rootoperation.js';
+import MergeOperation from './mergeoperation.js';
+import SplitOperation from './splitoperation.js';
+import NoOperation from './nooperation.js';
+import Range from '../range.js';
+import Position from '../position.js';
+
+import type Operation from './operation.js';
+import type Document from '../document.js';
+import type History from '../history.js';
 
 import { compareArrays } from '@ckeditor/ckeditor5-utils';
 
 type TransformationFunction = ( a: Operation, b: Operation, context: TransformationContext ) => Array<Operation>;
 
 const transformations = new Map<Function, Map<Function, TransformationFunction>>();
-
-/**
- * @module engine/model/operation/transform
- */
 
 /**
  * Sets a transformation function to be be used to transform instances of class `OperationA` by instances of class `OperationB`.
@@ -1977,8 +1977,8 @@ setTransformation( RootAttributeOperation, RootAttributeOperation, ( a, b, conte
 
 // -----------------------
 
-setTransformation( RootOperation, RootOperation, ( a, b, context ) => {
-	if ( a.rootName === b.rootName && a.isAdd === b.isAdd && !context.bWasUndone ) {
+setTransformation( RootOperation, RootOperation, ( a, b ) => {
+	if ( a.rootName === b.rootName && a.isAdd === b.isAdd ) {
 		return [ new NoOperation( 0 ) ];
 	}
 

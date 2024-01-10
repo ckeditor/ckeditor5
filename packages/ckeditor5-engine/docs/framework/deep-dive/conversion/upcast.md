@@ -1,12 +1,13 @@
 ---
 category: framework-deep-dive-conversion
 menu-title: View to model (upcast)
+meta-title: Upcast conversion - view to model | CKEditor 5 Framework Documentation
 order: 30
 since: 33.0.0
 modified_at: 2022-03-02
 ---
 
-# Upcast conversion &mdash; view to model
+# Upcast conversion &ndash; view to model
 
 ## Introduction
 
@@ -21,7 +22,7 @@ Incoming data becomes the view which is then converted into the model via regist
 {@snippet framework/mini-inspector}
 
 <info-box>
-	If you just want to quickly enable some common HTML tags that are not explicitly supported by the dedicated CKEditor 5 features, you can use the {@link features/general-html-support General HTML Support} feature instead of writing your own custom upcast converters.
+	If you just want to quickly enable some common HTML tags that are not explicitly supported by the dedicated CKEditor&nbsp;5 features, you can use the {@link features/general-html-support General HTML Support} feature instead of writing your own custom upcast converters.
 </info-box>
 
 ## Registering a converter
@@ -123,13 +124,13 @@ The above converter will handle the conversion of every `<div class="example">` 
 
 As you have learnt in the {@link framework/deep-dive/conversion/downcast previous chapter}, a single model element can be downcast into a structure of multiple view elements.
 
-The opposite process will have to detect that structure (e.g. the main element) and convert it into a simple model element.
+The opposite process will have to detect that structure (for example, the main element) and convert it into a simple model element.
 
-There is no `structureToElement()` helper available for the upcast conversion. In order to register an upcast converter for the entire structure and create a single model element, you must use the event based API. The following example shows how to achieve it:
+There is no `structureToElement()` helper available for the upcast conversion. In order to register an upcast converter for the entire structure and create a single model element, you must use the event-based API. The following example shows how to achieve it:
 
 ```js
 editor.conversion.for( 'upcast' ).add( dispatcher => {
-	// Look for every view div element.
+	// Look for every view <div> element.
 	dispatcher.on( 'element:div', ( evt, data, conversionApi ) => {
 		// Get all the necessary items from the conversion API object.
 		const {
@@ -160,7 +161,7 @@ editor.conversion.for( 'upcast' ).add( dispatcher => {
 		// Get the first child element.
 		const firstChildItem = viewItem.getChild( 0 );
 
-		// Check if the first element is a div.
+		// Check if the first element is a <div>.
 		if ( !firstChildItem.is( 'element', 'div' ) ) {
 			return;
 		}
@@ -193,7 +194,7 @@ editor.conversion.for( 'upcast' ).add( dispatcher => {
 } );
 ```
 
-The above converter will detect all `<div class="wrapper"><div class="inner-wrapper"><p>...</p></div></div>` structures (by scanning for the outer `<div>`s and turning those into a single `<myElement>` model element). The effect should return as follows:
+This converter will detect all `<div class="wrapper"><div class="inner-wrapper"><p>...</p></div></div>` structures (by scanning for the outer `<div>`s and turning those into a single `<myElement>` model element). The effect should return as follows:
 
 {@snippet framework/mini-inspector-structure}
 

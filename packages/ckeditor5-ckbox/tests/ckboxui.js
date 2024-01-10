@@ -5,21 +5,23 @@
 
 /* globals document, window */
 
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
-import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting';
-import ImageUploadEditing from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting';
-import ImageUploadProgress from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadprogress';
-import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
-import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import CloudServicesCoreMock from './_utils/cloudservicescoremock';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
+import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting.js';
+import ImageUploadEditing from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting.js';
+import ImageUploadProgress from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadprogress.js';
+import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
+import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting.js';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import CloudServicesCoreMock from './_utils/cloudservicescoremock.js';
+import ImageInsertUI from '@ckeditor/ckeditor5-image/src/imageinsert/imageinsertui.js';
+import Model from '@ckeditor/ckeditor5-ui/src/model.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { icons } from 'ckeditor5/src/core.js';
 
-import CKBoxUI from '../src/ckboxui';
-import CKBoxEditing from '../src/ckboxediting';
-import browseFilesIcon from '../theme/icons/browse-files.svg';
+import CKBoxUI from '../src/ckboxui.js';
+import CKBoxEditing from '../src/ckboxediting.js';
 
 describe( 'CKBoxUI', () => {
 	let editorElement, editor, button, command, originalCKBox;
@@ -41,6 +43,7 @@ describe( 'CKBoxUI', () => {
 				ImageInlineEditing,
 				ImageUploadEditing,
 				ImageUploadProgress,
+				ImageInsertUI,
 				CloudServices,
 				CKBoxUI,
 				CKBoxEditing
@@ -126,7 +129,7 @@ describe( 'CKBoxUI', () => {
 		} );
 
 		it( 'should set an #icon of the #buttonView', () => {
-			expect( button.icon ).to.equal( browseFilesIcon );
+			expect( button.icon ).to.equal( icons.browseFiles );
 		} );
 
 		it( 'should enable tooltips for the #buttonView', () => {
@@ -144,4 +147,106 @@ describe( 'CKBoxUI', () => {
 			expect( executeSpy.args[ 0 ][ 0 ] ).to.equal( 'ckbox' );
 		} );
 	} );
+
+	describe( 'InsertImageUI integration', () => {
+		it( 'should create CKBox button in split button dropdown button', () => {
+			mockAssetManagerIntegration();
+
+			const spy = sinon.spy( editor.ui.componentFactory, 'create' );
+			const dropdown = editor.ui.componentFactory.create( 'insertImage' );
+			const dropdownButton = dropdown.buttonView.actionView;
+
+			expect( dropdownButton ).to.be.instanceOf( ButtonView );
+			expect( dropdownButton.withText ).to.be.false;
+			expect( dropdownButton.icon ).to.equal( icons.imageAssetManager );
+
+			expect( spy.calledTwice ).to.be.true;
+			expect( spy.firstCall.args[ 0 ] ).to.equal( 'insertImage' );
+			expect( spy.secondCall.args[ 0 ] ).to.equal( 'ckbox' );
+			expect( spy.firstCall.returnValue ).to.equal( dropdown.buttonView.actionView );
+		} );
+
+		it( 'should create CKBox button in dropdown panel', () => {
+			mockAssetManagerIntegration();
+
+			const dropdown = editor.ui.componentFactory.create( 'insertImage' );
+			const spy = sinon.spy( editor.ui.componentFactory, 'create' );
+
+			dropdown.isOpen = true;
+
+			const formView = dropdown.panelView.children.get( 0 );
+			const buttonView = formView.children.get( 0 );
+
+			expect( buttonView ).to.be.instanceOf( ButtonView );
+			expect( buttonView.withText ).to.be.true;
+			expect( buttonView.icon ).to.equal( icons.imageAssetManager );
+
+			expect( spy.calledOnce ).to.be.true;
+			expect( spy.firstCall.args[ 0 ] ).to.equal( 'ckbox' );
+			expect( spy.firstCall.returnValue ).to.equal( buttonView );
+		} );
+
+		it( 'should bind to #isImageSelected', () => {
+			const insertImageUI = editor.plugins.get( 'ImageInsertUI' );
+
+			mockAssetManagerIntegration();
+
+			const dropdown = editor.ui.componentFactory.create( 'insertImage' );
+
+			dropdown.isOpen = true;
+
+			const dropdownButton = dropdown.buttonView.actionView;
+			const formView = dropdown.panelView.children.get( 0 );
+			const buttonView = formView.children.get( 0 );
+
+			insertImageUI.isImageSelected = false;
+			expect( dropdownButton.label ).to.equal( 'Insert image with file manager' );
+			expect( buttonView.label ).to.equal( 'Insert with file manager' );
+
+			insertImageUI.isImageSelected = true;
+			expect( dropdownButton.label ).to.equal( 'Replace image with file manager' );
+			expect( buttonView.label ).to.equal( 'Replace with file manager' );
+		} );
+
+		it( 'should close dropdown on execute', () => {
+			mockAssetManagerIntegration();
+
+			const dropdown = editor.ui.componentFactory.create( 'insertImage' );
+
+			dropdown.isOpen = true;
+
+			const formView = dropdown.panelView.children.get( 0 );
+			const buttonView = formView.children.get( 0 );
+
+			sinon.stub( editor, 'execute' );
+
+			buttonView.fire( 'execute' );
+
+			expect( dropdown.isOpen ).to.be.false;
+		} );
+	} );
+
+	function mockAssetManagerIntegration() {
+		const insertImageUI = editor.plugins.get( 'ImageInsertUI' );
+		const observable = new Model( { isEnabled: true } );
+
+		insertImageUI.registerIntegration( {
+			name: 'url',
+			observable,
+			buttonViewCreator() {
+				const button = new ButtonView( editor.locale );
+
+				button.label = 'foo';
+
+				return button;
+			},
+			formViewCreator() {
+				const button = new ButtonView( editor.locale );
+
+				button.label = 'bar';
+
+				return button;
+			}
+		} );
+	}
 } );

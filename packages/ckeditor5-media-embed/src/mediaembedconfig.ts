@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type { ToolbarConfigItem } from 'ckeditor5/src/core';
-import type { ArrayOrItem } from 'ckeditor5/src/utils';
+import type { ToolbarConfigItem } from 'ckeditor5/src/core.js';
+import type { ArrayOrItem } from 'ckeditor5/src/utils.js';
 
 /**
  * @module media-embed/mediaembedconfig

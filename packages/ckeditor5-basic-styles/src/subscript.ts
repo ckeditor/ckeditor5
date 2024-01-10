@@ -7,9 +7,9 @@
  * @module basic-styles/subscript
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import SubscriptEditing from './subscript/subscriptediting';
-import SubscriptUI from './subscript/subscriptui';
+import { Plugin } from 'ckeditor5/src/core.js';
+import SubscriptEditing from './subscript/subscriptediting.js';
+import SubscriptUI from './subscript/subscriptui.js';
 
 /**
  * The subscript feature.
@@ -28,7 +28,7 @@ export default class Subscript extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Subscript' {
-		return 'Subscript';
+	public static get pluginName() {
+		return 'Subscript' as const;
 	}
 }

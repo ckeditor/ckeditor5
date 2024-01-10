@@ -31,3 +31,8 @@
 		}
 	}
 }
+
+.ck.ck-clipboard-drop-target-line {
+	position: absolute;
+	pointer-events: none;
+}

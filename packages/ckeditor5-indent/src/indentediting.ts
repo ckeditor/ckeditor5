@@ -7,7 +7,7 @@
  * @module indent/indentediting
  */
 
-import { Plugin, MultiCommand } from 'ckeditor5/src/core';
+import { Plugin, MultiCommand } from 'ckeditor5/src/core.js';
 
 /**
  * The indent editing feature.
@@ -21,8 +21,8 @@ export default class IndentEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'IndentEditing' {
-		return 'IndentEditing';
+	public static get pluginName() {
+		return 'IndentEditing' as const;
 	}
 
 	/**

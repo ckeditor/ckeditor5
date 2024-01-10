@@ -7,18 +7,18 @@
  * @module ui/toolbar/toolbarview
  */
 
-import View from '../view';
-import FocusCycler from '../focuscycler';
-import ToolbarSeparatorView from './toolbarseparatorview';
-import ToolbarLineBreakView from './toolbarlinebreakview';
-import preventDefault from '../bindings/preventdefault';
-import { createDropdown, addToolbarToDropdown } from '../dropdown/utils';
-import normalizeToolbarConfig from './normalizetoolbarconfig';
+import View from '../view.js';
+import FocusCycler from '../focuscycler.js';
+import ToolbarSeparatorView from './toolbarseparatorview.js';
+import ToolbarLineBreakView from './toolbarlinebreakview.js';
+import preventDefault from '../bindings/preventdefault.js';
+import { createDropdown, addToolbarToDropdown } from '../dropdown/utils.js';
+import normalizeToolbarConfig from './normalizetoolbarconfig.js';
 
-import type ComponentFactory from '../componentfactory';
-import type ViewCollection from '../viewcollection';
-import type DropdownView from '../dropdown/dropdownview';
-import type DropdownPanelFocusable from '../dropdown/dropdownpanelfocusable';
+import type ComponentFactory from '../componentfactory.js';
+import type ViewCollection from '../viewcollection.js';
+import type DropdownView from '../dropdown/dropdownview.js';
+import type DropdownPanelFocusable from '../dropdown/dropdownpanelfocusable.js';
 
 import {
 	FocusTracker,
@@ -47,14 +47,16 @@ import '../../theme/components/toolbar/toolbar.css';
 
 const { threeVerticalDots } = icons;
 
-const NESTED_TOOLBAR_ICONS: Record<string, string | undefined> = {
+export const NESTED_TOOLBAR_ICONS: Record<string, string | undefined> = {
 	alignLeft: icons.alignLeft,
 	bold: icons.bold,
 	importExport: icons.importExport,
 	paragraph: icons.paragraph,
 	plus: icons.plus,
 	text: icons.text,
-	threeVerticalDots: icons.threeVerticalDots
+	threeVerticalDots: icons.threeVerticalDots,
+	pilcrow: icons.pilcrow,
+	dragIndicator: icons.dragIndicator
 };
 
 /**
@@ -235,7 +237,8 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 				'aria-label': bind.to( 'ariaLabel' ),
 				style: {
 					maxWidth: bind.to( 'maxWidth' )
-				}
+				},
+				tabindex: -1
 			},
 
 			children: this.children,
@@ -254,6 +257,8 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 	 */
 	public override render(): void {
 		super.render();
+
+		this.focusTracker.add( this.element! );
 
 		// Children added before rendering should be known to the #focusTracker.
 		for ( const item of this.items ) {

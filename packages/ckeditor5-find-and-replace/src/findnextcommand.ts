@@ -7,8 +7,8 @@
  * @module find-and-replace/findnextcommand
 */
 
-import { Command, type Editor } from 'ckeditor5/src/core';
-import type FindAndReplaceState from './findandreplacestate';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
+import type FindAndReplaceState from './findandreplacestate.js';
 
 /**
  * The find next command. Moves the highlight to the next search result.

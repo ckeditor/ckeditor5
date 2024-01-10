@@ -29,8 +29,8 @@ export default function findAttributeRange(
 	model: Model
 ): Range {
 	return model.createRange(
-		_findBound( position, attributeName, value, true, model ),
-		_findBound( position, attributeName, value, false, model )
+		findAttributeRangeBound( position, attributeName, value, true, model ),
+		findAttributeRangeBound( position, attributeName, value, false, model )
 	);
 }
 
@@ -44,7 +44,7 @@ export default function findAttributeRange(
  * @param lookBack Whether the walk direction is forward (`false`) or backward (`true`).
  * @returns The position just before the last matched node.
  */
-function _findBound(
+export function findAttributeRangeBound(
 	position: Position,
 	attributeName: string,
 	value: unknown,

@@ -5,11 +5,11 @@
 
 /* global document, window, console */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
 
-import FullPage from '../../src/fullpage';
+import FullPage from '../../src/fullpage.js';
 
 const initialData = `
 <?xml version="1.0" encoding="UTF-8"?>

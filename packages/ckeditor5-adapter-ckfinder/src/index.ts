@@ -7,6 +7,6 @@
  * @module adapter-ckfinder
  */
 
-export { default as UploadAdapter } from './uploadadapter';
+export { default as CKFinderUploadAdapter } from './uploadadapter.js';
 
-import './augmentation';
+import './augmentation.js';

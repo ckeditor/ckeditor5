@@ -1,20 +1,20 @@
 ---
 category: update-guides
 order: 10
-meta-title: CKEditor 5 updating documentation
+meta-title: Updating | CKEditor 5 Documentation
 meta-description: Learn how to maintain and keep your CKEditor 5 up-to-date at all times.
 ---
 
-# Updating CKEditor 5
+# Updating CKEditor&nbsp;5
 
 <info-box>
-  This guide covers the topic of keeping your CKEditor 5 copy up-to-date. If you would like to upgrade from CKEditor 4 to CKEditor 5, please see the {@link updating/migration-from-ckeditor-4 Migrating from CKEditor 4} guide instead.
+  This guide covers the topic of keeping your CKEditor&nbsp;5 copy up-to-date. If you would like to upgrade from CKEditor 4 to CKEditor&nbsp;5, please see the {@link updating/migration-from-ckeditor-4 Migrating from CKEditor 4} guide instead.
 </info-box>
 
 
 ## Updating the editor
 
-CKEditor 5 is delivered in several ways and the most flexible and popular one is by using npm packages. The updating process is simple and narrows down to, depending on the installation method, downloading a new package or updating package versions in the `package.json` file.
+CKEditor&nbsp;5 is delivered in several ways and the most flexible and popular one is by using npm packages. The updating process is simple and narrows down to, depending on the installation method, downloading a new package or updating package versions in the `package.json` file.
 
 Before proceeding with an update, it is highly recommended to [read the changelog](https://github.com/ckeditor/ckeditor5/blob/stable/CHANGELOG.md) for the latest version to learn about all changes introduced in the release. You should especially pay attention to any possible {@link updating/versioning-policy#major-and-minor-breaking-changes breaking changes}. This step is crucial if you develop your own custom features and modify the editor, as sometimes, changes in our code might affect these custom solutions.
 
@@ -24,7 +24,7 @@ To help you with a smooth update, we have prepared migration guides that describ
   Always remember to test your editor before deploying the changes into the production environment. This will help ensure that the update will not have a negative impact on your application and user experience.
 </info-box>
 
-If you use a {@link installation/getting-started/predefined-builds predefined build}, you can simply visit our [CKEditor 5 download page](https://ckeditor.com/ckeditor-5/download/) and get the latest editor version from there. However, if you created your own customized editor, the process can be described in a few steps:
+If you use a {@link installation/getting-started/predefined-builds predefined build}, you can simply visit our [CKEditor&nbsp;5 download page](https://ckeditor.com/ckeditor-5/download/) and get the latest editor version from there. However, if you created your own customized editor, the process can be described in a few steps:
 
 1. Read the changelog.
 2. Update your packages.
@@ -48,7 +48,7 @@ The change affects the {@link features/html-embed HTML embed feature}, so if you
 	It is recommended to update regularly. Sometimes, however, it could happen that you skip a few releases and need to update to a non-adjacent version. In such a case, remember to verify the changelog and migration guides for **all** missing versions, not only the one you are updating to.
 </info-box>
 
-When you already know what has changed and which parts of your custom code need to be adjusted, it is time to make the update. If you use a predefined build hosted on CDN or a downloaded ZIP package, you can simply visit the [CKEditor 5 download section](https://ckeditor.com/ckeditor-5/download/) and get the latest version. However, the most common way for installing CKEditor 5 is using npm packages.
+When you already know what has changed and which parts of your custom code need to be adjusted, it is time to make the update. If you use a predefined build hosted on CDN or a downloaded ZIP package, you can simply visit the [CKEditor&nbsp;5 download section](https://ckeditor.com/ckeditor-5/download/) and get the latest version. However, the most common way for installing CKEditor&nbsp;5 is using npm packages.
 
 The example `package.json` file with the editor version 30.0.0 looks as below:
 
@@ -76,7 +76,7 @@ The example `package.json` file with the editor version 30.0.0 looks as below:
   }
   ```
 
-To perform the update, you can simply change the version from 30.0.0 to 31.0.0 or use some automated tool (e.g. [`npm-check-updates`](https://www.npmjs.com/package/npm-check-updates)):
+To perform the update, you can change the version from 30.0.0 to 31.0.0 or use some automated tool (like [`npm-check-updates`](https://www.npmjs.com/package/npm-check-updates)):
 
 ```json
   "dependencies": {
@@ -108,14 +108,14 @@ Finally, you reinstall the packages and rebuild the editor. Note that sometimes 
 rm -rf node_modules && yarn install && yarn run build
 ```
 
-That's it! Your editor is updated and now you can focus on adjusting your custom solutions (if needed). If you use real-time collaboration, you should check the next section.
+This is it! Your editor is updated and now you can focus on adjusting your custom solutions (if needed). If you use real-time collaboration, you should check the next section.
 
 ### Real-time collaboration
 
-While using real-time collaboration it is important to remember about preparing existing documents for the updated editor. Basically, it is not possible to join the document that was created with a CKEditor 5 version different than the one used by the client. For example, imagine a situation when the document has been initialized with the editor version 30.0.0 and after the update, a user connects to this document with the editor version 31.0.0. In such a case, an error about an incompatible engine version will be thrown.
+While using real-time collaboration it is important to remember about preparing existing documents for the updated editor. Basically, it is not possible to join the document that was created with a CKEditor&nbsp;5 version different than the one used by the client. For example, imagine a situation when the document has been initialized with the editor version 30.0.0 and after the update, a user connects to this document with the editor version 31.0.0. In such a case, an error about an incompatible engine version will be thrown.
 
 A collaboration session will be removed 24 hours after the last user disconnects. You can also manually [flush](https://help.cke-cs.com/api/v4/docs#tag/Collaboration/paths/~1collaborations~1{document_id}/delete) any existing collaboration sessions using the {@link @cs developer-resources/apis/overview Cloud Services REST API}. After the collaboration session removal, users will be able to connect to the documents using a new editor.
 
 <info-box>
-	If you are using Collaboration Server On-premises, it is recommended to keep it updated at all times, just like CKEditor 5. Our collaboration features are strongly linked with Cloud Services, so it is important to keep compatibility between On-premises and CKEditor 5.
+	If you are using Collaboration Server On-premises, it is recommended to keep it updated at all times, just like CKEditor&nbsp;5. Our collaboration features are strongly linked with Cloud Services, so it is important to keep compatibility between On-premises and CKEditor&nbsp;5.
 </info-box>

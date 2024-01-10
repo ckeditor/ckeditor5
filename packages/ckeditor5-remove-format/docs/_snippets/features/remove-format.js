@@ -5,7 +5,7 @@
 
 /* globals ClassicEditor, console, window, document */
 
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -16,16 +16,26 @@ ClassicEditor
 				'|', 'fontSize', 'fontFamily',
 				'|', 'bold', 'italic', 'underline', 'strikethrough', 'code', 'subscript', 'superscript',
 				'|', 'removeformat',
-				'-', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'-', 'link', 'insertImage', 'insertTable', 'mediaEmbed',
 				'|', 'alignment',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			],
 			shouldNotGroupWhenFull: true
 		},
+		image: {
+			toolbar: [
+				'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|',
+				'toggleImageCaption', 'imageTextAlternative', 'ckboxImageEdit'
+			]
+		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
 			}
+		},
+		ckbox: {
+			allowExternalImagesEditing: [ /^data:/, 'origin' ],
+			forceDemoLabel: true
 		}
 	} )
 	.then( editor => {

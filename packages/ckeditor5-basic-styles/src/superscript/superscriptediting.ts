@@ -7,8 +7,8 @@
  * @module basic-styles/superscript/superscriptediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import AttributeCommand from '../attributecommand';
+import { Plugin } from 'ckeditor5/src/core.js';
+import AttributeCommand from '../attributecommand.js';
 
 const SUPERSCRIPT = 'superscript';
 
@@ -22,8 +22,8 @@ export default class SuperscriptEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'SuperscriptEditing' {
-		return 'SuperscriptEditing';
+	public static get pluginName() {
+		return 'SuperscriptEditing' as const;
 	}
 
 	/**

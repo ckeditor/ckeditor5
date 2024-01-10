@@ -7,16 +7,16 @@
  * @module minimap/minimap
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { findClosestScrollableAncestor, global } from 'ckeditor5/src/utils';
-import MinimapView, { type MinimapDragEvent, type MinimapClickEvent } from './minimapview';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { findClosestScrollableAncestor, global } from 'ckeditor5/src/utils.js';
+import MinimapView, { type MinimapDragEvent, type MinimapClickEvent } from './minimapview.js';
 import {
 	cloneEditingViewDomRoot,
 	getClientHeight,
 	getDomElementRect,
 	getPageStyles,
 	getScrollable
-} from './utils';
+} from './utils.js';
 
 // @if CK_DEBUG_MINIMAP // const RectDrawer = require( '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer' ).default;
 
@@ -29,8 +29,8 @@ export default class Minimap extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Minimap' {
-		return 'Minimap';
+	public static get pluginName() {
+		return 'Minimap' as const;
 	}
 
 	/**

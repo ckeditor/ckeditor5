@@ -7,10 +7,10 @@
  * @module style/style
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 
-import StyleUI from './styleui';
-import StyleEditing from './styleediting';
+import StyleUI from './styleui.js';
+import StyleEditing from './styleediting.js';
 
 /**
  * The style plugin.
@@ -22,8 +22,8 @@ export default class Style extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Style' {
-		return 'Style';
+	public static get pluginName() {
+		return 'Style' as const;
 	}
 
 	/**

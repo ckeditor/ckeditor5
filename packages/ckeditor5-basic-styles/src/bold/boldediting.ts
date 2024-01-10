@@ -7,8 +7,8 @@
  * @module basic-styles/bold/boldediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import AttributeCommand from '../attributecommand';
+import { Plugin } from 'ckeditor5/src/core.js';
+import AttributeCommand from '../attributecommand.js';
 
 const BOLD = 'bold';
 
@@ -22,8 +22,8 @@ export default class BoldEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'BoldEditing' {
-		return 'BoldEditing';
+	public static get pluginName() {
+		return 'BoldEditing' as const;
 	}
 
 	/**

@@ -7,15 +7,16 @@
  * @module style/stylecommand
  */
 
-import type { Element, Schema } from 'ckeditor5/src/engine';
-import { Command, type Editor } from 'ckeditor5/src/core';
-import { logWarning, first } from 'ckeditor5/src/utils';
+import type { DocumentSelection, Element } from 'ckeditor5/src/engine.js';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
+import { logWarning, first } from 'ckeditor5/src/utils.js';
 import type { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
-import { isObject } from 'lodash-es';
 
-import type { BlockStyleDefinition, InlineStyleDefinition, NormalizedStyleDefinitions } from './styleutils';
-
-type Definition = BlockStyleDefinition | InlineStyleDefinition;
+import StyleUtils, {
+	type BlockStyleDefinition,
+	type NormalizedStyleDefinition,
+	type NormalizedStyleDefinitions
+} from './styleutils.js';
 
 /**
  * Style command.
@@ -49,6 +50,11 @@ export default class StyleCommand extends Command {
 	private readonly _styleDefinitions: NormalizedStyleDefinitions;
 
 	/**
+	 * The StyleUtils plugin.
+	 */
+	private _styleUtils: StyleUtils;
+
+	/**
 	 * Creates an instance of the command.
 	 *
 	 * @param editor Editor on which this command will be used.
@@ -61,6 +67,7 @@ export default class StyleCommand extends Command {
 		this.set( 'enabledStyles', [] );
 
 		this._styleDefinitions = styleDefinitions;
+		this._styleUtils = this.editor.plugins.get( StyleUtils );
 	}
 
 	/**
@@ -75,52 +82,46 @@ export default class StyleCommand extends Command {
 
 		// Inline styles.
 		for ( const definition of this._styleDefinitions.inline ) {
-			for ( const ghsAttributeName of definition.ghsAttributes ) {
-				// Check if this inline style is enabled.
-				if ( model.schema.checkAttributeInSelection( selection, ghsAttributeName ) ) {
-					enabledStyles.add( definition.name );
-				}
+			// Check if this inline style is enabled.
+			if ( this._styleUtils.isStyleEnabledForInlineSelection( definition, selection ) ) {
+				enabledStyles.add( definition.name );
+			}
 
-				// Check if this inline style is active.
-				const ghsAttributeValue = this._getValueFromFirstAllowedNode( ghsAttributeName );
-
-				if ( hasAllClasses( ghsAttributeValue, definition.classes ) ) {
-					value.add( definition.name );
-				}
+			// Check if this inline style is active.
+			if ( this._styleUtils.isStyleActiveForInlineSelection( definition, selection ) ) {
+				value.add( definition.name );
 			}
 		}
 
 		// Block styles.
-		const firstBlock = first( selection.getSelectedBlocks() );
+		const firstBlock = first( selection.getSelectedBlocks() ) || selection.getFirstPosition()!.parent;
 
 		if ( firstBlock ) {
 			const ancestorBlocks = firstBlock.getAncestors( { includeSelf: true, parentFirst: true } ) as Array<Element>;
 
 			for ( const block of ancestorBlocks ) {
-				// E.g. reached a model table when the selection is in a cell. The command should not modify
-				// ancestors of a table.
-				if ( model.schema.isLimit( block ) ) {
+				if ( block.is( 'rootElement' ) ) {
 					break;
-				}
-
-				if ( !model.schema.checkAttribute( block, 'htmlAttributes' ) ) {
-					continue;
 				}
 
 				for ( const definition of this._styleDefinitions.block ) {
 					// Check if this block style is enabled.
-					if ( !definition.modelElements.includes( block.name ) ) {
+					if ( !this._styleUtils.isStyleEnabledForBlock( definition, block ) ) {
 						continue;
 					}
 
 					enabledStyles.add( definition.name );
 
 					// Check if this block style is active.
-					const ghsAttributeValue = block.getAttribute( 'htmlAttributes' );
-
-					if ( hasAllClasses( ghsAttributeValue, definition.classes ) ) {
+					if ( this._styleUtils.isStyleActiveForBlock( definition, block ) ) {
 						value.add( definition.name );
 					}
+				}
+
+				// E.g. reached a model table when the selection is in a cell. The command should not modify
+				// ancestors of a table.
+				if ( model.schema.isObject( block ) ) {
+					break;
 				}
 			}
 		}
@@ -131,7 +132,7 @@ export default class StyleCommand extends Command {
 	}
 
 	/**
-	 * Executes the command &mdash; applies the style classes to the selection or removes it from the selection.
+	 * Executes the command &ndash; applies the style classes to the selection or removes it from the selection.
 	 *
 	 * If the command value already contains the requested style, it will remove the style classes. Otherwise, it will set it.
 	 *
@@ -176,22 +177,24 @@ export default class StyleCommand extends Command {
 		const selection = model.document.selection;
 		const htmlSupport: GeneralHtmlSupport = this.editor.plugins.get( 'GeneralHtmlSupport' );
 
-		const allDefinitions: Array<Definition> = [
+		const allDefinitions: Array<NormalizedStyleDefinition> = [
 			...this._styleDefinitions.inline,
 			...this._styleDefinitions.block
 		];
 
 		const activeDefinitions = allDefinitions.filter( ( { name } ) => this.value.includes( name ) );
-		const definition: Definition = allDefinitions.find( ( { name } ) => name == styleName )!;
+		const definition: NormalizedStyleDefinition = allDefinitions.find( ( { name } ) => name == styleName )!;
 		const shouldAddStyle = forceValue === undefined ? !this.value.includes( definition.name ) : forceValue;
 
 		model.change( () => {
 			let selectables;
 
 			if ( isBlockStyleDefinition( definition ) ) {
-				selectables = getAffectedBlocks( selection.getSelectedBlocks(), definition.modelElements, model.schema );
+				selectables = this._findAffectedBlocks( getBlocksFromSelection( selection ),
+					definition
+				);
 			} else {
-				selectables = [ selection ];
+				selectables = [ this._styleUtils.getAffectedInlineSelectable( definition, selection ) ];
 			}
 
 			for ( const selectable of selectables ) {
@@ -209,69 +212,36 @@ export default class StyleCommand extends Command {
 	}
 
 	/**
-	 * Checks the attribute value of the first node in the selection that allows the attribute.
-	 * For the collapsed selection, returns the selection attribute.
-	 *
-	 * @param attributeName Name of the GHS attribute.
-	 * @returns The attribute value.
+	 * Returns a set of elements that should be affected by the block-style change.
 	 */
-	private _getValueFromFirstAllowedNode( attributeName: string ): unknown | null {
-		const model = this.editor.model;
-		const schema = model.schema;
-		const selection = model.document.selection;
+	private _findAffectedBlocks(
+		selectedBlocks: Iterable<Element>,
+		definition: BlockStyleDefinition
+	): Set<Element> {
+		const blocks = new Set<Element>();
 
-		if ( selection.isCollapsed ) {
-			return selection.getAttribute( attributeName );
-		}
+		for ( const selectedBlock of selectedBlocks ) {
+			const ancestorBlocks = selectedBlock.getAncestors( { includeSelf: true, parentFirst: true } ) as Array<Element>;
 
-		for ( const range of selection.getRanges() ) {
-			for ( const item of range.getItems() ) {
-				if ( schema.checkAttribute( item, attributeName ) ) {
-					return item.getAttribute( attributeName );
+			for ( const block of ancestorBlocks ) {
+				if ( block.is( 'rootElement' ) ) {
+					break;
+				}
+
+				const affectedBlocks = this._styleUtils.getAffectedBlocks( definition, block );
+
+				if ( affectedBlocks ) {
+					for ( const affectedBlock of affectedBlocks ) {
+						blocks.add( affectedBlock );
+					}
+
+					break;
 				}
 			}
 		}
 
-		return null;
+		return blocks;
 	}
-}
-
-/**
- * Verifies if all classes are present in the given GHS attribute.
- */
-function hasAllClasses( ghsAttributeValue: unknown, classes: Array<string> ): boolean {
-	return isObject( ghsAttributeValue ) &&
-		hasClassesProperty( ghsAttributeValue ) &&
-		classes.every( className => ghsAttributeValue.classes.includes( className ) );
-}
-
-/**
- * Returns a set of elements that should be affected by the block-style change.
- */
-function getAffectedBlocks(
-	selectedBlocks: IterableIterator<Element>,
-	elementNames: Array<string>,
-	schema: Schema
-): Set<Element> {
-	const blocks = new Set<Element>();
-
-	for ( const selectedBlock of selectedBlocks ) {
-		const ancestorBlocks: Array<Element> = selectedBlock.getAncestors( { includeSelf: true, parentFirst: true } ) as Array<Element>;
-
-		for ( const block of ancestorBlocks ) {
-			if ( schema.isLimit( block ) ) {
-				break;
-			}
-
-			if ( elementNames.includes( block.name ) ) {
-				blocks.add( block );
-
-				break;
-			}
-		}
-	}
-
-	return blocks;
 }
 
 /**
@@ -282,8 +252,11 @@ function getAffectedBlocks(
  * @param definition Definition whose classes will be compared with all other active definition classes.
  * @returns Array of classes exclusive to the supplied definition.
  */
-function getDefinitionExclusiveClasses( activeDefinitions: Array<Definition>, definition: Definition ): Array<string> {
-	return activeDefinitions.reduce( ( classes: Array<string>, currentDefinition: Definition ) => {
+function getDefinitionExclusiveClasses(
+	activeDefinitions: Array<NormalizedStyleDefinition>,
+	definition: NormalizedStyleDefinition
+): Array<string> {
+	return activeDefinitions.reduce( ( classes: Array<string>, currentDefinition: NormalizedStyleDefinition ) => {
 		if ( currentDefinition.name === definition.name ) {
 			return classes;
 		}
@@ -295,15 +268,19 @@ function getDefinitionExclusiveClasses( activeDefinitions: Array<Definition>, de
 /**
  * Checks if provided style definition is of type block.
  */
-function isBlockStyleDefinition( definition: Definition ): definition is BlockStyleDefinition {
+function isBlockStyleDefinition( definition: NormalizedStyleDefinition ): definition is BlockStyleDefinition {
 	return 'isBlock' in definition;
 }
 
 /**
- * Checks if given object has `classes` property which is an array.
- *
- * @param obj Object to check.
+ * Gets block elements from selection. If there are none, returns first selected element.
+ * @param selection Current document's selection.
+ * @returns Selected blocks if there are any, first selected element otherwise.
  */
-function hasClassesProperty<T extends { classes?: Array<unknown> }>( obj: T ): obj is T & { classes: Array<unknown> } {
-	return Boolean( obj.classes ) && Array.isArray( obj.classes );
+function getBlocksFromSelection( selection: DocumentSelection ) {
+	const blocks = Array.from( selection.getSelectedBlocks() );
+	if ( blocks.length ) {
+		return blocks;
+	}
+	return [ selection.getFirstPosition()!.parent as Element ];
 }

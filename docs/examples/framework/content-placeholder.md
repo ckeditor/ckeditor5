@@ -2,6 +2,7 @@
 category: examples-framework
 order: 140
 toc: false
+meta-title: Content placeholder example | CKEditor 5 Documentation
 classes: main__content--no-toc
 modified_at: 2022-12-19
 ---
@@ -14,7 +15,7 @@ The editor presented below offers a custom plugin that lets you add predefined p
 
 ## Detailed guide
 
-If you would like to create such a feature on your own, take a look at the {@link framework/tutorials/implementing-an-inline-widget dedicated tutorial} which shows how to achieve this step by step with the source code provided. 
+If you would like to create such a feature on your own, take a look at the {@link tutorials/widgets/implementing-an-inline-widget dedicated tutorial} which shows how to achieve this step by step with the source code provided. 
 
 ## Editor example configuration
 
@@ -22,22 +23,18 @@ If you would like to create such a feature on your own, take a look at the {@lin
 <summary>View editor configuration script</summary>
 
 ```js
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import List from '@ckeditor/ckeditor5-list/src/list';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { List } from '@ckeditor/ckeditor5-list';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { toWidget, viewToModelPositionOutsideModelElement } from '@ckeditor/ckeditor5-widget/src/utils';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
-import Command from '@ckeditor/ckeditor5-core/src/command';
+import { Command, Plugin } from '@ckeditor/ckeditor5-core';
+import { Widget, toWidget, viewToModelPositionOutsideModelElement } from '@ckeditor/ckeditor5-widget';
 
-import { addListToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import Model from '@ckeditor/ckeditor5-ui/src/model';
+import { Model, addListToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui';
+import { Collection } from '@ckeditor/ckeditor5-utils';
 
 class PlaceholderCommand extends Command {
 	execute( { value } ) {

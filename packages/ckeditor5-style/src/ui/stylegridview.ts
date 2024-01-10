@@ -7,11 +7,11 @@
  * @module style/ui/stylegridview
  */
 
-import { View, addKeyboardHandlingForGrid, type ViewCollection } from 'ckeditor5/src/ui';
-import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
+import { View, addKeyboardHandlingForGrid, type ViewCollection } from 'ckeditor5/src/ui.js';
+import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
 
-import StyleGridButtonView from './stylegridbuttonview';
-import type { StyleDefinition } from '../styleconfig';
+import StyleGridButtonView from './stylegridbuttonview.js';
+import type { NormalizedStyleDefinition } from '../styleutils.js';
 
 import '../../theme/stylegrid.css';
 
@@ -57,7 +57,7 @@ export default class StyleGridView extends View<HTMLDivElement> {
 	 * @param locale The localization services instance.
 	 * @param styleDefinitions Definitions of the styles.
 	 */
-	constructor( locale: Locale, styleDefinitions: Array<StyleDefinition> ) {
+	constructor( locale: Locale, styleDefinitions: Array<NormalizedStyleDefinition> ) {
 		super( locale );
 
 		this.focusTracker = new FocusTracker();

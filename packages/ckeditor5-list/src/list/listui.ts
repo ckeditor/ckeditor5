@@ -7,12 +7,9 @@
  * @module list/list/listui
  */
 
-import { createUIComponent } from './utils';
+import { createUIComponent } from './utils.js';
 
-import numberedListIcon from '../../theme/icons/numberedlist.svg';
-import bulletedListIcon from '../../theme/icons/bulletedlist.svg';
-
-import { Plugin } from 'ckeditor5/src/core';
+import { icons, Plugin } from 'ckeditor5/src/core.js';
 
 /**
  * The list UI feature. It introduces the `'numberedList'` and `'bulletedList'` buttons that
@@ -22,8 +19,8 @@ export default class ListUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ListUI' {
-		return 'ListUI';
+	public static get pluginName() {
+		return 'ListUI' as const;
 	}
 
 	/**
@@ -33,7 +30,7 @@ export default class ListUI extends Plugin {
 		const t = this.editor.t;
 
 		// Create two buttons and link them with numberedList and bulletedList commands.
-		createUIComponent( this.editor, 'numberedList', t( 'Numbered List' ), numberedListIcon );
-		createUIComponent( this.editor, 'bulletedList', t( 'Bulleted List' ), bulletedListIcon );
+		createUIComponent( this.editor, 'numberedList', t( 'Numbered List' ), icons.numberedList );
+		createUIComponent( this.editor, 'bulletedList', t( 'Bulleted List' ), icons.bulletedList );
 	}
 }

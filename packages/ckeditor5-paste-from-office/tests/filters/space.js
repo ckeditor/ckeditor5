@@ -5,7 +5,7 @@
 
 /* globals DOMParser */
 
-import { normalizeSpacing, normalizeSpacerunSpans } from '../../src/filters/space';
+import { normalizeSpacing, normalizeSpacerunSpans } from '../../src/filters/space.js';
 
 describe( 'PasteFromOffice - filters', () => {
 	describe( 'space', () => {
@@ -96,6 +96,20 @@ describe( 'PasteFromOffice - filters', () => {
 					'<span style=\'mso-spacerun:yes\'>          </span>' +
 					'<span\nstyle=\'mso-spacerun:yes\'>    </span>' +
 					'<span style=\'mso-spacerun:yes\'> </span>Test<o:p></o:p></span></p>';
+
+				expect( normalizeSpacing( input ) ).to.equal( expected );
+			} );
+
+			it( 'should detect span with new-line only', () => {
+				const input =
+					'<p><span style="letter-spacing:-.15pt">\n</span>' +
+					'<span\nstyle="letter-spacing:-1.5pt">\r</span>' +
+					'<span style=\'letter-spacing:.15pt\'>\r\n</span></p>';
+
+				const expected =
+					'<p><span style="letter-spacing:-.15pt">\u00A0</span>' +
+					'<span\nstyle="letter-spacing:-1.5pt">\u00A0</span>' +
+					'<span style=\'letter-spacing:.15pt\'>\u00A0</span></p>';
 
 				expect( normalizeSpacing( input ) ).to.equal( expected );
 			} );

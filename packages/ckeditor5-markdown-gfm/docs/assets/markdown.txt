@@ -1,0 +1,72 @@
+# Headings of various kinds
+## h2 Heading
+### h3 Heading
+#### h4 Heading
+##### h5 Heading
+
+
+## Various ways to create horizontal rules
+
+___
+
+---
+
+***
+
+## Basic formatting
+
+**This is bold text**
+
+__This is bold text__
+
+*This is italic text*
+
+_This is italic text_
+
+~~Strikethrough~~
+
+
+## Block quotes
+
+> Basic block quotes 
+
+
+## Lists
+
+Unordered lists
+
++ A list is created by starting a line with `+`, `-`, or `*`.
++ Indenting an item by two spaces will turn it into a sub-list.
+  + That can be nested further:
+    + Like this!
+
+Ordered lists
+
+1. You can create ordered lists...
+2. ...with sequential numbers...
+3. ...incrementing by 1.
+
+
+1. Or you can just use 1...
+1. ...for all the items.
+
+## Code formatting
+
+This covers either inline `code`...
+
+```
+Or a code block.
+```
+
+## Tables
+
+| Header | Header |
+| ------ | ----------- |
+| Tables are tricky   | And need some special care |
+
+## Links
+[CKEditor 5 main site](https://ckeditor.com/)
+
+## Images
+
+![CKEditor 5](https://user-images.githubusercontent.com/1099479/179190754-f4aaf2b3-21cc-49c4-a454-8de4a00cc70e.jpg)

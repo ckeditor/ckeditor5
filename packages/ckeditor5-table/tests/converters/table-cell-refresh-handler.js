@@ -5,14 +5,14 @@
 
 /* globals document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Delete from '@ckeditor/ckeditor5-typing/src/delete';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Delete from '@ckeditor/ckeditor5-typing/src/delete.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import TableEditing from '../../src/tableediting';
-import { viewTable } from '../_utils/utils';
+import TableEditing from '../../src/tableediting.js';
+import { viewTable } from '../_utils/utils.js';
 
 describe( 'Table cell refresh handler', () => {
 	let editor, model, doc, root, view, element;

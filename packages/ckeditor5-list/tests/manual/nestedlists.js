@@ -5,19 +5,19 @@
 
 /* globals console, window, document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import Link from '@ckeditor/ckeditor5-link/src/link';
-import List from '../../src/list';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
+import Link from '@ckeditor/ckeditor5-link/src/link.js';
+import LegacyList from '../../src/legacylist.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Enter, Typing, Heading, Paragraph, Undo, List, Clipboard, Link ],
+		plugins: [ Enter, Typing, Heading, Paragraph, Undo, LegacyList, Clipboard, Link ],
 		toolbar: [ 'heading', '|', 'bulletedList', 'numberedList', 'undo', 'redo' ]
 	} )
 	.then( editor => {
