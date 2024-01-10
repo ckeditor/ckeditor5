@@ -379,7 +379,7 @@ dropdownView.buttonView.set( {
 The {@link module:ui/list/listview~ListView} can be added to a dropdown using the {@link module:ui/dropdown/utils~addListToDropdown} helper.
 
 ```js
-import { Model, addListToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui';
+import { ViewModel, addListToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui';
 import { Collection } from '@ckeditor/ckeditor5-utils';
 
 // The default dropdown.
@@ -390,7 +390,7 @@ const items = new Collection();
 
 items.add( {
 	type: 'button',
-	model: new Model( {
+	model: new ViewModel( {
 		withText: true,
 		label: 'Foo'
 	} )
@@ -398,7 +398,7 @@ items.add( {
 
 items.add( {
 	type: 'button',
-	model: new Model( {
+	model: new ViewModel( {
 		withText: true,
 		label: 'Bar'
 	} )

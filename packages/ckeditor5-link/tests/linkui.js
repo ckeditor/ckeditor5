@@ -272,13 +272,30 @@ describe( 'LinkUI', () => {
 
 			setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
 
-			// Mock some leftover value **in DOM**, e.g. after previous editing.
-			formView.urlInputView.fieldView.element.value = 'leftover';
-
+			// Open the link balloon.
 			linkUIFeature._showUI();
+
+			// Simulate clicking the "edit" button.
 			actionsView.fire( 'edit' );
 
+			// Change text in the URL field.
+			formView.urlInputView.fieldView.element.value = 'to-be-discarded';
+
+			// Cancel link editing.
+			formView.fire( 'cancel' );
+
+			// Open the editing panel again.
+			actionsView.fire( 'edit' );
+
+			// Expect original value in the URL field.
 			expect( formView.urlInputView.fieldView.element.value ).to.equal( 'url' );
+
+			// Expect "save" button to be enabled, despite not making any changes.
+			expect( formView.saveButtonView.isEnabled ).to.equal( true );
+
+			// Expect entire content of the URL field to be selected.
+			const elem = formView.urlInputView.fieldView.element;
+			expect( elem.value.substring( elem.selectionStart, elem.selectionEnd ) ).to.equal( 'url' );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-link/issues/123

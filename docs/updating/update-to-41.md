@@ -164,9 +164,10 @@ The following icons were moved to the `@ckeditor/ckeditor5-core` package:
 Some export names were changed due to the possibility of name conflicts:
 
 * We renamed the default export of `View` from the `@ckeditor/ckeditor5-engine` package to `EditingView`.
+* We renamed the export of `Model` from the `@ckeditor/ckeditor5-ui` package to `ViewModel`.
 * We renamed the default export of `UploadAdapter` from the `@ckeditor/ckeditor5-adapter-ckfinder` package to `CKFinderUploadAdapter`.
 * We renamed the interface export of `Position` from the `@ckeditor/ckeditor5-utils` package to `DomPoint`.
-* We moved the `findOptimalInsertionRange` function to the `Schema` class as a method within the `@ckeditor/ckeditor5-engine` package.
+* We moved the `findOptimalInsertionRange` function to the `Schema` class as a method within the `@ckeditor/ckeditor5-engine` package. The exported function of the same name from the `@ckeditor/ckeditor5-widget` package remains unchanged and should be used while creating features and widgets.
 
 ### Making CKEditor npm packages valid ECMAScript modules (ESM)
 
