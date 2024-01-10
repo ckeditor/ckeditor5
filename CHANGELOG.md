@@ -11,7 +11,7 @@ We are happy to announce the release of CKEditor 5 v40.2.0.
 
 Enabling many AI model services was one of our priorities for the AI Assistant. We wanted everyone to be able to use a platform that they find the most convenient.
 
-We are happy to inform you that as of this release, you can use the AI Assistant together with the AWS Bedrock service.
+We are happy to inform you that as of this release, you can use the AI Assistant together with the Amazon Bedrock service.
 
 What is more, you can now extend existing adapters to enable more advanced customizations, such as decorating the AI Assistant requests.
 
@@ -50,12 +50,12 @@ We are excited to announce upcoming improvements to CKEditor 5's installation pr
 
 ### Features
 
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Introduced AWS Bedrock support for AI Assistant. See the [AI Assistant integration guide](https://ckeditor.com/docs/ckeditor5/latest/features/ai-assistant/ai-assistant-integration.html) to learn more.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Introduced Amazon Bedrock support for AI Assistant. See the [AI Assistant integration guide](https://ckeditor.com/docs/ckeditor5/latest/features/ai-assistant/ai-assistant-integration.html) to learn more.
 * **[ckbox](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox)**: Enabled editing of non-CKBox images in the editor. ([commit](https://github.com/ckeditor/ckeditor5/commit/448210c25f04d61e24fb0651d2f0f1ec40214b77))
 * **[ckbox](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox)**: Integrated the CKBox image editing feature into the editor. ([commit](https://github.com/ckeditor/ckeditor5/commit/11f18ac8d5d60dcdf2bfb56dc89c9067cb936c0a))
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Introduced the image insert dropdown as a consistent UI to insert images through different available integrations such as image upload, inserting an image with the asset manager, and inserting an image via URL. Closes [#15303](https://github.com/ckeditor/ckeditor5/issues/15303), [#15149](https://github.com/ckeditor/ckeditor5/issues/15149). ([commit](https://github.com/ckeditor/ckeditor5/commit/0647ba65cd09575937a9ba8e60bc7b6837f81b40))
 * **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: Links can now be applied by pasting a URL on a selected text. Closes [#5656](https://github.com/ckeditor/ckeditor5/issues/5656). ([commit](https://github.com/ckeditor/ckeditor5/commit/ba66ba1fb7ac1ce0675614d0f7ef516226d8485f))
-* **[markdown-gfm](https://www.npmjs.com/package/@ckeditor/ckeditor5-markdown-gfm)**: Added an experimental support for pasting Markdown-formatted content. Closes [#2321](https://github.com/ckeditor/ckeditor5/issues/2321). ([commit](https://github.com/ckeditor/ckeditor5/commit/767e681e57c9cc8cbe5ef26076c63724f20dc1f0))
+* **[markdown-gfm](https://www.npmjs.com/package/@ckeditor/ckeditor5-markdown-gfm)**: Added experimental support for pasting Markdown-formatted content. Closes [#2321](https://github.com/ckeditor/ckeditor5/issues/2321). ([commit](https://github.com/ckeditor/ckeditor5/commit/767e681e57c9cc8cbe5ef26076c63724f20dc1f0))
 * **[media-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed)**: Added support for short Dailymotion URLs (`dai.ly`) in the media embed feature. ([commit](https://github.com/ckeditor/ckeditor5/commit/da8c3ac422bef577b8a5e0766c96104a13524cd1))
 
   Thanks to [@Kocal](https://github.com/Kocal)!
