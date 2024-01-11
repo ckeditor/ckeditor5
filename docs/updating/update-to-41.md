@@ -137,6 +137,14 @@ If you happen to encounter this error, remove all imports of `DocumentList` and 
     </tbody>
 </table>
 
+#### Changes to list merging
+
+With the old list plugin it was possible to create the same list type with different properties, and these lists did not merge. This functionality is still available in the `LegacyList`.
+
+The current `List` plugin merges such lists. This can be handled by using the {@link features/lists-editing#merging-adjacent-lists `AdjacentListsSupport` plugin}. However, it only works for pasted contents or on data load by design. It does not support UI operations, which is a change from the previous behavior.
+
+We want to use this opportunity and ask our users for feedback [in this GitHub issue](https://github.com/ckeditor/ckeditor5/issues/14478). If you use this kind of lists, feel free to share your opinion of suggestions on the current implementation.
+
 ### Icon paths changed
 
 Among other changes, some icons were moved around the project. Check these changes if you use custom UI elements that call these icons.
