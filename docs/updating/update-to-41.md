@@ -208,12 +208,12 @@ Starting with v41.0.0, the UI of the {@link features/find-and-replace find and r
 
 To bring the previous user experience back, you can use the {@link module:find-and-replace/findandreplaceconfig~FindAndReplaceConfig `config.findAndReplace.uiType`} configuration option:
 
-```js
+```diff
 ClassicEditor
 	.create( editorElement, {
-		findAndReplace: {
-			uiType: 'dropdown'
-		}
++		findAndReplace: {
++			uiType: 'dropdown'
++		}
 	} )
 	.then( ... )
 	.catch( ... );
