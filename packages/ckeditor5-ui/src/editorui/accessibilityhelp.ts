@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -68,8 +68,8 @@ export default class AccessibilityHelp extends Plugin {
 	/**
 	 * TODO
 	 */
-	public registerKeystroke( definition: KeystrokeDefinition ): void {
-		this._keystrokeDefinitions.push( definition );
+	public registerKeystroke( ...definitions: Array<KeystrokeDefinition> ): void {
+		this._keystrokeDefinitions.push( ...definitions );
 	}
 
 	/**
@@ -101,30 +101,11 @@ export default class AccessibilityHelp extends Plugin {
 		const t = editor.locale.t;
 
 		if ( !this._dialogContentView ) {
-			this._dialogContentView = new AccessibilityHelpContentView(
-				editor.locale,
-				this._keystrokeDefinitions,
-				// TODO: This is private API.
-				Array.from( editor.plugins._availablePlugins.keys() ),
-				JSON.stringify(
-					Object.fromEntries( Array.from( editor.config.names() ).map( name => [ name, editor.config.get( name ) ] ) ),
-					( key, value ) => {
-						if ( typeof value === 'function' ) {
-							return 'Function';
-						}
-
-						if ( value instanceof RegExp ) {
-							return value.toString();
-						}
-
-						return value;
-					},
-					'\t'
-				)
-			);
+			this._dialogContentView = new AccessibilityHelpContentView( editor.locale, this._keystrokeDefinitions );
 		}
 
 		dialog.show( {
+			id: 'accessibilityHelp',
 			title: t( 'Accessibility help' ),
 			hasCloseButton: true,
 			content: this._dialogContentView
@@ -134,5 +115,5 @@ export default class AccessibilityHelp extends Plugin {
 
 export interface KeystrokeDefinition {
 	label: string;
-	keystroke: string | Array<string>;
+	keystroke: string | Array<string> | Array<Array<string>>;
 }

@@ -1,13 +1,11 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import { env, getEnvKeystrokeText, type Locale } from '@ckeditor/ckeditor5-utils';
 import type { KeystrokeDefinition } from './accessibilityhelp.js';
 import View from '../view.js';
-import { escape } from 'lodash-es';
-import TextareaView from '../textarea/textareaview.js';
 
 /**
  * TODO
@@ -16,7 +14,7 @@ export default class AccessibilityHelpContentView extends View<HTMLDivElement> {
 	/**
 	 * @inheritdoc
 	 */
-	constructor( locale: Locale, keystrokeDefinitions: Array<KeystrokeDefinition>, pluginNames: Array<string>, config: string ) {
+	constructor( locale: Locale, keystrokeDefinitions: Array<KeystrokeDefinition> ) {
 		super( locale );
 
 		this.setTemplate( {
@@ -28,10 +26,7 @@ export default class AccessibilityHelpContentView extends View<HTMLDivElement> {
 			},
 			children: [
 				this._createContentEditingSection( keystrokeDefinitions ),
-				this._createUserInterfaceAndNavigationSection(),
-				this._createEditorVersionSection(),
-				this._createEditorPluginsSection( pluginNames ),
-				this._createConfigSection( config )
+				this._createUserInterfaceAndNavigationSection()
 			]
 		} );
 	}
@@ -53,14 +48,17 @@ export default class AccessibilityHelpContentView extends View<HTMLDivElement> {
 		// TODO: Not sure about sorting here. Some keystroke look nice next to each other, e.g. copy & paste.
 		// OTOH, sorting makes it easier to find a keystroke and navigate the list in general.
 		for ( const definition of keystrokeDefinitions.sort( ( a, b ) => sortAlphabetically( a.label, b.label ) ) ) {
-			if ( typeof definition.keystroke === 'string' ) {
-				definition.keystroke = [ definition.keystroke ];
+			const normalizedKeystrokeDefinition = normalizeKeystrokeDefinition( definition.keystroke );
+			const keystrokeAlternativeHTMLs = [];
+
+			for ( const keystrokeAlternative of normalizedKeystrokeDefinition ) {
+				keystrokeAlternativeHTMLs.push( keystrokeAlternative.map( keystrokeToEnvKbd ).join( '' ) );
 			}
 
 			tbody.innerHTML += `
 				<tr>
 					<td>${ definition.label }</td>
-					<td>${ definition.keystroke.map( keystrokeToEnvKbd ).join( '<br>' ) }</td>
+					<td>${ keystrokeAlternativeHTMLs.join( '<br>' ) }</td>
 				</tr>
 			`;
 		}
@@ -112,7 +110,7 @@ export default class AccessibilityHelpContentView extends View<HTMLDivElement> {
 					<tr>
 						<td>Move focus to the toolbar</td>
 						<td>${ keystrokeToEnvKbd( 'Alt+F10' ) }
-							${ env.isMac ? '<br> (may require <kbd>Fn</kbd>)' : '' }</td>
+							${ env.isMac ? ' (may require <kbd>Fn</kbd>)' : '' }</td>
 					</tr>
 					<tr>
 						<td>Navigate through the toolbar</td>
@@ -128,58 +126,6 @@ export default class AccessibilityHelpContentView extends View<HTMLDivElement> {
 
 		return element;
 	}
-
-	/**
-	 * @inheritdoc
-	 */
-	private _createEditorVersionSection(): HTMLElement {
-		const element = document.createElement( 'section' );
-
-		element.innerHTML = `
-			<h3>Editor version</h3>
-			<p>v${ CKEDITOR_VERSION }</p>
-		`;
-
-		return element;
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	private _createEditorPluginsSection( pluginNames: Array<string> ): HTMLElement {
-		const element = document.createElement( 'section' );
-
-		element.innerHTML = `
-			<h3>Editor plugins</h3>
-			<p>${ pluginNames.sort( sortAlphabetically ).map( decorateInKbd ).join( ', ' ) }</p>
-		`;
-
-		return element;
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	private _createConfigSection( config: string ): View {
-		const textareaView = new TextareaView();
-		textareaView.value = config;
-		textareaView.resize = 'none';
-		textareaView.isReadOnly = true;
-
-		const heading = document.createElement( 'h3' );
-		heading.textContent = 'Editor config';
-		const sectionView = new View();
-
-		sectionView.setTemplate( {
-			tag: 'section',
-			children: [
-				heading,
-				textareaView
-			]
-		} );
-
-		return sectionView;
-	}
 }
 
 function keystrokeToEnvKbd( keystroke: string ) {
@@ -192,4 +138,16 @@ function decorateInKbd( text: string ) {
 
 function sortAlphabetically( a: string, b: string ) {
 	return a.localeCompare( b );
+}
+
+function normalizeKeystrokeDefinition( definition: KeystrokeDefinition[ 'keystroke' ] ): Array<Array<string>> {
+	if ( typeof definition === 'string' ) {
+		return [ [ definition ] ];
+	}
+
+	if ( definition.every( entry => typeof entry == 'string' ) ) {
+		return [ definition as Array<string> ];
+	}
+
+	return definition as Array<Array<string>>;
 }
