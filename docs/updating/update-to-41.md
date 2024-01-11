@@ -139,7 +139,7 @@ If you happen to encounter this error, remove all imports of `DocumentList` and 
 
 #### Changes to list merging
 
-With the old list plugin it was possible to create the same list type with different properties, and these lists did not merge. This functionality is still available in the `LegacyList`.
+With the old list plugin, it was possible to create two lists of the same type but with different styles next to each other, and these lists did not merge. This functionality is still available in the `LegacyList`.
 
 The current `List` plugin merges such lists. This can be handled by using the {@link features/lists-editing#merging-adjacent-lists `AdjacentListsSupport` plugin}. However, it only works for pasted contents or on data load by design. It does not support UI operations, which is a change from the previous behavior.
 

@@ -59,7 +59,7 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-This feature only works for pasted contents or on data load, it {@link updating/update-to-41#changes-to-list-merging does not support entering adjacent lists via the editor UI}.
+This feature only works for pasted contents or on data load, it {@link updating/update-to-41#changes-to-list-merging does not support entering adjacent lists via the editor UI}. If you are interested in this functionality, refer to [this issue on GitHub](https://github.com/ckeditor/ckeditor5/issues/14478).
 
 ## Indenting lists
 
