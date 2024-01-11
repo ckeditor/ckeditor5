@@ -94,6 +94,7 @@ swap:
   stylesheet: style sheet
   stylesheets: style sheets
   svg: SVG
+  titlecase: title case
   (?i)todo list: to-do list
   (?<!.)TS: TypeScript
   Typescript: TypeScript
