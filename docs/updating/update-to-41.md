@@ -181,11 +181,11 @@ Until now, the form for adding a URL to the selected text accepted an empty valu
 
 However, if for some reason you want to allow empty links, you can do so using the new {@link module:link/linkconfig~LinkConfig#allowCreatingEmptyLinks `config.link.allowCreatingEmptyLinks`} configuration option added to the link plugin.
 
-```js
+```diff
 ClassicEditor
 	.create( editorElement, {
 	link: {
-		allowCreatingEmptyLinks: true
++		allowCreatingEmptyLinks: true
 	}
 	} )
 	.then( ... )
