@@ -106,6 +106,30 @@ export default class LinkUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public afterInit(): void {
+		const editor = this.editor;
+
+		if ( editor.plugins.has( 'AccessibilityHelp' ) ) {
+			const t = editor.t;
+
+			editor.plugins.get( 'AccessibilityHelp' ).registerKeystroke( {
+				label: t( 'Link' ),
+				keystroke: 'CTRL+L'
+			} );
+
+			editor.plugins.get( 'AccessibilityHelp' ).registerKeystroke( {
+				label: t( 'Move out of a link' ),
+				keystroke: [
+					[ 'arrowleft', 'arrowleft' ],
+					[ 'arrowright', 'arrowright' ]
+				]
+			} );
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public override destroy(): void {
 		super.destroy();
 

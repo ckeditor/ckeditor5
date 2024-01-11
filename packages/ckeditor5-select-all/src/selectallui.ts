@@ -56,4 +56,20 @@ export default class SelectAllUI extends Plugin {
 			return view;
 		} );
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public afterInit(): void {
+		const editor = this.editor;
+
+		if ( editor.plugins.has( 'AccessibilityHelp' ) ) {
+			const t = editor.t;
+
+			editor.plugins.get( 'AccessibilityHelp' ).registerKeystroke( {
+				label: t( 'Select all' ),
+				keystroke: 'CTRL+A'
+			} );
+		}
+	}
 }

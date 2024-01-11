@@ -203,6 +203,7 @@ export default class ListEditing extends Plugin {
 		// Register conversion and model post-fixer after other plugins had a chance to register their attribute strategies.
 		this._setupModelPostFixing();
 		this._setupConversion();
+		this._setupAccessibilityHelp();
 	}
 
 	/**
@@ -597,6 +598,22 @@ export default class ListEditing extends Plugin {
 				}
 			} );
 		} );
+	}
+
+	/**
+	 * TODO
+	 */
+	private _setupAccessibilityHelp(): void {
+		const editor = this.editor;
+
+		if ( editor.plugins.has( 'AccessibilityHelp' ) ) {
+			const t = editor.t;
+
+			editor.plugins.get( 'AccessibilityHelp' ).registerKeystroke( {
+				label: t( 'Nest the current list item (when in a list)' ),
+				keystroke: 'Tab'
+			} );
+		}
 	}
 }
 

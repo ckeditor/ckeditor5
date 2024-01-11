@@ -52,4 +52,20 @@ export default class Enter extends Plugin {
 			view.scrollToTheSelection();
 		}, { priority: 'low' } );
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public afterInit(): void {
+		const editor = this.editor;
+
+		if ( editor.plugins.has( 'AccessibilityHelp' ) ) {
+			const t = editor.t;
+
+			editor.plugins.get( 'AccessibilityHelp' ).registerKeystroke( {
+				label: t( 'Insert a hard break (a new paragraph)' ),
+				keystroke: 'Enter'
+			} );
+		}
+	}
 }

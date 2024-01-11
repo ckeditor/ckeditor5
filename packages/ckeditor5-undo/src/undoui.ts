@@ -52,7 +52,7 @@ export default class UndoUI extends Plugin {
 
 			editor.plugins.get( 'AccessibilityHelp' ).registerKeystroke( {
 				label: t( 'Redo' ),
-				keystroke: [ 'CTRL+Y', 'CTRL+SHIFT+Z' ]
+				keystroke: [ [ 'CTRL+Y' ], [ 'CTRL+SHIFT+Z' ] ]
 			} );
 		}
 	}
