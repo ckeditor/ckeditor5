@@ -37,6 +37,10 @@ Unless you need to specifically use the old plugin in your integration, there is
 
 If you do not want to use block elements in your lists, you can {@link features/lists-editing#simple-lists turn off this functionality} with the configuration option instead of sticking to the old plugins.
 
+<info-box>
+    We have replaced the old list plugins in all {@link installation/getting-started/predefined-builds predefined builds} with the current ones.
+</info-box>
+
 #### Renaming of the plugins
 
 With the new version becoming the default, the `DocumentList` plugin (and all related plugins, [see the table below](#details-of-plugin-renames)) was renamed to `List`. The old plugin was renamed to `LegacyList` instead. The same applies to all other list-related plugins, namely: `LegacyListProperties`, and `LegacyTodoList`.
@@ -51,10 +55,6 @@ If you included document lists in your integration and used the `removePlugins` 
 This is because your integration was injecting `DocumentList` and `DocumentListProperties` plugins, and passing the `removePlugins: [ List, ListProperties, TodoList ]` configuration option. After the change and renaming of the plugins, these two are the same.
 
 If you happen to encounter this error, remove all imports of `DocumentList` and related plugins as well as the `removePlugins` configuration option. Replace these with `List` and related plugins.
-
-<info-box>
-    We have replaced the old list plugins in all {@link installation/getting-started/predefined-builds predefined builds} with the current ones.
-</info-box>
 
 #### Details of plugin renames
 
