@@ -159,6 +159,12 @@ The following icons were moved to the `@ckeditor/ckeditor5-core` package:
 * `todolist`
 * `undo`
 
+The following icons were moved to the `ckeditor5-collaboration` package:
+* `robot-pencil`
+* `table-of-contents`
+* `paint-roller`
+* `template`
+
 ### Exports renamed
 
 Some export names were changed due to the possibility of name conflicts:
