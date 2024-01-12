@@ -205,18 +205,22 @@ export default class Widget extends Plugin {
 		if ( editor.plugins.has( 'AccessibilityHelp' ) ) {
 			const t = editor.t;
 
-			editor.plugins.get( 'AccessibilityHelp' ).registerKeystroke( {
-				label: t( 'Insert a new paragraph directly after a widget' ),
-				keystroke: 'Enter'
-			}, {
-				label: t( 'Insert a new paragraph directly before a widget' ),
-				keystroke: 'Shift+Enter'
-			}, {
-				label: t( 'Display the caret to allow typing directly before a widget' ),
-				keystroke: [ [ 'arrowup' ], [ 'arrowleft' ] ]
-			}, {
-				label: t( 'Display the caret to allow typing directly after a widget' ),
-				keystroke: [ [ 'arrowdown' ], [ 'arrowright' ] ]
+			editor.plugins.get( 'AccessibilityHelp' ).registerKeystrokes( {
+				group: 'widget',
+				groupLabel: t( 'When a widget is selected (for example: image, table, horizontal line, etc.)' ),
+				keystrokes: [ {
+					label: t( 'Insert a new paragraph directly after a widget' ),
+					keystroke: 'Enter'
+				}, {
+					label: t( 'Insert a new paragraph directly before a widget' ),
+					keystroke: 'Shift+Enter'
+				}, {
+					label: t( 'Display the caret to allow typing directly before a widget' ),
+					keystroke: [ [ 'arrowup' ], [ 'arrowleft' ] ]
+				}, {
+					label: t( 'Display the caret to allow typing directly after a widget' ),
+					keystroke: [ [ 'arrowdown' ], [ 'arrowright' ] ]
+				} ]
 			} );
 		}
 	}

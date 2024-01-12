@@ -237,18 +237,27 @@ export default class TableUI extends Plugin {
 		if ( editor.plugins.has( 'AccessibilityHelp' ) ) {
 			const t = editor.t;
 
-			editor.plugins.get( 'AccessibilityHelp' ).registerKeystroke( {
-				label: t( 'Move the selection to the next cell' ),
-				keystroke: 'Tab'
-			}, {
-				label: t( 'Move the selection to the previous cell' ),
-				keystroke: 'Shift+Tab'
-			}, {
-				label: t( 'Insert a new table row (when in the last cell of a table)' ),
-				keystroke: 'Tab'
-			}, {
-				label: t( 'Navigate through the table' ),
-				keystroke: [ [ 'arrowup' ], [ 'arrowright' ], [ 'arrowdown' ], [ 'arrowleft' ] ]
+			editor.plugins.get( 'AccessibilityHelp' ).registerKeystrokes( {
+				group: 'table',
+				groupLabel: t( 'In a table cell' ),
+				keystrokes: [
+					{
+						label: t( 'Move the selection to the next cell' ),
+						keystroke: 'Tab'
+					},
+					{
+						label: t( 'Move the selection to the previous cell' ),
+						keystroke: 'Shift+Tab'
+					},
+					{
+						label: t( 'Insert a new table row (when in the last cell of a table)' ),
+						keystroke: 'Tab'
+					},
+					{
+						label: t( 'Navigate through the table' ),
+						keystroke: [ [ 'arrowup' ], [ 'arrowright' ], [ 'arrowdown' ], [ 'arrowleft' ] ]
+					}
+				]
 			} );
 		}
 	}

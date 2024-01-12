@@ -10,6 +10,9 @@ import { getEnvKeystrokeText } from '@ckeditor/ckeditor5-utils';
 
 import '../../theme/components/editorui/accessibilityhelp.css';
 
+const DEFAULT_CATEGORY_ID = 'contentEditing' as const;
+export const DEFAULT_GROUP_ID = 'common' as const;
+
 // TODO: Maybe just help? This could be more than just a11y shortcuts. For instance, editor version,
 // installed plugins, etc.
 export default class AccessibilityHelp extends Plugin {
@@ -22,6 +25,11 @@ export default class AccessibilityHelp extends Plugin {
 	 * TODO
 	 */
 	private _keystrokeDefinitions: Array<KeystrokeDefinition> = [];
+
+	/**
+	 * TODO
+	 */
+	private _keystrokes = new Map<string, KeystrokesCategory>();
 
 	/**
 	 * @inheritDoc
@@ -43,6 +51,47 @@ export default class AccessibilityHelp extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 		const t = editor.locale.t;
+
+		this.registerKeystrokeCategory( DEFAULT_CATEGORY_ID, {
+			label: t( 'Content editing' ),
+			description: t( 'These keyboard shortcuts allow for quick access to content editing features.' )
+		} );
+
+		this.registerKeystrokeCategory( 'navigation', {
+			label: t( 'User interface and navigation' ),
+			description: t( 'Use the following keystrokes for more efficient navigation in the CKEditor 5 user interface.' )
+		} );
+
+		this.registerKeystrokes( {
+			category: 'navigation',
+			keystrokes: [
+				{
+					label: t( 'Close contextual balloons and UI components like dropdowns' ),
+					keystroke: 'Esc'
+				},
+				{
+					label: t( 'Move focus to the visible contextual balloon' ),
+					keystroke: 'Tab'
+				},
+				{
+					label: t( 'Move focus between fields (inputs and buttons) in contextual balloons' ),
+					keystroke: 'Tab'
+				},
+				{
+					label: t( 'Move focus to the toolbar' ),
+					// TODO may require Fn
+					keystroke: 'Alt+F10'
+				},
+				{
+					label: t( 'Navigate through the toolbar' ),
+					keystroke: [ [ 'arrowup' ], [ 'arrowright' ], [ 'arrowdown' ], [ 'arrowleft' ] ]
+				},
+				{
+					label: t( 'Execute the currently focused button' ),
+					keystroke: [ [ 'Enter' ], [ 'Space' ] ]
+				}
+			]
+		} );
 
 		editor.ui.componentFactory.add( 'accessibilityHelp', locale => {
 			const buttonView = new ButtonView( locale );
@@ -68,8 +117,51 @@ export default class AccessibilityHelp extends Plugin {
 	/**
 	 * TODO
 	 */
-	public registerKeystroke( ...definitions: Array<KeystrokeDefinition> ): void {
-		this._keystrokeDefinitions.push( ...definitions );
+	public registerKeystrokeCategory( categoryId: string, definition: { label: string; description?: string } ): void {
+		this._keystrokes.set( categoryId, {
+			...definition,
+			keystrokeGroups: new Map( [ [ DEFAULT_GROUP_ID, { keystrokes: [] } ] ] )
+		} );
+	}
+
+	/**
+	 * TODO
+	 */
+	public registerKeystrokes( definition: {
+		category?: string;
+		group?: string;
+		groupLabel?: string;
+		keystrokes: Array<KeystrokeDefinition>;
+	} | Array<KeystrokeDefinition> | KeystrokeDefinition ): void {
+		if ( definition instanceof Array ) {
+			definition = {
+				keystrokes: definition
+			};
+		} else if ( typeof definition === 'object' && 'keystroke' in definition ) {
+			definition = {
+				keystrokes: [ definition ]
+			};
+		}
+
+		const categoryId = definition.category || DEFAULT_CATEGORY_ID;
+
+		if ( !this._keystrokes.has( categoryId ) ) {
+			throw new Error( `Cannot register keystrokes for unknown category: "${ categoryId }".` );
+		}
+
+		const category = this._keystrokes.get( categoryId )!;
+		const groupId = definition.group || DEFAULT_GROUP_ID;
+
+		if ( !category.keystrokeGroups.has( groupId ) && !definition.groupLabel ) {
+			throw new Error( `Cannot register keystrokes for unknown group: "${ groupId }".` );
+		} else if ( definition.groupLabel ) {
+			category.keystrokeGroups.set( groupId, {
+				label: definition.groupLabel,
+				keystrokes: definition.keystrokes
+			} );
+		} else {
+			category.keystrokeGroups.get( groupId )!.keystrokes.push( ...definition.keystrokes );
+		}
 	}
 
 	/**
@@ -101,7 +193,7 @@ export default class AccessibilityHelp extends Plugin {
 		const t = editor.locale.t;
 
 		if ( !this._dialogContentView ) {
-			this._dialogContentView = new AccessibilityHelpContentView( editor.locale, this._keystrokeDefinitions );
+			this._dialogContentView = new AccessibilityHelpContentView( editor.locale, this._keystrokes );
 		}
 
 		dialog.show( {
@@ -111,6 +203,17 @@ export default class AccessibilityHelp extends Plugin {
 			content: this._dialogContentView
 		} );
 	}
+}
+
+export interface KeystrokesCategory {
+	label: string;
+	description?: string;
+	keystrokeGroups: Map<string, KeystrokeGroupDefinition>;
+}
+
+export interface KeystrokeGroupDefinition {
+	label?: string;
+	keystrokes: Array<KeystrokeDefinition>;
 }
 
 export interface KeystrokeDefinition {

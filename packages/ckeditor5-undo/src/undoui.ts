@@ -45,12 +45,12 @@ export default class UndoUI extends Plugin {
 		if ( editor.plugins.has( 'AccessibilityHelp' ) ) {
 			const t = editor.t;
 
-			editor.plugins.get( 'AccessibilityHelp' ).registerKeystroke( {
+			editor.plugins.get( 'AccessibilityHelp' ).registerKeystrokes( {
 				label: t( 'Undo' ),
 				keystroke: 'CTRL+Z'
 			} );
 
-			editor.plugins.get( 'AccessibilityHelp' ).registerKeystroke( {
+			editor.plugins.get( 'AccessibilityHelp' ).registerKeystrokes( {
 				label: t( 'Redo' ),
 				keystroke: [ [ 'CTRL+Y' ], [ 'CTRL+SHIFT+Z' ] ]
 			} );

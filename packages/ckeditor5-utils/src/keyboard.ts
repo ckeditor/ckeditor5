@@ -13,6 +13,13 @@ import type { LanguageDirection } from './language.js';
 import CKEditorError from './ckeditorerror.js';
 import env from './env.js';
 
+const keyCodesToGlyphs = {
+	arrowright: '→',
+	arrowleft: '←',
+	arrowdown: '↓',
+	arrowup: '↑'
+} as const;
+
 const modifiersToGlyphsMac = {
 	ctrl: '⌃',
 	cmd: '⌘',

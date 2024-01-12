@@ -3,8 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { env, getEnvKeystrokeText, type Locale } from '@ckeditor/ckeditor5-utils';
-import type { KeystrokeDefinition } from './accessibilityhelp.js';
+import { getEnvKeystrokeText, type Locale } from '@ckeditor/ckeditor5-utils';
+import {
+	DEFAULT_GROUP_ID,
+	type KeystrokeDefinition,
+	type KeystrokeGroupDefinition,
+	type KeystrokesCategory
+} from './accessibilityhelp.js';
 import View from '../view.js';
 
 /**
@@ -14,7 +19,7 @@ export default class AccessibilityHelpContentView extends View<HTMLDivElement> {
 	/**
 	 * @inheritdoc
 	 */
-	constructor( locale: Locale, keystrokeDefinitions: Array<KeystrokeDefinition> ) {
+	constructor( locale: Locale, keystrokes: Map<string, KeystrokesCategory> ) {
 		super( locale );
 
 		this.setTemplate( {
@@ -25,8 +30,7 @@ export default class AccessibilityHelpContentView extends View<HTMLDivElement> {
 				tabindex: -1
 			},
 			children: [
-				this._createContentEditingSection( keystrokeDefinitions ),
-				this._createUserInterfaceAndNavigationSection()
+				...this._getKeystrokeCategoryElements( keystrokes )
 			]
 		} );
 	}
@@ -39,33 +43,32 @@ export default class AccessibilityHelpContentView extends View<HTMLDivElement> {
 	}
 
 	/**
-	 * @inheritdoc
+	 * TODO
 	 */
-	private _createContentEditingSection( keystrokeDefinitions: Array<KeystrokeDefinition> ): HTMLElement {
-		const element = document.createElement( 'section' );
-		const tbody = document.createElement( 'tbody' );
+	private _getKeystrokeCategoryElements( keystrokes: Map<string, KeystrokesCategory> ): Array<HTMLElement> {
+		const categoryElements = [];
 
-		// TODO: Not sure about sorting here. Some keystroke look nice next to each other, e.g. copy & paste.
-		// OTOH, sorting makes it easier to find a keystroke and navigate the list in general.
-		for ( const definition of keystrokeDefinitions.sort( ( a, b ) => sortAlphabetically( a.label, b.label ) ) ) {
-			const normalizedKeystrokeDefinition = normalizeKeystrokeDefinition( definition.keystroke );
-			const keystrokeAlternativeHTMLs = [];
+		for ( const [ , category ] of keystrokes ) {
+			const container = document.createElement( 'section' );
+			const header = document.createElement( 'h3' );
 
-			for ( const keystrokeAlternative of normalizedKeystrokeDefinition ) {
-				keystrokeAlternativeHTMLs.push( keystrokeAlternative.map( keystrokeToEnvKbd ).join( '' ) );
+			header.innerHTML = category.label;
+			container.append( header );
+
+			if ( category.description ) {
+				const description = document.createElement( 'p' );
+				description.innerHTML = category.description;
+				container.append( description );
 			}
 
-			tbody.innerHTML += `
-				<tr>
-					<td>${ definition.label }</td>
-					<td>${ keystrokeAlternativeHTMLs.join( '<br>' ) }</td>
-				</tr>
-			`;
-		}
+			const table = document.createElement( 'table' );
+			const tbody = document.createElement( 'tbody' );
 
-		element.innerHTML = `
-			<h3>Content editing</h3>
-			<table>
+			for ( const [ groupId, group ] of category.keystrokeGroups ) {
+				tbody.append( ...this._createKeystrokeGroupElements( groupId, group ) );
+			}
+
+			table.innerHTML = `<table>
 				<thead>
 					<tr>
 						<th>Action</th>
@@ -73,58 +76,56 @@ export default class AccessibilityHelpContentView extends View<HTMLDivElement> {
 					</tr>
 				</thead>
 				${ tbody.outerHTML }
-			</table>
-		`;
+			</table>`;
 
-		return element;
+			container.append( table );
+			categoryElements.push( container );
+		}
+
+		return categoryElements;
 	}
 
 	/**
-	 * @inheritdoc
+	 * TODO
 	 */
-	private _createUserInterfaceAndNavigationSection(): HTMLElement {
-		const element = document.createElement( 'section' );
+	private _createKeystrokeGroupElements( groupId: string, group: KeystrokeGroupDefinition ): Array<HTMLElement> {
+		const elements = [];
 
-		element.innerHTML = `
-			<h3>User interface and navigation</h3>
-			<table>
-				<thead>
-					<tr>
-						<th>Action</th>
-						<th>Keystroke</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>Close contextual balloons and UI components like dropdowns</td>
-						<td><kbd>Esc</kbd></td>
-					</tr>
-					<tr>
-						<td>Move focus to the visible contextual balloon</td>
-						<td><kbd>Tab</kbd></td>
-					</tr>
-					<tr>
-						<td>Move focus between fields (inputs and buttons) in contextual balloons</td>
-						<td><kbd>Tab</kbd></td>
-					</tr>
-					<tr>
-						<td>Move focus to the toolbar</td>
-						<td>${ keystrokeToEnvKbd( 'Alt+F10' ) }
-							${ env.isMac ? ' (may require <kbd>Fn</kbd>)' : '' }</td>
-					</tr>
-					<tr>
-						<td>Navigate through the toolbar</td>
-						<td><kbd>↑</kbd> / <kbd>→</kbd> / <kbd>↓</kbd> / <kbd>←</kbd></td>
-					</tr>
-					<tr>
-						<td>Execute the currently focused button</td>
-						<td><kbd>Enter</kbd> / <kbd>Space</kbd></td>
-					</tr>
-				</tbody>
-			</table>
-		`;
+		if ( groupId !== DEFAULT_GROUP_ID ) {
+			const headerRow = document.createElement( 'tr' );
 
-		return element;
+			headerRow.innerHTML = `<tr>
+				<th colspan="2">${ group.label }</th>
+			</tr>`;
+
+			elements.push( headerRow );
+		}
+
+		for ( const keystrokeDef of group.keystrokes.sort( ( a, b ) => sortAlphabetically( a.label, b.label ) ) ) {
+			elements.push( this._createKeystrokeRowElement( keystrokeDef ) );
+		}
+
+		return elements;
+	}
+
+	/**
+	 * TODO
+	 */
+	private _createKeystrokeRowElement( keystrokeDef: KeystrokeDefinition ): HTMLElement {
+		const row = document.createElement( 'tr' );
+		const normalizedKeystrokeDefinition = normalizeKeystrokeDefinition( keystrokeDef.keystroke );
+		const keystrokeAlternativeHTMLs = [];
+
+		for ( const keystrokeAlternative of normalizedKeystrokeDefinition ) {
+			keystrokeAlternativeHTMLs.push( keystrokeAlternative.map( keystrokeToEnvKbd ).join( '' ) );
+		}
+
+		row.innerHTML = `<tr>
+			<td>${ keystrokeDef.label }</td>
+			<td>${ keystrokeAlternativeHTMLs.join( ', ' ) }</td>
+		</tr>`;
+
+		return row;
 	}
 }
 

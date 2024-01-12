@@ -112,12 +112,12 @@ export default class LinkUI extends Plugin {
 		if ( editor.plugins.has( 'AccessibilityHelp' ) ) {
 			const t = editor.t;
 
-			editor.plugins.get( 'AccessibilityHelp' ).registerKeystroke( {
+			editor.plugins.get( 'AccessibilityHelp' ).registerKeystrokes( {
 				label: t( 'Link' ),
 				keystroke: 'CTRL+L'
 			} );
 
-			editor.plugins.get( 'AccessibilityHelp' ).registerKeystroke( {
+			editor.plugins.get( 'AccessibilityHelp' ).registerKeystrokes( {
 				label: t( 'Move out of a link' ),
 				keystroke: [
 					[ 'arrowleft', 'arrowleft' ],

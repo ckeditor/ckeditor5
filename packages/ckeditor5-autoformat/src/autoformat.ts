@@ -212,7 +212,7 @@ export default class Autoformat extends Plugin {
 		if ( editor.plugins.has( 'AccessibilityHelp' ) ) {
 			const t = editor.t;
 
-			editor.plugins.get( 'AccessibilityHelp' ).registerKeystroke( {
+			editor.plugins.get( 'AccessibilityHelp' ).registerKeystrokes( {
 				label: t( 'Revert autoformatting action' ),
 				keystroke: 'Backspace'
 			} );
