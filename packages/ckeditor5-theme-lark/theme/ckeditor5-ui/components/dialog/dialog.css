@@ -5,6 +5,7 @@
 
 @import "../../../mixins/_rounded.css";
 @import "../../../mixins/_shadow.css";
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
 :root {
 	--ck-dialog-overlay-background-color: hsla( 0, 0%, 0%, .5 );
@@ -29,6 +30,15 @@
 	max-height: var(--ck-dialog-max-height);
 	max-width: var(--ck-dialog-max-width);
 	border: 1px solid var(--ck-color-base-border);
+
+	/*
+	 * When the horizontal space is scarce, drop the max-width restriction and use all remaining space. This gives views
+	 * rendered inside the dialog more space to render and makes them a little bit less likely to break their layout
+	 * (https://github.com/cksource/ckeditor5-commercial/issues/5913).
+	 */
+	@mixin ck-media-phone {
+		--ck-dialog-max-width: 100vw;
+	}
 }
 
 @keyframes ck-dialog-fade-in {
