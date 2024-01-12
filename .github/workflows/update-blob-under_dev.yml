@@ -3,7 +3,7 @@ name: Update CKEditor 5 blob dev
 on:
     push:
         branches:
-            - fullScreen
+            - enhan/TR-2964-Add-dropdown-for-url
 
 jobs:
     build:
@@ -18,11 +18,11 @@ jobs:
                   registry-url: "https://npm.pkg.github.com"
                   scope: "@ftrprf"
             - name: Build editor
-              run: cd ./packages/ckeditor5-build-decoupled-document && pwd && npm install && npm run build
+              run: cd ./packages/ckeditor5-build-decoupled-document && pwd && npm install --legacy-peer-deps && npm run build
               env:
                   NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
             - name: upload to storage
               env:
                   AZURE_STORAGE_ACCOUNT: "ckeditorbuild"
                   AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_BLOB_STORAGE_DEV_CONNECTION_STRING }}
-              run: az storage blob upload -f ./packages/ckeditor5-build-decoupled-document/build/ckeditor.js -c \ckeditor -n ckeditor5fullScreen.js --overwrite
+              run: az storage blob upload -f ./packages/ckeditor5-build-decoupled-document/build/ckeditor.js -c \ckeditor -n underDevelopment.js --overwrite

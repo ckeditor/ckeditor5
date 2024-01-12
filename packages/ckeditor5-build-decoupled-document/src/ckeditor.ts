@@ -48,7 +48,7 @@ import {
 	Table,
 	TableToolbar,
 	TableProperties,
-	TableCellProperties,
+	TableCellProperties
 } from '@ckeditor/ckeditor5-table';
 import { TextTransformation } from '@ckeditor/ckeditor5-typing';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
@@ -145,7 +145,7 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 		TableProperties,
 		TableToolbar,
 		TextTransformation,
-		Underline,
+		Underline
 	];
 
 	public static override defaultConfig = {
@@ -174,9 +174,9 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				'indent',
 				'|',
 				'link',
-				'ownImagePlugin',
 				'insertTable',
 				'ownImagePlugin',
+				'insertImage',
 				'mediaEmbed',
 				'codeBlock',
 				'|',
@@ -196,8 +196,8 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				'styledLink',
 				'fullScreen',
 				'source',
-				'htmlInsert',
-			],
+				'htmlInsert'
+			]
 		},
 		image: {
 			resizeUnit: 'px' as const,
@@ -292,8 +292,8 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				{ language: 'python', label: 'Python' },
 				{ language: 'json', label: 'JSON' },
 				{ language: 'markdown', label: 'Markdown' },
-				{ language: 'blocks', label: 'Scratch' },
-			],
+				{ language: 'blocks', label: 'Scratch' }
+			]
 		},
 
 		// This value must be kept in sync with the language defined in webpack.config.js.
