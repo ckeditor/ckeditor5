@@ -71,14 +71,14 @@ Please refer to the [update guide](https://ckeditor.com/docs/ckeditor5/latest/up
 
 ### MAJOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: From this release on, the UI of the feature is displayed in a dialog instead of a balloon. See [ckeditor/ckeditor5#14973](https://github.com/ckeditor/ckeditor5/issues/14973).
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: From this release on, the UI of the feature is displayed in a dialog instead of a balloon. See [#14973](https://github.com/ckeditor/ckeditor5/issues/14973).
 * **[find-and-replace](https://www.npmjs.com/package/@ckeditor/ckeditor5-find-and-replace)**: From this release on, the UI of the Find and Replace feature is displayed by default in a dialog instead of a dropdown. To bring the previous user experience back, you can use the [`config.findAndReplace.uiType`](https://ckeditor.com/docs/ckeditor5/latest/api/module_core_editor_editorconfig-EditorConfig.html#member-findAndReplace) configuration option. See [#14973](https://github.com/ckeditor/ckeditor5/issues/14973).
 * **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: The `AdjacentListsSupport` plugin is moved from the `documentlist` directory to the `list` directory. See [#14942](https://github.com/ckeditor/ckeditor5/issues/14942).
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
 * **[adapter-ckfinder](https://www.npmjs.com/package/@ckeditor/ckeditor5-adapter-ckfinder)**: Rename export of the `UploadAdapter` class to `CKFinderUploadAdapter`. See [#15511](https://github.com/ckeditor/ckeditor5/issues/15511).
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The layout of the UI has been changed. Please keep in mind that customizations based on certain CSS selectors may not work anymore because of a different DOM structure in the UI. [Learn more](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-41.html) about the scope of changes. See [ckeditor/ckeditor5#14973](https://github.com/ckeditor/ckeditor5/issues/14973).
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The layout of the UI has been changed. Please keep in mind that customizations based on certain CSS selectors may not work anymore because of a different DOM structure in the UI. [Learn more](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-41.html) about the scope of changes. See [#14973](https://github.com/ckeditor/ckeditor5/issues/14973).
 * **[ckfinder](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckfinder)**: Move `browseFiles` icon to the `core` package and add it to the `icons` object exported from it. See [#15511](https://github.com/ckeditor/ckeditor5/issues/15511).
 * **[ckbox](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox)**: Move `browseFiles` icon to the `core` package and add it to the `icons` object exported from it. See [#15511](https://github.com/ckeditor/ckeditor5/issues/15511).
 * **[code-block](https://www.npmjs.com/package/@ckeditor/ckeditor5-code-block)**: Move `codeBlock` icon to the `core` package and add it to the `icons` object exported from it. See [#15511](https://github.com/ckeditor/ckeditor5/issues/15511).
@@ -107,7 +107,7 @@ Please refer to the [update guide](https://ckeditor.com/docs/ckeditor5/latest/up
 
 ### Features
 
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The UI of the feature has been migrated to a dialog for a better user experience. See [ckeditor/ckeditor5#14973](https://github.com/ckeditor/ckeditor5/issues/14973).
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The UI of the feature has been migrated to a dialog for a better user experience. See [#14973](https://github.com/ckeditor/ckeditor5/issues/14973).
 * **[case-change](https://www.npmjs.com/package/@ckeditor/ckeditor5-case-change)**: Introduced the case change feature.
 * **[find-and-replace](https://www.npmjs.com/package/@ckeditor/ckeditor5-find-and-replace)**: The UI of the feature has been migrated to a dialog for a better user experience. See [#14973](https://github.com/ckeditor/ckeditor5/issues/14973). ([commit](https://github.com/ckeditor/ckeditor5/commit/f8e2b1c902776a848e1ddc208b5db108628f04da))
 * **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Integrated list feature with the new attribute suggestions. Tracked changes in lists are now immediately visible in the editor.
@@ -126,7 +126,7 @@ Please refer to the [update guide](https://ckeditor.com/docs/ckeditor5/latest/up
 * **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: Fixed the editor crash using the `LinkImage` plugin loaded before `Image`, which ends with extending the schema definitions before they are registered. Closes [#15617](https://github.com/ckeditor/ckeditor5/issues/15617). ([commit](https://github.com/ckeditor/ckeditor5/commit/6d9ec4202f077a5dea278351f642aa04182d7c2e))
 * **[media-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed)**: Replaced some toolbar icons with ones with improved alignment. Closes [#15549](https://github.com/ckeditor/ckeditor5/issues/15549). ([commit](https://github.com/ckeditor/ckeditor5/commit/ee2b91c945224b2db71f809a4e4149ecdfe750b6))
 * **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: [`TextareaView`](https://ckeditor.com/docs/ckeditor5/latest/api/module_ui_textarea_textareaview-TextareaView.html) component should correctly update its size if its value has been changed while it was invisible. See [#14973](https://github.com/ckeditor/ckeditor5/issues/14973). ([commit](https://github.com/ckeditor/ckeditor5/commit/f8e2b1c902776a848e1ddc208b5db108628f04da))
-* Make all CKEditor 5 packages valid ES Modules. See [ckeditor/ckeditor5#13673](https://github.com/ckeditor/ckeditor5/issues/13673).
+* Make all CKEditor 5 packages valid ES Modules. See [#13673](https://github.com/ckeditor/ckeditor5/issues/13673).
 
 ### Other changes
 
@@ -154,7 +154,6 @@ Major releases (contain major breaking changes):
 * [@ckeditor/ckeditor5-ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai/v/41.0.0): v40.2.0 => v41.0.0
 * [@ckeditor/ckeditor5-find-and-replace](https://www.npmjs.com/package/@ckeditor/ckeditor5-find-and-replace/v/41.0.0): v40.2.0 => v41.0.0
 * [@ckeditor/ckeditor5-list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list/v/41.0.0): v40.2.0 => v41.0.0
-* [@ckeditor/ckeditor5-ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui/v/41.0.0): v40.2.0 => v41.0.0
 
 Minor releases (contain minor breaking changes):
 
@@ -172,6 +171,7 @@ Minor releases (contain minor breaking changes):
 * [@ckeditor/ckeditor5-table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table/v/41.0.0): v40.2.0 => v41.0.0
 * [@ckeditor/ckeditor5-undo](https://www.npmjs.com/package/@ckeditor/ckeditor5-undo/v/41.0.0): v40.2.0 => v41.0.0
 * [@ckeditor/ckeditor5-utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils/v/41.0.0): v40.2.0 => v41.0.0
+* [@ckeditor/ckeditor5-ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui/v/41.0.0): v40.2.0 => v41.0.0
 
 Releases containing new features:
 
