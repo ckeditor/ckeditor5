@@ -83,6 +83,7 @@ swap:
   regex: regular expression
   repo: repository
   right click: right-click
+  rule set: ruleset
   SAAS: SaaS
   sanity (?:check|test): check for completeness
   semver: SemVer
