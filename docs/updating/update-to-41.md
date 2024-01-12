@@ -168,9 +168,9 @@ The following icons were moved to the `@ckeditor/ckeditor5-core` package:
 * `undo`
 
 The following icons were moved to the `ckeditor5-collaboration` package:
+* `paint-roller`
 * `robot-pencil`
 * `table-of-contents`
-* `paint-roller`
 * `template`
 
 ### Exports renamed
@@ -187,7 +187,7 @@ Some export names were changed due to the possibility of name conflicts:
 
 The code we distribute in our npm packages uses the [ECMAScript Module (ESM) syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) (for example, `import X from 'y'`). Until now it was not fully compliant with the standard and the packages were not properly marked as ES modules. Sometimes this resulted in bundlers (like Vite) and other tools (such as Vitest) failing to build or run the projects containing CKEditor&nbsp;5. It required workarounds in their configuration.
 
-This release fixes the ESM-compatibility issues. CKEditor&nbsp;5 packages are now fully ESM-compliant and these workarounds are no longer needed.
+This release fixes the ESM compatibility issues. CKEditor&nbsp;5 packages are now fully ESM-compliant and these workarounds are no longer needed.
 
 ### Added validation to the URL field in the link form
 
