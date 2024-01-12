@@ -5,21 +5,15 @@ Changelog
 
 We are happy to announce the release of CKEditor 5 v40.2.0.
 
-#### Improved lists suggestions behavior
+#### Improved list suggestions behavior
 
-We continue to improve the way formatting suggestions are displayed in the editor.
+We continue to improve the way the editor displays the formatting suggestions.
 
-This release includes integration of the list features with the new suggestions behavior. All lists-related suggestions are now immediately visible in the editor content!
-
-<!-- TODO: GIF. -->
-
-#### Copy-paste comments
-
-We made an important improvement in the comments feature. Now, the comments are properly retained after you copy (or cut) and paste some content with comments.
+This release includes integration of the list features with the new suggestions behavior. All list-related suggestions are now visible in the editor content.
 
 <!-- TODO: GIF. -->
 
-#### The dialogs system
+#### The dialog system
 
 The dialogs finally come to the CKEditor 5 UI!
 
