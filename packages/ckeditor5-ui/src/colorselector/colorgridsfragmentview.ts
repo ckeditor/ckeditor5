@@ -238,12 +238,10 @@ export default class ColorGridsFragmentView extends View {
 	 */
 	public updateSelectedColors(): void {
 		const documentColorsGrid = this.documentColorsGrid;
-		const staticColorsGrid = this.staticColorsGrid;
+		const staticColorsGrid = this.staticColorsGrid!;
 		const selectedColor = this.selectedColor;
 
-		if ( staticColorsGrid ) {
-			staticColorsGrid.selectedColor = selectedColor;
-		}
+		staticColorsGrid.selectedColor = selectedColor;
 
 		if ( documentColorsGrid ) {
 			documentColorsGrid.selectedColor = selectedColor;

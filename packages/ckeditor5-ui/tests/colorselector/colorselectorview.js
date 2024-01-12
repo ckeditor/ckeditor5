@@ -301,15 +301,6 @@ describe( 'ColorSelectorView', () => {
 			sinon.assert.calledOnce( spy );
 		} );
 
-		it( 'should call updateSelectedColors when color grid is not defined without errors', () => {
-			const spy = sinon.spy( colorSelectorView, 'updateSelectedColors' );
-
-			colorSelectorView.colorGridsFragmentView.staticColorsGrid = null;
-			colorSelectorView.updateSelectedColors();
-
-			sinon.assert.calledOnce( spy );
-		} );
-
 		it( 'should unset selected color', () => {
 			setModelData( model,
 				'<paragraph><$text testColor="gold">Bar</$text></paragraph>' +
