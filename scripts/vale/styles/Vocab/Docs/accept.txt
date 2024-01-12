@@ -32,6 +32,7 @@ cycler
 Dailymotion
 declutter
 deduplicate
+dialogs
 DLL
 Dmitry
 DOM
