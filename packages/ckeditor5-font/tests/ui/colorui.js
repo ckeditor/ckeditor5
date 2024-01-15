@@ -575,7 +575,6 @@ describe( 'ColorUI', () => {
 				command = editor.commands.get( 'testColorCommand' );
 				dropdown = editor.ui.componentFactory.create( 'testColor' );
 				dropdown2 = editor.ui.componentFactory.create( 'testColor' );
-				dropdown.isOpen = true;
 
 				dropdown.render();
 			} );
@@ -584,7 +583,7 @@ describe( 'ColorUI', () => {
 				dropdown.destroy();
 			} );
 
-			it( 'should execute command if the color gets changed when dropdown is open', () => {
+			it( 'should execute command if in toolbar there are more than one dropdowns', () => {
 				const spy = sinon.spy( editor, 'execute' );
 
 				dropdown.isOpen = true;
