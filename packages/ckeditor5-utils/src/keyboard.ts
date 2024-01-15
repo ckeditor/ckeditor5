@@ -13,13 +13,6 @@ import type { LanguageDirection } from './language.js';
 import CKEditorError from './ckeditorerror.js';
 import env from './env.js';
 
-const keyCodesToGlyphs = {
-	arrowright: '→',
-	arrowleft: '←',
-	arrowdown: '↓',
-	arrowup: '↑'
-} as const;
-
 const modifiersToGlyphsMac = {
 	ctrl: '⌃',
 	cmd: '⌘',
@@ -31,6 +24,14 @@ const modifiersToGlyphsNonMac = {
 	ctrl: 'Ctrl+',
 	alt: 'Alt+',
 	shift: 'Shift+'
+} as const;
+
+const keyCodesToGlyphs: { [key: number]: string } = {
+	37: '←',
+	38: '↑',
+	39: '→',
+	40: '↓',
+	9: '⇥'
 } as const;
 
 /**
@@ -48,8 +49,18 @@ const modifiersToGlyphsNonMac = {
  */
 export const keyCodes = generateKnownKeyCodes();
 
-const keyCodeNames = Object.fromEntries(
-	Object.entries( keyCodes ).map( ( [ name, code ] ) => [ code, name.charAt( 0 ).toUpperCase() + name.slice( 1 ) ] )
+const keyCodeNames: { readonly [ keyCode: number ]: string } = Object.fromEntries(
+	Object.entries( keyCodes ).map( ( [ name, code ] ) => {
+		let prettyKeyName;
+
+		if ( code in keyCodesToGlyphs ) {
+			prettyKeyName = keyCodesToGlyphs[ code ];
+		} else {
+			prettyKeyName = name.charAt( 0 ).toUpperCase() + name.slice( 1 );
+		}
+
+		return [ code, prettyKeyName ];
+	} )
 );
 
 /**
@@ -271,9 +282,19 @@ function generateKnownKeyCodes(): { readonly [ keyCode: string ]: number } {
 	}
 
 	// other characters
-	for ( const char of '`-=[];\',./\\' ) {
-		keyCodes[ char ] = char.charCodeAt( 0 );
-	}
+	Object.assign( keyCodes, {
+		'\'': 222,
+		',': 108,
+		'-': 109,
+		'.': 110,
+		'/': 111,
+		';': 186,
+		'=': 187,
+		'[': 219,
+		'\\': 220,
+		']': 221,
+		'`': 223
+	} );
 
 	return keyCodes;
 }
