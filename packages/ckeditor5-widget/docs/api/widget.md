@@ -17,9 +17,9 @@ Browse the API documentation of this package by using the module tree on the lef
 The widget API consists of two layers:
 
 * The {@link module:widget/widget~Widget} plugin that enables base support for this feature. Usually, your plugin which implements a specific widget will define its reliance on the `Widget` plugin via its {@link module:core/plugin~PluginStaticMembers.requires `Plugin.requires`} property.
-* The {@link module:widget/utils~toWidget `toWidget()`} and {@link module:widget/utils~toWidgetEditable `toWidgetEditable()`} functions that need to be used during the conversion to make a specific element either a widget or a widget's nested editable. See their documentation for more details.
+* The {@link module:widget/utils~toWidget `toWidget()`} and {@link module:widget/utils~toWidgetEditable `toWidgetEditable()`} functions. You need to use them during the conversion to make a specific element either a widget or its nested editable. See their documentation for more details.
 
-Besides the above mentioned core functionalities, this package implements the following utilities:
+Besides these mentioned core functionalities, this package implements the following utilities:
 
 * The {@link module:widget/widgettoolbarrepository~WidgetToolbarRepository `WidgetToolbarRepository`} plugin which exposes a nice API for registering widget toolbars.
 * A few helper functions for managing widgets in the {@link module:widget/utils `@ckeditor/ckeditor5-widget/utils`} module.

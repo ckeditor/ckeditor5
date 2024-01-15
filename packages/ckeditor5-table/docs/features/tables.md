@@ -351,7 +351,7 @@ Check the table with default headers applied to both the first row and the first
 
 By default, the editor allows nesting a table inside another table's cell.
 
-In order to disallow nesting tables, you need to register an additional schema rule. It needs to be added before the data is loaded into the editor. Due to that, it is best to implement it as a plugin:
+To disallow nesting tables, you need to register an additional schema rule. It needs to be added before the data is loaded into the editor. Due to that, it is best to implement it as a plugin:
 
 ```js
 function DisallowNestingTables( editor ) {

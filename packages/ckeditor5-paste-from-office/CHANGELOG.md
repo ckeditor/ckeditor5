@@ -45,7 +45,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Features
 
-* Prevent of bolding entire content pasted from Google Docs. Closes [#61](https://github.com/ckeditor/ckeditor5-paste-from-office/issues/61). ([8102de3](https://github.com/ckeditor/ckeditor5-paste-from-office/commit/8102de3))
+* Prevent making entire content pasted from Google Docs bold. Closes [#61](https://github.com/ckeditor/ckeditor5-paste-from-office/issues/61). ([8102de3](https://github.com/ckeditor/ckeditor5-paste-from-office/commit/8102de3))
 * Provide support for pasting lists from Google Docs. Closes [#69](https://github.com/ckeditor/ckeditor5-paste-from-office/issues/69). ([6ad2a62](https://github.com/ckeditor/ckeditor5-paste-from-office/commit/6ad2a62))
 
 ### Other changes
