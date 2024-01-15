@@ -41,6 +41,7 @@ swap:
   doctype: DOCTYPE
   double click: double-click
   drop-down: dropdown
+  drop-downs: dropdowns
   dummy: placeholder|sample|fake
   "(?:e-mail|Email|E-mail)": email
   Fckeditor|FCkeditor|FCKEditor: FCKeditor
@@ -83,10 +84,14 @@ swap:
   SAAS: SaaS
   sanity (?:check|test): check for completeness
   semver: SemVer
+  spellcheck: spell check
+  spellchecker: spell checker
+  spellchecking: spell checking
   stand alone|stand-alone: standalone
   strike-through|strike through: strikethrough
   stylesheet: style sheet
   stylesheets: style sheets
+  svg: SVG
   (?i)todo list: to-do list
   (?<!.)TS: TypeScript
   Typescript: TypeScript

@@ -1,9 +1,10 @@
 /*
- * Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 :root {
 	--ck-z-default: 1;
-	--ck-z-modal: calc( var(--ck-z-default) + 999 );
+	--ck-z-panel: calc( var(--ck-z-default) + 999 );
+	--ck-z-dialog: 9999;
 }

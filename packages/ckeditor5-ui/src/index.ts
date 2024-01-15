@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -21,6 +21,8 @@ export { default as ButtonView } from './button/buttonview.js';
 export { default as ButtonLabelView } from './button/buttonlabelview.js';
 export { default as SwitchButtonView } from './button/switchbuttonview.js';
 
+export { default as CollapsibleView } from './collapsible/collapsibleview.js';
+
 export * from './colorgrid/utils.js';
 export { default as ColorGridView, type ColorDefinition } from './colorgrid/colorgridview.js';
 export { default as ColorTileView } from './colorgrid/colortileview.js';
@@ -37,6 +39,9 @@ export {
 
 export { default as ComponentFactory } from './componentfactory.js';
 
+export { default as Dialog } from './dialog/dialog.js';
+export { default as DialogView, DialogViewPosition, type DialogViewMoveToEvent } from './dialog/dialogview.js';
+
 export { default as DropdownView } from './dropdown/dropdownview.js';
 export { default as DropdownPanelView } from './dropdown/dropdownpanelview.js';
 export { default as DropdownButtonView } from './dropdown/button/dropdownbuttonview.js';
@@ -52,8 +57,11 @@ export { default as FormHeaderView } from './formheader/formheaderview.js';
 export {
 	default as FocusCycler,
 	type FocusableView,
+	type ViewWithFocusCycler,
 	type FocusCyclerForwardCycleEvent,
-	type FocusCyclerBackwardCycleEvent
+	type FocusCyclerBackwardCycleEvent,
+	isViewWithFocusCycler,
+	isFocusable
 } from './focuscycler.js';
 
 export { default as IconView } from './icon/iconview.js';
@@ -75,7 +83,7 @@ export { default as ListView } from './list/listview.js';
 
 export { default as Notification } from './notification/notification.js';
 
-export { default as Model } from './model.js';
+export { default as ViewModel } from './model.js';
 export { default as BalloonPanelView } from './panel/balloon/balloonpanelview.js';
 export { default as ContextualBalloon } from './panel/balloon/contextualballoon.js';
 export { default as StickyPanelView } from './panel/sticky/stickypanelview.js';
@@ -85,8 +93,6 @@ export { default as SearchTextView, type SearchTextViewSearchEvent, type SearchT
 export { default as SearchInfoView } from './search/searchinfoview.js';
 export { default as FilteredView, type FilteredViewExecuteEvent } from './search/filteredview.js';
 export { default as HighlightedTextView } from './highlightedtext/highlightedtextview.js';
-
-export { default as CollapsibleView } from './collapsible/collapsibleview.js';
 
 export { default as TooltipManager } from './tooltipmanager.js';
 export { default as Template, type TemplateDefinition } from './template.js';

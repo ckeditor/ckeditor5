@@ -11,12 +11,12 @@ The to-do list feature lets you create a list of interactive checkboxes with lab
 
 ## Demo
 
-Use the to-do list toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/todolist.svg To-do list} to add a list to the editor content. Thanks to the integration with the {@link features/autoformat autoformatting feature}, you can also simply start a line with `[ ]` or `[x]` followed by a space to insert an unchecked or checked list item, respectively.
+Use the to-do list toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/todolist.svg To-do list} to add a list to the editor content. Thanks to the integration with the {@link features/autoformat autoformatting feature}, you can also start a line with `[ ]` or `[x]` followed by a space to insert an unchecked or checked list item.
 
 {@snippet features/todo-list}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Keyboard support
@@ -25,7 +25,7 @@ You can check and clear a list item by using the <kbd>Ctrl</kbd> + <kbd>Enter</k
 
 ## Related features
 
-These features provide similar functionality:
+These CKEditor&nbsp;5 features provide similar functionality:
 * {@link features/lists Ordered and unordered lists} &ndash; Create ordered and unordered lists with configurable markers.
 * {@link features/autoformat Autoformatting} &ndash; Format the text on the go with Markdown code.
 

@@ -15,7 +15,7 @@ The editor presented below offers a custom plugin that lets you add predefined p
 
 ## Detailed guide
 
-If you would like to create such a feature on your own, take a look at the {@link tutorials/widgets/implementing-an-inline-widget dedicated tutorial} which shows how to achieve this step by step with the source code provided. 
+If you would like to create such a feature on your own, take a look at the {@link tutorials/widgets/implementing-an-inline-widget dedicated tutorial} which shows how to achieve this step by step with the source code provided.
 
 ## Editor example configuration
 
@@ -33,7 +33,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Command, Plugin } from '@ckeditor/ckeditor5-core';
 import { Widget, toWidget, viewToModelPositionOutsideModelElement } from '@ckeditor/ckeditor5-widget';
 
-import { Model, addListToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui';
+import { ViewModel, addListToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui';
 import { Collection } from '@ckeditor/ckeditor5-utils';
 
 class PlaceholderCommand extends Command {
@@ -115,7 +115,7 @@ function getDropdownItemsDefinitions( placeholderNames ) {
 	for ( const name of placeholderNames ) {
 		const definition = {
 			type: 'button',
-			model: new Model( {
+			model: new ViewModel( {
 				commandParam: name,
 				label: name,
 				withText: true

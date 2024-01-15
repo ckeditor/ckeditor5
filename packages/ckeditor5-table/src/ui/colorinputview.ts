@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -96,7 +96,7 @@ export default class ColorInputView extends View implements FocusableView {
 	/**
 	 * A collection of views that can be focused in the view.
 	 */
-	protected readonly _focusables: ViewCollection;
+	protected readonly _focusables: ViewCollection<FocusableView>;
 
 	/**
 	 * An instance of the dropdown allowing to select a color from a grid.

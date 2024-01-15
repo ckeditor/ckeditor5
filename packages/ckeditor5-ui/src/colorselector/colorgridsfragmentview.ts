@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -19,6 +19,7 @@ import DocumentColorCollection from './documentcolorcollection.js';
 import type { Model } from '@ckeditor/ckeditor5-engine';
 import type { FocusTracker, Locale } from '@ckeditor/ckeditor5-utils';
 import type ViewCollection from '../viewcollection.js';
+import type { FocusableView } from '../focuscycler.js';
 import type { ColorSelectorExecuteEvent, ColorSelectorColorPickerShowEvent } from './colorselectorview.js';
 import { icons } from '@ckeditor/ckeditor5-core';
 
@@ -118,7 +119,7 @@ export default class ColorGridsFragmentView extends View {
 	 *
 	 * @readonly
 	 */
-	protected _focusables: ViewCollection;
+	protected _focusables: ViewCollection<FocusableView>;
 
 	/**
 	 * Document color section's label.
@@ -163,7 +164,7 @@ export default class ColorGridsFragmentView extends View {
 			documentColorsLabel?: string;
 			documentColorsCount?: number;
 			focusTracker: FocusTracker;
-			focusables: ViewCollection;
+			focusables: ViewCollection<FocusableView>;
 		}
 	) {
 		super( locale );

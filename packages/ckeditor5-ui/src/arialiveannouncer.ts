@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -17,12 +17,16 @@ import '../theme/components/arialiveannouncer/arialiveannouncer.css';
 /**
  * The politeness level of an `aria-live` announcement.
  *
- * See https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Live_Regions#Politeness_levels
+ * Available keys are:
+ * * `AriaLiveAnnouncerPoliteness.POLITE`,
+ * * `AriaLiveAnnouncerPoliteness.ASSERTIVE`
+ *
+ * [Learn more](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Live_Regions#Politeness_levels).
  */
-export enum AriaLiveAnnouncerPoliteness {
-	POLITE = 'polite',
-	ASSERTIVE = 'assertive'
-}
+export const AriaLiveAnnouncerPoliteness = {
+	POLITE: 'polite',
+	ASSERTIVE: 'assertive'
+} as const;
 
 /**
  * An accessibility helper that manages all ARIA live regions associated with an editor instance. ARIA live regions announce changes
@@ -75,7 +79,7 @@ export default class AriaLiveAnnouncer {
 	public announce(
 		regionName: string,
 		announcementText: string,
-		politeness: AriaLiveAnnouncerPoliteness = AriaLiveAnnouncerPoliteness.POLITE
+		politeness: typeof AriaLiveAnnouncerPoliteness[ keyof typeof AriaLiveAnnouncerPoliteness ] = AriaLiveAnnouncerPoliteness.POLITE
 	): void {
 		const editor = this.editor;
 
@@ -138,7 +142,7 @@ export class AriaLiveAnnouncerRegionView extends View {
 	/**
 	 * Current politeness level of the region.
 	 */
-	declare public politeness: AriaLiveAnnouncerPoliteness;
+	declare public politeness: typeof AriaLiveAnnouncerPoliteness[ keyof typeof AriaLiveAnnouncerPoliteness ];
 
 	/**
 	 * A unique name of the region, usually associated with a specific editor feature or system.

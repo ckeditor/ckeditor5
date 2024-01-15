@@ -23,7 +23,7 @@ Listed below are the most important changes that require your attention when upg
 
 The below information affects all editor integrations that use the {@link features/ai-assistant-integration AI Assistant} feature.
 
-We added support for the AWS Bedrock service and for providing custom adapters that may extend our solutions or connect to a custom model. To enable this, we needed to refactor the feature's plugin architecture and configuration structure. However, we hope it makes CKEditor ready to provide new AI-related features in the future without introducing more breaking changes.
+We added support for the Amazon Bedrock service and for providing custom adapters that may extend our solutions or connect to a custom model. To enable this, we needed to refactor the feature's plugin architecture and configuration structure. However, we hope it makes CKEditor ready to provide new AI-related features in the future without introducing more breaking changes.
 
 Before, the OpenAI adapter was automatically required by the `AIAssistant` plugin. Now, the integrator must explicitly add the chosen adapter to the list of plugins:
 
@@ -48,7 +48,7 @@ Another change is related to the {@link module:ai/aiassistant~AIAssistantConfig 
 * We introduced a new {@link module:ai/aiconfig~AIConfig `config.ai`} namespace.
 * We moved the `config.aiAssistant` option into {@link module:ai/aiassistant~AIAssistantConfig `config.ai.aiAssistant`}.
 * We extracted adapter-related properties to {@link module:ai/adapters/openaitextadapter~OpenAITextAdapterConfig `config.ai.openAI`}.
-* Also, we renamed some of the properties.
+* Also, we renamed some properties.
 
 ```js
 // Before:
@@ -205,7 +205,7 @@ Listed below are the most important changes that require your attention when upg
 
 ### Changes to the default insert image action
 
-We changed how the images are inserted by default. For a long time, the image insert action detected where the selection is placed, and depending on that inserted an inline image or a block one. This sometimes caused confusion and led to suboptimal experience. From now on, the images will be inserted as block ones by default.
+We changed how the images are inserted by default. For a long time, the image insert action detected where the user placed the selection. Depending on that, the editor inserted an inline image or a block one. This sometimes caused confusion and led to suboptimal experiences. From now on, the images will be inserted as block ones by default.
 
 Changes introduced in the latest version affect the {@link module:image/imageconfig~ImageInsertConfig#type `image.insert.type`} configuration setting. It lets the integrators set up how to handle newly uploaded or pasted images in the editor content.
 

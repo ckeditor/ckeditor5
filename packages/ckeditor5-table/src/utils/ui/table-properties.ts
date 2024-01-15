@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,7 +9,7 @@
 
 import {
 	ButtonView,
-	Model,
+	ViewModel,
 	type ColorOption,
 	type LabeledFieldView,
 	type ListDropdownItemDefinition,
@@ -122,7 +122,7 @@ export function getBorderStyleDefinitions(
 	for ( const style in styleLabels ) {
 		const definition: ListDropdownItemDefinition = {
 			type: 'button',
-			model: new Model( {
+			model: new ViewModel( {
 				_borderStyleValue: style,
 				label: styleLabels[ style ],
 				role: 'menuitemradio',

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -8,7 +8,7 @@
  */
 
 import View from '../view.js';
-import FocusCycler from '../focuscycler.js';
+import FocusCycler, { isFocusable, type FocusableView } from '../focuscycler.js';
 import ToolbarSeparatorView from './toolbarseparatorview.js';
 import ToolbarLineBreakView from './toolbarlinebreakview.js';
 import preventDefault from '../bindings/preventdefault.js';
@@ -111,7 +111,7 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 	 * some optional UI elements that also belong to the toolbar and should be focusable
 	 * by the user.
 	 */
-	public readonly focusables: ViewCollection;
+	public readonly focusables: ViewCollection<FocusableView>;
 
 	declare public locale: Locale;
 
@@ -626,7 +626,7 @@ class StaticLayout implements ToolbarBehavior {
 		view.itemsView.children.bindTo( view.items ).using( item => item );
 
 		// 1:1 pass–through binding, all ToolbarView#items are focusable.
-		view.focusables.bindTo( view.items ).using( item => item );
+		view.focusables.bindTo( view.items ).using( item => isFocusable( item ) ? item : null );
 
 		view.extendTemplate( {
 			attributes: {
@@ -681,7 +681,7 @@ class DynamicGrouping implements ToolbarBehavior {
 	/**
 	 * A collection of focusable toolbar elements.
 	 */
-	public readonly viewFocusables: ViewCollection;
+	public readonly viewFocusables: ViewCollection<FocusableView>;
 
 	/**
 	 * A view containing toolbar items.
@@ -784,11 +784,11 @@ class DynamicGrouping implements ToolbarBehavior {
 		// Only those items that were not grouped are visible to the user.
 		view.itemsView.children.bindTo( this.ungroupedItems ).using( item => item );
 
-		// Make sure all #items visible in the main space of the toolbar are "focuscycleable".
-		this.ungroupedItems.on<CollectionChangeEvent>( 'change', this._updateFocusCycleableItems.bind( this ) );
+		// Make sure all #items visible in the main space of the toolbar are "focuscyclable".
+		this.ungroupedItems.on<CollectionChangeEvent>( 'change', this._updateFocusCyclableItems.bind( this ) );
 
 		// Make sure the #groupedItemsDropdown is also included in cycling when it appears.
-		view.children.on<CollectionChangeEvent>( 'change', this._updateFocusCycleableItems.bind( this ) );
+		view.children.on<CollectionChangeEvent>( 'change', this._updateFocusCyclableItems.bind( this ) );
 
 		// ToolbarView#items is dynamic. When an item is added or removed, it should be automatically
 		// represented in either grouped or ungrouped items at the right index.
@@ -1053,7 +1053,7 @@ class DynamicGrouping implements ToolbarBehavior {
 	}
 
 	/**
-	 * Updates the {@link module:ui/toolbar/toolbarview~ToolbarView#focusables focus–cycleable items}
+	 * Updates the {@link module:ui/toolbar/toolbarview~ToolbarView#focusables focus–cyclable items}
 	 * collection so it represents the up–to–date state of the UI from the perspective of the user.
 	 *
 	 * For instance, the {@link #groupedItemsDropdown} can show up and hide but when it is visible,
@@ -1062,11 +1062,13 @@ class DynamicGrouping implements ToolbarBehavior {
 	 * See the {@link module:ui/toolbar/toolbarview~ToolbarView#focusables collection} documentation
 	 * to learn more about the purpose of this method.
 	 */
-	private _updateFocusCycleableItems() {
+	private _updateFocusCyclableItems() {
 		this.viewFocusables.clear();
 
 		this.ungroupedItems.map( item => {
-			this.viewFocusables.add( item );
+			if ( isFocusable( item ) ) {
+				this.viewFocusables.add( item );
+			}
 		} );
 
 		if ( this.groupedItems.length ) {

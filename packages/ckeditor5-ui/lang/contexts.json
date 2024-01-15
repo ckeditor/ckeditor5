@@ -28,5 +28,7 @@
 	"HEX": "Label of an input field for typing colors in the HEX color format.",
 	"Accept": "Label of the button closing the color picker and confirming the changes done in the color selector component.",
 	"No results found": "The main text of the message shown to the user when given query does not match any results.",
-	"No searchable items": "The main text of the message shown to the user when no results are available."
+	"No searchable items": "The main text of the message shown to the user when no results are available.",
+	"Editor dialog": "A default label of a dialog window displayed on top the editor.",
+	"Close": "The label and the tooltip for the close button in the dialog header."
 }

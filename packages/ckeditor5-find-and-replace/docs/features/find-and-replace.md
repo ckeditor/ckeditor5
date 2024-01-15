@@ -58,7 +58,7 @@ ClassicEditor
 
 The {@link module:find-and-replace/findandreplace~FindAndReplace} plugin registers the `'findAndReplace'` UI button component and the {@link module:find-and-replace/findcommand~FindCommand `'find'`}, {@link module:find-and-replace/findnextcommand~FindNextCommand `'findNext'`}, {@link module:find-and-replace/findpreviouscommand~FindPreviousCommand `'findPrevious'`}, {@link module:find-and-replace/replacecommand~ReplaceCommand `'replace'`} and {@link module:find-and-replace/replaceallcommand~ReplaceAllCommand `'replaceAll'`} commands.
 
-The commands can be executed using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
+You can execute the commands using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
 
 ```js
 // Find all occurrences of a given text.

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,7 +9,7 @@
 
 import { icons, Plugin } from 'ckeditor5/src/core.js';
 import { Collection } from 'ckeditor5/src/utils.js';
-import { Model, SplitButtonView, createDropdown, addListToDropdown, type ListDropdownItemDefinition } from 'ckeditor5/src/ui.js';
+import { ViewModel, SplitButtonView, createDropdown, addListToDropdown, type ListDropdownItemDefinition } from 'ckeditor5/src/ui.js';
 
 import { getNormalizedAndLocalizedLanguageDefinitions } from './utils.js';
 
@@ -98,7 +98,7 @@ export default class CodeBlockUI extends Plugin {
 		for ( const languageDef of normalizedLanguageDefs ) {
 			const definition: ListDropdownItemDefinition = {
 				type: 'button',
-				model: new Model( {
+				model: new ViewModel( {
 					_codeBlockLanguage: languageDef.language,
 					label: languageDef.label,
 					role: 'menuitemradio',
