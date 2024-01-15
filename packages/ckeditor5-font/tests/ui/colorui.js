@@ -572,12 +572,11 @@ describe( 'ColorUI', () => {
 				command = editor.commands.get( 'testColorCommand' );
 				dropdown = editor.ui.componentFactory.create( 'testColor' );
 				dropdown2 = editor.ui.componentFactory.create( 'testColor' );
-
-				dropdown.render();
 			} );
 
 			afterEach( () => {
 				dropdown.destroy();
+				dropdown2.destroy();
 			} );
 
 			it( 'should execute command if in toolbar there are more than one dropdowns', () => {
