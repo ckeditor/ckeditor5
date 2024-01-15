@@ -569,11 +569,12 @@ describe( 'ColorUI', () => {
 		} );
 
 		describe( 'testColor Dropdown', () => {
-			let dropdown;
+			let dropdown, dropdown2;
 
 			beforeEach( () => {
 				command = editor.commands.get( 'testColorCommand' );
 				dropdown = editor.ui.componentFactory.create( 'testColor' );
+				dropdown2 = editor.ui.componentFactory.create( 'testColor' );
 				dropdown.isOpen = true;
 
 				dropdown.render();
@@ -586,9 +587,17 @@ describe( 'ColorUI', () => {
 			it( 'should execute command if the color gets changed when dropdown is open', () => {
 				const spy = sinon.spy( editor, 'execute' );
 
+				dropdown.isOpen = true;
+
 				dropdown.colorSelectorView.colorPickerFragmentView.colorPickerView.fire( 'colorSelected', { color: '#a37474' } );
 
 				sinon.assert.calledWithExactly( spy, 'testColorCommand', sinon.match( { value: '#a37474' } ) );
+
+				dropdown2.isOpen = true;
+
+				dropdown2.colorSelectorView.colorPickerFragmentView.colorPickerView.fire( 'colorSelected', { color: '#ffffff' } );
+
+				sinon.assert.calledWithExactly( spy, 'testColorCommand', sinon.match( { value: '#ffffff' } ) );
 			} );
 		} );
 	} );
