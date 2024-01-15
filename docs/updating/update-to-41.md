@@ -24,7 +24,7 @@ Listed below are the most important changes that require your attention when upg
 
 As of the latest release, we replaced the existing list plugin (often referred to as "list v1") with the {@link features/lists newer and more advanced document list plugin}, formerly known as document list ("list v2").
 
-We implemented the list v2 (document list) feature in 2022 to add support for block content in list items. It supported extending list markup via General HTML Support (GHS). It did not, however, support to-do lists. Since then we concentrated on bringing full list v1 functionality to this plugin. The newest release brings in the to-do list functionality so we were ready to switch.
+We implemented the list v2 (document list) feature in 2022 to add support for block content in list items. It supported extending list markup via General HTML Support (GHS). It did not, however, support to-do lists. Since then we concentrated on bringing full list v1 functionality to this plugin. The newest release brings in the all list functionality so we were ready to switch.
 
 We introduced the new plugin in a manner that aims to be transparent for the users:
 
