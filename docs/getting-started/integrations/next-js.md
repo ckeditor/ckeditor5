@@ -3,7 +3,7 @@ menu-title: Next.js
 meta-title: Integration with Next.js | CKEditor 5 documentation
 meta-description: Learn how to integrate the rich text editor - CKEditor 5 - with the Next.js framework using the App Router or Pages Router routing strategies.
 category: installation
-order: 35
+order: 40
 modified_at: 2023-11-14
 ---
 

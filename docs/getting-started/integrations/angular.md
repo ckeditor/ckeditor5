@@ -2,7 +2,7 @@
 menu-title: Angular
 meta-title: Angular rich text editor component | CKEditor 5 documentation
 category: installation
-order: 20
+order: 30
 ---
 
 {@snippet installation/integrations/framework-integration}

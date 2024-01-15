@@ -1,7 +1,7 @@
 ---
 category: installation
 meta-title: Compatibility with Laravel | CKEditor 5 documentation
-order: 60
+order: 70
 menu-title: Laravel
 ---
 

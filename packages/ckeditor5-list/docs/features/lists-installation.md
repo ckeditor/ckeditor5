@@ -16,10 +16,6 @@ The `List` plugin provides the {@link features/lists ordered (numbered) and unor
 
 ### List feature
 
-<info-box info>
-	The list feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}. The installation instructions are for developers interested in building their own, custom rich text editor.
-</info-box>
-
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:
 
 ```
@@ -41,10 +37,6 @@ ClassicEditor
 ```
 
 ### List properties
-
-<info-box info>
-	The {@link module:list/listproperties~ListProperties list properties feature} is enabled by default in the {@link installation/getting-started/predefined-builds#document-editor document editor build}.
-</info-box>
 
 To enable the list properties feature for ordered and unordered lists, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:
 

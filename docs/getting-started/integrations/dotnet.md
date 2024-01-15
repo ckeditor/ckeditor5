@@ -1,7 +1,7 @@
 ---
 category: installation
 meta-title: Compatibility with .NET | CKEditor 5 documentation
-order: 70
+order: 80
 menu-title: .NET
 ---
 

@@ -1,8 +1,8 @@
 ---
 category: installation
 meta-title: CKEditor 5 integrations overview | CKEditor 5 documentation
-order: 10
-menu-title: Overview
+order: 20
+menu-title: Old integrations overview (delete?)
 ---
 
 # CKEditor&nbsp;5 integrations
