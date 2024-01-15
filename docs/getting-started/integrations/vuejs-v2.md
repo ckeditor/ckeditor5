@@ -1,7 +1,7 @@
 ---
 menu-title: Vue.js 2.x
 meta-title: Vue.js 2.x rich text editor component | CKEditor 5 documentation
-category: integrations
+category: installation
 order: 40
 ---
 

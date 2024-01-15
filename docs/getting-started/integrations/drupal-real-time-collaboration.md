@@ -2,7 +2,7 @@
 menu-title: Drupal
 meta-title: Real-time editing in Drupal | CKEditor 5 documentation
 meta-description: Learn how to set up real-time collaboration in the Drupal editing platform with the CKEditor 5 Premium Features module.
-category: integrations
+category: installation
 order: 90
 modified_at: 2023-10-06
 ---

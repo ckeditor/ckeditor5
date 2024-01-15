@@ -367,6 +367,12 @@
 			"navigationIncludeIndex": true,
 			"categories": [
 				{
+					"name": "Installation",
+					"id": "installation",
+					"slug": "installation",
+					"order": 30
+				},
+				{
 					"name": "Setup",
 					"id": "setup",
 					"slug": "setup",
@@ -379,12 +385,6 @@
 							"order": 20
 						}
 					]
-				},
-				{
-					"name": "Integrations",
-					"id": "integrations",
-					"slug": "integrations",
-					"order": 50
 				},
 				{
 					"name": "Legacy installation methods",
