@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -37,6 +37,11 @@ export default class DocumentListProperties extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
-		logWarning( 'The `DocumentListProperties` plugin is obsolete. Use `ListProperties` instead.' );
+		/**
+		 * The `DocumentListProperties` plugin is obsolete. Use `ListProperties` instead.
+		 *
+		 * @error plugin-obsolete-documentlistproperties
+		 */
+		logWarning( 'plugin-obsolete-documentlistproperties', { pluginName: 'DocumentListProperties' } );
 	}
 }

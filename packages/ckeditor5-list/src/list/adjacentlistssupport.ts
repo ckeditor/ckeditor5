@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -33,18 +33,18 @@ export default class AdjacentListsSupport extends Plugin {
 		} );
 
 		editor.conversion.for( 'upcast' )
-			// Add `listSeparator` element between similar list elements on upcast.
+			// Add a list separator element between similar list elements on upcast.
 			.add( dispatcher => {
 				dispatcher.on<UpcastElementEvent>( 'element:ol', listSeparatorUpcastConverter() );
 				dispatcher.on<UpcastElementEvent>( 'element:ul', listSeparatorUpcastConverter() );
 			} )
-			// View to model transformation.
+			// View-to-model transformation.
 			.elementToElement( {
 				model: 'listSeparator',
 				view: 'ck-list-separator'
 			} );
 
-		// The `listSeparator` element should exist in the view, but should be invisible (hidden).
+		// The list separator element should exist in the view, but should be invisible (hidden).
 		editor.conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'listSeparator',
 			view: {
@@ -53,7 +53,7 @@ export default class AdjacentListsSupport extends Plugin {
 			}
 		} );
 
-		// The `listSeparator` element should not exist in output data.
+		// The list separator element should not exist in the output data.
 		editor.conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'listSeparator',
 			view: ( modelElement, conversionApi ) => {
@@ -70,7 +70,7 @@ export default class AdjacentListsSupport extends Plugin {
 }
 
 /**
- * Inserts a `listSeparator` element between two lists of the same type (`ol` + `ol` or `ul` + `ul`).
+ * Inserts a list separator element between two lists of the same type (`ol` + `ol` or `ul` + `ul`).
  */
 function listSeparatorUpcastConverter(): GetCallback<UpcastElementEvent> {
 	return ( evt, data, conversionApi ) => {
@@ -92,14 +92,14 @@ function listSeparatorUpcastConverter(): GetCallback<UpcastElementEvent> {
 		const writer = conversionApi.writer;
 		const modelElement = writer.createElement( 'listSeparator' );
 
-		// Try to insert `listSeparator` element on the current model cursor position.
+		// Try to insert a list separator element on the current model cursor position.
 		if ( !conversionApi.safeInsert( modelElement, data.modelCursor ) ) {
 			return;
 		}
 
 		const parts = conversionApi.getSplitParts( modelElement );
 
-		// Extend model range with the range of the created listSeparator element.
+		// Extend the model range with the range of the created list separator element.
 		data.modelRange = writer.createRange(
 			data.modelRange!.start,
 			writer.createPositionAfter( parts[ parts.length - 1 ] )

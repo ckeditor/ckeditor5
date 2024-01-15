@@ -9,7 +9,7 @@ Changes for the past releases are available below.
 
 ### Other changes
 
-* Improved performance of processing (loading) long lists. Closes [ckeditor/ckeditor5#6581](https://github.com/ckeditor/ckeditor5/issues/6581). ([b52db48](https://github.com/ckeditor/ckeditor5-list/commit/b52db48))
+* Improved the performance of processing (loading) long lists. Closes [ckeditor/ckeditor5#6581](https://github.com/ckeditor/ckeditor5/issues/6581). ([b52db48](https://github.com/ckeditor/ckeditor5-list/commit/b52db48))
 
 
 ## [18.0.0](https://github.com/ckeditor/ckeditor5-list/compare/v17.0.0...v18.0.0) (March 19, 2020)
@@ -23,7 +23,7 @@ Changes for the past releases are available below.
 
 ### Bug fixes
 
-* Focus the editor before executing toolbar buttons' command. See [ckeditor/ckeditor5#353](https://github.com/ckeditor/ckeditor5/issues/353). ([4af8783](https://github.com/ckeditor/ckeditor5-list/commit/4af8783))
+* Focus the editor before executing the toolbar buttons' command. See [ckeditor/ckeditor5#353](https://github.com/ckeditor/ckeditor5/issues/353). ([4af8783](https://github.com/ckeditor/ckeditor5-list/commit/4af8783))
 
 ### Other changes
 
@@ -41,23 +41,23 @@ Changes for the past releases are available below.
 
 ### MAJOR BREAKING CHANGES
 
-* The structure of the to–do list has changed (both in the editing and in the data). Please refer to the documentation for the information about used class names as it can impact the existing styles of your application.
+* The structure of the to-do list has changed (both in the editing and in the data). Refer to the documentation for the information about used class names as it can impact the existing styles of your application.
 
 ### Features
 
-* Introduces content styles for to–do lists. Unified to–do list representation in the editing and data. Extracted feature styles to a todolist.css file. Closes [#147](https://github.com/ckeditor/ckeditor5-list/issues/147). Closes [ckeditor/ckeditor5#2063](https://github.com/ckeditor/ckeditor5/issues/2063). ([5605663](https://github.com/ckeditor/ckeditor5-list/commit/5605663))
+* Introduces content styles for to-do lists. Unified the to-do list representation in the editing and data. Extracted feature styles to a `todolist.css` file. Closes [#147](https://github.com/ckeditor/ckeditor5-list/issues/147). Closes [ckeditor/ckeditor5#2063](https://github.com/ckeditor/ckeditor5/issues/2063). ([5605663](https://github.com/ckeditor/ckeditor5-list/commit/5605663))
 
 ### Bug fixes
 
 * Improved conversion of invalid nested lists. Closes [#115](https://github.com/ckeditor/ckeditor5-list/issues/115). ([ea55a54](https://github.com/ckeditor/ckeditor5-list/commit/ea55a54))
-* Keyboard navigation should work inside to-do lists in RTL content (see [ckeditor/ckeditor5-list#134](https://github.com/ckeditor/ckeditor5-list/issues/134)). ([63deb51](https://github.com/ckeditor/ckeditor5-list/commit/63deb51))
+* Keyboard navigation should work inside to-do lists in Right-to-Left (RTL) content (see [ckeditor/ckeditor5-list#134](https://github.com/ckeditor/ckeditor5-list/issues/134)). ([63deb51](https://github.com/ckeditor/ckeditor5-list/commit/63deb51))
 * To-do list item styles should not be interactive when applied to editor data (content). Closes [ckeditor/ckeditor5#2090](https://github.com/ckeditor/ckeditor5/issues/2090). ([5662d4e](https://github.com/ckeditor/ckeditor5-list/commit/5662d4e))
 * Use model-to-view position mapping in to-do lists. Closes [ckeditor/ckeditor5#2009](https://github.com/ckeditor/ckeditor5/issues/2009). Closed [ckeditor/ckeditor5#1980](https://github.com/ckeditor/ckeditor5/issues/1980). ([ff460f8](https://github.com/ckeditor/ckeditor5-list/commit/ff460f8))
 
 ### Other changes
 
-* Added `pluginName` property to editing plugin. ([48be07f](https://github.com/ckeditor/ckeditor5-list/commit/48be07f))
-* Added `pluginName` property to to-do editing plugin. ([3fd6758](https://github.com/ckeditor/ckeditor5-list/commit/3fd6758))
+* Added `pluginName` property to the editing plugin. ([48be07f](https://github.com/ckeditor/ckeditor5-list/commit/48be07f))
+* Added `pluginName` property to the to-do editing plugin. ([3fd6758](https://github.com/ckeditor/ckeditor5-list/commit/3fd6758))
 * Updated translations. ([a6cf5dd](https://github.com/ckeditor/ckeditor5-list/commit/a6cf5dd)) ([4f67d34](https://github.com/ckeditor/ckeditor5-list/commit/4f67d34))
 
 
@@ -88,7 +88,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 * Attach `'indentList'` and `'outdentList'` commands to `'indent'` and `'outdent'` commands. ([3a67531](https://github.com/ckeditor/ckeditor5-list/commit/3a67531))
 
-  The `@ckeditor/ckeditor5-indent` feature introduces the "indent" and "outdent" buttons which can be used to manipulate lists and other blocks.
+  The `@ckeditor/ckeditor5-indent` feature introduces the "indent" and "outdent" buttons which you can use to manipulate lists and other blocks.
 * Updated translations. ([6c4b520](https://github.com/ckeditor/ckeditor5-list/commit/6c4b520))
 
 
@@ -110,7 +110,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Bug fixes
 
-* Editor was crashing if multiple, specific block elements were inside list item in loaded/pasted data. Closes [[ckeditor/ckeditor5#1572](https://github.com/ckeditor/ckeditor5/issues/1572)](https://github.com/ckeditor/ckeditor5/issues/1572). ([788eea3](https://github.com/ckeditor/ckeditor5-list/commit/788eea3))
+* The editor was crashing if multiple, specific block elements were inside the list item in loaded or pasted data. Closes [[ckeditor/ckeditor5#1572](https://github.com/ckeditor/ckeditor5/issues/1572)](https://github.com/ckeditor/ckeditor5/issues/1572). ([788eea3](https://github.com/ckeditor/ckeditor5-list/commit/788eea3))
 * Some specific content resulted in creating additional, incorrect list items when loaded. Closes [#121](https://github.com/ckeditor/ckeditor5-list/issues/121). ([50ec81d](https://github.com/ckeditor/ckeditor5-list/commit/50ec81d))
 
 ### Other changes
@@ -127,7 +127,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 ### Bug fixes
 
 * Block filler will be inserted into the list item if its last child is a `<br>` element. Closes [ckeditor/ckeditor5#1312](https://github.com/ckeditor/ckeditor5/issues/1312). ([cb6708e](https://github.com/ckeditor/ckeditor5-list/commit/cb6708e))
-* Preserve the correct order of block elements inside list items during the view to model conversion. Closes [ckeditor/ckeditor5#1263](https://github.com/ckeditor/ckeditor5/issues/1263). ([abccef4](https://github.com/ckeditor/ckeditor5-list/commit/abccef4))
+* Preserve the correct order of block elements inside list items during the view-to-model conversion. Closes [ckeditor/ckeditor5#1263](https://github.com/ckeditor/ckeditor5/issues/1263). ([abccef4](https://github.com/ckeditor/ckeditor5-list/commit/abccef4))
 
 ### Other changes
 
@@ -169,7 +169,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### BREAKING CHANGES
 
-* The license under which CKEditor&nbsp;5 is released has been changed from a triple GPL, LGPL and MPL license to a GPL2+ only. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
+* The license under which CKEditor&nbsp;5 is released was changed from a triple GPL, LGPL, and MPL license to a GPL2+. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
 
 
 ## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-list/compare/v1.0.0-beta.2...v1.0.0-beta.4) (April 19, 2018)
@@ -191,7 +191,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 ### Other changes
 
 * Aligned feature class naming to the new scheme. ([d677fb6](https://github.com/ckeditor/ckeditor5-list/commit/d677fb6))
-* Removed `ViewListItemElement` class and introduced `createViewListItemElement()` utility method. Closes [#89](https://github.com/ckeditor/ckeditor5-list/issues/89). ([e4ac704](https://github.com/ckeditor/ckeditor5-list/commit/e4ac704))
+* Removed the `ViewListItemElement` class and introduced the `createViewListItemElement()` utility method. Closes [#89](https://github.com/ckeditor/ckeditor5-list/issues/89). ([e4ac704](https://github.com/ckeditor/ckeditor5-list/commit/e4ac704))
 * Updated translations. ([762a9ed](https://github.com/ckeditor/ckeditor5-list/commit/762a9ed))
 
 
@@ -199,7 +199,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Bug fixes
 
-* Pressing <kbd>Backspace</kbd> at the beginning of a first list item will turn it into a paragraph instead of merging with the previous block. Closes [#68](https://github.com/ckeditor/ckeditor5-list/issues/68). ([5160277](https://github.com/ckeditor/ckeditor5-list/commit/5160277))
+* Pressing <kbd>Backspace</kbd> at the beginning of the first list item will turn it into a paragraph instead of merging with the previous block. Closes [#68](https://github.com/ckeditor/ckeditor5-list/issues/68). ([5160277](https://github.com/ckeditor/ckeditor5-list/commit/5160277))
 
 ### Other changes
 
@@ -210,8 +210,8 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Bug fixes
 
-* Editor will no longer crash in certain cases during pasting when pasted content could not be converted at all. Closes [#80](https://github.com/ckeditor/ckeditor5-list/issues/80). ([40d0bf5](https://github.com/ckeditor/ckeditor5-list/commit/40d0bf5))
-* Editor will no longer crash when spellchecker corrects a word inside list item in a certain scenario. Closes [#70](https://github.com/ckeditor/ckeditor5-list/issues/70). ([f0b8b44](https://github.com/ckeditor/ckeditor5-list/commit/f0b8b44))
+* The editor will no longer crash in certain cases during pasting when pasted content could not be converted at all. Closes [#80](https://github.com/ckeditor/ckeditor5-list/issues/80). ([40d0bf5](https://github.com/ckeditor/ckeditor5-list/commit/40d0bf5))
+* The editor will no longer crash when the spell checker corrects a word inside a list item in a certain scenario. Closes [#70](https://github.com/ckeditor/ckeditor5-list/issues/70). ([f0b8b44](https://github.com/ckeditor/ckeditor5-list/commit/f0b8b44))
 
 
 ## [0.7.0](https://github.com/ckeditor/ckeditor5-list/compare/v0.6.1...v0.7.0) (September 3, 2017)
@@ -219,20 +219,20 @@ Internal changes only (updated dependencies, documentation, etc.).
 ### Bug fixes
 
 * `ListCommand` should check whether it can be applied to the selection. Closes [#62](https://github.com/ckeditor/ckeditor5-list/issues/62). ([12b77ae](https://github.com/ckeditor/ckeditor5-list/commit/12b77ae))
-* `view.UIElement` will no longer be incorrectly removed instead of `<li>` element if it was before `<li>` element to remove. Closes [#74](https://github.com/ckeditor/ckeditor5-list/issues/74). ([aa7855c](https://github.com/ckeditor/ckeditor5-list/commit/aa7855c))
-* Fixed a bug when editor sometimes crashed when list item was moved outside and before a container in which it was. Closes [#78](https://github.com/ckeditor/ckeditor5-list/issues/78). ([3d8814e](https://github.com/ckeditor/ckeditor5-list/commit/3d8814e))
-* List model fixer will not be triggered if a change-to-fix is in a `transparent` batch. ([0779f35](https://github.com/ckeditor/ckeditor5-list/commit/0779f35))
-* `<ul>` and `<ol>` view elements will now be inserted after view UI elements. Closes [#71](https://github.com/ckeditor/ckeditor5-list/issues/71). ([0e85b2f](https://github.com/ckeditor/ckeditor5-list/commit/0e85b2f))
-* The `ListEngine` plugin will not crash editor when using `DataController#insertContent()` with model items (it worked with data fragments only). Closes [#69](https://github.com/ckeditor/ckeditor5-list/issues/69). ([e0216a8](https://github.com/ckeditor/ckeditor5-list/commit/e0216a8))
+* `view.UIElement` will no longer be incorrectly removed instead of the `<li>` element if it was before the `<li>` element to remove. Closes [#74](https://github.com/ckeditor/ckeditor5-list/issues/74). ([aa7855c](https://github.com/ckeditor/ckeditor5-list/commit/aa7855c))
+* Fixed a bug when the editor sometimes crashed when a list item was moved outside and before a container in which it was. Closes [#78](https://github.com/ckeditor/ckeditor5-list/issues/78). ([3d8814e](https://github.com/ckeditor/ckeditor5-list/commit/3d8814e))
+* The list model fixer will not be triggered if a change to fix is in a `transparent` batch. ([0779f35](https://github.com/ckeditor/ckeditor5-list/commit/0779f35))
+* The `<ul>` and `<ol>` view elements will now be inserted after view UI elements. Closes [#71](https://github.com/ckeditor/ckeditor5-list/issues/71). ([0e85b2f](https://github.com/ckeditor/ckeditor5-list/commit/0e85b2f))
+* The `ListEngine` plugin will not crash the editor when using `DataController#insertContent()` with model items (it worked with data fragments only). Closes [#69](https://github.com/ckeditor/ckeditor5-list/issues/69). ([e0216a8](https://github.com/ckeditor/ckeditor5-list/commit/e0216a8))
 
 ### Features
 
-* List feature should use `EditingKeystrokeHandler` instead of direct event listeners. Closes [#76](https://github.com/ckeditor/ckeditor5-list/issues/76). ([aaf362c](https://github.com/ckeditor/ckeditor5-list/commit/aaf362c))
+* The list feature should use `EditingKeystrokeHandler` instead of direct event listeners. Closes [#76](https://github.com/ckeditor/ckeditor5-list/issues/76). ([aaf362c](https://github.com/ckeditor/ckeditor5-list/commit/aaf362c))
 
 ### Other changes
 
 * Aligned the implementation to the new Command API (see https://github.com/ckeditor/ckeditor5-core/issues/88). ([9a7d596](https://github.com/ckeditor/ckeditor5-list/commit/9a7d596))
-* Cleaning up svg icons. ([2d423db](https://github.com/ckeditor/ckeditor5-list/commit/2d423db))
+* Cleaning up SVG icons. ([2d423db](https://github.com/ckeditor/ckeditor5-list/commit/2d423db))
 
 ### BREAKING CHANGES
 
@@ -243,7 +243,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Bug fixes
 
-* List's view-to-model converter now returns `model.DocumentFragment` containing `listItem` model elements, instead of an array. Closes [#60](https://github.com/ckeditor/ckeditor5/issues/60). ([331242d](https://github.com/ckeditor/ckeditor5-list/commit/331242d))
+* The list's view-to-model converter now returns `model.DocumentFragment` containing `listItem` model elements instead of an array. Closes [#60](https://github.com/ckeditor/ckeditor5/issues/60). ([331242d](https://github.com/ckeditor/ckeditor5-list/commit/331242d))
 * Pasted list items' indentation will now be correctly adjusted if they are pasted into a nested list. Closes [#56](https://github.com/ckeditor/ckeditor5-list/issues/56). ([e91c3d1](https://github.com/ckeditor/ckeditor5-list/commit/e91c3d1))
 
 ### Other changes
@@ -267,6 +267,6 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Other changes
 
-* Made the list feature use the `model.Selection#getSelectedBlocks()` instead of implementing the same logic itself. Closes [#32](https://github.com/ckeditor/ckeditor5/issues/32). Closes [#31](https://github.com/ckeditor/ckeditor5/issues/31). ([d04eab5](https://github.com/ckeditor/ckeditor5-list/commit/d04eab5))
+* Made the list feature use the `model.Selection#getSelectedBlocks()` method instead of implementing the same logic itself. Closes [#32](https://github.com/ckeditor/ckeditor5/issues/32). Closes [#31](https://github.com/ckeditor/ckeditor5/issues/31). ([d04eab5](https://github.com/ckeditor/ckeditor5-list/commit/d04eab5))
 * Stop using `ModelConversionDispatcher#event:move` for list conversion. ([04e9e56](https://github.com/ckeditor/ckeditor5-list/commit/04e9e56))
 * Updated translations. ([8b92825](https://github.com/ckeditor/ckeditor5-list/commit/8b92825))

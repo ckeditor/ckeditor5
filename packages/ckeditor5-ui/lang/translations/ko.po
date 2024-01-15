@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -136,3 +136,11 @@ msgstr "결과 찾을 수 없음"
 msgctxt "The main text of the message shown to the user when no results are available."
 msgid "No searchable items"
 msgstr "검색 가능한 항목 없음"
+
+msgctxt "A default label of a dialog window displayed on top the editor."
+msgid "Editor dialog"
+msgstr "편집기 대화상자"
+
+msgctxt "The label and the tooltip for the close button in the dialog header."
+msgid "Close"
+msgstr "닫기"

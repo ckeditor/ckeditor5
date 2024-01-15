@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -21,14 +21,16 @@ describe( 'DocumentListProperties', () => {
 	} );
 
 	it( 'should emit warning when instantiated', () => {
-		const expectedMessage = '`DocumentListProperties` plugin is obsolete. Use `ListProperties` instead.';
-
 		sinon.stub( console, 'warn' );
 
 		// eslint-disable-next-line no-new
 		new DocumentListProperties();
 
 		sinon.assert.calledOnce( console.warn );
-		sinon.assert.calledWith( console.warn, sinon.match( expectedMessage ) );
+		sinon.assert.calledWithExactly( console.warn,
+			sinon.match( /^plugin-obsolete-documentlistproperties/ ),
+			{ pluginName: 'DocumentListProperties' },
+			sinon.match.string // Link to the documentation
+		);
 	} );
 } );

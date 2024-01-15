@@ -2,7 +2,7 @@ Software License Agreement
 ==========================
 
 **CKEditor&nbsp;5 horizontal line feature**  – https://github.com/ckeditor/ckeditor5-horizontal-line <br>
-Copyright (c) 2003–2023, [CKSource Holding sp. z o.o.](https://cksource.com) All rights reserved.
+Copyright (c) 2003–2024, [CKSource Holding sp. z o.o.](https://cksource.com) All rights reserved.
 
 Licensed under the terms of [GNU General Public License Version 2 or later](http://www.gnu.org/licenses/gpl.html).
 

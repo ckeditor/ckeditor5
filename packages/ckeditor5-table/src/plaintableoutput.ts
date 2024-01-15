@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -71,7 +71,7 @@ export default class PlainTableOutput extends Plugin {
  * @returns Created element.
  */
 function downcastTableElement( table: Element, { writer }: { writer: DowncastWriter } ) {
-	const headingRows = table.getAttribute( 'headingRows' ) || 0;
+	const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
 
 	// Table head rows slot.
 	const headRowsSlot = writer.createSlot( ( element: Node ) =>

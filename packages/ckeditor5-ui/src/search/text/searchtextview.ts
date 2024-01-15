@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -12,7 +12,7 @@ import View from '../../view.js';
 import { default as SearchTextQueryView, type SearchTextQueryViewConfig } from './searchtextqueryview.js';
 import SearchInfoView from '../searchinfoview.js';
 import SearchResultsView from '../searchresultsview.js';
-import FocusCycler from '../../focuscycler.js';
+import FocusCycler, { type FocusableView } from '../../focuscycler.js';
 import { escapeRegExp } from 'lodash-es';
 
 import type FilteredView from '../filteredview.js';
@@ -70,7 +70,7 @@ export default class SearchTextView<
 	/**
 	 * The view that displays the information about the search results.
 	 */
-	public infoView: View | undefined;
+	public infoView: FocusableView | undefined;
 
 	/**
 	 * The view that allows the user to enter the search query.
@@ -113,7 +113,7 @@ export default class SearchTextView<
 	 *
 	 * @readonly
 	 */
-	declare public readonly focusableChildren: ViewCollection;
+	declare public readonly focusableChildren: ViewCollection<FocusableView>;
 
 	public declare locale: Locale;
 
@@ -351,7 +351,7 @@ export interface SearchTextViewConfig<TConfigSearchField extends InputBase<HTMLI
 		 * The view that displays the information about the search results. If not specified,
 		 * {@link module:ui/search/searchinfoview~SearchInfoView} is used.
 		 */
-		instance?: View;
+		instance?: FocusableView;
 
 		/**
 		 * The configuration of text labels displayed in the {@link #infoView} in different states

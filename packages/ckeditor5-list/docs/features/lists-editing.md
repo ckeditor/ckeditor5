@@ -8,20 +8,19 @@ modified_at: 2024-01-02
 
 # Lists editing behavior
 
+This article describes the functionality and behaviors of lists in CKEditor&nbsp;5.
+
 ## Block lists
 
-The current list feature lets any part of the content be part of a list. Content blocks and elements &ndash; such as images, tables, paragraphs, headings, and others &ndash; can be put inside a list item, ensuring the continuity of numbering and retaining indentation.
+Since version 41.0.0, the list feature allows any part of the content to be part of a list. You can put content blocks and elements &ndash; such as images, tables, paragraphs, headings, and others &ndash; inside a list item, ensuring the continuity of numbering and retaining indentation.
 
 To edit a block inside a list item, press <kbd>Enter</kbd> to create a new line and then <kbd>Backspace</kbd> to remove the new list item marker. Keep on entering content. Observe this behavior in the screencast below.
 
 {@img assets/img/adding-list-items.gif 860 Editing a block list item.}
 
-
 ## Simple lists
 
-The simple list configuration option is a great solution for users who do not need to turn block elements into list items. When this setting is active, users can only insert text into list items and will not be able to nest content blocks &ndash; like paragraphs,  or tables &ndash; inside a list item. This would be handy for small editing areas and for content creation solutions that mostly need to work with less advanced documents.
-
-Turning off the block list capabilities as shown below will make editing easier with limited capabilities and also affect some fields like keyboard shortcuts.
+When working with simple content or in small editing areas, you might not need the support for multi-block lists. You can use the {@link module:list/listconfig~ListConfig#multiBlock `config.list.multiBlock`} configuration setting to turn off the block list functionality. When you set this option to `false`, users can only insert text into list items. They will not be able to nest content blocks &ndash; like paragraphs or tables &ndash; inside a list item. We sometimes refer to this setup as "simple lists."
 
 ```js
 import { List } from '@ckeditor/ckeditor5-list';
@@ -31,20 +30,20 @@ ClassicEditor
 		plugins: [ List, /* ... */ ],
 		toolbar: [ 'bulletedList', 'numberedList', /* ... */ ],
 		list: {
-		    multiBlock: false // Turn off the multi block support (enabled by default).
+		    multiBlock: false // Turn off the multi-block support (enabled by default).
 		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
 
-## Adjacent lists merging
+## Merging adjacent lists
 
-By default, two lists of the same type (ordered and unordered) that are next to each other are merged together. This is done so that lists that visually appear to be one continuous list actually are, even if the user has accidentally created several of them.
+By default, the editor merges two ordered and unordered lists of the same type that are next to each other. This happens to preserve the user intention. Lists that visually appear to be one continuous list should constitute one list even if the user has accidentally created several of them.
 
-Unfortunately, in some cases, this can be undesirable behavior. For example, two adjacent numbered lists, each with two items, will merge into a single list with the numbers 1 through 4.
+Sometimes this can be undesirable behavior. For example, two adjacent numbered lists, each with two items, will merge into a single list with the numbers 1 through 4.
 
-To prevent this behavior, enable the `AdjacentListsSupport` plugin.
+To prevent this behavior, enable the {@link module:list/list/adjacentlistssupport~AdjacentListsSupport `AdjacentListsSupport`} plugin.
 
 ```js
 import { AdjacentListsSupport } from '@ckeditor/ckeditor5-list';
@@ -53,18 +52,20 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
 			AdjacentListsSupport,
-			/* Other plugins */
+			/* Other plugins. */
 		],
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
 
+This feature only works for pasted contents or on data load, it {@link updating/update-to-41#changes-to-list-merging does not support entering adjacent lists via the editor UI}. If you are interested in this functionality, refer to [this issue on GitHub](https://github.com/ckeditor/ckeditor5/issues/14478).
+
 ## Indenting lists
 
 Besides controlling {@link features/indent text block indentation}, the indent {@icon @ckeditor/ckeditor5-core/theme/icons/indent.svg Indent} and outdent {@icon @ckeditor/ckeditor5-core/theme/icons/outdent.svg Outdent} buttons allow for indenting list items (nesting them).
 
-This mechanism is completely transparent to the user. From the code perspective, the buttons are implemented by the {@link module:indent/indent~Indent} plugin, but neither these buttons nor the respective commands implement any functionality by default.
+This mechanism is transparent to the user. From the code perspective, the buttons are implemented by the {@link module:indent/indent~Indent} plugin. Neither these buttons nor the respective commands implement any functionality by default.
 
 The target behavior comes from two other plugins:
 

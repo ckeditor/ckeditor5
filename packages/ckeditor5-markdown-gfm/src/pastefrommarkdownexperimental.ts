@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -88,12 +88,12 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 	}
 
 	/**
-	 * Determines if code copied from a website in `text/html` type can be parsed as markdown.
-	 * It removes any OS specific HTML tags e.g. <meta> on Mac OS and <!--StartFragment--> on Windows.
+	 * Determines if the code copied from a website in the `text/html` type can be parsed as Markdown.
+	 * It removes any OS-specific HTML tags, for example, <meta> on macOS and <!--StartFragment--> on Windows.
 	 * Then removes a single wrapper HTML tag or wrappers for sibling tags, and if there are no more tags left,
-	 * returns the remaining text. Returns null, if there are any remaining HTML tags detected.
+	 * returns the remaining text. Returns null if there are any remaining HTML tags detected.
 	 *
-	 * @param htmlString Clipboard content in `text/html` type format.
+	 * @param htmlString Clipboard content in the `text/html` type format.
 	 */
 	private _parseMarkdownFromHtml( htmlString: string ): string | null {
 		const withoutOsSpecificTags = this._removeOsSpecificTags( htmlString );
@@ -112,25 +112,25 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 	}
 
 	/**
-	 * Removes OS specific tags.
+	 * Removes OS-specific tags.
 	 *
-	 * @param htmlString Clipboard content in `text/html` type format.
+	 * @param htmlString Clipboard content in the `text/html` type format.
 	 */
 	private _removeOsSpecificTags( htmlString: string ): string {
-		// Removing <meta> tag present on Mac.
+		// Removing the <meta> tag present on Mac.
 		const withoutMetaTag = htmlString.replace( /^<meta\b[^>]*>/, '' ).trim();
-		// Removing <html> tag present on Windows.
+		// Removing the <html> tag present on Windows.
 		const withoutHtmlTag = withoutMetaTag.replace( /^<html>/, '' ).replace( /<\/html>$/, '' ).trim();
-		// Removing <body> tag present on Windows.
+		// Removing the <body> tag present on Windows.
 		const withoutBodyTag = withoutHtmlTag.replace( /^<body>/, '' ).replace( /<\/body>$/, '' ).trim();
 
-		// Removing <!--StartFragment--> tag present on Windows.
+		// Removing the <!--StartFragment--> tag present on Windows.
 		return withoutBodyTag.replace( /^<!--StartFragment-->/, '' ).replace( /<!--EndFragment-->$/, '' ).trim();
 	}
 
 	/**
-	 * If the input HTML string contains any first level formatting tags
-	 * like <b>, <strong> or <i>, then we should not treat it as markdown.
+	 * If the input HTML string contains any first-level formatting tags
+	 * like <b>, <strong>, or <i>, we should not treat it as Markdown.
 	 *
 	 * @param htmlString Clipboard content.
 	 */
@@ -146,7 +146,7 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 	/**
 	 * Removes multiple HTML wrapper tags from a list of sibling HTML tags.
 	 *
-	 * @param htmlString Clipboard content without any OS specific tags.
+	 * @param htmlString Clipboard content without any OS-specific tags.
 	 */
 	private _removeFirstLevelWrapperTagsAndBrs( htmlString: string ): string {
 		const parser = new DOMParser();
@@ -169,7 +169,7 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 	}
 
 	/**
-	 * Determines if string contains any HTML tags.
+	 * Determines if a string contains any HTML tags.
 	 */
 	private _containsAnyRemainingHtmlTags( str: string ): boolean {
 		return str.includes( '<' );

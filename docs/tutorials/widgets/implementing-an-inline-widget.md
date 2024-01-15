@@ -558,7 +558,7 @@ In this tutorial, you will create a dropdown with a list of available placeholde
 // placeholder/placeholderui.js
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
-import { Model, addListToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui';
+import { ViewModel, addListToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui';
 import { Collection } from '@ckeditor/ckeditor5-utils';
 
 export default class PlaceholderUI extends Plugin {
@@ -604,7 +604,7 @@ function getDropdownItemsDefinitions( placeholderNames ) {
 	for ( const name of placeholderNames ) {
 		const definition = {
 			type: 'button',
-			model: new Model( {
+			model: new ViewModel( {
 				commandParam: name,
 				label: name,
 				withText: true
@@ -755,7 +755,7 @@ import { List } from '@ckeditor/ckeditor5-list';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Command, Plugin } from '@ckeditor/ckeditor5-core';
 import { Widget, toWidget, viewToModelPositionOutsideModelElement } from '@ckeditor/ckeditor5-widget';
-import { Model, addListToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui';
+import { ViewModel, addListToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui';
 import { Collection } from '@ckeditor/ckeditor5-utils';
 
 class Placeholder extends Plugin {
@@ -834,7 +834,7 @@ function getDropdownItemsDefinitions( placeholderNames ) {
 	for ( const name of placeholderNames ) {
 		const definition = {
 			type: 'button',
-			model: new Model( {
+			model: new ViewModel( {
 				commandParam: name,
 				label: name,
 				withText: true

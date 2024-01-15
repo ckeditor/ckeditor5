@@ -72,6 +72,10 @@ There are two license keys available:
 
 The new key available is the new format license key that is **only** valid for versions 38.0.0 or later. The old key will work with all CKEditor&nbsp;5 versions up to the version to be released in May 2024 (when we consider removing support for these keys) as long as the key is not expired.
 
+<info-box>
+	Please note that the Premium Features Free Trial dashboard only provides one license key. This key is meant to work with the most recent version of CKEditor&nbsp;5.
+</info-box>
+
 ## Activating the product
 
 You need to add the license key to your CKEditor&nbsp;5 configuration. It is enough to add the license key once for the standalone features listed in this guide, no matter which and how many premium features you intend to use.

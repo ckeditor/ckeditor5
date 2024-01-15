@@ -80,7 +80,7 @@ ClassicEditor
 			// More plugins.
 			// ...
 		],
-		// More of editor's config.
+		// More of editor's configuration.
 		// ...
 	} )
 	.then( /* ... */ )
@@ -113,7 +113,7 @@ Some other ways to output the edited content include:
 * {@link features/export-word Export to Word} &ndash; Generate editable `.docx` files out of your editor-created content.
 * {@link features/export-pdf Export to PDF} &ndash; Generate portable PDF files out of your editor-created content.
 * {@link features/autoformat Autoformatting} &ndash; Use Markdown syntax shortcodes to automatically format your content as you type!
-* {@link features/paste-markdown Paste Markdown} &ndash; Paste Markdown formatted content straight into the editor.
+* {@link features/paste-markdown Paste Markdown} &ndash; Paste Markdown-formatted content straight into the editor.
 
 ## Contribute
 

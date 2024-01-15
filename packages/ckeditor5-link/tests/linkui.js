@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -238,6 +238,8 @@ describe( 'LinkUI', () => {
 			formView = linkUIFeature.formView;
 			actionsView = linkUIFeature.actionsView;
 
+			formView.urlInputView.fieldView.value = 'ckeditor.com';
+
 			editor.commands.get( 'link' ).isEnabled = true;
 			editor.commands.get( 'unlink' ).isEnabled = true;
 
@@ -270,13 +272,30 @@ describe( 'LinkUI', () => {
 
 			setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
 
-			// Mock some leftover value **in DOM**, e.g. after previous editing.
-			formView.urlInputView.fieldView.element.value = 'leftover';
-
+			// Open the link balloon.
 			linkUIFeature._showUI();
+
+			// Simulate clicking the "edit" button.
 			actionsView.fire( 'edit' );
 
+			// Change text in the URL field.
+			formView.urlInputView.fieldView.element.value = 'to-be-discarded';
+
+			// Cancel link editing.
+			formView.fire( 'cancel' );
+
+			// Open the editing panel again.
+			actionsView.fire( 'edit' );
+
+			// Expect original value in the URL field.
 			expect( formView.urlInputView.fieldView.element.value ).to.equal( 'url' );
+
+			// Expect "save" button to be enabled, despite not making any changes.
+			expect( formView.saveButtonView.isEnabled ).to.equal( true );
+
+			// Expect entire content of the URL field to be selected.
+			const elem = formView.urlInputView.fieldView.element;
+			expect( elem.value.substring( elem.selectionStart, elem.selectionEnd ) ).to.equal( 'url' );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-link/issues/123
@@ -1403,6 +1422,30 @@ describe( 'LinkUI', () => {
 				} );
 		};
 
+		const createEditorWithEmptyLinks = allowCreatingEmptyLinks => {
+			return ClassicTestEditor
+				.create( editorElement, {
+					plugins: [ LinkEditing, LinkUI, Paragraph, BlockQuote ],
+					link: { allowCreatingEmptyLinks }
+				} )
+				.then( editor => {
+					const linkUIFeature = editor.plugins.get( LinkUI );
+
+					linkUIFeature._createViews();
+
+					const formView = linkUIFeature.formView;
+
+					formView.render();
+
+					editor.model.schema.extend( '$text', {
+						allowIn: '$root',
+						allowAttributes: 'linkHref'
+					} );
+
+					return { editor, formView };
+				} );
+		};
+
 		beforeEach( () => {
 			// Make sure that forms are lazy initiated.
 			expect( linkUIFeature.formView ).to.be.null;
@@ -1427,6 +1470,40 @@ describe( 'LinkUI', () => {
 			expect( editor.ui.focusTracker.isFocused ).to.be.true;
 		} );
 
+		describe( 'empty links', () => {
+			it( 'should not allow empty links by default', () => {
+				const allowCreatingEmptyLinks = editor.config.get( 'link.allowCreatingEmptyLinks' );
+
+				expect( allowCreatingEmptyLinks ).to.equal( false );
+			} );
+
+			it( 'should allow enabling empty links', () => {
+				return createEditorWithEmptyLinks( true ).then( ( { editor } ) => {
+					const allowCreatingEmptyLinks = editor.config.get( 'link.allowCreatingEmptyLinks' );
+
+					expect( allowCreatingEmptyLinks ).to.equal( true );
+
+					return editor.destroy();
+				} );
+			} );
+
+			it( 'should not allow submitting empty form when link is required', () => {
+				return createEditorWithEmptyLinks( false ).then( ( { editor, formView } ) => {
+					expect( formView.saveButtonView.isEnabled ).to.be.false;
+
+					return editor.destroy();
+				} );
+			} );
+
+			it( 'should allow submitting empty form when link is not required', () => {
+				return createEditorWithEmptyLinks( true ).then( ( { editor, formView } ) => {
+					expect( formView.saveButtonView.isEnabled ).to.be.true;
+
+					return editor.destroy();
+				} );
+			} );
+		} );
+
 		describe( 'link protocol', () => {
 			it( 'should use a default link protocol from the `config.link.defaultProtocol` when provided', () => {
 				return ClassicTestEditor
@@ -1445,10 +1522,14 @@ describe( 'LinkUI', () => {
 			} );
 
 			it( 'should not add a protocol without the configuration', () => {
+				const linkCommandSpy = sinon.spy( editor.commands.get( 'link' ), 'execute' );
+
 				formView.urlInputView.fieldView.value = 'ckeditor.com';
 				formView.fire( 'submit' );
 
-				expect( formView.urlInputView.fieldView.value ).to.equal( 'ckeditor.com' );
+				sinon.assert.calledWith( linkCommandSpy, 'ckeditor.com', sinon.match.any );
+
+				return editor.destroy();
 			} );
 
 			it( 'should not add a protocol to the local links even when `config.link.defaultProtocol` configured', () => {
@@ -1481,7 +1562,6 @@ describe( 'LinkUI', () => {
 					formView.urlInputView.fieldView.value = 'http://example.com';
 					formView.fire( 'submit' );
 
-					expect( formView.urlInputView.fieldView.value ).to.equal( 'http://example.com' );
 					sinon.assert.calledWith( linkCommandSpy, 'http://example.com', sinon.match.any );
 
 					return editor.destroy();
@@ -1536,7 +1616,6 @@ describe( 'LinkUI', () => {
 					formView.urlInputView.fieldView.value = 'email@example.com';
 					formView.fire( 'submit' );
 
-					expect( formView.urlInputView.fieldView.value ).to.equal( 'mailto:email@example.com' );
 					expect( getModelData( editor.model ) ).to.equal(
 						'[<$text linkHref="mailto:email@example.com">email@example.com</$text>]'
 					);
@@ -1552,19 +1631,20 @@ describe( 'LinkUI', () => {
 				formView.urlInputView.fieldView.value = 'email@example.com';
 				formView.fire( 'submit' );
 
-				expect( formView.urlInputView.fieldView.value ).to.equal( 'mailto:email@example.com' );
 				expect( getModelData( editor.model ) ).to.equal(
 					'<paragraph>[<$text linkHref="mailto:email@example.com">email@example.com</$text>]</paragraph>'
 				);
 			} );
 
-			it( 'should not add an email protocol when given provided within the value' +
+			it( 'should not add an email protocol when given provided within the value ' +
 				'even when `config.link.defaultProtocol` configured', () => {
 				return createEditorWithDefaultProtocol( 'mailto:' ).then( ( { editor, formView } ) => {
+					const linkCommandSpy = sinon.spy( editor.commands.get( 'link' ), 'execute' );
+
 					formView.urlInputView.fieldView.value = 'mailto:test@example.com';
 					formView.fire( 'submit' );
 
-					expect( formView.urlInputView.fieldView.value ).to.equal( 'mailto:test@example.com' );
+					sinon.assert.calledWith( linkCommandSpy, 'mailto:test@example.com', sinon.match.any );
 
 					return editor.destroy();
 				} );

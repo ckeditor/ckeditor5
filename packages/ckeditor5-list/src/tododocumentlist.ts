@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -37,6 +37,11 @@ export default class TodoDocumentList extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
-		logWarning( 'The `TodoDocumentList` plugin is obsolete. Use `TodoList` instead.' );
+		/**
+		 * The `TodoDocumentList` plugin is obsolete. Use `TodoList` instead.
+		 *
+		 * @error plugin-obsolete-tododocumentlist
+		 */
+		logWarning( 'plugin-obsolete-tododocumentlist', { pluginName: 'TodoDocumentList' } );
 	}
 }

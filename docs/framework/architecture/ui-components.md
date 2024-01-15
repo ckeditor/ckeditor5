@@ -31,7 +31,7 @@ balloon.render();
 balloon.content.add( balloonButton );
 
 const positions = BalloonPanelView.defaultPositions;
-balloon.pin( { 
+balloon.pin( {
 	target: document.getElementById( 'balloon' ),
 	positions: [ positions.southArrowNorth ]
 } );
@@ -315,10 +315,10 @@ A dropdown consists of two elements: a button and a panel. The button expands th
 Inside a dropdown, you can put a list. To do so, you can use the {@link module:ui/dropdown/utils#addListToDropdown `addListToDropdown()`} helper function. Also, you must add items to a collection before putting them inside the dropdown.
 
 ```js
-import { 
+import {
 	addListToDropdown,
 	createDropdown,
-	Model
+	ViewModel
 } from '@ckeditor/ckeditor5-ui';
 import { Collection, Locale } from '@ckeditor/ckeditor5-utils';
 
@@ -327,14 +327,14 @@ const locale = new Locale();
 const collection = new Collection();
 collection.add( {
 	type: 'button',
-	model: new Model( {
+	model: new ViewModel( {
 		label: 'Button',
 		withText: true
 	} )
 } );
 collection.add( {
 	type: 'switchbutton',
-	model: new Model( {
+	model: new ViewModel( {
 		label: 'Switch button',
 		withText: true
 	} )
@@ -585,8 +585,8 @@ import tableMergeCell from '@ckeditor/ckeditor5-table/theme/icons/table-merge-ce
 import tableCellProperties from '@ckeditor/ckeditor5-table/theme/icons/table-cell-properties.svg';
 import tableProperties from '@ckeditor/ckeditor5-table/theme/icons/table-properties.svg';
 
-import nextArrow from '@ckeditor/ckeditor5-ui/theme/icons/next-arrow.svg';
-import previousArrow from '@ckeditor/ckeditor5-ui/theme/icons/previous-arrow.svg';
+import nextArrow from '@ckeditor/ckeditor5-core/theme/icons/next-arrow.svg';
+import previousArrow from '@ckeditor/ckeditor5-core/theme/icons/previous-arrow.svg';
 
 import undo from '@ckeditor/ckeditor5-core/theme/icons/undo.svg';
 import redo from '@ckeditor/ckeditor5-core/theme/icons/redo.svg';
@@ -599,11 +599,16 @@ import loupe from '@ckeditor/ckeditor5-core/theme/icons/loupe.svg';
 
 {@snippet framework/ui/ui-input}
 
-There are also inputs in the CKEditor&nbsp;5 UI library. There are a few use cases to put inputs inside a main toolbar, but you also can add them to balloon panels.
+The CKEditor&nbsp;5 UI library contains a few input elements. Usually, they are used in dropdowns and balloon panels, but you can also use them in a main toolbar.
+
+To create them, use the {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView `LabeledFieldView`} class, which takes two parameters:
+
+* an instance of the {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#locale `locale`} class,
+* a helper function, depending on the type of field you want to create.
 
 ### Text
 
-You can use the {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView `LabaledFieldView`} class to instantiate an input. It takes two parameters: {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#locale `locale`} and a helper function. Pass the {@link module:ui/labeledfield/utils#createLabeledInputText `createLabeledInputText()`} helper function to create a text input.
+To create a text field, pass the {@link module:ui/labeledfield/utils#createLabeledInputText `createLabeledInputText()`} helper function as the second parameter to the {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView `LabeledFieldView`} class.
 
 ```js
 import { createLabeledInputText, LabeledFieldView } from '@ckeditor/ckeditor5-ui';
@@ -620,7 +625,7 @@ document.getElementById( 'input-text' ).append( textInput.element );
 
 ### Number
 
-You can use the {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView `LabaledFieldView`} class to instantiate an input. It takes two parameters: {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#locale `locale`} and a helper function. Pass the {@link module:ui/labeledfield/utils#createLabeledInputNumber `createLabeledInputNumber()`} helper function to create a number input.
+To create a number field, pass the {@link module:ui/labeledfield/utils#createLabeledInputNumber `createLabeledInputNumber()`} helper function as the second parameter to the {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView `LabeledFieldView`} class.
 
 ```js
 import { createLabeledInputNumber, LabeledFieldView } from '@ckeditor/ckeditor5-ui';

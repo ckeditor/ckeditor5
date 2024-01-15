@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -23,7 +23,7 @@
 
 	& .ck-dropdown__panel {
 		display: none;
-		z-index: var(--ck-z-modal);
+		z-index: var(--ck-z-panel);
 		max-width: var(--ck-dropdown-max-width);
 
 		position: absolute;
@@ -91,5 +91,5 @@
  * See https://github.com/ckeditor/ckeditor5/issues/7874
  */
 .ck.ck-toolbar .ck-dropdown__panel {
-	z-index: calc( var(--ck-z-modal) + 1 );
+	z-index: calc( var(--ck-z-panel) + 1 );
 }

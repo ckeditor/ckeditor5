@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
+/* global document, console */
 
 import { global } from '@ckeditor/ckeditor5-utils';
 import TextareaView from '../../src/textarea/textareaview.js';
@@ -186,6 +186,82 @@ describe( 'TextareaView', () => {
 				view.value = '1';
 				await requestAnimationFrame();
 				expect( parseFloat( view.element.style.height ) ).to.equal( twoRowsHeight );
+			} );
+
+			it( 'should be deferred until the view becomes visible again (#reset())', async () => {
+				const warnStub = testUtils.sinon.stub( console, 'warn' );
+				const updateSpy = sinon.spy();
+
+				view.on( 'update', updateSpy );
+
+				view.value = '1\n2\n3\n4\n5';
+				await requestAnimationFrame();
+				const initialHeight = parseFloat( view.element.style.height );
+
+				sinon.assert.calledOnce( updateSpy );
+
+				// Remove the view from DOM. Anything that happens after it should be deferred.
+				wrapper.remove();
+
+				view.reset();
+				await requestAnimationFrame();
+
+				sinon.assert.calledTwice( updateSpy );
+				const heightAfterReset = parseFloat( view.element.style.height );
+
+				expect( heightAfterReset ).to.equal( initialHeight );
+
+				// Inject the view back into DOM. Anything that was pending should get executed.
+				document.body.appendChild( wrapper );
+
+				// The first one is for the ResizeObserver to notice the view is visible again.
+				// The second one is fo the auto-grow logic executed in another RAF.
+				await requestAnimationFrame();
+				await requestAnimationFrame();
+
+				const heightAfterShow = parseFloat( view.element.style.height );
+
+				expect( heightAfterShow ).to.be.lessThan( initialHeight );
+				sinon.assert.notCalled( warnStub );
+				sinon.assert.calledThrice( updateSpy );
+			} );
+
+			it( 'should be deferred until the view becomes visible again (#value change)', async () => {
+				const warnStub = testUtils.sinon.stub( console, 'warn' );
+				const updateSpy = sinon.spy();
+
+				view.on( 'update', updateSpy );
+
+				view.value = '1\n2\n3\n4\n5';
+				await requestAnimationFrame();
+				const initialHeight = parseFloat( view.element.style.height );
+
+				sinon.assert.calledOnce( updateSpy );
+
+				// Remove the view from DOM. Anything that happens after it should be deferred.
+				wrapper.remove();
+
+				view.value = '1';
+				await requestAnimationFrame();
+
+				sinon.assert.calledOnce( updateSpy );
+				const heightAfterValueChange = parseFloat( view.element.style.height );
+
+				expect( heightAfterValueChange ).to.equal( initialHeight );
+
+				// Inject the view back into DOM. Anything that was pending should get executed.
+				document.body.appendChild( wrapper );
+
+				// The first one is for the ResizeObserver to notice the view is visible again.
+				// The second one is fo the auto-grow logic executed in another RAF.
+				await requestAnimationFrame();
+				await requestAnimationFrame();
+
+				const heightAfterShow = parseFloat( view.element.style.height );
+
+				expect( heightAfterShow ).to.be.lessThan( initialHeight );
+				sinon.assert.notCalled( warnStub );
+				sinon.assert.calledTwice( updateSpy );
 			} );
 		} );
 

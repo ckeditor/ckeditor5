@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -12,6 +12,7 @@ import type { Locale } from '@ckeditor/ckeditor5-utils';
 import View from '../view.js';
 import ButtonView from '../button/buttonview.js';
 import type ViewCollection from '../viewcollection.js';
+import type { FocusableView } from '../focuscycler.js';
 
 import dropdownArrowIcon from '../../theme/icons/dropdown-arrow.svg';
 
@@ -57,7 +58,7 @@ export default class CollapsibleView extends View {
 	/**
 	 * A collection of the child views that can be collapsed by clicking the {@link #buttonView}.
 	 */
-	public readonly children: ViewCollection;
+	public readonly children: ViewCollection<FocusableView>;
 
 	/**
 	 * Creates an instance of the collapsible view.
@@ -65,7 +66,7 @@ export default class CollapsibleView extends View {
 	 * @param locale The {@link module:core/editor/editor~Editor#locale} instance.
 	 * @param childViews An optional array of initial child views to be inserted into the collapsible.
 	 */
-	constructor( locale: Locale, childViews?: Array<View> ) {
+	constructor( locale: Locale, childViews?: Array<FocusableView> ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
