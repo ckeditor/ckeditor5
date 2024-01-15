@@ -27,7 +27,7 @@ The demo below uses the {@link installation/getting-started/predefined-builds#cl
 {@snippet features/easy-image}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Additional feature information

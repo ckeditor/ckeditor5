@@ -18,7 +18,7 @@ Copy some text from one of the styled paragraphs below and press <kbd>Ctrl</kbd>
 {@snippet features/paste-plain-text}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Additional feature information

@@ -30,6 +30,7 @@ codebase
 Cordova
 cycler
 Dailymotion
+debounce
 declutter
 deduplicate
 dialogs

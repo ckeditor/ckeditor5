@@ -52,7 +52,7 @@ Changes for the past releases are available below.
 
 * `DataController` will now use a single instance of the view document for all its operations (`DataController#viewDocument`). Closes [ckeditor/ckeditor5#6381](https://github.com/ckeditor/ckeditor5/issues/6381). ([851bac6](https://github.com/ckeditor/ckeditor5-engine/commit/851bac6))
 * `Document#version` is no longer read-only. ([968b193](https://github.com/ckeditor/ckeditor5-engine/commit/968b193))
-* `StylesProcessor` rules will not be stored in a singleton, which made them shared between editor instances. In order to allow binding a styles processor instance to a specific view document, we had to replace a dynamic `#document` property in view nodes with a static one, set upon node creation. Closes [ckeditor/ckeditor5#6091](https://github.com/ckeditor/ckeditor5/issues/6091). ([0e2f02e](https://github.com/ckeditor/ckeditor5-engine/commit/0e2f02e))
+* `StylesProcessor` rules will not be stored in a singleton, which made them shared between editor instances. To allow binding a styles processor instance to a specific view document, we had to replace a dynamic `#document` property in view nodes with a static one, set upon node creation. Closes [ckeditor/ckeditor5#6091](https://github.com/ckeditor/ckeditor5/issues/6091). ([0e2f02e](https://github.com/ckeditor/ckeditor5-engine/commit/0e2f02e))
 * Introduced support for multi-range selections. Closes [ckeditor/ckeditor5#6116](https://github.com/ckeditor/ckeditor5/issues/6116). ([ffce577](https://github.com/ckeditor/ckeditor5-engine/commit/ffce577))
 
 
