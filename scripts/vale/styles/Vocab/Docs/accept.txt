@@ -50,6 +50,7 @@ hardcode
 hotlink
 hotlinked
 Iframely
+inlined
 ipsum
 Ivanov
 JSDoc
@@ -74,6 +75,7 @@ modified_at
 monorepo
 (?i)multiline
 [Nn]amespace
+namespacing
 npm
 Nuxt
 nvm
@@ -87,6 +89,7 @@ Rauch
 reinitialization
 reinitialize
 Rollup
+ruleset
 sanitization
 scaffold
 [Ss]chema

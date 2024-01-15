@@ -55,7 +55,7 @@ swap:
   grayed-out|greyed-out: unavailable
   hard code|hardcode: hard-code
   hard coding|hardcoding: hard-coding
-  in order to: to
+  "[Ii]n order to": to
   Javascript: JavaScript
   (?<!.)JS: JavaScript
   LINUX|linux: Linux
@@ -78,6 +78,8 @@ swap:
   popup: pop-up
   preconfigure: pre-configure
   preconfigured: pre-configured
+  preformat: pre-format
+  preformatted: pre-formatted
   premade: pre-made
   prod: production environment
   (?<!in) real time: real-time

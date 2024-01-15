@@ -133,7 +133,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### BREAKING CHANGES
 
-* The license under which CKEditor&nbsp;5 is released has been changed from a triple GPL, LGPL and MPL license to a GPL2+ only. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
+* The license under which CKEditor&nbsp;5 is released was changed from a triple GPL, LGPL, and MPL license to a GPL2+. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
 
 
 ## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v1.0.0-beta.2...v1.0.0-beta.4) (April 19, 2018)
@@ -149,7 +149,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### BREAKING CHANGES
 
-* The config options `config.toolbarContainer` and `config.editableContainer` have been removed. Please refer to the `DecoupledEditor` class API documentation to learn about possible methods of bootstrapping the UI.
+* The `config.toolbarContainer` and `config.editableContainer` configuration options were removed. Refer to the `DecoupledEditor` class API documentation to learn about possible methods of bootstrapping the UI.
 
 
 ## 1.0.0-beta.1 (March 15, 2018)
