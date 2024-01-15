@@ -550,10 +550,7 @@ describe( 'ColorUI', () => {
 				.create( element, {
 					plugins: [ Paragraph, TestColorPlugin, Undo ],
 					testColor: testColorConfig,
-					toolbar: [
-						'testColor',
-						'testColor'
-					]
+					toolbar: [ 'testColor' ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;
