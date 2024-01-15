@@ -5,12 +5,12 @@
 
 import { getEnvKeystrokeText, type Locale } from '@ckeditor/ckeditor5-utils';
 import {
-	DEFAULT_GROUP_ID,
 	type KeystrokeDefinition,
 	type KeystrokeGroupDefinition,
 	type KeystrokesCategory
 } from './accessibilityhelp.js';
 import View from '../view.js';
+import LabelView from '../label/labelview.js';
 
 /**
  * TODO
@@ -22,15 +22,22 @@ export default class AccessibilityHelpContentView extends View<HTMLDivElement> {
 	constructor( locale: Locale, keystrokes: Map<string, KeystrokesCategory> ) {
 		super( locale );
 
+		const t = locale.t;
+		const helpLabel = new LabelView();
+
+		helpLabel.text = t( 'Help Contents. To close this dialog press ESC.' );
+
 		this.setTemplate( {
 			tag: 'div',
 			attributes: {
 				class: [ 'ck', 'ck-accessibility-help-content' ],
-				'aria-label': 'Help Contents. To close this dialog press ESC.',
+				'aria-labelledby': helpLabel.id,
+				role: 'document',
 				tabindex: -1
 			},
 			children: [
-				...this._getKeystrokeCategoryElements( keystrokes )
+				...this._getKeystrokeCategoryElements( keystrokes ),
+				helpLabel
 			]
 		} );
 	}
@@ -55,30 +62,10 @@ export default class AccessibilityHelpContentView extends View<HTMLDivElement> {
 			header.innerHTML = category.label;
 			container.append( header );
 
-			if ( category.description ) {
-				const description = document.createElement( 'p' );
-				description.innerHTML = category.description;
-				container.append( description );
-			}
-
-			const table = document.createElement( 'table' );
-			const tbody = document.createElement( 'tbody' );
-
 			for ( const [ groupId, group ] of category.keystrokeGroups ) {
-				tbody.append( ...this._createKeystrokeGroupElements( groupId, group ) );
+				container.append( ...this._createKeystrokeGroupElements( groupId, group ) );
 			}
 
-			table.innerHTML = `<table>
-				<thead>
-					<tr>
-						<th>Action</th>
-						<th>Keystroke</th>
-					</tr>
-				</thead>
-				${ tbody.outerHTML }
-			</table>`;
-
-			container.append( table );
 			categoryElements.push( container );
 		}
 
@@ -90,20 +77,20 @@ export default class AccessibilityHelpContentView extends View<HTMLDivElement> {
 	 */
 	private _createKeystrokeGroupElements( groupId: string, group: KeystrokeGroupDefinition ): Array<HTMLElement> {
 		const elements = [];
+		const dl = document.createElement( 'dl' );
 
-		if ( groupId !== DEFAULT_GROUP_ID ) {
-			const headerRow = document.createElement( 'tr' );
+		if ( group.label ) {
+			const header = document.createElement( 'h4' );
+			header.innerHTML = group.label;
 
-			headerRow.innerHTML = `<tr>
-				<th colspan="2">${ group.label }</th>
-			</tr>`;
-
-			elements.push( headerRow );
+			elements.push( header );
 		}
 
 		for ( const keystrokeDef of group.keystrokes.sort( ( a, b ) => sortAlphabetically( a.label, b.label ) ) ) {
-			elements.push( this._createKeystrokeRowElement( keystrokeDef ) );
+			dl.append( ...this._createKeystrokeRowElement( keystrokeDef ) );
 		}
+
+		elements.push( dl );
 
 		return elements;
 	}
@@ -111,8 +98,9 @@ export default class AccessibilityHelpContentView extends View<HTMLDivElement> {
 	/**
 	 * TODO
 	 */
-	private _createKeystrokeRowElement( keystrokeDef: KeystrokeDefinition ): HTMLElement {
-		const row = document.createElement( 'tr' );
+	private _createKeystrokeRowElement( keystrokeDef: KeystrokeDefinition ): [ HTMLElement, HTMLElement ] {
+		const dt = document.createElement( 'dt' );
+		const dd = document.createElement( 'dd' );
 		const normalizedKeystrokeDefinition = normalizeKeystrokeDefinition( keystrokeDef.keystroke );
 		const keystrokeAlternativeHTMLs = [];
 
@@ -120,12 +108,10 @@ export default class AccessibilityHelpContentView extends View<HTMLDivElement> {
 			keystrokeAlternativeHTMLs.push( keystrokeAlternative.map( keystrokeToEnvKbd ).join( '' ) );
 		}
 
-		row.innerHTML = `<tr>
-			<td>${ keystrokeDef.label }</td>
-			<td>${ keystrokeAlternativeHTMLs.join( ', ' ) }</td>
-		</tr>`;
+		dt.innerHTML = keystrokeDef.label;
+		dd.innerHTML = keystrokeAlternativeHTMLs.join( ', ' );
 
-		return row;
+		return [ dt, dd ];
 	}
 }
 
