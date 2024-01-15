@@ -118,6 +118,22 @@ export default class FindAndReplaceUI extends Plugin {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public afterInit(): void {
+		const editor = this.editor;
+
+		if ( editor.plugins.has( 'AccessibilityHelp' ) ) {
+			const t = editor.t;
+
+			editor.plugins.get( 'AccessibilityHelp' ).registerKeystrokes( {
+				label: t( 'Find in the document' ),
+				keystroke: 'CTRL+F'
+			} );
+		}
+	}
+
+	/**
 	 * Creates a dropdown containing the find and replace form.
 	 */
 	private _createDropdown(): DropdownView {

@@ -113,7 +113,7 @@ export default class LinkUI extends Plugin {
 			const t = editor.t;
 
 			editor.plugins.get( 'AccessibilityHelp' ).registerKeystrokes( {
-				label: t( 'Link' ),
+				label: t( 'Create link' ),
 				keystroke: 'CTRL+L'
 			} );
 

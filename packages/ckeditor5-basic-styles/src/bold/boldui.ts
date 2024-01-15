@@ -66,7 +66,7 @@ export default class BoldUI extends Plugin {
 			const t = editor.t;
 
 			editor.plugins.get( 'AccessibilityHelp' ).registerKeystrokes( {
-				label: t( 'Bold' ),
+				label: t( 'Bold text' ),
 				keystroke: 'CTRL+B'
 			} );
 		}

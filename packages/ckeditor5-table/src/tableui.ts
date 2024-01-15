@@ -239,7 +239,7 @@ export default class TableUI extends Plugin {
 
 			editor.plugins.get( 'AccessibilityHelp' ).registerKeystrokes( {
 				group: 'table',
-				groupLabel: t( 'In a table cell' ),
+				groupLabel: t( 'Keystrokes that can be used in a table cell' ),
 				keystrokes: [
 					{
 						label: t( 'Move the selection to the next cell' ),

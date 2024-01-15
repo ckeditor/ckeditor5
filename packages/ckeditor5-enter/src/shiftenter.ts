@@ -83,7 +83,7 @@ export default class ShiftEnter extends Plugin {
 			const t = editor.t;
 
 			editor.plugins.get( 'AccessibilityHelp' ).registerKeystrokes( {
-				label: t( 'Insert a soft break (a <kbd>&lt;br&gt;</kbd>)' ),
+				label: t( 'Insert a soft break (a <code>&lt;br&gt;</code> element)' ),
 				keystroke: 'Shift+Enter'
 			} );
 		}

@@ -207,7 +207,7 @@ export default class Widget extends Plugin {
 
 			editor.plugins.get( 'AccessibilityHelp' ).registerKeystrokes( {
 				group: 'widget',
-				groupLabel: t( 'When a widget is selected (for example: image, table, horizontal line, etc.)' ),
+				groupLabel: t( 'Keystrokes that can be used when a widget is selected (for example: image, table, etc.)' ),
 				keystrokes: [ {
 					label: t( 'Insert a new paragraph directly after a widget' ),
 					keystroke: 'Enter'

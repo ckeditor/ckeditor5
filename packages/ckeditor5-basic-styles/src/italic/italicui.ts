@@ -68,7 +68,7 @@ export default class ItalicUI extends Plugin {
 			const t = editor.t;
 
 			editor.plugins.get( 'AccessibilityHelp' ).registerKeystrokes( {
-				label: t( 'Italic' ),
+				label: t( 'Italic text' ),
 				keystroke: 'CTRL+I'
 			} );
 		}
