@@ -977,16 +977,17 @@ function normalizeViewAttributeKeyValueConfig( config: any ) {
 	}
 
 	const key: string = config.view.key;
-	const value = typeof config.view.value == 'undefined' ? /[\s\S]*/ : config.view.value;
 	let normalized: MatcherPattern;
 
 	if ( key == 'class' || key == 'style' ) {
 		const keyName = key == 'class' ? 'classes' : 'styles';
 
 		normalized = {
-			[ keyName ]: value
+			[ keyName ]: config.view.value
 		};
 	} else {
+		const value = typeof config.view.value == 'undefined' ? /[\s\S]*/ : config.view.value;
+
 		normalized = {
 			attributes: {
 				[ key ]: value

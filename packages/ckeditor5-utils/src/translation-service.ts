@@ -9,10 +9,11 @@
  * @module utils/translation-service
  */
 
-import type { Translations } from '@ckeditor/ckeditor5-core';
+import type { Translations } from './locale.js';
 import CKEditorError from './ckeditorerror.js';
 import global from './dom/global.js';
 import { merge } from 'lodash-es';
+import { type ArrayOrItem } from './toarray.js';
 
 declare global {
 	var CKEDITOR_TRANSLATIONS: Translations;
@@ -232,7 +233,7 @@ export function _clear(): void {
  * @param translations Translations passed in editor config.
  */
 export function _unifyTranslations(
-	translations: Translations | Array<Translations> | undefined
+	translations?: ArrayOrItem<Translations>
 ): Translations | undefined {
 	return Array.isArray( translations ) ?
 		translations.reduce( ( acc, translation ) => merge( acc, translation ) ) :

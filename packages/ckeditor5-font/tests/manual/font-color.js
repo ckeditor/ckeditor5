@@ -34,14 +34,6 @@ ClassicEditor
 		],
 		fontColor: {
 			columns: 3
-		},
-		contentLanguage: 'pl',
-		translations: {
-			pl: {
-				dictionary: {
-					Bold: 'Pogrubienie'
-				}
-			}
 		}
 	} )
 	.then( editor => {

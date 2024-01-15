@@ -14,6 +14,7 @@ import {
 	normalizeColorOptions,
 	getLocalizedColorOptions,
 	focusChildOnDropdownOpen,
+	type ColorSelectorView,
 	type ColorSelectorExecuteEvent,
 	type ColorSelectorColorPickerCancelEvent,
 	type ColorSelectorColorPickerShowEvent
@@ -63,6 +64,11 @@ export default class ColorUI extends Plugin {
 	public columns: number;
 
 	/**
+	 * Keeps a reference to {@link module:ui/colorselector/colorselectorview~ColorSelectorView}.
+	 */
+	public colorSelectorView: ColorSelectorView | undefined;
+
+	/**
 	 * Keeps all changes in color picker in one batch while dropdown is open.
 	 */
 	declare private _undoStepBatch: Batch;
@@ -94,6 +100,7 @@ export default class ColorUI extends Plugin {
 		this.icon = icon;
 		this.dropdownLabel = dropdownLabel;
 		this.columns = editor.config.get( `${ this.componentName }.columns` )!;
+		this.colorSelectorView = undefined;
 	}
 
 	/**
@@ -116,7 +123,7 @@ export default class ColorUI extends Plugin {
 			// Font color dropdown rendering is deferred once it gets open to improve performance (#6192).
 			let dropdownContentRendered = false;
 
-			const colorSelectorView = addColorSelectorToDropdown( {
+			this.colorSelectorView = addColorSelectorToDropdown( {
 				dropdownView,
 				colors: localizedColors.map( option => ( {
 					label: option.label,
@@ -133,7 +140,7 @@ export default class ColorUI extends Plugin {
 				colorPickerViewConfig: hasColorPicker ? ( componentConfig.colorPicker || {} ) : false
 			} );
 
-			colorSelectorView.bind( 'selectedColor' ).to( command, 'value' );
+			this.colorSelectorView.bind( 'selectedColor' ).to( command, 'value' );
 
 			dropdownView.buttonView.set( {
 				label: this.dropdownLabel,
@@ -149,7 +156,7 @@ export default class ColorUI extends Plugin {
 
 			dropdownView.bind( 'isEnabled' ).to( command );
 
-			colorSelectorView.on<ColorSelectorExecuteEvent>( 'execute', ( evt, data ) => {
+			this.colorSelectorView.on<ColorSelectorExecuteEvent>( 'execute', ( evt, data ) => {
 				if ( dropdownView.isOpen ) {
 					editor.execute( this.commandName, {
 						value: data.value,
@@ -166,11 +173,11 @@ export default class ColorUI extends Plugin {
 				}
 			} );
 
-			colorSelectorView.on<ColorSelectorColorPickerShowEvent>( 'colorPicker:show', () => {
+			this.colorSelectorView.on<ColorSelectorColorPickerShowEvent>( 'colorPicker:show', () => {
 				this._undoStepBatch = editor.model.createBatch();
 			} );
 
-			colorSelectorView.on<ColorSelectorColorPickerCancelEvent>( 'colorPicker:cancel', () => {
+			this.colorSelectorView.on<ColorSelectorColorPickerCancelEvent>( 'colorPicker:cancel', () => {
 				if ( this._undoStepBatch!.operations.length ) {
 					// We need to close the dropdown before the undo batch.
 					// Otherwise, ColorUI treats undo as a selected color change,
@@ -192,11 +199,11 @@ export default class ColorUI extends Plugin {
 
 				if ( isVisible ) {
 					if ( documentColorsCount !== 0 ) {
-						colorSelectorView!.updateDocumentColors( editor.model, this.componentName );
+						this.colorSelectorView!.updateDocumentColors( editor.model, this.componentName );
 					}
 
-					colorSelectorView!.updateSelectedColors();
-					colorSelectorView!.showColorGridsFragment();
+					this.colorSelectorView!.updateSelectedColors();
+					this.colorSelectorView!.showColorGridsFragment();
 				}
 			} );
 

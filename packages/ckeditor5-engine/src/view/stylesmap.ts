@@ -303,7 +303,7 @@ export default class StylesMap {
 			return '';
 		}
 
-		return this.getStylesEntries()
+		return this._getStylesEntries()
 			.map( arr => arr.join( ':' ) )
 			.sort()
 			.join( ';' ) + ';';
@@ -411,7 +411,7 @@ export default class StylesMap {
 			return this._styleProcessor.getStyleNames( this._styles );
 		}
 
-		const entries = this.getStylesEntries();
+		const entries = this._getStylesEntries();
 
 		return entries.map( ( [ key ] ) => key );
 	}
@@ -426,7 +426,7 @@ export default class StylesMap {
 	/**
 	 * Returns normalized styles entries for further processing.
 	 */
-	public getStylesEntries(): Array<PropertyDescriptor> {
+	private _getStylesEntries(): Array<PropertyDescriptor> {
 		const parsed: Array<PropertyDescriptor> = [];
 
 		const keys = Object.keys( this._styles );

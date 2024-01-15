@@ -43,7 +43,6 @@ import type ViewElement from '../view/element.js';
 import type ViewNode from '../view/node.js';
 import type ViewPosition from '../view/position.js';
 import type ViewRange from '../view/range.js';
-import StylesMap from '../view/stylesmap.js';
 import type {
 	default as Mapper,
 	MapperModelToViewPositionEvent
@@ -1665,26 +1664,16 @@ function changeAttribute( attributeCreator: AttributeCreatorFunction ) {
 		// First remove the old attribute if there was one.
 		if ( data.attributeOldValue !== null && oldAttribute ) {
 			if ( oldAttribute.key == 'class' ) {
-				const classes = typeof oldAttribute.value == 'string' ? oldAttribute.value.split( /\s+/ ) : oldAttribute.value;
+				const classes = toArray( oldAttribute.value );
 
 				for ( const className of classes ) {
 					viewWriter.removeClass( className, viewElement );
 				}
 			} else if ( oldAttribute.key == 'style' ) {
-				if ( typeof oldAttribute.value == 'string' ) {
-					const styles = new StylesMap( viewWriter.document.stylesProcessor );
+				const keys = Object.keys( oldAttribute.value );
 
-					styles.setTo( oldAttribute.value );
-
-					for ( const [ key ] of styles.getStylesEntries() ) {
-						viewWriter.removeStyle( key, viewElement );
-					}
-				} else {
-					const keys = Object.keys( oldAttribute.value );
-
-					for ( const key of keys ) {
-						viewWriter.removeStyle( key, viewElement );
-					}
+				for ( const key of keys ) {
+					viewWriter.removeStyle( key, viewElement );
 				}
 			} else {
 				viewWriter.removeAttribute( oldAttribute.key, viewElement );
@@ -1694,26 +1683,16 @@ function changeAttribute( attributeCreator: AttributeCreatorFunction ) {
 		// Then set the new attribute.
 		if ( data.attributeNewValue !== null && newAttribute ) {
 			if ( newAttribute.key == 'class' ) {
-				const classes = typeof newAttribute.value == 'string' ? newAttribute.value.split( /\s+/ ) : newAttribute.value;
+				const classes = toArray( newAttribute.value );
 
 				for ( const className of classes ) {
 					viewWriter.addClass( className, viewElement );
 				}
 			} else if ( newAttribute.key == 'style' ) {
-				if ( typeof newAttribute.value == 'string' ) {
-					const styles = new StylesMap( viewWriter.document.stylesProcessor );
+				const keys = Object.keys( newAttribute.value );
 
-					styles.setTo( newAttribute.value );
-
-					for ( const [ key, value ] of styles.getStylesEntries() ) {
-						viewWriter.setStyle( key, value, viewElement );
-					}
-				} else {
-					const keys = Object.keys( newAttribute.value );
-
-					for ( const key of keys ) {
-						viewWriter.setStyle( key, ( newAttribute.value as Record<string, string> )[ key ], viewElement );
-					}
+				for ( const key of keys ) {
+					viewWriter.setStyle( key, ( newAttribute.value as Record<string, string> )[ key ], viewElement );
 				}
 			} else {
 				viewWriter.setAttribute( newAttribute.key, newAttribute.value as string, viewElement );

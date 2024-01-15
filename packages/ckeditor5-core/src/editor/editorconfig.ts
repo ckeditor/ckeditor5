@@ -7,7 +7,7 @@
  * @module core/editor/editorconfig
  */
 
-import { type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
+import type { ArrayOrItem, Translations } from '@ckeditor/ckeditor5-utils';
 import type Context from '../context.js';
 import type { PluginConstructor } from '../plugin.js';
 import type Editor from './editor.js';
@@ -700,13 +700,3 @@ export interface UiConfig {
 	 **/
 	poweredBy?: PoweredByConfig;
 }
-
-/**
- * Translations object definition.
- */
-export type Translations = {
-	[ language: string ]: {
-		dictionary: { [ messageId: string ]: string | ReadonlyArray<string> };
-		getPluralForm?: ( n: number ) => number;
-	};
-};

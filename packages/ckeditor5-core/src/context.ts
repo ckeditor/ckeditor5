@@ -146,10 +146,8 @@ export default class Context {
 	 * @param config The context configuration.
 	 */
 	constructor( config?: ContextConfig ) {
-		/**
-		 * We don't pass translations to the config, because its behavior of splitting keys
-		 * with dots (e.g. `resize.width` => `resize: { width }`) breaks the translations.
-		 */
+		// We don't pass translations to the config, because its behavior of splitting keys
+		// with dots (e.g. `resize.width` => `resize: { width }`) breaks the translations.
 		const { translations, ...rest } = config || {};
 
 		this.config = new Config<ContextConfig>( rest, ( this.constructor as typeof Context ).defaultConfig );

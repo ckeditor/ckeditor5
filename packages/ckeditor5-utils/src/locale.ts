@@ -9,10 +9,9 @@
 
 /* globals console */
 
-import toArray from './toarray.js';
+import toArray, { type ArrayOrItem } from './toarray.js';
 import { _translate, _unifyTranslations, type Message } from './translation-service.js';
 import { getLanguageDirection, type LanguageDirection } from './language.js';
-import type { Translations } from '@ckeditor/ckeditor5-core';
 
 /**
  * Represents the localization services.
@@ -115,11 +114,16 @@ export default class Locale {
 	 * See {@link #contentLanguage}.
 	 * @param translations Translations passed as a editor config parameter.
 	 */
-	constructor( { uiLanguage = 'en', contentLanguage, translations }: {
-		readonly uiLanguage?: string;
-		readonly contentLanguage?: string;
-		readonly translations?: Translations | Array<Translations>;
-	} = {}
+	constructor(
+		{
+			uiLanguage = 'en',
+			contentLanguage,
+			translations
+		}: {
+			readonly uiLanguage?: string;
+			readonly contentLanguage?: string;
+			readonly translations?: ArrayOrItem<Translations>;
+		} = {}
 	) {
 		this.uiLanguage = uiLanguage;
 		this.contentLanguage = contentLanguage || this.uiLanguage;
@@ -190,3 +194,13 @@ function interpolateString( string: string, values: ReadonlyArray<any> ): string
 		return ( index < values.length ) ? values[ index ] : match;
 	} );
 }
+
+/**
+ * Translations object definition.
+ */
+export type Translations = {
+	[ language: string ]: {
+		dictionary: { [ messageId: string ]: string | ReadonlyArray<string> };
+		getPluralForm?: ( n: number ) => number;
+	};
+};
