@@ -117,8 +117,8 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Upgraded minimal versions of Node to `8.0.0` and npm to `5.7.1`. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([612ea3c](https://github.com/ckeditor/ckeditor5-cloud-services/commit/612ea3c))
 * The `Editor#getData()` method now returns an empty string by default when editor content is empty (instead of returning `'<p>&nbsp;</p>'` as before).
 * The `editor#pluginsReady` event was removed. Use plugin `afterInit()` method instead.
-* Removed `EditorWithUI#element` property.  The `EditorUI#element` property should be used instead.
-* Removed `EditorWithUI#uiReady` event.  The `EditorUI#ready` event should be used instead.
+* Removed `EditorWithUI#element` property. The `EditorUI#element` property should be used instead.
+* Removed `EditorWithUI#uiReady` event. The `EditorUI#ready` event should be used instead.
 * Removed `view` parameter in `EditorUI` constructor. Only subclasses should use it without passing it further to `EditorUI`.
 * Removed `EditorUI#view` property. The `view` property from subclasses (like `ClassicEditorUI#view`) should be used directly instead.
 * The `editor.plugins.get()` will now throw an error if the plugin is not loaded. Use `editor.plugins.has()` to check if plugin is available.

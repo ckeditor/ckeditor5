@@ -78,7 +78,7 @@ By default, users can upload `jpeg`, `png`, `gif`, `bmp`, `webp`, and `tiff` fil
 
 It is up to you to implement any filtering mechanisms on your server to restrict the types of images allowed to be uploaded.
 
-## What's next?
+## What's next
 
 Check out the comprehensive {@link features/image-upload Image upload overview} to learn more about different ways of uploading images in CKEditor&nbsp;5.
 

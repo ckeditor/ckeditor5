@@ -157,7 +157,7 @@ ClassicEditor
 	Please note that most integrations will also require the {@link module:image/image~Image} plugin to be loaded in the editor to make this feature work properly (or one of {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline}). Check out the comprehensive {@link features/images-installation guide to images} in CKEditor&nbsp;5 to learn more.
 </info-box>
 
-## What's next?
+## What's next
 
 Check out the comprehensive {@link features/image-upload Image upload overview} to learn more about different ways of uploading images in CKEditor&nbsp;5.
 

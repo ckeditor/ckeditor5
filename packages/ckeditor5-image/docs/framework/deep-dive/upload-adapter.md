@@ -559,7 +559,7 @@ ClassicEditor
 	} );
 ```
 
-## What's next?
+## What's next
 
 Check out the comprehensive {@link features/image-upload image upload overview} guide to learn more about different ways of uploading images in CKEditor&nbsp;5. See the {@link features/images-overview image feature} guide to find out more about handling images in CKEditor&nbsp;5.
 

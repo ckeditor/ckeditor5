@@ -57,7 +57,7 @@ There are a few groups of packages:
 * [Themes](https://github.com/ckeditor/ckeditor5#themes) &ndash; Packages that implement editor themes.
 * [Builds](https://github.com/ckeditor/ckeditor5#builds) &ndash; Packages containing {@link installation/getting-started/predefined-builds CKEditor&nbsp;5 builds}.
 
-## What's next?
+## What's next
 
 To start using the framework refer to:
 

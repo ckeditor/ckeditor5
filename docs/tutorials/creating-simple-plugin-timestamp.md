@@ -243,7 +243,7 @@ Well done! When you rebuild the editor, you should be able to see that your time
 If you got lost at any point, see [the final implementation of the plugin](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/timestamp-plugin/final-project). You can paste the code from `app.js`, or clone and install the whole thing, and it will run out of the box.
 
 <info-box>
-	**What's next?**
+	**What's next**
 
 	If you want to continue learning, move on to our more advanced tutorials, where we will create {@link tutorials/abbreviation-plugin-tutorial/abbreviation-plugin-level-1 an abbreviation plugin} or read more about the {@link framework/index CKEditor 5 framework}.
 </info-box>
