@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { getEnvKeystrokeText, type Locale } from '@ckeditor/ckeditor5-utils';
+import { createElement, getEnvKeystrokeText, type Locale } from '@ckeditor/ckeditor5-utils';
 import {
 	type KeystrokeDefinition,
 	type KeystrokeGroupDefinition,
@@ -36,7 +36,8 @@ export default class AccessibilityHelpContentView extends View<HTMLDivElement> {
 				tabindex: -1
 			},
 			children: [
-				...this._getKeystrokeCategoryElements( keystrokes ),
+				createElement( document, 'p', {}, t( 'Below, you can find a list of keyboard shortcuts that can be used in the editor.' ) ),
+				...this._createCategories( keystrokes ),
 				helpLabel
 			]
 		} );
@@ -52,45 +53,33 @@ export default class AccessibilityHelpContentView extends View<HTMLDivElement> {
 	/**
 	 * TODO
 	 */
-	private _getKeystrokeCategoryElements( keystrokes: Map<string, KeystrokesCategory> ): Array<HTMLElement> {
-		const categoryElements = [];
+	private _createCategories( keystrokes: Map<string, KeystrokesCategory> ): Array<HTMLElement> {
+		return Array.from( keystrokes.entries() ).map( ( [ , category ] ) => {
+			return createElement( document, 'section', {}, [
+				// Category header.
+				createElement( document, 'h3', {}, category.label ),
 
-		for ( const [ , category ] of keystrokes ) {
-			const container = document.createElement( 'section' );
-			const header = document.createElement( 'h3' );
-
-			header.innerHTML = category.label;
-			container.append( header );
-
-			for ( const [ groupId, group ] of category.keystrokeGroups ) {
-				container.append( ...this._createKeystrokeGroupElements( groupId, group ) );
-			}
-
-			categoryElements.push( container );
-		}
-
-		return categoryElements;
+				// Category definitions (<dl>) and their optional headers (<h4>).
+				...Array.from( category.keystrokeGroups.entries() ).map( this._createGroup.bind( this ) ).flat()
+			] );
+		} );
 	}
 
 	/**
 	 * TODO
 	 */
-	private _createKeystrokeGroupElements( groupId: string, group: KeystrokeGroupDefinition ): Array<HTMLElement> {
-		const elements = [];
-		const dl = document.createElement( 'dl' );
+	private _createGroup( [ , group ]: [ groupId: string, group: KeystrokeGroupDefinition ] ): Array<HTMLElement> {
+		const elements: Array<HTMLElement> = [
+			createElement( document, 'dl', {}, group.keystrokes
+				.sort( ( a, b ) => sortAlphabetically( a.label, b.label ) )
+				.map( this._createGroupRow.bind( this ) )
+				.flat()
+			)
+		];
 
 		if ( group.label ) {
-			const header = document.createElement( 'h4' );
-			header.innerHTML = group.label;
-
-			elements.push( header );
+			elements.unshift( createElement( document, 'h4', {}, group.label ) );
 		}
-
-		for ( const keystrokeDef of group.keystrokes.sort( ( a, b ) => sortAlphabetically( a.label, b.label ) ) ) {
-			dl.append( ...this._createKeystrokeRowElement( keystrokeDef ) );
-		}
-
-		elements.push( dl );
 
 		return elements;
 	}
@@ -98,9 +87,10 @@ export default class AccessibilityHelpContentView extends View<HTMLDivElement> {
 	/**
 	 * TODO
 	 */
-	private _createKeystrokeRowElement( keystrokeDef: KeystrokeDefinition ): [ HTMLElement, HTMLElement ] {
-		const dt = document.createElement( 'dt' );
-		const dd = document.createElement( 'dd' );
+	private _createGroupRow( keystrokeDef: KeystrokeDefinition ): [ HTMLElement, HTMLElement ] {
+		const t = this.locale!.t;
+		const dt = createElement( document, 'dt' );
+		const dd = createElement( document, 'dd' );
 		const normalizedKeystrokeDefinition = normalizeKeystrokeDefinition( keystrokeDef.keystroke );
 		const keystrokeAlternativeHTMLs = [];
 
@@ -109,7 +99,8 @@ export default class AccessibilityHelpContentView extends View<HTMLDivElement> {
 		}
 
 		dt.innerHTML = keystrokeDef.label;
-		dd.innerHTML = keystrokeAlternativeHTMLs.join( ', ' );
+		dd.innerHTML = keystrokeAlternativeHTMLs.join( ', ' ) +
+			( keystrokeDef.mayRequireFn ? ` ${ t( '(may require <kbd>Fn</kbd>)' ) }` : '' );
 
 		return [ dt, dd ];
 	}

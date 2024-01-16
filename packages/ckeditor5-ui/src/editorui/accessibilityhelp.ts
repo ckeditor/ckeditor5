@@ -53,12 +53,12 @@ export default class AccessibilityHelp extends Plugin {
 		const t = editor.locale.t;
 
 		this.registerKeystrokeCategory( DEFAULT_CATEGORY_ID, {
-			label: t( 'Content editing' ),
+			label: t( 'Content editing keystrokes' ),
 			description: t( 'These keyboard shortcuts allow for quick access to content editing features.' )
 		} );
 
 		this.registerKeystrokeCategory( 'navigation', {
-			label: t( 'User interface and navigation' ),
+			label: t( 'User interface and content navigation keystrokes' ),
 			description: t( 'Use the following keystrokes for more efficient navigation in the CKEditor 5 user interface.' )
 		} );
 
@@ -66,7 +66,7 @@ export default class AccessibilityHelp extends Plugin {
 			category: 'navigation',
 			keystrokes: [
 				{
-					label: t( 'Close contextual balloons and UI components like dropdowns' ),
+					label: t( 'Close contextual balloons, dropdowns, and dialogs' ),
 					keystroke: 'Esc'
 				},
 				{
@@ -74,13 +74,13 @@ export default class AccessibilityHelp extends Plugin {
 					keystroke: 'Tab'
 				},
 				{
-					label: t( 'Move focus between fields (inputs and buttons) in contextual balloons' ),
+					label: t( 'Move focus between fields (inputs and buttons) in balloons and dialogs' ),
 					keystroke: 'Tab'
 				},
 				{
-					label: t( 'Move focus to the toolbar' ),
-					// TODO may require Fn
-					keystroke: 'Alt+F10'
+					label: t( 'Move focus to the toolbar, also navigate between toolbars' ),
+					keystroke: 'Alt+F10',
+					mayRequireFn: true
 				},
 				{
 					label: t( 'Navigate through the toolbar' ),
@@ -219,4 +219,5 @@ export interface KeystrokeGroupDefinition {
 export interface KeystrokeDefinition {
 	label: string;
 	keystroke: string | Array<string> | Array<Array<string>>;
+	mayRequireFn?: boolean;
 }
