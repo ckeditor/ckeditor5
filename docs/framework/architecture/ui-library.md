@@ -797,7 +797,7 @@ If not specified otherwise, the dialog will be displayed in the center of the ed
    	position: DialogViewPosition.EDITOR_BOTTOM_CENTER
    } );
    ```
-* To change the position of an existing dialog or manage positions dynamically, use the {@link module:ui/dialog/dialog~DialogShowEvent `show`} event listener (see the [example code](#dialogeventshowid-event)).
+* To change the position of an existing dialog or manage positions dynamically, use the {@link module:ui/dialog/dialog~DialogShowEvent `show`} event listener (see the [example code](#dialogshowid-event)).
 
 In some cases, for instance when the content of the dialog or the environment changes (e.g. the editor is resized), you may want to force-update the position of the dialog. This will restore its position to the {@link module:ui/dialog/dialog~DialogDefinition#position configured default}. It will also reset any manual positioning (dragging) done by the user. To do so, use the {@link module:ui/dialog/dialogview~DialogView#updatePosition} method.
 
