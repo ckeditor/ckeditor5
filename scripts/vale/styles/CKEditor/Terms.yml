@@ -62,6 +62,7 @@ swap:
   Lo-Dash|lodash: Lodash
   lower case: lowercase
   MacOS: macOS
+  markdown|MarkDown: Markdown
   mark-up: markup
   "(?:mongoDB|Mongodb|Mongo-db|Mongo DB)": MongoDB
   "(?:MSExcel|MS Excel)": Microsoft Excel

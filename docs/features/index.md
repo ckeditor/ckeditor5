@@ -17,7 +17,7 @@ CKEditor&nbsp;5 has many features, and the number is constantly growing. You can
 
 ## Using CKEditor&nbsp;5 features
 
-Most of the features are easily accessible from a {@link features/toolbar highly configurable toolbar} (in fact there are {@link features/blocktoolbar two of those}) offering buttons and dropdowns you may arrange the way you need. This is aided by dedicated feature toolbars in many cases. Plenty of actions can also be executed with {@link features/keyboard-support keyboard shortcuts}. And the whole user interface comes with a {@link features/ui-language multitude of translations} and it supports RTL languages.
+Most of the features are easily accessible from a {@link features/toolbar highly configurable toolbar} (in fact, there are {@link features/blocktoolbar two of those}) offering buttons and dropdowns you may arrange the way you need. This is aided by dedicated feature toolbars in many cases. Plenty of actions can also be executed with {@link features/keyboard-support keyboard shortcuts}. The whole user interface comes with a {@link features/ui-language multitude of translations} and it supports RTL languages.
 
 ## CKEditor&nbsp;5 WYSIWYG editor features and functions
 
@@ -39,11 +39,11 @@ Most of these formatting options can be applied from the {@link features/toolbar
 
 Rich text would not be rich without images. You can upload them, caption them, style them, you can even paste them straight from the URL with the help of the {@link features/images-overview image feature} {@icon @ckeditor/ckeditor5-core/theme/icons/image-upload.svg Image} and create a responsive design. If that is not enough, {@link features/media-embed embed media} {@icon @ckeditor/ckeditor5-media-embed/theme/icons/media.svg Media} into your content.
 
-An essential feature for online content are {@link features/link links} {@icon @ckeditor/ckeditor5-link/theme/icons/link.svg Link} - these can be easily pasted, changed and attributed.
+An essential feature for online content are {@link features/link links} {@icon @ckeditor/ckeditor5-link/theme/icons/link.svg Link} &ndash; these can be easily pasted, changed, and attributed.
 
-Provide clear and accessible data using {@link features/tables tables} {@icon @ckeditor/ckeditor5-core/theme/icons/table.svg Table} (you can even nest them to create advanced layouts), ordered {@icon @ckeditor/ckeditor5-core/theme/icons/numberedlist.svg Numbered List} and unordered {@link features/lists lists} {@icon @ckeditor/ckeditor5-core/theme/icons/bulletedlist.svg} Bulleted List with various markers to choose from and {@link features/todo-lists to-do lists} {@icon @ckeditor/ckeditor5-core/theme/icons/todolist.svg To-do List}. Use {@link features/indent indents and outdents} {@icon @ckeditor/ckeditor5-core/theme/icons/indent.svg Indent} as well as {@link features/block-quote block quotes} {@icon @ckeditor/ckeditor5-core/theme/icons/quote.svg Quote} to structure the content and draw the reader's attention to it.
+Provide clear and accessible data using {@link features/tables tables} {@icon @ckeditor/ckeditor5-core/theme/icons/table.svg Table} (you can even nest them to create advanced layouts), ordered {@icon @ckeditor/ckeditor5-core/theme/icons/numberedlist.svg Numbered List} and unordered {@link features/lists lists} {@icon @ckeditor/ckeditor5-core/theme/icons/bulletedlist.svg} Bulleted List with various markers to choose from, and {@link features/todo-lists to-do lists} {@icon @ckeditor/ckeditor5-core/theme/icons/todolist.svg To-do List}. Use {@link features/indent indents and outdents} {@icon @ckeditor/ckeditor5-core/theme/icons/indent.svg Indent} and {@link features/block-quote block quotes} {@icon @ckeditor/ckeditor5-core/theme/icons/quote.svg Quote} to structure the content and draw the reader's attention to it.
 
-Enrich you content further by {@link features/html-embed embedding HTML code} {@icon @ckeditor/ckeditor5-core/theme/icons/html.svg HTML} - this one is especially useful for webmasters. If you need to present code instead of employing it - use the {@link features/code-blocks code block} {@icon @ckeditor/ckeditor5-core/theme/icons/codeblock.svg Code Block} that lets you produce code listing with a syntax highlight, too!
+Enrich your content further by {@link features/html-embed embedding HTML code} {@icon @ckeditor/ckeditor5-core/theme/icons/html.svg HTML} &ndash; this one is especially useful for webmasters. If you need to present code instead of employing it, use the {@link features/code-blocks code block} {@icon @ckeditor/ckeditor5-core/theme/icons/codeblock.svg Code Block} that lets you produce code listing with a syntax highlight, too!
 
 {@img assets/img/features-images.png 800 CKEditor&nbsp;5 image feature.}
 
@@ -51,7 +51,7 @@ Enrich you content further by {@link features/html-embed embedding HTML code} {@
 
 The {@link framework/index CKEditor&nbsp;5 Framework} was created with {@link features/collaboration collaboration} in mind.
 
-The {@link features/users users API} is used by functions such as {@link features/track-changes track changes} {@icon @ckeditor/ckeditor5-track-changes/theme/icons/track-changes.svg Track changes}, that allow the users to follow any changes made to the edited document in real-time. Accepting or rejecting those changes is done with a single click from a convenient side panel.
+The {@link features/users users API} is used by functions such as {@link features/track-changes track changes} {@icon @ckeditor/ckeditor5-track-changes/theme/icons/track-changes.svg Track changes} that allow the users to follow any changes made to the edited document in real time. Accepting or rejecting these changes is done with a single click from a convenient side panel.
 
 Where tracking changes is not enough, the {@link features/comments comments} {@icon @ckeditor/ckeditor5-comments/theme/icons/add-comment.svg Comments} come in, offering a perfect collaboration communication platform for writing and editing as a team.
 
@@ -65,17 +65,17 @@ You can also easily track the progress and changes done in the content with the 
 
 ### Document conversion
 
-If you need to share the document outside your team, use the {@link features/export-pdf export to PDF feature} {@icon @ckeditor/ckeditor5-export-pdf/theme/icons/exportpdf.svg Export to PDF} to produce industry standard, portable, cross-platform final files. If you need to work further on the document, choose the {@link features/export-word export to Word feature} {@icon @ckeditor/ckeditor5-export-word/theme/icons/exportword.svg Export to Word} instead &ndash; and keep your comments and changes in the resulting document, ready to be edited further. These two are accompanied by the {@link features/pagination pagination feature} {@icon @ckeditor/ckeditor5-pagination/theme/icons/arrow-up.svg Previous page}{@icon @ckeditor/ckeditor5-pagination/theme/icons/arrow-down.svg Next page}, to ensure all produced documents will always look the way they should.
+If you need to share the document outside your team, use the {@link features/export-pdf export to PDF feature} {@icon @ckeditor/ckeditor5-export-pdf/theme/icons/exportpdf.svg Export to PDF} to produce industry-standard, portable, cross-platform final files. If you need to work further on the document, choose the {@link features/export-word export to Word feature} {@icon @ckeditor/ckeditor5-export-word/theme/icons/exportword.svg Export to Word} instead &ndash; and keep your comments and changes in the resulting document, ready to edit further. These two are accompanied by the {@link features/pagination pagination feature} {@icon @ckeditor/ckeditor5-pagination/theme/icons/arrow-up.svg Previous page}{@icon @ckeditor/ckeditor5-pagination/theme/icons/arrow-down.svg Next page}, to ensure all produced documents will always look the way they should.
 
 ### HTML and Markdown output
 
-The CKEditor&nbsp;5 WYSIWYG editor by default produces HTML output, that can be saved into a database. The default output can be also switched to {@link features/markdown Github-flavored Markdown} formatted text addressing the needs of software professionals.
+The CKEditor&nbsp;5 WYSIWYG editor by default produces HTML output that you can save into a database. The default output can be also switched to {@link features/markdown Github-flavored Markdown} formatted text addressing the needs of software professionals.
 
 {@img assets/img/features-output.png 800 CKEditor&nbsp;5 output features.}
 
 ### Productivity pack
 
-The {@link features/productivity-pack productivity pack} is a set of exclusive premium features only available to holders of a CKEditor&nbsp;5 commercial license. The productivity pack provides tools that make the creation of content faster and more efficient, thanks to providing predefined {@link features/template templates} {@icon ckeditor5-collaboration/theme/icons/template.svg} and a new set of {@link features/slash-commands slash commands}. {@link features/document-outline Document outline} {@icon ckeditor5-collaboration/theme/icons/table-of-contents.svg} and {@link features/table-of-contents table of contents} {@icon ckeditor5-collaboration/theme/icons/table-of-contents.svg} make navigating large documents much easier while {@link features/format-painter format painter} {@icon ckeditor5-collaboration/theme/icons/paint-roller.svg} lets the users style their content in a blaze while the {@link features/case-change case change feature} {@icon ckeditor5-collaboration/theme/icons/case-change.svg Case change} lets you quickly apply title case to selcted ssentences or turn whole paragraphs into uppercase. It also provides the enhanced {@link features/paste-from-office-enhanced paste from Office} plugin offering far greater formatting support.
+The {@link features/productivity-pack productivity pack} is a set of exclusive premium features only available to holders of a CKEditor&nbsp;5 commercial license. The productivity pack provides tools that make the creation of content faster and more efficient, thanks to providing predefined {@link features/template templates} {@icon ckeditor5-collaboration/theme/icons/template.svg} and a new set of {@link features/slash-commands slash commands}. {@link features/document-outline Document outline} {@icon ckeditor5-collaboration/theme/icons/table-of-contents.svg} and {@link features/table-of-contents table of contents} {@icon ckeditor5-collaboration/theme/icons/table-of-contents.svg} make navigating large documents much easier while {@link features/format-painter format painter} {@icon ckeditor5-collaboration/theme/icons/paint-roller.svg} lets the users style their content in a blaze while the {@link features/case-change case change feature} {@icon ckeditor5-collaboration/theme/icons/case-change.svg Case change} lets you quickly apply the title case to selected sentences or turn whole paragraphs into uppercase. It also provides the enhanced {@link features/paste-from-office-enhanced paste from Office} plugin offering far greater formatting support.
 
 ### Other productivity features
 
@@ -83,27 +83,27 @@ Keep full control of your work. Be safe and never lose anything thanks to the {@
 
 The {@link features/word-count words and characters counter} will help you track progress and control the volume of the content.
 
-Our {@link features/ai-assistant-overview AI Assistant} {@icon ckeditor5-collaboration/theme/icons/robot-pencil.svg AI Assistant} will help you rewrite, edit, or translate the already existing content to match your needs, or even come up with a completely new one!
+The {@link features/ai-assistant-overview AI Assistant} {@icon ckeditor5-collaboration/theme/icons/robot-pencil.svg AI Assistant} will help you rewrite, edit, or translate the existing content to match your needs, or even come up with a completely new one!
 
 Use {@link features/autoformat Markdown syntax} to format content on the go to speed the editing process, employ {@link features/text-transformation automatic text transformations} (also known as autocorrect) and the {@link features/spelling-and-grammar-checking spell checker} {@icon @webspellchecker/wproofreader-ckeditor5/theme/icons/wproofreader.svg Spell and grammar check} to ensure everything is correct. Create multi-language documents and correct them on the go with automatic language detection and {@link features/language text part language} feature.
 
-{@img assets/img/features-spellcheck-multilanguage.png 800 CKEditor&nbsp;5 spell-checking feature.}
+{@img assets/img/features-spell-check-multilanguage.png 800 CKEditor&nbsp;5 spell-checking feature.}
 
 ### Customizable user experience
 
-Work as you like it - choose user interface approach from {@link installation/getting-started/predefined-builds several predefined builds}, add or remove features easily to your build with the [online builder](https://ckeditor.com/ckeditor-5/online-builder/) or utilize the {@link installation/advanced/dll-builds DLL builds}. Then tailor the user interface to your needs with our customizable {@link features/toolbar editor toolbar} arranging features buttons, dropdowns, and other items in whatever way you need them.
+Work as you like it &ndash; choose a user interface approach from {@link installation/getting-started/predefined-builds several predefined builds}, add features to your build or remove them with the [online builder](https://ckeditor.com/ckeditor-5/online-builder/), or utilize the {@link installation/advanced/dll-builds DLL builds}. Then tailor the user interface to your needs with a customizable {@link features/toolbar editor toolbar}, arranging features buttons, dropdowns, and other items in whatever way you need them.
 
 {@img assets/img/full-toolbar.png 938 CKEditor&nbsp;5 customizable UI.}
 
 ### Cross-platform interoperability
 
-Do not get stopped by technology differences - CKEditor&nbsp;5 offers cross-platform interoperability. Being a {@link framework/index web-based JavaScript framework} it works in any and all environments. What is more, you can easily use documents from other editors: easily paste content {@link features/paste-from-office from MS Office}, paste from {@link features/paste-from-google-docs from Google Docs} and we even have extended support for {@link features/paste-plain-text pasting plain text} and {@link features/paste-markdown markdown-formatted content} to inherit formatting for convenience.
+Do not get stopped by technology differences &ndash; CKEditor&nbsp;5 offers cross-platform interoperability. Being a {@link framework/index web-based JavaScript framework} it works in any and all environments. What is more, you can use documents from other editors: easily paste content {@link features/paste-from-office from Microsoft Office} or from {@link features/paste-from-google-docs from Google Docs}. We even have extended support for {@link features/paste-plain-text pasting plain text} and {@link features/paste-markdown Markdown-formatted content} to inherit formatting for convenience.
 
 {@img assets/img/features-paste.png 800 CKEditor&nbsp;5 paste features.}
 
 ## Backward feature compatibility
 
-If you want to migrate from CKEditor 4 to CKEditor&nbsp;5, please check the {@link updating/migration-from-ckeditor-4 migration guide} for all the features that are already covered by the modern version.
+If you want to migrate from CKEditor 4 to CKEditor&nbsp;5, check the {@link updating/migration-from-ckeditor-4 migration guide} for all the features that are already covered by the modern version.
 
 ## Feature availability
 
@@ -131,7 +131,7 @@ Each kind of content must be handled by some feature. For example, the [`ckedito
 
 If you load some content unknown to any editor feature, it will be dropped. If you want all the HTML5 elements to be supported, you need to write plugins to support them or use {@link features/general-html-support general HTML support} feature. Once you do that, CKEditor 5 will not filter anything out.
 
-## Looking for more?
+## Looking for more
 
 The examples mentioned above do not present all features included in CKEditor&nbsp;5, nor does the list on the left panel. For example, some end-user features like undo and redo are quite self-explanatory and therefore only mentioned in the keyboard shortcuts guide.
 
