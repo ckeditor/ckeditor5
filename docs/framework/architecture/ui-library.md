@@ -736,7 +736,7 @@ editor.plugins.get( 'Dialog' ).show( {
 
 The {@link module:ui/dialog/dialog~DialogDefinition `DialogDefinition`} accepts two callbacks allowing to customize the actions after the dialog is shown ({@link module:ui/dialog/dialog~DialogDefinition#onShow `onShow()`}) and hidden ({@link module:ui/dialog/dialog~DialogDefinition#onHide `onHide()`}).
 
-`onShow` allows to manipulate the dialog values or set additional listeners. In [`DialogView#event:close` event](#dialogvieweventclose-event) section you can find an example of how to disable the <kbd>Esc</kbd> key with it. The code below shows how to bootstrap the dynamic field filling.
+`onShow` allows to manipulate the dialog values or set additional listeners. In the [`DialogView#event:close` event](#dialogviewclose-event) section you can find an example of how to disable the <kbd>Esc</kbd> key with it. The code below shows how to bootstrap the dynamic field filling.
 
 ```js
 // Import necessary classes.
