@@ -445,7 +445,7 @@ dropdownView.bind( 'isEnabled' ).toMany( buttons, 'isEnabled',
 
 Another UI component provided by the framework is a dialog. The dialog system in CKEditor 5 is brought by the {@link module:ui/dialog/dialog~Dialog `Dialog` plugin} that offers API for displaying [views](#views) in dialogs. In a sense, this plugin corresponds to another one that manages views in balloons (popovers) across the UI ({@link module:ui/panel/balloon/contextualballoon~ContextualBalloon `ContextualBalloon` plugin}).
 
-Dialog is a popup window that does not close when the user clicks outside of it. It allows for interacting with the editor and its content while being open (unless it is a modal, which blocks the interaction with the rest of the page until it is closed). When configured to display a [header](#header), a dialog is also {@link module:ui/bindings/draggableviewmixin~DraggableViewMixin draggable} using mouse or touch. Only one dialog can be open at a time - opening another one closes the previously visible one.
+Dialog is a pop-up window that does not close when the user clicks outside of it. It allows for interacting with the editor and its content while being open (unless it is a modal, which blocks the interaction with the rest of the page until it is closed). When configured to display a [header](#header), a dialog is also {@link module:ui/bindings/draggableviewmixin~DraggableViewMixin draggable} using mouse or touch. Only one dialog can be open at a time - opening another one closes the previously visible one.
 
 Check out {@link installation/plugins/plugins example plugins} that display
 * a {@link framework/architecture/ui-components#dialog dialog window},
@@ -455,7 +455,7 @@ Learn more about the [structure and behavior](#structure-and-behaviour) of dialo
 
 #### Modals
 
-Modals are similar to the dialogs - they share the same structure rules, API etc. The major difference is that while a modal is open, the user can not interact with the editor or the rest of the page - it is covered with a non-transparent overlay. It can be used e.g. to enforce user to take one of the specified actions.
+Modals are similar to the dialogs - they share the same structure rules, API etc. The major difference is that while a modal is open, the user cannot interact with the editor or the rest of the page - it is covered with a non-transparent overlay. It can be used for example to enforce user to take one of the specified actions.
 
 To create a modal, use the optional {@link module:ui/dialog/dialog~DialogDefinition#isModal `isModal`} property of the {@link module:ui/dialog/dialog~Dialog#show `Dialog#show()`} method:
 
@@ -470,12 +470,12 @@ editor.plugins.get( 'Dialog' ).show( {
 There are different ways to close a modal: either by clicking the "Close" button in the corner (if the [header](#header) is visible), an <kbd>Esc</kbd> key press or one of the [action buttons](#action-buttons).
 
 <info-box warning>
-	Below you'll learn about the ways to disable some of these methods, but remember to always leave at least one option to close the modal. Otherwise the users will be locked inside.
+	Below you will learn about the ways to disable some of these methods, but remember to always leave at least one option to close the modal. Otherwise the users will be locked inside.
 </info-box>
 
-#### Structure and behaviour
+#### Structure and behavior
 
-A dialog can have three parts, each of which is optional: the [header](#header) (also used as a drag handler), the [content](#content) (the body of the dialog) and the [action buttons](#action-buttons) area (a collection of buttons). The order of the parts can not be changed.
+A dialog can have three parts, each of which is optional: the [header](#header) (also used as a drag handler), the [content](#content) (the body of the dialog) and the [action buttons](#action-buttons) area (a collection of buttons). The order of the parts cannot be changed.
 
 ##### Header
 
@@ -503,7 +503,7 @@ editor.plugins.get( 'Dialog' ).show( {
 ```
 
 <info-box>
-	If you decide to hide the "Close" button, remember to leave some other way(s) to close the dialog. The <kbd>Esc</kbd> key press also closes the dialog but it may not be available, e.g. to touch screen users.
+	If you decide to hide the "Close" button, remember to leave some other way(s) to close the dialog. The <kbd>Esc</kbd> key press also closes the dialog but it may not be available, for example for touch screen users.
 </info-box>
 
 ##### Content
@@ -542,10 +542,10 @@ Please keep in mind that the content of the dialog determines its dimensions. If
 
 ##### Action buttons
 
-The last piece of the dialog is the actions area, where the buttons are displayed. Their behaviour can be fully customized using the `onCreate()` and `onExecute()` callbacks. Below you can find an example of the configuration for the four custom buttons:
+The last piece of the dialog is the actions area, where the buttons are displayed. Their behavior can be fully customized using the `onCreate()` and `onExecute()` callbacks. Below you can find an example of the configuration for the four custom buttons:
 
 * The "OK" button that closes the dialog and has a custom CSS class set,
-* The "Set custom title" button that changes the dialog's title,
+* The "Set custom title" button that changes the dialog title,
 * The "This button will be enabled in..." button that changes its state after a few seconds.
 * The "Cancel" button that closes the dialog.
 
@@ -658,7 +658,7 @@ Dialogs provide full keyboard accessibility. While a dialog is open, press the <
 
 #### API
 
-The dialog's lifecycle (creating and destroying) is managed by the {@link module:ui/dialog/dialog Dialog plugin}. It provides two public methods: {@link module:ui/dialog/dialog~Dialog#show `show()`} and {@link module:ui/dialog/dialog~Dialog#hide `hide()`}. Both of them fire the respective events ({@link module:ui/dialog/dialog~DialogShowEvent `show`} and {@link module:ui/dialog/dialog~DialogHideEvent `hide`}), so it's possible to hook after or before them.
+The dialog's lifecycle (creating and destroying) is managed by the {@link module:ui/dialog/dialog Dialog plugin}. It provides two public methods: {@link module:ui/dialog/dialog~Dialog#show `show()`} and {@link module:ui/dialog/dialog~Dialog#hide `hide()`}. Both of them fire the respective events ({@link module:ui/dialog/dialog~DialogShowEvent `show`} and {@link module:ui/dialog/dialog~DialogHideEvent `hide`}), so it is possible to hook after or before them.
 
 ##### `Dialog#show()` method
 
@@ -666,7 +666,7 @@ The {@link module:ui/dialog/dialog~Dialog#show `Dialog#show()`} method hides any
 
 ##### `Dialog#show:[id]` event
 
-When the [`Dialog#show()`](#dialogshow-method) function gets called, a namespaced {@link module:ui/dialog/dialog~DialogShowEvent `show:[id]`} event is fired, allowing for customizing dialog's behavior.
+When the [`Dialog#show()`](#dialogshow-method) function gets called, a namespaced {@link module:ui/dialog/dialog~DialogShowEvent `show:[id]`} event is fired, allowing for customizing the dialog's behavior.
 
 For example, you can change the default position of the "Find and replace" dialog from the editor corner to the bottom with the following code:
 
@@ -703,7 +703,7 @@ Please note that you can also listen to the general `'hide'` event to react to a
 
 When the <kbd>Esc</kbd> key or the "Close" button is pressed with the dialog open, the {@link module:ui/dialog/dialogview~DialogView `DialogView`} fires the {@link module:ui/dialog/dialogview~DialogViewCloseEvent `close`} event with the according `source` parameter. Then the {@link module:ui/dialog/dialog~Dialog plugin} hides (and destroys) the dialog.
 
-You can control this behavior, e.g. disabling the <kbd>Esc</kbd> key handling:
+You can control this behavior, for example disabling the <kbd>Esc</kbd> key handling:
 
 ```js
 editor.plugins.get( 'Dialog' ).view.on( 'close', ( evt, data ) => {
@@ -799,7 +799,7 @@ If not specified otherwise, the dialog will be displayed in the center of the ed
    ```
 * To change the position of an existing dialog or manage positions dynamically, use the {@link module:ui/dialog/dialog~DialogShowEvent `show`} event listener (see the [example code](#dialogshowid-event)).
 
-In some cases, for instance when the content of the dialog or the environment changes (e.g. the editor is resized), you may want to force-update the position of the dialog. This will restore its position to the {@link module:ui/dialog/dialog~DialogDefinition#position configured default}. It will also reset any manual positioning (dragging) done by the user. To do so, use the {@link module:ui/dialog/dialogview~DialogView#updatePosition} method.
+In some cases, for instance when the content of the dialog or the environment changes (for example, the editor is resized), you may want to force-update the position of the dialog. This will restore its position to the {@link module:ui/dialog/dialog~DialogDefinition#position configured default}. It will also reset any manual positioning (dragging) done by the user. To do so, use the {@link module:ui/dialog/dialogview~DialogView#updatePosition} method.
 
 ```js
 editor.plugins.get( 'Dialog' ).view.updatePosition();
