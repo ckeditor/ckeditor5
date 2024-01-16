@@ -8,7 +8,7 @@
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-findandreplace' ), {
+	.create( document.querySelector( '#snippet-findandreplace-dropdown' ), {
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
@@ -32,14 +32,18 @@ ClassicEditor
 		ckbox: {
 			allowExternalImagesEditing: [ /^data:/, 'origin' ],
 			forceDemoLabel: true
+		},
+		findAndReplace: {
+			uiType: 'dropdown'
 		}
 	} )
 	.then( editor => {
-		window.editor = editor;
+		window.editorWithDropdown = editor;
 
 		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.label === 'Find and replace' ),
-			text: 'Click here to search.',
+			target: window.findToolbarItem( editor.ui.view.toolbar,
+				item => item.buttonView && item.buttonView.label === 'Find and replace' ),
+			text: 'Click here to open the dropdown.',
 			editor,
 			tippyOptions: {
 				placement: 'bottom-start'
