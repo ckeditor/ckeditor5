@@ -135,9 +135,11 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 			} );
 		} );
 
-		// This logic handles cases when textarea has been hidden while changes were made to its content but they could not
-		// be reflected to its height (auto-grown) because it was invisible or detached from DOM. The auto-grow logic
-		// gets executed as soon as the textarea becomes visible again.
+		// It may occur that the Textarea size needs to be updated (e.g. because it's content was changed)
+		// when it is not visible or detached from DOM.
+		// In such case, we need to detect the moment when it becomes visible again and update its height then.
+		// We're using ResizeObserver for that as it is the most reliable way to detect when the element becomes visible.
+		// IntersectionObserver didn't work well with the absolute positioned containers.
 		this._resizeObserver = new ResizeObserver( this.element!, evt => {
 			const isVisible = !!evt.contentRect.width && !!evt.contentRect.height;
 

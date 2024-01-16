@@ -366,10 +366,10 @@ describe( 'Dialog', () => {
 			expect( dialogPlugin.view.position ).to.equal( DialogViewPosition.SCREEN_CENTER );
 		} );
 
-		it( 'should set the dialog view `isVisible` property to `true`', () => {
+		it( 'should set the dialog view `_isVisible` property to `true`', () => {
 			dialogPlugin._show( {} );
 
-			expect( dialogPlugin.view.isVisible ).to.be.true;
+			expect( dialogPlugin.view._isVisible ).to.be.true;
 		} );
 
 		it( 'should setup the view parts with the passed arguments', () => {

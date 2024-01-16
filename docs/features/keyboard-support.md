@@ -2,6 +2,7 @@
 category: features
 classes: keyboard-shortcuts
 meta-title: Keyboard support | CKEditor 5 Documentation
+modified_at: 2024-01-03
 ---
 
 # Keyboard support
@@ -169,6 +170,11 @@ Use the following keystrokes for more efficient navigation in the CKEditor&nbsp;
 		<tr>
 			<td>Navigate through the toolbar</td>
 			<td colspan="2"><kbd>↑</kbd> / <kbd>→</kbd> / <kbd>↓</kbd> / <kbd>←</kbd></td>
+		</tr>
+		<tr>
+			<td>Move focus to the open dialog</td>
+			<td><kbd>Ctrl</kbd> + <kbd>F6</kbd></td>
+			<td><kbd>Cmd</kbd> + <kbd>F6</kbd> <br> (may require <kbd>Fn</kbd>)</td>
 		</tr>
 		<tr>
 			<td>Execute the focused button</td>
