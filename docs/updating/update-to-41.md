@@ -24,7 +24,7 @@ Listed below are the most important changes that require your attention when upg
 
 As of the latest release, we replaced the existing list plugin (often referred to as "list v1") with the {@link features/lists newer and more advanced document list plugin}, formerly known as document list ("list v2").
 
-We implemented the list v2 (document list) feature in 2022 to add support for block content in list items. It supported extending list markup via General HTML Support (GHS). It did not, however, support to-do lists. Since then we concentrated on bringing full list v1 functionality to this plugin. The newest release brings in the to-do list functionality so we were ready to switch.
+We implemented the list v2 (document list) feature in 2022 to add support for block content in list items. It supported extending list markup via General HTML Support (GHS). It did not, however, support to-do lists. Since then we concentrated on bringing full list v1 functionality to this plugin. The newest release brings in the all list functionality so we were ready to switch.
 
 We introduced the new plugin in a manner that aims to be transparent for the users:
 
@@ -36,6 +36,10 @@ It means that starting with release v41.0.0 all imports of various list-related 
 Unless you need to specifically use the old plugin in your integration, there is no need to make changes in the configuration.
 
 If you do not want to use block elements in your lists, you can {@link features/lists-editing#simple-lists turn off this functionality} with the configuration option instead of sticking to the old plugins.
+
+<info-box>
+    We have replaced the old list plugins in all {@link installation/getting-started/predefined-builds predefined builds} with the current ones.
+</info-box>
 
 #### Renaming of the plugins
 
@@ -51,10 +55,6 @@ If you included document lists in your integration and used the `removePlugins` 
 This is because your integration was injecting `DocumentList` and `DocumentListProperties` plugins, and passing the `removePlugins: [ List, ListProperties, TodoList ]` configuration option. After the change and renaming of the plugins, these two are the same.
 
 If you happen to encounter this error, remove all imports of `DocumentList` and related plugins as well as the `removePlugins` configuration option. Replace these with `List` and related plugins.
-
-<info-box>
-	We have replaced the old list plugins in all {@link installation/getting-started/predefined-builds predefined builds} with the current ones.
-</info-box>
 
 #### Details of plugin renames
 
@@ -137,6 +137,14 @@ If you happen to encounter this error, remove all imports of `DocumentList` and 
 	</tbody>
 </table>
 
+#### Changes to list merging
+
+With the old list plugin, it was possible to create two lists of the same type but with different styles next to each other, and these lists did not merge. This functionality is still available in the `LegacyList`.
+
+The current `List` plugin merges such lists. This can be handled by using the {@link features/lists-editing#merging-adjacent-lists `AdjacentListsSupport` plugin}. However, it only works for pasted contents or on data load by design. It does not support UI operations, which is a change from the previous behavior.
+
+We want to use this opportunity and ask our users for feedback [in this GitHub issue](https://github.com/ckeditor/ckeditor5/issues/14478). If you use this kind of lists, feel free to share your opinion of suggestions on the current implementation.
+
 ### Icon paths changed
 
 Among other changes, some icons were moved around the project. Check these changes if you use custom UI elements that call these icons.
@@ -160,9 +168,9 @@ The following icons were moved to the `@ckeditor/ckeditor5-core` package:
 * `undo`
 
 The following icons were moved to the `ckeditor5-collaboration` package:
+* `paint-roller`
 * `robot-pencil`
 * `table-of-contents`
-* `paint-roller`
 * `template`
 
 ### Exports renamed
@@ -179,7 +187,7 @@ Some export names were changed due to the possibility of name conflicts:
 
 The code we distribute in our npm packages uses the [ECMAScript Module (ESM) syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) (for example, `import X from 'y'`). Until now it was not fully compliant with the standard and the packages were not properly marked as ES modules. Sometimes this resulted in bundlers (like Vite) and other tools (such as Vitest) failing to build or run the projects containing CKEditor&nbsp;5. It required workarounds in their configuration.
 
-This release fixes the ESM-compatibility issues. CKEditor&nbsp;5 packages are now fully ESM-compliant and these workarounds are no longer needed.
+This release fixes the ESM compatibility issues. CKEditor&nbsp;5 packages are now fully ESM-compliant and these workarounds are no longer needed.
 
 ### Added validation to the URL field in the link form
 
