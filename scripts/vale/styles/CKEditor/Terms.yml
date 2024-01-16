@@ -68,6 +68,7 @@ swap:
   "(?:MSOffice|MS Office)": Microsoft Office
   "(?:MSWord|MS Word)": Microsoft Word
   "(?:[nN]odejs|[nN]ode.JS|node.js)": Node.js
+  NPM: npm
   non-real-time|non real-time|non real time|non-RTC: asynchronous
   on Chrome: in Chrome
   on Edge: in Edge
@@ -97,6 +98,7 @@ swap:
   strike-through|strike through: strikethrough
   stylesheet: style sheet
   stylesheets: style sheets
+  super-build: superbuild
   svg: SVG
   titlecase: title case
   (?i)todo list: to-do list
