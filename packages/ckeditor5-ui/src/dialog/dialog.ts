@@ -73,6 +73,26 @@ export default class Dialog extends Plugin {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public afterInit(): void {
+		const editor = this.editor;
+
+		if ( editor.plugins.has( 'AccessibilityHelp' ) ) {
+			const t = editor.t;
+
+			editor.plugins.get( 'AccessibilityHelp' ).registerKeystrokes( {
+				category: 'navigation',
+				keystrokes: [ {
+					label: t( 'Move focus in and out of an active dialog window' ),
+					keystroke: 'Ctrl+F6',
+					mayRequireFn: true
+				} ]
+			} );
+		}
+	}
+
+	/**
 	 * Initiates listeners for the `show` and `hide` events emitted by this plugin.
 	 */
 	private _initShowHideListeners() {
