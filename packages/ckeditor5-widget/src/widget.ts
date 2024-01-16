@@ -215,10 +215,10 @@ export default class Widget extends Plugin {
 					label: t( 'Insert a new paragraph directly before a widget' ),
 					keystroke: 'Shift+Enter'
 				}, {
-					label: t( 'Display the caret to allow typing directly before a widget' ),
+					label: t( 'Move the caret to allow typing directly before a widget' ),
 					keystroke: [ [ 'arrowup' ], [ 'arrowleft' ] ]
 				}, {
-					label: t( 'Display the caret to allow typing directly after a widget' ),
+					label: t( 'Move the caret to allow typing directly after a widget' ),
 					keystroke: [ [ 'arrowdown' ], [ 'arrowright' ] ]
 				} ]
 			} );
