@@ -29,11 +29,13 @@ CMS
 codebase
 (?i)constructor
 Cordova
+CVs
 cycler
 Dailymotion
 debounce
 declutter
 deduplicate
+deduplicating
 dialogs
 DLL
 Dmitry

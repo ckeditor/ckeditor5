@@ -80,7 +80,7 @@ DecoupledEditor.create( document.querySelector( '#editor' ) )
 
 ## Getting the editor's instance
 
-The simplest way is save the reference to the editor somewhere after you create it. This is often done by using a window or some state management object. You will often see lines like this in our docs.
+The simplest way is save the reference to the editor somewhere after you create it. This is often done by using a window or some state management object. You will often see lines like this in our documentation.
 
 ```js
 // Editor's creation steps.

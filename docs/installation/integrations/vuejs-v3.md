@@ -252,7 +252,7 @@ The easiest way to integrate {@link features/collaboration collaboration plugins
 
 ## Using CKEditor&nbsp;5 from source
 
-Integrating the rich text editor from source allows you to use the full power of the {@link framework/index CKEditor&nbsp;5 Framework}. You have two options regarding building your application: Vite or webpack.
+Integrating the rich text editor from source allows you to use the full power of the {@link framework/index CKEditor&nbsp;5 Framework}. You have two options for building your application: Vite or webpack.
 
 ### Vite
 
@@ -262,7 +262,7 @@ This guide assumes that you use `create-vue` as your boilerplate. To get started
 npm init vue@latest ckeditor5-vue-example
 ```
 
-This command will install and execute `create-vue`, the official project scaffolding tool for Vue. It will also allow you to customize your project, for example, by adding Typescript. Choose your preferred options.
+This command will install and execute `create-vue`, the official project scaffolding tool for Vue. It will also allow you to customize your project, for example, by adding TypeScript. Choose your preferred options.
 
 #### Installing necessary packages
 
@@ -280,7 +280,7 @@ npm install --save @ckeditor/vite-plugin-ckeditor5 @ckeditor/ckeditor5-vue
 
 #### Configuring `vite.config.js` / `vite.config.ts`
 
-Configuring CKEditor with Vue and Vite is simple. Modify the existing config by importing `ckeditor5` and adding it to the list of plugins. In the case of TypeScript, the config can remain the same. The only difference is the extension - `.ts`.
+Configuring CKEditor with Vue and Vite is simple. Modify the existing configuration by importing `ckeditor5` and adding it to the list of plugins. For TypeScript, the configuration can remain the same. The only difference is the extension - `.ts`.
 
 ```ts
 // vite.config.js / vite.config.ts
@@ -303,7 +303,7 @@ export default defineConfig( {
 } );
 ```
 
-The configuration slightly differs for ESM projects. If you try to start the dev server using the `npm run dev` command, you may encounter an error: `require.resolve is not a function`. In this case, you need some additional lines of code.
+The configuration slightly differs for ECMAScript (ESM) projects. If you try to start the development server using the `npm run dev` command, you may encounter an error: `require.resolve is not a function`. In this case, you need some additional lines of code.
 
 ```ts
 // vite.config.js / vite.config.ts

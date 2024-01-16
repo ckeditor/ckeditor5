@@ -32,7 +32,7 @@ There are a couple of things you should know before you start:
 
 ## Let's start
 
-This guide assumes that you are familiar with [Yarn](https://yarnpkg.com) and your project uses Yarn already. If not, see the [yarn documentation](https://yarnpkg.com/en/docs/getting-started). If you are using [npm](https://www.npmjs.com/get-npm), you do not have to worry &ndash; you can perform the same installation tasks using [corresponding npm commands](https://docs.npmjs.com/packages-and-modules/getting-packages-from-the-registry).
+This guide assumes that you are familiar with [Yarn](https://yarnpkg.com) and your project uses Yarn already. If not, see the [Yarn documentation](https://yarnpkg.com/en/docs/getting-started). If you are using [npm](https://www.npmjs.com/get-npm), you do not have to worry &ndash; you can perform the same installation tasks using [corresponding npm commands](https://docs.npmjs.com/packages-and-modules/getting-packages-from-the-registry).
 
 First, install the packages needed to build and set up a basic React application with a CKEditor&nbsp;5 instance.
 
