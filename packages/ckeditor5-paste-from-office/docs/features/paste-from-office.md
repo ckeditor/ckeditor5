@@ -44,7 +44,7 @@ To test pasting from Office, download the sample documents and open them in Micr
 {@snippet features/paste-from-office}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Paste from Office enhanced
@@ -128,7 +128,7 @@ CKEditor&nbsp;5 supports a wider range of paste features, including:
 * {@link features/paste-from-google-docs Paste from Google Docs} &ndash; Paste content from Google Docs, maintaining the original formatting and structure.
 * {@link features/paste-plain-text Paste plain text} &ndash; Paste text without formatting that will inherit the style of the content it was pasted into.
 * {@link features/import-word Import from Word} &ndash; Convert Word files directly into HTML content. You can read more about the differences between the paste from Office and import from Word features in the {@link features/features-comparison dedicated comparison guide}.
-* {@link features/paste-markdown Paste Markdown} &ndash; Paste Markdown formatted content straight into the editor.
+* {@link features/paste-markdown Paste Markdown} &ndash; Paste Markdown-formatted content straight into the editor.
 
 ## Contribute
 

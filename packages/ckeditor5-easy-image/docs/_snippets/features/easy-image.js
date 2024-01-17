@@ -21,7 +21,7 @@ ClassicEditor
 
 		window.attachTourBalloon( {
 			target: window.findToolbarItem( editor.ui.view.toolbar,
-				item => item.buttonView && item.buttonView.label && item.buttonView.label === 'Insert image' ),
+				item => item.buttonView && item.buttonView.label && item.buttonView.label === 'Upload image from computer' ),
 			text: 'Click to insert an image or paste image URL directly into the editor.',
 			editor
 		} );

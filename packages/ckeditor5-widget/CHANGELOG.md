@@ -126,7 +126,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Other changes
 
-* Introduce support and utils for creating inline widgets. Closes [[ckeditor/ckeditor5#1096](https://github.com/ckeditor/ckeditor5/issues/1096)](https://github.com/ckeditor/ckeditor5/issues/1096). ([38fa159](https://github.com/ckeditor/ckeditor5-widget/commit/38fa159))
+* Introduce support and utilities for creating inline widgets. Closes [[ckeditor/ckeditor5#1096](https://github.com/ckeditor/ckeditor5/issues/1096)](https://github.com/ckeditor/ckeditor5/issues/1096). ([38fa159](https://github.com/ckeditor/ckeditor5-widget/commit/38fa159))
 * Renamed the `.ck-widget_selectable` class to `.ck-widget_with-selection-handler` for better semantics. Closes [#66](https://github.com/ckeditor/ckeditor5-widget/issues/66). ([178ad5f](https://github.com/ckeditor/ckeditor5-widget/commit/178ad5f))
 
 ### BREAKING CHANGES
@@ -163,7 +163,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Other changes
 
-* Do not set the `contenteditable` property for widgets and their nested editables on Edge due to an awful instability which it causes in this browser. Closes [ckeditor/ckeditor5#1079](https://github.com/ckeditor/ckeditor5/issues/1079). Closes [ckeditor/ckeditor5#1067](https://github.com/ckeditor/ckeditor5/issues/1067). ([ee530b1](https://github.com/ckeditor/ckeditor5-widget/commit/ee530b1))
+* Do not set the `contenteditable` property for widgets and their nested editable elements in Edge due to an awful instability which it causes in this browser. Closes [ckeditor/ckeditor5#1079](https://github.com/ckeditor/ckeditor5/issues/1079). Closes [ckeditor/ckeditor5#1067](https://github.com/ckeditor/ckeditor5/issues/1067). ([ee530b1](https://github.com/ckeditor/ckeditor5-widget/commit/ee530b1))
 
 
 ## [10.1.0](https://github.com/ckeditor/ckeditor5-widget/compare/v10.0.0...v10.1.0) (June 21, 2018)
@@ -193,7 +193,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Bug fixes
 
-* Replaced nested editable's `.ck-editable` class with `.ck-editor__editable` + `.ck-editor__nested-editable` to stop Grammarly throwing errors. Closes [ckeditor/ckeditor5#578](https://github.com/ckeditor/ckeditor5/issues/578). ([051b326](https://github.com/ckeditor/ckeditor5-widget/commit/051b326))
+* Replaced nested editable element's `.ck-editable` class with `.ck-editor__editable` + `.ck-editor__nested-editable` to stop Grammarly throwing errors. Closes [ckeditor/ckeditor5#578](https://github.com/ckeditor/ckeditor5/issues/578). ([051b326](https://github.com/ckeditor/ckeditor5-widget/commit/051b326))
 
 ### Other changes
 
@@ -237,11 +237,11 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Bug fixes
 
-* Added initial contenteditable state for editable widget. Closes [#9](https://github.com/ckeditor/ckeditor5-widget/issues/9). ([c6321ff](https://github.com/ckeditor/ckeditor5-widget/commit/c6321ff))
+* Added initial `contenteditable` state for editable widget. Closes [#9](https://github.com/ckeditor/ckeditor5-widget/issues/9). ([c6321ff](https://github.com/ckeditor/ckeditor5-widget/commit/c6321ff))
 
 ### Features
 
-* <kbd>Ctrl</kbd>+<kbd>A</kbd> in a nested editable should select nested editable's content. Closes [#13](https://github.com/ckeditor/ckeditor5-widget/issues/13). ([35a8aff](https://github.com/ckeditor/ckeditor5-widget/commit/35a8aff))
+* <kbd>Ctrl</kbd>+<kbd>A</kbd> in a nested editable should select the nested editable element's content. Closes [#13](https://github.com/ckeditor/ckeditor5-widget/issues/13). ([35a8aff](https://github.com/ckeditor/ckeditor5-widget/commit/35a8aff))
 
 ### Other changes
 

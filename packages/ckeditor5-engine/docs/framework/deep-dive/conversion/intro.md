@@ -21,7 +21,7 @@ When you load data into the editor, the view is created out of the markup. Then,
 
 ### Downcast conversion
 
-All changes, such as typing or pasting from the clipboard, are applied directly to the model. In order to update the editing view, e.i. the layer being displayed to the user, the engine transforms these changes in the model to the view. The same process is executed when data needs to be generated (for example, when you copy editor content or use `editor.getData()`). These processes are called editing and downcast conversions.
+All changes, such as typing or pasting from the clipboard, are applied directly to the model. To update the editing view, e.i. the layer being displayed to the user, the engine transforms these changes in the model to the view. The same process is executed when data needs to be generated (for example, when you copy editor content or use `editor.getData()`). These processes are called editing and downcast conversions.
 
 {@img assets/img/editor-data-flow.svg 582 Diagram explaining interaction between the user, model, and editor output.}
 

@@ -95,7 +95,7 @@ ClassicEditor
 ```
 
 <info-box hint>
-**What's next?**
+**What's next**
 
 Want to deepen your understanding of CKEditor 5? Dive into our {@link tutorials/crash-course/editor tutorial} to explore creating plugins hands-on.
 

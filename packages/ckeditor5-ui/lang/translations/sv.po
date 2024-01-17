@@ -139,8 +139,8 @@ msgstr "Inga sökbara objekt"
 
 msgctxt "A default label of a dialog window displayed on top the editor."
 msgid "Editor dialog"
-msgstr ""
+msgstr "Ordbehandlardialog"
 
 msgctxt "The label and the tooltip for the close button in the dialog header."
 msgid "Close"
-msgstr ""
+msgstr "Stäng"

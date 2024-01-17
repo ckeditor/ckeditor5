@@ -500,7 +500,7 @@ Open this page in your browser and you should see the simple WYSIWYG editor up a
 </info-box>
 
 <info-box hint>
-**What's next?**
+**What's next**
 
 Congratulations, you have just run your first CKEditor&nbsp;5 instance! Now it is time to learn more about customization, so jump in straight to the {@link installation/getting-started/configuration Configuration guide}.
 

@@ -15,7 +15,7 @@ Use the toolbar dropdowns in the demo below to control the font size {@icon @cke
 {@snippet features/font}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Additional feature information
@@ -435,7 +435,7 @@ Here are some more CKEditor&nbsp;5 features that can help you format your conten
 * {@link features/basic-styles Basic text styles} &ndash; The essentials, like **bold**, *italic*, and others.
 * {@link features/style Styles} &ndash; Apply pre-configured styles to existing elements in the editor content.
 * {@link features/text-alignment Text alignment} &ndash; Because it does matter whether the content is left, right, centered, or justified.
-* {@link features/case-change Case change} &ndash; Quickly turn a word or a passage into uppercase, lower case or title case.
+* {@link features/case-change Case change} &ndash; Turn a text fragment or block into uppercase, lowercase, or title case.
 * {@link features/headings Headings} &ndash; Divide your content into sections.
 * {@link features/highlight Highlight} &ndash; Mark important words and passages, aiding a review or drawing attention to specific parts of the content.
 * {@link features/format-painter Format painter} &ndash; Easily copy text formatting and apply it in a different place in the edited document.

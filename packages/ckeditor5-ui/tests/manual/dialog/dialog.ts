@@ -29,7 +29,7 @@ import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandrepl
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters.js';
 import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials.js';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
-import { ButtonView, Dialog, DialogViewPosition, View } from '../../../src/index.js';
+import { ButtonView, Dialog, DialogViewPosition, SwitchButtonView, View } from '../../../src/index.js';
 import { Plugin, icons } from '@ckeditor/ckeditor5-core';
 
 // Necessary to insert into config all of the generated buttons.
@@ -81,6 +81,7 @@ class ModalWithText extends Plugin {
 				} );
 
 				dialog.show( {
+					id: 'modalWithText',
 					isModal: true,
 					title: t( 'Modal with text' ),
 					content: textView,
@@ -100,14 +101,25 @@ class ModalWithText extends Plugin {
 							}
 						},
 						{
-							label: t( 'Button is active until dialog is moved...' ),
+							label: 'This button will be enabled in 5...',
 							withText: true,
 							onExecute: () => {
 								// eslint-disable-next-line no-alert
-								alert( 'Drag the dialog to see how the button disables' );
+								window.alert( 'Clicked when the button is enabled!' );
 							},
 							onCreate: buttonView => {
-								buttonView.bind( 'isEnabled' ).to( dialog.view!, 'wasMoved', wasMoved => !wasMoved );
+								buttonView.isEnabled = false;
+								let counter = 5;
+
+								const interval = setInterval( () => {
+									buttonView.label = `This button will be enabled in ${ --counter }...`;
+
+									if ( counter === 0 ) {
+										clearInterval( interval );
+										buttonView.label = 'This button is now enabled!';
+										buttonView.isEnabled = true;
+									}
+								}, 1000 );
 							}
 						},
 						{
@@ -143,24 +155,50 @@ class YesNoModal extends Plugin {
 
 			buttonView.on( 'execute', () => {
 				const dialog = this.editor.plugins.get( 'Dialog' );
+				const switchButtonView = new SwitchButtonView( locale );
+
+				switchButtonView.set( {
+					label: t( 'I accept the terms and conditions' ),
+					withText: true
+				} );
+
+				switchButtonView.on( 'execute', () => {
+					switchButtonView.isOn = !switchButtonView.isOn;
+				} );
 
 				dialog.show( {
+					id: 'yesNoModal',
 					isModal: true,
-					title: 'Are you sure you want to do this?',
+					title: 'Accept to enable the "Yes" button (Esc key does not work here)',
 					hasCloseButton: false,
+					content: switchButtonView,
 					actionButtons: [
 						{
 							label: t( 'Yes' ),
 							class: 'ck-button-action',
 							withText: true,
-							onExecute: () => dialog.hide()
+							onExecute: () => dialog.hide(),
+							onCreate: buttonView => {
+								buttonView.isEnabled = false;
+
+								switchButtonView.on( 'change:isOn', () => {
+									buttonView.isEnabled = switchButtonView.isOn;
+								} );
+							}
 						},
 						{
 							label: t( 'No' ),
 							withText: true,
 							onExecute: () => dialog.hide()
 						}
-					]
+					],
+					onShow: dialog => {
+						dialog.view!.on( 'close', ( evt, data ) => {
+							if ( data.source === 'escKeyPress' ) {
+								evt.stop();
+							}
+						}, { priority: 'high' } );
+					}
 				} );
 			} );
 
@@ -202,6 +240,7 @@ class MinimalisticDialogs extends Plugin {
 					} );
 
 					dialog.show( {
+						id: position,
 						content: textView,
 						position: DialogViewPosition[ position as keyof typeof DialogViewPosition ]
 					} );

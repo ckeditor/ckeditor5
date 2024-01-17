@@ -9,7 +9,7 @@ meta-description: Managing the "Powered by CKEditor" logo
 
 ## Why the "Powered by CKEditor" logo?
 
-Starting from version v38.0.0 onwards, all **open-source** installations of CKEditor&nbsp;5 display a small “Powered by CKEditor” logo in the bottom-right corner of the editing area. The label links directly to the [CKEditor website](https://ckeditor.com/). The new branding approach is designed to make sure the entire community knows who is powering and modernizing their rich text editor.
+Starting from version v38.0.0, all **open-source** installations of CKEditor&nbsp;5 display a small “Powered by CKEditor” logo in the bottom-right corner of the editing area. The label links directly to the [CKEditor website](https://ckeditor.com/). The new branding approach is designed to make sure the entire community knows who is powering and modernizing their rich text editor.
 
 {@img assets/img/powered-by-ckeditor.png Placement of the "Powered by CKEditor" logo within the editor}
 
@@ -42,7 +42,7 @@ For free, open-source users, the "Powered by CKEditor" logo will always be displ
 You can configure the following properties of the logo:
 
 * The **position** relative to the editor’s bottom edge. The default is over the edge. The logo can also be displayed inside the container.
-* The logo **offset** relative to the configured editable's corner.
+* The logo **offset** relative to the configured editable element's corner.
 * The **alignment**: left or right side of the editable area.
 * The **label** text, displayed before the CKEditor logo.
 

@@ -85,7 +85,7 @@ command.on( 'change:isEnabled', ( event, propName, newValue, oldValue ) => {
 } );
 ```
 
-## What's next?
+## What's next
 
 If you want to learn more about events and observables, see the {@link framework/deep-dive/observables Observables} and {@link framework/deep-dive/event-system Event system} documents.
 
