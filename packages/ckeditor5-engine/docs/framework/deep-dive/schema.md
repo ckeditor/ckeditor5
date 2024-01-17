@@ -356,7 +356,7 @@ schema.register( 'myCaption', {
 The engine and various features then check it via {@link module:engine/model/schema~Schema#isLimit `Schema#isLimit()`} and can act accordingly.
 
 <info-box>
-	"Limit element" does not mean "editable element." The concept of "editability" is reserved for the view and expressed by the {@link module:engine/view/editableelement~EditableElement `EditableElement` class}.
+	"Limit element" does not mean "editable element." The concept of "editable element" is reserved for the view and expressed by the {@link module:engine/view/editableelement~EditableElement `EditableElement` class}.
 </info-box>
 
 ### Object elements
@@ -690,7 +690,7 @@ You can argue that the engine could handle this by checking the schema at the en
 * How to fix the content after a transaction is committed? It is impossible to implement a reasonable heuristic that would not break the content from the user's perspective.
 * The model can become invalid during real-time collaborative changes. Operational Transformation, while implemented by us in a rich form (with 11 types of operations instead of the base 3), ensures conflict resolution and eventual consistency, but not the model's validity.
 
-Therefore, we chose to handle such situations on a case-by-case basis, using more expressive and flexible {@link module:engine/model/document~Document#registerPostFixer model's post-fixers}. Additionally, we moved the responsibility of checking the schema to features. They can make a lot better decisions a priori, before making changes. You can read more about this in the ["Implementing additional constraints"](#implementing-additional-constraints) section above.
+Therefore, we chose to handle such situations on a case-by-case basis, using more expressive and flexible {@link module:engine/model/document~Document#registerPostFixer model's post-fixers}. Additionally, we moved the responsibility of checking the schema to features. They can make a lot better decisions before making changes. You can read more about this in the ["Implementing additional constraints"](#implementing-additional-constraints) section above.
 
 ### High-level APIs
 

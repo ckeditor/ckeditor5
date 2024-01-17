@@ -71,7 +71,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
   Implemented the `EditorUI#setEditableElement()` method.
   Deprecated the `EditorUI#_editableElements` property.
-* Introduced `MultiCommand` which acts as a composite command – it can group multiple commands under the hood. ([ebcbd01](https://github.com/ckeditor/ckeditor5-core/commit/ebcbd01))
+* Introduced `MultiCommand` which acts as a composite command – it can group many commands under the hood. ([ebcbd01](https://github.com/ckeditor/ckeditor5-core/commit/ebcbd01))
 
 ### Other changes
 
@@ -117,8 +117,8 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Upgraded minimal versions of Node to `8.0.0` and npm to `5.7.1`. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([612ea3c](https://github.com/ckeditor/ckeditor5-cloud-services/commit/612ea3c))
 * The `Editor#getData()` method now returns an empty string by default when editor content is empty (instead of returning `'<p>&nbsp;</p>'` as before).
 * The `editor#pluginsReady` event was removed. Use plugin `afterInit()` method instead.
-* Removed `EditorWithUI#element` property.  The `EditorUI#element` property should be used instead.
-* Removed `EditorWithUI#uiReady` event.  The `EditorUI#ready` event should be used instead.
+* Removed `EditorWithUI#element` property. The `EditorUI#element` property should be used instead.
+* Removed `EditorWithUI#uiReady` event. The `EditorUI#ready` event should be used instead.
 * Removed `view` parameter in `EditorUI` constructor. Only subclasses should use it without passing it further to `EditorUI`.
 * Removed `EditorUI#view` property. The `view` property from subclasses (like `ClassicEditorUI#view`) should be used directly instead.
 * The `editor.plugins.get()` will now throw an error if the plugin is not loaded. Use `editor.plugins.has()` to check if plugin is available.
@@ -148,7 +148,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 * Added the observable `Editor#state` property. Closes [#124](https://github.com/ckeditor/ckeditor5-core/issues/124). ([ec89d8d](https://github.com/ckeditor/ckeditor5-core/commit/ec89d8d))
 * Imported the module providing the `CKEDITOR_VERSION` global constant in the `Editor` class (see [ckeditor/ckeditor5#1005](https://github.com/ckeditor/ckeditor5/issues/1005)). ([a1a9144](https://github.com/ckeditor/ckeditor5-core/commit/a1a9144))
-* Introduced the `#element` property to the `EditorWithUI` interface. The `#element` property from the `ElementApi` interface has been renamed to `#sourceElement`. Most editors implement both interfaces, which ultimately means that the old `editor.element` property is now called `editor.sourceElement` and there is a new `editor.element` property with a new meaning. Closes [#64](https://github.com/ckeditor/ckeditor5-core/issues/64). ([eb43b63](https://github.com/ckeditor/ckeditor5-core/commit/eb43b63))
+* Introduced the `#element` property to the `EditorWithUI` interface. The `#element` property from the `ElementApi` interface has been renamed to `#sourceElement`. Most editors implement both interfaces, which means that the old `editor.element` property is now called `editor.sourceElement` and there is a new `editor.element` property with a new meaning. Closes [#64](https://github.com/ckeditor/ckeditor5-core/issues/64). ([eb43b63](https://github.com/ckeditor/ckeditor5-core/commit/eb43b63))
 * Introduced the `EditorUI#update` event. Closes [#130](https://github.com/ckeditor/ckeditor5-core/issues/130). ([734166a](https://github.com/ckeditor/ckeditor5-core/commit/734166a))
 
 ### Bug fixes
@@ -189,7 +189,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### BREAKING CHANGES
 
-* The license under which CKEditor&nbsp;5 is released has been changed from a triple GPL, LGPL and MPL license to a GPL2+ only. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
+* The license under which CKEditor&nbsp;5 is released was changed from a triple GPL, LGPL, and MPL license to a GPL2+. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
 
 
 ## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-core/compare/v1.0.0-beta.2...v1.0.0-beta.4) (April 19, 2018)
@@ -238,7 +238,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 ### Bug fixes
 
 * `EditingKeystrokeHandler` should prevent default action only for commands. Closes [#90](https://github.com/ckeditor/ckeditor5-core/issues/90). ([82ff39a](https://github.com/ckeditor/ckeditor5-core/commit/82ff39a))
-* `ToggleAttributeCommand` should listen to reliable events in order to determine its state. Closes [#50](https://github.com/ckeditor/ckeditor5-core/issues/50). ([6816505](https://github.com/ckeditor/ckeditor5-core/commit/6816505))
+* `ToggleAttributeCommand` should listen to reliable events to determine its state. Closes [#50](https://github.com/ckeditor/ckeditor5-core/issues/50). ([6816505](https://github.com/ckeditor/ckeditor5-core/commit/6816505))
 * SVG icons should not define own fill if controlled by the styles. Closes [#79](https://github.com/ckeditor/ckeditor5-core/issues/79). ([fadf5ec](https://github.com/ckeditor/ckeditor5-core/commit/fadf5ec))
 
 ### Features
@@ -267,12 +267,12 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 * The `ToggleAttributeCommand` was moved to the `ckeditor5-basic-styles` package as `AttributeCommand` and the other command helpers to `ckeditor5-engine` as `Schema` methods.
 * The `Command`'s protected `_doExecute()` and `_checkEnabled()` methods have been replaced by public `execute()` and `refresh()` methods.
-* The `Command`'s `refreshState` event was removed and one should use `change:isEnabled` in order to control and override its state.
+* The `Command`'s `refreshState` event was removed and one should use `change:isEnabled` to control and override its state.
 * The `core/command/command` module has been moved to the root directory (so the `Command` class is `core/command~Command` now).
 * The `Command#refresh()` method is now automatically called on `editor.document#changesDone`.
 * The `editor.commands` map was replaced by a `CommandCollection` instance so `editor.commands.set()` calls need to be replaced with `editor.commands.add()`.
 
-### NOTE
+### Note
 
 * Plugin naming convention has changed.
 
@@ -292,7 +292,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Features
 
-* Added support for building plugins and default configs into `Editor` classes. Closes [#67](https://github.com/ckeditor/ckeditor5-core/issues/67). ([a1fa64f](https://github.com/ckeditor/ckeditor5-core/commit/a1fa64f))
+* Added support for building plugins and default configurations into `Editor` classes. Closes [#67](https://github.com/ckeditor/ckeditor5-core/issues/67). ([a1fa64f](https://github.com/ckeditor/ckeditor5-core/commit/a1fa64f))
 
 ### Other changes
 

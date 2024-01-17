@@ -113,7 +113,7 @@ emitter.fire( 'eventName' ); // -> 123
 
 ### Listening on namespaced events
 
-The event system supports namespaced events to give you the possibility to build a structure of callbacks. Namespacing is achieved by using `:` in the event name:
+The event system supports namespaced events to give you the possibility to build a structure of callbacks. You can achieve namespacing by using `:` in the event name:
 
 ```js
 this.fire( 'foo:bar:baz', data );
@@ -400,7 +400,7 @@ Currently, this information is available for the following events:
 Hence the events from the above example would be extended with the following `eventPhase` data:
 
 1. `'$capture'` - *capturing*
-1. `'$text'` - *atTarget*
+1. `'$text'` - *at target*
 1. `'p'` - *bubbling*
 1. `'td'` - *bubbling*
 1. `'tr'` - *bubbling*
@@ -417,7 +417,7 @@ And for the example with the widget selected:
 <blockquote>
 	<p>
 		Foo
-		[<img />]	 // enhanced with toWidget()
+		[<img />]	 // Enhanced with toWidget().
 		bar
 	</p>
 </blockquote>
@@ -426,8 +426,8 @@ And for the example with the widget selected:
 Events that will be fired:
 
 1. `'$capture'` - *capturing*
-1. `'img'` - *atTarget*
-1. *widget* - *atTarget* (assuming a custom matcher was used)
+1. `'img'` - *at target*
+1. *widget* - *at target* (assuming a custom matcher was used)
 1. `'p'` - *bubbling*
 1. `'blockquote'` - *bubbling*
 1. `'$root'` - *bubbling*

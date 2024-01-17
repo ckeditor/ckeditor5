@@ -67,4 +67,4 @@ msgstr "Padoms: Sākumā uzmeklējiet tekstu un tikai tad aizstājiet to."
 
 msgctxt "The label and the tooltip of the options dropdown button in the find and replace form."
 msgid "Advanced options"
-msgstr ""
+msgstr "Uzlabotas iespējas"

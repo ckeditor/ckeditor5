@@ -67,4 +67,4 @@ msgstr "提示：先查找文本再替换"
 
 msgctxt "The label and the tooltip of the options dropdown button in the find and replace form."
 msgid "Advanced options"
-msgstr ""
+msgstr "高级选项"

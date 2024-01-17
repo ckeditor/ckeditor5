@@ -81,7 +81,7 @@ export default class LinkFormView extends View {
 	/**
 	 * A collection of views that can be focused in the form.
 	 */
-	private readonly _focusables: ViewCollection<FocusableView> = new ViewCollection();
+	private readonly _focusables = new ViewCollection<FocusableView>();
 
 	/**
 	 * Helps cycling over {@link #_focusables} in the form.

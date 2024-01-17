@@ -15,7 +15,7 @@ Use the link toolbar button {@icon @ckeditor/ckeditor5-link/theme/icons/link.svg
 {@snippet features/link}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Typing around links

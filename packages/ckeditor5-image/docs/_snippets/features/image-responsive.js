@@ -74,7 +74,7 @@ ClassicEditor
 		window.editor = editor;
 
 		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.buttonView && item.buttonView.label === 'CKBox' ),
+			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.buttonView && item.buttonView.label === 'Insert image' ),
 			text: 'Click here to insert an image.',
 			tippyOptions: {
 				placement: 'bottom'

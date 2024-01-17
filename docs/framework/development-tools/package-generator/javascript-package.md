@@ -56,17 +56,17 @@ Guides for developing some of the files:
 
 ## Npm scripts
 
-Npm scripts are a convenient way to provide commands in a project. They are defined in the `package.json` file and shared with other people contributing to the project. It ensures that the developers use the same commands with the same options (flags).
+The npm scripts are a convenient way to provide commands in a project. They are defined in the `package.json` file and shared with other people contributing to the project. It ensures that the developers use the same commands with the same options (flags).
 
-All the scripts can be executed by running `npm run <script>`. Pre and post commands with matching names will be run for those as well.
+You can execute all the scripts by running `npm run <script>`. Pre-commands and post-commands with matching names will be run for those as well.
 
 The following scripts are available in the package.
 
 ### `start`
 
-Starts a HTTP server with the live-reload mechanism that allows previewing and testing plugins available in the package.
+Starts an HTTP server with the live-reload mechanism that allows previewing and testing of plugins available in the package.
 
-When the server has been started, the default browser will open the developer sample. This can be disabled by passing the `--no-open` option to that command.
+When the server has been started, the default browser will open the developer sample. You can turn this off by passing the `--no-open` option to that command.
 
 You can also define the language that will translate the created editor by specifying the `--language [LANG]` option. It defaults to `'en'`.
 
@@ -87,10 +87,10 @@ npm run start -- --language=de
 
 Allows executing unit tests for the package, specified in the `tests/` directory. The command accepts the following modifiers:
 
-* `--coverage` &ndash; to create the code coverage report.
-* `--watch` &ndash; to observe the source files (the command does not end after executing tests).
-* `--source-map` &ndash; to generate source maps of the sources.
-* `--verbose` &ndash; to print additional webpack logs.
+* `--coverage` &ndash; Creates the code coverage report.
+* `--watch` &ndash; Observes the source files (the command does not end after executing tests).
+* `--source-map` &ndash; Generates source maps of the sources.
+* `--verbose` &ndash; Prints additional webpack logs.
 
 Examples:
 
@@ -115,7 +115,7 @@ npm run lint
 
 ### `stylelint`
 
-Similar to the `lint` task, stylelint analyzes the CSS code (`*.css` files in the `theme/` directory) in the package.
+Similar to the `lint` task, `stylelint` analyzes the CSS code (`*.css` files in the `theme/` directory) in the package.
 
 Examples:
 
@@ -155,13 +155,13 @@ npm run dll:serve
 
 ### `translations:collect`
 
-Collects translation messages (arguments of the `t()` function) and context files, then validates whether the provided values do not interfere with the values specified in the `@ckeditor/ckeditor5-core` package.
+Collects translation messages (arguments of the `t()` function) and context files. Then validates whether the provided values do not interfere with the values specified in the `@ckeditor/ckeditor5-core` package.
 
 The task may end with an error if one of the following conditions is met:
 
-* Found the `Unused context` error &ndash; entries specified in the `lang/contexts.json` file are not used in source files. They should be removed.
-* Found the `Context is duplicated for the id` error &ndash; some of the entries are duplicated. Consider removing them from the `lang/contexts.json` file, or rewrite them.
-* Found the `Context for the message id is missing` error &ndash; entries specified in the source files are not described in the `lang/contexts.json` file. They should be added.
+* The `Unused context` error is found &ndash; Entries specified in the `lang/contexts.json` file are not used in source files. They should be removed.
+* The `Context is duplicated for the id` error is found &ndash; Some of the entries are duplicated. Consider removing them from the `lang/contexts.json` file, or rewrite them.
+* The `Context for the message id is missing` error is found &ndash; Entries specified in the source files are not described in the `lang/contexts.json` file. They should be added.
 
 Examples:
 
@@ -171,7 +171,7 @@ npm run translations:collect
 
 ### `translations:download`
 
-Download translations from the Transifex server. Depending on users' activity in the project, it creates translations files used for building the editor.
+Downloads translations from the Transifex server. Depending on users' activity in the project, it creates translation files used for building the editor.
 
 <info-box info>
 The task requires passing an organization and project names. Usually, it matches the following format: `https://www.transifex.com/[ORGANIZATION]/[PROJECT]`.
@@ -203,35 +203,35 @@ npm run translations:upload -- --organization [ORGANIZATION] --project [PROJECT]
 
 ### `prepare`
 
-Npm supports some special [life cycle scripts](https://docs.npmjs.com/cli/v7/using-npm/scripts#life-cycle-scripts) that allow automatically performing operations in certain situations:
+Npm supports some special [life cycle scripts](https://docs.npmjs.com/cli/v7/using-npm/scripts#life-cycle-scripts). They allow automatically performing operations in certain situations:
 
-- `prepare`: Triggers during package creation and before publishing.
+* `prepare` &ndash; Triggers during package creation and before publishing.
 
-That script simply creates a DLL-compatible package build after creation and before publishing the package.
+This script creates a DLL-compatible package build after creation and before publishing the package.
 
-## How to change ESLint configuration?
+## How to change ESLint configuration
 
-To change the ESLint configuration, edit the [.eslintrc.js](https://github.com/ckeditor/ckeditor5-package-generator/blob/master/.eslintrc.js) file. It is also a good idea to check out the [ESLint docs](https://eslint.org/docs/rules/).
+To change the ESLint configuration, edit the [.eslintrc.js](https://github.com/ckeditor/ckeditor5-package-generator/blob/master/.eslintrc.js) file. It is also a good idea to check out the [ESLint documentation](https://eslint.org/docs/rules/).
 
-### Why are the predefined ESLint rules recommended?
+### Why are the predefined ESLint rules recommended
 
 To make CKEditor&nbsp;5 plugins compatible with each other, we needed to introduce certain limitations when importing files from packages. To learn more, visit the {@link installation/advanced/dll-builds DLL guide} and {@link framework/contributing/code-style#dll-builds-ckeditor5-rulesckeditor-imports see a detailed explanation} about the limitations.
 
 ## Translations
 
-Packages created by this tool, just like the entirety of the CKEditor&nbsp;5 ecosystem, include full support for localization. If you wish to include translations for your package, visit the {@link framework/deep-dive/localization dedicated translation guide} and learn more.
+Packages created by this tool, just like the entirety of the CKEditor&nbsp;5 ecosystem, include full support for localization. If you wish to include translations for your package, visit the {@link framework/deep-dive/localization dedicated translation guide} to learn more.
 
 The package generator provides several tools for handling translations in the created package. We recommend the following flow when dealing with translations:
 
-1. Call `npm run translations:download` &ndash; download the latest version of translations.
+1. Call `npm run translations:download` &ndash; Download the latest version of translations.
     * If there are changes in the `lang/translations/*` files, commit them as they represent new or updated translation files.
-1. Call `npm run translations:collect` &ndash; verify whether contexts are up-to-date.
-1. Call `npm run translations:upload` &ndash; upload new translations.
-1. Call `npm run translations:download` &ndash; if new contexts were uploaded, it updates the `en.po` file in the package. Do not forget to commit the change.
+2. Call `npm run translations:collect` &ndash; Verify whether contexts are up-to-date.
+3. Call `npm run translations:upload` &ndash; Upload new translations.
+4. Call `npm run translations:download` &ndash; If new contexts were uploaded, it updates the `en.po` file in the package. Do not forget to commit the change.
 
 ## Reporting issues
 
-If you found a problem with CKEditor&nbsp;5 or the package generator, please, report an issue:
+If you found a problem with CKEditor&nbsp;5 or the package generator, report an issue:
 
 * [CKEditor&nbsp;5](https://github.com/ckeditor/ckeditor5/issues/new/choose)
 * [The package generator](https://github.com/ckeditor/ckeditor5-package-generator/issues/new)
