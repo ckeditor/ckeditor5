@@ -67,4 +67,4 @@ msgstr "ヒント：置換するには、対象テキストを先に検索して
 
 msgctxt "The label and the tooltip of the options dropdown button in the find and replace form."
 msgid "Advanced options"
-msgstr ""
+msgstr "高度なオプション"

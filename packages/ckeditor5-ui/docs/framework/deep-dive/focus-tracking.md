@@ -41,10 +41,10 @@ In the following chapters of this guide, we will explain how these systems work,
 
 The main editable area of CKEditor&nbsp;5 WYSIWYG editor can be focused thanks to the [`contenteditable`](https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Editable_content) DOM attribute. This attribute tells the web browser that a web page element can be edited like any other text field, which also means it must be able to receive focus.
 
-Each root of the editing view has the `contenteditable` attribute. The editing view uses the {@link module:engine/view/observer/focusobserver~FocusObserver `FocusObserver`} (learn more about {@link framework/architecture/editing-engine#observers view observers}) to track focus in editables by listening to native DOM `focus` and `blur` events coming from them.
+Each root of the editing view has the `contenteditable` attribute. The editing view uses the {@link module:engine/view/observer/focusobserver~FocusObserver `FocusObserver`} (learn more about {@link framework/architecture/editing-engine#observers view observers}) to track focus in editable elements by listening to native DOM `focus` and `blur` events coming from them.
 
 <info-box>
-	Already confused? Take a look at our {@link framework/architecture/editing-engine#observers editing engine guide} that explains what the editing view, editables and other building blocks of CKEditor&nbsp;5 are.
+	Already confused? Take a look at the {@link framework/architecture/editing-engine#observers editing engine guide} that explains what the editing view, editable elements, and other building blocks of CKEditor&nbsp;5 are.
 </info-box>
 
 ### Checking if the view document is focused
@@ -98,7 +98,7 @@ As for the user interface of CKEditor&nbsp;5, it is a composition of multiple co
 To sum up, there are two main reasons why focus is being tracked separately on the UI level:
 
 - **To make sure the editor (as a whole) never loses focus unless the user wants it to.**
-For instance, take a look at the {@link examples/builds/inline-editor inline editor}. As long as the user edits text in the main editable area or configures its properties in any popup, dropdown, or panel, the main editor toolbar must remain visible (because the focus is somewhere in the UI). Only when the user finishes editing and moves somewhere else on a web page, the toolbar can disappear.
+For instance, take a look at the {@link examples/builds/inline-editor inline editor}. As long as the user edits text in the main editable area or configures its properties in any pop-up, dropdown, or panel, the main editor toolbar must remain visible (because the focus is somewhere in the UI). Only when the user finishes editing and moves somewhere else on a web page, the toolbar can disappear.
 - **To make the UI accessible to users who navigate it using screen readers and other assistive technologies.**
 These users not only write text using the keyboard but also use it to navigate across toolbar buttons, panels, dropdowns, etc. The UI of the editor must constantly keep track of which component is currently focused, for example, to allow navigation using <kbd>Tab</kbd>, <kbd>Esc</kbd> and arrow keys.
 
@@ -359,7 +359,7 @@ The `MyListView` can now track focused children, and it is time to help the user
 
 ### Using the `KeystrokeHandler` class
 
-The {@link module:utils/keystrokehandler~KeystrokeHandler} helper class allows registering callbacks for the keystrokes. It is used in many views across the UI of the editor for many purposes. For instance, it is responsible for focusing the toolbar on the <kbd>Alt</kbd>+<kbd>F10</kbd> keypress or it opens the link pop-up form when you hit <kbd>Ctrl</kbd>+<kbd>L</kbd> on a selected text.
+The {@link module:utils/keystrokehandler~KeystrokeHandler} helper class allows registering callbacks for the keystrokes. It is used in many views across the UI of the editor for many purposes. For instance, it is responsible for focusing the toolbar on the <kbd>Alt</kbd>+<kbd>F10</kbd> key press or it opens the link pop-up form when you hit <kbd>Ctrl</kbd>+<kbd>L</kbd> on a selected text.
 
 However, in the context of focus management, it is used by the [focus cycler](#using-the-focuscycler-class) you will get familiar with in the next section. You can learn more about the {@link module:utils/keystrokehandler~KeystrokeHandler} class in the API documentation but for now, you should only know how to create and initialize it before moving forward:
 

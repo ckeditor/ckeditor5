@@ -826,7 +826,7 @@ Major releases (contain breaking changes):
 
 ## [1.0.0-beta.3](https://github.com/ckeditor/ckeditor5-build-classic/compare/v1.0.0-beta.2...v1.0.0-beta.3) (April 10, 2018)
 
-### NOTE
+### Note
 
 This release followed `v1.0.0-beta.2` immediately to fix the issue mentioned below. Therefore, when upgrading from `v1.0.0-beta.1` make sure to also check [`v1.0.0-beta.2` release notes](https://github.com/ckeditor/ckeditor5-build-classic/releases/tag/v1.0.0-beta.2).
 
@@ -997,7 +997,7 @@ Major releases (possible breaking changes):
 
 Besides changes in the dependencies, this build also contains these bug fixes:
 
-* It will be possible to configure toolbar offset without overriding preconfigured toolbar items. See [ckeditor/ckeditor5#572](https://github.com/ckeditor/ckeditor5/issues/572). ([e7fbda9](https://github.com/ckeditor/ckeditor5-build-classic/commit/e7fbda9))
+* It will be possible to configure toolbar offset without overriding pre-configured toolbar items. See [ckeditor/ckeditor5#572](https://github.com/ckeditor/ckeditor5/issues/572). ([e7fbda9](https://github.com/ckeditor/ckeditor5-build-classic/commit/e7fbda9))
 
 ### Features
 

@@ -126,7 +126,7 @@ ClassicEditor
 
 		window.attachTourBalloon( {
 			target: window.findToolbarItem( editor.ui.view.toolbar,
-				item => item.buttonView && item.buttonView.label === 'Styles' ),
+				item => item.buttonView && item.buttonView.label === 'Article category' ),
 			text: 'Click to apply styles.',
 			editor,
 			tippyOptions: {
