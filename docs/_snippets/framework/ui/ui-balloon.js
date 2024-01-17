@@ -8,6 +8,9 @@
 import {
 	BalloonPanelView,
 	ButtonView,
+	DialogView,
+	DialogViewPosition,
+	Dialog,
 	IconView,
 	LabeledFieldView,
 	ListView,
@@ -36,9 +39,13 @@ import { icons as coreIcons } from 'ckeditor5/src/core.js';
 
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Bold, Italic, Underline } from '@ckeditor/ckeditor5-basic-styles';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 window.BalloonPanelView = BalloonPanelView;
 window.ButtonView = ButtonView;
+window.DialogView = DialogView;
 window.IconView = IconView;
 window.LabeledFieldView = LabeledFieldView;
 window.ListView = ListView;
@@ -67,8 +74,15 @@ window.cancelIcon = coreIcons.cancel;
 window.boldIcon = boldIcon;
 window.italicIcon = italicIcon;
 
+window.DialogViewPosition = DialogViewPosition;
+window.Plugin = Plugin;
 window.ClassicEditor = ClassicEditor;
 window.Essentials = Essentials;
+window.Bold = Bold;
+window.Italic = Italic;
+window.Underline = Underline;
+window.Dialog = Dialog;
+window.Paragraph = Paragraph;
 
 const balloonButton = new ButtonView();
 balloonButton.set( { label: 'Balloon button', withText: true } );

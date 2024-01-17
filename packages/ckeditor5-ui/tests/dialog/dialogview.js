@@ -56,12 +56,12 @@ describe( 'DialogView', () => {
 				expect( view.focusTracker ).to.be.an.instanceOf( FocusTracker );
 			} );
 
-			it( 'should have #isVisible set', () => {
-				expect( view.isVisible ).to.be.false;
+			it( 'should have #_isVisible set', () => {
+				expect( view._isVisible ).to.be.false;
 			} );
 
-			it( 'should have #isTransparent set', () => {
-				expect( view.isTransparent ).to.be.false;
+			it( 'should have #_isTransparent set', () => {
+				expect( view._isTransparent ).to.be.false;
 			} );
 
 			it( 'should have #isModal set', () => {
@@ -121,10 +121,10 @@ describe( 'DialogView', () => {
 					expect( overlayElement.classList.contains( 'ck-dialog-overlay__transparent' ) ).to.be.false;
 				} );
 
-				it( 'should have a CSS class bound to #isVisible', () => {
-					view.isVisible = false;
+				it( 'should have a CSS class bound to #_isVisible', () => {
+					view._isVisible = false;
 					expect( overlayElement.classList.contains( 'ck-hidden' ) ).to.be.true;
-					view.isVisible = true;
+					view._isVisible = true;
 					expect( overlayElement.classList.contains( 'ck-hidden' ) ).to.be.false;
 				} );
 
@@ -173,10 +173,10 @@ describe( 'DialogView', () => {
 					expect( innerDialogElement.ariaLabel ).to.equal( 'foo' );
 				} );
 
-				it( 'should have CSS visibility bound to #isTransparent', () => {
-					view.isTransparent = true;
+				it( 'should have CSS visibility bound to #_isTransparent', () => {
+					view._isTransparent = true;
 					expect( innerDialogElement.style.visibility ).to.equal( 'hidden' );
-					view.isTransparent = false;
+					view._isTransparent = false;
 					expect( innerDialogElement.style.visibility ).to.equal( '' );
 				} );
 
@@ -201,7 +201,7 @@ describe( 'DialogView', () => {
 				childViewB = createContentView( 'B' );
 
 				view.render();
-				view.isVisible = true;
+				view._isVisible = true;
 
 				document.body.appendChild( view.element );
 
@@ -214,7 +214,7 @@ describe( 'DialogView', () => {
 					]
 				} );
 
-				// The view gets focused when #isVisible is set to true. Let's wait for the focus to move and
+				// The view gets focused when #_isVisible is set to true. Let's wait for the focus to move and
 				// then start the spies
 				await wait( 20 );
 
@@ -274,7 +274,7 @@ describe( 'DialogView', () => {
 					} );
 
 					newView.render();
-					newView.isVisible = true;
+					newView._isVisible = true;
 
 					document.body.appendChild( newView.element );
 
@@ -285,7 +285,7 @@ describe( 'DialogView', () => {
 						]
 					} );
 
-					// The view gets focused when #isVisible is set to true. Let's wait for the focus to move and
+					// The view gets focused when #_isVisible is set to true. Let's wait for the focus to move and
 					// then start the spies
 					await wait( 10 );
 
@@ -357,7 +357,7 @@ describe( 'DialogView', () => {
 					} );
 
 					newView.render();
-					newView.isVisible = true;
+					newView._isVisible = true;
 
 					document.body.appendChild( newView.element );
 
@@ -368,7 +368,7 @@ describe( 'DialogView', () => {
 						]
 					} );
 
-					// The view gets focused when #isVisible is set to true. Let's wait for the focus to move and
+					// The view gets focused when #_isVisible is set to true. Let's wait for the focus to move and
 					// then start the spies
 					await wait( 10 );
 
@@ -436,7 +436,7 @@ describe( 'DialogView', () => {
 			it( 'should update the position on window resize (if visible and not already moved)', () => {
 				const spy = sinon.spy( view, 'updatePosition' );
 
-				view.isVisible = true;
+				view._isVisible = true;
 				view.wasMoved = false;
 
 				global.window.dispatchEvent( new Event( 'resize' ) );
@@ -446,7 +446,7 @@ describe( 'DialogView', () => {
 			it( 'should not update the position on window resize (if not visible)', () => {
 				const spy = sinon.spy( view, 'updatePosition' );
 
-				view.isVisible = false;
+				view._isVisible = false;
 				view.wasMoved = false;
 
 				global.window.dispatchEvent( new Event( 'resize' ) );
@@ -456,7 +456,7 @@ describe( 'DialogView', () => {
 			it( 'should not update the position on window resize (if moved by the user)', () => {
 				const spy = sinon.spy( view, 'updatePosition' );
 
-				view.isVisible = true;
+				view._isVisible = true;
 				view.wasMoved = true;
 
 				global.window.dispatchEvent( new Event( 'resize' ) );
@@ -468,7 +468,7 @@ describe( 'DialogView', () => {
 			it( 'should update the position on window scroll (if visible and not already moved)', () => {
 				const spy = sinon.spy( view, 'updatePosition' );
 
-				view.isVisible = true;
+				view._isVisible = true;
 				view.wasMoved = false;
 
 				global.document.dispatchEvent( new Event( 'scroll' ) );
@@ -478,7 +478,7 @@ describe( 'DialogView', () => {
 			it( 'should not update the position on window scroll (if not visible)', () => {
 				const spy = sinon.spy( view, 'updatePosition' );
 
-				view.isVisible = false;
+				view._isVisible = false;
 				view.wasMoved = false;
 
 				global.document.dispatchEvent( new Event( 'scroll' ) );
@@ -488,7 +488,7 @@ describe( 'DialogView', () => {
 			it( 'should not update the position on window scroll (if moved by the user)', () => {
 				const spy = sinon.spy( view, 'updatePosition' );
 
-				view.isVisible = true;
+				view._isVisible = true;
 				view.wasMoved = true;
 
 				global.document.dispatchEvent( new Event( 'scroll' ) );
@@ -496,15 +496,15 @@ describe( 'DialogView', () => {
 			} );
 		} );
 
-		describe( 'position update on #isVisible change', () => {
+		describe( 'position update on #_isVisible change', () => {
 			it( 'should not happen if the dialog becomes invisible', async () => {
 				const spy = sinon.spy( view, 'updatePosition' );
 
-				view.isVisible = true;
+				view._isVisible = true;
 				await wait( 20 );
 				sinon.assert.calledOnce( spy );
 
-				view.isVisible = false;
+				view._isVisible = false;
 				await wait( 20 );
 				sinon.assert.calledOnce( spy );
 			} );
@@ -512,27 +512,27 @@ describe( 'DialogView', () => {
 			it( 'should toggle dialog transparency to avoid unnecessary visual movement + should use a slight delay ' +
 				'to allow the browser to render the content of the dialog first', async () => {
 				const updatePositionSpy = sinon.spy( view, 'updatePosition' );
-				const isTransparentSpy = sinon.spy();
+				const _isTransparentSpy = sinon.spy();
 
-				view.on( 'change:isTransparent', isTransparentSpy );
+				view.on( 'change:_isTransparent', _isTransparentSpy );
 
-				view.isVisible = true;
+				view._isVisible = true;
 				await wait( 20 );
 
-				sinon.assert.callOrder( isTransparentSpy, updatePositionSpy, isTransparentSpy );
-				sinon.assert.calledWithMatch( isTransparentSpy.firstCall, sinon.match.any, 'isTransparent', true );
-				sinon.assert.calledWithMatch( isTransparentSpy.secondCall, sinon.match.any, 'isTransparent', false );
+				sinon.assert.callOrder( _isTransparentSpy, updatePositionSpy, _isTransparentSpy );
+				sinon.assert.calledWithMatch( _isTransparentSpy.firstCall, sinon.match.any, '_isTransparent', true );
+				sinon.assert.calledWithMatch( _isTransparentSpy.secondCall, sinon.match.any, '_isTransparent', false );
 			} );
 		} );
 
 		it( 'should focus the view when it becomes visible', async () => {
 			const spy = sinon.spy( view, 'focus' );
 
-			view.isVisible = true;
+			view._isVisible = true;
 			await wait( 20 );
 			sinon.assert.calledOnce( spy );
 
-			view.isVisible = false;
+			view._isVisible = false;
 			await wait( 20 );
 			sinon.assert.calledOnce( spy );
 		} );
@@ -750,7 +750,7 @@ describe( 'DialogView', () => {
 				bottom: 50
 			} );
 
-			view.isVisible = true;
+			view._isVisible = true;
 
 			await wait( 50 );
 		} );

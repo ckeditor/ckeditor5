@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 41.x | CKEditor 5 Documentation
 menu-title: Update to v41.x
 order: 83
-modified_at: 2024-01-02
+modified_at: 2024-01-10
 ---
 
 # Update to CKEditor&nbsp;5 v41.x
@@ -38,7 +38,7 @@ Unless you need to specifically use the old plugin in your integration, there is
 If you do not want to use block elements in your lists, you can {@link features/lists-editing#simple-lists turn off this functionality} with the configuration option instead of sticking to the old plugins.
 
 <info-box>
-    We have replaced the old list plugins in all {@link installation/getting-started/predefined-builds predefined builds} with the current ones.
+	We have replaced the old list plugins in all {@link installation/getting-started/predefined-builds predefined builds} with the current ones.
 </info-box>
 
 #### Renaming of the plugins
@@ -48,8 +48,8 @@ With the new version becoming the default, the `DocumentList` plugin (and all re
 If you included document lists in your integration and used the `removePlugins` option to exclude the old list plugin, it could lead to errors, such as these:
 
 ```
-  ❌ CKEditorError: plugincollection-required {"plugin":"List","requiredBy":"DocumentList"}
-    Read more: https://ckeditor.com/docs/ckeditor5/latest/support/error-codes.html#error-plugincollection-required
+	❌ CKEditorError: plugincollection-required {"plugin":"List","requiredBy":"DocumentList"}
+	Read more: https://ckeditor.com/docs/ckeditor5/latest/support/error-codes.html#error-plugincollection-required
 ```
 
 This is because your integration was injecting `DocumentList` and `DocumentListProperties` plugins, and passing the `removePlugins: [ List, ListProperties, TodoList ]` configuration option. After the change and renaming of the plugins, these two are the same.
@@ -59,82 +59,82 @@ If you happen to encounter this error, remove all imports of `DocumentList` and 
 #### Details of plugin renames
 
 <table>
-    <thead>
-        <tr>
-            <th>Previous version</th>
-            <th>Current version</th>
-            <th>Comments</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <th colspan="3">Official plugins</th>
-        </tr>
-        <tr>
-            <td><code>DocumentList</code></td>
-            <td>{@link module:list/list~List `List`}</td>
-            <td>Plugin renamed</td>
-        </tr>
-        <tr>
-            <td><code>DocumentListProperties</code></td>
-            <td>{@link module:list/listproperties~ListProperties `ListProperties`}</td>
-            <td>Plugin renamed</td>
-        </tr>
-        <tr>
-            <td><code>TodoDocumentList</code></td>
-            <td>{@link module:list/todolist~TodoList `TodoList`}</td>
-            <td>Plugin renamed</td>
-        </tr>
-        <tr>
-            <td><code>AdjacentListsSupport</code></td>
-            <td>{@link module:list/list/adjacentlistssupport~AdjacentListsSupport `AdjacentListsSupport`}</td>
-            <td>Changed import path</td>
-        </tr>
-        <tr>
-            <th colspan="3">Backward compatibility plugins</th>
-        </tr>
-        <tr>
-            <td>-</td>
-            <td>{@link module:list/documentlist~DocumentList `DocumentList`}</td>
-            <td>Alias for the {@link module:list/list~List `List`} plugin</td>
-        </tr>
-        <tr>
-            <td>-</td>
-            <td>{@link module:list/documentlistproperties~DocumentListProperties `DocumentListProperties`}</td>
-            <td>Alias for the {@link module:list/listproperties~ListProperties `ListProperties`} plugin</td>
-        </tr>
-        <tr>
-            <td>-</td>
-            <td>{@link module:list/tododocumentlist~TodoDocumentList `TodoDocumentList`}</td>
-            <td>Alias for the {@link module:list/todolist~TodoList `TodoList`} plugin</td>
-        </tr>
-        <tr>
-            <th colspan="3">Legacy plugins</th>
-        </tr>
-        <tr>
-            <td><code>List</code></td>
-            <td>{@link module:list/legacylist~LegacyList `LegacyList`}</td>
-            <td>Plugin renamed</td>
-        </tr>
-        <tr>
-            <td><code>ListProperties</code></td>
-            <td>{@link module:list/legacylistproperties~LegacyListProperties `LegacyListProperties`}</td>
-            <td>Plugin renamed</td>
-        </tr>
-        <tr>
-            <td><code>TodoList</code></td>
-            <td>{@link module:list/legacytodolist~LegacyTodoList `LegacyTodoList`}</td>
-            <td>Plugin renamed</td>
-        </tr>
-        <tr>
-            <th colspan="3">Removed deprecated plugin</th>
-        </tr>
-        <tr>
-            <td><code>ListStyle</code></td>
-            <td>-</td>
-            <td>Use the {@link module:list/listproperties~ListProperties `ListProperties`} plugin instead.</td>
-        </tr>
-    </tbody>
+	<thead>
+		<tr>
+			<th>Previous version</th>
+			<th>Current version</th>
+			<th>Comments</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<th colspan="3">Official plugins</th>
+		</tr>
+		<tr>
+			<td><code>DocumentList</code></td>
+			<td>{@link module:list/list~List `List`}</td>
+			<td>Plugin renamed</td>
+		</tr>
+		<tr>
+			<td><code>DocumentListProperties</code></td>
+			<td>{@link module:list/listproperties~ListProperties `ListProperties`}</td>
+			<td>Plugin renamed</td>
+		</tr>
+		<tr>
+			<td><code>TodoDocumentList</code></td>
+			<td>{@link module:list/todolist~TodoList `TodoList`}</td>
+			<td>Plugin renamed</td>
+		</tr>
+		<tr>
+			<td><code>AdjacentListsSupport</code></td>
+			<td>{@link module:list/list/adjacentlistssupport~AdjacentListsSupport `AdjacentListsSupport`}</td>
+			<td>Changed import path</td>
+		</tr>
+		<tr>
+			<th colspan="3">Backward compatibility plugins</th>
+		</tr>
+		<tr>
+			<td>-</td>
+			<td>{@link module:list/documentlist~DocumentList `DocumentList`}</td>
+			<td>Alias for the {@link module:list/list~List `List`} plugin</td>
+		</tr>
+		<tr>
+			<td>-</td>
+			<td>{@link module:list/documentlistproperties~DocumentListProperties `DocumentListProperties`}</td>
+			<td>Alias for the {@link module:list/listproperties~ListProperties `ListProperties`} plugin</td>
+		</tr>
+		<tr>
+			<td>-</td>
+			<td>{@link module:list/tododocumentlist~TodoDocumentList `TodoDocumentList`}</td>
+			<td>Alias for the {@link module:list/todolist~TodoList `TodoList`} plugin</td>
+		</tr>
+		<tr>
+			<th colspan="3">Legacy plugins</th>
+		</tr>
+		<tr>
+			<td><code>List</code></td>
+			<td>{@link module:list/legacylist~LegacyList `LegacyList`}</td>
+			<td>Plugin renamed</td>
+		</tr>
+		<tr>
+			<td><code>ListProperties</code></td>
+			<td>{@link module:list/legacylistproperties~LegacyListProperties `LegacyListProperties`}</td>
+			<td>Plugin renamed</td>
+		</tr>
+		<tr>
+			<td><code>TodoList</code></td>
+			<td>{@link module:list/legacytodolist~LegacyTodoList `LegacyTodoList`}</td>
+			<td>Plugin renamed</td>
+		</tr>
+		<tr>
+			<th colspan="3">Removed deprecated plugin</th>
+		</tr>
+		<tr>
+			<td><code>ListStyle</code></td>
+			<td>-</td>
+			<td>Use the {@link module:list/listproperties~ListProperties `ListProperties`} plugin instead.</td>
+		</tr>
+	</tbody>
 </table>
 
 #### Changes to list merging
@@ -197,11 +197,57 @@ However, if for some reason you want to allow empty links, you can do so using t
 
 ```diff
 ClassicEditor
-  .create( editorElement, {
-    link: {
-+      allowCreatingEmptyLinks: true
-    }
-  } )
-  .then( ... )
-  .catch( ... );
+	.create( editorElement, {
+	link: {
++		allowCreatingEmptyLinks: true
+	}
+	} )
+	.then( ... )
+	.catch( ... );
 ```
+
+### UI migration to dialogs
+
+#### The find and replace feature
+
+Starting with v41.0.0, the UI of the {@link features/find-and-replace find and replace} feature is displayed by default in a {@link framework/architecture/ui-library#dialogs-and-modals dialog window}. Before, it was displayed in a dropdown panel. This change is meant to improve the overall user experience of the feature and allow content creators to make most out of the available tools.
+
+{@img assets/img/migration-to-dialogs-v41-find-and-replace.png 1610 The comparison of the find and replace UI before and after v41.0.0}
+
+To bring the previous user experience back, you can use the {@link module:find-and-replace/findandreplaceconfig~FindAndReplaceConfig `config.findAndReplace.uiType`} configuration option:
+
+```diff
+ClassicEditor
+	.create( editorElement, {
++		findAndReplace: {
++			uiType: 'dropdown'
++		}
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
+##### Changes to the DOM structure
+
+The migration from a dropdown panel to a dialog window brought some changes to the DOM structure of the UI. Keep in mind that customizations based on certain CSS selectors may not work anymore and may require adjustments.
+
+* The UI header element (`div.ck-form__header`) is no longer available inside the form element (`form.ck-find-and-replace-form`). CSS customizations should be applied to the {@link framework/architecture/ui-library#header header element} of the dialog instead (`.ck.ck-dialog .ck.ck-form__header`).
+* The `fieldset.ck-find-and-replace-form__find` element was removed from the form element (`form.ck-find-and-replace-form`). Its contents were distributed between new containers:
+	* the "Find in text" input field, and the "Previous result" and "Next result" buttons were moved to the `div.ck-find-and-replace-form__inputs` element.
+	* the "Find" button was moved to the `div.ck-find-and-replace-form__actions` element.
+* The `fieldset.ck-find-and-replace-form__replace` element was removed. Its contents were distributed between new containers:
+	* the "Replace with" input field was moved to the `div.ck-find-and-replace-form__inputs` element,
+	* the "Replace" and "Replace all" buttons were moved to the `div.ck-find-and-replace-form__actions` element.
+* The "Advanced options" dropdown (rendered as the `div.ck-options-dropdown` element) was replaced with the {@link module:ui/collapsible/collapsibleview collapsible} component (rendered as the `div.ck-collapsible` element). Switch buttons inside ("Match case" and "Whole words only") remain unchanged.
+
+#### The AI Assistant feature
+
+Starting with v41.0.0, the UI of the {@link features/ai-assistant-overview AI assistant} feature will be displayed by default in a {@link framework/architecture/ui-library#dialogs-and-modals dialog window}. Previously, it was displayed in the balloon panel.
+
+{@img assets/img/migration-to-dialogs-v41-ai-assistant.png 1610 The comparison of AI Assistant UI before and after v41.x}
+
+##### Changes to the DOM structure
+
+The migration from a dropdown panel to a dialog window brought some changes to the DOM structure of the UI. Keep in mind that customizations based on certain CSS selectors may not work anymore and may require adjustments.
+
+* The UI header element (`div.ck-form__header`) is no longer available inside the form element (`form.ck-ai-form`). CSS customizations should be applied to the {@link framework/architecture/ui-library#header header element} of the dialog instead (`.ck.ck-dialog .ck.ck-form__header`).
