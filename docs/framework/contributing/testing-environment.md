@@ -13,7 +13,7 @@ Before reading this article we recommend getting familiar with the CKEditor&nbsp
 
 The CKEditor&nbsp;5 testing environment uses a popular setup with [Karma](https://karma-runner.github.io), [webpack](https://webpack.github.io/), [babel-loader](https://github.com/babel/babel-loader) and [Istanbul](https://github.com/gotwarlost/istanbul). We created some [npm scripts](https://docs.npmjs.com/cli/run-script) which glue all these pieces and special requirements for CKEditor together.
 
-Each CKEditor&nbsp;5 package has its own tests suite (see for example the [engine's tests](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-engine/tests)), however, the test runner is available in the root of the [`ckeditor5`](https://github.com/ckeditor/ckeditor5) repository which is the central development environment. The actual code of the test runner is implemented in the [`@ckeditor/ckeditor5-dev-tests`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-tests) package and can be easily reused outside of `ckeditor5`.
+Each CKEditor&nbsp;5 package has its own tests suite (see for example the [engine's tests](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-engine/tests)). However, the test runner is available in the root of the [`ckeditor5`](https://github.com/ckeditor/ckeditor5) repository which is the central development environment. The actual code of the test runner is implemented in the [`@ckeditor/ckeditor5-dev-tests`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-tests) package and can be reused outside of `ckeditor5`.
 
 <info-box hint>
 	Both automated and manual tests support TypeScript. Simply use the `.ts` extension.
@@ -21,7 +21,7 @@ Each CKEditor&nbsp;5 package has its own tests suite (see for example the [engin
 
 ## Running automated tests
 
-In order to run the automated tests, use the `yarn run test [<args>...]` command.
+To run the automated tests, use the `yarn run test [<args>...]` command.
 
 It accepts the following arguments that must be passed after the `--` option:
 
@@ -31,7 +31,7 @@ It accepts the following arguments that must be passed after the `--` option:
 * `--verbose` (alias `-v`) &ndash; Allows switching on webpack logs.
 * `--files` &ndash; Specifies test files to run. See the [Rules for using the `--files` option](#rules-for-using-the-files-option) section.
 * `--browsers` &ndash; Browsers that will be used to run the tests. Defaults to `Chrome`.
-* `--debug` (alias `-d`) &ndash; Allows specifying custom debug flags. For example, the `--debug engine` option uncomments the `// @if CK_DEBUG_ENGINE //` lines in the code. Note that by default `--debug` is set to `true` even if you did not specify it. This enables the base set of debug logs (`// @if CK_DEBUG //`) which should always be enabled in the testing environment. You can completely turn off the debug mode by setting the `--debug false` option.
+* `--debug` (alias `-d`) &ndash; Allows specifying custom debug flags. For example, the `--debug engine` option uncomments the `// @if CK_DEBUG_ENGINE //` lines in the code. By default `--debug` is set to `true` even if you did not specify it. This enables the base set of debug logs (`// @if CK_DEBUG //`) which should always be enabled in the testing environment. You can completely turn off the debug mode by setting the `--debug false` option.
 * `--port` &ndash; Specifies the port for the server to use. Defaults to `9876`.
 * `--identity-file="/path/to/file.js"` (alias `-i`) &ndash; Path to the file containing the license key(s) for closed–source features.
 
@@ -57,11 +57,11 @@ yarn run test -w --files=basic-styles/bold*
 
 ### Custom Chai assertions
 
-Our testing environment allows for some custom `Chai` assertions. There is no need to import them, as they are imported by default inside all tests.
+The testing environment allows for some custom `Chai` assertions. There is no need to import them, as they are imported by default inside all tests.
 
 #### `equalMarkup`
 
-Tests whether two given strings containing markup language are equal. Unlike `expect().to.equal()` from Chai assertion library, this assertion formats the markup before showing a diff. It can be used to test HTML strings and strings containing a serialized model.
+Tests whether two given strings containing markup language are equal. Unlike `expect().to.equal()` from the Chai assertion library, this assertion formats the markup before showing a diff. It can be used to test HTML strings and strings containing a serialized model.
 
 This assertion will pass:
 
@@ -87,13 +87,13 @@ Asserts that the target has an attribute with the given key name. See {@link mod
 expect( selection ).to.have.attribute( 'linkHref' );
 ```
 
-When optional `value` is provided, `.attribute` also asserts that the attribute's value is equal to the given `value`. See {@link module:engine/model/documentselection~DocumentSelection#getAttribute getAttribute}.
+When an optional `value` is provided, `.attribute` also asserts that the attribute's value is equal to the given `value`. See {@link module:engine/model/documentselection~DocumentSelection#getAttribute getAttribute}.
 
 ```js
 expect( selection ).to.have.attribute( 'linkHref', 'example.com' );
 ```
 
-Negations works as well.
+Negations work as well.
 
 ```js
 expect( selection ).to.not.have.attribute( 'linkHref' );
@@ -102,7 +102,7 @@ expect( selection ).to.not.have.attribute( 'linkHref' );
 
 ## Running manual tests
 
-In order to start the manual tests server, use the `yarn run manual` task. After calling this command, you may be asked if you want to re-create the DLL builds. You do not have to re-create the DLL builds each time you run the manual tests. Do it only if you want to check your changes in those tests that require the DLL builds.
+To start the manual tests server, use the `yarn run manual` task. After calling this command, you may be asked if you want to re-create the DLL builds. You do not have to re-create the DLL builds each time you run the manual tests. Do it only if you want to check your changes in those tests that require the DLL builds.
 
 <info-box hint>
 	You can read more about the DLL builds in a {@link installation/advanced/dll-builds dedicated guide}.
@@ -111,12 +111,12 @@ In order to start the manual tests server, use the `yarn run manual` task. After
 The `yarn run manual` task accepts the following options:
 
 * `--files` &ndash; Specifies test files to run. See the [Rules for using the `--files` option](#rules-for-using-the-files-option) section.
-* `--language="pl"` &ndash; The main language build in into all test editors, passed to the [CKEditor&nbsp;5 translations plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations). Check out the {@link features/ui-language UI language guide} to learn more. If unspecified, `'en'` is passed to the test runner.
+* `--language="pl"` &ndash; The main language built into all test editors, passed to the [CKEditor&nbsp;5 translations plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations). Check out the {@link features/ui-language UI language guide} to learn more. If unspecified, `'en'` is passed to the test runner.
 * `--additional-languages="ar,pl,..."` &ndash; Specifies extra languages passed to the [CKEditor&nbsp;5 translations plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations). Check out the {@link features/ui-language UI language guide} to learn more.
 * `--debug` (alias `-d`) &ndash; Allows specifying custom debug flags. For example, the `--debug engine` option uncomments the `// @if CK_DEBUG_ENGINE //` lines in the code. Note that by default `--debug` is set to `true` even if you did not specify it. This enables the base set of debug logs (`// @if CK_DEBUG //`) which should always be enabled in the testing environment. You can completely turn off the debug mode by setting the `--debug false` option.
 * `--port` &ndash; Specifies the port for the server to use. Defaults to `8125`.
 * `--identity-file="/path/to/file.js"` (alias `-i`) &ndash; Path to the file containing the license key(s) for closed–source features.
-* `--dll` &ndash; An optional flag that allows creating the DLL builds automatically without asking user for confirmation. If `true` (meaning that the `--dll` flag is provided), DLL builds are created automatically if they are required by test files. You can negate the logic to never create DLL builds and not ask user by providing the `--no-dll` flag. Defaults to `null`, so user will be asked for confirmation.
+* `--dll` &ndash; An optional flag that allows creating the DLL builds automatically without asking the user for confirmation. If `true` (meaning that the `--dll` flag is provided), DLL builds are created automatically if they are required by test files. You can negate the logic to never create DLL builds and not ask the user by providing the `--no-dll` flag. Defaults to `null`, so the user will be asked for confirmation.
 * `--disable-watch` &ndash; It is enabled by default when there are no `--files` specified. This is due to high RAM memory usage when running watchers on all files. Disabling watch mode causes the files to no longer be rebuilt automatically when changed.
 
 It starts the server available at [http://localhost:8125](http://localhost:8125).
@@ -129,7 +129,7 @@ A manual test consists of 3 files:
 * A `<name>.js` or `<name>.ts` file with the JavaScript or TypeScript part of the test (for example, the code initializing an editor).
 * A `<name>.html` file with the HTML part of the test. It does not need to be an entire HTML page (with the DOCTYPE, etc.). It can include just the HTML elements that you want to define.
 
-All 3 files are combined together and create a single manual test.
+All 3 files are combined and create a single manual test.
 
 An example Markdown file:
 
@@ -198,7 +198,7 @@ ClassicEditor
 
 ### Verifying all manual tests
 
-To verify that all manual tests can be **opened** without any errors (the crawler does not execute the manual test steps, it just visits the page), you do not need to do that manually, page by page. Instead, there is a web crawler that automatically traverses the documentation and it visits all pages that have been found. The crawler opens a headless Chromium browser and logs to the console any error that has been found.
+To verify that all manual tests can be **opened** without any errors (the crawler does not execute the manual test steps, it just visits the page), you do not need to do that manually, page by page. Instead, there is a web crawler that automatically traverses the documentation and visits all pages that have been found. The crawler opens a headless Chromium browser and logs to the console any error that has been found.
 
 To check manual tests, start the server (`yarn manual --files=XYZ`), and then run the crawler:
 
@@ -274,10 +274,10 @@ The `--files` (alias `-f`) option is used by both the manual and automated tests
 
 ## Test suite and CI
 
-To ensure the highest quality, we maintain a complete test suite with a stable 100% of code coverage for each of the packages. As of September 2019, this means over 11000 tests and the number is growing. Since every package is tested separately, we implement lower-level tests for libraries and higher-level tests for end-user features.
+To ensure the highest quality, we maintain a complete test suite with a stable 100% code coverage for each of the packages. As of September 2019, this means over 11000 tests and the number is growing. Since every package is tested separately, we implement lower-level tests for libraries and higher-level tests for end-user features.
 
-Such an extensive test suite requires a proper continuous integration service. We use [Travis CI](https://travis-ci.com/) as a build platform. This service ensures seamless and fast developer experience and allows us to focus on the job.
+Such an extensive test suite requires a proper continuous integration service. We use [Travis CI](https://travis-ci.com/) as a build platform. This service ensures a seamless and fast developer experience and allows us to focus on the job.
 
 Besides automated tests, we also maintain a smaller set of manual tests. They help us verify whether something unexpected happens that might have been missed by the automated tests.
 
-When proposing a pull request make sure to add test(s) that verifies it. Every code change should be accompanied by a test which proves that it is needed. Such a strict approach to testing ensures that we have not only 100% of code coverage (which is quite easy to achieve and gives only illusory safety) but also a high level of coverage for cases that we failed to notice initially (and might do that again in the future).
+When proposing a pull request, make sure to add test(s) that verify it. Every code change should be accompanied by a test which proves that it is needed. Such a strict approach to testing ensures that we have not only 100% of code coverage (which is quite easy to achieve and gives only illusory safety) but also a high level of coverage for cases that we failed to notice initially (and might do that again in the future).

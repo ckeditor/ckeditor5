@@ -49,6 +49,7 @@ ESLint
 formatter
 Gantt
 [Gg]etter
+global
 Grammarly
 hardcode
 hotlink
