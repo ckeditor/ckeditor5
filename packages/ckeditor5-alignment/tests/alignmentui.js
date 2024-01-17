@@ -1,17 +1,17 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document */
 
-import AlignmentEditing from '../src/alignmentediting';
-import AlignmentUI from '../src/alignmentui';
+import AlignmentEditing from '../src/alignmentediting.js';
+import AlignmentUI from '../src/alignmentui.js';
 
 import alignLeftIcon from '@ckeditor/ckeditor5-core/theme/icons/align-left.svg';
 import alignRightIcon from '@ckeditor/ckeditor5-core/theme/icons/align-right.svg';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 describe( 'Alignment UI', () => {
 	let editor, command, element, button;

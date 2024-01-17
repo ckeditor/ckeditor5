@@ -1,11 +1,11 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Model from '../../../src/model/model';
-import modifySelection from '../../../src/model/utils/modifyselection';
-import { setData, stringify } from '../../../src/dev-utils/model';
+import Model from '../../../src/model/model.js';
+import modifySelection from '../../../src/model/utils/modifyselection.js';
+import { setData, stringify } from '../../../src/dev-utils/model.js';
 
 describe( 'DataController utils', () => {
 	let model, doc;

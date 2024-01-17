@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,12 +7,12 @@
  * @module ui/dropdown/button/splitbuttonview
  */
 
-import View from '../../view';
-import ButtonView from '../../button/buttonview';
-import type ViewCollection from '../../viewcollection';
-import type Button from '../../button/button';
-import type DropdownButton from './dropdownbutton';
-import type { FocusableView } from '../../focuscycler';
+import View from '../../view.js';
+import ButtonView from '../../button/buttonview.js';
+import type ViewCollection from '../../viewcollection.js';
+import type Button from '../../button/button.js';
+import type DropdownButton from './dropdownbutton.js';
+import type { FocusableView } from '../../focuscycler.js';
 
 import {
 	KeystrokeHandler,

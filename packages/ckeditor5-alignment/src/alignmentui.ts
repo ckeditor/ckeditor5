@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,12 +7,12 @@
  * @module alignment/alignmentui
  */
 
-import { Plugin, icons } from 'ckeditor5/src/core';
-import { ButtonView, createDropdown, addToolbarToDropdown } from 'ckeditor5/src/ui';
+import { Plugin, icons } from 'ckeditor5/src/core.js';
+import { ButtonView, createDropdown, addToolbarToDropdown } from 'ckeditor5/src/ui.js';
 
-import { isSupported, normalizeAlignmentOptions } from './utils';
-import type { SupportedOption } from './alignmentconfig';
-import type AlignmentCommand from './alignmentcommand';
+import { isSupported, normalizeAlignmentOptions } from './utils.js';
+import type { SupportedOption } from './alignmentconfig.js';
+import type AlignmentCommand from './alignmentcommand.js';
 
 const iconsMap = new Map( [
 	[ 'left', icons.alignLeft ],

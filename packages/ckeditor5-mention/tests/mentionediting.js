@@ -1,17 +1,17 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { stringify as stringifyView, getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { stringify as stringifyView, getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import MentionEditing, { _toMentionAttribute } from '../src/mentionediting';
-import MentionCommand from '../src/mentioncommand';
+import MentionEditing, { _toMentionAttribute } from '../src/mentionediting.js';
+import MentionCommand from '../src/mentioncommand.js';
 
 describe( 'MentionEditing', () => {
 	let editor, model, doc;

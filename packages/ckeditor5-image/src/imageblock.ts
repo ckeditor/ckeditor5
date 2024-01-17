@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,12 +7,12 @@
  * @module image/imageblock
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { Widget } from 'ckeditor5/src/widget';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { Widget } from 'ckeditor5/src/widget.js';
 
-import ImageTextAlternative from './imagetextalternative';
-import ImageBlockEditing from './image/imageblockediting';
-import ImageInsertUI from './imageinsert/imageinsertui';
+import ImageTextAlternative from './imagetextalternative.js';
+import ImageBlockEditing from './image/imageblockediting.js';
+import ImageInsertUI from './imageinsert/imageinsertui.js';
 
 import '../theme/image.css';
 

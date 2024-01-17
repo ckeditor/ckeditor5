@@ -777,6 +777,16 @@ The table below presents the list of all plugins included in various builds. <!-
 				<td style="text-align:center; width:70px">✅</td>
 			</tr>
 			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/case-change.html">Case change</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
 				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/file-management/ckbox.html">CKBox</a></td>
 				<td style="text-align:center; width:70px">✅</td>
 				<td style="text-align:center; width:70px">✅</td>
@@ -845,16 +855,6 @@ The table below presents the list of all plugins included in various builds. <!-
 				<td style="text-align:center; width:70px">❌</td>
 				<td style="text-align:center; width:70px">❌</td>
 				<td style="text-align:center; width:70px">✅</td>
-			</tr>
-			<tr>
-				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/document-lists.html">DocumentList</a> +</td>
-				<td style="text-align:center; width:70px">❌</td>
-				<td style="text-align:center; width:70px">❌</td>
-				<td style="text-align:center; width:70px">❌</td>
-				<td style="text-align:center; width:70px">❌</td>
-				<td style="text-align:center; width:70px">❌</td>
-				<td style="text-align:center; width:70px">❌</td>
-				<td style="text-align:center; width:70px">❌</td>
 			</tr>
 			<tr>
 				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/document-outline.html">DocumentOutline</a></td>
@@ -1135,7 +1135,7 @@ The table below presents the list of all plugins included in various builds. <!-
 				<td style="text-align:center; width:70px">✅</td>
 			</tr>
 			<tr>
-				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html">List</a> +</td>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html">List</a></td>
 				<td style="text-align:center; width:70px">✅</td>
 				<td style="text-align:center; width:70px">✅</td>
 				<td style="text-align:center; width:70px">✅</td>
@@ -1285,7 +1285,7 @@ The table below presents the list of all plugins included in various builds. <!-
 				<td style="text-align:center; width:70px">✅</td>
 			</tr>
 			<tr>
-				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/show-blocks.html">ShowBlocks</a> +</td>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/show-blocks.html">ShowBlocks</a></td>
 				<td style="text-align:center; width:70px">❌</td>
 				<td style="text-align:center; width:70px">❌</td>
 				<td style="text-align:center; width:70px">❌</td>
@@ -1468,8 +1468,6 @@ The table below presents the list of all plugins included in various builds. <!-
 
 **Important notes**
 Plugins denoted with an asterisk (*) are essential for the editor to work and should never be removed.
-The two list plugins denoted with a plus (+) can only be used separately.
-The document lists feature is required by the import from Word plugin to run correctly.
 
 ## UMD support
 

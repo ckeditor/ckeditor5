@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -8,8 +8,8 @@
  */
 
 import { View } from '@ckeditor/ckeditor5-ui';
-import type { ResizerOptions } from '../widgetresize';
-import type ResizeState from './resizerstate';
+import type { ResizerOptions } from '../widgetresize.js';
+import type ResizeState from './resizerstate.js';
 
 /**
  * A view displaying the proposed new element size during the resizing.

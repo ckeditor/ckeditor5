@@ -1,19 +1,19 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document */
 
-import FontSizeEditing from '../../src/fontsize/fontsizeediting';
-import FontSizeUI from '../../src/fontsize/fontsizeui';
+import FontSizeEditing from '../../src/fontsize/fontsizeediting.js';
+import FontSizeUI from '../../src/fontsize/fontsizeui.js';
 
 import fontSizeIcon from '../../theme/icons/font-size.svg';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { _clear as clearTranslations, add as addTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
-import { normalizeOptions } from '../../src/fontsize/utils';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { _clear as clearTranslations, add as addTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
+import { normalizeOptions } from '../../src/fontsize/utils.js';
 
 describe( 'FontSizeUI', () => {
 	let editor, command, element;

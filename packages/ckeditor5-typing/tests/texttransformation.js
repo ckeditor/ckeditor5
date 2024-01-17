@@ -1,19 +1,19 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 
-import Typing from '../src/typing';
-import TextTransformation from '../src/texttransformation';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
-import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
+import Typing from '../src/typing.js';
+import TextTransformation from '../src/texttransformation.js';
+import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock.js';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 
 describe( 'Text transformation feature', () => {
 	let editorElement, editor, model, doc;

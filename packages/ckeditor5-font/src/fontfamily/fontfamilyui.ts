@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,15 +7,15 @@
  * @module font/fontfamily/fontfamilyui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { Collection } from 'ckeditor5/src/utils';
-import { Model, createDropdown, addListToDropdown, type ListDropdownItemDefinition } from 'ckeditor5/src/ui';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { Collection } from 'ckeditor5/src/utils.js';
+import { ViewModel, createDropdown, addListToDropdown, type ListDropdownItemDefinition } from 'ckeditor5/src/ui.js';
 
-import { normalizeOptions } from './utils';
-import { FONT_FAMILY } from '../utils';
+import { normalizeOptions } from './utils.js';
+import { FONT_FAMILY } from '../utils.js';
 
-import type { FontFamilyOption } from '../fontconfig';
-import type FontFamilyCommand from './fontfamilycommand';
+import type { FontFamilyOption } from '../fontconfig.js';
+import type FontFamilyCommand from './fontfamilycommand.js';
 
 import fontFamilyIcon from '../../theme/icons/font-family.svg';
 
@@ -110,7 +110,7 @@ function _prepareListOptions( options: Array<FontFamilyOption>, command: FontFam
 	for ( const option of options ) {
 		const def = {
 			type: 'button' as const,
-			model: new Model( {
+			model: new ViewModel( {
 				commandName: FONT_FAMILY,
 				commandParam: option.model,
 				label: option.title,

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -15,9 +15,9 @@ import {
 	type EventInfo,
 	type DomEmitter,
 	type ObservableChangeEvent
-} from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/utils.js';
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 
 import type {
 	Differ,
@@ -27,16 +27,16 @@ import type {
 	Element,
 	ViewElement,
 	ViewNode
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
-import MouseEventsObserver from '../../src/tablemouse/mouseeventsobserver';
-import TableEditing from '../tableediting';
-import TableUtils from '../tableutils';
-import TableWalker from '../tablewalker';
+import MouseEventsObserver from '../../src/tablemouse/mouseeventsobserver.js';
+import TableEditing from '../tableediting.js';
+import TableUtils from '../tableutils.js';
+import TableWalker from '../tablewalker.js';
 
-import TableWidthsCommand from './tablewidthscommand';
+import TableWidthsCommand from './tablewidthscommand.js';
 
-import { downcastTableResizedClass, upcastColgroupElement } from './converters';
+import { downcastTableResizedClass, upcastColgroupElement } from './converters.js';
 
 import {
 	clamp,
@@ -54,10 +54,10 @@ import {
 	getColumnGroupElement,
 	getTableColumnElements,
 	getTableColumnsWidths
-} from './utils';
+} from './utils.js';
 
-import { COLUMN_MIN_WIDTH_IN_PIXELS } from './constants';
-import type TableColumnResize from '../tablecolumnresize';
+import { COLUMN_MIN_WIDTH_IN_PIXELS } from './constants.js';
+import type TableColumnResize from '../tablecolumnresize.js';
 
 type ResizingData = {
 	columnPosition: number;

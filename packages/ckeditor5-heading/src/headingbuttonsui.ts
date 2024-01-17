@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,27 +7,20 @@
  * @module heading/headingbuttonsui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { ButtonView } from 'ckeditor5/src/ui';
+import { icons, Plugin } from 'ckeditor5/src/core.js';
+import { ButtonView } from 'ckeditor5/src/ui.js';
 
-import { getLocalizedOptions } from './utils';
-import type { HeadingOption } from './headingconfig';
-import type HeadingCommand from './headingcommand';
-
-import iconHeading1 from '../theme/icons/heading1.svg';
-import iconHeading2 from '../theme/icons/heading2.svg';
-import iconHeading3 from '../theme/icons/heading3.svg';
-import iconHeading4 from '../theme/icons/heading4.svg';
-import iconHeading5 from '../theme/icons/heading5.svg';
-import iconHeading6 from '../theme/icons/heading6.svg';
+import { getLocalizedOptions } from './utils.js';
+import type { HeadingOption } from './headingconfig.js';
+import type HeadingCommand from './headingcommand.js';
 
 const defaultIcons: Record<string, string> = {
-	heading1: iconHeading1,
-	heading2: iconHeading2,
-	heading3: iconHeading3,
-	heading4: iconHeading4,
-	heading5: iconHeading5,
-	heading6: iconHeading6
+	heading1: icons.heading1,
+	heading2: icons.heading2,
+	heading3: icons.heading3,
+	heading4: icons.heading4,
+	heading5: icons.heading5,
+	heading6: icons.heading6
 };
 
 /**

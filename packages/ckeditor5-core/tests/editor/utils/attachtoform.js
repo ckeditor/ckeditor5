@@ -1,12 +1,12 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import attachToForm from '../../../src/editor/utils/attachtoform';
-import ElementApiMixin from '../../../src/editor/utils/elementapimixin';
-import Editor from '../../../src/editor/editor';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import attachToForm from '../../../src/editor/utils/attachtoform.js';
+import ElementApiMixin from '../../../src/editor/utils/elementapimixin.js';
+import Editor from '../../../src/editor/editor.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 /* global document, Event */
 

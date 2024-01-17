@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,15 +7,15 @@
  * @module table/tablecolumnresize/utils
  */
 
-import type { Editor } from 'ckeditor5/src/core';
-import type { Element, Model, ViewElement, ViewNode, Writer } from 'ckeditor5/src/engine';
-import { global } from 'ckeditor5/src/utils';
-import type TableUtils from '../tableutils';
+import type { Editor } from 'ckeditor5/src/core.js';
+import type { Element, Model, ViewElement, ViewNode, Writer } from 'ckeditor5/src/engine.js';
+import { global } from 'ckeditor5/src/utils.js';
+import type TableUtils from '../tableutils.js';
 import {
 	COLUMN_WIDTH_PRECISION,
 	COLUMN_MIN_WIDTH_AS_PERCENTAGE,
 	COLUMN_MIN_WIDTH_IN_PIXELS
-} from './constants';
+} from './constants.js';
 
 /**
  * Returns all the inserted or changed table model elements in a given change set. Only the tables

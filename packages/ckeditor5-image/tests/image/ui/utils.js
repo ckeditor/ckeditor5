@@ -1,18 +1,18 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Image from '../../../src/image';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import View from '@ckeditor/ckeditor5-ui/src/view';
-import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
-import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { repositionContextualBalloon, getBalloonPositionData } from '../../../src/image/ui/utils';
-import ImageCaption from '../../../src/imagecaption';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import Image from '../../../src/image.js';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import View from '@ckeditor/ckeditor5-ui/src/view.js';
+import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon.js';
+import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview.js';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { repositionContextualBalloon, getBalloonPositionData } from '../../../src/image/ui/utils.js';
+import ImageCaption from '../../../src/imagecaption.js';
 
 describe( 'Utils', () => {
 	const defaultPositions = BalloonPanelView.defaultPositions;

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -8,10 +8,13 @@
 import {
 	BalloonPanelView,
 	ButtonView,
+	DialogView,
+	DialogViewPosition,
+	Dialog,
 	IconView,
 	LabeledFieldView,
 	ListView,
-	Model,
+	ViewModel,
 	SearchTextView,
 	SpinnerView,
 	SplitButtonView,
@@ -32,17 +35,21 @@ import { Collection, Locale } from '@ckeditor/ckeditor5-utils';
 
 import italicIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg';
 import boldIcon from '@ckeditor/ckeditor5-core/theme/icons/bold.svg';
-import { icons as coreIcons } from 'ckeditor5/src/core';
+import { icons as coreIcons } from 'ckeditor5/src/core.js';
 
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Bold, Italic, Underline } from '@ckeditor/ckeditor5-basic-styles';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 window.BalloonPanelView = BalloonPanelView;
 window.ButtonView = ButtonView;
+window.DialogView = DialogView;
 window.IconView = IconView;
 window.LabeledFieldView = LabeledFieldView;
 window.ListView = ListView;
-window.Model = Model;
+window.Model = ViewModel;
 window.SearchTextView = SearchTextView;
 window.SpinnerView = SpinnerView;
 window.SplitButtonView = SplitButtonView;
@@ -67,8 +74,15 @@ window.cancelIcon = coreIcons.cancel;
 window.boldIcon = boldIcon;
 window.italicIcon = italicIcon;
 
+window.DialogViewPosition = DialogViewPosition;
+window.Plugin = Plugin;
 window.ClassicEditor = ClassicEditor;
 window.Essentials = Essentials;
+window.Bold = Bold;
+window.Italic = Italic;
+window.Underline = Underline;
+window.Dialog = Dialog;
+window.Paragraph = Paragraph;
 
 const balloonButton = new ButtonView();
 balloonButton.set( { label: 'Balloon button', withText: true } );

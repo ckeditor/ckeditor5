@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,12 +7,12 @@
  * @module engine/view/editableelement
  */
 
-import ContainerElement from './containerelement';
+import ContainerElement from './containerelement.js';
 import { ObservableMixin } from '@ckeditor/ckeditor5-utils';
-import type { ViewSelectionChangeEvent } from './selection';
-import type { ElementAttributes } from './element';
-import type Document from './document';
-import type Node from './node';
+import type { ViewSelectionChangeEvent } from './selection.js';
+import type { ElementAttributes } from './element.js';
+import type Document from './document.js';
+import type Node from './node.js';
 
 /**
  * Editable element which can be a {@link module:engine/view/rooteditableelement~RootEditableElement root}

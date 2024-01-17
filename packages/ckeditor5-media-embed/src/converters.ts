@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,10 +7,10 @@
  * @module media-embed/converters
  */
 
-import type { GetCallback } from 'ckeditor5/src/utils';
-import type { DowncastAttributeEvent, DowncastDispatcher, Element, ViewElement } from 'ckeditor5/src/engine';
-import type MediaRegistry from './mediaregistry';
-import type { MediaOptions } from './utils';
+import type { GetCallback } from 'ckeditor5/src/utils.js';
+import type { DowncastAttributeEvent, DowncastDispatcher, Element, ViewElement } from 'ckeditor5/src/engine.js';
+import type MediaRegistry from './mediaregistry.js';
+import type { MediaOptions } from './utils.js';
 
 /**
  * Returns a function that converts the model "url" attribute to the view representation.

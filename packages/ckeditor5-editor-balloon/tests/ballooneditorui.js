@@ -1,25 +1,25 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document, Event */
 
-import BalloonEditor from '../src/ballooneditor';
-import BalloonEditorUI from '../src/ballooneditorui';
-import EditorUI from '@ckeditor/ckeditor5-ui/src/editorui/editorui';
-import BalloonEditorUIView from '../src/ballooneditoruiview';
-import BalloonToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/balloon/balloontoolbar';
+import BalloonEditor from '../src/ballooneditor.js';
+import BalloonEditorUI from '../src/ballooneditorui.js';
+import EditorUI from '@ckeditor/ckeditor5-ui/src/editorui/editorui.js';
+import BalloonEditorUIView from '../src/ballooneditoruiview.js';
+import BalloonToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/balloon/balloontoolbar.js';
 import { Image, ImageCaption, ImageToolbar } from '@ckeditor/ckeditor5-image';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
 
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import { isElement } from 'lodash-es';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'BalloonEditorUI', () => {
 	let editor, view, ui, viewElement;

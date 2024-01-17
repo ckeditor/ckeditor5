@@ -1,11 +1,11 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Markdown from '../src/markdown';
-import GFMDataProcessor from '../src/gfmdataprocessor';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import Markdown from '../src/markdown.js';
+import GFMDataProcessor from '../src/gfmdataprocessor.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 describe( 'Markdown', () => {
 	it( 'has proper name', () => {

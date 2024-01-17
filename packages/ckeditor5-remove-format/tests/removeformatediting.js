@@ -1,11 +1,11 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import RemoveFormatCommand from '../src/removeformatcommand';
-import RemoveFormatEditing from '../src/removeformatediting';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import RemoveFormatCommand from '../src/removeformatcommand.js';
+import RemoveFormatEditing from '../src/removeformatediting.js';
 
 describe( 'RemoveFormat', () => {
 	let editor;

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,12 +7,12 @@
  * @module engine/model/operation/markeroperation
  */
 
-import Operation from './operation';
-import Range from '../range';
+import Operation from './operation.js';
+import Range from '../range.js';
 
-import type Document from '../document';
-import type MarkerCollection from '../markercollection';
-import type { Selectable } from '../selection';
+import type Document from '../document.js';
+import type MarkerCollection from '../markercollection.js';
+import type { Selectable } from '../selection.js';
 
 export default class MarkerOperation extends Operation {
 	/**

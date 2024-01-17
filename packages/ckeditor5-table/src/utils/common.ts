@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -15,10 +15,10 @@ import type {
 	Schema,
 	Writer,
 	DocumentSelection
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
-import { downcastAttributeToStyle, upcastStyleToAttribute } from './../converters/tableproperties';
-import type TableUtils from '../tableutils';
+import { downcastAttributeToStyle, upcastStyleToAttribute } from './../converters/tableproperties.js';
+import type TableUtils from '../tableutils.js';
 
 /**
  * A common method to update the numeric value. If a value is the default one, it will be unset.

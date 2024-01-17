@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,11 +7,11 @@
  * @module find-and-replace/findandreplace
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import FindAndReplaceUI, { type SearchResetedEvent } from './findandreplaceui';
-import FindAndReplaceEditing from './findandreplaceediting';
-import type { Marker } from 'ckeditor5/src/engine';
-import type { FindNextEvent, FindPreviousEvent, ReplaceAllEvent, ReplaceEvent } from './ui/findandreplaceformview';
+import { Plugin } from 'ckeditor5/src/core.js';
+import FindAndReplaceUI, { type SearchResetedEvent } from './findandreplaceui.js';
+import FindAndReplaceEditing from './findandreplaceediting.js';
+import type { Marker } from 'ckeditor5/src/engine.js';
+import type { FindNextEvent, FindPreviousEvent, ReplaceAllEvent, ReplaceEvent } from './ui/findandreplaceformview.js';
 
 export type ResultType = {
 	id?: string;

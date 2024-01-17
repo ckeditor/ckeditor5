@@ -1,17 +1,17 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import count from '@ckeditor/ckeditor5-utils/src/count';
-import Node from '../../src/view/node';
-import Element from '../../src/view/element';
-import Text from '../../src/view/text';
-import TextProxy from '../../src/view/textproxy';
-import Document from '../../src/view/document';
-import { addBorderRules } from '../../src/view/styles/border';
-import { addMarginRules } from '../../src/view/styles/margin';
-import { StylesProcessor } from '../../src/view/stylesmap';
+import count from '@ckeditor/ckeditor5-utils/src/count.js';
+import Node from '../../src/view/node.js';
+import Element from '../../src/view/element.js';
+import Text from '../../src/view/text.js';
+import TextProxy from '../../src/view/textproxy.js';
+import Document from '../../src/view/document.js';
+import { addBorderRules } from '../../src/view/styles/border.js';
+import { addMarginRules } from '../../src/view/styles/margin.js';
+import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'Element', () => {
 	let document;

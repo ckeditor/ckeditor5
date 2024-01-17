@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,10 +7,10 @@
 
 import { FocusCycler, ViewCollection } from '@ckeditor/ckeditor5-ui';
 import { FocusTracker, KeystrokeHandler, Locale } from '@ckeditor/ckeditor5-utils';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 
-import StyleGroupView from '../../src/ui/stylegroupview';
-import StylePanelView from '../../src/ui/stylepanelview';
+import StyleGroupView from '../../src/ui/stylegroupview.js';
+import StylePanelView from '../../src/ui/stylepanelview.js';
 
 describe( 'StylePanelView', () => {
 	let locale, panel;

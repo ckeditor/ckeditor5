@@ -1,19 +1,19 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
-import Delete from '@ckeditor/ckeditor5-typing/src/delete';
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
-import ShiftEnter from '../src/shiftenter';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
+import Delete from '@ckeditor/ckeditor5-typing/src/delete.js';
+import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
+import ShiftEnter from '../src/shiftenter.js';
 
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 describe( 'ShiftEnter integration', () => {
 	let editor, model, div;

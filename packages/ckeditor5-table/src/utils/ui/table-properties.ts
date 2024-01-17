@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,7 +9,7 @@
 
 import {
 	ButtonView,
-	Model,
+	ViewModel,
 	type ColorOption,
 	type LabeledFieldView,
 	type ListDropdownItemDefinition,
@@ -17,15 +17,15 @@ import {
 	type ToolbarView,
 	type View,
 	type ColorPickerConfig
-} from 'ckeditor5/src/ui';
+} from 'ckeditor5/src/ui.js';
 
-import { Collection, type LocaleTranslate } from 'ckeditor5/src/utils';
-import { isColor, isLength, isPercentage } from 'ckeditor5/src/engine';
+import { Collection, type LocaleTranslate } from 'ckeditor5/src/utils.js';
+import { isColor, isLength, isPercentage } from 'ckeditor5/src/engine.js';
 
-import type TableCellPropertiesView from '../../tablecellproperties/ui/tablecellpropertiesview';
-import type TablePropertiesView from '../../tableproperties/ui/tablepropertiesview';
+import type TableCellPropertiesView from '../../tablecellproperties/ui/tablecellpropertiesview.js';
+import type TablePropertiesView from '../../tableproperties/ui/tablepropertiesview.js';
 
-import ColorInputView from '../../ui/colorinputview';
+import ColorInputView from '../../ui/colorinputview.js';
 
 const isEmpty = ( val: string ) => val === '';
 
@@ -122,7 +122,7 @@ export function getBorderStyleDefinitions(
 	for ( const style in styleLabels ) {
 		const definition: ListDropdownItemDefinition = {
 			type: 'button',
-			model: new Model( {
+			model: new ViewModel( {
 				_borderStyleValue: style,
 				label: styleLabels[ style ],
 				role: 'menuitemradio',

@@ -1,14 +1,14 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* eslint-env browser */
 
-import FileUploader from '../../src/uploadgateway/fileuploader';
-import UploadGateway from '../../src/uploadgateway/uploadgateway';
-import Token from '../../src/token/token';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import FileUploader from '../../src/uploadgateway/fileuploader.js';
+import UploadGateway from '../../src/uploadgateway/uploadgateway.js';
+import Token from '../../src/token/token.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'UploadGateway', () => {
 	const tokenInitValue = `header.${ btoa( JSON.stringify( { exp: Date.now() + 3600000 } ) ) }.signature`;

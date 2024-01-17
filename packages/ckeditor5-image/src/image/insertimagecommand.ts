@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,9 @@
  * @module image/image/insertimagecommand
  */
 
-import { Command, type Editor } from 'ckeditor5/src/core';
-import { logWarning, toArray, type ArrayOrItem } from 'ckeditor5/src/utils';
-import type ImageUtils from '../imageutils';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
+import { logWarning, toArray, type ArrayOrItem } from 'ckeditor5/src/utils.js';
+import type ImageUtils from '../imageutils.js';
 
 /**
  * Insert image command.

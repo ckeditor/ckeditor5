@@ -1,11 +1,11 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Bold from '../src/bold';
-import BoldEditing from '../src/bold/boldediting';
-import BoldUI from '../src/bold/boldui';
+import Bold from '../src/bold.js';
+import BoldEditing from '../src/bold/boldediting.js';
+import BoldUI from '../src/bold/boldui.js';
 
 describe( 'Bold', () => {
 	it( 'should require BoldEditing and BoldUI', () => {

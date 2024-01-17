@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -8,17 +8,17 @@
 */
 
 import { FocusTracker, KeystrokeHandler, type Locale } from '@ckeditor/ckeditor5-utils';
-import View from '../../view';
-import { default as SearchTextQueryView, type SearchTextQueryViewConfig } from './searchtextqueryview';
-import SearchInfoView from '../searchinfoview';
-import SearchResultsView from '../searchresultsview';
-import FocusCycler from '../../focuscycler';
+import View from '../../view.js';
+import { default as SearchTextQueryView, type SearchTextQueryViewConfig } from './searchtextqueryview.js';
+import SearchInfoView from '../searchinfoview.js';
+import SearchResultsView from '../searchresultsview.js';
+import FocusCycler, { type FocusableView } from '../../focuscycler.js';
 import { escapeRegExp } from 'lodash-es';
 
-import type FilteredView from '../filteredview';
-import type ViewCollection from '../../viewcollection';
-import type InputBase from '../../input/inputbase';
-import type InputTextView from '../../inputtext/inputtextview';
+import type FilteredView from '../filteredview.js';
+import type ViewCollection from '../../viewcollection.js';
+import type InputBase from '../../input/inputbase.js';
+import type InputTextView from '../../inputtext/inputtextview.js';
 
 import '../../../theme/components/search/search.css';
 
@@ -70,7 +70,7 @@ export default class SearchTextView<
 	/**
 	 * The view that displays the information about the search results.
 	 */
-	public infoView: View | undefined;
+	public infoView: FocusableView | undefined;
 
 	/**
 	 * The view that allows the user to enter the search query.
@@ -113,7 +113,7 @@ export default class SearchTextView<
 	 *
 	 * @readonly
 	 */
-	declare public readonly focusableChildren: ViewCollection;
+	declare public readonly focusableChildren: ViewCollection<FocusableView>;
 
 	public declare locale: Locale;
 
@@ -351,7 +351,7 @@ export interface SearchTextViewConfig<TConfigSearchField extends InputBase<HTMLI
 		 * The view that displays the information about the search results. If not specified,
 		 * {@link module:ui/search/searchinfoview~SearchInfoView} is used.
 		 */
-		instance?: View;
+		instance?: FocusableView;
 
 		/**
 		 * The configuration of text labels displayed in the {@link #infoView} in different states

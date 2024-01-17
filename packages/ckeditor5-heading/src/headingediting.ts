@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,13 +7,13 @@
  * @module heading/headingediting
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
-import { Paragraph } from 'ckeditor5/src/paragraph';
-import { priorities } from 'ckeditor5/src/utils';
-import type { EnterCommandAfterExecuteEvent } from 'ckeditor5/src/enter';
-import type { HeadingOption } from './headingconfig';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { Paragraph } from 'ckeditor5/src/paragraph.js';
+import { priorities } from 'ckeditor5/src/utils.js';
+import type { EnterCommandAfterExecuteEvent } from 'ckeditor5/src/enter.js';
+import type { HeadingOption } from './headingconfig.js';
 
-import HeadingCommand from './headingcommand';
+import HeadingCommand from './headingcommand.js';
 
 const defaultModelElement = 'paragraph';
 

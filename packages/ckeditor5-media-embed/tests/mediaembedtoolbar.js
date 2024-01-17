@@ -1,22 +1,22 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document, console */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
-import MediaEmbed from '../src/mediaembed';
-import MediaEmbedToolbar from '../src/mediaembedtoolbar';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import View from '@ckeditor/ckeditor5-ui/src/view';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor.js';
+import MediaEmbed from '../src/mediaembed.js';
+import MediaEmbedToolbar from '../src/mediaembedtoolbar.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import View from '@ckeditor/ckeditor5-ui/src/view.js';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'MediaEmbedToolbar', () => {
 	let editor, element, widgetToolbarRepository, balloon, toolbar, model;

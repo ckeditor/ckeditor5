@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,22 +7,22 @@
  * @module image/imagetextalternative/imagetextalternativeui
  */
 
-import { Plugin, icons } from 'ckeditor5/src/core';
+import { Plugin, icons } from 'ckeditor5/src/core.js';
 import {
 	ButtonView,
 	ContextualBalloon,
 	clickOutsideHandler,
 	CssTransitionDisablerMixin,
 	type ViewWithCssTransitionDisabler
-} from 'ckeditor5/src/ui';
+} from 'ckeditor5/src/ui.js';
 
 import TextAlternativeFormView, {
 	type TextAlternativeFormViewCancelEvent,
 	type TextAlternativeFormViewSubmitEvent
-} from './ui/textalternativeformview';
-import { repositionContextualBalloon, getBalloonPositionData } from '../image/ui/utils';
-import type ImageTextAlternativeCommand from './imagetextalternativecommand';
-import type ImageUtils from '../imageutils';
+} from './ui/textalternativeformview.js';
+import { repositionContextualBalloon, getBalloonPositionData } from '../image/ui/utils.js';
+import type ImageTextAlternativeCommand from './imagetextalternativecommand.js';
+import type ImageUtils from '../imageutils.js';
 
 /**
  * The image text alternative UI plugin.

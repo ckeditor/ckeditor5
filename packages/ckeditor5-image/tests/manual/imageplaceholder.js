@@ -1,14 +1,14 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document, console, window */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ImageBlockEditing from '../../src/image/imageblockediting';
-import ImageUploadEditing from '../../src/imageupload/imageuploadediting';
-import ImageUploadProgress from '../../src/imageupload/imageuploadprogress';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import ImageBlockEditing from '../../src/image/imageblockediting.js';
+import ImageUploadEditing from '../../src/imageupload/imageuploadediting.js';
+import ImageUploadProgress from '../../src/imageupload/imageuploadprogress.js';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ ImageBlockEditing, ImageUploadEditing, ImageUploadProgress ]

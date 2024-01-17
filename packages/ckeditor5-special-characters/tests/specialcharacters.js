@@ -1,21 +1,21 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import SpecialCharacters from '../src/specialcharacters';
-import SpecialCharactersMathematical from '../src/specialcharactersmathematical';
-import SpecialCharactersArrows from '../src/specialcharactersarrows';
-import SpecialCharactersNavigationView from '../src/ui/specialcharactersnavigationview';
-import CharacterGridView from '../src/ui/charactergridview';
-import CharacterInfoView from '../src/ui/characterinfoview';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
+import SpecialCharacters from '../src/specialcharacters.js';
+import SpecialCharactersMathematical from '../src/specialcharactersmathematical.js';
+import SpecialCharactersArrows from '../src/specialcharactersarrows.js';
+import SpecialCharactersNavigationView from '../src/ui/specialcharactersnavigationview.js';
+import CharacterGridView from '../src/ui/charactergridview.js';
+import CharacterInfoView from '../src/ui/characterinfoview.js';
 import specialCharactersIcon from '../theme/icons/specialcharacters.svg';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'SpecialCharacters', () => {
 	let editor, element, command, plugin;

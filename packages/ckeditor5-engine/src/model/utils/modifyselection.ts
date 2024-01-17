@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,16 +7,16 @@
  * @module engine/model/utils/modifyselection
  */
 
-import DocumentSelection from '../documentselection';
-import Position from '../position';
-import Range from '../range';
-import TreeWalker, { type TreeWalkerValue } from '../treewalker';
+import DocumentSelection from '../documentselection.js';
+import Position from '../position.js';
+import Range from '../range.js';
+import TreeWalker, { type TreeWalkerValue } from '../treewalker.js';
 
-import type Model from '../model';
-import type Schema from '../schema';
-import type Selection from '../selection';
-import type Text from '../text';
-import type Node from '../node';
+import type Model from '../model.js';
+import type Schema from '../schema.js';
+import type Selection from '../selection.js';
+import type Text from '../text.js';
+import type Node from '../node.js';
 
 import { isInsideSurrogatePair, isInsideCombinedSymbol, isInsideEmojiSequence } from '@ckeditor/ckeditor5-utils';
 

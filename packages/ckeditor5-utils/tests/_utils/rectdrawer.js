@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import global from '../../src/dom/global';
+import global from '../../src/dom/global.js';
 
 /**
  * A helper class that makes it possible to visualize {@link module:utils/dom/rect~Rect rect objects}.

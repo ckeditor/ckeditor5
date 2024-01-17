@@ -13,7 +13,7 @@ modified_at: 2023-02-22
 The table feature gives you tools to create and edit tables. Tables are great for organizing data in a clear, visually appealing way.
 
 ## Demo
-Use the insert table button {@icon @ckeditor/ckeditor5-table/theme/icons/table.svg Insert table} to insert a new table into the content. Click inside the table to open a contextual toolbar. The toolbar lets you add or remove columns {@icon @ckeditor/ckeditor5-table/theme/icons/table-column.svg Table column} and rows {@icon @ckeditor/ckeditor5-table/theme/icons/table-row.svg Table row}. You can also merge or split cells {@icon @ckeditor/ckeditor5-table/theme/icons/table-merge-cell.svg Table cell}.
+Use the insert table button {@icon @ckeditor/ckeditor5-core/theme/icons/table.svg Insert table} to insert a new table into the content. Click inside the table to open a contextual toolbar. The toolbar lets you add or remove columns {@icon @ckeditor/ckeditor5-table/theme/icons/table-column.svg Table column} and rows {@icon @ckeditor/ckeditor5-table/theme/icons/table-row.svg Table row}. You can also merge or split cells {@icon @ckeditor/ckeditor5-table/theme/icons/table-merge-cell.svg Table cell}.
 
 Try toggling the caption on and off {@icon @ckeditor/ckeditor5-core/theme/icons/caption.svg Table caption}. You can also change the properties of the entire table {@icon @ckeditor/ckeditor5-table/theme/icons/table-properties.svg Table properties} or individual cells {@icon @ckeditor/ckeditor5-table/theme/icons/table-cell-properties.svg Cell properties}. To control the width of a column, click and drag its edge.
 
@@ -168,12 +168,12 @@ CKEditor&nbsp;5 allows nesting tables inside other table's cells. This may be us
 
 <!-- We may reconsider this demo, as the feature will still work in the first one -->
 
-You can test this feature in the demo below by adding a new table in the blank "abandoned" section at the bottom of the existing table. Click inside a cell and use the insert table button {@icon @ckeditor/ckeditor5-table/theme/icons/table.svg Insert table}. A nested table will appear inside the cell.
+You can test this feature in the demo below by adding a new table in the blank "abandoned" section at the bottom of the existing table. Click inside a cell and use the insert table button {@icon @ckeditor/ckeditor5-core/theme/icons/table.svg Insert table}. A nested table will appear inside the cell.
 
 {@snippet features/table-nesting}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ### Known issues
@@ -351,7 +351,7 @@ Check the table with default headers applied to both the first row and the first
 
 By default, the editor allows nesting a table inside another table's cell.
 
-In order to disallow nesting tables, you need to register an additional schema rule. It needs to be added before the data is loaded into the editor. Due to that, it is best to implement it as a plugin:
+To disallow nesting tables, you need to register an additional schema rule. It needs to be added before the data is loaded into the editor. Due to that, it is best to implement it as a plugin:
 
 ```js
 function DisallowNestingTables( editor ) {

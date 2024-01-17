@@ -1,16 +1,16 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals console */
 
-import Locale from '../src/locale';
+import Locale from '../src/locale.js';
 import {
 	add as addTranslations,
 	_clear as clearTranslations
-} from '../src/translation-service';
-import { expectToThrowCKEditorError } from './_utils/utils';
+} from '../src/translation-service.js';
+import { expectToThrowCKEditorError } from './_utils/utils.js';
 
 describe( 'Locale', () => {
 	afterEach( () => {

@@ -39,14 +39,14 @@ To find out more about CKBox, the brand-new file manager and image editor, visit
 
 ## Demo
 
-To upload a file using CKBox, use the open file manager toolbar button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/browse-files.svg Open file manager}. You can choose more than one file at a time. Use the edit image button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/ckbox-image-edit.svg} from either the main toolbar or the image contextual toolbar to edit the selected image.
+To upload a file using CKBox, use the open file manager toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/browse-files.svg Open file manager}. You can choose more than one file at a time. Use the edit image button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/ckbox-image-edit.svg} from either the main toolbar or the image contextual toolbar to edit the selected image.
 
 Note that the image toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/image-upload.svg Image upload} will now also upload images right into the CKBox file manager and you can {@link features/drag-drop drag and drop} them, too. You can then access the files from the management panel.
 
 {@snippet features/ckbox}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 Image files are inserted into the content as images that you can drag around and resize. Non-embeddable files (like PDF files) are inserted as links.
@@ -304,7 +304,7 @@ If you want to use the CKBox editing capabilities straight from the editor, the 
 	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
-## What's next?
+## What's next
 
 Be sure to check out the comprehensive {@link features/image-upload Image upload overview} guide to learn more about different ways of uploading images in CKEditor&nbsp;5.
 

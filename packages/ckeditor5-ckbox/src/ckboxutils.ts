@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,15 +10,15 @@
  */
 
 import type { CloudServices, InitializedToken } from '@ckeditor/ckeditor5-cloud-services';
-import { CKEditorError, logError } from 'ckeditor5/src/utils';
-import { Plugin } from 'ckeditor5/src/core';
+import { CKEditorError, logError } from 'ckeditor5/src/utils.js';
+import { Plugin } from 'ckeditor5/src/core.js';
 import {
 	convertMimeTypeToExtension,
 	getContentTypeOfUrl,
 	getFileExtension,
 	getWorkspaceId,
 	sendHttpRequest
-} from './utils';
+} from './utils.js';
 
 const DEFAULT_CKBOX_THEME_NAME = 'lark';
 

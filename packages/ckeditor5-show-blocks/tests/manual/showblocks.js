@@ -1,11 +1,11 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals window, document, console */
 
-import ShowBlocks from '../../src/showblocks';
+import ShowBlocks from '../../src/showblocks.js';
 
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
@@ -50,9 +50,9 @@ import { SpecialCharacters, SpecialCharactersEssentials } from '@ckeditor/ckedit
 import { Table, TableCaption, TableCellProperties, TableColumnResize, TableProperties, TableToolbar } from '@ckeditor/ckeditor5-table';
 import { TextTransformation } from '@ckeditor/ckeditor5-typing';
 
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage.js';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

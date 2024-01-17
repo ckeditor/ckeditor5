@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -12,9 +12,9 @@ import type {
 	Element,
 	Mapper,
 	Model
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
-import { isSingleParagraphWithoutAttributes } from './downcast';
+import { isSingleParagraphWithoutAttributes } from './downcast.js';
 
 /**
  * A table cell refresh handler which marks the table cell in the differ to have it re-rendered.

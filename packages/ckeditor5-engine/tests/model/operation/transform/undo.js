@@ -1,13 +1,13 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import { Client, expectClients, clearBuffer } from './utils.js';
 
-import DocumentFragment from '../../../../src/model/documentfragment';
-import Element from '../../../../src/model/element';
-import Text from '../../../../src/model/text';
+import DocumentFragment from '../../../../src/model/documentfragment.js';
+import Element from '../../../../src/model/element.js';
+import Text from '../../../../src/model/text.js';
 
 describe( 'transform', () => {
 	let john;

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,9 @@
  * @module table/tablecolumnresize/tablewidthscommand
  */
 
-import type { Element } from 'ckeditor5/src/engine';
-import { Command } from 'ckeditor5/src/core';
-import { normalizeColumnWidths } from './utils';
+import type { Element } from 'ckeditor5/src/engine.js';
+import { Command } from 'ckeditor5/src/core.js';
+import { normalizeColumnWidths } from './utils.js';
 
 /**
  * Command used by the {@link module:table/tablecolumnresize~TableColumnResize Table column resize feature} that

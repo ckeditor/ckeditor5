@@ -1,13 +1,13 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals CSSStyleSheet */
 
-import DocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment';
+import DocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment.js';
 
-import { parseHtml } from '../../src/filters/parse';
+import { parseHtml } from '../../src/filters/parse.js';
 
 describe( 'PasteFromOffice - filters', () => {
 	describe( 'parse', () => {

@@ -1,19 +1,19 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock.js';
 import { Link } from '@ckeditor/ckeditor5-link';
-import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import { INLINE_FILLER } from '@ckeditor/ckeditor5-engine/src/view/filler';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { INLINE_FILLER } from '@ckeditor/ckeditor5-engine/src/view/filler.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import GeneralHtmlSupport from '../../src/generalhtmlsupport';
-import { getModelDataWithAttributes } from '../_utils/utils';
+import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
+import { getModelDataWithAttributes } from '../_utils/utils.js';
 
 /* global document, console */
 

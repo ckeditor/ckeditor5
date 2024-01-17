@@ -15,7 +15,7 @@ In the demo below, select a text fragment. Next, use the language toolbar dropdo
 {@snippet features/textpartlanguage}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Additional feature information

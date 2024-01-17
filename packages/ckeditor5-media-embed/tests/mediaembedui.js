@@ -1,16 +1,16 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global Event */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import MediaEmbed from '../src/mediaembed';
-import MediaEmbedUI from '../src/mediaembedui';
-import MediaFormView from '../src/ui/mediaformview';
-import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import MediaEmbed from '../src/mediaembed.js';
+import MediaEmbedUI from '../src/mediaembedui.js';
+import MediaFormView from '../src/ui/mediaformview.js';
+import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 import mediaIcon from '../theme/icons/media.svg';
 
 describe( 'MediaEmbedUI', () => {

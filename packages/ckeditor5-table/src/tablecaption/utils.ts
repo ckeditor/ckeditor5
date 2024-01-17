@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -12,9 +12,9 @@ import type {
 	DocumentSelection,
 	Element,
 	ViewElement
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
-import { getSelectionAffectedTable } from '../utils/common';
+import { getSelectionAffectedTable } from '../utils/common.js';
 
 /**
  * Checks if the provided model element is a `table`.

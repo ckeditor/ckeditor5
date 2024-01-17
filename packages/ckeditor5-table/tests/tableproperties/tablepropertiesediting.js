@@ -1,24 +1,24 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import TableEditing from '../../src/tableediting';
-import TablePropertiesEditing from '../../src/tableproperties/tablepropertiesediting';
+import TableEditing from '../../src/tableediting.js';
+import TablePropertiesEditing from '../../src/tableproperties/tablepropertiesediting.js';
 
-import TableBorderColorCommand from '../../src/tableproperties/commands/tablebordercolorcommand';
-import TableBorderStyleCommand from '../../src/tableproperties/commands/tableborderstylecommand';
-import TableBorderWidthCommand from '../../src/tableproperties/commands/tableborderwidthcommand';
-import TableAlignmentCommand from '../../src/tableproperties/commands/tablealignmentcommand';
-import TableWidthCommand from '../../src/tableproperties/commands/tablewidthcommand';
-import TableHeightCommand from '../../src/tableproperties/commands/tableheightcommand';
-import TableBackgroundColorCommand from '../../src/tableproperties/commands/tablebackgroundcolorcommand';
+import TableBorderColorCommand from '../../src/tableproperties/commands/tablebordercolorcommand.js';
+import TableBorderStyleCommand from '../../src/tableproperties/commands/tableborderstylecommand.js';
+import TableBorderWidthCommand from '../../src/tableproperties/commands/tableborderwidthcommand.js';
+import TableAlignmentCommand from '../../src/tableproperties/commands/tablealignmentcommand.js';
+import TableWidthCommand from '../../src/tableproperties/commands/tablewidthcommand.js';
+import TableHeightCommand from '../../src/tableproperties/commands/tableheightcommand.js';
+import TableBackgroundColorCommand from '../../src/tableproperties/commands/tablebackgroundcolorcommand.js';
 
-import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { assertTableStyle, assertTRBLAttribute } from '../_utils/utils';
+import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { assertTableStyle, assertTRBLAttribute } from '../_utils/utils.js';
 
 describe( 'table properties', () => {
 	describe( 'TablePropertiesEditing', () => {

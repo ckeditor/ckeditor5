@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,14 +7,14 @@
  * @module engine/view/treewalker
  */
 
-import Element from './element';
-import Text from './text';
-import TextProxy from './textproxy';
-import Position from './position';
-import type Item from './item';
-import type DocumentFragment from './documentfragment';
-import type Range from './range';
-import type Node from './node';
+import Element from './element.js';
+import Text from './text.js';
+import TextProxy from './textproxy.js';
+import Position from './position.js';
+import type Item from './item.js';
+import type DocumentFragment from './documentfragment.js';
+import type Range from './range.js';
+import type Node from './node.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 

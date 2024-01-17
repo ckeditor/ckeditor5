@@ -1,23 +1,23 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Range from '../../src/model/range';
-import Position from '../../src/model/position';
-import Element from '../../src/model/element';
-import Text from '../../src/model/text';
-import Model from '../../src/model/model';
-import TreeWalker from '../../src/model/treewalker';
-import MarkerOperation from '../../src/model/operation/markeroperation';
-import AttributeOperation from '../../src/model/operation/attributeoperation';
-import InsertOperation from '../../src/model/operation/insertoperation';
-import MoveOperation from '../../src/model/operation/moveoperation';
-import RenameOperation from '../../src/model/operation/renameoperation';
-import MergeOperation from '../../src/model/operation/mergeoperation';
-import SplitOperation from '../../src/model/operation/splitoperation';
+import Range from '../../src/model/range.js';
+import Position from '../../src/model/position.js';
+import Element from '../../src/model/element.js';
+import Text from '../../src/model/text.js';
+import Model from '../../src/model/model.js';
+import TreeWalker from '../../src/model/treewalker.js';
+import MarkerOperation from '../../src/model/operation/markeroperation.js';
+import AttributeOperation from '../../src/model/operation/attributeoperation.js';
+import InsertOperation from '../../src/model/operation/insertoperation.js';
+import MoveOperation from '../../src/model/operation/moveoperation.js';
+import RenameOperation from '../../src/model/operation/renameoperation.js';
+import MergeOperation from '../../src/model/operation/mergeoperation.js';
+import SplitOperation from '../../src/model/operation/splitoperation.js';
 
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'Range', () => {
 	let doc, range, start, end, root, otherRoot, gy, model;

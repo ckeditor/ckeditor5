@@ -1,18 +1,19 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import Link from '../src/link';
+import Image from '@ckeditor/ckeditor5-image/src/image.js';
+import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption.js';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
+import Link from '../src/link.js';
+import LinkImage from '../src/linkimage.js';
 
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 
 describe( 'LinkImage integration', () => {
 	let editorElement, editor, model;
@@ -66,6 +67,23 @@ describe( 'LinkImage integration', () => {
 			);
 
 			expect( editor.commands.get( 'unlink' ).isEnabled ).to.equal( true );
+		} );
+	} );
+
+	describe( 'with Image plugin', () => {
+		it( 'should not crash when Image plugin is loaded after LinkImage', async () => {
+			const editorElement = global.document.createElement( 'div' );
+			global.document.body.appendChild( editorElement );
+
+			const editor = await ClassicEditor
+				.create( editorElement, {
+					plugins: [
+						Enter, Typing, Paragraph, LinkImage, Image
+					]
+				} );
+
+			await editor.destroy();
+			editorElement.remove();
 		} );
 	} );
 } );

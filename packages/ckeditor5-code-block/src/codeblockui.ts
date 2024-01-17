@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,16 +7,15 @@
  * @module code-block/codeblockui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { Collection } from 'ckeditor5/src/utils';
-import { Model, SplitButtonView, createDropdown, addListToDropdown, type ListDropdownItemDefinition } from 'ckeditor5/src/ui';
+import { icons, Plugin } from 'ckeditor5/src/core.js';
+import { Collection } from 'ckeditor5/src/utils.js';
+import { ViewModel, SplitButtonView, createDropdown, addListToDropdown, type ListDropdownItemDefinition } from 'ckeditor5/src/ui.js';
 
-import { getNormalizedAndLocalizedLanguageDefinitions } from './utils';
+import { getNormalizedAndLocalizedLanguageDefinitions } from './utils.js';
 
-import type { CodeBlockLanguageDefinition } from './codeblockconfig';
-import type CodeBlockCommand from './codeblockcommand';
+import type { CodeBlockLanguageDefinition } from './codeblockconfig.js';
+import type CodeBlockCommand from './codeblockcommand.js';
 
-import codeBlockIcon from '../theme/icons/codeblock.svg';
 import '../theme/codeblock.css';
 
 /**
@@ -50,7 +49,7 @@ export default class CodeBlockUI extends Plugin {
 			splitButtonView.set( {
 				label: accessibleLabel,
 				tooltip: true,
-				icon: codeBlockIcon,
+				icon: icons.codeBlock,
 				isToggleable: true
 			} );
 
@@ -99,7 +98,7 @@ export default class CodeBlockUI extends Plugin {
 		for ( const languageDef of normalizedLanguageDefs ) {
 			const definition: ListDropdownItemDefinition = {
 				type: 'button',
-				model: new Model( {
+				model: new ViewModel( {
 					_codeBlockLanguage: languageDef.language,
 					label: languageDef.label,
 					role: 'menuitemradio',

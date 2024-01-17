@@ -1,21 +1,21 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import TableEditing from '../../src/tableediting';
-import TablePropertiesEditing from '../../src/tableproperties/tablepropertiesediting';
+import TableEditing from '../../src/tableediting.js';
+import TablePropertiesEditing from '../../src/tableproperties/tablepropertiesediting.js';
 
-import TableCellPropertiesEditing from '../../src/tablecellproperties/tablecellpropertiesediting';
+import TableCellPropertiesEditing from '../../src/tablecellproperties/tablecellpropertiesediting.js';
 
-import AlignmentEditing from '@ckeditor/ckeditor5-alignment/src/alignmentediting';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
+import AlignmentEditing from '@ckeditor/ckeditor5-alignment/src/alignmentediting.js';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
 
-import { assertTableStyle } from '../_utils/utils';
+import { assertTableStyle } from '../_utils/utils.js';
 
 describe( 'table properties', () => {
 	describe( 'TablePropertiesEditing integration', () => {

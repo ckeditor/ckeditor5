@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,14 +7,14 @@
  * @module table/commands/setheadercolumncommand
  */
 
-import { Command } from 'ckeditor5/src/core';
-import type TableUtils from '../tableutils';
+import { Command } from 'ckeditor5/src/core.js';
+import type TableUtils from '../tableutils.js';
 
 import {
 	isHeadingColumnCell,
 	updateNumericAttribute
-} from '../utils/common';
-import { getHorizontallyOverlappingCells, splitVertically } from '../utils/structure';
+} from '../utils/common.js';
+import { getHorizontallyOverlappingCells, splitVertically } from '../utils/structure.js';
 
 /**
  * The header column command.

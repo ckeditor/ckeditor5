@@ -1,21 +1,21 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import Model from '../../src/model/model';
-import ModelText from '../../src/model/text';
-import ModelElement from '../../src/model/element';
-import ModelRange from '../../src/model/range';
-import ModelPosition from '../../src/model/position';
-import ModelSelection from '../../src/model/selection';
-import ModelDocumentFragment from '../../src/model/documentfragment';
-import Batch from '../../src/model/batch';
-import NoOperation from '../../src/model/operation/nooperation';
-import { getData, setData, stringify } from '../../src/dev-utils/model';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin.js';
+import Model from '../../src/model/model.js';
+import ModelText from '../../src/model/text.js';
+import ModelElement from '../../src/model/element.js';
+import ModelRange from '../../src/model/range.js';
+import ModelPosition from '../../src/model/position.js';
+import ModelSelection from '../../src/model/selection.js';
+import ModelDocumentFragment from '../../src/model/documentfragment.js';
+import Batch from '../../src/model/batch.js';
+import NoOperation from '../../src/model/operation/nooperation.js';
+import { getData, setData, stringify } from '../../src/dev-utils/model.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 
 describe( 'Model', () => {
 	let model, schema, changes;

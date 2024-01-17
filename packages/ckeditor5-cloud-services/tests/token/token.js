@@ -1,12 +1,12 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* eslint-env commonjs, browser */
 
-import Token from '../../src/token/token';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import Token from '../../src/token/token.js';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 
 describe( 'Token', () => {
 	let requests;

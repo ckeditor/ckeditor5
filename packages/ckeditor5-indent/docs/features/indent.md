@@ -10,12 +10,12 @@ The block indentation feature lets you set indentation for text blocks such as p
 
 ## Demo
 
-Use the indent {@icon @ckeditor/ckeditor5-indent/theme/icons/indent.svg Indent} or outdent {@icon @ckeditor/ckeditor5-indent/theme/icons/outdent.svg Outdent} toolbar buttons in the editor below to change the indentation level. Try this on different elements: paragraphs, headings, and list items.
+Use the indent {@icon @ckeditor/ckeditor5-core/theme/icons/indent.svg Indent} or outdent {@icon @ckeditor/ckeditor5-core/theme/icons/outdent.svg Outdent} toolbar buttons in the editor below to change the indentation level. Try this on different elements: paragraphs, headings, and list items.
 
 {@snippet features/indent}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Configuring the block indentation feature

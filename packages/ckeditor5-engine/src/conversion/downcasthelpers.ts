@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,14 +9,14 @@
  * @module engine/conversion/downcasthelpers
  */
 
-import ModelRange from '../model/range';
-import ModelSelection from '../model/selection';
-import ModelDocumentSelection from '../model/documentselection';
-import ModelElement from '../model/element';
-import ModelPosition from '../model/position';
+import ModelRange from '../model/range.js';
+import ModelSelection from '../model/selection.js';
+import ModelDocumentSelection from '../model/documentselection.js';
+import ModelElement from '../model/element.js';
+import ModelPosition from '../model/position.js';
 
-import ViewAttributeElement from '../view/attributeelement';
-import ConversionHelpers from './conversionhelpers';
+import ViewAttributeElement from '../view/attributeelement.js';
+import ConversionHelpers from './conversionhelpers.js';
 
 import type {
 	default as DowncastDispatcher,
@@ -27,26 +27,26 @@ import type {
 	DowncastAttributeEvent,
 	DowncastReduceChangesEvent,
 	DowncastRemoveMarkerEvent
-} from './downcastdispatcher';
-import type ModelConsumable from './modelconsumable';
-import type { DiffItem } from '../model/differ';
-import type ModelNode from '../model/node';
-import type ModelItem from '../model/item';
-import type ModelTextProxy from '../model/textproxy';
-import type ModelText from '../model/text';
+} from './downcastdispatcher.js';
+import type ModelConsumable from './modelconsumable.js';
+import type { DiffItem } from '../model/differ.js';
+import type ModelNode from '../model/node.js';
+import type ModelItem from '../model/item.js';
+import type ModelTextProxy from '../model/textproxy.js';
+import type ModelText from '../model/text.js';
 
-import type DowncastWriter from '../view/downcastwriter';
-import type ElementDefinition from '../view/elementdefinition';
-import type ViewDocumentFragment from '../view/documentfragment';
-import type UIElement from '../view/uielement';
-import type ViewElement from '../view/element';
-import type ViewNode from '../view/node';
-import type ViewPosition from '../view/position';
-import type ViewRange from '../view/range';
+import type DowncastWriter from '../view/downcastwriter.js';
+import type ElementDefinition from '../view/elementdefinition.js';
+import type ViewDocumentFragment from '../view/documentfragment.js';
+import type UIElement from '../view/uielement.js';
+import type ViewElement from '../view/element.js';
+import type ViewNode from '../view/node.js';
+import type ViewPosition from '../view/position.js';
+import type ViewRange from '../view/range.js';
 import type {
 	default as Mapper,
 	MapperModelToViewPositionEvent
-} from './mapper';
+} from './mapper.js';
 
 import {
 	CKEditorError,

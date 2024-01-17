@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,11 +7,11 @@
  * @module html-support/integrations/heading
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import type { HeadingOption } from '@ckeditor/ckeditor5-heading';
-import { Enter } from 'ckeditor5/src/enter';
+import { Enter } from 'ckeditor5/src/enter.js';
 
-import DataSchema from '../dataschema';
+import DataSchema from '../dataschema.js';
 
 /**
  * Provides the General HTML Support integration with {@link module:heading/heading~Heading Heading} feature.

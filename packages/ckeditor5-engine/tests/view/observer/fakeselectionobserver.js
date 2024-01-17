@@ -1,19 +1,19 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document */
 
-import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
-import FakeSelectionObserver from '../../../src/view/observer/fakeselectionobserver';
-import View from '../../../src/view/view';
-import DomEventData from '../../../src/view/observer/domeventdata';
-import createViewRoot from '../_utils/createroot';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import { setData, stringify } from '../../../src/dev-utils/view';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { StylesProcessor } from '../../../src/view/stylesmap';
+import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
+import FakeSelectionObserver from '../../../src/view/observer/fakeselectionobserver.js';
+import View from '../../../src/view/view.js';
+import DomEventData from '../../../src/view/observer/domeventdata.js';
+import createViewRoot from '../_utils/createroot.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import { setData, stringify } from '../../../src/dev-utils/view.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 describe( 'FakeSelectionObserver', () => {
 	let observer, view, viewDocument, root, domRoot;

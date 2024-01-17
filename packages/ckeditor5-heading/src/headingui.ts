@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,19 +7,19 @@
  * @module heading/headingui
  */
 
-import { Plugin, type Command } from 'ckeditor5/src/core';
+import { Plugin, type Command } from 'ckeditor5/src/core.js';
 import {
-	Model,
+	ViewModel,
 	createDropdown,
 	addListToDropdown,
 	type ButtonExecuteEvent,
 	type ListDropdownItemDefinition
-} from 'ckeditor5/src/ui';
-import { Collection } from 'ckeditor5/src/utils';
-import type { ParagraphCommand } from 'ckeditor5/src/paragraph';
+} from 'ckeditor5/src/ui.js';
+import { Collection } from 'ckeditor5/src/utils.js';
+import type { ParagraphCommand } from 'ckeditor5/src/paragraph.js';
 
-import { getLocalizedOptions } from './utils';
-import type HeadingCommand from './headingcommand';
+import { getLocalizedOptions } from './utils.js';
+import type HeadingCommand from './headingcommand.js';
 
 import '../theme/heading.css';
 
@@ -57,7 +57,7 @@ export default class HeadingUI extends Plugin {
 			for ( const option of options ) {
 				const def: ListDropdownItemDefinition = {
 					type: 'button',
-					model: new Model( {
+					model: new ViewModel( {
 						label: option.title,
 						class: option.class,
 						role: 'menuitemradio',

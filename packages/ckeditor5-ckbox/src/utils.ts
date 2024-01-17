@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,7 +10,7 @@
  */
 
 import type { InitializedToken } from '@ckeditor/ckeditor5-cloud-services';
-import type { CKBoxImageUrls } from './ckboxconfig';
+import type { CKBoxImageUrls } from './ckboxconfig.js';
 
 import { decode } from 'blurhash';
 

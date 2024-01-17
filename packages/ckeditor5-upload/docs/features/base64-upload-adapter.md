@@ -24,7 +24,7 @@ Use the editor below to see the adapter in action. Open the web browser console 
 {@snippet features/base64-upload}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Installation
@@ -78,7 +78,7 @@ By default, users can upload `jpeg`, `png`, `gif`, `bmp`, `webp`, and `tiff` fil
 
 It is up to you to implement any filtering mechanisms on your server to restrict the types of images allowed to be uploaded.
 
-## What's next?
+## What's next
 
 Check out the comprehensive {@link features/image-upload Image upload overview} to learn more about different ways of uploading images in CKEditor&nbsp;5.
 

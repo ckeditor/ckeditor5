@@ -1,22 +1,22 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document */
 
-import View from '../../../src/view/view';
-import UIElement from '../../../src/view/uielement';
-import ViewContainerElement from '../../../src/view/containerelement';
-import ViewAttribtueElement from '../../../src/view/attributeelement';
-import ViewText from '../../../src/view/text';
-import ViewRange from '../../../src/view/range';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
-import createViewRoot from '../_utils/createroot';
-import { setData as setViewData } from '../../../src/dev-utils/view';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { StylesProcessor } from '../../../src/view/stylesmap';
+import View from '../../../src/view/view.js';
+import UIElement from '../../../src/view/uielement.js';
+import ViewContainerElement from '../../../src/view/containerelement.js';
+import ViewAttribtueElement from '../../../src/view/attributeelement.js';
+import ViewText from '../../../src/view/text.js';
+import ViewRange from '../../../src/view/range.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
+import createViewRoot from '../_utils/createroot.js';
+import { setData as setViewData } from '../../../src/dev-utils/view.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 describe( 'View', () => {
 	let view, viewDocument, domRoot, domSelection, viewRoot, foo, bar, ui, ui2;

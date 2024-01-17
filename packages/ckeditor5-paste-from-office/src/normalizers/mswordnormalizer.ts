@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,11 +7,11 @@
  * @module paste-from-office/normalizers/mswordnormalizer
  */
 
-import { transformListItemLikeElementsIntoLists } from '../filters/list';
-import { replaceImagesSourceWithBase64 } from '../filters/image';
-import removeMSAttributes from '../filters/removemsattributes';
-import type { ViewDocument } from 'ckeditor5/src/engine';
-import type { Normalizer, NormalizerData } from '../normalizer';
+import { transformListItemLikeElementsIntoLists } from '../filters/list.js';
+import { replaceImagesSourceWithBase64 } from '../filters/image.js';
+import removeMSAttributes from '../filters/removemsattributes.js';
+import type { ViewDocument } from 'ckeditor5/src/engine.js';
+import type { Normalizer, NormalizerData } from '../normalizer.js';
 
 const msWordMatch1 = /<meta\s*name="?generator"?\s*content="?microsoft\s*word\s*\d+"?\/?>/i;
 const msWordMatch2 = /xmlns:o="urn:schemas-microsoft-com/i;

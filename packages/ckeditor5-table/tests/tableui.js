@@ -1,21 +1,21 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import { _clear as clearTranslations, add as addTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { _clear as clearTranslations, add as addTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import TableEditing from '../src/tableediting';
-import TableUI from '../src/tableui';
-import InsertTableView from '../src/ui/inserttableview';
-import SwitchButtonView from '@ckeditor/ckeditor5-ui/src/button/switchbuttonview';
-import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
-import ListSeparatorView from '@ckeditor/ckeditor5-ui/src/list/listseparatorview';
-import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
+import TableEditing from '../src/tableediting.js';
+import TableUI from '../src/tableui.js';
+import InsertTableView from '../src/ui/inserttableview.js';
+import SwitchButtonView from '@ckeditor/ckeditor5-ui/src/button/switchbuttonview.js';
+import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
+import ListSeparatorView from '@ckeditor/ckeditor5-ui/src/list/listseparatorview.js';
+import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview.js';
 
 describe( 'TableUI', () => {
 	let editor, element;

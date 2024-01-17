@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,9 @@
  * @module editor-decoupled/decouplededitoruiview
  */
 
-import { EditorUIView, InlineEditableUIView, ToolbarView } from 'ckeditor5/src/ui';
-import type { Locale } from 'ckeditor5/src/utils';
-import type { View } from 'ckeditor5/src/engine';
+import { EditorUIView, InlineEditableUIView, ToolbarView } from 'ckeditor5/src/ui.js';
+import type { Locale } from 'ckeditor5/src/utils.js';
+import type { EditingView } from 'ckeditor5/src/engine.js';
 
 /**
  * The decoupled editor UI view. It is a virtual view providing an inline
@@ -45,7 +45,7 @@ export default class DecoupledEditorUIView extends EditorUIView {
 	 */
 	constructor(
 		locale: Locale,
-		editingView: View,
+		editingView: EditingView,
 		options: {
 			editableElement?: HTMLElement;
 			shouldToolbarGroupWhenFull?: boolean;

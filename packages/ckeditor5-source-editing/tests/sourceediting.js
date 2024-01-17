@@ -1,28 +1,29 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document, Event, console */
 
-import SourceEditing from '../src/sourceediting';
+import SourceEditing from '../src/sourceediting.js';
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
-import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions';
-import Markdown from '@ckeditor/ckeditor5-markdown-gfm/src/markdown';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview.js';
+import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions.js';
+import Markdown from '@ckeditor/ckeditor5-markdown-gfm/src/markdown.js';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { _getEmitterListenedTo, _getEmitterId } from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { _getEmitterListenedTo, _getEmitterId } from '@ckeditor/ckeditor5-utils/src/emittermixin.js';
+import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import { Dialog } from '@ckeditor/ckeditor5-ui';
 
 describe( 'SourceEditing', () => {
 	let editor, editorElement, plugin, button;
@@ -33,7 +34,7 @@ describe( 'SourceEditing', () => {
 		editorElement = document.body.appendChild( document.createElement( 'div' ) );
 
 		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ SourceEditing, Paragraph, Essentials ],
+			plugins: [ SourceEditing, Paragraph, Essentials, Dialog ],
 			initialData: '<p>Foo</p>'
 		} );
 
@@ -371,6 +372,60 @@ describe( 'SourceEditing', () => {
 			const domRoot = editor.editing.view.getDomRoot();
 
 			expect( domRoot.classList.contains( 'ck-hidden' ) ).to.be.true;
+		} );
+
+		describe( 'integration with the Dialog plugin', () => {
+			it( 'should hide the open dialog after switching to the source editing mode', () => {
+				const dialog = editor.plugins.get( 'Dialog' );
+
+				dialog.show( {} );
+
+				const spy = sinon.spy( dialog, 'hide' );
+
+				button.fire( 'execute' );
+
+				sinon.assert.calledOnce( spy );
+			} );
+
+			it( 'should not attempt to hide a hidden dialog after switching to the source editing mode', () => {
+				const dialog = editor.plugins.get( 'Dialog' );
+				const spy = sinon.spy( dialog, 'hide' );
+
+				button.fire( 'execute' );
+
+				sinon.assert.notCalled( spy );
+			} );
+
+			it( 'should not throw if the Dialog plugin is not loaded', async () => {
+				const tempEditorElement = document.body.appendChild( document.createElement( 'div' ) );
+
+				const tempEditor = await ClassicTestEditor.create( tempEditorElement, {
+					plugins: [ SourceEditing, Paragraph, Essentials ],
+					initialData: '<p>Foo</p>'
+				} );
+
+				plugin = tempEditor.plugins.get( 'SourceEditing' );
+				button = tempEditor.ui.componentFactory.create( 'sourceEditing' );
+
+				expect( () => button.fire( 'execute' ) ).to.not.throw();
+
+				tempEditorElement.remove();
+				return tempEditor.destroy();
+			} );
+
+			it( 'should not show the previously open dialog after switching back from the source editing mode', () => {
+				const dialog = editor.plugins.get( 'Dialog' );
+
+				dialog.show( {} );
+
+				const spy = sinon.spy( dialog, 'show' );
+
+				// Exit and reenter the source editing mode.
+				button.fire( 'execute' );
+				button.fire( 'execute' );
+
+				sinon.assert.notCalled( spy );
+			} );
 		} );
 
 		it( 'should show the editing root after switching back from the source editing mode', () => {

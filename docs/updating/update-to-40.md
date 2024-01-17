@@ -3,7 +3,6 @@ category: update-guides
 meta-title: Update to version 40.x | CKEditor 5 Documentation
 menu-title: Update to v40.x
 order: 84
-modified_at: 2023-12-06
 ---
 
 # Update to CKEditor&nbsp;5 v40.x
@@ -24,7 +23,7 @@ Listed below are the most important changes that require your attention when upg
 
 The below information affects all editor integrations that use the {@link features/ai-assistant-integration AI Assistant} feature.
 
-We added support for the AWS Bedrock service and for providing custom adapters that may extend our solutions or connect to a custom model. To enable this, we needed to refactor the feature's plugin architecture and configuration structure. However, we hope it makes CKEditor ready to provide new AI-related features in the future without introducing more breaking changes.
+We added support for the Amazon Bedrock service and for providing custom adapters that may extend our solutions or connect to a custom model. To enable this, we needed to refactor the feature's plugin architecture and configuration structure. However, we hope it makes CKEditor ready to provide new AI-related features in the future without introducing more breaking changes.
 
 Before, the OpenAI adapter was automatically required by the `AIAssistant` plugin. Now, the integrator must explicitly add the chosen adapter to the list of plugins:
 
@@ -49,7 +48,7 @@ Another change is related to the {@link module:ai/aiassistant~AIAssistantConfig 
 * We introduced a new {@link module:ai/aiconfig~AIConfig `config.ai`} namespace.
 * We moved the `config.aiAssistant` option into {@link module:ai/aiassistant~AIAssistantConfig `config.ai.aiAssistant`}.
 * We extracted adapter-related properties to {@link module:ai/adapters/openaitextadapter~OpenAITextAdapterConfig `config.ai.openAI`}.
-* Also, we renamed some of the properties.
+* Also, we renamed some properties.
 
 ```js
 // Before:
@@ -206,7 +205,7 @@ Listed below are the most important changes that require your attention when upg
 
 ### Changes to the default insert image action
 
-We changed how the images are inserted by default. For a long time, the image insert action detected where the selection is placed, and depending on that inserted an inline image or a block one. This sometimes caused confusion and led to suboptimal experience. From now on, the images will be inserted as block ones by default.
+We changed how the images are inserted by default. For a long time, the image insert action detected where the user placed the selection. Depending on that, the editor inserted an inline image or a block one. This sometimes caused confusion and led to suboptimal experiences. From now on, the images will be inserted as block ones by default.
 
 Changes introduced in the latest version affect the {@link module:image/imageconfig~ImageInsertConfig#type `image.insert.type`} configuration setting. It lets the integrators set up how to handle newly uploaded or pasted images in the editor content.
 
@@ -425,9 +424,9 @@ While `⠿` is now a default, you can still configure it, for example:
 
 ### A new default lists plugin coming
 
-We currently maintain two list features: {@link features/lists `List`} and {@link features/document-lists `DocumentList`}. The list v1 feature was implemented in the early days of CKEditor&nbsp;5. It supports “plain lists” &ndash; lists where `<li>` cannot contain block content (paragraphs, headings, tables, block images). It supports to-do lists, but it does not support extending list markup via the {@link features/general-html-support General HTML Support (GHS)} feature.
+We currently maintain two list features: `List` and `DocumentList`. The list v1 feature was implemented in the early days of CKEditor&nbsp;5. It supports “plain lists” &ndash; lists where `<li>` cannot contain block content (paragraphs, headings, tables, block images). It supports to-do lists, but it does not support extending list markup via the {@link features/general-html-support General HTML Support (GHS)} feature.
 
-We implemented the list v2 (document list) feature in 2022 to add support for block content in list items. It supported extending list markup via GHS. It did not, however, support to-do lists. Since then we concentrated on bringing full list v1 functionality to this plugin. We are nearing the end of a long job of pairing these two plugins in their functions. The newest release brings in the to-do list functionality and the {@link features/document-lists#simple-lists simple list configuration setting}.
+We implemented the list v2 (document list) feature in 2022 to add support for block content in list items. It supported extending list markup via GHS. It did not, however, support to-do lists. Since then we concentrated on bringing full list v1 functionality to this plugin. We are nearing the end of a long job of pairing these two plugins in their functions. The newest release brings in the to-do list functionality and the {@link features/lists-editing#simple-lists simple list configuration setting}.
 
 You can follow the current state of works in the [Document list feature parity](https://github.com/ckeditor/ckeditor5/issues/14632) issue. Considering this progress, we will replace the old lists feature with the new document lists in one of the upcoming releases. We will also sunset the old lists at the beginning of 2024. The change will be seamless for the users, but there are significant changes between these plugins. We will update the information about this process as it unfolds.
 

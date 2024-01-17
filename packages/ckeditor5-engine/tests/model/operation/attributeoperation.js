@@ -1,17 +1,17 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Model from '../../../src/model/model';
-import Text from '../../../src/model/text';
-import Element from '../../../src/model/element';
-import AttributeOperation from '../../../src/model/operation/attributeoperation';
-import Position from '../../../src/model/position';
-import Range from '../../../src/model/range';
+import Model from '../../../src/model/model.js';
+import Text from '../../../src/model/text.js';
+import Element from '../../../src/model/element.js';
+import AttributeOperation from '../../../src/model/operation/attributeoperation.js';
+import Position from '../../../src/model/position.js';
+import Range from '../../../src/model/range.js';
 
-import count from '@ckeditor/ckeditor5-utils/src/count';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import count from '@ckeditor/ckeditor5-utils/src/count.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'AttributeOperation', () => {
 	let model, doc, root;

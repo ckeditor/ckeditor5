@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,13 +9,13 @@
  * @module engine/view/rawelement
  */
 
-import Element, { type ElementAttributes } from './element';
-import Node from './node';
+import Element, { type ElementAttributes } from './element.js';
+import Node from './node.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
-import type Document from './document';
-import type DomConverter from './domconverter';
-import type Item from './item';
+import type Document from './document.js';
+import type DomConverter from './domconverter.js';
+import type Item from './item.js';
 
 type DomElement = globalThis.HTMLElement;
 

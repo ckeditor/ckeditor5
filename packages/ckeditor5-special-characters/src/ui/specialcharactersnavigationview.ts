@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,15 +7,15 @@
  * @module special-characters/ui/specialcharactersnavigationview
  */
 
-import { Collection, type Locale } from 'ckeditor5/src/utils';
+import { Collection, type Locale } from 'ckeditor5/src/utils.js';
 import {
 	addListToDropdown,
 	createDropdown,
-	Model,
+	ViewModel,
 	FormHeaderView,
 	type DropdownView,
 	type ListDropdownButtonDefinition
-} from 'ckeditor5/src/ui';
+} from 'ckeditor5/src/ui.js';
 
 /**
  * A class representing the navigation part of the special characters UI. It is responsible
@@ -86,7 +86,7 @@ export default class SpecialCharactersNavigationView extends FormHeaderView {
 		} );
 
 		dropdown.on( 'execute', evt => {
-			dropdown.value = ( evt.source as Model ).name as string;
+			dropdown.value = ( evt.source as ViewModel ).name as string;
 		} );
 
 		dropdown.delegate( 'execute' ).to( this );
@@ -113,7 +113,7 @@ export default class SpecialCharactersNavigationView extends FormHeaderView {
 		const groupDefs = new Collection<ListDropdownButtonDefinition>();
 
 		for ( const [ name, label ] of groupNames ) {
-			const model = new Model( {
+			const model = new ViewModel( {
 				name,
 				label,
 				withText: true,

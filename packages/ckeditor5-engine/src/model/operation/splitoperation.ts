@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,16 +7,16 @@
  * @module engine/model/operation/splitoperation
  */
 
-import Operation from './operation';
-import MergeOperation from './mergeoperation';
-import Position from '../position';
-import Range from '../range';
-import { _insert, _move } from './utils';
+import Operation from './operation.js';
+import MergeOperation from './mergeoperation.js';
+import Position from '../position.js';
+import Range from '../range.js';
+import { _insert, _move } from './utils.js';
 
-import type Document from '../document';
+import type Document from '../document.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
-import type { Selectable } from '../selection';
+import type { Selectable } from '../selection.js';
 
 /**
  * Operation to split {@link module:engine/model/element~Element an element} at given

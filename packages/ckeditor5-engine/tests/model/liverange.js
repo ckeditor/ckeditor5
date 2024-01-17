@@ -1,17 +1,17 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Model from '../../src/model/model';
-import Element from '../../src/model/element';
-import Position from '../../src/model/position';
-import LiveRange from '../../src/model/liverange';
-import Range from '../../src/model/range';
-import Text from '../../src/model/text';
-import MoveOperation from '../../src/model/operation/moveoperation';
-import MergeOperation from '../../src/model/operation/mergeoperation';
-import { stringify, setData } from '../../src/dev-utils/model';
+import Model from '../../src/model/model.js';
+import Element from '../../src/model/element.js';
+import Position from '../../src/model/position.js';
+import LiveRange from '../../src/model/liverange.js';
+import Range from '../../src/model/range.js';
+import Text from '../../src/model/text.js';
+import MoveOperation from '../../src/model/operation/moveoperation.js';
+import MergeOperation from '../../src/model/operation/mergeoperation.js';
+import { stringify, setData } from '../../src/dev-utils/model.js';
 
 describe( 'LiveRange', () => {
 	let model, doc, root, ul, p;

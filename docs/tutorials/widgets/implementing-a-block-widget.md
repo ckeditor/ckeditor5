@@ -8,7 +8,7 @@ meta-title: Implementing a block widget tutorial | CKEditor 5 Documentation
 
 In this tutorial, you will learn how to implement a more complex CKEditor&nbsp;5 plugin.
 
-You will build a "Simple box" feature which will allow the user to insert a custom box with a title and body fields into the document. You will use the widget utilities and work with the model-view conversion in order to properly set up the behavior of this feature. Later on, you will create a UI which will allow for inserting new simple boxes into the document with the toolbar button.
+You will build a "Simple box" feature which will allow the user to insert a custom box with a title and body fields into the document. You will use the widget utilities and work with the model-view conversion to properly set up the behavior of this feature. Later on, you will create a UI which will allow for inserting new simple boxes into the document with the toolbar button.
 
 <info-box>
 	If you want to see the final product of this tutorial before you plunge in, check out the [demo](#demo).
@@ -28,7 +28,7 @@ The tutorial will also reference various parts of the {@link framework/architect
 
 ## Let's start
 
-This guide assumes that you are familiar with npm and your project uses npm already. If not, see the [npm documentation](https://docs.npmjs.com/getting-started/what-is-npm) or call `npm init` in an empty directory and keep your fingers crossed.
+This guide assumes that you are familiar with npm and your project uses npm already. If not, see the [npm documentation](https://docs.npmjs.com/getting-started/what-is-npm) or call `npm init` in an empty directory.
 
 First, install packages needed to build and set up a basic CKEditor&nbsp;5 instance.
 
@@ -356,7 +356,7 @@ export default class SimpleBoxEditing extends Plugin {
 }
 ```
 
-Defining the schema will not have any effect on the editor just yet. It is information which can be used by plugins and the editor engine to understand how actions like pressing the <kbd>Enter</kbd> key, clicking on an element, typing text, inserting an image, etc. should behave.
+Defining the schema will not have any effect on the editor just yet. It is information which can be used by plugins and the editor engine to understand how actions like pressing the <kbd>Enter</kbd> key, clicking an element, typing text, inserting an image, etc. should behave.
 
 For the simple box plugin to start doing anything you need to define model-view converters. Do that now!
 
@@ -437,7 +437,7 @@ export default class SimpleBoxEditing extends Plugin {
 }
 ```
 
-Once you have converters, you can try to see the simple box in action. You have not defined a way to insert a new simple box into the document yet, so load it via the editor data. In order to do that, you need to modify the `index.html` file:
+Once you have converters, you can try to see the simple box in action. You have not defined a way to insert a new simple box into the document yet, so load it via the editor data. To do that, you need to modify the `index.html` file:
 
 ```html
 <!DOCTYPE html>
@@ -540,7 +540,7 @@ ClassicEditor
 
 After rebuilding your project and refreshing the page you will see the inspector:
 
-{@img assets/img/tutorial-implementing-a-widget-4b.png Screenshot of a the simple box widget's structure displayed by CKEditor&nbsp;5 inspector.}
+{@img assets/img/tutorial-implementing-a-widget-4b.png Screenshot of a the simple box widget structure displayed by CKEditor&nbsp;5 inspector.}
 
 You will see the following HTML-like string:
 
@@ -564,11 +564,11 @@ Play a bit with the editor features (bold, italic, headings, lists, selection) t
 	You can also use some {@link framework/development-tools/testing-helpers useful helpers like `getData()` and `setData()`} to learn more about the state of the editor model or write assertions in tests.
 </info-box>
 
-### Behavior before "widgetizing" simple box
+### Behavior before turning simple box into a widget
 
 It is time to check if the simple box behaves like you would like it to. You can observe the following:
 
-* You can type text in the title, but pressing <kbd>Enter</kbd> will not split it and <kbd>Backspace</kbd> will not delete it entirely. This is because it was marked as an `isLimit` element in the schema.
+* You can type text in the title. Pressing <kbd>Enter</kbd> will not split it and <kbd>Backspace</kbd> will not delete it entirely. This is because it was marked as an `isLimit` element in the schema.
 * You cannot apply a list in the title and cannot turn it into a heading (other than `<h1 class="simple-box-title">` which it is already). This is because it allows only the content that is allowed in other block elements (like paragraphs). You can, however, apply italic inside the title (because italic is allowed in other blocks).
 * The description behaves like the title, but it allows more content inside &ndash; lists and other headings.
 * If you try to select the entire simple box instance and press <kbd>Delete</kbd>, it will be deleted as a whole. The same when you copy and paste it. This is because it was marked as an `isObject` element in the schema.
@@ -581,7 +581,7 @@ See what else you can improve.
 ### Making simple box a widget
 
 <info-box>
-	If you are familiar with the {@link @ckeditor4 guide/dev/deep_dive/widgets/README Widget System of CKEditor 4} you will notice significant differences in how widgets are implemented in CKEditor&nbsp;5.
+	If you are familiar with the {@link @ckeditor4 guide/dev/deep_dive/widgets/README widget system of CKEditor 4}, you will notice significant differences in how widgets are implemented in CKEditor&nbsp;5.
 
 	CKEditor 4 implementation exposes a declarative API that controls the entire behavior of a widget (from its schema and internal model to the styles, clicking behavior, context menu and the dialog).
 
@@ -611,7 +611,7 @@ Additionally, you need to ensure that the {@link module:widget/widget~Widget `Wi
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
-// ADDED 2 imports
+// ADDED 2 imports.
 import { Widget, toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget';
 
 export default class SimpleBoxEditing extends Plugin {
@@ -634,7 +634,7 @@ export default class SimpleBoxEditing extends Plugin {
 	_defineConverters() {                                                      // MODIFIED
 		const conversion = this.editor.conversion;
 
-		// <simpleBox> converters
+		// <simpleBox> converters.
 		conversion.for( 'upcast' ).elementToElement( {
 			model: 'simpleBox',
 			view: {
@@ -658,7 +658,7 @@ export default class SimpleBoxEditing extends Plugin {
 			}
 		} );
 
-		// <simpleBoxTitle> converters
+		// <simpleBoxTitle> converters.
 		conversion.for( 'upcast' ).elementToElement( {
 			model: 'simpleBoxTitle',
 			view: {
@@ -683,7 +683,7 @@ export default class SimpleBoxEditing extends Plugin {
 			}
 		} );
 
-		// <simpleBoxDescription> converters
+		// <simpleBoxDescription> converters.
 		conversion.for( 'upcast' ).elementToElement( {
 			model: 'simpleBoxDescription',
 			view: {
@@ -715,11 +715,11 @@ export default class SimpleBoxEditing extends Plugin {
 	As you can see, the code became much more verbose and far longer. This is because you used lower-level converters. We plan to provide more handy widget conversion utilities in the future. Read more (and 👍) in [this ticket](https://github.com/ckeditor/ckeditor5/issues/1228).
 </info-box>
 
-### Behavior after "widgetizing" simple box
+### Behavior after turning simple box into a widget
 
 You can rebuild your project now and see how your simple box plugin has changed.
 
-{@img assets/img/tutorial-implementing-a-widget-5.png Screenshot of the widget's focus outline.}
+{@img assets/img/tutorial-implementing-a-widget-5.png Screenshot of the widget focus outline.}
 
 You should observe that:
 
@@ -729,18 +729,18 @@ You should observe that:
 
 In other words, the simple box instance became much more responsive.
 
-Additionally, if you call `editor.getData()` you will get the same HTML as before "widgetizing" the simple box. This is thanks to using `toWidget()` and `toNestedEditable()` only in the `editingDowncast` pipeline.
+Additionally, if you call `editor.getData()`, you will get the same HTML as before turning the simple box into a widget. This is thanks to using `toWidget()` and `toNestedEditable()` only in the `editingDowncast` pipeline.
 
-This is all that you need from the model and the view layers for now. In terms of "editability" and data input/output it is fully functional. Now find a way to insert new simple boxes into the document!
+This is all that you need from the model and the view layers for now. In terms of being editable and data input/output, it is fully functional. Now find a way to insert new simple boxes into the document!
 
 ## Creating a command
 
-A {@link framework/architecture/core-editor-architecture#commands command} is a combination of an action and a state. You can interact with most of the editor features by the commands they expose. This allows not only for executing these features (like bolding a fragment of text) but also checking if this action can be executed in the selection's current location as well as observing other state properties (such as whether the currently selected text is bolded).
+A {@link framework/architecture/core-editor-architecture#commands command} is a combination of an action and a state. You can interact with most of the editor features by the commands they expose. This allows not only for executing these features (like making a fragment of text bold) but also checking if this action can be executed in the selection's current location as well as observing other state properties (such as whether the currently selected text was made bold).
 
-In the case of the simple box the situation is simple:
+For simple box the situation is simple:
 
-* you need an "insert a new simple box" action,
-* and a "can you insert a new simple box here (at the current selection position)" check.
+* You need an "insert a new simple box" action.
+* You need a "can you insert a new simple box here (at the current selection position)" check.
 
 Create a new file `insertsimpleboxcommand.js` in the `simplebox/` directory. You will use the {@link module:engine/model/model~Model#insertObject `model.insertObject()`} method which will be able to, for example, split a paragraph if you try to insert a simple box in the middle of it (which is not allowed by the schema).
 

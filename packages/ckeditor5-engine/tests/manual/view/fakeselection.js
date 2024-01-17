@@ -1,16 +1,16 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document, console */
 
-import View from '../../../src/view/view';
-import DomEventObserver from '../../../src/view/observer/domeventobserver';
-import ViewRange from '../../../src/view/range';
-import createViewRoot from '../../view/_utils/createroot';
-import { setData } from '../../../src/dev-utils/view';
-import { StylesProcessor } from '../../../src/view/stylesmap';
+import View from '../../../src/view/view.js';
+import DomEventObserver from '../../../src/view/observer/domeventobserver.js';
+import ViewRange from '../../../src/view/range.js';
+import createViewRoot from '../../view/_utils/createroot.js';
+import { setData } from '../../../src/dev-utils/view.js';
+import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 const view = new View( new StylesProcessor() );
 const viewDocument = view.document;

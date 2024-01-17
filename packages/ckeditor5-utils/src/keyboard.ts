@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,9 +9,9 @@
  * @module utils/keyboard
  */
 
-import type { LanguageDirection } from './language';
-import CKEditorError from './ckeditorerror';
-import env from './env';
+import type { LanguageDirection } from './language.js';
+import CKEditorError from './ckeditorerror.js';
+import env from './env.js';
 
 const modifiersToGlyphsMac = {
 	ctrl: '⌃',

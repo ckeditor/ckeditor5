@@ -1,22 +1,22 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Model from '../../src/model/model';
-import Element from '../../src/model/element';
-import Text from '../../src/model/text';
-import Range from '../../src/model/range';
-import Position from '../../src/model/position';
-import LiveRange from '../../src/model/liverange';
-import Selection from '../../src/model/selection';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import count from '@ckeditor/ckeditor5-utils/src/count';
-import { parse, setData } from '../../src/dev-utils/model';
-import Schema from '../../src/model/schema';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import Model from '../../src/model/model.js';
+import Element from '../../src/model/element.js';
+import Text from '../../src/model/text.js';
+import Range from '../../src/model/range.js';
+import Position from '../../src/model/position.js';
+import LiveRange from '../../src/model/liverange.js';
+import Selection from '../../src/model/selection.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import count from '@ckeditor/ckeditor5-utils/src/count.js';
+import { parse, setData } from '../../src/dev-utils/model.js';
+import Schema from '../../src/model/schema.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
-import { stringifyBlocks } from './_utils/utils';
+import { stringifyBlocks } from './_utils/utils.js';
 
 describe( 'Selection', () => {
 	let model, doc, root, selection, liveRange, range, range1, range2, range3;

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -21,8 +21,8 @@ import { Indent } from '@ckeditor/ckeditor5-indent';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
 
-import Documentlist from '../../src/documentlist';
-import TodoDocumentlist from '../../src/tododocumentlist';
+import List from '../../src/documentlist.js';
+import TodoList from '../../src/tododocumentlist.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -40,8 +40,8 @@ ClassicEditor
 			TableToolbar,
 			FontSize,
 			Indent,
-			Documentlist,
-			TodoDocumentlist,
+			List,
+			TodoList,
 			SourceEditing,
 			Alignment
 		],

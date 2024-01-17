@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,7 @@
  * @module engine/view/styles/utils
  */
 
-import type { BoxSides, PropertyDescriptor, StyleValue } from '../stylesmap';
+import type { BoxSides, PropertyDescriptor, StyleValue } from '../stylesmap.js';
 
 const HEX_COLOR_REGEXP = /^#([0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i;
 const RGB_COLOR_REGEXP = /^rgb\([ ]?([0-9]{1,3}[ %]?,[ ]?){2,3}[0-9]{1,3}[ %]?\)$/i;

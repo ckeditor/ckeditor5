@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,12 +10,12 @@
 import {
 	Plugin,
 	type Editor
-} from 'ckeditor5/src/core';
+} from 'ckeditor5/src/core.js';
 import {
 	logWarning,
 	type Locale,
 	type Observable
-} from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/utils.js';
 import {
 	createDropdown,
 	SplitButtonView,
@@ -23,10 +23,10 @@ import {
 	type DropdownButtonView,
 	type DropdownView,
 	type FocusableView
-} from 'ckeditor5/src/ui';
+} from 'ckeditor5/src/ui.js';
 
-import ImageInsertFormView from './ui/imageinsertformview';
-import ImageUtils from '../imageutils';
+import ImageInsertFormView from './ui/imageinsertformview.js';
+import ImageUtils from '../imageutils.js';
 
 /**
  * The image insert dropdown plugin.

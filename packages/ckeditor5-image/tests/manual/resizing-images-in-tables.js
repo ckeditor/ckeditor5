@@ -1,17 +1,17 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document, window, CKEditorInspector */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import ImageResize from '../../src/imageresize';
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
-import ImageUpload from '../../src/imageupload';
-import { UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import ImageResize from '../../src/imageresize.js';
+import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage.js';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
+import ImageUpload from '../../src/imageupload.js';
+import { UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
 
 ( async () => {
 	window.editorPx = await createEditor( document.querySelector( '#editor-px' ), 'px' );

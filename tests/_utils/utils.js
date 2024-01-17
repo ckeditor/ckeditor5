@@ -1,18 +1,18 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals console */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor';
-import FontBackgroundColor from '@ckeditor/ckeditor5-font/src/fontbackgroundcolor';
-import FontFamily from '@ckeditor/ckeditor5-font/src/fontfamily';
-import FontSize from '@ckeditor/ckeditor5-font/src/fontsize';
-import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
-import StrikeThrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor.js';
+import FontBackgroundColor from '@ckeditor/ckeditor5-font/src/fontbackgroundcolor.js';
+import FontFamily from '@ckeditor/ckeditor5-font/src/fontfamily.js';
+import FontSize from '@ckeditor/ckeditor5-font/src/fontsize.js';
+import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
+import StrikeThrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough.js';
 
 import smallFixture from '../_data/small.html';
 import mediumFixture from '../_data/medium.html';

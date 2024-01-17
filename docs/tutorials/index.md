@@ -16,10 +16,10 @@ If these are your early steps in the CKEditor Ecosystem, feel free to take the c
 
 ## Creating plugins
 
-Start developing your own features on the go with the {@link tutorials/creating-simple-plugin-timestamp timestamp plugin} tutorial to give you an idea of where to start, Should you want to develop advanced CKEditor&nbsp;5 plugins, have a look at the Creating Abbrieviation Plugin three-step course that will deep-dive into the internal works of feature plugins. This tutorial will explain in detail the {@link tutorials/abbreviation-plugin-tutorial/abbreviation-plugin-level-1 expanding of the model}, {@link tutorials/abbreviation-plugin-tutorial/abbreviation-plugin-level-2 handling user input} and finally {@link tutorials/abbreviation-plugin-tutorial/abbreviation-plugin-level-3 creating commands and expanding the UI}.
+Start developing your own features on the go with the {@link tutorials/creating-simple-plugin-timestamp timestamp plugin} tutorial to give you an idea of where to start. Should you want to develop advanced CKEditor&nbsp;5 plugins, have a look at the Creating Abbreviation Plugin three-step course. It will deep-dive into the internal works of feature plugins. This tutorial will explain in detail the {@link tutorials/abbreviation-plugin-tutorial/abbreviation-plugin-level-1 expanding of the model}, {@link tutorials/abbreviation-plugin-tutorial/abbreviation-plugin-level-2 handling user input}, and finally {@link tutorials/abbreviation-plugin-tutorial/abbreviation-plugin-level-3 creating commands and expanding the UI}.
 
 ## Using widgets
 
 Widgets are powerful elements of edited documents and can be used as containers for special content, formatting tools, and for other purposes. Our tutorials will show you how to implement a {@link tutorials/widgets/implementing-a-block-widget block widget}, and an {@link tutorials/widgets/implementing-an-inline-widget inline widget}, and how to use a {@link tutorials/widgets/using-react-in-a-widget React component in a widget}. The {@link tutorials/widgets/data-from-external-source Data from external source} tutorial is yet another approach to extending CKEditor&nbsp;5 capabilities via an advanced plugin. It is a step-by-step guide through the data input, schema handling, adapting the UI, and injecting the data into editor content.
 
-Keep coming back for new tutorials, that will make your CKEditor&nbsp;5 experience even more satisfactory!
+Keep coming back for new tutorials that will make your CKEditor&nbsp;5 experience even more satisfactory!

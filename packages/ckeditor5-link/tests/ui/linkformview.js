@@ -1,25 +1,25 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals Event, document */
 
-import LinkFormView from '../../src/ui/linkformview';
-import View from '@ckeditor/ckeditor5-ui/src/view';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
-import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import ManualDecorator from '../../src/utils/manualdecorator';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Link from '../../src/link';
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import LinkFormView from '../../src/ui/linkformview.js';
+import View from '@ckeditor/ckeditor5-ui/src/view.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker.js';
+import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler.js';
+import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import ManualDecorator from '../../src/utils/manualdecorator.js';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection.js';
+import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Link from '../../src/link.js';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin.js';
+import mix from '@ckeditor/ckeditor5-utils/src/mix.js';
 
 describe( 'LinkFormView', () => {
 	let view;

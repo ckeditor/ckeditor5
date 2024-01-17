@@ -1,11 +1,11 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Batch from '../../src/model/batch';
-import Operation from '../../src/model/operation/operation';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import Batch from '../../src/model/batch.js';
+import Operation from '../../src/model/operation/operation.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 /* globals console */
 

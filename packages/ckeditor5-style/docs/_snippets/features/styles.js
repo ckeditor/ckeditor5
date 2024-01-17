@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,10 +9,10 @@ import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 
 import { Code, Strikethrough } from '@ckeditor/ckeditor5-basic-styles';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { Highlight } from '@ckeditor/ckeditor5-highlight';
 import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
@@ -126,7 +126,7 @@ ClassicEditor
 
 		window.attachTourBalloon( {
 			target: window.findToolbarItem( editor.ui.view.toolbar,
-				item => item.buttonView && item.buttonView.label === 'Styles' ),
+				item => item.buttonView && item.buttonView.label === 'Article category' ),
 			text: 'Click to apply styles.',
 			editor,
 			tippyOptions: {

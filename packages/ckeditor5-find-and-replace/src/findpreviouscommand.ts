@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,7 @@
  * @module find-and-replace/findpreviouscommand
 */
 
-import FindNextCommand from './findnextcommand';
+import FindNextCommand from './findnextcommand.js';
 
 /**
  * The find previous command. Moves the highlight to the previous search result.

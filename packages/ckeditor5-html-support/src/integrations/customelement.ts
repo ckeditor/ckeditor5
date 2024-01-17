@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,12 +9,12 @@
 
 /* globals document */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { UpcastWriter, type ViewDocumentFragment, type ViewNode } from 'ckeditor5/src/engine';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { UpcastWriter, type ViewDocumentFragment, type ViewNode } from 'ckeditor5/src/engine.js';
 
-import DataSchema from '../dataschema';
-import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
-import { type GHSViewAttributes, setViewAttributes } from '../utils';
+import DataSchema from '../dataschema.js';
+import DataFilter, { type DataFilterRegisterEvent } from '../datafilter.js';
+import { type GHSViewAttributes, setViewAttributes } from '../utils.js';
 
 /**
  * Provides the General HTML Support for custom elements (not registered in the {@link module:html-support/dataschema~DataSchema}).

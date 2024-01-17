@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,12 +7,12 @@
  * @module ui/list/listitemgroupview
  */
 
-import View from '../view';
-import type ViewCollection from '../viewcollection';
-import ListView from './listview';
-import type ListItemView from './listitemview';
-import LabelView from '../label/labelview';
-import ListSeparatorView from './listseparatorview';
+import View from '../view.js';
+import type ViewCollection from '../viewcollection.js';
+import ListView from './listview.js';
+import type ListItemView from './listitemview.js';
+import LabelView from '../label/labelview.js';
+import ListSeparatorView from './listseparatorview.js';
 
 import { type Locale } from '@ckeditor/ckeditor5-utils';
 

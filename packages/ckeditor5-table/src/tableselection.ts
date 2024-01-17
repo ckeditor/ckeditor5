@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,8 +7,8 @@
  * @module table/tableselection
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { type EventInfo, first } from 'ckeditor5/src/utils';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { type EventInfo, first } from 'ckeditor5/src/utils.js';
 
 import type {
 	Element,
@@ -17,17 +17,17 @@ import type {
 	DowncastWriter,
 	ViewElement,
 	ModelDeleteContentEvent
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
 import type {
 	ViewDocumentInsertTextEvent,
 	InsertTextEventData
-} from 'ckeditor5/src/typing';
+} from 'ckeditor5/src/typing.js';
 
-import TableWalker from './tablewalker';
-import TableUtils from './tableutils';
+import TableWalker from './tablewalker.js';
+import TableUtils from './tableutils.js';
 
-import { cropTableToDimensions, adjustLastRowIndex, adjustLastColumnIndex } from './utils/structure';
+import { cropTableToDimensions, adjustLastRowIndex, adjustLastColumnIndex } from './utils/structure.js';
 
 import '../theme/tableselection.css';
 

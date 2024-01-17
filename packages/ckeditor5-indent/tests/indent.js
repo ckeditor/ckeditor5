@@ -1,16 +1,16 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import Indent from '../src/indent';
-import IndentEditing from '../src/indentediting';
-import IndentUI from '../src/indentui';
+import Indent from '../src/indent.js';
+import IndentEditing from '../src/indentediting.js';
+import IndentUI from '../src/indentui.js';
 
 describe( 'Indent', () => {
 	let editor, element;

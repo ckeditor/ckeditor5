@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,13 +7,13 @@
  * @module ui/colorgrid/colorgridview
  */
 
-import View from '../view';
-import ColorTileView from './colortileview';
-import addKeyboardHandlingForGrid from '../bindings/addkeyboardhandlingforgrid';
+import View from '../view.js';
+import ColorTileView from './colortileview.js';
+import addKeyboardHandlingForGrid from '../bindings/addkeyboardhandlingforgrid.js';
 
-import type { ButtonExecuteEvent } from '../button/button';
-import type DropdownPanelFocusable from '../dropdown/dropdownpanelfocusable';
-import type ViewCollection from '../viewcollection';
+import type { ButtonExecuteEvent } from '../button/button.js';
+import type DropdownPanelFocusable from '../dropdown/dropdownpanelfocusable.js';
+import type ViewCollection from '../viewcollection.js';
 
 import {
 	FocusTracker,

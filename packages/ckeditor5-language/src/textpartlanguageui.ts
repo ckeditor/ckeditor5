@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,11 +7,11 @@
  * @module language/textpartlanguageui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { Model, createDropdown, addListToDropdown, type ListDropdownItemDefinition } from 'ckeditor5/src/ui';
-import { Collection } from 'ckeditor5/src/utils';
-import { stringifyLanguageAttribute } from './utils';
-import type TextPartLanguageCommand from './textpartlanguagecommand';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { ViewModel, createDropdown, addListToDropdown, type ListDropdownItemDefinition } from 'ckeditor5/src/ui.js';
+import { Collection } from 'ckeditor5/src/utils.js';
+import { stringifyLanguageAttribute } from './utils.js';
+import type TextPartLanguageCommand from './textpartlanguagecommand.js';
 
 /**
  * The text part language UI plugin.
@@ -47,7 +47,7 @@ export default class TextPartLanguageUI extends Plugin {
 			// Item definition with false `languageCode` will behave as remove lang button.
 			itemDefinitions.add( {
 				type: 'button',
-				model: new Model( {
+				model: new ViewModel( {
 					label: removeTitle,
 					languageCode: false,
 					withText: true
@@ -61,7 +61,7 @@ export default class TextPartLanguageUI extends Plugin {
 			for ( const option of options ) {
 				const def = {
 					type: 'button' as const,
-					model: new Model( {
+					model: new ViewModel( {
 						label: option.title,
 						languageCode: option.languageCode,
 						role: 'menuitemradio',

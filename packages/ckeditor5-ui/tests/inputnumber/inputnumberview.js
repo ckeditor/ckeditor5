@@ -1,10 +1,10 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import InputNumberView from '../../src/inputnumber/inputnumberview';
-import InputView from '../../src/input/inputview';
+import InputNumberView from '../../src/inputnumber/inputnumberview.js';
+import InputView from '../../src/input/inputview.js';
 
 describe( 'InputNumberView', () => {
 	let view;

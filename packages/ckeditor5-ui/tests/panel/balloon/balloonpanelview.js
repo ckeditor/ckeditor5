@@ -1,14 +1,14 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global window, document, Event */
 
-import ViewCollection from '../../../src/viewcollection';
-import BalloonPanelView, { generatePositions } from '../../../src/panel/balloon/balloonpanelview';
-import ButtonView from '../../../src/button/buttonview';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import ViewCollection from '../../../src/viewcollection.js';
+import BalloonPanelView, { generatePositions } from '../../../src/panel/balloon/balloonpanelview.js';
+import ButtonView from '../../../src/button/buttonview.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Rect } from '@ckeditor/ckeditor5-utils';
 
 describe( 'BalloonPanelView', () => {

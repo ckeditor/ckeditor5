@@ -1,22 +1,22 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document */
 
-import Alignment from '../src/alignment';
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
-import List from '@ckeditor/ckeditor5-list/src/list';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import Delete from '@ckeditor/ckeditor5-typing/src/delete';
+import Alignment from '../src/alignment.js';
+import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
+import Image from '@ckeditor/ckeditor5-image/src/image.js';
+import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption.js';
+import LegacyList from '@ckeditor/ckeditor5-list/src/legacylist.js';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
+import Delete from '@ckeditor/ckeditor5-typing/src/delete.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'Alignment integration', () => {
 	let editor, model, element;
@@ -27,7 +27,7 @@ describe( 'Alignment integration', () => {
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ Alignment, BlockQuote, Paragraph, Heading, Image, ImageCaption, List, Enter, Delete ]
+				plugins: [ Alignment, BlockQuote, Paragraph, Heading, Image, ImageCaption, LegacyList, Enter, Delete ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;

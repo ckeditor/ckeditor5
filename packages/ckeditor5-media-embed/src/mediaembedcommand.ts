@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,11 +7,11 @@
  * @module media-embed/mediaembedcommand
  */
 
-import type { DocumentSelection, Element, Model, Selection } from 'ckeditor5/src/engine';
-import { Command } from 'ckeditor5/src/core';
-import { findOptimalInsertionRange } from 'ckeditor5/src/widget';
+import type { DocumentSelection, Element, Model, Selection } from 'ckeditor5/src/engine.js';
+import { Command } from 'ckeditor5/src/core.js';
+import { findOptimalInsertionRange } from 'ckeditor5/src/widget.js';
 
-import { getSelectedMediaModelWidget, insertMedia } from './utils';
+import { getSelectedMediaModelWidget, insertMedia } from './utils.js';
 
 /**
  * The insert media command.

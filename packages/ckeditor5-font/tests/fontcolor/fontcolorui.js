@@ -1,14 +1,14 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document */
 
-import FontColorEditing from './../../src/fontcolor/fontcolorediting';
-import FontColorUI from './../../src/fontcolor/fontcolorui';
-import ColorUI from './../../src/ui/colorui';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import FontColorEditing from './../../src/fontcolor/fontcolorediting.js';
+import FontColorUI from './../../src/fontcolor/fontcolorui.js';
+import ColorUI from './../../src/ui/colorui.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import fontColorIcon from '../../theme/icons/font-color.svg';
 
 describe( 'FontColorUI', () => {

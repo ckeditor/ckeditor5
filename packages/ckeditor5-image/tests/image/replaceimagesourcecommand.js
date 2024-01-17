@@ -1,17 +1,17 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global setTimeout */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import ReplaceImageSourceCommand from '../../src/image/replaceimagesourcecommand';
-import ImageBlockEditing from '../../src/image/imageblockediting';
-import ImageInlineEditing from '../../src/image/imageinlineediting';
+import ReplaceImageSourceCommand from '../../src/image/replaceimagesourcecommand.js';
+import ImageBlockEditing from '../../src/image/imageblockediting.js';
+import ImageInlineEditing from '../../src/image/imageinlineediting.js';
 
 describe( 'ReplaceImageSourceCommand', () => {
 	let editor, command, model;

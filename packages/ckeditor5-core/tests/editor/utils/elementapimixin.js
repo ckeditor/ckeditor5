@@ -1,14 +1,14 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document */
 
-import ElementApiMixin from '../../../src/editor/utils/elementapimixin';
-import Editor from '../../../src/editor/editor';
-import testUtils from '../../_utils/utils';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import ElementApiMixin from '../../../src/editor/utils/elementapimixin.js';
+import Editor from '../../../src/editor/editor.js';
+import testUtils from '../../_utils/utils.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'ElementApiMixin', () => {
 	let editor;

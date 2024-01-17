@@ -1,13 +1,13 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import MultiCommand from '../src/multicommand';
-import Command from '../src/command';
+import MultiCommand from '../src/multicommand.js';
+import Command from '../src/command.js';
 
-import ModelTestEditor from './_utils/modeltesteditor';
-import testUtils from './_utils/utils';
+import ModelTestEditor from './_utils/modeltesteditor.js';
+import testUtils from './_utils/utils.js';
 
 describe( 'MultiCommand', () => {
 	let editor, multiCommand;

@@ -1,18 +1,18 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document */
 
-import View from '../../../src/view/view';
-import MutationObserver from '../../../src/view/observer/mutationobserver';
-import UIElement from '../../../src/view/uielement';
-import RawElement from '../../../src/view/rawelement';
-import createViewRoot from '../_utils/createroot';
-import { parse } from '../../../src/dev-utils/view';
-import { StylesProcessor } from '../../../src/view/stylesmap';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import View from '../../../src/view/view.js';
+import MutationObserver from '../../../src/view/observer/mutationobserver.js';
+import UIElement from '../../../src/view/uielement.js';
+import RawElement from '../../../src/view/rawelement.js';
+import createViewRoot from '../_utils/createroot.js';
+import { parse } from '../../../src/dev-utils/view.js';
+import { StylesProcessor } from '../../../src/view/stylesmap.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'MutationObserver', () => {
 	let view, domRoot, viewDocument, viewRoot, mutationObserver, domWrapper, spyRenderedMarkToSync;

@@ -1,24 +1,24 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
-import Title from '../src/title';
-import Heading from '../src/heading';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo';
+import Title from '../src/title.js';
+import Heading from '../src/heading.js';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
+import Image from '@ckeditor/ckeditor5-image/src/image.js';
+import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload.js';
+import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
 
-import { setData, getData, stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { setData, getData, stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 
 describe( 'Title', () => {
 	let element, editor, model;

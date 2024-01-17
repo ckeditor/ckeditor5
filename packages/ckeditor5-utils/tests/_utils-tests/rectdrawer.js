@@ -1,13 +1,13 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document */
 
-import Rect from '../../src/dom/rect';
-import createElement from '../../src/dom/createelement';
-import RectDrawer from '../../tests/_utils/rectdrawer';
+import Rect from '../../src/dom/rect.js';
+import createElement from '../../src/dom/createelement.js';
+import RectDrawer from '../../tests/_utils/rectdrawer.js';
 
 const DEFAULT_STYLES = 'position: fixed; ' +
 	'outline: blue solid 1px; ' +

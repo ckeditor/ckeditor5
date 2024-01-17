@@ -1,28 +1,28 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global console */
 
-import Model from '../../src/model/model';
-import Writer from '../../src/model/writer';
-import Batch from '../../src/model/batch';
-import InsertOperation from '../../src/model/operation/insertoperation';
+import Model from '../../src/model/model.js';
+import Writer from '../../src/model/writer.js';
+import Batch from '../../src/model/batch.js';
+import InsertOperation from '../../src/model/operation/insertoperation.js';
 
-import DocumentFragment from '../../src/model/documentfragment';
-import Element from '../../src/model/element';
-import Text from '../../src/model/text';
-import Position from '../../src/model/position';
-import Range from '../../src/model/range';
+import DocumentFragment from '../../src/model/documentfragment.js';
+import Element from '../../src/model/element.js';
+import Text from '../../src/model/text.js';
+import Position from '../../src/model/position.js';
+import Range from '../../src/model/range.js';
 
-import count from '@ckeditor/ckeditor5-utils/src/count';
+import count from '@ckeditor/ckeditor5-utils/src/count.js';
 
-import { getNodesAndText } from '../../tests/model/_utils/utils';
-import DocumentSelection from '../../src/model/documentselection';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { getNodesAndText } from '../../tests/model/_utils/utils.js';
+import DocumentSelection from '../../src/model/documentselection.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'Writer', () => {
 	let model, doc, batch;

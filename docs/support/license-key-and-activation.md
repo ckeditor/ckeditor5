@@ -16,6 +16,7 @@ This article explains how to activate a commercial license of CKEditor&nbsp;5 an
 * {@link features/pagination Pagination}
 * {@link features/ai-assistant-overview AI Assistant}
 * The Productivity Pack that includes:
+	* {@link features/case-change Case change}
 	* {@link features/document-outline Document outline}
 	* {@link features/format-painter Format painter}
 	* {@link features/paste-from-office-enhanced Paste from Office enhanced}
@@ -70,6 +71,10 @@ There are two license keys available:
 2. The new key for versions 38.0.0 and later.
 
 The new key available is the new format license key that is **only** valid for versions 38.0.0 or later. The old key will work with all CKEditor&nbsp;5 versions up to the version to be released in May 2024 (when we consider removing support for these keys) as long as the key is not expired.
+
+<info-box>
+	Please note that the Premium Features Free Trial dashboard only provides one license key. This key is meant to work with the most recent version of CKEditor&nbsp;5.
+</info-box>
 
 ## Activating the product
 

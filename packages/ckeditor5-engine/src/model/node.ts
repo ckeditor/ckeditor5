@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,16 +9,16 @@
  * @module engine/model/node
  */
 
-import TypeCheckable from './typecheckable';
+import TypeCheckable from './typecheckable.js';
 
-import type Document from './document';
-import type DocumentFragment from './documentfragment';
-import type Element from './element';
+import type Document from './document.js';
+import type DocumentFragment from './documentfragment.js';
+import type Element from './element.js';
 
 import { CKEditorError, compareArrays, toMap } from '@ckeditor/ckeditor5-utils';
 
 // To check if component is loaded more than once.
-import '@ckeditor/ckeditor5-utils/src/version';
+import '@ckeditor/ckeditor5-utils/src/version.js';
 
 /**
  * Model node. Most basic structure of model tree.

@@ -1,25 +1,25 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global console, setTimeout */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
-import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
-import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
-import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
-import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { isWidget, getLabel } from '@ckeditor/ckeditor5-widget/src/utils';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter.js';
+import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document.js';
+import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element.js';
+import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
+import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { isWidget, getLabel } from '@ckeditor/ckeditor5-widget/src/utils.js';
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import ImageBlockEditing from '../src/image/imageblockediting';
-import ImageInlineEditing from '../src/image/imageinlineediting';
-import ImageCaptionEditing from '../src/imagecaption/imagecaptionediting';
+import ImageBlockEditing from '../src/image/imageblockediting.js';
+import ImageInlineEditing from '../src/image/imageinlineediting.js';
+import ImageCaptionEditing from '../src/imagecaption/imagecaptionediting.js';
 
-import ImageUtils from '../src/imageutils';
+import ImageUtils from '../src/imageutils.js';
 
 describe( 'ImageUtils plugin', () => {
 	let editor, imageUtils, element, image, writer, viewDocument;

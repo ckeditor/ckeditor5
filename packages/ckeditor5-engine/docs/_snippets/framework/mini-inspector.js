@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,7 +10,7 @@ import { DecoupledEditor as DecoupledEditorBase } from '@ckeditor/ckeditor5-edit
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
 import { FontSize, FontFamily, FontColor, FontBackgroundColor } from '@ckeditor/ckeditor5-font';
-import { UploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
+import { CKFinderUploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
 import { Bold, Italic, Strikethrough, Underline } from '@ckeditor/ckeditor5-basic-styles';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
@@ -40,7 +40,7 @@ DecoupledEditor.builtinPlugins = [
 	FontFamily,
 	FontColor,
 	FontBackgroundColor,
-	UploadAdapter,
+	CKFinderUploadAdapter,
 	Autoformat,
 	Bold,
 	Italic,

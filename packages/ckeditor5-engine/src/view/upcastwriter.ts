@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,21 +7,21 @@
  * @module engine/view/upcastwriter
  */
 
-import DocumentFragment from './documentfragment';
-import Element, { type ElementAttributes } from './element';
-import Text from './text';
+import DocumentFragment from './documentfragment.js';
+import Element, { type ElementAttributes } from './element.js';
+import Text from './text.js';
 import { isPlainObject } from 'lodash-es';
-import Position, { type PositionOffset } from './position';
-import Range from './range';
+import Position, { type PositionOffset } from './position.js';
+import Range from './range.js';
 import Selection, {
 	type PlaceOrOffset,
 	type Selectable,
 	type SelectionOptions
-} from './selection';
+} from './selection.js';
 
-import type Document from './document';
-import type Item from './item';
-import type Node from './node';
+import type Document from './document.js';
+import type Item from './item.js';
+import type Node from './node.js';
 
 /**
  * View upcast writer. It provides a set of methods used to manipulate non-semantic view trees.

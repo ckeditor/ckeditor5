@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,12 +7,12 @@
  * @module indent/indentblockcommand
  */
 
-import { Command, type Editor } from 'ckeditor5/src/core';
-import type { Element } from 'ckeditor5/src/engine';
-import type { DocumentListUtils } from '@ckeditor/ckeditor5-list';
-import { first } from 'ckeditor5/src/utils';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
+import type { Element } from 'ckeditor5/src/engine.js';
+import type { ListUtils } from '@ckeditor/ckeditor5-list';
+import { first } from 'ckeditor5/src/utils.js';
 
-import type { IndentBehavior } from './indentcommandbehavior/indentbehavior';
+import type { IndentBehavior } from './indentcommandbehavior/indentbehavior.js';
 
 /**
  * The indent block command.
@@ -112,7 +112,7 @@ export default class IndentBlockCommand extends Command {
 			return false;
 		}
 
-		if ( !editor.plugins.has( 'DocumentListUtils' ) ) {
+		if ( !editor.plugins.has( 'ListUtils' ) ) {
 			return true;
 		}
 
@@ -121,7 +121,7 @@ export default class IndentBlockCommand extends Command {
 			return true;
 		}
 
-		const documentListUtils: DocumentListUtils = editor.plugins.get( 'DocumentListUtils' );
+		const documentListUtils: ListUtils = editor.plugins.get( 'ListUtils' );
 
 		return !documentListUtils.isListItemBlock( element );
 	}

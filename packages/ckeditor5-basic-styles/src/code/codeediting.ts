@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,10 +7,10 @@
  * @module basic-styles/code/codeediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { TwoStepCaretMovement, inlineHighlight } from 'ckeditor5/src/typing';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { TwoStepCaretMovement, inlineHighlight } from 'ckeditor5/src/typing.js';
 
-import AttributeCommand from '../attributecommand';
+import AttributeCommand from '../attributecommand.js';
 
 const CODE = 'code';
 const HIGHLIGHT_CLASS = 'ck-code_selected';

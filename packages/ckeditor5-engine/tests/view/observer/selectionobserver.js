@@ -1,23 +1,23 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals setTimeout, document, console, Event */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import ViewRange from '../../../src/view/range';
-import DocumentSelection from '../../../src/view/documentselection';
-import ViewSelection from '../../../src/view/selection';
-import View from '../../../src/view/view';
-import SelectionObserver from '../../../src/view/observer/selectionobserver';
-import FocusObserver from '../../../src/view/observer/focusobserver';
-import MutationObserver from '../../../src/view/observer/mutationobserver';
-import createViewRoot from '../_utils/createroot';
-import { parse } from '../../../src/dev-utils/view';
-import { StylesProcessor } from '../../../src/view/stylesmap';
-import env from '@ckeditor/ckeditor5-utils/src/env';
+import ViewRange from '../../../src/view/range.js';
+import DocumentSelection from '../../../src/view/documentselection.js';
+import ViewSelection from '../../../src/view/selection.js';
+import View from '../../../src/view/view.js';
+import SelectionObserver from '../../../src/view/observer/selectionobserver.js';
+import FocusObserver from '../../../src/view/observer/focusobserver.js';
+import MutationObserver from '../../../src/view/observer/mutationobserver.js';
+import createViewRoot from '../_utils/createroot.js';
+import { parse } from '../../../src/dev-utils/view.js';
+import { StylesProcessor } from '../../../src/view/stylesmap.js';
+import env from '@ckeditor/ckeditor5-utils/src/env.js';
 
 describe( 'SelectionObserver', () => {
 	let view, viewDocument, viewRoot, selectionObserver, domRoot, domMain, domDocument;

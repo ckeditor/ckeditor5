@@ -1,19 +1,19 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals console, window, document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo';
-import Position from '../../../src/view/position';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
+import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
+import Position from '../../../src/view/position.js';
 
 function createEndingUIElement( writer ) {
 	const element = writer.createUIElement( 'span', null, function( domDocument ) {

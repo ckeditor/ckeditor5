@@ -1,12 +1,12 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document */
 
-import Config from '../src/config';
-import areConnectedThroughProperties from '../src/areconnectedthroughproperties';
+import Config from '../src/config.js';
+import areConnectedThroughProperties from '../src/areconnectedthroughproperties.js';
 
 describe( 'Config', () => {
 	let config;

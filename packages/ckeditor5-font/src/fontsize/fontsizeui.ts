@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,21 +7,21 @@
  * @module font/fontsize/fontsizeui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 import {
-	Model,
+	ViewModel,
 	createDropdown,
 	addListToDropdown,
 	type ListDropdownItemDefinition
-} from 'ckeditor5/src/ui';
-import { Collection } from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/ui.js';
+import { Collection } from 'ckeditor5/src/utils.js';
 
-import { normalizeOptions } from './utils';
-import { FONT_SIZE } from '../utils';
+import { normalizeOptions } from './utils.js';
+import { FONT_SIZE } from '../utils.js';
 
 import '../../theme/fontsize.css';
-import type { FontSizeOption } from '../fontconfig';
-import type FontSizeCommand from './fontsizecommand';
+import type { FontSizeOption } from '../fontconfig.js';
+import type FontSizeCommand from './fontsizecommand.js';
 
 import fontSizeIcon from '../../theme/icons/font-size.svg';
 
@@ -128,7 +128,7 @@ function _prepareListOptions( options: Array<FontSizeOption>, command: FontSizeC
 	for ( const option of options ) {
 		const def = {
 			type: 'button' as const,
-			model: new Model( {
+			model: new ViewModel( {
 				commandName: FONT_SIZE,
 				commandParam: option.model,
 				label: option.title,

@@ -1,19 +1,19 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Image from '../../src/image';
-import ImageCaption from '../../src/imagecaption';
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
+import Image from '../../src/image.js';
+import ImageCaption from '../../src/imagecaption.js';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
+import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
 
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 
 describe( 'ImageCaption integration', () => {
 	let editorElement, editor, model, view, viewDocument;

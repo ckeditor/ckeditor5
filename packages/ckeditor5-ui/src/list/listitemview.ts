@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,10 +7,10 @@
  * @module ui/list/listitemview
  */
 
-import View from '../view';
+import View from '../view.js';
 
-import type { FocusableView } from '../focuscycler';
-import type ViewCollection from '../viewcollection';
+import type { FocusableView } from '../focuscycler.js';
+import type ViewCollection from '../viewcollection.js';
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 

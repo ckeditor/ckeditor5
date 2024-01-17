@@ -1,13 +1,13 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
+import Widget from '@ckeditor/ckeditor5-widget/src/widget.js';
 
-import HorizontalLine from '../src/horizontalline';
-import HorizontalLineEditing from '../src/horizontallineediting';
-import HorizontalLineUI from '../src/horizontallineui';
+import HorizontalLine from '../src/horizontalline.js';
+import HorizontalLineEditing from '../src/horizontallineediting.js';
+import HorizontalLineUI from '../src/horizontallineui.js';
 
 describe( 'HorizontalLine', () => {
 	it( 'should require HorizontalLineEditing, HorizontalLineUI and Widget', () => {

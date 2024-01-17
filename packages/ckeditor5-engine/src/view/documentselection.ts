@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,22 +7,22 @@
  * @module engine/view/documentselection
  */
 
-import TypeCheckable from './typecheckable';
+import TypeCheckable from './typecheckable.js';
 import Selection, {
 	type PlaceOrOffset,
 	type Selectable,
 	type SelectionOptions,
 	type ViewSelectionChangeEvent
-} from './selection';
+} from './selection.js';
 
 import { EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
-import type EditableElement from './editableelement';
-import type Element from './element';
-import type Node from './node';
-import type Item from './item';
-import type { default as Position, PositionOffset } from './position';
-import type Range from './range';
+import type EditableElement from './editableelement.js';
+import type Element from './element.js';
+import type Node from './node.js';
+import type Item from './item.js';
+import type { default as Position, PositionOffset } from './position.js';
+import type Range from './range.js';
 
 /**
  * Class representing the document selection in the view.

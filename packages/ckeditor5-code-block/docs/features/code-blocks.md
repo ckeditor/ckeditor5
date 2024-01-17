@@ -11,12 +11,12 @@ The code block feature lets you insert and edit blocks of pre-formatted code. It
 
 ## Demo
 
-Use the code block toolbar button {@icon @ckeditor/ckeditor5-code-block/theme/icons/codeblock.svg Insert code block} and the type dropdown to insert a desired code block. Alternatively, start a line with `` ``` ``, and the {@link features/autoformat autoformatting feature} will format it as a code block. To add a paragraph under a code block, simply press <kbd>Enter</kbd> three times.
+Use the code block toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/codeblock.svg Insert code block} and the type dropdown to insert a desired code block. Alternatively, start a line with `` ``` ``, and the {@link features/autoformat autoformatting feature} will format it as a code block. To add a paragraph under a code block, simply press <kbd>Enter</kbd> three times.
 
 {@snippet features/code-block}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 Each code block has a [specific programming language assigned](#configuring-code-block-languages) (like "Java" or "CSS"; this is configurable) and supports basic editing tools, for instance, [changing the line indentation](#changing-line-indentation) using the keyboard.

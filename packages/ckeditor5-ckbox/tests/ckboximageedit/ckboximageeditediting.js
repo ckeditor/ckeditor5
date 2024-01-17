@@ -1,22 +1,22 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import { global } from '@ckeditor/ckeditor5-utils';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
+import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting.js';
 
-import CKBoxImageEditEditing from '../../src/ckboximageedit/ckboximageeditediting';
-import CKBoxImageEditCommand from '../../src/ckboximageedit/ckboximageeditcommand';
+import CKBoxImageEditEditing from '../../src/ckboximageedit/ckboximageeditediting.js';
+import CKBoxImageEditCommand from '../../src/ckboximageedit/ckboximageeditcommand.js';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import { LinkEditing } from '@ckeditor/ckeditor5-link';
 import { ImageBlockEditing, ImageUploadEditing, ImageUploadProgress, PictureEditing } from '@ckeditor/ckeditor5-image';
-import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock';
-import CloudServicesCoreMock from '../_utils/cloudservicescoremock';
+import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
+import CloudServicesCoreMock from '../_utils/cloudservicescoremock.js';
 
 describe( 'CKBoxImageEditEditing', () => {
 	let editor, domElement;

@@ -2,7 +2,7 @@
 category: framework-architecture
 meta-title: UI Components | CKEditor 5 Framework Documentation
 order: 50
-modified_at: 2023-03-06
+modified_at: 2024-01-03
 ---
 
 # UI components
@@ -31,7 +31,7 @@ balloon.render();
 balloon.content.add( balloonButton );
 
 const positions = BalloonPanelView.defaultPositions;
-balloon.pin( { 
+balloon.pin( {
 	target: document.getElementById( 'balloon' ),
 	positions: [ positions.southArrowNorth ]
 } );
@@ -315,10 +315,10 @@ A dropdown consists of two elements: a button and a panel. The button expands th
 Inside a dropdown, you can put a list. To do so, you can use the {@link module:ui/dropdown/utils#addListToDropdown `addListToDropdown()`} helper function. Also, you must add items to a collection before putting them inside the dropdown.
 
 ```js
-import { 
+import {
 	addListToDropdown,
 	createDropdown,
-	Model
+	ViewModel
 } from '@ckeditor/ckeditor5-ui';
 import { Collection, Locale } from '@ckeditor/ckeditor5-utils';
 
@@ -327,14 +327,14 @@ const locale = new Locale();
 const collection = new Collection();
 collection.add( {
 	type: 'button',
-	model: new Model( {
+	model: new ViewModel( {
 		label: 'Button',
 		withText: true
 	} )
 } );
 collection.add( {
 	type: 'switchbutton',
-	model: new Model( {
+	model: new ViewModel( {
 		label: 'Switch button',
 		withText: true
 	} )
@@ -470,6 +470,221 @@ disabledDropdown.render();
 document.getElementById( 'dropdown-disabled' ).append( disabledDropdown.element );
 ```
 
+## Dialog
+
+{@snippet framework/ui/ui-dialog}
+
+A dialog window is a draggable popup that can be displayed on top of the editor contents and remains open while user interacts with the editing area. You can use it to display any detached UI. Dialogs are brought by the {@link module:ui/dialog/dialog~Dialog `Dialog`} plugin.
+
+```js
+// Necessary imports. Remember to install the packages first.
+import {
+	ButtonView,
+	Dialog,
+	View
+} from '@ckeditor/ckeditor5-ui';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+
+// Create a plugin that brings a button that toggles the visibility of a dialog window.
+// Read more about creating the plugins here: https://ckeditor.com/docs/ckeditor5/latest/installation/plugins/plugins.html.
+class MinimalisticDialog extends Plugin {
+	// Make sure the Dialog plugin is loaded.
+	get requires() {
+		return [ Dialog ];
+	}
+
+	init() {
+		// Add a button to the component factory so it is available for the editor.
+		this.editor.ui.componentFactory.add( 'showDialog', locale => {
+			const buttonView = new ButtonView( locale );
+
+			buttonView.set( {
+				label: 'Show a dialog',
+				tooltip: true,
+				withText: true
+			} );
+
+			// Define button behavior on press.
+			buttonView.on( 'execute', () => {
+				const dialog = this.editor.plugins.get( 'Dialog' );
+
+				// If button is turned on, hide the dialog.
+				if ( buttonView.isOn ) {
+					dialog.hide();
+					buttonView.isOn = false;
+
+					return;
+				}
+
+				buttonView.isOn = true;
+
+				// Otherwise, show the dialog.
+				// Create a view with some simple content. It will be displayed as a dialog's body.
+				const textView = new View( locale );
+
+				textView.setTemplate( {
+					tag: 'div',
+					attributes: {
+						style: {
+							padding: 'var(--ck-spacing-large)',
+							whiteSpace: 'initial',
+							width: '100%',
+							maxWidth: '500px'
+						},
+						tabindex: -1
+					},
+					children: [
+						'This is the content of the dialog.',
+						'You can put here text, images, inputs, buttons, etc.'
+					]
+				} );
+
+				// Tell the plugin to display a dialog with title, content and one action button.
+				dialog.show( {
+					title: 'Dialog with text',
+					content: textView,
+					actionButtons: [
+						{
+							label: 'OK',
+							class: 'ck-button-action',
+							withText: true,
+							onExecute: () => dialog.hide()
+						}
+					],
+					onHide() { buttonView.isOn = false; }
+				} );
+			} );
+
+			return buttonView;
+		} );
+	}
+}
+
+// Create an editor instance. Remember to have an element with `[id="editor"]` attribute in the document.
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Essentials, Paragraph, Bold, Italic, MinimalisticDialog, Dialog ],
+		toolbar: [ 'bold', 'italic', '|', 'showDialog' ]
+	} )
+	.catch( error => {
+		console.error( error.stack );
+	} );
+```
+
+See the guide about the {@link framework/architecture/ui-library#dialogs-and-modals API of the dialogs system}.
+
+## Modal
+
+{@snippet framework/ui/ui-modal}
+
+Modal is a specific kind of a dialog window which while open, doesn't allow to interact with the editor content - it has to be closed first. It can be used to enforce the user interaction or interrupt them in some important situations. To create a modal, use the optional {@link module:ui/dialog/dialog~DialogDefinition#isModal `isModal`} property of the {@link module:ui/dialog/dialog~Dialog#show `Dialog#show()`} method.
+
+```js
+// Necessary imports. Remember to install the packages first.
+import {
+	ButtonView,
+	Dialog,
+	View
+} from '@ckeditor/ckeditor5-ui';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+
+// Create a plugin that brings a button that toggles the visibility of a modal window.
+// Read more about creating the plugins here: https://ckeditor.com/docs/ckeditor5/latest/installation/plugins/plugins.html.
+class MinimalisticModal extends Plugin {
+	// Make sure the Dialog plugin is loaded.
+	get requires() {
+		return [ Dialog ];
+	}
+
+	init() {
+		// Add a button to the component factory so it is available for the editor.
+		this.editor.ui.componentFactory.add( 'showModal', locale => {
+			const buttonView = new ButtonView( locale );
+
+			buttonView.set( {
+				label: 'Show a modal',
+				tooltip: true,
+				withText: true
+			} );
+
+			// Define button behavior on press.
+			buttonView.on( 'execute', () => {
+				const dialog = this.editor.plugins.get( 'Dialog' );
+
+				// If button is turned on, hide the modal.
+				if ( buttonView.isOn ) {
+					dialog.hide();
+					buttonView.isOn = false;
+
+					return;
+				}
+
+				buttonView.isOn = true;
+
+				// Otherwise, show the modal.
+				// First, create a view with some simple content. It will be displayed as a dialog's body.
+				const textView = new View( locale );
+
+				textView.setTemplate( {
+					tag: 'div',
+					attributes: {
+						style: {
+							padding: 'var(--ck-spacing-large)',
+							whiteSpace: 'initial',
+							width: '100%',
+							maxWidth: '500px'
+						},
+						tabindex: -1
+					},
+					children: [
+						'This is a sample content of the modal.',
+						'You can put here text, images, inputs, buttons, etc.'
+					]
+				} );
+
+				// Tell the plugin to display a modal with title, content and one action button.
+				dialog.show( {
+					isModal: true,
+					title: 'Modal with text',
+					content: textView,
+					actionButtons: [
+						{
+							label: 'OK',
+							class: 'ck-button-action',
+							withText: true,
+							onExecute: () => dialog.hide()
+						}
+					],
+					onHide() { buttonView.isOn = false; }
+				} );
+			} );
+
+			return buttonView;
+		} );
+	}
+}
+
+// Create an editor instance. Remember to have an element with `[id="editor"]` attribute in the document.
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Essentials, Paragraph, Bold, Italic, MinimalisticDialog, Dialog ],
+		toolbar: [ 'bold', 'italic', '|', 'showModal' ]
+	} )
+	.catch( error => {
+		console.error( error.stack );
+	} );
+```
+
+See the guide about the {@link framework/architecture/ui-library#dialogs-and-modals API of the dialogs system}.
+
 ## Icons
 
 {@snippet framework/ui/ui-icons}
@@ -499,9 +714,9 @@ import strikethrough from '@ckeditor/ckeditor5-basic-styles/theme/icons/striketh
 import subscript from '@ckeditor/ckeditor5-basic-styles/theme/icons/subscript.svg';
 import superscript from '@ckeditor/ckeditor5-basic-styles/theme/icons/superscript.svg';
 
-import browseFiles from '@ckeditor/ckeditor5-ckfinder/theme/icons/browse-files.svg';
+import browseFiles from '@ckeditor/ckeditor5-core/theme/icons/browse-files.svg';
 
-import codeBlock from '@ckeditor/ckeditor5-code-block/theme/icons/codeblock.svg';
+import codeBlock from '@ckeditor/ckeditor5-core/theme/icons/codeblock.svg';
 
 import cancel from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 import caption from '@ckeditor/ckeditor5-core/theme/icons/caption.svg';
@@ -539,27 +754,27 @@ import fontSize from '@ckeditor/ckeditor5-font/theme/icons/font-size.svg';
 import fontColor from '@ckeditor/ckeditor5-font/theme/icons/font-color.svg';
 import fontBackground from '@ckeditor/ckeditor5-font/theme/icons/font-background.svg';
 
-import heading1 from '@ckeditor/ckeditor5-heading/theme/icons/heading1.svg';
-import heading2 from '@ckeditor/ckeditor5-heading/theme/icons/heading2.svg';
-import heading3 from '@ckeditor/ckeditor5-heading/theme/icons/heading3.svg';
-import heading4 from '@ckeditor/ckeditor5-heading/theme/icons/heading4.svg';
-import heading5 from '@ckeditor/ckeditor5-heading/theme/icons/heading5.svg';
-import heading6 from '@ckeditor/ckeditor5-heading/theme/icons/heading6.svg';
+import heading1 from '@ckeditor/ckeditor5-core/theme/icons/heading1.svg';
+import heading2 from '@ckeditor/ckeditor5-core/theme/icons/heading2.svg';
+import heading3 from '@ckeditor/ckeditor5-core/theme/icons/heading3.svg';
+import heading4 from '@ckeditor/ckeditor5-core/theme/icons/heading4.svg';
+import heading5 from '@ckeditor/ckeditor5-core/theme/icons/heading5.svg';
+import heading6 from '@ckeditor/ckeditor5-core/theme/icons/heading6.svg';
 
-import indent from '@ckeditor/ckeditor5-indent/theme/icons/indent.svg';
-import outdent from '@ckeditor/ckeditor5-indent/theme/icons/outdent.svg';
+import indent from '@ckeditor/ckeditor5-core/theme/icons/indent.svg';
+import outdent from '@ckeditor/ckeditor5-core/theme/icons/outdent.svg';
 
 import marker from '@ckeditor/ckeditor5-highlight/theme/icons/marker.svg';
 import pen from '@ckeditor/ckeditor5-highlight/theme/icons/pen.svg';
 
-import html from '@ckeditor/ckeditor5-html-embed/theme/icons/html.svg';
+import html from '@ckeditor/ckeditor5-core/theme/icons/html.svg';
 
 import link from '@ckeditor/ckeditor5-link/theme/icons/link.svg';
 import unlink from '@ckeditor/ckeditor5-link/theme/icons/unlink.svg';
 
-import bulletedList from '@ckeditor/ckeditor5-list/theme/icons/bulletedlist.svg';
-import numberedList from '@ckeditor/ckeditor5-list/theme/icons/numberedlist.svg';
-import todoList from '@ckeditor/ckeditor5-list/theme/icons/todolist.svg';
+import bulletedList from '@ckeditor/ckeditor5-core/theme/icons/bulletedlist.svg';
+import numberedList from '@ckeditor/ckeditor5-core/theme/icons/numberedlist.svg';
+import todoList from '@ckeditor/ckeditor5-core/theme/icons/todolist.svg';
 
 import media from '@ckeditor/ckeditor5-media-embed/theme/icons/media.svg';
 
@@ -578,18 +793,18 @@ import sourceEditing from '@ckeditor/ckeditor5-source-editing/theme/icons/source
 
 import specialCharacters from '@ckeditor/ckeditor5-special-characters/theme/icons/specialcharacters.svg';
 
-import table from '@ckeditor/ckeditor5-table/theme/icons/table.svg';
+import table from '@ckeditor/ckeditor5-core/theme/icons/table.svg';
 import tableRow from '@ckeditor/ckeditor5-table/theme/icons/table-row.svg';
 import tableColumn from '@ckeditor/ckeditor5-table/theme/icons/table-column.svg';
 import tableMergeCell from '@ckeditor/ckeditor5-table/theme/icons/table-merge-cell.svg';
 import tableCellProperties from '@ckeditor/ckeditor5-table/theme/icons/table-cell-properties.svg';
 import tableProperties from '@ckeditor/ckeditor5-table/theme/icons/table-properties.svg';
 
-import nextArrow from '@ckeditor/ckeditor5-ui/theme/icons/next-arrow.svg';
-import previousArrow from '@ckeditor/ckeditor5-ui/theme/icons/previous-arrow.svg';
+import nextArrow from '@ckeditor/ckeditor5-core/theme/icons/next-arrow.svg';
+import previousArrow from '@ckeditor/ckeditor5-core/theme/icons/previous-arrow.svg';
 
-import undo from '@ckeditor/ckeditor5-undo/theme/icons/undo.svg';
-import redo from '@ckeditor/ckeditor5-undo/theme/icons/redo.svg';
+import undo from '@ckeditor/ckeditor5-core/theme/icons/undo.svg';
+import redo from '@ckeditor/ckeditor5-core/theme/icons/redo.svg';
 
 import history from '@ckeditor/ckeditor5-core/theme/icons/history.svg';
 import loupe from '@ckeditor/ckeditor5-core/theme/icons/loupe.svg';
@@ -599,11 +814,16 @@ import loupe from '@ckeditor/ckeditor5-core/theme/icons/loupe.svg';
 
 {@snippet framework/ui/ui-input}
 
-There are also inputs in the CKEditor&nbsp;5 UI library. There are a few use cases to put inputs inside a main toolbar, but you also can add them to balloon panels.
+The CKEditor&nbsp;5 UI library contains a few input elements. Usually, they are used in dropdowns and balloon panels, but you can also use them in a main toolbar.
+
+To create them, use the {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView `LabeledFieldView`} class, which takes two parameters:
+
+* an instance of the {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#locale `locale`} class,
+* a helper function, depending on the type of field you want to create.
 
 ### Text
 
-You can use the {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView `LabaledFieldView`} class to instantiate an input. It takes two parameters: {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#locale `locale`} and a helper function. Pass the {@link module:ui/labeledfield/utils#createLabeledInputText `createLabeledInputText()`} helper function to create a text input.
+To create a text field, pass the {@link module:ui/labeledfield/utils#createLabeledInputText `createLabeledInputText()`} helper function as the second parameter to the {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView `LabeledFieldView`} class.
 
 ```js
 import { createLabeledInputText, LabeledFieldView } from '@ckeditor/ckeditor5-ui';
@@ -620,7 +840,7 @@ document.getElementById( 'input-text' ).append( textInput.element );
 
 ### Number
 
-You can use the {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView `LabaledFieldView`} class to instantiate an input. It takes two parameters: {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#locale `locale`} and a helper function. Pass the {@link module:ui/labeledfield/utils#createLabeledInputNumber `createLabeledInputNumber()`} helper function to create a number input.
+To create a number field, pass the {@link module:ui/labeledfield/utils#createLabeledInputNumber `createLabeledInputNumber()`} helper function as the second parameter to the {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView `LabeledFieldView`} class.
 
 ```js
 import { createLabeledInputNumber, LabeledFieldView } from '@ckeditor/ckeditor5-ui';

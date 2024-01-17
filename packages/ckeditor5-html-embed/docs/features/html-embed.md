@@ -11,12 +11,12 @@ The HTML embed feature lets you embed any HTML snippet in your content. The feat
 
 ## Demo
 
-Use the HTML embed toolbar button {@icon @ckeditor/ckeditor5-html-embed/theme/icons/html.svg HTML embed} in the editor below to see the plugin in action. Click the "Preview editor data" button under the editor to preview the editor content, including the embedded HTML.
+Use the HTML embed toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/html.svg HTML embed} in the editor below to see the plugin in action. Click the "Preview editor data" button under the editor to preview the editor content, including the embedded HTML.
 
 {@snippet features/html-embed}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Additional feature information

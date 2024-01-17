@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,12 +7,12 @@
  * @module image/imageupload/imageuploadui
  */
 
-import type { Locale } from 'ckeditor5/src/utils';
-import { Plugin, icons } from 'ckeditor5/src/core';
-import { FileDialogButtonView } from 'ckeditor5/src/upload';
-import { createImageTypeRegExp } from './utils';
-import type UploadImageCommand from './uploadimagecommand';
-import type ImageInsertUI from '../imageinsert/imageinsertui';
+import type { Locale } from 'ckeditor5/src/utils.js';
+import { Plugin, icons } from 'ckeditor5/src/core.js';
+import { FileDialogButtonView } from 'ckeditor5/src/upload.js';
+import { createImageTypeRegExp } from './utils.js';
+import type UploadImageCommand from './uploadimagecommand.js';
+import type ImageInsertUI from '../imageinsert/imageinsertui.js';
 
 /**
  * The image upload button plugin.

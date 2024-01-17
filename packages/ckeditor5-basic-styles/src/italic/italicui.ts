@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,9 @@
  * @module basic-styles/italic/italicui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { ButtonView } from 'ckeditor5/src/ui';
-import type AttributeCommand from '../attributecommand';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { ButtonView } from 'ckeditor5/src/ui.js';
+import type AttributeCommand from '../attributecommand.js';
 
 import italicIcon from '../../theme/icons/italic.svg';
 

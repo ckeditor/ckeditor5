@@ -1,10 +1,10 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Model from '../../../src/model/model';
-import RootOperation from '../../../src/model/operation/rootoperation';
+import Model from '../../../src/model/model.js';
+import RootOperation from '../../../src/model/operation/rootoperation.js';
 
 describe( 'RootOperation', () => {
 	let model, doc;

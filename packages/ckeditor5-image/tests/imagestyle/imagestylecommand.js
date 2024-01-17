@@ -1,14 +1,14 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* eslint-disable no-undef */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import utils from '../../src/imagestyle/utils';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import utils from '../../src/imagestyle/utils.js';
 
 describe( 'ImageStyleCommand', () => {
 	const {

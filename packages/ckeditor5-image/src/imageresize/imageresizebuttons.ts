@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,20 +7,20 @@
  * @module image/imageresize/imageresizebuttons
  */
 
-import { Plugin, icons, type Editor } from 'ckeditor5/src/core';
+import { Plugin, icons, type Editor } from 'ckeditor5/src/core.js';
 import {
 	ButtonView,
 	DropdownButtonView,
-	Model,
+	ViewModel,
 	createDropdown,
 	addListToDropdown,
 	type ListDropdownItemDefinition
-} from 'ckeditor5/src/ui';
-import { CKEditorError, Collection, type Locale } from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/ui.js';
+import { CKEditorError, Collection, type Locale } from 'ckeditor5/src/utils.js';
 
-import ImageResizeEditing from './imageresizeediting';
-import type ResizeImageCommand from './resizeimagecommand';
-import type { ImageResizeOption } from '../imageconfig';
+import ImageResizeEditing from './imageresizeediting.js';
+import type ResizeImageCommand from './resizeimagecommand.js';
+import type { ImageResizeOption } from '../imageconfig.js';
 
 const RESIZE_ICONS = {
 	small: icons.objectSizeSmall,
@@ -236,7 +236,7 @@ export default class ImageResizeButtons extends Plugin {
 			const optionValueWithUnit = option.value ? option.value + this._resizeUnit : null;
 			const definition: ListDropdownItemDefinition = {
 				type: 'button',
-				model: new Model( {
+				model: new ViewModel( {
 					commandName: 'resizeImage',
 					commandValue: optionValueWithUnit,
 					label: this._getOptionLabelValue( option ),

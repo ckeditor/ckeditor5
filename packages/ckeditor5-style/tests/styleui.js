@@ -1,21 +1,21 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
-import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
-import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
+import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
+import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
 
-import Style from '../src/style';
-import StyleUI from '../src/styleui';
-import StylePanelView from '../src/ui/stylepanelview';
+import Style from '../src/style.js';
+import StyleUI from '../src/styleui.js';
+import StylePanelView from '../src/ui/stylepanelview.js';
 
 describe( 'StyleUI', () => {
 	let editor, element;

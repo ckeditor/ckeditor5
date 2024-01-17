@@ -1,32 +1,32 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import * as clipboardBase from '@ckeditor/ckeditor5-clipboard';
-import * as clipboardDLL from '../src/clipboard';
+import * as clipboardDLL from '../src/clipboard.js';
 import * as coreBase from '@ckeditor/ckeditor5-core';
-import * as coreDLL from '../src/core';
+import * as coreDLL from '../src/core.js';
 import * as engineBase from '@ckeditor/ckeditor5-engine';
-import * as engineDLL from '../src/engine';
+import * as engineDLL from '../src/engine.js';
 import * as enterBase from '@ckeditor/ckeditor5-enter';
-import * as enterDLL from '../src/enter';
+import * as enterDLL from '../src/enter.js';
 import * as paragraphBase from '@ckeditor/ckeditor5-paragraph';
-import * as paragraphDLL from '../src/paragraph';
+import * as paragraphDLL from '../src/paragraph.js';
 import * as selectallBase from '@ckeditor/ckeditor5-select-all';
-import * as selectallDLL from '../src/select-all';
+import * as selectallDLL from '../src/select-all.js';
 import * as typingBase from '@ckeditor/ckeditor5-typing';
-import * as typingDLL from '../src/typing';
+import * as typingDLL from '../src/typing.js';
 import * as uiBase from '@ckeditor/ckeditor5-ui';
-import * as uiDLL from '../src/ui';
+import * as uiDLL from '../src/ui.js';
 import * as undoBase from '@ckeditor/ckeditor5-undo';
-import * as undoDLL from '../src/undo';
+import * as undoDLL from '../src/undo.js';
 import * as uploadBase from '@ckeditor/ckeditor5-upload';
-import * as uploadDLL from '../src/upload';
+import * as uploadDLL from '../src/upload.js';
 import * as utilsBase from '@ckeditor/ckeditor5-utils';
-import * as utilsDLL from '../src/utils';
+import * as utilsDLL from '../src/utils.js';
 import * as widgetBase from '@ckeditor/ckeditor5-widget';
-import * as widgetDLL from '../src/widget';
+import * as widgetDLL from '../src/widget.js';
 
 describe( 'CKEditor DLL', () => {
 	testEqualExports( 'clipboard', clipboardBase, clipboardDLL );

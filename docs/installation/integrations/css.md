@@ -10,15 +10,15 @@ order: 80
 CKEditor&nbsp;5 is compatible with most of the popular CSS frameworks. However, to properly integrate with some of them, additional tweaks may be necessary. This is mostly because:
 * CSS frameworks often use a higher [CSS Specificity](https://developer.mozilla.org/en-US/docs/Web/CSS/Specificity) in their style sheets and override default editor styles, distorting the user interface.
 * Modal components of various UI frameworks use high `z-index` values in their styles and render over (cover) the UI of CKEditor&nbsp;5.
-* Framework modals use aggressive focus management policy which breaks the input fields in the rich-text editor (for example, the link input).
+* Framework modals use an aggressive focus management policy that breaks the input fields in the rich-text editor (for example, the link input).
 
-In this guide, you will learn how to address these integration issues and use the CKEditor&nbsp;5 WYSIWYG editor with the most popular front–end frameworks.
+In this guide, you will learn how to address these integration issues and use the CKEditor&nbsp;5 WYSIWYG editor with the most popular frontend frameworks.
 
 ## Compatibility with Bootstrap
 
 ### Bootstrap modals
 
-We noticed that [Bootstrap](https://getbootstrap.com) modals cover the UI of the rich-text editor and break the input fields. Knowing that, you will need to take the following steps to get CKEditor&nbsp;5 working in the Bootstrap environment:
+[Bootstrap](https://getbootstrap.com) modals cover the UI of the rich-text editor and break the input fields. Knowing that, you will need to take the following steps to get CKEditor&nbsp;5 working in the Bootstrap environment:
 
 * Configure the `z-index` of the floating editor UI (for example, balloons) to display it over the Bootstrap overlay.
 * Configure Bootstrap so it stops "stealing" the focus from the rich-text editor input fields.
@@ -32,11 +32,11 @@ To address the first issue, add the following styles to your application:
  */
 :root {
 	--ck-z-default: 100;
-	--ck-z-modal: calc( var(--ck-z-default) + 999 );
+	--ck-z-panel: calc( var(--ck-z-default) + 999 );
 }
 ```
 
-Pass the [`focus: false`](https://getbootstrap.com/docs/4.1/components/modal/#options) option to Bootstrap `modal()` function to fix the second issue:
+Pass the [`focus: false`](https://getbootstrap.com/docs/4.1/components/modal/#options) option to the Bootstrap `modal()` function to fix the second issue:
 
 ```js
 $( '#modal-container' ).modal( {
@@ -71,7 +71,7 @@ CKEditor&nbsp;5 requires some minor adjustments to the `z-index` of the UI to wo
  */
 :root {
 	--ck-z-default: 100;
-	--ck-z-modal: calc( var(--ck-z-default) + 999 );
+	--ck-z-panel: calc( var(--ck-z-default) + 999 );
 }
 ```
 
@@ -79,7 +79,7 @@ CKEditor&nbsp;5 requires some minor adjustments to the `z-index` of the UI to wo
 
 ## Compatibility with Materialize
 
-If you want to use CKEditor&nbsp;5 with [Materialize.css](https://materializecss.com/) you will need to take the following steps:
+If you want to use CKEditor&nbsp;5 with [Materialize.css](https://materializecss.com/), you will need to take the following steps:
 
 * Configure the base `z-index` of the floating editor UI so it is displayed over the Materialize modals.
 * Bring back the default `.ck-input` class appearance (because Materialize overrides it with a higher specificity).
@@ -95,7 +95,7 @@ Use the following CSS to address the issues with the `z-index` and selector spec
  */
 :root {
 	--ck-z-default: 100;
-	--ck-z-modal: calc( var(--ck-z-default) + 999 );
+	--ck-z-panel: calc( var(--ck-z-default) + 999 );
 }
 
 /*
@@ -137,7 +137,7 @@ Use the following CSS to address the issues with the `z-index` and selector spec
 }
 
 .ck.ck-content ul {
-  /* Default user agent stylesheet, you can change it to your needs. */
+  /* Default user agent style sheet. You can change it to your needs. */
   padding-left: 40px;
 }
 ```
@@ -166,7 +166,7 @@ CKEditor&nbsp;5 works properly with [Semantic-UI](https://semantic-ui.com/) afte
  */
 :root {
 	--ck-z-default: 100;
-	--ck-z-modal: calc( var(--ck-z-default) + 999 );
+	--ck-z-panel: calc( var(--ck-z-default) + 999 );
 }
 ```
 

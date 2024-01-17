@@ -1,24 +1,24 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Position from '../../src/view/position';
-import Node from '../../src/view/node';
-import Element from '../../src/view/element';
-import DocumentFragment from '../../src/view/documentfragment';
-import EditableElement from '../../src/view/editableelement';
-import Document from '../../src/view/document';
-import Text from '../../src/view/text';
-import TextProxy from '../../src/view/textproxy';
+import Position from '../../src/view/position.js';
+import Node from '../../src/view/node.js';
+import Element from '../../src/view/element.js';
+import DocumentFragment from '../../src/view/documentfragment.js';
+import EditableElement from '../../src/view/editableelement.js';
+import Document from '../../src/view/document.js';
+import Text from '../../src/view/text.js';
+import TextProxy from '../../src/view/textproxy.js';
 
-import { parse, stringify } from '../../src/dev-utils/view';
-import TreeWalker from '../../src/view/treewalker';
-import createViewRoot from './_utils/createroot';
-import AttributeElement from '../../src/view/attributeelement';
-import ContainerElement from '../../src/view/containerelement';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-import { StylesProcessor } from '../../src/view/stylesmap';
+import { parse, stringify } from '../../src/dev-utils/view.js';
+import TreeWalker from '../../src/view/treewalker.js';
+import createViewRoot from './_utils/createroot.js';
+import AttributeElement from '../../src/view/attributeelement.js';
+import ContainerElement from '../../src/view/containerelement.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
+import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'Position', () => {
 	const parentMock = {};

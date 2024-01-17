@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,27 +7,27 @@
  * @module basic-styles
  */
 
-export { default as Bold } from './bold';
-export { default as BoldEditing } from './bold/boldediting';
-export { default as BoldUI } from './bold/boldui';
-export { default as Code } from './code';
-export { default as CodeEditing } from './code/codeediting';
-export { default as CodeUI } from './code/codeui';
-export { default as Italic } from './italic';
-export { default as ItalicEditing } from './italic/italicediting';
-export { default as ItalicUI } from './italic/italicui';
-export { default as Strikethrough } from './strikethrough';
-export { default as StrikethroughEditing } from './strikethrough/strikethroughediting';
-export { default as StrikethroughUI } from './strikethrough/strikethroughui';
-export { default as Subscript } from './subscript';
-export { default as SubscriptEditing } from './subscript/subscriptediting';
-export { default as SubscriptUI } from './subscript/subscriptui';
-export { default as Superscript } from './superscript';
-export { default as SuperscriptEditing } from './superscript/superscriptediting';
-export { default as SuperscriptUI } from './superscript/superscriptui';
-export { default as Underline } from './underline';
-export { default as UnderlineEditing } from './underline/underlineediting';
-export { default as UnderlineUI } from './underline/underlineui';
-export type { default as AttributeCommand } from './attributecommand';
+export { default as Bold } from './bold.js';
+export { default as BoldEditing } from './bold/boldediting.js';
+export { default as BoldUI } from './bold/boldui.js';
+export { default as Code } from './code.js';
+export { default as CodeEditing } from './code/codeediting.js';
+export { default as CodeUI } from './code/codeui.js';
+export { default as Italic } from './italic.js';
+export { default as ItalicEditing } from './italic/italicediting.js';
+export { default as ItalicUI } from './italic/italicui.js';
+export { default as Strikethrough } from './strikethrough.js';
+export { default as StrikethroughEditing } from './strikethrough/strikethroughediting.js';
+export { default as StrikethroughUI } from './strikethrough/strikethroughui.js';
+export { default as Subscript } from './subscript.js';
+export { default as SubscriptEditing } from './subscript/subscriptediting.js';
+export { default as SubscriptUI } from './subscript/subscriptui.js';
+export { default as Superscript } from './superscript.js';
+export { default as SuperscriptEditing } from './superscript/superscriptediting.js';
+export { default as SuperscriptUI } from './superscript/superscriptui.js';
+export { default as Underline } from './underline.js';
+export { default as UnderlineEditing } from './underline/underlineediting.js';
+export { default as UnderlineUI } from './underline/underlineui.js';
+export type { default as AttributeCommand } from './attributecommand.js';
 
-import './augmentation';
+import './augmentation.js';

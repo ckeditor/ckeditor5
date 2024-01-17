@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,8 +7,8 @@
  * @module editor-classic/classiceditor
  */
 
-import ClassicEditorUI from './classiceditorui';
-import ClassicEditorUIView from './classiceditoruiview';
+import ClassicEditorUI from './classiceditorui.js';
+import ClassicEditorUIView from './classiceditoruiview.js';
 
 import {
 	Editor,
@@ -18,10 +18,10 @@ import {
 	attachToForm,
 	type EditorConfig,
 	type EditorReadyEvent
-} from 'ckeditor5/src/core';
-import { getDataFromElement, CKEditorError } from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/core.js';
+import { getDataFromElement, CKEditorError } from 'ckeditor5/src/utils.js';
 
-import { ContextWatchdog, EditorWatchdog } from 'ckeditor5/src/watchdog';
+import { ContextWatchdog, EditorWatchdog } from 'ckeditor5/src/watchdog.js';
 
 import { isElement as _isElement } from 'lodash-es';
 

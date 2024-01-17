@@ -1,16 +1,16 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Model from '../../../src/model/model';
-import NodeList from '../../../src/model/nodelist';
-import Element from '../../../src/model/element';
-import InsertOperation from '../../../src/model/operation/insertoperation';
-import MoveOperation from '../../../src/model/operation/moveoperation';
-import Position from '../../../src/model/position';
-import Text from '../../../src/model/text';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import Model from '../../../src/model/model.js';
+import NodeList from '../../../src/model/nodelist.js';
+import Element from '../../../src/model/element.js';
+import InsertOperation from '../../../src/model/operation/insertoperation.js';
+import MoveOperation from '../../../src/model/operation/moveoperation.js';
+import Position from '../../../src/model/position.js';
+import Text from '../../../src/model/text.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'InsertOperation', () => {
 	let model, doc, root;

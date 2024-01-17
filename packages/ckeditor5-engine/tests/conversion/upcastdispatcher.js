@@ -1,27 +1,27 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import UpcastDispatcher from '../../src/conversion/upcastdispatcher';
-import ViewContainerElement from '../../src/view/containerelement';
-import ViewElement from '../../src/view/element';
-import ViewDocumentFragment from '../../src/view/documentfragment';
-import ViewText from '../../src/view/text';
-import ViewDocument from '../../src/view/document';
+import UpcastDispatcher from '../../src/conversion/upcastdispatcher.js';
+import ViewContainerElement from '../../src/view/containerelement.js';
+import ViewElement from '../../src/view/element.js';
+import ViewDocumentFragment from '../../src/view/documentfragment.js';
+import ViewText from '../../src/view/text.js';
+import ViewDocument from '../../src/view/document.js';
 
-import Model from '../../src/model/model';
-import ModelText from '../../src/model/text';
-import ModelTextProxy from '../../src/model/textproxy';
-import ModelElement from '../../src/model/element';
-import ModelDocumentFragment from '../../src/model/documentfragment';
-import ModelPosition from '../../src/model/position';
-import ModelRange from '../../src/model/range';
-import ModelWriter from '../../src/model/writer';
+import Model from '../../src/model/model.js';
+import ModelText from '../../src/model/text.js';
+import ModelTextProxy from '../../src/model/textproxy.js';
+import ModelElement from '../../src/model/element.js';
+import ModelDocumentFragment from '../../src/model/documentfragment.js';
+import ModelPosition from '../../src/model/position.js';
+import ModelRange from '../../src/model/range.js';
+import ModelWriter from '../../src/model/writer.js';
 
-import first from '@ckeditor/ckeditor5-utils/src/first';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-import { StylesProcessor } from '../../src/view/stylesmap';
+import first from '@ckeditor/ckeditor5-utils/src/first.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
+import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'UpcastDispatcher', () => {
 	let model, viewDocument;

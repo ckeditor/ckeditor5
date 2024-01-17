@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,16 +7,16 @@
  * @module paste-from-office/pastefromoffice
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 
-import { ClipboardPipeline } from 'ckeditor5/src/clipboard';
+import { ClipboardPipeline } from 'ckeditor5/src/clipboard.js';
 
-import MSWordNormalizer from './normalizers/mswordnormalizer';
-import GoogleDocsNormalizer from './normalizers/googledocsnormalizer';
-import GoogleSheetsNormalizer from './normalizers/googlesheetsnormalizer';
+import MSWordNormalizer from './normalizers/mswordnormalizer.js';
+import GoogleDocsNormalizer from './normalizers/googledocsnormalizer.js';
+import GoogleSheetsNormalizer from './normalizers/googlesheetsnormalizer.js';
 
-import { parseHtml } from './filters/parse';
-import type { Normalizer, NormalizerData } from './normalizer';
+import { parseHtml } from './filters/parse.js';
+import type { Normalizer, NormalizerData } from './normalizer.js';
 
 /**
  * The Paste from Office plugin.

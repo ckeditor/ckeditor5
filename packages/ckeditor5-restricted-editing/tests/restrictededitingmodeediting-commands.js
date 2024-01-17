@@ -1,18 +1,18 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
-import Command from '@ckeditor/ckeditor5-core/src/command';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import Command from '@ckeditor/ckeditor5-core/src/command.js';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import RestrictedEditingModeEditing from './../src/restrictededitingmodeediting';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
+import RestrictedEditingModeEditing from './../src/restrictededitingmodeediting.js';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
 
 describe( 'RestrictedEditingEditing - commands', () => {
 	let editor;

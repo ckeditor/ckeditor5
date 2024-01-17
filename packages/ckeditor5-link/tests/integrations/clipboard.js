@@ -1,16 +1,16 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import LinkEditing from '../../src/linkediting';
+import LinkEditing from '../../src/linkediting.js';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
-import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
-import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 describe( 'Link integration: clipboard paste', () => {
 	let editor, model;

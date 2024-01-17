@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,11 +7,10 @@
  * @module horizontal-line/horizontallineui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { ButtonView } from 'ckeditor5/src/ui';
+import { icons, Plugin } from 'ckeditor5/src/core.js';
+import { ButtonView } from 'ckeditor5/src/ui.js';
 
-import type HorizontalLineCommand from './horizontallinecommand';
-import horizontalLineIcon from '../theme/icons/horizontalline.svg';
+import type HorizontalLineCommand from './horizontallinecommand.js';
 
 /**
  * The horizontal line UI plugin.
@@ -38,7 +37,7 @@ export default class HorizontalLineUI extends Plugin {
 
 			view.set( {
 				label: t( 'Horizontal line' ),
-				icon: horizontalLineIcon,
+				icon: icons.horizontalLine,
 				tooltip: true
 			} );
 

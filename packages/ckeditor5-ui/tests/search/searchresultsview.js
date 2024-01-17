@@ -1,15 +1,15 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document */
 
 import { Locale } from '@ckeditor/ckeditor5-utils';
-import SearchResultsView from '../../src/search/searchresultsview';
+import SearchResultsView from '../../src/search/searchresultsview.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { ButtonView, View, ViewCollection } from '../../src';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ButtonView, View, ViewCollection } from '../../src/index.js';
 
 describe( 'SearchResultsView', () => {
 	let locale, view;

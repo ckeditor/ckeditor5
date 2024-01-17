@@ -1,30 +1,30 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals console, window, document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 
-import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
-import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
-import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor';
-import FontBackgroundColor from '@ckeditor/ckeditor5-font/src/fontbackgroundcolor';
-import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak';
-import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
-import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
-import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize';
+import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough.js';
+import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
+import Table from '@ckeditor/ckeditor5-table/src/table.js';
+import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
+import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage.js';
+import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor.js';
+import FontBackgroundColor from '@ckeditor/ckeditor5-font/src/fontbackgroundcolor.js';
+import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak.js';
+import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties.js';
+import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties.js';
+import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize.js';
 
-import PasteFromOffice from '../../../../src/pastefromoffice';
+import PasteFromOffice from '../../../../src/pastefromoffice.js';
 
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
+import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload.js';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

@@ -20,6 +20,9 @@ parameters:
   isNightly:
     type: boolean
     default: false
+  isStaleBot:
+    type: boolean
+    default: false
 
 orbs:
   continuation: circleci/continuation@0.1.2

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,12 +7,12 @@
  * @module engine/model/element
  */
 
-import Node, { type NodeAttributes } from './node';
-import NodeList from './nodelist';
-import Text from './text';
-import TextProxy from './textproxy';
+import Node, { type NodeAttributes } from './node.js';
+import NodeList from './nodelist.js';
+import Text from './text.js';
+import TextProxy from './textproxy.js';
 
-import type Item from './item';
+import type Item from './item.js';
 
 import { isIterable } from '@ckeditor/ckeditor5-utils';
 

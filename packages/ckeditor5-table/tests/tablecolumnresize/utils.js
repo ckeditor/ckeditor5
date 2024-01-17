@@ -1,16 +1,16 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Element from '@ckeditor/ckeditor5-engine/src/model/element';
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Table from '../../src/table';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { modelTable } from '../_utils/utils';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Element from '@ckeditor/ckeditor5-engine/src/model/element.js';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import Table from '../../src/table.js';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { modelTable } from '../_utils/utils.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import TableColumnResize from '../../src/tablecolumnresize';
+import TableColumnResize from '../../src/tablecolumnresize.js';
 import {
 	getColumnEdgesIndexes,
 	getChangedResizedTables,
@@ -27,7 +27,7 @@ import {
 	getTableColumnElements,
 	getTableColumnsWidths,
 	translateColSpanAttribute
-} from '../../src/tablecolumnresize/utils';
+} from '../../src/tablecolumnresize/utils.js';
 
 /* globals window, document */
 

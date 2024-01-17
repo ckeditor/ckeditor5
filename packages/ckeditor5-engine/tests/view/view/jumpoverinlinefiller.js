@@ -1,19 +1,19 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document */
 
-import View from '../../../src/view/view';
-import { INLINE_FILLER_LENGTH, isInlineFiller, startsWithFiller } from '../../../src/view/filler';
+import View from '../../../src/view/view.js';
+import { INLINE_FILLER_LENGTH, isInlineFiller, startsWithFiller } from '../../../src/view/filler.js';
 
-import createViewRoot from '../_utils/createroot';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
+import createViewRoot from '../_utils/createroot.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
 
-import { parse, setData } from '../../../src/dev-utils/view';
-import { StylesProcessor } from '../../../src/view/stylesmap';
+import { parse, setData } from '../../../src/dev-utils/view.js';
+import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 describe( 'View', () => {
 	let view, viewDocument, domRoot;

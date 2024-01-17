@@ -1,17 +1,17 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global window */
 
-import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
-import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
-import AttributeElement from '@ckeditor/ckeditor5-engine/src/view/attributeelement';
-import ContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
-import Text from '@ckeditor/ckeditor5-engine/src/view/text';
-import Schema from '@ckeditor/ckeditor5-engine/src/model/schema';
-import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
+import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document.js';
+import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter.js';
+import AttributeElement from '@ckeditor/ckeditor5-engine/src/view/attributeelement.js';
+import ContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement.js';
+import Text from '@ckeditor/ckeditor5-engine/src/view/text.js';
+import Schema from '@ckeditor/ckeditor5-engine/src/model/schema.js';
+import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element.js';
 import {
 	createLinkElement,
 	isLinkElement,
@@ -21,7 +21,7 @@ import {
 	isEmail,
 	addLinkProtocolIfApplicable,
 	openLink
-} from '../src/utils';
+} from '../src/utils.js';
 
 describe( 'utils', () => {
 	describe( 'isLinkElement()', () => {

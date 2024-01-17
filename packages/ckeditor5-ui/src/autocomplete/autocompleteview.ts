@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -8,10 +8,10 @@
 */
 
 import { getOptimalPosition, type PositioningFunction, type Locale, global, toUnit, Rect } from '@ckeditor/ckeditor5-utils';
-import SearchTextView, { type SearchTextViewConfig } from '../search/text/searchtextview';
-import type SearchResultsView from '../search/searchresultsview';
-import type InputBase from '../input/inputbase';
-import type { FilteredViewExecuteEvent } from '../search/filteredview';
+import SearchTextView, { type SearchTextViewConfig } from '../search/text/searchtextview.js';
+import type SearchResultsView from '../search/searchresultsview.js';
+import type InputBase from '../input/inputbase.js';
+import type { FilteredViewExecuteEvent } from '../search/filteredview.js';
 
 import '../../theme/components/autocomplete/autocomplete.css';
 

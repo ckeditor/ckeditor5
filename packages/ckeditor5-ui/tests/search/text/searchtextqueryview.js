@@ -1,14 +1,14 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import { Locale } from '@ckeditor/ckeditor5-utils';
 import { ButtonView, createLabeledInputText, IconView } from '@ckeditor/ckeditor5-ui';
-import SearchTextQueryView from '../../../src/search/text/searchtextqueryview';
+import SearchTextQueryView from '../../../src/search/text/searchtextqueryview.js';
 import { icons } from '@ckeditor/ckeditor5-core';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'SearchTextQueryView', () => {
 	let locale, view;

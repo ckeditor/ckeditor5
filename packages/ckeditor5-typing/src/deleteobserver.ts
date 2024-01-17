@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -25,7 +25,7 @@ import {
 	type ViewDocumentSelection,
 	type ViewSelection,
 	type ViewRange,
-	type View
+	type EditingView
 } from '@ckeditor/ckeditor5-engine';
 
 const DELETE_CHARACTER = 'character';
@@ -131,7 +131,7 @@ export default class DeleteObserver extends Observer {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( view: View ) {
+	constructor( view: EditingView ) {
 		super( view );
 
 		const document = view.document;

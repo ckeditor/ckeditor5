@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,9 +9,9 @@
  * @module utils/focustracker
  */
 
-import DomEmitterMixin from './dom/emittermixin';
-import ObservableMixin from './observablemixin';
-import CKEditorError from './ckeditorerror';
+import DomEmitterMixin from './dom/emittermixin.js';
+import ObservableMixin from './observablemixin.js';
+import CKEditorError from './ckeditorerror.js';
 
 /**
  * Allows observing a group of `Element`s whether at least one of them is focused.

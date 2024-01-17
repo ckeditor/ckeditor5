@@ -1,11 +1,11 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import FontColorCommand from '../../src/fontcolor/fontcolorcommand';
-import FontCommand from '../../src/fontcommand';
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
+import FontColorCommand from '../../src/fontcolor/fontcolorcommand.js';
+import FontCommand from '../../src/fontcommand.js';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 
 describe( 'FontColorCommand', () => {
 	let editor, command;

@@ -1,14 +1,14 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import env, {
 	isMac, isWindows, isGecko, isSafari, isiOS, isAndroid, isRegExpUnicodePropertySupported, isBlink, getUserAgent
-} from '../src/env';
+} from '../src/env.js';
 
-import global from '../src/dom/global';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import global from '../src/dom/global.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 function toLowerCase( str ) {
 	return str.toLowerCase();

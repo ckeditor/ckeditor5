@@ -1,13 +1,13 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global window, document, Text */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { stubGeometry, assertScrollPosition } from '../_utils/scroll';
-import { scrollViewportToShowTarget, scrollAncestorsToShowTarget } from '../../src/dom/scroll';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { stubGeometry, assertScrollPosition } from '../_utils/scroll.js';
+import { scrollViewportToShowTarget, scrollAncestorsToShowTarget } from '../../src/dom/scroll.js';
 
 describe( 'scrollAncestorsToShowTarget()', () => {
 	let target, element, firstAncestor, secondAncestor;

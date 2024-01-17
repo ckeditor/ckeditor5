@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -59,7 +59,7 @@ msgstr "Negro"
 
 msgctxt "Label of a button that applies a dim grey color in color pickers."
 msgid "Dim grey"
-msgstr "Gris Oscuro"
+msgstr "Gris oscuro"
 
 msgctxt "Label of a button that applies a grey color in color pickers."
 msgid "Grey"
@@ -67,7 +67,7 @@ msgstr "Gris"
 
 msgctxt "Label of a button that applies a light grey color in color pickers."
 msgid "Light grey"
-msgstr "Gris Claro"
+msgstr "Gris claro"
 
 msgctxt "Label of a button that applies a white color in color pickers."
 msgid "White"
@@ -79,7 +79,7 @@ msgstr "Rojo"
 
 msgctxt "Label of a button that applies a orange color in color pickers."
 msgid "Orange"
-msgstr "Anaranjado"
+msgstr "Naranja"
 
 msgctxt "Label of a button that applies a yellow color in color pickers."
 msgid "Yellow"
@@ -87,7 +87,7 @@ msgstr "Amarillo"
 
 msgctxt "Label of a button that applies a light green color in color pickers."
 msgid "Light green"
-msgstr "Verde Claro"
+msgstr "Verde claro"
 
 msgctxt "Label of a button that applies a green color in color pickers."
 msgid "Green"
@@ -103,7 +103,7 @@ msgstr "Turquesa"
 
 msgctxt "Label of a button that applies a light blue color in color pickers."
 msgid "Light blue"
-msgstr "Azul Claro"
+msgstr "Azul claro"
 
 msgctxt "Label of a button that applies a blue color in color pickers."
 msgid "Blue"
@@ -136,3 +136,11 @@ msgstr "No se han encontrado resultados"
 msgctxt "The main text of the message shown to the user when no results are available."
 msgid "No searchable items"
 msgstr "No hay elementos que buscar"
+
+msgctxt "A default label of a dialog window displayed on top the editor."
+msgid "Editor dialog"
+msgstr "Diálogo del editor"
+
+msgctxt "The label and the tooltip for the close button in the dialog header."
+msgid "Close"
+msgstr "Cerrar"

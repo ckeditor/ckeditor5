@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -25,7 +25,7 @@ import {
 	type ModelDeleteContentEvent
 } from '@ckeditor/ckeditor5-engine';
 
-import type { ViewDocumentDeleteEvent } from './deleteobserver';
+import type { ViewDocumentDeleteEvent } from './deleteobserver.js';
 
 /**
  * This plugin enables the two-step caret (phantom) movement behavior for

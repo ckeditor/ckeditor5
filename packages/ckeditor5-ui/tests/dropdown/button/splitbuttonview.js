@@ -1,12 +1,12 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import ButtonView from '../../../src/button/buttonview';
-import SplitButtonView from '../../../src/dropdown/button/splitbuttonview';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import ButtonView from '../../../src/button/buttonview.js';
+import SplitButtonView from '../../../src/dropdown/button/splitbuttonview.js';
 
 describe( 'SplitButtonView', () => {
 	let locale, view;

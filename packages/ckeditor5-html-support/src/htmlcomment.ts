@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,9 @@
  * @module html-support/htmlcomment
  */
 
-import type { Marker, Position, Range, Element } from 'ckeditor5/src/engine';
-import { Plugin } from 'ckeditor5/src/core';
-import { uid } from 'ckeditor5/src/utils';
+import type { Marker, Position, Range, Element } from 'ckeditor5/src/engine.js';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { uid } from 'ckeditor5/src/utils.js';
 
 /**
  * The HTML comment feature. It preserves the HTML comments (`<!-- -->`) in the editor data.

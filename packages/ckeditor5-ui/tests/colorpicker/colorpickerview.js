@@ -1,15 +1,15 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals CustomEvent, document */
 
-import ColorPickerView from './../../src/colorpicker/colorpickerview';
+import ColorPickerView from './../../src/colorpicker/colorpickerview.js';
 import 'vanilla-colorful/hex-color-picker.js';
-import env from '@ckeditor/ckeditor5-utils/src/env';
+import env from '@ckeditor/ckeditor5-utils/src/env.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Locale } from '@ckeditor/ckeditor5-utils';
 
 describe( 'ColorPickerView', () => {

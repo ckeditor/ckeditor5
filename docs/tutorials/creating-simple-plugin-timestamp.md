@@ -99,7 +99,7 @@ After opening the `index.html` in the browser, you should be able to see the wor
 
 ## Creating a plugin
 
-All features in the CKEditor 5 are powered by plugins. In order to create our custom timestamp plugin, we need to import the base `Plugin` class.
+All features in the CKEditor 5 are powered by plugins. To create our custom timestamp plugin, we need to import the base `Plugin` class.
 
 We can now create a `Timestamp` class that extends the basic `Plugin` class. After we define it, we can add it to the editor's plugins array.
 
@@ -146,7 +146,7 @@ CKEditor 5 has a rich UI library. We will grab the `ButtonView` class for our to
 
 Once we create a new instance of `ButtonView`, we will be able to customize it by setting its properties. We will create a label, which will be visible on the button thanks to the `withText` property.
 
-We also need to register our button in the editor's UI `componentFactory`, so it can be displayed in the toolbar. To do it, we will pass the name of the button in the `componentFactory.add` method, in order to be able to add it into the {@link features/toolbar toolbar} array.
+We also need to register our button in the editor's UI `componentFactory`, so it can be displayed in the toolbar. To do it, we will pass the name of the button in the `componentFactory.add` method, to be able to add it into the {@link features/toolbar toolbar} array.
 
 ```js
 // Imports from the previous example
@@ -197,7 +197,7 @@ Rebuild the editor, and you should be able to see the timestamp button. It does 
 
 We can now define the core functionality of our plugin &ndash; the action that should be executed once our button is clicked.
 
-In order to insert anything into the document structure, we need to {@link framework/architecture/editing-engine#changing-the-model change the model} using the model's `change()` method. This way we get access to the model writer.
+To insert anything into the document structure, we need to {@link framework/architecture/editing-engine#changing-the-model change the model} using the model's `change()` method. This way we get access to the model writer.
 
 <info-box>
 	What is the model? It is a DOM-like structure, that is converted into the view, which is the layer that the user interacts with. You can read more about {@link framework/architecture/editing-engine#model the model} and {@link framework/architecture/editing-engine#view the view} in dedicated guides.
@@ -243,7 +243,7 @@ Well done! When you rebuild the editor, you should be able to see that your time
 If you got lost at any point, see [the final implementation of the plugin](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/timestamp-plugin/final-project). You can paste the code from `app.js`, or clone and install the whole thing, and it will run out of the box.
 
 <info-box>
-	**What's next?**
+	**What's next**
 
 	If you want to continue learning, move on to our more advanced tutorials, where we will create {@link tutorials/abbreviation-plugin-tutorial/abbreviation-plugin-level-1 an abbreviation plugin} or read more about the {@link framework/index CKEditor 5 framework}.
 </info-box>

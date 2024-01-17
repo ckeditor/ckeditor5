@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,10 +7,10 @@
  * @module image/imageinsert
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import ImageUpload from './imageupload';
-import ImageInsertViaUrl from './imageinsertviaurl';
-import ImageInsertUI from './imageinsert/imageinsertui';
+import { Plugin } from 'ckeditor5/src/core.js';
+import ImageUpload from './imageupload.js';
+import ImageInsertViaUrl from './imageinsertviaurl.js';
+import ImageInsertUI from './imageinsert/imageinsertui.js';
 
 /**
  * The image insert plugin.

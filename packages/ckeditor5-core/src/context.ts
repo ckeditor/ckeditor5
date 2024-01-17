@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -15,10 +15,10 @@ import {
 	type LocaleTranslate
 } from '@ckeditor/ckeditor5-utils';
 
-import PluginCollection from './plugincollection';
-import type Editor from './editor/editor';
-import type { LoadedPlugins, PluginConstructor } from './plugin';
-import type { EditorConfig } from './editor/editorconfig';
+import PluginCollection from './plugincollection.js';
+import type Editor from './editor/editor.js';
+import type { LoadedPlugins, PluginConstructor } from './plugin.js';
+import type { EditorConfig } from './editor/editorconfig.js';
 
 /**
  * Provides a common, higher-level environment for solutions that use multiple {@link module:core/editor/editor~Editor editors}

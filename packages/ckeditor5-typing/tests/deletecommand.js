@@ -1,18 +1,18 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import DeleteCommand from '../src/deletecommand';
-import Delete from '../src/delete';
-import ChangeBuffer from '../src/utils/changebuffer';
+import DeleteCommand from '../src/deletecommand.js';
+import Delete from '../src/delete.js';
+import ChangeBuffer from '../src/utils/changebuffer.js';
 
-import ParagraphCommand from '@ckeditor/ckeditor5-paragraph/src/paragraphcommand';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import ParagraphCommand from '@ckeditor/ckeditor5-paragraph/src/paragraphcommand.js';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'DeleteCommand', () => {
 	let editor, model, doc;
