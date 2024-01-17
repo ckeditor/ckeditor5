@@ -619,7 +619,7 @@ CKEditor&nbsp;5 is written in ECMAScript 2015 (also called ES6). All browsers in
 
 However, it may happen that your environment requires ES5. For instance, if you use tools like the original [UglifyJS](https://github.com/mishoo/UglifyJS) which do not support ES6+ yet, you may need to transpile CKEditor&nbsp;5 source to ES5. This will create ~80% bigger builds but will ensure that your environment can process CKEditor&nbsp;5 code.
 
-In order to create an ES5 build of CKEditor&nbsp;5 you can use [Babel](https://babeljs.io/):
+To create an ES5 build of CKEditor&nbsp;5, you can use [Babel](https://babeljs.io/):
 
 ```bash
 npm install --save babel-loader @babel/core @babel/preset-env regenerator-runtime

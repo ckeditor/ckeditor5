@@ -9,7 +9,7 @@ Changes for the past releases are available below.
 
 ### Bug fixes
 
-* The selected widget's outline should be visible when the editor is read-only. Closes [ckeditor/ckeditor5#6415](https://github.com/ckeditor/ckeditor5/issues/6415). ([bb03e9a](https://github.com/ckeditor/ckeditor5-theme-lark/commit/bb03e9a))
+* The outline of the selected widget should be visible when the editor is read-only. Closes [ckeditor/ckeditor5#6415](https://github.com/ckeditor/ckeditor5/issues/6415). ([bb03e9a](https://github.com/ckeditor/ckeditor5-theme-lark/commit/bb03e9a))
 
 ### Other changes
 
@@ -17,7 +17,7 @@ Changes for the past releases are available below.
 * Align code to the changes in ckeditor5-ui API. See [ckeditor/ckeditor5#6110](https://github.com/ckeditor/ckeditor5/issues/6110). ([7df8dec](https://github.com/ckeditor/ckeditor5-theme-lark/commit/7df8dec))
 * Changed styles of SpecialCharacters and Dropdown to match FormHeaderView component styles. See [ckeditor/ckeditor5#6109](https://github.com/ckeditor/ckeditor5/issues/6109). ([ceeb767](https://github.com/ckeditor/ckeditor5-theme-lark/commit/ceeb767))
 * Introduced the table cell overlay to improve the rendering of multiple–cell selections and bring compatibility with styled table cells. Closes [ckeditor/ckeditor5#6446](https://github.com/ckeditor/ckeditor5/issues/6446). ([6a1c7b9](https://github.com/ckeditor/ckeditor5-theme-lark/commit/6a1c7b9))
-* The selection inside the `InlineEditableUIView` should be grey when the editor is blurred. Closes [ckeditor/ckeditor5#6517](https://github.com/ckeditor/ckeditor5/issues/6517). ([8ad92eb](https://github.com/ckeditor/ckeditor5-theme-lark/commit/8ad92eb))
+* The selection inside the `InlineEditableUIView` should be gray when the editor is blurred. Closes [ckeditor/ckeditor5#6517](https://github.com/ckeditor/ckeditor5/issues/6517). ([8ad92eb](https://github.com/ckeditor/ckeditor5-theme-lark/commit/8ad92eb))
 
 
 ## [18.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v17.0.0...v18.0.0) (March 19, 2020)
@@ -50,7 +50,7 @@ Changes for the past releases are available below.
 
 ### Bug fixes
 
-* Removed `ck-` prefix from the restricted editing's CSS classes used in the editor content. Closes [ckeditor/ckeditor5#5899](https://github.com/ckeditor/ckeditor5/issues/5899). ([599f16e](https://github.com/ckeditor/ckeditor5-theme-lark/commit/599f16e))
+* Removed the `ck-` prefix from the restricted editing CSS classes used in the editor content. Closes [ckeditor/ckeditor5#5899](https://github.com/ckeditor/ckeditor5/issues/5899). ([599f16e](https://github.com/ckeditor/ckeditor5-theme-lark/commit/599f16e))
 
 ### Other changes
 
@@ -71,7 +71,7 @@ Changes for the past releases are available below.
 
 ### Bug fixes
 
-* Enabled additional box-shadow on `.ck-button` to meet WCAG AA recommendations. Adjusted the color of the `--ck-color-focus-border` for the same reason (editables, widget selection, etc.). Closes [ckeditor/ckeditor5#5580](https://github.com/ckeditor/ckeditor5/issues/5580). ([0fe1500](https://github.com/ckeditor/ckeditor5-theme-lark/commit/0fe1500))
+* Enabled additional box shadow on `.ck-button` to meet WCAG AA recommendations. Adjusted the color of the `--ck-color-focus-border` for the same reason (editable elements, widget selection, etc.). Closes [ckeditor/ckeditor5#5580](https://github.com/ckeditor/ckeditor5/issues/5580). ([0fe1500](https://github.com/ckeditor/ckeditor5-theme-lark/commit/0fe1500))
 
   Also:
   * Optimized the color of a grid component for WCAG AA.
@@ -117,7 +117,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Bug fixes
 
-* Background of splitbutton will not be highlighted on hover in read-only mode. Closes [ckeditor/ckeditor5#943](https://github.com/ckeditor/ckeditor5/issues/943). ([0579997](https://github.com/ckeditor/ckeditor5-theme-lark/commit/0579997))
+* Background of split button will not be highlighted on hover in read-only mode. Closes [ckeditor/ckeditor5#943](https://github.com/ckeditor/ckeditor5/issues/943). ([0579997](https://github.com/ckeditor/ckeditor5-theme-lark/commit/0579997))
 * Tooltips should not render blurry in LoDPI environments. Closes [ckeditor/ckeditor5#1802](https://github.com/ckeditor/ckeditor5/issues/1802). ([53d7ca3](https://github.com/ckeditor/ckeditor5-theme-lark/commit/53d7ca3))
 
 
@@ -315,13 +315,13 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Other changes
 
-* Adjusted the `border-radius` of the various UI components (drop-down, dropdown panel, list drop-down, and split button) for a better look when placed next to one another. Closes [ckeditor/ckeditor5#816](https://github.com/ckeditor/ckeditor5/issues/816). ([d81568d](https://github.com/ckeditor/ckeditor5-theme-lark/commit/d81568d))
-* All colors in the styles should be in the HSLa format. Closes [#124](https://github.com/ckeditor/ckeditor5-theme-lark/issues/124). ([33c7e0d](https://github.com/ckeditor/ckeditor5-theme-lark/commit/33c7e0d))
+* Adjusted the `border-radius` of the various UI components (dropdown, dropdown panel, list dropdown, and split button) for a better look when placed next to one another. Closes [ckeditor/ckeditor5#816](https://github.com/ckeditor/ckeditor5/issues/816). ([d81568d](https://github.com/ckeditor/ckeditor5-theme-lark/commit/d81568d))
+* All colors in the styles should be in the HSLA format. Closes [#124](https://github.com/ckeditor/ckeditor5-theme-lark/issues/124). ([33c7e0d](https://github.com/ckeditor/ckeditor5-theme-lark/commit/33c7e0d))
 * Enlarged background in `.ck-link_selected`. Closes [#155](https://github.com/ckeditor/ckeditor5-theme-lark/issues/155). ([a7f1925](https://github.com/ckeditor/ckeditor5-theme-lark/commit/a7f1925))
 * Fixed the coloring issue with the multi-color icons. Additionally, moved the visual `.ck-icon` styles from `ckeditor5-ui`. Closes [#148](https://github.com/ckeditor/ckeditor5-theme-lark/issues/148). ([fbe7e7d](https://github.com/ckeditor/ckeditor5-theme-lark/commit/fbe7e7d))
 * Improved the visual styles of the split button when hovered or open. Closes [[#134](https://github.com/ckeditor/ckeditor5-theme-lark/issues/134)](https://github.com/ckeditor/ckeditor5-theme-lark/issues/134). ([6db332e](https://github.com/ckeditor/ckeditor5-theme-lark/commit/6db332e))
 * Increased the spacing in the toolbar by making the buttons bigger. Unified rendering of several components. Closes [ckeditor/ckeditor5#820](https://github.com/ckeditor/ckeditor5/issues/820). ([f223d6a](https://github.com/ckeditor/ckeditor5-theme-lark/commit/f223d6a))
-* Manual tests should be aligned to the newest dropdown API ([ckeditor/ckeditor5-ui#356](https://github.com/ckeditor/ckeditor5-ui/issues/356)). Minor refactoring in the drop-down ecosystem. Closes [#129](https://github.com/ckeditor/ckeditor5-theme-lark/issues/129). ([553288a](https://github.com/ckeditor/ckeditor5-theme-lark/commit/553288a))
+* Manual tests should be aligned to the newest dropdown API ([ckeditor/ckeditor5-ui#356](https://github.com/ckeditor/ckeditor5-ui/issues/356)). Minor refactoring in the dropdown ecosystem. Closes [#129](https://github.com/ckeditor/ckeditor5-theme-lark/issues/129). ([553288a](https://github.com/ckeditor/ckeditor5-theme-lark/commit/553288a))
 * Migrated the theme from SASS to PostCSS (see [ckeditor/ckeditor5-ui#144](https://github.com/ckeditor/ckeditor5-ui/issues/144)). ([efc6004](https://github.com/ckeditor/ckeditor5-theme-lark/commit/efc6004))
 * Moved ck-button-icon mixin to ckeditor5-ui. ([f086062](https://github.com/ckeditor/ckeditor5-theme-lark/commit/f086062))
 * Reduced the contrast of the shadow under various floating elements. Closes [ckeditor/ckeditor5#818](https://github.com/ckeditor/ckeditor5/issues/818). ([cf658d5](https://github.com/ckeditor/ckeditor5-theme-lark/commit/cf658d5))

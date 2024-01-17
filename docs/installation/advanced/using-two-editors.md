@@ -38,7 +38,7 @@ Now it is time to add the missing editor package and install it:
 npm install --save-dev @ckeditor/ckeditor5-editor-inline
 ```
 
-Once all the dependencies are installed, modify the webpack's entry point which is the `src/ckeditor.js` file. For now it was exporting just a single class:
+Once all the dependencies are installed, change the webpack's entry point which is the `src/ckeditor.js` file. For now, it was exporting just a single class:
 
 ```js
 // The editor creator to use.
@@ -92,7 +92,7 @@ export default {
 };
 ```
 
-Since you now export an object with two properties (`ClassicEditor` and `InlineEditor`), it is also reasonable to rename the global variable to which webpack will assign this object. It was called `ClassicEditor` before. A more adequate name now would be, for example, `CKEDITOR`. This variable is defined in `webpack.config.js` in the `output.library` setting:
+Since you now export an object with two properties (`ClassicEditor` and `InlineEditor`), it is also reasonable to rename the global variable to which webpack will assign this object. It was called `ClassicEditor` before. An adequate name now would be, for example, `CKEDITOR`. This variable is defined in `webpack.config.js` in the `output.library` setting:
 
 ```diff
 diff --git a/webpack.config.js b/webpack.config.js

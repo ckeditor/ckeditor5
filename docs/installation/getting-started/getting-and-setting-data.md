@@ -286,7 +286,7 @@ How to understand this demo:
 {@snippet installation/getting-and-setting-data/manualsave}
 
 <info-box hint>
-**What's next?**
+**What's next**
 
 Having read this guide, you know how to communicate with the editor, but remember that CKEditor 5 offers a rich API to interact with it. Check out the {@link installation/getting-started/api-and-events API and events guide} for more.
 

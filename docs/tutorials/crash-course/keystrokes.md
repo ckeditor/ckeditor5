@@ -13,7 +13,7 @@ Currently, our `highlight` plugin requires the user to click the button in the e
 
 ## Adding keyboard shortcuts
 
-A common shortcut for highlighting text is <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>H</kbd> (on Windows systems), so this is what we are going to use in our plugin. On MacOS these keystrokes will get automatically translated to <kbd>Cmd</kbd> + <kbd>Alt</kbd> + <kbd>H</kbd>
+A common shortcut for highlighting text is <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>H</kbd> (on Windows systems), so this is what we are going to use in our plugin. On macOS these keystrokes will get automatically translated to <kbd>Cmd</kbd> + <kbd>Alt</kbd> + <kbd>H</kbd>
 
 To execute the `highlight` command when those keys are pressed, add the following code to the end of the `Highlight` function:
 
@@ -42,7 +42,7 @@ button.set( {
 	withText: true,
 	tooltip: true,
 	isToggleable: true,
-	keystroke: 'Ctrl+Alt+H' // Add this attribute
+	keystroke: 'Ctrl+Alt+H' // Add this attribute.
 } );
 ```
 
@@ -72,7 +72,7 @@ editor.editing.view.document.on( 'keydown:5570632', ( event, data ) => {
 
 As you can see above, we registered a listener that listens to the events fired when the <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>H</kbd> keys are pressed. When this happens, the callback is called and it executes the `highlight` command.
 
-To make sure that nothing unexpected happens (for example if some browser extension also uses this keyboard shortcut), we stop further propagation of the event to prevent any other DOM or framework listeners from reacting to this key combination and mark the event as handled.
+To make sure that nothing unexpected happens (for example if some browser extension also uses this keyboard shortcut), we stop further propagation of the event. This prevents any other DOM or framework listeners from reacting to this key combination and marks the event as handled.
 
 ## What's next
 

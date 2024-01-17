@@ -67,4 +67,4 @@ msgstr "Порада: спочатку знайдіть текст, щоб за�
 
 msgctxt "The label and the tooltip of the options dropdown button in the find and replace form."
 msgid "Advanced options"
-msgstr ""
+msgstr "Розширені опції"

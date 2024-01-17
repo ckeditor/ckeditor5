@@ -2,7 +2,7 @@
 category: framework-architecture
 meta-title: UI Components | CKEditor 5 Framework Documentation
 order: 50
-modified_at: 2023-03-06
+modified_at: 2024-01-03
 ---
 
 # UI components
@@ -469,6 +469,221 @@ disabledDropdown.render();
 
 document.getElementById( 'dropdown-disabled' ).append( disabledDropdown.element );
 ```
+
+## Dialog
+
+{@snippet framework/ui/ui-dialog}
+
+A dialog window is a draggable popup that can be displayed on top of the editor contents and remains open while user interacts with the editing area. You can use it to display any detached UI. Dialogs are brought by the {@link module:ui/dialog/dialog~Dialog `Dialog`} plugin.
+
+```js
+// Necessary imports. Remember to install the packages first.
+import {
+	ButtonView,
+	Dialog,
+	View
+} from '@ckeditor/ckeditor5-ui';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+
+// Create a plugin that brings a button that toggles the visibility of a dialog window.
+// Read more about creating the plugins here: https://ckeditor.com/docs/ckeditor5/latest/installation/plugins/plugins.html.
+class MinimalisticDialog extends Plugin {
+	// Make sure the Dialog plugin is loaded.
+	get requires() {
+		return [ Dialog ];
+	}
+
+	init() {
+		// Add a button to the component factory so it is available for the editor.
+		this.editor.ui.componentFactory.add( 'showDialog', locale => {
+			const buttonView = new ButtonView( locale );
+
+			buttonView.set( {
+				label: 'Show a dialog',
+				tooltip: true,
+				withText: true
+			} );
+
+			// Define button behavior on press.
+			buttonView.on( 'execute', () => {
+				const dialog = this.editor.plugins.get( 'Dialog' );
+
+				// If button is turned on, hide the dialog.
+				if ( buttonView.isOn ) {
+					dialog.hide();
+					buttonView.isOn = false;
+
+					return;
+				}
+
+				buttonView.isOn = true;
+
+				// Otherwise, show the dialog.
+				// Create a view with some simple content. It will be displayed as a dialog's body.
+				const textView = new View( locale );
+
+				textView.setTemplate( {
+					tag: 'div',
+					attributes: {
+						style: {
+							padding: 'var(--ck-spacing-large)',
+							whiteSpace: 'initial',
+							width: '100%',
+							maxWidth: '500px'
+						},
+						tabindex: -1
+					},
+					children: [
+						'This is the content of the dialog.',
+						'You can put here text, images, inputs, buttons, etc.'
+					]
+				} );
+
+				// Tell the plugin to display a dialog with title, content and one action button.
+				dialog.show( {
+					title: 'Dialog with text',
+					content: textView,
+					actionButtons: [
+						{
+							label: 'OK',
+							class: 'ck-button-action',
+							withText: true,
+							onExecute: () => dialog.hide()
+						}
+					],
+					onHide() { buttonView.isOn = false; }
+				} );
+			} );
+
+			return buttonView;
+		} );
+	}
+}
+
+// Create an editor instance. Remember to have an element with `[id="editor"]` attribute in the document.
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Essentials, Paragraph, Bold, Italic, MinimalisticDialog, Dialog ],
+		toolbar: [ 'bold', 'italic', '|', 'showDialog' ]
+	} )
+	.catch( error => {
+		console.error( error.stack );
+	} );
+```
+
+See the guide about the {@link framework/architecture/ui-library#dialogs-and-modals API of the dialogs system}.
+
+## Modal
+
+{@snippet framework/ui/ui-modal}
+
+Modal is a specific kind of a dialog window which while open, doesn't allow to interact with the editor content - it has to be closed first. It can be used to enforce the user interaction or interrupt them in some important situations. To create a modal, use the optional {@link module:ui/dialog/dialog~DialogDefinition#isModal `isModal`} property of the {@link module:ui/dialog/dialog~Dialog#show `Dialog#show()`} method.
+
+```js
+// Necessary imports. Remember to install the packages first.
+import {
+	ButtonView,
+	Dialog,
+	View
+} from '@ckeditor/ckeditor5-ui';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+
+// Create a plugin that brings a button that toggles the visibility of a modal window.
+// Read more about creating the plugins here: https://ckeditor.com/docs/ckeditor5/latest/installation/plugins/plugins.html.
+class MinimalisticModal extends Plugin {
+	// Make sure the Dialog plugin is loaded.
+	get requires() {
+		return [ Dialog ];
+	}
+
+	init() {
+		// Add a button to the component factory so it is available for the editor.
+		this.editor.ui.componentFactory.add( 'showModal', locale => {
+			const buttonView = new ButtonView( locale );
+
+			buttonView.set( {
+				label: 'Show a modal',
+				tooltip: true,
+				withText: true
+			} );
+
+			// Define button behavior on press.
+			buttonView.on( 'execute', () => {
+				const dialog = this.editor.plugins.get( 'Dialog' );
+
+				// If button is turned on, hide the modal.
+				if ( buttonView.isOn ) {
+					dialog.hide();
+					buttonView.isOn = false;
+
+					return;
+				}
+
+				buttonView.isOn = true;
+
+				// Otherwise, show the modal.
+				// First, create a view with some simple content. It will be displayed as a dialog's body.
+				const textView = new View( locale );
+
+				textView.setTemplate( {
+					tag: 'div',
+					attributes: {
+						style: {
+							padding: 'var(--ck-spacing-large)',
+							whiteSpace: 'initial',
+							width: '100%',
+							maxWidth: '500px'
+						},
+						tabindex: -1
+					},
+					children: [
+						'This is a sample content of the modal.',
+						'You can put here text, images, inputs, buttons, etc.'
+					]
+				} );
+
+				// Tell the plugin to display a modal with title, content and one action button.
+				dialog.show( {
+					isModal: true,
+					title: 'Modal with text',
+					content: textView,
+					actionButtons: [
+						{
+							label: 'OK',
+							class: 'ck-button-action',
+							withText: true,
+							onExecute: () => dialog.hide()
+						}
+					],
+					onHide() { buttonView.isOn = false; }
+				} );
+			} );
+
+			return buttonView;
+		} );
+	}
+}
+
+// Create an editor instance. Remember to have an element with `[id="editor"]` attribute in the document.
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Essentials, Paragraph, Bold, Italic, MinimalisticDialog, Dialog ],
+		toolbar: [ 'bold', 'italic', '|', 'showModal' ]
+	} )
+	.catch( error => {
+		console.error( error.stack );
+	} );
+```
+
+See the guide about the {@link framework/architecture/ui-library#dialogs-and-modals API of the dialogs system}.
 
 ## Icons
 
