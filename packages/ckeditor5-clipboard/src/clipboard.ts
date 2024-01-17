@@ -47,20 +47,18 @@ export default class Clipboard extends Plugin {
 		if ( editor.plugins.has( 'AccessibilityHelp' ) ) {
 			const t = editor.t;
 
-			editor.plugins.get( 'AccessibilityHelp' ).registerKeystrokes( {
-				label: t( 'Copy selected content' ),
-				keystroke: 'CTRL+C'
-			} );
-
-			editor.plugins.get( 'AccessibilityHelp' ).registerKeystrokes( {
-				label: t( 'Paste content' ),
-				keystroke: 'CTRL+V'
-			} );
-
-			editor.plugins.get( 'AccessibilityHelp' ).registerKeystrokes( {
-				label: t( 'Paste content as plain text' ),
-				keystroke: 'CTRL+SHIFT+V'
-			} );
+			editor.plugins.get( 'AccessibilityHelp' ).registerKeystrokes( [
+				{
+					label: t( 'Copy selected content' ),
+					keystroke: 'CTRL+C'
+				}, {
+					label: t( 'Paste content' ),
+					keystroke: 'CTRL+V'
+				}, {
+					label: t( 'Paste content as plain text' ),
+					keystroke: 'CTRL+SHIFT+V'
+				}
+			] );
 		}
 	}
 }
