@@ -10,7 +10,7 @@ modified_at: 2024-01-03
 The CKEditor&nbsp;5 framework provides several UI components that can be helpful when developing a new user interface. All UI classes come with the {@link module:ui/view~View.set `set()`} method, which sets the properties of the components, such as labels, icons, placeholders, etc.
 
 <info-box>
-	This article lists all available components and their variants. If you want to understand the implementation details check {@link framework/architecture/ui-library the UI library guide}.
+	This article lists all available components and their variants. If you want to understand the implementation details, check the {@link framework/architecture/ui-library UI library guide}.
 </info-box>
 
 ## Balloon
@@ -138,7 +138,7 @@ document.getElementById( 'button-bold' ).append( boldButton.element );
 
 ### Icon
 
-To get a button with an icon, import it first, then set the icon property on the button. There are also classes you can use to style icons appropriately.
+To get a button with an icon, import it first. Then set the `icon` property on the button. There are also classes you can use to style icons appropriately.
 
 ```js
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
@@ -159,7 +159,7 @@ document.getElementById( 'button-icon' ).append( saveButton.element );
 
 ### Keystrokes
 
-To get a button with a shortcut, add the keystroke property. To display the shortcut on the button, set the {@link module:ui/button/button~Button#withKeystroke `withKeystroke`} property to `true`. If you also add a label, it will display next to the shortcut. You do not need to worry about different shortcuts for different OSes &ndash; the shortcut is relative to the OS. For example, Mac OS will display the <kbd>CTRL</kbd>+<kbd>I</kbd> shortcut as </kbd>⌘</kbd>+<kbd>I</kbd>.
+To get a button with a shortcut, add the `keystroke` property. To display the shortcut on the button, set the {@link module:ui/button/button~Button#withKeystroke `withKeystroke`} property to `true`. If you also add a label, it will display next to the shortcut. You do not need to worry about different shortcuts for different operating systems &ndash; the shortcut is relative to the OS. For example, macOS will display the <kbd>Ctrl</kbd>+<kbd>I</kbd> shortcut as </kbd>⌘</kbd>+<kbd>I</kbd>.
 
 ```js
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
@@ -179,7 +179,7 @@ document.getElementById( 'button-keystroke' ).append( keystrokeButton.element );
 
 ### Tooltip
 
-To get a button with a tooltip, add the tooltip property. You can use it to display additional information on button hover. If you set it to true, a label value is displayed.
+To get a button with a tooltip, add the `tooltip` property. You can use it to display additional information on button hover. If you set it to `true`, a label value is displayed.
 
 ```js
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
@@ -197,7 +197,7 @@ tooltipButton.render();
 document.getElementById( 'button-tooltip' ).append( tooltipButton.element );
 ```
 
-By default, the tooltip will appear to the south of the button. However, you can adjust its position by the {@link module:ui/tooltipmanager~TooltipPosition `tooltipPosition`} property. You can set the property to:
+By default, the tooltip will appear to the south of the button. However, you can adjust its position with the {@link module:ui/tooltipmanager~TooltipPosition `tooltipPosition`} property. You can set the property to:
 
 * `n` &ndash; North
 * `w` &ndash; West
@@ -211,7 +211,7 @@ A tooltip needs the {@link module:ui/tooltipmanager~TooltipManager `TooltipManag
 ```js
 ClassicEditor
 	.create( document.getElementById( 'ui-editor' ), {
-		// Editor config.
+		// Editor configuration.
 		//
 	} )
 	.then( editor => {
@@ -286,7 +286,7 @@ document.getElementById( 'button-on' ).append( onButton.element );
 
 {@snippet framework/ui/ui-switch}
 
-You need a different class to instantiate a switch button &ndash; {@link module:ui/button/switchbuttonview~SwitchButtonView `SwitchButtonView`}. To make it work properly, you also need to add an event listener with the {@link module:ui/button/switchbuttonview~SwitchButtonView#on `on()`} method. Every click triggers the flip of the {@link module:ui/button/switchbuttonview~SwitchButtonView#isOn `isOn`} property &ndash; it is responsible for turning the button on and off.
+You need a different class to instantiate a switch button &ndash; {@link module:ui/button/switchbuttonview~SwitchButtonView `SwitchButtonView`}. To make it work properly, you also need to add an event listener with the {@link module:ui/button/switchbuttonview~SwitchButtonView#on `on()`} method. Every click triggers the flip of the {@link module:ui/button/switchbuttonview~SwitchButtonView#isOn `isOn`} property. It is responsible for turning the button on and off.
 
 ```js
 import { SwitchButtonView } from '@ckeditor/ckeditor5-ui';
@@ -308,7 +308,9 @@ document.getElementById( 'button-switch' ).append( switchButton.element );
 
 {@snippet framework/ui/ui-dropdown}
 
-A dropdown consists of two elements: a button and a panel. The button expands the dropdown menu. The dropdown panel can hold any UI element. You can use the {@link module:ui/dropdown/utils#createDropdown `createDropdown()`} helper method to create a dropdown. By default, it uses the {@link module:ui/dropdown/button/dropdownbuttonview~DropdownButtonView `DropdownButtonView`} class. But you can replace it with the {@link module:ui/button/buttonview~ButtonView `ButtonView`} or {@link module:ui/dropdown/button/splitbuttonview~SplitButtonView `SplitButtonView`} class.
+A dropdown consists of two elements: a button and a panel. The button expands the dropdown menu. The dropdown panel can hold any UI element.
+
+You can use the {@link module:ui/dropdown/utils#createDropdown `createDropdown()`} helper method to create a dropdown. By default, it uses the {@link module:ui/dropdown/button/dropdownbuttonview~DropdownButtonView `DropdownButtonView`} class. You can replace it with the {@link module:ui/button/buttonview~ButtonView `ButtonView`} or {@link module:ui/dropdown/button/splitbuttonview~SplitButtonView `SplitButtonView`} class.
 
 ### List
 
@@ -474,7 +476,7 @@ document.getElementById( 'dropdown-disabled' ).append( disabledDropdown.element 
 
 {@snippet framework/ui/ui-dialog}
 
-A dialog window is a draggable popup that can be displayed on top of the editor contents and remains open while user interacts with the editing area. You can use it to display any detached UI. Dialogs are brought by the {@link module:ui/dialog/dialog~Dialog `Dialog`} plugin.
+A dialog window is a draggable pop-up that you can display on top of the editor contents. It remains open when the user interacts with the editing area. You can use it to display any detached UI. Dialogs are brought by the {@link module:ui/dialog/dialog~Dialog `Dialog`} plugin.
 
 ```js
 // Necessary imports. Remember to install the packages first.
@@ -492,7 +494,7 @@ import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 // Create a plugin that brings a button that toggles the visibility of a dialog window.
 // Read more about creating the plugins here: https://ckeditor.com/docs/ckeditor5/latest/installation/plugins/plugins.html.
 class MinimalisticDialog extends Plugin {
-	// Make sure the Dialog plugin is loaded.
+	// Make sure the "Dialog" plugin is loaded.
 	get requires() {
 		return [ Dialog ];
 	}
@@ -508,11 +510,11 @@ class MinimalisticDialog extends Plugin {
 				withText: true
 			} );
 
-			// Define button behavior on press.
+			// Define the button behavior on press.
 			buttonView.on( 'execute', () => {
 				const dialog = this.editor.plugins.get( 'Dialog' );
 
-				// If button is turned on, hide the dialog.
+				// If the button is turned on, hide the dialog.
 				if ( buttonView.isOn ) {
 					dialog.hide();
 					buttonView.isOn = false;
@@ -543,7 +545,7 @@ class MinimalisticDialog extends Plugin {
 					]
 				} );
 
-				// Tell the plugin to display a dialog with title, content and one action button.
+				// Tell the plugin to display a dialog with the title, content, and one action button.
 				dialog.show( {
 					title: 'Dialog with text',
 					content: textView,
@@ -564,7 +566,7 @@ class MinimalisticDialog extends Plugin {
 	}
 }
 
-// Create an editor instance. Remember to have an element with `[id="editor"]` attribute in the document.
+// Create an editor instance. Remember to have an element with the `[id="editor"]` attribute in the document.
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Essentials, Paragraph, Bold, Italic, MinimalisticDialog, Dialog ],
@@ -575,13 +577,15 @@ ClassicEditor
 	} );
 ```
 
-See the guide about the {@link framework/architecture/ui-library#dialogs-and-modals API of the dialogs system}.
+See the guide about the {@link framework/architecture/ui-library#dialogs-and-modals API of the dialog system}.
 
 ## Modal
 
 {@snippet framework/ui/ui-modal}
 
-Modal is a specific kind of a dialog window which while open, doesn't allow to interact with the editor content - it has to be closed first. It can be used to enforce the user interaction or interrupt them in some important situations. To create a modal, use the optional {@link module:ui/dialog/dialog~DialogDefinition#isModal `isModal`} property of the {@link module:ui/dialog/dialog~Dialog#show `Dialog#show()`} method.
+Modal is a specific kind of dialog window. While open, it does not allow to interact with the editor content &ndash; it has to be closed first. You can use a modal to enforce the user interaction or interrupt them in some important situations.
+
+To create a modal, use the optional {@link module:ui/dialog/dialog~DialogDefinition#isModal `isModal`} property of the {@link module:ui/dialog/dialog~Dialog#show `Dialog#show()`} method.
 
 ```js
 // Necessary imports. Remember to install the packages first.
@@ -596,10 +600,10 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 
-// Create a plugin that brings a button that toggles the visibility of a modal window.
+// Create a plugin that brings a button which toggles the visibility of a modal window.
 // Read more about creating the plugins here: https://ckeditor.com/docs/ckeditor5/latest/installation/plugins/plugins.html.
 class MinimalisticModal extends Plugin {
-	// Make sure the Dialog plugin is loaded.
+	// Make sure the "Dialog" plugin is loaded.
 	get requires() {
 		return [ Dialog ];
 	}
@@ -615,11 +619,11 @@ class MinimalisticModal extends Plugin {
 				withText: true
 			} );
 
-			// Define button behavior on press.
+			// Define the button behavior on press.
 			buttonView.on( 'execute', () => {
 				const dialog = this.editor.plugins.get( 'Dialog' );
 
-				// If button is turned on, hide the modal.
+				// If the button is turned on, hide the modal.
 				if ( buttonView.isOn ) {
 					dialog.hide();
 					buttonView.isOn = false;
@@ -630,7 +634,7 @@ class MinimalisticModal extends Plugin {
 				buttonView.isOn = true;
 
 				// Otherwise, show the modal.
-				// First, create a view with some simple content. It will be displayed as a dialog's body.
+				// First, create a view with some simple content. It will be displayed as the dialog's body.
 				const textView = new View( locale );
 
 				textView.setTemplate( {
@@ -650,7 +654,7 @@ class MinimalisticModal extends Plugin {
 					]
 				} );
 
-				// Tell the plugin to display a modal with title, content and one action button.
+				// Tell the plugin to display a modal with the title, content, and one action button.
 				dialog.show( {
 					isModal: true,
 					title: 'Modal with text',
@@ -672,7 +676,7 @@ class MinimalisticModal extends Plugin {
 	}
 }
 
-// Create an editor instance. Remember to have an element with `[id="editor"]` attribute in the document.
+// Create an editor instance. Remember to have an element with the `[id="editor"]` attribute in the document.
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Essentials, Paragraph, Bold, Italic, MinimalisticDialog, Dialog ],
@@ -683,7 +687,7 @@ ClassicEditor
 	} );
 ```
 
-See the guide about the {@link framework/architecture/ui-library#dialogs-and-modals API of the dialogs system}.
+See the guide about the {@link framework/architecture/ui-library#dialogs-and-modals API of the dialog system}.
 
 ## Icons
 
@@ -703,7 +707,7 @@ icon.render();
 document.getElementById( 'icon-bold' ).append( icon.element );
 ```
 
-CKEditor&nbsp;5 features use different icons. You can find them in their respective packages. Here's a list of all available icons.
+CKEditor&nbsp;5 features use different icons. You can find them in their respective packages. Here is a list of all available icons.
 
 ```js
 import boldIcon from '@ckeditor/ckeditor5-core/theme/icons/bold.svg';
@@ -814,12 +818,12 @@ import loupe from '@ckeditor/ckeditor5-core/theme/icons/loupe.svg';
 
 {@snippet framework/ui/ui-input}
 
-The CKEditor&nbsp;5 UI library contains a few input elements. Usually, they are used in dropdowns and balloon panels, but you can also use them in a main toolbar.
+The CKEditor&nbsp;5 UI library contains some input elements. Usually, they are used in dropdowns and balloon panels, but you can also use them in the main toolbar.
 
 To create them, use the {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView `LabeledFieldView`} class, which takes two parameters:
 
-* an instance of the {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#locale `locale`} class,
-* a helper function, depending on the type of field you want to create.
+* An instance of the {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#locale `locale`} class.
+* A helper function, depending on the type of field you want to create.
 
 ### Text
 
@@ -906,7 +910,7 @@ A search component allows you to filter a list of items based on a specified que
 * The {@link module:ui/search/text/searchtextview~SearchTextView#infoView `infoView`} property displays additional information about the search results.
 * The {@link module:ui/search/text/searchtextview~SearchTextView#filteredView `filteredView`} is a view filtered by the search query. Remember to specify the {@link module:ui/search/filteredview~FilteredView#filter `filter()`} and {@link module:ui/search/filteredview~FilteredView#focus `focus()`} methods for this view.
 
-Some sub-components and classes that can help with better results presentation:
+Some sub-components and classes that can help with better presentation of the results:
 
 * The {@link module:ui/search/searchresultsview~SearchResultsView `SearchResultsView`} component hosts the filtered and the information views. It is a sub-component of the {@link module:ui/search/text/searchtextview~SearchTextView `SearchTextView`}.
 * The {@link module:ui/autocomplete/autocompleteview~AutocompleteView `AutocompleteView`} component lists proposed results when the user starts typing and hides them when it is out of focus. It extends the {@link module:ui/search/text/searchtextview~SearchTextView `SearchTextView`} class.
@@ -981,13 +985,13 @@ document.querySelector( '.ui-textarea' ).append( textarea.element );
 
 ## Toolbar
 
-A toolbar is a base for other components. Usually, you would put other UI elements inside it. But it can also be nested inside a balloon or dropdown. You can use the {@link module:ui/toolbar/toolbarview~ToolbarView `ToolbarView`} class to instantiate a toolbar.
+A toolbar is a base for other components. Usually, you would put other UI elements inside it. It can also be nested inside a balloon or dropdown. You can use the {@link module:ui/toolbar/toolbarview~ToolbarView `ToolbarView`} class to instantiate a toolbar.
 
 ### Text
 
 {@snippet framework/ui/ui-toolbar-text}
 
-As mentioned earlier, you can put different UI elements inside a toolbar. A simple text node is one example. You can use the {@link module:ui/toolbar/toolbarview~ToolbarView#items `items`} property to add a component to a toolbar.
+You can put different UI elements inside a toolbar. A simple text node is one example. You can use the {@link module:ui/toolbar/toolbarview~ToolbarView#items `items`} property to add a component to a toolbar.
 
 ```js
 import { ToolbarView, View } from '@ckeditor/ckeditor5-ui';

@@ -61,7 +61,7 @@ swap:
   LINUX|linux: Linux
   Lo-Dash|lodash: Lodash
   lower case: lowercase
-  MacOS: macOS
+  MacOS|Mac OS: macOS
   markdown|MarkDown: Markdown
   mark-up: markup
   "(?:mongoDB|Mongodb|Mongo-db|Mongo DB)": MongoDB
