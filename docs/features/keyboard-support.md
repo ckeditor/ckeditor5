@@ -130,10 +130,10 @@ Below is a list of the most important keystrokes supported by CKEditor&nbsp;5 an
 			<td>Insert a new table row (when in the last cell of a table)</td>
 			<td colspan="2"><kbd>Tab</kbd></td>
 		</tr>
-        <tr>
-            <td>Navigate through the table</td>
-            <td colspan="2"><kbd>↑</kbd> / <kbd>→</kbd> / <kbd>↓</kbd> / <kbd>←</kbd></td>
-        </tr>
+		<tr>
+			<td>Navigate through the table</td>
+			<td colspan="2"><kbd>↑</kbd> / <kbd>→</kbd> / <kbd>↓</kbd> / <kbd>←</kbd></td>
+		</tr>
 	</tbody>
 </table>
 
