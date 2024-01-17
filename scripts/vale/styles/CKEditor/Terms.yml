@@ -55,19 +55,21 @@ swap:
   grayed-out|greyed-out: unavailable
   hard code|hardcode: hard-code
   hard coding|hardcoding: hard-coding
-  in order to: to
+  "[Ii]n order to": to
   Javascript: JavaScript
   (?<!.)JS: JavaScript
   LINUX|linux: Linux
   Lo-Dash|lodash: Lodash
   lower case: lowercase
   MacOS: macOS
+  markdown|MarkDown: Markdown
   mark-up: markup
   "(?:mongoDB|Mongodb|Mongo-db|Mongo DB)": MongoDB
   "(?:MSExcel|MS Excel)": Microsoft Excel
   "(?:MSOffice|MS Office)": Microsoft Office
   "(?:MSWord|MS Word)": Microsoft Word
   "(?:[nN]odejs|[nN]ode.JS|node.js)": Node.js
+  NPM: npm
   non-real-time|non real-time|non real time|non-RTC: asynchronous
   on Chrome: in Chrome
   on Edge: in Edge
@@ -78,12 +80,15 @@ swap:
   popup: pop-up
   preconfigure: pre-configure
   preconfigured: pre-configured
+  preformat: pre-format
+  preformatted: pre-formatted
   premade: pre-made
   prod: production environment
   (?<!in) real time: real-time
   regex: regular expression
   repo: repository
   right click: right-click
+  rule set: ruleset
   SAAS: SaaS
   sanity (?:check|test): check for completeness
   semver: SemVer
@@ -94,6 +99,7 @@ swap:
   strike-through|strike through: strikethrough
   stylesheet: style sheet
   stylesheets: style sheets
+  super-build: superbuild
   svg: SVG
   titlecase: title case
   (?i)todo list: to-do list

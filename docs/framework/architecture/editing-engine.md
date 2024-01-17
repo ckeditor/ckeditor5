@@ -14,7 +14,7 @@ The [`@ckeditor/ckeditor5-engine`](https://www.npmjs.com/package/@ckeditor/ckedi
 
 ## Overview
 
-The editing engine implements an MVC architecture. The shape of it is not enforced by the engine itself but in most implementations it can be described by this diagram:
+The editing engine implements a Model-View-Controller (MVC) architecture. The shape of it is not enforced by the engine itself but in most implementations, it can be described by this diagram:
 
 [{@img assets/img/framework-architecture-engine-diagram.png Diagram of the engine's MVC architecture.}](%BASE_PATH%/assets/img/framework-architecture-engine-diagram.png)
 
@@ -176,17 +176,17 @@ The {@link module:engine/model/schema~Schema model's schema} defines several asp
 
 This information is then used by the features and the engine to make decisions on how to process the model. For instance, the information from the schema will affect:
 
-* What happens with the pasted content and what is filtered out (note: in case of pasting the other important mechanism is the {@link framework/deep-dive/conversion/upcast conversion}. HTML elements and attributes which are not upcasted by any of the registered converters are filtered out before they even become model nodes, so the schema is not applied to them; the conversion will be covered later in this guide).
+* What happens with the pasted content and what is filtered out (note: in case of pasting the other important mechanism is the {@link framework/deep-dive/conversion/upcast conversion}. HTML elements and attributes that are not upcasted by any of the registered converters are filtered out before they even become model nodes, so the schema is not applied to them; the conversion will be covered later in this guide).
 * To which elements the heading feature can be applied (which blocks can be turned to headings and which elements are blocks in the first place).
 * Which elements can be wrapped with a block quote.
-* Whether the bold button is enabled when the selection is in a heading (and whether the text in this heading can be bolded).
+* Whether the bold button is enabled when the selection is in a heading (and whether the text in this heading can be made bold).
 * Where the selection can be placed (which is &ndash; only in text nodes and on object elements).
 * etc.
 
-The schema is, by default, configured by editor plugins. It is recommended that every editor feature comes with rules that enable and preconfigure it in the editor. This will make sure that the plugin user can enable it without worrying to re-configure their schema.
+The schema is, by default, configured by editor plugins. It is recommended that every editor feature comes with rules that enable and pre-configure it in the editor. This will make sure that the plugin user can enable it without worrying about re-configuring their schema.
 
 <info-box>
-	Currently, there is [no straightforward way to override the schema](https://github.com/ckeditor/ckeditor5-engine/issues/1367) preconfigured by features. If you want to override the default settings when initializing the editor, the best solution is to replace `editor.model.schema` with a new instance of it. This, however, requires rebuilding the editor.
+	Currently, there is [no straightforward way to override the schema](https://github.com/ckeditor/ckeditor5-engine/issues/1367) pre-configured by features. If you want to override the default settings when initializing the editor, the best solution is to replace `editor.model.schema` with a new instance of it. This, however, requires rebuilding the editor.
 </info-box>
 
 The instance of the schema is available in {@link module:engine/model/model~Model#schema `editor.model.schema`}. Read an extensive guide about using the schema API in the {@link framework/deep-dive/schema Schema deep dive} guide.
@@ -236,7 +236,7 @@ The element types can be defined as follows:
 * **Empty element** &ndash; The elements that must not have any child nodes, for example `<img>`.
 * **UI element** &ndash; The elements that are not a part of the "data" but need to be "inlined" in the content. They are ignored by the selection (it jumps over them) and the view writer in general. The contents of these elements and events coming from them are filtered out, too.
 * **Raw element** &ndash; The elements that work as data containers ("wrappers," "sandboxes") but their children are transparent to the editor. Useful when non-standard data must be rendered but the editor should not be concerned what it is and how it works. Users cannot put the selection inside a raw element, split it into smaller chunks or directly modify its content.
-* **Editable element** &ndash; The elements used as "nested editables" of non-editable fragments of the content, for example a caption in the image widget, where the `<figure>` wrapping the image is not editable (it is a widget) and the `<figcaption>` inside it is an editable element.
+* **Editable element** &ndash; The elements used as "nested editable elements" of non-editable fragments of the content. For example, a caption in the image widget, where the `<figure>` wrapping the image is not editable (it is a widget) and the `<figcaption>` inside it is an editable element.
 
 Additionally, you can define {@link module:engine/view/element~Element#getCustomProperty custom properties} which may be used to store information like:
 
@@ -246,9 +246,9 @@ Additionally, you can define {@link module:engine/view/element~Element#getCustom
 
 #### Non-semantic views
 
-Not all view trees need to (and can) be build with semantic element types. View structures generated straight from input data (for instance, pasted HTML or with `editor.setData()`) consists only of {@link module:engine/view/element~Element base element} instances. Those view structures are (usually) [converted to model structures](#conversion) and then converted back to view structures for editing or data retrieval purposes, at which point they become semantic views again.
+Not all view trees need to (and can) be built with semantic element types. View structures generated straight from input data (for instance, pasted HTML or with `editor.setData()`) consists only of {@link module:engine/view/element~Element base element} instances. Those view structures are (usually) [converted to model structures](#conversion) and then converted back to view structures for editing or data retrieval purposes, at which point they become semantic views again.
 
-The additional information conveyed in the semantic views and special types of operations that feature developers want to perform on those tree (compared to simple tree operations on non-semantic views) means that both structures need to be [modified by different tools](#changing-the-view).
+The additional information conveyed in the semantic views and special types of operations that feature developers want to perform on those trees (compared to simple tree operations on non-semantic views) means that both structures need to be [modified by different tools](#changing-the-view).
 
 We will explain the [conversion](#conversion) later in this guide. For now, it is only important for you to know that there are semantic views for rendering and data retrieval purposes and non-semantic views for data input.
 
@@ -280,7 +280,7 @@ Just like [in the model](#positions-ranges-and-selections), there are 3 levels o
 A view range is similar to its [DOM counterpart](https://www.w3.org/TR/DOM-Level-2-Traversal-Range/ranges.html) as view positions are represented by a parent and an offset in that parent. This means that, unlike model offsets, view offsets describe:
 
 * points between child nodes of the position's parent if it is an element,
-* or points between the character of a text node if position's parent is a text node.
+* or points between the character of a text node if the position's parent is a text node.
 
 Therefore, you can say that view offsets work more like model indexes than model offsets.
 
@@ -307,7 +307,7 @@ Some browsers (Safari, Chrome and Opera) consider them identical, too (when used
 	<p>{Foo]<b>Bar</b></p>
 	```
 
-	describes a range which starts in the text node `Foo` at offset `0` and ends in the `<p>` element at offset `1`.
+	describes a range that starts in the text node `Foo` at offset `0` and ends in the `<p>` element at offset `1`.
 </info-box>
 
 The far-from-convenient representation of DOM positions is yet one more reason to think about and work with model positions.
@@ -365,12 +365,12 @@ Let's take a look at the diagram of the engine's MVC architecture and see where 
 {@link framework/deep-dive/conversion/downcast#downcast-pipelines **Editing downcasting**} is a bit different process than the other two.
 
 * It takes place in the "editing pipeline" (the left branch of the diagram).
-* It does not have its counterpart &ndash; there is no *editing upcasting* because all user actions are handled by editor features by listening to [view events](#observers), analyzing what happened and applying necessary changes to the model. Hence, this process does not involve conversion.
-* Unlike {@link module:engine/controller/datacontroller~DataController} (which handles the *data pipeline*), {@link module:engine/controller/editingcontroller~EditingController} maintains a single instance of the {@link module:engine/view/document~Document} view document's for its entire life. Every change in the model is converted to changes in that view so changes in that view can then be rendered to the DOM (if needed &ndash; that is, if the DOM actually differs from the view at this stage).
+* It does not have its counterpart. There is no *editing upcasting* because all user actions are handled by editor features by listening to [view events](#observers), analyzing what happened and applying necessary changes to the model. Hence, this process does not involve conversion.
+* Unlike {@link module:engine/controller/datacontroller~DataController} (which handles the *data pipeline*), {@link module:engine/controller/editingcontroller~EditingController} maintains a single instance of the {@link module:engine/view/document~Document} view document for its entire life. Every change in the model is converted to changes in that view so changes in that view can then be rendered to the DOM (if needed &ndash; that is, if the DOM actually differs from the view at this stage).
 
 ### More information
 
-A more in-depth introduction with examples can be found in the {@link framework/deep-dive/conversion/intro dedicated conversion guide}.
+You can find a more in-depth introduction with examples in the {@link framework/deep-dive/conversion/intro dedicated conversion guide}.
 
 For additional information, you can also check out the {@link tutorials/widgets/implementing-a-block-widget#defining-converters Implementing a block widget} and {@link tutorials/widgets/implementing-an-inline-widget#defining-converters Implementing an inline widget} tutorials.
 
@@ -380,4 +380,4 @@ For additional information, you can also check out the {@link tutorials/widgets/
 -->
 ## Read next
 
-Once you have learnt how to implement editing features, it is time to add a UI for them. You can read about the CKEditor&nbsp;5 standard UI framework and UI library in the {@link framework/architecture/ui-library UI library} guide.
+Once you have learned how to implement editing features, it is time to add a UI for them. You can read about the CKEditor&nbsp;5 standard UI framework and UI library in the {@link framework/architecture/ui-library UI library} guide.

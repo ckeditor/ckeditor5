@@ -27,7 +27,7 @@ Incoming data becomes the view which is then converted into the model via regist
 
 ## Registering a converter
 
-In order to instruct the engine how to convert a specific view element into a model element, you need to register an **upcast converter** by using the `editor.conversion.for( 'upcast' )` method:
+To instruct the engine how to convert a specific view element into a model element, you need to register an **upcast converter** by using the `editor.conversion.for( 'upcast' )` method:
 
 ```js
 editor.conversion
@@ -77,7 +77,7 @@ A text wrapped with the `<strong>` tag will be converted to a model text node wi
 
 If you need to “copy” an attribute from a view element to a model element, use the {@link framework/deep-dive/conversion/helpers/upcast#attribute-to-attribute-conversion-helper `attributeToAttribute()` method}.
 
-Keep in mind that the model element must have its own converter registered, otherwise there is nothing the attribute can be copied to.
+The model element must have its own converter registered, otherwise there is nothing the attribute can be copied to.
 
 ```js
 editor.conversion
@@ -112,7 +112,7 @@ editor.conversion
 	} );
 ```
 
-The above converter will handle the conversion of every `<div class="example">` view element into an `<example>` model element.
+This converter will handle the conversion of every `<div class="example">` view element into an `<example>` model element.
 
 {@snippet framework/mini-inspector-upcast-element}
 
@@ -126,7 +126,7 @@ As you have learnt in the {@link framework/deep-dive/conversion/downcast previou
 
 The opposite process will have to detect that structure (for example, the main element) and convert it into a simple model element.
 
-There is no `structureToElement()` helper available for the upcast conversion. In order to register an upcast converter for the entire structure and create a single model element, you must use the event-based API. The following example shows how to achieve it:
+There is no `structureToElement()` helper available for the upcast conversion. To register an upcast converter for the entire structure and create a single model element, you must use the event-based API. The following example shows how to achieve it:
 
 ```js
 editor.conversion.for( 'upcast' ).add( dispatcher => {

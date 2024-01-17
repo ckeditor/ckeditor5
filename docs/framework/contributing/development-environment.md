@@ -20,21 +20,21 @@ The main package's GitHub repository also [hosts all other CKEditor5 sub-package
 You can find all the official packages listed in the [CKEditor&nbsp;5 repository's README](https://github.com/ckeditor/ckeditor5#packages).
 
 <info-box info>
-	Prior to version **19.0.0** CKEditor&nbsp;5 was developed in a multi-repository architecture. If you would like to work with an older multi-repository release, please refer to the <a href="https://ckeditor.com/docs/ckeditor5/19.0.0/framework/guides/contributing/development-environment.html" data-cke-crawler-skip>older Development environment guide</a> for multi-repository oriented instructions.
+	Before version **19.0.0** CKEditor&nbsp;5 was developed in a multi-repository architecture. If you would like to work with an older multi-repository release, please refer to the <a href="https://ckeditor.com/docs/ckeditor5/19.0.0/framework/guides/contributing/development-environment.html" data-cke-crawler-skip>older Development environment guide</a> for multi-repository oriented instructions.
 </info-box>
 
 ## Requirements
 
-In order to start developing CKEditor&nbsp;5 you will require:
+To start developing CKEditor&nbsp;5 you will require:
 
 * [Node.js](https://nodejs.org/en/) 18.0.0+
 * [Git](https://git-scm.com/)
 
 ## Setting up the CKEditor development environment
 
-First, you need to install  [Yarn](https://yarnpkg.com/) that will be used for dependency management.
+First, you need to install [Yarn](https://yarnpkg.com/) to use it for dependency management.
 
-It is best to install it globally in your system for an easier use later on:
+It is best to install it globally in your system for easier use later on:
 
 ```
 npm install -g yarn
@@ -57,7 +57,7 @@ yarn install
 
 ## Running tests
 
-In order to run tests, you need to use the `test` and `manual` tasks.
+To run tests, you need to use the `test` and `manual` tasks.
 
 ```
 yarn run test --watch --coverage --source-map --files=engine
@@ -79,7 +79,7 @@ To create a server for manual tests use the `manual` task:
 yarn run manual
 ```
 
-To help test localized editors, the task accepts two optional configurations: `--language="en"` and `--additionalLanguages="ar,pl,..."`. The former sets the main language used by test editors. By default it is `"en"` and in most scenarios you do not need to change it. The latter brings more languages to manual tests, which is helpful e.g. when working with {@link features/ui-language#righttoleft-rtl-languages-support right–to–left languages in the user interface}.
+To help test localized editors, the task accepts two optional configurations: `--language="en"` and `--additionalLanguages="ar,pl,..."`. The former sets the main language used by test editors. By default it is `"en"` and in most scenarios, you do not need to change it. The latter brings more languages to manual tests, which is helpful e.g. when working with {@link features/ui-language#righttoleft-rtl-languages-support right–to–left languages in the user interface}.
 
 You can read more about the {@link framework/contributing/testing-environment Testing environment}.
 
@@ -120,7 +120,7 @@ This task accepts the following arguments:
 
 	Note: If a snippet that you want to build uses another snippet as a source that provides an editor instance, you need to specify both snippets (e.g. `--files=features/default-headings,build-classic-source`).
 * `--skip-validation` &ndash; Skips the final link validation.
-* `--skip-guides` &ndash; Skips building all guides except the `index.md` files which allowa navigating over the partially built documentation.
+* `--skip-guides` &ndash; Skips building all guides except the `index.md` files which allows navigating over the partially built documentation.
 * `--guides=guide-name` &ndash; Guides to build. Accepts glob patterns that are matched against guide names. Examples:
 
 	```
@@ -180,19 +180,19 @@ The crawler supports exclusions provided as text patterns, which are then search
 The pattern for ignoring an error must be defined in `<meta>` tag on a page, where an error occurs. This `<meta>` tag must have `x-cke-crawler-ignore-patterns` name and `content` value provided as JSON object, where:
 
 * Each key is the error type, that can be detected by the crawler.
-* Each value is the text or an array of texts, that are used for finding a match in error messages. The special wildcard value `*` can be used to ignore all errors for given error type.
+* Each value is the text or an array of texts, that are used for finding a match in error messages. The special wildcard value `*` can be used to ignore all errors for a given error type.
 
 The following error types are supported: `uncaught-exception`, `request-failure`, `response-failure`, `console-error`, `navigation-error` and `page-crash`:
 
 * `uncaught-exception` &ndash; As the name suggests, these are uncaught exceptions from the page.
-* `request-failure` &ndash; This error occurs, when the request has not been sent (e.g. it was blocked by the browser) or has not received any response (e.g. due to a timeout or in case the remote server is unreachable). HTTP error responses, such as 404 or 500, are considered as successful ones from HTTP standpoint, so such requests will not be logged as request failures, but as response failures.
-* `response-failure` &ndash; Each HTTP response with status code equal or greater than 400 is treated as failed one.
+* `request-failure` &ndash; This error occurs, when the request has not been sent (for example, it was blocked by the browser) or has not received any response (for example, due to a timeout or in case the remote server is unreachable). HTTP error responses, such as 404 or 500, are considered successful ones from the HTTP standpoint. Such requests will not be logged as request failures but as response failures.
+* `response-failure` &ndash; Each HTTP response with a status code equal to or greater than 400 is treated as a failed one.
 * `console-error` &ndash; All `console.error()` calls are treated as an error.
 * `navigation-error` &ndash; The navigation error may happen, when:
-	* there's an SSL error (e.g. in case of self-signed certificate or expired one),
-	* target URL is invalid,
-	* the timeout is exceeded during navigation to a page, so the `load` event is not emitted (e.g. due to an infinite loop in the JavaScript code).
-* `page-crash` &ndash; The general page malfunction, that does not fit to other categories (e.g. running out of a RAM).
+	* There is an SSL error (e.g. in the case of a self-signed certificate or an expired one).
+	* The target URL is invalid.
+	* The timeout is exceeded during navigation to a page, so the `load` event is not emitted (for example, due to an infinite loop in the JavaScript code).
+* `page-crash` &ndash; The general page malfunction, that does not fit other categories (like running out of RAM).
 
 | Error&nbsp;type      | Example              |
 |----------------------|----------------------|
@@ -213,7 +213,7 @@ These patterns are simply added as keys and values in a JSON object to the `<met
 }'>
 ```
 
-Please note that the pattern (regardless of the type of error) does not have to be a string, but can also be defined as an array of strings (patterns) to ignore many different errors:
+The pattern (regardless of the type of error) does not have to be a string, but can also be defined as an array of strings (patterns) to ignore many different errors:
 
 ```html
 <meta name="x-cke-crawler-ignore-patterns" content='{
@@ -237,13 +237,13 @@ In addition to the possibility of defining exclusions in the `<meta>` tag, it is
 
 ## Generating content styles
 
-It is possible to generate a stylesheet containing content styles brought by all CKEditor&nbsp;5 features. In order to do that, execute:
+It is possible to generate a style sheet containing content styles brought by all CKEditor&nbsp;5 features. To do that, execute:
 
 ```
 yarn docs:content-styles
 ```
 
-The stylesheet will be saved in the `build/content-styles` folder.
+The style sheet will be saved in the `build/content-styles` folder.
 
 To learn more, refer to the {@link installation/advanced/content-styles Content styles} guide.
 
@@ -253,7 +253,7 @@ To learn more, refer to the {@link installation/advanced/content-styles Content 
 
 By default, CKEditor&nbsp;5 supports SVG icons found in the `ckeditor5-*/theme/icons` folders. Unfortunately, most of the SVG editing software produces the output with comments, obsolete tags, and complex paths, which bloats the DOM and makes the builds heavy for no good reason.
 
-To remove the excess data and prevent [certain issues](https://github.com/ckeditor/ckeditor5-ui/issues/245), **all new icons should be optimized before joining the code base**. To do that, you can use the `clean-up-svg-icons` script in the [root of the project](#setting-up-the-ckeditor-development-environment), a wrapper for the [SVGO](https://github.com/svg/svgo) tool:
+To remove the excess data and prevent [certain issues](https://github.com/ckeditor/ckeditor5-ui/issues/245), **you should optimize all new icons before adding them to the code base**. To do that, you can use the `clean-up-svg-icons` script in the [root of the project](#setting-up-the-ckeditor-development-environment), a wrapper for the [SVGO](https://github.com/svg/svgo) tool:
 
 ```
 cd path/to/ckeditor5

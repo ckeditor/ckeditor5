@@ -65,11 +65,11 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Features
 
-* Introduced the text transformation feature. Additionally, the `TextWatcher` util was moved to this package from `@ckeditor/ckeditor5-mention`. Closes [ckeditor/ckeditor5#1490](https://github.com/ckeditor/ckeditor5/issues/1490). ([dafd16e](https://github.com/ckeditor/ckeditor5-typing/commit/dafd16e))
+* Introduced the text transformation feature. Additionally, the `TextWatcher` utility was moved to this package from `@ckeditor/ckeditor5-mention`. Closes [ckeditor/ckeditor5#1490](https://github.com/ckeditor/ckeditor5/issues/1490). ([dafd16e](https://github.com/ckeditor/ckeditor5-typing/commit/dafd16e))
 
 ### Bug fixes
 
-* Improved typing on Android devices by handling `beforeinput` event instead of mutations. Introduced `options.selection` in the `DeleteCommand#execute()` params. Introduced `selectionToRemove` parameter in the `view.Document#event:delete` data. Closes [#167](https://github.com/ckeditor/ckeditor5-typing/issues/167). ([92ab3ff](https://github.com/ckeditor/ckeditor5-typing/commit/92ab3ff))
+* Improved typing on Android devices by handling `beforeinput` event instead of mutations. Introduced `options.selection` in the `DeleteCommand#execute()` parameters. Introduced `selectionToRemove` parameter in the `view.Document#event:delete` data. Closes [#167](https://github.com/ckeditor/ckeditor5-typing/issues/167). ([92ab3ff](https://github.com/ckeditor/ckeditor5-typing/commit/92ab3ff))
 
 
 ## [12.0.2](https://github.com/ckeditor/ckeditor5-typing/compare/v12.0.1...v12.0.2) (June 6, 2019)
@@ -176,15 +176,15 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Bug fixes
 
-* Fixed a bug where using spellchecker sometimes caused creating incorrect deltas, which caused bugs in undo. Closes [#123](https://github.com/ckeditor/ckeditor5-typing/issues/123). Closes [ckeditor/ckeditor5-engine#1152](https://github.com/ckeditor/ckeditor5-engine/issues/1152). ([9a5e22b](https://github.com/ckeditor/ckeditor5-typing/commit/9a5e22b))
-* Fixed an error where using spellchecker on a word with a style applied sometimes resulted in that word being removed. Closes [#117](https://github.com/ckeditor/ckeditor5-typing/issues/117). ([1e8d02b](https://github.com/ckeditor/ckeditor5-typing/commit/1e8d02b))
+* Fixed a bug where using spell checker sometimes caused creating incorrect deltas, which caused bugs in undo. Closes [#123](https://github.com/ckeditor/ckeditor5-typing/issues/123). Closes [ckeditor/ckeditor5-engine#1152](https://github.com/ckeditor/ckeditor5-engine/issues/1152). ([9a5e22b](https://github.com/ckeditor/ckeditor5-typing/commit/9a5e22b))
+* Fixed an error where using spell checker on a word with a style applied sometimes resulted in that word being removed. Closes [#117](https://github.com/ckeditor/ckeditor5-typing/issues/117). ([1e8d02b](https://github.com/ckeditor/ckeditor5-typing/commit/1e8d02b))
 
 
 ## [0.10.0](https://github.com/ckeditor/ckeditor5-typing/compare/v0.9.1...v0.10.0) (September 3, 2017)
 
 ### Bug fixes
 
-* Fixed a range of issues when typing or using a spellchecker on styled words leads to errors. Closes [#100](https://github.com/ckeditor/ckeditor5-typing/issues/100). Closes ckeditor/ckeditor5[#491](https://github.com/ckeditor/ckeditor5-typing/issues/491). ([c30dbf8](https://github.com/ckeditor/ckeditor5-typing/commit/c30dbf8))
+* Fixed a range of issues when typing or using a spell checker on styled words leads to errors. Closes [#100](https://github.com/ckeditor/ckeditor5-typing/issues/100). Closes ckeditor/ckeditor5[#491](https://github.com/ckeditor/ckeditor5-typing/issues/491). ([c30dbf8](https://github.com/ckeditor/ckeditor5-typing/commit/c30dbf8))
 * Prevent from modifying document by `Input` feature when `InputCommand` is disabled. Closes [#107](https://github.com/ckeditor/ckeditor5-typing/issues/107). ([f935d66](https://github.com/ckeditor/ckeditor5-typing/commit/f935d66))
 
 ### Features

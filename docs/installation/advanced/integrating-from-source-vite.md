@@ -38,14 +38,14 @@ npm create vite@latest ckeditor5-vite-example -- --template vanilla-ts
 
  ## Installing necessary dependencies
 
-After initializing the project, you can start installing packages. Fundamentally, you need a list of three things before we start bundling:
+After initializing the project, you can start installing packages. Fundamentally, you need a list of three things before you start bundling:
 * an editor base
 * editor plugins
 * editor theme
 
-This example will use Classic Editor as an editor base and the default CKEditor&nbsp;5 theme - lark. In terms of plugins, you can use whatever you want. If you need inspiration, you can base your integration on one of the existing builds. There is a list of packages in the [classic build's](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-build-classic/package.json) `package.json` file. But remember that all packages (excluding `@ckeditor/ckeditor5-dev-*`) must have the same version as the base editor package.
+This example will use Classic Editor as an editor base and the default CKEditor&nbsp;5 theme, lark. In terms of plugins, you can use whatever you want. If you need inspiration, you can base your integration on one of the existing builds. There is a list of packages in the [classic build's](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-build-classic/package.json) `package.json` file. All packages (excluding `@ckeditor/ckeditor5-dev-*`) must have the same version as the base editor package.
 
-You can install packages individually like `npm install @ckeditor/ckeditor5-editor-classic`, or copy dependencies from the build repo and type `npm install`. An example list of plugins may look like this:
+You can install packages individually like `npm install @ckeditor/ckeditor5-editor-classic`, or copy dependencies from the build repository and type `npm install`. An example list of plugins may look like this:
 
 ```bash
 npm install --save @ckeditor/ckeditor5-theme-lark \

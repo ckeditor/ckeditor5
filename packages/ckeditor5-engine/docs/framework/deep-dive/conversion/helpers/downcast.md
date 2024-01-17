@@ -241,7 +241,7 @@ The second parameter of the view callback is the [DowncastConversionApi](https:/
 
 ### Changing converter priority
 
-In case there are other converters already present, you can prioritize your converter in order to override the existing ones. To do that, use the `converterPriority` property:
+In case there are other converters already present, you can prioritize your converter to override the existing ones. To do that, use the `converterPriority` property:
 
 ```js
 editor.conversion

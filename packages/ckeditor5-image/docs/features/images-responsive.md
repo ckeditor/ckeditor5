@@ -19,7 +19,7 @@ Observe the responsive image in the demo. You can also add another one with the 
 {@snippet features/image-responsive}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Why responsive images?

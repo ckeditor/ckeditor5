@@ -154,7 +154,7 @@ If the `message` property is missing in the `error` object, the {@link module:ui
 
 This upload adapter will notify users about the [file upload progress](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/progress_event) out–of–the–box.
 
-## What's next?
+## What's next
 
 Check out the comprehensive {@link features/image-upload Image upload overview} to learn more about different ways of uploading images in CKEditor&nbsp;5.
 

@@ -23,7 +23,7 @@ Use the toolbar button {@icon @webspellchecker/wproofreader-ckeditor5/theme/icon
 {@snippet features/wproofreader}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 The WProofreader badge in the bottom-right corner shows you the total number of mistakes detected. Hover an underlined word to display the WProofreader suggestions for any of the spelling and grammar mistakes found. The suggestion card allows the user to use the feature on the go. If you want to see an overview of all mistakes found, click the "Proofread in dialog" option in the toolbar dropdown. It will invoke a detached floating dialog, which is easy to navigate and perfect for dedicated proofreading sessions.
@@ -38,7 +38,7 @@ You can fine-tune WProofreader via the dedicated settings menu. Choose a primary
 
 The {@link features/language text part language} feature lets the user set different languages to different portions of the content. The spell and grammar check feature offers full support for multilingual content. If you set the WProofreader language to Auto Detect (or set the `auto` language in the configuration), the feature will automatically recognize the language for a given sentence. It will then suggest spelling and grammar corrections specifically for that language, as shown in the demo above.
 
-{@img assets/img/spellcheck-dictionary.png 770 Setting the spell checker dictionary to auto.}
+{@img assets/img/spell-check-dictionary.png 770 Setting the spell checker dictionary to auto.}
 
 ## Check types
 
@@ -50,7 +50,7 @@ WProofreader checks texts for spelling, grammar, and punctuation mistakes. The a
 
 The most popular languages used with WProofreader include: American English, Australian English, Arabic, Brazilian Portuguese, British English, Canadian English, Canadian French, Danish, Dutch, Finnish, French, German, Greek, Hebrew, Italian, Indonesian, Norwegian Bokmål, Norwegian Nynorsk, Portuguese, Spanish, Swedish, Turkish, and Ukrainian.
 
-There are, however, more languages available from the WebSpellChecker site. Grammar checking is available for over 20 languages.
+There are more languages available from the WebSpellChecker site. Grammar checking is available for over 20 languages.
 
 The AI-driven tools approach for English, German, and Spanish is a recent addition to the software. It offers a far better checking quality and generates proofreading suggestions based on the context of a sentence. It provides more suitable suggestions that address mistakes with 3 times the accuracy compared to a traditional mechanism.
 
@@ -64,7 +64,7 @@ Apart from the language dictionaries, WebSpellChecker offers two specialized dic
 
 You can use custom dictionaries in two ways.
 
-One is the **user-level dictionary** that can be expanded during regular use by adding new words. This is a perfect solution for users working on specific content that may contain slang or professional jargon.
+One is the **user-level dictionary** that you can expand during regular use by adding new words. This is a perfect solution for users working on specific content that may contain slang or professional jargon.
 
 The other is the so-called **company-level dictionary**. These pre-made dictionaries can be uploaded by system administrators or CKEditor&nbsp;5 integrators and made available across the company, accessible for all users. This way you can share all the benefits of a user-generated dictionary among the team, making the proofreading process more structured and controlled.
 

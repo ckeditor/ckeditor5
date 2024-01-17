@@ -120,7 +120,7 @@ If everything went well, the text you selected should be highlighted in the edit
 
 In the CKEditor Inspector, open the `Commands` tab to see all available commands. The `highlight` command should also be listed.
 
-## What's next?
+## What's next
 
 If you want to read more about the commands, see the {@link framework/architecture/core-editor-architecture#commands Commands} document.
 
