@@ -12,7 +12,7 @@ modified_at: 2023-04-03
 
 # TypeScript support in CKEditor&nbsp;5
 
-CKEditor&nbsp;5 is built using TypeScript and has native type definitions. All the official packages and builds distributed using npm and CDN contain type definitions. Custom builds produced by the **online builder** and **DLL** versions of packages provided by CKEditor&nbsp;5 do not provide built-in types yet.
+CKEditor&nbsp;5 is built using TypeScript and has native type definitions. All the official packages and builds distributed using npm and CDN as well as custom builds created with online builder contain type definitions. **DLL** versions of packages provided by CKEditor&nbsp;5 do not provide built-in types yet.
 
 <info-box hint>
 	Using TypeScript is just an option. If you do not need its features, you can continue using CKEditor&nbsp;5 in JavaScript.
