@@ -122,7 +122,7 @@ ClassicEditor
 </info-box>
 
 <info-box hint>
-**What's next?**
+**What's next**
 
 You have learned how to configure your own CKEditor 5 instance. Awesome! Learn more about CKEditor 5 by moving on to {@link installation/getting-started/editor-lifecycle the editor's lifecycle guide}!
 

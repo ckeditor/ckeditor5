@@ -8,7 +8,7 @@ modified_at: 2022-07-15
 
 # Getting user input with a custom UI
 
-In this part of the tutorial we will focus on creating a dialog box, which will get the user's input.
+In this part of the tutorial we will focus on creating a dialog, which will get the user's input.
 
 We will pick up where we left off in the first part, so make sure you {@link tutorials/abbreviation-plugin-tutorial/abbreviation-plugin-level-1 start there}, or grab our [starter files for this part](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/abbreviation-plugin/part-1).
 
@@ -20,7 +20,7 @@ If you want to see the final product of this tutorial before you plunge in, chec
 
 ## Creating a view
 
-The most important part of the UI for this plugin is a dialog box with a form, which will get us the user's input.
+The most important part of the UI for this plugin is a dialog with a form, which will get us the user's input.
 
 ### Creating a form view template
 
@@ -613,7 +613,7 @@ export default class AbbreviationUI extends Plugin {
 If you got lost at any point, this is [the final implementation of the plugin](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/abbreviation-plugin/part-2). You can paste the code from different files into your project, or clone and install the whole thing, and it will run out-of-the-box.
 
 <info-box>
-	**What's next?**
+	**What's next**
 
 	That's it for the second part of the tutorial! We have a working UI, and our plugin does what we want it to do. We can improve it according to our best practices, adding a {@link framework/architecture/core-editor-architecture#commands command}, focus tracking, and more. We will do it in the {@link tutorials/abbreviation-plugin-tutorial/abbreviation-plugin-level-3 third part of the tutorial}, so head over there.
 </info-box>

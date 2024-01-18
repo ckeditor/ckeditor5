@@ -67,7 +67,7 @@ toolbarButtons.render();
 document.querySelector( '.ui-button' ).append( toolbarButtons.element );
 
 ClassicEditor
-	.create( document.querySelector( '.ui-editor' ), {
+	.create( document.querySelector( '#ui-button-editor' ), {
 		plugins: [ Essentials ]
 	} )
 	.then( editor => {

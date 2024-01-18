@@ -100,7 +100,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 
 ### How to get the editor instance object from the DOM element?
 
-If you have a reference to the editor editable's DOM element (the one with the `.ck-editor__editable` class and the `contenteditable` attribute), you can access the editor instance this editable element belongs to using the `ckeditorInstance` property:
+If you have a reference to the editor editable DOM element (the one with the `.ck-editor__editable` class and the `contenteditable` attribute), you can access the editor instance this editable element belongs to using the `ckeditorInstance` property:
 
 ```html
 <!-- The editable element in the editor's DOM structure. -->

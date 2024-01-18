@@ -67,4 +67,4 @@ msgstr "Consejo: Primero busque algún texto para reemplazar."
 
 msgctxt "The label and the tooltip of the options dropdown button in the find and replace form."
 msgid "Advanced options"
-msgstr ""
+msgstr "Opciones avanzadas"

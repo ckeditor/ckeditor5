@@ -67,4 +67,4 @@ msgstr "نصيحة: في البداية، ابحث عن جزء من النص؛ �
 
 msgctxt "The label and the tooltip of the options dropdown button in the find and replace form."
 msgid "Advanced options"
-msgstr ""
+msgstr "الخيارات المتقدمة"

@@ -10,7 +10,7 @@ modified_at: 2021-09-07
 Every commit made *directly* to the `master` branch must follow the convention below. Based on commits in the `master` branch CKEditor&nbsp;5 release tools will generate changelog entries for the current release.
 
 <info-box>
-	Commits in the ticket branches are not analyzed for the changelog and do not have to follow any specific convention (other than finishing sentences with periods). In the case of ticket branches, **only merge commits are analyzed**.
+	Commits in the ticket branches are not analyzed for the changelog and do not have to follow any specific convention (other than finishing sentences with periods). For ticket branches, **only merge commits are analyzed**.
 
 	Therefore, this guide is mainly targeted at core team members. However, it may help you understand how to write a suggested commit message when creating a pull request for CKEditor&nbsp;5.
 </info-box>
@@ -22,7 +22,7 @@ Commit message template:
 ```
 Type (package-name): A short sentence about the commit. Closes #XXX.
 
-Type (another-package-name): If the change affects more than one package, it's possible to put multiple entries at once. Closes #YYY.
+Type (another-package-name): If the change affects more than one package, it is possible to put multiple entries at once. Closes #YYY.
 
 Optional description.
 
@@ -50,7 +50,7 @@ Each commit can contain additional notes that will be inserted into the changelo
 
 If any change contains the `MAJOR BREAKING CHANGE` note, the next release will automatically be marked as `major`.
 
-For reference on how to identify minor or major breaking change see the {@link updating/versioning-policy versioning policy guide}.
+For reference on how to identify minor or major breaking changes see the {@link updating/versioning-policy versioning policy guide}.
 
 Each `MAJOR BREAKING CHANGE` or `MINOR BREAKING CHANGE` note must be followed by the package name.
 
@@ -60,29 +60,29 @@ Each `MAJOR BREAKING CHANGE` or `MINOR BREAKING CHANGE` note must be followed by
 
 ### Package name
 
-Most commits are related to one or more packages. Each affected package should be listed in parenthesis following the commit type. A package that was the most impacted by the change should be listed first.
+Most commits are related to one or more packages. Each affected package should be listed in parentheses following the commit type. You should list the package that was the most impacted by the change first.
 
-It is, however, possible to skip this part if many packages are affected. This usually indicates a generic change. In this case having all the packages listed would reduce the changelog readability.
+It is, however, possible to skip this part if many packages are affected. This usually indicates a generic change. In this case, having all the packages listed would reduce the changelog readability.
 
-The package name is based on the npm package name, however, it has the `@ckeditor/ckeditor5-` prefix stripped.
+The package name is based on the npm package name but it has the `@ckeditor/ckeditor5-` prefix stripped.
 
-If your change is related to the main package only, use `ckeditor5` as the package name.
+If your change is related to the main package, use `ckeditor5` as the package name.
 
 <info-box>
-	If the commit introduces a breaking change across the entire project (a generic change), the package name does not have to be specified.
+	If the commit introduces a breaking change across the entire project (a generic change), you do not need to specify the package name.
 </info-box>
 
 ### Referencing issues
 
 When creating PRs that address specific issues, use the following messages to indicate it. Add these in the same line with the merge message:
-* `Closes #123` &ndash; when the PR closes an issue.
-* `Closes #123` (outside the merge message) &ndash; when a PR in a public repo closes an issue from a private repository.
-* `See #123` &ndash; when the PR only references an issue, but does not close it yet.
+* `Closes #123` &ndash; When the PR closes an issue.
+* `Closes #123` (outside the merge message) &ndash; When a PR in a public repository closes an issue from a private repository.
+* `See #123` &ndash; When the PR only references an issue but does not close it yet.
 * _No reference_ &ndash; when the PR does not reference any issue.
 
 ### Methods name syntax
 
-All methods mentioned in the git commit message should use the **#** sign between the class name and the method name. And example of a properly named method:
+All methods mentioned in the Git commit message should use the **#** sign between the class name and the method name. An example of a properly named method:
 
 ```
 MarkerCollection#has()
@@ -109,7 +109,7 @@ Fix (package-name-2): Message 2. Closes: #456
 Tests: A change across the entire project.
 ```
 
-An example of an invalid commit message with incorrectly separated lines (the second line will just be treated as a part of the first line):
+An example of an invalid commit message with incorrectly separated lines (the second line will be treated as a part of the first line):
 
 ```
 Feature (package-name-1): Message 1.
@@ -209,21 +209,21 @@ git push origin master
 
 ## Handling pull requests
 
-When creating a pull request, its author may (it is recommended in the pull request template) propose a merge commit message.
+When creating a pull request, you may (it is recommended in the pull request template) propose a merge commit message.
 
-The reviewer's duty is to validate the proposed message and apply necessary changes. The PR description can be edited.
+The reviewer must validate the proposed message and apply necessary changes. The PR description can be edited.
 
 Things like:
 
-* language and grammar of the message,
-* type of the change,
+* the language and grammar of the message,
+* the type of the change,
 * mentioned issue(s) number,
 * breaking changes,
 * and any additional information
 
 should be checked and added if missing.
 
-As a reviewer, remember that the message will end up in the changelog and must be understandable in a broad context of the entire editor. It is not for you &ndash; it is for other developers.
+As a reviewer, you must be aware that the message will end up in the changelog and must be understandable in the broad context of the entire editor. It is not for you &ndash; it is for other developers.
 
 When closing a PR, remember to copy the source of the message to the textarea with the merge commit message:
 

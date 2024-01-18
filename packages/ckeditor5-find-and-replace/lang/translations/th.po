@@ -67,4 +67,4 @@ msgstr "เคล็ดลับ: ค้นหาข้อความบาง�
 
 msgctxt "The label and the tooltip of the options dropdown button in the find and replace form."
 msgid "Advanced options"
-msgstr ""
+msgstr "ตัวเลือกขั้นสูง"

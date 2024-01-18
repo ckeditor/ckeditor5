@@ -38,8 +38,7 @@ ClassicEditor
 		window.editor = editor;
 
 		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar,
-				item => item.buttonView && item.buttonView.label === 'Find and replace' ),
+			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.label === 'Find and replace' ),
 			text: 'Click here to search.',
 			editor,
 			tippyOptions: {

@@ -140,7 +140,7 @@ editor.execute( 'redo' );
 
 ### `destroy()`
 
-Last but not least is the `destroy()` method. It removes the editor and cleans up after it, including removing it from the DOM, removing all event listeners, etc.
+The `destroy()` method removes the editor and cleans up after it. This includes removing it from the DOM, removing all event listeners, etc.
 
 Run the following command from a console:
 
@@ -148,7 +148,7 @@ Run the following command from a console:
 editor.destroy();
 ```
 
-The editor and its contents should disappear. Note that **this method returns a promise, so you need to `await` it** if you want to execute more logic after the editor is destroyed.
+The editor and its contents should disappear. **This method returns a promise, so you need to `await` it** if you want to execute more logic after the editor is destroyed.
 
 ## What's next
 

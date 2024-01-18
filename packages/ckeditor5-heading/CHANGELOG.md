@@ -212,7 +212,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The command API has been changed.
 * The `HeadingCommand` constructor's second parameter was changed from the `options` object to the `modelElement` alone.
 
-### NOTE
+### Note
 
 * The `HeadingOption` interface was moved to the `heading/heading` module.
 

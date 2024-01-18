@@ -173,7 +173,7 @@ The `CKEditorContext` component supports the following properties:
 
 ## Customizing the builds
 
-The {@link installation/getting-started/predefined-builds CKEditor&nbsp;5 builds} come ready to use, with a set of built-in plugins and a predefined configuration. While you can change the configuration easily by using the `config` property of the `<CKEditor>` component which allows you to change the {@link features/toolbar toolbar} or {@link installation/getting-started/configuration#removing-features remove some plugins}, in order to add more plugins you need to rebuild the editor.
+The {@link installation/getting-started/predefined-builds CKEditor&nbsp;5 builds} come ready to use, with a set of built-in plugins and a predefined configuration. While you can change the configuration easily by using the `config` property of the `<CKEditor>` component which allows you to change the {@link features/toolbar toolbar} or {@link installation/getting-started/configuration#removing-features remove some plugins}, to add more plugins you need to rebuild the editor.
 
 There are three main ways to do that.
 
@@ -399,9 +399,9 @@ Integrating the rich text editor from source allows you to use the full power of
 
 ### Create React App
 
-This guide assumes that you are using the [Create React App CLI](https://github.com/facebook/create-react-app) as your boilerplate and it goes through adjusting it to fit CKEditor&nbsp;5 needs. If you use your custom webpack setup, please read more about {@link installation/advanced/integrating-from-source-webpack including CKEditor&nbsp;5 built from source}.
+This guide assumes that you are using the [Create React App CLI](https://github.com/facebook/create-react-app) as your boilerplate and it goes through adjusting it to fit CKEditor&nbsp;5 needs. If you use your custom webpack setup, read more about {@link installation/advanced/integrating-from-source-webpack including CKEditor&nbsp;5 built from source}.
 
-The configuration needs to be ejected to make it possible to customize the webpack configuration. In order to be able to build CKEditor&nbsp;5 from source, you need to tell webpack how to handle CKEditor&nbsp;5's SVG and CSS files (by adding loaders configuration). Additionally, you need to exclude the CKEditor&nbsp;5 source from the existing loaders.
+The configuration needs to be ejected to make it possible to customize the webpack configuration. To be able to build CKEditor&nbsp;5 from source, you need to tell webpack how to handle CKEditor&nbsp;5's SVG and CSS files (by adding loaders configuration). Additionally, you need to exclude the CKEditor&nbsp;5 source from the existing loaders.
 
 <info-box>
   You can see all the changes described below in this example project: [https://github.com/ckeditor/ckeditor5-react-example/](https://github.com/ckeditor/ckeditor5-react-example/).
@@ -447,7 +447,7 @@ yarn add \
 	@ckeditor/ckeditor5-basic-styles
 ```
 
-Please note that all packages (excluding `@ckeditor/ckeditor5-dev-*` and `@ckeditor/ckeditor5-react`) {@link installation/plugins/installing-plugins#requirements must have the same version as the base editor package}.
+All packages (excluding `@ckeditor/ckeditor5-dev-*` and `@ckeditor/ckeditor5-react`) {@link installation/plugins/installing-plugins#requirements must have the same version as the base editor package}.
 
 #### Modifying the webpack configuration
 
@@ -496,7 +496,7 @@ Then, add two new elements to the exported object under the `module.rules` array
 
 Now you need to exclude CSS files used by CKEditor&nbsp;5 from the project's CSS loader.
 
-First, find a loader that starts its definition with the following code: `test: cssRegex`. Then modify it:
+First, find a loader that starts its definition with the following code: `test: cssRegex`. Then change it:
 
 ```js
 {
@@ -590,7 +590,7 @@ npm install --save \
 
 #### Configuring `vite.config.js` / `vite.config.ts`
 
-Configuring CKEditor&nbsp;5 with React and Vite is simple. Modify the existing config by importing `ckeditor5` and adding it to the list of plugins.
+Configuring CKEditor&nbsp;5 with React and Vite is simple. Modify the existing configuration by importing `ckeditor5` and adding it to the list of plugins.
 
 ```js
 // vite.config.js / vite.config.ts
@@ -607,7 +607,7 @@ export default defineConfig( {
 } )
 ```
 
-The configuration slightly differs for ESM projects. If you try to start the dev server using the `npm run dev` command, you may encounter an error: `require.resolve is not a function`. In this case, you need some additional lines of code.
+The configuration slightly differs for ECMAScript (ESM) projects. If you try to start the development server using the `npm run dev` command, you may encounter an error: `require.resolve is not a function`. In this case, you need some additional lines of code.
 
 ```js
 // vite.config.js / vite.config.ts
@@ -616,7 +616,7 @@ import { createRequire } from 'node:module';
 const require = createRequire( import.meta.url );
 ```
 
-If you want to use `.ts` config, you may need to install additional types for node.
+If you want to use `.ts` configuration, you may need to install additional types for Node.
 
 ```bash
 npm install --save @types/node
