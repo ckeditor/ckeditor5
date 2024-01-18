@@ -5,7 +5,7 @@
 
 category: setup
 order: 30
-menu-title: TypeScript support - NEW
+menu-title: TypeScript support - TODO NEW
 meta-title: TypeScript support | CKEditor 5 documentation
 modified_at: 2023-04-03
 ---
