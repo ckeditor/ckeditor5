@@ -20,7 +20,7 @@ If needed, you can revert the automatic change by pressing <kbd>Backspace</kbd>.
 {@snippet features/autoformat}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Block formatting

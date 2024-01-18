@@ -16,7 +16,7 @@ Use the HTML embed toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/ht
 {@snippet features/html-embed}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Additional feature information

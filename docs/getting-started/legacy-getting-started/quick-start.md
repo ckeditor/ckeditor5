@@ -56,7 +56,7 @@ Call the {@link module:editor-classic/classiceditor~ClassicEditor#create `Classi
 
 ### Sample implementation
 
-A full webpage with embedded CKEditor&nbsp;5 from the above example would look like this:
+A full web page with embedded CKEditor&nbsp;5 from this example would look like this:
 
 ```html
 <!DOCTYPE html>
@@ -90,10 +90,10 @@ A full webpage with embedded CKEditor&nbsp;5 from the above example would look l
 
 ## Running a full-featured editor from CDN
 
-The fastest way to run an advanced editor using the {@link features/index rich editing features offered by CKEditor&nbsp;5} is using a superbuild. The superbuild, available instantly from CDN, is a preconfigured package that offers access to almost all available plugins and all predefined editor types.
+The fastest way to run an advanced editor using the {@link features/index rich editing features offered by CKEditor&nbsp;5} is using a superbuild. The superbuild, available instantly from CDN, is a pre-configured package that offers access to almost all available plugins and all predefined editor types.
 
 <info-box>
-	Please consider, that the superbuild contains a really whole lot of code. A good portion of that code may not be needed in your implementation, so using the superbuild should be considered for evaluation purposes and tests rather, than for the production environment.
+	The superbuild contains a lot of code. A good portion of that code may not be needed in your implementation. Using the superbuild should be considered for evaluation purposes and tests rather than for the production environment.
 
 	We strongly advise using the {@link getting-started/legacy-getting-started/quick-start-other#creating-custom-builds-with-online-builder Online builder} approach or {@link getting-started/legacy-getting-started/quick-start-other#building-the-editor-from-source building the editor from source} to create customized and efficient production-environment solutions. You can also try out the {@link getting-started/legacy-getting-started/predefined-builds predefined builds} tailored for specific needs.
 </info-box>
@@ -102,11 +102,11 @@ The fastest way to run an advanced editor using the {@link features/index rich e
 
 In the superbuild, all editor classes are stored under the `CKEDITOR` object. Apart from that exception, the editor initialization is no different than the one described in the {@link getting-started/legacy-getting-started/predefined-builds#available-builds available builds documentation}.
 
-Because the superbuild contains a lot of plugins, you may need to remove the plugins you do not need with the <code>removePlugins</code> configuration option and adjust the toolbar configuration. There are also some plugins, like the {@link features/productivity-pack Productivity Pack}, that require a license to run. You can learn more about obtaining and activating license keys in the {@link support/license-key-and-activation License key and activation} guide. Observe the config below to see this implemented.
+Because the superbuild contains a lot of plugins, you may need to remove the plugins you do not need with the `removePlugins` configuration option and adjust the toolbar configuration. There are also some plugins, like the {@link features/productivity-pack Productivity Pack}, that require a license to run. You can learn more about obtaining and activating license keys in the {@link support/license-key-and-activation License key and activation} guide. Observe the configuration below to see this implemented.
 
 ### Sample implementation
 
-In this example, we remove the premium collaboration features as well as several other plugins that require credentials to work. We need to do this, otherwise, the editor will throw an error.
+In this example, you remove the premium collaboration features and several other plugins that require credentials to work. You need to do this, otherwise, the editor will throw an error.
 
 
 ```html
@@ -122,11 +122,11 @@ In this example, we remove the premium collaboration features as well as several
 				margin: 20px auto;
 			}
 			.ck-editor__editable[role="textbox"] {
-				/* editing area */
+				/* Editing area */
 				min-height: 200px;
 			}
 			.ck-content .image {
-				/* block images */
+				/* Block images */
 				max-width: 80%;
 				margin: 20px auto;
 			}
@@ -257,7 +257,7 @@ In this example, we remove the premium collaboration features as well as several
 						}
 					]
 				},
-				// The "super-build" contains more premium features that require additional configuration, disable them below.
+				// The "superbuild" contains more premium features that require additional configuration, disable them below.
 				// Do not turn them on unless you read the documentation and know how to configure them and setup the editor.
 				removePlugins: [
 					// These two are commercial, but you can try them out without registering to a trial.
@@ -313,10 +313,10 @@ While the superbuild is designed to provide as many of them as possible, some of
 
 ## Running a full-featured editor with Premium features
 
-If you would like to quickly evaluate CKEditor&nbsp;5 with premium features such as real-time collaboration, track changes and revision history then sign up for a [30-day free trial](https://orders.ckeditor.com/trial/premium-features).
+If you would like to quickly evaluate CKEditor&nbsp;5 with premium features such as real-time collaboration, track changes, and revision history, sign up for a [30-day free trial](https://orders.ckeditor.com/trial/premium-features).
 
-After you sign up, you will find in the customer dashboard the full code snippet to run the editor with premium features with all the necessary configurations.
+After you sign up, in the customer dashboard you will find the full code snippet to run the editor with premium features with all the necessary configurations.
 
 ## Adjusting plugins included in the CKEditor&nbsp;5 superbuild
 
-You may disable any features available in the superbuild using the {@link getting-started/setup/adding-removing-features#removing-features `removePlugins` configuration option}. For a full list of features currently available in the superbuild, please consult the {@link getting-started/legacy-getting-started/predefined-builds#list-of-plugins-included-in-the-ckeditor-5-predefined-builds predefined editor builds} guide. Please note, that removing certain features may make the editor unusable.
+You may turn off any features available in the superbuild using the {@link installation/getting-started/configuration#removing-features `removePlugins` configuration option}. For a full list of features currently available in the superbuild, consult the {@link installation/getting-started/predefined-builds#list-of-plugins-included-in-the-ckeditor-5-predefined-builds predefined editor builds} guide. Removing certain features may make the editor unusable.

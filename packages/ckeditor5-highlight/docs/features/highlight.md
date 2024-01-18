@@ -16,7 +16,7 @@ Select the text you want to highlight. Then use the highlight toolbar button {@i
 {@snippet features/highlight}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Configuring the highlight options

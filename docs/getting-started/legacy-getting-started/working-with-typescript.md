@@ -16,7 +16,7 @@ modified_at: 2023-04-03
 	This is a legacy guide kept for users' convenience. If you are looking for current CKEditor 5 installation instructions, please refer to the newest version of the {@link getting-started/quick-start CKEditor 5 Quick Start} guide.
 </info-box>
 
-CKEditor&nbsp;5 is built using TypeScript and has native type definitions. All the official packages and builds distributed using NPM and CDN contain type definitions. Custom builds produced by the **online builder** and **DLL** versions of packages provided by CKEditor&nbsp;5 do not provide built-in typings yet.
+CKEditor&nbsp;5 is built using TypeScript and has native type definitions. All the official packages and builds distributed using NPM and CDN contain type definitions. Custom builds produced by the **online builder** and **DLL** versions of packages provided by CKEditor&nbsp;5 do not provide built-in types yet.
 
 <info-box hint>
 	Using TypeScript is just an option. If you do not need its features, you can continue using CKEditor&nbsp;5 in JavaScript.
@@ -28,7 +28,7 @@ CKEditor&nbsp;5 is built using TypeScript and has native type definitions. All t
 	The minimal TypeScript version required to run CKEditor&nbsp;5 is v4.8.4.
 </info-box>
 
-## Why use CKEditor&nbsp;5 with TypeScript?
+## Why use CKEditor&nbsp;5 with TypeScript
 
 Using TypeScript comes with some advantages:
 
@@ -75,7 +75,7 @@ If you want to integrate CKEditor&nbsp;5 directly in your TypeScript project, fo
 * {@link getting-started/advanced/integrating-from-source-webpack Integration from source using webpack}
 * {@link getting-started/advanced/integrating-from-source-vite Integration from source using Vite}
 
-### Typings for Angular, React, and Vue 3 components
+### Types for Angular, React, and Vue 3 components
 
 The latest versions of our official components for Angular, React, and Vue 3 were migrated to TypeScript and use native CKEditor&nbsp;5's type definitions. You do not need to provide custom definitions anymore. You can use the following guides:
 

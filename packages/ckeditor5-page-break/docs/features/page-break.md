@@ -15,7 +15,7 @@ Use the insert page break toolbar button {@icon @ckeditor/ckeditor5-page-break/t
 {@snippet features/page-break}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Installation

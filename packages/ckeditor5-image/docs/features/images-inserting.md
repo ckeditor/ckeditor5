@@ -20,12 +20,12 @@ To upload an image, use the image toolbar button {@icon @ckeditor/ckeditor5-core
 {@snippet features/image-insert-via-url}
 
 <info-box info>
-	The demos in this guide only present a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+	These demos in this guide present a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ### Installation
 
-Using the URL of an image, the user may easily paste it into the editor. In order to enable this option, install the `ImageInsert` plugin and add the `insertImage` toolbar item to the toolbar (it replaces the standard `uploadImage` button).
+Using the URL of an image, the user may paste it into the editor. To enable this option, install the `ImageInsert` plugin and add the `insertImage` toolbar item to the toolbar (it replaces the standard `uploadImage` button).
 
 ```js
 import { ImageInsert } from '@ckeditor/ckeditor5-image';
@@ -66,7 +66,7 @@ ClassicEditor
 	The image URL must be the only content pasted to be properly embedded. Multiple links (`"http://image.url http://another.image.url"`) as well as bigger chunks of content (`"This link http://image.url will not be auto–embedded when pasted."`) are ignored.
 </info-box>
 
-If the automatic embedding was unexpected, for instance when the link was meant to remain in the content as text, simply undo the action (by clicking the "Undo" button in the toolbar or using the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>Z</kbd> keystrokes).
+If the automatic embedding was unexpected, for instance when the link was meant to remain in the content as text, simply undo the action. Click the "Undo" button in the toolbar or use the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>Z</kbd> keystrokes.
 
 ## Common API
 

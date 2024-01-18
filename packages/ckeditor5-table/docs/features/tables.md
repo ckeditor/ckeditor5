@@ -169,7 +169,7 @@ You can test this feature in the demo below by adding a new table in the blank "
 {@snippet features/table-nesting}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ### Known issues
@@ -343,7 +343,7 @@ Check the table with default headers applied to both the first row and the first
 
 By default, the editor allows nesting a table inside another table's cell.
 
-In order to disallow nesting tables, you need to register an additional schema rule. It needs to be added before the data is loaded into the editor. Due to that, it is best to implement it as a plugin:
+To disallow nesting tables, you need to register an additional schema rule. It needs to be added before the data is loaded into the editor. Due to that, it is best to implement it as a plugin:
 
 ```js
 function DisallowNestingTables( editor ) {

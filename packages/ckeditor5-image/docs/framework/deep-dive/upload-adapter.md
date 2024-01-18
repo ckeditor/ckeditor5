@@ -9,7 +9,7 @@ classes: custom-adapter
 
 In this guide, you will learn the basic concepts of the file upload architecture in CKEditor&nbsp;5 WYSIWYG editor which will help you implement your custom upload adapter.
 
-While this guide is mainly focused on image upload (the most common kind of upload), keep in mind that the presented concepts and the API allow development of all sorts of file upload adapters for different file types like PDFs, movies, etc.
+While this guide is mainly focused on image upload (the most common kind of upload), the presented concepts and the API allow development of all sorts of file upload adapters for different file types like PDF files, movies, etc.
 
 <info-box>
 	If you do not feel like getting through this guide but you want a simple upload adapter that works, check out the {@link features/simple-upload-adapter Simple upload adapter} plugin we implemented for you.
@@ -101,7 +101,7 @@ To sum up, for the image upload to work in the rich-text editor, two conditions 
 * **The upload adapter needs to be defined**. This can be done by using (enabling *and* configuring):
 
 	* {@link features/image-upload#official-upload-adapters One of the existing upload adapters}.
-	* [Your custom upload adapter](#implementing-a-custom-upload-adapter) and handling uploaded files on your server back–end.
+	* [Your custom upload adapter](#implementing-a-custom-upload-adapter) and handling uploaded files on your server backend.
 
 ## The anatomy of the adapter
 
@@ -114,7 +114,7 @@ Any upload adapter, whether an image upload adapter or a generic file upload ada
 	* **rejected** because of an error, in which case nothing is inserted into the content.
 * The {@link module:upload/filerepository~UploadAdapter#abort `abort()`} method must allow the editor to stop the upload process. It is necessary, for instance, when the image was removed from the content by the user before the upload finished or the editor instance was {@link module:core/editor/editor~Editor#destroy destroyed}.
 
-In its simplest form, a custom adapter implementing the `UploadAdapter` interface will look as follows. Note that `server.upload()`, `server.onUploadProgress()` and `server.abortUpload()`  should be replaced by specific implementations (dedicated for your application) and only demonstrate the minimal communication necessary for the upload to work:
+In its simplest form, a custom adapter implementing the `UploadAdapter` interface will look as follows. Note that `server.upload()`, `server.onUploadProgress()` and `server.abortUpload()` should be replaced by specific implementations (dedicated for your application) and only demonstrate the minimal communication necessary for the upload to work:
 
 ```js
 class MyUploadAdapter {
@@ -165,7 +165,7 @@ In this section, you are going to implement and enable a custom upload adapter. 
 </info-box>
 
 <info-box>
-	Note that this is just an example implementation and `XMLHttpRequest` might not necessarily be the best solution for your application.
+	This is just an example implementation and `XMLHttpRequest` might not necessarily be the best solution for your application.
 
 	Use the provided code snippets as an inspiration for your own custom upload adapter &ndash; it is up to you to choose the technologies and APIs to use. For instance, you may want to check out the native [`fetch()` API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) that works with `Promises` out of the box.
 </info-box>
@@ -219,7 +219,7 @@ class MyUploadAdapter {
 Let's see what the `_initRequest()` method looks like in your custom upload adapter. It should prepare the `XMLHttpRequest` object before it can be used to upload an image.
 
 <info-box>
-	Note that for the sake of keeping the code simple, in this example implementation no particular security mechanism is used that would prevent your application and services from being abused.
+	For the sake of keeping the code simple, in this example implementation no particular security mechanism is used that would prevent your application and services from being abused.
 
 	We **strongly recommend** using both authentication and [<abbr title="Cross-site request forgery">CSRF</abbr> protection](https://owasp.org/www-community/attacks/csrf) mechanisms (i.e. CSRF tokens) in your application. For instance, they can be implemented as [`XMLHttpRequest`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/setRequestHeader) headers.
 </info-box>
@@ -243,7 +243,7 @@ class MyUploadAdapter {
 }
 ```
 
-Now let's focus on the `_initListeners()` method which attaches the `error`, `abort`, `load`, and `progress` event listeners to the `XMLHttpRequest` object created in the last step.
+Now focus on the `_initListeners()` method which attaches the `error`, `abort`, `load`, and `progress` event listeners to the `XMLHttpRequest` object created in the last step.
 
 A successful image upload will finish when the upload promise is resolved upon the `load` event fired by the `XMLHttpRequest` request. The promise must be resolved with an object containing information about the image. See the documentation of the {@link module:upload/filerepository~UploadAdapter#upload `upload()`} method to learn more.
 
@@ -297,10 +297,10 @@ class MyUploadAdapter {
 }
 ```
 
-Last but not least, the `_sendRequest()` method sends the `XMLHttpRequest`. In this example, the [`FormData`](https://developer.mozilla.org/en-US/docs/Web/API/FormData) interface is used to pass the file provided by the {@link module:upload/filerepository~FileRepository#createLoader file loader}.
+Finally, the `_sendRequest()` method sends the `XMLHttpRequest`. In this example, the [`FormData`](https://developer.mozilla.org/en-US/docs/Web/API/FormData) interface is used to pass the file provided by the {@link module:upload/filerepository~FileRepository#createLoader file loader}.
 
 <info-box>
-	Note that both the data format and actual data passed to `XMLHttpRequest.send()` in this example implementation are arbitrary. Your implementation could be different and it will depend on the back–end of your application and interfaces it provides.
+	Both the data format and actual data passed to `XMLHttpRequest.send()` in this example implementation are arbitrary. Your implementation could be different and it will depend on the backend of your application and interfaces it provides.
 </info-box>
 
 ```js
@@ -328,7 +328,7 @@ class MyUploadAdapter {
 
 ### Responsive images and `srcset` attribute
 
-If the upload is successful, a `Promise` returned by the {@link module:upload/filerepository~UploadAdapter#upload `MyUploadAdapter.upload()`} method can resolve with more than just a `default` path to the uploaded image (see the implementation of `MyUploadAdapter._initListeners()`), which usually looks like this:
+If the upload is successful, a `Promise` returned by the {@link module:upload/filerepository~UploadAdapter#upload `MyUploadAdapter.upload()`} method can resolve with more than just a `default` path to the uploaded image. See the implementation of `MyUploadAdapter._initListeners()`. This usually looks like this:
 
 ```js
 {
@@ -352,7 +352,7 @@ Other image sizes can also be provided in the response, allowing [responsive ima
 	When returning multiple images, the widest returned one should be the default one. It is essential to correctly set the `width` attribute of the image in the rich-text editor content.
 </info-box>
 
-The {@link module:image/imageupload~ImageUpload image upload} plugin, which is capable of handling multiple image sizes returned by the upload adapter, will automatically add the URLs to other images sizes to the `srcset` attribute of the image in the content.
+The {@link module:image/imageupload~ImageUpload image upload} plugin is capable of handling multiple image sizes returned by the upload adapter. It will automatically add the URLs to other images sizes to the `srcset` attribute of the image in the content.
 
 <info-box>
 	The {@link features/easy-image Easy Image} feature provides responsive image support {@link features/easy-image#responsive-images out of the box}.
@@ -361,7 +361,7 @@ The {@link module:image/imageupload~ImageUpload image upload} plugin, which is c
 Knowing that, you can implement the `XMLHttpRequest#load` listener that resolves the upload promise in the [previous section](#using-xmlhttprequest-in-an-adapter) so that it passes the entire `urls` property of the server response to the image upload plugin:
 
 ```js
-// Rest of the MyUploadAdapter class definition.
+// The rest of the MyUploadAdapter class definition.
 // ...
 
 xhr.addEventListener( 'load', () => {
@@ -381,15 +381,15 @@ xhr.addEventListener( 'load', () => {
 	resolve( response.urls );
 } );
 
-// Rest of the MyUploadAdapter class definition.
+// The rest of the MyUploadAdapter class definition.
 // ...
 ```
 
 ### Passing additional data to the response
 
-There is a chance you might need to pass some data from the server to provide additional data to some features. In order to do that, you need to wrap all URLs in the `urls` property and pass additional data in the top level of the object.
+There is a chance you might need to pass some data from the server to provide additional data to some features. To do that, you need to wrap all URLs in the `urls` property and pass additional data in the top level of the object.
 
-For image uploading, you can later retrieve the data in the {@link module:image/imageupload/imageuploadediting~ImageUploadEditing#event:uploadComplete `uploadComplete`} event, which allows setting new attributes and overriding the existing ones on the model image based on the data just after the image is uploaded.
+For image uploading, you can later retrieve the data in the {@link module:image/imageupload/imageuploadediting~ImageUploadEditing#event:uploadComplete `uploadComplete`} event. This allows setting new attributes and overriding the existing ones on the model image based on the data just after the image is uploaded.
 
 ```js
 {
@@ -417,7 +417,7 @@ class MyUploadAdapter {
 
 function MyCustomUploadAdapterPlugin( editor ) {
 	editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
-		// Configure the URL to the upload script in your back-end here!
+		// Configure the URL to the upload script in your backend here!
 		return new MyUploadAdapter( loader );
 	};
 }
@@ -559,7 +559,7 @@ ClassicEditor
 	} );
 ```
 
-## What's next?
+## What's next
 
 Check out the comprehensive {@link features/image-upload image upload overview} guide to learn more about different ways of uploading images in CKEditor&nbsp;5. See the {@link features/images-overview image feature} guide to find out more about handling images in CKEditor&nbsp;5.
 

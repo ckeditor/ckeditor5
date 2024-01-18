@@ -3,7 +3,7 @@ Changelog
 
 ## [41.0.0](https://github.com/ckeditor/ckeditor5/compare/v40.2.0...v41.0.0) (January 17, 2024)
 
-We are happy to announce the release of CKEditor&nbsp;5 v40.2.0.
+We are happy to announce the release of CKEditor&nbsp;5 v41.0.0.
 
 #### Improved list suggestions behavior
 
@@ -21,17 +21,17 @@ Some users found using the [find and replace](https://ckeditor.com/docs/ckeditor
 
 <!-- TODO: GIF. -->
 
-If you liked the earlier user interface of find and replace, you can still display it inside a dropdown by setting the [`config.findAndReplace.uiType`](https://ckeditor.com/docs/ckeditor5/latest/api/module_find-and-replace_findandreplaceconfig-FindAndReplaceConfig.html) configuration option.
+If you liked the earlier user interface of this feature, you can still display it inside a dropdown by setting the [`config.findAndReplace.uiType`](https://ckeditor.com/docs/ckeditor5/latest/api/module_find-and-replace_findandreplaceconfig-FindAndReplaceConfig.html) configuration option.
 
 We have also introduced a dialog in the [AI Assistant](https://ckeditor.com/docs/ckeditor5/latest/features/ai-assistant/ai-assistant-overview.html) feature. Displaying the AI Assistant inside a balloon came with many UX hiccups, especially when you selected large content. It works great now.
 
 <!-- TODO: GIF or screenshot or nothing. -->
 
-The dialogs are now a part of the [CKEditor&nbsp;5 UI library](https://ckeditor.com/docs/ckeditor5/latest/framework/architecture/ui-library.html) so you can use them, too! Read our guides<!-- not merged yet --> to learn how to display your custom features inside dialogs and modals.
+The dialogs are now a part of the [CKEditor&nbsp;5 UI library](https://ckeditor.com/docs/ckeditor5/latest/framework/architecture/ui-library.html#dialogs-and-modals) so you can use them, too! Read the documentation to learn how to display your custom features inside dialogs and modals.
 
 #### Case change
 
-No more *select*, *delete*, *retype with Caps Lock* for long legal preambles. The case change plugin enables users to easily modify text cases, applying UPPERCASE, lowercase, and Title Case. This feature simplifies text formatting by allowing quick alterations with a single click or a keyboard shortcut.
+No more *selecting*, *deleting*, *retyping with Caps Lock* for long legal preambles. The case change plugin enables users to easily change text cases, applying UPPERCASE, lowercase, and Title Case. This feature simplifies text formatting by allowing quick alterations with a single click or a keyboard shortcut.
 
 <!-- TODO: GIF. -->
 
@@ -39,13 +39,13 @@ As a key component of [CKEditor&nbsp;5's Productivity Pack](https://ckeditor.com
 
 #### Improving CKEditor&nbsp;5 installation methods
 
-We start the new year with improvements in the new installation paths project. This includes an upgrade to the latest TypeScript version, ensuring enhanced type safety.
+We start the new year with improvements in the new installation methods project. This includes an upgrade to the latest TypeScript version, ensuring enhanced type safety.
 
 A key part of this release is the resolution of ECMAScript Module (ESM) compliance issues. We updated all packages and their definitions to be fully ESM-compliant. This ensures smoother integration and compatibility across various development environments.
 
 We have also renamed exports of several classes, interfaces, and helpers to eliminate naming conflicts in the code for the new bundle that will appear later this year.
 
-Take a look at the RFC to see what’s coming: [https://github.com/ckeditor/ckeditor5/issues/15502](https://github.com/ckeditor/ckeditor5/issues/15502).
+Take a look at the RFC to see what is coming: [https://github.com/ckeditor/ckeditor5/issues/15502](https://github.com/ckeditor/ckeditor5/issues/15502).
 
 #### Deprecation of lists v1
 
@@ -119,8 +119,8 @@ Refer to the [update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/
 * **[html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support)**: The editor should not be stuck in an infinite post-fixing loop while modifying a list structure inside a GHS element. Closes [#15527](https://github.com/ckeditor/ckeditor5/issues/15527), [#15565](https://github.com/ckeditor/ckeditor5/issues/15565). ([commit](https://github.com/ckeditor/ckeditor5/commit/7d600e2c87ec9b1982359343da9188ed7eebd69f))
 * **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: Fixed the editor crash using the `LinkImage` plugin loaded before `Image`, which ends with extending the schema definitions before they registering them. Closes [#15617](https://github.com/ckeditor/ckeditor5/issues/15617). ([commit](https://github.com/ckeditor/ckeditor5/commit/6d9ec4202f077a5dea278351f642aa04182d7c2e))
 * **[media-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed)**: Replaced some toolbar icons with ones with improved alignment. Closes [#15549](https://github.com/ckeditor/ckeditor5/issues/15549). ([commit](https://github.com/ckeditor/ckeditor5/commit/ee2b91c945224b2db71f809a4e4149ecdfe750b6))
-* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The [`TextareaView`](https://ckeditor.com/docs/ckeditor5/latest/api/module_ui_textarea_textareaview-TextareaView.html) component should correctly update its size if its value changed while it was invisible. See [#14973](https://github.com/ckeditor/ckeditor5/issues/14973). ([commit](https://github.com/ckeditor/ckeditor5/commit/f8e2b1c902776a848e1ddc208b5db108628f04da))
-* Make all CKEditor&nbsp;5 packages valid ES Modules. See [#13673](https://github.com/ckeditor/ckeditor5/issues/13673).
+* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The [`TextareaView`](https://ckeditor.com/docs/ckeditor5/latest/api/module_ui_textarea_textareaview-TextareaView.html) component should correctly update its size if its value changes while it is invisible. See [#14973](https://github.com/ckeditor/ckeditor5/issues/14973). ([commit](https://github.com/ckeditor/ckeditor5/commit/f8e2b1c902776a848e1ddc208b5db108628f04da))
+* Made all CKEditor&nbsp;5 packages valid ES Modules. See [#13673](https://github.com/ckeditor/ckeditor5/issues/13673).
 
 ### Other changes
 

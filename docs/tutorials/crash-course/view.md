@@ -99,7 +99,7 @@ Let's test our changes. In the browser, select some text in the editor and click
 
 If all went well, the text you selected should be highlighted in the editor and the button should be active. If you click the button again, the selection should be removed and the button should no longer be active.
 
-## What's next?
+## What's next
 
 Congratulations, you have just finished this tutorial!
 

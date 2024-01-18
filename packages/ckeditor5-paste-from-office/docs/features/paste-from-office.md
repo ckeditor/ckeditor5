@@ -44,7 +44,7 @@ To test pasting from Office, download the sample documents and open them in Micr
 {@snippet features/paste-from-office}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Paste from Office enhanced

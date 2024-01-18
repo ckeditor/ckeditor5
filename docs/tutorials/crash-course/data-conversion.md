@@ -68,7 +68,7 @@ editor.conversion.for( 'editingDowncast' ).attributeToElement( {
 
 Notice that we called the `elementToAttribute` method in the upcast and the `attributeToElement` method in the downcast. This is because in the upcast we convert the HTML element to a model attribute, but in the downcast we do the opposite.
 
-## What's next?
+## What's next
 
 If your case requires a more complex conversion than we covered in this tutorial, see the {@link framework/deep-dive/conversion/intro Conversion deep dive} document.
 

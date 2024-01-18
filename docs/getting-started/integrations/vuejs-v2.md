@@ -273,7 +273,7 @@ npm install --save @ckeditor/vite-plugin-ckeditor5 @ckeditor/ckeditor5-vue2
 
 #### Configuring `vite.config.js`
 
-Configuring CKEditor with Vue 2 and Vite is pretty simple. Modify the existing config by importing the `ckeditor5` package. Then add it to the list of plugins.
+Configuring CKEditor with Vue 2 and Vite is pretty simple. Modify the existing configuration by importing the `ckeditor5` package. Then add it to the list of plugins.
 
 ```js
 // vite.config.js
@@ -290,7 +290,7 @@ export default defineConfig( {
 } );
 ```
 
-The configuration slightly differs for ESM projects. If you try to start the dev server using the `npm run dev` command, you may encounter an error: `require.resolve is not a function`. In this case, you need some additional lines of code.
+The configuration slightly differs for ECMAScript (ESM) projects. If you try to start the development server using the `npm run dev` command, you may encounter an error: `require.resolve is not a function`. In this case, you need some additional lines of code.
 
 ```js
 // vite.config.js

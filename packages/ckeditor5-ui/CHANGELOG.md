@@ -46,9 +46,9 @@ Changes for the past releases are available below.
 
 ### Features
 
-* The `BalloonToolbar` plugin should group items when its width is close to related editable's width. Closes [ckeditor/ckeditor5#5597](https://github.com/ckeditor/ckeditor5/issues/5597). Closes [ckeditor/ckeditor5#5501](https://github.com/ckeditor/ckeditor5/issues/5501). ([d36fd23](https://github.com/ckeditor/ckeditor5-ui/commit/d36fd23))
+* The `BalloonToolbar` plugin should group items when its width is close to related editable element's width. Closes [ckeditor/ckeditor5#5597](https://github.com/ckeditor/ckeditor5/issues/5597). Closes [ckeditor/ckeditor5#5501](https://github.com/ckeditor/ckeditor5/issues/5501). ([d36fd23](https://github.com/ckeditor/ckeditor5-ui/commit/d36fd23))
 
-  [`BalloonPanelView.defaultPositions`](https://ckeditor.com/docs/ckeditor5/latest/api/module_ui_panel_balloon_balloonpanelview-BalloonPanelView.html#static-member-defaultPositions) has been extended with additional positions. Please refer to the documentation to learn more.
+  [`BalloonPanelView.defaultPositions`](https://ckeditor.com/docs/ckeditor5/latest/api/module_ui_panel_balloon_balloonpanelview-BalloonPanelView.html#static-member-defaultPositions) has been extended with additional positions. Refer to the documentation to learn more.
 
 ### Other changes
 
@@ -272,7 +272,7 @@ Changes for the past releases are available below.
 
 ### Bug fixes
 
-* The action should be executed upon the first click on a tooltip-enabled UI in iOS. Closes [ckeditor/ckeditor5#920](https://github.com/ckeditor/ckeditor5/issues/920). ([6508ba2](https://github.com/ckeditor/ckeditor5-ui/commit/6508ba2))
+* The action should be executed upon the first click of a tooltip-enabled UI in iOS. Closes [ckeditor/ckeditor5#920](https://github.com/ckeditor/ckeditor5/issues/920). ([6508ba2](https://github.com/ckeditor/ckeditor5-ui/commit/6508ba2))
 * The balloon toolbar should be attached correctly in case of a multi-range selection. Closes [#385](https://github.com/ckeditor/ckeditor5-ui/issues/385). ([714ef21](https://github.com/ckeditor/ckeditor5-ui/commit/714ef21))
 * The buttons in the editor should provide basic accessibility. Closes [ckeditor/ckeditor5#1013](https://github.com/ckeditor/ckeditor5/issues/1013). ([9e17d13](https://github.com/ckeditor/ckeditor5-ui/commit/9e17d13))
 
@@ -331,7 +331,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 ### Other changes
 
 * Added a CSS class to the SplitButtonView when the arrow is on (see [ckeditor/ckeditor5-theme-lark#134](https://github.com/ckeditor/ckeditor5-theme-lark/issues/134)). ([d490d61](https://github.com/ckeditor/ckeditor5-ui/commit/d490d61))
-* Added the `.ck-content` CSS class to the `EditableUIView` in order to simplify styling the editor content. Closes [#176](https://github.com/ckeditor/ckeditor5-ui/issues/176). ([f38ae70](https://github.com/ckeditor/ckeditor5-ui/commit/f38ae70))
+* Added the `.ck-content` CSS class to the `EditableUIView` to simplify styling the editor content. Closes [#176](https://github.com/ckeditor/ckeditor5-ui/issues/176). ([f38ae70](https://github.com/ckeditor/ckeditor5-ui/commit/f38ae70))
 * Align feature class naming to a new scheme. ([1c500f6](https://github.com/ckeditor/ckeditor5-ui/commit/1c500f6))
 * Aligned code to changes (`config.lang` to `config.languages`). Part of the Translation Service v2 ([ckeditor/ckeditor5#624](https://github.com/ckeditor/ckeditor5/issues/624)). ([876f681](https://github.com/ckeditor/ckeditor5-ui/commit/876f681))
 * ComponentFactory.names() will return original component names (instead of normalized names). Closes [#376](https://github.com/ckeditor/ckeditor5-ui/issues/376). ([b6b39d7](https://github.com/ckeditor/ckeditor5-ui/commit/b6b39d7))
@@ -454,7 +454,7 @@ refer to the `KeystrokeHandler` helper to learn more.
 
 * `StickyToolbarView#limiterOffset` has been renamed to `StickyToolbarView#limiterBottomOffset`.
 * `ContextualToolbar#beforeShow` is no longer available. Please refer to `ContextualToolbar#show` instead.
-* The `clickOutsideHandler` helper's `contextElement` config option is now an `Array` named `contextElements`.
+* The `clickOutsideHandler` helper's `contextElement` configuration option is now an `Array` named `contextElements`.
 * `View#init()`, `View#destroy()` (also `ViewCollection#init()`, `ViewCollection#destroy()` and `ViewCollection#add()`) no longer return `Promise`. It may require updates in UI components which inherit from `View` and rely on the value returned by these methods.
 * Various UI components switched to synchronous `init()` and `destroy()` (no longer returning `Promise`), which means that features using these components may need some updates to work properly.
 * The position names in `BalloonPanelView.defaultPositions` and their results have changed. Please refer to the latest API documentation to learn more.
@@ -512,7 +512,7 @@ refer to the `KeystrokeHandler` helper to learn more.
 
 * Allowed marking ListItemView active using the #isActive attribute. Closes [#166](https://github.com/ckeditor/ckeditor5-ui/issues/166). ([a19d6c4](https://github.com/ckeditor/ckeditor5-ui/commit/a19d6c4))
 * Enabled styling via "class" attribute in ListItemView. Closes [#162](https://github.com/ckeditor/ckeditor5-ui/issues/162). ([672bf82](https://github.com/ckeditor/ckeditor5-ui/commit/672bf82))
-* Implemented features necessary for creating inline editors UI – `FloatingPanelView` class, `Template.revert()` method and `enableToolbarKeyboardFocus()` util. Closes [#152](https://github.com/ckeditor/ckeditor5-ui/issues/152). ([cb606d7](https://github.com/ckeditor/ckeditor5-ui/commit/cb606d7))
+* Implemented features necessary for creating inline editors UI: `FloatingPanelView` class, `Template.revert()` method, and `enableToolbarKeyboardFocus()` utility. Closes [#152](https://github.com/ckeditor/ckeditor5-ui/issues/152). ([cb606d7](https://github.com/ckeditor/ckeditor5-ui/commit/cb606d7))
 
 ### Other changes
 
@@ -523,7 +523,7 @@ refer to the `KeystrokeHandler` helper to learn more.
 
 ### BREAKING CHANGES
 
-* `ViewCollection#bindTo.as` is renamed to `Collection#bindTo.using` when mapping function is a parameter. See`Collection#bindTo` docs.
+* `ViewCollection#bindTo.as` is renamed to `Collection#bindTo.using` when mapping function is a parameter. See the `Collection#bindTo` documentation.
 * The `ui/balloonpanel/balloonpanelview` module was renamed to `ui/panel/balloon/balloonpanelview`. See [#152](https://github.com/ckeditor/ckeditor5-ui/issues/152).
 
 
