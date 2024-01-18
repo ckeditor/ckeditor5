@@ -21,12 +21,12 @@ import { global, type Constructor, type Mixed, type EventInfo } from '@ckeditor/
  * ```
  *
  * Creating a class extending it attaches a set of mouse and touch listeners allowing to observe dragging of the view element:
- * * `mousedown` and `touchstart` on the view element - starting the dragging,
- * * `mousemove` and `touchmove` on the document - updating the view coordinates,
+ * * `mousedown` and `touchstart` on the view element - starting the dragging.
+ * * `mousemove` and `touchmove` on the document - updating the view coordinates.
  * * `mouseup` and `touchend` on the document - stopping the dragging.
  *
- * The mixin itself doesn't provide a visual feedback (i.e. the dragged element doesn't change its position) -
- * it's up to the developer to implement it.
+ * The mixin itself does not provide a visual feedback (that is, the dragged element does not change its position) -
+ * it is up to the developer to implement it.
  */
 export default function DraggableViewMixin<Base extends Constructor<View>>( view: Base ): Mixed<Base, DraggableView> {
 	abstract class DraggableMixin extends view implements DraggableView {
@@ -48,7 +48,7 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 		private _onDragEndBound = this._onDragEnd.bind( this );
 
 		/**
-		 * The last coordinates of the view. It's updated on every mouse move.
+		 * The last coordinates of the view. It is updated on every mouse move.
 		 */
 		private _lastDraggingCoordinates: { x: number; y: number } = { x: 0, y: 0 };
 

@@ -21,7 +21,7 @@ import FocusCycler, { type FocusableView } from '../focuscycler.js';
 import '../../theme/components/dialog/dialogactions.css';
 
 /**
- * A dialog actions view class. Contains button views which are used to execute dialog actions.
+ * A dialog actions view class. It contains button views which are used to execute dialog actions.
  */
 export default class DialogActionsView extends View {
 	/**
@@ -132,7 +132,7 @@ export default class DialogActionsView extends View {
 	}
 
 	/**
-	 * Add all elements from the {@link #children} collection to the {@link #_focusables} collection
+	 * Adds all elements from the {@link #children} collection to the {@link #_focusables} collection
 	 * and to the {@link #_focusTracker} instance.
 	 */
 	private _updateFocusCyclableItems() {
@@ -144,7 +144,7 @@ export default class DialogActionsView extends View {
 }
 
 /**
- * A dialog action button definition. It's a slightly modified version
+ * A dialog action button definition. It is a slightly modified version
  * of the {@link module:ui/button/button~Button} definition.
  */
 export type DialogActionButtonDefinition =
