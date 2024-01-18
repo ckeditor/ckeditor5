@@ -9,6 +9,7 @@ import ColorSelectorView from './../../src/colorselector/colorselectorview.js';
 import ColorTileView from '../../src/colorgrid/colortileview.js';
 import FocusCycler from '../../src/focuscycler.js';
 import ColorPickerView from '../../src/colorpicker/colorpickerview.js';
+import ColorGridsFragmentView from '../../src/colorselector/colorgridsfragmentview.js';
 
 import Collection from '@ckeditor/ckeditor5-utils/src/collection.js';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker.js';
@@ -24,32 +25,32 @@ import removeButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
 import checkButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
 import cancelButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 
+const colorDefinitions = [
+	{
+		color: '#000',
+		label: 'Black',
+		options: {
+			hasBorder: false
+		}
+	},
+	{
+		color: 'rgb(255, 255, 255)',
+		label: 'White',
+		options: {
+			hasBorder: true
+		}
+	},
+	{
+		color: 'red',
+		label: 'Red',
+		options: {
+			hasBorder: false
+		}
+	}
+];
+
 describe( 'ColorSelectorView', () => {
 	let locale, colorSelectorView;
-
-	const colorDefinitions = [
-		{
-			color: '#000',
-			label: 'Black',
-			options: {
-				hasBorder: false
-			}
-		},
-		{
-			color: 'rgb(255, 255, 255)',
-			label: 'White',
-			options: {
-				hasBorder: true
-			}
-		},
-		{
-			color: 'red',
-			label: 'Red',
-			options: {
-				hasBorder: false
-			}
-		}
-	];
 
 	beforeEach( () => {
 		locale = { t() {} };
@@ -856,5 +857,30 @@ describe( 'ColorSelectorView', () => {
 				color: 'rgb(255,255,255)'
 			} );
 		} );
+	} );
+} );
+
+describe( 'ColorGridsFragmentView', () => {
+	const locale = { t() {} };
+
+	it( 'should not focus on render', () => {
+		const colorGridsFragmentView = new ColorGridsFragmentView( locale, {
+			colors: colorDefinitions,
+			columns: 5,
+			removeButtonLabel: 'Remove color',
+			documentColorsLabel: 'Document colors',
+			documentColorsCount: 4,
+			focusTracker: new FocusTracker(),
+			focusables: new Collection()
+		} );
+
+		const spy = sinon.spy( colorGridsFragmentView, 'focus' );
+
+		colorGridsFragmentView.render();
+
+		sinon.assert.notCalled( spy );
+
+		colorGridsFragmentView.destroy();
+		colorGridsFragmentView.element.remove();
 	} );
 } );
