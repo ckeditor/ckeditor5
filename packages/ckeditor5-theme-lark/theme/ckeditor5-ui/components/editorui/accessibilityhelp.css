@@ -21,6 +21,8 @@
 	overflow: auto;
 	user-select: text;
 
+	border: 1px solid transparent;
+
 	&:focus {
 		@mixin ck-focus-ring;
 		@mixin ck-box-shadow var(--ck-focus-outer-shadow);
