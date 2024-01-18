@@ -29,10 +29,15 @@ module.exports = {
 			{
 				extensions: [ '.ts', '.js', '.json' ]
 			}
-		],
-		'ckeditor5-rules/no-cross-package-svg-imports': 'error'
+		]
 	},
 	overrides: [
+		{
+			files: [ './packages/*/src/**/*.ts' ],
+			rules: {
+				'ckeditor5-rules/no-cross-package-svg-imports': 'error'
+			}
+		},
 		{
 			files: [ '**/tests/**/*.@(js|ts)' ],
 			rules: {
