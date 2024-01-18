@@ -7,10 +7,10 @@ order: 30
 
 # Installing plugins
 
-CKEditor&nbsp;5 plugins, responsible for various features, are distributed through [npm](https://www.npmjs.com) packages. We implemented them modularly. It means a single plugin may contain multiple JavaScript files. Do not hesitate and explore available CKEditor&nbsp;5 features - they are waiting for you to install them!
+CKEditor&nbsp;5 plugins, responsible for various features, are distributed through [npm](https://www.npmjs.com) packages. We implemented them in a modular way. It means a single plugin may contain multiple JavaScript files. Do not hesitate and explore available CKEditor&nbsp;5 features &ndash; they are waiting for you to install them!
 
 <info-box hint>
-	If you are looking for an easy way to create a custom build of CKEditor&nbsp;5 without installing anything, check the [online builder](https://ckeditor.com/ckeditor-5/online-builder/), which allows you to create a build with a custom set of plugins through a simple and intuitive UI.
+	If you are looking for an easy way to create a custom build of CKEditor&nbsp;5 without installing anything, check the [online builder](https://ckeditor.com/ckeditor-5/online-builder/). It allows you to create a build with a custom set of plugins through a simple and intuitive UI.
 </info-box>
 
 ## Requirements
@@ -40,13 +40,13 @@ npm install <plugin-name>
 
 ### Installing a package
 
-Let's say we want to install the alignment package. It adds text alignment functionality to your editor. We can install it using the following command:
+Let's say you want to install the alignment package. It adds text alignment functionality to your editor. You can install it using the following command:
 
 ```bash
 npm install @ckeditor/ckeditor5-alignment
 ```
 
-The command will install the package and add it to `package.json`. You can also edit `package.json` manually. But remember that all packages (excluding `@ckeditor/ckeditor5-dev-*`) {@link installation/plugins/installing-plugins#requirements must have the same version as the base editor package}.
+The command will install the package and add it to `package.json`. You can also edit `package.json` manually. All packages (excluding `@ckeditor/ckeditor5-dev-*`) {@link installation/plugins/installing-plugins#requirements must have the same version as the base editor package}.
 
 <info-box hint>
 	Due to the non-deterministic way how npm installs packages, it is recommended to run `rm -rf node_modules && npm install` when in doubt. This will prevent some packages from getting installed more than once in `node_modules/` (which might lead to broken builds).
@@ -192,7 +192,7 @@ And use it with:
 npm run build
 ```
 
-If you are integrating an editor from the source into your application, then this step should be handled by build scripts used in your project.
+If you are integrating an editor from the source into your application, this step should be handled by build scripts used in your project.
 
 ## Adding an unofficial JavaScript plugin
 
@@ -206,7 +206,7 @@ Even if the package you want to use is in JavaScript, there is a chance there ar
 npm install --save-dev @types/<package-name>
 ```
 
-If you successfully installed those types, there is nothing more to do. You should no longer see TypeScript compiler errors, and your project should be ready to be built.
+If you successfully installed those types, there is nothing more to do. You should no longer see TypeScript compiler errors, and your project should be ready to build.
 
 ### Custom declarations
 
@@ -248,4 +248,4 @@ If there are no community types and creating declarations is not an option, ther
 import { foo } from 'javascript-package';
 ```
 
-This comment suppresses all errors that originate on the following line.
+This comment suppresses all errors that originate from the following line.

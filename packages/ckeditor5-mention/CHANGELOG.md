@@ -22,7 +22,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Features
 
-* Implemented debounced mechanism for requesting a mention feed. Closes [ckeditor/ckeditor5#4619](https://github.com/ckeditor/ckeditor5/issues/4619). ([f50db9c](https://github.com/ckeditor/ckeditor5-mention/commit/f50db9c))
+* Implemented a debounce mechanism for requesting a mention feed. Closes [ckeditor/ckeditor5#4619](https://github.com/ckeditor/ckeditor5/issues/4619). ([f50db9c](https://github.com/ckeditor/ckeditor5-mention/commit/f50db9c))
 
 
 ## [16.0.0](https://github.com/ckeditor/ckeditor5-mention/compare/v15.0.0...v16.0.0) (December 4, 2019)
@@ -44,11 +44,11 @@ Internal changes only (updated dependencies, documentation, etc.).
 ### Other changes
 
 * The issue tracker for this package was moved to https://github.com/ckeditor/ckeditor5/issues. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([2a33675](https://github.com/ckeditor/ckeditor5-mention/commit/2a33675))
-* Use RegExp Unicode support feature detection form ckeditor5-utils. ([d47923e](https://github.com/ckeditor/ckeditor5-mention/commit/d47923e))
+* Use RegExp Unicode support feature detection from `ckeditor5-utils`. ([d47923e](https://github.com/ckeditor/ckeditor5-mention/commit/d47923e))
 
 ### BREAKING CHANGES
 
-* The `mention/featuredetection` namespace is removed. Please use `env.features` from ckeditor5-utils instead.
+* The `mention/featuredetection` namespace is removed. Use `env.features` from `ckeditor5-utils` instead.
 
 
 ## [12.0.1](https://github.com/ckeditor/ckeditor5-mention/compare/v12.0.0...v12.0.1) (July 10, 2019)
@@ -66,11 +66,11 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Other changes
 
-* Moved the `TextWatcher` util to `@ckeditor/ckeditor5-typing`. ([a644043](https://github.com/ckeditor/ckeditor5-mention/commit/a644043))
+* Moved the `TextWatcher` utility to `@ckeditor/ckeditor5-typing`. ([a644043](https://github.com/ckeditor/ckeditor5-mention/commit/a644043))
 
 ### BREAKING CHANGES
 
-* The `TextWatcher` util was moved to `@ckeditor/ckeditor5-typing`.
+* The `TextWatcher` utility was moved to `@ckeditor/ckeditor5-typing`.
 
 
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-mention/compare/v10.0.0...v11.0.0) (June 6, 2019)
