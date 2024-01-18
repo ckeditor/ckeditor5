@@ -10,7 +10,7 @@ modified_at: 2024-01-03
 The CKEditor&nbsp;5 framework provides several UI components that can be helpful when developing a new user interface. All UI classes come with the {@link module:ui/view~View.set `set()`} method, which sets the properties of the components, such as labels, icons, placeholders, etc.
 
 <info-box>
-	This article lists all available components and their variants. If you want to understand the implementation details, check the {@link framework/architecture/ui-library UI library guide}.
+	This article lists all available components and their variants. If you want to understand the implementation details, check the {@link framework/architecture/ui-library UI library} guide.
 </info-box>
 
 ## Balloon
