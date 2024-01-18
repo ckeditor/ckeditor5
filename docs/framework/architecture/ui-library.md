@@ -729,7 +729,7 @@ editor.plugins.get( 'Dialog' ).show( {
 ```
 
 <info-box warning>
-	Blocking the usage of the <kbd>Esc</kbd> key is limits the accessibility and is considered a bad practise. If you really need to do this, remember to always leave at least one way to close the dialog or modal.
+	Blocking the usage of the <kbd>Esc</kbd> key is limits the accessibility and is considered a bad practice. If you really need to do this, remember to always leave at least one way to close the dialog or modal.
 </info-box>
 
 ##### Using the `onShow` and `onHide` callbacks
