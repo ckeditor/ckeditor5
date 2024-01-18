@@ -203,11 +203,11 @@ export default class AccessibilityHelp extends Plugin {
 		AccessibilityHelpKeystrokeDefinition |
 		Array<AccessibilityHelpKeystrokeDefinition>
 	): void {
-		if ( optionsOrDefinitions instanceof Array ) {
+		if ( Array.isArray( optionsOrDefinitions ) ) {
 			optionsOrDefinitions = {
 				keystrokes: optionsOrDefinitions
 			};
-		} else if ( typeof optionsOrDefinitions === 'object' && 'keystroke' in optionsOrDefinitions ) {
+		} else if ( 'keystroke' in optionsOrDefinitions ) {
 			optionsOrDefinitions = {
 				keystrokes: [ optionsOrDefinitions ]
 			};
