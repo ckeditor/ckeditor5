@@ -896,20 +896,20 @@ Major releases (contain breaking changes):
 
 ### Other changes
 
-* Image styles's default configuration has been changed to: left-aligned, right-aligned image and full-size image (instead of the typical: side-image and full-size image). This change makes content previously created with this build incompatible with the new setup.
+* The default configuration of the image styles was changed to: left-aligned, right-aligned image and full-size image (instead of the typical: side-image and full-size image). This change makes content previously created with this build incompatible with the new setup.
 
-   You can [configure image styles](https://ckeditor.com/docs/ckeditor5/latest/features/image.html#image-styles) in order to bring back the old setting (`[ 'full', 'side' ]`).
+   You can [configure image styles](https://ckeditor.com/docs/ckeditor5/latest/features/image.html#image-styles) to bring back the old setting (`[ 'full', 'side' ]`).
 
    Closes [#10](https://github.com/ckeditor/ckeditor5-build-decoupled-document/issues/10). ([75855d9](https://github.com/ckeditor/ckeditor5-build-decoupled-document/commit/75855d9))
 
 ### BREAKING CHANGES
 
-* The default image styles configuration has been changed (see the section above for more information).
+* The default image styles configuration was changed (see the section above for more information).
 
 
 ## [1.0.0-beta.3](https://github.com/ckeditor/ckeditor5-build-decoupled-document/compare/v1.0.0-beta.2...v1.0.0-beta.3) (April 10, 2018)
 
-### NOTE
+### Note
 
 This release followed `v1.0.0-beta.2` immediately to fix the issue mentioned below. Therefore, when upgrading from `v1.0.0-beta.1` make sure to also check [`v1.0.0-beta.2` release notes](https://github.com/ckeditor/ckeditor5-build-decoupled-document/releases/tag/v1.0.0-beta.2).
 
@@ -962,7 +962,7 @@ Major releases (contain breaking changes):
 ### BREAKING CHANGES
 
 * The global variable exported by the build is now called `DecoupledEditor` instead of `DecoupledDocumentEditor`. See [#6](https://github.com/ckeditor/ckeditor5-build-decoupled-document/issues/6).
-* The config options `config.toolbarContainer` and `config.editableContainer` have been removed. Please refer to the `DecoupledEditor` class API documentation to learn about possible methods of bootstrapping the UI.
+* The configuration options `config.toolbarContainer` and `config.editableContainer` have been removed. Refer to the `DecoupledEditor` class API documentation to learn about possible methods of bootstrapping the UI.
 
 
 ## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-build-decoupled-document/compare/v0.0.1...v1.0.0-beta.1) (March 15, 2018)

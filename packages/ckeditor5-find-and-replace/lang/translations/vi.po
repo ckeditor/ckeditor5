@@ -67,4 +67,4 @@ msgstr "Mẹo: Tìm một đoạn văn bản trước để thay thế."
 
 msgctxt "The label and the tooltip of the options dropdown button in the find and replace form."
 msgid "Advanced options"
-msgstr ""
+msgstr "Tùy chọn nâng cao"

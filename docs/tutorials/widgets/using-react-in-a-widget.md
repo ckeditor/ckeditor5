@@ -9,7 +9,7 @@ meta-title: Using a React component in a block widget tutorial | CKEditor 5 Docu
 
 In this tutorial, you will learn how to implement an editor plugin that uses the power of the [React](https://reactjs.org/) library inside the CKEditor&nbsp;5 widget ecosystem. You will build a "Product preview" feature which renders an actual React component inside the editor to display some useful information about the product.
 
-Later on, you will use the "Product preview" feature to build a simple React application that displays an editor next to the list of available products, allowing the user to insert the product into the editor content by clicking it on the list.
+Later on, you will use the "Product preview" feature to build a simple React application that displays an editor next to the list of available products. The application will allow the user to insert the product into the editor content by clicking it on the list.
 
 <info-box>
 	If you want to see the final product of this tutorial before you plunge in, check out the [demo](#demo).
@@ -32,7 +32,7 @@ There are a couple of things you should know before you start:
 
 ## Let's start
 
-This guide assumes that you are familiar with [yarn](https://yarnpkg.com) and your project uses yarn already. If not, see the [yarn documentation](https://yarnpkg.com/en/docs/getting-started). If you are using [npm](https://www.npmjs.com/get-npm), you do not have to worry &ndash; you can perform the same installation tasks just as easily using [corresponding npm commands](https://docs.npmjs.com/packages-and-modules/getting-packages-from-the-registry).
+This guide assumes that you are familiar with [Yarn](https://yarnpkg.com) and your project uses Yarn already. If not, see the [Yarn documentation](https://yarnpkg.com/en/docs/getting-started). If you are using [npm](https://www.npmjs.com/get-npm), you do not have to worry &ndash; you can perform the same installation tasks using [corresponding npm commands](https://docs.npmjs.com/packages-and-modules/getting-packages-from-the-registry).
 
 First, install the packages needed to build and set up a basic React application with a CKEditor&nbsp;5 instance.
 
@@ -230,7 +230,7 @@ Create the CKEditor–side logic that supports product preview widgets in the ed
 * The [`InsertProductPreviewCommand`](#command) provides an easy way for the "outside world" to insert product previews into the editor content.
 
 <info-box>
-	This guide assumes you are familiar with the {@link tutorials/widgets/implementing-a-block-widget Implementing a block widget} guide which explains the basic concepts behind data structures and widgets. If in doubt, please refer to that guide for more information.
+	This guide assumes you are familiar with the {@link tutorials/widgets/implementing-a-block-widget Implementing a block widget} guide which explains the basic concepts behind data structures and widgets. If in doubt, refer to that guide for more information.
 </info-box>
 
 ### Editing plugin
@@ -241,7 +241,7 @@ The `ProductPreviewEditing` plugin defines the `productPreview` element in the e
 	Read more about the {@link framework/architecture/editing-engine#overview editing engine architecture} of CKEditor&nbsp;5.
 </info-box>
 
-* In the **data view**, the `productPreview` is represented as an empty `<section class="product" data-id="..."></section>` element with a `data-id` attribute associating it with a particular product. A semantic representation of the product saved in the database can be then consumed in the front–end by retrieving a fresh preview using the `data-id`. Since it does not carry any formatting or styling, the data representation will never get outdated, even if the layout or styles of the application change in the future.
+* In the **data view**, the `productPreview` is represented as an empty `<section class="product" data-id="..."></section>` element with a `data-id` attribute associating it with a particular product. A semantic representation of the product saved in the database can be then consumed in the frontend by retrieving a fresh preview using the `data-id`. Since it does not carry any formatting or styling, the data representation will never get outdated, even if the layout or styles of the application change in the future.
 * In the **editing view**, on the other hand, the product preview is a {@link tutorials/widgets/implementing-a-block-widget block widget}, which acts as a self–contained piece of content the user can insert, copy, and paste as a whole but they cannot change its internal structure. Inside the widget, there is a {@link module:engine/view/uielement~UIElement `UIElement`} with a `.product__react-wrapper` class that hosts a React `<ProductPreview>` component. Each time the model element is upcasted, the rendering function specified in the {@link installation/getting-started/configuration editor configuration} (`editor.config.products.productRenderer`) mounts a React component inside the `UIElement`.
 
 <info-box>
@@ -497,7 +497,7 @@ export default class ProductPreview extends React.Component {
 
 At the moment, you have CKEditor classes that bring the product preview into the content, a list of products, and a product component ready. It is time to glue things together in the `App` class.
 
-You are going to extend the [main application file](#lets-start) skeleton that you created earlier in this tutorial so it renders the {@link installation/integrations/react official `<CKEditor>` React component} on the left side, and the list of available products on the right.
+You are going to extend the [main application file](#lets-start) skeleton that you created earlier in this tutorial. It should render the {@link installation/integrations/react official `<CKEditor>` React component} on the left side, and the list of available products on the right.
 
 Have a look at the full source code of the `App` class:
 

@@ -67,4 +67,4 @@ msgstr "পরামর্শঃ এটি প্রতিস্থাপন ক
 
 msgctxt "The label and the tooltip of the options dropdown button in the find and replace form."
 msgid "Advanced options"
-msgstr ""
+msgstr "উন্নত বিকল্পগুলি"

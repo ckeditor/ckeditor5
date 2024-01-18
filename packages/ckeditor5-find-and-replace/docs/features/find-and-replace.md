@@ -2,7 +2,7 @@
 title: Find and replace
 meta-title: Find and replace | CKEditor 5 Documentation
 category: features
-modified_at: 2021-06-29
+modified_at: 2024-01-03
 ---
 
 {@snippet features/build-find-and-replace-source}
@@ -11,13 +11,32 @@ The find and replace feature lets you find and replace any text in your document
 
 ## Demo
 
-Use the find and replace toolbar button {@icon @ckeditor/ckeditor5-find-and-replace/theme/icons/find-replace.svg Find and replace} to open the search panel. Use the panel to find and replace words or phrases. You can also use the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>F</kbd> keyboard shortcut. Try replacing "steam" with "diesel" to make the content more up-to-date. Be careful to match the case!
+Use the find and replace toolbar button {@icon @ckeditor/ckeditor5-find-and-replace/theme/icons/find-replace.svg Find and replace} to open the search dialog. Use it to find and replace words or phrases. You can also use the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>F</kbd> keyboard shortcut. Try replacing "AI" with "artificial intelligence" to make the content appeal to less tech-savvy users. Be careful to match the case!
 
 {@snippet features/find-and-replace}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
+
+## Configuration
+
+### Configuring the UI type
+
+By default, the find and replace form displays inside a dialog. That allows for keeping it open while editing the document at the same time. Alternatively, you can display the feature in a dropdown. To do this, use the {@link module:find-and-replace/findandreplaceconfig~FindAndReplaceConfig `config.findAndReplace.uiType`} configuration option:
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		findAndReplace: {
+			uiType: 'dropdown'
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+{@snippet features/find-and-replace-dropdown}
 
 ## Installation
 

@@ -61,7 +61,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Bug fixes
 
-* Improved error rethrowing by replacing the error stack. Closes [ckeditor/ckeditor5#5595](https://github.com/ckeditor/ckeditor5/issues/5595). ([7685c0d](https://github.com/ckeditor/ckeditor5-utils/commit/7685c0d))
+* Improved error re-throwing by replacing the error stack. Closes [ckeditor/ckeditor5#5595](https://github.com/ckeditor/ckeditor5/issues/5595). ([7685c0d](https://github.com/ckeditor/ckeditor5-utils/commit/7685c0d))
 
 
 ## [15.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v14.0.0...v15.0.0) (October 23, 2019)
@@ -69,7 +69,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 ### Features
 
 * Implemented the `getResizeObserver()` helper that offers an entry to the native `ResizeObserver` API (see [ckeditor/ckeditor5#416](https://github.com/ckeditor/ckeditor5/issues/416)). ([875d5a4](https://github.com/ckeditor/ckeditor5-utils/commit/875d5a4))
-* Introduced `assertEqualMarkup()` test util method. Closes [ckeditor/ckeditor5-paste-from-office#14](https://github.com/ckeditor/ckeditor5-paste-from-office/issues/14). ([ee1655f](https://github.com/ckeditor/ckeditor5-utils/commit/ee1655f))
+* Introduced `assertEqualMarkup()` test utility method. Closes [ckeditor/ckeditor5-paste-from-office#14](https://github.com/ckeditor/ckeditor5-paste-from-office/issues/14). ([ee1655f](https://github.com/ckeditor/ckeditor5-utils/commit/ee1655f))
 * Introduced support for creating elements in other XML namespaces. See [ckeditor/ckeditor5#1842](https://github.com/ckeditor/ckeditor5/issues/1842). ([37fbcb9](https://github.com/ckeditor/ckeditor5-utils/commit/37fbcb9))
 
   Thanks [@Sebobo](https://github.com/Sebobo)!
@@ -149,7 +149,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 ### Other changes
 
 * Configuration options should be cloned to prevent features from altering the original values. Closes [#257](https://github.com/ckeditor/ckeditor5-utils/issues/257). ([7981d4e](https://github.com/ckeditor/ckeditor5-utils/commit/7981d4e))
-* DOM Elements will not be cloned when returned from config.get. Closes [#264](https://github.com/ckeditor/ckeditor5-utils/issues/264). ([4ad23b1](https://github.com/ckeditor/ckeditor5-utils/commit/4ad23b1))
+* DOM Elements will not be cloned when returned from `editor.config.get()`. Closes [#264](https://github.com/ckeditor/ckeditor5-utils/issues/264). ([4ad23b1](https://github.com/ckeditor/ckeditor5-utils/commit/4ad23b1))
 * Optimized `diff()` function to use `fastDiff()` function internally for large data sets. Closes [#269](https://github.com/ckeditor/ckeditor5-utils/issues/269). ([ee9bed0](https://github.com/ckeditor/ckeditor5-utils/commit/ee9bed0))
 * Replaced `for..of` statement in `EventEmitter` with `Array.prototype.forEach`. This changes allows building a React application using `create-react-app@2`. Closes [ckeditor/ckeditor5-react#40](https://github.com/ckeditor/ckeditor5-react/issues/40). ([900b54b](https://github.com/ckeditor/ckeditor5-utils/commit/900b54b))
 
@@ -166,7 +166,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Other changes
 
-* Various fixes in the API docs. Thanks to [@denisname](https://github.com/denisname)!
+* Various fixes in the API documentation. Thanks to [@denisname](https://github.com/denisname)!
 
 
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v10.2.1...v11.0.0) (October 8, 2018)

@@ -19,7 +19,7 @@ If you want to see the final product of this tutorial before you plunge in, chec
 First, we make our plugin accessible for users who rely on keyboards for navigation. We want to ensure that pressing <kbd>Tab</kbd> and <kbd>Shift</kbd> + <kbd>Tab</kbd> will move focus around in the form view, and pressing `esc` will close it.
 
 <info-box>
-	In order to improve the accessibility of the plugin, it is important to understand how keystroke and focus management works in the CKEditor&nbsp;5 framework. We recommend you {@link framework/architecture/ui-library#keystrokes-and-focus-management read up on the basics}, or do a {@link framework/deep-dive/focus-tracking deep dive into focus tracking}.
+	To improve the accessibility of the plugin, it is important to understand how keystroke and focus management works in the CKEditor&nbsp;5 framework. We recommend you {@link framework/architecture/ui-library#keystrokes-and-focus-management read up on the basics}, or do a {@link framework/deep-dive/focus-tracking deep dive into focus tracking}.
 </info-box>
 
 We have some ready-to-use options to help us out &ndash; the {@link framework/deep-dive/focus-tracking#using-the-keystrokehandler-class KeystrokeHandler}, {@link framework/deep-dive/focus-tracking#using-the-focustracker-class FocusTracker}, and {@link framework/deep-dive/focus-tracking#using-the-focuscycler-class FocusCycler} helper classes.
@@ -172,7 +172,7 @@ When the user selects a range (a letter, a word, or a whole document fragment) a
 	As we will be working with user's selection in the document, it is important to understand what exactly does it mean in the editor's model. Read our introduction to {@link framework/architecture/editing-engine#positions-ranges-and-selections positions, ranges and selections} to expand your knowledge in the field.
 </info-box>
 
-In order to display the text from the user's selection in the form field, we need to first grab and concatenate all text from the selected range. If the user selects a couple of paragraphs, a heading, and an image, we need to go through all the nodes, and use only the ones containing text.
+To display the text from the user's selection in the form field, we need to first grab and concatenate all text from the selected range. If the user selects a couple of paragraphs, a heading, and an image, we need to go through all the nodes, and use only the ones containing text.
 
 Let's create a helper `getRangeText()` function in a separate `/utils.js` file. It will grab all items from a range using its `getItems()` method. Then, it will concatenate all text from the {@link module:engine/model/text~Text `text`} and {@link module:engine/model/textproxy~TextProxy `textProxy`} nodes, and skip all the others.
 
@@ -725,7 +725,7 @@ The command is now done, check how it works by trying all our different cases - 
 If you got lost at any point, this is [the final implementation of the plugin](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/abbreviation-plugin/part-3). You can paste the code from different files into your project, or clone and install the whole thing, and it will run out of the box.
 
 <info-box>
-	**What's next?**
+	**What's next**
 
 	That's it, you've finished the tutorial! You are now ready to create your own plugins. If you want to continue learning, move on to our more advanced tutorials, starting with the {@link tutorials/widgets/implementing-a-block-widget Implementing a block widget} guide.
 </info-box>

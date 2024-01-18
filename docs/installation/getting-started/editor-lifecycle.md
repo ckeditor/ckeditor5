@@ -80,7 +80,7 @@ DecoupledEditor.create( document.querySelector( '#editor' ) )
 
 ## Getting the editor's instance
 
-The simplest way is save the reference to the editor somewhere after you create it. This is often done by using a window or some state management object. You will often see lines like this in our docs.
+The simplest way is save the reference to the editor somewhere after you create it. This is often done by using a window or some state management object. You will often see lines like this in our documentation.
 
 ```js
 // Editor's creation steps.
@@ -106,7 +106,7 @@ editor.destroy().catch( error => {
 Once destroyed, resources used by the editor instance are released and the original element used to create the editor is automatically displayed and updated to reflect the final editor data.
 
 <info-box hint>
-**What's next?**
+**What's next**
 
 Now you know how to initialize the editor instance. But an editor without the ability to get its content is not particularly useful. It is time to learn how to work with the editor's data {@link installation/getting-started/getting-and-setting-data in the following guide}.
 </info-box>
