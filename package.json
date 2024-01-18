@@ -181,6 +181,7 @@
     "reinstall": "yarn run clean && yarn run bootstrap",
     "docs": "node --max-old-space-size=8192 ./scripts/docs/build-docs.js",
     "docs:api": "node ./scripts/docs/build-api-docs.js",
+    "docs:content-styles": "node -e \"require( './scripts/docs/build-content-styles.js' )();\"",
     "docs:serve": "http-server ./build/docs/",
     "docs:verify": "node ./scripts/web-crawler/index.js --docs",
     "docs:lint": "node scripts/vale/vale.js",
