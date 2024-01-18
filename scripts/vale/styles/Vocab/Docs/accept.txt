@@ -41,6 +41,7 @@ DLL
 Dmitry
 DOM
 (?i)downcast
+draggable
 [Dd]ropdown
 embeddable
 Embedly

@@ -24,7 +24,7 @@ Listed below are the most important changes that require your attention when upg
 
 As of the latest release, we replaced the existing list plugin (often referred to as "list v1") with the {@link features/lists newer and more advanced document list plugin}, formerly known as document list ("list v2").
 
-We implemented the list v2 (document list) feature in 2022 to add support for block content in list items. It supported extending list markup via General HTML Support (GHS). It did not, however, support to-do lists. Since then we concentrated on bringing full list v1 functionality to this plugin. The newest release brings in the all list functionality so we were ready to switch.
+We implemented the list v2 (document list) feature in 2022 to add support for block content in list items. It supported extending list markup via General HTML Support (GHS). It did not, however, support to-do lists. Since then we concentrated on bringing full list v1 functionality to this plugin. The newest release brings in the complete list functionality so we were ready to switch.
 
 We introduced the new plugin in a manner that aims to be transparent for the users:
 
@@ -139,11 +139,11 @@ If you happen to encounter this error, remove all imports of `DocumentList` and 
 
 #### Changes to list merging
 
-With the old list plugin, it was possible to create two lists of the same type but with different styles next to each other, and these lists did not merge. This functionality is still available in the `LegacyList`.
+With the old list plugin, it was possible to create two lists of the same type but with different styles next to each other. These lists did not merge. This functionality is still available in the `LegacyList`.
 
-The current `List` plugin merges such lists. This can be handled by using the {@link features/lists-editing#merging-adjacent-lists `AdjacentListsSupport` plugin}. However, it only works for pasted contents or on data load by design. It does not support UI operations, which is a change from the previous behavior.
+The current `List` plugin merges such lists. This can be handled by using the {@link features/lists-editing#merging-adjacent-lists `AdjacentListsSupport` plugin}. However, by design, it only works for pasted content or on data load. It does not support UI operations, which is a change from the previous behavior.
 
-We want to use this opportunity and ask our users for feedback [in this GitHub issue](https://github.com/ckeditor/ckeditor5/issues/14478). If you use this kind of lists, feel free to share your opinion of suggestions on the current implementation.
+We want to use this opportunity and ask the users for feedback in [this GitHub issue](https://github.com/ckeditor/ckeditor5/issues/14478). If you use this kind of lists, feel free to share your opinion and suggestions on the current implementation.
 
 ### Icon paths changed
 
@@ -185,7 +185,7 @@ Some export names were changed due to the possibility of name conflicts:
 
 ### Making CKEditor npm packages valid ECMAScript modules (ESM)
 
-The code we distribute in our npm packages uses the [ECMAScript Module (ESM) syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) (for example, `import X from 'y'`). Until now it was not fully compliant with the standard and the packages were not properly marked as ES modules. Sometimes this resulted in bundlers (like Vite) and other tools (such as Vitest) failing to build or run the projects containing CKEditor&nbsp;5. It required workarounds in their configuration.
+The code we distribute in the npm packages uses the [ECMAScript Module (ESM) syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) (for example, `import X from 'y'`). Until now it was not fully compliant with the standard and the packages were not properly marked as ES modules. Sometimes this resulted in bundlers (like Vite) and other tools (such as Vitest) failing to build or run the projects containing CKEditor&nbsp;5. It required workarounds in their configuration.
 
 This release fixes the ESM compatibility issues. CKEditor&nbsp;5 packages are now fully ESM-compliant and these workarounds are no longer needed.
 
@@ -210,11 +210,11 @@ ClassicEditor
 
 #### The find and replace feature
 
-Starting with v41.0.0, the UI of the {@link features/find-and-replace find and replace} feature is displayed by default in a {@link framework/architecture/ui-library#dialogs-and-modals dialog window}. Before, it was displayed in a dropdown panel. This change is meant to improve the overall user experience of the feature and allow content creators to make most out of the available tools.
+Starting with v41.0.0, the UI of the {@link features/find-and-replace find and replace} feature displays by default in a {@link framework/architecture/ui-library#dialogs-and-modals dialog window}. Before, it was displayed in a dropdown panel. This change is meant to improve the overall user experience of the feature and allow content creators to make the most out of the available tools.
 
 {@img assets/img/migration-to-dialogs-v41-find-and-replace.png 1610 The comparison of the find and replace UI before and after v41.0.0}
 
-To bring the previous user experience back, you can use the {@link module:find-and-replace/findandreplaceconfig~FindAndReplaceConfig `config.findAndReplace.uiType`} configuration option:
+To bring the earlier user experience back, you can use the {@link module:find-and-replace/findandreplaceconfig~FindAndReplaceConfig `config.findAndReplace.uiType`} configuration option:
 
 ```diff
 ClassicEditor
@@ -229,25 +229,25 @@ ClassicEditor
 
 ##### Changes to the DOM structure
 
-The migration from a dropdown panel to a dialog window brought some changes to the DOM structure of the UI. Keep in mind that customizations based on certain CSS selectors may not work anymore and may require adjustments.
+The migration from a dropdown panel to a dialog window brought some changes to the DOM structure of the UI. Customizations based on certain CSS selectors may not work anymore and may require adjustments.
 
-* The UI header element (`div.ck-form__header`) is no longer available inside the form element (`form.ck-find-and-replace-form`). CSS customizations should be applied to the {@link framework/architecture/ui-library#header header element} of the dialog instead (`.ck.ck-dialog .ck.ck-form__header`).
+* The UI header element (`div.ck-form__header`) is no longer available inside the form element (`form.ck-find-and-replace-form`). You should apply the CSS customizations to the {@link framework/architecture/ui-library#header header element} of the dialog instead (`.ck.ck-dialog .ck.ck-form__header`).
 * The `fieldset.ck-find-and-replace-form__find` element was removed from the form element (`form.ck-find-and-replace-form`). Its contents were distributed between new containers:
-	* the "Find in text" input field, and the "Previous result" and "Next result" buttons were moved to the `div.ck-find-and-replace-form__inputs` element.
-	* the "Find" button was moved to the `div.ck-find-and-replace-form__actions` element.
+	* The "Find in text" input field, and the "Previous result" and "Next result" buttons were moved to the `div.ck-find-and-replace-form__inputs` element.
+	* The "Find" button was moved to the `div.ck-find-and-replace-form__actions` element.
 * The `fieldset.ck-find-and-replace-form__replace` element was removed. Its contents were distributed between new containers:
-	* the "Replace with" input field was moved to the `div.ck-find-and-replace-form__inputs` element,
-	* the "Replace" and "Replace all" buttons were moved to the `div.ck-find-and-replace-form__actions` element.
+	* The "Replace with" input field was moved to the `div.ck-find-and-replace-form__inputs` element.
+	* The "Replace" and "Replace all" buttons were moved to the `div.ck-find-and-replace-form__actions` element.
 * The "Advanced options" dropdown (rendered as the `div.ck-options-dropdown` element) was replaced with the {@link module:ui/collapsible/collapsibleview collapsible} component (rendered as the `div.ck-collapsible` element). Switch buttons inside ("Match case" and "Whole words only") remain unchanged.
 
 #### The AI Assistant feature
 
-Starting with v41.0.0, the UI of the {@link features/ai-assistant-overview AI assistant} feature will be displayed by default in a {@link framework/architecture/ui-library#dialogs-and-modals dialog window}. Previously, it was displayed in the balloon panel.
+Starting with v41.0.0, the UI of the {@link features/ai-assistant-overview AI assistant} feature will display by default in a {@link framework/architecture/ui-library#dialogs-and-modals dialog window}. It was displayed in the balloon panel before.
 
 {@img assets/img/migration-to-dialogs-v41-ai-assistant.png 1610 The comparison of AI Assistant UI before and after v41.x}
 
 ##### Changes to the DOM structure
 
-The migration from a dropdown panel to a dialog window brought some changes to the DOM structure of the UI. Keep in mind that customizations based on certain CSS selectors may not work anymore and may require adjustments.
+The migration from a dropdown panel to a dialog window brought some changes to the DOM structure of the UI. Customizations based on certain CSS selectors may not work anymore and may require adjustments.
 
-* The UI header element (`div.ck-form__header`) is no longer available inside the form element (`form.ck-ai-form`). CSS customizations should be applied to the {@link framework/architecture/ui-library#header header element} of the dialog instead (`.ck.ck-dialog .ck.ck-form__header`).
+* The UI header element (`div.ck-form__header`) is no longer available inside the form element (`form.ck-ai-form`). You should apply CSS customizations to the {@link framework/architecture/ui-library#header header element} of the dialog instead (`.ck.ck-dialog .ck.ck-form__header`).
