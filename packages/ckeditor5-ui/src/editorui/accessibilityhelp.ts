@@ -198,23 +198,22 @@ export default class AccessibilityHelp extends Plugin {
 	 * } );
 	 * ```
 	 */
-	public registerKeystrokes( options: {
-		category?: string;
-		group?: string;
-		groupLabel?: string;
-		keystrokes: Array<AccessibilityHelpKeystrokeDefinition>;
-	} | Array<AccessibilityHelpKeystrokeDefinition> | AccessibilityHelpKeystrokeDefinition ): void {
-		if ( options instanceof Array ) {
-			options = {
-				keystrokes: options
+	public registerKeystrokes( optionsOrDefinitions:
+		AccessibilityHelpRegisterKeystrokesOptions |
+		AccessibilityHelpKeystrokeDefinition |
+		Array<AccessibilityHelpKeystrokeDefinition>
+	): void {
+		if ( optionsOrDefinitions instanceof Array ) {
+			optionsOrDefinitions = {
+				keystrokes: optionsOrDefinitions
 			};
-		} else if ( typeof options === 'object' && 'keystroke' in options ) {
-			options = {
-				keystrokes: [ options ]
+		} else if ( typeof optionsOrDefinitions === 'object' && 'keystroke' in optionsOrDefinitions ) {
+			optionsOrDefinitions = {
+				keystrokes: [ optionsOrDefinitions ]
 			};
 		}
 
-		const categoryId = options.category || DEFAULT_CATEGORY_ID;
+		const categoryId = optionsOrDefinitions.category || DEFAULT_CATEGORY_ID;
 
 		if ( !this._keystrokes.has( categoryId ) ) {
 			/**
@@ -229,9 +228,9 @@ export default class AccessibilityHelp extends Plugin {
 		}
 
 		const category = this._keystrokes.get( categoryId )!;
-		const groupId = options.group || DEFAULT_GROUP_ID;
+		const groupId = optionsOrDefinitions.group || DEFAULT_GROUP_ID;
 
-		if ( !category.groups.has( groupId ) && !options.groupLabel ) {
+		if ( !category.groups.has( groupId ) && !optionsOrDefinitions.groupLabel ) {
 			/**
 			 * Cannot register keystrokes in an unknown group.
 			 *
@@ -244,13 +243,13 @@ export default class AccessibilityHelp extends Plugin {
 			 * @param categoryId The id of category the unknown group should belong to.
 			 */
 			throw new CKEditorError( 'accessibility-help-unknown-group', { groupId, categoryId } );
-		} else if ( options.groupLabel ) {
+		} else if ( optionsOrDefinitions.groupLabel ) {
 			category.groups.set( groupId, {
-				label: options.groupLabel,
-				keystrokes: options.keystrokes
+				label: optionsOrDefinitions.groupLabel,
+				keystrokes: optionsOrDefinitions.keystrokes
 			} );
 		} else {
-			category.groups.get( groupId )!.keystrokes.push( ...options.keystrokes );
+			category.groups.get( groupId )!.keystrokes.push( ...optionsOrDefinitions.keystrokes );
 		}
 	}
 
@@ -344,7 +343,8 @@ export interface AccessibilityHelpKeystrokeGroupDefinition {
 }
 
 /**
- * A single keystroke definition to be displayed in the Accessibility help dialog.
+ * A single keystroke definition to be displayed in the Accessibility help dialog. Used by
+ * {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp#registerKeystrokes}.
  */
 export interface AccessibilityHelpKeystrokeDefinition {
 
@@ -379,4 +379,14 @@ export interface AccessibilityHelpKeystrokeDefinition {
 	 * information will be displayed next to the keystroke in the Accessibility help dialog.
 	 */
 	mayRequireFn?: boolean;
+}
+
+/**
+ * Options of the {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp#registerKeystrokes} method.
+ */
+export interface AccessibilityHelpRegisterKeystrokesOptions {
+	category?: string;
+	group?: string;
+	groupLabel?: string;
+	keystrokes: Array<AccessibilityHelpKeystrokeDefinition>;
 }

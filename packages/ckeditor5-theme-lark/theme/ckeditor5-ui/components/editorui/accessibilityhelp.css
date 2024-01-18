@@ -3,6 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+@import "../../../mixins/_focus.css";
+@import "../../../mixins/_shadow.css";
+
 :root {
 	--ck-accessibility-help-dialog-max-width: 600px;
 	--ck-accessibility-help-dialog-max-height: 400px;
@@ -17,6 +20,11 @@
 	max-height: var(--ck-accessibility-help-dialog-max-height);
 	overflow: auto;
 	user-select: text;
+
+	&:focus {
+		@mixin ck-focus-ring;
+		@mixin ck-box-shadow var(--ck-focus-outer-shadow);
+	}
 
 	* {
 		white-space: normal;
