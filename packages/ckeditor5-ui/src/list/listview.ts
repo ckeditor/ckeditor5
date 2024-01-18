@@ -151,7 +151,7 @@ export default class ListView extends View<HTMLUListElement> implements Dropdown
 			for ( const removed of data.removed ) {
 				if ( removed instanceof ListItemGroupView ) {
 					this._deregisterFocusableItemsGroup( removed );
-				} else {
+				} else if ( removed instanceof ListItemView ) {
 					this._deregisterFocusableListItem( removed );
 				}
 			}
@@ -159,7 +159,7 @@ export default class ListView extends View<HTMLUListElement> implements Dropdown
 			for ( const added of Array.from( data.added ).reverse() ) {
 				if ( added instanceof ListItemGroupView ) {
 					this._registerFocusableItemsGroup( added, data.index );
-				} else {
+				} else if ( added instanceof ListItemView ) {
 					this._registerFocusableListItem( added, data.index );
 				}
 			}
