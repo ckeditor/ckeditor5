@@ -116,7 +116,10 @@ export default class AccessibilityHelp extends Plugin {
 			return buttonView;
 		} );
 
-		editor.keystrokes.set( 'Alt+0', () => this._showDialog() );
+		editor.keystrokes.set( 'Alt+0', ( evt, cancel ) => {
+			this._showDialog();
+			cancel();
+		} );
 
 		this._setupRootLabels();
 	}
