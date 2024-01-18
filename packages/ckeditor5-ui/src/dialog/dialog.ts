@@ -75,8 +75,8 @@ export default class Dialog extends Plugin {
 	/**
 	 * Initiates listeners for the `show` and `hide` events emitted by this plugin.
 	 *
-	 * We couldn't simply decorate the {@link #show} and {@link #hide} methods to fire events,
-	 * because they would be fired in the wrong order - first would be `show` and then `hide`
+	 * We could not simply decorate the {@link #show} and {@link #hide} methods to fire events,
+	 * because they would be fired in the wrong order &ndash; first would be `show` and then `hide`
 	 * (because showing the dialog actually starts with hiding the previously visible one).
 	 * Hence, we added private methods {@link #_show} and {@link #_hide} which are called on events
 	 * in the desired sequence.
@@ -109,7 +109,7 @@ export default class Dialog extends Plugin {
 	}
 
 	/**
-	 * Initiates keystroke handler for toggling the focus between the editor and dialog view.
+	 * Initiates keystroke handler for toggling the focus between the editor and the dialog view.
 	 */
 	private _initFocusToggler() {
 		const editor = this.editor;
@@ -153,12 +153,12 @@ export default class Dialog extends Plugin {
 	/**
 	 * Displays a dialog window.
 	 *
-	 * This method requires a {@link ~DialogDefinition} that defines dialog's content, title, icon, action buttons, etc.
+	 * This method requires a {@link ~DialogDefinition} that defines the dialog's content, title, icon, action buttons, etc.
 	 *
 	 * For example, the following definition will create a dialog with:
-	 * * a header consisting of an icon, a title and a "Close" button (it's added by default),
-	 * * a content consisting of a view with a single paragraph,
-	 * * a footer consisting of two buttons: "Yes" and "No".
+	 * * A header consisting of an icon, a title, and a "Close" button (it is added by default).
+	 * * A content consisting of a view with a single paragraph.
+	 * * A footer consisting of two buttons: "Yes" and "No".
 	 *
 	 * ```js
 	 * // Create the view that will be used as the dialog's content.
@@ -183,7 +183,7 @@ export default class Dialog extends Plugin {
 	 * // Show the dialog.
 	 * editor.plugins.get( 'Dialog' ).show( {
 	 *	id: 'myDialog',
-	 * 	icon: 'myIcon', // this should be an SVG string
+	 * 	icon: 'myIcon', // This should be an SVG string.
 	 * 	title: 'My dialog',
 	 * 	content: textView,
 	 * 	actionButtons: [
@@ -203,18 +203,18 @@ export default class Dialog extends Plugin {
 	 * ```
 	 *
 	 * By specifying the {@link ~DialogDefinition#onShow} and {@link ~DialogDefinition#onHide} callbacks
-	 * it's also possible to add callbacks that will be called when the dialog is shown or hidden.
+	 * it is also possible to add callbacks that will be called when the dialog is shown or hidden.
 	 *
 	 * For example, the callbacks in the following definition:
-	 * * disable the default behavior of the `Esc` key,
-	 * * fire a custom event when the dialog gets hidden.
+	 * * Disable the default behavior of the <kbd>Esc</kbd> key.
+	 * * Fire a custom event when the dialog gets hidden.
 	 *
 	 * ```js
 	 * editor.plugins.get( 'Dialog' ).show( {
 	 * 	// ...
 	 * 	onShow: dialog => {
 	 * 		dialog.view.on( 'close', ( evt, data ) => {
-	 * 			// Only prevent the event from `Esc` key - don't affect the other ways of closing the dialog.
+	 * 			// Only prevent the event from the "Esc" key - do not affect the other ways of closing the dialog.
 	 * 			if ( data.source === 'escKeyPress' ) {
 	 * 				evt.stop();
 	 * 			}
@@ -355,8 +355,8 @@ export default class Dialog extends Plugin {
 export interface DialogDefinition {
 
 	/**
-	 * A unique identifier of the dialog. Allows for distinguishing between different dialogs and their visibility.
-	 * For instance, when open, the id of currently visible dialog is stored in {@link module:ui/dialog/dialog~Dialog#id}.
+	 * A unique identifier of the dialog. It allows for distinguishing between different dialogs and their visibility.
+	 * For instance, when open, the ID of the currently visible dialog is stored in {@link module:ui/dialog/dialog~Dialog#id}.
 	 *
 	 * The `id` is also passed along the {@link module:ui/dialog/dialog~DialogShowEvent} and {@link module:ui/dialog/dialog~DialogHideEvent}
 	 * events.
@@ -372,7 +372,7 @@ export interface DialogDefinition {
 	icon?: string;
 
 	/**
-	 * A title displayed in dialogs's header. Also works as an accessible name of the dialog used by assistive technologies.
+	 * A title displayed in the dialogs's header. It also works as an accessible name of the dialog used by assistive technologies.
 	 *
 	 * When not set, the header is not displayed. Affects {@link #icon} and {@link #hasCloseButton}.
 	 */
@@ -402,7 +402,7 @@ export interface DialogDefinition {
 	className?: string;
 
 	/**
-	 * When set `true`, the dialog will become a modal, i.e. it will block the UI until it is closed.
+	 * When set to `true`, the dialog will become a modal, that is, it will block the UI until it is closed.
 	 */
 	isModal?: boolean;
 
@@ -415,20 +415,20 @@ export interface DialogDefinition {
 	position?: typeof DialogViewPosition[ keyof typeof DialogViewPosition ];
 
 	/**
-	 * A callback called when the dialog shows up with `low` priority. It allows for setting up the dialog's {@link #content}.
+	 * A callback called when the dialog shows up with a `low` priority. It allows for setting up the dialog's {@link #content}.
 	 */
 	onShow?: ( dialog: Dialog ) => void;
 
 	/**
-	 * A callback called when the dialog hides with `low` priority.
-	 * It allows for cleaning up (e.g. resetting) the dialog's {@link #content}.
+	 * A callback called when the dialog hides with a `low` priority.
+	 * It allows for cleaning up (for example, resetting) the dialog's {@link #content}.
 	 */
 	onHide?: ( dialog: Dialog ) => void;
 }
 
 /**
- * An event fired after {@link module:ui/dialog/dialog~Dialog#show} is called. You can use it to customize behavior
- * any dialog.
+ * An event fired after {@link module:ui/dialog/dialog~Dialog#show} is called. You can use it to customize the behavior
+ * of any dialog.
  *
  * ```js
  * import { DialogViewPosition } from 'ckeditor5/src/ui.js';
@@ -449,8 +449,8 @@ export type DialogShowEvent = {
 };
 
 /**
- * An event fired after {@link module:ui/dialog/dialog~Dialog#hide} is called. You can use it to customize behavior
- * any dialog.
+ * An event fired after {@link module:ui/dialog/dialog~Dialog#hide} is called. You can use it to customize the behavior
+ * of any dialog.
  *
  * ```js
  * // Logs after the "Find and Replace" dialog gets hidden
