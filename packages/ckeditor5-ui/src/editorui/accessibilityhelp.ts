@@ -19,7 +19,16 @@ export const DEFAULT_GROUP_ID = 'common' as const;
 
 /**
  * A plugin that brings the accessibility help dialog to the editor available under the <kbd>Alt</kbd>+<kbd>0</kbd>
- * keystroke and via the "Accessibility help" toolbar button.
+ * keystroke and via the "Accessibility help" toolbar button. The dialog displays a list of keystrokes that can be used
+ * by the user to perform various actions in the editor.
+ *
+ * Keystroke information is automatically obtained from loaded editor plugins via
+ * {@link module:core/plugin~PluginInterface#accessibilityHelpMetadata} getter (recommended).
+ *
+ * Alternatively, the same information can be registered using the available API
+ * ({@link module:ui/editorui/accessibilityhelp~AccessibilityHelp#registerKeystrokeCategory},
+ * {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp#registerKeystrokeGroup}, and
+ * {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp#registerKeystrokes}).
  */
 export default class AccessibilityHelp extends Plugin {
 	/**
@@ -29,10 +38,13 @@ export default class AccessibilityHelp extends Plugin {
 	public contentView: AccessibilityHelpContentView | null = null;
 
 	/**
-	 * Keystroke categories, groups and descriptions registered via ({@link #registerKeystrokeCategory}) and
-	 * {@link #registerKeystrokes}.
+	 * Keystroke categories, groups, and descriptions obtained from {@link module:core/plugin~PluginInterface#accessibilityHelpMetadata}
+	 * or registered via plugin's API ({@link #registerKeystrokeCategory}, {@link #registerKeystrokeGroup},
+	 * and {@link #registerKeystrokes}).
+	 *
+	 * @internal
 	 */
-	private _keystrokes = new Map<string, AccessibilityHelpKeystrokesCategory>();
+	public keystrokes: Keystrokes = new Map();
 
 	/**
 	 * @inheritDoc
@@ -54,51 +66,6 @@ export default class AccessibilityHelp extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 		const t = editor.locale.t;
-
-		this.registerKeystrokeCategory( DEFAULT_CATEGORY_ID, {
-			label: t( 'Content editing keystrokes' ),
-			description: t( 'These keyboard shortcuts allow for quick access to content editing features.' )
-		} );
-
-		this.registerKeystrokeCategory( 'navigation', {
-			label: t( 'User interface and content navigation keystrokes' ),
-			description: t( 'Use the following keystrokes for more efficient navigation in the CKEditor 5 user interface.' )
-		} );
-
-		this.registerKeystrokes( {
-			category: 'navigation',
-			keystrokes: [
-				{
-					label: t( 'Close contextual balloons, dropdowns, and dialogs' ),
-					keystroke: 'Esc'
-				},
-				{
-					label: t( 'Move focus to the visible contextual balloon' ),
-					keystroke: 'Tab'
-				},
-				{
-					label: t( 'Open the accessibility help dialog' ),
-					keystroke: 'Alt+0'
-				},
-				{
-					label: t( 'Move focus between fields (inputs and buttons) in balloons and dialogs' ),
-					keystroke: 'Tab'
-				},
-				{
-					label: t( 'Move focus to the toolbar, also navigate between toolbars' ),
-					keystroke: 'Alt+F10',
-					mayRequireFn: true
-				},
-				{
-					label: t( 'Navigate through the toolbar' ),
-					keystroke: [ [ 'arrowup' ], [ 'arrowright' ], [ 'arrowdown' ], [ 'arrowleft' ] ]
-				},
-				{
-					label: t( 'Execute the currently focused button' ),
-					keystroke: [ [ 'Enter' ], [ 'Space' ] ]
-				}
-			]
-		} );
 
 		editor.ui.componentFactory.add( 'accessibilityHelp', locale => {
 			const buttonView = new ButtonView( locale );
@@ -125,100 +92,80 @@ export default class AccessibilityHelp extends Plugin {
 	}
 
 	/**
-	 * Registers a top-level category of keystrokes with its label and optional description. Categories organize
-	 * keystrokes and help users to find the right keystroke. Each category can have multiple groups of keystrokes
-	 * that narrow down the context in which the keystrokes are available. Every keystroke category comes with a
-	 * `'common'` group by default.
+	 * Registers a top-level category of keystrokes with its label and optional description.
 	 *
-	 * By default, two categories are registered by the `AccessibilityHelp` plugin: `'contentEditing'` and `'navigation'`.
+	 * Categories organize keystrokes and help users to find the right keystroke. Each category can have multiple groups
+	 * of keystrokes that narrow down the context in which the keystrokes are available. Every keystroke category comes
+	 * with a `'common'` group by default.
 	 *
-	 * You can add keystrokes to categories using {@link #registerKeystrokes} method.
+	 * By default, two categories are registered by the `AccessibilityHelp` plugin:
+	 * * `'contentEditing'` for keystrokes related to content creation,
+	 * * `'navigation'` for keystrokes related to navigation in the UI and the content.
+	 *
+	 * See {@link #registerKeystrokeGroup} and {@link #registerKeystrokes}.
 	 */
-	public registerKeystrokeCategory( categoryId: string, definition: { label: string; description?: string } ): void {
-		this._keystrokes.set( categoryId, {
-			...definition,
-			groups: new Map( [ [ DEFAULT_GROUP_ID, { keystrokes: [] } ] ] )
+	public registerKeystrokeCategory( { id, label, description, groups }: AccessibilityHelpKeystrokeCategory ): void {
+		this.keystrokes.set( id, {
+			id,
+			label,
+			description,
+			groups: new Map()
+		} );
+
+		this.registerKeystrokeGroup( {
+			categoryId: id,
+			id: DEFAULT_GROUP_ID
+		} );
+
+		if ( groups ) {
+			groups.forEach( group => {
+				this.registerKeystrokeGroup( {
+					categoryId: id,
+					...group
+				} );
+			} );
+		}
+	}
+
+	/**
+	 * Registers a group of keystrokes in a specific category. Groups narrow down the context in which the keystrokes are available.
+	 *
+	 * When `categoryId` is not specified, the group goes to the `'contentEditing'` category (default).
+	 *
+	 * See {@link #registerKeystrokeCategory} and {@link #registerKeystrokes}.
+	 */
+	public registerKeystrokeGroup( {
+		categoryId = DEFAULT_CATEGORY_ID,
+		id,
+		label,
+		keystrokes
+	}: AccessibilityHelpKeystrokeGroup ): void {
+		const category = this.keystrokes.get( categoryId );
+
+		if ( !category ) {
+			throw new CKEditorError( 'accessibility-help-unknown-category', { categoryId } );
+		}
+
+		category.groups.set( id, {
+			id,
+			label,
+			keystrokes: keystrokes || []
 		} );
 	}
 
 	/**
 	 * Registers keystrokes that will be displayed in the Accessibility help dialog.
 	 *
-	 * To simply register a single keystroke:
+	 * Keystrokes without specified `groupId` or `categoryId` go to the `'common'` group in the `'contentEditing'` category (default).
 	 *
-	 * ```js
-	 * const t = editor.t;
-	 * editor.plugins.get( 'AccessibilityHelp' ).registerKeystrokes( {
-	 * 	label: t( 'Bold text' ),
-	 * 	keystroke: 'CTRL+B'
-	 * } );
-	 * ```
-	 *
-	 * Please note that by default:
-	 * * two categories are registered by the `AccessibilityHelp` plugin: `'contentEditing'` and `'navigation'`,
-	 * * keystrokes are registered into the `'contentEditing'` category and the `'common'` keystroke group within that category.
-	 *
-	 * To register a keystroke in a specific group in the `'contentEditing'` category:
-	 *
-	 * ```js
-	 * const t = editor.t;
-	 *
-	 * editor.plugins.get( 'AccessibilityHelp' ).registerKeystrokes( {
-	 * 	// Add keystrokes to the "widget" group. If the group does not exist, it will be created.
-	 * 	group: 'widget',
-	 * 	// When creating a new group, you can provide its label.
-	 * 	label: t( 'Keystrokes that can be used when a widget is selected' ),
-	 * 	groupLabel: t( 'Keystrokes that can be used when a widget is selected' ),
-	 * 	keystrokes: [
-	 * 		{
-	 * 			label: t( 'Insert a new paragraph directly after a widget' ),
-	 * 			keystroke: 'Enter'
-	 * 		},
-	 * 		{
-	 * 			label: t( 'Insert a new paragraph directly before a widget' ),
-	 * 			keystroke: 'Shift+Enter'
-	 * 		}
-	 * 	]
-	 * } );
-	 *```
-	 *
-	 * You can add more keystroke categories using {@link #registerKeystrokeCategory} method. To add the keystrokes to the
-	 * `'navigation'` category:
-	 *
-	 * ```js
-	 * this.registerKeystrokes( {
-	 * 	category: 'navigation',
-	 * 	keystrokes: [
-	 * 		{
-	 * 			label: t( 'Close contextual balloons, dropdowns, and dialogs' ),
-	 * 			keystroke: 'Esc'
-	 * 		},
-	 * 		{
-	 * 			label: t( 'Move focus to the visible contextual balloon' ),
-	 * 			keystroke: 'Tab'
-	 * 		}
-	 * 	]
-	 * } );
-	 * ```
+	 * See {@link #registerKeystrokeGroup} and {@link #registerKeystrokeCategory}.
 	 */
-	public registerKeystrokes( optionsOrDefinitions:
-		AccessibilityHelpRegisterKeystrokesOptions |
-		AccessibilityHelpKeystrokeDefinition |
-		Array<AccessibilityHelpKeystrokeDefinition>
-	): void {
-		if ( Array.isArray( optionsOrDefinitions ) ) {
-			optionsOrDefinitions = {
-				keystrokes: optionsOrDefinitions
-			};
-		} else if ( 'keystroke' in optionsOrDefinitions ) {
-			optionsOrDefinitions = {
-				keystrokes: [ optionsOrDefinitions ]
-			};
-		}
-
-		const categoryId = optionsOrDefinitions.category || DEFAULT_CATEGORY_ID;
-
-		if ( !this._keystrokes.has( categoryId ) ) {
+	public registerKeystrokes( {
+		categoryId = DEFAULT_CATEGORY_ID,
+		groupId = DEFAULT_GROUP_ID,
+		keystrokes
+	}: AccessibilityHelpKeystrokes ): void {
+		if ( !this.keystrokes.has( categoryId ) ) {
 			/**
 			 * Cannot register keystrokes in an unknown category. Use
 			 * {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp#registerKeystrokeCategory}
@@ -230,10 +177,9 @@ export default class AccessibilityHelp extends Plugin {
 			throw new CKEditorError( 'accessibility-help-unknown-category', { categoryId } );
 		}
 
-		const category = this._keystrokes.get( categoryId )!;
-		const groupId = optionsOrDefinitions.group || DEFAULT_GROUP_ID;
+		const category = this.keystrokes.get( categoryId )!;
 
-		if ( !category.groups.has( groupId ) && !optionsOrDefinitions.groupLabel ) {
+		if ( !category.groups.has( groupId ) ) {
 			/**
 			 * Cannot register keystrokes in an unknown group.
 			 *
@@ -246,14 +192,116 @@ export default class AccessibilityHelp extends Plugin {
 			 * @param categoryId The id of category the unknown group should belong to.
 			 */
 			throw new CKEditorError( 'accessibility-help-unknown-group', { groupId, categoryId } );
-		} else if ( optionsOrDefinitions.groupLabel ) {
-			category.groups.set( groupId, {
-				label: optionsOrDefinitions.groupLabel,
-				keystrokes: optionsOrDefinitions.keystrokes
-			} );
-		} else {
-			category.groups.get( groupId )!.keystrokes.push( ...optionsOrDefinitions.keystrokes );
 		}
+
+		category.groups.get( groupId )!.keystrokes.push( ...keystrokes );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public get accessibilityHelpMetadata(): AccessibilityHelpMetadata {
+		const t = this.editor.t;
+
+		return {
+			keystrokeCategories: [
+				{
+					id: DEFAULT_CATEGORY_ID,
+					label: t( 'Content editing keystrokes' ),
+					description: t( 'These keyboard shortcuts allow for quick access to content editing features.' )
+				},
+				{
+					id: 'navigation',
+					label: t( 'User interface and content navigation keystrokes' ),
+					description: t( 'Use the following keystrokes for more efficient navigation in the CKEditor 5 user interface.' ),
+					groups: [
+						{
+							id: 'common',
+							keystrokes: [
+								{
+									label: t( 'Close contextual balloons, dropdowns, and dialogs' ),
+									keystroke: 'Esc'
+								},
+								{
+									label: t( 'Move focus to the visible contextual balloon' ),
+									keystroke: 'Tab'
+								},
+								{
+									label: t( 'Open the accessibility help dialog' ),
+									keystroke: 'Alt+0'
+								},
+								{
+									label: t( 'Move focus between fields (inputs and buttons) in balloons and dialogs' ),
+									keystroke: 'Tab'
+								},
+								{
+									label: t( 'Move focus to the toolbar, also navigate between toolbars' ),
+									keystroke: 'Alt+F10',
+									mayRequireFn: true
+								},
+								{
+									label: t( 'Navigate through the toolbar' ),
+									keystroke: [ [ 'arrowup' ], [ 'arrowright' ], [ 'arrowdown' ], [ 'arrowleft' ] ]
+								},
+								{
+									label: t( 'Execute the currently focused button' ),
+									keystroke: [ [ 'Enter' ], [ 'Space' ] ]
+								}
+							]
+						}
+					]
+				}
+			]
+		};
+	}
+
+	/**
+	 * Registers keystrokes exposed by editor plugins.
+	 */
+	private _initializeKeystrokesFromPluginsMetadata() {
+		const editor = this.editor;
+		const categories = [];
+		const groups = [];
+		const keystrokes = [];
+
+		// Gather all keystroke categories, groups, and keystrokes from plugins first.
+		// This way, the order of plugins in editor#plugins will not matter and the metadata offered by plugins
+		// can point to categories and groups that are not yet registered.
+		for ( const [ , pluginInterface ] of editor.plugins ) {
+			const metadata = pluginInterface.accessibilityHelpMetadata;
+
+			if ( metadata ) {
+				if ( metadata.keystrokeCategories ) {
+					for ( const data of metadata.keystrokeCategories ) {
+						categories.push( data );
+					}
+				}
+
+				if ( metadata.keystrokeGroups ) {
+					for ( const data of metadata.keystrokeGroups ) {
+						groups.push( data );
+					}
+				}
+
+				if ( metadata.keystrokes ) {
+					for ( const data of metadata.keystrokes ) {
+						keystrokes.push( data );
+					}
+				}
+			}
+		}
+
+		categories.forEach( data => this.registerKeystrokeCategory( data ) );
+		groups.forEach( data => this.registerKeystrokeGroup( data ) );
+		keystrokes.forEach( data => {
+			if ( 'keystrokes' in data ) {
+				// Keystrokes added to a specific category and/or group (advanced syntax).
+				this.registerKeystrokes( data );
+			} else {
+				// Keystrokes added to the default category and group (simple syntax).
+				this.registerKeystrokes( { keystrokes: [ data ] } );
+			}
+		} );
 	}
 
 	/**
@@ -289,7 +337,8 @@ export default class AccessibilityHelp extends Plugin {
 		const t = editor.locale.t;
 
 		if ( !this.contentView ) {
-			this.contentView = new AccessibilityHelpContentView( editor.locale, this._keystrokes );
+			this._initializeKeystrokesFromPluginsMetadata();
+			this.contentView = new AccessibilityHelpContentView( editor.locale, this.keystrokes );
 		}
 
 		dialog.show( {
@@ -303,10 +352,19 @@ export default class AccessibilityHelp extends Plugin {
 }
 
 /**
- * A category of keystrokes. Top-level categories organize keystrokes and help users to find the right keystroke.
- * Each category can have multiple groups of keystrokes that narrow down the context in which the keystrokes are available.
+ * A category of keystrokes in the Accessibility help dialog. Top-level categories organize keystrokes and help users to find the
+ * right keystroke. Each category can have multiple groups of keystrokes that narrow down the context in which the keystrokes are available.
+ *
+ * See {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp#registerKeystrokeCategory},
+ * {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp#registerKeystrokeGroup}, and
+ * {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp#registerKeystrokes}.
  */
-export interface AccessibilityHelpKeystrokesCategory {
+export interface AccessibilityHelpKeystrokeCategory {
+
+	/**
+	 * The unique id of the category.
+	 */
+	id: string;
 
 	/**
 	 * The label of the category. It gets displayed as a header in the Accessibility help dialog.
@@ -322,13 +380,29 @@ export interface AccessibilityHelpKeystrokesCategory {
 	/**
 	 * Groups of keystrokes within the category.
 	 */
-	groups: Map<string, AccessibilityHelpKeystrokeGroupDefinition>;
+	groups?: Array<AccessibilityHelpKeystrokeGroup>;
 }
 
 /**
- * A sub-category of keystrokes. Groups narrow down the context in which the keystrokes are available.
+ * A keystroke group in the Accessibility help dialog. Groups narrow down the context in which the keystrokes are available.
+ *
+ * When `categoryId` is not specified, the group goes to the `'contentEditing'` category (default).
+ *
+ * See {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp#registerKeystrokeCategory},
+ * {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp#registerKeystrokeGroup}, and
+ * {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp#registerKeystrokes}.
  */
-export interface AccessibilityHelpKeystrokeGroupDefinition {
+export interface AccessibilityHelpKeystrokeGroup {
+
+	/**
+	 * The category id the group belongs to.
+	 */
+	categoryId?: string;
+
+	/**
+	 * The unique id of the group.
+	 */
+	id: string;
 
 	/**
 	 * The label of the group (optional). It gets displayed as a header next to the list of keystrokes in the group.
@@ -336,13 +410,40 @@ export interface AccessibilityHelpKeystrokeGroupDefinition {
 	label?: string;
 
 	/**
-	 * Keystrokes within the group.
+	 * Keystroke definitions within the group.
+	 */
+	keystrokes?: Array<AccessibilityHelpKeystrokeDefinition>;
+}
+
+/**
+ * Keystrokes belonging to a specific category or group in the Accessibility help dialog.
+ *
+ * Keystrokes without specified `groupId` or `categoryId` go to the `'common'` group in the `'contentEditing'` category (default).
+ *
+ * See {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp#registerKeystrokeCategory},
+ * {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp#registerKeystrokeGroup}, and
+ * {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp#registerKeystrokes}.
+ */
+export interface AccessibilityHelpKeystrokes {
+
+	/**
+	 * The category id the keystrokes belong to.
+	 */
+	categoryId?: string;
+
+	/**
+	 * The group id the keystrokes belong to.
+	 */
+	groupId?: string;
+
+	/**
+	 * An array of keystroke definitions.
 	 */
 	keystrokes: Array<AccessibilityHelpKeystrokeDefinition>;
 }
 
 /**
- * A single keystroke definition to be displayed in the Accessibility help dialog. Used by
+ * A single keystroke definition to be displayed in the Accessibility help dialog. Used, for instance, by
  * {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp#registerKeystrokes}.
  */
 export interface AccessibilityHelpKeystrokeDefinition {
@@ -381,11 +482,28 @@ export interface AccessibilityHelpKeystrokeDefinition {
 }
 
 /**
- * Options of the {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp#registerKeystrokes} method.
+ * Metadata for the {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp Accessibility help} plugin.
+ *
+ * See the {@link module:core/plugin~PluginInterface#accessibilityHelpMetadata plugin metadata format} to learn more.
  */
-export interface AccessibilityHelpRegisterKeystrokesOptions {
-	category?: string;
-	group?: string;
-	groupLabel?: string;
+export type AccessibilityHelpMetadata = {
+	keystrokeCategories?: Array<AccessibilityHelpKeystrokeCategory>;
+	keystrokeGroups?: Array<AccessibilityHelpKeystrokeGroup>;
+	keystrokes?: Array<AccessibilityHelpKeystrokes | AccessibilityHelpKeystrokeDefinition>;
+};
+
+export type Keystrokes = Map<string, KeystrokeCategoryDefinition>;
+
+export type KeystrokeGroupDefinition = {
+	id: string;
+	label?: string;
 	keystrokes: Array<AccessibilityHelpKeystrokeDefinition>;
-}
+};
+
+export type KeystrokeCategoryDefinition = {
+	id: string;
+	label: string;
+	description?: string;
+	groups: Map<string, KeystrokeGroupDefinition>;
+};
+

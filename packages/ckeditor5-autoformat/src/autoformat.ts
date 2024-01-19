@@ -11,6 +11,7 @@ import type { HeadingCommand } from '@ckeditor/ckeditor5-heading';
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import type { Range, Writer } from 'ckeditor5/src/engine.js';
 import { Delete } from 'ckeditor5/src/typing.js';
+import type { AccessibilityHelpMetadata } from 'ckeditor5/src/ui.js';
 
 import blockAutoformatEditing from './blockautoformatediting.js';
 import inlineAutoformatEditing from './inlineautoformatediting.js';
@@ -46,7 +47,6 @@ export default class Autoformat extends Plugin {
 		this._addBlockQuoteAutoformats();
 		this._addCodeBlockAutoformats();
 		this._addHorizontalLineAutoformats();
-		this._setupAccessibilityHelp();
 	}
 
 	/**
@@ -204,19 +204,19 @@ export default class Autoformat extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * @inheritDoc
 	 */
-	private _setupAccessibilityHelp(): void {
-		const editor = this.editor;
+	public get accessibilityHelpMetadata(): AccessibilityHelpMetadata {
+		const t = this.editor.t;
 
-		if ( editor.plugins.has( 'AccessibilityHelp' ) ) {
-			const t = editor.t;
-
-			editor.plugins.get( 'AccessibilityHelp' ).registerKeystrokes( {
-				label: t( 'Revert autoformatting action' ),
-				keystroke: 'Backspace'
-			} );
-		}
+		return {
+			keystrokes: [
+				{
+					label: t( 'Revert autoformatting action' ),
+					keystroke: 'Backspace'
+				}
+			]
+		};
 	}
 }
 

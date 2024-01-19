@@ -9,6 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import { TwoStepCaretMovement, inlineHighlight } from 'ckeditor5/src/typing.js';
+import type { AccessibilityHelpMetadata } from 'ckeditor5/src/ui.js';
 
 import AttributeCommand from '../attributecommand.js';
 
@@ -67,5 +68,24 @@ export default class CodeEditing extends Plugin {
 
 		// Setup highlight over selected element.
 		inlineHighlight( editor, CODE, 'code', HIGHLIGHT_CLASS );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public get accessibilityHelpMetadata(): AccessibilityHelpMetadata {
+		const t = this.editor.t;
+
+		return {
+			keystrokes: [
+				{
+					label: t( 'Move out of an inline code style' ),
+					keystroke: [
+						[ 'arrowleft', 'arrowleft' ],
+						[ 'arrowright', 'arrowright' ]
+					]
+				}
+			]
+		};
 	}
 }

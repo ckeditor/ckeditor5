@@ -59,23 +59,4 @@ export default class CodeUI extends Plugin {
 			return view;
 		} );
 	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public afterInit(): void {
-		const editor = this.editor;
-
-		if ( editor.plugins.has( 'AccessibilityHelp' ) ) {
-			const t = editor.t;
-
-			editor.plugins.get( 'AccessibilityHelp' ).registerKeystrokes( {
-				label: t( 'Move out of an inline code style' ),
-				keystroke: [
-					[ 'arrowleft', 'arrowleft' ],
-					[ 'arrowright', 'arrowright' ]
-				]
-			} );
-		}
-	}
 }

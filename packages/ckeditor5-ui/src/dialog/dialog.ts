@@ -12,6 +12,7 @@ import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
 import DialogView, { type DialogViewCloseEvent, DialogViewPosition } from './dialogview.js';
 import type { DialogActionButtonDefinition } from './dialogactionsview.js';
 import type { DocumentChangeEvent } from '@ckeditor/ckeditor5-engine';
+import type { AccessibilityHelpMetadata } from '../editorui/accessibilityhelp.js';
 
 /**
  * The dialog controller class. It is used to show and hide the {@link module:ui/dialog/dialogview~DialogView}.
@@ -75,21 +76,21 @@ export default class Dialog extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public afterInit(): void {
-		const editor = this.editor;
+	public get accessibilityHelpMetadata(): AccessibilityHelpMetadata {
+		const t = this.editor.t;
 
-		if ( editor.plugins.has( 'AccessibilityHelp' ) ) {
-			const t = editor.t;
-
-			editor.plugins.get( 'AccessibilityHelp' ).registerKeystrokes( {
-				category: 'navigation',
-				keystrokes: [ {
-					label: t( 'Move focus in and out of an active dialog window' ),
-					keystroke: 'Ctrl+F6',
-					mayRequireFn: true
-				} ]
-			} );
-		}
+		return {
+			keystrokes: [
+				{
+					categoryId: 'navigation',
+					keystrokes: [ {
+						label: t( 'Move focus in and out of an active dialog window' ),
+						keystroke: 'Ctrl+F6',
+						mayRequireFn: true
+					} ]
+				}
+			]
+		};
 	}
 
 	/**

@@ -57,20 +57,4 @@ export default class ItalicUI extends Plugin {
 			return view;
 		} );
 	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public afterInit(): void {
-		const editor = this.editor;
-
-		if ( editor.plugins.has( 'AccessibilityHelp' ) ) {
-			const t = editor.t;
-
-			editor.plugins.get( 'AccessibilityHelp' ).registerKeystrokes( {
-				label: t( 'Italic text' ),
-				keystroke: 'CTRL+I'
-			} );
-		}
-	}
 }

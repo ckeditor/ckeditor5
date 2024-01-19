@@ -229,40 +229,6 @@ export default class TableUI extends Plugin {
 	}
 
 	/**
-	 * @inheritDoc
-	 */
-	public afterInit(): void {
-		const editor = this.editor;
-
-		if ( editor.plugins.has( 'AccessibilityHelp' ) ) {
-			const t = editor.t;
-
-			editor.plugins.get( 'AccessibilityHelp' ).registerKeystrokes( {
-				group: 'table',
-				groupLabel: t( 'Keystrokes that can be used in a table cell' ),
-				keystrokes: [
-					{
-						label: t( 'Move the selection to the next cell' ),
-						keystroke: 'Tab'
-					},
-					{
-						label: t( 'Move the selection to the previous cell' ),
-						keystroke: 'Shift+Tab'
-					},
-					{
-						label: t( 'Insert a new table row (when in the last cell of a table)' ),
-						keystroke: 'Tab'
-					},
-					{
-						label: t( 'Navigate through the table' ),
-						keystroke: [ [ 'arrowup' ], [ 'arrowright' ], [ 'arrowdown' ], [ 'arrowleft' ] ]
-					}
-				]
-			} );
-		}
-	}
-
-	/**
 	 * Creates a dropdown view from a set of options.
 	 *
 	 * @param label The dropdown button label.

@@ -30,6 +30,7 @@ import type {
 import { Delete, type ViewDocumentDeleteEvent } from 'ckeditor5/src/typing.js';
 import { Enter, type EnterCommand, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter.js';
 import { CKEditorError, type GetCallback } from 'ckeditor5/src/utils.js';
+import type { AccessibilityHelpMetadata } from 'ckeditor5/src/ui.js';
 
 import ListIndentCommand from './listindentcommand.js';
 import ListCommand from './listcommand.js';
@@ -203,7 +204,6 @@ export default class ListEditing extends Plugin {
 		// Register conversion and model post-fixer after other plugins had a chance to register their attribute strategies.
 		this._setupModelPostFixing();
 		this._setupConversion();
-		this._setupAccessibilityHelp();
 	}
 
 	/**
@@ -601,19 +601,19 @@ export default class ListEditing extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * @inheritDoc
 	 */
-	private _setupAccessibilityHelp(): void {
-		const editor = this.editor;
+	public get accessibilityHelpMetadata(): AccessibilityHelpMetadata {
+		const t = this.editor.t;
 
-		if ( editor.plugins.has( 'AccessibilityHelp' ) ) {
-			const t = editor.t;
-
-			editor.plugins.get( 'AccessibilityHelp' ).registerKeystrokes( {
-				label: t( 'Nest the current list item (when in a list)' ),
-				keystroke: 'Tab'
-			} );
-		}
+		return {
+			keystrokes: [
+				{
+					label: t( 'Nest the current list item (when in a list)' ),
+					keystroke: 'Tab'
+				}
+			]
+		};
 	}
 }
 

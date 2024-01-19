@@ -9,6 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import AttributeCommand from '../attributecommand.js';
+import type { AccessibilityHelpMetadata } from 'ckeditor5/src/ui.js';
 
 const BOLD = 'bold';
 
@@ -69,5 +70,21 @@ export default class BoldEditing extends Plugin {
 
 		// Set the Ctrl+B keystroke.
 		editor.keystrokes.set( 'CTRL+B', BOLD );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public get accessibilityHelpMetadata(): AccessibilityHelpMetadata {
+		const t = this.editor.t;
+
+		return {
+			keystrokes: [
+				{
+					label: t( 'Bold text' ),
+					keystroke: 'CTRL+B'
+				}
+			]
+		};
 	}
 }

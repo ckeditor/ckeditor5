@@ -24,6 +24,7 @@
     "@ckeditor/ckeditor5-link": "41.0.0",
     "@ckeditor/ckeditor5-paragraph": "41.0.0",
     "@ckeditor/ckeditor5-typing": "41.0.0",
+    "@ckeditor/ckeditor5-ui": "41.0.0",
     "@ckeditor/ckeditor5-undo": "41.0.0",
     "typescript": "5.0.4",
     "webpack": "^5.58.1",

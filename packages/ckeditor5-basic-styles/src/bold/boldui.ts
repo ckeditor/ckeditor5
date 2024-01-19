@@ -55,20 +55,4 @@ export default class BoldUI extends Plugin {
 			return view;
 		} );
 	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public afterInit(): void {
-		const editor = this.editor;
-
-		if ( editor.plugins.has( 'AccessibilityHelp' ) ) {
-			const t = editor.t;
-
-			editor.plugins.get( 'AccessibilityHelp' ).registerKeystrokes( {
-				label: t( 'Bold text' ),
-				keystroke: 'CTRL+B'
-			} );
-		}
-	}
 }

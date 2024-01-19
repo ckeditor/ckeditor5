@@ -26,6 +26,7 @@ import {
 } from '@ckeditor/ckeditor5-engine';
 
 import { Delete, type ViewDocumentDeleteEvent } from '@ckeditor/ckeditor5-typing';
+import type { AccessibilityHelpMetadata } from '@ckeditor/ckeditor5-ui';
 
 import {
 	env,
@@ -199,35 +200,35 @@ export default class Widget extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public afterInit(): void {
-		const editor = this.editor;
+	public get accessibilityHelpMetadata(): AccessibilityHelpMetadata {
+		const t = this.editor.t;
 
-		if ( editor.plugins.has( 'AccessibilityHelp' ) ) {
-			const t = editor.t;
-
-			editor.plugins.get( 'AccessibilityHelp' ).registerKeystrokes( {
-				group: 'widget',
-				groupLabel: t( 'Keystrokes that can be used when a widget is selected (for example: image, table, etc.)' ),
-				keystrokes: [
-					{
-						label: t( 'Insert a new paragraph directly after a widget' ),
-						keystroke: 'Enter'
-					},
-					{
-						label: t( 'Insert a new paragraph directly before a widget' ),
-						keystroke: 'Shift+Enter'
-					},
-					{
-						label: t( 'Move the caret to allow typing directly before a widget' ),
-						keystroke: [ [ 'arrowup' ], [ 'arrowleft' ] ]
-					},
-					{
-						label: t( 'Move the caret to allow typing directly after a widget' ),
-						keystroke: [ [ 'arrowdown' ], [ 'arrowright' ] ]
-					}
-				]
-			} );
-		}
+		return {
+			keystrokeGroups: [
+				{
+					id: 'widget',
+					label: t( 'Keystrokes that can be used when a widget is selected (for example: image, table, etc.)' ),
+					keystrokes: [
+						{
+							label: t( 'Insert a new paragraph directly after a widget' ),
+							keystroke: 'Enter'
+						},
+						{
+							label: t( 'Insert a new paragraph directly before a widget' ),
+							keystroke: 'Shift+Enter'
+						},
+						{
+							label: t( 'Move the caret to allow typing directly before a widget' ),
+							keystroke: [ [ 'arrowup' ], [ 'arrowleft' ] ]
+						},
+						{
+							label: t( 'Move the caret to allow typing directly after a widget' ),
+							keystroke: [ [ 'arrowdown' ], [ 'arrowright' ] ]
+						}
+					]
+				}
+			]
+		};
 	}
 
 	/**

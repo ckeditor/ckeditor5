@@ -13,10 +13,11 @@ import {
 	getEnvKeystrokeText,
 	type Locale
 } from '@ckeditor/ckeditor5-utils';
-import {
-	type AccessibilityHelpKeystrokeDefinition,
-	type AccessibilityHelpKeystrokeGroupDefinition,
-	type AccessibilityHelpKeystrokesCategory
+import type {
+	AccessibilityHelpKeystrokeDefinition,
+	KeystrokeCategoryDefinition,
+	KeystrokeGroupDefinition,
+	Keystrokes
 } from './accessibilityhelp.js';
 import View from '../view.js';
 import LabelView from '../label/labelview.js';
@@ -28,7 +29,7 @@ export default class AccessibilityHelpContentView extends View<HTMLDivElement> {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale, keystrokes: Map<string, AccessibilityHelpKeystrokesCategory> ) {
+	constructor( locale: Locale, keystrokes: Keystrokes ) {
 		super( locale );
 
 		const t = locale.t;
@@ -46,7 +47,7 @@ export default class AccessibilityHelpContentView extends View<HTMLDivElement> {
 			},
 			children: [
 				createElement( document, 'p', {}, t( 'Below, you can find a list of keyboard shortcuts that can be used in the editor.' ) ),
-				...this._createCategories( keystrokes ),
+				...this._createCategories( Array.from( keystrokes.values() ) ),
 				helpLabel
 			]
 		} );
@@ -62,32 +63,41 @@ export default class AccessibilityHelpContentView extends View<HTMLDivElement> {
 	/**
 	 * Creates `<section><h3>Category label</h3>...</section>` elements for each category of keystrokes.
 	 */
-	private _createCategories( keystrokes: Map<string, AccessibilityHelpKeystrokesCategory> ): Array<HTMLElement> {
-		return Array.from( keystrokes.entries() ).map( ( [ , category ] ) => {
-			return createElement( document, 'section', {}, [
+	private _createCategories( categories: Array<KeystrokeCategoryDefinition> ): Array<HTMLElement> {
+		return categories.map( categoryDefinition => {
+			const elements: Array<HTMLElement> = [
 				// Category header.
-				createElement( document, 'h3', {}, category.label ),
+				createElement( document, 'h3', {}, categoryDefinition.label ),
 
 				// Category definitions (<dl>) and their optional headers (<h4>).
-				...Array.from( category.groups.entries() ).map( this._createGroup.bind( this ) ).flat()
-			] );
+				...Array.from( categoryDefinition.groups.values() )
+					.map( groupDefinition => this._createGroup( groupDefinition ) )
+					.flat()
+			];
+
+			// Category description (<p>).
+			if ( categoryDefinition.description ) {
+				elements.splice( 1, 0, createElement( document, 'p', {}, categoryDefinition.description ) );
+			}
+
+			return createElement( document, 'section', {}, elements );
 		} );
 	}
 
 	/**
 	 * Creates `[<h4>Optional label</h4>]<dl>...</dl>` elements for each group of keystrokes in a category.
 	 */
-	private _createGroup( [ , group ]: [ groupId: string, group: AccessibilityHelpKeystrokeGroupDefinition ] ): Array<HTMLElement> {
+	private _createGroup( groupDefinition: KeystrokeGroupDefinition ): Array<HTMLElement> {
 		const elements: Array<HTMLElement> = [
-			createElement( document, 'dl', {}, group.keystrokes
+			createElement( document, 'dl', {}, groupDefinition.keystrokes
 				.sort( ( a, b ) => sortAlphabetically( a.label, b.label ) )
-				.map( this._createGroupRow.bind( this ) )
+				.map( keystrokeDefinition => this._createGroupRow( keystrokeDefinition ) )
 				.flat()
 			)
 		];
 
-		if ( group.label ) {
-			elements.unshift( createElement( document, 'h4', {}, group.label ) );
+		if ( groupDefinition.label ) {
+			elements.unshift( createElement( document, 'h4', {}, groupDefinition.label ) );
 		}
 
 		return elements;
@@ -96,20 +106,20 @@ export default class AccessibilityHelpContentView extends View<HTMLDivElement> {
 	/**
 	 * Creates `<dt>Keystroke label</dt><dd>Keystroke definition</dd>` elements for each keystroke in a group.
 	 */
-	private _createGroupRow( keystrokeDef: AccessibilityHelpKeystrokeDefinition ): [ HTMLElement, HTMLElement ] {
+	private _createGroupRow( keystrokeDefinition: AccessibilityHelpKeystrokeDefinition ): [ HTMLElement, HTMLElement ] {
 		const t = this.locale!.t;
 		const dt = createElement( document, 'dt' );
 		const dd = createElement( document, 'dd' );
-		const normalizedKeystrokeDefinition = normalizeKeystrokeDefinition( keystrokeDef.keystroke );
+		const normalizedKeystrokeDefinition = normalizeKeystrokeDefinition( keystrokeDefinition.keystroke );
 		const keystrokeAlternativeHTMLs = [];
 
 		for ( const keystrokeAlternative of normalizedKeystrokeDefinition ) {
 			keystrokeAlternativeHTMLs.push( keystrokeAlternative.map( keystrokeToEnvKbd ).join( '' ) );
 		}
 
-		dt.innerHTML = keystrokeDef.label;
+		dt.innerHTML = keystrokeDefinition.label;
 		dd.innerHTML = keystrokeAlternativeHTMLs.join( ', ' ) +
-			( keystrokeDef.mayRequireFn && env.isMac ? ` ${ t( '(may require <kbd>Fn</kbd>)' ) }` : '' );
+			( keystrokeDefinition.mayRequireFn && env.isMac ? ` ${ t( '(may require <kbd>Fn</kbd>)' ) }` : '' );
 
 		return [ dt, dd ];
 	}

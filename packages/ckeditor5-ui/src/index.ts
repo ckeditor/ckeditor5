@@ -13,7 +13,14 @@ export { default as CssTransitionDisablerMixin, type ViewWithCssTransitionDisabl
 export { default as submitHandler } from './bindings/submithandler.js';
 export { default as addKeyboardHandlingForGrid } from './bindings/addkeyboardhandlingforgrid.js';
 
-export { default as AccessibilityHelp } from './editorui/accessibilityhelp.js';
+export {
+	default as AccessibilityHelp,
+	type AccessibilityHelpKeystrokeDefinition,
+	type AccessibilityHelpKeystrokeCategory,
+	type AccessibilityHelpKeystrokeGroup,
+	type AccessibilityHelpKeystrokes,
+	type AccessibilityHelpMetadata
+} from './editorui/accessibilityhelp.js';
 
 export { default as BodyCollection } from './editorui/bodycollection.js';
 

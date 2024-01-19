@@ -20,7 +20,8 @@ import {
 	ContextualBalloon,
 	clickOutsideHandler,
 	CssTransitionDisablerMixin,
-	type ViewWithCssTransitionDisabler
+	type ViewWithCssTransitionDisabler,
+	type AccessibilityHelpMetadata
 } from 'ckeditor5/src/ui.js';
 import type { PositionOptions } from 'ckeditor5/src/utils.js';
 import { isWidget } from 'ckeditor5/src/widget.js';
@@ -106,25 +107,24 @@ export default class LinkUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public afterInit(): void {
-		const editor = this.editor;
+	public get accessibilityHelpMetadata(): AccessibilityHelpMetadata {
+		const t = this.editor.t;
 
-		if ( editor.plugins.has( 'AccessibilityHelp' ) ) {
-			const t = editor.t;
-
-			editor.plugins.get( 'AccessibilityHelp' ).registerKeystrokes( [
+		return {
+			keystrokes: [
 				{
 					label: t( 'Create link' ),
 					keystroke: 'CTRL+L'
-				}, {
+				},
+				{
 					label: t( 'Move out of a link' ),
 					keystroke: [
 						[ 'arrowleft', 'arrowleft' ],
 						[ 'arrowright', 'arrowright' ]
 					]
 				}
-			] );
-		}
+			]
+		};
 	}
 
 	/**
