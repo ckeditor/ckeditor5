@@ -232,7 +232,7 @@ describe( 'ColorUI', () => {
 				const spyUndo = sinon.spy( editor.commands.get( 'undo' ), 'execute' );
 
 				dropdown.isOpen = true;
-				testColorPlugin.colorSelectorView.fire( 'colorPicker:show' );
+				dropdown.colorSelectorView.fire( 'colorPicker:show' );
 
 				dropdown.colorSelectorView.selectedColor = 'hsl( 0, 0%, 100% )';
 
@@ -250,7 +250,7 @@ describe( 'ColorUI', () => {
 
 			it( 'should create new batch when color picker is showed', () => {
 				dropdown.isOpen = true;
-				testColorPlugin.colorSelectorView.colorGridsFragmentView.colorPickerButtonView.fire( 'execute' );
+				dropdown.colorSelectorView.colorGridsFragmentView.colorPickerButtonView.fire( 'execute' );
 
 				dropdown.colorSelectorView.selectedColor = '#000000';
 
@@ -270,7 +270,7 @@ describe( 'ColorUI', () => {
 				} );
 
 				dropdown.isOpen = true;
-				testColorPlugin.colorSelectorView.colorGridsFragmentView.colorPickerButtonView.fire( 'execute' );
+				dropdown.colorSelectorView.colorGridsFragmentView.colorPickerButtonView.fire( 'execute' );
 
 				expect( testColorPlugin._undoStepBatch.operations.length,
 					'should have 0 changes in batch' ).to.equal( 0 );
@@ -533,6 +533,67 @@ describe( 'ColorUI', () => {
 			await customizedEditor.destroy();
 
 			expect( dropdown.colorSelectorView.colorPickerView ).to.be.undefined;
+		} );
+	} );
+
+	// Issue: https://github.com/ckeditor/ckeditor5/issues/15580
+	// For simplicity we create editor with two same buttons in toolbar
+	// instead overcomplicating stuff with ballon toolbar.
+	describe( 'toolabar with two same instance of testColor', () => {
+		let editor, element;
+
+		beforeEach( () => {
+			element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
+			return ClassicTestEditor
+				.create( element, {
+					plugins: [ Paragraph, TestColorPlugin, Undo ],
+					testColor: testColorConfig,
+					toolbar: [ 'testColor' ]
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					testColorPlugin = newEditor.plugins.get( 'TestColorPlugin' );
+				} );
+		} );
+
+		afterEach( () => {
+			element.remove();
+
+			return editor.destroy();
+		} );
+
+		describe( 'testColor Dropdown', () => {
+			let dropdown, dropdown2;
+
+			beforeEach( () => {
+				command = editor.commands.get( 'testColorCommand' );
+				dropdown = editor.ui.componentFactory.create( 'testColor' );
+				dropdown2 = editor.ui.componentFactory.create( 'testColor' );
+			} );
+
+			afterEach( () => {
+				dropdown.destroy();
+				dropdown2.destroy();
+			} );
+
+			it( 'should execute command if in toolbar there are more than one dropdowns', () => {
+				const spy = sinon.spy( editor, 'execute' );
+
+				dropdown.isOpen = true;
+
+				dropdown.colorSelectorView.colorPickerFragmentView.colorPickerView.fire( 'colorSelected', { color: '#a37474' } );
+
+				sinon.assert.calledWithExactly( spy, 'testColorCommand', sinon.match( { value: '#a37474' } ) );
+
+				dropdown2.isOpen = true;
+
+				dropdown2.colorSelectorView.colorPickerFragmentView.colorPickerView.fire( 'colorSelected', { color: '#ffffff' } );
+
+				sinon.assert.calledWithExactly( spy, 'testColorCommand', sinon.match( { value: '#ffffff' } ) );
+			} );
 		} );
 	} );
 } );
