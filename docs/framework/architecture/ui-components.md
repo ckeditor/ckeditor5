@@ -814,6 +814,8 @@ import history from '@ckeditor/ckeditor5-core/theme/icons/history.svg';
 import loupe from '@ckeditor/ckeditor5-core/theme/icons/loupe.svg';
 ```
 
+You can also {@link framework/architecture/ui-library#setting-label-icon-and-tooltip add a custom icon to the dropdown} by providing the entire XML string of the icon
+
 ## Input
 
 {@snippet framework/ui/ui-input}
