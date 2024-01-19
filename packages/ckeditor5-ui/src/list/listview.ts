@@ -159,7 +159,7 @@ export default class ListView extends View<HTMLUListElement> implements Dropdown
 			for ( const added of Array.from( data.added ).reverse() ) {
 				if ( added instanceof ListItemGroupView ) {
 					this._registerFocusableItemsGroup( added, data.index );
-				} else if ( added instanceof ListItemView ) {
+				} else {
 					this._registerFocusableListItem( added, data.index );
 				}
 			}
