@@ -305,8 +305,6 @@ export default class AccessibilityHelp extends Plugin {
 /**
  * A category of keystrokes. Top-level categories organize keystrokes and help users to find the right keystroke.
  * Each category can have multiple groups of keystrokes that narrow down the context in which the keystrokes are available.
- *
- * @internal
  */
 export interface AccessibilityHelpKeystrokesCategory {
 
@@ -329,8 +327,6 @@ export interface AccessibilityHelpKeystrokesCategory {
 
 /**
  * A sub-category of keystrokes. Groups narrow down the context in which the keystrokes are available.
- *
- * @internal
  */
 export interface AccessibilityHelpKeystrokeGroupDefinition {
 
