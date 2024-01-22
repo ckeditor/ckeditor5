@@ -28,17 +28,6 @@ describe( 'FindAndReplaceUI', () => {
 		expect( FindAndReplaceUI.pluginName ).to.equal( 'FindAndReplaceUI' );
 	} );
 
-	it( 'should provide accessibility help dialog metadata', () => {
-		expect( editor.plugins.get( FindAndReplaceUI ).accessibilityHelpMetadata ).to.deep.equal( {
-			keystrokes: [
-				{
-					label: 'Find in the document',
-					keystroke: 'CTRL+F'
-				}
-			]
-		} );
-	} );
-
 	describe( 'init()', () => {
 		describe( 'with the default UI type config (dialog)', () => {
 			let toolbarButtonView, dialogPlugin, dialogView;
@@ -72,6 +61,17 @@ describe( 'FindAndReplaceUI', () => {
 				editorElement.remove();
 
 				return editor.destroy();
+			} );
+
+			it( 'should provide accessibility help dialog metadata', () => {
+				expect( editor.plugins.get( FindAndReplaceUI ).accessibilityHelpMetadata ).to.deep.equal( {
+					keystrokes: [
+						{
+							label: 'Find in the document',
+							keystroke: 'CTRL+F'
+						}
+					]
+				} );
 			} );
 
 			it( 'should register a button UI compontent', () => {
@@ -484,6 +484,17 @@ describe( 'FindAndReplaceUI', () => {
 				dropdown.element.remove();
 
 				return editor.destroy();
+			} );
+
+			it( 'should provide accessibility help dialog metadata', () => {
+				expect( editor.plugins.get( FindAndReplaceUI ).accessibilityHelpMetadata ).to.deep.equal( {
+					keystrokes: [
+						{
+							label: 'Find in the document',
+							keystroke: 'CTRL+F'
+						}
+					]
+				} );
 			} );
 
 			it( 'should create a dropdown UI component', () => {
