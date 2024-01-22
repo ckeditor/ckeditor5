@@ -229,6 +229,8 @@ export interface PluginInterface {
 	 * To simply register a keystroke brought by your plugin (using default group and category), use the following code:
 	 *
 	 * ```js
+	 * class MyPlugin extends Plugin {
+	 * // ...
 	 * get accessibilityHelpMetadata() {
 	 * 	const t = this.editor.t;
 	 *
@@ -249,107 +251,120 @@ export interface PluginInterface {
 	 * To add a keystroke in a specific existing `'widget'` group in the default `'contentEditing'` category:
 	 *
 	 * ```js
-	 * get accessibilityHelpMetadata() {
-	 * 	const t = this.editor.t;
+	 * class MyPlugin extends Plugin {
+	 * // ...
+	 * 	get accessibilityHelpMetadata() {
+	 * 		const t = this.editor.t;
 	 *
-	 * 	return {
-	 * 		keystrokes: [
-	 * 			{
-	 * 				// Add a keystroke to the existing "widget" group.
-	 * 				groupId: 'widget',
-	 * 				keystrokes: [
-	 * 					{
-	 * 						label: t( 'A an action on a selected widget' ),
-	 * 						keystroke: 'Ctrl+D',
-	 * 					}
-	 * 				]
-	 * 			}
-	 * 		]
-	 * };
+	 * 		return {
+	 * 			keystrokes: [
+	 * 				{
+	 * 					// Add a keystroke to the existing "widget" group.
+	 * 					groupId: 'widget',
+	 * 					keystrokes: [
+	 * 						{
+	 * 							label: t( 'A an action on a selected widget' ),
+	 * 							keystroke: 'Ctrl+D',
+	 * 						}
+	 * 					]
+	 * 				}
+	 * 			]
+	 * 		};
+	 * 	}
+	 * }
 	 *```
 	 *
 	 * To add a keystroke to another existing category (using default group):
 	 *
 	 * ```js
-	 * get accessibilityHelpMetadata() {
-	 * 	const t = this.editor.t;
+	 * class MyPlugin extends Plugin {
+	 * 	// ...
+	 * 	get accessibilityHelpMetadata() {
+	 * 		const t = this.editor.t;
 	 *
-	 * 	return {
-	 * 		keystrokes: [
-	 * 			{
-	 * 				// Add keystrokes to the "navigation" category (one of defaults).
-	 * 				categoryId: 'navigation',
-	 * 				keystrokes: [
-	 * 					{
-	 * 						label: t( 'Keystroke label' ),
-	 * 						keystroke: 'CTRL+B'
-	 * 					}
-	 * 				]
-	 * 			}
-	 * 		]
-	 * 	};
+	 * 		return {
+	 * 			keystrokes: [
+	 * 				{
+	 * 					// Add keystrokes to the "navigation" category (one of defaults).
+	 * 					categoryId: 'navigation',
+	 * 					keystrokes: [
+	 * 						{
+	 * 							label: t( 'Keystroke label' ),
+	 * 							keystroke: 'CTRL+B'
+	 * 						}
+	 * 					]
+	 * 				}
+	 * 			]
+	 * 		};
+	 * 	}
 	 * }
 	 * ```
 	 *
 	 * To create a new group within an existing category, use the following code:
 	 *
 	 * ```js
-	 * get accessibilityHelpMetadata() {
-	 * 	const t = this.editor.t;
+	 * class MyPlugin extends Plugin {
+	 * 	// ...
+	 * 	get accessibilityHelpMetadata() {
+	 * 		const t = this.editor.t;
 	 *
-	 * 	return {
-	 * 		keystrokeGroups: [
-	 * 			{
-	 * 				id: 'myGroup',
-	 * 				categoryId: 'navigation',
-	 * 				label: t( 'My keystroke group' ),
-	 * 				keystrokes: [
-	 * 					{
-	 * 						label: t( 'Keystroke label 1' ),
-	 * 						keystroke: 'Ctrl+Shift+N'
-	 * 					},
-	 * 					{
-	 * 						label: t( 'Keystroke label 2' ),
-	 * 						keystroke: 'Ctrl+Shift+M'
-	 * 					}
-	 * 				]
-	 * 			}
-	 * 		]
-	 * 	};
+	 * 		return {
+	 * 			keystrokeGroups: [
+	 * 				{
+	 * 					id: 'myGroup',
+	 * 					categoryId: 'navigation',
+	 * 					label: t( 'My keystroke group' ),
+	 * 					keystrokes: [
+	 * 						{
+	 * 							label: t( 'Keystroke label 1' ),
+	 * 							keystroke: 'Ctrl+Shift+N'
+	 * 						},
+	 * 						{
+	 * 							label: t( 'Keystroke label 2' ),
+	 * 							keystroke: 'Ctrl+Shift+M'
+	 * 						}
+	 * 					]
+	 * 				}
+	 * 			]
+	 * 		};
+	 * 	}
 	 * }
 	 * ```
 	 *
 	 * To create a new keystroke category with new groups, use the following code:
 	 *
 	 * ```js
-	 * get accessibilityHelpMetadata() {
-	 * 	const t = this.editor.t;
+	 * class MyPlugin extends Plugin {
+	 * 	// ...
+	 * 	get accessibilityHelpMetadata() {
+	 * 		const t = this.editor.t;
 	 *
-	 * 	return {
-	 * 		keystrokeCategories: [
-	 * 			{
-	 * 				id: 'myCategory',
-	 * 				label: t( 'My category' ),
-	 * 				description: t( 'My category description.' ),
-	 * 				groups: [
-	 * 					{
-	 * 						id: 'myGroup',
-	 * 						label: t( 'My keystroke group' ),
-	 * 						keystrokes: [
-	 * 							{
-	 * 								label: t( 'Keystroke label 1' ),
-	 * 								keystroke: 'Ctrl+Shift+N'
-	 * 							},
-	 * 							{
-	 * 								label: t( 'Keystroke label 2' ),
-	 * 								keystroke: 'Ctrl+Shift+M'
-	 * 							}
-	 * 						]
-	 * 					}
-	 * 				]
-	 * 			}
-	 * 		]
-	 * 	};
+	 * 		return {
+	 * 			keystrokeCategories: [
+	 * 				{
+	 * 					id: 'myCategory',
+	 * 					label: t( 'My category' ),
+	 * 					description: t( 'My category description.' ),
+	 * 					groups: [
+	 * 						{
+	 * 							id: 'myGroup',
+	 * 							label: t( 'My keystroke group' ),
+	 * 							keystrokes: [
+	 * 								{
+	 * 									label: t( 'Keystroke label 1' ),
+	 * 									keystroke: 'Ctrl+Shift+N'
+	 * 								},
+	 * 								{
+	 * 									label: t( 'Keystroke label 2' ),
+	 * 									keystroke: 'Ctrl+Shift+M'
+	 * 								}
+	 * 							]
+	 * 						}
+	 * 					]
+	 * 				}
+	 * 			]
+	 * 		};
+	 * 	}
 	 * }
 	 * ```
 	 */
