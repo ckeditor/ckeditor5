@@ -12,6 +12,7 @@ import { ButtonView, Dialog } from '../../src/index.js';
 import AccessibilityHelpContentView from './accessibilityhelpcontentview.js';
 import { CKEditorError, getEnvKeystrokeText } from '@ckeditor/ckeditor5-utils';
 
+import accessibilityIcon from '../../theme/icons/accessibility.svg';
 import '../../theme/components/editorui/accessibilityhelp.css';
 
 const DEFAULT_CATEGORY_ID = 'contentEditing' as const;
@@ -73,9 +74,9 @@ export default class AccessibilityHelp extends Plugin {
 			buttonView.set( {
 				label: t( 'Accessibility help' ),
 				tooltip: true,
-				withText: true,
-				keystroke: 'Alt+0'
-				// TODO: Hide text, add icon.
+				withText: false,
+				keystroke: 'Alt+0',
+				icon: accessibilityIcon
 			} );
 
 			buttonView.on( 'execute', () => this._showDialog() );
@@ -345,6 +346,7 @@ export default class AccessibilityHelp extends Plugin {
 			id: 'accessibilityHelp',
 			className: 'ck-accessibility-help-dialog',
 			title: t( 'Accessibility help' ),
+			icon: accessibilityIcon,
 			hasCloseButton: true,
 			content: this.contentView
 		} );
