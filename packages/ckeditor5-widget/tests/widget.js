@@ -137,6 +137,39 @@ describe( 'Widget', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have a name', () => {
+		expect( Widget.pluginName ).to.equal( 'Widget' );
+	} );
+
+	it( 'should provide accessibility help dialog metadata', () => {
+		expect( editor.plugins.get( Widget ).accessibilityHelpMetadata ).to.deep.equal( {
+			keystrokeGroups: [
+				{
+					id: 'widget',
+					label: 'Keystrokes that can be used when a widget is selected (for example: image, table, etc.)',
+					keystrokes: [
+						{
+							label: 'Insert a new paragraph directly after a widget',
+							keystroke: 'Enter'
+						},
+						{
+							label: 'Insert a new paragraph directly before a widget',
+							keystroke: 'Shift+Enter'
+						},
+						{
+							label: 'Move the caret to allow typing directly before a widget',
+							keystroke: [ [ 'arrowup' ], [ 'arrowleft' ] ]
+						},
+						{
+							label: 'Move the caret to allow typing directly after a widget',
+							keystroke: [ [ 'arrowdown' ], [ 'arrowright' ] ]
+						}
+					]
+				}
+			]
+		} );
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( Widget ) ).to.be.instanceOf( Widget );
 	} );

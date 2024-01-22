@@ -67,6 +67,24 @@ describe( 'LinkUI', () => {
 		expect( editor.plugins.get( ContextualBalloon ) ).to.be.instanceOf( ContextualBalloon );
 	} );
 
+	it( 'should provide accessibility help dialog metadata', () => {
+		expect( editor.plugins.get( LinkUI ).accessibilityHelpMetadata ).to.deep.equal( {
+			keystrokes: [
+				{
+					label: 'Create link',
+					keystroke: 'CTRL+L'
+				},
+				{
+					label: 'Move out of a link',
+					keystroke: [
+						[ 'arrowleft', 'arrowleft' ],
+						[ 'arrowright', 'arrowright' ]
+					]
+				}
+			]
+		} );
+	} );
+
 	describe( 'init', () => {
 		it( 'should register click observer', () => {
 			expect( editor.editing.view.getObserver( ClickObserver ) ).to.be.instanceOf( ClickObserver );

@@ -72,6 +72,17 @@ describe( 'ListEditing', () => {
 		expect( ListEditing.pluginName ).to.equal( 'ListEditing' );
 	} );
 
+	it( 'should provide accessibility help dialog metadata', () => {
+		expect( editor.plugins.get( ListEditing ).accessibilityHelpMetadata ).to.deep.equal( {
+			keystrokes: [
+				{
+					label: 'Nest the current list item (when in a list)',
+					keystroke: 'Tab'
+				}
+			]
+		} );
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( ListEditing ) ).to.be.instanceOf( ListEditing );
 	} );

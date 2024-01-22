@@ -54,6 +54,35 @@ describe( 'TableKeyboard', () => {
 		expect( TableKeyboard.pluginName ).to.equal( 'TableKeyboard' );
 	} );
 
+	it( 'should provide accessibility help dialog metadata', () => {
+		expect( editor.plugins.get( TableKeyboard ).accessibilityHelpMetadata ).to.deep.equal( {
+			keystrokeGroups: [
+				{
+					id: 'table',
+					label: 'Keystrokes that can be used in a table cell',
+					keystrokes: [
+						{
+							label: 'Move the selection to the next cell',
+							keystroke: 'Tab'
+						},
+						{
+							label: 'Move the selection to the previous cell',
+							keystroke: 'Shift+Tab'
+						},
+						{
+							label: 'Insert a new table row (when in the last cell of a table)',
+							keystroke: 'Tab'
+						},
+						{
+							label: 'Navigate through the table',
+							keystroke: [ [ 'arrowup' ], [ 'arrowright' ], [ 'arrowdown' ], [ 'arrowleft' ] ]
+						}
+					]
+				}
+			]
+		} );
+	} );
+
 	describe( 'Tab key handling', () => {
 		let domEvtDataStub;
 

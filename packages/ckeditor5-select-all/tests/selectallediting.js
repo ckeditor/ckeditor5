@@ -33,6 +33,17 @@ describe( 'SelectAllEditing', () => {
 		expect( SelectAllEditing.pluginName ).to.equal( 'SelectAllEditing' );
 	} );
 
+	it( 'should provide accessibility help dialog metadata', () => {
+		expect( editor.plugins.get( SelectAllEditing ).accessibilityHelpMetadata ).to.deep.equal( {
+			keystrokes: [
+				{
+					label: 'Select all',
+					keystroke: 'CTRL+A'
+				}
+			]
+		} );
+	} );
+
 	it( 'should register the "selectAll" command', () => {
 		const command = editor.commands.get( 'selectAll' );
 

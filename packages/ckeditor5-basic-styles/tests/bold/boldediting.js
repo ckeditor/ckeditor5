@@ -40,6 +40,17 @@ describe( 'BoldEditing', () => {
 		expect( editor.plugins.get( BoldEditing ) ).to.be.instanceOf( BoldEditing );
 	} );
 
+	it( 'should provide accessibility help dialog metadata', () => {
+		expect( editor.plugins.get( BoldEditing ).accessibilityHelpMetadata ).to.deep.equal( {
+			keystrokes: [
+				{
+					label: 'Bold text',
+					keystroke: 'CTRL+B'
+				}
+			]
+		} );
+	} );
+
 	it( 'should set proper schema rules', () => {
 		expect( model.schema.checkAttribute( [ '$root', '$block', '$text' ], 'bold' ) ).to.be.true;
 		expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'bold' ) ).to.be.true;

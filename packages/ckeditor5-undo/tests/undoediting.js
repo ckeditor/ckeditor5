@@ -26,6 +26,25 @@ describe( 'UndoEditing', () => {
 		undo.destroy();
 	} );
 
+	it( 'should have a name', () => {
+		expect( UndoEditing.pluginName ).to.equal( 'UndoEditing' );
+	} );
+
+	it( 'should provide accessibility help dialog metadata', () => {
+		expect( undo.accessibilityHelpMetadata ).to.deep.equal( {
+			keystrokes: [
+				{
+					label: 'Undo',
+					keystroke: 'CTRL+Z'
+				},
+				{
+					label: 'Redo',
+					keystroke: [ [ 'CTRL+Y' ], [ 'CTRL+SHIFT+Z' ] ]
+				}
+			]
+		} );
+	} );
+
 	it( 'should register undo command and redo command', () => {
 		expect( editor.commands.get( 'undo' ) ).to.equal( undo._undoCommand );
 		expect( editor.commands.get( 'redo' ) ).to.equal( undo._redoCommand );

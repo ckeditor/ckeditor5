@@ -28,6 +28,17 @@ describe( 'FindAndReplaceUI', () => {
 		expect( FindAndReplaceUI.pluginName ).to.equal( 'FindAndReplaceUI' );
 	} );
 
+	it( 'should provide accessibility help dialog metadata', () => {
+		expect( editor.plugins.get( FindAndReplaceUI ).accessibilityHelpMetadata ).to.deep.equal( {
+			keystrokes: [
+				{
+					label: 'Find in the document',
+					keystroke: 'CTRL+F'
+				}
+			]
+		} );
+	} );
+
 	describe( 'init()', () => {
 		describe( 'with the default UI type config (dialog)', () => {
 			let toolbarButtonView, dialogPlugin, dialogView;

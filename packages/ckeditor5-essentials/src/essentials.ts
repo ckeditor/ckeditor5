@@ -37,7 +37,7 @@ export default class Essentials extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ Clipboard, Enter, SelectAll, ShiftEnter, Typing, Undo, AccessibilityHelp ] as const;
+		return [ AccessibilityHelp, Clipboard, Enter, SelectAll, ShiftEnter, Typing, Undo ] as const;
 	}
 
 	/**
