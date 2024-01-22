@@ -37,6 +37,25 @@ describe( 'Dialog', () => {
 		Dialog._visibleDialogPlugin = undefined;
 	} );
 
+	it( 'should have a name', () => {
+		expect( Dialog.pluginName ).to.equal( 'Dialog' );
+	} );
+
+	it( 'should provide accessibility help dialog metadata', () => {
+		expect( editor.plugins.get( Dialog ).accessibilityHelpMetadata ).to.deep.equal( {
+			keystrokes: [
+				{
+					categoryId: 'navigation',
+					keystrokes: [ {
+						label: 'Move focus in and out of an active dialog window',
+						keystroke: 'Ctrl+F6',
+						mayRequireFn: true
+					} ]
+				}
+			]
+		} );
+	} );
+
 	it( 'should initialise without #_visibleDialogPlugin set', () => {
 		expect( Dialog._visibleDialogPlugin ).to.be.undefined;
 	} );
