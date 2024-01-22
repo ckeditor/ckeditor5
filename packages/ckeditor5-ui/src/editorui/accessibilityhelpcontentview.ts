@@ -89,7 +89,7 @@ export default class AccessibilityHelpContentView extends View<HTMLDivElement> {
 	 */
 	private _createGroup( groupDefinition: KeystrokeGroupDefinition ): Array<HTMLElement> {
 		const elements: Array<HTMLElement> = [
-			createElement( document, 'dl', {}, groupDefinition.keystrokes
+			createElement( document, 'dl', {}, Array.from( groupDefinition.keystrokes )
 				.sort( ( a, b ) => sortAlphabetically( a.label, b.label ) )
 				.map( keystrokeDefinition => this._createGroupRow( keystrokeDefinition ) )
 				.flat()

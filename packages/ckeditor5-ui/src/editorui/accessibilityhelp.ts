@@ -89,6 +89,54 @@ export default class AccessibilityHelp extends Plugin {
 			cancel();
 		} );
 
+		this.registerKeystrokeCategory( {
+			id: DEFAULT_CATEGORY_ID,
+			label: t( 'Content editing keystrokes' ),
+			description: t( 'These keyboard shortcuts allow for quick access to content editing features.' )
+		} );
+
+		this.registerKeystrokeCategory( {
+			id: 'navigation',
+			label: t( 'User interface and content navigation keystrokes' ),
+			description: t( 'Use the following keystrokes for more efficient navigation in the CKEditor 5 user interface.' ),
+			groups: [
+				{
+					id: 'common',
+					keystrokes: [
+						{
+							label: t( 'Close contextual balloons, dropdowns, and dialogs' ),
+							keystroke: 'Esc'
+						},
+						{
+							label: t( 'Move focus to the visible contextual balloon' ),
+							keystroke: 'Tab'
+						},
+						{
+							label: t( 'Open the accessibility help dialog' ),
+							keystroke: 'Alt+0'
+						},
+						{
+							label: t( 'Move focus between fields (inputs and buttons) in balloons and dialogs' ),
+							keystroke: 'Tab'
+						},
+						{
+							label: t( 'Move focus to the toolbar, also navigate between toolbars' ),
+							keystroke: 'Alt+F10',
+							mayRequireFn: true
+						},
+						{
+							label: t( 'Navigate through the toolbar' ),
+							keystroke: [ [ 'arrowup' ], [ 'arrowright' ], [ 'arrowdown' ], [ 'arrowleft' ] ]
+						},
+						{
+							label: t( 'Execute the currently focused button' ),
+							keystroke: [ [ 'Enter' ], [ 'Space' ] ]
+						}
+					]
+				}
+			]
+		} );
+
 		this._setupRootLabels();
 	}
 
@@ -144,7 +192,7 @@ export default class AccessibilityHelp extends Plugin {
 		const category = this.keystrokes.get( categoryId );
 
 		if ( !category ) {
-			throw new CKEditorError( 'accessibility-help-unknown-category', { categoryId } );
+			throw new CKEditorError( 'accessibility-help-unknown-category', this.editor, { groupId: id, categoryId } );
 		}
 
 		category.groups.set( id, {
@@ -174,8 +222,9 @@ export default class AccessibilityHelp extends Plugin {
 			 *
 			 * @error accessibility-help-unknown-category
 			 * @param categoryId The id of the unknown keystroke category.
+			 * @param keystrokes Keystroke definitions about to be registered.
 			 */
-			throw new CKEditorError( 'accessibility-help-unknown-category', { categoryId } );
+			throw new CKEditorError( 'accessibility-help-unknown-category', this.editor, { categoryId, keystrokes } );
 		}
 
 		const category = this.keystrokes.get( categoryId )!;
@@ -184,76 +233,18 @@ export default class AccessibilityHelp extends Plugin {
 			/**
 			 * Cannot register keystrokes in an unknown group.
 			 *
-			 * * If you want to create a new group, make sure you pass the `groupLabel` option to the
-			 * {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp#registerKeystrokes} method.
-			 * * If you want to add keystrokes to an existing group, make sure it exists.
+			 * Use {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp#registerKeystrokeGroup}
+			 * to register a new group or make sure the specified group exists.
 			 *
 			 * @error accessibility-help-unknown-group
 			 * @param groupId The id of the unknown keystroke group.
 			 * @param categoryId The id of category the unknown group should belong to.
+			 * @param keystrokes Keystroke definitions about to be registered.
 			 */
-			throw new CKEditorError( 'accessibility-help-unknown-group', { groupId, categoryId } );
+			throw new CKEditorError( 'accessibility-help-unknown-group', this.editor, { groupId, categoryId, keystrokes } );
 		}
 
 		category.groups.get( groupId )!.keystrokes.push( ...keystrokes );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public get accessibilityHelpMetadata(): AccessibilityHelpMetadata {
-		const t = this.editor.t;
-
-		return {
-			keystrokeCategories: [
-				{
-					id: DEFAULT_CATEGORY_ID,
-					label: t( 'Content editing keystrokes' ),
-					description: t( 'These keyboard shortcuts allow for quick access to content editing features.' )
-				},
-				{
-					id: 'navigation',
-					label: t( 'User interface and content navigation keystrokes' ),
-					description: t( 'Use the following keystrokes for more efficient navigation in the CKEditor 5 user interface.' ),
-					groups: [
-						{
-							id: 'common',
-							keystrokes: [
-								{
-									label: t( 'Close contextual balloons, dropdowns, and dialogs' ),
-									keystroke: 'Esc'
-								},
-								{
-									label: t( 'Move focus to the visible contextual balloon' ),
-									keystroke: 'Tab'
-								},
-								{
-									label: t( 'Open the accessibility help dialog' ),
-									keystroke: 'Alt+0'
-								},
-								{
-									label: t( 'Move focus between fields (inputs and buttons) in balloons and dialogs' ),
-									keystroke: 'Tab'
-								},
-								{
-									label: t( 'Move focus to the toolbar, also navigate between toolbars' ),
-									keystroke: 'Alt+F10',
-									mayRequireFn: true
-								},
-								{
-									label: t( 'Navigate through the toolbar' ),
-									keystroke: [ [ 'arrowup' ], [ 'arrowright' ], [ 'arrowdown' ], [ 'arrowleft' ] ]
-								},
-								{
-									label: t( 'Execute the currently focused button' ),
-									keystroke: [ [ 'Enter' ], [ 'Space' ] ]
-								}
-							]
-						}
-					]
-				}
-			]
-		};
 	}
 
 	/**
