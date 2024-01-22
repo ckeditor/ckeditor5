@@ -5,8 +5,8 @@
 
 category: legacy
 order: 40
-menu-title: TypeScript support
-meta-title: TypeScript support | CKEditor 5 documentation
+menu-title: TypeScript legacy support
+meta-title: TypeScript legacy support | CKEditor 5 documentation
 modified_at: 2023-04-03
 ---
 
