@@ -97,6 +97,21 @@ describe( 'Context', () => {
 			expect( context.locale.uiLanguage ).to.equal( 'en' );
 			expect( context.locale.contentLanguage ).to.equal( 'ar' );
 		} );
+
+		it( 'is configured with the config.translations', () => {
+			const context = new Context( {
+				translations: {
+					pl: {
+						dictionary: {
+							key: ''
+						},
+						getPluralForm: () => ''
+					} }
+			} );
+
+			expect( context.locale.translations.pl.dictionary.key ).to.equal( '' );
+			expect( context.locale.translations.pl.getPluralForm() ).to.equal( '' );
+		} );
 	} );
 
 	describe( 'plugins', () => {
