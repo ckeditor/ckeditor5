@@ -21,9 +21,18 @@ Check out the builder to quickly get a taste of CKEditor. It offers an easy-to-u
 **Prerequisites**
 
 * [Node.js](https://nodejs.org/) in version 18 or above
-* Basic familiarity with the terminal
+* An initialized Node.js project
+* Basic familiarity with a terminal
 
 </info-box>
+
+Before running any command, make sure that your Node.js version is up-to-date. Also, check if you're in the proper working directory with the initialized Node.js project. Then, run the following command:
+
+```bash
+npm install ckeditor5
+```
+
+The command will install the CKEditor main open-source package alongside essential plugins. You can import all modules from the `ckeditor5` package. Additionally, you have to import UI translations and CSS styles separately.
 
 ## Next steps
 
