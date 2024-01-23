@@ -35,13 +35,6 @@ ClassicEditor
 		fontColor: {
 			columns: 3
 		}
-		// translations: {
-		// 	pl: {
-		// 		dictionary: {
-		// 			Bold: 'Pogrubienie'
-		// 		}
-		// 	}
-		// }
 	} )
 	.then( editor => {
 		window.editor = editor;
