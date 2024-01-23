@@ -102,6 +102,14 @@ describe( 'AutoLink', () => {
 					'<paragraph>some http://hello.com[] text</paragraph>'
 				);
 			} );
+
+			// Simulate browser behavior on Windows. See https://github.com/ckeditor/ckeditor5/issues/15700
+			it( 'paste link (clipboard files array not empty)', () => {
+				pasteText( 'http://hello.com', [ 1 ] );
+				expect( getData( model ) ).to.equal(
+					'<paragraph>some http://hello.com[] text</paragraph>'
+				);
+			} );
 		} );
 
 		describe( 'pasting on collapsed selection', () => {
@@ -189,14 +197,14 @@ describe( 'AutoLink', () => {
 			} );
 		} );
 
-		function pasteText( text ) {
+		function pasteText( text, files = [] ) {
 			pasteData( {
 				'text/plain': text
-			} );
+			}, files );
 		}
 
-		function pasteData( data ) {
-			const dataTransferMock = createDataTransfer( data );
+		function pasteData( data, files = [] ) {
+			const dataTransferMock = createDataTransfer( data, files );
 			viewDocument.fire( 'paste', {
 				dataTransfer: dataTransferMock,
 				preventDefault() {},
@@ -204,8 +212,9 @@ describe( 'AutoLink', () => {
 			} );
 		}
 
-		function createDataTransfer( data ) {
+		function createDataTransfer( data, files = [] ) {
 			return {
+				files,
 				getData( type ) {
 					return data[ type ];
 				}

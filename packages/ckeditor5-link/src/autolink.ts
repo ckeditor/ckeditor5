@@ -173,10 +173,13 @@ export default class AutoLink extends Plugin {
 				return;
 			}
 
+			const isDataTransferContainingFiles = !!data.dataTransfer.files.length;
+
 			const matches = newLink.match( URL_REG_EXP );
 
-			// If the text in the clipboard has a URL, and that URL is the whole clipboard.
-			if ( matches && matches[ 2 ] === newLink ) {
+			// If the text in the clipboard has a URL, and that URL is the whole clipboard
+			// and there is now file in the clipboard (See: https://github.com/ckeditor/ckeditor5/issues/15700)
+			if ( matches && matches[ 2 ] === newLink && !isDataTransferContainingFiles ) {
 				model.change( writer => {
 					this._selectEntireLinks( writer, selectedRange );
 					linkCommand.execute( newLink );
