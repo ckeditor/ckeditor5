@@ -103,9 +103,8 @@ describe( 'AutoLink', () => {
 				);
 			} );
 
-			// Simulate browser behavior on Windows. See https://github.com/ckeditor/ckeditor5/issues/15700
-			it( 'paste link (clipboard files array not empty)', () => {
-				pasteText( 'http://hello.com', [ 1 ] );
+			it( 'should omit the `drop` clipboard method', () => {
+				pasteText( 'http://hello.com', 'drop' );
 				expect( getData( model ) ).to.equal(
 					'<paragraph>some http://hello.com[] text</paragraph>'
 				);
@@ -197,24 +196,23 @@ describe( 'AutoLink', () => {
 			} );
 		} );
 
-		function pasteText( text, files = [] ) {
+		function pasteText( text, method = 'paste' ) {
 			pasteData( {
 				'text/plain': text
-			}, files );
+			}, method );
 		}
 
-		function pasteData( data, files = [] ) {
-			const dataTransferMock = createDataTransfer( data, files );
-			viewDocument.fire( 'paste', {
+		function pasteData( data, method = 'paste' ) {
+			const dataTransferMock = createDataTransfer( data );
+			viewDocument.fire( method, {
 				dataTransfer: dataTransferMock,
 				preventDefault() {},
 				stopPropagation() {}
 			} );
 		}
 
-		function createDataTransfer( data, files = [] ) {
+		function createDataTransfer( data ) {
 			return {
-				files,
 				getData( type ) {
 					return data[ type ];
 				}

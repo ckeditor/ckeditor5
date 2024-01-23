@@ -154,7 +154,7 @@ export default class AutoLink extends Plugin {
 		const linkCommand = editor.commands.get( 'link' )!;
 
 		clipboardPipeline.on( 'inputTransformation', ( evt, data: ClipboardInputTransformationData ) => {
-			if ( !this.isEnabled || !linkCommand.isEnabled || selection.isCollapsed ) {
+			if ( !this.isEnabled || !linkCommand.isEnabled || selection.isCollapsed || data.method !== 'paste' ) {
 				// Abort if we are disabled or the selection is collapsed.
 				return;
 			}
@@ -173,13 +173,11 @@ export default class AutoLink extends Plugin {
 				return;
 			}
 
-			const isDataTransferContainingFiles = !!data.dataTransfer.files.length;
-
 			const matches = newLink.match( URL_REG_EXP );
 
 			// If the text in the clipboard has a URL, and that URL is the whole clipboard
 			// and there is now file in the clipboard (See: https://github.com/ckeditor/ckeditor5/issues/15700)
-			if ( matches && matches[ 2 ] === newLink && !isDataTransferContainingFiles ) {
+			if ( matches && matches[ 2 ] === newLink ) {
 				model.change( writer => {
 					this._selectEntireLinks( writer, selectedRange );
 					linkCommand.execute( newLink );
