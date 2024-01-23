@@ -24,6 +24,18 @@ describe( 'Context', () => {
 
 			expect( context.config.get( 'foo' ) ).to.equal( 'bar' );
 		} );
+
+		it( 'should not set translations in the config', () => {
+			const context = new Context( { translations: {
+				pl: {
+					dictionary: {
+						bold: 'Pogrubienie'
+					}
+				}
+			} } );
+
+			expect( context.config.get( 'translations' ) ).to.equal( undefined );
+		} );
 	} );
 
 	describe( '_getEditorConfig()', () => {

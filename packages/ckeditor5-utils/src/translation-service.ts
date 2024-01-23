@@ -121,7 +121,7 @@ export function add(
 	let mergedExistingTranslations: Translations | undefined;
 
 	if ( editor ) {
-		const existingTranslations = editor.config.get( 'translations' );
+		const existingTranslations = editor.locale.translations;
 
 		mergedExistingTranslations = _unifyTranslations( existingTranslations );
 	}
@@ -136,7 +136,7 @@ export function add(
 	Object.assign( languageTranslations.dictionary, translations );
 
 	if ( editor && mergedExistingTranslations ) {
-		editor.config.set( 'translations', { language: languageTranslations } );
+		editor.locale.translations = { language: languageTranslations };
 	}
 }
 

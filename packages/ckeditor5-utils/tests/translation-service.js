@@ -49,7 +49,7 @@ describe( 'translation-service', () => {
 			expect( _translate( 'pl', { string: 'Add space' }, 13 ) ).to.equal( 'Dodaj %0 spacji' );
 		} );
 
-		it( 'should add translation to the translation from config', () => {
+		it( 'should add translation if original translations defined in config', () => {
 			const translations = {
 				pl: {
 					dictionary: {
@@ -58,16 +58,14 @@ describe( 'translation-service', () => {
 				}
 			};
 			const editor = {
-				config: {
-					get: () => translations,
-					set: () => null
+				locale: {
+					translations
 				}
 			};
-			const spy = sinon.spy( editor.config, 'set' );
 
 			add( 'pl', { 'foo': 'foo_pl' }, undefined, editor );
 
-			sinon.assert.calledWithExactly( spy, 'translations', {
+			expect( editor.locale ).to.have.deep.property( 'translations', {
 				language: {
 					dictionary: {
 						bold: 'Pogrubienie',
@@ -184,7 +182,7 @@ describe( 'translation-service', () => {
 			expect( _translate( 'pl', { string: 'Add space' }, 13 ) ).to.equal( 'Dodaj %0 spacje' );
 		} );
 
-		it( 'should return the correct plural form of the message using translations from config', () => {
+		it( 'should return the correct plural form of the message using translations defined in config', () => {
 			const translations = {
 				pl: {
 					dictionary: {
@@ -193,9 +191,8 @@ describe( 'translation-service', () => {
 				}
 			};
 			const editor = {
-				config: {
-					get: () => translations,
-					set: () => null
+				locale: {
+					translations
 				}
 			};
 

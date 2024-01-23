@@ -101,7 +101,7 @@ export default class Locale {
 	/**
 	 * Object that contains translations.
 	 */
-	public readonly translations: Translations | undefined;
+	public translations: Translations | undefined;
 
 	/**
 	 * Creates a new instance of the locale class. Learn more about
