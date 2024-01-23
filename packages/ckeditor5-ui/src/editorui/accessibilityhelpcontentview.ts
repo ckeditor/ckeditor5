@@ -90,7 +90,7 @@ export default class AccessibilityHelpContentView extends View<HTMLDivElement> {
 	private _createGroup( groupDefinition: KeystrokeGroupDefinition ): Array<HTMLElement> {
 		const elements: Array<HTMLElement> = [
 			createElement( document, 'dl', {}, Array.from( groupDefinition.keystrokes )
-				.sort( ( a, b ) => sortAlphabetically( a.label, b.label ) )
+				.sort( ( a, b ) => a.label.localeCompare( b.label ) )
 				.map( keystrokeDefinition => this._createGroupRow( keystrokeDefinition ) )
 				.flat()
 			)
@@ -125,16 +125,11 @@ export default class AccessibilityHelpContentView extends View<HTMLDivElement> {
 	}
 }
 
-function keystrokeToEnvKbd( keystroke: string ) {
-	return decorateInKbd( getEnvKeystrokeText( keystroke ) );
-}
-
-function decorateInKbd( text: string ) {
-	return text.split( '+' ).map( part => `<kbd>${ part }</kbd>` ).join( '+' );
-}
-
-function sortAlphabetically( a: string, b: string ) {
-	return a.localeCompare( b );
+function keystrokeToEnvKbd( keystroke: string ): string {
+	return getEnvKeystrokeText( keystroke )
+		.split( '+' )
+		.map( part => `<kbd>${ part }</kbd>` )
+		.join( '+' );
 }
 
 function normalizeKeystrokeDefinition( definition: AccessibilityHelpKeystrokeDefinition[ 'keystroke' ] ): Array<Array<string>> {
