@@ -175,8 +175,7 @@ export default class AutoLink extends Plugin {
 
 			const matches = newLink.match( URL_REG_EXP );
 
-			// If the text in the clipboard has a URL, and that URL is the whole clipboard
-			// and there is now file in the clipboard (See: https://github.com/ckeditor/ckeditor5/issues/15700)
+			// If the text in the clipboard has a URL, and that URL is the whole clipboard.
 			if ( matches && matches[ 2 ] === newLink ) {
 				model.change( writer => {
 					this._selectEntireLinks( writer, selectedRange );
