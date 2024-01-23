@@ -5,17 +5,21 @@
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { AccessibilityHelp, ButtonView } from '../../src/index.js';
-import { global, keyCodes } from '@ckeditor/ckeditor5-utils';
+import { env, global, keyCodes } from '@ckeditor/ckeditor5-utils';
 import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
 import { cloneDeep } from 'lodash-es';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import AccessibilityHelpContentView from '../../src/editorui/accessibilityhelpcontentview.js';
 import { Plugin } from '@ckeditor/ckeditor5-core';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'AccessibilityHelp', () => {
 	let editor, plugin, dialogPlugin, domElement;
 
+	testUtils.createSinonSandbox();
+
 	beforeEach( async () => {
+		testUtils.sinon.stub( env, 'isMac' ).value( false );
 		domElement = global.document.createElement( 'div' );
 		global.document.body.appendChild( domElement );
 
@@ -169,7 +173,7 @@ describe( 'AccessibilityHelp', () => {
 				const viewRoot = editor.editing.view.document.getRoot( 'main' );
 				const ariaLabel = viewRoot.getAttribute( 'aria-label' );
 
-				expect( ariaLabel ).to.equal( 'Editor editing area: main. Press ⌥0 for help.' );
+				expect( ariaLabel ).to.equal( 'Editor editing area: main. Press Alt+0 for help.' );
 			} );
 
 			it( 'should work for multiple roots (MultiRootEditor)', async () => {
@@ -189,7 +193,7 @@ describe( 'AccessibilityHelp', () => {
 					const viewRoot = multiRootEditor.editing.view.document.getRoot( rootName );
 					const ariaLabel = viewRoot.getAttribute( 'aria-label' );
 
-					expect( ariaLabel ).to.equal( `Rich Text Editor. Editing area: ${ rootName }. Press ⌥0 for help.` );
+					expect( ariaLabel ).to.equal( `Rich Text Editor. Editing area: ${ rootName }. Press Alt+0 for help.` );
 				}
 
 				rootElA.remove();
