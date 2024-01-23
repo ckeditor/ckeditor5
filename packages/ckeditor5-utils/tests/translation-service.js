@@ -75,6 +75,32 @@ describe( 'translation-service', () => {
 				}
 			} );
 		} );
+
+		it( 'should override translation if original translations defined in config', () => {
+			const translations = {
+				pl: {
+					dictionary: {
+						bold: 'Pogrubienie'
+					}
+				}
+			};
+			const editor = {
+				locale: {
+					translations
+				}
+			};
+
+			add( 'pl', { 'bold': 'Gruba Czcionka' }, undefined, editor );
+
+			expect( editor.locale ).to.have.deep.property( 'translations', {
+				language: {
+					dictionary: {
+						bold: 'Gruba Czcionka'
+					},
+					getPluralForm: undefined
+				}
+			} );
+		} );
 	} );
 
 	describe( '_translate()', () => {

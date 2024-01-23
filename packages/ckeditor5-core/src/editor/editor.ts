@@ -277,7 +277,7 @@ export default abstract class Editor extends ObservableMixin() {
 
 		// Prefer the language passed as the argument to the constructor instead of the constructor's `defaultConfig`, if both are set.
 		const language = config.language || ( constructor.defaultConfig && constructor.defaultConfig.language );
-		const translations = config.translations || undefined;
+		const translations = config.translations;
 
 		this._context = config.context || new Context( { language, translations } );
 		this._context._addEditor( this, !config.context );

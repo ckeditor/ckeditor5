@@ -7,6 +7,7 @@
  * @module core/editor/editorconfig
  */
 
+import { type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
 import type Context from '../context.js';
 import type { PluginConstructor } from '../plugin.js';
 import type Editor from './editor.js';
@@ -537,7 +538,7 @@ export interface EditorConfig {
 	/**
 	 * Translations to be used in editor.
 	 */
-	translations?: Translations | Array<Translations>;
+	translations?: ArrayOrItem<Translations>;
 }
 
 /**
