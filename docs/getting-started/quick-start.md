@@ -8,27 +8,24 @@ meta-description: Learn how to install, integrate, configure, and develop CKEdit
 
 # Quick Start
 
-## Try CKEditor 5 builder
+This guide will show you the fastest way to start using CKEditor&nbsp;5.
 
-## Installing CKEditor 5 using npm
+## Try CKEditor&nbsp;5 builder
+
+Check out the builder to quickly get a taste of CKEditor. It offers an easy-to-use UI to help you configure and download the editor suited to your needs.
+
+## Installing CKEditor&nbsp;5 using npm
+
+<info-box>
+
+**Prerequisites**
+
+* [Node.js](https://nodejs.org/) in version 18 or above
+* Basic familiarity with the terminal
+
+</info-box>
 
 ## Next steps
 
-<span class="navigation-hint_mobile">
-	<info-box>
-		Use the **main menu button in the upper-left corner** to navigate through the documentation.
-	</info-box>
-</span>
-
-<!-- the wrapper class should be transformed into an additional infobox class if we will want to use it on other pages-->
-<!-- <div class="info-cta"> -->
-<info-box>
-	**Migrating from CKEditor 4?** {@link updating/migration-from-ckeditor-4 Check the migration section}
-</info-box>
-
-<info-box>
-	**Want to remove the "Powered by CKEditor" logo?** {@link support/managing-ckeditor-logo Check the dedicated guide}
-</info-box>
-<!-- </div> -->
-
-TODO
+* After installing the editor, you can learn more about configuration in the {@link getting-started/setup/configuration setup} section.
+* Check the {@link features/index Features} category of the documentation to learn more about individual features.
