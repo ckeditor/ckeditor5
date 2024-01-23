@@ -59,5 +59,10 @@
 	"Color picker": "The label used by assistive technologies describing a button that opens a color picker, where user can choose a configured color for a certain properties (eg.: background color, color, border-color etc.).",
 	"Toggle caption off": "The button label for the table toolbar hiding caption attached to the table.",
 	"Toggle caption on": "The button label for the table toolbar showing caption attached to the table.",
-	"Enter table caption": "The placeholder text for the table caption displayed when the caption is empty."
+	"Enter table caption": "The placeholder text for the table caption displayed when the caption is empty.",
+	"Keystrokes that can be used in a table cell": "Accessibility help dialog header text displayed before the list of keystrokes that can be used in a table cell.",
+	"Move the selection to the next cell": "Accessibility help dialog keystroke description: keystroke for moving the selection to the next cell.",
+	"Move the selection to the previous cell": "Accessibility help dialog keystroke description: keystroke for moving the selection to the previous cell.",
+	"Insert a new table row (when in the last cell of a table)": "Accessibility help dialog keystroke description: keystroke for inserting a new table row.",
+	"Navigate through the table": "Accessibility help dialog keystroke description: keystroke for navigating through the table."
 }

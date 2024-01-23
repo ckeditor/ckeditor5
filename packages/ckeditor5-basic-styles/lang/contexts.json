@@ -5,5 +5,8 @@
 	"Code": "Toolbar button tooltip for the Code feature.",
 	"Strikethrough": "Toolbar button tooltip for the Strikethrough feature.",
 	"Subscript": "Toolbar button tooltip for the Subscript feature.",
-	"Superscript": "Toolbar button tooltip for the Superscript feature."
+	"Superscript": "Toolbar button tooltip for the Superscript feature.",
+	"Italic text": "Accessibility help dialog keystroke description: keystroke for making text italic.",
+	"Move out of an inline code style": "Accessibility help dialog keystroke description: keystroke for moving selection out of an inline code style.",
+	"Bold text": "Accessibility help dialog keystroke description: keystroke for making text bold."
 }
