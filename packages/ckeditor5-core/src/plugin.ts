@@ -230,18 +230,18 @@ export interface PluginInterface {
 	 *
 	 * ```js
 	 * class MyPlugin extends Plugin {
-	 * // ...
-	 * get accessibilityHelpMetadata() {
-	 * 	const t = this.editor.t;
+	 * 	// ...
+	 * 	get accessibilityHelpMetadata() {
+	 * 		const t = this.editor.t;
 	 *
-	 * 	return {
-	 * 		keystrokes: [
-	 * 			{
-	 * 				label: t( 'Keystroke label' ),
-	 * 				keystroke: 'CTRL+B'
-	 * 			}
-	 * 		]
-	 * 	};
+	 * 		return {
+	 * 			keystrokes: [
+	 * 				{
+	 * 					label: t( 'Keystroke label' ),
+	 * 					keystroke: 'CTRL+B'
+	 * 				}
+	 * 			]
+	 * 		};
 	 * }
 	 * ```
 	 *
@@ -252,7 +252,7 @@ export interface PluginInterface {
 	 *
 	 * ```js
 	 * class MyPlugin extends Plugin {
-	 * // ...
+	 * 	// ...
 	 * 	get accessibilityHelpMetadata() {
 	 * 		const t = this.editor.t;
 	 *
