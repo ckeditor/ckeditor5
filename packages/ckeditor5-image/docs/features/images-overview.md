@@ -242,7 +242,7 @@ You can also use the **Insert paragraph** handles on the bottom or top edge of t
 
 ## Image editing
 
-While the image feature does not provide native image editing support, the {@link features/ckbox CKBox premium feature} provides basic editing capabilities such as cropping, resizing to presets, or flipping.
+While the image feature does not provide native image editing support, the {@link features/ckbox CKBox premium feature} provides basic editing capabilities such as cropping to presets, flipping, or rotating.
 
 ## Contribute
 
