@@ -9,6 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import AttributeCommand from '../attributecommand.js';
+import type { AccessibilityHelpMetadata } from 'ckeditor5/src/ui.js';
 
 const UNDERLINE = 'underline';
 
@@ -54,5 +55,21 @@ export default class UnderlineEditing extends Plugin {
 
 		// Set the Ctrl+U keystroke.
 		editor.keystrokes.set( 'CTRL+U', 'underline' );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public get accessibilityHelpMetadata(): AccessibilityHelpMetadata {
+		const t = this.editor.t;
+
+		return {
+			keystrokes: [
+				{
+					label: t( 'Underline text' ),
+					keystroke: 'CTRL+U'
+				}
+			]
+		};
 	}
 }

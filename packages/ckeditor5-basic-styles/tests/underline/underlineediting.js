@@ -38,6 +38,17 @@ describe( 'UnderlineEditing', () => {
 		expect( editor.plugins.get( UnderlineEditing ) ).to.be.instanceOf( UnderlineEditing );
 	} );
 
+	it( 'should provide accessibility help dialog metadata', () => {
+		expect( editor.plugins.get( UnderlineEditing ).accessibilityHelpMetadata ).to.deep.equal( {
+			keystrokes: [
+				{
+					label: 'Underline text',
+					keystroke: 'CTRL+U'
+				}
+			]
+		} );
+	} );
+
 	it( 'should set proper schema rules', () => {
 		expect( model.schema.checkAttribute( [ '$root', '$block', '$text' ], 'underline' ) ).to.be.true;
 		expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'underline' ) ).to.be.true;

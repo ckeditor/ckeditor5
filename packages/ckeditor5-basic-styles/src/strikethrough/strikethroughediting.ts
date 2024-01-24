@@ -9,6 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import AttributeCommand from '../attributecommand.js';
+import type { AccessibilityHelpMetadata } from 'ckeditor5/src/ui.js';
 
 const STRIKETHROUGH = 'strikethrough';
 
@@ -59,5 +60,21 @@ export default class StrikethroughEditing extends Plugin {
 
 		// Set the Ctrl+Shift+X keystroke.
 		editor.keystrokes.set( 'CTRL+SHIFT+X', 'strikethrough' );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public get accessibilityHelpMetadata(): AccessibilityHelpMetadata {
+		const t = this.editor.t;
+
+		return {
+			keystrokes: [
+				{
+					label: t( 'Strikethrough text' ),
+					keystroke: 'CTRL+SHIFT+X'
+				}
+			]
+		};
 	}
 }
