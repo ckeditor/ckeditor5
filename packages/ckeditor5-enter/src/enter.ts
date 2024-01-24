@@ -10,7 +10,7 @@
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import EnterCommand from './entercommand.js';
 import EnterObserver, { type ViewDocumentEnterEvent } from './enterobserver.js';
-import type { accessibilityMetadata } from '@ckeditor/ckeditor5-ui';
+import type { AccessibilityMetadata } from '@ckeditor/ckeditor5-ui';
 
 /**
  * This plugin handles the <kbd>Enter</kbd> keystroke (hard line break) in the editor.
@@ -57,7 +57,7 @@ export default class Enter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public get accessibilityMetadata(): accessibilityMetadata {
+	public get accessibilityMetadata(): AccessibilityMetadata {
 		const t = this.editor.t;
 
 		return {

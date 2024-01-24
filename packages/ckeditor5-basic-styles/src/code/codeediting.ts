@@ -9,7 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import { TwoStepCaretMovement, inlineHighlight } from 'ckeditor5/src/typing.js';
-import type { accessibilityMetadata } from 'ckeditor5/src/ui.js';
+import type { AccessibilityMetadata } from 'ckeditor5/src/ui.js';
 
 import AttributeCommand from '../attributecommand.js';
 
@@ -73,7 +73,7 @@ export default class CodeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public get accessibilityMetadata(): accessibilityMetadata {
+	public get accessibilityMetadata(): AccessibilityMetadata {
 		const t = this.editor.t;
 
 		return {

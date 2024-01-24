@@ -11,7 +11,7 @@ import { Plugin } from '@ckeditor/ckeditor5-core';
 import { getCode, parseKeystroke } from '@ckeditor/ckeditor5-utils';
 import SelectAllCommand from './selectallcommand.js';
 import type { ViewDocumentKeyDownEvent } from '@ckeditor/ckeditor5-engine';
-import type { accessibilityMetadata } from '@ckeditor/ckeditor5-ui';
+import type { AccessibilityMetadata } from '@ckeditor/ckeditor5-ui';
 
 const SELECT_ALL_KEYSTROKE = parseKeystroke( 'Ctrl+A' );
 
@@ -50,7 +50,7 @@ export default class SelectAllEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public get accessibilityMetadata(): accessibilityMetadata {
+	public get accessibilityMetadata(): AccessibilityMetadata {
 		const t = this.editor.t;
 
 		return {

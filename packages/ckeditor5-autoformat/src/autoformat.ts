@@ -11,7 +11,7 @@ import type { HeadingCommand } from '@ckeditor/ckeditor5-heading';
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import type { Range, Writer } from 'ckeditor5/src/engine.js';
 import { Delete } from 'ckeditor5/src/typing.js';
-import type { accessibilityMetadata } from 'ckeditor5/src/ui.js';
+import type { AccessibilityMetadata } from 'ckeditor5/src/ui.js';
 
 import blockAutoformatEditing from './blockautoformatediting.js';
 import inlineAutoformatEditing from './inlineautoformatediting.js';
@@ -206,7 +206,7 @@ export default class Autoformat extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public get accessibilityMetadata(): accessibilityMetadata {
+	public get accessibilityMetadata(): AccessibilityMetadata {
 		const t = this.editor.t;
 
 		return {

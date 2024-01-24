@@ -21,7 +21,7 @@ import {
 	clickOutsideHandler,
 	CssTransitionDisablerMixin,
 	type ViewWithCssTransitionDisabler,
-	type accessibilityMetadata
+	type AccessibilityMetadata
 } from 'ckeditor5/src/ui.js';
 import type { PositionOptions } from 'ckeditor5/src/utils.js';
 import { isWidget } from 'ckeditor5/src/widget.js';
@@ -107,7 +107,7 @@ export default class LinkUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public get accessibilityMetadata(): accessibilityMetadata {
+	public get accessibilityMetadata(): AccessibilityMetadata {
 		const t = this.editor.t;
 
 		return {

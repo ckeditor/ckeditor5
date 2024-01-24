@@ -12,7 +12,7 @@
 import { ObservableMixin, type ObservableSetEvent, type EventInfo } from '@ckeditor/ckeditor5-utils';
 
 import type Editor from './editor/editor.js';
-import type { accessibilityMetadata } from '@ckeditor/ckeditor5-ui';
+import type { AccessibilityMetadata } from '@ckeditor/ckeditor5-ui';
 
 /**
  * The base class for CKEditor plugin classes.
@@ -369,7 +369,7 @@ export interface PluginInterface {
 	 * }
 	 * ```
 	 */
-	readonly accessibilityMetadata?: accessibilityMetadata;
+	readonly accessibilityMetadata?: AccessibilityMetadata;
 }
 
 /**

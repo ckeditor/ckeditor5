@@ -26,7 +26,7 @@ import {
 } from '@ckeditor/ckeditor5-engine';
 
 import { Delete, type ViewDocumentDeleteEvent } from '@ckeditor/ckeditor5-typing';
-import type { accessibilityMetadata } from '@ckeditor/ckeditor5-ui';
+import type { AccessibilityMetadata } from '@ckeditor/ckeditor5-ui';
 
 import {
 	env,
@@ -200,7 +200,7 @@ export default class Widget extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public get accessibilityMetadata(): accessibilityMetadata {
+	public get accessibilityMetadata(): AccessibilityMetadata {
 		const t = this.editor.t;
 
 		return {

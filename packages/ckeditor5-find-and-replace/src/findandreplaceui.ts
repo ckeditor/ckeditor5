@@ -17,7 +17,7 @@ import {
 	FormHeaderView,
 	CssTransitionDisablerMixin,
 	type ViewWithCssTransitionDisabler,
-	type accessibilityMetadata
+	type AccessibilityMetadata
 } from 'ckeditor5/src/ui.js';
 import FindAndReplaceFormView from './ui/findandreplaceformview.js';
 import loupeIcon from '../theme/icons/find-replace.svg';
@@ -121,7 +121,7 @@ export default class FindAndReplaceUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public get accessibilityMetadata(): accessibilityMetadata {
+	public get accessibilityMetadata(): AccessibilityMetadata {
 		const t = this.editor.t;
 
 		return {

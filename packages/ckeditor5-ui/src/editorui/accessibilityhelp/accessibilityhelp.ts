@@ -484,7 +484,7 @@ export interface AccessibilityHelpKeystrokeDefinition {
  *
  * See the {@link module:core/plugin~PluginInterface#accessibilityMetadata plugin metadata format} to learn more.
  */
-export type accessibilityMetadata = {
+export type AccessibilityMetadata = {
 	keystrokeCategories?: Array<AccessibilityHelpKeystrokeCategory>;
 	keystrokeGroups?: Array<AccessibilityHelpKeystrokeGroup>;
 	keystrokes?: Array<AccessibilityHelpKeystrokes | AccessibilityHelpKeystrokeDefinition>;

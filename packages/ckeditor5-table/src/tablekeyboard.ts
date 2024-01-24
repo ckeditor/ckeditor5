@@ -29,7 +29,7 @@ import type {
 	ViewDocumentTabEvent
 } from 'ckeditor5/src/engine.js';
 
-import type { accessibilityMetadata } from 'ckeditor5/src/ui.js';
+import type { AccessibilityMetadata } from 'ckeditor5/src/ui.js';
 
 /**
  * This plugin enables keyboard navigation for tables.
@@ -380,7 +380,7 @@ export default class TableKeyboard extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public get accessibilityMetadata(): accessibilityMetadata {
+	public get accessibilityMetadata(): AccessibilityMetadata {
 		const t = this.editor.t;
 
 		return {
