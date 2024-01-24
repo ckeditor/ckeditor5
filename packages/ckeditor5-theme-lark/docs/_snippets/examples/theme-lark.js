@@ -11,14 +11,15 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
 import { ImageUpload } from '@ckeditor/ckeditor5-image';
+import { FindAndReplace } from '@ckeditor/ckeditor5-find-and-replace';
 import './custom.css';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-classic-editor' ), {
-		plugins: [ ArticlePluginSet, EasyImage, ImageUpload, CloudServices ],
+		plugins: [ ArticlePluginSet, EasyImage, ImageUpload, CloudServices, FindAndReplace ],
 		toolbar: {
 			items: [
-				'undo', 'redo',
+				'undo', 'redo', 'findAndReplace',
 				'|', 'heading',
 				'|', 'bold', 'italic',
 				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
