@@ -607,10 +607,20 @@ export default class ListEditing extends Plugin {
 		const t = this.editor.t;
 
 		return {
-			keystrokes: [
+			keystrokeGroups: [
 				{
-					label: t( 'Nest the current list item (when in a list)' ),
-					keystroke: 'Tab'
+					id: 'list',
+					label: t( 'Keystrokes that can be used in a list' ),
+					keystrokes: [
+						{
+							label: t( 'Increase list item indent' ),
+							keystroke: 'Tab'
+						},
+						{
+							label: t( 'Decrease list item indent' ),
+							keystroke: 'Shift+Tab'
+						}
+					]
 				}
 			]
 		};

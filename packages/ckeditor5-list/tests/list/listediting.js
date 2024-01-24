@@ -74,10 +74,20 @@ describe( 'ListEditing', () => {
 
 	it( 'should provide accessibility help dialog metadata', () => {
 		expect( editor.plugins.get( ListEditing ).accessibilityHelpMetadata ).to.deep.equal( {
-			keystrokes: [
+			keystrokeGroups: [
 				{
-					label: 'Nest the current list item (when in a list)',
-					keystroke: 'Tab'
+					id: 'list',
+					label: 'Keystrokes that can be used in a list',
+					keystrokes: [
+						{
+							label: 'Increase list item indent',
+							keystroke: 'Tab'
+						},
+						{
+							label: 'Decrease list item indent',
+							keystroke: 'Shift+Tab'
+						}
+					]
 				}
 			]
 		} );
