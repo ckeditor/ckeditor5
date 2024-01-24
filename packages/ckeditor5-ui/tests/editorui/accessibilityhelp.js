@@ -86,7 +86,7 @@ describe( 'AccessibilityHelp', () => {
 									},
 									{
 										keystroke: 'Alt+F10',
-										label: 'Move focus to the toolbar, also navigate between toolbars',
+										label: 'Move focus to the toolbar, navigate between toolbars',
 										mayRequireFn: true
 									},
 									{
@@ -671,7 +671,7 @@ describe( 'AccessibilityHelp', () => {
 											},
 											{
 												keystroke: 'Alt+F10',
-												label: 'Move focus to the toolbar, also navigate between toolbars',
+												label: 'Move focus to the toolbar, navigate between toolbars',
 												mayRequireFn: true
 											},
 											{

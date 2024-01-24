@@ -42,7 +42,7 @@
 	"Close contextual balloons, dropdowns, and dialogs": "Accessibility help dialog keystroke description: keystroke for closing contextual balloons, dropdowns, and dialogs.",
 	"Open the accessibility help dialog": "Accessibility help dialog keystroke description: keystroke for opening the accessibility help dialog.",
 	"Move focus between form fields (inputs, buttons, etc.)": "Accessibility help dialog keystroke description: keystroke for moving between fields.",
-	"Move focus to the toolbar, also navigate between toolbars": "Accessibility help dialog keystroke description: keystroke for moving focus to the toolbar.",
+	"Move focus to the toolbar, navigate between toolbars": "Accessibility help dialog keystroke description: keystroke for moving focus to the toolbar.",
 	"Navigate through the toolbar": "Accessibility help dialog keystroke description: keystroke for navigating through the toolbar.",
 	"Execute the currently focused button": "Accessibility help dialog keystroke description: keystroke for executing currently focused button.",
 	"Press %0 for help.": "Assistive technologies label added to each editor editing area informing users about the possibility of opening the accessibility help dialog.",

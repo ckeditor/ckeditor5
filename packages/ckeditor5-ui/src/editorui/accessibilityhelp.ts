@@ -116,7 +116,7 @@ export default class AccessibilityHelp extends Plugin {
 							keystroke: [ [ 'Tab' ], [ 'Shift+Tab' ] ]
 						},
 						{
-							label: t( 'Move focus to the toolbar, also navigate between toolbars' ),
+							label: t( 'Move focus to the toolbar, navigate between toolbars' ),
 							keystroke: 'Alt+F10',
 							mayRequireFn: true
 						},
