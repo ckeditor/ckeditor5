@@ -34,6 +34,37 @@ npm install ckeditor5
 
 The command will install the CKEditor main open-source package alongside essential plugins. You can import all modules from the `ckeditor5` package. Additionally, you have to import UI translations and CSS styles separately.
 
+```js
+// ckeditor.js
+
+import { ClassicEditor, Essentials, Bold, Italic, Heading, Paragraph } from 'ckeditor5';
+import translations from 'ckeditor5/dist/translations/en.js';
+
+import 'ckeditor5/dist/styles.css';
+
+await ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+        plugins: [ Essentials, Bold, Italic, Heading, Paragraph ],
+		toolbar: {
+			items: [ 'undo', 'redo', '|', 'heading', '|', 'bold', 'italic' ]
+		},
+        translations
+	} )
+	.catch( err => {
+		console.error( err );
+	} );
+```
+
+Pass the imported plugins inside the configuration to the {@link module:editor-classic/classiceditor~ClassicEditor#create `create()`} method. The first argument in this function is a DOM element for the editor placement, so you need to add it to your HTML file.
+
+```html
+<!-- index.html -->
+
+<div id="editor">
+    <h1>Hello from CKEditor 5!</h1>
+</div>
+```
+
 ## Next steps
 
 * After installing the editor, you can learn more about configuration in the {@link getting-started/setup/configuration setup} section.
