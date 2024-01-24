@@ -12,7 +12,7 @@ import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
 import DialogView, { type DialogViewCloseEvent, DialogViewPosition } from './dialogview.js';
 import type { DialogActionButtonDefinition } from './dialogactionsview.js';
 import type { DocumentChangeEvent } from '@ckeditor/ckeditor5-engine';
-import type { accessibilityMetadata } from '../editorui/accessibilityhelp.js';
+import type { accessibilityMetadata } from '../editorui/accessibilityhelp/accessibilityhelp.js';
 
 /**
  * The dialog controller class. It is used to show and hide the {@link module:ui/dialog/dialogview~DialogView}.

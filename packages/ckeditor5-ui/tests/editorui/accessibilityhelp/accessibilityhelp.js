@@ -4,12 +4,12 @@
  */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { AccessibilityHelp, ButtonView } from '../../src/index.js';
+import { AccessibilityHelp, ButtonView } from '../../../src/index.js';
 import { env, global, keyCodes } from '@ckeditor/ckeditor5-utils';
 import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
 import { cloneDeep } from 'lodash-es';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
-import AccessibilityHelpContentView from '../../src/editorui/accessibilityhelpcontentview.js';
+import AccessibilityHelpContentView from '../../../src/editorui/accessibilityhelp/accessibilityhelpcontentview.js';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo';

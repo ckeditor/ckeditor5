@@ -4,7 +4,7 @@
  */
 
 /**
- * @module ui/editorui/accessibilityhelpcontentview
+ * @module ui/editorui/accessibilityhelp/accessibilityhelpcontentview
  */
 
 import {
@@ -19,8 +19,8 @@ import type {
 	KeystrokeGroupDefinition,
 	Keystrokes
 } from './accessibilityhelp.js';
-import View from '../view.js';
-import LabelView from '../label/labelview.js';
+import View from '../../view.js';
+import LabelView from '../../label/labelview.js';
 
 /**
  * The view displaying keystrokes in the Accessibility help dialog.

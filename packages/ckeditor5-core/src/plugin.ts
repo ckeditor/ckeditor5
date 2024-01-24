@@ -215,7 +215,8 @@ export interface PluginInterface {
 	destroy?(): Promise<unknown> | null | undefined | void;
 
 	/**
-	 * Optional metadata getter for the {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp Accessibility help} plugin (dialog).
+	 * Optional metadata getter for the {@link module:ui/editorui/accessibilityhelp/accessibilityhelp~AccessibilityHelp Accessibility help}
+	 * plugin (dialog).
 	 *
 	 * This metadata describes keystrokes brought by the plugin the users can use to interact with the editor. This information
 	 * is particularly useful for screen reader and other assistive technology users.
@@ -245,7 +246,7 @@ export interface PluginInterface {
 	 * }
 	 * ```
 	 *
-	 * See the {@link module:ui/editorui/accessibilityhelp~AccessibilityHelpKeystrokeDefinition keystroke definition} API
+	 * See the {@link module:ui/editorui/accessibilityhelp/accessibilityhelp~AccessibilityHelpKeystrokeDefinition keystroke definition} API
 	 * to learn about supported properties and the keystroke format.
 	 *
 	 * To add a keystroke in a specific existing `'widget'` group in the default `'contentEditing'` category:

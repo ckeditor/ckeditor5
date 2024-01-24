@@ -4,18 +4,18 @@
  */
 
 /**
- * @module ui/editorui/accessibilityhelp
+ * @module ui/editorui/accessibilityhelp/accessibilityhelp
  */
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
-import { ButtonView, Dialog, type EditorUIReadyEvent } from '../../src/index.js';
+import { ButtonView, Dialog, type EditorUIReadyEvent } from '../../index.js';
 import AccessibilityHelpContentView from './accessibilityhelpcontentview.js';
 import { CKEditorError, getEnvKeystrokeText } from '@ckeditor/ckeditor5-utils';
 import type { AddRootEvent } from '@ckeditor/ckeditor5-editor-multi-root';
 import type { DowncastWriter, ViewRootEditableElement } from '@ckeditor/ckeditor5-engine';
 
-import accessibilityIcon from '../../theme/icons/accessibility.svg';
-import '../../theme/components/editorui/accessibilityhelp.css';
+import accessibilityIcon from '../../../theme/icons/accessibility.svg';
+import '../../../theme/components/editorui/accessibilityhelp.css';
 
 const DEFAULT_CATEGORY_ID = 'contentEditing' as const;
 export const DEFAULT_GROUP_ID = 'common' as const;
@@ -29,9 +29,9 @@ export const DEFAULT_GROUP_ID = 'common' as const;
  * {@link module:core/plugin~PluginInterface#accessibilityMetadata} getter (recommended).
  *
  * Alternatively, the same information can be registered using the available API
- * ({@link module:ui/editorui/accessibilityhelp~AccessibilityHelp#registerKeystrokeCategory},
- * {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp#registerKeystrokeGroup}, and
- * {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp#registerKeystrokes}).
+ * ({@link module:ui/editorui/accessibilityhelp/accessibilityhelp~AccessibilityHelp#registerKeystrokeCategory},
+ * {@link module:ui/editorui/accessibilityhelp/accessibilityhelp~AccessibilityHelp#registerKeystrokeGroup}, and
+ * {@link module:ui/editorui/accessibilityhelp/accessibilityhelp~AccessibilityHelp#registerKeystrokes}).
  */
 export default class AccessibilityHelp extends Plugin {
 	/**
@@ -215,7 +215,7 @@ export default class AccessibilityHelp extends Plugin {
 		if ( !this.keystrokes.has( categoryId ) ) {
 			/**
 			 * Cannot register keystrokes in an unknown category. Use
-			 * {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp#registerKeystrokeCategory}
+			 * {@link module:ui/editorui/accessibilityhelp/accessibilityhelp~AccessibilityHelp#registerKeystrokeCategory}
 			 * to register a new category or make sure the specified category exists.
 			 *
 			 * @error accessibility-help-unknown-category
@@ -231,7 +231,7 @@ export default class AccessibilityHelp extends Plugin {
 			/**
 			 * Cannot register keystrokes in an unknown group.
 			 *
-			 * Use {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp#registerKeystrokeGroup}
+			 * Use {@link module:ui/editorui/accessibilityhelp/accessibilityhelp~AccessibilityHelp#registerKeystrokeGroup}
 			 * to register a new group or make sure the specified group exists.
 			 *
 			 * @error accessibility-help-unknown-group
@@ -353,9 +353,9 @@ export default class AccessibilityHelp extends Plugin {
  * A category of keystrokes in the Accessibility help dialog. Top-level categories organize keystrokes and help users to find the
  * right keystroke. Each category can have multiple groups of keystrokes that narrow down the context in which the keystrokes are available.
  *
- * See {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp#registerKeystrokeCategory},
- * {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp#registerKeystrokeGroup}, and
- * {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp#registerKeystrokes}.
+ * See {@link module:ui/editorui/accessibilityhelp/accessibilityhelp~AccessibilityHelp#registerKeystrokeCategory},
+ * {@link module:ui/editorui/accessibilityhelp/accessibilityhelp~AccessibilityHelp#registerKeystrokeGroup}, and
+ * {@link module:ui/editorui/accessibilityhelp/accessibilityhelp~AccessibilityHelp#registerKeystrokes}.
  */
 export interface AccessibilityHelpKeystrokeCategory {
 
@@ -386,9 +386,9 @@ export interface AccessibilityHelpKeystrokeCategory {
  *
  * When `categoryId` is not specified, the group goes to the `'contentEditing'` category (default).
  *
- * See {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp#registerKeystrokeCategory},
- * {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp#registerKeystrokeGroup}, and
- * {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp#registerKeystrokes}.
+ * See {@link module:ui/editorui/accessibilityhelp/accessibilityhelp~AccessibilityHelp#registerKeystrokeCategory},
+ * {@link module:ui/editorui/accessibilityhelp/accessibilityhelp~AccessibilityHelp#registerKeystrokeGroup}, and
+ * {@link module:ui/editorui/accessibilityhelp/accessibilityhelp~AccessibilityHelp#registerKeystrokes}.
  */
 export interface AccessibilityHelpKeystrokeGroup {
 
@@ -418,9 +418,9 @@ export interface AccessibilityHelpKeystrokeGroup {
  *
  * Keystrokes without specified `groupId` or `categoryId` go to the `'common'` group in the `'contentEditing'` category (default).
  *
- * See {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp#registerKeystrokeCategory},
- * {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp#registerKeystrokeGroup}, and
- * {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp#registerKeystrokes}.
+ * See {@link module:ui/editorui/accessibilityhelp/accessibilityhelp~AccessibilityHelp#registerKeystrokeCategory},
+ * {@link module:ui/editorui/accessibilityhelp/accessibilityhelp~AccessibilityHelp#registerKeystrokeGroup}, and
+ * {@link module:ui/editorui/accessibilityhelp/accessibilityhelp~AccessibilityHelp#registerKeystrokes}.
  */
 export interface AccessibilityHelpKeystrokes {
 
@@ -442,7 +442,7 @@ export interface AccessibilityHelpKeystrokes {
 
 /**
  * A single keystroke definition to be displayed in the Accessibility help dialog. Used, for instance, by
- * {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp#registerKeystrokes}.
+ * {@link module:ui/editorui/accessibilityhelp/accessibilityhelp~AccessibilityHelp#registerKeystrokes}.
  */
 export interface AccessibilityHelpKeystrokeDefinition {
 
@@ -480,7 +480,7 @@ export interface AccessibilityHelpKeystrokeDefinition {
 }
 
 /**
- * Metadata for the {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp Accessibility help} plugin.
+ * Metadata for the {@link module:ui/editorui/accessibilityhelp/accessibilityhelp~AccessibilityHelp Accessibility help} plugin.
  *
  * See the {@link module:core/plugin~PluginInterface#accessibilityMetadata plugin metadata format} to learn more.
  */

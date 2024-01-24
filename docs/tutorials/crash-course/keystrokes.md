@@ -55,7 +55,7 @@ class MyPlugin extends Plugin {
 }
 ```
 
-Alternatively, you can use the plugin's API ({@link module:ui/editorui/accessibilityhelp~AccessibilityHelp#registerKeystrokeCategory}, {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp#registerKeystrokeGroup}, and {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp#registerKeystrokes} methods). In this case, a simple `registerKeystrokes()` is all you need:
+Alternatively, you can use the plugin's API ({@link module:ui/editorui/accessibilityhelp/accessibilityhelp~AccessibilityHelp#registerKeystrokeCategory}, {@link module:ui/editorui/accessibilityhelp/accessibilityhelp~AccessibilityHelp#registerKeystrokeGroup}, and {@link module:ui/editorui/accessibilityhelp/accessibilityhelp~AccessibilityHelp#registerKeystrokes} methods). In this case, a simple `registerKeystrokes()` is all you need:
 
 ```js
 if ( editor.plugins.has( 'AccessibilityHelp' ) ) {
@@ -72,7 +72,7 @@ if ( editor.plugins.has( 'AccessibilityHelp' ) ) {
 }
 ```
 
-You can learn more about the {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp} plugin in its API reference.
+You can learn more about the {@link module:ui/editorui/accessibilityhelp/accessibilityhelp~AccessibilityHelp} plugin in its API reference.
 
 ## Updating button tooltip
 
