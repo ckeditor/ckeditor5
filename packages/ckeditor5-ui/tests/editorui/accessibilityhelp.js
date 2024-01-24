@@ -12,6 +12,7 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 import AccessibilityHelpContentView from '../../src/editorui/accessibilityhelpcontentview.js';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo';
 
 describe( 'AccessibilityHelp', () => {
 	let editor, plugin, dialogPlugin, domElement;
@@ -185,19 +186,65 @@ describe( 'AccessibilityHelp', () => {
 					plugins: [ AccessibilityHelp ]
 				} );
 
-				for ( const rootName of multiRootEditor.model.document.getRootNames() ) {
-					const viewRoot = multiRootEditor.editing.view.document.getRoot( rootName );
+				assertEditorRootLabels( multiRootEditor );
+
+				await multiRootEditor.destroy();
+
+				for ( const editable of Object.values( multiRootEditor.ui.view.editables ) ) {
+					editable.element.remove();
+				}
+			} );
+
+			it( 'should work for dynamic roots', async () => {
+				const rootElA = global.document.createElement( 'div' );
+				const rootElB = global.document.createElement( 'div' );
+				const rootElC = global.document.createElement( 'div' );
+
+				global.document.body.appendChild( rootElA );
+				global.document.body.appendChild( rootElB );
+				global.document.body.appendChild( rootElC );
+
+				const multiRootEditor = await MultiRootEditor.create( { rootElA, rootElB, rootElC }, {
+					plugins: [ AccessibilityHelp, UndoEditing ]
+				} );
+
+				multiRootEditor.on( 'addRoot', ( evt, root ) => {
+					const domElement = multiRootEditor.createEditable( root );
+					global.document.body.appendChild( domElement );
+				} );
+
+				multiRootEditor.on( 'detachRoot', ( evt, root ) => {
+					const domElement = multiRootEditor.detachEditable( root );
+					domElement.remove();
+				} );
+
+				multiRootEditor.addRoot( 'dynamicRoot', { isUndoable: true } );
+
+				assertEditorRootLabels( multiRootEditor );
+
+				multiRootEditor.detachRoot( multiRootEditor.model.document.getRoot( 'dynamicRoot' ), true );
+
+				assertEditorRootLabels( multiRootEditor );
+
+				multiRootEditor.execute( 'undo' );
+
+				assertEditorRootLabels( multiRootEditor );
+
+				await multiRootEditor.destroy();
+
+				for ( const editable of Object.values( multiRootEditor.ui.view.editables ) ) {
+					editable.element.remove();
+				}
+			} );
+
+			function assertEditorRootLabels( editor ) {
+				for ( const rootName of editor.model.document.getRootNames() ) {
+					const viewRoot = editor.editing.view.document.getRoot( rootName );
 					const ariaLabel = viewRoot.getAttribute( 'aria-label' );
 
 					expect( ariaLabel ).to.equal( `Rich Text Editor. Editing area: ${ rootName }. Press Alt+0 for help.` );
 				}
-
-				rootElA.remove();
-				rootElB.remove();
-				rootElC.remove();
-
-				await multiRootEditor.destroy();
-			} );
+			}
 		} );
 	} );
 

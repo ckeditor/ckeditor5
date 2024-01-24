@@ -8,9 +8,11 @@
  */
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
-import { ButtonView, Dialog } from '../../src/index.js';
+import { ButtonView, Dialog, type EditorUIReadyEvent } from '../../src/index.js';
 import AccessibilityHelpContentView from './accessibilityhelpcontentview.js';
 import { CKEditorError, getEnvKeystrokeText } from '@ckeditor/ckeditor5-utils';
+import type { AddRootEvent } from '@ckeditor/ckeditor5-editor-multi-root';
+import type { DowncastWriter, ViewRootEditableElement } from '@ckeditor/ckeditor5-engine';
 
 import accessibilityIcon from '../../theme/icons/accessibility.svg';
 import '../../theme/components/editorui/accessibilityhelp.css';
@@ -298,22 +300,29 @@ export default class AccessibilityHelp extends Plugin {
 	 */
 	private _setupRootLabels() {
 		const editor = this.editor;
+		const editingView = editor.editing.view;
 		const t = editor.t;
 
-		editor.on( 'ready', () => {
-			editor.editing.view.change( writer => {
-				for ( const rootName of editor.model.document.getRootNames() ) {
-					const viewRoot = editor.editing.view.document.getRoot( rootName );
-					const currentAriaLabel = viewRoot!.getAttribute( 'aria-label' );
-
-					writer.setAttribute(
-						'aria-label',
-						`${ currentAriaLabel }. ${ t( 'Press %0 for help.', [ getEnvKeystrokeText( 'Alt+0' ) ] ) }`,
-						viewRoot!
-					);
+		editor.ui.on<EditorUIReadyEvent>( 'ready', () => {
+			editingView.change( writer => {
+				for ( const root of editingView.document.roots ) {
+					addAriaLabelTextToRoot( writer, root );
 				}
 			} );
+
+			editor.on<AddRootEvent>( 'addRoot', ( evt, modelRoot ) => {
+				const viewRoot = editor.editing.view.document.getRoot( modelRoot.rootName )!;
+
+				editingView.change( writer => addAriaLabelTextToRoot( writer, viewRoot ) );
+			}, { priority: 'low' } );
 		} );
+
+		function addAriaLabelTextToRoot( writer: DowncastWriter, viewRoot: ViewRootEditableElement ) {
+			const currentAriaLabel = viewRoot.getAttribute( 'aria-label' );
+			const newAriaLabel = `${ currentAriaLabel }. ${ t( 'Press %0 for help.', [ getEnvKeystrokeText( 'Alt+0' ) ] ) }`;
+
+			writer.setAttribute( 'aria-label', newAriaLabel, viewRoot );
+		}
 	}
 
 	/**
