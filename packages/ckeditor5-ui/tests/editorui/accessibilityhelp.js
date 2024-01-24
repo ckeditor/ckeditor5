@@ -77,16 +77,12 @@ describe( 'AccessibilityHelp', () => {
 										label: 'Close contextual balloons, dropdowns, and dialogs'
 									},
 									{
-										keystroke: 'Tab',
-										label: 'Move focus to the visible contextual balloon'
-									},
-									{
 										keystroke: 'Alt+0',
 										label: 'Open the accessibility help dialog'
 									},
 									{
-										keystroke: 'Tab',
-										label: 'Move focus between fields (inputs and buttons) in balloons and dialogs'
+										keystroke: [ [ 'Tab' ], [ 'Shift+Tab' ] ],
+										label: 'Move focus between form fields (inputs, buttons, etc.)'
 									},
 									{
 										keystroke: 'Alt+F10',
@@ -666,16 +662,12 @@ describe( 'AccessibilityHelp', () => {
 												label: 'Close contextual balloons, dropdowns, and dialogs'
 											},
 											{
-												keystroke: 'Tab',
-												label: 'Move focus to the visible contextual balloon'
-											},
-											{
 												keystroke: 'Alt+0',
 												label: 'Open the accessibility help dialog'
 											},
 											{
-												keystroke: 'Tab',
-												label: 'Move focus between fields (inputs and buttons) in balloons and dialogs'
+												keystroke: [ [ 'Tab' ], [ 'Shift+Tab' ] ],
+												label: 'Move focus between form fields (inputs, buttons, etc.)'
 											},
 											{
 												keystroke: 'Alt+F10',

@@ -108,16 +108,12 @@ export default class AccessibilityHelp extends Plugin {
 							keystroke: 'Esc'
 						},
 						{
-							label: t( 'Move focus to the visible contextual balloon' ),
-							keystroke: 'Tab'
-						},
-						{
 							label: t( 'Open the accessibility help dialog' ),
 							keystroke: 'Alt+0'
 						},
 						{
-							label: t( 'Move focus between fields (inputs and buttons) in balloons and dialogs' ),
-							keystroke: 'Tab'
+							label: t( 'Move focus between form fields (inputs, buttons, etc.)' ),
+							keystroke: [ [ 'Tab' ], [ 'Shift+Tab' ] ]
 						},
 						{
 							label: t( 'Move focus to the toolbar, also navigate between toolbars' ),
