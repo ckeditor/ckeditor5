@@ -8,7 +8,7 @@
  */
 
 import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
-import type { AccessibilityHelpMetadata } from '@ckeditor/ckeditor5-ui';
+import type { accessibilityMetadata } from '@ckeditor/ckeditor5-ui';
 
 import UndoCommand, { type UndoCommandRevertEvent } from './undocommand.js';
 import RedoCommand from './redocommand.js';
@@ -115,7 +115,7 @@ export default class UndoEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public get accessibilityHelpMetadata(): AccessibilityHelpMetadata {
+	public get accessibilityMetadata(): accessibilityMetadata {
 		const t = this.editor.t;
 
 		return {

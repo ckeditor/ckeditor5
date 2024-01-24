@@ -38,7 +38,7 @@ describe( 'Clipboard Feature', () => {
 	} );
 
 	it( 'should provide accessibility help dialog metadata', () => {
-		expect( editor.plugins.get( Clipboard ).accessibilityHelpMetadata ).to.deep.equal( {
+		expect( editor.plugins.get( Clipboard ).accessibilityMetadata ).to.deep.equal( {
 			keystrokes: [
 				{
 					label: 'Copy selected content',

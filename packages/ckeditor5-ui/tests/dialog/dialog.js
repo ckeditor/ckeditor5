@@ -42,7 +42,7 @@ describe( 'Dialog', () => {
 	} );
 
 	it( 'should provide accessibility help dialog metadata', () => {
-		expect( editor.plugins.get( Dialog ).accessibilityHelpMetadata ).to.deep.equal( {
+		expect( editor.plugins.get( Dialog ).accessibilityMetadata ).to.deep.equal( {
 			keystrokes: [
 				{
 					categoryId: 'navigation',

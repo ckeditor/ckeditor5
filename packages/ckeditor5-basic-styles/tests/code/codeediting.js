@@ -42,7 +42,7 @@ describe( 'CodeEditing', () => {
 	} );
 
 	it( 'should provide accessibility help dialog metadata', () => {
-		expect( editor.plugins.get( CodeEditing ).accessibilityHelpMetadata ).to.deep.equal( {
+		expect( editor.plugins.get( CodeEditing ).accessibilityMetadata ).to.deep.equal( {
 			keystrokes: [
 				{
 					label: 'Move out of an inline code style',

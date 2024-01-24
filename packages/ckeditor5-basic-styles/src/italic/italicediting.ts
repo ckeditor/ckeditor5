@@ -9,7 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import AttributeCommand from '../attributecommand.js';
-import type { AccessibilityHelpMetadata } from 'ckeditor5/src/ui.js';
+import type { accessibilityMetadata } from 'ckeditor5/src/ui.js';
 
 const ITALIC = 'italic';
 
@@ -63,7 +63,7 @@ export default class ItalicEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public get accessibilityHelpMetadata(): AccessibilityHelpMetadata {
+	public get accessibilityMetadata(): accessibilityMetadata {
 		const t = this.editor.t;
 
 		return {

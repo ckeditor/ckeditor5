@@ -19,7 +19,7 @@ export {
 	type AccessibilityHelpKeystrokeCategory,
 	type AccessibilityHelpKeystrokeGroup,
 	type AccessibilityHelpKeystrokes,
-	type AccessibilityHelpMetadata
+	type accessibilityMetadata
 } from './editorui/accessibilityhelp.js';
 
 export { default as BodyCollection } from './editorui/bodycollection.js';

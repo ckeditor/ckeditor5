@@ -31,7 +31,7 @@ describe( 'UndoEditing', () => {
 	} );
 
 	it( 'should provide accessibility help dialog metadata', () => {
-		expect( undo.accessibilityHelpMetadata ).to.deep.equal( {
+		expect( undo.accessibilityMetadata ).to.deep.equal( {
 			keystrokes: [
 				{
 					label: 'Undo',

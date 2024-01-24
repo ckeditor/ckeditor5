@@ -39,7 +39,7 @@ describe( 'StrikethroughEditing', () => {
 	} );
 
 	it( 'should provide accessibility help dialog metadata', () => {
-		expect( editor.plugins.get( StrikethroughEditing ).accessibilityHelpMetadata ).to.deep.equal( {
+		expect( editor.plugins.get( StrikethroughEditing ).accessibilityMetadata ).to.deep.equal( {
 			keystrokes: [
 				{
 					label: 'Strikethrough text',

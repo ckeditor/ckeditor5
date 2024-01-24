@@ -40,7 +40,7 @@ describe( 'ShiftEnter feature', () => {
 	} );
 
 	it( 'should provide accessibility help dialog metadata', () => {
-		expect( editor.plugins.get( ShiftEnter ).accessibilityHelpMetadata ).to.deep.equal( {
+		expect( editor.plugins.get( ShiftEnter ).accessibilityMetadata ).to.deep.equal( {
 			keystrokes: [
 				{
 					label: 'Insert a soft break (a <code>&lt;br&gt;</code> element)',

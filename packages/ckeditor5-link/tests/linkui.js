@@ -68,7 +68,7 @@ describe( 'LinkUI', () => {
 	} );
 
 	it( 'should provide accessibility help dialog metadata', () => {
-		expect( editor.plugins.get( LinkUI ).accessibilityHelpMetadata ).to.deep.equal( {
+		expect( editor.plugins.get( LinkUI ).accessibilityMetadata ).to.deep.equal( {
 			keystrokes: [
 				{
 					label: 'Create link',

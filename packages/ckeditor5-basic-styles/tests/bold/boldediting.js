@@ -41,7 +41,7 @@ describe( 'BoldEditing', () => {
 	} );
 
 	it( 'should provide accessibility help dialog metadata', () => {
-		expect( editor.plugins.get( BoldEditing ).accessibilityHelpMetadata ).to.deep.equal( {
+		expect( editor.plugins.get( BoldEditing ).accessibilityMetadata ).to.deep.equal( {
 			keystrokes: [
 				{
 					label: 'Bold text',

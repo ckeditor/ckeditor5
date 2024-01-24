@@ -12,7 +12,7 @@
 import { ObservableMixin, type ObservableSetEvent, type EventInfo } from '@ckeditor/ckeditor5-utils';
 
 import type Editor from './editor/editor.js';
-import type { AccessibilityHelpMetadata } from '@ckeditor/ckeditor5-ui';
+import type { accessibilityMetadata } from '@ckeditor/ckeditor5-ui';
 
 /**
  * The base class for CKEditor plugin classes.
@@ -231,7 +231,7 @@ export interface PluginInterface {
 	 * ```js
 	 * class MyPlugin extends Plugin {
 	 * 	// ...
-	 * 	get accessibilityHelpMetadata() {
+	 * 	get accessibilityMetadata() {
 	 * 		const t = this.editor.t;
 	 *
 	 * 		return {
@@ -253,7 +253,7 @@ export interface PluginInterface {
 	 * ```js
 	 * class MyPlugin extends Plugin {
 	 * 	// ...
-	 * 	get accessibilityHelpMetadata() {
+	 * 	get accessibilityMetadata() {
 	 * 		const t = this.editor.t;
 	 *
 	 * 		return {
@@ -279,7 +279,7 @@ export interface PluginInterface {
 	 * ```js
 	 * class MyPlugin extends Plugin {
 	 * 	// ...
-	 * 	get accessibilityHelpMetadata() {
+	 * 	get accessibilityMetadata() {
 	 * 		const t = this.editor.t;
 	 *
 	 * 		return {
@@ -305,7 +305,7 @@ export interface PluginInterface {
 	 * ```js
 	 * class MyPlugin extends Plugin {
 	 * 	// ...
-	 * 	get accessibilityHelpMetadata() {
+	 * 	get accessibilityMetadata() {
 	 * 		const t = this.editor.t;
 	 *
 	 * 		return {
@@ -336,7 +336,7 @@ export interface PluginInterface {
 	 * ```js
 	 * class MyPlugin extends Plugin {
 	 * 	// ...
-	 * 	get accessibilityHelpMetadata() {
+	 * 	get accessibilityMetadata() {
 	 * 		const t = this.editor.t;
 	 *
 	 * 		return {
@@ -368,7 +368,7 @@ export interface PluginInterface {
 	 * }
 	 * ```
 	 */
-	readonly accessibilityHelpMetadata?: AccessibilityHelpMetadata;
+	readonly accessibilityMetadata?: accessibilityMetadata;
 }
 
 /**

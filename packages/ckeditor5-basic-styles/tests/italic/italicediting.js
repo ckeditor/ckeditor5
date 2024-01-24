@@ -39,7 +39,7 @@ describe( 'ItalicEditing', () => {
 	} );
 
 	it( 'should provide accessibility help dialog metadata', () => {
-		expect( editor.plugins.get( ItalicEditing ).accessibilityHelpMetadata ).to.deep.equal( {
+		expect( editor.plugins.get( ItalicEditing ).accessibilityMetadata ).to.deep.equal( {
 			keystrokes: [
 				{
 					label: 'Italic text',

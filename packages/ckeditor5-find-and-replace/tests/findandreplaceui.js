@@ -64,7 +64,7 @@ describe( 'FindAndReplaceUI', () => {
 			} );
 
 			it( 'should provide accessibility help dialog metadata', () => {
-				expect( editor.plugins.get( FindAndReplaceUI ).accessibilityHelpMetadata ).to.deep.equal( {
+				expect( editor.plugins.get( FindAndReplaceUI ).accessibilityMetadata ).to.deep.equal( {
 					keystrokes: [
 						{
 							label: 'Find in the document',
@@ -487,7 +487,7 @@ describe( 'FindAndReplaceUI', () => {
 			} );
 
 			it( 'should provide accessibility help dialog metadata', () => {
-				expect( editor.plugins.get( FindAndReplaceUI ).accessibilityHelpMetadata ).to.deep.equal( {
+				expect( editor.plugins.get( FindAndReplaceUI ).accessibilityMetadata ).to.deep.equal( {
 					keystrokes: [
 						{
 							label: 'Find in the document',

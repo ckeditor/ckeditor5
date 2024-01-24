@@ -40,7 +40,7 @@ describe( 'Enter feature', () => {
 	} );
 
 	it( 'should provide accessibility help dialog metadata', () => {
-		expect( editor.plugins.get( Enter ).accessibilityHelpMetadata ).to.deep.equal( {
+		expect( editor.plugins.get( Enter ).accessibilityMetadata ).to.deep.equal( {
 			keystrokes: [
 				{
 					label: 'Insert a hard break (a new paragraph)',

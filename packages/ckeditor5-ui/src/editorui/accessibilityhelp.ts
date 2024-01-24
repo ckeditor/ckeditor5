@@ -24,7 +24,7 @@ export const DEFAULT_GROUP_ID = 'common' as const;
  * by the user to perform various actions in the editor.
  *
  * Keystroke information is automatically obtained from loaded editor plugins via
- * {@link module:core/plugin~PluginInterface#accessibilityHelpMetadata} getter (recommended).
+ * {@link module:core/plugin~PluginInterface#accessibilityMetadata} getter (recommended).
  *
  * Alternatively, the same information can be registered using the available API
  * ({@link module:ui/editorui/accessibilityhelp~AccessibilityHelp#registerKeystrokeCategory},
@@ -39,7 +39,7 @@ export default class AccessibilityHelp extends Plugin {
 	public contentView: AccessibilityHelpContentView | null = null;
 
 	/**
-	 * Keystroke categories, groups, and descriptions obtained from {@link module:core/plugin~PluginInterface#accessibilityHelpMetadata}
+	 * Keystroke categories, groups, and descriptions obtained from {@link module:core/plugin~PluginInterface#accessibilityMetadata}
 	 * or registered via plugin's API ({@link #registerKeystrokeCategory}, {@link #registerKeystrokeGroup},
 	 * and {@link #registerKeystrokes}).
 	 *
@@ -256,7 +256,7 @@ export default class AccessibilityHelp extends Plugin {
 		// This way, the order of plugins in editor#plugins will not matter and the metadata offered by plugins
 		// can point to categories and groups that are not yet registered.
 		for ( const [ , pluginInterface ] of editor.plugins ) {
-			const metadata = pluginInterface.accessibilityHelpMetadata;
+			const metadata = pluginInterface.accessibilityMetadata;
 
 			if ( metadata ) {
 				if ( metadata.keystrokeCategories ) {
@@ -473,9 +473,9 @@ export interface AccessibilityHelpKeystrokeDefinition {
 /**
  * Metadata for the {@link module:ui/editorui/accessibilityhelp~AccessibilityHelp Accessibility help} plugin.
  *
- * See the {@link module:core/plugin~PluginInterface#accessibilityHelpMetadata plugin metadata format} to learn more.
+ * See the {@link module:core/plugin~PluginInterface#accessibilityMetadata plugin metadata format} to learn more.
  */
-export type AccessibilityHelpMetadata = {
+export type accessibilityMetadata = {
 	keystrokeCategories?: Array<AccessibilityHelpKeystrokeCategory>;
 	keystrokeGroups?: Array<AccessibilityHelpKeystrokeGroup>;
 	keystrokes?: Array<AccessibilityHelpKeystrokes | AccessibilityHelpKeystrokeDefinition>;

@@ -142,7 +142,7 @@ describe( 'Widget', () => {
 	} );
 
 	it( 'should provide accessibility help dialog metadata', () => {
-		expect( editor.plugins.get( Widget ).accessibilityHelpMetadata ).to.deep.equal( {
+		expect( editor.plugins.get( Widget ).accessibilityMetadata ).to.deep.equal( {
 			keystrokeGroups: [
 				{
 					id: 'widget',

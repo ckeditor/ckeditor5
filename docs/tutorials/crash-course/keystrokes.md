@@ -34,13 +34,13 @@ editor.keystrokes.set( 'Ctrl+Alt+H', ( event, cancel ) => {
 
 The {@link features/keyboard-support#displaying-keyboard-shortcuts-in-the-editor Accessibility help} dialog displays a list of all available keyboard shortcuts. However, it does not know about the new [shortcut we just added](#adding-keyboard-shortcuts), so let's add it to the list.
 
-There are two ways of doing this. The first one is by using the {@link module:core/plugin~PluginInterface#accessibilityHelpMetadata} property of a plugin. It is a recommended way for plugin developers who bring new functionality to the editor:
+There are two ways of doing this. The first one is by using the {@link module:core/plugin~PluginInterface#accessibilityMetadata} property of a plugin. It is a recommended way for plugin developers who bring new functionality to the editor:
 
 ```js
 class MyPlugin extends Plugin {
 	// ...
 
-	get accessibilityHelpMetadata() {
+	get accessibilityMetadata() {
 		const t = this.editor.t;
 
 		return {

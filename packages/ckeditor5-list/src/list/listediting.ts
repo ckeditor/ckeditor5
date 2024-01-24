@@ -30,7 +30,7 @@ import type {
 import { Delete, type ViewDocumentDeleteEvent } from 'ckeditor5/src/typing.js';
 import { Enter, type EnterCommand, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter.js';
 import { CKEditorError, type GetCallback } from 'ckeditor5/src/utils.js';
-import type { AccessibilityHelpMetadata } from 'ckeditor5/src/ui.js';
+import type { accessibilityMetadata } from 'ckeditor5/src/ui.js';
 
 import ListIndentCommand from './listindentcommand.js';
 import ListCommand from './listcommand.js';
@@ -603,7 +603,7 @@ export default class ListEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public get accessibilityHelpMetadata(): AccessibilityHelpMetadata {
+	public get accessibilityMetadata(): accessibilityMetadata {
 		const t = this.editor.t;
 
 		return {

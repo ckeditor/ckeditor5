@@ -34,7 +34,7 @@ describe( 'SelectAllEditing', () => {
 	} );
 
 	it( 'should provide accessibility help dialog metadata', () => {
-		expect( editor.plugins.get( SelectAllEditing ).accessibilityHelpMetadata ).to.deep.equal( {
+		expect( editor.plugins.get( SelectAllEditing ).accessibilityMetadata ).to.deep.equal( {
 			keystrokes: [
 				{
 					label: 'Select all',

@@ -549,7 +549,7 @@ describe( 'AccessibilityHelp', () => {
 
 		describe( 'populating #keystrokes using plugins metadata', () => {
 			class PluginThatRegistersKeystrokesInDefaultGroupAndCat extends Plugin {
-				get accessibilityHelpMetadata() {
+				get accessibilityMetadata() {
 					return {
 						keystrokes: [
 							{
@@ -562,7 +562,7 @@ describe( 'AccessibilityHelp', () => {
 			}
 
 			class PluginThatRegistersKeystrokesIntoNonExistingGroupAndCat extends Plugin {
-				get accessibilityHelpMetadata() {
+				get accessibilityMetadata() {
 					return {
 						keystrokes: [
 							{
@@ -581,7 +581,7 @@ describe( 'AccessibilityHelp', () => {
 			}
 
 			class PluginThatRegistersGroupWhenThereIsNoCategoryYet extends Plugin {
-				get accessibilityHelpMetadata() {
+				get accessibilityMetadata() {
 					return {
 						keystrokeGroups: [
 							{
@@ -595,7 +595,7 @@ describe( 'AccessibilityHelp', () => {
 			}
 
 			class PluginThatBringsTheCategoryOtherPluginsWantToRegisterInto extends Plugin {
-				get accessibilityHelpMetadata() {
+				get accessibilityMetadata() {
 					return {
 						keystrokeCategories: [
 							{

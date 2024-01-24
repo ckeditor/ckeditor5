@@ -67,7 +67,7 @@ describe( 'Autoformat', () => {
 	} );
 
 	it( 'should provide accessibility help dialog metadata', () => {
-		expect( editor.plugins.get( Autoformat ).accessibilityHelpMetadata ).to.deep.equal( {
+		expect( editor.plugins.get( Autoformat ).accessibilityMetadata ).to.deep.equal( {
 			keystrokes: [
 				{
 					label: 'Revert autoformatting action',

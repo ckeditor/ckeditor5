@@ -10,7 +10,7 @@
 import ShiftEnterCommand from './shiftentercommand.js';
 import EnterObserver, { type ViewDocumentEnterEvent } from './enterobserver.js';
 import { Plugin } from '@ckeditor/ckeditor5-core';
-import type { AccessibilityHelpMetadata } from '@ckeditor/ckeditor5-ui';
+import type { accessibilityMetadata } from '@ckeditor/ckeditor5-ui';
 
 /**
  * This plugin handles the <kbd>Shift</kbd>+<kbd>Enter</kbd> keystroke (soft line break) in the editor.
@@ -77,7 +77,7 @@ export default class ShiftEnter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public get accessibilityHelpMetadata(): AccessibilityHelpMetadata {
+	public get accessibilityMetadata(): accessibilityMetadata {
 		const t = this.editor.t;
 
 		return {

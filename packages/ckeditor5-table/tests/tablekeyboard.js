@@ -55,7 +55,7 @@ describe( 'TableKeyboard', () => {
 	} );
 
 	it( 'should provide accessibility help dialog metadata', () => {
-		expect( editor.plugins.get( TableKeyboard ).accessibilityHelpMetadata ).to.deep.equal( {
+		expect( editor.plugins.get( TableKeyboard ).accessibilityMetadata ).to.deep.equal( {
 			keystrokeGroups: [
 				{
 					id: 'table',
