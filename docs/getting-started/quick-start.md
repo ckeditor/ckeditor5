@@ -8,11 +8,11 @@ meta-description: Learn the fastest way to install a powerful, rich text WYSIWYG
 
 # Quick Start
 
-CKEditor&nbsp;5 is a powerful, rich text editor you can embed in your web app. This guide will show you the fastest way to start using it.
+CKEditor&nbsp;5 is a powerful, rich text editor you can embed in your web application. This guide will show you the fastest way to start using it.
 
 ## Try CKEditor&nbsp;5 builder
 
-Check out the builder to quickly get a taste of CKEditor&nbsp;5. It offers an easy-to-use user interface to help you configure and download the editor suited to your needs.
+Check out our interactive builder to quickly get a taste of CKEditor&nbsp;5. It offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs.
 
 ## Installing CKEditor&nbsp;5 using npm
 
@@ -32,7 +32,9 @@ Before running any command, make sure that your Node.js version is up-to-date. C
 npm install ckeditor5
 ```
 
-The command will install the main CKEditor&nbsp;5 open-source package alongside essential plugins. You can import all the modules from the `ckeditor5` package. Additionally, you need to import UI translations and CSS styles separately.
+The command will install the main CKEditor&nbsp;5 open-source package containing essential plugins.
+
+After that, you can import all the modules from the `ckeditor5` package. Additionally, you have to import CSS styles separately. Importing and registering UI translations is optional.
 
 ```js
 import { ClassicEditor, Essentials, Bold, Italic, Heading, Paragraph } from 'ckeditor5';
@@ -66,5 +68,5 @@ That is all the code you need to see a bare-bone editor running in a web browser
 ## Next steps
 
 * See how to manipulate the editor's data in the {@link getting-started/getting-and-setting-data following guide}.
-* Refer to the {@link getting-started/setup/configuration detup section} to see how to customize your editor further.
+* Refer to the {@link getting-started/setup/configuration setup section} to see how to customize your editor further.
 * Check the {@link features/index features category} to learn more about individual features.
