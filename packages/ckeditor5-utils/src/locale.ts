@@ -126,9 +126,7 @@ export default class Locale {
 		this.uiLanguageDirection = getLanguageDirection( this.uiLanguage );
 		this.contentLanguageDirection = getLanguageDirection( this.contentLanguage );
 
-		const unifiedTranslations = _unifyTranslations( translations );
-
-		this.translations = unifiedTranslations;
+		this.translations = _unifyTranslations( translations );
 		this.t = ( message, values ) => this._t( message, values );
 	}
 
