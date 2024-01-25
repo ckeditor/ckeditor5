@@ -107,6 +107,16 @@ export function convertToHex( color: string ): string {
 }
 
 /**
+ * Registers the custom element in the
+ * [CustomElementsRegistry](https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry).
+ */
+export function registerCustomElement( elementName: string, constructor: CustomElementConstructor ): void {
+	if ( customElements.get( elementName ) === undefined ) {
+		customElements.define( elementName, constructor );
+	}
+}
+
+/**
  * Formats the passed color channels according to the requested format.
  *
  * @param values

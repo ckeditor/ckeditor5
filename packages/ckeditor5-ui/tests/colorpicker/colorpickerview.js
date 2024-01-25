@@ -3,10 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals CustomEvent, document */
+/* globals CustomEvent, document, customElements */
 
 import ColorPickerView from './../../src/colorpicker/colorpickerview.js';
-import 'vanilla-colorful/hex-color-picker.js';
 import env from '@ckeditor/ckeditor5-utils/src/env.js';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
@@ -302,6 +301,10 @@ describe( 'ColorPickerView', () => {
 	} );
 
 	describe( 'render()', () => {
+		it( 'should register the hex-color-picker custom element', () => {
+			expect( customElements.get( 'hex-color-picker' ) ).to.be.a( 'function' );
+		} );
+
 		it( 'should render color picker component', () => {
 			expect( view.picker.tagName ).to.equal( document.createElement( 'hex-color-picker' ).tagName );
 		} );
