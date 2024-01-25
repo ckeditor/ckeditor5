@@ -6,7 +6,6 @@
 /* eslint-disable new-cap */
 
 import Editor from '../../src/editor/editor.js';
-import DataApiMixin from '../../src/editor/utils/dataapimixin.js';
 
 /**
  * A simple editor implementation useful for testing the engine part of the features.
@@ -16,7 +15,7 @@ import DataApiMixin from '../../src/editor/utils/dataapimixin.js';
  *
  * @memberOf tests.core._utils
  */
-export default class VirtualTestEditor extends DataApiMixin( Editor ) {
+export default class VirtualTestEditor extends Editor {
 	constructor( config ) {
 		super( config );
 

@@ -13,7 +13,6 @@ import ClassicEditorUIView from './classiceditoruiview.js';
 import {
 	Editor,
 	Context,
-	DataApiMixin,
 	ElementApiMixin,
 	attachToForm,
 	type EditorConfig,
@@ -48,7 +47,7 @@ import { isElement as _isElement } from 'lodash-es';
  * Read more about initializing the editor from source or as a build in
  * {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`}.
  */
-export default class ClassicEditor extends DataApiMixin( ElementApiMixin( Editor ) ) {
+export default class ClassicEditor extends ElementApiMixin( Editor ) {
 	/**
 	 * @inheritDoc
 	 */
