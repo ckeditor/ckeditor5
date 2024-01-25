@@ -114,7 +114,7 @@ export default class LinkUI extends Plugin {
 			keystrokes: [
 				{
 					label: t( 'Create link' ),
-					keystroke: 'CTRL+L'
+					keystroke: LINK_KEYSTROKE
 				},
 				{
 					label: t( 'Move out of a link' ),

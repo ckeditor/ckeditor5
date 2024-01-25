@@ -72,7 +72,7 @@ describe( 'LinkUI', () => {
 			keystrokes: [
 				{
 					label: 'Create link',
-					keystroke: 'CTRL+L'
+					keystroke: 'Ctrl+K'
 				},
 				{
 					label: 'Move out of a link',
