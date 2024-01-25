@@ -26,7 +26,7 @@ Check out the builder to quickly get a taste of CKEditor. It offers an easy-to-u
 
 </info-box>
 
-Before running any command, make sure that your Node.js version is up-to-date. Also, check if you're in the proper working directory with the initialized Node.js project. Then, run the following command:
+Before running any command, make sure that your Node.js version is up-to-date. Also, check if you are in the proper working directory with the initialized Node.js project. Then, run the following command:
 
 ```bash
 npm install ckeditor5
@@ -61,7 +61,7 @@ Pass the imported plugins inside the configuration to the {@link module:editor-c
 </div>
 ```
 
-That's all the code you need to see a bare-bone editor running in a web browser.
+That is all the code you need to see a bare-bone editor running in a web browser.
 
 ## Next steps
 
