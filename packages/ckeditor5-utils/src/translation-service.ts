@@ -111,33 +111,18 @@ if ( !global.window.CKEDITOR_TRANSLATIONS ) {
 export function add(
 	language: string,
 	translations: { readonly [ messageId: string ]: string | ReadonlyArray<string> },
-	getPluralForm?: ( n: number ) => number,
-	editor?: Editor
+	getPluralForm?: ( n: number ) => number
 ): void {
 	if ( !global.window.CKEDITOR_TRANSLATIONS[ language ] ) {
 		global.window.CKEDITOR_TRANSLATIONS[ language ] = {} as any;
 	}
 
-	let mergedExistingTranslations: Translations | undefined;
-
-	if ( editor ) {
-		const existingTranslations = editor.locale.translations;
-
-		mergedExistingTranslations = _unifyTranslations( existingTranslations );
-	}
-
-	const languageTranslations = mergedExistingTranslations ?
-		mergedExistingTranslations[ language ] :
-		global.window.CKEDITOR_TRANSLATIONS[ language ];
+	const languageTranslations = global.window.CKEDITOR_TRANSLATIONS[ language ];
 
 	languageTranslations.dictionary = languageTranslations.dictionary || {};
 	languageTranslations.getPluralForm = getPluralForm || languageTranslations.getPluralForm;
 
 	Object.assign( languageTranslations.dictionary, translations );
-
-	if ( editor && mergedExistingTranslations ) {
-		editor.locale.translations = { language: languageTranslations };
-	}
 }
 
 /**

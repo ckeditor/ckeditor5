@@ -48,59 +48,6 @@ describe( 'translation-service', () => {
 			expect( _translate( 'pl', { string: 'Add space' }, 3 ) ).to.equal( 'Dodaj %0 spacje' );
 			expect( _translate( 'pl', { string: 'Add space' }, 13 ) ).to.equal( 'Dodaj %0 spacji' );
 		} );
-
-		it( 'should add translation if original translations defined in config', () => {
-			const translations = {
-				pl: {
-					dictionary: {
-						bold: 'Pogrubienie'
-					}
-				}
-			};
-			const editor = {
-				locale: {
-					translations
-				}
-			};
-
-			add( 'pl', { 'foo': 'foo_pl' }, undefined, editor );
-
-			expect( editor.locale ).to.have.deep.property( 'translations', {
-				language: {
-					dictionary: {
-						bold: 'Pogrubienie',
-						foo: 'foo_pl'
-					},
-					getPluralForm: undefined
-				}
-			} );
-		} );
-
-		it( 'should override translation if original translations defined in config', () => {
-			const translations = {
-				pl: {
-					dictionary: {
-						bold: 'Pogrubienie'
-					}
-				}
-			};
-			const editor = {
-				locale: {
-					translations
-				}
-			};
-
-			add( 'pl', { 'bold': 'Gruba Czcionka' }, undefined, editor );
-
-			expect( editor.locale ).to.have.deep.property( 'translations', {
-				language: {
-					dictionary: {
-						bold: 'Gruba Czcionka'
-					},
-					getPluralForm: undefined
-				}
-			} );
-		} );
 	} );
 
 	describe( '_translate()', () => {
@@ -208,7 +155,7 @@ describe( 'translation-service', () => {
 			expect( _translate( 'pl', { string: 'Add space' }, 13 ) ).to.equal( 'Dodaj %0 spacje' );
 		} );
 
-		it( 'should return the correct plural form of the message using translations defined in config', () => {
+		it( 'should return a translated message based on message id when translations were passed from config', () => {
 			const translations = {
 				pl: {
 					dictionary: {
@@ -217,23 +164,7 @@ describe( 'translation-service', () => {
 				}
 			};
 
-			const editor = {
-				locale: {
-					translations
-				}
-			};
-
-			add( 'pl', {
-				'Add space': [ 'Dodaj spację', 'Dodaj %0 spacje', 'Dodaj %0 spacji' ],
-				'Cancel': 'Anuluj'
-				// eslint-disable-next-line no-nested-ternary
-			}, n => n == 1 ? 0 : n % 10 >= 2 && n % 10 <= 4 && ( n % 100 < 10 || n % 100 >= 20 ) ? 1 : 2,
-			editor );
-
-			expect( _translate( 'pl', { string: 'Add space' }, 0, translations ) ).to.equal( 'Dodaj %0 spacji' );
-			expect( _translate( 'pl', { string: 'Add space' }, 1, translations ) ).to.equal( 'Dodaj spację' );
-			expect( _translate( 'pl', { string: 'Add space' }, 3, translations ) ).to.equal( 'Dodaj %0 spacje' );
-			expect( _translate( 'pl', { string: 'Add space' }, 13, translations ) ).to.equal( 'Dodaj %0 spacji' );
+			expect( _translate( 'pl', { string: 'bold' }, 1, translations ) ).to.equal( 'Pogrubienie' );
 		} );
 
 		it( 'should throw error if quantity is not a number', () => {
