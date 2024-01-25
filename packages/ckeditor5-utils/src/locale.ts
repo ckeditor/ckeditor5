@@ -116,9 +116,9 @@ export default class Locale {
 	 * @param translations Translations passed as a editor config parameter.
 	 */
 	constructor( { uiLanguage = 'en', contentLanguage, translations }: {
-			readonly uiLanguage?: string;
-			readonly contentLanguage?: string;
-			readonly translations?: Translations | Array<Translations> | undefined;
+		readonly uiLanguage?: string;
+		readonly contentLanguage?: string;
+		readonly translations?: Translations | Array<Translations>;
 	} = {}
 	) {
 		this.uiLanguage = uiLanguage;

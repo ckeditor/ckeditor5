@@ -536,7 +536,7 @@ export interface EditorConfig {
 	licenseKey?: string;
 
 	/**
-	 * Translations to be used in editor.
+	 * Translations to be used in the editor.
 	 */
 	translations?: ArrayOrItem<Translations>;
 }
