@@ -12,7 +12,7 @@ CKEditor&nbsp;5 is a powerful, rich text editor you can embed in your web app. T
 
 ## Try CKEditor&nbsp;5 builder
 
-Check out the builder to quickly get a taste of CKEditor. It offers an easy-to-use UI to help you configure and download the editor suited to your needs.
+Check out the builder to quickly get a taste of CKEditor&nbsp;5. It offers an easy-to-use user interface to help you configure and download the editor suited to your needs.
 
 ## Installing CKEditor&nbsp;5 using npm
 
@@ -20,19 +20,19 @@ Check out the builder to quickly get a taste of CKEditor. It offers an easy-to-u
 
 **Prerequisites:**
 
-* [Node.js](https://nodejs.org/) in version 18 or above
-* An initialized Node.js project
-* Basic familiarity with a terminal
+* [Node.js](https://nodejs.org/) in version 18 or above.
+* An initialized Node.js project.
+* Basic familiarity with a terminal.
 
 </info-box>
 
-Before running any command, make sure that your Node.js version is up-to-date. Also, check if you are in the proper working directory with the initialized Node.js project. Then, run the following command:
+Before running any command, make sure that your Node.js version is up-to-date. Check if you are in the proper working directory with the initialized Node.js project. Then, run the following command:
 
 ```bash
 npm install ckeditor5
 ```
 
-The command will install the CKEditor main open-source package alongside essential plugins. You can import all modules from the `ckeditor5` package. Additionally, you have to import UI translations and CSS styles separately.
+The command will install the main CKEditor&nbsp;5 open-source package alongside essential plugins. You can import all the modules from the `ckeditor5` package. Additionally, you need to import UI translations and CSS styles separately.
 
 ```js
 import { ClassicEditor, Essentials, Bold, Italic, Heading, Paragraph } from 'ckeditor5';
@@ -42,11 +42,11 @@ import 'ckeditor5/dist/styles.css';
 
 await ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-        plugins: [ Essentials, Bold, Italic, Heading, Paragraph ],
+		plugins: [ Essentials, Bold, Italic, Heading, Paragraph ],
 		toolbar: {
 			items: [ 'undo', 'redo', '|', 'heading', '|', 'bold', 'italic' ]
 		},
-        translations
+		translations
 	} )
 	.catch( err => {
 		console.error( err );
@@ -57,7 +57,7 @@ Pass the imported plugins inside the configuration to the {@link module:editor-c
 
 ```html
 <div id="editor">
-    <h1>Hello from CKEditor 5!</h1>
+	<h1>Hello from CKEditor 5!</h1>
 </div>
 ```
 
@@ -66,5 +66,5 @@ That is all the code you need to see a bare-bone editor running in a web browser
 ## Next steps
 
 * See how to manipulate the editor's data in the {@link getting-started/getting-and-setting-data following guide}.
-* Refer to the {@link getting-started/setup/configuration Setup} section to see how to customize your editor further.
-* Check the {@link features/index Features} category to learn more about individual features.
+* Refer to the {@link getting-started/setup/configuration detup section} to see how to customize your editor further.
+* Check the {@link features/index features category} to learn more about individual features.
