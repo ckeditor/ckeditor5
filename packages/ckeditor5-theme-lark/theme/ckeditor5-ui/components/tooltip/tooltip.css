@@ -25,6 +25,7 @@
 		white-space: break-spaces;
 		display: inline-block;
 		padding: var(--ck-tooltip-text-padding) 0;
+		max-width: 200px;
 	}
 
 	/* Reset balloon panel styles */
