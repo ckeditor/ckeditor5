@@ -125,7 +125,6 @@ export default class Locale {
 		this.contentLanguage = contentLanguage || this.uiLanguage;
 		this.uiLanguageDirection = getLanguageDirection( this.uiLanguage );
 		this.contentLanguageDirection = getLanguageDirection( this.contentLanguage );
-
 		this.translations = _unifyTranslations( translations );
 		this.t = ( message, values ) => this._t( message, values );
 	}
@@ -180,8 +179,7 @@ export default class Locale {
  */
 export type LocaleTranslate = (
 	message: string | Message,
-	values?: number | string | ReadonlyArray<number | string>,
-	translations?: { [key: string]: string } | null
+	values?: number | string | ReadonlyArray<number | string>
 ) => string;
 
 /**
