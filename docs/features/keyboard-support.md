@@ -67,6 +67,16 @@ Below is a list of the most important keystrokes supported by CKEditor&nbsp;5 an
 			<td><kbd>Cmd</kbd> + <kbd>I</kbd></td>
 		</tr>
 		<tr>
+			<td>Strikethrough</td>
+			<td><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>X</kbd></td>
+			<td><kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>X</kbd></td>
+		</tr>
+		<tr>
+			<td>Underline</td>
+			<td><kbd>Ctrl</kbd> + <kbd>U</kbd></td>
+			<td><kbd>Cmd</kbd> + <kbd>U</kbd></td>
+		</tr>
+		<tr>
 			<td>Link</td>
 			<td><kbd>Ctrl</kbd> + <kbd>K</kbd></td>
 			<td><kbd>Cmd</kbd> + <kbd>K</kbd></td>
@@ -80,21 +90,17 @@ Below is a list of the most important keystrokes supported by CKEditor&nbsp;5 an
 			<td colspan="2"><kbd>Shift</kbd> + <kbd>Enter</kbd></td>
 		</tr>
 		<tr>
-			<td>Nest the current list item (when in a list)</td>
-			<td colspan="2"><kbd>Tab</kbd></td>
-		</tr>
-		<tr>
-			<td>Check or clear a to-do list item</td>
-			<td><kbd>Ctrl</kbd> + <kbd>Enter</kbd></td>
-			<td><kbd>Cmd</kbd> + <kbd>Enter</kbd></td>
-		</tr>
-		<tr>
 			<td>Move out of link or inline code style</td>
 			<td colspan="2"><kbd>←</kbd> <kbd>←</kbd> / <kbd>→</kbd> <kbd>→</kbd></td>
 		</tr>
 		<tr>
 			<td>Revert autoformatting action</td>
 			<td colspan="2"><kbd>Backspace</kbd></td>
+		</tr>
+		<tr>
+			<td>Find in the document</td>
+			<td><kbd>Ctrl</kbd> + <kbd>F</kbd></td>
+			<td><kbd>Cmd</kbd> + <kbd>F</kbd></td>
 		</tr>
 		<tr>
 			<th colspan="3">When you select a widget (for example: image, table, horizontal line, etc.)</th>
@@ -114,6 +120,26 @@ Below is a list of the most important keystrokes supported by CKEditor&nbsp;5 an
 		<tr>
 			<td>Display the caret to allow typing directly after a widget</td>
 			<td colspan="2"><kbd>↓</kbd> / <kbd>→</kbd></td>
+		</tr>
+		<tr>
+			<th colspan="3">Inside a list</th>
+		</tr>
+		<tr>
+			<td>Increase list item indent</td>
+			<td colspan="2"><kbd>Tab</kbd></td>
+		</tr>
+		<tr>
+			<td>Decrease list item indent</td>
+			<td colspan="2"><kbd>Shift</kbd> + <kbd>Tab</kbd></td>
+		</tr>
+		<tr>
+			<td>Nest the current list item (when in a list)</td>
+			<td colspan="2"><kbd>Tab</kbd></td>
+		</tr>
+		<tr>
+			<td>Check or clear a to-do list item</td>
+			<td><kbd>Ctrl</kbd> + <kbd>Enter</kbd></td>
+			<td><kbd>Cmd</kbd> + <kbd>Enter</kbd></td>
 		</tr>
 		<tr>
 			<th colspan="3">In a table cell</th>
@@ -179,6 +205,11 @@ Use the following keystrokes for more efficient navigation in the CKEditor&nbsp;
 		<tr>
 			<td>Execute the focused button</td>
 			<td colspan="2"><kbd>Enter</kbd> / <kbd>Space</kbd></td>
+		</tr>
+		<tr>
+			<td>Open the accessibility help dialog</td>
+			<td><kbd>Ctrl</kbd> + <kbd>0</kbd></td>
+			<td><kbd>Option</kbd> + <kbd>0</kbd></td>
 		</tr>
 	</tbody>
 </table>
