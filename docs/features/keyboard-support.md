@@ -206,11 +206,6 @@ Use the following keystrokes for more efficient navigation in the CKEditor&nbsp;
 			<td>Execute the focused button</td>
 			<td colspan="2"><kbd>Enter</kbd> / <kbd>Space</kbd></td>
 		</tr>
-		<tr>
-			<td>Open the accessibility help dialog</td>
-			<td><kbd>Ctrl</kbd> + <kbd>0</kbd></td>
-			<td><kbd>Option</kbd> + <kbd>0</kbd></td>
-		</tr>
 	</tbody>
 </table>
 
