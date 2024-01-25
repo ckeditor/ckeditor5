@@ -4,7 +4,7 @@
  */
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { _translate, add, _clear, _unifyTranslations } from '../src/translation-service.js';
+import { _translate, add, _clear } from '../src/translation-service.js';
 import { expectToThrowCKEditorError } from '../tests/_utils/utils.js';
 
 describe( 'translation-service', () => {
@@ -47,59 +47,6 @@ describe( 'translation-service', () => {
 			expect( _translate( 'pl', { string: 'Add space' }, 1 ) ).to.equal( 'Dodaj spację' );
 			expect( _translate( 'pl', { string: 'Add space' }, 3 ) ).to.equal( 'Dodaj %0 spacje' );
 			expect( _translate( 'pl', { string: 'Add space' }, 13 ) ).to.equal( 'Dodaj %0 spacji' );
-		} );
-
-		it( 'should add translation if original translations defined in config', () => {
-			const translations = {
-				pl: {
-					dictionary: {
-						bold: 'Pogrubienie'
-					}
-				}
-			};
-			const editor = {
-				locale: {
-					translations
-				}
-			};
-
-			add( 'pl', { 'foo': 'foo_pl' }, undefined, editor );
-
-			expect( editor.locale ).to.have.deep.property( 'translations', {
-				language: {
-					dictionary: {
-						bold: 'Pogrubienie',
-						foo: 'foo_pl'
-					},
-					getPluralForm: undefined
-				}
-			} );
-		} );
-
-		it( 'should override translation if original translations defined in config', () => {
-			const translations = {
-				pl: {
-					dictionary: {
-						bold: 'Pogrubienie'
-					}
-				}
-			};
-			const editor = {
-				locale: {
-					translations
-				}
-			};
-
-			add( 'pl', { 'bold': 'Gruba Czcionka' }, undefined, editor );
-
-			expect( editor.locale ).to.have.deep.property( 'translations', {
-				language: {
-					dictionary: {
-						bold: 'Gruba Czcionka'
-					},
-					getPluralForm: undefined
-				}
-			} );
 		} );
 	} );
 
@@ -239,63 +186,6 @@ describe( 'translation-service', () => {
 			expectToThrowCKEditorError( () => {
 				_translate( 'pl', { string: 'Add space' }, null );
 			}, /^translation-service-quantity-not-a-number/ );
-		} );
-	} );
-
-	describe( '_unifyTranslations()', () => {
-		it( 'should merge two objects if array', () => {
-			const translations = [ {
-				pl: {
-					dictionary: {
-						bold: 'Pogrubienie'
-					}
-				}
-			},
-			{
-				de: {
-					dictionary: {
-						bold: 'Fett'
-					}
-				}
-			}
-			];
-
-			expect( _unifyTranslations( translations ) ).to.eql( {
-				pl: {
-					dictionary: {
-						bold: 'Pogrubienie'
-					}
-				},
-				de: {
-					dictionary: {
-						bold: 'Fett'
-					}
-				}
-			} );
-		} );
-
-		it( 'should return actual object', () => {
-			const translations = {
-				pl: {
-					dictionary: {
-						bold: 'Pogrubienie'
-					}
-				}
-			};
-
-			expect( _unifyTranslations( translations ) ).to.eql(
-				{
-					pl: {
-						dictionary: {
-							bold: 'Pogrubienie'
-						}
-					}
-				}
-			);
-		} );
-
-		it( 'should return undifined if undifined', () => {
-			expect( _unifyTranslations( undefined ) ).to.equal( undefined );
 		} );
 	} );
 } );
