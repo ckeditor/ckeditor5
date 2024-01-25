@@ -3,7 +3,7 @@ category: installation
 order: 10
 menu-title: Quick Start
 meta-title: Quick Start | CKEditor 5 documentation
-meta-description: Learn how to install, integrate, configure, and develop CKEditor 5. Browse through the API documentation and online samples.
+meta-description: Learn the fastest way to install a powerful, rich text WYSIWYG editor - CKEditor 5 - in your web application using npm.
 ---
 
 # Quick Start
@@ -18,7 +18,7 @@ Check out the builder to quickly get a taste of CKEditor. It offers an easy-to-u
 
 <info-box>
 
-**Prerequisites**
+**Prerequisites:**
 
 * [Node.js](https://nodejs.org/) in version 18 or above
 * An initialized Node.js project
@@ -66,5 +66,5 @@ That's all the code you need to see a bare-bone editor running in a web browser.
 ## Next steps
 
 * See how to manipulate the editor's data in the {@link getting-started/getting-and-setting-data following guide}.
-* Refer to the {@link getting-started/setup/configuration setup} section to see how to customize your editor further.
+* Refer to the {@link getting-started/setup/configuration Setup} section to see how to customize your editor further.
 * Check the {@link features/index Features} category to learn more about individual features.
