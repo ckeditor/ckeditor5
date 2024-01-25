@@ -10,8 +10,7 @@
 /* globals console */
 
 import toArray, { type ArrayOrItem } from './toarray.js';
-import { _translate, type Message } from './translation-service.js';
-import { merge } from 'lodash-es';
+import { _translate, _unifyTranslations, type Message } from './translation-service.js';
 import { getLanguageDirection, type LanguageDirection } from './language.js';
 import type { Translations } from '@ckeditor/ckeditor5-core';
 
@@ -127,14 +126,7 @@ export default class Locale {
 		this.uiLanguageDirection = getLanguageDirection( this.uiLanguage );
 		this.contentLanguageDirection = getLanguageDirection( this.contentLanguage );
 
-		let unifiedTranslations;
-
-		if ( Array.isArray( translations ) ) {
-			unifiedTranslations = translations.reduce(
-				( acc, singleTranslationObject ) => merge( acc, singleTranslationObject ) ) as Translations | undefined;
-		} else {
-			unifiedTranslations = translations as Translations | undefined;
-		}
+		const unifiedTranslations = _unifyTranslations( translations );
 
 		this.translations = unifiedTranslations;
 		this.t = ( message, values ) => this._t( message, values );
@@ -177,7 +169,7 @@ export default class Locale {
 		const hasPluralForm = !!message.plural;
 		const quantity = hasPluralForm ? values[ 0 ] as number : 1;
 
-		const translatedString = _translate( this.uiLanguage, message, quantity );
+		const translatedString = _translate( this.uiLanguage, message, quantity, this.translations );
 
 		return interpolateString( translatedString, values );
 	}
