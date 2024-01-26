@@ -26,19 +26,19 @@ Check out our interactive builder to quickly get a taste of CKEditor&nbsp;5. It 
 
 </info-box>
 
-Before running any command, make sure that your Node.js version is up-to-date. Check if you are in the proper working directory with the initialized Node.js project. Then, run the following command:
+In your initialized Node.js project, run the following command:
 
 ```bash
 npm install ckeditor5
 ```
 
-The command will install the main CKEditor&nbsp;5 open-source package containing essential plugins.
+The command will install the main CKEditor&nbsp;5 package containing all open-source plugins.
 
-After that, you can import all the modules from the `ckeditor5` package. Additionally, you have to import CSS styles separately. Importing and registering UI translations is optional.
+After that, you can import all the modules from the `ckeditor5` package. Additionally, you have to import CSS styles separately. **Importing and registering UI translations is optional for the English language.** For any other language, use imported translations, as in the example below.
 
 ```js
 import { ClassicEditor, Essentials, Bold, Italic, Heading, Paragraph } from 'ckeditor5';
-import translations from 'ckeditor5/dist/translations/en.js';
+import translations from 'ckeditor5/dist/translations/pl.js';
 
 import 'ckeditor5/dist/styles.css';
 
