@@ -15,6 +15,8 @@ order: 86
 
 ## Update to CKEditor&nbsp;5 v38.1.0
 
+_Released on June 28, 2023._
+
 For the entire list of changes introduced in version 38.0.0, see the [release notes for CKEditor&nbsp;5 v38.1.0](https://github.com/ckeditor/ckeditor5/releases/tag/v38.1.0).
 
 Listed below is the minor breaking change that requires your attention when upgrading to CKEditor&nbsp;5 v38.1.0.
@@ -30,6 +32,8 @@ For example, `htmlH1Attributes` is allowed on `H1` elements, but not on paragrap
 Upgrading to CKEditor&nbsp;5 v38.1.0 you will need to modify your GHS-related code accordingly by replacing all instances of `htmlAttributes` with proper `html*Attributes` for the respective view elements.
 
 ## Update to CKEditor&nbsp;5 v38.0.0
+
+_Released on May 22, 2023._
 
 For the entire list of changes introduced in version 38.0.0, see the [release notes for CKEditor&nbsp;5 v38.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v38.0.0).
 
