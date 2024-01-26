@@ -65,6 +65,33 @@ Pass the imported plugins inside the configuration to the {@link module:editor-c
 
 That is all the code you need to see a bare-bone editor running in a web browser.
 
+## Adding CKEditor&nbsp;5 premium features
+
+All premium features are available in a separate package. You can install it similarly to the open-source one.
+
+```bash
+npm install ckeditor5-premium-features
+```
+
+Importing and registering these plugins is also analogous to the open-source ones. However, to use premium features, you need to activate them with a proper license key. Refer to the {@link support/license-key-and-activation License key and activation} guide for details.
+
+```js
+import { ClassicEditor, Essentials } from 'ckeditor5';
+import { FormatPainter, SlashCommand } from 'ckeditor5-premium-features';
+
+import 'ckeditor5/dist/styles.css';
+
+ClassicEditor
+    .create( document.querySelector( '#editor' ), {
+        plugins: [ Essentials, FormatPainter, SlashCommand ],
+        toolbar: [ 'formatPainter' ],
+        licenseKey: 'your-license-key'
+    } )
+    .catch( err => {
+        console.error( err );
+    } );
+```
+
 ## Next steps
 
 * See how to manipulate the editor's data in the {@link getting-started/getting-and-setting-data following guide}.
