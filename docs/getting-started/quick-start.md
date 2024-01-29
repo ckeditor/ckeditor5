@@ -26,7 +26,15 @@ Check out our interactive builder to quickly get a taste of CKEditor&nbsp;5. It 
 
 </info-box>
 
-In your initialized Node.js project, run the following command:
+First, initialize the Node.js project in an example folder:
+
+```bash
+mkdir ckeditor5-quick-start
+cd ckeditor5-quick-start
+npm init -y
+```
+
+Then, install the necessary package:
 
 ```bash
 npm install ckeditor5
@@ -38,7 +46,7 @@ After that, you can import all the modules from the `ckeditor5` package. Additio
 
 ```js
 import { ClassicEditor, Essentials, Bold, Italic, Heading, Paragraph } from 'ckeditor5';
-import translations from 'ckeditor5/dist/translations/pl.js';
+// import translations from 'ckeditor5/dist/translations/es.js';
 
 import 'ckeditor5/dist/styles.css';
 
@@ -48,7 +56,7 @@ await ClassicEditor
 		toolbar: {
 			items: [ 'undo', 'redo', '|', 'heading', '|', 'bold', 'italic' ]
 		},
-		translations
+		// translations
 	} )
 	.catch( err => {
 		console.error( err );
