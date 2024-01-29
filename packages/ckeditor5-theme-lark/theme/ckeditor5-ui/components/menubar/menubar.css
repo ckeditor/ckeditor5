@@ -1,0 +1,88 @@
+/*
+ * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+@import "../../../mixins/_rounded.css";
+@import "../../../mixins/_shadow.css";
+
+:root {
+	--ck-menu-bar-sub-menu-horizontal-offset: 5px;
+}
+
+.ck.ck-menu-bar {
+	display: flex;
+	justify-content: flex-start;
+	background: var(--ck-color-base-background);
+	padding: var(--ck-spacing-small);
+	gap: var(--ck-spacing-small);
+
+	& .ck.ck-menu-bar__menu {
+		display: block;
+
+		& > .ck-menu-bar__menu__button {
+			padding: var(--ck-list-button-padding);
+
+			& .ck-button__label {
+				flex-grow: 1;
+			}
+
+			& .ck-icon {
+				transform: rotate(-90deg);
+			}
+
+			&:focus {
+				border-color: transparent;
+				box-shadow: none;
+
+				&:focus:not(.ck-on) {
+					background: var(--ck-color-button-default-hover-background);
+				}
+			}
+
+			/* Top level menu button styles. */
+			&.ck-menu-bar__menu__button_top-level {
+				padding: var(--ck-spacing-small) var(--ck-spacing-medium);
+				min-height: unset;
+
+				& .ck-button__label {
+					width: unset;
+					line-height: unset;
+				}
+
+				& .ck-icon {
+					display: none;
+				}
+			}
+
+			/* Spacing in buttons that miss the icon. */
+			&:not(.ck-menu-bar__menu__button_top-level):not(:has(.ck-button__icon)) .ck-button__label {
+				margin-left: calc(var(--ck-icon-size) - var(--ck-spacing-small));
+			}
+		}
+
+		& > .ck-dropdown__panel {
+			height: fit-content;
+
+			&.ck-dropdown__panel_w {
+				left: calc( 100% - var(--ck-menu-bar-sub-menu-horizontal-offset) );
+				top: 0px;
+			}
+
+			&.ck-dropdown__panel_e {
+				left: calc( -100% + var(--ck-menu-bar-sub-menu-horizontal-offset) );
+				top: 0px;
+			}
+
+			& .ck-list .ck-list__item {
+				& > .ck-button {
+					&:focus {
+						border-color: transparent;
+						box-shadow: none;
+						background: var(--ck-color-button-default-hover-background);
+					}
+				}
+			}
+		}
+	}
+}

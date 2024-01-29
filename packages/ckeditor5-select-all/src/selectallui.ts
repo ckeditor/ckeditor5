@@ -33,27 +33,54 @@ export default class SelectAllUI extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 
-		editor.ui.componentFactory.add( 'selectAll', locale => {
-			const command = editor.commands.get( 'selectAll' )!;
-			const view = new ButtonView( locale );
-			const t = locale.t;
+		editor.ui.componentFactory.add( 'selectAll', () => {
+			const buttonView = this._createGenericButton();
 
-			view.set( {
-				label: t( 'Select all' ),
-				icon: selectAllIcon,
-				keystroke: 'Ctrl+A',
+			buttonView.set( {
 				tooltip: true
 			} );
 
-			view.bind( 'isEnabled' ).to( command, 'isEnabled' );
+			return buttonView;
+		} );
 
-			// Execute the command.
-			this.listenTo( view, 'execute', () => {
-				editor.execute( 'selectAll' );
-				editor.editing.view.focus();
+		editor.ui.componentFactory.add( 'menuBar:selectAll', () => {
+			const buttonView = this._createGenericButton();
+
+			buttonView.set( {
+				withText: true,
+				withKeystroke: true,
+				tooltip: false
 			} );
 
-			return view;
+			return buttonView;
 		} );
+	}
+
+	/**
+	 * TODO
+	 */
+	private _createGenericButton() {
+		const editor = this.editor;
+		const locale = editor.locale;
+		const command = editor.commands.get( 'selectAll' )!;
+		const view = new ButtonView( locale );
+		const t = locale.t;
+
+		view.set( {
+			label: t( 'Select all' ),
+			icon: selectAllIcon,
+			keystroke: 'Ctrl+A',
+			tooltip: true
+		} );
+
+		view.bind( 'isEnabled' ).to( command, 'isEnabled' );
+
+		// Execute the command.
+		this.listenTo( view, 'execute', () => {
+			editor.execute( 'selectAll' );
+			editor.editing.view.focus();
+		} );
+
+		return view;
 	}
 }

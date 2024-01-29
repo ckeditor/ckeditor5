@@ -9,7 +9,7 @@
 
 import View from '../view.js';
 
-import type { default as DropdownButton, DropdownButtonOpenEvent } from './button/dropdownbutton.js';
+import type { default as DropdownButton } from './button/dropdownbutton.js';
 import type { default as DropdownPanelView, PanelPosition } from './dropdownpanelview.js';
 import type { FocusableView } from '../focuscycler.js';
 import type ListView from '../list/listview.js';
@@ -254,11 +254,6 @@ export default class DropdownView extends View<HTMLDivElement> {
 		this.focusTracker.add( this.buttonView.element! );
 		this.focusTracker.add( this.panelView.element! );
 
-		// Toggle the dropdown when its button has been clicked.
-		this.listenTo<DropdownButtonOpenEvent>( this.buttonView, 'open', () => {
-			this.isOpen = !this.isOpen;
-		} );
-
 		// Let the dropdown control the position of the panel. The position must
 		// be updated every time the dropdown is open.
 		this.on<ObservableChangeEvent<boolean>>( 'change:isOpen', ( evt, name, isOpen ) => {
@@ -287,32 +282,12 @@ export default class DropdownView extends View<HTMLDivElement> {
 		// Listen for keystrokes coming from within #element.
 		this.keystrokes.listenTo( this.element! );
 
-		const closeDropdown = ( data: unknown, cancel: () => void ) => {
+		this.keystrokes.set( 'esc', ( evt, cancel ) => {
 			if ( this.isOpen ) {
 				this.isOpen = false;
 				cancel();
 			}
-		};
-
-		// Open the dropdown panel using the arrow down key, just like with return or space.
-		this.keystrokes.set( 'arrowdown', ( data, cancel ) => {
-			// Don't open if the dropdown is disabled or already open.
-			if ( this.buttonView.isEnabled && !this.isOpen ) {
-				this.isOpen = true;
-				cancel();
-			}
 		} );
-
-		// Block the right arrow key (until nested dropdowns are implemented).
-		this.keystrokes.set( 'arrowright', ( data, cancel ) => {
-			if ( this.isOpen ) {
-				cancel();
-			}
-		} );
-
-		// Close the dropdown using the arrow left/escape key.
-		this.keystrokes.set( 'arrowleft', closeDropdown );
-		this.keystrokes.set( 'esc', closeDropdown );
 	}
 
 	/**
@@ -327,7 +302,7 @@ export default class DropdownView extends View<HTMLDivElement> {
 	 * {@link module:utils/dom/position~getOptimalPosition `getOptimalPosition()`}
 	 * utility considering the direction of the language the UI of the editor is displayed in.
 	 */
-	private get _panelPositions(): Array<PositioningFunction> {
+	protected get _panelPositions(): Array<PositioningFunction> {
 		const {
 			south, north,
 			southEast, southWest,

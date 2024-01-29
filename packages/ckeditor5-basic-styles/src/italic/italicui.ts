@@ -31,30 +31,60 @@ export default class ItalicUI extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
-		const t = editor.t;
+		const command: AttributeCommand = editor.commands.get( ITALIC )!;
 
 		// Add bold button to feature components.
-		editor.ui.componentFactory.add( ITALIC, locale => {
-			const command: AttributeCommand = editor.commands.get( ITALIC )!;
-			const view = new ButtonView( locale );
+		editor.ui.componentFactory.add( ITALIC, () => {
+			const buttonView = this._createGenericButton();
 
-			view.set( {
-				label: t( 'Italic' ),
-				icon: italicIcon,
-				keystroke: 'CTRL+I',
-				tooltip: true,
-				isToggleable: true
+			buttonView.set( {
+				tooltip: true
 			} );
 
-			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
+			buttonView.bind( 'isOn' ).to( command, 'value' );
 
-			// Execute command.
-			this.listenTo( view, 'execute', () => {
-				editor.execute( ITALIC );
-				editor.editing.view.focus();
-			} );
-
-			return view;
+			return buttonView;
 		} );
+
+		editor.ui.componentFactory.add( 'menuBar:' + ITALIC, () => {
+			const buttonView = this._createGenericButton();
+
+			buttonView.set( {
+				withText: true,
+				withKeystroke: true,
+				tooltip: false
+			} );
+
+			return buttonView;
+		} );
+	}
+
+	/**
+	 * TODO
+	 */
+	private _createGenericButton() {
+		const editor = this.editor;
+		const locale = editor.locale;
+		const command: AttributeCommand = editor.commands.get( ITALIC )!;
+		const view = new ButtonView( locale );
+		const t = locale.t;
+
+		view.set( {
+			label: t( 'Italic' ),
+			icon: italicIcon,
+			keystroke: 'CTRL+I',
+			tooltip: true,
+			isToggleable: true
+		} );
+
+		view.bind( 'isEnabled' ).to( command, 'isEnabled' );
+
+		// Execute the command.
+		this.listenTo( view, 'execute', () => {
+			editor.execute( ITALIC );
+			editor.editing.view.focus();
+		} );
+
+		return view;
 	}
 }

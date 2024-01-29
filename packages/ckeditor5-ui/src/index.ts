@@ -109,4 +109,6 @@ export { default as BlockToolbar } from './toolbar/block/blocktoolbar.js';
 export { default as View, type UIViewRenderEvent } from './view.js';
 export { default as ViewCollection } from './viewcollection.js';
 
+export { default as MenuBarView } from './menubar/menubarview.js';
+
 import './augmentation.js';

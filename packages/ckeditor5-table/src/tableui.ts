@@ -89,6 +89,17 @@ export default class TableUI extends Plugin {
 			return dropdownView;
 		} );
 
+		editor.ui.componentFactory.add( 'menuBar:insertTable', locale => {
+			const insertTableView = new InsertTableView( locale );
+
+			insertTableView.on( 'execute', () => {
+				editor.execute( 'insertTable', { rows: insertTableView.rows, columns: insertTableView.columns } );
+				editor.editing.view.focus();
+			} );
+
+			return insertTableView;
+		} );
+
 		editor.ui.componentFactory.add( 'tableColumn', locale => {
 			const options = [
 				{

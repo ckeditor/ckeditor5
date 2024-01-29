@@ -32,8 +32,8 @@ export default class UndoUI extends Plugin {
 		const localizedUndoIcon = locale.uiLanguageDirection == 'ltr' ? icons.undo : icons.redo;
 		const localizedRedoIcon = locale.uiLanguageDirection == 'ltr' ? icons.redo : icons.undo;
 
-		this._addButton( 'undo', t( 'Undo' ), 'CTRL+Z', localizedUndoIcon );
-		this._addButton( 'redo', t( 'Redo' ), 'CTRL+Y', localizedRedoIcon );
+		this._addButtonsToFactory( 'undo', t( 'Undo' ), 'CTRL+Z', localizedUndoIcon );
+		this._addButtonsToFactory( 'redo', t( 'Redo' ), 'CTRL+Y', localizedRedoIcon );
 	}
 
 	/**
@@ -44,28 +44,54 @@ export default class UndoUI extends Plugin {
 	 * @param keystroke Command keystroke.
 	 * @param Icon Source of the icon.
 	 */
-	private _addButton( name: 'undo' | 'redo', label: string, keystroke: string, Icon: string ) {
+	private _addButtonsToFactory( name: 'undo' | 'redo', label: string, keystroke: string, Icon: string ) {
 		const editor = this.editor;
 
-		editor.ui.componentFactory.add( name, locale => {
-			const command = editor.commands.get( name )!;
-			const view = new ButtonView( locale );
+		editor.ui.componentFactory.add( name, () => {
+			const buttonView = this._createGenericButton( name, label, keystroke, Icon );
 
-			view.set( {
-				label,
-				icon: Icon,
-				keystroke,
+			buttonView.set( {
 				tooltip: true
 			} );
 
-			view.bind( 'isEnabled' ).to( command, 'isEnabled' );
+			return buttonView;
+		} );
 
-			this.listenTo( view, 'execute', () => {
-				editor.execute( name );
-				editor.editing.view.focus();
+		editor.ui.componentFactory.add( 'menuBar:' + name, () => {
+			const buttonView = this._createGenericButton( name, label, keystroke, Icon );
+
+			buttonView.set( {
+				withText: true,
+				withKeystroke: true,
+				tooltip: false
 			} );
 
-			return view;
+			return buttonView;
 		} );
+	}
+
+	/**
+	 * TODO
+	 */
+	private _createGenericButton( name: 'undo' | 'redo', label: string, keystroke: string, Icon: string ) {
+		const editor = this.editor;
+		const locale = editor.locale;
+		const command = editor.commands.get( name )!;
+		const view = new ButtonView( locale );
+
+		view.set( {
+			label,
+			icon: Icon,
+			keystroke
+		} );
+
+		view.bind( 'isEnabled' ).to( command, 'isEnabled' );
+
+		this.listenTo( view, 'execute', () => {
+			editor.execute( name );
+			editor.editing.view.focus();
+		} );
+
+		return view;
 	}
 }
