@@ -243,19 +243,11 @@ export function _unifyTranslations(
  * Checks whether the dictionary exists and translation in that dictionary exists.
  */
 function hasTranslation( language: string, messageId: string, translations: Translations ): boolean {
-	return (
-		translations ? (
-			!!translations[ language ] &&
-			!!translations[ language ].dictionary[ messageId as any ]
-		) : (
-			!!global.window.CKEDITOR_TRANSLATIONS[ language ] &&
-			!!global.window.CKEDITOR_TRANSLATIONS[ language ].dictionary[ messageId ]
-		)
-	);
+	return !!translations[ language ] && !!translations[ language ].dictionary[ messageId ];
 }
 
 function getNumberOfLanguages( translations: Translations ): number {
-	return Object.keys( translations ? translations : global.window.CKEDITOR_TRANSLATIONS ).length;
+	return Object.keys( translations ).length;
 }
 
 /**
