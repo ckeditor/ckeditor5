@@ -141,6 +141,7 @@ describe( 'SourceEditing', () => {
 			}, err => {
 				assertCKEditorError( err, 'source-editing-incompatible-with-real-time-collaboration', null );
 				removeEditorBodyOrphans();
+				editorElement.remove();
 			} );
 		} );
 
