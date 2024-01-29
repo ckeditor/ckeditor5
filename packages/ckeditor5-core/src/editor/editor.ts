@@ -286,7 +286,7 @@ export default abstract class Editor extends ObservableMixin() {
 		// between editors and make the watchdog feature work correctly.
 		const availablePlugins = Array.from( constructor.builtinPlugins || [] );
 
-		this.config = new Config<EditorConfig>( config, constructor.defaultConfig );
+		this.config = new Config<EditorConfig>( { ...config, translations: undefined }, constructor.defaultConfig );
 		this.config.define( 'plugins', availablePlugins );
 		this.config.define( this._context._getEditorConfig() );
 

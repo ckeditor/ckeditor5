@@ -9,7 +9,7 @@
  * @module utils/translation-service
  */
 
-import type { Translations, Editor } from '@ckeditor/ckeditor5-core';
+import type { Translations } from '@ckeditor/ckeditor5-core';
 import CKEditorError from './ckeditorerror.js';
 import global from './dom/global.js';
 import { merge } from 'lodash-es';
@@ -180,17 +180,18 @@ export function _translate(
 		throw new CKEditorError( 'translation-service-quantity-not-a-number', null, { quantity } );
 	}
 
-	const numberOfLanguages = getNumberOfLanguages( translations );
+	const normalized: Translations = translations || global.window.CKEDITOR_TRANSLATIONS;
+	const numberOfLanguages = getNumberOfLanguages( normalized );
 
 	if ( numberOfLanguages === 1 ) {
 		// Override the language to the only supported one.
 		// This can't be done in the `Locale` class, because the translations comes after the `Locale` class initialization.
-		language = translations ? Object.keys( translations )[ 0 ] : Object.keys( global.window.CKEDITOR_TRANSLATIONS )[ 0 ];
+		language = Object.keys( normalized )[ 0 ];
 	}
 
 	const messageId = message.id || message.string;
 
-	if ( numberOfLanguages === 0 || !hasTranslation( language, messageId, translations ) ) {
+	if ( numberOfLanguages === 0 || !hasTranslation( language, messageId, normalized ) ) {
 		if ( quantity !== 1 ) {
 			// Return the default plural form that was passed in the `message.plural` parameter.
 			return message.plural!;
@@ -199,9 +200,8 @@ export function _translate(
 		return message.string;
 	}
 
-	const dictionary = ( translations ? translations : global.window.CKEDITOR_TRANSLATIONS )[ language ].dictionary;
-	const getPluralForm = ( translations ? translations : global.window.CKEDITOR_TRANSLATIONS )[ language ].getPluralForm ||
-		( n => n === 1 ? 0 : 1 );
+	const dictionary = normalized[ language ].dictionary;
+	const getPluralForm = normalized[ language ].getPluralForm || ( n => n === 1 ? 0 : 1 );
 	const translation = dictionary[ messageId ];
 
 	if ( typeof translation === 'string' ) {
@@ -234,18 +234,15 @@ export function _clear(): void {
 export function _unifyTranslations(
 	translations: Translations | Array<Translations> | undefined
 ): Translations | undefined {
-	if ( Array.isArray( translations ) ) {
-		return translations.reduce(
-			( acc, singleTranslationObject ) => merge( acc, singleTranslationObject ) ) as Translations | undefined;
-	} else {
-		return translations as Translations | undefined;
-	}
+	return Array.isArray( translations ) ?
+		translations.reduce( ( acc, translation ) => merge( acc, translation ) ) :
+		translations;
 }
 
 /**
  * Checks whether the dictionary exists and translation in that dictionary exists.
  */
-function hasTranslation( language: string, messageId: string, translations?: Translations ): boolean {
+function hasTranslation( language: string, messageId: string, translations: Translations ): boolean {
 	return (
 		translations ? (
 			!!translations[ language ] &&
@@ -257,7 +254,7 @@ function hasTranslation( language: string, messageId: string, translations?: Tra
 	);
 }
 
-function getNumberOfLanguages( translations?: Translations ): number {
+function getNumberOfLanguages( translations: Translations ): number {
 	return Object.keys( translations ? translations : global.window.CKEDITOR_TRANSLATIONS ).length;
 }
 
