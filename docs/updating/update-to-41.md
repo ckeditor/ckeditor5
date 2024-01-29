@@ -16,6 +16,8 @@ modified_at: 2024-01-10
 
 ## Update to CKEditor&nbsp;5 v41.0.0
 
+_Released on January 17, 2024._
+
 For the entire list of changes introduced in version 41.0.0, see the [release notes for CKEditor&nbsp;5 v41.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v41.0.0).
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v41.0.0.

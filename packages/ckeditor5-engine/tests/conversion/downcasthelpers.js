@@ -3298,6 +3298,62 @@ describe( 'DowncastHelpers', () => {
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 		} );
 
+		it( 'config.view and config.model as strings (class attribute)', () => {
+			const consoleWarnStub = testUtils.sinon.stub( console, 'warn' );
+
+			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
+			downcastHelpers.attributeToAttribute( { model: 'test', view: 'class' } );
+
+			model.change( writer => {
+				writer.insertElement( 'paragraph', { test: 'foo bar' }, modelRoot, 0 );
+				writer.insertElement( 'paragraph', { test: 'abc def' }, modelRoot, 1 );
+			} );
+
+			expectResult(
+				'<p class="bar foo"></p>' +
+				'<p class="abc def"></p>'
+			);
+			expect( consoleWarnStub.callCount ).to.equal( 0 );
+
+			model.change( writer => {
+				writer.setAttribute( 'test', 'bar', modelRoot.getChild( 0 ) );
+				writer.removeAttribute( 'test', modelRoot.getChild( 1 ) );
+			} );
+
+			expectResult(
+				'<p class="bar"></p>' +
+				'<p></p>'
+			);
+		} );
+
+		it( 'config.view and config.model as strings (style attribute)', () => {
+			const consoleWarnStub = testUtils.sinon.stub( console, 'warn' );
+
+			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
+			downcastHelpers.attributeToAttribute( { model: 'test', view: 'style' } );
+
+			model.change( writer => {
+				writer.insertElement( 'paragraph', { test: 'background: red; padding: 4px 10px;' }, modelRoot, 0 );
+				writer.insertElement( 'paragraph', { test: 'color: blue; background: yellow;' }, modelRoot, 1 );
+			} );
+
+			expectResult(
+				'<p style="background:red;padding:4px 10px"></p>' +
+				'<p style="background:yellow;color:blue"></p>'
+			);
+			expect( consoleWarnStub.callCount ).to.equal( 0 );
+
+			model.change( writer => {
+				writer.setAttribute( 'test', 'background: pink;', modelRoot.getChild( 0 ) );
+				writer.removeAttribute( 'test', modelRoot.getChild( 1 ) );
+			} );
+
+			expectResult(
+				'<p style="background:pink"></p>' +
+				'<p></p>'
+			);
+		} );
+
 		it( 'should be possible to override setAttribute', () => {
 			downcastHelpers.attributeToAttribute( {
 				model: 'class',
