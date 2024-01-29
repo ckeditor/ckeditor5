@@ -7,6 +7,8 @@ order: 87
 
 # Update to CKEditor&nbsp;5 v37.0.0
 
+_Released on April 5, 2023._
+
 <info-box>
 	When updating your CKEditor&nbsp;5 installation, make sure **all the packages are the same version** to avoid errors.
 

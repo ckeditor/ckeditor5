@@ -262,7 +262,9 @@ ClassicEditor
 			</td>
 		</tr>
 		<tr>
-			<td>French</td>
+			<td>
+			French
+			</td>
 			<td>
 			German
 			</td>
@@ -274,18 +276,23 @@ ClassicEditor
 			</td>
 		</tr>
 		<tr>
-			<td>Hindi</td>
+			<td>
+			Hindi
+			</td>
+			<td>
+			Hungarian
+			</td>
 			<td>
 			Indonesian
 			</td>
 			<td>
 			Italian
 			</td>
+		</tr>
+		<tr>
 			<td>
 			Japanese
 			</td>
-		</tr>
-		<tr>
 			<td>
 			Korean
 			</td>
@@ -295,11 +302,11 @@ ClassicEditor
 			<td>
 			Lithuanian
 			</td>
+		</tr>
+		<tr>
 			<td>
 			Malay
 			</td>
-		</tr>
-		<tr>
 			<td>
 			Norwegian
 			</td>
@@ -309,11 +316,11 @@ ClassicEditor
 			<td>
 			Portuguese (Brazilian)
 			</td>
+		</tr>
+		<tr>
 			<td>
 			Portuguese
 			</td>
-		</tr>
-		<tr>
 			<td>
 			Romanian
 			</td>
@@ -323,11 +330,11 @@ ClassicEditor
 			<td>
 			Serbian
 			</td>
+		</tr>
+		<tr>
 			<td>
 			Slovak
 			</td>
-		</tr>
-		<tr>
 			<td>
 			Spanish
 			</td>
@@ -337,18 +344,17 @@ ClassicEditor
 			<td>
 			Thai
 			</td>
+		</tr>
+		<tr>
 			<td>
 			Turkish
 			</td>
-		</tr>
-		<tr>
 			<td>
 			Ukrainian
 			</td>
 			<td>
 			Vietnamese
 			</td>
-			<td>&nbsp;</td>
 			<td>&nbsp;</td>
 		</tr>
 	</tbody>

@@ -4,6 +4,7 @@ meta-title: Update to version 29.x | CKEditor 5 Documentation
 menu-title: Update to v29.x
 order: 95
 ---
+# Update to CKEditor&nbsp;5 v29.x
 
 <info-box>
 	When updating your CKEditor&nbsp;5 installation, make sure **all the packages are the same version** to avoid errors.
@@ -11,9 +12,9 @@ order: 95
 	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
 
-# Update to CKEditor&nbsp;5 v29.x
-
 ## Update to CKEditor&nbsp;5 v29.1.0
+
+_Released on August 4, 2021._
 
 For the entire list of changes introduced in version 29.1.0, see the [release notes for CKEditor&nbsp;5 v29.1.0](https://github.com/ckeditor/ckeditor5/releases/tag/v29.1.0).
 
@@ -60,39 +61,41 @@ Here is an example of changes you may need for proper integration with the {@lin
 ```js
 // Old code.
 ClassicEditor
-    .create( ..., {
-        // ...
-        link: {
-            decorators: {
-                addGreenLink: {
-                    mode: 'automatic',
-                    attributes: {
-                        class: 'my-green-link',
+	.create( ..., {
+		// ...
+		link: {
+			decorators: {
+				addGreenLink: {
+					mode: 'automatic',
+					attributes: {
+						class: 'my-green-link',
 						style: 'color:green;'
-                    }
-                }
-            }
-        }
-    } )
+					}
+				}
+			}
+		}
+	} )
 // New code.
 ClassicEditor
-    .create( ..., {
-        // ...
-        link: {
-            decorators: {
-                addGreenLink: {
-                    mode: 'automatic',
-                    classes: 'my-green-link',
+	.create( ..., {
+		// ...
+		link: {
+			decorators: {
+				addGreenLink: {
+					mode: 'automatic',
+					classes: 'my-green-link',
 					styles: {
 						color: 'green'
 					}
-                }
-            }
-        }
-    } )
+				}
+			}
+		}
+	} )
 ```
 
 ## Update to CKEditor&nbsp;5 v29.0.0
+
+_Released on July 7, 2021._
 
 This migration guide enumerates the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v29.0.0 due to changes introduced in the {@link module:image/image~Image} plugin and some other image-related features.
 
@@ -351,9 +354,9 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ CKFinder, Image, ... ],
 		toolbar: [ 'uploadImage', ... ],
-        ckfinder: {
-            // Feature configuration.
-        }
+		ckfinder: {
+			// Feature configuration.
+		}
 	} )
 	.then( ... )
 	.catch( ... );

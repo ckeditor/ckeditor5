@@ -17,6 +17,7 @@ import {
 	type Locale,
 	type DecoratedMethodEvent
 } from '@ckeditor/ckeditor5-utils';
+import { icons } from '@ckeditor/ckeditor5-core';
 import ViewCollection from '../viewcollection.js';
 import View from '../view.js';
 import FormHeaderView from '../formheader/formheaderview.js';
@@ -37,22 +38,20 @@ import type EditorUI from '../editorui/editorui.js';
 import '../../theme/components/dialog/dialog.css';
 // @if CK_DEBUG_DIALOG // const RectDrawer = require( '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer' ).default;
 
-import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
-
 /**
  * Available dialog view positions:
  *
- * * `DialogViewPosition.SCREEN_CENTER` - a fixed position in the center of the screen,
- * * `DialogViewPosition.EDITOR_CENTER` - a dynamic position in the center of the editor editable area,
- * * `DialogViewPosition.EDITOR_TOP_SIDE` - a dynamic position at the top-right (for the left-to-right languages)
- * or top-left (for right-to-left languages) corner of the editor editable area,
- * * `DialogViewPosition.EDITOR_TOP_CENTER` - a dynamic position at the top-center of the editor editable area,
- * * `DialogViewPosition.EDITOR_BOTTOM_CENTER` - a dynamic position at the bottom-center of the editor editable area,
- * * `DialogViewPosition.EDITOR_ABOVE_CENTER` - a dynamic position centered above the editor editable area,
- * * `DialogViewPosition.EDITOR_BELOW_CENTER` - a dynamic position centered below the editor editable area.
+ * * `DialogViewPosition.SCREEN_CENTER` &ndash; A fixed position in the center of the screen.
+ * * `DialogViewPosition.EDITOR_CENTER` &ndash; A dynamic position in the center of the editor editable area.
+ * * `DialogViewPosition.EDITOR_TOP_SIDE` &ndash; A dynamic position at the top-right (for the left-to-right languages)
+ * or top-left (for right-to-left languages) corner of the editor editable area.
+ * * `DialogViewPosition.EDITOR_TOP_CENTER` &ndash; A dynamic position at the top-center of the editor editable area.
+ * * `DialogViewPosition.EDITOR_BOTTOM_CENTER` &ndash; A dynamic position at the bottom-center of the editor editable area.
+ * * `DialogViewPosition.EDITOR_ABOVE_CENTER` &ndash; A dynamic position centered above the editor editable area.
+ * * `DialogViewPosition.EDITOR_BELOW_CENTER` &ndash; A dynamic position centered below the editor editable area.
  *
  * The position of a dialog is specified by a {@link module:ui/dialog/dialog~DialogDefinition#position `position` property} of a
- * definition passed to {@link module:ui/dialog/dialog~Dialog#show} method.
+ * definition passed to the {@link module:ui/dialog/dialog~Dialog#show} method.
  */
 export const DialogViewPosition = {
 	SCREEN_CENTER: 'screen-center',
@@ -72,17 +71,17 @@ const toPx = toUnit( 'px' );
 export default class DialogView extends DraggableViewMixin( View ) implements DraggableView {
 	/**
 	 * A collection of the child views inside of the dialog.
-	 * Dialog can have 3 optional parts: header, content and actions.
+	 * A dialog can have 3 optional parts: header, content, and actions.
 	 */
 	public readonly parts: ViewCollection;
 
 	/**
-	 * A header view of the dialog. It's also a drag handle of the dialog.
+	 * A header view of the dialog. It is also a drag handle of the dialog.
 	 */
 	public headerView?: FormHeaderView;
 
 	/**
-	 * A close button view. It's automatically added to the header view if present.
+	 * A close button view. It is automatically added to the header view if present.
 	 */
 	public closeButtonView?: ButtonView;
 
@@ -113,12 +112,12 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 
 	/**
 	 * A flag indicating if the dialog was moved manually. If so, its position
-	 * won't be updated automatically upon window resize or document scroll.
+	 * will not be updated automatically upon window resize or document scroll.
 	 */
 	public wasMoved: boolean = false;
 
 	/**
-	 * A flag indicating if this DialogView is a modal.
+	 * A flag indicating if this dialog view is a modal.
 	 *
 	 * @observable
 	 */
@@ -157,7 +156,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	declare public _isVisible: boolean;
 
 	/**
-	 * A flag indicating if dialog is transparent. It is used to prevent the dialog from being visible
+	 * A flag indicating if a dialog is transparent. It is used to prevent the dialog from being visible
 	 * before its position is calculated.
 	 *
 	 * @observable
@@ -166,7 +165,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	declare public _isTransparent: boolean;
 
 	/**
-	 * The calculated `top` CSS dialog property used for positioning.
+	 * The calculated dialog `top` CSS property used for positioning.
 	 *
 	 * @observable
 	 * @internal
@@ -174,7 +173,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	declare public _top: number;
 
 	/**
-	 * The calculated `left` CSS dialog property used for positioning.
+	 * The calculated dialog `left` CSS property used for positioning.
 	 *
 	 * @observable
 	 * @internal
@@ -182,12 +181,12 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	declare public _left: number;
 
 	/**
-	 * Callback returning the DOM root that requested the dialog.
+	 * A callback returning the DOM root that requested the dialog.
 	 */
 	private _getCurrentDomRoot: () => HTMLElement;
 
 	/**
-	 * Callback returning the configured editor viewport offset.
+	 * A callback returning the configured editor viewport offset.
 	 */
 	private _getViewportOffset: () => EditorUI[ 'viewportOffset' ];
 
@@ -352,7 +351,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 
 	/**
 	 * Creates the dialog parts. Which of them are created depends on the arguments passed to the method.
-	 * There are no rules regarding the dialog construction, i.e. no part is mandatory.
+	 * There are no rules regarding the dialog construction, that is, no part is mandatory.
 	 * Each part can only be created once.
 	 *
 	 * @internal
@@ -405,7 +404,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	}
 
 	/**
-	 * Normalises the passed coordinates to make sure the dialog view
+	 * Normalizes the passed coordinates to make sure the dialog view
 	 * is displayed within the visible viewport and moves it there.
 	 *
 	 * @internal
@@ -454,14 +453,14 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 
 	/**
 	 * Moves the dialog view to the off-screen position.
-	 * Used when there's no space to display the dialog.
+	 * Used when there is no space to display the dialog.
 	 */
 	private _moveOffScreen(): void {
 		this._moveTo( -9999, -9999 );
 	}
 
 	/**
-	 * Recalculates the dialog according to the set position and viewport
+	 * Recalculates the dialog according to the set position and viewport,
 	 * and moves it to the new position.
 	 */
 	public updatePosition(): void {
@@ -675,7 +674,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	}
 
 	/**
-	 * Creates a close button view that is displayed in the header view corner.
+	 * Creates the close button view that is displayed in the header view corner.
 	 */
 	private _createCloseButton(): ButtonView {
 		const buttonView = new ButtonView( this.locale );
@@ -684,7 +683,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 		buttonView.set( {
 			label: t( 'Close' ),
 			tooltip: true,
-			icon: cancelIcon
+			icon: icons.cancel
 		} );
 
 		buttonView.on<ButtonExecuteEvent>( 'execute', () => this.fire<DialogViewCloseEvent>( 'close', { source: 'closeButton' } ) );

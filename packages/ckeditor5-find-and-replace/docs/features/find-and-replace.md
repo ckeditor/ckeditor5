@@ -11,7 +11,7 @@ The find and replace feature lets you find and replace any text in your document
 
 ## Demo
 
-Use the find and replace toolbar button {@icon @ckeditor/ckeditor5-find-and-replace/theme/icons/find-replace.svg Find and replace} to open the search dialog. Use it to find and replace words or phrases. You can also use the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>F</kbd> keyboard shortcut. Try replacing "steam" with "diesel" to make the content more up-to-date. Be careful to match the case!
+Use the find and replace toolbar button {@icon @ckeditor/ckeditor5-find-and-replace/theme/icons/find-replace.svg Find and replace} to open the search dialog. Use it to find and replace words or phrases. You can also use the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>F</kbd> keyboard shortcut. Try replacing "AI" with "artificial intelligence" to make the content appeal to less tech-savvy users. Be careful to match the case!
 
 {@snippet features/find-and-replace}
 
@@ -23,7 +23,7 @@ Use the find and replace toolbar button {@icon @ckeditor/ckeditor5-find-and-repl
 
 ### Configuring the UI type
 
-By default, the find and replace form is displayed inside a dialog. That allows for keeping it open while editing the document at the same time. Alternatively, it is possible to display the feature in a dropdown. To do this, use the {@link module:find-and-replace/findandreplaceconfig~FindAndReplaceConfig `config.findAndReplace.uiType`} configuration option:
+By default, the find and replace form displays inside a dialog. That allows for keeping it open while editing the document at the same time. Alternatively, you can display the feature in a dropdown. To do this, use the {@link module:find-and-replace/findandreplaceconfig~FindAndReplaceConfig `config.findAndReplace.uiType`} configuration option:
 
 ```js
 ClassicEditor
