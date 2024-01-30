@@ -5,6 +5,7 @@
 
 @import "../../../mixins/_rounded.css";
 @import "../../../mixins/_shadow.css";
+@import "../../mixins/_button.css";
 
 :root {
 	--ck-menu-bar-sub-menu-horizontal-offset: 5px;
@@ -20,17 +21,38 @@
 	& .ck.ck-menu-bar__menu {
 		display: block;
 
+		/* All menu buttons. */
 		& > .ck-menu-bar__menu__button {
 			padding: var(--ck-list-button-padding);
 
-			& .ck-button__label {
+			& > .ck-button__label {
 				flex-grow: 1;
+				width: auto;
+			}
+
+			& > .ck-dropdown__arrow {
+				transform: rotate(-90deg);
+			}
+		}
+
+		/* Top-level menu buttons only. */
+		&.ck-menu-bar__menu_top-level > .ck-menu-bar__menu__button {
+			padding: var(--ck-spacing-small) var(--ck-spacing-medium);
+			min-height: unset;
+
+			& .ck-button__label {
+				width: unset;
+				min-width: unset;
+				line-height: unset;
 			}
 
 			& .ck-icon {
-				transform: rotate(-90deg);
+				display: none;
 			}
+		}
 
+		/* All but top-level menu buttons. */
+		&:not(.ck-menu-bar__menu_top-level) .ck-menu-bar__menu__button {
 			&:focus {
 				border-color: transparent;
 				box-shadow: none;
@@ -40,29 +62,16 @@
 				}
 			}
 
-			/* Top level menu button styles. */
-			&.ck-menu-bar__menu__button_top-level {
-				padding: var(--ck-spacing-small) var(--ck-spacing-medium);
-				min-height: unset;
-
-				& .ck-button__label {
-					width: unset;
-					line-height: unset;
-				}
-
-				& .ck-icon {
-					display: none;
-				}
-			}
-
 			/* Spacing in buttons that miss the icon. */
-			&:not(.ck-menu-bar__menu__button_top-level):not(:has(.ck-button__icon)) .ck-button__label {
+			&:not(:has(.ck-button__icon)) > .ck-button__label {
 				margin-left: calc(var(--ck-icon-size) - var(--ck-spacing-small));
 			}
 		}
 
+
 		& > .ck-dropdown__panel {
 			height: fit-content;
+			min-width: auto;
 
 			&.ck-dropdown__panel_w {
 				left: calc( 100% - var(--ck-menu-bar-sub-menu-horizontal-offset) );
@@ -74,12 +83,36 @@
 				top: 0px;
 			}
 
-			& .ck-list .ck-list__item {
-				& > .ck-button {
+			& > .ck-list .ck-list__item {
+				& > .ck-menu-bar__menu__item__button {
+					&.ck-on {
+						@mixin ck-button-colors --ck-color-button-default;
+						color: var(--ck-color-base-text);
+					}
+
+					/*
+					 * Items get focused on mouse hover and :hover background becomes obsolete
+					 * or even wrong if two items are next to each other: one hovered and one focused (e.g. via keyboard)
+					 */
+					&:hover {
+						background: none;
+					}
+
+					& > .ck-button__label {
+						min-width: 8em;
+					}
+
 					&:focus {
 						border-color: transparent;
 						box-shadow: none;
 						background: var(--ck-color-button-default-hover-background);
+					}
+
+					&.ck-menu-bar__menu__item__checkbutton {
+						& .ck-icon.ck-button__icon {
+							--ck-icon-size: 15px;
+							margin-right: var(--ck-spacing-medium);
+						}
 					}
 				}
 			}

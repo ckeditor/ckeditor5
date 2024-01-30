@@ -8,7 +8,7 @@
  */
 
 import { icons, Plugin } from '@ckeditor/ckeditor5-core';
-import { ButtonView } from '@ckeditor/ckeditor5-ui';
+import { ButtonView, MenuBarMenuItemButtonView } from '@ckeditor/ckeditor5-ui';
 
 /**
  * The undo UI feature. It introduces the `'undo'` and `'redo'` buttons to the editor.
@@ -48,7 +48,7 @@ export default class UndoUI extends Plugin {
 		const editor = this.editor;
 
 		editor.ui.componentFactory.add( name, () => {
-			const buttonView = this._createGenericButton( name, label, keystroke, Icon );
+			const buttonView = this._createButton( ButtonView, name, label, keystroke, Icon );
 
 			buttonView.set( {
 				tooltip: true
@@ -58,26 +58,24 @@ export default class UndoUI extends Plugin {
 		} );
 
 		editor.ui.componentFactory.add( 'menuBar:' + name, () => {
-			const buttonView = this._createGenericButton( name, label, keystroke, Icon );
-
-			buttonView.set( {
-				withText: true,
-				withKeystroke: true,
-				tooltip: false
-			} );
-
-			return buttonView;
+			return this._createButton( MenuBarMenuItemButtonView, name, label, keystroke, Icon );
 		} );
 	}
 
 	/**
 	 * TODO
 	 */
-	private _createGenericButton( name: 'undo' | 'redo', label: string, keystroke: string, Icon: string ) {
+	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuItemButtonView>(
+		ButtonClass: T,
+		name: 'undo' | 'redo',
+		label: string,
+		keystroke: string,
+		Icon: string
+	): InstanceType<T> {
 		const editor = this.editor;
 		const locale = editor.locale;
 		const command = editor.commands.get( name )!;
-		const view = new ButtonView( locale );
+		const view = new ButtonClass( locale ) as InstanceType<T>;
 
 		view.set( {
 			label,

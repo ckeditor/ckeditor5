@@ -6,25 +6,29 @@
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 import ListItemView from '../list/listitemview.js';
 import type MenuBarMenuView from './menubarmenuview.js';
+import { EVENT_NAME_DELEGATES } from './utils.js';
 
 export default class MenuBarMenuItemView extends ListItemView {
 	public parentMenuView?: MenuBarMenuView;
 
-	constructor( locale: Locale, parentMenuView?: MenuBarMenuView ) {
+	constructor( locale: Locale, parentMenuView: MenuBarMenuView ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
 
 		this.extendTemplate( {
+			attributes: {
+				class: [
+					'ck-menu-bar__menu__item'
+				]
+			},
 			on: {
 				'mouseenter': bind.to( 'mouseenter' )
 			}
 		} );
 
-		this.on( 'mouseenter', () => {
-			this.focus();
-		} );
-
 		this.parentMenuView = parentMenuView;
+
+		this.delegate( ...EVENT_NAME_DELEGATES ).to( parentMenuView );
 	}
 }

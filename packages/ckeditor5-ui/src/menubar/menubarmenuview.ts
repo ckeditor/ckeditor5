@@ -5,25 +5,72 @@
 
 import type { Locale, PositioningFunction } from '@ckeditor/ckeditor5-utils';
 import DropdownView from '../dropdown/dropdownview.js';
-import type MenuBarButtonView from './menubarbuttonview.js';
+import type MenuBarMenuButtonView from './menubarmenubuttonview.js';
 import type DropdownPanelView from '../dropdown/dropdownpanelview.js';
+import { MenuBarMenuBehaviors } from './utils.js';
 
 const NESTED_PANEL_OFFSET = 5;
 
 export default class MenuBarMenuView extends DropdownView {
-	public parentMenuView?: MenuBarMenuView;
+	public override readonly buttonView: MenuBarMenuButtonView;
+	declare public parentMenuView?: MenuBarMenuView;
 
 	constructor(
 		locale: Locale | undefined,
-		buttonView: MenuBarButtonView,
+		buttonView: MenuBarMenuButtonView,
 		panelView: DropdownPanelView,
 		parentMenuView?: MenuBarMenuView
 	) {
 		super( locale, buttonView, panelView );
 
-		this.class = 'ck-menu-bar__menu';
+		const bind = this.bindTemplate;
 
-		this.parentMenuView = parentMenuView;
+		this.buttonView = buttonView;
+		this.buttonView.delegate( 'mouseenter' ).to( this );
+
+		this.set( 'parentMenuView', parentMenuView );
+
+		this.extendTemplate( {
+			attributes: {
+				class: [
+					'ck-menu-bar__menu',
+					bind.if( 'parentMenuView', 'ck-menu-bar__menu_top-level', value => !value )
+				]
+			}
+		} );
+	}
+
+	public override render(): void {
+		super.render();
+
+		if ( !this.parentMenuView ) {
+			this.keystrokes.set( 'arrowright', ( data, cancel ) => {
+				this.fire( 'arrowright' );
+				cancel();
+			} );
+
+			this.keystrokes.set( 'arrowleft', ( data, cancel ) => {
+				this.fire( 'arrowleft' );
+				cancel();
+			} );
+
+			MenuBarMenuBehaviors.openAndFocusPanelOnArrowDownKey( this );
+			MenuBarMenuBehaviors.toggleOnButtonClick( this );
+		} else {
+			MenuBarMenuBehaviors.oneWayMenuButtonClickOverride( this );
+			MenuBarMenuBehaviors.openOnButtonClick( this );
+			MenuBarMenuBehaviors.openOnArrowRightKey( this );
+			MenuBarMenuBehaviors.closeOnArrowLeftKey( this );
+			MenuBarMenuBehaviors.closeOnParentClose( this );
+		}
+
+		MenuBarMenuBehaviors.closeOnEscKey( this );
+
+		this.focusTracker.on( 'change:focusedElement', () => {
+			if ( this.focusTracker.focusedElement === this.buttonView.element ) {
+				this.fire( 'menuButtonFocus' );
+			}
+		} );
 	}
 
 	protected override get _panelPositions(): Array<PositioningFunction> {

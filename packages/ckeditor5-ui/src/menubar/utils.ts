@@ -8,12 +8,15 @@
  */
 
 import clickOutsideHandler from '../bindings/clickoutsidehandler.js';
-import type MenuBarMenuItemView from './menubarmenuitemview.js';
 import MenuBarMenuView from './menubarmenuview.js';
 import type MenuBarView from './menubarview.js';
-import type MenuBarButtonView from './menubarbuttonview.js';
+import MenuBarMenuButtonView from './menubarmenubuttonview.js';
 
-import { focusDropdownPanelOnOpen, openDropdownOnArrowDownKey } from '../dropdown/utils.js';
+import DropdownPanelView from '../dropdown/dropdownpanelview.js';
+import type { Locale } from '@ckeditor/ckeditor5-utils';
+import type { FocusableView } from '../focuscycler.js';
+
+export const EVENT_NAME_DELEGATES = [ 'mouseenter', 'arrowleft', 'arrowright', 'menuButtonFocus' ] as const;
 
 export const MenuBarBehaviors = {
 	closeOnClickOutside( menuBarView: MenuBarView ): void {
@@ -21,38 +24,64 @@ export const MenuBarBehaviors = {
 			emitter: menuBarView,
 			activator: () => menuBarView.isOpen,
 			callback: () => menuBarView.close(),
-			contextElements: menuBarView.children.map( child => child.element! )
+			contextElements: () => menuBarView.children.map( child => child.element! )
+		} );
+	},
+
+	toggleMenusAndFocusItemsOnHover( menuBarView: MenuBarView ): void {
+		menuBarView.on( 'mouseenter', evt => {
+			// This works only when the menu bar has already been open and the user hover over the menu bar.
+			if ( !menuBarView.isOpen ) {
+				return;
+			}
+
+			for ( const menuView of menuBarView.menus ) {
+				menuView.isOpen = evt.path.includes( menuView );
+			}
+
+			( evt.source as FocusableView ).focus();
+		} );
+	},
+
+	focusCycleMenusOnArrows( menuBarView: MenuBarView ): void {
+		menuBarView.on( 'arrowright', evt => cycleTopLevelMenus( evt.source as MenuBarMenuView, 1 ) );
+		menuBarView.on( 'arrowleft', evt => cycleTopLevelMenus( evt.source as MenuBarMenuView, -1 ) );
+
+		function cycleTopLevelMenus( currentMenuView: MenuBarMenuView, step: number ) {
+			const currentIndex = menuBarView.children.getIndex( currentMenuView );
+			const isCurrentMenuViewOpen = currentMenuView.isOpen;
+			const menusCount = menuBarView.children.length;
+			const menuViewToOpen = menuBarView.children.get( ( currentIndex + menusCount + step ) % menusCount )!;
+
+			currentMenuView.isOpen = false;
+
+			if ( isCurrentMenuViewOpen ) {
+				menuViewToOpen.isOpen = true;
+			}
+
+			menuViewToOpen.buttonView.focus();
+		}
+	},
+
+	closeMenusOnClose( menuBarView: MenuBarView ): void {
+		menuBarView.on( 'change:isOpen', () => {
+			if ( !menuBarView.isOpen ) {
+				menuBarView.menus.forEach( menuView => {
+					menuView.isOpen = false;
+				} );
+			}
 		} );
 	}
 };
 
 export const MenuBarMenuBehaviors = {
-	focusPanelOnOpen: focusDropdownPanelOnOpen,
-
-	/**
-	 * Pressing esc should keep focus on the menu button to allow further keyboard navigation.
-	 */
-	focusMenuOnEscKeyPress( menuView: MenuBarMenuView ): void {
-		menuView.on( 'keydown', ( evt, data ) => {
-			if ( data.keystroke === 'Esc' ) {
-				menuView.focus();
-			}
-		} );
-	},
-
-	focusButtonOnHover( menuBarView: MenuBarView, menuButtonView: MenuBarButtonView ): void {
-		menuButtonView.on( 'mouseenter', () => {
-			if ( !menuBarView.isOpen ) {
-				return;
-			}
-
-			menuButtonView.focus();
-		} );
-	},
-
-	focusPanelOnArrowDownKey( menuView: MenuBarMenuView ): void {
+	openAndFocusPanelOnArrowDownKey( menuView: MenuBarMenuView ): void {
 		menuView.keystrokes.set( 'arrowdown', ( data, cancel ) => {
-			if ( menuView.isOpen && menuView.focusTracker.focusedElement === menuView.buttonView.element ) {
+			if ( menuView.focusTracker.focusedElement === menuView.buttonView.element ) {
+				if ( !menuView.isOpen ) {
+					menuView.isOpen = true;
+				}
+
 				menuView.panelView.focus();
 				cancel();
 			}
@@ -60,14 +89,9 @@ export const MenuBarMenuBehaviors = {
 	},
 
 	/**
-	 * Allow opening the top-level menu using the arrow down key.
-	 */
-	openOnArrowDownKey: openDropdownOnArrowDownKey,
-
-	/**
 	 * Allow navigating to sub-menus using the arrow right key.
 	 */
-	openOnArrowRightKey( menuBarView: MenuBarView, menuView: MenuBarMenuView ): void {
+	openOnArrowRightKey( menuView: MenuBarMenuView ): void {
 		// TODO: RTL
 		menuView.keystrokes.set( 'arrowright', ( data, cancel ) => {
 			if ( menuView.focusTracker.focusedElement !== menuView.buttonView.element ) {
@@ -80,33 +104,6 @@ export const MenuBarMenuBehaviors = {
 
 			menuView.panelView.focus();
 			cancel();
-		} );
-	},
-
-	openOnButtonFocus( menuBarView: MenuBarView, menuView: MenuBarMenuView ): void {
-		menuView.focusTracker.on( 'change:focusedElement', () => {
-			// Only during hover-navigation.
-			if ( menuBarView.isOpen ) {
-				if ( menuView.focusTracker.focusedElement === menuView.buttonView.element ) {
-					menuView.isOpen = true;
-				}
-			}
-		} );
-	},
-
-	openOrCloseOnHover( menuBarView: MenuBarView, menuView: MenuBarMenuView ): void {
-		menuBarView.on( 'mouseenter:submenu', ( evt, { source } ) => {
-			if ( !menuBarView.isOpen ) {
-				return;
-			}
-
-			const eventPath = getMenuEventPath( source );
-
-			if ( source === menuView ) {
-				menuView.isOpen = true;
-			} else if ( !eventPath.includes( menuView ) ) {
-				menuView.isOpen = false;
-			}
 		} );
 	},
 
@@ -132,26 +129,14 @@ export const MenuBarMenuBehaviors = {
 	 * In sub-menus, the button should work one-way only (open). Override the default toggle behavior.
 	 */
 	oneWayMenuButtonClickOverride( menuView: MenuBarMenuView ): void {
-		menuView.buttonView.on( 'open', ( evt, data ) => {
+		menuView.buttonView.on( 'open', evt => {
 			if ( menuView.isOpen ) {
 				evt.stop();
 			}
-
-			data.method = 'buttonClick';
 		}, { priority: 'high' } );
 	},
 
-	closeOnExternalItemHover( menuBarView: MenuBarView, menuView: MenuBarMenuView ): void {
-		menuBarView.on( 'mouseenter:item', ( evt, { source } ) => {
-			const eventPath = getMenuEventPath( source );
-
-			if ( !eventPath.includes( menuView ) ) {
-				menuView.isOpen = false;
-			}
-		} );
-	},
-
-	closeOnArrowLeftKey( menuBarView: MenuBarView, menuView: MenuBarMenuView ): void {
+	closeOnArrowLeftKey( menuView: MenuBarMenuView ): void {
 		// TODO: RTL
 		menuView.keystrokes.set( 'arrowleft', ( data, cancel ) => {
 			if ( menuView.isOpen ) {
@@ -169,15 +154,7 @@ export const MenuBarMenuBehaviors = {
 				menuView.focus();
 				cancel();
 			}
-		} );
-	},
-
-	closeOnMenuBarClose( menuBarView: MenuBarView, menuView: MenuBarMenuView ): void {
-		menuBarView.on( 'change:isOpen', () => {
-			if ( !menuBarView.isOpen ) {
-				menuView.isOpen = false;
-			}
-		} );
+		}, { priority: 'high' } );
 	},
 
 	closeOnParentClose( menuView: MenuBarMenuView ): void {
@@ -186,36 +163,15 @@ export const MenuBarMenuBehaviors = {
 				menuView.isOpen = false;
 			}
 		} );
-	},
-
-	navigateToNextOnArrowRightKey( menuBarView: MenuBarView, menuView: MenuBarMenuView ): void {
-		menuView.keystrokes.set( 'arrowright', ( data, cancel ) => {
-			menuBarView.fire( 'cycleForward', { currentMenuView: menuView } );
-			cancel();
-		} );
-	},
-
-	navigateToPreviousOnArrowLeftKey( menuBarView: MenuBarView, menuView: MenuBarMenuView ): void {
-		menuView.keystrokes.set( 'arrowleft', ( data, cancel ) => {
-			menuBarView.fire( 'cycleBackward', { currentMenuView: menuView } );
-			cancel();
-		} );
 	}
 };
 
-function getMenuEventPath( source: MenuBarMenuView | MenuBarMenuItemView ) {
-	const path = [];
+export function createMenuBarMenu( locale: Locale, parentMenuView?: MenuBarMenuView ): MenuBarMenuView {
+	const menuButtonView = new MenuBarMenuButtonView( locale );
+	const dropdownPanelView = new DropdownPanelView( locale );
+	const menuView = new MenuBarMenuView( locale, menuButtonView, dropdownPanelView, parentMenuView );
 
-	if ( source instanceof MenuBarMenuView ) {
-		path.push( source );
-	}
+	menuButtonView.bind( 'isOn' ).to( menuView, 'isOpen' );
 
-	let parentMenuView = source.parentMenuView;
-
-	while ( parentMenuView ) {
-		path.push( parentMenuView );
-		parentMenuView = parentMenuView.parentMenuView;
-	}
-
-	return path;
+	return menuView;
 }

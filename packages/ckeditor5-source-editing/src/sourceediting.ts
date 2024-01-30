@@ -10,7 +10,7 @@
 /* global console */
 
 import { type Editor, Plugin, PendingActions } from 'ckeditor5/src/core.js';
-import { ButtonView, type Dialog } from 'ckeditor5/src/ui.js';
+import { ButtonView, MenuBarMenuItemCheckButtonView, type Dialog } from 'ckeditor5/src/ui.js';
 import { createElement, ElementReplacer } from 'ckeditor5/src/utils.js';
 import { formatHtml } from './utils/formathtml.js';
 
@@ -81,49 +81,26 @@ export default class SourceEditing extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
-		const t = editor.t;
+		const t = editor.locale.t;
 
-		editor.ui.componentFactory.add( 'sourceEditing', locale => {
-			const buttonView = new ButtonView( locale );
+		editor.ui.componentFactory.add( 'sourceEditing', () => {
+			const buttonView = this._createButton( ButtonView );
 
 			buttonView.set( {
 				label: t( 'Source' ),
 				icon: sourceEditingIcon,
 				tooltip: true,
-				withText: true,
 				class: 'ck-source-editing-button'
 			} );
 
-			buttonView.bind( 'isOn' ).to( this, 'isSourceEditingMode' );
+			return buttonView;
+		} );
 
-			// The button should be disabled if one of the following conditions is met:
-			buttonView.bind( 'isEnabled' ).to(
-				this, 'isEnabled',
-				editor, 'isReadOnly',
-				editor.plugins.get( PendingActions ), 'hasAny',
-				( isEnabled, isEditorReadOnly, hasAnyPendingActions ) => {
-					// (1) The plugin itself is disabled.
-					if ( !isEnabled ) {
-						return false;
-					}
+		editor.ui.componentFactory.add( 'menuBar:sourceEditing', () => {
+			const buttonView = this._createButton( MenuBarMenuItemCheckButtonView );
 
-					// (2) The editor is in read-only mode.
-					if ( isEditorReadOnly ) {
-						return false;
-					}
-
-					// (3) Any pending action is scheduled. It may change the model, so modifying the document source should be prevented
-					// until the model is finally set.
-					if ( hasAnyPendingActions ) {
-						return false;
-					}
-
-					return true;
-				}
-			);
-
-			this.listenTo( buttonView, 'execute', () => {
-				this.isSourceEditingMode = !this.isSourceEditingMode;
+			buttonView.set( {
+				label: t( 'Show source' )
 			} );
 
 			return buttonView;
@@ -382,6 +359,49 @@ export default class SourceEditing extends Plugin {
 				dialogPlugin.hide();
 			}
 		}
+	}
+
+	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuItemCheckButtonView>( ButtonClass: T ): InstanceType<T> {
+		const editor = this.editor;
+		const buttonView = new ButtonClass( editor.locale ) as InstanceType<T>;
+
+		buttonView.set( {
+			withText: true
+		} );
+
+		buttonView.bind( 'isOn' ).to( this, 'isSourceEditingMode' );
+
+		// The button should be disabled if one of the following conditions is met:
+		buttonView.bind( 'isEnabled' ).to(
+			this, 'isEnabled',
+			editor, 'isReadOnly',
+			editor.plugins.get( PendingActions ), 'hasAny',
+			( isEnabled, isEditorReadOnly, hasAnyPendingActions ) => {
+				// (1) The plugin itself is disabled.
+				if ( !isEnabled ) {
+					return false;
+				}
+
+				// (2) The editor is in read-only mode.
+				if ( isEditorReadOnly ) {
+					return false;
+				}
+
+				// (3) Any pending action is scheduled. It may change the model, so modifying the document source should be prevented
+				// until the model is finally set.
+				if ( hasAnyPendingActions ) {
+					return false;
+				}
+
+				return true;
+			}
+		);
+
+		this.listenTo( buttonView, 'execute', () => {
+			this.isSourceEditingMode = !this.isSourceEditingMode;
+		} );
+
+		return buttonView;
 	}
 }
 

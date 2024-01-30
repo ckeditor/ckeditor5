@@ -13,16 +13,15 @@ import View from '../view.js';
 import { cloneDeep, isObject } from 'lodash-es';
 import ListSeparatorView from '../list/listseparatorview.js';
 import ListView from '../list/listview.js';
-import DropdownPanelView from '../dropdown/dropdownpanelview.js';
 import type ViewCollection from '../viewcollection.js';
 import type ComponentFactory from '../componentfactory.js';
 
-import MenuBarButtonView from './menubarbuttonview.js';
 import MenuBarMenuView from './menubarmenuview.js';
 import MenuBarMenuItemView from './menubarmenuitemview.js';
-import { MenuBarBehaviors, MenuBarMenuBehaviors } from './utils.js';
+import { EVENT_NAME_DELEGATES, MenuBarBehaviors, createMenuBarMenu } from './utils.js';
 
 import '../../theme/components/menubar/menubar.css';
+import MenuBarMenuItemButtonView from './menubarmenuitembuttonview.js';
 
 /**
  * TODO
@@ -30,13 +29,16 @@ import '../../theme/components/menubar/menubar.css';
 export default class MenuBarView extends View implements FocusableView {
 	public children: ViewCollection<MenuBarMenuView>;
 	declare public isOpen: boolean;
+	public menus: Array<MenuBarMenuView> = [];
 
 	constructor( locale: Locale ) {
 		super( locale );
 
-		this.children = this.createCollection();
-
 		this.set( 'isOpen', false );
+		this._setupIsOpenUpdater();
+
+		this.children = this.createCollection();
+		this.children.delegate( 'change:isOpen' ).to( this );
 
 		this.setTemplate( {
 			tag: 'div',
@@ -48,9 +50,6 @@ export default class MenuBarView extends View implements FocusableView {
 			},
 			children: this.children
 		} );
-
-		this.on( 'cycleForward', ( evt, { currentMenuView } ) => this._cycleTopLevelMenus( currentMenuView, 1 ) );
-		this.on( 'cycleBackward', ( evt, { currentMenuView } ) => this._cycleTopLevelMenus( currentMenuView, -1 ) );
 	}
 
 	/**
@@ -65,8 +64,14 @@ export default class MenuBarView extends View implements FocusableView {
 		} ) );
 
 		this.children.addMany( topLevelCategoryMenuViews );
+	}
 
-		this._setupIsOpenUpdater();
+	public override render(): void {
+		super.render();
+
+		MenuBarBehaviors.toggleMenusAndFocusItemsOnHover( this );
+		MenuBarBehaviors.closeMenusOnClose( this );
+		MenuBarBehaviors.focusCycleMenusOnArrows( this );
 		MenuBarBehaviors.closeOnClickOutside( this );
 	}
 
@@ -100,35 +105,24 @@ export default class MenuBarView extends View implements FocusableView {
 					'menuBar:redo',
 					'-',
 					'menuBar:selectAll',
-					{
-						id: 'test-more',
-						label: 'Test more',
-						items: [
-							'menuBar:undo',
-							'menuBar:redo',
-							{
-								id: 'test-more-2',
-								label: 'Test more 2',
-								items: [
-									'menuBar:undo',
-									'menuBar:redo'
-								]
-							}
-						]
-					}
+					'-',
+					'menuBar:findAndReplace'
+				]
+			},
+			{
+				id: 'view',
+				label: 'View',
+				items: [
+					'menuBar:sourceEditing',
+					'-',
+					'menuBar:showBlocks'
 				]
 			},
 			{
 				id: 'format',
 				label: 'Format',
 				items: [
-					{
-						id: 'table',
-						label: 'Table',
-						items: [
-							'menuBar:insertTable'
-						]
-					},
+					'menuBar:insertTable',
 					'-',
 					'menuBar:bold',
 					'menuBar:italic',
@@ -141,7 +135,39 @@ export default class MenuBarView extends View implements FocusableView {
 				items: [
 					'menuBar:bold',
 					'menuBar:italic',
-					'menuBar:underline'
+					'menuBar:underline',
+					{
+						id: 'test-nested-lvl1',
+						label: 'Test nested level 1',
+						items: [
+							'menuBar:undo',
+							'menuBar:redo',
+							{
+								id: 'test-nested-lvl11',
+								label: 'Test nested level 1.1',
+								items: [
+									'menuBar:undo',
+									'menuBar:redo'
+								]
+							}
+						]
+					},
+					{
+						id: 'test-nested-lvl2',
+						label: 'Test nested level 2',
+						items: [
+							'menuBar:undo',
+							'menuBar:redo',
+							{
+								id: 'test-nested-lvl21',
+								label: 'Test nested level 2.1',
+								items: [
+									'menuBar:undo',
+									'menuBar:redo'
+								]
+							}
+						]
+					}
 				]
 			}
 		];
@@ -157,45 +183,18 @@ export default class MenuBarView extends View implements FocusableView {
 	} ) {
 		const locale = this.locale!;
 		const listView = new ListView( locale );
-		const menuButtonView = new MenuBarButtonView( locale, !parentMenuView );
-		const dropdownPanelView = new DropdownPanelView( locale );
-		const menuView = new MenuBarMenuView( locale, menuButtonView, dropdownPanelView, parentMenuView );
+		const menuView = createMenuBarMenu( locale, parentMenuView );
 
-		dropdownPanelView.children.add( listView );
-
-		listView.items.addMany( this._createMenuItems( { menuDefinition, menuView, componentFactory } ) );
-
-		menuButtonView.set( {
-			withText: true,
+		menuView.buttonView.set( {
 			label: menuDefinition.label
 		} );
 
-		menuButtonView.bind( 'isOn' ).to( menuView, 'isOpen' );
+		menuView.panelView.children.add( listView );
+		menuView.delegate( ...EVENT_NAME_DELEGATES ).to( parentMenuView || this );
 
-		menuButtonView.on( 'mouseenter', () => {
-			this.fire( 'mouseenter:submenu', { source: menuView } );
-		} );
+		listView.items.addMany( this._createMenuItems( { menuDefinition, parentMenuView: menuView, componentFactory } ) );
 
-		if ( parentMenuView ) {
-			MenuBarMenuBehaviors.oneWayMenuButtonClickOverride( menuView );
-			MenuBarMenuBehaviors.openOnButtonClick( menuView );
-			MenuBarMenuBehaviors.openOnArrowRightKey( this, menuView );
-			MenuBarMenuBehaviors.closeOnArrowLeftKey( this, menuView );
-			MenuBarMenuBehaviors.closeOnParentClose( menuView );
-		} else {
-			MenuBarMenuBehaviors.focusPanelOnArrowDownKey( menuView );
-			MenuBarMenuBehaviors.openOnArrowDownKey( menuView );
-			MenuBarMenuBehaviors.openOnButtonFocus( this, menuView );
-			MenuBarMenuBehaviors.toggleOnButtonClick( menuView );
-			MenuBarMenuBehaviors.navigateToNextOnArrowRightKey( this, menuView );
-			MenuBarMenuBehaviors.navigateToPreviousOnArrowLeftKey( this, menuView );
-		}
-
-		MenuBarMenuBehaviors.focusButtonOnHover( this, menuButtonView );
-		MenuBarMenuBehaviors.openOrCloseOnHover( this, menuView );
-		MenuBarMenuBehaviors.closeOnEscKey( menuView );
-		MenuBarMenuBehaviors.closeOnMenuBarClose( this, menuView );
-		MenuBarMenuBehaviors.closeOnExternalItemHover( this, menuView );
+		this.menus.push( menuView );
 
 		return menuView;
 	}
@@ -203,10 +202,10 @@ export default class MenuBarView extends View implements FocusableView {
 	/**
 	 * TODO
 	 */
-	private _createMenuItems( { menuDefinition, menuView, componentFactory }: {
+	private _createMenuItems( { menuDefinition, parentMenuView, componentFactory }: {
 		menuDefinition: MenuBarMenuDefinition;
 		componentFactory: ComponentFactory;
-		menuView: MenuBarMenuView;
+		parentMenuView: MenuBarMenuView;
 	} ) {
 		const locale = this.locale!;
 
@@ -215,34 +214,31 @@ export default class MenuBarView extends View implements FocusableView {
 				return new ListSeparatorView();
 			}
 
-			const menuItemView = new MenuBarMenuItemView( locale, menuView );
+			const menuItemView = new MenuBarMenuItemView( locale, parentMenuView );
 
 			if ( isObject( menuDefinition ) ) {
-				const subMenuView = this._createMenu( {
-					componentFactory,
-					menuDefinition,
-					parentMenuView: menuView
-				} );
-
-				menuItemView.children.add( subMenuView );
+				menuItemView.children.add( this._createMenu( { componentFactory, menuDefinition, parentMenuView } ) );
 			} else {
 				const componentView = componentFactory.create( menuDefinition );
 
-				// TODO: I don't like this bit. It's a bit hacky.
-				if ( 'focus' in componentView ) {
-					menuItemView.children.add( componentView as FocusableView );
-				} else {
-					throw new Error( 'TODO' );
+				if ( !( componentView instanceof MenuBarMenuView || componentView instanceof MenuBarMenuItemButtonView ) ) {
+					// TODO
+					throw new Error( `The component "${ menuDefinition }" is not supported in the menu bar.` );
 				}
 
-				menuItemView.on( 'mouseenter', () => {
-					this.fire( 'mouseenter:item', { source: menuItemView } );
-				} );
+				if ( componentView instanceof MenuBarMenuView ) {
+					componentView.parentMenuView = parentMenuView;
+					this.menus.push( componentView );
+				}
+
+				componentView.delegate( ...EVENT_NAME_DELEGATES ).to( menuItemView );
 
 				// Close the whole menu bar when a component is executed.
 				componentView.on( 'execute', () => {
 					this.isOpen = false;
 				} );
+
+				menuItemView.children.add( componentView );
 			}
 
 			return menuItemView;
@@ -255,37 +251,18 @@ export default class MenuBarView extends View implements FocusableView {
 	private _setupIsOpenUpdater() {
 		let closeTimeout: ReturnType<typeof setTimeout>;
 
-		for ( const topLevelCategoryMenuView of this.children ) {
-			topLevelCategoryMenuView.on( 'change:isOpen', ( evt, name, isOpen ) => {
-				clearTimeout( closeTimeout );
+		// TODO: This is not the prettiest approach but at least it's simple.
+		this.on( 'change:isOpen', ( evt, name, isOpen ) => {
+			clearTimeout( closeTimeout );
 
-				if ( isOpen ) {
-					this.isOpen = true;
-				} else {
-					closeTimeout = setTimeout( () => {
-						this.isOpen = Array.from( this.children ).some( menuView => menuView.isOpen );
-					}, 0 );
-				}
-			} );
-		}
-	}
-
-	/**
-	 * TODO
-	 */
-	private _cycleTopLevelMenus( currentMenuView: MenuBarMenuView, step: 1 | -1 ): void {
-		const currentIndex = this.children.getIndex( currentMenuView );
-		const isCurrentMenuViewOpen = currentMenuView.isOpen;
-		const menusCount = this.children.length;
-		const menuViewToOpen = this.children.get( ( currentIndex + menusCount + step ) % menusCount )!;
-
-		currentMenuView.isOpen = false;
-
-		if ( isCurrentMenuViewOpen ) {
-			menuViewToOpen.isOpen = true;
-		}
-
-		menuViewToOpen.buttonView.focus();
+			if ( isOpen ) {
+				this.isOpen = true;
+			} else {
+				closeTimeout = setTimeout( () => {
+					this.isOpen = Array.from( this.children ).some( menuView => menuView.isOpen );
+				}, 0 );
+			}
+		} );
 	}
 }
 

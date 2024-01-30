@@ -6,17 +6,16 @@
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 import DropdownButtonView from '../dropdown/button/dropdownbuttonview.js';
 
-export default class MenuBarButtonView extends DropdownButtonView {
-	constructor( locale: Locale, isTopLevelButton: boolean ) {
+export default class MenuBarMenuButtonView extends DropdownButtonView {
+	constructor( locale: Locale ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
 
-		this.class = 'ck-menu-bar__menu__button';
-
-		if ( isTopLevelButton ) {
-			this.class += ' ck-menu-bar__menu__button_top-level';
-		}
+		this.set( {
+			withText: true,
+			class: 'ck-menu-bar__menu__button'
+		} );
 
 		this.extendTemplate( {
 			on: {

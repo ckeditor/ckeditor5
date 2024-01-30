@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
-import { ButtonView } from '@ckeditor/ckeditor5-ui';
+import { ButtonView, MenuBarMenuItemButtonView } from '@ckeditor/ckeditor5-ui';
 
 import selectAllIcon from '../theme/icons/select-all.svg';
 
@@ -34,7 +34,7 @@ export default class SelectAllUI extends Plugin {
 		const editor = this.editor;
 
 		editor.ui.componentFactory.add( 'selectAll', () => {
-			const buttonView = this._createGenericButton();
+			const buttonView = this._createButton( ButtonView );
 
 			buttonView.set( {
 				tooltip: true
@@ -44,33 +44,24 @@ export default class SelectAllUI extends Plugin {
 		} );
 
 		editor.ui.componentFactory.add( 'menuBar:selectAll', () => {
-			const buttonView = this._createGenericButton();
-
-			buttonView.set( {
-				withText: true,
-				withKeystroke: true,
-				tooltip: false
-			} );
-
-			return buttonView;
+			return this._createButton( MenuBarMenuItemButtonView );
 		} );
 	}
 
 	/**
 	 * TODO
 	 */
-	private _createGenericButton() {
+	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuItemButtonView>( ButtonClass: T ): InstanceType<T> {
 		const editor = this.editor;
 		const locale = editor.locale;
 		const command = editor.commands.get( 'selectAll' )!;
-		const view = new ButtonView( locale );
+		const view = new ButtonClass( editor.locale ) as InstanceType<T>;
 		const t = locale.t;
 
 		view.set( {
 			label: t( 'Select all' ),
 			icon: selectAllIcon,
-			keystroke: 'Ctrl+A',
-			tooltip: true
+			keystroke: 'Ctrl+A'
 		} );
 
 		view.bind( 'isEnabled' ).to( command, 'isEnabled' );

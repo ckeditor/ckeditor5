@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import { ButtonView } from 'ckeditor5/src/ui.js';
+import { ButtonView, MenuBarMenuItemButtonView } from 'ckeditor5/src/ui.js';
 import type AttributeCommand from '../attributecommand.js';
 
 import underlineIcon from '../../theme/icons/underline.svg';
@@ -35,7 +35,7 @@ export default class UnderlineUI extends Plugin {
 
 		// Add bold button to feature components.
 		editor.ui.componentFactory.add( UNDERLINE, () => {
-			const buttonView = this._createGenericButton();
+			const buttonView = this._createButton( ButtonView );
 
 			buttonView.set( {
 				tooltip: true
@@ -47,33 +47,24 @@ export default class UnderlineUI extends Plugin {
 		} );
 
 		editor.ui.componentFactory.add( 'menuBar:' + UNDERLINE, () => {
-			const buttonView = this._createGenericButton();
-
-			buttonView.set( {
-				withText: true,
-				withKeystroke: true,
-				tooltip: false
-			} );
-
-			return buttonView;
+			return this._createButton( MenuBarMenuItemButtonView );
 		} );
 	}
 
 	/**
- * TODO
- */
-	private _createGenericButton() {
+	 * TODO
+	 */
+	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuItemButtonView>( ButtonClass: T ): InstanceType<T> {
 		const editor = this.editor;
 		const locale = editor.locale;
 		const command: AttributeCommand = editor.commands.get( UNDERLINE )!;
-		const view = new ButtonView( locale );
+		const view = new ButtonClass( editor.locale ) as InstanceType<T>;
 		const t = locale.t;
 
 		view.set( {
 			label: t( 'Underline' ),
 			icon: underlineIcon,
 			keystroke: 'CTRL+U',
-			tooltip: true,
 			isToggleable: true
 		} );
 
