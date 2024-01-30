@@ -178,6 +178,9 @@ function detectListStyle( listLikeItem: ListLikeElement, stylesString: string ) 
 	const listStyleRegexp = new RegExp( `@list l${ listLikeItem.id }:level${ listLikeItem.indent }\\s*({[^}]*)`, 'gi' );
 	const listStyleTypeRegex = /mso-level-number-format:([^;]{0,100});/gi;
 	const listStartIndexRegex = /mso-level-start-at:\s{0,100}([0-9]{0,10})\s{0,100};/gi;
+	const legalListTypeRegex = new RegExp( `@list l${ listLikeItem.id }:level\\d\\s*{[^{]*mso-level-text:"%\\d\\\\.`, 'gi' );
+
+	const legalListMatch = legalListTypeRegex.exec( stylesString );
 
 	const listStyleMatch = listStyleRegexp.exec( stylesString );
 
@@ -210,12 +213,17 @@ function detectListStyle( listLikeItem: ListLikeElement, stylesString: string ) 
 				startIndex = parseInt( listStartIndexMatch[ 1 ] );
 			}
 		}
+
+		if ( legalListMatch ) {
+			type = 'ol';
+		}
 	}
 
 	return {
 		type,
 		startIndex,
-		style: mapListStyleDefinition( listStyleType )
+		style: mapListStyleDefinition( listStyleType ),
+		isLegal: !!legalListMatch
 	};
 }
 
@@ -332,6 +340,10 @@ function insertNewEmptyList(
 
 	if ( listStyle.startIndex && listStyle.startIndex > 1 ) {
 		writer.setAttribute( 'start', listStyle.startIndex, list );
+	}
+
+	if ( listStyle.isLegal ) {
+		writer.addClass( 'legal-list', list );
 	}
 
 	return list;
