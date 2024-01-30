@@ -282,7 +282,7 @@ export default abstract class Editor extends ObservableMixin() {
 		 * We don't pass translations to the config, because its behavior of splitting keys
 		 * with dots (e.g. `resize.width` => `resize: { width }`) breaks the translations.
 		 */
-		const { translations, ...rest } = config || {};
+		const { translations, ...rest } = config;
 
 		this._context = config.context || new Context( { language, translations } );
 		this._context._addEditor( this, !config.context );
