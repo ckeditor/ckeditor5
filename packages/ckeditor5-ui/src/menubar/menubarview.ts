@@ -12,16 +12,16 @@ import { type FocusableView } from '../focuscycler.js';
 import View from '../view.js';
 import { cloneDeep, isObject } from 'lodash-es';
 import ListSeparatorView from '../list/listseparatorview.js';
-import ListView from '../list/listview.js';
 import type ViewCollection from '../viewcollection.js';
 import type ComponentFactory from '../componentfactory.js';
 
 import MenuBarMenuView from './menubarmenuview.js';
-import MenuBarMenuItemView from './menubarmenuitemview.js';
+import MenuBarMenuListView from './menubarmenulistview.js';
+import MenuBarMenuListItemView from './menubarmenulistitemview.js';
+import MenuBarMenuItemButtonView from './menubarmenuitembuttonview.js';
 import { EVENT_NAME_DELEGATES, MenuBarBehaviors, createMenuBarMenu } from './utils.js';
 
 import '../../theme/components/menubar/menubar.css';
-import MenuBarMenuItemButtonView from './menubarmenuitembuttonview.js';
 
 /**
  * TODO
@@ -33,6 +33,8 @@ export default class MenuBarView extends View implements FocusableView {
 
 	constructor( locale: Locale ) {
 		super( locale );
+
+		const t = locale.t;
 
 		this.set( 'isOpen', false );
 		this._setupIsOpenUpdater();
@@ -46,7 +48,9 @@ export default class MenuBarView extends View implements FocusableView {
 				class: [
 					'ck',
 					'ck-menu-bar'
-				]
+				],
+				'aria-label': t( 'Editor menu bar' ),
+				role: 'menubar'
 			},
 			children: this.children
 		} );
@@ -184,8 +188,10 @@ export default class MenuBarView extends View implements FocusableView {
 		parentMenuView?: MenuBarMenuView;
 	} ) {
 		const locale = this.locale!;
-		const listView = new ListView( locale );
+		const listView = new MenuBarMenuListView( locale );
 		const menuView = createMenuBarMenu( locale, parentMenuView );
+
+		listView.ariaLabel = menuDefinition.label;
 
 		menuView.buttonView.set( {
 			label: menuDefinition.label
@@ -216,7 +222,7 @@ export default class MenuBarView extends View implements FocusableView {
 				return new ListSeparatorView();
 			}
 
-			const menuItemView = new MenuBarMenuItemView( locale, parentMenuView );
+			const menuItemView = new MenuBarMenuListItemView( locale, parentMenuView );
 
 			if ( isObject( menuDefinition ) ) {
 				menuItemView.children.add( this._createMenu( { componentFactory, menuDefinition, parentMenuView } ) );

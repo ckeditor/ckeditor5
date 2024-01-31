@@ -8,7 +8,7 @@ import ListItemView from '../list/listitemview.js';
 import type MenuBarMenuView from './menubarmenuview.js';
 import { EVENT_NAME_DELEGATES } from './utils.js';
 
-export default class MenuBarMenuItemView extends ListItemView {
+export default class MenuBarMenuListItemView extends ListItemView {
 	public parentMenuView?: MenuBarMenuView;
 
 	constructor( locale: Locale, parentMenuView: MenuBarMenuView ) {

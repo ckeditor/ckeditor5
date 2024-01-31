@@ -14,7 +14,8 @@ export default class MenuBarMenuItemCheckButtonView extends MenuBarMenuItemButto
 		this.set( {
 			tooltip: false,
 			withKeystroke: true,
-			withText: true
+			withText: true,
+			role: 'menuitem'
 		} );
 
 		this.extendTemplate( {

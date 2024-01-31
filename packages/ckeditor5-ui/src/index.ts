@@ -111,7 +111,8 @@ export { default as ViewCollection } from './viewcollection.js';
 
 export { default as MenuBarView } from './menubar/menubarview.js';
 export { default as MenuBarMenuView } from './menubar/menubarmenuview.js';
-export { default as MenuBarMenuItemView } from './menubar/menubarmenuitemview.js';
+export { default as MenuBarMenuListView } from './menubar/menubarmenulistview.js';
+export { default as MenuBarMenuListItemView } from './menubar/menubarmenulistitemview.js';
 export { default as MenuBarMenuItemCheckButtonView } from './menubar/menubarmenuitemcheckbuttonview.js';
 export { default as MenuBarMenuItemButtonView } from './menubar/menubarmenuitembuttonview.js';
 export { createMenuBarMenu } from './menubar/utils.js';

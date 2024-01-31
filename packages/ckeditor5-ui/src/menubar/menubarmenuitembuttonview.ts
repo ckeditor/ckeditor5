@@ -13,7 +13,8 @@ export default class MenuBarMenuItemButtonView extends ButtonView {
 		this.set( {
 			withText: true,
 			withKeystroke: true,
-			tooltip: false
+			tooltip: false,
+			role: 'menuitem'
 		} );
 
 		this.extendTemplate( {

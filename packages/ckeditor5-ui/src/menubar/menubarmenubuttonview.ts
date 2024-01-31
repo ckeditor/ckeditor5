@@ -13,7 +13,8 @@ export default class MenuBarMenuButtonView extends DropdownButtonView {
 		const bind = this.bindTemplate;
 
 		this.set( {
-			withText: true
+			withText: true,
+			role: 'menuitem'
 		} );
 
 		this.extendTemplate( {
