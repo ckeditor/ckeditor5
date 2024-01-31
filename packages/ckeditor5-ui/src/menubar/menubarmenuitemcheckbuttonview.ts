@@ -17,7 +17,13 @@ export default class MenuBarMenuItemCheckButtonView extends MenuBarMenuItemButto
 			withText: true
 		} );
 
-		this.class += ' ck-menu-bar__menu__item__checkbutton';
+		this.extendTemplate( {
+			attributes: {
+				class: [
+					'ck-menu-bar__menu__item__checkbutton'
+				]
+			}
+		} );
 
 		this.bind( 'icon' ).to( this, 'isOn', isOn => isOn ? icons.check : '<svg></svg>' );
 	}

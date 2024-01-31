@@ -7,7 +7,7 @@
  * @module ui/menubar/menubarview
  */
 
-import { type Locale } from '@ckeditor/ckeditor5-utils';
+import { logWarning, type Locale } from '@ckeditor/ckeditor5-utils';
 import { type FocusableView } from '../focuscycler.js';
 import View from '../view.js';
 import { cloneDeep, isObject } from 'lodash-es';
@@ -126,7 +126,9 @@ export default class MenuBarView extends View implements FocusableView {
 					'-',
 					'menuBar:bold',
 					'menuBar:italic',
-					'menuBar:underline'
+					'menuBar:underline',
+					'-',
+					'menuBar:heading'
 				]
 			},
 			{
@@ -218,27 +220,40 @@ export default class MenuBarView extends View implements FocusableView {
 
 			if ( isObject( menuDefinition ) ) {
 				menuItemView.children.add( this._createMenu( { componentFactory, menuDefinition, parentMenuView } ) );
-			} else {
+			} else if ( componentFactory.has( menuDefinition ) ) {
 				const componentView = componentFactory.create( menuDefinition );
 
 				if ( !( componentView instanceof MenuBarMenuView || componentView instanceof MenuBarMenuItemButtonView ) ) {
-					// TODO
-					throw new Error( `The component "${ menuDefinition }" is not supported in the menu bar.` );
+					/**
+					 * TODO
+					 *
+					 * @error menu-bar-component-unsupported
+					 * @param view TODO
+					 */
+					logWarning( 'menu-bar-component-unsupported', { view: componentView } );
+				} else {
+					if ( componentView instanceof MenuBarMenuView ) {
+						componentView.parentMenuView = parentMenuView;
+						this.menus.push( componentView );
+					}
+
+					componentView.delegate( ...EVENT_NAME_DELEGATES ).to( menuItemView );
+
+					// Close the whole menu bar when a component is executed.
+					componentView.on( 'execute', () => {
+						this.isOpen = false;
+					} );
+
+					menuItemView.children.add( componentView );
 				}
-
-				if ( componentView instanceof MenuBarMenuView ) {
-					componentView.parentMenuView = parentMenuView;
-					this.menus.push( componentView );
-				}
-
-				componentView.delegate( ...EVENT_NAME_DELEGATES ).to( menuItemView );
-
-				// Close the whole menu bar when a component is executed.
-				componentView.on( 'execute', () => {
-					this.isOpen = false;
-				} );
-
-				menuItemView.children.add( componentView );
+			} else {
+				/**
+				 * TODO
+				 *
+				 * @error menu-bar-item-unavailable
+				 * @param item The name of the component.
+				 */
+				logWarning( 'menu-bar-item-unavailable', { menuDefinition } );
 			}
 
 			return menuItemView;

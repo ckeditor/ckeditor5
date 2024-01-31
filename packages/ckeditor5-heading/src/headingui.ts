@@ -13,7 +13,11 @@ import {
 	createDropdown,
 	addListToDropdown,
 	type ButtonExecuteEvent,
-	type ListDropdownItemDefinition
+	type ListDropdownItemDefinition,
+	createMenuBarMenu,
+	MenuBarMenuItemView,
+	ListView,
+	MenuBarMenuItemCheckButtonView
 } from 'ckeditor5/src/ui.js';
 import { Collection } from 'ckeditor5/src/utils.js';
 import type { ParagraphCommand } from 'ckeditor5/src/paragraph.js';
@@ -43,15 +47,13 @@ export default class HeadingUI extends Plugin {
 		const options = getLocalizedOptions( editor );
 		const defaultTitle = t( 'Choose heading' );
 		const accessibleLabel = t( 'Heading' );
+		const headingCommand: HeadingCommand = editor.commands.get( 'heading' )!;
+		const paragraphCommand: ParagraphCommand = editor.commands.get( 'paragraph' )!;
 
 		// Register UI component.
 		editor.ui.componentFactory.add( 'heading', locale => {
 			const titles: Record<string, string> = {};
 			const itemDefinitions: Collection<ListDropdownItemDefinition> = new Collection();
-
-			const headingCommand: HeadingCommand = editor.commands.get( 'heading' )!;
-			const paragraphCommand: ParagraphCommand = editor.commands.get( 'paragraph' )!;
-
 			const commands: Array<Command> = [ headingCommand ];
 
 			for ( const option of options ) {
@@ -132,6 +134,62 @@ export default class HeadingUI extends Plugin {
 			} );
 
 			return dropdownView;
+		} );
+
+		editor.ui.componentFactory.add( 'menuBar:heading', locale => {
+			const menuView = createMenuBarMenu( locale );
+			const commands: Array<Command> = [ headingCommand ];
+			const listView = new ListView( locale );
+
+			menuView.set( {
+				class: 'ck-heading-dropdown'
+			} );
+
+			listView.set( {
+				ariaLabel: t( 'Heading' ),
+				role: 'menu'
+			} );
+
+			menuView.buttonView.set( {
+				label: t( 'Heading' )
+			} );
+
+			menuView.panelView.children.add( listView );
+
+			for ( const option of options ) {
+				const listItemView = new MenuBarMenuItemView( locale, menuView );
+				const buttonView = new MenuBarMenuItemCheckButtonView( locale );
+
+				listItemView.children.add( buttonView );
+				listView.items.add( listItemView );
+
+				buttonView.set( {
+					label: option.title,
+					role: 'menuitemradio',
+					class: option.class
+				} );
+
+				buttonView.delegate( 'execute' ).to( menuView );
+
+				buttonView.on<ButtonExecuteEvent>( 'execute', () => {
+					const commandName = option.model === 'paragraph' ? 'paragraph' : 'heading';
+					editor.execute( commandName, { value: option.model } );
+					editor.editing.view.focus();
+				} );
+
+				if ( option.model === 'paragraph' ) {
+					buttonView.bind( 'isOn' ).to( paragraphCommand, 'value' );
+					commands.push( paragraphCommand );
+				} else {
+					buttonView.bind( 'isOn' ).to( headingCommand, 'value', value => value === option.model );
+				}
+			}
+
+			menuView.bind( 'isEnabled' ).toMany( commands, 'isEnabled', ( ...areEnabled ) => {
+				return areEnabled.some( isEnabled => isEnabled );
+			} );
+
+			return menuView;
 		} );
 	}
 }

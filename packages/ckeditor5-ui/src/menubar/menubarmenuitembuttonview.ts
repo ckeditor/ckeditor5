@@ -13,8 +13,15 @@ export default class MenuBarMenuItemButtonView extends ButtonView {
 		this.set( {
 			withText: true,
 			withKeystroke: true,
-			tooltip: false,
-			class: 'ck-menu-bar__menu__item__button'
+			tooltip: false
+		} );
+
+		this.extendTemplate( {
+			attributes: {
+				class: [
+					'ck-menu-bar__menu__item__button'
+				]
+			}
 		} );
 	}
 }

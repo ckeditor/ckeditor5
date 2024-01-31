@@ -13,11 +13,15 @@ export default class MenuBarMenuButtonView extends DropdownButtonView {
 		const bind = this.bindTemplate;
 
 		this.set( {
-			withText: true,
-			class: 'ck-menu-bar__menu__button'
+			withText: true
 		} );
 
 		this.extendTemplate( {
+			attributes: {
+				class: [
+					'ck-menu-bar__menu__button'
+				]
+			},
 			on: {
 				'mouseenter': bind.to( 'mouseenter' )
 			}
