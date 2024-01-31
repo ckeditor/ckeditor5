@@ -13,6 +13,7 @@
 	--ck-dialog-max-width: 100vw;
 	--ck-dialog-max-height: 90vh;
 	--ck-color-dialog-background: var(--ck-color-base-background);
+	--ck-color-dialog-form-header-border: var(--ck-color-base-border);
 }
 
 .ck.ck-dialog-overlay {
@@ -31,6 +32,10 @@
 	max-height: var(--ck-dialog-max-height);
 	max-width: var(--ck-dialog-max-width);
 	border: 1px solid var(--ck-color-base-border);
+
+	& .ck.ck-form__header {
+		border-bottom: 1px solid var(--ck-color-dialog-form-header-border);
+	}
 }
 
 @keyframes ck-dialog-fade-in {

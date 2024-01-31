@@ -67,7 +67,7 @@
 
 	/* -- Form header --------------------------------------------------------------------------- */
 
-	--ck-color-form-header-border: 								var(--ck-custom-border);
+	--ck-color-dialog-form-header-border: 								var(--ck-custom-border);
 
 	/* -- Input --------------------------------------------------------------------------------- */
 
