@@ -64,10 +64,7 @@
 	/* -- Dialog -------------------------------------------------------------------------------- */
 
 	--ck-color-dialog-background: 								var(--ck-custom-background);
-
-	/* -- Form header --------------------------------------------------------------------------- */
-
-	--ck-color-dialog-form-header-border: 								var(--ck-custom-border);
+	--ck-color-dialog-form-header-border: 						var(--ck-custom-border);
 
 	/* -- Input --------------------------------------------------------------------------------- */
 
