@@ -280,7 +280,6 @@ export default class ColorGridsFragmentView extends View {
 		this._createColorPickerButton();
 
 		this._addColorSelectorElementsToFocusTracker();
-		this.focus();
 	}
 
 	/**

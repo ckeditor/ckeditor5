@@ -35,6 +35,14 @@ How to understand this demo:
 	This plugin is not enabled in any of the {@link installation/getting-started/predefined-builds predefined builds}, so you need to {@link installation/plugins/installing-plugins install it} by hand.
 </info-box>
 
+To add the basic styles features to your editor install the [`@ckeditor/ckeditor5-autosave`](https://www.npmjs.com/package/@ckeditor/ckeditor5-autosave) package:
+
+```
+npm install --save @ckeditor/ckeditor5-autosave
+```
+
+And add the plugin to your plugin list.
+
 Assuming that you have implemented some form of the `saveData()` function that sends the data to your server and returns a promise which is resolved once the data is successfully saved, configuring the {@link module:autosave/autosave~Autosave} feature is simple:
 
 ```js

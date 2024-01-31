@@ -15,6 +15,8 @@ order: 84
 
 ## Update to CKEditor&nbsp;5 v40.2.0
 
+_Released on December 12, 2023._
+
 For the entire list of changes introduced in version 40.2.0, see the [release notes for CKEditor&nbsp;5 v40.2.0](https://github.com/ckeditor/ckeditor5/releases/tag/v40.2.0).
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v40.2.0.
@@ -199,6 +201,8 @@ The `insertImageViaUrl` configuration option was unused and was removed. If you 
 
 ## Update to CKEditor&nbsp;5 v40.1.0
 
+_Released on November 15, 2023._
+
 For the entire list of changes introduced in version 40.1.0, see the [release notes for CKEditor&nbsp;5 v40.1.0](https://github.com/ckeditor/ckeditor5/releases/tag/v40.1.0).
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v40.1.0.
@@ -238,6 +242,8 @@ If you omit the `type` setting in the configuration, the behavior defaults to in
 The {@link features/images-text-alternative image text alternative} (the `alt` attribute) helps screen reader users navigate and understand the document. We have updated the toolbar icon {@icon @ckeditor/ckeditor5-core/theme/icons/text-alternative.svg Alternative text} to be more intuitive and easier to recognize, following global standards.
 
 ## Update to CKEditor&nbsp;5 v40.0.0
+
+_Released on October 4, 2023._
 
 For the entire list of changes introduced in version 40.0.0, see the [release notes for CKEditor&nbsp;5 v40.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v40.0.0).
 
