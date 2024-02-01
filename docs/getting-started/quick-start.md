@@ -16,31 +16,11 @@ Check out our interactive builder to quickly get a taste of CKEditor&nbsp;5. It 
 
 ## Installing CKEditor&nbsp;5 using npm
 
-<info-box>
-
-**Prerequisites:**
-
-* [Node.js](https://nodejs.org/) in version 18 or above.
-* An initialized Node.js project.
-* Basic familiarity with a terminal.
-
-</info-box>
-
-First, initialize the Node.js project in an example folder:
-
-```bash
-mkdir ckeditor5-quick-start
-cd ckeditor5-quick-start
-npm init -y
-```
-
-Then, install the necessary package:
+First, install the necessary package. The below command will install the main CKEditor&nbsp;5 package containing all open-source plugins.
 
 ```bash
 npm install ckeditor5
 ```
-
-The command will install the main CKEditor&nbsp;5 package containing all open-source plugins.
 
 After that, you can import all the modules from the `ckeditor5` package. Additionally, you have to import CSS styles separately. **Importing and registering UI translations is optional for the English language.** For any other language, use imported translations, as in the example below.
 
