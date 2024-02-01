@@ -20,6 +20,8 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
+import { removeEditorBodyOrphans } from '@ckeditor/ckeditor5-core/tests/_utils/cleanup.js';
 import { _getEmitterListenedTo, _getEmitterId } from '@ckeditor/ckeditor5-utils/src/emittermixin.js';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
@@ -122,7 +124,70 @@ describe( 'SourceEditing', () => {
 			expect( spy.secondCall.args[ 2 ] ).to.be.false;
 		} );
 
-		it( 'should display a warning in the console only once if all CF plugins are loaded', async () => {
+		it( 'should throw when real-time collaboration plugin is loaded', async () => {
+			class RealTimeCollaborativeEditing extends Plugin {
+				static get pluginName() {
+					return 'RealTimeCollaborativeEditing';
+				}
+			}
+
+			const editorElement = document.body.appendChild( document.createElement( 'div' ) );
+
+			return ClassicTestEditor.create( editorElement, {
+				plugins: [ SourceEditing, Paragraph, Essentials, RealTimeCollaborativeEditing ],
+				initialData: '<p>Foo</p>'
+			} ).then( () => {
+				throw new Error( 'It should throw an error' );
+			}, err => {
+				assertCKEditorError( err, 'source-editing-incompatible-with-real-time-collaboration', null );
+				removeEditorBodyOrphans();
+				editorElement.remove();
+			} );
+		} );
+
+		it( 'should display a warning in the console once if one or more collaboration plugins are loaded', async () => {
+			sinon.stub( console, 'warn' );
+
+			class CommentsEditing extends Plugin {
+				static get pluginName() {
+					return 'CommentsEditing';
+				}
+			}
+
+			class TrackChangesEditing extends Plugin {
+				static get pluginName() {
+					return 'TrackChangesEditing';
+				}
+			}
+
+			class RevisionHistory extends Plugin {
+				static get pluginName() {
+					return 'RevisionHistory';
+				}
+			}
+
+			const pluginsFromCF = [ CommentsEditing, TrackChangesEditing, RevisionHistory ];
+
+			const editorElement = document.body.appendChild( document.createElement( 'div' ) );
+
+			const editor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ SourceEditing, Paragraph, Essentials, ...pluginsFromCF ],
+				initialData: '<p>Foo</p>'
+			} );
+
+			expect( console.warn.calledOnce ).to.be.true;
+			expect( console.warn.firstCall.args[ 0 ] ).to.equal(
+				'You initialized the editor with the source editing feature and at least one of the collaboration features. ' +
+				'Please be advised that the source editing feature may not work, and be careful when editing document source ' +
+				'that contains markers created by the collaboration features.'
+			);
+
+			editorElement.remove();
+
+			await editor.destroy();
+		} );
+
+		it( 'should not throw nor display a warning for collaboration plugins if `allowCollaborationPlugins` flag is set', async () => {
 			sinon.stub( console, 'warn' );
 
 			class RealTimeCollaborativeEditing extends Plugin {
@@ -155,15 +220,13 @@ describe( 'SourceEditing', () => {
 
 			const editor = await ClassicTestEditor.create( editorElement, {
 				plugins: [ SourceEditing, Paragraph, Essentials, ...pluginsFromCF ],
+				sourceEditing: {
+					allowCollaborationFeatures: true
+				},
 				initialData: '<p>Foo</p>'
 			} );
 
-			expect( console.warn.calledOnce ).to.be.true;
-			expect( console.warn.firstCall.args[ 0 ] ).to.equal(
-				'You initialized the editor with the source editing feature and at least one of the collaboration features. ' +
-				'Please be advised that the source editing feature may not work, and be careful when editing document source ' +
-				'that contains markers created by the collaboration features.'
-			);
+			expect( console.warn.called ).to.be.false;
 
 			editorElement.remove();
 
@@ -494,7 +557,7 @@ describe( 'SourceEditing', () => {
 			expect( setDataSpy.calledOnce ).to.be.true;
 			expect( setDataSpy.firstCall.args[ 1 ] ).to.deep.equal( [
 				{ main: '<p>Foo</p><p>bar</p>' },
-				{ batchType: { isUndoable: true } }
+				{ batchType: { isUndoable: true }, suppressErrorInCollaboration: true }
 			] );
 			expect( editor.data.get() ).to.equal( '<p>Foo</p><p>bar</p>' );
 		} );
@@ -544,11 +607,11 @@ describe( 'SourceEditing', () => {
 			expect( setDataSpy.calledTwice ).to.be.true;
 			expect( setDataSpy.firstCall.args[ 1 ] ).to.deep.equal( [
 				{ main: 'foo' },
-				{ batchType: { isUndoable: true } }
+				{ batchType: { isUndoable: true }, suppressErrorInCollaboration: true }
 			] );
 			expect( setDataSpy.secondCall.args[ 1 ] ).to.deep.equal( [
 				{ main: 'bar' },
-				{ batchType: { isUndoable: true } }
+				{ batchType: { isUndoable: true }, suppressErrorInCollaboration: true }
 			] );
 			expect( editor.data.get() ).to.equal( '<p>bar</p>' );
 		} );
@@ -604,11 +667,11 @@ describe( 'SourceEditing', () => {
 			expect( setDataSpy.callCount ).to.equal( 2 );
 			expect( setDataSpy.firstCall.args[ 1 ] ).to.deep.equal( [
 				{ main: 'foo' },
-				{ batchType: { isUndoable: true } }
+				{ batchType: { isUndoable: true }, suppressErrorInCollaboration: true }
 			] );
 			expect( setDataSpy.secondCall.args[ 1 ] ).to.deep.equal( [
 				{ main: 'bar' },
-				{ batchType: { isUndoable: true } }
+				{ batchType: { isUndoable: true }, suppressErrorInCollaboration: true }
 			] );
 			expect( editor.data.get() ).to.equal( '<p>bar</p>' );
 		} );

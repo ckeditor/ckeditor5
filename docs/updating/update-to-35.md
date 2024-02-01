@@ -16,6 +16,8 @@ modified_at: 2022-10-05
 
 ## Update to CKEditor&nbsp;5 v35.2.0
 
+_Released on October 5, 2022._
+
 For the entire list of changes introduced in version 35.2.0, see the [release notes for CKEditor&nbsp;5 v35.2.0](https://github.com/ckeditor/ckeditor5/releases/tag/v35.2.0).
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v35.2.0.
@@ -92,6 +94,8 @@ Among other changes, some icons have been moved around the project. Observe thes
 The rest of the import path remained unchanged (`/theme/icons/`).
 
 ## Update to CKEditor&nbsp;5 v35.1.0
+
+_Released on August 31, 2022._
 
 For the entire list of changes introduced in version 35.1.0, see the [release notes for CKEditor&nbsp;5 v35.1.0](https://github.com/ckeditor/ckeditor5/releases/tag/v35.1.0).
 
