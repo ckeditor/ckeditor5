@@ -11,5 +11,7 @@
 	"Insert with file manager": "The label for the insert image with the file manager toolbar button with visible label in insert image dropdown.",
 	"Replace with file manager": "The label for the replace image with the file manager toolbar button with visible label in insert image dropdown.",
 	"Insert image with file manager": "The label for the insert image with the file manager toolbar button.",
-	"Replace image with file manager": "The label for the replace image with the file manager toolbar button."
+	"Replace image with file manager": "The label for the replace image with the file manager toolbar button.",
+	"Toggle caption off": "The button label for the object (e.g. image, table) toolbar hiding caption attached to it.",
+	"Toggle caption on": "The button label for the object (e.g. image, table) toolbar showing caption attached to it."
 }
