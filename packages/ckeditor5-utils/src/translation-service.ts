@@ -180,18 +180,18 @@ export function _translate(
 		throw new CKEditorError( 'translation-service-quantity-not-a-number', null, { quantity } );
 	}
 
-	const normalized: Translations = translations || global.window.CKEDITOR_TRANSLATIONS;
-	const numberOfLanguages = getNumberOfLanguages( normalized );
+	const normalizedTranslations: Translations = translations || global.window.CKEDITOR_TRANSLATIONS;
+	const numberOfLanguages = getNumberOfLanguages( normalizedTranslations );
 
 	if ( numberOfLanguages === 1 ) {
 		// Override the language to the only supported one.
 		// This can't be done in the `Locale` class, because the translations comes after the `Locale` class initialization.
-		language = Object.keys( normalized )[ 0 ];
+		language = Object.keys( normalizedTranslations )[ 0 ];
 	}
 
 	const messageId = message.id || message.string;
 
-	if ( numberOfLanguages === 0 || !hasTranslation( language, messageId, normalized ) ) {
+	if ( numberOfLanguages === 0 || !hasTranslation( language, messageId, normalizedTranslations ) ) {
 		if ( quantity !== 1 ) {
 			// Return the default plural form that was passed in the `message.plural` parameter.
 			return message.plural!;
@@ -200,8 +200,8 @@ export function _translate(
 		return message.string;
 	}
 
-	const dictionary = normalized[ language ].dictionary;
-	const getPluralForm = normalized[ language ].getPluralForm || ( n => n === 1 ? 0 : 1 );
+	const dictionary = normalizedTranslations[ language ].dictionary;
+	const getPluralForm = normalizedTranslations[ language ].getPluralForm || ( n => n === 1 ? 0 : 1 );
 	const translation = dictionary[ messageId ];
 
 	if ( typeof translation === 'string' ) {
