@@ -3,28 +3,29 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type { Locale } from '@ckeditor/ckeditor5-utils';
-import MenuWithButtonButtonView from '../menu/menuwithbuttonbuttonview.js';
+/**
+ * @module ui/menu/menubuttonview
+ */
 
-export default class MenuBarMenuButtonView extends MenuWithButtonButtonView {
+import type { Locale } from '@ckeditor/ckeditor5-utils';
+import ButtonView from '../button/buttonview.js';
+
+export default class MenuWithButtonButtonView extends ButtonView {
+	declare public tooltipDisabled: boolean;
+
 	constructor( locale: Locale ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
 
-		this.set( {
-			withText: true,
-			role: 'menuitem'
-		} );
+		this.set( 'tooltipDisabled', false );
 
 		this.extendTemplate( {
 			attributes: {
 				class: [
-					'ck-menu-bar__menu__button'
-				]
-			},
-			on: {
-				'mouseenter': bind.to( 'mouseenter' )
+					'ck-dropdown__button'
+				],
+				'data-cke-tooltip-disabled': bind.to( 'tooltipDisabled' )
 			}
 		} );
 	}

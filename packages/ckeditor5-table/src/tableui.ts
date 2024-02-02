@@ -16,7 +16,7 @@ import {
 	SwitchButtonView,
 	type DropdownView,
 	type ListDropdownItemDefinition,
-	createMenuBarMenu
+	MenuBarMenuView
 } from 'ckeditor5/src/ui.js';
 import { Collection, type Locale } from 'ckeditor5/src/utils.js';
 
@@ -91,7 +91,7 @@ export default class TableUI extends Plugin {
 		} );
 
 		editor.ui.componentFactory.add( 'menuBar:insertTable', locale => {
-			const menuView = createMenuBarMenu( locale );
+			const menuView = new MenuBarMenuView( locale );
 			const insertTableView = new InsertTableView( locale );
 
 			insertTableView.delegate( 'execute' ).to( menuView );
@@ -106,7 +106,7 @@ export default class TableUI extends Plugin {
 				icon: icons.table
 			} );
 
-			menuView.panelView.children.add( insertTableView );
+			menuView.menuView.children.add( insertTableView );
 
 			return menuView;
 		} );

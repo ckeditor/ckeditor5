@@ -19,7 +19,7 @@ import MenuBarMenuView from './menubarmenuview.js';
 import MenuBarMenuListView from './menubarmenulistview.js';
 import MenuBarMenuListItemView from './menubarmenulistitemview.js';
 import MenuBarMenuItemButtonView from './menubarmenuitembuttonview.js';
-import { EVENT_NAME_DELEGATES, MenuBarBehaviors, createMenuBarMenu } from './utils.js';
+import { EVENT_NAME_DELEGATES, MenuBarBehaviors } from './utils.js';
 
 import '../../theme/components/menubar/menubar.css';
 
@@ -189,7 +189,7 @@ export default class MenuBarView extends View implements FocusableView {
 	} ) {
 		const locale = this.locale!;
 		const listView = new MenuBarMenuListView( locale );
-		const menuView = createMenuBarMenu( locale, parentMenuView );
+		const menuView = new MenuBarMenuView( locale, parentMenuView );
 
 		listView.ariaLabel = menuDefinition.label;
 
@@ -197,7 +197,7 @@ export default class MenuBarView extends View implements FocusableView {
 			label: menuDefinition.label
 		} );
 
-		menuView.panelView.children.add( listView );
+		menuView.menuView.children.add( listView );
 		menuView.delegate( ...EVENT_NAME_DELEGATES ).to( parentMenuView || this );
 
 		listView.items.addMany( this._createMenuItems( { menuDefinition, parentMenuView: menuView, componentFactory } ) );
