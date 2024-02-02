@@ -168,7 +168,7 @@ export function _translate(
 	language: string,
 	message: Message,
 	quantity: number = 1,
-	translations?: Translations | undefined
+	translations?: Translations
 ): string {
 	if ( typeof quantity !== 'number' ) {
 		/**
