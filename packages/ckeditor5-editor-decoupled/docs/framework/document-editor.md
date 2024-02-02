@@ -19,7 +19,7 @@ The document editor build includes all the necessary features for the task. All 
 	See the {@link installation/getting-started/predefined-builds#document-editor Predefined builds guide} to learn how to install the document editor build.
 </info-box>
 
-Document editor can be created using the existing data container in the DOM. It can also accept a raw data string and create the editable by itself. To get the output data, use the {@link module:core/editor/utils/dataapimixin~DataApi#getData `getData()`} method.
+Document editor can be created using the existing data container in the DOM. It can also accept a raw data string and create the editable by itself. To get the output data, use the {@link module:core/editor/editor~Editor#getData `getData()`} method.
 
 <info-box>
 	See the {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`} method to learn about different approaches to the initialization of the editor.
