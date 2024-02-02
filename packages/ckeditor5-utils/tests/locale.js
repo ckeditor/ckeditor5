@@ -37,6 +37,41 @@ describe( 'Locale', () => {
 			expect( locale ).to.have.property( 'contentLanguage', 'en' );
 		} );
 
+		it( 'sets the #translations', () => {
+			const translations = [ {
+				pl: {
+					dictionary: {
+						bold: 'Pogrubienie'
+					}
+				}
+			},
+			{
+				de: {
+					dictionary: {
+						bold: 'Fett'
+					}
+				}
+			}
+			];
+
+			const locale = new Locale( {
+				translations
+			} );
+
+			expect( locale ).to.have.deep.property( 'translations', {
+				pl: {
+					dictionary: {
+						bold: 'Pogrubienie'
+					}
+				},
+				de: {
+					dictionary: {
+						bold: 'Fett'
+					}
+				}
+			} );
+		} );
+
 		it( 'defaults #language to en', () => {
 			const locale = new Locale();
 
