@@ -610,6 +610,25 @@ describe( 'FindAndReplace', () => {
 			expect( findResults ).to.have.property( 'length', 5 );
 		} );
 
+		it( 'should update list of results on editor change (removed part of highlighted block)', () => {
+			editor.setData( LONG_TEXT );
+
+			const findResults = findAndReplaceEditing.find( 'CupCake' );
+
+			expect( findResults ).to.have.property( 'length', 1 );
+
+			model.change( writer => {
+				const selection = writer.createSelection( writer.createRange(
+					writer.createPositionAt( root.getChild( 0 ), 0 ),
+					writer.createPositionAt( root.getChild( 0 ), 2 )
+				) );
+
+				model.deleteContent( selection );
+			} );
+
+			expect( findResults ).to.have.property( 'length', 0 );
+		} );
+
 		it( 'should update list of results on editor change (changed text in marker)', () => {
 			editor.setData( FOO_BAR_PARAGRAPH );
 

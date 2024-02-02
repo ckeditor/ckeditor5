@@ -80,7 +80,11 @@ function onDocumentChange(
 				results.remove( markerName );
 			}
 
-			writer.removeMarker( markerName );
+			// This condition is checked in several tests anyway and seems to be ignored by instabul.
+			// istanbul ignore next -- @preserve
+			if ( model.markers.has( markerName ) ) {
+				writer.removeMarker( markerName );
+			}
 		} );
 	} );
 
@@ -110,12 +114,12 @@ export default class FindAndReplaceEditing extends Plugin {
 	}
 
 	/**
-	 * The collection of currently highlighted search results.
+	 * Flag that indicates that user started using search
 	 *
 	 * @private
-	 * @member {module:utils/collection~Collection} #_activeResults
+	 * @member {module:utils/collection~Collection} #_inFilteringMode
 	 */
-	private _activeResults?: Collection<ResultType> | null;
+	private _inFilteringMode?: boolean = false;
 
 	/**
 	 * An object storing the find and replace state within a given editor instance.
@@ -128,8 +132,6 @@ export default class FindAndReplaceEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	public init(): void {
-		this._activeResults = null;
-
 		this.state = new FindAndReplaceState( this.editor.model );
 
 		this._defineConverters();
@@ -190,29 +192,28 @@ export default class FindAndReplaceEditing extends Plugin {
 		const { editor } = this;
 		const { model } = editor;
 
-		const { findCallback, results } = editor.execute( 'find', callbackOrText );
+		const { findCallback } = editor.execute( 'find', callbackOrText );
 
-		this._activeResults = results;
+		this._inFilteringMode = true;
 
-		// @todo: handle this listener, another copy is in findcommand.js file.
-		this.listenTo( model.document, 'change:data', () => onDocumentChange( this._activeResults!, editor, findCallback ) );
+		this.listenTo( model.document, 'change:data', () => {
+			onDocumentChange( this.state!.results, editor, findCallback );
+		} );
 
-		return this._activeResults;
+		return this.state!.results;
 	}
 
 	/**
 	 * Stops active results from updating, and clears out the results.
 	 */
 	public stop(): void {
-		if ( !this._activeResults ) {
+		if ( !this._inFilteringMode ) {
 			return;
 		}
 
 		this.stopListening( this.editor.model.document );
-
 		this.state!.clear( this.editor.model );
-
-		this._activeResults = null;
+		this._inFilteringMode = false;
 	}
 
 	/**
