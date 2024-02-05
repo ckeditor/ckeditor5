@@ -9,6 +9,27 @@
 
 import type { ArrayOrItem } from 'ckeditor5/src/utils.js';
 
+export enum COMMON_PROTOCOLS {
+	HTTPS = 'https?',
+	FTPS = 'ftps?',
+	HTTPS_ONLY = 'https',
+	SFTP = 'sftp',
+	TEL = 'tel',
+	SMS = 'sms',
+	MAIL = 'mailto',
+	LOCALHOST = 'localhost',
+	SSH = 'ssh',
+	GIT = 'git',
+	SVN = 'svn',
+	XMPP = 'xmpp',
+	SKYPE = 'skype',
+	SLACK = 'slack',
+	VIBER = 'viber',
+	JABBER = 'jabber',
+	ZOOMMTG = 'zoommtg',
+	ZOOMUS = 'zoomus'
+}
+
 /**
  * The configuration of the {@link module:link/link~Link link feature}.
  *
@@ -47,6 +68,13 @@ export interface LinkConfig {
 	 * **NOTE:** If no configuration is provided, the editor will not auto-fix the links.
 	 */
 	defaultProtocol?: string;
+
+	/**
+	 * This is a protocols whitelist that can be used in links.
+	 * When not set, the editor will use a standard list of allowed protocols.
+	 * You can use common allowed protocols from the set of constants here (link to constants)
+	 */
+	allowedProtocols?: Array<string>;
 
 	/**
 	 * When set to `true`, the form will accept an empty value in the URL field, creating a link with an empty `href` (`<a href="">`).
