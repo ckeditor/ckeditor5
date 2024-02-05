@@ -3,7 +3,8 @@ category: installation
 order: 10
 menu-title: Quick Start
 meta-title: Quick Start | CKEditor 5 documentation
-meta-description: Learn the fastest way to install and use a powerful, rich text WYSIWYG editor - CKEditor 5 - in your web application using npm.
+meta-description: Learn the fastest way to install and use CKEditor 5 - the powerful, rich text WYSIWYG editor in your web application using npm.
+modified_at: 2024-02-05
 ---
 
 # Quick Start
@@ -16,13 +17,15 @@ Check out our interactive builder to quickly get a taste of CKEditor&nbsp;5. It 
 
 ## Installing CKEditor&nbsp;5 using npm
 
-First, install the necessary package. The below command will install the main CKEditor&nbsp;5 package containing all open-source plugins.
+First, install the necessary package. The command below will install the main CKEditor&nbsp;5 package containing all open-source plugins.
 
 ```bash
 npm install ckeditor5
 ```
 
-After that, you can import all the modules from the `ckeditor5` package. Additionally, you have to import CSS styles separately. **Importing and registering UI translations is optional for the English language.** For any other language, use imported translations, as in the example below.
+Now you can import all the modules from the `ckeditor5` package. Additionally, you have to import CSS styles separately.
+
+**Importing and registering UI translations is optional for the English language.** For any other language, use imported translations, as in the example below.
 
 ```js
 import { ClassicEditor, Essentials, Bold, Italic, Heading, Paragraph } from 'ckeditor5';
@@ -51,11 +54,11 @@ Pass the imported plugins inside the configuration to the {@link module:editor-c
 </div>
 ```
 
-That is all the code you need to see a bare-bone editor running in a web browser.
+That is all the code you need to see a bare-bone editor running in your web browser.
 
 ## Adding CKEditor&nbsp;5 premium features
 
-All premium features are available in a separate package. You can install it similarly to the open-source one.
+All premium features are available as a separate package. You can install it the same as the open-source one.
 
 ```bash
 npm install ckeditor5-premium-features
@@ -70,18 +73,18 @@ import { FormatPainter, SlashCommand } from 'ckeditor5-premium-features';
 import 'ckeditor5/dist/styles.css';
 
 ClassicEditor
-    .create( document.querySelector( '#editor' ), {
-        plugins: [ Essentials, FormatPainter, SlashCommand ],
-        toolbar: [ 'formatPainter' ],
-        licenseKey: 'your-license-key'
-    } )
-    .catch( err => {
-        console.error( err );
-    } );
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Essentials, FormatPainter, SlashCommand ],
+		toolbar: [ 'formatPainter' ],
+		licenseKey: 'your-license-key'
+	} )
+	.catch( err => {
+		console.error( err );
+	} );
 ```
 
 ## Next steps
 
-* See how to manipulate the editor's data in the {@link getting-started/getting-and-setting-data following guide}.
+* See how to manipulate the editor's data in the {@link getting-started/getting-and-setting-data Getting and setting data} guide.
 * Refer to the {@link getting-started/setup/configuration setup section} to see how to customize your editor further.
 * Check the {@link features/index features category} to learn more about individual features.
