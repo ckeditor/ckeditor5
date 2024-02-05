@@ -12,7 +12,11 @@ module.exports = {
 	GITHUB_TOKEN: process.env.CKE5_GITHUB_TOKEN,
 	REPOSITORY_SLUG: 'ckeditor/ckeditor5',
 	DAYS_BEFORE_STALE: 365,
+	DAYS_BEFORE_STALE_PENDING_ISSUE: 14,
 	DAYS_BEFORE_CLOSE: 30,
+	PENDING_ISSUE_LABELS: [
+		'pending:feedback'
+	],
 	IGNORED_ISSUE_LABELS: [
 		'support:1',
 		'support:2',
