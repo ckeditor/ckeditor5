@@ -16,6 +16,8 @@ modified_at: 2021-11-03
 
 ## Update to CKEditor&nbsp;5 v31.1.0
 
+_Released on December 7, 2021._
+
 For the entire list of changes introduced in version 31.1.0, see the [release notes for CKEditor&nbsp;5 v31.1.0](https://github.com/ckeditor/ckeditor5/releases/tag/v31.1.0).
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v31.1.0.
@@ -84,6 +86,8 @@ These were changed to `tableCellBackgroundColor`, `tableCellPadding`, `tableCell
 
 
 ## Update to CKEditor&nbsp;5 v31.0.0
+
+_Released on October 26, 2021._
 
 For the entire list of changes introduced in version 31.0.0, see the [release notes for CKEditor&nbsp;5 v31.1.0](https://github.com/ckeditor/ckeditor5/releases/tag/v31.1.0).
 
