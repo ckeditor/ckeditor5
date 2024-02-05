@@ -7,13 +7,13 @@ We are happy to announce the release of CKEditor&nbsp;5 v41.1.0.
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: In the `attributeToAttribute()` upcast helper we fixed how the missing `value` of the `"class"` and `"style"` attribute conversion is handled. Now while not providing the attribute's `value` to the conversion helper accepts and consumes all values. Previously those values were not consumed and left for other converters to convert. Note that you should use the `classes`, and the `styles` fields for the fine-tuned conversion of those attributes instead of a catch-all `"style"` and `"class"` specified in the `key` field.
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: We fixed how the missing `value` of the `"class"` and `"style"` attribute conversion is handled in the `attributeToAttribute()` upcast helper. Now while not providing the attribute's `value` to conversion the helper accepts and consumes all values. Previously those values were not consumed and left for other converters to convert. Note that you should use the `classes`, and the `styles` fields for the fine-tuned conversion of those attributes instead of a catch-all `"style"` and `"class"` specified in the `key` field.
 * **[font](https://www.npmjs.com/package/@ckeditor/ckeditor5-font)**: The `colorSelectorView` property will no longer be accessible from the `ColorUI` plugin in the `@ckeditor/ckeditor5-font/src/ui/colorui.ts`.
-* **[source-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-source-editing)**: Source editing will now throw when used with real-time collaboration as these features are not fully compatible and may lead to data loss. Now, you will have to explicitly enable source editing for real-time collaboration by setting `sourceEditing.allowCollaborationFeatures` configuration flag to `true`. If you have used both features, please read a new guide discussing the risks and add the flag to your configuration.
+* **[source-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-source-editing)**: The source editing feature will now throw an error when used with real-time collaboration as these features are not fully compatible and may lead to data loss. You will have to explicitly enable source editing for real-time collaboration by setting the `sourceEditing.allowCollaborationFeatures` configuration flag to `true`. If you want to use both these features, please read a new guide discussing the risks and add the flag to your configuration.
 
 ### Features
 
-* **[collaboration-core](https://www.npmjs.com/package/@ckeditor/ckeditor5-collaboration-core)**: The local user avatar will now have a distinct highlight (additional border) so it is easier to spot among many avatars. The related DOM element will receive `.ck-user_me` CSS class to customize or remove the highlight.
+* **[collaboration-core](https://www.npmjs.com/package/@ckeditor/ckeditor5-collaboration-core)**: The local user ("me" user) avatar will now have a distinct highlight (additional border) so it is easier to spot among other avatars. The related DOM element will receive the `.ck-user_me` CSS class to customize or remove the highlight.
 * **[real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration)**: Introduced the `presenceList.displayMe` configuration flag. When set to `false`, the local user ("me" user) will not be displayed in the presence list. Defaults to `true`.
 
 ### Bug fixes
@@ -25,7 +25,7 @@ We are happy to announce the release of CKEditor&nbsp;5 v41.1.0.
 ### Other changes
 
 * **[real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration)**: Modified the order of users in the presence list, so that local user ("me" user) is always visible first.
-* **[source-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-source-editing)**: Source editing will now throw when used with real-time collaboration. Added `sourceEditing.allowCollaborationFeatures` configuration flag that suppresses the error and allows to use both features together. Closes [#15764](https://github.com/ckeditor/ckeditor5/issues/15764). ([commit](https://github.com/ckeditor/ckeditor5/commit/7ed0b7cf5f2062a328161514a3a8286d064cf1b3))
+* **[source-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-source-editing)**: Source editing will now throw an error when used with real-time collaboration. Added the `sourceEditing.allowCollaborationFeatures` configuration flag that suppresses the error and allows to use both features together. Closes [#15764](https://github.com/ckeditor/ckeditor5/issues/15764). ([commit](https://github.com/ckeditor/ckeditor5/commit/7ed0b7cf5f2062a328161514a3a8286d064cf1b3))
 * Updated translations. ([commit](https://github.com/ckeditor/ckeditor5/commit/6881c8c866c4c4f8c3a91aedcb64313e2992b106))
 
 ### Released packages
