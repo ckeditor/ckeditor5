@@ -163,6 +163,20 @@ describe( 'Editor', () => {
 			expect( editor.config.get( 'bar' ) ).to.equal( 'foo' );
 		} );
 
+		it( 'should not have access to translations', () => {
+			const editor = new TestEditor( {
+				translations: {
+					pl: {
+						dictionary: {
+							Bold: 'Pogrubienie'
+						}
+					}
+				}
+			} );
+
+			expect( editor.config.get( 'translations' ) ).to.equal( undefined );
+		} );
+
 		it( 'should bind editing.view.document#isReadOnly to the editor#isReadOnly', () => {
 			const editor = new TestEditor();
 
