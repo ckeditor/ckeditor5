@@ -38,7 +38,7 @@ function onDocumentChange(
 	results: Collection<ResultType>,
 	editor: Editor,
 	searchCallback: ( ( { item, text }: { item: Item; text: string } ) => Array<ResultType> )
-) {
+): { changedSearchResults: Array<ResultType> } {
 	const changedNodes = new Set<Node>();
 	const removedMarkers = new Set<string>();
 	const model = editor.model;
@@ -89,10 +89,24 @@ function onDocumentChange(
 	} );
 
 	// Run search callback again on updated nodes.
+	const changedSearchResults = new Set<ResultType>();
+
 	changedNodes.forEach( nodeToCheck => {
 		const findAndReplaceUtils: FindAndReplaceUtils = editor.plugins.get( 'FindAndReplaceUtils' );
-		findAndReplaceUtils.updateFindResultFromRange( model.createRangeOn( nodeToCheck ), model, searchCallback, results );
+		const changedNodeSearchResults = findAndReplaceUtils.updateFindResultFromRange(
+			model.createRangeOn( nodeToCheck ), model, searchCallback, results
+		);
+
+		// Sometimes `changedNodeSearchResults` contains elements that are already present on `changedSearchResults`
+		// list so do not return them duplicated.
+		changedNodeSearchResults.forEach( changedNodeResult => {
+			changedSearchResults.add( changedNodeResult );
+		} );
 	} );
+
+	return {
+		changedSearchResults: Array.from( changedSearchResults )
+	};
 }
 
 /**
@@ -187,7 +201,11 @@ export default class FindAndReplaceEditing extends Plugin {
 		const { findCallback } = editor.execute( 'find', callbackOrText );
 
 		this.listenTo( model.document, 'change:data', () => {
-			onDocumentChange( this.state!.results, editor, findCallback );
+			const { changedSearchResults } = onDocumentChange( this.state!.results, editor, findCallback );
+
+			if ( changedSearchResults.length && !this.state!.highlightedResult ) {
+				this.state!.highlightedResult = changedSearchResults[ 0 ];
+			}
 		} );
 
 		return this.state!.results;

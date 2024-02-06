@@ -629,6 +629,18 @@ describe( 'FindAndReplace', () => {
 			expect( findResults ).to.have.property( 'length', 0 );
 		} );
 
+		it( 'should update list of results on editor change (find, remove all blocks and type search phrase in editor)', () => {
+			editor.setData( '' );
+
+			const findResults = findAndReplaceEditing.find( 'CupCake' );
+
+			expect( findResults ).to.have.property( 'length', 0 );
+
+			editor.setData( LONG_TEXT );
+
+			expect( findResults ).to.have.property( 'length', 1 );
+		} );
+
 		it( 'should update list of results on editor change (changed text in marker)', () => {
 			editor.setData( FOO_BAR_PARAGRAPH );
 

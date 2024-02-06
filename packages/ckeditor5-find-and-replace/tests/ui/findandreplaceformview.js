@@ -949,6 +949,25 @@ describe( 'FindAndReplaceFormView', () => {
 				findButton.fire( 'execute' );
 				expect( matchCounterElement.textContent ).to.equal( '1 of 3' );
 			} );
+
+			it( 'hitting "Find" with no result should watch document modifications and update highlighted item if not present', () => {
+				editor.setData( '' );
+				toggleDialog();
+
+				findInput.fieldView.value = 'CupCake';
+				findButton.fire( 'execute' );
+
+				expect( matchCounterElement.textContent ).to.equal( '0 of 0' );
+
+				editor.setData( 'CupCake' );
+				expect( matchCounterElement.textContent ).to.equal( '1 of 1' );
+
+				editor.setData( 'CupCake CupCake' );
+				expect( matchCounterElement.textContent ).to.equal( '1 of 2' );
+
+				editor.setData( '' );
+				expect( matchCounterElement.textContent ).to.equal( '0 of 0' );
+			} );
 		} );
 
 		describe( 'find results navigation using previous/next buttons', () => {
