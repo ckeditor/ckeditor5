@@ -310,7 +310,7 @@ export default class MediaEmbedEditing extends Plugin {
 
 						return (
 							`<a href=${ match[ 0 ] } style="display: block; width: 100%; height: 100%;">` +
-								'<div style="position: relative; height: 216px; pointer-events: none;">' +
+								'<div style="position: relative; height: 245px; pointer-events: none;">' +
 									`<iframe src="${ url }"` +
 										'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
 										'frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>' +
