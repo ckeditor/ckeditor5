@@ -469,8 +469,8 @@ function getTooltipData( element: HTMLElement ): TooltipData {
 	};
 }
 
-// Creates a simple MutationObserver instance wrapper that observes changes in the tooltip-related attributes of the given element.
-// Used instead of the MutationObserver from the engine for simplicity.
+// Creates a simple `MutationObserver` instance wrapper that observes changes in the tooltip-related attributes of the given element.
+// Used instead of the `MutationObserver` from the engine for simplicity.
 function createMutationObserver( callback: ( ...args: Array<any> ) => unknown ): MutationObserverWrapper {
 	const mutationObserver = new MutationObserver( () => {
 		callback();
