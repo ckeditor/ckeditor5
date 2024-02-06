@@ -23,7 +23,7 @@ import { ComponentFactory, EditorUI, EditorUIView, InlineEditableUIView } from '
 import { ElementReplacer, FocusTracker } from '@ckeditor/ckeditor5-utils';
 
 // Interfaces to extend the basic Editor API.
-import { DataApiMixin, ElementApiMixin } from '@ckeditor/ckeditor5-core';
+import { ElementApiMixin } from '@ckeditor/ckeditor5-core';
 
 // Helper function for adding interfaces to the Editor class.
 import { mix } from '@ckeditor/ckeditor5-utils';
@@ -56,7 +56,7 @@ After importing the basic editor components, you can define the custom `Bootstra
 
 ```js
 // Extending the Editor class, which brings the base editor API.
-export default class BootstrapEditor extends Editor {
+export default class BootstrapEditor extends ElementApiMixin( Editor ) {
 	constructor( element, config ) {
 		super( config );
 
@@ -101,10 +101,6 @@ export default class BootstrapEditor extends Editor {
 		} );
 	}
 }
-
-// Mixing interfaces, which extends the basic editor API.
-mix( BootstrapEditor, DataApiMixin );
-mix( BootstrapEditor, ElementApiMixin );
 ```
 
 ## Creating the Bootstrap UI

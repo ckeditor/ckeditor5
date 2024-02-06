@@ -71,11 +71,6 @@ describe( 'ClassicTestEditor', () => {
 			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( RootElement );
 		} );
 
-		it( 'mixes DataApiMixin', () => {
-			expect( ClassicTestEditor.prototype ).have.property( 'setData' ).to.be.a( 'function' );
-			expect( ClassicTestEditor.prototype ).have.property( 'getData' ).to.be.a( 'function' );
-		} );
-
 		it( 'mixes ElementApiMixin', () => {
 			expect( ClassicTestEditor.prototype ).have.property( 'updateSourceElement' ).to.be.a( 'function' );
 		} );

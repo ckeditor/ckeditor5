@@ -29,11 +29,6 @@ describe( 'VirtualTestEditor', () => {
 
 			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( RootElement );
 		} );
-
-		it( 'mixes DataApiMixin', () => {
-			expect( VirtualTestEditor.prototype ).have.property( 'setData' ).to.be.a( 'function' );
-			expect( VirtualTestEditor.prototype ).have.property( 'getData' ).to.be.a( 'function' );
-		} );
 	} );
 
 	describe( 'static create()', () => {

@@ -44,7 +44,7 @@ You can display images in the editor as either inline or block.
 The inline-type images are represented as inline HTML elements. You can insert them in the middle of a paragraph or in a link just like regular text. The HTML representation of the inline image looks like this:
 
 * `<span class=”image-style-class”><img></img></span>` in the editable.
-* `<img class=”image-style-class”></img>` in the HTML content retrieved by the {@link module:core/editor/utils/dataapimixin~DataApi#getData `getData()`} method.
+* `<img class=”image-style-class”></img>` in the HTML content retrieved by the {@link module:core/editor/editor~Editor#getData `getData()`} method.
 
 Block-type images can be inserted only between other blocks like paragraphs, tables, or media. The HTML representation of the block image looks like this:
 

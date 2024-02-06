@@ -42,7 +42,7 @@ You may apply basic formatting options with toolbar buttons. You can also make u
 
 ### Supported input
 
-By default, each feature can upcast more than one type of content. Here is the full list of elements supported by each feature, either when pasting from the clipboard, loading data on start, or using the {@link module:core/editor/utils/dataapimixin~DataApi#setData data API}.
+By default, each feature can upcast more than one type of content. Here is the full list of elements supported by each feature, either when pasting from the clipboard, loading data on start, or using the {@link module:core/editor/editor~Editor#setData data API}.
 
 | Style feature | Supported input elements |
 |-----|---|

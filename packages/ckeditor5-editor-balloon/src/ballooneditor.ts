@@ -10,7 +10,6 @@
 import {
 	Editor,
 	Context,
-	DataApiMixin,
 	ElementApiMixin,
 	attachToForm,
 	secureSourceElement,
@@ -52,7 +51,7 @@ import { isElement as _isElement } from 'lodash-es';
  * Read more about initializing the editor from source or as a build in
  * {@link module:editor-balloon/ballooneditor~BalloonEditor.create `BalloonEditor.create()`}.
  */
-export default class BalloonEditor extends DataApiMixin( ElementApiMixin( Editor ) ) {
+export default class BalloonEditor extends ElementApiMixin( Editor ) {
 	/**
 	 * @inheritDoc
 	 */
