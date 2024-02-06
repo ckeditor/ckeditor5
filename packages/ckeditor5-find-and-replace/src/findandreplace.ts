@@ -83,7 +83,6 @@ export default class FindAndReplace extends Plugin {
 
 			if ( highlightedResult ) {
 				this.editor.execute( 'replace', data.replaceText, highlightedResult );
-				findAndReplaceEditing.find( data.searchText );
 			}
 		} );
 
