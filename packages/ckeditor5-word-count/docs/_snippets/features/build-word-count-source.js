@@ -88,7 +88,7 @@ BalloonEditor.defaultConfig = {
 		toolbar: [
 			'imageStyle:inline',
 			'imageStyle:block',
-			'imageStyle:side',
+			'imageStyle:wrapText',
 			'|',
 			'toggleImageCaption',
 			'imageTextAlternative'
@@ -136,7 +136,7 @@ ClassicEditor.defaultConfig = {
 		toolbar: [
 			'imageStyle:inline',
 			'imageStyle:block',
-			'imageStyle:side',
+			'imageStyle:wrapText',
 			'|',
 			'toggleImageCaption',
 			'imageTextAlternative'
