@@ -132,8 +132,8 @@ describe( 'FindAndReplace', () => {
 			stopSpy.restore();
 			stateClearSpy.restore();
 
-			expect( stopSpy.calledOnce ).to.true;
-			expect( stateClearSpy.calledOnce ).to.true;
+			expect( stopSpy.called ).to.true;
+			expect( stateClearSpy.called ).to.true;
 		} );
 	} );
 

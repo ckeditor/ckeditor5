@@ -114,14 +114,6 @@ export default class FindAndReplaceEditing extends Plugin {
 	}
 
 	/**
-	 * Flag that indicates that user started using search
-	 *
-	 * @private
-	 * @member {module:utils/collection~Collection} #_inFilteringMode
-	 */
-	private _inFilteringMode?: boolean = false;
-
-	/**
 	 * An object storing the find and replace state within a given editor instance.
 	 *
 	 * @member {module:find-and-replace/findandreplacestate~FindAndReplaceState} #state
@@ -194,8 +186,6 @@ export default class FindAndReplaceEditing extends Plugin {
 
 		const { findCallback } = editor.execute( 'find', callbackOrText );
 
-		this._inFilteringMode = true;
-
 		this.listenTo( model.document, 'change:data', () => {
 			onDocumentChange( this.state!.results, editor, findCallback );
 		} );
@@ -207,13 +197,8 @@ export default class FindAndReplaceEditing extends Plugin {
 	 * Stops active results from updating, and clears out the results.
 	 */
 	public stop(): void {
-		if ( !this._inFilteringMode ) {
-			return;
-		}
-
 		this.stopListening( this.editor.model.document );
 		this.state!.clear( this.editor.model );
-		this._inFilteringMode = false;
 	}
 
 	/**
