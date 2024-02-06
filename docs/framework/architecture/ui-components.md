@@ -138,7 +138,7 @@ document.getElementById( 'button-bold' ).append( boldButton.element );
 
 ### Icon
 
-To get a button with an icon, import it first. Then set the `icon` property on the button. You can also add a custom icon to the dropdown by {@link framework/architecture/ui-library#setting-label-icon-and-tooltipproviding the entire XML string of the icon}. There are also classes you can use to style icons appropriately.
+To get a button with an icon, import it first. Then set the `icon` property on the button. You can also add a custom icon to the dropdown by {@link framework/architecture/ui-library#setting-label-icon-and-tooltip providing the entire XML string of the icon}. There are also classes you can use to style icons appropriately.
 
 ```js
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
