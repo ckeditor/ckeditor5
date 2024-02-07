@@ -48,6 +48,13 @@
 					"_comment": "The plugin can output HTML comments that were added from the editor inital data or by the plugin API."
 				}
 			]
+		},
+		{
+			"name": "Full page HTML",
+			"className": "FullPage",
+			"description": "Allows editing entire HTML page including the page metadata.",
+			"docs": "features/html/full-page-html.html",
+			"path": "src/fullpage.js"
 		}
 	]
 }

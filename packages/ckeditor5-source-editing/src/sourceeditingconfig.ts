@@ -29,7 +29,7 @@ export interface SourceEditingConfig {
 	 * Set to `true` to enable source editing feature for real-time collaboration.
 	 *
 	 * Please note that source editing feature is not fully compatible with real-time collaboration and using it may lead to data loss.
-	 * {@glink features/source-editing#limitations-and-incompatibility Read more}.
+	 * {@glink features/source-editing#limitations-and-incompatibilities Read more}.
 	 *
 	 * @default false
 	 */

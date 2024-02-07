@@ -121,6 +121,11 @@ The file containing custom variables will be named `custom.css` and it will look
 	--ck-color-dropdown-panel-background: var(--ck-custom-background);
 	--ck-color-dropdown-panel-border: var(--ck-custom-foreground);
 
+	/* -- Overrides the default .ck-dialog class colors. ----------------------------------- */
+
+	--ck-color-dialog-background: var(--ck-custom-background);
+	--ck-color-dialog-form-header-border: var(--ck-custom-border);
+
 	/* -- Overrides the default .ck-splitbutton class colors. ----------------------------------- */
 
 	--ck-color-split-button-hover-background: var(--ck-color-button-default-hover-background);

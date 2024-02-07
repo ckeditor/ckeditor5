@@ -29,7 +29,7 @@ ClassicEditor
 			allowExternalImagesEditing: [ /^data:/, 'origin' ]
 		},
 		image: {
-			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side',
+			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText',
 				'|', 'toggleImageCaption', 'imageTextAlternative', '|', 'ckboxImageEdit' ]
 		},
 		codeBlock: {

@@ -31,7 +31,7 @@ How to understand this demo:
 
 ## Installation
 
-To add the basic styles features to your editor install the [`@ckeditor/ckeditor5-autosave`](https://www.npmjs.com/package/@ckeditor/ckeditor5-autosave) package:
+To add the autosave feature to your editor install the [`@ckeditor/ckeditor5-autosave`](https://www.npmjs.com/package/@ckeditor/ckeditor5-autosave) package:
 
 ```
 npm install --save @ckeditor/ckeditor5-autosave

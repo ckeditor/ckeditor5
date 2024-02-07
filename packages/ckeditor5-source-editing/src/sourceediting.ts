@@ -192,7 +192,7 @@ export default class SourceEditing extends Plugin {
 			/**
 			 * Source editing feature is not fully compatible with real-time collaboration,
 			 * and using it may lead to data loss. Please read
-			 * {@glink features/source-editing#limitations-and-incompatibility source editing feature guide} to learn more.
+			 * {@glink features/source-editing#limitations-and-incompatibilities source editing feature guide} to learn more.
 			 *
 			 * If you understand the possible risk of data loss, you can enable the source editing
 			 * by setting the
