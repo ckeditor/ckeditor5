@@ -65,7 +65,7 @@ ClassicEditor
 			'redo'
 		],
 		image: {
-			toolbar: [ 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ]
+			toolbar: [ 'imageStyle:block', 'imageStyle:wrapText', '|', 'toggleImageCaption', 'imageTextAlternative' ]
 		},
 		ckfinder: {
 			// eslint-disable-next-line max-len

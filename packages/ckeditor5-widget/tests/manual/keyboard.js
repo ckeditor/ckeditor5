@@ -158,7 +158,7 @@ const config = {
 		'redo'
 	],
 	image: {
-		toolbar: [ 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
+		toolbar: [ 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative' ]
 	},
 	table: {
 		contentToolbar: [
