@@ -2,8 +2,9 @@
 category: features
 menu-title: Source editing
 meta-title: Source editing | CKEditor 5 Documentation
-modified_at: 2021-06-28
+modified_at: 2024-02-06
 ---
+
 # Source editing
 {@snippet features/source-editing-imports}
 
@@ -67,7 +68,7 @@ Note, that the same document "state" may be described using HTML in various ways
 
 For example, `<strong><em>Foo</em></strong>` and `<i><b>Foo</b></i>` both mean text "Foo" with bold and italic styling. Both will be represented the same when loaded to the internal editor data model.
 
-When the editor data model is later converted back to the document source data, it will be normalized regardless what was the original input. So, `<i><b>Foo</b></i>` will eventually become `<strong><em>Foo</em></strong>`.
+When the editor data model is later converted back to the document source data, it will be normalized regardless of what the original input was. In effect, `<i><b>Foo</b></i>` will eventually become `<strong><em>Foo</em></strong>`.
 
 This limitation is a direct consequence of the core editor architecture and cannot be worked around. Although it is possible to change the editor final output, the input data will always be normalized to that output format.
 
