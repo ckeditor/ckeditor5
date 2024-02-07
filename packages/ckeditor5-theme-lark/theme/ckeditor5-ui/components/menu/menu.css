@@ -1,0 +1,24 @@
+/*
+ * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+@import "../../../mixins/_rounded.css";
+@import "../../../mixins/_shadow.css";
+
+:root {
+	--ck-color-menu-background: var(--ck-color-base-background);
+	--ck-color-menu-border: var(--ck-color-base-border);
+}
+
+.ck.ck-menu {
+	@mixin ck-rounded-corners;
+	@mixin ck-drop-shadow;
+
+	background: var(--ck-color-menu-background);
+	border: 1px solid var(--ck-color-menu-border);
+
+	&:focus {
+		outline: none;
+	}
+}

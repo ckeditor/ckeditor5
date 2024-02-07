@@ -18,6 +18,8 @@ import {
 import View from '../view.js';
 import MenuView from './menuview.js';
 import MenuWithButtonButtonView from './menuwithbuttonbuttonview.js';
+
+import '../../theme/components/menu/menuwithbutton.css';
 import SplitButtonView from '../dropdown/button/splitbuttonview.js';
 
 export default abstract class MenuWithButtonView extends View {
@@ -52,10 +54,9 @@ export default abstract class MenuWithButtonView extends View {
 		this.set( 'menuPosition', 'auto' );
 
 		this.buttonView.bind( 'isEnabled' ).to( this );
-		this.buttonView.bind( 'tooltipDisabled' ).to( this, 'isOpen' );
 		this.menuView.bind( 'isVisible' ).to( this, 'isOpen' );
 
-		if ( this.buttonView instanceof SplitButtonView ) {
+		if ( buttonView instanceof SplitButtonView ) {
 			this.buttonView.arrowView.bind( 'isOn' ).to( this, 'isOpen' );
 		} else {
 			this.buttonView.bind( 'isOn' ).to( this, 'isOpen' );
@@ -70,7 +71,7 @@ export default abstract class MenuWithButtonView extends View {
 			attributes: {
 				class: [
 					'ck',
-					'ck-button-menu',
+					'ck-menu-with-button',
 					bind.to( 'class' ),
 					bind.if( 'isEnabled', 'ck-disabled', value => !value )
 				],

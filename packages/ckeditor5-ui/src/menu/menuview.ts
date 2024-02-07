@@ -12,6 +12,8 @@ import type { FocusableView } from '../focuscycler.js';
 import type ViewCollection from '../viewcollection.js';
 import { type Locale } from '@ckeditor/ckeditor5-utils';
 
+import '../../theme/components/menu/menu.css';
+
 export default class MenuView extends View implements FocusableView {
 	declare public position: string | null;
 	declare public isVisible: boolean;

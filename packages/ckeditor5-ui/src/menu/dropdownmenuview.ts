@@ -7,12 +7,33 @@
  * @module ui/menu/dropdownmenuview
  */
 
-import { type PositioningFunction } from '@ckeditor/ckeditor5-utils';
+import type { Locale, PositioningFunction } from '@ckeditor/ckeditor5-utils';
 import MenuWithButtonView from './menuwithbuttonview.js';
 import { DropdownMenuPositions, MenuWithButtonBehaviors } from './utils.js';
+import type MenuWithButtonButtonView from './menuwithbuttonbuttonview.js';
+import type MenuView from './menuview.js';
+
+import '../../theme/components/menu/dropdownmenu.css';
 
 export default class DropdownMenuView extends MenuWithButtonView {
 	declare public menuPosition: 's' | 'se' | 'sw' | 'sme' | 'smw' | 'n' | 'ne' | 'nw' | 'nme' | 'nmw';
+
+	public constructor(
+		locale: Locale,
+		buttonView?: MenuWithButtonButtonView,
+		menuView?: MenuView
+	) {
+		super( locale, buttonView, menuView );
+
+		this.extendTemplate( {
+			tag: 'div',
+			attributes: {
+				class: [
+					'ck-dropdown-menu'
+				]
+			}
+		} );
+	}
 
 	public override render(): void {
 		super.render();

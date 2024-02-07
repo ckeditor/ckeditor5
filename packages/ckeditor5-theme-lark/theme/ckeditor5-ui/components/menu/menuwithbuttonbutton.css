@@ -1,0 +1,79 @@
+/*
+ * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+@import "../../../mixins/_disabled.css";
+@import "../../../mixins/_shadow.css";
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
+
+:root {
+	--ck-menu-with-button-button-arrow-size: calc(0.5 * var(--ck-icon-size));
+}
+
+.ck.ck-menu-with-button__button {
+	& > .ck-button__label {
+		width: 7em;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	& > .ck-menu-with-button__button__arrow {
+		width: var(--ck-menu-with-button-button-arrow-size);
+	}
+
+	&.ck-disabled {
+		& .ck-menu-with-button__button__arrow {
+			@mixin ck-disabled;
+		}
+
+		& .ck-button__label {
+			@mixin ck-disabled;
+		}
+	}
+
+	/* https://github.com/ckeditor/ckeditor5/issues/816 */
+	&.ck-on {
+		border-bottom-left-radius: 0;
+		border-bottom-right-radius: 0;
+	}
+
+	/* https://github.com/ckeditor/ckeditor5/issues/8699 */
+	&.ck-off:active,
+	&.ck-on:active {
+		box-shadow: none;
+
+		&:focus {
+			@mixin ck-box-shadow var(--ck-focus-outer-shadow);
+		}
+	}
+
+	@mixin ck-dir ltr {
+		& .ck-menu-with-button__button__arrow {
+			right: var(--ck-spacing-standard);
+
+			/* A space to accommodate the triangle. */
+			margin-left: var(--ck-spacing-standard);
+		}
+
+		&:not(.ck-button_with-text) {
+			/* Make sure dropdowns with just an icon have the right inner spacing */
+			padding-left: var(--ck-spacing-small);
+		}
+	}
+
+	@mixin ck-dir rtl {
+		& .ck-menu-with-button__button__arrow {
+			left: var(--ck-spacing-standard);
+
+			/* A space to accommodate the triangle. */
+			margin-right: var(--ck-spacing-small);
+		}
+
+		&:not(.ck-button_with-text) {
+			/* Make sure dropdowns with just an icon have the right inner spacing */
+			padding-right: var(--ck-spacing-small);
+		}
+	}
+
+}

@@ -1,0 +1,35 @@
+/*
+ * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+.ck.ck-menu-with-button {
+	/* Enable font size inheritance, which allows fluid UI scaling. */
+	font-size: inherit;
+
+	& > .ck.ck-menu {
+		/* Make sure the panel is at least as wide as the button. */
+		min-width: 100%;
+		bottom: 0;
+
+		/* Disabled corner border radius to be consistent with the .dropdown__button
+		https://github.com/ckeditor/ckeditor5/issues/816 */
+		&.ck-menu_position_se,
+		&.ck-menu_position_e {
+			border-top-left-radius: 0;
+		}
+
+		&.ck-menu_position_sw,
+		&.ck-menu_position_w {
+			border-top-right-radius: 0;
+		}
+
+		&.ck-menu_position_ne {
+			border-bottom-left-radius: 0;
+		}
+
+		&.ck-menu_position_nw {
+			border-bottom-right-radius: 0;
+		}
+	}
+}

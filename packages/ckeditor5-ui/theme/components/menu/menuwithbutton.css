@@ -1,0 +1,82 @@
+/*
+ * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+:root {
+	--ck-menu-horizontal-offset: 5px;
+	--ck-menu-with-button-menu-max-width: 75vw;
+}
+
+.ck.ck-menu-with-button {
+	display: inline-block;
+	position: relative;
+
+	& > .ck.ck-menu {
+		z-index: var(--ck-z-panel);
+		max-width: var(--ck-menu-with-button-menu-max-width);
+		position: absolute;
+
+		&.ck-menu_position_ne,
+		&.ck-menu_position_nw,
+		&.ck-menu_position_n,
+		&.ck-menu_position_nmw,
+		&.ck-menu_position_nme {
+			bottom: 100%;
+		}
+
+		&.ck-menu_position_se,
+		&.ck-menu_position_sw,
+		&.ck-menu_position_smw,
+		&.ck-menu_position_sme,
+		&.ck-menu_position_s {
+			/*
+			 * Using transform: translate3d( 0, 100%, 0 ) causes blurry dropdown on Chrome 67-78+ on non-retina displays.
+			 * See https://github.com/ckeditor/ckeditor5/issues/1053.
+			 */
+			top: 100%;
+			bottom: auto;
+		}
+
+		&.ck-menu_position_ne,
+		&.ck-menu_position_se {
+			left: 0px;
+		}
+
+		&.ck-menu_position_nw,
+		&.ck-menu_position_sw {
+			right: 0px;
+		}
+
+		&.ck-menu_position_s,
+		&.ck-menu_position_n {
+			/* Positioning panels relative to the center of the button */
+			left: 50%;
+			transform: translateX(-50%);
+		}
+
+		&.ck-menu_position_nmw,
+		&.ck-menu_position_smw {
+			/* Positioning panels relative to the middle-west of the button */
+			left: 75%;
+			transform: translateX(-75%);
+		}
+
+		&.ck-menu_position_nme,
+		&.ck-menu_position_sme {
+			/* Positioning panels relative to the middle-east of the button */
+			left: 25%;
+			transform: translateX(-25%);
+		}
+
+		&.ck-menu_position_w {
+			left: calc( 100% - var(--ck-menu-horizontal-offset) );
+			top: 0px;
+		}
+
+		&.ck-menu_position_e {
+			left: calc( -100% + var(--ck-menu-horizontal-offset) );
+			top: 0px;
+		}
+	}
+}
