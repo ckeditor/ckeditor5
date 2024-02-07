@@ -22,8 +22,6 @@ For the entire list of changes introduced in version 34.0.0, see the [release no
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v34.0.0.
 
-## Important changes
-
 ### Collaboration Server On-Premises version must be at least 4.5.0
 
  The latest version of CKEditor contains some fixes and improvements for the WebSockets communication with the CKEditor Cloud Services servers. If you use the on-premises version of CKEditor Cloud Services (that is, Collaboration Server On-Premises), CKEditor v34.0.0 will only work with the server in version 4.5.0 or higher.

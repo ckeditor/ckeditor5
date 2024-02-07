@@ -21,11 +21,11 @@ For the entire list of changes introduced in version 25.0.0, see the [release no
 
 This migration guide enumerates the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v25.0.0 due to changes introduced in the {@link features/collaboration collaboration features} and the redesign of the annotations API.
 
-## The redesign of the Annotations API
+### The redesign of the Annotations API
 
 The entire annotations API was redesigned to support many annotation UIs at the same time. A good example of this is an idea of displaying {@link features/comments comments} in the {@link features/annotations-display-mode#wide-sidebar sidebar} while showing suggestions from {@link features/track-changes track changes} in {@link features/annotations-display-mode#inline-balloons inline balloons} when their corresponding suggestions are active. Due to that, some architectural changes were made and quite a lot of breaking changes were introduced with this release. See the migration guide below to check how to adapt to the changes.
 
-## Conceptual and architectural changes
+### Conceptual and architectural changes
 
 The new annotations API allows for activating (attaching) many annotation UIs at the same time. To allow multiple UIs at the same time, the annotation filtering function must be registered during the annotation UI activation. Though, still, one annotation can be handled only by one annotation UI at the same time.
 
@@ -51,9 +51,9 @@ The [`Sidebar`](https://ckeditor.com/docs/ckeditor5/latest/api/module_comments_a
 
 The [`EditorAnnotations`](https://ckeditor.com/docs/ckeditor5/latest/api/module_comments_annotations_editorannotations-EditorAnnotations.html) started firing events instead of manipulating the global collection of annotations. From now on, every annotation UI needs to create its own integration with this class. This may change in the future as it complicates the implementation of the custom UI.
 
-## Code migration examples
+### Code migration examples
 
-### Registering and activating annotation UIs
+#### Registering and activating annotation UIs
 
 Before:
 
