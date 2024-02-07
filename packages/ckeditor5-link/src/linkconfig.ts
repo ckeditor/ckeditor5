@@ -21,6 +21,7 @@ export enum COMMON_PROTOCOLS {
 	SSH = 'ssh',
 	GIT = 'git',
 	SVN = 'svn',
+	SAMBA = 'smb',
 	XMPP = 'xmpp',
 	SKYPE = 'skype',
 	SLACK = 'slack',
@@ -29,6 +30,14 @@ export enum COMMON_PROTOCOLS {
 	ZOOMMTG = 'zoommtg',
 	ZOOMUS = 'zoomus'
 }
+
+export const DEFAULT_LINK_PROTOCOLS = [
+	COMMON_PROTOCOLS.HTTPS,
+	COMMON_PROTOCOLS.FTPS,
+	COMMON_PROTOCOLS.TEL,
+	COMMON_PROTOCOLS.SMS,
+	COMMON_PROTOCOLS.MAIL
+];
 
 /**
  * The configuration of the {@link module:link/link~Link link feature}.
