@@ -79,13 +79,16 @@ export default class FindAndReplaceState extends ObservableMixin() {
 			if ( Array.from( removed ).length ) {
 				let highlightedResultRemoved = false;
 
+				console.log('model.change from state.results change');
 				model.change( writer => {
 					for ( const removedResult of removed ) {
 						if ( this.highlightedResult === removedResult ) {
 							highlightedResultRemoved = true;
 						}
 
+						console.log( removedResult.marker!.name );
 						if ( model.markers.has( removedResult.marker!.name ) ) {
+							console.log('removeMarker', removedResult.marker!);
 							writer.removeMarker( removedResult.marker! );
 						}
 					}
@@ -111,11 +114,13 @@ export default class FindAndReplaceState extends ObservableMixin() {
 				const oldMarker = model.markers.get( `findResultHighlighted:${ oldMatchId }` );
 
 				if ( oldMarker ) {
+					console.log( 'removeMarker', oldMarker);
 					writer.removeMarker( oldMarker );
 				}
 			}
 
 			[ ...this.results ].forEach( ( { marker } ) => {
+				console.log('removeMarker', marker!);
 				writer.removeMarker( marker! );
 			} );
 		} );

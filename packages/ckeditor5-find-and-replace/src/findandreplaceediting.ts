@@ -72,8 +72,11 @@ function onDocumentChange(
 		markersInNode.forEach( marker => removedMarkers.add( marker.name ) );
 	} );
 
+	console.log( 'model.change from onDocumentChange' );
+
 	// Remove results & markers from the changed part of content.
 	model.change( writer => {
+		console.log( removedMarkers );
 		removedMarkers.forEach( markerName => {
 			// Remove the result first - in order to prevent rendering a removed marker.
 			if ( results.has( markerName ) ) {
@@ -83,6 +86,7 @@ function onDocumentChange(
 			// This condition is checked in several tests anyway and seems to be ignored by instabul.
 			// istanbul ignore next -- @preserve
 			if ( model.markers.has( markerName ) ) {
+				console.log('removeMarker', markerName);
 				writer.removeMarker( markerName );
 			}
 		} );
@@ -146,12 +150,15 @@ export default class FindAndReplaceEditing extends Plugin {
 		this.listenTo( this.state, 'change:highlightedResult', ( eventInfo, name, newValue, oldValue ) => {
 			const { model } = this.editor;
 
+			console.log('model.change from change:highlightedResult' );
 			model.change( writer => {
 				if ( oldValue ) {
 					const oldMatchId = oldValue.marker.name.split( ':' )[ 1 ];
 					const oldMarker = model.markers.get( `findResultHighlighted:${ oldMatchId }` );
 
+					console.log('oldMarker', oldMarker );
 					if ( oldMarker ) {
+						console.log( 'removeMarker', oldMarker );
 						writer.removeMarker( oldMarker );
 					}
 				}
