@@ -21,7 +21,7 @@ For the entire list of changes introduced in version 30.0.0, see the [release no
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v30.0.0.
 
-## Viewport (toolbar) offset configuration change
+### Viewport (toolbar) offset configuration change
 
 Starting from v30.0.0, the {@link module:core/editor/editorconfig~EditorConfig#toolbar `EditorConfig#toolbar.viewportTopOffset`} configuration is deprecated.
 
