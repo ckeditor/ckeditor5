@@ -24,7 +24,7 @@ import clickOutsideHandler from '../bindings/clickoutsidehandler.js';
 import type { default as View, UIViewRenderEvent } from '../view.js';
 import type { ButtonExecuteEvent } from '../button/button.js';
 import type Model from '../model.js';
-import type { default as DropdownButton, DropdownButtonOpenEvent } from './button/dropdownbutton.js';
+import type DropdownButton from './button/dropdownbutton.js';
 import type { FocusableView } from '../focuscycler.js';
 import type { FalsyValue } from '../template.js';
 
@@ -412,61 +412,12 @@ export function focusChildOnDropdownOpen(
  * Add a set of default behaviors to dropdown view.
  */
 function addDefaultBehavior( dropdownView: DropdownView ) {
-	openDropdownOnArrowDownKey( dropdownView );
 	closeDropdownOnClickOutside( dropdownView );
 	closeDropdownOnExecute( dropdownView );
 	closeDropdownOnBlur( dropdownView );
-	closeOnArrowLeftKey( dropdownView );
 	focusDropdownContentsOnArrows( dropdownView );
 	focusDropdownButtonOnClose( dropdownView );
 	focusDropdownPanelOnOpen( dropdownView );
-	blockArrowRightKey( dropdownView );
-	toggleOnButtonClick( dropdownView );
-}
-
-/**
- * Toggle the dropdown when its button has been clicked.
- */
-export function toggleOnButtonClick( dropdownView: DropdownView ): void {
-	dropdownView.listenTo<DropdownButtonOpenEvent>( dropdownView.buttonView, 'open', () => {
-		dropdownView.isOpen = !dropdownView.isOpen;
-	} );
-}
-
-/**
- * Open the dropdown panel using the arrow down key, just like with return or space.
- */
-export function openDropdownOnArrowDownKey( dropdownView: DropdownView ): void {
-	dropdownView.keystrokes.set( 'arrowdown', ( data, cancel ) => {
-		// Don't open if the dropdown is disabled or already open.
-		if ( dropdownView.buttonView.isEnabled && !dropdownView.isOpen ) {
-			dropdownView.isOpen = true;
-			cancel();
-		}
-	} );
-}
-
-/**
- * Close the dropdown using the arrow left/escape key.
- */
-function closeOnArrowLeftKey( dropdownView: DropdownView ) {
-	dropdownView.keystrokes.set( 'arrowleft', ( evt, cancel ) => {
-		if ( dropdownView.isOpen ) {
-			dropdownView.isOpen = false;
-			cancel();
-		}
-	} );
-}
-
-/**
- * Block the right arrow key (until nested dropdowns are implemented).
- */
-function blockArrowRightKey( dropdownView: DropdownView ) {
-	dropdownView.keystrokes.set( 'arrowright', ( data, cancel ) => {
-		if ( dropdownView.isOpen ) {
-			cancel();
-		}
-	} );
 }
 
 /**
@@ -559,7 +510,7 @@ function focusDropdownButtonOnClose( dropdownView: DropdownView ) {
 /**
  * Adds a behavior that focuses the #panelView when dropdown gets open (accessibility).
  */
-export function focusDropdownPanelOnOpen( dropdownView: DropdownView ): void {
+function focusDropdownPanelOnOpen( dropdownView: DropdownView ) {
 	dropdownView.on<ObservableChangeEvent<boolean>>( 'change:isOpen', ( evt, name, isOpen ) => {
 		if ( !isOpen ) {
 			return;

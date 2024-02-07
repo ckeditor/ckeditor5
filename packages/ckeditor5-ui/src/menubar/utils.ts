@@ -8,12 +8,8 @@
  */
 
 import clickOutsideHandler from '../bindings/clickoutsidehandler.js';
-import MenuBarMenuView from './menubarmenuview.js';
+import type MenuBarMenuView from './menubarmenuview.js';
 import type MenuBarView from './menubarview.js';
-import MenuBarMenuButtonView from './menubarmenubuttonview.js';
-
-import DropdownPanelView from '../dropdown/dropdownpanelview.js';
-import type { Locale } from '@ckeditor/ckeditor5-utils';
 import type { FocusableView } from '../focuscycler.js';
 
 export const EVENT_NAME_DELEGATES = [ 'mouseenter', 'arrowleft', 'arrowright', 'menuButtonFocus' ] as const;
@@ -165,13 +161,3 @@ export const MenuBarMenuBehaviors = {
 		} );
 	}
 };
-
-export function createMenuBarMenu( locale: Locale, parentMenuView?: MenuBarMenuView ): MenuBarMenuView {
-	const menuButtonView = new MenuBarMenuButtonView( locale );
-	const dropdownPanelView = new DropdownPanelView( locale );
-	const menuView = new MenuBarMenuView( locale, menuButtonView, dropdownPanelView, parentMenuView );
-
-	menuButtonView.bind( 'isOn' ).to( menuView, 'isOpen' );
-
-	return menuView;
-}

@@ -3,8 +3,58 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/*
- * Note: This file should contain the wireframe styles only. But since there are no such styles,
- * it acts as a message to the builder telling that it should look for the corresponding styles
- * **in the theme** when compiling the editor.
- */
+
+:root {
+	--ck-menu-bar-menu-max-width: 75vw;
+	--ck-menu-bar-nested-menu-horizontal-offset: 5px;
+}
+
+.ck.ck-menu-bar__menu {
+	display: inline-block;
+	position: relative;
+
+	& .ck-menu-bar__menu__button > .ck-menu-bar__menu__button__arrow {
+		pointer-events: none;
+		z-index: var(--ck-z-default);
+	}
+
+	/*
+	 * The panel.
+	 */
+	& > .ck-menu-bar__menu__panel {
+		z-index: var(--ck-z-panel);
+		max-width: var(--ck-menu-bar-menu-max-width);
+		position: absolute;
+
+		&.ck-menu-bar__menu__panel_ne,
+		&.ck-menu-bar__menu__panel_nw{
+			bottom: 100%;
+		}
+
+		&.ck-menu-bar__menu__panel_se,
+		&.ck-menu-bar__menu__panel_sw {
+			top: 100%;
+			bottom: auto;
+		}
+
+		&.ck-menu-bar__menu__panel_ne,
+		&.ck-menu-bar__menu__panel_se {
+			left: 0px;
+		}
+
+		&.ck-menu-bar__menu__panel_nw,
+		&.ck-menu-bar__menu__panel_sw {
+			right: 0px;
+		}
+
+		&.ck-menu-bar__menu__panel_w {
+			left: calc( 100% - var(--ck-menu-bar-nested-menu-horizontal-offset) );
+			top: 0px;
+		}
+
+		&.ck-menu-bar__menu__panel_e {
+			left: calc( -100% + var(--ck-menu-bar-nested-menu-horizontal-offset) );
+			top: 0px;
+		}
+	}
+}

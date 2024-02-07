@@ -14,10 +14,10 @@ import {
 	addListToDropdown,
 	type ButtonExecuteEvent,
 	type ListDropdownItemDefinition,
-	createMenuBarMenu,
 	MenuBarMenuListItemView,
 	MenuBarMenuItemCheckButtonView,
-	MenuBarMenuListView
+	MenuBarMenuListView,
+	MenuBarMenuView
 } from 'ckeditor5/src/ui.js';
 import { Collection } from 'ckeditor5/src/utils.js';
 import type { ParagraphCommand } from 'ckeditor5/src/paragraph.js';
@@ -137,7 +137,7 @@ export default class HeadingUI extends Plugin {
 		} );
 
 		editor.ui.componentFactory.add( 'menuBar:heading', locale => {
-			const menuView = createMenuBarMenu( locale );
+			const menuView = new MenuBarMenuView( locale );
 			const commands: Array<Command> = [ headingCommand ];
 			const listView = new MenuBarMenuListView( locale );
 

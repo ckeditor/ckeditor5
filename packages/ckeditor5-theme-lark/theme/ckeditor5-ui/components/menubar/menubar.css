@@ -5,10 +5,12 @@
 
 @import "../../../mixins/_rounded.css";
 @import "../../../mixins/_shadow.css";
+@import "../../../mixins/_disabled.css";
 @import "../../mixins/_button.css";
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 
 :root {
-	--ck-menu-bar-sub-menu-horizontal-offset: 5px;
+	--ck-menu-bar-menu-panel-max-width: 75vw;
 }
 
 .ck.ck-menu-bar {
@@ -17,102 +19,178 @@
 	background: var(--ck-color-base-background);
 	padding: var(--ck-spacing-small);
 	gap: var(--ck-spacing-small);
+}
 
-	& .ck.ck-menu-bar__menu {
-		display: block;
+.ck.ck-menu-bar__menu {
+	display: block;
 
-		/* All menu buttons. */
-		& > .ck-menu-bar__menu__button {
-			padding: var(--ck-list-button-padding);
+	/* Enable font size inheritance, which allows fluid UI scaling. */
+	font-size: inherit;
 
-			& > .ck-button__label {
-				flex-grow: 1;
-				width: auto;
-			}
+	/*
+	 * All menu buttons.
+	 */
+	& > .ck-menu-bar__menu__button {
+		padding: var(--ck-list-button-padding);
+		width: 100%;
 
-			& > .ck-dropdown__arrow {
-				transform: rotate(-90deg);
+		& > .ck-button__label {
+			flex-grow: 1;
+			width: 7em;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		&.ck-disabled > .ck-button__label {
+			@mixin ck-disabled;
+		}
+
+		@mixin ck-dir ltr {
+			&:not(.ck-button_with-text) {
+				padding-left: var(--ck-spacing-small);
 			}
 		}
 
-		/* Top-level menu buttons only. */
-		&.ck-menu-bar__menu_top-level > .ck-menu-bar__menu__button {
-			padding: var(--ck-spacing-small) var(--ck-spacing-medium);
-			min-height: unset;
-
-			& .ck-button__label {
-				width: unset;
-				min-width: unset;
-				line-height: unset;
+		@mixin ck-dir rtl {
+			&:not(.ck-button_with-text) {
+				padding-right: var(--ck-spacing-small);
 			}
+		}
+	}
 
-			& .ck-icon {
-				display: none;
+	/*
+	 * Top-level menu buttons only.
+	 */
+	&.ck-menu-bar__menu_top-level > .ck-menu-bar__menu__button {
+		padding: var(--ck-spacing-small) var(--ck-spacing-medium);
+		min-height: unset;
+
+		& .ck-button__label {
+			width: unset;
+			min-width: unset;
+			line-height: unset;
+		}
+
+		&.ck-on {
+			border-bottom-left-radius: 0;
+			border-bottom-right-radius: 0;
+		}
+
+		& .ck-icon {
+			display: none;
+		}
+	}
+
+	/*
+	 * All but top-level menu buttons.
+	 */
+	&:not(.ck-menu-bar__menu_top-level) .ck-menu-bar__menu__button {
+		&:focus {
+			border-color: transparent;
+			box-shadow: none;
+
+			&:focus:not(.ck-on) {
+				background: var(--ck-color-button-default-hover-background);
 			}
 		}
 
-		/* All but top-level menu buttons. */
-		&:not(.ck-menu-bar__menu_top-level) .ck-menu-bar__menu__button {
-			&:focus {
-				border-color: transparent;
-				box-shadow: none;
+		/* Spacing in buttons that miss the icon. */
+		&:not(:has(.ck-button__icon)) > .ck-button__label {
+			margin-left: calc(var(--ck-icon-size) - var(--ck-spacing-small));
+		}
 
-				&:focus:not(.ck-on) {
+		& > .ck-menu-bar__menu__button__arrow {
+			transform: rotate(-90deg);
+			width: var(--ck-dropdown-arrow-size);
+		}
+
+		&.ck-disabled > .ck-menu-bar__menu__button__arrow {
+			@mixin ck-disabled;
+		}
+
+		@mixin ck-dir ltr {
+			& > .ck-menu-bar__menu__button__arrow {
+				right: var(--ck-spacing-standard);
+
+				/* A space to accommodate the triangle. */
+				margin-left: var(--ck-spacing-standard);
+			}
+		}
+
+		@mixin ck-dir rtl {
+			& > .ck-menu-bar__menu__button__arrow {
+				left: var(--ck-spacing-standard);
+
+				/* A space to accommodate the triangle. */
+				margin-right: var(--ck-spacing-small);
+			}
+		}
+	}
+
+	/*
+	 * The panel.
+	 */
+	& > .ck-menu-bar__menu__panel {
+		@mixin ck-rounded-corners;
+		@mixin ck-drop-shadow;
+
+		background: var(--ck-color-dropdown-panel-background);
+		border: 1px solid var(--ck-color-dropdown-panel-border);
+		bottom: 0;
+		height: fit-content;
+		z-index: var(--ck-z-panel);
+		max-width: var(--ck-menu-bar-menu-panel-max-width);
+
+		/* Corner border radius consistent with the button. */
+		&.ck-dropdown__panel_se {
+			border-top-left-radius: 0;
+		}
+
+		&.ck-dropdown__panel_sw {
+			border-top-right-radius: 0;
+		}
+
+		&.ck-dropdown__panel_ne {
+			border-bottom-left-radius: 0;
+		}
+
+		&.ck-dropdown__panel_nw {
+			border-bottom-right-radius: 0;
+		}
+
+		&:focus {
+			outline: none;
+		}
+
+		& > .ck-list > .ck-list__item {
+			& > .ck-menu-bar__menu__item__button {
+				&.ck-on {
+					@mixin ck-button-colors --ck-color-button-default;
+					color: var(--ck-color-base-text);
+				}
+
+				/*
+				 * Items get focused on mouse hover and :hover background becomes obsolete
+				 * or even wrong if two items are next to each other: one hovered and one focused (e.g. via keyboard)
+				 */
+				&:hover {
+					background: none;
+				}
+
+				& > .ck-button__label {
+					min-width: 8em;
+				}
+
+				&:focus {
+					border-color: transparent;
+					box-shadow: none;
 					background: var(--ck-color-button-default-hover-background);
 				}
-			}
 
-			/* Spacing in buttons that miss the icon. */
-			&:not(:has(.ck-button__icon)) > .ck-button__label {
-				margin-left: calc(var(--ck-icon-size) - var(--ck-spacing-small));
-			}
-		}
-
-
-		& > .ck-dropdown__panel {
-			height: fit-content;
-			min-width: auto;
-
-			&.ck-dropdown__panel_w {
-				left: calc( 100% - var(--ck-menu-bar-sub-menu-horizontal-offset) );
-				top: 0px;
-			}
-
-			&.ck-dropdown__panel_e {
-				left: calc( -100% + var(--ck-menu-bar-sub-menu-horizontal-offset) );
-				top: 0px;
-			}
-
-			& > .ck-list .ck-list__item {
-				& > .ck-menu-bar__menu__item__button {
-					&.ck-on {
-						@mixin ck-button-colors --ck-color-button-default;
-						color: var(--ck-color-base-text);
-					}
-
-					/*
-					 * Items get focused on mouse hover and :hover background becomes obsolete
-					 * or even wrong if two items are next to each other: one hovered and one focused (e.g. via keyboard)
-					 */
-					&:hover {
-						background: none;
-					}
-
-					& > .ck-button__label {
-						min-width: 8em;
-					}
-
-					&:focus {
-						border-color: transparent;
-						box-shadow: none;
-						background: var(--ck-color-button-default-hover-background);
-					}
-
-					&.ck-menu-bar__menu__item__checkbutton {
-						& .ck-icon.ck-button__icon {
-							--ck-icon-size: 15px;
-							margin-right: var(--ck-spacing-medium);
-						}
+				&.ck-menu-bar__menu__item__checkbutton {
+					& .ck-icon.ck-button__icon {
+						--ck-icon-size: 15px;
+						margin-right: var(--ck-spacing-medium);
 					}
 				}
 			}

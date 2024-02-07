@@ -115,6 +115,5 @@ export { default as MenuBarMenuListView } from './menubar/menubarmenulistview.js
 export { default as MenuBarMenuListItemView } from './menubar/menubarmenulistitemview.js';
 export { default as MenuBarMenuItemCheckButtonView } from './menubar/menubarmenuitemcheckbuttonview.js';
 export { default as MenuBarMenuItemButtonView } from './menubar/menubarmenuitembuttonview.js';
-export { createMenuBarMenu } from './menubar/utils.js';
 
 import './augmentation.js';
