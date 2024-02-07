@@ -22,7 +22,7 @@ ClassicEditor
 			'|', 'undo', 'redo'
 		],
 		image: {
-			toolbar: [ 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
+			toolbar: [ 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative' ]
 		}
 	} )
 	.then( editor => {

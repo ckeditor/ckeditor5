@@ -457,7 +457,7 @@ describe( 'DecoupledEditor', () => {
 					plugins: [ ArticlePluginSet ],
 					toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
 					image: {
-						toolbar: [ 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
+						toolbar: [ 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative' ]
 					}
 				} ) );
 	} );

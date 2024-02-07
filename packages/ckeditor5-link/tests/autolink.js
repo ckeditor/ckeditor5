@@ -102,6 +102,13 @@ describe( 'AutoLink', () => {
 					'<paragraph>some http://hello.com[] text</paragraph>'
 				);
 			} );
+
+			it( 'should omit the `drop` clipboard method', () => {
+				pasteText( 'http://hello.com', 'drop' );
+				expect( getData( model ) ).to.equal(
+					'<paragraph>some http://hello.com[] text</paragraph>'
+				);
+			} );
 		} );
 
 		describe( 'pasting on collapsed selection', () => {
@@ -189,15 +196,15 @@ describe( 'AutoLink', () => {
 			} );
 		} );
 
-		function pasteText( text ) {
+		function pasteText( text, method = 'paste' ) {
 			pasteData( {
 				'text/plain': text
-			} );
+			}, method );
 		}
 
-		function pasteData( data ) {
+		function pasteData( data, method = 'paste' ) {
 			const dataTransferMock = createDataTransfer( data );
-			viewDocument.fire( 'paste', {
+			viewDocument.fire( method, {
 				dataTransfer: dataTransferMock,
 				preventDefault() {},
 				stopPropagation() {}

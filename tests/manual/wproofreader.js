@@ -54,7 +54,7 @@ ClassicEditor
 			'|'
 		],
 		image: {
-			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
+			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative' ]
 		},
 		mediaEmbed: {
 			previewsInData: true,

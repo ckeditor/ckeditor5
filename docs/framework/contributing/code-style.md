@@ -1171,3 +1171,23 @@ As required by the [ECMAScript (ESM)](https://developer.mozilla.org/en-US/docs/W
 The second case is common in the documentation, because its pieces are in different directories and repositories. These pieces are merged during the build step, but before that, the imports are technically invalid.
 
 In such cases, you must add the file extension manually. Imports with file extensions are not validated.
+
+### Importing SVG files from other packages: `ckeditor5-rules/no-cross-package-svg-imports`
+
+To ensure that all SVG icons are properly converted to JavaScript strings at build time, all icons must be imported either from the package's own `theme` folder or as a JavaScript object from another package. Importing from another package's `theme` folder is not allowed.
+
+👎  Example of incorrect SVG import:
+
+```js
+import CheckIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
+```
+
+👍 Examples of correct SVG imports:
+
+```js
+import CheckIcon from './../theme/icons/check.svg';
+```
+
+```js
+import { icons } from '@ckeditor/ckeditor5-core';
+```

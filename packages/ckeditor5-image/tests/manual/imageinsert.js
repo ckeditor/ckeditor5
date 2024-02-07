@@ -32,7 +32,7 @@ async function createEditor( elementId, imageType ) {
 			'redo'
 		],
 		image: {
-			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ],
+			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText', '|', 'toggleImageCaption', 'imageTextAlternative' ],
 			insert: {
 				integrations: getSelectedIntegrations(),
 				type: imageType

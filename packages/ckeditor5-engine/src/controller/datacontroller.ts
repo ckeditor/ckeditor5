@@ -406,7 +406,13 @@ export default class DataController extends EmitterMixin() {
 	 * cleared after the new data is applied (all undo steps will be removed). If the batch type `isUndoable` flag is be set to `true`,
 	 * the undo stack will be preserved instead and not cleared when new data is applied.
 	 */
-	public set( data: string | Record<string, string>, options: { batchType?: BatchType } = {} ): void {
+	public set(
+		data: string | Record<string, string>,
+		options: {
+			batchType?: BatchType;
+			[ key: string ]: unknown;
+		} = {}
+	): void {
 		let newData: Record<string, string> = {};
 
 		if ( typeof data === 'string' ) {
