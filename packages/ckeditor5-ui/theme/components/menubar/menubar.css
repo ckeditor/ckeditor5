@@ -47,14 +47,30 @@
 			right: 0px;
 		}
 
-		&.ck-menu-bar__menu__panel_w {
+		&.ck-menu-bar__menu__panel_es,
+		&.ck-menu-bar__menu__panel_en {
 			left: calc( 100% - var(--ck-menu-bar-nested-menu-horizontal-offset) );
+		}
+
+		&.ck-menu-bar__menu__panel_es {
 			top: 0px;
 		}
 
-		&.ck-menu-bar__menu__panel_e {
+		&.ck-menu-bar__menu__panel_en {
+			bottom: 0px;
+		}
+
+		&.ck-menu-bar__menu__panel_ws,
+		&.ck-menu-bar__menu__panel_wn {
 			left: calc( -100% + var(--ck-menu-bar-nested-menu-horizontal-offset) );
+		}
+
+		&.ck-menu-bar__menu__panel_ws {
 			top: 0px;
+		}
+
+		&.ck-menu-bar__menu__panel_wn {
+			bottom: 0px;
 		}
 	}
 }

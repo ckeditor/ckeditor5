@@ -276,18 +276,32 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
 			name: 'nw'
 		};
 	},
-	west: buttonRect => {
+	eastSouth: buttonRect => {
 		return {
 			top: buttonRect.top,
 			left: buttonRect.right - NESTED_PANEL_HORIZONTAL_OFFSET,
-			name: 'w'
+			name: 'es'
 		};
 	},
-	east: ( buttonRect, panelRect ) => {
+	eastNorth: ( buttonRect, panelRect ) => {
+		return {
+			top: buttonRect.top - panelRect.height,
+			left: buttonRect.right - NESTED_PANEL_HORIZONTAL_OFFSET,
+			name: 'en'
+		};
+	},
+	westSouth: ( buttonRect, panelRect ) => {
 		return {
 			top: buttonRect.top,
 			left: buttonRect.left - panelRect.width + NESTED_PANEL_HORIZONTAL_OFFSET,
-			name: 'e'
+			name: 'ws'
+		};
+	},
+	westNorth: ( buttonRect, panelRect ) => {
+		return {
+			top: buttonRect.top - panelRect.height,
+			left: buttonRect.left - panelRect.width + NESTED_PANEL_HORIZONTAL_OFFSET,
+			name: 'wn'
 		};
 	}
 } as const;

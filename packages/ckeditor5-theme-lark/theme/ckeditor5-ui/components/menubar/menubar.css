@@ -145,20 +145,22 @@
 		max-width: var(--ck-menu-bar-menu-panel-max-width);
 
 		/* Corner border radius consistent with the button. */
-		&.ck-menu-bar__menu__panel_w,
+		&.ck-menu-bar__menu__panel_es,
 		&.ck-menu-bar__menu__panel_se {
 			border-top-left-radius: 0;
 		}
 
-		&.ck-menu-bar__menu__panel_e,
+		&.ck-menu-bar__menu__panel_ws,
 		&.ck-menu-bar__menu__panel_sw {
 			border-top-right-radius: 0;
 		}
 
+		&.ck-menu-bar__menu__panel_en,
 		&.ck-menu-bar__menu__panel_ne {
 			border-bottom-left-radius: 0;
 		}
 
+		&.ck-menu-bar__menu__panel_wn,
 		&.ck-menu-bar__menu__panel_nw {
 			border-bottom-right-radius: 0;
 		}
