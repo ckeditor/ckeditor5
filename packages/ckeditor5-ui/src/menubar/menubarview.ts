@@ -7,7 +7,12 @@
  * @module ui/menubar/menubarview
  */
 
-import { logWarning, type BaseEvent, type Locale } from '@ckeditor/ckeditor5-utils';
+import {
+	logWarning,
+	type BaseEvent,
+	type Locale,
+	type ObservableChangeEvent
+} from '@ckeditor/ckeditor5-utils';
 import { type FocusableView } from '../focuscycler.js';
 import View from '../view.js';
 import { cloneDeep, isObject } from 'lodash-es';
@@ -204,18 +209,21 @@ export default class MenuBarView extends View implements FocusableView {
 		parentMenuView?: MenuBarMenuView;
 	} ) {
 		const locale = this.locale!;
-		const listView = new MenuBarMenuListView( locale );
 		const menuView = new MenuBarMenuView( locale, parentMenuView, this );
-
-		listView.ariaLabel = menuDefinition.label;
 
 		menuView.buttonView.set( {
 			label: menuDefinition.label
 		} );
 
-		menuView.panelView.children.add( listView );
+		// Defer the creation of the menu structure until it gets open. This is a performance optimization
+		// that shortens the time needed to create the editor.
+		menuView.once<ObservableChangeEvent<boolean>>( 'change:isOpen', () => {
+			const listView = new MenuBarMenuListView( locale );
+			listView.ariaLabel = menuDefinition.label;
+			menuView.panelView.children.add( listView );
 
-		listView.items.addMany( this._createMenuItems( { menuDefinition, parentMenuView: menuView, componentFactory } ) );
+			listView.items.addMany( this._createMenuItems( { menuDefinition, parentMenuView: menuView, componentFactory } ) );
+		} );
 
 		this.menus.push( menuView );
 
