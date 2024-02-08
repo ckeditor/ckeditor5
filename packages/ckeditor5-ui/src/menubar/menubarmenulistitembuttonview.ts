@@ -4,7 +4,7 @@
  */
 
 /**
- * @module ui/menubar/menubarmenuitembuttonview
+ * @module ui/menubar/menubarmenulistitembuttonview
  */
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
@@ -13,7 +13,7 @@ import ButtonView from '../button/buttonview.js';
 /**
  * TODO
  */
-export default class MenuBarMenuItemButtonView extends ButtonView {
+export default class MenuBarMenuListItemButtonView extends ButtonView {
 	/**
 	 * TODO
 	 */

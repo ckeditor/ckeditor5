@@ -113,6 +113,6 @@ export { default as MenuBarView } from './menubar/menubarview.js';
 export { default as MenuBarMenuView } from './menubar/menubarmenuview.js';
 export { default as MenuBarMenuListView } from './menubar/menubarmenulistview.js';
 export { default as MenuBarMenuListItemView } from './menubar/menubarmenulistitemview.js';
-export { default as MenuBarMenuItemButtonView } from './menubar/menubarmenuitembuttonview.js';
+export { default as MenuBarMenuListItemButtonView } from './menubar/menubarmenulistitembuttonview.js';
 
 import './augmentation.js';

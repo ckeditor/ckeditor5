@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
-import { ButtonView, MenuBarMenuItemButtonView } from '@ckeditor/ckeditor5-ui';
+import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 
 import selectAllIcon from '../theme/icons/select-all.svg';
 
@@ -44,14 +44,14 @@ export default class SelectAllUI extends Plugin {
 		} );
 
 		editor.ui.componentFactory.add( 'menuBar:selectAll', () => {
-			return this._createButton( MenuBarMenuItemButtonView );
+			return this._createButton( MenuBarMenuListItemButtonView );
 		} );
 	}
 
 	/**
 	 * TODO
 	 */
-	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuItemButtonView>( ButtonClass: T ): InstanceType<T> {
+	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
 		const editor = this.editor;
 		const locale = editor.locale;
 		const command = editor.commands.get( 'selectAll' )!;

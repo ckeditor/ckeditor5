@@ -8,7 +8,7 @@
  */
 
 import { Plugin, icons } from 'ckeditor5/src/core.js';
-import { ButtonView, MenuBarMenuItemButtonView } from 'ckeditor5/src/ui.js';
+import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 import type AttributeCommand from '../attributecommand.js';
 
 const BOLD = 'bold';
@@ -45,14 +45,14 @@ export default class BoldUI extends Plugin {
 		} );
 
 		editor.ui.componentFactory.add( 'menuBar:' + BOLD, () => {
-			return this._createButton( MenuBarMenuItemButtonView );
+			return this._createButton( MenuBarMenuListItemButtonView );
 		} );
 	}
 
 	/**
 	 * TODO
 	 */
-	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuItemButtonView>( ButtonClass: T ): InstanceType<T> {
+	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
 		const editor = this.editor;
 		const locale = editor.locale;
 		const command: AttributeCommand = editor.commands.get( BOLD )!;

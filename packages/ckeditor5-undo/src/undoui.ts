@@ -8,7 +8,7 @@
  */
 
 import { icons, Plugin } from '@ckeditor/ckeditor5-core';
-import { ButtonView, MenuBarMenuItemButtonView } from '@ckeditor/ckeditor5-ui';
+import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 
 /**
  * The undo UI feature. It introduces the `'undo'` and `'redo'` buttons to the editor.
@@ -58,14 +58,14 @@ export default class UndoUI extends Plugin {
 		} );
 
 		editor.ui.componentFactory.add( 'menuBar:' + name, () => {
-			return this._createButton( MenuBarMenuItemButtonView, name, label, keystroke, Icon );
+			return this._createButton( MenuBarMenuListItemButtonView, name, label, keystroke, Icon );
 		} );
 	}
 
 	/**
 	 * TODO
 	 */
-	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuItemButtonView>(
+	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>(
 		ButtonClass: T,
 		name: 'undo' | 'redo',
 		label: string,

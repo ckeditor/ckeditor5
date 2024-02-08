@@ -87,7 +87,7 @@ export default class MenuBarMenuView extends View implements FocusableView {
 	/**
 	 * TODO
 	 */
-	constructor( locale: Locale, parentMenuView?: MenuBarMenuView, menuBarView?: MenuBarView ) {
+	constructor( locale: Locale ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
@@ -106,10 +106,6 @@ export default class MenuBarMenuView extends View implements FocusableView {
 		this.set( 'isEnabled', true );
 		this.set( 'panelPosition', 'w' );
 		this.set( 'class', undefined );
-
-		this.parentMenuView = parentMenuView;
-		this.menuBarView = menuBarView;
-
 		this.set( 'ariaDescribedById', null );
 
 		this.setTemplate( {

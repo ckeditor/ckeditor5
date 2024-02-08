@@ -23,7 +23,7 @@ import type ComponentFactory from '../componentfactory.js';
 import MenuBarMenuView from './menubarmenuview.js';
 import MenuBarMenuListView from './menubarmenulistview.js';
 import MenuBarMenuListItemView from './menubarmenulistitemview.js';
-import MenuBarMenuItemButtonView from './menubarmenuitembuttonview.js';
+import MenuBarMenuListItemButtonView from './menubarmenulistitembuttonview.js';
 import { EVENT_NAME_DELEGATES, MenuBarBehaviors } from './utils.js';
 
 import '../../theme/components/menubar/menubar.css';
@@ -112,9 +112,11 @@ export default class MenuBarView extends View implements FocusableView {
 	/**
 	 * Registers a menu view in the menu bar.
 	 */
-	public registerMenu( menuView: MenuBarMenuView, parentMenuView: MenuBarMenuView ): void {
+	public registerMenu( menuView: MenuBarMenuView, parentMenuView?: MenuBarMenuView ): void {
 		menuView.parentMenuView = parentMenuView;
 		menuView.menuBarView = this;
+
+		this.menus.push( menuView );
 	}
 
 	/**
@@ -209,7 +211,9 @@ export default class MenuBarView extends View implements FocusableView {
 		parentMenuView?: MenuBarMenuView;
 	} ) {
 		const locale = this.locale!;
-		const menuView = new MenuBarMenuView( locale, parentMenuView, this );
+		const menuView = new MenuBarMenuView( locale );
+
+		this.registerMenu( menuView, parentMenuView );
 
 		menuView.buttonView.set( {
 			label: menuDefinition.label
@@ -224,8 +228,6 @@ export default class MenuBarView extends View implements FocusableView {
 
 			listView.items.addMany( this._createMenuItems( { menuDefinition, parentMenuView: menuView, componentFactory } ) );
 		} );
-
-		this.menus.push( menuView );
 
 		return menuView;
 	}
@@ -273,7 +275,7 @@ export default class MenuBarView extends View implements FocusableView {
 		componentName: string;
 		componentFactory: ComponentFactory;
 		parentMenuView: MenuBarMenuView;
-	} ): MenuBarMenuView | MenuBarMenuItemButtonView | null {
+	} ): MenuBarMenuView | MenuBarMenuListItemButtonView | null {
 		if ( !componentFactory.has( componentName ) ) {
 			/**
 			 * TODO
@@ -288,7 +290,7 @@ export default class MenuBarView extends View implements FocusableView {
 
 		const componentView = componentFactory.create( componentName );
 
-		if ( !( componentView instanceof MenuBarMenuView || componentView instanceof MenuBarMenuItemButtonView ) ) {
+		if ( !( componentView instanceof MenuBarMenuView || componentView instanceof MenuBarMenuListItemButtonView ) ) {
 			/**
 			 * TODO
 			 *
@@ -302,8 +304,6 @@ export default class MenuBarView extends View implements FocusableView {
 
 		if ( componentView instanceof MenuBarMenuView ) {
 			this.registerMenu( componentView, parentMenuView );
-
-			this.menus.push( componentView );
 		} else {
 			componentView.delegate( ...EVENT_NAME_DELEGATES ).to( parentMenuView );
 		}

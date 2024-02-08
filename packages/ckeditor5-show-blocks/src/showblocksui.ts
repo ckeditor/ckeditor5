@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import { ButtonView, MenuBarMenuItemButtonView } from 'ckeditor5/src/ui.js';
+import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 
 import showBlocksIcon from '../theme/icons/show-blocks.svg';
 import '../theme/showblocks.css';
@@ -45,14 +45,14 @@ export default class ShowBlocksUI extends Plugin {
 		} );
 
 		editor.ui.componentFactory.add( 'menuBar:showBlocks', () => {
-			return this._createButton( MenuBarMenuItemButtonView );
+			return this._createButton( MenuBarMenuListItemButtonView );
 		} );
 	}
 
 	/**
 	 * TODO
 	 */
-	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuItemButtonView>( ButtonClass: T ): InstanceType<T> {
+	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
 		const editor = this.editor;
 		const locale = editor.locale;
 		const command = editor.commands.get( 'showBlocks' )!;

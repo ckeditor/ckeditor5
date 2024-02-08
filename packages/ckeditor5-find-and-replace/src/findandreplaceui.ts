@@ -10,7 +10,7 @@
 import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 import {
 	ButtonView,
-	MenuBarMenuItemButtonView,
+	MenuBarMenuListItemButtonView,
 	Dialog,
 	DialogViewPosition,
 	createDropdown,
@@ -203,8 +203,8 @@ export default class FindAndReplaceUI extends Plugin {
 	/**
 	 * TODO
 	 */
-	private _createDialogButtonForMenuBar(): MenuBarMenuItemButtonView {
-		const buttonView = this._createButton( MenuBarMenuItemButtonView );
+	private _createDialogButtonForMenuBar(): MenuBarMenuListItemButtonView {
+		const buttonView = this._createButton( MenuBarMenuListItemButtonView );
 
 		buttonView.on( 'execute', () => {
 			this._showDialog();
@@ -216,7 +216,7 @@ export default class FindAndReplaceUI extends Plugin {
 	/**
 	 * TODO
 	 */
-	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuItemButtonView>( ButtonClass: T ): InstanceType<T> {
+	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
 		const editor = this.editor;
 		const buttonView = new ButtonClass( editor.locale ) as InstanceType<T>;
 		const t = editor.locale.t;

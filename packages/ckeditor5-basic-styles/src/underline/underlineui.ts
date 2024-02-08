@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import { ButtonView, MenuBarMenuItemButtonView } from 'ckeditor5/src/ui.js';
+import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 import type AttributeCommand from '../attributecommand.js';
 
 import underlineIcon from '../../theme/icons/underline.svg';
@@ -47,14 +47,14 @@ export default class UnderlineUI extends Plugin {
 		} );
 
 		editor.ui.componentFactory.add( 'menuBar:' + UNDERLINE, () => {
-			return this._createButton( MenuBarMenuItemButtonView );
+			return this._createButton( MenuBarMenuListItemButtonView );
 		} );
 	}
 
 	/**
 	 * TODO
 	 */
-	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuItemButtonView>( ButtonClass: T ): InstanceType<T> {
+	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
 		const editor = this.editor;
 		const locale = editor.locale;
 		const command: AttributeCommand = editor.commands.get( UNDERLINE )!;
