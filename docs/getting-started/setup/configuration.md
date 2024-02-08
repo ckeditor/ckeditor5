@@ -17,7 +17,7 @@ modified_at: 2024-02-08
 
 When creating an editor on your page, it is possible to set up {@link module:core/editor/editorconfig~EditorConfig configuration options} that change many of its aspects. The configuration is set by a simple JavaScript object passed to the `create()` method.
 
-The sample snippet below bear configuration of the toolbar, the headers feature and font color picker setting:
+The sample snippet below shows configuration of the toolbar, the headers feature and font color picker setting:
 
 ```js
 ClassicEditor
