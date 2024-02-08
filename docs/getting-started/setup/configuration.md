@@ -50,7 +50,7 @@ See {@link module:core/editor/editorconfig~EditorConfig} to learn about all avai
 
 {@img assets/img/full-toolbar.png 938 Sample CKEditor&nbsp;5 toolbar.} 
 
-CKEditor&nbsp;5 comes with a flexible, fully configurable toolbar which lets the integrators set the UI buttons for various features. A simple, basic setup is shown in the snippet above. However, the toolbar configuration can get really advanced, and for the best UX, there are two of these: the {@link getting-started/setup/toolbar editor toolbar} and the {@link features/blocktoolbar block toolbar}. Some features also sport their own dedicated toolbars, like the {@link features/images-overview#image-contextual-toolbar image toolbar} or the {@link features/tables#toolbars table toolbars}. You will find all information about the letter in the {@link features/index respective feature guides}.
+CKEditor&nbsp;5 comes with a flexible, fully configurable toolbar which lets the integrators set the UI buttons for various features. A simple, basic setup is shown in the snippet above. However, the toolbar configuration can get really advanced, and for the best UX, there are two of these: the {@link getting-started/setup/toolbar editor toolbar} and the {@link features/blocktoolbar block toolbar}. Some features also sport their own dedicated toolbars, like the {@link features/images-overview#image-contextual-toolbar image toolbar} or the {@link features/tables#toolbars table toolbars}. You will find all information about the latter ones in the {@link features/index respective feature guides}.
 
 ## Managing editor features
 
