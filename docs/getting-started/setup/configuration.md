@@ -8,9 +8,8 @@ category: setup
 menu-title: Configuration
 meta-title: Configuration | CKEditor 5 documentation
 order: 10
+modified_at: 2024-02-08
 ---
-
-<!-- cut out nav infoboxes, cut out all mentions of predefined builds, cut out mentions about Online Builder -->
 
 # CKEditor&nbsp;5 configuration options
 
@@ -47,21 +46,32 @@ The available options may require loading plugins first &ndash; this is done dur
 
 See {@link module:core/editor/editorconfig~EditorConfig} to learn about all available configuration options. Also, check out individual {@link features/index feature guides}, listing various configuration options available per feature.
 
-## Editor toolbar
+## Editor toolbars
 
 {@img assets/img/full-toolbar.png 938 Sample CKEditor&nbsp;5 toolbar.} 
 
-CKEditor&nbsp;5 comes with a flexible, fully configurable toolbar. The basic setting show above lets the integrators set the UI buttons for various features. However, the toolbar configuration can get really advance, and for the best UX, there are two of these: {@link getting-started/setup/toolbar editor toolbar} and {@link features/blocktoolbar block toolbar}. Some features would also sport their own dedicated toolbars, like the {@link features/images-overview#image-contextual-toolbar image toolbar} or {@link features/tables#toolbars table toolbars}.
+CKEditor&nbsp;5 comes with a flexible, fully configurable toolbar which lets the integrators set the UI buttons for various features. A simple, basic setup is shown in the snippet above. However, the toolbar configuration can get really advanced, and for the best UX, there are two of these: the {@link getting-started/setup/toolbar editor toolbar} and the {@link features/blocktoolbar block toolbar}. Some features also sport their own dedicated toolbars, like the {@link features/images-overview#image-contextual-toolbar image toolbar} or the {@link features/tables#toolbars table toolbars}. You will find all information about the letter in the {@link features/index respective feature guides}.
 
 ## Managing editor features
 
 ### Adding features
 
-All the features of CKEditor 5 all implemented by plugins. {@link framework/plugins/plugins Read more about the plugin concept}. To add more features you can {@link framework/plugins/installing-plugins install plugins} to custom builds and to editors integrated from the source.
+All the features of CKEditor 5 all implemented by plugins. You can read more about them in the {@link framework/plugins/plugins plugins} guide. To add more features you can {@link framework/plugins/installing-plugins install plugins} to customise your builds. Listed below is an example configuration adding the {@link features/indent block indentation} feature. Note that some features may require more than one plugin to run. You will find the plugin-per-feature listing in the {@link framework/plugins/features-html-output-overview Plugins and HTML output} guide.
+
+
+```js
+import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Indent, IndentBlock, /* ... */ ], // plugins import
+		toolbar: [ 'outdent', 'indent', /* ... */ ] // toolbar items configuration
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
 
 ### Removing features
-<!-- not sure how to handle this for it to make sense still -->
-The {@link getting-started/legacy-getting-started/predefined-builds predefined CKEditor 5 builds} come with all the features included in the distribution package enabled by default. They are defined as plugins for CKEditor 5.
 
 In some cases, you may want to have different editor setups in your application, all based on the same build. For that purpose, you need to control the plugins available in the editor at runtime.
 
@@ -114,5 +124,5 @@ ClassicEditor
 ```
 
 <info-box>
-	Be careful when removing plugins from CKEditor builds using {@link module:core/editor/editorconfig~EditorConfig#removePlugins `config.removePlugins`}. If removed plugins were providing toolbar buttons, the default toolbar configuration included in a build will become invalid. In such a case, you need to provide the {@link getting-started/setup/toolbar updated toolbar configuration} as in the example above or by providing only toolbar items that need to be removed using `config.toolbar.removeItems`.
+	Be careful when removing plugins from CKEditor builds using {@link module:core/editor/editorconfig~EditorConfig#removePlugins `config.removePlugins`}. If removed plugins were providing toolbar buttons, the toolbar configuration included in a build will become invalid. In such a case, you need to provide the {@link getting-started/setup/toolbar updated toolbar configuration} as in the example above or by providing only toolbar items that need to be removed using `config.toolbar.removeItems`.
 </info-box>
