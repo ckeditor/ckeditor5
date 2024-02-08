@@ -27,11 +27,23 @@ The icon {@icon @ckeditor/ckeditor5-core/theme/icons/drag-indicator.svg drag ind
 
 The block toolbar complements the <!-- update to builder preset when ready-->{@link getting-started/legacy-getting-started/predefined-builds#balloon-editor balloon editor} where it falls short, for example when you must insert some content (like an image), but the selection is collapsed, so you cannot access the toolbar. You can read more about it in the {@link getting-started/legacy-getting-started/predefined-builds#balloon-block-editor balloon block editor overview}.
 
-See the {@link examples/builds/balloon-block-editor balloon block editor example} page, too.
+See the <!-- update to builder preset when ready-->{@link examples/builds/balloon-block-editor balloon block editor example} page, too.
 
 ## Configuration
 
-The content of the toolbar can be defined using the {@link module:core/editor/editorconfig~EditorConfig#blockToolbar} configuration. See the [installation instructions](#installation) to learn more.
+The content of the block toolbar can be defined using the {@link module:core/editor/editorconfig~EditorConfig#blockToolbar} configuration. It is similar to the regular toolbar UI items list.
+
+```js
+	blockToolbar: {
+		items: [
+			'bold',
+			'italic',
+			'link'
+		]
+	},
+```
+
+See the [installation instructions](#installation) for a more advanced example.
 
 <info-box hint>
 	Because the toolbar is always connected to the block of content, it works best with the features that modify entire blocks (for example, create {@link features/headings headings}) or insert objects (like {@link features/images-overview images} or {@link features/tables tables}) rather than inline styles (like {@link features/basic-styles bold or italic}).
@@ -66,7 +78,7 @@ Before the v40.0.0 release of CKEditor 5, the block toolbar used the pilcrow ico
 	},
 ```
 
-Some available preset icons are {@link getting-started/setup/toolbar#changing-the-icon listed in the toolbar guide}. You can provide custom icon by {@link framework/architecture/ui-library#setting-label-icon-and-tooltip passing an SVG string}.
+Some available preset icons are {@link getting-started/setup/toolbar#changing-the-icon listed in the toolbar guide}. You can also provide a custom toolbar button icon by {@link framework/architecture/ui-library#setting-label-icon-and-tooltip passing an SVG string}.
 
 ## Installation
 
