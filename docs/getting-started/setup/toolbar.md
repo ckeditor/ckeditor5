@@ -23,7 +23,7 @@ Below is a sample toolbar with a basic set of features. Toolbar items can be eas
 ## Basic toolbar configuration
 
 <info-box hint>
-	Toolbar configuration is a strict UI-related setting. Removing a toolbar item does not remove the feature from the editor internals. If your goal with the toolbar configuration is to remove features, the right solution is to also remove their respective plugins. Check {@link getting-started/setup/adding-removing-features#removing-features removing features} for more information.
+	Toolbar configuration is a strict UI-related setting. Removing a toolbar item does not remove the feature from the editor internals. If your goal with the toolbar configuration is to remove features, the right solution is to also remove their respective plugins. Check the {@link getting-started/setup/adding-removing-features#removing-features removing features} guide for more information.
 </info-box>
 
 In the builds that contain toolbars, an optimal default toolbar set is defined for it. You may need a different toolbar arrangement, though, and this can be achieved through configuration.
@@ -212,7 +212,7 @@ You can use one of the icons listed below for your dropdown:
 * The default icons are loaded from the `ckeditor5-core` package.
 * If no icon is specified, `'threeVerticalDots'` will be used as a default.
 * If `icon: false` is configured, no icon will be displayed and the text label will show up instead.
-* You can set a custom icon for the dropdown by passing an SVG string.
+* You can set a custom icon for the dropdown by {@link framework/architecture/ui-library#setting-label-icon-and-tooltip passing an SVG string}.
 
 Here is an example:
 
@@ -286,8 +286,8 @@ Refer to the {@link tutorials/crash-course/editor step-by-step tutorial} to lear
 
 ## Block toolbar
 
-The {@link features/blocktoolbar BlockToolbar} feature provides an additional configurable toolbar on the left-hand side of the content area, useful when the main toolbar is not accessible (for example in certain {@link getting-started/legacy-getting-started/predefined-builds#balloon-block-editor balloon block editor} scenarios).
+The {@link features/blocktoolbar block toolbar} provides an additional configurable toolbar on the left-hand side of the content area, useful when the main toolbar is not accessible (for example in certain <!-- replace link with Builder preset when applicable. -->{@link getting-started/legacy-getting-started/predefined-builds#balloon-block-editor balloon block editor} scenarios).
 
-## Contribute
+## Feature-specific toolbars
 
-The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-ui](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-ui).
+Some features also sport their own dedicated toolbars. In the demos on this page, you can see the {@link features/images-overview#image-contextual-toolbar image toolbar} or the {@link features/tables#toolbars table toolbars} when you use the respective features. You will find all information about these toolbars in the {@link features/index respective feature guides}.
