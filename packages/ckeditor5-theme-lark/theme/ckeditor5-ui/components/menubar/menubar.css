@@ -11,7 +11,7 @@
 
 :root {
 	--ck-menu-bar-menu-panel-max-width: 75vw;
-	--ck-menu-bar-menu-item-min-width: 8em;
+	--ck-menu-bar-menu-item-min-width: 10em;
 }
 
 .ck.ck-menu-bar {
@@ -90,7 +90,7 @@
 			border-color: transparent;
 			box-shadow: none;
 
-			&:focus:not(.ck-on) {
+			&:not(.ck-on) {
 				background: var(--ck-color-button-default-hover-background);
 			}
 		}
@@ -176,6 +176,10 @@
 				&:focus {
 					border-color: transparent;
 					box-shadow: none;
+
+					&:not(.ck-on) {
+						background: var(--ck-color-button-default-hover-background);
+					}
 				}
 			}
 		}
