@@ -1,7 +1,7 @@
 ---
 category: installation
 order: 10
-menu-title: Quick Start
+menu-title: Quick Start (NPM)
 meta-title: Quick Start | CKEditor 5 documentation
 meta-description: Learn the fastest way to install and use CKEditor 5 - the powerful, rich text WYSIWYG editor in your web application using npm.
 modified_at: 2024-02-05
@@ -72,7 +72,7 @@ import { FormatPainter, SlashCommand } from 'ckeditor5-premium-features';
 
 import 'ckeditor5/dist/styles.css';
 
-ClassicEditor
+await ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Essentials, FormatPainter, SlashCommand ],
 		toolbar: [ 'formatPainter' ],
@@ -81,6 +81,63 @@ ClassicEditor
 	.catch( err => {
 		console.error( err );
 	} );
+```
+
+## Using CKEditor&nbsp;5 from CDN
+
+// Will there be 2 CDN links? Which one we want to promote?
+
+Short description about this method.
+
+// If the premium one, what about the license key?
+
+### Obtain a license key
+
+* Trial?
+* Buy?
+
+// Do we want to show steps on how to obtain a license key?
+Steps with screenshots how to obtain a license key.
+
+### CDN setup
+
+1. Add a link for CSS
+
+```html
+<link rel="stylesheet" href="<CDN_LINK>/ckeditor5/dist/styles.css">
+```
+
+2. Add scripts with import maps
+
+```html
+<script type="importmap">
+	{
+	"imports": {
+		"ckeditor5": "<CDN_LINK>/ckeditor5/dist/index.min.js",
+		"ckeditor5/": "<CDN_LINK>/ckeditor5/",
+	}
+	}
+</script>
+```
+
+3. Add a script with editor initialization
+
+```html
+<script type="module">
+	import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
+	import translations from 'ckeditor5/dist/translations/pl.js';
+
+	await ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [
+		Essentials,
+		Paragraph,
+	],
+	toolbar: {
+		items: [ 'undo', 'redo' ]
+	},
+	translations
+	} );
+</script>
 ```
 
 ## Next steps
