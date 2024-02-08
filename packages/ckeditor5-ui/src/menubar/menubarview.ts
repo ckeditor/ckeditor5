@@ -74,6 +74,9 @@ export default class MenuBarView extends View implements FocusableView {
 		this.children.addMany( topLevelCategoryMenuViews );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public override render(): void {
 		super.render();
 
@@ -99,6 +102,14 @@ export default class MenuBarView extends View implements FocusableView {
 		for ( const topLevelCategoryMenuView of this.children ) {
 			topLevelCategoryMenuView.isOpen = false;
 		}
+	}
+
+	/**
+	 * Registers a menu view in the menu bar.
+	 */
+	public registerMenu( menuView: MenuBarMenuView, parentMenuView: MenuBarMenuView ): void {
+		menuView.parentMenuView = parentMenuView;
+		menuView.menuBarView = this;
 	}
 
 	/**
@@ -185,7 +196,7 @@ export default class MenuBarView extends View implements FocusableView {
 	}
 
 	/**
-	 * TODO
+	 * Creates a {@link TODO~MenuBarMenuView} based on the given definition.
 	 */
 	private _createMenu( { componentFactory, menuDefinition, parentMenuView }: {
 		componentFactory: ComponentFactory;
@@ -212,13 +223,13 @@ export default class MenuBarView extends View implements FocusableView {
 	}
 
 	/**
-	 * TODO
+	 * Creates a {@link TODO~MenuBarMenuView} content items based on the given definition.
 	 */
 	private _createMenuItems( { menuDefinition, parentMenuView, componentFactory }: {
 		menuDefinition: MenuBarMenuDefinition;
 		componentFactory: ComponentFactory;
 		parentMenuView: MenuBarMenuView;
-	} ) {
+	} ): Array<MenuBarMenuListItemView | ListSeparatorView> {
 		const locale = this.locale!;
 
 		return menuDefinition.items.map( menuDefinition => {
@@ -229,50 +240,80 @@ export default class MenuBarView extends View implements FocusableView {
 			const menuItemView = new MenuBarMenuListItemView( locale, parentMenuView );
 
 			if ( isObject( menuDefinition ) ) {
-				menuItemView.children.add( this._createMenu( { componentFactory, menuDefinition, parentMenuView } ) );
-			} else if ( componentFactory.has( menuDefinition ) ) {
-				const componentView = componentFactory.create( menuDefinition );
+				menuItemView.children.add( this._createMenu( {
+					componentFactory,
+					menuDefinition,
+					parentMenuView
+				} ) );
+			} else {
+				const componentView = this._createMenuItemContentFromFactory( {
+					componentName: menuDefinition,
+					componentFactory,
+					parentMenuView
+				} );
 
-				if ( !( componentView instanceof MenuBarMenuView || componentView instanceof MenuBarMenuItemButtonView ) ) {
-					/**
-					 * TODO
-					 *
-					 * @error menu-bar-component-unsupported
-					 * @param view TODO
-					 */
-					logWarning( 'menu-bar-component-unsupported', { view: componentView } );
-				} else {
-					if ( componentView instanceof MenuBarMenuView ) {
-						componentView.setParent( this, parentMenuView );
-
-						this.menus.push( componentView );
-					} else {
-						componentView.delegate( ...EVENT_NAME_DELEGATES ).to( parentMenuView );
-					}
-
-					// Close the whole menu bar when a component is executed.
-					componentView.on( 'execute', () => {
-						this.isOpen = false;
-					} );
-
+				if ( componentView ) {
 					menuItemView.children.add( componentView );
 				}
-			} else {
-				/**
-				 * TODO
-				 *
-				 * @error menu-bar-item-unavailable
-				 * @param item The name of the component.
-				 */
-				logWarning( 'menu-bar-item-unavailable', { menuDefinition } );
 			}
 
 			return menuItemView;
 		} );
 	}
 
+	private _createMenuItemContentFromFactory( { componentName, parentMenuView, componentFactory }: {
+		componentName: string;
+		componentFactory: ComponentFactory;
+		parentMenuView: MenuBarMenuView;
+	} ): MenuBarMenuView | MenuBarMenuItemButtonView | null {
+		if ( !componentFactory.has( componentName ) ) {
+			/**
+			 * TODO
+			 *
+			 * @error menu-bar-item-unavailable
+			 * @param componentName The name of the component.
+			 */
+			logWarning( 'menu-bar-item-unavailable', { componentName } );
+
+			return null;
+		}
+
+		const componentView = componentFactory.create( componentName );
+
+		if ( !( componentView instanceof MenuBarMenuView || componentView instanceof MenuBarMenuItemButtonView ) ) {
+			/**
+			 * TODO
+			 *
+			 * @error menu-bar-component-unsupported
+			 * @param view TODO
+			 */
+			logWarning( 'menu-bar-component-unsupported', { view: componentView } );
+
+			return null;
+		}
+
+		if ( componentView instanceof MenuBarMenuView ) {
+			this.registerMenu( componentView, parentMenuView );
+
+			this.menus.push( componentView );
+		} else {
+			componentView.delegate( ...EVENT_NAME_DELEGATES ).to( parentMenuView );
+		}
+
+		// Close the whole menu bar when a component is executed.
+		componentView.on( 'execute', () => {
+			this.isOpen = false;
+		} );
+
+		return componentView;
+	}
+
 	/**
-	 * TODO
+	 * Manages the state of the {@link #isOpen} property of the menu bar. Because the state is a sum of individual
+	 * top-level menus' states, it's necessary to listen to their changes and update the state accordingly.
+	 *
+	 * Additionally, it prevents from unnecessary changes of `isOpen` when one top-level menu opens and another closes
+	 * (regardless of in which order), maintaining a stable `isOpen === true` in that situation.
 	 */
 	private _setupIsOpenUpdater() {
 		let closeTimeout: ReturnType<typeof setTimeout>;
@@ -292,6 +333,9 @@ export default class MenuBarView extends View implements FocusableView {
 	}
 }
 
+/**
+ * Localizes the user-config using pre-defined localized category labels.
+ */
 function localizeConfigCategories( locale: Locale, config: MenuBarConfig ): MenuBarConfig {
 	const t = locale.t;
 	const configClone = cloneDeep( config );

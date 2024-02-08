@@ -17,12 +17,19 @@ import type {
 	MenuBarSubMenuArrowLeftEvent
 } from './menubarview.js';
 import type { FocusableView } from '../focuscycler.js';
-import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
+import type { ObservableChangeEvent, PositioningFunction } from '@ckeditor/ckeditor5-utils';
 import type { ButtonExecuteEvent } from '../button/button.js';
 
-export const EVENT_NAME_DELEGATES = [ 'mouseenter', 'arrowleft', 'arrowright', 'menuButtonFocus', 'change:isOpen' ] as const;
+export const EVENT_NAME_DELEGATES = [ 'mouseenter', 'arrowleft', 'arrowright', 'change:isOpen' ] as const;
+const NESTED_PANEL_HORIZONTAL_OFFSET = 5;
 
+/**
+ * Behaviors of the {@link TODO~MenuBarView} component.
+ */
 export const MenuBarBehaviors = {
+	/**
+	 * Closes the bar when the user clicked outside of it (page body, editor root, etc.).
+	 */
 	closeOnClickOutside( menuBarView: MenuBarView ): void {
 		clickOutsideHandler( {
 			emitter: menuBarView,
@@ -32,6 +39,11 @@ export const MenuBarBehaviors = {
 		} );
 	},
 
+	/**
+	 * When the bar is already open:
+	 * * Opens the menu when the user hovers over its button.
+	 * * Closes open menu when another menu's button gets hovered.
+	 */
 	toggleMenusAndFocusItemsOnHover( menuBarView: MenuBarView ): void {
 		menuBarView.on<MenuBarSubMenuMouseEnterEvent>( 'submenu:mouseenter', evt => {
 			// This works only when the menu bar has already been open and the user hover over the menu bar.
@@ -52,6 +64,12 @@ export const MenuBarBehaviors = {
 		} );
 	},
 
+	/**
+	 * Moves between top-level menus using the arrow left and right keys.
+	 *
+	 * If the menubar has already been open, arrow keys move focus between top-level menu buttons and open them.
+	 * If the menubar was closes, arrow keys only move focus between top-level menu buttons.
+	 */
 	focusCycleMenusOnArrows( menuBarView: MenuBarView ): void {
 		menuBarView.on<MenuBarSubMenuArrowRightEvent>( 'submenu:arrowright', evt => {
 			cycleTopLevelMenus( evt.source as MenuBarMenuView, 1 );
@@ -77,6 +95,10 @@ export const MenuBarBehaviors = {
 		}
 	},
 
+	/**
+	 * Closes the entire sub-menu structure when the bar is closed. This prevents sub-menus from being open if the user
+	 * closes the entire bar, and then re-opens some top-level menu.
+	 */
 	closeMenusWhenTheBarCloses( menuBarView: MenuBarView ): void {
 		menuBarView.on<ObservableChangeEvent<boolean>>( 'change:isOpen', () => {
 			if ( !menuBarView.isOpen ) {
@@ -89,6 +111,13 @@ export const MenuBarBehaviors = {
 		} );
 	},
 
+	/**
+	 * Handles the following case:
+	 * 1. Hover to open a sub-menu (A). The button has focus.
+	 * 2. Press arrow up/down to move focus to another sub-menu (B) button.
+	 * 3. Press arrow right to open the sub-menu (B).
+	 * 4. The sub-menu (A) should close as it would with `toggleMenusAndFocusItemsOnHover()`.
+	 */
 	closeMenuWhenAnotherOnTheSameLevelOpens( menuBarView: MenuBarView ): void {
 		menuBarView.on<MenuBarSubMenuChangeIsOpenEvent>( 'submenu:change:isOpen', ( evt, name, isOpen ) => {
 			if ( isOpen ) {
@@ -107,7 +136,14 @@ export const MenuBarBehaviors = {
 	}
 };
 
+/**
+ * Behaviors of the {@link TODO~MenuBarMenuView} component.
+ */
 export const MenuBarMenuBehaviors = {
+	/**
+	 * If the button of the menu is focused, pressing the arrow down key should open the panel and focus it.
+	 * This is analogous to the {@link TODO~DropdownView}.
+	 */
 	openAndFocusPanelOnArrowDownKey( menuView: MenuBarMenuView ): void {
 		menuView.keystrokes.set( 'arrowdown', ( data, cancel ) => {
 			if ( menuView.focusTracker.focusedElement === menuView.buttonView.element ) {
@@ -122,10 +158,10 @@ export const MenuBarMenuBehaviors = {
 	},
 
 	/**
-	 * Allow navigating to sub-menus using the arrow right key.
+	 * Open the menu on the right arrow key press. This allows for navigating to sub-menus using the keyboard.
 	 */
 	openOnArrowRightKey( menuView: MenuBarMenuView ): void {
-		// TODO: RTL
+		// TODO: RTL support.
 		menuView.keystrokes.set( 'arrowright', ( data, cancel ) => {
 			if ( menuView.focusTracker.focusedElement !== menuView.buttonView.element ) {
 				return;
@@ -140,14 +176,19 @@ export const MenuBarMenuBehaviors = {
 		} );
 	},
 
+	/**
+	 * Opens the menu on its button click. Note that this behavior only opens but never closes the menu (unlike {@link TODO~DropdownView}).
+	 */
 	openOnButtonClick( menuView: MenuBarMenuView ): void {
 		menuView.buttonView.on<ButtonExecuteEvent>( 'execute', () => {
 			menuView.isOpen = true;
-
 			menuView.panelView.focus();
 		} );
 	},
 
+	/**
+	 * Toggles the menu on its button click. This behavior is analogous to {@link TODO~DropdownView}.
+	 */
 	toggleOnButtonClick( menuView: MenuBarMenuView ): void {
 		menuView.buttonView.on<ButtonExecuteEvent>( 'execute', () => {
 			menuView.isOpen = !menuView.isOpen;
@@ -159,18 +200,10 @@ export const MenuBarMenuBehaviors = {
 	},
 
 	/**
-	 * In sub-menus, the button should work one-way only (open). Override the default toggle behavior.
+	 * Closes the menu on the right left key press. This allows for navigating to sub-menus using the keyboard.
 	 */
-	oneWayMenuButtonClickOverride( menuView: MenuBarMenuView ): void {
-		menuView.buttonView.on<ButtonExecuteEvent>( 'execute', evt => {
-			if ( menuView.isOpen ) {
-				evt.stop();
-			}
-		}, { priority: 'high' } );
-	},
-
 	closeOnArrowLeftKey( menuView: MenuBarMenuView ): void {
-		// TODO: RTL
+		// TODO: RTL support.
 		menuView.keystrokes.set( 'arrowleft', ( data, cancel ) => {
 			if ( menuView.isOpen ) {
 				menuView.isOpen = false;
@@ -180,6 +213,9 @@ export const MenuBarMenuBehaviors = {
 		} );
 	},
 
+	/**
+	 * Closes the menu on the esc key press. This allows for navigating to sub-menus using the keyboard.
+	 */
 	closeOnEscKey( menuView: MenuBarMenuView ): void {
 		menuView.keystrokes.set( 'esc', ( data, cancel ) => {
 			if ( menuView.isOpen ) {
@@ -187,9 +223,12 @@ export const MenuBarMenuBehaviors = {
 				menuView.focus();
 				cancel();
 			}
-		}, { priority: 'high' } );
+		} );
 	},
 
+	/**
+	 * Closes the menu when its parent menu also closed. This prevents from orphaned open menus when the parent menu re-opens.
+	 */
 	closeOnParentClose( menuView: MenuBarMenuView ): void {
 		menuView.parentMenuView!.on<ObservableChangeEvent<boolean>>( 'change:isOpen', ( evt, name, isOpen ) => {
 			if ( !isOpen && evt.source === menuView.parentMenuView ) {
@@ -203,3 +242,52 @@ export const MenuBarMenuBehaviors = {
 function logMenu( menuView: MenuBarMenuView ) {
 	return `"${ menuView.buttonView.label }"`;
 }
+
+/**
+ * Contains every positioning function used by {@link TODO~MenuBarMenuView} that decides where the
+ * {@link TODO~MenuBarMenuView#panelView} should be placed.
+ */
+export const MenuBarMenuViewPanelPositioningFunctions: Record<string, PositioningFunction> = {
+	southEast: buttonRect => {
+		return {
+			top: buttonRect.bottom,
+			left: buttonRect.left,
+			name: 'se'
+		};
+	},
+	southWest: ( buttonRect, panelRect ) => {
+		return {
+			top: buttonRect.bottom,
+			left: buttonRect.left - panelRect.width + buttonRect.width,
+			name: 'sw'
+		};
+	},
+	northEast: ( buttonRect, panelRect ) => {
+		return {
+			top: buttonRect.top - panelRect.height,
+			left: buttonRect.left,
+			name: 'ne'
+		};
+	},
+	northWest: ( buttonRect, panelRect ) => {
+		return {
+			top: buttonRect.top - panelRect.height,
+			left: buttonRect.left - panelRect.width + buttonRect.width,
+			name: 'nw'
+		};
+	},
+	west: buttonRect => {
+		return {
+			top: buttonRect.top,
+			left: buttonRect.right - NESTED_PANEL_HORIZONTAL_OFFSET,
+			name: 'w'
+		};
+	},
+	east: ( buttonRect, panelRect ) => {
+		return {
+			top: buttonRect.top,
+			left: buttonRect.left - panelRect.width + NESTED_PANEL_HORIZONTAL_OFFSET,
+			name: 'e'
+		};
+	}
+} as const;

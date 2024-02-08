@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/**
+ * @module ui/menubar/menubarmenuview
+ */
+
 import {
 	FocusTracker,
 	KeystrokeHandler,
@@ -12,7 +16,7 @@ import {
 	type ObservableChangeEvent
 } from '@ckeditor/ckeditor5-utils';
 import MenuBarMenuButtonView from './menubarmenubuttonview.js';
-import { EVENT_NAME_DELEGATES, MenuBarMenuBehaviors } from './utils.js';
+import { EVENT_NAME_DELEGATES, MenuBarMenuBehaviors, MenuBarMenuViewPanelPositioningFunctions } from './utils.js';
 import type { FocusableView } from '../focuscycler.js';
 import View from '../view.js';
 import {
@@ -21,22 +25,68 @@ import {
 } from './menubarmenupanelview.js';
 import type MenuBarView from './menubarview.js';
 
-const NESTED_PANEL_HORIZONTAL_OFFSET = 5;
-
+/**
+ * TODO
+ */
 export default class MenuBarMenuView extends View implements FocusableView {
+	/**
+	 * TODO
+	 */
 	public readonly buttonView: MenuBarMenuButtonView;
+
+	/**
+	 * TODO
+	 */
 	public readonly panelView: MenuBarMenuPanelView;
+
+	/**
+	 * TODO
+	 */
 	public readonly focusTracker: FocusTracker;
+
+	/**
+	 * TODO
+	 */
 	public readonly keystrokes: KeystrokeHandler;
 
+	/**
+	 * TODO
+	 */
 	declare public isOpen: boolean;
+
+	/**
+	 * TODO
+	 */
 	declare public isEnabled: boolean;
+
+	/**
+	 * TODO
+	 */
 	declare public class: string | undefined;
+
+	/**
+	 * TODO
+	 */
 	declare public panelPosition: MenuBarMenuPanelPosition;
+
+	/**
+	 * TODO
+	 */
 	declare public parentMenuView: MenuBarMenuView | undefined;
+
+	/**
+	 * TODO
+	 */
 	declare public menuBarView: MenuBarView | undefined;
+
+	/**
+	 * TODO
+	 */
 	declare public ariaDescribedById: string | null;
 
+	/**
+	 * TODO
+	 */
 	constructor( locale: Locale, parentMenuView?: MenuBarMenuView, menuBarView?: MenuBarView ) {
 		super( locale );
 
@@ -83,6 +133,9 @@ export default class MenuBarMenuView extends View implements FocusableView {
 		} );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public override render(): void {
 		super.render();
 
@@ -93,12 +146,11 @@ export default class MenuBarMenuView extends View implements FocusableView {
 		this.keystrokes.listenTo( this.element! );
 
 		if ( !this.parentMenuView ) {
-			this._listenToArrowKeystrokes();
+			this._propagateArrowKeystrokeEvents();
 
 			MenuBarMenuBehaviors.openAndFocusPanelOnArrowDownKey( this );
 			MenuBarMenuBehaviors.toggleOnButtonClick( this );
 		} else {
-			MenuBarMenuBehaviors.oneWayMenuButtonClickOverride( this );
 			MenuBarMenuBehaviors.openOnButtonClick( this );
 			MenuBarMenuBehaviors.openOnArrowRightKey( this );
 			MenuBarMenuBehaviors.closeOnArrowLeftKey( this );
@@ -107,7 +159,6 @@ export default class MenuBarMenuView extends View implements FocusableView {
 
 		MenuBarMenuBehaviors.closeOnEscKey( this );
 
-		this._listenToButtonFocus();
 		this._repositionPanelOnOpen();
 
 		if ( this.parentMenuView ) {
@@ -117,7 +168,10 @@ export default class MenuBarMenuView extends View implements FocusableView {
 		}
 	}
 
-	private _listenToArrowKeystrokes(): void {
+	/**
+	 * Fires `arrowright` and `arrowleft` events when the user pressed corresponding arrow keys.
+	 */
+	private _propagateArrowKeystrokeEvents(): void {
 		this.keystrokes.set( 'arrowright', ( data, cancel ) => {
 			this.fire( 'arrowright' );
 			cancel();
@@ -129,14 +183,10 @@ export default class MenuBarMenuView extends View implements FocusableView {
 		} );
 	}
 
-	private _listenToButtonFocus(): void {
-		this.focusTracker.on( 'change:focusedElement', () => {
-			if ( this.focusTracker.focusedElement === this.buttonView.element ) {
-				this.fire( 'menuButtonFocus' );
-			}
-		} );
-	}
-
+	/**
+	 * Sets the position of the panel when the menu opens. The panel is positioned
+	 * so that it optimally uses the available space in the viewport.
+	 */
 	private _repositionPanelOnOpen(): void {
 		// Let the menu control the position of the panel. The position must be updated every time the menu is open.
 		this.on<ObservableChangeEvent<boolean>>( 'change:isOpen', ( evt, name, isOpen ) => {
@@ -157,17 +207,19 @@ export default class MenuBarMenuView extends View implements FocusableView {
 		} );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public focus(): void {
 		this.buttonView.focus();
 	}
 
-	public setParent( menuBarView: MenuBarView, parentMenuView: MenuBarMenuView ): void {
-		this.parentMenuView = parentMenuView;
-		this.menuBarView = menuBarView;
-	}
-
+	/**
+	 * {@link #panelView} positions depending on the role of the menu in the {@link TODO~MenuBarView}
+	 * and the language direction.
+	 */
 	public get _panelPositions(): Array<PositioningFunction> {
-		const { southEast, southWest, northEast, northWest, west, east } = MenuBarMenuView.defaultPanelPositions;
+		const { southEast, southWest, northEast, northWest, west, east } = MenuBarMenuViewPanelPositioningFunctions;
 
 		if ( this.locale!.uiLanguageDirection !== 'rtl' ) {
 			if ( this.parentMenuView ) {
@@ -184,50 +236,10 @@ export default class MenuBarMenuView extends View implements FocusableView {
 		}
 	}
 
-	public static defaultPanelPositions: Record<string, PositioningFunction> = {
-		southEast: buttonRect => {
-			return {
-				top: buttonRect.bottom,
-				left: buttonRect.left,
-				name: 'se'
-			};
-		},
-		southWest: ( buttonRect, panelRect ) => {
-			return {
-				top: buttonRect.bottom,
-				left: buttonRect.left - panelRect.width + buttonRect.width,
-				name: 'sw'
-			};
-		},
-		northEast: ( buttonRect, panelRect ) => {
-			return {
-				top: buttonRect.top - panelRect.height,
-				left: buttonRect.left,
-				name: 'ne'
-			};
-		},
-		northWest: ( buttonRect, panelRect ) => {
-			return {
-				top: buttonRect.top - panelRect.height,
-				left: buttonRect.left - panelRect.width + buttonRect.width,
-				name: 'nw'
-			};
-		},
-		west: buttonRect => {
-			return {
-				top: buttonRect.top,
-				left: buttonRect.right - NESTED_PANEL_HORIZONTAL_OFFSET,
-				name: 'w'
-			};
-		},
-		east: ( buttonRect, panelRect ) => {
-			return {
-				top: buttonRect.top,
-				left: buttonRect.left - panelRect.width + NESTED_PANEL_HORIZONTAL_OFFSET,
-				name: 'e'
-			};
-		}
-	};
-
+	/**
+	 * A function used to calculate the optimal position for the dropdown panel.
+	 *
+	 * Referenced for unit testing purposes.
+	 */
 	private static _getOptimalPosition = getOptimalPosition;
 }

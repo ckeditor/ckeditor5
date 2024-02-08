@@ -4,7 +4,7 @@
  */
 
 /**
- * @module TODO
+ * @module ui/menubar/menubarmenupanelview
  */
 
 import { type Locale } from '@ckeditor/ckeditor5-utils';
@@ -12,9 +12,23 @@ import type { FocusableView } from '../focuscycler.js';
 import type ViewCollection from '../viewcollection.js';
 import View from '../view.js';
 
+/**
+ * TODO
+ */
 export default class MenuBarMenuPanelView extends View implements FocusableView {
+	/**
+	 * TODO
+	 */
 	public readonly children: ViewCollection<FocusableView>;
+
+	/**
+	 * TODO
+	 */
 	declare public isVisible: boolean;
+
+	/**
+	 * TODO
+	 */
 	declare public position: MenuBarMenuPanelPosition;
 
 	/**
@@ -60,6 +74,9 @@ export default class MenuBarMenuPanelView extends View implements FocusableView 
 		} );
 	}
 
+	/**
+	 * TODO
+	 */
 	public focus( direction: -1 | 1 = 1 ): void {
 		if ( this.children.length ) {
 			if ( direction === 1 ) {
