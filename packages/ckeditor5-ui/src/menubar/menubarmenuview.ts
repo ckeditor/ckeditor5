@@ -12,13 +12,14 @@ import {
 	type ObservableChangeEvent
 } from '@ckeditor/ckeditor5-utils';
 import MenuBarMenuButtonView from './menubarmenubuttonview.js';
-import { MenuBarMenuBehaviors } from './utils.js';
+import { EVENT_NAME_DELEGATES, MenuBarMenuBehaviors } from './utils.js';
 import type { FocusableView } from '../focuscycler.js';
 import View from '../view.js';
 import {
 	default as MenuBarMenuPanelView,
 	type MenuBarMenuPanelPosition
 } from './menubarmenupanelview.js';
+import type MenuBarView from './menubarview.js';
 
 const NESTED_PANEL_HORIZONTAL_OFFSET = 5;
 
@@ -32,10 +33,11 @@ export default class MenuBarMenuView extends View implements FocusableView {
 	declare public isEnabled: boolean;
 	declare public class: string | undefined;
 	declare public panelPosition: MenuBarMenuPanelPosition;
-	declare public parentMenuView?: MenuBarMenuView;
+	declare public parentMenuView: MenuBarMenuView | undefined;
+	declare public menuBarView: MenuBarView | undefined;
 	declare public ariaDescribedById: string | null;
 
-	constructor( locale: Locale, parentMenuView?: MenuBarMenuView ) {
+	constructor( locale: Locale, parentMenuView?: MenuBarMenuView, menuBarView?: MenuBarView ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
@@ -54,7 +56,10 @@ export default class MenuBarMenuView extends View implements FocusableView {
 		this.set( 'isEnabled', true );
 		this.set( 'panelPosition', 'w' );
 		this.set( 'class', undefined );
-		this.set( 'parentMenuView', parentMenuView );
+
+		this.parentMenuView = parentMenuView;
+		this.menuBarView = menuBarView;
+
 		this.set( 'ariaDescribedById', null );
 
 		this.setTemplate( {
@@ -104,6 +109,12 @@ export default class MenuBarMenuView extends View implements FocusableView {
 
 		this._listenToButtonFocus();
 		this._repositionPanelOnOpen();
+
+		if ( this.parentMenuView ) {
+			this.delegate( ...EVENT_NAME_DELEGATES ).to( this.parentMenuView );
+		} else {
+			this.delegate( ...EVENT_NAME_DELEGATES ).to( this.menuBarView!, name => 'submenu:' + name );
+		}
 	}
 
 	private _listenToArrowKeystrokes(): void {
@@ -148,6 +159,11 @@ export default class MenuBarMenuView extends View implements FocusableView {
 
 	public focus(): void {
 		this.buttonView.focus();
+	}
+
+	public setParent( menuBarView: MenuBarView, parentMenuView: MenuBarMenuView ): void {
+		this.parentMenuView = parentMenuView;
+		this.menuBarView = menuBarView;
 	}
 
 	public get _panelPositions(): Array<PositioningFunction> {

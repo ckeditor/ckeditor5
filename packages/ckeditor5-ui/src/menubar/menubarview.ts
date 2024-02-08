@@ -7,7 +7,7 @@
  * @module ui/menubar/menubarview
  */
 
-import { logWarning, type Locale } from '@ckeditor/ckeditor5-utils';
+import { logWarning, type BaseEvent, type Locale } from '@ckeditor/ckeditor5-utils';
 import { type FocusableView } from '../focuscycler.js';
 import View from '../view.js';
 import { cloneDeep, isObject } from 'lodash-es';
@@ -40,7 +40,11 @@ export default class MenuBarView extends View implements FocusableView {
 		this._setupIsOpenUpdater();
 
 		this.children = this.createCollection();
-		this.children.delegate( 'change:isOpen' ).to( this );
+
+		// Logs events in the main event bus of the component.
+		// this.on( 'submenu', ( evt, data ) => {
+		// 	console.log( `MenuBarView:${ evt.name }`, evt.path.map( view => view.element ) );
+		// } );
 
 		this.setTemplate( {
 			tag: 'div',
@@ -74,7 +78,8 @@ export default class MenuBarView extends View implements FocusableView {
 		super.render();
 
 		MenuBarBehaviors.toggleMenusAndFocusItemsOnHover( this );
-		MenuBarBehaviors.closeMenusOnClose( this );
+		MenuBarBehaviors.closeMenusWhenTheBarCloses( this );
+		MenuBarBehaviors.closeMenuWhenAnotherOnTheSameLevelOpens( this );
 		MenuBarBehaviors.focusCycleMenusOnArrows( this );
 		MenuBarBehaviors.closeOnClickOutside( this );
 	}
@@ -189,7 +194,7 @@ export default class MenuBarView extends View implements FocusableView {
 	} ) {
 		const locale = this.locale!;
 		const listView = new MenuBarMenuListView( locale );
-		const menuView = new MenuBarMenuView( locale, parentMenuView );
+		const menuView = new MenuBarMenuView( locale, parentMenuView, this );
 
 		listView.ariaLabel = menuDefinition.label;
 
@@ -198,7 +203,6 @@ export default class MenuBarView extends View implements FocusableView {
 		} );
 
 		menuView.panelView.children.add( listView );
-		menuView.delegate( ...EVENT_NAME_DELEGATES ).to( parentMenuView || this );
 
 		listView.items.addMany( this._createMenuItems( { menuDefinition, parentMenuView: menuView, componentFactory } ) );
 
@@ -239,11 +243,12 @@ export default class MenuBarView extends View implements FocusableView {
 					logWarning( 'menu-bar-component-unsupported', { view: componentView } );
 				} else {
 					if ( componentView instanceof MenuBarMenuView ) {
-						componentView.parentMenuView = parentMenuView;
-						this.menus.push( componentView );
-					}
+						componentView.setParent( this, parentMenuView );
 
-					componentView.delegate( ...EVENT_NAME_DELEGATES ).to( menuItemView );
+						this.menus.push( componentView );
+					} else {
+						componentView.delegate( ...EVENT_NAME_DELEGATES ).to( parentMenuView );
+					}
 
 					// Close the whole menu bar when a component is executed.
 					componentView.on( 'execute', () => {
@@ -273,7 +278,7 @@ export default class MenuBarView extends View implements FocusableView {
 		let closeTimeout: ReturnType<typeof setTimeout>;
 
 		// TODO: This is not the prettiest approach but at least it's simple.
-		this.on( 'change:isOpen', ( evt, name, isOpen ) => {
+		this.on( 'submenu:change:isOpen', ( evt, name, isOpen ) => {
 			clearTimeout( closeTimeout );
 
 			if ( isOpen ) {
@@ -286,14 +291,6 @@ export default class MenuBarView extends View implements FocusableView {
 		} );
 	}
 }
-
-export type MenuBarConfig = Array<MenuBarMenuDefinition>;
-
-export type MenuBarMenuDefinition = {
-	id: string;
-	label: string;
-	items: Array<string | MenuBarMenuDefinition>;
-};
 
 function localizeConfigCategories( locale: Locale, config: MenuBarConfig ): MenuBarConfig {
 	const t = locale.t;
@@ -310,4 +307,54 @@ function localizeConfigCategories( locale: Locale, config: MenuBarConfig ): Menu
 	}
 
 	return configClone;
+}
+
+/**
+ * TODO
+ */
+export type MenuBarConfig = Array<MenuBarMenuDefinition>;
+
+/**
+ * TODO
+ */
+export type MenuBarMenuDefinition = {
+	id: string;
+	label: string;
+	items: Array<string | MenuBarMenuDefinition>;
+};
+
+/**
+ * TODO
+ */
+interface MenuBarSubMenuEvent extends BaseEvent {
+	name: `submenu:${ string }` | `submenu:change:${ string }`;
+}
+
+/**
+ * TODO
+ */
+export interface MenuBarSubMenuMouseEnterEvent extends MenuBarSubMenuEvent {
+	name: 'submenu:mouseenter';
+}
+
+/**
+ * TODO
+ */
+export interface MenuBarSubMenuArrowLeftEvent extends MenuBarSubMenuEvent {
+	name: 'submenu:arrowleft';
+}
+
+/**
+ * TODO
+ */
+export interface MenuBarSubMenuArrowRightEvent extends MenuBarSubMenuEvent {
+	name: 'submenu:arrowright';
+}
+
+/**
+ * TODO
+ */
+export interface MenuBarSubMenuChangeIsOpenEvent extends MenuBarSubMenuEvent {
+	name: 'submenu:change:isOpen';
+	args: [ name: string, value: boolean, oldValue: boolean ];
 }

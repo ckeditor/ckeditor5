@@ -24,9 +24,6 @@ export default class MenuBarMenuButtonView extends ButtonView {
 
 		this.arrowView = this._createArrowView();
 
-		// The DropdownButton interface expects the open event upon which will open the dropdown.
-		this.delegate( 'execute' ).to( this, 'open' );
-
 		this.extendTemplate( {
 			attributes: {
 				class: [
