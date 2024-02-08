@@ -86,6 +86,8 @@
 	 * All but top-level menu buttons.
 	 */
 	&:not(.ck-menu-bar__menu_top-level) .ck-menu-bar__menu__button {
+		border-radius: 0;
+
 		&:focus {
 			border-color: transparent;
 			box-shadow: none;
@@ -143,19 +145,21 @@
 		max-width: var(--ck-menu-bar-menu-panel-max-width);
 
 		/* Corner border radius consistent with the button. */
-		&.ck-dropdown__panel_se {
+		&.ck-menu-bar__menu__panel_w,
+		&.ck-menu-bar__menu__panel_se {
 			border-top-left-radius: 0;
 		}
 
-		&.ck-dropdown__panel_sw {
+		&.ck-menu-bar__menu__panel_e,
+		&.ck-menu-bar__menu__panel_sw {
 			border-top-right-radius: 0;
 		}
 
-		&.ck-dropdown__panel_ne {
+		&.ck-menu-bar__menu__panel_ne {
 			border-bottom-left-radius: 0;
 		}
 
-		&.ck-dropdown__panel_nw {
+		&.ck-menu-bar__menu__panel_nw {
 			border-bottom-right-radius: 0;
 		}
 
@@ -163,23 +167,26 @@
 			outline: none;
 		}
 
-		& > .ck-list > .ck-list__item {
-			& > .ck-button {
-				& > .ck-button__label {
-					min-width: var(--ck-menu-bar-menu-item-min-width);
-				}
+		/*
+		 * Styles of the content of the panel (list items and their buttons).
+		 */
+		& > .ck-list > .ck-list__item > .ck-button {
+			border-radius: 0;
 
-				/*
-				 * Hovered items automatically get focused. Default focus styles look odd
-				 * while moving across a huge list of items so let's get rid of them
-				 */
-				&:focus {
-					border-color: transparent;
-					box-shadow: none;
+			& > .ck-button__label {
+				min-width: var(--ck-menu-bar-menu-item-min-width);
+			}
 
-					&:not(.ck-on) {
-						background: var(--ck-color-button-default-hover-background);
-					}
+			/*
+			 * Hovered items automatically get focused. Default focus styles look odd
+			 * while moving across a huge list of items so let's get rid of them
+			 */
+			&:focus {
+				border-color: transparent;
+				box-shadow: none;
+
+				&:not(.ck-on) {
+					background: var(--ck-color-button-default-hover-background);
 				}
 			}
 		}
