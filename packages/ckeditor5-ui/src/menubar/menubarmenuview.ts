@@ -30,6 +30,7 @@ export default class MenuBarMenuView extends View implements FocusableView {
 
 	declare public isOpen: boolean;
 	declare public isEnabled: boolean;
+	declare public class: string | undefined;
 	declare public panelPosition: MenuBarMenuPanelPosition;
 	declare public parentMenuView?: MenuBarMenuView;
 	declare public ariaDescribedById: string | null;
@@ -52,6 +53,7 @@ export default class MenuBarMenuView extends View implements FocusableView {
 		this.set( 'isOpen', false );
 		this.set( 'isEnabled', true );
 		this.set( 'panelPosition', 'w' );
+		this.set( 'class', undefined );
 		this.set( 'parentMenuView', parentMenuView );
 		this.set( 'ariaDescribedById', null );
 
@@ -62,6 +64,7 @@ export default class MenuBarMenuView extends View implements FocusableView {
 				class: [
 					'ck',
 					'ck-menu-bar__menu',
+					bind.to( 'class' ),
 					bind.if( 'isEnabled', 'ck-disabled', value => !value ),
 					bind.if( 'parentMenuView', 'ck-menu-bar__menu_top-level', value => !value )
 				],

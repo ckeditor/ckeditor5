@@ -16,13 +16,5 @@ export default class MenuBarMenuItemButtonView extends ButtonView {
 			tooltip: false,
 			role: 'menuitem'
 		} );
-
-		this.extendTemplate( {
-			attributes: {
-				class: [
-					'ck-menu-bar__menu__item__button'
-				]
-			}
-		} );
 	}
 }

@@ -11,6 +11,7 @@
 
 :root {
 	--ck-menu-bar-menu-panel-max-width: 75vw;
+	--ck-menu-bar-menu-item-min-width: 8em;
 }
 
 .ck.ck-menu-bar {
@@ -163,35 +164,18 @@
 		}
 
 		& > .ck-list > .ck-list__item {
-			& > .ck-menu-bar__menu__item__button {
-				&.ck-on {
-					@mixin ck-button-colors --ck-color-button-default;
-					color: var(--ck-color-base-text);
+			& > .ck-button {
+				& > .ck-button__label {
+					min-width: var(--ck-menu-bar-menu-item-min-width);
 				}
 
 				/*
-				 * Items get focused on mouse hover and :hover background becomes obsolete
-				 * or even wrong if two items are next to each other: one hovered and one focused (e.g. via keyboard)
+				 * Hovered items automatically get focused. Default focus styles look odd
+				 * while moving across a huge list of items so let's get rid of them
 				 */
-				&:hover {
-					background: none;
-				}
-
-				& > .ck-button__label {
-					min-width: 8em;
-				}
-
 				&:focus {
 					border-color: transparent;
 					box-shadow: none;
-					background: var(--ck-color-button-default-hover-background);
-				}
-
-				&.ck-menu-bar__menu__item__checkbutton {
-					& .ck-icon.ck-button__icon {
-						--ck-icon-size: 15px;
-						margin-right: var(--ck-spacing-medium);
-					}
 				}
 			}
 		}

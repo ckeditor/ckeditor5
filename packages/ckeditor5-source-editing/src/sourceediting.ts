@@ -10,7 +10,7 @@
 /* global console */
 
 import { type Editor, Plugin, PendingActions } from 'ckeditor5/src/core.js';
-import { ButtonView, MenuBarMenuItemCheckButtonView, type Dialog } from 'ckeditor5/src/ui.js';
+import { ButtonView, MenuBarMenuItemButtonView, type Dialog } from 'ckeditor5/src/ui.js';
 import { CKEditorError, createElement, ElementReplacer } from 'ckeditor5/src/utils.js';
 import { formatHtml } from './utils/formathtml.js';
 
@@ -101,7 +101,7 @@ export default class SourceEditing extends Plugin {
 		} );
 
 		editor.ui.componentFactory.add( 'menuBar:sourceEditing', () => {
-			const buttonView = this._createButton( MenuBarMenuItemCheckButtonView );
+			const buttonView = this._createButton( MenuBarMenuItemButtonView );
 
 			buttonView.set( {
 				label: t( 'Show source' )
@@ -382,7 +382,7 @@ export default class SourceEditing extends Plugin {
 		}
 	}
 
-	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuItemCheckButtonView>( ButtonClass: T ): InstanceType<T> {
+	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuItemButtonView>( ButtonClass: T ): InstanceType<T> {
 		const editor = this.editor;
 		const buttonView = new ButtonClass( editor.locale ) as InstanceType<T>;
 
