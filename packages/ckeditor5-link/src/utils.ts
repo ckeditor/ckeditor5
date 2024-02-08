@@ -29,7 +29,6 @@ import {
 import { upperFirst } from 'lodash-es';
 
 const ATTRIBUTE_WHITESPACES = /[\u0000-\u0020\u00A0\u1680\u180E\u2000-\u2029\u205f\u3000]/g; // eslint-disable-line no-control-regex
-const SAFE_URL = /^(?:(?:https?|ftps?|mailto):|[^a-z]|[a-z+.-]+(?:[^a-z+.:-]|$))/i;
 
 /* Building a link checking regex in parts for readability's sake. */
 
@@ -84,12 +83,9 @@ export function createLinkElement( href: string, { writer }: DowncastConversionA
  */
 export function ensureSafeUrl( url: unknown, allowedProtocols: Array<string> = DEFAULT_LINK_PROTOCOLS ): string {
 	const urlString = String( url );
-	let customSafeRegex;
 
-	if ( allowedProtocols ) {
-		const protocolsList = allowedProtocols.join( '|' );
-		customSafeRegex = new RegExp( `${ SAFE_URL_BASE.replace( '<protocols>', protocolsList ) }`, 'i' );
-	}
+	const protocolsList = allowedProtocols.join( '|' );
+	const customSafeRegex = new RegExp( `${ SAFE_URL_BASE.replace( '<protocols>', protocolsList ) }`, 'i' );
 
 	return isSafeUrl( urlString, customSafeRegex ) ? urlString : '#';
 }
@@ -97,10 +93,10 @@ export function ensureSafeUrl( url: unknown, allowedProtocols: Array<string> = D
 /**
  * Checks whether the given URL is safe for the user (does not contain any malicious code).
  */
-function isSafeUrl( url: string, customRegexp?: RegExp ): boolean {
+function isSafeUrl( url: string, customRegexp: RegExp ): boolean {
 	const normalizedUrl = url.replace( ATTRIBUTE_WHITESPACES, '' );
 
-	return !!normalizedUrl.match( customRegexp || SAFE_URL );
+	return !!normalizedUrl.match( customRegexp );
 }
 
 /**

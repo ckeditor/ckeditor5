@@ -82,8 +82,26 @@ describe( 'utils', () => {
 			expect( ensureSafeUrl( url ) ).to.equal( url );
 		} );
 
+		it( 'returns the same absolute sftp URL', () => {
+			const url = 'sftp://xx.yy/zz';
+
+			expect( ensureSafeUrl( url ) ).to.equal( url );
+		} );
+
 		it( 'returns the same absolute mailto URL', () => {
 			const url = 'mailto://foo@bar.com';
+
+			expect( ensureSafeUrl( url ) ).to.equal( url );
+		} );
+
+		it( 'returns the same absolute tel URL', () => {
+			const url = 'tel:+48123456789';
+
+			expect( ensureSafeUrl( url ) ).to.equal( url );
+		} );
+
+		it( 'returns the same absolute sms URL', () => {
+			const url = 'sms:+48987654321';
 
 			expect( ensureSafeUrl( url ) ).to.equal( url );
 		} );
@@ -118,6 +136,12 @@ describe( 'utils', () => {
 			expect( ensureSafeUrl( url ) ).to.equal( url );
 		} );
 
+		it( 'returns the same relative URL (starting with hash)', () => {
+			const url = '#thatsection1';
+
+			expect( ensureSafeUrl( url ) ).to.equal( url );
+		} );
+
 		it( 'returns the same URL even if it contains whitespaces', () => {
 			const url = '  ./xx/ yyy\t';
 
@@ -126,6 +150,24 @@ describe( 'utils', () => {
 
 		it( 'returns the same URL even if it contains non ASCII characters', () => {
 			const url = 'https://kłącze.yy/źdźbło';
+
+			expect( ensureSafeUrl( url ) ).to.equal( url );
+		} );
+
+		it( 'returns the same URL even if it contains a :port part', () => {
+			const url = 'localhost:12345';
+
+			expect( ensureSafeUrl( url ) ).to.equal( url );
+		} );
+
+		it( 'returns the same URL even if it contains a :port and a path after it', () => {
+			const url = 'localhost:678/pathafterwards';
+
+			expect( ensureSafeUrl( url ) ).to.equal( url );
+		} );
+
+		it( 'returns the same URL even if it starts with an IP address', () => {
+			const url = '192.178.10.123/subpath';
 
 			expect( ensureSafeUrl( url ) ).to.equal( url );
 		} );
@@ -143,6 +185,19 @@ describe( 'utils', () => {
 
 		it( 'returns safe URL when a malicious URL starts with an unknown protocol', () => {
 			const url = 'foo:alert(1)';
+
+			expect( ensureSafeUrl( url ) ).to.equal( '#' );
+		} );
+
+		it( 'returns the same URL when the URL contains a custom protocol defined in the allowedProtocols parameter', () => {
+			const url = 'foo:customurl.resource';
+			const allowedCustomProtocols = [ 'https', 'http', 'foo' ];
+
+			expect( ensureSafeUrl( url, allowedCustomProtocols ) ).to.equal( url );
+		} );
+
+		it( 'returns safe URL when a malicious URL starts with an unknown protocol (with numbers & dots)', () => {
+			const url = 'foo2bar.baz:alert(1)';
 
 			expect( ensureSafeUrl( url ) ).to.equal( '#' );
 		} );

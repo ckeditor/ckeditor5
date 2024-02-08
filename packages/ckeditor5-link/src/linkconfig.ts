@@ -41,6 +41,7 @@ export enum COMMON_PROTOCOLS {
 export const DEFAULT_LINK_PROTOCOLS = [
 	COMMON_PROTOCOLS.HTTPS,
 	COMMON_PROTOCOLS.FTPS,
+	COMMON_PROTOCOLS.SFTP,
 	COMMON_PROTOCOLS.TEL,
 	COMMON_PROTOCOLS.SMS,
 	COMMON_PROTOCOLS.MAIL
@@ -89,6 +90,9 @@ export interface LinkConfig {
 	 * This is a protocols whitelist that can be used in links, defined as an array of strings.
 	 * When not set, the editor will use a default list of allowed protocols.
 	 * You can use the {@link module:link/linkconfig~COMMON_PROTOCOLS common protocols list} for help.
+	 *
+	 * **Note:** Use this with caution and at your own risk - adding unsafe protocols like `javascript:`
+	 * can result in serious security vulnerabilities!
 	 *
 	 * ```ts
 	 * ClassicEditor
