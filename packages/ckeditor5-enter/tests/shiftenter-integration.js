@@ -46,7 +46,7 @@ describe( 'ShiftEnter integration', () => {
 		expect( getViewData( editor.editing.view, options ) ).to.equal( '<p>First line.<br></br>Second line.</p>' );
 	} );
 
-	it( 'BLOCK_FILLER should be inserted after <br> in the paragraph', () => {
+	it( 'INLINE_FILLER should be inserted before last <br> in the paragraph', () => {
 		setModelData( model, '<paragraph>[]</paragraph>' );
 
 		editor.execute( 'shiftEnter' );
