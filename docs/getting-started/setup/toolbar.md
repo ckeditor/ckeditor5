@@ -23,7 +23,7 @@ Below is a sample toolbar with a basic set of features. Toolbar items can be eas
 ## Basic toolbar configuration
 
 <info-box hint>
-	Toolbar configuration is a strict UI-related setting. Removing a toolbar item does not remove the feature from the editor internals. If your goal with the toolbar configuration is to remove features, the right solution is to also remove their respective plugins. Check the {@link getting-started/setup/adding-removing-features#removing-features removing features} guide for more information.
+	Toolbar configuration is a strict UI-related setting. Removing a toolbar item does not remove the feature from the editor internals. If your goal with the toolbar configuration is to remove features, the right solution is to also remove their respective plugins. Check the {@link getting-started/setup/configuration#removing-features removing features} guide for more information.
 </info-box>
 
 In the builds that contain toolbars, an optimal default toolbar set is defined for it. You may need a different toolbar arrangement, though, and this can be achieved through configuration.
@@ -286,7 +286,7 @@ Refer to the {@link tutorials/crash-course/editor step-by-step tutorial} to lear
 
 ## Block toolbar
 
-The {@link features/blocktoolbar block toolbar} provides an additional configurable toolbar on the left-hand side of the content area, useful when the main toolbar is not accessible (for example in certain <!-- replace link with Builder preset when applicable. -->{@link getting-started/legacy-getting-started/predefined-builds#balloon-block-editor balloon block editor} scenarios).
+The {@link setup/blocktoolbar block toolbar} provides an additional configurable toolbar on the left-hand side of the content area, useful when the main toolbar is not accessible (for example in certain <!-- replace link with Builder preset when applicable. -->{@link getting-started/legacy-getting-started/predefined-builds#balloon-block-editor balloon block editor} scenarios).
 
 ## Feature-specific toolbars
 

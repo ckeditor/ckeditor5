@@ -79,7 +79,7 @@ ClassicEditor
 
 There are other language-related CKEditor&nbsp;5 features you may want to check:
 
-* {@link features/ui-language UI Language}  &ndash; Set the UI language.
+* {@link getting-started/setup/ui-language UI Language}  &ndash; Set the UI language.
 * {@link features/spelling-and-grammar-checking Spelling and grammar checking} &ndash; Employ multi-language spell check for flawless content.
 
 ## Common API

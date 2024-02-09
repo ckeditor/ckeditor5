@@ -17,7 +17,7 @@ CKEditor&nbsp;5 has many features, and the number is constantly growing. You can
 
 ## Using CKEditor&nbsp;5 features
 
-Most of the editor features are accessible from a {@link getting-started/setup/toolbar highly configurable toolbar} (in fact, there are {@link features/blocktoolbar two of those}) offering buttons and dropdowns. Some features also have a dedicated contextual toolbar. You can also execute plenty of actions with {@link features/keyboard-support keyboard shortcuts}. The entire user interface comes with a {@link features/ui-language multitude of translations} and it supports Right-to-Left (RTL) languages.
+Most of the editor features are accessible from a {@link getting-started/setup/toolbar highly configurable toolbar} (in fact, there are {@link setup/blocktoolbar two of those}) offering buttons and dropdowns. Some features also have a dedicated contextual toolbar. You can also execute plenty of actions with {@link features/keyboard-support keyboard shortcuts}. The entire user interface comes with a {@link getting-started/setup/ui-language multitude of translations} and it supports Right-to-Left (RTL) languages.
 
 ## CKEditor&nbsp;5 WYSIWYG editor features and functions
 

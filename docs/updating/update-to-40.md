@@ -413,7 +413,7 @@ If your custom integration manually adds deleted comment threads to `CommentsRep
 
 ### New balloon block editor icon
 
-We have changed the default {@link features/blocktoolbar balloon block editor toolbar} indicator icon from the pilcrow icon (`¶`) to the braille pattern dots icon (`⠿`). The new icon better corresponds to the dual function of the indicator, which you may use to both invoke the balloon toolbar and to drag to content block around.
+We have changed the default {@link setup/blocktoolbar balloon block editor toolbar} indicator icon from the pilcrow icon (`¶`) to the braille pattern dots icon (`⠿`). The new icon better corresponds to the dual function of the indicator, which you may use to both invoke the balloon toolbar and to drag to content block around.
 
 While `⠿` is now a default, you can still configure it, for example:
 

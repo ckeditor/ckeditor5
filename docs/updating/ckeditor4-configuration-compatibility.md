@@ -156,11 +156,11 @@ Note: In CKEditor&nbsp;5, the number of options was reduced on purpose. Configur
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-contentsLangDirection"><code>contentsLangDirection</code></a></td>
-			<td>Refer to the {@link features/ui-language#setting-the-language-of-the-content Setting the language of the content} guide to learn how to set the content direction using the {@link module:core/editor/editorconfig~EditorConfig#language `config.language`} configuration option.</td>
+			<td>Refer to the {@link getting-started/setup/ui-language#setting-the-language-of-the-content Setting the language of the content} guide to learn how to set the content direction using the {@link module:core/editor/editorconfig~EditorConfig#language `config.language`} configuration option.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-contentsLanguage"><code>contentsLanguage</code></a></td>
-			<td>Refer to the {@link features/ui-language#setting-the-language-of-the-content Setting the language of the content} guide to learn how to set the content language using the {@link module:core/editor/editorconfig~EditorConfig#language `config.language`} configuration option.</td>
+			<td>Refer to the {@link getting-started/setup/ui-language#setting-the-language-of-the-content Setting the language of the content} guide to learn how to set the content language using the {@link module:core/editor/editorconfig~EditorConfig#language `config.language`} configuration option.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-contextmenu_contentsCss"><code>contextmenu_contentsCss</code></a></td>
@@ -231,7 +231,7 @@ Note: In CKEditor&nbsp;5, the number of options was reduced on purpose. Configur
 		</tr>
 		<tr>
 			<td><span id="defaultLanguage"><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-defaultLanguage"><code>defaultLanguage</code></a></span></td>
-			<td>The support for multiple translations is handled by the translations service. See the {@link features/ui-language UI language} feature guide.</td>
+			<td>The support for multiple translations is handled by the translations service. See the {@link getting-started/setup/ui-language UI language} feature guide.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-delayIfDetached"><code>delayIfDetached</code></a> <br>
@@ -460,7 +460,7 @@ Note: In CKEditor&nbsp;5, the number of options was reduced on purpose. Configur
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-language"><code>language</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-language_list"><code>language_list</code></a></td>
-			<td>The support for many translations is handled by the translations service. See the {@link features/ui-language UI language} feature guide.</td>
+			<td>The support for many translations is handled by the translations service. See the {@link getting-started/setup/ui-language UI language} feature guide.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-linkDefaultProtocol"><code>linkDefaultProtocol</code></a></td>
@@ -668,7 +668,7 @@ Note: In CKEditor&nbsp;5, the number of options was reduced on purpose. Configur
 			</td>
 			<td>
 				<p>See {@link module:core/editor/editorconfig~EditorConfig#toolbar `config.toolbar`}. Refer to the {@link getting-started/setup/toolbar toolbar} feature guide to learn more about managing toolbars in CKEditor&nbsp;5.</p>
-				<p>See also {@link module:core/editor/editorconfig~EditorConfig#balloonToolbar `config.balloonToolbar`} to define the toolbar of a balloon editor and the {@link features/blocktoolbar block toolbar} feature.</p>
+				<p>See also {@link module:core/editor/editorconfig~EditorConfig#balloonToolbar `config.balloonToolbar`} to define the toolbar of a balloon editor and the {@link setup/blocktoolbar block toolbar} feature.</p>
 			</td>
 		</tr>
 		<tr>

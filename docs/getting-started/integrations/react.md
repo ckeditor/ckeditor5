@@ -173,7 +173,7 @@ The `CKEditorContext` component supports the following properties:
 
 ## Customizing the builds
 
-The {@link getting-started/legacy-getting-started/predefined-builds CKEditor&nbsp;5 builds} come ready to use, with a set of built-in plugins and a predefined configuration. While you can change the configuration easily by using the `config` property of the `<CKEditor>` component which allows you to change the {@link getting-started/setup/toolbar toolbar} or {@link getting-started/setup/adding-removing-features#removing-features remove some plugins}, you need to rebuild the editor to add more plugins.
+The {@link getting-started/legacy-getting-started/predefined-builds CKEditor&nbsp;5 builds} come ready to use, with a set of built-in plugins and a predefined configuration. While you can change the configuration easily by using the `config` property of the `<CKEditor>` component which allows you to change the {@link getting-started/setup/toolbar toolbar} or {@link getting-started/setup/configuration#removing-features remove some plugins}, you need to rebuild the editor to add more plugins.
 
 There are three main ways to do that.
 
@@ -692,7 +692,7 @@ You can read more about using CKEditor&nbsp;5 from source in the {@link getting-
 
 ## Localization
 
-CKEditor&nbsp;5 supports {@link features/ui-language multiple UI languages}, and so does the official React component. Follow the instructions below to translate CKEditor&nbsp;5 in your React application.
+CKEditor&nbsp;5 supports {@link getting-started/setup/ui-language multiple UI languages}, and so does the official React component. Follow the instructions below to translate CKEditor&nbsp;5 in your React application.
 
 ### Predefined builds
 
@@ -733,7 +733,7 @@ Then, {@link getting-started/setup/configuration configure} the language of the 
 />
 ```
 
-For more information, please refer to the {@link features/ui-language Setting the UI language} guide.
+For more information, please refer to the {@link getting-started/setup/ui-language Setting the UI language} guide.
 
 ### CKEditor&nbsp;5 built from source
 
@@ -773,7 +773,7 @@ module.exports = {
 
 After building the application, CKEditor&nbsp;5 will run with the UI translated into the specified language.
 
-For more information, please refer to the {@link features/ui-language Setting the UI language} guide.
+For more information, please refer to the {@link getting-started/setup/ui-language Setting the UI language} guide.
 
 ## Contributing and reporting issues
 

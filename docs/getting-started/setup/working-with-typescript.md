@@ -4,10 +4,10 @@
 # * List and clarify the things that need attention when using TypeScript.
 
 category: setup
-order: 30
 menu-title: TypeScript support
 meta-title: TypeScript support | CKEditor 5 documentation
 modified_at: 2024-01-22
+order: 50
 ---
 
 # TypeScript support in CKEditor&nbsp;5

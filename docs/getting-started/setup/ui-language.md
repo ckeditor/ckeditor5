@@ -1,7 +1,8 @@
 ---
-category: features
+category: setup
 menu-title: UI language
 meta-title: Setting the UI language | CKEditor 5 Documentation
+order: 30
 ---
 
 {@snippet features/build-ui-language-source}
@@ -80,7 +81,7 @@ For example:
 <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/classic/translations/de.js"></script>
 ```
 
-See the {@link getting-started/legacy-getting-started/predefined-builds#cdn CDN installation guide} for more information.
+See the <!-- update links to proper when ready-->{@link getting-started/legacy-getting-started/predefined-builds#cdn CDN installation guide} for more information.
 
 ### npm
 
@@ -88,7 +89,7 @@ After installing the build from npm, languages will be available in `node_module
 
 You can load a single language directly to your code by importing, for example, `'@ckeditor/ckeditor5-build-classic/build/translations/de.js'`.
 
-See the {@link getting-started/legacy-getting-started/predefined-builds#npm npm installation guide} for more information.
+See the <!-- update links to proper when ready-->{@link getting-started/legacy-getting-started/predefined-builds#npm npm installation guide} for more information.
 
 ### Zip
 
@@ -99,13 +100,11 @@ All additional languages are included in the `.zip` file. You need to include th
 <script src="[ckeditor-path]/translations/de.js"></script>
 ```
 
-See the {@link getting-started/legacy-getting-started/predefined-builds#zip-download zip installation guide} for more information.
+See the <!-- update links to proper when ready-->{@link getting-started/legacy-getting-started/predefined-builds#zip-download zip installation guide} for more information.
 
 ## Building the editor using a specific language
 
 Currently, it is possible to change the UI language at the build stage and after the build. A single build of the editor supports the language which was defined in the [CKEditor&nbsp;5 translations plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations)'s configuration. Check the whole translation process to see how you can change the language later.
-
-If you use one of the {@link getting-started/index predefined editor builds}, refer to {@link getting-started/legacy-getting-started/quick-start-other#building-the-editor-from-source Creating custom builds} to learn how to change the language of your build.
 
 If you build CKEditor&nbsp;5 from scratch or integrate it directly into your application, then all you need to do is to:
 
