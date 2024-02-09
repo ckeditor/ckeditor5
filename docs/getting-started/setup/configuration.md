@@ -22,11 +22,12 @@ Listed below is an example configuration adding the {@link features/indent block
 ```js
 import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+/* ... */
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Indent, IndentBlock, BlockQuote, /* ... */ ], // plugins import
-		toolbar: [ 'outdent', 'indent', 'blockquote', /* ... */ ] // toolbar items configuration
+		toolbar: [ 'outdent', 'indent', 'blockquote', /* ... */ ] // toolbar configuration
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -34,7 +35,7 @@ ClassicEditor
 
 Note that some features may require more than one plugin to run. You will find the plugin-per-feature listing in the {@link framework/plugins/features-html-output-overview Plugins and HTML output} guide.
 
-## Configuring various editor settings
+## Configuring editor settings
 
 When integrating an editor into your application, you can customize its features by passing a JavaScript object with configuration options to the `create()` method. These settings, defined in the `EditorConfig`, allow for extensive customization of the editor's functionality. Remember that customization depends on the editor setup and plugins loaded.
 
