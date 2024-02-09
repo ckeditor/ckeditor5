@@ -149,8 +149,10 @@ export default abstract class InputBase<TElement extends HTMLInputElement | HTML
 		// Bind `this.value` to the DOM element's value.
 		// We cannot use `value` DOM attribute because removing it on Edge does not clear the DOM element's value property.
 		this.on<ObservableChangeEvent>( 'change:value', ( evt, name, value ) => {
-			this._setDomElementValue( value );
-			this._updateIsEmpty();
+			if ( value.toString() !== this.element!.value ) {
+				this._setDomElementValue( value );
+				this._updateIsEmpty();
+			}
 		} );
 	}
 
