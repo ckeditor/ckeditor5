@@ -11,6 +11,7 @@ import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
 import Delete from '@ckeditor/ckeditor5-typing/src/delete.js';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
 import ShiftEnter from '../src/shiftenter.js';
+import { INLINE_FILLER } from '@ckeditor/ckeditor5-engine/src/view/filler.js';
 
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
@@ -51,7 +52,10 @@ describe( 'ShiftEnter integration', () => {
 		editor.execute( 'shiftEnter' );
 
 		expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p><br>&nbsp;</p>' );
-		expect( editor.ui.view.editable.element.innerHTML ).to.equal( '<p><br><br data-cke-filler="true"></p>' );
+
+		expect( editor.ui.view.editable.element.innerHTML ).to.equal(
+			`<p><br>${ INLINE_FILLER }<br data-cke-filler="true"></p>`
+		);
 	} );
 
 	it( 'should not inherit text attributes before the "softBreak" element', () => {
