@@ -548,7 +548,7 @@ Since accessing the editor toolbar is not possible until after the editor instan
 
 ## Localization
 
-CKEditor&nbsp;5 supports {@link features/ui-language multiple UI languages}, and so does the official Vue.js component. Follow the instructions below to translate CKEditor&nbsp;5 in your Vue.js application.
+CKEditor&nbsp;5 supports {@link getting-started/setup/ui-language multiple UI languages}, and so does the official Vue.js component. Follow the instructions below to translate CKEditor&nbsp;5 in your Vue.js application.
 
 ### Predefined builds
 
@@ -591,7 +591,7 @@ export default {
 }
 ```
 
-For more information, please refer to the {@link features/ui-language Setting the UI language} guide.
+For more information, please refer to the {@link getting-started/setup/ui-language Setting the UI language} guide.
 
 ### CKEditor&nbsp;5 built from source
 
@@ -627,7 +627,7 @@ module.exports = {
 
 After building the application, CKEditor&nbsp;5 will run with the UI translated to the specified language.
 
-For more information, refer to the {@link features/ui-language "Setting UI language"} guide.
+For more information, refer to the {@link getting-started/setup/ui-language "Setting UI language"} guide.
 
 ## Component directives
 

@@ -175,8 +175,8 @@ export interface EditorConfig {
 	 *
 	 * But you can add them manually by coping from the `node_modules/@ckeditor/ckeditor5-build-[name]/build/lang/[lang].js'`.
 	 *
-	 * Check the {@glink features/ui-language UI language} guide for more information about the localization options and translation
-	 * process.
+	 * Check the {@glink getting-started/setup/ui-language UI language} guide for more information about
+	 * the localization options and translation process.
 	 */
 	language?: string | LanguageConfig;
 

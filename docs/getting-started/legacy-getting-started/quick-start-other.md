@@ -28,7 +28,7 @@ Although the CKEditor&nbsp;5 WYSIWYG editor comes with handy {@link getting-star
 * Removing unnecessary features present in a build.
 * Designing a {@link getting-started/setup/toolbar customized toolbar experience}.
 * Changing the {@link getting-started/legacy-getting-started/predefined-builds#available-builds editor type build}.
-* Changing the {@link features/ui-language localization language} of the editor.
+* Changing the {@link getting-started/setup/ui-language localization language} of the editor.
 
 The [online builder](https://ckeditor.com/ckeditor-5/online-builder/) is an application that lets you design and download custom CKEditor&nbsp;5 builds. It allows you to create your bundles with your desired editor type, toolbar, and plugins in a few easy steps through a simple and intuitive UI.
 
@@ -112,7 +112,7 @@ Some of the reasons for creating custom builds are:
 * Removing unnecessary features present in a build.
 * Changing the {@link getting-started/legacy-getting-started/editor-lifecycle#creating-an-editor-with-create editor creator}.
 * Changing the {@link framework/theme-customization editor theme}.
-* Changing the {@link features/ui-language localization language} of the editor.
+* Changing the {@link getting-started/setup/ui-language localization language} of the editor.
 * Enabling bug fixes that are still not a part of any public release.
 
 <info-box hint>

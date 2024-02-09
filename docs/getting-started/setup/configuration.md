@@ -6,7 +6,7 @@
 
 category: setup
 menu-title: Configuration
-meta-title: Configuration| CKEditor 5 documentation
+meta-title: Configuration | CKEditor 5 documentation
 order: 10
 modified_at: 2024-02-08
 ---
@@ -95,9 +95,13 @@ See {@link module:core/editor/editorconfig~EditorConfig} to learn about all avai
 
 {@img assets/img/full-toolbar.png 938 Sample CKEditor&nbsp;5 toolbar.} 
 
-CKEditor&nbsp;5 comes with a flexible, fully configurable toolbar which lets the integrators set the UI buttons and dropdowns for various features. A simple, basic setup is shown in the snippet above. However, the toolbar configuration can get really advanced, and for the best UX, there are two of these: the {@link getting-started/setup/toolbar editor toolbar} and the {@link features/blocktoolbar block toolbar}.
+CKEditor&nbsp;5 comes with a flexible, fully configurable toolbar which lets the integrators set the UI buttons and dropdowns for various features. A simple, basic setup is shown in the snippet above. However, the toolbar configuration can get really advanced, and for the best UX, there are two of these: the {@link getting-started/setup/toolbar editor toolbar} and the {@link setup/blocktoolbar block toolbar}.
 
 Some features also sport their own dedicated toolbars, like the {@link features/images-overview#image-contextual-toolbar image toolbar} or the {@link features/tables#toolbars table toolbars}. You will find all information about these in the {@link features/index respective feature guides}.
+
+## Setting the editor UI language 
+
+CKEditor&nbsp;5 currently supports more than 40 languages, while many more community translations are also available. This also includes RTL and CJK languages. The translation packs are available both as npm packages and from CDN. Refer to the {@link getting-started/setup/ui-language UI language} guide for details.
 
 ## Removing features
 

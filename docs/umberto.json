@@ -132,7 +132,7 @@
 		"examples/framework/inline-widget.html": "examples/framework/content-placeholder.html",
 		"examples/framework/multi-root-editor.html": "examples/builds/multi-root-editor.html",
 		"features/ai-assistant/ai-assistant-integration.html#aws-bedrock-integration": "features/ai-assistant/ai-assistant-integration.html#amazon-bedrock-integration",
-		"features/blocktoolbar.html": "features/toolbar/blocktoolbar.html",
+		"features/blocktoolbar.html": "getting-started/setup/toolbar/blocktoolbar.html",
 		"features/ckbox.html": "features/file-management/ckbox.html",
 		"features/ckfinder.html": "features/file-management/ckfinder.html",
 		"features/collaboration/annotation-customization/annotations-custom-configuration.html": "features/collaboration/annotations/annotations-custom-configuration.html",
@@ -191,7 +191,7 @@
 		"features/revision-history/revision-history-integration.htm": "features/collaboration/revision-history/revision-history-integration.html",
 		"features/spell-checker.html": "features/spelling-and-grammar-checking.html",
 		"features/table.html": "features/tables/tables.html",
-		"features/toolbar.html": "features/toolbar/toolbar.html",
+		"features/toolbar.html": "getting-started/setup/toolbar/toolbar.html",
 		"features/video.html": "features/media-embed.html",
 		"features/video-upload.html": "features/media-embed.html",
 		"features/ai-assistant.html": "features/ai-assistant/ai-assistant-overview.html",
@@ -315,7 +315,10 @@
 		"installation/plugins/installing-plugins.html": "framework/plugins/installing-plugins.html",
 		"installation/getting-started/editor-lifecycle.html": "getting-started/setup/configuration.html",
 		"installation/working-with-typescript.html": "getting-started/setup/working-with-typescript.html",
-		"installation/getting-started/configuration.html": "installation/getting-started/configuration.html"
+		"installation/getting-started/configuration.html": "installation/getting-started/configuration.html",
+		"features/ui-language.html": "getting-started/setup/ui-language.html",
+		"features/toolbar/toolbar.html": "getting-started/setup/toolbar/toolbar.html",
+		"features/toolbar/blocktoolbar.html": "getting-started/setup/toolbar/blocktoolbar.html"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter",

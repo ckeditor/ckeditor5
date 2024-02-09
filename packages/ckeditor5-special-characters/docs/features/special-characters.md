@@ -63,7 +63,7 @@ After adding the above plugin to the editor configuration, the new category will
 </info-box>
 
 <info-box>
-	The third argument of the {@link module:special-characters/specialcharacters~SpecialCharacters#addItems `SpecialCharacters#addItems()`} method is optional. You can use it to specify a label displayed as a category name. It is useful when your editor uses a language other than English. Check out the {@link features/ui-language UI language guide} to learn more.
+	The third argument of the {@link module:special-characters/specialcharacters~SpecialCharacters#addItems `SpecialCharacters#addItems()`} method is optional. You can use it to specify a label displayed as a category name. It is useful when your editor uses a language other than English. Check out the {@link getting-started/setup/ui-language UI language guide} to learn more.
 </info-box>
 
 Below you can see a demo based on the example shown above. Use the special characters toolbar button {@icon @ckeditor/ckeditor5-special-characters/theme/icons/specialcharacters.svg Special characters} and then select "Emoticons" from the dropdown. This will let you insert an emoji into the content.

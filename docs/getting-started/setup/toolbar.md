@@ -286,7 +286,7 @@ Refer to the {@link tutorials/crash-course/editor step-by-step tutorial} to lear
 
 ## Block toolbar
 
-The {@link features/blocktoolbar block toolbar} provides an additional configurable toolbar on the left-hand side of the content area, useful when the main toolbar is not accessible (for example in certain <!-- replace link with Builder preset when applicable. -->{@link getting-started/legacy-getting-started/predefined-builds#balloon-block-editor balloon block editor} scenarios).
+The {@link setup/blocktoolbar block toolbar} provides an additional configurable toolbar on the left-hand side of the content area, useful when the main toolbar is not accessible (for example in certain <!-- replace link with Builder preset when applicable. -->{@link getting-started/legacy-getting-started/predefined-builds#balloon-block-editor balloon block editor} scenarios).
 
 ## Feature-specific toolbars
 

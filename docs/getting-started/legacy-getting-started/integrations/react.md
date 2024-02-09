@@ -696,7 +696,7 @@ You can read more about using CKEditor&nbsp;5 from source in the {@link getting-
 
 ## Localization
 
-CKEditor&nbsp;5 supports {@link features/ui-language multiple UI languages}, and so does the official React component. Follow the instructions below to translate CKEditor&nbsp;5 in your React application.
+CKEditor&nbsp;5 supports {@link getting-started/setup/ui-language multiple UI languages}, and so does the official React component. Follow the instructions below to translate CKEditor&nbsp;5 in your React application.
 
 ### Predefined builds
 
@@ -737,7 +737,7 @@ Then, {@link getting-started/setup/configuration configure} the language of the 
 />
 ```
 
-For more information, please refer to the {@link features/ui-language Setting the UI language} guide.
+For more information, please refer to the {@link getting-started/setup/ui-language Setting the UI language} guide.
 
 ### CKEditor&nbsp;5 built from source
 
@@ -777,7 +777,7 @@ module.exports = {
 
 After building the application, CKEditor&nbsp;5 will run with the UI translated into the specified language.
 
-For more information, please refer to the {@link features/ui-language Setting the UI language} guide.
+For more information, please refer to the {@link getting-started/setup/ui-language Setting the UI language} guide.
 
 ## Contributing and reporting issues
 
