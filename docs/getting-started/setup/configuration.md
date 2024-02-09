@@ -6,28 +6,74 @@
 
 category: setup
 menu-title: Configuration
-meta-title: Configuration | CKEditor 5 documentation
+meta-title: Configuration| CKEditor 5 documentation
 order: 10
 modified_at: 2024-02-08
 ---
 
-# CKEditor&nbsp;5 configuration options
+# Configuring CKEditor&nbsp;5
+
+## Adding features
+
+All the features of CKEditor&nbsp;5 are implemented by plugins. You can read more about them in the {@link framework/plugins/plugins plugins} guide. To add more features and customise your builds, you {@link framework/plugins/installing-plugins install plugins} by importing them.
+
+Listed below is an example configuration adding the {@link features/indent block indentation} feature.
+
+```js
+import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Indent, IndentBlock, BlockQuote, /* ... */ ], // plugins import
+		toolbar: [ 'outdent', 'indent', 'blockquote', /* ... */ ] // toolbar items configuration
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+Note that some features may require more than one plugin to run. You will find the plugin-per-feature listing in the {@link framework/plugins/features-html-output-overview Plugins and HTML output} guide.
 
 ## Configuring various editor settings
 
-When creating an editor on your page, it is possible to set up {@link module:core/editor/editorconfig~EditorConfig configuration options} that change many of its aspects. The configuration is set by a simple JavaScript object passed to the `create()` method.
+When integrating an editor into your application, you can customize its features by passing a JavaScript object with configuration options to the `create()` method. These settings, defined in the `EditorConfig`, allow for extensive customization of the editor's functionality. Remember that customization depends on the editor setup and plugins loaded.
 
-The sample snippet below shows configuration of the toolbar, the headers feature and font color picker setting:
+The available options may require loading plugins first &ndash; this is done during the setup and <!-- add link when ready -->Builder is the easiest way to choose all needed features. The sample snippet below shows configuration of the toolbar, the headers feature and font family and color picker settings:
 
 ```js
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { Font } from '@ckeditor/ckeditor5-font';
+import { Link } from '@ckeditor/ckeditor5-link';
+import { List } from '@ckeditor/ckeditor5-list';
+
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
+		toolbar: [
+			'heading','|',
+			'bold',
+			'italic',
+			'fontSize',
+			'fontFamily',
+			'fontColor', '|',
+			'link',
+			'bulletedList',
+			'numberedList',
+			'blockQuote'
+			],
 		heading: {
 			options: [
 				{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
 				{ model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
 				{ model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' }
+			]
+		},
+		fontFamily: {
+			options: [
+				'default',
+				'Ubuntu, Arial, sans-serif',
+				'Ubuntu Mono, Courier New, Courier, monospace'
 			]
 		},
 		fontColor: {
@@ -42,46 +88,32 @@ ClassicEditor
 	} );
 ```
 
-The available options may require loading plugins first &ndash; this is done during the setup and Builder is the easiest way to choose all needed features.
-
 See {@link module:core/editor/editorconfig~EditorConfig} to learn about all available configuration options. Also, check out individual {@link features/index feature guides}, listing various configuration options available per feature.
 
 ## Editor toolbars
 
 {@img assets/img/full-toolbar.png 938 Sample CKEditor&nbsp;5 toolbar.} 
 
-CKEditor&nbsp;5 comes with a flexible, fully configurable toolbar which lets the integrators set the UI buttons for various features. A simple, basic setup is shown in the snippet above. However, the toolbar configuration can get really advanced, and for the best UX, there are two of these: the {@link getting-started/setup/toolbar editor toolbar} and the {@link features/blocktoolbar block toolbar}. Some features also sport their own dedicated toolbars, like the {@link features/images-overview#image-contextual-toolbar image toolbar} or the {@link features/tables#toolbars table toolbars}. You will find all information about the latter ones in the {@link features/index respective feature guides}.
+CKEditor&nbsp;5 comes with a flexible, fully configurable toolbar which lets the integrators set the UI buttons and dropdowns for various features. A simple, basic setup is shown in the snippet above. However, the toolbar configuration can get really advanced, and for the best UX, there are two of these: the {@link getting-started/setup/toolbar editor toolbar} and the {@link features/blocktoolbar block toolbar}.
 
-## Managing editor features
+Some features also sport their own dedicated toolbars, like the {@link features/images-overview#image-contextual-toolbar image toolbar} or the {@link features/tables#toolbars table toolbars}. You will find all information about these in the {@link features/index respective feature guides}.
 
-### Adding features
-
-All the features of CKEditor 5 all implemented by plugins. You can read more about them in the {@link framework/plugins/plugins plugins} guide. To add more features you can {@link framework/plugins/installing-plugins install plugins} to customise your builds. Listed below is an example configuration adding the {@link features/indent block indentation} feature. Note that some features may require more than one plugin to run. You will find the plugin-per-feature listing in the {@link framework/plugins/features-html-output-overview Plugins and HTML output} guide.
-
-
-```js
-import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Indent, IndentBlock, /* ... */ ], // plugins import
-		toolbar: [ 'outdent', 'indent', /* ... */ ] // toolbar items configuration
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
-```
-
-### Removing features
+## Removing features
 
 In some cases, you may want to have different editor setups in your application, all based on the same build. For that purpose, you need to control the plugins available in the editor at runtime.
 
 In the example below, the `Heading` plugin is removed:
 
 ```js
-// Remove a plugin from the default setup.
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { Link } from '@ckeditor/ckeditor5-link';
+import { List } from '@ckeditor/ckeditor5-list';
+
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		removePlugins: [ 'Heading' ],
+		removePlugins: [ 'Heading' ], // Remove a plugin from the setup.
 		toolbar: [ 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote' , 'link' ]
 	} )
 	.catch( error => {
@@ -92,10 +124,15 @@ ClassicEditor
 You might want to delete the `Link` plugin also, as shown below:
 
 ```js
-// Remove a few plugins from the default setup.
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { AutoLink, Link } from '@ckeditor/ckeditor5-link';
+import { List } from '@ckeditor/ckeditor5-list';
+
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		removePlugins: [ 'Heading', 'Link' ],
+		removePlugins: [ 'Heading', 'Link' ], // Remove a few plugins from the setup.
 		toolbar: [ 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote' ]
 	} )
 	.catch( error => {
@@ -103,19 +140,25 @@ ClassicEditor
 	} );
 ```
 
-However, using this snippet with the official classic build of CKEditor 5 will result in an error thrown in the console of the browser:
+However, this will result in an error thrown in the console of the browser:
 
 ```
-CKEditorError: plugincollection-required {"plugin":"Link","requiredBy":"CKFinder"}`
+CKEditorError: plugincollection-required {"plugin":"Link","requiredBy":"Autolink"}`
 Read more: [https://ckeditor.com/docs/ckeditor5/latest/support/error-codes.html#error-plugincollection-required](https://ckeditor.com/docs/ckeditor5/latest/support/error-codes.html#error-plugincollection-required)
 ```
-This is a good time to remind you that some plugins in CKEditor 5 depend on each other. In this case, the `CKFinder` plugin requires the `Link` plugin to work. To make the above snippet work, the `CKFinder` plugin must also be deleted:
+
+This is a good time to remind you that some plugins in CKEditor&nbsp;5 depend on each other. In this case, the `Autolink` plugin requires the `Link` plugin to work. To make the above snippet work, the `Autolink` plugin must also be removed:
 
 ```js
-// Remove a few plugins from the default setup.
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { AutoLink, Link } from '@ckeditor/ckeditor5-link';
+import { List } from '@ckeditor/ckeditor5-list';
+
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		removePlugins: [ 'Heading', 'Link', 'CKFinder' ],
+		removePlugins: [ 'Heading', 'Link', 'Autolink' ], // Remove a few plugins from the setup.
 		toolbar: [ 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote' ]
 	} )
 	.catch( error => {
@@ -124,5 +167,5 @@ ClassicEditor
 ```
 
 <info-box>
-	Be careful when removing plugins from CKEditor builds using {@link module:core/editor/editorconfig~EditorConfig#removePlugins `config.removePlugins`}. If removed plugins were providing toolbar buttons, the toolbar configuration included in a build will become invalid. In such a case, you need to provide the {@link getting-started/setup/toolbar updated toolbar configuration} as in the example above or by providing only toolbar items that need to be removed using `config.toolbar.removeItems`.
+	Be careful when removing plugins from CKEditor builds using {@link module:core/editor/editorconfig~EditorConfig#removePlugins `config.removePlugins`}. If removed plugins were providing toolbar buttons, the toolbar configuration included in a build will become invalid. In such a case, you need to provide the updated toolbar configuration as in the example above or by providing only toolbar items that need to be removed using the {@link getting-started/setup/toolbar#extended-toolbar-configuration-format `config.toolbar.removeItems`} configuration option instead.
 </info-box>
