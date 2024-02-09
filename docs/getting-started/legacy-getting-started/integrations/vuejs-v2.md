@@ -747,7 +747,7 @@ To execute an action when the editor data changes, use the [`input`](#input) eve
 
 ### `config`
 
-Specifies the {@link module:core/editor/editorconfig~Editorconfiguration configuration} of the editor.
+Specifies the {@link module:core/editor/editorconfig~EditorConfig configuration} of the editor.
 
 ```html
 <template>
