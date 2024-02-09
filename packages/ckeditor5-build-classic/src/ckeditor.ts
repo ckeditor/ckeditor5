@@ -50,6 +50,7 @@ import {
 } from '@phudak/ckeditor5-emoji/src';
 import '../theme/emoji.css';
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
+import { FontSize, FontFamily, FontColor, FontBackgroundColor } from '@ckeditor/ckeditor5-font';
 
 export default class ClassicEditor extends ClassicEditorBase {
 	public static override builtinPlugins = [
@@ -64,6 +65,10 @@ export default class ClassicEditor extends ClassicEditorBase {
 		CloudServices,
 		EasyImage,
 		Heading,
+		FontFamily,
+		FontSize,
+		FontColor,
+		FontBackgroundColor,
 		Image,
 		ImageCaption,
 		ImageStyle,
@@ -113,6 +118,12 @@ export default class ClassicEditor extends ClassicEditorBase {
 		toolbar: {
 			items: [
 				'heading',
+				'|',
+				{
+					label: 'Fonts',
+					icon: 'text',
+					items: [ 'fontFamily', 'fontSize', 'fontColor', 'fontBackgroundColor' ]
+				},
 				'|',
 				'bold',
 				'italic',

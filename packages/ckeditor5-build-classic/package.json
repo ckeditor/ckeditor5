@@ -38,6 +38,7 @@
     "@ckeditor/ckeditor5-easy-image": "39.0.0",
     "@ckeditor/ckeditor5-editor-classic": "39.0.0",
     "@ckeditor/ckeditor5-essentials": "39.0.0",
+    "@ckeditor/ckeditor5-font": "39.0.0",
     "@ckeditor/ckeditor5-heading": "39.0.0",
     "@ckeditor/ckeditor5-html-embed": "39.0.0",
     "@ckeditor/ckeditor5-image": "39.0.0",

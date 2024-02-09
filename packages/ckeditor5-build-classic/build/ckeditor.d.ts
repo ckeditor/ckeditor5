@@ -8,7 +8,11 @@ export default class ClassicEditor extends ClassicEditorBase {
     static builtinPlugins: any[];
     static defaultConfig: {
         toolbar: {
-            items: string[];
+            items: (string | {
+                label: string;
+                icon: string;
+                items: string[];
+            })[];
             shouldNotGroupWhenFull: boolean;
         };
         image: {
