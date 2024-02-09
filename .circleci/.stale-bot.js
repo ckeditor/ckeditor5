@@ -42,7 +42,8 @@ module.exports = {
 		'resolution:expired'
 	],
 	STALE_ISSUE_MESSAGE: 'There has been no activity on this issue for the past year. We\'ve marked it as stale and will close it in 30 days. We understand it may still be relevant, so if you\'re interested in the solution, leave a comment or reaction under this issue.',
+	STALE_PENDING_ISSUE_MESSAGE: 'The issue lacks the feedback we asked for two weeks. Hence, we\'ve marked it as stale and will close it in 30 days. We understand it may still be relevant, so if you\'re interested in the solution, leave a comment or reaction under this issue.',
 	STALE_PR_MESSAGE: 'There has been no activity on this PR for the past year. We\'ve marked it as stale and will close it in 30 days. We understand it may still be relevant, so if you\'re interested in the contribution, leave a comment or reaction under this PR.',
-	CLOSE_ISSUE_MESSAGE: 'We\'ve closed your issue due to inactivity over the last year. We understand that the issue may still be relevant. If so, feel free to open a new one (and link this issue to it).',
-	CLOSE_PR_MESSAGE: 'We\'ve closed your PR due to inactivity over the last year. While time has passed, the core of your contribution might still be relevant. If you\'re able, consider reopening a similar PR.'
+	CLOSE_ISSUE_MESSAGE: 'We\'ve closed your issue due to inactivity. We understand that the issue may still be relevant. If so, feel free to open a new one (and link this issue to it).',
+	CLOSE_PR_MESSAGE: 'We\'ve closed your PR due to inactivity. While time has passed, the core of your contribution might still be relevant. If you\'re able, consider reopening a similar PR.'
 };
