@@ -9,14 +9,21 @@ modified_at: 2024-02-05
 
 # Quick start (CDN)
 
+// Will there be 2 CDN links? Which one we want to promote?
+
 Short description about this method.
+
+// If the premium one, what about the license key?
 
 ## Obtain a license key
 
-* Trial
-* Buy
+* Trial?
+* Buy?
 
+// Do we want to show steps on how to obtain a license key?
 Steps with screenshots how to obtain a license key.
+
+// Do we already know what CDN links will look like?
 
 ## CDN setup
 
@@ -30,12 +37,12 @@ Steps with screenshots how to obtain a license key.
 
 ```html
 <script type="importmap">
-	{
-	"imports": {
-		"ckeditor5": "<CDN_LINK>/ckeditor5/dist/index.min.js",
-		"ckeditor5/": "<CDN_LINK>/ckeditor5/",
-	}
-	}
+{
+   "imports": {
+      "ckeditor5": "<CDN_LINK>/ckeditor5/dist/index.min.js",
+      "ckeditor5/": "<CDN_LINK>/ckeditor5/",
+   }
+}
 </script>
 ```
 
@@ -43,19 +50,22 @@ Steps with screenshots how to obtain a license key.
 
 ```html
 <script type="module">
-	import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
-	import translations from 'ckeditor5/dist/translations/pl.js';
+	import { ClassicEditor, Essentials, Bold, Italic, Heading, Paragraph } from 'ckeditor5';
+	// import translations from 'ckeditor5/dist/translations/es.js';
 
-	await ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [
-		Essentials,
-		Paragraph,
-	],
-	toolbar: {
-		items: [ 'undo', 'redo' ]
-	},
-	translations
-	} );
+	import 'ckeditor5/dist/styles.css';
+
+	await ClassicEditor
+		.create( document.querySelector( '#editor' ), {
+			plugins: [ Essentials, Bold, Italic, Heading, Paragraph ],
+			toolbar: {
+				items: [ 'undo', 'redo', '|', 'heading', '|', 'bold', 'italic' ]
+			},
+			// translations
+		} )
+		.catch( err => {
+			console.error( err );
+		} );
 </script>
 ```
 

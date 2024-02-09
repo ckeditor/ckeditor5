@@ -7,7 +7,7 @@ meta-description: Learn the fastest way to install and use CKEditor 5 - the powe
 modified_at: 2024-02-05
 ---
 
-# Quick Start
+# Quick Start (NPM)
 
 CKEditor&nbsp;5 is a powerful, rich text editor you can embed in your web application. This guide will show you the fastest way to start using it.
 
@@ -99,6 +99,8 @@ Short description about this method.
 // Do we want to show steps on how to obtain a license key?
 Steps with screenshots how to obtain a license key.
 
+// Do we already know what CDN links will look like?
+
 ### CDN setup
 
 1. Add a link for CSS
@@ -111,32 +113,35 @@ Steps with screenshots how to obtain a license key.
 
 ```html
 <script type="importmap">
-	{
-	"imports": {
-		"ckeditor5": "<CDN_LINK>/ckeditor5/dist/index.min.js",
-		"ckeditor5/": "<CDN_LINK>/ckeditor5/",
-	}
-	}
+{
+   "imports": {
+      "ckeditor5": "<CDN_LINK>/ckeditor5/dist/index.min.js",
+      "ckeditor5/": "<CDN_LINK>/ckeditor5/",
+   }
+}
 </script>
 ```
 
-3. Add a script with editor initialization
+3. Add a script with the editor initialization
 
 ```html
 <script type="module">
-	import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
-	import translations from 'ckeditor5/dist/translations/pl.js';
+	import { ClassicEditor, Essentials, Bold, Italic, Heading, Paragraph } from 'ckeditor5';
+	// import translations from 'ckeditor5/dist/translations/es.js';
 
-	await ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [
-		Essentials,
-		Paragraph,
-	],
-	toolbar: {
-		items: [ 'undo', 'redo' ]
-	},
-	translations
-	} );
+	import 'ckeditor5/dist/styles.css';
+
+	await ClassicEditor
+		.create( document.querySelector( '#editor' ), {
+			plugins: [ Essentials, Bold, Italic, Heading, Paragraph ],
+			toolbar: {
+				items: [ 'undo', 'redo', '|', 'heading', '|', 'bold', 'italic' ]
+			},
+			// translations
+		} )
+		.catch( err => {
+			console.error( err );
+		} );
 </script>
 ```
 
