@@ -77,21 +77,11 @@ await ClassicEditor
 
 ## Using CKEditor&nbsp;5 from CDN
 
-// Will there be 2 CDN links? Which one we want to promote?
-
-Short description about this method.
-
-// If the premium one, what about the license key?
+CDN is an effortless method of running CKEditor 5. You can start using it in just a few steps and with a few tags.
 
 ### Obtain a license key
 
-* Trial?
-* Buy?
-
-// Do we want to show steps on how to obtain a license key?
-Steps with screenshots how to obtain a license key.
-
-// Do we already know what CDN links will look like?
+TODO: Describe the steps to obtain a license key, attaching some screenshots.
 
 ### CDN setup
 
