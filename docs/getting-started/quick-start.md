@@ -85,7 +85,7 @@ TODO: Describe the steps to obtain a license key, attaching some screenshots.
 
 ### CDN setup
 
-1. Add a link for CSS
+Start by attaching a link to the stylesheet. It contains all styles for the editor's UI and content. You can also include your styles if you like. Refer to the content styles guide for more information.
 
 ```html
 <link rel="stylesheet" href="<CDN_LINK>/ckeditor5/dist/styles.css">
@@ -95,12 +95,12 @@ TODO: Describe the steps to obtain a license key, attaching some screenshots.
 
 ```html
 <script type="importmap">
-{
-   "imports": {
-      "ckeditor5": "<CDN_LINK>/ckeditor5/dist/index.min.js",
-      "ckeditor5/": "<CDN_LINK>/ckeditor5/",
-   }
-}
+	{
+		"imports": {
+			"ckeditor5": "<CDN_LINK>/ckeditor5/dist/index.min.js",
+			"ckeditor5/": "<CDN_LINK>/ckeditor5/",
+		}
+	}
 </script>
 ```
 
@@ -108,22 +108,46 @@ TODO: Describe the steps to obtain a license key, attaching some screenshots.
 
 ```html
 <script type="module">
-	import { ClassicEditor, Essentials, Bold, Italic, Heading, Paragraph } from 'ckeditor5';
-	// import translations from 'ckeditor5/dist/translations/es.js';
+	import { ClassicEditor, Essentials, Bold, Italic, Paragraph } from 'ckeditor5';
 
 	import 'ckeditor5/dist/styles.css';
 
 	await ClassicEditor
 		.create( document.querySelector( '#editor' ), {
-			plugins: [ Essentials, Bold, Italic, Heading, Paragraph ],
+			plugins: [ Essentials, Bold, Italic, Paragraph ],
 			toolbar: {
-				items: [ 'undo', 'redo', '|', 'heading', '|', 'bold', 'italic' ]
-			},
-			// translations
+				items: [ 'undo', 'redo', '|', 'bold', 'italic' ]
+			}
 		} )
-		.catch( err => {
-			console.error( err );
-		} );
+</script>
+```
+
+4. Final setup
+
+```html
+<link rel="stylesheet" href="<CDN_LINK>/ckeditor5/dist/styles.css">
+
+<script type="importmap">
+	{
+		"imports": {
+			"ckeditor5": "<CDN_LINK>/ckeditor5/dist/index.min.js",
+			"ckeditor5/": "<CDN_LINK>/ckeditor5/",
+		}
+	}
+</script>
+
+<script type="module">
+	import { ClassicEditor, Essentials, Bold, Italic, Paragraph } from 'ckeditor5';
+
+	import 'ckeditor5/dist/styles.css';
+
+	await ClassicEditor
+		.create( document.querySelector( '#editor' ), {
+			plugins: [ Essentials, Bold, Italic, Paragraph ],
+			toolbar: {
+				items: [ 'undo', 'redo', '|', 'bold', 'italic' ]
+			}
+		} )
 </script>
 ```
 
