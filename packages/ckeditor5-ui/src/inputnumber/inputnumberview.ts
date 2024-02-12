@@ -73,20 +73,7 @@ export default class InputNumberView extends InputView {
 				min: bind.to( 'min' ),
 				max: bind.to( 'max' ),
 				step: bind.to( 'step' )
-			},
-			on: {
-				keydown: bind.to( event => this._disallowSpecialChars( event as KeyboardEvent ) )
 			}
 		} );
-	}
-
-	/**
-	 * Cuts out the `e`, `+` and `-` characters from the numeric input.
-	 * @param event - the keyboard event
-	 */
-	private _disallowSpecialChars( event: KeyboardEvent ): void {
-		if ( /^[e+-]$/.test( event.key ) ) {
-			event.preventDefault();
-		}
 	}
 }
