@@ -11,7 +11,7 @@ import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { Paragraph } from 'ckeditor5/src/paragraph.js';
 import { priorities } from 'ckeditor5/src/utils.js';
 import type { EnterCommandAfterExecuteEvent } from 'ckeditor5/src/enter.js';
-import type { HeadingOption } from './headingconfig.js';
+import type { HeadingElementOption, HeadingOption } from './headingconfig.js';
 
 import HeadingCommand from './headingcommand.js';
 
@@ -73,7 +73,7 @@ export default class HeadingEditing extends Plugin {
 				inheritAllFrom: '$block'
 			} );
 
-			editor.conversion.elementToElement( { view: { name: 'element' }, ...option } );
+			editor.conversion.elementToElement( option as HeadingElementOption );
 
 			modelElements.push( option.model );
 		}
