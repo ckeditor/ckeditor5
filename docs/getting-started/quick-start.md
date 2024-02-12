@@ -28,15 +28,15 @@ Now you can import all the modules from the `ckeditor5` package. Additionally, y
 **Importing and registering UI translations is optional for the English language.** For any other language, use imported translations, as in the {@link getting-started/setup/configuration setup section}.
 
 ```js
-import { ClassicEditor, Essentials, Bold, Italic, Heading, Paragraph } from 'ckeditor5';
+import { ClassicEditor, Essentials, Bold, Italic, Paragraph } from 'ckeditor5';
 
 import 'ckeditor5/dist/styles.css';
 
 await ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Essentials, Bold, Italic, Heading, Paragraph ],
+		plugins: [ Essentials, Bold, Italic, Paragraph ],
 		toolbar: {
-			items: [ 'undo', 'redo', '|', 'heading', '|', 'bold', 'italic' ]
+			items: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 		}
 	} )
 ```
