@@ -73,7 +73,7 @@ export default class HeadingEditing extends Plugin {
 				inheritAllFrom: '$block'
 			} );
 
-			editor.conversion.elementToElement( option as HeadingElementOption );
+			editor.conversion.elementToElement( option );
 
 			modelElements.push( option.model );
 		}
