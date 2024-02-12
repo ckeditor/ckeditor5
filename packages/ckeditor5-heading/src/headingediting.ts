@@ -11,7 +11,7 @@ import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { Paragraph } from 'ckeditor5/src/paragraph.js';
 import { priorities } from 'ckeditor5/src/utils.js';
 import type { EnterCommandAfterExecuteEvent } from 'ckeditor5/src/enter.js';
-import type { HeadingElementOption, HeadingOption } from './headingconfig.js';
+import type { HeadingOption } from './headingconfig.js';
 
 import HeadingCommand from './headingcommand.js';
 
