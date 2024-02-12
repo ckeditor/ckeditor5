@@ -79,7 +79,7 @@ export function formatHtml( input: string ): string {
 		.split( '\n' );
 
 	let indentCount = 0;
-	let isPreformattedLine: 'first' | 'last' | 'middle' | false = false;
+	let isPreformattedLine: ReturnType<typeof isPreformattedBlockLine> = false;
 
 	return lines
 		.filter( line => line.length )
