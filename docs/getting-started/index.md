@@ -8,7 +8,7 @@ meta-description: Learn how to install, integrate, configure, and develop CKEdit
 
 # Getting started with CKEditor&nbsp;5
 
-CKEditor&nbsp;5 provides every type of WYSIWYG editing solution imaginable. From editors similar to Google Docs and Medium to Slack or Twitter-like applications, all is possible within a single editing framework. It is an ultra-modern JavaScript rich-text editor with MVC architecture, custom data model, and virtual DOM, written from scratch in TypeScript with excellent webpack and Vite support. Find out the most convenient way to start using it!
+CKEditor&nbsp;5 is a flexible editing framework, which provides every type of WYSIWYG editing solution imaginable. From editors similar to Google Docs and Medium to Slack or Twitter-like applications, all is possible within a single editing framework. It is an ultra-modern JavaScript rich-text editor with MVC architecture, custom data model, and virtual DOM, written from scratch in TypeScript with excellent webpack and Vite support. Find out the most convenient way to start using it!
 
 <span class="navigation-hint_mobile">
 	<info-box>
@@ -23,17 +23,10 @@ Find out how to start your adventure with the {@link getting-started/quick-start
 ## Migrating from CKEditor&nbsp;4?
 
 Check the {@link updating/migration-from-ckeditor-4 migration} section.
-</info-box>
 
-## Want to remove the "Powered by CKEditor" logo?
-
-Check the dedicated {@link support/managing-ckeditor-logo branding} guide.
-
-## CKEditor&nbsp;5 integrations
+## CKEditor&nbsp;5 framework integrations
 
 CKEditor&nbsp;5 is framework agnostic and can be integrated with any JavaScript framework. CKEditor&nbsp;5 is a native JavaScript rich-text editing component written in TypeScript. It does not require any uncommon techniques or technologies to be used. Therefore, unless the framework you use has atypical limitations, CKEditor&nbsp;5 is compatible with it. Native integrations with the most popular libraries will save you time and effort.
-
-### Official WYSIWYG editor integrations
 
 There are four official integrations so far:
 
@@ -42,11 +35,11 @@ There are four official integrations so far:
 * {@link getting-started/integrations/vuejs-v2 CKEditor&nbsp;5 rich-text editor for Vue.js 2.x}
 * {@link getting-started/integrations/vuejs-v3 CKEditor&nbsp;5 rich-text editor for Vue.js 3.x}
 
-Refer to their documentation to learn how to use them.
+However, some more frameworks are also supported. Refer to their documentation on the left to learn how to use them.
 
 We plan to provide more integrations with time. We would like to [hear your ideas](https://github.com/ckeditor/ckeditor5/issues/1002) about what we should work on next.
 
-### How do I use CKEditor&nbsp;5 if my framework does not have an official integration?
+<!-- ### How do I use CKEditor&nbsp;5 if my framework does not have an official integration?
 
 CKEditor&nbsp;5 should be compatible with your framework and initializing it usually requires a single method call. A tighter integration of CKEditor&nbsp;5 with your framework may require using an existing or writing a new adapter (integration layer) to communicate your framework with CKEditor&nbsp;5.
 
@@ -62,4 +55,8 @@ When checking how to integrate CKEditor&nbsp;5 with your framework, you can foll
 
 ### Compatibility with CSS frameworks
 
-CKEditor&nbsp;5 is compatible with popular CSS frameworks such as [Bootstrap](https://getbootstrap.com/) or [Foundation](https://get.foundation/). Such integrations, however, often require additional changes and adjustments that we have gathered {@link getting-started/integrations/css in this guide}.
+CKEditor&nbsp;5 is compatible with popular CSS frameworks such as [Bootstrap](https://getbootstrap.com/) or [Foundation](https://get.foundation/). Such integrations, however, often require additional changes and adjustments that we have gathered {@link getting-started/integrations/css in this guide}. -->
+
+## Want to remove the "Powered by CKEditor" logo?
+
+Check the dedicated {@link support/managing-ckeditor-logo branding} guide.
