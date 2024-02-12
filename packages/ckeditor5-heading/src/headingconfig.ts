@@ -7,7 +7,8 @@
  * @module heading/headingconfig
  */
 
-import type { ViewElementDefinition } from 'ckeditor5/src/engine.js';
+import type { ArrayOrItem } from 'ckeditor5/src/utils.js';
+import type { MatcherPattern, ViewElementDefinition } from 'ckeditor5/src/engine.js';
 
 /**
  * The configuration of the heading feature.
@@ -100,6 +101,11 @@ export interface HeadingElementOption {
 	 * Icon used by {@link module:heading/headingbuttonsui~HeadingButtonsUI}. It can be omitted when using the default configuration.
 	 */
 	icon?: string;
+
+	/**
+	 * An array with all matched elements that the view-to-model conversion should also accept.
+	 */
+	upcastAlso?: ArrayOrItem<ViewElementDefinition | MatcherPattern>;
 }
 
 export interface HeadingParagraphOption {
@@ -123,4 +129,9 @@ export interface HeadingParagraphOption {
 	 * Icon used by {@link module:heading/headingbuttonsui~HeadingButtonsUI}. It can be omitted when using the default configuration.
 	 */
 	icon?: string;
+
+	/**
+	 * An array with all matched elements that the view-to-model conversion should also accept.
+	 */
+	upcastAlso?: ArrayOrItem<ViewElementDefinition | MatcherPattern>;
 }
