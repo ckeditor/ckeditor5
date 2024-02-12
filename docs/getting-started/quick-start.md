@@ -1,13 +1,13 @@
 ---
 category: installation
 order: 10
-menu-title: Quick Start (NPM)
+menu-title: Quick Start
 meta-title: Quick Start | CKEditor 5 documentation
 meta-description: Learn the fastest way to install and use CKEditor 5 - the powerful, rich text WYSIWYG editor in your web application using npm.
 modified_at: 2024-02-05
 ---
 
-# Quick Start (NPM)
+# Quick Start
 
 CKEditor&nbsp;5 is a powerful, rich text editor you can embed in your web application. This guide will show you the fastest way to start using it.
 
