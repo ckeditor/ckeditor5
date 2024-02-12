@@ -73,9 +73,6 @@ await ClassicEditor
 		toolbar: [ 'formatPainter' ],
 		licenseKey: 'your-license-key'
 	} )
-	.catch( err => {
-		console.error( err );
-	} );
 ```
 
 ## Using CKEditor&nbsp;5 from CDN
