@@ -221,6 +221,9 @@ export default class ListPropertiesView extends View {
 			this.keystrokes.set( 'arrowleft', stopPropagation );
 			this.keystrokes.set( 'arrowup', stopPropagation );
 			this.keystrokes.set( 'arrowdown', stopPropagation );
+
+			this.listenTo( this.startIndexFieldView.fieldView.element!, 'keydown',
+				( evInfo, event ) => this._preventSpecialNumericValues( event ) );
 		}
 
 		if ( this.reversedSwitchButtonView ) {
@@ -366,6 +369,7 @@ export default class ListPropertiesView extends View {
 			const startIndex = inputElement.valueAsNumber;
 
 			if ( Number.isNaN( startIndex ) ) {
+				startIndexFieldView.errorText = t( 'Invalid start index value.' );
 				return;
 			}
 
@@ -396,6 +400,17 @@ export default class ListPropertiesView extends View {
 
 		return reversedButtonView;
 	}
+
+	/**
+	 * Cuts out the `e`, `E`, `+` and `-` characters from the numeric input.
+	 * @internal
+	 */
+	private _preventSpecialNumericValues = ( event: KeyboardEvent ) => {
+		console.log( 'keystrokes event', event );
+		if ( /^[e+-]$/i.test( event.key ) ) {
+			event.preventDefault();
+		}
+	};
 }
 
 export type StylesView = View & {
