@@ -80,7 +80,7 @@ export interface HeadingElementOption {
 	/**
 	 * Name of the model element to convert.
 	 */
-	model: 'heading1' | 'heading2' | 'heading3' | 'heading4' | 'heading5' | 'heading6';
+	model: string;
 
 	/**
 	 * Definition of a view element to convert from/to.
