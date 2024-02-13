@@ -50,6 +50,12 @@ When checking how to integrate CKEditor&nbsp;5 with your framework, you can foll
 
 CKEditor&nbsp;5 offers {@link getting-started/legacy-getting-started/predefined-builds predefined builds} that expose a rich JavaScript API, which you can use to {@link getting-started/legacy-getting-started/editor-lifecycle#creating-an-editor-with-create create editors} and {@link getting-started/getting-and-setting-data#setting-the-editor-data-with-setdata control them}. -->
 
+## Configuring CKEditor&nbsp;5
+
+Once you install your copy of CKEditor&nbsp;5, take some time to {@link getting-started/setup/configuration configure it} before first use. Set up data saving methods, editor toolbars and UI.
+
+You may also take the {@link tutorials/crash-course/editor step-by-step tutorial} that will guide you through the installation and configuration of the editor..
+
 ## Wishing to remove the "Powered by CKEditor" logo?
 
 If you came here looking for a guide on how to suppress the branding logo, check the dedicated {@link support/managing-ckeditor-logo branding} guide.
