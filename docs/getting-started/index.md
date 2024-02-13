@@ -16,19 +16,17 @@ CKEditor&nbsp;5 is a flexible editing framework, which provides every type of WY
 	</info-box>
 </span>
 
-## New to CKEditor&nbsp;5?
+## Are you new to CKEditor&nbsp;5?
 
-If your dive into using our WYSIWYG editor is only starting, find out how to kick off this adventure easily with the {@link getting-started/quick-start Quick Start} guide.
+If your dive into using our WYSIWYG editor is only starting, find out how to kick off this adventure easily with the {@link getting-started/quick-start Quick Start} guide. You will learn how to run CKEditor&nbsp;5 from npm or using CDN.
 
 ## Migrating from CKEditor&nbsp;4?
 
-If you are familiar with our previous, discontinued product and would like to switch, check the {@link updating/migration-from-ckeditor-4 migration} section.
+If you are familiar with our previous, discontinued product and would like to switch, check the {@link updating/migration-from-ckeditor-4 migration} section. You will find a useful upgrade guide there to help you switch with the least effort.
 
 ## CKEditor&nbsp;5 framework integrations
 
-Dou you prefer to use ready-made frameworks? Native integrations with the most popular libraries will save you time and effort.
-
-There are four official integrations so far:
+Dou you prefer to use ready-made frameworks? Native integrations with the most popular libraries will save you time and effort. There are four official integrations so far:
 
 * {@link getting-started/integrations/angular CKEditor&nbsp;5 rich-text editor for Angular}
 * {@link getting-started/integrations/react CKEditor&nbsp;5 rich-text editor for React}
@@ -52,6 +50,6 @@ When checking how to integrate CKEditor&nbsp;5 with your framework, you can foll
 
 CKEditor&nbsp;5 offers {@link getting-started/legacy-getting-started/predefined-builds predefined builds} that expose a rich JavaScript API, which you can use to {@link getting-started/legacy-getting-started/editor-lifecycle#creating-an-editor-with-create create editors} and {@link getting-started/getting-and-setting-data#setting-the-editor-data-with-setdata control them}. -->
 
-## Want to remove the "Powered by CKEditor" logo?
+## Wishing to remove the "Powered by CKEditor" logo?
 
-IF you came here looking for a guide on how to suppress the branding logo, check the dedicated {@link support/managing-ckeditor-logo branding} guide.
+If you came here looking for a guide on how to suppress the branding logo, check the dedicated {@link support/managing-ckeditor-logo branding} guide.
