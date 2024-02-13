@@ -45,7 +45,7 @@ Pass the imported plugins inside the configuration to the {@link module:editor-c
 
 ```html
 <div id="editor">
-	<h1>Hello from CKEditor 5!</h1>
+	<p>Hello from CKEditor 5!</p>
 </div>
 ```
 
@@ -120,31 +120,42 @@ Having the import map set up, we can add plugins. In the following script tag, i
 </script>
 ```
 
-4. Final setup
+Lastly, don't forget about adding a tag for editor initialization. Your final page may look like this.
 
 ```html
-<link rel="stylesheet" href="<CDN_LINK>/ckeditor5/dist/styles.css">
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>CKEditor 5 - Quick start CDN</title>
+		<link rel="stylesheet" href="<CDN_LINK>/ckeditor5/dist/styles.css" />
+	</head>
+	<body>
+		<div id="editor"></div>
 
-<script type="importmap">
-	{
-		"imports": {
-			"ckeditor5": "<CDN_LINK>/ckeditor5/dist/index.min.js",
-			"ckeditor5/": "<CDN_LINK>/ckeditor5/",
-		}
-	}
-</script>
-
-<script type="module">
-	import { ClassicEditor, Essentials, Bold, Italic, Paragraph } from 'ckeditor5';
-
-	await ClassicEditor
-		.create( document.querySelector( '#editor' ), {
-			plugins: [ Essentials, Bold, Italic, Paragraph ],
-			toolbar: {
-				items: [ 'undo', 'redo', '|', 'bold', 'italic' ]
+		<script type="importmap">
+			{
+				"imports": {
+					"ckeditor5": "<CDN_LINK>/ckeditor5/dist/index.min.js",
+					"ckeditor5/": "<CDN_LINK>/ckeditor5/",
+				}
 			}
-		} )
-</script>
+		</script>
+		
+		<script type="module">
+			import { ClassicEditor, Essentials, Bold, Italic, Paragraph } from 'ckeditor5';
+		
+			await ClassicEditor
+				.create( document.querySelector( '#editor' ), {
+					plugins: [ Essentials, Bold, Italic, Paragraph ],
+					toolbar: {
+						items: [ 'undo', 'redo', '|', 'bold', 'italic' ]
+					}
+				} )
+		</script>
+	</body>
+</html>
 ```
 
 ## Next steps
