@@ -8,7 +8,7 @@ meta-description: Learn how to install, integrate, configure, and develop CKEdit
 
 # Getting started with CKEditor&nbsp;5
 
-CKEditor&nbsp;5 is a flexible editing framework, which provides every type of WYSIWYG editing solution imaginable. From editors similar to Google Docs and Medium to Slack or Twitter-like applications, all is possible within a single editing framework. It is an ultra-modern JavaScript rich-text editor with MVC architecture, custom data model, and virtual DOM, written from scratch in TypeScript with excellent webpack and Vite support. Find out the most convenient way to start using it!
+CKEditor&nbsp;5 is a flexible editing framework, which provides every type of WYSIWYG editing solution imaginable. From editors similar to Google Docs and Medium to Notion, Slack or Twitter-like applications, all is possible within a single editing framework. It is an ultra-modern JavaScript rich-text editor with MVC architecture, custom data model, and virtual DOM, written from scratch in TypeScript with excellent webpack and Vite support. Find out the most convenient way to start using it!
 
 <span class="navigation-hint_mobile">
 	<info-box>
@@ -18,15 +18,15 @@ CKEditor&nbsp;5 is a flexible editing framework, which provides every type of WY
 
 ## New to CKEditor&nbsp;5?
 
-Find out how to start your adventure with the {@link getting-started/quick-start Quick Start} guide.
+If your dive into using our WYSIWYG editor is only starting, find out how to kick off this adventure easily with the {@link getting-started/quick-start Quick Start} guide.
 
 ## Migrating from CKEditor&nbsp;4?
 
-Check the {@link updating/migration-from-ckeditor-4 migration} section.
+If you are familiar with our previous, discontinued product and would like to switch, check the {@link updating/migration-from-ckeditor-4 migration} section.
 
 ## CKEditor&nbsp;5 framework integrations
 
-CKEditor&nbsp;5 is framework agnostic and can be integrated with any JavaScript framework. CKEditor&nbsp;5 is a native JavaScript rich-text editing component written in TypeScript. It does not require any uncommon techniques or technologies to be used. Therefore, unless the framework you use has atypical limitations, CKEditor&nbsp;5 is compatible with it. Native integrations with the most popular libraries will save you time and effort.
+Dou you prefer to use ready-made frameworks? Native integrations with the most popular libraries will save you time and effort.
 
 There are four official integrations so far:
 
@@ -35,7 +35,9 @@ There are four official integrations so far:
 * {@link getting-started/integrations/vuejs-v2 CKEditor&nbsp;5 rich-text editor for Vue.js 2.x}
 * {@link getting-started/integrations/vuejs-v3 CKEditor&nbsp;5 rich-text editor for Vue.js 3.x}
 
-However, some more frameworks are also supported. Refer to their documentation on the left to learn how to use them.
+However, some more frameworks are also supported. Refer to their documentation on the left to learn how to use them. CKEditor&nbsp;5 is a native JavaScript rich-text editing component written in TypeScript. As such, it is framework agnostic and can be integrated with any JavaScript framework. It does not require any uncommon techniques or technologies to be used. Therefore, unless the framework you use has atypical limitations, CKEditor&nbsp;5 is compatible with it.
+
+CKEditor&nbsp;5 is also compatible with popular CSS frameworks such as Bootstrap or Foundation. Such integrations, however, often require additional changes and adjustments that we have gathered {@link getting-started/integrations/css in this guide}.
 
 We plan to provide more integrations with time. We would like to [hear your ideas](https://github.com/ckeditor/ckeditor5/issues/1002) about what we should work on next.
 
@@ -45,18 +47,11 @@ CKEditor&nbsp;5 should be compatible with your framework and initializing it usu
 
 When checking how to integrate CKEditor&nbsp;5 with your framework, you can follow these steps:
 
-1. **Check whether an [official integration](#official-wysiwyg-editor-integrations) exists.**
+* If no official integrations (listed above) are available, search for community-driven integrations. Most of them are available on [npm](https://www.npmjs.com/).
+* If none exists, integrate CKEditor&nbsp;5 with your framework by yourself.
 
-	There are four official integrations now: for {@link getting-started/integrations/react React}, {@link getting-started/integrations/angular Angular}, {@link getting-started/integrations/vuejs-v2 Vue.js 2.x}, and {@link getting-started/integrations/vuejs-v3 Vue.js 3.x}.
-2. **If not, search for community-driven integrations.** Most of them are available on [npm](https://www.npmjs.com/).
-3. **If none exists, integrate CKEditor&nbsp;5 with your framework by yourself.**
-
-	CKEditor&nbsp;5 offers {@link getting-started/legacy-getting-started/predefined-builds predefined builds} that expose a rich JavaScript API, which you can use to {@link getting-started/legacy-getting-started/editor-lifecycle#creating-an-editor-with-create create editors} and {@link getting-started/getting-and-setting-data#setting-the-editor-data-with-setdata control them}.
-
-### Compatibility with CSS frameworks
-
-CKEditor&nbsp;5 is compatible with popular CSS frameworks such as [Bootstrap](https://getbootstrap.com/) or [Foundation](https://get.foundation/). Such integrations, however, often require additional changes and adjustments that we have gathered {@link getting-started/integrations/css in this guide}. -->
+CKEditor&nbsp;5 offers {@link getting-started/legacy-getting-started/predefined-builds predefined builds} that expose a rich JavaScript API, which you can use to {@link getting-started/legacy-getting-started/editor-lifecycle#creating-an-editor-with-create create editors} and {@link getting-started/getting-and-setting-data#setting-the-editor-data-with-setdata control them}. -->
 
 ## Want to remove the "Powered by CKEditor" logo?
 
-Check the dedicated {@link support/managing-ckeditor-logo branding} guide.
+IF you came here looking for a guide on how to suppress the branding logo, check the dedicated {@link support/managing-ckeditor-logo branding} guide.
