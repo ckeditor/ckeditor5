@@ -354,7 +354,7 @@ export default class TableColumnResizeEditing extends Plugin {
 					// If the first cell was removed, use the node after the change position instead.
 					const referenceNode = ( change.position.nodeBefore || change.position.nodeAfter ) as Element;
 
-					if ( referenceNode.name == 'tableCell' && referenceNode.getAncestors().includes( table ) ) {
+					if ( referenceNode && referenceNode.name == 'tableCell' && referenceNode.getAncestors().includes( table ) ) {
 						cellSet.add( referenceNode );
 					}
 				}
