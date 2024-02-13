@@ -61,6 +61,11 @@
 	--ck-color-dropdown-panel-background: 						var(--ck-color-base-background);
 	--ck-color-dropdown-panel-border: 							var(--ck-color-base-border);
 
+	/* -- Dialog -------------------------------------------------------------------------------- */
+
+	--ck-color-dialog-background: 								var(--ck-custom-background);
+	--ck-color-dialog-form-header-border: 						var(--ck-custom-border);
+
 	/* -- Input --------------------------------------------------------------------------------- */
 
 	--ck-color-input-background: 								var(--ck-color-base-background);

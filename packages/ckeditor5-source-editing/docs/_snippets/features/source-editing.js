@@ -32,7 +32,7 @@ ClassicEditor
 				'linkImage',
 				'|',
 				'imageStyle:block',
-				'imageStyle:side',
+				'imageStyle:wrapText',
 				'|',
 				'imageTextAlternative',
 				'toggleImageCaption',

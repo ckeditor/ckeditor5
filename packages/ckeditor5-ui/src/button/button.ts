@@ -132,6 +132,9 @@ export default interface Button {
 	 * (Optional) An XML {@link module:ui/icon/iconview~IconView#content content} of the icon.
 	 * When defined, an `iconView` should be added to the button.
 	 *
+	 * The user must provide the entire XML string, not just the path. See the
+	 * {@glink framework/architecture/ui-library#setting-label-icon-and-tooltip UI library} guide for details.
+	 *
 	 * @observable
 	 */
 	icon: string | undefined;

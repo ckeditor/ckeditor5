@@ -72,7 +72,7 @@ ClassicEditor
 
 ## HTML structure
 
-When you call {@link module:core/editor/utils/dataapimixin~DataApi#function-getData `editor.getData()`}, the document title will be represented as the following HTML:
+When you call {@link module:core/editor/editor~Editor#function-getData `editor.getData()`}, the document title will be represented as the following HTML:
 
 ```html
 <h1>Feasibility Study</h1>

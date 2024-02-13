@@ -109,7 +109,7 @@ ClassicEditor
 		image: {
 			toolbar: [
 				'imageStyle:block',
-				'imageStyle:side',
+				'imageStyle:wrapText',
 				'|',
 				'imageTextAlternative',
 				'|',

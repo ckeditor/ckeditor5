@@ -5,7 +5,7 @@ menu-title: Update to v37.x
 order: 87
 ---
 
-# Update to CKEditor&nbsp;5 v37.0.0
+# Update to CKEditor&nbsp;5 v37.x
 
 <info-box>
 	When updating your CKEditor&nbsp;5 installation, make sure **all the packages are the same version** to avoid errors.
@@ -13,15 +13,19 @@ order: 87
 	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
 
+## Update to CKEditor&nbsp;5 v37.0.0
+
+_Released on April 5, 2023._
+
 For the entire list of changes introduced in version 37.0.0, see the [release notes for CKEditor&nbsp;5 v37.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v37.0.0).
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v37.0.0.
 
-## Bump of minimal version of Node.js to 16.x
+### Bump of minimal version of Node.js to 16.x
 
 [Node.js 14 ends its long-term support in April 2023](https://nodejs.org/en/about/releases/). Because of that, starting from v37.0.0, the minimal version of Node.js required by CKEditor&nbsp;5 will be 16.
 
-## TypeScript type definitions
+### TypeScript type definitions
 
 As of version 37.0.0, CKEditor&nbsp;5 provides native TypeScript types, so community types are no longer needed. To address this, it may be necessary to replace community types with native types provided by the package. Here is how to do it:
 
@@ -82,13 +86,13 @@ As of version 37.0.0, CKEditor&nbsp;5 provides native TypeScript types, so commu
 
 We want to thank our community for providing the types so far!
 
-## Comments archive
+### Comments archive
 
 CKEditor&nbsp;5 v37.0.0 introduces the comments archive feature. Below you will find notes regarding the feature and migration tips in case of breaking changes that may affect some integrations.
 
 The [documentation for the previous editor version (36.0.1)](https://ckeditor.com/docs/ckeditor5/36.0.1/) is still available if you would like to compare the differences.
 
-### General notes
+#### General notes
 
 * Comments archive is enabled by default and you cannot turn it off.
 * You need to add the `commentsArchive` button to the toolbar to get access to the comments archive panel.
@@ -100,17 +104,17 @@ The [documentation for the previous editor version (36.0.1)](https://ckeditor.co
 * The undo feature no longer undoes creating or removing a comment thread.
 * The undo feature no longer undoes resolving or re-opening a comment thread.
 
-### Breaking changes
+#### Breaking changes
 
-#### Asynchronous collaboration integration
+##### Asynchronous collaboration integration
 
 This concerns applications that use the comments feature without real-time collaboration and provide their integration.
 
-##### "Load and save" integration
+###### "Load and save" integration
 
 You need to store additional data for comment threads and pass it to `CommentsRepository#addCommentThread()` when adding comments data. Make sure that you correctly store the new properties: `resolvedBy`, `resolvedAt`, `context`, and `attributes`. Depending on your integration, this may require changes in your database.
 
-##### Adapter integration
+###### Adapter integration
 
 Comment thread becomes an actual data entity, with properties that you need to save in the database. This requires changes in the adapter and may require changes in your database, depending on your integration.
 
@@ -126,7 +130,7 @@ Additionally, you should also update `getCommentThread()` to resolve with an obj
 
 You may also review the updated API documentation for the {@link module:comments/comments/commentsrepository~CommentsAdapter comments adapter}.
 
-#### Custom views and templates
+##### Custom views and templates
 
 This concerns applications that customize the comment and comment thread views and templates.
 
@@ -141,7 +145,7 @@ Comments and comment thread views and templates have substantially changed due t
 
 Finally, we introduced a special type of comment, "system comment." It looks like a simple comment and displays system messages, such as "Comment thread was resolved" (displayed for a resolved comment thread). These comments are created using `CommentView` (or a defined custom view). A system comment has the `#isSystemComment` property set to `true`. You may use it to recognize a system comment and provide necessary customization (for example, a system comment should not have action buttons). A system comment receives a temporary comment model. The system comment model's `attributes` property is set to an empty object. Make sure that your custom comment view correctly handles system comments.
 
-#### Comments outside the editor
+##### Comments outside the editor
 
 This concerns applications that use the comments outside the editor feature.
 

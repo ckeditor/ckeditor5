@@ -8,5 +8,6 @@
  */
 
 export { default as SourceEditing } from './sourceediting.js';
+export type { SourceEditingConfig } from './sourceeditingconfig.js';
 
 import './augmentation.js';

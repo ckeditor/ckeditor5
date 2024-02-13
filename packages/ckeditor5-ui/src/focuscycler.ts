@@ -19,7 +19,7 @@ import type View from './view.js';
 import type ViewCollection from './viewcollection.js';
 
 /**
- * A utility class that helps cycling over focusable {@link module:ui/view~View views} in a
+ * A utility class that helps cycling over {@link module:ui/focuscycler~FocusableView focusable views} in a
  * {@link module:ui/viewcollection~ViewCollection} when the focus is tracked by the
  * {@link module:utils/focustracker~FocusTracker} instance. It helps implementing keyboard
  * navigation in HTML forms, toolbars, lists and the like.
@@ -31,7 +31,7 @@ import type ViewCollection from './viewcollection.js';
  * A simple cycler setup can look like this:
  *
  * ```ts
- * const focusables = new ViewCollection();
+ * const focusables = new ViewCollection<FocusableView>();
  * const focusTracker = new FocusTracker();
  *
  * // Add focusable views to the focus tracker.
