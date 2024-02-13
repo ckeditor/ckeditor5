@@ -91,7 +91,7 @@ Start by attaching a link to the stylesheet. It contains all styles for the edit
 <link rel="stylesheet" href="<CDN_LINK>/ckeditor5/dist/styles.css">
 ```
 
-2. Add scripts with import maps
+Then, we need to attach the script with the JavaScript code. To simplify imports, we can use the feature available in browsers - the [import map](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap). It maps the text used as the module specifier and the value that will replace the text when resolving the specifier. This way, import statements don't need to contain the full CDN URL.
 
 ```html
 <script type="importmap">
