@@ -1170,6 +1170,22 @@ describe( 'TableUtils', () => {
 
 			expect( tableUtils.getColumns( root.getNodeByPath( [ 0 ] ) ) ).to.equal( 5 );
 		} );
+
+		it( 'should ignore elements other than tableCell (e.g. $marker elements) when counting', () => {
+			setData( model, modelTable( [
+				[ '00', '02', '03' ]
+			] ) );
+
+			model.change( writer => {
+				const markerFakeStartElement = writer.createElement( 'fakeMarkerStart' );
+				const markerFakeEndElement = writer.createElement( 'fakeMarkerEnd' );
+
+				writer.insert( markerFakeStartElement, writer.createPositionAt( root.getNodeByPath( [ 0, 0 ] ), 0 ) );
+				writer.insert( markerFakeEndElement, writer.createPositionAt( root.getNodeByPath( [ 0, 0 ] ), 3 ) );
+			} );
+
+			expect( tableUtils.getColumns( root.getNodeByPath( [ 0 ] ) ) ).to.equal( 3 );
+		} );
 	} );
 
 	describe( 'getRows()', () => {
