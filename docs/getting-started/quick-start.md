@@ -104,7 +104,7 @@ Then, we need to attach the script with the JavaScript code. To simplify imports
 </script>
 ```
 
-Having the import map set up, we can add plugins. In the following script tag, import desired plugins and add them to the plugins array.
+Having the import map set up, we can add plugins. In the following script tag, import desired plugins and add them to the plugins array. Notice that both script tags have corresponding `type` values.
 
 ```html
 <script type="module">
