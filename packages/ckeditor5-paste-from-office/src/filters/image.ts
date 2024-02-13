@@ -80,9 +80,15 @@ function findAllShapesIds( documentFragment: ViewDocumentFragment, writer: Upcas
 		const el = value.item as ViewElement;
 		const previousSibling = el.previousSibling;
 		const prevSiblingName = previousSibling && previousSibling.is( 'element' ) ? previousSibling.name : null;
+		const exceptionIds = [ 'Chart' ];
 
 		// If shape element have 'o:gfxdata' attribute and is not directly before `<v:shapetype>` element it means it represent Word shape.
-		if ( shapeElementsMatcher.match( el ) && el.getAttribute( 'o:gfxdata' ) && prevSiblingName !== 'v:shapetype' ) {
+		if (
+			shapeElementsMatcher.match( el ) &&
+			el.getAttribute( 'o:gfxdata' ) &&
+			prevSiblingName !== 'v:shapetype' &&
+			!exceptionIds.some( item => el.getAttribute( 'id' )!.includes( item ) )
+		) {
 			shapesIds.push( ( value.item as ViewElement ).getAttribute( 'id' )! );
 		}
 	}
