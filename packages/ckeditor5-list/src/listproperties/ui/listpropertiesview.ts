@@ -406,7 +406,6 @@ export default class ListPropertiesView extends View {
 	 * @internal
 	 */
 	private _preventSpecialNumericValues = ( event: KeyboardEvent ) => {
-		console.log( 'keystrokes event', event );
 		if ( /^[e+-]$/i.test( event.key ) ) {
 			event.preventDefault();
 		}

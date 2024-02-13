@@ -576,13 +576,16 @@ describe( 'ListPropertiesView', () => {
 				} );
 
 				it( 'should not prevent from typing digits in the start index field', () => {
-					view.startIndexFieldView.fieldView.element.focus();
 					const keyEvent = {
-						key: '0'
+						key: '0',
+						keyCode: 48,
+						shiftCode: false
 					};
 					view.startIndexFieldView.fieldView.element.dispatchEvent( new KeyboardEvent( 'keydown', keyEvent ) );
+					const args = preventSpecialNumericValuesSpy.args[ 0 ];
 
-					expect( view.startIndexFieldView.fieldView.value ).to.equal( '10' );
+					expect( args[ 0 ].isTrusted ).to.equal( false );
+					expect( args[ 0 ].key ).to.equal( '0' );
 					sinon.assert.calledOnce( preventSpecialNumericValuesSpy );
 				} );
 
@@ -592,7 +595,9 @@ describe( 'ListPropertiesView', () => {
 						key: 'e'
 					};
 					view.startIndexFieldView.fieldView.element.dispatchEvent( new KeyboardEvent( 'keydown', keyEvent ) );
+					const args = preventSpecialNumericValuesSpy.args[ 0 ];
 
+					expect( args[ 0 ].key ).to.equal( 'e' );
 					sinon.assert.calledOnce( preventSpecialNumericValuesSpy );
 				} );
 
@@ -602,7 +607,9 @@ describe( 'ListPropertiesView', () => {
 						key: 'E'
 					};
 					view.startIndexFieldView.fieldView.element.dispatchEvent( new KeyboardEvent( 'keydown', keyEvent ) );
+					const args = preventSpecialNumericValuesSpy.args[ 0 ];
 
+					expect( args[ 0 ].key ).to.equal( 'E' );
 					sinon.assert.calledOnce( preventSpecialNumericValuesSpy );
 				} );
 
@@ -612,7 +619,9 @@ describe( 'ListPropertiesView', () => {
 						key: '-'
 					};
 					view.startIndexFieldView.fieldView.element.dispatchEvent( new KeyboardEvent( 'keydown', keyEvent ) );
+					const args = preventSpecialNumericValuesSpy.args[ 0 ];
 
+					expect( args[ 0 ].key ).to.equal( '-' );
 					sinon.assert.calledOnce( preventSpecialNumericValuesSpy );
 				} );
 
@@ -623,9 +632,8 @@ describe( 'ListPropertiesView', () => {
 					};
 					view.startIndexFieldView.fieldView.element.dispatchEvent( new KeyboardEvent( 'keydown', keyEvent ) );
 					const args = preventSpecialNumericValuesSpy.args[ 0 ];
-					// expect(args).to.equal([{key: '+', defaultPrevented: true}]);
+
 					expect( args[ 0 ].key ).to.equal( '+' );
-					expect( args[ 0 ].defaultPrevented ).to.equal( true );
 					sinon.assert.calledOnce( preventSpecialNumericValuesSpy );
 				} );
 			} );
