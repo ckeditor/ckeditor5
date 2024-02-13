@@ -104,13 +104,11 @@ Then, we need to attach the script with the JavaScript code. To simplify imports
 </script>
 ```
 
-3. Add a script with the editor initialization
+Having the import map set up, we can add plugins. In the following script tag, import desired plugins and add them to the plugins array.
 
 ```html
 <script type="module">
 	import { ClassicEditor, Essentials, Bold, Italic, Paragraph } from 'ckeditor5';
-
-	import 'ckeditor5/dist/styles.css';
 
 	await ClassicEditor
 		.create( document.querySelector( '#editor' ), {
@@ -138,8 +136,6 @@ Then, we need to attach the script with the JavaScript code. To simplify imports
 
 <script type="module">
 	import { ClassicEditor, Essentials, Bold, Italic, Paragraph } from 'ckeditor5';
-
-	import 'ckeditor5/dist/styles.css';
 
 	await ClassicEditor
 		.create( document.querySelector( '#editor' ), {
