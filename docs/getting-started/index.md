@@ -54,8 +54,12 @@ CKEditor&nbsp;5 offers {@link getting-started/legacy-getting-started/predefined-
 
 Once you install your copy of CKEditor&nbsp;5, take some time to {@link getting-started/setup/configuration configure it} before first use. Set up data saving methods, editor toolbars and UI.
 
-You may also take the {@link tutorials/crash-course/editor step-by-step tutorial} that will guide you through the installation and configuration of the editor..
+You may also take the {@link tutorials/crash-course/editor step-by-step tutorial} that will guide you through the installation and configuration of the editor.
 
-## Wishing to remove the "Powered by CKEditor" logo?
+## Want to remove the "Powered by CKEditor" logo?
 
 If you came here looking for a guide on how to suppress the branding logo, check the dedicated {@link support/managing-ckeditor-logo branding} guide.
+
+## Legacy installation methods
+
+Before version 4x.x.x, CKEditor&nbsp;5 used different installation methods. If for whatever reason you wish to use these older versions &ndash; while it is not advised &ndash; you can have a look at the {@link getting-started/legacy-getting-started/quick-start legacy installation guides}.
