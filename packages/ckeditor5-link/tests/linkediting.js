@@ -101,7 +101,7 @@ describe( 'LinkEditing', () => {
 			// So let's simulate the `keydown` event.
 			editor.editing.view.document.fire( 'keydown', {
 				keyCode: keyCodes.arrowright,
-				preventDefault: () => {},
+				preventDefault: () => { },
 				domTarget: document.body
 			} );
 
@@ -132,7 +132,7 @@ describe( 'LinkEditing', () => {
 			// So let's simulate the `keydown` event.
 			editor.editing.view.document.fire( 'keydown', {
 				keyCode: keyCodes.arrowleft,
-				preventDefault: () => {},
+				preventDefault: () => { },
 				domTarget: document.body
 			} );
 
@@ -168,7 +168,7 @@ describe( 'LinkEditing', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>' +
-					'foo<$text linkHref="ckeditor.com" linkIsExternal="true">INSERTED</$text>[]' +
+				'foo<$text linkHref="ckeditor.com" linkIsExternal="true">INSERTED</$text>[]' +
 				'</paragraph>'
 			);
 
@@ -184,8 +184,8 @@ describe( 'LinkEditing', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>' +
-					'<$text linkHref="ckeditor.com">foo</$text>' +
-					'<$text bold="true">INSERTED[]</$text>' +
+				'<$text linkHref="ckeditor.com">foo</$text>' +
+				'<$text bold="true">INSERTED[]</$text>' +
 				'</paragraph>'
 			);
 
@@ -208,7 +208,7 @@ describe( 'LinkEditing', () => {
 
 			view.document.fire( 'keydown', {
 				keyCode: keyCodes.arrowright,
-				preventDefault: () => {},
+				preventDefault: () => { },
 				domTarget: document.body
 			} );
 
@@ -220,9 +220,9 @@ describe( 'LinkEditing', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>' +
-					'foo' +
-					'<$text bold="true">INSERTED</$text>[]' +
-					'<$text linkHref="ckeditor.com">bar</$text>' +
+				'foo' +
+				'<$text bold="true">INSERTED</$text>[]' +
+				'<$text linkHref="ckeditor.com">bar</$text>' +
 				'</paragraph>'
 			);
 
@@ -239,9 +239,9 @@ describe( 'LinkEditing', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>' +
-					'<$text linkHref="ckeditor.com">f</$text>' +
-					'<$text linkHref="http://INSERTED">INSERTED</$text>[]' +
-					'<$text linkHref="ckeditor.com">oo</$text>' +
+				'<$text linkHref="ckeditor.com">f</$text>' +
+				'<$text linkHref="http://INSERTED">INSERTED</$text>[]' +
+				'<$text linkHref="ckeditor.com">oo</$text>' +
 				'</paragraph>'
 			);
 
@@ -259,8 +259,8 @@ describe( 'LinkEditing', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>' +
-					'<$text linkHref="http://INSERTED">INSERTED</$text>[]' +
-					'<$text linkHref="ckeditor.com">foo</$text>' +
+				'<$text linkHref="http://INSERTED">INSERTED</$text>[]' +
+				'<$text linkHref="ckeditor.com">foo</$text>' +
 				'</paragraph>'
 			);
 
@@ -282,7 +282,7 @@ describe( 'LinkEditing', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>' +
-					'<$text linkHref="ckeditor.com">fbar[]oo</$text>' +
+				'<$text linkHref="ckeditor.com">fbar[]oo</$text>' +
 				'</paragraph>'
 			);
 		} );
@@ -398,7 +398,7 @@ describe( 'LinkEditing', () => {
 
 			setModelData( model,
 				'<paragraph>' +
-					'<$text linkHref="url">a</$text><$text foo="true" linkHref="url">b</$text><$text linkHref="url">c</$text>' +
+				'<$text linkHref="url">a</$text><$text foo="true" linkHref="url">b</$text><$text linkHref="url">c</$text>' +
 				'</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><a href="url">a<f>b</f>c</a></p>' );
@@ -409,6 +409,38 @@ describe( 'LinkEditing', () => {
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
 				.to.equal( '<p><a href="#">foo</a>bar</p>' );
+		} );
+
+		describe( 'links with custom protocols', () => {
+			let editor, model;
+
+			beforeEach( async () => {
+				editor = await ClassicTestEditor.create( element, {
+					plugins: [ Paragraph, LinkEditing, Enter ],
+					link: {
+						allowedProtocols: [ 'https', 'custom' ]
+					}
+				} );
+
+				model = editor.model;
+				view = editor.editing.view;
+
+				model.schema.extend( '$text', {
+					allowIn: '$root',
+					allowAttributes: [ 'linkIsFoo', 'linkIsBar' ]
+				} );
+			} );
+
+			afterEach( async () => {
+				await editor.destroy();
+			} );
+
+			it( 'should render a link with a custom protocol, if provided in the custom allowed protocols', () => {
+				setModelData( model, '<paragraph><$text linkHref="custom:address.in.app">[]foo</$text>bar[]</paragraph>' );
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+					.to.equal( '<p><a href="custom:address.in.app">foo</a>bar</p>' );
+			} );
 		} );
 	} );
 
@@ -895,9 +927,9 @@ describe( 'LinkEditing', () => {
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 					'<paragraph>' +
-						'<$text linkHref="url" linkIsDownloadable="true" linkIsExternal="true">Foo</$text>' +
-						'<$text linkHref="example.com" linkIsFile="true">Bar</$text>' +
-						'<$text linkHref="example.com" linkIsDownloadable="true">Baz</$text>' +
+					'<$text linkHref="url" linkIsDownloadable="true" linkIsExternal="true">Foo</$text>' +
+					'<$text linkHref="example.com" linkIsFile="true">Bar</$text>' +
+					'<$text linkHref="example.com" linkIsDownloadable="true">Baz</$text>' +
 					'</paragraph>'
 				);
 
@@ -934,8 +966,8 @@ describe( 'LinkEditing', () => {
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 					'<paragraph>' +
-						'<$text linkHref="url">Foo</$text>' +
-						'<$text linkHref="example.com">Bar</$text>' +
+					'<$text linkHref="url">Foo</$text>' +
+					'<$text linkHref="example.com">Bar</$text>' +
 					'</paragraph>'
 				);
 
@@ -1152,7 +1184,7 @@ describe( 'LinkEditing', () => {
 					keyCode: keyCodes.enter,
 					domEvent: {
 						keyCode: keyCodes.enter,
-						preventDefault: () => {},
+						preventDefault: () => { },
 						target: document.body,
 						...options
 					},
@@ -2006,7 +2038,7 @@ describe( 'LinkEditing', () => {
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial state' ).to.equal( false );
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
-				preventDefault: () => {}
+				preventDefault: () => { }
 			}, {
 				direction: 'backward',
 				selectionToRemove: view.document.selection
@@ -2015,7 +2047,7 @@ describe( 'LinkEditing', () => {
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link' ).to.equal( false );
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
-				preventDefault: () => {}
+				preventDefault: () => { }
 			}, {
 				direction: 'backward',
 				selectionToRemove: view.document.selection
@@ -2028,11 +2060,11 @@ describe( 'LinkEditing', () => {
 		it( 'should not preserve the `linkHref` attribute when deleting content after the link (decorators check)', () => {
 			setModelData( model,
 				'<paragraph>' +
-					'This is ' +
-					'<$text linkIsFoo="true" linkIsBar="true" linkHref="foo">Foo</$text>' +
-					' []from ' +
-					'<$text linkHref="bar">Bar</$text>' +
-					'.' +
+				'This is ' +
+				'<$text linkIsFoo="true" linkIsBar="true" linkHref="foo">Foo</$text>' +
+				' []from ' +
+				'<$text linkHref="bar">Bar</$text>' +
+				'.' +
 				'</paragraph>'
 			);
 
@@ -2041,7 +2073,7 @@ describe( 'LinkEditing', () => {
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial "linkHref" state' ).to.equal( false );
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
-				preventDefault: () => {}
+				preventDefault: () => { }
 			}, {
 				direction: 'backward',
 				selectionToRemove: view.document.selection
@@ -2052,7 +2084,7 @@ describe( 'LinkEditing', () => {
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link ("linkHref")' ).to.equal( false );
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
-				preventDefault: () => {}
+				preventDefault: () => { }
 			}, {
 				direction: 'backward',
 				selectionToRemove: view.document.selection
@@ -2064,11 +2096,11 @@ describe( 'LinkEditing', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>' +
-					'This is ' +
-					'<$text linkHref="foo" linkIsBar="true" linkIsFoo="true">Fo</$text>' +
-					'[]from ' +
-					'<$text linkHref="bar">Bar</$text>' +
-					'.' +
+				'This is ' +
+				'<$text linkHref="foo" linkIsBar="true" linkIsFoo="true">Fo</$text>' +
+				'[]from ' +
+				'<$text linkHref="bar">Bar</$text>' +
+				'.' +
 				'</paragraph>'
 			);
 		} );
@@ -2079,7 +2111,7 @@ describe( 'LinkEditing', () => {
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial state' ).to.equal( true );
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
-				preventDefault: () => {}
+				preventDefault: () => { }
 			}, {
 				direction: 'backward',
 				selectionToRemove: view.document.selection
@@ -2088,7 +2120,7 @@ describe( 'LinkEditing', () => {
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link' ).to.equal( true );
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
-				preventDefault: () => {}
+				preventDefault: () => { }
 			}, {
 				direction: 'backward',
 				selectionToRemove: view.document.selection
@@ -2104,7 +2136,7 @@ describe( 'LinkEditing', () => {
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial state' ).to.equal( true );
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
-				preventDefault: () => {}
+				preventDefault: () => { }
 			}, {
 				direction: 'backward',
 				selectionToRemove: view.document.selection
@@ -2113,7 +2145,7 @@ describe( 'LinkEditing', () => {
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link' ).to.equal( true );
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
-				preventDefault: () => {}
+				preventDefault: () => { }
 			}, {
 				direction: 'backward',
 				selectionToRemove: view.document.selection
@@ -2127,14 +2159,14 @@ describe( 'LinkEditing', () => {
 			setModelData( model, '<paragraph>Foo <$text bold="true">Bolded.</$text> []Bar</paragraph>' );
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
-				preventDefault: () => {}
+				preventDefault: () => { }
 			}, {
 				direction: 'backward',
 				selectionToRemove: view.document.selection
 			} ) );
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
-				preventDefault: () => {}
+				preventDefault: () => { }
 			}, {
 				direction: 'backward',
 				selectionToRemove: view.document.selection
@@ -2149,7 +2181,7 @@ describe( 'LinkEditing', () => {
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial state' ).to.equal( false );
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
-				preventDefault: () => {}
+				preventDefault: () => { }
 			}, {
 				direction: 'forward',
 				selectionToRemove: view.document.selection
@@ -2166,7 +2198,7 @@ describe( 'LinkEditing', () => {
 			getData( type ) {
 				return data[ type ];
 			},
-			setData() {}
+			setData() { }
 		};
 	}
 } );
