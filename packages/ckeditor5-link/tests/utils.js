@@ -82,28 +82,31 @@ describe( 'utils', () => {
 			expect( ensureSafeUrl( url ) ).to.equal( url );
 		} );
 
-		it( 'returns the same absolute sftp URL', () => {
-			const url = 'sftp://xx.yy/zz';
-
-			expect( ensureSafeUrl( url ) ).to.equal( url );
-		} );
-
 		it( 'returns the same absolute mailto URL', () => {
 			const url = 'mailto://foo@bar.com';
 
 			expect( ensureSafeUrl( url ) ).to.equal( url );
 		} );
 
-		it( 'returns the same absolute tel URL', () => {
+		it( 'returns the same absolute tel URL (if allowed in config)', () => {
 			const url = 'tel:+48123456789';
+			const allowedCustomProtocols = [ 'tel' ];
 
-			expect( ensureSafeUrl( url ) ).to.equal( url );
+			expect( ensureSafeUrl( url, allowedCustomProtocols ) ).to.equal( url );
 		} );
 
-		it( 'returns the same absolute sms URL', () => {
+		it( 'returns the same absolute sms URL (if allowed in config)', () => {
 			const url = 'sms:+48987654321';
+			const allowedCustomProtocols = [ 'sms' ];
 
-			expect( ensureSafeUrl( url ) ).to.equal( url );
+			expect( ensureSafeUrl( url, allowedCustomProtocols ) ).to.equal( url );
+		} );
+
+		it( 'returns the same absolute sftp URL (if allowed in config)', () => {
+			const url = 'sftp://xx.yy/zz';
+			const allowedCustomProtocols = [ 'sftp' ];
+
+			expect( ensureSafeUrl( url, allowedCustomProtocols ) ).to.equal( url );
 		} );
 
 		it( 'returns the same relative URL (starting with a dot)', () => {
@@ -175,6 +178,12 @@ describe( 'utils', () => {
 		it( 'accepts non string values', () => {
 			expect( ensureSafeUrl( undefined ) ).to.equal( 'undefined' );
 			expect( ensureSafeUrl( null ) ).to.equal( 'null' );
+		} );
+
+		it( 'returns safe URL when there is character junk in the URL', () => {
+			const url = '::%^#.foo.com';
+
+			expect( ensureSafeUrl( url ) ).to.equal( '#' );
 		} );
 
 		it( 'returns safe URL when a malicious URL starts with javascript:', () => {
