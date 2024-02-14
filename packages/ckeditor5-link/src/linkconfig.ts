@@ -10,41 +10,12 @@
 import type { ArrayOrItem } from 'ckeditor5/src/utils.js';
 
 /**
- * This is a list of most commonly used protocols to make the link custom configuration a bit easier.
- * The {@link module:link/linkconfig~LinkConfig#allowedProtocols `allowedProtocols` } list
- * can also contain other values than enlisted here.
- */
-export enum COMMON_PROTOCOLS {
-	HTTPS = 'https?',
-	FTPS = 'ftps?',
-	HTTPS_ONLY = 'https',
-	SFTP = 'sftp',
-	TEL = 'tel',
-	SMS = 'sms',
-	MAIL = 'mailto',
-	SSH = 'ssh',
-	GIT = 'git',
-	SVN = 'svn',
-	SAMBA = 'smb',
-	XMPP = 'xmpp',
-	SKYPE = 'skype',
-	SLACK = 'slack',
-	VIBER = 'viber',
-	JABBER = 'jabber',
-	ZOOMMTG = 'zoommtg',
-	ZOOMUS = 'zoomus'
-}
-
-/**
  * @internal
  */
 export const DEFAULT_LINK_PROTOCOLS = [
-	COMMON_PROTOCOLS.HTTPS,
-	COMMON_PROTOCOLS.FTPS,
-	COMMON_PROTOCOLS.SFTP,
-	COMMON_PROTOCOLS.TEL,
-	COMMON_PROTOCOLS.SMS,
-	COMMON_PROTOCOLS.MAIL
+	'https?',
+	'ftps?',
+	'mailto'
 ];
 
 /**
@@ -89,7 +60,6 @@ export interface LinkConfig {
 	/**
 	 * This is a protocols whitelist that can be used in links, defined as an array of strings.
 	 * When not set, the editor will use a default list of allowed protocols.
-	 * You can use the {@link module:link/linkconfig~COMMON_PROTOCOLS common protocols list} for help.
 	 *
 	 * **Note:** Use this with caution and at your own risk - adding unsafe protocols like `javascript:`
 	 * can result in serious security vulnerabilities!
@@ -98,7 +68,7 @@ export interface LinkConfig {
 	 * ClassicEditor
 	 * 	.create( editorElement, {
 	 * 		link: {
-	 * 			allowedProtocols: ['http', 'https', 'ftp', 'tel', 'mailto', 'ssh']
+	 * 			allowedProtocols: [ 'http', 'https', 'ftp', 'tel', 'mailto', 'ssh' ]
 	 * 		}
 	 * 	} )
 	 * 	.then( ... )
