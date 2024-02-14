@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, KeyboardEvent */
+/* globals document */
 
 import ListPropertiesView from '../../../src/listproperties/ui/listpropertiesview.js';
 
@@ -566,76 +566,6 @@ describe( 'ListPropertiesView', () => {
 				keyEvtData.keyCode = keyCodes.arrowright;
 				view.keystrokes.press( keyEvtData );
 				sinon.assert.callCount( keyEvtData.stopPropagation, 4 );
-			} );
-
-			describe( 'special keys keydown event', () => {
-				let preventSpecialNumericValuesSpy;
-
-				beforeEach( () => {
-					preventSpecialNumericValuesSpy = sinon.spy( view, '_preventSpecialNumericValues' );
-				} );
-
-				it( 'should not prevent from typing digits in the start index field', () => {
-					const keyEvent = {
-						key: '0',
-						keyCode: 48,
-						shiftCode: false
-					};
-					view.startIndexFieldView.fieldView.element.dispatchEvent( new KeyboardEvent( 'keydown', keyEvent ) );
-					const args = preventSpecialNumericValuesSpy.args[ 0 ];
-
-					expect( args[ 0 ].isTrusted ).to.equal( false );
-					expect( args[ 0 ].key ).to.equal( '0' );
-					sinon.assert.calledOnce( preventSpecialNumericValuesSpy );
-				} );
-
-				it( 'should prevent from typing `e` character into the start index field', () => {
-					view.focus();
-					const keyEvent = {
-						key: 'e'
-					};
-					view.startIndexFieldView.fieldView.element.dispatchEvent( new KeyboardEvent( 'keydown', keyEvent ) );
-					const args = preventSpecialNumericValuesSpy.args[ 0 ];
-
-					expect( args[ 0 ].key ).to.equal( 'e' );
-					sinon.assert.calledOnce( preventSpecialNumericValuesSpy );
-				} );
-
-				it( 'should prevent from typing capital `E` character into the start index field', () => {
-					view.focus();
-					const keyEvent = {
-						key: 'E'
-					};
-					view.startIndexFieldView.fieldView.element.dispatchEvent( new KeyboardEvent( 'keydown', keyEvent ) );
-					const args = preventSpecialNumericValuesSpy.args[ 0 ];
-
-					expect( args[ 0 ].key ).to.equal( 'E' );
-					sinon.assert.calledOnce( preventSpecialNumericValuesSpy );
-				} );
-
-				it( 'should prevent from typing `-` character into the start index field', () => {
-					view.focus();
-					const keyEvent = {
-						key: '-'
-					};
-					view.startIndexFieldView.fieldView.element.dispatchEvent( new KeyboardEvent( 'keydown', keyEvent ) );
-					const args = preventSpecialNumericValuesSpy.args[ 0 ];
-
-					expect( args[ 0 ].key ).to.equal( '-' );
-					sinon.assert.calledOnce( preventSpecialNumericValuesSpy );
-				} );
-
-				it( 'should prevent from typing `+` character into the start index field', () => {
-					view.focus();
-					const keyEvent = {
-						key: '+'
-					};
-					view.startIndexFieldView.fieldView.element.dispatchEvent( new KeyboardEvent( 'keydown', keyEvent ) );
-					const args = preventSpecialNumericValuesSpy.args[ 0 ];
-
-					expect( args[ 0 ].key ).to.equal( '+' );
-					sinon.assert.calledOnce( preventSpecialNumericValuesSpy );
-				} );
 			} );
 		} );
 	} );
