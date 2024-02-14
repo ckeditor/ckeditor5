@@ -215,15 +215,15 @@ function detectListStyle( listLikeItem: ListLikeElement, stylesString: string ) 
 		}
 
 		if ( legalListMatch ) {
-			type = 'ol';
+			// type = 'ol'; // TODO: while working on the task: PFW should work for legal only
 		}
 	}
 
 	return {
 		type,
 		startIndex,
-		style: mapListStyleDefinition( listStyleType ),
-		isLegal: !!legalListMatch
+		style: mapListStyleDefinition( listStyleType )
+		// isLegal: !!legalListMatch // TODO: while working on the task: PFW should work for legal only
 	};
 }
 
@@ -342,9 +342,9 @@ function insertNewEmptyList(
 		writer.setAttribute( 'start', listStyle.startIndex, list );
 	}
 
-	if ( listStyle.isLegal ) {
-		writer.addClass( 'legal-list', list );
-	}
+	// if ( listStyle.isLegal ) { // TODO: while working on the task: PFW should work for legal only
+	// 	writer.addClass( 'legal-list', list );
+	// }
 
 	return list;
 }
