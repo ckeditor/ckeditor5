@@ -120,7 +120,15 @@ Having the import map set up, we can add plugins. In the following script tag, i
 </script>
 ```
 
-Lastly, don't forget about adding a tag for editor initialization. Your final page may look like this.
+Lastly, don't forget about adding a tag for editor initialization.
+
+```html
+<div id="editor">
+	<p>Hello from CKEditor 5!</p>
+</div>
+```
+
+Your final page may look like the one below.
 
 ```html
 <!DOCTYPE html>
@@ -132,7 +140,9 @@ Lastly, don't forget about adding a tag for editor initialization. Your final pa
 		<link rel="stylesheet" href="<CDN_LINK>/ckeditor5/dist/styles.css" />
 	</head>
 	<body>
-		<div id="editor"></div>
+		<div id="editor">
+			<p>Hello from CKEditor 5!</p>
+		</div>
 
 		<script type="importmap">
 			{
