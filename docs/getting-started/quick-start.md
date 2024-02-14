@@ -85,13 +85,13 @@ TODO: Describe the steps to obtain a license key, attaching some screenshots.
 
 ### CDN setup
 
-Start by attaching a link to the stylesheet. It contains all styles for the editor's UI and content. You can also include your styles if you like. Refer to the content styles guide for more information.
+Start by attaching a link to the style sheet. It contains all styles for the editor's UI and content. You can also include your styles if you like. Refer to the content styles guide for more information.
 
 ```html
 <link rel="stylesheet" href="<CDN_LINK>/ckeditor5/dist/styles.css" />
 ```
 
-Then, we need to attach the script with the JavaScript code. To simplify imports, we can use the feature available in browsers - the [import map](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap). It maps the text used as the module specifier and the value that will replace the text when resolving the specifier. This way, import statements don't need to contain the full CDN URL.
+Then, we need to attach the script with the JavaScript code. To simplify imports, we can use the feature available in browsers - the [import map](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap). It maps the text used as the module specifier and the value that will replace the text when resolving the specifier. This way, import statements do not need to contain the full CDN URL.
 
 ```html
 <script type="importmap">
@@ -120,7 +120,7 @@ Having the import map set up, we can add plugins. In the following script tag, i
 </script>
 ```
 
-Lastly, don't forget about adding a tag for editor initialization.
+Lastly, do not forget about adding a tag for editor initialization.
 
 ```html
 <div id="editor">
