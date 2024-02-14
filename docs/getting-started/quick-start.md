@@ -11,7 +11,7 @@ modified_at: 2024-02-05
 
 CKEditor&nbsp;5 is a powerful, rich text editor you can embed in your web application. This guide will show you the fastest way to start using it.
 
-## Try CKEditor&nbsp;5 builder
+## Try CKEditor&nbsp;5 Builder
 
 Check out our interactive builder to quickly get a taste of CKEditor&nbsp;5. It offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs.
 
@@ -51,7 +51,7 @@ Pass the imported plugins inside the configuration to the {@link module:editor-c
 
 That is all the code you need to see a bare-bone editor running in your web browser.
 
-## Adding CKEditor&nbsp;5 premium features
+### Adding CKEditor&nbsp;5 premium features
 
 All premium features are available as a separate package. You can install it the same as the open-source one.
 
@@ -81,7 +81,9 @@ CDN is an effortless method of running CKEditor 5. You can start using it in jus
 
 ### Obtain a license key
 
-TODO: Describe the steps to obtain a license key, attaching some screenshots.
+To activate CKEditor&nbsp;5 premium features, you will need a commercial license. If you wish to purchase a commercial CKEditor&nbsp;5 license or a license to one of the premium features, [contact us](https://ckeditor.com/contact/?sales=true#contact-form) to receive an offer tailored to your needs. To obtain an activation key, please follow the {@link support/license-key-and-activation License key and activation} giuide.
+
+<!-- Not sure we should duplicate this in QS: TODO: Describe the steps to obtain a license key, attaching some screenshots. -->
 
 ### CDN setup
 
@@ -91,7 +93,7 @@ Start by attaching a link to the style sheet. It contains all styles for the edi
 <link rel="stylesheet" href="<CDN_LINK>/ckeditor5/dist/styles.css" />
 ```
 
-Then, we need to attach the script with the JavaScript code. To simplify imports, we can use the feature available in browsers - the [import map](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap). It maps the text used as the module specifier and the value that will replace the text when resolving the specifier. This way, import statements do not need to contain the full CDN URL.
+Then, you need to attach the script with the JavaScript code. To simplify imports, you can use the feature available in browsers &ndash; the [import map](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap). It maps the text used as the module specifier and the value that will replace the text when resolving the specifier. This way, import statements do not need to contain the full CDN URL.
 
 ```html
 <script type="importmap">
@@ -104,7 +106,7 @@ Then, we need to attach the script with the JavaScript code. To simplify imports
 </script>
 ```
 
-Having the import map set up, we can add plugins. In the following script tag, import desired plugins and add them to the plugins array. Notice that both script tags have corresponding `type` values.
+After you  set up the import map, you can add plugins. In the following script tag, import the desired plugins and add them to the plugins array. Notice that both script tags have the corresponding `type` values.
 
 ```html
 <script type="module">
@@ -120,7 +122,7 @@ Having the import map set up, we can add plugins. In the following script tag, i
 </script>
 ```
 
-Lastly, do not forget about adding a tag for editor initialization.
+Lastly, do not forget to add a tag for editor initialization.
 
 ```html
 <div id="editor">
@@ -128,7 +130,7 @@ Lastly, do not forget about adding a tag for editor initialization.
 </div>
 ```
 
-Your final page may look like the one below.
+Your final page should look similar to the one below.
 
 ```html
 <!DOCTYPE html>
