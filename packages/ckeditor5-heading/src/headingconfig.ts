@@ -76,10 +76,19 @@ export interface HeadingConfig {
 export type HeadingOption = HeadingElementOption | HeadingParagraphOption;
 
 /**
- * Custom name of the model specified by the user.
+ * Characters used to distinguish whether a name is a custom model name with a separator.
+ *
+ * @internal
  */
-export type HeadingCustomModel = `heading${ 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K'
-| 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T' | 'U' | 'V' | 'W' | 'X' | '-' | '_' | ':' }${ string }`;
+type HeadingCustomModelSeparator = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K'
+	| 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T' | 'U' | 'V' | 'W' | 'X' | '-' | '_' | ':';
+
+/**
+ * Custom name of the model specified by the user.
+ *
+ * @internal
+ */
+type HeadingCustomModel = `heading${ HeadingCustomModelSeparator }${ string }`;
 
 export interface HeadingElementOption {
 
