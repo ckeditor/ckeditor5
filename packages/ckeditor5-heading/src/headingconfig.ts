@@ -75,12 +75,18 @@ export interface HeadingConfig {
  */
 export type HeadingOption = HeadingElementOption | HeadingParagraphOption;
 
+/**
+ * Custom name of the model specified by the user.
+ */
+export type HeadingCustomModel = `heading${ 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K'
+| 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T' | 'U' | 'V' | 'W' | 'X' | '-' | '_' | ':' }${ string }`;
+
 export interface HeadingElementOption {
 
 	/**
 	 * Name of the model element to convert.
 	 */
-	model: 'heading1' | 'heading2' | 'heading3' | 'heading4' | 'heading5' | 'heading6' | `heading-${ string }`;
+	model: 'heading1' | 'heading2' | 'heading3' | 'heading4' | 'heading5' | 'heading6' | HeadingCustomModel;
 
 	/**
 	 * Definition of a view element to convert from/to.
