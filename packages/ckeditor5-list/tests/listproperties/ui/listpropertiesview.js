@@ -698,7 +698,7 @@ describe( 'ListPropertiesView', () => {
 				sinon.assert.notCalled( spy );
 			} );
 
-			it( 'should not fire #listStart upon #input but display an errir if the field is invalid', () => {
+			it( 'should not fire #listStart upon #input but display an error if the field is invalid', () => {
 				const spy = sinon.spy();
 				view.on( 'listStart', spy );
 
@@ -707,6 +707,17 @@ describe( 'ListPropertiesView', () => {
 
 				sinon.assert.notCalled( spy );
 				expect( view.startIndexFieldView.errorText ).to.equal( 'Start index must be greater than 0.' );
+			} );
+
+			it( 'should not fire #listStart upon #input but display an error if the numeric value is NaN', () => {
+				const spy = sinon.spy();
+				view.on( 'listStart', spy );
+
+				view.startIndexFieldView.fieldView.value = '3e';
+				view.startIndexFieldView.fieldView.fire( 'input' );
+
+				sinon.assert.notCalled( spy );
+				expect( view.startIndexFieldView.errorText ).to.equal( 'Invalid start index value.' );
 			} );
 		} );
 
