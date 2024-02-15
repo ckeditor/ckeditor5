@@ -80,7 +80,8 @@ function findAllShapesIds( documentFragment: ViewDocumentFragment, writer: Upcas
 		const el = value.item as ViewElement;
 		const previousSibling = el.previousSibling;
 		const prevSiblingName = previousSibling && previousSibling.is( 'element' ) ? previousSibling.name : null;
-		// List of ids which should not be considered as shapes.
+		// If shape element has 'o:gfxdata' attribute and is not directly before
+		// `<v:shapetype>` element it means that it represents a Word shape.
 		// https://github.com/ckeditor/ckeditor5/pull/15847#issuecomment-1941543983
 		const exceptionIds = [ 'Chart' ];
 
