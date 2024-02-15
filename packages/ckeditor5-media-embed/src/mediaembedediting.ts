@@ -269,6 +269,19 @@ export default class MediaEmbedEditing extends Plugin {
 					}
 				},
 				{
+					name: 'Fireflies.AI',
+					url: [
+						/^https:\/\/app\.fireflies\.ai\/view\/[a-zA-Z0-9-_]+::([a-zA-Z0-9-_]+)?$/
+					],
+					html: match => {
+						const id = match[ 1 ];
+						const src = `https://share.fireflies.ai/embed/meetings/${ id }`;
+						return (
+							`<div style="position: relative; height: 431px;"><iframe src="${ src }" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>`
+						);
+					}
+				},
+				{
 					name: 'FJLink',
 					url: [
 						/^((?:.)+flockjay.com)\/(course|learningpath|hub|page|opportunity|classroom)\/(?!create)([\w=?&-]+)(\/)?$/,
