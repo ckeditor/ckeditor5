@@ -11,10 +11,11 @@ import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 
 import {
 	Matcher,
+	StylesMap,
 	type MatcherPattern,
+	type Match,
 	type UpcastConversionApi,
 	type ViewElement,
-	type MatchResult,
 	type ViewConsumable,
 	type MatcherObjectPattern,
 	type DocumentSelectionChangeAttributeEvent
@@ -808,6 +809,7 @@ export interface DataFilterRegisterEvent {
  * Matches and consumes the given view attributes.
  */
 function consumeAttributes( viewElement: ViewElement, conversionApi: UpcastConversionApi, matcher: Matcher ) {
+	const stylesProcessor = viewElement.document.stylesProcessor;
 	const matches = consumeAttributeMatches( viewElement, conversionApi, matcher );
 	const { attributes, styles, classes } = mergeMatchResults( matches );
 	const viewAttributes: GHSViewAttributes = {};
@@ -825,12 +827,37 @@ function consumeAttributes( viewElement: ViewElement, conversionApi: UpcastConve
 		viewAttributes.attributes = iterableToObject( attributes, key => viewElement.getAttribute( key ) );
 	}
 
-	if ( styles.size ) {
-		viewAttributes.styles = iterableToObject( styles, key => viewElement.getStyle( key ) );
-	}
-
 	if ( classes.size ) {
 		viewAttributes.classes = Array.from( classes );
+	}
+
+	if ( styles.size ) {
+		// Gather all consumed styles.
+		const stylesMap = new StylesMap( stylesProcessor );
+
+		for ( const key of styles ) {
+			const styleValue = viewElement.getStyle( key );
+
+			if ( styleValue !== undefined ) {
+				stylesMap.set( key, styleValue );
+
+				continue;
+			}
+
+			// Find other longhand styles that were consumed but can not be returned for shorthand name.
+			for ( const relatedKey of stylesProcessor.getRelatedStyles( key ) ) {
+				const relatedValue = viewElement.getStyle( relatedKey );
+
+				// Set all styles on the StyleMap, so later we can get the minimal set of styles
+				// (without duplication of multiple shorthand notations).
+				if ( relatedValue !== undefined ) {
+					stylesMap.set( relatedKey, relatedValue );
+				}
+			}
+		}
+
+		// Output styles in the reduced form.
+		viewAttributes.styles = Object.fromEntries( stylesMap.getStylesEntries() );
 	}
 
 	if ( !Object.keys( viewAttributes ).length ) {
@@ -845,17 +872,17 @@ function consumeAttributes( viewElement: ViewElement, conversionApi: UpcastConve
  *
  * @returns Array with match information about found attributes.
  */
-function consumeAttributeMatches( viewElement: ViewElement, { consumable }: UpcastConversionApi, matcher: Matcher ): Array<MatchResult> {
+function consumeAttributeMatches( viewElement: ViewElement, { consumable }: UpcastConversionApi, matcher: Matcher ): Array<Match> {
 	const matches = matcher.matchAll( viewElement ) || [];
-	const consumedMatches = [];
+	const consumedMatches: Array<Match> = [];
 
-	for ( const match of matches ) {
+	for ( const { match } of matches ) {
 		removeConsumedAttributes( consumable, viewElement, match );
 
 		// We only want to consume attributes, so element can be still processed by other converters.
-		delete match.match.name;
+		delete match.name;
 
-		consumable.consume( viewElement, match.match );
+		consumable.consume( viewElement, match );
 		consumedMatches.push( match );
 	}
 
@@ -865,9 +892,9 @@ function consumeAttributeMatches( viewElement: ViewElement, { consumable }: Upca
 /**
  * Removes attributes from the given match that were already consumed by other converters.
  */
-function removeConsumedAttributes( consumable: ViewConsumable, viewElement: ViewElement, match: MatchResult ) {
+function removeConsumedAttributes( consumable: ViewConsumable, viewElement: ViewElement, match: Match ) {
 	for ( const key of [ 'attributes', 'classes', 'styles' ] as const ) {
-		const attributes = match.match[ key ];
+		const attributes = match[ key ];
 
 		if ( !attributes ) {
 			continue;
@@ -891,7 +918,7 @@ function removeConsumedAttributes( consumable: ViewConsumable, viewElement: View
  * - styles Set with matched style names.
  * - classes Set with matched class names.
  */
-function mergeMatchResults( matches: Array<MatchResult> ):
+function mergeMatchResults( matches: Array<Match> ):
 {
 	attributes: Set<string>;
 	styles: Set<string>;
@@ -905,7 +932,7 @@ function mergeMatchResults( matches: Array<MatchResult> ):
 
 	for ( const match of matches ) {
 		for ( const key in matchResult ) {
-			const values: Array<string> = match.match[ key as keyof typeof matchResult ] || [];
+			const values: Array<string> = match[ key as keyof typeof matchResult ] || [];
 
 			values.forEach( value => ( matchResult[ key as keyof typeof matchResult ] ).add( value ) );
 		}
@@ -922,8 +949,9 @@ function iterableToObject( iterable: Set<string>, getValue: ( s: string ) => any
 
 	for ( const prop of iterable ) {
 		const value = getValue( prop );
+
 		if ( value !== undefined ) {
-			attributesObject[ prop ] = getValue( prop );
+			attributesObject[ prop ] = value;
 		}
 	}
 
