@@ -366,6 +366,7 @@ export default class ListPropertiesView extends View {
 			const startIndex = inputElement.valueAsNumber;
 
 			if ( Number.isNaN( startIndex ) ) {
+				// There are several inputs that can result in NaN value, examples are: `e`, `123e`, `2-` (ending with a special char).
 				startIndexFieldView.errorText = t( 'Invalid start index value.' );
 				return;
 			}

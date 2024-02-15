@@ -719,6 +719,25 @@ describe( 'ListPropertiesView', () => {
 				sinon.assert.notCalled( spy );
 				expect( view.startIndexFieldView.errorText ).to.equal( 'Invalid start index value.' );
 			} );
+
+			it( 'should hide an error and proceed to fire #listStart when previously invalid value gets corrected', () => {
+				const spy = sinon.spy();
+				view.on( 'listStart', spy );
+
+				// Check for error.
+				view.startIndexFieldView.fieldView.value = '3e';
+				view.startIndexFieldView.fieldView.fire( 'input' );
+
+				sinon.assert.notCalled( spy );
+				expect( view.startIndexFieldView.errorText ).to.equal( 'Invalid start index value.' );
+
+				// And revert to valid state (clear error).
+				view.startIndexFieldView.fieldView.value = '32';
+				view.startIndexFieldView.fieldView.fire( 'input' );
+
+				sinon.assert.calledOnce( spy );
+				expect( view.startIndexFieldView.errorText ).to.be.null;
+			} );
 		} );
 
 		describe( '#reversedSwitchButtonView', () => {
