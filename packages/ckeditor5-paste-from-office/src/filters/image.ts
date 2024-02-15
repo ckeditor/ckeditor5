@@ -80,17 +80,23 @@ function findAllShapesIds( documentFragment: ViewDocumentFragment, writer: Upcas
 		const el = value.item as ViewElement;
 		const previousSibling = el.previousSibling;
 		const prevSiblingName = previousSibling && previousSibling.is( 'element' ) ? previousSibling.name : null;
-		// If shape element has 'o:gfxdata' attribute and is not directly before
-		// `<v:shapetype>` element it means that it represents a Word shape.
+		// List of ids which should not be considered as shapes.
 		// https://github.com/ckeditor/ckeditor5/pull/15847#issuecomment-1941543983
 		const exceptionIds = [ 'Chart' ];
 
-		// If shape element have 'o:gfxdata' attribute and is not directly before `<v:shapetype>` element it means it represent Word shape.
+		const isElementAShape = shapeElementsMatcher.match( el );
+		const hasElementGfxdataAttribute = el.getAttribute( 'o:gfxdata' );
+		const isPreviousSiblingAShapeType = prevSiblingName === 'v:shapetype';
+		const isElementIdInExcpetionsArray = hasElementGfxdataAttribute &&
+			exceptionIds.some( item => el.getAttribute( 'id' )!.includes( item ) );
+
+		// If shape element has 'o:gfxdata' attribute and is not directly before
+		// `<v:shapetype>` element it means that it represents a Word shape.
 		if (
-			shapeElementsMatcher.match( el ) &&
-			el.getAttribute( 'o:gfxdata' ) &&
-			prevSiblingName !== 'v:shapetype' &&
-			!exceptionIds.some( item => el.getAttribute( 'id' )!.includes( item ) )
+			isElementAShape &&
+			hasElementGfxdataAttribute &&
+			!isPreviousSiblingAShapeType &&
+			!isElementIdInExcpetionsArray
 		) {
 			shapesIds.push( ( value.item as ViewElement ).getAttribute( 'id' )! );
 		}
