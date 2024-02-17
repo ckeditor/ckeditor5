@@ -861,27 +861,36 @@ function consumeAttributes( viewElement: ViewElement, conversionApi: UpcastConve
  */
 function consumeAttributeMatches( viewElement: ViewElement, { consumable }: UpcastConversionApi, matcher: Matcher ): Array<Match> {
 	const matches = matcher.matchAll( viewElement ) || [];
-	const consumedMatches: Array<Match> = [];
+	const stylesProcessor = viewElement.document.stylesProcessor;
 
-	for ( const { match } of matches ) {
+	return matches.reduce( ( consumedMatches, { match } ) => {
 		// Inject other forms of the same style as those could be matched but not present in the element directly.
 		if ( match.styles ) {
-			// Iterating over a copy of an array so adding items doesn't influence iteration.
-			for ( const style of Array.from( match.styles ) ) {
-				match.styles.push( ...viewElement.document.stylesProcessor.getRelatedStyles( style ) );
+			for ( const style of match.styles ) {
+				for ( const relatedStyle of stylesProcessor.getRelatedStyles( style ) ) {
+					consumedMatches.push( consumeAttributeMatch( viewElement, consumable, {
+						styles: [ relatedStyle ]
+					} ) );
+				}
 			}
 		}
 
-		removeConsumedAttributes( consumable, viewElement, match );
+		return consumedMatches.concat( consumeAttributeMatch( viewElement, consumable, match ) );
+	}, [] as Array<Match> );
+}
 
-		// We only want to consume attributes, so element can be still processed by other converters.
-		delete match.name;
+/**
+ * TODO
+ */
+function consumeAttributeMatch( viewElement: ViewElement, consumable: ViewConsumable, match: Match ): Match {
+	removeConsumedAttributes( consumable, viewElement, match );
 
-		consumable.consume( viewElement, match );
-		consumedMatches.push( match );
-	}
+	// We only want to consume attributes, so element can be still processed by other converters.
+	delete match.name;
 
-	return consumedMatches;
+	consumable.consume( viewElement, match );
+
+	return match;
 }
 
 /**
