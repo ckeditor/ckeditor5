@@ -832,7 +832,7 @@ function consumeAttributes( viewElement: ViewElement, conversionApi: UpcastConve
 	}
 
 	if ( styles.size ) {
-		// Gather all consumed styles.
+		// Use StyleMap to reduce style value to the minimal form (without shorthand and long-hand notation and duplication).
 		const stylesMap = new StylesMap( stylesProcessor );
 
 		for ( const key of styles ) {
@@ -840,19 +840,6 @@ function consumeAttributes( viewElement: ViewElement, conversionApi: UpcastConve
 
 			if ( styleValue !== undefined ) {
 				stylesMap.set( key, styleValue );
-
-				continue;
-			}
-
-			// Find other longhand styles that were consumed but can not be returned for shorthand name.
-			for ( const relatedKey of stylesProcessor.getRelatedStyles( key ) ) {
-				const relatedValue = viewElement.getStyle( relatedKey );
-
-				// Set all styles on the StyleMap, so later we can get the minimal set of styles
-				// (without duplication of multiple shorthand notations).
-				if ( relatedValue !== undefined ) {
-					stylesMap.set( relatedKey, relatedValue );
-				}
 			}
 		}
 
@@ -877,6 +864,14 @@ function consumeAttributeMatches( viewElement: ViewElement, { consumable }: Upca
 	const consumedMatches: Array<Match> = [];
 
 	for ( const { match } of matches ) {
+		// Inject other forms of the same style as those could be matched but not present in the element directly.
+		if ( match.styles ) {
+			// Iterating over a copy of an array so adding items doesn't influence iteration.
+			for ( const style of Array.from( match.styles ) ) {
+				match.styles.push( ...viewElement.document.stylesProcessor.getRelatedStyles( style ) );
+			}
+		}
+
 		removeConsumedAttributes( consumable, viewElement, match );
 
 		// We only want to consume attributes, so element can be still processed by other converters.
