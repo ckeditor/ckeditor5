@@ -87,7 +87,7 @@ function findAllShapesIds( documentFragment: ViewDocumentFragment, writer: Upcas
 		const isElementAShape = shapeElementsMatcher.match( el );
 		const hasElementGfxdataAttribute = el.getAttribute( 'o:gfxdata' );
 		const isPreviousSiblingAShapeType = prevSiblingName === 'v:shapetype';
-		const isElementIdInExcpetionsArray = hasElementGfxdataAttribute &&
+		const isElementIdInExceptionsArray = hasElementGfxdataAttribute &&
 			exceptionIds.some( item => el.getAttribute( 'id' )!.includes( item ) );
 
 		// If shape element has 'o:gfxdata' attribute and is not directly before
@@ -96,7 +96,7 @@ function findAllShapesIds( documentFragment: ViewDocumentFragment, writer: Upcas
 			isElementAShape &&
 			hasElementGfxdataAttribute &&
 			!isPreviousSiblingAShapeType &&
-			!isElementIdInExcpetionsArray
+			!isElementIdInExceptionsArray
 		) {
 			shapesIds.push( ( value.item as ViewElement ).getAttribute( 'id' )! );
 		}
