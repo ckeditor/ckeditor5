@@ -52,6 +52,17 @@ export default class FindAndReplaceUtils extends Plugin {
 	): Collection<ResultType> {
 		const results = startResults || new Collection();
 
+		const checkIfResultAlreadyOnList = ( marker: Marker ) => results.find(
+			markerItem => {
+				const { marker: resultsMarker } = markerItem;
+
+				const resultRange = resultsMarker!.getRange();
+				const markerRange = marker.getRange();
+
+				return resultRange.isEqual( markerRange );
+			}
+		);
+
 		model.change( writer => {
 			[ ...range ].forEach( ( { type, item } ) => {
 				if ( type === 'elementStart' ) {
@@ -78,14 +89,16 @@ export default class FindAndReplaceUtils extends Plugin {
 
 							const index = findInsertIndex( results, marker );
 
-							results.add(
-								{
-									id: resultId,
-									label: foundItem.label,
-									marker
-								},
-								index
-							);
+							if ( !checkIfResultAlreadyOnList( marker ) ) {
+								results.add(
+									{
+										id: resultId,
+										label: foundItem.label,
+										marker
+									},
+									index
+								);
+							}
 						} );
 					}
 				}
