@@ -312,11 +312,16 @@ export default class DataFilter extends Plugin {
 	 * - classes Set with matched class names.
 	 */
 	public processViewAttributes( viewElement: ViewElement, conversionApi: UpcastConversionApi ): GHSViewAttributes | null {
+		const { consumable } = conversionApi;
+
 		// Make sure that the disabled attributes are handled before the allowed attributes are called.
 		// For example, for block images the <figure> converter triggers conversion for <img> first and then for other elements, i.e. <a>.
-		consumeAttributes( viewElement, conversionApi, this._disallowedAttributes );
+		matchAndConsumeAttributes( viewElement, this._disallowedAttributes, consumable );
 
-		return consumeAttributes( viewElement, conversionApi, this._allowedAttributes );
+		const matches = matchAndConsumeAttributes( viewElement, this._allowedAttributes, consumable );
+		const mergedMatches = mergeMatchResults( matches );
+
+		return normalizeGHSAttribute( viewElement, mergedMatches );
 	}
 
 	/**
@@ -806,52 +811,33 @@ export interface DataFilterRegisterEvent {
 }
 
 /**
- * Matches and consumes the given view attributes.
+ * TODO
  */
-function consumeAttributes( viewElement: ViewElement, conversionApi: UpcastConversionApi, matcher: Matcher ) {
-	const stylesProcessor = viewElement.document.stylesProcessor;
-	const matches = consumeAttributeMatches( viewElement, conversionApi, matcher );
-	const { attributes, styles, classes } = mergeMatchResults( matches );
-	const viewAttributes: GHSViewAttributes = {};
-
-	// Remove invalid DOM element attributes.
-	if ( attributes.size ) {
-		for ( const key of attributes ) {
-			if ( !isValidAttributeName( key as string ) ) {
-				attributes.delete( key );
-			}
-		}
+function normalizeGHSAttribute(
+	viewElement: ViewElement,
+	{ attributes, classes, styles }: {
+		attributes: Set<string>;
+		classes: Set<string>;
+		styles: Set<string>;
 	}
-
-	if ( attributes.size ) {
-		viewAttributes.attributes = iterableToObject( attributes, key => viewElement.getAttribute( key ) );
-	}
-
-	if ( classes.size ) {
-		viewAttributes.classes = Array.from( classes );
-	}
-
-	if ( styles.size ) {
-		// Use StyleMap to reduce style value to the minimal form (without shorthand and long-hand notation and duplication).
-		const stylesMap = new StylesMap( stylesProcessor );
-
-		for ( const key of styles ) {
-			const styleValue = viewElement.getStyle( key );
-
-			if ( styleValue !== undefined ) {
-				stylesMap.set( key, styleValue );
-			}
-		}
-
-		// Output styles in the reduced form.
-		viewAttributes.styles = Object.fromEntries( stylesMap.getStylesEntries() );
-	}
-
-	if ( !Object.keys( viewAttributes ).length ) {
+): GHSViewAttributes | null {
+	if ( !attributes.size && !classes.size && !styles.size ) {
 		return null;
 	}
 
-	return viewAttributes;
+	return {
+		...( attributes.size && {
+			attributes: normalizeAttributes( viewElement, attributes )
+		} ),
+
+		...( styles.size && {
+			styles: normalizeStyles( viewElement, styles )
+		} ),
+
+		...( classes.size && {
+			classes: Array.from( classes )
+		} )
+	};
 }
 
 /**
@@ -859,7 +845,11 @@ function consumeAttributes( viewElement: ViewElement, conversionApi: UpcastConve
  *
  * @returns Array with match information about found attributes.
  */
-function consumeAttributeMatches( viewElement: ViewElement, { consumable }: UpcastConversionApi, matcher: Matcher ): Array<Match> {
+function matchAndConsumeAttributes(
+	viewElement: ViewElement,
+	matcher: Matcher,
+	consumable: ViewConsumable
+): Array<Match> {
 	const matches = matcher.matchAll( viewElement ) || [];
 	const stylesProcessor = viewElement.document.stylesProcessor;
 
@@ -922,12 +912,12 @@ function removeConsumedAttributes( consumable: ViewConsumable, viewElement: View
  * - styles Set with matched style names.
  * - classes Set with matched class names.
  */
-function mergeMatchResults( matches: Array<Match> ):
-{
+function mergeMatchResults( matches: Array<Match> ): {
 	attributes: Set<string>;
-	styles: Set<string>;
 	classes: Set<string>;
+	styles: Set<string>;
 } {
+	const keys = [ 'attributes', 'classes', 'styles' ] as const;
 	const matchResult = {
 		attributes: new Set<string>(),
 		classes: new Set<string>(),
@@ -935,10 +925,10 @@ function mergeMatchResults( matches: Array<Match> ):
 	};
 
 	for ( const match of matches ) {
-		for ( const key in matchResult ) {
-			const values: Array<string> = match[ key as keyof typeof matchResult ] || [];
-
-			values.forEach( value => ( matchResult[ key as keyof typeof matchResult ] ).add( value ) );
+		for ( const key of keys ) {
+			for ( const value of match[ key ] || [] ) {
+				matchResult[ key ].add( value );
+			}
 		}
 	}
 
@@ -946,20 +936,38 @@ function mergeMatchResults( matches: Array<Match> ):
 }
 
 /**
- * Converts the given iterable object into an object.
+ * Returns list of attributes as a normalized object.
  */
-function iterableToObject( iterable: Set<string>, getValue: ( s: string ) => any ) {
-	const attributesObject: Record<string, any> = {};
+function normalizeAttributes( viewElement: ViewElement, attributes: Iterable<string> ): Record<string, string> {
+	const attributesObject: Record<string, string> = {};
 
-	for ( const prop of iterable ) {
-		const value = getValue( prop );
+	for ( const key of attributes ) {
+		const value = viewElement.getAttribute( key );
 
-		if ( value !== undefined ) {
-			attributesObject[ prop ] = value;
+		if ( value !== undefined && isValidAttributeName( key ) ) {
+			attributesObject[ key ] = value;
 		}
 	}
 
 	return attributesObject;
+}
+
+/**
+ * Returns list of styles as a normalized object (without redundant entries).
+ */
+function normalizeStyles( viewElement: ViewElement, styles: Iterable<string> ): Record<string, string> {
+	// Use StyleMap to reduce style value to the minimal form (without shorthand and long-hand notation and duplication).
+	const stylesMap = new StylesMap( viewElement.document.stylesProcessor );
+
+	for ( const key of styles ) {
+		const styleValue = viewElement.getStyle( key );
+
+		if ( styleValue !== undefined ) {
+			stylesMap.set( key, styleValue );
+		}
+	}
+
+	return Object.fromEntries( stylesMap.getStylesEntries() );
 }
 
 /**
