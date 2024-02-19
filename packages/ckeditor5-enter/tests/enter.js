@@ -39,14 +39,10 @@ describe( 'Enter feature', () => {
 		expect( Enter.pluginName ).to.equal( 'Enter' );
 	} );
 
-	it( 'should provide accessibility help dialog metadata', () => {
-		expect( editor.plugins.get( Enter ).accessibilityMetadata ).to.deep.equal( {
-			keystrokes: [
-				{
-					label: 'Insert a hard break (a new paragraph)',
-					keystroke: 'Enter'
-				}
-			]
+	it( 'should add keystroke accessibility info', () => {
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
+			label: 'Insert a hard break (a new paragraph)',
+			keystroke: 'Enter'
 		} );
 	} );
 

@@ -38,14 +38,10 @@ describe( 'UnderlineEditing', () => {
 		expect( editor.plugins.get( UnderlineEditing ) ).to.be.instanceOf( UnderlineEditing );
 	} );
 
-	it( 'should provide accessibility help dialog metadata', () => {
-		expect( editor.plugins.get( UnderlineEditing ).accessibilityMetadata ).to.deep.equal( {
-			keystrokes: [
-				{
-					label: 'Underline text',
-					keystroke: 'CTRL+U'
-				}
-			]
+	it( 'should add keystroke accessibility info', () => {
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
+			label: 'Underline text',
+			keystroke: 'CTRL+U'
 		} );
 	} );
 

@@ -141,32 +141,29 @@ describe( 'Widget', () => {
 		expect( Widget.pluginName ).to.equal( 'Widget' );
 	} );
 
-	it( 'should provide accessibility help dialog metadata', () => {
-		expect( editor.plugins.get( Widget ).accessibilityMetadata ).to.deep.equal( {
-			keystrokeGroups: [
-				{
-					id: 'widget',
-					label: 'Keystrokes that can be used when a widget is selected (for example: image, table, etc.)',
-					keystrokes: [
-						{
-							label: 'Insert a new paragraph directly after a widget',
-							keystroke: 'Enter'
-						},
-						{
-							label: 'Insert a new paragraph directly before a widget',
-							keystroke: 'Shift+Enter'
-						},
-						{
-							label: 'Move the caret to allow typing directly before a widget',
-							keystroke: [ [ 'arrowup' ], [ 'arrowleft' ] ]
-						},
-						{
-							label: 'Move the caret to allow typing directly after a widget',
-							keystroke: [ [ 'arrowdown' ], [ 'arrowright' ] ]
-						}
-					]
-				}
-			]
+	it( 'should add keystroke accessibility info', () => {
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'widget' ).label ).to.equal(
+			'Keystrokes that can be used when a widget is selected (for example: image, table, etc.)'
+		);
+
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'widget' ).keystrokes ).to.deep.include( {
+			label: 'Insert a new paragraph directly after a widget',
+			keystroke: 'Enter'
+		} );
+
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'widget' ).keystrokes ).to.deep.include( {
+			label: 'Insert a new paragraph directly before a widget',
+			keystroke: 'Shift+Enter'
+		} );
+
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'widget' ).keystrokes ).to.deep.include( {
+			label: 'Move the caret to allow typing directly before a widget',
+			keystroke: [ [ 'arrowup' ], [ 'arrowleft' ] ]
+		} );
+
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'widget' ).keystrokes ).to.deep.include( {
+			label: 'Move the caret to allow typing directly after a widget',
+			keystroke: [ [ 'arrowdown' ], [ 'arrowright' ] ]
 		} );
 	} );
 

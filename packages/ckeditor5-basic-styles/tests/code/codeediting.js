@@ -41,16 +41,12 @@ describe( 'CodeEditing', () => {
 		expect( editor.plugins.get( CodeEditing ) ).to.be.instanceOf( CodeEditing );
 	} );
 
-	it( 'should provide accessibility help dialog metadata', () => {
-		expect( editor.plugins.get( CodeEditing ).accessibilityMetadata ).to.deep.equal( {
-			keystrokes: [
-				{
-					label: 'Move out of an inline code style',
-					keystroke: [
-						[ 'arrowleft', 'arrowleft' ],
-						[ 'arrowright', 'arrowright' ]
-					]
-				}
+	it( 'should add keystroke accessibility info', () => {
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
+			label: 'Move out of an inline code style',
+			keystroke: [
+				[ 'arrowleft', 'arrowleft' ],
+				[ 'arrowright', 'arrowright' ]
 			]
 		} );
 	} );

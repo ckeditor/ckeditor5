@@ -30,18 +30,15 @@ describe( 'UndoEditing', () => {
 		expect( UndoEditing.pluginName ).to.equal( 'UndoEditing' );
 	} );
 
-	it( 'should provide accessibility help dialog metadata', () => {
-		expect( undo.accessibilityMetadata ).to.deep.equal( {
-			keystrokes: [
-				{
-					label: 'Undo',
-					keystroke: 'CTRL+Z'
-				},
-				{
-					label: 'Redo',
-					keystroke: [ [ 'CTRL+Y' ], [ 'CTRL+SHIFT+Z' ] ]
-				}
-			]
+	it( 'should add keystroke accessibility info', () => {
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
+			label: 'Undo',
+			keystroke: 'CTRL+Z'
+		} );
+
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
+			label: 'Redo',
+			keystroke: [ [ 'CTRL+Y' ], [ 'CTRL+SHIFT+Z' ] ]
 		} );
 	} );
 

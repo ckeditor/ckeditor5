@@ -54,32 +54,29 @@ describe( 'TableKeyboard', () => {
 		expect( TableKeyboard.pluginName ).to.equal( 'TableKeyboard' );
 	} );
 
-	it( 'should provide accessibility help dialog metadata', () => {
-		expect( editor.plugins.get( TableKeyboard ).accessibilityMetadata ).to.deep.equal( {
-			keystrokeGroups: [
-				{
-					id: 'table',
-					label: 'Keystrokes that can be used in a table cell',
-					keystrokes: [
-						{
-							label: 'Move the selection to the next cell',
-							keystroke: 'Tab'
-						},
-						{
-							label: 'Move the selection to the previous cell',
-							keystroke: 'Shift+Tab'
-						},
-						{
-							label: 'Insert a new table row (when in the last cell of a table)',
-							keystroke: 'Tab'
-						},
-						{
-							label: 'Navigate through the table',
-							keystroke: [ [ 'arrowup' ], [ 'arrowright' ], [ 'arrowdown' ], [ 'arrowleft' ] ]
-						}
-					]
-				}
-			]
+	it( 'should add keystroke accessibility info', () => {
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'table' ).label ).to.equal(
+			'Keystrokes that can be used in a table cell'
+		);
+
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'table' ).keystrokes ).to.deep.include( {
+			label: 'Move the selection to the next cell',
+			keystroke: 'Tab'
+		} );
+
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'table' ).keystrokes ).to.deep.include( {
+			label: 'Move the selection to the previous cell',
+			keystroke: 'Shift+Tab'
+		} );
+
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'table' ).keystrokes ).to.deep.include( {
+			label: 'Insert a new table row (when in the last cell of a table)',
+			keystroke: 'Tab'
+		} );
+
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'table' ).keystrokes ).to.deep.include( {
+			label: 'Navigate through the table',
+			keystroke: [ [ 'arrowup' ], [ 'arrowright' ], [ 'arrowdown' ], [ 'arrowleft' ] ]
 		} );
 	} );
 

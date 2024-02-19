@@ -37,22 +37,20 @@ describe( 'Clipboard Feature', () => {
 		expect( Clipboard.pluginName ).to.equal( 'Clipboard' );
 	} );
 
-	it( 'should provide accessibility help dialog metadata', () => {
-		expect( editor.plugins.get( Clipboard ).accessibilityMetadata ).to.deep.equal( {
-			keystrokes: [
-				{
-					label: 'Copy selected content',
-					keystroke: 'CTRL+C'
-				},
-				{
-					label: 'Paste content',
-					keystroke: 'CTRL+V'
-				},
-				{
-					label: 'Paste content as plain text',
-					keystroke: 'CTRL+SHIFT+V'
-				}
-			]
+	it( 'should provide keystroke accessibility info', () => {
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
+			label: 'Copy selected content',
+			keystroke: 'CTRL+C'
+		} );
+
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
+			label: 'Paste content',
+			keystroke: 'CTRL+V'
+		} );
+
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
+			label: 'Paste content as plain text',
+			keystroke: 'CTRL+SHIFT+V'
 		} );
 	} );
 } );

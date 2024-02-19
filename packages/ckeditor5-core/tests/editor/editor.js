@@ -19,6 +19,7 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 import testUtils from '../../tests/_utils/utils.js';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import Accessibility from '../../src/accessibility.js';
 
 class TestEditor extends Editor {
 	static create( config ) {
@@ -130,6 +131,7 @@ describe( 'Editor', () => {
 		it( 'should create a new editor instance', () => {
 			const editor = new TestEditor();
 
+			expect( editor.accessibility ).to.be.an.instanceof( Accessibility );
 			expect( editor.config ).to.be.an.instanceof( Config );
 			expect( editor.commands ).to.be.an.instanceof( CommandCollection );
 			expect( editor.editing ).to.be.instanceof( EditingController );

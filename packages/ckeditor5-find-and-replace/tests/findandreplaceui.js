@@ -63,14 +63,10 @@ describe( 'FindAndReplaceUI', () => {
 				return editor.destroy();
 			} );
 
-			it( 'should provide accessibility help dialog metadata', () => {
-				expect( editor.plugins.get( FindAndReplaceUI ).accessibilityMetadata ).to.deep.equal( {
-					keystrokes: [
-						{
-							label: 'Find in the document',
-							keystroke: 'CTRL+F'
-						}
-					]
+			it( 'should add keystroke accessibility info', () => {
+				expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
+					label: 'Find in the document',
+					keystroke: 'CTRL+F'
 				} );
 			} );
 
@@ -486,14 +482,10 @@ describe( 'FindAndReplaceUI', () => {
 				return editor.destroy();
 			} );
 
-			it( 'should provide accessibility help dialog metadata', () => {
-				expect( editor.plugins.get( FindAndReplaceUI ).accessibilityMetadata ).to.deep.equal( {
-					keystrokes: [
-						{
-							label: 'Find in the document',
-							keystroke: 'CTRL+F'
-						}
-					]
+			it( 'should add keystroke accessibility info', () => {
+				expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
+					label: 'Find in the document',
+					keystroke: 'CTRL+F'
 				} );
 			} );
 

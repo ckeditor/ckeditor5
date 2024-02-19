@@ -38,14 +38,10 @@ describe( 'ItalicEditing', () => {
 		expect( editor.plugins.get( ItalicEditing ) ).to.be.instanceOf( ItalicEditing );
 	} );
 
-	it( 'should provide accessibility help dialog metadata', () => {
-		expect( editor.plugins.get( ItalicEditing ).accessibilityMetadata ).to.deep.equal( {
-			keystrokes: [
-				{
-					label: 'Italic text',
-					keystroke: 'CTRL+I'
-				}
-			]
+	it( 'should add keystroke accessibility info', () => {
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
+			label: 'Italic text',
+			keystroke: 'CTRL+I'
 		} );
 	} );
 
