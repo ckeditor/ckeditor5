@@ -73,29 +73,47 @@ export interface HeadingConfig {
 /**
  * Heading option descriptor.
  */
-export type HeadingOption = HeadingElementOption | HeadingParagraphOption;
-
-/**
- * Characters used to distinguish whether a name is a custom model name with a separator.
- *
- * @internal
- */
-type HeadingCustomModelSeparator = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K'
-	| 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T' | 'U' | 'V' | 'W' | 'X' | '-' | '_' | ':';
-
-/**
- * Custom name of the model specified by the user.
- *
- * @internal
- */
-type HeadingCustomModel = `heading${ HeadingCustomModelSeparator }${ string }`;
+export type HeadingOption = HeadingElementOption | HeadingParagraphOption | HeadingCustomElementOption;
 
 export interface HeadingElementOption {
 
 	/**
 	 * Name of the model element to convert.
 	 */
-	model: 'heading1' | 'heading2' | 'heading3' | 'heading4' | 'heading5' | 'heading6' | HeadingCustomModel;
+	model: 'heading1' | 'heading2' | 'heading3' | 'heading4' | 'heading5' | 'heading6';
+
+	/**
+	 * Definition of a view element to convert from/to.
+	 */
+	view: ViewElementDefinition;
+
+	/**
+	 * The user-readable title of the option.
+	 */
+	title: string;
+
+	/**
+	 * The class which will be added to the dropdown item representing this option.
+	 */
+	class: string;
+
+	/**
+	 * Icon used by {@link module:heading/headingbuttonsui~HeadingButtonsUI}. It can be omitted when using the default configuration.
+	 */
+	icon?: string;
+
+	/**
+	 * An array with all matched elements that the view-to-model conversion should also accept.
+	 */
+	upcastAlso?: ArrayOrItem<ViewElementDefinition | MatcherPattern>;
+}
+
+export interface HeadingCustomElementOption {
+
+	/**
+	 * Name of the model element to convert.
+	 */
+	model: `heading${ string }`;
 
 	/**
 	 * Definition of a view element to convert from/to.
