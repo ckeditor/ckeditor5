@@ -18,7 +18,6 @@ import ContextWatchdog from '@ckeditor/ckeditor5-watchdog/src/contextwatchdog.js
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
 import BalloonToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/balloon/balloontoolbar.js';
-import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin.js';
 import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementapimixin.js';
 import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement.js';
 
@@ -65,10 +64,6 @@ describe( 'BalloonEditor', () => {
 
 		it( 'uses HTMLDataProcessor', () => {
 			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
-		} );
-
-		it( 'has a Data Interface', () => {
-			testUtils.isMixed( BalloonEditor, DataApiMixin );
 		} );
 
 		it( 'has a Element Interface', () => {
@@ -417,7 +412,7 @@ describe( 'BalloonEditor', () => {
 					plugins: [ ArticlePluginSet ],
 					toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
 					image: {
-						toolbar: [ 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
+						toolbar: [ 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative' ]
 					}
 				} ) );
 	} );

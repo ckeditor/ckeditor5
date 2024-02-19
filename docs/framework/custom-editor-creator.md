@@ -16,7 +16,7 @@ This guide goes through the process of implementing a custom, multi-root editor.
 The `*Editor` class is the main class of each editor type. It initializes the whole editor and its UI parts. The custom creator class should extend the {@link module:core/editor/editor~Editor base `Editor` class}. For a multi-root editor, it may look like below:
 
 ```js
-import { DataApiMixin, Editor } from '@ckeditor/ckeditor5-core';
+import { Editor } from '@ckeditor/ckeditor5-core';
 import { getDataFromElement, setDataInElement } from '@ckeditor/ckeditor5-utils';
 
 /**
@@ -27,11 +27,10 @@ import { getDataFromElement, setDataInElement } from '@ckeditor/ckeditor5-utils'
  * This type of an editor is dedicated to integrations which require a customized UI with an open
  * structure, allowing developers to specify the exact location of the interface.
  *
- * @mixes module:core/editor/utils/dataapimixin~DataApiMixin
  * @implements module:core/editor/editorwithui~EditorWithUI
  * @extends module:core/editor/editor~Editor
  */
-class MultirootEditor extends DataApiMixin( Editor ) {
+class MultirootEditor extends Editor {
 	/**
 	 * Creates an instance of the multi-root editor.
 	 *

@@ -43,11 +43,6 @@ describe( 'ModelTestEditor', () => {
 
 			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( RootElement );
 		} );
-
-		it( 'mixes DataApiMixin', () => {
-			expect( ModelTestEditor.prototype ).have.property( 'setData' ).to.be.a( 'function' );
-			expect( ModelTestEditor.prototype ).have.property( 'getData' ).to.be.a( 'function' );
-		} );
 	} );
 
 	describe( 'setData', () => {

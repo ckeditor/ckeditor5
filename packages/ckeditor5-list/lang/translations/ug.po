@@ -67,51 +67,51 @@ msgstr "چوڭ رىم رەقىمى تىزىم ئۇسلۇبىغا ئالماشت�
 
 msgctxt "The ARIA label of the button that toggles the \"lower–latin\" list style."
 msgid "Toggle the lower–latin list style"
-msgstr ""
+msgstr "كىچىك لاتىن رەقىمى تىزىم ئۇسلۇبىغا ئالماشتۇر"
 
 msgctxt "The ARIA label of the button that toggles the \"upper–latin\" list style."
 msgid "Toggle the upper–latin list style"
-msgstr ""
+msgstr "چوڭ لاتىن رەقىمى تىزىم ئۇسلۇبىغا ئالماشتۇر"
 
 msgctxt "The tooltip text of the button that toggles the \"disc\" list style."
 msgid "Disc"
-msgstr ""
+msgstr "ئۇيۇل چەمبەر"
 
 msgctxt "The tooltip text of the button that toggles the \"circle\" list style."
 msgid "Circle"
-msgstr ""
+msgstr "چەمبەر"
 
 msgctxt "The tooltip text of the button that toggles the \"square\" list style."
 msgid "Square"
-msgstr ""
+msgstr "چاسا"
 
 msgctxt "The tooltip text of the button that toggles the \"decimal\" list style."
 msgid "Decimal"
-msgstr ""
+msgstr "ئونلۇق كەسىر"
 
 msgctxt "The tooltip text of the button that toggles the \"decimal with leading zero\" list style."
 msgid "Decimal with leading zero"
-msgstr ""
+msgstr "نۆل بىلەن باشلانغان ئونلۇق كەسىر"
 
 msgctxt "The tooltip text of the button that toggles the \"lower–roman\" list style."
 msgid "Lower–roman"
-msgstr ""
+msgstr "كىچىك رىم رەقىمى"
 
 msgctxt "The tooltip text of the button that toggles the \"upper–roman\" list style."
 msgid "Upper-roman"
-msgstr ""
+msgstr "چوڭ رىم رەقىمى"
 
 msgctxt "The tooltip text of the button that toggles the \"lower–latin\" list style."
 msgid "Lower-latin"
-msgstr ""
+msgstr "كىچىك لاتىن رەقىمى"
 
 msgctxt "The tooltip text of the button that toggles the \"upper–latin\" list style."
 msgid "Upper-latin"
-msgstr ""
+msgstr "چوڭ لاتىن رەقىمى"
 
 msgctxt "The label of the button that toggles the visibility of additional numbered list property UI fields."
 msgid "List properties"
-msgstr ""
+msgstr "تىزىم خاسلىقى"
 
 msgctxt "The label of the input allowing to change the start index of a numbered list."
 msgid "Start at"

@@ -22,6 +22,9 @@ export default class IconView extends View {
 	/**
 	 * The SVG source of the icon.
 	 *
+	 * The user must provide the entire XML string, not just the path. See the
+	 * {@glink framework/architecture/ui-library#setting-label-icon-and-tooltip UI library} guide for details.
+	 *
 	 * @observable
 	 */
 	declare public content: string | undefined;
