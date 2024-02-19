@@ -824,26 +824,36 @@ function matchAndConsumeAttributes(
 	const stylesProcessor = viewElement.document.stylesProcessor;
 
 	return matches.reduce( ( result, { match } ) => {
+		// Verify and consume styles.
 		for ( const style of match.styles || [] ) {
-			// Check other forms of the same style as those could be matched
+			// Check longer forms of the same style as those could be matched
 			// but not present in the element directly.
 			for ( const relatedStyle of stylesProcessor.getRelatedStyles( style ) ) {
+				// Consider only longhand (or longer than current notation) so that
+				// we do not include all sides of the box if only one side is allowed.
+				if ( relatedStyle.split( '-' ).length <= style.split( '-' ).length ) {
+					continue;
+				}
+
 				if ( consumable.consume( viewElement, { styles: [ relatedStyle ] } ) ) {
 					result.styles.push( relatedStyle );
 				}
 			}
 
+			// Verify and consume style as specified in the matcher.
 			if ( consumable.consume( viewElement, { styles: [ style ] } ) ) {
 				result.styles.push( style );
 			}
 		}
 
+		// Verify and consume class names.
 		for ( const className of match.classes || [] ) {
 			if ( consumable.consume( viewElement, { classes: [ className ] } ) ) {
 				result.classes.push( className );
 			}
 		}
 
+		// Verify and consume other attributes.
 		for ( const attributeName of match.attributes || [] ) {
 			if ( consumable.consume( viewElement, { attributes: [ attributeName ] } ) ) {
 				result.attributes.push( attributeName );

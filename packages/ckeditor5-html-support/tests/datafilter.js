@@ -3970,6 +3970,28 @@ describe( 'DataFilter', () => {
 			expect( editor.getData() ).to.equal( '<p style="background-color:red;">foobar</p>' );
 		} );
 
+		it( 'should handle shorthand style for longhand filter (background vs background-color)', () => {
+			editor.data.addStyleProcessorRules( addBackgroundRules );
+
+			dataFilter.allowElement( 'p' );
+			dataFilter.allowAttributes( { name: 'p', styles: 'background' } );
+
+			editor.setData( '<p style="background-color:red;">foobar</p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph htmlPAttributes="(1)">foobar</paragraph>',
+				attributes: {
+					1: {
+						styles: {
+							'background-color': 'red'
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p style="background-color:red;">foobar</p>' );
+		} );
+
 		it( 'should handle partial padding for generic padding filter (single box side)', () => {
 			editor.data.addStyleProcessorRules( addPaddingRules );
 
@@ -3977,6 +3999,28 @@ describe( 'DataFilter', () => {
 			dataFilter.allowAttributes( { name: 'p', styles: 'padding' } );
 
 			editor.setData( '<p style="padding-left:10px;">foobar</p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph htmlPAttributes="(1)">foobar</paragraph>',
+				attributes: {
+					1: {
+						styles: {
+							'padding-left': '10px'
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p style="padding-left:10px;">foobar</p>' );
+		} );
+
+		it( 'should handle partial padding for specific full padding filter (single box side)', () => {
+			editor.data.addStyleProcessorRules( addPaddingRules );
+
+			dataFilter.allowElement( 'p' );
+			dataFilter.allowAttributes( { name: 'p', styles: 'padding-left' } );
+
+			editor.setData( '<p style="padding:10px;">foobar</p>' );
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data: '<paragraph htmlPAttributes="(1)">foobar</paragraph>',
@@ -4057,6 +4101,50 @@ describe( 'DataFilter', () => {
 			} );
 
 			expect( editor.getData() ).to.equal( '<p style="border-bottom:3px dotted red;">foobar</p>' );
+		} );
+
+		it( 'should handle partial border for partial border filter (box bottom side)', () => {
+			editor.data.addStyleProcessorRules( addBorderRules );
+
+			dataFilter.allowElement( 'p' );
+			dataFilter.allowAttributes( { name: 'p', styles: 'border-bottom' } );
+
+			editor.setData( '<p style="border: 3px dotted red;">foobar</p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph htmlPAttributes="(1)">foobar</paragraph>',
+				attributes: {
+					1: {
+						styles: {
+							'border-bottom': '3px dotted red'
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p style="border-bottom:3px dotted red;">foobar</p>' );
+		} );
+
+		it( 'should handle partial border for partial border filter (color only)', () => {
+			editor.data.addStyleProcessorRules( addBorderRules );
+
+			dataFilter.allowElement( 'p' );
+			dataFilter.allowAttributes( { name: 'p', styles: 'border-color' } );
+
+			editor.setData( '<p style="border: 3px dotted red;">foobar</p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph htmlPAttributes="(1)">foobar</paragraph>',
+				attributes: {
+					1: {
+						styles: {
+							'border-color': 'red'
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p style="border-color:red;">foobar</p>' );
 		} );
 
 		it( 'should handle partial border for generic border filter (mixed)', () => {
