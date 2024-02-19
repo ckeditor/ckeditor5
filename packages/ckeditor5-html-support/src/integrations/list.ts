@@ -15,7 +15,8 @@ import type {
 	ListEditing,
 	ListEditingPostFixerEvent,
 	LegacyIndentCommand,
-	ListIndentCommand
+	ListIndentCommand,
+	ListTypeOptions
 } from '@ckeditor/ckeditor5-list';
 
 import { getHtmlAttributeName, setViewAttributes } from '../utils.js';
@@ -227,7 +228,7 @@ function viewToModelListAttributeConverter( attributeName: string, dataFilter: D
 /**
  * Returns HTML attribute name based on provided list type.
  */
-function getAttributeFromListType( listType: 'bulleted' | 'numbered' | 'todo' ) {
+function getAttributeFromListType( listType: ListTypeOptions ) {
 	return listType === 'numbered' ?
 		'htmlOlAttributes' :
 		'htmlUlAttributes';

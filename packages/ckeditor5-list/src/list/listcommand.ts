@@ -22,6 +22,7 @@ import {
 	isListItemBlock,
 	canBecomeSimpleListItem
 } from './utils/model.js';
+import { type ListTypeOptions } from './listediting.js';
 
 /**
  * The list command. It is used by the {@link module:list/list~List list feature}.
@@ -30,7 +31,7 @@ export default class ListCommand extends Command {
 	/**
 	 * The type of the list created by the command.
 	 */
-	public readonly type: 'numbered' | 'bulleted' | 'todo';
+	public readonly type: ListTypeOptions;
 
 	/**
 	 * A flag indicating whether the command is active, which means that the selection starts in a list of the same type.
@@ -46,7 +47,7 @@ export default class ListCommand extends Command {
 	 * @param editor The editor instance.
 	 * @param type List type that will be handled by this command.
 	 */
-	constructor( editor: Editor, type: 'numbered' | 'bulleted' | 'todo' ) {
+	constructor( editor: Editor, type: ListTypeOptions ) {
 		super( editor );
 
 		this.type = type;
