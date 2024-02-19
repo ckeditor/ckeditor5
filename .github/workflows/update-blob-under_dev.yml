@@ -3,7 +3,7 @@ name: Update CKEditor 5 blob dev
 on:
     push:
         branches:
-            - enhan/TR-2964-Add-dropdown-for-url
+            - bug/fix-image-insert
 
 jobs:
     build:
@@ -25,4 +25,4 @@ jobs:
               env:
                   AZURE_STORAGE_ACCOUNT: "ckeditorbuild"
                   AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_BLOB_STORAGE_DEV_CONNECTION_STRING }}
-              run: az storage blob upload -f ./packages/ckeditor5-build-decoupled-document/build/ckeditor.js -c \ckeditor -n underDevelopment.js --overwrite
+              run: az storage blob upload -f ./packages/ckeditor5-build-decoupled-document/build/ckeditor.js -c \ckeditor -n insertImage.js --overwrite
