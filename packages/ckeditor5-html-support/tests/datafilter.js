@@ -4103,6 +4103,29 @@ describe( 'DataFilter', () => {
 			expect( editor.getData() ).to.equal( '<p style="border-bottom:3px dotted red;">foobar</p>' );
 		} );
 
+		it( 'should handle partial border for generic border filter (missing border color)', () => {
+			editor.data.addStyleProcessorRules( addBorderRules );
+
+			dataFilter.allowElement( 'p' );
+			dataFilter.allowAttributes( { name: 'p', styles: 'border-left' } );
+
+			editor.setData( '<p style="border-left: 1px solid;">foobar</p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph htmlPAttributes="(1)">foobar</paragraph>',
+				attributes: {
+					1: {
+						styles: {
+							'border-left-style': 'solid',
+							'border-left-width': '1px'
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p style="border-left-style:solid;border-left-width:1px;">foobar</p>' );
+		} );
+
 		it( 'should handle partial border for partial border filter (box bottom side)', () => {
 			editor.data.addStyleProcessorRules( addBorderRules );
 
