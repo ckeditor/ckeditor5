@@ -13,7 +13,6 @@ import {
 	Matcher,
 	StylesMap,
 	type MatcherPattern,
-	type Match,
 	type UpcastConversionApi,
 	type ViewElement,
 	type ViewConsumable,
@@ -318,10 +317,7 @@ export default class DataFilter extends Plugin {
 		// For example, for block images the <figure> converter triggers conversion for <img> first and then for other elements, i.e. <a>.
 		matchAndConsumeAttributes( viewElement, this._disallowedAttributes, consumable );
 
-		const matches = matchAndConsumeAttributes( viewElement, this._allowedAttributes, consumable );
-		const mergedMatches = mergeMatchResults( matches );
-
-		return normalizeGHSAttribute( viewElement, mergedMatches );
+		return normalizeGHSAttribute( viewElement, matchAndConsumeAttributes( viewElement, this._allowedAttributes, consumable ) );
 	}
 
 	/**
@@ -811,36 +807,6 @@ export interface DataFilterRegisterEvent {
 }
 
 /**
- * TODO
- */
-function normalizeGHSAttribute(
-	viewElement: ViewElement,
-	{ attributes, classes, styles }: {
-		attributes: Set<string>;
-		classes: Set<string>;
-		styles: Set<string>;
-	}
-): GHSViewAttributes | null {
-	if ( !attributes.size && !classes.size && !styles.size ) {
-		return null;
-	}
-
-	return {
-		...( attributes.size && {
-			attributes: normalizeAttributes( viewElement, attributes )
-		} ),
-
-		...( styles.size && {
-			styles: normalizeStyles( viewElement, styles )
-		} ),
-
-		...( classes.size && {
-			classes: Array.from( classes )
-		} )
-	};
-}
-
-/**
  * Consumes matched attributes.
  *
  * @returns Array with match information about found attributes.
@@ -849,90 +815,77 @@ function matchAndConsumeAttributes(
 	viewElement: ViewElement,
 	matcher: Matcher,
 	consumable: ViewConsumable
-): Array<Match> {
+): {
+	attributes: Array<string>;
+	classes: Array<string>;
+	styles: Array<string>;
+} {
 	const matches = matcher.matchAll( viewElement ) || [];
 	const stylesProcessor = viewElement.document.stylesProcessor;
 
-	return matches.reduce( ( consumedMatches, { match } ) => {
-		// Inject other forms of the same style as those could be matched but not present in the element directly.
-		if ( match.styles ) {
-			for ( const style of match.styles ) {
-				for ( const relatedStyle of stylesProcessor.getRelatedStyles( style ) ) {
-					consumedMatches.push( consumeAttributeMatch( viewElement, consumable, {
-						styles: [ relatedStyle ]
-					} ) );
+	return matches.reduce( ( result, { match } ) => {
+		for ( const style of match.styles || [] ) {
+			// Check other forms of the same style as those could be matched
+			// but not present in the element directly.
+			for ( const relatedStyle of stylesProcessor.getRelatedStyles( style ) ) {
+				if ( consumable.consume( viewElement, { styles: [ relatedStyle ] } ) ) {
+					result.styles.push( relatedStyle );
 				}
 			}
-		}
 
-		return consumedMatches.concat( consumeAttributeMatch( viewElement, consumable, match ) );
-	}, [] as Array<Match> );
-}
-
-/**
- * TODO
- */
-function consumeAttributeMatch( viewElement: ViewElement, consumable: ViewConsumable, match: Match ): Match {
-	removeConsumedAttributes( consumable, viewElement, match );
-
-	// We only want to consume attributes, so element can be still processed by other converters.
-	delete match.name;
-
-	consumable.consume( viewElement, match );
-
-	return match;
-}
-
-/**
- * Removes attributes from the given match that were already consumed by other converters.
- */
-function removeConsumedAttributes( consumable: ViewConsumable, viewElement: ViewElement, match: Match ) {
-	for ( const key of [ 'attributes', 'classes', 'styles' ] as const ) {
-		const attributes = match[ key ];
-
-		if ( !attributes ) {
-			continue;
-		}
-
-		// Iterating over a copy of an array so removing items doesn't influence iteration.
-		for ( const value of Array.from( attributes ) ) {
-			if ( !consumable.test( viewElement, ( { [ key ]: [ value ] } ) ) ) {
-				removeItemFromArray( attributes, value );
+			if ( consumable.consume( viewElement, { styles: [ style ] } ) ) {
+				result.styles.push( style );
 			}
 		}
-	}
+
+		for ( const className of match.classes || [] ) {
+			if ( consumable.consume( viewElement, { classes: [ className ] } ) ) {
+				result.classes.push( className );
+			}
+		}
+
+		for ( const attributeName of match.attributes || [] ) {
+			if ( consumable.consume( viewElement, { attributes: [ attributeName ] } ) ) {
+				result.attributes.push( attributeName );
+			}
+		}
+
+		return result;
+	}, {
+		attributes: [] as Array<string>,
+		classes: [] as Array<string>,
+		styles: [] as Array<string>
+	} );
 }
 
 /**
- * Merges the result of {@link module:engine/view/matcher~Matcher#matchAll} method.
- *
- * @param matches
- * @returns Object with following properties:
- * - attributes Set with matched attribute names.
- * - styles Set with matched style names.
- * - classes Set with matched class names.
+ * Prepares the GHS attribute value as an object with element attributes' values.
  */
-function mergeMatchResults( matches: Array<Match> ): {
-	attributes: Set<string>;
-	classes: Set<string>;
-	styles: Set<string>;
-} {
-	const keys = [ 'attributes', 'classes', 'styles' ] as const;
-	const matchResult = {
-		attributes: new Set<string>(),
-		classes: new Set<string>(),
-		styles: new Set<string>()
+function normalizeGHSAttribute(
+	viewElement: ViewElement,
+	{ attributes, classes, styles }: {
+		attributes: Array<string>;
+		classes: Array<string>;
+		styles: Array<string>;
+	}
+): GHSViewAttributes | null {
+	if ( !attributes.length && !classes.length && !styles.length ) {
+		return null;
+	}
+
+	return {
+		...( attributes.length && {
+			attributes: normalizeAttributes( viewElement, attributes )
+		} ),
+
+		...( styles.length && {
+			styles: normalizeStyles( viewElement, styles )
+		} ),
+
+		...( classes.length && {
+			classes
+		} )
 	};
-
-	for ( const match of matches ) {
-		for ( const key of keys ) {
-			for ( const value of match[ key ] || [] ) {
-				matchResult[ key ].add( value );
-			}
-		}
-	}
-
-	return matchResult;
 }
 
 /**
@@ -982,8 +935,8 @@ function splitPattern( pattern: MatcherObjectPattern, attributeName: 'attributes
 	const attributeValue = pattern[ attributeName ];
 
 	if ( isPlainObject( attributeValue ) ) {
-		return Object.entries( attributeValue as Record<string, unknown> ).map(
-			( [ key, value ] ) => ( {
+		return Object.entries( attributeValue as Record<string, unknown> )
+			.map( ( [ key, value ] ) => ( {
 				name,
 				[ attributeName ]: {
 					[ key ]: value
@@ -992,12 +945,11 @@ function splitPattern( pattern: MatcherObjectPattern, attributeName: 'attributes
 	}
 
 	if ( Array.isArray( attributeValue ) ) {
-		return attributeValue.map(
-			value => ( {
+		return attributeValue
+			.map( value => ( {
 				name,
 				[ attributeName ]: [ value ]
-			} )
-		);
+			} ) );
 	}
 
 	return [ pattern ];
