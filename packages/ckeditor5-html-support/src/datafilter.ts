@@ -53,7 +53,7 @@ import {
 	type GHSViewAttributes
 } from './utils.js';
 
-import { isPlainObject, pull as removeItemFromArray } from 'lodash-es';
+import { isPlainObject } from 'lodash-es';
 
 import '../theme/datafilter.css';
 
