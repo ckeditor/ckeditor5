@@ -25,7 +25,7 @@ npm install ckeditor5
 
 Now you can import all the modules from the `ckeditor5` package. Additionally, you have to import CSS styles separately.
 
-**Importing and registering UI translations is optional for the English language.** For any other language, use imported translations, as in the {@link getting-started/setup/configuration setup section}.
+**Importing and registering UI translations is optional for American English.** To use the editor in any other language, use imported translations, as shown in the {@link getting-started/setup/configuration setup section}.
 
 ```js
 import { ClassicEditor, Essentials, Bold, Italic, Paragraph } from 'ckeditor5';
@@ -77,7 +77,7 @@ await ClassicEditor
 
 ## Using CKEditor&nbsp;5 from CDN
 
-CDN is an effortless method of running CKEditor 5. You can start using it in just a few steps and with a few tags.
+CDN is an alternative method of running CKEditor 5. You can start using it in just a few steps and with a few tags.
 
 ### Obtain a license key
 
@@ -93,7 +93,7 @@ Start by attaching a link to the style sheet. It contains all styles for the edi
 <link rel="stylesheet" href="<CDN_LINK>/ckeditor5/dist/styles.css" />
 ```
 
-Then, you need to attach the script with the JavaScript code. To simplify imports, you can use the feature available in browsers &ndash; the [import map](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap). It maps the text used as the module specifier and the value that will replace the text when resolving the specifier. This way, import statements do not need to contain the full CDN URL.
+Then, you need to attach the script with the JavaScript code. To simplify imports, you can use the feature available in browsers &ndash; the [import map](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap). It allows us to map an easy-to-remember specifier (like `ckeditor5`) to the full URL of the file from the CDN. We use this browser feature to share an editor engine code between plugins.
 
 ```html
 <script type="importmap">
@@ -106,7 +106,7 @@ Then, you need to attach the script with the JavaScript code. To simplify import
 </script>
 ```
 
-After you  set up the import map, you can add plugins. In the following script tag, import the desired plugins and add them to the plugins array. Notice that both script tags have the corresponding `type` values.
+Once you have added the import map, you can access the editor and its plugins using the `ckeditor5` specifier. In the following script tag, import the desired plugins and add them to the `plugins` array. Note that both script tags (this and previous) have the appropriate `type` values.
 
 ```html
 <script type="module">
@@ -122,7 +122,7 @@ After you  set up the import map, you can add plugins. In the following script t
 </script>
 ```
 
-Lastly, do not forget to add a tag for editor initialization.
+Lastly, add a tag for the editor to attach to.
 
 ```html
 <div id="editor">
