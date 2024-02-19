@@ -26,7 +26,6 @@ import {
 } from '@ckeditor/ckeditor5-engine';
 
 import { Delete, type ViewDocumentDeleteEvent } from '@ckeditor/ckeditor5-typing';
-import type { AccessibilityMetadata } from '@ckeditor/ckeditor5-ui';
 
 import {
 	env,
@@ -81,6 +80,7 @@ export default class Widget extends Plugin {
 		const editor = this.editor;
 		const view = editor.editing.view;
 		const viewDocument = view.document;
+		const t = editor.t;
 
 		// Model to view selection converter.
 		// Converts selection placed over widget element to fake selection.
@@ -195,40 +195,30 @@ export default class Widget extends Plugin {
 				evt.stop();
 			}
 		}, { context: '$root' } );
-	}
 
-	/**
-	 * @inheritDoc
-	 */
-	public get accessibilityMetadata(): AccessibilityMetadata {
-		const t = this.editor.t;
-
-		return {
-			keystrokeGroups: [
+		// Register the accessibility information about the keystrokes.
+		editor.accessibility.addKeystrokeInfoGroup( {
+			id: 'widget',
+			label: t( 'Keystrokes that can be used when a widget is selected (for example: image, table, etc.)' ),
+			keystrokes: [
 				{
-					id: 'widget',
-					label: t( 'Keystrokes that can be used when a widget is selected (for example: image, table, etc.)' ),
-					keystrokes: [
-						{
-							label: t( 'Insert a new paragraph directly after a widget' ),
-							keystroke: 'Enter'
-						},
-						{
-							label: t( 'Insert a new paragraph directly before a widget' ),
-							keystroke: 'Shift+Enter'
-						},
-						{
-							label: t( 'Move the caret to allow typing directly before a widget' ),
-							keystroke: [ [ 'arrowup' ], [ 'arrowleft' ] ]
-						},
-						{
-							label: t( 'Move the caret to allow typing directly after a widget' ),
-							keystroke: [ [ 'arrowdown' ], [ 'arrowright' ] ]
-						}
-					]
+					label: t( 'Insert a new paragraph directly after a widget' ),
+					keystroke: 'Enter'
+				},
+				{
+					label: t( 'Insert a new paragraph directly before a widget' ),
+					keystroke: 'Shift+Enter'
+				},
+				{
+					label: t( 'Move the caret to allow typing directly before a widget' ),
+					keystroke: [ [ 'arrowup' ], [ 'arrowleft' ] ]
+				},
+				{
+					label: t( 'Move the caret to allow typing directly after a widget' ),
+					keystroke: [ [ 'arrowdown' ], [ 'arrowright' ] ]
 				}
 			]
-		};
+		} );
 	}
 
 	/**

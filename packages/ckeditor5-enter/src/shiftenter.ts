@@ -10,7 +10,6 @@
 import ShiftEnterCommand from './shiftentercommand.js';
 import EnterObserver, { type ViewDocumentEnterEvent } from './enterobserver.js';
 import { Plugin } from '@ckeditor/ckeditor5-core';
-import type { AccessibilityMetadata } from '@ckeditor/ckeditor5-ui';
 
 /**
  * This plugin handles the <kbd>Shift</kbd>+<kbd>Enter</kbd> keystroke (soft line break) in the editor.
@@ -33,6 +32,7 @@ export default class ShiftEnter extends Plugin {
 		const conversion = editor.conversion;
 		const view = editor.editing.view;
 		const viewDocument = view.document;
+		const t = this.editor.t;
 
 		// Configure the schema.
 		schema.register( 'softBreak', {
@@ -72,21 +72,15 @@ export default class ShiftEnter extends Plugin {
 			editor.execute( 'shiftEnter' );
 			view.scrollToTheSelection();
 		}, { priority: 'low' } );
-	}
 
-	/**
-	 * @inheritDoc
-	 */
-	public get accessibilityMetadata(): AccessibilityMetadata {
-		const t = this.editor.t;
-
-		return {
+		// Register the accessibility information about the keystroke.
+		editor.accessibility.addKeystrokeInfos( {
 			keystrokes: [
 				{
 					label: t( 'Insert a soft break (a <code>&lt;br&gt;</code> element)' ),
 					keystroke: 'Shift+Enter'
 				}
 			]
-		};
+		} );
 	}
 }

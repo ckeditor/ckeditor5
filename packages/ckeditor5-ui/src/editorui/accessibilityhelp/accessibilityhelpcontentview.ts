@@ -13,14 +13,15 @@ import {
 	getEnvKeystrokeText,
 	type Locale
 } from '@ckeditor/ckeditor5-utils';
-import type {
-	AccessibilityHelpKeystrokeDefinition,
-	KeystrokeCategoryDefinition,
-	KeystrokeGroupDefinition,
-	Keystrokes
-} from './accessibilityhelp.js';
+
 import View from '../../view.js';
 import LabelView from '../../label/labelview.js';
+import type {
+	KeystrokeInfoCategoryDefinition,
+	KeystrokeInfoDefinition,
+	KeystrokeInfoDefinitions,
+	KeystrokeInfoGroupDefinition
+} from '@ckeditor/ckeditor5-core';
 
 /**
  * The view displaying keystrokes in the Accessibility help dialog.
@@ -29,7 +30,7 @@ export default class AccessibilityHelpContentView extends View<HTMLDivElement> {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale, keystrokes: Keystrokes ) {
+	constructor( locale: Locale, keystrokes: KeystrokeInfoDefinitions ) {
 		super( locale );
 
 		const t = locale.t;
@@ -63,7 +64,7 @@ export default class AccessibilityHelpContentView extends View<HTMLDivElement> {
 	/**
 	 * Creates `<section><h3>Category label</h3>...</section>` elements for each category of keystrokes.
 	 */
-	private _createCategories( categories: Array<KeystrokeCategoryDefinition> ): Array<HTMLElement> {
+	private _createCategories( categories: Array<KeystrokeInfoCategoryDefinition> ): Array<HTMLElement> {
 		return categories.map( categoryDefinition => {
 			const elements: Array<HTMLElement> = [
 				// Category header.
@@ -87,7 +88,7 @@ export default class AccessibilityHelpContentView extends View<HTMLDivElement> {
 	/**
 	 * Creates `[<h4>Optional label</h4>]<dl>...</dl>` elements for each group of keystrokes in a category.
 	 */
-	private _createGroup( groupDefinition: KeystrokeGroupDefinition ): Array<HTMLElement> {
+	private _createGroup( groupDefinition: KeystrokeInfoGroupDefinition ): Array<HTMLElement> {
 		const elements: Array<HTMLElement> = [
 			createElement( document, 'dl', {}, Array.from( groupDefinition.keystrokes )
 				.sort( ( a, b ) => a.label.localeCompare( b.label ) )
@@ -106,7 +107,7 @@ export default class AccessibilityHelpContentView extends View<HTMLDivElement> {
 	/**
 	 * Creates `<dt>Keystroke label</dt><dd>Keystroke definition</dd>` elements for each keystroke in a group.
 	 */
-	private _createGroupRow( keystrokeDefinition: AccessibilityHelpKeystrokeDefinition ): [ HTMLElement, HTMLElement ] {
+	private _createGroupRow( keystrokeDefinition: KeystrokeInfoDefinition ): [ HTMLElement, HTMLElement ] {
 		const t = this.locale!.t;
 		const dt = createElement( document, 'dt' );
 		const dd = createElement( document, 'dd' );
@@ -132,7 +133,7 @@ function keystrokeToEnvKbd( keystroke: string ): string {
 		.join( '+' );
 }
 
-function normalizeKeystrokeDefinition( definition: AccessibilityHelpKeystrokeDefinition[ 'keystroke' ] ): Array<Array<string>> {
+function normalizeKeystrokeDefinition( definition: KeystrokeInfoDefinition[ 'keystroke' ] ): Array<Array<string>> {
 	if ( typeof definition === 'string' ) {
 		return [ [ definition ] ];
 	}

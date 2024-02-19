@@ -29,8 +29,6 @@ import type {
 	ViewDocumentTabEvent
 } from 'ckeditor5/src/engine.js';
 
-import type { AccessibilityMetadata } from 'ckeditor5/src/ui.js';
-
 /**
  * This plugin enables keyboard navigation for tables.
  * It is loaded automatically by the {@link module:table/table~Table} plugin.
@@ -54,8 +52,10 @@ export default class TableKeyboard extends Plugin {
 	 * @inheritDoc
 	 */
 	public init(): void {
-		const view = this.editor.editing.view;
+		const editor = this.editor;
+		const view = editor.editing.view;
 		const viewDocument = view.document;
+		const t = editor.t;
 
 		this.listenTo<ViewDocumentArrowKeyEvent>(
 			viewDocument,
@@ -77,6 +77,30 @@ export default class TableKeyboard extends Plugin {
 			( ...args ) => this._handleTab( ...args ),
 			{ context: [ 'th', 'td' ] }
 		);
+
+		// Register the accessibility information about the keystrokes.
+		editor.accessibility.addKeystrokeInfoGroup( {
+			id: 'table',
+			label: t( 'Keystrokes that can be used in a table cell' ),
+			keystrokes: [
+				{
+					label: t( 'Move the selection to the next cell' ),
+					keystroke: 'Tab'
+				},
+				{
+					label: t( 'Move the selection to the previous cell' ),
+					keystroke: 'Shift+Tab'
+				},
+				{
+					label: t( 'Insert a new table row (when in the last cell of a table)' ),
+					keystroke: 'Tab'
+				},
+				{
+					label: t( 'Navigate through the table' ),
+					keystroke: [ [ 'arrowup' ], [ 'arrowright' ], [ 'arrowdown' ], [ 'arrowleft' ] ]
+				}
+			]
+		} );
 	}
 
 	/**
@@ -375,39 +399,5 @@ export default class TableKeyboard extends Plugin {
 				writer.setSelection( positionToSelect );
 			} );
 		}
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public get accessibilityMetadata(): AccessibilityMetadata {
-		const t = this.editor.t;
-
-		return {
-			keystrokeGroups: [
-				{
-					id: 'table',
-					label: t( 'Keystrokes that can be used in a table cell' ),
-					keystrokes: [
-						{
-							label: t( 'Move the selection to the next cell' ),
-							keystroke: 'Tab'
-						},
-						{
-							label: t( 'Move the selection to the previous cell' ),
-							keystroke: 'Shift+Tab'
-						},
-						{
-							label: t( 'Insert a new table row (when in the last cell of a table)' ),
-							keystroke: 'Tab'
-						},
-						{
-							label: t( 'Navigate through the table' ),
-							keystroke: [ [ 'arrowup' ], [ 'arrowright' ], [ 'arrowdown' ], [ 'arrowleft' ] ]
-						}
-					]
-				}
-			]
-		};
 	}
 }

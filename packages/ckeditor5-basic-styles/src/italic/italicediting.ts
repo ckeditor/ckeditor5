@@ -9,7 +9,6 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import AttributeCommand from '../attributecommand.js';
-import type { AccessibilityMetadata } from 'ckeditor5/src/ui.js';
 
 const ITALIC = 'italic';
 
@@ -32,6 +31,7 @@ export default class ItalicEditing extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
+		const t = this.editor.t;
 
 		// Allow italic attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: ITALIC } );
@@ -58,21 +58,15 @@ export default class ItalicEditing extends Plugin {
 
 		// Set the Ctrl+I keystroke.
 		editor.keystrokes.set( 'CTRL+I', ITALIC );
-	}
 
-	/**
-	 * @inheritDoc
-	 */
-	public get accessibilityMetadata(): AccessibilityMetadata {
-		const t = this.editor.t;
-
-		return {
+		// Register the accessibility information about the keystroke.
+		editor.accessibility.addKeystrokeInfos( {
 			keystrokes: [
 				{
 					label: t( 'Italic text' ),
 					keystroke: 'CTRL+I'
 				}
 			]
-		};
+		} );
 	}
 }

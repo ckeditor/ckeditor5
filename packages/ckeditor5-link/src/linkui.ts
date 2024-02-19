@@ -20,8 +20,7 @@ import {
 	ContextualBalloon,
 	clickOutsideHandler,
 	CssTransitionDisablerMixin,
-	type ViewWithCssTransitionDisabler,
-	type AccessibilityMetadata
+	type ViewWithCssTransitionDisabler
 } from 'ckeditor5/src/ui.js';
 import type { PositionOptions } from 'ckeditor5/src/utils.js';
 import { isWidget } from 'ckeditor5/src/widget.js';
@@ -77,6 +76,7 @@ export default class LinkUI extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
+		const t = this.editor.t;
 
 		editor.editing.view.addObserver( ClickObserver );
 
@@ -102,15 +102,9 @@ export default class LinkUI extends Plugin {
 				classes: [ 'ck-fake-link-selection', 'ck-fake-link-selection_collapsed' ]
 			}
 		} );
-	}
 
-	/**
-	 * @inheritDoc
-	 */
-	public get accessibilityMetadata(): AccessibilityMetadata {
-		const t = this.editor.t;
-
-		return {
+		// Register the accessibility information about the keystrokes.
+		editor.accessibility.addKeystrokeInfos( {
 			keystrokes: [
 				{
 					label: t( 'Create link' ),
@@ -124,7 +118,7 @@ export default class LinkUI extends Plugin {
 					]
 				}
 			]
-		};
+		} );
 	}
 
 	/**

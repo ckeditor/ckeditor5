@@ -16,8 +16,7 @@ import {
 	DropdownView,
 	FormHeaderView,
 	CssTransitionDisablerMixin,
-	type ViewWithCssTransitionDisabler,
-	type AccessibilityMetadata
+	type ViewWithCssTransitionDisabler
 } from 'ckeditor5/src/ui.js';
 import FindAndReplaceFormView from './ui/findandreplaceformview.js';
 import loupeIcon from '../theme/icons/find-replace.svg';
@@ -71,6 +70,7 @@ export default class FindAndReplaceUI extends Plugin {
 		const editor = this.editor;
 		const isUiUsingDropdown = editor.config.get( 'findAndReplace.uiType' ) === 'dropdown';
 		const findCommand = editor.commands.get( 'find' )!;
+		const t = this.editor.t;
 
 		// Register the toolbar component: dropdown or button (that opens a dialog).
 		editor.ui.componentFactory.add( 'findAndReplace', () => {
@@ -116,22 +116,16 @@ export default class FindAndReplaceUI extends Plugin {
 
 			return view;
 		} );
-	}
 
-	/**
-	 * @inheritDoc
-	 */
-	public get accessibilityMetadata(): AccessibilityMetadata {
-		const t = this.editor.t;
-
-		return {
+		// Register the accessibility information about the keystroke.
+		editor.accessibility.addKeystrokeInfos( {
 			keystrokes: [
 				{
 					label: t( 'Find in the document' ),
 					keystroke: 'CTRL+F'
 				}
 			]
-		};
+		} );
 	}
 
 	/**

@@ -7,8 +7,7 @@
  * @module undo/undoediting
  */
 
-import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
-import type { AccessibilityMetadata } from '@ckeditor/ckeditor5-ui';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import UndoCommand, { type UndoCommandRevertEvent } from './undocommand.js';
 import RedoCommand from './redocommand.js';
@@ -53,6 +52,7 @@ export default class UndoEditing extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
+		const t = editor.t;
 
 		// Create commands.
 		this._undoCommand = new UndoCommand( editor );
@@ -110,15 +110,9 @@ export default class UndoEditing extends Plugin {
 		editor.keystrokes.set( 'CTRL+Z', 'undo' );
 		editor.keystrokes.set( 'CTRL+Y', 'redo' );
 		editor.keystrokes.set( 'CTRL+SHIFT+Z', 'redo' );
-	}
 
-	/**
-	 * @inheritDoc
-	 */
-	public get accessibilityMetadata(): AccessibilityMetadata {
-		const t = this.editor.t;
-
-		return {
+		// Register the accessibility information about the keystrokes.
+		editor.accessibility.addKeystrokeInfos( {
 			keystrokes: [
 				{
 					label: t( 'Undo' ),
@@ -129,6 +123,6 @@ export default class UndoEditing extends Plugin {
 					keystroke: [ [ 'CTRL+Y' ], [ 'CTRL+SHIFT+Z' ] ]
 				}
 			]
-		};
+		} );
 	}
 }

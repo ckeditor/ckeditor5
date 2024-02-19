@@ -30,6 +30,7 @@ import Context from '../context.js';
 import PluginCollection from '../plugincollection.js';
 import CommandCollection, { type CommandsMap } from '../commandcollection.js';
 import EditingKeystrokeHandler from '../editingkeystrokehandler.js';
+import Accessibility from '../accessibility.js';
 
 import type { LoadedPlugins, PluginConstructor } from '../plugin.js';
 import type { EditorConfig } from './editorconfig.js';
@@ -53,6 +54,11 @@ import type { EditorConfig } from './editorconfig.js';
  * (as most editor implementations do).
  */
 export default abstract class Editor extends ObservableMixin() {
+	/**
+	 * A namespace for the accessibility features of the editor.
+	 */
+	public readonly accessibility: Accessibility;
+
 	/**
 	 * Commands registered to the editor.
 	 *
@@ -325,6 +331,8 @@ export default abstract class Editor extends ObservableMixin() {
 
 		this.keystrokes = new EditingKeystrokeHandler( this );
 		this.keystrokes.listenTo( this.editing.view.document );
+
+		this.accessibility = new Accessibility( this );
 	}
 
 	/**

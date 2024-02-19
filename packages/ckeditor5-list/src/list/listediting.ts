@@ -30,7 +30,6 @@ import type {
 import { Delete, type ViewDocumentDeleteEvent } from 'ckeditor5/src/typing.js';
 import { Enter, type EnterCommand, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter.js';
 import { CKEditorError, type GetCallback } from 'ckeditor5/src/utils.js';
-import type { AccessibilityMetadata } from 'ckeditor5/src/ui.js';
 
 import ListIndentCommand from './listindentcommand.js';
 import ListCommand from './listcommand.js';
@@ -178,6 +177,7 @@ export default class ListEditing extends Plugin {
 		this._setupEnterIntegration();
 		this._setupTabIntegration();
 		this._setupClipboardIntegration();
+		this._setupAccessibilityIntegration();
 	}
 
 	/**
@@ -601,29 +601,26 @@ export default class ListEditing extends Plugin {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Informs editor accessibility features about keystrokes brought by the plugin.
 	 */
-	public get accessibilityMetadata(): AccessibilityMetadata {
-		const t = this.editor.t;
+	private _setupAccessibilityIntegration() {
+		const editor = this.editor;
+		const t = editor.t;
 
-		return {
-			keystrokeGroups: [
+		editor.accessibility.addKeystrokeInfoGroup( {
+			id: 'list',
+			label: t( 'Keystrokes that can be used in a list' ),
+			keystrokes: [
 				{
-					id: 'list',
-					label: t( 'Keystrokes that can be used in a list' ),
-					keystrokes: [
-						{
-							label: t( 'Increase list item indent' ),
-							keystroke: 'Tab'
-						},
-						{
-							label: t( 'Decrease list item indent' ),
-							keystroke: 'Shift+Tab'
-						}
-					]
+					label: t( 'Increase list item indent' ),
+					keystroke: 'Tab'
+				},
+				{
+					label: t( 'Decrease list item indent' ),
+					keystroke: 'Shift+Tab'
 				}
 			]
-		};
+		} );
 	}
 }
 

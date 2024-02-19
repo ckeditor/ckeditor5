@@ -12,7 +12,6 @@ import { Plugin } from '@ckeditor/ckeditor5-core';
 import ClipboardPipeline from './clipboardpipeline.js';
 import DragDrop from './dragdrop.js';
 import PastePlainText from './pasteplaintext.js';
-import type { AccessibilityMetadata } from '@ckeditor/ckeditor5-ui';
 
 /**
  * The clipboard feature.
@@ -42,10 +41,12 @@ export default class Clipboard extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public get accessibilityMetadata(): AccessibilityMetadata {
+	public init(): void {
+		const editor = this.editor;
 		const t = this.editor.t;
 
-		return {
+		// Register the accessibility information about the keystrokes.
+		editor.accessibility.addKeystrokeInfos( {
 			keystrokes: [
 				{
 					label: t( 'Copy selected content' ),
@@ -60,6 +61,6 @@ export default class Clipboard extends Plugin {
 					keystroke: 'CTRL+SHIFT+V'
 				}
 			]
-		};
+		} );
 	}
 }

@@ -11,7 +11,6 @@ import { Plugin } from '@ckeditor/ckeditor5-core';
 import { getCode, parseKeystroke } from '@ckeditor/ckeditor5-utils';
 import SelectAllCommand from './selectallcommand.js';
 import type { ViewDocumentKeyDownEvent } from '@ckeditor/ckeditor5-engine';
-import type { AccessibilityMetadata } from '@ckeditor/ckeditor5-ui';
 
 const SELECT_ALL_KEYSTROKE = parseKeystroke( 'Ctrl+A' );
 
@@ -34,6 +33,7 @@ export default class SelectAllEditing extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
+		const t = editor.t;
 		const view = editor.editing.view;
 		const viewDocument = view.document;
 
@@ -45,21 +45,15 @@ export default class SelectAllEditing extends Plugin {
 				domEventData.preventDefault();
 			}
 		} );
-	}
 
-	/**
-	 * @inheritDoc
-	 */
-	public get accessibilityMetadata(): AccessibilityMetadata {
-		const t = this.editor.t;
-
-		return {
+		// Register the accessibility information about the keystroke.
+		editor.accessibility.addKeystrokeInfos( {
 			keystrokes: [
 				{
 					label: t( 'Select all' ),
 					keystroke: 'CTRL+A'
 				}
 			]
-		};
+		} );
 	}
 }

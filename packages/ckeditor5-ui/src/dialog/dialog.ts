@@ -12,7 +12,6 @@ import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
 import DialogView, { type DialogViewCloseEvent, DialogViewPosition } from './dialogview.js';
 import type { DialogActionButtonDefinition } from './dialogactionsview.js';
 import type { DocumentChangeEvent } from '@ckeditor/ckeditor5-engine';
-import type { AccessibilityMetadata } from '../editorui/accessibilityhelp/accessibilityhelp.js';
 
 /**
  * The dialog controller class. It is used to show and hide the {@link module:ui/dialog/dialogview~DialogView}.
@@ -66,31 +65,23 @@ export default class Dialog extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
+		const t = editor.t;
+
 		this._initShowHideListeners();
 		this._initFocusToggler();
 		this._initMultiRootIntegration();
 
 		this.set( 'id', null );
-	}
 
-	/**
-	 * @inheritDoc
-	 */
-	public get accessibilityMetadata(): AccessibilityMetadata {
-		const t = this.editor.t;
-
-		return {
-			keystrokes: [
-				{
-					categoryId: 'navigation',
-					keystrokes: [ {
-						label: t( 'Move focus in and out of an active dialog window' ),
-						keystroke: 'Ctrl+F6',
-						mayRequireFn: true
-					} ]
-				}
-			]
-		};
+		// Register the accessibility information about the keystroke.
+		editor.accessibility.addKeystrokeInfos( {
+			categoryId: 'navigation',
+			keystrokes: [ {
+				label: t( 'Move focus in and out of an active dialog window' ),
+				keystroke: 'Ctrl+F6',
+				mayRequireFn: true
+			} ]
+		} );
 	}
 
 	/**
