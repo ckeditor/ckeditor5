@@ -6,9 +6,9 @@
 	"Strikethrough": "Toolbar button tooltip for the Strikethrough feature.",
 	"Subscript": "Toolbar button tooltip for the Subscript feature.",
 	"Superscript": "Toolbar button tooltip for the Superscript feature.",
-	"Italic text": "Accessibility help dialog keystroke description: keystroke for making text italic.",
-	"Move out of an inline code style": "Accessibility help dialog keystroke description: keystroke for moving selection out of an inline code style.",
-	"Bold text": "Accessibility help dialog keystroke description: keystroke for making text bold.",
-	"Underline text": "Accessibility help dialog keystroke description: keystroke for making text underlined.",
-	"Strikethrough text": "Accessibility help dialog keystroke description: keystroke for making text strikethrough."
+	"Italic text": "Keystroke description for assistive technologies: keystroke for making text italic.",
+	"Move out of an inline code style": "Keystroke description for assistive technologies: keystroke for moving selection out of an inline code style.",
+	"Bold text": "Keystroke description for assistive technologies: keystroke for making text bold.",
+	"Underline text": "Keystroke description for assistive technologies: keystroke for making text underlined.",
+	"Strikethrough text": "Keystroke description for assistive technologies: keystroke for making text strikethrough."
 }
