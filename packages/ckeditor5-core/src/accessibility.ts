@@ -24,11 +24,6 @@ export const DEFAULT_GROUP_ID = 'common' as const;
  */
 export default class Accessibility {
 	/**
-	 * The editor instance.
-	 */
-	public readonly editor: Editor;
-
-	/**
 	 * Stores information about keystrokes brought by editor features for the users to interact with the editor, mainly
 	 * keystroke combinations and their accessible labels.
 	 *
@@ -48,10 +43,15 @@ export default class Accessibility {
 	public readonly keystrokeInfos: KeystrokeInfos = new Map();
 
 	/**
+	 * The editor instance.
+	 */
+	private readonly _editor: Editor;
+
+	/**
 	 * @inheritDoc
 	 */
 	constructor( editor: Editor ) {
-		this.editor = editor;
+		this._editor = editor;
 
 		const t = editor.locale.t;
 
@@ -219,7 +219,7 @@ export default class Accessibility {
 		const category = this.keystrokeInfos.get( categoryId );
 
 		if ( !category ) {
-			throw new CKEditorError( 'accessibility-unknown-keystroke-info-category', this.editor, { groupId: id, categoryId } );
+			throw new CKEditorError( 'accessibility-unknown-keystroke-info-category', this._editor, { groupId: id, categoryId } );
 		}
 
 		category.groups.set( id, {
@@ -323,7 +323,7 @@ export default class Accessibility {
 			 * @param categoryId The id of the unknown keystroke category.
 			 * @param keystrokes Keystroke definitions about to be added.
 			 */
-			throw new CKEditorError( 'accessibility-unknown-keystroke-info-category', this.editor, { categoryId, keystrokes } );
+			throw new CKEditorError( 'accessibility-unknown-keystroke-info-category', this._editor, { categoryId, keystrokes } );
 		}
 
 		const category = this.keystrokeInfos.get( categoryId )!;
@@ -340,7 +340,7 @@ export default class Accessibility {
 			 * @param categoryId The id of category the unknown group should belong to.
 			 * @param keystrokes Keystroke definitions about to be added.
 			 */
-			throw new CKEditorError( 'accessibility-unknown-keystroke-info-group', this.editor, { groupId, categoryId, keystrokes } );
+			throw new CKEditorError( 'accessibility-unknown-keystroke-info-group', this._editor, { groupId, categoryId, keystrokes } );
 		}
 
 		category.groups.get( groupId )!.keystrokes.push( ...keystrokes );

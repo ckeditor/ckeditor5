@@ -32,47 +32,26 @@ editor.keystrokes.set( 'Ctrl+Alt+H', ( event, cancel ) => {
 
 ## Adding shortcut information to the Accessibility help dialog
 
-The {@link features/keyboard-support#displaying-keyboard-shortcuts-in-the-editor Accessibility help} dialog displays a list of all available keyboard shortcuts. However, it does not know about the new [shortcut we just added](#adding-keyboard-shortcuts), so let's add it to the list.
+The {@link features/keyboard-support#displaying-keyboard-shortcuts-in-the-editor Accessibility help} dialog displays a complete list of available keyboard shortcuts with their descriptions. It does not know about the [shortcut we just added](#adding-keyboard-shortcuts), though.
 
-There are two ways of doing this. The first one is by using the {@link module:core/plugin~PluginInterface#accessibilityMetadata} property of a plugin. It is a recommended way for plugin developers who bring new functionality to the editor:
+The dialog reads from the {@link module:core/accessibility~Accessibility `editor.accessibility`} namespace where all the information about keystrokes and their accessible labels is stored. There is an API to add new entries ({@link module:core/accessibility~Accessibility#addKeystrokeInfos}, {@link module:core/accessibility~Accessibility#addKeystrokeInfoGroup}, and {@link module:core/accessibility~Accessibility#addKeystrokeInfoCategory} methods).
 
-```js
-class MyPlugin extends Plugin {
-	// ...
-
-	get accessibilityMetadata() {
-		const t = this.editor.t;
-
-		return {
-			keystrokes: [
-				{
-					label: t( 'Highlight text' ),
-					keystroke: 'Ctrl+Alt+H'
-				}
-			]
-		};
-	};
-}
-```
-
-Alternatively, you can use the plugin's API ({@link module:ui/editorui/accessibilityhelp/accessibilityhelp~AccessibilityHelp#registerKeystrokeCategory}, {@link module:ui/editorui/accessibilityhelp/accessibilityhelp~AccessibilityHelp#registerKeystrokeGroup}, and {@link module:ui/editorui/accessibilityhelp/accessibilityhelp~AccessibilityHelp#registerKeystrokes} methods). In this case, a simple `registerKeystrokes()` is all you need:
+In this case, a simple `editor.accessibility.addKeystrokeInfos( ... )` is all you need for the Accessibility help dialog to learn about the new shortcut:
 
 ```js
-if ( editor.plugins.has( 'AccessibilityHelp' ) ) {
-	const t = editor.t;
+const t = editor.t;
 
-	editor.plugins.get( 'AccessibilityHelp' ).registerKeystrokes( {
-		keystrokes: [
-			{
-				label: t( 'Highlight text' ),
-				keystroke: 'Ctrl+Alt+H'
-			}
-		]
-	} );
-}
+editor.accessibility.addKeystrokeInfos( {
+	keystrokes: [
+		{
+			label: t( 'Highlight text' ),
+			keystroke: 'Ctrl+Alt+H'
+		}
+	]
+} );
 ```
 
-You can learn more about the {@link module:ui/editorui/accessibilityhelp/accessibilityhelp~AccessibilityHelp} plugin in its API reference.
+You can learn more about the {@link module:ui/editorui/accessibilityhelp/accessibilityhelp~AccessibilityHelp} plugin and the {@link module:core/accessibility~Accessibility `editor.accessibility`} namespace in the API reference.
 
 ## Updating button tooltip
 
