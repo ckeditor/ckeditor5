@@ -93,7 +93,7 @@ export { default as History } from './model/history.js';
 export { default as Text } from './model/text.js';
 export { default as TextProxy } from './model/textproxy.js';
 export type { default as Document, ModelPostFixer } from './model/document.js';
-export type { Marker } from './model/markercollection.js';
+export type { default as MarkerCollection, Marker } from './model/markercollection.js';
 export type { default as Batch } from './model/batch.js';
 export type { default as Differ, DiffItem, DiffItemAttribute, DiffItemInsert, DiffItemRemove } from './model/differ.js';
 export type { default as Item } from './model/item.js';
