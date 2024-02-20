@@ -149,6 +149,22 @@ describe( 'InputBase', () => {
 				view.value = '';
 				expect( view.isEmpty ).to.be.true;
 			} );
+
+			it( 'should not update the dom value or #isEmpty property when the changed #value is the same as previous dom value', () => {
+				const updateIsEmptySpy = sinon.spy( view, '_updateIsEmpty' );
+
+				view.value = 'thesame';
+
+				expect( view.value ).to.equal( 'thesame' );
+				expect( view.element.value ).to.equal( 'thesame' );
+				sinon.assert.calledOnce( updateIsEmptySpy );
+
+				updateIsEmptySpy.resetHistory();
+
+				view.fire( 'change:value', 'value', 'thesame' );
+				expect( view.element.value ).to.equal( 'thesame' );
+				sinon.assert.notCalled( updateIsEmptySpy );
+			} );
 		} );
 
 		describe( 'id', () => {
