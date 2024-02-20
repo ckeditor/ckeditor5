@@ -7,11 +7,11 @@
 * @module list/listproperties/utils/style
 */
 
-const LIST_STYLE_TO_LIST_TYPE: Record<string, 'bulleted' | 'numbered' | undefined> = {};
+const LIST_STYLE_TO_LIST_TYPE: Record<string, 'bulleted' | 'numbered' | 'legal' | undefined> = {};
 const LIST_STYLE_TO_TYPE_ATTRIBUTE: Record<string, string | null | undefined> = {};
 const TYPE_ATTRIBUTE_TO_LIST_STYLE: Record<string, string | undefined> = {};
 
-const LIST_STYLE_TYPES: Array<{ listStyle: string; typeAttribute: string | null; listType: 'bulleted' | 'numbered' }> = [
+const LIST_STYLE_TYPES: Array<{ listStyle: string; typeAttribute: string | null; listType: 'bulleted' | 'numbered' | 'legal' }> = [
 	{ listStyle: 'disc', typeAttribute: 'disc', listType: 'bulleted' },
 	{ listStyle: 'circle', typeAttribute: 'circle', listType: 'bulleted' },
 	{ listStyle: 'square', typeAttribute: 'square', listType: 'bulleted' },
@@ -22,7 +22,8 @@ const LIST_STYLE_TYPES: Array<{ listStyle: string; typeAttribute: string | null;
 	{ listStyle: 'lower-alpha', typeAttribute: 'a', listType: 'numbered' },
 	{ listStyle: 'upper-alpha', typeAttribute: 'A', listType: 'numbered' },
 	{ listStyle: 'lower-latin', typeAttribute: 'a', listType: 'numbered' },
-	{ listStyle: 'upper-latin', typeAttribute: 'A', listType: 'numbered' }
+	{ listStyle: 'upper-latin', typeAttribute: 'A', listType: 'numbered' },
+	{ listStyle: 'decimal-legal', typeAttribute: '1', listType: 'legal' }
 ];
 
 for ( const { listStyle, typeAttribute, listType } of LIST_STYLE_TYPES ) {
@@ -44,7 +45,7 @@ export function getAllSupportedStyleTypes(): Array<string> {
 /**
  * Checks whether the given list-style-type is supported by numbered or bulleted list.
  */
-export function getListTypeFromListStyleType( listStyleType: string ): 'bulleted' | 'numbered' | null {
+export function getListTypeFromListStyleType( listStyleType: string ): 'bulleted' | 'numbered' | 'legal' | null {
 	return LIST_STYLE_TO_LIST_TYPE[ listStyleType ] || null;
 }
 
