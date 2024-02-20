@@ -56,7 +56,7 @@ export default class UnderlineEditing extends Plugin {
 		// Set the Ctrl+U keystroke.
 		editor.keystrokes.set( 'CTRL+U', 'underline' );
 
-		// Register the accessibility information about the keystroke.
+		// Add the information about the keystroke to the accessibility database.
 		editor.accessibility.addKeystrokeInfos( {
 			keystrokes: [
 				{

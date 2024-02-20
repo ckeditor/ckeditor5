@@ -69,7 +69,7 @@ export default class CodeEditing extends Plugin {
 		// Setup highlight over selected element.
 		inlineHighlight( editor, CODE, 'code', HIGHLIGHT_CLASS );
 
-		// Register the accessibility information about the keystroke.
+		// Add the information about the keystroke to the accessibility database.
 		editor.accessibility.addKeystrokeInfos( {
 			keystrokes: [
 				{

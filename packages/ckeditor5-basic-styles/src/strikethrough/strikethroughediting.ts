@@ -61,7 +61,7 @@ export default class StrikethroughEditing extends Plugin {
 		// Set the Ctrl+Shift+X keystroke.
 		editor.keystrokes.set( 'CTRL+SHIFT+X', 'strikethrough' );
 
-		// Register the accessibility information about the keystroke.
+		// Add the information about the keystroke to the accessibility database.
 		editor.accessibility.addKeystrokeInfos( {
 			keystrokes: [
 				{

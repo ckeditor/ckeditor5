@@ -45,7 +45,7 @@ export default class Clipboard extends Plugin {
 		const editor = this.editor;
 		const t = this.editor.t;
 
-		// Register the accessibility information about the keystrokes.
+		// Add the information about the keystrokes to the accessibility database.
 		editor.accessibility.addKeystrokeInfos( {
 			keystrokes: [
 				{

@@ -78,7 +78,7 @@ export default class TableKeyboard extends Plugin {
 			{ context: [ 'th', 'td' ] }
 		);
 
-		// Register the accessibility information about the keystrokes.
+		// Add the information about the keystrokes to the accessibility database.
 		editor.accessibility.addKeystrokeInfoGroup( {
 			id: 'table',
 			label: t( 'Keystrokes that can be used in a table cell' ),

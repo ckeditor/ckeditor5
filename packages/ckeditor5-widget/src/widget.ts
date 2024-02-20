@@ -196,7 +196,7 @@ export default class Widget extends Plugin {
 			}
 		}, { context: '$root' } );
 
-		// Register the accessibility information about the keystrokes.
+		// Add the information about the keystrokes to the accessibility database.
 		editor.accessibility.addKeystrokeInfoGroup( {
 			id: 'widget',
 			label: t( 'Keystrokes that can be used when a widget is selected (for example: image, table, etc.)' ),

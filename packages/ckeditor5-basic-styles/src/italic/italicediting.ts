@@ -59,7 +59,7 @@ export default class ItalicEditing extends Plugin {
 		// Set the Ctrl+I keystroke.
 		editor.keystrokes.set( 'CTRL+I', ITALIC );
 
-		// Register the accessibility information about the keystroke.
+		// Add the information about the keystroke to the accessibility database.
 		editor.accessibility.addKeystrokeInfos( {
 			keystrokes: [
 				{

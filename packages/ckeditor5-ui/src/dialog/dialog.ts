@@ -73,7 +73,7 @@ export default class Dialog extends Plugin {
 
 		this.set( 'id', null );
 
-		// Register the accessibility information about the keystroke.
+		// Add the information about the keystroke to the accessibility database.
 		editor.accessibility.addKeystrokeInfos( {
 			categoryId: 'navigation',
 			keystrokes: [ {

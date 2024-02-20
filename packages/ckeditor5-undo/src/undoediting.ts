@@ -111,7 +111,7 @@ export default class UndoEditing extends Plugin {
 		editor.keystrokes.set( 'CTRL+Y', 'redo' );
 		editor.keystrokes.set( 'CTRL+SHIFT+Z', 'redo' );
 
-		// Register the accessibility information about the keystrokes.
+		// Add the information about the keystrokes to the accessibility database.
 		editor.accessibility.addKeystrokeInfos( {
 			keystrokes: [
 				{

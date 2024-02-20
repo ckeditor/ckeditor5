@@ -72,7 +72,7 @@ export default class BoldEditing extends Plugin {
 		// Set the Ctrl+B keystroke.
 		editor.keystrokes.set( 'CTRL+B', BOLD );
 
-		// Register the accessibility information about the keystroke.
+		// Add the information about the keystroke to the accessibility database.
 		editor.accessibility.addKeystrokeInfos( {
 			keystrokes: [
 				{

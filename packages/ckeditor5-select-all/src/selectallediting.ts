@@ -46,7 +46,7 @@ export default class SelectAllEditing extends Plugin {
 			}
 		} );
 
-		// Register the accessibility information about the keystroke.
+		// Add the information about the keystroke to the accessibility database.
 		editor.accessibility.addKeystrokeInfos( {
 			keystrokes: [
 				{

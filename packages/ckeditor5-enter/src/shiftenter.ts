@@ -73,7 +73,7 @@ export default class ShiftEnter extends Plugin {
 			view.scrollToTheSelection();
 		}, { priority: 'low' } );
 
-		// Register the accessibility information about the keystroke.
+		// Add the information about the keystroke to the accessibility database.
 		editor.accessibility.addKeystrokeInfos( {
 			keystrokes: [
 				{
