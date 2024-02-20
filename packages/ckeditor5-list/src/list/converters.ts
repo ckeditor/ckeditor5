@@ -21,7 +21,8 @@ import {
 	type UpcastElementEvent,
 	type ViewDocumentFragment,
 	type ViewElement,
-	type ViewRange
+	type ViewRange,
+	type DowncastRemoveEvent
 } from 'ckeditor5/src/engine.js';
 
 import type { GetCallback } from 'ckeditor5/src/utils.js';
@@ -379,6 +380,35 @@ export function listItemDowncastConverter(
 
 		// Then wrap them with the new list wrappers (UL, OL, LI).
 		wrapListItemBlock( listItem, viewRange, strategies, writer );
+	};
+}
+
+/**
+ * TODO
+ */
+export function listItemDowncastRemoveConverter(): GetCallback<DowncastRemoveEvent> {
+	return ( evt, data, conversionApi ) => {
+		const { writer, mapper } = conversionApi;
+
+		// Find the view range start position by mapping the model position at which the remove happened.
+		const viewStart = conversionApi.mapper.toViewPosition( data.position );
+
+		const modelEnd = data.position.getShiftedBy( data.length );
+		const viewEnd = conversionApi.mapper.toViewPosition( modelEnd, { isPhantom: true } );
+
+		// Trim the range to remove in case some UI elements are on the view range boundaries.
+		const viewRange = conversionApi.writer.createRange( viewStart, viewEnd ).getTrimmed();
+
+		// Use positions mapping instead of mapper.toViewElement( listItem ) to find outermost view element.
+		// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
+		const viewElement = viewRange.end.nodeBefore as ViewElement | null;
+
+		if ( !viewElement ) {
+			return;
+		}
+
+		// Remove custom item marker.
+		removeCustomMarkerElements( viewElement, writer, mapper );
 	};
 }
 

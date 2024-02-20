@@ -24,7 +24,8 @@ import type {
 	ViewDocumentTabEvent,
 	ViewElement,
 	ViewAttributeElement,
-	Writer
+	Writer,
+	DowncastRemoveEvent
 } from 'ckeditor5/src/engine.js';
 
 import { Delete, type ViewDocumentDeleteEvent } from 'ckeditor5/src/typing.js';
@@ -40,6 +41,7 @@ import ListUtils from './listutils.js';
 import {
 	bogusParagraphCreator,
 	listItemDowncastConverter,
+	listItemDowncastRemoveConverter,
 	listItemUpcastConverter,
 	listUpcastCleanList,
 	reconvertItemsOnDataChange
@@ -471,6 +473,8 @@ export default class ListEditing extends Plugin {
 					'attribute',
 					listItemDowncastConverter( attributeNames, this._downcastStrategies, model )
 				);
+
+				dispatcher.on<DowncastRemoveEvent>( 'remove', listItemDowncastRemoveConverter() );
 			} );
 
 		editor.conversion.for( 'dataDowncast' )
