@@ -15,7 +15,7 @@ ClassicEditor
 			toolbar: [
 				'imageStyle:inline',
 				'imageStyle:block',
-				'imageStyle:side',
+				'imageStyle:wrapText',
 				'|',
 				'toggleImageCaption',
 				'imageTextAlternative',

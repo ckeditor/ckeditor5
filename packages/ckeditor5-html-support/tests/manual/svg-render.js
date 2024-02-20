@@ -23,7 +23,7 @@ ClassicEditor
 		image: {
 			toolbar: [
 				'toggleImageCaption', '|',
-				'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|',
+				'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText', '|',
 				'imageTextAlternative'
 			]
 		},

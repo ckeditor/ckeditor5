@@ -22,8 +22,6 @@ For the entire list of changes introduced in version 33.0.0, see the [release no
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v33.0.0.
 
-## Important changes
-
 ### New import paths in the `ckeditor5-list` package
 
 Starting with v33.0.0, some import paths have changed in the [`ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package. If your application {@link installation/plugins/installing-plugins imports individual plugins} to integrate or build CKEditor&nbsp;5, you should update the paths accordingly:

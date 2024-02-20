@@ -25,7 +25,7 @@ ClassicEditor
 			}
 		],
 		image: {
-			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side',
+			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText',
 				'|', 'toggleImageCaption', 'imageTextAlternative', '|', 'ckboxImageEdit' ]
 		},
 		cloudServices: CS_CONFIG,

@@ -52,11 +52,6 @@ describe( 'ClassicEditor', () => {
 			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
 		} );
 
-		it( 'mixes DataApiMixin', () => {
-			expect( ClassicEditor.prototype ).have.property( 'setData' ).to.be.a( 'function' );
-			expect( ClassicEditor.prototype ).have.property( 'getData' ).to.be.a( 'function' );
-		} );
-
 		it( 'mixes ElementApiMixin', () => {
 			expect( ClassicEditor.prototype ).have.property( 'updateSourceElement' ).to.be.a( 'function' );
 		} );
@@ -411,7 +406,7 @@ describe( 'ClassicEditor', () => {
 					plugins: [ ArticlePluginSet ],
 					toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
 					image: {
-						toolbar: [ 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
+						toolbar: [ 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative' ]
 					}
 				} ) );
 	} );

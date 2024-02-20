@@ -551,6 +551,24 @@ describe( 'TooltipManager', () => {
 				} );
 			} );
 		} );
+
+		it( 'should update the position if the attribute was changed', async () => {
+			utils.dispatchMouseEnter( elements.a );
+			utils.waitForTheTooltipToShow( clock );
+			clock.restore();
+
+			// ResizeObserver is asynchronous.
+			await wait( 100 );
+
+			expect( elements.a.dataset.ckeTooltipPosition ).to.equal( undefined );
+			sinon.assert.calledOnce( pinSpy );
+
+			elements.a.dataset.ckeTooltipPosition = 'e';
+
+			await wait( 100 );
+
+			sinon.assert.calledTwice( pinSpy );
+		} );
 	} );
 
 	describe( 'hiding tooltips', () => {
@@ -770,6 +788,23 @@ describe( 'TooltipManager', () => {
 
 				sinon.assert.calledOnce( unpinSpy );
 			} );
+		} );
+
+		it( 'when the tooltip text gets removed', async () => {
+			utils.dispatchMouseEnter( elements.a );
+			utils.waitForTheTooltipToShow( clock );
+			clock.restore();
+
+			// ResizeObserver is asynchronous.
+			await wait( 100 );
+
+			unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
+
+			elements.a.dataset.ckeTooltipText = '';
+
+			await wait( 100 );
+
+			sinon.assert.calledOnce( unpinSpy );
 		} );
 	} );
 

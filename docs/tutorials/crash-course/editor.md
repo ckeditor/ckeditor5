@@ -99,8 +99,8 @@ window.editor = editor;
 
 Four common methods we will test are:
 
-* {@link module:core/editor/utils/dataapimixin~DataApi#getData `getData()`}
-* {@link module:core/editor/utils/dataapimixin~DataApi#setData `setData()`}
+* {@link module:core/editor/editor~Editor#getData `getData()`}
+* {@link module:core/editor/editor~Editor#setData `setData()`}
 * {@link module:core/editor/editor~Editor#execute `execute()`}
 * {@link module:core/editor/editor~Editor#destroy `destroy()`}
 

@@ -21,7 +21,7 @@ For the entire list of changes introduced in version 26.0.0, see the [release no
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v26.0.0.
 
-## Soft requirements
+### Soft requirements
 
 While [allowing to extend builds](https://github.com/ckeditor/ckeditor5/issues/8395) with extra plugins without rebuilding the bundle (a concept also called {@link installation/advanced/dll-builds "DLLs"}), we had to decouple certain sets of plugins. This has led to the introduction of the "soft requirements."
 
@@ -31,7 +31,7 @@ Starting from v26.0.0 not all plugins can be directly imported by other plugins.
 
 Therefore, when upgrading to version 26.0.0, you may stumble upon the {@link support/error-codes#error-plugincollection-soft-required `plugincollection-soft-required`} error. This tells you that some dependencies are now missing and you need to provide them.
 
-### List of known soft requirements
+#### List of known soft requirements
 
 * Add {@link module:cloud-services/cloudservices~CloudServices `CloudServices`} to the editor plugins when using the `CloudServicesUploadAdapter` or `EasyImage` features.
 * Add {@link module:image/image~Image `Image`} and {@link module:image/imageupload~ImageUpload `ImageUpload`} to the editor plugins when using the `EasyImage` feature.
@@ -41,7 +41,7 @@ Therefore, when upgrading to version 26.0.0, you may stumble upon the {@link sup
 * Add {@link module:image/image~Image `Image`} to the editor plugins when using the `LinkImage` feature.
 * Add {@link module:cloud-services/cloudservices~CloudServices `CloudServices`} to the editor plugins when using the `ExportPdf` or `ExportWord` features.
 
-### Upgrade method
+#### Upgrade method
 
 Before, when you were passing plugins directly to `Editor.create()` via `config.plugins`, this would be your setup:
 
@@ -192,13 +192,13 @@ ClassicEditor
 	} );
 ```
 
-## Keystrokes for macOS
+### Keystrokes for macOS
 
 Starting from v26.0.0, the {@link module:utils/keystrokehandler~KeystrokeHandler `KeystrokeHandler`} is not automatically binding to both <kbd>Ctrl</kbd> and <kbd>Cmd</kbd> keys on macOS as before. Instead, it is translating the <kbd>Ctrl</kbd> key to the <kbd>Cmd</kbd> key and handling just this keystroke.
 
 For example, a registered keystroke `Ctrl+A` will now be translated to `Cmd+A` on macOS. To block the translation of a keystroke, use the forced modifier: `Ctrl!+A` (note the exclamation mark).
 
-## Unified button and command naming convention
+### Unified button and command naming convention
 
 The naming conventions for both buttons and commands have been reviewed and unified to maintain maximum consistency and provide sane rules that match real-life cases.
 

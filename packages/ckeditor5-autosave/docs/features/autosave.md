@@ -35,7 +35,7 @@ How to understand this demo:
 	This plugin is not enabled in any of the {@link installation/getting-started/predefined-builds predefined builds}, so you need to {@link installation/plugins/installing-plugins install it} by hand.
 </info-box>
 
-To add the basic styles features to your editor install the [`@ckeditor/ckeditor5-autosave`](https://www.npmjs.com/package/@ckeditor/ckeditor5-autosave) package:
+To add the autosave feature to your editor install the [`@ckeditor/ckeditor5-autosave`](https://www.npmjs.com/package/@ckeditor/ckeditor5-autosave) package:
 
 ```
 npm install --save @ckeditor/ckeditor5-autosave
