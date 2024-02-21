@@ -23,7 +23,7 @@ const LIST_STYLE_TYPES: Array<{ listStyle: string; typeAttribute: string | null;
 	{ listStyle: 'upper-alpha', typeAttribute: 'A', listType: 'numbered' },
 	{ listStyle: 'lower-latin', typeAttribute: 'a', listType: 'numbered' },
 	{ listStyle: 'upper-latin', typeAttribute: 'A', listType: 'numbered' },
-	{ listStyle: 'decimal-legal', typeAttribute: '1', listType: 'legal' }
+	{ listStyle: 'decimal-legal', typeAttribute: '1.', listType: 'legal' }
 ];
 
 for ( const { listStyle, typeAttribute, listType } of LIST_STYLE_TYPES ) {
