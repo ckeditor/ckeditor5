@@ -3,6 +3,7 @@ category: setup
 menu-title: UI language
 meta-title: Setting the UI language | CKEditor 5 Documentation
 order: 30
+modified_at: 2024-02-21
 ---
 
 {@snippet features/build-ui-language-source}
@@ -47,62 +48,75 @@ We are doing our best to deliver the best RTL support to our users and we consta
 
 * [CDN](#cdn)
 * [npm](#npm)
-<!-- * [Zip download](#zip) -->
-
-Next, you can configure the editor to use the chosen language:
-
-```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		// The language code is defined in the https://en.wikipedia.org/wiki/ISO_639-1 standard.
-		language: 'es'
-	} )
-	.then( editor => {
-		console.log( editor );
-	} )
-	.catch( error => {
-		console.error( error );
-	} );
-```
 
 ### CDN
 
 To use a different language than the default one (English), you need to load the editor together with the preferred language:
 
 ```html
-<script src="https://cdn.ckeditor.com/ckeditor5/[version.number]/[distribution]/ckeditor.js"></script>
-<script src="https://cdn.ckeditor.com/ckeditor5/[version.number]/[distribution]/translations/[lang].js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/dist/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/dist/translations/[lang].js"></script>
 ```
 
 For example:
 
 ```html
-<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/classic/ckeditor.js"></script>
-<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/classic/translations/de.js"></script>
+<link rel="stylesheet" href="<CDN_LINK>/ckeditor5/dist/styles.css">
+
+<script type="importmap">
+{
+	"imports": {
+		"ckeditor5": "<CDN_LINK>/ckeditor5/dist/index.min.js",
+		"ckeditor5/": "<CDN_LINK>/ckeditor5/",
+	}
+}
+</script>
+<script type="module">
+import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
+import translations from 'ckeditor5/dist/translations/pl.js';
+
+await ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [
+		Essentials,
+		Paragraph,
+	],
+	toolbar: {
+		items: [ 'undo', 'redo' ]
+	},
+	translations
+} );
+</script>
 ```
 
 See the {@link getting-started/quick-start#using-ckeditor-5-from-cdn CDN installation guide} for more information.
 
 ### npm
 
-After installing the build from npm, languages will be available in `node_modules/@ckeditor/ckeditor5-build-[name]/build/translations/[lang].js`.
+After installing the build from npm, languages will be available in `ckeditor5/dist/translations/[lang].js`.
 
-You can load a single language directly to your code by importing, for example, `'@ckeditor/ckeditor5-build-classic/build/translations/de.js'`.
+You can load a single language directly to your code by importing, for example, to use Polish, call `'ckeditor5/dist/translations/pl.js'`. Sample editor code may look similar to this one:
+
+```js
+import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
+import translations from 'ckeditor5/dist/translations/pl.js';
+
+import 'ckeditor5/dist/styles.css';
+
+await ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [
+		Essentials,
+		Paragraph,
+	],
+	toolbar: {
+		items: [ 'undo', 'redo' ]
+	},
+	translations
+} );
+```
 
 See the {@link getting-started/quick-start#installing-ckeditor-5-using-npm npm installation guide} for more information.
 
-<!-- ### Zip
-
-All additional languages are included in the `.zip` file. You need to include the `ckeditor.js` file together with the chosen language file:
-
-```html
-<script src="[ckeditor-path]/ckeditor.js"></script>
-<script src="[ckeditor-path]/translations/de.js"></script>
-```
-
-See the {@link getting-started/legacy-getting-started/predefined-builds#zip-download zip installation guide} for more information. -->
-
-## Building the editor using a specific language
+## Building the editor using a specific language <!-- Needs a redo or potential removal -->
 
 Currently, it is possible to change the UI language at the build stage and after the build. A single build of the editor supports the language which was defined in the [CKEditor&nbsp;5 translations plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations)'s configuration. Check the whole translation process to see how you can change the language later.
 
