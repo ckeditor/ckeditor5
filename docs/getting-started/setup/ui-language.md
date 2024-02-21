@@ -51,9 +51,9 @@ We are doing our best to deliver the best RTL support to our users and we consta
 
 ### npm
 
-After installing the build from npm, languages will be available in `ckeditor5/dist/translations/[lang].js`.
+After installing the build from npm, languages will be available via `ckeditor5/dist/translations/[lang].js`.
 
-You can load a single language directly to your code by importing, for example, to use Polish, call `'ckeditor5/dist/translations/pl.js'`. Sample editor code may look similar to this one:
+You can load a single language directly to your code by importing. For example, to use Polish, call `'ckeditor5/dist/translations/pl.js'`. Sample editor code will look similar to this one:
 
 ```js
 import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
@@ -77,7 +77,7 @@ See the {@link getting-started/quick-start#installing-ckeditor-5-using-npm npm i
 
 ### CDN
 
-To use a different language than the default one (English), you need to load the editor together with the preferred language:
+To use different language than the default one (English), you need to load the editor together with the preferred language:
 
 ```html
 <script src="https://cdn.ckeditor.com/ckeditor5/dist/ckeditor.js"></script>
@@ -147,6 +147,8 @@ ClassicEditor
 
 <info-box>
 	If you are unsure about the language that the content will be typed in, do not set it. The language of the content will then be inherited from the {@link module:core/editor/editorconfig~EditorConfig#language language of the UI}.
+
+	You can also employ the {@link features/language text part language} feature to produce multi-language content.
 </info-box>
 
 ## List of available professional translations
