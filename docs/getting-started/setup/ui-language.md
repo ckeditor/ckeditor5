@@ -42,12 +42,38 @@ See the demo of the editor in Arabic:
 
 We are doing our best to deliver the best RTL support to our users and we constantly improve the editor. Check out the [RTL support](https://github.com/ckeditor/ckeditor5/issues/1151) issue on GitHub to learn more and stay up–to–date. Your feedback is much appreciated!
 
-## Loading additional languages from CDN, npm, and a zip file
+## Loading additional languages from npm or CDN
 
  By default, the editor will display in American English. This is the language built into the `ckeditor.js` files. To change the language of the editor UI, you need to load additional language file(s). Check out the following sections to see how to do that:
 
-* [CDN](#cdn)
 * [npm](#npm)
+* [CDN](#cdn)
+
+### npm
+
+After installing the build from npm, languages will be available in `ckeditor5/dist/translations/[lang].js`.
+
+You can load a single language directly to your code by importing, for example, to use Polish, call `'ckeditor5/dist/translations/pl.js'`. Sample editor code may look similar to this one:
+
+```js
+import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
+import translations from 'ckeditor5/dist/translations/pl.js';
+
+import 'ckeditor5/dist/styles.css';
+
+await ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [
+		Essentials,
+		Paragraph,
+	],
+	toolbar: {
+		items: [ 'undo', 'redo' ]
+	},
+	translations
+} );
+```
+
+See the {@link getting-started/quick-start#installing-ckeditor-5-using-npm npm installation guide} for more information.
 
 ### CDN
 
@@ -89,32 +115,6 @@ await ClassicEditor.create( document.querySelector( '#editor' ), {
 ```
 
 See the {@link getting-started/quick-start#using-ckeditor-5-from-cdn CDN installation guide} for more information.
-
-### npm
-
-After installing the build from npm, languages will be available in `ckeditor5/dist/translations/[lang].js`.
-
-You can load a single language directly to your code by importing, for example, to use Polish, call `'ckeditor5/dist/translations/pl.js'`. Sample editor code may look similar to this one:
-
-```js
-import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
-import translations from 'ckeditor5/dist/translations/pl.js';
-
-import 'ckeditor5/dist/styles.css';
-
-await ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [
-		Essentials,
-		Paragraph,
-	],
-	toolbar: {
-		items: [ 'undo', 'redo' ]
-	},
-	translations
-} );
-```
-
-See the {@link getting-started/quick-start#installing-ckeditor-5-using-npm npm installation guide} for more information.
 
 ## Setting the language of the content
 
