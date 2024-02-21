@@ -17,6 +17,7 @@
     "@ckeditor/ckeditor5-ui": "41.0.0"
   },
   "devDependencies": {
+    "@ckeditor/ckeditor5-dev-build-tools": "0.1.0",
     "typescript": "5.0.4",
     "webpack": "^5.58.1",
     "webpack-cli": "^4.9.0"
@@ -31,6 +32,7 @@
     "directory": "packages/ckeditor5-upload"
   },
   "files": [
+    "dist",
     "lang",
     "src/**/*.js",
     "src/**/*.d.ts",
@@ -39,6 +41,7 @@
     "CHANGELOG.md"
   ],
   "scripts": {
-    "build": "tsc -p ./tsconfig.json"
+    "build": "tsc -p ./tsconfig.json",
+    "build:node": "ckeditor5-build-package --tsconfig=tsconfig.kowalski.json --clean --source-map --declarations --banner=../../scripts/banner.mjs"
   }
 }

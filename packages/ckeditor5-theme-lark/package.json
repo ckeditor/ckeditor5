@@ -14,6 +14,7 @@
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "41.0.0",
     "@ckeditor/ckeditor5-core": "41.0.0",
+    "@ckeditor/ckeditor5-dev-build-tools": "0.1.0",
     "@ckeditor/ckeditor5-editor-balloon": "41.0.0",
     "@ckeditor/ckeditor5-editor-classic": "41.0.0",
     "@ckeditor/ckeditor5-find-and-replace": "41.0.0",
@@ -42,11 +43,15 @@
     "directory": "packages/ckeditor5-theme-lark"
   },
   "files": [
+    "dist",
     "lang",
     "src",
     "theme",
     "ckeditor5-metadata.json",
     "CHANGELOG.md"
   ],
-  "main": "./theme/theme.css"
+  "main": "./theme/theme.css",
+  "scripts": {
+    "build:node": "ckeditor5-build-package --input=theme/index.css --clean"
+  }
 }

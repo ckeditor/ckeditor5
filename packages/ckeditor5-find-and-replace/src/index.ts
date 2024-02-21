@@ -16,6 +16,6 @@ export { default as FindNextCommand } from './findnextcommand.js';
 export { default as FindPreviousCommand } from './findpreviouscommand.js';
 export { default as ReplaceCommand } from './replacecommand.js';
 export { default as ReplaceAllCommand } from './replaceallcommand.js';
-export { FindAndReplaceConfig } from './findandreplaceconfig.js';
+export type { FindAndReplaceConfig } from './findandreplaceconfig.js';
 
 import './augmentation.js';

@@ -1,0 +1,12 @@
+{
+	"extends": "../../tsconfig.kowalski.json",
+	"compilerOptions": {
+		"rootDir": "src",
+		"types": [
+			"../../typings/types"
+		]
+	},
+	"include": [
+		"src"
+	]
+}

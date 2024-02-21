@@ -45,8 +45,6 @@ import { isObject } from 'lodash-es';
 
 import '../../theme/components/toolbar/toolbar.css';
 
-const { threeVerticalDots } = icons;
-
 export const NESTED_TOOLBAR_ICONS: Record<string, string | undefined> = {
 	alignLeft: icons.alignLeft,
 	bold: icons.bold,
@@ -541,7 +539,7 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 		// Allow disabling icon by passing false.
 		if ( icon !== false ) {
 			// A pre-defined icon picked by name, SVG string, a fallback (default) icon.
-			dropdownView.buttonView.icon = NESTED_TOOLBAR_ICONS[ icon! ] || icon || threeVerticalDots;
+			dropdownView.buttonView.icon = NESTED_TOOLBAR_ICONS[ icon! ] || icon || icons.threeVerticalDots;
 		}
 		// If the icon is disabled, display the label automatically.
 		else {
@@ -1046,7 +1044,7 @@ class DynamicGrouping implements ToolbarBehavior {
 			label: t( 'Show more items' ),
 			tooltip: true,
 			tooltipPosition: locale.uiLanguageDirection === 'rtl' ? 'se' : 'sw',
-			icon: threeVerticalDots
+			icon: icons.threeVerticalDots
 		} );
 
 		return dropdown;

@@ -20,6 +20,7 @@
     "@ckeditor/ckeditor5-basic-styles": "41.0.0",
     "@ckeditor/ckeditor5-clipboard": "41.0.0",
     "@ckeditor/ckeditor5-core": "41.0.0",
+    "@ckeditor/ckeditor5-dev-build-tools": "0.1.0",
     "@ckeditor/ckeditor5-dev-utils": "^39.0.0",
     "@ckeditor/ckeditor5-editor-balloon": "41.0.0",
     "@ckeditor/ckeditor5-editor-classic": "41.0.0",
@@ -48,6 +49,7 @@
     "directory": "packages/ckeditor5-media-embed"
   },
   "files": [
+    "dist",
     "lang",
     "src/**/*.js",
     "src/**/*.d.ts",
@@ -58,6 +60,7 @@
   ],
   "scripts": {
     "dll:build": "webpack",
-    "build": "tsc -p ./tsconfig.json"
+    "build": "tsc -p ./tsconfig.json",
+    "build:node": "ckeditor5-build-package --tsconfig=tsconfig.kowalski.json --clean --source-map --declarations --banner=../../scripts/banner.mjs"
   }
 }

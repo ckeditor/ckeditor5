@@ -90,6 +90,7 @@
     "@ckeditor/ckeditor5-ai": "41.0.0",
     "@ckeditor/ckeditor5-case-change": "41.0.0",
     "@ckeditor/ckeditor5-comments": "41.0.0",
+    "@ckeditor/ckeditor5-dev-build-tools": "0.1.0",
     "@ckeditor/ckeditor5-dev-bump-year": "^39.0.0",
     "@ckeditor/ckeditor5-dev-ci": "^39.0.0",
     "@ckeditor/ckeditor5-dev-dependency-checker": "^39.0.0",
@@ -201,7 +202,9 @@
     "clean-up-svg-icons": "node ./scripts/clean-up-svg-icons.js",
     "collect-svg-icons": "node scripts/collect-svg-icons.js",
     "check-dependencies": "ckeditor5-dev-dependency-checker",
-    "check-dependencies:versions-match": "node ./scripts/ci/check-dependencies-versions-match.js"
+    "check-dependencies:versions-match": "node ./scripts/ci/check-dependencies-versions-match.js",
+    "build:node": "ckeditor5-build-package --tsconfig=tsconfig.ckeditor5.kowalski.json --clean --source-map --declarations --translations --banner=scripts/banner.mjs",
+    "build:browser": "ckeditor5-build-package --input=src/index.browser.ts --tsconfig=tsconfig.ckeditor5.kowalski.json --source-map --bundle --minify --banner=scripts/banner.mjs"
   },
   "lint-staged": {
     "**/*.{js,ts}": [
