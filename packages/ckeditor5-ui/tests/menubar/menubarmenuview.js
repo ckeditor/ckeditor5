@@ -124,7 +124,7 @@ describe( 'MenuBarMenuView', () => {
 
 			} );
 
-			it( 'should enable a behavior that opens the menu upon arrow left key press', () => {
+			it( 'should enable a behavior that closes the menu upon arrow left key press', () => {
 
 			} );
 

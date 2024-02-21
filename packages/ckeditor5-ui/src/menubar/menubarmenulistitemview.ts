@@ -40,7 +40,7 @@ export default class MenuBarMenuListItemView extends ListItemView {
 			}
 		} );
 
-		this.parentMenuView = parentMenuView;
+		// this.parentMenuView = parentMenuView;
 
 		this.delegate( ...EVENT_NAME_DELEGATES ).to( parentMenuView );
 	}

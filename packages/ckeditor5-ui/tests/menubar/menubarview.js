@@ -122,7 +122,7 @@ describe( 'MenuBarView', () => {
 
 		} );
 
-		it( 'should add a behavior that allows for moving horizontalli across menus using arrow keys', () => {
+		it( 'should add a behavior that allows for moving horizontally across menus using arrow keys', () => {
 
 		} );
 
