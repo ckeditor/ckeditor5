@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import { ButtonView } from 'ckeditor5/src/ui.js';
+import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 import type AttributeCommand from '../attributecommand.js';
 
 import underlineIcon from '../../theme/icons/underline.svg';
@@ -31,30 +31,51 @@ export default class UnderlineUI extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
-		const t = editor.t;
+		const command: AttributeCommand = editor.commands.get( UNDERLINE )!;
 
 		// Add bold button to feature components.
-		editor.ui.componentFactory.add( UNDERLINE, locale => {
-			const command: AttributeCommand = editor.commands.get( UNDERLINE )!;
-			const view = new ButtonView( locale );
+		editor.ui.componentFactory.add( UNDERLINE, () => {
+			const buttonView = this._createButton( ButtonView );
 
-			view.set( {
-				label: t( 'Underline' ),
-				icon: underlineIcon,
-				keystroke: 'CTRL+U',
-				tooltip: true,
-				isToggleable: true
+			buttonView.set( {
+				tooltip: true
 			} );
 
-			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
+			buttonView.bind( 'isOn' ).to( command, 'value' );
 
-			// Execute command.
-			this.listenTo( view, 'execute', () => {
-				editor.execute( UNDERLINE );
-				editor.editing.view.focus();
-			} );
-
-			return view;
+			return buttonView;
 		} );
+
+		editor.ui.componentFactory.add( 'menuBar:' + UNDERLINE, () => {
+			return this._createButton( MenuBarMenuListItemButtonView );
+		} );
+	}
+
+	/**
+	 * TODO
+	 */
+	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
+		const editor = this.editor;
+		const locale = editor.locale;
+		const command: AttributeCommand = editor.commands.get( UNDERLINE )!;
+		const view = new ButtonClass( editor.locale ) as InstanceType<T>;
+		const t = locale.t;
+
+		view.set( {
+			label: t( 'Underline' ),
+			icon: underlineIcon,
+			keystroke: 'CTRL+U',
+			isToggleable: true
+		} );
+
+		view.bind( 'isEnabled' ).to( command, 'isEnabled' );
+
+		// Execute the command.
+		this.listenTo( view, 'execute', () => {
+			editor.execute( UNDERLINE );
+			editor.editing.view.focus();
+		} );
+
+		return view;
 	}
 }

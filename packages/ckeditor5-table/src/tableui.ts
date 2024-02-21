@@ -15,7 +15,8 @@ import {
 	SplitButtonView,
 	SwitchButtonView,
 	type DropdownView,
-	type ListDropdownItemDefinition
+	type ListDropdownItemDefinition,
+	MenuBarMenuView
 } from 'ckeditor5/src/ui.js';
 import { Collection, type Locale } from 'ckeditor5/src/utils.js';
 
@@ -87,6 +88,27 @@ export default class TableUI extends Plugin {
 			} );
 
 			return dropdownView;
+		} );
+
+		editor.ui.componentFactory.add( 'menuBar:insertTable', locale => {
+			const menuView = new MenuBarMenuView( locale );
+			const insertTableView = new InsertTableView( locale );
+
+			insertTableView.delegate( 'execute' ).to( menuView );
+
+			insertTableView.on( 'execute', () => {
+				editor.execute( 'insertTable', { rows: insertTableView.rows, columns: insertTableView.columns } );
+				editor.editing.view.focus();
+			} );
+
+			menuView.buttonView.set( {
+				label: t( 'Table' ),
+				icon: icons.table
+			} );
+
+			menuView.panelView.children.add( insertTableView );
+
+			return menuView;
 		} );
 
 		editor.ui.componentFactory.add( 'tableColumn', locale => {

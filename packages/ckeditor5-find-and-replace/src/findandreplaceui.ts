@@ -10,6 +10,7 @@
 import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 import {
 	ButtonView,
+	MenuBarMenuListItemButtonView,
 	Dialog,
 	DialogViewPosition,
 	createDropdown,
@@ -81,7 +82,7 @@ export default class FindAndReplaceUI extends Plugin {
 				// Button should be disabled when in source editing mode. See #10001.
 				view.bind( 'isEnabled' ).to( findCommand );
 			} else {
-				view = this._createDialogButton();
+				view = this._createDialogButtonForToolbar();
 
 				// Button should be disabled when in source editing mode. See #10001.
 				view.bind( 'isEnabled' ).to( findCommand );
@@ -115,6 +116,12 @@ export default class FindAndReplaceUI extends Plugin {
 
 			return view;
 		} );
+
+		if ( !isUiUsingDropdown ) {
+			editor.ui.componentFactory.add( 'menuBar:findAndReplace', () => {
+				return this._createDialogButtonForMenuBar();
+			} );
+		}
 	}
 
 	/**
@@ -166,16 +173,12 @@ export default class FindAndReplaceUI extends Plugin {
 	/**
 	 * Creates a button that opens a dialog with the find and replace form.
 	 */
-	private _createDialogButton(): ButtonView {
+	private _createDialogButtonForToolbar(): ButtonView {
 		const editor = this.editor;
-		const buttonView = new ButtonView( editor.locale );
+		const buttonView = this._createButton( ButtonView );
 		const dialog = editor.plugins.get( 'Dialog' );
-		const t = editor.locale.t;
 
 		buttonView.set( {
-			icon: loupeIcon,
-			label: t( 'Find and replace' ),
-			keystroke: 'CTRL+F',
 			tooltip: true
 		} );
 
@@ -187,30 +190,71 @@ export default class FindAndReplaceUI extends Plugin {
 		// and let the find and replace editing feature know that all search results can be invalidated
 		// and no longer should be marked in the content.
 		buttonView.on( 'execute', () => {
-			if ( !this.formView ) {
-				this.formView = this._createFormView();
-			}
-
 			if ( buttonView.isOn ) {
 				dialog.hide();
 			} else {
-				dialog.show( {
-					id: 'findAndReplace',
-					title: t( 'Find and replace' ),
-					content: this.formView,
-					position: DialogViewPosition.EDITOR_TOP_SIDE,
-					onShow: () => {
-						this._setupFormView();
-					},
-
-					onHide: () => {
-						this.fire( 'searchReseted' );
-					}
-				} );
+				this._showDialog();
 			}
 		} );
 
 		return buttonView;
+	}
+
+	/**
+	 * TODO
+	 */
+	private _createDialogButtonForMenuBar(): MenuBarMenuListItemButtonView {
+		const buttonView = this._createButton( MenuBarMenuListItemButtonView );
+
+		buttonView.on( 'execute', () => {
+			this._showDialog();
+		} );
+
+		return buttonView;
+	}
+
+	/**
+	 * TODO
+	 */
+	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
+		const editor = this.editor;
+		const buttonView = new ButtonClass( editor.locale ) as InstanceType<T>;
+		const t = editor.locale.t;
+
+		buttonView.set( {
+			icon: loupeIcon,
+			label: t( 'Find and replace' ),
+			keystroke: 'CTRL+F'
+		} );
+
+		return buttonView;
+	}
+
+	/**
+	 * TODO
+	 */
+	private _showDialog(): void {
+		const editor = this.editor;
+		const dialog = editor.plugins.get( 'Dialog' );
+		const t = editor.locale.t;
+
+		if ( !this.formView ) {
+			this.formView = this._createFormView();
+		}
+
+		dialog.show( {
+			id: 'findAndReplace',
+			title: t( 'Find and replace' ),
+			content: this.formView,
+			position: DialogViewPosition.EDITOR_TOP_SIDE,
+			onShow: () => {
+				this._setupFormView();
+			},
+
+			onHide: () => {
+				this.fire( 'searchReseted' );
+			}
+		} );
 	}
 
 	/**
