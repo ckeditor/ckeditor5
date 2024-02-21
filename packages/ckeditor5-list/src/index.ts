@@ -22,6 +22,7 @@ export { default as ListProperties } from './listproperties.js';
 export { default as ListPropertiesEditing } from './listproperties/listpropertiesediting.js';
 export { default as ListPropertiesUtils } from './listproperties/listpropertiesutils.js';
 export { default as ListPropertiesUI } from './listproperties/listpropertiesui.js';
+export { default as ListPropertiesView } from './listproperties/ui/listpropertiesview.js';
 export type { default as ListReversedCommand } from './listproperties/listreversedcommand.js';
 export type { default as ListStartCommand } from './listproperties/liststartcommand.js';
 export type { default as ListStyleCommand } from './listproperties/liststylecommand.js';
