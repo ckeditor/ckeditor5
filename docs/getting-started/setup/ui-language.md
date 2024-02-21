@@ -51,9 +51,9 @@ We are doing our best to deliver the best RTL support to our users and we consta
 
 ### npm
 
-After installing the build from npm, languages will be available via `ckeditor5/dist/translations/[lang].js`.
+After installing the build from npm, translations can be imported from `ckeditor5/dist/translations/[lang].js` and must be passed to the editor configuration.
 
-You can load a single language directly to your code by importing. For example, to use Polish, call `'ckeditor5/dist/translations/pl.js'`. Sample editor code will look similar to this one:
+For example, to use Polish, import `'ckeditor5/dist/translations/pl.js'` and pass the translation object to the editor configuration:
 
 ```js
 import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
