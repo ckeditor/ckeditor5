@@ -3,6 +3,7 @@ category: setup
 menu-title: UI language
 meta-title: Setting the UI language | CKEditor 5 Documentation
 order: 30
+modified_at: 2024-02-21
 ---
 
 {@snippet features/build-ui-language-source}
@@ -41,136 +42,72 @@ See the demo of the editor in Arabic:
 
 We are doing our best to deliver the best RTL support to our users and we constantly improve the editor. Check out the [RTL support](https://github.com/ckeditor/ckeditor5/issues/1151) issue on GitHub to learn more and stay up–to–date. Your feedback is much appreciated!
 
-## Loading additional languages from CDN, npm, and a zip file
+## Loading additional languages from npm or CDN
 
  By default, the editor will display in American English. This is the language built into the `ckeditor.js` files. To change the language of the editor UI, you need to load additional language file(s). Check out the following sections to see how to do that:
 
-* [CDN](#cdn),
-* [npm](#npm),
-* [Zip download](#zip).
-
-Next, you can configure the editor to use the chosen language:
-
-```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		// The language code is defined in the https://en.wikipedia.org/wiki/ISO_639-1 standard.
-		language: 'es'
-	} )
-	.then( editor => {
-		console.log( editor );
-	} )
-	.catch( error => {
-		console.error( error );
-	} );
-```
-
-### CDN
-
-To use a different language than the default one (English), you need to load the editor together with the preferred language:
-
-```html
-<script src="https://cdn.ckeditor.com/ckeditor5/[version.number]/[distribution]/ckeditor.js"></script>
-<script src="https://cdn.ckeditor.com/ckeditor5/[version.number]/[distribution]/translations/[lang].js"></script>
-```
-
-For example:
-
-```html
-<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/classic/ckeditor.js"></script>
-<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/classic/translations/de.js"></script>
-```
-
-See the <!-- update links to proper when ready-->{@link getting-started/legacy-getting-started/predefined-builds#cdn CDN installation guide} for more information.
+* [npm](#npm)
+* [CDN](#cdn)
 
 ### npm
 
-After installing the build from npm, languages will be available in `node_modules/@ckeditor/ckeditor5-build-[name]/build/translations/[lang].js`.
+After installing the build from npm, translations can be imported from `ckeditor5/dist/translations/[lang].js` and must be passed to the editor configuration.
 
-You can load a single language directly to your code by importing, for example, `'@ckeditor/ckeditor5-build-classic/build/translations/de.js'`.
+For example, to use Polish, import `'ckeditor5/dist/translations/pl.js'` and pass the translation object to the editor configuration:
 
-See the <!-- update links to proper when ready-->{@link getting-started/legacy-getting-started/predefined-builds#npm npm installation guide} for more information.
+```js
+import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
+import translations from 'ckeditor5/dist/translations/pl.js';
 
-### Zip
+import 'ckeditor5/dist/styles.css';
 
-All additional languages are included in the `.zip` file. You need to include the `ckeditor.js` file together with the chosen language file:
-
-```html
-<script src="[ckeditor-path]/ckeditor.js"></script>
-<script src="[ckeditor-path]/translations/de.js"></script>
+await ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [
+		Essentials,
+		Paragraph,
+	],
+	toolbar: {
+		items: [ 'undo', 'redo' ]
+	},
+	translations
+} );
 ```
 
-See the <!-- update links to proper when ready-->{@link getting-started/legacy-getting-started/predefined-builds#zip-download zip installation guide} for more information.
+See the {@link getting-started/quick-start#installing-ckeditor-5-using-npm npm installation guide} for more information.
 
-## Building the editor using a specific language
+### CDN
 
-Currently, it is possible to change the UI language at the build stage and after the build. A single build of the editor supports the language which was defined in the [CKEditor&nbsp;5 translations plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations)'s configuration. Check the whole translation process to see how you can change the language later.
+To use different language than the default one (English), you need to load the editor together with the preferred language. For example:
 
-If you build CKEditor&nbsp;5 from scratch or integrate it directly into your application, then all you need to do is to:
+```html
+<link rel="stylesheet" href="<CDN_LINK>/ckeditor5/dist/styles.css">
 
-1. Install the [`@ckeditor/ckeditor5-dev-translations`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations) package:
-
-	```
-	npm install --save @ckeditor/ckeditor5-dev-translations
-	```
-
-2. Add it to your webpack configuration:
-
-	Note: The language code is defined in the [ISO 639–1](https://en.wikipedia.org/wiki/ISO_639-1) standard.
-
-	```js
-	const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-translations' );
-
-	module.exports = {
-		// Define webpack plugins.
-		// ...
-
-		plugins: [
-			new CKEditorTranslationsPlugin( {
-				// The main language that will be built into the main bundle.
-				language: 'en',
-
-				// Additional languages that will be emitted to the `outputDirectory`.
-				// This option can be set to an array of language codes or `'all'` to build all found languages.
-				// The bundle is optimized for one language when this option is omitted.
-				additionalLanguages: 'all',
-
-				// For more advanced options see https://github.com/ckeditor/ckeditor5-dev/tree/master/packages/ckeditor5-dev-translations.
-			} ),
-
-			// Other webpack plugins.
-			// ...
-		]
-
-		// Remaining webpack configuration.
-		// ...
+<script type="importmap">
+{
+	"imports": {
+		"ckeditor5": "<CDN_LINK>/ckeditor5/dist/index.min.js",
+		"ckeditor5/": "<CDN_LINK>/ckeditor5/",
 	}
-	```
+}
+</script>
+<script type="module">
+import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
+import translations from 'ckeditor5/dist/translations/pl.js';
 
-3. Run webpack. The CKEditor&nbsp;5 plugin for webpack will emit additional files for each language specified in the `additionalLanguages` option. They will contain translations for messages from the {@link module:utils/locale~Locale#t `t()` function} calls. The files will be created in the `translations` directory (or another one if the `outputDirectory` option is specified). Translations from the language specified in the `language` option will be automatically included in the build.
+await ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [
+		Essentials,
+		Paragraph,
+	],
+	toolbar: {
+		items: [ 'undo', 'redo' ]
+	},
+	translations
+} );
+</script>
+```
 
-4. If you want to change the language after the build ends, you will need to edit the `index.html` file, add the translation file, and set the UI language to the target one.
-
-	```html
-	<script src="../build/ckeditor.js"></script>
-	<script src="../build/translations/de.js"></script>
-	<script>
-		ClassicEditor
-			.create( document.querySelector( '#editor' ), {
-				language: 'de'
-			} )
-			.then( editor => {
-				window.editor = editor;
-			} )
-			.catch( err => {
-				console.error( err.stack );
-			} );
-	</script>
-	```
-
-<info-box>
-	We are aware that the current localization method is not sufficient for some needs. It does not support different bundlers (for example, Rollup or Browserify). We will be extending the localization possibilities in the future.
-</info-box>
+See the {@link getting-started/quick-start#using-ckeditor-5-from-cdn CDN installation guide} for more information.
 
 ## Setting the language of the content
 
@@ -203,6 +140,8 @@ ClassicEditor
 
 <info-box>
 	If you are unsure about the language that the content will be typed in, do not set it. The language of the content will then be inherited from the {@link module:core/editor/editorconfig~EditorConfig#language language of the UI}.
+
+	You can also employ the {@link features/language text part language} feature to produce multi-language content.
 </info-box>
 
 ## List of available professional translations
