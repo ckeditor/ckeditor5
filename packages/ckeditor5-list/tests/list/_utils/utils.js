@@ -253,7 +253,7 @@ export function modelList( lines, { ignoreIdConflicts = false } = {} ) {
 	let prevIndent = -1;
 
 	for ( const [ idx, line ] of lines.entries() ) {
-		let [ , pad, marker, content ] = line.match( /^((?: {2})*(?:([*#]) )?)(.*)/ );
+		let [ , pad, marker, content ] = line.match( /^((?: {2})*(?:([*#^]) )?)(.*)/ );
 		const listIndent = pad.length / 2 - 1;
 
 		if ( listIndent < 0 ) {
@@ -270,8 +270,18 @@ export function modelList( lines, { ignoreIdConflicts = false } = {} ) {
 			}
 
 			if ( !stack[ listIndent ] || marker ) {
+				let listType;
+
+				if ( marker === '#' ) {
+					listType = 'numbered';
+				} else if ( marker === '^' ) {
+					listType = 'legal';
+				} else {
+					listType = 'bulleted';
+				}
+
 				const props = {
-					listType: marker == '#' ? 'numbered' : 'bulleted',
+					listType,
 					listItemId: String( idx ).padStart( 3, '0' )
 				};
 

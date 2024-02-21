@@ -302,6 +302,10 @@ describe( 'List - utils - view', () => {
 			expect( getViewElementNameForListType( 'bar' ) ).to.equal( 'ul' );
 			expect( getViewElementNameForListType( 'sth' ) ).to.equal( 'ul' );
 		} );
+
+		it( 'should return "ol" for legal type', () => {
+			expect( getViewElementNameForListType( 'legal' ) ).to.equal( 'ol' );
+		} );
 	} );
 
 	describe( 'getViewElementIdForListType()', () => {
