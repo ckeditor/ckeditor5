@@ -77,14 +77,7 @@ See the {@link getting-started/quick-start#installing-ckeditor-5-using-npm npm i
 
 ### CDN
 
-To use different language than the default one (English), you need to load the editor together with the preferred language:
-
-```html
-<script src="https://cdn.ckeditor.com/ckeditor5/dist/ckeditor.js"></script>
-<script src="https://cdn.ckeditor.com/ckeditor5/dist/translations/[lang].js"></script>
-```
-
-For example:
+To use different language than the default one (English), you need to load the editor together with the preferred language. For example:
 
 ```html
 <link rel="stylesheet" href="<CDN_LINK>/ckeditor5/dist/styles.css">
