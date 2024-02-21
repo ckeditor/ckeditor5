@@ -62,7 +62,7 @@ export default class MenuBarMenuView extends View implements FocusableView {
 	/**
 	 * TODO
 	 */
-	declare public class: string | undefined;
+	// declare public class: string | undefined;
 
 	/**
 	 * TODO
@@ -82,7 +82,7 @@ export default class MenuBarMenuView extends View implements FocusableView {
 	/**
 	 * TODO
 	 */
-	declare public ariaDescribedById: string | null;
+	// declare public ariaDescribedById: string | null;
 
 	/**
 	 * TODO
@@ -105,8 +105,8 @@ export default class MenuBarMenuView extends View implements FocusableView {
 		this.set( 'isOpen', false );
 		this.set( 'isEnabled', true );
 		this.set( 'panelPosition', 'w' );
-		this.set( 'class', undefined );
-		this.set( 'ariaDescribedById', null );
+		// this.set( 'class', undefined );
+		// this.set( 'ariaDescribedById', null );
 
 		this.setTemplate( {
 			tag: 'div',
@@ -115,11 +115,11 @@ export default class MenuBarMenuView extends View implements FocusableView {
 				class: [
 					'ck',
 					'ck-menu-bar__menu',
-					bind.to( 'class' ),
+					// bind.to( 'class' ),
 					bind.if( 'isEnabled', 'ck-disabled', value => !value ),
 					bind.if( 'parentMenuView', 'ck-menu-bar__menu_top-level', value => !value )
-				],
-				'aria-describedby': bind.to( 'ariaDescribedById' )
+				]
+				// 'aria-describedby': bind.to( 'ariaDescribedById' )
 			},
 
 			children: [
@@ -141,27 +141,26 @@ export default class MenuBarMenuView extends View implements FocusableView {
 		// Listen for keystrokes coming from within #element.
 		this.keystrokes.listenTo( this.element! );
 
+		// Top-level menus.
 		if ( !this.parentMenuView ) {
 			this._propagateArrowKeystrokeEvents();
 
 			MenuBarMenuBehaviors.openAndFocusPanelOnArrowDownKey( this );
 			MenuBarMenuBehaviors.toggleOnButtonClick( this );
+
+			this.delegate( ...EVENT_NAME_DELEGATES ).to( this.menuBarView!, name => 'submenu:' + name );
 		} else {
 			MenuBarMenuBehaviors.openOnButtonClick( this );
 			MenuBarMenuBehaviors.openOnArrowRightKey( this );
 			MenuBarMenuBehaviors.closeOnArrowLeftKey( this );
 			MenuBarMenuBehaviors.closeOnParentClose( this );
+
+			this.delegate( ...EVENT_NAME_DELEGATES ).to( this.parentMenuView );
 		}
 
 		MenuBarMenuBehaviors.closeOnEscKey( this );
 
 		this._repositionPanelOnOpen();
-
-		if ( this.parentMenuView ) {
-			this.delegate( ...EVENT_NAME_DELEGATES ).to( this.parentMenuView );
-		} else {
-			this.delegate( ...EVENT_NAME_DELEGATES ).to( this.menuBarView!, name => 'submenu:' + name );
-		}
 	}
 
 	/**
