@@ -45,9 +45,9 @@ We are doing our best to deliver the best RTL support to our users and we consta
 
  By default, the editor will display in American English. This is the language built into the `ckeditor.js` files. To change the language of the editor UI, you need to load additional language file(s). Check out the following sections to see how to do that:
 
-* [CDN](#cdn),
-* [npm](#npm),
-* [Zip download](#zip).
+* [CDN](#cdn)
+* [npm](#npm)
+<!-- * [Zip download](#zip) -->
 
 Next, you can configure the editor to use the chosen language:
 
@@ -81,7 +81,7 @@ For example:
 <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/classic/translations/de.js"></script>
 ```
 
-See the <!-- update links to proper when ready-->{@link getting-started/legacy-getting-started/predefined-builds#cdn CDN installation guide} for more information.
+See the {@link getting-started/quick-start#using-ckeditor-5-from-cdn CDN installation guide} for more information.
 
 ### npm
 
@@ -89,9 +89,9 @@ After installing the build from npm, languages will be available in `node_module
 
 You can load a single language directly to your code by importing, for example, `'@ckeditor/ckeditor5-build-classic/build/translations/de.js'`.
 
-See the <!-- update links to proper when ready-->{@link getting-started/legacy-getting-started/predefined-builds#npm npm installation guide} for more information.
+See the {@link getting-started/quick-start#installing-ckeditor-5-using-npm npm installation guide} for more information.
 
-### Zip
+<!-- ### Zip
 
 All additional languages are included in the `.zip` file. You need to include the `ckeditor.js` file together with the chosen language file:
 
@@ -100,7 +100,7 @@ All additional languages are included in the `.zip` file. You need to include th
 <script src="[ckeditor-path]/translations/de.js"></script>
 ```
 
-See the <!-- update links to proper when ready-->{@link getting-started/legacy-getting-started/predefined-builds#zip-download zip installation guide} for more information.
+See the {@link getting-started/legacy-getting-started/predefined-builds#zip-download zip installation guide} for more information. -->
 
 ## Building the editor using a specific language
 
