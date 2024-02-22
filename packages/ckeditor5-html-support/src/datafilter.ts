@@ -810,9 +810,9 @@ export interface DataFilterRegisterEvent {
  * Matches and consumes matched attributes.
  *
  * @returns Object with following properties:
- *  * - attributes Array with matched attribute names.
- *  * - styles Array with matched style names.
- *  * - classes Array with matched class names.
+ * - attributes Array with matched attribute names.
+ * - classes Array with matched class names.
+ * - styles Array with matched style names.
  */
 function matchAndConsumeAttributes(
 	viewElement: ViewElement,
