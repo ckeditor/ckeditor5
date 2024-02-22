@@ -11,7 +11,7 @@ import type { StylesProcessor } from '../stylesmap.js';
 import { getPositionShorthandNormalizer, getBoxSidesValueReducer } from './utils.js';
 
 /**
- * Adds a margin CSS styles processing rules.
+ * Adds a padding CSS styles processing rules.
  *
  * ```ts
  * editor.data.addStyleProcessorRules( addPaddingRules );

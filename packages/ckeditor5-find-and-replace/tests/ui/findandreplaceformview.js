@@ -949,6 +949,62 @@ describe( 'FindAndReplaceFormView', () => {
 				findButton.fire( 'execute' );
 				expect( matchCounterElement.textContent ).to.equal( '1 of 3' );
 			} );
+
+			it( 'hitting "Find" with no result should watch document modifications and update highlighted item if not present', () => {
+				editor.setData( '' );
+				toggleDialog();
+
+				findInput.fieldView.value = 'CupCake';
+				findButton.fire( 'execute' );
+
+				expect( matchCounterElement.textContent ).to.equal( '0 of 0' );
+
+				editor.setData( 'CupCake' );
+				expect( matchCounterElement.textContent ).to.equal( '1 of 1' );
+
+				editor.setData( 'CupCake CupCake' );
+				expect( matchCounterElement.textContent ).to.equal( '1 of 2' );
+
+				editor.setData( '' );
+				expect( matchCounterElement.textContent ).to.equal( '0 of 0' );
+			} );
+
+			it( 'hitting "Find" and toggling "matchCase" affects search results', () => {
+				editor.setData( '<p>MatCH casE test</P' );
+				toggleDialog();
+
+				findInput.fieldView.value = 'match';
+				matchCaseSwitch.fire( 'execute' );
+
+				findButton.fire( 'execute' );
+				expect( matchCounterElement.textContent ).to.equal( '0 of 0' );
+
+				// try again
+				findButton.fire( 'execute' );
+				expect( matchCounterElement.textContent ).to.equal( '0 of 0' );
+
+				// toggle switch
+				matchCaseSwitch.fire( 'execute' );
+				findButton.fire( 'execute' );
+
+				expect( matchCounterElement.textContent ).to.equal( '1 of 1' );
+			} );
+
+			it( 'hitting "Find" and toggling "wholeWords" affects search results', () => {
+				editor.setData( '<p>MatCH casE test</P' );
+				toggleDialog();
+
+				findInput.fieldView.value = 'matc';
+				findButton.fire( 'execute' );
+
+				expect( matchCounterElement.textContent ).to.equal( '1 of 1' );
+
+				// toggle switch
+				wholeWordsOnlySwitch.fire( 'execute' );
+				findButton.fire( 'execute' );
+
+				expect( matchCounterElement.textContent ).to.equal( '0 of 0' );
+			} );
 		} );
 
 		describe( 'find results navigation using previous/next buttons', () => {
@@ -1230,7 +1286,7 @@ describe( 'FindAndReplaceFormView', () => {
 				expect( matchCounterElement.textContent ).to.equal( '2 of 3' );
 
 				replaceButton.fire( 'execute' );
-				expect( matchCounterElement.textContent ).to.equal( '2 of 2' );
+				expect( matchCounterElement.textContent ).to.equal( '1 of 2' );
 
 				replaceButton.fire( 'execute' );
 				expect( matchCounterElement.textContent ).to.equal( '1 of 1' );
@@ -1245,6 +1301,9 @@ describe( 'FindAndReplaceFormView', () => {
 
 				findInput.fieldView.value = 'A';
 				findButton.fire( 'execute' );
+
+				expect( matchCounterElement.textContent ).to.equal( '1 of 3' );
+
 				findNextButton.fire( 'execute' );
 
 				expect( matchCounterElement.textContent ).to.equal( '2 of 3' );
@@ -1269,6 +1328,34 @@ describe( 'FindAndReplaceFormView', () => {
 				replaceAllButton.fire( 'execute' );
 
 				sinon.assert.calledOnce( spy );
+			} );
+
+			it( 'replace items and using undo should set proper hits counter value', () => {
+				editor.setData( '<p>Test Test Test</p><p>Test</p>' );
+				toggleDialog();
+
+				findInput.fieldView.value = 'Test';
+				findButton.fire( 'execute' );
+
+				expect( matchCounterElement.textContent ).to.equal( '1 of 4' );
+
+				replaceButton.fire( 'execute' );
+				expect( matchCounterElement.textContent ).to.equal( '1 of 3' );
+
+				replaceButton.fire( 'execute' );
+				expect( matchCounterElement.textContent ).to.equal( '1 of 2' );
+
+				replaceButton.fire( 'execute' );
+				expect( matchCounterElement.textContent ).to.equal( '1 of 1' );
+
+				editor.execute( 'undo' );
+				expect( matchCounterElement.textContent ).to.equal( '2 of 2' );
+
+				editor.execute( 'undo' );
+				expect( matchCounterElement.textContent ).to.equal( '3 of 3' );
+
+				editor.execute( 'undo' );
+				expect( matchCounterElement.textContent ).to.equal( '4 of 4' );
 			} );
 		} );
 

@@ -7,11 +7,10 @@
  * @module find-and-replace/findcommand
 */
 
-import type { Item } from 'ckeditor5/src/engine.js';
 import { Command, type Editor } from 'ckeditor5/src/core.js';
 import type { Collection } from 'ckeditor5/src/utils.js';
 
-import type FindAndReplaceState from './findandreplacestate.js';
+import type { default as FindAndReplaceState, FindCallback } from './findandreplacestate.js';
 import type { ResultType } from './findandreplace.js';
 import type FindAndReplaceUtils from './findandreplaceutils.js';
 
@@ -53,14 +52,14 @@ export default class FindCommand extends Command {
 	 * @fires execute
 	 */
 	public override execute(
-		callbackOrText: string | ( ( { item, text }: { item: Item; text: string } ) => Array<ResultType> ),
-		{ matchCase, wholeWords }: { matchCase?: boolean; wholeWords?: boolean } = {}
-	): { results: Collection<ResultType>; findCallback: ( ( { item, text }: { item: Item; text: string } ) => Array<ResultType> ) } {
+		callbackOrText: string | FindCallback,
+		{ matchCase, wholeWords }: FindAttributes = {}
+	): { results: Collection<ResultType>; findCallback: FindCallback } {
 		const { editor } = this;
 		const { model } = editor;
 		const findAndReplaceUtils: FindAndReplaceUtils = editor.plugins.get( 'FindAndReplaceUtils' );
 
-		let findCallback: ( ( { item, text }: { item: Item; text: string } ) => Array<ResultType> ) | undefined;
+		let findCallback: FindCallback | undefined;
 
 		// Allow to execute `find()` on a plugin with a keyword only.
 		if ( typeof callbackOrText === 'string' ) {
@@ -88,6 +87,10 @@ export default class FindCommand extends Command {
 			this._state.searchText = callbackOrText;
 		}
 
+		if ( findCallback ) {
+			this._state.lastSearchCallback = findCallback;
+		}
+
 		this._state.matchCase = !!matchCase;
 		this._state.matchWholeWords = !!wholeWords;
 
@@ -97,3 +100,8 @@ export default class FindCommand extends Command {
 		};
 	}
 }
+
+/**
+ * The options object for the find command.
+ */
+export type FindAttributes = { matchCase?: boolean; wholeWords?: boolean };
