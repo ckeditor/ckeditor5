@@ -4,7 +4,7 @@ order: 10
 menu-title: Overview
 meta-title: Getting started with CKEditor 5 | CKEditor 5 documentation
 meta-description: Learn how to install, integrate, configure, and develop CKEditor 5. Browse through the API documentation and online samples.
-modified_at: 2024-02-14
+modified_at: 2024-02-22
 ---
 
 # Getting started with CKEditor&nbsp;5
@@ -64,3 +64,11 @@ If you came here looking for a guide on how to suppress the branding logo, check
 ## Legacy installation methods
 
 Before version <!-- UPDATE to proper version -->4x.x.x, CKEditor&nbsp;5 used different installation methods. If, for whatever reason, you wish to use these older versions &ndash; while it is not advised &ndash; you can have a look at the {@link getting-started/legacy-getting-started/quick-start legacy installation guides}.
+
+**Related links**
+
+* {@link features/index Features} &ndash; Learn more about the CKEditor&nbsp;5 features.
+* {@link tutorials/index CKEditor&nbsp;5 tutorials} &ndash; Follow these easy guides to tailor the editor to your needs.
+* {@link framework/index CKEditor&nbsp;5 Framework} &ndash; Learn how to work with CKEditor&nbsp;5 Framework, customize it, create your own plugins or custom editors, change the UI, or even bring your own UI to the editor.
+* {@link updating/updating-ckeditor-5 Updating CKEditor&nbsp;5} &ndash; Find out how to keep you installation up-to-date at all times.
+* {@link examples/index Examples} &ndash; Try live demos of available predefined builds and custom solutions.

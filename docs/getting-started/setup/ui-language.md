@@ -3,7 +3,7 @@ category: setup
 menu-title: UI language
 meta-title: Setting the UI language | CKEditor 5 Documentation
 order: 30
-modified_at: 2024-02-21
+modified_at: 2024-02-22
 ---
 
 {@snippet features/build-ui-language-source}
@@ -306,7 +306,7 @@ There are community translations available for Australian and British variations
 
 ## Related features
 
-CKEditor&nbsp;5 has other features that will help you control the content language:
+Other features that will help you control the content language:
 
 * {@link features/language Text part Language}  &ndash; Set the language of the selected content part to support multilingual texts.
 
