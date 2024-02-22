@@ -43,7 +43,7 @@ export default class ImageInsertViaUrlUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public init(): void {
+	public afterInit(): void {
 		this._imageInsertUI = this.editor.plugins.get( 'ImageInsertUI' );
 		const insertImageCommand: InsertImageCommand = this.editor.commands.get( 'insertImage' )!;
 

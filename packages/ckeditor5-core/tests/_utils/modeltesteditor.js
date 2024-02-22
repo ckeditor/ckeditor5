@@ -6,7 +6,6 @@
 /* eslint-disable new-cap */
 
 import Editor from '../../src/editor/editor.js';
-import DataApiMixin from '../../src/editor/utils/dataapimixin.js';
 
 /**
  * A simple editor implementation with a functional model part of the engine (the document).
@@ -16,7 +15,7 @@ import DataApiMixin from '../../src/editor/utils/dataapimixin.js';
  *
  * @memberOf tests.core._utils
  */
-export default class ModelTestEditor extends DataApiMixin( Editor ) {
+export default class ModelTestEditor extends Editor {
 	constructor( config ) {
 		super( config );
 

@@ -21,7 +21,7 @@ describe( 'FindAndReplaceEditing', () => {
 	const FOO_BAR_PARAGRAPH = '<p>Foo bar baz</p>';
 	const TWO_FOO_BAR_PARAGRAPHS = FOO_BAR_PARAGRAPH + FOO_BAR_PARAGRAPH;
 
-	let editor, model, root;
+	let editor, model, root, findAndReplaceEditing;
 
 	beforeEach( async () => {
 		editor = await DecoupledEditor.create( '', {
@@ -30,6 +30,7 @@ describe( 'FindAndReplaceEditing', () => {
 
 		model = editor.model;
 		root = model.document.getRoot();
+		findAndReplaceEditing = editor.plugins.get( 'FindAndReplaceEditing' );
 	} );
 
 	afterEach( async () => {
@@ -38,6 +39,84 @@ describe( 'FindAndReplaceEditing', () => {
 
 	it( 'should be named', () => {
 		expect( FindAndReplaceEditing.pluginName ).to.equal( 'FindAndReplaceEditing' );
+	} );
+
+	describe( 'highlight', () => {
+		it( 'when document is empty and user enters search phrase then it is highlighted', () => {
+			editor.setData( '' );
+			findAndReplaceEditing.find( 'Chleb' );
+			editor.setData( 'Chleb' );
+
+			expect( getSearchResultHTML() ).to.equal(
+				'<p><span class="ck-find-result"><span class="ck-find-result_selected">Chleb</span></span></p>'
+			);
+		} );
+
+		it( 'highlight iterates over all found words', () => {
+			editor.setData( '<p>Chleb Chleb</p><p>Chleb</p>' );
+
+			findAndReplaceEditing.find( 'Chleb' );
+			expect( getSearchResultHTML() ).to.equal(
+				'<p><span class="ck-find-result">' +
+				'<span class="ck-find-result_selected">Chleb</span></span> <span class="ck-find-result">Chleb</span></p>' +
+				'<p><span class="ck-find-result">Chleb</span></p>'
+			);
+
+			editor.execute( 'findNext' );
+			expect( getSearchResultHTML() ).to.equal(
+				'<p><span class="ck-find-result">Chleb</span> <span class="ck-find-result">' +
+				'<span class="ck-find-result_selected">Chleb</span></span></p><p><span class="ck-find-result">Chleb</span></p>'
+			);
+
+			editor.execute( 'findNext' );
+			expect( getSearchResultHTML() ).to.equal(
+				'<p><span class="ck-find-result">Chleb</span> <span class="ck-find-result">Chleb</span></p>' +
+				'<p><span class="ck-find-result"><span class="ck-find-result_selected">Chleb</span></span></p>'
+			);
+		} );
+
+		it( 'search results are replaced in correct order', () => {
+			editor.setData( '<p>Chleb Chleb</p><p>Chleb</p>' );
+
+			findAndReplaceEditing.find( 'Chleb' );
+			replace( '' );
+			expect( getSearchResultHTML() ).to.equal(
+				'<p> <span class="ck-find-result"><span class="ck-find-result_selected">Chleb</span></span></p><p>' +
+				'<span class="ck-find-result">Chleb</span></p>'
+			);
+
+			replace( '' );
+			expect( getSearchResultHTML() ).to.equal(
+				'<p> </p><p><span class="ck-find-result"><span class="ck-find-result_selected">Chleb</span></span></p>'
+			);
+
+			replace( '' );
+			expect( getSearchResultHTML() ).to.equal( '<p> </p><p></p>' );
+		} );
+
+		it( 'basic formatting works on highlighted search results', () => {
+			editor.setData( '<p>test</p>' );
+
+			findAndReplaceEditing.find( 'test' );
+			editor.model.change( writer => {
+				writer.setSelection( editor.model.document.getRoot().getChild( 0 ), 'on' );
+			} );
+
+			editor.execute( 'bold' );
+			findAndReplaceEditing.find(
+				'<p><span class="ck-find-result"><span class="ck-find-result_selected"><strong>test</strong></span></span></p>'
+			);
+		} );
+
+		function replace( replaceText ) {
+			editor.execute( 'replace', replaceText, findAndReplaceEditing.state.highlightedResult );
+		}
+
+		function getSearchResultHTML() {
+			const viewData = getViewData( editor.editing.view, { withoutSelection: true, renderUIElements: false } );
+
+			return viewData.replaceAll( /\s*data-find-result="[^"]*"/g, '' );
+		}
 	} );
 
 	describe( 'downcast conversion', () => {

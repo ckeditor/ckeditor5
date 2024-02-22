@@ -123,6 +123,11 @@ export default class TooltipManager extends DomEmitterMixin() {
 	private _resizeObserver: ResizeObserver | null = null;
 
 	/**
+	 * An instance of the mutation observer that keeps track on target element attributes changes.
+	 */
+	private _mutationObserver: MutationObserverWrapper | null = null;
+
+	/**
 	 * A debounced version of {@link #_pinTooltip}. Tooltips show with a delay to avoid flashing and
 	 * to improve the UX.
 	 */
@@ -178,6 +183,10 @@ export default class TooltipManager extends DomEmitterMixin() {
 		this.balloonPanelView = new BalloonPanelView( editor.locale );
 		this.balloonPanelView.class = BALLOON_CLASS;
 		this.balloonPanelView.content.add( this.tooltipTextView );
+
+		this._mutationObserver = createMutationObserver( () => {
+			this._updateTooltipPosition();
+		} );
 
 		this._pinTooltipDebounced = debounce( this._pinTooltip, 600 );
 
@@ -374,6 +383,8 @@ export default class TooltipManager extends DomEmitterMixin() {
 			}
 		} );
 
+		this._mutationObserver!.attach( targetDomElement );
+
 		this.balloonPanelView.class = [ BALLOON_CLASS, cssClass ]
 			.filter( className => className )
 			.join( ' ' );
@@ -407,17 +418,21 @@ export default class TooltipManager extends DomEmitterMixin() {
 		if ( this._resizeObserver ) {
 			this._resizeObserver.destroy();
 		}
+
+		this._mutationObserver!.detach();
 	}
 
 	/**
 	 * Updates the position of the tooltip so it stays in sync with the element it is pinned to.
 	 *
-	 * Hides the tooltip when the element is no longer visible in DOM.
+	 * Hides the tooltip when the element is no longer visible in DOM or the tooltip text was removed.
 	 */
 	private _updateTooltipPosition() {
+		const tooltipData = getTooltipData( this._currentElementWithTooltip! );
+
 		// This could happen if the tooltip was attached somewhere in a contextual content toolbar and the toolbar
-		// disappeared (e.g. removed an image).
-		if ( !isVisible( this._currentElementWithTooltip ) ) {
+		// disappeared (e.g. removed an image), or the tooltip text was removed.
+		if ( !isVisible( this._currentElementWithTooltip ) || !tooltipData.text ) {
 			this._unpinTooltip();
 
 			return;
@@ -425,7 +440,7 @@ export default class TooltipManager extends DomEmitterMixin() {
 
 		this.balloonPanelView.pin( {
 			target: this._currentElementWithTooltip!,
-			positions: TooltipManager.getPositioningFunctions( this._currentTooltipPosition! )
+			positions: TooltipManager.getPositioningFunctions( tooltipData.position )
 		} );
 	}
 }
@@ -452,4 +467,30 @@ function getTooltipData( element: HTMLElement ): TooltipData {
 		position: ( element.dataset.ckeTooltipPosition || 's' ) as TooltipPosition,
 		cssClass: element.dataset.ckeTooltipClass || ''
 	};
+}
+
+// Creates a simple `MutationObserver` instance wrapper that observes changes in the tooltip-related attributes of the given element.
+// Used instead of the `MutationObserver` from the engine for simplicity.
+function createMutationObserver( callback: ( ...args: Array<any> ) => unknown ): MutationObserverWrapper {
+	const mutationObserver = new MutationObserver( () => {
+		callback();
+	} );
+
+	return {
+		attach( element ) {
+			mutationObserver.observe( element, {
+				attributes: true,
+				attributeFilter: [ 'data-cke-tooltip-text', 'data-cke-tooltip-position' ]
+			} );
+		},
+
+		detach() {
+			mutationObserver.disconnect();
+		}
+	};
+}
+
+interface MutationObserverWrapper {
+	attach: ( element: Node ) => void;
+	detach: () => void;
 }

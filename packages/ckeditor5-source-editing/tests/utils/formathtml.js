@@ -207,6 +207,50 @@ describe( 'SourceEditing utils', () => {
 			expect( formatHtml( source ) ).to.equal( sourceFormatted );
 		} );
 
+		it( 'should not inject extra white spaces at the beginning of preformatted lines in <pre>', () => {
+			const source = '' +
+				'<blockquote>' +
+					'<pre><code>foo\n' +
+					'bar\n' +
+					'abc\n' +
+					'baz</code></pre>' +
+				'</blockquote>';
+
+			const sourceFormatted = '' +
+				'<blockquote>\n' +
+				'    <pre><code>foo\n' +
+				'bar\n' +
+				'abc\n' +
+				'baz</code></pre>\n' +
+				'</blockquote>';
+
+			expect( formatHtml( source ) ).to.equal( sourceFormatted );
+		} );
+
+		it( 'should not inject extra white spaces at the beginning of preformatted lines in <pre> (deep structure)', () => {
+			const source = '' +
+				'<blockquote>' +
+					'<blockquote>' +
+						'<pre><code>foo\n' +
+						'bar\n' +
+						'abc\n' +
+						'baz</code></pre>' +
+					'</blockquote>' +
+				'</blockquote>';
+
+			const sourceFormatted = '' +
+				'<blockquote>\n' +
+				'    <blockquote>\n' +
+				'        <pre><code>foo\n' +
+				'bar\n' +
+				'abc\n' +
+				'baz</code></pre>\n' +
+				'    </blockquote>\n' +
+				'</blockquote>';
+
+			expect( formatHtml( source ) ).to.equal( sourceFormatted );
+		} );
+
 		it( 'should keep all attributes unchanged', () => {
 			const source = '' +
 				'<p id="foo" class="class1 class2" data-value="bar" onclick="fn();">' +

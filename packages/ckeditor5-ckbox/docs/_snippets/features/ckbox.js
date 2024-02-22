@@ -25,7 +25,7 @@ ClassicEditor
 				'|',
 				'imageStyle:inline',
 				'imageStyle:block',
-				'imageStyle:side',
+				'imageStyle:wrapText',
 				'|',
 				'resizeImage:25',
 				'resizeImage:50',
