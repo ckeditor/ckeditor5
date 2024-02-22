@@ -36,7 +36,7 @@ export default class ListPropertiesUtils extends Plugin {
 	/**
 	 * Checks whether the given list-style-type is supported by numbered or bulleted list.
 	 */
-	public getListTypeFromListStyleType( listStyleType: string ): 'bulleted' | 'numbered' | null {
+	public getListTypeFromListStyleType( listStyleType: string ): 'bulleted' | 'numbered' | 'legal' | null {
 		return getListTypeFromListStyleType( listStyleType );
 	}
 
