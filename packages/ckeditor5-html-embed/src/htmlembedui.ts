@@ -8,7 +8,7 @@
  */
 
 import { icons, Plugin } from 'ckeditor5/src/core.js';
-import { ButtonView } from 'ckeditor5/src/ui.js';
+import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 import type { RawHtmlApi } from './htmlembedediting.js';
 import type HtmlEmbedCommand from './htmlembedcommand.js';
 
@@ -28,34 +28,47 @@ export default class HtmlEmbedUI extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
-		const t = editor.t;
 
 		// Add the `htmlEmbed` button to feature components.
-		editor.ui.componentFactory.add( 'htmlEmbed', locale => {
-			const command: HtmlEmbedCommand = editor.commands.get( 'htmlEmbed' )!;
-			const view = new ButtonView( locale );
-
-			view.set( {
-				label: t( 'Insert HTML' ),
-				icon: icons.html,
-				tooltip: true
-			} );
-
-			view.bind( 'isEnabled' ).to( command, 'isEnabled' );
-
-			// Execute the command.
-			this.listenTo( view, 'execute', () => {
-				editor.execute( 'htmlEmbed' );
-				editor.editing.view.focus();
-
-				const rawHtmlApi = editor.editing.view.document.selection
-					.getSelectedElement()!
-					.getCustomProperty( 'rawHtmlApi' ) as RawHtmlApi;
-
-				rawHtmlApi.makeEditable();
-			} );
-
-			return view;
+		editor.ui.componentFactory.add( 'htmlEmbed', () => {
+			return this._createButton( ButtonView );
 		} );
+
+		editor.ui.componentFactory.add( 'menuBar:htmlEmbed', () => {
+			return this._createButton( MenuBarMenuListItemButtonView );
+		} );
+	}
+
+	/**
+	 * Creates a button for html embed command to use either in toolbar or in menu bar.
+	 */
+	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
+		const editor = this.editor;
+		const locale = editor.locale;
+		const command: HtmlEmbedCommand = editor.commands.get( 'htmlEmbed' )!;
+		const view = new ButtonClass( editor.locale ) as InstanceType<T>;
+		const t = locale.t;
+
+		view.set( {
+			label: t( 'Insert HTML' ),
+			icon: icons.html,
+			tooltip: true
+		} );
+
+		view.bind( 'isEnabled' ).to( command, 'isEnabled' );
+
+		// Execute the command.
+		this.listenTo( view, 'execute', () => {
+			editor.execute( 'htmlEmbed' );
+			editor.editing.view.focus();
+
+			const rawHtmlApi = editor.editing.view.document.selection
+				.getSelectedElement()!
+				.getCustomProperty( 'rawHtmlApi' ) as RawHtmlApi;
+
+			rawHtmlApi.makeEditable();
+		} );
+
+		return view;
 	}
 }

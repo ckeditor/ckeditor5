@@ -149,7 +149,8 @@ export default class MenuBarView extends View implements FocusableView {
 				id: 'insert',
 				label: 'Insert',
 				items: [
-					'menuBar:blockQuote'
+					'menuBar:blockQuote',
+					'menuBar:htmlEmbed'
 				]
 			},
 			{
