@@ -249,33 +249,39 @@ export default class MenuBarView extends View implements FocusableView {
 	} ): Array<MenuBarMenuListItemView | ListSeparatorView> {
 		const locale = this.locale!;
 
-		return menuDefinition.items.map( menuDefinition => {
-			if ( menuDefinition === '-' ) {
-				return new ListSeparatorView();
-			}
+		return menuDefinition.items
+			.map( menuDefinition => {
+				if ( menuDefinition === '-' ) {
+					return new ListSeparatorView();
+				}
 
-			const menuItemView = new MenuBarMenuListItemView( locale, parentMenuView );
+				const menuItemView = new MenuBarMenuListItemView( locale, parentMenuView );
 
-			if ( isObject( menuDefinition ) ) {
-				menuItemView.children.add( this._createMenu( {
-					componentFactory,
-					menuDefinition,
-					parentMenuView
-				} ) );
-			} else {
-				const componentView = this._createMenuItemContentFromFactory( {
-					componentName: menuDefinition,
-					componentFactory,
-					parentMenuView
-				} );
+				if ( isObject( menuDefinition ) ) {
+					menuItemView.children.add( this._createMenu( {
+						componentFactory,
+						menuDefinition,
+						parentMenuView
+					} ) );
+				} else {
+					const componentView = this._createMenuItemContentFromFactory( {
+						componentName: menuDefinition,
+						componentFactory,
+						parentMenuView
+					} );
 
-				if ( componentView ) {
+					if ( !componentView ) {
+						return null;
+					}
+
 					menuItemView.children.add( componentView );
 				}
-			}
 
-			return menuItemView;
-		} );
+				return menuItemView;
+			} )
+			.filter( ( menuItemView ): menuItemView is MenuBarMenuListItemView | ListSeparatorView => {
+				return menuItemView !== null;
+			} );
 	}
 
 	private _createMenuItemContentFromFactory( { componentName, parentMenuView, componentFactory }: {
@@ -360,8 +366,8 @@ function localizeConfigCategories( locale: Locale, config: MenuBarConfig ): Menu
 	};
 
 	for ( const categoryDef of configClone ) {
-		if ( categoryDef.id in localizedCategoryLabels ) {
-			categoryDef.label = localizedCategoryLabels[ categoryDef.id ];
+		if ( categoryDef.label in localizedCategoryLabels ) {
+			categoryDef.label = localizedCategoryLabels[ categoryDef.label ];
 		}
 	}
 

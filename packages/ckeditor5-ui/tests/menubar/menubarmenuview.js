@@ -37,6 +37,10 @@ describe( 'MenuBarMenuView', () => {
 
 		} );
 
+		it( 'should have #class property', () => {
+
+		} );
+
 		it( 'should have #parentMenuView reference', () => {
 
 		} );
@@ -75,6 +79,10 @@ describe( 'MenuBarMenuView', () => {
 
 		describe( 'template and DOM element', () => {
 			it( 'should have CSS classes', () => {
+
+			} );
+
+			it( 'should have CSS classes bound to #class', () => {
 
 			} );
 
