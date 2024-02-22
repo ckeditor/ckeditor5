@@ -89,12 +89,10 @@
 			& > .ck-splitbutton__arrow:not(.ck-disabled),
 			& > .ck-splitbutton__arrow:not(.ck-disabled):not(:hover) {
 				background-color: var(--ck-color-button-on-background);
-			}
 
-			& > .ck-splitbutton__action:not(.ck-disabled)::after,
-			& > .ck-splitbutton__arrow:not(.ck-disabled)::after,
-			& > .ck-splitbutton__arrow:not(.ck-disabled):not(:hover)::after {
-				display: none;
+				&::after {
+					display: none;
+				}
 			}
 		}
 
