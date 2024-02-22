@@ -201,7 +201,7 @@ export default class FindAndReplaceUI extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Creates a button for for menu bar that will show find and replace dialog.
 	 */
 	private _createDialogButtonForMenuBar(): MenuBarMenuListItemButtonView {
 		const buttonView = this._createButton( MenuBarMenuListItemButtonView );
@@ -214,7 +214,7 @@ export default class FindAndReplaceUI extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Creates a button for find and replace command to use either in toolbar or in menu bar.
 	 */
 	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
 		const editor = this.editor;
@@ -231,7 +231,7 @@ export default class FindAndReplaceUI extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Shows the find and replace dialog.
 	 */
 	private _showDialog(): void {
 		const editor = this.editor;

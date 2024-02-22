@@ -50,7 +50,7 @@ export default class BoldUI extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Creates a button for bold command to use either in toolbar or in menu bar.
 	 */
 	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
 		const editor = this.editor;
