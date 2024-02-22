@@ -65,6 +65,8 @@ export default class Minimap extends Plugin {
 	 * @inheritDoc
 	 */
 	public override destroy(): void {
+		super.destroy();
+
 		this._minimapView!.destroy();
 		this._minimapView!.element!.remove();
 	}
@@ -91,6 +93,10 @@ export default class Minimap extends Plugin {
 		this._initializeMinimapView();
 
 		this.listenTo( editor.editing.view, 'render', () => {
+			if ( editor.state !== 'ready' ) {
+				return;
+			}
+
 			this._syncMinimapToEditingRootScrollPosition();
 		} );
 
@@ -205,11 +211,7 @@ export default class Minimap extends Plugin {
 
 		// The intersection helps to change the tracker height when there is a lot of padding around the root.
 		// Note: It is **essential** that the height is set first because the progress depends on the correct tracker height.
-		const intersection = scrollableRootAncestorRect.getIntersection( editingRootRect );
-
-		if ( intersection ) {
-			minimapView.setPositionTrackerHeight( intersection.height );
-			minimapView.setScrollProgress( scrollProgress );
-		}
+		minimapView.setPositionTrackerHeight( scrollableRootAncestorRect.getIntersection( editingRootRect )!.height );
+		minimapView.setScrollProgress( scrollProgress );
 	}
 }
