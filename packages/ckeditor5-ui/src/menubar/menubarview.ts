@@ -154,6 +154,9 @@ export default class MenuBarView extends View implements FocusableView {
 					'menuBar:bold',
 					'menuBar:italic',
 					'menuBar:underline',
+					'menuBar:strikethrough',
+					'menuBar:subscript',
+					'menuBar:superscript',
 					'menuBar:code',
 					'-',
 					'menuBar:heading'

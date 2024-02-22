@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import { ButtonView } from 'ckeditor5/src/ui.js';
+import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 import type AttributeCommand from '../attributecommand.js';
 
 import superscriptIcon from '../../theme/icons/superscript.svg';
@@ -34,26 +34,46 @@ export default class SuperscriptUI extends Plugin {
 		const t = editor.t;
 
 		// Add superscript button to feature components.
-		editor.ui.componentFactory.add( SUPERSCRIPT, locale => {
-			const command: AttributeCommand = editor.commands.get( SUPERSCRIPT )!;
-			const view = new ButtonView( locale );
+		editor.ui.componentFactory.add( SUPERSCRIPT, () => {
+			const buttonView = this._createButton( ButtonView );
+			const command = editor.commands.get( SUPERSCRIPT )!;
 
-			view.set( {
-				label: t( 'Superscript' ),
-				icon: superscriptIcon,
-				tooltip: true,
-				isToggleable: true
-			} );
+			// Bind button model to command.
+			buttonView.bind( 'isOn' ).to( command, 'value' );
 
-			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
-
-			// Execute command.
-			this.listenTo( view, 'execute', () => {
-				editor.execute( SUPERSCRIPT );
-				editor.editing.view.focus();
-			} );
-
-			return view;
+			return buttonView;
 		} );
+
+		editor.ui.componentFactory.add( 'menuBar:' + SUPERSCRIPT, () => {
+			return this._createButton( MenuBarMenuListItemButtonView );
+		} );
+	}
+
+	/**
+	 * Creates a button for code command to use either in toolbar or in menu bar.
+	 */
+	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
+		const editor = this.editor;
+		const locale = editor.locale;
+		const command: AttributeCommand = editor.commands.get( SUPERSCRIPT )!;
+		const view = new ButtonClass( editor.locale ) as InstanceType<T>;
+		const t = locale.t;
+
+		view.set( {
+			label: t( 'Superscript' ),
+			icon: superscriptIcon,
+			tooltip: true,
+			isToggleable: true
+		} );
+
+		view.bind( 'isEnabled' ).to( command, 'isEnabled' );
+
+		// Execute the command.
+		this.listenTo( view, 'execute', () => {
+			editor.execute( SUPERSCRIPT );
+			editor.editing.view.focus();
+		} );
+
+		return view;
 	}
 }
