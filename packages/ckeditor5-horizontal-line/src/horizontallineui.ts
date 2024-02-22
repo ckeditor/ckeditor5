@@ -8,7 +8,7 @@
  */
 
 import { icons, Plugin } from 'ckeditor5/src/core.js';
-import { ButtonView } from 'ckeditor5/src/ui.js';
+import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 
 import type HorizontalLineCommand from './horizontallinecommand.js';
 
@@ -31,25 +31,39 @@ export default class HorizontalLineUI extends Plugin {
 		const t = editor.t;
 
 		// Add the `horizontalLine` button to feature components.
-		editor.ui.componentFactory.add( 'horizontalLine', locale => {
-			const command: HorizontalLineCommand = editor.commands.get( 'horizontalLine' )!;
-			const view = new ButtonView( locale );
-
-			view.set( {
-				label: t( 'Horizontal line' ),
-				icon: icons.horizontalLine,
-				tooltip: true
-			} );
-
-			view.bind( 'isEnabled' ).to( command, 'isEnabled' );
-
-			// Execute the command.
-			this.listenTo( view, 'execute', () => {
-				editor.execute( 'horizontalLine' );
-				editor.editing.view.focus();
-			} );
-
-			return view;
+		editor.ui.componentFactory.add( 'horizontalLine', () => {
+			return this._createButton( ButtonView );
 		} );
+
+		editor.ui.componentFactory.add( 'menuBar:horizontalLine', () => {
+			return this._createButton( MenuBarMenuListItemButtonView );
+		} );
+	}
+
+	/**
+	 * Creates a button for horizontal line command to use either in toolbar or in menu bar.
+	 */
+	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
+		const editor = this.editor;
+		const locale = editor.locale;
+		const command: HorizontalLineCommand = editor.commands.get( 'horizontalLine' )!;
+		const view = new ButtonClass( editor.locale ) as InstanceType<T>;
+		const t = locale.t;
+
+		view.set( {
+			label: t( 'Horizontal line' ),
+			icon: icons.horizontalLine,
+			tooltip: true
+		} );
+
+		view.bind( 'isEnabled' ).to( command, 'isEnabled' );
+
+		// Execute the command.
+		this.listenTo( view, 'execute', () => {
+			editor.execute( 'horizontalLine' );
+			editor.editing.view.focus();
+		} );
+
+		return view;
 	}
 }
