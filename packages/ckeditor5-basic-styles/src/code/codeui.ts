@@ -57,7 +57,7 @@ export default class CodeUI extends Plugin {
 	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
 		const editor = this.editor;
 		const locale = editor.locale;
-		const command = editor.commands.get( CODE )!;
+		const command: AttributeCommand = editor.commands.get( CODE )!;
 		const view = new ButtonClass( editor.locale ) as InstanceType<T>;
 		const t = locale.t;
 
