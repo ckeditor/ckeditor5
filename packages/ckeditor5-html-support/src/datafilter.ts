@@ -317,7 +317,7 @@ export default class DataFilter extends Plugin {
 		// For example, for block images the <figure> converter triggers conversion for <img> first and then for other elements, i.e. <a>.
 		matchAndConsumeAttributes( viewElement, this._disallowedAttributes, consumable );
 
-		return normalizeGHSAttribute( viewElement, matchAndConsumeAttributes( viewElement, this._allowedAttributes, consumable ) );
+		return prepareGHSAttribute( viewElement, matchAndConsumeAttributes( viewElement, this._allowedAttributes, consumable ) );
 	}
 
 	/**
@@ -874,7 +874,7 @@ function matchAndConsumeAttributes(
 /**
  * Prepares the GHS attribute value as an object with element attributes' values.
  */
-function normalizeGHSAttribute(
+function prepareGHSAttribute(
 	viewElement: ViewElement,
 	{ attributes, classes, styles }: {
 		attributes: Array<string>;
@@ -888,11 +888,11 @@ function normalizeGHSAttribute(
 
 	return {
 		...( attributes.length && {
-			attributes: normalizeAttributes( viewElement, attributes )
+			attributes: getAttributes( viewElement, attributes )
 		} ),
 
 		...( styles.length && {
-			styles: normalizeStyles( viewElement, styles )
+			styles: getReducedStyles( viewElement, styles )
 		} ),
 
 		...( classes.length && {
@@ -902,9 +902,9 @@ function normalizeGHSAttribute(
 }
 
 /**
- * Returns list of attributes as a normalized object.
+ * Returns attributes as an object with names and values.
  */
-function normalizeAttributes( viewElement: ViewElement, attributes: Iterable<string> ): Record<string, string> {
+function getAttributes( viewElement: ViewElement, attributes: Iterable<string> ): Record<string, string> {
 	const attributesObject: Record<string, string> = {};
 
 	for ( const key of attributes ) {
@@ -919,9 +919,9 @@ function normalizeAttributes( viewElement: ViewElement, attributes: Iterable<str
 }
 
 /**
- * Returns list of styles as a normalized object (without redundant entries).
+ * Returns styles as an object reduced to shorthand notation without redundant entries.
  */
-function normalizeStyles( viewElement: ViewElement, styles: Iterable<string> ): Record<string, string> {
+function getReducedStyles( viewElement: ViewElement, styles: Iterable<string> ): Record<string, string> {
 	// Use StyleMap to reduce style value to the minimal form (without shorthand and long-hand notation and duplication).
 	const stylesMap = new StylesMap( viewElement.document.stylesProcessor );
 
