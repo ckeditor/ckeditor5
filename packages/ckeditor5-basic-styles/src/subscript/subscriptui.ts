@@ -31,12 +31,15 @@ export default class SubscriptUI extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
-		const t = editor.t;
 
 		// Add subscript button to feature components.
 		editor.ui.componentFactory.add( SUBSCRIPT, () => {
 			const buttonView = this._createButton( ButtonView );
 			const command = editor.commands.get( SUBSCRIPT )!;
+
+			buttonView.set( {
+				tooltip: true
+			} );
 
 			// Bind button model to command.
 			buttonView.bind( 'isOn' ).to( command, 'value' );
@@ -62,7 +65,6 @@ export default class SubscriptUI extends Plugin {
 		view.set( {
 			label: t( 'Subscript' ),
 			icon: subscriptIcon,
-			tooltip: true,
 			isToggleable: true
 		} );
 

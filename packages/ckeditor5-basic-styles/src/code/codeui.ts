@@ -40,6 +40,10 @@ export default class CodeUI extends Plugin {
 			const buttonView = this._createButton( ButtonView );
 			const command = editor.commands.get( CODE )!;
 
+			buttonView.set( {
+				tooltip: true
+			} );
+
 			// Bind button model to command.
 			buttonView.bind( 'isOn' ).to( command, 'value' );
 
@@ -64,7 +68,6 @@ export default class CodeUI extends Plugin {
 		view.set( {
 			label: t( 'Code' ),
 			icon: codeIcon,
-			tooltip: true,
 			isToggleable: true
 		} );
 

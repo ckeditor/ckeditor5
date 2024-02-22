@@ -31,12 +31,15 @@ export default class SuperscriptUI extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
-		const t = editor.t;
 
 		// Add superscript button to feature components.
 		editor.ui.componentFactory.add( SUPERSCRIPT, () => {
 			const buttonView = this._createButton( ButtonView );
 			const command = editor.commands.get( SUPERSCRIPT )!;
+
+			buttonView.set( {
+				tooltip: true
+			} );
 
 			// Bind button model to command.
 			buttonView.bind( 'isOn' ).to( command, 'value' );
@@ -62,7 +65,6 @@ export default class SuperscriptUI extends Plugin {
 		view.set( {
 			label: t( 'Superscript' ),
 			icon: superscriptIcon,
-			tooltip: true,
 			isToggleable: true
 		} );
 

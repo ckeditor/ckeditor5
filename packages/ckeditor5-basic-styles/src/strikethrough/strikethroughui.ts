@@ -37,6 +37,10 @@ export default class StrikethroughUI extends Plugin {
 			const buttonView = this._createButton( ButtonView );
 			const command = editor.commands.get( STRIKETHROUGH )!;
 
+			buttonView.set( {
+				tooltip: true
+			} );
+
 			// Bind button model to command.
 			buttonView.bind( 'isOn' ).to( command, 'value' );
 
@@ -62,7 +66,6 @@ export default class StrikethroughUI extends Plugin {
 			label: t( 'Strikethrough' ),
 			icon: strikethroughIcon,
 			keystroke: 'CTRL+SHIFT+X',
-			tooltip: true,
 			isToggleable: true
 		} );
 
