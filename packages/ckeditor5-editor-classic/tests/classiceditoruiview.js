@@ -7,6 +7,7 @@ import ClassicEditorUIView from '../src/classiceditoruiview.js';
 import EditingView from '@ckeditor/ckeditor5-engine/src/view/view.js';
 import StickyPanelView from '@ckeditor/ckeditor5-ui/src/panel/sticky/stickypanelview.js';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview.js';
+import MenuBarView from '@ckeditor/ckeditor5-ui/src/menubar/menubarview.js';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview.js';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale.js';
 import createRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
@@ -37,7 +38,7 @@ describe( 'ClassicEditorUIView', () => {
 				expect( view.stickyPanel ).to.be.instanceof( StickyPanelView );
 			} );
 
-			it( 'is given a locate object', () => {
+			it( 'is given a locale object', () => {
 				expect( view.stickyPanel.locale ).to.equal( locale );
 			} );
 
@@ -51,12 +52,12 @@ describe( 'ClassicEditorUIView', () => {
 				expect( view.toolbar ).to.be.instanceof( ToolbarView );
 			} );
 
-			it( 'is given a locate object', () => {
+			it( 'is given a locale object', () => {
 				expect( view.toolbar.locale ).to.equal( locale );
 			} );
 
 			it( 'is put into the "stickyPanel.content" collection', () => {
-				expect( view.stickyPanel.content.get( 0 ) ).to.equal( view.toolbar );
+				expect( view.stickyPanel.content.has( view.toolbar ) ).to.be.true;
 			} );
 
 			describe( 'automatic items grouping', () => {
@@ -82,12 +83,26 @@ describe( 'ClassicEditorUIView', () => {
 			} );
 		} );
 
+		describe( '#menuBarView', () => {
+			it( 'is created', () => {
+				expect( view.menuBarView ).to.be.instanceof( MenuBarView );
+			} );
+
+			it( 'is given a locale object', () => {
+				expect( view.menuBarView.locale ).to.equal( locale );
+			} );
+
+			it( 'is put into the "stickyPanel.content" collection', () => {
+				expect( view.stickyPanel.content.has( view.menuBarView ) ).to.be.true;
+			} );
+		} );
+
 		describe( '#editable', () => {
 			it( 'is created', () => {
 				expect( view.editable ).to.be.instanceof( InlineEditableUIView );
 			} );
 
-			it( 'is given a locate object', () => {
+			it( 'is given a locale object', () => {
 				expect( view.editable.locale ).to.equal( locale );
 			} );
 
