@@ -24,7 +24,6 @@ import {
 	getCode,
 	parseKeystroke,
 	getLocalizedArrowKeyCodeDirection,
-	uid,
 	type GetCallback,
 	type Locale
 } from 'ckeditor5/src/utils.js';
@@ -183,9 +182,6 @@ export default class TodoListEditing extends Plugin {
 
 				return writer.createAttributeElement( dataPipeline ? 'label' : 'span', {
 					class: classes.join( ' ' )
-				}, {
-					// Set unique ID so that adjacent nodes won't get merged.
-					id: uid()
 				} );
 			}
 		} );

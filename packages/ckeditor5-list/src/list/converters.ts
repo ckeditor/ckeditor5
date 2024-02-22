@@ -463,7 +463,7 @@ export function findMappedViewElement( element: Element, mapper: Mapper, model: 
 function removeCustomMarkerElements( viewElement: ViewElement, viewWriter: DowncastWriter, mapper: Mapper ): void {
 	// Remove item wrapper.
 	while ( viewElement.parent!.is( 'attributeElement' ) && viewElement.parent!.getCustomProperty( 'listItemWrapper' ) ) {
-		viewWriter.unwrap( viewWriter.createRangeIn( viewElement.parent ), viewElement.parent );
+		viewWriter.unwrap( viewWriter.createRangeOn( viewElement ), viewElement.parent );
 	}
 
 	// Remove custom item markers.
