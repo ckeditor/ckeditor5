@@ -831,13 +831,13 @@ function matchAndConsumeAttributes(
 		for ( const style of match.styles || [] ) {
 			// Check longer forms of the same style as those could be matched
 			// but not present in the element directly.
-			for ( const relatedStyle of stylesProcessor.getRelatedStyles( style ) ) {
-				// Consider only longhand (or longer than current notation) so that
-				// we do not include all sides of the box if only one side is allowed.
-				if ( relatedStyle.split( '-' ).length <= style.split( '-' ).length ) {
-					continue;
-				}
+			// Consider only longhand (or longer than current notation) so that
+			// we do not include all sides of the box if only one side is allowed.
+			const sortedRelatedStyles = stylesProcessor.getRelatedStyles( style )
+				.filter( relatedStyle => relatedStyle.split( '-' ).length > style.split( '-' ).length )
+				.sort( ( a, b ) => b.split( '-' ).length - a.split( '-' ).length );
 
+			for ( const relatedStyle of sortedRelatedStyles ) {
 				if ( consumable.consume( viewElement, { styles: [ relatedStyle ] } ) ) {
 					result.styles.push( relatedStyle );
 				}

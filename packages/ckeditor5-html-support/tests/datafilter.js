@@ -4103,6 +4103,51 @@ describe( 'DataFilter', () => {
 			expect( editor.getData() ).to.equal( '<p style="border-bottom:3px dotted red;">foobar</p>' );
 		} );
 
+		it( 'should handle partial border for generic border filter (box bottom side style only)', () => {
+			editor.data.addStyleProcessorRules( addBorderRules );
+
+			dataFilter.allowElement( 'p' );
+			dataFilter.allowAttributes( { name: 'p', styles: 'border' } );
+
+			editor.setData( '<p style="border-bottom: dotted;">foobar</p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph htmlPAttributes="(1)">foobar</paragraph>',
+				attributes: {
+					1: {
+						styles: {
+							'border-bottom-style': 'dotted'
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p style="border-bottom-style:dotted;">foobar</p>' );
+		} );
+
+		it( 'should handle partial border for generic border filter (box bottom side style and color)', () => {
+			editor.data.addStyleProcessorRules( addBorderRules );
+
+			dataFilter.allowElement( 'p' );
+			dataFilter.allowAttributes( { name: 'p', styles: 'border' } );
+
+			editor.setData( '<p style="border-bottom: dotted red;">foobar</p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph htmlPAttributes="(1)">foobar</paragraph>',
+				attributes: {
+					1: {
+						styles: {
+							'border-bottom-style': 'dotted',
+							'border-bottom-color': 'red'
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p style="border-bottom-color:red;border-bottom-style:dotted;">foobar</p>' );
+		} );
+
 		it( 'should handle partial border for generic border filter (missing border color)', () => {
 			editor.data.addStyleProcessorRules( addBorderRules );
 
