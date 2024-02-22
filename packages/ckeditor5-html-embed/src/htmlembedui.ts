@@ -31,7 +31,13 @@ export default class HtmlEmbedUI extends Plugin {
 
 		// Add the `htmlEmbed` button to feature components.
 		editor.ui.componentFactory.add( 'htmlEmbed', () => {
-			return this._createButton( ButtonView );
+			const buttonView = this._createButton( ButtonView );
+
+			buttonView.set( {
+				tooltip: true
+			} );
+
+			return buttonView;
 		} );
 
 		editor.ui.componentFactory.add( 'menuBar:htmlEmbed', () => {
@@ -51,8 +57,7 @@ export default class HtmlEmbedUI extends Plugin {
 
 		view.set( {
 			label: t( 'Insert HTML' ),
-			icon: icons.html,
-			tooltip: true
+			icon: icons.html
 		} );
 
 		view.bind( 'isEnabled' ).to( command, 'isEnabled' );
