@@ -268,22 +268,20 @@ export default abstract class Editor extends ObservableMixin() {
 	 *
 	 * Usually, not to be used directly. See the static {@link module:core/editor/editor~Editor.create `create()`} method.
 	 *
-	 * @param config The editor configuration.
+	 * @param providedConfig The editor configuration.
 	 */
-	constructor( config: EditorConfig = {} ) {
+	constructor( providedConfig?: EditorConfig ) {
 		super();
 
 		const constructor = this.constructor as typeof Editor;
 
-		// Prefer the language passed as the argument to the constructor instead of the constructor's `defaultConfig`, if both are set.
-		const language = config.language || ( constructor.defaultConfig && constructor.defaultConfig.language );
-
 		// We don't pass translations to the config, because its behavior of splitting keys
 		// with dots (e.g. `resize.width` => `resize: { width }`) breaks the translations.
-		const {
-			translations = ( constructor.defaultConfig && constructor.defaultConfig.translations ),
-			...rest
-		} = config;
+		const { translations: defaultTranslations, ...defaultConfig } = constructor.defaultConfig || {};
+		const { translations = defaultTranslations, ...config } = providedConfig || {};
+
+		// Prefer the language passed as the argument to the constructor instead of the constructor's `defaultConfig`, if both are set.
+		const language = config.language || defaultConfig.language;
 
 		this._context = config.context || new Context( { language, translations } );
 		this._context._addEditor( this, !config.context );
@@ -292,7 +290,7 @@ export default abstract class Editor extends ObservableMixin() {
 		// between editors and make the watchdog feature work correctly.
 		const availablePlugins = Array.from( constructor.builtinPlugins || [] );
 
-		this.config = new Config<EditorConfig>( rest, constructor.defaultConfig );
+		this.config = new Config<EditorConfig>( config, defaultConfig );
 		this.config.define( 'plugins', availablePlugins );
 		this.config.define( this._context._getEditorConfig() );
 
