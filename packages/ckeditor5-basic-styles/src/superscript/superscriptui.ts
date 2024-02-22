@@ -50,7 +50,7 @@ export default class SuperscriptUI extends Plugin {
 	}
 
 	/**
-	 * Creates a button for code command to use either in toolbar or in menu bar.
+	 * Creates a button for superscript command to use either in toolbar or in menu bar.
 	 */
 	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
 		const editor = this.editor;
