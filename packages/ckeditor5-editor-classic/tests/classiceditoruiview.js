@@ -56,8 +56,8 @@ describe( 'ClassicEditorUIView', () => {
 				expect( view.toolbar.locale ).to.equal( locale );
 			} );
 
-			it( 'is put into the "stickyPanel.content" collection', () => {
-				expect( view.stickyPanel.content.has( view.toolbar ) ).to.be.true;
+			it( 'is put into the "stickyPanel.content" collection as second element', () => {
+				expect( view.stickyPanel.content.get( 1 ) ).to.euqal( view.toolbar );
 			} );
 
 			describe( 'automatic items grouping', () => {
@@ -92,8 +92,8 @@ describe( 'ClassicEditorUIView', () => {
 				expect( view.menuBarView.locale ).to.equal( locale );
 			} );
 
-			it( 'is put into the "stickyPanel.content" collection', () => {
-				expect( view.stickyPanel.content.has( view.menuBarView ) ).to.be.true;
+			it( 'is put into the "stickyPanel.content" collection as first element', () => {
+				expect( view.stickyPanel.content.get( 0 ) ).to.equal( view.menuBarView );
 			} );
 		} );
 
