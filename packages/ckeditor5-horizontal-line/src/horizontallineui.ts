@@ -28,11 +28,16 @@ export default class HorizontalLineUI extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
-		const t = editor.t;
 
 		// Add the `horizontalLine` button to feature components.
 		editor.ui.componentFactory.add( 'horizontalLine', () => {
-			return this._createButton( ButtonView );
+			const buttonView = this._createButton( ButtonView );
+
+			buttonView.set( {
+				tooltip: true
+			} );
+
+			return buttonView;
 		} );
 
 		editor.ui.componentFactory.add( 'menuBar:horizontalLine', () => {
@@ -52,8 +57,7 @@ export default class HorizontalLineUI extends Plugin {
 
 		view.set( {
 			label: t( 'Horizontal line' ),
-			icon: icons.horizontalLine,
-			tooltip: true
+			icon: icons.horizontalLine
 		} );
 
 		view.bind( 'isEnabled' ).to( command, 'isEnabled' );
