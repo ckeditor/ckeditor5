@@ -312,7 +312,7 @@ export default class MediaEmbedEditing extends Plugin {
 								contentType = 'asset';
 								contentId = assetId;
 							} else if ( callId ) {
-								contentType = 'gongcall';
+								contentType = 'call';
 								contentId = callId;
 							}
 						} else {
