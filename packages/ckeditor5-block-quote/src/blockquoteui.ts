@@ -34,7 +34,6 @@ export default class BlockQuoteUI extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 		const command: BlockQuoteCommand = editor.commands.get( 'blockQuote' )!;
-		const t = editor.t;
 
 		editor.ui.componentFactory.add( 'blockQuote', () => {
 			const buttonView = this._createButton( ButtonView );
