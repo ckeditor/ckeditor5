@@ -30,16 +30,7 @@ import { upperFirst } from 'lodash-es';
 
 const ATTRIBUTE_WHITESPACES = /[\u0000-\u0020\u00A0\u1680\u180E\u2000-\u2029\u205f\u3000]/g; // eslint-disable-line no-control-regex
 
-/* Building a link checking regex in parts for readability's sake. */
-
-// Part 1: basically any allowed protocol followed by ':' and any set of next characters (min. 1).
-const SAFE_PROTOCOLS_PLACEHOLDER = '(?:<protocols>):(?:\\S+)';
-// Part 2: any set of non-whitespace characters that doesn't include a ':' colon.
-const SAFE_URL_WITHOUT_COLONS = '(?:[^\\s:]+)';
-// Part 3: case for URLS which have port numbers after their hostnames, optionally with a following path/hash/query.
-const SAFE_URL_WITH_ALLOWED_COLON_FORMAT = '((?:[^\\s:]+)(?::\\d{2,5})(?:[/#?]\\S*)?)';
-
-const SAFE_URL_BASE = `^(?:${ SAFE_PROTOCOLS_PLACEHOLDER }|${ SAFE_URL_WITHOUT_COLONS }|${ SAFE_URL_WITH_ALLOWED_COLON_FORMAT })$`;
+const SAFE_URL_TEMPLATE = '^(?:(?:<protocols>):|[^a-z]|[a-z+.-]+(?:[^a-z+.:-]|$))';
 
 // Simplified email test - should be run over previously found URL.
 const EMAIL_REG_EXP = /^[\S]+@((?![-_])(?:[-\w\u00a1-\uffff]{0,63}[^-_]\.))+(?:[a-z\u00a1-\uffff]{2,})$/i;
@@ -85,7 +76,7 @@ export function ensureSafeUrl( url: unknown, allowedProtocols: Array<string> = D
 	const urlString = String( url );
 
 	const protocolsList = allowedProtocols.join( '|' );
-	const customSafeRegex = new RegExp( `${ SAFE_URL_BASE.replace( '<protocols>', protocolsList ) }`, 'i' );
+	const customSafeRegex = new RegExp( `${ SAFE_URL_TEMPLATE.replace( '<protocols>', protocolsList ) }`, 'i' );
 
 	return isSafeUrl( urlString, customSafeRegex ) ? urlString : '#';
 }
