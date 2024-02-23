@@ -170,6 +170,30 @@ describe( 'utils', () => {
 
 			expect( ensureSafeUrl( url ) ).to.equal( '#' );
 		} );
+
+		it( 'returns the same URL even if it contains a :port part', () => {
+			const url = 'localhost:12345';
+
+			expect( ensureSafeUrl( url ) ).to.equal( url );
+		} );
+
+		it( 'returns the same URL even if it contains a :port and a path after it', () => {
+			const url = 'localhost:678/pathafterwards';
+
+			expect( ensureSafeUrl( url ) ).to.equal( url );
+		} );
+
+		it( 'returns safe URL when there is character junk in the URL', () => {
+			const url = '::%^#.foo.com';
+
+			expect( ensureSafeUrl( url ) ).to.equal( '#' );
+		} );
+
+		it( 'returns safe URL when a malicious URL starts with an unknown protocol (with numbers & dots)', () => {
+			const url = 'foo2bar.baz:alert(1)';
+
+			expect( ensureSafeUrl( url ) ).to.equal( '#' );
+		} );
 	} );
 
 	describe( 'normalizeDecorators()', () => {
