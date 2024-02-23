@@ -22,7 +22,10 @@ import {
 	type ViewDocumentFragment,
 	type ViewElement,
 	type ViewRange,
-	type DowncastRemoveEvent
+	type DowncastRemoveEvent,
+	type EditingView,
+	type MapperModelToViewPositionEvent,
+	type ViewTreeWalker
 } from 'ckeditor5/src/engine.js';
 
 import type { GetCallback } from 'ckeditor5/src/utils.js';
@@ -458,6 +461,51 @@ export function findMappedViewElement( element: Element, mapper: Mapper, model: 
 }
 
 /**
+ * TODO
+ */
+export function createModelToViewPositionMapper(
+	strategies: Array<DowncastStrategy>,
+	view: EditingView
+): GetCallback<MapperModelToViewPositionEvent> {
+	return ( evt, data ) => {
+		if ( data.modelPosition.offset > 0 ) {
+			return;
+		}
+
+		const positionParent = data.modelPosition.parent;
+
+		if ( !isListItemBlock( positionParent ) ) {
+			return;
+		}
+
+		if ( !strategies.some( strategy => (
+			strategy.scope == 'itemMarker' && strategy.canInject && strategy.canInject( positionParent )
+		) ) ) {
+			return;
+		}
+
+		const viewElement = data.mapper.toViewElement( positionParent )!;
+		const viewRange = view.createRangeIn( viewElement );
+
+		const viewWalker = viewRange.getWalker();
+		let positionAfterLastMarker = viewRange.start;
+
+		for ( const { item, nextPosition } of viewWalker ) {
+			// Walk only over the non-mapped elements between list item blocks.
+			if ( item.is( 'element' ) && data.mapper.toModelElement( item ) ) {
+				break;
+			}
+
+			if ( item.is( 'element' ) && item.getCustomProperty( 'listItemMarker' ) ) {
+				positionAfterLastMarker = nextPosition;
+			}
+		}
+
+		data.viewPosition = positionAfterLastMarker;
+	};
+}
+
+/**
  * Removes a custom marker elements and item wrappers related to that marker.
  */
 function removeCustomMarkerElements( viewElement: ViewElement, viewWriter: DowncastWriter, mapper: Mapper ): void {
@@ -467,22 +515,29 @@ function removeCustomMarkerElements( viewElement: ViewElement, viewWriter: Downc
 	}
 
 	// Remove custom item markers.
-	const viewWalker = viewWriter.createPositionBefore( viewElement ).getWalker( { direction: 'backward' } );
-	const markersToRemove = [];
+	const markersToRemove: Array<ViewElement> = [];
 
-	for ( const { item } of viewWalker ) {
-		// Walk only over the non-mapped elements between list item blocks.
-		if ( item.is( 'element' ) && mapper.toModelElement( item ) ) {
-			break;
-		}
+	// Markers before a block.
+	collectMarkersToRemove( viewWriter.createPositionBefore( viewElement ).getWalker( { direction: 'backward' } ) );
 
-		if ( item.is( 'element' ) && item.getCustomProperty( 'listItemMarker' ) ) {
-			markersToRemove.push( item );
-		}
-	}
+	// Markers inside a block.
+	collectMarkersToRemove( viewWriter.createRangeIn( viewElement ).getWalker() );
 
 	for ( const marker of markersToRemove ) {
 		viewWriter.remove( marker );
+	}
+
+	function collectMarkersToRemove( viewWalker: ViewTreeWalker ) {
+		for ( const { item } of viewWalker ) {
+			// Walk only over the non-mapped elements between list item blocks.
+			if ( item.is( 'element' ) && mapper.toModelElement( item ) ) {
+				break;
+			}
+
+			if ( item.is( 'element' ) && item.getCustomProperty( 'listItemMarker' ) ) {
+				markersToRemove.push( item );
+			}
+		}
 	}
 }
 
@@ -516,12 +571,17 @@ function insertCustomMarkerElements(
 		}
 
 		writer.setCustomProperty( 'listItemMarker', true, markerElement );
-		writer.insert( viewRange.start, markerElement );
 
-		viewRange = writer.createRange(
-			writer.createPositionBefore( markerElement ),
-			writer.createPositionAfter( viewElement )
-		);
+		if ( strategy.canInject && strategy.canInject( listItem ) ) {
+			writer.insert( writer.createPositionAt( viewElement, 0 ), markerElement );
+		} else {
+			writer.insert( viewRange.start, markerElement );
+
+			viewRange = writer.createRange(
+				writer.createPositionBefore( markerElement ),
+				writer.createPositionAfter( viewElement )
+			);
+		}
 
 		// Wrap the marker and optionally the first block with an attribute element (label for to-do lists).
 		if ( !strategy.createWrapperElement || !strategy.canWrapElement ) {

@@ -25,7 +25,8 @@ import type {
 	ViewElement,
 	ViewAttributeElement,
 	Writer,
-	DowncastRemoveEvent
+	DowncastRemoveEvent,
+	MapperModelToViewPositionEvent
 } from 'ckeditor5/src/engine.js';
 
 import { Delete, type ViewDocumentDeleteEvent } from 'ckeditor5/src/typing.js';
@@ -39,7 +40,7 @@ import ListSplitCommand from './listsplitcommand.js';
 import ListUtils from './listutils.js';
 
 import {
-	bogusParagraphCreator,
+	bogusParagraphCreator, createModelToViewPositionMapper,
 	listItemDowncastConverter,
 	listItemDowncastRemoveConverter,
 	listItemUpcastConverter,
@@ -490,6 +491,11 @@ export default class ListEditing extends Plugin {
 				);
 			} );
 
+		const modelToViewPositionMapper = createModelToViewPositionMapper( this._downcastStrategies, editor.editing.view );
+
+		editor.editing.mapper.on<MapperModelToViewPositionEvent>( 'modelToViewPosition', modelToViewPositionMapper );
+		editor.data.mapper.on<MapperModelToViewPositionEvent>( 'modelToViewPosition', modelToViewPositionMapper );
+
 		this.listenTo<DocumentChangeEvent>(
 			model.document,
 			'change:data',
@@ -665,6 +671,11 @@ export interface ItemMarkerDowncastStrategy {
 	 * or only the marker element should be wrapped.
 	 */
 	canWrapElement?( modelElement: Element ): boolean;
+
+	/**
+	 * TODO description and better name
+	 */
+	canInject?( modelElement: Element ): boolean;
 }
 
 /**
