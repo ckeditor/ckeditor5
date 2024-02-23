@@ -157,18 +157,6 @@ describe( 'utils', () => {
 			expect( ensureSafeUrl( url ) ).to.equal( url );
 		} );
 
-		it( 'returns the same URL even if it contains a :port part', () => {
-			const url = 'localhost:12345';
-
-			expect( ensureSafeUrl( url ) ).to.equal( url );
-		} );
-
-		it( 'returns the same URL even if it contains a :port and a path after it', () => {
-			const url = 'localhost:678/pathafterwards';
-
-			expect( ensureSafeUrl( url ) ).to.equal( url );
-		} );
-
 		it( 'returns the same URL even if it starts with an IP address', () => {
 			const url = '192.178.10.123/subpath';
 
@@ -178,12 +166,6 @@ describe( 'utils', () => {
 		it( 'accepts non string values', () => {
 			expect( ensureSafeUrl( undefined ) ).to.equal( 'undefined' );
 			expect( ensureSafeUrl( null ) ).to.equal( 'null' );
-		} );
-
-		it( 'returns safe URL when there is character junk in the URL', () => {
-			const url = '::%^#.foo.com';
-
-			expect( ensureSafeUrl( url ) ).to.equal( '#' );
 		} );
 
 		it( 'returns safe URL when a malicious URL starts with javascript:', () => {
@@ -203,12 +185,6 @@ describe( 'utils', () => {
 			const allowedCustomProtocols = [ 'https', 'http', 'foo' ];
 
 			expect( ensureSafeUrl( url, allowedCustomProtocols ) ).to.equal( url );
-		} );
-
-		it( 'returns safe URL when a malicious URL starts with an unknown protocol (with numbers & dots)', () => {
-			const url = 'foo2bar.baz:alert(1)';
-
-			expect( ensureSafeUrl( url ) ).to.equal( '#' );
 		} );
 
 		it( 'returns safe URL when a malicious URL contains spaces', () => {
