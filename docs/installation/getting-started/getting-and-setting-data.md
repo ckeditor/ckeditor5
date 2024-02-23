@@ -125,7 +125,7 @@ When you print the data from the database to a `<textarea>` element in an HTML p
 Thanks to that, the `<textarea>` will be printed out like this:
 
 ```html
-&lt;textarea&lt;p>This is some sample content.&lt;/p>&lt/textarea>
+&lt;textarea>&lt;p>This is some sample content.&lt;/p>&lt;/textarea>
 ```
 
 Instead of being printed like this:
