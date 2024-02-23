@@ -101,7 +101,7 @@ describe( 'LinkEditing', () => {
 			// So let's simulate the `keydown` event.
 			editor.editing.view.document.fire( 'keydown', {
 				keyCode: keyCodes.arrowright,
-				preventDefault: () => { },
+				preventDefault: () => {},
 				domTarget: document.body
 			} );
 
@@ -132,7 +132,7 @@ describe( 'LinkEditing', () => {
 			// So let's simulate the `keydown` event.
 			editor.editing.view.document.fire( 'keydown', {
 				keyCode: keyCodes.arrowleft,
-				preventDefault: () => { },
+				preventDefault: () => {},
 				domTarget: document.body
 			} );
 
@@ -208,7 +208,7 @@ describe( 'LinkEditing', () => {
 
 			view.document.fire( 'keydown', {
 				keyCode: keyCodes.arrowright,
-				preventDefault: () => { },
+				preventDefault: () => {},
 				domTarget: document.body
 			} );
 
@@ -1184,7 +1184,7 @@ describe( 'LinkEditing', () => {
 					keyCode: keyCodes.enter,
 					domEvent: {
 						keyCode: keyCodes.enter,
-						preventDefault: () => { },
+						preventDefault: () => {},
 						target: document.body,
 						...options
 					},
@@ -2038,7 +2038,7 @@ describe( 'LinkEditing', () => {
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial state' ).to.equal( false );
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
-				preventDefault: () => { }
+				preventDefault: () => {}
 			}, {
 				direction: 'backward',
 				selectionToRemove: view.document.selection
@@ -2047,7 +2047,7 @@ describe( 'LinkEditing', () => {
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link' ).to.equal( false );
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
-				preventDefault: () => { }
+				preventDefault: () => {}
 			}, {
 				direction: 'backward',
 				selectionToRemove: view.document.selection
@@ -2073,7 +2073,7 @@ describe( 'LinkEditing', () => {
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial "linkHref" state' ).to.equal( false );
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
-				preventDefault: () => { }
+				preventDefault: () => {}
 			}, {
 				direction: 'backward',
 				selectionToRemove: view.document.selection
@@ -2084,7 +2084,7 @@ describe( 'LinkEditing', () => {
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link ("linkHref")' ).to.equal( false );
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
-				preventDefault: () => { }
+				preventDefault: () => {}
 			}, {
 				direction: 'backward',
 				selectionToRemove: view.document.selection
@@ -2111,7 +2111,7 @@ describe( 'LinkEditing', () => {
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial state' ).to.equal( true );
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
-				preventDefault: () => { }
+				preventDefault: () => {}
 			}, {
 				direction: 'backward',
 				selectionToRemove: view.document.selection
@@ -2120,7 +2120,7 @@ describe( 'LinkEditing', () => {
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link' ).to.equal( true );
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
-				preventDefault: () => { }
+				preventDefault: () => {}
 			}, {
 				direction: 'backward',
 				selectionToRemove: view.document.selection
@@ -2136,7 +2136,7 @@ describe( 'LinkEditing', () => {
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial state' ).to.equal( true );
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
-				preventDefault: () => { }
+				preventDefault: () => {}
 			}, {
 				direction: 'backward',
 				selectionToRemove: view.document.selection
@@ -2145,7 +2145,7 @@ describe( 'LinkEditing', () => {
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link' ).to.equal( true );
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
-				preventDefault: () => { }
+				preventDefault: () => {}
 			}, {
 				direction: 'backward',
 				selectionToRemove: view.document.selection
@@ -2159,14 +2159,14 @@ describe( 'LinkEditing', () => {
 			setModelData( model, '<paragraph>Foo <$text bold="true">Bolded.</$text> []Bar</paragraph>' );
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
-				preventDefault: () => { }
+				preventDefault: () => {}
 			}, {
 				direction: 'backward',
 				selectionToRemove: view.document.selection
 			} ) );
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
-				preventDefault: () => { }
+				preventDefault: () => {}
 			}, {
 				direction: 'backward',
 				selectionToRemove: view.document.selection
@@ -2181,7 +2181,7 @@ describe( 'LinkEditing', () => {
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial state' ).to.equal( false );
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
-				preventDefault: () => { }
+				preventDefault: () => {}
 			}, {
 				direction: 'forward',
 				selectionToRemove: view.document.selection
@@ -2198,7 +2198,7 @@ describe( 'LinkEditing', () => {
 			getData( type ) {
 				return data[ type ];
 			},
-			setData() { }
+			setData() {}
 		};
 	}
 } );

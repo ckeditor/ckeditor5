@@ -185,7 +185,7 @@ ClassicEditor
 
 #### Adding custom protocols in links
 
-By default, a minimal set of protocols is allowed to be used in the links, and any link with an unrecognized protocol will fallback to `#`. You can overwrite the list of protocols by using {@link module:link/linkconfig~LinkConfig#allowedProtocols `config.link.allowedProtocols`}.
+By default, a minimal set of protocols is allowed to be used in the links, and any link with an unrecognized protocol will be removed from the element. You can overwrite the list of protocols by using {@link module:link/linkconfig~LinkConfig#allowedProtocols `config.link.allowedProtocols`}.
 
 See a configuration example:
 
