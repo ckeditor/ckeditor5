@@ -70,7 +70,7 @@ export default class CKBoxEditing extends Plugin {
 		this._checkImagePlugins();
 
 		// Registering the `ckbox` command makes sense only if the CKBox library is loaded, as the `ckbox` command opens the CKBox dialog.
-		if ( this._isLibraryLoaded() ) {
+		if ( isLibraryLoaded() ) {
 			editor.commands.add( 'ckbox', new CKBoxCommand( editor ) );
 		}
 	}
@@ -102,11 +102,7 @@ export default class CKBoxEditing extends Plugin {
 		const editor = this.editor;
 		const hasConfiguration = !!editor.config.get( 'ckbox' );
 
-		return hasConfiguration || this._isLibraryLoaded();
-	}
-
-	private _isLibraryLoaded(): boolean {
-		return !!window.CKBox;
+		return hasConfiguration || isLibraryLoaded();
 	}
 
 	/**
@@ -442,4 +438,11 @@ function shouldUpcastAttributeForNode( node: Node ) {
 	}
 
 	return false;
+}
+
+/**
+ * Returns true if the CKBox library is loaded, false otherwise.
+ */
+function isLibraryLoaded(): boolean {
+	return !!window.CKBox;
 }
