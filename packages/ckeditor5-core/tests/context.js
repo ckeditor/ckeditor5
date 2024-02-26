@@ -505,7 +505,7 @@ describe( 'Context', () => {
 		} );
 	} );
 
-	describe( 'translations', () => {
+	describe( 'config.translations', () => {
 		let editor, element;
 
 		beforeEach( () => {
@@ -523,6 +523,52 @@ describe( 'Context', () => {
 						}
 					}
 				} )
+				.then( _editor => {
+					editor = _editor;
+				} );
+		} );
+
+		afterEach( () => {
+			document.body.removeChild( element );
+
+			return editor.destroy();
+		} );
+
+		it( 'should not set translations in the config', () => {
+			expect( editor.config.get( 'translations' ) ).to.equal( undefined );
+		} );
+
+		it( 'should properly get translations with the key', () => {
+			expect( editor.locale.translations.pl.dictionary.bold ).to.equal( 'Pogrubienie' );
+		} );
+
+		it( 'should properly get translations with dot in the key', () => {
+			expect( editor.locale.translations.pl.dictionary[ 'a.b' ] ).to.equal( 'value' );
+		} );
+	} );
+
+	describe( 'defaultConfig.translations', () => {
+		let editor, element;
+
+		beforeEach( () => {
+			element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
+			class TestEditor extends ClassicTestEditor {}
+
+			TestEditor.defaultConfig = {
+				translations: {
+					pl: {
+						dictionary: {
+							bold: 'Pogrubienie',
+							'a.b': 'value'
+						}
+					}
+				}
+			};
+
+			return TestEditor
+				.create( element )
 				.then( _editor => {
 					editor = _editor;
 				} );

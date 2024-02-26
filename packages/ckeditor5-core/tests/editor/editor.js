@@ -179,6 +179,22 @@ describe( 'Editor', () => {
 			expect( editor.config.get( 'translations' ) ).to.equal( undefined );
 		} );
 
+		it( 'should use translations set as the defaultConfig option on the constructor', () => {
+			TestEditor.defaultConfig = {
+				translations: {
+					pl: {
+						dictionary: {
+							Bold: 'Pogrubienie'
+						}
+					}
+				}
+			};
+
+			const editor = new TestEditor();
+
+			expect( editor.config.get( 'translations' ) ).to.equal( undefined );
+		} );
+
 		it( 'should bind editing.view.document#isReadOnly to the editor#isReadOnly', () => {
 			const editor = new TestEditor();
 

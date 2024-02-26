@@ -73,7 +73,3 @@ Regardless of the original file format, the responsive versions will be served a
 </info-box>
 
 For detailed information on how to configure and use CKBox, please refer to the {@link features/ckbox#installation CKBox file manager} installation guide.
-
-## Contribute
-
-The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-link](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-link).
