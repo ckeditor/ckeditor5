@@ -674,7 +674,8 @@ export interface ItemMarkerDowncastStrategy {
 	canWrapElement?( modelElement: Element ): boolean;
 
 	/**
-	 * TODO description
+	 * Should return true if the custom marker can be injected into a given list block.
+	 * Otherwise, custom marker view element is always injected before the block element.
 	 */
 	canInjectMarkerIntoElement?( modelElement: Element ): boolean;
 }
