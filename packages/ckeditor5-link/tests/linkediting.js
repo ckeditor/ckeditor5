@@ -168,7 +168,7 @@ describe( 'LinkEditing', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>' +
-				'foo<$text linkHref="ckeditor.com" linkIsExternal="true">INSERTED</$text>[]' +
+					'foo<$text linkHref="ckeditor.com" linkIsExternal="true">INSERTED</$text>[]' +
 				'</paragraph>'
 			);
 
@@ -184,8 +184,8 @@ describe( 'LinkEditing', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>' +
-				'<$text linkHref="ckeditor.com">foo</$text>' +
-				'<$text bold="true">INSERTED[]</$text>' +
+					'<$text linkHref="ckeditor.com">foo</$text>' +
+					'<$text bold="true">INSERTED[]</$text>' +
 				'</paragraph>'
 			);
 
@@ -220,9 +220,9 @@ describe( 'LinkEditing', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>' +
-				'foo' +
-				'<$text bold="true">INSERTED</$text>[]' +
-				'<$text linkHref="ckeditor.com">bar</$text>' +
+					'foo' +
+					'<$text bold="true">INSERTED</$text>[]' +
+					'<$text linkHref="ckeditor.com">bar</$text>' +
 				'</paragraph>'
 			);
 
@@ -239,9 +239,9 @@ describe( 'LinkEditing', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>' +
-				'<$text linkHref="ckeditor.com">f</$text>' +
-				'<$text linkHref="http://INSERTED">INSERTED</$text>[]' +
-				'<$text linkHref="ckeditor.com">oo</$text>' +
+					'<$text linkHref="ckeditor.com">f</$text>' +
+					'<$text linkHref="http://INSERTED">INSERTED</$text>[]' +
+					'<$text linkHref="ckeditor.com">oo</$text>' +
 				'</paragraph>'
 			);
 
@@ -259,8 +259,8 @@ describe( 'LinkEditing', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>' +
-				'<$text linkHref="http://INSERTED">INSERTED</$text>[]' +
-				'<$text linkHref="ckeditor.com">foo</$text>' +
+					'<$text linkHref="http://INSERTED">INSERTED</$text>[]' +
+					'<$text linkHref="ckeditor.com">foo</$text>' +
 				'</paragraph>'
 			);
 
@@ -282,7 +282,7 @@ describe( 'LinkEditing', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>' +
-				'<$text linkHref="ckeditor.com">fbar[]oo</$text>' +
+					'<$text linkHref="ckeditor.com">fbar[]oo</$text>' +
 				'</paragraph>'
 			);
 		} );
@@ -398,7 +398,7 @@ describe( 'LinkEditing', () => {
 
 			setModelData( model,
 				'<paragraph>' +
-				'<$text linkHref="url">a</$text><$text foo="true" linkHref="url">b</$text><$text linkHref="url">c</$text>' +
+					'<$text linkHref="url">a</$text><$text foo="true" linkHref="url">b</$text><$text linkHref="url">c</$text>' +
 				'</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><a href="url">a<f>b</f>c</a></p>' );
@@ -927,9 +927,9 @@ describe( 'LinkEditing', () => {
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 					'<paragraph>' +
-					'<$text linkHref="url" linkIsDownloadable="true" linkIsExternal="true">Foo</$text>' +
-					'<$text linkHref="example.com" linkIsFile="true">Bar</$text>' +
-					'<$text linkHref="example.com" linkIsDownloadable="true">Baz</$text>' +
+						'<$text linkHref="url" linkIsDownloadable="true" linkIsExternal="true">Foo</$text>' +
+						'<$text linkHref="example.com" linkIsFile="true">Bar</$text>' +
+						'<$text linkHref="example.com" linkIsDownloadable="true">Baz</$text>' +
 					'</paragraph>'
 				);
 
@@ -966,8 +966,8 @@ describe( 'LinkEditing', () => {
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 					'<paragraph>' +
-					'<$text linkHref="url">Foo</$text>' +
-					'<$text linkHref="example.com">Bar</$text>' +
+						'<$text linkHref="url">Foo</$text>' +
+						'<$text linkHref="example.com">Bar</$text>' +
 					'</paragraph>'
 				);
 
@@ -2060,11 +2060,11 @@ describe( 'LinkEditing', () => {
 		it( 'should not preserve the `linkHref` attribute when deleting content after the link (decorators check)', () => {
 			setModelData( model,
 				'<paragraph>' +
-				'This is ' +
-				'<$text linkIsFoo="true" linkIsBar="true" linkHref="foo">Foo</$text>' +
-				' []from ' +
-				'<$text linkHref="bar">Bar</$text>' +
-				'.' +
+					'This is ' +
+					'<$text linkIsFoo="true" linkIsBar="true" linkHref="foo">Foo</$text>' +
+					' []from ' +
+					'<$text linkHref="bar">Bar</$text>' +
+					'.' +
 				'</paragraph>'
 			);
 
@@ -2096,11 +2096,11 @@ describe( 'LinkEditing', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>' +
-				'This is ' +
-				'<$text linkHref="foo" linkIsBar="true" linkIsFoo="true">Fo</$text>' +
-				'[]from ' +
-				'<$text linkHref="bar">Bar</$text>' +
-				'.' +
+					'This is ' +
+					'<$text linkHref="foo" linkIsBar="true" linkIsFoo="true">Fo</$text>' +
+					'[]from ' +
+					'<$text linkHref="bar">Bar</$text>' +
+					'.' +
 				'</paragraph>'
 			);
 		} );
