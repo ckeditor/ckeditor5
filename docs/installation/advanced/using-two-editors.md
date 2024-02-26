@@ -95,7 +95,7 @@ export default {
 };
 ```
 
-Since you now export an object with two properties (`ClassicEditor` and `InlineEditor`), it is also reasonable to rename the global variable `ClassicEditor`. Webpack will assign the exported object to it. An appropriate name now might be `CKEDITOR`. This variable is defined in `webpack.config.js` in the `output.library` setting:
+Since you now export an object with two editor types (`ClassicEditor` and `InlineEditor`), it is also reasonable to rename the global variable `ClassicEditor`. An appropriate name now might be `CKEDITOR`. This variable is defined in `webpack.config.js` in the `output.library` setting:
 
 ```diff
 // webpack.config.js
