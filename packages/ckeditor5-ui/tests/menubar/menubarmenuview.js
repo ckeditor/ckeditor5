@@ -3,12 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* global document */
+
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { FocusTracker, KeystrokeHandler, Locale, keyCodes } from '@ckeditor/ckeditor5-utils';
 import { MenuBarMenuView, MenuBarView } from '../../src/index.js';
 import MenuBarMenuButtonView from '../../src/menubar/menubarmenubuttonview.js';
 import MenuBarMenuPanelView from '../../src/menubar/menubarmenupanelview.js';
-import { MenuBarMenuBehaviors } from '../../src/menubar/utils.js';
+import { MenuBarMenuBehaviors, MenuBarMenuViewPanelPositioningFunctions } from '../../src/menubar/utils.js';
 
 describe( 'MenuBarMenuView', () => {
 	let menuView, locale;
@@ -16,8 +18,8 @@ describe( 'MenuBarMenuView', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		menuView = new MenuBarMenuView();
 		locale = new Locale();
+		menuView = new MenuBarMenuView( locale );
 	} );
 
 	afterEach( () => {
@@ -286,24 +288,65 @@ describe( 'MenuBarMenuView', () => {
 		} );
 
 		it( 'should enable a behavior that closes the menu upon the Esc key press', () => {
+			const spy = sinon.spy( MenuBarMenuBehaviors, 'closeOnEscKey' );
 
+			menuView.render();
+
+			sinon.assert.calledOnceWithExactly( spy, menuView );
 		} );
 
 		describe( 'panel repositioning upon open', () => {
-			it( 'should update the position whenever the menu gets open (but not when it closes)', () => {
+			let menuView, menuBarView, parentMenuView;
 
+			it( 'should update the position whenever the menu gets open (but not when it closes)', () => {
+				createTopLevelMenuWithLocale( locale );
+
+				menuView.panelView.position = null;
+
+				menuView.isOpen = true;
+
+				expect( menuView.panelView.position ).to.not.be.null;
+			} );
+
+			afterEach( () => {
+				menuView.element.remove();
+				menuBarView.destroy();
 			} );
 
 			describe( 'top-level menu', () => {
 				describe( 'when the UI language is LTR', () => {
 					it( 'should use a specific set of positioning functions in a specific priority order', () => {
+						const spy = sinon.spy( MenuBarMenuView, '_getOptimalPosition' );
+						const locale = new Locale( { uiLanguage: 'pl' } );
 
+						createTopLevelMenuWithLocale( locale );
+
+						menuView.isOpen = true;
+
+						expect( spy.firstCall.args[ 0 ].positions ).to.have.ordered.members( [
+							MenuBarMenuViewPanelPositioningFunctions.southEast,
+							MenuBarMenuViewPanelPositioningFunctions.southWest,
+							MenuBarMenuViewPanelPositioningFunctions.northEast,
+							MenuBarMenuViewPanelPositioningFunctions.northWest
+						] );
 					} );
 				} );
 
 				describe( 'when the UI language is RTL', () => {
 					it( 'should use a specific set of positioning functions in a specific priority order', () => {
+						const spy = sinon.spy( MenuBarMenuView, '_getOptimalPosition' );
+						const locale = new Locale( { uiLanguage: 'ar' } );
 
+						createTopLevelMenuWithLocale( locale );
+
+						menuView.isOpen = true;
+
+						expect( spy.firstCall.args[ 0 ].positions ).to.have.ordered.members( [
+							MenuBarMenuViewPanelPositioningFunctions.southWest,
+							MenuBarMenuViewPanelPositioningFunctions.southEast,
+							MenuBarMenuViewPanelPositioningFunctions.northWest,
+							MenuBarMenuViewPanelPositioningFunctions.northEast
+						] );
 					} );
 				} );
 			} );
@@ -311,16 +354,56 @@ describe( 'MenuBarMenuView', () => {
 			describe( 'sub-menu', () => {
 				describe( 'when the UI language is LTR', () => {
 					it( 'should use a specific set of positioning functions in a specific priority order', () => {
+						const spy = sinon.spy( MenuBarMenuView, '_getOptimalPosition' );
+						const locale = new Locale( { uiLanguage: 'pl' } );
 
+						createSubMenuWithLocale( locale );
+
+						menuView.isOpen = true;
+
+						expect( spy.firstCall.args[ 0 ].positions ).to.have.ordered.members( [
+							MenuBarMenuViewPanelPositioningFunctions.eastSouth,
+							MenuBarMenuViewPanelPositioningFunctions.eastNorth,
+							MenuBarMenuViewPanelPositioningFunctions.westSouth,
+							MenuBarMenuViewPanelPositioningFunctions.westNorth
+						] );
 					} );
 				} );
 
 				describe( 'when the UI language is RTL', () => {
 					it( 'should use a specific set of positioning functions in a specific priority order', () => {
+						const spy = sinon.spy( MenuBarMenuView, '_getOptimalPosition' );
+						const locale = new Locale( { uiLanguage: 'ar' } );
 
+						createSubMenuWithLocale( locale );
+
+						menuView.isOpen = true;
+
+						expect( spy.firstCall.args[ 0 ].positions ).to.have.ordered.members( [
+							MenuBarMenuViewPanelPositioningFunctions.westSouth,
+							MenuBarMenuViewPanelPositioningFunctions.westNorth,
+							MenuBarMenuViewPanelPositioningFunctions.eastSouth,
+							MenuBarMenuViewPanelPositioningFunctions.eastNorth
+						] );
 					} );
 				} );
 			} );
+
+			function createTopLevelMenuWithLocale( locale ) {
+				menuView = new MenuBarMenuView( locale );
+				menuBarView = new MenuBarView( locale );
+				menuBarView.registerMenu( menuView );
+				menuView.render();
+				document.body.appendChild( menuView.element );
+			}
+
+			function createSubMenuWithLocale( locale ) {
+				menuView = new MenuBarMenuView( locale );
+				parentMenuView = new MenuBarMenuView( locale );
+				menuView.parentMenuView = parentMenuView;
+				menuView.render();
+				document.body.appendChild( menuView.element );
+			}
 		} );
 	} );
 } );
