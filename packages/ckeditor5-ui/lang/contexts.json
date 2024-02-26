@@ -35,16 +35,6 @@
 	"Below, you can find a list of keyboard shortcuts that can be used in the editor.": "Accessibility help dialog text explaining what can be found in that dialog.",
 	"(may require <kbd>Fn</kbd>)": "Accessibility help dialog text displayed next to keystrokes that may require the Fn key on Mac.",
 	"Accessibility help": "Accessibility help dialog title.",
-	"Content editing keystrokes": "Accessibility help dialog category header text for keystrokes related to content creation.",
-	"These keyboard shortcuts allow for quick access to content editing features.": "Accessibility help dialog text further explaining the purpose of the \"Content editing keystrokes\" category.",
-	"User interface and content navigation keystrokes": "Accessibility help dialog category header text for keystrokes related to navigation in the user interface.",
-	"Use the following keystrokes for more efficient navigation in the CKEditor 5 user interface.": "Accessibility help dialog text further explaining the purpose of the \"User interface and content navigation keystrokes\" category.",
-	"Close contextual balloons, dropdowns, and dialogs": "Keystroke description for assistive technologies: keystroke for closing contextual balloons, dropdowns, and dialogs.",
-	"Open the accessibility help dialog": "Keystroke description for assistive technologies: keystroke for opening the accessibility help dialog.",
-	"Move focus between form fields (inputs, buttons, etc.)": "Keystroke description for assistive technologies: keystroke for moving between fields.",
-	"Move focus to the toolbar, navigate between toolbars": "Keystroke description for assistive technologies: keystroke for moving focus to the toolbar.",
-	"Navigate through the toolbar": "Keystroke description for assistive technologies: keystroke for navigating through the toolbar.",
-	"Execute the currently focused button": "Keystroke description for assistive technologies: keystroke for executing currently focused button.",
 	"Press %0 for help.": "Assistive technologies label added to each editor editing area informing users about the possibility of opening the accessibility help dialog.",
 	"Move focus in and out of an active dialog window": "Keystroke description for assistive technologies: keystroke for moving focus out of an active dialog window."
 }
