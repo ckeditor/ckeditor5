@@ -103,7 +103,6 @@ export default class MenuBarView extends View implements FocusableView {
 	 * Closes all menus in the bar.
 	 */
 	public close(): void {
-		// TODO: We need to close all sub-menus in the structure too.
 		for ( const topLevelCategoryMenuView of this.children ) {
 			topLevelCategoryMenuView.isOpen = false;
 		}

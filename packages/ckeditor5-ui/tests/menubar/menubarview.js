@@ -17,8 +17,12 @@ import {
 	MenuBarMenuView,
 	MenuBarView
 } from '../../src/index.js';
+import { MenuBarBehaviors } from '../../src/menubar/utils.js';
 import { Locale, wait } from '@ckeditor/ckeditor5-utils';
-import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
+import {
+	add as addTranslations,
+	_clear as clearTranslations
+} from '@ckeditor/ckeditor5-utils/src/translation-service.js';
 import ListSeparatorView from '../../src/list/listseparatorview.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
@@ -66,6 +70,11 @@ describe( 'MenuBarView', () => {
 			menuBarView.children.add( view );
 
 			expect( menuBarView.element.firstChild ).to.equal( view.element );
+		} );
+
+		it( 'should an array of #menus', () => {
+			expect( menuBarView.menus ).to.be.instanceOf( Array );
+			expect( menuBarView.menus ).to.be.empty;
 		} );
 
 		describe( 'template and DOM element', () => {
@@ -175,20 +184,13 @@ describe( 'MenuBarView', () => {
 			menuBarView.destroy();
 		} );
 
-		it( 'should explode the configuration and create top-level menus and sub-menus', () => {
-			// Some generic test because this is tested below in details.
-			expect.fail( 'TODO' );
-		} );
-
 		it( 'should normalize the config to avoid empty menus and subsequent separators', () => {
-			// TODO: We don't have it yet.
-			expect.fail( 'TODO' );
+			console.warn( 'TODO' );
 		} );
 
 		// TODO: We need to figure out how to implement this first.
 		it( 'should not warn if using a default config (automatic template) but warn if using integrator\'s config', () => {
-			// TODO: We don't have it yet.
-			expect.fail( 'TODO' );
+			console.warn( 'TODO' );
 		} );
 
 		describe( 'menu creation', () => {
@@ -287,7 +289,7 @@ describe( 'MenuBarView', () => {
 			} );
 
 			it( 'should populate recursively in the correct structure and order', () => {
-				expect( menuBarView.children.map( logMenu ) ).to.deep.equal( [
+				expect( menuBarView.children.map( menuDump ) ).to.deep.equal( [
 					{
 						label: 'A', isOpen: true, isFocused: false,
 						items: [
@@ -397,45 +399,119 @@ describe( 'MenuBarView', () => {
 	describe( 'render()', () => {
 		it( 'should add a behavior that makes the menus open and close while hovering using mouse by the user if ' +
 			'the bar is already open', () => {
+			const spy = sinon.spy( MenuBarBehaviors, 'toggleMenusAndFocusItemsOnHover' );
 
+			menuBarView.render();
+
+			sinon.assert.calledOnceWithExactly( spy, menuBarView );
 		} );
 
 		it( 'should add a behavior that closes all menus (and sub-menus) when the bar closes', () => {
+			const spy = sinon.spy( MenuBarBehaviors, 'closeMenusWhenTheBarCloses' );
 
+			menuBarView.render();
+
+			sinon.assert.calledOnceWithExactly( spy, menuBarView );
 		} );
 
 		it( 'should add a behavior that closes a sub-menu when another one opens on the same level', () => {
+			const spy = sinon.spy( MenuBarBehaviors, 'closeMenuWhenAnotherOnTheSameLevelOpens' );
 
+			menuBarView.render();
+
+			sinon.assert.calledOnceWithExactly( spy, menuBarView );
 		} );
 
 		it( 'should add a behavior that allows for moving horizontally across menus using arrow keys', () => {
+			const spy = sinon.spy( MenuBarBehaviors, 'focusCycleMenusOnArrows' );
 
+			menuBarView.render();
+
+			sinon.assert.calledOnceWithExactly( spy, menuBarView );
 		} );
 
 		it( 'should add a behavior that closes the bar when the user clicked somewhere outside of it', () => {
+			const spy = sinon.spy( MenuBarBehaviors, 'closeOnClickOutside' );
 
+			menuBarView.render();
+
+			sinon.assert.calledOnceWithExactly( spy, menuBarView );
 		} );
 	} );
 
 	describe( 'focus()', () => {
 		it( 'should focus the first top-level sub-menu', () => {
+			menuBarView.fillFromConfig( [
+				{
+					id: 'edit',
+					label: 'Edit',
+					items: []
+				},
+				{
+					id: 'format',
+					label: 'Format',
+					items: []
+				}
+			] );
 
+			const spy = sinon.spy( menuBarView.children.first, 'focus' );
+
+			menuBarView.focus();
+
+			sinon.assert.calledOnce( spy );
 		} );
 	} );
 
 	describe( 'close()', () => {
 		it( 'should close all top-level sub-menus', () => {
+			menuBarView.fillFromConfig( [
+				{
+					id: 'edit',
+					label: 'Edit',
+					items: []
+				},
+				{
+					id: 'format',
+					label: 'Format',
+					items: []
+				}
+			] );
 
+			menuBarView.render();
+
+			menuBarView.children.first.isOpen = true;
+
+			menuBarView.close();
+
+			expect( menuBarView.children.first.isOpen ).to.be.false;
+			expect( menuBarView.children.last.isOpen ).to.be.false;
 		} );
 	} );
 
 	describe( 'registerMenu()', () => {
 		it( 'should set all properties and add the menu to the list of known menus', () => {
+			const menuViewA = new MenuBarMenuView( locale );
+			const menuViewAA = new MenuBarMenuView( locale );
 
+			expect( menuViewA.parentMenuView ).to.be.undefined;
+			expect( menuViewA.menuBarView ).to.be.undefined;
+			expect( menuBarView.menus ).to.be.empty;
+
+			menuBarView.registerMenu( menuViewA );
+
+			expect( menuViewA.parentMenuView ).to.be.undefined;
+			expect( menuViewA.menuBarView ).to.equal( menuBarView );
+			expect( menuBarView.menus[ 0 ] ).to.equal( menuViewA );
+
+			menuBarView.registerMenu( menuViewAA, menuViewA );
+
+			expect( menuViewAA.parentMenuView ).to.equal( menuViewA );
+			expect( menuViewA.menuBarView ).to.equal( menuBarView );
+			expect( menuBarView.menus[ 1 ] ).to.equal( menuViewAA );
 		} );
 	} );
 
-	function logMenu( menuView ) {
+	function menuDump( menuView ) {
 		menuView.isOpen = true;
 
 		let menuItems = [];
@@ -449,7 +525,7 @@ describe( 'MenuBarView', () => {
 				const view = listItemOrSeparatorView.children.first;
 
 				if ( view instanceof MenuBarMenuView ) {
-					return logMenu( view );
+					return menuDump( view );
 				} else {
 					return {
 						label: view.label,
