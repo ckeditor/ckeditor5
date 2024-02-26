@@ -112,31 +112,29 @@ Please note that the replaced `<textarea>` element is updated automatically by C
 If you need to get the actual data from CKEditor at any moment using JavaScript, use the {@link module:editor-classic/classiceditor~ClassicEditor#getData `editor.getData()`} method as described in the next section.
 </info-box>
 
-<info-box>
 When you print the data from the database to a `<textarea>` element in an HTML page, you need to encode it correctly. For instance, if you use PHP then a minimal solution would look like this:
 
 ```php
-&lt;?php
+<?php
 	$data = str_replace( '&', '&amp;', $data );
 ?>
 
-&lt;textarea name="content" id="editor">&lt;?= $data ?>&lt;/textarea>
+<textarea name="content" id="editor"><?= $data ?></textarea>
 ```
 
 Thanks to that, the `<textarea>` will be printed out like this:
 
 ```html
-&lt;textarea>&lt;p>This is some sample content.&lt;/p>&lt/textarea>
+&lt;textarea>&lt;p>This is some sample content.&lt;/p>&lt;/textarea>
 ```
 
 Instead of being printed like this:
 
 ```html
-&lt;textarea>&lt;p>This is some sample content.&lt;/p>&lt;/textarea>
+<textarea><p>This is some sample content.</p></textarea>
 ```
 
 While simple content like that mentioned above does not itself require to be encoded, encoding the data will prevent losing text like "&lt;" or "&lt;img&gt;".
-</info-box>
 
 ## Updating the source element
 

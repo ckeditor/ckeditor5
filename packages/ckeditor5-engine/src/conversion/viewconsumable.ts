@@ -7,15 +7,13 @@
  * @module engine/conversion/viewconsumable
  */
 
-import { CKEditorError } from '@ckeditor/ckeditor5-utils';
+import { CKEditorError, toArray, type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
 
 import type Element from '../view/element.js';
 import type Node from '../view/node.js';
 import type Text from '../view/text.js';
 import type DocumentFragment from '../view/documentfragment.js';
 import type { Match } from '../view/matcher.js';
-
-import { isArray } from 'lodash-es';
 
 /**
  * Class used for handling consumption of view {@link module:engine/view/element~Element elements},
@@ -558,8 +556,8 @@ export class ViewElementConsumables {
 	 * @param type Type of the consumable item: `attributes`, `classes` or `styles`.
 	 * @param item Consumable item or array of items.
 	 */
-	private _add( type: ConsumableType, item: string | Array<string> ) {
-		const items = isArray( item ) ? item : [ item ];
+	private _add( type: ConsumableType, item: ArrayOrItem<string> ) {
+		const items = toArray( item );
 		const consumables = this._consumables[ type ];
 
 		for ( const name of items ) {
@@ -603,8 +601,8 @@ export class ViewElementConsumables {
 	 * @returns Returns `true` if all items can be consumed, `null` when one of the items cannot be
 	 * consumed and `false` when one of the items is already consumed.
 	 */
-	private _test( type: ConsumableType, item: string | Array<string> ): boolean | null {
-		const items = isArray( item ) ? item : [ item ];
+	private _test( type: ConsumableType, item: ArrayOrItem<string> ): boolean | null {
+		const items = toArray( item );
 		const consumables = this._consumables[ type ];
 
 		for ( const name of items ) {
@@ -639,8 +637,8 @@ export class ViewElementConsumables {
 	 * @param type Type of the consumable item: `attributes`, `classes` or `styles`.
 	 * @param item Consumable item or array of items.
 	 */
-	private _consume( type: ConsumableType, item: string | Array<string> ) {
-		const items = isArray( item ) ? item : [ item ];
+	private _consume( type: ConsumableType, item: ArrayOrItem<string> ) {
+		const items = toArray( item );
 		const consumables = this._consumables[ type ];
 
 		for ( const name of items ) {
@@ -667,8 +665,8 @@ export class ViewElementConsumables {
 	 * @param type Type of the consumable item: `attributes`, `classes` or , `styles`.
 	 * @param item Consumable item or array of items.
 	 */
-	private _revert( type: ConsumableType, item: string | Array<string> ) {
-		const items = isArray( item ) ? item : [ item ];
+	private _revert( type: ConsumableType, item: ArrayOrItem<string> ) {
+		const items = toArray( item );
 		const consumables = this._consumables[ type ];
 
 		for ( const name of items ) {
