@@ -217,7 +217,7 @@ export default class MenuBarMenuView extends View implements FocusableView {
 			westSouth, eastSouth, westNorth, eastNorth
 		} = MenuBarMenuViewPanelPositioningFunctions;
 
-		if ( this.locale!.uiLanguageDirection !== 'rtl' ) {
+		if ( this.locale!.uiLanguageDirection === 'ltr' ) {
 			if ( this.parentMenuView ) {
 				return [ eastSouth, eastNorth, westSouth, westNorth ];
 			} else {

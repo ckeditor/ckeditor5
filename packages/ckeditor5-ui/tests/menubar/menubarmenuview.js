@@ -6,11 +6,22 @@
 /* global document */
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { FocusTracker, KeystrokeHandler, Locale, keyCodes } from '@ckeditor/ckeditor5-utils';
-import { MenuBarMenuView, MenuBarView } from '../../src/index.js';
+import {
+	FocusTracker,
+	KeystrokeHandler,
+	Locale,
+	keyCodes
+} from '@ckeditor/ckeditor5-utils';
+import {
+	MenuBarMenuView,
+	MenuBarView
+} from '../../src/index.js';
 import MenuBarMenuButtonView from '../../src/menubar/menubarmenubuttonview.js';
 import MenuBarMenuPanelView from '../../src/menubar/menubarmenupanelview.js';
-import { MenuBarMenuBehaviors, MenuBarMenuViewPanelPositioningFunctions } from '../../src/menubar/utils.js';
+import {
+	MenuBarMenuBehaviors,
+	MenuBarMenuViewPanelPositioningFunctions
+} from '../../src/menubar/utils.js';
 
 describe( 'MenuBarMenuView', () => {
 	let menuView, locale;

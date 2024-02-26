@@ -18,13 +18,17 @@ import {
 	MenuBarView
 } from '../../src/index.js';
 import { MenuBarBehaviors } from '../../src/menubar/utils.js';
-import { Locale, wait } from '@ckeditor/ckeditor5-utils';
+import {
+	Locale,
+	wait
+} from '@ckeditor/ckeditor5-utils';
 import {
 	add as addTranslations,
 	_clear as clearTranslations
 } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
 import ListSeparatorView from '../../src/list/listseparatorview.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { barDump, getItemByLabel, getMenuByLabel } from './_utils/utils.js';
 
 describe( 'MenuBarView', () => {
 	let menuBarView, locale, factory;
@@ -272,10 +276,10 @@ describe( 'MenuBarView', () => {
 					childMenuView => childMenuView.panelView.children.length === 0 )
 				).to.be.true;
 
-				menuBarView.children.first.isOpen = true;
+				getMenuByLabel( menuBarView, 'A' ).isOpen = true;
 
-				expect( menuBarView.children.first.panelView.children.length ).to.equal( 1 );
-				expect( menuBarView.children.last.panelView.children.length ).to.equal( 0 );
+				expect( getMenuByLabel( menuBarView, 'A' ).panelView.children.length ).to.equal( 1 );
+				expect( getMenuByLabel( menuBarView, 'B' ).panelView.children.length ).to.equal( 0 );
 			} );
 
 			it( 'should use MenuBarMenuListView instances in MenuBarMenuView panels', () => {
@@ -289,7 +293,7 @@ describe( 'MenuBarView', () => {
 			} );
 
 			it( 'should populate recursively in the correct structure and order', () => {
-				expect( menuBarView.children.map( menuDump ) ).to.deep.equal( [
+				expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
 					{
 						label: 'A', isOpen: true, isFocused: false,
 						items: [
@@ -323,36 +327,36 @@ describe( 'MenuBarView', () => {
 
 			describe( 'menu item creation', () => {
 				beforeEach( () => {
-					menuBarView.children.first.isOpen = true;
+					getMenuByLabel( menuBarView, 'A' ).isOpen = true;
 				} );
 
 				it( 'should create separators in place of "-"', () => {
 					expect(
-						menuBarView.children.first.panelView.children.first.items.get( 2 )
+						getMenuByLabel( menuBarView, 'A' ).panelView.children.first.items.get( 2 )
 					).to.be.instanceOf( ListSeparatorView );
 				} );
 
 				it( 'should use MenuBarMenuListItemView for list items', () => {
 					expect(
-						menuBarView.children.first.panelView.children.first.items.get( 0 )
+						getMenuByLabel( menuBarView, 'A' ).panelView.children.first.items.get( 0 )
 					).to.be.instanceOf( MenuBarMenuListItemView );
 				} );
 
 				it( 'should create sub-menus with MenuBarMenuView recursively and put them in MenuBarMenuListItemView', () => {
 					expect(
-						menuBarView.children.first.panelView.children.first.items.get( 3 ).children.first
+						getMenuByLabel( menuBarView, 'A' ).panelView.children.first.items.get( 3 ).children.first
 					).to.be.instanceOf( MenuBarMenuView );
 				} );
 
 				describe( 'feature component creation using component factory', () => {
 					it( 'should produce a component and put in MenuBarMenuListItemView', () => {
 						expect(
-							menuBarView.children.first.panelView.children.first.items.get( 0 ).children.first
+							getMenuByLabel( menuBarView, 'A' ).panelView.children.first.items.get( 0 ).children.first
 						).to.be.instanceOf( MenuBarMenuListItemButtonView );
 					} );
 
 					it( 'should warn if the compoent is not MenuBarMenuView or MenuBarMenuListItemButtonView', () => {
-						menuBarView.children.last.isOpen = true;
+						getMenuByLabel( menuBarView, 'B' ).isOpen = true;
 
 						sinon.assert.calledOnceWithExactly( console.warn, 'menu-bar-component-unsupported', {
 							view: sinon.match.object
@@ -360,18 +364,16 @@ describe( 'MenuBarView', () => {
 					} );
 
 					it( 'should register nested MenuBarMenuView produced by the factory', () => {
-						const menuViewAA = menuBarView.children.first.panelView.children.first.items.get( 3 ).children.first;
+						getMenuByLabel( menuBarView, 'AA' ).isOpen = true;
 
-						menuViewAA.isOpen = true;
-
-						const menuViewAAAFromFactory = menuViewAA.panelView.children.first.items.get( 1 ).children.first;
+						const menuViewAAAFromFactory = getMenuByLabel( menuBarView, 'AAA (from-factory)' );
 
 						expect( menuViewAAAFromFactory ).to.be.instanceOf( MenuBarMenuView );
 						expect( menuBarView.menus ).to.include( menuViewAAAFromFactory );
 					} );
 
 					it( 'should delegate events from feature components to the parent menu', () => {
-						const buttonView = menuBarView.children.first.panelView.children.first.items.get( 0 ).children.first;
+						const buttonView = getItemByLabel( menuBarView, 'menu-A-item1' );
 
 						[ 'mouseenter', 'arrowleft', 'arrowright', 'change:isOpen' ].forEach( eventName => {
 							const spy = sinon.spy();
@@ -383,13 +385,13 @@ describe( 'MenuBarView', () => {
 					} );
 
 					it( 'should close parent menu when feature component fires #execute', () => {
-						const buttonView = menuBarView.children.first.panelView.children.first.items.get( 0 ).children.first;
+						const buttonView = getItemByLabel( menuBarView, 'menu-A-item1' ).children.first;
 
-						expect( menuBarView.children.first.isOpen ).to.be.true;
+						expect( getMenuByLabel( menuBarView, 'A' ).isOpen ).to.be.true;
 
 						buttonView.fire( 'execute' );
 
-						expect( menuBarView.children.first.isOpen ).to.be.false;
+						expect( getMenuByLabel( menuBarView, 'A' ).isOpen ).to.be.false;
 					} );
 				} );
 			} );
@@ -454,7 +456,7 @@ describe( 'MenuBarView', () => {
 				}
 			] );
 
-			const spy = sinon.spy( menuBarView.children.first, 'focus' );
+			const spy = sinon.spy( getMenuByLabel( menuBarView, 'Edit' ), 'focus' );
 
 			menuBarView.focus();
 
@@ -479,12 +481,12 @@ describe( 'MenuBarView', () => {
 
 			menuBarView.render();
 
-			menuBarView.children.first.isOpen = true;
+			getMenuByLabel( menuBarView, 'Edit' ).isOpen = true;
 
 			menuBarView.close();
 
-			expect( menuBarView.children.first.isOpen ).to.be.false;
-			expect( menuBarView.children.last.isOpen ).to.be.false;
+			expect( getMenuByLabel( menuBarView, 'Edit' ).isOpen ).to.be.false;
+			expect( getMenuByLabel( menuBarView, 'Format' ).isOpen ).to.be.false;
 		} );
 	} );
 
@@ -510,36 +512,4 @@ describe( 'MenuBarView', () => {
 			expect( menuBarView.menus[ 1 ] ).to.equal( menuViewAA );
 		} );
 	} );
-
-	function menuDump( menuView ) {
-		menuView.isOpen = true;
-
-		let menuItems = [];
-
-		if ( menuView.panelView.children.first ) {
-			menuItems = menuView.panelView.children.first.items.map( listItemOrSeparatorView => {
-				if ( listItemOrSeparatorView instanceof ListSeparatorView ) {
-					return '-';
-				}
-
-				const view = listItemOrSeparatorView.children.first;
-
-				if ( view instanceof MenuBarMenuView ) {
-					return menuDump( view );
-				} else {
-					return {
-						label: view.label,
-						isFocused: document.activeElement === view.element
-					};
-				}
-			} );
-		}
-
-		return {
-			label: menuView.buttonView.label,
-			isOpen: menuView.isOpen,
-			isFocused: document.activeElement === menuView.buttonView.element,
-			items: menuItems
-		};
-	}
 } );

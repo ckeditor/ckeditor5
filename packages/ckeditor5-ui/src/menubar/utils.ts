@@ -28,18 +28,6 @@ const NESTED_PANEL_HORIZONTAL_OFFSET = 5;
  */
 export const MenuBarBehaviors = {
 	/**
-	 * Closes the bar when the user clicked outside of it (page body, editor root, etc.).
-	 */
-	closeOnClickOutside( menuBarView: MenuBarView ): void {
-		clickOutsideHandler( {
-			emitter: menuBarView,
-			activator: () => menuBarView.isOpen,
-			callback: () => menuBarView.close(),
-			contextElements: () => menuBarView.children.map( child => child.element! )
-		} );
-	},
-
-	/**
 	 * When the bar is already open:
 	 * * Opens the menu when the user hovers over its button.
 	 * * Closes open menu when another menu's button gets hovered.
@@ -132,6 +120,18 @@ export const MenuBarBehaviors = {
 						console.log( '[BEHAVIOR] closeMenuWhenAnotherOpens(): Closing', logMenu( menuView ) );
 					} );
 			}
+		} );
+	},
+
+	/**
+	 * Closes the bar when the user clicked outside of it (page body, editor root, etc.).
+	 */
+	closeOnClickOutside( menuBarView: MenuBarView ): void {
+		clickOutsideHandler( {
+			emitter: menuBarView,
+			activator: () => menuBarView.isOpen,
+			callback: () => menuBarView.close(),
+			contextElements: () => menuBarView.children.map( child => child.element! )
 		} );
 	}
 };
