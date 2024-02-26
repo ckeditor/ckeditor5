@@ -149,7 +149,7 @@ export default class Accessibility {
 	 *
 	 * See {@link #keystrokeInfos}, {@link #addKeystrokeInfoGroup}, and {@link #addKeystrokeInfos}.
 	 */
-	public addKeystrokeInfoCategory( { id, label, description, groups }: AddedKeystrokeInfoCategory ): void {
+	public addKeystrokeInfoCategory( { id, label, description, groups }: AddKeystrokeInfoCategoryData ): void {
 		this.keystrokeInfos.set( id, {
 			id,
 			label,
@@ -215,7 +215,7 @@ export default class Accessibility {
 		id,
 		label,
 		keystrokes
-	}: AddedKeystrokeInfoGroup ): void {
+	}: AddKeystrokeInfoGroupData ): void {
 		const category = this.keystrokeInfos.get( categoryId );
 
 		if ( !category ) {
@@ -312,7 +312,7 @@ export default class Accessibility {
 		categoryId = DEFAULT_CATEGORY_ID,
 		groupId = DEFAULT_GROUP_ID,
 		keystrokes
-	}: AddedKeystrokeInfos ): void {
+	}: AddKeystrokeInfosData ): void {
 		if ( !this.keystrokeInfos.has( categoryId ) ) {
 			/**
 			 * Cannot add keystrokes in an unknown category. Use
@@ -356,7 +356,7 @@ export default class Accessibility {
  * See {@link module:core/accessibility~Accessibility#addKeystrokeInfoGroup} and
  * {@link module:core/accessibility~Accessibility#addKeystrokeInfos}.
  */
-export interface AddedKeystrokeInfoCategory {
+export interface AddKeystrokeInfoCategoryData {
 
 	/**
 	 * The unique id of the category.
@@ -376,7 +376,7 @@ export interface AddedKeystrokeInfoCategory {
 	/**
 	 * Groups of keystrokes within the category.
 	 */
-	groups?: Array<AddedKeystrokeInfoGroup>;
+	groups?: Array<AddKeystrokeInfoGroupData>;
 }
 
 /**
@@ -388,7 +388,7 @@ export interface AddedKeystrokeInfoCategory {
  * See {@link module:core/accessibility~Accessibility#addKeystrokeInfoCategory} and
  * {@link module:core/accessibility~Accessibility#addKeystrokeInfos}.
  */
-export interface AddedKeystrokeInfoGroup {
+export interface AddKeystrokeInfoGroupData {
 
 	/**
 	 * The category id the group belongs to.
@@ -419,7 +419,7 @@ export interface AddedKeystrokeInfoGroup {
  * See {@link module:core/accessibility~Accessibility#addKeystrokeInfoCategory} and
  * {@link module:core/accessibility~Accessibility#addKeystrokeInfoGroup}.
  */
-export interface AddedKeystrokeInfos {
+export interface AddKeystrokeInfosData {
 
 	/**
 	 * The category id the keystrokes belong to.
