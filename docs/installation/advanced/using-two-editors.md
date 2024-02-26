@@ -38,7 +38,7 @@ Now it is time to add the missing editor package and install it:
 yarn add -D @ckeditor/ckeditor5-editor-inline
 ```
 
-Once all the dependencies are installed, you'll need to modify the `src/ckeditor.ts` file, which currently only exports a single class. The first step is to move all plugins and configuration to a variables so they can be reused by both editors:
+Once all the dependencies are installed, you will need to modify the `src/ckeditor.ts` file, which currently only exports a single class. The first step is to move all plugins and configuration to variables so they can be reused by both editors:
 
 ```js
 import { ClassicEditor as ClassicEditorBase } from '@ckeditor/ckeditor5-editor-classic';
@@ -95,7 +95,7 @@ export default {
 };
 ```
 
-Since you now export an object with two properties (`ClassicEditor` and `InlineEditor`), it is also reasonable to rename the global variable `ClassicEditor` to which webpack will assign the exported object.  An appropriate name now might be `CKEDITOR`. This variable is defined in `webpack.config.js` in the `output.library` setting:
+Since you now export an object with two properties (`ClassicEditor` and `InlineEditor`), it is also reasonable to rename the global variable `ClassicEditor`. Webpack will assign the exported object to it. An appropriate name now might be `CKEDITOR`. This variable is defined in `webpack.config.js` in the `output.library` setting:
 
 ```diff
 // webpack.config.js
