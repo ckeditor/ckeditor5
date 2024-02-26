@@ -89,12 +89,13 @@ export default class AccessibilityHelpContentView extends View<HTMLDivElement> {
 	 * Creates `[<h4>Optional label</h4>]<dl>...</dl>` elements for each group of keystrokes in a category.
 	 */
 	private _createGroup( groupDefinition: KeystrokeInfoGroupDefinition ): Array<HTMLElement> {
+		const definitionAndDescriptionElements = groupDefinition.keystrokes
+			.sort( ( a, b ) => a.label.localeCompare( b.label ) )
+			.map( keystrokeDefinition => this._createGroupRow( keystrokeDefinition ) )
+			.flat();
+
 		const elements: Array<HTMLElement> = [
-			createElement( document, 'dl', {}, Array.from( groupDefinition.keystrokes )
-				.sort( ( a, b ) => a.label.localeCompare( b.label ) )
-				.map( keystrokeDefinition => this._createGroupRow( keystrokeDefinition ) )
-				.flat()
-			)
+			createElement( document, 'dl', {}, definitionAndDescriptionElements )
 		];
 
 		if ( groupDefinition.label ) {
