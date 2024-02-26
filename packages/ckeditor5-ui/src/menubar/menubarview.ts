@@ -111,7 +111,7 @@ export default class MenuBarView extends View implements FocusableView {
 	/**
 	 * Registers a menu view in the menu bar.
 	 */
-	public registerMenu( menuView: MenuBarMenuView, parentMenuView?: MenuBarMenuView ): void {
+	public registerMenu( menuView: MenuBarMenuView, parentMenuView: MenuBarMenuView | null = null ): void {
 		menuView.parentMenuView = parentMenuView;
 		menuView.menuBarView = this;
 

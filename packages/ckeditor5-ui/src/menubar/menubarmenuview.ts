@@ -72,12 +72,12 @@ export default class MenuBarMenuView extends View implements FocusableView {
 	/**
 	 * TODO
 	 */
-	declare public parentMenuView: MenuBarMenuView | undefined;
+	public parentMenuView: MenuBarMenuView | null = null;
 
 	/**
 	 * TODO
 	 */
-	declare public menuBarView: MenuBarView | undefined;
+	public menuBarView: MenuBarView | null = null;
 
 	/**
 	 * TODO
@@ -106,7 +106,6 @@ export default class MenuBarMenuView extends View implements FocusableView {
 		this.set( 'isEnabled', true );
 		this.set( 'panelPosition', 'w' );
 		this.set( 'class', undefined );
-		// this.set( 'ariaDescribedById', null );
 
 		this.setTemplate( {
 			tag: 'div',
@@ -119,7 +118,6 @@ export default class MenuBarMenuView extends View implements FocusableView {
 					bind.if( 'isEnabled', 'ck-disabled', value => !value ),
 					bind.if( 'parentMenuView', 'ck-menu-bar__menu_top-level', value => !value )
 				]
-				// 'aria-describedby': bind.to( 'ariaDescribedById' )
 			},
 
 			children: [

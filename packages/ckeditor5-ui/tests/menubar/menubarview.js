@@ -493,13 +493,13 @@ describe( 'MenuBarView', () => {
 			const menuViewA = new MenuBarMenuView( locale );
 			const menuViewAA = new MenuBarMenuView( locale );
 
-			expect( menuViewA.parentMenuView ).to.be.undefined;
-			expect( menuViewA.menuBarView ).to.be.undefined;
+			expect( menuViewA.parentMenuView ).to.be.null;
+			expect( menuViewA.menuBarView ).to.be.null;
 			expect( menuBarView.menus ).to.be.empty;
 
 			menuBarView.registerMenu( menuViewA );
 
-			expect( menuViewA.parentMenuView ).to.be.undefined;
+			expect( menuViewA.parentMenuView ).to.be.null;
 			expect( menuViewA.menuBarView ).to.equal( menuBarView );
 			expect( menuBarView.menus[ 0 ] ).to.equal( menuViewA );
 
