@@ -40,7 +40,8 @@ import ListSplitCommand from './listsplitcommand.js';
 import ListUtils from './listutils.js';
 
 import {
-	bogusParagraphCreator, createModelToViewPositionMapper,
+	bogusParagraphCreator,
+	createModelToViewPositionMapper,
 	listItemDowncastConverter,
 	listItemDowncastRemoveConverter,
 	listItemUpcastConverter,
@@ -673,9 +674,9 @@ export interface ItemMarkerDowncastStrategy {
 	canWrapElement?( modelElement: Element ): boolean;
 
 	/**
-	 * TODO description and better name
+	 * TODO description
 	 */
-	canInject?( modelElement: Element ): boolean;
+	canInjectMarkerIntoElement?( modelElement: Element ): boolean;
 }
 
 /**

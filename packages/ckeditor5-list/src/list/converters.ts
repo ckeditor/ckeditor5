@@ -479,7 +479,9 @@ export function createModelToViewPositionMapper(
 		}
 
 		if ( !strategies.some( strategy => (
-			strategy.scope == 'itemMarker' && strategy.canInject && strategy.canInject( positionParent )
+			strategy.scope == 'itemMarker' &&
+			strategy.canInjectMarkerIntoElement &&
+			strategy.canInjectMarkerIntoElement( positionParent )
 		) ) ) {
 			return;
 		}
@@ -572,7 +574,7 @@ function insertCustomMarkerElements(
 
 		writer.setCustomProperty( 'listItemMarker', true, markerElement );
 
-		if ( strategy.canInject && strategy.canInject( listItem ) ) {
+		if ( strategy.canInjectMarkerIntoElement && strategy.canInjectMarkerIntoElement( listItem ) ) {
 			writer.insert( writer.createPositionAt( viewElement, 0 ), markerElement );
 		} else {
 			writer.insert( viewRange.start, markerElement );
