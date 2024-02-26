@@ -33,6 +33,7 @@ export default class SelectAllEditing extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
+		const t = editor.t;
 		const view = editor.editing.view;
 		const viewDocument = view.document;
 
@@ -43,6 +44,16 @@ export default class SelectAllEditing extends Plugin {
 				editor.execute( 'selectAll' );
 				domEventData.preventDefault();
 			}
+		} );
+
+		// Add the information about the keystroke to the accessibility database.
+		editor.accessibility.addKeystrokeInfos( {
+			keystrokes: [
+				{
+					label: t( 'Select all' ),
+					keystroke: 'CTRL+A'
+				}
+			]
 		} );
 	}
 }

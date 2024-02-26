@@ -26,6 +26,22 @@ describe( 'UndoEditing', () => {
 		undo.destroy();
 	} );
 
+	it( 'should have a name', () => {
+		expect( UndoEditing.pluginName ).to.equal( 'UndoEditing' );
+	} );
+
+	it( 'should add keystroke accessibility info', () => {
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
+			label: 'Undo',
+			keystroke: 'CTRL+Z'
+		} );
+
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
+			label: 'Redo',
+			keystroke: [ [ 'CTRL+Y' ], [ 'CTRL+SHIFT+Z' ] ]
+		} );
+	} );
+
 	it( 'should register undo command and redo command', () => {
 		expect( editor.commands.get( 'undo' ) ).to.equal( undo._undoCommand );
 		expect( editor.commands.get( 'redo' ) ).to.equal( undo._redoCommand );

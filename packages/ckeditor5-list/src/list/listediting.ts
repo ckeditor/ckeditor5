@@ -177,6 +177,7 @@ export default class ListEditing extends Plugin {
 		this._setupEnterIntegration();
 		this._setupTabIntegration();
 		this._setupClipboardIntegration();
+		this._setupAccessibilityIntegration();
 	}
 
 	/**
@@ -596,6 +597,29 @@ export default class ListEditing extends Plugin {
 					}
 				}
 			} );
+		} );
+	}
+
+	/**
+	 * Informs editor accessibility features about keystrokes brought by the plugin.
+	 */
+	private _setupAccessibilityIntegration() {
+		const editor = this.editor;
+		const t = editor.t;
+
+		editor.accessibility.addKeystrokeInfoGroup( {
+			id: 'list',
+			label: t( 'Keystrokes that can be used in a list' ),
+			keystrokes: [
+				{
+					label: t( 'Increase list item indent' ),
+					keystroke: 'Tab'
+				},
+				{
+					label: t( 'Decrease list item indent' ),
+					keystroke: 'Shift+Tab'
+				}
+			]
 		} );
 	}
 }
