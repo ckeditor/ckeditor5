@@ -9,10 +9,10 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import Clipboard from '../../src/clipboard.js';
+import Clipboard from '../src/clipboard.js';
 
-describe( 'Insert and collect fake markers', () => {
-	let editor, model, modelRoot, element, viewDocument, clipboardPipeline;
+describe( 'Clipboard Markers Utils', () => {
+	let editor, model, modelRoot, element, viewDocument, clipboardMarkersUtils;
 
 	testUtils.createSinonSandbox();
 
@@ -21,12 +21,6 @@ describe( 'Insert and collect fake markers', () => {
 		document.body.appendChild( element );
 
 		await createEditor();
-
-		clipboardPipeline.on(
-			'contentInsertion',
-			( evt, clipboardData ) => updateCopiedMarkersIds( clipboardData.content.markers ),
-			{ priority: 'highest' }
-		);
 	} );
 
 	afterEach( async () => {
@@ -241,7 +235,11 @@ describe( 'Insert and collect fake markers', () => {
 		model = editor.model;
 		modelRoot = model.document.getRoot();
 		viewDocument = editor.editing.view.document;
-		clipboardPipeline = editor.plugins.get( 'ClipboardPipeline' );
+
+		clipboardMarkersUtils = editor.plugins.get( 'ClipboardMarkersUtils' );
+		clipboardMarkersUtils._registerMarkerToCopy( 'comment', [ 'copy', 'cut' ] );
+
+		sinon.stub( clipboardMarkersUtils, '_genUniqMarkerName' ).callsFake( markerName => `${ markerName }:pasted` );
 
 		editor.conversion.for( 'downcast' ).markerToData( {
 			model: 'comment'
@@ -265,16 +263,6 @@ describe( 'Insert and collect fake markers', () => {
 
 			writer.addMarker( name, { usingOperation: false, affectsData: true, range } );
 		} );
-	}
-
-	function updateCopiedMarkersIds( markers ) {
-		const markersToCheck = Array.from( markers );
-
-		markers.clear();
-
-		for ( const [ name, range ] of markersToCheck ) {
-			markers.set( `${ name }:pasted`, range );
-		}
 	}
 
 	function checkMarker( name, range ) {
