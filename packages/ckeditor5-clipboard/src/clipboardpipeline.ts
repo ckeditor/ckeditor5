@@ -196,6 +196,7 @@ export default class ClipboardPipeline extends Plugin {
 		const model = editor.model;
 		const view = editor.editing.view;
 		const viewDocument = view.document;
+		const clipboardMarkersUtils: ClipboardMarkersUtils = this.editor.plugins.get( 'ClipboardMarkersUtils' );
 
 		// Pasting is disabled when selection is in non-editable place.
 		// Dropping is disabled in drag and drop handler.
@@ -272,6 +273,10 @@ export default class ClipboardPipeline extends Plugin {
 				} );
 			} );
 		}, { priority: 'low' } );
+
+		this.listenTo<ClipboardContentInsertionEvent>( this, 'contentInsertion', ( evt, data ) => {
+			clipboardMarkersUtils._setUniqueMarkerNamesInFragment( data.content );
+		}, { priority: 'highest' } );
 
 		this.listenTo<ClipboardContentInsertionEvent>( this, 'contentInsertion', ( evt, data ) => {
 			data.resultRange = model.insertContent( data.content );

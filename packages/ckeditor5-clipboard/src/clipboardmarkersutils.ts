@@ -32,7 +32,7 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 *
 	 * @internal
 	 */
-	private _markersToCopy: Map<string | symbol, Array<ClipboardMarkerAction>> = new Map();
+	private _markersToCopy: Map<string, Array<ClipboardMarkerAction>> = new Map();
 
 	/**
 	 * @inheritDoc
@@ -42,26 +42,27 @@ export default class ClipboardMarkersUtils extends Plugin {
 	}
 
 	/**
-	 * In some situations we have to perform copy on selected fragment with certain markers.
-	 * This function allows to temporary bypass restrictions on markers that we want to copy.
+	 * In some situations we have to perform copy on selected fragment with certain markers. This function allows to temporarily bypass
+	 * restrictions on markers that we want to copy.
 	 *
-	 * @param action Forced action on markers.
+	 * This function executes `executor()` callback. For the duration of the callback, if the clipboard pipeline is used to copy
+	 * content, markers with the specified name will be copied to the clipboard as well.
+	 *
+	 * @param markerName Which markers should be copied.
 	 * @param executor Callback executed.
 	 * @internal
 	 */
-	public _temporaryDisableActionRestrictionsOnMarkers( action: ClipboardMarkerAction, executor: VoidFunction ): void {
-		const markersToRevert = new Map( this._markersToCopy );
+	public _forceMarkersCopy( markerName: string, executor: VoidFunction ): void {
+		const before = this._markersToCopy.get( markerName );
 
-		for ( const marker of this._markersToCopy.keys() ) {
-			this._markersToCopy.set( marker, [ action ] );
-		}
+		this._markersToCopy.set( markerName, [ 'copy', 'cut', 'dragstart' ] );
 
-		try {
-			executor();
-		} finally {
-			for ( const marker of this._markersToCopy.keys() ) {
-				this._markersToCopy.set( marker, markersToRevert.get( marker )! );
-			}
+		executor();
+
+		if ( before ) {
+			this._markersToCopy.set( markerName, before );
+		} else {
+			this._markersToCopy.delete( markerName );
 		}
 	}
 
@@ -125,6 +126,22 @@ export default class ClipboardMarkersUtils extends Plugin {
 	}
 
 	/**
+	 * Changes marker names for markers stored in given document fragment so that they are unique.
+	 *
+	 * @param fragment
+	 * @internal
+	 */
+	public _setUniqueMarkerNamesInFragment( fragment: DocumentFragment ) {
+		const markers = Array.from( fragment.markers );
+
+		fragment.markers.clear();
+
+		for ( const [ name, range ] of markers ) {
+			fragment.markers.set( this._getUniqueMarkerName( name ), range );
+		}
+	}
+
+	/**
 	 * First step of copying markers. It looks for markers intersecting with given selection and inserts `$marker` elements
 	 * at positions where document markers start or end. This way `$marker` elements can be easily copied together with
 	 * the rest of the content of the selection.
@@ -159,7 +176,7 @@ export default class ClipboardMarkersUtils extends Plugin {
 		const fakeMarkersRangesInsideRange = this._removeFakeMarkersInsideElement( writer, fragment );
 
 		for ( const [ marker, range ] of Object.entries( fakeMarkersRangesInsideRange ) ) {
-			fragment.markers.set( this._genUniqMarkerName( marker ), range );
+			fragment.markers.set( marker, range );
 		}
 
 		// <fake-marker> [Foo] Bar</fake-marker>
@@ -170,10 +187,7 @@ export default class ClipboardMarkersUtils extends Plugin {
 				continue;
 			}
 
-			fragment.markers.set(
-				this._genUniqMarkerName( marker.name ),
-				writer.createRangeIn( fragment )
-			);
+			fragment.markers.set( marker.name, writer.createRangeIn( fragment ) );
 		}
 	}
 
@@ -292,6 +306,7 @@ export default class ClipboardMarkersUtils extends Plugin {
 				writer.remove( endElement );
 
 				acc[ markerName ] = new Range( startPosition, endPosition );
+
 				return acc;
 			}, {} );
 	}
@@ -326,7 +341,7 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 *
 	 * @param name Name of marker
 	 */
-	private _genUniqMarkerName( name: string ) {
+	private _getUniqueMarkerName( name: string ) {
 		const parts = name.split( ':' );
 		const newId = uid();
 

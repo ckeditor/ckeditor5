@@ -12,7 +12,7 @@ import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-util
 import Clipboard from '../src/clipboard.js';
 
 describe( 'Clipboard Markers Utils', () => {
-	let editor, model, modelRoot, element, viewDocument, clipboardMarkersUtils, genUniqMarkerNameStub;
+	let editor, model, modelRoot, element, viewDocument, clipboardMarkersUtils, getUniqueMarkerNameStub;
 
 	testUtils.createSinonSandbox();
 
@@ -239,12 +239,12 @@ describe( 'Clipboard Markers Utils', () => {
 		} );
 	} );
 
-	describe( '_genUniqMarkerName', () => {
+	describe( '_getUniqueMarkerName', () => {
 		it( 'replaces only ID part of three segmented marker name', () => {
-			genUniqMarkerNameStub.restore();
+			getUniqueMarkerNameStub.restore();
 
-			const firstResult = clipboardMarkersUtils._genUniqMarkerName( 'comment:thread:123123' );
-			const secondResult = clipboardMarkersUtils._genUniqMarkerName( 'comment:thread:123123' );
+			const firstResult = clipboardMarkersUtils._getUniqueMarkerName( 'comment:thread:123123' );
+			const secondResult = clipboardMarkersUtils._getUniqueMarkerName( 'comment:thread:123123' );
 
 			expect( firstResult.startsWith( 'comment:thread:' ) ).to.be.true;
 			expect( firstResult ).not.to.eq( 'comment:thread:123123' );
@@ -253,10 +253,10 @@ describe( 'Clipboard Markers Utils', () => {
 		} );
 
 		it( 'replaces only ID part of two segmented marker name', () => {
-			genUniqMarkerNameStub.restore();
+			getUniqueMarkerNameStub.restore();
 
-			const firstResult = clipboardMarkersUtils._genUniqMarkerName( 'comment:thread' );
-			const secondResult = clipboardMarkersUtils._genUniqMarkerName( 'comment:thread' );
+			const firstResult = clipboardMarkersUtils._getUniqueMarkerName( 'comment:thread' );
+			const secondResult = clipboardMarkersUtils._getUniqueMarkerName( 'comment:thread' );
 
 			expect( firstResult.startsWith( 'comment:thread' ) ).to.be.true;
 			expect( firstResult ).not.to.eq( 'comment:thread' );
@@ -292,8 +292,8 @@ describe( 'Clipboard Markers Utils', () => {
 			expect( data.dataTransfer.getData( 'text/html' ) ).to.equal( 'Foo Bar Test' );
 		} );
 
-		it( 'should be possible to copy and paste with temporary disabled restrictions ', () => {
-			clipboardMarkersUtils._temporaryDisableActionRestrictionsOnMarkers( 'copy', () => {
+		it( 'should be possible to force markers copy', () => {
+			clipboardMarkersUtils._forceMarkersCopy( 'comment', () => {
 				setModelData(
 					model,
 					wrapWithTag( 'paragraph', 'Start' ) +
@@ -332,6 +332,47 @@ describe( 'Clipboard Markers Utils', () => {
 				) );
 			} );
 		} );
+
+		it( 'should be possible to force markers copy #2 - unregistered marker', () => {
+			clipboardMarkersUtils._forceMarkersCopy( 'new', () => {
+				setModelData(
+					model,
+					wrapWithTag( 'paragraph', 'Start' ) +
+					wrapWithTag( 'paragraph', 'Foo Bar Test' ) +
+					wrapWithTag( 'paragraph', 'End' )
+				);
+
+				appendMarker( 'new:test', { start: [ 0 ], end: [ 3 ] } );
+				model.change( writer => {
+					writer.setSelection(
+						writer.createRangeOn( editor.model.document.getRoot().getChild( 1 ) ),
+						0
+					);
+				} );
+
+				const data = {
+					dataTransfer: createDataTransfer(),
+					preventDefault: () => {},
+					stopPropagation: () => {}
+				};
+
+				viewDocument.fire( 'copy', data );
+
+				model.change( writer => {
+					writer.setSelection(
+						writer.createRangeIn( editor.model.document.getRoot().getChild( 2 ) ),
+						0
+					);
+				} );
+
+				viewDocument.fire( 'paste', data );
+
+				checkMarker( 'new:test:pasted', model.createRange(
+					model.createPositionFromPath( modelRoot, [ 2, 0 ] ),
+					model.createPositionFromPath( modelRoot, [ 2, 12 ] )
+				) );
+			} );
+		} );
 	} );
 
 	async function createEditor() {
@@ -346,8 +387,8 @@ describe( 'Clipboard Markers Utils', () => {
 		clipboardMarkersUtils = editor.plugins.get( 'ClipboardMarkersUtils' );
 		clipboardMarkersUtils._registerMarkerToCopy( 'comment', [ ] );
 
-		genUniqMarkerNameStub = sinon
-			.stub( clipboardMarkersUtils, '_genUniqMarkerName' )
+		getUniqueMarkerNameStub = sinon
+			.stub( clipboardMarkersUtils, '_getUniqueMarkerName' )
 			.callsFake( markerName => `${ markerName }:pasted` );
 
 		editor.conversion.for( 'downcast' ).markerToData( {
@@ -356,6 +397,14 @@ describe( 'Clipboard Markers Utils', () => {
 
 		editor.conversion.for( 'upcast' ).dataToMarker( {
 			view: 'comment'
+		} );
+
+		editor.conversion.for( 'downcast' ).markerToData( {
+			model: 'new'
+		} );
+
+		editor.conversion.for( 'upcast' ).dataToMarker( {
+			view: 'new'
 		} );
 	}
 
