@@ -858,15 +858,15 @@ describe( 'MenuBarView utils', () => {
 			describe( 'openOnArrowRightKey()', () => {
 				it( 'should open the menu upon arrow right key press', () => {
 					const menuA = getMenuByLabel( menuBarView, 'A' );
-
-					menuA.isOpen = true;
-
-					const menuAA = getMenuByLabel( menuBarView, 'AA' );
 					const keyEvtData = {
 						keyCode: keyCodes.arrowright,
 						preventDefault: sinon.spy(),
 						stopPropagation: sinon.spy()
 					};
+
+					menuA.isOpen = true;
+
+					const menuAA = getMenuByLabel( menuBarView, 'AA' );
 
 					menuAA.buttonView.focus();
 					menuAA.keystrokes.press( keyEvtData );
@@ -884,6 +884,77 @@ describe( 'MenuBarView utils', () => {
 							}
 						]
 					);
+
+					sinon.assert.calledOnce( keyEvtData.preventDefault );
+					sinon.assert.calledOnce( keyEvtData.stopPropagation );
+				} );
+
+				it( 'should focus the already open menu\'s panel upon arrow right key press', () => {
+					const menuA = getMenuByLabel( menuBarView, 'A' );
+					const keyEvtData = {
+						keyCode: keyCodes.arrowright,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+
+					menuA.isOpen = true;
+
+					const menuAA = getMenuByLabel( menuBarView, 'AA' );
+
+					menuAA.isOpen = true;
+
+					menuAA.buttonView.focus();
+					menuAA.keystrokes.press( keyEvtData );
+
+					expect( barDump( menuBarView ) ).to.deep.equal(
+						[
+							{
+								label: 'A', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'A#1', isFocused: false },
+									{ label: 'AA', isFocused: false, isOpen: true, items: [
+										{ label: 'AA#1', isFocused: true }
+									] }
+								]
+							}
+						]
+					);
+
+					sinon.assert.calledOnce( keyEvtData.preventDefault );
+					sinon.assert.calledOnce( keyEvtData.stopPropagation );
+				} );
+
+				it( 'should work only when the menu\'s button is focused', async () => {
+					const menuA = getMenuByLabel( menuBarView, 'A' );
+					const keyEvtData = {
+						keyCode: keyCodes.arrowright,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+
+					menuA.isOpen = true;
+
+					const menuAA = getMenuByLabel( menuBarView, 'AA' );
+
+					menuAA.isOpen = true;
+					menuAA.panelView.focus();
+
+					expect( barDump( menuBarView ) ).to.deep.equal(
+						[
+							{
+								label: 'A', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'A#1', isFocused: false },
+									{ label: 'AA', isFocused: false, isOpen: true, items: [
+										{ label: 'AA#1', isFocused: true }
+									] }
+								]
+							}
+						]
+					);
+
+					sinon.assert.notCalled( keyEvtData.preventDefault );
+					sinon.assert.notCalled( keyEvtData.stopPropagation );
 				} );
 			} );
 

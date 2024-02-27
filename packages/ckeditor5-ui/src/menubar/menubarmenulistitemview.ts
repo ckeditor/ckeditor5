@@ -18,11 +18,6 @@ export default class MenuBarMenuListItemView extends ListItemView {
 	/**
 	 * TODO
 	 */
-	public parentMenuView?: MenuBarMenuView;
-
-	/**
-	 * TODO
-	 */
 	constructor( locale: Locale, parentMenuView: MenuBarMenuView ) {
 		super( locale );
 

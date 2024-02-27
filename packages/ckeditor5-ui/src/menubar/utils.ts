@@ -59,6 +59,7 @@ export const MenuBarBehaviors = {
 	 */
 	focusCycleMenusOnArrows( menuBarView: MenuBarView ): void {
 		menuBarView.on<MenuBarSubMenuArrowRightEvent>( 'submenu:arrowright', evt => {
+			console.log( 'sub:right' );
 			cycleTopLevelMenus( evt.source as MenuBarMenuView, 1 );
 		} );
 
@@ -162,16 +163,18 @@ export const MenuBarMenuBehaviors = {
 	openOnArrowRightKey( menuView: MenuBarMenuView ): void {
 		// TODO: RTL support.
 		menuView.keystrokes.set( 'arrowright', ( data, cancel ) => {
-			// if ( menuView.focusTracker.focusedElement !== menuView.buttonView.element ) {
-			// 	return;
-			// }
+			if ( menuView.focusTracker.focusedElement !== menuView.buttonView.element ) {
+				return;
+			}
+
+			console.log( '[BEHAVIOR] openOnArrowRightKey(): Opening', logMenu( menuView ) );
 
 			if ( !menuView.isOpen ) {
-				console.log( '[BEHAVIOR] openOnArrowRightKey(): Opening', logMenu( menuView ) );
 				menuView.isOpen = true;
-				menuView.panelView.focus();
-				cancel();
 			}
+
+			menuView.panelView.focus();
+			cancel();
 		} );
 	},
 
