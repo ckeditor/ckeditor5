@@ -39,12 +39,15 @@ export const MenuBarBehaviors = {
 			}
 
 			for ( const menuView of menuBarView.menus ) {
-				const wasOpen = menuView.isOpen;
+				// @if CK_DEBUG_MENU_BAR // const wasOpen = menuView.isOpen;
+
 				menuView.isOpen = evt.path.includes( menuView );
 
-				if ( wasOpen !== menuView.isOpen ) {
-					console.log( '[BEHAVIOR] toggleMenusAndFocusItemsOnHover(): Toggle', logMenu( menuView ), 'isOpen', menuView.isOpen );
-				}
+				// @if CK_DEBUG_MENU_BAR // if ( wasOpen !== menuView.isOpen ) {
+				// @if CK_DEBUG_MENU_BAR // console.log( '[BEHAVIOR] toggleMenusAndFocusItemsOnHover(): Toggle',
+				// @if CK_DEBUG_MENU_BAR // 	logMenu( menuView ), 'isOpen', menuView.isOpen
+				// @if CK_DEBUG_MENU_BAR // );
+				// @if CK_DEBUG_MENU_BAR // }
 			}
 
 			( evt.source as FocusableView ).focus();
@@ -92,7 +95,7 @@ export const MenuBarBehaviors = {
 				menuBarView.menus.forEach( menuView => {
 					menuView.isOpen = false;
 
-					console.log( '[BEHAVIOR] closeMenusWhenTheBarCloses(): Closing', logMenu( menuView ) );
+					// @if CK_DEBUG_MENU_BAR // console.log( '[BEHAVIOR] closeMenusWhenTheBarCloses(): Closing', logMenu( menuView ) );
 				} );
 			}
 		} );
@@ -116,7 +119,7 @@ export const MenuBarBehaviors = {
 					} ).forEach( menuView => {
 						menuView.isOpen = false;
 
-						console.log( '[BEHAVIOR] closeMenuWhenAnotherOpens(): Closing', logMenu( menuView ) );
+						// @if CK_DEBUG_MENU_BAR // console.log( '[BEHAVIOR] closeMenuWhenAnotherOpens(): Closing', logMenu( menuView ) );
 					} );
 			}
 		} );
@@ -166,7 +169,7 @@ export const MenuBarMenuBehaviors = {
 				return;
 			}
 
-			console.log( '[BEHAVIOR] openOnArrowRightKey(): Opening', logMenu( menuView ) );
+			// @if CK_DEBUG_MENU_BAR // console.log( '[BEHAVIOR] openOnArrowRightKey(): Opening', logMenu( menuView ) );
 
 			if ( !menuView.isOpen ) {
 				menuView.isOpen = true;
@@ -233,16 +236,17 @@ export const MenuBarMenuBehaviors = {
 	closeOnParentClose( menuView: MenuBarMenuView ): void {
 		menuView.parentMenuView!.on<ObservableChangeEvent<boolean>>( 'change:isOpen', ( evt, name, isOpen ) => {
 			if ( !isOpen && evt.source === menuView.parentMenuView ) {
-				console.log( '[BEHAVIOR] closeOnParentClose(): Closing', logMenu( menuView ) );
+				// @if CK_DEBUG_MENU_BAR // console.log( '[BEHAVIOR] closeOnParentClose(): Closing', logMenu( menuView ) );
+
 				menuView.isOpen = false;
 			}
 		} );
 	}
 };
 
-function logMenu( menuView: MenuBarMenuView ) {
-	return `"${ menuView.buttonView.label }"`;
-}
+// @if CK_DEBUG_MENU_BAR // function logMenu( menuView: MenuBarMenuView ) {
+// @if CK_DEBUG_MENU_BAR //	return `"${ menuView.buttonView.label }"`;
+// @if CK_DEBUG_MENU_BAR // }
 
 /**
  * Contains every positioning function used by {@link module:ui/menubar/menubarmenuview~MenuBarMenuView} that decides where the
