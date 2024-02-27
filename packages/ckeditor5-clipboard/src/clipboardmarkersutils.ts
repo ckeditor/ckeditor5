@@ -2,6 +2,7 @@
  * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
+import { clone } from 'lodash-es';
 
 import { uid } from '@ckeditor/ckeditor5-utils';
 import { Plugin } from '@ckeditor/ckeditor5-core';
@@ -35,6 +36,30 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 */
 	public static get pluginName() {
 		return 'ClipboardMarkersUtils' as const;
+	}
+
+	/**
+	 * In some situations we have to perform copy on selected fragment with certain markers.
+	 * This function allows to temporary bypass restrictions on markers that we want to copy.
+	 *
+	 * @param action Forced action on markers.
+	 * @param executor Callback executed.
+	 * @internal
+	 */
+	public _temporaryDisableActionRestrictionsOnMarkers( action: ClipboardMarkerAction, executor: VoidFunction ): void {
+		const markersToRevert = new Map( clone( this._markersToCopy.entries() ) );
+
+		for ( const marker of this._markersToCopy.keys() ) {
+			this._markersToCopy.set( marker, [ action ] );
+		}
+
+		try {
+			executor();
+		} finally {
+			for ( const marker of this._markersToCopy.keys() ) {
+				this._markersToCopy.set( marker, markersToRevert.get( marker )! );
+			}
+		}
 	}
 
 	/**
