@@ -10,15 +10,6 @@
 import type { ArrayOrItem } from 'ckeditor5/src/utils.js';
 
 /**
- * @internal
- */
-export const DEFAULT_LINK_PROTOCOLS = [
-	'https?',
-	'ftps?',
-	'mailto'
-];
-
-/**
  * The configuration of the {@link module:link/link~Link link feature}.
  *
  * ```ts

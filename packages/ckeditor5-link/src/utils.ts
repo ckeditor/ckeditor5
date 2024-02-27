@@ -39,6 +39,12 @@ const EMAIL_REG_EXP = /^[\S]+@((?![-_])(?:[-\w\u00a1-\uffff]{0,63}[^-_]\.))+(?:[
 // or non-word characters at the beginning of the link ('/', '#' etc.).
 const PROTOCOL_REG_EXP = /^((\w+:(\/{2,})?)|(\W))/i;
 
+const DEFAULT_LINK_PROTOCOLS = [
+	'https?',
+	'ftps?',
+	'mailto'
+];
+
 /**
  * A keystroke used by the {@link module:link/linkui~LinkUI link UI feature}.
  */
