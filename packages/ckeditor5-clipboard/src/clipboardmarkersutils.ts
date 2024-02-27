@@ -3,7 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import { uid } from '@ckeditor/ckeditor5-utils';
 import { Plugin } from '@ckeditor/ckeditor5-core';
+
 import {
 	Range,
 	type Marker,
@@ -13,7 +15,6 @@ import {
 	type Selection,
 	type Writer
 } from '@ckeditor/ckeditor5-engine';
-import { uid } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Part of the clipboard logic. Responsible for collecting markers from selected fragments
@@ -122,7 +123,7 @@ export default class ClipboardMarkersUtils extends Plugin {
 		const fakeMarkersRangesInsideRange = this._removeFakeMarkersInsideElement( writer, fragment );
 
 		for ( const [ marker, range ] of Object.entries( fakeMarkersRangesInsideRange ) ) {
-			fragment.markers.set( marker, range );
+			fragment.markers.set( this._genUniqMarkerName( marker ), range );
 		}
 
 		// <fake-marker>[ Foo ]</fake-marker>
@@ -133,7 +134,10 @@ export default class ClipboardMarkersUtils extends Plugin {
 				continue;
 			}
 
-			fragment.markers.set( marker.name, writer.createRangeIn( fragment ) );
+			fragment.markers.set(
+				this._genUniqMarkerName( marker.name ),
+				writer.createRangeIn( fragment )
+			);
 		}
 	}
 
@@ -175,7 +179,7 @@ export default class ClipboardMarkersUtils extends Plugin {
 
 		for ( const { position, marker, type } of sortedMarkers ) {
 			const fakeMarker = writer.createElement( '$marker', {
-				'data-name': this._genUniqMarkerName( marker.name ),
+				'data-name': marker.name,
 				'data-type': type
 			} );
 
