@@ -52,7 +52,7 @@ export default class UnderlineUI extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Creates a button for underline command to use either in toolbar or in menu bar.
 	 */
 	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
 		const editor = this.editor;

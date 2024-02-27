@@ -14,16 +14,16 @@ import type { Locale } from '@ckeditor/ckeditor5-utils';
 import dropdownArrowIcon from '../../theme/icons/dropdown-arrow.svg';
 
 /**
- * TODO
+ * Class for menu bar button view.
  */
 export default class MenuBarMenuButtonView extends ButtonView {
 	/**
-	 * TODO
+	 * Arrow icon view for expanding nested menu.
 	 */
 	public readonly arrowView: IconView;
 
 	/**
-	 * TODO
+	 * @inheritDoc
 	 */
 	constructor( locale: Locale ) {
 		super( locale );

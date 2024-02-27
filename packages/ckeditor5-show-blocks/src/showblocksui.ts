@@ -50,7 +50,7 @@ export default class ShowBlocksUI extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Creates a button for show blocks command to use either in toolbar or in menu bar.
 	 */
 	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
 		const editor = this.editor;
