@@ -23,7 +23,7 @@ import type { ButtonExecuteEvent } from '../button/button.js';
 const NESTED_PANEL_HORIZONTAL_OFFSET = 5;
 
 /**
- * Behaviors of the {@link TODO~MenuBarView} component.
+ * Behaviors of the {@link module:ui/menubar/menubarview~MenuBarView} component.
  */
 export const MenuBarBehaviors = {
 	/**
@@ -137,7 +137,7 @@ export const MenuBarBehaviors = {
 };
 
 /**
- * Behaviors of the {@link TODO~MenuBarMenuView} component.
+ * Behaviors of the {@link module:ui/menubar/menubarmenuview~MenuBarMenuView} component.
  */
 export const MenuBarMenuBehaviors = {
 	/**
@@ -246,8 +246,8 @@ function logMenu( menuView: MenuBarMenuView ) {
 }
 
 /**
- * Contains every positioning function used by {@link TODO~MenuBarMenuView} that decides where the
- * {@link TODO~MenuBarMenuView#panelView} should be placed.
+ * Contains every positioning function used by {@link module:ui/menubar/menubarmenuview~MenuBarMenuView} that decides where the
+ * {@link module:ui/menubar/menubarmenuview~MenuBarMenuView#panelView} should be placed.
  */
 export const MenuBarMenuViewPanelPositioningFunctions: Record<string, PositioningFunction> = {
 	southEast: buttonRect => {

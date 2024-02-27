@@ -12,11 +12,16 @@ import ListItemView from '../list/listitemview.js';
 import type MenuBarMenuView from './menubarmenuview.js';
 
 /**
- * TODO
+ * A menu bar list item view, a child of {@link module:ui/menubar/menubarmenulistview~MenuBarMenuListView}.
+ *
+ * Populate this item with a {@link module:ui/menubar/menubarmenulistitembuttonview~MenuBarMenuListItemButtonView} instance
+ * or a {@link module:ui/menubar/menubarmenuview~MenuBarMenuView} instance to create a sub-menu.
  */
 export default class MenuBarMenuListItemView extends ListItemView {
 	/**
-	 * TODO
+	 * Creates an instance of the list item view.
+	 *
+	 * @param locale The localization services instance.
 	 */
 	constructor( locale: Locale, parentMenuView: MenuBarMenuView ) {
 		super( locale );

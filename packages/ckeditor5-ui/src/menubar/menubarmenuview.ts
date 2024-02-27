@@ -35,7 +35,7 @@ export default class MenuBarMenuView extends View implements FocusableView {
 	public readonly buttonView: MenuBarMenuButtonView;
 
 	/**
-	 * Panel of the menu. It hosts {@link #children child views} of the menu.
+	 * Panel of the menu. It hosts children of the menu.
 	 */
 	public readonly panelView: MenuBarMenuPanelView;
 

@@ -58,10 +58,10 @@ describe( 'MenuBarMenuPanelView', () => {
 				panelView.render();
 
 				panelView.position = 'sw';
-				expect( panelView.element.classList.contains( 'ck-menu-bar__menu__panel_sw' ) ).to.be.true;
+				expect( panelView.element.classList.contains( 'ck-menu-bar__menu__panel_position_sw' ) ).to.be.true;
 
 				panelView.position = 'se';
-				expect( panelView.element.classList.contains( 'ck-menu-bar__menu__panel_se' ) ).to.be.true;
+				expect( panelView.element.classList.contains( 'ck-menu-bar__menu__panel_position_se' ) ).to.be.true;
 			} );
 
 			it( 'should have #isVisible bound to a CSS class', () => {

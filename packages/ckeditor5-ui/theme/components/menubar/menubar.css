@@ -26,50 +26,50 @@
 		max-width: var(--ck-menu-bar-menu-max-width);
 		position: absolute;
 
-		&.ck-menu-bar__menu__panel_ne,
-		&.ck-menu-bar__menu__panel_nw{
+		&.ck-menu-bar__menu__panel_position_ne,
+		&.ck-menu-bar__menu__panel_position_nw{
 			bottom: 100%;
 		}
 
-		&.ck-menu-bar__menu__panel_se,
-		&.ck-menu-bar__menu__panel_sw {
+		&.ck-menu-bar__menu__panel_position_se,
+		&.ck-menu-bar__menu__panel_position_sw {
 			top: 100%;
 			bottom: auto;
 		}
 
-		&.ck-menu-bar__menu__panel_ne,
-		&.ck-menu-bar__menu__panel_se {
+		&.ck-menu-bar__menu__panel_position_ne,
+		&.ck-menu-bar__menu__panel_position_se {
 			left: 0px;
 		}
 
-		&.ck-menu-bar__menu__panel_nw,
-		&.ck-menu-bar__menu__panel_sw {
+		&.ck-menu-bar__menu__panel_position_nw,
+		&.ck-menu-bar__menu__panel_position_sw {
 			right: 0px;
 		}
 
-		&.ck-menu-bar__menu__panel_es,
-		&.ck-menu-bar__menu__panel_en {
+		&.ck-menu-bar__menu__panel_position_es,
+		&.ck-menu-bar__menu__panel_position_en {
 			left: calc( 100% - var(--ck-menu-bar-nested-menu-horizontal-offset) );
 		}
 
-		&.ck-menu-bar__menu__panel_es {
+		&.ck-menu-bar__menu__panel_position_es {
 			top: 0px;
 		}
 
-		&.ck-menu-bar__menu__panel_en {
+		&.ck-menu-bar__menu__panel_position_en {
 			bottom: 0px;
 		}
 
-		&.ck-menu-bar__menu__panel_ws,
-		&.ck-menu-bar__menu__panel_wn {
+		&.ck-menu-bar__menu__panel_position_ws,
+		&.ck-menu-bar__menu__panel_position_wn {
 			left: calc( -100% + var(--ck-menu-bar-nested-menu-horizontal-offset) );
 		}
 
-		&.ck-menu-bar__menu__panel_ws {
+		&.ck-menu-bar__menu__panel_position_ws {
 			top: 0px;
 		}
 
-		&.ck-menu-bar__menu__panel_wn {
+		&.ck-menu-bar__menu__panel_position_wn {
 			bottom: 0px;
 		}
 	}

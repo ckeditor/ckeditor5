@@ -145,23 +145,23 @@
 		max-width: var(--ck-menu-bar-menu-panel-max-width);
 
 		/* Corner border radius consistent with the button. */
-		&.ck-menu-bar__menu__panel_es,
-		&.ck-menu-bar__menu__panel_se {
+		&.ck-menu-bar__menu__panel_position_es,
+		&.ck-menu-bar__menu__panel_position_se {
 			border-top-left-radius: 0;
 		}
 
-		&.ck-menu-bar__menu__panel_ws,
-		&.ck-menu-bar__menu__panel_sw {
+		&.ck-menu-bar__menu__panel_position_ws,
+		&.ck-menu-bar__menu__panel_position_sw {
 			border-top-right-radius: 0;
 		}
 
-		&.ck-menu-bar__menu__panel_en,
-		&.ck-menu-bar__menu__panel_ne {
+		&.ck-menu-bar__menu__panel_position_en,
+		&.ck-menu-bar__menu__panel_position_ne {
 			border-bottom-left-radius: 0;
 		}
 
-		&.ck-menu-bar__menu__panel_wn,
-		&.ck-menu-bar__menu__panel_nw {
+		&.ck-menu-bar__menu__panel_position_wn,
+		&.ck-menu-bar__menu__panel_position_nw {
 			border-bottom-right-radius: 0;
 		}
 
