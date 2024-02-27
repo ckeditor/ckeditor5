@@ -22,6 +22,7 @@
     "@ckeditor/ckeditor5-paragraph": "41.1.0",
     "@ckeditor/ckeditor5-utils": "41.1.0",
     "@ckeditor/ckeditor5-track-changes": "41.1.0",
+    "@ckeditor/ckeditor5-clipboard": "41.1.0",
     "ckeditor5": "41.1.0",
     "typescript": "5.0.4"
   },

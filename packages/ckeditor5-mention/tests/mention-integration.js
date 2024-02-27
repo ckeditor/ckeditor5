@@ -221,7 +221,7 @@ describe( 'Mention feature - integration', () => {
 		beforeEach( () => {
 			return ClassicTestEditor
 				.create( div, {
-					plugins: [ Paragraph, Table, TableToolbar, Mention ],
+					plugins: [ Paragraph, Table, TableToolbar, Mention, ClipboardPipeline ],
 					table: {
 						contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 					},
@@ -339,7 +339,7 @@ describe( 'Mention feature - integration', () => {
 		beforeEach( () => {
 			return ClassicTestEditor
 				.create( div, {
-					plugins: [ Paragraph, Table, Mention ],
+					plugins: [ Paragraph, Table, Mention, ClipboardPipeline ],
 					mention: {
 						feeds: [
 							{

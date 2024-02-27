@@ -17,6 +17,8 @@ export { default as Context, type ContextConfig } from './context.js';
 export { default as ContextPlugin, type ContextPluginDependencies } from './contextplugin.js';
 export { type EditingKeystrokeCallback } from './editingkeystrokehandler.js';
 
+export * from './typings.js';
+
 export { default as Editor, type EditorReadyEvent, type EditorDestroyEvent } from './editor/editor.js';
 export type {
 	EditorConfig,
