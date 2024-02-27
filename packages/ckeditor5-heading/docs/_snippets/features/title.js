@@ -118,7 +118,7 @@ BalloonEditor
 			}
 		},
 		ckbox: {
-			allowExternalImagesEditing: [ /^data:/, 'origin' ]
+			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ]
 		},
 		blockToolbar: [
 			'bulletedList',

@@ -28,7 +28,7 @@ ClassicEditor
 		},
 		ckbox: {
 			forceDemoLabel: true,
-			allowExternalImagesEditing: [ /^data:/, 'origin' ]
+			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ]
 		},
 		image: {
 			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText',

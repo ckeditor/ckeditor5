@@ -78,7 +78,7 @@ async function startStandardEditingMode() {
 			}
 		},
 		ckbox: {
-			allowExternalImagesEditing: [ /^data:/, 'origin' ],
+			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 			forceDemoLabel: true
 		},
 		updateSourceElementOnDestroy: true
@@ -102,7 +102,7 @@ async function startRestrictedEditingMode() {
 			}
 		},
 		ckbox: {
-			allowExternalImagesEditing: [ /^data:/, 'origin' ]
+			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ]
 		},
 		updateSourceElementOnDestroy: true
 	} );

@@ -35,7 +35,7 @@ ClassicEditor
 		},
 		ckbox: {
 			forceDemoLabel: true,
-			allowExternalImagesEditing: [ /^data:/, 'origin' ]
+			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ]
 		}
 	} )
 	.then( editor => {
