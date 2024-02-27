@@ -27,7 +27,7 @@ import TableClipboard from '../src/tableclipboard.js';
 import TableColumnResize from '../src/tablecolumnresize.js';
 
 describe( 'table clipboard', () => {
-	let editor, model, modelRoot, tableSelection, viewDocument, element, clipboardPipeline, clipboardMarkersUtils;
+	let editor, model, modelRoot, tableSelection, viewDocument, element, clipboardMarkersUtils;
 
 	testUtils.createSinonSandbox();
 
@@ -4386,7 +4386,6 @@ describe( 'table clipboard', () => {
 		modelRoot = model.document.getRoot();
 		viewDocument = editor.editing.view.document;
 		tableSelection = editor.plugins.get( 'TableSelection' );
-		clipboardPipeline = editor.plugins.get( 'ClipboardPipeline' );
 		clipboardMarkersUtils = editor.plugins.get( 'ClipboardMarkersUtils' );
 	}
 
