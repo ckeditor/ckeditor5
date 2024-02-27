@@ -12,7 +12,7 @@ import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-util
 import Clipboard from '../src/clipboard.js';
 
 describe( 'Clipboard Markers Utils', () => {
-	let editor, model, modelRoot, element, viewDocument, clipboardMarkersUtils;
+	let editor, model, modelRoot, element, viewDocument, clipboardMarkersUtils, genUniqMarkerNameStub;
 
 	testUtils.createSinonSandbox();
 
@@ -30,6 +30,10 @@ describe( 'Clipboard Markers Utils', () => {
 	} );
 
 	describe( 'Check markers selection intersection', () => {
+		beforeEach( () => {
+			clipboardMarkersUtils._registerMarkerToCopy( 'comment', [ 'copy' ] );
+		} );
+
 		it( 'should copy and paste marker that is inside selection', () => {
 			setModelData(
 				model,
@@ -181,50 +185,153 @@ describe( 'Clipboard Markers Utils', () => {
 				model.createPositionFromPath( modelRoot, [ 1, 11 ] )
 			) );
 		} );
+
+		it( 'copy and paste markers does not affect position of markers that are after selection', () => {
+			setModelData(
+				model,
+				wrapWithTag( 'paragraph', 'Hello World Hello World' ) + wrapWithTag( 'paragraph', '' )
+			);
+
+			appendMarker( 'comment:test', { start: [ 0, 6 ], end: [ 0, 11 ] } );
+			appendMarker( 'comment:test2', { start: [ 0, 0 ], end: [ 0, 14 ] } );
+
+			model.change( writer => {
+				writer.setSelection(
+					writer.createRangeOn( editor.model.document.getRoot().getChild( 0 ) ),
+					0
+				);
+			} );
+
+			const data = {
+				dataTransfer: createDataTransfer(),
+				preventDefault: () => {},
+				stopPropagation: () => {}
+			};
+
+			viewDocument.fire( 'copy', data );
+
+			model.change( writer => {
+				writer.setSelection(
+					writer.createRangeIn( editor.model.document.getRoot().getChild( 1 ) ),
+					0
+				);
+			} );
+
+			viewDocument.fire( 'paste', data );
+
+			checkMarker( 'comment:test:pasted', model.createRange(
+				model.createPositionFromPath( modelRoot, [ 1, 6 ] ),
+				model.createPositionFromPath( modelRoot, [ 1, 11 ] )
+			) );
+
+			checkMarker( 'comment:test2:pasted', model.createRange(
+				model.createPositionFromPath( modelRoot, [ 1, 0 ] ),
+				model.createPositionFromPath( modelRoot, [ 1, 14 ] )
+			) );
+		} );
 	} );
 
-	it( 'copy and paste markers does not affect position of markers that are after selection', () => {
-		setModelData(
-			model,
-			wrapWithTag( 'paragraph', 'Hello World Hello World' ) + wrapWithTag( 'paragraph', '' )
-		);
+	describe( '_canPerformMarkerClipboardAction', () => {
+		it( 'returns false on non existing clipboard markers', () => {
+			const result = clipboardMarkersUtils._canPerformMarkerClipboardAction( 'Hello', 'cut' );
 
-		appendMarker( 'comment:test', { start: [ 0, 6 ], end: [ 0, 11 ] } );
-		appendMarker( 'comment:test2', { start: [ 0, 0 ], end: [ 0, 14 ] } );
+			expect( result ).to.false;
+		} );
+	} );
 
-		model.change( writer => {
-			writer.setSelection(
-				writer.createRangeOn( editor.model.document.getRoot().getChild( 0 ) ),
-				0
-			);
+	describe( '_genUniqMarkerName', () => {
+		it( 'replaces only ID part of three segmented marker name', () => {
+			genUniqMarkerNameStub.restore();
+
+			const firstResult = clipboardMarkersUtils._genUniqMarkerName( 'comment:thread:123123' );
+			const secondResult = clipboardMarkersUtils._genUniqMarkerName( 'comment:thread:123123' );
+
+			expect( firstResult.startsWith( 'comment:thread:' ) ).to.be.true;
+			expect( firstResult ).not.to.eq( 'comment:thread:123123' );
+
+			expect( firstResult ).not.to.eq( secondResult );
 		} );
 
-		const data = {
-			dataTransfer: createDataTransfer(),
-			preventDefault: () => {},
-			stopPropagation: () => {}
-		};
+		it( 'replaces only ID part of two segmented marker name', () => {
+			genUniqMarkerNameStub.restore();
 
-		viewDocument.fire( 'copy', data );
+			const firstResult = clipboardMarkersUtils._genUniqMarkerName( 'comment:thread' );
+			const secondResult = clipboardMarkersUtils._genUniqMarkerName( 'comment:thread' );
 
-		model.change( writer => {
-			writer.setSelection(
-				writer.createRangeIn( editor.model.document.getRoot().getChild( 1 ) ),
-				0
+			expect( firstResult.startsWith( 'comment:thread' ) ).to.be.true;
+			expect( firstResult ).not.to.eq( 'comment:thread' );
+			expect( firstResult ).not.to.eq( secondResult );
+		} );
+	} );
+
+	describe( 'restrictions', () => {
+		it( 'should not be possible to copy and paste with restrictions', () => {
+			setModelData(
+				model,
+				wrapWithTag( 'paragraph', 'Start' ) +
+					wrapWithTag( 'paragraph', 'Foo Bar Test' ) +
+					wrapWithTag( 'paragraph', 'End' )
 			);
+
+			appendMarker( 'comment:test', { start: [ 0 ], end: [ 3 ] } );
+			model.change( writer => {
+				writer.setSelection(
+					writer.createRangeOn( editor.model.document.getRoot().getChild( 1 ) ),
+					0
+				);
+			} );
+
+			const data = {
+				dataTransfer: createDataTransfer(),
+				preventDefault: () => {},
+				stopPropagation: () => {}
+			};
+
+			viewDocument.fire( 'copy', data );
+
+			expect( data.dataTransfer.getData( 'text/html' ) ).to.equal( 'Foo Bar Test' );
 		} );
 
-		viewDocument.fire( 'paste', data );
+		it( 'should be possible to copy and paste with temporary disabled restrictions ', () => {
+			clipboardMarkersUtils._temporaryDisableActionRestrictionsOnMarkers( 'copy', () => {
+				setModelData(
+					model,
+					wrapWithTag( 'paragraph', 'Start' ) +
+						wrapWithTag( 'paragraph', 'Foo Bar Test' ) +
+						wrapWithTag( 'paragraph', 'End' )
+				);
 
-		checkMarker( 'comment:test:pasted', model.createRange(
-			model.createPositionFromPath( modelRoot, [ 1, 6 ] ),
-			model.createPositionFromPath( modelRoot, [ 1, 11 ] )
-		) );
+				appendMarker( 'comment:test', { start: [ 0 ], end: [ 3 ] } );
+				model.change( writer => {
+					writer.setSelection(
+						writer.createRangeOn( editor.model.document.getRoot().getChild( 1 ) ),
+						0
+					);
+				} );
 
-		checkMarker( 'comment:test2:pasted', model.createRange(
-			model.createPositionFromPath( modelRoot, [ 1, 0 ] ),
-			model.createPositionFromPath( modelRoot, [ 1, 14 ] )
-		) );
+				const data = {
+					dataTransfer: createDataTransfer(),
+					preventDefault: () => {},
+					stopPropagation: () => {}
+				};
+
+				viewDocument.fire( 'copy', data );
+
+				model.change( writer => {
+					writer.setSelection(
+						writer.createRangeIn( editor.model.document.getRoot().getChild( 2 ) ),
+						0
+					);
+				} );
+
+				viewDocument.fire( 'paste', data );
+
+				checkMarker( 'comment:test:pasted', model.createRange(
+					model.createPositionFromPath( modelRoot, [ 2, 0 ] ),
+					model.createPositionFromPath( modelRoot, [ 2, 12 ] )
+				) );
+			} );
+		} );
 	} );
 
 	async function createEditor() {
@@ -237,9 +344,11 @@ describe( 'Clipboard Markers Utils', () => {
 		viewDocument = editor.editing.view.document;
 
 		clipboardMarkersUtils = editor.plugins.get( 'ClipboardMarkersUtils' );
-		clipboardMarkersUtils._registerMarkerToCopy( 'comment', [ 'copy', 'cut' ] );
+		clipboardMarkersUtils._registerMarkerToCopy( 'comment', [ ] );
 
-		sinon.stub( clipboardMarkersUtils, '_genUniqMarkerName' ).callsFake( markerName => `${ markerName }:pasted` );
+		genUniqMarkerNameStub = sinon
+			.stub( clipboardMarkersUtils, '_genUniqMarkerName' )
+			.callsFake( markerName => `${ markerName }:pasted` );
 
 		editor.conversion.for( 'downcast' ).markerToData( {
 			model: 'comment'

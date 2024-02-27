@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { clone } from 'lodash-es';
-
 import { uid } from '@ckeditor/ckeditor5-utils';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
@@ -66,11 +64,11 @@ export default class ClipboardMarkersUtils extends Plugin {
 	/**
 	 * Checks if marker can be copied.
 	 *
-	 * @param marker Instance of marker.
+	 * @param markerName Name of checked marker.
 	 * @internal
 	 */
-	public _canPerformMarkerClipboardAction( marker: Marker, action: ClipboardMarkerAction ): boolean {
-		const [ markerNamePrefix ] = marker.name.split( ':' );
+	public _canPerformMarkerClipboardAction( markerName: string, action: ClipboardMarkerAction ): boolean {
+		const [ markerNamePrefix ] = markerName.split( ':' );
 		const possibleActions = this._markersToCopy.get( markerNamePrefix ) || [];
 
 		return possibleActions.includes( action );
@@ -188,7 +186,7 @@ export default class ClipboardMarkersUtils extends Plugin {
 		return Array
 			.from( selection.getRanges()! )
 			.flatMap( selectionRange => Array.from( writer.model.markers.getMarkersIntersectingRange( selectionRange ) ) )
-			.filter( marker => this._canPerformMarkerClipboardAction( marker, action ) );
+			.filter( marker => this._canPerformMarkerClipboardAction( marker.name, action ) );
 	}
 
 	/**
