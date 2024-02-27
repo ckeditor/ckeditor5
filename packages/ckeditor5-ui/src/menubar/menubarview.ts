@@ -26,6 +26,8 @@ import MenuBarMenuListItemView from './menubarmenulistitemview.js';
 import MenuBarMenuListItemButtonView from './menubarmenulistitembuttonview.js';
 import { MenuBarBehaviors } from './utils.js';
 
+const EVENT_NAME_DELEGATES = [ 'mouseenter', 'arrowleft', 'arrowright', 'change:isOpen' ] as const;
+
 import '../../theme/components/menubar/menubar.css';
 
 /**
@@ -112,8 +114,12 @@ export default class MenuBarView extends View implements FocusableView {
 	 * Registers a menu view in the menu bar.
 	 */
 	public registerMenu( menuView: MenuBarMenuView, parentMenuView: MenuBarMenuView | null = null ): void {
-		menuView.parentMenuView = parentMenuView;
-		menuView.menuBarView = this;
+		if ( parentMenuView ) {
+			menuView.delegate( ...EVENT_NAME_DELEGATES ).to( parentMenuView );
+			menuView.parentMenuView = parentMenuView;
+		} else {
+			menuView.delegate( ...EVENT_NAME_DELEGATES ).to( this, name => 'submenu:' + name );
+		}
 
 		this.menus.push( menuView );
 	}

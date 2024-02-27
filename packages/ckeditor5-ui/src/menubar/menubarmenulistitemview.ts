@@ -39,8 +39,6 @@ export default class MenuBarMenuListItemView extends ListItemView {
 			}
 		} );
 
-		// this.parentMenuView = parentMenuView;
-
 		this.delegate( 'mouseenter' ).to( parentMenuView );
 	}
 }

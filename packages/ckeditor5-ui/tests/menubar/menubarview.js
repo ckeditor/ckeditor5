@@ -490,20 +490,46 @@ describe( 'MenuBarView', () => {
 			const menuViewAA = new MenuBarMenuView( locale );
 
 			expect( menuViewA.parentMenuView ).to.be.null;
-			expect( menuViewA.menuBarView ).to.be.null;
 			expect( menuBarView.menus ).to.be.empty;
 
 			menuBarView.registerMenu( menuViewA );
 
 			expect( menuViewA.parentMenuView ).to.be.null;
-			expect( menuViewA.menuBarView ).to.equal( menuBarView );
 			expect( menuBarView.menus[ 0 ] ).to.equal( menuViewA );
 
 			menuBarView.registerMenu( menuViewAA, menuViewA );
 
 			expect( menuViewAA.parentMenuView ).to.equal( menuViewA );
-			expect( menuViewA.menuBarView ).to.equal( menuBarView );
 			expect( menuBarView.menus[ 1 ] ).to.equal( menuViewAA );
+		} );
+
+		it( 'should delegate specific events to the parent menu (sub-menu)', () => {
+			const menuViewA = new MenuBarMenuView( locale );
+			const menuViewAA = new MenuBarMenuView( locale );
+
+			menuBarView.registerMenu( menuViewAA, menuViewA );
+
+			[ 'mouseenter', 'arrowleft', 'arrowright', 'change:isOpen' ].forEach( eventName => {
+				const spy = sinon.spy();
+
+				menuViewA.on( eventName, spy );
+				menuViewAA.fire( eventName );
+				sinon.assert.calledOnce( spy );
+			} );
+		} );
+
+		it( 'should delegate specific events to the menu bar with a prefix (top-level menu)', () => {
+			const menuViewA = new MenuBarMenuView( locale );
+
+			menuBarView.registerMenu( menuViewA );
+
+			[ 'mouseenter', 'arrowleft', 'arrowright', 'change:isOpen' ].forEach( eventName => {
+				const spy = sinon.spy();
+
+				menuBarView.on( 'submenu:' + eventName, spy );
+				menuViewA.fire( eventName );
+				sinon.assert.calledOnce( spy );
+			} );
 		} );
 	} );
 } );

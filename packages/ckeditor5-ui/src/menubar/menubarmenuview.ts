@@ -23,9 +23,6 @@ import {
 	default as MenuBarMenuPanelView,
 	type MenuBarMenuPanelPosition
 } from './menubarmenupanelview.js';
-import type MenuBarView from './menubarview.js';
-
-const EVENT_NAME_DELEGATES = [ 'mouseenter', 'arrowleft', 'arrowright', 'change:isOpen' ] as const;
 
 /**
  * TODO
@@ -74,17 +71,7 @@ export default class MenuBarMenuView extends View implements FocusableView {
 	/**
 	 * TODO
 	 */
-	public parentMenuView: MenuBarMenuView | null = null;
-
-	/**
-	 * TODO
-	 */
-	public menuBarView: MenuBarView | null = null;
-
-	/**
-	 * TODO
-	 */
-	// declare public ariaDescribedById: string | null;
+	declare public parentMenuView: MenuBarMenuView | null;
 
 	/**
 	 * TODO
@@ -108,6 +95,7 @@ export default class MenuBarMenuView extends View implements FocusableView {
 		this.set( 'isEnabled', true );
 		this.set( 'panelPosition', 'w' );
 		this.set( 'class', undefined );
+		this.set( 'parentMenuView', null );
 
 		this.setTemplate( {
 			tag: 'div',
@@ -147,15 +135,11 @@ export default class MenuBarMenuView extends View implements FocusableView {
 
 			MenuBarMenuBehaviors.openAndFocusPanelOnArrowDownKey( this );
 			MenuBarMenuBehaviors.toggleOnButtonClick( this );
-
-			this.delegate( ...EVENT_NAME_DELEGATES ).to( this.menuBarView!, name => 'submenu:' + name );
 		} else {
 			MenuBarMenuBehaviors.openOnButtonClick( this );
 			MenuBarMenuBehaviors.openOnArrowRightKey( this );
 			MenuBarMenuBehaviors.closeOnArrowLeftKey( this );
 			MenuBarMenuBehaviors.closeOnParentClose( this );
-
-			this.delegate( ...EVENT_NAME_DELEGATES ).to( this.parentMenuView );
 		}
 
 		MenuBarMenuBehaviors.closeOnEscKey( this );

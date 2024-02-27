@@ -74,10 +74,6 @@ describe( 'MenuBarMenuView', () => {
 			expect( menuView.parentMenuView ).to.be.null;
 		} );
 
-		it( 'should have #menuBarView reference', () => {
-			expect( menuView.menuBarView ).to.be.null;
-		} );
-
 		describe( '#buttonView', () => {
 			it( 'should delegate mouseenter to the menu', () => {
 				const spy = sinon.spy();
@@ -225,19 +221,6 @@ describe( 'MenuBarMenuView', () => {
 
 				sinon.assert.calledOnceWithExactly( spy, menuView );
 			} );
-
-			it( 'should delegate specific events to the menu bar with a prefix', () => {
-				menuBarView.children.add( menuView );
-				menuBarView.render();
-
-				[ 'mouseenter', 'arrowleft', 'arrowright', 'change:isOpen' ].forEach( eventName => {
-					const spy = sinon.spy();
-
-					menuBarView.on( 'submenu:' + eventName, spy );
-					menuView.fire( eventName );
-					sinon.assert.calledOnce( spy );
-				} );
-			} );
 		} );
 
 		describe( 'sub-menu', () => {
@@ -283,18 +266,6 @@ describe( 'MenuBarMenuView', () => {
 				menuView.render();
 
 				sinon.assert.calledOnceWithExactly( spy, menuView );
-			} );
-
-			it( 'should delegate specific events to the parent menu', () => {
-				menuView.render();
-
-				[ 'mouseenter', 'arrowleft', 'arrowright', 'change:isOpen' ].forEach( eventName => {
-					const spy = sinon.spy();
-
-					parentMenuView.on( eventName, spy );
-					menuView.fire( eventName );
-					sinon.assert.calledOnce( spy );
-				} );
 			} );
 		} );
 
