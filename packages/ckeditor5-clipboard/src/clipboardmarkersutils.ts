@@ -128,7 +128,6 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 * @param writer An instance of the model writer.
 	 * @param selection Selection to be checked.
 	 * @param action Type of clipboard action.
-	 * @internal
 	 */
 	private _insertFakeMarkersToSelection(
 		writer: Writer,
@@ -146,7 +145,6 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 * @param writer An instance of the model writer.
 	 * @param fragment Document fragment to be checked.
 	 * @param insertedFakeMarkersElements Map of fake markers with corresponding fake elements.
-	 * @internal
 	 */
 	private _hydrateCopiedFragmentWithMarkers(
 		writer: Writer,
