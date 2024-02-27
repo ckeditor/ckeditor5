@@ -313,10 +313,25 @@ describe( 'MenuBarMenuView', () => {
 				createTopLevelMenuWithLocale( locale );
 
 				menuView.panelView.position = null;
-
 				menuView.isOpen = true;
 
 				expect( menuView.panelView.position ).to.not.be.null;
+
+				const newPositionName = menuView.panelView.position;
+				menuView.isOpen = false;
+				expect( menuView.panelView.position ).to.equal( newPositionName );
+			} );
+
+			it( 'should use the default position if none were considered optimal (because off the viewport, etc.)', () => {
+				createTopLevelMenuWithLocale( locale );
+
+				sinon.stub( MenuBarMenuView, '_getOptimalPosition' ).returns( null );
+
+				menuView.panelView.position = null;
+
+				menuView.isOpen = true;
+
+				expect( menuView.panelView.position ).to.equal( menuView._panelPositions[ 0 ].name );
 			} );
 
 			afterEach( () => {
