@@ -27,7 +27,7 @@ import TableClipboard from '../src/tableclipboard.js';
 import TableColumnResize from '../src/tablecolumnresize.js';
 
 describe( 'table clipboard', () => {
-	let editor, model, modelRoot, tableSelection, viewDocument, element, clipboardPipeline;
+	let editor, model, modelRoot, tableSelection, viewDocument, element, clipboardPipeline, clipboardMarkersUtils;
 
 	testUtils.createSinonSandbox();
 
@@ -4076,6 +4076,11 @@ describe( 'table clipboard', () => {
 		beforeEach( async () => {
 			await createEditor();
 
+			clipboardMarkersUtils._registerMarkerToCopy( 'comment', [ 'copy' ] );
+			sinon
+				.stub( clipboardMarkersUtils, '_genUniqMarkerName' )
+				.callsFake( markerName => `${ markerName }:uniq` );
+
 			markerConversion();
 		} );
 
@@ -4182,22 +4187,6 @@ describe( 'table clipboard', () => {
 		} );
 
 		it( 'should not crash if user copy column to row with markers', () => {
-			function updateCopiedMarkersIds( markers ) {
-				const markersToCheck = Array.from( markers );
-
-				markers.clear();
-
-				for ( const [ name, range ] of markersToCheck ) {
-					markers.set( `${ name }:pasted`, range );
-				}
-			}
-
-			clipboardPipeline.on(
-				'contentInsertion',
-				( evt, clipboardData ) => updateCopiedMarkersIds( clipboardData.content.markers ),
-				{ priority: 'highest' }
-			);
-
 			setModelData( model, '' );
 			pasteTable(
 				[
@@ -4230,8 +4219,8 @@ describe( 'table clipboard', () => {
 			viewDocument.fire( 'paste', data );
 
 			expect( data.dataTransfer.getData( 'text/html' ) ).to.equal(
-				'<figure class="table"><table><tbody><tr><td><comment-start name="pre:pasted"></comment-start>' +
-				'First<comment-end name="pre:pasted"></comment-end></td><td>&nbsp;</td></tr></tbody></table></figure>'
+				'<figure class="table"><table><tbody><tr><td><comment-start name="pre:uniq"></comment-start>' +
+				'First<comment-end name="pre:uniq"></comment-end></td><td>&nbsp;</td></tr></tbody></table></figure>'
 			);
 		} );
 
@@ -4398,6 +4387,7 @@ describe( 'table clipboard', () => {
 		viewDocument = editor.editing.view.document;
 		tableSelection = editor.plugins.get( 'TableSelection' );
 		clipboardPipeline = editor.plugins.get( 'ClipboardPipeline' );
+		clipboardMarkersUtils = editor.plugins.get( 'ClipboardMarkersUtils' );
 	}
 
 	function pasteHtml( editor, html ) {
