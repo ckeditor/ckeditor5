@@ -5,14 +5,39 @@
 
 /* global document */
 
-import { MenuBarMenuListItemButtonView, MenuBarMenuView } from '../../../src/index.js';
+import {
+	MenuBarMenuListItemButtonView,
+	MenuBarMenuView
+} from '../../../src/index.js';
 import ListSeparatorView from '../../../src/list/listseparatorview.js';
 
 export function barDump( menuBarView, options ) {
 	return menuBarView.children.map( child => menuDump( child, options ) );
 }
 
-export function menuDump( menuView, options = {} ) {
+export function getMenuByLabel( menuBarView, label ) {
+	return menuBarView.menus.find( menuView => menuView.buttonView.label === label );
+}
+
+export function getItemByLabel( menuBarView, label ) {
+	for ( const menuView of menuBarView.menus ) {
+		for ( const listItemView of menuView.panelView.children.first.items ) {
+			if ( listItemView.children.first.label === label ) {
+				return listItemView;
+			}
+		}
+	}
+}
+
+export function getButtonCreator( label, locale ) {
+	return () => {
+		const buttonView = new MenuBarMenuListItemButtonView( locale );
+		buttonView.label = label;
+		return buttonView;
+	};
+}
+
+function menuDump( menuView, options = {} ) {
 	const { fullDump } = options;
 
 	if ( fullDump ) {
@@ -45,27 +70,5 @@ export function menuDump( menuView, options = {} ) {
 		isOpen: menuView.isOpen,
 		isFocused: document.activeElement === menuView.buttonView.element,
 		items: menuItems
-	};
-}
-
-export function getMenuByLabel( menuBarView, label ) {
-	return menuBarView.menus.find( menuView => menuView.buttonView.label === label );
-}
-
-export function getItemByLabel( menuBarView, label ) {
-	for ( const menuView of menuBarView.menus ) {
-		for ( const listItemView of menuView.panelView.children.first.items ) {
-			if ( listItemView.children.first.label === label ) {
-				return listItemView;
-			}
-		}
-	}
-}
-
-export function getButtonCreator( label, locale ) {
-	return () => {
-		const buttonView = new MenuBarMenuListItemButtonView( locale );
-		buttonView.label = label;
-		return buttonView;
 	};
 }
