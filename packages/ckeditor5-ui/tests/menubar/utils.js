@@ -6,9 +6,23 @@
 /* global document, Event */
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { Locale, keyCodes, wait } from '@ckeditor/ckeditor5-utils';
-import { ComponentFactory, MenuBarMenuListItemButtonView, MenuBarMenuView, MenuBarView } from '../../src/index.js';
-import { barDump, getItemByLabel, getMenuByLabel } from './_utils/utils.js';
+import {
+	Locale,
+	keyCodes,
+	wait
+} from '@ckeditor/ckeditor5-utils';
+import {
+	ComponentFactory,
+	MenuBarMenuListItemButtonView,
+	MenuBarMenuView,
+	MenuBarView
+} from '../../src/index.js';
+import {
+	barDump,
+	getItemByLabel,
+	getMenuByLabel
+} from './_utils/utils.js';
+import { MenuBarMenuViewPanelPositioningFunctions } from '../../src/menubar/utils.js';
 
 describe( 'MenuBarView utils', () => {
 	const locale = new Locale();
@@ -1004,36 +1018,90 @@ describe( 'MenuBarView utils', () => {
 	} );
 
 	describe( 'MenuBarMenuViewPanelPositioningFunctions', () => {
-		it( 'should bring the "southEast" positioning fuction', () => {
+		let buttonRect, panelRect;
 
+		beforeEach( () => {
+			buttonRect = {
+				top: 100,
+				bottom: 200,
+				left: 500,
+				right: 200,
+				width: 100,
+				height: 100
+			};
+
+			panelRect = {
+				top: 0,
+				bottom: 0,
+				left: 0,
+				right: 0,
+				width: 400,
+				height: 50
+			};
+		} );
+
+		it( 'should bring the "southEast" positioning fuction', () => {
+			expect( MenuBarMenuViewPanelPositioningFunctions.southEast( buttonRect ) ).to.deep.equal( {
+				name: 'se',
+				left: 500,
+				top: 200
+			} );
 		} );
 
 		it( 'should bring the "southWest" positioning fuction', () => {
-
+			expect( MenuBarMenuViewPanelPositioningFunctions.southWest( buttonRect, panelRect ) ).to.deep.equal( {
+				name: 'sw',
+				left: 200,
+				top: 200
+			} );
 		} );
 
 		it( 'should bring the "northEast" positioning fuction', () => {
-
+			expect( MenuBarMenuViewPanelPositioningFunctions.northEast( buttonRect, panelRect ) ).to.deep.equal( {
+				name: 'ne',
+				left: 500,
+				top: 50
+			} );
 		} );
 
 		it( 'should bring the "northWest" positioning fuction', () => {
-
+			expect( MenuBarMenuViewPanelPositioningFunctions.northWest( buttonRect, panelRect ) ).to.deep.equal( {
+				name: 'nw',
+				left: 200,
+				top: 50
+			} );
 		} );
 
 		it( 'should bring the "eastSouth" positioning fuction', () => {
-
+			expect( MenuBarMenuViewPanelPositioningFunctions.eastSouth( buttonRect, panelRect ) ).to.deep.equal( {
+				name: 'es',
+				left: 195,
+				top: 100
+			} );
 		} );
 
 		it( 'should bring the "eastNorth" positioning fuction', () => {
-
+			expect( MenuBarMenuViewPanelPositioningFunctions.eastNorth( buttonRect, panelRect ) ).to.deep.equal( {
+				name: 'en',
+				left: 195,
+				top: 50
+			} );
 		} );
 
 		it( 'should bring the "westSouth" positioning fuction', () => {
-
+			expect( MenuBarMenuViewPanelPositioningFunctions.westSouth( buttonRect, panelRect ) ).to.deep.equal( {
+				name: 'ws',
+				left: 105,
+				top: 100
+			} );
 		} );
 
 		it( 'should bring the "westNorth" positioning fuction', () => {
-
+			expect( MenuBarMenuViewPanelPositioningFunctions.westNorth( buttonRect, panelRect ) ).to.deep.equal( {
+				name: 'wn',
+				left: 105,
+				top: 50
+			} );
 		} );
 	} );
 
