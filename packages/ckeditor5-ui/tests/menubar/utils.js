@@ -938,6 +938,7 @@ describe( 'MenuBarView utils', () => {
 
 					menuAA.isOpen = true;
 					menuAA.panelView.focus();
+					menuAA.keystrokes.press( keyEvtData );
 
 					expect( barDump( menuBarView ) ).to.deep.equal(
 						[
