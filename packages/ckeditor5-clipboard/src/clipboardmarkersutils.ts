@@ -48,7 +48,7 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 * @internal
 	 */
 	public _temporaryDisableActionRestrictionsOnMarkers( action: ClipboardMarkerAction, executor: VoidFunction ): void {
-		const markersToRevert = new Map( clone( this._markersToCopy.entries() ) );
+		const markersToRevert = new Map( this._markersToCopy );
 
 		for ( const marker of this._markersToCopy.keys() ) {
 			this._markersToCopy.set( marker, [ action ] );
