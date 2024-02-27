@@ -274,9 +274,9 @@ export default class TableClipboard extends Plugin {
 				{}
 			);
 
-		// sometimes fake markers are duplicated and there is more than two elements in array.
-		// it can happen if you copy column from first table with single marker and then paste
-		// it as row to second table
+		// Sometimes fake markers are duplicated and there is more than two elements in array.
+		// It can happen if you copy column from first table with single marker and then paste
+		// it as row to second table.
 		for ( const [ markerName, positions ] of Object.entries( markersFakeElements ) ) {
 			const positionsChunks = chunk( positions, 2 );
 
@@ -291,8 +291,8 @@ export default class TableClipboard extends Plugin {
 
 					// if copy is performed and some of markers are duplicated
 					// we have to reassign their custom id to prevent incorrect
-					// cell selection after pasting to second table
-					// todo: Remove it after refactoring `updateMarkersIds` function
+					// cell selection after pasting to second table.
+					// TODO: Remove it after refactoring `updateMarkersIds` function.
 					const chunkMarkerName = chunkOffset > 0 ?
 						`${ markerName.slice( 0, markerName.lastIndexOf( ':' ) ) }:${ uid() }` : markerName;
 
