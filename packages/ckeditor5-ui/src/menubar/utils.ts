@@ -11,10 +11,10 @@ import clickOutsideHandler from '../bindings/clickoutsidehandler.js';
 import type MenuBarMenuView from './menubarmenuview.js';
 import type {
 	default as MenuBarView,
-	MenuBarSubMenuMouseEnterEvent,
-	MenuBarSubMenuChangeIsOpenEvent,
-	MenuBarSubMenuArrowRightEvent,
-	MenuBarSubMenuArrowLeftEvent
+	MenuBarMenuMouseEnterEvent,
+	MenuBarMenuChangeIsOpenEvent,
+	MenuBarMenuArrowRightEvent,
+	MenuBarMenuArrowLeftEvent
 } from './menubarview.js';
 import type { FocusableView } from '../focuscycler.js';
 import type { ObservableChangeEvent, PositioningFunction } from '@ckeditor/ckeditor5-utils';
@@ -32,7 +32,7 @@ export const MenuBarBehaviors = {
 	 * * Closes open menu when another menu's button gets hovered.
 	 */
 	toggleMenusAndFocusItemsOnHover( menuBarView: MenuBarView ): void {
-		menuBarView.on<MenuBarSubMenuMouseEnterEvent>( 'submenu:mouseenter', evt => {
+		menuBarView.on<MenuBarMenuMouseEnterEvent>( 'menu:mouseenter', evt => {
 			// This works only when the menu bar has already been open and the user hover over the menu bar.
 			if ( !menuBarView.isOpen ) {
 				return;
@@ -58,12 +58,12 @@ export const MenuBarBehaviors = {
 	 * If the menubar is closed, the arrow keys only move focus between top-level menu buttons.
 	 */
 	focusCycleMenusOnArrows( menuBarView: MenuBarView ): void {
-		menuBarView.on<MenuBarSubMenuArrowRightEvent>( 'submenu:arrowright', evt => {
+		menuBarView.on<MenuBarMenuArrowRightEvent>( 'menu:arrowright', evt => {
 			console.log( 'sub:right' );
 			cycleTopLevelMenus( evt.source as MenuBarMenuView, 1 );
 		} );
 
-		menuBarView.on<MenuBarSubMenuArrowLeftEvent>( 'submenu:arrowleft', evt => {
+		menuBarView.on<MenuBarMenuArrowLeftEvent>( 'menu:arrowleft', evt => {
 			cycleTopLevelMenus( evt.source as MenuBarMenuView, -1 );
 		} );
 
@@ -107,7 +107,7 @@ export const MenuBarBehaviors = {
 	 * 4. The sub-menu (A) should close as it would with `toggleMenusAndFocusItemsOnHover()`.
 	 */
 	closeMenuWhenAnotherOnTheSameLevelOpens( menuBarView: MenuBarView ): void {
-		menuBarView.on<MenuBarSubMenuChangeIsOpenEvent>( 'submenu:change:isOpen', ( evt, name, isOpen ) => {
+		menuBarView.on<MenuBarMenuChangeIsOpenEvent>( 'menu:change:isOpen', ( evt, name, isOpen ) => {
 			if ( isOpen ) {
 				menuBarView.menus
 					.filter( menuView => {

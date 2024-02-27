@@ -356,7 +356,8 @@ describe( 'MenuBarView', () => {
 						getMenuByLabel( menuBarView, 'B' ).isOpen = true;
 
 						sinon.assert.calledOnceWithExactly( console.warn, 'menu-bar-component-unsupported', {
-							view: sinon.match.object
+							componentView: sinon.match.object,
+							componentName: 'B#3 (incorrect)'
 						}, sinon.match.string );
 					} );
 
@@ -526,7 +527,7 @@ describe( 'MenuBarView', () => {
 			[ 'mouseenter', 'arrowleft', 'arrowright', 'change:isOpen' ].forEach( eventName => {
 				const spy = sinon.spy();
 
-				menuBarView.on( 'submenu:' + eventName, spy );
+				menuBarView.on( 'menu:' + eventName, spy );
 				menuViewA.fire( eventName );
 				sinon.assert.calledOnce( spy );
 			} );
