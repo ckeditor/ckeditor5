@@ -55,8 +55,8 @@ export const MenuBarBehaviors = {
 	/**
 	 * Moves between top-level menus using the arrow left and right keys.
 	 *
-	 * If the menubar has already been open, arrow keys move focus between top-level menu buttons and open them.
-	 * If the menubar was closes, arrow keys only move focus between top-level menu buttons.
+	 * If the menubar has already been open, the arrow keys move focus between top-level menu buttons and open them.
+	 * If the menubar is closed, the arrow keys only move focus between top-level menu buttons.
 	 */
 	focusCycleMenusOnArrows( menuBarView: MenuBarView ): void {
 		menuBarView.on<MenuBarSubMenuArrowRightEvent>( 'submenu:arrowright', evt => {

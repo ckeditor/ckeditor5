@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
+/* global document, Event */
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Locale } from '@ckeditor/ckeditor5-utils';
@@ -34,6 +34,7 @@ describe( 'MenuBarView utils', () => {
 				return menuView;
 			} );
 			factory.add( 'menu-B-item1', getButtonCreator( 'menu-B-item1' ) );
+			factory.add( 'menu-C-item1', getButtonCreator( 'menu-C-item1' ) );
 
 			menuBarView.fillFromConfig( [
 				{
@@ -64,6 +65,13 @@ describe( 'MenuBarView utils', () => {
 					items: [
 						'menu-B-item1'
 					]
+				},
+				{
+					id: 'C',
+					label: 'C',
+					items: [
+						'menu-C-item1'
+					]
 				}
 			], factory );
 		} );
@@ -74,11 +82,30 @@ describe( 'MenuBarView utils', () => {
 
 		describe( 'toggleMenusAndFocusItemsOnHover()', () => {
 			it( 'should not engage if the bar is closed', () => {
+				const menuA = getMenuByLabel( menuBarView, 'A' );
 
+				menuA.buttonView.fire( 'mouseenter' );
+
+				expect( barDump( menuBarView ) ).to.deep.equal(
+					[
+						{
+							label: 'A', isOpen: false, isFocused: false,
+							items: []
+						},
+						{
+							label: 'B', isOpen: false, isFocused: false,
+							items: []
+						},
+						{
+							label: 'C', isOpen: false, isFocused: false,
+							items: []
+						}
+					]
+				);
 			} );
 
 			describe( 'if the bar is already open', () => {
-				it( 'should toggle menus while hovering using a mouse (top-level menu -> top-level menu)', () => {
+				it( 'should toggle menus and move focus while moving the mouse (top-level menu -> top-level menu)', () => {
 					const menuA = getMenuByLabel( menuBarView, 'A' );
 					const menuB = getMenuByLabel( menuBarView, 'B' );
 
@@ -100,6 +127,10 @@ describe( 'MenuBarView utils', () => {
 								items: [
 									{ label: 'menu-B-item1', isFocused: false }
 								]
+							},
+							{
+								label: 'C', isOpen: false, isFocused: false,
+								items: []
 							}
 						]
 					);
@@ -121,12 +152,16 @@ describe( 'MenuBarView utils', () => {
 								items: [
 									{ label: 'menu-B-item1', isFocused: false }
 								]
+							},
+							{
+								label: 'C', isOpen: false, isFocused: false,
+								items: []
 							}
 						]
 					);
 				} );
 
-				it( 'should toggle menus while hovering using a mouse (sub-menu -> sub-menu)', () => {
+				it( 'should toggle menus and move focus while moving the mouse (sub-menu -> sub-menu)', () => {
 					const menuA = getMenuByLabel( menuBarView, 'A' );
 
 					menuA.isOpen = true;
@@ -155,6 +190,10 @@ describe( 'MenuBarView utils', () => {
 							{
 								label: 'B', isOpen: false, isFocused: false,
 								items: []
+							},
+							{
+								label: 'C', isOpen: false, isFocused: false,
+								items: []
 							}
 						]
 					);
@@ -179,12 +218,16 @@ describe( 'MenuBarView utils', () => {
 							{
 								label: 'B', isOpen: false, isFocused: false,
 								items: []
+							},
+							{
+								label: 'C', isOpen: false, isFocused: false,
+								items: []
 							}
 						]
 					);
 				} );
 
-				it( 'should toggle menus while hovering using a mouse (sub-menu -> item)', () => {
+				it( 'should toggle menus and move focus while moving the mouse (sub-menu -> item)', () => {
 					const menuA = getMenuByLabel( menuBarView, 'A' );
 
 					menuA.isOpen = true;
@@ -210,6 +253,10 @@ describe( 'MenuBarView utils', () => {
 							{
 								label: 'B', isOpen: false, isFocused: false,
 								items: []
+							},
+							{
+								label: 'C', isOpen: false, isFocused: false,
+								items: []
 							}
 						]
 					);
@@ -232,6 +279,10 @@ describe( 'MenuBarView utils', () => {
 							{
 								label: 'B', isOpen: false, isFocused: false,
 								items: []
+							},
+							{
+								label: 'C', isOpen: false, isFocused: false,
+								items: []
 							}
 						]
 					);
@@ -239,22 +290,387 @@ describe( 'MenuBarView utils', () => {
 			} );
 		} );
 
-		it( 'should bring closeMenusWhenTheBarCloses() that closes all menus (and sub-menus) when the bar closes', () => {
+		describe( 'closeMenusWhenTheBarCloses()', () => {
+			it( 'should close all menus (and sub-menus) when the bar closes', () => {
+				const menuA = getMenuByLabel( menuBarView, 'A' );
+				menuA.isOpen = true;
 
+				const menuAA = getMenuByLabel( menuBarView, 'AA' );
+				menuAA.isOpen = true;
+
+				const menuAAA = getMenuByLabel( menuBarView, 'AAA (from-factory)' );
+				menuAAA.isOpen = true;
+
+				expect( barDump( menuBarView ) ).to.deep.equal(
+					[
+						{
+							label: 'A', isOpen: true, isFocused: false,
+							items: [
+								{ label: 'menu-A-item1', isFocused: false },
+								{ label: 'AA', isOpen: true, isFocused: false, items: [
+									{ label: 'menu-AA-item1', isFocused: false },
+									{ label: 'AAA (from-factory)', isOpen: true, isFocused: false, items: [
+
+									] }
+								] },
+								{ label: 'AB', isOpen: false, isFocused: false, items: [] }
+							]
+						},
+						{
+							label: 'B', isOpen: false, isFocused: false,
+							items: []
+						},
+						{
+							label: 'C', isOpen: false, isFocused: false,
+							items: []
+						}
+					]
+				);
+
+				menuBarView.isOpen = false;
+
+				expect( barDump( menuBarView ) ).to.deep.equal(
+					[
+						{
+							label: 'A', isOpen: false, isFocused: false,
+							items: [
+								{ label: 'menu-A-item1', isFocused: false },
+								{ label: 'AA', isOpen: false, isFocused: false, items: [
+									{ label: 'menu-AA-item1', isFocused: false },
+									{ label: 'AAA (from-factory)', isOpen: false, isFocused: false, items: [
+
+									] }
+								] },
+								{ label: 'AB', isOpen: false, isFocused: false, items: [] }
+							]
+						},
+						{
+							label: 'B', isOpen: false, isFocused: false,
+							items: []
+						},
+						{
+							label: 'C', isOpen: false, isFocused: false,
+							items: []
+						}
+					]
+				);
+			} );
 		} );
 
-		it( 'should bring closeMenuWhenAnotherOnTheSameLevelOpens() that closes a sub-menu when another one opens ' +
-			'on the same level', () => {
+		describe( 'closeMenuWhenAnotherOnTheSameLevelOpens()', () => {
+			it( 'should closea a sub-menu when another one opens on the same level (same parent menu)', () => {
+				const menuA = getMenuByLabel( menuBarView, 'A' );
 
+				menuA.isOpen = true;
+
+				const menuAA = getMenuByLabel( menuBarView, 'AA' );
+				const menuAB = getMenuByLabel( menuBarView, 'AB' );
+
+				menuAA.isOpen = true;
+				menuAB.isOpen = true;
+
+				expect( barDump( menuBarView ) ).to.deep.equal(
+					[
+						{
+							label: 'A', isOpen: true, isFocused: false,
+							items: [
+								{ label: 'menu-A-item1', isFocused: false },
+								{ label: 'AA', isOpen: false, isFocused: false, items: [
+									{ label: 'menu-AA-item1', isFocused: false },
+									{ label: 'AAA (from-factory)', isOpen: false, isFocused: false, items: [] }
+								] },
+								{ label: 'AB', isOpen: true, isFocused: false, items: [
+									{ label: 'menu-AB-item1', isFocused: false }
+								] }
+							]
+						},
+						{
+							label: 'B', isOpen: false, isFocused: false,
+							items: []
+						},
+						{
+							label: 'C', isOpen: false, isFocused: false,
+							items: []
+						}
+					]
+				);
+			} );
 		} );
 
-		it( 'should bring focusCycleMenusOnArrows() that allows for moving horizontally across menus using arrow keys', () => {
+		describe( 'focusCycleMenusOnArrows()', () => {
+			describe( 'when the menu bar is closed and a top-level menu button focused', () => {
+				it( 'should move focus horizontally across top-level menu buttons using the arrow right key', () => {
+					const menuA = getMenuByLabel( menuBarView, 'A' );
+					const menuB = getMenuByLabel( menuBarView, 'B' );
+					const menuC = getMenuByLabel( menuBarView, 'C' );
 
+					menuA.buttonView.focus();
+					menuA.fire( 'arrowright' );
+
+					expect( barDump( menuBarView ) ).to.deep.equal(
+						[
+							{
+								label: 'A', isOpen: false, isFocused: false,
+								items: []
+							},
+							{
+								label: 'B', isOpen: false, isFocused: true,
+								items: []
+							},
+							{
+								label: 'C', isOpen: false, isFocused: false,
+								items: []
+							}
+						]
+					);
+
+					menuB.fire( 'arrowright' );
+
+					expect( barDump( menuBarView ) ).to.deep.equal(
+						[
+							{
+								label: 'A', isOpen: false, isFocused: false,
+								items: []
+							},
+							{
+								label: 'B', isOpen: false, isFocused: false,
+								items: []
+							},
+							{
+								label: 'C', isOpen: false, isFocused: true,
+								items: []
+							}
+						]
+					);
+
+					menuC.fire( 'arrowright' );
+
+					expect( barDump( menuBarView ) ).to.deep.equal(
+						[
+							{
+								label: 'A', isOpen: false, isFocused: true,
+								items: []
+							},
+							{
+								label: 'B', isOpen: false, isFocused: false,
+								items: []
+							},
+							{
+								label: 'C', isOpen: false, isFocused: false,
+								items: []
+							}
+						]
+					);
+				} );
+
+				it( 'should move focus horizontally across top-level menu buttons using the arrow left key', () => {
+					const menuA = getMenuByLabel( menuBarView, 'A' );
+					const menuC = getMenuByLabel( menuBarView, 'C' );
+
+					menuA.buttonView.focus();
+					menuA.fire( 'arrowleft' );
+
+					expect( barDump( menuBarView ) ).to.deep.equal(
+						[
+							{
+								label: 'A', isOpen: false, isFocused: false,
+								items: []
+							},
+							{
+								label: 'B', isOpen: false, isFocused: false,
+								items: []
+							},
+							{
+								label: 'C', isOpen: false, isFocused: true,
+								items: []
+							}
+						]
+					);
+
+					menuC.fire( 'arrowleft' );
+
+					expect( barDump( menuBarView ) ).to.deep.equal(
+						[
+							{
+								label: 'A', isOpen: false, isFocused: false,
+								items: []
+							},
+							{
+								label: 'B', isOpen: false, isFocused: true,
+								items: []
+							},
+							{
+								label: 'C', isOpen: false, isFocused: false,
+								items: []
+							}
+						]
+					);
+				} );
+			} );
+
+			describe( 'when the menu bar is open', () => {
+				it( 'should move focus horizontally across top-level menu buttons and open menus using the arrow right key', () => {
+					const menuA = getMenuByLabel( menuBarView, 'A' );
+					const menuB = getMenuByLabel( menuBarView, 'B' );
+					const menuC = getMenuByLabel( menuBarView, 'C' );
+
+					menuA.buttonView.focus();
+					menuA.isOpen = true;
+					menuA.fire( 'arrowright' );
+
+					expect( barDump( menuBarView ) ).to.deep.equal(
+						[
+							{
+								label: 'A', isOpen: false, isFocused: false,
+								items: [
+									{ label: 'menu-A-item1', isFocused: false },
+									{ label: 'AA', isOpen: false, isFocused: false, items: [] },
+									{ label: 'AB', isOpen: false, isFocused: false, items: [] }
+								]
+							},
+							{
+								label: 'B', isOpen: true, isFocused: true,
+								items: [
+									{ label: 'menu-B-item1', isFocused: false }
+								]
+							},
+							{
+								label: 'C', isOpen: false, isFocused: false,
+								items: []
+							}
+						]
+					);
+
+					menuB.fire( 'arrowright' );
+
+					expect( barDump( menuBarView ) ).to.deep.equal(
+						[
+							{
+								label: 'A', isOpen: false, isFocused: false,
+								items: [
+									{ label: 'menu-A-item1', isFocused: false },
+									{ label: 'AA', isOpen: false, isFocused: false, items: [] },
+									{ label: 'AB', isOpen: false, isFocused: false, items: [] }
+								]
+							},
+							{
+								label: 'B', isOpen: false, isFocused: false,
+								items: [
+									{ label: 'menu-B-item1', isFocused: false }
+								]
+							},
+							{
+								label: 'C', isOpen: true, isFocused: true,
+								items: [
+									{ label: 'menu-C-item1', isFocused: false }
+								]
+							}
+						]
+					);
+
+					menuC.fire( 'arrowright' );
+
+					expect( barDump( menuBarView ) ).to.deep.equal(
+						[
+							{
+								label: 'A', isOpen: true, isFocused: true,
+								items: [
+									{ label: 'menu-A-item1', isFocused: false },
+									{ label: 'AA', isOpen: false, isFocused: false, items: [] },
+									{ label: 'AB', isOpen: false, isFocused: false, items: [] }
+								]
+							},
+							{
+								label: 'B', isOpen: false, isFocused: false,
+								items: [
+									{ label: 'menu-B-item1', isFocused: false }
+								]
+							},
+							{
+								label: 'C', isOpen: false, isFocused: false,
+								items: [
+									{ label: 'menu-C-item1', isFocused: false }
+								]
+							}
+						]
+					);
+				} );
+
+				it( 'should move focus horizontally across top-level menu buttons and open menus using the arrow left key', () => {
+					const menuA = getMenuByLabel( menuBarView, 'A' );
+					const menuC = getMenuByLabel( menuBarView, 'C' );
+
+					menuA.buttonView.focus();
+					menuA.isOpen = true;
+					menuA.fire( 'arrowleft' );
+
+					expect( barDump( menuBarView ) ).to.deep.equal(
+						[
+							{
+								label: 'A', isOpen: false, isFocused: false,
+								items: [
+									{ label: 'menu-A-item1', isFocused: false },
+									{ label: 'AA', isOpen: false, isFocused: false, items: [] },
+									{ label: 'AB', isOpen: false, isFocused: false, items: [] }
+								]
+							},
+							{
+								label: 'B', isOpen: false, isFocused: false,
+								items: []
+							},
+							{
+								label: 'C', isOpen: true, isFocused: true,
+								items: [
+									{ label: 'menu-C-item1', isFocused: false }
+								]
+							}
+						]
+					);
+
+					menuC.fire( 'arrowleft' );
+
+					expect( barDump( menuBarView ) ).to.deep.equal(
+						[
+							{
+								label: 'A', isOpen: false, isFocused: false,
+								items: [
+									{ label: 'menu-A-item1', isFocused: false },
+									{ label: 'AA', isOpen: false, isFocused: false, items: [] },
+									{ label: 'AB', isOpen: false, isFocused: false, items: [] }
+								]
+							},
+							{
+								label: 'B', isOpen: true, isFocused: true,
+								items: [
+									{ label: 'menu-B-item1', isFocused: false }
+								]
+							},
+							{
+								label: 'C', isOpen: false, isFocused: false,
+								items: [
+									{ label: 'menu-C-item1', isFocused: false }
+								]
+							}
+						]
+					);
+				} );
+			} );
 		} );
 
-		it( 'should bring closeOnClickOutside() that closes the bar when the user clicked ' +
-			' somewhere outside of it', () => {
+		describe( 'closeOnClickOutside()', () => {
+			it( 'should closes the bar when the user clicked  somewhere outside of it', () => {
+				const closeSpy = sinon.spy( menuBarView, 'close' );
+				const menuA = getMenuByLabel( menuBarView, 'A' );
 
+				menuA.isOpen = true;
+
+				// Check if context elements are correct.
+				menuA.element.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
+				sinon.assert.notCalled( closeSpy );
+
+				document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
+				sinon.assert.calledOnce( closeSpy );
+			} );
 		} );
 	} );
 
