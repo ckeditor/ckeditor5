@@ -24,7 +24,7 @@ import type {
 	InsertTextEventData
 } from 'ckeditor5/src/typing.js';
 
-import { collectAndRemoveFakeMarkers, insertAndCollectFakeMarkers } from 'ckeditor5/src/clipboard.js';
+import { ClipboardMarkersUtils } from 'ckeditor5/src/clipboard.js';
 
 import TableWalker from './tablewalker.js';
 import TableUtils from './tableutils.js';
@@ -49,7 +49,7 @@ export default class TableSelection extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ TableUtils, TableUtils ] as const;
+		return [ ClipboardMarkersUtils, TableUtils, TableUtils ] as const;
 	}
 
 	/**
@@ -103,6 +103,7 @@ export default class TableSelection extends Plugin {
 	 * Returns the selected table fragment as a document fragment.
 	 */
 	public getSelectionAsFragment(): DocumentFragment | null {
+		const clipboardMarkersUtils: ClipboardMarkersUtils = this.editor.plugins.get( 'ClipboardMarkersUtils' );
 		const tableUtils = this.editor.plugins.get( TableUtils );
 		const selectedCells = this.getSelectedTableCells();
 
@@ -110,46 +111,46 @@ export default class TableSelection extends Plugin {
 			return null;
 		}
 
-		return this.editor.model.change( writer => {
-			const documentFragment = writer.createDocumentFragment();
-			const insertedFakeMarkersElements = insertAndCollectFakeMarkers( writer, writer.model.document.selection );
+		return clipboardMarkersUtils._copySelectedFragmentWithMarkers(
+			this.editor.model.document.selection,
+			writer => {
+				const documentFragment = writer.createDocumentFragment();
 
-			const { first: firstColumn, last: lastColumn } = tableUtils.getColumnIndexes( selectedCells );
-			const { first: firstRow, last: lastRow } = tableUtils.getRowIndexes( selectedCells );
+				const { first: firstColumn, last: lastColumn } = tableUtils.getColumnIndexes( selectedCells );
+				const { first: firstRow, last: lastRow } = tableUtils.getRowIndexes( selectedCells );
 
-			const sourceTable = selectedCells[ 0 ].findAncestor( 'table' )!;
+				const sourceTable = selectedCells[ 0 ].findAncestor( 'table' )!;
 
-			let adjustedLastRow = lastRow;
-			let adjustedLastColumn = lastColumn;
+				let adjustedLastRow = lastRow;
+				let adjustedLastColumn = lastColumn;
 
-			// If the selection is rectangular there could be a case of all cells in the last row/column spanned over
-			// next row/column so the real lastRow/lastColumn should be updated.
-			if ( tableUtils.isSelectionRectangular( selectedCells ) ) {
-				const dimensions = {
-					firstColumn,
-					lastColumn,
-					firstRow,
-					lastRow
+				// If the selection is rectangular there could be a case of all cells in the last row/column spanned over
+				// next row/column so the real lastRow/lastColumn should be updated.
+				if ( tableUtils.isSelectionRectangular( selectedCells ) ) {
+					const dimensions = {
+						firstColumn,
+						lastColumn,
+						firstRow,
+						lastRow
+					};
+
+					adjustedLastRow = adjustLastRowIndex( sourceTable, dimensions );
+					adjustedLastColumn = adjustLastColumnIndex( sourceTable, dimensions );
+				}
+
+				const cropDimensions = {
+					startRow: firstRow,
+					startColumn: firstColumn,
+					endRow: adjustedLastRow,
+					endColumn: adjustedLastColumn
 				};
 
-				adjustedLastRow = adjustLastRowIndex( sourceTable, dimensions );
-				adjustedLastColumn = adjustLastColumnIndex( sourceTable, dimensions );
+				const table = cropTableToDimensions( sourceTable, cropDimensions, writer );
+				writer.insert( table, documentFragment, 0 );
+
+				return documentFragment;
 			}
-
-			const cropDimensions = {
-				startRow: firstRow,
-				startColumn: firstColumn,
-				endRow: adjustedLastRow,
-				endColumn: adjustedLastColumn
-			};
-
-			const table = cropTableToDimensions( sourceTable, cropDimensions, writer );
-			writer.insert( table, documentFragment, 0 );
-
-			collectAndRemoveFakeMarkers( writer, documentFragment, insertedFakeMarkersElements );
-
-			return documentFragment;
-		} );
+		);
 	}
 
 	/**
