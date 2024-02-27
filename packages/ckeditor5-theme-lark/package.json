@@ -52,6 +52,6 @@
   ],
   "main": "./theme/theme.css",
   "scripts": {
-    "build:node": "ckeditor5-build-package --input=theme/index.css --clean"
+    "build:node": "ckeditor5-build-package --input=theme/index.css --clean --banner=../../scripts/banner.mjs"
   }
 }
