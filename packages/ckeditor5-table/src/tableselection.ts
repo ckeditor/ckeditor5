@@ -112,7 +112,7 @@ export default class TableSelection extends Plugin {
 
 		return this.editor.model.change( writer => {
 			const documentFragment = writer.createDocumentFragment();
-			const insertedFakeMarkersElements = insertAndCollectFakeMarkers( writer, writer.model.document.selection );
+			const insertedFakeMarkersElements = insertAndCollectFakeMarkers( writer, this.editor.model.document.selection );
 
 			const { first: firstColumn, last: lastColumn } = tableUtils.getColumnIndexes( selectedCells );
 			const { first: firstRow, last: lastRow } = tableUtils.getRowIndexes( selectedCells );

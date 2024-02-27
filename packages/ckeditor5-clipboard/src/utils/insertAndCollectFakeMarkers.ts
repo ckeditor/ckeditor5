@@ -80,21 +80,22 @@ function insertFakeMarkersElements( writer: Writer, markers: Array<Marker> ): Ma
 }
 
 /**
- * Returns object that contains mapping between marker names and corresponding fake-marker elements.
- * Function returns fake-markers elements that starts or ends or are present inside selected fragment.
- * Markers that start before and end after of specified fragment are not returned at all.
+ * Returns object that contains mapping between marker names and corresponding `$marker` elements.
+ *
+ * For each marker, there can be two `$marker` elements or only one (if the document fragment contained
+ * only the beginning or only the end of a marker).
  *
  * @param writer An instance of the model writer.
- * @param fragment The element to be checked.
+ * @param fragment The document fragment to be checked.
  */
-function getAllFakeMarkersFromElement( writer: Writer, fragment: DocumentFragment ): Record<string, Array<Element>> {
+function getAllFakeMarkersFromFragment( writer: Writer, fragment: DocumentFragment ): Record<string, Array<Element>> {
 	return Array
 		.from( writer.createRangeIn( fragment ) )
 		.reduce<Record<string, Array<Element>>>( ( fakeMarkerElements, { item } ) => {
 			if ( item.is( 'element', '$marker' ) ) {
-				const fakeMarkerName = item.getAttribute( 'data-name' ) as string | undefined;
+				const fakeMarkerName = item.getAttribute( 'data-name' ) as string;
 
-				( fakeMarkerElements[ fakeMarkerName! ] ||= [] ).push( item );
+				( fakeMarkerElements[ fakeMarkerName ] ||= [] ).push( item );
 			}
 
 			return fakeMarkerElements;
@@ -102,15 +103,18 @@ function getAllFakeMarkersFromElement( writer: Writer, fragment: DocumentFragmen
 }
 
 /**
- * Removes all inserted in previous functions markers that are present in specified fragment. It removes only
- * markers that have at least start or end position inside fragment. Markers that start before and
- * end after of specified fragment are not removed at all.
+ * Removes all `$marker` elements from the given document fragment.
+ *
+ * Returns an object where keys are marker names, and values are ranges corresponding to positions where `$marker` elements were inserted.
+ *
+ * If the document fragment had only one `$marker` element for given marker (start or end) the other boundary is set automatically
+ * (to the end or start of the document fragment, respectively).
  *
  * @param writer An instance of the model writer.
- * @param fragment The element to be checked.
+ * @param fragment The fragment to be checked.
  */
 function removeFakeMarkersInsideFragment( writer: Writer, fragment: DocumentFragment ): Record<string, Range> {
-	const fakeFragmentMarkersInMap = getAllFakeMarkersFromElement( writer, fragment );
+	const fakeFragmentMarkersInMap = getAllFakeMarkersFromFragment( writer, fragment );
 
 	return Object
 		.entries( fakeFragmentMarkersInMap )
@@ -154,13 +158,15 @@ function removeFakeMarkersInsideFragment( writer: Writer, fragment: DocumentFrag
 			writer.remove( endElement );
 
 			acc[ markerName ] = new Range( startPosition, endPosition );
+
 			return acc;
 		}, {} );
 }
 
 /**
- * First step of copying markers. Inserts into specified fragment fake markers elements with positions of
- * real markers that will be used later to calculate positions of real markers.
+ * First step of copying markers. It looks for markers intersecting with given selection and inserts `$marker` elements
+ * at positions where document markers start or end. This way `$marker` elements can be easily copied together with the rest of the content
+ * of the selection.
  *
  * @param writer An instance of the model writer.
  * @param selection Selection to be checked.
@@ -173,7 +179,8 @@ export function insertAndCollectFakeMarkers( writer: Writer, selection: Selectio
 }
 
 /**
- * Calculates new positions of real markers using fake markers that are present inside fragment.
+ * Calculates positions for marker ranges using fake markers that are present inside fragment. The markers are added to
+ * `DocumentFragment#markers` property. It also removes `$marker` elements stored in `insertedFakeMarkersElements` from the model.
  *
  * @param writer An instance of the model writer.
  * @param selection Selection to be checked.
@@ -191,10 +198,10 @@ export function collectAndRemoveFakeMarkers(
 		fragment.markers.set( marker, range );
 	}
 
-	// <fake-marker>[ Foo ]</fake-marker>
-	//      ^                    ^
+	// <fake-marker> [Foo] Bar</fake-marker>
+	//      ^                       ^
 	// Handle case when selection is inside marker.
-	for ( const [ marker ] of insertedFakeMarkersElements.entries() ) {
+	for ( const marker of insertedFakeMarkersElements.keys() ) {
 		if ( fakeMarkersRangesInsideRange[ marker.name ] ) {
 			continue;
 		}
@@ -202,7 +209,7 @@ export function collectAndRemoveFakeMarkers(
 		fragment.markers.set( marker.name, writer.createRangeIn( fragment ) );
 	}
 
-	// Remove remain markers inserted to original element (source of copy).
+	// Remove remaining markers inserted to original element (source of copy).
 	for ( const element of Array.from( insertedFakeMarkersElements.values() ).flat() ) {
 		writer.remove( element );
 	}
