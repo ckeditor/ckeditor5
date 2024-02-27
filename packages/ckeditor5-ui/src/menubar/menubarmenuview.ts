@@ -16,7 +16,7 @@ import {
 	type ObservableChangeEvent
 } from '@ckeditor/ckeditor5-utils';
 import MenuBarMenuButtonView from './menubarmenubuttonview.js';
-import { EVENT_NAME_DELEGATES, MenuBarMenuBehaviors, MenuBarMenuViewPanelPositioningFunctions } from './utils.js';
+import { MenuBarMenuBehaviors, MenuBarMenuViewPanelPositioningFunctions } from './utils.js';
 import type { FocusableView } from '../focuscycler.js';
 import View from '../view.js';
 import {
@@ -24,6 +24,8 @@ import {
 	type MenuBarMenuPanelPosition
 } from './menubarmenupanelview.js';
 import type MenuBarView from './menubarview.js';
+
+const EVENT_NAME_DELEGATES = [ 'mouseenter', 'arrowleft', 'arrowright', 'change:isOpen' ] as const;
 
 /**
  * TODO

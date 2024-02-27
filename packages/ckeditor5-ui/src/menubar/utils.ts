@@ -20,7 +20,6 @@ import type { FocusableView } from '../focuscycler.js';
 import type { ObservableChangeEvent, PositioningFunction } from '@ckeditor/ckeditor5-utils';
 import type { ButtonExecuteEvent } from '../button/button.js';
 
-export const EVENT_NAME_DELEGATES = [ 'mouseenter', 'arrowleft', 'arrowright', 'change:isOpen' ] as const;
 const NESTED_PANEL_HORIZONTAL_OFFSET = 5;
 
 /**
@@ -163,9 +162,9 @@ export const MenuBarMenuBehaviors = {
 	openOnArrowRightKey( menuView: MenuBarMenuView ): void {
 		// TODO: RTL support.
 		menuView.keystrokes.set( 'arrowright', ( data, cancel ) => {
-			if ( menuView.focusTracker.focusedElement !== menuView.buttonView.element ) {
-				return;
-			}
+			// if ( menuView.focusTracker.focusedElement !== menuView.buttonView.element ) {
+			// 	return;
+			// }
 
 			if ( !menuView.isOpen ) {
 				console.log( '[BEHAVIOR] openOnArrowRightKey(): Opening', logMenu( menuView ) );

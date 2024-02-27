@@ -10,7 +10,6 @@
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 import ListItemView from '../list/listitemview.js';
 import type MenuBarMenuView from './menubarmenuview.js';
-import { EVENT_NAME_DELEGATES } from './utils.js';
 
 /**
  * TODO
@@ -42,6 +41,6 @@ export default class MenuBarMenuListItemView extends ListItemView {
 
 		// this.parentMenuView = parentMenuView;
 
-		this.delegate( ...EVENT_NAME_DELEGATES ).to( parentMenuView );
+		this.delegate( 'mouseenter' ).to( parentMenuView );
 	}
 }

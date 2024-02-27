@@ -372,16 +372,13 @@ describe( 'MenuBarView', () => {
 						expect( menuBarView.menus ).to.include( menuViewAAAFromFactory );
 					} );
 
-					it( 'should delegate events from feature components to the parent menu', () => {
+					it( 'should delegate #mouseenter from feature list items to the parent menu', () => {
 						const buttonView = getItemByLabel( menuBarView, 'menu-A-item1' );
+						const spy = sinon.spy();
 
-						[ 'mouseenter', 'arrowleft', 'arrowright', 'change:isOpen' ].forEach( eventName => {
-							const spy = sinon.spy();
-
-							menuBarView.children.first.on( eventName, spy );
-							buttonView.fire( eventName );
-							sinon.assert.calledOnce( spy );
-						} );
+						menuBarView.children.first.on( 'mouseenter', spy );
+						buttonView.fire( 'mouseenter' );
+						sinon.assert.calledOnce( spy );
 					} );
 
 					it( 'should close parent menu when feature component fires #execute', () => {

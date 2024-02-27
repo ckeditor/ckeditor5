@@ -6,7 +6,7 @@
 /* global document, Event */
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { Locale } from '@ckeditor/ckeditor5-utils';
+import { Locale, keyCodes, wait } from '@ckeditor/ckeditor5-utils';
 import { ComponentFactory, MenuBarMenuListItemButtonView, MenuBarMenuView, MenuBarView } from '../../src/index.js';
 import { barDump, getItemByLabel, getMenuByLabel } from './_utils/utils.js';
 
@@ -676,35 +676,339 @@ describe( 'MenuBarView utils', () => {
 
 	describe( 'MenuBarMenuBehaviors', () => {
 		describe( 'for top-level menus', () => {
-			it( 'should bring openAndFocusPanelOnArrowDownKey() that opens and focuses the panel on arrow down key', () => {
+			let menuBarView, factory;
 
+			beforeEach( () => {
+				menuBarView = new MenuBarView( locale );
+				menuBarView.render();
+
+				factory = new ComponentFactory( {} );
+				factory.add( 'menu-A-item1', getButtonCreator( 'menu-A-item1' ) );
+
+				document.body.appendChild( menuBarView.element );
+
+				menuBarView.fillFromConfig( [
+					{
+						id: 'A',
+						label: 'A',
+						items: [
+							'menu-A-item1'
+						]
+					}
+				], factory );
 			} );
 
-			it( 'should bring toggleOnButtonClick() that toggles the visibility of the menu upon clicking', () => {
+			afterEach( () => {
+				menuBarView.element.remove();
+			} );
 
+			describe( 'openAndFocusPanelOnArrowDownKey()', () => {
+				it( 'should open and focus the panel on arrow down key', () => {
+					const menuA = getMenuByLabel( menuBarView, 'A' );
+					const keyEvtData = {
+						keyCode: keyCodes.arrowdown,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+
+					menuA.buttonView.focus();
+					menuA.keystrokes.press( keyEvtData );
+
+					expect( barDump( menuBarView ) ).to.deep.equal(
+						[
+							{
+								label: 'A', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'menu-A-item1', isFocused: true }
+								]
+							}
+
+						]
+					);
+				} );
+			} );
+
+			describe( 'toggleOnButtonClick()', () => {
+				it( 'should toggles the visibility of the menu upon clicking', async () => {
+					const menuA = getMenuByLabel( menuBarView, 'A' );
+
+					menuA.buttonView.fire( 'execute' );
+
+					expect( barDump( menuBarView ) ).to.deep.equal(
+						[
+							{
+								label: 'A', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'menu-A-item1', isFocused: true }
+								]
+							}
+
+						]
+					);
+
+					menuA.buttonView.fire( 'execute' );
+
+					// Wait for the bar to close.
+					await wait( 10 );
+
+					expect( barDump( menuBarView ) ).to.deep.equal(
+						[
+							{
+								label: 'A', isOpen: false, isFocused: false,
+								items: [
+									{ label: 'menu-A-item1', isFocused: false }
+								]
+							}
+
+						]
+					);
+				} );
 			} );
 		} );
 
 		describe( 'for sub-menu', () => {
-			it( 'should bring openOnButtonClick() that opens the menu upon clicking (but does not close it)', () => {
+			let menuBarView, factory;
 
+			beforeEach( () => {
+				menuBarView = new MenuBarView( locale );
+				menuBarView.render();
+
+				factory = new ComponentFactory( {} );
+				factory.add( 'menu-A-item1', getButtonCreator( 'menu-A-item1' ) );
+				factory.add( 'menu-AA-item1', getButtonCreator( 'menu-AA-item1' ) );
+
+				document.body.appendChild( menuBarView.element );
+
+				menuBarView.fillFromConfig( [
+					{
+						id: 'A',
+						label: 'A',
+						items: [
+							'menu-A-item1',
+							{
+								id: 'AA',
+								label: 'AA',
+								items: [
+									'menu-AA-item1'
+								]
+							}
+						]
+					}
+				], factory );
 			} );
 
-			it( 'should bring openOnArrowRightKey() that opens the menu upon arrow right key press', () => {
-
+			afterEach( () => {
+				menuBarView.element.remove();
 			} );
 
-			it( 'should bring closeOnArrowLeftKey() that closes the menu upon arrow left key press', () => {
+			describe( 'openOnButtonClick()', () => {
+				it( 'should open the menu upon clicking (but does not close it)', () => {
+					const menuA = getMenuByLabel( menuBarView, 'A' );
 
+					menuA.isOpen = true;
+
+					const menuAA = getMenuByLabel( menuBarView, 'AA' );
+
+					menuAA.buttonView.fire( 'execute' );
+
+					expect( barDump( menuBarView ) ).to.deep.equal(
+						[
+							{
+								label: 'A', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'menu-A-item1', isFocused: false },
+									{ label: 'AA', isFocused: false, isOpen: true, items: [
+										{ label: 'menu-AA-item1', isFocused: true }
+									] }
+								]
+							}
+
+						]
+					);
+
+					menuAA.buttonView.fire( 'execute' );
+
+					expect( barDump( menuBarView ) ).to.deep.equal(
+						[
+							{
+								label: 'A', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'menu-A-item1', isFocused: false },
+									{ label: 'AA', isFocused: false, isOpen: true, items: [
+										{ label: 'menu-AA-item1', isFocused: true }
+									] }
+								]
+							}
+
+						]
+					);
+				} );
 			} );
 
-			it( 'should bring closeOnParentClose() that closes the menu when its parent closes', () => {
+			describe( 'openOnArrowRightKey()', () => {
+				it( 'should open the menu upon arrow right key press', () => {
+					const menuA = getMenuByLabel( menuBarView, 'A' );
 
+					menuA.isOpen = true;
+
+					const menuAA = getMenuByLabel( menuBarView, 'AA' );
+					const keyEvtData = {
+						keyCode: keyCodes.arrowright,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+
+					menuAA.buttonView.focus();
+					menuAA.keystrokes.press( keyEvtData );
+
+					expect( barDump( menuBarView ) ).to.deep.equal(
+						[
+							{
+								label: 'A', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'menu-A-item1', isFocused: false },
+									{ label: 'AA', isFocused: false, isOpen: true, items: [
+										{ label: 'menu-AA-item1', isFocused: true }
+									] }
+								]
+							}
+						]
+					);
+				} );
+			} );
+
+			describe( 'closeOnArrowLeftKey()', () => {
+				it( 'should close the menu upon arrow left key press', () => {
+					const menuA = getMenuByLabel( menuBarView, 'A' );
+
+					menuA.isOpen = true;
+
+					const menuAA = getMenuByLabel( menuBarView, 'AA' );
+					const keyEvtData = {
+						keyCode: keyCodes.arrowleft,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+
+					menuAA.isOpen = true;
+					menuAA.keystrokes.press( keyEvtData );
+
+					expect( barDump( menuBarView ) ).to.deep.equal(
+						[
+							{
+								label: 'A', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'menu-A-item1', isFocused: false },
+									{ label: 'AA', isFocused: true, isOpen: false, items: [
+										{ label: 'menu-AA-item1', isFocused: false }
+									] }
+								]
+							}
+						]
+					);
+				} );
+			} );
+
+			describe( 'closeOnParentClose()', () => {
+				it( 'should close the menu when its parent closes', () => {
+					const menuA = getMenuByLabel( menuBarView, 'A' );
+
+					menuA.isOpen = true;
+
+					const menuAA = getMenuByLabel( menuBarView, 'AA' );
+
+					menuAA.isOpen = true;
+					menuA.isOpen = false;
+
+					expect( barDump( menuBarView ) ).to.deep.equal(
+						[
+							{
+								label: 'A', isOpen: false, isFocused: false,
+								items: [
+									{ label: 'menu-A-item1', isFocused: false },
+									{ label: 'AA', isFocused: false, isOpen: false, items: [
+										{ label: 'menu-AA-item1', isFocused: false }
+									] }
+								]
+							}
+						]
+					);
+				} );
 			} );
 		} );
 
 		it( 'should bring closeOnEscKey() that closes the menu on Esc key press', () => {
+			const menuBarView = new MenuBarView( locale );
+			menuBarView.render();
 
+			const factory = new ComponentFactory( {} );
+			factory.add( 'menu-A-item1', getButtonCreator( 'menu-A-item1' ) );
+			factory.add( 'menu-AA-item1', getButtonCreator( 'menu-AA-item1' ) );
+
+			document.body.appendChild( menuBarView.element );
+
+			menuBarView.fillFromConfig( [
+				{
+					id: 'A',
+					label: 'A',
+					items: [
+						'menu-A-item1',
+						{
+							id: 'AA',
+							label: 'AA',
+							items: [
+								'menu-AA-item1'
+							]
+						}
+					]
+				}
+			], factory );
+
+			const menuA = getMenuByLabel( menuBarView, 'A' );
+
+			menuA.isOpen = true;
+
+			const menuAA = getMenuByLabel( menuBarView, 'AA' );
+			const keyEvtData = {
+				keyCode: keyCodes.esc,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+
+			menuAA.isOpen = true;
+			menuAA.keystrokes.press( keyEvtData );
+
+			expect( barDump( menuBarView ) ).to.deep.equal(
+				[
+					{
+						label: 'A', isOpen: true, isFocused: false,
+						items: [
+							{ label: 'menu-A-item1', isFocused: false },
+							{ label: 'AA', isFocused: true, isOpen: false, items: [
+								{ label: 'menu-AA-item1', isFocused: false }
+							] }
+						]
+					}
+				]
+			);
+
+			menuA.keystrokes.press( keyEvtData );
+
+			expect( barDump( menuBarView ) ).to.deep.equal(
+				[
+					{
+						label: 'A', isOpen: false, isFocused: true,
+						items: [
+							{ label: 'menu-A-item1', isFocused: false },
+							{ label: 'AA', isFocused: false, isOpen: false, items: [
+								{ label: 'menu-AA-item1', isFocused: false }
+							] }
+						]
+					}
+				]
+			);
+
+			menuBarView.element.remove();
 		} );
 	} );
 

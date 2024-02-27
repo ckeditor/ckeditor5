@@ -24,7 +24,7 @@ import MenuBarMenuView from './menubarmenuview.js';
 import MenuBarMenuListView from './menubarmenulistview.js';
 import MenuBarMenuListItemView from './menubarmenulistitemview.js';
 import MenuBarMenuListItemButtonView from './menubarmenulistitembuttonview.js';
-import { EVENT_NAME_DELEGATES, MenuBarBehaviors } from './utils.js';
+import { MenuBarBehaviors } from './utils.js';
 
 import '../../theme/components/menubar/menubar.css';
 
@@ -317,7 +317,7 @@ export default class MenuBarView extends View implements FocusableView {
 		if ( componentView instanceof MenuBarMenuView ) {
 			this.registerMenu( componentView, parentMenuView );
 		} else {
-			componentView.delegate( ...EVENT_NAME_DELEGATES ).to( parentMenuView );
+			componentView.delegate( 'mouseenter' ).to( parentMenuView );
 		}
 
 		// Close the whole menu bar when a component is executed.
