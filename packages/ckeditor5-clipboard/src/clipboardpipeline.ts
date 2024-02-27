@@ -179,7 +179,7 @@ export default class ClipboardPipeline extends Plugin {
 		method: 'copy' | 'cut' | 'dragstart'
 	): void {
 		const clipboardMarkersUtils: ClipboardMarkersUtils = this.editor.plugins.get( 'ClipboardMarkersUtils' );
-		const documentFragment = clipboardMarkersUtils._copySelectedFragmentWithMarkers( selection );
+		const documentFragment = clipboardMarkersUtils._copySelectedFragmentWithMarkers( method, selection );
 
 		this.fire<ClipboardOutputTransformationEvent>( 'outputTransformation', {
 			dataTransfer,

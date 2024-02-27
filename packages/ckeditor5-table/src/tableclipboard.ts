@@ -12,6 +12,7 @@ import { uid, type EventInfo } from 'ckeditor5/src/utils.js';
 
 import {
 	ClipboardPipeline,
+	ClipboardMarkersUtils,
 	type ClipboardEventData,
 	type ViewDocumentCopyEvent,
 	type ViewDocumentCutEvent,
@@ -65,7 +66,7 @@ export default class TableClipboard extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ ClipboardPipeline, TableSelection, TableUtils ] as const;
+		return [ ClipboardMarkersUtils, ClipboardPipeline, TableSelection, TableUtils ] as const;
 	}
 
 	/**
@@ -96,6 +97,7 @@ export default class TableClipboard extends Plugin {
 	private _onCopyCut( evt: EventInfo<'copy' | 'cut'>, data: DomEventData<ClipboardEvent> & ClipboardEventData ) {
 		const view = this.editor.editing.view;
 		const tableSelection = this.editor.plugins.get( TableSelection );
+		const clipboardMarkersUtils = this.editor.plugins.get( ClipboardMarkersUtils );
 
 		if ( !tableSelection.getSelectedTableCells() ) {
 			return;
@@ -108,9 +110,15 @@ export default class TableClipboard extends Plugin {
 		data.preventDefault();
 		evt.stop();
 
+		const fragment = clipboardMarkersUtils._copySelectedFragmentWithMarkers(
+			evt.name,
+			this.editor.model.document.selection,
+			() => tableSelection.getSelectionAsFragment()!
+		);
+
 		view.document.fire<ViewDocumentClipboardOutputEvent>( 'clipboardOutput', {
 			dataTransfer: data.dataTransfer,
-			content: this.editor.data.toView( tableSelection.getSelectionAsFragment()! ),
+			content: this.editor.data.toView( fragment ),
 			method: evt.name
 		} );
 	}

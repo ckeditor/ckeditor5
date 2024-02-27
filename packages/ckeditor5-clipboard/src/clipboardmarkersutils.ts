@@ -28,7 +28,7 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 *
 	 * @internal
 	 */
-	private _markersToCopy: Map<string | symbol, boolean> = new Map();
+	private _markersToCopy: Map<string | symbol, Array<ClipboardMarkerAction>> = new Map();
 
 	/**
 	 * @inheritDoc
@@ -43,21 +43,22 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 * @param marker Instance of marker.
 	 * @internal
 	 */
-	public _isCopyableMarker( marker: Marker ): boolean {
+	public _canPerformMarkerClipboardAction( marker: Marker, action: ClipboardMarkerAction ): boolean {
 		const [ markerNamePrefix ] = marker.name.split( ':' );
+		const possibleActions = this._markersToCopy.get( markerNamePrefix ) || [];
 
-		return this._markersToCopy.has( markerNamePrefix );
+		return possibleActions.includes( action );
 	}
 
 	/**
 	 * Registers marker name as copyable in clipboard pipeline.
 	 *
 	 * @param markerName Name of marker that can be copied.
-	 * @param onCutOnly Marker can be copied only in cut operation.
+	 * @param allowedActions List of allowed actions that can be performed on markers with specified name.
 	 * @internal
 	 */
-	public _registerMarkerToCopy( markerName: string, onCutOnly: boolean ): void {
-		this._markersToCopy.set( markerName, onCutOnly );
+	public _registerMarkerToCopy( markerName: string, allowedActions: Array<ClipboardMarkerAction> ): void {
+		this._markersToCopy.set( markerName, allowedActions );
 	}
 
 	/**
@@ -69,17 +70,19 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 * 	4. Removes fake elements from fragment.
 	 * 	5. Inserts markers on position of fake markers.
 	 *
+	 * @param action Type of clipboard action.
 	 * @param writer An instance of the model writer.
 	 * @param selection Selection to be checked.
 	 * @param getCopiedFragment	Callback that performs copy of selection and returns it as fragment.
 	 * @internal
 	 */
 	public _copySelectedFragmentWithMarkers(
+		action: ClipboardMarkerAction,
 		selection: Selection | DocumentSelection,
 		getCopiedFragment: ( writer: Writer ) => DocumentFragment = writer => writer.model.getSelectedContent( selection )
 	): DocumentFragment {
 		return this.editor.model.change( writer => {
-			const sourceSelectionInsertedMarkers = this._insertFakeMarkersToSelection( writer, selection );
+			const sourceSelectionInsertedMarkers = this._insertFakeMarkersToSelection( writer, selection, action );
 			const fragment = getCopiedFragment( writer );
 
 			this._hydrateCopiedFragmentWithMarkers( writer, fragment, sourceSelectionInsertedMarkers );
@@ -99,10 +102,15 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 *
 	 * @param writer An instance of the model writer.
 	 * @param selection Selection to be checked.
+	 * @param action Type of clipboard action.
 	 * @internal
 	 */
-	private _insertFakeMarkersToSelection( writer: Writer, selection: Selection | DocumentSelection ): Map<Marker, Array<Element>> {
-		const copyableMarkers = this._getCopyableMarkersFromSelection( writer, selection );
+	private _insertFakeMarkersToSelection(
+		writer: Writer,
+		selection: Selection | DocumentSelection,
+		action: ClipboardMarkerAction
+	): Map<Marker, Array<Element>> {
+		const copyableMarkers = this._getCopyableMarkersFromSelection( writer, selection, action );
 
 		return this._insertFakeMarkersElements( writer, copyableMarkers );
 	}
@@ -146,12 +154,17 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 *
 	 * @param writer An instance of the model writer.
 	 * @param selection  Selection which will be checked.
+	 * @param action Type of clipboard action.
 	 */
-	private _getCopyableMarkersFromSelection( writer: Writer, selection: Selection | DocumentSelection ): Array<Marker> {
+	private _getCopyableMarkersFromSelection(
+		writer: Writer,
+		selection: Selection | DocumentSelection,
+		action: ClipboardMarkerAction
+	): Array<Marker> {
 		return Array
 			.from( selection.getRanges()! )
 			.flatMap( selectionRange => Array.from( writer.model.markers.getMarkersIntersectingRange( selectionRange ) ) )
-			.filter( this._isCopyableMarker.bind( this ) );
+			.filter( marker => this._canPerformMarkerClipboardAction( marker, action ) );
 	}
 
 	/**
@@ -298,3 +311,10 @@ export default class ClipboardMarkersUtils extends Plugin {
 		return `${ parts.join( ':' ) }:${ newId }`;
 	}
 }
+
+/**
+ * Specifies which action is performed during clipboard event.
+ *
+ * @internal
+ */
+export type ClipboardMarkerAction = 'copy' | 'cut' | 'dragstart';

@@ -19,7 +19,10 @@ export {
 	type ViewDocumentClipboardOutputEvent
 } from './clipboardpipeline.js';
 
-export { default as ClipboardMarkersUtils } from './clipboardmarkersutils.js';
+export {
+	default as ClipboardMarkersUtils,
+	type ClipboardMarkerAction
+} from './clipboardmarkersutils.js';
 
 export type {
 	ClipboardEventData
