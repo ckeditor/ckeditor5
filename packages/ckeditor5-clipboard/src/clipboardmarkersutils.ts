@@ -131,7 +131,7 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 * @param fragment
 	 * @internal
 	 */
-	public _setUniqueMarkerNamesInFragment( fragment: DocumentFragment ) {
+	public _setUniqueMarkerNamesInFragment( fragment: DocumentFragment ): void {
 		const markers = Array.from( fragment.markers );
 
 		fragment.markers.clear();
@@ -343,7 +343,7 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 */
 	private _getUniqueMarkerName( name: string ) {
 		const parts = name.split( ':' );
-		const newId = uid();
+		const newId = uid().substring( 1, 6 );
 
 		// It looks like the marker already is UID marker so in this scenario just swap
 		// last part of marker name and assign new UID.

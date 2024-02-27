@@ -4078,7 +4078,7 @@ describe( 'table clipboard', () => {
 
 			clipboardMarkersUtils._registerMarkerToCopy( 'comment', [ 'copy' ] );
 			sinon
-				.stub( clipboardMarkersUtils, '_genUniqMarkerName' )
+				.stub( clipboardMarkersUtils, '_getUniqueMarkerName' )
 				.callsFake( markerName => `${ markerName }:uniq` );
 
 			markerConversion();
@@ -4097,7 +4097,7 @@ describe( 'table clipboard', () => {
 
 			const paragraph = modelRoot.getNodeByPath( [ 1, 0, 0, 0 ] );
 
-			checkMarker( 'comment:paste', model.createRangeIn( paragraph ) );
+			checkMarker( 'comment:paste:uniq', model.createRangeIn( paragraph ) );
 		} );
 
 		it( 'should paste table with multiple markers to multiple cells', () => {
@@ -4126,8 +4126,8 @@ describe( 'table clipboard', () => {
 				model.createPositionFromPath( modelRoot, [ 1, 0, 1, 0, 6 ] )
 			);
 
-			checkMarker( 'comment:pre', prePosition );
-			checkMarker( 'comment:post', postPosition );
+			checkMarker( 'comment:pre:uniq', prePosition );
+			checkMarker( 'comment:post:uniq', postPosition );
 		} );
 
 		it( 'should paste table with multiple markers to single cell', () => {
@@ -4157,8 +4157,8 @@ describe( 'table clipboard', () => {
 				model.createPositionFromPath( modelRoot, [ 1, 0, 0, 0, 34 ] )
 			);
 
-			checkMarker( 'comment:pre', prePosition );
-			checkMarker( 'comment:post', postPosition );
+			checkMarker( 'comment:pre:uniq', prePosition );
+			checkMarker( 'comment:post:uniq', postPosition );
 		} );
 
 		it( 'should handle paste markers that contain markers', () => {
@@ -4175,12 +4175,12 @@ describe( 'table clipboard', () => {
 				[ [ outerMarker ] ]
 			);
 
-			checkMarker( 'comment:outer', model.createRange(
+			checkMarker( 'comment:outer:uniq', model.createRange(
 				model.createPositionFromPath( modelRoot, [ 1, 0, 0, 0, 0 ] ),
 				model.createPositionFromPath( modelRoot, [ 1, 0, 0, 0, 11 ] )
 			) );
 
-			checkMarker( 'comment:inner', model.createRange(
+			checkMarker( 'comment:inner:uniq', model.createRange(
 				model.createPositionFromPath( modelRoot, [ 1, 0, 0, 0, 1 ] ),
 				model.createPositionFromPath( modelRoot, [ 1, 0, 0, 0, 5 ] )
 			) );
