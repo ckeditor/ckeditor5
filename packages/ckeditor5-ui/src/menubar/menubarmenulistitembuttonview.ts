@@ -10,6 +10,8 @@
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 import ButtonView from '../button/buttonview.js';
 
+import '../../theme/components/menubar/menubarmenulistitembutton.css';
+
 /**
  * A menu bar list button view. Buttons like this one execute user actions.
  */
@@ -27,6 +29,12 @@ export default class MenuBarMenuListItemButtonView extends ButtonView {
 			withKeystroke: true,
 			tooltip: false,
 			role: 'menuitem'
+		} );
+
+		this.extendTemplate( {
+			attributes: {
+				class: [ 'ck-menu-bar__menu__item__button' ]
+			}
 		} );
 	}
 }

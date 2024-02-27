@@ -24,6 +24,8 @@ import {
 	type MenuBarMenuPanelPosition
 } from './menubarmenupanelview.js';
 
+import '../../theme/components/menubar/menubarmenu.css';
+
 /**
  * A menu view for the {@link module:ui/menubar/menubarview~MenuBarView}. Menus are building blocks of the menu bar,
  * they host other sub-menus and menu items (buttons) that users can interact with.

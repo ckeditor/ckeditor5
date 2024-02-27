@@ -12,6 +12,8 @@ import type { FocusableView } from '../focuscycler.js';
 import type ViewCollection from '../viewcollection.js';
 import View from '../view.js';
 
+import '../../theme/components/menubar/menubarmenupanel.css';
+
 /**
  * A view representing a {@link module:ui/menubar/menubarmenuview~MenuBarMenuView#panelView} of a menu.
  */

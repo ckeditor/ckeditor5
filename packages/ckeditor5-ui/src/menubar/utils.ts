@@ -59,7 +59,6 @@ export const MenuBarBehaviors = {
 	 */
 	focusCycleMenusOnArrows( menuBarView: MenuBarView ): void {
 		menuBarView.on<MenuBarMenuArrowRightEvent>( 'menu:arrowright', evt => {
-			console.log( 'sub:right' );
 			cycleTopLevelMenus( evt.source as MenuBarMenuView, 1 );
 		} );
 

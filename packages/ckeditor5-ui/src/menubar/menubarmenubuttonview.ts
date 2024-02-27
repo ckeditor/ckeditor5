@@ -13,6 +13,8 @@ import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 import dropdownArrowIcon from '../../theme/icons/dropdown-arrow.svg';
 
+import '../../theme/components/menubar/menubarmenubutton.css';
+
 /**
  * A menu {@link module:ui/menubar/menubarmenuview~MenuBarMenuView#buttonView} class. Buttons like this one
  * open both top-level bar menus as well as sub-menus.
