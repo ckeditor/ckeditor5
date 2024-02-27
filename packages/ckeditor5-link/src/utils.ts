@@ -19,11 +19,10 @@ import type {
 } from 'ckeditor5/src/engine.js';
 import type { LocaleTranslate } from 'ckeditor5/src/utils.js';
 
-import {
-	DEFAULT_LINK_PROTOCOLS,
-	type LinkDecoratorAutomaticDefinition,
-	type LinkDecoratorDefinition,
-	type LinkDecoratorManualDefinition
+import type {
+	LinkDecoratorAutomaticDefinition,
+	LinkDecoratorDefinition,
+	LinkDecoratorManualDefinition
 } from './linkconfig.js';
 
 import { upperFirst } from 'lodash-es';
