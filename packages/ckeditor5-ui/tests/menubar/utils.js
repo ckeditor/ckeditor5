@@ -13,12 +13,12 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 import {
 	ComponentFactory,
-	MenuBarMenuListItemButtonView,
 	MenuBarMenuView,
 	MenuBarView
 } from '../../src/index.js';
 import {
 	barDump,
+	getButtonCreator,
 	getItemByLabel,
 	getMenuByLabel
 } from './_utils/utils.js';
@@ -32,16 +32,16 @@ describe( 'MenuBarView utils', () => {
 
 	beforeEach( () => {
 		factory = new ComponentFactory( {} );
-		factory.add( 'A#1', getButtonCreator( 'A#1' ) );
-		factory.add( 'AA#1', getButtonCreator( 'AA#1' ) );
-		factory.add( 'AB#1', getButtonCreator( 'AB#1' ) );
+		factory.add( 'A#1', getButtonCreator( 'A#1', locale ) );
+		factory.add( 'AA#1', getButtonCreator( 'AA#1', locale ) );
+		factory.add( 'AB#1', getButtonCreator( 'AB#1', locale ) );
 		factory.add( 'AAA (from-factory)', () => {
 			const menuView = new MenuBarMenuView( locale );
 			menuView.buttonView.label = 'AAA (from-factory)';
 			return menuView;
 		} );
-		factory.add( 'B#1', getButtonCreator( 'B#1' ) );
-		factory.add( 'C#1', getButtonCreator( 'C#1' ) );
+		factory.add( 'B#1', getButtonCreator( 'B#1', locale ) );
+		factory.add( 'C#1', getButtonCreator( 'C#1', locale ) );
 	} );
 
 	describe( 'MenuBarBehaviors', () => {
@@ -1104,12 +1104,4 @@ describe( 'MenuBarView utils', () => {
 			} );
 		} );
 	} );
-
-	function getButtonCreator( label ) {
-		return () => {
-			const buttonView = new MenuBarMenuListItemButtonView( locale );
-			buttonView.label = label;
-			return buttonView;
-		};
-	}
 } );

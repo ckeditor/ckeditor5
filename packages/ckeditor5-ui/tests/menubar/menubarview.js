@@ -28,7 +28,12 @@ import {
 } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
 import ListSeparatorView from '../../src/list/listseparatorview.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { barDump, getItemByLabel, getMenuByLabel } from './_utils/utils.js';
+import {
+	barDump,
+	getButtonCreator,
+	getItemByLabel,
+	getMenuByLabel
+} from './_utils/utils.js';
 
 describe( 'MenuBarView', () => {
 	let menuBarView, locale, factory;
@@ -201,16 +206,16 @@ describe( 'MenuBarView', () => {
 			beforeEach( () => {
 				testUtils.sinon.stub( console, 'warn' );
 
-				factory.add( 'A#1', getButtonCreator( 'A#1' ) );
-				factory.add( 'A#2', getButtonCreator( 'A#2' ) );
-				factory.add( 'AA#1', getButtonCreator( 'AA#1' ) );
+				factory.add( 'A#1', getButtonCreator( 'A#1', locale ) );
+				factory.add( 'A#2', getButtonCreator( 'A#2', locale ) );
+				factory.add( 'AA#1', getButtonCreator( 'AA#1', locale ) );
 				factory.add( 'AAA (from-factory)', () => {
 					const menuView = new MenuBarMenuView( locale );
 					menuView.buttonView.label = 'AAA (from-factory)';
 					return menuView;
 				} );
-				factory.add( 'B#1', getButtonCreator( 'B#1' ) );
-				factory.add( 'B#2', getButtonCreator( 'B#2' ) );
+				factory.add( 'B#1', getButtonCreator( 'B#1', locale ) );
+				factory.add( 'B#2', getButtonCreator( 'B#2', locale ) );
 				factory.add( 'B#3 (incorrect)', () => {
 					const buttonView = new ButtonView( locale );
 					buttonView.label = 'incorrect';
@@ -245,14 +250,6 @@ describe( 'MenuBarView', () => {
 						]
 					}
 				], factory );
-
-				function getButtonCreator( label ) {
-					return () => {
-						const buttonView = new MenuBarMenuListItemButtonView( locale );
-						buttonView.label = label;
-						return buttonView;
-					};
-				}
 
 				menuBarView.render();
 

@@ -5,7 +5,7 @@
 
 /* global document */
 
-import { MenuBarMenuView } from '../../../src/index.js';
+import { MenuBarMenuListItemButtonView, MenuBarMenuView } from '../../../src/index.js';
 import ListSeparatorView from '../../../src/list/listseparatorview.js';
 
 export function barDump( menuBarView, options ) {
@@ -60,4 +60,12 @@ export function getItemByLabel( menuBarView, label ) {
 			}
 		}
 	}
+}
+
+export function getButtonCreator( label, locale ) {
+	return () => {
+		const buttonView = new MenuBarMenuListItemButtonView( locale );
+		buttonView.label = label;
+		return buttonView;
+	};
 }
