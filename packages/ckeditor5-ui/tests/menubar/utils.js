@@ -11,42 +11,45 @@ import { ComponentFactory, MenuBarMenuListItemButtonView, MenuBarMenuView, MenuB
 import { barDump, getItemByLabel, getMenuByLabel } from './_utils/utils.js';
 
 describe( 'MenuBarView utils', () => {
+	const locale = new Locale();
+	let factory;
+
 	testUtils.createSinonSandbox();
 
-	const locale = new Locale();
+	beforeEach( () => {
+		factory = new ComponentFactory( {} );
+		factory.add( 'A#1', getButtonCreator( 'A#1' ) );
+		factory.add( 'AA#1', getButtonCreator( 'AA#1' ) );
+		factory.add( 'AB#1', getButtonCreator( 'AB#1' ) );
+		factory.add( 'AAA (from-factory)', () => {
+			const menuView = new MenuBarMenuView( locale );
+			menuView.buttonView.label = 'AAA (from-factory)';
+			return menuView;
+		} );
+		factory.add( 'B#1', getButtonCreator( 'B#1' ) );
+		factory.add( 'C#1', getButtonCreator( 'C#1' ) );
+	} );
 
 	describe( 'MenuBarBehaviors', () => {
-		let menuBarView, factory;
+		let menuBarView;
 
 		beforeEach( () => {
 			menuBarView = new MenuBarView( locale );
-			factory = new ComponentFactory( {} );
 			menuBarView.render();
 
 			document.body.appendChild( menuBarView.element );
-
-			factory.add( 'menu-A-item1', getButtonCreator( 'menu-A-item1' ) );
-			factory.add( 'menu-AA-item1', getButtonCreator( 'menu-AA-item1' ) );
-			factory.add( 'menu-AB-item1', getButtonCreator( 'menu-AB-item1' ) );
-			factory.add( 'AAA (from-factory)', () => {
-				const menuView = new MenuBarMenuView( locale );
-				menuView.buttonView.label = 'AAA (from-factory)';
-				return menuView;
-			} );
-			factory.add( 'menu-B-item1', getButtonCreator( 'menu-B-item1' ) );
-			factory.add( 'menu-C-item1', getButtonCreator( 'menu-C-item1' ) );
 
 			menuBarView.fillFromConfig( [
 				{
 					id: 'A',
 					label: 'A',
 					items: [
-						'menu-A-item1',
+						'A#1',
 						{
 							id: 'AA',
 							label: 'AA',
 							items: [
-								'menu-AA-item1',
+								'AA#1',
 								'AAA (from-factory)'
 							]
 						},
@@ -54,7 +57,7 @@ describe( 'MenuBarView utils', () => {
 							id: 'AB',
 							label: 'AB',
 							items: [
-								'menu-AB-item1'
+								'AB#1'
 							]
 						}
 					]
@@ -63,14 +66,14 @@ describe( 'MenuBarView utils', () => {
 					id: 'B',
 					label: 'B',
 					items: [
-						'menu-B-item1'
+						'B#1'
 					]
 				},
 				{
 					id: 'C',
 					label: 'C',
 					items: [
-						'menu-C-item1'
+						'C#1'
 					]
 				}
 			], factory );
@@ -117,7 +120,7 @@ describe( 'MenuBarView utils', () => {
 							{
 								label: 'A', isOpen: false, isFocused: false,
 								items: [
-									{ label: 'menu-A-item1', isFocused: false },
+									{ label: 'A#1', isFocused: false },
 									{ label: 'AA', isOpen: false, isFocused: false, items: [] },
 									{ label: 'AB', isOpen: false, isFocused: false, items: [] }
 								]
@@ -125,7 +128,7 @@ describe( 'MenuBarView utils', () => {
 							{
 								label: 'B', isOpen: true, isFocused: true,
 								items: [
-									{ label: 'menu-B-item1', isFocused: false }
+									{ label: 'B#1', isFocused: false }
 								]
 							},
 							{
@@ -142,7 +145,7 @@ describe( 'MenuBarView utils', () => {
 							{
 								label: 'A', isOpen: true, isFocused: true,
 								items: [
-									{ label: 'menu-A-item1', isFocused: false },
+									{ label: 'A#1', isFocused: false },
 									{ label: 'AA', isOpen: false, isFocused: false, items: [] },
 									{ label: 'AB', isOpen: false, isFocused: false, items: [] }
 								]
@@ -150,7 +153,7 @@ describe( 'MenuBarView utils', () => {
 							{
 								label: 'B', isOpen: false, isFocused: false,
 								items: [
-									{ label: 'menu-B-item1', isFocused: false }
+									{ label: 'B#1', isFocused: false }
 								]
 							},
 							{
@@ -177,13 +180,13 @@ describe( 'MenuBarView utils', () => {
 							{
 								label: 'A', isOpen: true, isFocused: false,
 								items: [
-									{ label: 'menu-A-item1', isFocused: false },
+									{ label: 'A#1', isFocused: false },
 									{ label: 'AA', isOpen: false, isFocused: false, items: [
-										{ label: 'menu-AA-item1', isFocused: false },
+										{ label: 'AA#1', isFocused: false },
 										{ label: 'AAA (from-factory)', isOpen: false, isFocused: false, items: [] }
 									] },
 									{ label: 'AB', isOpen: true, isFocused: true, items: [
-										{ label: 'menu-AB-item1', isFocused: false }
+										{ label: 'AB#1', isFocused: false }
 									] }
 								]
 							},
@@ -205,13 +208,13 @@ describe( 'MenuBarView utils', () => {
 							{
 								label: 'A', isOpen: true, isFocused: false,
 								items: [
-									{ label: 'menu-A-item1', isFocused: false },
+									{ label: 'A#1', isFocused: false },
 									{ label: 'AA', isOpen: true, isFocused: true, items: [
-										{ label: 'menu-AA-item1', isFocused: false },
+										{ label: 'AA#1', isFocused: false },
 										{ label: 'AAA (from-factory)', isOpen: false, isFocused: false, items: [] }
 									] },
 									{ label: 'AB', isOpen: false, isFocused: false, items: [
-										{ label: 'menu-AB-item1', isFocused: false }
+										{ label: 'AB#1', isFocused: false }
 									] }
 								]
 							},
@@ -233,7 +236,7 @@ describe( 'MenuBarView utils', () => {
 					menuA.isOpen = true;
 
 					const menuAA = getMenuByLabel( menuBarView, 'AA' );
-					const menuAItem1 = getItemByLabel( menuBarView, 'menu-A-item1' );
+					const menuAItem1 = getItemByLabel( menuBarView, 'A#1' );
 
 					menuAA.buttonView.fire( 'mouseenter' );
 
@@ -242,9 +245,9 @@ describe( 'MenuBarView utils', () => {
 							{
 								label: 'A', isOpen: true, isFocused: false,
 								items: [
-									{ label: 'menu-A-item1', isFocused: false },
+									{ label: 'A#1', isFocused: false },
 									{ label: 'AA', isOpen: true, isFocused: true, items: [
-										{ label: 'menu-AA-item1', isFocused: false },
+										{ label: 'AA#1', isFocused: false },
 										{ label: 'AAA (from-factory)', isOpen: false, isFocused: false, items: [] }
 									] },
 									{ label: 'AB', isOpen: false, isFocused: false, items: [] }
@@ -268,9 +271,9 @@ describe( 'MenuBarView utils', () => {
 							{
 								label: 'A', isOpen: true, isFocused: false,
 								items: [
-									{ label: 'menu-A-item1', isFocused: true },
+									{ label: 'A#1', isFocused: true },
 									{ label: 'AA', isOpen: false, isFocused: false, items: [
-										{ label: 'menu-AA-item1', isFocused: false },
+										{ label: 'AA#1', isFocused: false },
 										{ label: 'AAA (from-factory)', isOpen: false, isFocused: false, items: [] }
 									] },
 									{ label: 'AB', isOpen: false, isFocused: false, items: [] }
@@ -306,9 +309,9 @@ describe( 'MenuBarView utils', () => {
 						{
 							label: 'A', isOpen: true, isFocused: false,
 							items: [
-								{ label: 'menu-A-item1', isFocused: false },
+								{ label: 'A#1', isFocused: false },
 								{ label: 'AA', isOpen: true, isFocused: false, items: [
-									{ label: 'menu-AA-item1', isFocused: false },
+									{ label: 'AA#1', isFocused: false },
 									{ label: 'AAA (from-factory)', isOpen: true, isFocused: false, items: [
 
 									] }
@@ -334,9 +337,9 @@ describe( 'MenuBarView utils', () => {
 						{
 							label: 'A', isOpen: false, isFocused: false,
 							items: [
-								{ label: 'menu-A-item1', isFocused: false },
+								{ label: 'A#1', isFocused: false },
 								{ label: 'AA', isOpen: false, isFocused: false, items: [
-									{ label: 'menu-AA-item1', isFocused: false },
+									{ label: 'AA#1', isFocused: false },
 									{ label: 'AAA (from-factory)', isOpen: false, isFocused: false, items: [
 
 									] }
@@ -374,13 +377,13 @@ describe( 'MenuBarView utils', () => {
 						{
 							label: 'A', isOpen: true, isFocused: false,
 							items: [
-								{ label: 'menu-A-item1', isFocused: false },
+								{ label: 'A#1', isFocused: false },
 								{ label: 'AA', isOpen: false, isFocused: false, items: [
-									{ label: 'menu-AA-item1', isFocused: false },
+									{ label: 'AA#1', isFocused: false },
 									{ label: 'AAA (from-factory)', isOpen: false, isFocused: false, items: [] }
 								] },
 								{ label: 'AB', isOpen: true, isFocused: false, items: [
-									{ label: 'menu-AB-item1', isFocused: false }
+									{ label: 'AB#1', isFocused: false }
 								] }
 							]
 						},
@@ -523,7 +526,7 @@ describe( 'MenuBarView utils', () => {
 							{
 								label: 'A', isOpen: false, isFocused: false,
 								items: [
-									{ label: 'menu-A-item1', isFocused: false },
+									{ label: 'A#1', isFocused: false },
 									{ label: 'AA', isOpen: false, isFocused: false, items: [] },
 									{ label: 'AB', isOpen: false, isFocused: false, items: [] }
 								]
@@ -531,7 +534,7 @@ describe( 'MenuBarView utils', () => {
 							{
 								label: 'B', isOpen: true, isFocused: true,
 								items: [
-									{ label: 'menu-B-item1', isFocused: false }
+									{ label: 'B#1', isFocused: false }
 								]
 							},
 							{
@@ -548,7 +551,7 @@ describe( 'MenuBarView utils', () => {
 							{
 								label: 'A', isOpen: false, isFocused: false,
 								items: [
-									{ label: 'menu-A-item1', isFocused: false },
+									{ label: 'A#1', isFocused: false },
 									{ label: 'AA', isOpen: false, isFocused: false, items: [] },
 									{ label: 'AB', isOpen: false, isFocused: false, items: [] }
 								]
@@ -556,13 +559,13 @@ describe( 'MenuBarView utils', () => {
 							{
 								label: 'B', isOpen: false, isFocused: false,
 								items: [
-									{ label: 'menu-B-item1', isFocused: false }
+									{ label: 'B#1', isFocused: false }
 								]
 							},
 							{
 								label: 'C', isOpen: true, isFocused: true,
 								items: [
-									{ label: 'menu-C-item1', isFocused: false }
+									{ label: 'C#1', isFocused: false }
 								]
 							}
 						]
@@ -575,7 +578,7 @@ describe( 'MenuBarView utils', () => {
 							{
 								label: 'A', isOpen: true, isFocused: true,
 								items: [
-									{ label: 'menu-A-item1', isFocused: false },
+									{ label: 'A#1', isFocused: false },
 									{ label: 'AA', isOpen: false, isFocused: false, items: [] },
 									{ label: 'AB', isOpen: false, isFocused: false, items: [] }
 								]
@@ -583,13 +586,13 @@ describe( 'MenuBarView utils', () => {
 							{
 								label: 'B', isOpen: false, isFocused: false,
 								items: [
-									{ label: 'menu-B-item1', isFocused: false }
+									{ label: 'B#1', isFocused: false }
 								]
 							},
 							{
 								label: 'C', isOpen: false, isFocused: false,
 								items: [
-									{ label: 'menu-C-item1', isFocused: false }
+									{ label: 'C#1', isFocused: false }
 								]
 							}
 						]
@@ -609,7 +612,7 @@ describe( 'MenuBarView utils', () => {
 							{
 								label: 'A', isOpen: false, isFocused: false,
 								items: [
-									{ label: 'menu-A-item1', isFocused: false },
+									{ label: 'A#1', isFocused: false },
 									{ label: 'AA', isOpen: false, isFocused: false, items: [] },
 									{ label: 'AB', isOpen: false, isFocused: false, items: [] }
 								]
@@ -621,7 +624,7 @@ describe( 'MenuBarView utils', () => {
 							{
 								label: 'C', isOpen: true, isFocused: true,
 								items: [
-									{ label: 'menu-C-item1', isFocused: false }
+									{ label: 'C#1', isFocused: false }
 								]
 							}
 						]
@@ -634,7 +637,7 @@ describe( 'MenuBarView utils', () => {
 							{
 								label: 'A', isOpen: false, isFocused: false,
 								items: [
-									{ label: 'menu-A-item1', isFocused: false },
+									{ label: 'A#1', isFocused: false },
 									{ label: 'AA', isOpen: false, isFocused: false, items: [] },
 									{ label: 'AB', isOpen: false, isFocused: false, items: [] }
 								]
@@ -642,13 +645,13 @@ describe( 'MenuBarView utils', () => {
 							{
 								label: 'B', isOpen: true, isFocused: true,
 								items: [
-									{ label: 'menu-B-item1', isFocused: false }
+									{ label: 'B#1', isFocused: false }
 								]
 							},
 							{
 								label: 'C', isOpen: false, isFocused: false,
 								items: [
-									{ label: 'menu-C-item1', isFocused: false }
+									{ label: 'C#1', isFocused: false }
 								]
 							}
 						]
@@ -676,14 +679,11 @@ describe( 'MenuBarView utils', () => {
 
 	describe( 'MenuBarMenuBehaviors', () => {
 		describe( 'for top-level menus', () => {
-			let menuBarView, factory;
+			let menuBarView;
 
 			beforeEach( () => {
 				menuBarView = new MenuBarView( locale );
 				menuBarView.render();
-
-				factory = new ComponentFactory( {} );
-				factory.add( 'menu-A-item1', getButtonCreator( 'menu-A-item1' ) );
 
 				document.body.appendChild( menuBarView.element );
 
@@ -692,7 +692,7 @@ describe( 'MenuBarView utils', () => {
 						id: 'A',
 						label: 'A',
 						items: [
-							'menu-A-item1'
+							'A#1'
 						]
 					}
 				], factory );
@@ -719,7 +719,7 @@ describe( 'MenuBarView utils', () => {
 							{
 								label: 'A', isOpen: true, isFocused: false,
 								items: [
-									{ label: 'menu-A-item1', isFocused: true }
+									{ label: 'A#1', isFocused: true }
 								]
 							}
 
@@ -739,7 +739,7 @@ describe( 'MenuBarView utils', () => {
 							{
 								label: 'A', isOpen: true, isFocused: false,
 								items: [
-									{ label: 'menu-A-item1', isFocused: true }
+									{ label: 'A#1', isFocused: true }
 								]
 							}
 
@@ -756,7 +756,7 @@ describe( 'MenuBarView utils', () => {
 							{
 								label: 'A', isOpen: false, isFocused: false,
 								items: [
-									{ label: 'menu-A-item1', isFocused: false }
+									{ label: 'A#1', isFocused: false }
 								]
 							}
 
@@ -767,15 +767,11 @@ describe( 'MenuBarView utils', () => {
 		} );
 
 		describe( 'for sub-menu', () => {
-			let menuBarView, factory;
+			let menuBarView;
 
 			beforeEach( () => {
 				menuBarView = new MenuBarView( locale );
 				menuBarView.render();
-
-				factory = new ComponentFactory( {} );
-				factory.add( 'menu-A-item1', getButtonCreator( 'menu-A-item1' ) );
-				factory.add( 'menu-AA-item1', getButtonCreator( 'menu-AA-item1' ) );
 
 				document.body.appendChild( menuBarView.element );
 
@@ -784,12 +780,12 @@ describe( 'MenuBarView utils', () => {
 						id: 'A',
 						label: 'A',
 						items: [
-							'menu-A-item1',
+							'A#1',
 							{
 								id: 'AA',
 								label: 'AA',
 								items: [
-									'menu-AA-item1'
+									'AA#1'
 								]
 							}
 						]
@@ -816,9 +812,9 @@ describe( 'MenuBarView utils', () => {
 							{
 								label: 'A', isOpen: true, isFocused: false,
 								items: [
-									{ label: 'menu-A-item1', isFocused: false },
+									{ label: 'A#1', isFocused: false },
 									{ label: 'AA', isFocused: false, isOpen: true, items: [
-										{ label: 'menu-AA-item1', isFocused: true }
+										{ label: 'AA#1', isFocused: true }
 									] }
 								]
 							}
@@ -833,9 +829,9 @@ describe( 'MenuBarView utils', () => {
 							{
 								label: 'A', isOpen: true, isFocused: false,
 								items: [
-									{ label: 'menu-A-item1', isFocused: false },
+									{ label: 'A#1', isFocused: false },
 									{ label: 'AA', isFocused: false, isOpen: true, items: [
-										{ label: 'menu-AA-item1', isFocused: true }
+										{ label: 'AA#1', isFocused: true }
 									] }
 								]
 							}
@@ -866,9 +862,9 @@ describe( 'MenuBarView utils', () => {
 							{
 								label: 'A', isOpen: true, isFocused: false,
 								items: [
-									{ label: 'menu-A-item1', isFocused: false },
+									{ label: 'A#1', isFocused: false },
 									{ label: 'AA', isFocused: false, isOpen: true, items: [
-										{ label: 'menu-AA-item1', isFocused: true }
+										{ label: 'AA#1', isFocused: true }
 									] }
 								]
 							}
@@ -898,9 +894,9 @@ describe( 'MenuBarView utils', () => {
 							{
 								label: 'A', isOpen: true, isFocused: false,
 								items: [
-									{ label: 'menu-A-item1', isFocused: false },
+									{ label: 'A#1', isFocused: false },
 									{ label: 'AA', isFocused: true, isOpen: false, items: [
-										{ label: 'menu-AA-item1', isFocused: false }
+										{ label: 'AA#1', isFocused: false }
 									] }
 								]
 							}
@@ -925,9 +921,9 @@ describe( 'MenuBarView utils', () => {
 							{
 								label: 'A', isOpen: false, isFocused: false,
 								items: [
-									{ label: 'menu-A-item1', isFocused: false },
+									{ label: 'A#1', isFocused: false },
 									{ label: 'AA', isFocused: false, isOpen: false, items: [
-										{ label: 'menu-AA-item1', isFocused: false }
+										{ label: 'AA#1', isFocused: false }
 									] }
 								]
 							}
@@ -940,11 +936,6 @@ describe( 'MenuBarView utils', () => {
 		it( 'should bring closeOnEscKey() that closes the menu on Esc key press', () => {
 			const menuBarView = new MenuBarView( locale );
 			menuBarView.render();
-
-			const factory = new ComponentFactory( {} );
-			factory.add( 'menu-A-item1', getButtonCreator( 'menu-A-item1' ) );
-			factory.add( 'menu-AA-item1', getButtonCreator( 'menu-AA-item1' ) );
-
 			document.body.appendChild( menuBarView.element );
 
 			menuBarView.fillFromConfig( [
@@ -952,12 +943,12 @@ describe( 'MenuBarView utils', () => {
 					id: 'A',
 					label: 'A',
 					items: [
-						'menu-A-item1',
+						'A#1',
 						{
 							id: 'AA',
 							label: 'AA',
 							items: [
-								'menu-AA-item1'
+								'AA#1'
 							]
 						}
 					]
@@ -983,9 +974,9 @@ describe( 'MenuBarView utils', () => {
 					{
 						label: 'A', isOpen: true, isFocused: false,
 						items: [
-							{ label: 'menu-A-item1', isFocused: false },
+							{ label: 'A#1', isFocused: false },
 							{ label: 'AA', isFocused: true, isOpen: false, items: [
-								{ label: 'menu-AA-item1', isFocused: false }
+								{ label: 'AA#1', isFocused: false }
 							] }
 						]
 					}
@@ -999,9 +990,9 @@ describe( 'MenuBarView utils', () => {
 					{
 						label: 'A', isOpen: false, isFocused: true,
 						items: [
-							{ label: 'menu-A-item1', isFocused: false },
+							{ label: 'A#1', isFocused: false },
 							{ label: 'AA', isFocused: false, isOpen: false, items: [
-								{ label: 'menu-AA-item1', isFocused: false }
+								{ label: 'AA#1', isFocused: false }
 							] }
 						]
 					}

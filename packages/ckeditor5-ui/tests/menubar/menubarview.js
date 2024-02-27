@@ -201,17 +201,17 @@ describe( 'MenuBarView', () => {
 			beforeEach( () => {
 				testUtils.sinon.stub( console, 'warn' );
 
-				factory.add( 'menu-A-item1', getButtonCreator( 'menu-A-item1' ) );
-				factory.add( 'menu-A-item2', getButtonCreator( 'menu-A-item2' ) );
-				factory.add( 'menu-AA-item1', getButtonCreator( 'menu-AA-item1' ) );
+				factory.add( 'A#1', getButtonCreator( 'A#1' ) );
+				factory.add( 'A#2', getButtonCreator( 'A#2' ) );
+				factory.add( 'AA#1', getButtonCreator( 'AA#1' ) );
 				factory.add( 'AAA (from-factory)', () => {
 					const menuView = new MenuBarMenuView( locale );
 					menuView.buttonView.label = 'AAA (from-factory)';
 					return menuView;
 				} );
-				factory.add( 'menu-B-item1', getButtonCreator( 'menu-B-item1' ) );
-				factory.add( 'menu-B-item2', getButtonCreator( 'menu-B-item2' ) );
-				factory.add( 'menu-B-item3-incorrect', () => {
+				factory.add( 'B#1', getButtonCreator( 'B#1' ) );
+				factory.add( 'B#2', getButtonCreator( 'B#2' ) );
+				factory.add( 'B#3 (incorrect)', () => {
 					const buttonView = new ButtonView( locale );
 					buttonView.label = 'incorrect';
 					return buttonView;
@@ -222,14 +222,14 @@ describe( 'MenuBarView', () => {
 						id: 'A',
 						label: 'A',
 						items: [
-							'menu-A-item1',
-							'menu-A-item2',
+							'A#1',
+							'A#2',
 							'-',
 							{
 								id: 'AA',
 								label: 'AA',
 								items: [
-									'menu-AA-item1',
+									'AA#1',
 									'AAA (from-factory)'
 								]
 							}
@@ -239,9 +239,9 @@ describe( 'MenuBarView', () => {
 						id: 'B',
 						label: 'B',
 						items: [
-							'menu-B-item1',
-							'menu-B-item2',
-							'menu-B-item3-incorrect'
+							'B#1',
+							'B#2',
+							'B#3 (incorrect)'
 						]
 					}
 				], factory );
@@ -297,13 +297,13 @@ describe( 'MenuBarView', () => {
 					{
 						label: 'A', isOpen: true, isFocused: false,
 						items: [
-							{ label: 'menu-A-item1', isFocused: false },
-							{ label: 'menu-A-item2', isFocused: false },
+							{ label: 'A#1', isFocused: false },
+							{ label: 'A#2', isFocused: false },
 							'-',
 							{
 								label: 'AA', isOpen: true, isFocused: false,
 								items: [
-									{ label: 'menu-AA-item1', isFocused: false },
+									{ label: 'AA#1', isFocused: false },
 									{
 										label: 'AAA (from-factory)', isOpen: true, isFocused: false,
 										items: []
@@ -314,8 +314,8 @@ describe( 'MenuBarView', () => {
 					},
 					{
 						label: 'B', isOpen: true, isFocused: false, items: [
-							{ label: 'menu-B-item1', isFocused: false },
-							{ label: 'menu-B-item2', isFocused: false }
+							{ label: 'B#1', isFocused: false },
+							{ label: 'B#2', isFocused: false }
 						]
 					}
 				] );
@@ -373,7 +373,7 @@ describe( 'MenuBarView', () => {
 					} );
 
 					it( 'should delegate #mouseenter from feature list items to the parent menu', () => {
-						const buttonView = getItemByLabel( menuBarView, 'menu-A-item1' );
+						const buttonView = getItemByLabel( menuBarView, 'A#1' );
 						const spy = sinon.spy();
 
 						menuBarView.children.first.on( 'mouseenter', spy );
@@ -382,7 +382,7 @@ describe( 'MenuBarView', () => {
 					} );
 
 					it( 'should close parent menu when feature component fires #execute', () => {
-						const buttonView = getItemByLabel( menuBarView, 'menu-A-item1' ).children.first;
+						const buttonView = getItemByLabel( menuBarView, 'A#1' ).children.first;
 
 						expect( getMenuByLabel( menuBarView, 'A' ).isOpen ).to.be.true;
 
