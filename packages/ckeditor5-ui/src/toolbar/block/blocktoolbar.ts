@@ -103,8 +103,6 @@ export default class BlockToolbar extends Plugin {
 	 *
 	 * **Note**: Used only when `shouldNotGroupWhenFull` was **not** set in the
 	 * {@link module:core/editor/editorconfig~EditorConfig#blockToolbar configuration}.
-	 *
-	 * **Note:** Created in {@link #afterInit}.
 	 */
 	private _resizeObserver: ResizeObserver | null = null;
 
