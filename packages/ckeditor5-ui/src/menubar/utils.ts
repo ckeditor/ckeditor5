@@ -11,14 +11,23 @@ import clickOutsideHandler from '../bindings/clickoutsidehandler.js';
 import type MenuBarMenuView from './menubarmenuview.js';
 import type {
 	default as MenuBarView,
+	MenuBarConfig,
 	MenuBarMenuMouseEnterEvent,
 	MenuBarMenuChangeIsOpenEvent,
 	MenuBarMenuArrowRightEvent,
-	MenuBarMenuArrowLeftEvent
+	MenuBarMenuArrowLeftEvent,
+	MenuBarMenuDefinition
 } from './menubarview.js';
+import { cloneDeep } from 'lodash-es';
 import type { FocusableView } from '../focuscycler.js';
-import type { ObservableChangeEvent, PositioningFunction } from '@ckeditor/ckeditor5-utils';
+import {
+	logWarning,
+	type Locale,
+	type ObservableChangeEvent,
+	type PositioningFunction
+} from '@ckeditor/ckeditor5-utils';
 import type { ButtonExecuteEvent } from '../button/button.js';
+import type ComponentFactory from '../componentfactory.js';
 
 const NESTED_PANEL_HORIZONTAL_OFFSET = 5;
 
@@ -378,3 +387,283 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
 		};
 	}
 } as const;
+
+/**
+ * The default configuration of the {@link module:ui/menubar/menubarview~MenuBarView} component.
+ *
+ * It contains names of all UI components available in the project.
+ */
+export const DefaultMenuBarConfig: MenuBarConfig = [
+	{
+		id: 'edit',
+		label: 'Edit',
+		items: [
+			'menuBar:undo',
+			'menuBar:redo',
+			'-',
+			'menuBar:selectAll',
+			'-',
+			'menuBar:findAndReplace',
+			'blah'
+		]
+	},
+	{
+		id: 'view',
+		label: 'View',
+		items: [
+			'menuBar:sourceEditing',
+			'-',
+			'menuBar:showBlocks'
+		]
+	},
+	{
+		id: 'insert',
+		label: 'Insert',
+		items: [
+			'menuBar:blockQuote'
+		]
+	},
+	{
+		id: 'format',
+		label: 'Format',
+		items: [
+			'menuBar:insertTable',
+			'-',
+			'menuBar:bold',
+			'menuBar:italic',
+			'menuBar:underline',
+			'-',
+			'menuBar:heading'
+		]
+	},
+	{
+		id: 'test',
+		label: 'Test',
+		items: [
+			'menuBar:bold',
+			'menuBar:italic',
+			'menuBar:underline',
+			{
+				id: 'test-nested-lvl1',
+				label: 'Test nested level 1',
+				items: [
+					'menuBar:undo',
+					'menuBar:redo',
+					{
+						id: 'test-nested-lvl11',
+						label: 'Test nested level 1.1',
+						items: [
+							'menuBar:undo',
+							'menuBar:redo'
+						]
+					}
+				]
+			},
+			{
+				id: 'test-nested-lvl2',
+				label: 'Test nested level 2',
+				items: [
+					'menuBar:undo',
+					'menuBar:redo',
+					{
+						id: 'test-nested-lvl21',
+						label: 'Test nested level 2.1',
+						items: [
+							'menuBar:undo',
+							'menuBar:redo'
+						]
+					}
+				]
+			}
+		]
+	}
+] as const;
+
+/**
+ * Performs a cleanup and normalization of the menu bar configuration and returns a config
+ * clone with the following modifications:
+ *
+ * * Removed components that are not available in the component factory,
+ * * Removed obsolete separators,
+ * * Purged empty menus,
+ * * Localized top-level menu labels.
+ */
+export function normalizeMenuBarConfig( {
+	locale,
+	componentFactory,
+	config
+}: {
+	locale: Locale;
+	componentFactory: ComponentFactory;
+	config: Readonly<MenuBarConfig> | undefined;
+} ): MenuBarConfig {
+	if ( !config ) {
+		return DefaultMenuBarConfig;
+	}
+
+	const isUsingDefaultConfig = config === DefaultMenuBarConfig;
+	const configClone = cloneDeep( config ) as MenuBarConfig;
+
+	purgeUnavailableComponents( config, configClone, componentFactory, isUsingDefaultConfig );
+	purgeObsoleteSeparators( configClone );
+	purgeEmptyMenus( config, configClone, isUsingDefaultConfig );
+	localizeTopLevelCategories( configClone, locale );
+
+	return configClone;
+}
+
+/**
+ * Removes components from the menu bar configuration that are not available in the factory and would
+ * not be instantiated. Warns about missing components if the menu bar configuration was specified by the user.
+ */
+function purgeUnavailableComponents(
+	originalConfig: Readonly<MenuBarConfig>,
+	config: MenuBarConfig,
+	componentFactory: ComponentFactory,
+	isUsingDefaultConfig: boolean
+) {
+	walkConfig( config, menuDefinition => {
+		menuDefinition.items = menuDefinition.items.filter( item => {
+			const isItemUnavailable = typeof item === 'string' && item !== '-' && !componentFactory.has( item );
+
+			// The default configuration contains all possible editor features. But integrators' editors rarely load
+			// every possible feature. This is why we do not want to log warnings about unavailable items for the default config
+			// because they would show up in almost every integration. If the configuration has been provided by
+			// the integrator, on the other hand, then these warnings bring value.
+			if ( isItemUnavailable && !isUsingDefaultConfig ) {
+				/**
+				 * There was a problem processing the configuration of the menu bar. The item with the given
+				 * name does not exist so it was omitted when rendering the menu bar.
+				 *
+				 * This warning usually shows up when the {@link module:core/plugin~Plugin} which is supposed
+				 * to provide a menu bar item has not been loaded or there is a typo in the
+				 * {@link module:core/editor/editorconfig~EditorConfig#menuBar menu bar configuration}.
+				 *
+				 * Make sure the plugin responsible for this menu bar item is loaded and the menu bar configuration
+				 * is correct, e.g. {@link module:basic-styles/boldyu~BoldUI} is loaded for the `'menuBar:bold'`
+				 * menu bar item.
+				 *
+				 * @error menu-bar-item-unavailable
+				 * @param menuBarConfig The full configuration of the menu bar.
+				 * @param parentMenuConfig The config of the menu the unavailable component was defined in.
+				 * @param componentName The name of the unavailable component.
+				 */
+				logWarning( 'menu-bar-item-unavailable', {
+					menuBarConfig: originalConfig,
+					parentMenuConfig: cloneDeep( menuDefinition ),
+					componentName: item
+				} );
+			}
+
+			return !isItemUnavailable;
+		} );
+	} );
+}
+
+/**
+ * Removes trailing and leading separators from menu bar configuration. Such separators can be added by mistake
+ * or due to the missing components in the factory that were meant to be separated.
+ */
+function purgeObsoleteSeparators( config: MenuBarConfig ) {
+	walkConfig( config, menuDefinition => {
+		menuDefinition.items = menuDefinition.items.filter( ( item, index, items ) => {
+			const isSeparator = item === '-';
+			const isTrailingSeparator = isSeparator && index === items.length - 1;
+			const isLeadingSeparator = isSeparator && index === 0;
+
+			return !isTrailingSeparator && !isLeadingSeparator;
+		} );
+	} );
+}
+
+/**
+ * Removes empty menus from the menu bar configuration to improve the visual UX. Such menus can occur
+ * when some plugins responsible for providing menu bar items have not been loaded and some part of
+ * the configuration populated menus using these components exclusively.
+ */
+function purgeEmptyMenus(
+	originalConfig: Readonly<MenuBarConfig>,
+	config: MenuBarConfig,
+	isUsingDefaultConfig: boolean
+) {
+	if ( !config.length ) {
+		/**
+		 * There was a problem processing the configuration of the menu bar. One of the menus
+		 * is empty so it was omitted when rendering the menu bar.
+		 *
+		 * This warning usually shows up when some {@link module:core/plugin~Plugin plugins} responsible for
+		 * providing menu bar items have not been loaded and the
+		 * {@link module:core/editor/editorconfig~EditorConfig#menuBar menu bar configuration} was not updated.
+		 *
+		 * Make sure all necessary editor plugins are loaded and/or update the menu bar configuration
+		 * to account for the missing menu items.
+		 *
+		 * @error menu-bar-menu-empty
+		 * @param menuBarConfig The full configuration of the menu bar.
+		 * @param emptyMenuConfig The definition of the menu that has no child items.
+		 */
+		logWarning( 'menu-bar-menu-empty', {
+			menuBarConfig: originalConfig,
+			emptyMenuConfig: originalConfig
+		} );
+
+		return;
+	}
+
+	walkConfig( config, ( menuDefinition, siblings ) => {
+		if ( !menuDefinition.items.length || menuDefinition.items.every( item => item === '-' ) ) {
+			siblings.splice( siblings.indexOf( menuDefinition ), 1 );
+
+			if ( !isUsingDefaultConfig ) {
+				logWarning( 'menu-bar-menu-empty', {
+					menuBarConfig: originalConfig,
+					emptyMenuConfig: menuDefinition
+				} );
+			}
+
+			// Walking goes from the root to the leaves so if leaves are removed, we need to re-iterate the level up.
+			purgeEmptyMenus( originalConfig, config, isUsingDefaultConfig );
+		}
+	} );
+}
+
+/**
+ * Localizes the user-config using pre-defined localized category labels.
+ */
+function localizeTopLevelCategories( config: MenuBarConfig, locale: Locale ) {
+	const t = locale.t;
+	const localizedCategoryLabels: Record<string, string> = {
+		'Edit': t( 'Edit' ),
+		'Format': t( 'Format' )
+	};
+
+	for ( const categoryDef of config ) {
+		if ( categoryDef.label in localizedCategoryLabels ) {
+			categoryDef.label = localizedCategoryLabels[ categoryDef.label ];
+		}
+	}
+}
+
+function walkConfig(
+	definition: MenuBarConfig | MenuBarMenuDefinition,
+	callback: ( definition: MenuBarMenuDefinition, siblings: MenuBarConfig | MenuBarMenuDefinition[ 'items' ] ) => void
+) {
+	if ( Array.isArray( definition ) ) {
+		for ( const topLevelMenuDefinition of definition ) {
+			walk( topLevelMenuDefinition, definition );
+		}
+	}
+
+	function walk(
+		definition: MenuBarMenuDefinition,
+		siblings: MenuBarMenuDefinition[ 'items' ] | MenuBarConfig
+	) {
+		callback( definition, siblings );
+
+		for ( const item of definition.items ) {
+			if ( typeof item === 'object' ) {
+				walk( item, definition.items );
+			}
+		}
+	}
+}

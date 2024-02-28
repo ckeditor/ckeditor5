@@ -15,7 +15,7 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 import { type FocusableView } from '../focuscycler.js';
 import View from '../view.js';
-import { cloneDeep, isObject } from 'lodash-es';
+import { isObject } from 'lodash-es';
 import ListSeparatorView from '../list/listseparatorview.js';
 import type ViewCollection from '../viewcollection.js';
 import type ComponentFactory from '../componentfactory.js';
@@ -24,7 +24,10 @@ import MenuBarMenuView from './menubarmenuview.js';
 import MenuBarMenuListView from './menubarmenulistview.js';
 import MenuBarMenuListItemView from './menubarmenulistitemview.js';
 import MenuBarMenuListItemButtonView from './menubarmenulistitembuttonview.js';
-import { MenuBarBehaviors } from './utils.js';
+import {
+	MenuBarBehaviors,
+	normalizeMenuBarConfig
+} from './utils.js';
 
 const EVENT_NAME_DELEGATES = [ 'mouseenter', 'arrowleft', 'arrowright', 'change:isOpen' ] as const;
 
@@ -95,10 +98,13 @@ export default class MenuBarView extends View implements FocusableView {
 	 *
 	 * TODO: The configuration will expand with removing and adding items.
 	 */
-	public fillFromConfig( config: MenuBarConfig, componentFactory: ComponentFactory ): void {
+	public fillFromConfig( config: MenuBarConfig | undefined, componentFactory: ComponentFactory ): void {
 		const locale = this.locale!;
-		const localizedConfig = localizeConfigCategories( locale, config );
-		const topLevelCategoryMenuViews = localizedConfig.map( menuDefinition => this._createMenu( {
+		const topLevelCategoryMenuViews = normalizeMenuBarConfig( {
+			locale,
+			componentFactory,
+			config
+		} ).map( menuDefinition => this._createMenu( {
 			componentFactory,
 			menuDefinition
 		} ) );
@@ -148,96 +154,6 @@ export default class MenuBarView extends View implements FocusableView {
 		}
 
 		this.menus.push( menuView );
-	}
-
-	/**
-	 * TODO
-	 */
-	public static get defaultConfig(): MenuBarConfig {
-		return [
-			{
-				id: 'edit',
-				label: 'Edit',
-				items: [
-					'menuBar:undo',
-					'menuBar:redo',
-					'-',
-					'menuBar:selectAll',
-					'-',
-					'menuBar:findAndReplace'
-				]
-			},
-			{
-				id: 'view',
-				label: 'View',
-				items: [
-					'menuBar:sourceEditing',
-					'-',
-					'menuBar:showBlocks'
-				]
-			},
-			{
-				id: 'insert',
-				label: 'Insert',
-				items: [
-					'menuBar:blockQuote'
-				]
-			},
-			{
-				id: 'format',
-				label: 'Format',
-				items: [
-					'menuBar:insertTable',
-					'-',
-					'menuBar:bold',
-					'menuBar:italic',
-					'menuBar:underline',
-					'-',
-					'menuBar:heading'
-				]
-			},
-			{
-				id: 'test',
-				label: 'Test',
-				items: [
-					'menuBar:bold',
-					'menuBar:italic',
-					'menuBar:underline',
-					{
-						id: 'test-nested-lvl1',
-						label: 'Test nested level 1',
-						items: [
-							'menuBar:undo',
-							'menuBar:redo',
-							{
-								id: 'test-nested-lvl11',
-								label: 'Test nested level 1.1',
-								items: [
-									'menuBar:undo',
-									'menuBar:redo'
-								]
-							}
-						]
-					},
-					{
-						id: 'test-nested-lvl2',
-						label: 'Test nested level 2',
-						items: [
-							'menuBar:undo',
-							'menuBar:redo',
-							{
-								id: 'test-nested-lvl21',
-								label: 'Test nested level 2.1',
-								items: [
-									'menuBar:undo',
-									'menuBar:redo'
-								]
-							}
-						]
-					}
-				]
-			}
-		];
 	}
 
 	/**
@@ -323,18 +239,6 @@ export default class MenuBarView extends View implements FocusableView {
 		componentFactory: ComponentFactory;
 		parentMenuView: MenuBarMenuView;
 	} ): MenuBarMenuView | MenuBarMenuListItemButtonView | null {
-		if ( !componentFactory.has( componentName ) ) {
-			/**
-			 * TODO: figure out how to handle this when the default config is used.
-			 *
-			 * @error menu-bar-item-unavailable
-			 * @param componentName The name of the component.
-			 */
-			logWarning( 'menu-bar-item-unavailable', { componentName } );
-
-			return null;
-		}
-
 		const componentView = componentFactory.create( componentName );
 
 		if ( !( componentView instanceof MenuBarMenuView || componentView instanceof MenuBarMenuListItemButtonView ) ) {
@@ -393,26 +297,6 @@ export default class MenuBarView extends View implements FocusableView {
 			}
 		} );
 	}
-}
-
-/**
- * Localizes the user-config using pre-defined localized category labels.
- */
-function localizeConfigCategories( locale: Locale, config: MenuBarConfig ): MenuBarConfig {
-	const t = locale.t;
-	const configClone = cloneDeep( config );
-	const localizedCategoryLabels: Record<string, string> = {
-		'Edit': t( 'Edit' ),
-		'Format': t( 'Format' )
-	};
-
-	for ( const categoryDef of configClone ) {
-		if ( categoryDef.label in localizedCategoryLabels ) {
-			categoryDef.label = localizedCategoryLabels[ categoryDef.label ];
-		}
-	}
-
-	return configClone;
 }
 
 export type MenuBarConfig = Array<MenuBarMenuDefinition>;
