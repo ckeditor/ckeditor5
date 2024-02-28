@@ -12,6 +12,7 @@ import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import {
 	Range,
+	type Position,
 	type Marker,
 	type Element,
 	type DocumentFragment,
@@ -116,11 +117,6 @@ export default class ClipboardMarkersUtils extends Plugin {
 
 			this._hydrateCopiedFragmentWithMarkers( writer, fragment, sourceSelectionInsertedMarkers );
 
-			// Remove all fake markers elements
-			for ( const element of Array.from( sourceSelectionInsertedMarkers.values() ).flat() ) {
-				writer.remove( element );
-			}
-
 			return fragment;
 		} );
 	}
@@ -166,12 +162,12 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 *
 	 * @param writer An instance of the model writer.
 	 * @param fragment Document fragment to be checked.
-	 * @param insertedFakeMarkersElements Map of fake markers with corresponding fake elements.
+	 * @param sourceFakeMarkers Fake markers inserted into source of copy.
 	 */
 	private _hydrateCopiedFragmentWithMarkers(
 		writer: Writer,
 		fragment: DocumentFragment,
-		insertedFakeMarkersElements: Map<Marker, Array<Element>>
+		sourceFakeMarkers: Map<Marker, Array<Element>>
 	): void {
 		const fakeMarkersRangesInsideRange = this._removeFakeMarkersInsideElement( writer, fragment );
 
@@ -182,12 +178,14 @@ export default class ClipboardMarkersUtils extends Plugin {
 		// <fake-marker> [Foo] Bar</fake-marker>
 		//      ^                    ^
 		// Handle case when selection is inside marker.
-		for ( const [ marker ] of insertedFakeMarkersElements.entries() ) {
-			if ( fakeMarkersRangesInsideRange[ marker.name ] ) {
-				continue;
+		for ( const [ marker, elements ] of sourceFakeMarkers.entries() ) {
+			if ( !fakeMarkersRangesInsideRange[ marker.name ] ) {
+				fragment.markers.set( marker.name, writer.createRangeIn( fragment ) );
 			}
 
-			fragment.markers.set( marker.name, writer.createRangeIn( fragment ) );
+			for ( const element of elements ) {
+				writer.remove( element );
+			}
 		}
 	}
 
@@ -262,53 +260,35 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 * @param rootElement The element to be checked.
 	 */
 	private _removeFakeMarkersInsideElement( writer: Writer, rootElement: Element | DocumentFragment ): Record<string, Range> {
-		const fakeFragmentMarkersInMap = this._getAllFakeMarkersFromElement( writer, rootElement );
+		type ReducedMarkersMap = Record<string, { start: Position | null; end: Position | null }>;
 
-		return Object
-			.entries( fakeFragmentMarkersInMap )
-			.reduce<Record<string, Range>>( ( acc, [ markerName, [ startElement, endElement ] ] ) => {
-				// Marker is not entire inside specified fragment but rather starts or ends inside it.
-				if ( !endElement ) {
-					const type = startElement.getAttribute( 'data-type' );
+		const fakeMarkersElements = this._getAllFakeMarkersFromElement( writer, rootElement );
+		const fakeMarkersRanges = fakeMarkersElements
+			.reduce<ReducedMarkersMap>( ( acc, fakeMarker ) => {
+				const position = fakeMarker.markerElement ? writer.createPositionBefore( fakeMarker.markerElement ) : null;
 
-					if ( type === 'end' ) {
-						// <fake-marker> [ phrase</fake-marker> phrase ]
-						//   ^
-						// Handle case when marker is just before start of selection.
+				acc[ fakeMarker.name ] = {
+					...acc[ fakeMarker.name ],
+					[ fakeMarker.type ]: position
+				};
 
-						const endPosition = writer.createPositionAt( startElement, 'before' );
-						const startPosition = writer.createPositionFromPath( endPosition.root, [ 0 ] );
-
-						writer.remove( startElement );
-						acc[ markerName ] = new Range( startPosition, endPosition );
-					} else {
-						// [<fake-marker>phrase]</fake-marker>
-						//                           ^
-						// Handle case when fake marker is after selection.
-
-						const startPosition = writer.createPositionAt( startElement, 'before' );
-						writer.remove( startElement );
-
-						const endPosition = writer.createPositionAt( rootElement, 'end' );
-						acc[ markerName ] = new Range( startPosition, endPosition );
-					}
-
-					return acc;
+				if ( fakeMarker.markerElement ) {
+					writer.remove( fakeMarker.markerElement );
 				}
-
-				// [ foo <fake-marker>aaa</fake-marker> test ]
-				//                    ^
-				// Handle case when marker is between start and end of selection.
-				const startPosition = writer.createPositionAt( startElement, 'before' );
-				writer.remove( startElement );
-
-				const endPosition = writer.createPositionAt( endElement, 'before' );
-				writer.remove( endElement );
-
-				acc[ markerName ] = new Range( startPosition, endPosition );
 
 				return acc;
 			}, {} );
+
+		return Object.fromEntries(
+			Object
+				.entries( fakeMarkersRanges )
+				.map( ( [ markerName, maybeRange ] ) => [
+					markerName,
+					new Range(
+						maybeRange.start || writer.createPositionFromPath( rootElement, [ 0 ] ),
+						maybeRange.end || writer.createPositionAt( rootElement, 'end' ) )
+				] )
+		);
 	}
 
 	/**
@@ -320,18 +300,80 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 * @param writer An instance of the model writer.
 	 * @param element The element to be checked.
 	 */
-	private _getAllFakeMarkersFromElement( writer: Writer, element: Element | DocumentFragment ): Record<string, Array<Element>> {
-		return Array
-			.from( writer.createRangeIn( element ) )
-			.reduce<Record<string, Array<Element>>>( ( fakeMarkerElements, { item } ) => {
-				if ( item.is( 'element', '$marker' ) ) {
-					const fakeMarkerName = item.getAttribute( 'data-name' ) as string;
-
-					( fakeMarkerElements[ fakeMarkerName! ] ||= [] ).push( item );
+	private _getAllFakeMarkersFromElement( writer: Writer, rootElement: Element | DocumentFragment ): Array<FakeMarker> {
+		const foundFakeMarkers = Array
+			.from( writer.createRangeIn( rootElement ) )
+			.flatMap( ( { item } ): Array<FakeMarker> => {
+				if ( !item.is( 'element', '$marker' ) ) {
+					return [];
 				}
 
-				return fakeMarkerElements;
-			}, {} );
+				const name = item.getAttribute( 'data-name' ) as string;
+				const type = item.getAttribute( 'data-type' ) as 'start' | 'end';
+
+				return [
+					{
+						markerElement: item,
+						name,
+						type
+					}
+				];
+			} )
+			.sort( ( fakeMarkerA, fakeMarkerB ) => {
+				const posA = writer.createPositionBefore( fakeMarkerA.markerElement! );
+				const posB = writer.createPositionBefore( fakeMarkerB.markerElement! );
+
+				return posA.isBefore( posB ) ? -1 : 1;
+			} );
+
+		const prependFakeMarkers: Array<FakeMarker> = [];
+		const appendFakeMarkers: Array<FakeMarker> = [];
+
+		for ( const fakeMarker of foundFakeMarkers ) {
+			if ( fakeMarker.type === 'end' ) {
+				// <fake-marker> [ phrase</fake-marker> phrase ]
+				//   ^
+				// Handle case when marker is just before start of selection.
+				// Only end marker is inside selection.
+
+				const hasMatchingStartMarker = foundFakeMarkers.some(
+					otherFakeMarker => otherFakeMarker.name === fakeMarker.name && otherFakeMarker.type === 'start'
+				);
+
+				if ( !hasMatchingStartMarker ) {
+					prependFakeMarkers.push( {
+						markerElement: null,
+						name: fakeMarker.name,
+						type: 'start'
+					} );
+				}
+			}
+
+			if ( fakeMarker.type === 'start' ) {
+				// [<fake-marker>phrase]</fake-marker>
+				//                           ^
+				// Handle case when fake marker is after selection.
+				// Only start marker is inside selection.
+
+				const hasMatchingEndMarker = foundFakeMarkers.some(
+					otherFakeMarker => otherFakeMarker.name === fakeMarker.name && otherFakeMarker.type === 'end'
+				);
+
+				if ( !hasMatchingEndMarker ) {
+					appendFakeMarkers.unshift( {
+						markerElement: null,
+						name: fakeMarker.name,
+						type: 'end'
+					} );
+				}
+			}
+		}
+
+		return [
+			...prependFakeMarkers,
+			...foundFakeMarkers,
+			...appendFakeMarkers
+		];
 	}
 
 	/**
@@ -366,3 +408,14 @@ export default class ClipboardMarkersUtils extends Plugin {
  * @internal
  */
 export type ClipboardMarkerAction = 'copy' | 'cut' | 'dragstart';
+
+/**
+ * Marker descriptor type used to revert markers into tree node.
+ *
+ * @internal
+ */
+type FakeMarker = {
+	type: 'start' | 'end';
+	name: string;
+	markerElement: Element | null;
+};
