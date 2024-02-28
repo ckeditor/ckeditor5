@@ -318,12 +318,6 @@ export default class ClipboardMarkersUtils extends Plugin {
 						type
 					}
 				];
-			} )
-			.sort( ( fakeMarkerA, fakeMarkerB ) => {
-				const posA = writer.createPositionBefore( fakeMarkerA.markerElement! );
-				const posB = writer.createPositionBefore( fakeMarkerB.markerElement! );
-
-				return posA.isBefore( posB ) ? -1 : 1;
 			} );
 
 		const prependFakeMarkers: Array<FakeMarker> = [];

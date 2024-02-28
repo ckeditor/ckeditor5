@@ -229,6 +229,129 @@ describe( 'Clipboard Markers Utils', () => {
 				model.createPositionFromPath( modelRoot, [ 1, 14 ] )
 			) );
 		} );
+
+		it( 'copy and paste fake marker that is inside another fake marker aligned to right', () => {
+			setModelData(
+				model,
+				wrapWithTag( 'paragraph', 'Fake Marker' ) + wrapWithTag( 'paragraph', '' )
+			);
+
+			appendMarker( 'comment:test', { start: [ 0, 2 ], end: [ 0, 11 ] } );
+			appendMarker( 'comment:test2', { start: [ 0, 6 ], end: [ 0, 11 ] } );
+
+			model.change( writer => {
+				writer.setSelection( writer.createRangeIn( editor.model.document.getRoot().getChild( 0 ) ) );
+			} );
+
+			const data = {
+				dataTransfer: createDataTransfer(),
+				preventDefault: () => {},
+				stopPropagation: () => {}
+			};
+
+			viewDocument.fire( 'copy', data );
+
+			model.change( writer => {
+				writer.setSelection(
+					writer.createRangeIn( editor.model.document.getRoot().getChild( 1 ) ),
+					0
+				);
+			} );
+
+			viewDocument.fire( 'paste', data );
+
+			checkMarker( 'comment:test:pasted', model.createRange(
+				model.createPositionFromPath( modelRoot, [ 1, 2 ] ),
+				model.createPositionFromPath( modelRoot, [ 1, 11 ] )
+			) );
+
+			checkMarker( 'comment:test2:pasted', model.createRange(
+				model.createPositionFromPath( modelRoot, [ 1, 6 ] ),
+				model.createPositionFromPath( modelRoot, [ 1, 11 ] )
+			) );
+		} );
+
+		it( 'copy and paste fake marker that is inside another fake marker aligned to left', () => {
+			setModelData(
+				model,
+				wrapWithTag( 'paragraph', 'Fake Marker' ) + wrapWithTag( 'paragraph', '' )
+			);
+
+			appendMarker( 'comment:test', { start: [ 0, 0 ], end: [ 0, 11 ] } );
+			appendMarker( 'comment:test2', { start: [ 0, 0 ], end: [ 0, 5 ] } );
+
+			model.change( writer => {
+				writer.setSelection( writer.createRangeIn( editor.model.document.getRoot().getChild( 0 ) ) );
+			} );
+
+			const data = {
+				dataTransfer: createDataTransfer(),
+				preventDefault: () => {},
+				stopPropagation: () => {}
+			};
+
+			viewDocument.fire( 'copy', data );
+
+			model.change( writer => {
+				writer.setSelection(
+					writer.createRangeIn( editor.model.document.getRoot().getChild( 1 ) ),
+					0
+				);
+			} );
+
+			viewDocument.fire( 'paste', data );
+
+			checkMarker( 'comment:test:pasted', model.createRange(
+				model.createPositionFromPath( modelRoot, [ 1, 0 ] ),
+				model.createPositionFromPath( modelRoot, [ 1, 11 ] )
+			) );
+
+			checkMarker( 'comment:test2:pasted', model.createRange(
+				model.createPositionFromPath( modelRoot, [ 1, 0 ] ),
+				model.createPositionFromPath( modelRoot, [ 1, 5 ] )
+			) );
+		} );
+
+		it( 'copy and paste fake marker that is inside another larger fake marker', () => {
+			setModelData(
+				model,
+				wrapWithTag( 'paragraph', 'Fake Marker' ) + wrapWithTag( 'paragraph', '' )
+			);
+
+			appendMarker( 'comment:test', { start: [ 0, 0 ], end: [ 0, 11 ] } );
+			appendMarker( 'comment:test2', { start: [ 0, 5 ], end: [ 0, 8 ] } );
+
+			model.change( writer => {
+				writer.setSelection( writer.createRangeIn( editor.model.document.getRoot().getChild( 0 ) ) );
+			} );
+
+			const data = {
+				dataTransfer: createDataTransfer(),
+				preventDefault: () => {},
+				stopPropagation: () => {}
+			};
+
+			viewDocument.fire( 'copy', data );
+
+			model.change( writer => {
+				writer.setSelection(
+					writer.createRangeIn( editor.model.document.getRoot().getChild( 1 ) ),
+					0
+				);
+			} );
+
+			viewDocument.fire( 'paste', data );
+
+			checkMarker( 'comment:test:pasted', model.createRange(
+				model.createPositionFromPath( modelRoot, [ 1, 0 ] ),
+				model.createPositionFromPath( modelRoot, [ 1, 11 ] )
+			) );
+
+			checkMarker( 'comment:test2:pasted', model.createRange(
+				model.createPositionFromPath( modelRoot, [ 1, 5 ] ),
+				model.createPositionFromPath( modelRoot, [ 1, 8 ] )
+			) );
+		} );
 	} );
 
 	describe( '_canPerformMarkerClipboardAction', () => {
@@ -413,13 +536,13 @@ describe( 'Clipboard Markers Utils', () => {
 	}
 
 	function appendMarker( name, { start, end } ) {
-		editor.model.change( writer => {
+		return editor.model.change( writer => {
 			const range = model.createRange(
 				model.createPositionFromPath( modelRoot, start ),
 				model.createPositionFromPath( modelRoot, end )
 			);
 
-			writer.addMarker( name, { usingOperation: false, affectsData: true, range } );
+			return writer.addMarker( name, { usingOperation: false, affectsData: true, range } );
 		} );
 	}
 
