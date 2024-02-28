@@ -60,7 +60,7 @@ export default class ListPropertiesView extends View {
 	 * {@link #reversedSwitchButtonView}) to visually separate them from the {@link #stylesView grid of styles}.
 	 *
 	 * **Note**: Only present when:
-	 * * the view represents **numbered** list properties,
+	 * * the view represents list properties,
 	 * * and the {@link #stylesView} is rendered,
 	 * * and either {@link #startIndexFieldView} or {@link #reversedSwitchButtonView} is rendered.
 	 *
@@ -71,7 +71,7 @@ export default class ListPropertiesView extends View {
 	/**
 	 * A labeled number field allowing the user to set the start index of the list.
 	 *
-	 * **Note**: Only present when the view represents **numbered** list properties.
+	 * **Note**: Only present when the view represents list properties.
 	 *
 	 * @readonly
 	 */
@@ -80,7 +80,7 @@ export default class ListPropertiesView extends View {
 	/**
 	 * A switch button allowing the user to make the edited list reversed.
 	 *
-	 * **Note**: Only present when the view represents **numbered** list properties.
+	 * **Note**: Only present when the view represents list properties.
 	 *
 	 * @readonly
 	 */
@@ -148,7 +148,7 @@ export default class ListPropertiesView extends View {
 		} );
 
 		// The rendering of the styles grid is conditional. When there is no styles grid, the view will render without collapsible
-		// for numbered list properties, hence simplifying the layout.
+		// for list properties, hence simplifying the layout.
 		if ( enabledProperties.styles ) {
 			this.stylesView = this._createStylesView( styleButtonViews!, styleGridAriaLabel );
 			this.children.add( this.stylesView );
@@ -156,10 +156,10 @@ export default class ListPropertiesView extends View {
 			elementCssClasses.push( 'ck-list-properties_without-styles' );
 		}
 
-		// The rendering of the numbered list property views is also conditional. It only makes sense for the numbered list
+		// The rendering of the list property views is also conditional. It only makes sense for the list
 		// dropdown. The unordered list does not have such properties.
 		if ( enabledProperties.startIndex || enabledProperties.reversed ) {
-			this._addNumberedListPropertyViews( enabledProperties );
+			this._addListPropertyViews( enabledProperties );
 
 			elementCssClasses.push( 'ck-list-properties_with-numbered-properties' );
 		}
@@ -302,7 +302,7 @@ export default class ListPropertiesView extends View {
 	 * @param enabledProperties An object containing the configuration of enabled list property names
 	 * (see {@link #constructor}).
 	 */
-	private _addNumberedListPropertyViews( enabledProperties: ListPropertiesConfig ) {
+	private _addListPropertyViews( enabledProperties: ListPropertiesConfig ) {
 		const t = this.locale.t;
 		const numberedPropertyViews = [];
 
