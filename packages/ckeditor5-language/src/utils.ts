@@ -19,7 +19,7 @@ import { getLanguageDirection, type LanguageDirection } from 'ckeditor5/src/util
  * * `languageCode` - The language code used for the `lang` attribute in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) format.
  * * `textDirection` - One of the following values: `rtl` or `ltr`, indicating the reading direction of the language.
  *
- * See the {@link module:core/editor/editorconfig~LanguageConfig#textPartLanguage text part language configuration}
+ * See the {@link module:language/textpartlanguage~TextPartLanguage text part language configuration}
  * for more information about language properties.
  *
  * If the `textDirection` argument is omitted, it will be automatically detected based on `languageCode`.

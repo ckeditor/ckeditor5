@@ -27,7 +27,7 @@ The text part language feature implements the [WCAG 3.1.2 Language of Parts](htt
 
 ## Configuring available languages
 
-To modify the list of available languages displayed in the language dropdown use the {@link module:core/editor/editorconfig~LanguageConfig#textPartLanguage `config.language.textPartLanguage`} configuration option.
+To modify the list of available languages displayed in the language dropdown use the {@link module:language/textpartlanguage~TextPartLanguage `config.language.textPartLanguage`} configuration option.
 
 The example below shows the configuration used for the [demo](#demo) above:
 
