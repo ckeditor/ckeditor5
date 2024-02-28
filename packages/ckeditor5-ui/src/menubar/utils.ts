@@ -403,8 +403,7 @@ export const DefaultMenuBarConfig: MenuBarConfig = [
 			'-',
 			'menuBar:selectAll',
 			'-',
-			'menuBar:findAndReplace',
-			'blah'
+			'menuBar:findAndReplace'
 		]
 	},
 	{
@@ -498,7 +497,7 @@ export function normalizeMenuBarConfig( {
 	config: Readonly<MenuBarConfig> | undefined;
 } ): MenuBarConfig {
 	if ( !config ) {
-		return DefaultMenuBarConfig;
+		config = DefaultMenuBarConfig;
 	}
 
 	const isUsingDefaultConfig = config === DefaultMenuBarConfig;
