@@ -10,6 +10,7 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import View from '@ckeditor/ckeditor5-ui/src/view.js';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
 
 import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview.js';
 import ColorInputView from '../../../src/ui/colorinputview.js';
@@ -40,7 +41,7 @@ describe( 'table utils', () => {
 
 		return ClassicEditor
 			.create( editorElement, {
-				plugins: [ Table, TableCellProperties, Paragraph ]
+				plugins: [ Table, TableCellProperties, Paragraph, ClipboardPipeline ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;

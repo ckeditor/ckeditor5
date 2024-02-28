@@ -80,6 +80,7 @@ export default class Widget extends Plugin {
 		const editor = this.editor;
 		const view = editor.editing.view;
 		const viewDocument = view.document;
+		const t = editor.t;
 
 		// Model to view selection converter.
 		// Converts selection placed over widget element to fake selection.
@@ -194,6 +195,30 @@ export default class Widget extends Plugin {
 				evt.stop();
 			}
 		}, { context: '$root' } );
+
+		// Add the information about the keystrokes to the accessibility database.
+		editor.accessibility.addKeystrokeInfoGroup( {
+			id: 'widget',
+			label: t( 'Keystrokes that can be used when a widget is selected (for example: image, table, etc.)' ),
+			keystrokes: [
+				{
+					label: t( 'Insert a new paragraph directly after a widget' ),
+					keystroke: 'Enter'
+				},
+				{
+					label: t( 'Insert a new paragraph directly before a widget' ),
+					keystroke: 'Shift+Enter'
+				},
+				{
+					label: t( 'Move the caret to allow typing directly before a widget' ),
+					keystroke: [ [ 'arrowup' ], [ 'arrowleft' ] ]
+				},
+				{
+					label: t( 'Move the caret to allow typing directly after a widget' ),
+					keystroke: [ [ 'arrowdown' ], [ 'arrowright' ] ]
+				}
+			]
+		} );
 	}
 
 	/**

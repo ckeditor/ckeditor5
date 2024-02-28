@@ -13,6 +13,7 @@ import BlockToolbar from '../../../src/toolbar/block/blocktoolbar.js';
 import ToolbarView from '../../../src/toolbar/toolbarview.js';
 import BalloonPanelView from '../../../src/panel/balloon/balloonpanelview.js';
 import BlockButtonView from '../../../src/toolbar/block/blockbuttonview.js';
+import ButtonView from '../../../src/button/buttonview.js';
 
 import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
 import HeadingButtonsUI from '@ckeditor/ckeditor5-heading/src/headingbuttonsui.js';
@@ -23,6 +24,7 @@ import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption.js';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver.js';
 import DragDropBlockToolbar from '@ckeditor/ckeditor5-clipboard/src/dragdropblocktoolbar.js';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
@@ -949,6 +951,36 @@ describe( 'BlockToolbar', () => {
 			elBar.remove();
 
 			return multiRootEditor.destroy();
+		} );
+	} );
+
+	describe( 'BlockToolbar plugin load order', () => {
+		it( 'should add a button registered in the afterInit of Foo when BlockToolbar is loaded before Foo', () => {
+			class Foo extends Plugin {
+				afterInit() {
+					this.editor.ui.componentFactory.add( 'foo', () => {
+						const button = new ButtonView();
+
+						button.set( { label: 'Foo' } );
+
+						return button;
+					} );
+				}
+			}
+
+			return ClassicTestEditor
+				.create( element, {
+					plugins: [ BlockToolbar, Foo ],
+					blockToolbar: [ 'foo' ]
+				} )
+				.then( editor => {
+					const items = editor.plugins.get( BlockToolbar ).toolbarView.items;
+
+					expect( items.length ).to.equal( 1 );
+					expect( items.first.label ).to.equal( 'Foo' );
+
+					return editor.destroy();
+				} );
 		} );
 	} );
 } );
