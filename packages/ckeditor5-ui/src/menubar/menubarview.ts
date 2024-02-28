@@ -70,10 +70,10 @@ export default class MenuBarView extends View implements FocusableView {
 
 		this.children = this.createCollection();
 
-		// Logs events in the main event bus of the component.
-		// this.on( 'submenu', ( evt, data ) => {
-		// 	console.log( `MenuBarView:${ evt.name }`, evt.path.map( view => view.element ) );
-		// } );
+		// @if CK_DEBUG_MENU_BAR // Logs events in the main event bus of the component.
+		// @if CK_DEBUG_MENU_BAR // this.on( 'submenu', ( evt, data ) => {
+		// @if CK_DEBUG_MENU_BAR // 	console.log( `MenuBarView:${ evt.name }`, evt.path.map( view => view.element ) );
+		// @if CK_DEBUG_MENU_BAR // } );
 
 		this.setTemplate( {
 			tag: 'div',
