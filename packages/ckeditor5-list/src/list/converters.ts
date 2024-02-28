@@ -492,14 +492,17 @@ export function createModelToViewPositionMapper(
 		const viewWalker = viewRange.getWalker();
 		let positionAfterLastMarker = viewRange.start;
 
-		for ( const { item, nextPosition } of viewWalker ) {
-			// Walk only over the non-mapped elements between list item blocks.
-			if ( item.is( 'element' ) && data.mapper.toModelElement( item ) ) {
+		for ( const { item } of viewWalker ) {
+			// Walk only over the non-mapped elements (UIElements, AttributeElements, $text, or any other element without mapping).
+			if ( item.is( 'element' ) && data.mapper.toModelElement( item ) || item.is( '$textProxy' ) ) {
 				break;
 			}
 
 			if ( item.is( 'element' ) && item.getCustomProperty( 'listItemMarker' ) ) {
-				positionAfterLastMarker = nextPosition;
+				positionAfterLastMarker = view.createPositionAfter( item );
+
+				// Jump over the content of the marker (this is not needed for UIElement but required for other element types).
+				viewWalker.skip( ( { previousPosition } ) => !previousPosition.isEqual( positionAfterLastMarker ) );
 			}
 		}
 
@@ -531,7 +534,7 @@ function removeCustomMarkerElements( viewElement: ViewElement, viewWriter: Downc
 
 	function collectMarkersToRemove( viewWalker: ViewTreeWalker ) {
 		for ( const { item } of viewWalker ) {
-			// Walk only over the non-mapped elements between list item blocks.
+			// Walk only over the non-mapped elements (UIElements, AttributeElements, $text, or any other element without mapping).
 			if ( item.is( 'element' ) && mapper.toModelElement( item ) ) {
 				break;
 			}

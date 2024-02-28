@@ -51,8 +51,9 @@ describe( 'ListEditing - conversion - custom list marker - changes', () => {
 			const editor = this.editor;
 			const model = editor.model;
 
-			model.schema.extend( '$listItem', { allowAttributes: 'listMarker' } );
+			model.schema.extend( '$listItem', { allowAttributes: [ 'listMarker', 'listOtherMarker' ] } );
 
+			// Basic marker as UIElement.
 			editor.plugins.get( ListEditing ).registerDowncastStrategy( {
 				scope: 'itemMarker',
 				attributeName: 'listMarker',
@@ -75,6 +76,50 @@ describe( 'ListEditing - conversion - custom list marker - changes', () => {
 						listItem.getAttribute( 'listType' ) == 'numbered'
 					);
 				}
+			} );
+
+			// More complex marker requires model-length callback (below).
+			editor.plugins.get( ListEditing ).registerDowncastStrategy( {
+				scope: 'itemMarker',
+				attributeName: 'listOtherMarker',
+
+				createElement( writer, modelElement ) {
+					if ( !modelElement.hasAttribute( 'listOtherMarker' ) ) {
+						return null;
+					}
+
+					return writer.createContainerElement( 'span', {
+						class: 'list-other-marker'
+					}, writer.createText( modelElement.getAttribute( 'listOtherMarker' ) ) );
+				},
+
+				canInjectMarkerIntoElement( listItem ) {
+					return (
+						model.schema.checkChild( listItem, '$text' ) &&
+						!model.schema.isLimit( listItem ) &&
+						listItem.getAttribute( 'listType' ) == 'numbered'
+					);
+				}
+			} );
+
+			editor.editing.mapper.registerViewToModelLength( 'span', viewElement => {
+				if ( viewElement.hasClass( 'list-other-marker' ) ) {
+					return 0;
+				}
+
+				// Mapped element.
+				if ( editor.editing.mapper.toModelElement( viewElement ) ) {
+					return 1;
+				}
+
+				// UIElement.
+				if ( viewElement.is( 'uiElement' ) ) {
+					return 0;
+				}
+
+				// Other not-mapped elements (like AttributeElement).
+				return Array.from( viewElement.getChildren() )
+					.reduce( ( len, child ) => len + editor.editing.mapper.getModelLength( child ), 0 );
 			} );
 		}
 	}
@@ -107,6 +152,34 @@ describe( 'ListEditing - conversion - custom list marker - changes', () => {
 					'<ol>' +
 						'<li><span class="ck-list-bogus-paragraph"><span class="list-marker" data-marker="X"></span>x</span></li>' +
 						'<li><span class="ck-list-bogus-paragraph"><span class="list-marker" data-marker="A"></span>a</span></li>' +
+					'</ol>'
+				);
+
+				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+			} );
+
+			it( 'list item at the beginning of same list type (multiple markers inside block)', () => {
+				test.insert(
+					'<paragraph>p</paragraph>' +
+					'[<paragraph listIndent="0" listItemId="x" listType="numbered" listMarker="X" listOtherMarker="X.">x</paragraph>]' +
+					'<paragraph listIndent="0" listItemId="a" listType="numbered" listMarker="A" listOtherMarker="II.">a</paragraph>',
+
+					'<p>p</p>' +
+					'<ol>' +
+						'<li>' +
+							'<span class="ck-list-bogus-paragraph">' +
+								'<span class="list-other-marker">X.</span>' +
+								'<span class="list-marker" data-marker="X"></span>' +
+								'x' +
+							'</span>' +
+						'</li>' +
+						'<li>' +
+							'<span class="ck-list-bogus-paragraph">' +
+								'<span class="list-other-marker">II.</span>' +
+								'<span class="list-marker" data-marker="A"></span>' +
+								'a' +
+							'</span>' +
+						'</li>' +
 					'</ol>'
 				);
 
@@ -551,76 +624,6 @@ describe( 'ListEditing - conversion - custom list marker - changes', () => {
 				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
 				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 4 ) );
 			} );
-
-			describe( 'text into paragraph', () => {
-				it( 'should insert text at the start of a paragraph (marker before block)', () => {
-					model.schema.extend( '$text', { allowIn: '$root' } );
-					test.insert(
-						'<paragraph>p</paragraph>' +
-						'<paragraph listIndent="0" listItemId="a" listType="bulleted" listMarker="A">[foo]bar</paragraph>',
-
-						'<p>p</p>' +
-						'<ul>' +
-							'<li>' +
-								'<span class="list-marker" data-marker="A"></span>' +
-								'<span class="ck-list-bogus-paragraph">foobar</span>' +
-							'</li>' +
-						'</ul>'
-					);
-				} );
-
-				it( 'should insert text at the start of a paragraph (marker inside block)', () => {
-					model.schema.extend( '$text', { allowIn: '$root' } );
-					test.insert(
-						'<paragraph>p</paragraph>' +
-						'<paragraph listIndent="0" listItemId="a" listType="numbered" listMarker="A">[foo]bar</paragraph>',
-
-						'<p>p</p>' +
-						'<ol>' +
-							'<li>' +
-								'<span class="ck-list-bogus-paragraph">' +
-									'<span class="list-marker" data-marker="A"></span>' +
-									'foobar' +
-								'</span>' +
-							'</li>' +
-						'</ol>'
-					);
-				} );
-
-				it( 'should insert text in the middle of a paragraph (marker before block)', () => {
-					model.schema.extend( '$text', { allowIn: '$root' } );
-					test.insert(
-						'<paragraph>p</paragraph>' +
-						'<paragraph listIndent="0" listItemId="a" listType="bulleted" listMarker="A">fo[ob]ar</paragraph>',
-
-						'<p>p</p>' +
-						'<ul>' +
-							'<li>' +
-								'<span class="list-marker" data-marker="A"></span>' +
-								'<span class="ck-list-bogus-paragraph">foobar</span>' +
-							'</li>' +
-						'</ul>'
-					);
-				} );
-
-				it( 'should insert text in the middle of a paragraph (marker inside block)', () => {
-					model.schema.extend( '$text', { allowIn: '$root' } );
-					test.insert(
-						'<paragraph>p</paragraph>' +
-						'<paragraph listIndent="0" listItemId="a" listType="numbered" listMarker="A">fo[ob]ar</paragraph>',
-
-						'<p>p</p>' +
-						'<ol>' +
-							'<li>' +
-								'<span class="ck-list-bogus-paragraph">' +
-									'<span class="list-marker" data-marker="A"></span>' +
-									'foobar' +
-								'</span>' +
-							'</li>' +
-						'</ol>'
-					);
-				} );
-			} );
 		} );
 
 		describe( 'remove', () => {
@@ -652,6 +655,35 @@ describe( 'ListEditing - conversion - custom list marker - changes', () => {
 					'<ol>' +
 						'<li><span class="ck-list-bogus-paragraph"><span class="list-marker" data-marker="B"></span>b</span></li>' +
 						'<li><span class="ck-list-bogus-paragraph"><span class="list-marker" data-marker="C"></span>c</span></li>' +
+					'</ol>'
+				);
+
+				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+			} );
+
+			it( 'remove the first list item (multiple markers inside block)', () => {
+				test.remove(
+					'<paragraph>p</paragraph>' +
+					'[<paragraph listIndent="0" listItemId="a" listType="numbered" listMarker="A" listOtherMarker="I.">a</paragraph>]' +
+					'<paragraph listIndent="0" listItemId="b" listType="numbered" listMarker="B" listOtherMarker="II.">b</paragraph>' +
+					'<paragraph listIndent="0" listItemId="c" listType="numbered" listMarker="C" listOtherMarker="III.">c</paragraph>',
+
+					'<p>p</p>' +
+					'<ol>' +
+						'<li>' +
+							'<span class="ck-list-bogus-paragraph">' +
+								'<span class="list-other-marker">II.</span>' +
+								'<span class="list-marker" data-marker="B"></span>' +
+								'b' +
+							'</span>' +
+						'</li>' +
+						'<li>' +
+							'<span class="ck-list-bogus-paragraph">' +
+								'<span class="list-other-marker">III.</span>' +
+								'<span class="list-marker" data-marker="C"></span>' +
+								'c' +
+							'</span>' +
+						'</li>' +
 					'</ol>'
 				);
 
@@ -899,72 +931,6 @@ describe( 'ListEditing - conversion - custom list marker - changes', () => {
 				);
 
 				expect( test.reconvertSpy.callCount ).to.equal( 0 );
-			} );
-
-			describe( 'text from paragraph', () => {
-				it( 'should remove text at the start of a paragraph (marker before block)', () => {
-					test.remove(
-						'<paragraph>p</paragraph>' +
-						'<paragraph listIndent="0" listItemId="a" listType="bulleted" listMarker="A">[foo]bar</paragraph>',
-
-						'<p>p</p>' +
-						'<ul>' +
-							'<li>' +
-								'<span class="list-marker" data-marker="A"></span>' +
-								'<span class="ck-list-bogus-paragraph">bar</span>' +
-							'</li>' +
-						'</ul>'
-					);
-				} );
-
-				it( 'should remove text at the start of a paragraph (marker inside block)', () => {
-					test.remove(
-						'<paragraph>p</paragraph>' +
-						'<paragraph listIndent="0" listItemId="a" listType="numbered" listMarker="A">[foo]bar</paragraph>',
-
-						'<p>p</p>' +
-						'<ol>' +
-							'<li>' +
-								'<span class="ck-list-bogus-paragraph">' +
-									'<span class="list-marker" data-marker="A"></span>' +
-									'bar' +
-								'</span>' +
-							'</li>' +
-						'</ol>'
-					);
-				} );
-
-				it( 'should remove text in the middle of a paragraph (marker before block)', () => {
-					test.remove(
-						'<paragraph>p</paragraph>' +
-						'<paragraph listIndent="0" listItemId="a" listType="bulleted" listMarker="A">fo[ob]ar</paragraph>',
-
-						'<p>p</p>' +
-						'<ul>' +
-							'<li>' +
-								'<span class="list-marker" data-marker="A"></span>' +
-								'<span class="ck-list-bogus-paragraph">foar</span>' +
-							'</li>' +
-						'</ul>'
-					);
-				} );
-
-				it( 'should remove text in the middle of a paragraph (marker inside block)', () => {
-					test.remove(
-						'<paragraph>p</paragraph>' +
-						'<paragraph listIndent="0" listItemId="a" listType="numbered" listMarker="A">fo[ob]ar</paragraph>',
-
-						'<p>p</p>' +
-						'<ol>' +
-							'<li>' +
-								'<span class="ck-list-bogus-paragraph">' +
-									'<span class="list-marker" data-marker="A"></span>' +
-									'foar' +
-								'</span>' +
-							'</li>' +
-						'</ol>'
-					);
-				} );
 			} );
 		} );
 
@@ -2705,6 +2671,218 @@ describe( 'ListEditing - conversion - custom list marker - changes', () => {
 							writer.append( parseModel( item2, model.schema ), modelRoot );
 						} );
 					}
+				);
+			} );
+		} );
+	} );
+
+	describe( 'position mapping', () => {
+		describe( 'insert text into paragraph', () => {
+			it( 'should insert text at the start of a paragraph (marker before block)', () => {
+				model.schema.extend( '$text', { allowIn: '$root' } );
+				test.insert(
+					'<paragraph>p</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted" listMarker="A">[foo]bar</paragraph>',
+
+					'<p>p</p>' +
+					'<ul>' +
+						'<li>' +
+							'<span class="list-marker" data-marker="A"></span>' +
+							'<span class="ck-list-bogus-paragraph">foobar</span>' +
+						'</li>' +
+					'</ul>'
+				);
+			} );
+
+			it( 'should insert text at the start of a paragraph (marker inside block)', () => {
+				model.schema.extend( '$text', { allowIn: '$root' } );
+				test.insert(
+					'<paragraph>p</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a" listType="numbered" listMarker="A">[foo]bar</paragraph>',
+
+					'<p>p</p>' +
+					'<ol>' +
+						'<li>' +
+							'<span class="ck-list-bogus-paragraph">' +
+								'<span class="list-marker" data-marker="A"></span>' +
+								'foobar' +
+							'</span>' +
+						'</li>' +
+					'</ol>'
+				);
+			} );
+
+			it( 'should insert text at the start of a paragraph (multiple markers inside block)', () => {
+				model.schema.extend( '$text', { allowIn: '$root' } );
+				test.insert(
+					'<paragraph>p</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a" listType="numbered" listMarker="A" listOtherMarker="I.">[foo]bar</paragraph>',
+
+					'<p>p</p>' +
+					'<ol>' +
+						'<li>' +
+							'<span class="ck-list-bogus-paragraph">' +
+								'<span class="list-other-marker">I.</span>' +
+								'<span class="list-marker" data-marker="A"></span>' +
+								'foobar' +
+							'</span>' +
+						'</li>' +
+					'</ol>'
+				);
+			} );
+
+			it( 'should insert text in the middle of a paragraph (marker before block)', () => {
+				model.schema.extend( '$text', { allowIn: '$root' } );
+				test.insert(
+					'<paragraph>p</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted" listMarker="A">fo[ob]ar</paragraph>',
+
+					'<p>p</p>' +
+					'<ul>' +
+						'<li>' +
+							'<span class="list-marker" data-marker="A"></span>' +
+							'<span class="ck-list-bogus-paragraph">foobar</span>' +
+						'</li>' +
+					'</ul>'
+				);
+			} );
+
+			it( 'should insert text in the middle of a paragraph (marker inside block)', () => {
+				model.schema.extend( '$text', { allowIn: '$root' } );
+				test.insert(
+					'<paragraph>p</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a" listType="numbered" listMarker="A">fo[ob]ar</paragraph>',
+
+					'<p>p</p>' +
+					'<ol>' +
+						'<li>' +
+							'<span class="ck-list-bogus-paragraph">' +
+								'<span class="list-marker" data-marker="A"></span>' +
+								'foobar' +
+							'</span>' +
+						'</li>' +
+					'</ol>'
+				);
+			} );
+
+			it( 'should insert text in the middle of a paragraph (multiple markers inside block)', () => {
+				model.schema.extend( '$text', { allowIn: '$root' } );
+				test.insert(
+					'<paragraph>p</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a" listType="numbered" listMarker="A" listOtherMarker="I.">fo[ob]ar</paragraph>',
+
+					'<p>p</p>' +
+					'<ol>' +
+						'<li>' +
+							'<span class="ck-list-bogus-paragraph">' +
+								'<span class="list-other-marker">I.</span>' +
+								'<span class="list-marker" data-marker="A"></span>' +
+								'foobar' +
+							'</span>' +
+						'</li>' +
+					'</ol>'
+				);
+			} );
+		} );
+
+		describe( 'remove text from paragraph', () => {
+			it( 'should remove text at the start of a paragraph (marker before block)', () => {
+				test.remove(
+					'<paragraph>p</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted" listMarker="A">[foo]bar</paragraph>',
+
+					'<p>p</p>' +
+					'<ul>' +
+						'<li>' +
+							'<span class="list-marker" data-marker="A"></span>' +
+							'<span class="ck-list-bogus-paragraph">bar</span>' +
+						'</li>' +
+					'</ul>'
+				);
+			} );
+
+			it( 'should remove text at the start of a paragraph (marker inside block)', () => {
+				test.remove(
+					'<paragraph>p</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a" listType="numbered" listMarker="A">[foo]bar</paragraph>',
+
+					'<p>p</p>' +
+					'<ol>' +
+						'<li>' +
+							'<span class="ck-list-bogus-paragraph">' +
+								'<span class="list-marker" data-marker="A"></span>' +
+								'bar' +
+							'</span>' +
+						'</li>' +
+					'</ol>'
+				);
+			} );
+
+			it( 'should remove text at the start of a paragraph (multiple markers inside block)', () => {
+				test.remove(
+					'<paragraph>p</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a" listType="numbered" listMarker="A" listOtherMarker="I.">[foo]bar</paragraph>',
+
+					'<p>p</p>' +
+					'<ol>' +
+						'<li>' +
+							'<span class="ck-list-bogus-paragraph">' +
+								'<span class="list-other-marker">I.</span>' +
+								'<span class="list-marker" data-marker="A"></span>' +
+								'bar' +
+							'</span>' +
+						'</li>' +
+					'</ol>'
+				);
+			} );
+
+			it( 'should remove text in the middle of a paragraph (marker before block)', () => {
+				test.remove(
+					'<paragraph>p</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted" listMarker="A">fo[ob]ar</paragraph>',
+
+					'<p>p</p>' +
+					'<ul>' +
+						'<li>' +
+							'<span class="list-marker" data-marker="A"></span>' +
+							'<span class="ck-list-bogus-paragraph">foar</span>' +
+						'</li>' +
+					'</ul>'
+				);
+			} );
+
+			it( 'should remove text in the middle of a paragraph (marker inside block)', () => {
+				test.remove(
+					'<paragraph>p</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a" listType="numbered" listMarker="A">fo[ob]ar</paragraph>',
+
+					'<p>p</p>' +
+					'<ol>' +
+						'<li>' +
+							'<span class="ck-list-bogus-paragraph">' +
+								'<span class="list-marker" data-marker="A"></span>' +
+								'foar' +
+							'</span>' +
+						'</li>' +
+					'</ol>'
+				);
+			} );
+
+			it( 'should remove text in the middle of a paragraph (multiple markers inside block)', () => {
+				test.remove(
+					'<paragraph>p</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a" listType="numbered" listMarker="A" listOtherMarker="I.">fo[ob]ar</paragraph>',
+
+					'<p>p</p>' +
+					'<ol>' +
+						'<li>' +
+							'<span class="ck-list-bogus-paragraph">' +
+								'<span class="list-other-marker">I.</span>' +
+								'<span class="list-marker" data-marker="A"></span>' +
+								'foar' +
+							'</span>' +
+						'</li>' +
+					'</ol>'
 				);
 			} );
 		} );
