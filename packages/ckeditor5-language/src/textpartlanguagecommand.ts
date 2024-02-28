@@ -27,7 +27,7 @@ export default class TextPartLanguageCommand extends Command {
 	 *    format.
 	 * * `textDirection` - One of the following values: `rtl` or `ltr`, indicating the reading direction of the language.
 	 *
-	 * See the {@link module:language/textpartlanguage~TextPartLanguage text part language configuration}
+	 * See the {@link module:core/editor/editorconfig~LanguageConfig#textPartLanguage text part language configuration}
 	 * for more information about language properties.
 	 *
 	 * It is set to `false` otherwise.
