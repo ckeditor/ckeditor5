@@ -251,6 +251,74 @@ export const MenuBarMenuBehaviors = {
 /**
  * Contains every positioning function used by {@link module:ui/menubar/menubarmenuview~MenuBarMenuView} that decides where the
  * {@link module:ui/menubar/menubarmenuview~MenuBarMenuView#panelView} should be placed.
+ *
+ * Top-level menu positioning functions:
+ *
+ *	┌──────┐
+ *	│      │
+ *	├──────┴────────┐
+ *	│               │
+ *	│               │
+ *	│               │
+ *	│            SE │
+ *	└───────────────┘
+ *
+ *	         ┌──────┐
+ *	         │      │
+ *	┌────────┴──────┤
+ *	│               │
+ *	│               │
+ *	│               │
+ *	│ SW            │
+ *	└───────────────┘
+ *
+ *	┌───────────────┐
+ *	│ NW            │
+ *	│               │
+ *	│               │
+ *	│               │
+ *	└────────┬──────┤
+ *	         │      │
+ *	         └──────┘
+ *
+ *	┌───────────────┐
+ *	│            NE │
+ *	│               │
+ *	│               │
+ *	│               │
+ *	├──────┬────────┘
+ *	│      │
+ *	└──────┘
+ *
+ * Sub-menu positioning functions:
+ *
+ *	┌──────┬───────────────┐
+ *	│      │               │
+ *	└──────┤               │
+ *	       │               │
+ *	       │            ES │
+ *	       └───────────────┘
+ *
+ *	┌───────────────┬──────┐
+ *	│               │      │
+ *	│               ├──────┘
+ *	│               │
+ *	│ WS            │
+ *	└───────────────┘
+ *
+ *	       ┌───────────────┐
+ *	       │            EN │
+ *	       │               │
+ *	┌──────┤               │
+ *	│      │               │
+ *	└──────┴───────────────┘
+ *
+ *	┌───────────────┐
+ *	│ WN            │
+ *	│               │
+ *	│               ├──────┐
+ *	│               │      │
+ *	└───────────────┴──────┘
  */
 export const MenuBarMenuViewPanelPositioningFunctions: Record<string, PositioningFunction> = {
 	southEast: buttonRect => {
