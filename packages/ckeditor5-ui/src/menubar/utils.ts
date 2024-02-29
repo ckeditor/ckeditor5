@@ -649,6 +649,9 @@ function localizeTopLevelCategories( config: MenuBarConfig, locale: Locale ) {
 	}
 }
 
+/**
+ * Recursively visits all menu definitions in the config and calls the callback for each of them.
+ */
 function walkConfig(
 	definition: MenuBarConfig | MenuBarMenuDefinition,
 	callback: ( definition: MenuBarMenuDefinition, siblings: MenuBarConfig | MenuBarMenuDefinition[ 'items' ] ) => void
