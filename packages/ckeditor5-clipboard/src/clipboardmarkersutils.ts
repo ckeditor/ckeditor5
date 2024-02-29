@@ -275,12 +275,10 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 * @param rootElement The element to be checked.
 	 */
 	private _removeFakeMarkersInsideElement( writer: Writer, rootElement: Element | DocumentFragment ): Record<string, Range> {
-		type ReducedMarkersMap = Record<string, { start: Position | null; end: Position | null }>;
-
 		const fakeMarkersElements = this._getAllFakeMarkersFromElement( writer, rootElement );
 		const fakeMarkersRanges = fakeMarkersElements
-			.reduce<ReducedMarkersMap>( ( acc, fakeMarker ) => {
-				const position = fakeMarker.markerElement ? writer.createPositionBefore( fakeMarker.markerElement ) : null;
+			.reduce<Record<string, { start: Position | null; end: Position | null }>>( ( acc, fakeMarker ) => {
+				const position = fakeMarker.markerElement && writer.createPositionBefore( fakeMarker.markerElement );
 
 				acc[ fakeMarker.name ] = {
 					...acc[ fakeMarker.name ],
@@ -297,11 +295,11 @@ export default class ClipboardMarkersUtils extends Plugin {
 		return Object.fromEntries(
 			Object
 				.entries( fakeMarkersRanges )
-				.map( ( [ markerName, maybeRange ] ) => [
+				.map( ( [ markerName, range ] ) => [
 					markerName,
 					new Range(
-						maybeRange.start || writer.createPositionFromPath( rootElement, [ 0 ] ),
-						maybeRange.end || writer.createPositionAt( rootElement, 'end' ) )
+						range.start || writer.createPositionFromPath( rootElement, [ 0 ] ),
+						range.end || writer.createPositionAt( rootElement, 'end' ) )
 				] )
 		);
 	}
@@ -313,7 +311,7 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 * only the beginning or only the end of a marker).
 	 *
 	 * @param writer An instance of the model writer.
-	 * @param element The element to be checked.
+	 * @param rootElement The element to be checked.
 	 */
 	private _getAllFakeMarkersFromElement( writer: Writer, rootElement: Element | DocumentFragment ): Array<FakeMarker> {
 		const foundFakeMarkers = Array
