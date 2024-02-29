@@ -38,7 +38,7 @@ Now it is time to add the missing editor package and install it:
 yarn add -D @ckeditor/ckeditor5-editor-inline
 ```
 
-Next, modify the `src/ckeditor.ts` file, which currently only exports a single editor class. Start by moving all plugins and configuration to variables so they can be reused by both editors:
+Next, modify the `src/ckeditor.ts` file, which only exports a single editor class. Start by moving all plugins and configuration to variables so both editors can reuse them:
 
 ```js
 import { ClassicEditor as ClassicEditorBase } from '@ckeditor/ckeditor5-editor-classic';
