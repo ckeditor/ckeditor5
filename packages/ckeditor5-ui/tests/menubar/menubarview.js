@@ -505,6 +505,22 @@ describe( 'MenuBarView', () => {
 
 					menuBarView.destroy();
 				} );
+
+				it( 'should not warn if the bar became empty because there were no components in the factory', () => {
+					// Test top category localization.
+					const locale = new Locale( { uiLanguage: 'pl' } );
+					const menuBarView = new MenuBarView( locale );
+					const spy = sinon.spy( console, 'warn' );
+
+					// Pass undefined to force the default config.
+					menuBarView.fillFromConfig( undefined, factory );
+
+					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [] );
+
+					sinon.assert.notCalled( spy );
+
+					menuBarView.destroy();
+				} );
 			} );
 		} );
 

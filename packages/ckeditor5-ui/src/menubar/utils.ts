@@ -589,7 +589,7 @@ function purgeEmptyMenus(
 	config: MenuBarConfig,
 	isUsingDefaultConfig: boolean
 ) {
-	if ( !config.length ) {
+	if ( !config.length && !isUsingDefaultConfig ) {
 		/**
 		 * There was a problem processing the configuration of the menu bar. One of the menus
 		 * is empty so it was omitted when rendering the menu bar.
