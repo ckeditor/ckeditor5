@@ -305,7 +305,7 @@ export default class ClipboardMarkersUtils extends Plugin {
 	}
 
 	/**
-	 * Returns object that contains mapping between marker names and corresponding `$marker` elements.
+	 * Returns array that contains list of fake markers with corresponding `$marker` elements.
 	 *
 	 * For each marker, there can be two `$marker` elements or only one (if the document fragment contained
 	 * only the beginning or only the end of a marker).
