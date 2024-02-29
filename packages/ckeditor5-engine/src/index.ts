@@ -191,7 +191,7 @@ export type { ViewDocumentSelectionChangeEvent } from './view/observer/selection
 export type { ViewRenderEvent, ViewScrollToTheSelectionEvent } from './view/view.js';
 
 // View / Styles.
-export { StylesProcessor, type BoxSides } from './view/stylesmap.js';
+export { default as StylesMap, StylesProcessor, type BoxSides } from './view/stylesmap.js';
 export * from './view/styles/background.js';
 export * from './view/styles/border.js';
 export * from './view/styles/margin.js';

@@ -35,6 +35,17 @@ describe( 'ShiftEnter feature', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have pluginName', () => {
+		expect( ShiftEnter.pluginName ).to.equal( 'ShiftEnter' );
+	} );
+
+	it( 'should add keystroke accessibility info', () => {
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
+			label: 'Insert a soft break (a <code>&lt;br&gt;</code> element)',
+			keystroke: 'Shift+Enter'
+		} );
+	} );
+
 	it( 'creates the commands', () => {
 		expect( editor.commands.get( 'shiftEnter' ) ).to.be.instanceof( ShiftEnterCommand );
 	} );

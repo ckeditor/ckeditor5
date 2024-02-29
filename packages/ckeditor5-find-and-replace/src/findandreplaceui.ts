@@ -70,6 +70,7 @@ export default class FindAndReplaceUI extends Plugin {
 		const editor = this.editor;
 		const isUiUsingDropdown = editor.config.get( 'findAndReplace.uiType' ) === 'dropdown';
 		const findCommand = editor.commands.get( 'find' )!;
+		const t = this.editor.t;
 
 		// Register the toolbar component: dropdown or button (that opens a dialog).
 		editor.ui.componentFactory.add( 'findAndReplace', () => {
@@ -114,6 +115,16 @@ export default class FindAndReplaceUI extends Plugin {
 			} );
 
 			return view;
+		} );
+
+		// Add the information about the keystroke to the accessibility database.
+		editor.accessibility.addKeystrokeInfos( {
+			keystrokes: [
+				{
+					label: t( 'Find in the document' ),
+					keystroke: 'CTRL+F'
+				}
+			]
 		} );
 	}
 
@@ -224,18 +235,8 @@ export default class FindAndReplaceUI extends Plugin {
 		const commands = editor.commands;
 		const findAndReplaceEditing: FindAndReplaceEditing = this.editor.plugins.get( 'FindAndReplaceEditing' );
 		const editingState = findAndReplaceEditing.state!;
-		const sortMapping = { before: -1, same: 0, after: 1, different: 1 };
 
-		// Let the form know which result is being highlighted.
-		formView.bind( 'highlightOffset' ).to( editingState, 'highlightedResult', highlightedResult => {
-			if ( !highlightedResult ) {
-				return 0;
-			}
-
-			return Array.from( editingState.results )
-				.sort( ( a, b ) => sortMapping[ a.marker!.getStart().compareWith( b.marker!.getStart() ) ] )
-				.indexOf( highlightedResult ) + 1;
-		} );
+		formView.bind( 'highlightOffset' ).to( editingState, 'highlightedOffset' );
 
 		// Let the form know how many results were found in total.
 		formView.listenTo( editingState.results, 'change', () => {

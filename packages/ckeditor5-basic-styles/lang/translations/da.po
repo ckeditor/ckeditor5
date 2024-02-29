@@ -44,3 +44,23 @@ msgstr "Sænket skrift"
 msgctxt "Toolbar button tooltip for the Superscript feature."
 msgid "Superscript"
 msgstr "Hævet skrift"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for making text italic."
+msgid "Italic text"
+msgstr "Kursiv tekst"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for moving selection out of an inline code style."
+msgid "Move out of an inline code style"
+msgstr "Flyt ud af en inline-kodestil"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for making text bold."
+msgid "Bold text"
+msgstr "Fed tekst"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for making text underlined."
+msgid "Underline text"
+msgstr "Understreget tekst"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for making text strikethrough."
+msgid "Strikethrough text"
+msgstr "Gennemstreget tekst"

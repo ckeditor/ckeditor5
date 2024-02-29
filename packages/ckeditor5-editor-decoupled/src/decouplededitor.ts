@@ -11,7 +11,6 @@ import {
 	Editor,
 	Context,
 	ElementApiMixin,
-	DataApiMixin,
 	secureSourceElement,
 	type EditorConfig,
 	type EditorReadyEvent
@@ -60,7 +59,7 @@ import { isElement as _isElement } from 'lodash-es';
  * Read more about initializing the editor from source or as a build in
  * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`}.
  */
-export default class DecoupledEditor extends DataApiMixin( ElementApiMixin( Editor ) ) {
+export default class DecoupledEditor extends ElementApiMixin( Editor ) {
 	/**
 	 * @inheritDoc
 	 */

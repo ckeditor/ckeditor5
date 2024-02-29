@@ -87,7 +87,7 @@ describe( 'ImageResizeHandles', () => {
 				resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
 
 				expect( spy.calledOnce ).to.be.true;
-				expect( spy.args[ 0 ][ 0 ] ).to.deep.equal( { width: '80px' } );
+				expect( spy.args[ 0 ][ 0 ] ).to.deep.equal( { width: '90px' } );
 			} );
 
 			it( 'disables the resizer if the command is disabled', async () => {
@@ -146,7 +146,7 @@ describe( 'ImageResizeHandles', () => {
 				resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
 
 				expect( stub.calledOnce ).to.be.true;
-				expect( stub.args[ 0 ][ 0 ] ).to.deep.equal( { width: '80px' } );
+				expect( stub.args[ 0 ][ 0 ] ).to.deep.equal( { width: '90px' } );
 
 				expect( widget.hasClass( 'image_resized' ), 'CSS class' ).to.be.false;
 				expect( widget.hasStyle( 'width' ), 'width style' ).to.be.false;
@@ -564,7 +564,7 @@ describe( 'ImageResizeHandles', () => {
 				resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
 
 				expect( spy.calledOnce ).to.be.true;
-				expect( spy.args[ 0 ][ 0 ] ).to.deep.equal( { width: '80px' } );
+				expect( spy.args[ 0 ][ 0 ] ).to.deep.equal( { width: '90px' } );
 			} );
 
 			it( 'disables the resizer if the command is disabled', async () => {
@@ -807,7 +807,7 @@ describe( 'ImageResizeHandles', () => {
 
 			resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
 
-			sinon.assert.calledWithExactly( spy.firstCall, { width: '80px' } );
+			sinon.assert.calledWithExactly( spy.firstCall, { width: '90px' } );
 
 			await editor.destroy();
 		} );

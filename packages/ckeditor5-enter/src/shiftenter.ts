@@ -32,6 +32,7 @@ export default class ShiftEnter extends Plugin {
 		const conversion = editor.conversion;
 		const view = editor.editing.view;
 		const viewDocument = view.document;
+		const t = this.editor.t;
 
 		// Configure the schema.
 		schema.register( 'softBreak', {
@@ -71,5 +72,15 @@ export default class ShiftEnter extends Plugin {
 			editor.execute( 'shiftEnter' );
 			view.scrollToTheSelection();
 		}, { priority: 'low' } );
+
+		// Add the information about the keystroke to the accessibility database.
+		editor.accessibility.addKeystrokeInfos( {
+			keystrokes: [
+				{
+					label: t( 'Insert a soft break (a <code>&lt;br&gt;</code> element)' ),
+					keystroke: 'Shift+Enter'
+				}
+			]
+		} );
 	}
 }

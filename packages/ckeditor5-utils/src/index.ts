@@ -72,7 +72,7 @@ export * from './dom/scroll.js';
 
 export * from './keyboard.js';
 export * from './language.js';
-export { default as Locale, type LocaleTranslate } from './locale.js';
+export { default as Locale, type LocaleTranslate, type Translations } from './locale.js';
 export {
 	default as Collection,
 	type CollectionAddEvent,

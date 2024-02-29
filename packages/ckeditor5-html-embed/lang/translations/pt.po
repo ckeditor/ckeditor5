@@ -27,7 +27,7 @@ msgstr "Fragmento de HTML"
 
 msgctxt "A placeholder that will be displayed in the raw HTML textarea field."
 msgid "Paste raw HTML here..."
-msgstr "Colar HTML aqui..."
+msgstr "Colar aqui HTML em bruto..."
 
 msgctxt "A label of a button that switches the HTML embed to the source editing mode."
 msgid "Edit source"

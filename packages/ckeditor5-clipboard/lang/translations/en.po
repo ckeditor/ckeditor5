@@ -1,0 +1,30 @@
+# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language: \n"
+"Language-Team: \n"
+"Plural-Forms: \n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for copying selected content."
+msgid "Copy selected content"
+msgstr "Copy selected content"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for pasting content."
+msgid "Paste content"
+msgstr "Paste content"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for pasting content as plain text."
+msgid "Paste content as plain text"
+msgstr "Paste content as plain text"

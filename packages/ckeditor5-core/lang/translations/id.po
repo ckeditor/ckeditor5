@@ -68,3 +68,51 @@ msgstr "Sisipkan gambar dengan pengelola file"
 msgctxt "The label for the replace image with the file manager toolbar button."
 msgid "Replace image with file manager"
 msgstr "Ganti gambar dengan pengelola file"
+
+msgctxt "The button label for the object (e.g. image, table) toolbar for hiding the attached caption."
+msgid "Toggle caption off"
+msgstr "Sembunyikan keterangan"
+
+msgctxt "The button label for the object (e.g. image, table) toolbar for showing the attached caption."
+msgid "Toggle caption on"
+msgstr "Tampilkan keterangan"
+
+msgctxt "Accessibility help dialog category header text for keystrokes related to content creation."
+msgid "Content editing keystrokes"
+msgstr "Penekanan tombol untuk mengedit konten"
+
+msgctxt "Accessibility help dialog text further explaining the purpose of the \"Content editing keystrokes\" category."
+msgid "These keyboard shortcuts allow for quick access to content editing features."
+msgstr "Pintasan keyboard ini mengizinkan akses cepat ke fitur pengeditan konten."
+
+msgctxt "Accessibility help dialog category header text for keystrokes related to navigation in the user interface."
+msgid "User interface and content navigation keystrokes"
+msgstr "Antarmuka pengguna dan penekanan tombol navigasi konten"
+
+msgctxt "Accessibility help dialog text further explaining the purpose of the \"User interface and content navigation keystrokes\" category."
+msgid "Use the following keystrokes for more efficient navigation in the CKEditor 5 user interface."
+msgstr "Gunakan penekanan tombol berikut untuk navigasi yang lebih efisien di antarmuka pengguna CKEditor 5."
+
+msgctxt "Keystroke description for assistive technologies: keystroke for closing contextual balloons, dropdowns, and dialogs."
+msgid "Close contextual balloons, dropdowns, and dialogs"
+msgstr "Tutup balon kontekstual, menu tarik-turun, dan dialog"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for opening the accessibility help dialog."
+msgid "Open the accessibility help dialog"
+msgstr "Buka dialog bantuan aksesibilitas"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for moving between fields."
+msgid "Move focus between form fields (inputs, buttons, etc.)"
+msgstr "Pindahkan fokus di antara bidang formulir (input, tombol, dll.)"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the toolbar."
+msgid "Move focus to the toolbar, navigate between toolbars"
+msgstr "Pindahkan fokus ke toolbar, jelajahi antar toolbar"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the toolbar."
+msgid "Navigate through the toolbar"
+msgstr "Jelajahi toolbar"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for executing currently focused button."
+msgid "Execute the currently focused button"
+msgstr "Jalankan tombol yang difokuskan saat ini"

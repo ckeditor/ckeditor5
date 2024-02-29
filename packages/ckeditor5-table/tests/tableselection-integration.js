@@ -22,6 +22,7 @@ import { assertSelectedCells, modelTable } from './_utils/utils.js';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 import Input from '@ckeditor/ckeditor5-typing/src/input.js';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
 
 describe( 'TableSelection - integration', () => {
 	let editor, model, tableSelection, modelRoot, element, viewDocument;
@@ -283,7 +284,7 @@ describe( 'TableSelection - integration', () => {
 		document.body.appendChild( element );
 
 		editor = await ClassicTestEditor.create( element, {
-			plugins: [ TableEditing, TableSelection, TableClipboard, Paragraph, ...plugins ]
+			plugins: [ TableEditing, TableSelection, TableClipboard, Paragraph, ClipboardPipeline, ...plugins ]
 		} );
 
 		model = editor.model;
