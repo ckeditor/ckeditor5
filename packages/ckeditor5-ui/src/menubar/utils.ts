@@ -153,7 +153,7 @@ export const MenuBarBehaviors = {
 export const MenuBarMenuBehaviors = {
 	/**
 	 * If the button of the menu is focused, pressing the arrow down key should open the panel and focus it.
-	 * This is analogous to the {@link TODO~DropdownView}.
+	 * This is analogous to the {@link module:ui/dropdown/dropdownview~DropdownView}.
 	 */
 	openAndFocusPanelOnArrowDownKey( menuView: MenuBarMenuView ): void {
 		menuView.keystrokes.set( 'arrowdown', ( data, cancel ) => {
@@ -190,7 +190,8 @@ export const MenuBarMenuBehaviors = {
 	},
 
 	/**
-	 * Opens the menu on its button click. Note that this behavior only opens but never closes the menu (unlike {@link TODO~DropdownView}).
+	 * Opens the menu on its button click. Note that this behavior only opens but never closes the menu (unlike
+	 * {@link module:ui/dropdown/dropdownview~DropdownView}).
 	 */
 	openOnButtonClick( menuView: MenuBarMenuView ): void {
 		menuView.buttonView.on<ButtonExecuteEvent>( 'execute', () => {
@@ -200,7 +201,7 @@ export const MenuBarMenuBehaviors = {
 	},
 
 	/**
-	 * Toggles the menu on its button click. This behavior is analogous to {@link TODO~DropdownView}.
+	 * Toggles the menu on its button click. This behavior is analogous to {@link module:ui/dropdown/dropdownview~DropdownView}.
 	 */
 	toggleOnButtonClick( menuView: MenuBarMenuView ): void {
 		menuView.buttonView.on<ButtonExecuteEvent>( 'execute', () => {
