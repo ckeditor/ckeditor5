@@ -12,6 +12,8 @@ import leftIcon from '@ckeditor/ckeditor5-image/docs/assets/img/icons/left.svg';
 import rightIcon from '@ckeditor/ckeditor5-image/docs/assets/img/icons/right.svg';
 import sideIcon from '@ckeditor/ckeditor5-image/docs/assets/img/icons/side.svg';
 
+import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
+
 ClassicEditor
 	.create( document.querySelector( '#snippet-image-semantical-style-custom' ), {
 		removePlugins: [ 'ImageResize' ],
@@ -21,6 +23,7 @@ ClassicEditor
 			}
 		},
 		ckbox: {
+			tokenUrl: TOKEN_URL,
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 			forceDemoLabel: true
 		},

@@ -13,6 +13,7 @@ import { PictureEditing, ImageInsert, ImageUpload } from '@ckeditor/ckeditor5-im
 import WProofreader from '@webspellchecker/wproofreader-ckeditor5/src/wproofreader.js';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
+import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-wproofreader' ), {
@@ -39,6 +40,7 @@ ClassicEditor
 			}
 		},
 		ckbox: {
+			tokenUrl: TOKEN_URL,
 			forceDemoLabel: true,
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ]
 		},

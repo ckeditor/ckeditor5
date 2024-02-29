@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document, ClassicEditor, CS_CONFIG, CKEditorPlugins */
+/* globals console, window, document, ClassicEditor, CS_CONFIG, TOKEN_URL, CKEditorPlugins */
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-autolink' ), {
@@ -20,6 +20,7 @@ ClassicEditor
 			]
 		},
 		ckbox: {
+			tokenUrl: TOKEN_URL,
 			forceDemoLabel: true
 		},
 		ui: {

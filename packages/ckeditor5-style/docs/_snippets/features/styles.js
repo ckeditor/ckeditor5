@@ -28,6 +28,8 @@ import {
 } from '@ckeditor/ckeditor5-image';
 import { Style } from '@ckeditor/ckeditor5-style';
 
+import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
+
 ClassicEditor
 	.create( document.querySelector( '#snippet-styles' ), {
 		plugins: [
@@ -117,6 +119,7 @@ ClassicEditor
 			}
 		},
 		ckbox: {
+			tokenUrl: TOKEN_URL,
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 			forceDemoLabel: true
 		}

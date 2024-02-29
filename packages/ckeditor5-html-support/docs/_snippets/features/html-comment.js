@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document, ClassicEditor, HtmlComment */
+/* globals console, window, document, ClassicEditor, HtmlComment, TOKEN_URL */
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-html-comment' ), {
@@ -28,6 +28,7 @@ ClassicEditor
 			}
 		},
 		ckbox: {
+			tokenUrl: TOKEN_URL,
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 			forceDemoLabel: true
 		}

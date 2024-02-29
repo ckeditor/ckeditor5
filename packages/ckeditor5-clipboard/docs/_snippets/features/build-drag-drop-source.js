@@ -40,6 +40,8 @@ import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import { Font } from '@ckeditor/ckeditor5-font';
 import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
 
+import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
+
 //
 // Plugins for specific scenarios.
 //
@@ -130,6 +132,7 @@ const defaultConfig = {
 		}
 	},
 	ckbox: {
+		tokenUrl: TOKEN_URL,
 		allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 		forceDemoLabel: true
 	},

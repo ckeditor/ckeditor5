@@ -44,9 +44,9 @@ ClassicEditor
 			]
 		},
 		ckbox: {
+			tokenUrl: TOKEN_URL,
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
-			forceDemoLabel: true,
-			tokenUrl: TOKEN_URL
+			forceDemoLabel: true
 		},
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
