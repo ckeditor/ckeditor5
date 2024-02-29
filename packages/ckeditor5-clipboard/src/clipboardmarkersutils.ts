@@ -109,13 +109,28 @@ export default class ClipboardMarkersUtils extends Plugin {
 	public _copySelectedFragmentWithMarkers(
 		action: ClipboardMarkerAction,
 		selection: Selection | DocumentSelection,
-		getCopiedFragment: ( writer: Writer ) => DocumentFragment = writer => writer.model.getSelectedContent( selection )
+		getCopiedFragment: ( writer: Writer ) => DocumentFragment = writer =>
+			writer.model.getSelectedContent( writer.model.document.selection )
 	): DocumentFragment {
 		return this.editor.model.change( writer => {
-			const sourceSelectionInsertedMarkers = this._insertFakeMarkersToSelection( writer, selection, action );
+			const oldSelection = writer.model.document.selection;
+
+			// In some scenarios, such like in drag & drop, passed `selection` parameter is not actually
+			// the same `selection` as the `writer.model.document.selection` which means that `_insertFakeMarkersToSelection`
+			// is not affecting passed `selection` `start` and `end` positions but rather modifies `writer.model.document.selection`.
+			//
+			// It is critical due to fact that when we have selection that starts [ 0, 0 ] and ends at [ 1, 0 ]
+			// and after inserting fake marker it will point to such marker instead of new widget position at start: [ 1, 0 ] end: [2, 0 ].
+			// `writer.insert` modifies only original `writer.model.document.selection`.
+			writer.setSelection( selection );
+
+			const sourceSelectionInsertedMarkers = this._insertFakeMarkersToSelection( writer, writer.model.document.selection, action );
 			const fragment = getCopiedFragment( writer );
 
 			this._hydrateCopiedFragmentWithMarkers( writer, fragment, sourceSelectionInsertedMarkers );
+
+			// Revert back selection to previous one.
+			writer.setSelection( oldSelection );
 
 			return fragment;
 		} );
