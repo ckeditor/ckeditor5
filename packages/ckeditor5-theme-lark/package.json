@@ -14,7 +14,7 @@
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "41.1.0",
     "@ckeditor/ckeditor5-core": "41.1.0",
-    "@ckeditor/ckeditor5-dev-build-tools": "0.1.0",
+    "@ckeditor/ckeditor5-dev-build-tools": "^39.7.0-alpha.0",
     "@ckeditor/ckeditor5-editor-balloon": "41.1.0",
     "@ckeditor/ckeditor5-editor-classic": "41.1.0",
     "@ckeditor/ckeditor5-find-and-replace": "41.1.0",
@@ -52,6 +52,6 @@
   ],
   "main": "./theme/theme.css",
   "scripts": {
-    "build:node": "ckeditor5-build-package --input=theme/index.css --clean --banner=../../scripts/banner.mjs"
+    "build:node": "ckeditor5-dev-build-tools --input=theme/index.css --clean --banner=../../scripts/banner.mjs"
   }
 }
