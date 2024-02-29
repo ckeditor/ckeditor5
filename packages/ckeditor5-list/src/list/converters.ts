@@ -394,13 +394,13 @@ export function listItemDowncastRemoveConverter(): GetCallback<DowncastRemoveEve
 		const { writer, mapper } = conversionApi;
 
 		// Find the view range start position by mapping the model position at which the remove happened.
-		const viewStart = conversionApi.mapper.toViewPosition( data.position );
+		const viewStart = mapper.toViewPosition( data.position );
 
 		const modelEnd = data.position.getShiftedBy( data.length );
-		const viewEnd = conversionApi.mapper.toViewPosition( modelEnd, { isPhantom: true } );
+		const viewEnd = mapper.toViewPosition( modelEnd, { isPhantom: true } );
 
 		// Trim the range to remove in case some UI elements are on the view range boundaries.
-		const viewRange = conversionApi.writer.createRange( viewStart, viewEnd ).getTrimmed();
+		const viewRange = writer.createRange( viewStart, viewEnd ).getTrimmed();
 
 		// Use positions mapping instead of mapper.toViewElement( listItem ) to find outermost view element.
 		// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
