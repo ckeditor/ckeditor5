@@ -57,8 +57,8 @@ msgstr "ডাউনলোডযোগ্য"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for creating a link."
 msgid "Create link"
-msgstr ""
+msgstr "লিঙ্ক তৈরি করুন"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving out of a link."
 msgid "Move out of a link"
-msgstr ""
+msgstr "কোনো লিঙ্কের বাইরে সরান"
