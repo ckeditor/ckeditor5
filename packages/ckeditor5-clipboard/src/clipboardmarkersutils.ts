@@ -352,7 +352,7 @@ export default class ClipboardMarkersUtils extends Plugin {
 				// Handle scenario when tables clone cells with the same fake node. Example:
 				//
 				// <cell><fake-marker-a></cell> <cell><fake-marker-a></cell> <cell><fake-marker-a></cell>
-				//                                          ^ cloned                    & cloned
+				//                                          ^ cloned                    ^ cloned
 				//
 				// The easiest way to bypass this issue is to rename already existing in map nodes and
 				// set them new unique name.
