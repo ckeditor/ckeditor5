@@ -43,12 +43,14 @@ describe( 'MenuBarView', () => {
 	before( () => {
 		addTranslations( 'en', {
 			'Edit': 'Edit',
-			'Format': 'Format'
+			'Format': 'Format',
+			'View': 'View'
 		} );
 
 		addTranslations( 'pl', {
 			'Edit': 'Edycja',
-			'Format': 'Formatowanie'
+			'Format': 'Formatowanie',
+			'View': 'Widok'
 		} );
 	} );
 
@@ -60,6 +62,9 @@ describe( 'MenuBarView', () => {
 		locale = new Locale();
 		menuBarView = new MenuBarView( locale );
 		factory = new ComponentFactory( {} );
+
+		factory.add( 'item1', getButtonCreator( 'item1', locale ) );
+		factory.add( 'item2', getButtonCreator( 'item2', locale ) );
 	} );
 
 	afterEach( () => {
@@ -111,14 +116,18 @@ describe( 'MenuBarView', () => {
 					{
 						id: 'top2',
 						label: 'Top 2',
-						items: []
+						items: [
+							'item1'
+						]
 					},
 					{
 						id: 'top2',
 						label: 'Top 2',
-						items: []
+						items: [
+							'item1'
+						]
 					}
-				] );
+				], factory );
 
 				const changeSpy = sinon.spy();
 
@@ -170,36 +179,333 @@ describe( 'MenuBarView', () => {
 	} );
 
 	describe( 'fillFromConfig()', () => {
-		it( 'should localize top-level category labels from the config', () => {
-			const locale = new Locale( { uiLanguage: 'pl' } );
+		it( 'should use the default config if none was provided', () => {
+			const locale = new Locale();
 			const menuBarView = new MenuBarView( locale );
 
-			menuBarView.fillFromConfig( [
-				{
-					id: 'edit',
-					label: 'Edit',
-					items: []
-				},
-				{
-					id: 'format',
-					label: 'Format',
-					items: []
-				}
-			] );
+			factory.add( 'menuBar:undo', getButtonCreator( 'menuBar:undo', locale ) );
+			factory.add( 'menuBar:sourceEditing', getButtonCreator( 'menuBar:sourceEditing', locale ) );
 
-			expect( menuBarView.menus[ 0 ].buttonView.label ).to.equal( 'Edycja' );
-			expect( menuBarView.menus[ 1 ].buttonView.label ).to.equal( 'Formatowanie' );
+			menuBarView.fillFromConfig( undefined, factory );
+
+			expect( menuBarView.menus.map( menuView => menuView.buttonView.label ) ).to.have.members( [
+				'Edit', 'View'
+			] );
 
 			menuBarView.destroy();
 		} );
 
-		it( 'should normalize the config to avoid empty menus and subsequent separators', () => {
-			console.warn( 'TODO' );
-		} );
+		describe( 'config normalization and clean-up', () => {
+			describe( 'user config', () => {
+				beforeEach( () => {
+					testUtils.sinon.stub( console, 'warn' );
+				} );
 
-		// TODO: We need to figure out how to implement this first.
-		it( 'should not warn if using a default config (automatic template) but warn if using integrator\'s config', () => {
-			console.warn( 'TODO' );
+				it( 'should localize top-level category labels from the config', () => {
+					const locale = new Locale( { uiLanguage: 'pl' } );
+					const menuBarView = new MenuBarView( locale );
+
+					menuBarView.fillFromConfig( [
+						{
+							id: 'edit',
+							label: 'Edit',
+							items: [
+								'item1'
+							]
+						},
+						{
+							id: 'format',
+							label: 'Format',
+							items: [
+								'item1'
+							]
+						}
+					], factory );
+
+					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+						{
+							label: 'Edycja', isOpen: true, isFocused: false,
+							items: [
+								{ label: 'item1', isFocused: false }
+							]
+						},
+						{
+							label: 'Formatowanie', isOpen: true, isFocused: false,
+							items: [
+								{ label: 'item1', isFocused: false }
+							]
+						}
+					] );
+
+					menuBarView.destroy();
+				} );
+
+				it( 'should warn about unavailable components', () => {
+					const locale = new Locale();
+					const menuBarView = new MenuBarView( locale );
+					const config = [
+						{
+							id: 'A',
+							label: 'A',
+							items: [
+								'item1',
+								'unavailable'
+							]
+						}
+					];
+
+					menuBarView.fillFromConfig( config, factory );
+
+					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+						{
+							label: 'A', isOpen: true, isFocused: false,
+							items: [
+								{ label: 'item1', isFocused: false }
+							]
+						}
+					] );
+
+					sinon.assert.callCount( console.warn, 1 );
+
+					sinon.assert.calledWithExactly( console.warn.getCall( 0 ), 'menu-bar-item-unavailable', {
+						menuBarConfig: config,
+						parentMenuConfig: config[ 0 ],
+						componentName: 'unavailable'
+					}, sinon.match.string );
+
+					menuBarView.destroy();
+				} );
+
+				it( 'should get rid of empty menus and warn about them', () => {
+					const locale = new Locale();
+					const menuBarView = new MenuBarView( locale );
+					const config = [
+						{
+							id: 'A',
+							label: 'A',
+							items: [
+								'item1'
+							]
+						},
+						{
+							id: 'B',
+							label: 'B',
+							items: [
+								'item1',
+								{
+									id: 'BA (empty)',
+									label: 'BA (empty)',
+									items: [
+										{
+											id: 'BAA (empty)',
+											label: 'BAA (empty)',
+											items: []
+										}
+									]
+								}
+							]
+						}
+					];
+
+					menuBarView.fillFromConfig( config, factory );
+
+					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+						{
+							label: 'A', isOpen: true, isFocused: false,
+							items: [
+								{ label: 'item1', isFocused: false }
+							]
+						},
+						{
+							label: 'B', isOpen: true, isFocused: false,
+							items: [
+								{ label: 'item1', isFocused: false }
+							]
+						}
+					] );
+
+					sinon.assert.callCount( console.warn, 2 );
+
+					sinon.assert.calledWithExactly( console.warn.firstCall, 'menu-bar-menu-empty', {
+						menuBarConfig: config,
+						emptyMenuConfig: { id: 'BAA (empty)', label: 'BAA (empty)', items: [] }
+					}, sinon.match.string );
+
+					sinon.assert.calledWithExactly( console.warn.secondCall, 'menu-bar-menu-empty', {
+						menuBarConfig: config,
+						emptyMenuConfig: { id: 'BA (empty)', label: 'BA (empty)', items: [] }
+					}, sinon.match.string );
+
+					menuBarView.destroy();
+				} );
+
+				it( 'should warn if there were no menus left because components were not registered in the factory', () => {
+					const locale = new Locale();
+					const menuBarView = new MenuBarView( locale );
+
+					const config = [
+						{
+							id: 'A',
+							label: 'A',
+							items: [
+								'invalid'
+							]
+						},
+						{
+							id: 'B',
+							label: 'B',
+							items: [
+								'invalid',
+								{
+									id: 'BA (empty)',
+									label: 'BA (empty)',
+									items: [
+										{
+											id: 'BAA (empty)',
+											label: 'BAA (empty)',
+											items: []
+										}
+									]
+								}
+							]
+						}
+					];
+
+					menuBarView.fillFromConfig( config, factory );
+
+					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [] );
+
+					sinon.assert.callCount( console.warn, 7 );
+
+					sinon.assert.calledWithExactly( console.warn.getCall( 0 ), 'menu-bar-item-unavailable', {
+						menuBarConfig: config,
+						parentMenuConfig: config[ 0 ],
+						componentName: 'invalid'
+					}, sinon.match.string );
+
+					sinon.assert.calledWithExactly( console.warn.getCall( 1 ), 'menu-bar-item-unavailable', {
+						menuBarConfig: config,
+						parentMenuConfig: config[ 1 ],
+						componentName: 'invalid'
+					}, sinon.match.string );
+
+					sinon.assert.calledWithExactly( console.warn.getCall( 2 ), 'menu-bar-menu-empty', {
+						menuBarConfig: config,
+						emptyMenuConfig: { id: 'A', label: 'A', items: [] }
+					}, sinon.match.string );
+
+					sinon.assert.calledWithExactly( console.warn.getCall( 3 ), 'menu-bar-menu-empty', {
+						menuBarConfig: config,
+						emptyMenuConfig: { id: 'BAA (empty)', label: 'BAA (empty)', items: [] }
+					}, sinon.match.string );
+
+					sinon.assert.calledWithExactly( console.warn.getCall( 4 ), 'menu-bar-menu-empty', {
+						menuBarConfig: config,
+						emptyMenuConfig: { id: 'BA (empty)', label: 'BA (empty)', items: [] }
+					}, sinon.match.string );
+
+					sinon.assert.calledWithExactly( console.warn.getCall( 5 ), 'menu-bar-menu-empty', {
+						menuBarConfig: config,
+						emptyMenuConfig: { id: 'B', label: 'B', items: [] }
+					}, sinon.match.string );
+
+					sinon.assert.calledWithExactly( console.warn.getCall( 6 ), 'menu-bar-menu-empty', {
+						menuBarConfig: config,
+						emptyMenuConfig: config
+					}, sinon.match.string );
+
+					menuBarView.destroy();
+				} );
+
+				it( 'should get rid of trailing and leading separators and consider that while purging empty menus', () => {
+					const locale = new Locale();
+					const menuBarView = new MenuBarView( locale );
+
+					menuBarView.fillFromConfig( [
+						{
+							id: 'A',
+							label: 'A',
+							items: [
+								'-',
+								'item1',
+								'-'
+							]
+						},
+						{
+							id: 'B',
+							label: 'B',
+							items: [
+								'-',
+								'item2',
+								'-',
+								{
+									id: 'BA (empty)',
+									label: 'BA (empty)',
+									items: [
+										'-',
+										{
+											id: 'BAA (empty)',
+											label: 'BAA (empty)',
+											items: [
+												'-'
+											]
+										}
+									]
+								}
+							]
+						}
+					], factory );
+
+					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+						{
+							label: 'A', isOpen: true, isFocused: false,
+							items: [
+								{ label: 'item1', isFocused: false }
+							]
+						},
+						{
+							label: 'B', isOpen: true, isFocused: false,
+							items: [
+								{ label: 'item2', isFocused: false }
+							]
+						}
+					] );
+
+					menuBarView.destroy();
+				} );
+			} );
+
+			describe( 'default config', () => {
+				it( 'should normalize the config as if it was a user config but without warnings', () => {
+					// Test top category localization.
+					const locale = new Locale( { uiLanguage: 'pl' } );
+					const menuBarView = new MenuBarView( locale );
+
+					// Adding just two components to the factory, the rest should be purged.
+					factory.add( 'menuBar:undo', getButtonCreator( 'menuBar:undo', locale ) );
+					factory.add( 'menuBar:sourceEditing', getButtonCreator( 'menuBar:sourceEditing', locale ) );
+
+					// Pass undefined to force the default config.
+					menuBarView.fillFromConfig( undefined, factory );
+
+					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+						{
+							label: 'Edycja', isOpen: true, isFocused: false,
+							items: [
+								{ label: 'menuBar:undo', isFocused: false }
+							]
+						},
+						{
+							label: 'Widok', isOpen: true, isFocused: false,
+							items: [
+								{ label: 'menuBar:sourceEditing', isFocused: false }
+							]
+						}
+					] );
+
+					menuBarView.destroy();
+				} );
+			} );
 		} );
 
 		describe( 'menu creation', () => {
@@ -442,14 +748,18 @@ describe( 'MenuBarView', () => {
 				{
 					id: 'edit',
 					label: 'Edit',
-					items: []
+					items: [
+						'item1'
+					]
 				},
 				{
 					id: 'format',
 					label: 'Format',
-					items: []
+					items: [
+						'item1'
+					]
 				}
-			] );
+			], factory );
 
 			const spy = sinon.spy( getMenuByLabel( menuBarView, 'Edit' ), 'focus' );
 
@@ -465,14 +775,18 @@ describe( 'MenuBarView', () => {
 				{
 					id: 'edit',
 					label: 'Edit',
-					items: []
+					items: [
+						'item1'
+					]
 				},
 				{
 					id: 'format',
 					label: 'Format',
-					items: []
+					items: [
+						'item1'
+					]
 				}
-			] );
+			], factory );
 
 			menuBarView.render();
 

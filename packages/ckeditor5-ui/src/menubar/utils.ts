@@ -434,48 +434,48 @@ export const DefaultMenuBarConfig: MenuBarConfig = [
 			'-',
 			'menuBar:heading'
 		]
-	},
-	{
-		id: 'test',
-		label: 'Test',
-		items: [
-			'menuBar:bold',
-			'menuBar:italic',
-			'menuBar:underline',
-			{
-				id: 'test-nested-lvl1',
-				label: 'Test nested level 1',
-				items: [
-					'menuBar:undo',
-					'menuBar:redo',
-					{
-						id: 'test-nested-lvl11',
-						label: 'Test nested level 1.1',
-						items: [
-							'menuBar:undo',
-							'menuBar:redo'
-						]
-					}
-				]
-			},
-			{
-				id: 'test-nested-lvl2',
-				label: 'Test nested level 2',
-				items: [
-					'menuBar:undo',
-					'menuBar:redo',
-					{
-						id: 'test-nested-lvl21',
-						label: 'Test nested level 2.1',
-						items: [
-							'menuBar:undo',
-							'menuBar:redo'
-						]
-					}
-				]
-			}
-		]
 	}
+	// {
+	// 	id: 'test',
+	// 	label: 'Test',
+	// 	items: [
+	// 		'menuBar:bold',
+	// 		'menuBar:italic',
+	// 		'menuBar:underline',
+	// 		{
+	// 			id: 'test-nested-lvl1',
+	// 			label: 'Test nested level 1',
+	// 			items: [
+	// 				'menuBar:undo',
+	// 				'menuBar:redo',
+	// 				{
+	// 					id: 'test-nested-lvl11',
+	// 					label: 'Test nested level 1.1',
+	// 					items: [
+	// 						'menuBar:undo',
+	// 						'menuBar:redo'
+	// 					]
+	// 				}
+	// 			]
+	// 		},
+	// 		{
+	// 			id: 'test-nested-lvl2',
+	// 			label: 'Test nested level 2',
+	// 			items: [
+	// 				'menuBar:undo',
+	// 				'menuBar:redo',
+	// 				{
+	// 					id: 'test-nested-lvl21',
+	// 					label: 'Test nested level 2.1',
+	// 					items: [
+	// 						'menuBar:undo',
+	// 						'menuBar:redo'
+	// 					]
+	// 				}
+	// 			]
+	// 		}
+	// 	]
+	// }
 ] as const;
 
 /**
@@ -504,8 +504,8 @@ export function normalizeMenuBarConfig( {
 	const configClone = cloneDeep( config ) as MenuBarConfig;
 
 	purgeUnavailableComponents( config, configClone, componentFactory, isUsingDefaultConfig );
-	purgeObsoleteSeparators( configClone );
 	purgeEmptyMenus( config, configClone, isUsingDefaultConfig );
+	purgeObsoleteSeparators( configClone );
 	localizeTopLevelCategories( configClone, locale );
 
 	return configClone;
@@ -564,11 +564,15 @@ function purgeUnavailableComponents(
  * or due to the missing components in the factory that were meant to be separated.
  */
 function purgeObsoleteSeparators( config: MenuBarConfig ) {
+	function isSeparator( item: any ) {
+		return item === '-';
+	}
+
 	walkConfig( config, menuDefinition => {
 		menuDefinition.items = menuDefinition.items.filter( ( item, index, items ) => {
-			const isSeparator = item === '-';
-			const isTrailingSeparator = isSeparator && index === items.length - 1;
-			const isLeadingSeparator = isSeparator && index === 0;
+			const itemIsSeparator = isSeparator( item );
+			const isLeadingSeparator = itemIsSeparator && items.slice( 0, index + 1 ).every( isSeparator );
+			const isTrailingSeparator = itemIsSeparator && items.slice( index, items.length ).every( isSeparator );
 
 			return !isTrailingSeparator && !isLeadingSeparator;
 		} );
@@ -633,7 +637,9 @@ function localizeTopLevelCategories( config: MenuBarConfig, locale: Locale ) {
 	const t = locale.t;
 	const localizedCategoryLabels: Record<string, string> = {
 		'Edit': t( 'Edit' ),
-		'Format': t( 'Format' )
+		'Format': t( 'Format' ),
+		'View': t( 'View' ),
+		'Insert': t( 'Insert' )
 	};
 
 	for ( const categoryDef of config ) {

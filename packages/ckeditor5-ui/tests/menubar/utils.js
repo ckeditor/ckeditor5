@@ -743,7 +743,7 @@ describe( 'MenuBarView utils', () => {
 			} );
 
 			describe( 'toggleOnButtonClick()', () => {
-				it( 'should toggles the visibility of the menu upon clicking', async () => {
+				it( 'should toggle the visibility of the menu upon clicking', async () => {
 					const menuA = getMenuByLabel( menuBarView, 'A' );
 
 					menuA.buttonView.fire( 'execute' );
