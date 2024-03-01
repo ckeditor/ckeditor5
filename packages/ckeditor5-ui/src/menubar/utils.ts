@@ -644,7 +644,7 @@ function addItems( config: RequitedMenuBarConfigObject ) {
 
 				let wasAdded = false;
 
-				if ( isMenuBarMenuDefinition( itemToAdd.item ) ) {
+				if ( isMenuBarMenuDefinition( itemToAdd.item ) || typeof itemToAdd.item === 'string' ) {
 					if ( menuGroupDefinition.groupId === itemToAdd.start ) {
 						menuGroupDefinition.items.unshift( itemToAdd.item );
 						wasAdded = true;
