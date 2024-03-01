@@ -95,6 +95,10 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 * 	4. Removes fake elements from fragment.
 	 * 	5. Inserts markers on position of fake markers.
 	 *
+	 * Due to selection modification when elements are inserted the `getCopiedFragment` must *always*
+	 * operate on `writer.model.document.selection`. Do not use any other custom selection object inside
+	 * such callback because it will lead to out-of-bounds exceptions in rare scenarios.
+	 *
 	 * @param action Type of clipboard action.
 	 * @param writer An instance of the model writer.
 	 * @param selection Selection to be checked.
@@ -148,8 +152,8 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 *
 	 * There are multiple edge cases that have to be considered before calling this function:
 	 *
-	 * 	1  The same `markers` map must be present in element that was transformed inside `getTransformedElement`.
-	 * 	2. Fake markers elements inside `getTransformedElement` can be cloned but their ranges cannot overlap.
+	 * 	* `markers` are inserted into the same element that must be later transformed inside `getTransformedElement`.
+	 * 	* Fake markers elements inside `getTransformedElement` can be cloned but their ranges cannot overlap.
 	 *
 	 * @param action Type of clipboard action.
 	 * @param markers Object that maps marker name to corresponding range.
