@@ -28,20 +28,29 @@ export default class HtmlEmbedUI extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
+		const locale = editor.locale;
+		const t = locale.t;
 
 		// Add the `htmlEmbed` button to feature components.
 		editor.ui.componentFactory.add( 'htmlEmbed', () => {
 			const buttonView = this._createButton( ButtonView );
 
 			buttonView.set( {
-				tooltip: true
+				tooltip: true,
+				label: t( 'Insert HTML' )
 			} );
 
 			return buttonView;
 		} );
 
 		editor.ui.componentFactory.add( 'menuBar:htmlEmbed', () => {
-			return this._createButton( MenuBarMenuListItemButtonView );
+			const buttonView = this._createButton( MenuBarMenuListItemButtonView );
+
+			buttonView.set( {
+				label: t( 'HTML' )
+			} );
+
+			return buttonView;
 		} );
 	}
 
@@ -50,13 +59,10 @@ export default class HtmlEmbedUI extends Plugin {
 	 */
 	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
 		const editor = this.editor;
-		const locale = editor.locale;
 		const command: HtmlEmbedCommand = editor.commands.get( 'htmlEmbed' )!;
 		const view = new ButtonClass( editor.locale ) as InstanceType<T>;
-		const t = locale.t;
 
 		view.set( {
-			label: t( 'Insert HTML' ),
 			icon: icons.html
 		} );
 
