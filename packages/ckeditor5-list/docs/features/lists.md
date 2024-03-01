@@ -83,6 +83,7 @@ Click the second list and use the ordered list {@icon @ckeditor/ckeditor5-core/t
 These CKEditor&nbsp;5 features provide similar functionality:
 
 * {@link features/todo-lists To-do lists} &ndash; Create a list of interactive checkboxes with labels.
+* {@link features/multi-level-lists Multi-level lists} &ndash; Multi-level lists allow the user to set different markers (symbols, text or numbers) to display at each level of the list.
 * {@link features/indent Block indentation} &ndash; Set indentation for text blocks such as paragraphs or headings and lists.
 * {@link features/autoformat Autoformatting} &ndash; Format the text on the go with Markdown code.
 

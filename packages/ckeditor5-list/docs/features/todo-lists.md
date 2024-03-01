@@ -27,6 +27,7 @@ You can check and clear a list item by using the <kbd>Ctrl</kbd> + <kbd>Enter</k
 
 These CKEditor&nbsp;5 features provide similar functionality:
 * {@link features/lists Ordered and unordered lists} &ndash; Create ordered and unordered lists with configurable markers.
+* {@link features/multi-level-lists Multi-level lists} &ndash; Multi-level lists allow the user to set different markers (symbols, text or numbers) to display at each level of the list.
 * {@link features/autoformat Autoformatting} &ndash; Format the text on the go with Markdown code.
 
 ## Common API
