@@ -90,14 +90,13 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 * Performs copy markers on provided selection and paste it to fragment returned from `getCopiedFragment`.
 	 *
 	 * 	1. Picks all markers in provided selection.
-	 * 	2. Inserts fake markers inside provided selection.
-	 * 	3. Gets copied selection fragment.
-	 * 	4. Removes fake elements from fragment.
-	 * 	5. Inserts markers on position of fake markers.
+	 * 	2. Inserts fake markers to document.
+	 * 	3. Gets copied selection fragment from document.
+	 * 	4. Removes fake elements from fragment and document.
+	 * 	5. Inserts markers in the place of removed fake markers.
 	 *
-	 * Due to selection modification when elements are inserted the `getCopiedFragment` must *always*
-	 * operate on `writer.model.document.selection`. Do not use any other custom selection object inside
-	 * such callback because it will lead to out-of-bounds exceptions in rare scenarios.
+	 * Due to selection modification, when inserting items, `getCopiedFragment` must *always* operate on `writer.model.document.selection'.
+	 * Do not use any other custom selection object within callback, as this will lead to out-of-bounds exceptions in rare scenarios.
 	 *
 	 * @param action Type of clipboard action.
 	 * @param writer An instance of the model writer.
@@ -146,14 +145,14 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 * Performs paste of markers on already pasted element.
 	 *
 	 * 	1. Inserts fake markers that are present in pasted fragment element.
-	 * 	2. Calls `getTransformedElement` and gets transformed by this callback previous step fragment element.
+	 * 	2. Calls `getTransformedElement` and gets transformed previous step fragment element.
 	 * 	3. Removes all fake markers present in transformed element.
 	 * 	4. Inserts new markers with removed fake markers ranges into pasted fragment.
 	 *
 	 * There are multiple edge cases that have to be considered before calling this function:
 	 *
 	 * 	* `markers` are inserted into the same element that must be later transformed inside `getTransformedElement`.
-	 * 	* Fake markers elements inside `getTransformedElement` can be cloned but their ranges cannot overlap.
+	 * 	* Fake marker elements inside `getTransformedElement` can be cloned, but their ranges cannot overlap.
 	 *
 	 * @param action Type of clipboard action.
 	 * @param markers Object that maps marker name to corresponding range.
