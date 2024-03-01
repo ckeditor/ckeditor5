@@ -45,9 +45,8 @@ export default class ClipboardMarkersUtils extends Plugin {
 	/**
 	 * Registers marker name as copyable in clipboard pipeline.
 	 *
-	 * @param markerName	Name of marker that can be copied.
-	 * @param restrictions	Restrictions preset that specify when marker should be copied.
-	 * 						If array is passed specific clipboard actions should be passed.
+	 * @param markerName Name of marker that can be copied.
+	 * @param restrictions Preset or specified array of actions that can be performed on specified marker name.
 	 * @internal
 	 */
 	public _registerMarkerToCopy(
@@ -537,9 +536,9 @@ export type ClipboardMarkerRestrictedAction = 'copy' | 'cut' | 'dragstart';
  * Specifies copy, paste or move marker restrictions in clipboard. Depending on specified mode
  * it will disallow copy, cut or paste of marker in clipboard.
  *
- * 	`default` allows marker to be cut only.
- * 	`always` allows marker to be copied, moved or cut.
- * 	'never' no clipboard operations will be performed on marker.
+ * 	* `'default'` - the markers will be preserved on cut-paste action only.
+ * 	* `'always'` - the markers will be preserved on any clipboard action (cut-paste, copy, move).
+ * 	* `'never'` - the markers will be ignored by clipboard.
  *
  * @internal
  */
