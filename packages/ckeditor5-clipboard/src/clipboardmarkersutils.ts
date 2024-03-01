@@ -72,7 +72,7 @@ export default class ClipboardMarkersUtils extends Plugin {
 				return [ 'copy', 'cut', 'dragstart' ];
 
 			case 'default':
-				return [ 'cut' ];
+				return [ 'cut', 'dragstart' ];
 
 			case 'never':
 				return [];
