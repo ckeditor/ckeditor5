@@ -158,7 +158,7 @@ export default class ClipboardMarkersUtils extends Plugin {
 	/**
 	 * Performs paste of markers on already pasted element.
 	 *
-	 * 	1. Inserts fake markers that are present in pasted fragment element.
+	 * 	1. Inserts fake markers that are present in fragment element (such fragment will be processed in `getPastedDocumentElement`).
 	 * 	2. Calls `getPastedDocumentElement` and gets element that is inserted into root model.
 	 * 	3. Removes all fake markers present in transformed element.
 	 * 	4. Inserts new markers with removed fake markers ranges into pasted fragment.
