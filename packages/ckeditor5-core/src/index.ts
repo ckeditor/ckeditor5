@@ -33,6 +33,13 @@ export { default as secureSourceElement } from './editor/utils/securesourceeleme
 
 export { default as PendingActions, type PendingAction } from './pendingactions.js';
 
+export type {
+	KeystrokeInfos as KeystrokeInfoDefinitions,
+	KeystrokeInfoGroup as KeystrokeInfoGroupDefinition,
+	KeystrokeInfoCategory as KeystrokeInfoCategoryDefinition,
+	KeystrokeInfoDefinition as KeystrokeInfoDefinition
+} from './accessibility.js';
+
 import cancel from './../theme/icons/cancel.svg';
 import caption from './../theme/icons/caption.svg';
 import check from './../theme/icons/check.svg';

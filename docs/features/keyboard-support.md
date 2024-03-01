@@ -221,6 +221,16 @@ Use the following keystrokes for more efficient navigation in the CKEditor&nbsp;
 }
 </style>
 
+## Displaying keyboard shortcuts in the editor
+
+CKEditor&nbsp;5 offers a dedicated {@link module:ui/editorui/accessibilityhelp/accessibilityhelp~AccessibilityHelp Accessibility help} plugin that displays a list of all available keyboard shortcuts in a dialog. It can be opened by pressing <kbd>Alt</kbd> + <kbd>0</kbd> (on Windows) or <kbd>⌥0</kbd> (on macOS). Alternatively, you can use the toolbar button to open the dialog.
+
+{@snippet features/keyboard-support}
+
+The Accessibility help plugin is enabled by the {@link module:essentials/essentials~Essentials} plugin from the {@link api/essentials `@ckeditor/ckeditor5-essentials`} package (which also enables other fundamental editing features).
+
+Learn how to {@link tutorials/crash-course/keystrokes#adding-shortcut-information-to-the-accessibility-help-dialog add your own keyboard shortcuts} to the Accessibility help dialog.
+
 ## Related productivity features
 
 Besides using keyboard shortcuts, you may want to check the following productivity features:

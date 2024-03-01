@@ -104,7 +104,8 @@ export default class FormHeaderView extends View {
 				class: [
 					'ck',
 					'ck-form__header__label'
-				]
+				],
+				role: 'presentation'
 			},
 			children: [
 				{ text: bind.to( 'label' ) }
