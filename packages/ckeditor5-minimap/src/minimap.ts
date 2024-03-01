@@ -65,6 +65,8 @@ export default class Minimap extends Plugin {
 	 * @inheritDoc
 	 */
 	public override destroy(): void {
+		super.destroy();
+
 		this._minimapView!.destroy();
 		this._minimapView!.element!.remove();
 	}
@@ -91,6 +93,10 @@ export default class Minimap extends Plugin {
 		this._initializeMinimapView();
 
 		this.listenTo( editor.editing.view, 'render', () => {
+			if ( editor.state !== 'ready' ) {
+				return;
+			}
+
 			this._syncMinimapToEditingRootScrollPosition();
 		} );
 

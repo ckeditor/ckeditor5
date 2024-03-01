@@ -31,6 +31,8 @@ export default class BoldEditing extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
+		const t = this.editor.t;
+
 		// Allow bold attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: BOLD } );
 		editor.model.schema.setAttributeProperties( BOLD, {
@@ -69,5 +71,15 @@ export default class BoldEditing extends Plugin {
 
 		// Set the Ctrl+B keystroke.
 		editor.keystrokes.set( 'CTRL+B', BOLD );
+
+		// Add the information about the keystroke to the accessibility database.
+		editor.accessibility.addKeystrokeInfos( {
+			keystrokes: [
+				{
+					label: t( 'Bold text' ),
+					keystroke: 'CTRL+B'
+				}
+			]
+		} );
 	}
 }

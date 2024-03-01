@@ -32,6 +32,7 @@ export default class StrikethroughEditing extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
+		const t = this.editor.t;
 
 		// Allow strikethrough attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: STRIKETHROUGH } );
@@ -59,5 +60,15 @@ export default class StrikethroughEditing extends Plugin {
 
 		// Set the Ctrl+Shift+X keystroke.
 		editor.keystrokes.set( 'CTRL+SHIFT+X', 'strikethrough' );
+
+		// Add the information about the keystroke to the accessibility database.
+		editor.accessibility.addKeystrokeInfos( {
+			keystrokes: [
+				{
+					label: t( 'Strikethrough text' ),
+					keystroke: 'CTRL+SHIFT+X'
+				}
+			]
+		} );
 	}
 }

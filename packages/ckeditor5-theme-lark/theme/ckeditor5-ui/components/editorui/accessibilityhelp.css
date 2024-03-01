@@ -1,0 +1,103 @@
+/*
+ * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+@import "../../../mixins/_focus.css";
+@import "../../../mixins/_shadow.css";
+
+:root {
+	--ck-accessibility-help-dialog-max-width: 600px;
+	--ck-accessibility-help-dialog-max-height: 400px;
+	--ck-accessibility-help-dialog-border-color: hsl(220, 6%, 81%);
+	--ck-accessibility-help-dialog-code-background-color: hsl(0deg 0% 92.94%);
+	--ck-accessibility-help-dialog-kbd-shadow-color: hsl(0deg 0% 61%);
+}
+
+.ck.ck-accessibility-help-dialog .ck-accessibility-help-dialog__content {
+	padding: var(--ck-spacing-large);
+	max-width: var(--ck-accessibility-help-dialog-max-width);
+	max-height: var(--ck-accessibility-help-dialog-max-height);
+	overflow: auto;
+	user-select: text;
+
+	border: 1px solid transparent;
+
+	&:focus {
+		@mixin ck-focus-ring;
+		@mixin ck-box-shadow var(--ck-focus-outer-shadow);
+	}
+
+	* {
+		white-space: normal;
+	}
+
+	/* Hide the main label of the content container. */
+	& .ck-label {
+		display: none;
+	}
+
+	& h3 {
+		font-weight: bold;
+		font-size: 1.2em;
+	}
+
+	& h4 {
+		font-weight: bold;
+		font-size: 1em;
+	}
+
+	& p,
+	& h3,
+	& h4,
+	& table {
+		margin: 1em 0;
+	}
+
+	& dl {
+		display: grid;
+		grid-template-columns: 2fr 1fr;
+		border-top: 1px solid var(--ck-accessibility-help-dialog-border-color);
+		border-bottom: none;
+
+		& dt, & dd {
+			border-bottom: 1px solid var(--ck-accessibility-help-dialog-border-color);
+			padding: .4em 0;
+		}
+
+		& dt {
+			grid-column-start: 1;
+		}
+
+		& dd {
+			grid-column-start: 2;
+			text-align: right;
+		}
+	}
+
+	& kbd, & code {
+		display: inline-block;
+		background: var(--ck-accessibility-help-dialog-code-background-color);
+		padding: .4em;
+		vertical-align: middle;
+		line-height: 1;
+		border-radius: 2px;
+		text-align: center;
+		font-size: .9em;
+	}
+
+	& code {
+		font-family: monospace;
+	}
+
+	& kbd {
+		min-width: 1.8em;
+		box-shadow: 0px 1px 1px var(--ck-accessibility-help-dialog-kbd-shadow-color);
+		margin: 0 1px;
+
+		& + kbd {
+			margin-left: 2px;
+		}
+	}
+}
+
