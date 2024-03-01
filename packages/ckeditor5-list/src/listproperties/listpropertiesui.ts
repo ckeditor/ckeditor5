@@ -14,11 +14,8 @@ import {
 	SplitButtonView,
 	createDropdown,
 	focusChildOnDropdownOpen,
-	type DropdownView,
 	MenuBarMenuView,
-	MenuBarMenuListView,
-	MenuBarMenuListItemView,
-	MenuBarMenuListItemButtonView
+	type DropdownView
 } from 'ckeditor5/src/ui.js';
 
 import type { Locale } from 'ckeditor5/src/utils.js';
@@ -43,6 +40,7 @@ import listStyleLowerLatinIcon from '../../theme/icons/liststylelowerlatin.svg';
 import listStyleUpperLatinIcon from '../../theme/icons/liststyleupperlatin.svg';
 
 import '../../theme/liststyles.css';
+import type { ListPropertiesConfig } from '../listconfig.js';
 
 /**
  * The list properties UI plugin. It introduces the extended `'bulletedList'` and `'numberedList'` toolbar
@@ -62,12 +60,12 @@ export default class ListPropertiesUI extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 		const t = editor.locale.t;
-		const enabledProperties = editor.config.get( 'list.properties' )!;
+		const propertiesConfig = editor.config.get( 'list.properties' )!;
 
 		// Note: When this plugin does not register the "bulletedList" dropdown due to properties configuration,
 		// a simple button will be still registered under the same name by ListUI as a fallback. This should happen
 		// in most editor configuration because the List plugin automatically requires ListUI.
-		if ( enabledProperties.styles ) {
+		if ( propertiesConfig.styles ) {
 			const styleDefinitions = [
 				{
 					label: t( 'Toggle the disc list style' ),
@@ -88,26 +86,35 @@ export default class ListPropertiesUI extends Plugin {
 					icon: listStyleSquareIcon
 				}
 			];
-			const buttonLabel = t( 'Bulleted list' );
+			const buttonLabel = t( 'Bulleted List' );
+			const styleGridAriaLabel = t( 'Bulleted list styles toolbar' );
 			const commandName = 'bulletedList';
 
 			editor.ui.componentFactory.add( commandName, getDropdownViewCreator( {
 				editor,
+				propertiesConfig,
 				parentCommandName: commandName,
 				buttonLabel,
 				buttonIcon: icons.bulletedList,
-				styleGridAriaLabel: t( 'Bulleted list styles toolbar' ),
+				styleGridAriaLabel,
 				styleDefinitions
 			} ) );
 
-			// Add menu item for bulleted list.
-			createMenuItem( editor, commandName, buttonLabel, t( 'Bulleted' ), styleDefinitions );
+			// Add the menu bar item for bulleted list.
+			editor.ui.componentFactory.add( `menuBar:${ commandName }`, getMenuBarStylesMenuCreator( {
+				editor,
+				propertiesConfig,
+				parentCommandName: commandName,
+				buttonLabel,
+				styleGridAriaLabel,
+				styleDefinitions
+			} ) );
 		}
 
 		// Note: When this plugin does not register the "numberedList" dropdown due to properties configuration,
 		// a simple button will be still registered under the same name by ListUI as a fallback. This should happen
 		// in most editor configuration because the List plugin automatically requires ListUI.
-		if ( enabledProperties.styles || enabledProperties.startIndex || enabledProperties.reversed ) {
+		if ( propertiesConfig.styles || propertiesConfig.startIndex || propertiesConfig.reversed ) {
 			const styleDefinitions = [
 				{
 					label: t( 'Toggle the decimal list style' ),
@@ -146,20 +153,32 @@ export default class ListPropertiesUI extends Plugin {
 					icon: listStyleUpperLatinIcon
 				}
 			];
-			const buttonLabel = t( 'Numbered list' );
+			const buttonLabel = t( 'Numbered List' );
+			const styleGridAriaLabel = t( 'Numbered list styles toolbar' );
 			const commandName = 'numberedList';
 
 			editor.ui.componentFactory.add( commandName, getDropdownViewCreator( {
 				editor,
+				propertiesConfig,
 				parentCommandName: commandName,
 				buttonLabel,
 				buttonIcon: icons.numberedList,
-				styleGridAriaLabel: t( 'Numbered list styles toolbar' ),
+				styleGridAriaLabel,
 				styleDefinitions
 			} ) );
 
-			// Add menu item for numbered list.
-			createMenuItem( editor, commandName, buttonLabel, t( 'Numbered' ), styleDefinitions );
+			// Menu bar menu does not display list start index or reverse UI. If there are no styles enabled,
+			// the menu makes no sense and should be omitted.
+			if ( propertiesConfig.styles ) {
+				editor.ui.componentFactory.add( `menuBar:${ commandName }`, getMenuBarStylesMenuCreator( {
+					editor,
+					propertiesConfig,
+					parentCommandName: commandName,
+					buttonLabel,
+					styleGridAriaLabel,
+					styleDefinitions
+				} ) );
+			}
 		}
 	}
 }
@@ -169,6 +188,7 @@ export default class ListPropertiesUI extends Plugin {
  * which in turn contains buttons allowing users to change list styles in the context of the current selection.
  *
  * @param options.editor
+ * @param options.propertiesConfig List properties configuration.
  * @param options.parentCommandName The name of the higher-order editor command associated with
  * the set of particular list styles (e.g. "bulletedList" for "disc", "circle", and "square" styles).
  * @param options.buttonLabel Label of the main part of the split button.
@@ -179,6 +199,7 @@ export default class ListPropertiesUI extends Plugin {
  */
 function getDropdownViewCreator( {
 	editor,
+	propertiesConfig,
 	parentCommandName,
 	buttonLabel,
 	buttonIcon,
@@ -186,6 +207,7 @@ function getDropdownViewCreator( {
 	styleDefinitions
 }: {
 	editor: Editor;
+	propertiesConfig: Readonly<ListPropertiesConfig>;
 	parentCommandName: string;
 	buttonLabel: string;
 	buttonIcon: string;
@@ -219,6 +241,7 @@ function getDropdownViewCreator( {
 		dropdownView.once( 'change:isOpen', () => {
 			const listPropertiesView = createListPropertiesView( {
 				editor,
+				propertiesConfig,
 				dropdownView,
 				parentCommandName,
 				styleGridAriaLabel,
@@ -272,9 +295,13 @@ function getStyleButtonCreator( {
 		button.on( 'execute', () => {
 			// If the content the selection is anchored to is a list, let's change its style.
 			if ( parentCommand.value ) {
+				// Remove the list when the current list style is the same as the one that would normally be applied.
+				if ( listStyleCommand.value === type ) {
+					editor.execute( parentCommandName );
+				}
 				// If the current list style is not set in the model or the style is different than the
 				// one to be applied, simply apply the new style.
-				if ( listStyleCommand.value !== type ) {
+				else if ( listStyleCommand.value !== type ) {
 					editor.execute( 'listStyle', { type } );
 				}
 				// If the style was the same, remove it (the button works as an off toggle).
@@ -298,6 +325,7 @@ function getStyleButtonCreator( {
  * A helper that creates the properties view for the individual style dropdown.
  *
  * @param options.editor Editor instance.
+ * @param options.propertiesConfig List properties configuration.
  * @param options.dropdownView Styles dropdown view that hosts the properties view.
  * @param options.parentCommandName The name of the higher-order editor command associated with
  * the set of particular list styles (e.g. "bulletedList" for "disc", "circle", and "square" styles).
@@ -306,25 +334,30 @@ function getStyleButtonCreator( {
  */
 function createListPropertiesView( {
 	editor,
+	propertiesConfig,
 	dropdownView,
 	parentCommandName,
 	styleDefinitions,
 	styleGridAriaLabel
 }: {
 	editor: Editor;
+	propertiesConfig: Readonly<ListPropertiesConfig>;
 	dropdownView: DropdownView;
 	parentCommandName: string;
 	styleDefinitions: Array<StyleDefinition>;
 	styleGridAriaLabel: string;
 } ) {
 	const locale = editor.locale;
-	const enabledProperties = editor.config.get( 'list.properties' )!;
-	let styleButtonViews = null;
+	const enabledProperties = {
+		...propertiesConfig
+	};
 
 	if ( parentCommandName != 'numberedList' ) {
 		enabledProperties.startIndex = false;
 		enabledProperties.reversed = false;
 	}
+
+	let styleButtonViews = null;
 
 	if ( enabledProperties.styles ) {
 		const listStyleCommand: LegacyListStyleCommand | ListStyleCommand = editor.commands.get( 'listStyle' )!;
@@ -336,9 +369,7 @@ function createListPropertiesView( {
 		} );
 
 		// The command can be ListStyleCommand or DocumentListStyleCommand.
-		const isStyleTypeSupported = typeof listStyleCommand.isStyleTypeSupported == 'function' ?
-			( styleDefinition: StyleDefinition ) => listStyleCommand.isStyleTypeSupported( styleDefinition.type ) :
-			() => true;
+		const isStyleTypeSupported = getStyleTypeSupportChecker( listStyleCommand );
 
 		styleButtonViews = styleDefinitions.filter( isStyleTypeSupported ).map( styleButtonCreator );
 	}
@@ -386,91 +417,74 @@ function createListPropertiesView( {
  * A helper that creates the list style submenu for menu bar.
  *
  * @param editor Editor instance.
- * @param commandName Name of the list command.
- * @param mainItemLabel Short list type name.
- * @param defaultStyleLabel Label for `default` list style.
- * @param styleDefinitions Array of avaialble styles for processed list type.
+ * @param propertiesConfig List properties configuration.
+ * @param parentCommandName Name of the list command.
+ * @param buttonLabel Label of the menu button.
+ * @param styleGridAriaLabel ARIA label of the styles grid.
+ * @param styleDefinitions Array of available styles for processed list type.
  */
-function createMenuItem(
-	editor: Editor,
-	commandName: 'bulletedList' | 'numberedList',
-	mainItemLabel: string,
-	defaultStyleLabel: string,
-	styleDefinitions: Array<StyleDefinition>
+function getMenuBarStylesMenuCreator(
+	{
+		editor,
+		propertiesConfig,
+		parentCommandName,
+		buttonLabel,
+		styleGridAriaLabel,
+		styleDefinitions
+	}: {
+		editor: Editor;
+		propertiesConfig: Readonly<ListPropertiesConfig>;
+		parentCommandName: 'bulletedList' | 'numberedList';
+		buttonLabel: string;
+		styleGridAriaLabel: string;
+		styleDefinitions: Array<StyleDefinition>;
+	}
 ) {
-	editor.ui.componentFactory.add( `menuBar:${ commandName }`, locale => {
+	return ( locale: Locale ) => {
 		const menuView = new MenuBarMenuView( locale );
-		const listCommand = editor.commands.get( commandName )!;
+		const listCommand = editor.commands.get( parentCommandName )!;
 		const listStyleCommand = editor.commands.get( 'listStyle' )!;
-		const listView = new MenuBarMenuListView( locale );
+		const isStyleTypeSupported = getStyleTypeSupportChecker( listStyleCommand );
+		const styleButtonCreator = getStyleButtonCreator( {
+			editor,
+			parentCommandName,
+			listStyleCommand
+		} );
+		const styleButtonViews = styleDefinitions.filter( isStyleTypeSupported ).map( styleButtonCreator );
+		const listPropertiesView = new ListPropertiesView( locale, {
+			styleGridAriaLabel,
+			enabledProperties: {
+				...propertiesConfig,
 
-		menuView.buttonView.set( {
-			label: mainItemLabel,
-			icon: icons[ commandName ]
+				// Disable list start index and reversed in the menu bar.
+				startIndex: false,
+				reversed: false
+			},
+			styleButtonViews
 		} );
 
-		menuView.panelView.children.add( listView );
+		listPropertiesView.delegate( 'execute' ).to( menuView );
 
-		const options = [
-			{
-				tooltip: defaultStyleLabel,
-				type: 'default',
-				icon: icons[ commandName ]
-			},
-			...styleDefinitions
-		];
-
-		for ( const option of options ) {
-			const listItemView = new MenuBarMenuListItemView( locale, menuView );
-			const buttonView = new MenuBarMenuListItemButtonView( locale );
-
-			listItemView.children.add( buttonView );
-			listView.items.add( listItemView );
-
-			buttonView.set( {
-				label: option.tooltip,
-				// role: 'menuitemradio',
-				icon: option.icon
-			} );
-
-			buttonView.delegate( 'execute' ).to( menuView );
-
-			// Keep current list option highlighted.
-			listStyleCommand.on( 'change:value', () => {
-				buttonView.isOn = listStyleCommand.value === option.type &&
-					listCommand.value === true;
-			} );
-			listCommand.on( 'change:value', () => {
-				buttonView.isOn = listStyleCommand.value === option.type &&
-					listCommand.value === true;
-			} );
-
-			buttonView.on( 'execute', () => {
-				// If current list style is selected, execute main list command to remove list format.
-				if ( listStyleCommand.value == option.type ) {
-					editor.execute( commandName );
-				}
-				// For unique styles, just call `listStyle` command.
-				else if ( option.type != 'default' ) {
-					editor.execute( 'listStyle', { type: option.type } );
-				}
-				// For 'default' style we need to call main list command if slected element is not a list.
-				else if ( !listCommand.value ) {
-					editor.execute( commandName );
-				}
-				// Or change list style to 'default' if selected element is a list of custom style.
-				else {
-					editor.execute( 'listStyle', { type: option.type } );
-				}
-
-				editor.editing.view.focus();
-			} );
-		}
-
+		menuView.buttonView.set( {
+			label: buttonLabel,
+			icon: icons[ parentCommandName ]
+		} );
+		menuView.panelView.children.add( listPropertiesView );
 		menuView.bind( 'isEnabled' ).to( listCommand, 'isEnabled' );
+		menuView.on( 'execute', () => {
+			editor.editing.view.focus();
+		} );
 
 		return menuView;
-	} );
+	};
+}
+
+function getStyleTypeSupportChecker( listStyleCommand: LegacyListStyleCommand | ListStyleCommand ) {
+	if ( typeof listStyleCommand.isStyleTypeSupported == 'function' ) {
+		return ( styleDefinition: StyleDefinition ) => listStyleCommand.isStyleTypeSupported( styleDefinition.type );
+	} else {
+		return () => true;
+	}
 }
 
 interface StyleDefinition {

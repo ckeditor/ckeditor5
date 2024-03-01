@@ -8,9 +8,7 @@
  */
 
 import { createUIComponents } from './utils.js';
-
 import { icons, Plugin } from 'ckeditor5/src/core.js';
-import { MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 
 /**
  * The list UI feature. It introduces the `'numberedList'` and `'bulletedList'` buttons that
