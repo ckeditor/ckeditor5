@@ -420,6 +420,10 @@ export const DefaultMenuBarConfig: MenuBarConfig = [
 		id: 'insert',
 		label: 'Insert',
 		items: [
+			'menuBar:blockQuote',
+			'menuBar:htmlEmbed',
+			'menuBar:pageBreak',
+			'menuBar:horizontalLine',
 			'menuBar:blockQuote'
 		]
 	},
@@ -432,8 +436,20 @@ export const DefaultMenuBarConfig: MenuBarConfig = [
 			'menuBar:bold',
 			'menuBar:italic',
 			'menuBar:underline',
+			'menuBar:strikethrough',
+			'menuBar:subscript',
+			'menuBar:superscript',
+			'menuBar:code',
 			'-',
-			'menuBar:heading'
+			'menuBar:bulletedList',
+			'menuBar:numberedList',
+			'menuBar:todoList',
+			'-',
+			'menuBar:heading',
+			'-',
+			'menuBar:indent',
+			'menuBar:outdent',
+			'menuBar:removeFormat'
 		]
 	}
 	// {
