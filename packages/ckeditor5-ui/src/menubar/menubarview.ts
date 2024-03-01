@@ -166,6 +166,8 @@ export default class MenuBarView extends View implements FocusableView {
 					'-',
 					'menuBar:heading',
 					'-',
+					'menuBar:indent',
+					'menuBar:outdent',
 					'menuBar:removeFormat'
 				]
 			},
