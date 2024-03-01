@@ -306,7 +306,7 @@ function createEditor( number, table, type ) {
 		},
 		autosave: {
 			save( editor ) {
-				createTableInPre( number, editor.getData(), 'standard' );
+				createTableInPre( number, editor.getData(), type );
 			}
 		}
 	};
