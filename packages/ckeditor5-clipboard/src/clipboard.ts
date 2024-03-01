@@ -37,4 +37,30 @@ export default class Clipboard extends Plugin {
 	public static get requires() {
 		return [ ClipboardPipeline, DragDrop, PastePlainText ] as const;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public init(): void {
+		const editor = this.editor;
+		const t = this.editor.t;
+
+		// Add the information about the keystrokes to the accessibility database.
+		editor.accessibility.addKeystrokeInfos( {
+			keystrokes: [
+				{
+					label: t( 'Copy selected content' ),
+					keystroke: 'CTRL+C'
+				},
+				{
+					label: t( 'Paste content' ),
+					keystroke: 'CTRL+V'
+				},
+				{
+					label: t( 'Paste content as plain text' ),
+					keystroke: 'CTRL+SHIFT+V'
+				}
+			]
+		} );
+	}
 }

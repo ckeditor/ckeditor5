@@ -11,8 +11,6 @@ import { get, isObject, merge, set, unset } from 'lodash-es';
 
 /**
  * Styles map. Allows handling (adding, removing, retrieving) a set of style rules (usually, of an element).
- *
- * The styles map is capable of normalizing style names so e.g. the following operations are possible:
  */
 export default class StylesMap {
 	/**
