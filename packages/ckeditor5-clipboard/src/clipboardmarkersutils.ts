@@ -209,12 +209,13 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 * Checks if marker can be copied.
 	 *
 	 * @param markerName Name of checked marker.
+	 * @param action Type of clipboard action. If null then checks only if marker is registered as copyable.
 	 * @internal
 	 */
-	public _canPerformMarkerClipboardAction( markerName: string, action: ClipboardMarkerRestrictedAction ): boolean {
+	public _canPerformMarkerClipboardAction( markerName: string, action: ClipboardMarkerRestrictedAction | null ): boolean {
 		const [ markerNamePrefix ] = markerName.split( ':' );
 
-		if ( action === 'any' ) {
+		if ( !action ) {
 			return this._markersToCopy.has( markerNamePrefix );
 		}
 
@@ -293,12 +294,12 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 *
 	 * @param writer An instance of the model writer.
 	 * @param selection  Selection which will be checked.
-	 * @param action Type of clipboard action.
+	 * @param action Type of clipboard action. If null then checks only if marker is registered as copyable.
 	 */
 	private _getCopyableMarkersFromSelection(
 		writer: Writer,
 		selection: Selection | DocumentSelection,
-		action: ClipboardMarkerRestrictedAction
+		action: ClipboardMarkerRestrictedAction | null
 	): Array<CopyableMarker> {
 		return Array
 			.from( selection.getRanges()! )
@@ -313,12 +314,12 @@ export default class ClipboardMarkersUtils extends Plugin {
 	/**
 	 * Picks all markers from markers map that can be copied.
 	 *
-	 * @param action Type of clipboard action. If not provided then copy marker if registered in `_markersToCopy`.
 	 * @param markers Object that maps marker name to corresponding range.
+	 * @param action Type of clipboard action. If null then checks only if marker is registered as copyable.
 	 */
 	private _getCopyableMarkersFromRangeMap(
 		markers: Record<string, Range>,
-		action: ClipboardMarkerRestrictedAction = 'any'
+		action: ClipboardMarkerRestrictedAction | null = null
 	): Array<CopyableMarker> {
 		return Object
 			.entries( markers )
@@ -530,7 +531,7 @@ export default class ClipboardMarkersUtils extends Plugin {
  *
  * @internal
  */
-export type ClipboardMarkerRestrictedAction = 'copy' | 'cut' | 'dragstart' | 'any';
+export type ClipboardMarkerRestrictedAction = 'copy' | 'cut' | 'dragstart';
 
 /**
  * Specifies copy, paste or move marker restrictions in clipboard. Depending on specified mode
