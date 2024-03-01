@@ -6,6 +6,7 @@
 /**
  * @module clipboard/clipboardmarkersutils
  */
+import { mapValues } from 'lodash-es';
 
 import { uid } from '@ckeditor/ckeditor5-utils';
 import { Plugin } from '@ckeditor/ckeditor5-core';
@@ -32,13 +33,58 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 *
 	 * @internal
 	 */
-	private _markersToCopy: Map<string, Array<ClipboardMarkerAction>> = new Map();
+	private _markersToCopy: Map<string, Array<ClipboardMarkerRestrictedAction>> = new Map();
 
 	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
 		return 'ClipboardMarkersUtils' as const;
+	}
+
+	/**
+	 * Registers marker name as copyable in clipboard pipeline.
+	 *
+	 * @param markerName	Name of marker that can be copied.
+	 * @param restrictions	Restrictions preset that specify when marker should be copied.
+	 * 						If array is passed specific clipboard actions should be passed.
+	 * @internal
+	 */
+	public _registerMarkerToCopy(
+		markerName: string,
+		restrictions: ClipboardMarkerRestrictionsPreset | Array<ClipboardMarkerRestrictedAction>
+	): void {
+		const allowedActions = Array.isArray( restrictions ) ? restrictions : this._mapRestrictionPresetToActions( restrictions );
+
+		if ( allowedActions.length ) {
+			this._markersToCopy.set( markerName, allowedActions );
+		}
+	}
+
+	/**
+	 * Maps preset into array of clipboard operations to be allowed on marker.
+	 *
+	 * @param preset Restrictions preset to be mapped to actions
+	 * @internal
+	 */
+	private _mapRestrictionPresetToActions( preset: ClipboardMarkerRestrictionsPreset ): Array<ClipboardMarkerRestrictedAction> {
+		switch ( preset ) {
+			case 'always':
+				return [ 'copy', 'cut', 'dragstart' ];
+
+			case 'default':
+				return [ 'cut' ];
+
+			case 'never':
+				return [];
+
+			default: {
+				// Skip unrecognized type.
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
+				const unreachable: never = preset;
+				return [];
+			}
+		}
 	}
 
 	/**
@@ -57,7 +103,7 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 * @internal
 	 */
 	public _copySelectedFragmentWithMarkers(
-		action: ClipboardMarkerAction,
+		action: ClipboardMarkerRestrictedAction,
 		selection: Selection | DocumentSelection,
 		getCopiedFragment: ( writer: Writer ) => DocumentFragment = writer =>
 			writer.model.getSelectedContent( writer.model.document.selection )
@@ -112,11 +158,10 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 * @internal
 	 */
 	public _pasteMarkersIntoTransformedElement(
-		action: ClipboardMarkerAction,
 		markers: Record<string, Range>,
 		getTransformedElement: ( writer: Writer ) => Element
 	): Element {
-		const copyableMarkers = this._getCopyableMarkersFromRangeMap( action, markers );
+		const copyableMarkers = this._getCopyableMarkersFromRangeMap( markers );
 
 		return this.editor.model.change( writer => {
 			const sourceInsertedMarkers = this._insertFakeMarkersElements( writer, copyableMarkers );
@@ -166,22 +211,16 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 * @param markerName Name of checked marker.
 	 * @internal
 	 */
-	public _canPerformMarkerClipboardAction( markerName: string, action: ClipboardMarkerAction ): boolean {
+	public _canPerformMarkerClipboardAction( markerName: string, action: ClipboardMarkerRestrictedAction ): boolean {
 		const [ markerNamePrefix ] = markerName.split( ':' );
+
+		if ( action === 'any' ) {
+			return this._markersToCopy.has( markerNamePrefix );
+		}
+
 		const possibleActions = this._markersToCopy.get( markerNamePrefix ) || [];
 
 		return possibleActions.includes( action );
-	}
-
-	/**
-	 * Registers marker name as copyable in clipboard pipeline.
-	 *
-	 * @param markerName Name of marker that can be copied.
-	 * @param allowedActions List of allowed actions that can be performed on markers with specified name.
-	 * @internal
-	 */
-	public _registerMarkerToCopy( markerName: string, allowedActions: Array<ClipboardMarkerAction> ): void {
-		this._markersToCopy.set( markerName, allowedActions );
 	}
 
 	/**
@@ -212,7 +251,7 @@ export default class ClipboardMarkersUtils extends Plugin {
 	private _insertFakeMarkersFromSelection(
 		writer: Writer,
 		selection: Selection | DocumentSelection,
-		action: ClipboardMarkerAction
+		action: ClipboardMarkerRestrictedAction
 	): Record<string, Array<Element>> {
 		const copyableMarkers = this._getCopyableMarkersFromSelection( writer, selection, action );
 
@@ -259,7 +298,7 @@ export default class ClipboardMarkersUtils extends Plugin {
 	private _getCopyableMarkersFromSelection(
 		writer: Writer,
 		selection: Selection | DocumentSelection,
-		action: ClipboardMarkerAction
+		action: ClipboardMarkerRestrictedAction
 	): Array<CopyableMarker> {
 		return Array
 			.from( selection.getRanges()! )
@@ -274,12 +313,12 @@ export default class ClipboardMarkersUtils extends Plugin {
 	/**
 	 * Picks all markers from markers map that can be copied.
 	 *
-	 * @param action Type of clipboard action.
+	 * @param action Type of clipboard action. If not provided then copy marker if registered in `_markersToCopy`.
 	 * @param markers Object that maps marker name to corresponding range.
 	 */
 	private _getCopyableMarkersFromRangeMap(
-		action: ClipboardMarkerAction,
-		markers: Record<string, Range>
+		markers: Record<string, Range>,
+		action: ClipboardMarkerRestrictedAction = 'any'
 	): Array<CopyableMarker> {
 		return Object
 			.entries( markers )
@@ -344,44 +383,40 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 */
 	private _removeFakeMarkersInsideElement( writer: Writer, rootElement: Element | DocumentFragment ): Record<string, Range> {
 		const fakeMarkersElements = this._getAllFakeMarkersFromElement( writer, rootElement );
-		const fakeMarkersRanges = fakeMarkersElements
-			.reduce<Record<string, FakeMarkerOptionalRange>>( ( acc, fakeMarker ) => {
-				const position = fakeMarker.markerElement && writer.createPositionBefore( fakeMarker.markerElement );
-				let prevFakeMarker: FakeMarkerOptionalRange | null = acc[ fakeMarker.name ];
+		const fakeMarkersRanges = fakeMarkersElements.reduce<Record<string, FakeMarkerRangeConstruct>>( ( acc, fakeMarker ) => {
+			const position = fakeMarker.markerElement && writer.createPositionBefore( fakeMarker.markerElement );
+			let prevFakeMarker: FakeMarkerRangeConstruct | null = acc[ fakeMarker.name ];
 
-				// Handle scenario when tables clone cells with the same fake node. Example:
-				//
-				// <cell><fake-marker-a></cell> <cell><fake-marker-a></cell> <cell><fake-marker-a></cell>
-				//                                          ^ cloned                    ^ cloned
-				//
-				// The easiest way to bypass this issue is to rename already existing in map nodes and
-				// set them new unique name.
-				if ( prevFakeMarker && prevFakeMarker.start && prevFakeMarker.end ) {
-					acc[ this._getUniqueMarkerName( fakeMarker.name ) ] = acc[ fakeMarker.name ];
-					prevFakeMarker = null;
-				}
+			// Handle scenario when tables clone cells with the same fake node. Example:
+			//
+			// <cell><fake-marker-a></cell> <cell><fake-marker-a></cell> <cell><fake-marker-a></cell>
+			//                                          ^ cloned                    ^ cloned
+			//
+			// The easiest way to bypass this issue is to rename already existing in map nodes and
+			// set them new unique name.
+			if ( prevFakeMarker && prevFakeMarker.start && prevFakeMarker.end ) {
+				acc[ this._getUniqueMarkerName( fakeMarker.name ) ] = acc[ fakeMarker.name ];
+				prevFakeMarker = null;
+			}
 
-				acc[ fakeMarker.name ] = {
-					...prevFakeMarker!,
-					[ fakeMarker.type ]: position
-				};
+			acc[ fakeMarker.name ] = {
+				...prevFakeMarker!,
+				[ fakeMarker.type ]: position
+			};
 
-				if ( fakeMarker.markerElement ) {
-					writer.remove( fakeMarker.markerElement );
-				}
+			if ( fakeMarker.markerElement ) {
+				writer.remove( fakeMarker.markerElement );
+			}
 
-				return acc;
-			}, {} );
+			return acc;
+		}, {} );
 
-		return Object.fromEntries(
-			Object
-				.entries( fakeMarkersRanges )
-				.map( ( [ markerName, range ] ) => [
-					markerName,
-					new Range(
-						range.start || writer.createPositionFromPath( rootElement, [ 0 ] ),
-						range.end || writer.createPositionAt( rootElement, 'end' ) )
-				] )
+		return mapValues(
+			fakeMarkersRanges,
+			range => new Range(
+				range.start || writer.createPositionFromPath( rootElement, [ 0 ] ),
+				range.end || writer.createPositionAt( rootElement, 'end' )
+			)
 		);
 	}
 
@@ -495,7 +530,19 @@ export default class ClipboardMarkersUtils extends Plugin {
  *
  * @internal
  */
-export type ClipboardMarkerAction = 'copy' | 'cut' | 'dragstart';
+export type ClipboardMarkerRestrictedAction = 'copy' | 'cut' | 'dragstart' | 'any';
+
+/**
+ * Specifies copy, paste or move marker restrictions in clipboard. Depending on specified mode
+ * it will disallow copy, cut or paste of marker in clipboard.
+ *
+ * 	`default` allows marker to be cut only.
+ * 	`always` allows marker to be copied, moved or cut.
+ * 	'never' no clipboard operations will be performed on marker.
+ *
+ * @internal
+ */
+export type ClipboardMarkerRestrictionsPreset = 'default' | 'always' | 'never';
 
 /**
  * Marker descriptor type used to revert markers into tree node.
@@ -509,6 +556,18 @@ type FakeMarker = {
 };
 
 /**
+ * Range used to construct real markers from fake markers. Every property must be optional
+ * because real marker range is constructed using iteration over markers that represent `start`
+ * and then `end`. Usually `start` is set firstly then after few nodes `end` is set.
+ *
+ * @internal
+ */
+type FakeMarkerRangeConstruct = {
+	start: Position | null;
+	end: Position | null;
+};
+
+/**
  * Structure used to describe marker that has to be copied.
  *
  * @internal
@@ -516,16 +575,4 @@ type FakeMarker = {
 type CopyableMarker = {
 	name: string;
 	range: Range;
-};
-
-/**
- * Range used to construct real markers from fake markers. Every property must be optional
- * because real marker range is constructed using iteration over markers that represent `start`
- * and then `end`. Usually `start` is set firstly then after few nodes `end` is set.
- *
- * @internal
- */
-type FakeMarkerOptionalRange = {
-	start: Position | null;
-	end: Position | null;
 };

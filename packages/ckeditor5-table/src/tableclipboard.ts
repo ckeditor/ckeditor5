@@ -162,7 +162,6 @@ export default class TableClipboard extends Plugin {
 
 		if ( content.is( 'documentFragment' ) ) {
 			clipboardMarkersUtils._pasteMarkersIntoTransformedElement(
-				'copy',
 				Object.fromEntries( content.markers.entries() ),
 				writer => this._replaceSelectedCells( pastedTable, selectedTableCells, writer )
 			);
