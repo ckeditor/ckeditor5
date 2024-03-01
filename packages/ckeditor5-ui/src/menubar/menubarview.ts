@@ -104,7 +104,7 @@ export default class MenuBarView extends View implements FocusableView {
 			locale,
 			componentFactory,
 			config
-		} ).map( menuDefinition => this._createMenu( {
+		} ).items.map( menuDefinition => this._createMenu( {
 			componentFactory,
 			menuDefinition
 		} ) );
@@ -195,40 +195,42 @@ export default class MenuBarView extends View implements FocusableView {
 		parentMenuView: MenuBarMenuView;
 	} ): Array<MenuBarMenuListItemView | ListSeparatorView> {
 		const locale = this.locale!;
+		const items = [];
 
-		return menuDefinition.items
-			.map( menuDefinition => {
-				if ( menuDefinition === '-' ) {
-					return new ListSeparatorView();
-				}
-
+		for ( const menuGroupDefinition of menuDefinition.items ) {
+			for ( const itemDefinition of menuGroupDefinition.items ) {
 				const menuItemView = new MenuBarMenuListItemView( locale, parentMenuView );
 
-				if ( isObject( menuDefinition ) ) {
+				if ( isObject( itemDefinition ) ) {
 					menuItemView.children.add( this._createMenu( {
 						componentFactory,
-						menuDefinition,
+						menuDefinition: itemDefinition,
 						parentMenuView
 					} ) );
 				} else {
 					const componentView = this._createMenuItemContentFromFactory( {
-						componentName: menuDefinition,
+						componentName: itemDefinition,
 						componentFactory,
 						parentMenuView
 					} );
 
 					if ( !componentView ) {
-						return null;
+						continue;
 					}
 
 					menuItemView.children.add( componentView );
 				}
 
-				return menuItemView;
-			} )
-			.filter( ( menuItemView ): menuItemView is MenuBarMenuListItemView | ListSeparatorView => {
-				return menuItemView !== null;
-			} );
+				items.push( menuItemView );
+			}
+
+			// Separate groups with a separator.
+			if ( menuGroupDefinition !== menuDefinition.items[ menuDefinition.items.length - 1 ] ) {
+				items.push( new ListSeparatorView( locale ) );
+			}
+		}
+
+		return items;
 	}
 
 	/**
@@ -299,12 +301,31 @@ export default class MenuBarView extends View implements FocusableView {
 	}
 }
 
-export type MenuBarConfig = Array<MenuBarMenuDefinition>;
+export type MenuBarConfig = Array<MenuBarMenuGroupDefinition> | MenuBarConfigObject;
+
+export type MenuBarConfigObject = {
+	items: Array<MenuBarMenuDefinition>;
+	removeItems?: Array<string>;
+	addItems?: Array<MenuBarConfigAddedItem>;
+};
+
+export type MenuBarMenuGroupDefinition = {
+	groupId: string;
+	items: Array<MenuBarMenuDefinition | string>;
+};
 
 export type MenuBarMenuDefinition = {
 	id: string;
 	label: string;
-	items: Array<string | MenuBarMenuDefinition>;
+	items: Array<MenuBarMenuGroupDefinition>;
+};
+
+export type MenuBarConfigAddedItem = {
+	item: string | MenuBarMenuDefinition | MenuBarMenuGroupDefinition;
+	end?: string;
+	start?: string;
+	before?: string;
+	after?: string;
 };
 
 /**

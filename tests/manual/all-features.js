@@ -163,6 +163,23 @@ ClassicEditor
 				}
 			}
 		},
+		menuBar: {
+			removeItems: [ 'menuBar:undo', 'menuBar:redo' ],
+			addItems: [
+				{ item: 'menuBar:undo', after: 'menuBar:bold' },
+				{ item: 'menuBar:redo', end: 'basicStyles' },
+				{
+					item: {
+						groupId: 'indent',
+						items: [
+							'menuBar:indent',
+							'menuBar:outdent'
+						]
+					},
+					after: 'basicStyles'
+				}
+			]
+		},
 		htmlEmbed: {
 			showPreviews: true,
 			sanitizeHtml: html => ( { html, hasChange: false } )

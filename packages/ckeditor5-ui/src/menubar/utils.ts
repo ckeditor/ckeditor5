@@ -16,7 +16,9 @@ import type {
 	MenuBarMenuChangeIsOpenEvent,
 	MenuBarMenuArrowRightEvent,
 	MenuBarMenuArrowLeftEvent,
-	MenuBarMenuDefinition
+	MenuBarMenuDefinition,
+	MenuBarConfigObject,
+	MenuBarMenuGroupDefinition
 } from './menubarview.js';
 import { cloneDeep } from 'lodash-es';
 import type { FocusableView } from '../focuscycler.js';
@@ -30,6 +32,8 @@ import type { ButtonExecuteEvent } from '../button/button.js';
 import type ComponentFactory from '../componentfactory.js';
 
 const NESTED_PANEL_HORIZONTAL_OFFSET = 5;
+
+type RequitedMenuBarConfigObject = Required<MenuBarConfigObject>;
 
 /**
  * Behaviors of the {@link module:ui/menubar/menubarview~MenuBarView} component.
@@ -394,62 +398,115 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
  *
  * It contains names of all UI components available in the project.
  */
-export const DefaultMenuBarConfig: MenuBarConfig = [
+export const DefaultMenuBarConfig: Array<MenuBarMenuDefinition> = [
 	{
 		id: 'edit',
 		label: 'Edit',
 		items: [
-			'menuBar:undo',
-			'menuBar:redo',
-			'-',
-			'menuBar:selectAll',
-			'-',
-			'menuBar:findAndReplace'
+			{
+				groupId: 'undo',
+				items: [
+					'menuBar:undo',
+					'menuBar:redo'
+				]
+			},
+			{
+				groupId: 'selectAll',
+				items: [
+					'menuBar:selectAll'
+				]
+			},
+			{
+				groupId: 'findAndReplace',
+				items: [
+					'menuBar:findAndReplace'
+				]
+			}
 		]
 	},
 	{
 		id: 'view',
 		label: 'View',
 		items: [
-			'menuBar:sourceEditing',
-			'-',
-			'menuBar:showBlocks'
+			{
+				groupId: 'sourceEditing',
+				items: [
+					'menuBar:sourceEditing'
+				]
+			},
+			{
+				groupId: 'showBlocks',
+				items: [
+					'menuBar:showBlocks'
+				]
+			}
 		]
 	},
 	{
 		id: 'insert',
 		label: 'Insert',
 		items: [
-			'menuBar:blockQuote',
-			'menuBar:htmlEmbed',
-			'menuBar:pageBreak',
-			'menuBar:horizontalLine',
-			'menuBar:blockQuote'
+			{
+				groupId: 'insert',
+				items: [
+					'menuBar:blockQuote',
+					'menuBar:htmlEmbed',
+					'menuBar:pageBreak',
+					'menuBar:horizontalLine',
+					'menuBar:blockQuote'
+				]
+			}
 		]
 	},
 	{
 		id: 'format',
 		label: 'Format',
 		items: [
-			'menuBar:insertTable',
-			'-',
-			'menuBar:bold',
-			'menuBar:italic',
-			'menuBar:underline',
-			'menuBar:strikethrough',
-			'menuBar:subscript',
-			'menuBar:superscript',
-			'menuBar:code',
-			'-',
-			'menuBar:bulletedList',
-			'menuBar:numberedList',
-			'menuBar:todoList',
-			'-',
-			'menuBar:heading',
-			'-',
-			'menuBar:indent',
-			'menuBar:outdent',
-			'menuBar:removeFormat'
+			{
+				groupId: 'table',
+				items: [
+					'menuBar:insertTable'
+				]
+			},
+			{
+				groupId: 'basicStyles',
+				items: [
+					'menuBar:bold',
+					'menuBar:italic',
+					'menuBar:underline',
+					'menuBar:strikethrough',
+					'menuBar:subscript',
+					'menuBar:superscript',
+					'menuBar:code'
+				]
+			},
+			{
+				groupId: 'list',
+				items: [
+					'menuBar:bulletedList',
+					'menuBar:numberedList',
+					'menuBar:todoList'
+				]
+			},
+			{
+				groupId: 'heading',
+				items: [
+					'menuBar:heading'
+				]
+			},
+			{
+				groupId: 'indent',
+				items: [
+					'menuBar:indent',
+					'menuBar:outdent'
+				]
+			},
+			{
+				groupId: 'removeFormat',
+				items: [
+					'menuBar:removeFormat'
+				]
+			}
 		]
 	}
 	// {
@@ -512,20 +569,141 @@ export function normalizeMenuBarConfig( {
 	locale: Locale;
 	componentFactory: ComponentFactory;
 	config: Readonly<MenuBarConfig> | undefined;
-} ): MenuBarConfig {
+} ): MenuBarConfigObject {
+	let configObject: RequitedMenuBarConfigObject;
+
+	// The integrator didn't specify any configuration so we use the default one.
 	if ( !config ) {
-		config = DefaultMenuBarConfig;
+		configObject = {
+			items: DefaultMenuBarConfig,
+			addItems: [],
+			removeItems: []
+		};
+	}
+	// The integrator specified the config as an array. Let's convert it into a generic object config.
+	else if ( Array.isArray( config ) ) {
+		configObject = {
+			items: config,
+			addItems: [],
+			removeItems: []
+		};
+	}
+	// The integrator specified the config as an object but without items. Let's give them defaults but respect their
+	// additions and removals.
+	else if ( !( config as MenuBarConfigObject ).items ) {
+		configObject = {
+			items: DefaultMenuBarConfig,
+			addItems: [],
+			removeItems: [],
+			...config
+		};
+	}
+	// The integrator specified the config as an object and there are items there. Let's take it as it is.
+	else {
+		configObject = {
+			removeItems: [],
+			addItems: [],
+			...config as MenuBarConfigObject
+		};
 	}
 
 	const isUsingDefaultConfig = config === DefaultMenuBarConfig;
-	const configClone = cloneDeep( config ) as MenuBarConfig;
+	const configClone = cloneDeep( configObject );
 
-	purgeUnavailableComponents( config, configClone, componentFactory, isUsingDefaultConfig );
-	purgeEmptyMenus( config, configClone, isUsingDefaultConfig );
-	purgeObsoleteSeparators( configClone );
+	removeItems( configClone );
+	addItems( configClone );
+	purgeUnavailableComponents( configObject, configClone, componentFactory, isUsingDefaultConfig );
+	purgeEmptyMenus( configObject, configClone, isUsingDefaultConfig );
 	localizeTopLevelCategories( configClone, locale );
 
 	return configClone;
+}
+
+function removeItems( config: RequitedMenuBarConfigObject ) {
+	walkConfig( config.items, menuDefinition => {
+		for ( const menuGroupDefinition of menuDefinition.items ) {
+			menuGroupDefinition.items = menuGroupDefinition.items.filter( item => {
+				return !config.removeItems!.includes( typeof item == 'string' ? item : item.id );
+			} );
+		}
+	} );
+}
+
+function addItems( config: RequitedMenuBarConfigObject ) {
+	const itemsToAdd = cloneDeep( config.addItems );
+	const addedItems = new Set();
+
+	walkConfig( config.items, menuDefinition => {
+		// Addition at the beginning or and of a group.
+		for ( const menuGroupDefinition of menuDefinition.items ) {
+			for ( const itemToAdd of itemsToAdd ) {
+				// Don't process items that have been already added.
+				if ( addedItems.has( itemToAdd ) ) {
+					continue;
+				}
+
+				let wasAdded = false;
+
+				if ( isMenuBarMenuDefinition( itemToAdd.item ) ) {
+					if ( menuGroupDefinition.groupId === itemToAdd.start ) {
+						menuGroupDefinition.items.unshift( itemToAdd.item );
+						wasAdded = true;
+					} else if ( menuGroupDefinition.groupId === itemToAdd.end ) {
+						menuGroupDefinition.items.push( itemToAdd.item );
+						wasAdded = true;
+					}
+				} else if ( isMenuBarMenuGroupDefinition( itemToAdd.item ) ) {
+					if ( menuGroupDefinition.groupId === itemToAdd.before ) {
+						menuDefinition.items.splice( menuDefinition.items.indexOf( menuGroupDefinition ), 0, itemToAdd.item );
+						wasAdded = true;
+					} else if ( menuGroupDefinition.groupId === itemToAdd.after ) {
+						menuDefinition.items.splice( menuDefinition.items.indexOf( menuGroupDefinition ) + 1, 0, itemToAdd.item );
+						wasAdded = true;
+					}
+				}
+
+				if ( wasAdded ) {
+					addedItems.add( itemToAdd );
+				}
+			}
+		}
+
+		// Addition of a button or a menu before or after a group item.
+		for ( const menuGroupDefinition of menuDefinition.items ) {
+			for ( const itemToAdd of itemsToAdd ) {
+				let wasAdded = false;
+
+				for ( const item of menuGroupDefinition.items ) {
+					// Don't process items that have been already added.
+					if ( addedItems.has( itemToAdd ) ) {
+						continue;
+					}
+
+					let itemId;
+
+					if ( typeof item === 'string' ) {
+						itemId = item;
+					} else {
+						itemId = item.id;
+					}
+
+					if ( isMenuBarMenuDefinition( itemToAdd.item ) || typeof itemToAdd.item === 'string' ) {
+						if ( itemToAdd.before === itemId ) {
+							menuGroupDefinition.items.splice( menuGroupDefinition.items.indexOf( item ), 0, itemToAdd.item );
+							wasAdded = true;
+						} else if ( itemToAdd.after === itemId ) {
+							menuGroupDefinition.items.splice( menuGroupDefinition.items.indexOf( item ) + 1, 0, itemToAdd.item );
+							wasAdded = true;
+						}
+					}
+
+					if ( wasAdded ) {
+						addedItems.add( itemToAdd );
+					}
+				}
+			}
+		}
+	} );
 }
 
 /**
@@ -533,66 +711,48 @@ export function normalizeMenuBarConfig( {
  * not be instantiated. Warns about missing components if the menu bar configuration was specified by the user.
  */
 function purgeUnavailableComponents(
-	originalConfig: Readonly<MenuBarConfig>,
-	config: MenuBarConfig,
+	originalConfig: Readonly<MenuBarConfigObject>,
+	config: RequitedMenuBarConfigObject,
 	componentFactory: ComponentFactory,
 	isUsingDefaultConfig: boolean
 ) {
-	walkConfig( config, menuDefinition => {
-		menuDefinition.items = menuDefinition.items.filter( item => {
-			const isItemUnavailable = typeof item === 'string' && item !== '-' && !componentFactory.has( item );
+	walkConfig( config.items, menuDefinition => {
+		for ( const menuGroupDefinition of menuDefinition.items ) {
+			menuGroupDefinition.items = menuGroupDefinition.items.filter( item => {
+				const isItemUnavailable = typeof item === 'string' && !componentFactory.has( item );
 
-			// The default configuration contains all possible editor features. But integrators' editors rarely load
-			// every possible feature. This is why we do not want to log warnings about unavailable items for the default config
-			// because they would show up in almost every integration. If the configuration has been provided by
-			// the integrator, on the other hand, then these warnings bring value.
-			if ( isItemUnavailable && !isUsingDefaultConfig ) {
-				/**
-				 * There was a problem processing the configuration of the menu bar. The item with the given
-				 * name does not exist so it was omitted when rendering the menu bar.
-				 *
-				 * This warning usually shows up when the {@link module:core/plugin~Plugin} which is supposed
-				 * to provide a menu bar item has not been loaded or there is a typo in the
-				 * {@link module:core/editor/editorconfig~EditorConfig#menuBar menu bar configuration}.
-				 *
-				 * Make sure the plugin responsible for this menu bar item is loaded and the menu bar configuration
-				 * is correct, e.g. {@link module:basic-styles/boldyu~BoldUI} is loaded for the `'menuBar:bold'`
-				 * menu bar item.
-				 *
-				 * @error menu-bar-item-unavailable
-				 * @param menuBarConfig The full configuration of the menu bar.
-				 * @param parentMenuConfig The config of the menu the unavailable component was defined in.
-				 * @param componentName The name of the unavailable component.
-				 */
-				logWarning( 'menu-bar-item-unavailable', {
-					menuBarConfig: originalConfig,
-					parentMenuConfig: cloneDeep( menuDefinition ),
-					componentName: item
-				} );
-			}
+				// The default configuration contains all possible editor features. But integrators' editors rarely load
+				// every possible feature. This is why we do not want to log warnings about unavailable items for the default config
+				// because they would show up in almost every integration. If the configuration has been provided by
+				// the integrator, on the other hand, then these warnings bring value.
+				if ( isItemUnavailable && !isUsingDefaultConfig ) {
+					/**
+					 * There was a problem processing the configuration of the menu bar. The item with the given
+					 * name does not exist so it was omitted when rendering the menu bar.
+					 *
+					 * This warning usually shows up when the {@link module:core/plugin~Plugin} which is supposed
+					 * to provide a menu bar item has not been loaded or there is a typo in the
+					 * {@link module:core/editor/editorconfig~EditorConfig#menuBar menu bar configuration}.
+					 *
+					 * Make sure the plugin responsible for this menu bar item is loaded and the menu bar configuration
+					 * is correct, e.g. {@link module:basic-styles/boldyu~BoldUI} is loaded for the `'menuBar:bold'`
+					 * menu bar item.
+					 *
+					 * @error menu-bar-item-unavailable
+					 * @param menuBarConfig The full configuration of the menu bar.
+					 * @param parentMenuConfig The config of the menu the unavailable component was defined in.
+					 * @param componentName The name of the unavailable component.
+					 */
+					logWarning( 'menu-bar-item-unavailable', {
+						menuBarConfig: originalConfig,
+						parentMenuConfig: cloneDeep( menuDefinition ),
+						componentName: item
+					} );
+				}
 
-			return !isItemUnavailable;
-		} );
-	} );
-}
-
-/**
- * Removes trailing and leading separators from menu bar configuration. Such separators can be added by mistake
- * or due to the missing components in the factory that were meant to be separated.
- */
-function purgeObsoleteSeparators( config: MenuBarConfig ) {
-	function isSeparator( item: any ) {
-		return item === '-';
-	}
-
-	walkConfig( config, menuDefinition => {
-		menuDefinition.items = menuDefinition.items.filter( ( item, index, items ) => {
-			const itemIsSeparator = isSeparator( item );
-			const isLeadingSeparator = itemIsSeparator && items.slice( 0, index + 1 ).every( isSeparator );
-			const isTrailingSeparator = itemIsSeparator && items.slice( index, items.length ).every( isSeparator );
-
-			return !isTrailingSeparator && !isLeadingSeparator;
-		} );
+				return !isItemUnavailable;
+			} );
+		}
 	} );
 }
 
@@ -602,11 +762,11 @@ function purgeObsoleteSeparators( config: MenuBarConfig ) {
  * the configuration populated menus using these components exclusively.
  */
 function purgeEmptyMenus(
-	originalConfig: Readonly<MenuBarConfig>,
-	config: MenuBarConfig,
+	originalConfig: Readonly<MenuBarConfigObject>,
+	config: RequitedMenuBarConfigObject,
 	isUsingDefaultConfig: boolean
 ) {
-	if ( !config.length && !isUsingDefaultConfig ) {
+	if ( !config.items.length && !isUsingDefaultConfig ) {
 		/**
 		 * There was a problem processing the configuration of the menu bar. One of the menus
 		 * is empty so it was omitted when rendering the menu bar.
@@ -630,10 +790,16 @@ function purgeEmptyMenus(
 		return;
 	}
 
-	walkConfig( config, ( menuDefinition, siblings ) => {
-		if ( !menuDefinition.items.length || menuDefinition.items.every( item => item === '-' ) ) {
-			siblings.splice( siblings.indexOf( menuDefinition ), 1 );
+	walkConfig( config.items, menuDefinition => {
+		for ( const menuGroupDefinition of menuDefinition.items ) {
+			// Get rid of empty groups.
+			if ( !menuGroupDefinition.items.length ) {
+				menuDefinition.items.splice( menuDefinition.items.indexOf( menuGroupDefinition ), 1 );
+			}
+		}
 
+		// If no groups were left after removing empty ones.
+		if ( !menuDefinition.items.length ) {
 			if ( !isUsingDefaultConfig ) {
 				logWarning( 'menu-bar-menu-empty', {
 					menuBarConfig: originalConfig,
@@ -650,7 +816,7 @@ function purgeEmptyMenus(
 /**
  * Localizes the user-config using pre-defined localized category labels.
  */
-function localizeTopLevelCategories( config: MenuBarConfig, locale: Locale ) {
+function localizeTopLevelCategories( config: RequitedMenuBarConfigObject, locale: Locale ) {
 	const t = locale.t;
 	const localizedCategoryLabels: Record<string, string> = {
 		'Edit': t( 'Edit' ),
@@ -659,7 +825,7 @@ function localizeTopLevelCategories( config: MenuBarConfig, locale: Locale ) {
 		'Insert': t( 'Insert' )
 	};
 
-	for ( const categoryDef of config ) {
+	for ( const categoryDef of config.items ) {
 		if ( categoryDef.label in localizedCategoryLabels ) {
 			categoryDef.label = localizedCategoryLabels[ categoryDef.label ];
 		}
@@ -670,25 +836,32 @@ function localizeTopLevelCategories( config: MenuBarConfig, locale: Locale ) {
  * Recursively visits all menu definitions in the config and calls the callback for each of them.
  */
 function walkConfig(
-	definition: MenuBarConfig | MenuBarMenuDefinition,
-	callback: ( definition: MenuBarMenuDefinition, siblings: MenuBarConfig | MenuBarMenuDefinition[ 'items' ] ) => void
+	definition: RequitedMenuBarConfigObject[ 'items' ] | MenuBarMenuDefinition,
+	callback: ( definition: MenuBarMenuDefinition ) => void
 ) {
 	if ( Array.isArray( definition ) ) {
 		for ( const topLevelMenuDefinition of definition ) {
-			walk( topLevelMenuDefinition, definition );
+			walk( topLevelMenuDefinition );
 		}
 	}
 
-	function walk(
-		definition: MenuBarMenuDefinition,
-		siblings: MenuBarMenuDefinition[ 'items' ] | MenuBarConfig
-	) {
-		callback( definition, siblings );
+	function walk( definition: MenuBarMenuDefinition ) {
+		callback( definition );
 
-		for ( const item of definition.items ) {
-			if ( typeof item === 'object' ) {
-				walk( item, definition.items );
+		for ( const groupDefinition of definition.items ) {
+			for ( const groupItem of groupDefinition.items ) {
+				if ( typeof groupItem === 'object' ) {
+					walk( groupItem );
+				}
 			}
 		}
 	}
+}
+
+function isMenuBarMenuDefinition( definition: any ): definition is MenuBarMenuDefinition {
+	return typeof definition === 'object' && 'id' in definition;
+}
+
+function isMenuBarMenuGroupDefinition( definition: any ): definition is MenuBarMenuGroupDefinition {
+	return typeof definition === 'object' && 'groupId' in definition;
 }
