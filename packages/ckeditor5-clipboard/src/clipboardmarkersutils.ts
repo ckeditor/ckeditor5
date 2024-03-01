@@ -539,7 +539,7 @@ export type ClipboardMarkerRestrictedAction = 'copy' | 'cut' | 'dragstart';
  * Specifies copy, paste or move marker restrictions in clipboard. Depending on specified mode
  * it will disallow copy, cut or paste of marker in clipboard.
  *
- * 	* `'default'` - the markers will be preserved on cut-paste action only.
+ * 	* `'default'` - the markers will be preserved on cut-paste and move actions only.
  * 	* `'always'` - the markers will be preserved on any clipboard action (cut-paste, copy, move).
  * 	* `'never'` - the markers will be ignored by clipboard.
  *
