@@ -406,6 +406,14 @@ export default class ClipboardMarkersUtils extends Plugin {
 			return acc;
 		}, {} );
 
+		// We cannot construct ranges directly in previous reduce because element ranges can overlap.
+		// In other words lets assume we have such scenario:
+
+		// <fake-marker-start /> <paragraph /> <fake-marker-2-start /> <fake-marker-end /> <fake-marker-2-end />
+		//
+		// We have to remove `fake-marker-start` firstly and then remove `fake-marker-2-start`.
+		// Removal of `fake-marker-2-start` affects `fake-marker-end` position so we cannot create
+		// connection between `fake-marker-start` and `fake-marker-end` without iterating whole set firstly.
 		return mapValues(
 			fakeMarkersRanges,
 			range => new Range(
@@ -531,8 +539,8 @@ export type ClipboardMarkerRestrictedAction = 'copy' | 'cut' | 'dragstart';
  * Specifies copy, paste or move marker restrictions in clipboard. Depending on specified mode
  * it will disallow copy, cut or paste of marker in clipboard.
  *
- * 	* `'default'` - the markers will be preserved on cut-paste and move actions only.
- * 	* `'always'` - the markers will be preserved on any clipboard action (cut-paste, copy, move).
+ * 	* `'default'` - the markers will be preserved on cut-paste and drag and drop actions only.
+* 	* `'always'` - the markers will be preserved on all clipboard actions (cut, copy, drag and drop).
  * 	* `'never'` - the markers will be ignored by clipboard.
  *
  * @internal
