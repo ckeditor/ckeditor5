@@ -9,6 +9,7 @@ import BalloonToolbar from '../../../src/toolbar/balloon/balloontoolbar.js';
 import ContextualBalloon from '../../../src/panel/balloon/contextualballoon.js';
 import BalloonPanelView from '../../../src/panel/balloon/balloonpanelview.js';
 import ToolbarView from '../../../src/toolbar/toolbarview.js';
+import ButtonView from '../../../src/button/buttonview.js';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker.js';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
@@ -790,6 +791,36 @@ describe( 'BalloonToolbar', () => {
 
 			balloonToolbar.show();
 			sinon.assert.notCalled( balloonAddSpy );
+		} );
+	} );
+
+	describe( 'BalloonToolbar plugin load order', () => {
+		it( 'should add a button registered in the afterInit of Foo when BalloonToolbar is loaded before Foo', () => {
+			class Foo extends Plugin {
+				afterInit() {
+					this.editor.ui.componentFactory.add( 'foo', () => {
+						const button = new ButtonView();
+
+						button.set( { label: 'Foo' } );
+
+						return button;
+					} );
+				}
+			}
+
+			return ClassicTestEditor
+				.create( editorElement, {
+					plugins: [ BalloonToolbar, Foo ],
+					balloonToolbar: [ 'foo' ]
+				} )
+				.then( editor => {
+					const items = editor.plugins.get( BalloonToolbar ).toolbarView.items;
+
+					expect( items.length ).to.equal( 1 );
+					expect( items.first.label ).to.equal( 'Foo' );
+
+					return editor.destroy();
+				} );
 		} );
 	} );
 

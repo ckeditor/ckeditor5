@@ -150,6 +150,7 @@ export default class MenuBarView extends View implements FocusableView {
 				label: 'Insert',
 				items: [
 					'menuBar:pageBreak',
+					'menuBar:horizontalLine',
 					'menuBar:blockQuote'
 				]
 			},
