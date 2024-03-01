@@ -149,6 +149,10 @@ export default class MenuBarView extends View implements FocusableView {
 				id: 'insert',
 				label: 'Insert',
 				items: [
+					'menuBar:blockQuote',
+					'menuBar:htmlEmbed',
+					'menuBar:pageBreak',
+					'menuBar:horizontalLine',
 					'menuBar:blockQuote'
 				]
 			},
@@ -166,7 +170,11 @@ export default class MenuBarView extends View implements FocusableView {
 					'menuBar:numberedList',
 					'menuBar:todoList',
 					'-',
-					'menuBar:heading'
+					'menuBar:heading',
+					'-',
+					'menuBar:indent',
+					'menuBar:outdent',
+					'menuBar:removeFormat'
 				]
 			},
 			{
