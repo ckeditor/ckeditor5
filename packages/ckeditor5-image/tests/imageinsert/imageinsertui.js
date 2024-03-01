@@ -296,6 +296,22 @@ describe( 'ImageInsertUI', () => {
 			} );
 		} );
 
+		describe( 'single integration with form view required and observalbe as a function', () => {
+			beforeEach( async () => {
+				registerUrlIntegration( true );
+			} );
+
+			it( 'should bind isEnabled state to observable', () => {
+				const dropdown = editor.ui.componentFactory.create( 'insertImage' );
+
+				observableUrl.isEnabled = false;
+				expect( dropdown.isEnabled ).to.be.false;
+
+				observableUrl.isEnabled = true;
+				expect( dropdown.isEnabled ).to.be.true;
+			} );
+		} );
+
 		describe( 'multiple integrations', () => {
 			beforeEach( async () => {
 				registerUploadIntegration();
@@ -365,12 +381,39 @@ describe( 'ImageInsertUI', () => {
 			} );
 		} );
 
-		function registerUrlIntegration() {
+		describe( 'multiple integrations and observalbe as a function', () => {
+			beforeEach( async () => {
+				registerUploadIntegration( true );
+				registerUrlIntegration( true );
+			} );
+
+			it( 'should bind isEnabled state to observables', () => {
+				const dropdown = editor.ui.componentFactory.create( 'insertImage' );
+
+				observableUrl.isEnabled = false;
+				observableUpload.isEnabled = false;
+				expect( dropdown.isEnabled ).to.be.false;
+
+				observableUrl.isEnabled = true;
+				observableUpload.isEnabled = false;
+				expect( dropdown.isEnabled ).to.be.true;
+
+				observableUrl.isEnabled = false;
+				observableUpload.isEnabled = true;
+				expect( dropdown.isEnabled ).to.be.true;
+
+				observableUrl.isEnabled = true;
+				observableUpload.isEnabled = true;
+				expect( dropdown.isEnabled ).to.be.true;
+			} );
+		} );
+
+		function registerUrlIntegration( observableAsFunc ) {
 			observableUrl = new Model( { isEnabled: true } );
 
 			insertImageUI.registerIntegration( {
 				name: 'url',
-				observable: observableUrl,
+				observable: observableAsFunc ? () => observableUrl : observableUrl,
 				requiresForm: true,
 				buttonViewCreator( isOnlyOne ) {
 					const button = new ButtonView( editor.locale );
@@ -389,12 +432,12 @@ describe( 'ImageInsertUI', () => {
 			} );
 		}
 
-		function registerUploadIntegration() {
+		function registerUploadIntegration( observableAsFunc ) {
 			observableUpload = new Model( { isEnabled: true } );
 
 			insertImageUI.registerIntegration( {
 				name: 'upload',
-				observable: observableUpload,
+				observable: observableAsFunc ? () => observableUpload : observableUpload,
 				buttonViewCreator( isOnlyOne ) {
 					const button = new ButtonView( editor.locale );
 

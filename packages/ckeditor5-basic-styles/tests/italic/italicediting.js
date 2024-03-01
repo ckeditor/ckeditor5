@@ -38,6 +38,13 @@ describe( 'ItalicEditing', () => {
 		expect( editor.plugins.get( ItalicEditing ) ).to.be.instanceOf( ItalicEditing );
 	} );
 
+	it( 'should add keystroke accessibility info', () => {
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
+			label: 'Italic text',
+			keystroke: 'CTRL+I'
+		} );
+	} );
+
 	it( 'should set proper schema rules', () => {
 		expect( model.schema.checkAttribute( [ '$root', '$block', '$text' ], 'italic' ) ).to.be.true;
 		expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'italic' ) ).to.be.true;

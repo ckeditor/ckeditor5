@@ -30,6 +30,29 @@ editor.keystrokes.set( 'Ctrl+Alt+H', ( event, cancel ) => {
 } );
 ```
 
+## Adding shortcut information to the Accessibility help dialog
+
+The {@link features/keyboard-support#displaying-keyboard-shortcuts-in-the-editor Accessibility help} dialog displays a complete list of available keyboard shortcuts with their descriptions. It does not know about the [shortcut we just added](#adding-keyboard-shortcuts), though.
+
+The dialog reads from the {@link module:core/accessibility~Accessibility `editor.accessibility`} namespace where all the information about keystrokes and their accessible labels is stored. There is an API to add new entries ({@link module:core/accessibility~Accessibility#addKeystrokeInfos}, {@link module:core/accessibility~Accessibility#addKeystrokeInfoGroup}, and {@link module:core/accessibility~Accessibility#addKeystrokeInfoCategory} methods).
+
+In this case, a simple `editor.accessibility.addKeystrokeInfos( ... )` is all you need for the Accessibility help dialog to learn about the new shortcut:
+
+```js
+const t = editor.t;
+
+editor.accessibility.addKeystrokeInfos( {
+	keystrokes: [
+		{
+			label: t( 'Highlight text' ),
+			keystroke: 'Ctrl+Alt+H'
+		}
+	]
+} );
+```
+
+You can learn more about the {@link module:ui/editorui/accessibilityhelp/accessibilityhelp~AccessibilityHelp} plugin and the {@link module:core/accessibility~Accessibility `editor.accessibility`} namespace in the API reference.
+
 ## Updating button tooltip
 
 When you hover over the "Undo" and "Redo" buttons, you will see a tooltip containing the name of the operation and their respective keyboard shortcuts. However, when hovering over the "Highlight" button, the keyboard shortcut is missing.

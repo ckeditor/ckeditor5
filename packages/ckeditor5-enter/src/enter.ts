@@ -30,6 +30,7 @@ export default class Enter extends Plugin {
 		const editor = this.editor;
 		const view = editor.editing.view;
 		const viewDocument = view.document;
+		const t = this.editor.t;
 
 		view.addObserver( EnterObserver );
 
@@ -51,5 +52,15 @@ export default class Enter extends Plugin {
 
 			view.scrollToTheSelection();
 		}, { priority: 'low' } );
+
+		// Add the information about the keystroke to the accessibility database.
+		editor.accessibility.addKeystrokeInfos( {
+			keystrokes: [
+				{
+					label: t( 'Insert a hard break (a new paragraph)' ),
+					keystroke: 'Enter'
+				}
+			]
+		} );
 	}
 }

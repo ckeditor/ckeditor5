@@ -31,6 +31,7 @@ export default class ItalicEditing extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
+		const t = this.editor.t;
 
 		// Allow italic attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: ITALIC } );
@@ -57,5 +58,15 @@ export default class ItalicEditing extends Plugin {
 
 		// Set the Ctrl+I keystroke.
 		editor.keystrokes.set( 'CTRL+I', ITALIC );
+
+		// Add the information about the keystroke to the accessibility database.
+		editor.accessibility.addKeystrokeInfos( {
+			keystrokes: [
+				{
+					label: t( 'Italic text' ),
+					keystroke: 'CTRL+I'
+				}
+			]
+		} );
 	}
 }
