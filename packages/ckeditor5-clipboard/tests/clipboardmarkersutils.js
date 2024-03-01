@@ -10,8 +10,7 @@ import Position from '@ckeditor/ckeditor5-engine/src/model/position.js';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { parse, setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { parse, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import Clipboard from '../src/clipboard.js';
 
