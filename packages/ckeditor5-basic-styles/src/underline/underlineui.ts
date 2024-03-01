@@ -9,7 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
-import type AttributeCommand from '../attributecommand.js';
+import { getButtonCreator } from '../utils.js';
 
 import underlineIcon from '../../theme/icons/underline.svg';
 
@@ -31,11 +31,20 @@ export default class UnderlineUI extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
-		const command: AttributeCommand = editor.commands.get( UNDERLINE )!;
+		const command = editor.commands.get( UNDERLINE )!;
+		const t = editor.locale.t;
+		const createButton = getButtonCreator( {
+			editor,
+			commandName: UNDERLINE,
+			plugin: this,
+			icon: underlineIcon,
+			label: t( 'Underline' ),
+			keystroke: 'CTRL+U'
+		} );
 
 		// Add bold button to feature components.
 		editor.ui.componentFactory.add( UNDERLINE, () => {
-			const buttonView = this._createButton( ButtonView );
+			const buttonView = createButton( ButtonView );
 
 			buttonView.set( {
 				tooltip: true
@@ -47,35 +56,7 @@ export default class UnderlineUI extends Plugin {
 		} );
 
 		editor.ui.componentFactory.add( 'menuBar:' + UNDERLINE, () => {
-			return this._createButton( MenuBarMenuListItemButtonView );
+			return createButton( MenuBarMenuListItemButtonView );
 		} );
-	}
-
-	/**
-	 * TODO
-	 */
-	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
-		const editor = this.editor;
-		const locale = editor.locale;
-		const command: AttributeCommand = editor.commands.get( UNDERLINE )!;
-		const view = new ButtonClass( editor.locale ) as InstanceType<T>;
-		const t = locale.t;
-
-		view.set( {
-			label: t( 'Underline' ),
-			icon: underlineIcon,
-			keystroke: 'CTRL+U',
-			isToggleable: true
-		} );
-
-		view.bind( 'isEnabled' ).to( command, 'isEnabled' );
-
-		// Execute the command.
-		this.listenTo( view, 'execute', () => {
-			editor.execute( UNDERLINE );
-			editor.editing.view.focus();
-		} );
-
-		return view;
 	}
 }
