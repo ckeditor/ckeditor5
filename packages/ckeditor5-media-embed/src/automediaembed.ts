@@ -18,7 +18,7 @@ import MediaEmbedEditing from './mediaembedediting';
 import { insertMedia } from './utils';
 import type MediaEmbedCommand from './mediaembedcommand';
 
-const URL_REGEXP = /^(?:http(s)?:\/\/)?[\w-]+\.[\w-.~:/?#[\]@!$&'()*+,;=%]+$/;
+const URL_REGEXP = /^(?:http(s)?:\/\/)?[\w-]+(?:\.|:)[\w\-.~:/?#[\]@!$&'()*+,;=%]+$/;
 
 /**
  * The auto-media embed plugin. It recognizes media links in the pasted content and embeds
