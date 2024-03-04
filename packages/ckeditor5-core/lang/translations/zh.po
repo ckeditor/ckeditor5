@@ -68,3 +68,51 @@ msgstr "使用檔案管理員插入圖片"
 msgctxt "The label for the replace image with the file manager toolbar button."
 msgid "Replace image with file manager"
 msgstr "使用檔案管理員替換圖片"
+
+msgctxt "The button label for the object (e.g. image, table) toolbar for hiding the attached caption."
+msgid "Toggle caption off"
+msgstr "關閉表標題"
+
+msgctxt "The button label for the object (e.g. image, table) toolbar for showing the attached caption."
+msgid "Toggle caption on"
+msgstr "開啟表標題"
+
+msgctxt "Accessibility help dialog category header text for keystrokes related to content creation."
+msgid "Content editing keystrokes"
+msgstr "內容編輯按鍵"
+
+msgctxt "Accessibility help dialog text further explaining the purpose of the \"Content editing keystrokes\" category."
+msgid "These keyboard shortcuts allow for quick access to content editing features."
+msgstr "運用這些鍵盤快捷鍵可快速使用內容編輯功能。"
+
+msgctxt "Accessibility help dialog category header text for keystrokes related to navigation in the user interface."
+msgid "User interface and content navigation keystrokes"
+msgstr "使用者介面和內容瀏覽按鍵"
+
+msgctxt "Accessibility help dialog text further explaining the purpose of the \"User interface and content navigation keystrokes\" category."
+msgid "Use the following keystrokes for more efficient navigation in the CKEditor 5 user interface."
+msgstr "使用以下按鍵可更有效率地在 CKEditor 5 使用者介面中移動。"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for closing contextual balloons, dropdowns, and dialogs."
+msgid "Close contextual balloons, dropdowns, and dialogs"
+msgstr "關閉選單提示、下拉式選單和對話框"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for opening the accessibility help dialog."
+msgid "Open the accessibility help dialog"
+msgstr "開啟無障礙協助對話框"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for moving between fields."
+msgid "Move focus between form fields (inputs, buttons, etc.)"
+msgstr "在表單欄位（輸入、按鈕等）之間移動焦點"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the toolbar."
+msgid "Move focus to the toolbar, navigate between toolbars"
+msgstr "將焦點移動至工具列，在工具列間移動"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the toolbar."
+msgid "Navigate through the toolbar"
+msgstr "在工具列間移動"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for executing currently focused button."
+msgid "Execute the currently focused button"
+msgstr "執行目前焦點所在的按鈕"

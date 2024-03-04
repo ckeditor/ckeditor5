@@ -63,6 +63,13 @@ describe( 'FindAndReplaceUI', () => {
 				return editor.destroy();
 			} );
 
+			it( 'should add keystroke accessibility info', () => {
+				expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
+					label: 'Find in the document',
+					keystroke: 'CTRL+F'
+				} );
+			} );
+
 			it( 'should register a button UI compontent', () => {
 				expect( toolbarButtonView ).to.be.instanceOf( ButtonView );
 			} );
@@ -473,6 +480,13 @@ describe( 'FindAndReplaceUI', () => {
 				dropdown.element.remove();
 
 				return editor.destroy();
+			} );
+
+			it( 'should add keystroke accessibility info', () => {
+				expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
+					label: 'Find in the document',
+					keystroke: 'CTRL+F'
+				} );
 			} );
 
 			it( 'should create a dropdown UI component', () => {

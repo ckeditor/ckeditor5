@@ -52,8 +52,10 @@ export default class TableKeyboard extends Plugin {
 	 * @inheritDoc
 	 */
 	public init(): void {
-		const view = this.editor.editing.view;
+		const editor = this.editor;
+		const view = editor.editing.view;
 		const viewDocument = view.document;
+		const t = editor.t;
 
 		this.listenTo<ViewDocumentArrowKeyEvent>(
 			viewDocument,
@@ -75,6 +77,30 @@ export default class TableKeyboard extends Plugin {
 			( ...args ) => this._handleTab( ...args ),
 			{ context: [ 'th', 'td' ] }
 		);
+
+		// Add the information about the keystrokes to the accessibility database.
+		editor.accessibility.addKeystrokeInfoGroup( {
+			id: 'table',
+			label: t( 'Keystrokes that can be used in a table cell' ),
+			keystrokes: [
+				{
+					label: t( 'Move the selection to the next cell' ),
+					keystroke: 'Tab'
+				},
+				{
+					label: t( 'Move the selection to the previous cell' ),
+					keystroke: 'Shift+Tab'
+				},
+				{
+					label: t( 'Insert a new table row (when in the last cell of a table)' ),
+					keystroke: 'Tab'
+				},
+				{
+					label: t( 'Navigate through the table' ),
+					keystroke: [ [ 'arrowup' ], [ 'arrowright' ], [ 'arrowdown' ], [ 'arrowleft' ] ]
+				}
+			]
+		} );
 	}
 
 	/**

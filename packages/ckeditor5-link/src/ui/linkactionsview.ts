@@ -19,6 +19,7 @@ import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.c
 import '../../theme/linkactions.css';
 
 import unlinkIcon from '../../theme/icons/unlink.svg';
+import type { LinkConfig } from '../linkconfig.js';
 
 /**
  * The link actions view class. This view displays the link preview, allows
@@ -67,12 +68,14 @@ export default class LinkActionsView extends View {
 	 */
 	private readonly _focusCycler: FocusCycler;
 
+	private readonly _linkConfig: LinkConfig;
+
 	declare public t: LocaleTranslate;
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale ) {
+	constructor( locale: Locale, linkConfig: LinkConfig = {} ) {
 		super( locale );
 
 		const t = locale.t;
@@ -82,6 +85,8 @@ export default class LinkActionsView extends View {
 		this.editButtonView = this._createButton( t( 'Edit link' ), icons.pencil, 'edit' );
 
 		this.set( 'href', undefined );
+
+		this._linkConfig = linkConfig;
 
 		this._focusCycler = new FocusCycler( {
 			focusables: this._focusables,
@@ -202,7 +207,7 @@ export default class LinkActionsView extends View {
 					'ck',
 					'ck-link-actions__preview'
 				],
-				href: bind.to( 'href', href => href && ensureSafeUrl( href ) ),
+				href: bind.to( 'href', href => href && ensureSafeUrl( href, this._linkConfig.allowedProtocols ) ),
 				target: '_blank',
 				rel: 'noopener noreferrer'
 			}

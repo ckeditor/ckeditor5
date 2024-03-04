@@ -70,6 +70,7 @@ export default class FindAndReplaceUI extends Plugin {
 		const editor = this.editor;
 		const isUiUsingDropdown = editor.config.get( 'findAndReplace.uiType' ) === 'dropdown';
 		const findCommand = editor.commands.get( 'find' )!;
+		const t = this.editor.t;
 
 		// Register the toolbar component: dropdown or button (that opens a dialog).
 		editor.ui.componentFactory.add( 'findAndReplace', () => {
@@ -114,6 +115,16 @@ export default class FindAndReplaceUI extends Plugin {
 			} );
 
 			return view;
+		} );
+
+		// Add the information about the keystroke to the accessibility database.
+		editor.accessibility.addKeystrokeInfos( {
+			keystrokes: [
+				{
+					label: t( 'Find in the document' ),
+					keystroke: 'CTRL+F'
+				}
+			]
 		} );
 	}
 

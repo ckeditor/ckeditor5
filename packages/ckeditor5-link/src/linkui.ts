@@ -76,6 +76,7 @@ export default class LinkUI extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
+		const t = this.editor.t;
 
 		editor.editing.view.addObserver( ClickObserver );
 
@@ -100,6 +101,23 @@ export default class LinkUI extends Plugin {
 				name: 'span',
 				classes: [ 'ck-fake-link-selection', 'ck-fake-link-selection_collapsed' ]
 			}
+		} );
+
+		// Add the information about the keystrokes to the accessibility database.
+		editor.accessibility.addKeystrokeInfos( {
+			keystrokes: [
+				{
+					label: t( 'Create link' ),
+					keystroke: LINK_KEYSTROKE
+				},
+				{
+					label: t( 'Move out of a link' ),
+					keystroke: [
+						[ 'arrowleft', 'arrowleft' ],
+						[ 'arrowright', 'arrowright' ]
+					]
+				}
+			]
 		} );
 	}
 
@@ -135,7 +153,7 @@ export default class LinkUI extends Plugin {
 	 */
 	private _createActionsView(): LinkActionsView {
 		const editor = this.editor;
-		const actionsView = new LinkActionsView( editor.locale );
+		const actionsView = new LinkActionsView( editor.locale, editor.config.get( 'link' ) );
 		const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
 		const unlinkCommand: UnlinkCommand = editor.commands.get( 'unlink' )!;
 

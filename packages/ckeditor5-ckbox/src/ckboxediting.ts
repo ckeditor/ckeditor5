@@ -62,16 +62,28 @@ export default class CKBoxEditing extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
-		const hasConfiguration = !!editor.config.get( 'ckbox' );
-		const isLibraryLoaded = !!window.CKBox;
 
-		// Proceed with plugin initialization only when the integrator intentionally wants to use it, i.e. when the `config.ckbox` exists or
-		// the CKBox JavaScript library is loaded.
-		if ( !hasConfiguration && !isLibraryLoaded ) {
+		if ( !this._shouldBeInitialised() ) {
 			return;
 		}
 
 		this._checkImagePlugins();
+
+		// Registering the `ckbox` command makes sense only if the CKBox library is loaded, as the `ckbox` command opens the CKBox dialog.
+		if ( isLibraryLoaded() ) {
+			editor.commands.add( 'ckbox', new CKBoxCommand( editor ) );
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public afterInit(): void {
+		const editor = this.editor;
+
+		if ( !this._shouldBeInitialised() ) {
+			return;
+		}
 
 		// Extending the schema, registering converters and applying fixers only make sense if the configuration option to assign
 		// the assets ID with the model elements is enabled.
@@ -80,11 +92,17 @@ export default class CKBoxEditing extends Plugin {
 			this._initConversion();
 			this._initFixers();
 		}
+	}
 
-		// Registering the `ckbox` command makes sense only if the CKBox library is loaded, as the `ckbox` command opens the CKBox dialog.
-		if ( isLibraryLoaded ) {
-			editor.commands.add( 'ckbox', new CKBoxCommand( editor ) );
-		}
+	/**
+	 * Returns true only when the integrator intentionally wants to use the plugin, i.e. when the `config.ckbox` exists or
+	 * the CKBox JavaScript library is loaded.
+	 */
+	private _shouldBeInitialised(): boolean {
+		const editor = this.editor;
+		const hasConfiguration = !!editor.config.get( 'ckbox' );
+
+		return hasConfiguration || isLibraryLoaded();
 	}
 
 	/**
@@ -420,4 +438,11 @@ function shouldUpcastAttributeForNode( node: Node ) {
 	}
 
 	return false;
+}
+
+/**
+ * Returns true if the CKBox library is loaded, false otherwise.
+ */
+function isLibraryLoaded(): boolean {
+	return !!window.CKBox;
 }

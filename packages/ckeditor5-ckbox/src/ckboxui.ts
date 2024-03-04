@@ -31,10 +31,9 @@ export default class CKBoxUI extends Plugin {
 	public afterInit(): void {
 		const editor = this.editor;
 
-		const command: CKBoxCommand | undefined = editor.commands.get( 'ckbox' );
-
 		// Do not register the `ckbox` button if the command does not exist.
-		if ( !command ) {
+		// This might happen when CKBox library is not loaded on the page.
+		if ( !editor.commands.get( 'ckbox' ) ) {
 			return;
 		}
 
@@ -42,6 +41,7 @@ export default class CKBoxUI extends Plugin {
 		const componentFactory = editor.ui.componentFactory;
 
 		componentFactory.add( 'ckbox', locale => {
+			const command: CKBoxCommand = editor.commands.get( 'ckbox' )!;
 			const button = new ButtonView( locale );
 
 			button.set( {
@@ -64,7 +64,7 @@ export default class CKBoxUI extends Plugin {
 
 			imageInsertUI.registerIntegration( {
 				name: 'assetManager',
-				observable: command,
+				observable: () => editor.commands.get( 'ckbox' )!,
 
 				buttonViewCreator: () => {
 					const button = this.editor.ui.componentFactory.create( 'ckbox' ) as ButtonView;

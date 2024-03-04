@@ -5,6 +5,7 @@
 
 import Element from '@ckeditor/ckeditor5-engine/src/model/element.js';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
 import Table from '../../src/table.js';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { modelTable } from '../_utils/utils.js';
@@ -39,7 +40,7 @@ describe( 'TableColumnResize utils', () => {
 		document.body.appendChild( editorElement );
 
 		editor = await ClassicEditor.create( editorElement, {
-			plugins: [ Table, TableColumnResize, Paragraph ]
+			plugins: [ Table, TableColumnResize, Paragraph, ClipboardPipeline ]
 		} );
 
 		model = editor.model;
