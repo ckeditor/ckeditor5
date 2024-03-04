@@ -20,6 +20,7 @@ const getCKEditor5PackageJson = require( './utils/getckeditor5packagejson' );
 const parseArguments = require( './utils/parsearguments' );
 const isCKEditor5PackageFactory = require( './utils/isckeditor5packagefactory' );
 const compileTypeScriptCallback = require( './utils/compiletypescriptcallback' );
+const newMethodOfBuildingPackage = require( './utils/newmethodofbuildingpackage' );
 const updatePackageEntryPoint = require( './utils/updatepackageentrypoint' );
 const prepareDllBuildsCallback = require( './utils/preparedllbuildscallback' );
 const buildCKEditor5BuildsCallback = require( './utils/buildckeditor5buildscallback' );
@@ -145,6 +146,17 @@ const tasks = new Listr( [
 							packagesDirectory: PACKAGES_DIRECTORY,
 							listrTask: task,
 							taskToExecute: compileTypeScriptCallback,
+							concurrency: cliArguments.concurrency
+						} );
+					}
+				},
+				{
+					title: 'Building `ckeditor5-*` packages using `Rollup` bundler.',
+					task: ( ctx, task ) => {
+						return releaseTools.executeInParallel( {
+							packagesDirectory: PACKAGES_DIRECTORY,
+							listrTask: task,
+							taskToExecute: newMethodOfBuildingPackage,
 							concurrency: cliArguments.concurrency
 						} );
 					}
