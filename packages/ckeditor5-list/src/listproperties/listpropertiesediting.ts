@@ -375,7 +375,7 @@ function createAttributeStrategies( enabledProperties: ListPropertiesConfig ) {
 			},
 
 			appliesToListItem( item ) {
-				return item.getAttribute( 'listType' ) == 'numbered' || item.getAttribute( 'listType' ) == 'legal';
+				return item.getAttribute( 'listType' ) == 'numbered' || item.getAttribute( 'listType' ) == 'customNumbered';
 			},
 
 			hasValidAttribute( item ) {

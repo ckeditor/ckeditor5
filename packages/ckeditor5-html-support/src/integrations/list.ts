@@ -145,12 +145,12 @@ export default class ListElementSupport extends Plugin {
 			for ( const { node } of listNodes ) {
 				const listType = node.getAttribute( 'listType' );
 
-				if ( listType !== 'numbered' && node.getAttribute( 'htmlOlAttributes' ) ) {
+				if ( listType !== 'numbered' && listType !== 'customNumbered' && node.getAttribute( 'htmlOlAttributes' ) ) {
 					writer.removeAttribute( 'htmlOlAttributes', node );
 					evt.return = true;
 				}
 
-				if ( listType === 'numbered' && node.getAttribute( 'htmlUlAttributes' ) ) {
+				if ( ( listType === 'numbered' || listType === 'customNumbered' ) && node.getAttribute( 'htmlUlAttributes' ) ) {
 					writer.removeAttribute( 'htmlUlAttributes', node );
 					evt.return = true;
 				}
@@ -229,7 +229,7 @@ function viewToModelListAttributeConverter( attributeName: string, dataFilter: D
  * Returns HTML attribute name based on provided list type.
  */
 function getAttributeFromListType( listType: ListTypeOptions ) {
-	return listType === 'numbered' ?
+	return listType === 'numbered' || listType == 'customNumbered' ?
 		'htmlOlAttributes' :
 		'htmlUlAttributes';
 }
