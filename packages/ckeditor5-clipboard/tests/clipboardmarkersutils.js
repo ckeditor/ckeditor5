@@ -34,7 +34,10 @@ describe( 'Clipboard Markers Utils', () => {
 
 	describe( 'Check markers selection intersection', () => {
 		beforeEach( () => {
-			clipboardMarkersUtils._registerMarkerToCopy( 'comment', [ 'copy' ] );
+			clipboardMarkersUtils._registerMarkerToCopy( 'comment', {
+				allowedActions: [ 'copy' ],
+				withPartiallySelected: true
+			} );
 		} );
 
 		it( 'should copy and paste marker that is inside selection', () => {
@@ -384,88 +387,6 @@ describe( 'Clipboard Markers Utils', () => {
 
 			expect( data.dataTransfer.getData( 'text/html' ) ).to.equal( 'Foo Bar Test' );
 		} );
-
-		it( 'should be possible to force markers copy', () => {
-			clipboardMarkersUtils._forceMarkersCopy( 'comment', () => {
-				setModelData(
-					model,
-					wrapWithTag( 'paragraph', 'Start' ) +
-						wrapWithTag( 'paragraph', 'Foo Bar Test' ) +
-						wrapWithTag( 'paragraph', 'End' )
-				);
-
-				appendMarker( 'comment:test', { start: [ 0 ], end: [ 3 ] } );
-				model.change( writer => {
-					writer.setSelection(
-						writer.createRangeOn( editor.model.document.getRoot().getChild( 1 ) ),
-						0
-					);
-				} );
-
-				const data = {
-					dataTransfer: createDataTransfer(),
-					preventDefault: () => {},
-					stopPropagation: () => {}
-				};
-
-				viewDocument.fire( 'copy', data );
-
-				model.change( writer => {
-					writer.setSelection(
-						writer.createRangeIn( editor.model.document.getRoot().getChild( 2 ) ),
-						0
-					);
-				} );
-
-				viewDocument.fire( 'paste', data );
-
-				checkMarker( 'comment:test:pasted', model.createRange(
-					model.createPositionFromPath( modelRoot, [ 2, 0 ] ),
-					model.createPositionFromPath( modelRoot, [ 2, 12 ] )
-				) );
-			} );
-		} );
-
-		it( 'should be possible to force markers copy #2 - unregistered marker', () => {
-			clipboardMarkersUtils._forceMarkersCopy( 'new', () => {
-				setModelData(
-					model,
-					wrapWithTag( 'paragraph', 'Start' ) +
-					wrapWithTag( 'paragraph', 'Foo Bar Test' ) +
-					wrapWithTag( 'paragraph', 'End' )
-				);
-
-				appendMarker( 'new:test', { start: [ 0 ], end: [ 3 ] } );
-				model.change( writer => {
-					writer.setSelection(
-						writer.createRangeOn( editor.model.document.getRoot().getChild( 1 ) ),
-						0
-					);
-				} );
-
-				const data = {
-					dataTransfer: createDataTransfer(),
-					preventDefault: () => {},
-					stopPropagation: () => {}
-				};
-
-				viewDocument.fire( 'copy', data );
-
-				model.change( writer => {
-					writer.setSelection(
-						writer.createRangeIn( editor.model.document.getRoot().getChild( 2 ) ),
-						0
-					);
-				} );
-
-				viewDocument.fire( 'paste', data );
-
-				checkMarker( 'new:test:pasted', model.createRange(
-					model.createPositionFromPath( modelRoot, [ 2, 0 ] ),
-					model.createPositionFromPath( modelRoot, [ 2, 12 ] )
-				) );
-			} );
-		} );
 	} );
 
 	describe( 'Presets', () => {
@@ -581,6 +502,40 @@ describe( 'Clipboard Markers Utils', () => {
 		}
 	} );
 
+	describe( 'Copy if partially selected flag', () => {
+		for ( const preset of [ 'always', 'default' ] ) {
+			it( `should not copy partially selected markers in ${ preset } preset`, () => {
+				clipboardMarkersUtils._registerMarkerToCopy( 'comment', preset );
+
+				setModelData(
+					model,
+					wrapWithTag( 'paragraph', '[He]llo World' ) + wrapWithTag( 'paragraph', '' )
+				);
+
+				appendMarker( 'comment:test', { start: [ 0, 1 ], end: [ 0, 4 ] } );
+
+				const data = {
+					dataTransfer: createDataTransfer(),
+					preventDefault: () => {},
+					stopPropagation: () => {}
+				};
+
+				viewDocument.fire( 'cut', data );
+
+				model.change( writer => {
+					writer.setSelection(
+						writer.createRangeIn( editor.model.document.getRoot().getChild( 1 ) ),
+						0
+					);
+				} );
+
+				viewDocument.fire( 'paste', data );
+
+				expect( model.markers.has( 'comment:test:pasted' ) ).to.false;
+			} );
+		}
+	} );
+
 	describe( '_removeFakeMarkersInsideElement', () => {
 		it( 'should handle duplicated fake-markers in element', () => {
 			model.change( writer => {
@@ -611,15 +566,103 @@ describe( 'Clipboard Markers Utils', () => {
 
 	describe( '_forceMarkersCopy', () => {
 		it( 'properly reverts old marker restricted actions', () => {
-			clipboardMarkersUtils._registerMarkerToCopy( 'comment', [ 'cut' ] );
-
-			expect( getMarkerRestrictions() ).deep.equal( [ 'cut' ] );
-
-			clipboardMarkersUtils._forceMarkersCopy( 'comment', () => {
-				expect( getMarkerRestrictions() ).deep.equal( clipboardMarkersUtils._mapRestrictionPresetToActions( 'always' ) );
+			clipboardMarkersUtils._registerMarkerToCopy( 'comment', {
+				allowedActions: [ 'cut' ],
+				withPartiallySelected: true
 			} );
 
-			expect( getMarkerRestrictions() ).deep.equal( [ 'cut' ] );
+			clipboardMarkersUtils._forceMarkersCopy( 'comment', () => {
+				expect( getMarkerRestrictions() ).deep.equal( {
+					allowedActions: clipboardMarkersUtils._getAllowedActionsInPreset( 'always' )
+				} );
+			} );
+
+			expect( getMarkerRestrictions() ).deep.equal( {
+				allowedActions: [ 'cut' ],
+				withPartiallySelected: true
+			} );
+		} );
+
+		it( 'should be possible to force markers copy', () => {
+			clipboardMarkersUtils._forceMarkersCopy( 'comment', () => {
+				setModelData(
+					model,
+					wrapWithTag( 'paragraph', 'Start' ) +
+						wrapWithTag( 'paragraph', 'Foo Bar Test' ) +
+						wrapWithTag( 'paragraph', 'End' )
+				);
+
+				appendMarker( 'comment:test', { start: [ 0 ], end: [ 3 ] } );
+				model.change( writer => {
+					writer.setSelection(
+						writer.createRangeOn( editor.model.document.getRoot().getChild( 1 ) ),
+						0
+					);
+				} );
+
+				const data = {
+					dataTransfer: createDataTransfer(),
+					preventDefault: () => {},
+					stopPropagation: () => {}
+				};
+
+				viewDocument.fire( 'copy', data );
+
+				model.change( writer => {
+					writer.setSelection(
+						writer.createRangeIn( editor.model.document.getRoot().getChild( 2 ) ),
+						0
+					);
+				} );
+
+				viewDocument.fire( 'paste', data );
+
+				checkMarker( 'comment:test:pasted', model.createRange(
+					model.createPositionFromPath( modelRoot, [ 2, 0 ] ),
+					model.createPositionFromPath( modelRoot, [ 2, 12 ] )
+				) );
+			}, { withPartiallySelected: true } );
+		} );
+
+		it( 'should be possible to force markers copy #2 - unregistered marker', () => {
+			clipboardMarkersUtils._forceMarkersCopy( 'new', () => {
+				setModelData(
+					model,
+					wrapWithTag( 'paragraph', 'Start' ) +
+					wrapWithTag( 'paragraph', 'Foo Bar Test' ) +
+					wrapWithTag( 'paragraph', 'End' )
+				);
+
+				appendMarker( 'new:test', { start: [ 0 ], end: [ 3 ] } );
+				model.change( writer => {
+					writer.setSelection(
+						writer.createRangeOn( editor.model.document.getRoot().getChild( 1 ) ),
+						0
+					);
+				} );
+
+				const data = {
+					dataTransfer: createDataTransfer(),
+					preventDefault: () => {},
+					stopPropagation: () => {}
+				};
+
+				viewDocument.fire( 'copy', data );
+
+				model.change( writer => {
+					writer.setSelection(
+						writer.createRangeIn( editor.model.document.getRoot().getChild( 2 ) ),
+						0
+					);
+				} );
+
+				viewDocument.fire( 'paste', data );
+
+				checkMarker( 'new:test:pasted', model.createRange(
+					model.createPositionFromPath( modelRoot, [ 2, 0 ] ),
+					model.createPositionFromPath( modelRoot, [ 2, 12 ] )
+				) );
+			}, { withPartiallySelected: true } );
 		} );
 
 		function getMarkerRestrictions() {
@@ -627,9 +670,9 @@ describe( 'Clipboard Markers Utils', () => {
 		}
 	} );
 
-	describe( '_canPerformMarkerClipboardAction', () => {
+	describe( '_isMarkerCopyable', () => {
 		it( 'returns false on non existing clipboard markers', () => {
-			const result = clipboardMarkersUtils._canPerformMarkerClipboardAction( 'Hello', 'cut' );
+			const result = clipboardMarkersUtils._isMarkerCopyable( 'Hello', 'cut' );
 
 			expect( result ).to.false;
 		} );
@@ -637,7 +680,7 @@ describe( 'Clipboard Markers Utils', () => {
 
 	describe( '_getCopyableMarkersFromRangeMap', () => {
 		it( 'properly filters markers Map instance', () => {
-			clipboardMarkersUtils._registerMarkerToCopy( 'comment', [ 'cut' ] );
+			clipboardMarkersUtils._registerMarkerToCopy( 'comment', { allowedActions: [ 'cut' ] } );
 
 			const { markers } = createFragmentWithMarkers(
 				wrapWithTag( 'paragraph', 'Hello world' ),
@@ -658,7 +701,7 @@ describe( 'Clipboard Markers Utils', () => {
 		} );
 
 		it( 'properly filters markers Record instance', () => {
-			clipboardMarkersUtils._registerMarkerToCopy( 'comment', [ 'cut' ] );
+			clipboardMarkersUtils._registerMarkerToCopy( 'comment', { allowedActions: [ 'cut' ] } );
 
 			const markers = Object.fromEntries(
 				createFragmentWithMarkers(
@@ -837,7 +880,7 @@ describe( 'Clipboard Markers Utils', () => {
 		viewDocument = editor.editing.view.document;
 
 		clipboardMarkersUtils = editor.plugins.get( 'ClipboardMarkersUtils' );
-		clipboardMarkersUtils._registerMarkerToCopy( 'comment', [ ] );
+		clipboardMarkersUtils._registerMarkerToCopy( 'comment', { allowedActions: [ ] } );
 
 		getUniqueMarkerNameStub = sinon
 			.stub( clipboardMarkersUtils, '_getUniqueMarkerName' )
