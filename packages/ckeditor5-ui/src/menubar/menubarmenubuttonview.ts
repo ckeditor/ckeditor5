@@ -13,17 +13,22 @@ import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 import dropdownArrowIcon from '../../theme/icons/dropdown-arrow.svg';
 
+import '../../theme/components/menubar/menubarmenubutton.css';
+
 /**
- * TODO
+ * A menu {@link module:ui/menubar/menubarmenuview~MenuBarMenuView#buttonView} class. Buttons like this one
+ * open both top-level bar menus as well as sub-menus.
  */
 export default class MenuBarMenuButtonView extends ButtonView {
 	/**
-	 * TODO
+	 * An icon that displays an arrow to indicate a direction of the menu.
 	 */
 	public readonly arrowView: IconView;
 
 	/**
-	 * TODO
+	 * Creates an instance of the menu bar button view.
+	 *
+	 * @param locale The localization services instance.
 	 */
 	constructor( locale: Locale ) {
 		super( locale );
@@ -62,7 +67,7 @@ export default class MenuBarMenuButtonView extends ButtonView {
 	}
 
 	/**
-	 * TODO
+	 * Creates the {@link #arrowView} instance.
 	 */
 	private _createArrowView() {
 		const arrowView = new IconView();

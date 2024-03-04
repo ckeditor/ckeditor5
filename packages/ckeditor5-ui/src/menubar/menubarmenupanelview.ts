@@ -12,27 +12,39 @@ import type { FocusableView } from '../focuscycler.js';
 import type ViewCollection from '../viewcollection.js';
 import View from '../view.js';
 
+import '../../theme/components/menubar/menubarmenupanel.css';
+
 /**
- * TODO
+ * A view representing a {@link module:ui/menubar/menubarmenuview~MenuBarMenuView#panelView} of a menu.
  */
 export default class MenuBarMenuPanelView extends View implements FocusableView {
 	/**
-	 * TODO
+	 * Collection of the child views in this panel.
 	 */
 	public readonly children: ViewCollection<FocusableView>;
 
 	/**
-	 * TODO
+	 * Controls whether the panel is visible.
+	 *
+	 * @observable
 	 */
 	declare public isVisible: boolean;
 
 	/**
-	 * TODO
+	 * The name of the position of the panel, relative to the parent.
+	 *
+	 * This property is reflected in the CSS class suffix set to {@link #element} that controls
+	 * the position of the panel.
+	 *
+	 * @observable
+	 * @default 'se'
 	 */
 	declare public position: MenuBarMenuPanelPosition;
 
 	/**
-	 * @inheritDoc
+	 * Creates an instance of the menu panel view.
+	 *
+	 * @param locale The localization services instance.
 	 */
 	constructor( locale?: Locale ) {
 		super( locale );
@@ -52,7 +64,7 @@ export default class MenuBarMenuPanelView extends View implements FocusableView 
 					'ck',
 					'ck-reset',
 					'ck-menu-bar__menu__panel',
-					bind.to( 'position', value => `ck-menu-bar__menu__panel_${ value }` ),
+					bind.to( 'position', value => `ck-menu-bar__menu__panel_position_${ value }` ),
 					bind.if( 'isVisible', 'ck-hidden', value => !value )
 				],
 				tabindex: '-1'
@@ -75,7 +87,7 @@ export default class MenuBarMenuPanelView extends View implements FocusableView 
 	}
 
 	/**
-	 * TODO
+	 * Focuses the first child of the panel (default) or the last one if the `direction` is `-1`.
 	 */
 	public focus( direction: -1 | 1 = 1 ): void {
 		if ( this.children.length ) {
@@ -88,4 +100,9 @@ export default class MenuBarMenuPanelView extends View implements FocusableView 
 	}
 }
 
+/**
+ * The names of the positions of the {@link module:ui/menubar/menubarmenupanelview~MenuBarMenuPanelView}.
+ *
+ * They are reflected as CSS class suffixes on the panel view element.
+ */
 export type MenuBarMenuPanelPosition = 'se' | 'sw' | 'ne' | 'nw' | 'w' | 'e';

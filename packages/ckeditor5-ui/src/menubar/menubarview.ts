@@ -15,7 +15,7 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 import { type FocusableView } from '../focuscycler.js';
 import View from '../view.js';
-import { cloneDeep, isObject } from 'lodash-es';
+import { isObject } from 'lodash-es';
 import ListSeparatorView from '../list/listseparatorview.js';
 import type ViewCollection from '../viewcollection.js';
 import type ComponentFactory from '../componentfactory.js';
@@ -24,18 +24,45 @@ import MenuBarMenuView from './menubarmenuview.js';
 import MenuBarMenuListView from './menubarmenulistview.js';
 import MenuBarMenuListItemView from './menubarmenulistitemview.js';
 import MenuBarMenuListItemButtonView from './menubarmenulistitembuttonview.js';
-import { EVENT_NAME_DELEGATES, MenuBarBehaviors } from './utils.js';
+import {
+	MenuBarBehaviors,
+	normalizeMenuBarConfig
+} from './utils.js';
+
+const EVENT_NAME_DELEGATES = [ 'mouseenter', 'arrowleft', 'arrowright', 'change:isOpen' ] as const;
 
 import '../../theme/components/menubar/menubar.css';
 
 /**
- * TODO
+ * The application menu bar component. It brings a set of top-level menus (and sub-menus) that can be used
+ * to organize and access a large number of buttons.
  */
 export default class MenuBarView extends View implements FocusableView {
+	/**
+	 * Collection of the child views inside the {@link #element}.
+	 */
 	public children: ViewCollection<MenuBarMenuView>;
+
+	/**
+	 * Indicates whether any of top-level menus are open in the menu bar. To close
+	 * the menu bar use the {@link #close} method.
+	 *
+	 * @observable
+	 */
 	declare public isOpen: boolean;
+
+	/**
+	 * A list of {@link module:ui/menubar/menubarmenuview~MenuBarMenuView} instances registered in the menu bar.
+	 *
+	 * @observable
+	 */
 	public menus: Array<MenuBarMenuView> = [];
 
+	/**
+	 * Creates an instance of the menu bar view.
+	 *
+	 * @param locale The localization services instance.
+	 */
 	constructor( locale: Locale ) {
 		super( locale );
 
@@ -46,10 +73,10 @@ export default class MenuBarView extends View implements FocusableView {
 
 		this.children = this.createCollection();
 
-		// Logs events in the main event bus of the component.
-		// this.on( 'submenu', ( evt, data ) => {
-		// 	console.log( `MenuBarView:${ evt.name }`, evt.path.map( view => view.element ) );
-		// } );
+		// @if CK_DEBUG_MENU_BAR // Logs events in the main event bus of the component.
+		// @if CK_DEBUG_MENU_BAR // this.on( 'submenu', ( evt, data ) => {
+		// @if CK_DEBUG_MENU_BAR // 	console.log( `MenuBarView:${ evt.name }`, evt.path.map( view => view.element ) );
+		// @if CK_DEBUG_MENU_BAR // } );
 
 		this.setTemplate( {
 			tag: 'div',
@@ -66,12 +93,18 @@ export default class MenuBarView extends View implements FocusableView {
 	}
 
 	/**
-	 * TODO
+	 * A utility that expands a plain menu bar configuration into a structure of menus (also: sub-menus)
+	 * and items using a given {@link module:ui/componentfactory~ComponentFactory component factory}.
+	 *
+	 * TODO: The configuration will expand with removing and adding items.
 	 */
-	public fillFromConfig( config: MenuBarConfig, componentFactory: ComponentFactory ): void {
+	public fillFromConfig( config: MenuBarConfig | undefined, componentFactory: ComponentFactory ): void {
 		const locale = this.locale!;
-		const localizedConfig = localizeConfigCategories( locale, config );
-		const topLevelCategoryMenuViews = localizedConfig.map( menuDefinition => this._createMenu( {
+		const topLevelCategoryMenuViews = normalizeMenuBarConfig( {
+			locale,
+			componentFactory,
+			config
+		} ).map( menuDefinition => this._createMenu( {
 			componentFactory,
 			menuDefinition
 		} ) );
@@ -93,7 +126,7 @@ export default class MenuBarView extends View implements FocusableView {
 	}
 
 	/**
-	 * Focuses the menu.
+	 * Focuses the menu bar.
 	 */
 	public focus(): void {
 		this.children.first!.focus();
@@ -103,130 +136,28 @@ export default class MenuBarView extends View implements FocusableView {
 	 * Closes all menus in the bar.
 	 */
 	public close(): void {
-		// TODO: We need to close all sub-menus in the structure too.
 		for ( const topLevelCategoryMenuView of this.children ) {
 			topLevelCategoryMenuView.isOpen = false;
 		}
 	}
 
 	/**
-	 * Registers a menu view in the menu bar.
+	 * Registers a menu view in the menu bar. Every {@link module:ui/menubar/menubarmenuview~MenuBarMenuView} instance must be registered
+	 * in the menu bar to be properly managed.
 	 */
-	public registerMenu( menuView: MenuBarMenuView, parentMenuView?: MenuBarMenuView ): void {
-		menuView.parentMenuView = parentMenuView;
-		menuView.menuBarView = this;
+	public registerMenu( menuView: MenuBarMenuView, parentMenuView: MenuBarMenuView | null = null ): void {
+		if ( parentMenuView ) {
+			menuView.delegate( ...EVENT_NAME_DELEGATES ).to( parentMenuView );
+			menuView.parentMenuView = parentMenuView;
+		} else {
+			menuView.delegate( ...EVENT_NAME_DELEGATES ).to( this, name => 'menu:' + name );
+		}
 
 		this.menus.push( menuView );
 	}
 
 	/**
-	 * TODO
-	 */
-	public static get defaultConfig(): MenuBarConfig {
-		return [
-			{
-				id: 'edit',
-				label: 'Edit',
-				items: [
-					'menuBar:undo',
-					'menuBar:redo',
-					'-',
-					'menuBar:selectAll',
-					'-',
-					'menuBar:findAndReplace'
-				]
-			},
-			{
-				id: 'view',
-				label: 'View',
-				items: [
-					'menuBar:sourceEditing',
-					'-',
-					'menuBar:showBlocks'
-				]
-			},
-			{
-				id: 'insert',
-				label: 'Insert',
-				items: [
-					'menuBar:blockQuote',
-					'menuBar:htmlEmbed',
-					'menuBar:pageBreak',
-					'menuBar:horizontalLine',
-					'menuBar:blockQuote'
-				]
-			},
-			{
-				id: 'format',
-				label: 'Format',
-				items: [
-					'menuBar:insertTable',
-					'-',
-					'menuBar:bold',
-					'menuBar:italic',
-					'menuBar:underline',
-					'menuBar:strikethrough',
-					'menuBar:subscript',
-					'menuBar:superscript',
-					'menuBar:code',
-					'-',
-					'menuBar:bulletedList',
-					'menuBar:numberedList',
-					'menuBar:todoList',
-					'-',
-					'menuBar:heading',
-					'-',
-					'menuBar:indent',
-					'menuBar:outdent',
-					'menuBar:removeFormat'
-				]
-			},
-			{
-				id: 'test',
-				label: 'Test',
-				items: [
-					'menuBar:bold',
-					'menuBar:italic',
-					'menuBar:underline',
-					{
-						id: 'test-nested-lvl1',
-						label: 'Test nested level 1',
-						items: [
-							'menuBar:undo',
-							'menuBar:redo',
-							{
-								id: 'test-nested-lvl11',
-								label: 'Test nested level 1.1',
-								items: [
-									'menuBar:undo',
-									'menuBar:redo'
-								]
-							}
-						]
-					},
-					{
-						id: 'test-nested-lvl2',
-						label: 'Test nested level 2',
-						items: [
-							'menuBar:undo',
-							'menuBar:redo',
-							{
-								id: 'test-nested-lvl21',
-								label: 'Test nested level 2.1',
-								items: [
-									'menuBar:undo',
-									'menuBar:redo'
-								]
-							}
-						]
-					}
-				]
-			}
-		];
-	}
-
-	/**
-	 * Creates a {@link TODO~MenuBarMenuView} based on the given definition.
+	 * Creates a {@link module:ui/menubar/menubarmenuview~MenuBarMenuView} based on the given definition.
 	 */
 	private _createMenu( { componentFactory, menuDefinition, parentMenuView }: {
 		componentFactory: ComponentFactory;
@@ -256,7 +187,7 @@ export default class MenuBarView extends View implements FocusableView {
 	}
 
 	/**
-	 * Creates a {@link TODO~MenuBarMenuView} content items based on the given definition.
+	 * Creates a {@link module:ui/menubar/menubarmenuview~MenuBarMenuView} items based on the given definition.
 	 */
 	private _createMenuItems( { menuDefinition, parentMenuView, componentFactory }: {
 		menuDefinition: MenuBarMenuDefinition;
@@ -265,62 +196,66 @@ export default class MenuBarView extends View implements FocusableView {
 	} ): Array<MenuBarMenuListItemView | ListSeparatorView> {
 		const locale = this.locale!;
 
-		return menuDefinition.items.map( menuDefinition => {
-			if ( menuDefinition === '-' ) {
-				return new ListSeparatorView();
-			}
+		return menuDefinition.items
+			.map( menuDefinition => {
+				if ( menuDefinition === '-' ) {
+					return new ListSeparatorView();
+				}
 
-			const menuItemView = new MenuBarMenuListItemView( locale, parentMenuView );
+				const menuItemView = new MenuBarMenuListItemView( locale, parentMenuView );
 
-			if ( isObject( menuDefinition ) ) {
-				menuItemView.children.add( this._createMenu( {
-					componentFactory,
-					menuDefinition,
-					parentMenuView
-				} ) );
-			} else {
-				const componentView = this._createMenuItemContentFromFactory( {
-					componentName: menuDefinition,
-					componentFactory,
-					parentMenuView
-				} );
+				if ( isObject( menuDefinition ) ) {
+					menuItemView.children.add( this._createMenu( {
+						componentFactory,
+						menuDefinition,
+						parentMenuView
+					} ) );
+				} else {
+					const componentView = this._createMenuItemContentFromFactory( {
+						componentName: menuDefinition,
+						componentFactory,
+						parentMenuView
+					} );
 
-				if ( componentView ) {
+					if ( !componentView ) {
+						return null;
+					}
+
 					menuItemView.children.add( componentView );
 				}
-			}
 
-			return menuItemView;
-		} );
+				return menuItemView;
+			} )
+			.filter( ( menuItemView ): menuItemView is MenuBarMenuListItemView | ListSeparatorView => {
+				return menuItemView !== null;
+			} );
 	}
 
+	/**
+	 * Uses the component factory to create a content of the menu item (a button or a sub-menu).
+	 */
 	private _createMenuItemContentFromFactory( { componentName, parentMenuView, componentFactory }: {
 		componentName: string;
 		componentFactory: ComponentFactory;
 		parentMenuView: MenuBarMenuView;
 	} ): MenuBarMenuView | MenuBarMenuListItemButtonView | null {
-		if ( !componentFactory.has( componentName ) ) {
-			/**
-			 * TODO
-			 *
-			 * @error menu-bar-item-unavailable
-			 * @param componentName The name of the component.
-			 */
-			logWarning( 'menu-bar-item-unavailable', { componentName } );
-
-			return null;
-		}
-
 		const componentView = componentFactory.create( componentName );
 
 		if ( !( componentView instanceof MenuBarMenuView || componentView instanceof MenuBarMenuListItemButtonView ) ) {
 			/**
-			 * TODO
+			 * Adding unsupported components to the {@link module:ui/menubar/menubarview~MenuBarView} is not possible.
+			 *
+			 * A component should be either a {@link module:ui/menubar/menubarmenuview~MenuBarMenuView} (sub-menu) or a
+			 * {@link module:ui/menubar/menubarmenulistitembuttonview~MenuBarMenuListItemButtonView} (button).
 			 *
 			 * @error menu-bar-component-unsupported
-			 * @param view TODO
+			 * @param componentName A name of the unsupported component used in the configuration.
+			 * @param componentView An unsupported component view.
 			 */
-			logWarning( 'menu-bar-component-unsupported', { view: componentView } );
+			logWarning( 'menu-bar-component-unsupported', {
+				componentName,
+				componentView
+			} );
 
 			return null;
 		}
@@ -328,12 +263,12 @@ export default class MenuBarView extends View implements FocusableView {
 		if ( componentView instanceof MenuBarMenuView ) {
 			this.registerMenu( componentView, parentMenuView );
 		} else {
-			componentView.delegate( ...EVENT_NAME_DELEGATES ).to( parentMenuView );
+			componentView.delegate( 'mouseenter' ).to( parentMenuView );
 		}
 
 		// Close the whole menu bar when a component is executed.
 		componentView.on( 'execute', () => {
-			this.isOpen = false;
+			this.close();
 		} );
 
 		return componentView;
@@ -350,7 +285,7 @@ export default class MenuBarView extends View implements FocusableView {
 		let closeTimeout: ReturnType<typeof setTimeout>;
 
 		// TODO: This is not the prettiest approach but at least it's simple.
-		this.on( 'submenu:change:isOpen', ( evt, name, isOpen ) => {
+		this.on<MenuBarMenuChangeIsOpenEvent>( 'menu:change:isOpen', ( evt, name, isOpen ) => {
 			clearTimeout( closeTimeout );
 
 			if ( isOpen ) {
@@ -364,34 +299,8 @@ export default class MenuBarView extends View implements FocusableView {
 	}
 }
 
-/**
- * Localizes the user-config using pre-defined localized category labels.
- */
-function localizeConfigCategories( locale: Locale, config: MenuBarConfig ): MenuBarConfig {
-	const t = locale.t;
-	const configClone = cloneDeep( config );
-	const localizedCategoryLabels: Record<string, string> = {
-		'Edit': t( 'Edit' ),
-		'Format': t( 'Format' )
-	};
-
-	for ( const categoryDef of configClone ) {
-		if ( categoryDef.id in localizedCategoryLabels ) {
-			categoryDef.label = localizedCategoryLabels[ categoryDef.id ];
-		}
-	}
-
-	return configClone;
-}
-
-/**
- * TODO
- */
 export type MenuBarConfig = Array<MenuBarMenuDefinition>;
 
-/**
- * TODO
- */
 export type MenuBarMenuDefinition = {
 	id: string;
 	label: string;
@@ -399,37 +308,42 @@ export type MenuBarMenuDefinition = {
 };
 
 /**
- * TODO
+ * Any namespaced event fired by menu a {@link module:ui/menubar/menubarview~MenuBarView#menus menu view instance} of the
+ * {@link module:ui/menubar/menubarview~MenuBarView menu bar}.
  */
-interface MenuBarSubMenuEvent extends BaseEvent {
-	name: `submenu:${ string }` | `submenu:change:${ string }`;
+interface MenuBarMenuEvent extends BaseEvent {
+	name: `menu:${ string }` | `menu:change:${ string }`;
 }
 
 /**
- * TODO
+ * A `mouseenter` event originating from a {@link module:ui/menubar/menubarview~MenuBarView#menus menu view instance} of the
+ * {@link module:ui/menubar/menubarview~MenuBarView menu bar}.
  */
-export interface MenuBarSubMenuMouseEnterEvent extends MenuBarSubMenuEvent {
-	name: 'submenu:mouseenter';
+export interface MenuBarMenuMouseEnterEvent extends MenuBarMenuEvent {
+	name: 'menu:mouseenter';
 }
 
 /**
- * TODO
+ * An `arrowleft` event originating from a {@link module:ui/menubar/menubarview~MenuBarView#menus menu view instance} of the
+ * {@link module:ui/menubar/menubarview~MenuBarView menu bar}.
  */
-export interface MenuBarSubMenuArrowLeftEvent extends MenuBarSubMenuEvent {
-	name: 'submenu:arrowleft';
+export interface MenuBarMenuArrowLeftEvent extends MenuBarMenuEvent {
+	name: 'menu:arrowleft';
 }
 
 /**
- * TODO
+ * An `arrowright` event originating from a {@link module:ui/menubar/menubarview~MenuBarView#menus menu view instance} of the
+ * {@link module:ui/menubar/menubarview~MenuBarView menu bar}.
  */
-export interface MenuBarSubMenuArrowRightEvent extends MenuBarSubMenuEvent {
-	name: 'submenu:arrowright';
+export interface MenuBarMenuArrowRightEvent extends MenuBarMenuEvent {
+	name: 'menu:arrowright';
 }
 
 /**
- * TODO
+ * A `change:isOpen` event originating from a {@link module:ui/menubar/menubarview~MenuBarView#menus menu view instance} of the
+ * {@link module:ui/menubar/menubarview~MenuBarView menu bar}.
  */
-export interface MenuBarSubMenuChangeIsOpenEvent extends MenuBarSubMenuEvent {
-	name: 'submenu:change:isOpen';
+export interface MenuBarMenuChangeIsOpenEvent extends MenuBarMenuEvent {
+	name: 'menu:change:isOpen';
 	args: [ name: string, value: boolean, oldValue: boolean ];
 }

@@ -11,53 +11,52 @@ import clickOutsideHandler from '../bindings/clickoutsidehandler.js';
 import type MenuBarMenuView from './menubarmenuview.js';
 import type {
 	default as MenuBarView,
-	MenuBarSubMenuMouseEnterEvent,
-	MenuBarSubMenuChangeIsOpenEvent,
-	MenuBarSubMenuArrowRightEvent,
-	MenuBarSubMenuArrowLeftEvent
+	MenuBarConfig,
+	MenuBarMenuMouseEnterEvent,
+	MenuBarMenuChangeIsOpenEvent,
+	MenuBarMenuArrowRightEvent,
+	MenuBarMenuArrowLeftEvent,
+	MenuBarMenuDefinition
 } from './menubarview.js';
+import { cloneDeep } from 'lodash-es';
 import type { FocusableView } from '../focuscycler.js';
-import type { ObservableChangeEvent, PositioningFunction } from '@ckeditor/ckeditor5-utils';
+import {
+	logWarning,
+	type Locale,
+	type ObservableChangeEvent,
+	type PositioningFunction
+} from '@ckeditor/ckeditor5-utils';
 import type { ButtonExecuteEvent } from '../button/button.js';
+import type ComponentFactory from '../componentfactory.js';
 
-export const EVENT_NAME_DELEGATES = [ 'mouseenter', 'arrowleft', 'arrowright', 'change:isOpen' ] as const;
 const NESTED_PANEL_HORIZONTAL_OFFSET = 5;
 
 /**
- * Behaviors of the {@link TODO~MenuBarView} component.
+ * Behaviors of the {@link module:ui/menubar/menubarview~MenuBarView} component.
  */
 export const MenuBarBehaviors = {
-	/**
-	 * Closes the bar when the user clicked outside of it (page body, editor root, etc.).
-	 */
-	closeOnClickOutside( menuBarView: MenuBarView ): void {
-		clickOutsideHandler( {
-			emitter: menuBarView,
-			activator: () => menuBarView.isOpen,
-			callback: () => menuBarView.close(),
-			contextElements: () => menuBarView.children.map( child => child.element! )
-		} );
-	},
-
 	/**
 	 * When the bar is already open:
 	 * * Opens the menu when the user hovers over its button.
 	 * * Closes open menu when another menu's button gets hovered.
 	 */
 	toggleMenusAndFocusItemsOnHover( menuBarView: MenuBarView ): void {
-		menuBarView.on<MenuBarSubMenuMouseEnterEvent>( 'submenu:mouseenter', evt => {
+		menuBarView.on<MenuBarMenuMouseEnterEvent>( 'menu:mouseenter', evt => {
 			// This works only when the menu bar has already been open and the user hover over the menu bar.
 			if ( !menuBarView.isOpen ) {
 				return;
 			}
 
 			for ( const menuView of menuBarView.menus ) {
-				const wasOpen = menuView.isOpen;
+				// @if CK_DEBUG_MENU_BAR // const wasOpen = menuView.isOpen;
+
 				menuView.isOpen = evt.path.includes( menuView );
 
-				if ( wasOpen !== menuView.isOpen ) {
-					console.log( '[BEHAVIOR] toggleMenusAndFocusItemsOnHover(): Toggle', logMenu( menuView ), 'isOpen', menuView.isOpen );
-				}
+				// @if CK_DEBUG_MENU_BAR // if ( wasOpen !== menuView.isOpen ) {
+				// @if CK_DEBUG_MENU_BAR // console.log( '[BEHAVIOR] toggleMenusAndFocusItemsOnHover(): Toggle',
+				// @if CK_DEBUG_MENU_BAR // 	logMenu( menuView ), 'isOpen', menuView.isOpen
+				// @if CK_DEBUG_MENU_BAR // );
+				// @if CK_DEBUG_MENU_BAR // }
 			}
 
 			( evt.source as FocusableView ).focus();
@@ -67,15 +66,15 @@ export const MenuBarBehaviors = {
 	/**
 	 * Moves between top-level menus using the arrow left and right keys.
 	 *
-	 * If the menubar has already been open, arrow keys move focus between top-level menu buttons and open them.
-	 * If the menubar was closes, arrow keys only move focus between top-level menu buttons.
+	 * If the menubar has already been open, the arrow keys move focus between top-level menu buttons and open them.
+	 * If the menubar is closed, the arrow keys only move focus between top-level menu buttons.
 	 */
 	focusCycleMenusOnArrows( menuBarView: MenuBarView ): void {
-		menuBarView.on<MenuBarSubMenuArrowRightEvent>( 'submenu:arrowright', evt => {
+		menuBarView.on<MenuBarMenuArrowRightEvent>( 'menu:arrowright', evt => {
 			cycleTopLevelMenus( evt.source as MenuBarMenuView, 1 );
 		} );
 
-		menuBarView.on<MenuBarSubMenuArrowLeftEvent>( 'submenu:arrowleft', evt => {
+		menuBarView.on<MenuBarMenuArrowLeftEvent>( 'menu:arrowleft', evt => {
 			cycleTopLevelMenus( evt.source as MenuBarMenuView, -1 );
 		} );
 
@@ -105,7 +104,7 @@ export const MenuBarBehaviors = {
 				menuBarView.menus.forEach( menuView => {
 					menuView.isOpen = false;
 
-					console.log( '[BEHAVIOR] closeMenusWhenTheBarCloses(): Closing', logMenu( menuView ) );
+					// @if CK_DEBUG_MENU_BAR // console.log( '[BEHAVIOR] closeMenusWhenTheBarCloses(): Closing', logMenu( menuView ) );
 				} );
 			}
 		} );
@@ -119,7 +118,7 @@ export const MenuBarBehaviors = {
 	 * 4. The sub-menu (A) should close as it would with `toggleMenusAndFocusItemsOnHover()`.
 	 */
 	closeMenuWhenAnotherOnTheSameLevelOpens( menuBarView: MenuBarView ): void {
-		menuBarView.on<MenuBarSubMenuChangeIsOpenEvent>( 'submenu:change:isOpen', ( evt, name, isOpen ) => {
+		menuBarView.on<MenuBarMenuChangeIsOpenEvent>( 'menu:change:isOpen', ( evt, name, isOpen ) => {
 			if ( isOpen ) {
 				menuBarView.menus
 					.filter( menuView => {
@@ -129,20 +128,32 @@ export const MenuBarBehaviors = {
 					} ).forEach( menuView => {
 						menuView.isOpen = false;
 
-						console.log( '[BEHAVIOR] closeMenuWhenAnotherOpens(): Closing', logMenu( menuView ) );
+						// @if CK_DEBUG_MENU_BAR // console.log( '[BEHAVIOR] closeMenuWhenAnotherOpens(): Closing', logMenu( menuView ) );
 					} );
 			}
+		} );
+	},
+
+	/**
+	 * Closes the bar when the user clicked outside of it (page body, editor root, etc.).
+	 */
+	closeOnClickOutside( menuBarView: MenuBarView ): void {
+		clickOutsideHandler( {
+			emitter: menuBarView,
+			activator: () => menuBarView.isOpen,
+			callback: () => menuBarView.close(),
+			contextElements: () => menuBarView.children.map( child => child.element! )
 		} );
 	}
 };
 
 /**
- * Behaviors of the {@link TODO~MenuBarMenuView} component.
+ * Behaviors of the {@link module:ui/menubar/menubarmenuview~MenuBarMenuView} component.
  */
 export const MenuBarMenuBehaviors = {
 	/**
 	 * If the button of the menu is focused, pressing the arrow down key should open the panel and focus it.
-	 * This is analogous to the {@link TODO~DropdownView}.
+	 * This is analogous to the {@link module:ui/dropdown/dropdownview~DropdownView}.
 	 */
 	openAndFocusPanelOnArrowDownKey( menuView: MenuBarMenuView ): void {
 		menuView.keystrokes.set( 'arrowdown', ( data, cancel ) => {
@@ -167,17 +178,20 @@ export const MenuBarMenuBehaviors = {
 				return;
 			}
 
+			// @if CK_DEBUG_MENU_BAR // console.log( '[BEHAVIOR] openOnArrowRightKey(): Opening', logMenu( menuView ) );
+
 			if ( !menuView.isOpen ) {
-				console.log( '[BEHAVIOR] openOnArrowRightKey(): Opening', logMenu( menuView ) );
 				menuView.isOpen = true;
-				menuView.panelView.focus();
-				cancel();
 			}
+
+			menuView.panelView.focus();
+			cancel();
 		} );
 	},
 
 	/**
-	 * Opens the menu on its button click. Note that this behavior only opens but never closes the menu (unlike {@link TODO~DropdownView}).
+	 * Opens the menu on its button click. Note that this behavior only opens but never closes the menu (unlike
+	 * {@link module:ui/dropdown/dropdownview~DropdownView}).
 	 */
 	openOnButtonClick( menuView: MenuBarMenuView ): void {
 		menuView.buttonView.on<ButtonExecuteEvent>( 'execute', () => {
@@ -187,7 +201,7 @@ export const MenuBarMenuBehaviors = {
 	},
 
 	/**
-	 * Toggles the menu on its button click. This behavior is analogous to {@link TODO~DropdownView}.
+	 * Toggles the menu on its button click. This behavior is analogous to {@link module:ui/dropdown/dropdownview~DropdownView}.
 	 */
 	toggleOnButtonClick( menuView: MenuBarMenuView ): void {
 		menuView.buttonView.on<ButtonExecuteEvent>( 'execute', () => {
@@ -232,20 +246,89 @@ export const MenuBarMenuBehaviors = {
 	closeOnParentClose( menuView: MenuBarMenuView ): void {
 		menuView.parentMenuView!.on<ObservableChangeEvent<boolean>>( 'change:isOpen', ( evt, name, isOpen ) => {
 			if ( !isOpen && evt.source === menuView.parentMenuView ) {
-				console.log( '[BEHAVIOR] closeOnParentClose(): Closing', logMenu( menuView ) );
+				// @if CK_DEBUG_MENU_BAR // console.log( '[BEHAVIOR] closeOnParentClose(): Closing', logMenu( menuView ) );
+
 				menuView.isOpen = false;
 			}
 		} );
 	}
 };
 
-function logMenu( menuView: MenuBarMenuView ) {
-	return `"${ menuView.buttonView.label }"`;
-}
+// @if CK_DEBUG_MENU_BAR // function logMenu( menuView: MenuBarMenuView ) {
+// @if CK_DEBUG_MENU_BAR //	return `"${ menuView.buttonView.label }"`;
+// @if CK_DEBUG_MENU_BAR // }
 
 /**
- * Contains every positioning function used by {@link TODO~MenuBarMenuView} that decides where the
- * {@link TODO~MenuBarMenuView#panelView} should be placed.
+ * Contains every positioning function used by {@link module:ui/menubar/menubarmenuview~MenuBarMenuView} that decides where the
+ * {@link module:ui/menubar/menubarmenuview~MenuBarMenuView#panelView} should be placed.
+ *
+ * Top-level menu positioning functions:
+ *
+ *	┌──────┐
+ *	│      │
+ *	├──────┴────────┐
+ *	│               │
+ *	│               │
+ *	│               │
+ *	│            SE │
+ *	└───────────────┘
+ *
+ *	         ┌──────┐
+ *	         │      │
+ *	┌────────┴──────┤
+ *	│               │
+ *	│               │
+ *	│               │
+ *	│ SW            │
+ *	└───────────────┘
+ *
+ *	┌───────────────┐
+ *	│ NW            │
+ *	│               │
+ *	│               │
+ *	│               │
+ *	└────────┬──────┤
+ *	         │      │
+ *	         └──────┘
+ *
+ *	┌───────────────┐
+ *	│            NE │
+ *	│               │
+ *	│               │
+ *	│               │
+ *	├──────┬────────┘
+ *	│      │
+ *	└──────┘
+ *
+ * Sub-menu positioning functions:
+ *
+ *	┌──────┬───────────────┐
+ *	│      │               │
+ *	└──────┤               │
+ *	       │               │
+ *	       │            ES │
+ *	       └───────────────┘
+ *
+ *	┌───────────────┬──────┐
+ *	│               │      │
+ *	│               ├──────┘
+ *	│               │
+ *	│ WS            │
+ *	└───────────────┘
+ *
+ *	       ┌───────────────┐
+ *	       │            EN │
+ *	       │               │
+ *	┌──────┤               │
+ *	│      │               │
+ *	└──────┴───────────────┘
+ *
+ *	┌───────────────┐
+ *	│ WN            │
+ *	│               │
+ *	│               ├──────┐
+ *	│               │      │
+ *	└───────────────┴──────┘
  */
 export const MenuBarMenuViewPanelPositioningFunctions: Record<string, PositioningFunction> = {
 	southEast: buttonRect => {
@@ -305,3 +388,307 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
 		};
 	}
 } as const;
+
+/**
+ * The default configuration of the {@link module:ui/menubar/menubarview~MenuBarView} component.
+ *
+ * It contains names of all UI components available in the project.
+ */
+export const DefaultMenuBarConfig: MenuBarConfig = [
+	{
+		id: 'edit',
+		label: 'Edit',
+		items: [
+			'menuBar:undo',
+			'menuBar:redo',
+			'-',
+			'menuBar:selectAll',
+			'-',
+			'menuBar:findAndReplace'
+		]
+	},
+	{
+		id: 'view',
+		label: 'View',
+		items: [
+			'menuBar:sourceEditing',
+			'-',
+			'menuBar:showBlocks'
+		]
+	},
+	{
+		id: 'insert',
+		label: 'Insert',
+		items: [
+			'menuBar:blockQuote',
+			'menuBar:htmlEmbed',
+			'menuBar:pageBreak',
+			'menuBar:horizontalLine',
+			'menuBar:blockQuote'
+		]
+	},
+	{
+		id: 'format',
+		label: 'Format',
+		items: [
+			'menuBar:insertTable',
+			'-',
+			'menuBar:bold',
+			'menuBar:italic',
+			'menuBar:underline',
+			'menuBar:strikethrough',
+			'menuBar:subscript',
+			'menuBar:superscript',
+			'menuBar:code',
+			'-',
+			'menuBar:bulletedList',
+			'menuBar:numberedList',
+			'menuBar:todoList',
+			'-',
+			'menuBar:heading',
+			'-',
+			'menuBar:indent',
+			'menuBar:outdent',
+			'menuBar:removeFormat'
+		]
+	}
+	// {
+	// 	id: 'test',
+	// 	label: 'Test',
+	// 	items: [
+	// 		'menuBar:bold',
+	// 		'menuBar:italic',
+	// 		'menuBar:underline',
+	// 		{
+	// 			id: 'test-nested-lvl1',
+	// 			label: 'Test nested level 1',
+	// 			items: [
+	// 				'menuBar:undo',
+	// 				'menuBar:redo',
+	// 				{
+	// 					id: 'test-nested-lvl11',
+	// 					label: 'Test nested level 1.1',
+	// 					items: [
+	// 						'menuBar:undo',
+	// 						'menuBar:redo'
+	// 					]
+	// 				}
+	// 			]
+	// 		},
+	// 		{
+	// 			id: 'test-nested-lvl2',
+	// 			label: 'Test nested level 2',
+	// 			items: [
+	// 				'menuBar:undo',
+	// 				'menuBar:redo',
+	// 				{
+	// 					id: 'test-nested-lvl21',
+	// 					label: 'Test nested level 2.1',
+	// 					items: [
+	// 						'menuBar:undo',
+	// 						'menuBar:redo'
+	// 					]
+	// 				}
+	// 			]
+	// 		}
+	// 	]
+	// }
+] as const;
+
+/**
+ * Performs a cleanup and normalization of the menu bar configuration and returns a config
+ * clone with the following modifications:
+ *
+ * * Removed components that are not available in the component factory,
+ * * Removed obsolete separators,
+ * * Purged empty menus,
+ * * Localized top-level menu labels.
+ */
+export function normalizeMenuBarConfig( {
+	locale,
+	componentFactory,
+	config
+}: {
+	locale: Locale;
+	componentFactory: ComponentFactory;
+	config: Readonly<MenuBarConfig> | undefined;
+} ): MenuBarConfig {
+	if ( !config ) {
+		config = DefaultMenuBarConfig;
+	}
+
+	const isUsingDefaultConfig = config === DefaultMenuBarConfig;
+	const configClone = cloneDeep( config ) as MenuBarConfig;
+
+	purgeUnavailableComponents( config, configClone, componentFactory, isUsingDefaultConfig );
+	purgeEmptyMenus( config, configClone, isUsingDefaultConfig );
+	purgeObsoleteSeparators( configClone );
+	localizeTopLevelCategories( configClone, locale );
+
+	return configClone;
+}
+
+/**
+ * Removes components from the menu bar configuration that are not available in the factory and would
+ * not be instantiated. Warns about missing components if the menu bar configuration was specified by the user.
+ */
+function purgeUnavailableComponents(
+	originalConfig: Readonly<MenuBarConfig>,
+	config: MenuBarConfig,
+	componentFactory: ComponentFactory,
+	isUsingDefaultConfig: boolean
+) {
+	walkConfig( config, menuDefinition => {
+		menuDefinition.items = menuDefinition.items.filter( item => {
+			const isItemUnavailable = typeof item === 'string' && item !== '-' && !componentFactory.has( item );
+
+			// The default configuration contains all possible editor features. But integrators' editors rarely load
+			// every possible feature. This is why we do not want to log warnings about unavailable items for the default config
+			// because they would show up in almost every integration. If the configuration has been provided by
+			// the integrator, on the other hand, then these warnings bring value.
+			if ( isItemUnavailable && !isUsingDefaultConfig ) {
+				/**
+				 * There was a problem processing the configuration of the menu bar. The item with the given
+				 * name does not exist so it was omitted when rendering the menu bar.
+				 *
+				 * This warning usually shows up when the {@link module:core/plugin~Plugin} which is supposed
+				 * to provide a menu bar item has not been loaded or there is a typo in the
+				 * {@link module:core/editor/editorconfig~EditorConfig#menuBar menu bar configuration}.
+				 *
+				 * Make sure the plugin responsible for this menu bar item is loaded and the menu bar configuration
+				 * is correct, e.g. {@link module:basic-styles/boldyu~BoldUI} is loaded for the `'menuBar:bold'`
+				 * menu bar item.
+				 *
+				 * @error menu-bar-item-unavailable
+				 * @param menuBarConfig The full configuration of the menu bar.
+				 * @param parentMenuConfig The config of the menu the unavailable component was defined in.
+				 * @param componentName The name of the unavailable component.
+				 */
+				logWarning( 'menu-bar-item-unavailable', {
+					menuBarConfig: originalConfig,
+					parentMenuConfig: cloneDeep( menuDefinition ),
+					componentName: item
+				} );
+			}
+
+			return !isItemUnavailable;
+		} );
+	} );
+}
+
+/**
+ * Removes trailing and leading separators from menu bar configuration. Such separators can be added by mistake
+ * or due to the missing components in the factory that were meant to be separated.
+ */
+function purgeObsoleteSeparators( config: MenuBarConfig ) {
+	function isSeparator( item: any ) {
+		return item === '-';
+	}
+
+	walkConfig( config, menuDefinition => {
+		menuDefinition.items = menuDefinition.items.filter( ( item, index, items ) => {
+			const itemIsSeparator = isSeparator( item );
+			const isLeadingSeparator = itemIsSeparator && items.slice( 0, index + 1 ).every( isSeparator );
+			const isTrailingSeparator = itemIsSeparator && items.slice( index, items.length ).every( isSeparator );
+
+			return !isTrailingSeparator && !isLeadingSeparator;
+		} );
+	} );
+}
+
+/**
+ * Removes empty menus from the menu bar configuration to improve the visual UX. Such menus can occur
+ * when some plugins responsible for providing menu bar items have not been loaded and some part of
+ * the configuration populated menus using these components exclusively.
+ */
+function purgeEmptyMenus(
+	originalConfig: Readonly<MenuBarConfig>,
+	config: MenuBarConfig,
+	isUsingDefaultConfig: boolean
+) {
+	if ( !config.length && !isUsingDefaultConfig ) {
+		/**
+		 * There was a problem processing the configuration of the menu bar. One of the menus
+		 * is empty so it was omitted when rendering the menu bar.
+		 *
+		 * This warning usually shows up when some {@link module:core/plugin~Plugin plugins} responsible for
+		 * providing menu bar items have not been loaded and the
+		 * {@link module:core/editor/editorconfig~EditorConfig#menuBar menu bar configuration} was not updated.
+		 *
+		 * Make sure all necessary editor plugins are loaded and/or update the menu bar configuration
+		 * to account for the missing menu items.
+		 *
+		 * @error menu-bar-menu-empty
+		 * @param menuBarConfig The full configuration of the menu bar.
+		 * @param emptyMenuConfig The definition of the menu that has no child items.
+		 */
+		logWarning( 'menu-bar-menu-empty', {
+			menuBarConfig: originalConfig,
+			emptyMenuConfig: originalConfig
+		} );
+
+		return;
+	}
+
+	walkConfig( config, ( menuDefinition, siblings ) => {
+		if ( !menuDefinition.items.length || menuDefinition.items.every( item => item === '-' ) ) {
+			siblings.splice( siblings.indexOf( menuDefinition ), 1 );
+
+			if ( !isUsingDefaultConfig ) {
+				logWarning( 'menu-bar-menu-empty', {
+					menuBarConfig: originalConfig,
+					emptyMenuConfig: menuDefinition
+				} );
+			}
+
+			// Walking goes from the root to the leaves so if leaves are removed, we need to re-iterate the level up.
+			purgeEmptyMenus( originalConfig, config, isUsingDefaultConfig );
+		}
+	} );
+}
+
+/**
+ * Localizes the user-config using pre-defined localized category labels.
+ */
+function localizeTopLevelCategories( config: MenuBarConfig, locale: Locale ) {
+	const t = locale.t;
+	const localizedCategoryLabels: Record<string, string> = {
+		'Edit': t( 'Edit' ),
+		'Format': t( 'Format' ),
+		'View': t( 'View' ),
+		'Insert': t( 'Insert' )
+	};
+
+	for ( const categoryDef of config ) {
+		if ( categoryDef.label in localizedCategoryLabels ) {
+			categoryDef.label = localizedCategoryLabels[ categoryDef.label ];
+		}
+	}
+}
+
+/**
+ * Recursively visits all menu definitions in the config and calls the callback for each of them.
+ */
+function walkConfig(
+	definition: MenuBarConfig | MenuBarMenuDefinition,
+	callback: ( definition: MenuBarMenuDefinition, siblings: MenuBarConfig | MenuBarMenuDefinition[ 'items' ] ) => void
+) {
+	if ( Array.isArray( definition ) ) {
+		for ( const topLevelMenuDefinition of definition ) {
+			walk( topLevelMenuDefinition, definition );
+		}
+	}
+
+	function walk(
+		definition: MenuBarMenuDefinition,
+		siblings: MenuBarMenuDefinition[ 'items' ] | MenuBarConfig
+	) {
+		callback( definition, siblings );
+
+		for ( const item of definition.items ) {
+			if ( typeof item === 'object' ) {
+				walk( item, definition.items );
+			}
+		}
+	}
+}

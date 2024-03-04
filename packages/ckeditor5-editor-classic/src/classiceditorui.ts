@@ -14,8 +14,7 @@ import {
 	DialogView,
 	type EditorUIReadyEvent,
 	type DialogViewMoveToEvent,
-	type Dialog,
-	MenuBarView
+	type Dialog
 } from 'ckeditor5/src/ui.js';
 import {
 	enablePlaceholder,
@@ -146,7 +145,6 @@ export default class ClassicEditorUI extends EditorUI {
 		view.stickyPanel.bind( 'viewportTopOffset' ).to( this, 'viewportOffset', ( { top } ) => top || 0 );
 
 		view.toolbar.fillFromConfig( this._toolbarConfig, this.componentFactory );
-		view.menuBarView.fillFromConfig( MenuBarView.defaultConfig, this.componentFactory );
 
 		// Register the toolbar so it becomes available for Alt+F10 and Esc navigation.
 		this.addToolbar( view.toolbar );
@@ -158,9 +156,11 @@ export default class ClassicEditorUI extends EditorUI {
 	private _initMenuBar(): void {
 		const editor = this.editor;
 		const menuBarViewElement = this.view.menuBarView.element!;
+		const view = this.view;
 
 		this.focusTracker.add( menuBarViewElement );
 		editor.keystrokes.listenTo( menuBarViewElement );
+		view.menuBarView.fillFromConfig( editor.config.get( 'menuBar' ), this.componentFactory );
 
 		editor.keystrokes.set( 'Esc', ( data, cancel ) => {
 			if ( menuBarViewElement.contains( this.focusTracker.focusedElement ) ) {
