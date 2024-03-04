@@ -63,12 +63,6 @@ describe( 'ListStartCommand', () => {
 			expect( listStartCommand.isEnabled ).to.be.false;
 		} );
 
-		it( 'should be false if selection is inside a listItem (listType: legal)', () => {
-			setData( model, modelList( [ '^ Foo[]' ] ) );
-
-			expect( listStartCommand.isEnabled ).to.be.false;
-		} );
-
 		it( 'should be false if selection is inside a listItem (listType: todo)', () => {
 			setData( model, '<paragraph listType="todo" listItemId="a" listIndent="0">foo[]</paragraph>' );
 
@@ -77,12 +71,6 @@ describe( 'ListStartCommand', () => {
 
 		it( 'should be true if selection is inside a listItem (collapsed selection)', () => {
 			setData( model, modelList( [ '# Foo[] {start:2}' ] ) );
-
-			expect( listStartCommand.isEnabled ).to.be.true;
-		} );
-
-		it( 'should be true if selection is inside a listItem (collapsed selection) in legal list', () => {
-			setData( model, modelList( [ '^ Foo[] {start:2}' ] ) );
 
 			expect( listStartCommand.isEnabled ).to.be.true;
 		} );
@@ -184,22 +172,6 @@ describe( 'ListStartCommand', () => {
 			listStartCommand.execute( { startIndex: 5 } );
 
 			expect( getData( model ) ).to.equalMarkup( modelList( [ '# [1.] {start:5}' ] ) );
-		} );
-
-		it( 'should set the `listStart` attribute for collapsed selection in legal list', () => {
-			setData( model, modelList( [ '^ 1.[] {start:1}' ] ) );
-
-			listStartCommand.execute( { startIndex: 5 } );
-
-			expect( getData( model ) ).to.equalMarkup( modelList( [ '^ 1.[] {start:5}' ] ) );
-		} );
-
-		it( 'should set the `listStart` attribute for non-collapsed selection in legal list', () => {
-			setData( model, modelList( [ '^ [1.] {start:2}' ] ) );
-
-			listStartCommand.execute( { startIndex: 5 } );
-
-			expect( getData( model ) ).to.equalMarkup( modelList( [ '^ [1.] {start:5}' ] ) );
 		} );
 
 		it( 'should set the `listStart` attribute for all the same list items (collapsed selection)', () => {

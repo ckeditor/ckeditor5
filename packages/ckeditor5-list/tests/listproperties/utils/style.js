@@ -35,7 +35,6 @@ describe( 'ListProperties - utils - style', () => {
 	describe( 'converting between `style:list-style-type` and `type`', () => {
 		const testData = [
 			[ 'decimal', '1' ],
-			[ 'decimal-legal', '1.' ],
 			[ 'lower-roman', 'i' ],
 			[ 'upper-roman', 'I' ],
 			[ 'lower-alpha', 'a' ],
