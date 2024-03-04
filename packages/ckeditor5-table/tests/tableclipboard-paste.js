@@ -4076,7 +4076,7 @@ describe( 'table clipboard', () => {
 		beforeEach( async () => {
 			await createEditor();
 
-			clipboardMarkersUtils._registerMarkerToCopy( 'comment', [ 'copy' ] );
+			clipboardMarkersUtils._registerMarkerToCopy( 'comment', { allowedActions: [ 'copy' ] } );
 			sinon
 				.stub( clipboardMarkersUtils, '_getUniqueMarkerName' )
 				.callsFake( markerName => `${ markerName }:uniq` );
