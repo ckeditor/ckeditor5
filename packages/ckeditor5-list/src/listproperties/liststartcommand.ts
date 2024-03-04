@@ -46,7 +46,11 @@ export default class ListStartCommand extends Command {
 		const document = model.document;
 
 		let blocks = Array.from( document.selection.getSelectedBlocks() )
-			.filter( block => isListItemBlock( block ) && ( block.getAttribute( 'listType' ) == 'numbered' || block.getAttribute( 'listType' ) == 'customNumbered' ) );
+			.filter( block =>
+				isListItemBlock( block ) &&
+				( block.getAttribute( 'listType' ) == 'numbered' ||
+				block.getAttribute( 'listType' ) == 'customNumbered' )
+			);
 
 		blocks = expandListBlocksToCompleteList( blocks );
 
@@ -68,7 +72,11 @@ export default class ListStartCommand extends Command {
 
 		const block = first( document.selection.getSelectedBlocks() );
 
-		if ( block && isListItemBlock( block ) && ( block.getAttribute( 'listType' ) == 'numbered' || block.getAttribute( 'listType' ) == 'customNumbered' ) ) {
+		if (
+			block &&
+			isListItemBlock( block ) &&
+			( block.getAttribute( 'listType' ) == 'numbered' || block.getAttribute( 'listType' ) == 'customNumbered' )
+		) {
 			return block.getAttribute( 'listStart' ) as number;
 		}
 
