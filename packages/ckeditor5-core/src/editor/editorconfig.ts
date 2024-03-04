@@ -11,6 +11,7 @@ import type { ArrayOrItem, Translations } from '@ckeditor/ckeditor5-utils';
 import type Context from '../context.js';
 import type { PluginConstructor } from '../plugin.js';
 import type Editor from './editor.js';
+import type { MenuBarConfig } from '@ckeditor/ckeditor5-ui';
 
 /**
  * CKEditor configuration options.
@@ -178,6 +179,14 @@ export interface EditorConfig {
 	 * process.
 	 */
 	language?: string | LanguageConfig;
+
+	/**
+	 * The editor menu bar configuration.
+	 *
+	 * TODO: Format, defaults, extending, narrowing down.
+	 * TODO: Not every editor has a menu bar.
+	 */
+	menuBar?: MenuBarConfig;
 
 	/**
 	 * Specifies the text displayed in the editor when there is no content (editor is empty). It is intended to
