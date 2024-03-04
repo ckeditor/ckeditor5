@@ -21,7 +21,8 @@ export {
 
 export {
 	default as ClipboardMarkersUtils,
-	type ClipboardMarkerAction
+	type ClipboardMarkerRestrictionsPreset,
+	type ClipboardMarkerRestrictedAction
 } from './clipboardmarkersutils.js';
 
 export type {
