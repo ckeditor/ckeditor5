@@ -27,7 +27,6 @@
     "@ckeditor/ckeditor5-paragraph": "41.1.0",
     "@ckeditor/ckeditor5-table": "41.1.0",
     "@ckeditor/ckeditor5-ui": "41.1.0",
-    "@ckeditor/ckeditor5-utils": "41.1.0",
     "@ckeditor/ckeditor5-theme-lark": "41.1.0",
     "@ckeditor/ckeditor5-widget": "41.1.0",
     "lodash-es": "^4.17.15",
