@@ -24,7 +24,9 @@ import type {
 	ViewDocumentTabEvent,
 	ViewElement,
 	ViewAttributeElement,
-	Writer
+	Writer,
+	DowncastRemoveEvent,
+	MapperModelToViewPositionEvent
 } from 'ckeditor5/src/engine.js';
 
 import { Delete, type ViewDocumentDeleteEvent } from 'ckeditor5/src/typing.js';
@@ -39,7 +41,9 @@ import ListUtils from './listutils.js';
 
 import {
 	bogusParagraphCreator,
+	createModelToViewPositionMapper,
 	listItemDowncastConverter,
+	listItemDowncastRemoveConverter,
 	listItemUpcastConverter,
 	listUpcastCleanList,
 	reconvertItemsOnDataChange
@@ -472,6 +476,8 @@ export default class ListEditing extends Plugin {
 					'attribute',
 					listItemDowncastConverter( attributeNames, this._downcastStrategies, model )
 				);
+
+				dispatcher.on<DowncastRemoveEvent>( 'remove', listItemDowncastRemoveConverter() );
 			} );
 
 		editor.conversion.for( 'dataDowncast' )
@@ -486,6 +492,11 @@ export default class ListEditing extends Plugin {
 					listItemDowncastConverter( attributeNames, this._downcastStrategies, model, { dataPipeline: true } )
 				);
 			} );
+
+		const modelToViewPositionMapper = createModelToViewPositionMapper( this._downcastStrategies, editor.editing.view );
+
+		editor.editing.mapper.on<MapperModelToViewPositionEvent>( 'modelToViewPosition', modelToViewPositionMapper );
+		editor.data.mapper.on<MapperModelToViewPositionEvent>( 'modelToViewPosition', modelToViewPositionMapper );
 
 		this.listenTo<DocumentChangeEvent>(
 			model.document,
@@ -685,6 +696,12 @@ export interface ItemMarkerDowncastStrategy {
 	 * or only the marker element should be wrapped.
 	 */
 	canWrapElement?( modelElement: Element ): boolean;
+
+	/**
+	 * Should return true if the custom marker can be injected into a given list block.
+	 * Otherwise, custom marker view element is always injected before the block element.
+	 */
+	canInjectMarkerIntoElement?( modelElement: Element ): boolean;
 }
 
 /**
