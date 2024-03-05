@@ -11,7 +11,7 @@
  * @param {String} packagePath
  * @returns {Promise}
  */
-module.exports = async function compileTypeScriptCallback( packagePath ) {
+module.exports = async function buildPackageUsingRollupCallback( packagePath ) {
 	const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
 	const fs = require( 'fs/promises' );
 	const path = require( 'upath' );
