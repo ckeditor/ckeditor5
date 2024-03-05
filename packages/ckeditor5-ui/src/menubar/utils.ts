@@ -454,8 +454,7 @@ export const DefaultMenuBarConfig: Array<MenuBarMenuDefinition> = [
 					'menuBar:blockQuote',
 					'menuBar:htmlEmbed',
 					'menuBar:pageBreak',
-					'menuBar:horizontalLine',
-					'menuBar:blockQuote'
+					'menuBar:horizontalLine'
 				]
 			}
 		]
@@ -592,7 +591,7 @@ export function normalizeMenuBarConfig( {
 	}
 	// The integrator specified the config as an object but without items. Let's give them defaults but respect their
 	// additions and removals.
-	else if ( !( config as MenuBarConfigObject ).items ) {
+	else if ( !( 'items' in config ) ) {
 		configObject = {
 			items: DefaultMenuBarConfig,
 			addItems: [],
@@ -612,7 +611,7 @@ export function normalizeMenuBarConfig( {
 	const isUsingDefaultConfig = configObject.items === DefaultMenuBarConfig;
 	const configClone = cloneDeep( configObject );
 
-	handleRemovals( configClone );
+	handleRemovals( configObject, configClone );
 	handleAdditions( configClone );
 	purgeUnavailableComponents( configObject, configClone, componentFactory, isUsingDefaultConfig );
 	purgeEmptyMenus( configObject, configClone, isUsingDefaultConfig );
@@ -622,27 +621,72 @@ export function normalizeMenuBarConfig( {
 }
 
 /**
- * TODO
+ * Removes items from the menu bar config based on user `removeItems` configuration. Users can remove
+ * individual items, groups, or entire menus. For each removed item, a warning is logged if the item
+ * was not found in the configuration.
  */
-function handleRemovals( config: RequitedMenuBarConfigObject ) {
+function handleRemovals(
+	originalConfig: RequitedMenuBarConfigObject,
+	config: RequitedMenuBarConfigObject
+) {
+	const removedItems: Array<string> = [];
+
 	// Remove top-level menus.
-	config.items = config.items.filter( topLevelMenuDefinition => {
-		return !config.removeItems!.includes( topLevelMenuDefinition.menuId );
+	config.items = config.items.filter( ( { menuId } ) => {
+		if ( config.removeItems.includes( menuId ) ) {
+			removedItems.push( menuId );
+			return false;
+		}
+
+		return true;
 	} );
 
 	walkConfigMenus( config.items, menuDefinition => {
 		// Remove groups from menus.
-		menuDefinition.groups = menuDefinition.groups.filter( groupDefinition => {
-			return !config.removeItems!.includes( groupDefinition.groupId );
+		menuDefinition.groups = menuDefinition.groups.filter( ( { groupId } ) => {
+			if ( config.removeItems.includes( groupId ) ) {
+				removedItems.push( groupId );
+				return false;
+			}
+
+			return true;
 		} );
 
 		// Remove sub-menus and items from groups.
 		for ( const groupDefinition of menuDefinition.groups ) {
 			groupDefinition.items = groupDefinition.items.filter( item => {
-				return !config.removeItems!.includes( typeof item == 'string' ? item : item.menuId );
+				const itemId = getIdFromGroupItem( item );
+
+				if ( config.removeItems.includes( itemId ) ) {
+					removedItems.push( itemId );
+					return false;
+				}
+
+				return true;
 			} );
 		}
 	} );
+
+	for ( const itemName of config.removeItems ) {
+		if ( !removedItems.includes( itemName ) ) {
+			/**
+			 * There was a problem processing the configuration of the menu bar. The item with the given
+			 * name does could not be removed from the menu bar configuration.
+			 *
+			 * This warning usually shows up when the {@link module:core/plugin~Plugin} which is supposed
+			 * to provide a menu bar item has not been loaded or there is a typo in the
+			 * {@link module:core/editor/editorconfig~EditorConfig#menuBar menu bar configuration}.
+			 *
+			 * @error menu-bar-item-could-not-be-removed
+			 * @param menuBarConfig The full configuration of the menu bar.
+			 * @param itemName The name of the item that was not removed from the menu bar.
+			 */
+			logWarning( 'menu-bar-item-could-not-be-removed', {
+				menuBarConfig: originalConfig,
+				itemName
+			} );
+		}
+	}
 }
 
 /**
@@ -788,7 +832,7 @@ function purgeUnavailableComponents(
 					 * @param componentName The name of the unavailable component.
 					 */
 					logWarning( 'menu-bar-item-unavailable', {
-						menuBarConfig: originalConfig.items,
+						menuBarConfig: originalConfig,
 						parentMenuConfig: cloneDeep( menuDefinition ),
 						componentName: item
 					} );
@@ -815,7 +859,7 @@ function purgeEmptyMenus(
 	// Purge top-level menus.
 	config.items = config.items.filter( menuDefinition => {
 		if ( !menuDefinition.groups.length ) {
-			warnAboutEmptyMenu( originalConfig.items, menuDefinition, isUsingDefaultConfig );
+			warnAboutEmptyMenu( originalConfig, menuDefinition, isUsingDefaultConfig );
 
 			return false;
 		}
@@ -825,7 +869,7 @@ function purgeEmptyMenus(
 
 	// Warn if there were no top-level menus left in the menu bar after purging.
 	if ( !config.items.length ) {
-		warnAboutEmptyMenu( originalConfig.items, originalConfig.items, isUsingDefaultConfig );
+		warnAboutEmptyMenu( originalConfig, originalConfig, isUsingDefaultConfig );
 
 		return;
 	}
@@ -846,8 +890,8 @@ function purgeEmptyMenus(
 		for ( const groupDefinition of menuDefinition.groups ) {
 			groupDefinition.items = groupDefinition.items.filter( item => {
 				// If no groups were left after removing empty ones.
-				if ( typeof item === 'object' && !item.groups.length ) {
-					warnAboutEmptyMenu( originalConfig.items, item, isUsingDefaultConfig );
+				if ( isMenuDefinition( item ) && !item.groups.length ) {
+					warnAboutEmptyMenu( originalConfig, item, isUsingDefaultConfig );
 					wasSubMenuPurged = true;
 					return false;
 				}
@@ -866,7 +910,7 @@ function purgeEmptyMenus(
 
 function warnAboutEmptyMenu(
 	menuBarConfig: MenuBarConfig,
-	emptyMenuConfig: MenuBarMenuDefinition | Array<MenuBarMenuDefinition>,
+	emptyMenuConfig: MenuBarMenuDefinition | MenuBarConfig,
 	isUsingDefaultConfig: boolean
 ) {
 	if ( isUsingDefaultConfig ) {
@@ -931,7 +975,7 @@ function walkConfigMenus(
 
 		for ( const groupDefinition of menuDefinition.groups ) {
 			for ( const groupItem of groupDefinition.items ) {
-				if ( typeof groupItem === 'object' ) {
+				if ( isMenuDefinition( groupItem ) ) {
 					walk( groupItem );
 				}
 			}
@@ -965,4 +1009,8 @@ function getRelativeIdFromPosition( position: MenuBarConfigAddedPosition ): stri
 
 function getIdFromGroupItem( item: string | MenuBarMenuDefinition ): string {
 	return typeof item === 'string' ? item : item.menuId;
+}
+
+function isMenuDefinition( definition: any ): definition is MenuBarMenuDefinition {
+	return typeof definition === 'object' && 'menuId' in definition;
 }

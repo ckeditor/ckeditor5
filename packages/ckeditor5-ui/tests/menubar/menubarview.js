@@ -185,7 +185,7 @@ describe( 'MenuBarView', () => {
 	} );
 
 	describe( 'fillFromConfig()', () => {
-		it( 'should use the default config if none was provided', () => {
+		it( 'should use the default config if none was provided (array format)', () => {
 			const locale = new Locale();
 			const menuBarView = new MenuBarView( locale );
 
@@ -200,6 +200,75 @@ describe( 'MenuBarView', () => {
 			expect( menuBarView.menus.map( menuView => menuView.buttonView.label ) ).to.have.members( [
 				'Edit', 'View', 'Insert', 'Format'
 			] );
+
+			menuBarView.destroy();
+		} );
+
+		it( 'should use a default items config if the configuration was specified as an object (object format)', () => {
+			const locale = new Locale();
+			const menuBarView = new MenuBarView( locale );
+
+			// Fake components in top-level categories so they don't get purged.
+			factory.add( 'menuBar:undo', getButtonCreator( 'menuBar:undo', locale ) );
+			factory.add( 'menuBar:sourceEditing', getButtonCreator( 'menuBar:sourceEditing', locale ) );
+			factory.add( 'menuBar:blockQuote', getButtonCreator( 'menuBar:blockQuote', locale ) );
+			factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
+
+			menuBarView.fillFromConfig( {
+				addItems: [
+					{
+						item: 'menuBar:undo',
+						position: 'end:basicStyles'
+					}
+				],
+				removeItems: [
+					'menuBar:bold'
+				]
+			}, factory );
+
+			expect( menuBarView.menus.map( menuView => menuView.buttonView.label ) ).to.have.members( [
+				'Edit', 'View', 'Insert', 'Format'
+			] );
+
+			menuBarView.destroy();
+		} );
+
+		it( 'should support config specified as an object with user items', () => {
+			const locale = new Locale();
+			const menuBarView = new MenuBarView( locale );
+
+			factory.add( 'menuBar:undo', getButtonCreator( 'menuBar:undo', locale ) );
+
+			menuBarView.fillFromConfig( {
+				items: [
+					{
+						menuId: 'M1',
+						label: 'My menu 1',
+						groups: [
+							{
+								groupId: 'G1',
+								items: [
+									'menuBar:undo'
+								]
+							}
+						]
+					}
+				]
+			}, factory );
+
+			expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal(
+				[
+					{
+						label: 'My menu 1', isOpen: true, isFocused: false,
+						items: [
+							{
+								label: 'menuBar:undo',
+								isFocused: false
+							}
+						]
+					}
+				]
+			);
 
 			menuBarView.destroy();
 		} );
@@ -288,7 +357,11 @@ describe( 'MenuBarView', () => {
 					sinon.assert.callCount( console.warn, 1 );
 
 					sinon.assert.calledWith( console.warn.getCall( 0 ), 'menu-bar-item-unavailable', {
-						menuBarConfig: config,
+						menuBarConfig: {
+							addItems: [],
+							removeItems: [],
+							items: config
+						},
 						parentMenuConfig: config[ 0 ],
 						componentName: 'unavailable'
 					}, sinon.match.string );
@@ -362,12 +435,20 @@ describe( 'MenuBarView', () => {
 					sinon.assert.callCount( console.warn, 2 );
 
 					sinon.assert.calledWithExactly( console.warn.firstCall, 'menu-bar-menu-empty', {
-						menuBarConfig: config,
+						menuBarConfig: {
+							addItems: [],
+							removeItems: [],
+							items: config
+						},
 						emptyMenuConfig: { menuId: 'BAA (empty)', label: 'BAA (empty)', groups: [] }
 					}, sinon.match.string );
 
 					sinon.assert.calledWithExactly( console.warn.secondCall, 'menu-bar-menu-empty', {
-						menuBarConfig: config,
+						menuBarConfig: {
+							addItems: [],
+							removeItems: [],
+							items: config
+						},
 						emptyMenuConfig: { menuId: 'BA (empty)', label: 'BA (empty)', groups: [] }
 					}, sinon.match.string );
 
@@ -428,40 +509,72 @@ describe( 'MenuBarView', () => {
 					sinon.assert.callCount( console.warn, 7 );
 
 					sinon.assert.calledWithExactly( console.warn.getCall( 0 ), 'menu-bar-item-unavailable', {
-						menuBarConfig: config,
+						menuBarConfig: {
+							addItems: [],
+							removeItems: [],
+							items: config
+						},
 						parentMenuConfig: config[ 0 ],
 						componentName: 'invalid'
 					}, sinon.match.string );
 
 					sinon.assert.calledWithExactly( console.warn.getCall( 1 ), 'menu-bar-item-unavailable', {
-						menuBarConfig: config,
+						menuBarConfig: {
+							addItems: [],
+							removeItems: [],
+							items: config
+						},
 						parentMenuConfig: config[ 1 ],
 						componentName: 'invalid'
 					}, sinon.match.string );
 
 					sinon.assert.calledWithExactly( console.warn.getCall( 2 ), 'menu-bar-menu-empty', {
-						menuBarConfig: config,
+						menuBarConfig: {
+							addItems: [],
+							removeItems: [],
+							items: config
+						},
 						emptyMenuConfig: { menuId: 'BAA (empty)', label: 'BAA (empty)', groups: [] }
 					}, sinon.match.string );
 
 					sinon.assert.calledWithExactly( console.warn.getCall( 3 ), 'menu-bar-menu-empty', {
-						menuBarConfig: config,
+						menuBarConfig: {
+							addItems: [],
+							removeItems: [],
+							items: config
+						},
 						emptyMenuConfig: { menuId: 'A', label: 'A', groups: [] }
 					}, sinon.match.string );
 
 					sinon.assert.calledWithExactly( console.warn.getCall( 4 ), 'menu-bar-menu-empty', {
-						menuBarConfig: config,
+						menuBarConfig: {
+							addItems: [],
+							removeItems: [],
+							items: config
+						},
 						emptyMenuConfig: { menuId: 'BA (empty)', label: 'BA (empty)', groups: [] }
 					}, sinon.match.string );
 
 					sinon.assert.calledWithExactly( console.warn.getCall( 5 ), 'menu-bar-menu-empty', {
-						menuBarConfig: config,
+						menuBarConfig: {
+							addItems: [],
+							removeItems: [],
+							items: config
+						},
 						emptyMenuConfig: { menuId: 'B', label: 'B', groups: [] }
 					}, sinon.match.string );
 
 					sinon.assert.calledWithExactly( console.warn.getCall( 6 ), 'menu-bar-menu-empty', {
-						menuBarConfig: config,
-						emptyMenuConfig: config
+						menuBarConfig: {
+							addItems: [],
+							removeItems: [],
+							items: config
+						},
+						emptyMenuConfig: {
+							addItems: [],
+							removeItems: [],
+							items: config
+						}
 					}, sinon.match.string );
 
 					menuBarView.destroy();
@@ -531,6 +644,10 @@ describe( 'MenuBarView', () => {
 
 					menuBarView.destroy();
 				} );
+
+				describe( 'adding items via config.menuBar.addItems', () => {
+
+				} );
 			} );
 
 			describe( 'default config', () => {
@@ -576,6 +693,212 @@ describe( 'MenuBarView', () => {
 					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [] );
 
 					sinon.assert.notCalled( spy );
+
+					menuBarView.destroy();
+				} );
+			} );
+
+			describe( 'removing items via config.menuBar.removeItems', () => {
+				it( 'should remove items', () => {
+					const locale = new Locale();
+					const menuBarView = new MenuBarView( locale );
+
+					factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
+					factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
+
+					// Pass undefined to force the default config.
+					menuBarView.fillFromConfig( {
+						removeItems: [
+							'menuBar:bold'
+						]
+					}, factory );
+
+					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+						{
+							label: 'Format', isOpen: true, isFocused: false,
+							items: [
+								{ label: 'menuBar:italic', isFocused: false }
+							]
+						}
+					] );
+
+					menuBarView.destroy();
+				} );
+
+				it( 'should remove groups', () => {
+					const locale = new Locale();
+					const menuBarView = new MenuBarView( locale );
+
+					factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
+					factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
+					factory.add( 'menuBar:bulletedList', getButtonCreator( 'menuBar:bulletedList', locale ) );
+
+					menuBarView.fillFromConfig( {
+						removeItems: [
+							'basicStyles'
+						]
+					}, factory );
+
+					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+						{
+							label: 'Format', isOpen: true, isFocused: false,
+							items: [
+								{ label: 'menuBar:bulletedList', isFocused: false }
+							]
+						}
+					] );
+
+					menuBarView.destroy();
+				} );
+
+				it( 'should remove sub-menus', () => {
+					const locale = new Locale();
+					const menuBarView = new MenuBarView( locale );
+
+					factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
+					factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
+					factory.add( 'menuBar:bulletedList', getButtonCreator( 'menuBar:bulletedList', locale ) );
+
+					menuBarView.fillFromConfig( {
+						items: [
+							{
+								menuId: 'A',
+								label: 'A',
+								groups: [
+									{
+										groupId: 'AA',
+										items: [
+											'menuBar:bold',
+											{
+												menuId: 'AAA',
+												items: [
+													{
+														groupId: 'AAA1',
+														items: [
+															'menuBar:bulletedList'
+														]
+													}
+												]
+											},
+											'menuBar:italic'
+										]
+									}
+								]
+							}
+						],
+						removeItems: [
+							'AAA'
+						]
+					}, factory );
+
+					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+						{
+							label: 'A', isOpen: true, isFocused: false,
+							items: [
+								{ label: 'menuBar:bold', isFocused: false },
+								{ label: 'menuBar:italic', isFocused: false }
+							]
+						}
+					] );
+
+					menuBarView.destroy();
+				} );
+
+				it( 'should remove top-level menus', () => {
+					const locale = new Locale();
+					const menuBarView = new MenuBarView( locale );
+
+					factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
+					factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
+					factory.add( 'menuBar:blockQuote', getButtonCreator( 'menuBar:blockQuote', locale ) );
+
+					menuBarView.fillFromConfig( {
+						removeItems: [
+							'format'
+						]
+					}, factory );
+
+					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+						{
+							label: 'Insert', isOpen: true, isFocused: false,
+							items: [
+								{ label: 'menuBar:blockQuote', isFocused: false }
+							]
+						}
+					] );
+
+					menuBarView.destroy();
+				} );
+
+				it( 'should warn if an object to be removed has not been found (user config)', () => {
+					const locale = new Locale();
+					const menuBarView = new MenuBarView( locale );
+
+					testUtils.sinon.stub( console, 'warn' );
+
+					factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
+					factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
+
+					const config = {
+						items: [
+							{
+								menuId: 'A',
+								label: 'A',
+								groups: [
+									{
+										groupId: 'AA',
+										items: [
+											'menuBar:bold'
+										]
+									}
+								]
+							}
+						],
+						addItems: [],
+						removeItems: [
+							'doesNotExist'
+						]
+					};
+
+					menuBarView.fillFromConfig( config, factory );
+
+					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+						{
+							label: 'A', isOpen: true, isFocused: false,
+							items: [
+								{ label: 'menuBar:bold', isFocused: false }
+							]
+						}
+					] );
+
+					sinon.assert.calledOnceWithExactly( console.warn, 'menu-bar-item-could-not-be-removed', {
+						menuBarConfig: config,
+						itemName: 'doesNotExist'
+					}, sinon.match.string );
+
+					menuBarView.destroy();
+				} );
+
+				it( 'should warn if an object to be removed has not been found (default config)', () => {
+					const locale = new Locale();
+					const menuBarView = new MenuBarView( locale );
+
+					testUtils.sinon.stub( console, 'warn' );
+
+					factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
+
+					const config = {
+						removeItems: [
+							'doesNotExist'
+						]
+					};
+
+					menuBarView.fillFromConfig( config, factory );
+
+					sinon.assert.calledOnceWithExactly( console.warn, 'menu-bar-item-could-not-be-removed', {
+						menuBarConfig: sinon.match.object,
+						itemName: 'doesNotExist'
+					}, sinon.match.string );
 
 					menuBarView.destroy();
 				} );
