@@ -179,9 +179,10 @@ function detectListStyle( listLikeItem: ListLikeElement, stylesString: string ) 
 	const listStyleTypeRegex = /mso-level-number-format:([^;]{0,100});/gi;
 	const listStartIndexRegex = /mso-level-start-at:\s{0,100}([0-9]{0,10})\s{0,100};/gi;
 	const legalListTypeRegex = new RegExp( `@list l${ listLikeItem.id }:level\\d\\s*{[^{]*mso-level-text:"%\\d\\\\.`, 'gi' );
+	const multiLevelNumberFormatTypeRegex = new RegExp( `@list l${ listLikeItem.id }:level\\d\\s*{[^{]*mso-level-number-format:`, 'gi' );
 
 	const legalListMatch = legalListTypeRegex.exec( stylesString );
-	const multiLevelNumberFormatMatch = listStyleTypeRegex.exec( stylesString );
+	const multiLevelNumberFormatMatch = multiLevelNumberFormatTypeRegex.exec( stylesString );
 
 	const listStyleMatch = listStyleRegexp.exec( stylesString );
 
