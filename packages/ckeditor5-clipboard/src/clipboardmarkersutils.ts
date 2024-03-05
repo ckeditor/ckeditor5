@@ -336,13 +336,13 @@ export default class ClipboardMarkersUtils extends Plugin {
 				return false;
 			}
 
-			// Checks if configuration disallows to copy marker only if part of it is selected.
+			// Checks if configuration disallows to copy marker only if part of its content is selected.
 			//
 			// Example:
 			// 	<marker-a> Hello [ World ] </marker-a>
 			//					     ^ selection
 			//
-			// In this scenario `marker-a` will be not copied because selection does not overlaps it's content entirely.
+			// In this scenario `marker-a` won't be copied because selection doesn't overlap its content entirely.
 			const { withPartiallySelected } = this._getMarkerClipboardConfig( marker.name )!;
 
 			if ( !withPartiallySelected ) {
