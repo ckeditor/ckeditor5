@@ -46,6 +46,7 @@ We would also like to mention that there are further accessibility support impro
 
 ### Bug fixes
 
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Fixed a few scenarios where AI Assistant was incorrectly showing empty responses.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Custom functions passed in the `ai.openAI.requestParameters` configuration will no longer be overwritten by default parameters.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The selected widgets (for instance, images) will now be correctly highlighted while using AI Assistant.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Incorrect Markdown syntax should be stripped from the AI responses.
