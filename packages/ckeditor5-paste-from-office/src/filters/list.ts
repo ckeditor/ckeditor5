@@ -44,12 +44,70 @@ export function transformListItemLikeElementsIntoLists(
 		return;
 	}
 
+	const stack: Array<ListLikeElement & {
+		listElement: ViewElement;
+		itemElements: Array<ViewElement>;
+	}> = [];
+
+	for ( const [ idx, itemLikeElement ] of itemLikeElements.entries() ) {
+		if ( itemLikeElement.indent !== undefined ) {
+			// const isDifferentList = isNewListNeeded( itemLikeElements[ idx - 1 ], itemLikeElement );
+			const indent = itemLikeElement.indent - 1;
+
+			if ( indent > stack.length - 1 /* || isDifferentList */ ) {
+				const listStyle = detectListStyle( itemLikeElement, stylesString );
+				const refElement = stack.length == 0 ? itemLikeElement.element : stack.at( -1 ).itemElements.at( -1 );
+				const listElement = insertNewEmptyList( listStyle, refElement, writer );
+
+				stack.length = indent + 1;
+
+				stack[ indent ] = {
+					...itemLikeElement,
+					listElement,
+					itemElements: [ itemLikeElement.element ]
+				};
+			}
+			else if ( indent == stack.length - 1 ) {
+				stack[ indent ].itemElements.push( itemLikeElement.element );
+			}
+			else {
+				stack.length = indent + 1;
+			}
+
+			// const listItem = transformElementIntoListItem( itemLikeElement.element, writer );
+
+			removeBulletElement( itemLikeElement.element, writer );
+			writer.removeStyle( 'text-indent', itemLikeElement.element ); // #12361
+			writer.removeStyle( 'margin-left', itemLikeElement.element );
+
+			const listItem = writer.createElement( 'li', null, itemLikeElement.element );
+
+			writer.appendChild( listItem, stack[ indent ].listElement );
+		}
+		else {
+			// Other blocks in a list item.
+			const stackItem = stack.find( stackItem => stackItem.marginLeft == itemLikeElement.marginLeft );
+
+			if ( stackItem ) {
+				stackItem.itemElements.push( itemLikeElement.element );
+				writer.removeStyle( 'margin-left', itemLikeElement.element ); // TODO substract stackitem margin
+				writer.appendChild( itemLikeElement.element, stackItem.itemElements.at( -1 ).parent );
+			} else {
+				stack.length = 0;
+			}
+		}
+	}
+
+	return;
+	//
+	//
+	//
 	let currentList: ViewElement | null = null;
 	let currentIndentation = 1;
 
-	itemLikeElements.forEach( ( itemLikeElement, i ) => {
-		const isDifferentList = isNewListNeeded( itemLikeElements[ i - 1 ], itemLikeElement );
-		const previousItemLikeElement = isDifferentList ? null : itemLikeElements[ i - 1 ];
+	for ( const [ idx, itemLikeElement ] of itemLikeElements.entries() ) {
+		const isDifferentList = isNewListNeeded( itemLikeElements[ idx - 1 ], itemLikeElement );
+		const previousItemLikeElement = isDifferentList ? null : itemLikeElements[ idx - 1 ];
 		const indentationDifference = getIndentationDifference( previousItemLikeElement, itemLikeElement );
 
 		if ( isDifferentList ) {
@@ -85,7 +143,7 @@ export function transformListItemLikeElementsIntoLists(
 		const listItem = transformElementIntoListItem( itemLikeElement.element, writer );
 
 		writer.appendChild( listItem, currentList! );
-	} );
+	}
 }
 
 /**
@@ -120,27 +178,43 @@ function findAllItemLikeElements(
 	writer: UpcastWriter
 ): Array<ListLikeElement> {
 	const range = writer.createRangeIn( documentFragment );
-
-	// Matcher for finding list-like elements.
-	const itemLikeElementsMatcher = new Matcher( {
-		name: /^p|h\d+$/,
-		styles: {
-			'mso-list': /.*/
-		}
-	} );
-
 	const itemLikeElements: Array<ListLikeElement> = [];
+	const foundMargins = new Set<string>();
 
-	for ( const value of range ) {
-		if ( value.type === 'elementStart' && itemLikeElementsMatcher.match( value.item as ViewElement ) ) {
-			const itemData = getListItemData( value.item as ViewElement );
+	for ( const item of range.getItems() ) {
+		if ( item.is( 'element' ) && item.name.match( /^(p|h\d+)$/ ) ) {
+			// Try to rely on margin-left style to find paragraphs visually aligned with previously encountered list item.
+			let marginLeft = item.getStyle( 'margin-left' );
 
-			itemLikeElements.push( {
-				element: value.item as ViewElement,
-				id: itemData.id,
-				order: itemData.order,
-				indent: itemData.indent
-			} );
+			// Ignore margin-left 0 style if there is no MsoList... class.
+			if (
+				marginLeft !== undefined &&
+				parseFloat( marginLeft ) == 0 &&
+				!Array.from( item.getClassNames() ).find( className => className.startsWith( 'MsoList' ) )
+			) {
+				marginLeft = undefined;
+			}
+
+			// List item or a following list item block.
+			if ( item.hasStyle( 'mso-list' ) || marginLeft !== undefined && foundMargins.has( marginLeft ) ) {
+				const itemData = getListItemData( item );
+
+				itemLikeElements.push( {
+					element: item,
+					id: itemData.id,
+					order: itemData.order,
+					indent: itemData.indent,
+					marginLeft
+				} );
+
+				if ( marginLeft !== undefined ) {
+					foundMargins.add( marginLeft );
+				}
+			}
+			// Clear found margins as we found block after a list.
+			else {
+				foundMargins.clear();
+			}
 		}
 	}
 
@@ -370,7 +444,7 @@ function transformElementIntoListItem( element: ViewElement, writer: UpcastWrite
  * @param element Element from which style data is extracted.
  */
 function getListItemData( element: ViewElement ): ListItemData {
-	const data: ListItemData = {} as any;
+	const data: ListItemData = {};
 	const listStyle = element.getStyle( 'mso-list' );
 
 	if ( listStyle ) {
@@ -489,17 +563,17 @@ interface ListItemData {
 	/**
 	 * Parent list id.
 	 */
-	id: string;
+	id?: string;
 
 	/**
 	 * List item creation order.
 	 */
-	order: string;
+	order?: string;
 
 	/**
 	 * List item indentation level.
 	 */
-	indent: number;
+	indent?: number;
 }
 
 interface ListLikeElement extends ListItemData {
@@ -508,4 +582,9 @@ interface ListLikeElement extends ListItemData {
 	 * List-like element.
 	 */
 	element: ViewElement;
+
+	/**
+	 * TODO
+	 */
+	marginLeft?: string;
 }
