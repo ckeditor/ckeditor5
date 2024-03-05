@@ -178,11 +178,12 @@ function detectListStyle( listLikeItem: ListLikeElement, stylesString: string ) 
 	const listStyleRegexp = new RegExp( `@list l${ listLikeItem.id }:level${ listLikeItem.indent }\\s*({[^}]*)`, 'gi' );
 	const listStyleTypeRegex = /mso-level-number-format:([^;]{0,100});/gi;
 	const listStartIndexRegex = /mso-level-start-at:\s{0,100}([0-9]{0,10})\s{0,100};/gi;
-	const legalListTypeRegex = new RegExp( `@list l${ listLikeItem.id }:level\\d\\s*{[^{]*mso-level-text:"%\\d\\\\.`, 'gi' );
+	const legalStyleListRegex = new RegExp( `@list l${ listLikeItem.id }:level\\d\\s*{[^{]*mso-level-text:"%\\d\\\\.`, 'gi' );
 	const multiLevelNumberFormatTypeRegex = new RegExp( `@list l${ listLikeItem.id }:level\\d\\s*{[^{]*mso-level-number-format:`, 'gi' );
 
-	const legalListMatch = legalListTypeRegex.exec( stylesString );
+	const legalStyleListMatch = legalStyleListRegex.exec( stylesString );
 	const multiLevelNumberFormatMatch = multiLevelNumberFormatTypeRegex.exec( stylesString );
+	const islegalStyleList = legalStyleListMatch && !multiLevelNumberFormatMatch;
 
 	const listStyleMatch = listStyleRegexp.exec( stylesString );
 
@@ -216,7 +217,7 @@ function detectListStyle( listLikeItem: ListLikeElement, stylesString: string ) 
 			}
 		}
 
-		if ( legalListMatch && !multiLevelNumberFormatMatch ) {
+		if ( islegalStyleList ) {
 			type = 'ol';
 		}
 	}
@@ -225,7 +226,7 @@ function detectListStyle( listLikeItem: ListLikeElement, stylesString: string ) 
 		type,
 		startIndex,
 		style: mapListStyleDefinition( listStyleType ),
-		isLegal: !!( legalListMatch && !multiLevelNumberFormatMatch )
+		isLegalStyleList: islegalStyleList
 	};
 }
 
@@ -344,7 +345,7 @@ function insertNewEmptyList(
 		writer.setAttribute( 'start', listStyle.startIndex, list );
 	}
 
-	if ( listStyle.isLegal ) {
+	if ( listStyle.isLegalStyleList ) {
 		writer.addClass( 'legal-list', list );
 	}
 
