@@ -18,7 +18,9 @@ import type {
 	MenuBarMenuArrowLeftEvent,
 	MenuBarMenuDefinition,
 	MenuBarConfigObject,
-	MenuBarMenuGroupDefinition
+	MenuBarConfigAddedGroup,
+	MenuBarConfigAddedMenu,
+	MenuBarConfigAddedPosition
 } from './menubarview.js';
 import { cloneDeep } from 'lodash-es';
 import type { FocusableView } from '../focuscycler.js';
@@ -400,9 +402,9 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
  */
 export const DefaultMenuBarConfig: Array<MenuBarMenuDefinition> = [
 	{
-		id: 'edit',
+		menuId: 'edit',
 		label: 'Edit',
-		items: [
+		groups: [
 			{
 				groupId: 'undo',
 				items: [
@@ -425,9 +427,9 @@ export const DefaultMenuBarConfig: Array<MenuBarMenuDefinition> = [
 		]
 	},
 	{
-		id: 'view',
+		menuId: 'view',
 		label: 'View',
-		items: [
+		groups: [
 			{
 				groupId: 'sourceEditing',
 				items: [
@@ -443,9 +445,9 @@ export const DefaultMenuBarConfig: Array<MenuBarMenuDefinition> = [
 		]
 	},
 	{
-		id: 'insert',
+		menuId: 'insert',
 		label: 'Insert',
-		items: [
+		groups: [
 			{
 				groupId: 'insert',
 				items: [
@@ -459,9 +461,9 @@ export const DefaultMenuBarConfig: Array<MenuBarMenuDefinition> = [
 		]
 	},
 	{
-		id: 'format',
+		menuId: 'format',
 		label: 'Format',
-		items: [
+		groups: [
 			{
 				groupId: 'table',
 				items: [
@@ -607,11 +609,11 @@ export function normalizeMenuBarConfig( {
 		};
 	}
 
-	const isUsingDefaultConfig = config === DefaultMenuBarConfig;
+	const isUsingDefaultConfig = configObject.items === DefaultMenuBarConfig;
 	const configClone = cloneDeep( configObject );
 
-	removeItems( configClone );
-	addItems( configClone );
+	handleRemovals( configClone );
+	handleAdditions( configClone );
 	purgeUnavailableComponents( configObject, configClone, componentFactory, isUsingDefaultConfig );
 	purgeEmptyMenus( configObject, configClone, isUsingDefaultConfig );
 	localizeTopLevelCategories( configClone, locale );
@@ -619,86 +621,128 @@ export function normalizeMenuBarConfig( {
 	return configClone;
 }
 
-function removeItems( config: RequitedMenuBarConfigObject ) {
-	walkConfig( config.items, menuDefinition => {
-		for ( const menuGroupDefinition of menuDefinition.items ) {
-			menuGroupDefinition.items = menuGroupDefinition.items.filter( item => {
-				return !config.removeItems!.includes( typeof item == 'string' ? item : item.id );
+/**
+ * TODO
+ */
+function handleRemovals( config: RequitedMenuBarConfigObject ) {
+	// Remove top-level menus.
+	config.items = config.items.filter( topLevelMenuDefinition => {
+		return !config.removeItems!.includes( topLevelMenuDefinition.menuId );
+	} );
+
+	walkConfigMenus( config.items, menuDefinition => {
+		// Remove groups from menus.
+		menuDefinition.groups = menuDefinition.groups.filter( groupDefinition => {
+			return !config.removeItems!.includes( groupDefinition.groupId );
+		} );
+
+		// Remove sub-menus and items from groups.
+		for ( const groupDefinition of menuDefinition.groups ) {
+			groupDefinition.items = groupDefinition.items.filter( item => {
+				return !config.removeItems!.includes( typeof item == 'string' ? item : item.menuId );
 			} );
 		}
 	} );
 }
 
-function addItems( config: RequitedMenuBarConfigObject ) {
-	const itemsToAdd = cloneDeep( config.addItems );
-	const addedItems = new Set();
+/**
+ * TODO
+ */
+function handleAdditions( config: RequitedMenuBarConfigObject ) {
+	const itemsToAdd = config.addItems;
 
-	walkConfig( config.items, menuDefinition => {
-		// Addition at the beginning or and of a group.
-		for ( const menuGroupDefinition of menuDefinition.items ) {
-			for ( const itemToAdd of itemsToAdd ) {
-				// Don't process items that have been already added.
-				if ( addedItems.has( itemToAdd ) ) {
-					continue;
-				}
+	for ( const itemToAdd of itemsToAdd ) {
+		const relation = getRelationFromPosition( itemToAdd.position );
+		const relativeId = getRelativeIdFromPosition( itemToAdd.position );
 
-				let wasAdded = false;
+		// Adding a menu.
+		if ( isMenuBarMenuAddition( itemToAdd ) ) {
+			// Adding a top-level menu at the beginning of the menu bar.
+			if ( relation === 'start' ) {
+				config.items.unshift( itemToAdd.menu );
+			}
+			// Adding a top-level menu at the end of the menu bar.
+			else if ( relation === 'end' ) {
+				config.items.push( itemToAdd.menu );
+			} else {
+				const topLevelMenuDefinitionIndex = config.items.findIndex( menuDefinition => menuDefinition.menuId === relativeId );
 
-				if ( isMenuBarMenuDefinition( itemToAdd.item ) || typeof itemToAdd.item === 'string' ) {
-					if ( menuGroupDefinition.groupId === itemToAdd.start ) {
-						menuGroupDefinition.items.unshift( itemToAdd.item );
-						wasAdded = true;
-					} else if ( menuGroupDefinition.groupId === itemToAdd.end ) {
-						menuGroupDefinition.items.push( itemToAdd.item );
-						wasAdded = true;
-					}
-				} else if ( isMenuBarMenuGroupDefinition( itemToAdd.item ) ) {
-					if ( menuGroupDefinition.groupId === itemToAdd.before ) {
-						menuDefinition.items.splice( menuDefinition.items.indexOf( menuGroupDefinition ), 0, itemToAdd.item );
-						wasAdded = true;
-					} else if ( menuGroupDefinition.groupId === itemToAdd.after ) {
-						menuDefinition.items.splice( menuDefinition.items.indexOf( menuGroupDefinition ) + 1, 0, itemToAdd.item );
-						wasAdded = true;
+				// Adding a top-level menu somewhere between existing menu bar menus.
+				if ( topLevelMenuDefinitionIndex != -1 ) {
+					if ( relation === 'before' ) {
+						config.items.splice( topLevelMenuDefinitionIndex, 0, itemToAdd.menu );
+					} else if ( relation === 'after' ) {
+						config.items.splice( topLevelMenuDefinitionIndex + 1, 0, itemToAdd.menu );
 					}
 				}
-
-				if ( wasAdded ) {
-					addedItems.add( itemToAdd );
+				// Adding a menu to an existing items group.
+				else {
+					addMenuOrItemToGroup( config, itemToAdd.menu, relativeId, relation );
 				}
 			}
 		}
-
-		// Addition of a button or a menu before or after a group item.
-		for ( const menuGroupDefinition of menuDefinition.items ) {
-			for ( const itemToAdd of itemsToAdd ) {
-				let wasAdded = false;
-
-				for ( const item of menuGroupDefinition.items ) {
-					// Don't process items that have been already added.
-					if ( addedItems.has( itemToAdd ) ) {
-						continue;
+		// Adding a group.
+		else if ( isMenuBarMenuGroupAddition( itemToAdd ) ) {
+			walkConfigMenus( config.items, menuDefinition => {
+				if ( menuDefinition.menuId === relativeId ) {
+					// Add a group at the start of a menu.
+					if ( relation === 'start' ) {
+						menuDefinition.groups.unshift( itemToAdd.group );
 					}
-
-					let itemId;
-
-					if ( typeof item === 'string' ) {
-						itemId = item;
-					} else {
-						itemId = item.id;
+					// Add a group at the end of a menu.
+					else if ( relation === 'end' ) {
+						menuDefinition.groups.push( itemToAdd.group );
 					}
+				} else {
+					const relativeGroupIndex = menuDefinition.groups.findIndex( group => group.groupId === relativeId );
 
-					if ( isMenuBarMenuDefinition( itemToAdd.item ) || typeof itemToAdd.item === 'string' ) {
-						if ( itemToAdd.before === itemId ) {
-							menuGroupDefinition.items.splice( menuGroupDefinition.items.indexOf( item ), 0, itemToAdd.item );
-							wasAdded = true;
-						} else if ( itemToAdd.after === itemId ) {
-							menuGroupDefinition.items.splice( menuGroupDefinition.items.indexOf( item ) + 1, 0, itemToAdd.item );
-							wasAdded = true;
+					if ( relativeGroupIndex !== -1 ) {
+						// Add a group before an existing group in a menu.
+						if ( relation === 'before' ) {
+							menuDefinition.groups.splice( relativeGroupIndex, 0, itemToAdd.group );
+						}
+						// Add a group after an existing group in a menu.
+						else if ( relation === 'after' ) {
+							menuDefinition.groups.splice( relativeGroupIndex + 1, 0, itemToAdd.group );
 						}
 					}
+				}
+			} );
+		}
+		// Adding an item to an existing items group.
+		else {
+			addMenuOrItemToGroup( config, itemToAdd.item, relativeId, relation );
+		}
+	}
+}
 
-					if ( wasAdded ) {
-						addedItems.add( itemToAdd );
+function addMenuOrItemToGroup(
+	config: RequitedMenuBarConfigObject,
+	itemOrMenuToAdd: string | MenuBarMenuDefinition,
+	relativeId: string, relation: 'start' | 'end' | 'before' | 'after'
+) {
+	walkConfigMenus( config.items, menuDefinition => {
+		for ( const { groupId, items: groupItems } of menuDefinition.groups ) {
+			if ( groupId === relativeId ) {
+				// Adding an item/menu at the beginning of a group.
+				if ( relation === 'start' ) {
+					groupItems.unshift( itemOrMenuToAdd );
+				}
+				// Adding an item/menu at the end of a group.
+				else if ( relation === 'end' ) {
+					groupItems.push( itemOrMenuToAdd );
+				}
+			} else {
+				// Adding an item/menu relative to an existing item/menu.
+				for ( const groupItem of groupItems ) {
+					const itemOrMenuId = getIdFromGroupItem( groupItem );
+
+					if ( itemOrMenuId === relativeId ) {
+						if ( relation === 'before' ) {
+							groupItems.splice( groupItems.indexOf( groupItem ), 0, itemOrMenuToAdd );
+						} else if ( relation === 'after' ) {
+							groupItems.splice( groupItems.indexOf( groupItem ) + 1, 0, itemOrMenuToAdd );
+						}
 					}
 				}
 			}
@@ -716,9 +760,9 @@ function purgeUnavailableComponents(
 	componentFactory: ComponentFactory,
 	isUsingDefaultConfig: boolean
 ) {
-	walkConfig( config.items, menuDefinition => {
-		for ( const menuGroupDefinition of menuDefinition.items ) {
-			menuGroupDefinition.items = menuGroupDefinition.items.filter( item => {
+	walkConfigMenus( config.items, menuDefinition => {
+		for ( const groupDefinition of menuDefinition.groups ) {
+			groupDefinition.items = groupDefinition.items.filter( item => {
 				const isItemUnavailable = typeof item === 'string' && !componentFactory.has( item );
 
 				// The default configuration contains all possible editor features. But integrators' editors rarely load
@@ -744,7 +788,7 @@ function purgeUnavailableComponents(
 					 * @param componentName The name of the unavailable component.
 					 */
 					logWarning( 'menu-bar-item-unavailable', {
-						menuBarConfig: originalConfig,
+						menuBarConfig: originalConfig.items,
 						parentMenuConfig: cloneDeep( menuDefinition ),
 						componentName: item
 					} );
@@ -766,50 +810,87 @@ function purgeEmptyMenus(
 	config: RequitedMenuBarConfigObject,
 	isUsingDefaultConfig: boolean
 ) {
-	if ( !config.items.length && !isUsingDefaultConfig ) {
-		/**
-		 * There was a problem processing the configuration of the menu bar. One of the menus
-		 * is empty so it was omitted when rendering the menu bar.
-		 *
-		 * This warning usually shows up when some {@link module:core/plugin~Plugin plugins} responsible for
-		 * providing menu bar items have not been loaded and the
-		 * {@link module:core/editor/editorconfig~EditorConfig#menuBar menu bar configuration} was not updated.
-		 *
-		 * Make sure all necessary editor plugins are loaded and/or update the menu bar configuration
-		 * to account for the missing menu items.
-		 *
-		 * @error menu-bar-menu-empty
-		 * @param menuBarConfig The full configuration of the menu bar.
-		 * @param emptyMenuConfig The definition of the menu that has no child items.
-		 */
-		logWarning( 'menu-bar-menu-empty', {
-			menuBarConfig: originalConfig,
-			emptyMenuConfig: originalConfig
-		} );
+	let wasSubMenuPurged = false;
+
+	// Purge top-level menus.
+	config.items = config.items.filter( menuDefinition => {
+		if ( !menuDefinition.groups.length ) {
+			warnAboutEmptyMenu( originalConfig.items, menuDefinition, isUsingDefaultConfig );
+
+			return false;
+		}
+
+		return true;
+	} );
+
+	// Warn if there were no top-level menus left in the menu bar after purging.
+	if ( !config.items.length ) {
+		warnAboutEmptyMenu( originalConfig.items, originalConfig.items, isUsingDefaultConfig );
 
 		return;
 	}
 
-	walkConfig( config.items, menuDefinition => {
-		for ( const menuGroupDefinition of menuDefinition.items ) {
-			// Get rid of empty groups.
-			if ( !menuGroupDefinition.items.length ) {
-				menuDefinition.items.splice( menuDefinition.items.indexOf( menuGroupDefinition ), 1 );
-			}
-		}
-
-		// If no groups were left after removing empty ones.
-		if ( !menuDefinition.items.length ) {
-			if ( !isUsingDefaultConfig ) {
-				logWarning( 'menu-bar-menu-empty', {
-					menuBarConfig: originalConfig,
-					emptyMenuConfig: menuDefinition
-				} );
+	// Purge sub-menus and groups.
+	walkConfigMenus( config.items, menuDefinition => {
+		// Get rid of empty groups.
+		menuDefinition.groups = menuDefinition.groups.filter( groupDefinition => {
+			if ( !groupDefinition.items.length ) {
+				wasSubMenuPurged = true;
+				return false;
 			}
 
-			// Walking goes from the root to the leaves so if leaves are removed, we need to re-iterate the level up.
-			purgeEmptyMenus( originalConfig, config, isUsingDefaultConfig );
+			return true;
+		} );
+
+		// Get rid of empty sub-menus.
+		for ( const groupDefinition of menuDefinition.groups ) {
+			groupDefinition.items = groupDefinition.items.filter( item => {
+				// If no groups were left after removing empty ones.
+				if ( typeof item === 'object' && !item.groups.length ) {
+					warnAboutEmptyMenu( originalConfig.items, item, isUsingDefaultConfig );
+					wasSubMenuPurged = true;
+					return false;
+				}
+
+				return true;
+			} );
 		}
+	} );
+
+	if ( wasSubMenuPurged ) {
+		// The config is walked from the root to the leaves so if anything gets removed, we need to re-run the
+		// whole process because it could've affected parents.
+		purgeEmptyMenus( originalConfig, config, isUsingDefaultConfig );
+	}
+}
+
+function warnAboutEmptyMenu(
+	menuBarConfig: MenuBarConfig,
+	emptyMenuConfig: MenuBarMenuDefinition | Array<MenuBarMenuDefinition>,
+	isUsingDefaultConfig: boolean
+) {
+	if ( isUsingDefaultConfig ) {
+		return;
+	}
+
+	/**
+	 * There was a problem processing the configuration of the menu bar. One of the menus
+	 * is empty so it was omitted when rendering the menu bar.
+	 *
+	 * This warning usually shows up when some {@link module:core/plugin~Plugin plugins} responsible for
+	 * providing menu bar items have not been loaded and the
+	 * {@link module:core/editor/editorconfig~EditorConfig#menuBar menu bar configuration} was not updated.
+	 *
+	 * Make sure all necessary editor plugins are loaded and/or update the menu bar configuration
+	 * to account for the missing menu items.
+	 *
+	 * @error menu-bar-menu-empty
+	 * @param menuBarConfig The full configuration of the menu bar.
+	 * @param emptyMenuConfig The definition of the menu that has no child items.
+	 */
+	logWarning( 'menu-bar-menu-empty', {
+		menuBarConfig,
+		emptyMenuConfig
 	} );
 }
 
@@ -835,7 +916,7 @@ function localizeTopLevelCategories( config: RequitedMenuBarConfigObject, locale
 /**
  * Recursively visits all menu definitions in the config and calls the callback for each of them.
  */
-function walkConfig(
+function walkConfigMenus(
 	definition: RequitedMenuBarConfigObject[ 'items' ] | MenuBarMenuDefinition,
 	callback: ( definition: MenuBarMenuDefinition ) => void
 ) {
@@ -845,10 +926,10 @@ function walkConfig(
 		}
 	}
 
-	function walk( definition: MenuBarMenuDefinition ) {
-		callback( definition );
+	function walk( menuDefinition: MenuBarMenuDefinition ) {
+		callback( menuDefinition );
 
-		for ( const groupDefinition of definition.items ) {
+		for ( const groupDefinition of menuDefinition.groups ) {
 			for ( const groupItem of groupDefinition.items ) {
 				if ( typeof groupItem === 'object' ) {
 					walk( groupItem );
@@ -858,10 +939,30 @@ function walkConfig(
 	}
 }
 
-function isMenuBarMenuDefinition( definition: any ): definition is MenuBarMenuDefinition {
-	return typeof definition === 'object' && 'id' in definition;
+function isMenuBarMenuAddition( definition: any ): definition is MenuBarConfigAddedMenu {
+	return typeof definition === 'object' && 'menu' in definition;
 }
 
-function isMenuBarMenuGroupDefinition( definition: any ): definition is MenuBarMenuGroupDefinition {
-	return typeof definition === 'object' && 'groupId' in definition;
+function isMenuBarMenuGroupAddition( definition: any ): definition is MenuBarConfigAddedGroup {
+	return typeof definition === 'object' && 'group' in definition;
+}
+
+function getRelationFromPosition( position: MenuBarConfigAddedPosition ): 'start' | 'end' | 'before' | 'after' {
+	if ( position.startsWith( 'start' ) ) {
+		return 'start';
+	} else if ( position.startsWith( 'end' ) ) {
+		return 'end';
+	} else if ( position.startsWith( 'after' ) ) {
+		return 'after';
+	} else {
+		return 'before';
+	}
+}
+
+function getRelativeIdFromPosition( position: MenuBarConfigAddedPosition ): string {
+	return position.replace( /^[^:]+:/g, '' );
+}
+
+function getIdFromGroupItem( item: string | MenuBarMenuDefinition ): string {
+	return typeof item === 'string' ? item : item.menuId;
 }

@@ -114,17 +114,23 @@ describe( 'MenuBarView', () => {
 				'from one sub-menu to another', async () => {
 				menuBarView.fillFromConfig( [
 					{
-						id: 'top2',
+						menuId: 'top2',
 						label: 'Top 2',
-						items: [
-							'item1'
+						groups: [
+							{
+								groupId: '1',
+								items: [ 'item1' ]
+							}
 						]
 					},
 					{
-						id: 'top2',
+						menuId: 'top2',
 						label: 'Top 2',
-						items: [
-							'item1'
+						groups: [
+							{
+								groupId: '2',
+								items: [ 'item2' ]
+							}
 						]
 					}
 				], factory );
@@ -183,13 +189,16 @@ describe( 'MenuBarView', () => {
 			const locale = new Locale();
 			const menuBarView = new MenuBarView( locale );
 
+			// Fake components in top-level categories so they don't get purged.
 			factory.add( 'menuBar:undo', getButtonCreator( 'menuBar:undo', locale ) );
 			factory.add( 'menuBar:sourceEditing', getButtonCreator( 'menuBar:sourceEditing', locale ) );
+			factory.add( 'menuBar:blockQuote', getButtonCreator( 'menuBar:blockQuote', locale ) );
+			factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
 
 			menuBarView.fillFromConfig( undefined, factory );
 
 			expect( menuBarView.menus.map( menuView => menuView.buttonView.label ) ).to.have.members( [
-				'Edit', 'View'
+				'Edit', 'View', 'Insert', 'Format'
 			] );
 
 			menuBarView.destroy();
@@ -207,17 +216,23 @@ describe( 'MenuBarView', () => {
 
 					menuBarView.fillFromConfig( [
 						{
-							id: 'edit',
+							menuId: 'edit',
 							label: 'Edit',
-							items: [
-								'item1'
+							groups: [
+								{
+									groupId: '1',
+									items: [ 'item1' ]
+								}
 							]
 						},
 						{
-							id: 'format',
+							menuId: 'format',
 							label: 'Format',
-							items: [
-								'item1'
+							groups: [
+								{
+									groupId: '1',
+									items: [ 'item1' ]
+								}
 							]
 						}
 					], factory );
@@ -245,11 +260,16 @@ describe( 'MenuBarView', () => {
 					const menuBarView = new MenuBarView( locale );
 					const config = [
 						{
-							id: 'A',
+							menuId: 'A',
 							label: 'A',
-							items: [
-								'item1',
-								'unavailable'
+							groups: [
+								{
+									groupId: '1',
+									items: [
+										'item1',
+										'unavailable'
+									]
+								}
 							]
 						}
 					];
@@ -267,7 +287,7 @@ describe( 'MenuBarView', () => {
 
 					sinon.assert.callCount( console.warn, 1 );
 
-					sinon.assert.calledWithExactly( console.warn.getCall( 0 ), 'menu-bar-item-unavailable', {
+					sinon.assert.calledWith( console.warn.getCall( 0 ), 'menu-bar-item-unavailable', {
 						menuBarConfig: config,
 						parentMenuConfig: config[ 0 ],
 						componentName: 'unavailable'
@@ -281,25 +301,40 @@ describe( 'MenuBarView', () => {
 					const menuBarView = new MenuBarView( locale );
 					const config = [
 						{
-							id: 'A',
+							menuId: 'A',
 							label: 'A',
-							items: [
-								'item1'
+							groups: [
+								{
+									groupId: 'A1',
+									items: [
+										'item1'
+									]
+								}
 							]
 						},
 						{
-							id: 'B',
+							menuId: 'B',
 							label: 'B',
-							items: [
-								'item1',
+							groups: [
 								{
-									id: 'BA (empty)',
-									label: 'BA (empty)',
+									groupId: 'B1',
 									items: [
+										'item1',
 										{
-											id: 'BAA (empty)',
-											label: 'BAA (empty)',
-											items: []
+											menuId: 'BA (empty)',
+											label: 'BA (empty)',
+											groups: [
+												{
+													groupId: 'BA1',
+													items: [
+														{
+															menuId: 'BAA (empty)',
+															label: 'BAA (empty)',
+															groups: []
+														}
+													]
+												}
+											]
 										}
 									]
 								}
@@ -328,12 +363,12 @@ describe( 'MenuBarView', () => {
 
 					sinon.assert.calledWithExactly( console.warn.firstCall, 'menu-bar-menu-empty', {
 						menuBarConfig: config,
-						emptyMenuConfig: { id: 'BAA (empty)', label: 'BAA (empty)', items: [] }
+						emptyMenuConfig: { menuId: 'BAA (empty)', label: 'BAA (empty)', groups: [] }
 					}, sinon.match.string );
 
 					sinon.assert.calledWithExactly( console.warn.secondCall, 'menu-bar-menu-empty', {
 						menuBarConfig: config,
-						emptyMenuConfig: { id: 'BA (empty)', label: 'BA (empty)', items: [] }
+						emptyMenuConfig: { menuId: 'BA (empty)', label: 'BA (empty)', groups: [] }
 					}, sinon.match.string );
 
 					menuBarView.destroy();
@@ -345,25 +380,40 @@ describe( 'MenuBarView', () => {
 
 					const config = [
 						{
-							id: 'A',
+							menuId: 'A',
 							label: 'A',
-							items: [
-								'invalid'
+							groups: [
+								{
+									groupId: 'A1',
+									items: [
+										'invalid'
+									]
+								}
 							]
 						},
 						{
-							id: 'B',
+							menuId: 'B',
 							label: 'B',
-							items: [
-								'invalid',
+							groups: [
 								{
-									id: 'BA (empty)',
-									label: 'BA (empty)',
+									groupId: 'B1',
 									items: [
+										'invalid',
 										{
-											id: 'BAA (empty)',
-											label: 'BAA (empty)',
-											items: []
+											menuId: 'BA (empty)',
+											label: 'BA (empty)',
+											groups: [
+												{
+													groupId: 'BA1',
+													items: [
+														{
+															menuId: 'BAA (empty)',
+															label: 'BAA (empty)',
+															groups: []
+														}
+													]
+												}
+											]
 										}
 									]
 								}
@@ -391,22 +441,22 @@ describe( 'MenuBarView', () => {
 
 					sinon.assert.calledWithExactly( console.warn.getCall( 2 ), 'menu-bar-menu-empty', {
 						menuBarConfig: config,
-						emptyMenuConfig: { id: 'A', label: 'A', items: [] }
+						emptyMenuConfig: { menuId: 'BAA (empty)', label: 'BAA (empty)', groups: [] }
 					}, sinon.match.string );
 
 					sinon.assert.calledWithExactly( console.warn.getCall( 3 ), 'menu-bar-menu-empty', {
 						menuBarConfig: config,
-						emptyMenuConfig: { id: 'BAA (empty)', label: 'BAA (empty)', items: [] }
+						emptyMenuConfig: { menuId: 'A', label: 'A', groups: [] }
 					}, sinon.match.string );
 
 					sinon.assert.calledWithExactly( console.warn.getCall( 4 ), 'menu-bar-menu-empty', {
 						menuBarConfig: config,
-						emptyMenuConfig: { id: 'BA (empty)', label: 'BA (empty)', items: [] }
+						emptyMenuConfig: { menuId: 'BA (empty)', label: 'BA (empty)', groups: [] }
 					}, sinon.match.string );
 
 					sinon.assert.calledWithExactly( console.warn.getCall( 5 ), 'menu-bar-menu-empty', {
 						menuBarConfig: config,
-						emptyMenuConfig: { id: 'B', label: 'B', items: [] }
+						emptyMenuConfig: { menuId: 'B', label: 'B', groups: [] }
 					}, sinon.match.string );
 
 					sinon.assert.calledWithExactly( console.warn.getCall( 6 ), 'menu-bar-menu-empty', {
@@ -423,31 +473,39 @@ describe( 'MenuBarView', () => {
 
 					menuBarView.fillFromConfig( [
 						{
-							id: 'A',
+							menuId: 'A',
 							label: 'A',
-							items: [
-								'-',
-								'item1',
-								'-'
+							groups: [
+								{
+									groupId: 'A1',
+									items: [
+										'item1'
+									]
+								}
 							]
 						},
 						{
-							id: 'B',
+							menuId: 'B',
 							label: 'B',
-							items: [
-								'-',
-								'item2',
-								'-',
+							groups: [
 								{
-									id: 'BA (empty)',
-									label: 'BA (empty)',
+									groupId: 'B1',
 									items: [
-										'-',
+										'item2',
 										{
-											id: 'BAA (empty)',
-											label: 'BAA (empty)',
-											items: [
-												'-'
+											menuId: 'BA (empty)',
+											label: 'BA (empty)',
+											groups: [
+												{
+													groupId: 'BA1',
+													items: [
+														{
+															menuId: 'BAA (empty)',
+															label: 'BAA (empty)',
+															groups: []
+														}
+													]
+												}
 											]
 										}
 									]
@@ -548,16 +606,30 @@ describe( 'MenuBarView', () => {
 					{
 						id: 'A',
 						label: 'A',
-						items: [
-							'A#1',
-							'A#2',
-							'-',
+						groups: [
 							{
-								id: 'AA',
-								label: 'AA',
+								groupId: 'A1',
 								items: [
-									'AA#1',
-									'AAA (from-factory)'
+									'A#1',
+									'A#2'
+								]
+							},
+							{
+								groupId: 'A2',
+								items: [
+									{
+										id: 'AA',
+										label: 'AA',
+										groups: [
+											{
+												groupId: 'AA1',
+												items: [
+													'AA#1',
+													'AAA (from-factory)'
+												]
+											}
+										]
+									}
 								]
 							}
 						]
@@ -565,10 +637,15 @@ describe( 'MenuBarView', () => {
 					{
 						id: 'B',
 						label: 'B',
-						items: [
-							'B#1',
-							'B#2',
-							'B#3 (incorrect)'
+						groups: [
+							{
+								groupId: 'B1',
+								items: [
+									'B#1',
+									'B#2',
+									'B#3 (incorrect)'
+								]
+							}
 						]
 					}
 				], factory );
@@ -762,17 +839,27 @@ describe( 'MenuBarView', () => {
 		it( 'should focus the first top-level sub-menu', () => {
 			menuBarView.fillFromConfig( [
 				{
-					id: 'edit',
+					menuId: 'edit',
 					label: 'Edit',
-					items: [
-						'item1'
+					groups: [
+						{
+							groupId: '1',
+							items: [
+								'item1'
+							]
+						}
 					]
 				},
 				{
-					id: 'format',
+					menuId: 'format',
 					label: 'Format',
-					items: [
-						'item1'
+					groups: [
+						{
+							groupId: '1',
+							items: [
+								'item1'
+							]
+						}
 					]
 				}
 			], factory );
@@ -789,17 +876,27 @@ describe( 'MenuBarView', () => {
 		it( 'should close all top-level sub-menus', () => {
 			menuBarView.fillFromConfig( [
 				{
-					id: 'edit',
+					menuId: 'edit',
 					label: 'Edit',
-					items: [
-						'item1'
+					groups: [
+						{
+							groupId: '1',
+							items: [
+								'item1'
+							]
+						}
 					]
 				},
 				{
-					id: 'format',
+					menuId: 'format',
 					label: 'Format',
-					items: [
-						'item1'
+					groups: [
+						{
+							groupId: '1',
+							items: [
+								'item1'
+							]
+						}
 					]
 				}
 			], factory );

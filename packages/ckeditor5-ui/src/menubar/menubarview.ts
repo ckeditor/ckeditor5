@@ -197,7 +197,7 @@ export default class MenuBarView extends View implements FocusableView {
 		const locale = this.locale!;
 		const items = [];
 
-		for ( const menuGroupDefinition of menuDefinition.items ) {
+		for ( const menuGroupDefinition of menuDefinition.groups ) {
 			for ( const itemDefinition of menuGroupDefinition.items ) {
 				const menuItemView = new MenuBarMenuListItemView( locale, parentMenuView );
 
@@ -225,7 +225,7 @@ export default class MenuBarView extends View implements FocusableView {
 			}
 
 			// Separate groups with a separator.
-			if ( menuGroupDefinition !== menuDefinition.items[ menuDefinition.items.length - 1 ] ) {
+			if ( menuGroupDefinition !== menuDefinition.groups[ menuDefinition.groups.length - 1 ] ) {
 				items.push( new ListSeparatorView( locale ) );
 			}
 		}
@@ -301,12 +301,12 @@ export default class MenuBarView extends View implements FocusableView {
 	}
 }
 
-export type MenuBarConfig = Array<MenuBarMenuGroupDefinition> | MenuBarConfigObject;
+export type MenuBarConfig = Array<MenuBarMenuDefinition> | MenuBarConfigObject;
 
 export type MenuBarConfigObject = {
 	items: Array<MenuBarMenuDefinition>;
 	removeItems?: Array<string>;
-	addItems?: Array<MenuBarConfigAddedItem>;
+	addItems?: Array<MenuBarConfigAddedItem | MenuBarConfigAddedGroup | MenuBarConfigAddedMenu>;
 };
 
 export type MenuBarMenuGroupDefinition = {
@@ -315,17 +315,27 @@ export type MenuBarMenuGroupDefinition = {
 };
 
 export type MenuBarMenuDefinition = {
-	id: string;
+	menuId: string;
 	label: string;
-	items: Array<MenuBarMenuGroupDefinition>;
+	groups: Array<MenuBarMenuGroupDefinition>;
 };
 
+export type MenuBarConfigAddedPosition =
+	`start:${ string }` | `end:${ string }` | 'start' | 'end' | `after:${ string }` | `before:${ string }`;
+
 export type MenuBarConfigAddedItem = {
-	item: string | MenuBarMenuDefinition | MenuBarMenuGroupDefinition;
-	end?: string;
-	start?: string;
-	before?: string;
-	after?: string;
+	item: string;
+	position: MenuBarConfigAddedPosition;
+};
+
+export type MenuBarConfigAddedGroup = {
+	group: MenuBarMenuGroupDefinition;
+	position: MenuBarConfigAddedPosition;
+};
+
+export type MenuBarConfigAddedMenu = {
+	menu: MenuBarMenuDefinition;
+	position: MenuBarConfigAddedPosition;
 };
 
 /**
