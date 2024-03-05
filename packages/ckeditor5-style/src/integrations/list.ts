@@ -111,7 +111,8 @@ export default class ListStyleSupport extends Plugin {
 				return false;
 			}
 
-			const viewElementName = block.getAttribute( 'listType' ) == 'numbered' || block.getAttribute( 'listType' ) == 'customNumbered' ? 'ol' : 'ul';
+			const isNumbered = block.getAttribute( 'listType' ) == 'numbered' || block.getAttribute( 'listType' ) == 'customNumbered';
+			const viewElementName = isNumbered ? 'ol' : 'ul';
 
 			return definition.element == viewElementName;
 		} else {
