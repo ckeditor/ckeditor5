@@ -47,6 +47,7 @@
     "@ckeditor/ckeditor5-special-characters": "41.1.0",
     "@ckeditor/ckeditor5-table": "41.1.0",
     "@ckeditor/ckeditor5-typing": "41.1.0",
+    "@ckeditor/ckeditor5-undo": "41.1.0",
     "@types/color-convert": "2.0.0",
     "typescript": "5.0.4",
     "webpack": "^5.58.1",

@@ -55,11 +55,10 @@ export default class CKFinderUI extends Plugin {
 
 		if ( editor.plugins.has( 'ImageInsertUI' ) ) {
 			const imageInsertUI: ImageInsertUI = editor.plugins.get( 'ImageInsertUI' );
-			const command: CKFinderCommand = editor.commands.get( 'ckfinder' )!;
 
 			imageInsertUI.registerIntegration( {
 				name: 'assetManager',
-				observable: command,
+				observable: () => editor.commands.get( 'ckfinder' )!,
 
 				buttonViewCreator: () => {
 					const button = this.editor.ui.componentFactory.create( 'ckfinder' ) as ButtonView;

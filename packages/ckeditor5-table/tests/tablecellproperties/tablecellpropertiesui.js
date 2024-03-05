@@ -15,6 +15,7 @@ import Batch from '@ckeditor/ckeditor5-engine/src/model/batch.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon.js';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
 
 import Table from '../../src/table.js';
 import TableCellPropertiesEditing from '../../src/tablecellproperties/tablecellpropertiesediting.js';
@@ -39,7 +40,10 @@ describe( 'table cell properties', () => {
 
 			return ClassicTestEditor
 				.create( editorElement, {
-					plugins: [ Table, TableCellPropertiesEditing, TableCellPropertiesUI, TableCellWidthEditing, Paragraph, Undo ],
+					plugins: [
+						Table, TableCellPropertiesEditing, TableCellPropertiesUI, TableCellWidthEditing,
+						Paragraph, Undo, ClipboardPipeline
+					],
 					initialData: '<table><tr><td>foo</td></tr></table><p>bar</p>'
 				} )
 				.then( newEditor => {
@@ -763,7 +767,10 @@ describe( 'table cell properties', () => {
 
 				return ClassicTestEditor
 					.create( editorElement, {
-						plugins: [ Table, TableCellPropertiesEditing, TableCellPropertiesUI, TableCellWidthEditing, Paragraph, Undo ],
+						plugins: [
+							Table, TableCellPropertiesEditing, TableCellPropertiesUI, TableCellWidthEditing,
+							ClipboardPipeline, Paragraph, Undo
+						],
 						initialData: '<table><tr><td>foo</td></tr></table><p>bar</p>',
 						table: {
 							tableCellProperties: {
@@ -902,7 +909,7 @@ describe( 'table cell properties', () => {
 
 				return ClassicTestEditor
 					.create( editorElement, {
-						plugins: [ Table, TableCellPropertiesEditing, TableCellPropertiesUI, TableCellWidthEditing ],
+						plugins: [ Table, TableCellPropertiesEditing, TableCellPropertiesUI, TableCellWidthEditing, ClipboardPipeline ],
 						table: {
 							tableCellProperties: {
 								colorPicker: false

@@ -29,91 +29,88 @@ You can start by forking (or copying) an existing build like in the {@link insta
 ```bash
 git clone -b stable git@github.com:<your-username>/ckeditor5.git
 cd ckeditor5/packages/ckeditor5-build-classic
-npm install
+yarn install
 ```
 
 Now it is time to add the missing editor package and install it:
 
-```
-npm install --save-dev @ckeditor/ckeditor5-editor-inline
+```bash
+yarn add -D @ckeditor/ckeditor5-editor-inline
 ```
 
-Once all the dependencies are installed, change the webpack's entry point which is the `src/ckeditor.js` file. For now, it was exporting just a single class:
+Once all the dependencies are installed, you will need to modify the `src/ckeditor.ts` file, which currently only exports a single class. The first step is to move all plugins and configuration to variables so they can be reused by both editors:
 
 ```js
-// The editor creator to use.
 import { ClassicEditor as ClassicEditorBase } from '@ckeditor/ckeditor5-editor-classic';
 
-// ...
+// Other imports
 
-export default class ClassicEditor extends ClassicEditorBase {}
+class ClassicEditor extends ClassicEditorBase {}
 
-// Plugins to include in the build.
-ClassicEditor.builtinPlugins = [
-	// ...
-];
+const plugins = [
+  // ...
+]
 
-// Editor configuration.
-ClassicEditor.defaultConfig = {
-	// ...
+const config = {
+  // ...
+}
+
+ClassicEditor.builtinPlugins = plugins;
+ClassicEditor.defaultConfig = config;
+
+export {
+  ClassicEditor
 };
 ```
 
-Let's make it export an object with two classes: `ClassicEditor` and `InlineEditor`. To make both constructors work in the same way (load the same plugins and default configuration) you also need to assign `builtinPlugins` and `defaultConfig` static properties to both of them:
+Now you can add the `InlineEditor` class to the file, add the same plugins and configuration to it and export it:
 
-```js
-// The editor creators to use.
+```diff
 import { ClassicEditor as ClassicEditorBase } from '@ckeditor/ckeditor5-editor-classic';
-import { InlineEditor as InlineEditorBase } from '@ckeditor/ckeditor5-editor-inline';
++ import { InlineEditor as InlineEditorBase } from '@ckeditor/ckeditor5-editor-inline';
 
-// ...
+// Other imports
 
 class ClassicEditor extends ClassicEditorBase {}
-class InlineEditor extends InlineEditorBase {}
++ class InlineEditor extends InlineEditorBase {}
 
-// Plugins to include in the build.
 const plugins = [
-	// ...
+  // ...
 ];
-
-ClassicEditor.builtinPlugins = plugins;
-InlineEditor.builtinPlugins = plugins;
 
 // Editor configuration.
 const config = {
-	// ...
+  // ...
 };
 
+ClassicEditor.builtinPlugins = plugins;
 ClassicEditor.defaultConfig = config;
-InlineEditor.defaultConfig = config;
+
++ InlineEditor.builtinPlugins = plugins;
++ InlineEditor.defaultConfig = config;
 
 export default {
-	ClassicEditor, InlineEditor
+  ClassicEditor,
++  InlineEditor
 };
 ```
 
-Since you now export an object with two properties (`ClassicEditor` and `InlineEditor`), it is also reasonable to rename the global variable to which webpack will assign this object. It was called `ClassicEditor` before. An adequate name now would be, for example, `CKEDITOR`. This variable is defined in `webpack.config.js` in the `output.library` setting:
+Since you now export an object with two editor types (`ClassicEditor` and `InlineEditor`), it is also reasonable to rename the global variable `ClassicEditor`. An appropriate name now might be `CKEDITOR`. This variable is defined in `webpack.config.js` in the `output.library` setting:
 
 ```diff
-diff --git a/webpack.config.js b/webpack.config.js
-index c57e371..04fc9fe 100644
---- a/webpack.config.js
-+++ b/webpack.config.js
-@@ -21,7 +21,7 @@ module.exports = {
+// webpack.config.js
 
-     output: {
-         // The name under which the editor will be exported.
--        library: 'ClassicEditor',
-+        library: 'CKEDITOR',
-
-         path: path.resolve( __dirname, 'build' ),
-         filename: 'ckeditor.js',
+module.exports = {
+  output: {
+-    library: 'ClassicEditor',
++    library: 'CKEDITOR',
+		// ...
 ```
 
-Once you changed the `src/ckeditor.js` and `webpack.config.js` files, it is time to rebuild the build:
+Once you changed the `src/ckeditor.ts` and `webpack.config.js` files, it is time to rebuild the build:
 
 ```bash
-npm run build
+yarn build
 ```
 
 Finally, when webpack finishes compiling your super build, you can change the `samples/index.html` file to test both editors:
