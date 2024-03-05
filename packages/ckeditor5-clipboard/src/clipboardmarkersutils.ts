@@ -279,7 +279,9 @@ export default class ClipboardMarkersUtils extends Plugin {
 
 	/**
 	 * Returns array of markers that can be copied in specified selection.
-	 * It marker cannot be copied partially ( according to `skipPartiallySelected` configuration flag ) it will be skipped.
+	 *
+	 * If marker cannot be copied partially ( according to `skipPartiallySelected` configuration flag ) and
+	 * is not present entirely in any selection range then it will be skipped.
 	 *
 	 * @param writer An instance of the model writer.
 	 * @param selection  Selection which will be checked.
