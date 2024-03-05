@@ -32,6 +32,7 @@
     "@ckeditor/ckeditor5-paragraph": "41.1.0",
     "@ckeditor/ckeditor5-table": "41.1.0",
     "@ckeditor/ckeditor5-theme-lark": "41.1.0",
+    "@ckeditor/ckeditor5-ui": "41.1.0",
     "@ckeditor/ckeditor5-utils": "41.1.0",
     "typescript": "5.0.4",
     "webpack": "^5.58.1",
@@ -59,6 +60,6 @@
   "scripts": {
     "dll:build": "webpack",
     "build": "tsc -p ./tsconfig.json",
-    "build:node": "ckeditor5-dev-build-tools --tsconfig=tsconfig.kowalski.json --clean --source-map --declarations --banner=../../scripts/banner.mjs"
+    "build:kowalski": "ckeditor5-dev-build-tools --tsconfig=tsconfig.kowalski.json --clean --source-map --declarations --banner=../../scripts/banner.mjs"
   }
 }

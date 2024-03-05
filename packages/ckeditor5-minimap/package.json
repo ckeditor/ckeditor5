@@ -25,10 +25,13 @@
     "@ckeditor/ckeditor5-dev-utils": "^39.0.0",
     "@ckeditor/ckeditor5-easy-image": "41.1.0",
     "@ckeditor/ckeditor5-editor-decoupled": "41.1.0",
+    "@ckeditor/ckeditor5-engine": "41.1.0",
     "@ckeditor/ckeditor5-font": "41.1.0",
     "@ckeditor/ckeditor5-image": "41.1.0",
     "@ckeditor/ckeditor5-indent": "41.1.0",
     "@ckeditor/ckeditor5-page-break": "41.1.0",
+    "@ckeditor/ckeditor5-ui": "41.1.0",
+    "@ckeditor/ckeditor5-utils": "41.1.0",
     "@ckeditor/ckeditor5-table": "41.1.0",
     "@ckeditor/ckeditor5-theme-lark": "41.1.0",
     "typescript": "5.0.4",
@@ -57,6 +60,6 @@
   "scripts": {
     "dll:build": "webpack",
     "build": "tsc -p ./tsconfig.json",
-    "build:node": "ckeditor5-dev-build-tools --tsconfig=tsconfig.kowalski.json --clean --source-map --declarations --banner=../../scripts/banner.mjs"
+    "build:kowalski": "ckeditor5-dev-build-tools --tsconfig=tsconfig.kowalski.json --clean --source-map --declarations --banner=../../scripts/banner.mjs"
   }
 }
