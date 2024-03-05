@@ -72,11 +72,10 @@ export default class ImageUploadUI extends Plugin {
 
 		if ( editor.plugins.has( 'ImageInsertUI' ) ) {
 			const imageInsertUI: ImageInsertUI = editor.plugins.get( 'ImageInsertUI' );
-			const command: UploadImageCommand = editor.commands.get( 'uploadImage' )!;
 
 			imageInsertUI.registerIntegration( {
 				name: 'upload',
-				observable: command,
+				observable: () => editor.commands.get( 'uploadImage' )!,
 
 				buttonViewCreator: () => {
 					const uploadImageButton = editor.ui.componentFactory.create( 'uploadImage' ) as FileDialogButtonView;

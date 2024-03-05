@@ -40,12 +40,25 @@ export default class Autoformat extends Plugin {
 	 * @inheritDoc
 	 */
 	public afterInit(): void {
+		const editor = this.editor;
+		const t = this.editor.t;
+
 		this._addListAutoformats();
 		this._addBasicStylesAutoformats();
 		this._addHeadingAutoformats();
 		this._addBlockQuoteAutoformats();
 		this._addCodeBlockAutoformats();
 		this._addHorizontalLineAutoformats();
+
+		// Add the information about the keystroke to the accessibility database.
+		editor.accessibility.addKeystrokeInfos( {
+			keystrokes: [
+				{
+					label: t( 'Revert autoformatting action' ),
+					keystroke: 'Backspace'
+				}
+			]
+		} );
 	}
 
 	/**

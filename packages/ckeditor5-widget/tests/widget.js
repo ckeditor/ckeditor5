@@ -137,6 +137,36 @@ describe( 'Widget', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have a name', () => {
+		expect( Widget.pluginName ).to.equal( 'Widget' );
+	} );
+
+	it( 'should add keystroke accessibility info', () => {
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'widget' ).label ).to.equal(
+			'Keystrokes that can be used when a widget is selected (for example: image, table, etc.)'
+		);
+
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'widget' ).keystrokes ).to.deep.include( {
+			label: 'Insert a new paragraph directly after a widget',
+			keystroke: 'Enter'
+		} );
+
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'widget' ).keystrokes ).to.deep.include( {
+			label: 'Insert a new paragraph directly before a widget',
+			keystroke: 'Shift+Enter'
+		} );
+
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'widget' ).keystrokes ).to.deep.include( {
+			label: 'Move the caret to allow typing directly before a widget',
+			keystroke: [ [ 'arrowup' ], [ 'arrowleft' ] ]
+		} );
+
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'widget' ).keystrokes ).to.deep.include( {
+			label: 'Move the caret to allow typing directly after a widget',
+			keystroke: [ [ 'arrowdown' ], [ 'arrowright' ] ]
+		} );
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( Widget ) ).to.be.instanceOf( Widget );
 	} );

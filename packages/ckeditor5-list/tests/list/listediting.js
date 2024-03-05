@@ -72,6 +72,22 @@ describe( 'ListEditing', () => {
 		expect( ListEditing.pluginName ).to.equal( 'ListEditing' );
 	} );
 
+	it( 'should add keystroke accessibility info', () => {
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'list' ).label ).to.equal(
+			'Keystrokes that can be used in a list'
+		);
+
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'list' ).keystrokes ).to.deep.include( {
+			label: 'Increase list item indent',
+			keystroke: 'Tab'
+		} );
+
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'list' ).keystrokes ).to.deep.include( {
+			label: 'Decrease list item indent',
+			keystroke: 'Shift+Tab'
+		} );
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( ListEditing ) ).to.be.instanceOf( ListEditing );
 	} );
