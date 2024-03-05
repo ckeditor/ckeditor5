@@ -203,8 +203,7 @@
     "collect-svg-icons": "node scripts/collect-svg-icons.js",
     "check-dependencies": "ckeditor5-dev-dependency-checker",
     "check-dependencies:versions-match": "node ./scripts/ci/check-dependencies-versions-match.js",
-    "build:node": "ckeditor5-dev-build-tools --tsconfig=tsconfig.ckeditor5.kowalski.json --clean --source-map --declarations --translations --banner=scripts/banner.mjs",
-    "build:browser": "ckeditor5-dev-build-tools --input=src/index.browser.ts --tsconfig=tsconfig.ckeditor5.kowalski.json --source-map --bundle --minify --banner=scripts/banner.mjs"
+    "build:kowalski": "node ./scripts/build-kowalski.mjs"
   },
   "lint-staged": {
     "**/*.{js,ts}": [
