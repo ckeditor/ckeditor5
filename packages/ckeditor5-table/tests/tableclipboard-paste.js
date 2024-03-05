@@ -4076,10 +4076,19 @@ describe( 'table clipboard', () => {
 		beforeEach( async () => {
 			await createEditor();
 
-			clipboardMarkersUtils._registerMarkerToCopy( 'comment', { allowedActions: [ 'copy' ] } );
+			clipboardMarkersUtils._registerMarkerToCopy( 'comment', {
+				allowedActions: [ 'copy' ]
+			} );
+
 			sinon
 				.stub( clipboardMarkersUtils, '_getUniqueMarkerName' )
-				.callsFake( markerName => `${ markerName }:uniq` );
+				.callsFake( markerName => {
+					if ( markerName.endsWith( 'uniq' ) ) {
+						return markerName;
+					}
+
+					return `${ markerName }:uniq`;
+				} );
 
 			markerConversion();
 		} );
@@ -4097,7 +4106,7 @@ describe( 'table clipboard', () => {
 
 			const paragraph = modelRoot.getNodeByPath( [ 1, 0, 0, 0 ] );
 
-			checkMarker( 'comment:paste:uniq', model.createRangeIn( paragraph ) );
+			checkMarker( 'comment:paste', model.createRangeIn( paragraph ) );
 		} );
 
 		it( 'should paste table with multiple markers to multiple cells', () => {
@@ -4126,8 +4135,8 @@ describe( 'table clipboard', () => {
 				model.createPositionFromPath( modelRoot, [ 1, 0, 1, 0, 6 ] )
 			);
 
-			checkMarker( 'comment:pre:uniq', prePosition );
-			checkMarker( 'comment:post:uniq', postPosition );
+			checkMarker( 'comment:pre', prePosition );
+			checkMarker( 'comment:post', postPosition );
 		} );
 
 		it( 'should paste table with multiple markers to single cell', () => {
@@ -4157,8 +4166,8 @@ describe( 'table clipboard', () => {
 				model.createPositionFromPath( modelRoot, [ 1, 0, 0, 0, 34 ] )
 			);
 
-			checkMarker( 'comment:pre:uniq', prePosition );
-			checkMarker( 'comment:post:uniq', postPosition );
+			checkMarker( 'comment:pre', prePosition );
+			checkMarker( 'comment:post', postPosition );
 		} );
 
 		it( 'should handle paste markers that contain markers', () => {
@@ -4175,12 +4184,12 @@ describe( 'table clipboard', () => {
 				[ [ outerMarker ] ]
 			);
 
-			checkMarker( 'comment:outer:uniq', model.createRange(
+			checkMarker( 'comment:outer', model.createRange(
 				model.createPositionFromPath( modelRoot, [ 1, 0, 0, 0, 0 ] ),
 				model.createPositionFromPath( modelRoot, [ 1, 0, 0, 0, 11 ] )
 			) );
 
-			checkMarker( 'comment:inner:uniq', model.createRange(
+			checkMarker( 'comment:inner', model.createRange(
 				model.createPositionFromPath( modelRoot, [ 1, 0, 0, 0, 1 ] ),
 				model.createPositionFromPath( modelRoot, [ 1, 0, 0, 0, 5 ] )
 			) );
