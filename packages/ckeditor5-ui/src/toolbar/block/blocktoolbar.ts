@@ -30,7 +30,7 @@ import clickOutsideHandler from '../../bindings/clickoutsidehandler.js';
 import normalizeToolbarConfig from '../normalizetoolbarconfig.js';
 
 import type { ButtonExecuteEvent } from '../../button/button.js';
-import type { EditorUIUpdateEvent } from '../../editorui/editorui.js';
+import type { EditorUIReadyEvent, EditorUIUpdateEvent } from '../../editorui/editorui.js';
 
 const toPx = toUnit( 'px' );
 
@@ -103,8 +103,6 @@ export default class BlockToolbar extends Plugin {
 	 *
 	 * **Note**: Used only when `shouldNotGroupWhenFull` was **not** set in the
 	 * {@link module:core/editor/editorconfig~EditorConfig#blockToolbar configuration}.
-	 *
-	 * **Note:** Created in {@link #afterInit}.
 	 */
 	private _resizeObserver: ResizeObserver | null = null;
 
@@ -191,20 +189,17 @@ export default class BlockToolbar extends Plugin {
 			beforeFocus: () => this._showPanel(),
 			afterBlur: () => this._hidePanel()
 		} );
-	}
 
-	/**
-	 * Fills the toolbar with its items based on the configuration.
-	 *
-	 * **Note:** This needs to be done after all plugins are ready.
-	 */
-	public afterInit(): void {
-		this.toolbarView.fillFromConfig( this._blockToolbarConfig, this.editor.ui.componentFactory );
+		// Fills the toolbar with its items based on the configuration.
+		// This needs to be done after all plugins are ready.
+		editor.ui.once<EditorUIReadyEvent>( 'ready', () => {
+			this.toolbarView.fillFromConfig( this._blockToolbarConfig, this.editor.ui.componentFactory );
 
-		// Hide panel before executing each button in the panel.
-		for ( const item of this.toolbarView.items ) {
-			item.on<ButtonExecuteEvent>( 'execute', () => this._hidePanel( true ), { priority: 'high' } );
-		}
+			// Hide panel before executing each button in the panel.
+			for ( const item of this.toolbarView.items ) {
+				item.on<ButtonExecuteEvent>( 'execute', () => this._hidePanel( true ), { priority: 'high' } );
+			}
+		} );
 	}
 
 	/**

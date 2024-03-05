@@ -38,6 +38,13 @@ describe( 'StrikethroughEditing', () => {
 		expect( editor.plugins.get( StrikethroughEditing ) ).to.be.instanceOf( StrikethroughEditing );
 	} );
 
+	it( 'should add keystroke accessibility info', () => {
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
+			label: 'Strikethrough text',
+			keystroke: 'CTRL+SHIFT+X'
+		} );
+	} );
+
 	it( 'should set proper schema rules', () => {
 		expect( model.schema.checkAttribute( [ '$root', '$block', '$text' ], 'strikethrough' ) ).to.be.true;
 		expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'strikethrough' ) ).to.be.true;

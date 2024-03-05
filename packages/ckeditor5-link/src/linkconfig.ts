@@ -49,6 +49,27 @@ export interface LinkConfig {
 	defaultProtocol?: string;
 
 	/**
+	 * This is a protocols whitelist that can be used in links, defined as an array of strings.
+	 * When not set, the editor will use a default list of allowed protocols.
+	 *
+	 * **Note:** Use this with caution and at your own risk - adding unsafe protocols like `javascript:`
+	 * can result in serious security vulnerabilities!
+	 *
+	 * ```ts
+	 * ClassicEditor
+	 * 	.create( editorElement, {
+	 * 		link: {
+	 * 			allowedProtocols: [ 'http', 'https', 'ftp', 'tel', 'mailto', 'ssh' ]
+	 * 		}
+	 * 	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
+	 * ```
+	 *
+	 */
+	allowedProtocols?: Array<string>;
+
+	/**
 	 * When set to `true`, the form will accept an empty value in the URL field, creating a link with an empty `href` (`<a href="">`).
 	 *
 	 * ```ts
