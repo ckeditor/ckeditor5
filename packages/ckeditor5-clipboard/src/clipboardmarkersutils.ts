@@ -165,15 +165,13 @@ export default class ClipboardMarkersUtils extends Plugin {
 
 			// Inserts to root document fake markers.
 			for ( const [ markerName, range ] of Object.entries( removedFakeMarkers ) ) {
-				if ( writer.model.markers.has( markerName ) ) {
-					continue;
+				if ( !writer.model.markers.has( markerName ) ) {
+					writer.addMarker( markerName, {
+						usingOperation: true,
+						affectsData: true,
+						range
+					} );
 				}
-
-				writer.addMarker( markerName, {
-					usingOperation: true,
-					affectsData: true,
-					range
-				} );
 			}
 
 			return transformedElement;
