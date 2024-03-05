@@ -612,7 +612,7 @@ export function normalizeMenuBarConfig( {
 	const configClone = cloneDeep( configObject );
 
 	handleRemovals( configObject, configClone );
-	handleAdditions( configClone );
+	handleAdditions( configObject, configClone );
 	purgeUnavailableComponents( configObject, configClone, componentFactory, isUsingDefaultConfig );
 	purgeEmptyMenus( configObject, configClone, isUsingDefaultConfig );
 	localizeTopLevelCategories( configClone, locale );
@@ -629,12 +629,13 @@ function handleRemovals(
 	originalConfig: RequitedMenuBarConfigObject,
 	config: RequitedMenuBarConfigObject
 ) {
-	const removedItems: Array<string> = [];
+	const itemsToBeRemoved = config.removeItems;
+	const successfullyRemovedItems: Array<string> = [];
 
 	// Remove top-level menus.
 	config.items = config.items.filter( ( { menuId } ) => {
-		if ( config.removeItems.includes( menuId ) ) {
-			removedItems.push( menuId );
+		if ( itemsToBeRemoved.includes( menuId ) ) {
+			successfullyRemovedItems.push( menuId );
 			return false;
 		}
 
@@ -644,8 +645,8 @@ function handleRemovals(
 	walkConfigMenus( config.items, menuDefinition => {
 		// Remove groups from menus.
 		menuDefinition.groups = menuDefinition.groups.filter( ( { groupId } ) => {
-			if ( config.removeItems.includes( groupId ) ) {
-				removedItems.push( groupId );
+			if ( itemsToBeRemoved.includes( groupId ) ) {
+				successfullyRemovedItems.push( groupId );
 				return false;
 			}
 
@@ -657,8 +658,8 @@ function handleRemovals(
 			groupDefinition.items = groupDefinition.items.filter( item => {
 				const itemId = getIdFromGroupItem( item );
 
-				if ( config.removeItems.includes( itemId ) ) {
-					removedItems.push( itemId );
+				if ( itemsToBeRemoved.includes( itemId ) ) {
+					successfullyRemovedItems.push( itemId );
 					return false;
 				}
 
@@ -667,8 +668,8 @@ function handleRemovals(
 		}
 	} );
 
-	for ( const itemName of config.removeItems ) {
-		if ( !removedItems.includes( itemName ) ) {
+	for ( const itemName of itemsToBeRemoved ) {
+		if ( !successfullyRemovedItems.includes( itemName ) ) {
 			/**
 			 * There was a problem processing the configuration of the menu bar. The item with the given
 			 * name does could not be removed from the menu bar configuration.
@@ -690,24 +691,33 @@ function handleRemovals(
 }
 
 /**
- * TODO
+ * Handles the `config.menuBar.addItems` configuration. It allows for adding menus, groups, and items at arbitrary
+ * positions in the menu bar. If the position does not exist, a warning is logged.
  */
-function handleAdditions( config: RequitedMenuBarConfigObject ) {
-	const itemsToAdd = config.addItems;
+function handleAdditions(
+	originalConfig: RequitedMenuBarConfigObject,
+	config: RequitedMenuBarConfigObject
+) {
+	const itemsToBeAdded = config.addItems;
+	const successFullyAddedItems: typeof itemsToBeAdded = [];
 
-	for ( const itemToAdd of itemsToAdd ) {
+	for ( const itemToAdd of itemsToBeAdded ) {
 		const relation = getRelationFromPosition( itemToAdd.position );
 		const relativeId = getRelativeIdFromPosition( itemToAdd.position );
 
 		// Adding a menu.
 		if ( isMenuBarMenuAddition( itemToAdd ) ) {
-			// Adding a top-level menu at the beginning of the menu bar.
-			if ( relation === 'start' ) {
-				config.items.unshift( itemToAdd.menu );
-			}
-			// Adding a top-level menu at the end of the menu bar.
-			else if ( relation === 'end' ) {
-				config.items.push( itemToAdd.menu );
+			if ( !relativeId ) {
+				// Adding a top-level menu at the beginning of the menu bar.
+				if ( relation === 'start' ) {
+					config.items.unshift( itemToAdd.menu );
+					successFullyAddedItems.push( itemToAdd );
+				}
+				// Adding a top-level menu at the end of the menu bar.
+				else if ( relation === 'end' ) {
+					config.items.push( itemToAdd.menu );
+					successFullyAddedItems.push( itemToAdd );
+				}
 			} else {
 				const topLevelMenuDefinitionIndex = config.items.findIndex( menuDefinition => menuDefinition.menuId === relativeId );
 
@@ -715,13 +725,19 @@ function handleAdditions( config: RequitedMenuBarConfigObject ) {
 				if ( topLevelMenuDefinitionIndex != -1 ) {
 					if ( relation === 'before' ) {
 						config.items.splice( topLevelMenuDefinitionIndex, 0, itemToAdd.menu );
+						successFullyAddedItems.push( itemToAdd );
 					} else if ( relation === 'after' ) {
 						config.items.splice( topLevelMenuDefinitionIndex + 1, 0, itemToAdd.menu );
+						successFullyAddedItems.push( itemToAdd );
 					}
 				}
-				// Adding a menu to an existing items group.
+				// Adding a sub-menu to an existing items group.
 				else {
-					addMenuOrItemToGroup( config, itemToAdd.menu, relativeId, relation );
+					const wasAdded = addMenuOrItemToGroup( config, itemToAdd.menu, relativeId, relation );
+
+					if ( wasAdded ) {
+						successFullyAddedItems.push( itemToAdd );
+					}
 				}
 			}
 		}
@@ -732,10 +748,12 @@ function handleAdditions( config: RequitedMenuBarConfigObject ) {
 					// Add a group at the start of a menu.
 					if ( relation === 'start' ) {
 						menuDefinition.groups.unshift( itemToAdd.group );
+						successFullyAddedItems.push( itemToAdd );
 					}
 					// Add a group at the end of a menu.
 					else if ( relation === 'end' ) {
 						menuDefinition.groups.push( itemToAdd.group );
+						successFullyAddedItems.push( itemToAdd );
 					}
 				} else {
 					const relativeGroupIndex = menuDefinition.groups.findIndex( group => group.groupId === relativeId );
@@ -744,10 +762,12 @@ function handleAdditions( config: RequitedMenuBarConfigObject ) {
 						// Add a group before an existing group in a menu.
 						if ( relation === 'before' ) {
 							menuDefinition.groups.splice( relativeGroupIndex, 0, itemToAdd.group );
+							successFullyAddedItems.push( itemToAdd );
 						}
 						// Add a group after an existing group in a menu.
 						else if ( relation === 'after' ) {
 							menuDefinition.groups.splice( relativeGroupIndex + 1, 0, itemToAdd.group );
+							successFullyAddedItems.push( itemToAdd );
 						}
 					}
 				}
@@ -755,43 +775,85 @@ function handleAdditions( config: RequitedMenuBarConfigObject ) {
 		}
 		// Adding an item to an existing items group.
 		else {
-			addMenuOrItemToGroup( config, itemToAdd.item, relativeId, relation );
+			const wasAdded = addMenuOrItemToGroup( config, itemToAdd.item, relativeId, relation );
+
+			if ( wasAdded ) {
+				successFullyAddedItems.push( itemToAdd );
+			}
+		}
+	}
+
+	for ( const addedItemConfig of itemsToBeAdded ) {
+		if ( !successFullyAddedItems.includes( addedItemConfig ) ) {
+			/**
+			 * There was a problem processing the configuration of the menu bar. The configured item could not be added
+			 * because the position it was supposed to be added to does not exist.
+			 *
+			 * This warning usually shows up when the {@link module:core/plugin~Plugin} which is supposed
+			 * to provide a menu bar item has not been loaded or there is a typo in the
+			 * {@link module:core/editor/editorconfig~EditorConfig#menuBar menu bar configuration}.
+			 *
+			 * @error menu-bar-item-could-not-be-removed
+			 * @param menuBarConfig The full configuration of the menu bar.
+			 * @param itemName The name of the item that was not removed from the menu bar.
+			 */
+			logWarning( 'menu-bar-item-could-not-be-added', {
+				menuBarConfig: originalConfig,
+				addedItemConfig
+			} );
 		}
 	}
 }
 
+/**
+ * Handles adding a sub-menu or an item into a group. The logic is the same for both cases.
+ */
 function addMenuOrItemToGroup(
 	config: RequitedMenuBarConfigObject,
 	itemOrMenuToAdd: string | MenuBarMenuDefinition,
-	relativeId: string, relation: 'start' | 'end' | 'before' | 'after'
-) {
+	relativeId: string | null,
+	relation: 'start' | 'end' | 'before' | 'after'
+): boolean {
+	let wasAdded = false;
+
 	walkConfigMenus( config.items, menuDefinition => {
 		for ( const { groupId, items: groupItems } of menuDefinition.groups ) {
+			// Avoid infinite loops.
+			if ( wasAdded ) {
+				return;
+			}
+
 			if ( groupId === relativeId ) {
 				// Adding an item/menu at the beginning of a group.
 				if ( relation === 'start' ) {
 					groupItems.unshift( itemOrMenuToAdd );
+					wasAdded = true;
 				}
 				// Adding an item/menu at the end of a group.
 				else if ( relation === 'end' ) {
 					groupItems.push( itemOrMenuToAdd );
+					wasAdded = true;
 				}
 			} else {
 				// Adding an item/menu relative to an existing item/menu.
-				for ( const groupItem of groupItems ) {
-					const itemOrMenuId = getIdFromGroupItem( groupItem );
+				const relativeItemIndex = groupItems.findIndex( groupItem => {
+					return getIdFromGroupItem( groupItem ) === relativeId;
+				} );
 
-					if ( itemOrMenuId === relativeId ) {
-						if ( relation === 'before' ) {
-							groupItems.splice( groupItems.indexOf( groupItem ), 0, itemOrMenuToAdd );
-						} else if ( relation === 'after' ) {
-							groupItems.splice( groupItems.indexOf( groupItem ) + 1, 0, itemOrMenuToAdd );
-						}
+				if ( relativeItemIndex !== -1 ) {
+					if ( relation === 'before' ) {
+						groupItems.splice( relativeItemIndex, 0, itemOrMenuToAdd );
+						wasAdded = true;
+					} else if ( relation === 'after' ) {
+						groupItems.splice( relativeItemIndex + 1, 0, itemOrMenuToAdd );
+						wasAdded = true;
 					}
 				}
 			}
 		}
 	} );
+
+	return wasAdded;
 }
 
 /**
@@ -1003,8 +1065,14 @@ function getRelationFromPosition( position: MenuBarConfigAddedPosition ): 'start
 	}
 }
 
-function getRelativeIdFromPosition( position: MenuBarConfigAddedPosition ): string {
-	return position.replace( /^[^:]+:/g, '' );
+function getRelativeIdFromPosition( position: MenuBarConfigAddedPosition ): string | null {
+	const match = position.match( /^[^:]+:(.+)/ );
+
+	if ( match ) {
+		return match[ 1 ];
+	}
+
+	return null;
 }
 
 function getIdFromGroupItem( item: string | MenuBarMenuDefinition ): string {

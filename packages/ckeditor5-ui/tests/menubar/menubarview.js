@@ -644,10 +644,6 @@ describe( 'MenuBarView', () => {
 
 					menuBarView.destroy();
 				} );
-
-				describe( 'adding items via config.menuBar.addItems', () => {
-
-				} );
 			} );
 
 			describe( 'default config', () => {
@@ -898,6 +894,730 @@ describe( 'MenuBarView', () => {
 					sinon.assert.calledOnceWithExactly( console.warn, 'menu-bar-item-could-not-be-removed', {
 						menuBarConfig: sinon.match.object,
 						itemName: 'doesNotExist'
+					}, sinon.match.string );
+
+					menuBarView.destroy();
+				} );
+			} );
+
+			describe( 'adding items via config.menuBar.addItems', () => {
+				describe( 'adding a top-level menu', () => {
+					it( 'should be possible at the beginning of the bar', () => {
+						const locale = new Locale();
+						const menuBarView = new MenuBarView( locale );
+
+						factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
+						factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
+
+						menuBarView.fillFromConfig( {
+							addItems: [
+								{
+									menu: {
+										menuId: 'MY',
+										label: 'My menu',
+										groups: [
+											{
+												groupId: 'MY1',
+												items: [ 'menuBar:italic' ]
+											}
+										]
+									},
+									position: 'start'
+								}
+							]
+						}, factory );
+
+						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+							{
+								label: 'My menu', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'menuBar:italic', isFocused: false }
+								]
+							},
+							{
+								label: 'Format', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'menuBar:bold', isFocused: false },
+									{ label: 'menuBar:italic', isFocused: false }
+								]
+							}
+						] );
+
+						menuBarView.destroy();
+					} );
+
+					it( 'should be possible at the end of the bar', () => {
+						const locale = new Locale();
+						const menuBarView = new MenuBarView( locale );
+
+						factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
+						factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
+
+						menuBarView.fillFromConfig( {
+							addItems: [
+								{
+									menu: {
+										menuId: 'MY',
+										label: 'My menu',
+										groups: [
+											{
+												groupId: 'MY1',
+												items: [ 'menuBar:italic' ]
+											}
+										]
+									},
+									position: 'end'
+								}
+							]
+						}, factory );
+
+						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+							{
+								label: 'Format', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'menuBar:bold', isFocused: false },
+									{ label: 'menuBar:italic', isFocused: false }
+								]
+							},
+							{
+								label: 'My menu', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'menuBar:italic', isFocused: false }
+								]
+							}
+						] );
+
+						menuBarView.destroy();
+					} );
+
+					it( 'should be possible before another top-level menu', () => {
+						const locale = new Locale();
+						const menuBarView = new MenuBarView( locale );
+
+						factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
+						factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
+						factory.add( 'menuBar:blockQuote', getButtonCreator( 'menuBar:blockQuote', locale ) );
+
+						menuBarView.fillFromConfig( {
+							addItems: [
+								{
+									menu: {
+										menuId: 'MY',
+										label: 'My menu',
+										groups: [
+											{
+												groupId: 'MY1',
+												items: [ 'menuBar:italic' ]
+											}
+										]
+									},
+									position: 'beofre:format'
+								}
+							]
+						}, factory );
+
+						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+							{
+								label: 'Insert', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'menuBar:blockQuote', isFocused: false }
+								]
+							},
+							{
+								label: 'My menu', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'menuBar:italic', isFocused: false }
+								]
+							},
+							{
+								label: 'Format', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'menuBar:bold', isFocused: false },
+									{ label: 'menuBar:italic', isFocused: false }
+								]
+							}
+
+						] );
+
+						menuBarView.destroy();
+					} );
+
+					it( 'should be possible after another top-level menu', () => {
+						const locale = new Locale();
+						const menuBarView = new MenuBarView( locale );
+
+						factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
+						factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
+						factory.add( 'menuBar:blockQuote', getButtonCreator( 'menuBar:blockQuote', locale ) );
+
+						menuBarView.fillFromConfig( {
+							addItems: [
+								{
+									menu: {
+										menuId: 'MY',
+										label: 'My menu',
+										groups: [
+											{
+												groupId: 'MY1',
+												items: [ 'menuBar:italic' ]
+											}
+										]
+									},
+									position: 'after:insert'
+								}
+							]
+						}, factory );
+
+						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+							{
+								label: 'Insert', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'menuBar:blockQuote', isFocused: false }
+								]
+							},
+							{
+								label: 'My menu', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'menuBar:italic', isFocused: false }
+								]
+							},
+							{
+								label: 'Format', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'menuBar:bold', isFocused: false },
+									{ label: 'menuBar:italic', isFocused: false }
+								]
+							}
+
+						] );
+
+						menuBarView.destroy();
+					} );
+				} );
+
+				describe( 'adding a sub-menu', () => {
+					it( 'should be possible at the beginning of the group', () => {
+						const locale = new Locale();
+						const menuBarView = new MenuBarView( locale );
+
+						factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
+						factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
+
+						menuBarView.fillFromConfig( {
+							addItems: [
+								{
+									menu: {
+										menuId: 'MY',
+										label: 'My menu',
+										groups: [
+											{
+												groupId: 'MY1',
+												items: [ 'menuBar:italic' ]
+											}
+										]
+									},
+									position: 'start:basicStyles'
+								}
+							]
+						}, factory );
+
+						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+							{
+								label: 'Format', isOpen: true, isFocused: false,
+								items: [
+									{
+										label: 'My menu', isOpen: true, isFocused: false,
+										items: [
+											{ label: 'menuBar:italic', isFocused: false }
+										]
+									},
+									{ label: 'menuBar:bold', isFocused: false },
+									{ label: 'menuBar:italic', isFocused: false }
+								]
+							}
+
+						] );
+
+						menuBarView.destroy();
+					} );
+
+					it( 'should be possible at the beginning end the group', () => {
+						const locale = new Locale();
+						const menuBarView = new MenuBarView( locale );
+
+						factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
+						factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
+
+						menuBarView.fillFromConfig( {
+							addItems: [
+								{
+									menu: {
+										menuId: 'MY',
+										label: 'My menu',
+										groups: [
+											{
+												groupId: 'MY1',
+												items: [ 'menuBar:italic' ]
+											}
+										]
+									},
+									position: 'end:basicStyles'
+								}
+							]
+						}, factory );
+
+						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+							{
+								label: 'Format', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'menuBar:bold', isFocused: false },
+									{ label: 'menuBar:italic', isFocused: false },
+									{
+										label: 'My menu', isOpen: true, isFocused: false,
+										items: [
+											{ label: 'menuBar:italic', isFocused: false }
+										]
+									}
+								]
+							}
+
+						] );
+
+						menuBarView.destroy();
+					} );
+
+					it( 'should be possible before another item', () => {
+						const locale = new Locale();
+						const menuBarView = new MenuBarView( locale );
+
+						factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
+						factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
+
+						menuBarView.fillFromConfig( {
+							addItems: [
+								{
+									menu: {
+										menuId: 'MY',
+										label: 'My menu',
+										groups: [
+											{
+												groupId: 'MY1',
+												items: [ 'menuBar:italic' ]
+											}
+										]
+									},
+									position: 'after:menuBar:bold'
+								}
+							]
+						}, factory );
+
+						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+							{
+								label: 'Format', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'menuBar:bold', isFocused: false },
+									{
+										label: 'My menu', isOpen: true, isFocused: false,
+										items: [
+											{ label: 'menuBar:italic', isFocused: false }
+										]
+									},
+									{ label: 'menuBar:italic', isFocused: false }
+								]
+							}
+
+						] );
+
+						menuBarView.destroy();
+					} );
+
+					it( 'should be possible after another item', () => {
+						const locale = new Locale();
+						const menuBarView = new MenuBarView( locale );
+
+						factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
+						factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
+
+						menuBarView.fillFromConfig( {
+							addItems: [
+								{
+									menu: {
+										menuId: 'MY',
+										label: 'My menu',
+										groups: [
+											{
+												groupId: 'MY1',
+												items: [ 'menuBar:italic' ]
+											}
+										]
+									},
+									position: 'before:menuBar:italic'
+								}
+							]
+						}, factory );
+
+						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+							{
+								label: 'Format', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'menuBar:bold', isFocused: false },
+									{
+										label: 'My menu', isOpen: true, isFocused: false,
+										items: [
+											{ label: 'menuBar:italic', isFocused: false }
+										]
+									},
+									{ label: 'menuBar:italic', isFocused: false }
+								]
+							}
+
+						] );
+
+						menuBarView.destroy();
+					} );
+				} );
+
+				describe( 'adding a group', () => {
+					it( 'should be possible at the beginning of the menu', () => {
+						const locale = new Locale();
+						const menuBarView = new MenuBarView( locale );
+
+						factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
+						factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
+
+						menuBarView.fillFromConfig( {
+							addItems: [
+								{
+									group: {
+										groupId: 'MY',
+										items: [
+											'menuBar:italic'
+										]
+									},
+									position: 'start:format'
+								}
+							]
+						}, factory );
+
+						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+							{
+								label: 'Format', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'menuBar:italic', isFocused: false },
+									'-',
+									{ label: 'menuBar:bold', isFocused: false },
+									{ label: 'menuBar:italic', isFocused: false }
+								]
+							}
+
+						] );
+
+						menuBarView.destroy();
+					} );
+
+					it( 'should be possible at the beginning end the menu', () => {
+						const locale = new Locale();
+						const menuBarView = new MenuBarView( locale );
+
+						factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
+						factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
+
+						menuBarView.fillFromConfig( {
+							addItems: [
+								{
+									group: {
+										groupId: 'MY',
+										items: [
+											'menuBar:italic'
+										]
+									},
+									position: 'end:format'
+								}
+							]
+						}, factory );
+
+						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+							{
+								label: 'Format', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'menuBar:bold', isFocused: false },
+									{ label: 'menuBar:italic', isFocused: false },
+									'-',
+									{ label: 'menuBar:italic', isFocused: false }
+								]
+							}
+
+						] );
+
+						menuBarView.destroy();
+					} );
+
+					it( 'should be possible before another group', () => {
+						const locale = new Locale();
+						const menuBarView = new MenuBarView( locale );
+
+						factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
+						factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
+
+						menuBarView.fillFromConfig( {
+							addItems: [
+								{
+									group: {
+										groupId: 'MY',
+										items: [
+											'menuBar:italic'
+										]
+									},
+									position: 'before:basicStyles'
+								}
+							]
+						}, factory );
+
+						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+							{
+								label: 'Format', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'menuBar:italic', isFocused: false },
+									'-',
+									{ label: 'menuBar:bold', isFocused: false },
+									{ label: 'menuBar:italic', isFocused: false }
+								]
+							}
+
+						] );
+
+						menuBarView.destroy();
+					} );
+
+					it( 'should be possible after another group', () => {
+						const locale = new Locale();
+						const menuBarView = new MenuBarView( locale );
+
+						factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
+						factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
+
+						menuBarView.fillFromConfig( {
+							addItems: [
+								{
+									group: {
+										groupId: 'MY',
+										items: [
+											'menuBar:italic'
+										]
+									},
+									position: 'after:basicStyles'
+								}
+							]
+						}, factory );
+
+						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+							{
+								label: 'Format', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'menuBar:bold', isFocused: false },
+									{ label: 'menuBar:italic', isFocused: false },
+									'-',
+									{ label: 'menuBar:italic', isFocused: false }
+								]
+							}
+
+						] );
+
+						menuBarView.destroy();
+					} );
+				} );
+
+				describe( 'adding an item', () => {
+					it( 'should be possible at the beginning of the group', () => {
+						const locale = new Locale();
+						const menuBarView = new MenuBarView( locale );
+
+						factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
+						factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
+
+						menuBarView.fillFromConfig( {
+							addItems: [
+								{
+									item: 'menuBar:italic',
+									position: 'start:basicStyles'
+								}
+							]
+						}, factory );
+
+						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+							{
+								label: 'Format', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'menuBar:italic', isFocused: false },
+									{ label: 'menuBar:bold', isFocused: false },
+									{ label: 'menuBar:italic', isFocused: false }
+								]
+							}
+
+						] );
+
+						menuBarView.destroy();
+					} );
+
+					it( 'should be possible at the beginning end the group', () => {
+						const locale = new Locale();
+						const menuBarView = new MenuBarView( locale );
+
+						factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
+						factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
+
+						menuBarView.fillFromConfig( {
+							addItems: [
+								{
+									item: 'menuBar:italic',
+									position: 'end:basicStyles'
+								}
+							]
+						}, factory );
+
+						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+							{
+								label: 'Format', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'menuBar:bold', isFocused: false },
+									{ label: 'menuBar:italic', isFocused: false },
+									{ label: 'menuBar:italic', isFocused: false }
+								]
+							}
+						] );
+
+						menuBarView.destroy();
+					} );
+
+					it( 'should be possible before another item', () => {
+						const locale = new Locale();
+						const menuBarView = new MenuBarView( locale );
+
+						factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
+						factory.add( 'menuBar:blockQuote', getButtonCreator( 'menuBar:blockQuote', locale ) );
+
+						menuBarView.fillFromConfig( {
+							addItems: [
+								{
+									item: 'menuBar:bold',
+									position: 'before:menuBar:blockQuote'
+								}
+							]
+						}, factory );
+
+						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+							{
+								label: 'Insert', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'menuBar:bold', isFocused: false },
+									{ label: 'menuBar:blockQuote', isFocused: false }
+								]
+							},
+							{
+								label: 'Format', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'menuBar:bold', isFocused: false }
+								]
+							}
+						] );
+
+						menuBarView.destroy();
+					} );
+
+					it( 'should be possible after another item', () => {
+						const locale = new Locale();
+						const menuBarView = new MenuBarView( locale );
+
+						factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
+						factory.add( 'menuBar:blockQuote', getButtonCreator( 'menuBar:blockQuote', locale ) );
+
+						menuBarView.fillFromConfig( {
+							addItems: [
+								{
+									item: 'menuBar:bold',
+									position: 'after:menuBar:blockQuote'
+								}
+							]
+						}, factory );
+
+						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+							{
+								label: 'Insert', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'menuBar:blockQuote', isFocused: false },
+									{ label: 'menuBar:bold', isFocused: false }
+								]
+							},
+							{
+								label: 'Format', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'menuBar:bold', isFocused: false }
+								]
+							}
+						] );
+
+						menuBarView.destroy();
+					} );
+				} );
+
+				it( 'should warn if some objects could not be added', () => {
+					const locale = new Locale();
+					const menuBarView = new MenuBarView( locale );
+
+					testUtils.sinon.stub( console, 'warn' );
+
+					factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
+					factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
+
+					menuBarView.fillFromConfig( {
+						addItems: [
+							{
+								item: 'menuBar:italic',
+								position: 'doesNotExist'
+							},
+							{
+								group: {
+									groupId: 'MY',
+									items: [
+										'menuBar:italic'
+									]
+								},
+								position: 'doesNotExistEither'
+							}
+						]
+					}, factory );
+
+					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+						{
+							label: 'Format', isOpen: true, isFocused: false,
+							items: [
+								{ label: 'menuBar:bold', isFocused: false },
+								{ label: 'menuBar:italic', isFocused: false }
+							]
+						}
+					] );
+
+					sinon.assert.callCount( console.warn, 2 );
+
+					sinon.assert.calledWithExactly( console.warn.firstCall, 'menu-bar-item-could-not-be-added', {
+						menuBarConfig: sinon.match.object,
+						addedItemConfig: {
+							item: 'menuBar:italic',
+							position: 'doesNotExist'
+						}
+					}, sinon.match.string );
+
+					sinon.assert.calledWithExactly( console.warn.secondCall, 'menu-bar-item-could-not-be-added', {
+						menuBarConfig: sinon.match.object,
+						addedItemConfig: {
+							group: {
+								groupId: 'MY',
+								items: [
+									'menuBar:italic'
+								]
+							},
+							position: 'doesNotExistEither'
+						}
 					}, sinon.match.string );
 
 					menuBarView.destroy();
