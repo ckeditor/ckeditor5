@@ -24,12 +24,18 @@ import { build } from '@ckeditor/ckeditor5-dev-build-tools';
 
 	await build( {
 		input: 'src/index.ts',
-		sourceMap: true,
-		declarations: true,
-		translations: true,
-		clean: true,
 		tsconfig,
-		banner
+		banner,
+		sourceMap: true,
+
+		/**
+		 * Because this build runs first, it cleans up the old output folder
+		 * and generates TypeScript declarations and translation files.
+		 * We don't want to do this for other bundles.
+		 */
+		clean: true,
+		declarations: true,
+		translations: true
 	} );
 
 	/**
@@ -40,10 +46,10 @@ import { build } from '@ckeditor/ckeditor5-dev-build-tools';
 	await build( {
 		input: 'src/index.browser.ts',
 		output: 'dist/index.bundled.js',
-		sourceMap: true,
-		bundle: true,
 		tsconfig,
-		banner
+		banner,
+		sourceMap: true,
+		bundle: true
 	} );
 
 	/**
@@ -54,10 +60,10 @@ import { build } from '@ckeditor/ckeditor5-dev-build-tools';
 	await build( {
 		input: 'src/index.browser.ts',
 		output: 'dist/index.browser.js',
+		tsconfig,
+		banner,
 		sourceMap: true,
 		bundle: true,
-		minify: true,
-		tsconfig,
-		banner
+		minify: true
 	} );
 } )();
