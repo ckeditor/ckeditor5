@@ -20,7 +20,7 @@
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "41.1.0",
     "@ckeditor/ckeditor5-clipboard": "41.1.0",
-    "@ckeditor/ckeditor5-dev-build-tools": "0.1.0",
+    "@ckeditor/ckeditor5-dev-build-tools": "^39.7.0-alpha.0",
     "@ckeditor/ckeditor5-editor-classic": "41.1.0",
     "@ckeditor/ckeditor5-engine": "41.1.0",
     "@ckeditor/ckeditor5-enter": "41.1.0",
@@ -52,6 +52,6 @@
   ],
   "scripts": {
     "build": "tsc -p ./tsconfig.json",
-    "build:node": "ckeditor5-build-package --tsconfig=tsconfig.kowalski.json --clean --source-map --declarations --banner=../../scripts/banner.mjs"
+    "build:node": "ckeditor5-dev-build-tools --tsconfig=tsconfig.kowalski.json --clean --source-map --declarations --banner=../../scripts/banner.mjs"
   }
 }
