@@ -47,7 +47,7 @@ import type {
 	DocumentList,
 	DocumentListProperties,
 	TodoDocumentList
-} from '.';
+} from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
   interface EditorConfig {
