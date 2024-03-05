@@ -184,15 +184,21 @@ export default class ClipboardMarkersUtils extends Plugin {
 		const copyableMarkers = this._getCopyableMarkersFromRangeMap( markers );
 
 		return this.editor.model.change( writer => {
+			// Inserts fake markers into source fragment / element that is later transformed inside `getPastedDocumentElement`.
 			const sourceFragmentFakeMarkers = this._insertFakeMarkersElements( writer, copyableMarkers );
+
+			// Modifies document fragment ( for example clone of table cells is performed ) and then inserts it into document.
 			const transformedElement = getPastedDocumentElement( writer );
+
+			// Removes markers in pasted and transformed fragment in root document.
 			const removedFakeMarkers = this._removeFakeMarkersInsideElement( writer, transformedElement );
 
-			// Cleanup fake markers inserted into transformed element.
+			// Cleanup fake markers inserted into source fragment ( that one before transformation which is not pasted ).
 			for ( const element of Object.values( sourceFragmentFakeMarkers ).flat() ) {
 				writer.remove( element );
 			}
 
+			// Inserts to root document fake markers.
 			for ( const [ markerName, range ] of Object.entries( removedFakeMarkers ) ) {
 				const uniqueName = writer.model.markers.has( markerName ) ? this._getUniqueMarkerName( markerName ) : markerName;
 
