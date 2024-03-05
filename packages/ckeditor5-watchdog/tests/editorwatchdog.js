@@ -211,6 +211,28 @@ describe( 'EditorWatchdog', () => {
 
 			await watchdog.destroy();
 		} );
+
+		it( 'should create an editor instance after destroying the previous one', async () => {
+			const watchdog = new EditorWatchdog( ClassicTestEditor );
+
+			await watchdog.create( element, {
+				initialData: '<p>foo</p>',
+				plugins: [ Paragraph ]
+			} );
+
+			// Do not wait for the destruction process to finish.
+			watchdog.destroy();
+
+			await watchdog.create( element, {
+				initialData: '<p>foo</p>',
+				plugins: [ Paragraph ]
+			} );
+
+			expect( watchdog.editor ).to.not.be.null;
+			expect( watchdog.state ).to.equal( 'ready' );
+
+			await watchdog.destroy();
+		} );
 	} );
 
 	describe( 'editor', () => {
@@ -1246,6 +1268,21 @@ describe( 'EditorWatchdog', () => {
 			await watchdog.destroy();
 
 			sinon.assert.calledTwice( spy );
+		} );
+
+		it( 'should destroy the editor after finishing initialization', async () => {
+			const watchdog = new EditorWatchdog( ClassicTestEditor );
+
+			// Do not wait for the creation process to finish.
+			watchdog.create( element, {
+				initialData: '<p>foo</p>',
+				plugins: [ Paragraph ]
+			} );
+
+			await watchdog.destroy();
+
+			expect( watchdog.editor ).to.equal( null );
+			expect( watchdog.state ).to.equal( 'destroyed' );
 		} );
 	} );
 

@@ -39,6 +39,14 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 	private _editor: TEditor | null = null;
 
 	/**
+	 * Representing the processing of the editor (creation or destruction).
+	 *
+	 * It is used to prevent the initialization of the editor if the previous instance has not been destroyed yet,
+	 * and conversely, to prevent the destruction of the editor if it has not been initialized.
+	 */
+	private _editorProcessing: Promise<unknown> | null = null;
+
+	/**
 	 * Throttled save method. The `save()` method is called the specified `saveInterval` after `throttledSave()` is called,
 	 * unless a new action happens in the meantime.
 	 */
@@ -249,7 +257,10 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 		config: EditorConfig = this._config!,
 		context?: Context
 	): Promise<unknown> {
-		return Promise.resolve()
+		const currentProcessing = this._editorProcessing;
+
+		this._editorProcessing = Promise.resolve()
+			.then( () => currentProcessing )
 			.then( () => {
 				super._startErrorHandling();
 
@@ -282,7 +293,11 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 
 				this.state = 'ready';
 				this._fire( 'stateChange' );
+			} ).finally( () => {
+				this._editorProcessing = null;
 			} );
+
+		return this._editorProcessing;
 	}
 
 	/**
@@ -291,7 +306,10 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 	 * It also sets the state to `destroyed`.
 	 */
 	public override destroy(): Promise<unknown> {
-		return Promise.resolve()
+		const currentProcessing = this._editorProcessing;
+
+		this._editorProcessing = Promise.resolve()
+			.then( () => currentProcessing )
 			.then( () => {
 				this.state = 'destroyed';
 				this._fire( 'stateChange' );
@@ -299,7 +317,11 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 				super.destroy();
 
 				return this._destroy();
+			} ).finally( () => {
+				this._editorProcessing = null;
 			} );
+
+		return this._editorProcessing;
 	}
 
 	private _destroy(): Promise<unknown> {
