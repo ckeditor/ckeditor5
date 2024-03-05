@@ -13,9 +13,9 @@ import { Plugin, type NonEmptyArray } from '@ckeditor/ckeditor5-core';
 
 import {
 	Range,
+	type DocumentFragment,
 	type Position,
 	type Element,
-	type DocumentFragment,
 	type DocumentSelection,
 	type Selection,
 	type Writer,
@@ -135,6 +135,7 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 *
 	 * 	* `markers` are inserted into the same element that must be later transformed inside `getPastedDocumentElement`.
 	 * 	* Fake marker elements inside `getPastedDocumentElement` can be cloned, but their ranges cannot overlap.
+	 * 	* If `regenerateMarkerIdsOnPaste` is `true` in marker config is true then associated marker id is regenerated before pasting.
 	 *
 	 * @param action Type of clipboard action.
 	 * @param markers Object that maps marker name to corresponding range.
@@ -145,11 +146,11 @@ export default class ClipboardMarkersUtils extends Plugin {
 		markers: Record<string, Range> | Map<string, Range>,
 		getPastedDocumentElement: ( writer: Writer ) => Element
 	): Element {
-		const copyableMarkers = this._getCopyableMarkersFromRangeMap( markers );
+		const pasteMarkers = this._getPasteMarkersFromRangeMap( markers );
 
 		return this.editor.model.change( writer => {
 			// Inserts fake markers into source fragment / element that is later transformed inside `getPastedDocumentElement`.
-			const sourceFragmentFakeMarkers = this._insertFakeMarkersElements( writer, copyableMarkers );
+			const sourceFragmentFakeMarkers = this._insertFakeMarkersElements( writer, pasteMarkers );
 
 			// Modifies document fragment ( for example clone of table cells is performed ) and then inserts it into document.
 			const transformedElement = getPastedDocumentElement( writer );
@@ -164,9 +165,11 @@ export default class ClipboardMarkersUtils extends Plugin {
 
 			// Inserts to root document fake markers.
 			for ( const [ markerName, range ] of Object.entries( removedFakeMarkers ) ) {
-				const uniqueName = writer.model.markers.has( markerName ) ? this._getUniqueMarkerName( markerName ) : markerName;
+				if ( writer.model.markers.has( markerName ) ) {
+					continue;
+				}
 
-				writer.addMarker( uniqueName, {
+				writer.addMarker( markerName, {
 					usingOperation: true,
 					affectsData: true,
 					range
@@ -175,6 +178,26 @@ export default class ClipboardMarkersUtils extends Plugin {
 
 			return transformedElement;
 		} );
+	}
+
+	/**
+	 * Paste fragment with markers to document.
+	 * If `regenerateMarkerIdsOnPaste` is `true` in marker config is true then associated markers ids
+	 * are regenerated before pasting to avoid markers duplications in content.
+	 *
+	 * @param fragment Fragment that should contain already processed by pipeline markers.
+	 * @internal
+	 */
+	public _pasteFragmentWithMarkers( fragment: DocumentFragment ): Range {
+		const pasteMarkers = this._getPasteMarkersFromRangeMap( fragment.markers );
+
+		fragment.markers.clear();
+
+		for ( const copyableMarker of pasteMarkers ) {
+			fragment.markers.set( copyableMarker.name, copyableMarker.range );
+		}
+
+		return this.editor.model.insertContent( fragment );
 	}
 
 	/**
@@ -240,22 +263,6 @@ export default class ClipboardMarkersUtils extends Plugin {
 		const [ markerNamePrefix ] = markerName.split( ':' );
 
 		return this._markersToCopy.get( markerNamePrefix ) || null;
-	}
-
-	/**
-	 * Changes marker names for markers stored in given document fragment so that they are unique.
-	 *
-	 * @param fragment
-	 * @internal
-	 */
-	public _setUniqueMarkerNamesInFragment( fragment: DocumentFragment ): void {
-		const markers = Array.from( fragment.markers );
-
-		fragment.markers.clear();
-
-		for ( const [ name, range ] of markers ) {
-			fragment.markers.set( this._getUniqueMarkerName( name ), range );
-		}
 	}
 
 	/**
@@ -332,29 +339,38 @@ export default class ClipboardMarkersUtils extends Plugin {
 			.from( markersInRanges )
 			.filter( isSelectionMarkerCopyable )
 			.map( ( marker ): CopyableMarker => ( {
-				name: marker.name,
+				name: this._getUniqueMarkerName( marker.name ),
 				range: marker.getRange()
 			} ) );
 	}
 
 	/**
-	 * Picks all markers from markers map that can be copied.
+	 * Picks all markers from markers map that can be pasted.
+	 * If `regenerateMarkerIdsOnPaste` is true then regenerates their ids.
 	 *
 	 * @param markers Object that maps marker name to corresponding range.
 	 * @param action Type of clipboard action. If null then checks only if marker is registered as copyable.
 	 */
-	private _getCopyableMarkersFromRangeMap(
+	private _getPasteMarkersFromRangeMap(
 		markers: Record<string, Range> | Map<string, Range>,
 		action: ClipboardMarkerRestrictedAction | null = null
 	): Array<CopyableMarker> {
 		const entries = markers instanceof Map ? Array.from( markers.entries() ) : Object.entries( markers );
 
 		return entries
-			.map( ( [ markerName, range ] ): CopyableMarker => ( {
-				name: markerName,
-				range
-			} ) )
-			.filter( marker => this._isMarkerCopyable( marker.name, action ) );
+			.filter( ( [ markerName ] ) => this._isMarkerCopyable( markerName, action ) )
+			.map( ( [ markerName, range ] ): CopyableMarker => {
+				const copyMarkerConfig = this._getMarkerClipboardConfig( markerName )!;
+
+				if ( copyMarkerConfig.regenerateMarkerIdsOnPaste ) {
+					markerName = this._getUniqueMarkerName( markerName );
+				}
+
+				return {
+					name: markerName,
+					range
+				};
+			} );
 	}
 
 	/**
@@ -575,7 +591,16 @@ export type ClipboardMarkerRestrictedAction = 'copy' | 'cut' | 'dragstart';
  */
 export type ClipboardMarkerConfiguration = {
 	allowedActions: NonEmptyArray<ClipboardMarkerRestrictedAction> | 'all';
-	withPartiallySelected?: boolean; // If false, do not copy marker when only part of its content is selected.
+
+	// If false, do not copy marker when only part of its content is selected.
+	withPartiallySelected?: boolean;
+
+	// If true then every marker that is present in clipboard document fragment element obtain new generated id just before pasting.
+	// It means that it is possible to perform copy once and then paste it multiple times wherever we want.
+	//
+	// On the other hand if it has false value the marker will be pasted only first time.
+	// Second paste results in not pasting markers because their ids are already present on the list of root document markers.
+	regenerateMarkerIdsOnPaste?: boolean;
 };
 
 /**

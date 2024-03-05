@@ -275,11 +275,7 @@ export default class ClipboardPipeline extends Plugin {
 		}, { priority: 'low' } );
 
 		this.listenTo<ClipboardContentInsertionEvent>( this, 'contentInsertion', ( evt, data ) => {
-			clipboardMarkersUtils._setUniqueMarkerNamesInFragment( data.content );
-		}, { priority: 'highest' } );
-
-		this.listenTo<ClipboardContentInsertionEvent>( this, 'contentInsertion', ( evt, data ) => {
-			data.resultRange = model.insertContent( data.content );
+			data.resultRange = clipboardMarkersUtils._pasteFragmentWithMarkers( data.content );
 		}, { priority: 'low' } );
 	}
 
