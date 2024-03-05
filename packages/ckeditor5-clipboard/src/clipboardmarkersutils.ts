@@ -9,7 +9,7 @@
 import { mapValues } from 'lodash-es';
 
 import { uid } from '@ckeditor/ckeditor5-utils';
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type NonEmptyArray } from '@ckeditor/ckeditor5-core';
 
 import {
 	Range,
@@ -50,44 +50,8 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 * @param presetOrConfig Preset or configuration that describes what can be performed on specified marker.
 	 * @internal
 	 */
-	public _registerMarkerToCopy(
-		markerName: string,
-		presetOrConfig: ClipboardMarkerActionsPreset | ClipboardMarkerConfiguration
-	): void {
-		const config = typeof presetOrConfig === 'string' ? {
-			allowedActions: this._getAllowedActionsInPreset( presetOrConfig )
-		} : presetOrConfig;
-
-		if ( config.allowedActions.length ) {
-			this._markersToCopy.set( markerName, config );
-		}
-	}
-
-	/**
-	 * Maps preset into array of clipboard operations to be allowed on marker.
-	 *
-	 * @param preset Restrictions preset to be mapped to actions
-	 * @internal
-	 */
-	private _getAllowedActionsInPreset( preset: ClipboardMarkerActionsPreset ): Array<ClipboardMarkerRestrictedAction> {
-		switch ( preset ) {
-			case 'always':
-				return [ 'copy', 'cut', 'dragstart' ];
-
-			case 'default':
-				return [ 'cut', 'dragstart' ];
-
-			case 'never':
-				return [];
-
-			default: {
-				// Skip unrecognized type.
-				// eslint-disable-next-line @typescript-eslint/no-unused-vars
-				const unreachable: never = preset;
-
-				return [];
-			}
-		}
+	public _registerMarkerToCopy( markerName: string, config: ClipboardMarkerConfiguration ): void {
+		this._markersToCopy.set( markerName, config );
 	}
 
 	/**
@@ -222,14 +186,14 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 *
 	 * @param markerName Which markers should be copied.
 	 * @param executor Callback executed.
-	 * @param config Additional configuration flags used by copy (such as partial copy flag).
+	 * @param config Additional configuration flags used by copy (such like partial copy flag).
 	 * @internal
 	 */
 	public _forceMarkersCopy( markerName: string, executor: VoidFunction, config?: ClipboardMarkerConfiguration ): void {
 		const before = this._markersToCopy.get( markerName );
 
 		this._markersToCopy.set( markerName, {
-			allowedActions: this._getAllowedActionsInPreset( 'always' ),
+			allowedActions: 'all',
 			...config
 		} );
 
@@ -261,7 +225,9 @@ export default class ClipboardMarkersUtils extends Plugin {
 			return true;
 		}
 
-		return config.allowedActions.includes( action );
+		const { allowedActions } = config;
+
+		return allowedActions === 'all' || allowedActions.includes( action );
 	}
 
 	/**
@@ -601,24 +567,12 @@ export default class ClipboardMarkersUtils extends Plugin {
 export type ClipboardMarkerRestrictedAction = 'copy' | 'cut' | 'dragstart';
 
 /**
- * Specifies copy, paste or move marker restrictions in clipboard. Depending on specified mode
- * it will disallow copy, cut or paste of marker in clipboard.
- *
- * 	* `'default'` - the markers will be preserved on cut-paste and drag and drop actions only.
- * 	* `'always'` - the markers will be preserved on all clipboard actions (cut, copy, drag and drop).
- * 	* `'never'` - the markers will be ignored by clipboard.
- *
- * @internal
- */
-export type ClipboardMarkerActionsPreset = 'default' | 'always' | 'never';
-
-/**
  * Specifies behavior of markers during clipboard actions.
  *
  * @internal
  */
 export type ClipboardMarkerConfiguration = {
-	allowedActions: Array<ClipboardMarkerRestrictedAction>;
+	allowedActions: NonEmptyArray<ClipboardMarkerRestrictedAction> | 'all';
 	withPartiallySelected?: boolean; // If false, do not copy marker when only part of its content is selected.
 };
 

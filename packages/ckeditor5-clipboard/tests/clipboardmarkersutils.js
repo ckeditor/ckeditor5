@@ -500,9 +500,7 @@ describe( 'Clipboard Markers Utils', () => {
 				expect( model.markers.has( 'comment:test:pasted' ) ).to.false;
 			} );
 		}
-	} );
 
-	describe( 'Copy if partially selected flag', () => {
 		for ( const preset of [ 'always', 'default' ] ) {
 			it( `should not copy partially selected markers in ${ preset } preset`, () => {
 				clipboardMarkersUtils._registerMarkerToCopy( 'comment', preset );
@@ -751,7 +749,9 @@ describe( 'Clipboard Markers Utils', () => {
 
 	describe( '_pasteMarkersIntoTransformedElement', () => {
 		beforeEach( () => {
-			clipboardMarkersUtils._registerMarkerToCopy( 'comment', 'always' );
+			clipboardMarkersUtils._registerMarkerToCopy( 'comment', {
+				allowedActions: 'all'
+			} );
 		} );
 
 		it( 'should preserve original marker name if it is not duplicated', () => {
