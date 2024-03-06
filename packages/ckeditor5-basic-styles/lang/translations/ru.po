@@ -47,20 +47,20 @@ msgstr "Надстрочный"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for making text italic."
 msgid "Italic text"
-msgstr ""
+msgstr "Текст курсивом"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving selection out of an inline code style."
 msgid "Move out of an inline code style"
-msgstr ""
+msgstr "Выйти из встроенного стиля кода"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for making text bold."
 msgid "Bold text"
-msgstr ""
+msgstr "Жирный текст"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for making text underlined."
 msgid "Underline text"
-msgstr ""
+msgstr "Подчеркнутый текст"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for making text strikethrough."
 msgid "Strikethrough text"
-msgstr ""
+msgstr "Зачеркнутый текст"

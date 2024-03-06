@@ -35,20 +35,20 @@ msgstr "Nhấn Enter để nhập vào sau hoặc nhấn Shift + Enter để nh�
 
 msgctxt "Accessibility help dialog section title for widget plugin keystrokes."
 msgid "Keystrokes that can be used when a widget is selected (for example: image, table, etc.)"
-msgstr ""
+msgstr "Tổ hợp phím mà bạn có thể dùng khi một tiện ích được chọn (ví dụ: hình ảnh, bảng, v.v.)"
 
 msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that inserts a paragraph after a widget."
 msgid "Insert a new paragraph directly after a widget"
-msgstr ""
+msgstr "Chèn đoạn văn mới ngay sau tiện ích"
 
 msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that inserts a paragraph before a widget."
 msgid "Insert a new paragraph directly before a widget"
-msgstr ""
+msgstr "Chèn đoạn văn mới ngay trước tiện ích"
 
 msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that moves the caret before a widget."
 msgid "Move the caret to allow typing directly before a widget"
-msgstr ""
+msgstr "Di chuyển dấu sót để cho phép nhập ngay trước một tiện ích"
 
 msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that moves the caret after a widget."
 msgid "Move the caret to allow typing directly after a widget"
-msgstr ""
+msgstr "Di chuyển dấu sót để cho phép nhập ngay sau một tiện ích"
