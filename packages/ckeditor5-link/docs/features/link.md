@@ -204,7 +204,7 @@ ClassicEditor
 ```
 
 <info-box warning>
-	Please keep in mind that customizing this list is at your own risk - adding unsafe protocols like `javascript` can lead to serious security vulnerabilities!
+	Please keep in mind that you customize this list at your own risk &ndash; adding unsafe protocols like `javascript` can lead to serious security vulnerabilities!
 </info-box>
 
 #### Adding attributes to links based on predefined rules (automatic decorators)

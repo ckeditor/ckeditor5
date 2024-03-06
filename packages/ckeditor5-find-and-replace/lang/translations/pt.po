@@ -35,7 +35,7 @@ msgstr "Resultado anterior"
 
 msgctxt "The label for the previous result button in the find and replace dropdown."
 msgid "Next result"
-msgstr "Próximo resultado"
+msgstr "Resultado seguinte"
 
 msgctxt "The label for the (single) replace action button in the find and replace dropdown."
 msgid "Replace"
@@ -55,7 +55,7 @@ msgstr "Apenas palavras inteiras"
 
 msgctxt "The label for the text replacement in the find and replace dropdown."
 msgid "Replace with…"
-msgstr "Substituir com..."
+msgstr "Substituir por..."
 
 msgctxt "An error text displayed when user attempted to find an empty text."
 msgid "Text to find must not be empty."
@@ -71,4 +71,4 @@ msgstr "Opções avançadas"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for opening the find and replace UI."
 msgid "Find in the document"
-msgstr ""
+msgstr "Localizar no documento"

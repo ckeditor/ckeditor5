@@ -55,8 +55,8 @@ msgstr "다운로드 가능"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for creating a link."
 msgid "Create link"
-msgstr ""
+msgstr "링크 생성"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving out of a link."
 msgid "Move out of a link"
-msgstr ""
+msgstr "링크 밖으로 이동"

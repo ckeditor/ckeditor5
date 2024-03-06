@@ -47,20 +47,20 @@ msgstr "Superscript"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for making text italic."
 msgid "Italic text"
-msgstr ""
+msgstr "Cursieve tekst"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving selection out of an inline code style."
 msgid "Move out of an inline code style"
-msgstr ""
+msgstr "Uit een stijl voor code op één regel gaan"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for making text bold."
 msgid "Bold text"
-msgstr ""
+msgstr "Vetgedrukte tekst"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for making text underlined."
 msgid "Underline text"
-msgstr ""
+msgstr "Onderstreepte tekst"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for making text strikethrough."
 msgid "Strikethrough text"
-msgstr ""
+msgstr "Doorgehaalde tekst"

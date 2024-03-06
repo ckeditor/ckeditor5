@@ -71,4 +71,4 @@ msgstr "Pokročilé nastavenia"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for opening the find and replace UI."
 msgid "Find in the document"
-msgstr ""
+msgstr "Nájsť v dokumente"

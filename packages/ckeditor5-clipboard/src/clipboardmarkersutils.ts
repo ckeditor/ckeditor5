@@ -6,13 +6,14 @@
 /**
  * @module clipboard/clipboardmarkersutils
  */
+import { mapValues } from 'lodash-es';
 
 import { uid } from '@ckeditor/ckeditor5-utils';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import {
 	Range,
-	type Marker,
+	type Position,
 	type Element,
 	type DocumentFragment,
 	type DocumentSelection,
@@ -32,13 +33,174 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 *
 	 * @internal
 	 */
-	private _markersToCopy: Map<string, Array<ClipboardMarkerAction>> = new Map();
+	private _markersToCopy: Map<string, Array<ClipboardMarkerRestrictedAction>> = new Map();
 
 	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
 		return 'ClipboardMarkersUtils' as const;
+	}
+
+	/**
+	 * Registers marker name as copyable in clipboard pipeline.
+	 *
+	 * @param markerName Name of marker that can be copied.
+	 * @param restrictions Preset or specified array of actions that can be performed on specified marker name.
+	 * @internal
+	 */
+	public _registerMarkerToCopy(
+		markerName: string,
+		restrictions: ClipboardMarkerRestrictionsPreset | Array<ClipboardMarkerRestrictedAction>
+	): void {
+		const allowedActions = Array.isArray( restrictions ) ? restrictions : this._mapRestrictionPresetToActions( restrictions );
+
+		if ( allowedActions.length ) {
+			this._markersToCopy.set( markerName, allowedActions );
+		}
+	}
+
+	/**
+	 * Maps preset into array of clipboard operations to be allowed on marker.
+	 *
+	 * @param preset Restrictions preset to be mapped to actions
+	 * @internal
+	 */
+	private _mapRestrictionPresetToActions( preset: ClipboardMarkerRestrictionsPreset ): Array<ClipboardMarkerRestrictedAction> {
+		switch ( preset ) {
+			case 'always':
+				return [ 'copy', 'cut', 'dragstart' ];
+
+			case 'default':
+				return [ 'cut', 'dragstart' ];
+
+			case 'never':
+				return [];
+
+			default: {
+				// Skip unrecognized type.
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
+				const unreachable: never = preset;
+				return [];
+			}
+		}
+	}
+
+	/**
+	 * Performs copy markers on provided selection and paste it to fragment returned from `getCopiedFragment`.
+	 *
+	 * 	1. Picks all markers in provided selection.
+	 * 	2. Inserts fake markers to document.
+	 * 	3. Gets copied selection fragment from document.
+	 * 	4. Removes fake elements from fragment and document.
+	 * 	5. Inserts markers in the place of removed fake markers.
+	 *
+	 * Due to selection modification, when inserting items, `getCopiedFragment` must *always* operate on `writer.model.document.selection'.
+	 * Do not use any other custom selection object within callback, as this will lead to out-of-bounds exceptions in rare scenarios.
+	 *
+	 * @param action Type of clipboard action.
+	 * @param writer An instance of the model writer.
+	 * @param selection Selection to be checked.
+	 * @param getCopiedFragment	Callback that performs copy of selection and returns it as fragment.
+	 * @internal
+	 */
+	public _copySelectedFragmentWithMarkers(
+		action: ClipboardMarkerRestrictedAction,
+		selection: Selection | DocumentSelection,
+		getCopiedFragment: ( writer: Writer ) => DocumentFragment = writer =>
+			writer.model.getSelectedContent( writer.model.document.selection )
+	): DocumentFragment {
+		return this.editor.model.change( writer => {
+			const oldSelection = writer.model.document.selection;
+
+			// In some scenarios, such like in drag & drop, passed `selection` parameter is not actually
+			// the same `selection` as the `writer.model.document.selection` which means that `_insertFakeMarkersToSelection`
+			// is not affecting passed `selection` `start` and `end` positions but rather modifies `writer.model.document.selection`.
+			//
+			// It is critical due to fact that when we have selection that starts [ 0, 0 ] and ends at [ 1, 0 ]
+			// and after inserting fake marker it will point to such marker instead of new widget position at start: [ 1, 0 ] end: [2, 0 ].
+			// `writer.insert` modifies only original `writer.model.document.selection`.
+			writer.setSelection( selection );
+
+			const sourceSelectionInsertedMarkers = this._insertFakeMarkersIntoSelection( writer, writer.model.document.selection, action );
+			const fragment = getCopiedFragment( writer );
+			const fakeMarkersRangesInsideRange = this._removeFakeMarkersInsideElement( writer, fragment );
+
+			// <fake-marker> [Foo] Bar</fake-marker>
+			//      ^                    ^
+			// In `_insertFakeMarkersIntoSelection` call we inserted fake marker just before first element.
+			// The problem is that the first element can be start position of selection so insertion fake-marker
+			// before such element shifts selection (so selection that was at [0, 0] now is at [0, 1]).
+			// It means that inserted fake-marker is no longer present inside such selection and is orphaned.
+			// This function checks special case of such problem. Markers that are orphaned at the start position
+			// and end position in the same time. Basically it means that they overlaps whole element.
+			for ( const [ markerName, elements ] of Object.entries( sourceSelectionInsertedMarkers ) ) {
+				fakeMarkersRangesInsideRange[ markerName ] ||= writer.createRangeIn( fragment );
+
+				for ( const element of elements ) {
+					writer.remove( element );
+				}
+			}
+
+			fragment.markers.clear();
+
+			for ( const [ markerName, range ] of Object.entries( fakeMarkersRangesInsideRange ) ) {
+				fragment.markers.set( markerName, range );
+			}
+
+			// Revert back selection to previous one.
+			writer.setSelection( oldSelection );
+
+			return fragment;
+		} );
+	}
+
+	/**
+	 * Performs paste of markers on already pasted element.
+	 *
+	 * 	1. Inserts fake markers that are present in fragment element (such fragment will be processed in `getPastedDocumentElement`).
+	 * 	2. Calls `getPastedDocumentElement` and gets element that is inserted into root model.
+	 * 	3. Removes all fake markers present in transformed element.
+	 * 	4. Inserts new markers with removed fake markers ranges into pasted fragment.
+	 *
+	 * There are multiple edge cases that have to be considered before calling this function:
+	 *
+	 * 	* `markers` are inserted into the same element that must be later transformed inside `getPastedDocumentElement`.
+	 * 	* Fake marker elements inside `getPastedDocumentElement` can be cloned, but their ranges cannot overlap.
+	 *
+	 * @param action Type of clipboard action.
+	 * @param markers Object that maps marker name to corresponding range.
+	 * @param getPastedDocumentElement Getter used to get target markers element.
+	 * @internal
+	 */
+	public _pasteMarkersIntoTransformedElement(
+		markers: Record<string, Range> | Map<string, Range>,
+		getPastedDocumentElement: ( writer: Writer ) => Element
+	): Element {
+		const copyableMarkers = this._getCopyableMarkersFromRangeMap( markers );
+
+		return this.editor.model.change( writer => {
+			const sourceFragmentFakeMarkers = this._insertFakeMarkersElements( writer, copyableMarkers );
+			const transformedElement = getPastedDocumentElement( writer );
+			const removedFakeMarkers = this._removeFakeMarkersInsideElement( writer, transformedElement );
+
+			// Cleanup fake markers inserted into transformed element.
+			for ( const element of Object.values( sourceFragmentFakeMarkers ).flat() ) {
+				writer.remove( element );
+			}
+
+			for ( const [ markerName, range ] of Object.entries( removedFakeMarkers ) ) {
+				const uniqueName = writer.model.markers.has( markerName ) ? this._getUniqueMarkerName( markerName ) : markerName;
+
+				writer.addMarker( uniqueName, {
+					usingOperation: true,
+					affectsData: true,
+					range
+				} );
+			}
+
+			return transformedElement;
+		} );
 	}
 
 	/**
@@ -55,7 +217,7 @@ export default class ClipboardMarkersUtils extends Plugin {
 	public _forceMarkersCopy( markerName: string, executor: VoidFunction ): void {
 		const before = this._markersToCopy.get( markerName );
 
-		this._markersToCopy.set( markerName, [ 'copy', 'cut', 'dragstart' ] );
+		this._markersToCopy.set( markerName, this._mapRestrictionPresetToActions( 'always' ) );
 
 		executor();
 
@@ -70,59 +232,19 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 * Checks if marker can be copied.
 	 *
 	 * @param markerName Name of checked marker.
+	 * @param action Type of clipboard action. If null then checks only if marker is registered as copyable.
 	 * @internal
 	 */
-	public _canPerformMarkerClipboardAction( markerName: string, action: ClipboardMarkerAction ): boolean {
+	public _canPerformMarkerClipboardAction( markerName: string, action: ClipboardMarkerRestrictedAction | null ): boolean {
 		const [ markerNamePrefix ] = markerName.split( ':' );
+
+		if ( !action ) {
+			return this._markersToCopy.has( markerNamePrefix );
+		}
+
 		const possibleActions = this._markersToCopy.get( markerNamePrefix ) || [];
 
 		return possibleActions.includes( action );
-	}
-
-	/**
-	 * Registers marker name as copyable in clipboard pipeline.
-	 *
-	 * @param markerName Name of marker that can be copied.
-	 * @param allowedActions List of allowed actions that can be performed on markers with specified name.
-	 * @internal
-	 */
-	public _registerMarkerToCopy( markerName: string, allowedActions: Array<ClipboardMarkerAction> ): void {
-		this._markersToCopy.set( markerName, allowedActions );
-	}
-
-	/**
-	 * Performs copy markers on provided selection and paste it to fragment returned from `getCopiedFragment`.
-	 *
-	 * 	1. Picks all markers in provided selection.
-	 * 	2. Inserts fake markers inside provided selection.
-	 * 	3. Gets copied selection fragment.
-	 * 	4. Removes fake elements from fragment.
-	 * 	5. Inserts markers on position of fake markers.
-	 *
-	 * @param action Type of clipboard action.
-	 * @param writer An instance of the model writer.
-	 * @param selection Selection to be checked.
-	 * @param getCopiedFragment	Callback that performs copy of selection and returns it as fragment.
-	 * @internal
-	 */
-	public _copySelectedFragmentWithMarkers(
-		action: ClipboardMarkerAction,
-		selection: Selection | DocumentSelection,
-		getCopiedFragment: ( writer: Writer ) => DocumentFragment = writer => writer.model.getSelectedContent( selection )
-	): DocumentFragment {
-		return this.editor.model.change( writer => {
-			const sourceSelectionInsertedMarkers = this._insertFakeMarkersToSelection( writer, selection, action );
-			const fragment = getCopiedFragment( writer );
-
-			this._hydrateCopiedFragmentWithMarkers( writer, fragment, sourceSelectionInsertedMarkers );
-
-			// Remove all fake markers elements
-			for ( const element of Array.from( sourceSelectionInsertedMarkers.values() ).flat() ) {
-				writer.remove( element );
-			}
-
-			return fragment;
-		} );
 	}
 
 	/**
@@ -150,45 +272,14 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 * @param selection Selection to be checked.
 	 * @param action Type of clipboard action.
 	 */
-	private _insertFakeMarkersToSelection(
+	private _insertFakeMarkersIntoSelection(
 		writer: Writer,
 		selection: Selection | DocumentSelection,
-		action: ClipboardMarkerAction
-	): Map<Marker, Array<Element>> {
+		action: ClipboardMarkerRestrictedAction
+	): Record<string, Array<Element>> {
 		const copyableMarkers = this._getCopyableMarkersFromSelection( writer, selection, action );
 
 		return this._insertFakeMarkersElements( writer, copyableMarkers );
-	}
-
-	/**
-	 * Calculates positions for marker ranges using fake markers that are present inside fragment. The markers are added to
-	 * `DocumentFragment#markers` property. It also removes `$marker` elements stored in `insertedFakeMarkersElements` from the model.
-	 *
-	 * @param writer An instance of the model writer.
-	 * @param fragment Document fragment to be checked.
-	 * @param insertedFakeMarkersElements Map of fake markers with corresponding fake elements.
-	 */
-	private _hydrateCopiedFragmentWithMarkers(
-		writer: Writer,
-		fragment: DocumentFragment,
-		insertedFakeMarkersElements: Map<Marker, Array<Element>>
-	): void {
-		const fakeMarkersRangesInsideRange = this._removeFakeMarkersInsideElement( writer, fragment );
-
-		for ( const [ marker, range ] of Object.entries( fakeMarkersRangesInsideRange ) ) {
-			fragment.markers.set( marker, range );
-		}
-
-		// <fake-marker> [Foo] Bar</fake-marker>
-		//      ^                    ^
-		// Handle case when selection is inside marker.
-		for ( const [ marker ] of insertedFakeMarkersElements.entries() ) {
-			if ( fakeMarkersRangesInsideRange[ marker.name ] ) {
-				continue;
-			}
-
-			fragment.markers.set( marker.name, writer.createRangeIn( fragment ) );
-		}
 	}
 
 	/**
@@ -196,16 +287,40 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 *
 	 * @param writer An instance of the model writer.
 	 * @param selection  Selection which will be checked.
-	 * @param action Type of clipboard action.
+	 * @param action Type of clipboard action. If null then checks only if marker is registered as copyable.
 	 */
 	private _getCopyableMarkersFromSelection(
 		writer: Writer,
 		selection: Selection | DocumentSelection,
-		action: ClipboardMarkerAction
-	): Array<Marker> {
+		action: ClipboardMarkerRestrictedAction | null
+	): Array<CopyableMarker> {
 		return Array
 			.from( selection.getRanges()! )
 			.flatMap( selectionRange => Array.from( writer.model.markers.getMarkersIntersectingRange( selectionRange ) ) )
+			.filter( marker => this._canPerformMarkerClipboardAction( marker.name, action ) )
+			.map( ( marker ): CopyableMarker => ( {
+				name: marker.name,
+				range: marker.getRange()
+			} ) );
+	}
+
+	/**
+	 * Picks all markers from markers map that can be copied.
+	 *
+	 * @param markers Object that maps marker name to corresponding range.
+	 * @param action Type of clipboard action. If null then checks only if marker is registered as copyable.
+	 */
+	private _getCopyableMarkersFromRangeMap(
+		markers: Record<string, Range> | Map<string, Range>,
+		action: ClipboardMarkerRestrictedAction | null = null
+	): Array<CopyableMarker> {
+		const entries = markers instanceof Map ? Array.from( markers.entries() ) : Object.entries( markers );
+
+		return entries
+			.map( ( [ markerName, range ] ): CopyableMarker => ( {
+				name: markerName,
+				range
+			} ) )
 			.filter( marker => this._canPerformMarkerClipboardAction( marker.name, action ) );
 	}
 
@@ -217,11 +332,11 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 * @param writer An instance of the model writer.
 	 * @param markers Array of markers that will be inserted.
 	 */
-	private _insertFakeMarkersElements( writer: Writer, markers: Array<Marker> ): Map<Marker, Array<Element>> {
-		const mappedMarkers = new Map<Marker, Array<Element>>();
+	private _insertFakeMarkersElements( writer: Writer, markers: Array<CopyableMarker> ): Record<string, Array<Element>> {
+		const mappedMarkers: Record<string, Array<Element>> = {};
 		const sortedMarkers = markers
 			.flatMap( marker => {
-				const { start, end } = marker.getRange();
+				const { start, end } = marker.range;
 
 				return [
 					{ position: start, marker, type: 'start' },
@@ -238,11 +353,11 @@ export default class ClipboardMarkersUtils extends Plugin {
 				'data-type': type
 			} );
 
-			if ( !mappedMarkers.has( marker ) ) {
-				mappedMarkers.set( marker, [] );
+			if ( !mappedMarkers[ marker.name ] ) {
+				mappedMarkers[ marker.name ] = [];
 			}
 
-			mappedMarkers.get( marker )!.push( fakeMarker );
+			mappedMarkers[ marker.name ]!.push( fakeMarker );
 			writer.insert( fakeMarker, position );
 		}
 
@@ -262,76 +377,129 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 * @param rootElement The element to be checked.
 	 */
 	private _removeFakeMarkersInsideElement( writer: Writer, rootElement: Element | DocumentFragment ): Record<string, Range> {
-		const fakeFragmentMarkersInMap = this._getAllFakeMarkersFromElement( writer, rootElement );
+		const fakeMarkersElements = this._getAllFakeMarkersFromElement( writer, rootElement );
+		const fakeMarkersRanges = fakeMarkersElements.reduce<Record<string, FakeMarkerRangeConstruct>>( ( acc, fakeMarker ) => {
+			const position = fakeMarker.markerElement && writer.createPositionBefore( fakeMarker.markerElement );
+			let prevFakeMarker: FakeMarkerRangeConstruct | null = acc[ fakeMarker.name ];
 
-		return Object
-			.entries( fakeFragmentMarkersInMap )
-			.reduce<Record<string, Range>>( ( acc, [ markerName, [ startElement, endElement ] ] ) => {
-				// Marker is not entire inside specified fragment but rather starts or ends inside it.
-				if ( !endElement ) {
-					const type = startElement.getAttribute( 'data-type' );
+			// Handle scenario when tables clone cells with the same fake node. Example:
+			//
+			// <cell><fake-marker-a></cell> <cell><fake-marker-a></cell> <cell><fake-marker-a></cell>
+			//                                          ^ cloned                    ^ cloned
+			//
+			// The easiest way to bypass this issue is to rename already existing in map nodes and
+			// set them new unique name.
+			if ( prevFakeMarker && prevFakeMarker.start && prevFakeMarker.end ) {
+				acc[ this._getUniqueMarkerName( fakeMarker.name ) ] = acc[ fakeMarker.name ];
+				prevFakeMarker = null;
+			}
 
-					if ( type === 'end' ) {
-						// <fake-marker> [ phrase</fake-marker> phrase ]
-						//   ^
-						// Handle case when marker is just before start of selection.
+			acc[ fakeMarker.name ] = {
+				...prevFakeMarker!,
+				[ fakeMarker.type ]: position
+			};
 
-						const endPosition = writer.createPositionAt( startElement, 'before' );
-						const startPosition = writer.createPositionFromPath( endPosition.root, [ 0 ] );
+			if ( fakeMarker.markerElement ) {
+				writer.remove( fakeMarker.markerElement );
+			}
 
-						writer.remove( startElement );
-						acc[ markerName ] = new Range( startPosition, endPosition );
-					} else {
-						// [<fake-marker>phrase]</fake-marker>
-						//                           ^
-						// Handle case when fake marker is after selection.
+			return acc;
+		}, {} );
 
-						const startPosition = writer.createPositionAt( startElement, 'before' );
-						writer.remove( startElement );
+		// We cannot construct ranges directly in previous reduce because element ranges can overlap.
+		// In other words lets assume we have such scenario:
 
-						const endPosition = writer.createPositionAt( rootElement, 'end' );
-						acc[ markerName ] = new Range( startPosition, endPosition );
-					}
-
-					return acc;
-				}
-
-				// [ foo <fake-marker>aaa</fake-marker> test ]
-				//                    ^
-				// Handle case when marker is between start and end of selection.
-				const startPosition = writer.createPositionAt( startElement, 'before' );
-				writer.remove( startElement );
-
-				const endPosition = writer.createPositionAt( endElement, 'before' );
-				writer.remove( endElement );
-
-				acc[ markerName ] = new Range( startPosition, endPosition );
-
-				return acc;
-			}, {} );
+		// <fake-marker-start /> <paragraph /> <fake-marker-2-start /> <fake-marker-end /> <fake-marker-2-end />
+		//
+		// We have to remove `fake-marker-start` firstly and then remove `fake-marker-2-start`.
+		// Removal of `fake-marker-2-start` affects `fake-marker-end` position so we cannot create
+		// connection between `fake-marker-start` and `fake-marker-end` without iterating whole set firstly.
+		return mapValues(
+			fakeMarkersRanges,
+			range => new Range(
+				range.start || writer.createPositionFromPath( rootElement, [ 0 ] ),
+				range.end || writer.createPositionAt( rootElement, 'end' )
+			)
+		);
 	}
 
 	/**
-	 * Returns object that contains mapping between marker names and corresponding `$marker` elements.
+	 * Returns array that contains list of fake markers with corresponding `$marker` elements.
 	 *
 	 * For each marker, there can be two `$marker` elements or only one (if the document fragment contained
 	 * only the beginning or only the end of a marker).
 	 *
 	 * @param writer An instance of the model writer.
-	 * @param element The element to be checked.
+	 * @param rootElement The element to be checked.
 	 */
-	private _getAllFakeMarkersFromElement( writer: Writer, element: Element | DocumentFragment ): Record<string, Array<Element>> {
-		return Array
-			.from( writer.createRangeIn( element ) )
-			.reduce<Record<string, Array<Element>>>( ( fakeMarkerElements, { item } ) => {
-				if ( item.is( 'element', '$marker' ) ) {
-					const fakeMarkerName = item.getAttribute( 'data-name' ) as string;
-
-					( fakeMarkerElements[ fakeMarkerName! ] ||= [] ).push( item );
+	private _getAllFakeMarkersFromElement( writer: Writer, rootElement: Element | DocumentFragment ): Array<FakeMarker> {
+		const foundFakeMarkers = Array
+			.from( writer.createRangeIn( rootElement ) )
+			.flatMap( ( { item } ): Array<FakeMarker> => {
+				if ( !item.is( 'element', '$marker' ) ) {
+					return [];
 				}
 
-				return fakeMarkerElements;
-			}, {} );
+				const name = item.getAttribute( 'data-name' ) as string;
+				const type = item.getAttribute( 'data-type' ) as 'start' | 'end';
+
+				return [
+					{
+						markerElement: item,
+						name,
+						type
+					}
+				];
+			} );
+
+		const prependFakeMarkers: Array<FakeMarker> = [];
+		const appendFakeMarkers: Array<FakeMarker> = [];
+
+		for ( const fakeMarker of foundFakeMarkers ) {
+			if ( fakeMarker.type === 'end' ) {
+				// <fake-marker> [ phrase</fake-marker> phrase ]
+				//   ^
+				// Handle case when marker is just before start of selection.
+				// Only end marker is inside selection.
+
+				const hasMatchingStartMarker = foundFakeMarkers.some(
+					otherFakeMarker => otherFakeMarker.name === fakeMarker.name && otherFakeMarker.type === 'start'
+				);
+
+				if ( !hasMatchingStartMarker ) {
+					prependFakeMarkers.push( {
+						markerElement: null,
+						name: fakeMarker.name,
+						type: 'start'
+					} );
+				}
+			}
+
+			if ( fakeMarker.type === 'start' ) {
+				// [<fake-marker>phrase]</fake-marker>
+				//                           ^
+				// Handle case when fake marker is after selection.
+				// Only start marker is inside selection.
+
+				const hasMatchingEndMarker = foundFakeMarkers.some(
+					otherFakeMarker => otherFakeMarker.name === fakeMarker.name && otherFakeMarker.type === 'end'
+				);
+
+				if ( !hasMatchingEndMarker ) {
+					appendFakeMarkers.unshift( {
+						markerElement: null,
+						name: fakeMarker.name,
+						type: 'end'
+					} );
+				}
+			}
+		}
+
+		return [
+			...prependFakeMarkers,
+			...foundFakeMarkers,
+			...appendFakeMarkers
+		];
 	}
 
 	/**
@@ -365,4 +533,49 @@ export default class ClipboardMarkersUtils extends Plugin {
  *
  * @internal
  */
-export type ClipboardMarkerAction = 'copy' | 'cut' | 'dragstart';
+export type ClipboardMarkerRestrictedAction = 'copy' | 'cut' | 'dragstart';
+
+/**
+ * Specifies copy, paste or move marker restrictions in clipboard. Depending on specified mode
+ * it will disallow copy, cut or paste of marker in clipboard.
+ *
+ * 	* `'default'` - the markers will be preserved on cut-paste and drag and drop actions only.
+ * 	* `'always'` - the markers will be preserved on all clipboard actions (cut, copy, drag and drop).
+ * 	* `'never'` - the markers will be ignored by clipboard.
+ *
+ * @internal
+ */
+export type ClipboardMarkerRestrictionsPreset = 'default' | 'always' | 'never';
+
+/**
+ * Marker descriptor type used to revert markers into tree node.
+ *
+ * @internal
+ */
+type FakeMarker = {
+	type: 'start' | 'end';
+	name: string;
+	markerElement: Element | null;
+};
+
+/**
+ * Range used to construct real markers from fake markers. Every property must be optional
+ * because real marker range is constructed using iteration over markers that represent `start`
+ * and then `end`. Usually `start` is set firstly then after few nodes `end` is set.
+ *
+ * @internal
+ */
+type FakeMarkerRangeConstruct = {
+	start: Position | null;
+	end: Position | null;
+};
+
+/**
+ * Structure used to describe marker that has to be copied.
+ *
+ * @internal
+ */
+type CopyableMarker = {
+	name: string;
+	range: Range;
+};

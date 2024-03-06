@@ -55,8 +55,8 @@ msgstr "Загружаемые"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for creating a link."
 msgid "Create link"
-msgstr ""
+msgstr "Создать ссылку"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving out of a link."
 msgid "Move out of a link"
-msgstr ""
+msgstr "Выйти из ссылки"

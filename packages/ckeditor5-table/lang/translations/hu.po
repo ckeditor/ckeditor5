@@ -255,20 +255,20 @@ msgstr "Táblázat feliratának megadása"
 
 msgctxt "Accessibility help dialog header text displayed before the list of keystrokes that can be used in a table cell."
 msgid "Keystrokes that can be used in a table cell"
-msgstr ""
+msgstr "Egy táblázatcellában használható billentyű leütések"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving the selection to the next cell."
 msgid "Move the selection to the next cell"
-msgstr ""
+msgstr "A kiválasztás átmozgatása a következő cellába"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving the selection to the previous cell."
 msgid "Move the selection to the previous cell"
-msgstr ""
+msgstr "A kiválasztás átmozgatása az előző cellába"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for inserting a new table row."
 msgid "Insert a new table row (when in the last cell of a table)"
-msgstr ""
+msgstr "Új sor beillesztése a táblázatba (a táblázat utolsó cellájában)"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the table."
 msgid "Navigate through the table"
-msgstr ""
+msgstr "Navigáció a táblázatban"

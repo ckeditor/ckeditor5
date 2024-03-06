@@ -35,20 +35,20 @@ msgstr "Pulse Intro para escribir después o pulse Mayús + Intro para escribir 
 
 msgctxt "Accessibility help dialog section title for widget plugin keystrokes."
 msgid "Keystrokes that can be used when a widget is selected (for example: image, table, etc.)"
-msgstr ""
+msgstr "Teclas que se pueden utilizar cuando se selecciona un módulo interactivo (por ejemplo: imagen, tabla, etc.)"
 
 msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that inserts a paragraph after a widget."
 msgid "Insert a new paragraph directly after a widget"
-msgstr ""
+msgstr "Inserta un nuevo párrafo directamente después de un módulo interactivo"
 
 msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that inserts a paragraph before a widget."
 msgid "Insert a new paragraph directly before a widget"
-msgstr ""
+msgstr "Inserta un nuevo párrafo directamente antes de un módulo interactivo"
 
 msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that moves the caret before a widget."
 msgid "Move the caret to allow typing directly before a widget"
-msgstr ""
+msgstr "Mueve el cursor para permitir escribir directamente antes de un módulo interactivo"
 
 msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that moves the caret after a widget."
 msgid "Move the caret to allow typing directly after a widget"
-msgstr ""
+msgstr "Mueve el cursor para permitir escribir directamente después de un módulo interactivo"

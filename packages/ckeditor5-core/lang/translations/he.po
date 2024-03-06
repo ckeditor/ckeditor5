@@ -79,40 +79,40 @@ msgstr "הפעל את הכיתוב"
 
 msgctxt "Accessibility help dialog category header text for keystrokes related to content creation."
 msgid "Content editing keystrokes"
-msgstr ""
+msgstr "מקשי עריכת תוכן"
 
 msgctxt "Accessibility help dialog text further explaining the purpose of the \"Content editing keystrokes\" category."
 msgid "These keyboard shortcuts allow for quick access to content editing features."
-msgstr ""
+msgstr "קיצורי מקשים אלה מאפשרים גישה מהירה לתכונות עריכת תוכן."
 
 msgctxt "Accessibility help dialog category header text for keystrokes related to navigation in the user interface."
 msgid "User interface and content navigation keystrokes"
-msgstr ""
+msgstr "ממשק משתמש ומקשים לניווט בתוכן"
 
 msgctxt "Accessibility help dialog text further explaining the purpose of the \"User interface and content navigation keystrokes\" category."
 msgid "Use the following keystrokes for more efficient navigation in the CKEditor 5 user interface."
-msgstr ""
+msgstr "השתמשו במקשים הבאים לניווט יעיל יותר בממשק המשתמש של CKEditor 5."
 
 msgctxt "Keystroke description for assistive technologies: keystroke for closing contextual balloons, dropdowns, and dialogs."
 msgid "Close contextual balloons, dropdowns, and dialogs"
-msgstr ""
+msgstr "סגירת בלוני הקשר, תפריטים נפתחים ותיבות דו-שיח"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for opening the accessibility help dialog."
 msgid "Open the accessibility help dialog"
-msgstr ""
+msgstr "פתיחת תיבת הדו-שיח של עזרה בנושא נגישות"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving between fields."
 msgid "Move focus between form fields (inputs, buttons, etc.)"
-msgstr ""
+msgstr "העברת המיקוד בין שדות בטופס (שדות קלט, לחצנים וכו')"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the toolbar."
 msgid "Move focus to the toolbar, navigate between toolbars"
-msgstr ""
+msgstr "העברת המיקוד לסרגל הכלים, ניווט בין סרגלי כלים"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the toolbar."
 msgid "Navigate through the toolbar"
-msgstr ""
+msgstr "ניווט בסרגל הכלים"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for executing currently focused button."
 msgid "Execute the currently focused button"
-msgstr ""
+msgstr "הפעלת הכפתור שבמיקוד כעת"

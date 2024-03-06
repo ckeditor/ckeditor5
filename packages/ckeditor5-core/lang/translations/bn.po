@@ -79,40 +79,40 @@ msgstr "টগল ক্যাপশন চালু করুন"
 
 msgctxt "Accessibility help dialog category header text for keystrokes related to content creation."
 msgid "Content editing keystrokes"
-msgstr ""
+msgstr "কনটেন্ট এডিটিংয়ের কীস্ট্রোকগুলি"
 
 msgctxt "Accessibility help dialog text further explaining the purpose of the \"Content editing keystrokes\" category."
 msgid "These keyboard shortcuts allow for quick access to content editing features."
-msgstr ""
+msgstr "এই কীবোর্ড শর্টকাটগুলির ফলে কনটেন্ট এডিটিংয়ের বৈশিষ্ট্যগুলির সুবিধা দ্রুত নেওয়া যায়।"
 
 msgctxt "Accessibility help dialog category header text for keystrokes related to navigation in the user interface."
 msgid "User interface and content navigation keystrokes"
-msgstr ""
+msgstr "ইউজার ইন্টারফেস এবং কনটেন্ট নেভিগেশনের কীস্ট্রোকগুলি"
 
 msgctxt "Accessibility help dialog text further explaining the purpose of the \"User interface and content navigation keystrokes\" category."
 msgid "Use the following keystrokes for more efficient navigation in the CKEditor 5 user interface."
-msgstr ""
+msgstr "CKEditor 5 ইউজার ইন্টারফেসে আরও কার্যকর নেভিগেশনের জন্য নিম্নলিখিত কীস্ট্রোকগুলি ব্যবহার করুন।"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for closing contextual balloons, dropdowns, and dialogs."
 msgid "Close contextual balloons, dropdowns, and dialogs"
-msgstr ""
+msgstr "কন্টেক্সচুয়াল বেলুন, ড্রপডাউন এবং ডায়ালগগুলি বন্ধ করুন"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for opening the accessibility help dialog."
 msgid "Open the accessibility help dialog"
-msgstr ""
+msgstr "প্রবেশযোগ্যতার সহায়ক ডায়ালগ খুলুন"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving between fields."
 msgid "Move focus between form fields (inputs, buttons, etc.)"
-msgstr ""
+msgstr "ফর্ম ফিল্ডের (ইনপুট, বাটন, ইত্যাদি) মধ্যে ফোকাস স্থানান্তর করুন"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the toolbar."
 msgid "Move focus to the toolbar, navigate between toolbars"
-msgstr ""
+msgstr "টুলবারে ফোকাস স্থানান্তর করুন, টুলবারগুলির মধ্যে নেভিগেট করুন"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the toolbar."
 msgid "Navigate through the toolbar"
-msgstr ""
+msgstr "টুলবারের মধ্য দিয়ে নেভিগেট করুন"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for executing currently focused button."
 msgid "Execute the currently focused button"
-msgstr ""
+msgstr "বর্তমানে ফোকাস করা বাটনটি কার্যকর করুন"
