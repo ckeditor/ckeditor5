@@ -68,3 +68,51 @@ msgstr "แทรกภาพด้วยตัวจัดการไฟล์
 msgctxt "The label for the replace image with the file manager toolbar button."
 msgid "Replace image with file manager"
 msgstr "แทนที่ภาพด้วยตัวจัดการไฟล์"
+
+msgctxt "The button label for the object (e.g. image, table) toolbar for hiding the attached caption."
+msgid "Toggle caption off"
+msgstr "ปิดคำอธิบายภาพ"
+
+msgctxt "The button label for the object (e.g. image, table) toolbar for showing the attached caption."
+msgid "Toggle caption on"
+msgstr "เปิดคำอธิบายภาพ"
+
+msgctxt "Accessibility help dialog category header text for keystrokes related to content creation."
+msgid "Content editing keystrokes"
+msgstr "แป้นพิมพ์ลัดเพื่อแก้ไขเนื้อหา"
+
+msgctxt "Accessibility help dialog text further explaining the purpose of the \"Content editing keystrokes\" category."
+msgid "These keyboard shortcuts allow for quick access to content editing features."
+msgstr "แป้นพิมพ์ลัดเหล่านี้จะทำให้สามารถเข้าถึงฟีเจอร์เพื่อการแก้ไขเนื้อหาได้อย่างรวดเร็ว"
+
+msgctxt "Accessibility help dialog category header text for keystrokes related to navigation in the user interface."
+msgid "User interface and content navigation keystrokes"
+msgstr "แป้นพิมพ์ลัดในอินเตอร์เฟสผู้ใช้และการนำทางเนื้อหา"
+
+msgctxt "Accessibility help dialog text further explaining the purpose of the \"User interface and content navigation keystrokes\" category."
+msgid "Use the following keystrokes for more efficient navigation in the CKEditor 5 user interface."
+msgstr "ใช้แป้นพิมพ์ลัดต่อไปนี้เพื่อการนำทางที่มีประสิทธิภาพยิ่งขึ้นในอินเตอร์เฟสผู้ใช้ CKEditor 5"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for closing contextual balloons, dropdowns, and dialogs."
+msgid "Close contextual balloons, dropdowns, and dialogs"
+msgstr "ปิดลูกโป่งบริบท, รายการดรอปดาวน์, และกล่องโต้ตอบ"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for opening the accessibility help dialog."
+msgid "Open the accessibility help dialog"
+msgstr "เปิดกล่องโต้ตอบความช่วยเหลือการเข้าถึง"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for moving between fields."
+msgid "Move focus between form fields (inputs, buttons, etc.)"
+msgstr "ย้ายโฟกัสระหว่างช่องฟอร์ม (รับข้อมูล, ปุ่ม, ฯลฯ)"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the toolbar."
+msgid "Move focus to the toolbar, navigate between toolbars"
+msgstr "ย้ายโฟกัสไปยังแถบเครื่องมือ, นำทางภายในแถบเครื่องมือ"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the toolbar."
+msgid "Navigate through the toolbar"
+msgstr "นำทางผ่านแถบเครื่องมือ"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for executing currently focused button."
+msgid "Execute the currently focused button"
+msgstr "ใช้งานปุ่มที่โฟกัสอยู่ในปัจจุบัน"

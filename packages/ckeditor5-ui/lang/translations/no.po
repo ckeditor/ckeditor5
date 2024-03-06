@@ -144,3 +144,27 @@ msgstr "Dialogboks for redigering"
 msgctxt "The label and the tooltip for the close button in the dialog header."
 msgid "Close"
 msgstr "Lukk"
+
+msgctxt "Accessibility help dialog assistive technologies label telling users how to exit the dialog."
+msgid "Help Contents. To close this dialog press ESC."
+msgstr "Hjelpeinnhold. Trykk på ESC for å lukke denne dialogen."
+
+msgctxt "Accessibility help dialog text explaining what can be found in that dialog."
+msgid "Below, you can find a list of keyboard shortcuts that can be used in the editor."
+msgstr "Nedenfor finner du en liste over hurtigtaster som kan brukes i redigeringsverktøyet."
+
+msgctxt "Accessibility help dialog text displayed next to keystrokes that may require the Fn key on Mac."
+msgid "(may require <kbd>Fn</kbd>)"
+msgstr "(trenger kanskje <kbd>Fn</kbd>)"
+
+msgctxt "Accessibility help dialog title."
+msgid "Accessibility help"
+msgstr "Tilgjengelighetshjelp"
+
+msgctxt "Assistive technologies label added to each editor editing area informing users about the possibility of opening the accessibility help dialog."
+msgid "Press %0 for help."
+msgstr "Trykk på %0 for hjelp."
+
+msgctxt "Keystroke description for assistive technologies: keystroke for moving focus out of an active dialog window."
+msgid "Move focus in and out of an active dialog window"
+msgstr "Flytt fokus inn og ut av et aktivt dialogvindu"

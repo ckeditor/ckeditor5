@@ -144,3 +144,27 @@ msgstr "편집기 대화상자"
 msgctxt "The label and the tooltip for the close button in the dialog header."
 msgid "Close"
 msgstr "닫기"
+
+msgctxt "Accessibility help dialog assistive technologies label telling users how to exit the dialog."
+msgid "Help Contents. To close this dialog press ESC."
+msgstr "도움말 내용입니다. 이 대화 상자를 닫으려면 ESC 키를 누르세요."
+
+msgctxt "Accessibility help dialog text explaining what can be found in that dialog."
+msgid "Below, you can find a list of keyboard shortcuts that can be used in the editor."
+msgstr "편집기에서 사용할 수 있는 키보드 단축키 목록을 아래에서 확인할 수 있습니다."
+
+msgctxt "Accessibility help dialog text displayed next to keystrokes that may require the Fn key on Mac."
+msgid "(may require <kbd>Fn</kbd>)"
+msgstr "(<kbd>Fn</kbd> 키가 필요할 수 있음)"
+
+msgctxt "Accessibility help dialog title."
+msgid "Accessibility help"
+msgstr "접근성 도움말"
+
+msgctxt "Assistive technologies label added to each editor editing area informing users about the possibility of opening the accessibility help dialog."
+msgid "Press %0 for help."
+msgstr "도움말을 보려면 %0 키를 누르세요."
+
+msgctxt "Keystroke description for assistive technologies: keystroke for moving focus out of an active dialog window."
+msgid "Move focus in and out of an active dialog window"
+msgstr "활성화된 대화 창 안팎으로 포커스 이동"

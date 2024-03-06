@@ -4,6 +4,7 @@
  */
 
 import Clipboard from '../src/clipboard.js';
+import ClipboardMarkersUtils from '../src/clipboardmarkersutils.js';
 import ClipboardPipeline from '../src/clipboardpipeline.js';
 import DragDrop from '../src/dragdrop.js';
 import PastePlainText from '../src/pasteplaintext.js';
@@ -30,7 +31,7 @@ describe( 'Clipboard Feature', () => {
 	} );
 
 	it( 'requires ClipboardPipeline, DragDrop and PastePlainText', () => {
-		expect( Clipboard.requires ).to.deep.equal( [ ClipboardPipeline, DragDrop, PastePlainText ] );
+		expect( Clipboard.requires ).to.deep.equal( [ ClipboardMarkersUtils, ClipboardPipeline, DragDrop, PastePlainText ] );
 	} );
 
 	it( 'has proper name', () => {

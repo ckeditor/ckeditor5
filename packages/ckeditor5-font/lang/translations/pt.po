@@ -19,7 +19,7 @@ msgstr ""
 
 msgctxt "Tooltip for the font size dropdown."
 msgid "Font Size"
-msgstr "Tamanho da Fonte"
+msgstr "Tamanho da fonte"
 
 msgctxt "Dropdown option label for the 'tiny' font size preset."
 msgid "Tiny"

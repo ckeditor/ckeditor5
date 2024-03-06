@@ -144,3 +144,27 @@ msgstr "Redaktoriaus dialogo langas"
 msgctxt "The label and the tooltip for the close button in the dialog header."
 msgid "Close"
 msgstr "Uždaryti"
+
+msgctxt "Accessibility help dialog assistive technologies label telling users how to exit the dialog."
+msgid "Help Contents. To close this dialog press ESC."
+msgstr "Pagalbos turinys. Norėdami uždaryti šį dialogo langą, spauskite „ESC“."
+
+msgctxt "Accessibility help dialog text explaining what can be found in that dialog."
+msgid "Below, you can find a list of keyboard shortcuts that can be used in the editor."
+msgstr "Žemiau galite rasti sparčiųjų klavišų, kuriuos galima naudoti redaktoriuje, sąrašą."
+
+msgctxt "Accessibility help dialog text displayed next to keystrokes that may require the Fn key on Mac."
+msgid "(may require <kbd>Fn</kbd>)"
+msgstr "(gali reikalauti <kbd>Fn</kbd>)"
+
+msgctxt "Accessibility help dialog title."
+msgid "Accessibility help"
+msgstr "Prieinamumo pagalba"
+
+msgctxt "Assistive technologies label added to each editor editing area informing users about the possibility of opening the accessibility help dialog."
+msgid "Press %0 for help."
+msgstr "Spauskite %0, norėdami gauti pagalbą."
+
+msgctxt "Keystroke description for assistive technologies: keystroke for moving focus out of an active dialog window."
+msgid "Move focus in and out of an active dialog window"
+msgstr "Perkelti fokusą į ir iš aktyvaus dialogo lango"

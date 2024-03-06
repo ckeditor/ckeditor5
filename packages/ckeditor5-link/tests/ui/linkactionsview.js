@@ -64,6 +64,21 @@ describe( 'LinkActionsView', () => {
 			expect( view._focusables ).to.be.instanceOf( ViewCollection );
 		} );
 
+		it( 'should create #_linkConfig as empty object by default', () => {
+			expect( view._linkConfig ).to.be.empty;
+		} );
+
+		it( 'should create #_linkConfig containing config object passed as argument', () => {
+			const customConfig = { allowedProtocols: [ 'https', 'ftps', 'tel', 'sms' ] };
+
+			const view = new LinkActionsView( { t: () => { } }, customConfig );
+			view.render();
+
+			expect( view._linkConfig ).to.equal( customConfig );
+
+			view.destroy();
+		} );
+
 		it( 'should fire `edit` event on editButtonView#execute', () => {
 			const spy = sinon.spy();
 

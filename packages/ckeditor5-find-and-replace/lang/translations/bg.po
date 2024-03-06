@@ -68,3 +68,7 @@ msgstr "Съвет: Първо намерете някакъв текст, за 
 msgctxt "The label and the tooltip of the options dropdown button in the find and replace form."
 msgid "Advanced options"
 msgstr "Разширени опции"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for opening the find and replace UI."
+msgid "Find in the document"
+msgstr "Намиране на документ"

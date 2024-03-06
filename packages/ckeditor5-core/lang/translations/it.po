@@ -68,3 +68,51 @@ msgstr "Inserisci l'immagine con il file manager"
 msgctxt "The label for the replace image with the file manager toolbar button."
 msgid "Replace image with file manager"
 msgstr "Sostituisci l'immagine con il file manager"
+
+msgctxt "The button label for the object (e.g. image, table) toolbar for hiding the attached caption."
+msgid "Toggle caption off"
+msgstr "Attiva didascalia"
+
+msgctxt "The button label for the object (e.g. image, table) toolbar for showing the attached caption."
+msgid "Toggle caption on"
+msgstr "Disattiva didascalia"
+
+msgctxt "Accessibility help dialog category header text for keystrokes related to content creation."
+msgid "Content editing keystrokes"
+msgstr "Tasti per la modifica del contenuto"
+
+msgctxt "Accessibility help dialog text further explaining the purpose of the \"Content editing keystrokes\" category."
+msgid "These keyboard shortcuts allow for quick access to content editing features."
+msgstr "Queste scorciatoie da tastiera permettono di accedere velocemente alle funzionalità di modifica del contenuto."
+
+msgctxt "Accessibility help dialog category header text for keystrokes related to navigation in the user interface."
+msgid "User interface and content navigation keystrokes"
+msgstr "Tasti per la navigazione nell'interfaccia utente e nei contenuti"
+
+msgctxt "Accessibility help dialog text further explaining the purpose of the \"User interface and content navigation keystrokes\" category."
+msgid "Use the following keystrokes for more efficient navigation in the CKEditor 5 user interface."
+msgstr "Utilizza i seguenti tasti per una navigazione più efficiente nell'interfaccia utente di CKEditor 5."
+
+msgctxt "Keystroke description for assistive technologies: keystroke for closing contextual balloons, dropdowns, and dialogs."
+msgid "Close contextual balloons, dropdowns, and dialogs"
+msgstr "Chiude menu a discesa, finestre di dialogo e callout contestuali"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for opening the accessibility help dialog."
+msgid "Open the accessibility help dialog"
+msgstr "Apre la finestra di dialogo della guida all'accessibilità"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for moving between fields."
+msgid "Move focus between form fields (inputs, buttons, etc.)"
+msgstr "Seleziona/deseleziona i diversi campi del modulo (inserimenti, pulsanti ecc.)"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the toolbar."
+msgid "Move focus to the toolbar, navigate between toolbars"
+msgstr "Seleziona la barra degli strumenti, permette di spostarsi tra le barre degli strumenti"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the toolbar."
+msgid "Navigate through the toolbar"
+msgstr "Permette di spostarsi all'interno della barra degli strumenti"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for executing currently focused button."
+msgid "Execute the currently focused button"
+msgstr "Attiva il pulsante attualmente selezionato"
