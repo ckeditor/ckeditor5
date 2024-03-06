@@ -68,3 +68,7 @@ msgstr "Tipp: Először keressen egy szöveget, hogy lecserélhesse."
 msgctxt "The label and the tooltip of the options dropdown button in the find and replace form."
 msgid "Advanced options"
 msgstr "Speciális beállítások"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for opening the find and replace UI."
+msgid "Find in the document"
+msgstr "Keresés a dokumentumban"

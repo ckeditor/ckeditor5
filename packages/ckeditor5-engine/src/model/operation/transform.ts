@@ -548,6 +548,14 @@ class ContextFactory {
 				if ( opA.sourcePosition.isEqual( opB.splitPosition ) ) {
 					this._setRelation( opA, opB, 'splitAtSource' );
 				}
+			} else if ( opB instanceof MoveOperation && opB.howMany > 0 ) {
+				if ( opA.sourcePosition.isEqual( opB.sourcePosition.getShiftedBy( opB.howMany ) ) ) {
+					this._setRelation( opA, opB, 'mergeSourceAffected' );
+				}
+
+				if ( opA.targetPosition.isEqual( opB.sourcePosition ) ) {
+					this._setRelation( opA, opB, 'mergeTargetWasBefore' );
+				}
 			}
 		} else if ( opA instanceof MarkerOperation ) {
 			const markerRange = opA.newRange;
@@ -1342,18 +1350,75 @@ setTransformation( MergeOperation, MoveOperation, ( a, b, context ) => {
 		}
 	}
 
-	// The default case.
+	// In most cases we want `sourcePosition` to stick to previous and `targetPosition` to stick to next.
+	// Usually, `sourcePosition` is at the beginning of the merged element and `targetPosition` is at the end of the merge-target element.
 	//
-	if ( a.sourcePosition.hasSameParentAs( b.targetPosition ) ) {
+	// However, `sourcePosition` and `targetPosition` may end up in the middle of an element due to some OT magic that happens during undo.
+	// It is expected and used in `MergeOperation` x `SplitOperation` transformation.
+	//
+	// But when these positions are in the middle, it messes up the regular `MergeOperation` x `MoveOperation` transformation because
+	// these positions may "follow" some moved elements. And we want them stick in the original elements.
+	//
+	// This is why we add two extra cases: (1) and (2).
+	//
+	// But after this `MergeOperation` is transformed by "this" move (which is undone), we also need to define extra cases for
+	// the operation undoing previous move. These are (3) and (4).
+	//
+	// (1). Note that this case is also added to `updateRelations()` and sets `mergeSourceAffected` relation.
+	//
+	// [] is move operation, } is merge source position (sticks to previous by default):
+	// <p>A[b]}c</p>  ->  <p>A}c</p>
+	//
+	if ( b.sourcePosition.getShiftedBy( b.howMany ).isEqual( a.sourcePosition ) ) {
+		a.sourcePosition.stickiness = 'toNone';
+	}
+
+	// (3). This is the transformation for undoing operation of the above case.
+	//
+	// [] is move operation, } is merge source position (sticks to previous by default):
+	// <p>A}c</p>  ->  <p>A[b]}c</p>  (instead of <p>A}[b]c</p>)
+	//
+	else if ( b.targetPosition.isEqual( a.sourcePosition ) && context.abRelation == 'mergeSourceAffected' ) {
+		a.sourcePosition.stickiness = 'toNext';
+	}
+
+	// (2). Note that this case is also added to `updateRelations()` and sets `mergeTargetWasBefore` relation.
+	//
+	// [] is move operation, { is merge target position (sticks to next by default):
+	// <p>A{[b]c</p>  ->  <p>A{c</p>
+	//
+	else if ( b.sourcePosition.isEqual( a.targetPosition ) ) {
+		a.targetPosition.stickiness = 'toNone';
+		a.howMany -= b.howMany;
+	}
+
+	// (4). This is the transformation for undoing operation of the above case.
+	//
+	// [] is move operation, { is merge target position (sticks to next by default):
+	// <p>A{c</p>  ->  <p>A{[b]c</p>  (instead of <p>A[b]{c</p>)
+	//
+	else if ( b.targetPosition.isEqual( a.targetPosition ) && context.abRelation == 'mergeTargetWasBefore' ) {
+		a.targetPosition.stickiness = 'toPrevious';
 		a.howMany += b.howMany;
 	}
 
-	if ( a.sourcePosition.hasSameParentAs( b.sourcePosition ) ) {
-		a.howMany -= b.howMany;
+	// The default case.
+	else {
+		if ( a.sourcePosition.hasSameParentAs( b.targetPosition ) ) {
+			a.howMany += b.howMany;
+		}
+
+		if ( a.sourcePosition.hasSameParentAs( b.sourcePosition ) ) {
+			a.howMany -= b.howMany;
+		}
 	}
 
 	a.sourcePosition = a.sourcePosition._getTransformedByMoveOperation( b );
 	a.targetPosition = a.targetPosition._getTransformedByMoveOperation( b );
+
+	// After transformations are done, make sure to revert stickiness in case if (1) - (4) scenario happened.
+	a.sourcePosition.stickiness = 'toPrevious';
+	a.targetPosition.stickiness = 'toNext';
 
 	// `MergeOperation` graveyard position is like `MoveOperation` target position. It is a position where element(s) will
 	// be moved. Like in other similar cases, we need to consider the scenario when those positions are same.

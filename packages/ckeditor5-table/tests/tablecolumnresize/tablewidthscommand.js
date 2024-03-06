@@ -8,6 +8,7 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
 
 import TableColumnResize from '../../src/tablecolumnresize.js';
 import Table from '../../src/table.js';
@@ -21,7 +22,7 @@ describe( 'TableWidthsCommand', () => {
 		document.body.appendChild( editorElement );
 
 		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ Table, TableColumnResize, Paragraph ]
+			plugins: [ Table, TableColumnResize, Paragraph, ClipboardPipeline ]
 		} );
 
 		model = editor.model;

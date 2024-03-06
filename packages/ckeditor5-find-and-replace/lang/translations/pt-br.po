@@ -68,3 +68,7 @@ msgstr "Dica: Localize algum texto primeiro para poder substituí-lo."
 msgctxt "The label and the tooltip of the options dropdown button in the find and replace form."
 msgid "Advanced options"
 msgstr "Opções avançadas"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for opening the find and replace UI."
+msgid "Find in the document"
+msgstr "Pesquisar no documento"
