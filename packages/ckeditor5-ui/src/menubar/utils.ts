@@ -36,6 +36,12 @@ import type ComponentFactory from '../componentfactory.js';
 const NESTED_PANEL_HORIZONTAL_OFFSET = 5;
 
 type RequiredMenuBarConfigObject = Required<MenuBarConfigObject>;
+type DeepReadonly<T> = Readonly<{
+	[K in keyof T]:
+		T[K] extends string ? Readonly<T[K]>
+			: T[K] extends Array<infer A> ? Readonly<Array<DeepReadonly<A>>>
+				: DeepReadonly<T[K]>;
+}>;
 
 /**
  * Behaviors of the {@link module:ui/menubar/menubarview~MenuBarView} component.
@@ -407,7 +413,7 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
  * TODO: This configuration has to be listed in API docs for developers to learn its structure
  * and to be able to customize it using `config.menuBar.removeItems` and `config.menuBar.addItems` properties.
  */
-export const DefaultMenuBarConfig: Array<MenuBarMenuDefinition> = [
+export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> = [
 	{
 		menuId: 'edit',
 		label: 'Edit',
@@ -578,15 +584,18 @@ export function normalizeMenuBarConfig( {
 	componentFactory: ComponentFactory;
 	config: Readonly<MenuBarConfig> | undefined;
 } ): MenuBarConfigObject {
-	let configObject;
+	let configObject: DeepReadonly<RequiredMenuBarConfigObject>;
+	let isUsingDefaultConfig = false;
 
 	// The integrator didn't specify any configuration so we use the default one.
 	if ( !config ) {
 		configObject = {
-			items: DefaultMenuBarConfig,
+			items: cloneDeep( DefaultMenuBarItems ) as Array<MenuBarMenuDefinition>,
 			addItems: [],
 			removeItems: []
 		};
+
+		isUsingDefaultConfig = true;
 	}
 	// The integrator specified the config as an array. Let's convert it into a generic object config.
 	else if ( Array.isArray( config ) ) {
@@ -600,11 +609,13 @@ export function normalizeMenuBarConfig( {
 	// additions and removals.
 	else if ( !( 'items' in config ) ) {
 		configObject = {
-			items: DefaultMenuBarConfig,
+			items: cloneDeep( DefaultMenuBarItems ) as Array<MenuBarMenuDefinition>,
 			addItems: [],
 			removeItems: [],
 			...config
 		};
+
+		isUsingDefaultConfig = true;
 	}
 	// The integrator specified the config as an object and there are items there. Let's take it as it is.
 	else {
@@ -615,8 +626,7 @@ export function normalizeMenuBarConfig( {
 		};
 	}
 
-	const isUsingDefaultConfig = configObject.items === DefaultMenuBarConfig;
-	const configClone = cloneDeep( configObject );
+	const configClone = cloneDeep( configObject ) as RequiredMenuBarConfigObject;
 
 	handleRemovals( configObject, configClone );
 	handleAdditions( configObject, configClone );
@@ -633,7 +643,7 @@ export function normalizeMenuBarConfig( {
  * was not found in the configuration.
  */
 function handleRemovals(
-	originalConfig: Readonly<RequiredMenuBarConfigObject>,
+	originalConfig: DeepReadonly<RequiredMenuBarConfigObject>,
 	config: RequiredMenuBarConfigObject
 ) {
 	const itemsToBeRemoved = config.removeItems;
@@ -702,7 +712,7 @@ function handleRemovals(
  * positions in the menu bar. If the position does not exist, a warning is logged.
  */
 function handleAdditions(
-	originalConfig: Readonly<RequiredMenuBarConfigObject>,
+	originalConfig: DeepReadonly<RequiredMenuBarConfigObject>,
 	config: RequiredMenuBarConfigObject
 ) {
 	const itemsToBeAdded = config.addItems;
@@ -868,7 +878,7 @@ function addMenuOrItemToGroup(
  * not be instantiated. Warns about missing components if the menu bar configuration was specified by the user.
  */
 function purgeUnavailableComponents(
-	originalConfig: Readonly<RequiredMenuBarConfigObject>,
+	originalConfig: DeepReadonly<RequiredMenuBarConfigObject>,
 	config: RequiredMenuBarConfigObject,
 	componentFactory: ComponentFactory,
 	isUsingDefaultConfig: boolean
@@ -919,7 +929,7 @@ function purgeUnavailableComponents(
  * the configuration populated menus using these components exclusively.
  */
 function purgeEmptyMenus(
-	originalConfig: Readonly<RequiredMenuBarConfigObject>,
+	originalConfig: DeepReadonly<RequiredMenuBarConfigObject>,
 	config: RequiredMenuBarConfigObject,
 	isUsingDefaultConfig: boolean
 ) {
@@ -978,8 +988,8 @@ function purgeEmptyMenus(
 }
 
 function warnAboutEmptyMenu(
-	originalConfig: Readonly<RequiredMenuBarConfigObject>,
-	emptyMenuConfig: MenuBarMenuDefinition | MenuBarConfig,
+	originalConfig: DeepReadonly<RequiredMenuBarConfigObject>,
+	emptyMenuConfig: MenuBarMenuDefinition | DeepReadonly<RequiredMenuBarConfigObject>,
 	isUsingDefaultConfig: boolean
 ) {
 	if ( isUsingDefaultConfig ) {
