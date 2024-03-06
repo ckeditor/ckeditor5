@@ -16,7 +16,6 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import Input from '@ckeditor/ckeditor5-typing/src/input.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { assertSelectedCells, formatAttributes, modelTable, viewTable } from './_utils/utils.js';
 import { Range } from '@ckeditor/ckeditor5-engine';
 import TableEditing from '../src/tableediting.js';
