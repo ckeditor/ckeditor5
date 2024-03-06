@@ -43,13 +43,12 @@ export default class ImageInsertViaUrlUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public init(): void {
+	public afterInit(): void {
 		this._imageInsertUI = this.editor.plugins.get( 'ImageInsertUI' );
-		const insertImageCommand: InsertImageCommand = this.editor.commands.get( 'insertImage' )!;
 
 		this._imageInsertUI.registerIntegration( {
 			name: 'url',
-			observable: insertImageCommand,
+			observable: () => this.editor.commands.get( 'insertImage' )!,
 			requiresForm: true,
 			buttonViewCreator: isOnlyOne => this._createInsertUrlButton( isOnlyOne ),
 			formViewCreator: isOnlyOne => this._createInsertUrlView( isOnlyOne )

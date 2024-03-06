@@ -799,11 +799,14 @@ export default class TableUtils extends Plugin {
 		// that table will have only tableRow model elements at the beginning.
 		const row = table.getChild( 0 ) as Element;
 
-		return [ ...row.getChildren() ].reduce( ( columns, row ) => {
-			const columnWidth = parseInt( row.getAttribute( 'colspan' ) as string || '1' );
+		return [ ...row.getChildren() ]
+			// $marker elements can also be children of a row too (when TrackChanges is on). Don't include them in the count.
+			.filter( node => node.is( 'element', 'tableCell' ) )
+			.reduce( ( columns, row ) => {
+				const columnWidth = parseInt( row.getAttribute( 'colspan' ) as string || '1' );
 
-			return columns + columnWidth;
-		}, 0 );
+				return columns + columnWidth;
+			}, 0 );
 	}
 
 	/**

@@ -6,6 +6,7 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import BalloonToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/balloon/balloontoolbar.js';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 import Table from '../src/table.js';
@@ -22,7 +23,7 @@ describe( 'TableContentToolbar integration', () => {
 
 			return ClassicTestEditor
 				.create( editorElement, {
-					plugins: [ Table, TableToolbar, BalloonToolbar, Paragraph ]
+					plugins: [ Table, TableToolbar, BalloonToolbar, Paragraph, ClipboardPipeline ]
 				} )
 				.then( editor => {
 					newEditor = editor;

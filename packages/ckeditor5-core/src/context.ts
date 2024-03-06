@@ -146,7 +146,11 @@ export default class Context {
 	 * @param config The context configuration.
 	 */
 	constructor( config?: ContextConfig ) {
-		this.config = new Config<ContextConfig>( config, ( this.constructor as typeof Context ).defaultConfig );
+		// We don't pass translations to the config, because its behavior of splitting keys
+		// with dots (e.g. `resize.width` => `resize: { width }`) breaks the translations.
+		const { translations, ...rest } = config || {};
+
+		this.config = new Config<ContextConfig>( rest, ( this.constructor as typeof Context ).defaultConfig );
 
 		const availablePlugins = ( this.constructor as typeof Context ).builtinPlugins;
 
@@ -158,7 +162,8 @@ export default class Context {
 
 		this.locale = new Locale( {
 			uiLanguage: typeof languageConfig === 'string' ? languageConfig : languageConfig.ui,
-			contentLanguage: this.config.get( 'language.content' )
+			contentLanguage: this.config.get( 'language.content' ),
+			translations
 		} );
 
 		this.t = this.locale.t;

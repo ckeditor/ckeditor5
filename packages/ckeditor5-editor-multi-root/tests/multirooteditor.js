@@ -20,6 +20,7 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
 import Table from '@ckeditor/ckeditor5-table/src/table.js';
 import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement.js';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
@@ -756,7 +757,7 @@ describe( 'MultiRootEditor', () => {
 		beforeEach( async () => {
 			editor = await MultiRootEditor.create(
 				{ main: '<p>Main.</p>', second: '<table><tr><td>Foo.</td></tr></table>' },
-				{ plugins: [ Paragraph, Table, Undo ] }
+				{ plugins: [ Paragraph, Table, Undo, ClipboardPipeline ] }
 			);
 		} );
 

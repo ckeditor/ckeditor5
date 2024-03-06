@@ -58,11 +58,6 @@ describe( 'InlineEditor', () => {
 			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
 		} );
 
-		it( 'mixes DataApiMixin', () => {
-			expect( InlineEditor.prototype ).have.property( 'setData' ).to.be.a( 'function' );
-			expect( InlineEditor.prototype ).have.property( 'getData' ).to.be.a( 'function' );
-		} );
-
 		it( 'mixes ElementApiMixin', () => {
 			expect( InlineEditor.prototype ).have.property( 'updateSourceElement' ).to.be.a( 'function' );
 		} );

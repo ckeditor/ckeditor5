@@ -141,7 +141,6 @@ export default class TableSelection extends Plugin {
 			};
 
 			const table = cropTableToDimensions( sourceTable, cropDimensions, writer );
-
 			writer.insert( table, documentFragment, 0 );
 
 			return documentFragment;

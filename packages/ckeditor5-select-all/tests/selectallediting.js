@@ -33,6 +33,13 @@ describe( 'SelectAllEditing', () => {
 		expect( SelectAllEditing.pluginName ).to.equal( 'SelectAllEditing' );
 	} );
 
+	it( 'should add keystroke accessibility info', () => {
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
+			label: 'Select all',
+			keystroke: 'CTRL+A'
+		} );
+	} );
+
 	it( 'should register the "selectAll" command', () => {
 		const command = editor.commands.get( 'selectAll' );
 
