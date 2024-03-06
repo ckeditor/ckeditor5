@@ -167,7 +167,7 @@ function findAllItemLikeElements(
 					element: item,
 					id: itemData.id,
 					order: itemData.order,
-					indent: itemData.indent || 1,
+					indent: itemData.indent,
 					marginLeft
 				} );
 
@@ -383,22 +383,27 @@ function createNewEmptyList(
  * @param element Element from which style data is extracted.
  */
 function getListItemData( element: ViewElement ): ListItemData {
-	const data: ListItemData = {};
 	const listStyle = element.getStyle( 'mso-list' );
 
-	if ( listStyle ) {
-		const idMatch = listStyle.match( /(^|\s{1,100})l(\d+)/i );
-		const orderMatch = listStyle.match( /\s{0,100}lfo(\d+)/i );
-		const indentMatch = listStyle.match( /\s{0,100}level(\d+)/i );
-
-		if ( idMatch && orderMatch && indentMatch ) {
-			data.id = idMatch[ 2 ];
-			data.order = orderMatch[ 1 ];
-			data.indent = parseInt( indentMatch[ 1 ] );
-		}
+	if ( listStyle === undefined ) {
+		return {};
 	}
 
-	return data;
+	const idMatch = listStyle.match( /(^|\s{1,100})l(\d+)/i );
+	const orderMatch = listStyle.match( /\s{0,100}lfo(\d+)/i );
+	const indentMatch = listStyle.match( /\s{0,100}level(\d+)/i );
+
+	if ( idMatch && orderMatch && indentMatch ) {
+		return {
+			id: idMatch[ 2 ],
+			order: orderMatch[ 1 ],
+			indent: parseInt( indentMatch[ 1 ] )
+		};
+	}
+
+	return {
+		indent: 1 // Handle empty mso-list style as a marked for default list item.
+	};
 }
 
 /**
