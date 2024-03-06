@@ -16,6 +16,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import Input from '@ckeditor/ckeditor5-typing/src/input.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { assertSelectedCells, formatAttributes, modelTable, viewTable } from './_utils/utils.js';
 import { Range } from '@ckeditor/ckeditor5-engine';
 import TableEditing from '../src/tableediting.js';
@@ -4227,6 +4228,42 @@ describe( 'table clipboard', () => {
 			);
 		} );
 
+		it( 'should paste table that is entirely wrapped in marker', () => {
+			setModelData( model, modelTable( [ [ 'A', 'B' ] ] ) + '<paragraph></paragraph>' );
+			appendMarker( 'comment:thread', {
+				start: [ 0 ],
+				end: [ 1 ]
+			} );
+
+			model.change( writer => {
+				writer.setSelection( writer.createRangeOn( modelRoot.getNodeByPath( [ 0 ] ) ) );
+			} );
+
+			const data = {
+				dataTransfer: createDataTransfer(),
+				preventDefault: () => {},
+				stopPropagation: () => {}
+			};
+
+			viewDocument.fire( 'copy', data );
+
+			model.change( writer => {
+				writer.setSelection( modelRoot.getNodeByPath( [ 1 ] ), 0 );
+			} );
+
+			viewDocument.fire( 'paste', data );
+
+			checkMarker( 'comment:thread', {
+				start: [ 0 ],
+				end: [ 1 ]
+			} );
+
+			checkMarker( 'comment:thread:uniq', {
+				start: [ 1 ],
+				end: [ 2 ]
+			} );
+		} );
+
 		describe( 'Markers duplications', () => {
 			beforeEach( () => {
 				let index = 0;
@@ -4402,6 +4439,17 @@ describe( 'table clipboard', () => {
 				contents,
 				`<${ marker }-end${ formattedAttributes }></${ marker }-end>`
 			].join( '' );
+		}
+
+		function appendMarker( name, { start, end } ) {
+			return editor.model.change( writer => {
+				const range = model.createRange(
+					model.createPositionFromPath( modelRoot, start ),
+					model.createPositionFromPath( modelRoot, end )
+				);
+
+				return writer.addMarker( name, { usingOperation: false, affectsData: true, range } );
+			} );
 		}
 
 		function checkMarker( name, range ) {
