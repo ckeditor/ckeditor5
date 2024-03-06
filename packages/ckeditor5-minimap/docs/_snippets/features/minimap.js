@@ -21,6 +21,7 @@ import { TableCellProperties, TableProperties } from '@ckeditor/ckeditor5-table'
 import { Minimap } from '@ckeditor/ckeditor5-minimap';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
+import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
 
 const config = {
 	plugins: [
@@ -96,7 +97,8 @@ const config = {
 		}
 	},
 	ckbox: {
-		allowExternalImagesEditing: [ /^data:/, 'origin' ],
+		tokeUrl: TOKEN_URL,
+		allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 		forceDemoLabel: true
 	}
 };
