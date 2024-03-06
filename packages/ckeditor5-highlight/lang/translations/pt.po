@@ -43,12 +43,12 @@ msgstr "Caneta verde"
 
 msgctxt "Toolbar button tooltip for removing text highlight."
 msgid "Remove highlight"
-msgstr "Remover "
+msgstr "Remover realce"
 
 msgctxt "Toolbar button tooltip for the text highlight feature."
 msgid "Highlight"
-msgstr "Sublinhar"
+msgstr "Realçar"
 
 msgctxt "Label used by assistive technologies describing the highlight feature toolbar."
 msgid "Text highlight toolbar"
-msgstr "Barra de ferramentas de destaque de texto"
+msgstr "Barra de ferramentas de realces de texto"

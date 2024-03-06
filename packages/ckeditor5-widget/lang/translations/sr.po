@@ -35,20 +35,20 @@ msgstr "Притисните Ентер да куцате после или пр
 
 msgctxt "Accessibility help dialog section title for widget plugin keystrokes."
 msgid "Keystrokes that can be used when a widget is selected (for example: image, table, etc.)"
-msgstr ""
+msgstr "Tasteri koji se mogu koristiti kada je vidžet izabran (na primer: slika, tabela, itd.)"
 
 msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that inserts a paragraph after a widget."
 msgid "Insert a new paragraph directly after a widget"
-msgstr ""
+msgstr "Umetni novi pasus direktno posle vidžeta"
 
 msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that inserts a paragraph before a widget."
 msgid "Insert a new paragraph directly before a widget"
-msgstr ""
+msgstr "Umetni novi pasus direktno pre vidžeta"
 
 msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that moves the caret before a widget."
 msgid "Move the caret to allow typing directly before a widget"
-msgstr ""
+msgstr "Pomeri kursor kako bi se omogućilo kucanje direktno pre vidžeta"
 
 msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that moves the caret after a widget."
 msgid "Move the caret to allow typing directly after a widget"
-msgstr ""
+msgstr "Pomeri kursor kako bi se omogućilo kucanje direktno posle vidžeta"

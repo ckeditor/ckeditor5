@@ -7,8 +7,7 @@
  * @module table/tableclipboard
  */
 
-import { chunk } from 'lodash-es';
-import { uid, type EventInfo } from 'ckeditor5/src/utils.js';
+import type { EventInfo } from 'ckeditor5/src/utils.js';
 
 import {
 	ClipboardPipeline,
@@ -21,18 +20,17 @@ import {
 
 import { Plugin } from 'ckeditor5/src/core.js';
 
-import {
-	Range,
-	type DocumentFragment,
-	type DocumentSelection,
-	type DomEventData,
-	type Element,
-	type Item,
-	type Model,
-	type ModelInsertContentEvent,
-	type Position,
-	type Selection,
-	type Writer
+import type {
+	DocumentFragment,
+	DocumentSelection,
+	DomEventData,
+	Element,
+	Item,
+	Model,
+	ModelInsertContentEvent,
+	Position,
+	Selection,
+	Writer
 } from 'ckeditor5/src/engine.js';
 
 import TableSelection from './tableselection.js';
@@ -142,6 +140,7 @@ export default class TableClipboard extends Plugin {
 
 		const model = this.editor.model;
 		const tableUtils = this.editor.plugins.get( TableUtils );
+		const clipboardMarkersUtils = this.editor.plugins.get( ClipboardMarkersUtils );
 
 		// We might need to crop table before inserting so reference might change.
 		const pastedTable = this.getTableIfOnlyTableInContent( content, model )!;
@@ -161,17 +160,16 @@ export default class TableClipboard extends Plugin {
 		// Override default model.insertContent() handling at this point.
 		evt.stop();
 
-		this.editor.model.change( writer => {
-			if ( content.is( 'documentFragment' ) ) {
-				this._convertMarkersToElements( content.markers, writer );
-			}
-
-			const replacedCells = this._replaceSelectedCells( pastedTable, selectedTableCells, writer );
-
-			if ( content.is( 'documentFragment' ) && content.markers.size ) {
-				this._convertElementsToMarkers( replacedCells, writer );
-			}
-		} );
+		if ( content.is( 'documentFragment' ) ) {
+			clipboardMarkersUtils._pasteMarkersIntoTransformedElement(
+				content.markers,
+				writer => this._replaceSelectedCells( pastedTable, selectedTableCells, writer )
+			);
+		} else {
+			this.editor.model.change( writer => {
+				this._replaceSelectedCells( pastedTable, selectedTableCells, writer );
+			} );
+		}
 	}
 
 	/**
@@ -225,92 +223,7 @@ export default class TableClipboard extends Plugin {
 			writer.setSelection( cellsToSelect[ 0 ], 0 );
 		}
 
-		return cellsToSelect;
-	}
-
-	/**
-	 * Inserts a marker map into the tree in the form of fake `$marker` elements (at the beginning of the marker range and at the end).
-	 * The fake elements will be used in further steps to restore the markers after table modifications.
-	 */
-	private _convertMarkersToElements( markers: Map<string, Range>, writer: Writer ) {
-		const sortedMarkers = [ ...markers.entries() ]
-			.flatMap( ( [ name, { start, end } ] ) => [
-				{ position: start, name },
-				{ position: end, name }
-			] )
-			// Markers position is sorted backwards to ensure that the insertion of fake markers will not change
-			// the position of the next markers.
-			.sort( ( { position: posA }, { position: posB } ) => posA.isBefore( posB ) ? 1 : -1 );
-
-		for ( const { position, name } of sortedMarkers ) {
-			const fakeMarker = writer.createElement( '$marker', { 'data-name': name } );
-
-			writer.insert( fakeMarker, position );
-		}
-	}
-
-	/**
-	 * Restores the markers to the tree after the table modifications are finished.
-	 * It inserts them in place of each fake element (which are then removed).
-	 */
-	private _convertElementsToMarkers( replacedCells: Array<Element>, writer: Writer ) {
-		const markersFakeElements = replacedCells
-			.flatMap( cell => Array.from( writer.createRangeOn( cell ) ) )
-			.reduce<Record<string, Array<Item>>>(
-				( acc, { item: cellItem } ) => {
-					const markerAttribute = cellItem.getAttribute( 'data-name' ) as string | undefined;
-
-					if ( !markerAttribute ) {
-						return acc;
-					}
-
-					if ( !acc[ markerAttribute ] ) {
-						acc[ markerAttribute ] = [];
-					}
-
-					acc[ markerAttribute ].push( cellItem );
-					return acc;
-				},
-				{}
-			);
-
-		// Sometimes fake markers are duplicated and there is more than two elements in array.
-		// It can happen if you copy column from first table with single marker and then paste
-		// it as row to second table.
-		for ( const [ markerName, positions ] of Object.entries( markersFakeElements ) ) {
-			const positionsChunks = chunk( positions, 2 );
-
-			for ( let chunkOffset = 0; chunkOffset < positionsChunks.length; ++chunkOffset ) {
-				const [ startNode, endNode ] = positionsChunks[ chunkOffset ];
-
-				if ( endNode ) {
-					const range = new Range(
-						writer.createPositionAt( startNode, 'before' ),
-						writer.createPositionAt( endNode, 'before' )
-					);
-
-					// if copy is performed and some of markers are duplicated
-					// we have to reassign their custom id to prevent incorrect
-					// cell selection after pasting to second table.
-					// TODO: Remove it after refactoring `updateMarkersIds` function.
-					const chunkMarkerName = chunkOffset > 0 ?
-						`${ markerName.slice( 0, markerName.lastIndexOf( ':' ) ) }:${ uid() }` : markerName;
-
-					writer.addMarker( chunkMarkerName, {
-						// We are inserting some content saved in the document fragment, so these
-						// markers must affect data if they were put into the document fragment
-						usingOperation: true,
-						// All markers affecting data must use operations.
-						affectsData: true,
-						range
-					} );
-
-					writer.remove( endNode );
-				}
-
-				writer.remove( startNode );
-			}
-		}
+		return selectedTable;
 	}
 
 	/**
