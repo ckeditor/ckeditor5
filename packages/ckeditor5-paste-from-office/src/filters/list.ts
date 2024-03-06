@@ -12,7 +12,6 @@ import {
 	UpcastWriter,
 	type ViewDocumentFragment,
 	type ViewElement,
-	type ViewNode,
 	type ViewText
 } from 'ckeditor5/src/engine.js';
 
@@ -46,103 +45,67 @@ export function transformListItemLikeElementsIntoLists(
 
 	const stack: Array<ListLikeElement & {
 		listElement: ViewElement;
-		itemElements: Array<ViewElement>;
+		listItemElements: Array<ViewElement>;
 	}> = [];
 
-	for ( const [ idx, itemLikeElement ] of itemLikeElements.entries() ) {
+	for ( const itemLikeElement of itemLikeElements ) {
 		if ( itemLikeElement.indent !== undefined ) {
-			// const isDifferentList = isNewListNeeded( itemLikeElements[ idx - 1 ], itemLikeElement );
 			const indent = itemLikeElement.indent - 1;
 
-			if ( indent > stack.length - 1 /* || isDifferentList */ ) {
-				const listStyle = detectListStyle( itemLikeElement, stylesString );
-				const refElement = stack.length == 0 ? itemLikeElement.element : stack.at( -1 ).itemElements.at( -1 );
-				const listElement = insertNewEmptyList( listStyle, refElement, writer );
+			if ( indent < stack.length && stack[ indent ].id != itemLikeElement.id ) {
+				stack.length = indent;
+			}
 
+			if ( indent < stack.length - 1 ) {
 				stack.length = indent + 1;
+			}
+			else if ( indent > stack.length - 1 ) {
+				const listStyle = detectListStyle( itemLikeElement, stylesString );
+				const listElement = createNewEmptyList( listStyle, writer );
+
+				if ( stack.length == 0 ) {
+					const parent = itemLikeElement.element.parent!;
+					const index = parent.getChildIndex( itemLikeElement.element ) + 1;
+
+					writer.insertChild( index, listElement, parent );
+				} else {
+					const parentListItems = stack[ indent - 1 ].listItemElements;
+
+					writer.appendChild( listElement, parentListItems[ parentListItems.length - 1 ] );
+				}
 
 				stack[ indent ] = {
 					...itemLikeElement,
 					listElement,
-					itemElements: [ itemLikeElement.element ]
+					listItemElements: []
 				};
 			}
-			else if ( indent == stack.length - 1 ) {
-				stack[ indent ].itemElements.push( itemLikeElement.element );
-			}
-			else {
-				stack.length = indent + 1;
-			}
 
-			// const listItem = transformElementIntoListItem( itemLikeElement.element, writer );
+			const listItem = writer.createElement( 'li' );
+
+			writer.appendChild( listItem, stack[ indent ].listElement );
+			stack[ indent ].listItemElements.push( listItem );
+
+			writer.appendChild( itemLikeElement.element, listItem );
 
 			removeBulletElement( itemLikeElement.element, writer );
 			writer.removeStyle( 'text-indent', itemLikeElement.element ); // #12361
-			writer.removeStyle( 'margin-left', itemLikeElement.element );
-
-			const listItem = writer.createElement( 'li', null, itemLikeElement.element );
-
-			writer.appendChild( listItem, stack[ indent ].listElement );
+			writer.removeStyle( 'margin-left', itemLikeElement.element ); // TODO maybe preserve difference (list item vs block indent)
 		}
 		else {
 			// Other blocks in a list item.
+			// TODO: find first of equal margin or bigger
 			const stackItem = stack.find( stackItem => stackItem.marginLeft == itemLikeElement.marginLeft );
 
 			if ( stackItem ) {
-				stackItem.itemElements.push( itemLikeElement.element );
-				writer.removeStyle( 'margin-left', itemLikeElement.element ); // TODO substract stackitem margin
-				writer.appendChild( itemLikeElement.element, stackItem.itemElements.at( -1 ).parent );
+				const listItems = stackItem.listItemElements;
+
+				writer.appendChild( itemLikeElement.element, listItems[ listItems.length - 1 ] );
+				writer.removeStyle( 'margin-left', itemLikeElement.element ); // TODO substract stack-item margin
 			} else {
 				stack.length = 0;
 			}
 		}
-	}
-
-	return;
-	//
-	//
-	//
-	let currentList: ViewElement | null = null;
-	let currentIndentation = 1;
-
-	for ( const [ idx, itemLikeElement ] of itemLikeElements.entries() ) {
-		const isDifferentList = isNewListNeeded( itemLikeElements[ idx - 1 ], itemLikeElement );
-		const previousItemLikeElement = isDifferentList ? null : itemLikeElements[ idx - 1 ];
-		const indentationDifference = getIndentationDifference( previousItemLikeElement, itemLikeElement );
-
-		if ( isDifferentList ) {
-			currentList = null;
-			currentIndentation = 1;
-		}
-
-		if ( !currentList || indentationDifference !== 0 ) {
-			const listStyle = detectListStyle( itemLikeElement, stylesString );
-
-			if ( !currentList ) {
-				currentList = insertNewEmptyList( listStyle, itemLikeElement.element, writer );
-			} else if ( itemLikeElement.indent > currentIndentation ) {
-				const lastListItem = currentList.getChild( currentList.childCount - 1 ) as ViewElement;
-				const lastListItemChild = lastListItem!.getChild( lastListItem.childCount - 1 ) as ViewElement;
-
-				currentList = insertNewEmptyList( listStyle, lastListItemChild, writer );
-				currentIndentation += 1;
-			} else if ( itemLikeElement.indent < currentIndentation ) {
-				const differentIndentation = currentIndentation - itemLikeElement.indent;
-
-				currentList = findParentListAtLevel( currentList, differentIndentation );
-				currentIndentation = itemLikeElement.indent;
-			}
-
-			if ( itemLikeElement.indent <= currentIndentation ) {
-				if ( !currentList.is( 'element', listStyle.type ) ) {
-					currentList = writer.rename( listStyle.type, currentList );
-				}
-			}
-		}
-
-		const listItem = transformElementIntoListItem( itemLikeElement.element, writer );
-
-		writer.appendChild( listItem, currentList! );
 	}
 }
 
@@ -196,6 +159,7 @@ function findAllItemLikeElements(
 			}
 
 			// List item or a following list item block.
+			// TODO make sure that foundMargins has unified units
 			if ( item.hasStyle( 'mso-list' ) || marginLeft !== undefined && foundMargins.has( marginLeft ) ) {
 				const itemData = getListItemData( item );
 
@@ -203,7 +167,7 @@ function findAllItemLikeElements(
 					element: item,
 					id: itemData.id,
 					order: itemData.order,
-					indent: itemData.indent,
+					indent: itemData.indent || 1,
 					marginLeft
 				} );
 
@@ -380,23 +344,13 @@ function mapListStyleDefinition( value: string ) {
 }
 
 /**
- * Creates an empty list of a given type and inserts it after a specified element.
- *
- * @param listStyle List style object which determines the type of newly created list.
- * Usually a result of `detectListStyle()` function.
- * @param element Element after which list is inserted.
- * @returns Newly created list element.
+ * TODO
  */
-function insertNewEmptyList(
+function createNewEmptyList(
 	listStyle: ReturnType<typeof detectListStyle>,
-	element: ViewElement,
 	writer: UpcastWriter
 ) {
-	const parent = element.parent!;
 	const list = writer.createElement( listStyle.type );
-	const position = parent.getChildIndex( element ) + 1;
-
-	writer.insertChild( position, list, parent );
 
 	// We do not support modifying the marker for a particular list item.
 	// Set the value for the `list-style-type` property directly to the list container.
@@ -409,21 +363,6 @@ function insertNewEmptyList(
 	}
 
 	return list;
-}
-
-/**
- * Transforms a given element into a semantic list item. As the function operates on a provided
- * {module:engine/src/view/element~Element element} it will modify the view structure to which this element belongs.
- *
- * @param element Element which will be transformed into a list item.
- * @returns New element to which the given one was transformed. It is
- * inserted in place of the old element (the reference to the old element is lost due to renaming).
- */
-function transformElementIntoListItem( element: ViewElement, writer: UpcastWriter ) {
-	removeBulletElement( element, writer );
-	writer.removeStyle( 'text-indent', element ); // #12361
-
-	return writer.rename( 'li', element )!;
 }
 
 /**
@@ -481,81 +420,6 @@ function removeBulletElement( element: ViewElement, writer: UpcastWriter ) {
 			writer.remove( value.item as ViewElement );
 		}
 	}
-}
-
-/**
- * Whether the previous and current items belong to the same list. It is determined based on `item.id`
- * (extracted from `mso-list` style, see #getListItemData) and a previous sibling of the current item.
- *
- * However, it's quite easy to change the `id` attribute for nested lists in Word. It will break the list feature while pasting.
- * Let's check also the `indent` attribute. If the difference between those two elements is equal to 1, we can assume that
- * the `currentItem` is a beginning of the nested list because lists in CKEditor 5 always start with the `indent=0` attribute.
- * See: https://github.com/ckeditor/ckeditor5/issues/7805.
- */
-function isNewListNeeded( previousItem: ListLikeElement, currentItem: ListLikeElement ) {
-	if ( !previousItem ) {
-		return true;
-	}
-
-	if ( previousItem.id !== currentItem.id ) {
-		// See: https://github.com/ckeditor/ckeditor5/issues/7805.
-		//
-		// * List item 1.
-		//     - Nested list item 1.
-		if ( currentItem.indent - previousItem.indent === 1 ) {
-			return false;
-		}
-
-		return true;
-	}
-
-	const previousSibling = currentItem.element.previousSibling;
-
-	if ( !previousSibling ) {
-		return true;
-	}
-
-	// Even with the same id the list does not have to be continuous (#43).
-	return !isList( previousSibling );
-}
-
-function isList( element: ViewNode ) {
-	return element.is( 'element', 'ol' ) || element.is( 'element', 'ul' );
-}
-
-/**
- * Calculates the indentation difference between two given list items (based on the indent attribute
- * extracted from the `mso-list` style, see #getListItemData).
- */
-function getIndentationDifference( previousItem: ListLikeElement | null, currentItem: ListLikeElement ) {
-	return previousItem ? currentItem.indent - previousItem.indent : currentItem.indent - 1;
-}
-
-/**
- * Finds the parent list element (ul/ol) of a given list element with indentation level lower by a given value.
- *
- * @param listElement List element from which to start looking for a parent list.
- * @param indentationDifference Indentation difference between lists.
- * @returns Found list element with indentation level lower by a given value.
- */
-function findParentListAtLevel( listElement: ViewElement, indentationDifference: number ) {
-	const ancestors = listElement.getAncestors( { parentFirst: true } );
-
-	let parentList = null;
-	let levelChange = 0;
-
-	for ( const ancestor of ancestors ) {
-		if ( ancestor.is( 'element', 'ul' ) || ancestor.is( 'element', 'ol' ) ) {
-			levelChange++;
-		}
-
-		if ( levelChange === indentationDifference ) {
-			parentList = ancestor;
-			break;
-		}
-	}
-
-	return parentList as ViewElement;
 }
 
 interface ListItemData {
