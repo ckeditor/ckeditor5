@@ -55,10 +55,7 @@
 			"path": "src/linkimage.js",
 			"requires": [
 				"Link",
-				[
-					"ImageBlock",
-					"ImageInline"
-				]
+				"ImageBlock"
 			],
 			"uiComponents": [
 				{
