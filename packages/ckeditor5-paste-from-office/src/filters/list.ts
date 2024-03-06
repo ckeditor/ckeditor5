@@ -7,8 +7,6 @@
  * @module paste-from-office/filters/list
  */
 
-/* window */
-
 import {
 	Matcher,
 	UpcastWriter,
