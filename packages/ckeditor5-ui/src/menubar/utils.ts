@@ -35,7 +35,7 @@ import type ComponentFactory from '../componentfactory.js';
 
 const NESTED_PANEL_HORIZONTAL_OFFSET = 5;
 
-type RequitedMenuBarConfigObject = Required<MenuBarConfigObject>;
+type RequiredMenuBarConfigObject = Required<MenuBarConfigObject>;
 
 /**
  * Behaviors of the {@link module:ui/menubar/menubarview~MenuBarView} component.
@@ -396,9 +396,16 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
 } as const;
 
 /**
- * The default configuration of the {@link module:ui/menubar/menubarview~MenuBarView} component.
+ * The {@link module:core/editor/editorconfig~EditorConfig#menuBar default items configuration} of the
+ * {@link module:ui/menubar/menubarview~MenuBarView} component. It contains names of all menu bar components
+ * registered in the {@link module:ui/componentfactory~ComponentFactory component factory} (available in the project).
  *
- * It contains names of all UI components available in the project.
+ * **Note**: Menu bar component names provided by core editor features are prefixed with `menuBar:` in order to distinguish
+ * them from components referenced by the {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar configuration}, for instance,
+ * `'menuBar:bold'` is a menu bar button but `'bold'` is a toolbar button.
+ *
+ * TODO: This configuration has to be listed in API docs for developers to learn its structure
+ * and to be able to customize it using `config.menuBar.removeItems` and `config.menuBar.addItems` properties.
  */
 export const DefaultMenuBarConfig: Array<MenuBarMenuDefinition> = [
 	{
@@ -571,7 +578,7 @@ export function normalizeMenuBarConfig( {
 	componentFactory: ComponentFactory;
 	config: Readonly<MenuBarConfig> | undefined;
 } ): MenuBarConfigObject {
-	let configObject: RequitedMenuBarConfigObject;
+	let configObject;
 
 	// The integrator didn't specify any configuration so we use the default one.
 	if ( !config ) {
@@ -626,8 +633,8 @@ export function normalizeMenuBarConfig( {
  * was not found in the configuration.
  */
 function handleRemovals(
-	originalConfig: RequitedMenuBarConfigObject,
-	config: RequitedMenuBarConfigObject
+	originalConfig: Readonly<RequiredMenuBarConfigObject>,
+	config: RequiredMenuBarConfigObject
 ) {
 	const itemsToBeRemoved = config.removeItems;
 	const successfullyRemovedItems: Array<string> = [];
@@ -695,8 +702,8 @@ function handleRemovals(
  * positions in the menu bar. If the position does not exist, a warning is logged.
  */
 function handleAdditions(
-	originalConfig: RequitedMenuBarConfigObject,
-	config: RequitedMenuBarConfigObject
+	originalConfig: Readonly<RequiredMenuBarConfigObject>,
+	config: RequiredMenuBarConfigObject
 ) {
 	const itemsToBeAdded = config.addItems;
 	const successFullyAddedItems: typeof itemsToBeAdded = [];
@@ -809,7 +816,7 @@ function handleAdditions(
  * Handles adding a sub-menu or an item into a group. The logic is the same for both cases.
  */
 function addMenuOrItemToGroup(
-	config: RequitedMenuBarConfigObject,
+	config: RequiredMenuBarConfigObject,
 	itemOrMenuToAdd: string | MenuBarMenuDefinition,
 	relativeId: string | null,
 	relation: 'start' | 'end' | 'before' | 'after'
@@ -861,8 +868,8 @@ function addMenuOrItemToGroup(
  * not be instantiated. Warns about missing components if the menu bar configuration was specified by the user.
  */
 function purgeUnavailableComponents(
-	originalConfig: Readonly<MenuBarConfigObject>,
-	config: RequitedMenuBarConfigObject,
+	originalConfig: Readonly<RequiredMenuBarConfigObject>,
+	config: RequiredMenuBarConfigObject,
 	componentFactory: ComponentFactory,
 	isUsingDefaultConfig: boolean
 ) {
@@ -912,8 +919,8 @@ function purgeUnavailableComponents(
  * the configuration populated menus using these components exclusively.
  */
 function purgeEmptyMenus(
-	originalConfig: Readonly<MenuBarConfigObject>,
-	config: RequitedMenuBarConfigObject,
+	originalConfig: Readonly<RequiredMenuBarConfigObject>,
+	config: RequiredMenuBarConfigObject,
 	isUsingDefaultConfig: boolean
 ) {
 	let wasSubMenuPurged = false;
@@ -971,7 +978,7 @@ function purgeEmptyMenus(
 }
 
 function warnAboutEmptyMenu(
-	menuBarConfig: MenuBarConfig,
+	originalConfig: Readonly<RequiredMenuBarConfigObject>,
 	emptyMenuConfig: MenuBarMenuDefinition | MenuBarConfig,
 	isUsingDefaultConfig: boolean
 ) {
@@ -995,7 +1002,7 @@ function warnAboutEmptyMenu(
 	 * @param emptyMenuConfig The definition of the menu that has no child items.
 	 */
 	logWarning( 'menu-bar-menu-empty', {
-		menuBarConfig,
+		menuBarConfig: originalConfig,
 		emptyMenuConfig
 	} );
 }
@@ -1003,7 +1010,7 @@ function warnAboutEmptyMenu(
 /**
  * Localizes the user-config using pre-defined localized category labels.
  */
-function localizeTopLevelCategories( config: RequitedMenuBarConfigObject, locale: Locale ) {
+function localizeTopLevelCategories( config: RequiredMenuBarConfigObject, locale: Locale ) {
 	const t = locale.t;
 	const localizedCategoryLabels: Record<string, string> = {
 		'Edit': t( 'Edit' ),
@@ -1023,7 +1030,7 @@ function localizeTopLevelCategories( config: RequitedMenuBarConfigObject, locale
  * Recursively visits all menu definitions in the config and calls the callback for each of them.
  */
 function walkConfigMenus(
-	definition: RequitedMenuBarConfigObject[ 'items' ] | MenuBarMenuDefinition,
+	definition: RequiredMenuBarConfigObject[ 'items' ] | MenuBarMenuDefinition,
 	callback: ( definition: MenuBarMenuDefinition ) => void
 ) {
 	if ( Array.isArray( definition ) ) {
