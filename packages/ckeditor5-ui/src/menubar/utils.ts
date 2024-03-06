@@ -396,7 +396,7 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
 } as const;
 
 /**
- * The {@link module:core/editor/editorconfig~EditorConfig#menuBar default items configuration} of the
+ * The default items {@link module:core/editor/editorconfig~EditorConfig#menuBar configuration} of the
  * {@link module:ui/menubar/menubarview~MenuBarView} component. It contains names of all menu bar components
  * registered in the {@link module:ui/componentfactory~ComponentFactory component factory} (available in the project).
  *
@@ -558,7 +558,7 @@ export const DefaultMenuBarConfig: Array<MenuBarMenuDefinition> = [
 	// 		}
 	// 	]
 	// }
-] as const;
+];
 
 /**
  * Performs a cleanup and normalization of the menu bar configuration and returns a config
@@ -892,7 +892,7 @@ function purgeUnavailableComponents(
 					 * {@link module:core/editor/editorconfig~EditorConfig#menuBar menu bar configuration}.
 					 *
 					 * Make sure the plugin responsible for this menu bar item is loaded and the menu bar configuration
-					 * is correct, e.g. {@link module:basic-styles/boldyu~BoldUI} is loaded for the `'menuBar:bold'`
+					 * is correct, e.g. {@link module:basic-styles/bold/boldui~BoldUI} is loaded for the `'menuBar:bold'`
 					 * menu bar item.
 					 *
 					 * @error menu-bar-item-unavailable

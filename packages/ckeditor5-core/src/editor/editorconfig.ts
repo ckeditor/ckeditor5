@@ -184,17 +184,17 @@ export interface EditorConfig {
 	 * The editor menu bar configuration.
 	 *
 	 * **Note**: The menu bar is not available in all editor types. Currently, only the
-	 * {@link examples/builds/classic-editor Classic editor} and {@link examples/builds/document-editor Document editor}
-	 * offer this feature. Setting the `menuBar` configuration for other editor types will have no effect.
+	 * {@glink examples/builds/classic-editor Classic editor} and {@glink examples/builds/document-editor Document editor}
+	 * support this feature. Setting the `config.menuBar` configuration for other editor types will have no effect.
 	 *
 	 * **Note**: You do not have set this configuration in order to to use the menu bar.
-	 * A {@link module:ui/menubar/utils~DefaultMenuBarConfig default configuration} is used by default that already includes
-	 * all core editor features. For you convenience, there are `config.menuBar.addItems` and
+	 * By default, a {@link module:ui/menubar/utils#DefaultMenuBarConfig default configuration} is used that already includes
+	 * **all core editor features**. For you convenience, there are `config.menuBar.addItems` and
 	 * `config.menuBar.removeItems` options available that will help you adjust the default configuration without setting the
 	 * entire menu bar structure from scratch (see below).
 	 *
 	 * **Note**: Please make sure that features (editor plugins) that bring specific menu bar buttons are loaded. For instance,
-	 * the "Bold" button will not show up in the menu bar unless the {@link features/basic-styles basic styles} feature is loaded
+	 * the "Bold" button will not show up in the menu bar unless the {@glink features/basic-styles basic styles} feature is loaded
 	 * (a warning will be logged in the console). {@link module:core/editor/editorconfig~EditorConfig#plugins Learn more} about loading
 	 * plugins.
 	 *
@@ -203,7 +203,7 @@ export interface EditorConfig {
 	 * Use can use the `config.menuBar.removeItems` option to remove items from the default menu bar configuration. You can
 	 * remove individual buttons (e.g. "Bold" or "Block quote"), item groups (e.g. the basic styles section that
 	 * includes multiple buttons such as "Bold", "Italic", "Underline", etc.), or menus (e.g. the "Insert" menu). Please
-	 * refer to the {@link module:ui/menubar/utils~DefaultMenuBarConfig default configuration} to see default buttons/groups/menus
+	 * refer to the {@link module:ui/menubar/utils#DefaultMenuBarConfig default configuration} to see default buttons/groups/menus
 	 * and their structure.
 	 *
 	 * To remove individual buttons from the menu bar:
@@ -251,13 +251,15 @@ export interface EditorConfig {
 	 * **Adding items to the menu bar**
 	 *
 	 * Using the `config.menuBar.addItems` option you can add individual buttons, button groups or entire menus to the structure
-	 * of the menu bar. Please refer to the {@link module:ui/menubar/utils~DefaultMenuBarConfig default configuration} to learn about the
+	 * of the menu bar. Please refer to the {@link module:ui/menubar/utils#DefaultMenuBarConfig default configuration} to learn about the
 	 * names of buttons and positions they can be added at.
 	 *
 	 * Each entry in the `config.menuBar.addItems` is an object with one of the following properties:
-	 * * `item` &ndash; A name of the button to be added to a specific button group,
-	 * * `menu` &ndash; A definition of a menu that should be added to the menu bar,
-	 * * `group` &ndash; A definition of a button group that should be added to a specific menu.
+	 * * `item` &ndash; A name of the button to be added to a specific button group (e.g. `'menuBar:bold'` or `'myButton'`),
+	 * * `menu` &ndash; A {@link module:ui/menubar/menubarview#MenuBarMenuDefinition definition of a menu} that should be added to
+	 * the menu bar,
+	 * * `group` &ndash; A {@link module:ui/menubar/menubarview#MenuBarMenuGroupDefinition definition of a button group} that should be
+	 * added to a specific menu.
 	 *
 	 * Additionally, each entry must define the `position` property that accepts the following values:
 	 * * `'start'` &ndash; Adds a top-level menu (e.g. "Format", "Insert", etc.) at the beginning of the menu bar,
@@ -373,7 +375,7 @@ export interface EditorConfig {
 	 * **Defining menu bar from scratch**
 	 *
 	 * If the `config.menuBar.addItems` and `config.menuBar.removeItems` options are not enough to adjust the
-	 * {@link module:ui/menubar/utils~DefaultMenuBarConfig default configuration}, you can set the menu bar structure from scratch.
+	 * {@link module:ui/menubar/utils#DefaultMenuBarConfig default configuration}, you can set the menu bar structure from scratch.
 	 *
 	 * For instance, to create a minimalistic menu bar configuration with just two main categories (menus), the first one
 	 * containing some of the buttons delivered by the default configuration and the second one containing custom buttons

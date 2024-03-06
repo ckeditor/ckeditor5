@@ -96,6 +96,9 @@ export default class MenuBarView extends View implements FocusableView {
 	 * A utility that expands a plain menu bar configuration into a structure of menus (also: sub-menus)
 	 * and items using a given {@link module:ui/componentfactory~ComponentFactory component factory}.
 	 *
+	 * See the {@link module:core/editor/editorconfig~EditorConfig#menuBar menu bar} in the editor
+	 * configuration reference to learn how to configure the menu bar.
+	 *
 	 * TODO: The configuration will expand with removing and adding items.
 	 */
 	public fillFromConfig( config: MenuBarConfig | undefined, componentFactory: ComponentFactory ): void {
