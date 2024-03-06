@@ -17,7 +17,7 @@ import Input from '@ckeditor/ckeditor5-typing/src/input.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { assertSelectedCells, formatAttributes, modelTable, viewTable } from './_utils/utils.js';
-
+import { Range } from '@ckeditor/ckeditor5-engine';
 import TableEditing from '../src/tableediting.js';
 import TableCellPropertiesEditing from '../src/tablecellproperties/tablecellpropertiesediting.js';
 import TableCellWidthEditing from '../src/tablecellwidth/tablecellwidthediting.js';
@@ -27,7 +27,7 @@ import TableClipboard from '../src/tableclipboard.js';
 import TableColumnResize from '../src/tablecolumnresize.js';
 
 describe( 'table clipboard', () => {
-	let editor, model, modelRoot, tableSelection, viewDocument, element, clipboardMarkersUtils;
+	let editor, model, modelRoot, tableSelection, viewDocument, element, clipboardMarkersUtils, getUniqueMarkerNameStub;
 
 	testUtils.createSinonSandbox();
 
@@ -4080,7 +4080,7 @@ describe( 'table clipboard', () => {
 				allowedActions: [ 'copy' ]
 			} );
 
-			sinon
+			getUniqueMarkerNameStub = sinon
 				.stub( clipboardMarkersUtils, '_getUniqueMarkerName' )
 				.callsFake( markerName => {
 					if ( markerName.endsWith( 'uniq' ) ) {
@@ -4101,7 +4101,7 @@ describe( 'table clipboard', () => {
 			} );
 
 			pasteTable(
-				[ [ wrapWithMarker( 'FooBarr', 'comment', { name: 'paste' } ) ] ]
+				[ [ wrapWithHTMLMarker( 'FooBarr', 'comment', { name: 'paste' } ) ] ]
 			);
 
 			const paragraph = modelRoot.getNodeByPath( [ 1, 0, 0, 0 ] );
@@ -4119,24 +4119,21 @@ describe( 'table clipboard', () => {
 			pasteTable(
 				[
 					[
-						wrapWithMarker( 'First', 'comment', { name: 'pre' } ),
-						wrapWithMarker( 'Second', 'comment', { name: 'post' } )
+						wrapWithHTMLMarker( 'First', 'comment', { name: 'pre' } ),
+						wrapWithHTMLMarker( 'Second', 'comment', { name: 'post' } )
 					]
 				]
 			);
 
-			const prePosition = model.createRange(
-				model.createPositionFromPath( modelRoot, [ 1, 0, 0, 0, 0 ] ),
-				model.createPositionFromPath( modelRoot, [ 1, 0, 0, 0, 5 ] )
-			);
+			checkMarker( 'comment:pre', {
+				start: [ 1, 0, 0, 0, 0 ],
+				end: [ 1, 0, 0, 0, 5 ]
+			} );
 
-			const postPosition = model.createRange(
-				model.createPositionFromPath( modelRoot, [ 1, 0, 1, 0, 0 ] ),
-				model.createPositionFromPath( modelRoot, [ 1, 0, 1, 0, 6 ] )
-			);
-
-			checkMarker( 'comment:pre', prePosition );
-			checkMarker( 'comment:post', postPosition );
+			checkMarker( 'comment:post', {
+				start: [ 1, 0, 1, 0, 0 ],
+				end: [ 1, 0, 1, 0, 6 ]
+			} );
 		} );
 
 		it( 'should paste table with multiple markers to single cell', () => {
@@ -4149,25 +4146,22 @@ describe( 'table clipboard', () => {
 			pasteTable(
 				[
 					[
-						wrapWithMarker( 'FooBarr', 'comment', { name: 'pre' } ) +
+						wrapWithHTMLMarker( 'FooBarr', 'comment', { name: 'pre' } ) +
 						'foo fo fooo' +
-						wrapWithMarker( 'a foo bar fo bar', 'comment', { name: 'post' } )
+						wrapWithHTMLMarker( 'a foo bar fo bar', 'comment', { name: 'post' } )
 					]
 				]
 			);
 
-			const prePosition = model.createRange(
-				model.createPositionFromPath( modelRoot, [ 1, 0, 0, 0, 0 ] ),
-				model.createPositionFromPath( modelRoot, [ 1, 0, 0, 0, 7 ] )
-			);
+			checkMarker( 'comment:pre', {
+				start: [ 1, 0, 0, 0, 0 ],
+				end: [ 1, 0, 0, 0, 7 ]
+			} );
 
-			const postPosition = model.createRange(
-				model.createPositionFromPath( modelRoot, [ 1, 0, 0, 0, 18 ] ),
-				model.createPositionFromPath( modelRoot, [ 1, 0, 0, 0, 34 ] )
-			);
-
-			checkMarker( 'comment:pre', prePosition );
-			checkMarker( 'comment:post', postPosition );
+			checkMarker( 'comment:post', {
+				start: [ 1, 0, 0, 0, 18 ],
+				end: [ 1, 0, 0, 0, 34 ]
+			} );
 		} );
 
 		it( 'should handle paste markers that contain markers', () => {
@@ -4177,22 +4171,22 @@ describe( 'table clipboard', () => {
 				writer.setSelection( modelRoot.getNodeByPath( [ 1, 0, 0 ] ), 0 );
 			} );
 
-			const innerMarker = wrapWithMarker( 'ello', 'comment', { name: 'inner' } );
-			const outerMarker = wrapWithMarker( 'H' + innerMarker + ' world', 'comment', { name: 'outer' } );
+			const innerMarker = wrapWithHTMLMarker( 'ello', 'comment', { name: 'inner' } );
+			const outerMarker = wrapWithHTMLMarker( 'H' + innerMarker + ' world', 'comment', { name: 'outer' } );
 
 			pasteTable(
 				[ [ outerMarker ] ]
 			);
 
-			checkMarker( 'comment:outer', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 1, 0, 0, 0, 0 ] ),
-				model.createPositionFromPath( modelRoot, [ 1, 0, 0, 0, 11 ] )
-			) );
+			checkMarker( 'comment:outer', {
+				start: [ 1, 0, 0, 0, 0 ],
+				end: [ 1, 0, 0, 0, 11 ]
+			} );
 
-			checkMarker( 'comment:inner', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 1, 0, 0, 0, 1 ] ),
-				model.createPositionFromPath( modelRoot, [ 1, 0, 0, 0, 5 ] )
-			) );
+			checkMarker( 'comment:inner', {
+				start: [ 1, 0, 0, 0, 1 ],
+				end: [ 1, 0, 0, 0, 5 ]
+			} );
 		} );
 
 		it( 'should not crash if user copy column to row with markers', () => {
@@ -4200,7 +4194,7 @@ describe( 'table clipboard', () => {
 			pasteTable(
 				[
 					[
-						wrapWithMarker( 'First', 'comment', { name: 'pre' } ),
+						wrapWithHTMLMarker( 'First', 'comment', { name: 'pre' } ),
 						''
 					],
 					[ '', '' ]
@@ -4233,7 +4227,174 @@ describe( 'table clipboard', () => {
 			);
 		} );
 
-		function wrapWithMarker( contents, marker, attrs ) {
+		describe( 'Markers duplications', () => {
+			beforeEach( () => {
+				let index = 0;
+
+				getUniqueMarkerNameStub.callsFake( markerName => {
+					const markerWithoutID = markerName.split( ':' ).slice( 0, 2 ).join( ':' );
+
+					return `${ markerWithoutID }:${ index++ }`;
+				} );
+			} );
+
+			it( 'should paste row with single marker as column with duplicated markers to empty last column', () => {
+				pasteTable(
+					[
+						[ '', '', '' ],
+						[ '', '', '' ],
+						[
+							wrapWithHTMLMarker( 'Foo', 'comment', { name: 'thread' } ),
+							'',
+							''
+						]
+					]
+				);
+
+				// copy whole last row
+				tableSelection.setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 2, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 2, 2 ] )
+				);
+
+				const data = {
+					dataTransfer: createDataTransfer(),
+					preventDefault: () => {},
+					stopPropagation: () => {}
+				};
+
+				viewDocument.fire( 'copy', data );
+
+				// paste into last column
+				tableSelection.setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 2 ] ),
+					modelRoot.getNodeByPath( [ 0, 2, 2 ] )
+				);
+
+				viewDocument.fire( 'paste', data );
+
+				// check if markers are present on proper positions
+				checkMarker( 'comment:thread', {
+					start: [ 0, 2, 0, 0, 0 ],
+					end: [ 0, 2, 0, 0, 3 ]
+				} );
+
+				checkMarker( 'comment:thread:0', {
+					start: [ 0, 2, 2, 0, 0 ],
+					end: [ 0, 2, 2, 0, 3 ]
+				} );
+
+				checkMarker( 'comment:thread:1', {
+					start: [ 0, 0, 2, 0, 0 ],
+					end: [ 0, 0, 2, 0, 3 ]
+				} );
+
+				checkMarker( 'comment:thread:2', {
+					start: [ 0, 1, 2, 0, 0 ],
+					end: [ 0, 1, 2, 0, 3 ]
+				} );
+			} );
+
+			it( 'should paste row with single marker as column with duplicated markers to non-empty first-column', () => {
+				pasteTable(
+					[
+						[ wrapWithHTMLMarker( 'Foo', 'comment', { name: 'thread' } ), '', '' ],
+						[ '', '', '' ],
+						[ '', '', '' ]
+					]
+				);
+
+				// copy whole first row
+				tableSelection.setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 0, 2 ] )
+				);
+
+				const data = {
+					dataTransfer: createDataTransfer(),
+					preventDefault: () => {},
+					stopPropagation: () => {}
+				};
+
+				viewDocument.fire( 'copy', data );
+
+				// paste into last column
+				tableSelection.setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 2, 0 ] )
+				);
+
+				viewDocument.fire( 'paste', data );
+
+				// check if markers are present on proper positions
+				checkMarker( 'comment:thread:0', {
+					start: [ 0, 2, 0, 0, 0 ],
+					end: [ 0, 2, 0, 0, 3 ]
+				} );
+
+				checkMarker( 'comment:thread:1', {
+					start: [ 0, 0, 0, 0, 0 ],
+					end: [ 0, 0, 0, 0, 3 ]
+				} );
+
+				checkMarker( 'comment:thread:2', {
+					start: [ 0, 1, 0, 0, 0 ],
+					end: [ 0, 1, 0, 0, 3 ]
+				} );
+			} );
+
+			it( 'should paste row with two markers to first column', () => {
+				pasteTable(
+					[
+						[ '', '' ],
+						[
+							wrapWithHTMLMarker( 'Foo', 'comment', { name: 'start' } ),
+							wrapWithHTMLMarker( 'Foo', 'comment', { name: 'end' } )
+						]
+					]
+				);
+
+				// copy whole last row
+				tableSelection.setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 1, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+				);
+
+				const data = {
+					dataTransfer: createDataTransfer(),
+					preventDefault: () => {},
+					stopPropagation: () => {}
+				};
+
+				viewDocument.fire( 'copy', data );
+
+				// paste into first column
+				tableSelection.setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 1, 0 ] )
+				);
+
+				viewDocument.fire( 'paste', data );
+
+				// check if markers are present on proper positions
+				checkMarker( 'comment:start:2', {
+					start: [ 0, 0, 0, 0, 0 ],
+					end: [ 0, 0, 0, 0, 3 ]
+				} );
+
+				checkMarker( 'comment:start:0', {
+					start: [ 0, 1, 0, 0, 0 ],
+					end: [ 0, 1, 0, 0, 3 ]
+				} );
+
+				checkMarker( 'comment:end', {
+					start: [ 0, 1, 1, 0, 0 ],
+					end: [ 0, 1, 1, 0, 3 ]
+				} );
+			} );
+		} );
+
+		function wrapWithHTMLMarker( contents, marker, attrs ) {
 			const formattedAttributes = formatAttributes( attrs );
 
 			return [
@@ -4247,7 +4408,15 @@ describe( 'table clipboard', () => {
 			const marker = editor.model.markers.get( name );
 
 			expect( marker ).to.not.be.null;
-			expect( marker.getRange().isEqual( range ) ).to.be.true;
+
+			if ( range instanceof Range ) {
+				expect( marker.getRange().isEqual( range ) ).to.be.true;
+			} else {
+				const markerRange = marker.getRange();
+
+				expect( markerRange.start.path ).to.deep.equal( range.start );
+				expect( markerRange.end.path ).to.deep.equal( range.end );
+			}
 		}
 
 		function markerConversion( ) {
