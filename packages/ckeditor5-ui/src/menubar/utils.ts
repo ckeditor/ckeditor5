@@ -523,47 +523,6 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 			}
 		]
 	}
-	// {
-	// 	id: 'test',
-	// 	label: 'Test',
-	// 	items: [
-	// 		'menuBar:bold',
-	// 		'menuBar:italic',
-	// 		'menuBar:underline',
-	// 		{
-	// 			id: 'test-nested-lvl1',
-	// 			label: 'Test nested level 1',
-	// 			items: [
-	// 				'menuBar:undo',
-	// 				'menuBar:redo',
-	// 				{
-	// 					id: 'test-nested-lvl11',
-	// 					label: 'Test nested level 1.1',
-	// 					items: [
-	// 						'menuBar:undo',
-	// 						'menuBar:redo'
-	// 					]
-	// 				}
-	// 			]
-	// 		},
-	// 		{
-	// 			id: 'test-nested-lvl2',
-	// 			label: 'Test nested level 2',
-	// 			items: [
-	// 				'menuBar:undo',
-	// 				'menuBar:redo',
-	// 				{
-	// 					id: 'test-nested-lvl21',
-	// 					label: 'Test nested level 2.1',
-	// 					items: [
-	// 						'menuBar:undo',
-	// 						'menuBar:redo'
-	// 					]
-	// 				}
-	// 			]
-	// 		}
-	// 	]
-	// }
 ];
 
 /**
