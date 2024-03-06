@@ -12,6 +12,7 @@ import { replaceImagesSourceWithBase64 } from '../filters/image.js';
 import removeMSAttributes from '../filters/removemsattributes.js';
 import type { ViewDocument } from 'ckeditor5/src/engine.js';
 import type { Normalizer, NormalizerData } from '../normalizer.js';
+import type { Editor } from 'ckeditor5/src/core.js';
 
 const msWordMatch1 = /<meta\s*name="?generator"?\s*content="?microsoft\s*word\s*\d+"?\/?>/i;
 const msWordMatch2 = /xmlns:o="urn:schemas-microsoft-com/i;
@@ -22,13 +23,16 @@ const msWordMatch2 = /xmlns:o="urn:schemas-microsoft-com/i;
 export default class MSWordNormalizer implements Normalizer {
 	public readonly document: ViewDocument;
 
+	public readonly editor: Editor;
+
 	/**
 	 * Creates a new `MSWordNormalizer` instance.
 	 *
 	 * @param document View document.
 	 */
-	constructor( document: ViewDocument ) {
+	constructor( document: ViewDocument, edytor: Editor ) {
 		this.document = document;
+		this.editor = edytor;
 	}
 
 	/**
@@ -43,8 +47,9 @@ export default class MSWordNormalizer implements Normalizer {
 	 */
 	public execute( data: NormalizerData ): void {
 		const { body: documentFragment, stylesString } = data._parsedData;
+		const multiLevelListPlugin = this.editor.plugins.has( 'MultiLevelList' );
 
-		transformListItemLikeElementsIntoLists( documentFragment, stylesString );
+		transformListItemLikeElementsIntoLists( documentFragment, stylesString, multiLevelListPlugin );
 		replaceImagesSourceWithBase64( documentFragment, data.dataTransfer.getData( 'text/rtf' ) );
 		removeMSAttributes( documentFragment );
 

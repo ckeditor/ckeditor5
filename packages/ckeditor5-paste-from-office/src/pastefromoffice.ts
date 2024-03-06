@@ -55,7 +55,7 @@ export default class PasteFromOffice extends Plugin {
 		const viewDocument = editor.editing.view.document;
 		const normalizers: Array<Normalizer> = [];
 
-		normalizers.push( new MSWordNormalizer( viewDocument ) );
+		normalizers.push( new MSWordNormalizer( viewDocument, editor ) );
 		normalizers.push( new GoogleDocsNormalizer( viewDocument ) );
 		normalizers.push( new GoogleSheetsNormalizer( viewDocument ) );
 

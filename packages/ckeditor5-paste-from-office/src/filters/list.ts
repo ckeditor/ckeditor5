@@ -7,6 +7,8 @@
  * @module paste-from-office/filters/list
  */
 
+/* window */
+
 import {
 	Matcher,
 	UpcastWriter,
@@ -31,7 +33,8 @@ import {
  */
 export function transformListItemLikeElementsIntoLists(
 	documentFragment: ViewDocumentFragment,
-	stylesString: string
+	stylesString: string,
+	isMultiLevelListPlugin: boolean
 ): void {
 	if ( !documentFragment.childCount ) {
 		return;
@@ -61,12 +64,12 @@ export function transformListItemLikeElementsIntoLists(
 			const listStyle = detectListStyle( itemLikeElement, stylesString );
 
 			if ( !currentList ) {
-				currentList = insertNewEmptyList( listStyle, itemLikeElement.element, writer );
+				currentList = insertNewEmptyList( listStyle, itemLikeElement.element, writer, isMultiLevelListPlugin );
 			} else if ( itemLikeElement.indent > currentIndentation ) {
 				const lastListItem = currentList.getChild( currentList.childCount - 1 ) as ViewElement;
 				const lastListItemChild = lastListItem!.getChild( lastListItem.childCount - 1 ) as ViewElement;
 
-				currentList = insertNewEmptyList( listStyle, lastListItemChild, writer );
+				currentList = insertNewEmptyList( listStyle, lastListItemChild, writer, isMultiLevelListPlugin );
 				currentIndentation += 1;
 			} else if ( itemLikeElement.indent < currentIndentation ) {
 				const differentIndentation = currentIndentation - itemLikeElement.indent;
@@ -327,7 +330,8 @@ function mapListStyleDefinition( value: string ) {
 function insertNewEmptyList(
 	listStyle: ReturnType<typeof detectListStyle>,
 	element: ViewElement,
-	writer: UpcastWriter
+	writer: UpcastWriter,
+	isMultiLevelListPlugin: boolean
 ) {
 	const parent = element.parent!;
 	const list = writer.createElement( listStyle.type );
@@ -345,7 +349,7 @@ function insertNewEmptyList(
 		writer.setAttribute( 'start', listStyle.startIndex, list );
 	}
 
-	if ( listStyle.isLegalStyleList ) {
+	if ( listStyle.isLegalStyleList && isMultiLevelListPlugin ) {
 		writer.addClass( 'legal-list', list );
 	}
 
