@@ -12,6 +12,7 @@ import {
 	UpcastWriter,
 	type ViewDocumentFragment,
 	type ViewElement,
+	type ViewNode,
 	type ViewText
 } from 'ckeditor5/src/engine.js';
 
@@ -43,6 +44,8 @@ export function transformListItemLikeElementsIntoLists(
 		return;
 	}
 
+	const encounteredLists: Record<string, number> = {};
+
 	const stack: Array<ListLikeElement & {
 		listElement: ViewElement;
 		listItemElements: Array<ViewElement>;
@@ -52,7 +55,7 @@ export function transformListItemLikeElementsIntoLists(
 		if ( itemLikeElement.indent !== undefined ) {
 			const indent = itemLikeElement.indent - 1;
 
-			if ( indent < stack.length && stack[ indent ].id != itemLikeElement.id ) {
+			if ( indent < stack.length && isNewListNeeded( stack[ indent ], itemLikeElement ) ) {
 				stack.length = indent;
 			}
 
@@ -61,6 +64,11 @@ export function transformListItemLikeElementsIntoLists(
 			}
 			else if ( indent > stack.length - 1 ) {
 				const listStyle = detectListStyle( itemLikeElement, stylesString );
+
+				if ( indent == 0 && listStyle.type == 'ol' && itemLikeElement.id !== undefined && encounteredLists[ itemLikeElement.id ] ) {
+					listStyle.startIndex = encounteredLists[ itemLikeElement.id ];
+				}
+
 				const listElement = createNewEmptyList( listStyle, writer );
 
 				if ( stack.length == 0 ) {
@@ -79,6 +87,10 @@ export function transformListItemLikeElementsIntoLists(
 					listElement,
 					listItemElements: []
 				};
+
+				if ( indent == 0 && itemLikeElement.id !== undefined ) {
+					encounteredLists[ itemLikeElement.id ] = listStyle.startIndex || 1;
+				}
 			}
 
 			// https://github.com/ckeditor/ckeditor5/issues/15964
@@ -86,6 +98,10 @@ export function transformListItemLikeElementsIntoLists(
 
 			writer.appendChild( listItem, stack[ indent ].listElement );
 			stack[ indent ].listItemElements.push( listItem );
+
+			if ( indent == 0 && itemLikeElement.id !== undefined ) {
+				encounteredLists[ itemLikeElement.id ]++;
+			}
 
 			if ( itemLikeElement.element != listItem ) {
 				writer.appendChild( itemLikeElement.element, listItem );
@@ -187,6 +203,38 @@ function findAllItemLikeElements(
 	}
 
 	return itemLikeElements;
+}
+
+/**
+ * Whether the previous and current items belong to the same list. It is determined based on `item.id`
+ * (extracted from `mso-list` style, see #getListItemData) and a previous sibling of the current item.
+ *
+ * However, it's quite easy to change the `id` attribute for nested lists in Word. It will break the list feature while pasting.
+ * Let's check also the `indent` attribute. If the difference between those two elements is equal to 1, we can assume that
+ * the `currentItem` is a beginning of the nested list because lists in CKEditor 5 always start with the `indent=0` attribute.
+ * See: https://github.com/ckeditor/ckeditor5/issues/7805.
+ */
+function isNewListNeeded( previousItem: ListLikeElement, currentItem: ListLikeElement ) {
+	if ( !previousItem ) {
+		return true;
+	}
+
+	if ( previousItem.id !== currentItem.id ) {
+		return true;
+	}
+
+	const previousSibling = currentItem.element.previousSibling;
+
+	if ( !previousSibling ) {
+		return true;
+	}
+
+	// Even with the same id the list does not have to be continuous (#43).
+	return !isList( previousSibling );
+}
+
+function isList( element: ViewNode ) {
+	return element.is( 'element', 'ol' ) || element.is( 'element', 'ul' );
 }
 
 /**
