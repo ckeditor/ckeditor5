@@ -61,6 +61,6 @@
   ],
   "scripts": {
     "build": "tsc -p ./tsconfig.json",
-    "build:node": "ckeditor5-dev-build-tools --tsconfig=tsconfig.kowalski.json --clean --source-map --declarations --banner=../../scripts/banner.mjs"
+    "build:kowalski": "ckeditor5-dev-build-tools --tsconfig=tsconfig.kowalski.json --clean --source-map --declarations --banner=../../scripts/banner.mjs"
   }
 }
