@@ -183,6 +183,30 @@ ClassicEditor
 	When enabled, this feature also provides the **email address autodetection** feature. When you submit `hello@example.com` in your content, the plugin will automatically change it to `mailto:hello@example.com`.
 </info-box>
 
+#### Adding custom protocols in links
+
+By default, a minimal set of protocols is allowed to be used in the links. Any URL with an unrecognized protocol will be changed to '#'. You can overwrite the list of protocols by using {@link module:link/linkconfig~LinkConfig#allowedProtocols `config.link.allowedProtocols`}.
+
+See a configuration example:
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		link: {
+			// You can use `s?` suffix like below to allow both `http` and `https` protocols at the same time.
+			allowedProtocols: [ 'https?', 'tel', 'sms', 'sftp', 'smb', 'slack' ]
+		}
+		// More of the editor's configuration.
+ 		// ...
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+<info-box warning>
+	Please keep in mind that you customize this list at your own risk &ndash; adding unsafe protocols like `javascript` can lead to serious security vulnerabilities!
+</info-box>
+
 #### Adding attributes to links based on predefined rules (automatic decorators)
 
 Automatic link decorators match all links in the editor content against a {@link module:link/linkconfig~LinkDecoratorAutomaticDefinition function} which decides whether the link should receive some set of attributes, considering the URL (`href`) of the link. These decorators work silently and the editor applies them during the {@link framework/architecture/editing-engine#conversion data downcast}.

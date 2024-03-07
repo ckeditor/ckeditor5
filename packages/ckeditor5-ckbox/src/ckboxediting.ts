@@ -76,7 +76,7 @@ export default class CKBoxEditing extends Plugin {
 	}
 
 	/**
-	 * @inheritdoc
+	 * @inheritDoc
 	 */
 	public afterInit(): void {
 		const editor = this.editor;

@@ -44,3 +44,23 @@ msgstr "아래 첨자"
 msgctxt "Toolbar button tooltip for the Superscript feature."
 msgid "Superscript"
 msgstr "위 첨자"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for making text italic."
+msgid "Italic text"
+msgstr "기울인 텍스트"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for moving selection out of an inline code style."
+msgid "Move out of an inline code style"
+msgstr "인라인 코드 스타일 밖으로 이동"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for making text bold."
+msgid "Bold text"
+msgstr "굵은 텍스트"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for making text underlined."
+msgid "Underline text"
+msgstr "텍스트 밑줄"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for making text strikethrough."
+msgid "Strikethrough text"
+msgstr "텍스트 취소선"
