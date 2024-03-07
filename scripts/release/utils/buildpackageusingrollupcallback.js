@@ -13,10 +13,9 @@
  */
 module.exports = async function buildPackageUsingRollupCallback( packagePath ) {
 	const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
-	const fs = require( 'fs/promises' );
-	const path = require( 'upath' );
 
-	if ( !( await isTypeScriptPackage( packagePath ) ) ) {
+	// Ignore builds as they are rather "a product to use" instead of "blocks to combine".
+	if ( packagePath.includes( 'ckeditor5-build-' ) ) {
 		return;
 	}
 
@@ -25,29 +24,5 @@ module.exports = async function buildPackageUsingRollupCallback( packagePath ) {
 		verbosity: 'error',
 		async: true
 	} );
-
-	/**
-	 * @param {String} packagePath
-	 * @returns {Promise.<Boolean>}
-	 */
-	function isTypeScriptPackage( packagePath ) {
-		const packageJsonPath = path.join( packagePath, 'package.json' );
-		const packageJson = require( packageJsonPath );
-
-		// Almost all CKEditor 5 packages define an entry point. When it points to a TypeScript file,
-		// the package is written in TS.
-		if ( packageJson.main ) {
-			return packageJson.main.includes( '.ts' );
-		}
-
-		// Otherwise, let's check if the package contains a `tsconfig.json` file.
-		return checkFileExists( path.join( packagePath, 'tsconfig.json' ) );
-	}
-
-	function checkFileExists( file ) {
-		return fs.access( file, fs.constants.F_OK )
-			.then( () => true )
-			.catch( () => false );
-	}
 };
 
