@@ -3,7 +3,75 @@ Changelog
 
 ## [41.3.0-alpha.0](https://github.com/ckeditor/ckeditor5/compare/v41.2.0...v41.3.0-alpha.0) (March 7, 2024)
 
-Internal changes only (updated dependencies, documentation, etc.).
+We are happy to announce the release of CKEditor&nbsp;5 v41.3.0-alpha.0.
+
+This release is intended for testing new installation methods [announced in this post](https://github.com/ckeditor/ckeditor5/issues/15502).
+
+It contains two builds that can be found in the `dist` folder.
+
+The first build is a **browser build** that can be run directly in the browser without a build step. It contains the files `index.browser.js` and `index.browser.css`. For editor- or content-only styles, use the `editor-index.browser.css` or `content-index.browser.css` files.
+
+<details>
+<summary>Code snippet</summary>
+
+```html
+<link rel="stylesheet" href="<PATH_TO_THE_CKEDITOR5>/dist/index.browser.css">
+
+<script type="importmap">
+{
+  "imports": {
+    "ckeditor5": "<PATH_TO_THE_CKEDITOR5>/dist/index.browser.js",
+    "ckeditor5/": "<PATH_TO_THE_CKEDITOR5>/",
+  }
+}
+</script>
+<script type="module">
+import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
+import translations from 'ckeditor5/dist/translations/pl.js';
+
+await ClassicEditor.create( document.querySelector( '#editor' ), {
+  plugins: [
+    Essentials,
+    Paragraph,
+  ],
+  toolbar: {
+    items: [ 'undo', 'redo' ]
+  },
+  translations
+} );
+</script>
+```
+
+</details>
+
+The second build is an **NPM build**. It includes the files `index.js` and `index.bundled.css`. For editor- or content-only styles, use the `editor-index.bundled.css` or `content-index.bundled.css` files.
+
+<details>
+<summary>Code snippet</summary>
+
+```js
+import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
+import translations from 'ckeditor5/dist/translations/pl.js';
+
+import 'ckeditor5/dist/index.bundled.css';
+
+await ClassicEditor.create( document.querySelector( '#editor' ), {
+  plugins: [
+    Essentials,
+    Paragraph,
+  ],
+  toolbar: {
+    items: [ 'undo', 'redo' ]
+  },
+  translations
+} );
+```
+
+</details>
+
+Please note that this release is based on `v41.2.0` and is marked as alpha, which means that it is an experimental release and some unexpected results may occur when using it.
+
+We appreciate any feedback that will help us improve the final form of the project.
 
 ### Released packages
 
