@@ -213,7 +213,11 @@ export default class ClipboardMarkersUtils extends Plugin {
 	public _forceMarkersCopy(
 		markerName: string,
 		executor: VoidFunction,
-		config: ClipboardMarkerConfiguration = { allowedActions: 'all' }
+		config: ClipboardMarkerConfiguration = {
+			allowedActions: 'all',
+			withPartiallySelected: true,
+			regenerateMarkerIdsOnPaste: true
+		}
 	): void {
 		const before = this._markersToCopy.get( markerName );
 
@@ -338,7 +342,7 @@ export default class ClipboardMarkersUtils extends Plugin {
 			.from( markersInRanges )
 			.filter( isSelectionMarkerCopyable )
 			.map( ( marker ): CopyableMarker => ( {
-				name: this._getUniqueMarkerName( marker.name ),
+				name: marker.name,
 				range: marker.getRange()
 			} ) );
 	}
