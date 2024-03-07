@@ -602,8 +602,10 @@ export type ClipboardMarkerConfiguration = {
 	// If true then every marker that is present in clipboard document fragment element obtain new generated id just before pasting.
 	// It means that it is possible to perform copy once and then paste it multiple times wherever we want.
 	//
-	// On the other hand if it has false value the marker will be pasted only first time.
-	// Second paste results in not pasting markers because their ids are already present on the list of root document markers.
+	// On the other hand if it has false value the marker will be not pasted because ID already exists in the document.
+	//
+	// This flag is ignored in `cut` and `dragstart` actions because source marker is moved to graveyard and
+	// it is still present in `model.markers`. Pasted marker id must be regenerated to avoid duplications.
 	regenerateMarkerIdsOnPaste?: boolean;
 };
 
