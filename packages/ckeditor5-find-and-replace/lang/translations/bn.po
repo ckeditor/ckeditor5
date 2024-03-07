@@ -68,3 +68,7 @@ msgstr "পরামর্শঃ এটি প্রতিস্থাপন ক
 msgctxt "The label and the tooltip of the options dropdown button in the find and replace form."
 msgid "Advanced options"
 msgstr "উন্নত বিকল্পগুলি"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for opening the find and replace UI."
+msgid "Find in the document"
+msgstr "ডকুমেন্টে খুঁজুন"

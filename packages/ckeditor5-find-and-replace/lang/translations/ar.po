@@ -68,3 +68,7 @@ msgstr "نصيحة: في البداية، ابحث عن جزء من النص؛ �
 msgctxt "The label and the tooltip of the options dropdown button in the find and replace form."
 msgid "Advanced options"
 msgstr "الخيارات المتقدمة"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for opening the find and replace UI."
+msgid "Find in the document"
+msgstr "ابحثْ في الوثيقة"

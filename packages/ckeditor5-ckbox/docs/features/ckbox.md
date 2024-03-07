@@ -77,21 +77,20 @@ The CKBox feature requires one of the following plugins to be loaded to work cor
 
 These plugins are, by default, loaded with predefined builds, such as `ClassicEditor`. If you do not have any of them in your editor, install one and add it to your plugin list.
 
-Please also remember, that the CKBox plugin requires the following dependency plugins to work properly: `ArticlePluginSet`, `PictureEditing`, `ImageUpload`, and `CloudServices`. Except for `ImageUpload` which is, likewise, available in predefined builds, these need to be added manually.
+Please also remember, that the CKBox plugin requires the following dependency plugins to work properly: `PictureEditing`, `ImageUpload`, and `CloudServices`. Except for `ImageUpload` which is, likewise, available in predefined builds, these need to be added manually.
 
 You must include the `CKBoxImageEdit` plugin if you want to use CKBox image editing capabilities from within CKEditor&nbsp;5.
 
 Finally, add {@link module:ckbox/ckbox~CKBox} to your plugin list and toolbar, and [configure](#configuration) the feature as needed. An example configuration may look like this:
 
 ```js
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import { ImageUpload, PictureEditing } from '@ckeditor/ckeditor5-image';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import { CKBox, CKBoxImageEdit } from "@ckeditor/ckeditor5-ckbox";
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [  ArticlePluginSet, PictureEditing, ImageUpload, CloudServices, CKBox, CKBoxImageEdit, /* ... */ ],
+		plugins: [ PictureEditing, ImageUpload, CloudServices, CKBox, CKBoxImageEdit, /* ... */ ],
 		toolbar: [ 'ckbox', 'ckboxImageEdit', /* ... */ ], // Depending on your preference.
 		ckbox: {
 			// Feature configuration.

@@ -42,6 +42,26 @@ describe( 'Keyboard', () => {
 				'`', '-', '=', '[', ']', ';', '\'', ',', '.', '/', '\\'
 			);
 		} );
+
+		it( 'should provide correct codes for interpunction characters, brackets, slashes, etc.', () => {
+			const charactersToCodes = {
+				'\'': 222,
+				',': 108,
+				'-': 109,
+				'.': 110,
+				'/': 111,
+				';': 186,
+				'=': 187,
+				'[': 219,
+				'\\': 220,
+				']': 221,
+				'`': 223
+			};
+
+			for ( const character in charactersToCodes ) {
+				expect( keyCodes[ character ] ).to.equal( charactersToCodes[ character ] );
+			}
+		} );
 	} );
 
 	describe( 'getCode', () => {
@@ -58,7 +78,7 @@ describe( 'Keyboard', () => {
 		} );
 
 		it( 'gets code of a punctuation character', () => {
-			expect( getCode( ']' ) ).to.equal( 93 );
+			expect( getCode( ']' ) ).to.equal( 221 );
 		} );
 
 		it( 'is case insensitive', () => {
@@ -103,7 +123,7 @@ describe( 'Keyboard', () => {
 			} );
 
 			it( 'parses string without modifier', () => {
-				expect( parseKeystroke( '[' ) ).to.equal( 91 );
+				expect( parseKeystroke( '[' ) ).to.equal( 219 );
 			} );
 
 			it( 'allows spacing', () => {
@@ -148,7 +168,7 @@ describe( 'Keyboard', () => {
 			} );
 
 			it( 'parses string without modifier', () => {
-				expect( parseKeystroke( '[' ) ).to.equal( 91 );
+				expect( parseKeystroke( '[' ) ).to.equal( 219 );
 			} );
 
 			it( 'allows spacing', () => {
@@ -192,7 +212,7 @@ describe( 'Keyboard', () => {
 			} );
 
 			it( 'parses string without modifier', () => {
-				expect( parseKeystroke( '[' ) ).to.equal( 91 );
+				expect( parseKeystroke( '[' ) ).to.equal( 219 );
 			} );
 
 			it( 'allows spacing', () => {
@@ -273,13 +293,20 @@ describe( 'Keyboard', () => {
 
 			it( 'normalizes value', () => {
 				expect( getEnvKeystrokeText( 'ESC' ) ).to.equal( 'Esc' );
-				expect( getEnvKeystrokeText( 'TAB' ) ).to.equal( 'Tab' );
+				expect( getEnvKeystrokeText( 'TAB' ) ).to.equal( '⇥' );
 				expect( getEnvKeystrokeText( 'A' ) ).to.equal( 'A' );
 				expect( getEnvKeystrokeText( 'a' ) ).to.equal( 'A' );
 				expect( getEnvKeystrokeText( 'CTRL+a' ) ).to.equal( '⌘A' );
 				expect( getEnvKeystrokeText( 'ctrl+b' ) ).to.equal( '⌘B' );
 				expect( getEnvKeystrokeText( 'CTRL+[' ) ).to.equal( '⌘[' );
 				expect( getEnvKeystrokeText( 'CTRL+]' ) ).to.equal( '⌘]' );
+			} );
+
+			it( 'uses pretty glyphs for arrows', () => {
+				expect( getEnvKeystrokeText( 'Arrowleft' ) ).to.equal( '←' );
+				expect( getEnvKeystrokeText( 'Arrowup' ) ).to.equal( '↑' );
+				expect( getEnvKeystrokeText( 'Arrowright' ) ).to.equal( '→' );
+				expect( getEnvKeystrokeText( 'Arrowdown' ) ).to.equal( '↓' );
 			} );
 		} );
 
@@ -320,13 +347,20 @@ describe( 'Keyboard', () => {
 
 			it( 'normalizes value', () => {
 				expect( getEnvKeystrokeText( 'ESC' ) ).to.equal( 'Esc' );
-				expect( getEnvKeystrokeText( 'TAB' ) ).to.equal( 'Tab' );
+				expect( getEnvKeystrokeText( 'TAB' ) ).to.equal( '⇥' );
 				expect( getEnvKeystrokeText( 'A' ) ).to.equal( 'A' );
 				expect( getEnvKeystrokeText( 'a' ) ).to.equal( 'A' );
 				expect( getEnvKeystrokeText( 'CTRL+a' ) ).to.equal( '⌘A' );
 				expect( getEnvKeystrokeText( 'ctrl+b' ) ).to.equal( '⌘B' );
 				expect( getEnvKeystrokeText( 'CTRL+[' ) ).to.equal( '⌘[' );
 				expect( getEnvKeystrokeText( 'CTRL+]' ) ).to.equal( '⌘]' );
+			} );
+
+			it( 'uses pretty glyphs for arrows', () => {
+				expect( getEnvKeystrokeText( 'Arrowleft' ) ).to.equal( '←' );
+				expect( getEnvKeystrokeText( 'Arrowup' ) ).to.equal( '↑' );
+				expect( getEnvKeystrokeText( 'Arrowright' ) ).to.equal( '→' );
+				expect( getEnvKeystrokeText( 'Arrowdown' ) ).to.equal( '↓' );
 			} );
 		} );
 
@@ -337,7 +371,7 @@ describe( 'Keyboard', () => {
 
 			it( 'normalizes value', () => {
 				expect( getEnvKeystrokeText( 'ESC' ) ).to.equal( 'Esc' );
-				expect( getEnvKeystrokeText( 'TAB' ) ).to.equal( 'Tab' );
+				expect( getEnvKeystrokeText( 'TAB' ) ).to.equal( '⇥' );
 				expect( getEnvKeystrokeText( 'A' ) ).to.equal( 'A' );
 				expect( getEnvKeystrokeText( 'a' ) ).to.equal( 'A' );
 				expect( getEnvKeystrokeText( 'CTRL+a' ) ).to.equal( 'Ctrl+A' );
@@ -349,6 +383,13 @@ describe( 'Keyboard', () => {
 				expect( getEnvKeystrokeText( 'CTRL+SHIFT+A' ) ).to.equal( 'Ctrl+Shift+A' );
 				expect( getEnvKeystrokeText( 'CTRL+[' ) ).to.equal( 'Ctrl+[' );
 				expect( getEnvKeystrokeText( 'CTRL+]' ) ).to.equal( 'Ctrl+]' );
+			} );
+
+			it( 'uses pretty glyphs for arrows', () => {
+				expect( getEnvKeystrokeText( 'Arrowleft' ) ).to.equal( '←' );
+				expect( getEnvKeystrokeText( 'Arrowup' ) ).to.equal( '↑' );
+				expect( getEnvKeystrokeText( 'Arrowright' ) ).to.equal( '→' );
+				expect( getEnvKeystrokeText( 'Arrowdown' ) ).to.equal( '↓' );
 			} );
 		} );
 	} );

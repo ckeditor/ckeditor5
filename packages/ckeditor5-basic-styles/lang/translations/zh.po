@@ -44,3 +44,23 @@ msgstr "下標"
 msgctxt "Toolbar button tooltip for the Superscript feature."
 msgid "Superscript"
 msgstr "上標"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for making text italic."
+msgid "Italic text"
+msgstr "斜體文字"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for moving selection out of an inline code style."
+msgid "Move out of an inline code style"
+msgstr "移出行內程式碼樣式"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for making text bold."
+msgid "Bold text"
+msgstr "粗體文字"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for making text underlined."
+msgid "Underline text"
+msgstr "底線文字"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for making text strikethrough."
+msgid "Strikethrough text"
+msgstr "刪除線文字"

@@ -135,11 +135,11 @@ msgstr "\"Top\" com seta para cima em cima"
 
 msgctxt "A label for the \"dollar sign\" symbol."
 msgid "Dollar sign"
-msgstr "Cifrão"
+msgstr "Sinal de Dólar"
 
 msgctxt "A label for the \"euro sign\" symbol."
 msgid "Euro sign"
-msgstr "Sinal de euro"
+msgstr "Sinal de Euro"
 
 msgctxt "A label for the \"yen sign\" symbol."
 msgid "Yen sign"

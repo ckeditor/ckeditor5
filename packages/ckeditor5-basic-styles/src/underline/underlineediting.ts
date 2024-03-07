@@ -31,6 +31,7 @@ export default class UnderlineEditing extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
+		const t = this.editor.t;
 
 		// Allow strikethrough attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: UNDERLINE } );
@@ -54,5 +55,15 @@ export default class UnderlineEditing extends Plugin {
 
 		// Set the Ctrl+U keystroke.
 		editor.keystrokes.set( 'CTRL+U', 'underline' );
+
+		// Add the information about the keystroke to the accessibility database.
+		editor.accessibility.addKeystrokeInfos( {
+			keystrokes: [
+				{
+					label: t( 'Underline text' ),
+					keystroke: 'CTRL+U'
+				}
+			]
+		} );
 	}
 }

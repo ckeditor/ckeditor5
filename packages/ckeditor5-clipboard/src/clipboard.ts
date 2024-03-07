@@ -12,6 +12,7 @@ import { Plugin } from '@ckeditor/ckeditor5-core';
 import ClipboardPipeline from './clipboardpipeline.js';
 import DragDrop from './dragdrop.js';
 import PastePlainText from './pasteplaintext.js';
+import ClipboardMarkersUtils from './clipboardmarkersutils.js';
 
 /**
  * The clipboard feature.
@@ -35,6 +36,32 @@ export default class Clipboard extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ ClipboardPipeline, DragDrop, PastePlainText ] as const;
+		return [ ClipboardMarkersUtils, ClipboardPipeline, DragDrop, PastePlainText ] as const;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public init(): void {
+		const editor = this.editor;
+		const t = this.editor.t;
+
+		// Add the information about the keystrokes to the accessibility database.
+		editor.accessibility.addKeystrokeInfos( {
+			keystrokes: [
+				{
+					label: t( 'Copy selected content' ),
+					keystroke: 'CTRL+C'
+				},
+				{
+					label: t( 'Paste content' ),
+					keystroke: 'CTRL+V'
+				},
+				{
+					label: t( 'Paste content as plain text' ),
+					keystroke: 'CTRL+SHIFT+V'
+				}
+			]
+		} );
 	}
 }

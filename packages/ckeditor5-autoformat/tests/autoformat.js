@@ -62,6 +62,17 @@ describe( 'Autoformat', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have pluginName', () => {
+		expect( Autoformat.pluginName ).to.equal( 'Autoformat' );
+	} );
+
+	it( 'should add keystroke accessibility info', () => {
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
+			label: 'Revert autoformatting action',
+			keystroke: 'Backspace'
+		} );
+	} );
+
 	describe( 'Bulleted list', () => {
 		it( 'should replace asterisk with bulleted list item', () => {
 			setData( model, '<paragraph>*[]</paragraph>' );

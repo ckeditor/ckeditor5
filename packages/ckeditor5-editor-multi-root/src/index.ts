@@ -9,6 +9,10 @@
 
 export { default as MultiRootEditor } from './multirooteditor.js';
 
-export type { RootAttributes } from './multirooteditor.js';
+export type {
+	RootAttributes,
+	AddRootEvent,
+	DetachRootEvent
+} from './multirooteditor.js';
 
 import './augmentation.js';

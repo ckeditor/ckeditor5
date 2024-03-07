@@ -214,6 +214,20 @@ export class Client {
 		this._processExecute( 'redo' );
 	}
 
+	getModelString() {
+		return getData( this.editor.model, { withoutSelection: true, convertMarkers: true } );
+	}
+
+	destroy() {
+		clients.delete( this );
+
+		return this.editor.destroy();
+	}
+
+	insertContent( modelFragment ) {
+		this.editor.model.insertContent( modelFragment );
+	}
+
 	_processExecute( commandName, commandArgs ) {
 		const oldVersion = this.document.version;
 
@@ -244,16 +258,6 @@ export class Client {
 			case 'beforeParent':
 				return Position._createBefore( selRange.start.parent );
 		}
-	}
-
-	getModelString() {
-		return getData( this.editor.model, { withoutSelection: true, convertMarkers: true } );
-	}
-
-	destroy() {
-		clients.delete( this );
-
-		return this.editor.destroy();
 	}
 
 	_processAction( name, ...args ) {

@@ -67,6 +67,21 @@ describe( 'LinkUI', () => {
 		expect( editor.plugins.get( ContextualBalloon ) ).to.be.instanceOf( ContextualBalloon );
 	} );
 
+	it( 'should add keystroke accessibility info', () => {
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
+			label: 'Create link',
+			keystroke: 'Ctrl+K'
+		} );
+
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
+			label: 'Move out of a link',
+			keystroke: [
+				[ 'arrowleft', 'arrowleft' ],
+				[ 'arrowright', 'arrowright' ]
+			]
+		} );
+	} );
+
 	describe( 'init', () => {
 		it( 'should register click observer', () => {
 			expect( editor.editing.view.getObserver( ClickObserver ) ).to.be.instanceOf( ClickObserver );
