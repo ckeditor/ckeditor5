@@ -35,20 +35,20 @@ msgstr "按下 Enter 在小工具後輸入，或按下 Shift + Enter 在小工�
 
 msgctxt "Accessibility help dialog section title for widget plugin keystrokes."
 msgid "Keystrokes that can be used when a widget is selected (for example: image, table, etc.)"
-msgstr ""
+msgstr "小工具選取時可使用的按鍵（例如：圖片、表格等）"
 
 msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that inserts a paragraph after a widget."
 msgid "Insert a new paragraph directly after a widget"
-msgstr ""
+msgstr "在小工具後直接插入新段落"
 
 msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that inserts a paragraph before a widget."
 msgid "Insert a new paragraph directly before a widget"
-msgstr ""
+msgstr "在小工具前直接插入新段落"
 
 msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that moves the caret before a widget."
 msgid "Move the caret to allow typing directly before a widget"
-msgstr ""
+msgstr "移動插入符號，以便在小工具前直接輸入"
 
 msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that moves the caret after a widget."
 msgid "Move the caret to allow typing directly after a widget"
-msgstr ""
+msgstr "移動插入符號，以便在小工具後直接輸入"

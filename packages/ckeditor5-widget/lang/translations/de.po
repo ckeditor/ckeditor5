@@ -35,20 +35,20 @@ msgstr "Drücken Sie die Eingabetaste, um nach dem Widget zu tippen oder Shift +
 
 msgctxt "Accessibility help dialog section title for widget plugin keystrokes."
 msgid "Keystrokes that can be used when a widget is selected (for example: image, table, etc.)"
-msgstr ""
+msgstr "Tastatureingaben, die verwendet werden können, wenn ein Widget ausgewählt wurde (zum Beispiel: Bilder, Tabellen etc.)"
 
 msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that inserts a paragraph after a widget."
 msgid "Insert a new paragraph directly after a widget"
-msgstr ""
+msgstr "Einen neuen Abschnitt direkt nach einem Widget einfügen"
 
 msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that inserts a paragraph before a widget."
 msgid "Insert a new paragraph directly before a widget"
-msgstr ""
+msgstr "Einen neuen Abschnitt direkt vor einem Widget einfügen"
 
 msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that moves the caret before a widget."
 msgid "Move the caret to allow typing directly before a widget"
-msgstr ""
+msgstr "Verschieben Sie den Textcursor, um die Eingabe direkt nach dem Widget zu erlauben"
 
 msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that moves the caret after a widget."
 msgid "Move the caret to allow typing directly after a widget"
-msgstr ""
+msgstr "Verschieben Sie den Textcursor, um die direkte Eingabe nach dem Widget zu erlauben"

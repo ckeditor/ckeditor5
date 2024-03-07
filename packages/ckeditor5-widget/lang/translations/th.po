@@ -35,20 +35,20 @@ msgstr "กด Enter เพื่อพิมพ์หลังจาก หร�
 
 msgctxt "Accessibility help dialog section title for widget plugin keystrokes."
 msgid "Keystrokes that can be used when a widget is selected (for example: image, table, etc.)"
-msgstr ""
+msgstr "แป้นพิมพ์ลัดที่สามารถใช้ได้เมื่อเลือกวิดเจ็ต (ยกตัวอย่าง: รูปภาพ, ตาราง, ฯลฯ)"
 
 msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that inserts a paragraph after a widget."
 msgid "Insert a new paragraph directly after a widget"
-msgstr ""
+msgstr "แทรกย่อหน้าใหม่หลังวิดเจ็ตโดยตรง"
 
 msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that inserts a paragraph before a widget."
 msgid "Insert a new paragraph directly before a widget"
-msgstr ""
+msgstr "แทรกย่อหน้าใหม่หน้าวิดเจ็ตโดยตรง"
 
 msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that moves the caret before a widget."
 msgid "Move the caret to allow typing directly before a widget"
-msgstr ""
+msgstr "ย้ายสัญลักษณ์คาเร็ตเพื่อให้สามารถพิมพ์ได้ไปอยู่หน้าวิดเจ็ตโดยตรง"
 
 msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that moves the caret after a widget."
 msgid "Move the caret to allow typing directly after a widget"
-msgstr ""
+msgstr "ย้ายสัญลักษณ์คาเร็ตเพื่อให้สามารถพิมพ์ได้ไปอยู่หลังวิดเจ็ตโดยตรง"

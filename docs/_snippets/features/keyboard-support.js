@@ -5,7 +5,7 @@
 
 /* globals window, document, open, console, LICENSE_KEY */
 
-// Keep the guide listing updated with each change
+// Keep the guide listing updated with each change.
 
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
@@ -68,7 +68,7 @@ import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.j
 // Allow using internal license keys in this sample. See CF#2555.
 open.closed = 1;
 
-// templates icons
+// Templates icons.
 import articleImageRightIcon from '../../assets/img/article-image-right.svg';
 import financialReportIcon from '../../assets/img/financial-report.svg';
 import formalLetterIcon from '../../assets/img/formal-letter.svg';

@@ -6,6 +6,7 @@
 /* globals console, window, document, ClassicEditor */
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
+import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-update-placeholder' ), {
@@ -17,6 +18,7 @@ ClassicEditor
 			'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 		],
 		ckbox: {
+			tokenUrl: TOKEN_URL,
 			forceDemoLabel: true
 		},
 		ui: {
