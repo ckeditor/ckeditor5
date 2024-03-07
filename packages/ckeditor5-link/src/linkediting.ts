@@ -90,6 +90,7 @@ export default class LinkEditing extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
+		const allowedProtocols = this.editor.config.get( 'link.allowedProtocols' );
 
 		// Allow link attribute on all inline nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: 'linkHref' } );
@@ -99,7 +100,7 @@ export default class LinkEditing extends Plugin {
 
 		editor.conversion.for( 'editingDowncast' )
 			.attributeToElement( { model: 'linkHref', view: ( href, conversionApi ) => {
-				return createLinkElement( ensureSafeUrl( href ), conversionApi );
+				return createLinkElement( ensureSafeUrl( href, allowedProtocols ), conversionApi );
 			} } );
 
 		editor.conversion.for( 'upcast' )

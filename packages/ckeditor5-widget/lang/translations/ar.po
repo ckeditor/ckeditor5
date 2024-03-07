@@ -29,6 +29,26 @@ msgctxt "The title displayed when a mouse is over a button that inserts a paragr
 msgid "Insert paragraph after block"
 msgstr "إدراج فقرة بعد الكتلة"
 
-msgctxt "Information to be read by screen reader about shortcuts to type around a widget"
+msgctxt "Information to be read by screen reader about shortcuts to type around a widget."
 msgid "Press Enter to type after or press Shift + Enter to type before the widget"
 msgstr "اضغط على Enter للكتابة بعد ذلك أو اضغط على Shift + Enter للكتابة قبل الأداة"
+
+msgctxt "Accessibility help dialog section title for widget plugin keystrokes."
+msgid "Keystrokes that can be used when a widget is selected (for example: image, table, etc.)"
+msgstr "ضغطة المفاتيح التي يمكن استخدامها عند اختيار الأداة (على سبيل المثال: الصورة والجدول وما إلى ذلك)"
+
+msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that inserts a paragraph after a widget."
+msgid "Insert a new paragraph directly after a widget"
+msgstr "قم بإدراج فقرة جديدة مباشرةً بعد الأداة"
+
+msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that inserts a paragraph before a widget."
+msgid "Insert a new paragraph directly before a widget"
+msgstr "قم بإدراج فقرة جديدة مباشرةً قبل الأداة"
+
+msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that moves the caret before a widget."
+msgid "Move the caret to allow typing directly before a widget"
+msgstr "حرّكْ علامة الإقحام للسماح بالكتابة مباشرةً قبل الأداة"
+
+msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that moves the caret after a widget."
+msgid "Move the caret to allow typing directly after a widget"
+msgstr "حرّكْ علامة الإقحام للسماح بالكتابة مباشرةً بعد الأداة"

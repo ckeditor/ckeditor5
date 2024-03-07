@@ -68,3 +68,7 @@ msgstr "팁: 바꾸려는 텍스트를 먼저 찾으세요."
 msgctxt "The label and the tooltip of the options dropdown button in the find and replace form."
 msgid "Advanced options"
 msgstr "고급 옵션"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for opening the find and replace UI."
+msgid "Find in the document"
+msgstr "문서에서 찾기"

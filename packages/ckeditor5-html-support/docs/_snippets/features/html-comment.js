@@ -5,6 +5,8 @@
 
 /* globals console, window, document, ClassicEditor, HtmlComment */
 
+import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
+
 ClassicEditor
 	.create( document.querySelector( '#snippet-html-comment' ), {
 		extraPlugins: [ HtmlComment ],
@@ -28,7 +30,8 @@ ClassicEditor
 			}
 		},
 		ckbox: {
-			allowExternalImagesEditing: [ /^data:/, 'origin' ],
+			tokenUrl: TOKEN_URL,
+			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 			forceDemoLabel: true
 		}
 	} )
