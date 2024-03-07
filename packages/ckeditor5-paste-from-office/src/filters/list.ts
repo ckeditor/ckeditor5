@@ -81,12 +81,15 @@ export function transformListItemLikeElementsIntoLists(
 				};
 			}
 
-			const listItem = writer.createElement( 'li' );
+			// https://github.com/ckeditor/ckeditor5/issues/15964
+			const listItem = itemLikeElement.element.name == 'li' ? itemLikeElement.element : writer.createElement( 'li' );
 
 			writer.appendChild( listItem, stack[ indent ].listElement );
 			stack[ indent ].listItemElements.push( listItem );
 
-			writer.appendChild( itemLikeElement.element, listItem );
+			if ( itemLikeElement.element != listItem ) {
+				writer.appendChild( itemLikeElement.element, listItem );
+			}
 
 			removeBulletElement( itemLikeElement.element, writer );
 			writer.removeStyle( 'text-indent', itemLikeElement.element ); // #12361
@@ -145,7 +148,8 @@ function findAllItemLikeElements(
 	const foundMargins = new Set<string>();
 
 	for ( const item of range.getItems() ) {
-		if ( item.is( 'element' ) && item.name.match( /^(p|h\d+)$/ ) ) {
+		// https://github.com/ckeditor/ckeditor5/issues/15964
+		if ( item.is( 'element' ) && item.name.match( /^(p|h\d+|li|div)$/ ) ) {
 			// Try to rely on margin-left style to find paragraphs visually aligned with previously encountered list item.
 			let marginLeft = item.getStyle( 'margin-left' );
 
@@ -261,6 +265,11 @@ function detectListStyle( listLikeItem: ListLikeElement, stylesString: string ) 
  * Tries to extract the `list-style-type` value based on the marker element for bulleted list.
  */
 function findBulletedListStyle( element: ViewElement ) {
+	// https://github.com/ckeditor/ckeditor5/issues/15964
+	if ( element.name == 'li' && element.parent!.name == 'ul' && element.parent!.hasAttribute( 'type' ) ) {
+		return element.parent!.getAttribute( 'type' );
+	}
+
 	const listMarkerElement = findListMarkerNode( element );
 
 	if ( !listMarkerElement ) {
