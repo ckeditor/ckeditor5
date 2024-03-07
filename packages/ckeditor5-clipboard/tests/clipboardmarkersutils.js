@@ -36,7 +36,8 @@ describe( 'Clipboard Markers Utils', () => {
 		beforeEach( () => {
 			clipboardMarkersUtils._registerMarkerToCopy( 'comment', {
 				allowedActions: [ 'copy' ],
-				withPartiallySelected: true
+				withPartiallySelected: true,
+				regenerateMarkerIdsOnPaste: true
 			} );
 		} );
 
@@ -391,7 +392,11 @@ describe( 'Clipboard Markers Utils', () => {
 
 	describe( 'Copy partial selection', () => {
 		it( 'should be possible to copy partially selected markers if withPartiallySelected = true', () => {
-			clipboardMarkersUtils._registerMarkerToCopy( 'comment', { allowedActions: 'all', withPartiallySelected: true } );
+			clipboardMarkersUtils._registerMarkerToCopy( 'comment', {
+				allowedActions: 'all',
+				withPartiallySelected: true,
+				regenerateMarkerIdsOnPaste: true
+			} );
 
 			setModelData(
 				model,
@@ -493,8 +498,8 @@ describe( 'Clipboard Markers Utils', () => {
 			getUniqueMarkerNameStub = getUniqueMarkerNameStub.callsFake( markerName => `${ markerName }:pasted-2` );
 			viewDocument.fire( 'paste', data );
 
-			expect( model.markers.has( 'comment:test:pasted' ) ).to.true;
-			expect( model.markers.has( 'comment:test:pasted-2' ) ).to.false;
+			expect( model.markers.has( 'comment:test' ) ).to.true;
+			expect( model.markers.has( 'comment:test:pasted' ) ).to.false;
 		} );
 
 		it( 'should insert marker on second paste if regenerateMarkerIdsOnPaste = true', () => {
@@ -580,7 +585,9 @@ describe( 'Clipboard Markers Utils', () => {
 
 			clipboardMarkersUtils._forceMarkersCopy( 'comment', () => {
 				expect( getMarkerRestrictions() ).deep.equal( {
-					allowedActions: 'all'
+					allowedActions: 'all',
+					regenerateMarkerIdsOnPaste: true,
+					withPartiallySelected: true
 				} );
 			} );
 
@@ -628,7 +635,7 @@ describe( 'Clipboard Markers Utils', () => {
 					model.createPositionFromPath( modelRoot, [ 2, 0 ] ),
 					model.createPositionFromPath( modelRoot, [ 2, 12 ] )
 				) );
-			}, { withPartiallySelected: true } );
+			} );
 		} );
 
 		it( 'should be possible to force markers copy #2 - unregistered marker', () => {
@@ -669,7 +676,7 @@ describe( 'Clipboard Markers Utils', () => {
 					model.createPositionFromPath( modelRoot, [ 2, 0 ] ),
 					model.createPositionFromPath( modelRoot, [ 2, 12 ] )
 				) );
-			}, { withPartiallySelected: true } );
+			} );
 		} );
 
 		function getMarkerRestrictions() {

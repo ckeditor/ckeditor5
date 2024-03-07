@@ -4077,7 +4077,8 @@ describe( 'table clipboard', () => {
 			await createEditor();
 
 			clipboardMarkersUtils._registerMarkerToCopy( 'comment', {
-				allowedActions: [ 'copy' ]
+				allowedActions: [ 'copy' ],
+				regenerateMarkerIdsOnPaste: true
 			} );
 
 			getUniqueMarkerNameStub = sinon
@@ -4106,7 +4107,7 @@ describe( 'table clipboard', () => {
 
 			const paragraph = modelRoot.getNodeByPath( [ 1, 0, 0, 0 ] );
 
-			checkMarker( 'comment:paste', model.createRangeIn( paragraph ) );
+			checkMarker( 'comment:paste:uniq', model.createRangeIn( paragraph ) );
 		} );
 
 		it( 'should paste table with multiple markers to multiple cells', () => {
@@ -4125,12 +4126,12 @@ describe( 'table clipboard', () => {
 				]
 			);
 
-			checkMarker( 'comment:pre', {
+			checkMarker( 'comment:pre:uniq', {
 				start: [ 1, 0, 0, 0, 0 ],
 				end: [ 1, 0, 0, 0, 5 ]
 			} );
 
-			checkMarker( 'comment:post', {
+			checkMarker( 'comment:post:uniq', {
 				start: [ 1, 0, 1, 0, 0 ],
 				end: [ 1, 0, 1, 0, 6 ]
 			} );
@@ -4153,12 +4154,12 @@ describe( 'table clipboard', () => {
 				]
 			);
 
-			checkMarker( 'comment:pre', {
+			checkMarker( 'comment:pre:uniq', {
 				start: [ 1, 0, 0, 0, 0 ],
 				end: [ 1, 0, 0, 0, 7 ]
 			} );
 
-			checkMarker( 'comment:post', {
+			checkMarker( 'comment:post:uniq', {
 				start: [ 1, 0, 0, 0, 18 ],
 				end: [ 1, 0, 0, 0, 34 ]
 			} );
@@ -4178,12 +4179,12 @@ describe( 'table clipboard', () => {
 				[ [ outerMarker ] ]
 			);
 
-			checkMarker( 'comment:outer', {
+			checkMarker( 'comment:outer:uniq', {
 				start: [ 1, 0, 0, 0, 0 ],
 				end: [ 1, 0, 0, 0, 11 ]
 			} );
 
-			checkMarker( 'comment:inner', {
+			checkMarker( 'comment:inner:uniq', {
 				start: [ 1, 0, 0, 0, 1 ],
 				end: [ 1, 0, 0, 0, 5 ]
 			} );
@@ -4310,22 +4311,22 @@ describe( 'table clipboard', () => {
 				viewDocument.fire( 'paste', data );
 
 				// check if markers are present on proper positions
-				checkMarker( 'comment:thread', {
+				checkMarker( 'comment:thread:0', {
 					start: [ 0, 2, 0, 0, 0 ],
 					end: [ 0, 2, 0, 0, 3 ]
 				} );
 
-				checkMarker( 'comment:thread:0', {
+				checkMarker( 'comment:thread:2', {
 					start: [ 0, 2, 2, 0, 0 ],
 					end: [ 0, 2, 2, 0, 3 ]
 				} );
 
-				checkMarker( 'comment:thread:1', {
+				checkMarker( 'comment:thread:3', {
 					start: [ 0, 0, 2, 0, 0 ],
 					end: [ 0, 0, 2, 0, 3 ]
 				} );
 
-				checkMarker( 'comment:thread:2', {
+				checkMarker( 'comment:thread:4', {
 					start: [ 0, 1, 2, 0, 0 ],
 					end: [ 0, 1, 2, 0, 3 ]
 				} );
@@ -4363,17 +4364,17 @@ describe( 'table clipboard', () => {
 				viewDocument.fire( 'paste', data );
 
 				// check if markers are present on proper positions
-				checkMarker( 'comment:thread:0', {
+				checkMarker( 'comment:thread:2', {
 					start: [ 0, 2, 0, 0, 0 ],
 					end: [ 0, 2, 0, 0, 3 ]
 				} );
 
-				checkMarker( 'comment:thread:1', {
+				checkMarker( 'comment:thread:3', {
 					start: [ 0, 0, 0, 0, 0 ],
 					end: [ 0, 0, 0, 0, 3 ]
 				} );
 
-				checkMarker( 'comment:thread:2', {
+				checkMarker( 'comment:thread:4', {
 					start: [ 0, 1, 0, 0, 0 ],
 					end: [ 0, 1, 0, 0, 3 ]
 				} );
@@ -4413,17 +4414,17 @@ describe( 'table clipboard', () => {
 				viewDocument.fire( 'paste', data );
 
 				// check if markers are present on proper positions
-				checkMarker( 'comment:start:2', {
+				checkMarker( 'comment:start:6', {
 					start: [ 0, 0, 0, 0, 0 ],
 					end: [ 0, 0, 0, 0, 3 ]
 				} );
 
-				checkMarker( 'comment:start:0', {
+				checkMarker( 'comment:start:4', {
 					start: [ 0, 1, 0, 0, 0 ],
 					end: [ 0, 1, 0, 0, 3 ]
 				} );
 
-				checkMarker( 'comment:end', {
+				checkMarker( 'comment:end:1', {
 					start: [ 0, 1, 1, 0, 0 ],
 					end: [ 0, 1, 1, 0, 3 ]
 				} );
