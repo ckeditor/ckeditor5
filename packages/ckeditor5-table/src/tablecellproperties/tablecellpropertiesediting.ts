@@ -76,7 +76,11 @@ export default class TableCellPropertiesEditing extends Plugin {
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
 
-		editor.config.define( 'table.tableCellProperties.defaultProperties', {} );
+		editor.config.define( 'table.tableCellProperties.defaultProperties', {
+			borderStyle: 'solid',
+			borderColor: 'hsl(0, 0%, 75%)',
+			borderWidth: '1px'
+		} );
 
 		const defaultTableCellProperties = getNormalizedDefaultProperties(
 			editor.config.get( 'table.tableCellProperties.defaultProperties' )!,
