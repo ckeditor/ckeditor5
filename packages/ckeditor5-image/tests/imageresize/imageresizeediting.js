@@ -491,6 +491,30 @@ describe( 'ImageResizeEditing', () => {
 			expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'resizedHeight' ) ).to.be.true;
 			await newEditor.destroy();
 		} );
+
+		it( 'allows the resizedWidth attribute when ImageBlock plugin is enabled (reverse order in plugins array)', async () => {
+			const newEditor = await ClassicEditor.create( editorElement, { plugins: [ ImageResizeEditing, ImageBlockEditing ] } );
+			expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'resizedWidth' ) ).to.be.true;
+			await newEditor.destroy();
+		} );
+
+		it( 'allows the resizedHeight attribute when ImageBlock plugin is enabled (reverse order in plugins array)', async () => {
+			const newEditor = await ClassicEditor.create( editorElement, { plugins: [ ImageResizeEditing, ImageBlockEditing ] } );
+			expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'resizedHeight' ) ).to.be.true;
+			await newEditor.destroy();
+		} );
+
+		it( 'allows the resizedWidth attribute when ImageInline plugin is enabled (reverse order in plugins array)', async () => {
+			const newEditor = await ClassicEditor.create( editorElement, { plugins: [ ImageResizeEditing, ImageInlineEditing ] } );
+			expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'resizedWidth' ) ).to.be.true;
+			await newEditor.destroy();
+		} );
+
+		it( 'allows the resizedHeight attribute when ImageInline plugin is enabled (reverse order in plugins array)', async () => {
+			const newEditor = await ClassicEditor.create( editorElement, { plugins: [ ImageResizeEditing, ImageInlineEditing ] } );
+			expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'resizedHeight' ) ).to.be.true;
+			await newEditor.destroy();
+		} );
 	} );
 
 	describe( 'command', () => {
