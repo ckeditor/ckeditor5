@@ -8,6 +8,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import DocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment.js';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position.js';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range.js';
+import Undo from '@ckeditor/ckeditor5-undo/src/undoediting.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { parse, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
@@ -72,10 +73,10 @@ describe( 'Clipboard Markers Utils', () => {
 
 			viewDocument.fire( 'paste', data );
 
-			checkMarker( 'comment:test:pasted', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 2, 4 ] ),
-				model.createPositionFromPath( modelRoot, [ 2, 7 ] )
-			) );
+			checkMarker( 'comment:test:pasted', {
+				start: [ 2, 4 ],
+				end: [ 2, 7 ]
+			} );
 		} );
 
 		it( 'should copy and paste marker that is outside selection', () => {
@@ -111,10 +112,10 @@ describe( 'Clipboard Markers Utils', () => {
 
 			viewDocument.fire( 'paste', data );
 
-			checkMarker( 'comment:test:pasted', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 2, 0 ] ),
-				model.createPositionFromPath( modelRoot, [ 2, 12 ] )
-			) );
+			checkMarker( 'comment:test:pasted', {
+				start: [ 2, 0 ],
+				end: [ 2, 12 ]
+			} );
 		} );
 
 		it( 'should copy and paste marker that starts before selection', () => {
@@ -149,10 +150,10 @@ describe( 'Clipboard Markers Utils', () => {
 
 			viewDocument.fire( 'paste', data );
 
-			checkMarker( 'comment:test:pasted', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 1, 0 ] ),
-				model.createPositionFromPath( modelRoot, [ 1, 5 ] )
-			) );
+			checkMarker( 'comment:test:pasted', {
+				start: [ 1, 0 ],
+				end: [ 1, 5 ]
+			} );
 		} );
 
 		it( 'should copy and paste marker that starts after selection', () => {
@@ -187,10 +188,10 @@ describe( 'Clipboard Markers Utils', () => {
 
 			viewDocument.fire( 'paste', data );
 
-			checkMarker( 'comment:test:pasted', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 1, 6 ] ),
-				model.createPositionFromPath( modelRoot, [ 1, 11 ] )
-			) );
+			checkMarker( 'comment:test:pasted', {
+				start: [ 1, 6 ],
+				end: [ 1, 11 ]
+			} );
 		} );
 
 		it( 'copy and paste markers does not affect position of markers that are after selection', () => {
@@ -226,15 +227,15 @@ describe( 'Clipboard Markers Utils', () => {
 
 			viewDocument.fire( 'paste', data );
 
-			checkMarker( 'comment:test:pasted', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 1, 6 ] ),
-				model.createPositionFromPath( modelRoot, [ 1, 11 ] )
-			) );
+			checkMarker( 'comment:test:pasted', {
+				start: [ 1, 6 ],
+				end: [ 1, 11 ]
+			} );
 
-			checkMarker( 'comment:test2:pasted', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 1, 0 ] ),
-				model.createPositionFromPath( modelRoot, [ 1, 14 ] )
-			) );
+			checkMarker( 'comment:test2:pasted', {
+				start: [ 1, 0 ],
+				end: [ 1, 14 ]
+			} );
 		} );
 
 		it( 'copy and paste fake marker that is inside another fake marker aligned to right', () => {
@@ -267,15 +268,15 @@ describe( 'Clipboard Markers Utils', () => {
 
 			viewDocument.fire( 'paste', data );
 
-			checkMarker( 'comment:test:pasted', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 1, 2 ] ),
-				model.createPositionFromPath( modelRoot, [ 1, 11 ] )
-			) );
+			checkMarker( 'comment:test:pasted', {
+				start: [ 1, 2 ],
+				end: [ 1, 11 ]
+			} );
 
-			checkMarker( 'comment:test2:pasted', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 1, 6 ] ),
-				model.createPositionFromPath( modelRoot, [ 1, 11 ] )
-			) );
+			checkMarker( 'comment:test2:pasted', {
+				start: [ 1, 6 ],
+				end: [ 1, 11 ]
+			} );
 		} );
 
 		it( 'copy and paste fake marker that is inside another fake marker aligned to left', () => {
@@ -308,15 +309,15 @@ describe( 'Clipboard Markers Utils', () => {
 
 			viewDocument.fire( 'paste', data );
 
-			checkMarker( 'comment:test:pasted', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 1, 0 ] ),
-				model.createPositionFromPath( modelRoot, [ 1, 11 ] )
-			) );
+			checkMarker( 'comment:test:pasted', {
+				start: [ 1, 0 ],
+				end: [ 1, 11 ]
+			} );
 
-			checkMarker( 'comment:test2:pasted', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 1, 0 ] ),
-				model.createPositionFromPath( modelRoot, [ 1, 5 ] )
-			) );
+			checkMarker( 'comment:test2:pasted', {
+				start: [ 1, 0 ],
+				end: [ 1, 5 ]
+			} );
 		} );
 
 		it( 'copy and paste fake marker that is inside another larger fake marker', () => {
@@ -349,15 +350,15 @@ describe( 'Clipboard Markers Utils', () => {
 
 			viewDocument.fire( 'paste', data );
 
-			checkMarker( 'comment:test:pasted', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 1, 0 ] ),
-				model.createPositionFromPath( modelRoot, [ 1, 11 ] )
-			) );
+			checkMarker( 'comment:test:pasted', {
+				start: [ 1, 0 ],
+				end: [ 1, 11 ]
+			} );
 
-			checkMarker( 'comment:test2:pasted', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 1, 5 ] ),
-				model.createPositionFromPath( modelRoot, [ 1, 8 ] )
-			) );
+			checkMarker( 'comment:test2:pasted', {
+				start: [ 1, 5 ],
+				end: [ 1, 8 ]
+			} );
 		} );
 	} );
 
@@ -457,7 +458,50 @@ describe( 'Clipboard Markers Utils', () => {
 	} );
 
 	describe( 'regenerateMarkerIdsOnPaste flag behavior', () => {
-		it( 'should not insert marker on second paste if regenerateMarkerIdsOnPaste = false', () => {
+		it( 'should insert marker with regenerated ID on cut and regenerateMarkerIdsOnPaste = false', () => {
+			clipboardMarkersUtils._registerMarkerToCopy( 'comment', {
+				allowedActions: 'all',
+				regenerateMarkerIdsOnPaste: false,
+				withPartiallySelected: true
+			} );
+
+			setModelData(
+				model,
+				wrapWithTag( 'paragraph', '[Hello World]' ) + wrapWithTag( 'paragraph', '' )
+			);
+
+			appendMarker( 'comment:test', { start: [ 0, 2 ], end: [ 0, 4 ] } );
+
+			const data = {
+				dataTransfer: createDataTransfer(),
+				preventDefault: () => {},
+				stopPropagation: () => {}
+			};
+
+			viewDocument.fire( 'cut', data );
+
+			model.change( writer => {
+				writer.setSelection(
+					writer.createRangeIn( editor.model.document.getRoot().getChild( 1 ) ),
+					0
+				);
+			} );
+
+			viewDocument.fire( 'paste', data );
+
+			checkMarker( 'comment:test:pasted', {
+				start: [ 1, 2 ],
+				end: [ 1, 4 ]
+			} );
+
+			editor.execute( 'undo' );
+			editor.execute( 'undo' );
+
+			// pasted comment is removed
+			expect( editor.model.markers.get( 'comment:test:pasted' ) ).to.be.null;
+		} );
+
+		it( 'should not insert marker with the same name on paste if regenerateMarkerIdsOnPaste = false', () => {
 			clipboardMarkersUtils._registerMarkerToCopy( 'comment', {
 				allowedActions: 'all',
 				regenerateMarkerIdsOnPaste: false,
@@ -495,14 +539,13 @@ describe( 'Clipboard Markers Utils', () => {
 				);
 			} );
 
-			getUniqueMarkerNameStub = getUniqueMarkerNameStub.callsFake( markerName => `${ markerName }:pasted-2` );
 			viewDocument.fire( 'paste', data );
 
 			expect( model.markers.has( 'comment:test' ) ).to.true;
 			expect( model.markers.has( 'comment:test:pasted' ) ).to.false;
 		} );
 
-		it( 'should insert marker on second paste if regenerateMarkerIdsOnPaste = true', () => {
+		it( 'should insert marker with the same name on paste if regenerateMarkerIdsOnPaste = true', () => {
 			clipboardMarkersUtils._registerMarkerToCopy( 'comment', {
 				allowedActions: 'all',
 				regenerateMarkerIdsOnPaste: true,
@@ -631,10 +674,10 @@ describe( 'Clipboard Markers Utils', () => {
 
 				viewDocument.fire( 'paste', data );
 
-				checkMarker( 'comment:test:pasted', model.createRange(
-					model.createPositionFromPath( modelRoot, [ 2, 0 ] ),
-					model.createPositionFromPath( modelRoot, [ 2, 12 ] )
-				) );
+				checkMarker( 'comment:test:pasted', {
+					start: [ 2, 0 ],
+					end: [ 2, 12 ]
+				} );
 			} );
 		} );
 
@@ -672,10 +715,10 @@ describe( 'Clipboard Markers Utils', () => {
 
 				viewDocument.fire( 'paste', data );
 
-				checkMarker( 'new:test:pasted', model.createRange(
-					model.createPositionFromPath( modelRoot, [ 2, 0 ] ),
-					model.createPositionFromPath( modelRoot, [ 2, 12 ] )
-				) );
+				checkMarker( 'new:test:pasted', {
+					start: [ 2, 0 ],
+					end: [ 2, 12 ]
+				} );
 			} );
 		} );
 
@@ -782,15 +825,15 @@ describe( 'Clipboard Markers Utils', () => {
 				}
 			);
 
-			checkMarker( 'comment:a', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 0, 0 ] ),
-				model.createPositionFromPath( modelRoot, [ 0, 6 ] )
-			) );
+			checkMarker( 'comment:a', {
+				start: [ 0, 0 ],
+				end: [ 0, 6 ]
+			} );
 
-			checkMarker( 'comment:b', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 0, 0 ] ),
-				model.createPositionFromPath( modelRoot, [ 0, 7 ] )
-			) );
+			checkMarker( 'comment:b', {
+				start: [ 0, 0 ],
+				end: [ 0, 7 ]
+			} );
 		} );
 
 		it( 'should add real markers to pasted fragment (overlap at the end)', () => {
@@ -811,15 +854,15 @@ describe( 'Clipboard Markers Utils', () => {
 				}
 			);
 
-			checkMarker( 'comment:a', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 0, 5 ] ),
-				model.createPositionFromPath( modelRoot, [ 0, 11 ] )
-			) );
+			checkMarker( 'comment:a', {
+				start: [ 0, 5 ],
+				end: [ 0, 11 ]
+			} );
 
-			checkMarker( 'comment:b', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 0, 4 ] ),
-				model.createPositionFromPath( modelRoot, [ 0, 11 ] )
-			) );
+			checkMarker( 'comment:b', {
+				start: [ 0, 4 ],
+				end: [ 0, 11 ]
+			} );
 		} );
 
 		it( 'should add real markers to pasted fragment (overlap at center)', () => {
@@ -840,21 +883,21 @@ describe( 'Clipboard Markers Utils', () => {
 				}
 			);
 
-			checkMarker( 'comment:a', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 0, 4 ] ),
-				model.createPositionFromPath( modelRoot, [ 0, 8 ] )
-			) );
+			checkMarker( 'comment:a', {
+				start: [ 0, 4 ],
+				end: [ 0, 8 ]
+			} );
 
-			checkMarker( 'comment:b', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 0, 0 ] ),
-				model.createPositionFromPath( modelRoot, [ 0, 11 ] )
-			) );
+			checkMarker( 'comment:b', {
+				start: [ 0, 0 ],
+				end: [ 0, 11 ]
+			} );
 		} );
 	} );
 
 	async function createEditor() {
 		editor = await ClassicTestEditor.create( element, {
-			plugins: [ Paragraph, Clipboard ]
+			plugins: [ Undo, Paragraph, Clipboard ]
 		} );
 
 		model = editor.model;
@@ -928,7 +971,15 @@ describe( 'Clipboard Markers Utils', () => {
 		const marker = editor.model.markers.get( name );
 
 		expect( marker ).to.not.be.null;
-		expect( marker.getRange().isEqual( range ) ).to.be.true;
+
+		if ( range instanceof Range ) {
+			expect( marker.getRange().isEqual( range ) ).to.be.true;
+		} else {
+			const markerRange = marker.getRange();
+
+			expect( markerRange.start.path ).to.deep.equal( range.start );
+			expect( markerRange.end.path ).to.deep.equal( range.end );
+		}
 	}
 
 	function createDataTransfer() {
