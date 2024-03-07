@@ -364,8 +364,9 @@ export default class ClipboardMarkersUtils extends Plugin {
 			.filter( ( [ markerName ] ) => this._isMarkerCopyable( markerName, action ) )
 			.map( ( [ markerName, range ] ): CopyableMarker => {
 				const copyMarkerConfig = this._getMarkerClipboardConfig( markerName )!;
+				const isInGraveyard = this.editor.model.markers.get( markerName )?.getRange().root.rootName === '$graveyard';
 
-				if ( copyMarkerConfig.regenerateMarkerIdsOnPaste ) {
+				if ( copyMarkerConfig.regenerateMarkerIdsOnPaste || isInGraveyard ) {
 					markerName = this._getUniqueMarkerName( markerName );
 				}
 
