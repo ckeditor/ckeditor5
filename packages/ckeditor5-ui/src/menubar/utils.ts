@@ -396,6 +396,13 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
  */
 export const DefaultMenuBarConfig: MenuBarConfig = [
 	{
+		id: 'file',
+		label: 'File',
+		items: [
+			'menuBar:exportPdf'
+		]
+	},
+	{
 		id: 'edit',
 		label: 'Edit',
 		items: [
