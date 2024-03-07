@@ -18,7 +18,7 @@
     "@ckeditor/ckeditor5-build-classic": "41.3.0-alpha.0",
     "@ckeditor/ckeditor5-editor-classic": "41.3.0-alpha.0",
     "@ckeditor/ckeditor5-core": "41.3.0-alpha.0",
-    "@ckeditor/ckeditor5-dev-build-tools": "^39.7.0-alpha.0",
+    "@ckeditor/ckeditor5-dev-build-tools": "^39.7.0-alpha.1",
     "@ckeditor/ckeditor5-engine": "41.3.0-alpha.0",
     "@types/lodash-es": "^4.17.6",
     "typescript": "5.0.4"

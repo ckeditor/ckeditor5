@@ -20,7 +20,7 @@
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "41.3.0-alpha.0",
     "@ckeditor/ckeditor5-clipboard": "41.3.0-alpha.0",
-    "@ckeditor/ckeditor5-dev-build-tools": "^39.7.0-alpha.0",
+    "@ckeditor/ckeditor5-dev-build-tools": "^39.7.0-alpha.1",
     "@ckeditor/ckeditor5-editor-classic": "41.3.0-alpha.0",
     "@ckeditor/ckeditor5-engine": "41.3.0-alpha.0",
     "@ckeditor/ckeditor5-enter": "41.3.0-alpha.0",

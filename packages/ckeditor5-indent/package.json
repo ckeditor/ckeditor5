@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-core": "41.3.0-alpha.0",
-    "@ckeditor/ckeditor5-dev-build-tools": "^39.7.0-alpha.0",
+    "@ckeditor/ckeditor5-dev-build-tools": "^39.7.0-alpha.1",
     "@ckeditor/ckeditor5-dev-utils": "^39.0.0",
     "@ckeditor/ckeditor5-list": "41.3.0-alpha.0",
     "@ckeditor/ckeditor5-editor-classic": "41.3.0-alpha.0",
