@@ -479,7 +479,8 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 					'menuBar:blockQuote',
 					'menuBar:htmlEmbed',
 					'menuBar:pageBreak',
-					'menuBar:horizontalLine'
+					'menuBar:horizontalLine',
+					'menuBar:codeBlock'
 				]
 			}
 		]
