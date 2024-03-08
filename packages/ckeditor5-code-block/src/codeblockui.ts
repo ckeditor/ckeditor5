@@ -115,6 +115,8 @@ export default class CodeBlockUI extends Plugin {
 				} );
 
 				buttonView.bind( ...Object.keys( definition.model ) as Array<keyof MenuBarMenuListItemButtonView> ).to( definition.model );
+				buttonView.delegate( 'execute' ).to( menuView );
+
 				buttonView.on( 'execute', () => {
 					editor.execute( 'codeBlock', {
 						language: definition.model._codeBlockLanguage as string,
