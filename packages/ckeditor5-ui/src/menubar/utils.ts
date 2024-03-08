@@ -453,6 +453,7 @@ export const DefaultMenuBarConfig: MenuBarConfig = [
 			'menuBar:todoList',
 			'-',
 			'menuBar:heading',
+			'menuBar:alignment',
 			'-',
 			'menuBar:indent',
 			'menuBar:outdent',

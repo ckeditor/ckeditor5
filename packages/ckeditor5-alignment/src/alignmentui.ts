@@ -8,10 +8,18 @@
  */
 
 import { Plugin, icons } from 'ckeditor5/src/core.js';
-import { ButtonView, createDropdown, addToolbarToDropdown } from 'ckeditor5/src/ui.js';
+import {
+	ButtonView,
+	createDropdown,
+	addToolbarToDropdown,
+	MenuBarMenuListItemButtonView,
+	MenuBarMenuListView,
+	MenuBarMenuView,
+	MenuBarMenuListItemView
+} from 'ckeditor5/src/ui.js';
 
 import { isSupported, normalizeAlignmentOptions } from './utils.js';
-import type { SupportedOption } from './alignmentconfig.js';
+import type { AlignmentFormat, SupportedOption } from './alignmentconfig.js';
 import type AlignmentCommand from './alignmentcommand.js';
 
 const iconsMap = new Map( [
@@ -117,6 +125,8 @@ export default class AlignmentUI extends Plugin {
 
 			return dropdownView;
 		} );
+
+		this._addMenuBarButton( options );
 	}
 
 	/**
@@ -149,6 +159,63 @@ export default class AlignmentUI extends Plugin {
 			} );
 
 			return buttonView;
+		} );
+	}
+
+	/**
+	 * Creates a button for all alignment options to use either in menu bar.
+	 *
+	 * @param options Normalized alignment options from config.
+	 */
+	private _addMenuBarButton( options: Array<AlignmentFormat> ): void {
+		const editor = this.editor;
+
+		editor.ui.componentFactory.add( 'menuBar:alignment', locale => {
+			const command: AlignmentCommand = editor.commands.get( 'alignment' )!;
+			const t = locale.t;
+			const menuView = new MenuBarMenuView( locale );
+			const listView = new MenuBarMenuListView( locale );
+
+			listView.set( {
+				ariaLabel: t( 'Alignment' ),
+				role: 'menu'
+			} );
+
+			menuView.buttonView.set( {
+				label: t( 'Alignment' )
+			} );
+
+			for ( const option of options ) {
+				const listItemView = new MenuBarMenuListItemView( locale, menuView );
+				const buttonView = new MenuBarMenuListItemButtonView( locale );
+
+				buttonView.extendTemplate( {
+					attributes: {
+						'aria-checked': buttonView.bindTemplate.to( 'isOn' )
+					}
+				} );
+
+				buttonView.delegate( 'execute' ).to( menuView );
+				buttonView.set( {
+					label: this.localizedOptionTitles[ option.name ],
+					icon: iconsMap.get( option.name )
+				} );
+
+				buttonView.on( 'execute', () => {
+					editor.execute( 'alignment', { value: option.name } );
+
+					editor.editing.view.focus();
+				} );
+
+				buttonView.bind( 'isOn' ).to( command, 'value', value => value === option.name );
+
+				listItemView.children.add( buttonView );
+				listView.items.add( listItemView );
+			}
+
+			menuView.panelView.children.add( listView );
+
+			return menuView;
 		} );
 	}
 }
