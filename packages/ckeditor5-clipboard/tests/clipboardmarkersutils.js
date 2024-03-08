@@ -392,7 +392,7 @@ describe( 'Clipboard Markers Utils', () => {
 	} );
 
 	describe( 'Copy partial selection', () => {
-		it( 'should be possible to copy partially selected markers if withPartiallySelected = true', () => {
+		it( 'should be possible to copy partially selected markers if `withPartiallySelected` is set to `true`', () => {
 			clipboardMarkersUtils._registerMarkerToCopy( 'comment', {
 				allowedActions: 'all',
 				withPartiallySelected: true,
@@ -426,7 +426,7 @@ describe( 'Clipboard Markers Utils', () => {
 			expect( model.markers.has( 'comment:test:pasted' ) ).to.true;
 		} );
 
-		it( 'should not be possible to copy partially selected markers if withPartiallySelected = false', () => {
+		it( 'should not be possible to copy partially selected markers if `withPartiallySelected` is set to `false`', () => {
 			clipboardMarkersUtils._registerMarkerToCopy( 'comment', { allowedActions: 'all', withPartiallySelected: false } );
 
 			setModelData(
@@ -458,7 +458,7 @@ describe( 'Clipboard Markers Utils', () => {
 	} );
 
 	describe( 'regenerateMarkerIdsOnPaste flag behavior', () => {
-		it( 'should insert marker with regenerated ID on cut and regenerateMarkerIdsOnPaste = false', () => {
+		it( 'should insert marker with regenerated ID on cut and `regenerateMarkerIdsOnPaste` is set to `false`', () => {
 			clipboardMarkersUtils._registerMarkerToCopy( 'comment', {
 				allowedActions: 'all',
 				regenerateMarkerIdsOnPaste: false,
@@ -501,7 +501,7 @@ describe( 'Clipboard Markers Utils', () => {
 			expect( editor.model.markers.get( 'comment:test:pasted' ) ).to.be.null;
 		} );
 
-		it( 'should not insert marker with the same name on paste if regenerateMarkerIdsOnPaste = false', () => {
+		it( 'should not insert marker with the same name on paste if `regenerateMarkerIdsOnPaste` is set to `false`', () => {
 			clipboardMarkersUtils._registerMarkerToCopy( 'comment', {
 				allowedActions: 'all',
 				regenerateMarkerIdsOnPaste: false,
@@ -545,7 +545,7 @@ describe( 'Clipboard Markers Utils', () => {
 			expect( model.markers.has( 'comment:test:pasted' ) ).to.false;
 		} );
 
-		it( 'should insert marker with the same name on paste if regenerateMarkerIdsOnPaste = true', () => {
+		it( 'should insert marker with the same name on paste if `regenerateMarkerIdsOnPaste` is set to `true`', () => {
 			clipboardMarkersUtils._registerMarkerToCopy( 'comment', {
 				allowedActions: 'all',
 				regenerateMarkerIdsOnPaste: true,
