@@ -131,9 +131,107 @@ describe( 'downcast converters', () => {
 				expect( viewTableRow1After ).to.equal( viewTableRow1Before );
 				expect( viewTableCell1After ).to.equal( viewTableCell1Before );
 			} );
+
+			it( 'should reconvert table on footerRows attribute change', () => {
+				setModelData( model, modelTable( [
+					[ '00' ],
+					[ '10' ]
+				] ) );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
+									'</td>' +
+								'</tr>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
+										'<span class="ck-table-bogus-paragraph">10</span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+
+				const viewFigureBefore = viewRoot.getChild( 0 );
+				const viewTableBefore = viewFigureBefore.getChild( 1 );
+				const viewTableRow0Before = viewTableBefore.getChild( 0 ).getChild( 0 );
+				const viewTableRow1Before = viewTableBefore.getChild( 0 ).getChild( 1 );
+				const viewTableCell0Before = viewTableRow0Before.getChild( 0 );
+				const viewTableCell1Before = viewTableRow1Before.getChild( 0 );
+
+				model.change( writer => {
+					writer.setAttribute( 'footerRows', 1, root.getChild( 0 ) );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+							'<tfoot>' +
+								'<tr>' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
+										'<span class="ck-table-bogus-paragraph">10</span>' +
+									'</th>' +
+								'</tr>' +
+							'</tfoot>' +
+						'</table>' +
+					'</figure>'
+				);
+
+				const viewFigureAfter = viewRoot.getChild( 0 );
+				const viewTableAfter = viewFigureAfter.getChild( 1 );
+				const viewTableRow0After = viewTableAfter.getChild( 0 ).getChild( 0 );
+				const viewTableRow1After = viewTableAfter.getChild( 1 ).getChild( 0 );
+				const viewTableCell0After = viewTableRow0After.getChild( 0 );
+				const viewTableCell1After = viewTableRow1After.getChild( 1 );
+
+				expect( viewFigureAfter ).to.not.equal( viewFigureBefore );
+				expect( viewTableAfter ).to.not.equal( viewTableBefore );
+				expect( viewTableRow1After ).to.not.equal( viewTableRow1Before );
+				expect( viewTableCell1After ).to.not.equal( viewTableCell1Before );
+				expect( viewTableRow0After ).to.equal( viewTableRow0Before );
+				expect( viewTableCell0After ).to.equal( viewTableCell0Before );
+			} );
 		} );
 
 		describe( 'data pipeline', () => {
+			it( 'should create table with tbody, thead, and tfoot', () => {
+				setModelData( model, modelTable( [
+					[ '00' ],
+					[ '10' ],
+					[ '20' ]
+				], { headingRows: 1, footerRows: 1 } ) );
+
+				expect( editor.getData() ).to.equalMarkup(
+					'<figure class="table">' +
+						'<table>' +
+							'<thead>' +
+								'<tr><th>00</th></tr>' +
+							'</thead>' +
+							'<tbody>' +
+								'<tr><td>10</td></tr>' +
+							'</tbody>' +
+							'<tfoot>' +
+								'<tr><th>20</th></tr>' +
+							'</tfoot>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+
 			it( 'should create table with tbody and thead', () => {
 				setModelData( model, modelTable( [
 					[ '00' ],
@@ -149,6 +247,26 @@ describe( 'downcast converters', () => {
 							'<tbody>' +
 								'<tr><td>10</td></tr>' +
 							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should create table with tbody and tfoot', () => {
+				setModelData( model, modelTable( [
+					[ '00' ],
+					[ '10' ]
+				], { footerRows: 1 } ) );
+
+				expect( editor.getData() ).to.equalMarkup(
+					'<figure class="table">' +
+						'<table>' +
+							'<tbody>' +
+								'<tr><td>00</td></tr>' +
+							'</tbody>' +
+							'<tfoot>' +
+								'<tr><th>10</th></tr>' +
+							'</tfoot>' +
 						'</table>' +
 					'</figure>'
 				);
@@ -172,6 +290,44 @@ describe( 'downcast converters', () => {
 				);
 			} );
 
+			it( 'should create table with tfoot', () => {
+				setModelData( model, modelTable( [
+					[ '00' ],
+					[ '10' ]
+				], { footerRows: 2 } ) );
+
+				expect( editor.getData() ).to.equalMarkup(
+					'<figure class="table">' +
+						'<table>' +
+							'<tfoot>' +
+								'<tr><th>00</th></tr>' +
+								'<tr><th>10</th></tr>' +
+							'</tfoot>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should create table with thead and tfoot', () => {
+				setModelData( model, modelTable( [
+					[ '00' ],
+					[ '10' ]
+				], { headingRows: 1, footerRows: 1 } ) );
+
+				expect( editor.getData() ).to.equalMarkup(
+					'<figure class="table">' +
+						'<table>' +
+							'<thead>' +
+								'<tr><th>00</th></tr>' +
+							'</thead>' +
+							'<tfoot>' +
+								'<tr><th>10</th></tr>' +
+							'</tfoot>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+
 			it( 'should create table with heading columns and rows', () => {
 				setModelData( model, modelTable( [
 					[ '00', '01', '02', '03' ],
@@ -187,6 +343,26 @@ describe( 'downcast converters', () => {
 							'<tbody>' +
 								'<tr><th>10</th><th>11</th><th>12</th><td>13</td></tr>' +
 							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should create table with heading columns and footer row', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01', '02', '03' ],
+					[ '10', '11', '12', '13' ]
+				], { headingColumns: 3, footerRows: 1 } ) );
+
+				expect( editor.getData() ).to.equalMarkup(
+					'<figure class="table">' +
+						'<table>' +
+							'<tbody>' +
+								'<tr><th>00</th><th>01</th><th>02</th><td>03</td></tr>' +
+							'</tbody>' +
+							'<tfoot>' +
+								'<tr><th>10</th><th>11</th><th>12</th><th>13</th></tr>' +
+							'</tfoot>' +
 						'</table>' +
 					'</figure>'
 				);
@@ -754,6 +930,60 @@ describe( 'downcast converters', () => {
 				], { headingRows: 3, asWidget: true } ) );
 			} );
 
+			it( 'should insert row on proper index when table has footer rows defined - insert in body', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '21', '22' ],
+					[ '31', '32' ]
+				], { footerRows: 1, asWidget: true } ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					const row = writer.createElement( 'tableRow' );
+
+					writer.insert( row, table, 1 );
+
+					writer.insertElement( 'tableCell', row, 'end' );
+					writer.insertElement( 'tableCell', row, 'end' );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+					[ '00', '01' ],
+					[ '', '' ],
+					[ '21', '22' ],
+					[ '31', '32' ]
+				], { footerRows: 1, asWidget: true } ) );
+			} );
+
+			it( 'should insert row on proper index when table has footer rows defined - insert in footer', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '21', '22' ],
+					[ '31', '32' ]
+				], { footerRows: 2 } ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					const row = writer.createElement( 'tableRow' );
+
+					writer.insert( row, table, 2 );
+
+					writer.insertElement( 'tableCell', row, 'end' );
+					writer.insertElement( 'tableCell', row, 'end' );
+
+					writer.setAttribute( 'footerRows', 3, table );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+					[ '00', '01' ],
+					[ '21', '22' ],
+					[ '', '' ],
+					[ '31', '32' ]
+				], { footerRows: 3, asWidget: true } ) );
+			} );
+
 			it( 'should react to changed rows when previous rows\' cells has rowspans', () => {
 				setModelData( model, modelTable( [
 					[ { rowspan: 2, contents: '00' }, '01' ],
@@ -942,6 +1172,39 @@ describe( 'downcast converters', () => {
 				);
 			} );
 
+			it( 'should react to removed row from the beginning of footer rows (no body rows)', () => {
+				setModelData( model, modelTable( [
+					[ '00[]', '01' ],
+					[ '10', '11' ]
+				], { footerRows: 2 } ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					// Removing row from footer section changes requires changing heading rows attribute.
+					writer.setAttribute( 'footerRows', 1, table );
+					writer.remove( table.getChild( 0 ) );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tfoot>' +
+								'<tr>' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
+										'<span class="ck-table-bogus-paragraph">10</span>' +
+									'</th>' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
+										'<span class="ck-table-bogus-paragraph">11</span>' +
+									'</th>' +
+								'</tr>' +
+							'</tfoot>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+
 			it( 'should react to removed row from the end of a heading rows (no body rows)', () => {
 				setModelData( model, modelTable( [
 					[ '00[]', '01' ],
@@ -972,6 +1235,39 @@ describe( 'downcast converters', () => {
 									'</th>' +
 								'</tr>' +
 							'</thead>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should react to removed row from the end of footer rows (no body rows)', () => {
+				setModelData( model, modelTable( [
+					[ '00[]', '01' ],
+					[ '10', '11' ]
+				], { footerRows: 2 } ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					// Removing row from footer section changes requires changing heading rows attribute.
+					writer.setAttribute( 'footerRows', 1, table );
+					writer.remove( table.getChild( 1 ) );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tfoot>' +
+								'<tr>' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
+									'</th>' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
+										'<span class="ck-table-bogus-paragraph">01</span>' +
+									'</th>' +
+								'</tr>' +
+							'</tfoot>' +
 						'</table>' +
 					'</figure>'
 				);
@@ -1028,6 +1324,58 @@ describe( 'downcast converters', () => {
 				);
 			} );
 
+			it( 'should react to removed row from the start of footer rows (first cell in body has colspan)', () => {
+				setModelData( model, modelTable( [
+					[ '00[]', '01', '02', '03' ],
+					[ { colspan: 2, contents: '10' }, '12', '13' ],
+					[ '22', '23', '24', '25' ]
+				], { footerRows: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					// Removing row from footer section changes requires changing heading rows attribute.
+					writer.remove( table.getChild( 2 ) );
+					writer.setAttribute( 'footerRows', 0, table );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
+									'</td>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
+										'<span class="ck-table-bogus-paragraph">01</span>' +
+									'</td>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
+										'<span class="ck-table-bogus-paragraph">02</span>' +
+									'</td>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
+										'<span class="ck-table-bogus-paragraph">03</span>' +
+									'</td>' +
+								'</tr>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" ' +
+											'colspan="2" contenteditable="true" role="textbox">' +
+										'<span class="ck-table-bogus-paragraph">10</span>' +
+									'</td>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
+										'<span class="ck-table-bogus-paragraph">12</span>' +
+									'</td>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
+										'<span class="ck-table-bogus-paragraph">13</span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+
 			it( 'should remove empty thead if a last row was removed from a heading rows (has heading and body)', () => {
 				setModelData( model, modelTable( [
 					[ '00[]', '01' ],
@@ -1055,6 +1403,39 @@ describe( 'downcast converters', () => {
 									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" ' +
 									'tabindex="-1">' +
 										'<span class="ck-table-bogus-paragraph">11</span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should remove empty thead if a last row was removed from footer rows (has footer and body)', () => {
+				setModelData( model, modelTable( [
+					[ '00[]', '01' ],
+					[ '10', '11' ]
+				], { footerRows: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					// Removing row from footer section changes requires changing footer rows attribute.
+					writer.removeAttribute( 'footerRows', table );
+					writer.remove( table.getChild( 1 ) );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
+									'</td>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
+										'<span class="ck-table-bogus-paragraph">01</span>' +
 									'</td>' +
 								'</tr>' +
 							'</tbody>' +
@@ -1091,6 +1472,37 @@ describe( 'downcast converters', () => {
 									'</th>' +
 								'</tr>' +
 							'</thead>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should remove empty tbody if a last row was removed a body rows (has footer and body)', () => {
+				setModelData( model, modelTable( [
+					[ '00[]', '01' ],
+					[ '10', '11' ]
+				], { footerRows: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					writer.remove( table.getChild( 0 ) );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tfoot>' +
+								'<tr>' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
+										'<span class="ck-table-bogus-paragraph">10</span>' +
+									'</th>' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
+										'<span class="ck-table-bogus-paragraph">11</span>' +
+									'</th>' +
+								'</tr>' +
+							'</tfoot>' +
 						'</table>' +
 					'</figure>'
 				);
@@ -1736,6 +2148,240 @@ describe( 'downcast converters', () => {
 		} );
 	} );
 
+	describe( 'footer rows conversion', () => {
+		describe( 'editing pipeline', () => {
+			it( 'should work for adding footer rows', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				] ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					writer.setAttribute( 'footerRows', 2, table );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				], { footerRows: 2, asWidget: true } ) );
+			} );
+
+			it( 'should work for changing number of footer rows to a bigger number', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				], { footerRows: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					writer.setAttribute( 'footerRows', 2, table );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				], { footerRows: 2, asWidget: true } ) );
+			} );
+
+			it( 'should work for changing number of footer rows to a smaller number', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ],
+					[ '30', '31' ]
+				], { footerRows: 3 } ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					writer.setAttribute( 'footerRows', 2, table );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ],
+					[ '30', '31' ]
+				], { footerRows: 2, asWidget: true } ) );
+			} );
+
+			it( 'should work for removing footer rows', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ]
+				], { footerRows: 2 } ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					writer.removeAttribute( 'footerRows', table );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+					[ '00', '01' ],
+					[ '10', '11' ]
+				], { asWidget: true } ) );
+			} );
+
+			it( 'should work for making footer rows without tbody', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ]
+				] ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					writer.setAttribute( 'footerRows', 2, table );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+					[ '00', '01' ],
+					[ '10', '11' ]
+				], { footerRows: 2, asWidget: true } ) );
+			} );
+
+			it( 'should work with adding table rows at the beginning of a table', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ]
+				], { footerRows: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					writer.setAttribute( 'footerRows', 2, table );
+
+					const tableRow = writer.createElement( 'tableRow' );
+
+					writer.insert( tableRow, table, 0 );
+					writer.insertElement( 'tableCell', tableRow, 'end' );
+					writer.insertElement( 'tableCell', tableRow, 'end' );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+					[ '', '' ],
+					[ '00', '01' ],
+					[ '10', '11' ]
+				], { footerRows: 2, asWidget: true } ) );
+			} );
+
+			it( 'should work with adding a table row and expanding footer', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				], { footerRows: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					writer.setAttribute( 'footerRows', 2, table );
+
+					const tableRow = writer.createElement( 'tableRow' );
+
+					writer.insert( tableRow, table, 1 );
+					writer.insertElement( 'tableCell', tableRow, 'end' );
+					writer.insertElement( 'tableCell', tableRow, 'end' );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+					[ '00', '01' ],
+					[ '', '' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				], { footerRows: 2, asWidget: true } ) );
+			} );
+
+			it( 'should reorder rows with footer correctly - up direction', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01', '02' ],
+					[ '10', '11', '12' ]
+				], { footerRows: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				editor.model.change( writer => {
+					writer.move(
+						writer.createRangeOn( table.getChild( 1 ) ),
+						writer.createPositionAt( table, 0 )
+					);
+				} );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ '10', '11', '12' ],
+					[ '00', '01', '02' ]
+				], { footerRows: 1 } ) );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+					[ '10', '11', '12' ],
+					[ '00', '01', '02' ]
+				], { footerRows: 1, asWidget: true } ) );
+			} );
+
+			it( 'should reorder rows with footer correctly - down direction', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01', '02' ],
+					[ '10', '11', '12' ]
+				], { footerRows: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				editor.model.change( writer => {
+					writer.move(
+						writer.createRangeOn( table.getChild( 0 ) ),
+						writer.createPositionAt( table, 2 )
+					);
+				} );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ '10', '11', '12' ],
+					[ '00', '01', '02' ]
+				], { footerRows: 1 } ) );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+					[ '10', '11', '12' ],
+					[ '00', '01', '02' ]
+				], { footerRows: 1, asWidget: true } ) );
+			} );
+
+			it( 'should properly integrate with undo', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				], { footerRows: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					writer.setAttribute( 'footerRows', 2, table );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				], { footerRows: 2, asWidget: true } ) );
+
+				editor.execute( 'undo' );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				], { footerRows: 1, asWidget: true } ) );
+			} );
+		} );
+	} );
+
 	describe( 'marker highlight conversion on table cell', () => {
 		describe( 'single class in highlight descriptor', () => {
 			beforeEach( async () => {
@@ -1987,6 +2633,41 @@ describe( 'downcast converters', () => {
 
 				model.change( writer => {
 					writer.setAttribute( 'headingRows', 2, table );
+				} );
+
+				const cell = root.getNodeByPath( [ 0, 1, 0 ] );
+				const viewElement = editor.editing.mapper.toViewElement( cell );
+
+				checkCustomPropertyForHighlight( viewElement );
+				expect( viewElement.hasClass( 'highlight-yellow' ) ).to.be.true;
+
+				model.change( writer => {
+					writer.removeMarker( 'marker:yellow' );
+				} );
+
+				expect( viewElement.hasClass( 'highlight-yellow' ) ).to.be.false;
+			} );
+
+			it( 'should preserve marker class on tableCell - when changing footer rows', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				], { footerRows: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					const cell = root.getNodeByPath( [ 0, 1, 0 ] );
+
+					writer.addMarker( 'marker:yellow', {
+						range: writer.createRangeOn( cell ),
+						usingOperation: false
+					} );
+				} );
+
+				model.change( writer => {
+					writer.setAttribute( 'footerRows', 2, table );
 				} );
 
 				const cell = root.getNodeByPath( [ 0, 1, 0 ] );

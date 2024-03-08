@@ -139,6 +139,20 @@ describe( 'InsertTableCommand', () => {
 					], { headingRows: 1, headingColumns: 2 } )
 				);
 			} );
+			it( 'should insert table with given footer rows and heading columns after non-empty paragraph', () => {
+				setData( model, '<paragraph>foo[]</paragraph>' );
+
+				command.execute( { rows: 3, columns: 4, headingColumns: 2, footerRows: 1 } );
+
+				expect( getData( model ) ).to.equalMarkup(
+					'<paragraph>foo</paragraph>' +
+					modelTable( [
+						[ '[]', '', '', '' ],
+						[ '', '', '', '' ],
+						[ '', '', '', '' ]
+					], { headingColumns: 2, footerRows: 1 } )
+				);
+			} );
 
 			it( 'should insert table before after non-empty paragraph if selection is inside', () => {
 				setData( model, '<paragraph>f[]oo</paragraph>' );

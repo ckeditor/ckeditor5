@@ -92,7 +92,7 @@ describe( 'table properties', () => {
 		function createEmptyTable() {
 			setModelData(
 				model,
-				'<table headingRows="0" headingColumns="0">' +
+				'<table footerRows="0" headingRows="0" headingColumns="0">' +
 					'<tableRow>' +
 						'<tableCell>' +
 							'<paragraph>foo</paragraph>' +

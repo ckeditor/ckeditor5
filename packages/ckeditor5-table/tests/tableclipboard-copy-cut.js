@@ -309,6 +309,47 @@ describe( 'table clipboard', () => {
 				[ '42', '43', '44' ]
 			] ) );
 		} );
+
+		it( 'should update table footer attributes (selection with footers)', () => {
+			setModelData( model, modelTable( [
+				[ '00', '01', '02', '03', '04' ],
+				[ '10', '11', '12', '13', '14' ],
+				[ '20', '21', '22', '23', '24' ],
+				[ '30', '31', '32', '33', '34' ],
+				[ '40', '41', '42', '43', '44' ]
+			], { footerRows: 3, headingColumns: 2 } ) );
+
+			tableSelection.setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
+				modelRoot.getNodeByPath( [ 0, 3, 3 ] )
+			);
+
+			assertClipboardContentOnMethod( 'copy', viewTable( [
+				[ { contents: '11', isHeading: true }, '12', '13' ],
+				[ '21', '22', '23' ],
+				[ '31', '32', '33' ]
+			], { footerRows: 2 } ) );
+		} );
+
+		it( 'should update table footer attributes (selection without footers)', () => {
+			setModelData( model, modelTable( [
+				[ '00', '01', '02', '03', '04' ],
+				[ '10', '11', '12', '13', '14' ],
+				[ '20', '21', '22', '23', '24' ],
+				[ '30', '31', '32', '33', '34' ],
+				[ '40', '41', '42', '43', '44' ]
+			], { footerRows: 3, headingColumns: 2 } ) );
+
+			tableSelection.setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 2 ] ),
+				modelRoot.getNodeByPath( [ 0, 1, 4 ] )
+			);
+
+			assertClipboardContentOnMethod( 'copy', viewTable( [
+				[ '02', '03', '04' ],
+				[ '12', '13', '14' ]
+			] ) );
+		} );
 	} );
 
 	describe( 'Clipboard integration - cut', () => {

@@ -86,9 +86,9 @@ export default class TableElementSupport extends Plugin {
 			schema.extend( 'table', {
 				allowAttributes: [
 					'htmlTableAttributes',
-					// Figure, thead and tbody elements don't have model counterparts.
+					// Figure, thead, tbody, and tfoot elements don't have model counterparts.
 					// We will be preserving attributes on table element using these attribute keys.
-					'htmlFigureAttributes', 'htmlTheadAttributes', 'htmlTbodyAttributes'
+					'htmlFigureAttributes', 'htmlTheadAttributes', 'htmlTbodyAttributes', 'htmlTfootAttributes'
 				]
 			} );
 
@@ -103,7 +103,7 @@ export default class TableElementSupport extends Plugin {
 }
 
 /**
- * Creates a model post-fixer for thead and tbody GHS related attributes.
+ * Creates a model post-fixer for thead, tbody, and tfoot GHS related attributes.
  */
 function createHeadingRowsPostFixer( model: Model, tableUtils: TableUtils ): ModelPostFixer {
 	return writer => {
@@ -111,21 +111,32 @@ function createHeadingRowsPostFixer( model: Model, tableUtils: TableUtils ): Mod
 		let wasFixed = false;
 
 		for ( const change of changes ) {
-			if ( change.type != 'attribute' || change.attributeKey != 'headingRows' ) {
+			if ( change.type != 'attribute' || ![ 'headingRows', 'footerRows' ].includes( change.attributeKey ) ) {
 				continue;
 			}
 
 			const table = change.range.start.nodeAfter as Element;
 			const hasTHeadAttributes = table.getAttribute( 'htmlTheadAttributes' );
 			const hasTBodyAttributes = table.getAttribute( 'htmlTbodyAttributes' );
+			const hasTFootAttributes = table.getAttribute( 'htmlTfootAttributes' );
 
-			if ( hasTHeadAttributes && !change.attributeNewValue ) {
+			if ( hasTHeadAttributes && change.attributeKey === 'headingRows' && !change.attributeNewValue ) {
 				writer.removeAttribute( 'htmlTheadAttributes', table );
 				wasFixed = true;
 			}
-			else if ( hasTBodyAttributes && change.attributeNewValue == tableUtils.getRows( table ) ) {
-				writer.removeAttribute( 'htmlTbodyAttributes', table );
+
+			if ( hasTFootAttributes && change.attributeKey === 'footerRows' && !change.attributeNewValue ) {
+				writer.removeAttribute( 'htmlTfootAttributes', table );
 				wasFixed = true;
+			}
+
+			if ( hasTBodyAttributes ) {
+				const headingRows = table.getAttribute( 'headingRows' ) || 0;
+				const footerRows = table.getAttribute( 'footerRows' ) || 0;
+				if ( headingRows + footerRows == tableUtils.getRows( table ) ) {
+					writer.removeAttribute( 'htmlTbodyAttributes', table );
+					wasFixed = true;
+				}
 			}
 		}
 
@@ -153,6 +164,10 @@ function viewToModelTableAttributeConverter( dataFilter: DataFilter ) {
 			for ( const childNode of viewTableElement.getChildren() ) {
 				if ( childNode.is( 'element', 'thead' ) ) {
 					preserveElementAttributes( childNode, 'htmlTheadAttributes' );
+				}
+
+				if ( childNode.is( 'element', 'tfoot' ) ) {
+					preserveElementAttributes( childNode, 'htmlTfootAttributes' );
 				}
 
 				if ( childNode.is( 'element', 'tbody' ) ) {
@@ -207,6 +222,7 @@ function modelToViewTableAttributeConverter() {
 		addAttributeConversionDispatcherHandler( 'figure', 'htmlFigureAttributes' );
 		addAttributeConversionDispatcherHandler( 'thead', 'htmlTheadAttributes' );
 		addAttributeConversionDispatcherHandler( 'tbody', 'htmlTbodyAttributes' );
+		addAttributeConversionDispatcherHandler( 'tfoot', 'htmlTfootAttributes' );
 
 		function addAttributeConversionDispatcherHandler( elementName: string, attributeName: string ) {
 			dispatcher.on<DowncastAttributeEvent>( `attribute:${ attributeName }:table`, ( evt, data, conversionApi ) => {

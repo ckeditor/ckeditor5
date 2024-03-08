@@ -67,7 +67,7 @@ ClassicEditor
 		htmlSupport: {
 			allow: [
 				{
-					name: /^(table|tbody|thead|tr|td|th|caption)$/,
+					name: /^(table|tbody|thead|tfoot|tr|td|th|caption)$/,
 					attributes: true,
 					classes: true,
 					styles: true

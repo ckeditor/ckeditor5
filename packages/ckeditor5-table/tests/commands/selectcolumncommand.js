@@ -419,6 +419,27 @@ describe( 'SelectColumnCommand', () => {
 					[ 1, 1, 0, 0 ]
 				] );
 			} );
+
+			it( 'should support selecting mixed footer and cell columns', () => {
+				setData( model, modelTable( [
+					[ '00', '01', '02', '03' ],
+					[ '10', '11', '12', '13' ],
+					[ '20', '21', '22', '23' ]
+				], { footerRows: 1 } ) );
+
+				tableSelection.setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 0, 1 ] )
+				);
+
+				command.execute();
+
+				assertSelectedCells( model, [
+					[ 1, 1, 0, 0 ],
+					[ 1, 1, 0, 0 ],
+					[ 1, 1, 0, 0 ]
+				] );
+			} );
 		} );
 
 		describe( 'with entire column selected', () => {

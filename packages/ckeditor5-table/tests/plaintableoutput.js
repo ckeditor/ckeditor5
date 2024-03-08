@@ -15,6 +15,7 @@ import PlainTableOutput from '../src/plaintableoutput.js';
 import { modelTable } from './_utils/utils.js';
 import TableCaption from '../src/tablecaption.js';
 import TableProperties from '../src/tableproperties.js';
+import TableUtils from '../src/tableutils.js';
 
 describe( 'PlainTableOutput', () => {
 	let editor, editorElement, model;
@@ -36,7 +37,7 @@ describe( 'PlainTableOutput', () => {
 	} );
 
 	it( 'requires Table', () => {
-		expect( PlainTableOutput.requires ).to.deep.equal( [ Table ] );
+		expect( PlainTableOutput.requires ).to.deep.equal( [ Table, TableUtils ] );
 	} );
 
 	it( 'should have pluginName', () => {
@@ -87,6 +88,26 @@ describe( 'PlainTableOutput', () => {
 				);
 			} );
 
+			it( 'should create footer rows', () => {
+				setModelData( model, modelTable( [
+					[ '1', '2' ],
+					[ '3', '4' ],
+					[ '5', '6' ]
+				], { footerRows: 2 } ) );
+
+				expect( editor.getData() ).to.equal(
+					'<table>' +
+						'<tbody>' +
+							'<tr><td>1</td><td>2</td></tr>' +
+						'</tbody>' +
+						'<tfoot>' +
+							'<tr><th>3</th><th>4</th></tr>' +
+							'<tr><th>5</th><th>6</th></tr>' +
+						'</tfoot>' +
+					'</table>'
+				);
+			} );
+
 			it( 'should create heading columns', () => {
 				setModelData( model, modelTable( [
 					[ '1', '2' ],
@@ -125,6 +146,26 @@ describe( 'PlainTableOutput', () => {
 				);
 			} );
 
+			it( 'should create footer rows and columns', () => {
+				setModelData( model, modelTable( [
+					[ '1', '2' ],
+					[ '3', '4' ],
+					[ '5', '6' ]
+				], { footerRows: 1, headingColumns: 1 } ) );
+
+				expect( editor.getData() ).to.equal(
+					'<table>' +
+						'<tbody>' +
+							'<tr><th>1</th><td>2</td></tr>' +
+							'<tr><th>3</th><td>4</td></tr>' +
+						'</tbody>' +
+						'<tfoot>' +
+							'<tr><th>5</th><th>6</th></tr>' +
+						'</tfoot>' +
+					'</table>'
+				);
+			} );
+
 			it( 'should work when heading rows number is bigger than number of rows', () => {
 				setModelData( model, modelTable( [
 					[ '1', '2' ],
@@ -137,6 +178,22 @@ describe( 'PlainTableOutput', () => {
 							'<tr><th>1</th><th>2</th></tr>' +
 							'<tr><th>3</th><th>4</th></tr>' +
 						'</thead>' +
+					'</table>'
+				);
+			} );
+
+			it( 'should work when footer rows number is bigger than number of rows', () => {
+				setModelData( model, modelTable( [
+					[ '1', '2' ],
+					[ '3', '4' ]
+				], { footerRows: 3 } ) );
+
+				expect( editor.getData() ).to.equal(
+					'<table>' +
+						'<tfoot>' +
+							'<tr><th>1</th><th>2</th></tr>' +
+							'<tr><th>3</th><th>4</th></tr>' +
+						'</tfoot>' +
 					'</table>'
 				);
 			} );

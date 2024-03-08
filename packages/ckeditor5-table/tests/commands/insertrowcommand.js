@@ -99,6 +99,23 @@ describe( 'InsertRowCommand', () => {
 				], { headingRows: 3 } ) );
 			} );
 
+			it( 'should update table footer rows attribute when inserting row in footers section', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10[]', '11' ],
+					[ '20', '21' ]
+				], { footerRows: 2 } ) );
+
+				command.execute();
+
+				expect( getData( model ) ).to.equalMarkup( modelTable( [
+					[ '00', '01' ],
+					[ '10[]', '11' ],
+					[ '', '' ],
+					[ '20', '21' ]
+				], { footerRows: 3 } ) );
+			} );
+
 			it( 'should not update table heading rows attribute when inserting row after headings section', () => {
 				setData( model, modelTable( [
 					[ '00', '01' ],
@@ -114,6 +131,23 @@ describe( 'InsertRowCommand', () => {
 					[ '', '' ],
 					[ '20', '21' ]
 				], { headingRows: 2 } ) );
+			} );
+
+			it( 'should not update table footer rows attribute when inserting row before footers section', () => {
+				setData( model, modelTable( [
+					[ '00[]', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				], { footerRows: 2 } ) );
+
+				command.execute();
+
+				expect( getData( model ) ).to.equalMarkup( modelTable( [
+					[ '00[]', '01' ],
+					[ '', '' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				], { footerRows: 2 } ) );
 			} );
 
 			it( 'should expand rowspan of a cell that overlaps inserted rows', () => {
@@ -151,6 +185,41 @@ describe( 'InsertRowCommand', () => {
 				], { headingColumns: 3, headingRows: 1 } ) );
 			} );
 
+			it( 'should expand rowspan of a cell that overlaps inserted rows (footer)', () => {
+				// +----+----+----+----+
+				// | 00      | 02 | 03 |
+				// +         +----+----+
+				// |         | 12 | 13 |
+				// +----+----+----+----+ <-- footer rows begin
+				// | 20      | 22 | 23 |
+				// +----+----+----+----+
+				//                     ^-- heading columns
+				setData( model, modelTable( [
+					[ { contents: '00[]', colspan: 2, rowspan: 2 }, '02', '03' ],
+					[ '12', '13' ],
+					[ { contents: '20', colspan: 2 }, '22', '23' ]
+				], { headingColumns: 3, footerRows: 1 } ) );
+
+				command.execute();
+
+				// +----+----+----+----+
+				// | 00      | 02 | 03 |
+				// +         +----+----+
+				// |         |    |    |
+				// +         +----+----+
+				// |         | 12 | 13 |
+				// +----+----+----+----+ <-- footer rows begin
+				// | 20      | 22 | 23 |
+				// +----+----+----+----+
+				//                     ^-- heading columns
+				expect( getData( model ) ).to.equalMarkup( modelTable( [
+					[ { contents: '00[]', colspan: 2, rowspan: 3 }, '02', '03' ],
+					[ '', '' ],
+					[ '12', '13' ],
+					[ { contents: '20', colspan: 2 }, '22', '23' ]
+				], { headingColumns: 3, footerRows: 1 } ) );
+			} );
+
 			it( 'should not expand rowspan of a cell that does not overlaps inserted rows', () => {
 				// +----+----+----+
 				// | 00 | 01 | 02 |
@@ -184,6 +253,39 @@ describe( 'InsertRowCommand', () => {
 				], { headingRows: 2 } ) );
 			} );
 
+			it( 'should not expand rowspan of a cell that does not overlap inserted rows (footer)', () => {
+				// +----+----+----+
+				// | 00 | 01 | 02 |
+				// +----+----+----+ <-- footer rows begin
+				// | 10 | 11 | 12 |
+				// +    +----+----+
+				// |    | 21 | 22 |
+				// +----+----+----+
+				setData( model, modelTable( [
+					[ '00[]', '01', '02' ],
+					[ { contents: '10', rowspan: 2 }, '11', '12' ],
+					[ '21', '22' ]
+				], { footerRows: 2 } ) );
+
+				command.execute();
+
+				// +----+----+----+
+				// | 00 | 01 | 02 |
+				// +----+----+----+
+				// |    |    |    |
+				// +----+----+----+ <-- footer rows begin
+				// | 10 | 11 | 12 |
+				// +    +----+----+
+				// |    | 21 | 22 |
+				// +----+----+----+
+				expect( getData( model ) ).to.equalMarkup( modelTable( [
+					[ '00[]', '01', '02' ],
+					[ '', '', '' ],
+					[ { contents: '10', rowspan: 2 }, '11', '12' ],
+					[ '21', '22' ]
+				], { footerRows: 2 } ) );
+			} );
+
 			it( 'should properly calculate columns if next row has colspans', () => {
 				// +----+----+----+
 				// | 00 | 01 | 02 |
@@ -215,6 +317,39 @@ describe( 'InsertRowCommand', () => {
 					[ '', '', '' ],
 					[ { contents: '20', colspan: 3 } ]
 				], { headingRows: 2 } ) );
+			} );
+
+			it( 'should properly calculate columns if previous row has colspans (footer)', () => {
+				// +----+----+----+
+				// | 00 | 01 | 02 |
+				// +    +----+----+
+				// |    | 11 | 12 |
+				// +----+----+----+ <-- footer rows begin
+				// | 20           |
+				// +----+----+----+
+				setData( model, modelTable( [
+					[ { contents: '00', rowspan: 2 }, '01', '02' ],
+					[ '11[]', '12' ],
+					[ { contents: '20', colspan: 3 } ]
+				], { footerRows: 1 } ) );
+
+				command.execute();
+
+				// +----+----+----+
+				// | 00 | 01 | 02 |
+				// +    +----+----+
+				// |    | 11 | 12 |
+				// +----+----+----+
+				// |    |    |    |
+				// +----+----+----+ <-- footer rows begin
+				// | 20           |
+				// +----+----+----+
+				expect( getData( model ) ).to.equalMarkup( modelTable( [
+					[ { contents: '00', rowspan: 2 }, '01', '02' ],
+					[ '11[]', '12' ],
+					[ '', '', '' ],
+					[ { contents: '20', colspan: 3 } ]
+				], { footerRows: 1 } ) );
 			} );
 
 			it( 'should insert rows at the end of a table', () => {
@@ -415,6 +550,23 @@ describe( 'InsertRowCommand', () => {
 				], { headingRows: 3 } ) );
 			} );
 
+			it( 'should update table footer rows attribute when inserting row in footers section', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20[]', '21' ]
+				], { footerRows: 2 } ) );
+
+				command.execute();
+
+				expect( getData( model ) ).to.equalMarkup( modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '', '' ],
+					[ '20[]', '21' ]
+				], { footerRows: 3 } ) );
+			} );
+
 			it( 'should not update table heading rows attribute when inserting row after headings section', () => {
 				setData( model, modelTable( [
 					[ '00', '01' ],
@@ -430,6 +582,23 @@ describe( 'InsertRowCommand', () => {
 					[ '', '' ],
 					[ '20[]', '21' ]
 				], { headingRows: 2 } ) );
+			} );
+
+			it( 'should not update table footer rows attribute when inserting row before footer section', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10[]', '11' ],
+					[ '20', '21' ]
+				], { footerRows: 2 } ) );
+
+				command.execute();
+
+				expect( getData( model ) ).to.equalMarkup( modelTable( [
+					[ '00', '01' ],
+					[ '', '' ],
+					[ '10[]', '11' ],
+					[ '20', '21' ]
+				], { footerRows: 2 } ) );
 			} );
 
 			it( 'should insert a row when multiple rows are selected', () => {

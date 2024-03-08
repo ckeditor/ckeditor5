@@ -211,12 +211,20 @@ function getVerticalCell( tableCell: Element, direction: ArrowKeyCodeDirection, 
 
 	const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) as string || '1' );
 	const headingRows = table.getAttribute( 'headingRows' ) || 0;
+	const footerRows = table.getAttribute( 'footerRows' ) || 0;
+	const footerIndex = tableUtils.getRows( table ) - footerRows;
 
-	const isMergeWithBodyCell = direction == 'down' && ( rowIndex + rowspan ) === headingRows;
+	const isMergeDownWithBodyCell = direction == 'down' && ( rowIndex + rowspan ) === headingRows;
+	const isMergeUpWithBodyCell = direction == 'up' && rowIndex === footerIndex;
 	const isMergeWithHeadCell = direction == 'up' && rowIndex === headingRows;
+	const isMergeWithFootCell = direction == 'down' && rowIndex === footerIndex - 1;
 
 	// Don't search for mergeable cell if direction points out of the current table section.
-	if ( headingRows && ( isMergeWithBodyCell || isMergeWithHeadCell ) ) {
+	if ( headingRows && ( isMergeDownWithBodyCell || isMergeWithHeadCell ) ) {
+		return null;
+	}
+
+	if ( footerRows && ( isMergeUpWithBodyCell || isMergeWithFootCell ) ) {
 		return null;
 	}
 

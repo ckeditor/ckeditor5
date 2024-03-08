@@ -31,7 +31,7 @@ const WIDGET_TABLE_CELL_CLASS = 'ck-editor__editable ck-editor__nested-editable'
  *		};
  *
  * @param {Array.<Array.<String>|Object>} tableData
- * @param {Object} [attributes] Optional table attributes: `headingRows` and `headingColumns`.
+ * @param {Object} [attributes] Optional table attributes: `headingRows`, `headingColumns`, `footerRows`.
  *
  * @returns {String}
  */
@@ -138,8 +138,8 @@ export function setTableWithObjectAttributes( model, attributes, cellContent ) {
  *		};
  *
  * @param {Array.<Array.<String|Object>>} tableData The table data array.
- * @param {Object} [attributes] Optional table attributes: `headingRows` and `headingColumns` - passing them will properly render rows
- * in `<tbody>` or `<thead>` sections.
+ * @param {Object} [attributes] Optional table attributes: `headingRows`, `headingColumns`, and `footerColumns` - passing them will properly
+ * render rows in `<tbody>`, `<thead>`, or `<tfoot>` sections.
  *
  * @returns {String}
  */
@@ -149,6 +149,8 @@ export function viewTable( tableData, attributes = {} ) {
 	}
 
 	const headingRows = attributes.headingRows || 0;
+	const footerRows = attributes.footerRows || 0;
+	const footerIndex = tableData.length - footerRows;
 	const asWidget = !!attributes.asWidget;
 
 	const thead = headingRows > 0 ? `<thead>${ makeRows( tableData.slice( 0, headingRows ), {
@@ -160,8 +162,8 @@ export function viewTable( tableData, attributes = {} ) {
 		asWidget
 	} ) }</thead>` : '';
 
-	const tbody = tableData.length > headingRows ?
-		`<tbody>${ makeRows( tableData.slice( headingRows ), {
+	const tbody = tableData.length > headingRows + footerRows ?
+		`<tbody>${ makeRows( tableData.slice( headingRows, footerIndex ), {
 			cellElement: 'td',
 			rowElement: 'tr',
 			headingElement: 'th',
@@ -170,11 +172,20 @@ export function viewTable( tableData, attributes = {} ) {
 			asWidget
 		} ) }</tbody>` : '';
 
+	const tfoot = footerRows > 0 ? `<tfoot>${ makeRows( tableData.slice( footerIndex ), {
+		cellElement: 'th',
+		rowElement: 'tr',
+		headingElement: 'th',
+		wrappingElement: asWidget ? 'span' : 'p',
+		enforceWrapping: asWidget,
+		asWidget
+	} ) }</tfoot>` : '';
+
 	const figureAttributes = asWidget ?
 		'class="ck-widget ck-widget_with-selection-handle table" contenteditable="false"' : 'class="table"';
 	const widgetHandler = '<div class="ck ck-widget__selection-handle"></div>';
 
-	return `<figure ${ figureAttributes }>${ asWidget ? widgetHandler : '' }<table>${ thead }${ tbody }</table></figure>`;
+	return `<figure ${ figureAttributes }>${ asWidget ? widgetHandler : '' }<table>${ thead }${ tbody }${ tfoot }</table></figure>`;
 }
 
 /**

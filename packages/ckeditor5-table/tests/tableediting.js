@@ -63,6 +63,7 @@ describe( 'TableEditing', () => {
 		expect( model.schema.checkChild( [ '$root' ], 'table' ) ).to.be.true;
 		expect( model.schema.checkAttribute( [ '$root', 'table' ], 'headingRows' ) ).to.be.true;
 		expect( model.schema.checkAttribute( [ '$root', 'table' ], 'headingColumns' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', 'table' ], 'footerRows' ) ).to.be.true;
 
 		// Table row:
 		expect( model.schema.isRegistered( 'tableRow' ) ).to.be.true;
@@ -196,6 +197,23 @@ describe( 'TableEditing', () => {
 							'<thead>' +
 								'<tr><th>foo</th></tr>' +
 							'</thead>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should create tfoot section', () => {
+				setModelData(
+					model,
+					'<table footerRows="1"><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<figure class="table">' +
+						'<table>' +
+							'<tfoot>' +
+								'<tr><th>foo</th></tr>' +
+							'</tfoot>' +
 						'</table>' +
 					'</figure>'
 				);

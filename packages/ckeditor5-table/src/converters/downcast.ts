@@ -20,6 +20,8 @@ import type { AdditionalSlot } from '../tableediting.js';
 export function downcastTable( tableUtils: TableUtils, options: DowncastTableOptions ): ElementCreatorFunction {
 	return ( table, { writer } ) => {
 		const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
+		const footerRows = table.getAttribute( 'footerRows' ) as number || 0;
+		const rowCount = tableUtils.getRows( table ) as number || 0;
 		const tableElement = writer.createContainerElement( 'table', null, [] );
 		const figureElement = writer.createContainerElement( 'figure', { class: 'table' }, tableElement );
 
@@ -36,13 +38,39 @@ export function downcastTable( tableUtils: TableUtils, options: DowncastTableOpt
 		}
 
 		// Table body slot.
-		if ( headingRows < tableUtils.getRows( table ) ) {
+		if ( headingRows + footerRows < rowCount ) {
 			writer.insert(
 				writer.createPositionAt( tableElement, 'end' ),
 				writer.createContainerElement(
 					'tbody',
 					null,
-					writer.createSlot( element => element.is( 'element', 'tableRow' ) && element.index! >= headingRows )
+					writer.createSlot( element => {
+						if ( !element.is( 'element', 'tableRow' ) ) {
+							return false;
+						}
+
+						if ( element.index! < headingRows ) {
+							return false;
+						}
+
+						if ( element.index! >= rowCount - footerRows ) {
+							return false;
+						}
+
+						return true;
+					} )
+				)
+			);
+		}
+
+		// Table footer slot.
+		if ( footerRows > 0 ) {
+			writer.insert(
+				writer.createPositionAt( tableElement, 'end' ),
+				writer.createContainerElement(
+					'tfoot',
+					null,
+					writer.createSlot( element => element.is( 'element', 'tableRow' ) && element.index! >= rowCount - footerRows )
 				)
 			);
 		}
@@ -87,13 +115,13 @@ export function downcastRow(): ElementCreatorFunction {
 /**
  * Model table cell element to view `<td>` or `<th>` element conversion helper.
  *
- * This conversion helper will create proper `<th>` elements for table cells that are in the heading section (heading row or column)
- * and `<td>` otherwise.
+ * This conversion helper will create proper `<th>` elements for table cells that are in the heading section (heading row or column,
+ * or footer row) and `<td>` otherwise.
  *
  * @param options.asWidget If set to `true`, the downcast conversion will produce a widget.
  * @returns Element creator.
  */
-export function downcastCell( options: { asWidget?: boolean } = {} ): ElementCreatorFunction {
+export function downcastCell( tableUtils: TableUtils, options: { asWidget?: boolean } = {} ): ElementCreatorFunction {
 	return ( tableCell, { writer } ) => {
 		const tableRow = tableCell.parent as Element;
 		const table = tableRow.parent as Element;
@@ -102,13 +130,15 @@ export function downcastCell( options: { asWidget?: boolean } = {} ): ElementCre
 		const tableWalker = new TableWalker( table, { row: rowIndex } );
 		const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
 		const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
+		const footerRows = table.getAttribute( 'footerRows' ) as number || 0;
+		const footerIndex = tableUtils.getRows( table ) - footerRows;
 
 		let result: ViewElement | null = null;
 
 		// We need to iterate over a table in order to get proper row & column values from a walker.
 		for ( const tableSlot of tableWalker ) {
 			if ( tableSlot.cell == tableCell ) {
-				const isHeading = tableSlot.row < headingRows || tableSlot.column < headingColumns;
+				const isHeading = tableSlot.row < headingRows || tableSlot.column < headingColumns || tableSlot.row >= footerIndex;
 				const cellElementName = isHeading ? 'th' : 'td';
 
 				result = options.asWidget ?
