@@ -6,6 +6,7 @@
 /* global window, document, console, BalloonEditor */
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
+import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
 
 const maxCharacters = 120;
 const container = document.querySelector( '.demo-update' );
@@ -37,7 +38,8 @@ BalloonEditor
 			}
 		},
 		ckbox: {
-			allowExternalImagesEditing: [ /^data:/, 'origin' ],
+			tokenUrl: TOKEN_URL,
+			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 			forceDemoLabel: true
 		},
 		placeholder: 'Text of the post',

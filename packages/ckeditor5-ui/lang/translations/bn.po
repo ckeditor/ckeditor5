@@ -147,24 +147,24 @@ msgstr "বন্ধ করুন"
 
 msgctxt "Accessibility help dialog assistive technologies label telling users how to exit the dialog."
 msgid "Help Contents. To close this dialog press ESC."
-msgstr ""
+msgstr "সহায়তাকারী কনটেন্টগুলি। এই ডায়ালগটি বন্ধ করতে ESC প্রেস করুন।"
 
 msgctxt "Accessibility help dialog text explaining what can be found in that dialog."
 msgid "Below, you can find a list of keyboard shortcuts that can be used in the editor."
-msgstr ""
+msgstr "এডিটরে ব্যবহার করা যেতে পারে এমন কীবোর্ড শর্টকাটগুলির একটি তালিকা আপনি নিচে দেখতে পাবেন।"
 
 msgctxt "Accessibility help dialog text displayed next to keystrokes that may require the Fn key on Mac."
 msgid "(may require <kbd>Fn</kbd>)"
-msgstr ""
+msgstr "(<kbd>Fn[</kbd>] এর প্রয়োজন হতে পারে)"
 
 msgctxt "Accessibility help dialog title."
 msgid "Accessibility help"
-msgstr ""
+msgstr "প্রবেশযোগ্যতা জন্য সহায়তা"
 
 msgctxt "Assistive technologies label added to each editor editing area informing users about the possibility of opening the accessibility help dialog."
 msgid "Press %0 for help."
-msgstr ""
+msgstr "সহায়তার জন্য %0 প্রেস করুন।"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving focus out of an active dialog window."
 msgid "Move focus in and out of an active dialog window"
-msgstr ""
+msgstr "সক্রিয় ডায়ালগ উইন্ডোর ভিতরে এবং বাইরে ফোকাস স্থানান্তর করুন"

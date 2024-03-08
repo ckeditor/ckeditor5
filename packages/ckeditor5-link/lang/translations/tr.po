@@ -55,8 +55,8 @@ msgstr "İndirilebilir"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for creating a link."
 msgid "Create link"
-msgstr ""
+msgstr "Bağlantı oluştur"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving out of a link."
 msgid "Move out of a link"
-msgstr ""
+msgstr "Bir bağlantıdan çık"

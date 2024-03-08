@@ -55,8 +55,8 @@ msgstr "Có thể tải về"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for creating a link."
 msgid "Create link"
-msgstr ""
+msgstr "Tạo liên kết"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving out of a link."
 msgid "Move out of a link"
-msgstr ""
+msgstr "Di chuyển ra khỏi một liên kết"

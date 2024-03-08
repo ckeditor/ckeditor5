@@ -47,20 +47,20 @@ msgstr "Superskrip"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for making text italic."
 msgid "Italic text"
-msgstr ""
+msgstr "Teks huruf condong"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving selection out of an inline code style."
 msgid "Move out of an inline code style"
-msgstr ""
+msgstr "Alih keluar daripada gaya kod sebaris"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for making text bold."
 msgid "Bold text"
-msgstr ""
+msgstr "Teks tebal"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for making text underlined."
 msgid "Underline text"
-msgstr ""
+msgstr "Teks garis bawah"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for making text strikethrough."
 msgid "Strikethrough text"
-msgstr ""
+msgstr "Teks coretan"

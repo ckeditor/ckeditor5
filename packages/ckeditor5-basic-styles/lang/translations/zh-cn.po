@@ -47,20 +47,20 @@ msgstr "上标"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for making text italic."
 msgid "Italic text"
-msgstr ""
+msgstr "斜体文本"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving selection out of an inline code style."
 msgid "Move out of an inline code style"
-msgstr ""
+msgstr "摆脱内联代码风格"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for making text bold."
 msgid "Bold text"
-msgstr ""
+msgstr "加粗字体"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for making text underlined."
 msgid "Underline text"
-msgstr ""
+msgstr "给文本添加下划线"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for making text strikethrough."
 msgid "Strikethrough text"
-msgstr ""
+msgstr "给文本添加删除线"
