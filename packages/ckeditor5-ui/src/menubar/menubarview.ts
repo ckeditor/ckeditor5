@@ -96,7 +96,8 @@ export default class MenuBarView extends View implements FocusableView {
 	 * A utility that expands a plain menu bar configuration into a structure of menus (also: sub-menus)
 	 * and items using a given {@link module:ui/componentfactory~ComponentFactory component factory}.
 	 *
-	 * TODO: The configuration will expand with removing and adding items.
+	 * See the {@link module:core/editor/editorconfig~EditorConfig#menuBar menu bar} in the editor
+	 * configuration reference to learn how to configure the menu bar.
 	 */
 	public fillFromConfig( config: MenuBarConfig | undefined, componentFactory: ComponentFactory ): void {
 		const locale = this.locale!;
@@ -104,7 +105,7 @@ export default class MenuBarView extends View implements FocusableView {
 			locale,
 			componentFactory,
 			config
-		} ).map( menuDefinition => this._createMenu( {
+		} ).items.map( menuDefinition => this._createMenu( {
 			componentFactory,
 			menuDefinition
 		} ) );
@@ -195,40 +196,42 @@ export default class MenuBarView extends View implements FocusableView {
 		parentMenuView: MenuBarMenuView;
 	} ): Array<MenuBarMenuListItemView | ListSeparatorView> {
 		const locale = this.locale!;
+		const items = [];
 
-		return menuDefinition.items
-			.map( menuDefinition => {
-				if ( menuDefinition === '-' ) {
-					return new ListSeparatorView();
-				}
-
+		for ( const menuGroupDefinition of menuDefinition.groups ) {
+			for ( const itemDefinition of menuGroupDefinition.items ) {
 				const menuItemView = new MenuBarMenuListItemView( locale, parentMenuView );
 
-				if ( isObject( menuDefinition ) ) {
+				if ( isObject( itemDefinition ) ) {
 					menuItemView.children.add( this._createMenu( {
 						componentFactory,
-						menuDefinition,
+						menuDefinition: itemDefinition,
 						parentMenuView
 					} ) );
 				} else {
 					const componentView = this._createMenuItemContentFromFactory( {
-						componentName: menuDefinition,
+						componentName: itemDefinition,
 						componentFactory,
 						parentMenuView
 					} );
 
 					if ( !componentView ) {
-						return null;
+						continue;
 					}
 
 					menuItemView.children.add( componentView );
 				}
 
-				return menuItemView;
-			} )
-			.filter( ( menuItemView ): menuItemView is MenuBarMenuListItemView | ListSeparatorView => {
-				return menuItemView !== null;
-			} );
+				items.push( menuItemView );
+			}
+
+			// Separate groups with a separator.
+			if ( menuGroupDefinition !== menuDefinition.groups[ menuDefinition.groups.length - 1 ] ) {
+				items.push( new ListSeparatorView( locale ) );
+			}
+		}
+
+		return items;
 	}
 
 	/**
@@ -299,12 +302,41 @@ export default class MenuBarView extends View implements FocusableView {
 	}
 }
 
-export type MenuBarConfig = Array<MenuBarMenuDefinition>;
+export type MenuBarConfig = Array<MenuBarMenuDefinition> | MenuBarConfigObject;
+
+export type MenuBarConfigObject = {
+	items: Array<MenuBarMenuDefinition>;
+	removeItems?: Array<string>;
+	addItems?: Array<MenuBarConfigAddedItem | MenuBarConfigAddedGroup | MenuBarConfigAddedMenu>;
+};
+
+export type MenuBarMenuGroupDefinition = {
+	groupId: string;
+	items: Array<MenuBarMenuDefinition | string>;
+};
 
 export type MenuBarMenuDefinition = {
-	id: string;
+	menuId: string;
 	label: string;
-	items: Array<string | MenuBarMenuDefinition>;
+	groups: Array<MenuBarMenuGroupDefinition>;
+};
+
+export type MenuBarConfigAddedPosition =
+	`start:${ string }` | `end:${ string }` | 'start' | 'end' | `after:${ string }` | `before:${ string }`;
+
+export type MenuBarConfigAddedItem = {
+	item: string;
+	position: MenuBarConfigAddedPosition;
+};
+
+export type MenuBarConfigAddedGroup = {
+	group: MenuBarMenuGroupDefinition;
+	position: MenuBarConfigAddedPosition;
+};
+
+export type MenuBarConfigAddedMenu = {
+	menu: MenuBarMenuDefinition;
+	position: MenuBarConfigAddedPosition;
 };
 
 /**
