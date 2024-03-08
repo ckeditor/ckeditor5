@@ -257,7 +257,7 @@ export default class ClipboardMarkersUtils extends Plugin {
 	}
 
 	/**
-	 * Returns marker's `allowedActions` and other flags passed during registration.
+	 * Returns marker's configuration flags passed during registration.
 	 *
 	 * @param markerName Name of marker that should be returned.
 	 * @internal
@@ -290,7 +290,7 @@ export default class ClipboardMarkersUtils extends Plugin {
 	/**
 	 * Returns array of markers that can be copied in specified selection.
 	 *
-	 * If marker cannot be copied partially ( according to `skipPartiallySelected` configuration flag ) and
+	 * If marker cannot be copied partially (according to `skipPartiallySelected` configuration flag) and
 	 * is not present entirely in any selection range then it will be skipped.
 	 *
 	 * @param writer An instance of the model writer.
@@ -349,7 +349,7 @@ export default class ClipboardMarkersUtils extends Plugin {
 
 	/**
 	 * Picks all markers from markers map that can be pasted.
-	 * If `regenerateMarkerIdsOnPaste` is true then regenerates their ids.
+	 * If `regenerateMarkerIdsOnPaste` is `true`, it regenerates their IDs to ensure uniqueness.
 	 *
 	 * @param markers Object that maps marker name to corresponding range.
 	 * @param action Type of clipboard action. If null then checks only if marker is registered as copyable.
@@ -358,13 +358,15 @@ export default class ClipboardMarkersUtils extends Plugin {
 		markers: Record<string, Range> | Map<string, Range>,
 		action: ClipboardMarkerRestrictedAction | null = null
 	): Array<CopyableMarker> {
+		const { model } = this.editor;
 		const entries = markers instanceof Map ? Array.from( markers.entries() ) : Object.entries( markers );
 
 		return entries
 			.filter( ( [ markerName ] ) => this._isMarkerCopyable( markerName, action ) )
 			.map( ( [ markerName, range ] ): CopyableMarker => {
 				const copyMarkerConfig = this._getMarkerClipboardConfig( markerName )!;
-				const isInGraveyard = this.editor.model.markers.get( markerName )?.getRange().root.rootName === '$graveyard';
+				const isInGraveyard = model.markers.has( markerName ) &&
+					model.markers.get( markerName )!.getRange().root.rootName === '$graveyard';
 
 				if ( copyMarkerConfig.regenerateMarkerIdsOnPaste || isInGraveyard ) {
 					markerName = this._getUniqueMarkerName( markerName );
@@ -596,10 +598,10 @@ export type ClipboardMarkerRestrictedAction = 'copy' | 'cut' | 'dragstart';
 export type ClipboardMarkerConfiguration = {
 	allowedActions: NonEmptyArray<ClipboardMarkerRestrictedAction> | 'all';
 
-	// If false, do not copy marker when only part of its content is selected.
+	// If `false`, do not copy marker when only part of its content is selected.
 	withPartiallySelected?: boolean;
 
-	// If true then every marker that is present in clipboard document fragment element obtain new generated id just before pasting.
+	// If `true` then every marker that is present in clipboard document fragment element obtain new generated ID just before pasting.
 	// It means that it is possible to perform copy once and then paste it multiple times wherever we want.
 	//
 	// On the other hand if it has false value the marker will be not pasted because ID already exists in the document.
