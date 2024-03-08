@@ -132,8 +132,8 @@ describe( 'FindAndReplace', () => {
 			stopSpy.restore();
 			stateClearSpy.restore();
 
-			expect( stopSpy.calledOnce ).to.true;
-			expect( stateClearSpy.calledOnce ).to.true;
+			expect( stopSpy.called ).to.true;
+			expect( stateClearSpy.called ).to.true;
 		} );
 	} );
 
@@ -610,6 +610,37 @@ describe( 'FindAndReplace', () => {
 			expect( findResults ).to.have.property( 'length', 5 );
 		} );
 
+		it( 'should update list of results on editor change (removed part of highlighted block)', () => {
+			editor.setData( LONG_TEXT );
+
+			const findResults = findAndReplaceEditing.find( 'CupCake' );
+
+			expect( findResults ).to.have.property( 'length', 1 );
+
+			model.change( writer => {
+				const selection = writer.createSelection( writer.createRange(
+					writer.createPositionAt( root.getChild( 0 ), 0 ),
+					writer.createPositionAt( root.getChild( 0 ), 2 )
+				) );
+
+				model.deleteContent( selection );
+			} );
+
+			expect( findResults ).to.have.property( 'length', 0 );
+		} );
+
+		it( 'should update list of results on editor change (find, remove all blocks and type search phrase in editor)', () => {
+			editor.setData( '' );
+
+			const findResults = findAndReplaceEditing.find( 'CupCake' );
+
+			expect( findResults ).to.have.property( 'length', 0 );
+
+			editor.setData( LONG_TEXT );
+
+			expect( findResults ).to.have.property( 'length', 1 );
+		} );
+
 		it( 'should update list of results on editor change (changed text in marker)', () => {
 			editor.setData( FOO_BAR_PARAGRAPH );
 
@@ -682,10 +713,25 @@ describe( 'FindAndReplace', () => {
 			expect( callbackSpy.callCount ).to.equal( 2 );
 		} );
 
-		it( 'should call a callback for changed blocks', () => {
+		it( 'should call a callback for changed blocks when pass string to find', () => {
 			editor.setData( LONG_TEXT );
 
-			const callbackSpy = sinon.spy();
+			const callbackSpy = sinon.spy( () => [] );
+
+			findAndReplaceEditing.find( callbackSpy );
+			callbackSpy.resetHistory();
+
+			model.change( writer => {
+				model.insertContent( writer.createText( 'Foo bears foo' ), root.getChild( 0 ), 0 );
+			} );
+
+			expect( callbackSpy.callCount ).to.equal( 1 );
+		} );
+
+		it( 'should call a callback for changed blocks when pass callback to find', () => {
+			editor.setData( LONG_TEXT );
+
+			const callbackSpy = sinon.spy( () => [] );
 			findAndReplaceEditing.find( callbackSpy );
 			callbackSpy.resetHistory();
 

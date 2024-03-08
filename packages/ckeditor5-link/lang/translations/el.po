@@ -52,3 +52,11 @@ msgstr "Άνοιγμα σε νέα καρτέλα"
 msgctxt "The label of the switch button that controls whether the edited link refers to downloadable resource."
 msgid "Downloadable"
 msgstr "Με δυνατότητα λήψης"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for creating a link."
+msgid "Create link"
+msgstr "Δημιουργία συνδέσμου"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for moving out of a link."
+msgid "Move out of a link"
+msgstr "Μετακίνηση από έναν σύνδεσμο"

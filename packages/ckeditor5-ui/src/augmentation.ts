@@ -8,7 +8,8 @@ import type {
 	BlockToolbar,
 	ContextualBalloon,
 	Notification,
-	Dialog
+	Dialog,
+	AccessibilityHelp
 } from './index.js';
 
 import type {
@@ -97,5 +98,6 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ ContextualBalloon.pluginName ]: ContextualBalloon;
 		[ Dialog.pluginName ]: Dialog;
 		[ Notification.pluginName ]: Notification;
+		[ AccessibilityHelp.pluginName ]: AccessibilityHelp;
 	}
 }

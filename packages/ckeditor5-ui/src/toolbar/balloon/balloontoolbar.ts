@@ -192,16 +192,12 @@ export default class BalloonToolbar extends Plugin {
 		this.listenTo<ToolbarViewGroupedItemsUpdateEvent>( this.toolbarView, 'groupedItemsUpdate', () => {
 			this._updatePosition();
 		} );
-	}
 
-	/**
-	 * Creates toolbar components based on given configuration.
-	 * This needs to be done when all plugins are ready.
-	 */
-	public afterInit(): void {
-		const factory = this.editor.ui.componentFactory;
-
-		this.toolbarView.fillFromConfig( this._balloonConfig, factory );
+		// Creates toolbar components based on given configuration.
+		// This needs to be done when all plugins are ready.
+		editor.ui.once<EditorUIReadyEvent>( 'ready', () => {
+			this.toolbarView.fillFromConfig( this._balloonConfig, this.editor.ui.componentFactory );
+		} );
 	}
 
 	/**

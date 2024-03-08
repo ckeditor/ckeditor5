@@ -69,6 +69,7 @@ describe( 'FormHeaderView', () => {
 
 				expect( view.element.firstChild.classList.contains( 'ck' ) ).to.be.true;
 				expect( view.element.firstChild.classList.contains( 'ck-form__header__label' ) ).to.be.true;
+				expect( view.element.firstChild.role ).to.equal( 'presentation' );
 				expect( view.element.firstChild.textContent ).to.equal( 'foo' );
 
 				view.destroy();

@@ -29,7 +29,7 @@ describe( 'TableElementSupport', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Table, TableCaption, Paragraph, GeneralHtmlSupport ]
+				plugins: [ Table, TableCaption, Paragraph, GeneralHtmlSupport, ClipboardPipeline ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -1205,7 +1205,7 @@ describe( 'TableElementSupport', () => {
 	it( 'should not strip allowed attributes from elements that are not directly upcasted (like <thead> or <tbody>) ' +
 		'if another upcast converter exists for all possible view elements', async () => {
 		const editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ Table, TableCaption, Paragraph, GeneralHtmlSupport, function( editor ) {
+			plugins: [ Table, TableCaption, Paragraph, GeneralHtmlSupport, ClipboardPipeline, function( editor ) {
 				editor.conversion.for( 'upcast' ).attributeToAttribute( {
 					view: 'align',
 					model: 'alignment'
@@ -1259,7 +1259,7 @@ describe( 'TableElementSupport', () => {
 	// https://github.com/ckeditor/ckeditor5/issues/11479
 	it( 'should not strip attributes from <colgroup> and <col> elements', async () => {
 		const editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ Table, TableCaption, TableColumnResize, Paragraph, GeneralHtmlSupport ],
+			plugins: [ Table, TableCaption, TableColumnResize, Paragraph, GeneralHtmlSupport, ClipboardPipeline ],
 			htmlSupport: {
 				allow: [
 					{

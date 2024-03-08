@@ -366,6 +366,10 @@ export default class ListPropertiesView extends View {
 			const startIndex = inputElement.valueAsNumber;
 
 			if ( Number.isNaN( startIndex ) ) {
+				// Number inputs allow for the entry of characters that may result in NaN,
+				// such as 'e', '+', '123e', '2-'.
+				startIndexFieldView.errorText = t( 'Invalid start index value.' );
+
 				return;
 			}
 

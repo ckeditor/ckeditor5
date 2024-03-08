@@ -1,0 +1,26 @@
+# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language-Team: Portuguese (Brazil) (https://app.transifex.com/ckeditor/teams/11143/pt_BR/)\n"
+"Language: pt_BR\n"
+"Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for inserting a soft break."
+msgid "Insert a soft break (a <code>&lt;br&gt;</code> element)"
+msgstr "Inserir uma quebra suave (um elemento <code><br></code>)"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for inserting a hard break."
+msgid "Insert a hard break (a new paragraph)"
+msgstr "Inserir uma quebra dura (um novo parágrafo)"

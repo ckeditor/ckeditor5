@@ -68,3 +68,7 @@ msgstr "Tip: zoek eerst de tekst om hem te vervangen"
 msgctxt "The label and the tooltip of the options dropdown button in the find and replace form."
 msgid "Advanced options"
 msgstr "Geavanceerde opties"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for opening the find and replace UI."
+msgid "Find in the document"
+msgstr "Zoek in het document"
