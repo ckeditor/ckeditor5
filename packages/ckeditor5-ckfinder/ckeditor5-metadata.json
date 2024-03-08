@@ -9,7 +9,10 @@
 			"requires": [
 				"CKFinderUploadAdapter",
 				"Link",
-				"Image"
+				[
+					"ImageBlock",
+					"ImageInline"
+				]
 			],
 			"uiComponents": [
 				{
