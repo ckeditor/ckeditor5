@@ -10,6 +10,7 @@
 @import "./ckeditor5-ui/components/autocomplete/autocomplete.css";
 @import "./ckeditor5-ui/components/button/button.css";
 @import "./ckeditor5-ui/components/button/switchbutton.css";
+@import "./ckeditor5-ui/components/collapsible/collapsible.css";
 @import "./ckeditor5-ui/components/colorgrid/colorgrid.css";
 @import "./ckeditor5-ui/components/colorselector/colorselector.css";
 @import "./ckeditor5-ui/components/dialog/dialog.css";
@@ -18,6 +19,7 @@
 @import "./ckeditor5-ui/components/dropdown/listdropdown.css";
 @import "./ckeditor5-ui/components/dropdown/splitbutton.css";
 @import "./ckeditor5-ui/components/dropdown/toolbardropdown.css";
+@import "./ckeditor5-ui/components/editorui/accessibilityhelp.css";
 @import "./ckeditor5-ui/components/editorui/editorui.css";
 @import "./ckeditor5-ui/components/formheader/formheader.css";
 @import "./ckeditor5-ui/components/icon/icon.css";
@@ -47,6 +49,7 @@
 @import "./ckeditor5-engine/placeholder.css";
 @import "./ckeditor5-find-and-replace/findandreplaceform.css";
 @import "./ckeditor5-heading/heading.css";
+@import "./ckeditor5-horizontal-line/horizontalline.css";
 @import "./ckeditor5-html-embed/htmlembed.css";
 @import "./ckeditor5-image/imageinsert.css";
 @import "./ckeditor5-image/imageupload.css";
