@@ -16,7 +16,11 @@ import type {
 	MenuBarMenuChangeIsOpenEvent,
 	MenuBarMenuArrowRightEvent,
 	MenuBarMenuArrowLeftEvent,
-	MenuBarMenuDefinition
+	MenuBarMenuDefinition,
+	MenuBarConfigObject,
+	MenuBarConfigAddedGroup,
+	MenuBarConfigAddedMenu,
+	MenuBarConfigAddedPosition
 } from './menubarview.js';
 import { cloneDeep } from 'lodash-es';
 import type { FocusableView } from '../focuscycler.js';
@@ -30,6 +34,14 @@ import type { ButtonExecuteEvent } from '../button/button.js';
 import type ComponentFactory from '../componentfactory.js';
 
 const NESTED_PANEL_HORIZONTAL_OFFSET = 5;
+
+type RequiredMenuBarConfigObject = Required<MenuBarConfigObject>;
+type DeepReadonly<T> = Readonly<{
+	[K in keyof T]:
+		T[K] extends string ? Readonly<T[K]>
+			: T[K] extends Array<infer A> ? Readonly<Array<DeepReadonly<A>>>
+				: DeepReadonly<T[K]>;
+}>;
 
 /**
  * Behaviors of the {@link module:ui/menubar/menubarview~MenuBarView} component.
@@ -390,118 +402,141 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
 } as const;
 
 /**
- * The default configuration of the {@link module:ui/menubar/menubarview~MenuBarView} component.
+ * The default items {@link module:core/editor/editorconfig~EditorConfig#menuBar configuration} of the
+ * {@link module:ui/menubar/menubarview~MenuBarView} component. It contains names of all menu bar components
+ * registered in the {@link module:ui/componentfactory~ComponentFactory component factory} (available in the project).
  *
- * It contains names of all UI components available in the project.
+ * **Note**: Menu bar component names provided by core editor features are prefixed with `menuBar:` in order to distinguish
+ * them from components referenced by the {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar configuration}, for instance,
+ * `'menuBar:bold'` is a menu bar button but `'bold'` is a toolbar button.
+ *
+ * TODO: This configuration has to be listed in API docs for developers to learn its structure
+ * and to be able to customize it using `config.menuBar.removeItems` and `config.menuBar.addItems` properties.
  */
-export const DefaultMenuBarConfig: MenuBarConfig = [
+export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> = [
 	{
-		id: 'file',
+		menuId: 'file',
 		label: 'File',
-		items: [
-			'menuBar:exportPdf'
+		groups: [
+			{
+				groupId: 'export',
+				items: [
+					'menuBar:exportPdf'
+				]
+			}
 		]
 	},
 	{
-		id: 'edit',
+		menuId: 'edit',
 		label: 'Edit',
-		items: [
-			'menuBar:undo',
-			'menuBar:redo',
-			'-',
-			'menuBar:selectAll',
-			'-',
-			'menuBar:findAndReplace'
+		groups: [
+			{
+				groupId: 'undo',
+				items: [
+					'menuBar:undo',
+					'menuBar:redo'
+				]
+			},
+			{
+				groupId: 'selectAll',
+				items: [
+					'menuBar:selectAll'
+				]
+			},
+			{
+				groupId: 'findAndReplace',
+				items: [
+					'menuBar:findAndReplace'
+				]
+			}
 		]
 	},
 	{
-		id: 'view',
+		menuId: 'view',
 		label: 'View',
-		items: [
-			'menuBar:sourceEditing',
-			'-',
-			'menuBar:showBlocks'
+		groups: [
+			{
+				groupId: 'sourceEditing',
+				items: [
+					'menuBar:sourceEditing'
+				]
+			},
+			{
+				groupId: 'showBlocks',
+				items: [
+					'menuBar:showBlocks'
+				]
+			}
 		]
 	},
 	{
-		id: 'insert',
+		menuId: 'insert',
 		label: 'Insert',
-		items: [
-			'menuBar:blockQuote',
-			'menuBar:htmlEmbed',
-			'menuBar:pageBreak',
-			'menuBar:horizontalLine',
-			'menuBar:blockQuote'
+		groups: [
+			{
+				groupId: 'insert',
+				items: [
+					'menuBar:blockQuote',
+					'menuBar:htmlEmbed',
+					'menuBar:pageBreak',
+					'menuBar:horizontalLine'
+				]
+			}
 		]
 	},
 	{
-		id: 'format',
+		menuId: 'format',
 		label: 'Format',
-		items: [
-			'menuBar:insertTable',
-			'-',
-			'menuBar:bold',
-			'menuBar:italic',
-			'menuBar:underline',
-			'menuBar:strikethrough',
-			'menuBar:subscript',
-			'menuBar:superscript',
-			'menuBar:code',
-			'-',
-			'menuBar:bulletedList',
-			'menuBar:numberedList',
-			'menuBar:todoList',
-			'-',
-			'menuBar:heading',
-			'menuBar:alignment',
-			'-',
-			'menuBar:indent',
-			'menuBar:outdent',
-			'menuBar:removeFormat'
+		groups: [
+			{
+				groupId: 'table',
+				items: [
+					'menuBar:insertTable'
+				]
+			},
+			{
+				groupId: 'basicStyles',
+				items: [
+					'menuBar:bold',
+					'menuBar:italic',
+					'menuBar:underline',
+					'menuBar:strikethrough',
+					'menuBar:subscript',
+					'menuBar:superscript',
+					'menuBar:code'
+				]
+			},
+			{
+				groupId: 'list',
+				items: [
+					'menuBar:bulletedList',
+					'menuBar:numberedList',
+					'menuBar:todoList'
+				]
+			},
+			{
+				groupId: 'heading',
+				items: [
+					'menuBar:alignment',
+					'menuBar:heading'
+				]
+			},
+			{
+				groupId: 'indent',
+				items: [
+					'menuBar:indent',
+					'menuBar:outdent'
+				]
+			},
+			{
+				groupId: 'removeFormat',
+				items: [
+					'menuBar:removeFormat'
+				]
+			}
 		]
 	}
-	// {
-	// 	id: 'test',
-	// 	label: 'Test',
-	// 	items: [
-	// 		'menuBar:bold',
-	// 		'menuBar:italic',
-	// 		'menuBar:underline',
-	// 		{
-	// 			id: 'test-nested-lvl1',
-	// 			label: 'Test nested level 1',
-	// 			items: [
-	// 				'menuBar:undo',
-	// 				'menuBar:redo',
-	// 				{
-	// 					id: 'test-nested-lvl11',
-	// 					label: 'Test nested level 1.1',
-	// 					items: [
-	// 						'menuBar:undo',
-	// 						'menuBar:redo'
-	// 					]
-	// 				}
-	// 			]
-	// 		},
-	// 		{
-	// 			id: 'test-nested-lvl2',
-	// 			label: 'Test nested level 2',
-	// 			items: [
-	// 				'menuBar:undo',
-	// 				'menuBar:redo',
-	// 				{
-	// 					id: 'test-nested-lvl21',
-	// 					label: 'Test nested level 2.1',
-	// 					items: [
-	// 						'menuBar:undo',
-	// 						'menuBar:redo'
-	// 					]
-	// 				}
-	// 			]
-	// 		}
-	// 	]
-	// }
-] as const;
+];
 
 /**
  * Performs a cleanup and normalization of the menu bar configuration and returns a config
@@ -520,20 +555,294 @@ export function normalizeMenuBarConfig( {
 	locale: Locale;
 	componentFactory: ComponentFactory;
 	config: Readonly<MenuBarConfig> | undefined;
-} ): MenuBarConfig {
+} ): MenuBarConfigObject {
+	let configObject: DeepReadonly<RequiredMenuBarConfigObject>;
+	let isUsingDefaultConfig = false;
+
+	// The integrator didn't specify any configuration so we use the default one.
 	if ( !config ) {
-		config = DefaultMenuBarConfig;
+		configObject = {
+			items: cloneDeep( DefaultMenuBarItems ) as Array<MenuBarMenuDefinition>,
+			addItems: [],
+			removeItems: []
+		};
+
+		isUsingDefaultConfig = true;
+	}
+	// The integrator specified the config as an array. Let's convert it into a generic object config.
+	else if ( Array.isArray( config ) ) {
+		configObject = {
+			items: config,
+			addItems: [],
+			removeItems: []
+		};
+	}
+	// The integrator specified the config as an object but without items. Let's give them defaults but respect their
+	// additions and removals.
+	else if ( !( 'items' in config ) ) {
+		configObject = {
+			items: cloneDeep( DefaultMenuBarItems ) as Array<MenuBarMenuDefinition>,
+			addItems: [],
+			removeItems: [],
+			...config
+		};
+
+		isUsingDefaultConfig = true;
+	}
+	// The integrator specified the config as an object and there are items there. Let's take it as it is.
+	else {
+		configObject = {
+			removeItems: [],
+			addItems: [],
+			...config as MenuBarConfigObject
+		};
 	}
 
-	const isUsingDefaultConfig = config === DefaultMenuBarConfig;
-	const configClone = cloneDeep( config ) as MenuBarConfig;
+	const configClone = cloneDeep( configObject ) as RequiredMenuBarConfigObject;
 
-	purgeUnavailableComponents( config, configClone, componentFactory, isUsingDefaultConfig );
-	purgeEmptyMenus( config, configClone, isUsingDefaultConfig );
-	purgeObsoleteSeparators( configClone );
+	handleRemovals( configObject, configClone );
+	handleAdditions( configObject, configClone );
+	purgeUnavailableComponents( configObject, configClone, componentFactory, isUsingDefaultConfig );
+	purgeEmptyMenus( configObject, configClone, isUsingDefaultConfig );
 	localizeTopLevelCategories( configClone, locale );
 
 	return configClone;
+}
+
+/**
+ * Removes items from the menu bar config based on user `removeItems` configuration. Users can remove
+ * individual items, groups, or entire menus. For each removed item, a warning is logged if the item
+ * was not found in the configuration.
+ */
+function handleRemovals(
+	originalConfig: DeepReadonly<RequiredMenuBarConfigObject>,
+	config: RequiredMenuBarConfigObject
+) {
+	const itemsToBeRemoved = config.removeItems;
+	const successfullyRemovedItems: Array<string> = [];
+
+	// Remove top-level menus.
+	config.items = config.items.filter( ( { menuId } ) => {
+		if ( itemsToBeRemoved.includes( menuId ) ) {
+			successfullyRemovedItems.push( menuId );
+			return false;
+		}
+
+		return true;
+	} );
+
+	walkConfigMenus( config.items, menuDefinition => {
+		// Remove groups from menus.
+		menuDefinition.groups = menuDefinition.groups.filter( ( { groupId } ) => {
+			if ( itemsToBeRemoved.includes( groupId ) ) {
+				successfullyRemovedItems.push( groupId );
+				return false;
+			}
+
+			return true;
+		} );
+
+		// Remove sub-menus and items from groups.
+		for ( const groupDefinition of menuDefinition.groups ) {
+			groupDefinition.items = groupDefinition.items.filter( item => {
+				const itemId = getIdFromGroupItem( item );
+
+				if ( itemsToBeRemoved.includes( itemId ) ) {
+					successfullyRemovedItems.push( itemId );
+					return false;
+				}
+
+				return true;
+			} );
+		}
+	} );
+
+	for ( const itemName of itemsToBeRemoved ) {
+		if ( !successfullyRemovedItems.includes( itemName ) ) {
+			/**
+			 * There was a problem processing the configuration of the menu bar. The item with the given
+			 * name does could not be removed from the menu bar configuration.
+			 *
+			 * This warning usually shows up when the {@link module:core/plugin~Plugin} which is supposed
+			 * to provide a menu bar item has not been loaded or there is a typo in the
+			 * {@link module:core/editor/editorconfig~EditorConfig#menuBar menu bar configuration}.
+			 *
+			 * @error menu-bar-item-could-not-be-removed
+			 * @param menuBarConfig The full configuration of the menu bar.
+			 * @param itemName The name of the item that was not removed from the menu bar.
+			 */
+			logWarning( 'menu-bar-item-could-not-be-removed', {
+				menuBarConfig: originalConfig,
+				itemName
+			} );
+		}
+	}
+}
+
+/**
+ * Handles the `config.menuBar.addItems` configuration. It allows for adding menus, groups, and items at arbitrary
+ * positions in the menu bar. If the position does not exist, a warning is logged.
+ */
+function handleAdditions(
+	originalConfig: DeepReadonly<RequiredMenuBarConfigObject>,
+	config: RequiredMenuBarConfigObject
+) {
+	const itemsToBeAdded = config.addItems;
+	const successFullyAddedItems: typeof itemsToBeAdded = [];
+
+	for ( const itemToAdd of itemsToBeAdded ) {
+		const relation = getRelationFromPosition( itemToAdd.position );
+		const relativeId = getRelativeIdFromPosition( itemToAdd.position );
+
+		// Adding a menu.
+		if ( isMenuBarMenuAddition( itemToAdd ) ) {
+			if ( !relativeId ) {
+				// Adding a top-level menu at the beginning of the menu bar.
+				if ( relation === 'start' ) {
+					config.items.unshift( itemToAdd.menu );
+					successFullyAddedItems.push( itemToAdd );
+				}
+				// Adding a top-level menu at the end of the menu bar.
+				else if ( relation === 'end' ) {
+					config.items.push( itemToAdd.menu );
+					successFullyAddedItems.push( itemToAdd );
+				}
+			} else {
+				const topLevelMenuDefinitionIndex = config.items.findIndex( menuDefinition => menuDefinition.menuId === relativeId );
+
+				// Adding a top-level menu somewhere between existing menu bar menus.
+				if ( topLevelMenuDefinitionIndex != -1 ) {
+					if ( relation === 'before' ) {
+						config.items.splice( topLevelMenuDefinitionIndex, 0, itemToAdd.menu );
+						successFullyAddedItems.push( itemToAdd );
+					} else if ( relation === 'after' ) {
+						config.items.splice( topLevelMenuDefinitionIndex + 1, 0, itemToAdd.menu );
+						successFullyAddedItems.push( itemToAdd );
+					}
+				}
+				// Adding a sub-menu to an existing items group.
+				else {
+					const wasAdded = addMenuOrItemToGroup( config, itemToAdd.menu, relativeId, relation );
+
+					if ( wasAdded ) {
+						successFullyAddedItems.push( itemToAdd );
+					}
+				}
+			}
+		}
+		// Adding a group.
+		else if ( isMenuBarMenuGroupAddition( itemToAdd ) ) {
+			walkConfigMenus( config.items, menuDefinition => {
+				if ( menuDefinition.menuId === relativeId ) {
+					// Add a group at the start of a menu.
+					if ( relation === 'start' ) {
+						menuDefinition.groups.unshift( itemToAdd.group );
+						successFullyAddedItems.push( itemToAdd );
+					}
+					// Add a group at the end of a menu.
+					else if ( relation === 'end' ) {
+						menuDefinition.groups.push( itemToAdd.group );
+						successFullyAddedItems.push( itemToAdd );
+					}
+				} else {
+					const relativeGroupIndex = menuDefinition.groups.findIndex( group => group.groupId === relativeId );
+
+					if ( relativeGroupIndex !== -1 ) {
+						// Add a group before an existing group in a menu.
+						if ( relation === 'before' ) {
+							menuDefinition.groups.splice( relativeGroupIndex, 0, itemToAdd.group );
+							successFullyAddedItems.push( itemToAdd );
+						}
+						// Add a group after an existing group in a menu.
+						else if ( relation === 'after' ) {
+							menuDefinition.groups.splice( relativeGroupIndex + 1, 0, itemToAdd.group );
+							successFullyAddedItems.push( itemToAdd );
+						}
+					}
+				}
+			} );
+		}
+		// Adding an item to an existing items group.
+		else {
+			const wasAdded = addMenuOrItemToGroup( config, itemToAdd.item, relativeId, relation );
+
+			if ( wasAdded ) {
+				successFullyAddedItems.push( itemToAdd );
+			}
+		}
+	}
+
+	for ( const addedItemConfig of itemsToBeAdded ) {
+		if ( !successFullyAddedItems.includes( addedItemConfig ) ) {
+			/**
+			 * There was a problem processing the configuration of the menu bar. The configured item could not be added
+			 * because the position it was supposed to be added to does not exist.
+			 *
+			 * This warning usually shows up when the {@link module:core/plugin~Plugin} which is supposed
+			 * to provide a menu bar item has not been loaded or there is a typo in the
+			 * {@link module:core/editor/editorconfig~EditorConfig#menuBar menu bar configuration}.
+			 *
+			 * @error menu-bar-item-could-not-be-removed
+			 * @param menuBarConfig The full configuration of the menu bar.
+			 * @param itemName The name of the item that was not removed from the menu bar.
+			 */
+			logWarning( 'menu-bar-item-could-not-be-added', {
+				menuBarConfig: originalConfig,
+				addedItemConfig
+			} );
+		}
+	}
+}
+
+/**
+ * Handles adding a sub-menu or an item into a group. The logic is the same for both cases.
+ */
+function addMenuOrItemToGroup(
+	config: RequiredMenuBarConfigObject,
+	itemOrMenuToAdd: string | MenuBarMenuDefinition,
+	relativeId: string | null,
+	relation: 'start' | 'end' | 'before' | 'after'
+): boolean {
+	let wasAdded = false;
+
+	walkConfigMenus( config.items, menuDefinition => {
+		for ( const { groupId, items: groupItems } of menuDefinition.groups ) {
+			// Avoid infinite loops.
+			if ( wasAdded ) {
+				return;
+			}
+
+			if ( groupId === relativeId ) {
+				// Adding an item/menu at the beginning of a group.
+				if ( relation === 'start' ) {
+					groupItems.unshift( itemOrMenuToAdd );
+					wasAdded = true;
+				}
+				// Adding an item/menu at the end of a group.
+				else if ( relation === 'end' ) {
+					groupItems.push( itemOrMenuToAdd );
+					wasAdded = true;
+				}
+			} else {
+				// Adding an item/menu relative to an existing item/menu.
+				const relativeItemIndex = groupItems.findIndex( groupItem => {
+					return getIdFromGroupItem( groupItem ) === relativeId;
+				} );
+
+				if ( relativeItemIndex !== -1 ) {
+					if ( relation === 'before' ) {
+						groupItems.splice( relativeItemIndex, 0, itemOrMenuToAdd );
+						wasAdded = true;
+					} else if ( relation === 'after' ) {
+						groupItems.splice( relativeItemIndex + 1, 0, itemOrMenuToAdd );
+						wasAdded = true;
+					}
+				}
+			}
+		}
+	} );
+
+	return wasAdded;
 }
 
 /**
@@ -541,66 +850,48 @@ export function normalizeMenuBarConfig( {
  * not be instantiated. Warns about missing components if the menu bar configuration was specified by the user.
  */
 function purgeUnavailableComponents(
-	originalConfig: Readonly<MenuBarConfig>,
-	config: MenuBarConfig,
+	originalConfig: DeepReadonly<RequiredMenuBarConfigObject>,
+	config: RequiredMenuBarConfigObject,
 	componentFactory: ComponentFactory,
 	isUsingDefaultConfig: boolean
 ) {
-	walkConfig( config, menuDefinition => {
-		menuDefinition.items = menuDefinition.items.filter( item => {
-			const isItemUnavailable = typeof item === 'string' && item !== '-' && !componentFactory.has( item );
+	walkConfigMenus( config.items, menuDefinition => {
+		for ( const groupDefinition of menuDefinition.groups ) {
+			groupDefinition.items = groupDefinition.items.filter( item => {
+				const isItemUnavailable = typeof item === 'string' && !componentFactory.has( item );
 
-			// The default configuration contains all possible editor features. But integrators' editors rarely load
-			// every possible feature. This is why we do not want to log warnings about unavailable items for the default config
-			// because they would show up in almost every integration. If the configuration has been provided by
-			// the integrator, on the other hand, then these warnings bring value.
-			if ( isItemUnavailable && !isUsingDefaultConfig ) {
-				/**
-				 * There was a problem processing the configuration of the menu bar. The item with the given
-				 * name does not exist so it was omitted when rendering the menu bar.
-				 *
-				 * This warning usually shows up when the {@link module:core/plugin~Plugin} which is supposed
-				 * to provide a menu bar item has not been loaded or there is a typo in the
-				 * {@link module:core/editor/editorconfig~EditorConfig#menuBar menu bar configuration}.
-				 *
-				 * Make sure the plugin responsible for this menu bar item is loaded and the menu bar configuration
-				 * is correct, e.g. {@link module:basic-styles/boldyu~BoldUI} is loaded for the `'menuBar:bold'`
-				 * menu bar item.
-				 *
-				 * @error menu-bar-item-unavailable
-				 * @param menuBarConfig The full configuration of the menu bar.
-				 * @param parentMenuConfig The config of the menu the unavailable component was defined in.
-				 * @param componentName The name of the unavailable component.
-				 */
-				logWarning( 'menu-bar-item-unavailable', {
-					menuBarConfig: originalConfig,
-					parentMenuConfig: cloneDeep( menuDefinition ),
-					componentName: item
-				} );
-			}
+				// The default configuration contains all possible editor features. But integrators' editors rarely load
+				// every possible feature. This is why we do not want to log warnings about unavailable items for the default config
+				// because they would show up in almost every integration. If the configuration has been provided by
+				// the integrator, on the other hand, then these warnings bring value.
+				if ( isItemUnavailable && !isUsingDefaultConfig ) {
+					/**
+					 * There was a problem processing the configuration of the menu bar. The item with the given
+					 * name does not exist so it was omitted when rendering the menu bar.
+					 *
+					 * This warning usually shows up when the {@link module:core/plugin~Plugin} which is supposed
+					 * to provide a menu bar item has not been loaded or there is a typo in the
+					 * {@link module:core/editor/editorconfig~EditorConfig#menuBar menu bar configuration}.
+					 *
+					 * Make sure the plugin responsible for this menu bar item is loaded and the menu bar configuration
+					 * is correct, e.g. {@link module:basic-styles/bold/boldui~BoldUI} is loaded for the `'menuBar:bold'`
+					 * menu bar item.
+					 *
+					 * @error menu-bar-item-unavailable
+					 * @param menuBarConfig The full configuration of the menu bar.
+					 * @param parentMenuConfig The config of the menu the unavailable component was defined in.
+					 * @param componentName The name of the unavailable component.
+					 */
+					logWarning( 'menu-bar-item-unavailable', {
+						menuBarConfig: originalConfig,
+						parentMenuConfig: cloneDeep( menuDefinition ),
+						componentName: item
+					} );
+				}
 
-			return !isItemUnavailable;
-		} );
-	} );
-}
-
-/**
- * Removes trailing and leading separators from menu bar configuration. Such separators can be added by mistake
- * or due to the missing components in the factory that were meant to be separated.
- */
-function purgeObsoleteSeparators( config: MenuBarConfig ) {
-	function isSeparator( item: any ) {
-		return item === '-';
-	}
-
-	walkConfig( config, menuDefinition => {
-		menuDefinition.items = menuDefinition.items.filter( ( item, index, items ) => {
-			const itemIsSeparator = isSeparator( item );
-			const isLeadingSeparator = itemIsSeparator && items.slice( 0, index + 1 ).every( isSeparator );
-			const isTrailingSeparator = itemIsSeparator && items.slice( index, items.length ).every( isSeparator );
-
-			return !isTrailingSeparator && !isLeadingSeparator;
-		} );
+				return !isItemUnavailable;
+			} );
+		}
 	} );
 }
 
@@ -610,55 +901,98 @@ function purgeObsoleteSeparators( config: MenuBarConfig ) {
  * the configuration populated menus using these components exclusively.
  */
 function purgeEmptyMenus(
-	originalConfig: Readonly<MenuBarConfig>,
-	config: MenuBarConfig,
+	originalConfig: DeepReadonly<RequiredMenuBarConfigObject>,
+	config: RequiredMenuBarConfigObject,
 	isUsingDefaultConfig: boolean
 ) {
-	if ( !config.length && !isUsingDefaultConfig ) {
-		/**
-		 * There was a problem processing the configuration of the menu bar. One of the menus
-		 * is empty so it was omitted when rendering the menu bar.
-		 *
-		 * This warning usually shows up when some {@link module:core/plugin~Plugin plugins} responsible for
-		 * providing menu bar items have not been loaded and the
-		 * {@link module:core/editor/editorconfig~EditorConfig#menuBar menu bar configuration} was not updated.
-		 *
-		 * Make sure all necessary editor plugins are loaded and/or update the menu bar configuration
-		 * to account for the missing menu items.
-		 *
-		 * @error menu-bar-menu-empty
-		 * @param menuBarConfig The full configuration of the menu bar.
-		 * @param emptyMenuConfig The definition of the menu that has no child items.
-		 */
-		logWarning( 'menu-bar-menu-empty', {
-			menuBarConfig: originalConfig,
-			emptyMenuConfig: originalConfig
-		} );
+	let wasSubMenuPurged = false;
+
+	// Purge top-level menus.
+	config.items = config.items.filter( menuDefinition => {
+		if ( !menuDefinition.groups.length ) {
+			warnAboutEmptyMenu( originalConfig, menuDefinition, isUsingDefaultConfig );
+
+			return false;
+		}
+
+		return true;
+	} );
+
+	// Warn if there were no top-level menus left in the menu bar after purging.
+	if ( !config.items.length ) {
+		warnAboutEmptyMenu( originalConfig, originalConfig, isUsingDefaultConfig );
 
 		return;
 	}
 
-	walkConfig( config, ( menuDefinition, siblings ) => {
-		if ( !menuDefinition.items.length || menuDefinition.items.every( item => item === '-' ) ) {
-			siblings.splice( siblings.indexOf( menuDefinition ), 1 );
-
-			if ( !isUsingDefaultConfig ) {
-				logWarning( 'menu-bar-menu-empty', {
-					menuBarConfig: originalConfig,
-					emptyMenuConfig: menuDefinition
-				} );
+	// Purge sub-menus and groups.
+	walkConfigMenus( config.items, menuDefinition => {
+		// Get rid of empty groups.
+		menuDefinition.groups = menuDefinition.groups.filter( groupDefinition => {
+			if ( !groupDefinition.items.length ) {
+				wasSubMenuPurged = true;
+				return false;
 			}
 
-			// Walking goes from the root to the leaves so if leaves are removed, we need to re-iterate the level up.
-			purgeEmptyMenus( originalConfig, config, isUsingDefaultConfig );
+			return true;
+		} );
+
+		// Get rid of empty sub-menus.
+		for ( const groupDefinition of menuDefinition.groups ) {
+			groupDefinition.items = groupDefinition.items.filter( item => {
+				// If no groups were left after removing empty ones.
+				if ( isMenuDefinition( item ) && !item.groups.length ) {
+					warnAboutEmptyMenu( originalConfig, item, isUsingDefaultConfig );
+					wasSubMenuPurged = true;
+					return false;
+				}
+
+				return true;
+			} );
 		}
+	} );
+
+	if ( wasSubMenuPurged ) {
+		// The config is walked from the root to the leaves so if anything gets removed, we need to re-run the
+		// whole process because it could've affected parents.
+		purgeEmptyMenus( originalConfig, config, isUsingDefaultConfig );
+	}
+}
+
+function warnAboutEmptyMenu(
+	originalConfig: DeepReadonly<RequiredMenuBarConfigObject>,
+	emptyMenuConfig: MenuBarMenuDefinition | DeepReadonly<RequiredMenuBarConfigObject>,
+	isUsingDefaultConfig: boolean
+) {
+	if ( isUsingDefaultConfig ) {
+		return;
+	}
+
+	/**
+	 * There was a problem processing the configuration of the menu bar. One of the menus
+	 * is empty so it was omitted when rendering the menu bar.
+	 *
+	 * This warning usually shows up when some {@link module:core/plugin~Plugin plugins} responsible for
+	 * providing menu bar items have not been loaded and the
+	 * {@link module:core/editor/editorconfig~EditorConfig#menuBar menu bar configuration} was not updated.
+	 *
+	 * Make sure all necessary editor plugins are loaded and/or update the menu bar configuration
+	 * to account for the missing menu items.
+	 *
+	 * @error menu-bar-menu-empty
+	 * @param menuBarConfig The full configuration of the menu bar.
+	 * @param emptyMenuConfig The definition of the menu that has no child items.
+	 */
+	logWarning( 'menu-bar-menu-empty', {
+		menuBarConfig: originalConfig,
+		emptyMenuConfig
 	} );
 }
 
 /**
  * Localizes the user-config using pre-defined localized category labels.
  */
-function localizeTopLevelCategories( config: MenuBarConfig, locale: Locale ) {
+function localizeTopLevelCategories( config: RequiredMenuBarConfigObject, locale: Locale ) {
 	const t = locale.t;
 	const localizedCategoryLabels: Record<string, string> = {
 		'Edit': t( 'Edit' ),
@@ -667,7 +1001,7 @@ function localizeTopLevelCategories( config: MenuBarConfig, locale: Locale ) {
 		'Insert': t( 'Insert' )
 	};
 
-	for ( const categoryDef of config ) {
+	for ( const categoryDef of config.items ) {
 		if ( categoryDef.label in localizedCategoryLabels ) {
 			categoryDef.label = localizedCategoryLabels[ categoryDef.label ];
 		}
@@ -677,26 +1011,63 @@ function localizeTopLevelCategories( config: MenuBarConfig, locale: Locale ) {
 /**
  * Recursively visits all menu definitions in the config and calls the callback for each of them.
  */
-function walkConfig(
-	definition: MenuBarConfig | MenuBarMenuDefinition,
-	callback: ( definition: MenuBarMenuDefinition, siblings: MenuBarConfig | MenuBarMenuDefinition[ 'items' ] ) => void
+function walkConfigMenus(
+	definition: RequiredMenuBarConfigObject[ 'items' ] | MenuBarMenuDefinition,
+	callback: ( definition: MenuBarMenuDefinition ) => void
 ) {
 	if ( Array.isArray( definition ) ) {
 		for ( const topLevelMenuDefinition of definition ) {
-			walk( topLevelMenuDefinition, definition );
+			walk( topLevelMenuDefinition );
 		}
 	}
 
-	function walk(
-		definition: MenuBarMenuDefinition,
-		siblings: MenuBarMenuDefinition[ 'items' ] | MenuBarConfig
-	) {
-		callback( definition, siblings );
+	function walk( menuDefinition: MenuBarMenuDefinition ) {
+		callback( menuDefinition );
 
-		for ( const item of definition.items ) {
-			if ( typeof item === 'object' ) {
-				walk( item, definition.items );
+		for ( const groupDefinition of menuDefinition.groups ) {
+			for ( const groupItem of groupDefinition.items ) {
+				if ( isMenuDefinition( groupItem ) ) {
+					walk( groupItem );
+				}
 			}
 		}
 	}
+}
+
+function isMenuBarMenuAddition( definition: any ): definition is MenuBarConfigAddedMenu {
+	return typeof definition === 'object' && 'menu' in definition;
+}
+
+function isMenuBarMenuGroupAddition( definition: any ): definition is MenuBarConfigAddedGroup {
+	return typeof definition === 'object' && 'group' in definition;
+}
+
+function getRelationFromPosition( position: MenuBarConfigAddedPosition ): 'start' | 'end' | 'before' | 'after' {
+	if ( position.startsWith( 'start' ) ) {
+		return 'start';
+	} else if ( position.startsWith( 'end' ) ) {
+		return 'end';
+	} else if ( position.startsWith( 'after' ) ) {
+		return 'after';
+	} else {
+		return 'before';
+	}
+}
+
+function getRelativeIdFromPosition( position: MenuBarConfigAddedPosition ): string | null {
+	const match = position.match( /^[^:]+:(.+)/ );
+
+	if ( match ) {
+		return match[ 1 ];
+	}
+
+	return null;
+}
+
+function getIdFromGroupItem( item: string | MenuBarMenuDefinition ): string {
+	return typeof item === 'string' ? item : item.menuId;
+}
+
+function isMenuDefinition( definition: any ): definition is MenuBarMenuDefinition {
+	return typeof definition === 'object' && 'menuId' in definition;
 }

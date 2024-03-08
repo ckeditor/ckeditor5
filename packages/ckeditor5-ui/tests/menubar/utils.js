@@ -55,39 +55,64 @@ describe( 'MenuBarView utils', () => {
 
 			menuBarView.fillFromConfig( [
 				{
-					id: 'A',
+					menuId: 'A',
 					label: 'A',
-					items: [
-						'A#1',
+					groups: [
 						{
-							id: 'AA',
-							label: 'AA',
+							groupId: 'A1',
 							items: [
-								'AA#1',
-								'AAA (from-factory)'
-							]
-						},
-						{
-							id: 'AB',
-							label: 'AB',
-							items: [
-								'AB#1'
+								'A#1',
+								{
+									menuId: 'AA',
+									label: 'AA',
+									groups: [
+										{
+											groupId: 'AA1',
+											items: [
+												'AA#1',
+												'AAA (from-factory)'
+											]
+										}
+									]
+								},
+								{
+									menuId: 'AB',
+									label: 'AB',
+									groups: [
+										{
+											groupId: 'AB1',
+											items: [
+												'AB#1'
+											]
+										}
+									]
+								}
 							]
 						}
 					]
 				},
 				{
-					id: 'B',
+					menuId: 'B',
 					label: 'B',
-					items: [
-						'B#1'
+					groups: [
+						{
+							groupId: 'B1',
+							items: [
+								'B#1'
+							]
+						}
 					]
 				},
 				{
-					id: 'C',
+					menuId: 'C',
 					label: 'C',
-					items: [
-						'C#1'
+					groups: [
+						{
+							groupId: 'C1',
+							items: [
+								'C#1'
+							]
+						}
 					]
 				}
 			], factory );
@@ -703,10 +728,15 @@ describe( 'MenuBarView utils', () => {
 
 				menuBarView.fillFromConfig( [
 					{
-						id: 'A',
+						menuId: 'A',
 						label: 'A',
-						items: [
-							'A#1'
+						groups: [
+							{
+								groupId: 'A1',
+								items: [
+									'A#1'
+								]
+							}
 						]
 					}
 				], factory );
@@ -791,15 +821,25 @@ describe( 'MenuBarView utils', () => {
 
 				menuBarView.fillFromConfig( [
 					{
-						id: 'A',
+						menuId: 'A',
 						label: 'A',
-						items: [
-							'A#1',
+						groups: [
 							{
-								id: 'AA',
-								label: 'AA',
+								groupId: 'A1',
 								items: [
-									'AA#1'
+									'A#1',
+									{
+										menuId: 'AA',
+										label: 'AA',
+										groups: [
+											{
+												groupId: 'AA1',
+												items: [
+													'AA#1'
+												]
+											}
+										]
+									}
 								]
 							}
 						]
@@ -1026,15 +1066,25 @@ describe( 'MenuBarView utils', () => {
 
 			menuBarView.fillFromConfig( [
 				{
-					id: 'A',
+					menuId: 'A',
 					label: 'A',
-					items: [
-						'A#1',
+					groups: [
 						{
-							id: 'AA',
-							label: 'AA',
+							groupId: 'A1',
 							items: [
-								'AA#1'
+								'A#1',
+								{
+									menuId: 'AA',
+									label: 'AA',
+									groups: [
+										{
+											groupId: 'AA1',
+											items: [
+												'AA#1'
+											]
+										}
+									]
+								}
 							]
 						}
 					]
