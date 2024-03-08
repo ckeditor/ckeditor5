@@ -189,7 +189,8 @@
     "collect-svg-icons": "node scripts/collect-svg-icons.js",
     "check-dependencies": "ckeditor5-dev-dependency-checker",
     "check-dependencies:versions-match": "node ./scripts/ci/check-dependencies-versions-match.js",
-    "build:kowalski": "node ./scripts/build-kowalski.mjs"
+    "build:kowalski": "node ./scripts/build-kowalski.mjs",
+    "check-theme-lark-imports": "node ./scripts/check-theme-lark-imports.js"
   },
   "lint-staged": {
     "**/*.{js,ts}": [
