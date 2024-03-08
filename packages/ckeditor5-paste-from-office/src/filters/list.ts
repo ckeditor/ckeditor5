@@ -53,9 +53,14 @@ export function transformListItemLikeElementsIntoLists(
 
 	for ( const itemLikeElement of itemLikeElements ) {
 		if ( itemLikeElement.indent !== undefined ) {
-			const indent = itemLikeElement.indent - 1;
+			if ( isNewListNeeded( itemLikeElement ) ) {
+				stack.length = 0;
+			}
 
-			if ( indent < stack.length && isNewListNeeded( stack[ indent ], itemLikeElement ) ) {
+			const originalListId = `${ itemLikeElement.id }:${ itemLikeElement.indent }`;
+			const indent = Math.min( itemLikeElement.indent - 1, stack.length );
+
+			if ( indent < stack.length && stack[ indent ].id !== itemLikeElement.id ) {
 				stack.length = indent;
 			}
 
@@ -65,8 +70,8 @@ export function transformListItemLikeElementsIntoLists(
 			else if ( indent > stack.length - 1 ) {
 				const listStyle = detectListStyle( itemLikeElement, stylesString );
 
-				if ( indent == 0 && listStyle.type == 'ol' && itemLikeElement.id !== undefined && encounteredLists[ itemLikeElement.id ] ) {
-					listStyle.startIndex = encounteredLists[ itemLikeElement.id ];
+				if ( indent == 0 && listStyle.type == 'ol' && itemLikeElement.id !== undefined && encounteredLists[ originalListId ] ) {
+					listStyle.startIndex = encounteredLists[ originalListId ];
 				}
 
 				const listElement = createNewEmptyList( listStyle, writer );
@@ -89,7 +94,7 @@ export function transformListItemLikeElementsIntoLists(
 				};
 
 				if ( indent == 0 && itemLikeElement.id !== undefined ) {
-					encounteredLists[ itemLikeElement.id ] = listStyle.startIndex || 1;
+					encounteredLists[ originalListId ] = listStyle.startIndex || 1;
 				}
 			}
 
@@ -100,7 +105,7 @@ export function transformListItemLikeElementsIntoLists(
 			stack[ indent ].listItemElements.push( listItem );
 
 			if ( indent == 0 && itemLikeElement.id !== undefined ) {
-				encounteredLists[ itemLikeElement.id ]++;
+				encounteredLists[ originalListId ]++;
 			}
 
 			if ( itemLikeElement.element != listItem ) {
@@ -214,15 +219,7 @@ function findAllItemLikeElements(
  * the `currentItem` is a beginning of the nested list because lists in CKEditor 5 always start with the `indent=0` attribute.
  * See: https://github.com/ckeditor/ckeditor5/issues/7805.
  */
-function isNewListNeeded( previousItem: ListLikeElement, currentItem: ListLikeElement ) {
-	if ( !previousItem ) {
-		return true;
-	}
-
-	if ( previousItem.id !== currentItem.id ) {
-		return true;
-	}
-
+function isNewListNeeded( currentItem: ListLikeElement ) {
 	const previousSibling = currentItem.element.previousSibling;
 
 	if ( !previousSibling ) {
