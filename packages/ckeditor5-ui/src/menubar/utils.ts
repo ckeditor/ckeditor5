@@ -399,7 +399,8 @@ export const DefaultMenuBarConfig: MenuBarConfig = [
 		id: 'file',
 		label: 'File',
 		items: [
-			'menuBar:exportPdf'
+			'menuBar:exportPdf',
+			'menuBar:exportWord'
 		]
 	},
 	{
