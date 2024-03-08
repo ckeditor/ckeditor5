@@ -37,8 +37,8 @@ describe( 'Clipboard Markers Utils', () => {
 		beforeEach( () => {
 			clipboardMarkersUtils._registerMarkerToCopy( 'comment', {
 				allowedActions: [ 'copy' ],
-				withPartiallySelected: true,
-				regenerateMarkerIdsOnPaste: true
+				copyPartiallySelected: true,
+				duplicateOnPaste: true
 			} );
 		} );
 
@@ -392,11 +392,11 @@ describe( 'Clipboard Markers Utils', () => {
 	} );
 
 	describe( 'Copy partial selection', () => {
-		it( 'should be possible to copy partially selected markers if `withPartiallySelected` is set to `true`', () => {
+		it( 'should be possible to copy partially selected markers if `copyPartiallySelected` is set to `true`', () => {
 			clipboardMarkersUtils._registerMarkerToCopy( 'comment', {
 				allowedActions: 'all',
-				withPartiallySelected: true,
-				regenerateMarkerIdsOnPaste: true
+				copyPartiallySelected: true,
+				duplicateOnPaste: true
 			} );
 
 			setModelData(
@@ -426,8 +426,8 @@ describe( 'Clipboard Markers Utils', () => {
 			expect( model.markers.has( 'comment:test:pasted' ) ).to.true;
 		} );
 
-		it( 'should not be possible to copy partially selected markers if `withPartiallySelected` is set to `false`', () => {
-			clipboardMarkersUtils._registerMarkerToCopy( 'comment', { allowedActions: 'all', withPartiallySelected: false } );
+		it( 'should not be possible to copy partially selected markers if `copyPartiallySelected` is set to `false`', () => {
+			clipboardMarkersUtils._registerMarkerToCopy( 'comment', { allowedActions: 'all', copyPartiallySelected: false } );
 
 			setModelData(
 				model,
@@ -457,12 +457,12 @@ describe( 'Clipboard Markers Utils', () => {
 		} );
 	} );
 
-	describe( 'regenerateMarkerIdsOnPaste flag behavior', () => {
-		it( 'should insert marker with regenerated ID on cut and `regenerateMarkerIdsOnPaste` is set to `false`', () => {
+	describe( 'duplicateOnPaste flag behavior', () => {
+		it( 'should insert marker with regenerated ID on cut and `duplicateOnPaste` is set to `false`', () => {
 			clipboardMarkersUtils._registerMarkerToCopy( 'comment', {
 				allowedActions: 'all',
-				regenerateMarkerIdsOnPaste: false,
-				withPartiallySelected: true
+				duplicateOnPaste: false,
+				copyPartiallySelected: true
 			} );
 
 			setModelData(
@@ -501,11 +501,11 @@ describe( 'Clipboard Markers Utils', () => {
 			expect( editor.model.markers.get( 'comment:test:pasted' ) ).to.be.null;
 		} );
 
-		it( 'should not insert marker with the same name on paste if `regenerateMarkerIdsOnPaste` is set to `false`', () => {
+		it( 'should not insert marker with the same name on paste if `duplicateOnPaste` is set to `false`', () => {
 			clipboardMarkersUtils._registerMarkerToCopy( 'comment', {
 				allowedActions: 'all',
-				regenerateMarkerIdsOnPaste: false,
-				withPartiallySelected: true
+				duplicateOnPaste: false,
+				copyPartiallySelected: true
 			} );
 
 			setModelData(
@@ -545,11 +545,11 @@ describe( 'Clipboard Markers Utils', () => {
 			expect( model.markers.has( 'comment:test:pasted' ) ).to.false;
 		} );
 
-		it( 'should insert marker with the same name on paste if `regenerateMarkerIdsOnPaste` is set to `true`', () => {
+		it( 'should insert marker with the same name on paste if `duplicateOnPaste` is set to `true`', () => {
 			clipboardMarkersUtils._registerMarkerToCopy( 'comment', {
 				allowedActions: 'all',
-				regenerateMarkerIdsOnPaste: true,
-				withPartiallySelected: true
+				duplicateOnPaste: true,
+				copyPartiallySelected: true
 			} );
 
 			setModelData(
@@ -623,20 +623,20 @@ describe( 'Clipboard Markers Utils', () => {
 		it( 'properly reverts old marker restricted actions', () => {
 			clipboardMarkersUtils._registerMarkerToCopy( 'comment', {
 				allowedActions: [ 'cut' ],
-				withPartiallySelected: true
+				copyPartiallySelected: true
 			} );
 
 			clipboardMarkersUtils._forceMarkersCopy( 'comment', () => {
 				expect( getMarkerRestrictions() ).deep.equal( {
 					allowedActions: 'all',
-					regenerateMarkerIdsOnPaste: true,
-					withPartiallySelected: true
+					duplicateOnPaste: true,
+					copyPartiallySelected: true
 				} );
 			} );
 
 			expect( getMarkerRestrictions() ).deep.equal( {
 				allowedActions: [ 'cut' ],
-				withPartiallySelected: true
+				copyPartiallySelected: true
 			} );
 		} );
 

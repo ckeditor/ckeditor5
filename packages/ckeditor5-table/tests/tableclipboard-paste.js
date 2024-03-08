@@ -4078,7 +4078,7 @@ describe( 'table clipboard', () => {
 
 			clipboardMarkersUtils._registerMarkerToCopy( 'comment', {
 				allowedActions: [ 'copy' ],
-				regenerateMarkerIdsOnPaste: true
+				duplicateOnPaste: true
 			} );
 
 			getUniqueMarkerNameStub = sinon
