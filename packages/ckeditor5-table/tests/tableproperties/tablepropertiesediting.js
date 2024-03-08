@@ -90,6 +90,16 @@ describe( 'table properties', () => {
 			} );
 
 			describe( 'upcast conversion', () => {
+				it( 'should not upcast border shorthand when values are the same as default values', () => {
+					editor.setData( '<table style="border:1px double hsl(0, 0%, 70%)"><tr><td>foo</td></tr></table>' );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableBorderColor' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableBorderStyle' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableBorderWidth' ) ).to.be.undefined;
+				} );
+
 				it( 'should upcast border shorthand', () => {
 					editor.setData( '<table style="border:1px solid #f00"><tr><td>foo</td></tr></table>' );
 
@@ -402,11 +412,11 @@ describe( 'table properties', () => {
 
 						it( 'should upcast tables with nested tables in their cells', () => {
 							editor.setData(
-								'<table style="border:1px solid red">' +
+								'<table style="border:2px solid red">' +
 									'<tr>' +
 										'<td>parent:00</td>' +
 										'<td>' +
-											'<table style="border:1px solid green"><tr><td>child:00</td></tr></table>' +
+											'<table style="border:2px solid green"><tr><td>child:00</td></tr></table>' +
 										'</td>' +
 									'</tr>' +
 								'</table>'
@@ -416,10 +426,10 @@ describe( 'table properties', () => {
 
 							expect( table.getAttribute( 'tableBorderColor' ) ).to.equal( 'red' );
 							expect( table.getAttribute( 'tableBorderStyle' ) ).to.equal( 'solid' );
-							expect( table.getAttribute( 'tableBorderWidth' ) ).to.equal( '1px' );
+							expect( table.getAttribute( 'tableBorderWidth' ) ).to.equal( '2px' );
 
 							expect( getModelData( editor.model ) ).to.equal(
-								'[<table tableBorderColor="red" tableBorderStyle="solid" tableBorderWidth="1px">' +
+								'[<table tableBorderColor="red" tableBorderStyle="solid" tableBorderWidth="2px">' +
 									'<tableRow>' +
 										'<tableCell>' +
 											'<paragraph>' +
