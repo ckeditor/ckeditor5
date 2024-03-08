@@ -12,6 +12,8 @@
 @import "./ckeditor5-ui/components/button/switchbutton.css";
 @import "./ckeditor5-ui/components/colorgrid/colorgrid.css";
 @import "./ckeditor5-ui/components/colorselector/colorselector.css";
+@import "./ckeditor5-ui/components/dialog/dialog.css";
+@import "./ckeditor5-ui/components/dialog/dialogactions.css";
 @import "./ckeditor5-ui/components/dropdown/dropdown.css";
 @import "./ckeditor5-ui/components/dropdown/listdropdown.css";
 @import "./ckeditor5-ui/components/dropdown/splitbutton.css";
