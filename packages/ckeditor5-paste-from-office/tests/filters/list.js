@@ -114,9 +114,9 @@ describe( 'PasteFromOffice - filters', () => {
 
 				const html = `<p ${ level1 }>Foo</p>`;
 				const view = htmlDataProcessor.toView( html );
-				const isMultiLevelListPluginLoaded = true;
+				const hasMultiLevelListPluginLoaded = true;
 
-				transformListItemLikeElementsIntoLists( view, styles, isMultiLevelListPluginLoaded );
+				transformListItemLikeElementsIntoLists( view, styles, hasMultiLevelListPluginLoaded );
 
 				expect( stringify( view ) ).to.equal(
 					`<ol class="legal-list"><li ${ level1 }>Foo</li></ol>`
@@ -130,9 +130,9 @@ describe( 'PasteFromOffice - filters', () => {
 
 				const html = `<p ${ level1 }>Foo</p>`;
 				const view = htmlDataProcessor.toView( html );
-				const isMultiLevelListPluginLoaded = false;
+				const hasMultiLevelListPluginLoaded = false;
 
-				transformListItemLikeElementsIntoLists( view, styles, isMultiLevelListPluginLoaded );
+				transformListItemLikeElementsIntoLists( view, styles, hasMultiLevelListPluginLoaded );
 
 				expect( stringify( view ) ).to.equal(
 					`<ol><li ${ level1 }>Foo</li></ol>`

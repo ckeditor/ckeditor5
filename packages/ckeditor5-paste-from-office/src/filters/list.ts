@@ -32,7 +32,7 @@ import {
 export function transformListItemLikeElementsIntoLists(
 	documentFragment: ViewDocumentFragment,
 	stylesString: string,
-	isMultiLevelListPlugin: boolean
+	hasMultiLevelListPlugin: boolean
 ): void {
 	if ( !documentFragment.childCount ) {
 		return;
@@ -62,12 +62,12 @@ export function transformListItemLikeElementsIntoLists(
 			const listStyle = detectListStyle( itemLikeElement, stylesString );
 
 			if ( !currentList ) {
-				currentList = insertNewEmptyList( listStyle, itemLikeElement.element, writer, isMultiLevelListPlugin );
+				currentList = insertNewEmptyList( listStyle, itemLikeElement.element, writer, hasMultiLevelListPlugin );
 			} else if ( itemLikeElement.indent > currentIndentation ) {
 				const lastListItem = currentList.getChild( currentList.childCount - 1 ) as ViewElement;
 				const lastListItemChild = lastListItem!.getChild( lastListItem.childCount - 1 ) as ViewElement;
 
-				currentList = insertNewEmptyList( listStyle, lastListItemChild, writer, isMultiLevelListPlugin );
+				currentList = insertNewEmptyList( listStyle, lastListItemChild, writer, hasMultiLevelListPlugin );
 				currentIndentation += 1;
 			} else if ( itemLikeElement.indent < currentIndentation ) {
 				const differentIndentation = currentIndentation - itemLikeElement.indent;
@@ -329,7 +329,7 @@ function insertNewEmptyList(
 	listStyle: ReturnType<typeof detectListStyle>,
 	element: ViewElement,
 	writer: UpcastWriter,
-	isMultiLevelListPlugin: boolean
+	hasMultiLevelListPlugin: boolean
 ) {
 	const parent = element.parent!;
 	const list = writer.createElement( listStyle.type );
@@ -347,7 +347,7 @@ function insertNewEmptyList(
 		writer.setAttribute( 'start', listStyle.startIndex, list );
 	}
 
-	if ( listStyle.isLegalStyleList && isMultiLevelListPlugin ) {
+	if ( listStyle.isLegalStyleList && hasMultiLevelListPlugin ) {
 		writer.addClass( 'legal-list', list );
 	}
 
