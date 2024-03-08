@@ -180,10 +180,10 @@ export default class ClipboardMarkersUtils extends Plugin {
 
 	/**
 	 * Paste fragment with markers to document.
-	 * If `regenerateMarkerIdsOnPaste` is `true` in marker config is true then associated markers ids
+	 * If `regenerateMarkerIdsOnPaste` is `true` in marker config then associated markers ids
 	 * are regenerated before pasting to avoid markers duplications in content.
 	 *
-	 * @param fragment Fragment that should contain already processed by pipeline markers.
+	 * @param fragment Document fragment that should contain already processed by pipeline markers.
 	 * @internal
 	 */
 	public _pasteFragmentWithMarkers( fragment: DocumentFragment ): Range {
