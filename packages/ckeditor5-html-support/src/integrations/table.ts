@@ -131,8 +131,8 @@ function createHeadingRowsPostFixer( model: Model, tableUtils: TableUtils ): Mod
 			}
 
 			if ( hasTBodyAttributes ) {
-				const headingRows = table.getAttribute( 'headingRows' ) || 0;
-				const footerRows = table.getAttribute( 'footerRows' ) || 0;
+				const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
+				const footerRows = table.getAttribute( 'footerRows' ) as number || 0;
 				if ( headingRows + footerRows == tableUtils.getRows( table ) ) {
 					writer.removeAttribute( 'htmlTbodyAttributes', table );
 					wasFixed = true;

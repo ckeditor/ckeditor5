@@ -211,7 +211,7 @@ function getVerticalCell( tableCell: Element, direction: ArrowKeyCodeDirection, 
 
 	const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) as string || '1' );
 	const headingRows = table.getAttribute( 'headingRows' ) || 0;
-	const footerRows = table.getAttribute( 'footerRows' ) || 0;
+	const footerRows = table.getAttribute( 'footerRows' ) as number || 0;
 	const footerIndex = tableUtils.getRows( table ) - footerRows;
 
 	const isMergeDownWithBodyCell = direction == 'down' && ( rowIndex + rowspan ) === headingRows;
