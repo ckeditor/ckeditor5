@@ -415,6 +415,18 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
  */
 export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> = [
 	{
+		menuId: 'file',
+		label: 'File',
+		groups: [
+			{
+				groupId: 'export',
+				items: [
+					'menuBar:exportPdf'
+				]
+			}
+		]
+	},
+	{
 		menuId: 'edit',
 		label: 'Edit',
 		groups: [
