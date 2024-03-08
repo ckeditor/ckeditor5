@@ -212,7 +212,7 @@ describe( 'TableEditing', () => {
 					'<figure class="table">' +
 						'<table>' +
 							'<tfoot>' +
-								'<tr><th>foo</th></tr>' +
+								'<tr><td>foo</td></tr>' +
 							'</tfoot>' +
 						'</table>' +
 					'</figure>'

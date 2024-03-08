@@ -1311,7 +1311,7 @@ describe( 'HtmlComment integration', () => {
 						'<tfoot>' +
 							'<tr>' +
 								'<!-- c14 -->' +
-								'<th>table cell</th>' +
+								'<td>table cell</td>' +
 								'<!-- c15 -->' +
 							'</tr>' +
 						'</tfoot>' +

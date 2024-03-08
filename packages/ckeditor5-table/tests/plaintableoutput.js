@@ -101,8 +101,8 @@ describe( 'PlainTableOutput', () => {
 							'<tr><td>1</td><td>2</td></tr>' +
 						'</tbody>' +
 						'<tfoot>' +
-							'<tr><th>3</th><th>4</th></tr>' +
-							'<tr><th>5</th><th>6</th></tr>' +
+							'<tr><td>3</td><td>4</td></tr>' +
+							'<tr><td>5</td><td>6</td></tr>' +
 						'</tfoot>' +
 					'</table>'
 				);
@@ -160,7 +160,7 @@ describe( 'PlainTableOutput', () => {
 							'<tr><th>3</th><td>4</td></tr>' +
 						'</tbody>' +
 						'<tfoot>' +
-							'<tr><th>5</th><th>6</th></tr>' +
+							'<tr><th>5</th><td>6</td></tr>' +
 						'</tfoot>' +
 					'</table>'
 				);
@@ -191,8 +191,8 @@ describe( 'PlainTableOutput', () => {
 				expect( editor.getData() ).to.equal(
 					'<table>' +
 						'<tfoot>' +
-							'<tr><th>1</th><th>2</th></tr>' +
-							'<tr><th>3</th><th>4</th></tr>' +
+							'<tr><td>1</td><td>2</td></tr>' +
+							'<tr><td>3</td><td>4</td></tr>' +
 						'</tfoot>' +
 					'</table>'
 				);

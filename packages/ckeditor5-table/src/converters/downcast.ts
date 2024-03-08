@@ -115,13 +115,13 @@ export function downcastRow(): ElementCreatorFunction {
 /**
  * Model table cell element to view `<td>` or `<th>` element conversion helper.
  *
- * This conversion helper will create proper `<th>` elements for table cells that are in the heading section (heading row or column,
- * or footer row) and `<td>` otherwise.
+ * This conversion helper will create proper `<th>` elements for table cells that are in the heading section (heading row or column)
+ * and `<td>` otherwise.
  *
  * @param options.asWidget If set to `true`, the downcast conversion will produce a widget.
  * @returns Element creator.
  */
-export function downcastCell( tableUtils: TableUtils, options: { asWidget?: boolean } = {} ): ElementCreatorFunction {
+export function downcastCell( options: { asWidget?: boolean } = {} ): ElementCreatorFunction {
 	return ( tableCell, { writer } ) => {
 		const tableRow = tableCell.parent as Element;
 		const table = tableRow.parent as Element;
@@ -130,15 +130,13 @@ export function downcastCell( tableUtils: TableUtils, options: { asWidget?: bool
 		const tableWalker = new TableWalker( table, { row: rowIndex } );
 		const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
 		const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
-		const footerRows = table.getAttribute( 'footerRows' ) as number || 0;
-		const footerIndex = tableUtils.getRows( table ) - footerRows;
 
 		let result: ViewElement | null = null;
 
 		// We need to iterate over a table in order to get proper row & column values from a walker.
 		for ( const tableSlot of tableWalker ) {
 			if ( tableSlot.cell == tableCell ) {
-				const isHeading = tableSlot.row < headingRows || tableSlot.column < headingColumns || tableSlot.row >= footerIndex;
+				const isHeading = tableSlot.row < headingRows || tableSlot.column < headingColumns;
 				const cellElementName = isHeading ? 'th' : 'td';
 
 				result = options.asWidget ?

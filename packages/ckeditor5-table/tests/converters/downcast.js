@@ -182,9 +182,9 @@ describe( 'downcast converters', () => {
 							'</tbody>' +
 							'<tfoot>' +
 								'<tr>' +
-									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">10</span>' +
-									'</th>' +
+									'</td>' +
 								'</tr>' +
 							'</tfoot>' +
 						'</table>' +
@@ -204,6 +204,79 @@ describe( 'downcast converters', () => {
 				expect( viewTableCell1After ).to.not.equal( viewTableCell1Before );
 				expect( viewTableRow0After ).to.equal( viewTableRow0Before );
 				expect( viewTableCell0After ).to.equal( viewTableCell0Before );
+			} );
+
+			it( 'should reconvert table on changing from headingRows to footerRows', () => {
+				setModelData( model, modelTable( [
+					[ '00' ],
+					[ '10' ]
+				], { headingRows: 2 } ) );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<thead>' +
+								'<tr>' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
+									'</th>' +
+								'</tr>' +
+								'<tr>' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
+										'<span class="ck-table-bogus-paragraph">10</span>' +
+									'</th>' +
+								'</tr>' +
+							'</thead>' +
+						'</table>' +
+					'</figure>'
+				);
+
+				const viewFigureBefore = viewRoot.getChild( 0 );
+				const viewTableBefore = viewFigureBefore.getChild( 1 );
+				const viewTableRow0Before = viewTableBefore.getChild( 0 ).getChild( 0 );
+				const viewTableRow1Before = viewTableBefore.getChild( 0 ).getChild( 1 );
+				const viewTableCell0Before = viewTableRow0Before.getChild( 0 );
+				const viewTableCell1Before = viewTableRow1Before.getChild( 0 );
+
+				model.change( writer => {
+					writer.setAttribute( 'footerRows', 2, root.getChild( 0 ) );
+					writer.removeAttribute( 'headingRows', root.getChild( 0 ) );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tfoot>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
+									'</td>' +
+								'</tr>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
+										'<span class="ck-table-bogus-paragraph">10</span>' +
+									'</td>' +
+								'</tr>' +
+							'</tfoot>' +
+						'</table>' +
+					'</figure>'
+				);
+
+				const viewFigureAfter = viewRoot.getChild( 0 );
+				const viewTableAfter = viewFigureAfter.getChild( 1 );
+				const viewTableRow0After = viewTableAfter.getChild( 0 ).getChild( 0 );
+				const viewTableRow1After = viewTableAfter.getChild( 0 ).getChild( 1 );
+				const viewTableCell0After = viewTableRow0After.getChild( 0 );
+				const viewTableCell1After = viewTableRow1After.getChild( 1 );
+
+				expect( viewFigureAfter ).to.not.equal( viewFigureBefore );
+				expect( viewTableAfter ).to.not.equal( viewTableBefore );
+				expect( viewTableRow1After ).to.not.equal( viewTableRow1Before );
+				expect( viewTableCell1After ).to.not.equal( viewTableCell1Before );
+				expect( viewTableRow0After ).to.not.equal( viewTableRow0Before );
+				expect( viewTableCell0After ).to.not.equal( viewTableCell0Before );
 			} );
 		} );
 
@@ -225,7 +298,7 @@ describe( 'downcast converters', () => {
 								'<tr><td>10</td></tr>' +
 							'</tbody>' +
 							'<tfoot>' +
-								'<tr><th>20</th></tr>' +
+								'<tr><td>20</td></tr>' +
 							'</tfoot>' +
 						'</table>' +
 					'</figure>'
@@ -265,7 +338,7 @@ describe( 'downcast converters', () => {
 								'<tr><td>00</td></tr>' +
 							'</tbody>' +
 							'<tfoot>' +
-								'<tr><th>10</th></tr>' +
+								'<tr><td>10</td></tr>' +
 							'</tfoot>' +
 						'</table>' +
 					'</figure>'
@@ -300,8 +373,8 @@ describe( 'downcast converters', () => {
 					'<figure class="table">' +
 						'<table>' +
 							'<tfoot>' +
-								'<tr><th>00</th></tr>' +
-								'<tr><th>10</th></tr>' +
+								'<tr><td>00</td></tr>' +
+								'<tr><td>10</td></tr>' +
 							'</tfoot>' +
 						'</table>' +
 					'</figure>'
@@ -321,7 +394,7 @@ describe( 'downcast converters', () => {
 								'<tr><th>00</th></tr>' +
 							'</thead>' +
 							'<tfoot>' +
-								'<tr><th>10</th></tr>' +
+								'<tr><td>10</td></tr>' +
 							'</tfoot>' +
 						'</table>' +
 					'</figure>'
@@ -361,7 +434,7 @@ describe( 'downcast converters', () => {
 								'<tr><th>00</th><th>01</th><th>02</th><td>03</td></tr>' +
 							'</tbody>' +
 							'<tfoot>' +
-								'<tr><th>10</th><th>11</th><th>12</th><th>13</th></tr>' +
+								'<tr><th>10</th><th>11</th><th>12</th><td>13</td></tr>' +
 							'</tfoot>' +
 						'</table>' +
 					'</figure>'
@@ -1192,12 +1265,12 @@ describe( 'downcast converters', () => {
 						'<table>' +
 							'<tfoot>' +
 								'<tr>' +
-									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">10</span>' +
-									'</th>' +
-									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
+									'</td>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">11</span>' +
-									'</th>' +
+									'</td>' +
 								'</tr>' +
 							'</tfoot>' +
 						'</table>' +
@@ -1260,12 +1333,12 @@ describe( 'downcast converters', () => {
 						'<table>' +
 							'<tfoot>' +
 								'<tr>' +
-									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">00</span>' +
-									'</th>' +
-									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
+									'</td>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">01</span>' +
-									'</th>' +
+									'</td>' +
 								'</tr>' +
 							'</tfoot>' +
 						'</table>' +
@@ -1495,12 +1568,12 @@ describe( 'downcast converters', () => {
 						'<table>' +
 							'<tfoot>' +
 								'<tr>' +
-									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">10</span>' +
-									'</th>' +
-									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
+									'</td>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
 										'<span class="ck-table-bogus-paragraph">11</span>' +
-									'</th>' +
+									'</td>' +
 								'</tr>' +
 							'</tfoot>' +
 						'</table>' +

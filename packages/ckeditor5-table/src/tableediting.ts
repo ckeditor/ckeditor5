@@ -145,11 +145,11 @@ export default class TableEditing extends Plugin {
 
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'tableCell',
-			view: downcastCell( tableUtils, { asWidget: true } )
+			view: downcastCell( { asWidget: true } )
 		} );
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'tableCell',
-			view: downcastCell( tableUtils )
+			view: downcastCell()
 		} );
 
 		// Duplicates code - needed to properly refresh paragraph inside a table cell.

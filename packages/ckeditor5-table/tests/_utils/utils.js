@@ -173,7 +173,7 @@ export function viewTable( tableData, attributes = {} ) {
 		} ) }</tbody>` : '';
 
 	const tfoot = footerRows > 0 ? `<tfoot>${ makeRows( tableData.slice( footerIndex ), {
-		cellElement: 'th',
+		cellElement: 'td',
 		rowElement: 'tr',
 		headingElement: 'th',
 		wrappingElement: asWidget ? 'span' : 'p',

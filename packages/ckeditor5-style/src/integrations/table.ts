@@ -122,9 +122,7 @@ export default class TableStyleSupport extends Plugin {
 
 			const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
 			const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
-			const footerRows = table.getAttribute( 'footerRows' ) as number || 0;
-			const footerIndex = this._tableUtils.getRows( table ) - footerRows;
-			const isHeadingCell = location.row < headingRows || location.column < headingColumns || location.row >= footerIndex;
+			const isHeadingCell = location.row < headingRows || location.column < headingColumns;
 
 			if ( definition.element == 'th' ) {
 				return isHeadingCell;

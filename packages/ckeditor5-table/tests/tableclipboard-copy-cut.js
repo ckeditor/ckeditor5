@@ -326,8 +326,8 @@ describe( 'table clipboard', () => {
 
 			assertClipboardContentOnMethod( 'copy', viewTable( [
 				[ { contents: '11', isHeading: true }, '12', '13' ],
-				[ '21', '22', '23' ],
-				[ '31', '32', '33' ]
+				[ { contents: '21', isHeading: true }, '22', '23' ],
+				[ { contents: '31', isHeading: true }, '32', '33' ]
 			], { footerRows: 2 } ) );
 		} );
 

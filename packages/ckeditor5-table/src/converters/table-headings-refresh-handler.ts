@@ -23,7 +23,7 @@ import type TableUtils from '../tableutils.js';
  * Table heading rows and heading columns are represented in the model by a `headingRows` and `headingColumns` attributes.
  * Table footer rows are represented in the model by a `footerRows` attribute.
  *
- * When table headings or footer attribute changes, all the cells/rows are marked to re-render to change between `<td>` and `<th>`.
+ * When table headings attribute changes, all the cells/rows are marked to re-render to change between `<td>` and `<th>`.
  */
 export default function tableHeadingsRefreshHandler( model: Model, editing: EditingController, tableUtils: TableUtils ): void {
 	const differ = model.document.differ;
@@ -62,13 +62,18 @@ export default function tableHeadingsRefreshHandler( model: Model, editing: Edit
 		const tableWalker = new TableWalker( table );
 
 		for ( const tableSlot of tableWalker ) {
-			const isHeading = tableSlot.row < headingRows || tableSlot.column < headingColumns || tableSlot.row >= footerIndex;
+			const isHeading = tableSlot.row < headingRows || tableSlot.column < headingColumns;
 			const expectedElementName = isHeading ? 'th' : 'td';
 
 			const viewElement = editing.mapper.toViewElement( tableSlot.cell );
 
 			if ( viewElement && viewElement.is( 'element' ) && viewElement.name != expectedElementName ) {
 				editing.reconvertItem( ( isRowChange ? tableSlot.cell.parent : tableSlot.cell ) as Element );
+			}
+
+			const isFooterChange = change.type == 'attribute' && change.attributeKey == 'footerRows';
+			if ( isFooterChange && tableSlot.row >= footerIndex && viewElement && viewElement.is( 'element' ) ) {
+				editing.reconvertItem( tableSlot.cell.parent as Element );
 			}
 		}
 	}
