@@ -38,6 +38,8 @@ const cssFilesPathsList = glob.sync( '**/*.css', globOptions );
 
 cssFilesPathsList.forEach( filePath => {
 	const fileContent = fs.readFileSync( path.join( THEME_LARK_DIR_PATH, filePath ), 'utf-8' );
+
+	// Remove all comments (included commented code).
 	const fileContentWithoutComments = fileContent.replaceAll( regexForMatchComments, '' );
 
 	// Check if files other than `index.css` has `@import`.
@@ -56,11 +58,13 @@ cssFilesPathsList.forEach( filePath => {
 
 // Get content of `index.css` - main aggregator of `CSS`files.
 const indexCssContent = fs.readFileSync( path.join( THEME_LARK_DIR_PATH, 'index.css' ), 'utf-8' );
+
+// Remove all comments (included commented code).
 const cssContentWithoutComments = indexCssContent.replaceAll( regexForMatchComments, '' );
 const matchList = [ ...cssContentWithoutComments.matchAll( regexForIndexImports ) ];
 const matchSimplifiedList = matchList.map( item => item[ 0 ] );
 
-// Merge imported file paths gathered from `index.css` and from other `CSS`files.
+// Merge imported file paths gathered from `index.css` and from other `CSS` files.
 const importedFiles = [ ...matchSimplifiedList, ...importedSubFilesList ];
 const notImportedFiles = cssFilesPathsList.filter( x => !importedFiles.includes( x ) );
 
