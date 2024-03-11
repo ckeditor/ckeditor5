@@ -108,7 +108,7 @@ export default class TableClipboard extends Plugin {
 		data.preventDefault();
 		evt.stop();
 
-		this.editor.model.enqueueChange( { isUndoable: false }, () => {
+		this.editor.model.enqueueChange( { isUndoable: evt.name === 'cut' }, () => {
 			const documentFragment = clipboardMarkersUtils._copySelectedFragmentWithMarkers(
 				evt.name,
 				this.editor.model.document.selection,

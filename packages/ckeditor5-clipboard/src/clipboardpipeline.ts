@@ -180,7 +180,7 @@ export default class ClipboardPipeline extends Plugin {
 	): void {
 		const clipboardMarkersUtils: ClipboardMarkersUtils = this.editor.plugins.get( 'ClipboardMarkersUtils' );
 
-		this.editor.model.enqueueChange( { isUndoable: false }, () => {
+		this.editor.model.enqueueChange( { isUndoable: method === 'cut' }, () => {
 			const documentFragment = clipboardMarkersUtils._copySelectedFragmentWithMarkers( method, selection );
 
 			this.fire<ClipboardOutputTransformationEvent>( 'outputTransformation', {
