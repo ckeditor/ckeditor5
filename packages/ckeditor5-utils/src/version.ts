@@ -14,7 +14,7 @@ const version = '41.3.0-alpha.0';
 export default version;
 
 // The second argument is not a month. It is `monthIndex` and starts from `0`.
-export const releaseDate = new Date( 2024, 2, 7 );
+export const releaseDate = new Date( 2024, 2, 11 );
 
 declare global {
 	// eslint-disable-next-line no-var
