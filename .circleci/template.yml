@@ -130,7 +130,7 @@ jobs:
           command: yarn run stylelint
       - run:
           when: always
-          name: Check if `theme-lark` imports in `index.css` are all present
+          name: Check if "theme-lark" imports in "index.css" file are all present
           command: yarn run check-theme-lark-imports
 
   cke5_coverage:

@@ -72,8 +72,8 @@ const importedFiles = [ ...importsList, ...listOfImportsFoundInSubfolders ];
 const notImportedFiles = cssFilesPathsList.filter( x => !importedFiles.includes( x ) );
 
 if ( notImportedFiles.length ) {
-	console.log( chalk.red.bold( '\nSome CSS files are not imported in `index.css` in `theme-lark` package.' ) );
+	console.log( chalk.red.bold( '\nSome CSS files are not imported in "index.css" file in "theme-lark" package.' ) );
 
-	notImportedFiles.forEach( file => console.log( chalk.red( ' - ' + file ) ) );
+	notImportedFiles.forEach( file => console.log( chalk.red( ` - "${ file }"` ) ) );
 	process.exitCode = 1;
 }
