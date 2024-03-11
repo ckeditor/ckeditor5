@@ -3,7 +3,18 @@ Changelog
 
 ## [41.3.0-alpha.1](https://github.com/ckeditor/ckeditor5/compare/v41.3.0-alpha.0...v41.3.0-alpha.1) (March 11, 2024)
 
-Internal changes only (updated dependencies, documentation, etc.).
+We are happy to announce the release of CKEditor&nbsp;5 v41.3.0-alpha.1.
+
+This release is intended to address various styling issues we have found with the new installation methods.
+
+For instructions on how to use the new installation methods, see the [v41.3.0-alpha.0 Release Notes](https://github.com/ckeditor/ckeditor5/releases/tag/v41.3.0-alpha.0).
+
+For more general information about the new installation methods, see the [announcement post](https://github.com/ckeditor/ckeditor5/issues/15502).
+
+### Bug fixes
+
+* **[theme-lark](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark)**: Fix displaying icons in the editor's toolbar.
+* **[theme-lark](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark)**: Fix styling of the dialog component.
 
 ### Released packages
 
