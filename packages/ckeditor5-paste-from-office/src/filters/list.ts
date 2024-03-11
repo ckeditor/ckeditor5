@@ -76,6 +76,16 @@ export function transformListItemLikeElementsIntoLists(
 
 				const listElement = createNewEmptyList( listStyle, writer );
 
+				if ( itemLikeElement.marginLeft ) {
+					let marginLeft = itemLikeElement.marginLeft;
+
+					if ( indent > 0 && stack[ indent - 1 ].marginLeft ) {
+						marginLeft = toPx( parseFloat( marginLeft ) - parseFloat( stack[ indent - 1 ].marginLeft! ) );
+					}
+
+					writer.setStyle( 'padding-left', marginLeft, listElement );
+				}
+
 				if ( stack.length == 0 ) {
 					const parent = itemLikeElement.element.parent!;
 					const index = parent.getChildIndex( itemLikeElement.element ) + 1;
@@ -172,7 +182,7 @@ function findAllItemLikeElements(
 		// https://github.com/ckeditor/ckeditor5/issues/15964
 		if ( item.is( 'element' ) && item.name.match( /^(p|h\d+|li|div)$/ ) ) {
 			// Try to rely on margin-left style to find paragraphs visually aligned with previously encountered list item.
-			let marginLeft = item.getStyle( 'margin-left' );
+			let marginLeft = getMarginLeftNormalized( item );
 
 			// Ignore margin-left 0 style if there is no MsoList... class.
 			if (
@@ -479,6 +489,49 @@ function removeBulletElement( element: ViewElement, writer: UpcastWriter ) {
 			writer.remove( value.item as ViewElement );
 		}
 	}
+}
+
+/**
+ * TODO
+ */
+function getMarginLeftNormalized( element: ViewElement ): string | undefined {
+	const value = element.getStyle( 'margin-left' );
+
+	if ( value === undefined || value.endsWith( 'px' ) ) {
+		return value;
+	}
+
+	const numericValue = parseFloat( value );
+
+	if ( value.endsWith( 'pt' ) ) {
+		// 1pt = 1in / 72
+		return toPx( numericValue * 96 / 72 );
+	}
+	else if ( value.endsWith( 'cm' ) ) {
+		// 1cm = 96px / 2.54
+		return toPx( numericValue * 2.54 / 96 );
+	}
+	else if ( value.endsWith( 'mm' ) ) {
+		// 1mm = 1cm / 10
+		return toPx( numericValue / 10 * 2.54 / 96 );
+	}
+	else if ( value.endsWith( 'in' ) ) {
+		// 1in = 2.54cm = 96px
+		return toPx( numericValue * 96 );
+	}
+	else if ( value.endsWith( 'pc' ) ) {
+		// 1pc = 12pt = 1in / 6.
+		return toPx( numericValue / 12 * 96 / 72 );
+	}
+
+	return value;
+}
+
+/**
+ * TODO
+ */
+function toPx( value: number ): string {
+	return value.toFixed( 2 ).replace( /\.?0+$/, '' ) + 'px';
 }
 
 interface ListItemData {
