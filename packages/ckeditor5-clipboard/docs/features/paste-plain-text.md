@@ -31,23 +31,15 @@ Pasting plain text with a double line break will turn the break into a paragraph
 
 ## Installation
 
-To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-clipboard`](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard) package:
-
-```
-npm install --save @ckeditor/ckeditor5-clipboard
-```
-
-Then add the {@link module:clipboard/clipboard~Clipboard `Clipboard`} plugin to your plugin list:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
+import { Clipboard } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Clipboard, Bold, /* ... */ ]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Clipboard, Bold, /* ... */ ]
+} )
+	.then( /* ... */ );
 ```
 
 The {@link module:clipboard/pasteplaintext~PastePlainText `PastePlainText`} plugin will activate along with the clipboard plugin.

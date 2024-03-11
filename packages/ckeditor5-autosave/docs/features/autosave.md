@@ -31,33 +31,26 @@ How to understand this demo:
 
 ## Installation
 
-To add the autosave feature to your editor install the [`@ckeditor/ckeditor5-autosave`](https://www.npmjs.com/package/@ckeditor/ckeditor5-autosave) package:
-
-```
-npm install --save @ckeditor/ckeditor5-autosave
-```
-
-And add the plugin to your plugin list.
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list.
 
 Assuming that you have implemented some form of the `saveData()` function that sends the data to your server and returns a promise which is resolved once the data is successfully saved, configuring the {@link module:autosave/autosave~Autosave} feature is simple:
 
 ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [
-			Autosave,
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [
+		Autosave,
 
-			// ... other plugins.
-		],
+		// ... other plugins.
+	],
 
-		autosave: {
-			save( editor ) {
-				return saveData( editor.getData() );
-			}
-		},
+	autosave: {
+		save( editor ) {
+			return saveData( editor.getData() );
+		}
+	},
 
-		// ... other configuration options.
-	} );
+	// ... other configuration options.
+} );
 ```
 
 The autosave feature listens to the {@link module:engine/model/document~Document#event:change:data `editor.model.document#change:data`} event, throttles it, and executes the {@link module:autosave/autosave~AutosaveConfig#save `config.autosave.save()`} function.

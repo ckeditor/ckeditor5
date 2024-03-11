@@ -40,24 +40,16 @@ ClassicEditor
 
 ## Installation
 
-To add this feature to your editor, install the [`@ckeditor/ckeditor5-find-and-replace`](https://www.npmjs.com/package/@ckeditor/ckeditor5-find-and-replace) package:
-
-```
-npm install --save @ckeditor/ckeditor5-find-and-replace
-```
-
-Then add the `FindAndReplace` plugin to your plugin list:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { FindAndReplace } from '@ckeditor/ckeditor5-find-and-replace';
+import { FindAndReplace } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ FindAndReplace, /* ... */ ],
-		toolbar: [ 'findAndReplace', /* ... */ ],
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ FindAndReplace, /* ... */ ],
+	toolbar: [ 'findAndReplace', /* ... */ ],
+} )
+	.then( /* ... */ );
 ```
 
 <info-box info>

@@ -122,24 +122,16 @@ To speed up the editing, when typing in a code block, the indentation of the cur
 
 ## Installation
 
-To add the code blocks feature to your rich-text editor, install the [`@ckeditor/ckeditor5-code-block`](https://www.npmjs.com/package/@ckeditor/ckeditor5-code-block) package:
-
-```
-npm install --save @ckeditor/ckeditor5-code-block
-```
-
-Then add it to your plugin list and the toolbar configuration:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
+import { CodeBlock } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ CodeBlock, /* ... */ ],
-		toolbar: [ 'codeBlock', /* ... */ ]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ CodeBlock, /* ... */ ],
+	toolbar: [ 'codeBlock', /* ... */ ]
+} )
+	.then( /* ... */ );
 ```
 
 <info-box info>

@@ -92,24 +92,16 @@ ClassicEditor
 
 ## Installation
 
-To add this feature to your editor, install the [`@ckeditor/ckeditor5-alignment`](https://www.npmjs.com/package/@ckeditor/ckeditor5-alignment) package:
-
-```bash
-npm install --save @ckeditor/ckeditor5-alignment
-```
-
-And add it to your plugin list and toolbar configuration:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { Alignment } from '@ckeditor/ckeditor5-alignment';
+import { Alignment } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Alignment, /* ... */ ],
-		toolbar: [ 'alignment', /* ... */ ]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Alignment, /* ... */ ],
+	toolbar: [ 'alignment', /* ... */ ]
+} )
+	.then( /* ... */ );
 ```
 
 <info-box info>
