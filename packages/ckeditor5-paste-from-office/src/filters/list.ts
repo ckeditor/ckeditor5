@@ -76,10 +76,11 @@ export function transformListItemLikeElementsIntoLists(
 
 				const listElement = createNewEmptyList( listStyle, writer );
 
-				if ( itemLikeElement.marginLeft ) {
+				// Apply list padding only if we have margins for both, an item and the parent item.
+				if ( isPx( itemLikeElement.marginLeft ) && ( indent == 0 || isPx( stack[ indent - 1 ].marginLeft ) ) ) {
 					let marginLeft = itemLikeElement.marginLeft;
 
-					if ( indent > 0 && stack[ indent - 1 ].marginLeft ) {
+					if ( indent > 0 ) {
 						marginLeft = toPx( parseFloat( marginLeft ) - parseFloat( stack[ indent - 1 ].marginLeft! ) );
 					}
 
@@ -124,18 +125,17 @@ export function transformListItemLikeElementsIntoLists(
 
 			removeBulletElement( itemLikeElement.element, writer );
 			writer.removeStyle( 'text-indent', itemLikeElement.element ); // #12361
-			writer.removeStyle( 'margin-left', itemLikeElement.element ); // TODO maybe preserve difference (list item vs block indent)
+			writer.removeStyle( 'margin-left', itemLikeElement.element );
 		}
 		else {
 			// Other blocks in a list item.
-			// TODO: find first of equal margin or bigger
 			const stackItem = stack.find( stackItem => stackItem.marginLeft == itemLikeElement.marginLeft );
 
 			if ( stackItem ) {
 				const listItems = stackItem.listItemElements;
 
 				writer.appendChild( itemLikeElement.element, listItems[ listItems.length - 1 ] );
-				writer.removeStyle( 'margin-left', itemLikeElement.element ); // TODO substract stack-item margin
+				writer.removeStyle( 'margin-left', itemLikeElement.element );
 			} else {
 				stack.length = 0;
 			}
@@ -194,7 +194,6 @@ function findAllItemLikeElements(
 			}
 
 			// List item or a following list item block.
-			// TODO make sure that foundMargins has unified units
 			if ( item.hasStyle( 'mso-list' ) || marginLeft !== undefined && foundMargins.has( marginLeft ) ) {
 				const itemData = getListItemData( item );
 
@@ -532,6 +531,13 @@ function getMarginLeftNormalized( element: ViewElement ): string | undefined {
  */
 function toPx( value: number ): string {
 	return value.toFixed( 2 ).replace( /\.?0+$/, '' ) + 'px';
+}
+
+/**
+ * TODO
+ */
+function isPx( value?: string ): value is string {
+	return value !== undefined && value.endsWith( 'px' );
 }
 
 interface ListItemData {
