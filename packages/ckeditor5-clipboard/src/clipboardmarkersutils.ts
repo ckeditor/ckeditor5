@@ -257,6 +257,15 @@ export default class ClipboardMarkersUtils extends Plugin {
 	}
 
 	/**
+	 * Checks if marker has any clipboard copy behavior configuration.
+	 *
+	 * @param markerName Name of checked marker.
+	 */
+	public _hasMarkerConfiguration( markerName: string ): boolean {
+		return !!this._getMarkerClipboardConfig( markerName );
+	}
+
+	/**
 	 * Returns marker's configuration flags passed during registration.
 	 *
 	 * @param markerName Name of marker that should be returned.
@@ -358,6 +367,7 @@ export default class ClipboardMarkersUtils extends Plugin {
 	/**
 	 * Picks all markers from markers map that can be pasted.
 	 * If `duplicateOnPaste` is `true`, it regenerates their IDs to ensure uniqueness.
+	 * If marker is not registered, it will be kept in the array anyway.
 	 *
 	 * @param markers Object that maps marker name to corresponding range.
 	 * @param action Type of clipboard action. If null then checks only if marker is registered as copyable.
@@ -369,9 +379,17 @@ export default class ClipboardMarkersUtils extends Plugin {
 		const { model } = this.editor;
 		const entries = markers instanceof Map ? Array.from( markers.entries() ) : Object.entries( markers );
 
-		return entries
-			.filter( ( [ markerName ] ) => this._isMarkerCopyable( markerName, action ) )
-			.map( ( [ markerName, range ] ): CopyableMarker => {
+		return entries.flatMap( ( [ markerName, range ] ): Array<CopyableMarker> => {
+			if ( !this._hasMarkerConfiguration( markerName ) ) {
+				return [
+					{
+						name: markerName,
+						range
+					}
+				];
+			}
+
+			if ( this._isMarkerCopyable( markerName, action ) ) {
 				const copyMarkerConfig = this._getMarkerClipboardConfig( markerName )!;
 				const isInGraveyard = model.markers.has( markerName ) &&
 					model.markers.get( markerName )!.getRange().root.rootName === '$graveyard';
@@ -380,11 +398,16 @@ export default class ClipboardMarkersUtils extends Plugin {
 					markerName = this._getUniqueMarkerName( markerName );
 				}
 
-				return {
-					name: markerName,
-					range
-				};
-			} );
+				return [
+					{
+						name: markerName,
+						range
+					}
+				];
+			}
+
+			return [];
+		} );
 	}
 
 	/**

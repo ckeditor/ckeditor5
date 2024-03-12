@@ -758,6 +758,18 @@ describe( 'Clipboard Markers Utils', () => {
 	} );
 
 	describe( '_getPasteMarkersFromRangeMap', () => {
+		it( 'keeps unknown markers', () => {
+			const copyMarkers = createCopyableMarkersMap( new DocumentFragment(), {
+				'unknown-marker': { start: [ 0, 0 ], end: [ 0, 6 ] }
+			} );
+
+			const result = clipboardMarkersUtils._getPasteMarkersFromRangeMap( copyMarkers );
+
+			expect( result ).be.deep.equal( [
+				{ name: 'unknown-marker', range: copyMarkers.get( 'unknown-marker' ) }
+			] );
+		} );
+
 		it( 'properly filters markers Map instance', () => {
 			clipboardMarkersUtils._registerMarkerToCopy( 'comment', { allowedActions: [ 'cut' ] } );
 
