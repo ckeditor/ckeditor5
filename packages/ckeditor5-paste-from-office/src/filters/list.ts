@@ -232,10 +232,8 @@ function isNewListNeeded( currentItem: ListLikeElement ) {
 	const previousSibling = currentItem.element.previousSibling;
 
 	if ( !previousSibling ) {
-		const parent = currentItem.element.parent!;
-
 		// If it's a li inside ul or ol like in here: https://github.com/ckeditor/ckeditor5/issues/15964.
-		return parent.name != 'ul' && parent.name != 'ol';
+		return !isList( currentItem.element.parent as ViewElement );
 	}
 
 	// Even with the same id the list does not have to be continuous (#43).
