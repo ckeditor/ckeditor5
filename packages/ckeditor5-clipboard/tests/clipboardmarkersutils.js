@@ -592,7 +592,12 @@ describe( 'Clipboard Markers Utils', () => {
 	} );
 
 	describe( '_removeFakeMarkersInsideElement', () => {
-		it( 'should handle duplicated fake-markers in element', () => {
+		it( 'should duplicate fake-markers in element if `duplicateOnPaste` = `true`', () => {
+			clipboardMarkersUtils._registerMarkerToCopy( 'comment', {
+				allowedActions: 'all',
+				duplicateOnPaste: true
+			} );
+
 			model.change( writer => {
 				const fragment = new DocumentFragment( [
 					...createFakeMarkerElements( writer, 'comment:123', [
@@ -607,6 +612,29 @@ describe( 'Clipboard Markers Utils', () => {
 				const markers = clipboardMarkersUtils._removeFakeMarkersInsideElement( writer, fragment );
 
 				expect( Object.keys( markers ) ).deep.equal( [ 'comment:123', 'comment:123:pasted' ] );
+			} );
+		} );
+
+		it( 'should not duplicate fake-markers in element if `duplicateOnPaste` = `true`', () => {
+			clipboardMarkersUtils._registerMarkerToCopy( 'comment', {
+				allowedActions: 'all',
+				duplicateOnPaste: false
+			} );
+
+			model.change( writer => {
+				const fragment = new DocumentFragment( [
+					...createFakeMarkerElements( writer, 'comment:123', [
+						writer.createElement( 'paragraph' )
+					] ),
+					writer.createElement( 'paragraph' ),
+					...createFakeMarkerElements( writer, 'comment:123', [
+						writer.createElement( 'paragraph' )
+					] )
+				] );
+
+				const markers = clipboardMarkersUtils._removeFakeMarkersInsideElement( writer, fragment );
+
+				expect( Object.keys( markers ) ).deep.equal( [ 'comment:123' ] );
 			} );
 		} );
 
