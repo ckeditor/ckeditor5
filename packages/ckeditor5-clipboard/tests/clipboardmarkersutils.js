@@ -736,7 +736,7 @@ describe( 'Clipboard Markers Utils', () => {
 	} );
 
 	describe( '_getCopyableMarkersFromSelection', () => {
-		it( 'force regenerate marker id in `dragstart action', () => {
+		it( 'force regenerate marker id in `dragstart` action', () => {
 			clipboardMarkersUtils._registerMarkerToCopy( 'comment', {
 				allowedActions: [ 'dragstart' ],
 				copyPartiallySelected: true
