@@ -163,8 +163,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 To configure the toolbar buttons for styling text as headings and paragraphs, you need to import the following into your plugin list and configuration:
 
 ```js
-import { ClassicEditor, HeadingButtonsUI } from 'ckeditor5';
-import { ParagraphButtonUI } from 'ckeditor5';
+import { ClassicEditor, HeadingButtonsUI, ParagraphButtonUI } from 'ckeditor5';
 ```
 
 <info-box info>
