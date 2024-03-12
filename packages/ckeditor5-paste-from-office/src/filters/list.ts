@@ -16,6 +16,12 @@ import {
 	type ViewText
 } from 'ckeditor5/src/engine.js';
 
+import {
+	convertCssLengthToPx,
+	isPx,
+	toPx
+} from './utils.js';
+
 /**
  * Transforms Word specific list-like elements to the semantic HTML lists.
  *
@@ -501,44 +507,7 @@ function getMarginLeftNormalized( element: ViewElement ): string | undefined {
 		return value;
 	}
 
-	const numericValue = parseFloat( value );
-
-	if ( value.endsWith( 'pt' ) ) {
-		// 1pt = 1in / 72
-		return toPx( numericValue * 96 / 72 );
-	}
-	else if ( value.endsWith( 'cm' ) ) {
-		// 1cm = 96px / 2.54
-		return toPx( numericValue * 2.54 / 96 );
-	}
-	else if ( value.endsWith( 'mm' ) ) {
-		// 1mm = 1cm / 10
-		return toPx( numericValue / 10 * 2.54 / 96 );
-	}
-	else if ( value.endsWith( 'in' ) ) {
-		// 1in = 2.54cm = 96px
-		return toPx( numericValue * 96 );
-	}
-	else if ( value.endsWith( 'pc' ) ) {
-		// 1pc = 12pt = 1in / 6.
-		return toPx( numericValue / 12 * 96 / 72 );
-	}
-
-	return value;
-}
-
-/**
- * TODO
- */
-function toPx( value: number ): string {
-	return value.toFixed( 2 ).replace( /\.?0+$/, '' ) + 'px';
-}
-
-/**
- * TODO
- */
-function isPx( value?: string ): value is string {
-	return value !== undefined && value.endsWith( 'px' );
+	return convertCssLengthToPx( value );
 }
 
 interface ListItemData {
