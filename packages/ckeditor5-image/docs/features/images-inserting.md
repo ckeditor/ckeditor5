@@ -34,6 +34,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ /* ... */ , Image, ImageInsert ],
 	toolbar: [ /* ... */ , 'insertImage' ]
 } )
+.then( /* ... */ );
 ```
 
 This will add a new **Insert image** dropdown {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Insert image} in the toolbar.

@@ -215,7 +215,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		}
 	}
 	// More of the editor's configuration.
-		// ...
+	// ...
 } )
 .then( /* ... */ );
 ```

@@ -346,9 +346,9 @@ ClassicEditor.create( document.querySelector( '#snippet-mention-customization' )
 		]
 	}
 } )
-	.then( editor => {
-		window.editor = editor;
-	} )
+.then( editor => {
+	window.editor = editor;
+} )
 	.catch( err => {
 		console.error( err.stack );
 	} );

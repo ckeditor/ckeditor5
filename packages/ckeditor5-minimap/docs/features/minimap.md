@@ -118,12 +118,12 @@ DecoupledEditor.create( document.querySelector( '#editor-content' ), {
 		container: document.querySelector( '.minimap-container' ),
 	}
 } )
-	.then( editor => {
-		const toolbarContainer = document.querySelector( '#toolbar-container' );
+.then( editor => {
+	const toolbarContainer = document.querySelector( '#toolbar-container' );
 
-		toolbarContainer.appendChild( editor.ui.view.toolbar.element );
-	} )
-	.catch( /* ... */ );
+	toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+} )
+.catch( /* ... */ );
 ```
 
 ## Installation

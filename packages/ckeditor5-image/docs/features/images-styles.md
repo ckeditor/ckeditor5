@@ -164,8 +164,7 @@ This set of buttons and styles is available by default in the document editor an
 ```js
 import { DecoupledEditor } from 'ckeditor5';
 
-DecoupledEditor..create( document.querySelector( '#editor' ) )
-.then( /* ... */ );
+DecoupledEditor..create( document.querySelector( '#editor' ) ).then( /* ... */ );
 ```
 
 <info-box warning>

@@ -43,14 +43,12 @@ You can configure resizing images by handles in two different ways in the CKEdit
 ```js
 import { ClassicEditor, Image, ImageResizeEditing, ImageResizeHandles } from '@ckeditor/ckeditor5-image';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Image, ImageResizeEditing, ImageResizeHandles, /* ... */ ],
-		// More of editor's configuration.
-		// ...
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Image, ImageResizeEditing, ImageResizeHandles, /* ... */ ],
+	// More of editor's configuration.
+	// ...
+} )
+.then( /* ... */ );
 ```
 
 Both ways enable resize handles by default.
