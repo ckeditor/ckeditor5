@@ -95,7 +95,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ Alignment, /* ... */ ],
 	toolbar: [ 'alignment', /* ... */ ]
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box info>
