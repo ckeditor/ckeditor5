@@ -66,7 +66,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		'heading', '|', 'bulletedList', 'numberedList', 'alignment', 'undo', 'redo'
 	]
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 ## Configuring the toolbar
