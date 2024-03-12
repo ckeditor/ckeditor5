@@ -43,9 +43,7 @@ Then, change your `ClassicEditor.create()` call to `watchdog.create()` as follow
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { ClassicEditor, EditorWatchdog } from '@ckeditor/ckeditor5-watchdog';
 
-import { ClassicEditor, Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
-import { ClassicEditor, Essentials } from '@ckeditor/ckeditor5-essentials';
-import { ClassicEditor, Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { ClassicEditor, Bold, EditorWatchdog, Essentials, Italic, Paragraph } from 'ckeditor5';
 
 // Create a watchdog for the given editor type.
 const watchdog = new EditorWatchdog( ClassicEditor );
