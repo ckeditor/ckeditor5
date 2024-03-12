@@ -237,7 +237,7 @@ import { ClassicEditor, WordCount } from 'ckeditor5';
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ WordCount, /* ... */ ],
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box info>
