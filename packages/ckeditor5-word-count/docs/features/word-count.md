@@ -35,9 +35,9 @@ You can use the code below to set up the WYSIWYG editor with the word and charac
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	// Configuration details.
 } )
-	.then( editor => {
-		const wordCountPlugin = editor.plugins.get( 'WordCount' );
-		const wordCountWrapper = document.getElementById( 'word-count' );
+.then( editor => {
+	const wordCountPlugin = editor.plugins.get( 'WordCount' );
+	const wordCountWrapper = document.getElementById( 'word-count' );
 
 		wordCountWrapper.appendChild( wordCountPlugin.wordCountContainer );
 	} )
