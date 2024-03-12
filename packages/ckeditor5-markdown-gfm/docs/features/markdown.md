@@ -52,39 +52,26 @@ When converting the output produced by this data processor, make sure to use a c
 
 ## Installation
 
-To enable this data processor in your editor, install the [`@ckeditor/ckeditor5-markdown-gfm`](https://www.npmjs.com/package/@ckeditor/ckeditor5-markdown-gfm) package:
-
-```
-npm install --save @ckeditor/ckeditor5-markdown-gfm
-```
-
-Then add the {@link module:markdown-gfm/markdown~Markdown} plugin to the editor configuration, which will change the default {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor} to the {@link module:markdown-gfm/gfmdataprocessor~GFMDataProcessor}:
+After {@link getting-started/quick-start installing the editor}, add the {@link module:markdown-gfm/markdown~Markdown} plugin to the editor configuration. It will change the default {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor} to the {@link module:markdown-gfm/gfmdataprocessor~GFMDataProcessor}:
 
 ```js
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-
-import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { ClassicEditor, Bold, Italic, Essentials, Markdown } from 'ckeditor5';
 // More imports.
 // ...
 
-import { Markdown } from '@ckeditor/ckeditor5-markdown-gfm';
-
-ClassicEditor
-	.create( document.querySelector( '#snippet-markdown' ), {
-		plugins: [
-			Markdown,
-			Essentials,
-			Bold,
-			Italic,
-			// More plugins.
-			// ...
-		],
-		// More of editor's configuration.
+ClassicEditor.create( document.querySelector( '#snippet-markdown' ), {
+	plugins: [
+		Markdown,
+		Essentials,
+		Bold,
+		Italic,
+		// More plugins.
 		// ...
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+	],
+	// More of editor's configuration.
+	// ...
+} )
+	.then( /* ... */ );
 
 ```
 

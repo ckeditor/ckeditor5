@@ -52,33 +52,31 @@ In the editor below, all **external** links get the `target="_blank"` and `rel="
 The following code runs this editor. Learn more about the [configuration](#configuration) of the feature.
 
 ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		toolbar: {
-			items: [
-				'link',
-				// More toolbar items.
-				// ...
-			],
-		},
-		link: {
-			// Automatically add target="_blank" and rel="noopener noreferrer" to all external links.
-			addTargetToExternalLinks: true,
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	toolbar: {
+		items: [
+			'link',
+			// More toolbar items.
+			// ...
+		],
+	},
+	link: {
+		// Automatically add target="_blank" and rel="noopener noreferrer" to all external links.
+		addTargetToExternalLinks: true,
 
-			// Let the users control the "download" attribute of each link.
-			decorators: [
-				{
-					mode: 'manual',
-					label: 'Downloadable',
-					attributes: {
-						download: 'download'
-					}
+		// Let the users control the "download" attribute of each link.
+		decorators: [
+			{
+				mode: 'manual',
+				label: 'Downloadable',
+				attributes: {
+					download: 'download'
 				}
-			]
-		}
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+			}
+		]
+	}
+} )
+	.then( /* ... */ );
 ```
 
 ### Configuration
@@ -96,64 +94,58 @@ Each decorator definition must have a unique name. For [manual decorators](#addi
 A common use case for (automatic) link decorators is adding the `target="_blank"` and `rel="noopener noreferrer"` attributes to all external links in the document. A dedicated {@link module:link/linkconfig~LinkConfig#addTargetToExternalLinks `config.link.addTargetToExternalLinks`} configuration exists for that purpose. When you set this option to `true`, all links starting with `http://`, `https://`, or `//` are "decorated" with `target` and `rel` attributes.
 
 ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		link: {
-			addTargetToExternalLinks: true
-		}
-		// More of the editor's configuration.
- 		// ...
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	link: {
+		addTargetToExternalLinks: true
+	}
+	// More of the editor's configuration.
+		// ...
+} )
+	.then( /* ... */ );
 ```
 
 Internally, this configuration corresponds to an [automatic decorator](#adding-attributes-to-links-based-on-predefined-rules-automatic-decorators) with the following {@link module:link/linkconfig~LinkDecoratorAutomaticDefinition definition}:
 
 ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		link: {
-			decorators: {
-				addTargetToExternalLinks: {
-					mode: 'automatic',
-					callback: url => /^(https?:)?\/\//.test( url ),
-					attributes: {
-						target: '_blank',
-						rel: 'noopener noreferrer'
-					}
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	link: {
+		decorators: {
+			addTargetToExternalLinks: {
+				mode: 'automatic',
+				callback: url => /^(https?:)?\/\//.test( url ),
+				attributes: {
+					target: '_blank',
+					rel: 'noopener noreferrer'
 				}
 			}
 		}
-		// More of the editor's configuration.
- 		// ...
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+	}
+	// More of the editor's configuration.
+		// ...
+} )
+	.then( /* ... */ );
 ```
 
 If you want to leave the decision whether a link should open in a new tab to the users, do not use the `config.link.addTargetToExternalLinks` configuration. Define a new [manual decorator](#adding-attributes-to-links-using-the-ui-manual-decorators) with the following definition instead:
 
 ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		link: {
-			decorators: {
-				openInNewTab: {
-					mode: 'manual',
-					label: 'Open in a new tab',
-					attributes: {
-						target: '_blank',
-						rel: 'noopener noreferrer'
-					}
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	link: {
+		decorators: {
+			openInNewTab: {
+				mode: 'manual',
+				label: 'Open in a new tab',
+				attributes: {
+					target: '_blank',
+					rel: 'noopener noreferrer'
 				}
 			}
 		}
-		// More of the editor's configuration.
- 		// ...
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+	}
+	// More of the editor's configuration.
+		// ...
+} )
+	.then( /* ... */ );
 ```
 
 #### Adding default link protocol to external links
@@ -165,16 +157,14 @@ After you enable the {@link module:link/linkconfig~LinkConfig#defaultProtocol `c
 See a basic configuration example:
 
 ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		link: {
-			defaultProtocol: 'http://'
-		}
-		// More of the editor's configuration.
- 		// ...
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	link: {
+		defaultProtocol: 'http://'
+	}
+	// More of the editor's configuration.
+		// ...
+} )
+	.then( /* ... */ );
 ```
 
 <info-box>
@@ -190,17 +180,15 @@ By default, a minimal set of protocols is allowed to be used in the links. Any U
 See a configuration example:
 
 ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		link: {
-			// You can use `s?` suffix like below to allow both `http` and `https` protocols at the same time.
-			allowedProtocols: [ 'https?', 'tel', 'sms', 'sftp', 'smb', 'slack' ]
-		}
-		// More of the editor's configuration.
- 		// ...
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	link: {
+		// You can use `s?` suffix like below to allow both `http` and `https` protocols at the same time.
+		allowedProtocols: [ 'https?', 'tel', 'sms', 'sftp', 'smb', 'slack' ]
+	}
+	// More of the editor's configuration.
+		// ...
+} )
+	.then( /* ... */ );
 ```
 
 <info-box warning>
@@ -214,24 +202,22 @@ Automatic link decorators match all links in the editor content against a {@link
 For instance, to create an automatic decorator that adds the `download="file.pdf"` attribute to all links ending with the `".pdf"` extension, you should add the following {@link module:link/linkconfig~LinkDecoratorAutomaticDefinition definition} to {@link module:link/linkconfig~LinkConfig#decorators `config.link.decorators`}:
 
 ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		link: {
-			decorators: {
-				detectDownloadable: {
-					mode: 'automatic',
-					callback: url => url.endsWith( '.pdf' ),
-					attributes: {
-						download: 'file.pdf'
-					}
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	link: {
+		decorators: {
+			detectDownloadable: {
+				mode: 'automatic',
+				callback: url => url.endsWith( '.pdf' ),
+				attributes: {
+					download: 'file.pdf'
 				}
 			}
 		}
-		// More of the editor's configuration.
- 		// ...
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+	}
+	// More of the editor's configuration.
+		// ...
+} )
+	.then( /* ... */ );
 ```
 
 <info-box>
@@ -245,33 +231,31 @@ Manual link decorators are represented in the link editing balloon as switch but
 To configure a "Downloadable" switch button in the link editing balloon that adds the `download="file"` attribute to the link when turned on, add the following definition to {@link module:link/linkconfig~LinkConfig#decorators `config.link.decorators`}:
 
 ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		link: {
-			decorators: {
-				toggleDownloadable: {
-					mode: 'manual',
-					label: 'Downloadable',
-					attributes: {
-						download: 'file'
-					}
-				},
-				openInNewTab: {
-					mode: 'manual',
-					label: 'Open in a new tab',
-					defaultValue: true,			// This option will be selected by default.
-					attributes: {
-						target: '_blank',
-						rel: 'noopener noreferrer'
-					}
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	link: {
+		decorators: {
+			toggleDownloadable: {
+				mode: 'manual',
+				label: 'Downloadable',
+				attributes: {
+					download: 'file'
+				}
+			},
+			openInNewTab: {
+				mode: 'manual',
+				label: 'Open in a new tab',
+				defaultValue: true,			// This option will be selected by default.
+				attributes: {
+					target: '_blank',
+					rel: 'noopener noreferrer'
 				}
 			}
 		}
-		// More of the editor's configuration.
- 		// ...
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+	}
+	// More of the editor's configuration.
+	// ...
+} )
+	.then( /* ... */ );
 ```
 
 ## Autolink feature
@@ -288,24 +272,16 @@ To use the autolink function, press <kbd>Space</kbd>, <kbd>Enter</kbd>, or <kbd>
 
 ## Installation
 
-To add this feature to your editor, install the [`@ckeditor/ckeditor5-link`](https://www.npmjs.com/package/@ckeditor/ckeditor5-link) package:
-
-```bash
-npm install --save @ckeditor/ckeditor5-link
-```
-
-Then add the `Link` and `AutoLink` plugins to your plugin list:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { AutoLink, Link } from '@ckeditor/ckeditor5-link';
+import { ClassicEditor, AutoLink, Link } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Link, AutoLink, /* ... */ ],
-		toolbar: [ 'link', /* ... */ ],
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Link, AutoLink, /* ... */ ],
+	toolbar: [ 'link', /* ... */ ],
+} )
+	.then( /* ... */ );
 ```
 
 <info-box info>

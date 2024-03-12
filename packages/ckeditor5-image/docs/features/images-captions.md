@@ -40,6 +40,8 @@ By default, if the image caption is empty, the `<figcaption>` element is not vis
 
 ## Installation
 
+To enable this feature, you need to load the {@link module:link/linkimage~LinkImage} plugin. Read more in the {@link features/images-installation installation guide}.
+
 ## Common API
 
 The {@link module:image/imagecaption~ImageCaption} plugin registers:
