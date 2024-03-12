@@ -186,7 +186,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		allowedProtocols: [ 'https?', 'tel', 'sms', 'sftp', 'smb', 'slack' ]
 	}
 	// More of the editor's configuration.
-		// ...
+	// ...
 } )
 .then( /* ... */ );
 ```
