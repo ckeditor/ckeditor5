@@ -181,28 +181,20 @@ Use the `allowedExtensions` configuration option to define the file extension al
 
 ## Installation
 
-To add this feature to your editor, install the [`@ckeditor/ckeditor5-ckfinder`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckfinder) package:
-
-```bash
-npm install --save @ckeditor/ckeditor5-ckfinder
-```
-
-Then add {@link module:ckfinder/ckfinder~CKFinder} to your plugin list and [configure](#configuration) the feature (when necessary). For instance:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { CKFinder } from '@ckeditor/ckeditor5-ckfinder';
+import { ClassicEditor, CKFinder } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ CKFinder, /* ... */ ],
-		toolbar: [ 'ckfinder', 'uploadImage', /* ... */ ], // Depending on your preference.
-		ckfinder: {
-			// Feature configuration.
-			// ...
-		}
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ CKFinder, /* ... */ ],
+	toolbar: [ 'ckfinder', 'uploadImage', /* ... */ ], // Depending on your preference.
+	ckfinder: {
+		// Feature configuration.
+		// ...
+	}
+} )
+	.then( /* ... */ );
 ```
 
 ## Common API
