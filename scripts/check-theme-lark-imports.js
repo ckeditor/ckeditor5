@@ -16,7 +16,7 @@ const THEME_LARK_DIR_PATH = path.resolve( __dirname, '..', 'packages', 'ckeditor
 const REGEX_FOR_INDEX_IMPORTS = /(?<=@import ".\/)(.*)(?=";)/gm;
 const REGEX_FOR_MATCHING_COMMENTS = /\/\*(?:(?!\*\/).|\n)*\*\//gm;
 
-// Exit process when 'theme-lark' package does not exists.
+// Exit process when 'theme-lark' package does not exist.
 if ( !fs.existsSync( THEME_LARK_DIR_PATH ) ) {
 	process.exit( 0 );
 }
