@@ -31,7 +31,8 @@ import {
  */
 export function transformListItemLikeElementsIntoLists(
 	documentFragment: ViewDocumentFragment,
-	stylesString: string
+	stylesString: string,
+	hasMultiLevelListPlugin: boolean
 ): void {
 	if ( !documentFragment.childCount ) {
 		return;
@@ -61,12 +62,12 @@ export function transformListItemLikeElementsIntoLists(
 			const listStyle = detectListStyle( itemLikeElement, stylesString );
 
 			if ( !currentList ) {
-				currentList = insertNewEmptyList( listStyle, itemLikeElement.element, writer );
+				currentList = insertNewEmptyList( listStyle, itemLikeElement.element, writer, hasMultiLevelListPlugin );
 			} else if ( itemLikeElement.indent > currentIndentation ) {
 				const lastListItem = currentList.getChild( currentList.childCount - 1 ) as ViewElement;
 				const lastListItemChild = lastListItem!.getChild( lastListItem.childCount - 1 ) as ViewElement;
 
-				currentList = insertNewEmptyList( listStyle, lastListItemChild, writer );
+				currentList = insertNewEmptyList( listStyle, lastListItemChild, writer, hasMultiLevelListPlugin );
 				currentIndentation += 1;
 			} else if ( itemLikeElement.indent < currentIndentation ) {
 				const differentIndentation = currentIndentation - itemLikeElement.indent;
@@ -178,9 +179,16 @@ function detectListStyle( listLikeItem: ListLikeElement, stylesString: string ) 
 	const listStyleRegexp = new RegExp( `@list l${ listLikeItem.id }:level${ listLikeItem.indent }\\s*({[^}]*)`, 'gi' );
 	const listStyleTypeRegex = /mso-level-number-format:([^;]{0,100});/gi;
 	const listStartIndexRegex = /mso-level-start-at:\s{0,100}([0-9]{0,10})\s{0,100};/gi;
-	const legalListTypeRegex = new RegExp( `@list l${ listLikeItem.id }:level\\d\\s*{[^{]*mso-level-text:"%\\d\\\\.`, 'gi' );
+	const legalStyleListRegex = new RegExp( `@list\\s+l${ listLikeItem.id }:level\\d\\s*{[^{]*mso-level-text:"%\\d\\\\.`, 'gi' );
+	const multiLevelNumberFormatTypeRegex = new RegExp( `@list l${ listLikeItem.id }:level\\d\\s*{[^{]*mso-level-number-format:`, 'gi' );
 
-	const legalListMatch = legalListTypeRegex.exec( stylesString );
+	const legalStyleListMatch = legalStyleListRegex.exec( stylesString );
+	const multiLevelNumberFormatMatch = multiLevelNumberFormatTypeRegex.exec( stylesString );
+
+	// Multi level lists in Word have mso-level-number-format attribute except legal lists,
+	// so we used that. If list has legal list match and doesn't has mso-level-number-format
+	// then this is legal-list.
+	const islegalStyleList = legalStyleListMatch && !multiLevelNumberFormatMatch;
 
 	const listStyleMatch = listStyleRegexp.exec( stylesString );
 
@@ -214,16 +222,16 @@ function detectListStyle( listLikeItem: ListLikeElement, stylesString: string ) 
 			}
 		}
 
-		if ( legalListMatch ) {
-			// type = 'ol'; // TODO: while working on the task: PFW should work for legal only
+		if ( islegalStyleList ) {
+			type = 'ol';
 		}
 	}
 
 	return {
 		type,
 		startIndex,
-		style: mapListStyleDefinition( listStyleType )
-		// isLegal: !!legalListMatch // TODO: while working on the task: PFW should work for legal only
+		style: mapListStyleDefinition( listStyleType ),
+		isLegalStyleList: islegalStyleList
 	};
 }
 
@@ -324,7 +332,8 @@ function mapListStyleDefinition( value: string ) {
 function insertNewEmptyList(
 	listStyle: ReturnType<typeof detectListStyle>,
 	element: ViewElement,
-	writer: UpcastWriter
+	writer: UpcastWriter,
+	hasMultiLevelListPlugin: boolean
 ) {
 	const parent = element.parent!;
 	const list = writer.createElement( listStyle.type );
@@ -342,9 +351,9 @@ function insertNewEmptyList(
 		writer.setAttribute( 'start', listStyle.startIndex, list );
 	}
 
-	// if ( listStyle.isLegal ) { // TODO: while working on the task: PFW should work for legal only
-	// 	writer.addClass( 'legal-list', list );
-	// }
+	if ( listStyle.isLegalStyleList && hasMultiLevelListPlugin ) {
+		writer.addClass( 'legal-list', list );
+	}
 
 	return list;
 }
