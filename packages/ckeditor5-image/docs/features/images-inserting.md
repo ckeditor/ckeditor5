@@ -23,7 +23,7 @@ To upload an image, use the image toolbar button {@icon @ckeditor/ckeditor5-core
 	These demos in this guide present a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
-### Installation
+## Installation
 
 Using the URL of an image, the user may paste it into the editor. To enable this option, install the `ImageInsert` plugin and add the `insertImage` toolbar item to the toolbar (it replaces the standard `uploadImage` button).
 
