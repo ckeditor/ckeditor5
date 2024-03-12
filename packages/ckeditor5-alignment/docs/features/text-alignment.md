@@ -79,7 +79,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		'heading', '|', 'alignment:left', 'alignment:right', 'alignment:center', 'alignment:justify'
 	]
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 {@snippet features/custom-text-alignment-toolbar}
