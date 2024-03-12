@@ -29,9 +29,9 @@ export default class MSWordNormalizer implements Normalizer {
 	 *
 	 * @param document View document.
 	 */
-	constructor( document: ViewDocument, hasMultiLevelListPlugintor: boolean ) {
+	constructor( document: ViewDocument, hasMultiLevelListPlugin: boolean ) {
 		this.document = document;
-		this.hasMultiLevelListPlugin = hasMultiLevelListPlugintor;
+		this.hasMultiLevelListPlugin = hasMultiLevelListPlugin;
 	}
 
 	/**
