@@ -55,7 +55,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ Autoformat, /* ... */ ],
 	toolbar: [ /* ... */ ]
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box hint>
