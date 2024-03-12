@@ -341,10 +341,18 @@ export default class ClipboardMarkersUtils extends Plugin {
 		return Array
 			.from( markersInRanges )
 			.filter( isSelectionMarkerCopyable )
-			.map( ( marker ): CopyableMarker => ( {
-				name: marker.name,
-				range: marker.getRange()
-			} ) );
+			.map( ( marker ): CopyableMarker => {
+				// During `dragstart` event original marker is still present in tree.
+				// It is removed after the clipboard drop event, so none of the copied markers are inserted at the end.
+				// It happens because there already markers with specified `marker.name` when clipboard is trying to insert data
+				// and it aborts inserting.
+				const name = action === 'dragstart' ? this._getUniqueMarkerName( marker.name ) : marker.name;
+
+				return {
+					name,
+					range: marker.getRange()
+				};
+			} );
 	}
 
 	/**
