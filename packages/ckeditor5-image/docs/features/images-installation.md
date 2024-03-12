@@ -65,7 +65,15 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 You also need to configure the desired contextual image toolbar items. Notice the {@link getting-started/setup/toolbar#separating-toolbar-items separators} used to organize the toolbar.
 
 ```js
-import { ClassicEditor, Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar, LinkImage } from 'ckeditor5';
+import {
+    ClassicEditor,
+    Image,
+    ImageCaption,
+    ImageResize,
+    ImageStyle,
+    ImageToolbar,
+    LinkImage
+} from 'ckeditor5';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ Image, ImageToolbar, ImageCaption, ImageStyle, ImageResize, LinkImage ],
