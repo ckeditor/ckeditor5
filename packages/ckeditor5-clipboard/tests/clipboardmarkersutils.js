@@ -735,6 +735,28 @@ describe( 'Clipboard Markers Utils', () => {
 		} );
 	} );
 
+	describe( '_getCopyableMarkersFromSelection', () => {
+		it( 'force regenerate marker id in `dragstart action', () => {
+			clipboardMarkersUtils._registerMarkerToCopy( 'comment', {
+				allowedActions: [ 'dragstart' ],
+				copyPartiallySelected: true
+			} );
+
+			setModelData(
+				model,
+				wrapWithTag( 'paragraph', '[Hello World]' )
+			);
+
+			appendMarker( 'comment:test', { start: [ 0, 0 ], end: [ 0, 4 ] } );
+
+			const result = model.change(
+				writer => clipboardMarkersUtils._getCopyableMarkersFromSelection( writer, writer.model.document.selection, 'dragstart' )
+			);
+
+			expect( result[ 0 ].name ).to.equal( 'comment:test:pasted' );
+		} );
+	} );
+
 	describe( '_getPasteMarkersFromRangeMap', () => {
 		it( 'properly filters markers Map instance', () => {
 			clipboardMarkersUtils._registerMarkerToCopy( 'comment', { allowedActions: [ 'cut' ] } );
