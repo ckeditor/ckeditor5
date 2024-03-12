@@ -475,15 +475,26 @@ export default class ClipboardMarkersUtils extends Plugin {
 			//
 			// The easiest way to bypass this issue is to rename already existing in map nodes and
 			// set them new unique name.
+			let skipAssign = false;
+
 			if ( prevFakeMarker && prevFakeMarker.start && prevFakeMarker.end ) {
-				acc[ this._getUniqueMarkerName( fakeMarker.name ) ] = acc[ fakeMarker.name ];
+				const config = this._getMarkerClipboardConfig( fakeMarker.name )!;
+
+				if ( config.duplicateOnPaste ) {
+					acc[ this._getUniqueMarkerName( fakeMarker.name ) ] = acc[ fakeMarker.name ];
+				} else {
+					skipAssign = true;
+				}
+
 				prevFakeMarker = null;
 			}
 
-			acc[ fakeMarker.name ] = {
-				...prevFakeMarker!,
-				[ fakeMarker.type ]: position
-			};
+			if ( !skipAssign ) {
+				acc[ fakeMarker.name ] = {
+					...prevFakeMarker!,
+					[ fakeMarker.type ]: position
+				};
+			}
 
 			if ( fakeMarker.markerElement ) {
 				writer.remove( fakeMarker.markerElement );
