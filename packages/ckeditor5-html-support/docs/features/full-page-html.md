@@ -27,7 +27,7 @@ import { ClassicEditor, FullPage } from 'ckeditor5';
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ FullPage, /* ... */ ],
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box info>

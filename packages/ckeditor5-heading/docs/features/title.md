@@ -36,7 +36,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	},
 	placeholder: 'My custom placeholder for the body'
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 ## Installation
@@ -49,7 +49,7 @@ import { ClassicEditor, Title } from 'ckeditor5';
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ Title, /* ... */ ]
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box info>

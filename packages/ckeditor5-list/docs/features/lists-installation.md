@@ -25,7 +25,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ List, /* ... */ ],
 	toolbar: [ 'bulletedList', 'numberedList', /* ... */ ]
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 ### List properties
@@ -48,7 +48,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		}
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box info>
@@ -72,7 +72,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ TodoList, /* ... */ ],
 	toolbar: [ 'todoList', /* ... */ ],
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box info>

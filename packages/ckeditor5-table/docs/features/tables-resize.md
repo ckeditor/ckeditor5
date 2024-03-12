@@ -34,7 +34,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ Table, TableColumnResize, /* ... */ ],
 	toolbar: [ 'insertTable', /* ... */ ],
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 ## Common API

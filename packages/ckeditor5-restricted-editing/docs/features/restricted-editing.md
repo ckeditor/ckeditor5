@@ -54,7 +54,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		allowedCommands: [ 'bold' ]
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 **Note**: Typing and deleting text is always possible in restricted editing regions. For more information, check out the {@link module:restricted-editing/restrictededitingconfig~RestrictedEditingConfig `config.restrictedEditing`} documentation.
@@ -88,7 +88,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ StandardEditingMode, /* ... */ ],
 	toolbar: [ 'restrictedEditingException', /* ... */ ]
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 ### Running the restricted editing mode
@@ -102,7 +102,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ RestrictedEditingMode, /* ... */ ],
 	toolbar: [ 'restrictedEditing', /* ... */ ]
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box info>

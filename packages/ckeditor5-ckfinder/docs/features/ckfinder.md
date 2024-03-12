@@ -194,7 +194,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		// ...
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 ## Common API

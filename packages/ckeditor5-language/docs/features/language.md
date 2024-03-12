@@ -44,7 +44,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		]
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 ## Installation
@@ -58,7 +58,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ TextPartLanguage, /* ... */ ],
 	toolbar: [ 'textPartLanguage', /* ... */ ]
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box info>

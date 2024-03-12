@@ -121,7 +121,7 @@ The editor above does not require any configuration, using one of the following 
 import ClassicEditor from 'ckeditor5';
 
 ClassicEditor.create( document.querySelector( '#editor' ) )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 ### Presentational styles
@@ -165,7 +165,7 @@ This set of buttons and styles is available by default in the document editor an
 import { DecoupledEditor } from 'ckeditor5';
 
 DecoupledEditor..create( document.querySelector( '#editor' ) )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box warning>
@@ -251,7 +251,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		]
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 It also applies multiple CSS rules to not only display custom image styles (the `'image-margin-right'`, `'image-margin-left'` and `'image-side'` classes) properly, but also to provide the default {@link getting-started/advanced/content-styles content styles}, so the appearance of headers, paragraphs, links, captions and newly inserted images is consistent.

@@ -38,7 +38,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ Base64UploadAdapter, /* ... */ ],
 	toolbar: [ /* ... */ ]
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 Once enabled in the plugin list, the Base64 image upload adapter works out–of–the–box without any additional configuration.

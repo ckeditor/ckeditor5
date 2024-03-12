@@ -51,7 +51,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ HtmlEmbed, /* ... */ ],
 	toolbar: [ 'htmlEmbed', /* ... */ ],
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box info>
@@ -85,7 +85,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		}
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 Currently, the [feature does not execute `<script>` tags](https://github.com/ckeditor/ckeditor5/issues/8326) so the content that requires executing JavaScript to generate a preview will not show in the editor. However, other JavaScript code, for example, used in `on*` observers and `src="javascript:..."` attributes will be executed. You still need to enable the sanitizer.

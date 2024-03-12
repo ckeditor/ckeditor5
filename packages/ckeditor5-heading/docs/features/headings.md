@@ -65,7 +65,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		]
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 {@snippet features/custom-heading-levels}
@@ -115,7 +115,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		]
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 {@snippet features/custom-heading-elements}
@@ -139,7 +139,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		]
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 {@snippet features/custom-heading-buttons}
 
@@ -155,7 +155,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ Heading, /* ... */ ],
 	toolbar: [ 'heading', /* ... */ ]
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 ### Installation with toolbar heading buttons

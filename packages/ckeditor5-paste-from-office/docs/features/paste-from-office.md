@@ -74,7 +74,7 @@ import { ClassicEditor, PasteFromOffice } from 'ckeditor5';
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ PasteFromOffice, Bold, /* ... */ ]
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box info>

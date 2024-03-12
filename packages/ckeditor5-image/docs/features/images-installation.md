@@ -16,7 +16,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ Image, ImageToolbar, ImageCaption, ImageStyle, ImageResize, LinkImage ],
 	toolbar: [ 'insertImage', /* ... */ ],
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 ## Configuring the toolbar dropdown
@@ -30,7 +30,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ Image ],
 	toolbar: [ 'insertImage', /* ... */ ]
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 The feature is pre-configured to include the following image insertion methods:
@@ -57,7 +57,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		}
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 ## Configuring the contextual image toolbar
@@ -87,7 +87,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		}
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box info>

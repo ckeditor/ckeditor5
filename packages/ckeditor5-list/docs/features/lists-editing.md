@@ -32,7 +32,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		multiBlock: false // Turn off the multi-block support (enabled by default).
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 ## Merging adjacent lists
@@ -50,7 +50,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ List, AdjacentListsSupport, /* ... */
 	],
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 This feature only works for pasted contents or on data load, it {@link updating/update-to-41#changes-to-list-merging does not support entering adjacent lists via the editor UI}. If you are interested in this functionality, refer to [this issue on GitHub](https://github.com/ckeditor/ckeditor5/issues/14478).

@@ -39,7 +39,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		'heading', '|', 'bulletedList', 'numberedList', 'alignment', 'undo', 'redo'
 	]
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 {@snippet features/custom-text-alignment-options}

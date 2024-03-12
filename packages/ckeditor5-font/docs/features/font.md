@@ -53,7 +53,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		'heading', 'bulletedList', 'numberedList', 'fontFamily', 'undo', 'redo'
 	]
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 {@snippet features/custom-font-family-options}
@@ -74,7 +74,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	// More of editor's configuration.
 	// ...
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 ## Configuring the font size feature
@@ -137,7 +137,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		'heading', 'bulletedList', 'numberedList', 'fontSize', 'undo', 'redo'
 	]
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 {@snippet features/custom-font-size-named-options}
@@ -171,7 +171,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		'heading', 'bulletedList', 'numberedList', 'fontSize', 'undo', 'redo'
 	]
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 {@snippet features/custom-font-size-numeric-options}
@@ -192,7 +192,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	// More of editor's configuration.
 	// ...
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box info>
@@ -274,7 +274,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		'heading', 'bulletedList', 'numberedList', 'fontColor', 'fontBackgroundColor', 'undo', 'redo'
 	]
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 ### Changing the geometry of the color grid
@@ -305,7 +305,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		'heading', 'bulletedList', 'numberedList', 'fontColor', 'fontBackgroundColor', 'undo', 'redo'
 	]
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 ### Documents colors
@@ -337,7 +337,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		'heading', 'bulletedList', 'numberedList', 'fontColor', 'fontBackgroundColor', 'undo', 'redo'
 	]
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 ### Color picker
@@ -364,7 +364,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		'heading', 'bulletedList', 'numberedList', 'fontColor', 'fontBackgroundColor', 'undo', 'redo'
 	]
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 ## Installation
@@ -378,7 +378,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ Font, /* ... */ ],
 	toolbar: [ 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', /* ... */ ]
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 You can also add just one or a selected few of the font features to your plugin list and the toolbar configuration:
@@ -390,7 +390,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ FontFamily, /* ... */ ],
 	toolbar: [ 'fontFamily', /* ... */ ]
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box info>

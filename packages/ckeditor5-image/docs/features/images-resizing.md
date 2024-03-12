@@ -302,7 +302,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	// More of editor's configuration.
 	// ...
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 ## Common API

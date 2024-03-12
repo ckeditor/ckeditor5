@@ -61,7 +61,7 @@ import { ClassicEditor, Clipboard } from 'ckeditor5';
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ Clipboard, Bold, /* ... */ ],
 })
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 The {@link module:clipboard/dragdrop~DragDrop `DragDrop`} plugin will activate along with the clipboard plugin.

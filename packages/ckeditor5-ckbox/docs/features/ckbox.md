@@ -88,7 +88,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		// ...
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 Further in the document, the dependency plugins will be omitted in code listings for clarity.
@@ -145,7 +145,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		}
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 If you define your own upload category mappings for a particular image type, only your first found category will be taken into account while finding the appropriate category for the uploaded image. Category mappings configured on the server will not be searched in that case. The image will not be uploaded (and hence inserted into the editor) in the following cases:
@@ -174,7 +174,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		defaultUploadWorkspaceId: [ 'pHUSQFj_QIvc' ]
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 You can obtain the list of available workspaces using the [Workspaces REST API](https://ckeditor.com/docs/ckbox/latest/features/file-management/workspaces.html#managing-workspaces-with-the-rest-api).
@@ -193,7 +193,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		ignoreDataId: true
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 ### Changing the language
@@ -210,7 +210,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		language: 'es'
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 Also, make sure to include the translation file after loading the CKBox library:
@@ -234,7 +234,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		tokenUrl: 'https://example.com/cs-token-endpoint'
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 ### Configuring the API service
@@ -251,7 +251,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		serviceOrigin: 'https://example.com/'
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 ## Common API

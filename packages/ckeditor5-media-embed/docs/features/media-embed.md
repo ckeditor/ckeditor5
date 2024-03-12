@@ -40,7 +40,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		// ...
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box>
@@ -178,7 +178,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		removeProviders: [ 'instagram', 'twitter', 'googleMaps', 'flickr', 'facebook' ]
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 #### Overriding media providers
@@ -203,7 +203,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		]
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 You can take inspiration from the default configuration of this feature. You can find it in [https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-media-embed/src/mediaembedediting.ts](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-media-embed/src/mediaembedediting.ts)

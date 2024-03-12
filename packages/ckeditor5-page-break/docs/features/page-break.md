@@ -29,7 +29,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ PageBreak, /* ... */ ],
 	toolbar: [ 'pageBreak', /* ... */ ],
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box info>

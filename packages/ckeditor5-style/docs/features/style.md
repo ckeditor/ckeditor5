@@ -246,7 +246,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		]
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box info>
@@ -282,7 +282,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		]
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 
 ```
 

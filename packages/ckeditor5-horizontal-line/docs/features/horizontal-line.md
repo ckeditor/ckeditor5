@@ -29,7 +29,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ HorizontalLine, /* ... */ ],
 	toolbar: [ 'horizontalLine', /* ... */ ],
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box info>

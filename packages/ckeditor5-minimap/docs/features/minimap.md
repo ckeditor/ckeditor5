@@ -140,7 +140,7 @@ DecoupledEditor.create( document.querySelector( '#editor' ), {
 		// ...
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box>
@@ -166,7 +166,7 @@ DecoupledEditor.create( document.querySelector( '#editor' ), {
 		container: document.querySelector( '.minimap-container' )
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 ### Content styles and classes

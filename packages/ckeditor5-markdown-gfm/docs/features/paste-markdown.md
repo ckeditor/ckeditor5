@@ -46,7 +46,7 @@ ClassicEditor.create( document.querySelector( '#snippet-markdown' ), {
 	// More of editor's configuration.
 	// ...
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 
 ```
 

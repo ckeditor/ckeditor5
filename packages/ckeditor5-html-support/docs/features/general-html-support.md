@@ -63,7 +63,7 @@ import { ClassicEditor, GeneralHtmlSupport } from 'ckeditor5';
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ GeneralHtmlSupport, /* ... */ ],
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box info>

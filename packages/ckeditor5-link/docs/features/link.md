@@ -76,7 +76,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		]
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 ### Configuration
@@ -101,7 +101,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	// More of the editor's configuration.
 		// ...
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 Internally, this configuration corresponds to an [automatic decorator](#adding-attributes-to-links-based-on-predefined-rules-automatic-decorators) with the following {@link module:link/linkconfig~LinkDecoratorAutomaticDefinition definition}:
@@ -123,7 +123,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	// More of the editor's configuration.
 		// ...
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 If you want to leave the decision whether a link should open in a new tab to the users, do not use the `config.link.addTargetToExternalLinks` configuration. Define a new [manual decorator](#adding-attributes-to-links-using-the-ui-manual-decorators) with the following definition instead:
@@ -145,7 +145,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	// More of the editor's configuration.
 		// ...
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 #### Adding default link protocol to external links
@@ -164,7 +164,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	// More of the editor's configuration.
 		// ...
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box>
@@ -188,7 +188,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	// More of the editor's configuration.
 		// ...
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box warning>
@@ -217,7 +217,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	// More of the editor's configuration.
 		// ...
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box>
@@ -255,7 +255,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	// More of the editor's configuration.
 	// ...
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 ## Autolink feature
@@ -281,7 +281,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ Link, AutoLink, /* ... */ ],
 	toolbar: [ 'link', /* ... */ ],
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box info>

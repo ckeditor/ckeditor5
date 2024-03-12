@@ -33,7 +33,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ SourceEditing, /* ... */ ],
 	toolbar: [ 'sourceEditing', /* ... */ ]
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 To utilize the Markdown source editing mode just add the {@link features/markdown Markdown output} plugin to the editor.
@@ -45,7 +45,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ SourceEditing, Markdown, /* ... */ ],
 	toolbar: [ 'sourceEditing', /* ... */ ]
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box info>

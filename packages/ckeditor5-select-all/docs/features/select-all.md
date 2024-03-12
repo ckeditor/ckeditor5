@@ -34,7 +34,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	// Display the "Select all" button in the toolbar.
 	toolbar: [ 'selectAll', /* ... */ ],
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box info>

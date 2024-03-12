@@ -79,7 +79,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		items: [ 'bold', 'italic', 'underline', 'strikethrough', 'code', 'subscript', 'superscript'  ]
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box info>

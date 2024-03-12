@@ -42,7 +42,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	// Display the "Undo" and "Redo" buttons in the toolbar.
 	toolbar: [ 'undo', 'redo', /* ... */ ],
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box info>

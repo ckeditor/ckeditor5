@@ -31,7 +31,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		uiType: 'dropdown'
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 {@snippet features/find-and-replace-dropdown}
@@ -47,7 +47,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ FindAndReplace, /* ... */ ],
 	toolbar: [ 'findAndReplace', /* ... */ ],
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box info>

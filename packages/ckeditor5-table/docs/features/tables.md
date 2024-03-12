@@ -197,7 +197,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 ### Default table headers
@@ -214,7 +214,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		defaultHeadings: { rows: 1, columns: 1 }
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 Check the table with default headers applied to both the first row and the first column in the demo below. Click on the table and use the column properties {@icon @ckeditor/ckeditor5-table/theme/icons/table-column.svg Table column} or the row properties {@icon @ckeditor/ckeditor5-table/theme/icons/table-row.svg Table row} UI button to toggle the respective headers.
@@ -243,7 +243,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 
 	// The rest of the configuration.
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 <info-box>
 	Check the {@link tutorials/crash-course/editor step-by-step tutorial} if you need more information about the technical side of this solution.

@@ -23,7 +23,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		// Feature configuration.
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box info>
@@ -54,7 +54,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		}
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 ### Configuring allowed file types

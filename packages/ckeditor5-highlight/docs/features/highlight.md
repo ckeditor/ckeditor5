@@ -57,7 +57,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		'heading', '|', 'bulletedList', 'numberedList', 'highlight', 'undo', 'redo'
 	]
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 {@snippet features/custom-highlight-options}
@@ -79,7 +79,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		]
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 {@snippet features/highlight-buttons}
@@ -144,7 +144,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		'heading', '|', 'bulletedList', 'numberedList', 'highlight', 'undo', 'redo'
 	]
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 Then, update the classes in the style sheet so the content corresponds to the UI of the editor. The UI buttons and the actual highlights in the text should be the same color.
@@ -174,7 +174,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ Highlight, /* ... */ ],
 	toolbar: [ 'highlight', /* ... */ ]
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box info>

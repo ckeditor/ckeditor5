@@ -32,7 +32,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	// Display the "Show blocks" button in the toolbar.
 	toolbar: [ 'showBlocks', /* ... */ ],
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box info>

@@ -51,7 +51,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	],
 	toolbar: [ 'specialCharacters', /* ... */ ],
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 After adding the above plugin to the editor configuration, the new category will become available in the special characters dropdown.
@@ -92,7 +92,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	],
 	toolbar: [ 'specialCharacters', /* ... */ ],
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box>
@@ -130,7 +130,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	],
 	toolbar: [ 'specialCharacters', /* ... */ ],
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 Below you can see a demo based on the example shown above. After clicking the special characters toolbar button {@icon @ckeditor/ckeditor5-special-characters/theme/icons/specialcharacters.svg Special characters}, you can see that it contains fewer categories compared to the other editors on this page.
@@ -172,7 +172,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ SpecialCharacters, SpecialCharactersEssentials, /* ... */ ],
 	toolbar: [ 'specialCharacters', /* ... */ ],
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box info>

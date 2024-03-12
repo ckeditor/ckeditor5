@@ -78,7 +78,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ RemoveFormat, /* ... */ ],
 	toolbar: [ 'removeFormat', /* ... */ ]
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box info>

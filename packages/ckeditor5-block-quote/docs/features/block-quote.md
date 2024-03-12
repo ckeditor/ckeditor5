@@ -42,7 +42,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ BlockQuote, /* ... */ ],
 	toolbar: [ 'blockQuote', /* ... */ ]
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box info>

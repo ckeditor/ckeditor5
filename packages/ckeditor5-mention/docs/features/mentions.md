@@ -88,7 +88,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		}
 	]
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 
 const items = [
 	{ id: '@swarley', userId: '1', name: 'Barney Stinson', link: 'https://www.imdb.com/title/tt0460649/characters/nm0000439' },
@@ -152,7 +152,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		]
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 
 function customItemRenderer( item ) {
 	const itemElement = document.createElement( 'span' );
@@ -191,7 +191,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		]
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 A full, working demo with all possible customizations and its source code is available {@link features/mentions#fully-customized-mention-feed at the end of this section}.
@@ -258,7 +258,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		// ...
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 
 function MentionCustomization( editor ) {
 	// The upcast converter will convert view <a class="mention" href="" data-user-id="">
@@ -501,7 +501,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		// ...
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box info>

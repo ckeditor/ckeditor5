@@ -131,7 +131,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ CodeBlock, /* ... */ ],
 	toolbar: [ 'codeBlock', /* ... */ ]
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box info>

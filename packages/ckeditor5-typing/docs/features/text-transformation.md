@@ -92,7 +92,7 @@ ClassicEditor.create( editorElement, {
 		}
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 ### Example: Using `transformations.remove` and `extra`
@@ -139,7 +139,7 @@ ClassicEditor.create( editorElement, {
 		}
 	}
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 You can read more about the format of transformation rules in {@link module:typing/typingconfig~TextTransformationDescription}.
@@ -158,7 +158,7 @@ import { ClassicEditor, TextTransformation } from 'ckeditor5';
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ TextTransformation, ... ],
 } )
-	.then( /* ... */ );
+.then( /* ... */ );
 ```
 
 <info-box info>
