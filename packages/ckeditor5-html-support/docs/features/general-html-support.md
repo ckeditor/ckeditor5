@@ -55,23 +55,15 @@ Therefore, the main use cases for GHS would be:
 
 ## Installation
 
-To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-html-support`](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support) package:
-
-```plaintext
-npm install --save @ckeditor/ckeditor5-html-support
-```
-
-And add it to your plugin list configuration:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
+import { ClassicEditor, GeneralHtmlSupport } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ GeneralHtmlSupport, /* ... */ ],
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ GeneralHtmlSupport, /* ... */ ],
+} )
+	.then( /* ... */ );
 ```
 
 <info-box info>
@@ -220,16 +212,11 @@ To enable such elements and add attributes or classes to them, you need to use t
 Base implementation example:
 
 ```js
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { Plugin } from '@ckeditor/ckeditor5-core';
-import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
-import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
+import { ClassicEditor, Essentials, Paragraph, Plugin, SourceEditing, GeneralHtmlSupport } from 'ckeditor5';
 
 /**
- * A plugin extending General HTML Support, for example, with custom HTML elements.
- */
+* A plugin extending General HTML Support, for example, with custom HTML elements.
+*/
 class ExtendHTMLSupport extends Plugin {
 	static get requires() {
 		return [ GeneralHtmlSupport ];
@@ -263,24 +250,23 @@ class ExtendHTMLSupport extends Plugin {
 	}
 }
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [
-			Essentials,
-			Paragraph,
-			ExtendHTMLSupport
-		],
-		htmlSupport: {
-			allow: [
-				{
-					name: /.*/,
-					attributes: true,
-					classes: true,
-					styles: true
-				}
-			]
-		}
-	} )
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [
+		Essentials,
+		Paragraph,
+		ExtendHTMLSupport
+	],
+	htmlSupport: {
+		allow: [
+			{
+				name: /.*/,
+				attributes: true,
+				classes: true,
+				styles: true
+			}
+		]
+	}
+} )
 ```
 
 You can treat both inline and block elements as object elements. To make it possible, it is necessary to set the {@link module:html-support/dataschema~DataSchemaDefinition#isObject isObject} property to `true`.

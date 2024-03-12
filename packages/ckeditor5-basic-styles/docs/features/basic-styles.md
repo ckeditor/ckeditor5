@@ -71,7 +71,7 @@ CKEditor&nbsp;5 allows for typing both at the inner and outer boundaries of code
 After {@link getting-started/quick-start installing the editor}, add the plugins which you need to your plugin list. Then, simply configure the toolbar items to make the features available in the user interface.
 
 ```js
-import { Bold, Code, Italic, Strikethrough, Subscript, Superscript, Underline } from 'ckeditor5';
+import { ClassicEditor, Bold, Code, Italic, Strikethrough, Subscript, Superscript, Underline } from 'ckeditor5';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ Bold, Code, Italic, Strikethrough, Subscript, Superscript, Underline ],

@@ -78,7 +78,7 @@ You must include the `CKBoxImageEdit` plugin if you want to use CKBox image edit
 Finally, add {@link module:ckbox/ckbox~CKBox} to your plugin list and toolbar, and [configure](#configuration) the feature as needed. An example configuration may look like this:
 
 ```js
-import { Image, ImageUpload, PictureEditing, CKBox, CKBoxImageEdit,CloudServices } from 'ckeditor5';
+import { ClassicEditor, Image, ImageUpload, PictureEditing, CKBox, CKBoxImageEdit,CloudServices } from 'ckeditor5';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ Image, PictureEditing, ImageUpload, CloudServices, CKBox, CKBoxImageEdit, /* ... */ ],
@@ -102,12 +102,11 @@ To invoke the CKBox image editor straight from the image contextual toolbar (ava
 The snippet below shows an example image contextual toolbar configuration.
 
 ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		image: {
-			toolbar: [ 'toggleImageCaption', 'imageTextAlternative', 'ckboxImageEdit' ]
-		}
-	} )
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	image: {
+		toolbar: [ 'toggleImageCaption', 'imageTextAlternative', 'ckboxImageEdit' ]
+	}
+} )
 ```
 
 ## Configuration
@@ -131,24 +130,22 @@ After you purchase a license, log into the CKEditor Ecosystem customer dashboard
 By default, the CKBox feature maps the uploaded image type to the category configured on the cloud service. You can override this behavior and provide your own mappings via the {@link module:ckbox/ckboxconfig~CKBoxConfig#defaultUploadCategories `config.ckbox.defaultUploadCategories`} configuration option. It is an object, where the keys define categories and their values are the types of images that will be uploaded to these categories. The categories might be referenced either by their name or by their ID. Referencing by ID is future-proof because it will not require configuration changes when a category name changes.
 
 ```js
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { ClassicEditor, CKBox } from '@ckeditor/ckeditor5-ckbox';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ CKBox, /* ... */ ],
-		toolbar: [ 'ckbox', /* ... */ ],
-		ckbox: {
-			defaultUploadCategories: {
-				Bitmaps: [ 'bmp' ],
-				Pictures: [ 'jpg', 'jpeg' ],
-				Scans: [ 'png', 'tiff' ],
-				// The category below is referenced by its ID.
-				'fdf2a647-b67f-4a6c-b692-5ba1dc1ed87b': [ 'gif' ]
-			}
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ CKBox, /* ... */ ],
+	toolbar: [ 'ckbox', /* ... */ ],
+	ckbox: {
+		defaultUploadCategories: {
+			Bitmaps: [ 'bmp' ],
+			Pictures: [ 'jpg', 'jpeg' ],
+			Scans: [ 'png', 'tiff' ],
+			// The category below is referenced by its ID.
+			'fdf2a647-b67f-4a6c-b692-5ba1dc1ed87b': [ 'gif' ]
 		}
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+	}
+} )
+	.then( /* ... */ );
 ```
 
 If you define your own upload category mappings for a particular image type, only your first found category will be taken into account while finding the appropriate category for the uploaded image. Category mappings configured on the server will not be searched in that case. The image will not be uploaded (and hence inserted into the editor) in the following cases:
@@ -166,20 +163,18 @@ The [CKBox workspaces](https://ckeditor.com/docs/ckbox/latest/features/file-mana
 If the user is assigned to more than one workspace, by default all the files uploaded directly from CKEditor are located in the first workspace in the list of workspaces allowed in the user's JWT token. This corresponds to uploads through drag and drop into the editor area, pasting images from the clipboard, or images uploaded using the Image {@icon @ckeditor/ckeditor5-core/theme/icons/image-upload.svg Image} feature. If you would like to define a specific workspace for files uploaded this way, you can define its ID in the `defaultUploadWorkspaceId` option. After that, all the files uploaded directly from CKEditor will be placed in the specified workspace.
 
 ```js
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { ClassicEditor, CKBox } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ CKBox, /* ... */ ],
-		toolbar: [ 'ckbox', /* ... */ ],
-		ckbox: {
-			tokenUrl: 'https://your.token.url',
-			// Sample workspace referenced by its ID.
-			defaultUploadWorkspaceId: [ 'pHUSQFj_QIvc' ]
-		}
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ CKBox, /* ... */ ],
+	toolbar: [ 'ckbox', /* ... */ ],
+	ckbox: {
+		tokenUrl: 'https://your.token.url',
+		// Sample workspace referenced by its ID.
+		defaultUploadWorkspaceId: [ 'pHUSQFj_QIvc' ]
+	}
+} )
+	.then( /* ... */ );
 ```
 
 You can obtain the list of available workspaces using the [Workspaces REST API](https://ckeditor.com/docs/ckbox/latest/features/file-management/workspaces.html#managing-workspaces-with-the-rest-api).
@@ -189,18 +184,16 @@ You can obtain the list of available workspaces using the [Workspaces REST API](
 After choosing an asset from the CKBox dialog, it is inserted into the editor content with a unique `data-ckbox-resource-id` attribute. If you want to disable it and do not want to add this attribute, set the {@link module:ckbox/ckboxconfig~CKBoxConfig#ignoreDataId `config.ckbox.ignoreDataId`} option to `true`:
 
 ```js
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { ClassicEditor, CKBox } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ CKBox, /* ... */ ],
-		toolbar: [ 'ckbox', /* ... */ ],
-		ckbox: {
-			ignoreDataId: true
-		}
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ CKBox, /* ... */ ],
+	toolbar: [ 'ckbox', /* ... */ ],
+	ckbox: {
+		ignoreDataId: true
+	}
+} )
+	.then( /* ... */ );
 ```
 
 ### Changing the language
@@ -208,18 +201,16 @@ ClassicEditor
 By default, the CKBox dialog takes the current language from the editor. If you want to use a different language, you can set the language code in the {@link module:ckbox/ckboxconfig~CKBoxConfig#language `config.ckbox.language`} option:
 
 ```js
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { ClassicEditor, CKBox } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ CKBox, /* ... */ ],
-		toolbar: [ 'ckbox', /* ... */ ],
-		ckbox: {
-			language: 'es'
-		}
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ CKBox, /* ... */ ],
+	toolbar: [ 'ckbox', /* ... */ ],
+	ckbox: {
+		language: 'es'
+	}
+} )
+	.then( /* ... */ );
 ```
 
 Also, make sure to include the translation file after loading the CKBox library:
@@ -234,18 +225,16 @@ Also, make sure to include the translation file after loading the CKBox library:
 The CKBox feature requires the token endpoint URL configured in the {@link module:ckbox/ckboxconfig~CKBoxConfig#tokenUrl `config.ckbox.tokenUrl`} key. If not explicitly provided, the token URL from {@link module:cloud-services/cloudservicesconfig~CloudServicesConfig#tokenUrl `config.cloudServices.tokenUrl`} is used instead. If both are provided, the token URL defined in `config.ckbox.tokenUrl` takes precedence over the `config.cloudServices.tokenUrl`.
 
 ```js
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { ClassicEditor, CKBox } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ CKBox, /* ... */ ],
-		toolbar: [ 'ckbox', /* ... */ ],
-		ckbox: {
-			tokenUrl: 'https://example.com/cs-token-endpoint'
-		}
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ CKBox, /* ... */ ],
+	toolbar: [ 'ckbox', /* ... */ ],
+	ckbox: {
+		tokenUrl: 'https://example.com/cs-token-endpoint'
+	}
+} )
+	.then( /* ... */ );
 ```
 
 ### Configuring the API service
@@ -253,18 +242,16 @@ ClassicEditor
 If you host the cloud service in your environment, you should configure the base URL of the API service via the {@link module:ckbox/ckboxconfig~CKBoxConfig#serviceOrigin `config.ckbox.serviceOrigin`} option:
 
 ```js
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { ClassicEditor, CKBox } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ CKBox, /* ... */ ],
-		toolbar: [ 'ckbox', /* ... */ ],
-		ckbox: {
-			serviceOrigin: 'https://example.com/'
-		}
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ CKBox, /* ... */ ],
+	toolbar: [ 'ckbox', /* ... */ ],
+	ckbox: {
+		serviceOrigin: 'https://example.com/'
+	}
+} )
+	.then( /* ... */ );
 ```
 
 ## Common API

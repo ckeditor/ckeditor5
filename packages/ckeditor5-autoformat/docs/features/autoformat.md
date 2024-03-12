@@ -49,7 +49,7 @@ The following {@link features/basic-styles basic styles} inline formatting optio
 After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { Autoformat } from 'ckeditor5';
+import { ClassicEditor, Autoformat } from 'ckeditor5';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ Autoformat, /* ... */ ],

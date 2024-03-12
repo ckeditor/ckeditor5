@@ -34,32 +34,30 @@ You can configure which highlight options are supported by the editor. Use the {
 For example, the following editor supports two styles (a green marker and a red pen):
 
 ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		highlight: {
-			options: [
-				{
-					model: 'greenMarker',
-					class: 'marker-green',
-					title: 'Green marker',
-					color: 'var(--ck-highlight-marker-green)',
-					type: 'marker'
-				},
-				{
-					model: 'redPen',
-					class: 'pen-red',
-					title: 'Red pen',
-					color: 'var(--ck-highlight-pen-red)',
-					type: 'pen'
-				}
-			]
-		},
-		toolbar: [
-			'heading', '|', 'bulletedList', 'numberedList', 'highlight', 'undo', 'redo'
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	highlight: {
+		options: [
+			{
+				model: 'greenMarker',
+				class: 'marker-green',
+				title: 'Green marker',
+				color: 'var(--ck-highlight-marker-green)',
+				type: 'marker'
+			},
+			{
+				model: 'redPen',
+				class: 'pen-red',
+				title: 'Red pen',
+				color: 'var(--ck-highlight-pen-red)',
+				type: 'pen'
+			}
 		]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+	},
+	toolbar: [
+		'heading', '|', 'bulletedList', 'numberedList', 'highlight', 'undo', 'redo'
+	]
+} )
+	.then( /* ... */ );
 ```
 
 {@snippet features/custom-highlight-options}
@@ -69,21 +67,19 @@ ClassicEditor
 Instead of using the (default) `'highlight'` button, the feature also supports a configuration with separate buttons available directly in the toolbar:
 
 ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		toolbar: {
-			items: [
-				'heading',
-				'|',
-				'highlight:yellowMarker', 'highlight:greenMarker', 'highlight:pinkMarker',
-				'highlight:greenPen', 'highlight:redPen', 'removeHighlight',
-				'|',
-				'undo', 'redo'
-			]
-		}
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	toolbar: {
+		items: [
+			'heading',
+			'|',
+			'highlight:yellowMarker', 'highlight:greenMarker', 'highlight:pinkMarker',
+			'highlight:greenPen', 'highlight:redPen', 'removeHighlight',
+			'|',
+			'undo', 'redo'
+		]
+	}
+} )
+	.then( /* ... */ );
 ```
 
 {@snippet features/highlight-buttons}
@@ -118,39 +114,37 @@ The highlight feature is using the power of [CSS variables](https://developer.mo
 You can use inline color values in the `rgba(R, G, B, A)`, `#RRGGBB[AA]`, or `hsla(H, S, L, A)` formats instead of CSS variables. To do that, customize the {@link module:highlight/highlightconfig~HighlightConfig#options options} and define the `color` property for each option:
 
 ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		highlight: {
-			options: [
-				{
-					model: 'greenMarker',
-					class: 'marker-green',
-					title: 'Green marker',
-					color: 'rgb(25, 156, 25)',
-					type: 'marker'
-				},
-				{
-					model: 'yellowMarker',
-					class: 'marker-yellow',
-					title: 'Yellow marker',
-					color: '#cac407',
-					type: 'marker'
-				},
-				{
-					model: 'redPen',
-					class: 'pen-red',
-					title: 'Red pen',
-					color: 'hsl(343, 82%, 58%)',
-					type: 'pen'
-				}
-			]
-		},
-		toolbar: [
-			'heading', '|', 'bulletedList', 'numberedList', 'highlight', 'undo', 'redo'
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	highlight: {
+		options: [
+			{
+				model: 'greenMarker',
+				class: 'marker-green',
+				title: 'Green marker',
+				color: 'rgb(25, 156, 25)',
+				type: 'marker'
+			},
+			{
+				model: 'yellowMarker',
+				class: 'marker-yellow',
+				title: 'Yellow marker',
+				color: '#cac407',
+				type: 'marker'
+			},
+			{
+				model: 'redPen',
+				class: 'pen-red',
+				title: 'Red pen',
+				color: 'hsl(343, 82%, 58%)',
+				type: 'pen'
+			}
 		]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+	},
+	toolbar: [
+		'heading', '|', 'bulletedList', 'numberedList', 'highlight', 'undo', 'redo'
+	]
+} )
+	.then( /* ... */ );
 ```
 
 Then, update the classes in the style sheet so the content corresponds to the UI of the editor. The UI buttons and the actual highlights in the text should be the same color.
@@ -171,24 +165,16 @@ Then, update the classes in the style sheet so the content corresponds to the UI
 
 ## Installation
 
-To add this feature to your editor install the [`@ckeditor/ckeditor5-highlight`](https://www.npmjs.com/package/@ckeditor/ckeditor5-highlight) package:
-
-```bash
-npm install --save @ckeditor/ckeditor5-highlight
-```
-
-And add it to your plugin list and the toolbar configuration:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { Highlight } from '@ckeditor/ckeditor5-highlight';
+import { ClassicEditor, Highlight } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Highlight, /* ... */ ],
-		toolbar: [ 'highlight', /* ... */ ]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Highlight, /* ... */ ],
+	toolbar: [ 'highlight', /* ... */ ]
+} )
+	.then( /* ... */ );
 ```
 
 <info-box info>

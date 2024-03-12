@@ -56,7 +56,7 @@ In the balloon block editor, you can also drag content blocks using the drag han
 After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { Clipboard } from 'ckeditor5';
+import { ClassicEditor, Clipboard } from 'ckeditor5';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ Clipboard, Bold, /* ... */ ],

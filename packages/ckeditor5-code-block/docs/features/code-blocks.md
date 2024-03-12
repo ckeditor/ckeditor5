@@ -125,7 +125,7 @@ To speed up the editing, when typing in a code block, the indentation of the cur
 After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { CodeBlock } from 'ckeditor5';
+import { ClassicEditor, CodeBlock } from 'ckeditor5';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ CodeBlock, /* ... */ ],

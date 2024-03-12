@@ -36,7 +36,7 @@ Support for nested block quotes is provided as backward compatibility for loadin
 After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { BlockQuote } from 'ckeditor5';
+import { ClassicEditor, BlockQuote } from 'ckeditor5';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ BlockQuote, /* ... */ ],

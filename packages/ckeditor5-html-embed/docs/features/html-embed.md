@@ -42,24 +42,16 @@ We recommended using the {@link features/media-embed media embed} feature for em
 
 ## Installation
 
-To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-html-embed`](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-embed) package:
-
-```plaintext
-npm install --save @ckeditor/ckeditor5-html-embed
-```
-
-And add it to your plugin list configuration:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { HtmlEmbed } from '@ckeditor/ckeditor5-html-embed';
+import { ClassicEditor, HtmlEmbed } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ HtmlEmbed, /* ... */ ],
-		toolbar: [ 'htmlEmbed', /* ... */ ],
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ HtmlEmbed, /* ... */ ],
+	toolbar: [ 'htmlEmbed', /* ... */ ],
+} )
+	.then( /* ... */ );
 ```
 
 <info-box info>
@@ -75,27 +67,25 @@ The feature is by default configured to not show previews of the HTML snippets. 
 However, by showing previews of the embedded HTML snippets, you expose the users of your system to the **risk of executing malicious JavaScript code inside the editor**. Therefore, it is highly recommended to plug in some HTML sanitizer that will strip the malicious code from the created snippets before rendering their previews. You can plug in the sanitizer by defining the {@link module:html-embed/htmlembedconfig~HtmlEmbedConfig#sanitizeHtml `config.htmlEmbed.sanitizeHtml`} option.
 
 ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ HtmlEmbed, /* ... */ ],
-		toolbar: [ 'htmlEmbed', /* ... */ ],
-		htmlEmbed: {
-			showPreviews: true,
-			sanitizeHtml: ( inputHtml ) => {
-				// Strip unsafe elements and attributes, for example:
-				// the `<script>` elements and `on*` attributes.
-				const outputHtml = sanitize( inputHtml );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ HtmlEmbed, /* ... */ ],
+	toolbar: [ 'htmlEmbed', /* ... */ ],
+	htmlEmbed: {
+		showPreviews: true,
+		sanitizeHtml: ( inputHtml ) => {
+			// Strip unsafe elements and attributes, for example:
+			// the `<script>` elements and `on*` attributes.
+			const outputHtml = sanitize( inputHtml );
 
-				return {
-					html: outputHtml,
-					// true or false depending on whether the sanitizer stripped anything.
-					hasChanged: true
-				};
-			}
+			return {
+				html: outputHtml,
+				// true or false depending on whether the sanitizer stripped anything.
+				hasChanged: true
+			};
 		}
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+	}
+} )
+	.then( /* ... */ );
 ```
 
 Currently, the [feature does not execute `<script>` tags](https://github.com/ckeditor/ckeditor5/issues/8326) so the content that requires executing JavaScript to generate a preview will not show in the editor. However, other JavaScript code, for example, used in `on*` observers and `src="javascript:..."` attributes will be executed. You still need to enable the sanitizer.

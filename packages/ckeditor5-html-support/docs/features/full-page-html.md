@@ -19,23 +19,15 @@ Use the {@link features/source-editing source editing feature} toolbar button {@
 
 ## Installation
 
-To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-html-support`](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support) package:
-
-```bash
-npm install --save @ckeditor/ckeditor5-html-support
-```
-
-And add it to your plugin list configuration:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { FullPage } from '@ckeditor/ckeditor5-html-support';
+import { ClassicEditor, FullPage } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ FullPage, /* ... */ ],
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ FullPage, /* ... */ ],
+} )
+	.then( /* ... */ );
 ```
 
 <info-box info>
