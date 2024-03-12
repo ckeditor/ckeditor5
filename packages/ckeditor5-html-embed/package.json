@@ -29,6 +29,7 @@
     "@ckeditor/ckeditor5-ui": "41.3.0-alpha.1",
     "@ckeditor/ckeditor5-theme-lark": "41.3.0-alpha.1",
     "@ckeditor/ckeditor5-widget": "41.3.0-alpha.1",
+    "@ckeditor/ckeditor5-utils": "41.3.0-alpha.1",
     "lodash-es": "^4.17.15",
     "sanitize-html": "^2.1.0",
     "typescript": "5.0.4",
