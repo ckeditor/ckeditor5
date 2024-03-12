@@ -50,44 +50,35 @@ function RemoveFormatLinks( editor ) {
 Enable the `RemoveFormatLinks` plugin in the {@link getting-started/setup/configuration#adding-features configuration} and run the editor:
 
 ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [
-			RemoveFormat,
-			RemoveFormatLinks,
-			// More plugins.
-			// ...
-		],
-		toolbar: [
-			'removeFormat',
-			// More toolbar items.
-			// ...
-		]
-	} )
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [
+		RemoveFormat,
+		RemoveFormatLinks,
+		// More plugins.
+		// ...
+	],
+	toolbar: [
+		'removeFormat',
+		// More toolbar items.
+		// ...
+	]
+} )
 ```
 
 From now on, the remove format button should also remove links in the content. {@link module:engine/model/schema~Schema#setAttributeProperties Learn more about attribute properties.}
 
 ## Installation
 
-To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-remove-format`](https://www.npmjs.com/package/@ckeditor/ckeditor5-remove-format) package:
-
-```bash
-npm install --save @ckeditor/ckeditor5-remove-format
-```
-
-And add it to your plugin list and the toolbar configuration:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
+import { ClassicEditor, RemoveFormat } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ RemoveFormat, /* ... */ ],
-		toolbar: [ 'removeFormat', /* ... */ ]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ RemoveFormat, /* ... */ ],
+	toolbar: [ 'removeFormat', /* ... */ ]
+} )
+	.then( /* ... */ );
 ```
 
 <info-box info>

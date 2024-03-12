@@ -22,27 +22,19 @@ Press <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>A</kbd> or use the toolbar button {@ic
 
 ## Installation
 
-To add this feature to your editor, install the [`@ckeditor/ckeditor5-select-all`](https://www.npmjs.com/package/@ckeditor/ckeditor5-select-all) package:
-
-```
-npm install --save @ckeditor/ckeditor5-select-all
-```
-
-Then add the `SelectAll` plugin to your plugin list and to the toolbar:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { SelectAll } from '@ckeditor/ckeditor5-select-all';
+import { ClassicEditor, SelectAll } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		// Load the plugin.
-		plugins: [ SelectAll, /* ... */ ],
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	// Load the plugin.
+	plugins: [ SelectAll, /* ... */ ],
 
-		// Display the "Select all" button in the toolbar.
-		toolbar: [ 'selectAll', /* ... */ ],
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+	// Display the "Select all" button in the toolbar.
+	toolbar: [ 'selectAll', /* ... */ ],
+} )
+	.then( /* ... */ );
 ```
 
 <info-box info>

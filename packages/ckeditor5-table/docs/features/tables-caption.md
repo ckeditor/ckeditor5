@@ -24,29 +24,21 @@ In the demo below, click the table caption to edit it. Once you click the captio
 
 ## Installation
 
-To enable the table caption feature in your editor, you need to have the [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package installed (it is already present in the predefined builds):
-
-```
-npm install --save @ckeditor/ckeditor5-table
-```
-
-Then add the `Table`, `TableToolbar`, and **`TableCaption`** plugins to your plugin list and configure the table toolbar:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { Table, TableCaption, TableToolbar } from '@ckeditor/ckeditor5-table';
+import { ClassicEditor, Table, TableCaption, TableToolbar } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Table, TableToolbar, TableCaption, Bold, /* ... */ ],
-		toolbar: [ 'insertTable', /* ... */ ],
-		table: {
-			contentToolbar: [
-				'toggleTableCaption'
-			]
-		}
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Table, TableToolbar, TableCaption, Bold, /* ... */ ],
+	toolbar: [ 'insertTable', /* ... */ ],
+	table: {
+		contentToolbar: [
+			'toggleTableCaption'
+		]
+	}
+} )
+	.then( /* ... */ );
 ```
 
 <info-box info>

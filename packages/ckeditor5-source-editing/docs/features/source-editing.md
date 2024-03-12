@@ -24,39 +24,28 @@ You can also use one of the many CKEditor&nbsp;5 features available in the toolb
 
 ## Installation
 
-To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-source-editing`](https://www.npmjs.com/package/@ckeditor/ckeditor5-source-editing) package:
-
-```bash
-npm install --save @ckeditor/ckeditor5-source-editing
-```
-
-And add it to your plugin list configuration:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
+import { ClassicEditor, SourceEditing } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ SourceEditing, /* ... */ ],
-		toolbar: [ 'sourceEditing', /* ... */ ]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ SourceEditing, /* ... */ ],
+	toolbar: [ 'sourceEditing', /* ... */ ]
+} )
+	.then( /* ... */ );
 ```
 
 To utilize the Markdown source editing mode just add the {@link features/markdown Markdown output} plugin to the editor.
 
 ```js
-import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
-import { Markdown } from '@ckeditor/ckeditor5-markdown-gfm';
+import { ClassicEditor, SourceEditing, Markdown } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ SourceEditing, Markdown, /* ... */ ],
-		toolbar: [ 'sourceEditing', /* ... */ ]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ SourceEditing, Markdown, /* ... */ ],
+	toolbar: [ 'sourceEditing', /* ... */ ]
+} )
+	.then( /* ... */ );
 ```
 
 <info-box info>

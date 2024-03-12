@@ -20,27 +20,19 @@ Toggle the block elements visibility with the show block {@icon @ckeditor/ckedit
 
 ## Installation
 
-To add this feature to your editor, install the [`@ckeditor/ckeditor5-show-blocks`](https://www.npmjs.com/package/@ckeditor/ckeditor5-show-blocks) package:
-
-```
-npm install --save @ckeditor/ckeditor5-show-blocks
-```
-
-Then add the `ShowBlocks` plugin to your plugin list and to the toolbar:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { ShowBlocks } from '@ckeditor/ckeditor5-show-blocks';
+import { ClassicEditor, ShowBlocks } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		// Load the plugin.
-		plugins: [ ShowBlocks, /* ... */ ],
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	// Load the plugin.
+	plugins: [ ShowBlocks, /* ... */ ],
 
-		// Display the "Show blocks" button in the toolbar.
-		toolbar: [ 'showBlocks', /* ... */ ],
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+	// Display the "Show blocks" button in the toolbar.
+	toolbar: [ 'showBlocks', /* ... */ ],
+} )
+	.then( /* ... */ );
 ```
 
 <info-box info>

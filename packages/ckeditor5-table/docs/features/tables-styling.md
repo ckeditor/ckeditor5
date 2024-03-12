@@ -26,40 +26,32 @@ Put the caret anywhere inside the table to open the table toolbar. Click the tab
 
 ## Installation
 
-To enable the rich table and cell styling tools in your editor, you need to have the [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package installed (it is already present in the predefined builds):
-
-```
-npm install --save @ckeditor/ckeditor5-table
-```
-
-Then add the `Table`, `TableToolbar`, **`TableProperties`**, and **`TableCellProperties`** plugins to your plugin list and configure the table toolbar:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { Table, TableCellProperties, TableProperties, TableToolbar } from '@ckeditor/ckeditor5-table';
+import { ClassicEditor, Table, TableCellProperties, TableProperties, TableToolbar } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Table, TableToolbar, TableProperties, TableCellProperties, Bold, /* ... */ ],
-		toolbar: [ 'insertTable', /* ... */ ],
-		table: {
-			contentToolbar: [
-				'tableColumn', 'tableRow', 'mergeTableCells',
-				'tableProperties', 'tableCellProperties'
-			],
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Table, TableToolbar, TableProperties, TableCellProperties, Bold, /* ... */ ],
+	toolbar: [ 'insertTable', /* ... */ ],
+	table: {
+		contentToolbar: [
+			'tableColumn', 'tableRow', 'mergeTableCells',
+			'tableProperties', 'tableCellProperties'
+		],
 
-			tableProperties: {
-				// The configuration of the TableProperties plugin.
-				// ...
-			},
+		tableProperties: {
+			// The configuration of the TableProperties plugin.
+			// ...
+		},
 
-			tableCellProperties: {
-				// The configuration of the TableCellProperties plugin.
-				// ...
-			}
+		tableCellProperties: {
+			// The configuration of the TableCellProperties plugin.
+			// ...
 		}
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+	}
+} )
+	.then( /* ... */ );
 ```
 
 <info-box info>
@@ -120,31 +112,29 @@ const customColorPalette = [
 	// ...
 ];
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Table, TableToolbar, TableProperties, TableCellProperties, Bold, /* ... */ ],
-		toolbar: [ 'insertTable', /* ... */ ],
-		table: {
-			contentToolbar: [
-				'tableColumn', 'tableRow', 'mergeTableCells',
-				'tableProperties', 'tableCellProperties'
-			],
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Table, TableToolbar, TableProperties, TableCellProperties, Bold, /* ... */ ],
+	toolbar: [ 'insertTable', /* ... */ ],
+	table: {
+		contentToolbar: [
+			'tableColumn', 'tableRow', 'mergeTableCells',
+			'tableProperties', 'tableCellProperties'
+		],
 
-			// Set the palettes for tables.
-			tableProperties: {
-				borderColors: customColorPalette,
-				backgroundColors: customColorPalette
-			},
+		// Set the palettes for tables.
+		tableProperties: {
+			borderColors: customColorPalette,
+			backgroundColors: customColorPalette
+		},
 
-			// Set the palettes for table cells.
-			tableCellProperties: {
-				borderColors: customColorPalette,
-				backgroundColors: customColorPalette
-			}
+		// Set the palettes for table cells.
+		tableCellProperties: {
+			borderColors: customColorPalette,
+			backgroundColors: customColorPalette
 		}
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+	}
+} )
+	.then( /* ... */ );
 ```
 
 ### Default table and table cell styles

@@ -30,27 +30,19 @@ The feature supports both toolbar buttons and {@link features/keyboard-support k
 
 ## Installation
 
-To add this feature to your editor, install the [`@ckeditor/ckeditor5-undo`](https://www.npmjs.com/package/@ckeditor/ckeditor5-undo) package:
-
-```
-npm install --save @ckeditor/ckeditor5-undo
-```
-
-Then add the `Undo` plugin to your plugin list and to the toolbar:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { Undo } from '@ckeditor/ckeditor5-undo';
+import { ClassicEditor, Undo } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		// Load the plugin.
-		plugins: [ Undo, /* ... */ ],
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	// Load the plugin.
+	plugins: [ Undo, /* ... */ ],
 
-		// Display the "Undo" and "Redo" buttons in the toolbar.
-		toolbar: [ 'undo', 'redo', /* ... */ ],
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+	// Display the "Undo" and "Redo" buttons in the toolbar.
+	toolbar: [ 'undo', 'redo', /* ... */ ],
+} )
+	.then( /* ... */ );
 ```
 
 <info-box info>

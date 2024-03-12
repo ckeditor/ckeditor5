@@ -29,24 +29,16 @@ Use the editor below to see the adapter in action. Open the web browser console 
 
 ## Installation
 
-First, install the [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package:
-
-```plaintext
-npm install --save @ckeditor/ckeditor5-upload
-```
-
-Add the {@link module:upload/adapters/base64uploadadapter~Base64UploadAdapter `Base64UploadAdapter`} to your plugin list:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { Base64UploadAdapter } from '@ckeditor/ckeditor5-upload';
+import { ClassicEditor, Base64UploadAdapter } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Base64UploadAdapter, /* ... */ ],
-		toolbar: [ /* ... */ ]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Base64UploadAdapter, /* ... */ ],
+	toolbar: [ /* ... */ ]
+} )
+	.then( /* ... */ );
 ```
 
 Once enabled in the plugin list, the Base64 image upload adapter works out–of–the–box without any additional configuration.

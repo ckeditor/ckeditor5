@@ -29,114 +29,6 @@ The basic table features allow users to insert tables into content, add or remov
 
 The [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package contains multiple plugins that implement various table-related features. The {@link module:table/table~Table `Table`} plugin is at the core of the ecosystem. Available in all {@link getting-started/legacy-getting-started/predefined-builds predefined builds}, it provides the table functionality. There are many other features that extend the editor capabilities:
 
-The availability of these plugins varies in different {@link getting-started/legacy-getting-started/predefined-builds predefined editor builds} but the most important ones are present in all builds as presented in the table below:
-
-<figure class="table">
-	<table style="text-align: center">
-		<thead>
-			<tr>
-				<th rowspan="2"  style="vertical-align: middle">Image feature (plugin)</th>
-				<th colspan="6">Predefined editor build</th>
-			</tr>
-			<tr>
-				<th>{@link getting-started/legacy-getting-started/predefined-builds#classic-editor Classic}</th>
-				<th>{@link getting-started/legacy-getting-started/predefined-builds#inline-editor Inline}</th>
-				<th>{@link getting-started/legacy-getting-started/predefined-builds#balloon-editor Balloon}</th>
-				<th>{@link getting-started/legacy-getting-started/predefined-builds#balloon-block-editor Balloon block}</th>
-				<th>{@link getting-started/legacy-getting-started/predefined-builds#document-editor Document}</th>
-				<th>{@link getting-started/legacy-getting-started/predefined-builds#superbuild Superbuild}</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<th>{@link module:table/table~Table}</th>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-			</tr>
-			<tr>
-				<th>{@link module:table/tabletoolbar~TableToolbar}</th>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-			</tr>
-			<tr>
-				<th>{@link module:table/tableproperties~TableProperties}</th>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-			</tr>
-			<tr>
-				<th>{@link module:table/tablecellproperties~TableCellProperties}</th>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-			</tr>
-			<tr>
-				<th>{@link module:table/tablecolumnresize~TableColumnResize}</th>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-			</tr>
-			<tr>
-				<th>{@link module:table/tablecaption~TableCaption}</th>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-			</tr>
-			<tr>
-				<th>{@link module:table/tableselection~TableSelection}</th>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-			</tr>
-			<tr>
-				<th>{@link module:table/tableclipboard~TableClipboard}</th>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-			</tr>
-			<tr>
-				<th>{@link module:table/tableutils~TableUtils}</th>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-			</tr>
-		</tbody>
-	</table>
-</figure>
-
-<info-box>
-	You can add more table features to your editor using the [online builder](https://ckeditor.com/ckeditor-5/online-builder/) or by customizing your editor build.
-</info-box>
-
 ## Table selection
 
 The {@link module:table/tableselection~TableSelection} plugin introduces support for the custom selection system for tables that lets you:
@@ -293,27 +185,19 @@ The above model structure will be rendered to the data and to the editing view a
 
 ## Installation
 
-To add only the basic table features to your editor, install the [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package:
-
-```
-npm install --save @ckeditor/ckeditor5-table
-```
-
-Then add the `Table` and `TableToolbar` plugins to your plugin list and configure the table toolbar:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
+import { ClassicEditor, Table, TableToolbar } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Table, TableToolbar, Bold, /* ... */ ],
-		toolbar: [ 'insertTable', /* ... */ ],
-		table: {
-			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
-		}
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Table, TableToolbar, Bold, /* ... */ ],
+	toolbar: [ 'insertTable', /* ... */ ],
+	table: {
+		contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
+	}
+} )
+	.then( /* ... */ );
 ```
 
 ### Default table headers
@@ -321,18 +205,16 @@ ClassicEditor
 To make every inserted table have `n` number of rows and columns as table headers by default, set an optional table configuration property `defaultHeadings` as follows:
 
 ```js
-import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
+import { ClassicEditor, Table, TableToolbar } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Table, TableToolbar, Bold, /* ... */ ],
-		toolbar: [ 'insertTable', /* ... */ ],
-		table: {
-			defaultHeadings: { rows: 1, columns: 1 }
-		}
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Table, TableToolbar, Bold, /* ... */ ],
+	toolbar: [ 'insertTable', /* ... */ ],
+	table: {
+		defaultHeadings: { rows: 1, columns: 1 }
+	}
+} )
+	.then( /* ... */ );
 ```
 
 Check the table with default headers applied to both the first row and the first column in the demo below. Click on the table and use the column properties {@icon @ckeditor/ckeditor5-table/theme/icons/table-column.svg Table column} or the row properties {@icon @ckeditor/ckeditor5-table/theme/icons/table-row.svg Table row} UI button to toggle the respective headers.
@@ -356,14 +238,12 @@ function DisallowNestingTables( editor ) {
 
 // Pass it via config.extraPlugins or config.plugins:
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		extraPlugins: [ DisallowNestingTables ],
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	extraPlugins: [ DisallowNestingTables ],
 
-		// The rest of the configuration.
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+	// The rest of the configuration.
+} )
+	.then( /* ... */ );
 ```
 <info-box>
 	Check the {@link tutorials/crash-course/editor step-by-step tutorial} if you need more information about the technical side of this solution.
