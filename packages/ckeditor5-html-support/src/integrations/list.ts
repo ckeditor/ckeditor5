@@ -16,7 +16,8 @@ import type {
 	ListEditingPostFixerEvent,
 	LegacyIndentCommand,
 	ListIndentCommand,
-	ListTypeOptions
+	ListTypeOptions,
+	ListUtils
 } from '@ckeditor/ckeditor5-list';
 
 import { getHtmlAttributeName, setViewAttributes } from '../utils.js';
@@ -54,6 +55,7 @@ export default class ListElementSupport extends Plugin {
 		const conversion = editor.conversion;
 		const dataFilter = editor.plugins.get( DataFilter );
 		const listEditing: ListEditing = editor.plugins.get( 'ListEditing' );
+		const listUtils: ListUtils = editor.plugins.get( 'ListUtils' );
 		const viewElements = [ 'ul', 'ol', 'li' ];
 
 		// Register downcast strategy.
@@ -145,12 +147,12 @@ export default class ListElementSupport extends Plugin {
 			for ( const { node } of listNodes ) {
 				const listType = node.getAttribute( 'listType' );
 
-				if ( listType !== 'numbered' && listType !== 'customNumbered' && node.getAttribute( 'htmlOlAttributes' ) ) {
+				if ( !listUtils.isNumberedListType( listType ) && node.getAttribute( 'htmlOlAttributes' ) ) {
 					writer.removeAttribute( 'htmlOlAttributes', node );
 					evt.return = true;
 				}
 
-				if ( ( listType === 'numbered' || listType === 'customNumbered' ) && node.getAttribute( 'htmlUlAttributes' ) ) {
+				if ( listUtils.isNumberedListType( listType ) && node.getAttribute( 'htmlUlAttributes' ) ) {
 					writer.removeAttribute( 'htmlUlAttributes', node );
 					evt.return = true;
 				}
