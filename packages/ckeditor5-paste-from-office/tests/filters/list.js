@@ -7,6 +7,7 @@ import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/html
 import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import Document from '@ckeditor/ckeditor5-engine/src/view/document.js';
 import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import {
 	transformListItemLikeElementsIntoLists,
@@ -15,6 +16,8 @@ import {
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
 
 describe( 'PasteFromOffice - filters', () => {
+	testUtils.createSinonSandbox();
+
 	describe( 'list - paste from MS Word', () => {
 		const htmlDataProcessor = new HtmlDataProcessor( new Document( new StylesProcessor() ) );
 
@@ -102,6 +105,140 @@ describe( 'PasteFromOffice - filters', () => {
 						'</li>' +
 					'</ul>'
 				);
+			} );
+
+			describe( 'legal list detecting', () => {
+				it( 'handles "legal-list" when multi-level-list is loaded', () => {
+					const level1 = 'style="mso-list:l0 level1 lfo0"';
+					const styles = '@list l0:level1\n' +
+						'{mso-level-text:"%1\\.%2\\.";}';
+
+					const html = `<p ${ level1 }>Foo</p>`;
+					const view = htmlDataProcessor.toView( html );
+					const hasMultiLevelListPluginLoaded = true;
+
+					transformListItemLikeElementsIntoLists( view, styles, hasMultiLevelListPluginLoaded );
+
+					expect( stringify( view ) ).to.equal(
+						`<ol class="legal-list"><li ${ level1 }>Foo</li></ol>`
+					);
+				} );
+
+				it( 'detect "legal-list" with double new line', () => {
+					const level1 = 'style="mso-list:l0 level1 lfo0"';
+					const styles = '@list l0:level1\n\n' +
+						'{mso-level-text:"%1\\.%2\\.";}';
+
+					const html = `<p ${ level1 }>Foo</p>`;
+					const view = htmlDataProcessor.toView( html );
+					const hasMultiLevelListPluginLoaded = true;
+
+					transformListItemLikeElementsIntoLists( view, styles, hasMultiLevelListPluginLoaded );
+
+					expect( stringify( view ) ).to.equal(
+						`<ol class="legal-list"><li ${ level1 }>Foo</li></ol>`
+					);
+				} );
+
+				it( 'detect "legal-list" with double spaces', () => {
+					const level1 = 'style="mso-list:l0 level1 lfo0"';
+					const styles = '@list  l0:level1\n\n' +
+						'{mso-level-text:"%1\\.%2\\.";}';
+
+					const html = `<p ${ level1 }>Foo</p>`;
+					const view = htmlDataProcessor.toView( html );
+					const hasMultiLevelListPluginLoaded = true;
+
+					transformListItemLikeElementsIntoLists( view, styles, hasMultiLevelListPluginLoaded );
+
+					expect( stringify( view ) ).to.equal(
+						`<ol class="legal-list"><li ${ level1 }>Foo</li></ol>`
+					);
+				} );
+
+				it( 'detect "legal-list" with another css attribute', () => {
+					const level1 = 'style="mso-list:l0 level1 lfo0"';
+					const styles = '@list  l0:level1\n\n' +
+						'{mso-level-text:"%1\\.%2\\.";' +
+						'another-css-attribute: value;}';
+
+					const html = `<p ${ level1 }>Foo</p>`;
+					const view = htmlDataProcessor.toView( html );
+					const hasMultiLevelListPluginLoaded = true;
+
+					transformListItemLikeElementsIntoLists( view, styles, hasMultiLevelListPluginLoaded );
+
+					expect( stringify( view ) ).to.equal(
+						`<ol class="legal-list"><li ${ level1 }>Foo</li></ol>`
+					);
+				} );
+
+				it( 'detect "legal-list" with another css attribute and another order', () => {
+					const level1 = 'style="mso-list:l0 level1 lfo0"';
+					const styles = '@list  l0:level1\n\n' +
+						'{another-css-attribute: value;' +
+						'mso-level-text:"%1\\.%2\\.";}';
+
+					const html = `<p ${ level1 }>Foo</p>`;
+					const view = htmlDataProcessor.toView( html );
+					const hasMultiLevelListPluginLoaded = true;
+
+					transformListItemLikeElementsIntoLists( view, styles, hasMultiLevelListPluginLoaded );
+
+					expect( stringify( view ) ).to.equal(
+						`<ol class="legal-list"><li ${ level1 }>Foo</li></ol>`
+					);
+				} );
+
+				it( 'handles "legal-list" with wrong id', () => {
+					const level1 = 'style="mso-list:l0 level1 lfo0"';
+					const styles = '@list l1:level1\n\n' +
+						'{another-css-attribute: value;' +
+						'mso-level-text:"%1\\.%2\\.";}';
+
+					const html = `<p ${ level1 }>Foo</p>`;
+					const view = htmlDataProcessor.toView( html );
+					const hasMultiLevelListPluginLoaded = true;
+
+					transformListItemLikeElementsIntoLists( view, styles, hasMultiLevelListPluginLoaded );
+
+					expect( stringify( view ) ).to.equal(
+						`<ol><li ${ level1 }>Foo</li></ol>`
+					);
+				} );
+
+				it( 'handles legal-list when multi-level-list is not loaded', () => {
+					const level1 = 'style="mso-list:l0 level1 lfo0"';
+					const styles = '@list l0:level1\n' +
+						'{mso-level-text:"%1\\.%2\\.";}';
+
+					const html = `<p ${ level1 }>Foo</p>`;
+					const view = htmlDataProcessor.toView( html );
+					const hasMultiLevelListPluginLoaded = false;
+
+					transformListItemLikeElementsIntoLists( view, styles, hasMultiLevelListPluginLoaded );
+
+					expect( stringify( view ) ).to.equal(
+						`<ol><li ${ level1 }>Foo</li></ol>`
+					);
+				} );
+
+				it( 'handles legal-list when multi-level-list with mso-level-number-format attribute', () => {
+					const level1 = 'style="mso-list:l0 level1 lfo0"';
+					const styles = '@list l0:level1\n' +
+						'{mso-level-text:"%1\\.%2\\.";' +
+						'mso-level-number-format: bullet;}';
+
+					const html = `<p ${ level1 }>Foo</p>`;
+					const view = htmlDataProcessor.toView( html );
+					const hasMultiLevelListPluginLoaded = false;
+
+					transformListItemLikeElementsIntoLists( view, styles, hasMultiLevelListPluginLoaded );
+
+					expect( stringify( view ) ).to.equal(
+						`<ul><li ${ level1 }>Foo</li></ul>`
+					);
+				} );
 			} );
 
 			describe( 'nesting', () => {
@@ -279,6 +416,7 @@ describe( 'PasteFromOffice - filters', () => {
 							`<ol style="list-style-type:lower-alpha"><li ${ level1 }>Foo</li></ol>`
 						);
 					} );
+
 					it( 'converts "roman-upper" style to proper CSS attribute', () => {
 						const styles = '@list l0:level1\n' +
 							'{mso-level-number-format:roman-upper;}';
