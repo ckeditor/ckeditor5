@@ -32,7 +32,7 @@ After {@link getting-started/quick-start installing the editor}, add the feature
 import { ClassicEditor, Table, TableCellProperties, TableProperties, TableToolbar } from 'ckeditor5';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Table, TableToolbar, TableProperties, TableCellProperties, Bold, /* ... */ ],
+	plugins: [ Table, TableToolbar, TableProperties, TableCellProperties, /* ... */ ],
 	toolbar: [ 'insertTable', /* ... */ ],
 	table: {
 		contentToolbar: [
