@@ -41,7 +41,6 @@ Then, change your `ClassicEditor.create()` call to `watchdog.create()` as follow
 
 ```js
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import { ClassicEditor, EditorWatchdog } from '@ckeditor/ckeditor5-watchdog';
 
 import { ClassicEditor, Bold, EditorWatchdog, Essentials, Italic, Paragraph } from 'ckeditor5';
 
