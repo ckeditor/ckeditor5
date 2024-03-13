@@ -130,11 +130,7 @@ export function createListItemElement(
  * @internal
  */
 export function getViewElementNameForListType( type?: ListTypeOptions ): 'ol' | 'ul' {
-	if ( type == 'legal' ) {
-		return 'ol';
-	}
-
-	return type == 'numbered' ? 'ol' : 'ul';
+	return type == 'numbered' || type == 'customNumbered' ? 'ol' : 'ul';
 }
 
 /**
