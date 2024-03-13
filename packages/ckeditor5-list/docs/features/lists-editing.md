@@ -47,8 +47,7 @@ To prevent this behavior, enable the {@link module:list/list/adjacentlistssuppor
 import { ClassicEditor, List, AdjacentListsSupport } from 'ckeditor5';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ List, AdjacentListsSupport, /* ... */
-	],
+	plugins: [ List, AdjacentListsSupport, /* ... */ ]
 } )
 .then( /* ... */ );
 ```
