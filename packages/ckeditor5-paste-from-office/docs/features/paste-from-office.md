@@ -72,7 +72,7 @@ After {@link getting-started/quick-start installing the editor}, add the feature
 import { ClassicEditor, PasteFromOffice } from 'ckeditor5';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ PasteFromOffice, Bold, /* ... */ ]
+	plugins: [ PasteFromOffice, /* ... */ ]
 } )
 .then( /* ... */ );
 ```
