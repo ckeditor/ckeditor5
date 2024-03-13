@@ -40,8 +40,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	const wordCountWrapper = document.getElementById( 'word-count' );
 
 	wordCountWrapper.appendChild( wordCountPlugin.wordCountContainer );
-} )
-	.catch( /* ... */ );
+} );
 ```
 
 ## Configuration
@@ -138,8 +137,7 @@ BalloonEditor
 				sendButton.toggleAttribute( 'disabled', isLimitExceeded );
 			}
 		}
-	} )
-	.catch( /* ... */ );
+	} );
 ```
 
 Here is the HTML structure used to create the customized word and character count implementation above:
