@@ -39,8 +39,8 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	const wordCountPlugin = editor.plugins.get( 'WordCount' );
 	const wordCountWrapper = document.getElementById( 'word-count' );
 
-		wordCountWrapper.appendChild( wordCountPlugin.wordCountContainer );
-	} )
+	wordCountWrapper.appendChild( wordCountPlugin.wordCountContainer );
+} )
 	.catch( /* ... */ );
 ```
 
