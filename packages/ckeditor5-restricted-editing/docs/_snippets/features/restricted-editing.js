@@ -91,7 +91,7 @@ async function startRestrictedEditingMode() {
 	await reloadEditor( {
 		removePlugins: [ 'StandardEditingMode' ],
 		cloudServices: CS_CONFIG,
-		toolbar: [ 'restrictedEditing', '|', 'bold', 'italic', 'link', '|', 'undo', 'redo' ],
+		toolbar: [ 'restrictedEditing', '|', 'bold', 'italic', 'link', '|', 'undo', 'redo', 'insertImage' ],
 		image: {
 			toolbar: [
 				'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText', '|',

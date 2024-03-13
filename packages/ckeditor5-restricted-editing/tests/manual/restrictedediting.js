@@ -12,6 +12,12 @@ import Table from '@ckeditor/ckeditor5-table/src/table.js';
 import StandardEditingMode from '../../src/standardeditingmode.js';
 import RestrictedEditingMode from '../../src/restrictededitingmode.js';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
+import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert.js';
+import ImageInline from '@ckeditor/ckeditor5-image/src/imageinline.js';
+import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder.js';
+import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter.js';
+import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload.js';
+import { UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
 
 const restrictedModeButton = document.getElementById( 'mode-restricted' );
 const standardModeButton = document.getElementById( 'mode-standard' );
@@ -35,11 +41,12 @@ async function startMode( selectedMode ) {
 
 async function startStandardEditingMode() {
 	await reloadEditor( {
-		plugins: [ ArticlePluginSet, Table, StandardEditingMode ],
+		plugins: [ ArticlePluginSet, Table, StandardEditingMode, ImageInline, ImageInsert,
+			CKFinder, CKFinderUploadAdapter ],
 		toolbar: [
 			'heading', '|', 'bold', 'italic', 'link', '|',
 			'bulletedList', 'numberedList', 'blockQuote', 'insertTable', '|',
-			'restrictedEditingException', '|', 'undo', 'redo'
+			'restrictedEditingException', '|', 'undo', 'redo', 'insertImage'
 		],
 		image: {
 			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative' ]
@@ -50,6 +57,10 @@ async function startStandardEditingMode() {
 				'tableRow',
 				'mergeTableCells'
 			]
+		},
+		ckfinder: {
+			// eslint-disable-next-line max-len
+			uploadUrl: 'https://ckeditor.com/apps/ckfinder/3.5.0/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
 		},
 		updateSourceElementOnDestroy: true
 	} );
@@ -74,11 +85,19 @@ function MyPlugin( editor ) {
 
 async function startRestrictedEditingMode() {
 	await reloadEditor( {
-		plugins: [ ArticlePluginSet, Table, TableToolbar, RestrictedEditingMode, MyPlugin ],
-		toolbar: [ 'bold', 'italic', 'link', '|', 'restrictedEditing', '|', 'undo', 'redo' ],
+		plugins: [ ImageUpload, ArticlePluginSet, Table, TableToolbar, RestrictedEditingMode, MyPlugin,
+			ImageInline, ImageInsert, CKFinderUploadAdapter, CKFinder, CKFinderUploadAdapter ],
+		toolbar: [ 'bold', 'italic', 'link', '|', 'restrictedEditing', '|', 'undo', 'redo', 'insertImage' ],
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ],
 			tableToolbar: [ 'bold', 'italic' ]
+		},
+		image: {
+			toolbar: [ 'imageStyle:inline' ]
+		},
+		ckfinder: {
+			// eslint-disable-next-line max-len
+			uploadUrl: 'https://ckeditor.com/apps/ckfinder/3.5.0/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
 		},
 		updateSourceElementOnDestroy: true
 	} );
@@ -90,4 +109,11 @@ async function reloadEditor( config ) {
 	}
 
 	window.editor = await ClassicEditor.create( document.querySelector( '#editor' ), config );
+	window.editor.plugins._plugins.delete( 'ImageBlockEditing' );
+
+	window.editor.plugins.get( 'FileRepository' ).createUploadAdapter = loader => {
+		const adapterMock = new UploadAdapterMock( loader );
+
+		return adapterMock;
+	};
 }
