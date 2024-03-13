@@ -29,37 +29,27 @@ The title plugin is integrated with the {@link features/editor-placeholder place
 To change the title placeholder, use the {@link module:heading/title~TitleConfig#placeholder `title.placeholder`} configuration option. For instance:
 
 ```js
-ClassicEditor
-    .create( document.querySelector( '#editor' ), {
-        plugins: [ Title, /* ... */ ],
-        title: {
-            placeholder: 'My custom placeholder for the title'
-        },
-        placeholder: 'My custom placeholder for the body'
-    } )
-    .then( /* ... */ )
-    .catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Title, /* ... */ ],
+	title: {
+		placeholder: 'My custom placeholder for the title'
+	},
+	placeholder: 'My custom placeholder for the body'
+} )
+.then( /* ... */ );
 ```
 
 ## Installation
 
-To add this feature to your editor, install the [`@ckeditor/ckeditor5-heading`](https://www.npmjs.com/package/@ckeditor/ckeditor5-heading) package:
-
-```plaintext
-npm install --save @ckeditor/ckeditor5-heading
-```
-
-Then add the `Title` plugin to your plugin list:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { Title } from '@ckeditor/ckeditor5-heading';
+import { ClassicEditor, Title } from 'ckeditor5';
 
-ClassicEditor
-    .create( document.querySelector( '#editor' ), {
-        plugins: [ Title, /* ... */ ]
-    } )
-    .then( /* ... */ )
-    .catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Title, /* ... */ ]
+} )
+.then( /* ... */ );
 ```
 
 <info-box info>

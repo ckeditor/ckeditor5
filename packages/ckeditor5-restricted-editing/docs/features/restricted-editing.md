@@ -45,19 +45,16 @@ By using this feature, the users of your application will be able to create temp
 You can configure which features should be available in the restricted mode. For instance, the following configuration allows the users to type, delete but also to bold text.
 
 ```js
-import { RestrictedEditingMode } from '@ckeditor/ckeditor5-restricted-editing';
-import { Bold } from '@ckeditor/ckeditor5-basic-styles';
+import { ClassicEditor, RestrictedEditingMode, Bold } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Bold, RestrictedEditingMode, /* ... */ ],
-		toolbar: [ 'bold', '|', 'restrictedEditing', /* ... */ ],
-		restrictedEditing: {
-			allowedCommands: [ 'bold' ]
-		}
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Bold, RestrictedEditingMode, /* ... */ ],
+	toolbar: [ 'bold', '|', 'restrictedEditing', /* ... */ ],
+	restrictedEditing: {
+		allowedCommands: [ 'bold' ]
+	}
+} )
+.then( /* ... */ );
 ```
 
 **Note**: Typing and deleting text is always possible in restricted editing regions. For more information, check out the {@link module:restricted-editing/restrictededitingconfig~RestrictedEditingConfig `config.restrictedEditing`} documentation.
@@ -67,7 +64,7 @@ ClassicEditor
 The restricted editing mode allows modifying the editor content only in designated regions. Outside these regions, most of the editor commands are turned off by default. If you wish to enable some commands outside the restricted editing regions, you can use the {@link module:restricted-editing/restrictededitingmodeediting~RestrictedEditingModeEditing#enableCommand `RestrictedEditingModeEditing.enableCommand()`} method. You must execute this method in the {@link module:core/plugin~PluginInterface#afterInit `afterInit()`} callback of an editor plugin.
 
 ```js
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { ClassicEditor, Plugin } from 'ckeditor5';
 
 class MyPlugin extends Plugin {
 	afterInit() {
@@ -78,26 +75,20 @@ class MyPlugin extends Plugin {
 
 ## Installation
 
-To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-restricted-editing`](https://www.npmjs.com/package/@ckeditor/ckeditor5-restricted-editing) package:
-
-```plaintext
-npm install --save @ckeditor/ckeditor5-restricted-editing
-```
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration.
 
 ### Running the standard editing mode
 
 To initialize the editor in the standard editing mode, add the {@link module:restricted-editing/standardeditingmode~StandardEditingMode} plugin and add the `'restrictedEditingException'` button to the toolbar:
 
 ```js
-import { StandardEditingMode } from '@ckeditor/ckeditor5-restricted-editing';
+import { ClassicEditor, StandardEditingMode } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ StandardEditingMode, /* ... */ ],
-		toolbar: [ 'restrictedEditingException', /* ... */ ]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ StandardEditingMode, /* ... */ ],
+	toolbar: [ 'restrictedEditingException', /* ... */ ]
+} )
+.then( /* ... */ );
 ```
 
 ### Running the restricted editing mode
@@ -105,15 +96,13 @@ ClassicEditor
 To initialize the editor in the restricted editing mode, add the {@link module:restricted-editing/restrictededitingmode~RestrictedEditingMode} plugin and add the `'restrictedEditing'` button to the toolbar:
 
 ```js
-import { RestrictedEditingMode } from '@ckeditor/ckeditor5-restricted-editing';
+import { ClassicEditor, RestrictedEditingMode } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ RestrictedEditingMode, /* ... */ ],
-		toolbar: [ 'restrictedEditing', /* ... */ ]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ RestrictedEditingMode, /* ... */ ],
+	toolbar: [ 'restrictedEditing', /* ... */ ]
+} )
+.then( /* ... */ );
 ```
 
 <info-box info>

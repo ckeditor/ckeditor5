@@ -118,12 +118,9 @@ You can change the style of an individual image using the contextual toolbar tha
 The editor above does not require any configuration, using one of the following builds: classic, inline, balloon, or balloon-block, for example:
 
 ```js
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
+import ClassicEditor from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ) )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ) ).then( /* ... */ );
 ```
 
 ### Presentational styles
@@ -161,15 +158,12 @@ See the result below:
 
 </div>
 
-This set of buttons and styles is available by default in the predefined {@link getting-started/legacy-getting-started/predefined-builds#document-editor document editor build} and does not require any additional customization:
+This set of buttons and styles is available by default in the document editor and does not require any additional customization:
 
 ```js
-import { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
+import { DecoupledEditor } from 'ckeditor5';
 
-DecoupledEditor.
-	.create( document.querySelector( '#editor' ) )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+DecoupledEditor..create( document.querySelector( '#editor' ) ).then( /* ... */ );
 ```
 
 <info-box warning>
@@ -197,67 +191,65 @@ The editor example below shows what you can achieve by customizing the visual re
 This editor uses custom image styles, custom image toolbar configuration with {@link module:image/imageconfig~ImageStyleDropdownDefinition declarative dropdowns}, and some modified [default styles](#ready-to-use-styles). You can find some more examples of using and modifying these styles in the {@link module:image/imageconfig~ImageConfig#styles `config.image.styles`} API documentation.
 
 ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		// More of editor's configuration.
-		// ...
-		image: {
-			styles: {
-				// Defining custom styling options for the images.
-				options: [ {
-					name: 'side',
-					icon: sideIcon,
-					title: 'Side image',
-					className: 'image-side',
-					modelElements: [ 'imageBlock' ]
-				}, {
-					name: 'margin-left',
-					icon: leftIcon,
-					title: 'Image on left margin',
-					className: 'image-margin-left',
-					modelElements: [ 'imageInline' ]
-				}, {
-					name: 'margin-right',
-					icon: rightIcon,
-					title: 'Image on right margin',
-					className: 'image-margin-right',
-					modelElements: [ 'imageInline' ]
-				},
-				// Modifying icons and titles of the default inline and
-				// block image styles to reflect its real appearance.
-				{
-					name: 'inline',
-					icon: inlineIcon
-				}, {
-					name: 'block',
-					title: 'Centered image',
-					icon: centerIcon
-				} ]
-			},
-			toolbar: [ {
-				// Grouping the buttons for the icon-like image styling
-				// into one dropdown.
-				name: 'imageStyle:icons',
-				title: 'Alignment',
-				items: [
-					'imageStyle:margin-left',
-					'imageStyle:margin-right',
-					'imageStyle:inline'
-				],
-				defaultItem: 'imageStyle:margin-left'
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	// More of editor's configuration.
+	// ...
+	image: {
+		styles: {
+			// Defining custom styling options for the images.
+			options: [ {
+				name: 'side',
+				icon: sideIcon,
+				title: 'Side image',
+				className: 'image-side',
+				modelElements: [ 'imageBlock' ]
 			}, {
-				// Grouping the buttons for the regular
-				// picture-like image styling into one dropdown.
-				name: 'imageStyle:pictures',
-				title: 'Style',
-				items: [ 'imageStyle:block', 'imageStyle:side' ],
-				defaultItem: 'imageStyle:block'
-			}, '|', 'toggleImageCaption', 'linkImage'
-			]
-		}
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+				name: 'margin-left',
+				icon: leftIcon,
+				title: 'Image on left margin',
+				className: 'image-margin-left',
+				modelElements: [ 'imageInline' ]
+			}, {
+				name: 'margin-right',
+				icon: rightIcon,
+				title: 'Image on right margin',
+				className: 'image-margin-right',
+				modelElements: [ 'imageInline' ]
+			},
+			// Modifying icons and titles of the default inline and
+			// block image styles to reflect its real appearance.
+			{
+				name: 'inline',
+				icon: inlineIcon
+			}, {
+				name: 'block',
+				title: 'Centered image',
+				icon: centerIcon
+			} ]
+		},
+		toolbar: [ {
+			// Grouping the buttons for the icon-like image styling
+			// into one dropdown.
+			name: 'imageStyle:icons',
+			title: 'Alignment',
+			items: [
+				'imageStyle:margin-left',
+				'imageStyle:margin-right',
+				'imageStyle:inline'
+			],
+			defaultItem: 'imageStyle:margin-left'
+		}, {
+			// Grouping the buttons for the regular
+			// picture-like image styling into one dropdown.
+			name: 'imageStyle:pictures',
+			title: 'Style',
+			items: [ 'imageStyle:block', 'imageStyle:side' ],
+			defaultItem: 'imageStyle:block'
+		}, '|', 'toggleImageCaption', 'linkImage'
+		]
+	}
+} )
+.then( /* ... */ );
 ```
 
 It also applies multiple CSS rules to not only display custom image styles (the `'image-margin-right'`, `'image-margin-left'` and `'image-side'` classes) properly, but also to provide the default {@link getting-started/advanced/content-styles content styles}, so the appearance of headers, paragraphs, links, captions and newly inserted images is consistent.
@@ -444,7 +436,7 @@ The `ImageStyle` plugin provides a set of default styles depending on the loaded
 
 ## Installation
 
-This feature is available in all {@link getting-started/legacy-getting-started/predefined-builds ready-to-use editor builds}. If your integrations uses a custom editor build, check out the {@link features/images-installation image feature installation guide} to learn how to enable this feature.
+This feature is enabled by default. If your integrations uses a custom editor build, check out the {@link features/images-installation image feature installation guide} to learn how to enable this feature.
 
 ## Common API
 

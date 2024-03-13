@@ -46,24 +46,16 @@ The following {@link features/basic-styles basic styles} inline formatting optio
 
 ## Installation
 
-To add this feature to your editor install the [`@ckeditor/ckeditor5-autoformat`](https://www.npmjs.com/package/@ckeditor/ckeditor5-autoformat) package:
-
-```bash
-npm install --save @ckeditor/ckeditor5-autoformat
-```
-
-And add it to your plugin list:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
+import { ClassicEditor, Autoformat } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Autoformat, /* ... */ ],
-		toolbar: [ /* ... */ ]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Autoformat, /* ... */ ],
+	toolbar: [ /* ... */ ]
+} )
+.then( /* ... */ );
 ```
 
 <info-box hint>

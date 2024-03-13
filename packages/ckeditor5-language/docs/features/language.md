@@ -32,43 +32,33 @@ To modify the list of available languages displayed in the language dropdown use
 The example below shows the configuration used for the [demo](#demo) above:
 
 ```js
-ClassicEditor
-    .create( document.querySelector( '#editor' ), {
-		// More of editor's configuration.
-		// ...
-		language: {
-			textPartLanguage: [
-				{ title: 'Arabic', languageCode: 'ar' },
-				{ title: 'French', languageCode: 'fr' },
-				{ title: 'Hebrew', languageCode: 'he' },
-				{ title: 'Spanish', languageCode: 'es' }
-			]
-		}
-    } )
-    .then( /* ... */ )
-    .catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	// More of editor's configuration.
+	// ...
+	language: {
+		textPartLanguage: [
+			{ title: 'Arabic', languageCode: 'ar' },
+			{ title: 'French', languageCode: 'fr' },
+			{ title: 'Hebrew', languageCode: 'he' },
+			{ title: 'Spanish', languageCode: 'es' }
+		]
+	}
+} )
+.then( /* ... */ );
 ```
 
 ## Installation
 
-To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-language`](https://www.npmjs.com/package/@ckeditor/ckeditor5-language) package:
-
-```plaintext
-npm install --save @ckeditor/ckeditor5-language
-```
-
-And add it to your plugin list configuration:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { TextPartLanguage } from '@ckeditor/ckeditor5-language';
+import { ClassicEditor, TextPartLanguage } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ TextPartLanguage, /* ... */ ],
-		toolbar: [ 'textPartLanguage', /* ... */ ]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ TextPartLanguage, /* ... */ ],
+	toolbar: [ 'textPartLanguage', /* ... */ ]
+} )
+.then( /* ... */ );
 ```
 
 <info-box info>

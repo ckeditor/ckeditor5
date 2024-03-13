@@ -31,7 +31,7 @@ You can define a new special characters category using the {@link module:special
 For example, the following plugin adds the "Emoji" category to the special characters dropdown.
 
 ```js
-import { SpecialCharacters, SpecialCharactersEssentials } from '@ckeditor/ckeditor5-special-characters';
+import { ClassicEditor, SpecialCharacters, SpecialCharactersEssentials } from 'ckeditor5';
 
 function SpecialCharactersEmoji( editor ) {
 	editor.plugins.get( 'SpecialCharacters' ).addItems( 'Emoji', [
@@ -43,17 +43,15 @@ function SpecialCharactersEmoji( editor ) {
 	], { label: 'Emoticons' } );
 }
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [
-			SpecialCharacters, SpecialCharactersEssentials, SpecialCharactersEmoji,
-			// More plugins.
-			// ...
-		],
-		toolbar: [ 'specialCharacters', /* ... */ ],
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [
+		SpecialCharacters, SpecialCharactersEssentials, SpecialCharactersEmoji,
+		// More plugins.
+		// ...
+	],
+	toolbar: [ 'specialCharacters', /* ... */ ],
+} )
+.then( /* ... */ );
 ```
 
 After adding the above plugin to the editor configuration, the new category will become available in the special characters dropdown.
@@ -75,7 +73,7 @@ Below you can see a demo based on the example shown above. Use the special chara
 By using the {@link module:special-characters/specialcharacters~SpecialCharacters#addItems `SpecialCharacters#addItems()`} function you can also add new special characters to an existing category.
 
 ```js
-import { SpecialCharacters, SpecialCharactersEssentials } from '@ckeditor/ckeditor5-special-characters';
+import { ClassicEditor, SpecialCharacters, SpecialCharactersEssentials } from 'ckeditor5';
 
 function SpecialCharactersExtended( editor ) {
 	editor.plugins.get( 'SpecialCharacters' ).addItems( 'Mathematical', [
@@ -85,18 +83,16 @@ function SpecialCharactersExtended( editor ) {
 	] );
 }
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [
-			SpecialCharacters, SpecialCharactersEssentials, SpecialCharactersExtended,
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [
+		SpecialCharacters, SpecialCharactersEssentials, SpecialCharactersExtended,
 
-			// More plugins.
-			// ...
-		],
-		toolbar: [ 'specialCharacters', /* ... */ ],
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+		// More plugins.
+		// ...
+	],
+	toolbar: [ 'specialCharacters', /* ... */ ],
+} )
+.then( /* ... */ );
 ```
 
 <info-box>
@@ -123,20 +119,18 @@ By default, the `@ckeditor/ckeditor5-special-characters` package provides specia
 For example, you can limit the categories to "Mathematical" and "Currency" only by picking the {@link module:special-characters/specialcharactersmathematical~SpecialCharactersMathematical} and {@link module:special-characters/specialcharacterscurrency~SpecialCharactersCurrency} plugins, like so:
 
 ```js
-import { SpecialCharacters, SpecialCharactersCurrency, SpecialCharactersMathematical } from '@ckeditor/ckeditor5-special-characters';
+import { ClassicEditor, SpecialCharacters, SpecialCharactersCurrency, SpecialCharactersMathematical } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [
-			SpecialCharacters, SpecialCharactersCurrency, SpecialCharactersMathematical,
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [
+		SpecialCharacters, SpecialCharactersCurrency, SpecialCharactersMathematical,
 
-			// More plugins.
-			// ...
-		],
-		toolbar: [ 'specialCharacters', /* ... */ ],
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+		// More plugins.
+		// ...
+	],
+	toolbar: [ 'specialCharacters', /* ... */ ],
+} )
+.then( /* ... */ );
 ```
 
 Below you can see a demo based on the example shown above. After clicking the special characters toolbar button {@icon @ckeditor/ckeditor5-special-characters/theme/icons/specialcharacters.svg Special characters}, you can see that it contains fewer categories compared to the other editors on this page.
@@ -150,46 +144,35 @@ The order of categories in the UI is determined by the order in which they were 
 The categories order can be customized using the {@link module:special-characters/specialcharactersconfig~SpecialCharactersConfig#order `order`} array.
 
 ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ SpecialCharacters, SpecialCharactersEssentials, ... ],
-		specialCharacters: {
-			order: [
-				'Text',
-				'Latin',
-				'Mathematical',
-				'Currency',
-				'Arrows'
-			]
-		}
-	} )
-	.then( ... )
-	.catch( ... );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ SpecialCharacters, SpecialCharactersEssentials, ... ],
+	specialCharacters: {
+		order: [
+			'Text',
+			'Latin',
+			'Mathematical',
+			'Currency',
+			'Arrows'
+		]
+	}
+} )
+	.then( ... );
 ```
 
 ## Installation
 
-To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-special-characters`](https://www.npmjs.com/package/@ckeditor/ckeditor5-special-characters) package:
-
-```plaintext
-npm install --save @ckeditor/ckeditor5-special-characters
-```
-
-And add it to your plugin list configuration:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-// Core plugin that provides the API for the management of special characters and their categories.
-import { SpecialCharacters } from '@ckeditor/ckeditor5-special-characters';
-// A plugin that combines a basic set of special characters.
-import { SpecialCharactersEssentials } from '@ckeditor/ckeditor5-special-characters';
+// Core plugin provides the API for the management of special characters and their categories.
+// The other provide a basic set of special characters.
+import { ClassicEditor, SpecialCharacters, SpecialCharactersEssentials } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ SpecialCharacters, SpecialCharactersEssentials, /* ... */ ],
-		toolbar: [ 'specialCharacters', /* ... */ ],
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ SpecialCharacters, SpecialCharactersEssentials, /* ... */ ],
+	toolbar: [ 'specialCharacters', /* ... */ ],
+} )
+.then( /* ... */ );
 ```
 
 <info-box info>

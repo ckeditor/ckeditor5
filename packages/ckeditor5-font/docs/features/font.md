@@ -41,21 +41,19 @@ Use the special `'default'` keyword to use the default font family defined in th
 For example, the following editor supports two font families besides the default one:
 
 ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		fontFamily: {
-			options: [
-				'default',
-				'Ubuntu, Arial, sans-serif',
-				'Ubuntu Mono, Courier New, Courier, monospace'
-			]
-		},
-		toolbar: [
-			'heading', 'bulletedList', 'numberedList', 'fontFamily', 'undo', 'redo'
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	fontFamily: {
+		options: [
+			'default',
+			'Ubuntu, Arial, sans-serif',
+			'Ubuntu Mono, Courier New, Courier, monospace'
 		]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+	},
+	toolbar: [
+		'heading', 'bulletedList', 'numberedList', 'fontFamily', 'undo', 'redo'
+	]
+} )
+.then( /* ... */ );
 ```
 
 {@snippet features/custom-font-family-options}
@@ -65,20 +63,18 @@ ClassicEditor
 By default, all `font-family` values that are not specified in the `config.fontFamily.options` are stripped. You can enable support for all font names by using the {@link module:font/fontconfig~FontFamilyConfig#supportAllValues `config.fontFamily.supportAllValues`} option.
 
 ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		fontFamily: {
-			options: [
-				// Font family configuration options are described in the "Configuring the font family feature" section.
-				// ...
-			],
-			supportAllValues: true
-		},
-		// More of editor's configuration.
-        // ...
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	fontFamily: {
+		options: [
+			// Font family configuration options are described in the "Configuring the font family feature" section.
+			// ...
+		],
+		supportAllValues: true
+	},
+	// More of editor's configuration.
+	// ...
+} )
+.then( /* ... */ );
 ```
 
 ## Configuring the font size feature
@@ -129,21 +125,19 @@ Here is an example of the font size CSS classes:
 An example of an editor that supports two font sizes:
 
 ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		fontSize: {
-			options: [
-				'tiny',
-				'default',
-				'big'
-			]
-		},
-		toolbar: [
-			'heading', 'bulletedList', 'numberedList', 'fontSize', 'undo', 'redo'
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	fontSize: {
+		options: [
+			'tiny',
+			'default',
+			'big'
 		]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+	},
+	toolbar: [
+		'heading', 'bulletedList', 'numberedList', 'fontSize', 'undo', 'redo'
+	]
+} )
+.then( /* ... */ );
 ```
 
 {@snippet features/custom-font-size-named-options}
@@ -161,25 +155,23 @@ In this case, each size is represented in the view as a `<span>` element with th
 Here is an example of the WYSIWYG editor that supports numerical font sizes. Note that `'default'` is controlled by the default styles of the web page:
 
 ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		fontSize: {
-			options: [
-				9,
-				11,
-				13,
-				'default',
-				17,
-				19,
-				21
-			]
-		},
-		toolbar: [
-			'heading', 'bulletedList', 'numberedList', 'fontSize', 'undo', 'redo'
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	fontSize: {
+		options: [
+			9,
+			11,
+			13,
+			'default',
+			17,
+			19,
+			21
 		]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+	},
+	toolbar: [
+		'heading', 'bulletedList', 'numberedList', 'fontSize', 'undo', 'redo'
+	]
+} )
+.then( /* ... */ );
 ```
 
 {@snippet features/custom-font-size-numeric-options}
@@ -189,20 +181,18 @@ ClassicEditor
 By default, all `font-size` values that are not specified in the `config.fontSize.options` are stripped. You can enable support for all font sizes by using the {@link module:font/fontconfig~FontSizeConfig#supportAllValues `config.fontSize.supportAllValues`} option.
 
 ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		fontSize: {
-			options: [
-				// Numerical values.
-				// ...
-			],
-			supportAllValues: true
-		},
-		// More of editor's configuration.
-        // ...
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	fontSize: {
+		options: [
+			// Numerical values.
+			// ...
+		],
+		supportAllValues: true
+	},
+	// More of editor's configuration.
+	// ...
+} )
+.then( /* ... */ );
 ```
 
 <info-box info>
@@ -226,67 +216,65 @@ Check out the WYSIWYG editor below with both features customized using the edito
 It is possible to configure which colors are available in the color dropdown. Use the {@link module:font/fontconfig~FontColorConfig#colors `config.fontColor.colors`} and {@link module:font/fontconfig~FontColorConfig#colors `config.fontBackgroundColor.colors`} configuration options to do so.
 
 ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		fontColor: {
-			colors: [
-				{
-					color: 'hsl(0, 0%, 0%)',
-					label: 'Black'
-				},
-				{
-					color: 'hsl(0, 0%, 30%)',
-					label: 'Dim grey'
-				},
-				{
-					color: 'hsl(0, 0%, 60%)',
-					label: 'Grey'
-				},
-				{
-					color: 'hsl(0, 0%, 90%)',
-					label: 'Light grey'
-				},
-				{
-					color: 'hsl(0, 0%, 100%)',
-					label: 'White',
-					hasBorder: true
-				},
-				// More colors.
-				// ...
-			]
-		},
-		fontBackgroundColor: {
-			colors: [
-				{
-					color: 'hsl(0, 75%, 60%)',
-					label: 'Red'
-				},
-				{
-					color: 'hsl(30, 75%, 60%)',
-					label: 'Orange'
-				},
-				{
-					color: 'hsl(60, 75%, 60%)',
-					label: 'Yellow'
-				},
-				{
-					color: 'hsl(90, 75%, 60%)',
-					label: 'Light green'
-				},
-				{
-					color: 'hsl(120, 75%, 60%)',
-					label: 'Green'
-				},
-				// More colors.
-				// ...
-			]
-		},
-		toolbar: [
-			'heading', 'bulletedList', 'numberedList', 'fontColor', 'fontBackgroundColor', 'undo', 'redo'
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	fontColor: {
+		colors: [
+			{
+				color: 'hsl(0, 0%, 0%)',
+				label: 'Black'
+			},
+			{
+				color: 'hsl(0, 0%, 30%)',
+				label: 'Dim grey'
+			},
+			{
+				color: 'hsl(0, 0%, 60%)',
+				label: 'Grey'
+			},
+			{
+				color: 'hsl(0, 0%, 90%)',
+				label: 'Light grey'
+			},
+			{
+				color: 'hsl(0, 0%, 100%)',
+				label: 'White',
+				hasBorder: true
+			},
+			// More colors.
+			// ...
 		]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+	},
+	fontBackgroundColor: {
+		colors: [
+			{
+				color: 'hsl(0, 75%, 60%)',
+				label: 'Red'
+			},
+			{
+				color: 'hsl(30, 75%, 60%)',
+				label: 'Orange'
+			},
+			{
+				color: 'hsl(60, 75%, 60%)',
+				label: 'Yellow'
+			},
+			{
+				color: 'hsl(90, 75%, 60%)',
+				label: 'Light green'
+			},
+			{
+				color: 'hsl(120, 75%, 60%)',
+				label: 'Green'
+			},
+			// More colors.
+			// ...
+		]
+	},
+	toolbar: [
+		'heading', 'bulletedList', 'numberedList', 'fontColor', 'fontBackgroundColor', 'undo', 'redo'
+	]
+} )
+.then( /* ... */ );
 ```
 
 ### Changing the geometry of the color grid
@@ -296,30 +284,28 @@ You can configure the number of columns in the color dropdown by setting the {@l
 Usually, you will want to use this option when changing the number of [available colors](#specifying-available-colors).
 
 ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		fontColor: {
-			colors: [
-				// 9 colors defined here.
-				// ...
-			]
-
-			columns: 3, // So, you can display them in 3 columns.
-
-			// Optional configuration of the number of document colors.
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	fontColor: {
+		colors: [
+			// 9 colors defined here.
 			// ...
-		},
-		fontBackgroundColor: {
-			columns: 6,
-			// Background color options.
-			// ...
-		},
-		toolbar: [
-			'heading', 'bulletedList', 'numberedList', 'fontColor', 'fontBackgroundColor', 'undo', 'redo'
 		]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+
+		columns: 3, // So, you can display them in 3 columns.
+
+		// Optional configuration of the number of document colors.
+		// ...
+	},
+	fontBackgroundColor: {
+		columns: 6,
+		// Background color options.
+		// ...
+	},
+	toolbar: [
+		'heading', 'bulletedList', 'numberedList', 'fontColor', 'fontBackgroundColor', 'undo', 'redo'
+	]
+} )
+.then( /* ... */ );
 ```
 
 ### Documents colors
@@ -329,31 +315,29 @@ The font and font background color dropdowns contain the "Document colors" secti
 By default, the number of displayed document colors is limited to one row, but you can adjust it (or remove the whole section) by using the {@link module:font/fontconfig~FontColorConfig#documentColors `config.fontColor.documentColors`} or {@link module:font/fontconfig~FontColorConfig#documentColors `config.fontBackgroundColor.documentColors`} options.
 
 ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		fontColor: {
-			// Display 6 columns in the color grid.
-			columns: 6,
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	fontColor: {
+		// Display 6 columns in the color grid.
+		columns: 6,
 
-			// And 12 document colors (2 rows of them).
-			documentColors: 12,
+		// And 12 document colors (2 rows of them).
+		documentColors: 12,
 
-			// Optional available font colors configuration.
-			// ...
-		},
-		fontBackgroundColor: {
-			// Remove the "Document colors" section.
-			documentColors: 0,
+		// Optional available font colors configuration.
+		// ...
+	},
+	fontBackgroundColor: {
+		// Remove the "Document colors" section.
+		documentColors: 0,
 
-			// Background color options.
-			// ...
-		},
-		toolbar: [
-			'heading', 'bulletedList', 'numberedList', 'fontColor', 'fontBackgroundColor', 'undo', 'redo'
-		]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+		// Background color options.
+		// ...
+	},
+	toolbar: [
+		'heading', 'bulletedList', 'numberedList', 'fontColor', 'fontBackgroundColor', 'undo', 'redo'
+	]
+} )
+.then( /* ... */ );
 ```
 
 ### Color picker
@@ -365,60 +349,48 @@ Color picker applies colors in the **HSL** format as it is the default for the f
 To turn off the color picker entirely for the given feature, set the {@link module:font/fontconfig~FontColorConfig#colorPicker `config.fontColor.colorPicker`} (or {@link module:font/fontconfig~FontColorConfig#colorPicker `config.fontBackgroundColor.colorPicker`}) option to `false`.
 
 ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		fontColor: {
-			colorPicker: {
-				// Use 'hex' format for output instead of 'hsl'.
-				format: 'hex'
-			}
-		},
-		fontBackgroundColor: {
-			// Do not display the color picker.
-			colorPicker: false
-		},
-		toolbar: [
-			'heading', 'bulletedList', 'numberedList', 'fontColor', 'fontBackgroundColor', 'undo', 'redo'
-		]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	fontColor: {
+		colorPicker: {
+			// Use 'hex' format for output instead of 'hsl'.
+			format: 'hex'
+		}
+	},
+	fontBackgroundColor: {
+		// Do not display the color picker.
+		colorPicker: false
+	},
+	toolbar: [
+		'heading', 'bulletedList', 'numberedList', 'fontColor', 'fontBackgroundColor', 'undo', 'redo'
+	]
+} )
+.then( /* ... */ );
 ```
 
 ## Installation
 
-To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-font`](https://www.npmjs.com/package/@ckeditor/ckeditor5-font) package:
-
-```bash
-npm install --save @ckeditor/ckeditor5-font
-```
-
-Then add it to your plugin list and the toolbar configuration:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { Font } from '@ckeditor/ckeditor5-font';
+import { ClassicEditor, Font } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Font, /* ... */ ],
-		toolbar: [ 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', /* ... */ ]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Font, /* ... */ ],
+	toolbar: [ 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', /* ... */ ]
+} )
+.then( /* ... */ );
 ```
 
 You can also add just one or a selected few of the font features to your plugin list and the toolbar configuration:
 
 ```js
-import { FontFamily } from '@ckeditor/ckeditor5-font';
+import { ClassicEditor, FontFamily } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ FontFamily, /* ... */ ],
-		toolbar: [ 'fontFamily', /* ... */ ]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ FontFamily, /* ... */ ],
+	toolbar: [ 'fontFamily', /* ... */ ]
+} )
+.then( /* ... */ );
 ```
 
 <info-box info>
