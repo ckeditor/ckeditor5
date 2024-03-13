@@ -120,8 +120,7 @@ The editor above does not require any configuration, using one of the following 
 ```js
 import ClassicEditor from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ) )
-.then( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ) ).then( /* ... */ );
 ```
 
 ### Presentational styles
