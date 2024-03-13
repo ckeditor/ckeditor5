@@ -40,7 +40,6 @@ npm install --save @ckeditor/ckeditor5-watchdog
 Then, change your `ClassicEditor.create()` call to `watchdog.create()` as follows:
 
 ```js
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 
 import { ClassicEditor, Bold, EditorWatchdog, Essentials, Italic, Paragraph } from 'ckeditor5';
 
