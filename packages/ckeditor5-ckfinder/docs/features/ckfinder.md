@@ -17,8 +17,6 @@ The CKFinder feature lets you insert images and links to files into your content
 	This is a premium feature and you need a license for it on top of your CKEditor&nbsp;5 commercial license. [Contact us](https://ckeditor.com/contact/?sales=true#contact-form) to receive an offer tailored to your needs.
 
 	You can also sign up for the [CKEditor Premium Features 30-day free trial](https://orders.ckeditor.com/trial/premium-features) to test the feature.
-
-	This feature is enabled by default in all [predefined builds](https://ckeditor.com/docs/ckeditor5/latest/getting-started/legacy/installation-methods/predefined-builds.html) for convenience, but the editor will still work properly without activating it.
 </info-box>
 
 ## Demos

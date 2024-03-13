@@ -71,4 +71,4 @@ Before version <!-- UPDATE to proper version -->4x.x.x, CKEditor&nbsp;5 used dif
 * {@link tutorials/index CKEditor&nbsp;5 tutorials} &ndash; Follow these easy guides to tailor the editor to your needs.
 * {@link framework/index CKEditor&nbsp;5 Framework} &ndash; Learn how to work with CKEditor&nbsp;5 Framework, customize it, create your own plugins or custom editors, change the UI, or even bring your own UI to the editor.
 * {@link updating/updating-ckeditor-5 Updating CKEditor&nbsp;5} &ndash; Find out how to keep you installation up-to-date at all times.
-* {@link examples/index Examples} &ndash; Try live demos of available predefined builds and custom solutions.
+* {@link examples/index Examples} &ndash; Try live demos of various editing solutions.

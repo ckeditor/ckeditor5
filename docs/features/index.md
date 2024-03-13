@@ -105,7 +105,7 @@ Keep full control of your work. Be safe and never lose anything thanks to the {@
 
 ### Customizable user experience
 
-Work as you like it &ndash; choose a user interface approach from {@link getting-started/legacy-getting-started/predefined-builds several predefined builds}, add features to your build or remove them with the [online builder](https://ckeditor.com/ckeditor-5/online-builder/), or use the {@link getting-started/advanced/dll-builds DLL builds}. Then tailor the user interface to your needs with a customizable {@link getting-started/setup/toolbar editor toolbar}, arranging feature buttons, dropdowns, and other items in whatever way you need.
+Work as you like it &ndash; choose a user interface approach from several predefined layouts, add features to your build or remove them with the [online builder](https://ckeditor.com/ckeditor-5/online-builder/), or use the {@link getting-started/advanced/dll-builds DLL builds}. Then tailor the user interface to your needs with a customizable {@link getting-started/setup/toolbar editor toolbar}, arranging feature buttons, dropdowns, and other items in whatever way you need.
 
 {@img assets/img/full-toolbar.png 938 CKEditor&nbsp;5 customizable UI.}
 
@@ -121,6 +121,8 @@ The editor supports {@link features/paste-plain-text pasting plain text} and {@l
 
 If you want to migrate from CKEditor 4 to CKEditor&nbsp;5, check the {@link updating/migration-from-ckeditor-4 migration guide}.
 
+<!-- This needs to be demolished
+
 ## Feature availability
 
 Predefined {@link getting-started/legacy-getting-started/predefined-builds CKEditor&nbsp;5 builds} have plenty of these features available out-of-the-box, like {@link features/autoformat autoformatting} or {@link features/keyboard-support keyboard support}.
@@ -129,7 +131,7 @@ However, you need to include some presented features manually in your CKEditor&n
 
 You can refer to the {@link getting-started/legacy-getting-started/predefined-builds#list-of-plugins-included-in-the-ckeditor-5-predefined-builds full list of features available in each build} for details.
 
-We also offer the flexibility of the {@link getting-started/advanced/dll-builds DLL builds}. They enable the addition of new plugins into an existing build without the need to rebuild the installation.
+We also offer the flexibility of the {@link getting-started/advanced/dll-builds DLL builds}. They enable the addition of new plugins into an existing build without the need to rebuild the installation. -->
 
 ## Feature examples
 

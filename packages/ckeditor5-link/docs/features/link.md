@@ -260,7 +260,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 
 ## Autolink feature
 
-Automatic linking of URLs typed or pasted into the editor is enabled by default in the predefined builds. The {@link module:link/autolink~AutoLink `AutoLink`} feature will automatically turn URLs or email addresses into working links.
+The {@link module:link/autolink~AutoLink `AutoLink`} feature will automatically turn URLs or email addresses into working links.
 
 To use the autolink function, press <kbd>Space</kbd>, <kbd>Enter</kbd>, or <kbd>Shift</kbd>+<kbd>Enter</kbd> after a link.
 

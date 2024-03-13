@@ -59,7 +59,7 @@ When you insert a new image, the editor will, by default, choose the optimal ima
 	<!-- TODO: describe this case in the inline and block images installation guide. -->
 </info-box>
 
-## UI
+## UI <!-- needs a rewrite -->
 
 You can apply a style by using one of the toolbar buttons created by the `ImageStyle` plugin. Each of the defined styles (both [default](#ready-to-use-styles) and [custom](#configuring-the-styles)) will be registered under the name `imageStyle:image-style-name` in the {@link module:ui/componentfactory~ComponentFactory}. You can then add it to the image or main toolbar by referencing this name.
 

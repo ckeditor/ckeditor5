@@ -69,7 +69,7 @@ The CKBox feature requires one of the following plugins to be loaded to work cor
 * {@link module:image/imageinline~ImageInline The `ImageInline` feature}
 * {@link module:image/image~Image The `Image` feature} (a glue plugin that loads both the `ImageBlock` and `ImageInline` features)
 
-These plugins are, by default, loaded with predefined builds, such as `ClassicEditor`. If you do not have any of them in your editor, install one and add it to your plugin list.
+If you do not have any of these plugins in your editor, install one and add it to your plugin list.
 
 Please also remember, that the CKBox plugin requires the following dependency plugins to work properly: `PictureEditing`, `ImageUpload`, and `CloudServices`.
 
