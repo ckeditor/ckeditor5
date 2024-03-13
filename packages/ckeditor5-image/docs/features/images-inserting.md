@@ -31,8 +31,8 @@ Using the URL of an image, the user may paste it into the editor. To enable this
 import { ClassicEditor, Image, ImageInsert } from 'ckeditor5';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ /* ... */ , Image, ImageInsert ],
-	toolbar: [ /* ... */ , 'insertImage' ]
+	plugins: [ Image, ImageInsert, /* ... */  ],
+	toolbar: [ 'insertImage', /* ... */  ]
 } )
 .then( /* ... */ );
 ```
