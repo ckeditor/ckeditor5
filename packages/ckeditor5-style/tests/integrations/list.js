@@ -93,11 +93,19 @@ describe( 'ListStyleSupport', () => {
 			command.refresh();
 
 			expect( command.enabledStyles ).to.have.members( [ 'LI style', 'OL style', 'P style' ] );
+
+			changeListType( root.getChild( 1 ), 'customNumbered' );
+
+			expect( command.enabledStyles ).to.have.members( [ 'LI style', 'OL style', 'P style' ] );
 		} );
 
 		it( 'OL style should be enabled for OL blocks (selection in the second block of the first list item)', () => {
 			model.change( writer => writer.setSelection( root.getChild( 2 ), 0 ) );
 			command.refresh();
+
+			expect( command.enabledStyles ).to.have.members( [ 'LI style', 'OL style', 'P style' ] );
+
+			changeListType( root.getChild( 2 ), 'customNumbered' );
 
 			expect( command.enabledStyles ).to.have.members( [ 'LI style', 'OL style', 'P style' ] );
 		} );
@@ -107,6 +115,10 @@ describe( 'ListStyleSupport', () => {
 			command.refresh();
 
 			expect( command.enabledStyles ).to.have.members( [ 'LI style', 'OL style', 'P style' ] );
+
+			changeListType( root.getChild( 3 ), 'customNumbered' );
+
+			expect( command.enabledStyles ).to.have.members( [ 'LI style', 'OL style', 'P style' ] );
 		} );
 
 		it( 'OL style should be disabled for UL blocks (selection in the nested list item)', () => {
@@ -114,11 +126,19 @@ describe( 'ListStyleSupport', () => {
 			command.refresh();
 
 			expect( command.enabledStyles ).to.have.members( [ 'LI style', 'UL style', 'P style' ] );
+
+			changeListType( root.getChild( 4 ), 'customBulleted' );
+
+			expect( command.enabledStyles ).to.have.members( [ 'LI style', 'UL style', 'P style' ] );
 		} );
 
 		it( 'OL style should be enabled for OL blocks (selection in the nested list item)', () => {
 			model.change( writer => writer.setSelection( root.getChild( 10 ), 0 ) );
 			command.refresh();
+
+			expect( command.enabledStyles ).to.have.members( [ 'LI style', 'OL style', 'P style' ] );
+
+			changeListType( root.getChild( 10 ), 'customNumbered' );
 
 			expect( command.enabledStyles ).to.have.members( [ 'LI style', 'OL style', 'P style' ] );
 		} );
@@ -211,11 +231,19 @@ describe( 'ListStyleSupport', () => {
 			command.refresh();
 
 			expect( command.value ).to.have.members( [ 'LI style', 'OL style' ] );
+
+			changeListType( root.getChild( 1 ), 'customNumbered' );
+
+			expect( command.value ).to.have.members( [ 'LI style', 'OL style' ] );
 		} );
 
 		it( 'OL style should be active for OL blocks (selection in the second block of the first list item)', () => {
 			model.change( writer => writer.setSelection( root.getChild( 2 ), 0 ) );
 			command.refresh();
+
+			expect( command.value ).to.have.members( [ 'LI style', 'OL style' ] );
+
+			changeListType( root.getChild( 2 ), 'customNumbered' );
 
 			expect( command.value ).to.have.members( [ 'LI style', 'OL style' ] );
 		} );
@@ -225,6 +253,10 @@ describe( 'ListStyleSupport', () => {
 			command.refresh();
 
 			expect( command.value ).to.have.members( [ 'OL style' ] );
+
+			changeListType( root.getChild( 3 ), 'customNumbered' );
+
+			expect( command.value ).to.have.members( [ 'OL style' ] );
 		} );
 
 		it( 'UL style should be active for UL blocks (selection in the nested list item)', () => {
@@ -232,11 +264,19 @@ describe( 'ListStyleSupport', () => {
 			command.refresh();
 
 			expect( command.value ).to.have.members( [ 'UL style' ] );
+
+			changeListType( root.getChild( 4 ), 'customBulleted' );
+
+			expect( command.value ).to.have.members( [ 'UL style' ] );
 		} );
 
 		it( 'OL style should be enabled for OL blocks (selection in the nested list item)', () => {
 			model.change( writer => writer.setSelection( root.getChild( 10 ), 0 ) );
 			command.refresh();
+
+			expect( command.value ).to.have.members( [ 'LI style', 'OL style' ] );
+
+			changeListType( root.getChild( 10 ), 'customNumbered' );
 
 			expect( command.value ).to.have.members( [ 'LI style', 'OL style' ] );
 		} );
@@ -328,6 +368,17 @@ describe( 'ListStyleSupport', () => {
 			);
 		} );
 
+		it( 'OL style should be applied to the `customNumbered` list', () => {
+			model.change( writer => writer.setSelection( root.getChild( 1 ), 0 ) );
+			command.refresh();
+
+			changeListType( root.getChild( 1 ), 'customNumbered' );
+
+			command.execute( { styleName: 'OL style' } );
+
+			expect( root.getChild( 1 ).getAttribute( 'htmlOlAttributes' ).classes ).to.include.members( [ 'ol-styled' ] );
+		} );
+
 		it( 'OL style should be applied to the closest list (without parent list)', () => {
 			model.change( writer => writer.setSelection( root.getChild( 10 ), 0 ) );
 			command.refresh();
@@ -406,6 +457,17 @@ describe( 'ListStyleSupport', () => {
 					'<li>13</li>' +
 				'</ol>'
 			);
+		} );
+
+		it( 'UL style should be applied to the `customBulleted` list', () => {
+			model.change( writer => writer.setSelection( root.getChild( 4 ), 0 ) );
+			command.refresh();
+
+			changeListType( root.getChild( 4 ), 'customBulleted' );
+
+			command.execute( { styleName: 'UL style' } );
+
+			expect( root.getChild( 4 ).getAttribute( 'htmlUlAttributes' ).classes ).to.include.members( [ 'ul-styled' ] );
 		} );
 
 		it( 'LI style should be applied to the whole list item', () => {
@@ -622,5 +684,11 @@ describe( 'ListStyleSupport', () => {
 		command = editor.commands.get( 'style' );
 		doc = model.document;
 		root = doc.getRoot();
+	}
+
+	function changeListType( item, newLisType ) {
+		model.change( writer => {
+			writer.setAttribute( 'listType', newLisType, item );
+		} );
 	}
 } );
