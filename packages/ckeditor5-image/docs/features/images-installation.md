@@ -10,7 +10,15 @@ modified_at: 2021-06-17
 After {@link getting-started/quick-start installing the editor},  add the {@link features/images-overview#image-features subfeatures that you need} to your plugin list and to the editor toolbar:
 
 ```js
-import { ClassicEditor, Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar, LinkImage } from 'ckeditor5';
+import {
+    ClassicEditor,
+    Image,
+    ImageCaption,
+    ImageResize,
+    ImageStyle,
+    ImageToolbar,
+    LinkImage
+} from 'ckeditor5';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ Image, ImageToolbar, ImageCaption, ImageStyle, ImageResize, LinkImage ],
