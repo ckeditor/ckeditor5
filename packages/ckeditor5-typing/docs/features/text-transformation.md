@@ -156,7 +156,7 @@ After {@link getting-started/quick-start installing the editor}, add the feature
 import { ClassicEditor, TextTransformation } from 'ckeditor5';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ TextTransformation, ... ],
+	plugins: [ TextTransformation, /* ... */ ],
 } )
 .then( /* ... */ );
 ```
