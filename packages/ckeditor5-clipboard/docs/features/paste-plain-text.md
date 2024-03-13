@@ -34,7 +34,7 @@ Pasting plain text with a double line break will turn the break into a paragraph
 After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { ClassicEditor, Clipboard } from 'ckeditor5';
+import { Bold, ClassicEditor, Clipboard } from 'ckeditor5';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ Clipboard, Bold, /* ... */ ]
