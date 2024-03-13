@@ -568,6 +568,13 @@ export function canBecomeSimpleListItem( block: Element, schema: Schema ): boole
 }
 
 /**
+ * Returns true if listType is of type `numbered` or `customNumbered`.
+ */
+export function isNumberedListType( listType: ListTypeOptions ): boolean {
+	return listType == 'numbered' || listType == 'customNumbered';
+}
+
+/**
  * Merges a given block to the given parent block if parent is a list item and there is no more blocks in the same item.
  */
 function mergeListItemIfNotLast(

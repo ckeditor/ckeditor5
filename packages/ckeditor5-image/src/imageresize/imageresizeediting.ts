@@ -72,13 +72,19 @@ export default class ImageResizeEditing extends Plugin {
 		const editor = this.editor;
 		const resizeImageCommand = new ResizeImageCommand( editor );
 
-		this._registerSchema();
 		this._registerConverters( 'imageBlock' );
 		this._registerConverters( 'imageInline' );
 
 		// Register `resizeImage` command and add `imageResize` command as an alias for backward compatibility.
 		editor.commands.add( 'resizeImage', resizeImageCommand );
 		editor.commands.add( 'imageResize', resizeImageCommand );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public afterInit(): void {
+		this._registerSchema();
 	}
 
 	private _registerSchema(): void {
