@@ -38,7 +38,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	language: {
 		textPartLanguage: [
 			{ title: 'Arabic', languageCode: 'ar' },
-		{ title: 'French', languageCode: 'fr' },
+			{ title: 'French', languageCode: 'fr' },
 			{ title: 'Hebrew', languageCode: 'he' },
 			{ title: 'Spanish', languageCode: 'es' }
 		]
