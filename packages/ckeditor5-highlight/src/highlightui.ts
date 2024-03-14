@@ -260,7 +260,7 @@ export default class HighlightUI extends Plugin {
 	}
 
 	/**
-	 * Creates the TODO.
+	 * Creates the menu bar button for highlight including submenu with available options.
 	 */
 	private _addMenuBarButton( options: Array<HighlightOption> ) {
 		const editor = this.editor;
