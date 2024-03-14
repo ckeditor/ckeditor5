@@ -74,7 +74,7 @@ describe( 'HeadingUI', () => {
 			expect( dropdown.buttonView.isOn ).to.be.false;
 			expect( dropdown.buttonView.label ).to.equal( 'Paragraph' );
 			expect( dropdown.buttonView.tooltip ).to.equal( 'Heading' );
-			expect( dropdown.buttonView.ariaLabel ).to.equal( 'Heading' );
+			expect( dropdown.buttonView.ariaLabel ).to.equal( 'Paragraph, Heading' );
 			expect( dropdown.buttonView.ariaLabelledBy ).to.be.undefined;
 		} );
 
