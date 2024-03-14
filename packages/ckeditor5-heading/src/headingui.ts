@@ -15,7 +15,7 @@ import {
 	type ButtonExecuteEvent,
 	type ListDropdownItemDefinition
 } from 'ckeditor5/src/ui.js';
-import { Collection } from 'ckeditor5/src/utils.js';
+import { Collection, type ObservableChangeEvent } from 'ckeditor5/src/utils.js';
 import type { ParagraphCommand } from 'ckeditor5/src/paragraph.js';
 
 import { getLocalizedOptions } from './utils.js';
@@ -122,6 +122,21 @@ export default class HeadingUI extends Plugin {
 				}
 
 				return titles[ whichModel ];
+			} );
+
+			dropdownView.buttonView.bind( 'ariaLabel' ).to( headingCommand, 'value', paragraphCommand, 'value', ( value, para ) => {
+				const whichModel = value || para && 'paragraph';
+
+				if ( typeof whichModel === 'boolean' ) {
+					return accessibleLabel;
+				}
+
+				// If none of the commands is active, display default title.
+				if ( !titles[ whichModel ] ) {
+					return accessibleLabel;
+				}
+
+				return `${ titles[ whichModel ] }, ${ accessibleLabel }`;
 			} );
 
 			// Execute command when an item from the dropdown is selected.
