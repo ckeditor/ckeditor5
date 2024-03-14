@@ -14,7 +14,11 @@ import {
 	ToolbarSeparatorView,
 	createDropdown,
 	addToolbarToDropdown,
-	type DropdownView
+	type DropdownView,
+	MenuBarMenuView,
+	MenuBarMenuListView,
+	MenuBarMenuListItemView,
+	MenuBarMenuListItemButtonView
 } from 'ckeditor5/src/ui.js';
 
 import markerIcon from './../theme/icons/marker.svg';
@@ -89,6 +93,8 @@ export default class HighlightUI extends Plugin {
 		this._addRemoveHighlightButton();
 
 		this._addDropdown( options );
+
+		this._addMenuBarButton( options );
 	}
 
 	/**
@@ -250,6 +256,80 @@ export default class HighlightUI extends Plugin {
 			}
 
 			return dropdownView;
+		} );
+	}
+
+	/**
+	 * Creates the TODO.
+	 */
+	private _addMenuBarButton( options: Array<HighlightOption> ) {
+		const editor = this.editor;
+		const t = editor.t;
+
+		editor.ui.componentFactory.add( 'menuBar:highlight', locale => {
+			const command: HighlightCommand = editor.commands.get( 'highlight' )!;
+			const menuView = new MenuBarMenuView( locale );
+
+			menuView.buttonView.set( {
+				label: t( 'Highlight' ),
+				icon: getIconForType( 'marker' )
+			} );
+
+			const listView = new MenuBarMenuListView( locale );
+
+			for ( const option of options ) {
+				const listItemView = new MenuBarMenuListItemView( locale, menuView );
+				const buttonView = new MenuBarMenuListItemButtonView( locale );
+
+				buttonView.set( {
+					label: option.title,
+					icon: getIconForType( option.type )
+				} );
+
+				buttonView.iconView.fillColor = option.color;
+
+				buttonView.extendTemplate( {
+					attributes: {
+						'aria-checked': buttonView.bindTemplate.to( 'isOn' )
+					}
+				} );
+
+				buttonView.delegate( 'execute' ).to( menuView );
+				buttonView.bind( 'isOn' ).to( command, 'value', value => value === option.model );
+
+				buttonView.on( 'execute', () => {
+					editor.execute( 'highlight', { value: option.model } );
+
+					editor.editing.view.focus();
+				} );
+
+				listItemView.children.add( buttonView );
+				listView.items.add( listItemView );
+			}
+
+			// Add remove highlight button
+			const listItemView = new MenuBarMenuListItemView( locale, menuView );
+			const buttonView = new MenuBarMenuListItemButtonView( locale );
+
+			buttonView.set( {
+				label: t( 'Remove highlight' ),
+				icon: icons.eraser
+			} );
+
+			buttonView.delegate( 'execute' ).to( menuView );
+
+			buttonView.on( 'execute', () => {
+				editor.execute( 'highlight', { value: null } );
+
+				editor.editing.view.focus();
+			} );
+
+			listItemView.children.add( buttonView );
+			listView.items.add( listItemView );
+
+			menuView.panelView.children.add( listView );
+
+			return menuView;
 		} );
 	}
 }
