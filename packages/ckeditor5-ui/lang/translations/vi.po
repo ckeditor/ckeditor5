@@ -144,3 +144,27 @@ msgstr "Hộp thoại trình biên tập"
 msgctxt "The label and the tooltip for the close button in the dialog header."
 msgid "Close"
 msgstr "Đóng"
+
+msgctxt "Accessibility help dialog assistive technologies label telling users how to exit the dialog."
+msgid "Help Contents. To close this dialog press ESC."
+msgstr "Nội dung Trợ giúp. Nhấn phím ESC để đóng hộp thoại này."
+
+msgctxt "Accessibility help dialog text explaining what can be found in that dialog."
+msgid "Below, you can find a list of keyboard shortcuts that can be used in the editor."
+msgstr "Dưới đây, bạn có thể tìm thấy danh sách các phím tắt mà bạn có thể dùng trong trình biên tập này."
+
+msgctxt "Accessibility help dialog text displayed next to keystrokes that may require the Fn key on Mac."
+msgid "(may require <kbd>Fn</kbd>)"
+msgstr "(có thể cần nhấn phím <kbd>Fn</kbd>)"
+
+msgctxt "Accessibility help dialog title."
+msgid "Accessibility help"
+msgstr "Trợ giúp về khả năng truy cập"
+
+msgctxt "Assistive technologies label added to each editor editing area informing users about the possibility of opening the accessibility help dialog."
+msgid "Press %0 for help."
+msgstr "Nhấn %0 để được trợ giúp."
+
+msgctxt "Keystroke description for assistive technologies: keystroke for moving focus out of an active dialog window."
+msgid "Move focus in and out of an active dialog window"
+msgstr "Di chuyển tiêu điểm vào và ra khỏi cửa sổ hộp thoại đang kích hoạt"

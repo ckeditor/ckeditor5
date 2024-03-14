@@ -410,6 +410,38 @@ describe( 'LinkEditing', () => {
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
 				.to.equal( '<p><a href="#">foo</a>bar</p>' );
 		} );
+
+		describe( 'links with custom protocols', () => {
+			let editor, model;
+
+			beforeEach( async () => {
+				editor = await ClassicTestEditor.create( element, {
+					plugins: [ Paragraph, LinkEditing, Enter ],
+					link: {
+						allowedProtocols: [ 'https', 'custom' ]
+					}
+				} );
+
+				model = editor.model;
+				view = editor.editing.view;
+
+				model.schema.extend( '$text', {
+					allowIn: '$root',
+					allowAttributes: [ 'linkIsFoo', 'linkIsBar' ]
+				} );
+			} );
+
+			afterEach( async () => {
+				await editor.destroy();
+			} );
+
+			it( 'should render a link with a custom protocol, if provided in the custom allowed protocols', () => {
+				setModelData( model, '<paragraph><$text linkHref="custom:address.in.app">[]foo</$text>bar[]</paragraph>' );
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+					.to.equal( '<p><a href="custom:address.in.app">foo</a>bar</p>' );
+			} );
+		} );
 	} );
 
 	describe( 'link highlighting', () => {

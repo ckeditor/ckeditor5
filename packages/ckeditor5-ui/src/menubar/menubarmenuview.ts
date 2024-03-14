@@ -16,76 +16,84 @@ import {
 	type ObservableChangeEvent
 } from '@ckeditor/ckeditor5-utils';
 import MenuBarMenuButtonView from './menubarmenubuttonview.js';
-import { EVENT_NAME_DELEGATES, MenuBarMenuBehaviors, MenuBarMenuViewPanelPositioningFunctions } from './utils.js';
+import { MenuBarMenuBehaviors, MenuBarMenuViewPanelPositioningFunctions } from './utils.js';
 import type { FocusableView } from '../focuscycler.js';
 import View from '../view.js';
 import {
 	default as MenuBarMenuPanelView,
 	type MenuBarMenuPanelPosition
 } from './menubarmenupanelview.js';
-import type MenuBarView from './menubarview.js';
+
+import '../../theme/components/menubar/menubarmenu.css';
 
 /**
- * TODO
+ * A menu view for the {@link module:ui/menubar/menubarview~MenuBarView}. Menus are building blocks of the menu bar,
+ * they host other sub-menus and menu items (buttons) that users can interact with.
  */
 export default class MenuBarMenuView extends View implements FocusableView {
 	/**
-	 * TODO
+	 * Button of the menu view.
 	 */
 	public readonly buttonView: MenuBarMenuButtonView;
 
 	/**
-	 * TODO
+	 * Panel of the menu. It hosts children of the menu.
 	 */
 	public readonly panelView: MenuBarMenuPanelView;
 
 	/**
-	 * TODO
+	 * Tracks information about the DOM focus in the menu.
 	 */
 	public readonly focusTracker: FocusTracker;
 
 	/**
-	 * TODO
+	 * Instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}. It manages
+	 * keystrokes of the menu.
 	 */
 	public readonly keystrokes: KeystrokeHandler;
 
 	/**
-	 * TODO
+	 * Controls whether the menu is open, i.e. shows or hides the {@link #panelView panel}.
+	 *
+	 * @observable
 	 */
 	declare public isOpen: boolean;
 
 	/**
-	 * TODO
+	 * Controls whether the menu is enabled, i.e. its {@link #buttonView} can be clicked.
+	 *
+	 * @observable
 	 */
 	declare public isEnabled: boolean;
 
 	/**
-	 * TODO
+	 * (Optional) The additional CSS class set on the menu {@link #element}.
+	 *
+	 * @observable
 	 */
 	declare public class: string | undefined;
 
 	/**
-	 * TODO
+	 * The name of the position of the {@link #panelView}, relative to the menu.
+	 *
+	 * **Note**: The value is updated each time the panel gets {@link #isOpen open}.
+	 *
+	 * @observable
+	 * @default 'w'
 	 */
 	declare public panelPosition: MenuBarMenuPanelPosition;
 
 	/**
-	 * TODO
+	 * The parent menu view of the menu. It is `null` for top-level menus.
+	 *
+	 * See {@link module:ui/menubar/menubarview~MenuBarView#registerMenu}.
 	 */
-	declare public parentMenuView: MenuBarMenuView | undefined;
+	declare public parentMenuView: MenuBarMenuView | null;
 
 	/**
-	 * TODO
-	 */
-	declare public menuBarView: MenuBarView | undefined;
-
-	/**
-	 * TODO
-	 */
-	declare public ariaDescribedById: string | null;
-
-	/**
-	 * TODO
+	 * Creates an instance of the menu view.
+	 *
+	 * @param locale The localization services instance.
 	 */
 	constructor( locale: Locale ) {
 		super( locale );
@@ -106,7 +114,7 @@ export default class MenuBarMenuView extends View implements FocusableView {
 		this.set( 'isEnabled', true );
 		this.set( 'panelPosition', 'w' );
 		this.set( 'class', undefined );
-		this.set( 'ariaDescribedById', null );
+		this.set( 'parentMenuView', null );
 
 		this.setTemplate( {
 			tag: 'div',
@@ -118,8 +126,7 @@ export default class MenuBarMenuView extends View implements FocusableView {
 					bind.to( 'class' ),
 					bind.if( 'isEnabled', 'ck-disabled', value => !value ),
 					bind.if( 'parentMenuView', 'ck-menu-bar__menu_top-level', value => !value )
-				],
-				'aria-describedby': bind.to( 'ariaDescribedById' )
+				]
 			},
 
 			children: [
@@ -141,6 +148,7 @@ export default class MenuBarMenuView extends View implements FocusableView {
 		// Listen for keystrokes coming from within #element.
 		this.keystrokes.listenTo( this.element! );
 
+		// Top-level menus.
 		if ( !this.parentMenuView ) {
 			this._propagateArrowKeystrokeEvents();
 
@@ -156,12 +164,6 @@ export default class MenuBarMenuView extends View implements FocusableView {
 		MenuBarMenuBehaviors.closeOnEscKey( this );
 
 		this._repositionPanelOnOpen();
-
-		if ( this.parentMenuView ) {
-			this.delegate( ...EVENT_NAME_DELEGATES ).to( this.parentMenuView );
-		} else {
-			this.delegate( ...EVENT_NAME_DELEGATES ).to( this.menuBarView!, name => 'submenu:' + name );
-		}
 	}
 
 	/**
@@ -211,8 +213,8 @@ export default class MenuBarMenuView extends View implements FocusableView {
 	}
 
 	/**
-	 * {@link #panelView} positions depending on the role of the menu in the {@link TODO~MenuBarView}
-	 * and the language direction.
+	 * Positioning functions for the {@link #panelView} . They change depending on the role of the menu (top-level vs sub-menu) in
+	 * the {@link module:ui/menubar/menubarview~MenuBarView menu bar} and the UI language direction.
 	 */
 	public get _panelPositions(): Array<PositioningFunction> {
 		const {
@@ -220,7 +222,7 @@ export default class MenuBarMenuView extends View implements FocusableView {
 			westSouth, eastSouth, westNorth, eastNorth
 		} = MenuBarMenuViewPanelPositioningFunctions;
 
-		if ( this.locale!.uiLanguageDirection !== 'rtl' ) {
+		if ( this.locale!.uiLanguageDirection === 'ltr' ) {
 			if ( this.parentMenuView ) {
 				return [ eastSouth, eastNorth, westSouth, westNorth ];
 			} else {

@@ -10,6 +10,7 @@ import MultiRootEditor from '@ckeditor/ckeditor5-editor-multi-root/src/multiroot
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
 import { Comments } from '@ckeditor/ckeditor5-comments';
 import { TrackChanges } from '@ckeditor/ckeditor5-track-changes';
 import Suggestion from '@ckeditor/ckeditor5-track-changes/src/suggestion.js';
@@ -266,7 +267,7 @@ describe( 'EditorWatchdog', () => {
 
 		it( 'should support comment threads', async () => {
 			await watchdog.create( '<p>Foo bar</p>', {
-				plugins: [ Paragraph, UsersInit, Comments, TrackChanges ],
+				plugins: [ Paragraph, UsersInit, Comments, TrackChanges, Clipboard ],
 				licenseKey: 'uI0zfya2yTle649FSKlQCRsBSez+W4Vh5reIiKp0uDVYRCuPjaPYlf8=',
 				comments: {
 					editorConfig: {}
@@ -312,7 +313,7 @@ describe( 'EditorWatchdog', () => {
 
 		it( 'should support suggestions', async () => {
 			await watchdog.create( '<p>Foo bar</p>', {
-				plugins: [ Paragraph, UsersInit, Comments, TrackChanges ],
+				plugins: [ Paragraph, UsersInit, Comments, TrackChanges, Clipboard ],
 				licenseKey: 'uI0zfya2yTle649FSKlQCRsBSez+W4Vh5reIiKp0uDVYRCuPjaPYlf8=',
 				comments: {
 					editorConfig: {}
@@ -387,7 +388,7 @@ describe( 'EditorWatchdog', () => {
 			}
 
 			await watchdog.create( '<p>Foo bar</p>', {
-				plugins: [ Paragraph, UsersInit, Comments, TrackChanges, InitPlugin ],
+				plugins: [ Paragraph, UsersInit, Comments, Clipboard, TrackChanges, InitPlugin ],
 				licenseKey: 'uI0zfya2yTle649FSKlQCRsBSez+W4Vh5reIiKp0uDVYRCuPjaPYlf8=',
 				comments: {
 					editorConfig: {}
@@ -453,7 +454,7 @@ describe( 'EditorWatchdog', () => {
 			}
 
 			await watchdog.create( '<p>Foo bar</p>', {
-				plugins: [ Paragraph, UsersInit, Comments, TrackChanges, InitPlugin ],
+				plugins: [ Paragraph, UsersInit, Comments, Clipboard, TrackChanges, InitPlugin ],
 				licenseKey: 'uI0zfya2yTle649FSKlQCRsBSez+W4Vh5reIiKp0uDVYRCuPjaPYlf8=',
 				comments: {
 					editorConfig: {}

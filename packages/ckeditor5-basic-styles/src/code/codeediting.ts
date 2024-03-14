@@ -41,6 +41,7 @@ export default class CodeEditing extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
+		const t = this.editor.t;
 
 		// Allow code attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: CODE } );
@@ -67,5 +68,18 @@ export default class CodeEditing extends Plugin {
 
 		// Setup highlight over selected element.
 		inlineHighlight( editor, CODE, 'code', HIGHLIGHT_CLASS );
+
+		// Add the information about the keystroke to the accessibility database.
+		editor.accessibility.addKeystrokeInfos( {
+			keystrokes: [
+				{
+					label: t( 'Move out of an inline code style' ),
+					keystroke: [
+						[ 'arrowleft', 'arrowleft' ],
+						[ 'arrowright', 'arrowright' ]
+					]
+				}
+			]
+		} );
 	}
 }

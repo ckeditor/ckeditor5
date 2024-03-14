@@ -8,6 +8,7 @@ import Table from '../../../src/table.js';
 import TableCellProperties from '../../../src/tablecellproperties.js';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
 import View from '@ckeditor/ckeditor5-ui/src/view.js';
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview.js';
 
@@ -27,7 +28,7 @@ describe( 'table utils', () => {
 
 		return ClassicEditor
 			.create( editorElement, {
-				plugins: [ Table, TableCellProperties, Paragraph ]
+				plugins: [ Table, TableCellProperties, Paragraph, ClipboardPipeline ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
