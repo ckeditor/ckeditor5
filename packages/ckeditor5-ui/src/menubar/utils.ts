@@ -421,7 +421,8 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 			{
 				groupId: 'export',
 				items: [
-					'menuBar:exportPdf'
+					'menuBar:exportPdf',
+					'menuBar:exportWord'
 				]
 			}
 		]
