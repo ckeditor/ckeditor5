@@ -14,6 +14,10 @@ import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.j
 import StrikethroughEditing from '@ckeditor/ckeditor5-basic-styles/src/strikethrough/strikethroughediting.js';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
+import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting.js';
+import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting.js';
+import InsertImageCommand from '@ckeditor/ckeditor5-image/src/image/insertimagecommand.js';
+
 import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
 
 import RestrictedEditingModeEditing from './../src/restrictededitingmodeediting.js';
@@ -378,7 +382,9 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 	describe( 'editing behavior', () => {
 		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, RestrictedEditingModeEditing, ClipboardPipeline ] } );
+			editor = await VirtualTestEditor.create( { plugins: [
+				Paragraph, Typing, RestrictedEditingModeEditing, ClipboardPipeline, ImageEditing, ImageInlineEditing
+			] } );
 			model = editor.model;
 		} );
 
@@ -467,6 +473,62 @@ describe( 'RestrictedEditingModeEditing', () => {
 			editor.execute( 'insertText', { text: 'X' } );
 
 			expect( getModelData( model ) ).to.equalMarkup( '<paragraph>foo barX[] baz</paragraph>' );
+			const markerRange = editor.model.markers.get( 'restrictedEditingException:1' ).getRange();
+			const expectedRange = model.createRange(
+				model.createPositionAt( firstParagraph, 4 ),
+				model.createPositionAt( firstParagraph, 8 )
+			);
+
+			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+		} );
+
+		it( 'should extend maker when inserting inline image on the marker boundary (end)', () => {
+			setModelData( model, '<paragraph>foo bar[] baz</paragraph>' );
+			const imgSrc = 'foo/bar.jpg';
+			const firstParagraph = model.document.getRoot().getChild( 0 );
+			const command = new InsertImageCommand( editor );
+
+			model.change( writer => {
+				writer.addMarker( 'restrictedEditingException:1', {
+					range: writer.createRange( writer.createPositionAt( firstParagraph, 4 ), writer.createPositionAt( firstParagraph, 7 ) ),
+					usingOperation: true,
+					affectsData: true
+				} );
+			} );
+
+			command.execute( { source: imgSrc } );
+
+			expect( getModelData( model ) ).to.equalMarkup(
+				'<paragraph>foo bar[<imageInline src="foo/bar.jpg"></imageInline>] baz</paragraph>'
+			);
+			const markerRange = editor.model.markers.get( 'restrictedEditingException:1' ).getRange();
+			const expectedRange = model.createRange(
+				model.createPositionAt( firstParagraph, 4 ),
+				model.createPositionAt( firstParagraph, 8 )
+			);
+
+			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+		} );
+
+		it( 'should extend maker when inserting inline image on the marker boundary (start)', () => {
+			setModelData( model, '<paragraph>foo []bar baz</paragraph>' );
+			const imgSrc = 'foo/bar.jpg';
+			const firstParagraph = model.document.getRoot().getChild( 0 );
+			const command = new InsertImageCommand( editor );
+
+			model.change( writer => {
+				writer.addMarker( 'restrictedEditingException:1', {
+					range: writer.createRange( writer.createPositionAt( firstParagraph, 4 ), writer.createPositionAt( firstParagraph, 7 ) ),
+					usingOperation: true,
+					affectsData: true
+				} );
+			} );
+
+			command.execute( { source: imgSrc } );
+
+			expect( getModelData( model ) ).to.equalMarkup(
+				'<paragraph>foo [<imageInline src="foo/bar.jpg"></imageInline>]bar baz</paragraph>'
+			);
 			const markerRange = editor.model.markers.get( 'restrictedEditingException:1' ).getRange();
 			const expectedRange = model.createRange(
 				model.createPositionAt( firstParagraph, 4 ),

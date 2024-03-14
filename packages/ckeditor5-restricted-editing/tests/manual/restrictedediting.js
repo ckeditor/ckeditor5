@@ -11,7 +11,6 @@ import Table from '@ckeditor/ckeditor5-table/src/table.js';
 
 import StandardEditingMode from '../../src/standardeditingmode.js';
 import RestrictedEditingMode from '../../src/restrictededitingmode.js';
-import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
 import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert.js';
 import ImageInline from '@ckeditor/ckeditor5-image/src/imageinline.js';
 import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder.js';
@@ -85,15 +84,18 @@ function MyPlugin( editor ) {
 
 async function startRestrictedEditingMode() {
 	await reloadEditor( {
-		plugins: [ ImageUpload, ArticlePluginSet, Table, TableToolbar, RestrictedEditingMode, MyPlugin,
-			ImageInline, ImageInsert, CKFinderUploadAdapter, CKFinder, CKFinderUploadAdapter ],
-		toolbar: [ 'bold', 'italic', 'link', '|', 'restrictedEditing', '|', 'undo', 'redo', 'insertImage' ],
+		plugins: [ ImageUpload, ArticlePluginSet, RestrictedEditingMode, MyPlugin,
+			ImageInline, ImageInsert, CKFinderUploadAdapter, CKFinder, CKFinderUploadAdapter, Table ],
+		toolbar: [ 'bold', 'italic', 'link', '|', 'restrictedEditing', '|', 'undo', 'redo', 'insertImage', 'insertTable' ],
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ],
 			tableToolbar: [ 'bold', 'italic' ]
 		},
 		image: {
 			toolbar: [ 'imageStyle:inline' ]
+		},
+		restrictedEditing: {
+			allowedCommands: [ 'imageInsert', 'imageUpload', 'insertTable' ]
 		},
 		ckfinder: {
 			// eslint-disable-next-line max-len

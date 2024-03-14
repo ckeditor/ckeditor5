@@ -108,7 +108,7 @@ export function extendMarkerOnTypingPostFixer( editor: Editor ): ModelPostFixer 
 		let changeApplied = false;
 
 		for ( const change of editor.model.document.differ.getChanges() ) {
-			if ( change.type == 'insert' && change.name == '$text' ) {
+			if ( change.type == 'insert' && ( change.name == '$text' || change.name == 'imageInline' ) ) {
 				changeApplied = _tryExtendMarkerStart( editor, change.position, change.length, writer ) || changeApplied;
 				changeApplied = _tryExtendMarkedEnd( editor, change.position, change.length, writer ) || changeApplied;
 			}
