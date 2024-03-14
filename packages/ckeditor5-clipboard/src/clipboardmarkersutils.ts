@@ -135,7 +135,7 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 *
 	 * 	* `markers` are inserted into the same element that must be later transformed inside `getPastedDocumentElement`.
 	 * 	* Fake marker elements inside `getPastedDocumentElement` can be cloned, but their ranges cannot overlap.
-	 * 	* If `duplicateOnPaste` is `true` in marker config is true then associated marker id is regenerated before pasting.
+	 * 	* If `duplicateOnPaste` is `true` in marker config then associated marker ID is regenerated before pasting.
 	 *
 	 * @param action Type of clipboard action.
 	 * @param markers Object that maps marker name to corresponding range.
@@ -179,8 +179,8 @@ export default class ClipboardMarkersUtils extends Plugin {
 	}
 
 	/**
-	 * Paste fragment with markers to document.
-	 * If `duplicateOnPaste` is `true` in marker config then associated markers ids
+	 * Pastes document fragment with markers to document.
+	 * If `duplicateOnPaste` is `true` in marker config then associated markers IDs
 	 * are regenerated before pasting to avoid markers duplications in content.
 	 *
 	 * @param fragment Document fragment that should contain already processed by pipeline markers.
@@ -299,7 +299,7 @@ export default class ClipboardMarkersUtils extends Plugin {
 	/**
 	 * Returns array of markers that can be copied in specified selection.
 	 *
-	 * If marker cannot be copied partially (according to `skipPartiallySelected` configuration flag) and
+	 * If marker cannot be copied partially (according to `copyPartiallySelected` configuration flag) and
 	 * is not present entirely in any selection range then it will be skipped.
 	 *
 	 * @param writer An instance of the model writer.
@@ -333,7 +333,7 @@ export default class ClipboardMarkersUtils extends Plugin {
 			//
 			// Example:
 			// 	<marker-a> Hello [ World ] </marker-a>
-			//					     ^ selection
+			//						^ selection
 			//
 			// In this scenario `marker-a` won't be copied because selection doesn't overlap its content entirely.
 			const { copyPartiallySelected } = this._getMarkerClipboardConfig( marker.name )!;
@@ -350,16 +350,16 @@ export default class ClipboardMarkersUtils extends Plugin {
 		return Array
 			.from( markersInRanges )
 			.filter( isSelectionMarkerCopyable )
-			.map( ( marker ): CopyableMarker => {
+			.map( ( copyableMarker ): CopyableMarker => {
 				// During `dragstart` event original marker is still present in tree.
 				// It is removed after the clipboard drop event, so none of the copied markers are inserted at the end.
 				// It happens because there already markers with specified `marker.name` when clipboard is trying to insert data
 				// and it aborts inserting.
-				const name = action === 'dragstart' ? this._getUniqueMarkerName( marker.name ) : marker.name;
+				const name = action === 'dragstart' ? this._getUniqueMarkerName( copyableMarker.name ) : copyableMarker.name;
 
 				return {
 					name,
-					range: marker.getRange()
+					range: copyableMarker.getRange()
 				};
 			} );
 	}
