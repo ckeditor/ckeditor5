@@ -212,7 +212,7 @@ describe( 'EditorWatchdog', () => {
 			await watchdog.destroy();
 		} );
 
-		it( 'should create an editor instance after destroying the previous one', async () => {
+		it( 'should create an editor instance after the ongoing destruction process has been finished', async () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 
 			await watchdog.create( element, {
@@ -1270,7 +1270,7 @@ describe( 'EditorWatchdog', () => {
 			sinon.assert.calledTwice( spy );
 		} );
 
-		it( 'should destroy the editor after finishing initialization', async () => {
+		it( 'should destroy the editor after finishing the ongoing creation process', async () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 
 			// Do not wait for the creation process to finish.
