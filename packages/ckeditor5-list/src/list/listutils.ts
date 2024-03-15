@@ -15,8 +15,10 @@ import {
 	expandListBlocksToCompleteItems,
 	expandListBlocksToCompleteList,
 	isFirstBlockOfListItem,
-	isListItemBlock
+	isListItemBlock,
+	isNumberedListType
 } from './utils/model.js';
+import type { ListTypeOptions } from './listediting.js';
 
 /**
  * A set of helpers related to document lists.
@@ -64,5 +66,12 @@ export default class ListUtils extends Plugin {
 	 */
 	public expandListBlocksToCompleteItems( blocks: ArrayOrItem<Element>, options: { withNested?: boolean } = {} ): Array<Element> {
 		return expandListBlocksToCompleteItems( blocks, options );
+	}
+
+	/**
+	 * Returns true if listType is of type `numbered` or `customNumbered`.
+	 */
+	public isNumberedListType( listType: ListTypeOptions ): boolean {
+		return isNumberedListType( listType );
 	}
 }
