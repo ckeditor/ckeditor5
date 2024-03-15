@@ -460,7 +460,11 @@ export default class DomConverter {
 
 			if ( options.withChildren !== false ) {
 				for ( const child of this.viewChildrenToDom( viewElementOrFragment, options ) ) {
-					domElement.appendChild( child );
+					if ( domElement instanceof HTMLTemplateElement ) {
+						domElement.content.appendChild( child );
+					} else {
+						domElement.appendChild( child );
+					}
 				}
 			}
 

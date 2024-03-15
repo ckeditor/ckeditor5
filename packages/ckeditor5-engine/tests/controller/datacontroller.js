@@ -590,6 +590,19 @@ describe( 'DataController', () => {
 
 			console.warn.restore();
 		} );
+
+		it( 'should get template with children', () => {
+			schema.register( 'container', { inheritAllFrom: '$block' } );
+			schema.extend( 'paragraph', { allowIn: [ 'container' ] } );
+			setData( model, '<container><paragraph>foo</paragraph></container>' );
+
+			downcastHelpers.elementToElement( {
+				model: 'container',
+				view: 'template'
+			} );
+
+			expect( data.get() ).to.equal( '<template><p>foo</p></template>' );
+		} );
 	} );
 
 	describe( 'stringify()', () => {
