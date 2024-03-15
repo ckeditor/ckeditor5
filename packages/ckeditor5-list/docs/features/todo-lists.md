@@ -23,10 +23,43 @@ Use the to-do list toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/to
 
 You can check and clear a list item by using the <kbd>Ctrl</kbd> + <kbd>Enter</kbd> (<kbd>Cmd</kbd> + <kbd>Enter</kbd> on Mac) shortcut when the selection is in that item.
 
+## Installation
+
+The `TodoList` plugin provides the {@link features/todo-lists to-do list feature} for CKEditor&nbsp;5.
+
+<info-box info>
+	The to-do list feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
+</info-box>
+
+To add this feature to your editor, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:
+
+```bash
+npm install --save @ckeditor/ckeditor5-list
+```
+
+Then add the `TodoList` plugin to your plugin list and the toolbar configuration:
+
+```js
+import { TodoList } from '@ckeditor/ckeditor5-list';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ TodoList, /* ... */ ],
+		toolbar: [ 'todoList', /* ... */ ],
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+<info-box info>
+	Read more about {@link installation/plugins/installing-plugins installing plugins}.
+</info-box>
+
 ## Related features
 
 These CKEditor&nbsp;5 features provide similar functionality:
 * {@link features/lists Ordered and unordered lists} &ndash; Create ordered and unordered lists with configurable markers.
+* {@link features/multi-level-lists Multi-level lists} &ndash; Multi-level lists allow the user to set different markers (symbols, text or numbers) to display at each level of the list.
 * {@link features/autoformat Autoformatting} &ndash; Format the text on the go with Markdown code.
 
 ## Common API
