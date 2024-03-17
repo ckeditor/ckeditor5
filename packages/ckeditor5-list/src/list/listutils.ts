@@ -7,13 +7,16 @@
  * @module list/list/listutils
  */
 
-import type { Element, Node } from 'ckeditor5/src/engine.js';
+import type { Element, Model, Node } from 'ckeditor5/src/engine.js';
 import type { ArrayOrItem } from 'ckeditor5/src/utils.js';
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import {
+	type ListElement,
+	expandListBlocksToCompleteStructure,
 	expandListBlocksToCompleteItems,
 	expandListBlocksToCompleteList,
+	getSelectedBlockObject,
 	isFirstBlockOfListItem,
 	isListItemBlock,
 	isNumberedListType
@@ -73,5 +76,24 @@ export default class ListUtils extends Plugin {
 	 */
 	public isNumberedListType( listType: ListTypeOptions ): boolean {
 		return isNumberedListType( listType );
+	}
+
+	/**
+	 * TODO
+	 */
+	public expandListBlocksToCompleteStructure( listItem: Element ): Array<ListElement> {
+		return expandListBlocksToCompleteStructure( listItem );
+	}
+
+	/**
+	 * Returns a selected block object. If a selected object is inline or when there is no selected
+	 * object, `null` is returned.
+	 *
+	 * @internal
+	 * @param model The instance of editor model.
+	 * @returns Selected block object or `null`.
+	 */
+	public getSelectedBlockObject( model: Model ): Element | null {
+		return getSelectedBlockObject( model );
 	}
 }

@@ -575,6 +575,28 @@ export function isNumberedListType( listType: ListTypeOptions ): boolean {
 }
 
 /**
+ * TODO
+ */
+export function expandListBlocksToCompleteStructure( listItem: Element ): Array<ListElement> {
+	const backwardBlocks = new ListWalker( listItem, {
+		direction: 'backward',
+		higherIndent: true,
+		lowerIndent: true,
+		sameIndent: true,
+		includeSelf: true
+	} );
+
+	const forwardBlocks = new ListWalker( listItem, {
+		direction: 'forward',
+		higherIndent: true,
+		lowerIndent: true,
+		sameIndent: true
+	} );
+
+	return [ ...backwardBlocks, ...forwardBlocks ];
+}
+
+/**
  * Merges a given block to the given parent block if parent is a list item and there is no more blocks in the same item.
  */
 function mergeListItemIfNotLast(

@@ -20,7 +20,8 @@ import {
 	sortBlocks,
 	getSelectedBlockObject,
 	isListItemBlock,
-	canBecomeSimpleListItem
+	canBecomeSimpleListItem,
+	expandListBlocksToCompleteStructure
 } from './utils/model.js';
 import { type ListTypeOptions } from './listediting.js';
 
@@ -104,7 +105,9 @@ export default class ListCommand extends Command {
 			}
 			// Changing type of list items for a collapsed selection inside a list item.
 			else if ( ( selectedBlockObject || document.selection.isCollapsed ) && isListItemBlock( blocks[ 0 ] ) ) {
-				const changedBlocks = getListItems( selectedBlockObject || blocks[ 0 ] );
+				const changedBlocks = ( this.type == 'customNumbered' || this.type == 'customBulleted' ) ?
+					expandListBlocksToCompleteStructure( selectedBlockObject || blocks[ 0 ] ) :
+					getListItems( selectedBlockObject || blocks[ 0 ] );
 
 				for ( const block of changedBlocks ) {
 					writer.setAttribute( 'listType', this.type, block );
