@@ -8,11 +8,12 @@
 /* eslint-env node */
 
 // See: https://eslint.org/docs/user-guide/formatters/#stylish.
-const eslintStylishFormatter = require( 'eslint/lib/cli-engine/formatters/stylish' );
 const chalk = require( 'chalk' );
+const { ESLint } = require( 'eslint' );
 
 // eslint-disable-next-line max-len
-const CODE_STYLE_URL = 'https://ckeditor.com/docs/ckeditor5/latest/framework/contributing/code-style.html#ckeditor-5-custom-eslint-rules';
+const CODE_STYLE_URL =
+	'https://ckeditor.com/docs/ckeditor5/latest/framework/contributing/code-style.html#ckeditor-5-custom-eslint-rules';
 
 /**
  * Overwrite the default ESLint formatter. If CKEditor 5 related error occurred,
@@ -20,8 +21,11 @@ const CODE_STYLE_URL = 'https://ckeditor.com/docs/ckeditor5/latest/framework/con
  *
  * @param {Array} results
  */
-module.exports = results => {
-	console.log( eslintStylishFormatter( results ) );
+module.exports = async results => {
+	const eslint = new ESLint();
+	const stylish = await eslint.loadFormatter();
+
+	console.log( stylish.format( results ) );
 
 	const hasCKEditorErrors = results.some( item => {
 		if ( !Array.isArray( item.messages ) ) {
