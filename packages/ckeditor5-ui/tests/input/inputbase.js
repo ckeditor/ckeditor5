@@ -225,7 +225,7 @@ describe( 'InputBase', () => {
 
 				view.tabIndex = 123;
 
-				expect( view.element.getAttribute( 'tabIndex' ) ).to.equal( 123 );
+				expect( view.element.getAttribute( 'tabIndex' ) ).to.equal( '123' );
 			} );
 		} );
 
