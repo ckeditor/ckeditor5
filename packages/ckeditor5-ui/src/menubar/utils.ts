@@ -479,6 +479,7 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 				items: [
 					'menuBar:blockQuote',
 					'menuBar:link',
+					'menuBar:comment',
 					'menuBar:htmlEmbed',
 					'menuBar:pageBreak',
 					'menuBar:horizontalLine',
@@ -534,6 +535,18 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 				groupId: 'removeFormat',
 				items: [
 					'menuBar:removeFormat'
+				]
+			}
+		]
+	},
+	{
+		menuId: 'tools',
+		label: 'Tools',
+		groups: [
+			{
+				groupId: 'tools',
+				items: [
+					'menuBar:aiAssistant'
 				]
 			}
 		]
@@ -1000,7 +1013,8 @@ function localizeTopLevelCategories( config: RequiredMenuBarConfigObject, locale
 		'Edit': t( 'Edit' ),
 		'Format': t( 'Format' ),
 		'View': t( 'View' ),
-		'Insert': t( 'Insert' )
+		'Insert': t( 'Insert' ),
+		'Tools': t( 'Tools' )
 	};
 
 	for ( const categoryDef of config.items ) {
