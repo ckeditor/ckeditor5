@@ -616,6 +616,32 @@ describe( 'TooltipManager', () => {
 				sinon.assert.notCalled( unpinSpy );
 			} );
 
+			it( 'should not work if the tooltip is currently pinned and' +
+				'the event target is element and relatedTarget is balloon element', () => {
+				utils.dispatchMouseEnter( elements.a );
+				utils.waitForTheTooltipToShow( clock );
+
+				sinon.assert.calledOnce( pinSpy );
+
+				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
+				utils.dispatchMouseLeave( elements.a, tooltipManager.balloonPanelView.element );
+
+				sinon.assert.notCalled( unpinSpy );
+			} );
+
+			it( 'should work if the tooltip is currently pinned and' +
+				'the event target is balloon element and relatedTarget is something else', () => {
+				utils.dispatchMouseEnter( elements.a );
+				utils.waitForTheTooltipToShow( clock );
+
+				sinon.assert.calledOnce( pinSpy );
+
+				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
+				utils.dispatchMouseLeave( tooltipManager.balloonPanelView.element, elements.b );
+
+				sinon.assert.calledOnce( unpinSpy );
+			} );
+
 			it( 'should not work if the tooltip is currently pinned and the event target is different than the current element', () => {
 				utils.dispatchMouseEnter( elements.a );
 				utils.waitForTheTooltipToShow( clock );
