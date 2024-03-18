@@ -537,6 +537,18 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 				]
 			}
 		]
+	},
+	{
+		menuId: 'help',
+		label: 'Help',
+		groups: [
+			{
+				groupId: 'help',
+				items: [
+					'menuBar:accessibilityHelp'
+				]
+			}
+		]
 	}
 ];
 
@@ -1000,7 +1012,8 @@ function localizeTopLevelCategories( config: RequiredMenuBarConfigObject, locale
 		'Edit': t( 'Edit' ),
 		'Format': t( 'Format' ),
 		'View': t( 'View' ),
-		'Insert': t( 'Insert' )
+		'Insert': t( 'Insert' ),
+		'Help': t( 'Help' )
 	};
 
 	for ( const categoryDef of config.items ) {
