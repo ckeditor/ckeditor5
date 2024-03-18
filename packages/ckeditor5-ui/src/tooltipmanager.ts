@@ -298,10 +298,20 @@ export default class TooltipManager extends DomEmitterMixin() {
 				return;
 			}
 
+			const balloonElement = this.balloonPanelView.element;
+			const isEnteringBalloon = balloonElement && ( balloonElement === relatedTarget || balloonElement.contains( relatedTarget ) );
+			const isLeavingBalloon = !isEnteringBalloon && target === balloonElement;
+
+			// Do not hide the tooltip when the user moves the cursor over it.
+			if ( isEnteringBalloon ) {
+				return;
+			}
+
 			// If a tooltip is currently visible, don't act for a targets other than the one it is attached to.
+			// The only exception is leaving balloon, in this scenario tooltip should be closed.
 			// For instance, a random mouseleave far away in the page should not unpin the tooltip that was pinned because
 			// of a previous focus. Only leaving the same element should hide the tooltip.
-			if ( this._currentElementWithTooltip && target !== this._currentElementWithTooltip ) {
+			if ( !isLeavingBalloon && this._currentElementWithTooltip && target !== this._currentElementWithTooltip ) {
 				return;
 			}
 
@@ -309,13 +319,12 @@ export default class TooltipManager extends DomEmitterMixin() {
 			const relatedDescendantWithTooltip = getDescendantWithTooltip( relatedTarget );
 
 			// Unpin when the mouse was leaving element with a tooltip to a place which does not have or has a different tooltip.
-			// Note that this should happen whether the tooltip is already visible or not, for instance, it could be invisible but queued
-			// (debounced): it should get canceled.
-			if ( descendantWithTooltip && descendantWithTooltip !== relatedDescendantWithTooltip ) {
+			// Note that this should happen whether the tooltip is already visible or not, for instance,
+			// it could be invisible but queued (debounced): it should get canceled.
+			if ( isLeavingBalloon || ( descendantWithTooltip && descendantWithTooltip !== relatedDescendantWithTooltip ) ) {
 				this._unpinTooltip();
 			}
-		}
-		else {
+		} else {
 			// If a tooltip is currently visible, don't act for a targets other than the one it is attached to.
 			// For instance, a random blur in the web page should not unpin the tooltip that was pinned because of a previous mouseenter.
 			if ( this._currentElementWithTooltip && target !== this._currentElementWithTooltip ) {
@@ -494,3 +503,6 @@ interface MutationObserverWrapper {
 	attach: ( element: Node ) => void;
 	detach: () => void;
 }
+
+// Add role tooltip: https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/tooltip_role#keyboard_interactions
+// Escape to close tooltip
