@@ -66,7 +66,6 @@ export default class BlockQuoteUI extends Plugin {
 		view.set( {
 			label: t( 'Block quote' ),
 			icon: icons.quote,
-			tooltip: true,
 			isToggleable: true
 		} );
 
