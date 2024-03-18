@@ -215,13 +215,19 @@ describe( 'EditorWatchdog', () => {
 		it( 'should create an editor instance after the ongoing destruction process has been finished', async () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 
-			await watchdog.create( element, {
-				initialData: '<p>foo</p>',
-				plugins: [ Paragraph ]
-			} );
+			// It simulates the process of creating a new instance of the editor and immediately destroying it.
+			const simulateRefreshApp = async () => {
+				watchdog.create( element, {
+					initialData: '<p>foo</p>',
+					plugins: [ Paragraph ]
+				} );
 
-			// Do not wait for the destruction process to finish.
-			watchdog.destroy();
+				watchdog.destroy();
+			};
+
+			// We do not wait for the completion of this process, which simulates the real case when the app is immediately
+			// restarted and the initial process of the new app is called without waiting for the previous process to finish.
+			simulateRefreshApp();
 
 			await watchdog.create( element, {
 				initialData: '<p>foo</p>',
