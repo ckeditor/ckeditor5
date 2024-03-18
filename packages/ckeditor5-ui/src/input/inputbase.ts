@@ -53,6 +53,7 @@ export default abstract class InputBase<TElement extends HTMLInputElement | HTML
 	 */
 	declare public tabIndex: number | undefined;
 
+	/**
 	 * The `aria-label` attribute of the input.
 	 *
 	 * @observable
