@@ -51,19 +51,27 @@ export default class AccessibilityHelp extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
+		const t = editor.locale.t;
 
 		editor.ui.componentFactory.add( 'accessibilityHelp', () => {
 			const button = this._createButton( ButtonView );
 
 			button.set( {
 				tooltip: true,
-				withText: false
+				withText: false,
+				label: t( 'Accessibility help' )
 			} );
 
 			return button;
 		} );
 
-		editor.ui.componentFactory.add( 'menuBar:accessibilityHelp', () => this._createButton( MenuBarMenuListItemButtonView ) );
+		editor.ui.componentFactory.add( 'menuBar:accessibilityHelp', () => {
+			const button = this._createButton( MenuBarMenuListItemButtonView );
+
+			button.label = t( 'Accessibility' );
+
+			return button;
+		} );
 
 		editor.keystrokes.set( 'Alt+0', ( evt, cancel ) => {
 			this._showDialog();
@@ -80,10 +88,8 @@ export default class AccessibilityHelp extends Plugin {
 		const editor = this.editor;
 		const locale = editor.locale;
 		const view = new ButtonClass( locale ) as InstanceType<T>;
-		const t = locale.t;
 
 		view.set( {
-			label: t( 'Accessibility help' ),
 			keystroke: 'Alt+0',
 			icon: accessibilityIcon
 		} );
