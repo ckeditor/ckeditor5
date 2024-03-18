@@ -476,6 +476,7 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 			{
 				groupId: 'insert',
 				items: [
+					'menuBar:insertTemplate',
 					'menuBar:blockQuote',
 					'menuBar:htmlEmbed',
 					'menuBar:pageBreak',
