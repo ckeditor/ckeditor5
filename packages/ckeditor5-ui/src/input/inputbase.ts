@@ -47,6 +47,13 @@ export default abstract class InputBase<TElement extends HTMLInputElement | HTML
 	declare public placeholder: string | undefined;
 
 	/**
+	 * The `aria-label` attribute of the input.
+	 *
+	 * @observable
+	 */
+	declare public ariaLabel: string | undefined;
+
+	/**
 	 * Controls whether the input view is in read-only mode.
 	 *
 	 * @observable
@@ -101,6 +108,7 @@ export default abstract class InputBase<TElement extends HTMLInputElement | HTML
 		this.set( 'isReadOnly', false );
 		this.set( 'hasError', false );
 		this.set( 'ariaDescribedById', undefined );
+		this.set( 'ariaLabel', undefined );
 
 		this.focusTracker = new FocusTracker();
 
@@ -123,7 +131,8 @@ export default abstract class InputBase<TElement extends HTMLInputElement | HTML
 				placeholder: bind.to( 'placeholder' ),
 				readonly: bind.to( 'isReadOnly' ),
 				'aria-invalid': bind.if( 'hasError', true ),
-				'aria-describedby': bind.to( 'ariaDescribedById' )
+				'aria-describedby': bind.to( 'ariaDescribedById' ),
+				'aria-label': bind.to( 'ariaLabel' )
 			},
 			on: {
 				input: bind.to( ( ...args ) => {

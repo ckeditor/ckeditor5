@@ -219,6 +219,16 @@ describe( 'InputBase', () => {
 			} );
 		} );
 
+		describe( 'aria-label', () => {
+			it( 'should react on view#ariaLabel', () => {
+				expect( view.element.getAttribute( 'aria-label' ) ).to.be.null;
+
+				view.ariaLabel = 'reader text';
+
+				expect( view.element.getAttribute( 'aria-label' ) ).to.equal( 'reader text' );
+			} );
+		} );
+
 		describe( 'aria-describedby', () => {
 			it( 'should react on view#hasError', () => {
 				expect( view.element.getAttribute( 'aria-describedby' ) ).to.be.null;
