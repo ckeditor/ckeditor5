@@ -18,6 +18,7 @@ import nestedMixed from './nested-mixed/input.word2016.html';
 import nestedMultiple from './nested-multiple/input.word2016.html';
 import nestedMixedId from './nested-mixed-id/input.word2016.html';
 import styledAnchor from './styled-anchor/input.word2016.html';
+import multiBlock from './multi-block/input.word.html';
 
 import simpleNormalized from './simple/normalized.word2016.html';
 import styledNormalized from './styled/normalized.word2016.html';
@@ -33,6 +34,7 @@ import nestedMixedNormalized from './nested-mixed/normalized.word2016.html';
 import nestedMultipleNormalized from './nested-multiple/normalized.word2016.html';
 import nestedMixedIdNormalized from './nested-mixed-id/normalized.word2016.html';
 import styledAnchorNormalized from './styled-anchor/normalized.word2016.html';
+import multiBlockNormalized from './multi-block/normalized.word.html';
 
 import simpleModel from './simple/model.word2016.html';
 import styledModel from './styled/model.word2016.html';
@@ -48,6 +50,7 @@ import nestedMixedModel from './nested-mixed/model.word2016.html';
 import nestedMultipleModel from './nested-multiple/model.word2016.html';
 import nestedMixedIdModel from './nested-mixed-id/model.word2016.html';
 import styledAnchorModel from './styled-anchor/model.word2016.html';
+import multiBlockModel from './multi-block/model.word.html';
 
 export const fixtures = {
 	input: {
@@ -64,7 +67,8 @@ export const fixtures = {
 		nestedMixed,
 		nestedMultiple,
 		nestedMixedId,
-		styledAnchor
+		styledAnchor,
+		multiBlock
 	},
 	normalized: {
 		simple: simpleNormalized,
@@ -80,7 +84,8 @@ export const fixtures = {
 		nestedMixed: nestedMixedNormalized,
 		nestedMultiple: nestedMultipleNormalized,
 		nestedMixedId: nestedMixedIdNormalized,
-		styledAnchor: styledAnchorNormalized
+		styledAnchor: styledAnchorNormalized,
+		multiBlock: multiBlockNormalized
 	},
 	model: {
 		simple: simpleModel,
@@ -96,7 +101,8 @@ export const fixtures = {
 		nestedMixed: nestedMixedModel,
 		nestedMultiple: nestedMultipleModel,
 		nestedMixedId: nestedMixedIdModel,
-		styledAnchor: styledAnchorModel
+		styledAnchor: styledAnchorModel,
+		multiBlock: multiBlockModel
 	}
 };
 

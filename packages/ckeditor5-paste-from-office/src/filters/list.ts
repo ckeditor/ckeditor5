@@ -73,45 +73,47 @@ export function transformListItemLikeElementsIntoLists(
 			if ( indent < stack.length - 1 ) {
 				stack.length = indent + 1;
 			}
-			else if ( indent > stack.length - 1 ) {
+			else {
 				const listStyle = detectListStyle( itemLikeElement, stylesString );
 
-				if ( indent == 0 && listStyle.type == 'ol' && itemLikeElement.id !== undefined && encounteredLists[ originalListId ] ) {
-					listStyle.startIndex = encounteredLists[ originalListId ];
-				}
-
-				const listElement = createNewEmptyList( listStyle, writer );
-
-				// Apply list padding only if we have margins for both, an item and the parent item.
-				if ( isPx( itemLikeElement.marginLeft ) && ( indent == 0 || isPx( stack[ indent - 1 ].marginLeft ) ) ) {
-					let marginLeft = itemLikeElement.marginLeft;
-
-					if ( indent > 0 ) {
-						marginLeft = toPx( parseFloat( marginLeft ) - parseFloat( stack[ indent - 1 ].marginLeft! ) );
+				if ( indent > stack.length - 1 || stack[ indent ].listElement.name != listStyle.type ) {
+					if ( indent == 0 && listStyle.type == 'ol' && itemLikeElement.id !== undefined && encounteredLists[ originalListId ] ) {
+						listStyle.startIndex = encounteredLists[ originalListId ];
 					}
 
-					writer.setStyle( 'padding-left', marginLeft, listElement );
-				}
+					const listElement = createNewEmptyList( listStyle, writer );
 
-				if ( stack.length == 0 ) {
-					const parent = itemLikeElement.element.parent!;
-					const index = parent.getChildIndex( itemLikeElement.element ) + 1;
+					// Apply list padding only if we have margins for both, an item and the parent item.
+					if ( isPx( itemLikeElement.marginLeft ) && ( indent == 0 || isPx( stack[ indent - 1 ].marginLeft ) ) ) {
+						let marginLeft = itemLikeElement.marginLeft;
 
-					writer.insertChild( index, listElement, parent );
-				} else {
-					const parentListItems = stack[ indent - 1 ].listItemElements;
+						if ( indent > 0 ) {
+							marginLeft = toPx( parseFloat( marginLeft ) - parseFloat( stack[ indent - 1 ].marginLeft! ) );
+						}
 
-					writer.appendChild( listElement, parentListItems[ parentListItems.length - 1 ] );
-				}
+						writer.setStyle( 'padding-left', marginLeft, listElement );
+					}
 
-				stack[ indent ] = {
-					...itemLikeElement,
-					listElement,
-					listItemElements: []
-				};
+					if ( stack.length == 0 ) {
+						const parent = itemLikeElement.element.parent!;
+						const index = parent.getChildIndex( itemLikeElement.element ) + 1;
 
-				if ( indent == 0 && itemLikeElement.id !== undefined ) {
-					encounteredLists[ originalListId ] = listStyle.startIndex || 1;
+						writer.insertChild( index, listElement, parent );
+					} else {
+						const parentListItems = stack[ indent - 1 ].listItemElements;
+
+						writer.appendChild( listElement, parentListItems[ parentListItems.length - 1 ] );
+					}
+
+					stack[ indent ] = {
+						...itemLikeElement,
+						listElement,
+						listItemElements: []
+					};
+
+					if ( indent == 0 && itemLikeElement.id !== undefined ) {
+						encounteredLists[ originalListId ] = listStyle.startIndex || 1;
+					}
 				}
 			}
 

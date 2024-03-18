@@ -193,15 +193,17 @@ describe( 'PasteFromOffice - filters', () => {
 					const html = `<p ${ level1 }>Foo</p><p ${ level3 }>Bar</p><p ${ level2 }>Baz</p>`;
 					const view = htmlDataProcessor.toView( html );
 
-					transformListItemLikeElementsIntoLists( view, '@list l0:level1 { mso-level-number-format: bullet; }' +
-						'@list l0:level2 { mso-level-number-format: bullet; }' );
+					transformListItemLikeElementsIntoLists( view,
+						'@list l0:level1 { mso-level-number-format: bullet; }' +
+						'@list l0:level2 { mso-level-number-format: bullet; }'
+					);
 
 					expect( view.childCount ).to.equal( 1 );
 
 					expect( stringify( view ) ).to.equal(
 						`<ul><li><p ${ level1 }>Foo</p>` +
-							`<ol><li><p ${ level3 }>Bar</p></li>` +
-							`<li><p ${ level2 }>Baz</p></li></ol>` +
+							`<ol><li><p ${ level3 }>Bar</p></li></ol>` +
+							`<ul><li><p ${ level2 }>Baz</p></li></ul>` +
 						'</li></ul>' );
 				} );
 
