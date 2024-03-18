@@ -827,6 +827,30 @@ describe( 'Clipboard Markers Utils', () => {
 		} );
 	} );
 
+	describe( '_setUniqueMarkerNamesInFragment', () => {
+		beforeEach( () => {
+			clipboardMarkersUtils._registerMarkerToCopy( 'comment', 'always' );
+		} );
+
+		it( 'do not regenerate name of marker if not copyable', () => {
+			const fragment = createFragmentWithMarkers( '<paragraph>ABC</paragraph>', {
+				'comment:1123:1': {
+					start: [ 0 ],
+					end: [ 1 ]
+				},
+				'marker-1': {
+					start: [ 0 ],
+					end: [ 1 ]
+				}
+			} );
+
+			clipboardMarkersUtils._setUniqueMarkerNamesInFragment( fragment );
+
+			expect( fragment.markers.has( 'comment:1123:1:pasted' ) ).to.be.true;
+			expect( fragment.markers.has( 'marker-1' ) ).to.be.true;
+		} );
+	} );
+
 	async function createEditor() {
 		editor = await ClassicTestEditor.create( element, {
 			plugins: [ Paragraph, Clipboard ]
