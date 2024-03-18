@@ -190,6 +190,7 @@ export default class TooltipManager extends DomEmitterMixin() {
 
 		this._pinTooltipDebounced = debounce( this._pinTooltip, 600 );
 
+		this.listenTo( global.document, 'keydown', this._onKeyDown.bind( this ), { useCapture: true } );
 		this.listenTo( global.document, 'mouseenter', this._onEnterOrFocus.bind( this ), { useCapture: true } );
 		this.listenTo( global.document, 'mouseleave', this._onLeaveOrBlur.bind( this ), { useCapture: true } );
 
@@ -257,6 +258,18 @@ export default class TooltipManager extends DomEmitterMixin() {
 			sw: [ defaultPositions.southArrowNorthEast ],
 			se: [ defaultPositions.southArrowNorthWest ]
 		}[ position ];
+	}
+
+	/**
+	 * Handles hiding tooltips on `keydown` in DOM.
+	 *
+	 * @param evt An object containing information about the fired event.
+	 * @param domEvent The DOM event.
+	 */
+	private _onKeyDown( evt: EventInfo, { key }: KeyboardEvent ) {
+		if ( key === 'Escape' && this._currentElementWithTooltip ) {
+			this._unpinTooltip();
+		}
 	}
 
 	/**
@@ -504,5 +517,4 @@ interface MutationObserverWrapper {
 	detach: () => void;
 }
 
-// Add role tooltip: https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/tooltip_role#keyboard_interactions
 // Escape to close tooltip
