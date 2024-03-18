@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, MouseEvent, Event */
+/* global document, MouseEvent, Event, KeyboardEvent */
 
 import EditorUI from '../../src/editorui/editorui.js';
 import View from '../../src/view.js';
@@ -603,6 +603,38 @@ describe( 'TooltipManager', () => {
 			clock.restore();
 		} );
 
+		describe( 'on keydown', () => {
+			it( 'should work if `Escape` keyboard keydown event occurs and tooltip opened', () => {
+				utils.dispatchMouseEnter( elements.a );
+				utils.waitForTheTooltipToShow( clock );
+
+				sinon.assert.calledOnce( pinSpy );
+
+				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
+				utils.dispatchKeydown( document, 'Escape' );
+
+				sinon.assert.calledOnce( unpinSpy );
+			} );
+
+			it( 'should not work if `A` keyboard keydown event occurs and tooltip opened', () => {
+				utils.dispatchMouseEnter( elements.a );
+				utils.waitForTheTooltipToShow( clock );
+
+				sinon.assert.calledOnce( pinSpy );
+
+				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
+				utils.dispatchKeydown( document, 'A' );
+
+				sinon.assert.notCalled( unpinSpy );
+			} );
+
+			it( 'should not throw exception if there is no opened tooltip and `Escape` keydown event occurs', () => {
+				expect( () => {
+					utils.dispatchKeydown( document, 'Escape' );
+				} ).not.to.throw();
+			} );
+		} );
+
 		describe( 'on mouseleave', () => {
 			it( 'should not work for unrelated event targets such as DOM document', () => {
 				utils.dispatchMouseEnter( elements.a );
@@ -998,6 +1030,10 @@ function getUtils() {
 
 		dispatchMouseEnter: element => {
 			element.dispatchEvent( new MouseEvent( 'mouseenter' ) );
+		},
+
+		dispatchKeydown: ( element, key ) => {
+			element.dispatchEvent( new KeyboardEvent( 'keydown', { key } ) );
 		},
 
 		dispatchMouseLeave: ( element, relatedTarget ) => {

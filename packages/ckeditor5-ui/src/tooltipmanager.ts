@@ -516,5 +516,3 @@ interface MutationObserverWrapper {
 	attach: ( element: Node ) => void;
 	detach: () => void;
 }
-
-// Escape to close tooltip
