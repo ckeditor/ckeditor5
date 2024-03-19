@@ -1,8 +1,8 @@
 {
 	"Insert code block": "A label of the button that allows inserting a new code block into the editor content.",
 	"Plain text": "A language of the code block in the editor content when no specific programming language is associated with it.",
-	"Leaving %0 code snippet": "Assistive technologies label for entering the code block with specified language in document.",
-	"Entering %0 code snippet": "Assistive technologies label for leaving the code block with specified language in document.",
+	"Leaving %0 code snippet": "Assistive technologies label for leaving the code block with specified language in document.",
+	"Entering %0 code snippet": "Assistive technologies label for entering the code block with specified language in document.",
 	"Entering code snippet": "Assistive technologies label for entering the code block with not specified language in document.",
 	"Leaving code snippet": "Assistive technologies label for leaving the code block with not specified language in document."
 }
