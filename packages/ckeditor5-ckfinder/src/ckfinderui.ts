@@ -93,7 +93,7 @@ export default class CKFinderUI extends Plugin {
 	}
 
 	/**
-	 * Creates a button to show accessibility help dialog, for use either in toolbar or in menu bar.
+	 * Creates a button for CKFinder command to use either in toolbar or in menu bar.
 	 */
 	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
 		const editor = this.editor;
