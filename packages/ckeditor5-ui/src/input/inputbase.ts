@@ -47,6 +47,20 @@ export default abstract class InputBase<TElement extends HTMLInputElement | HTML
 	declare public placeholder: string | undefined;
 
 	/**
+	 * The `tabindex` attribute of the input.
+	 *
+	 * @observable
+	 */
+	declare public tabIndex: number | undefined;
+
+	/**
+	 * The `aria-label` attribute of the input.
+	 *
+	 * @observable
+	 */
+	declare public ariaLabel: string | undefined;
+
+	/**
 	 * Controls whether the input view is in read-only mode.
 	 *
 	 * @observable
@@ -98,9 +112,11 @@ export default abstract class InputBase<TElement extends HTMLInputElement | HTML
 		this.set( 'value', undefined );
 		this.set( 'id', undefined );
 		this.set( 'placeholder', undefined );
+		this.set( 'tabIndex', undefined );
 		this.set( 'isReadOnly', false );
 		this.set( 'hasError', false );
 		this.set( 'ariaDescribedById', undefined );
+		this.set( 'ariaLabel', undefined );
 
 		this.focusTracker = new FocusTracker();
 
@@ -121,9 +137,11 @@ export default abstract class InputBase<TElement extends HTMLInputElement | HTML
 				],
 				id: bind.to( 'id' ),
 				placeholder: bind.to( 'placeholder' ),
+				tabindex: bind.to( 'tabIndex' ),
 				readonly: bind.to( 'isReadOnly' ),
 				'aria-invalid': bind.if( 'hasError', true ),
-				'aria-describedby': bind.to( 'ariaDescribedById' )
+				'aria-describedby': bind.to( 'ariaDescribedById' ),
+				'aria-label': bind.to( 'ariaLabel' )
 			},
 			on: {
 				input: bind.to( ( ...args ) => {

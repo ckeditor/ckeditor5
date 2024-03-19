@@ -219,6 +219,26 @@ describe( 'InputBase', () => {
 			} );
 		} );
 
+		describe( 'tabIndex', () => {
+			it( 'should react on view#tabIndex', () => {
+				expect( view.element.getAttribute( 'tabIndex' ) ).to.be.null;
+
+				view.tabIndex = 123;
+
+				expect( view.element.getAttribute( 'tabIndex' ) ).to.equal( '123' );
+			} );
+		} );
+
+		describe( 'aria-label', () => {
+			it( 'should react on view#ariaLabel', () => {
+				expect( view.element.getAttribute( 'aria-label' ) ).to.be.null;
+
+				view.ariaLabel = 'reader text';
+
+				expect( view.element.getAttribute( 'aria-label' ) ).to.equal( 'reader text' );
+			} );
+		} );
+
 		describe( 'aria-describedby', () => {
 			it( 'should react on view#hasError', () => {
 				expect( view.element.getAttribute( 'aria-describedby' ) ).to.be.null;

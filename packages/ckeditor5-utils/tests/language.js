@@ -32,7 +32,11 @@ describe( 'language', () => {
 
 			// Uighur, Uyghur
 			{ code: 'ug', textDirection: 'rtl' },
-			{ code: 'uig', textDirection: 'rtl' }
+			{ code: 'uig', textDirection: 'rtl' },
+
+			// Dhivehi, Divehi
+			{ code: 'dv', textDirection: 'rtl' },
+			{ code: 'div', textDirection: 'rtl' }
 		].forEach( ( { code, textDirection } ) => {
 			it( `determines the "${ code }" language direction`, () => {
 				expect( getLanguageDirection( code ) ).to.equal( textDirection );
