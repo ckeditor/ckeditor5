@@ -19,10 +19,12 @@ import {
 	type DowncastInsertEvent,
 	type UpcastElementEvent,
 	type UpcastTextEvent,
-	type Element
+	type Element,
+	type SelectionChangeRangeEvent
 } from 'ckeditor5/src/engine.js';
 
 import type { ListEditing } from '@ckeditor/ckeditor5-list';
+import type { CodeBlockLanguageDefinition } from './codeblockconfig.js';
 
 import CodeBlockCommand from './codeblockcommand.js';
 import IndentCodeBlockCommand from './indentcodeblockcommand.js';
@@ -30,7 +32,8 @@ import OutdentCodeBlockCommand from './outdentcodeblockcommand.js';
 import {
 	getNormalizedAndLocalizedLanguageDefinitions,
 	getLeadingWhiteSpaces,
-	rawSnippetTextToViewDocumentFragment
+	rawSnippetTextToViewDocumentFragment,
+	getCodeBlockAriaAnnouncement
 } from './utils.js';
 import {
 	modelToViewCodeBlockInsertion,
@@ -236,6 +239,8 @@ export default class CodeBlockEditing extends Plugin {
 				}
 			} );
 		} );
+
+		this._initAriaAnnouncements( normalizedLanguagesDefs );
 	}
 
 	/**
@@ -277,6 +282,36 @@ export default class CodeBlockEditing extends Plugin {
 			data.preventDefault();
 			evt.stop();
 		}, { context: 'pre' } );
+	}
+
+	/**
+	 * @internal
+	 */
+	private _initAriaAnnouncements( languageDefs: Array<CodeBlockLanguageDefinition> ) {
+		const { model, ui, t } = this.editor;
+		let lastFocusedCodeBlock: Element | null = null;
+
+		model.document.selection.on<SelectionChangeRangeEvent>( 'change:range', () => {
+			const focusParent = model.document.selection.focus!.parent;
+
+			if ( lastFocusedCodeBlock === focusParent || !focusParent.is( 'element' ) ) {
+				return;
+			}
+
+			let announcement: string | null = null;
+
+			if ( focusParent.is( 'element', 'codeBlock' ) ) {
+				announcement = getCodeBlockAriaAnnouncement( t, languageDefs, focusParent, 'enter' );
+			} else if ( lastFocusedCodeBlock && lastFocusedCodeBlock.is( 'element', 'codeBlock' ) ) {
+				announcement = getCodeBlockAriaAnnouncement( t, languageDefs, focusParent, 'leave' );
+			}
+
+			if ( announcement ) {
+				ui.ariaLiveAnnouncer.announce( 'codeBlocks', announcement, 'assertive' );
+			}
+
+			lastFocusedCodeBlock = focusParent;
+		} );
 	}
 }
 
