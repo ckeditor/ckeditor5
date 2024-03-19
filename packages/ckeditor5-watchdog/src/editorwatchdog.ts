@@ -252,60 +252,49 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 	 * @param config The editor configuration.
 	 * @param context A context for the editor.
 	 */
-	public async create(
+	public create(
 		elementOrData: HTMLElement | string | Record<string, string> | Record<string, HTMLElement> = this._elementOrData!,
 		config: EditorConfig = this._config!,
 		context?: Context
 	): Promise<unknown> {
-		super._startErrorHandling();
+		this._lifecyclePromise = Promise.resolve( this._lifecyclePromise )
+			.then( () => {
+				super._startErrorHandling();
 
-		this._lifecyclePromise = ( async () => {
-			await this._lifecyclePromise;
-			await this._createEditor( elementOrData, config, context );
+				this._elementOrData = elementOrData;
 
-			this._lifecyclePromise = null;
-		} )();
+				// Use document data in the first parameter of the editor `.create()` call only if it was used like this originally.
+				// Use document data if a string or object with strings was passed.
+				this._initUsingData = typeof elementOrData == 'string' ||
+					( Object.keys( elementOrData ).length > 0 && typeof Object.values( elementOrData )[ 0 ] == 'string' );
+
+				// Clone configuration because it might be shared within multiple watchdog instances. Otherwise,
+				// when an error occurs in one of these editors, the watchdog will restart all of them.
+				this._config = this._cloneEditorConfiguration( config ) || {};
+
+				this._config!.context = context;
+
+				return this._creator( elementOrData, this._config! );
+			} )
+			.then( editor => {
+				this._editor = editor;
+
+				editor.model.document.on( 'change:data', this._throttledSave );
+
+				this._lastDocumentVersion = editor.model.document.version;
+				this._data = this._getData();
+
+				if ( !this._initUsingData ) {
+					this._editables = this._getEditables();
+				}
+
+				this.state = 'ready';
+				this._fire( 'stateChange' );
+			} ).finally( () => {
+				this._lifecyclePromise = null;
+			} );
 
 		return this._lifecyclePromise;
-	}
-
-	private async _createEditor(
-		elementOrData: HTMLElement | string | Record<string, string> | Record<string, HTMLElement>,
-		config: EditorConfig = this._config!,
-		context?: Context
-	): Promise<void> {
-		this._elementOrData = elementOrData;
-
-		// Use document data in the first parameter of the editor `.create()` call only if it was used like this originally.
-		// Use document data if a string or object with strings was passed.
-		this._initUsingData = typeof elementOrData == 'string' ||
-			( Object.keys( elementOrData ).length > 0 && typeof Object.values( elementOrData )[ 0 ] == 'string' );
-
-		// Clone configuration because it might be shared within multiple watchdog instances. Otherwise,
-		// when an error occurs in one of these editors, the watchdog will restart all of them.
-		this._config = this._cloneEditorConfiguration( config ) || {};
-
-		this._config!.context = context;
-
-		const editor = await this._creator( elementOrData, this._config! );
-
-		this._setupEditor( editor );
-	}
-
-	private _setupEditor( editor ): void {
-		this._editor = editor;
-
-		editor.model.document.on( 'change:data', this._throttledSave );
-
-		this._lastDocumentVersion = editor.model.document.version;
-		this._data = this._getData();
-
-		if ( !this._initUsingData ) {
-			this._editables = this._getEditables();
-		}
-
-		this.state = 'ready';
-		this._fire( 'stateChange' );
 	}
 
 	/**
@@ -313,19 +302,18 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 	 * registered in {@link #setDestructor `setDestructor()`} and uses it to destroy the editor instance.
 	 * It also sets the state to `destroyed`.
 	 */
-	public override async destroy(): Promise<unknown> {
-		this._lifecyclePromise = ( async () => {
-			await this._lifecyclePromise;
+	public override destroy(): Promise<unknown> {
+		this._lifecyclePromise = Promise.resolve( this._lifecyclePromise )
+			.then( () => {
+				this.state = 'destroyed';
+				this._fire( 'stateChange' );
 
-			this.state = 'destroyed';
-			this._fire( 'stateChange' );
+				super.destroy();
 
-			super.destroy();
-
-			this._lifecyclePromise = null;
-
-			return this._destroy();
-		} )();
+				return this._destroy();
+			} ).finally( () => {
+				this._lifecyclePromise = null;
+			} );
 
 		return this._lifecyclePromise;
 	}
