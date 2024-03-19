@@ -308,10 +308,10 @@ export default class CodeBlockEditing extends Plugin {
 			if ( focusParent.is( 'element', 'codeBlock' ) ) {
 				announcement = getCodeBlockAriaAnnouncement( t, languageDefs, focusParent, 'enter' );
 			} else if ( lastFocusedCodeBlock && lastFocusedCodeBlock.is( 'element', 'codeBlock' ) ) {
-				announcement = getCodeBlockAriaAnnouncement( t, languageDefs, focusParent, 'leave' );
+				announcement = getCodeBlockAriaAnnouncement( t, languageDefs, lastFocusedCodeBlock, 'leave' );
 			}
 
-			if ( announcement ) {
+			if ( announcement && ui ) {
 				ui.ariaLiveAnnouncer.announce( 'codeBlocks', announcement, 'assertive' );
 			}
 

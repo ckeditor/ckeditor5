@@ -30,7 +30,7 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import { _clear as clearTranslations, add as addTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
 
 describe( 'CodeBlockEditing', () => {
-	let editor, element, model, view, viewDoc;
+	let editor, element, model, view, viewDoc, root;
 
 	before( () => {
 		addTranslations( 'en', {
@@ -60,6 +60,7 @@ describe( 'CodeBlockEditing', () => {
 				model = editor.model;
 				view = editor.editing.view;
 				viewDoc = view.document;
+				root = model.document.getRoot();
 			} );
 	} );
 
@@ -1788,4 +1789,51 @@ describe( 'CodeBlockEditing', () => {
 			} );
 		} );
 	} );
+
+	describe( 'accessibility', () => {
+		let announcerSpy;
+
+		beforeEach( () => {
+			announcerSpy = sinon.spy( editor.ui.ariaLiveAnnouncer, 'announce' );
+		} );
+
+		it( 'should announce enter and leave code block with specified language label', () => {
+			setModelData( model, '<codeBlock language="css">foo</codeBlock><paragraph>a</paragraph>' );
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 0, 0 ], root, [ 0, 1 ] ) );
+			} );
+
+			expect( announcerSpy ).to.be.calledWithExactly( 'codeBlocks', 'Entering CSS code snippet', 'assertive' );
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 1, 0 ], root, [ 1, 1 ] ) );
+			} );
+
+			expect( announcerSpy ).to.be.calledWithExactly( 'codeBlocks', 'Leaving CSS code snippet', 'assertive' );
+		} );
+
+		it( 'should announce enter and leave code block without language label', () => {
+			setModelData( model, '<codeBlock language="FooBar">foo</codeBlock><paragraph>a</paragraph>' );
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 0, 0 ], root, [ 0, 1 ] ) );
+			} );
+
+			expect( announcerSpy ).to.be.calledWithExactly( 'codeBlocks', 'Entering code snippet', 'assertive' );
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 1, 0 ], root, [ 1, 1 ] ) );
+			} );
+
+			expect( announcerSpy ).to.be.calledWithExactly( 'codeBlocks', 'Leaving code snippet', 'assertive' );
+		} );
+	} );
+
+	function createRange( startElement, startPath, endElement, endPath ) {
+		return model.createRange(
+			model.createPositionFromPath( startElement, startPath ),
+			model.createPositionFromPath( endElement, endPath )
+		);
+	}
 } );
