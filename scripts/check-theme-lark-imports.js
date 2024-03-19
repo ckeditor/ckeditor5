@@ -10,10 +10,10 @@
 const chalk = require( 'chalk' );
 const path = require( 'path' );
 const fs = require( 'fs' );
-const glob = require( 'glob' );
+const { globSync } = require( 'glob' );
 
 const THEME_LARK_DIR_PATH = path.resolve( __dirname, '..', 'packages', 'ckeditor5-theme-lark', 'theme' );
-const REGEX_FOR_INDEX_IMPORTS = /(?<=@import ".\/)(.*)(?=";)/gm;
+const REGEX_FOR_INDEX_IMPORTS = /(?<=@import ")(.*)(?=";)/gm;
 const REGEX_FOR_MATCHING_COMMENTS = /\/\*(?:(?!\*\/).|\n)*\*\//gm;
 
 // Exit process when 'theme-lark' package does not exist.
@@ -38,7 +38,7 @@ const ignoreList = [
 const globOptions = { cwd: THEME_LARK_DIR_PATH, ignore: ignoreList };
 
 // List of all paths to `CSS` files in `theme` folder of `theme-lark` package.
-const cssFilesPathsList = glob.sync( '**/*.css', globOptions );
+const cssFilesPathsList = globSync( '**/*.css', globOptions );
 
 cssFilesPathsList.forEach( filePath => {
 	const fileContent = fs.readFileSync( path.join( THEME_LARK_DIR_PATH, filePath ), 'utf-8' );
@@ -56,7 +56,7 @@ cssFilesPathsList.forEach( filePath => {
 
 	// Add paths to already imported files so we can exclude them from not imported ones.
 	matchSimplifiedList.forEach( item => {
-		listOfImportsFoundInSubfolders.push( path.dirname( filePath ) + '/' + item );
+		listOfImportsFoundInSubfolders.push( path.join( path.dirname( filePath ), item ) );
 	} );
 } );
 
@@ -65,15 +65,20 @@ const indexCssContent = fs.readFileSync( path.join( THEME_LARK_DIR_PATH, 'index.
 
 // Remove all comments (included commented code).
 const cssContentWithoutComments = indexCssContent.replaceAll( REGEX_FOR_MATCHING_COMMENTS, '' );
-const importsList = [ ...cssContentWithoutComments.matchAll( REGEX_FOR_INDEX_IMPORTS ) ].map( item => item[ 0 ] );
+const importsList = [ ...cssContentWithoutComments.matchAll( REGEX_FOR_INDEX_IMPORTS ) ]
+	.map( item => path.normalize( item[ 0 ] ) );
 
 // Merge imported file paths gathered from `index.css` and from other `CSS` files.
-const importedFiles = [ ...importsList, ...listOfImportsFoundInSubfolders ];
+const importedFiles = [ ...importsList, ...listOfImportsFoundInSubfolders ]
+	.map( importPath => path.normalize( importPath ) );
 const notImportedFiles = cssFilesPathsList.filter( x => !importedFiles.includes( x ) );
 
 if ( notImportedFiles.length ) {
-	console.log( chalk.red.bold( '\nSome CSS files are not imported in "index.css" file in "theme-lark" package.' ) );
-
+	console.log( chalk.red.bold(
+		'\nSome CSS files from "theme" directory of "theme-lark" package are not imported in "index.css" file.'
+	) );
 	notImportedFiles.forEach( file => console.log( chalk.red( ` - "${ file }"` ) ) );
 	process.exitCode = 1;
+} else {
+	console.log( chalk.red.green( '\nAll CSS files from "theme" directory of "theme-lark" package are imported in "index.css".' ) );
 }
