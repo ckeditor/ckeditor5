@@ -5,6 +5,13 @@
 
 'use strict';
 
+// Checks if all CSS files from `theme` directory of `theme-lark` package are imported in `index.css`.
+//
+// See: https://github.com/ckeditor/ckeditor5/issues/16010
+//
+// Usage:
+// 	yarn run check-theme-lark-imports
+
 /* eslint-env node */
 
 const chalk = require( 'chalk' );
