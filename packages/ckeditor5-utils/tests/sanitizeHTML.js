@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import sanitizeHtml from '../src/sanitizeHtml.js';
+import sanitizeHTML from '../src/sanitizeHTML.js';
 
-describe( 'sanitizeHtml', () => {
+describe( 'sanitizeHTML', () => {
 	it( 'should escape HTML string tags', () => {
 		const src = '<img src=x onerror="alert(\'Attack\')">';
 		const dest = '&lt;img src=x onerror="alert(\'Attack\')"&gt;';
 
-		expect( sanitizeHtml( src ) ).to.equal( dest );
+		expect( sanitizeHTML( src ) ).to.equal( dest );
 	} );
 } );
