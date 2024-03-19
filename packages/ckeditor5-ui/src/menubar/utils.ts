@@ -522,6 +522,8 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 				groupId: 'heading',
 				items: [
 					'menuBar:heading',
+					'menuBar:fontSize',
+					'menuBar:fontFamily',
 					'menuBar:textPartLanguage'
 				]
 			},
@@ -530,6 +532,13 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 				items: [
 					'menuBar:indent',
 					'menuBar:outdent'
+				]
+			},
+			{
+				groupId: 'fontColor',
+				items: [
+					'menuBar:fontColor',
+					'menuBar:fontBackgroundColor'
 				]
 			},
 			{
