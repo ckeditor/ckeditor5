@@ -239,8 +239,6 @@ export default class CodeBlockEditing extends Plugin {
 				}
 			} );
 		} );
-
-		this._initAriaAnnouncements( normalizedLanguagesDefs );
 	}
 
 	/**
@@ -282,13 +280,20 @@ export default class CodeBlockEditing extends Plugin {
 			data.preventDefault();
 			evt.stop();
 		}, { context: 'pre' } );
+
+		this._initAriaAnnouncements( );
 	}
 
 	/**
+	 * Observe when user enters or leaves code block and set value of `aria-live' tag.
+	 * This allows screen readers to indicate when the user has entered and left the specified code block.
+	 *
 	 * @internal
 	 */
-	private _initAriaAnnouncements( languageDefs: Array<CodeBlockLanguageDefinition> ) {
+	private _initAriaAnnouncements( ) {
 		const { model, ui, t } = this.editor;
+		const languageDefs = getNormalizedAndLocalizedLanguageDefinitions( this.editor );
+
 		let lastFocusedCodeBlock: Element | null = null;
 
 		model.document.selection.on<SelectionChangeRangeEvent>( 'change:range', () => {
