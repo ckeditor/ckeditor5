@@ -13,14 +13,15 @@ import {
 	type Editor,
 	type EditingKeystrokeCallback
 } from 'ckeditor5/src/core.js';
-import type {
-	DocumentSelection,
-	Marker,
-	ModelDeleteContentEvent,
-	ModelPostFixer,
-	Range,
-	SchemaAttributeCheckCallback,
-	SchemaChildCheckCallback
+import {
+	UpcastWriter,
+	type DocumentSelection,
+	type Marker,
+	type ModelDeleteContentEvent,
+	type ModelPostFixer,
+	type Range,
+	type SchemaAttributeCheckCallback,
+	type SchemaChildCheckCallback
 } from 'ckeditor5/src/engine.js';
 import type { BaseEvent, GetCallback } from 'ckeditor5/src/utils.js';
 import type { InsertTextCommand, InsertTextCommandExecuteEvent } from 'ckeditor5/src/typing.js';
@@ -119,6 +120,32 @@ export default class RestrictedEditingModeEditing extends Plugin {
 				writer.addClass( 'ck-restricted-editing_mode_restricted', root );
 			}
 		} );
+
+		// this.listenTo( editor.model.document, 'change:data', () => {
+		// 	const range = editor.editing.view.createRangeIn( editor.editing.view.document.getRoot()! );
+		// 	const writer = new UpcastWriter( editor.editing.view.document );
+		// 	console.log( 'event' );
+		// 	for ( const value of range.getWalker() ) {
+		// 		const item = value.item;
+
+		// 		if ( item.is( 'element' ) && item.name === 'td' ) {
+		// 			writer.setAttribute( 'tabindex', '-1', item );
+		// 		}
+		// 	}
+		// }, { priority: 'high' } );
+
+		editor.conversion
+			.for( 'editingDowncast' )
+			.elementToElement( {
+				model: 'tableCell',
+				view: {
+					name: 'td',
+					attributes: {
+						tabIndex: '-1'
+					}
+				},
+				converterPriority: 'high'
+			} );
 	}
 
 	/**
