@@ -285,7 +285,7 @@ export default class CodeBlockEditing extends Plugin {
 	}
 
 	/**
-	 * Observe when user enters or leaves code block and set value of `aria-live' tag.
+	 * Observe when user enters or leaves code block and set proper aria value in global live announcer.
 	 * This allows screen readers to indicate when the user has entered and left the specified code block.
 	 *
 	 * @internal
