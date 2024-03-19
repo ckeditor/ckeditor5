@@ -245,20 +245,12 @@ export default class ColorUI extends Plugin {
 
 			colorSelectorView.delegate( 'execute' ).to( menuView );
 			colorSelectorView.on<ColorSelectorExecuteEvent>( 'execute', ( evt, data ) => {
-				if ( menuView.isOpen ) {
-					editor.execute( this.commandName, {
-						value: data.value,
-						batch: this._undoStepBatch
-					} );
-				}
+				editor.execute( this.commandName, {
+					value: data.value,
+					batch: this._undoStepBatch
+				} );
 
-				if ( data.source === 'colorPicker' ) {
-					evt.stop();
-				}
-
-				if ( data.source === 'colorPickerSaveButton' ) {
-					menuView.isOpen = false;
-				}
+				editor.editing.view.focus();
 			} );
 
 			menuView.on( 'change:isOpen', ( evt, name, isVisible ) => {
