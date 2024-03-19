@@ -467,6 +467,23 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 				items: [
 					'menuBar:showBlocks'
 				]
+			},
+			{
+				groupId: 'restrictedEditing',
+				items: [
+					{
+						menuId: 'restrictedEditing',
+						label: 'Restricted Editing',
+						groups: [
+							{
+								groupId: 'standardEditing',
+								items: [
+									'menuBar:restrictedEditingException'
+								]
+							}
+						]
+					}
+				]
 			}
 		]
 	},
