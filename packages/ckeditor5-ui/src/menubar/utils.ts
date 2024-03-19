@@ -521,7 +521,8 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 			{
 				groupId: 'heading',
 				items: [
-					'menuBar:heading'
+					'menuBar:heading',
+					'menuBar:textPartLanguage'
 				]
 			},
 			{

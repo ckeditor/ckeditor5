@@ -8,7 +8,17 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import { ViewModel, createDropdown, addListToDropdown, type ListDropdownItemDefinition } from 'ckeditor5/src/ui.js';
+import {
+	addListToDropdown,
+	createDropdown,
+	ListSeparatorView,
+	MenuBarMenuView,
+	MenuBarMenuListView,
+	MenuBarMenuListItemView,
+	MenuBarMenuListItemButtonView,
+	ViewModel,
+	type ListDropdownItemDefinition
+} from 'ckeditor5/src/ui.js';
 import { Collection } from 'ckeditor5/src/utils.js';
 import { stringifyLanguageAttribute } from './utils.js';
 import type TextPartLanguageCommand from './textpartlanguagecommand.js';
@@ -37,48 +47,47 @@ export default class TextPartLanguageUI extends Plugin {
 		const removeTitle = t( 'Remove language' );
 		const accessibleLabel = t( 'Language' );
 
-		// Register UI component.
-		editor.ui.componentFactory.add( 'textPartLanguage', locale => {
-			const itemDefinitions = new Collection<ListDropdownItemDefinition>();
-			const titles: Record<string, string> = {};
+		const itemDefinitions = new Collection<ListDropdownItemDefinition>();
+		const titles: Record<string, string> = {};
+		const languageCommand: TextPartLanguageCommand = editor.commands.get( 'textPartLanguage' )!;
 
-			const languageCommand: TextPartLanguageCommand = editor.commands.get( 'textPartLanguage' )!;
+		// Item definition with false `languageCode` will behave as remove lang button.
+		itemDefinitions.add( {
+			type: 'button',
+			model: new ViewModel( {
+				label: removeTitle,
+				languageCode: false,
+				withText: true
+			} )
+		} );
 
-			// Item definition with false `languageCode` will behave as remove lang button.
-			itemDefinitions.add( {
-				type: 'button',
+		itemDefinitions.add( {
+			type: 'separator'
+		} );
+
+		for ( const option of options ) {
+			const def = {
+				type: 'button' as const,
 				model: new ViewModel( {
-					label: removeTitle,
-					languageCode: false,
+					label: option.title,
+					languageCode: option.languageCode,
+					role: 'menuitemradio',
+					textDirection: option.textDirection,
 					withText: true
 				} )
-			} );
+			};
 
-			itemDefinitions.add( {
-				type: 'separator'
-			} );
+			const language = stringifyLanguageAttribute( option.languageCode, option.textDirection );
 
-			for ( const option of options ) {
-				const def = {
-					type: 'button' as const,
-					model: new ViewModel( {
-						label: option.title,
-						languageCode: option.languageCode,
-						role: 'menuitemradio',
-						textDirection: option.textDirection,
-						withText: true
-					} )
-				};
+			def.model.bind( 'isOn' ).to( languageCommand, 'value', value => value === language );
 
-				const language = stringifyLanguageAttribute( option.languageCode, option.textDirection );
+			itemDefinitions.add( def );
 
-				def.model.bind( 'isOn' ).to( languageCommand, 'value', value => value === language );
+			titles[ language ] = option.title;
+		}
 
-				itemDefinitions.add( def );
-
-				titles[ language ] = option.title;
-			}
-
+		// Register UI component.
+		editor.ui.componentFactory.add( 'textPartLanguage', locale => {
 			const dropdownView = createDropdown( locale );
 			addListToDropdown( dropdownView, itemDefinitions, {
 				ariaLabel: accessibleLabel,
@@ -117,6 +126,54 @@ export default class TextPartLanguageUI extends Plugin {
 			} );
 
 			return dropdownView;
+		} );
+
+		// Register menu bar UI component.
+		editor.ui.componentFactory.add( 'menuBar:textPartLanguage', locale => {
+			const menuView = new MenuBarMenuView( locale );
+
+			menuView.buttonView.set( {
+				label: accessibleLabel
+			} );
+
+			const listView = new MenuBarMenuListView( locale );
+
+			for ( const definition of itemDefinitions ) {
+				if ( definition.type != 'button' ) {
+					listView.items.add( new ListSeparatorView( locale ) );
+					continue;
+				}
+
+				const listItemView = new MenuBarMenuListItemView( locale, menuView );
+				const buttonView = new MenuBarMenuListItemButtonView( locale );
+
+				// TODO change after font is merged
+				buttonView.extendTemplate( {
+					attributes: {
+						'aria-checked': buttonView.bindTemplate.to( 'isOn' )
+					}
+				} );
+
+				buttonView.bind( ...Object.keys( definition.model ) as Array<keyof MenuBarMenuListItemButtonView> ).to( definition.model );
+				buttonView.delegate( 'execute' ).to( menuView );
+
+				buttonView.on( 'execute', () => {
+					languageCommand.execute( {
+						languageCode: ( definition.model as any ).languageCode,
+						textDirection: ( definition.model as any ).textDirection
+					} );
+
+					editor.editing.view.focus();
+				} );
+
+				listItemView.children.add( buttonView );
+				listView.items.add( listItemView );
+			}
+
+			menuView.bind( 'isEnabled' ).to( languageCommand, 'isEnabled' );
+			menuView.panelView.children.add( listView );
+
+			return menuView;
 		} );
 	}
 }
