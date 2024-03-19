@@ -7,7 +7,7 @@
  * @module list/list/listcommand
  */
 
-import type { Element } from 'ckeditor5/src/engine.js';
+import type { Element, Writer } from 'ckeditor5/src/engine.js';
 import { Command, type Editor } from 'ckeditor5/src/core.js';
 import {
 	splitListItemBefore,
@@ -21,9 +21,11 @@ import {
 	getSelectedBlockObject,
 	isListItemBlock,
 	canBecomeSimpleListItem,
-	expandListBlocksToCompleteStructure
+	expandListBlocksToCompleteStructure,
+	type ListElement
 } from './utils/model.js';
 import { type ListTypeOptions } from './listediting.js';
+import { toMap } from 'ckeditor5/src/utils.js';
 
 /**
  * The list command. It is used by the {@link module:list/list~List list feature}.
@@ -36,6 +38,7 @@ export default class ListCommand extends Command {
 
 	/**
 	 * A flag indicating whether the command is active, which means that the selection starts in a list of the same type.
+	 * TODO: update description
 	 *
 	 * @observable
 	 * @readonly
@@ -46,7 +49,7 @@ export default class ListCommand extends Command {
 	 * Creates an instance of the command.
 	 *
 	 * @param editor The editor instance.
-	 * @param type List type that will be handled by this command.
+	 * @param type List type that will be handled by this command. TODO: update description
 	 */
 	constructor( editor: Editor, type: ListTypeOptions ) {
 		super( editor );
@@ -71,8 +74,9 @@ export default class ListCommand extends Command {
 	 * @param options.forceValue If set, it will force the command behavior. If `true`, the command will try to convert the
 	 * selected items and potentially the neighbor elements to the proper list items. If set to `false` it will convert selected elements
 	 * to paragraphs. If not set, the command will toggle selected elements to list items or paragraphs, depending on the selection.
+	 * @param options.additionalProperties TODO
 	 */
-	public override execute( options: { forceValue?: boolean } = {} ): void {
+	public override execute( options: { forceValue?: boolean; additionalProperties?: Array<AdditionalProperty> } = {} ): void {
 		const model = this.editor.model;
 		const document = model.document;
 		const selectedBlockObject = getSelectedBlockObject( model );
@@ -105,12 +109,14 @@ export default class ListCommand extends Command {
 			}
 			// Changing type of list items for a collapsed selection inside a list item.
 			else if ( ( selectedBlockObject || document.selection.isCollapsed ) && isListItemBlock( blocks[ 0 ] ) ) {
-				const changedBlocks = ( this.type == 'customNumbered' || this.type == 'customBulleted' ) ?
+				const changedBlocks = this.type == 'customNumbered' || this.type == 'customBulleted' ?
 					expandListBlocksToCompleteStructure( selectedBlockObject || blocks[ 0 ] ) :
 					getListItems( selectedBlockObject || blocks[ 0 ] );
 
 				for ( const block of changedBlocks ) {
 					writer.setAttribute( 'listType', this.type, block );
+
+					this._setAdditionalAttributes( writer, block, options.additionalProperties );
 				}
 
 				this._fireAfterExecute( changedBlocks );
@@ -130,7 +136,8 @@ export default class ListCommand extends Command {
 						writer.setAttributes( {
 							listIndent: 0,
 							listItemId: ListItemUid.next(),
-							listType: this.type
+							listType: this.type,
+							...options.additionalProperties
 						}, block );
 
 						changedBlocks.push( block );
@@ -140,6 +147,9 @@ export default class ListCommand extends Command {
 						for ( const node of expandListBlocksToCompleteItems( block, { withNested: false } ) ) {
 							if ( node.getAttribute( 'listType' ) != this.type ) {
 								writer.setAttribute( 'listType', this.type, node );
+
+								this._setAdditionalAttributes( writer, node, options.additionalProperties );
+
 								changedBlocks.push( node );
 							}
 						}
@@ -211,6 +221,17 @@ export default class ListCommand extends Command {
 
 		return false;
 	}
+
+	/**
+	 * TODO
+	 */
+	private _setAdditionalAttributes( writer: Writer, block: ListElement, additionalProperties?: Array<AdditionalProperty> ) {
+		if ( additionalProperties ) {
+			for ( const [ attributeKey, attributeValue ] of toMap( additionalProperties ) ) {
+				writer.setAttribute( attributeKey, attributeValue, block );
+			}
+		}
+	}
 }
 
 /**
@@ -225,4 +246,8 @@ export default class ListCommand extends Command {
 export type ListCommandAfterExecuteEvent = {
 	name: 'afterExecute';
 	args: [ changedBlocks: Array<Element> ];
+};
+
+type AdditionalProperty = {
+	[ key: string ]: any;
 };
