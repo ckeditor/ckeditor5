@@ -274,6 +274,7 @@ export default class HighlightUI extends Plugin {
 				label: t( 'Highlight' ),
 				icon: getIconForType( 'marker' )
 			} );
+			menuView.buttonView.iconView.fillColor = 'transparent';
 
 			const listView = new MenuBarMenuListView( locale );
 
@@ -286,8 +287,6 @@ export default class HighlightUI extends Plugin {
 					icon: getIconForType( option.type )
 				} );
 
-				buttonView.iconView.fillColor = option.color;
-
 				buttonView.extendTemplate( {
 					attributes: {
 						'aria-checked': buttonView.bindTemplate.to( 'isOn' )
@@ -296,6 +295,7 @@ export default class HighlightUI extends Plugin {
 
 				buttonView.delegate( 'execute' ).to( menuView );
 				buttonView.bind( 'isOn' ).to( command, 'value', value => value === option.model );
+				buttonView.iconView.bind( 'fillColor' ).to( buttonView, 'isOn', value => value ? 'transparent' : option.color );
 
 				buttonView.on( 'execute', () => {
 					editor.execute( 'highlight', { value: option.model } );
