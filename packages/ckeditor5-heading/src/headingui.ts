@@ -184,6 +184,7 @@ export default class HeadingUI extends Plugin {
 					class: option.class
 				} );
 
+				buttonView.bind( 'ariaChecked' ).to( buttonView, 'isOn' );
 				buttonView.delegate( 'execute' ).to( menuView );
 
 				buttonView.on<ButtonExecuteEvent>( 'execute', () => {
