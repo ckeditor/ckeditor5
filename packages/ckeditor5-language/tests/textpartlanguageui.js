@@ -157,10 +157,10 @@ describe( 'TextPartLanguageUI', () => {
 				expect( dropdown.buttonView.ariaLabel ).to.equal( 'Language' );
 
 				command.value = 'fr:ltr';
-				expect( dropdown.buttonView.ariaLabel ).to.equal( 'Language, French' );
+				expect( dropdown.buttonView.ariaLabel ).to.equal( 'French, Language' );
 
 				command.value = 'ar:rtl';
-				expect( dropdown.buttonView.ariaLabel ).to.equal( 'Language, Arabic' );
+				expect( dropdown.buttonView.ariaLabel ).to.equal( 'Arabic, Language' );
 			} );
 
 			it( 'reflects the #value of the command', () => {

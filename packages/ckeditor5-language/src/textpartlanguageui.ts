@@ -113,7 +113,7 @@ export default class TextPartLanguageUI extends Plugin {
 					return accessibleLabel;
 				}
 
-				return `${ accessibleLabel }, ${ selectedLanguageTitle }`;
+				return `${ selectedLanguageTitle }, ${ accessibleLabel }`;
 			} );
 
 			// Execute command when an item from the dropdown is selected.
