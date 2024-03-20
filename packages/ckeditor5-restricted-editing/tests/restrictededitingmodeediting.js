@@ -458,7 +458,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 			expect( getModelData( model ) ).to.equalMarkup( '<paragraph>foo bX[]ar baz</paragraph>' );
 		} );
 
-		it( 'should extend maker when typing on the marker boundary (end)', () => {
+		it( 'should extend marker when typing on the marker boundary (end)', () => {
 			setModelData( model, '<paragraph>foo bar[] baz</paragraph>' );
 			const firstParagraph = model.document.getRoot().getChild( 0 );
 
@@ -482,7 +482,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
 		} );
 
-		it( 'should extend maker when inserting inline image on the marker boundary (end)', () => {
+		it( 'should extend marker when inserting inline image on the marker boundary (end)', () => {
 			setModelData( model, '<paragraph>foo bar[] baz</paragraph>' );
 			const imgSrc = 'foo/bar.jpg';
 			const firstParagraph = model.document.getRoot().getChild( 0 );
@@ -510,7 +510,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
 		} );
 
-		it( 'should extend maker when inserting inline image on the marker boundary (start)', () => {
+		it( 'should extend marker when inserting inline image on the marker boundary (start)', () => {
 			setModelData( model, '<paragraph>foo []bar baz</paragraph>' );
 			const imgSrc = 'foo/bar.jpg';
 			const firstParagraph = model.document.getRoot().getChild( 0 );
