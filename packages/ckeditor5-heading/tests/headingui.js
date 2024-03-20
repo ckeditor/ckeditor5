@@ -156,6 +156,34 @@ describe( 'HeadingUI', () => {
 				paragraphCommand.value = true;
 				expect( dropdown.buttonView.label ).to.equal( 'Paragraph' );
 			} );
+
+			it( 'label when heading and paragraph commands active', () => {
+				command.value = 'heading2';
+				paragraphCommand.value = true;
+
+				expect( dropdown.buttonView.label ).to.equal( 'Paragraph' );
+			} );
+
+			it( 'ariaLabel', () => {
+				command.value = false;
+				paragraphCommand.value = false;
+
+				expect( dropdown.buttonView.ariaLabel ).to.equal( 'Heading' );
+
+				command.value = 'heading2';
+				expect( dropdown.buttonView.ariaLabel ).to.equal( 'Heading 2, Heading' );
+				command.value = false;
+
+				paragraphCommand.value = true;
+				expect( dropdown.buttonView.ariaLabel ).to.equal( 'Paragraph, Heading' );
+			} );
+
+			it( 'ariaLabel when heading and paragraph commands active', () => {
+				command.value = 'heading2';
+				paragraphCommand.value = true;
+
+				expect( dropdown.buttonView.ariaLabel ).to.equal( 'Paragraph, Heading' );
+			} );
 		} );
 
 		describe( 'localization', () => {
