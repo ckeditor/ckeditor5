@@ -15,7 +15,7 @@ import {
 	type ButtonExecuteEvent,
 	type ListDropdownItemDefinition
 } from 'ckeditor5/src/ui.js';
-import { Collection, type ObservableChangeEvent } from 'ckeditor5/src/utils.js';
+import { Collection } from 'ckeditor5/src/utils.js';
 import type { ParagraphCommand } from 'ckeditor5/src/paragraph.js';
 
 import { getLocalizedOptions } from './utils.js';
