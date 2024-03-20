@@ -4,6 +4,10 @@
  */
 
 /**
+ * @module utils/sanitizeHTML
+ */
+
+/**
  * Escapes HTML tags in string to prevent XSS attack.
  *
  * @param html HTML string
