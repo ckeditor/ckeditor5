@@ -106,6 +106,16 @@ export default class TextPartLanguageUI extends Plugin {
 				return ( value && titles[ value ] ) || defaultTitle;
 			} );
 
+			dropdownView.buttonView.bind( 'ariaLabel' ).to( languageCommand, 'value', value => {
+				const selectedLanguageTitle = value && titles[ value ];
+
+				if ( !selectedLanguageTitle ) {
+					return accessibleLabel;
+				}
+
+				return `${ accessibleLabel }, ${ selectedLanguageTitle }`;
+			} );
+
 			// Execute command when an item from the dropdown is selected.
 			this.listenTo( dropdownView, 'execute', evt => {
 				languageCommand.execute( {

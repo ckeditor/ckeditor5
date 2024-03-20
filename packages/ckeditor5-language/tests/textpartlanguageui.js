@@ -151,6 +151,18 @@ describe( 'TextPartLanguageUI', () => {
 				expect( dropdown.buttonView.label ).to.equal( 'Arabic' );
 			} );
 
+			it( 'ariaLabel', () => {
+				command.value = false;
+
+				expect( dropdown.buttonView.ariaLabel ).to.equal( 'Language' );
+
+				command.value = 'fr:ltr';
+				expect( dropdown.buttonView.ariaLabel ).to.equal( 'Language, French' );
+
+				command.value = 'ar:rtl';
+				expect( dropdown.buttonView.ariaLabel ).to.equal( 'Language, Arabic' );
+			} );
+
 			it( 'reflects the #value of the command', () => {
 				// Trigger lazy init.
 				dropdown.isOpen = true;
