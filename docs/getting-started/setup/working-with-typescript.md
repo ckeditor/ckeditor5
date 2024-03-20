@@ -16,6 +16,8 @@ CKEditor&nbsp;5 is built using TypeScript and has native type definitions. All t
 
 <info-box hint>
 	Using TypeScript is just an option. If you do not need its features, you can continue using CKEditor&nbsp;5 in JavaScript.
+
+	For best results, we suggest using TypeScript version 5.0 or newer.
 </info-box>
 
 ## Why use CKEditor&nbsp;5 with TypeScript
