@@ -59,7 +59,7 @@ You may also take the {@link tutorials/crash-course/editor step-by-step tutorial
 
 ## Want to remove the "Powered by CKEditor" logo?
 
-If you came here looking for a guide on how to suppress the branding logo, check the dedicated {@link support/managing-ckeditor-logo branding} guide.
+If you came here looking for a guide on how to suppress the branding logo, check the dedicated {@link getting-started/setup/managing-ckeditor-logo branding} guide.
 
 ## Legacy installation methods
 
