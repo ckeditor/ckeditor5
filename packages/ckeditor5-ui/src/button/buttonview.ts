@@ -155,6 +155,11 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 	/**
 	 * @inheritDoc
 	 */
+	declare public ariaChecked: boolean | undefined;
+
+	/**
+	 * @inheritDoc
+	 */
 	declare public ariaLabel?: string | undefined;
 
 	/**
@@ -246,6 +251,7 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 				role: bind.to( 'role' ),
 				type: bind.to( 'type', value => value ? value : 'button' ),
 				tabindex: bind.to( 'tabindex' ),
+				'aria-checked': bind.to( 'ariaChecked' ),
 				'aria-label': bind.to( 'ariaLabel' ),
 				'aria-labelledby': bind.to( 'ariaLabelledBy' ),
 				'aria-disabled': bind.if( 'isEnabled', true, value => !value ),
