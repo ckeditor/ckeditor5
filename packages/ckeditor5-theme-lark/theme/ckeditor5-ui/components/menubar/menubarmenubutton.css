@@ -17,7 +17,7 @@
 
 		& > .ck-button__label {
 			flex-grow: 1;
-			width: 7em;
+			min-width: var(--ck-menu-bar-menu-item-min-width);
 			overflow: hidden;
 			text-overflow: ellipsis;
 		}

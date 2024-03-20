@@ -4,7 +4,7 @@
  */
 
 :root {
-	--ck-menu-bar-menu-item-min-width: 10em;
+	--ck-menu-bar-menu-item-min-width: 12em;
 }
 
 .ck.ck-menu-bar__menu .ck-button.ck-menu-bar__menu__item__button {
