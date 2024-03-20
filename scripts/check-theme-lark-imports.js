@@ -15,11 +15,11 @@
 /* eslint-env node */
 
 const chalk = require( 'chalk' );
-const path = require( 'path' );
+const upath = require( 'upath' );
 const fs = require( 'fs' );
 const { globSync } = require( 'glob' );
 
-const THEME_LARK_DIR_PATH = path.resolve( __dirname, '..', 'packages', 'ckeditor5-theme-lark', 'theme' );
+const THEME_LARK_DIR_PATH = upath.resolve( __dirname, '..', 'packages', 'ckeditor5-theme-lark', 'theme' );
 const REGEX_FOR_INDEX_IMPORTS = /(?<=@import ")(.*)(?=";)/gm;
 const REGEX_FOR_MATCHING_COMMENTS = /\/\*(?:(?!\*\/).|\n)*\*\//gm;
 
@@ -45,10 +45,11 @@ const ignoreList = [
 const globOptions = { cwd: THEME_LARK_DIR_PATH, ignore: ignoreList };
 
 // List of all paths to `CSS` files in `theme` folder of `theme-lark` package.
-const cssFilesPathsList = globSync( '**/*.css', globOptions );
+const cssFilesPathsList = globSync( '**/*.css', globOptions )
+	.map( item => upath.normalize( item ) );
 
 cssFilesPathsList.forEach( filePath => {
-	const fileContent = fs.readFileSync( path.join( THEME_LARK_DIR_PATH, filePath ), 'utf-8' );
+	const fileContent = fs.readFileSync( upath.join( THEME_LARK_DIR_PATH, filePath ), 'utf-8' );
 
 	// Remove all comments (included commented code).
 	const fileContentWithoutComments = fileContent.replaceAll( REGEX_FOR_MATCHING_COMMENTS, '' );
@@ -63,21 +64,21 @@ cssFilesPathsList.forEach( filePath => {
 
 	// Add paths to already imported files so we can exclude them from not imported ones.
 	matchSimplifiedList.forEach( item => {
-		listOfImportsFoundInSubfolders.push( path.join( path.dirname( filePath ), item ) );
+		listOfImportsFoundInSubfolders.push( upath.join( upath.dirname( filePath ), item ) );
 	} );
 } );
 
 // Get content of `index.css` - main aggregator of `CSS`files.
-const indexCssContent = fs.readFileSync( path.join( THEME_LARK_DIR_PATH, 'index.css' ), 'utf-8' );
+const indexCssContent = fs.readFileSync( upath.join( THEME_LARK_DIR_PATH, 'index.css' ), 'utf-8' );
 
 // Remove all comments (included commented code).
 const cssContentWithoutComments = indexCssContent.replaceAll( REGEX_FOR_MATCHING_COMMENTS, '' );
 const importsList = [ ...cssContentWithoutComments.matchAll( REGEX_FOR_INDEX_IMPORTS ) ]
-	.map( item => path.normalize( item[ 0 ] ) );
+	.map( item => upath.normalize( item[ 0 ] ) );
 
 // Merge imported file paths gathered from `index.css` and from other `CSS` files.
 const importedFiles = [ ...importsList, ...listOfImportsFoundInSubfolders ]
-	.map( importPath => path.normalize( importPath ) );
+	.map( importPath => upath.normalize( importPath ) );
 const notImportedFiles = cssFilesPathsList.filter( x => !importedFiles.includes( x ) );
 
 if ( notImportedFiles.length ) {
