@@ -21,6 +21,8 @@ The easiest way to use CKEditor&nbsp;5 in your React application is by choosing 
 
 <info-box hint>
 	Starting from version 6.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link getting-started/setup/working-with-typescript TypeScript support}.
+
+	For best results, we suggest using TypeScript version 5.0 or newer.
 </info-box>
 
 ## Quick start
