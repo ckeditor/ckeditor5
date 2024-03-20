@@ -9,16 +9,17 @@
 
 import { Plugin, icons } from 'ckeditor5/src/core.js';
 import {
-	ButtonView,
-	SplitButtonView,
-	ToolbarSeparatorView,
-	createDropdown,
 	addToolbarToDropdown,
-	type DropdownView,
+	createDropdown,
+	ButtonView,
+	ListSeparatorView,
 	MenuBarMenuView,
 	MenuBarMenuListView,
 	MenuBarMenuListItemView,
-	MenuBarMenuListItemButtonView
+	MenuBarMenuListItemButtonView,
+	SplitButtonView,
+	ToolbarSeparatorView,
+	type DropdownView
 } from 'ckeditor5/src/ui.js';
 
 import markerIcon from './../theme/icons/marker.svg';
@@ -308,6 +309,7 @@ export default class HighlightUI extends Plugin {
 			}
 
 			// Add remove highlight button
+			listView.items.add( new ListSeparatorView( locale ) );
 			const listItemView = new MenuBarMenuListItemView( locale, menuView );
 			const buttonView = new MenuBarMenuListItemButtonView( locale );
 
