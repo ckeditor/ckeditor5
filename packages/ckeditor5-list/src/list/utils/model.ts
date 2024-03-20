@@ -19,7 +19,7 @@ import type {
 
 import { uid, toArray, type ArrayOrItem } from 'ckeditor5/src/utils.js';
 
-import ListWalker, { iterateSiblingListBlocks } from './listwalker.js';
+import ListWalker, { type ListWalkerOptions, iterateSiblingListBlocks } from './listwalker.js';
 import { type ListTypeOptions } from '../listediting.js';
 
 /**
@@ -131,17 +131,19 @@ export function getNestedListBlocks( listItem: Element ): Array<ListElement> {
  * @internal
  * @param listItem Starting list item element.
  */
-export function getListItems( listItem: Element ): Array<ListElement> {
+export function getListItems( listItem: Element, options?: ListWalkerOptions ): Array<ListElement> {
 	const backwardBlocks = new ListWalker( listItem, {
 		sameIndent: true,
-		sameAttributes: 'listType'
+		sameAttributes: 'listType',
+		...options
 	} );
 
 	const forwardBlocks = new ListWalker( listItem, {
 		sameIndent: true,
 		sameAttributes: 'listType',
 		includeSelf: true,
-		direction: 'forward'
+		direction: 'forward',
+		...options
 	} );
 
 	return [
@@ -572,28 +574,6 @@ export function canBecomeSimpleListItem( block: Element, schema: Schema ): boole
  */
 export function isNumberedListType( listType: ListTypeOptions ): boolean {
 	return listType == 'numbered' || listType == 'customNumbered';
-}
-
-/**
- * TODO
- */
-export function expandListBlocksToCompleteStructure( listItem: Element ): Array<ListElement> {
-	const backwardBlocks = new ListWalker( listItem, {
-		direction: 'backward',
-		higherIndent: true,
-		lowerIndent: true,
-		sameIndent: true,
-		includeSelf: true
-	} );
-
-	const forwardBlocks = new ListWalker( listItem, {
-		direction: 'forward',
-		higherIndent: true,
-		lowerIndent: true,
-		sameIndent: true
-	} );
-
-	return [ ...backwardBlocks, ...forwardBlocks ];
 }
 
 /**

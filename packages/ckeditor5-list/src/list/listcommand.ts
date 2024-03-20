@@ -7,7 +7,7 @@
  * @module list/list/listcommand
  */
 
-import type { Element, Writer } from 'ckeditor5/src/engine.js';
+import type { Element } from 'ckeditor5/src/engine.js';
 import { Command, type Editor } from 'ckeditor5/src/core.js';
 import {
 	splitListItemBefore,
@@ -20,12 +20,10 @@ import {
 	sortBlocks,
 	getSelectedBlockObject,
 	isListItemBlock,
-	canBecomeSimpleListItem,
-	expandListBlocksToCompleteStructure,
-	type ListElement
+	canBecomeSimpleListItem
 } from './utils/model.js';
 import { type ListTypeOptions } from './listediting.js';
-import { toMap } from 'ckeditor5/src/utils.js';
+import type { ListWalkerOptions } from './utils/listwalker.js';
 
 /**
  * The list command. It is used by the {@link module:list/list~List list feature}.
@@ -46,15 +44,26 @@ export default class ListCommand extends Command {
 	public declare value: boolean;
 
 	/**
+	 * TODO
+	 */
+	private readonly _listWalkerOptions?: ListWalkerOptions;
+
+	/**
 	 * Creates an instance of the command.
 	 *
 	 * @param editor The editor instance.
 	 * @param type List type that will be handled by this command. TODO: update description
 	 */
-	constructor( editor: Editor, type: ListTypeOptions ) {
+	constructor( editor: Editor, type: ListTypeOptions, options: { multiLevel?: boolean } = {} ) {
 		super( editor );
 
 		this.type = type;
+
+		this._listWalkerOptions = options.multiLevel ? {
+			higherIndent: true,
+			lowerIndent: true,
+			sameAttributes: []
+		} :	undefined;
 	}
 
 	/**
@@ -76,7 +85,7 @@ export default class ListCommand extends Command {
 	 * to paragraphs. If not set, the command will toggle selected elements to list items or paragraphs, depending on the selection.
 	 * @param options.additionalProperties TODO
 	 */
-	public override execute( options: { forceValue?: boolean; additionalProperties?: Array<AdditionalProperty> } = {} ): void {
+	public override execute( options: { forceValue?: boolean; additionalAttributes?: Record<string, unknown> } = {} ): void {
 		const model = this.editor.model;
 		const document = model.document;
 		const selectedBlockObject = getSelectedBlockObject( model );
@@ -109,14 +118,13 @@ export default class ListCommand extends Command {
 			}
 			// Changing type of list items for a collapsed selection inside a list item.
 			else if ( ( selectedBlockObject || document.selection.isCollapsed ) && isListItemBlock( blocks[ 0 ] ) ) {
-				const changedBlocks = this.type == 'customNumbered' || this.type == 'customBulleted' ?
-					expandListBlocksToCompleteStructure( selectedBlockObject || blocks[ 0 ] ) :
-					getListItems( selectedBlockObject || blocks[ 0 ] );
+				const changedBlocks = getListItems( selectedBlockObject || blocks[ 0 ], this._listWalkerOptions );
 
 				for ( const block of changedBlocks ) {
-					writer.setAttribute( 'listType', this.type, block );
-
-					this._setAdditionalAttributes( writer, block, options.additionalProperties );
+					writer.setAttributes( {
+						...options.additionalAttributes,
+						listType: this.type
+					}, block );
 				}
 
 				this._fireAfterExecute( changedBlocks );
@@ -134,10 +142,10 @@ export default class ListCommand extends Command {
 						}
 
 						writer.setAttributes( {
+							...options.additionalAttributes,
 							listIndent: 0,
 							listItemId: ListItemUid.next(),
-							listType: this.type,
-							...options.additionalProperties
+							listType: this.type
 						}, block );
 
 						changedBlocks.push( block );
@@ -146,9 +154,10 @@ export default class ListCommand extends Command {
 					else {
 						for ( const node of expandListBlocksToCompleteItems( block, { withNested: false } ) ) {
 							if ( node.getAttribute( 'listType' ) != this.type ) {
-								writer.setAttribute( 'listType', this.type, node );
-
-								this._setAdditionalAttributes( writer, node, options.additionalProperties );
+								writer.setAttributes( {
+									...options.additionalAttributes,
+									listType: this.type
+								}, node );
 
 								changedBlocks.push( node );
 							}
@@ -221,17 +230,6 @@ export default class ListCommand extends Command {
 
 		return false;
 	}
-
-	/**
-	 * TODO
-	 */
-	private _setAdditionalAttributes( writer: Writer, block: ListElement, additionalProperties?: Array<AdditionalProperty> ) {
-		if ( additionalProperties ) {
-			for ( const [ attributeKey, attributeValue ] of toMap( additionalProperties ) ) {
-				writer.setAttribute( attributeKey, attributeValue, block );
-			}
-		}
-	}
 }
 
 /**
@@ -246,8 +244,4 @@ export default class ListCommand extends Command {
 export type ListCommandAfterExecuteEvent = {
 	name: 'afterExecute';
 	args: [ changedBlocks: Array<Element> ];
-};
-
-type AdditionalProperty = {
-	[ key: string ]: any;
 };

@@ -168,8 +168,8 @@ export default class ListEditing extends Plugin {
 		editor.commands.add( 'numberedList', new ListCommand( editor, 'numbered' ) );
 		editor.commands.add( 'bulletedList', new ListCommand( editor, 'bulleted' ) );
 
-		editor.commands.add( 'customNumberedList', new ListCommand( editor, 'customNumbered' ) );
-		editor.commands.add( 'customBulletedList', new ListCommand( editor, 'customBulleted' ) );
+		editor.commands.add( 'customNumberedList', new ListCommand(	editor,	'customNumbered', {	multiLevel: true } ) );
+		editor.commands.add( 'customBulletedList', new ListCommand( editor, 'customBulleted', {	multiLevel: true } ) );
 
 		editor.commands.add( 'indentList', new ListIndentCommand( editor, 'forward' ) );
 		editor.commands.add( 'outdentList', new ListIndentCommand( editor, 'backward' ) );
