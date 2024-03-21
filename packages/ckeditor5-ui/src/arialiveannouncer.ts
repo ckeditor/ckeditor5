@@ -8,7 +8,7 @@
  */
 
 import type { Editor } from '@ckeditor/ckeditor5-core';
-import type { Locale } from '@ckeditor/ckeditor5-utils';
+import type { Locale, ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 import type ViewCollection from './viewcollection.js';
 import View from './view.js';
 
@@ -59,6 +59,15 @@ export default class AriaLiveAnnouncer {
 	}
 
 	/**
+	 * Appends empty `aria-live` announcement region. Some of screen readers tend to not read newly added
+	 * regions with already filled text content. Appending empty region before any action prevents
+	 * that behavior and screen readers are forced to read updated text.
+	 */
+	public registerRegion( regionName: string ): void {
+		this.announce( regionName, '' );
+	}
+
+	/**
 	 * Sets an announcement text to an aria region associated with a specific editor feature. The text is then
 	 * announced by a screen reader to the user.
 	 *
@@ -78,8 +87,8 @@ export default class AriaLiveAnnouncer {
 	 */
 	public announce(
 		regionName: string,
-		announcementText: string,
-		politeness: typeof AriaLiveAnnouncerPoliteness[ keyof typeof AriaLiveAnnouncerPoliteness ] = AriaLiveAnnouncerPoliteness.POLITE
+		announcement: string,
+		attributes: AriaLiveAnnouncerPolitenessValue | AriaLiveAnnounceConfig = AriaLiveAnnouncerPoliteness.POLITE
 	): void {
 		const editor = this.editor;
 
@@ -95,9 +104,30 @@ export default class AriaLiveAnnouncer {
 			this.view.regionViews.add( regionView );
 		}
 
+		const { politeness, allowReadAgain, isUnsafeHTML }: AriaLiveAnnounceConfig = typeof attributes === 'string' ? {
+			politeness: attributes
+		} : attributes;
+
+		// Handle edge case when:
+		//
+		// 	1. user enters code block #1 with PHP language.
+		//  2. user enters code block #2 with PHP language.
+		//	3. user leaves code block #2 and comes back to code block #1 with identical language
+		//
+		// In this scenario `announcement` will be identical (`Leaving PHP code block, entering PHP code block`)
+		// Screen reader will not detect this change because `aria-live` is identical with previous one and
+		// will skip reading the label.
+		//
+		// Try to bypass this issue by toggling non readable character at the end of phrase.
+		if ( allowReadAgain && regionView.content === announcement ) {
+			// eslint-disable-next-line no-irregular-whitespace
+			announcement = `${ announcement } `;
+		}
+
 		regionView.set( {
 			regionName,
-			text: announcementText,
+			isUnsafeHTML: !!isUnsafeHTML,
+			content: announcement,
 			politeness
 		} );
 	}
@@ -135,9 +165,14 @@ export class AriaLiveAnnouncerView extends View {
  */
 export class AriaLiveAnnouncerRegionView extends View {
 	/**
-	 * Current text of the region.
+	 * Current content of the region.
 	 */
-	declare public text: string;
+	declare public content: string;
+
+	/**
+	 * Indication that region has HTML content.
+	 */
+	declare public isUnsafeHTML: boolean;
 
 	/**
 	 * Current politeness level of the region.
@@ -155,7 +190,8 @@ export class AriaLiveAnnouncerRegionView extends View {
 		const bind = this.bindTemplate;
 
 		this.set( 'regionName', '' );
-		this.set( 'text', '' );
+		this.set( 'content', '' );
+		this.set( 'isUnsafeHTML', false );
 		this.set( 'politeness', AriaLiveAnnouncerPoliteness.POLITE );
 
 		this.setTemplate( {
@@ -164,10 +200,19 @@ export class AriaLiveAnnouncerRegionView extends View {
 				role: 'region',
 				'data-region': bind.to( 'regionName' ),
 				'aria-live': bind.to( 'politeness' )
-			},
-			children: [
-				{ text: bind.to( 'text' ) }
-			]
+			}
+		} );
+
+		this.on<ObservableChangeEvent<string>>( 'change:content', ( evt, name, content ) => {
+			this.element![ this.isUnsafeHTML ? 'innerHTML' : 'innerText' ] = content;
 		} );
 	}
 }
+
+type AriaLiveAnnouncerPolitenessValue = typeof AriaLiveAnnouncerPoliteness[ keyof typeof AriaLiveAnnouncerPoliteness ];
+
+type AriaLiveAnnounceConfig = {
+	politeness: AriaLiveAnnouncerPolitenessValue;
+	allowReadAgain?: boolean;
+	isUnsafeHTML?: boolean;
+};
