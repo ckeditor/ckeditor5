@@ -24,6 +24,7 @@ import MenuBarMenuView from './menubarmenuview.js';
 import MenuBarMenuListView from './menubarmenulistview.js';
 import MenuBarMenuListItemView from './menubarmenulistitemview.js';
 import MenuBarMenuListItemButtonView from './menubarmenulistitembuttonview.js';
+import MenuBarMenuListItemFileDialogButtonView from './menubarmenulistitemfiledialogbuttonview.js';
 import {
 	MenuBarBehaviors,
 	normalizeMenuBarConfig
@@ -244,7 +245,11 @@ export default class MenuBarView extends View implements FocusableView {
 	} ): MenuBarMenuView | MenuBarMenuListItemButtonView | null {
 		const componentView = componentFactory.create( componentName );
 
-		if ( !( componentView instanceof MenuBarMenuView || componentView instanceof MenuBarMenuListItemButtonView ) ) {
+		if ( !(
+			componentView instanceof MenuBarMenuView ||
+			componentView instanceof MenuBarMenuListItemButtonView ||
+			componentView instanceof MenuBarMenuListItemFileDialogButtonView
+		) ) {
 			/**
 			 * Adding unsupported components to the {@link module:ui/menubar/menubarview~MenuBarView} is not possible.
 			 *
