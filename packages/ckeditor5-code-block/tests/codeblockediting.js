@@ -1936,6 +1936,46 @@ describe( 'CodeBlockEditing', () => {
 				'assertive'
 			);
 		} );
+
+		it( 'should force trigger announce if leaving and entering again code block with the same language', () => {
+			setModelData( model, join( codeblock( 'css' ), codeblock( 'css' ) ) );
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 0, 0 ], root, [ 0, 1 ] ) );
+			} );
+
+			expect( announcerSpy ).to.be.calledWithExactly( 'codeBlocks', 'Entering CSS code snippet', 'assertive' );
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 1, 0 ], root, [ 1, 1 ] ) );
+			} );
+
+			expect( announcerSpy ).to.be.calledWithExactly(
+				'codeBlocks',
+				'Leaving CSS code snippet, entering CSS code snippet',
+				'assertive'
+			);
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 0, 0 ], root, [ 0, 1 ] ) );
+			} );
+
+			expect( announcerSpy ).to.be.calledWithExactly(
+				'codeBlocks',
+				'Leaving CSS code snippet, entering CSS code snippet.',
+				'assertive'
+			);
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 1, 0 ], root, [ 1, 1 ] ) );
+			} );
+
+			expect( announcerSpy ).to.be.calledWithExactly(
+				'codeBlocks',
+				'Leaving CSS code snippet, entering CSS code snippet',
+				'assertive'
+			);
+		} );
 	} );
 
 	function join( ...lines ) {
