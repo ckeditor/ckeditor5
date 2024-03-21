@@ -479,6 +479,7 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 				items: [
 					'menuBar:blockQuote',
 					'menuBar:link',
+					'menuBar:comment',
 					'menuBar:htmlEmbed',
 					'menuBar:pageBreak',
 					'menuBar:horizontalLine',
@@ -521,7 +522,12 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 				groupId: 'heading',
 				items: [
 					'menuBar:caseChange',
-					'menuBar:heading'
+					'menuBar:heading',
+					'menuBar:alignment',
+					'menuBar:fontSize',
+					'menuBar:fontFamily',
+					'menuBar:highlight',
+					'menuBar:textPartLanguage'
 				]
 			},
 			{
@@ -532,9 +538,40 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 				]
 			},
 			{
+				groupId: 'fontColor',
+				items: [
+					'menuBar:fontColor',
+					'menuBar:fontBackgroundColor'
+				]
+			},
+			{
 				groupId: 'removeFormat',
 				items: [
 					'menuBar:removeFormat'
+				]
+			}
+		]
+	},
+	{
+		menuId: 'tools',
+		label: 'Tools',
+		groups: [
+			{
+				groupId: 'tools',
+				items: [
+					'menuBar:aiAssistant'
+				]
+			}
+		]
+	},
+	{
+		menuId: 'help',
+		label: 'Help',
+		groups: [
+			{
+				groupId: 'help',
+				items: [
+					'menuBar:accessibilityHelp'
 				]
 			}
 		]
@@ -1001,7 +1038,9 @@ function localizeTopLevelCategories( config: RequiredMenuBarConfigObject, locale
 		'Edit': t( 'Edit' ),
 		'Format': t( 'Format' ),
 		'View': t( 'View' ),
-		'Insert': t( 'Insert' )
+		'Insert': t( 'Insert' ),
+		'Help': t( 'Help' ),
+		'Tools': t( 'Tools' )
 	};
 
 	for ( const categoryDef of config.items ) {
