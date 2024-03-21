@@ -9,7 +9,7 @@ This package implements a simple UI framework and CKEditor&nbsp;5's standard UI 
 
 ## Demo
 
-Check out the [editor toolbar demo](https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/toolbar/toolbar.html#demo) and [block toolbar demo](https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/toolbar/blocktoolbar.html#demo) in CKEditor&nbsp;5 documentation.
+Check out the [editor toolbar demo](https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/toolbar/toolbar.html#demo) and [block toolbar demo](https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/blocktoolbar.html#demo) in CKEditor&nbsp;5 documentation.
 
 ## Documentation
 

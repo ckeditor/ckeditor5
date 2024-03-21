@@ -1,8 +1,8 @@
 ---
 title: Block toolbar
 meta-title: Block toolbar | CKEditor 5 Documentation
-category: features-toolbar
-order: 20
+category: setup
+order: 22
 ---
 
 The block toolbar plugin provides an additional [configurable](#configuration) toolbar on the left-hand side of the content area. The block toolbar comes in handy when you cannot access the main editor toolbar.

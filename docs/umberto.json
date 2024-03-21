@@ -133,7 +133,8 @@
 		"examples/framework/inline-widget.html": "examples/framework/content-placeholder.html",
 		"examples/framework/multi-root-editor.html": "examples/builds/multi-root-editor.html",
 		"features/ai-assistant/ai-assistant-integration.html#aws-bedrock-integration": "features/ai-assistant/ai-assistant-integration.html#amazon-bedrock-integration",
-		"features/blocktoolbar.html": "getting-started/setup/toolbar/blocktoolbar.html",
+		"features/blocktoolbar.html": "getting-started/setup/blocktoolbar.html",
+		"features/toolbar/blocktoolbar.html": "getting-started/setup/blocktoolbar.html",
 		"features/ckbox.html": "features/file-management/ckbox.html",
 		"features/ckfinder.html": "features/file-management/ckfinder.html",
 		"features/collaboration/annotation-customization/annotations-custom-configuration.html": "features/collaboration/annotations/annotations-custom-configuration.html",
@@ -320,8 +321,7 @@
 		"installation/working-with-typescript.html": "getting-started/setup/working-with-typescript.html",
 		"installation/getting-started/configuration.html": "installation/getting-started/configuration.html",
 		"features/ui-language.html": "getting-started/setup/ui-language.html",
-		"features/toolbar/toolbar.html": "getting-started/setup/toolbar/toolbar.html",
-		"features/toolbar/blocktoolbar.html": "getting-started/setup/toolbar/blocktoolbar.html"
+		"features/toolbar/toolbar.html": "getting-started/setup/toolbar/toolbar.html"
 
 	},
 	"scripts": {
@@ -386,15 +386,7 @@
 					"name": "Setup",
 					"id": "setup",
 					"slug": "setup",
-					"order": 40,
-					"categories": [
-						{
-							"name": "Toolbars",
-							"id": "features-toolbar",
-							"slug": "toolbar",
-							"order": 30
-						}
-					]
+					"order": 40
 				},
 				{
 					"name": "Legacy installation methods",
