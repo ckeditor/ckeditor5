@@ -298,7 +298,49 @@ describe( 'ListCommand', () => {
 				} );
 			} );
 
-			describe( 'options.multiLevel', () => {
+			describe( 'options.additionalAttributes', () => {
+				it( 'should set additional attribute when changing from different list type (collapsed selection)', () => {
+					setData( model, modelList( [
+						'# a[]'
+					] ) );
+
+					command.execute( { additionalAttributes: { foo: 'foo' } } );
+
+					expect( getData( model ) ).to.equalMarkup(
+						'<paragraph foo="foo" listIndent="0" listItemId="000" listType="bulleted">a[]</paragraph>'
+					);
+				} );
+
+				it( 'should set additional attribute when changing from different list type (non-collapsed selection)', () => {
+					setData( model, modelList( [
+						'# [a',
+						'# b]',
+						'# c'
+					] ) );
+
+					command.execute( { additionalAttributes: { foo: 'foo' } } );
+
+					expect( getData( model ) ).to.equalMarkup(
+						'<paragraph foo="foo" listIndent="0" listItemId="000" listType="bulleted">[a</paragraph>' +
+						'<paragraph foo="foo" listIndent="0" listItemId="001" listType="bulleted">b]</paragraph>' +
+						'<paragraph listIndent="0" listItemId="002" listType="numbered">c</paragraph>'
+					);
+				} );
+
+				it( 'should set additional attribute when turning paragraph into a list', () => {
+					setData( model, modelList( [
+						'a[]'
+					] ) );
+
+					command.execute( { additionalAttributes: { foo: 'foo' } } );
+
+					expect( getData( model ) ).to.equalMarkup(
+						'<paragraph foo="foo" listIndent="0" listItemId="a00" listType="bulleted">a[]</paragraph>'
+					);
+				} );
+			} );
+
+			describe( 'constructor options.multiLevel', () => {
 				beforeEach( () => {
 					command = new ListCommand( editor, 'bulleted', { multiLevel: true } );
 
@@ -1159,7 +1201,49 @@ describe( 'ListCommand', () => {
 				} );
 			} );
 
-			describe( 'options.multiLevel', () => {
+			describe( 'options.additionalAttributes', () => {
+				it( 'should set additional attribute when changing from different list type (collapsed selection)', () => {
+					setData( model, modelList( [
+						'* a[]'
+					] ) );
+
+					command.execute( { additionalAttributes: { foo: 'foo' } } );
+
+					expect( getData( model ) ).to.equalMarkup(
+						'<paragraph foo="foo" listIndent="0" listItemId="000" listType="numbered">a[]</paragraph>'
+					);
+				} );
+
+				it( 'should set additional attribute when changing from different list type (non-collapsed selection)', () => {
+					setData( model, modelList( [
+						'* [a',
+						'* b]',
+						'* c'
+					] ) );
+
+					command.execute( { additionalAttributes: { foo: 'foo' } } );
+
+					expect( getData( model ) ).to.equalMarkup(
+						'<paragraph foo="foo" listIndent="0" listItemId="000" listType="numbered">[a</paragraph>' +
+						'<paragraph foo="foo" listIndent="0" listItemId="001" listType="numbered">b]</paragraph>' +
+						'<paragraph listIndent="0" listItemId="002" listType="bulleted">c</paragraph>'
+					);
+				} );
+
+				it( 'should set additional attribute when turning paragraph into a list', () => {
+					setData( model, modelList( [
+						'a[]'
+					] ) );
+
+					command.execute( { additionalAttributes: { foo: 'foo' } } );
+
+					expect( getData( model ) ).to.equalMarkup(
+						'<paragraph foo="foo" listIndent="0" listItemId="a00" listType="numbered">a[]</paragraph>'
+					);
+				} );
+			} );
+
+			describe( 'constructor options.multiLevel', () => {
 				beforeEach( () => {
 					command = new ListCommand( editor, 'numbered', { multiLevel: true } );
 
