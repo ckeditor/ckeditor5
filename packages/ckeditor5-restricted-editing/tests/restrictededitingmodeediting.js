@@ -486,6 +486,9 @@ describe( 'RestrictedEditingModeEditing', () => {
 			setModelData( model, '<paragraph>foo bar[] baz</paragraph>' );
 			const imgSrc = 'foo/bar.jpg';
 			const firstParagraph = model.document.getRoot().getChild( 0 );
+			// We don't use `editor.execute( ... )` because it requires adding Image plugin into VirtualTestEditor,
+			// so it's impossible because it doesn't has 'ui' which Image package requires. So we are simply using
+			// `new InsertImageCommand()` command.
 			const command = new InsertImageCommand( editor );
 
 			model.change( writer => {
@@ -514,6 +517,9 @@ describe( 'RestrictedEditingModeEditing', () => {
 			setModelData( model, '<paragraph>foo []bar baz</paragraph>' );
 			const imgSrc = 'foo/bar.jpg';
 			const firstParagraph = model.document.getRoot().getChild( 0 );
+			// We don't use `editor.execute( ... )` because it requires adding Image plugin into VirtualTestEditor,
+			// so it's impossible because it doesn't has 'ui' which Image package requires. So we are simply using
+			// `new InsertImageCommand()` command.
 			const command = new InsertImageCommand( editor );
 
 			model.change( writer => {

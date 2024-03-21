@@ -109,7 +109,7 @@ export function extendMarkerOnTypingPostFixer( editor: Editor ): ModelPostFixer 
 		const schema = editor.model.schema;
 
 		for ( const change of editor.model.document.differ.getChanges() ) {
-			if ( change.type == 'insert' && ( change.name === '$text' || schema.isInline( change.position.nodeAfter! ) ) ) {
+			if ( change.type == 'insert' && schema.checkChild( '$block', change.name ) ) {
 				changeApplied = _tryExtendMarkerStart( editor, change.position, change.length, writer ) || changeApplied;
 				changeApplied = _tryExtendMarkedEnd( editor, change.position, change.length, writer ) || changeApplied;
 			}
