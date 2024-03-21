@@ -288,14 +288,9 @@ export default class HighlightUI extends Plugin {
 					icon: getIconForType( option.type )
 				} );
 
-				buttonView.extendTemplate( {
-					attributes: {
-						'aria-checked': buttonView.bindTemplate.to( 'isOn' )
-					}
-				} );
-
 				buttonView.delegate( 'execute' ).to( menuView );
 				buttonView.bind( 'isOn' ).to( command, 'value', value => value === option.model );
+				buttonView.bind( 'ariaChecked' ).to( buttonView, 'isOn' );
 				buttonView.iconView.bind( 'fillColor' ).to( buttonView, 'isOn', value => value ? 'transparent' : option.color );
 
 				buttonView.on( 'execute', () => {
