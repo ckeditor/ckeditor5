@@ -59,41 +59,58 @@ export function transformListItemLikeElementsIntoLists(
 
 	for ( const itemLikeElement of itemLikeElements ) {
 		if ( itemLikeElement.indent !== undefined ) {
-			if ( isNewListNeeded( itemLikeElement ) ) {
+			if ( !isListContinuation( itemLikeElement ) ) {
 				stack.length = 0;
 			}
 
+			// Combined list ID for addressing encounter lists counters.
 			const originalListId = `${ itemLikeElement.id }:${ itemLikeElement.indent }`;
+
+			// Normalized list item indentation.
 			const indent = Math.min( itemLikeElement.indent - 1, stack.length );
 
+			// Trimming of the list stack on list ID change.
 			if ( indent < stack.length && stack[ indent ].id !== itemLikeElement.id ) {
 				stack.length = indent;
 			}
 
+			// Trimming of the list stack on lower indent list encountered.
 			if ( indent < stack.length - 1 ) {
 				stack.length = indent + 1;
 			}
 			else {
 				const listStyle = detectListStyle( itemLikeElement, stylesString );
 
+				// Create a new OL/UL if required (greater indent or different list type).
 				if ( indent > stack.length - 1 || stack[ indent ].listElement.name != listStyle.type ) {
-					if ( indent == 0 && listStyle.type == 'ol' && itemLikeElement.id !== undefined && encounteredLists[ originalListId ] ) {
+					// Check if there is some start index to set from a previous list.
+					if (
+						indent == 0 &&
+						listStyle.type == 'ol' &&
+						itemLikeElement.id !== undefined &&
+						encounteredLists[ originalListId ]
+					) {
 						listStyle.startIndex = encounteredLists[ originalListId ];
 					}
 
 					const listElement = createNewEmptyList( listStyle, writer );
 
-					// Apply list padding only if we have margins for both, an item and the parent item.
-					if ( isPx( itemLikeElement.marginLeft ) && ( indent == 0 || isPx( stack[ indent - 1 ].marginLeft ) ) ) {
+					// Apply list padding only if we have margins for the item and the parent item.
+					if (
+						isPx( itemLikeElement.marginLeft ) &&
+						( indent == 0 || isPx( stack[ indent - 1 ].marginLeft ) )
+					) {
 						let marginLeft = itemLikeElement.marginLeft;
 
 						if ( indent > 0 ) {
+							// Convert the padding from absolute to relative.
 							marginLeft = toPx( parseFloat( marginLeft ) - parseFloat( stack[ indent - 1 ].marginLeft! ) );
 						}
 
 						writer.setStyle( 'padding-left', marginLeft, listElement );
 					}
 
+					// Insert the new OL/UL.
 					if ( stack.length == 0 ) {
 						const parent = itemLikeElement.element.parent!;
 						const index = parent.getChildIndex( itemLikeElement.element ) + 1;
@@ -105,32 +122,39 @@ export function transformListItemLikeElementsIntoLists(
 						writer.appendChild( listElement, parentListItems[ parentListItems.length - 1 ] );
 					}
 
+					// Update the list stack for other items to reference.
 					stack[ indent ] = {
 						...itemLikeElement,
 						listElement,
 						listItemElements: []
 					};
 
+					// Prepare list counter for start index.
 					if ( indent == 0 && itemLikeElement.id !== undefined ) {
 						encounteredLists[ originalListId ] = listStyle.startIndex || 1;
 					}
 				}
 			}
 
+			// Use LI if it is already it or create a new LI element.
 			// https://github.com/ckeditor/ckeditor5/issues/15964
 			const listItem = itemLikeElement.element.name == 'li' ? itemLikeElement.element : writer.createElement( 'li' );
 
+			// Append the LI to OL/UL.
 			writer.appendChild( listItem, stack[ indent ].listElement );
 			stack[ indent ].listItemElements.push( listItem );
 
+			// Increment list counter.
 			if ( indent == 0 && itemLikeElement.id !== undefined ) {
 				encounteredLists[ originalListId ]++;
 			}
 
+			// Append list block to LI.
 			if ( itemLikeElement.element != listItem ) {
 				writer.appendChild( itemLikeElement.element, listItem );
 			}
 
+			// Clean list block.
 			removeBulletElement( itemLikeElement.element, writer );
 			writer.removeStyle( 'text-indent', itemLikeElement.element ); // #12361
 			writer.removeStyle( 'margin-left', itemLikeElement.element );
@@ -139,9 +163,11 @@ export function transformListItemLikeElementsIntoLists(
 			// Other blocks in a list item.
 			const stackItem = stack.find( stackItem => stackItem.marginLeft == itemLikeElement.marginLeft );
 
+			// This might be a paragraph that has known margin, but it is not a real list block.
 			if ( stackItem ) {
 				const listItems = stackItem.listItemElements;
 
+				// Append block to LI.
 				writer.appendChild( itemLikeElement.element, listItems[ listItems.length - 1 ] );
 				writer.removeStyle( 'margin-left', itemLikeElement.element );
 			} else {
@@ -188,39 +214,41 @@ function findAllItemLikeElements(
 
 	for ( const item of range.getItems() ) {
 		// https://github.com/ckeditor/ckeditor5/issues/15964
-		if ( item.is( 'element' ) && item.name.match( /^(p|h\d+|li|div)$/ ) ) {
-			// Try to rely on margin-left style to find paragraphs visually aligned with previously encountered list item.
-			let marginLeft = getMarginLeftNormalized( item );
+		if ( !item.is( 'element' ) || !item.name.match( /^(p|h\d+|li|div)$/ ) ) {
+			continue;
+		}
 
-			// Ignore margin-left 0 style if there is no MsoList... class.
-			if (
-				marginLeft !== undefined &&
-				parseFloat( marginLeft ) == 0 &&
-				!Array.from( item.getClassNames() ).find( className => className.startsWith( 'MsoList' ) )
-			) {
-				marginLeft = undefined;
+		// Try to rely on margin-left style to find paragraphs visually aligned with previously encountered list item.
+		let marginLeft = getMarginLeftNormalized( item );
+
+		// Ignore margin-left 0 style if there is no MsoList... class.
+		if (
+			marginLeft !== undefined &&
+			parseFloat( marginLeft ) == 0 &&
+			!Array.from( item.getClassNames() ).find( className => className.startsWith( 'MsoList' ) )
+		) {
+			marginLeft = undefined;
+		}
+
+		// List item or a following list item block.
+		if ( item.hasStyle( 'mso-list' ) || marginLeft !== undefined && foundMargins.has( marginLeft ) ) {
+			const itemData = getListItemData( item );
+
+			itemLikeElements.push( {
+				element: item,
+				id: itemData.id,
+				order: itemData.order,
+				indent: itemData.indent,
+				marginLeft
+			} );
+
+			if ( marginLeft !== undefined ) {
+				foundMargins.add( marginLeft );
 			}
-
-			// List item or a following list item block.
-			if ( item.hasStyle( 'mso-list' ) || marginLeft !== undefined && foundMargins.has( marginLeft ) ) {
-				const itemData = getListItemData( item );
-
-				itemLikeElements.push( {
-					element: item,
-					id: itemData.id,
-					order: itemData.order,
-					indent: itemData.indent,
-					marginLeft
-				} );
-
-				if ( marginLeft !== undefined ) {
-					foundMargins.add( marginLeft );
-				}
-			}
-			// Clear found margins as we found block after a list.
-			else {
-				foundMargins.clear();
-			}
+		}
+		// Clear found margins as we found block after a list.
+		else {
+			foundMargins.clear();
 		}
 	}
 
@@ -228,24 +256,19 @@ function findAllItemLikeElements(
 }
 
 /**
- * Whether the previous and current items belong to the same list. It is determined based on `item.id`
- * (extracted from `mso-list` style, see #getListItemData) and a previous sibling of the current item.
- *
- * However, it's quite easy to change the `id` attribute for nested lists in Word. It will break the list feature while pasting.
- * Let's check also the `indent` attribute. If the difference between those two elements is equal to 1, we can assume that
- * the `currentItem` is a beginning of the nested list because lists in CKEditor 5 always start with the `indent=0` attribute.
- * See: https://github.com/ckeditor/ckeditor5/issues/7805.
+ * Whether the given element is possibly a list continuation. Previous element was wrapped into a list
+ * or the current element already is inside a list.
  */
-function isNewListNeeded( currentItem: ListLikeElement ) {
+function isListContinuation( currentItem: ListLikeElement ) {
 	const previousSibling = currentItem.element.previousSibling;
 
 	if ( !previousSibling ) {
 		// If it's a li inside ul or ol like in here: https://github.com/ckeditor/ckeditor5/issues/15964.
-		return !isList( currentItem.element.parent as ViewElement );
+		return isList( currentItem.element.parent as ViewElement );
 	}
 
 	// Even with the same id the list does not have to be continuous (#43).
-	return !isList( previousSibling );
+	return isList( previousSibling );
 }
 
 function isList( element: ViewNode ) {
@@ -416,7 +439,7 @@ function mapListStyleDefinition( value: string ) {
 }
 
 /**
- * TODO
+ * Creates a new list OL/UL element.
  */
 function createNewEmptyList(
 	listStyle: ReturnType<typeof detectListStyle>,
@@ -500,7 +523,7 @@ function removeBulletElement( element: ViewElement, writer: UpcastWriter ) {
 }
 
 /**
- * TODO
+ * Returns element left margin normalized to 'px' if possible.
  */
 function getMarginLeftNormalized( element: ViewElement ): string | undefined {
 	const value = element.getStyle( 'margin-left' );
@@ -538,7 +561,7 @@ interface ListLikeElement extends ListItemData {
 	element: ViewElement;
 
 	/**
-	 * TODO
+	 * The margin-left normalized to 'px' if possible.
 	 */
 	marginLeft?: string;
 }

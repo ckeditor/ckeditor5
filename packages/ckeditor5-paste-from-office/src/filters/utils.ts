@@ -8,7 +8,8 @@
  */
 
 /**
- * TODO
+ * Normalizes CSS length value to 'px'.
+ *
  * @internal
  */
 export function convertCssLengthToPx( value: string ): string {
@@ -39,7 +40,8 @@ export function convertCssLengthToPx( value: string ): string {
 }
 
 /**
- * TODO
+ * Returns true for value with 'px' unit.
+ *
  * @internal
  */
 export function isPx( value?: string ): value is string {
@@ -47,7 +49,8 @@ export function isPx( value?: string ): value is string {
 }
 
 /**
- * TODO
+ * Returns a rounded 'px' value.
+ *
  * @internal
  */
 export function toPx( value: number ): string {
