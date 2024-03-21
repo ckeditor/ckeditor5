@@ -421,7 +421,8 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 			{
 				groupId: 'export',
 				items: [
-					'menuBar:exportPdf'
+					'menuBar:exportPdf',
+					'menuBar:exportWord'
 				]
 			}
 		]
@@ -477,9 +478,12 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 				groupId: 'insert',
 				items: [
 					'menuBar:blockQuote',
+					'menuBar:link',
+					'menuBar:comment',
 					'menuBar:htmlEmbed',
 					'menuBar:pageBreak',
-					'menuBar:horizontalLine'
+					'menuBar:horizontalLine',
+					'menuBar:codeBlock'
 				]
 			}
 		]
@@ -518,7 +522,11 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 				groupId: 'heading',
 				items: [
 					'menuBar:alignment',
-					'menuBar:heading'
+					'menuBar:heading',
+					'menuBar:fontSize',
+					'menuBar:fontFamily',
+					'menuBar:highlight',
+					'menuBar:textPartLanguage'
 				]
 			},
 			{
@@ -529,9 +537,40 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 				]
 			},
 			{
+				groupId: 'fontColor',
+				items: [
+					'menuBar:fontColor',
+					'menuBar:fontBackgroundColor'
+				]
+			},
+			{
 				groupId: 'removeFormat',
 				items: [
 					'menuBar:removeFormat'
+				]
+			}
+		]
+	},
+	{
+		menuId: 'tools',
+		label: 'Tools',
+		groups: [
+			{
+				groupId: 'tools',
+				items: [
+					'menuBar:aiAssistant'
+				]
+			}
+		]
+	},
+	{
+		menuId: 'help',
+		label: 'Help',
+		groups: [
+			{
+				groupId: 'help',
+				items: [
+					'menuBar:accessibilityHelp'
 				]
 			}
 		]
@@ -998,7 +1037,9 @@ function localizeTopLevelCategories( config: RequiredMenuBarConfigObject, locale
 		'Edit': t( 'Edit' ),
 		'Format': t( 'Format' ),
 		'View': t( 'View' ),
-		'Insert': t( 'Insert' )
+		'Insert': t( 'Insert' ),
+		'Help': t( 'Help' ),
+		'Tools': t( 'Tools' )
 	};
 
 	for ( const categoryDef of config.items ) {
