@@ -112,5 +112,21 @@ describe( 'AriaLiveAnnouncer', () => {
 			expect( firstRegion.politeness ).to.equal( 'assertive' );
 			expect( firstRegion.element.getAttribute( 'aria-live' ) ).to.equal( 'assertive' );
 		} );
+
+		it( 'should be possible to read selected text again', () => {
+			announcer.announce( 'foo', 'bar', {
+				politeness: 'polite',
+				allowReadAgain: true
+			} );
+
+			announcer.announce( 'foo', 'bar', {
+				politeness: 'polite',
+				allowReadAgain: true
+			} );
+
+			const firstRegion = announcer.view.regionViews.first;
+
+			expect( firstRegion.text ).to.equal( 'bar ' );
+		} );
 	} );
 } );

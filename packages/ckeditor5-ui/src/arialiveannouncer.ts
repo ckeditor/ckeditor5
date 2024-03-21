@@ -79,7 +79,7 @@ export default class AriaLiveAnnouncer {
 	public announce(
 		regionName: string,
 		announcementText: string,
-		politeness: typeof AriaLiveAnnouncerPoliteness[ keyof typeof AriaLiveAnnouncerPoliteness ] = AriaLiveAnnouncerPoliteness.POLITE
+		attributes: AriaLiveAnnouncerPolitenessValue | AriaLiveAnnounceConfig = AriaLiveAnnouncerPoliteness.POLITE
 	): void {
 		const editor = this.editor;
 
@@ -93,6 +93,26 @@ export default class AriaLiveAnnouncer {
 		if ( !regionView ) {
 			regionView = new AriaLiveAnnouncerRegionView( this.view.locale! );
 			this.view.regionViews.add( regionView );
+		}
+
+		const { politeness, allowReadAgain }: AriaLiveAnnounceConfig = typeof attributes === 'string' ? {
+			politeness: attributes
+		} : attributes;
+
+		// Handle edge case when:
+		//
+		// 	1. user enters code block #1 with PHP language.
+		//  2. user enters code block #2 with PHP language.
+		//	3. user leaves code block #2 and comes back to code block #1 with identical language
+		//
+		// In this scenario `announcement` will be identical (`Leaving PHP code block, entering PHP code block`)
+		// Screen reader will not detect this change because `aria-live` is identical with previous one and
+		// will skip reading the label.
+		//
+		// Try to bypass this issue by toggling non readable character at the end of phrase.
+		if ( allowReadAgain && regionView.text === announcementText ) {
+			// eslint-disable-next-line no-irregular-whitespace
+			announcementText = `${ announcementText } `;
 		}
 
 		regionView.set( {
@@ -171,3 +191,10 @@ export class AriaLiveAnnouncerRegionView extends View {
 		} );
 	}
 }
+
+type AriaLiveAnnouncerPolitenessValue = typeof AriaLiveAnnouncerPoliteness[ keyof typeof AriaLiveAnnouncerPoliteness ];
+
+type AriaLiveAnnounceConfig = {
+	politeness: AriaLiveAnnouncerPolitenessValue;
+	allowReadAgain?: boolean;
+};
