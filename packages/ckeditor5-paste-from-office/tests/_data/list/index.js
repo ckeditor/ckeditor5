@@ -20,6 +20,7 @@ import nestedMixedId from './nested-mixed-id/input.word2016.html';
 import styledAnchor from './styled-anchor/input.word2016.html';
 import multiBlock from './multi-block/input.word.html';
 import mixedElements from './mixed-elements/input.word.html';
+import multiBlockBlockAfter from './multi-block-block-after/input.word.html';
 
 import simpleNormalized from './simple/normalized.word2016.html';
 import styledNormalized from './styled/normalized.word2016.html';
@@ -37,6 +38,7 @@ import nestedMixedIdNormalized from './nested-mixed-id/normalized.word2016.html'
 import styledAnchorNormalized from './styled-anchor/normalized.word2016.html';
 import multiBlockNormalized from './multi-block/normalized.word.html';
 import mixedElementsNormalized from './mixed-elements/normalized.word.html';
+import multiBlockBlockAfterNormalized from './multi-block-block-after/normalized.word.html';
 
 import simpleModel from './simple/model.word2016.html';
 import styledModel from './styled/model.word2016.html';
@@ -54,6 +56,7 @@ import nestedMixedIdModel from './nested-mixed-id/model.word2016.html';
 import styledAnchorModel from './styled-anchor/model.word2016.html';
 import multiBlockModel from './multi-block/model.word.html';
 import mixedElementsModel from './mixed-elements/model.word.html';
+import multiBlockBlockAfterModel from './multi-block-block-after/model.word.html';
 
 export const fixtures = {
 	input: {
@@ -72,7 +75,8 @@ export const fixtures = {
 		nestedMixedId,
 		styledAnchor,
 		multiBlock,
-		mixedElements
+		mixedElements,
+		multiBlockBlockAfter
 	},
 	normalized: {
 		simple: simpleNormalized,
@@ -90,7 +94,8 @@ export const fixtures = {
 		nestedMixedId: nestedMixedIdNormalized,
 		styledAnchor: styledAnchorNormalized,
 		multiBlock: multiBlockNormalized,
-		mixedElements: mixedElementsNormalized
+		mixedElements: mixedElementsNormalized,
+		multiBlockBlockAfter: multiBlockBlockAfterNormalized
 	},
 	model: {
 		simple: simpleModel,
@@ -108,7 +113,8 @@ export const fixtures = {
 		nestedMixedId: nestedMixedIdModel,
 		styledAnchor: styledAnchorModel,
 		multiBlock: multiBlockModel,
-		mixedElements: mixedElementsModel
+		mixedElements: mixedElementsModel,
+		multiBlockBlockAfter: multiBlockBlockAfterModel
 	}
 };
 
