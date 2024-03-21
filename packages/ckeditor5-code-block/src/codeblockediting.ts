@@ -296,7 +296,7 @@ export default class CodeBlockEditing extends Plugin {
 		const languageDefs = getNormalizedAndLocalizedLanguageDefinitions( this.editor );
 
 		let lastFocusedCodeBlock: Element | null = null;
-		let prevAnnouncement: string | null = null;
+		let lastAnnouncement: string | null = null;
 
 		const joinAnnouncements = ( announcements: Array<string> ) => upperFirst(
 			announcements
@@ -335,12 +335,12 @@ export default class CodeBlockEditing extends Plugin {
 				// will skip reading the label.
 				//
 				// Try to bypass this issue by toggling non readable character at the end of phrase.
-				if ( prevAnnouncement === announcement ) {
+				if ( lastAnnouncement === announcement ) {
 					announcement += '.';
 				}
 
 				ui.ariaLiveAnnouncer.announce( 'codeBlocks', announcement, 'assertive' );
-				prevAnnouncement = announcement;
+				lastAnnouncement = announcement;
 			}
 
 			lastFocusedCodeBlock = focusParent;
