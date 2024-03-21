@@ -86,11 +86,11 @@ toolbar: {
 }
 ```
 
- * **`items`** &ndash; An array of toolbar item names. Most of the components (buttons, dropdowns, etc.) that you can use as toolbar items are described in the {@link features/index Features} section. A full list is defined in {@link module:ui/componentfactory~ComponentFactory `editor.ui.componentFactory`} and can be listed using the following snippet: `Array.from( editor.ui.componentFactory.names() )`. Besides button names, you can also use the dedicated separators for toolbar groups (`'|'`) and toolbar lines (`'-'`).
+* **`items`** &ndash; An array of toolbar item names. Most of the components (buttons, dropdowns, etc.) that you can use as toolbar items are described in the {@link features/index Features} section. A full list is defined in {@link module:ui/componentfactory~ComponentFactory `editor.ui.componentFactory`} and can be listed using the following snippet: `Array.from( editor.ui.componentFactory.names() )`. Besides button names, you can also use the dedicated separators for toolbar groups (`'|'`) and toolbar lines (`'-'`).
 
- * **`removeItems`** &ndash; An array of toolbar item names. With this setting, you can change the default toolbar configuration without the need to define the entire list. You can specify a couple of buttons that you want to remove instead of specifying all the buttons you want to keep. If, after removing an item, the toolbar will have two or more consecutive separators (`'|'`), the duplicates will be removed automatically.
+* **`removeItems`** &ndash; An array of toolbar item names. With this setting, you can change the default toolbar configuration without the need to define the entire list. You can specify a couple of buttons that you want to remove instead of specifying all the buttons you want to keep. If, after removing an item, the toolbar will have two or more consecutive separators (`'|'`), the duplicates will be removed automatically.
 
- * **`shouldNotGroupWhenFull`** &ndash; When set to `true`, the toolbar will stop grouping items and let them wrap to the next line when there is not enough space to display them in a single row. This setting is `false` by default, which enables item grouping.
+* **`shouldNotGroupWhenFull`** &ndash; When set to `true`, the toolbar will stop grouping items and let them wrap to the next line when there is not enough space to display them in a single row. This setting is `false` by default, which enables item grouping.
 
 The demo below presents the "regular" toolbar look with `shouldNotGroupWhenFull` set to `false`. If there are more toolbar items than can fit in the toolbar in the current display width, some items get hidden. You can access them by clicking the show more items button {@icon @ckeditor/ckeditor5-core/theme/icons/three-vertical-dots.svg Show more items}.
 
