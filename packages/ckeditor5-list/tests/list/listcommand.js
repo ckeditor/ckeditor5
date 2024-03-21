@@ -298,6 +298,148 @@ describe( 'ListCommand', () => {
 				} );
 			} );
 
+			describe( 'options.multiLevel', () => {
+				beforeEach( () => {
+					command = new ListCommand( editor, 'bulleted', { multiLevel: true } );
+
+					command.on( 'afterExecute', ( evt, data ) => {
+						changedBlocks = data;
+					} );
+				} );
+
+				afterEach( () => {
+					command.destroy();
+				} );
+
+				describe( 'turning on when the selection is collapsed (default command behaviour changed)', () => {
+					it( 'should change the type of the whole list structure if the selection is collapsed', () => {
+						setData( model, modelList( [
+							'# a',
+							'  # b[]',
+							'    # c',
+							'  # d',
+							'    # e',
+							'      # f',
+							'# g'
+						] ) );
+
+						command.execute();
+
+						expect( getData( model ) ).to.equalMarkup( modelList( [
+							'* a',
+							'  * b[]',
+							'    * c',
+							'  * d',
+							'    * e',
+							'      * f',
+							'* g'
+						] ) );
+
+						expect( changedBlocks.length ).to.equal( 7 );
+						expect( changedBlocks ).to.deep.equal( [
+							root.getChild( 0 ),
+							root.getChild( 1 ),
+							root.getChild( 2 ),
+							root.getChild( 3 ),
+							root.getChild( 4 ),
+							root.getChild( 5 ),
+							root.getChild( 6 )
+						] );
+					} );
+
+					it( 'should change the type of the whole list structure if the selection is collapsed ' +
+						'(but not paragraphs and other lists)', () => {
+						setData( model, modelList( [
+							'# a',
+							'p',
+							'# b',
+							'  # c[]',
+							'    # d',
+							'p',
+							'# e'
+						] ) );
+
+						command.execute();
+
+						expect( getData( model ) ).to.equalMarkup( modelList( [
+							'# a',
+							'p',
+							'* b',
+							'  * c[]',
+							'    * d',
+							'p',
+							'# e'
+						] ) );
+
+						expect( changedBlocks.length ).to.equal( 3 );
+						expect( changedBlocks ).to.deep.equal( [
+							root.getChild( 2 ),
+							root.getChild( 3 ),
+							root.getChild( 4 )
+						] );
+					} );
+				} );
+
+				describe( 'turning on when the selection is not collapsed (default command behaviour not changed)', () => {
+					it( 'should change only selected list items', () => {
+						setData( model, modelList( [
+							'# a',
+							'  # [b',
+							'    # c]',
+							'  # d',
+							'    # e',
+							'      # f',
+							'# g'
+						] ) );
+
+						command.execute();
+
+						expect( getData( model ) ).to.equalMarkup( modelList( [
+							'# a',
+							'  * [b',
+							'    * c]',
+							'  # d',
+							'    # e',
+							'      # f',
+							'# g'
+						] ) );
+
+						expect( changedBlocks.length ).to.equal( 2 );
+						expect( changedBlocks ).to.deep.equal( [
+							root.getChild( 1 ),
+							root.getChild( 2 )
+						] );
+					} );
+				} );
+
+				describe( 'turning off when the selection is collapsed (default command behaviour not changed)', () => {
+					it( 'should strip the list attributes from the closest item and decrease indent of children (middle item)', () => {
+						setData( model, modelList( [
+							'* foo',
+							'* b[]ar',
+							'  * baz',
+							'    * qux'
+						] ) );
+
+						command.execute();
+
+						expect( getData( model ) ).to.equalMarkup( modelList( [
+							'* foo',
+							'b[]ar',
+							'* baz',
+							'  * qux'
+						] ) );
+
+						expect( changedBlocks.length ).to.equal( 3 );
+						expect( changedBlocks ).to.deep.equal( [
+							root.getChild( 1 ),
+							root.getChild( 2 ),
+							root.getChild( 3 )
+						] );
+					} );
+				} );
+			} );
+
 			describe( 'when turning on', () => {
 				it( 'should turn the closest block into a list item', () => {
 					setData( model, '<paragraph>fo[]o</paragraph>' );
@@ -1014,6 +1156,148 @@ describe( 'ListCommand', () => {
 					expect( getData( model ) ).to.equalMarkup( modelList( [
 						'fo[]o'
 					] ) );
+				} );
+			} );
+
+			describe( 'options.multiLevel', () => {
+				beforeEach( () => {
+					command = new ListCommand( editor, 'numbered', { multiLevel: true } );
+
+					command.on( 'afterExecute', ( evt, data ) => {
+						changedBlocks = data;
+					} );
+				} );
+
+				afterEach( () => {
+					command.destroy();
+				} );
+
+				describe( 'turning on when the selection is collapsed (default command behaviour changed)', () => {
+					it( 'should change the type of the whole list structure if the selection is collapsed', () => {
+						setData( model, modelList( [
+							'* a',
+							'  * b[]',
+							'    * c',
+							'  * d',
+							'    * e',
+							'      * f',
+							'* g'
+						] ) );
+
+						command.execute();
+
+						expect( getData( model ) ).to.equalMarkup( modelList( [
+							'# a',
+							'  # b[]',
+							'    # c',
+							'  # d',
+							'    # e',
+							'      # f',
+							'# g'
+						] ) );
+
+						expect( changedBlocks.length ).to.equal( 7 );
+						expect( changedBlocks ).to.deep.equal( [
+							root.getChild( 0 ),
+							root.getChild( 1 ),
+							root.getChild( 2 ),
+							root.getChild( 3 ),
+							root.getChild( 4 ),
+							root.getChild( 5 ),
+							root.getChild( 6 )
+						] );
+					} );
+
+					it( 'should change the type of the whole list structure if the selection is collapsed ' +
+						'(but not paragraphs and other lists)', () => {
+						setData( model, modelList( [
+							'* a',
+							'p',
+							'* b',
+							'  * c[]',
+							'    * d',
+							'p',
+							'* e'
+						] ) );
+
+						command.execute();
+
+						expect( getData( model ) ).to.equalMarkup( modelList( [
+							'* a',
+							'p',
+							'# b',
+							'  # c[]',
+							'    # d',
+							'p',
+							'* e'
+						] ) );
+
+						expect( changedBlocks.length ).to.equal( 3 );
+						expect( changedBlocks ).to.deep.equal( [
+							root.getChild( 2 ),
+							root.getChild( 3 ),
+							root.getChild( 4 )
+						] );
+					} );
+				} );
+
+				describe( 'turning on when the selection is not collapsed (default command behaviour not changed)', () => {
+					it( 'should change only selected list items', () => {
+						setData( model, modelList( [
+							'* a',
+							'  * [b',
+							'    * c]',
+							'  * d',
+							'    * e',
+							'      * f',
+							'* g'
+						] ) );
+
+						command.execute();
+
+						expect( getData( model ) ).to.equalMarkup( modelList( [
+							'* a',
+							'  # [b',
+							'    # c]',
+							'  * d',
+							'    * e',
+							'      * f',
+							'* g'
+						] ) );
+
+						expect( changedBlocks.length ).to.equal( 2 );
+						expect( changedBlocks ).to.deep.equal( [
+							root.getChild( 1 ),
+							root.getChild( 2 )
+						] );
+					} );
+				} );
+
+				describe( 'turning off when the selection is collapsed (default command behaviour not changed)', () => {
+					it( 'should strip the list attributes from the closest item and decrease indent of children (middle item)', () => {
+						setData( model, modelList( [
+							'# foo',
+							'# b[]ar',
+							'  # baz',
+							'    # qux'
+						] ) );
+
+						command.execute();
+
+						expect( getData( model ) ).to.equalMarkup( modelList( [
+							'# foo',
+							'b[]ar',
+							'# baz',
+							'  # qux'
+						] ) );
+
+						expect( changedBlocks.length ).to.equal( 3 );
+						expect( changedBlocks ).to.deep.equal( [
+							root.getChild( 1 ),
+							root.getChild( 2 ),
+							root.getChild( 3 )
+						] );
+					} );
 				} );
 			} );
 
