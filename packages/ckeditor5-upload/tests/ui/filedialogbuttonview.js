@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import FileDialogButtonView from '@ckeditor/ckeditor5-ui/src/button/filedialogbuttonview.ts';
+import FileDialogButtonView from '@ckeditor/ckeditor5-ui/src/button/filedialogbuttonview.js';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
 import View from '@ckeditor/ckeditor5-ui/src/view.js';
 
