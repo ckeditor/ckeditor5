@@ -81,6 +81,7 @@ export * from './labeledfield/utils.js';
 
 export { default as ListItemGroupView } from './list/listitemgroupview.js';
 export { default as ListItemView } from './list/listitemview.js';
+export { default as ListSeparatorView } from './list/listseparatorview.js';
 export { default as ListView } from './list/listview.js';
 
 export { default as Notification } from './notification/notification.js';
