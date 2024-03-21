@@ -18,7 +18,7 @@ import {
 	isListItemBlock,
 	isNumberedListType
 } from './utils/model.js';
-import type { ListTypeOptions } from './listediting.js';
+import type { ListType } from './listediting.js';
 
 /**
  * A set of helpers related to document lists.
@@ -71,7 +71,7 @@ export default class ListUtils extends Plugin {
 	/**
 	 * Returns true if listType is of type `numbered` or `customNumbered`.
 	 */
-	public isNumberedListType( listType: ListTypeOptions ): boolean {
+	public isNumberedListType( listType: ListType ): boolean {
 		return isNumberedListType( listType );
 	}
 }

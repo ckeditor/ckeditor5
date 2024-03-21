@@ -22,7 +22,7 @@ import {
 	isListItemBlock,
 	canBecomeSimpleListItem
 } from './utils/model.js';
-import { type ListTypeOptions } from './listediting.js';
+import { type ListType } from './listediting.js';
 import type { ListWalkerOptions } from './utils/listwalker.js';
 
 /**
@@ -32,7 +32,7 @@ export default class ListCommand extends Command {
 	/**
 	 * The type of the list created by the command.
 	 */
-	public readonly type: ListTypeOptions;
+	public readonly type: ListType;
 
 	/**
 	 * A flag indicating whether the command is active, which means that the selection starts in a list of the same type.
@@ -56,7 +56,7 @@ export default class ListCommand extends Command {
 	 * @param editor The editor instance.
 	 * @param type List type that will be handled by this command.
 	 */
-	constructor( editor: Editor, type: ListTypeOptions, options: { multiLevel?: boolean } = {} ) {
+	constructor( editor: Editor, type: ListType, options: { multiLevel?: boolean } = {} ) {
 		super( editor );
 
 		this.type = type;

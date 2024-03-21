@@ -84,13 +84,13 @@ import '../../theme/list.css';
  */
 const LIST_BASE_ATTRIBUTES = [ 'listType', 'listIndent', 'listItemId' ];
 
-export type ListTypeOptions = 'numbered' | 'bulleted' | 'todo' | 'customNumbered' | 'customBulleted';
+export type ListType = 'numbered' | 'bulleted' | 'todo' | 'customNumbered' | 'customBulleted';
 
 /**
  * Map of model attributes applicable to list blocks.
  */
 export interface ListItemAttributesMap {
-	listType?: ListTypeOptions;
+	listType?: ListType;
 	listIndent?: number;
 	listItemId?: string;
 }
