@@ -161,13 +161,13 @@ To save space in your toolbar or arrange the features thematically, you can grou
 
 ```js
 toolbar: [
-			{
-				label: 'More basic styles',
-				icon: 'threeVerticalDots',
-				items: [ 'strikethrough', 'superscript', 'subscript' ]
-			},
-// More of toolbar's configuration.
-// ...
+	{
+		label: 'More basic styles',
+		icon: 'threeVerticalDots',
+		items: [ 'strikethrough', 'superscript', 'subscript' ]
+	},
+	// More of toolbar's configuration.
+	// ...
 ]
 ```
 
@@ -355,13 +355,13 @@ BalloonEditor.create( document.querySelector( '#editor' ), {
 The content of the block toolbar can be defined using the {@link module:core/editor/editorconfig~EditorConfig#blockToolbar} configuration. It is similar to the regular toolbar UI items list.
 
 ```js
-	blockToolbar: {
-		items: [
-			'bold',
-			'italic',
-			'link'
-		]
-	},
+blockToolbar: {
+  items: [
+  	'bold',
+  	'italic',
+  	'link'
+  ]
+}
 ```
 
 See the [installation instructions](#block-toolbar-installation) for a more advanced example.
@@ -391,14 +391,14 @@ You can use the `shouldNotGroupWhenFull` [configuration option](#multiline-wrapp
 You can also change the current default toolbar icon `'dragIndicator'` {@icon @ckeditor/ckeditor5-core/theme/icons/drag-indicator.svg Drag indicator} by choosing predefined icon from [icon list](#changing-the-icon) using the `icon` option or by passing a `SVG` string:
 
 ```js
-	blockToolbar: {
-		items: [ /* ... */ ],
-		icon: 'pilcrow'
-		// or
-		// icon: '<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">' +
-		//		'<path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"/></svg>'
-	},
-	toolbar: [ /* ... */ ]
+blockToolbar: {
+  items: [ /* ... */ ],
+  icon: 'pilcrow'
+  // or
+  // icon: '<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">' +
+  //		'<path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"/></svg>'
+},
+toolbar: [ /* ... */ ]
 ```
 
 You can provide a custom toolbar button icon by {@link framework/architecture/ui-library#setting-label-icon-and-tooltip passing an SVG string}.
