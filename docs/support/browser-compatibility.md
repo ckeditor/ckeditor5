@@ -1,7 +1,7 @@
 ---
-category: setup
+category: support
 meta-title: Browser compatibility | CKEditor 5 Documentation
-order: 80
+order: 30
 ---
 
 # Browser compatibility

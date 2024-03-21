@@ -1,7 +1,7 @@
 ---
 category: support
 meta-title: Error codes | CKEditor 5 Documentation
-order: 70
+order: 40
 ---
 
 # Error codes
