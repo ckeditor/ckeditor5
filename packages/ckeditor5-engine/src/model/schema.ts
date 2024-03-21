@@ -939,6 +939,14 @@ export default class Schema extends ObservableMixin() {
 		}
 
 		for ( const itemName of itemNames ) {
+			compileDisallowChildren( compiledDefinitions, itemName );
+		}
+
+		for ( const itemName of itemNames ) {
+			compileDisallowIn( compiledDefinitions, itemName );
+		}
+
+		for ( const itemName of itemNames ) {
 			compileAllowContentOf( compiledDefinitions, itemName );
 		}
 
@@ -947,11 +955,21 @@ export default class Schema extends ObservableMixin() {
 		}
 
 		for ( const itemName of itemNames ) {
+			clearAfterChildrenProcessing( compiledDefinitions, itemName );
+		}
+
+		// Run disallow rules after the deduplication cleanups.
+		for ( const itemName of itemNames ) {
+			compileDisallowAttributes( compiledDefinitions, itemName );
+		}
+
+		for ( const itemName of itemNames ) {
 			compileAllowAttributesOf( compiledDefinitions, itemName );
 			compileInheritPropertiesFrom( compiledDefinitions, itemName );
 		}
 
 		for ( const itemName of itemNames ) {
+			clearAfterAttributes( compiledDefinitions, itemName );
 			cleanUpAllowIn( compiledDefinitions, itemName );
 			setupAllowChildren( compiledDefinitions, itemName );
 			cleanUpAllowAttributes( compiledDefinitions, itemName );
@@ -1414,6 +1432,21 @@ export interface SchemaItemDefinition {
 	allowAttributesOf?: string | Array<string>;
 
 	/**
+	 * Defines in which other items this item will be disallowed. Takes precedence over `allowChildren`, `allowIn` and `allowContentOf`.
+	 */
+	disallowIn?: string | Array<string>;
+
+	/**
+	 * Defines which other items are disallowed inside this item. Takes precedence over `allowChildren`, `allowIn` and `allowContentOf`.
+	 */
+	disallowChildren?: string | Array<string>;
+
+	/**
+	 * Defines disallowed attributes for this item. Takes precedence over `allowAttributes` and `allowAttributesOf`.
+	 */
+	disallowAttributes?: string | Array<string>;
+
+	/**
 	 * Inherits `is*` properties of other items.
 	 */
 	inheritTypesFrom?: string | Array<string>;
@@ -1537,6 +1570,10 @@ interface SchemaCompiledItemDefinitionInternal {
 	allowIn: Array<string>;
 	allowChildren: Array<string>;
 	allowAttributes: Array<string>;
+
+	disallowIn?: Array<string>;
+	disallowChildren?: Array<string>;
+	disallowAttributes?: Array<string>;
 
 	allowAttributesOf?: Array<string>;
 	allowContentOf?: Array<string>;
@@ -1859,6 +1896,10 @@ function compileBaseItemRule( sourceItemRules: Array<SchemaItemDefinition>, item
 
 		allowChildren: [],
 
+		disallowIn: [],
+		disallowChildren: [],
+		disallowAttributes: [],
+
 		inheritTypesFrom: []
 	};
 
@@ -1873,11 +1914,31 @@ function compileBaseItemRule( sourceItemRules: Array<SchemaItemDefinition>, item
 
 	copyProperty( sourceItemRules, itemRule, 'allowChildren' );
 
+	copyProperty( sourceItemRules, itemRule, 'disallowAttributes' );
+	copyProperty( sourceItemRules, itemRule, 'disallowChildren' );
+	copyProperty( sourceItemRules, itemRule, 'disallowIn' );
+
 	copyProperty( sourceItemRules, itemRule, 'inheritTypesFrom' );
 
 	makeInheritAllWork( sourceItemRules, itemRule );
 
 	return itemRule;
+}
+
+function clearAfterChildrenProcessing(
+	compiledDefinitions: Record<string, SchemaCompiledItemDefinitionInternal>,
+	itemName: string
+) {
+	compiledDefinitions[ itemName ].allowChildren.length = 0;
+	delete compiledDefinitions[ itemName ].disallowChildren;
+	delete compiledDefinitions[ itemName ].disallowIn;
+}
+
+function clearAfterAttributes(
+	compiledDefinitions: Record<string, SchemaCompiledItemDefinitionInternal>,
+	itemName: string
+) {
+	delete compiledDefinitions[ itemName ].disallowAttributes;
 }
 
 function compileAllowChildren(
@@ -1886,38 +1947,112 @@ function compileAllowChildren(
 ) {
 	const item = compiledDefinitions[ itemName ];
 
-	for ( const allowChildrenItem of item.allowChildren ) {
-		const allowedChildren = compiledDefinitions[ allowChildrenItem ];
-
-		// The allowChildren property may point to an unregistered element.
-		if ( !allowedChildren ) {
+	for ( const [ allowedChildIndex, allowChildrenItem ] of item.allowChildren.entries() ) {
+		// Immediately remove item from `allowChildren` if it's in `disallowChildren` too.
+		if ( item.disallowChildren!.find( child => child === allowChildrenItem ) ) {
+			item.allowChildren.splice( allowedChildIndex, 1 );
 			continue;
 		}
 
-		allowedChildren.allowIn.push( itemName );
-	}
+		const allowedChildDefinition = compiledDefinitions[ allowChildrenItem ];
 
-	// The allowIn property already includes correct items, reset the allowChildren property
-	// to avoid duplicates later when setting up compilation results.
-	item.allowChildren.length = 0;
+		// The allowChildren property may point to an unregistered element.
+		if ( !allowedChildDefinition ) {
+			continue;
+		}
+
+		allowedChildDefinition.allowIn.push( itemName );
+	}
 }
 
 function compileAllowContentOf(
 	compiledDefinitions: Record<string, SchemaCompiledItemDefinitionInternal>,
 	itemName: string
 ) {
-	for ( const allowContentOfItemName of compiledDefinitions[ itemName ].allowContentOf! ) {
-		// The allowContentOf property may point to an unregistered element.
-		if ( compiledDefinitions[ allowContentOfItemName ] ) {
-			const allowedChildren = getAllowedChildren( compiledDefinitions, allowContentOfItemName );
+	const itemRule = compiledDefinitions[ itemName ];
 
-			allowedChildren.forEach( allowedItem => {
+	for ( const allowContentOfItemName of itemRule.allowContentOf! ) {
+		// The allowContentOf property may point to an unregistered element.
+		const inheritFromItem = compiledDefinitions[ allowContentOfItemName ];
+		if ( !inheritFromItem ) {
+			continue;
+		}
+
+		const inheritedAllowedChildren = getAllowedChildren( compiledDefinitions, allowContentOfItemName );
+		const inheritedDisallowedChildren = getDisallowedChildrenFromAllDefs( compiledDefinitions, allowContentOfItemName );
+
+		// First, add the item to each inherited allowed child, except:
+		// - the ones which are explicitly disallowed in the item,
+		// - the ones which have own disallowIn rule for this item.
+		inheritedAllowedChildren
+			.filter( allowedChildItem => itemRule.disallowChildren!.indexOf( allowedChildItem.name ) === -1 )
+			.filter( allowedChildItem => allowedChildItem.disallowIn!.indexOf( itemName ) === -1 )
+			.forEach( allowedItem => {
 				allowedItem.allowIn.push( itemName );
 			} );
-		}
+
+		// And then, run inherited disallowChildren rules to remove this item from them.
+		// Additionally, keep higher priority on the item's own allowChildren rules over inherited disallowChildren.
+		inheritedDisallowedChildren!
+			.filter( disallowedItemRule => itemRule.allowChildren.indexOf( disallowedItemRule.name ) === -1 )
+			.forEach( disallowedItemRule => {
+				if ( disallowedItemRule ) {
+					disallowedItemRule.disallowIn!.push( itemName );
+				}
+			} );
 	}
 
 	delete compiledDefinitions[ itemName ].allowContentOf;
+}
+
+function compileDisallowChildren(
+	compiledDefinitions: Record<string, SchemaCompiledItemDefinitionInternal>,
+	itemName: string
+) {
+	const item = compiledDefinitions[ itemName ];
+	for ( const disallowedChild of item.disallowChildren! ) {
+		// Proceed to remove the item from the previously allowed children.
+		const disallowedChildDefinition = compiledDefinitions[ disallowedChild ];
+
+		// The allowChildren property may point to an unregistered element.
+		if ( !disallowedChildDefinition ) {
+			continue;
+		}
+
+		disallowedChildDefinition.disallowIn!.push( itemName );
+
+		const allowedChildAllowInIndex = disallowedChildDefinition.allowIn.indexOf( itemName );
+		if ( allowedChildAllowInIndex !== -1 ) {
+			disallowedChildDefinition.allowIn.splice( allowedChildAllowInIndex, 1 );
+		}
+	}
+}
+
+function compileDisallowIn(
+	compiledDefinitions: Record<string, SchemaCompiledItemDefinitionInternal>,
+	itemName: string
+) {
+	const itemRule = compiledDefinitions[ itemName ];
+
+	for ( const disallowedInItemName of itemRule.disallowIn! ) {
+		const disallowedInItem = compiledDefinitions[ disallowedInItemName ];
+
+		if ( !disallowedInItem ) {
+			continue;
+		}
+
+		// Look for the item in the "parent" element to disallow it as a children there.
+		const childItemIndexToDisallow = disallowedInItem.allowChildren.indexOf( itemName );
+		if ( childItemIndexToDisallow !== -1 ) {
+			disallowedInItem.allowChildren.splice( childItemIndexToDisallow, 1 );
+		}
+
+		// Next, check within the rule-originating element itself to remove disallowed "parent" element.
+		const disallowedInIndex = itemRule.allowIn.indexOf( disallowedInItemName );
+		if ( disallowedInIndex !== -1 ) {
+			itemRule.allowIn.splice( disallowedInIndex, 1 );
+		}
+	}
 }
 
 function compileAllowWhere(
@@ -1928,14 +2063,36 @@ function compileAllowWhere(
 		const inheritFrom = compiledDefinitions[ allowWhereItemName ];
 
 		// The allowWhere property may point to an unregistered element.
-		if ( inheritFrom ) {
-			const allowedIn = inheritFrom.allowIn;
-
-			compiledDefinitions[ itemName ].allowIn.push( ...allowedIn );
+		if ( !inheritFrom || !inheritFrom.allowIn ) {
+			continue;
 		}
+
+		// Get all inherited allowedIn items, without:
+		//  - filter 1: items specified in item's own `disallowIn` list,
+		//  - filter 2: items for which the `disallowChildren` list contains this item.
+		const inheritedAllowedIn = inheritFrom.allowIn
+			.filter( allowedItem =>
+				!( compiledDefinitions[ itemName ].disallowIn!.find( disallowedItem => disallowedItem === allowedItem ) ) )
+			.filter( allowedItem => {
+				const itemDef = compiledDefinitions[ allowedItem ];
+				return !!itemDef && !itemDef.disallowChildren!.find( child => child === itemName );
+			} );
+
+		compiledDefinitions[ itemName ].allowIn.push( ...inheritedAllowedIn );
 	}
 
 	delete compiledDefinitions[ itemName ].allowWhere;
+}
+
+function compileDisallowAttributes(
+	compiledDefinitions: Record<string, SchemaCompiledItemDefinitionInternal>,
+	itemName: string
+) {
+	const item = compiledDefinitions[ itemName ];
+	for ( const disallowedAttribute of item.disallowAttributes! ) {
+		// Remove all the disallowed attributes from the own allowed attributes list.
+		item.allowAttributes = item.allowAttributes.filter( attr => attr !== disallowedAttribute );
+	}
 }
 
 function compileAllowAttributesOf(
@@ -1946,7 +2103,9 @@ function compileAllowAttributesOf(
 		const inheritFrom = compiledDefinitions[ allowAttributeOfItem ];
 
 		if ( inheritFrom ) {
-			const inheritAttributes = inheritFrom.allowAttributes;
+			// Filter out any inherited attribute that is disallowed in this (inheriting) item.
+			const inheritAttributes = inheritFrom.allowAttributes
+				.filter( attr => compiledDefinitions[ itemName ].disallowAttributes!.indexOf( attr ) === -1 );
 
 			compiledDefinitions[ itemName ].allowAttributes.push( ...inheritAttributes );
 		}
@@ -2032,6 +2191,9 @@ function copyProperty(
 		'allowAttributes' |
 		'allowAttributesOf' |
 		'allowChildren' |
+		'disallowAttributes' |
+		'disallowChildren' |
+		'disallowIn' |
 		'inheritTypesFrom'
 ) {
 	for ( const sourceItemRule of sourceItemRules ) {
@@ -2061,7 +2223,15 @@ function makeInheritAllWork( sourceItemRules: Array<SchemaItemDefinition>, itemR
 function getAllowedChildren( compiledDefinitions: Record<string, SchemaCompiledItemDefinitionInternal>, itemName: string ) {
 	const itemRule = compiledDefinitions[ itemName ];
 
-	return getValues( compiledDefinitions ).filter( def => def.allowIn.includes( itemRule.name ) );
+	return getValues( compiledDefinitions )
+		.filter( def => def.allowIn.includes( itemRule.name ) );
+}
+
+function getDisallowedChildrenFromAllDefs( compiledDefinitions: Record<string, SchemaCompiledItemDefinitionInternal>, itemName: string ) {
+	const itemRule = compiledDefinitions[ itemName ];
+
+	return getValues( compiledDefinitions )
+		.filter( def => def.disallowIn!.includes( itemRule.name ) );
 }
 
 function getValues( obj: Record<string, SchemaCompiledItemDefinitionInternal> ) {

@@ -2005,12 +2005,12 @@ describe( 'Schema', () => {
 				expect( getData( model, { withoutSelection: true } ) )
 					.to.equal(
 						'<div>' +
-							'<paragraph a="1">' +
-								'<$text b="1">foo</$text>' +
-								'<imageBlock b="1"></imageBlock>' +
-							'</paragraph>' +
-							'<$text a="1">bar</$text>' +
-							'<imageBlock a="1"></imageBlock>' +
+						'<paragraph a="1">' +
+						'<$text b="1">foo</$text>' +
+						'<imageBlock b="1"></imageBlock>' +
+						'</paragraph>' +
+						'<$text a="1">bar</$text>' +
+						'<imageBlock a="1"></imageBlock>' +
 						'</div>'
 					);
 			} );
@@ -2179,7 +2179,7 @@ describe( 'Schema', () => {
 
 			const attributesWithProperty = schema.getAttributesWithProperty( root.getChild( 0 ), 'isBarable' );
 
-			expect( attributesWithProperty ).to.deep.equal( { } );
+			expect( attributesWithProperty ).to.deep.equal( {} );
 		} );
 
 		it( 'should not return an attribute if it does not have given property', () => {
@@ -2191,7 +2191,7 @@ describe( 'Schema', () => {
 
 			const attributesWithProperty = schema.getAttributesWithProperty( root.getChild( 0 ), 'isFooable' );
 
-			expect( attributesWithProperty ).to.deep.equal( { } );
+			expect( attributesWithProperty ).to.deep.equal( {} );
 		} );
 
 		it( 'should not return an attribute if value does not match', () => {
@@ -2207,7 +2207,7 @@ describe( 'Schema', () => {
 
 			const attributesWithProperty = schema.getAttributesWithProperty( root.getChild( 0 ), 'isFooable', 'yes' );
 
-			expect( attributesWithProperty ).to.deep.equal( { } );
+			expect( attributesWithProperty ).to.deep.equal( {} );
 		} );
 
 		it( 'should return only an attribute that matches value', () => {
@@ -2544,7 +2544,7 @@ describe( 'Schema', () => {
 			} );
 
 			it( 'passes $root>paragraph and $root2>paragraph – where $root2 inherits content of $root' +
-			'and paragraph inherits allowWhere from $block', () => {
+				'and paragraph inherits allowWhere from $block', () => {
 				schema.register( '$root' );
 				schema.register( '$root2', {
 					allowContentOf: '$root'
@@ -2939,6 +2939,371 @@ describe( 'Schema', () => {
 				} );
 
 				expect( schema.checkAttribute( r1p1, 'align' ) ).to.be.true;
+			} );
+		} );
+
+		describe( 'disallow rules - children', () => {
+			it( 'does not break and does not keep the value when used disallowChildren pointing to a non-registered element', () => {
+				schema.register( '$root' );
+				schema.register( 'paragraph', {
+					allowIn: '$root',
+					allowChildren: [ '$root' ],
+					disallowChildren: [ 'not-existing-elem' ]
+				} );
+
+				const notExisting = new Element( 'not-existing-elem' );
+				r1p1._appendChild( notExisting );
+
+				expect( schema.checkChild( root1, r1p1 ) ).to.be.true;
+				expect( schema.checkChild( r1p1, notExisting ) ).to.be.false;
+			} );
+
+			it( 'does not break and does not keep the value when used disallowIn pointing to a non-registered element', () => {
+				schema.register( '$root' );
+				schema.register( 'paragraph', {
+					allowIn: '$root',
+					allowChildren: [ '$root' ],
+					disallowIn: [ 'not-existing-elem' ]
+				} );
+
+				const notExisting = new Element( 'not-existing-elem' );
+				const p = new Element( 'paragraph' );
+				root1._appendChild( notExisting );
+
+				expect( schema.checkChild( root1, r1p1 ) ).to.be.true;
+				expect( schema.checkChild( notExisting, p ) ).to.be.false;
+			} );
+
+			it( 'disallows paragraph in a blockQuote with disallowChildren rule', () => {
+				schema.register( '$root' );
+
+				schema.register( 'blockQuote', {
+					allowIn: [ '$root' ],
+					allowContentOf: [ '$root' ],
+					disallowChildren: [ 'paragraph' ]
+				} );
+
+				schema.register( 'paragraph', {
+					allowIn: '$root'
+				} );
+
+				expect( schema.checkChild( r1bQ, r1bQp ) ).to.be.false;
+			} );
+
+			it( 'disallows paragraph in a blockQuote with disallowIn rule', () => {
+				schema.register( '$root' );
+
+				schema.register( 'blockQuote', {
+					allowIn: [ '$root' ],
+					allowContentOf: [ '$root' ]
+				} );
+
+				schema.register( 'paragraph', {
+					allowIn: '$root',
+					disallowIn: 'blockQuote'
+				} );
+
+				expect( schema.checkChild( r1bQ, r1bQp ) ).to.be.false;
+			} );
+
+			it( 'disallows previously allowed paragraph on a $root via disallowChildren rule', () => {
+				schema.register( '$root', {
+					disallowChildren: [ 'paragraph' ]
+				} );
+
+				schema.register( 'paragraph', {
+					allowIn: '$root'
+				} );
+
+				expect( schema.checkChild( root1, r1p1 ) ).to.be.false;
+			} );
+
+			it( 'disallows previously allowed paragraphs on root elements via disallowIn rule', () => {
+				schema.register( '$root', { allowChildren: [ 'paragraph' ] } );
+				schema.register( '$root2', { allowChildren: [ 'paragraph' ] } );
+				schema.register( 'paragraph', {
+					disallowIn: [ '$root', '$root2' ]
+				} );
+
+				expect( schema.checkChild( root1, r1p1 ) ).to.be.false;
+				expect( schema.checkChild( root2, r1p1 ) ).to.be.false;
+			} );
+
+			it( 'disallows paragraph on a $root even though there is also an allowChildren rule', () => {
+				schema.register( '$root', {
+					allowChildren: [ 'paragraph' ],
+					disallowChildren: [ 'paragraph' ]
+				} );
+
+				schema.register( 'paragraph' );
+
+				expect( schema.checkChild( root1, r1p1 ) ).to.be.false;
+			} );
+
+			it( 'disallows paragraphs in root even though there is also an allowIn rule', () => {
+				schema.register( '$root' );
+				schema.register( 'paragraph', {
+					allowIn: [ '$root' ],
+					disallowIn: [ '$root' ]
+				} );
+
+				expect( schema.checkChild( root1, r1p1 ) ).to.be.false;
+			} );
+
+			it( 'disallows descendant elements in root with disallowIn', () => {
+				schema.register( '$root', {} );
+				schema.register( 'baseElem', {
+					disallowIn: [ '$root' ]
+				} );
+				schema.register( 'descendant1', { inheritAllFrom: 'baseElem' } );
+				schema.register( 'descendant2', { inheritAllFrom: 'descendant1' } );
+				root1._appendChild( 'descendant1' );
+				root1._appendChild( 'descendant2' );
+				const descElem1 = new Element( 'descendant1' );
+				const descElem2 = new Element( 'descendant2' );
+
+				expect( schema.checkChild( root1, descElem1 ) ).to.be.false;
+				expect( schema.checkChild( root1, descElem2 ) ).to.be.false;
+			} );
+
+			it( 'disallows descendant elements in root with disallowChildren', () => {
+				schema.register( '$root', {
+					disallowChildren: [ 'baseElem' ]
+				} );
+				schema.register( 'baseElem', {
+				} );
+				schema.register( 'descendant1', { inheritAllFrom: 'baseElem' } );
+				schema.register( 'descendant2', { inheritAllFrom: 'descendant1' } );
+
+				const descElem1 = new Element( 'descendant1' );
+				const descElem2 = new Element( 'descendant2' );
+				root1._appendChild( descElem1 );
+				root1._appendChild( descElem2 );
+
+				expect( schema.checkChild( root1, descElem1 ) ).to.be.false;
+				expect( schema.checkChild( root1, descElem2 ) ).to.be.false;
+			} );
+
+			it( `should disallow inlineSpecificItem and its descendants 
+			in paragraph and descendants but allow the base $inlineElement`, () => {
+				schema.register( '$root' );
+
+				/* The case here: ensure that item (inlineSpecificItem) inheriting from a base item
+				 * is disallowed in other items which allow base item but disallow this specific item
+				 * (prevent from inheriting allows and omitting specific disallows).
+				 */
+
+				schema.register( '$base', {
+					allowChildren: [ '$inlineElement' ],
+					allowIn: '$root'
+				} );
+				schema.register( '$inlineElement', {
+					allowIn: '$root'
+				} );
+				schema.register( 'inlineSpecificItem', {
+					inheritAllFrom: '$inlineElement'
+				} );
+				schema.register( 'inlineMoreSpecificItem', {
+					inheritAllFrom: 'inlineSpecificItem'
+				} );
+				schema.register( 'paragraph', { inheritAllFrom: '$base', disallowChildren: 'inlineSpecificItem' } );
+				schema.register( 'paragraphDescendantA', { inheritAllFrom: 'paragraph' } );
+				schema.register( 'paragraphDescendantB', { inheritAllFrom: 'paragraphDescendantA' } );
+
+				const inlineElem = new Element( '$inlineElement' );
+				const inlineSpecific = new Element( 'inlineSpecificItem' );
+				const inlineMoreSpecific = new Element( 'inlineMoreSpecificItem' );
+				const pA = new Element( 'paragraphDescendantA' );
+				const pB = new Element( 'paragraphDescendantB' );
+
+				root1._appendChild( pA );
+				root1._appendChild( pB );
+
+				expect( schema.checkChild( pA, inlineElem ) ).to.be.true;
+				expect( schema.checkChild( pA, inlineSpecific ) ).to.be.false;
+				expect( schema.checkChild( pA, inlineMoreSpecific ) ).to.be.false;
+				expect( schema.checkChild( pB, inlineElem ) ).to.be.true;
+				expect( schema.checkChild( pB, inlineSpecific ) ).to.be.false;
+				expect( schema.checkChild( pB, inlineMoreSpecific ) ).to.be.false;
+			} );
+
+			it( 'should disallow inlineSpecificItem and its descendants in all paragraph and descendants (with disallowIn)', () => {
+				schema.register( '$root' );
+
+				/**
+				 * The case here: ensure that item (inlineSpecificItem) inheriting from a base item
+				 * is disallowed in other items which allow its base item, when it has disallowIn rule containing these.
+				 */
+
+				schema.register( '$base', {
+					allowIn: '$root'
+				} );
+				schema.register( '$inlineElement', {
+					allowIn: '$root'
+				} );
+				schema.register( 'inlineSpecificItem', {
+					inheritAllFrom: '$inlineElement',
+					disallowIn: 'paragraph'
+				} );
+				schema.register( 'inlineMoreSpecificItem', {
+					inheritAllFrom: 'inlineSpecificItem'
+				} );
+				schema.register( 'paragraph', { inheritAllFrom: '$base', allowChildren: '$inlineElement' } );
+				schema.register( 'paragraphDescendantA', { inheritAllFrom: 'paragraph' } );
+				schema.register( 'paragraphDescendantB', { inheritAllFrom: 'paragraphDescendantA' } );
+
+				const inlineElem = new Element( '$inlineElement' );
+				const inlineSpecific = new Element( 'inlineSpecificItem' );
+				const inlineMoreSpecific = new Element( 'inlineMoreSpecificItem' );
+				const pA = new Element( 'paragraphDescendantA' );
+				const pB = new Element( 'paragraphDescendantB' );
+
+				root1._appendChild( pA );
+				root1._appendChild( pB );
+
+				expect( schema.checkChild( pA, inlineElem ) ).to.be.true;
+				expect( schema.checkChild( pA, inlineSpecific ) ).to.be.false;
+				expect( schema.checkChild( pA, inlineMoreSpecific ) ).to.be.false;
+				expect( schema.checkChild( pB, inlineElem ) ).to.be.true;
+				expect( schema.checkChild( pB, inlineSpecific ) ).to.be.false;
+				expect( schema.checkChild( pB, inlineMoreSpecific ) ).to.be.false;
+			} );
+
+			it( 'should reallow an item again if disallowed higher in the inheritance hierarchy', () => {
+				schema.register( '$root' );
+				schema.register( 'paragraph', {
+					allowIn: '$root'
+				} );
+				schema.register( 'baseElem', { allowIn: '$root', allowContentOf: '$root' } );
+				schema.register( 'descendant1', { inheritAllFrom: 'baseElem', disallowChildren: [ 'paragraph' ] } );
+				schema.register( 'descendant2', { inheritAllFrom: 'descendant1' } );
+				schema.register( 'descendant3', { inheritAllFrom: 'descendant2', allowChildren: [ 'paragraph' ] } );
+
+				const descElem1 = new Element( 'descendant1' );
+				const descElem2 = new Element( 'descendant2' );
+				const descElem3 = new Element( 'descendant3' );
+				const p = new Element( 'paragraph' );
+
+				expect( schema.checkChild( descElem1, p ) ).to.be.false;
+				expect( schema.checkChild( descElem2, p ) ).to.be.false;
+				expect( schema.checkChild( descElem3, p ) ).to.be.true;
+			} );
+
+			it( 'should allow for a descendant item if reallowed its ancestor item again after it was disallowed', () => {
+				schema.register( '$root' );
+
+				/**
+				 * The case: paragraph is disallowed in descendant1, but them reallowed in descendant3,
+				 * check if that and next items will also allow paragraphDescendant which inherits from paragraph.
+				 */
+
+				schema.register( 'paragraph', {
+					allowIn: '$root'
+				} );
+				schema.register( 'paragraphDescendant', {
+					inheritAllFrom: 'paragraph'
+				} );
+				schema.register( 'baseElem', { allowIn: '$root', allowContentOf: '$root' } );
+				schema.register( 'descendant1', { inheritAllFrom: 'baseElem', disallowChildren: [ 'paragraph' ] } );
+				schema.register( 'descendant2', { inheritAllFrom: 'descendant1' } );
+				schema.register( 'descendant3', { inheritAllFrom: 'descendant2', allowChildren: [ 'paragraph' ] } );
+				schema.register( 'descendant4', { inheritAllFrom: 'descendant3' } );
+
+				const descElem1 = new Element( 'descendant1' );
+				const descElem2 = new Element( 'descendant2' );
+				const descElem3 = new Element( 'descendant3' );
+				const descElem4 = new Element( 'descendant3' );
+				const p = new Element( 'paragraph' );
+				const pD = new Element( 'paragraphDescendant' );
+
+				expect( schema.checkChild( descElem1, p ) ).to.be.false;
+				expect( schema.checkChild( descElem1, pD ) ).to.be.false;
+				expect( schema.checkChild( descElem2, p ) ).to.be.false;
+				expect( schema.checkChild( descElem2, pD ) ).to.be.false;
+				expect( schema.checkChild( descElem3, p ) ).to.be.true;
+				expect( schema.checkChild( descElem3, pD ) ).to.be.true;
+				expect( schema.checkChild( descElem4, pD ) ).to.be.true;
+			} );
+		} );
+
+		describe( 'disallow rules - attributes', () => {
+			it( 'disallows attribute in a paragraph with disallowAttributes rule', () => {
+				schema.register( '$root' );
+				schema.register( 'paragraph', {
+					allowAttributes: [ 'alignment', 'listStyle', 'listType' ],
+					disallowAttributes: [ 'listStyle' ]
+				} );
+
+				expect( schema.checkAttribute( r1p1, 'alignment' ) ).to.be.true;
+				expect( schema.checkAttribute( r1p1, 'listStyle' ) ).to.be.false;
+			} );
+
+			it( 'disallows inherited attribute in a paragraph descendant', () => {
+				schema.register( 'baseElement', {
+					allowAttributes: [ 'alignment', 'listStyle', 'listType', 'indent' ]
+				} );
+				schema.register( 'paragraph', {
+					allowAttributesOf: 'baseElement',
+					disallowAttributes: [ 'alignment', 'indent' ]
+				} );
+				schema.register( 'paragraphDescendant', {
+					allowAttributesOf: 'paragraph'
+				} );
+
+				const baseElem = new Element( 'baseElement' );
+				const p = new Element( 'paragraph' );
+				const pD = new Element( 'paragraphDescendant' );
+
+				expect( schema.checkAttribute( baseElem, 'alignment' ) ).to.be.true;
+				expect( schema.checkAttribute( baseElem, 'indent' ) ).to.be.true;
+				expect( schema.checkAttribute( p, 'alignment' ) ).to.be.false;
+				expect( schema.checkAttribute( p, 'indent' ) ).to.be.false;
+				expect( schema.checkAttribute( pD, 'alignment' ) ).to.be.false;
+				expect( schema.checkAttribute( pD, 'indent' ) ).to.be.false;
+			} );
+
+			it( 'should not inherit attributes which have been disallowed in the ancestor definition', () => {
+				schema.register( 'baseElement', {
+					allowAttributes: [ 'alignment', 'listStyle', 'listType', 'indent' ]
+				} );
+				schema.register( 'paragraph', {
+					allowAttributesOf: 'baseElement',
+					disallowAttributes: [ 'alignment', 'indent' ]
+				} );
+				schema.register( 'paragraphDescendant', {
+					allowAttributesOf: 'paragraph',
+					allowAttributes: [ 'listStart' ]
+				} );
+
+				expect( schema.getDefinition( 'paragraphDescendant' ).allowAttributes )
+					.to.have.members( [ 'listStyle', 'listType', 'listStart' ] );
+				expect( schema.getDefinition( 'paragraphDescendant' ).allowAttributes )
+					.to.not.have.members( [ 'alignment', 'indent' ] );
+			} );
+
+			it( 'should reallow attribute which have been disallowed in the ancestor definition', () => {
+				schema.register( 'baseElement', {
+					allowAttributes: [ 'alignment', 'listStyle', 'listType', 'indent', 'listStart' ],
+					disallowAttributes: [ 'indent' ]
+				} );
+				schema.register( 'paragraph', {
+					allowAttributesOf: 'baseElement',
+					disallowAttributes: [ 'listStart' ]
+				} );
+				schema.register( 'paragraphDescendant', {
+					allowAttributesOf: 'paragraph',
+					allowAttributes: [ 'indent', 'listStart' ]
+				} );
+
+				const baseElem = new Element( 'baseElement' );
+				const p = new Element( 'paragraph' );
+				const pD = new Element( 'paragraphDescendant' );
+
+				expect( schema.checkAttribute( baseElem, 'indent' ) ).to.be.false;
+				expect( schema.checkAttribute( p, 'listStart' ) ).to.be.false;
+				expect( schema.checkAttribute( p, 'indent' ) ).to.be.false;
+				expect( schema.checkAttribute( pD, 'listStart' ) ).to.be.true;
+				expect( schema.checkAttribute( pD, 'indent' ) ).to.be.true;
 			} );
 		} );
 
