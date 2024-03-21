@@ -7,6 +7,8 @@
  * @module code-block/codeblockediting
  */
 
+import { lowerFirst, upperFirst } from 'lodash-es';
+
 import { Plugin, type Editor, type MultiCommand } from 'ckeditor5/src/core.js';
 import { ShiftEnter, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter.js';
 
@@ -24,7 +26,6 @@ import {
 } from 'ckeditor5/src/engine.js';
 
 import type { ListEditing } from '@ckeditor/ckeditor5-list';
-import type { CodeBlockLanguageDefinition } from './codeblockconfig.js';
 
 import CodeBlockCommand from './codeblockcommand.js';
 import IndentCodeBlockCommand from './indentcodeblockcommand.js';
@@ -303,15 +304,23 @@ export default class CodeBlockEditing extends Plugin {
 				return;
 			}
 
-			let announcement: string | null = null;
+			const announcements: Array<string> = [];
 
-			if ( focusParent.is( 'element', 'codeBlock' ) ) {
-				announcement = getCodeBlockAriaAnnouncement( t, languageDefs, focusParent, 'enter' );
-			} else if ( lastFocusedCodeBlock && lastFocusedCodeBlock.is( 'element', 'codeBlock' ) ) {
-				announcement = getCodeBlockAriaAnnouncement( t, languageDefs, lastFocusedCodeBlock, 'leave' );
+			if ( lastFocusedCodeBlock && lastFocusedCodeBlock.is( 'element', 'codeBlock' ) ) {
+				announcements.push( getCodeBlockAriaAnnouncement( t, languageDefs, lastFocusedCodeBlock, 'leave' ) );
 			}
 
-			if ( announcement && ui ) {
+			if ( focusParent.is( 'element', 'codeBlock' ) ) {
+				announcements.push( getCodeBlockAriaAnnouncement( t, languageDefs, focusParent, 'enter' ) );
+			}
+
+			if ( ui && announcements.length ) {
+				const announcement = upperFirst(
+					announcements
+						.map( lowerFirst )
+						.join( ', ' )
+				);
+
 				ui.ariaLiveAnnouncer.announce( 'codeBlocks', announcement, 'assertive' );
 			}
 
