@@ -483,6 +483,7 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 			{
 				groupId: 'insert',
 				items: [
+					'menuBar:ckfinder',
 					'menuBar:imageUpload',
 					'menuBar:blockQuote',
 					'menuBar:link',
@@ -528,9 +529,12 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 			{
 				groupId: 'heading',
 				items: [
+					'menuBar:caseChange',
 					'menuBar:heading',
+					'menuBar:alignment',
 					'menuBar:fontSize',
 					'menuBar:fontFamily',
+					'menuBar:highlight',
 					'menuBar:textPartLanguage'
 				]
 			},
