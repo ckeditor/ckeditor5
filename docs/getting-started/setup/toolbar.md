@@ -44,7 +44,7 @@ ClassicEditor
 	} );
 ```
 
-#### Separating toolbar items
+### Separating toolbar items
 
 You can use `'|'` to create a separator between groups of toolbar items. This works in both the basic and extended configuration formats.
 
@@ -52,7 +52,7 @@ Below you can find an example of a simple toolbar with button grouping. The grou
 
 {@snippet features/toolbar-separator}
 
-#### Extended toolbar configuration format
+### Extended toolbar configuration format
 
 There are two available toolbar configuration formats:
 
@@ -96,7 +96,7 @@ The demo below presents the "regular" toolbar look with `shouldNotGroupWhenFull`
 
 {@snippet features/toolbar-grouping}
 
-#### Multiline (wrapping) toolbar
+### Multiline (wrapping) toolbar
 
 In the [extended toolbar configuration format](#extended-toolbar-configuration-format), it is also possible to arrange toolbar items into multiple lines. Here is how to achieve this:
 
@@ -110,7 +110,7 @@ toolbar: {
 }
 ```
 
-##### Automatic toolbar wrapping
+#### Automatic toolbar wrapping
 
 When you set `shouldNotGroupWhenFull` to `true`, by default the toolbar items are automatically wrapped into a new line once they do not fit the editor width. The mechanism is automatic and only wraps excess items. Notice that while the toolbar group separators `'|'` are preserved, the groups may be split when they overflow.
 
@@ -133,7 +133,7 @@ See how it works in practice. Play with the browser window width to see how the 
 
 {@snippet features/toolbar-wrapping}
 
-##### Explicit wrapping breakpoint
+#### Explicit wrapping breakpoint
 
 Setting an explicit break point in the toolbar configuration with `'-'` lets you create your own predefined multiline toolbar configuration. Toolbar items will then be grouped and put in lines as declared in the configuration.
 
@@ -155,7 +155,7 @@ toolbar: {
 
 {@snippet features/toolbar-breakpoint}
 
-#### Grouping toolbar items in dropdowns (nested toolbars)
+### Grouping toolbar items in dropdowns (nested toolbars)
 
 To save space in your toolbar or arrange the features thematically, you can group several items into a dropdown. For instance, check out the following configuration:
 
@@ -175,11 +175,11 @@ It will create a "Basic styles" dropdown with a three vertical dots icon {@icon 
 
 {@snippet features/toolbar-nested-simple}
 
-##### Customization
+#### Customization
 
 You can customize the look of the dropdown by configuring additional properties, such as the icon, label, or tooltip text.
 
-###### Displaying the label
+#### Displaying the label
 
 You can control the way the UI element is displayed. For instance, to hide the icon and to display the label, you can use the following configuration:
 
@@ -197,7 +197,7 @@ You can control the way the UI element is displayed. For instance, to hide the i
 
 {@snippet features/toolbar-nested-label}
 
-###### Changing the icon
+#### Changing the icon
 
 You can use one of the icons listed below for your dropdown:
 
@@ -254,11 +254,12 @@ toolbar: [
 	}
 ],
 ```
+
 And here is the effect:
 
 {@snippet features/toolbar-nested-icon}
 
-###### Customizing the tooltip
+#### Customizing the tooltip
 
 By default, the tooltip of the button shares its text with the label. You can customize it to better describe your dropdown and make it more accessible by using the {@link module:ui/button/buttonview~ButtonView#tooltip `tooltip`} property:
 
