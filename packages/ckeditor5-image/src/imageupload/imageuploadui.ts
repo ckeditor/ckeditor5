@@ -13,7 +13,6 @@ import {
 	MenuBarMenuListItemFileDialogButtonView
 } from 'ckeditor5/src/ui.js';
 import { createImageTypeRegExp } from './utils.js';
-import type UploadImageCommand from './uploadimagecommand.js';
 import type ImageInsertUI from '../imageinsert/imageinsertui.js';
 
 /**
@@ -107,7 +106,7 @@ export default class ImageUploadUI extends Plugin {
 	): InstanceType<T> {
 		const editor = this.editor;
 		const locale = editor.locale;
-		const command: UploadImageCommand = editor.commands.get( 'uploadImage' );
+		const command = editor.commands.get( 'uploadImage' )!;
 		const imageTypes = editor.config.get( 'image.upload.types' )!;
 		const imageTypesRegExp = createImageTypeRegExp( imageTypes );
 
