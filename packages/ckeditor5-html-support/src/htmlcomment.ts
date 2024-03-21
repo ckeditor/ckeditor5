@@ -38,7 +38,7 @@ export default class HtmlComment extends Plugin {
 			if ( context.endsWith( '$root' ) && attributeName.startsWith( '$comment' ) ) {
 				return true;
 			}
-		} );
+		}, '$root' );
 
 		// Convert the `$comment` view element to `$comment:<unique id>` marker and store its content (the comment itself) as a $root
 		// attribute. The comment content is needed in the `dataDowncast` pipeline to re-create the comment node.

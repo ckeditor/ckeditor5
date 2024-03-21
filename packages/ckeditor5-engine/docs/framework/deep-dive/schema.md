@@ -617,6 +617,20 @@ The {@link module:engine/model/schema~Schema#checkChild `Schema#checkChild()`} m
 
 These listeners can be added either by listening directly to the {@link module:engine/model/schema~Schema#event:checkChild} event or by using the handy {@link module:engine/model/schema~Schema#addChildCheck `Schema#addChildCheck()`} method.
 
+You can define specific listeners that will trigger a check only when a context or a child definition parameter points to a given element (in a check call). Look at this example:
+
+```js
+schema.addChildCheck( ( context, childDefinition ) => {
+	// In this example, don't allow for imageInline inside a codeBlock node.
+	if ( context.endsWith( 'codeBlock' ) && childDefinition.name === 'imageInline' ) {
+		return false;
+	}
+}, 'imageInline' );
+```
+
+The second parameter (`'imageInline'`) is used to run the callback only when `imageInline` is either a context or a child that's being checked.
+
+If that's not enough to meet the needs, you can also define generic listeners that trigger on every schema check, by omitting the second parameter.
 For instance, to disallow nested `<blockQuote>` structures, you can define such a listener:
 
 ```js
@@ -631,6 +645,9 @@ schema.addChildCheck( ( context, childDefinition ) => {
 	}
 } );
 ```
+
+The above will trigger on every `checkChild()` call - please keep in mind that using many generic callbacks might negatively impact the performance.
+
 <!--
 ## Defining attributes
 

@@ -150,7 +150,7 @@ export default class Model extends ObservableMixin() {
 			if ( childDefinition.name === '$marker' ) {
 				return true;
 			}
-		} );
+		}, '$marker' );
 
 		injectSelectionPostFixer( this );
 

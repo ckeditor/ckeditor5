@@ -742,29 +742,34 @@ describe( 'Schema', () => {
 			schema.register( 'paragraph', {
 				allowIn: '$root'
 			} );
+			schema.register( 'blockQuote', {
+				allowIn: '$root'
+			} );
 		} );
 
-		it( 'adds a high-priority listener', () => {
+		it( 'adds a callback that runs before declarative checks', () => {
 			const order = [];
-
-			schema.on( 'checkChild', () => {
-				order.push( 'checkChild:high-before' );
-			}, { priority: 'high' } );
 
 			schema.addChildCheck( () => {
 				order.push( 'addChildCheck' );
 			} );
 
 			schema.on( 'checkChild', () => {
-				order.push( 'checkChild:high-after' );
+				order.push( 'checkChild:high' );
 			}, { priority: 'high' } );
+
+			sinon.stub( schema, '_checkContextMatch' ).callsFake( () => {
+				order.push( 'declarativeCheck' );
+			} );
 
 			schema.checkChild( root1, r1p1 );
 
-			expect( order.join() ).to.equal( 'checkChild:high-before,addChildCheck,checkChild:high-after' );
+			expect( order.join() ).to.equal( 'checkChild:high,addChildCheck,declarativeCheck' );
+
+			sinon.restore();
 		} );
 
-		it( 'stops the event and overrides the return value when callback returned true', () => {
+		it( 'overrides the return value when callback returned true', () => {
 			schema.register( '$text' );
 
 			expect( schema.checkChild( root1, '$text' ) ).to.be.false;
@@ -773,23 +778,15 @@ describe( 'Schema', () => {
 				return true;
 			} );
 
-			schema.on( 'checkChild', () => {
-				throw new Error( 'the event should be stopped' );
-			}, { priority: 'high' } );
-
 			expect( schema.checkChild( root1, '$text' ) ).to.be.true;
 		} );
 
-		it( 'stops the event and overrides the return value when callback returned false', () => {
+		it( 'overrides the return value when callback returned false', () => {
 			expect( schema.checkChild( root1, r1p1 ) ).to.be.true;
 
 			schema.addChildCheck( () => {
 				return false;
 			} );
-
-			schema.on( 'checkChild', () => {
-				throw new Error( 'the event should be stopped' );
-			}, { priority: 'high' } );
 
 			expect( schema.checkChild( root1, r1p1 ) ).to.be.false;
 		} );
@@ -812,6 +809,41 @@ describe( 'Schema', () => {
 
 			expect( schema.checkChild( root1, 'foo' ) ).to.be.false;
 		} );
+
+		it( 'calls the custom callback only on given context check when given node name parameter', () => {
+			const callbacks = {
+				blockQuote: ( ctx, childDef ) => {
+					expect( ctx ).to.be.instanceOf( SchemaContext );
+					expect( ctx.last.name ).to.equal( 'blockQuote' );
+					expect( childDef ).to.equal( schema.getDefinition( 'paragraph' ) );
+				}
+			};
+
+			const checkSpy = sinon.spy( callbacks, 'blockQuote' );
+			schema.addChildCheck( checkSpy, 'blockQuote' );
+
+			schema.checkChild( root1, r1p1 );
+			schema.checkChild( r1bQ, r1bQp );
+
+			sinon.assert.calledOnce( checkSpy );
+		} );
+
+		it( 'calls the custom callback only on given children check when given node name parameter', () => {
+			const callbacks = {
+				blockQuote: ( ctx, childDef ) => {
+					expect( ctx ).to.be.instanceOf( SchemaContext );
+					expect( childDef ).to.equal( schema.getDefinition( 'blockQuote' ) );
+				}
+			};
+
+			const checkSpy = sinon.spy( callbacks, 'blockQuote' );
+			schema.addChildCheck( checkSpy, 'blockQuote' );
+
+			schema.checkChild( root1, r1p1 );
+			schema.checkChild( root1, r1bQ );
+
+			sinon.assert.calledOnce( checkSpy );
+		} );
 	} );
 
 	describe( 'addAttributeCheck()', () => {
@@ -821,50 +853,38 @@ describe( 'Schema', () => {
 			} );
 		} );
 
-		it( 'adds a high-priority listener', () => {
+		it( 'adds a callback that runs after listeners', () => {
 			const order = [];
-
-			schema.on( 'checkAttribute', () => {
-				order.push( 'checkAttribute:high-before' );
-			}, { priority: 'high' } );
 
 			schema.addAttributeCheck( () => {
 				order.push( 'addAttributeCheck' );
 			} );
 
 			schema.on( 'checkAttribute', () => {
-				order.push( 'checkAttribute:high-after' );
+				order.push( 'checkAttribute:high' );
 			}, { priority: 'high' } );
 
 			schema.checkAttribute( r1p1, 'foo' );
 
-			expect( order.join() ).to.equal( 'checkAttribute:high-before,addAttributeCheck,checkAttribute:high-after' );
+			expect( order.join() ).to.equal( 'checkAttribute:high,addAttributeCheck' );
 		} );
 
-		it( 'stops the event and overrides the return value when callback returned true', () => {
+		it( 'overrides the return value when callback returned true', () => {
 			expect( schema.checkAttribute( r1p1, 'bar' ) ).to.be.false;
 
 			schema.addAttributeCheck( () => {
 				return true;
 			} );
 
-			schema.on( 'checkAttribute', () => {
-				throw new Error( 'the event should be stopped' );
-			}, { priority: 'high' } );
-
 			expect( schema.checkAttribute( r1p1, 'bar' ) ).to.be.true;
 		} );
 
-		it( 'stops the event and overrides the return value when callback returned false', () => {
+		it( 'overrides the return value when callback returned false', () => {
 			expect( schema.checkAttribute( r1p1, 'foo' ) ).to.be.true;
 
 			schema.addAttributeCheck( () => {
 				return false;
 			} );
-
-			schema.on( 'checkAttribute', () => {
-				throw new Error( 'the event should be stopped' );
-			}, { priority: 'high' } );
 
 			expect( schema.checkAttribute( r1p1, 'foo' ) ).to.be.false;
 		} );
@@ -876,6 +896,43 @@ describe( 'Schema', () => {
 			} );
 
 			expect( schema.checkAttribute( r1p1, 'foo' ) ).to.be.true;
+		} );
+
+		it( 'calls the added attribute check callback only on given context check when given node name parameter', () => {
+			const callbacks = {
+				paragraph: ( ctx, attr ) => {
+					expect( ctx ).to.be.instanceOf( SchemaContext );
+					expect( ctx.last.name ).to.equal( 'paragraph' );
+					expect( attr ).to.equal( 'foo' );
+
+					return false;
+				}
+			};
+
+			const checkSpy = sinon.spy( callbacks, 'paragraph' );
+			schema.addAttributeCheck( checkSpy, 'paragraph' );
+
+			expect( schema.checkAttribute( r1p1, 'foo' ) ).to.be.false;
+			schema.checkAttribute( root1, 'foo' );
+
+			sinon.assert.calledOnce( checkSpy );
+		} );
+
+		it( 'calls the custom callback for paragraph regardless of the checked attribute', () => {
+			const callbacks = {
+				paragraph: ctx => {
+					expect( ctx ).to.be.instanceOf( SchemaContext );
+				}
+			};
+
+			const checkSpy = sinon.spy( callbacks, 'paragraph' );
+			schema.addAttributeCheck( checkSpy, 'paragraph' );
+
+			schema.checkAttribute( r1p1, 'foo' );
+			schema.checkAttribute( r1p1, 'bar' );
+			schema.checkAttribute( root1, 'foo' );
+
+			sinon.assert.calledTwice( checkSpy );
 		} );
 	} );
 

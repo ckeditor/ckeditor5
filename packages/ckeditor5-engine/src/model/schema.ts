@@ -42,6 +42,11 @@ export default class Schema extends ObservableMixin() {
 	 * A dictionary containing attribute properties.
 	 */
 	private readonly _attributeProperties: Record<string, AttributeProperties> = {};
+
+	private readonly _genericCheckSymbol = Symbol( '$generic' );
+	private readonly _customChildChecks: Map<string | symbol, Array<SchemaChildCheckCallback>> = new Map();
+	private readonly _customAttributeChecks: Map<string | symbol, Array<any>> = new Map();
+
 	private _compiledDefinitions?: Record<string, SchemaCompiledItemDefinition> | null;
 
 	/**
@@ -389,6 +394,31 @@ export default class Schema extends ObservableMixin() {
 			return false;
 		}
 
+		const childDef = def as unknown as SchemaCompiledItemDefinition;
+
+		const generalChecks = this._customChildChecks.get( this._genericCheckSymbol ) || [];
+		const checksForChild = this._customChildChecks.get( childDef.name ) || [];
+		const checksForContext = this._customChildChecks.get( ( context as SchemaContext ).last.name ) || [];
+
+		// Right now, it will check all custom check callbacks that match either children or context name.
+		// It will stop processing callbacks if any would return `false`.
+		let retValue;
+		for ( const nextCheck of [ ...generalChecks, ...checksForChild, ...checksForContext ] ) {
+			const checkResult = nextCheck( context as SchemaContext, childDef );
+
+			// Only apply newer return value if it's boolean.
+			retValue = typeof checkResult === 'boolean' ? checkResult : retValue;
+
+			if ( retValue === false ) {
+				// Break out of loop if any check returns false (forbidding is prioritized).
+				break;
+			}
+		}
+
+		if ( typeof retValue === 'boolean' ) {
+			return retValue;
+		}
+
 		return this._checkContextMatch( def as any, context as any );
 	}
 
@@ -413,6 +443,27 @@ export default class Schema extends ObservableMixin() {
 
 		if ( !def ) {
 			return false;
+		}
+
+		const generalChecks = this._customAttributeChecks.get( this._genericCheckSymbol ) || [];
+		const customChecksForContext = this._customAttributeChecks.get( ( context as SchemaContext ).last.name ) || [];
+
+		let retValue;
+
+		for ( const nextCheck of [ ...generalChecks, ...customChecksForContext ] ) {
+			const checkResult = nextCheck( context as SchemaContext, attributeName );
+
+			// Only apply newer return value if it's boolean.
+			retValue = typeof checkResult === 'boolean' ? checkResult : retValue;
+
+			if ( retValue === false ) {
+				// Break out of loop if any check returns false (forbidding is prioritized).
+				break;
+			}
+		}
+
+		if ( typeof retValue === 'boolean' ) {
+			return retValue;
 		}
 
 		return def.allowAttributes.includes( attributeName );
@@ -515,23 +566,15 @@ export default class Schema extends ObservableMixin() {
 	 * {@link module:engine/model/schema~SchemaCompiledItemDefinition} (child-to-check definition).
 	 * The callback may return `true/false` to override `checkChild()`'s return value. If it does not return
 	 * a boolean value, the default algorithm (or other callbacks) will define `checkChild()`'s return value.
+	 * @param forNode Optional name of the node to run the callback for.
+	 * 	If no node is specified, the callback will run for each `checkChild` call.
 	 */
-	public addChildCheck( callback: SchemaChildCheckCallback ): void {
-		this.on<SchemaCheckChildEvent>( 'checkChild', ( evt, [ ctx, childDef ] ) => {
-			// checkChild() was called with a non-registered child.
-			// In 99% cases such check should return false, so not to overcomplicate all callbacks
-			// don't even execute them.
-			if ( !childDef ) {
-				return;
-			}
+	public addChildCheck( callback: SchemaChildCheckCallback, forNode?: string ): void {
+		const nodeKey = forNode ?? this._genericCheckSymbol;
 
-			const retValue = callback( ctx, childDef );
-
-			if ( typeof retValue == 'boolean' ) {
-				evt.stop();
-				evt.return = retValue;
-			}
-		}, { priority: 'high' } );
+		const checksForNode = this._customChildChecks.get( nodeKey ) || [];
+		checksForNode.push( callback );
+		this._customChildChecks.set( nodeKey, checksForNode );
 	}
 
 	/**
@@ -576,16 +619,15 @@ export default class Schema extends ObservableMixin() {
 	 * {@link module:engine/model/schema~SchemaContext} (context) instance and attribute name.
 	 * The callback may return `true/false` to override `checkAttribute()`'s return value. If it does not return
 	 * a boolean value, the default algorithm (or other callbacks) will define `checkAttribute()`'s return value.
+	 * @param forNode Optional name of the node to run the callback for.
+	 * 	If no node is specified, the callback will run for each `checkAttribute` call.
 	 */
-	public addAttributeCheck( callback: SchemaAttributeCheckCallback ): void {
-		this.on<SchemaCheckAttributeEvent>( 'checkAttribute', ( evt, [ ctx, attributeName ] ) => {
-			const retValue = callback( ctx, attributeName );
+	public addAttributeCheck( callback: SchemaAttributeCheckCallback, forNode?: string ): void {
+		const nodeKey = forNode ?? this._genericCheckSymbol;
 
-			if ( typeof retValue == 'boolean' ) {
-				evt.stop();
-				evt.return = retValue;
-			}
-		}, { priority: 'high' } );
+		const attributeChecksForNode = this._customAttributeChecks.get( nodeKey ) || [];
+		attributeChecksForNode.push( callback );
+		this._customAttributeChecks.set( nodeKey, attributeChecksForNode );
 	}
 
 	/**

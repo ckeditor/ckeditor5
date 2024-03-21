@@ -68,11 +68,11 @@ export default class ImageInlineEditing extends Plugin {
 		// Disallow inline images in captions (for now). This is the best spot to do that because
 		// independent packages can introduce captions (ImageCaption, TableCaption, etc.) so better this
 		// be future-proof.
-		schema.addChildCheck( ( context, childDefinition ) => {
-			if ( context.endsWith( 'caption' ) && childDefinition.name === 'imageInline' ) {
+		schema.addChildCheck( context => {
+			if ( context.endsWith( 'caption' ) ) {
 				return false;
 			}
-		} );
+		}, 'imageInline' );
 
 		this._setupConversion();
 
