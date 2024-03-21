@@ -9,7 +9,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
 import Image from '../../src/image.js';
-import FileDialogButtonView from '@ckeditor/ckeditor5-upload/src/ui/filedialogbuttonview.js';
+import FileDialogButtonView from '@ckeditor/ckeditor5-ui/src/button/filedialogbuttonview.js';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository.js';
 import ImageUploadUI from '../../src/imageupload/imageuploadui.js';
 import ImageUploadEditing from '../../src/imageupload/imageuploadediting.js';

@@ -424,6 +424,12 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 					'menuBar:exportPdf',
 					'menuBar:exportWord'
 				]
+			},
+			{
+				groupId: 'import',
+				items: [
+					'menuBar:importWord'
+				]
 			}
 		]
 	},
@@ -502,6 +508,7 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 				groupId: 'insert',
 				items: [
 					'menuBar:ckfinder',
+					'menuBar:imageUpload',
 					'menuBar:blockQuote',
 					'menuBar:link',
 					'menuBar:comment',
