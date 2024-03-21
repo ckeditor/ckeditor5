@@ -284,7 +284,7 @@ export interface ListIteratorValue {
 }
 
 /**
- * TODO
+ * Document list blocks iterator options.
  */
 export type ListWalkerOptions = {
 	direction?: 'forward' | 'backward';

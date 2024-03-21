@@ -130,6 +130,7 @@ export function getNestedListBlocks( listItem: Element ): Array<ListElement> {
  *
  * @internal
  * @param listItem Starting list item element.
+ * @param options Additional list walker options to modify the range of returned list items.
  */
 export function getListItems( listItem: Element, options?: ListWalkerOptions ): Array<ListElement> {
 	const backwardBlocks = new ListWalker( listItem, {

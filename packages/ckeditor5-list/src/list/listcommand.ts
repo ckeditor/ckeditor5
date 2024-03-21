@@ -36,7 +36,6 @@ export default class ListCommand extends Command {
 
 	/**
 	 * A flag indicating whether the command is active, which means that the selection starts in a list of the same type.
-	 * TODO: update description
 	 *
 	 * @observable
 	 * @readonly
@@ -44,7 +43,10 @@ export default class ListCommand extends Command {
 	public declare value: boolean;
 
 	/**
-	 * TODO
+	 * List Walker options that change the range of the list items to be changed when the selection is collapsed within a list item.
+	 *
+	 * In a multi-level list, when the selection is collapsed within a list item, instead of changing only the list items of the same list
+	 * type and current indent level, the entire list structure is changed (all list items at all indent levels of any list type).
 	 */
 	private readonly _listWalkerOptions?: ListWalkerOptions;
 
@@ -52,7 +54,7 @@ export default class ListCommand extends Command {
 	 * Creates an instance of the command.
 	 *
 	 * @param editor The editor instance.
-	 * @param type List type that will be handled by this command. TODO: update description
+	 * @param type List type that will be handled by this command.
 	 */
 	constructor( editor: Editor, type: ListTypeOptions, options: { multiLevel?: boolean } = {} ) {
 		super( editor );
@@ -83,7 +85,7 @@ export default class ListCommand extends Command {
 	 * @param options.forceValue If set, it will force the command behavior. If `true`, the command will try to convert the
 	 * selected items and potentially the neighbor elements to the proper list items. If set to `false` it will convert selected elements
 	 * to paragraphs. If not set, the command will toggle selected elements to list items or paragraphs, depending on the selection.
-	 * @param options.additionalProperties TODO
+	 * @param options.additionalAttributes Additional attributes that are set for list items when the command is executed.
 	 */
 	public override execute( options: { forceValue?: boolean; additionalAttributes?: Record<string, unknown> } = {} ): void {
 		const model = this.editor.model;
