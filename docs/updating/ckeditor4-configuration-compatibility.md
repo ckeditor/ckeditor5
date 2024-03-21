@@ -668,7 +668,7 @@ Note: In CKEditor&nbsp;5, the number of options was reduced on purpose. Configur
 			</td>
 			<td>
 				<p>See {@link module:core/editor/editorconfig~EditorConfig#toolbar `config.toolbar`}. Refer to the {@link getting-started/setup/toolbar toolbar} feature guide to learn more about managing toolbars in CKEditor&nbsp;5.</p>
-				<p>See also {@link module:core/editor/editorconfig~EditorConfig#balloonToolbar `config.balloonToolbar`} to define the toolbar of a balloon editor and the {@link setup/blocktoolbar block toolbar} feature.</p>
+				<p>See also {@link module:core/editor/editorconfig~EditorConfig#balloonToolbar `config.balloonToolbar`} to define the toolbar of a balloon editor and the {@link getting-started/setup/toolbar#block-toolbar block toolbar} feature.</p>
 			</td>
 		</tr>
 		<tr>

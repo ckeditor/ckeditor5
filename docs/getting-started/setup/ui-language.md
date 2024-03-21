@@ -2,8 +2,8 @@
 category: setup
 menu-title: UI language
 meta-title: Setting the UI language | CKEditor 5 Documentation
-order: 40
-modified_at: 2024-02-22
+order: 30
+modified_at: 2024-03-21
 ---
 
 {@snippet features/build-ui-language-source}
