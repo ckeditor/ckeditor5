@@ -524,6 +524,7 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 					'menuBar:heading',
 					'menuBar:fontSize',
 					'menuBar:fontFamily',
+					'menuBar:highlight',
 					'menuBar:textPartLanguage'
 				]
 			},
