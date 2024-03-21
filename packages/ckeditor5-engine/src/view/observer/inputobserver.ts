@@ -35,6 +35,12 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 		// @if CK_DEBUG_TYPING // 	);
 		// @if CK_DEBUG_TYPING // }
 
+		// Handles reverse typing cases where the current document is not seen as the
+		// DOM `activeElement`, but the editable is somehow still in focus.
+		// In other words, the editable visually appears to be in focus, but it is not.
+		if ( !this.view.document.isFocused ) {
+			domEvent.currentTarget?.dispatchEvent( new FocusEvent( 'focus' ) );
+		}
 		const domTargetRanges = domEvent.getTargetRanges();
 		const view = this.view;
 		const viewDocument = view.document;
