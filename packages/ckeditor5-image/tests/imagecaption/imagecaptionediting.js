@@ -338,7 +338,7 @@ describe( 'ImageCaptionEditing', () => {
 						'<img src="img.png"></img>' +
 						'<figcaption aria-label="Caption for the image" ' +
 							'class="ck-editor__editable ck-editor__nested-editable highlight-yellow" ' +
-							'contenteditable="true" data-foo="yellow" data-placeholder="Enter image caption" role="textbox"' +
+							'contenteditable="true" data-foo="yellow" data-placeholder="Enter image caption" role="textbox" ' +
 							'tabindex="-1">' +
 							'Foo bar baz.' +
 						'</figcaption>' +
