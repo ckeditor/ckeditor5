@@ -4,7 +4,6 @@ category: setup
 meta-title: Editor toolbars | CKEditor 5 Documentation
 toc-limit: 4
 order: 20
-modified_at: 2024-03-21
 ---
 {@snippet features/build-toolbar-source}
 
