@@ -22,7 +22,9 @@ import {
 	type ViewDocumentMouseDownEvent,
 	type ViewElement,
 	type Schema,
-	type Position
+	type Position,
+	type ViewDocumentTabEvent,
+	type ViewDocumentKeyDownEvent
 } from '@ckeditor/ckeditor5-engine';
 
 import { Delete, type ViewDocumentDeleteEvent } from '@ckeditor/ckeditor5-typing';
@@ -31,7 +33,7 @@ import {
 	env,
 	getLocalizedArrowKeyCodeDirection,
 	type EventInfo,
-	type KeystrokeInfo
+	type KeystrokeInfo, keyCodes
 } from '@ckeditor/ckeditor5-utils';
 
 import WidgetTypeAround from './widgettypearound/widgettypearound.js';
@@ -195,6 +197,63 @@ export default class Widget extends Plugin {
 				evt.stop();
 			}
 		}, { context: '$root' } );
+
+		// Handle Tab key while a widget is selected.
+		this.listenTo<ViewDocumentTabEvent>( view.document, 'tab', ( evt, data ) => {
+			// This event could be triggered from inside the widget but we are interested
+			// only when the widget is selected itself.
+			if ( evt.eventPhase != 'atTarget' ) {
+				return;
+			}
+
+			const selectedModelElement = editor.model.document.selection.getSelectedElement()!;
+			const selectedViewElement = editor.editing.mapper.toViewElement( selectedModelElement );
+
+			if ( !selectedViewElement ) {
+				return;
+			}
+
+			// TODO what about Shift+Tab?
+			for ( const item of view.createRangeIn( selectedViewElement ).getItems() ) {
+				if ( item.is( 'element' ) && item.getAttribute( 'contenteditable' ) == 'true' ) {
+					const modelElement = editor.editing.mapper.toModelElement( item );
+
+					if ( !modelElement ) {
+						continue;
+					}
+
+					editor.model.change( writer => {
+						writer.setSelection( modelElement, 0 );
+					} );
+
+					data.preventDefault();
+					evt.stop();
+					break;
+				}
+			}
+		}, { context: isWidget, priority: 'low' } );
+
+		// Handle Esc key while inside a nested editable.
+		this.listenTo<ViewDocumentKeyDownEvent>( viewDocument, 'keydown', ( evt, data ) => {
+			if ( data.keystroke != keyCodes.esc ) {
+				return;
+			}
+
+			const modelSelectionParent = editor.model.document.selection.getFirstPosition()!.parent as Element;
+			const viewSelectionParent = editor.editing.mapper.toViewElement( modelSelectionParent );
+
+			const viewElement = viewSelectionParent!.findAncestor( isWidget );
+			const modelElement = viewElement ? editor.editing.mapper.toModelElement( viewElement ) : null;
+
+			if ( modelElement ) {
+				editor.model.change( writer => {
+					writer.setSelection( modelElement, 'on' );
+				} );
+
+				data.preventDefault();
+				evt.stop();
+			}
+		}, { priority: 'low' } );
 
 		// Add the information about the keystrokes to the accessibility database.
 		editor.accessibility.addKeystrokeInfoGroup( {
