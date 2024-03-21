@@ -259,7 +259,9 @@ export default class ClipboardMarkersUtils extends Plugin {
 		fragment.markers.clear();
 
 		for ( const [ name, range ] of markers ) {
-			fragment.markers.set( this._getUniqueMarkerName( name ), range );
+			const newName = this._canPerformMarkerClipboardAction( name, null ) ? this._getUniqueMarkerName( name ) : name;
+
+			fragment.markers.set( newName, range );
 		}
 	}
 

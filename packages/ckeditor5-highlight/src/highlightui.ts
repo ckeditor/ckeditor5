@@ -9,16 +9,17 @@
 
 import { Plugin, icons } from 'ckeditor5/src/core.js';
 import {
-	ButtonView,
-	SplitButtonView,
-	ToolbarSeparatorView,
-	createDropdown,
 	addToolbarToDropdown,
-	type DropdownView,
+	createDropdown,
+	ButtonView,
+	ListSeparatorView,
 	MenuBarMenuView,
 	MenuBarMenuListView,
 	MenuBarMenuListItemView,
-	MenuBarMenuListItemButtonView
+	MenuBarMenuListItemButtonView,
+	SplitButtonView,
+	ToolbarSeparatorView,
+	type DropdownView
 } from 'ckeditor5/src/ui.js';
 
 import markerIcon from './../theme/icons/marker.svg';
@@ -274,6 +275,7 @@ export default class HighlightUI extends Plugin {
 				label: t( 'Highlight' ),
 				icon: getIconForType( 'marker' )
 			} );
+			menuView.buttonView.iconView.fillColor = 'transparent';
 
 			const listView = new MenuBarMenuListView( locale );
 
@@ -286,16 +288,10 @@ export default class HighlightUI extends Plugin {
 					icon: getIconForType( option.type )
 				} );
 
-				buttonView.iconView.fillColor = option.color;
-
-				buttonView.extendTemplate( {
-					attributes: {
-						'aria-checked': buttonView.bindTemplate.to( 'isOn' )
-					}
-				} );
-
 				buttonView.delegate( 'execute' ).to( menuView );
 				buttonView.bind( 'isOn' ).to( command, 'value', value => value === option.model );
+				buttonView.bind( 'ariaChecked' ).to( buttonView, 'isOn' );
+				buttonView.iconView.bind( 'fillColor' ).to( buttonView, 'isOn', value => value ? 'transparent' : option.color );
 
 				buttonView.on( 'execute', () => {
 					editor.execute( 'highlight', { value: option.model } );
@@ -308,6 +304,7 @@ export default class HighlightUI extends Plugin {
 			}
 
 			// Add remove highlight button
+			listView.items.add( new ListSeparatorView( locale ) );
 			const listItemView = new MenuBarMenuListItemView( locale, menuView );
 			const buttonView = new MenuBarMenuListItemButtonView( locale );
 

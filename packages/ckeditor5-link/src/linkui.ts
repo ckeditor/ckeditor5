@@ -20,6 +20,7 @@ import {
 	ContextualBalloon,
 	clickOutsideHandler,
 	CssTransitionDisablerMixin,
+	MenuBarMenuListItemButtonView,
 	type ViewWithCssTransitionDisabler
 } from 'ckeditor5/src/ui.js';
 import type { PositionOptions } from 'ckeditor5/src/utils.js';
@@ -239,27 +240,47 @@ export default class LinkUI extends Plugin {
 	private _createToolbarLinkButton(): void {
 		const editor = this.editor;
 		const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
-		const t = editor.t;
 
-		editor.ui.componentFactory.add( 'link', locale => {
-			const button = new ButtonView( locale );
+		editor.ui.componentFactory.add( 'link', () => {
+			const button = this._createButton( ButtonView );
 
-			button.isEnabled = true;
-			button.label = t( 'Link' );
-			button.icon = linkIcon;
-			button.keystroke = LINK_KEYSTROKE;
-			button.tooltip = true;
-			button.isToggleable = true;
+			button.set( {
+				tooltip: true,
+				isToggleable: true
+			} );
 
-			// Bind button to the command.
-			button.bind( 'isEnabled' ).to( linkCommand, 'isEnabled' );
 			button.bind( 'isOn' ).to( linkCommand, 'value', value => !!value );
-
-			// Show the panel on button click.
-			this.listenTo( button, 'execute', () => this._showUI( true ) );
 
 			return button;
 		} );
+
+		editor.ui.componentFactory.add( 'menuBar:link', () => {
+			return this._createButton( MenuBarMenuListItemButtonView );
+		} );
+	}
+
+	/**
+	 * Creates a button for link command to use either in toolbar or in menu bar.
+	 */
+	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
+		const editor = this.editor;
+		const locale = editor.locale;
+		const command = editor.commands.get( 'link' )!;
+		const view = new ButtonClass( editor.locale ) as InstanceType<T>;
+		const t = locale.t;
+
+		view.set( {
+			label: t( 'Link' ),
+			icon: linkIcon,
+			keystroke: LINK_KEYSTROKE
+		} );
+
+		view.bind( 'isEnabled' ).to( command, 'isEnabled' );
+
+		// Show the panel on button click.
+		this.listenTo( view, 'execute', () => this._showUI( true ) );
+
+		return view;
 	}
 
 	/**
