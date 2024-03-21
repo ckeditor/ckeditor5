@@ -39,6 +39,7 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 		// DOM `activeElement`, but the editable is somehow still in focus.
 		// In other words, the editable visually appears to be in focus, but it is not.
 		if ( !this.view.document.isFocused ) {
+			// The current target is assumed to be the editable
 			domEvent.currentTarget?.dispatchEvent( new FocusEvent( 'focus' ) );
 		}
 		const domTargetRanges = domEvent.getTargetRanges();
