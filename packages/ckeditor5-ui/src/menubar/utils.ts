@@ -521,8 +521,9 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 			{
 				groupId: 'heading',
 				items: [
-					'menuBar:alignment',
+					'menuBar:caseChange',
 					'menuBar:heading',
+					'menuBar:alignment',
 					'menuBar:fontSize',
 					'menuBar:fontFamily',
 					'menuBar:highlight',
