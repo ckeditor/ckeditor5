@@ -93,9 +93,9 @@ export default class RestrictedEditingModeUI extends Plugin {
 	}
 
 	/**
-	 * Creates a button for restricted editing to use in menu bar.
+	 * Creates a button for restricted editing command to use in menu bar.
 	 */
-	private _createMenuBarButton( label, commandName, keystroke ): MenuBarMenuListItemButtonView {
+	private _createMenuBarButton( label: string, commandName: string, keystroke: string ): MenuBarMenuListItemButtonView {
 		const editor = this.editor;
 		const command = editor.commands.get( commandName ) as Command;
 		const view = new MenuBarMenuListItemButtonView( editor.locale );
@@ -129,7 +129,7 @@ export default class RestrictedEditingModeUI extends Plugin {
 	private _getButtonDefinition( commandName: string, label: string, keystroke: string ): ListDropdownItemDefinition {
 		const editor = this.editor;
 		const command: Command = editor.commands.get( commandName )!;
-		const definition = {
+		const definition: ListDropdownItemDefinition = {
 			type: 'button' as const,
 			model: new ViewModel( {
 				label,
