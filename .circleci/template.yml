@@ -128,6 +128,10 @@ jobs:
           when: always
           name: Execute Stylelint
           command: yarn run stylelint
+      - run:
+          when: always
+          name: Checks if all available packages of "ckeditor5" and "ckeditor5-premium-features" are on the list in "packages-lists.json" file
+          command: yarn run check-packages-lists
 
   cke5_coverage:
     machine: true
