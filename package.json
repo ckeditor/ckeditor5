@@ -87,7 +87,7 @@
   },
   "devDependencies": {
     "@babel/parser": "^7.23.3",
-    "@ckeditor/ckeditor5-comments": "41.3.0-alpha.1",
+    "@ckeditor/ckeditor5-comments": "41.2.1",
     "@ckeditor/ckeditor5-dev-build-tools": "^39.7.0-alpha.1",
     "@ckeditor/ckeditor5-dev-bump-year": "^39.7.0-alpha.1",
     "@ckeditor/ckeditor5-dev-ci": "^39.7.0-alpha.1",

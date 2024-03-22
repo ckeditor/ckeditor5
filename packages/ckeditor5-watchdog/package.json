@@ -16,13 +16,13 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-core": "41.3.0-alpha.1",
-    "@ckeditor/ckeditor5-comments": "41.3.0-alpha.1",
+    "@ckeditor/ckeditor5-comments": "41.2.1",
     "@ckeditor/ckeditor5-dev-build-tools": "^39.7.0-alpha.1",
     "@ckeditor/ckeditor5-editor-classic": "41.3.0-alpha.1",
     "@ckeditor/ckeditor5-editor-multi-root": "41.3.0-alpha.1",
     "@ckeditor/ckeditor5-paragraph": "41.3.0-alpha.1",
     "@ckeditor/ckeditor5-utils": "41.3.0-alpha.1",
-    "@ckeditor/ckeditor5-track-changes": "41.3.0-alpha.1",
+    "@ckeditor/ckeditor5-track-changes": "41.2.1",
     "@ckeditor/ckeditor5-clipboard": "41.3.0-alpha.1",
     "ckeditor5": "41.3.0-alpha.1",
     "typescript": "5.0.4"
