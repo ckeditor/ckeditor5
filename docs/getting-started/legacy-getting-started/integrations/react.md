@@ -405,7 +405,7 @@ Integrating the rich text editor from source allows you to use the full power of
 
 This guide assumes that you are using the [Create React App CLI](https://github.com/facebook/create-react-app) as your boilerplate and it goes through adjusting it to fit CKEditor&nbsp;5 needs. If you use your custom webpack setup, please read more about {@link getting-started/advanced/integrating-from-source-webpack including CKEditor&nbsp;5 built from source}.
 
-The configuration needs to be ejected to make it possible to customize the webpack configuration. In order to be able to build CKEditor&nbsp;5 from source, you need to tell webpack how to handle CKEditor&nbsp;5's SVG and CSS files (by adding loaders configuration). Additionally, you need to exclude the CKEditor&nbsp;5 source from the existing loaders.
+The configuration needs to be ejected to make it possible to customize the webpack configuration. To build CKEditor&nbsp;5 from source, you need to tell webpack how to handle CKEditor&nbsp;5's SVG and CSS files (by adding loaders configuration). Additionally, you need to exclude the CKEditor&nbsp;5 source from the existing loaders.
 
 <info-box>
   You can see all the changes described below in this example project: [https://github.com/ckeditor/ckeditor5-react-example/](https://github.com/ckeditor/ckeditor5-react-example/).

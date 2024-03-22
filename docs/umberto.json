@@ -101,7 +101,6 @@
 		"builds/guides/integration/installing-plugins.html": "framework/plugins/installing-plugins.html",
 		"builds/guides/integration/saving-data.html": "installation/legacy-getting-started/getting-and-setting-data.html",
 		"installation/integrations/drupal.html": "installation/integrations/drupal-real-time-collaboration.html",
-		"builds/guides/license-and-legal.html": "support/license-and-legal.html",
 		"builds/guides/migrate.html": "updating/ckeditor4/migration-from-ckeditor-4.html",
 		"builds/guides/migration/migration-from-ckeditor-4.html": "updating/ckeditor4/migration-from-ckeditor-4.html",
 		"builds/guides/migration/migration-to-25.html": "updating/guides/update-to-25.html",
@@ -121,18 +120,18 @@
 		"builds/guides/predefined-builds/overview.html": "installation/legacy-getting-started/predefined-builds.html",
 		"builds/guides/predefined-builds/quick-start.html": "installation/legacy-getting-started/predefined-builds.html",
 		"builds/guides/quick-start.html": "installation/legacy-getting-started/quick-start.html",
-		"builds/guides/reporting-issues.html": "support/reporting-issues.html",
-		"builds/guides/support/browser-compatibility.html": "support/browser-compatibility.html",
 		"builds/guides/support/getting-support.html": "support/getting-support.html",
-		"builds/guides/support/license-and-legal.html": "support/license-and-legal.html",
-		"builds/guides/support/reporting-issues.html": "support/reporting-issues.html",
+		"builds/guides/reporting-issues.html": "support/index.html#reporting-issues",
+		"builds/guides/support/reporting-issues.html": "support/index.html#reporting-issues",
+		"support/reporting-issues.html": "support/index.html#reporting-issues",
 		"builds/guides/whats-new.html": "features/overview.html",
 		"builds/index.html": "installation/index.html",
 		"examples/builds/custom-build.html": "examples/builds-custom/full-featured-editor.html",
 		"examples/framework/inline-widget.html": "examples/framework/content-placeholder.html",
 		"examples/framework/multi-root-editor.html": "examples/builds/multi-root-editor.html",
 		"features/ai-assistant/ai-assistant-integration.html#aws-bedrock-integration": "features/ai-assistant/ai-assistant-integration.html#amazon-bedrock-integration",
-		"features/blocktoolbar.html": "getting-started/setup/toolbar/blocktoolbar.html",
+		"features/blocktoolbar.html": "getting-started/setup/toolbar.html#block-toolbar",
+		"features/toolbar/blocktoolbar.html": "getting-started/setup/toolbar.html#block-toolbar",
 		"features/ckbox.html": "features/file-management/ckbox.html",
 		"features/ckfinder.html": "features/file-management/ckfinder.html",
 		"features/collaboration/annotation-customization/annotations-custom-configuration.html": "features/collaboration/annotations/annotations-custom-configuration.html",
@@ -240,7 +239,6 @@
 		"framework/guides/support/browser-compatibility.html": "support/browser-compatibility.html",
 		"framework/guides/support/error-codes.html": "support/error-codes.html",
 		"framework/guides/support/getting-support.html": "support/getting-support.html",
-		"framework/guides/support/license-and-legal.html": "support/license-and-legal.html",
 		"framework/guides/support/reporting-issues.html": "support/reporting-issues.html",
 		"framework/guides/support/versioning-policy.html": "updating/versioning-policy.html",
 		"framework/guides/tutorials/data-from-external-source.html": "tutorials/widgets/data-from-external-source.html",
@@ -288,10 +286,13 @@
 		"installation/getting-started/configuration.html#adding-simple-standalone-features": "installation/legacy-getting-started/extending-features.html",
 		"support/getting-support.html": "support/index.html",
 		"support/versioning-policy.html": "updating/versioning-policy.html",
-		"support/license-and-legal.html": "support/licensing/license-and-legal.html",
-		"support/managing-ckeditor-logo.html": "support/licensing/managing-ckeditor-logo.html",
-		"support/faq.html": "framework/how-tos.html",
-		"examples/how-tos.html": "framework/how-tos.html",
+		"builds/guides/license-and-legal.html": "support/license-and-legal.html",
+		"builds/guides/support/license-and-legal.html": "support/license-and-legal.html",
+		"support/licensing/license-and-legal.html": "support/license-and-legal.html",
+		"support/managing-ckeditor-logo.html": "getting-started/setup/managing-ckeditor-logo.html",
+		"support/licensing/managing-ckeditor-logo.html": "getting-started/setup/managing-ckeditor-logo.html",
+		"support/licensing/license-key-and-activation.html": "getting-started/setup/license-key-and-activation.html",
+		"support/faq.html": "examples/how-tos.html",
 		"updating/changelog.html": "updating/guides/changelog.html",
 		"updating/migration-from-ckeditor-4.html": "updating/ckeditor4/migration-from-ckeditor-4.html",
 		"updating/migration-from-ckeditor-4.html#migration-from-ckeditor-4-faq": "updating/ckeditor4/ckeditor4-troubleshooting.html",
@@ -318,8 +319,8 @@
 		"installation/working-with-typescript.html": "getting-started/setup/working-with-typescript.html",
 		"installation/getting-started/configuration.html": "installation/getting-started/configuration.html",
 		"features/ui-language.html": "getting-started/setup/ui-language.html",
-		"features/toolbar/toolbar.html": "getting-started/setup/toolbar/toolbar.html",
-		"features/toolbar/blocktoolbar.html": "getting-started/setup/toolbar/blocktoolbar.html"
+		"features/toolbar/toolbar.html": "getting-started/setup/toolbar/toolbar.html"
+
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter",
@@ -383,15 +384,7 @@
 					"name": "Setup",
 					"id": "setup",
 					"slug": "setup",
-					"order": 40,
-					"categories": [
-						{
-							"name": "Toolbars",
-							"id": "features-toolbar",
-							"slug": "toolbar",
-							"order": 20
-						}
-					]
+					"order": 40
 				},
 				{
 					"name": "Legacy installation methods",
