@@ -18,42 +18,41 @@ The main difference between using a multi-root editor and using multiple separat
 
 Please note that setting and reading the editor data is different for multi-root editor.
 
-<details>
-<summary>Pass an object when setting the editor data</summary>
+Pass an object when setting the editor data
 
 Setting the data using `editor.setData()`:
+
 ```js
-	editor.setData( {
-		header: '<p>Content for header part.</p>',
-		content: '<p>Content for main part.</p>',
-		leftSide: '<p>Content for left-side box.</p>',
-		rightSide: '<p>Content for right-side box.</p>'
-	} );
+editor.setData( {
+	header: '<p>Content for header part.</p>',
+	content: '<p>Content for main part.</p>',
+	leftSide: '<p>Content for left-side box.</p>',
+	rightSide: '<p>Content for right-side box.</p>'
+} );
 ```
 
 Setting the data through `config.initialData`:
-```js
-	MultiRootEditor.create(
-		{
-			header: document.querySelector( '#header' ),
-			content: document.querySelector( '#content' ),
-			leftSide: document.querySelector( '#left-side' ),
-			rightSide: document.querySelector( '#right-side' )
-		},
-		{
-			initialData: {
-				header: '<p>Content for header part.</p>',
-				content: '<p>Content for main part.</p>',
-				leftSide: '<p>Content for left-side box.</p>',
-				rightSide: '<p>Content for right-side box.</p>'
-			}
-		}
-	);
-```
-</details>
 
-<details>
-<summary>Specify root name when obtaining the data</summary>
+```js
+MultiRootEditor.create(
+	{
+		header: document.querySelector( '#header' ),
+		content: document.querySelector( '#content' ),
+		leftSide: document.querySelector( '#left-side' ),
+		rightSide: document.querySelector( '#right-side' )
+	},
+	{
+		initialData: {
+			header: '<p>Content for header part.</p>',
+			content: '<p>Content for main part.</p>',
+			leftSide: '<p>Content for left-side box.</p>',
+			rightSide: '<p>Content for right-side box.</p>'
+		}
+	}
+);
+```
+
+Specify root name when obtaining the data
 
 ```js
 	editor.getData( { rootName: 'leftSide' } ); // -> '<p>Content for left-side box.</p>'
