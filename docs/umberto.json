@@ -82,7 +82,7 @@
 		"builds/guides/development/dll-builds-collaboration-features.html": "installation/advanced/alternative-setups/dll-builds-collaboration-features.html",
 		"builds/guides/development/installing-plugins.html": "framework/plugins/installing-plugins.html",
 		"builds/guides/development/plugins.html": "installation/plugins/plugins.html",
-		"builds/guides/faq.html": "tutorials/index.html",
+		"builds/guides/faq.html": "framework/tutorials/index.html",
 		"builds/guides/integration/advanced-setup.html": "installation/legacy-getting-started/quick-start-other.html",
 		"builds/guides/integration/advanced-setup.html#creating-super-builds": "installation/advanced/using-two-editors.html#creating-super-builds",
 		"builds/guides/integration/basic-api.html": "installation/legacy-getting-started/editor-lifecycle.html",
@@ -230,31 +230,27 @@
 		"framework/guides/plugins/package-generator.html": "framework/plugins/package-generator/using-package-generator.html",
 		"framework/guides/plugins/package-generator/javascript-package.html": "framework/plugins/package-generator/javascript-package.html",
 		"framework/guides/plugins/package-generator/typescript-package.html": "framework/plugins/package-generator/typescript-package.html",
-		"framework/guides/plugins/simple-plugin/abbreviation-plugin-level-1.html": "tutorials/abbreviation-plugin/abbreviation-plugin-level-1.html",
-		"framework/guides/plugins/simple-plugin/abbreviation-plugin-level-2.html": "tutorials/abbreviation-plugin/abbreviation-plugin-level-2.html",
-		"framework/guides/plugins/simple-plugin/abbreviation-plugin-level-3.html": "tutorials/abbreviation-plugin/abbreviation-plugin-level-3.html",
-		"framework/plugins/abbreviation-plugin/abbreviation-plugin-level-1.html": "tutorials/abbreviation-plugin/abbreviation-plugin-level-1.html",
-		"framework/plugins/abbreviation-plugin/abbreviation-plugin-level-2.html": "tutorials/abbreviation-plugin/abbreviation-plugin-level-2.html",
-		"framework/plugins/abbreviation-plugin/abbreviation-plugin-level-3.html": "tutorials/abbreviation-plugin/abbreviation-plugin-level-3.html",
+		"framework/guides/plugins/simple-plugin/abbreviation-plugin-level-1.html": "framework/tutorials/abbreviation-plugin/abbreviation-plugin-level-1.html",
+		"framework/guides/plugins/simple-plugin/abbreviation-plugin-level-2.html": "framework/tutorials/abbreviation-plugin/abbreviation-plugin-level-2.html",
+		"framework/guides/plugins/simple-plugin/abbreviation-plugin-level-3.html": "framework/tutorials/abbreviation-plugin/abbreviation-plugin-level-3.html",
+		"framework/plugins/abbreviation-plugin/abbreviation-plugin-level-1.html": "framework/tutorials/abbreviation-plugin/abbreviation-plugin-level-1.html",
+		"framework/plugins/abbreviation-plugin/abbreviation-plugin-level-2.html": "framework/tutorials/abbreviation-plugin/abbreviation-plugin-level-2.html",
+		"framework/plugins/abbreviation-plugin/abbreviation-plugin-level-3.html": "framework/tutorials/abbreviation-plugin/abbreviation-plugin-level-3.html",
 		"framework/guides/support/browser-compatibility.html": "support/browser-compatibility.html",
 		"framework/guides/support/error-codes.html": "support/error-codes.html",
 		"framework/guides/support/getting-support.html": "support/getting-support.html",
 		"framework/guides/support/reporting-issues.html": "support/reporting-issues.html",
 		"framework/guides/support/versioning-policy.html": "updating/versioning-policy.html",
-		"framework/guides/tutorials/data-from-external-source.html": "tutorials/widgets/data-from-external-source.html",
-		"framework/guides/tutorials/implementing-a-block-widget.html": "tutorials/widgets/implementing-a-block-widget.html",
-		"framework/guides/tutorials/implementing-an-inline-widget.html": "tutorials/widgets/implementing-an-inline-widget.html",
-		"framework/guides/tutorials/using-react-in-a-widget.html": "tutorials/widgets/using-react-in-a-widget.html",
-		"framework/tutorials/data-from-external-source.html": "tutorials/widgets/data-from-external-source.html",
-		"framework/tutorials/implementing-a-block-widget.html": "tutorials/widgets/implementing-a-block-widget.html",
-		"framework/tutorials/implementing-an-inline-widget.html": "tutorials/widgets/implementing-an-inline-widget.html",
-		"framework/tutorials/using-react-in-a-widget.html": "tutorials/widgets/using-react-in-a-widget.html",
+		"framework/guides/tutorials/data-from-external-source.html": "framework/tutorials/widgets/data-from-external-source.html",
+		"framework/guides/tutorials/implementing-a-block-widget.html": "framework/tutorials/widgets/implementing-a-block-widget.html",
+		"framework/guides/tutorials/implementing-an-inline-widget.html": "framework/tutorials/widgets/implementing-an-inline-widget.html",
+		"framework/guides/tutorials/using-react-in-a-widget.html": "framework/tutorials/widgets/using-react-in-a-widget.html",
 		"framework/guides/ui/document-editor.html": "framework/deep-dive/ui/document-editor.html",
 		"framework/guides/ui/external-ui.html": "framework/deep-dive/ui/external-ui.html",
 		"framework/guides/ui/theme-customization.html": "framework/deep-dive/ui/theme-customization.html",
 		"framework/guides/quick-start.html": "framework/quick-start.html",
-		"framework/plugins/creating-simple-plugin-timestamp.html": "tutorials/crash-course/plugins.html",
-		"framework/guides/plugins/creating-simple-plugin.html": "tutorials/crash-course/plugins.html",
+		"framework/plugins/creating-simple-plugin-timestamp.html": "framework/tutorials/crash-course/plugins.html",
+		"framework/guides/plugins/creating-simple-plugin.html": "framework/tutorials/crash-course/plugins.html",
 		"installation/advanced/advanced-setup.html": "installation/legacy-getting-started/quick-start-other.html",
 		"installation/advanced/alternative-setups/integrating-from-source.html": "installation/advanced/alternative-setups/integrating-from-source-webpack.html",
 		"installation/advanced/alternative-setups/predefined-builds.html": "installation/legacy-getting-started/predefined-builds.html",
@@ -605,6 +601,13 @@
 					"order": 100
 				},
 				{
+					"name": "Development tools",
+					"id": "development-tools",
+					"slug": "develpment-tools",
+					"folded": true,
+					"order": 200
+				},
+				{
 					"name": "Deep dive",
 					"id": "framework-deep-dive",
 					"slug": "deep-dive",
@@ -635,16 +638,10 @@
 					]
 				},
 				{
-					"name": "Development tools",
-					"id": "development-tools",
-					"slug": "develpment-tools",
-					"order": 200
-				},
-				{
 					"name": "Plugins",
 					"id": "plugins",
 					"slug": "plugins",
-					"order": 300,
+					"order": 400,
 					"categories": [
 						{
 							"name": "Package Generator",
@@ -656,36 +653,36 @@
 					]
 				},
 				{
+					"name": "Tutorials",
+					"id": "tutorials",
+					"slug": "tutorials",
+					"order": 400,
+					"categories": [
+						{
+							"name": "Crash course",
+							"id": "crash-course",
+							"slug": "crash-course",
+							"order": 10
+						},
+						{
+							"name": "Creating an advanced plugin",
+							"id": "abbreviation-plugin",
+							"slug": "abbreviation-plugin",
+							"order": 20
+						},
+						{
+							"name": "Using widgets",
+							"id": "widget-tutorials",
+							"slug": "widgets",
+							"order": 30
+						}
+					]
+				},
+				{
 					"name": "Contributing",
 					"id": "framework-contributing",
 					"slug": "contributing",
-					"order": 400
-				}
-			]
-		},
-		{
-			"name": "Tutorials",
-			"id": "tutorials",
-			"navigationIncludeIndex": true,
-			"slug": "tutorials",
-			"categories": [
-				{
-					"name": "Crash course",
-					"id": "crash-course",
-					"slug": "crash-course",
-					"order": 10
-				},
-				{
-					"name": "Creating an advanced plugin",
-					"id": "abbreviation-plugin",
-					"slug": "abbreviation-plugin",
-					"order": 20
-				},
-				{
-					"name": "Using widgets",
-					"id": "widget-tutorials",
-					"slug": "widgets",
-					"order": 30
+					"order": 500
 				}
 			]
 		},
