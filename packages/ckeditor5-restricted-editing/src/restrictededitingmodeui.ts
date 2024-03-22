@@ -12,9 +12,9 @@ import {
 	ViewModel,
 	createDropdown,
 	addListToDropdown,
+	MenuBarMenuListItemButtonView,
 	type ButtonExecuteEvent,
-	type ListDropdownItemDefinition,
-	MenuBarMenuListItemButtonView
+	type ListDropdownItemDefinition
 } from 'ckeditor5/src/ui.js';
 import { Collection } from 'ckeditor5/src/utils.js';
 
@@ -91,7 +91,7 @@ export default class RestrictedEditingModeUI extends Plugin {
 	 */
 	private _createMenuBarButton( label: string, commandName: string, keystroke: string ): MenuBarMenuListItemButtonView {
 		const editor = this.editor;
-		const command = editor.commands.get( commandName ) as Command;
+		const command = editor.commands.get( commandName )!;
 		const view = new MenuBarMenuListItemButtonView( editor.locale );
 
 		view.set( {

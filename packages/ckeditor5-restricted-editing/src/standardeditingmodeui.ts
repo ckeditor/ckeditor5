@@ -11,7 +11,6 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 
 import unlockIcon from '../theme/icons/contentunlock.svg';
-import type RestrictedEditingExceptionCommand from './restrictededitingexceptioncommand.js';
 
 /**
  * The standard editing mode UI feature.
@@ -54,7 +53,7 @@ export default class StandardEditingModeUI extends Plugin {
 	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
 		const editor = this.editor;
 		const locale = editor.locale;
-		const command: RestrictedEditingExceptionCommand = this.editor.commands.get( 'restrictedEditingException' );
+		const command = this.editor.commands.get( 'restrictedEditingException' )!;
 		const view = new ButtonClass( locale ) as InstanceType<T>;
 		const t = locale.t;
 
