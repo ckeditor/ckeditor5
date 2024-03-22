@@ -7,20 +7,14 @@
  * @module restricted-editing/restrictededitingmodeui
  */
 
-import {
-	Plugin,
-	type Command, icons
-} from 'ckeditor5/src/core.js';
+import { Plugin, type Command } from 'ckeditor5/src/core.js';
 import {
 	ViewModel,
 	createDropdown,
 	addListToDropdown,
 	type ButtonExecuteEvent,
 	type ListDropdownItemDefinition,
-	MenuBarMenuListItemButtonView,
-	MenuBarMenuListView,
-	MenuBarMenuListItemView,
-	MenuBarMenuView
+	MenuBarMenuListItemButtonView
 } from 'ckeditor5/src/ui.js';
 import { Collection } from 'ckeditor5/src/utils.js';
 
