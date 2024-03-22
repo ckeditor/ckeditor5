@@ -14,7 +14,11 @@ import { FontBackgroundColor, FontSize, FontColor, FontFamily } from '@ckeditor/
 import { PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
-import ClassicEditor from '../build-classic.js';
+import { BlockToolbar } from '@ckeditor/ckeditor5-ui';
+import { HeadingButtonsUI } from '@ckeditor/ckeditor5-heading';
+import { ParagraphButtonUI } from '@ckeditor/ckeditor5-paragraph';
+import { LinkImage } from '@ckeditor/ckeditor5-link';
+import ClassicEditor from '../../build-classic.js';
 
 ClassicEditor.builtinPlugins.push( Alignment );
 ClassicEditor.builtinPlugins.push( Strikethrough );
@@ -38,5 +42,9 @@ ClassicEditor.builtinPlugins.push( Code );
 ClassicEditor.builtinPlugins.push( TodoList );
 ClassicEditor.builtinPlugins.push( CKBox );
 ClassicEditor.builtinPlugins.push( CKBoxImageEdit );
+ClassicEditor.builtinPlugins.push( BlockToolbar );
+ClassicEditor.builtinPlugins.push( HeadingButtonsUI );
+ClassicEditor.builtinPlugins.push( ParagraphButtonUI );
+ClassicEditor.builtinPlugins.push( LinkImage );
 
 window.ClassicEditor = ClassicEditor;

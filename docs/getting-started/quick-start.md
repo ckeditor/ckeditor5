@@ -59,7 +59,7 @@ All premium features are available as a separate package. You can install it the
 npm install ckeditor5-premium-features
 ```
 
-Importing and registering these plugins is also analogous to the open-source ones. However, to use premium features, you need to activate them with a proper license key. Refer to the {@link support/license-key-and-activation License key and activation} guide for details.
+Importing and registering these plugins is also analogous to the open-source ones. However, to use premium features, you need to activate them with a proper license key. Refer to the {@link getting-started/setup/license-key-and-activation License key and activation} guide for details.
 
 ```js
 import { ClassicEditor, Essentials } from 'ckeditor5';
@@ -81,7 +81,7 @@ CDN is an alternative method of running CKEditor 5. You can start using it in ju
 
 ### Obtain a license key
 
-To activate CKEditor&nbsp;5 premium features, you will need a commercial license. If you wish to purchase a commercial CKEditor&nbsp;5 license or a license to one of the premium features, [contact us](https://ckeditor.com/contact/?sales=true#contact-form) to receive an offer tailored to your needs. To obtain an activation key, please follow the {@link support/license-key-and-activation License key and activation} guide.
+To activate CKEditor&nbsp;5 premium features, you will need a commercial license. If you wish to purchase a commercial CKEditor&nbsp;5 license or a license to one of the premium features, [contact us](https://ckeditor.com/contact/?sales=true#contact-form) to receive an offer tailored to your needs. To obtain an activation key, please follow the {@link getting-started/setup/license-key-and-activation License key and activation} guide.
 
 <!-- Not sure we should duplicate this in QS: TODO: Describe the steps to obtain a license key, attaching some screenshots. -->
 
