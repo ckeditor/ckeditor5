@@ -5,7 +5,7 @@ meta-title: Editor toolbars | CKEditor 5 Documentation
 toc-limit: 4
 order: 20
 ---
-{@snippet features/build-toolbar-source}
+{@snippet installation/setup/build-toolbar-source}
 
 # Editor toolbars
 
@@ -17,7 +17,7 @@ The toolbar is the most basic user interface element of CKEditor&nbsp;5 that giv
 
 Below is a sample toolbar with a basic set of features. Toolbar items can be easily added or removed. Read on to learn how to do that.
 
-{@snippet features/toolbar-basic}
+{@snippet installation/setup/toolbar-basic}
 
 <info-box info>
 	For clarity, all demos in this guide present a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
@@ -49,7 +49,7 @@ You can use `'|'` to create a separator between groups of toolbar items. This wo
 
 Below you can find an example of a simple toolbar with button grouping. The group separators (`'|'`) set in the configuration help organize the toolbar.
 
-{@snippet features/toolbar-separator}
+{@snippet installation/setup/toolbar-separator}
 
 ### Extended toolbar configuration format
 
@@ -93,7 +93,7 @@ toolbar: {
 
 The demo below presents the "regular" toolbar look with `shouldNotGroupWhenFull` set to `false`. If there are more toolbar items than can fit in the toolbar in the current display width, some items get hidden. You can access them by clicking the show more items button {@icon @ckeditor/ckeditor5-core/theme/icons/three-vertical-dots.svg Show more items}.
 
-{@snippet features/toolbar-grouping}
+{@snippet installation/setup/toolbar-grouping}
 
 ### Multiline (wrapping) toolbar
 
@@ -130,7 +130,7 @@ toolbar: {
 
 See how it works in practice. Play with the browser window width to see how the buttons behave when the toolbar gets wrapped into multiple lines.
 
-{@snippet features/toolbar-wrapping}
+{@snippet installation/setup/toolbar-wrapping}
 
 #### Explicit wrapping breakpoint
 
@@ -152,7 +152,7 @@ toolbar: {
 }
 ```
 
-{@snippet features/toolbar-breakpoint}
+{@snippet installation/setup/toolbar-breakpoint}
 
 ### Grouping toolbar items in dropdowns (nested toolbars)
 
@@ -172,7 +172,7 @@ toolbar: [
 
 It will create a "Basic styles" dropdown with a three vertical dots icon {@icon @ckeditor/ckeditor5-core/theme/icons/three-vertical-dots.svg Three vertical dots} containing the additional basic text styles buttons set. You can test it in the demo below along with a few more toolbar dropdowns.
 
-{@snippet features/toolbar-nested-simple}
+{@snippet installation/setup/toolbar-nested-simple}
 
 #### Customization
 
@@ -194,7 +194,7 @@ You can control the way the UI element is displayed. For instance, to hide the i
 
 **Note**: The label will also automatically show up if the `icon` is `false` ([learn more](#changing-the-icon)).
 
-{@snippet features/toolbar-nested-label}
+{@snippet installation/setup/toolbar-nested-label}
 
 #### Changing the icon
 
@@ -256,7 +256,7 @@ toolbar: [
 
 And here is the effect:
 
-{@snippet features/toolbar-nested-icon}
+{@snippet installation/setup/toolbar-nested-icon}
 
 #### Customizing the tooltip
 
@@ -274,7 +274,7 @@ toolbar: [
 ]
 ```
 
-{@snippet features/toolbar-nested-tooltip}
+{@snippet installation/setup/toolbar-nested-tooltip}
 
 #### Listing available items
 
@@ -298,7 +298,7 @@ The block toolbar provides an additional configurable toolbar on the left-hand s
 	In the editor below, move the caret around the content. You will see that the block toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/drag-indicator.svg drag indicator}  is following your selection. Click the button to show the toolbar.
 </info-box>
 
-{@snippet features/blocktoolbar}
+{@snippet installation/setup/blocktoolbar}
 
 <info-box info>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.

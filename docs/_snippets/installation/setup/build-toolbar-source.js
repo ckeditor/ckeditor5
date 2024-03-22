@@ -18,7 +18,7 @@ import { BlockToolbar } from '@ckeditor/ckeditor5-ui';
 import { HeadingButtonsUI } from '@ckeditor/ckeditor5-heading';
 import { ParagraphButtonUI } from '@ckeditor/ckeditor5-paragraph';
 import { LinkImage } from '@ckeditor/ckeditor5-link';
-import ClassicEditor from '../build-classic.js';
+import ClassicEditor from '../../build-classic.js';
 
 ClassicEditor.builtinPlugins.push( Alignment );
 ClassicEditor.builtinPlugins.push( Strikethrough );
