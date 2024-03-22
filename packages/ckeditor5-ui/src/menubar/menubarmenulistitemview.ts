@@ -11,6 +11,8 @@ import type { Locale } from '@ckeditor/ckeditor5-utils';
 import ListItemView from '../list/listitemview.js';
 import type MenuBarMenuView from './menubarmenuview.js';
 
+import '../../theme/components/menubar/menubarmenulistitem.css';
+
 /**
  * A menu bar list item view, a child of {@link module:ui/menubar/menubarmenulistview~MenuBarMenuListView}.
  *

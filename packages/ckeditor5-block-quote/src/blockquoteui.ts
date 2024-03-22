@@ -48,9 +48,7 @@ export default class BlockQuoteUI extends Plugin {
 			return buttonView;
 		} );
 
-		editor.ui.componentFactory.add( 'menuBar:blockQuote', () => {
-			return this._createButton( MenuBarMenuListItemButtonView );
-		} );
+		editor.ui.componentFactory.add( 'menuBar:blockQuote', () => this._createButton( MenuBarMenuListItemButtonView ) );
 	}
 
 	/**

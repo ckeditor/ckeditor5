@@ -3,16 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-:root {
-	--ck-menu-bar-menu-item-min-width: 10em;
-}
-
 .ck.ck-menu-bar__menu .ck-button.ck-menu-bar__menu__item__button {
 	border-radius: 0;
-
-	& > .ck-button__label {
-		min-width: var(--ck-menu-bar-menu-item-min-width);
-	}
 
 	& > .ck-spinner-container,
 	& > .ck-spinner-container .ck-spinner {

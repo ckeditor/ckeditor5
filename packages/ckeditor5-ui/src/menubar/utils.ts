@@ -424,6 +424,12 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 					'menuBar:exportPdf',
 					'menuBar:exportWord'
 				]
+			},
+			{
+				groupId: 'import',
+				items: [
+					'menuBar:importWord'
+				]
 			}
 		]
 	},
@@ -467,6 +473,30 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 				items: [
 					'menuBar:showBlocks'
 				]
+			},
+			{
+				groupId: 'standardEditingMode',
+				items: [
+					'menuBar:restrictedEditingException'
+				]
+			},
+			{
+				groupId: 'restrictedEditing',
+				items: [
+					{
+						menuId: 'restrictedEditing',
+						label: 'Restricted editing',
+						groups: [
+							{
+								groupId: 'restrictedEditingMode',
+								items: [
+									'menuBar:restrictedEditingPrevious',
+									'menuBar:restrictedEditingNext'
+								]
+							}
+						]
+					}
+				]
 			}
 		]
 	},
@@ -478,6 +508,8 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 				groupId: 'insert',
 				items: [
 					'menuBar:insertTemplate',
+					'menuBar:ckfinder',
+					'menuBar:imageUpload',
 					'menuBar:blockQuote',
 					'menuBar:link',
 					'menuBar:comment',
@@ -522,7 +554,9 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 			{
 				groupId: 'heading',
 				items: [
+					'menuBar:caseChange',
 					'menuBar:heading',
+					'menuBar:alignment',
 					'menuBar:fontSize',
 					'menuBar:fontFamily',
 					'menuBar:highlight',
@@ -556,9 +590,16 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 		label: 'Tools',
 		groups: [
 			{
+				groupId: 'aiTools',
+				items: [
+					'menuBar:aiAssistant',
+					'menuBar:trackChanges'
+				]
+			},
+			{
 				groupId: 'tools',
 				items: [
-					'menuBar:aiAssistant'
+					'menuBar:commentsArchive'
 				]
 			}
 		]
