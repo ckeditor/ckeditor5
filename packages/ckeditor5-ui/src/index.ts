@@ -22,6 +22,7 @@ export type { default as ButtonLabel } from './button/buttonlabel.js';
 export { default as ButtonView } from './button/buttonview.js';
 export { default as ButtonLabelView } from './button/buttonlabelview.js';
 export { default as SwitchButtonView } from './button/switchbuttonview.js';
+export { default as FileDialogButtonView } from './button/filedialogbuttonview.js';
 
 export { default as CollapsibleView } from './collapsible/collapsibleview.js';
 
@@ -117,6 +118,7 @@ export { default as MenuBarMenuView } from './menubar/menubarmenuview.js';
 export { default as MenuBarMenuListView } from './menubar/menubarmenulistview.js';
 export { default as MenuBarMenuListItemView } from './menubar/menubarmenulistitemview.js';
 export { default as MenuBarMenuListItemButtonView } from './menubar/menubarmenulistitembuttonview.js';
+export { default as MenuBarMenuListItemFileDialogButtonView } from './menubar/menubarmenulistitemfiledialogbuttonview.js';
 export { normalizeMenuBarConfig, DefaultMenuBarItems } from './menubar/utils.js';
 
 import './augmentation.js';

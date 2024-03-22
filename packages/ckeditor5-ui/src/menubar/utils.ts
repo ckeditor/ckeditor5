@@ -424,6 +424,12 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 					'menuBar:exportPdf',
 					'menuBar:exportWord'
 				]
+			},
+			{
+				groupId: 'import',
+				items: [
+					'menuBar:importWord'
+				]
 			}
 		]
 	},
@@ -467,6 +473,30 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 				items: [
 					'menuBar:showBlocks'
 				]
+			},
+			{
+				groupId: 'standardEditingMode',
+				items: [
+					'menuBar:restrictedEditingException'
+				]
+			},
+			{
+				groupId: 'restrictedEditing',
+				items: [
+					{
+						menuId: 'restrictedEditing',
+						label: 'Restricted editing',
+						groups: [
+							{
+								groupId: 'restrictedEditingMode',
+								items: [
+									'menuBar:restrictedEditingPrevious',
+									'menuBar:restrictedEditingNext'
+								]
+							}
+						]
+					}
+				]
 			}
 		]
 	},
@@ -478,6 +508,7 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 				groupId: 'insert',
 				items: [
 					'menuBar:ckfinder',
+					'menuBar:imageUpload',
 					'menuBar:blockQuote',
 					'menuBar:link',
 					'menuBar:comment',
@@ -560,7 +591,8 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 			{
 				groupId: 'aiTools',
 				items: [
-					'menuBar:aiAssistant'
+					'menuBar:aiAssistant',
+					'menuBar:trackChanges'
 				]
 			},
 			{
