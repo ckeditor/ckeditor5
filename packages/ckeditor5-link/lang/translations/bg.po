@@ -55,8 +55,8 @@ msgstr "Изтегляне"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for creating a link."
 msgid "Create link"
-msgstr ""
+msgstr "Създаване на линк"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving out of a link."
 msgid "Move out of a link"
-msgstr ""
+msgstr "Излизане от линк"

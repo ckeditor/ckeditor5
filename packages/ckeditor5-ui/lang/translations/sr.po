@@ -147,24 +147,24 @@ msgstr "Zatvori"
 
 msgctxt "Accessibility help dialog assistive technologies label telling users how to exit the dialog."
 msgid "Help Contents. To close this dialog press ESC."
-msgstr ""
+msgstr "Sadržaji za pomoć. Kako biste zatvorili ovaj dijalog pritisnite taster ESC."
 
 msgctxt "Accessibility help dialog text explaining what can be found in that dialog."
 msgid "Below, you can find a list of keyboard shortcuts that can be used in the editor."
-msgstr ""
+msgstr "Ispod možete pronaći listu prečica na tastaturi koje se mogu koristiti u uređivaču."
 
 msgctxt "Accessibility help dialog text displayed next to keystrokes that may require the Fn key on Mac."
 msgid "(may require <kbd>Fn</kbd>)"
-msgstr ""
+msgstr "(možda će biti neophodan <kbd>Fn</kbd>)"
 
 msgctxt "Accessibility help dialog title."
 msgid "Accessibility help"
-msgstr ""
+msgstr "Pomoć oko pristupačnosti"
 
 msgctxt "Assistive technologies label added to each editor editing area informing users about the possibility of opening the accessibility help dialog."
 msgid "Press %0 for help."
-msgstr ""
+msgstr "Pritisni %0 za pomoć."
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving focus out of an active dialog window."
 msgid "Move focus in and out of an active dialog window"
-msgstr ""
+msgstr "Pomeri fokus u i van aktivnog prozora dijaloga"

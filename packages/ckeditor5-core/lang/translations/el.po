@@ -79,40 +79,40 @@ msgstr "Εναλλαγής εμφάνισης λεζάντας"
 
 msgctxt "Accessibility help dialog category header text for keystrokes related to content creation."
 msgid "Content editing keystrokes"
-msgstr ""
+msgstr "Πλήκτρα επεξεργασίας περιεχομένου"
 
 msgctxt "Accessibility help dialog text further explaining the purpose of the \"Content editing keystrokes\" category."
 msgid "These keyboard shortcuts allow for quick access to content editing features."
-msgstr ""
+msgstr "Αυτές οι συντομεύσεις πληκτρολογίου επιτρέπουν τη γρήγορη πρόσβαση σε λειτουργίες επεξεργασίας περιεχομένου."
 
 msgctxt "Accessibility help dialog category header text for keystrokes related to navigation in the user interface."
 msgid "User interface and content navigation keystrokes"
-msgstr ""
+msgstr "Πλήκτρα για πλοήγηση  στο περιβάλλον εργασίας χρήστη και στο περιεχόμενο"
 
 msgctxt "Accessibility help dialog text further explaining the purpose of the \"User interface and content navigation keystrokes\" category."
 msgid "Use the following keystrokes for more efficient navigation in the CKEditor 5 user interface."
-msgstr ""
+msgstr "Χρησιμοποιήστε τα ακόλουθα πλήκτρα για πιο αποτελεσματική πλοήγηση στο περιβάλλον εργασίας χρήστη του CKEditor 5."
 
 msgctxt "Keystroke description for assistive technologies: keystroke for closing contextual balloons, dropdowns, and dialogs."
 msgid "Close contextual balloons, dropdowns, and dialogs"
-msgstr ""
+msgstr "Κλείσιμο παραθύρων σχολίων, αναπτυσσόμενων μενού και παραθύρων διαλόγου"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for opening the accessibility help dialog."
 msgid "Open the accessibility help dialog"
-msgstr ""
+msgstr "Άνοιγμα του παραθύρου διαλόγου βοήθειας προσβασιμότητας"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving between fields."
 msgid "Move focus between form fields (inputs, buttons, etc.)"
-msgstr ""
+msgstr "Μετακίνηση της εστίασης μεταξύ των πεδίων φόρμας (εισαγωγές, κουμπιά, κ.λπ.)"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the toolbar."
 msgid "Move focus to the toolbar, navigate between toolbars"
-msgstr ""
+msgstr "Μετακίνηση της εστίασης στη γραμμή εργαλείων, πλοήγηση μεταξύ των γραμμών εργαλείων"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the toolbar."
 msgid "Navigate through the toolbar"
-msgstr ""
+msgstr "Πλοήγηση στη γραμμή εργαλείων"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for executing currently focused button."
 msgid "Execute the currently focused button"
-msgstr ""
+msgstr "Εκτέλεση του τρέχοντος εστιασμένου κουμπιού"

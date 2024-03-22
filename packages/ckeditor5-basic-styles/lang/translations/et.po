@@ -47,20 +47,20 @@ msgstr "Ülaindeks"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for making text italic."
 msgid "Italic text"
-msgstr ""
+msgstr "Kaldkirjas tekst"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving selection out of an inline code style."
 msgid "Move out of an inline code style"
-msgstr ""
+msgstr "Välju reasisese koodi stiilist"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for making text bold."
 msgid "Bold text"
-msgstr ""
+msgstr "Paks tekst"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for making text underlined."
 msgid "Underline text"
-msgstr ""
+msgstr "Allakriipsutatud tekst"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for making text strikethrough."
 msgid "Strikethrough text"
-msgstr ""
+msgstr "Läbikriipsutatud tekst"

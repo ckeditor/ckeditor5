@@ -71,4 +71,4 @@ msgstr "Дополнительные параметры"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for opening the find and replace UI."
 msgid "Find in the document"
-msgstr ""
+msgstr "Найти в документе"

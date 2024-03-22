@@ -147,24 +147,24 @@ msgstr "Zamknij"
 
 msgctxt "Accessibility help dialog assistive technologies label telling users how to exit the dialog."
 msgid "Help Contents. To close this dialog press ESC."
-msgstr ""
+msgstr "Zawartość pomocy. Aby zamknąć to okno dialogowe, naciśnij klawisz ESC."
 
 msgctxt "Accessibility help dialog text explaining what can be found in that dialog."
 msgid "Below, you can find a list of keyboard shortcuts that can be used in the editor."
-msgstr ""
+msgstr "Poniżej znajdziesz listę skrótów klawiszowych, których można używać w edytorze."
 
 msgctxt "Accessibility help dialog text displayed next to keystrokes that may require the Fn key on Mac."
 msgid "(may require <kbd>Fn</kbd>)"
-msgstr ""
+msgstr "(może wymagać użycia klawisza <kbd>Fn</kbd>)"
 
 msgctxt "Accessibility help dialog title."
 msgid "Accessibility help"
-msgstr ""
+msgstr "Pomoc dotycząca dostępności"
 
 msgctxt "Assistive technologies label added to each editor editing area informing users about the possibility of opening the accessibility help dialog."
 msgid "Press %0 for help."
-msgstr ""
+msgstr "Naciśnij %0, aby uzyskać pomoc."
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving focus out of an active dialog window."
 msgid "Move focus in and out of an active dialog window"
-msgstr ""
+msgstr "Przenosi fokus do i z aktywnego okna dialogowego"

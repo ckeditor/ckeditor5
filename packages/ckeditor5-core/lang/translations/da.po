@@ -79,40 +79,40 @@ msgstr "Slå billedtekst til"
 
 msgctxt "Accessibility help dialog category header text for keystrokes related to content creation."
 msgid "Content editing keystrokes"
-msgstr ""
+msgstr "Tastaturtryk til redigering af indhold"
 
 msgctxt "Accessibility help dialog text further explaining the purpose of the \"Content editing keystrokes\" category."
 msgid "These keyboard shortcuts allow for quick access to content editing features."
-msgstr ""
+msgstr "Disse tastaturgenveje giver hurtigt adgang til funktioner til redigering af indhold."
 
 msgctxt "Accessibility help dialog category header text for keystrokes related to navigation in the user interface."
 msgid "User interface and content navigation keystrokes"
-msgstr ""
+msgstr "Tastatur tryk til brugerflade- og indholdsnavigering"
 
 msgctxt "Accessibility help dialog text further explaining the purpose of the \"User interface and content navigation keystrokes\" category."
 msgid "Use the following keystrokes for more efficient navigation in the CKEditor 5 user interface."
-msgstr ""
+msgstr "Brug følgende tastaturtryk for mere effektiv navigering i CKEditor 5 brugerfladen."
 
 msgctxt "Keystroke description for assistive technologies: keystroke for closing contextual balloons, dropdowns, and dialogs."
 msgid "Close contextual balloons, dropdowns, and dialogs"
-msgstr ""
+msgstr "Luk kontekstbetingede balloner, rullemenuer og dialoger"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for opening the accessibility help dialog."
 msgid "Open the accessibility help dialog"
-msgstr ""
+msgstr "Åbn hjælpedialogen om tilgængelighed"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving between fields."
 msgid "Move focus between form fields (inputs, buttons, etc.)"
-msgstr ""
+msgstr "Flyt fokus mellem formularfelter (input, knapper, osv.)"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the toolbar."
 msgid "Move focus to the toolbar, navigate between toolbars"
-msgstr ""
+msgstr "Flyt fokus til værktøjslinjen, naviger mellem værktøjslinjer"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the toolbar."
 msgid "Navigate through the toolbar"
-msgstr ""
+msgstr "Naviger gennem værktøjslinjen"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for executing currently focused button."
 msgid "Execute the currently focused button"
-msgstr ""
+msgstr "Brug den knap, der i øjeblikket er i fokus"

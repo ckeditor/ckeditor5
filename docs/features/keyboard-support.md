@@ -2,7 +2,7 @@
 category: features
 classes: keyboard-shortcuts
 meta-title: Keyboard support | CKEditor 5 Documentation
-modified_at: 2024-01-03
+modified_at: 2024-03-06
 ---
 
 # Keyboard support
@@ -223,7 +223,7 @@ Use the following keystrokes for more efficient navigation in the CKEditor&nbsp;
 
 ## Displaying keyboard shortcuts in the editor
 
-CKEditor&nbsp;5 offers a dedicated {@link module:ui/editorui/accessibilityhelp/accessibilityhelp~AccessibilityHelp Accessibility help} plugin that displays a list of all available keyboard shortcuts in a dialog. It can be opened by pressing <kbd>Alt</kbd> + <kbd>0</kbd> (on Windows) or <kbd>⌥0</kbd> (on macOS). Alternatively, you can use the toolbar button to open the dialog.
+CKEditor&nbsp;5 offers a dedicated {@link module:ui/editorui/accessibilityhelp/accessibilityhelp~AccessibilityHelp Accessibility help} plugin that displays a list of all available keyboard shortcuts in a dialog. It can be opened by pressing <kbd>Alt</kbd> + <kbd>0</kbd> (on Windows) or <kbd>Option</kbd> + <kbd>0</kbd> (on macOS). Alternatively, you can use the toolbar button to open the dialog.
 
 {@snippet features/keyboard-support}
 

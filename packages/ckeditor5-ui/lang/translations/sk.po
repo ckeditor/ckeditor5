@@ -147,24 +147,24 @@ msgstr "Zatvoriť"
 
 msgctxt "Accessibility help dialog assistive technologies label telling users how to exit the dialog."
 msgid "Help Contents. To close this dialog press ESC."
-msgstr ""
+msgstr "Obsah pomocníka. Toto dialógové okno zavriete klávesom Esc."
 
 msgctxt "Accessibility help dialog text explaining what can be found in that dialog."
 msgid "Below, you can find a list of keyboard shortcuts that can be used in the editor."
-msgstr ""
+msgstr "Nižšie nájdete zoznam klávesových skratiek, ktoré môžete používať v editore."
 
 msgctxt "Accessibility help dialog text displayed next to keystrokes that may require the Fn key on Mac."
 msgid "(may require <kbd>Fn</kbd>)"
-msgstr ""
+msgstr "(môže si vyžadovať stlačenie klávesu <kbd>Fn</kbd>)"
 
 msgctxt "Accessibility help dialog title."
 msgid "Accessibility help"
-msgstr ""
+msgstr "Pomoc so zjednodušením ovládania"
 
 msgctxt "Assistive technologies label added to each editor editing area informing users about the possibility of opening the accessibility help dialog."
 msgid "Press %0 for help."
-msgstr ""
+msgstr "Ak potrebujete pomoc, stlačte %0."
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving focus out of an active dialog window."
 msgid "Move focus in and out of an active dialog window"
-msgstr ""
+msgstr "Presunúť zameranie z/do aktívneho dialógového okna"

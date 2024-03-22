@@ -71,4 +71,4 @@ msgstr "एडवांस्ड विकल्प"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for opening the find and replace UI."
 msgid "Find in the document"
-msgstr ""
+msgstr "डॉक्युमेंट में खोजें"

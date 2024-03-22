@@ -79,40 +79,40 @@ msgstr "Activar el peu de foto"
 
 msgctxt "Accessibility help dialog category header text for keystrokes related to content creation."
 msgid "Content editing keystrokes"
-msgstr ""
+msgstr "Tecles edició de contingut"
 
 msgctxt "Accessibility help dialog text further explaining the purpose of the \"Content editing keystrokes\" category."
 msgid "These keyboard shortcuts allow for quick access to content editing features."
-msgstr ""
+msgstr "Aquestes dreceres del teclat permeten un accés ràpid a les accions d'edició de contingut."
 
 msgctxt "Accessibility help dialog category header text for keystrokes related to navigation in the user interface."
 msgid "User interface and content navigation keystrokes"
-msgstr ""
+msgstr "Tecles d'interfície de l'usuari i navegació del contingut"
 
 msgctxt "Accessibility help dialog text further explaining the purpose of the \"User interface and content navigation keystrokes\" category."
 msgid "Use the following keystrokes for more efficient navigation in the CKEditor 5 user interface."
-msgstr ""
+msgstr "Empreu les següents tecles per a una navegació més eficient en la interfície de l'usuari de CKEditor 5."
 
 msgctxt "Keystroke description for assistive technologies: keystroke for closing contextual balloons, dropdowns, and dialogs."
 msgid "Close contextual balloons, dropdowns, and dialogs"
-msgstr ""
+msgstr "Tanca finestres contextuals, desplegables i diàlegs"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for opening the accessibility help dialog."
 msgid "Open the accessibility help dialog"
-msgstr ""
+msgstr "Obre la finestra d'ajuda d'accessibilitat"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving between fields."
 msgid "Move focus between form fields (inputs, buttons, etc.)"
-msgstr ""
+msgstr "Desplaça el focus entre els camps d'un formulari (entrades, botons, etc.)"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the toolbar."
 msgid "Move focus to the toolbar, navigate between toolbars"
-msgstr ""
+msgstr "Desplaça el focus a la barra d'eines, navega entre barres d'eines"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the toolbar."
 msgid "Navigate through the toolbar"
-msgstr ""
+msgstr "Navega a través de la barra d'eines"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for executing currently focused button."
 msgid "Execute the currently focused button"
-msgstr ""
+msgstr "Executa el botó seleccionat"
