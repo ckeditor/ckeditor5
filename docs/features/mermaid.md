@@ -1,10 +1,7 @@
 ---
-category: experiments
-order: 20
-classes: main__content--no-toc
-toc: false
+category: features
 meta-title: Mermaid flowcharts and diagrams example | CKEditor 5 Documentation
-menu-title: Flowcharts and diagrams
+menu-title: Mermaid flowcharts and diagrams
 modified_at: 2023-06-14
 ---
 
@@ -12,15 +9,21 @@ modified_at: 2023-06-14
 
 You can create flowcharts and diagrams in CKEditor&nbsp;5 thanks to the experimental integration with the [Mermaid](https://mermaid.js.org/) library. Mermaid uses a Markdown-inspired syntax to create and dynamically modify flowcharts, Gantt diagrams, pie or quadrant charts, graphs, mindmaps, and more.
 
+<info-box warning>
+	This is an **experimental feature**, and as such it is not recommended for production use. For more information, comments, and feature requests, please refer to the [package repository on GitHub](https://github.com/ckeditor/ckeditor5-mermaid).
+</info-box>
+
+## Demo
+
 The example below lets you test creating diagrams and flowcharts right during the content creation &ndash; no more screenshots that need to be re-created and re-uploaded each time something needs a change! You can also check out a live implementation in [GitHub Writer](https://ckeditor.com/blog/github-writer-now-available-with-mermaid-support/).
 
-{@snippet examples/mermaid}
+{@snippet features/mermaid}
 
 ## Using Mermaid syntax
 
 Mermaid offers an extensive and flexible syntax allowing users to create a variety of diagrams, charts, and graphs. Find the complete syntax reference on [Mermaid.js](https://mermaid.js.org/intro/). You can also check out more examples online in [Mermaid Live Editor](https://mermaid.live/).
 
-<!-- Learn more about Mermaid syntax and usage in a [dedicated article](https://ckeditor.com/blog/basic-overview-of-creating-flowcharts-using-mermaid/) on our company blog. -->
+Learn more about Mermaid syntax and usage in a [dedicated article](https://ckeditor.com/blog/basic-overview-of-creating-flowcharts-using-mermaid/) on our company blog.
 
 ## Editor example configuration
 
