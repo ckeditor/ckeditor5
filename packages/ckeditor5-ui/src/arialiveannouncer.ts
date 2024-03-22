@@ -8,7 +8,7 @@
  */
 
 import type { Editor } from '@ckeditor/ckeditor5-core';
-import type { Locale } from '@ckeditor/ckeditor5-utils';
+import type { Locale, ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 import type ViewCollection from './viewcollection.js';
 import View from './view.js';
 
@@ -78,7 +78,7 @@ export default class AriaLiveAnnouncer {
 	 */
 	public announce(
 		regionName: string,
-		announcementText: string,
+		announcement: string,
 		attributes: AriaLiveAnnouncerPolitenessValue | AriaLiveAnnounceConfig = AriaLiveAnnouncerPoliteness.POLITE
 	): void {
 		const editor = this.editor;
@@ -95,7 +95,7 @@ export default class AriaLiveAnnouncer {
 			this.view.regionViews.add( regionView );
 		}
 
-		const { politeness, allowReadAgain }: AriaLiveAnnounceConfig = typeof attributes === 'string' ? {
+		const { politeness, allowReadAgain, isUnsafeHTML }: AriaLiveAnnounceConfig = typeof attributes === 'string' ? {
 			politeness: attributes
 		} : attributes;
 
@@ -110,14 +110,15 @@ export default class AriaLiveAnnouncer {
 		// will skip reading the label.
 		//
 		// Try to bypass this issue by toggling non readable character at the end of phrase.
-		if ( allowReadAgain && regionView.text === announcementText ) {
+		if ( allowReadAgain && regionView.content === announcement ) {
 			// eslint-disable-next-line no-irregular-whitespace
-			announcementText = `${ announcementText } `;
+			announcement = `${ announcement } `;
 		}
 
 		regionView.set( {
 			regionName,
-			text: announcementText,
+			isUnsafeHTML: !!isUnsafeHTML,
+			content: announcement,
 			politeness
 		} );
 	}
@@ -155,9 +156,14 @@ export class AriaLiveAnnouncerView extends View {
  */
 export class AriaLiveAnnouncerRegionView extends View {
 	/**
-	 * Current text of the region.
+	 * Current content of the region.
 	 */
-	declare public text: string;
+	declare public content: string;
+
+	/**
+	 * Indication that region has HTML content.
+	 */
+	declare public isUnsafeHTML: boolean;
 
 	/**
 	 * Current politeness level of the region.
@@ -175,7 +181,8 @@ export class AriaLiveAnnouncerRegionView extends View {
 		const bind = this.bindTemplate;
 
 		this.set( 'regionName', '' );
-		this.set( 'text', '' );
+		this.set( 'content', '' );
+		this.set( 'isUnsafeHTML', false );
 		this.set( 'politeness', AriaLiveAnnouncerPoliteness.POLITE );
 
 		this.setTemplate( {
@@ -184,10 +191,11 @@ export class AriaLiveAnnouncerRegionView extends View {
 				role: 'region',
 				'data-region': bind.to( 'regionName' ),
 				'aria-live': bind.to( 'politeness' )
-			},
-			children: [
-				{ text: bind.to( 'text' ) }
-			]
+			}
+		} );
+
+		this.on<ObservableChangeEvent<string>>( 'change:content', ( evt, name, content ) => {
+			this.element![ this.isUnsafeHTML ? 'innerHTML' : 'innerText' ] = content;
 		} );
 	}
 }
@@ -197,4 +205,5 @@ type AriaLiveAnnouncerPolitenessValue = typeof AriaLiveAnnouncerPoliteness[ keyo
 type AriaLiveAnnounceConfig = {
 	politeness: AriaLiveAnnouncerPolitenessValue;
 	allowReadAgain?: boolean;
+	isUnsafeHTML?: boolean;
 };

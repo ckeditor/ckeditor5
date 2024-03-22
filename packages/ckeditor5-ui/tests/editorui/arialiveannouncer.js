@@ -54,7 +54,7 @@ describe( 'AriaLiveAnnouncer', () => {
 
 			expect( firstRegion ).to.be.instanceOf( AriaLiveAnnouncerRegionView );
 			expect( firstRegion.regionName ).to.equal( 'foo' );
-			expect( firstRegion.text ).to.equal( 'bar' );
+			expect( firstRegion.content ).to.equal( 'bar' );
 			expect( firstRegion.politeness ).to.equal( 'polite' );
 			expect( firstRegion.element.parentNode ).to.equal( announcer.view.element );
 
@@ -74,7 +74,7 @@ describe( 'AriaLiveAnnouncer', () => {
 
 			expect( firstRegion ).to.be.instanceOf( AriaLiveAnnouncerRegionView );
 			expect( firstRegion.regionName ).to.equal( 'foo' );
-			expect( firstRegion.text ).to.equal( 'baz' );
+			expect( firstRegion.content ).to.equal( 'baz' );
 			expect( firstRegion.politeness ).to.equal( 'polite' );
 			expect( firstRegion.element.parentNode ).to.equal( announcer.view.element );
 
@@ -94,12 +94,12 @@ describe( 'AriaLiveAnnouncer', () => {
 			const lastRegion = announcer.view.regionViews.last;
 
 			expect( firstRegion.regionName ).to.equal( 'foo' );
-			expect( firstRegion.text ).to.equal( 'bar' );
+			expect( firstRegion.content ).to.equal( 'bar' );
 			expect( firstRegion.politeness ).to.equal( 'polite' );
 			expect( firstRegion.element.parentNode ).to.equal( announcer.view.element );
 
 			expect( lastRegion.regionName ).to.equal( 'baz' );
-			expect( lastRegion.text ).to.equal( 'qux' );
+			expect( lastRegion.content ).to.equal( 'qux' );
 			expect( lastRegion.politeness ).to.equal( 'polite' );
 			expect( lastRegion.element.parentNode ).to.equal( announcer.view.element );
 		} );
@@ -126,7 +126,18 @@ describe( 'AriaLiveAnnouncer', () => {
 
 			const firstRegion = announcer.view.regionViews.first;
 
-			expect( firstRegion.text ).to.equal( 'bar ' );
+			expect( firstRegion.content ).to.equal( 'bar ' );
+		} );
+
+		it( 'should be possible to read selected text with HTML tags', () => {
+			announcer.announce( 'foo', '<h1>Foo</h1>', {
+				politeness: 'polite',
+				isUnsafeHTML: true
+			} );
+
+			const firstRegion = announcer.view.regionViews.first;
+
+			expect( firstRegion.content ).to.equal( '<h1>Foo</h1>' );
 		} );
 	} );
 } );
