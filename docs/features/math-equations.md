@@ -55,10 +55,6 @@ If you visit a page using MathType with your mobile device, the handwriting inte
 
 ## Installation
 
-<info-box info>
-	The Math equations and chemical formulas feature is enabled by default in the {@link getting-started/legacy-getting-started/predefined-builds#superbuild superbuild} only.
-</info-box>
-
 <info-box>
 	This is an additionally payable feature. [Contact us](https://ckeditor.com/contact/?sales=true#contact-form) to receive an offer tailored to your needs.
 </info-box>
@@ -74,13 +70,11 @@ Then add it to your plugin list and the toolbar configuration:
 ```js
 import MathType from '@wiris/mathtype-ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ MathType, /* ... */ ],
-		toolbar: [ 'MathType', 'ChemType', /* ... */ ]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ MathType, /* ... */ ],
+	toolbar: [ 'MathType', 'ChemType', /* ... */ ]
+} )
+.then( /* ... */ );
 ```
 
 <info-box info>

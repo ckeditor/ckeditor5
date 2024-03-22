@@ -25,59 +25,24 @@ Mermaid offers an extensive and flexible syntax allowing users to create a varie
 
 Learn more about Mermaid syntax and usage in a [dedicated article](https://ckeditor.com/blog/basic-overview-of-creating-flowcharts-using-mermaid/) on our company blog.
 
-## Editor example configuration
+## Installation
 
-This example uses our own Mermaid plugin, [available on GitHub](https://github.com/ckeditor/ckeditor5-mermaid). You need to import it before CKEditor&nbsp;5 can use the Mermaid syntax. Look at the sample configuration to learn how to add the plugin and the toolbar button.
+<infobox>
+	Please note that this plugin is not imported from the main CKEditor&nbsp;5 file, but from its own package.
+</infobox>
 
-<details>
-<summary>Editor configuration script</summary>
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-
 import Mermaid from '@ckeditor/ckeditor5-mermaid/src/mermaid';
 
-ClassicEditor
-	.create( document.querySelector( '#mermaid' ), {
-		plugins: ClassicEditor.builtinPlugins.concat( [
-			Mermaid
-		] ),
-		toolbar: {
-			items: [
-				'undo', 'redo', '|', 'heading',
-				'|', 'bold', 'italic',
-				'|', 'link', 'insertImage', 'insertTable', 'blockQuote', 'mediaEmbed', 'mermaid',
-				'|', 'bulletedList', 'numberedList', 'todolist', 'outdent', 'indent'
-			]
-		},
-		ui: {
-			viewportOffset: {
-				top: window.getViewportTopOffsetConfig()
-			}
-		},
-	} )
-	.then( editor => {
-		window.editor = editor;
-	} )
-	.catch( err => {
-		console.error( err.stack );
-	} );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ MathType, /* ... */ ],
+	toolbar: [ 'MathType', 'ChemType', /* ... */ ]
+} )
+.then( /* ... */ );
 ```
 
-</details>
-
-<details>
-<summary>Editor content listing</summary>
-
-```html
-<div id="mermaid">
-
-	<p>Sample editor data</p>
-	<pre spellcheck="false"><code class="language-mermaid">
-		Sample Mermaid code goes here.
-	</code></pre>
-
-</div>
-```
-
-</details>
+<info-box info>
+	Read more about {@link framework/plugins/installing-plugins installing plugins}.
+</info-box>
