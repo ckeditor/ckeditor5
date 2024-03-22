@@ -16,6 +16,7 @@ import {
 import { type FocusableView } from '../focuscycler.js';
 import View from '../view.js';
 import { isObject } from 'lodash-es';
+import ListItemView from '../list/listitemview.js';
 import ListSeparatorView from '../list/listseparatorview.js';
 import type ViewCollection from '../viewcollection.js';
 import type ComponentFactory from '../componentfactory.js';
@@ -268,11 +269,7 @@ export default class MenuBarView extends View implements FocusableView {
 			return null;
 		}
 
-		if ( componentView instanceof MenuBarMenuView ) {
-			this.registerMenu( componentView, parentMenuView );
-		} else {
-			componentView.delegate( 'mouseenter' ).to( parentMenuView );
-		}
+		this._registerMenuTree( componentView, parentMenuView );
 
 		// Close the whole menu bar when a component is executed.
 		componentView.on( 'execute', () => {
@@ -280,6 +277,29 @@ export default class MenuBarView extends View implements FocusableView {
 		} );
 
 		return componentView;
+	}
+
+	/**
+	 * Checks component and its children recursively and calls {@link #registerMenu}
+	 * for each item that is {@link module:ui/menubar/menubarmenuview~MenuBarMenuView}.
+	 * @internal
+	 */
+	private _registerMenuTree( componentView: MenuBarMenuView | MenuBarMenuListItemButtonView, parentMenuView: MenuBarMenuView ) {
+		if ( componentView instanceof MenuBarMenuView ) {
+			this.registerMenu( componentView, parentMenuView );
+
+			const nonSeparatorItems = ( componentView.panelView.children.get( 0 ) as MenuBarMenuListView ).items
+				.filter( item => item instanceof ListItemView ) as Array<ListItemView>;
+
+			for ( const item of nonSeparatorItems ) {
+				this._registerMenuTree(
+					item.children.get( 0 ) as MenuBarMenuView | MenuBarMenuListItemButtonView,
+					componentView
+				);
+			}
+		} else {
+			componentView.delegate( 'mouseenter' ).to( parentMenuView );
+		}
 	}
 
 	/**
