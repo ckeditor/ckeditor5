@@ -32,8 +32,8 @@ You can find the full list of editor content styles in the {@link getting-starte
 
 ## Where are the `editor.insertHtml()` and `editor.insertText()` methods? How to insert some content?
 
-Refer to {@link examples/how-tos#how-to-insert-some-content-into-the-editor this CKEditor&nbsp;5 How-to question}.
+Refer to {@link framework/how-tos#how-to-insert-some-content-into-the-editor this CKEditor&nbsp;5 How-to question}.
 
 ## What happened to the global `window.CKEDITOR`? How to list all instances of the editor?
 
-Refer to {@link examples/how-tos#how-to-list-all-instances-of-the-editor this CKEditor&nbsp;5 How-to question}.
+Refer to {@link framework/how-tos#how-to-list-all-instances-of-the-editor this CKEditor&nbsp;5 How-to question}.

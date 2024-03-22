@@ -290,7 +290,8 @@
 		"support/versioning-policy.html": "updating/versioning-policy.html",
 		"support/license-and-legal.html": "support/licensing/license-and-legal.html",
 		"support/managing-ckeditor-logo.html": "support/licensing/managing-ckeditor-logo.html",
-		"support/faq.html": "examples/how-tos.html",
+		"support/faq.html": "framework/how-tos.html",
+		"examples/how-tos.html": "framework/how-tos.html",
 		"updating/changelog.html": "updating/guides/changelog.html",
 		"updating/migration-from-ckeditor-4.html": "updating/ckeditor4/migration-from-ckeditor-4.html",
 		"updating/migration-from-ckeditor-4.html#migration-from-ckeditor-4-faq": "updating/ckeditor4/ckeditor4-troubleshooting.html",
@@ -573,19 +574,19 @@
 			"navigationIncludeIndex": true,
 			"categories": [
 				{
-					"name": "Predefined builds",
+					"name": "Editor types",
 					"id": "examples-builds",
 					"slug": "builds",
 					"order": 100
 				},
 				{
-					"name": "Custom builds",
+					"name": "Presets",
 					"id": "examples-builds-custom",
 					"slug": "builds-custom",
 					"order": 200
 				},
 				{
-					"name": "Framework",
+					"name": "Advanced configurations",
 					"id": "examples-framework",
 					"slug": "framework",
 					"order": 300

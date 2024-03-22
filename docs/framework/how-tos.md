@@ -1,5 +1,5 @@
 ---
-category: examples
+category: framework
 order: 500
 meta-title: CKEditor 5 How-tos | CKEditor 5 Documentation
 modified_at: 2023-07-17

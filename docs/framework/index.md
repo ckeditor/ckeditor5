@@ -57,6 +57,10 @@ There are a few groups of packages:
 * [Themes](https://github.com/ckeditor/ckeditor5#themes) &ndash; Packages that implement editor themes.
 * [Builds](https://github.com/ckeditor/ckeditor5#builds) &ndash; Packages containing {@link getting-started/legacy-getting-started/predefined-builds CKEditor&nbsp;5 builds}.
 
+## How-tos
+
+There come times when you do not need deep-dive guides, elaborate solutions, and complicated examples. Sometimes, you just need to know how to set the height of CKEditor&nbsp;5. Or, maybe you want to learn how to focus the editor? This is what the {@link framework/how-tos How-to} section is for!
+
 ## What's next
 
 To start using the framework refer to:

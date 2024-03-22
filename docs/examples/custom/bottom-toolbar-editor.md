@@ -1,5 +1,5 @@
 ---
-category: examples-builds-custom
+category: examples-framework
 order: 70
 classes: main__content--no-toc
 toc: false
