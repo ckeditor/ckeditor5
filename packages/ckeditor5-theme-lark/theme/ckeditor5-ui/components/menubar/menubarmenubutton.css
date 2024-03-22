@@ -17,7 +17,6 @@
 
 		& > .ck-button__label {
 			flex-grow: 1;
-			min-width: var(--ck-menu-bar-menu-item-min-width);
 			overflow: hidden;
 			text-overflow: ellipsis;
 		}
@@ -48,7 +47,6 @@
 
 		& .ck-button__label {
 			width: unset;
-			min-width: unset;
 			line-height: unset;
 		}
 
