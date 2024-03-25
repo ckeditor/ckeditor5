@@ -12,6 +12,7 @@ import type { ArrayOrItem } from 'ckeditor5/src/utils.js';
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import {
+	type ListElement,
 	expandListBlocksToCompleteItems,
 	expandListBlocksToCompleteList,
 	isFirstBlockOfListItem,
@@ -54,7 +55,7 @@ export default class ListUtils extends Plugin {
 	 *
 	 * @param node A model node.
 	 */
-	public isListItemBlock( node: Node ): boolean {
+	public isListItemBlock( node: Node | null ): node is ListElement {
 		return isListItemBlock( node );
 	}
 
