@@ -30,8 +30,6 @@
     "@ckeditor/ckeditor5-table": "41.3.0-alpha.1",
     "@ckeditor/ckeditor5-theme-lark": "41.3.0-alpha.1",
     "@ckeditor/ckeditor5-typing": "41.3.0-alpha.1",
-    "@ckeditor/ckeditor5-ui": "41.3.0-alpha.1",
-    "@ckeditor/ckeditor5-utils": "41.3.0-alpha.1",
     "typescript": "5.0.4",
     "webpack": "^5.58.1",
     "webpack-cli": "^4.9.0"
