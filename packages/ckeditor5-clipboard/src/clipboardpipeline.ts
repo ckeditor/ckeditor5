@@ -179,12 +179,15 @@ export default class ClipboardPipeline extends Plugin {
 		method: 'copy' | 'cut' | 'dragstart'
 	): void {
 		const clipboardMarkersUtils: ClipboardMarkersUtils = this.editor.plugins.get( 'ClipboardMarkersUtils' );
-		const documentFragment = clipboardMarkersUtils._copySelectedFragmentWithMarkers( method, selection );
 
-		this.fire<ClipboardOutputTransformationEvent>( 'outputTransformation', {
-			dataTransfer,
-			content: documentFragment,
-			method
+		this.editor.model.enqueueChange( { isUndoable: method === 'cut' }, () => {
+			const documentFragment = clipboardMarkersUtils._copySelectedFragmentWithMarkers( method, selection );
+
+			this.fire<ClipboardOutputTransformationEvent>( 'outputTransformation', {
+				dataTransfer,
+				content: documentFragment,
+				method
+			} );
 		} );
 	}
 
@@ -275,11 +278,7 @@ export default class ClipboardPipeline extends Plugin {
 		}, { priority: 'low' } );
 
 		this.listenTo<ClipboardContentInsertionEvent>( this, 'contentInsertion', ( evt, data ) => {
-			clipboardMarkersUtils._setUniqueMarkerNamesInFragment( data.content );
-		}, { priority: 'highest' } );
-
-		this.listenTo<ClipboardContentInsertionEvent>( this, 'contentInsertion', ( evt, data ) => {
-			data.resultRange = model.insertContent( data.content );
+			data.resultRange = clipboardMarkersUtils._pasteFragmentWithMarkers( data.content );
 		}, { priority: 'low' } );
 	}
 
