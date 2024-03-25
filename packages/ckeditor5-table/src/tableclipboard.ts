@@ -108,16 +108,18 @@ export default class TableClipboard extends Plugin {
 		data.preventDefault();
 		evt.stop();
 
-		const fragment = clipboardMarkersUtils._copySelectedFragmentWithMarkers(
-			evt.name,
-			this.editor.model.document.selection,
-			() => tableSelection.getSelectionAsFragment()!
-		);
+		this.editor.model.enqueueChange( { isUndoable: evt.name === 'cut' }, () => {
+			const documentFragment = clipboardMarkersUtils._copySelectedFragmentWithMarkers(
+				evt.name,
+				this.editor.model.document.selection,
+				() => tableSelection.getSelectionAsFragment()!
+			);
 
-		view.document.fire<ViewDocumentClipboardOutputEvent>( 'clipboardOutput', {
-			dataTransfer: data.dataTransfer,
-			content: this.editor.data.toView( fragment ),
-			method: evt.name
+			view.document.fire<ViewDocumentClipboardOutputEvent>( 'clipboardOutput', {
+				dataTransfer: data.dataTransfer,
+				content: this.editor.data.toView( documentFragment ),
+				method: evt.name
+			} );
 		} );
 	}
 
