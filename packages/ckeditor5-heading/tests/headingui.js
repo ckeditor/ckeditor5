@@ -74,7 +74,7 @@ describe( 'HeadingUI', () => {
 			expect( dropdown.buttonView.isOn ).to.be.false;
 			expect( dropdown.buttonView.label ).to.equal( 'Paragraph' );
 			expect( dropdown.buttonView.tooltip ).to.equal( 'Heading' );
-			expect( dropdown.buttonView.ariaLabel ).to.equal( 'Heading' );
+			expect( dropdown.buttonView.ariaLabel ).to.equal( 'Paragraph, Heading' );
 			expect( dropdown.buttonView.ariaLabelledBy ).to.be.undefined;
 		} );
 
@@ -155,6 +155,34 @@ describe( 'HeadingUI', () => {
 
 				paragraphCommand.value = true;
 				expect( dropdown.buttonView.label ).to.equal( 'Paragraph' );
+			} );
+
+			it( 'label when heading and paragraph commands active', () => {
+				command.value = 'heading2';
+				paragraphCommand.value = true;
+
+				expect( dropdown.buttonView.label ).to.equal( 'Paragraph' );
+			} );
+
+			it( 'ariaLabel', () => {
+				command.value = false;
+				paragraphCommand.value = false;
+
+				expect( dropdown.buttonView.ariaLabel ).to.equal( 'Heading' );
+
+				command.value = 'heading2';
+				expect( dropdown.buttonView.ariaLabel ).to.equal( 'Heading 2, Heading' );
+				command.value = false;
+
+				paragraphCommand.value = true;
+				expect( dropdown.buttonView.ariaLabel ).to.equal( 'Paragraph, Heading' );
+			} );
+
+			it( 'ariaLabel when heading and paragraph commands active', () => {
+				command.value = 'heading2';
+				paragraphCommand.value = true;
+
+				expect( dropdown.buttonView.ariaLabel ).to.equal( 'Paragraph, Heading' );
 			} );
 		} );
 

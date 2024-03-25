@@ -109,8 +109,8 @@ export default class HeadingUI extends Plugin {
 				return areEnabled.some( isEnabled => isEnabled );
 			} );
 
-			dropdownView.buttonView.bind( 'label' ).to( headingCommand, 'value', paragraphCommand, 'value', ( value, para ) => {
-				const whichModel = value || para && 'paragraph';
+			dropdownView.buttonView.bind( 'label' ).to( headingCommand, 'value', paragraphCommand, 'value', ( heading, paragraph ) => {
+				const whichModel = paragraph ? 'paragraph' : heading;
 
 				if ( typeof whichModel === 'boolean' ) {
 					return defaultTitle;
@@ -122,6 +122,21 @@ export default class HeadingUI extends Plugin {
 				}
 
 				return titles[ whichModel ];
+			} );
+
+			dropdownView.buttonView.bind( 'ariaLabel' ).to( headingCommand, 'value', paragraphCommand, 'value', ( heading, paragraph ) => {
+				const whichModel = paragraph ? 'paragraph' : heading;
+
+				if ( typeof whichModel === 'boolean' ) {
+					return accessibleLabel;
+				}
+
+				// If none of the commands is active, display default title.
+				if ( !titles[ whichModel ] ) {
+					return accessibleLabel;
+				}
+
+				return `${ titles[ whichModel ] }, ${ accessibleLabel }`;
 			} );
 
 			// Execute command when an item from the dropdown is selected.
