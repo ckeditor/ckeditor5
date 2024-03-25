@@ -266,9 +266,10 @@ export default class TooltipManager extends DomEmitterMixin() {
 	 * @param evt An object containing information about the fired event.
 	 * @param domEvent The DOM event.
 	 */
-	private _onKeyDown( evt: EventInfo, { key }: KeyboardEvent ) {
-		if ( key === 'Escape' && this._currentElementWithTooltip ) {
+	private _onKeyDown( evt: EventInfo, domEvent: KeyboardEvent ) {
+		if ( domEvent.key === 'Escape' && this._currentElementWithTooltip ) {
 			this._unpinTooltip();
+			domEvent.stopPropagation();
 		}
 	}
 

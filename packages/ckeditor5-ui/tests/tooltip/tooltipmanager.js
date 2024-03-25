@@ -611,8 +611,13 @@ describe( 'TooltipManager', () => {
 				sinon.assert.calledOnce( pinSpy );
 
 				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
-				utils.dispatchKeydown( document, 'Escape' );
 
+				const event = new KeyboardEvent( 'keydown', { key: 'Escape' } );
+				const stopPropagationSpy = sinon.spy( event, 'stopPropagation' );
+
+				element.dispatchEvent( event );
+
+				sinon.assert.calledOnce( stopPropagationSpy );
 				sinon.assert.calledOnce( unpinSpy );
 			} );
 
