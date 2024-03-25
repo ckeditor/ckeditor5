@@ -38,7 +38,7 @@ import Mermaid from '@ckeditor/ckeditor5-mermaid/src/mermaid';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ MathType, /* ... */ ],
-	toolbar: [ 'MathType', 'ChemType', /* ... */ ]
+	toolbar: [ 'mermaid', /* ... */ ]
 } )
 .then( /* ... */ );
 ```
