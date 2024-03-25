@@ -133,6 +133,11 @@ export default class TooltipManager extends DomEmitterMixin() {
 	 */
 	private _pinTooltipDebounced!: DebouncedFunc<( targetDomElement: HTMLElement, data: TooltipData ) => void>;
 
+	/**
+	 * A debounced version of {@link #_unpinTooltip}. Tooltips hide with a delay to allow hovering of their titles.
+	 */
+	private _unpinTooltipDebounced!: DebouncedFunc<VoidFunction>;
+
 	private readonly _watchdogExcluded!: true;
 
 	/**
@@ -189,6 +194,7 @@ export default class TooltipManager extends DomEmitterMixin() {
 		} );
 
 		this._pinTooltipDebounced = debounce( this._pinTooltip, 600 );
+		this._unpinTooltipDebounced = debounce( this._unpinTooltip, 400 );
 
 		this.listenTo( global.document, 'keydown', this._onKeyDown.bind( this ), { useCapture: true } );
 		this.listenTo( global.document, 'mouseenter', this._onEnterOrFocus.bind( this ), { useCapture: true } );
@@ -318,6 +324,7 @@ export default class TooltipManager extends DomEmitterMixin() {
 
 			// Do not hide the tooltip when the user moves the cursor over it.
 			if ( isEnteringBalloon ) {
+				this._unpinTooltipDebounced.cancel();
 				return;
 			}
 
@@ -336,7 +343,7 @@ export default class TooltipManager extends DomEmitterMixin() {
 			// Note that this should happen whether the tooltip is already visible or not, for instance,
 			// it could be invisible but queued (debounced): it should get canceled.
 			if ( isLeavingBalloon || ( descendantWithTooltip && descendantWithTooltip !== relatedDescendantWithTooltip ) ) {
-				this._unpinTooltip();
+				this._unpinTooltipDebounced();
 			}
 		} else {
 			// If a tooltip is currently visible, don't act for a targets other than the one it is attached to.
@@ -347,7 +354,7 @@ export default class TooltipManager extends DomEmitterMixin() {
 
 			// Note that unpinning should happen whether the tooltip is already visible or not, for instance, it could be invisible but
 			// queued (debounced): it should get canceled (e.g. quick focus then quick blur using the keyboard).
-			this._unpinTooltip();
+			this._unpinTooltipDebounced();
 		}
 	}
 

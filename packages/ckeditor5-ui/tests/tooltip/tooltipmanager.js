@@ -616,6 +616,7 @@ describe( 'TooltipManager', () => {
 				const stopPropagationSpy = sinon.spy( event, 'stopPropagation' );
 
 				element.dispatchEvent( event );
+				utils.waitForTheTooltipToHide( clock );
 
 				sinon.assert.calledOnce( stopPropagationSpy );
 				sinon.assert.calledOnce( unpinSpy );
@@ -630,6 +631,7 @@ describe( 'TooltipManager', () => {
 				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
 				utils.dispatchKeydown( document, 'A' );
 
+				utils.waitForTheTooltipToHide( clock );
 				sinon.assert.notCalled( unpinSpy );
 			} );
 
@@ -650,6 +652,7 @@ describe( 'TooltipManager', () => {
 				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
 				utils.dispatchMouseLeave( document );
 
+				utils.waitForTheTooltipToHide( clock );
 				sinon.assert.notCalled( unpinSpy );
 			} );
 
@@ -661,8 +664,10 @@ describe( 'TooltipManager', () => {
 				sinon.assert.calledOnce( pinSpy );
 
 				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
+
 				utils.dispatchMouseLeave( elements.a, tooltipManager.balloonPanelView.element );
 
+				utils.waitForTheTooltipToHide( clock );
 				sinon.assert.notCalled( unpinSpy );
 			} );
 
@@ -676,6 +681,7 @@ describe( 'TooltipManager', () => {
 				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
 				utils.dispatchMouseLeave( tooltipManager.balloonPanelView.element, elements.b );
 
+				utils.waitForTheTooltipToHide( clock );
 				sinon.assert.calledOnce( unpinSpy );
 			} );
 
@@ -688,6 +694,7 @@ describe( 'TooltipManager', () => {
 				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
 				utils.dispatchMouseLeave( elements.b );
 
+				utils.waitForTheTooltipToHide( clock );
 				sinon.assert.notCalled( unpinSpy );
 			} );
 
@@ -695,23 +702,25 @@ describe( 'TooltipManager', () => {
 				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
 				utils.dispatchMouseLeave( elements.unrelated );
 
+				utils.waitForTheTooltipToHide( clock );
 				sinon.assert.notCalled( unpinSpy );
 			} );
 
 			it( 'should unpin the tooltip when moving from one element with a tooltip to another element with a tooltip quickly' +
-				'before the tooltip shows for the first tooltip (cancellin the queued pinning)', () => {
+				'before the tooltip shows for the first tooltip (cancelling the queued pinning)', () => {
 				utils.dispatchMouseEnter( elements.a );
 
 				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
 				utils.dispatchMouseLeave( elements.childOfA, elements.a );
 
+				utils.waitForTheTooltipToHide( clock );
 				sinon.assert.calledOnce( unpinSpy );
 
 				utils.waitForTheTooltipToShow( clock );
 				sinon.assert.notCalled( pinSpy );
 			} );
 
-			it( 'should immediatelly unpin the tooltip otherwise', () => {
+			it( 'should immediately unpin the tooltip otherwise', () => {
 				utils.dispatchMouseEnter( elements.a );
 				utils.waitForTheTooltipToShow( clock );
 
@@ -720,6 +729,7 @@ describe( 'TooltipManager', () => {
 				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
 				utils.dispatchMouseLeave( elements.a );
 
+				utils.waitForTheTooltipToHide( clock );
 				sinon.assert.calledOnce( unpinSpy );
 			} );
 		} );
@@ -734,6 +744,7 @@ describe( 'TooltipManager', () => {
 				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
 				utils.dispatchBlur( elements.unrelated );
 
+				utils.waitForTheTooltipToHide( clock );
 				sinon.assert.notCalled( unpinSpy );
 			} );
 
@@ -746,6 +757,7 @@ describe( 'TooltipManager', () => {
 				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
 				utils.dispatchBlur( elements.a );
 
+				utils.waitForTheTooltipToHide( clock );
 				sinon.assert.calledOnce( unpinSpy );
 			} );
 
@@ -753,6 +765,7 @@ describe( 'TooltipManager', () => {
 				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
 				utils.dispatchBlur( elements.unrelated );
 
+				utils.waitForTheTooltipToHide( clock );
 				sinon.assert.calledOnce( unpinSpy );
 			} );
 		} );
@@ -762,6 +775,7 @@ describe( 'TooltipManager', () => {
 				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
 				utils.dispatchScroll( elements.a );
 
+				utils.waitForTheTooltipToHide( clock );
 				sinon.assert.notCalled( unpinSpy );
 			} );
 
@@ -774,7 +788,7 @@ describe( 'TooltipManager', () => {
 
 				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
 				utils.dispatchScroll( document );
-
+				utils.waitForTheTooltipToHide( clock );
 				sinon.assert.notCalled( unpinSpy );
 			} );
 
@@ -786,7 +800,7 @@ describe( 'TooltipManager', () => {
 
 				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
 				utils.dispatchScroll( elements.a );
-
+				utils.waitForTheTooltipToHide( clock );
 				sinon.assert.calledOnce( unpinSpy );
 			} );
 
@@ -798,7 +812,7 @@ describe( 'TooltipManager', () => {
 
 				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
 				utils.dispatchScroll( elements.unrelated );
-
+				utils.waitForTheTooltipToHide( clock );
 				sinon.assert.calledOnce( unpinSpy );
 			} );
 		} );
@@ -946,8 +960,10 @@ describe( 'TooltipManager', () => {
 			sinon.assert.calledTwice( pinSpy );
 
 			utils.dispatchMouseLeave( elements.a );
+			utils.waitForTheTooltipToHide( clock );
 
 			editor.ui.update();
+
 			sinon.assert.calledTwice( pinSpy );
 		} );
 
@@ -1030,6 +1046,10 @@ function destroyElements( elements ) {
 function getUtils() {
 	return {
 		waitForTheTooltipToShow: clock => {
+			clock.tick( 650 );
+		},
+
+		waitForTheTooltipToHide: clock => {
 			clock.tick( 650 );
 		},
 
