@@ -14,7 +14,6 @@ import {
 	type EditingKeystrokeCallback
 } from 'ckeditor5/src/core.js';
 import {
-	UpcastWriter,
 	type DocumentSelection,
 	type Marker,
 	type ModelDeleteContentEvent,
