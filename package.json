@@ -189,7 +189,7 @@
     "collect-svg-icons": "node scripts/collect-svg-icons.js",
     "check-dependencies": "ckeditor5-dev-dependency-checker",
     "check-dependencies:versions-match": "node ./scripts/ci/check-dependencies-versions-match.js",
-    "build:kowalski": "node ./scripts/build-kowalski.mjs"
+    "build:kowalski": "node ./scripts/build-ckeditor5.mjs"
   },
   "lint-staged": {
     "**/*.{js,ts}": [
@@ -217,11 +217,5 @@
       "external/*/packages/*",
       "."
     ]
-  },
-  "resolutions": {
-    "@ckeditor/ckeditor5-core": "41.3.0-alpha.0",
-    "@ckeditor/ckeditor5-engine": "41.3.0-alpha.0",
-    "@ckeditor/ckeditor5-ui": "41.3.0-alpha.0",
-    "@ckeditor/ckeditor5-widget": "41.3.0-alpha.0"
   }
 }

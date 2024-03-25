@@ -7,8 +7,13 @@
 
 /* eslint-env node */
 
+import upath from 'upath';
 import chalk from 'chalk';
 import { build } from '@ckeditor/ckeditor5-dev-build-tools';
+
+function dist( path ) {
+	return upath.join( process.cwd(), 'dist', path );
+}
 
 ( async () => {
 	/**
@@ -18,14 +23,15 @@ import { build } from '@ckeditor/ckeditor5-dev-build-tools';
 	const banner = 'scripts/banner.mjs';
 
 	/**
-	 * Generate NPM build.
+	 * Step 1
 	 */
-	console.log( chalk.green( '1/3: Generating NPM build...' ) );
+	console.log( chalk.green( '1/2: Generating NPM build...' ) );
 
 	await build( {
-		input: 'src/index.ts',
+		output: dist( 'index.js' ),
 		tsconfig,
 		banner,
+		external: [],
 		sourceMap: true,
 
 		/**
@@ -35,35 +41,20 @@ import { build } from '@ckeditor/ckeditor5-dev-build-tools';
 		 */
 		clean: true,
 		declarations: true,
-		translations: true
+		translations: 'packages/**/*.po'
 	} );
 
 	/**
-	 * Experimental: Generate bundled NPM build.
+	 * Step 2
 	 */
-	console.log( chalk.green( '2/3: Generating bundled NPM build...' ) );
+	console.log( chalk.green( '2/2: Generating browser build...' ) );
 
 	await build( {
-		input: 'src/index.browser.ts',
-		output: 'dist/index.bundled.js',
+		output: dist( 'index.browser.js' ),
 		tsconfig,
 		banner,
+		external: [],
 		sourceMap: true,
-		bundle: true
-	} );
-
-	/**
-	 * Generate browser build.
-	 */
-	console.log( chalk.green( '3/3: Generating browser build...' ) );
-
-	await build( {
-		input: 'src/index.browser.ts',
-		output: 'dist/index.browser.js',
-		tsconfig,
-		banner,
-		sourceMap: true,
-		bundle: true,
 		minify: true
 	} );
 } )();
