@@ -37,7 +37,7 @@ After {@link getting-started/quick-start installing the editor}, add the feature
 import Mermaid from '@ckeditor/ckeditor5-mermaid/src/mermaid';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ MathType, /* ... */ ],
+	plugins: [ Mermaid, /* ... */ ],
 	toolbar: [ 'mermaid', /* ... */ ]
 } )
 .then( /* ... */ );
