@@ -59,6 +59,15 @@ export default class AriaLiveAnnouncer {
 	}
 
 	/**
+	 * Appends empty `aria-live` announcement region. Some of screen readers tend to not read newly added
+	 * regions with already filled text content. Appending empty region before any action prevents
+	 * that behavior and screen readers are forced to read updated text.
+	 */
+	public registerRegion( regionName: string ): void {
+		this.announce( regionName, '' );
+	}
+
+	/**
 	 * Sets an announcement text to an aria region associated with a specific editor feature. The text is then
 	 * announced by a screen reader to the user.
 	 *

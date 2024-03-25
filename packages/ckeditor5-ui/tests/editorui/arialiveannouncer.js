@@ -26,6 +26,21 @@ describe( 'AriaLiveAnnouncer', () => {
 		await editor.destroy();
 	} );
 
+	describe( 'registerRegion()', () => {
+		it( 'should create empty region with specified name', () => {
+			announcer.registerRegion( 'foo' );
+
+			expect( announcer.view.regionViews.length ).to.equal( 1 );
+
+			const region = announcer.view.regionViews.first;
+
+			expect( region.regionName ).to.equal( 'foo' );
+			expect( region.content ).to.equal( '' );
+			expect( region.politeness ).to.equal( 'polite' );
+			expect( region.element.parentNode ).to.equal( announcer.view.element );
+		} );
+	} );
+
 	describe( 'announce()', () => {
 		it( 'should create, then add the view to the body collection', () => {
 			expect( announcer.view ).to.be.undefined;
