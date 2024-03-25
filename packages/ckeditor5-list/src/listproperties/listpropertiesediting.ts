@@ -19,7 +19,7 @@ import type {
 } from 'ckeditor5/src/engine.js';
 
 import ListEditing, {
-	type ListTypeOptions,
+	type ListType,
 	type ListEditingCheckAttributesEvent,
 	type ListEditingPostFixerEvent,
 	type ListItemAttributesMap
@@ -379,7 +379,7 @@ function createAttributeStrategies( enabledProperties: ListPropertiesConfig ) {
 			},
 
 			appliesToListItem( item ) {
-				return isNumberedListType( item.getAttribute( 'listType' ) as ListTypeOptions );
+				return isNumberedListType( item.getAttribute( 'listType' ) as ListType );
 			},
 
 			hasValidAttribute( item ) {

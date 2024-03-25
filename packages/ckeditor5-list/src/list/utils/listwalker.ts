@@ -72,14 +72,7 @@ export default class ListWalker {
 	 */
 	constructor(
 		startElement: Node,
-		options: {
-			direction?: 'forward' | 'backward';
-			includeSelf?: boolean;
-			sameAttributes?: ArrayOrItem<string>;
-			sameIndent?: boolean;
-			lowerIndent?: boolean;
-			higherIndent?: boolean;
-		}
+		options: ListWalkerOptions
 	) {
 		this._startElement = startElement;
 		this._referenceIndent = startElement.getAttribute( 'listIndent' ) as number;
@@ -107,14 +100,7 @@ export default class ListWalker {
 	 */
 	public static first(
 		startElement: Node,
-		options: {
-			direction?: 'forward' | 'backward';
-			includeSelf?: boolean;
-			sameAttributes?: ArrayOrItem<string>;
-			sameIndent?: boolean;
-			lowerIndent?: boolean;
-			higherIndent?: boolean;
-		}
+		options: ListWalkerOptions
 	): ListElement | null {
 		const walker = new this( startElement, options );
 		const iterator = walker[ Symbol.iterator ]();
@@ -296,3 +282,15 @@ export interface ListIteratorValue {
 	 */
 	previousNodeInList: ListElement | null;
 }
+
+/**
+ * Document list blocks iterator options.
+ */
+export type ListWalkerOptions = {
+	direction?: 'forward' | 'backward';
+	includeSelf?: boolean;
+	sameAttributes?: ArrayOrItem<string>;
+	sameIndent?: boolean;
+	lowerIndent?: boolean;
+	higherIndent?: boolean;
+};

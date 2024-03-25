@@ -514,6 +514,53 @@ describe( 'List - utils - model', () => {
 				fragment.getChild( 4 )
 			] );
 		} );
+
+		describe( 'modify backward and forward iterator with options', () => {
+			it( 'should return all list items and nested lists (higherIndent: true)', () => {
+				const input = modelList( [
+					'0',
+					'* 1',
+					'  * 2',
+					'    * 3',
+					'  * 4',
+					'    * 5',
+					'  * 6',
+					'7'
+				] );
+
+				const fragment = parseModel( input, schema );
+				const listItem = fragment.getChild( 4 );
+
+				expect( getListItems( listItem, { higherIndent: true } ) ).to.deep.equal( [
+					fragment.getChild( 2 ),
+					fragment.getChild( 3 ),
+					fragment.getChild( 4 ),
+					fragment.getChild( 5 ),
+					fragment.getChild( 6 )
+				] );
+			} );
+
+			it( 'should return all list items of all types (sameAttributes: [])', () => {
+				const input = modelList( [
+					'# 0',
+					'* 1',
+					'* 2',
+					'* 3',
+					'# 4'
+				] );
+
+				const fragment = parseModel( input, schema );
+				const listItem = fragment.getChild( 2 );
+
+				expect( getListItems( listItem, { sameAttributes: [] } ) ).to.deep.equal( [
+					fragment.getChild( 0 ),
+					fragment.getChild( 1 ),
+					fragment.getChild( 2 ),
+					fragment.getChild( 3 ),
+					fragment.getChild( 4 )
+				] );
+			} );
+		} );
 	} );
 
 	describe( 'isFirstBlockOfListItem()', () => {

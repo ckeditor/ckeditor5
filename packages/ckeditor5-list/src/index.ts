@@ -9,7 +9,7 @@
 
 // List.
 export { default as List } from './list.js';
-export { default as ListEditing, type ListEditingPostFixerEvent, type ListTypeOptions } from './list/listediting.js';
+export { default as ListEditing, type ListEditingPostFixerEvent, type ListType } from './list/listediting.js';
 export { default as ListUtils } from './list/listutils.js';
 export { default as ListUI } from './list/listui.js';
 export { default as ListIndentCommand } from './list/listindentcommand.js';

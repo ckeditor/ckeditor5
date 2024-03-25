@@ -11,7 +11,7 @@ import type { Element, Node, Schema } from 'ckeditor5/src/engine.js';
 import { Command, type Editor } from 'ckeditor5/src/core.js';
 
 import { first } from 'ckeditor5/src/utils.js';
-import { type ListTypeOptions } from '../list/listediting.js';
+import { type ListType } from '../list/listediting.js';
 
 /**
  * The list command. It is used by the {@link module:list/legacylist~LegacyList legacy list feature}.
@@ -20,7 +20,7 @@ export default class LegacyListCommand extends Command {
 	/**
 	 * The type of the list created by the command.
 	 */
-	public readonly type: ListTypeOptions;
+	public readonly type: ListType;
 
 	/**
 	 * A flag indicating whether the command is active, which means that the selection starts in a list of the same type.
@@ -35,7 +35,7 @@ export default class LegacyListCommand extends Command {
 	 * @param editor The editor instance.
 	 * @param type List type that will be handled by this command.
 	 */
-	constructor( editor: Editor, type: ListTypeOptions ) {
+	constructor( editor: Editor, type: ListType ) {
 		super( editor );
 
 		this.type = type;

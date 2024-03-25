@@ -9,7 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import type { Element } from 'ckeditor5/src/engine.js';
-import type { ListTypeOptions, ListUtils } from '@ckeditor/ckeditor5-list';
+import type { ListType, ListUtils } from '@ckeditor/ckeditor5-list';
 import type { TemplateDefinition } from 'ckeditor5/src/ui.js';
 
 import type { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
@@ -111,7 +111,7 @@ export default class ListStyleSupport extends Plugin {
 				return false;
 			}
 
-			const isNumbered = this._listUtils.isNumberedListType( block.getAttribute( 'listType' ) as ListTypeOptions );
+			const isNumbered = this._listUtils.isNumberedListType( block.getAttribute( 'listType' ) as ListType );
 			const viewElementName = isNumbered ? 'ol' : 'ul';
 
 			return definition.element == viewElementName;

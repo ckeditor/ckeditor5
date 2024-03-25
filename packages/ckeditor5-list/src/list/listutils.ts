@@ -12,13 +12,14 @@ import type { ArrayOrItem } from 'ckeditor5/src/utils.js';
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import {
+	type ListElement,
 	expandListBlocksToCompleteItems,
 	expandListBlocksToCompleteList,
 	isFirstBlockOfListItem,
 	isListItemBlock,
 	isNumberedListType
 } from './utils/model.js';
-import type { ListTypeOptions } from './listediting.js';
+import type { ListType } from './listediting.js';
 
 /**
  * A set of helpers related to document lists.
@@ -54,7 +55,7 @@ export default class ListUtils extends Plugin {
 	 *
 	 * @param node A model node.
 	 */
-	public isListItemBlock( node: Node ): boolean {
+	public isListItemBlock( node: Node | null ): node is ListElement {
 		return isListItemBlock( node );
 	}
 
@@ -71,7 +72,7 @@ export default class ListUtils extends Plugin {
 	/**
 	 * Returns true if listType is of type `numbered` or `customNumbered`.
 	 */
-	public isNumberedListType( listType: ListTypeOptions ): boolean {
+	public isNumberedListType( listType: ListType ): boolean {
 		return isNumberedListType( listType );
 	}
 }
