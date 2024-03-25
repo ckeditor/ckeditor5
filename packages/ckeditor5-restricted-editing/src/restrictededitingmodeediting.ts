@@ -13,14 +13,14 @@ import {
 	type Editor,
 	type EditingKeystrokeCallback
 } from 'ckeditor5/src/core.js';
-import {
-	type DocumentSelection,
-	type Marker,
-	type ModelDeleteContentEvent,
-	type ModelPostFixer,
-	type Range,
-	type SchemaAttributeCheckCallback,
-	type SchemaChildCheckCallback
+import type {
+	DocumentSelection,
+	Marker,
+	ModelDeleteContentEvent,
+	ModelPostFixer,
+	Range,
+	SchemaAttributeCheckCallback,
+	SchemaChildCheckCallback
 } from 'ckeditor5/src/engine.js';
 import type { BaseEvent, GetCallback } from 'ckeditor5/src/utils.js';
 import type { InsertTextCommand, InsertTextCommandExecuteEvent } from 'ckeditor5/src/typing.js';
