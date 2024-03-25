@@ -188,7 +188,7 @@ export default function insertContent(
 			for ( const [ name, [ start, end ] ] of Object.entries( markersData ) ) {
 				// For now, we ignore markers if they are included in the filtered-out content.
 				// In the future implementation we will improve that case to create markers that are not filtered out completely.
-				if ( start && end && start.root === end.root && start.root.document ) {
+				if ( start && end && start.root === end.root && start.root.document && !writer.model.markers.has( name ) ) {
 					writer.addMarker( name, {
 						usingOperation: true,
 						affectsData: true,
