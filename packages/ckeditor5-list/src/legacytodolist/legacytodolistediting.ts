@@ -20,7 +20,8 @@ import type {
 	ViewDocumentKeyDownEvent,
 	AttributeOperation,
 	RenameOperation,
-	SelectionChangeRangeEvent
+	SelectionChangeRangeEvent,
+	DocumentFragment
 } from 'ckeditor5/src/engine.js';
 
 import { Plugin } from 'ckeditor5/src/core.js';
@@ -221,7 +222,7 @@ export default class LegacyTodoListEditing extends Plugin {
 	 */
 	private _initAriaAnnouncements( ) {
 		const { model, ui, t } = this.editor;
-		let lastFocusedCodeBlock: Element | null = null;
+		let lastFocusedCodeBlock: Element | DocumentFragment | null = null;
 
 		if ( !ui ) {
 			return;
@@ -235,11 +236,6 @@ export default class LegacyTodoListEditing extends Plugin {
 
 		model.document.selection.on<SelectionChangeRangeEvent>( 'change:range', () => {
 			const focusParent = model.document.selection.focus!.parent;
-
-			if ( !focusParent.is( 'element' ) ) {
-				return;
-			}
-
 			const lastElementIsTodoList = isLegacyTodoListItemElement( lastFocusedCodeBlock );
 			const currentElementIsTodoList = isLegacyTodoListItemElement( focusParent );
 
@@ -296,6 +292,6 @@ function jumpOverCheckmarkOnSideArrowKeyPress( model: Model, locale: Locale ): G
 /**
  * Returns true if the given element is a list item model element of a to-do list.
  */
-function isLegacyTodoListItemElement( element: Element | null ): boolean {
+function isLegacyTodoListItemElement( element: Element | DocumentFragment | null ): boolean {
 	return !!element && element.is( 'element', 'listItem' ) && element.getAttribute( 'listType' ) === 'todo';
 }

@@ -675,6 +675,86 @@ describe( 'LegacyTodoListEditing', () => {
 		} );
 	} );
 
+	describe( 'accessibility', () => {
+		let announcerSpy;
+
+		beforeEach( () => {
+			const editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			return ClassicTestEditor
+				.create( editorElement, {
+					plugins: [ Paragraph, LegacyTodoListEditing ]
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+
+					model = editor.model;
+					modelDoc = model.document;
+					modelRoot = modelDoc.getRoot();
+
+					view = editor.editing.view;
+					viewDoc = view.document;
+					announcerSpy = sinon.spy( editor.ui.ariaLiveAnnouncer, 'announce' );
+				} );
+		} );
+
+		it( 'should announce entering and leaving list', () => {
+			setModelData( model,
+				'<paragraph>[Foo]</paragraph>' +
+				'<listItem listType="todo" listIndent="0">1</listItem>' +
+				'<listItem listType="todo" listIndent="0" todoListChecked="true">2</listItem>' +
+				'<paragraph>Foo</paragraph>'
+			);
+
+			moveSelection( [ 1, 0 ], [ 1, 1 ] );
+			expectAnnounce( 'Entering todo list' );
+
+			moveSelection( [ 3, 0 ], [ 3, 1 ] );
+			expectAnnounce( 'Leaving todo list' );
+		} );
+
+		it( 'should announce entering and leaving list once, even if there is nested list', () => {
+			setModelData( model,
+				'<paragraph>[Foo]</paragraph>' +
+				'<listItem listType="todo" listIndent="0">1</listItem>' +
+				'<listItem listType="todo" listIndent="1">1</listItem>' +
+				'<listItem listType="todo" listIndent="0" todoListChecked="true">2</listItem>' +
+				'<paragraph>Foo</paragraph>'
+			);
+
+			moveSelection( [ 1, 0 ], [ 1, 1 ] );
+			expectAnnounce( 'Entering todo list' );
+
+			moveSelection( [ 2, 0 ], [ 2, 1 ] );
+			expectNotToAnnounce( 'Leaving todo list' );
+
+			moveSelection( [ 4, 0 ], [ 4, 1 ] );
+			expectAnnounce( 'Leaving todo list' );
+		} );
+
+		function expectNotToAnnounce( message ) {
+			expect( announcerSpy ).not.to.be.calledWithExactly( 'legacyTodoList', message );
+		}
+
+		function expectAnnounce( message ) {
+			expect( announcerSpy ).to.be.calledWithExactly( 'legacyTodoList', message );
+		}
+
+		function moveSelection( startPath, endPath ) {
+			model.change( writer => {
+				writer.setSelection( createRange( modelRoot, startPath, modelRoot, endPath ) );
+			} );
+		}
+
+		function createRange( startElement, startPath, endElement, endPath ) {
+			return model.createRange(
+				model.createPositionFromPath( startElement, startPath ),
+				model.createPositionFromPath( endElement, endPath )
+			);
+		}
+	} );
+
 	describe( 'data pipeline m -> v', () => {
 		it( 'should convert to-do list item', () => {
 			setModelData( model,
