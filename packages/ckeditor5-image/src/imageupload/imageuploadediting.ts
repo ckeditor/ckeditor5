@@ -280,6 +280,16 @@ export default class ImageUploadEditing extends Plugin {
 		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 		const imageUploadElements = this._uploadImageElements;
 
+		if ( editor.ui ) {
+			editor.ui.ariaLiveAnnouncer.registerRegion( 'imageUpload' );
+		}
+
+		const ariaAnnounce = ( message: string ) => {
+			if ( editor.ui ) {
+				editor.ui.ariaLiveAnnouncer.announce( 'imageUpload', message );
+			}
+		};
+
 		model.enqueueChange( { isUndoable: false }, writer => {
 			writer.setAttribute( 'uploadStatus', 'reading', imageUploadElements.get( loader.id )! );
 		} );
@@ -320,6 +330,7 @@ export default class ImageUploadEditing extends Plugin {
 					} );
 				}
 
+				ariaAnnounce( t( 'Uploading image' ) );
 				model.enqueueChange( { isUndoable: false }, writer => {
 					writer.setAttribute( 'uploadStatus', 'uploading', imageElement );
 				} );
@@ -331,6 +342,7 @@ export default class ImageUploadEditing extends Plugin {
 					const imageElement = imageUploadElements.get( loader.id )!;
 
 					writer.setAttribute( 'uploadStatus', 'complete', imageElement );
+					ariaAnnounce( t( 'Image upload complete' ) );
 
 					this.fire<ImageUploadCompleteEvent>( 'uploadComplete', { data, imageElement } );
 				} );
@@ -338,6 +350,8 @@ export default class ImageUploadEditing extends Plugin {
 				clean();
 			} )
 			.catch( error => {
+				ariaAnnounce( t( 'Error during image upload' ) );
+
 				// If status is not 'error' nor 'aborted' - throw error because it means that something else went wrong,
 				// it might be generic error and it would be real pain to find what is going on.
 				if ( loader.status !== 'error' && loader.status !== 'aborted' ) {
