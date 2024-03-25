@@ -182,7 +182,7 @@ export default class DomConverter {
 			'td', 'tfoot', 'th', 'thead', 'tr', 'ul'
 		];
 		this.inlineObjectElements = [
-			'object', 'iframe', 'input', 'button', 'textarea', 'select', 'option', 'video', 'embed', 'audio', 'img', 'canvas'
+			'object', 'iframe', 'input', 'button', 'textarea', 'select', 'option', 'video', 'embed', 'audio', 'img', 'canvas', 'mergeTag'
 		];
 		this.unsafeElements = [ 'script', 'style' ];
 
@@ -1504,14 +1504,6 @@ export default class DomConverter {
 				// We're replacing 1+ (and not 2+) to also normalize singular \n\t\r characters (#822).
 				data = node.data.replace( /[ \n\t\r]{1,}/g, ' ' );
 
-				// Usually the text node following the merge tag will start with a space character.
-				// We should not remove it. However, in some situations the merge tag is not passed
-				// in the `inlineNodes` (e.g. when XML data processor in unit tests helper 'setData` is used),
-				// so the checks based on that array won't work. Hence the ugly workaround.
-				if ( isAfterMergeTag( node ) ) {
-					continue;
-				}
-
 				nodeEndsWithSpace = /[^\S\u00A0]/.test( data.charAt( data.length - 1 ) );
 
 				const prevNode = i > 0 ? inlineNodes[ i - 1 ] : null;
@@ -1578,17 +1570,6 @@ export default class DomConverter {
 		}
 
 		inlineNodes.length = 0;
-
-		function isAfterMergeTag( node: ViewText ): boolean {
-			if ( !node.parent ) {
-				return false;
-			}
-
-			const nodeIndex = node.parent.getChildIndex( node );
-			const previousChild = nodeIndex > 0 ? node.parent?.getChild( nodeIndex - 1 ) : null;
-
-			return !!previousChild && previousChild.is( 'element', 'mergeTag' );
-		}
 	}
 
 	/**
