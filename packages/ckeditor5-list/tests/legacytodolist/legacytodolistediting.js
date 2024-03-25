@@ -676,10 +676,10 @@ describe( 'LegacyTodoListEditing', () => {
 	} );
 
 	describe( 'accessibility', () => {
-		let announcerSpy;
+		let announcerSpy, editorElement;
 
-		beforeEach( () => {
-			const editorElement = document.createElement( 'div' );
+		beforeEach( async () => {
+			editorElement = document.createElement( 'div' );
 			document.body.appendChild( editorElement );
 
 			return ClassicTestEditor
@@ -697,6 +697,11 @@ describe( 'LegacyTodoListEditing', () => {
 					viewDoc = view.document;
 					announcerSpy = sinon.spy( editor.ui.ariaLiveAnnouncer, 'announce' );
 				} );
+		} );
+
+		afterEach( () => {
+			editorElement.remove();
+			return editor.destroy();
 		} );
 
 		it( 'should announce entering and leaving list', () => {
