@@ -31,7 +31,7 @@ import ListPropertiesEditing from '../../src/listproperties/listpropertieseditin
 import stubUid from '../list/_utils/uid.js';
 
 describe( 'TodoListEditing', () => {
-	let editor, model, view, editorElement;
+	let editor, model, view, editorElement, modelRoot;
 
 	testUtils.createSinonSandbox();
 
@@ -44,6 +44,7 @@ describe( 'TodoListEditing', () => {
 		} );
 
 		model = editor.model;
+		modelRoot = model.document.getRoot();
 		view = editor.editing.view;
 
 		stubUid();
@@ -951,6 +952,69 @@ describe( 'TodoListEditing', () => {
 				);
 			} );
 		} );
+	} );
+
+	describe( 'accessibility', () => {
+		let announcerSpy;
+
+		beforeEach( () => {
+			announcerSpy = sinon.spy( editor.ui.ariaLiveAnnouncer, 'announce' );
+		} );
+
+		it( 'should announce entering and leaving list', () => {
+			setModelData( model,
+				'<paragraph>[Foo]</paragraph>' +
+				'<paragraph listType="todo" listIndent="0">1</paragraph>' +
+				'<paragraph listType="todo" listIndent="0" todoListChecked="true">2</paragraph>' +
+				'<paragraph>Foo</paragraph>'
+			);
+
+			moveSelection( [ 1, 0 ], [ 1, 1 ] );
+			expectAnnounce( 'Entering todo list' );
+
+			moveSelection( [ 3, 0 ], [ 3, 1 ] );
+			expectAnnounce( 'Leaving todo list' );
+		} );
+
+		it( 'should announce entering and leaving list once, even if there is nested list', () => {
+			setModelData( model,
+				'<paragraph>[Foo]</paragraph>' +
+				'<paragraph listType="todo" listIndent="0">1</paragraph>' +
+				'<paragraph listType="todo" listIndent="1">1</paragraph>' +
+				'<paragraph listType="todo" listIndent="0" todoListChecked="true">2</paragraph>' +
+				'<paragraph>Foo</paragraph>'
+			);
+
+			moveSelection( [ 1, 0 ], [ 1, 1 ] );
+			expectAnnounce( 'Entering todo list' );
+
+			moveSelection( [ 2, 0 ], [ 2, 1 ] );
+			expectNotToAnnounce( 'Leaving todo list' );
+
+			moveSelection( [ 4, 0 ], [ 4, 1 ] );
+			expectAnnounce( 'Leaving todo list' );
+		} );
+
+		function expectNotToAnnounce( message ) {
+			expect( announcerSpy ).not.to.be.calledWithExactly( 'todoList', message );
+		}
+
+		function expectAnnounce( message ) {
+			expect( announcerSpy ).to.be.calledWithExactly( 'todoList', message );
+		}
+
+		function moveSelection( startPath, endPath ) {
+			model.change( writer => {
+				writer.setSelection( createRange( modelRoot, startPath, modelRoot, endPath ) );
+			} );
+		}
+
+		function createRange( startElement, startPath, endElement, endPath ) {
+			return model.createRange(
+				model.createPositionFromPath( startElement, startPath ),
+				model.createPositionFromPath( endElement, endPath )
+			);
+		}
 	} );
 
 	describe( 'user interaction events', () => {
