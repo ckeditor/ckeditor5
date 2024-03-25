@@ -35,5 +35,8 @@
 	"Caption for the image": "Text used by screen readers do describe an image when the image has no text alternative.",
 	"Caption for image: %0": "Text used by screen readers do describe an image when there is a text alternative available, e.g. 'Caption for image: this is a description of the image.'",
 	"The value must not be empty.": "Text used as error label when user submitted custom image resize form with blank value.",
-	"The value should be a plain number.": "Text used as error label when user submitted custom image resize form with incorrect value."
+	"The value should be a plain number.": "Text used as error label when user submitted custom image resize form with incorrect value.",
+	"Uploading image": "Aria status message indicating that the image is being uploaded. Example: 'Uploading image'.",
+	"Image upload complete": "Aria status message indicating that the image has been uploaded successfully. Example: 'Image upload complete'.",
+	"Error during image upload": "Aria status message indicating that an error has occurred during image upload. Example: 'Error during image upload'."
 }
