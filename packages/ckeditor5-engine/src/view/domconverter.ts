@@ -1503,7 +1503,6 @@ export default class DomConverter {
 				// That's how multiple whitespaces are treated when rendered, so we normalize those whitespaces.
 				// We're replacing 1+ (and not 2+) to also normalize singular \n\t\r characters (#822).
 				data = node.data.replace( /[ \n\t\r]{1,}/g, ' ' );
-
 				nodeEndsWithSpace = /[^\S\u00A0]/.test( data.charAt( data.length - 1 ) );
 
 				const prevNode = i > 0 ? inlineNodes[ i - 1 ] : null;
