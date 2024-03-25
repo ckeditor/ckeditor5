@@ -8,6 +8,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import DocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment.js';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position.js';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range.js';
+import Undo from '@ckeditor/ckeditor5-undo/src/undoediting.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { parse, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
@@ -34,7 +35,11 @@ describe( 'Clipboard Markers Utils', () => {
 
 	describe( 'Check markers selection intersection', () => {
 		beforeEach( () => {
-			clipboardMarkersUtils._registerMarkerToCopy( 'comment', [ 'copy' ] );
+			clipboardMarkersUtils._registerMarkerToCopy( 'comment', {
+				allowedActions: [ 'copy' ],
+				copyPartiallySelected: true,
+				duplicateOnPaste: true
+			} );
 		} );
 
 		it( 'should copy and paste marker that is inside selection', () => {
@@ -68,10 +73,10 @@ describe( 'Clipboard Markers Utils', () => {
 
 			viewDocument.fire( 'paste', data );
 
-			checkMarker( 'comment:test:pasted', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 2, 4 ] ),
-				model.createPositionFromPath( modelRoot, [ 2, 7 ] )
-			) );
+			checkMarker( 'comment:test:pasted', {
+				start: [ 2, 4 ],
+				end: [ 2, 7 ]
+			} );
 		} );
 
 		it( 'should copy and paste marker that is outside selection', () => {
@@ -107,10 +112,10 @@ describe( 'Clipboard Markers Utils', () => {
 
 			viewDocument.fire( 'paste', data );
 
-			checkMarker( 'comment:test:pasted', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 2, 0 ] ),
-				model.createPositionFromPath( modelRoot, [ 2, 12 ] )
-			) );
+			checkMarker( 'comment:test:pasted', {
+				start: [ 2, 0 ],
+				end: [ 2, 12 ]
+			} );
 		} );
 
 		it( 'should copy and paste marker that starts before selection', () => {
@@ -145,10 +150,10 @@ describe( 'Clipboard Markers Utils', () => {
 
 			viewDocument.fire( 'paste', data );
 
-			checkMarker( 'comment:test:pasted', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 1, 0 ] ),
-				model.createPositionFromPath( modelRoot, [ 1, 5 ] )
-			) );
+			checkMarker( 'comment:test:pasted', {
+				start: [ 1, 0 ],
+				end: [ 1, 5 ]
+			} );
 		} );
 
 		it( 'should copy and paste marker that starts after selection', () => {
@@ -183,10 +188,10 @@ describe( 'Clipboard Markers Utils', () => {
 
 			viewDocument.fire( 'paste', data );
 
-			checkMarker( 'comment:test:pasted', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 1, 6 ] ),
-				model.createPositionFromPath( modelRoot, [ 1, 11 ] )
-			) );
+			checkMarker( 'comment:test:pasted', {
+				start: [ 1, 6 ],
+				end: [ 1, 11 ]
+			} );
 		} );
 
 		it( 'copy and paste markers does not affect position of markers that are after selection', () => {
@@ -222,15 +227,15 @@ describe( 'Clipboard Markers Utils', () => {
 
 			viewDocument.fire( 'paste', data );
 
-			checkMarker( 'comment:test:pasted', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 1, 6 ] ),
-				model.createPositionFromPath( modelRoot, [ 1, 11 ] )
-			) );
+			checkMarker( 'comment:test:pasted', {
+				start: [ 1, 6 ],
+				end: [ 1, 11 ]
+			} );
 
-			checkMarker( 'comment:test2:pasted', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 1, 0 ] ),
-				model.createPositionFromPath( modelRoot, [ 1, 14 ] )
-			) );
+			checkMarker( 'comment:test2:pasted', {
+				start: [ 1, 0 ],
+				end: [ 1, 14 ]
+			} );
 		} );
 
 		it( 'copy and paste fake marker that is inside another fake marker aligned to right', () => {
@@ -263,15 +268,15 @@ describe( 'Clipboard Markers Utils', () => {
 
 			viewDocument.fire( 'paste', data );
 
-			checkMarker( 'comment:test:pasted', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 1, 2 ] ),
-				model.createPositionFromPath( modelRoot, [ 1, 11 ] )
-			) );
+			checkMarker( 'comment:test:pasted', {
+				start: [ 1, 2 ],
+				end: [ 1, 11 ]
+			} );
 
-			checkMarker( 'comment:test2:pasted', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 1, 6 ] ),
-				model.createPositionFromPath( modelRoot, [ 1, 11 ] )
-			) );
+			checkMarker( 'comment:test2:pasted', {
+				start: [ 1, 6 ],
+				end: [ 1, 11 ]
+			} );
 		} );
 
 		it( 'copy and paste fake marker that is inside another fake marker aligned to left', () => {
@@ -304,15 +309,15 @@ describe( 'Clipboard Markers Utils', () => {
 
 			viewDocument.fire( 'paste', data );
 
-			checkMarker( 'comment:test:pasted', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 1, 0 ] ),
-				model.createPositionFromPath( modelRoot, [ 1, 11 ] )
-			) );
+			checkMarker( 'comment:test:pasted', {
+				start: [ 1, 0 ],
+				end: [ 1, 11 ]
+			} );
 
-			checkMarker( 'comment:test2:pasted', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 1, 0 ] ),
-				model.createPositionFromPath( modelRoot, [ 1, 5 ] )
-			) );
+			checkMarker( 'comment:test2:pasted', {
+				start: [ 1, 0 ],
+				end: [ 1, 5 ]
+			} );
 		} );
 
 		it( 'copy and paste fake marker that is inside another larger fake marker', () => {
@@ -345,15 +350,15 @@ describe( 'Clipboard Markers Utils', () => {
 
 			viewDocument.fire( 'paste', data );
 
-			checkMarker( 'comment:test:pasted', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 1, 0 ] ),
-				model.createPositionFromPath( modelRoot, [ 1, 11 ] )
-			) );
+			checkMarker( 'comment:test:pasted', {
+				start: [ 1, 0 ],
+				end: [ 1, 11 ]
+			} );
 
-			checkMarker( 'comment:test2:pasted', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 1, 5 ] ),
-				model.createPositionFromPath( modelRoot, [ 1, 8 ] )
-			) );
+			checkMarker( 'comment:test2:pasted', {
+				start: [ 1, 5 ],
+				end: [ 1, 8 ]
+			} );
 		} );
 	} );
 
@@ -383,6 +388,284 @@ describe( 'Clipboard Markers Utils', () => {
 			viewDocument.fire( 'copy', data );
 
 			expect( data.dataTransfer.getData( 'text/html' ) ).to.equal( 'Foo Bar Test' );
+		} );
+	} );
+
+	describe( 'Copy partial selection', () => {
+		it( 'should be possible to copy partially selected markers if `copyPartiallySelected` is set to `true`', () => {
+			clipboardMarkersUtils._registerMarkerToCopy( 'comment', {
+				allowedActions: 'all',
+				copyPartiallySelected: true,
+				duplicateOnPaste: true
+			} );
+
+			setModelData(
+				model,
+				wrapWithTag( 'paragraph', '[He]llo World' ) + wrapWithTag( 'paragraph', '' )
+			);
+
+			appendMarker( 'comment:test', { start: [ 0, 1 ], end: [ 0, 4 ] } );
+
+			const data = {
+				dataTransfer: createDataTransfer(),
+				preventDefault: () => {},
+				stopPropagation: () => {}
+			};
+
+			viewDocument.fire( 'cut', data );
+
+			model.change( writer => {
+				writer.setSelection(
+					writer.createRangeIn( editor.model.document.getRoot().getChild( 1 ) ),
+					0
+				);
+			} );
+
+			viewDocument.fire( 'paste', data );
+
+			expect( model.markers.has( 'comment:test:pasted' ) ).to.true;
+		} );
+
+		it( 'should not be possible to copy partially selected markers if `copyPartiallySelected` is set to `false`', () => {
+			clipboardMarkersUtils._registerMarkerToCopy( 'comment', { allowedActions: 'all', copyPartiallySelected: false } );
+
+			setModelData(
+				model,
+				wrapWithTag( 'paragraph', '[He]llo World' ) + wrapWithTag( 'paragraph', '' )
+			);
+
+			appendMarker( 'comment:test', { start: [ 0, 1 ], end: [ 0, 4 ] } );
+
+			const data = {
+				dataTransfer: createDataTransfer(),
+				preventDefault: () => {},
+				stopPropagation: () => {}
+			};
+
+			viewDocument.fire( 'cut', data );
+
+			model.change( writer => {
+				writer.setSelection(
+					writer.createRangeIn( editor.model.document.getRoot().getChild( 1 ) ),
+					0
+				);
+			} );
+
+			viewDocument.fire( 'paste', data );
+
+			expect( model.markers.has( 'comment:test:pasted' ) ).to.false;
+		} );
+	} );
+
+	describe( 'duplicateOnPaste flag behavior', () => {
+		it( 'should insert marker with regenerated ID on cut and `duplicateOnPaste` is set to `false`', () => {
+			clipboardMarkersUtils._registerMarkerToCopy( 'comment', {
+				allowedActions: 'all',
+				duplicateOnPaste: false,
+				copyPartiallySelected: true
+			} );
+
+			setModelData(
+				model,
+				wrapWithTag( 'paragraph', '[Hello World]' ) + wrapWithTag( 'paragraph', '' )
+			);
+
+			appendMarker( 'comment:test', { start: [ 0, 2 ], end: [ 0, 4 ] } );
+
+			const data = {
+				dataTransfer: createDataTransfer(),
+				preventDefault: () => {},
+				stopPropagation: () => {}
+			};
+
+			viewDocument.fire( 'cut', data );
+
+			model.change( writer => {
+				writer.setSelection(
+					writer.createRangeIn( editor.model.document.getRoot().getChild( 1 ) ),
+					0
+				);
+			} );
+
+			viewDocument.fire( 'paste', data );
+
+			checkMarker( 'comment:test:pasted', {
+				start: [ 1, 2 ],
+				end: [ 1, 4 ]
+			} );
+
+			editor.execute( 'undo' );
+			editor.execute( 'undo' );
+
+			// pasted comment is removed
+			expect( editor.model.markers.get( 'comment:test:pasted' ) ).to.be.null;
+		} );
+
+		it( 'should not insert marker with the same name on paste if `duplicateOnPaste` is set to `false`', () => {
+			clipboardMarkersUtils._registerMarkerToCopy( 'comment', {
+				allowedActions: 'all',
+				duplicateOnPaste: false,
+				copyPartiallySelected: true
+			} );
+
+			setModelData(
+				model,
+				wrapWithTag( 'paragraph', '[He]llo World' ) + wrapWithTag( 'paragraph', '' ) + wrapWithTag( 'paragraph', '' )
+			);
+
+			appendMarker( 'comment:test', { start: [ 0, 1 ], end: [ 0, 4 ] } );
+
+			const data = {
+				dataTransfer: createDataTransfer(),
+				preventDefault: () => {},
+				stopPropagation: () => {}
+			};
+
+			viewDocument.fire( 'copy', data );
+
+			model.change( writer => {
+				writer.setSelection(
+					writer.createRangeIn( editor.model.document.getRoot().getChild( 1 ) ),
+					0
+				);
+			} );
+
+			viewDocument.fire( 'paste', data );
+
+			model.change( writer => {
+				writer.setSelection(
+					writer.createRangeIn( editor.model.document.getRoot().getChild( 2 ) ),
+					0
+				);
+			} );
+
+			viewDocument.fire( 'paste', data );
+
+			expect( model.markers.has( 'comment:test' ) ).to.true;
+			expect( model.markers.has( 'comment:test:pasted' ) ).to.false;
+		} );
+
+		it( 'should insert marker with the same name on paste if `duplicateOnPaste` is set to `true`', () => {
+			clipboardMarkersUtils._registerMarkerToCopy( 'comment', {
+				allowedActions: 'all',
+				duplicateOnPaste: true,
+				copyPartiallySelected: true
+			} );
+
+			setModelData(
+				model,
+				wrapWithTag( 'paragraph', '[He]llo World' ) + wrapWithTag( 'paragraph', '' ) + wrapWithTag( 'paragraph', '' )
+			);
+
+			appendMarker( 'comment:test', { start: [ 0, 1 ], end: [ 0, 4 ] } );
+
+			const data = {
+				dataTransfer: createDataTransfer(),
+				preventDefault: () => {},
+				stopPropagation: () => {}
+			};
+
+			viewDocument.fire( 'copy', data );
+
+			model.change( writer => {
+				writer.setSelection(
+					writer.createRangeIn( editor.model.document.getRoot().getChild( 1 ) ),
+					0
+				);
+			} );
+
+			let pasteIndex = 0;
+			getUniqueMarkerNameStub = getUniqueMarkerNameStub.callsFake( () => `comment:test:${ pasteIndex++ }` );
+
+			viewDocument.fire( 'paste', data );
+			model.change( writer => {
+				writer.setSelection(
+					writer.createRangeIn( editor.model.document.getRoot().getChild( 2 ) ),
+					0
+				);
+			} );
+
+			viewDocument.fire( 'paste', data );
+			expect( model.markers.has( 'comment:test:0' ) ).to.true;
+			expect( model.markers.has( 'comment:test:1' ) ).to.true;
+		} );
+	} );
+
+	describe( '_removeFakeMarkersInsideElement', () => {
+		it( 'should duplicate fake-markers in element if `duplicateOnPaste` = `true`', () => {
+			clipboardMarkersUtils._registerMarkerToCopy( 'comment', {
+				allowedActions: 'all',
+				duplicateOnPaste: true
+			} );
+
+			model.change( writer => {
+				const fragment = new DocumentFragment( [
+					...createFakeMarkerElements( writer, 'comment:123', [
+						writer.createElement( 'paragraph' )
+					] ),
+					writer.createElement( 'paragraph' ),
+					...createFakeMarkerElements( writer, 'comment:123', [
+						writer.createElement( 'paragraph' )
+					] )
+				] );
+
+				const markers = clipboardMarkersUtils._removeFakeMarkersInsideElement( writer, fragment );
+
+				expect( Object.keys( markers ) ).deep.equal( [ 'comment:123', 'comment:123:pasted' ] );
+			} );
+		} );
+
+		it( 'should not duplicate fake-markers in element if `duplicateOnPaste` = `true`', () => {
+			clipboardMarkersUtils._registerMarkerToCopy( 'comment', {
+				allowedActions: 'all',
+				duplicateOnPaste: false
+			} );
+
+			model.change( writer => {
+				const fragment = new DocumentFragment( [
+					...createFakeMarkerElements( writer, 'comment:123', [
+						writer.createElement( 'paragraph' )
+					] ),
+					writer.createElement( 'paragraph' ),
+					...createFakeMarkerElements( writer, 'comment:123', [
+						writer.createElement( 'paragraph' )
+					] )
+				] );
+
+				const markers = clipboardMarkersUtils._removeFakeMarkersInsideElement( writer, fragment );
+
+				expect( Object.keys( markers ) ).deep.equal( [ 'comment:123' ] );
+			} );
+		} );
+
+		function createFakeMarkerElements( writer, name, content = [] ) {
+			return [
+				writer.createElement( '$marker', { 'data-type': 'start', 'data-name': name } ),
+				...content,
+				writer.createElement( '$marker', { 'data-type': 'end', 'data-name': name } )
+			];
+		}
+	} );
+
+	describe( '_forceMarkersCopy', () => {
+		it( 'properly reverts old marker restricted actions', () => {
+			clipboardMarkersUtils._registerMarkerToCopy( 'comment', {
+				allowedActions: [ 'cut' ],
+				copyPartiallySelected: true
+			} );
+
+			clipboardMarkersUtils._forceMarkersCopy( 'comment', () => {
+				expect( getMarkerRestrictions() ).deep.equal( {
+					allowedActions: 'all',
+					duplicateOnPaste: true,
+					copyPartiallySelected: true
+				} );
+			} );
+
+			expect( getMarkerRestrictions() ).deep.equal( {
+				allowedActions: [ 'cut' ],
+				copyPartiallySelected: true
+			} );
 		} );
 
 		it( 'should be possible to force markers copy', () => {
@@ -419,10 +702,10 @@ describe( 'Clipboard Markers Utils', () => {
 
 				viewDocument.fire( 'paste', data );
 
-				checkMarker( 'comment:test:pasted', model.createRange(
-					model.createPositionFromPath( modelRoot, [ 2, 0 ] ),
-					model.createPositionFromPath( modelRoot, [ 2, 12 ] )
-				) );
+				checkMarker( 'comment:test:pasted', {
+					start: [ 2, 0 ],
+					end: [ 2, 12 ]
+				} );
 			} );
 		} );
 
@@ -460,166 +743,11 @@ describe( 'Clipboard Markers Utils', () => {
 
 				viewDocument.fire( 'paste', data );
 
-				checkMarker( 'new:test:pasted', model.createRange(
-					model.createPositionFromPath( modelRoot, [ 2, 0 ] ),
-					model.createPositionFromPath( modelRoot, [ 2, 12 ] )
-				) );
-			} );
-		} );
-	} );
-
-	describe( 'Presets', () => {
-		it( 'should not copy marker in default preset', () => {
-			clipboardMarkersUtils._registerMarkerToCopy( 'comment', 'default' );
-
-			setModelData(
-				model,
-				wrapWithTag( 'paragraph', 'Hello World' ) + wrapWithTag( 'paragraph', '' )
-			);
-
-			appendMarker( 'comment:test', { start: [ 0, 0 ], end: [ 0, 3 ] } );
-
-			model.change( writer => {
-				writer.setSelection(
-					writer.createRangeOn( editor.model.document.getRoot().getChild( 0 ) ),
-					0
-				);
-			} );
-
-			const data = {
-				dataTransfer: createDataTransfer(),
-				preventDefault: () => {},
-				stopPropagation: () => {}
-			};
-
-			viewDocument.fire( 'copy', data );
-
-			model.change( writer => {
-				writer.setSelection(
-					writer.createRangeIn( editor.model.document.getRoot().getChild( 1 ) ),
-					0
-				);
-			} );
-
-			viewDocument.fire( 'paste', data );
-
-			expect( model.markers.has( 'comment:test:pasted' ) ).to.false;
-		} );
-
-		it( 'should cut marker in default preset', () => {
-			clipboardMarkersUtils._registerMarkerToCopy( 'comment', 'default' );
-
-			setModelData(
-				model,
-				wrapWithTag( 'paragraph', 'Hello World' ) + wrapWithTag( 'paragraph', '' )
-			);
-
-			appendMarker( 'comment:test', { start: [ 0, 0 ], end: [ 0, 3 ] } );
-
-			model.change( writer => {
-				writer.setSelection(
-					writer.createRangeOn( editor.model.document.getRoot().getChild( 0 ) ),
-					0
-				);
-			} );
-
-			const data = {
-				dataTransfer: createDataTransfer(),
-				preventDefault: () => {},
-				stopPropagation: () => {}
-			};
-
-			viewDocument.fire( 'cut', data );
-
-			model.change( writer => {
-				writer.setSelection(
-					writer.createRangeIn( editor.model.document.getRoot().getChild( 1 ) ),
-					0
-				);
-			} );
-
-			viewDocument.fire( 'paste', data );
-			expect( model.markers.has( 'comment:test:pasted' ) ).to.true;
-		} );
-
-		for ( const emptyPreset of [ 'never', 'dummy' ] ) {
-			it( `should not cut marker in ${ emptyPreset } preset`, () => {
-				clipboardMarkersUtils._registerMarkerToCopy( 'comment', emptyPreset );
-
-				setModelData(
-					model,
-					wrapWithTag( 'paragraph', 'Hello World' ) + wrapWithTag( 'paragraph', '' )
-				);
-
-				appendMarker( 'comment:test', { start: [ 0, 0 ], end: [ 0, 3 ] } );
-
-				model.change( writer => {
-					writer.setSelection(
-						writer.createRangeOn( editor.model.document.getRoot().getChild( 0 ) ),
-						0
-					);
+				checkMarker( 'new:test:pasted', {
+					start: [ 2, 0 ],
+					end: [ 2, 12 ]
 				} );
-
-				const data = {
-					dataTransfer: createDataTransfer(),
-					preventDefault: () => {},
-					stopPropagation: () => {}
-				};
-
-				viewDocument.fire( 'cut', data );
-
-				model.change( writer => {
-					writer.setSelection(
-						writer.createRangeIn( editor.model.document.getRoot().getChild( 1 ) ),
-						0
-					);
-				} );
-
-				viewDocument.fire( 'paste', data );
-				expect( model.markers.has( 'comment:test:pasted' ) ).to.false;
 			} );
-		}
-	} );
-
-	describe( '_removeFakeMarkersInsideElement', () => {
-		it( 'should handle duplicated fake-markers in element', () => {
-			model.change( writer => {
-				const fragment = new DocumentFragment( [
-					...createFakeMarkerElements( writer, 'comment:123', [
-						writer.createElement( 'paragraph' )
-					] ),
-					writer.createElement( 'paragraph' ),
-					...createFakeMarkerElements( writer, 'comment:123', [
-						writer.createElement( 'paragraph' )
-					] )
-				] );
-
-				const markers = clipboardMarkersUtils._removeFakeMarkersInsideElement( writer, fragment );
-
-				expect( Object.keys( markers ) ).deep.equal( [ 'comment:123', 'comment:123:pasted' ] );
-			} );
-		} );
-
-		function createFakeMarkerElements( writer, name, content = [] ) {
-			return [
-				writer.createElement( '$marker', { 'data-type': 'start', 'data-name': name } ),
-				...content,
-				writer.createElement( '$marker', { 'data-type': 'end', 'data-name': name } )
-			];
-		}
-	} );
-
-	describe( '_forceMarkersCopy', () => {
-		it( 'properly reverts old marker restricted actions', () => {
-			clipboardMarkersUtils._registerMarkerToCopy( 'comment', [ 'cut' ] );
-
-			expect( getMarkerRestrictions() ).deep.equal( [ 'cut' ] );
-
-			clipboardMarkersUtils._forceMarkersCopy( 'comment', () => {
-				expect( getMarkerRestrictions() ).deep.equal( clipboardMarkersUtils._mapRestrictionPresetToActions( 'always' ) );
-			} );
-
-			expect( getMarkerRestrictions() ).deep.equal( [ 'cut' ] );
 		} );
 
 		function getMarkerRestrictions() {
@@ -627,53 +755,81 @@ describe( 'Clipboard Markers Utils', () => {
 		}
 	} );
 
-	describe( '_canPerformMarkerClipboardAction', () => {
+	describe( '_isMarkerCopyable', () => {
 		it( 'returns false on non existing clipboard markers', () => {
-			const result = clipboardMarkersUtils._canPerformMarkerClipboardAction( 'Hello', 'cut' );
+			const result = clipboardMarkersUtils._isMarkerCopyable( 'Hello', 'cut' );
 
 			expect( result ).to.false;
 		} );
 	} );
 
-	describe( '_getCopyableMarkersFromRangeMap', () => {
-		it( 'properly filters markers Map instance', () => {
-			clipboardMarkersUtils._registerMarkerToCopy( 'comment', [ 'cut' ] );
+	describe( '_getCopyableMarkersFromSelection', () => {
+		it( 'force regenerate marker id in `dragstart` action', () => {
+			clipboardMarkersUtils._registerMarkerToCopy( 'comment', {
+				allowedActions: [ 'dragstart' ],
+				copyPartiallySelected: true
+			} );
 
-			const { markers } = createFragmentWithMarkers(
-				wrapWithTag( 'paragraph', 'Hello world' ),
-				{
-					'comment:a': { start: [ 0, 0 ], end: [ 0, 6 ] },
-					'comment:b': { start: [ 0, 0 ], end: [ 0, 7 ] }
-				}
+			setModelData(
+				model,
+				wrapWithTag( 'paragraph', '[Hello World]' )
 			);
 
-			let result = clipboardMarkersUtils._getCopyableMarkersFromRangeMap( markers, 'copy' );
+			appendMarker( 'comment:test', { start: [ 0, 0 ], end: [ 0, 4 ] } );
+
+			const result = model.change(
+				writer => clipboardMarkersUtils._getCopyableMarkersFromSelection( writer, writer.model.document.selection, 'dragstart' )
+			);
+
+			expect( result[ 0 ].name ).to.equal( 'comment:test:pasted' );
+		} );
+	} );
+
+	describe( '_getPasteMarkersFromRangeMap', () => {
+		it( 'keeps unknown markers', () => {
+			const copyMarkers = createCopyableMarkersMap( new DocumentFragment(), {
+				'unknown-marker': { start: [ 0, 0 ], end: [ 0, 6 ] }
+			} );
+
+			const result = clipboardMarkersUtils._getPasteMarkersFromRangeMap( copyMarkers );
+
+			expect( result ).be.deep.equal( [
+				{ name: 'unknown-marker', range: copyMarkers.get( 'unknown-marker' ) }
+			] );
+		} );
+
+		it( 'properly filters markers Map instance', () => {
+			clipboardMarkersUtils._registerMarkerToCopy( 'comment', { allowedActions: [ 'cut' ] } );
+
+			const copyMarkers = createCopyableMarkersMap( new DocumentFragment(), {
+				'comment:a': { start: [ 0, 0 ], end: [ 0, 6 ] },
+				'comment:b': { start: [ 0, 0 ], end: [ 0, 7 ] }
+			} );
+
+			let result = clipboardMarkersUtils._getPasteMarkersFromRangeMap( copyMarkers, 'copy' );
 			expect( result ).be.deep.equal( [] );
 
-			result = clipboardMarkersUtils._getCopyableMarkersFromRangeMap( markers, 'cut' );
+			result = clipboardMarkersUtils._getPasteMarkersFromRangeMap( copyMarkers, 'cut' );
 			expect( result ).be.deep.equal( [
-				{ name: 'comment:a', range: markers.get( 'comment:a' ) },
-				{ name: 'comment:b', range: markers.get( 'comment:b' ) }
+				{ name: 'comment:a', range: copyMarkers.get( 'comment:a' ) },
+				{ name: 'comment:b', range: copyMarkers.get( 'comment:b' ) }
 			] );
 		} );
 
 		it( 'properly filters markers Record instance', () => {
-			clipboardMarkersUtils._registerMarkerToCopy( 'comment', [ 'cut' ] );
+			clipboardMarkersUtils._registerMarkerToCopy( 'comment', { allowedActions: [ 'cut' ] } );
 
 			const markers = Object.fromEntries(
-				createFragmentWithMarkers(
-					wrapWithTag( 'paragraph', 'Hello world' ),
-					{
-						'comment:a': { start: [ 0, 0 ], end: [ 0, 6 ] },
-						'comment:b': { start: [ 0, 0 ], end: [ 0, 7 ] }
-					}
-				).markers.entries()
+				createCopyableMarkersMap( new DocumentFragment(), {
+					'comment:a': { start: [ 0, 0 ], end: [ 0, 6 ] },
+					'comment:b': { start: [ 0, 0 ], end: [ 0, 7 ] }
+				} ).entries()
 			);
 
-			let result = clipboardMarkersUtils._getCopyableMarkersFromRangeMap( markers, 'copy' );
+			let result = clipboardMarkersUtils._getPasteMarkersFromRangeMap( markers, 'copy' );
 			expect( result ).be.deep.equal( [] );
 
-			result = clipboardMarkersUtils._getCopyableMarkersFromRangeMap( markers, 'cut' );
+			result = clipboardMarkersUtils._getPasteMarkersFromRangeMap( markers, 'cut' );
 			expect( result ).be.deep.equal( [
 				{ name: 'comment:a', range: markers[ 'comment:a' ] },
 				{ name: 'comment:b', range: markers[ 'comment:b' ] }
@@ -708,43 +864,15 @@ describe( 'Clipboard Markers Utils', () => {
 
 	describe( '_pasteMarkersIntoTransformedElement', () => {
 		beforeEach( () => {
-			clipboardMarkersUtils._registerMarkerToCopy( 'comment', 'always' );
-		} );
-
-		it( 'should preserve original marker name if it is not duplicated', () => {
-			const copiedFragment = createFragmentWithMarkers(
-				wrapWithTag( 'paragraph', 'Hello world' ),
-				{
-					'comment:a': { start: [ 0, 0 ], end: [ 0, 6 ] },
-					'comment:b': { start: [ 0, 0 ], end: [ 0, 7 ] }
-				}
-			);
-
-			clipboardMarkersUtils._pasteMarkersIntoTransformedElement(
-				copiedFragment.markers,
-				writer => {
-					writer.insert( copiedFragment, modelRoot, 0 );
-					writer.removeMarker( 'comment:a' );
-					writer.removeMarker( 'comment:b' );
-
-					return editor.model.document.getRoot().getChild( 0 );
-				}
-			);
-
-			checkMarker( 'comment:a', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 0, 0 ] ),
-				model.createPositionFromPath( modelRoot, [ 0, 6 ] )
-			) );
-
-			checkMarker( 'comment:b', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 0, 0 ] ),
-				model.createPositionFromPath( modelRoot, [ 0, 7 ] )
-			) );
+			clipboardMarkersUtils._registerMarkerToCopy( 'comment', {
+				allowedActions: 'all'
+			} );
 		} );
 
 		it( 'should add real markers to pasted fragment (overlap at the start)', () => {
-			const copiedFragment = createFragmentWithMarkers(
-				wrapWithTag( 'paragraph', 'Hello world' ),
+			const copiedFragment = createFragment( wrapWithTag( 'paragraph', 'Hello world' ) );
+			const copyMarkers = createCopyableMarkersMap(
+				copiedFragment,
 				{
 					'comment:a': { start: [ 0, 0 ], end: [ 0, 6 ] },
 					'comment:b': { start: [ 0, 0 ], end: [ 0, 7 ] }
@@ -752,27 +880,28 @@ describe( 'Clipboard Markers Utils', () => {
 			);
 
 			clipboardMarkersUtils._pasteMarkersIntoTransformedElement(
-				copiedFragment.markers,
+				copyMarkers,
 				writer => {
 					writer.insert( copiedFragment, modelRoot, 0 );
 					return editor.model.document.getRoot().getChild( 0 );
 				}
 			);
 
-			checkMarker( 'comment:a:pasted', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 0, 0 ] ),
-				model.createPositionFromPath( modelRoot, [ 0, 6 ] )
-			) );
+			checkMarker( 'comment:a', {
+				start: [ 0, 0 ],
+				end: [ 0, 6 ]
+			} );
 
-			checkMarker( 'comment:b:pasted', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 0, 0 ] ),
-				model.createPositionFromPath( modelRoot, [ 0, 7 ] )
-			) );
+			checkMarker( 'comment:b', {
+				start: [ 0, 0 ],
+				end: [ 0, 7 ]
+			} );
 		} );
 
 		it( 'should add real markers to pasted fragment (overlap at the end)', () => {
-			const copiedFragment = createFragmentWithMarkers(
-				wrapWithTag( 'paragraph', 'Hello world' ),
+			const copiedFragment = createFragment( wrapWithTag( 'paragraph', 'Hello world' ) );
+			const copyMarkers = createCopyableMarkersMap(
+				copiedFragment,
 				{
 					'comment:a': { start: [ 0, 5 ], end: [ 0, 11 ] },
 					'comment:b': { start: [ 0, 4 ], end: [ 0, 11 ] }
@@ -780,27 +909,28 @@ describe( 'Clipboard Markers Utils', () => {
 			);
 
 			clipboardMarkersUtils._pasteMarkersIntoTransformedElement(
-				copiedFragment.markers,
+				copyMarkers,
 				writer => {
 					writer.insert( copiedFragment, modelRoot, 0 );
 					return editor.model.document.getRoot().getChild( 0 );
 				}
 			);
 
-			checkMarker( 'comment:a:pasted', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 0, 5 ] ),
-				model.createPositionFromPath( modelRoot, [ 0, 11 ] )
-			) );
+			checkMarker( 'comment:a', {
+				start: [ 0, 5 ],
+				end: [ 0, 11 ]
+			} );
 
-			checkMarker( 'comment:b:pasted', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 0, 4 ] ),
-				model.createPositionFromPath( modelRoot, [ 0, 11 ] )
-			) );
+			checkMarker( 'comment:b', {
+				start: [ 0, 4 ],
+				end: [ 0, 11 ]
+			} );
 		} );
 
 		it( 'should add real markers to pasted fragment (overlap at center)', () => {
-			const copiedFragment = createFragmentWithMarkers(
-				wrapWithTag( 'paragraph', 'Hello world' ),
+			const copiedFragment = createFragment( wrapWithTag( 'paragraph', 'Hello world' ) );
+			const copyMarkers = createCopyableMarkersMap(
+				copiedFragment,
 				{
 					'comment:a': { start: [ 0, 4 ], end: [ 0, 8 ] },
 					'comment:b': { start: [ 0, 0 ], end: [ 0, 11 ] }
@@ -808,28 +938,28 @@ describe( 'Clipboard Markers Utils', () => {
 			);
 
 			clipboardMarkersUtils._pasteMarkersIntoTransformedElement(
-				copiedFragment.markers,
+				copyMarkers,
 				writer => {
 					writer.insert( copiedFragment, modelRoot, 0 );
 					return editor.model.document.getRoot().getChild( 0 );
 				}
 			);
 
-			checkMarker( 'comment:a:pasted', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 0, 4 ] ),
-				model.createPositionFromPath( modelRoot, [ 0, 8 ] )
-			) );
+			checkMarker( 'comment:a', {
+				start: [ 0, 4 ],
+				end: [ 0, 8 ]
+			} );
 
-			checkMarker( 'comment:b:pasted', model.createRange(
-				model.createPositionFromPath( modelRoot, [ 0, 0 ] ),
-				model.createPositionFromPath( modelRoot, [ 0, 11 ] )
-			) );
+			checkMarker( 'comment:b', {
+				start: [ 0, 0 ],
+				end: [ 0, 11 ]
+			} );
 		} );
 	} );
 
 	async function createEditor() {
 		editor = await ClassicTestEditor.create( element, {
-			plugins: [ Paragraph, Clipboard ]
+			plugins: [ Undo, Paragraph, Clipboard ]
 		} );
 
 		model = editor.model;
@@ -837,7 +967,7 @@ describe( 'Clipboard Markers Utils', () => {
 		viewDocument = editor.editing.view.document;
 
 		clipboardMarkersUtils = editor.plugins.get( 'ClipboardMarkersUtils' );
-		clipboardMarkersUtils._registerMarkerToCopy( 'comment', [ ] );
+		clipboardMarkersUtils._registerMarkerToCopy( 'comment', { allowedActions: [ ] } );
 
 		getUniqueMarkerNameStub = sinon
 			.stub( clipboardMarkersUtils, '_getUniqueMarkerName' )
@@ -860,6 +990,30 @@ describe( 'Clipboard Markers Utils', () => {
 		} );
 	}
 
+	function createFragment( content ) {
+		let parsedContent = parse( content, model.schema, {
+			context: [ '$clipboardHolder' ]
+		} );
+
+		if ( !parsedContent.is( 'documentFragment' ) ) {
+			parsedContent = new DocumentFragment( [ parsedContent ] );
+		}
+
+		return parsedContent;
+	}
+
+	function createCopyableMarkersMap( fragment, markers ) {
+		const markersMap = new Map();
+
+		for ( const [ name, value ] of Object.entries( markers ) ) {
+			markersMap.set( name, new Range(
+				new Position( fragment, value.start ), new Position( fragment, value.end )
+			) );
+		}
+
+		return markersMap;
+	}
+
 	function wrapWithTag( tag, content ) {
 		return `<${ tag }>${ content }</${ tag }>`;
 	}
@@ -879,7 +1033,15 @@ describe( 'Clipboard Markers Utils', () => {
 		const marker = editor.model.markers.get( name );
 
 		expect( marker ).to.not.be.null;
-		expect( marker.getRange().isEqual( range ) ).to.be.true;
+
+		if ( range instanceof Range ) {
+			expect( marker.getRange().isEqual( range ) ).to.be.true;
+		} else {
+			const markerRange = marker.getRange();
+
+			expect( markerRange.start.path ).to.deep.equal( range.start );
+			expect( markerRange.end.path ).to.deep.equal( range.end );
+		}
 	}
 
 	function createDataTransfer() {
@@ -894,29 +1056,5 @@ describe( 'Clipboard Markers Utils', () => {
 				return store.get( type );
 			}
 		};
-	}
-
-	function createFragmentWithMarkers( content, markers ) {
-		let parsedContent = parse( content, model.schema, {
-			context: [ '$clipboardHolder' ]
-		} );
-
-		if ( markers && !parsedContent.is( 'documentFragment' ) ) {
-			parsedContent = new DocumentFragment( [ parsedContent ] );
-		}
-
-		if ( markers ) {
-			const markersMap = new Map();
-
-			for ( const [ name, value ] of Object.entries( markers ) ) {
-				markersMap.set( name, new Range(
-					new Position( parsedContent, value.start ), new Position( parsedContent, value.end )
-				) );
-			}
-
-			parsedContent.markers = markersMap;
-		}
-
-		return parsedContent;
 	}
 } );
