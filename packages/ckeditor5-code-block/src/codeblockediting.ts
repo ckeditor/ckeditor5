@@ -296,7 +296,6 @@ export default class CodeBlockEditing extends Plugin {
 		const languageDefs = getNormalizedAndLocalizedLanguageDefinitions( this.editor );
 
 		let lastFocusedCodeBlock: Element | null = null;
-		let lastAnnouncement: string | null = null;
 
 		const joinAnnouncements = ( announcements: Array<string> ) => upperFirst(
 			announcements
@@ -322,25 +321,12 @@ export default class CodeBlockEditing extends Plugin {
 			}
 
 			if ( ui && announcements.length ) {
-				let announcement = joinAnnouncements( announcements );
+				const announcement = joinAnnouncements( announcements );
 
-				// Handle edge case when:
-				//
-				// 	1. user enters code block #1 with PHP language.
-				//  2. user enters code block #2 with PHP language.
-				//	3. user leaves code block #2 and comes back to code block #1 with identical language
-				//
-				// In this scenario `announcement` will be identical (`Leaving PHP code block, entering PHP code block`)
-				// Screen reader will not detect this change because `aria-live` is identical with previous one and
-				// will skip reading the label.
-				//
-				// Try to bypass this issue by toggling non readable character at the end of phrase.
-				if ( lastAnnouncement === announcement ) {
-					announcement += '.';
-				}
-
-				ui.ariaLiveAnnouncer.announce( 'codeBlocks', announcement, 'assertive' );
-				lastAnnouncement = announcement;
+				ui.ariaLiveAnnouncer.announce( 'codeBlocks', announcement, {
+					politeness: 'assertive',
+					allowReadAgain: true
+				} );
 			}
 
 			lastFocusedCodeBlock = focusParent;

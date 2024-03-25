@@ -1804,13 +1804,13 @@ describe( 'CodeBlockEditing', () => {
 				writer.setSelection( createRange( root, [ 0, 0 ], root, [ 0, 1 ] ) );
 			} );
 
-			expect( announcerSpy ).to.be.calledWithExactly( 'codeBlocks', 'Entering CSS code snippet', 'assertive' );
+			expectAnnounce( 'Entering CSS code snippet' );
 
 			model.change( writer => {
 				writer.setSelection( createRange( root, [ 1, 0 ], root, [ 1, 1 ] ) );
 			} );
 
-			expect( announcerSpy ).to.be.calledWithExactly( 'codeBlocks', 'Leaving CSS code snippet', 'assertive' );
+			expectAnnounce( 'Leaving CSS code snippet' );
 		} );
 
 		it( 'should announce enter and leave code block without language label', () => {
@@ -1820,13 +1820,13 @@ describe( 'CodeBlockEditing', () => {
 				writer.setSelection( createRange( root, [ 0, 0 ], root, [ 0, 1 ] ) );
 			} );
 
-			expect( announcerSpy ).to.be.calledWithExactly( 'codeBlocks', 'Entering code snippet', 'assertive' );
+			expectAnnounce( 'Entering code snippet' );
 
 			model.change( writer => {
 				writer.setSelection( createRange( root, [ 1, 0 ], root, [ 1, 1 ] ) );
 			} );
 
-			expect( announcerSpy ).to.be.calledWithExactly( 'codeBlocks', 'Leaving code snippet', 'assertive' );
+			expectAnnounce( 'Leaving code snippet' );
 		} );
 
 		it( 'should announce sequential entry and exit of a code block with paragraph between', () => {
@@ -1836,19 +1836,19 @@ describe( 'CodeBlockEditing', () => {
 				writer.setSelection( createRange( root, [ 0, 0 ], root, [ 0, 1 ] ) );
 			} );
 
-			expect( announcerSpy ).to.be.calledWithExactly( 'codeBlocks', 'Entering PHP code snippet', 'assertive' );
+			expectAnnounce( 'Entering PHP code snippet' );
 
 			model.change( writer => {
 				writer.setSelection( createRange( root, [ 1, 0 ], root, [ 1, 1 ] ) );
 			} );
 
-			expect( announcerSpy ).to.be.calledWithExactly( 'codeBlocks', 'Leaving PHP code snippet', 'assertive' );
+			expectAnnounce( 'Leaving PHP code snippet' );
 
 			model.change( writer => {
 				writer.setSelection( createRange( root, [ 2, 0 ], root, [ 2, 1 ] ) );
 			} );
 
-			expect( announcerSpy ).to.be.calledWithExactly( 'codeBlocks', 'Entering CSS code snippet', 'assertive' );
+			expectAnnounce( 'Entering CSS code snippet' );
 		} );
 
 		it( 'should announce sequential entry and exit of a code block that starts immediately after another code block', () => {
@@ -1865,27 +1865,19 @@ describe( 'CodeBlockEditing', () => {
 				writer.setSelection( createRange( root, [ 0, 0 ], root, [ 0, 1 ] ) );
 			} );
 
-			expect( announcerSpy ).to.be.calledWithExactly( 'codeBlocks', 'Entering CSS code snippet', 'assertive' );
+			expectAnnounce( 'Entering CSS code snippet' );
 
 			model.change( writer => {
 				writer.setSelection( createRange( root, [ 1, 0 ], root, [ 1, 1 ] ) );
 			} );
 
-			expect( announcerSpy ).to.be.calledWithExactly(
-				'codeBlocks',
-				'Leaving CSS code snippet, entering PHP code snippet',
-				'assertive'
-			);
+			expectAnnounce( 'Leaving CSS code snippet, entering PHP code snippet' );
 
 			model.change( writer => {
 				writer.setSelection( createRange( root, [ 2, 0 ], root, [ 2, 1 ] ) );
 			} );
 
-			expect( announcerSpy ).to.be.calledWithExactly(
-				'codeBlocks',
-				'Leaving PHP code snippet',
-				'assertive'
-			);
+			expectAnnounce( 'Leaving PHP code snippet' );
 		} );
 
 		it( 'should announce random enter and exit of a code block that starts immediately after another code block', () => {
@@ -1904,78 +1896,37 @@ describe( 'CodeBlockEditing', () => {
 				writer.setSelection( createRange( root, [ 2, 0 ], root, [ 2, 1 ] ) );
 			} );
 
-			expect( announcerSpy ).to.be.calledWithExactly( 'codeBlocks', 'Entering Ruby code snippet', 'assertive' );
+			expectAnnounce( 'Entering Ruby code snippet' );
 
 			model.change( writer => {
 				writer.setSelection( createRange( root, [ 0, 0 ], root, [ 0, 1 ] ) );
 			} );
 
-			expect( announcerSpy ).to.be.calledWithExactly(
-				'codeBlocks',
-				'Leaving Ruby code snippet, entering CSS code snippet',
-				'assertive'
-			);
+			expectAnnounce( 'Leaving Ruby code snippet, entering CSS code snippet' );
 
 			model.change( writer => {
 				writer.setSelection( createRange( root, [ 3, 0 ], root, [ 3, 1 ] ) );
 			} );
 
-			expect( announcerSpy ).to.be.calledWithExactly(
-				'codeBlocks',
-				'Leaving CSS code snippet, entering XML code snippet',
-				'assertive'
-			);
+			expectAnnounce( 'Leaving CSS code snippet, entering XML code snippet' );
 
 			model.change( writer => {
 				writer.setSelection( createRange( root, [ 4, 0 ], root, [ 4, 1 ] ) );
 			} );
 
-			expect( announcerSpy ).to.be.calledWithExactly(
-				'codeBlocks',
-				'Leaving XML code snippet, entering code snippet',
-				'assertive'
-			);
+			expectAnnounce( 'Leaving XML code snippet, entering code snippet' );
 		} );
 
-		it( 'should force trigger announce if leaving and entering again code block with the same language', () => {
-			setModelData( model, join( codeblock( 'css' ), codeblock( 'css' ) ) );
-
-			model.change( writer => {
-				writer.setSelection( createRange( root, [ 0, 0 ], root, [ 0, 1 ] ) );
-			} );
-
-			expect( announcerSpy ).to.be.calledWithExactly( 'codeBlocks', 'Entering CSS code snippet', 'assertive' );
-
-			model.change( writer => {
-				writer.setSelection( createRange( root, [ 1, 0 ], root, [ 1, 1 ] ) );
-			} );
-
+		function expectAnnounce( message ) {
 			expect( announcerSpy ).to.be.calledWithExactly(
 				'codeBlocks',
-				'Leaving CSS code snippet, entering CSS code snippet',
-				'assertive'
+				message,
+				{
+					politeness: 'assertive',
+					allowReadAgain: true
+				}
 			);
-
-			model.change( writer => {
-				writer.setSelection( createRange( root, [ 0, 0 ], root, [ 0, 1 ] ) );
-			} );
-
-			expect( announcerSpy ).to.be.calledWithExactly(
-				'codeBlocks',
-				'Leaving CSS code snippet, entering CSS code snippet.',
-				'assertive'
-			);
-
-			model.change( writer => {
-				writer.setSelection( createRange( root, [ 1, 0 ], root, [ 1, 1 ] ) );
-			} );
-
-			expect( announcerSpy ).to.be.calledWithExactly(
-				'codeBlocks',
-				'Leaving CSS code snippet, entering CSS code snippet',
-				'assertive'
-			);
-		} );
+		}
 	} );
 
 	function join( ...lines ) {
