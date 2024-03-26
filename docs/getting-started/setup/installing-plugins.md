@@ -1,7 +1,7 @@
 ---
 menu-title: Installing plugins
 meta-title: Installing plugins | CKEditor 5 documentation
-category: plugins
+category: setup
 order: 30
 ---
 
@@ -46,7 +46,7 @@ Let's say you want to install the alignment package. It adds text alignment func
 npm install @ckeditor/ckeditor5-alignment
 ```
 
-The command will install the package and add it to `package.json`. You can also edit `package.json` manually. But remember that all packages (excluding `@ckeditor/ckeditor5-dev-*`) {@link framework/plugins/installing-plugins#requirements must have the same version as the base editor package}.
+The command will install the package and add it to `package.json`. You can also edit `package.json` manually. But remember that all packages (excluding `@ckeditor/ckeditor5-dev-*`) {@link getting-started/setup/installing-plugins#requirements must have the same version as the base editor package}.
 
 <info-box hint>
 	Due to the non-deterministic way how npm installs packages, it is recommended to run `rm -rf node_modules && npm install` when in doubt. This will prevent some packages from getting installed more than once in `node_modules/` (which might lead to broken builds).

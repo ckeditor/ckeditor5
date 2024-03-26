@@ -16,7 +16,7 @@ modified_at: 2024-03-21
 
 ## Adding features
 
-All the features of CKEditor&nbsp;5 are implemented by plugins. You can read more about them in the {@link framework/plugins/plugins plugins} guide. To add more features and customise your builds, you {@link framework/plugins/installing-plugins install plugins} by importing them.
+All the features of CKEditor&nbsp;5 are implemented by plugins. You can read more about them in the {@link framework/plugins/plugins plugins} guide. To add more features and customise your builds, you {@link getting-started/setup/installing-plugins install plugins} by importing them.
 
 Listed below is an example configuration adding the {@link features/indent block indentation} feature.
 

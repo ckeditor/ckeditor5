@@ -24,7 +24,7 @@ Use the toolbar dropdown to style a heading. You can also type one or more `#` c
 By default, this feature is configured to support `<h2>`, `<h3>`, and `<h4>` elements which are named: "Heading 1," "Heading 2," and "Heading 3," respectively. The rationale behind starting from `<h2>` is that `<h1>` should be reserved for the {@link features/title page's main title} and the page content will usually start from `<h2>`.
 
 <info-box hint>
-	Support for adding a document title is provided through the {@link module:heading/title~Title} plugin. This plugin is optional and needs to be {@link framework/plugins/installing-plugins added to your editor build}. When it is enabled, a `<h1>` element pasted into the editor will be rendered as the {@link features/title document title}.
+	Support for adding a document title is provided through the {@link module:heading/title~Title} plugin. This plugin is optional and needs to be {@link getting-started/setup/installing-plugins added to your editor build}. When it is enabled, a `<h1>` element pasted into the editor will be rendered as the {@link features/title document title}.
 </info-box>
 
 By default, when your editor build does not include the title plugin, an `<h1>` element pasted into the rich-text editor is converted to `<h2>` ("Heading 1").
@@ -167,7 +167,7 @@ import { ClassicEditor, HeadingButtonsUI, ParagraphButtonUI } from 'ckeditor5';
 ```
 
 <info-box info>
-	Read more about {@link framework/plugins/installing-plugins installing plugins}.
+	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
 </info-box>
 
 ## Related features
