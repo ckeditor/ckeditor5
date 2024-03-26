@@ -28,6 +28,10 @@
 	/* Apply some smooth transition to the box-shadow and border. */
 	transition: box-shadow .1s ease-in-out, border .1s ease-in-out;
 
+	@media (prefers-reduced-motion: reduce) {
+		transition: none;
+	}
+
 	&:focus {
 		@mixin ck-focus-ring;
 		@mixin ck-box-shadow var(--ck-focus-outer-shadow);
