@@ -33,13 +33,13 @@ if ( !fs.existsSync( pathToPackagesLists ) ) {
 // Get content of `packages-lists.json` file.
 const packagesListsFileContent = fs.readJsonSync( pathToPackagesLists );
 
-// CKEditor5
+// CKEditor5 packages.
 const allCKEditor5PackagesNames = getPackagesNames( [ 'packages/*/package.json' ] );
 const missingCKE5Packages = allCKEditor5PackagesNames
 	.filter( pkg => !packagesListsFileContent.ckeditor5.includes( pkg ) )
 	.filter( pkg => !EXCLUDED_PACKAGES.includes( pkg ) );
 
-// Commercial
+// Commercial packages.
 let missingCommercialPackages = [];
 
 if ( fs.existsSync( 'external/ckeditor5-commercial' ) ) {
@@ -50,7 +50,7 @@ if ( fs.existsSync( 'external/ckeditor5-commercial' ) ) {
 		.filter( pkg => !EXCLUDED_PACKAGES.includes( pkg ) );
 }
 
-// Final check and log.
+// Check and log messages.
 if ( missingCKE5Packages.length || missingCommercialPackages.length ) {
 	logMissingPackages( missingCKE5Packages, 'ckeditor5' );
 	logMissingPackages( missingCommercialPackages, 'ckeditor5-premium-features' );
