@@ -57,10 +57,8 @@
 		/* #1095. While reset is not providing proper box-sizing for pseudoelements, we need to handle it. */
 		box-sizing: border-box;
 	}
-}
 
-@media (prefers-reduced-motion: reduce) {
-	.ck-image-upload-complete-icon {
+	@media (prefers-reduced-motion: reduce) {
 		animation-duration: 0ms;
 
 		&::after {
