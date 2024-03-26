@@ -12,7 +12,7 @@ badges: [ premium ]
 The productivity pack is a set of exclusive premium features for the CKEditor&nbsp;5 WYSIWYG editor. They make editing faster, easier, and more efficient.
 
 <info-box>
-These are only available to holders of a [CKEditor&nbsp;5 commercial license](https://ckeditor.com/pricing/). Feel free to [contact us](https://ckeditor.com/contact/?sales=true#contact-form) to receive an offer tailored to your needs.
+	The Productivity Pack is included in our commercial license. If you have an active CKEditor&nbsp;5 license, please contact your Account Manager to check your eligibility. Some legacy licenses are not eligible for the exclusive Productivity Pack even if they are active. Feel free to [contact us](https://ckeditor.com/contact/?sales=true#contact-form) to receive an offer tailored to your needs.
 </info-box>
 
 ## Features included in the productivity pack
