@@ -60,11 +60,15 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.ck-image-upload-complete-icon::after {
-		animation: none;
-		opacity: 1;
-		width: 0.3em;
-		height: 0.45em;
+	.ck-image-upload-complete-icon {
+		animation-duration: 0ms;
+
+		&::after {
+			animation: none;
+			opacity: 1;
+			width: 0.3em;
+			height: 0.45em;
+		}
 	}
 }
 
