@@ -75,6 +75,12 @@
 	}
 }
 
+@media (prefers-reduced-motion: reduce) {
+	.ck.ck-table-form .ck.ck-labeled-field-view .ck.ck-labeled-field-view__status {
+		animation: none;
+	}
+}
+
 @keyframes ck-table-form-labeled-view-status-appear {
 	0% {
 		opacity: 0;
