@@ -693,9 +693,9 @@ describe( 'table cell properties', () => {
 
 					expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
 					expect( tableCellPropertiesView ).to.include( {
-						borderStyle: 'none',
-						borderColor: '',
-						borderWidth: '',
+						borderStyle: 'solid',
+						borderColor: 'hsl(0, 0%, 75%)',
+						borderWidth: '1px',
 						height: '',
 						padding: '',
 						backgroundColor: '',

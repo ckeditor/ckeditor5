@@ -3935,15 +3935,15 @@ describe( 'table clipboard', () => {
 			);
 
 			pasteTable( [
-				[ { contents: 'aa', style: 'border:1px solid #f00;background:#ba7' }, 'ab' ],
+				[ { contents: 'aa', style: 'border:3px dashed #f00;background:#ba7' }, 'ab' ],
 				[ 'ba', 'bb' ]
 			] );
 
 			const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
 			expect( tableCell.getAttribute( 'tableCellBorderColor' ) ).to.equal( '#f00' );
-			expect( tableCell.getAttribute( 'tableCellBorderStyle' ) ).to.equal( 'solid' );
-			expect( tableCell.getAttribute( 'tableCellBorderWidth' ) ).to.equal( '1px' );
+			expect( tableCell.getAttribute( 'tableCellBorderStyle' ) ).to.equal( 'dashed' );
+			expect( tableCell.getAttribute( 'tableCellBorderWidth' ) ).to.equal( '3px' );
 			expect( tableCell.getAttribute( 'tableCellBackgroundColor' ) ).to.equal( '#ba7' );
 		} );
 
@@ -4032,7 +4032,7 @@ describe( 'table clipboard', () => {
 			await createEditor( [ TableCellPropertiesEditing ] );
 
 			const color = 'rgb(242, 242, 242)';
-			const style = 'solid';
+			const style = 'double';
 			const width = '2px';
 
 			pasteHtml( editor,

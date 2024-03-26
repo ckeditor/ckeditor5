@@ -669,12 +669,12 @@ describe( 'table properties', () => {
 
 					expect( contextualBalloon.visibleView ).to.equal( tablePropertiesView );
 					expect( tablePropertiesView ).to.include( {
-						borderStyle: 'none',
-						borderColor: '',
-						borderWidth: '',
+						borderStyle: 'double',
+						borderColor: 'hsl(0, 0%, 70%)',
+						borderWidth: '1px',
 						backgroundColor: '',
-						width: '',
-						height: '',
+						width: '100%',
+						height: '100%',
 						alignment: 'center'
 					} );
 				} );
