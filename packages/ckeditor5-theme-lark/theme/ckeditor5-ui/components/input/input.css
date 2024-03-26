@@ -48,15 +48,13 @@
 		border-color: var(--ck-color-input-error-border);
 		animation: ck-input-shake .3s ease both;
 
+		@media (prefers-reduced-motion: reduce) {
+			animation: none;
+		}
+
 		&:focus {
 			@mixin ck-box-shadow var(--ck-focus-error-outer-shadow);
 		}
-	}
-}
-
-@media (prefers-reduced-motion: reduce) {
-	.ck.ck-input.ck-error {
-		animation: none;
 	}
 }
 

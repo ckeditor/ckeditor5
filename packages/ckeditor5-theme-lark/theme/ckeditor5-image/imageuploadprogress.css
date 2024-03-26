@@ -9,6 +9,11 @@
 		/* Showing animation. */
 		&.ck-appear {
 			animation: fadeIn 700ms;
+
+			@media (prefers-reduced-motion: reduce) {
+				opacity: 1;
+				animation: none;
+			}
 		}
 	}
 
@@ -19,20 +24,6 @@
 		width: 0;
 		background: var(--ck-color-upload-bar-background);
 		transition: width 100ms;
-	}
-}
-
-
-@media (prefers-reduced-motion: reduce) {
-	.ck.ck-editor__editable {
-		& .image,
-		& .image-inline {
-			/* Showing animation. */
-			&.ck-appear {
-				opacity: 1;
-				animation: none;
-			}
-		}
 	}
 }
 
