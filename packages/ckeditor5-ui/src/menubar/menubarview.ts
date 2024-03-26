@@ -285,20 +285,28 @@ export default class MenuBarView extends View implements FocusableView {
 	 * @internal
 	 */
 	private _registerMenuTree( componentView: MenuBarMenuView | MenuBarMenuListItemButtonView, parentMenuView: MenuBarMenuView ) {
-		if ( componentView instanceof MenuBarMenuView ) {
-			this.registerMenu( componentView, parentMenuView );
-
-			const nonSeparatorItems = ( componentView.panelView.children.get( 0 ) as MenuBarMenuListView ).items
-				.filter( item => item instanceof ListItemView ) as Array<ListItemView>;
-
-			for ( const item of nonSeparatorItems ) {
-				this._registerMenuTree(
-					item.children.get( 0 ) as MenuBarMenuView | MenuBarMenuListItemButtonView,
-					componentView
-				);
-			}
-		} else {
+		if ( !( componentView instanceof MenuBarMenuView ) ) {
 			componentView.delegate( 'mouseenter' ).to( parentMenuView );
+			return;
+		}
+
+		this.registerMenu( componentView, parentMenuView );
+
+		const menuBarItemsList = componentView.panelView.children
+			.filter( child => child instanceof MenuBarMenuListView )[ 0 ] as MenuBarMenuListView | undefined;
+
+		if ( !menuBarItemsList ) {
+			componentView.delegate( 'mouseenter' ).to( parentMenuView );
+			return;
+		}
+
+		const nonSeparatorItems = menuBarItemsList.items.filter( item => item instanceof ListItemView ) as Array<ListItemView>;
+
+		for ( const item of nonSeparatorItems ) {
+			this._registerMenuTree(
+				item.children.get( 0 ) as MenuBarMenuView | MenuBarMenuListItemButtonView,
+				componentView
+			);
 		}
 	}
 
