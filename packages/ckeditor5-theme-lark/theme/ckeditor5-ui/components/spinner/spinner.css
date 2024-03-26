@@ -27,3 +27,8 @@
 	}
 }
 
+@media (prefers-reduced-motion: reduce) {
+	.ck.ck-spinner-container {
+		animation-duration: 3s;
+	}
+}
