@@ -43,6 +43,10 @@
 			transition: transform .5s ease;
 			margin-top: 1px;
 
+			@media (prefers-reduced-motion: reduce) {
+				transition: none;
+			}
+
 			& * {
 				stroke-dasharray: 10;
 				stroke-dashoffset: 0;
