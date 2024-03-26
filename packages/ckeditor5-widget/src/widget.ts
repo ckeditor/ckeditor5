@@ -198,40 +198,38 @@ export default class Widget extends Plugin {
 			}
 		}, { context: '$root' } );
 
-		// Handle Tab key while a widget is selected.
+		// Handle Tab/Shift+Tab key while a widget is selected.
 		this.listenTo<ViewDocumentTabEvent>( view.document, 'tab', ( evt, data ) => {
-			// This event could be triggered from inside the widget but we are interested
-			// only when the widget is selected itself.
-			if ( evt.eventPhase != 'atTarget' ) {
+			const viewSelection = editor.editing.view.document.selection;
+			const startPosition = !data.shiftKey ? viewSelection.getFirstPosition() : viewSelection.getLastPosition();
+
+			if ( !startPosition ) {
 				return;
 			}
 
-			const selectedModelElement = editor.model.document.selection.getSelectedElement()!;
-			const selectedViewElement = editor.editing.mapper.toViewElement( selectedModelElement );
+			const viewPosition = startPosition.getLastMatchingPosition( ( { item } ) => (
+				!item.is( 'element' ) || item.getAttribute( 'contenteditable' ) != 'true'
+			), { direction: !data.shiftKey ? 'forward' : 'backward' } );
 
-			if ( !selectedViewElement ) {
+			const viewNodeAfter = !data.shiftKey ? viewPosition.nodeAfter : viewPosition.nodeBefore;
+
+			if ( !viewNodeAfter || !viewNodeAfter.is( 'element' ) ) {
 				return;
 			}
 
-			// TODO what about Shift+Tab?
-			for ( const item of view.createRangeIn( selectedViewElement ).getItems() ) {
-				if ( item.is( 'element' ) && item.getAttribute( 'contenteditable' ) == 'true' ) {
-					const modelElement = editor.editing.mapper.toModelElement( item );
+			const modelElement = editor.editing.mapper.toModelElement( viewNodeAfter );
 
-					if ( !modelElement ) {
-						continue;
-					}
-
-					editor.model.change( writer => {
-						writer.setSelection( modelElement, 0 );
-					} );
-
-					data.preventDefault();
-					evt.stop();
-					break;
-				}
+			if ( !modelElement ) {
+				return;
 			}
-		}, { context: isWidget, priority: 'low' } );
+
+			editor.model.change( writer => {
+				writer.setSelection( modelElement, 0 );
+			} );
+
+			data.preventDefault();
+			evt.stop();
+		}, { priority: 'low' } );
 
 		// Handle Esc key while inside a nested editable.
 		this.listenTo<ViewDocumentKeyDownEvent>( viewDocument, 'keydown', ( evt, data ) => {
