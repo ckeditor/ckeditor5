@@ -17,6 +17,11 @@ const upath = require( 'upath' );
 const fs = require( 'fs-extra' );
 const { globSync } = require( 'glob' );
 
+const EXCLUDED_PACKAGES = [
+	'ckeditor5-premium-features',
+	'ckeditor5-collaboration'
+];
+
 const pathToPackagesLists = upath.resolve( __dirname, '..', 'packages-lists.json' );
 
 // Exit process when `packages-lists.json` file does not exist.
@@ -30,7 +35,9 @@ const packagesListsFileContent = fs.readJsonSync( pathToPackagesLists );
 
 // CKEditor5
 const allCKEditor5PackagesNames = getPackagesNames( [ 'packages/*/package.json' ] );
-const missingCKE5Packages = allCKEditor5PackagesNames.filter( x => !packagesListsFileContent.ckeditor5.includes( x ) );
+const missingCKE5Packages = allCKEditor5PackagesNames
+	.filter( pkg => !packagesListsFileContent.ckeditor5.includes( pkg ) )
+	.filter( pkg => !EXCLUDED_PACKAGES.includes( pkg ) );
 
 // Commercial
 let missingCommercialPackages = [];
@@ -39,7 +46,8 @@ if ( fs.existsSync( 'external/ckeditor5-commercial' ) ) {
 	const allCKEditor5CommercialPackagesNames = getPackagesNames( [ 'external/ckeditor5-commercial/packages/*/package.json' ] );
 
 	missingCommercialPackages = allCKEditor5CommercialPackagesNames
-		.filter( x => !packagesListsFileContent[ 'ckeditor5-premium-features' ].includes( x ) );
+		.filter( pkg => !packagesListsFileContent[ 'ckeditor5-premium-features' ].includes( pkg ) )
+		.filter( pkg => !EXCLUDED_PACKAGES.includes( pkg ) );
 }
 
 // Final check and log.
