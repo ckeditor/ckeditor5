@@ -16,7 +16,7 @@ modified_at: 2024-03-21
 
 ## Adding features
 
-All the features of CKEditor&nbsp;5 are implemented by plugins. You can read more about them in the {@link framework/plugins/plugins plugins} guide. To add more features and customise your builds, you {@link getting-started/setup/installing-plugins install plugins} by importing them.
+All the features of CKEditor&nbsp;5 are implemented by plugins. You can read more about them in the {@link framework/architecture/plugins plugins} guide. To add more features and customise your builds, you {@link getting-started/setup/installing-plugins install plugins} by importing them.
 
 Listed below is an example configuration adding the {@link features/indent block indentation} feature.
 
@@ -31,7 +31,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 .then( /* ... */ );
 ```
 
-Note that some features may require more than one plugin to run. You will find the plugin-per-feature listing in the {@link framework/plugins/features-html-output-overview Plugins and HTML output} guide.
+Note that some features may require more than one plugin to run. You will find the plugin-per-feature listing in the {@link framework/architecture/plugins#features-html-output-overview Plugins and HTML output} guide.
 
 ## Configuring editor settings
 
