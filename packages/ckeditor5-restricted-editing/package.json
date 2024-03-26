@@ -23,7 +23,7 @@
     "@ckeditor/ckeditor5-clipboard": "41.2.1",
     "@ckeditor/ckeditor5-core": "41.2.1",
     "@ckeditor/ckeditor5-dev-utils": "^39.0.0",
-    "@ckeditor/ckeditor5-heading": "^39.0.0",
+    "@ckeditor/ckeditor5-heading": "41.2.1",
     "@ckeditor/ckeditor5-image": "41.2.1",
     "@ckeditor/ckeditor5-indent": "41.2.1",
     "@ckeditor/ckeditor5-editor-classic": "41.2.1",
