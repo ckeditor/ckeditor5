@@ -563,28 +563,22 @@
 			"navigationIncludeIndex": true,
 			"categories": [
 				{
-					"name": "Predefined builds",
+					"name": "Editor types",
 					"id": "examples-builds",
 					"slug": "builds",
 					"order": 100
 				},
 				{
-					"name": "Custom builds",
+					"name": "Presets",
 					"id": "examples-builds-custom",
 					"slug": "builds-custom",
 					"order": 200
 				},
 				{
-					"name": "Framework",
+					"name": "Advanced configurations",
 					"id": "examples-framework",
 					"slug": "framework",
 					"order": 300
-				},
-				{
-					"name": "Experiments",
-					"id": "experiments",
-					"slug": "experiments",
-					"order": 400
 				}
 			]
 		},

@@ -35,7 +35,7 @@ editor.model.change( writer => {
 
 In the example above, you use a selection and a command, and you change the content using the editor's model. All of this could be reverted with one undo step. This is a simple example of what the API can do.
 
-Check more {@link examples/how-tos#editors-api examples how to use the API} or deep dive into our {@link tutorials/crash-course/editor step-by-step tutorial}.
+Check more {@link framework/how-tos#editors-api examples how to use the API} or deep dive into our {@link tutorials/crash-course/editor step-by-step tutorial}.
 
 ## Using events
 
