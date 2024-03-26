@@ -277,10 +277,6 @@ After modifying the configuration or source code, you can rebuild the project to
 npm run build
 ```
 
-<info-box hint>
-	If you do not have the build script, learn more about {@link getting-started/setup/installing-plugins#building-an-editor building an editor}.
-</info-box>
-
 ### Running the editor
 
 You can validate whether your new build works by opening the `sample/index.html` file in a browser (via HTTP, not as a local file). Make sure to **clear the cache**.

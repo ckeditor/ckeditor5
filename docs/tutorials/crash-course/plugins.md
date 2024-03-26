@@ -43,7 +43,7 @@ Since the `Essentials` plugin does not define block-level containers, we also in
 
 The editor we created so far still lacks many features, such as support for headings, tables, block quotes, and much more. You can add them using plugins, of course.
 
-For a list of plugins, usage examples, installation, and configuration options, see the {@link framework/architecture/plugins#features-html-output-overview Plugins and HTML output} guide.
+For a list of plugins, usage examples, installation, and configuration options, see the {@link framework/architecture/plugins#plugins-and-html-output Plugins and HTML output} guide.
 
 <!-- marked for probable removal
 ## Predefined builds

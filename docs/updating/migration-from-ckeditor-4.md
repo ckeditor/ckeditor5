@@ -169,7 +169,7 @@ CKEditor 4 and CKEditor&nbsp;5 are two different products. Here are the most imp
 
 Perform extensive analysis, data verification, and tests on existing data. If necessary, you will need to develop conversion procedures to avoid data loss. You can use the {@link features/general-html-support General HTML Support} feature to introduce HTML markup that is present in the legacy content but is not yet fully covered by CKEditor&nbsp;5 features.
 
-The {@link framework/architecture/plugins#features-html-output-overview Plugins and HTML output} article lists all official CKEditor&nbsp;5 plugins and the HTML output they produce. You can use it to check the compatibility of legacy data with what is supported in CKEditor&nbsp;5.
+The {@link framework/architecture/plugins#plugins-and-html-output Plugins and HTML output} article lists all official CKEditor&nbsp;5 plugins and the HTML output they produce. You can use it to check the compatibility of legacy data with what is supported in CKEditor&nbsp;5.
 
 A simple yet efficient strategy for adopting CKEditor&nbsp;5 into existing systems might be using CKEditor&nbsp;5 for creating new content and the old editor for editing legacy content.
 

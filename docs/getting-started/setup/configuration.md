@@ -31,7 +31,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 .then( /* ... */ );
 ```
 
-Note that some features may require more than one plugin to run. You will find the plugin-per-feature listing in the {@link framework/architecture/plugins#features-html-output-overview Plugins and HTML output} guide.
+Note that some features may require more than one plugin to run. You will find the plugin-per-feature listing in the {@link framework/architecture/plugins#plugins-and-html-output Plugins and HTML output} guide.
 
 ## Configuring editor settings
 
