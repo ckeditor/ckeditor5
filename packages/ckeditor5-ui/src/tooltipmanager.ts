@@ -391,7 +391,7 @@ export default class TooltipManager extends DomEmitterMixin() {
 		targetDomElement: HTMLElement,
 		{ text, position, cssClass }: TooltipData
 	): void {
-		this._unpinTooltipDebounced.cancel();
+		this._unpinTooltip();
 
 		// Use the body collection of the first editor.
 		const bodyViewCollection = first( TooltipManager._editors.values() )!.ui.view.body;
@@ -447,6 +447,7 @@ export default class TooltipManager extends DomEmitterMixin() {
 
 		this._currentElementWithTooltip = null;
 		this._currentTooltipPosition = null;
+		this.tooltipTextView.text = '';
 
 		if ( this._resizeObserver ) {
 			this._resizeObserver.destroy();

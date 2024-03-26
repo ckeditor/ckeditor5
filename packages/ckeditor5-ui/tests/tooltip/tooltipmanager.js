@@ -749,7 +749,7 @@ describe( 'TooltipManager', () => {
 				sinon.assert.calledOnce( unpinSpy );
 
 				utils.waitForTheTooltipToHide( clock );
-				sinon.assert.calledTwice( unpinSpy );
+				sinon.assert.calledThrice( unpinSpy );
 			} );
 		} );
 
