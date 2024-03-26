@@ -78,6 +78,10 @@
 		left: calc(0px - var(--ck-widget-outline-thickness));
 		top: 0;
 
+		@media (prefers-reduced-motion: reduce) {
+			transition: none;
+		}
+
 		& .ck-icon {
 			/* Make sure the dimensions of the icon are independent of the fon-size of the content. */
 			width: var(--ck-widget-handler-icon-size);
@@ -90,6 +94,10 @@
 
 				/* Note: The animation is longer on purpose. Simply feels better. */
 				transition: opacity 300ms var(--ck-widget-handler-animation-curve);
+
+				@media (prefers-reduced-motion: reduce) {
+					transition: none;
+				}
 			}
 		}
 
