@@ -54,6 +54,12 @@
 	}
 }
 
+@media (prefers-reduced-motion: reduce) {
+	.ck.ck-input.ck-error {
+		animation: none;
+	}
+}
+
 @keyframes ck-input-shake {
 	20% {
 		transform: translateX(-2px);
