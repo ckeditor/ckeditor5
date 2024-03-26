@@ -720,7 +720,7 @@ describe( 'TooltipManager', () => {
 				sinon.assert.notCalled( pinSpy );
 			} );
 
-			it( 'should immediately unpin the tooltip otherwise', () => {
+			it( 'should unpin the tooltip otherwise', () => {
 				utils.dispatchMouseEnter( elements.a );
 				utils.waitForTheTooltipToShow( clock );
 
@@ -731,6 +731,25 @@ describe( 'TooltipManager', () => {
 
 				utils.waitForTheTooltipToHide( clock );
 				sinon.assert.calledOnce( unpinSpy );
+			} );
+
+			it( 'should cancel pending unpin when hovered another tooltip', () => {
+				utils.dispatchMouseEnter( elements.a );
+				utils.waitForTheTooltipToShow( clock );
+
+				sinon.assert.calledOnce( pinSpy );
+				utils.dispatchMouseLeave( elements.a );
+
+				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
+				const debounceCancelUnpinSpy = sinon.spy( tooltipManager._unpinTooltipDebounced, 'cancel' );
+
+				utils.dispatchMouseEnter( elements.b );
+
+				sinon.assert.calledOnce( debounceCancelUnpinSpy );
+				sinon.assert.calledOnce( unpinSpy );
+
+				utils.waitForTheTooltipToHide( clock );
+				sinon.assert.calledTwice( unpinSpy );
 			} );
 		} );
 

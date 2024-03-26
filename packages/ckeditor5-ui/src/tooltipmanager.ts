@@ -391,6 +391,8 @@ export default class TooltipManager extends DomEmitterMixin() {
 		targetDomElement: HTMLElement,
 		{ text, position, cssClass }: TooltipData
 	): void {
+		this._unpinTooltipDebounced.cancel();
+
 		// Use the body collection of the first editor.
 		const bodyViewCollection = first( TooltipManager._editors.values() )!.ui.view.body;
 
@@ -434,6 +436,7 @@ export default class TooltipManager extends DomEmitterMixin() {
 	 * Unpins the tooltip and cancels all queued pinning.
 	 */
 	private _unpinTooltip() {
+		this._unpinTooltipDebounced.cancel();
 		this._pinTooltipDebounced.cancel();
 
 		this.balloonPanelView.unpin();
