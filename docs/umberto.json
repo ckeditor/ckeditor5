@@ -595,10 +595,30 @@
 			"navigationIncludeIndex": true,
 			"categories": [
 				{
-					"name": "Architecture",
-					"id": "framework-architecture",
-					"slug": "architecture",
-					"order": 100
+					"name": "Tutorials",
+					"id": "tutorials",
+					"slug": "tutorials",
+					"order": 100,
+					"categories": [
+						{
+							"name": "Crash course",
+							"id": "crash-course",
+							"slug": "crash-course",
+							"order": 10
+						},
+						{
+							"name": "Creating an advanced plugin",
+							"id": "abbreviation-plugin",
+							"slug": "abbreviation-plugin",
+							"order": 20
+						},
+						{
+							"name": "Using widgets",
+							"id": "widget-tutorials",
+							"slug": "widgets",
+							"order": 30
+						}
+					]
 				},
 				{
 					"name": "Development tools",
@@ -608,10 +628,31 @@
 					"order": 200
 				},
 				{
+					"name": "Plugins",
+					"id": "plugins",
+					"slug": "plugins",
+					"order": 300,
+					"categories": [
+						{
+							"name": "Package Generator",
+							"id": "package-generator",
+							"slug": "package-generator",
+							"order": 100,
+							"folded": true
+						}
+					]
+				},
+				{
+					"name": "Architecture",
+					"id": "framework-architecture",
+					"slug": "architecture",
+					"order": 400
+				},
+				{
 					"name": "Deep dive",
 					"id": "framework-deep-dive",
 					"slug": "deep-dive",
-					"order": 300,
+					"order": 500,
 					"categories": [
 						{
 							"name": "Conversion",
@@ -638,51 +679,10 @@
 					]
 				},
 				{
-					"name": "Plugins",
-					"id": "plugins",
-					"slug": "plugins",
-					"order": 400,
-					"categories": [
-						{
-							"name": "Package Generator",
-							"id": "package-generator",
-							"slug": "package-generator",
-							"order": 100,
-							"folded": true
-						}
-					]
-				},
-				{
-					"name": "Tutorials",
-					"id": "tutorials",
-					"slug": "tutorials",
-					"order": 400,
-					"categories": [
-						{
-							"name": "Crash course",
-							"id": "crash-course",
-							"slug": "crash-course",
-							"order": 10
-						},
-						{
-							"name": "Creating an advanced plugin",
-							"id": "abbreviation-plugin",
-							"slug": "abbreviation-plugin",
-							"order": 20
-						},
-						{
-							"name": "Using widgets",
-							"id": "widget-tutorials",
-							"slug": "widgets",
-							"order": 30
-						}
-					]
-				},
-				{
 					"name": "Contributing",
 					"id": "framework-contributing",
 					"slug": "contributing",
-					"order": 500
+					"order": 600
 				}
 			]
 		},
