@@ -36,6 +36,10 @@
 
 		@mixin ck-widget-type-around-button-hidden;
 
+		@media (prefers-reduced-motion: reduce) {
+			transition: none;
+		}
+
 		& svg {
 			width: 10px;
 			height: 8px;
