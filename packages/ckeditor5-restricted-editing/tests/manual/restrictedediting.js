@@ -6,8 +6,6 @@
 /* globals window, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import Table from '@ckeditor/ckeditor5-table/src/table.js';
 
 import StandardEditingMode from '../../src/standardeditingmode.js';
 import RestrictedEditingMode from '../../src/restrictededitingmode.js';
@@ -17,6 +15,17 @@ import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder.js';
 import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter.js';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload.js';
 import { UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { Indent } from '@ckeditor/ckeditor5-indent';
+import { Link } from '@ckeditor/ckeditor5-link';
+import { List } from '@ckeditor/ckeditor5-list';
+import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
 
 const restrictedModeButton = document.getElementById( 'mode-restricted' );
 const standardModeButton = document.getElementById( 'mode-standard' );
@@ -40,16 +49,32 @@ async function startMode( selectedMode ) {
 
 async function startStandardEditingMode() {
 	await reloadEditor( {
-		plugins: [ ArticlePluginSet, Table, StandardEditingMode, ImageInline, ImageInsert,
-			CKFinder, CKFinderUploadAdapter ],
+		plugins: [
+			Essentials,
+			Autoformat,
+			BlockQuote,
+			Bold,
+			Heading,
+			Indent,
+			Italic,
+			Link,
+			List,
+			MediaEmbed,
+			Paragraph,
+			Table,
+			TableToolbar,
+			Table,
+			StandardEditingMode,
+			ImageInline,
+			ImageInsert,
+			CKFinder,
+			CKFinderUploadAdapter
+		],
 		toolbar: [
 			'heading', '|', 'bold', 'italic', 'link', '|',
 			'bulletedList', 'numberedList', 'blockQuote', 'insertTable', '|',
 			'restrictedEditingException', '|', 'undo', 'redo', 'insertImage'
 		],
-		image: {
-			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative' ]
-		},
 		table: {
 			contentToolbar: [
 				'tableColumn',
@@ -84,15 +109,34 @@ function MyPlugin( editor ) {
 
 async function startRestrictedEditingMode() {
 	await reloadEditor( {
-		plugins: [ ImageUpload, ArticlePluginSet, RestrictedEditingMode, MyPlugin,
-			ImageInline, ImageInsert, CKFinderUploadAdapter, CKFinder, CKFinderUploadAdapter, Table ],
+		plugins: [
+			ImageUpload,
+			RestrictedEditingMode,
+			MyPlugin,
+			ImageInline,
+			ImageInsert,
+			CKFinderUploadAdapter,
+			CKFinder,
+			CKFinderUploadAdapter,
+			Table,
+			Essentials,
+			Autoformat,
+			BlockQuote,
+			Bold,
+			Heading,
+			Indent,
+			Italic,
+			Link,
+			List,
+			MediaEmbed,
+			Paragraph,
+			Table,
+			TableToolbar
+		],
 		toolbar: [ 'bold', 'italic', 'link', '|', 'restrictedEditing', '|', 'undo', 'redo', 'insertImage', 'insertTable' ],
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ],
 			tableToolbar: [ 'bold', 'italic' ]
-		},
-		image: {
-			toolbar: [ 'imageStyle:inline' ]
 		},
 		restrictedEditing: {
 			allowedCommands: [ 'imageInsert', 'imageUpload', 'insertTable' ]
@@ -111,7 +155,6 @@ async function reloadEditor( config ) {
 	}
 
 	window.editor = await ClassicEditor.create( document.querySelector( '#editor' ), config );
-	window.editor.plugins._plugins.delete( 'ImageBlockEditing' );
 
 	window.editor.plugins.get( 'FileRepository' ).createUploadAdapter = loader => {
 		const adapterMock = new UploadAdapterMock( loader );
