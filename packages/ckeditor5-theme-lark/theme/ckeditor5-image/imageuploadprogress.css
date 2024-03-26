@@ -22,6 +22,20 @@
 	}
 }
 
+
+@media (prefers-reduced-motion: reduce) {
+	.ck.ck-editor__editable {
+		& .image,
+		& .image-inline {
+			/* Showing animation. */
+			&.ck-appear {
+				opacity: 1;
+				animation: none;
+			}
+		}
+	}
+}
+
 @keyframes fadeIn {
 	from { opacity: 0; }
 	to   { opacity: 1; }
