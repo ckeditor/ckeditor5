@@ -92,6 +92,8 @@ export default class RestrictedEditingModeUI extends Plugin {
 				const listItemView = new MenuBarMenuListItemView( locale, menuView );
 				const buttonView = this._createMenuBarButton( t( label ), commandName, keystroke );
 
+				buttonView.delegate( 'execute' ).to( menuView );
+
 				listItemView.children.add( buttonView );
 				listView.items.add( listItemView );
 			} );
@@ -121,7 +123,6 @@ export default class RestrictedEditingModeUI extends Plugin {
 		view.set( {
 			label,
 			keystroke,
-			tooltip: true,
 			isEnabled: true,
 			isOn: false
 		} );
