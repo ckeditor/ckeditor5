@@ -103,11 +103,13 @@ export default class MenuBarView extends View implements FocusableView {
 	 */
 	public fillFromConfig( config: MenuBarConfig | undefined, componentFactory: ComponentFactory ): void {
 		const locale = this.locale!;
-		const topLevelCategoryMenuViews = normalizeMenuBarConfig( {
+		const normalizedConfig = normalizeMenuBarConfig( {
 			locale,
 			componentFactory,
 			config
-		} ).items.map( menuDefinition => this._createMenu( {
+		} );
+
+		const topLevelCategoryMenuViews = normalizedConfig.items.map( menuDefinition => this._createMenu( {
 			componentFactory,
 			menuDefinition
 		} ) );
@@ -342,9 +344,10 @@ export default class MenuBarView extends View implements FocusableView {
 export type MenuBarConfig = Array<MenuBarMenuDefinition> | MenuBarConfigObject;
 
 export type MenuBarConfigObject = {
-	items: Array<MenuBarMenuDefinition>;
+	items?: Array<MenuBarMenuDefinition>;
 	removeItems?: Array<string>;
 	addItems?: Array<MenuBarConfigAddedItem | MenuBarConfigAddedGroup | MenuBarConfigAddedMenu>;
+	isVisible?: boolean;
 };
 
 export type MenuBarMenuGroupDefinition = {
