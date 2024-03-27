@@ -307,9 +307,9 @@ The image is editable if this option is:
 * `origin` literal and the image URL is from the same origin, or
 * an array of the above and the image URL matches one of the array elements.
 
-<infobox warning>
+<info-box warning>
 	The whitelisted image resources must have CORS enabled.
-</infobox>
+</info-box>
 
 ## Common API
 
