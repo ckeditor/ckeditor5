@@ -8,8 +8,8 @@
  */
 
 import { Plugin, icons } from 'ckeditor5/src/core.js';
-import { ButtonView } from 'ckeditor5/src/ui.js';
-import type AttributeCommand from '../attributecommand.js';
+import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
+import { getButtonCreator } from '../utils.js';
 
 const BOLD = 'bold';
 
@@ -29,30 +29,32 @@ export default class BoldUI extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
-		const t = editor.t;
+		const t = editor.locale.t;
+		const command = editor.commands.get( BOLD )!;
+		const createButton = getButtonCreator( {
+			editor,
+			commandName: BOLD,
+			plugin: this,
+			icon: icons.bold,
+			label: t( 'Bold' ),
+			keystroke: 'CTRL+B'
+		} );
 
 		// Add bold button to feature components.
-		editor.ui.componentFactory.add( BOLD, locale => {
-			const command: AttributeCommand = editor.commands.get( BOLD )!;
-			const view = new ButtonView( locale );
+		editor.ui.componentFactory.add( BOLD, () => {
+			const buttonView = createButton( ButtonView );
 
-			view.set( {
-				label: t( 'Bold' ),
-				icon: icons.bold,
-				keystroke: 'CTRL+B',
-				tooltip: true,
-				isToggleable: true
+			buttonView.set( {
+				tooltip: true
 			} );
 
-			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
+			buttonView.bind( 'isOn' ).to( command, 'value' );
 
-			// Execute command.
-			this.listenTo( view, 'execute', () => {
-				editor.execute( BOLD );
-				editor.editing.view.focus();
-			} );
+			return buttonView;
+		} );
 
-			return view;
+		editor.ui.componentFactory.add( 'menuBar:' + BOLD, () => {
+			return createButton( MenuBarMenuListItemButtonView );
 		} );
 	}
 }

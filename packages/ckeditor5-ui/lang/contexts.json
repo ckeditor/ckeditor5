@@ -34,6 +34,7 @@
 	"Help Contents. To close this dialog press ESC.": "Accessibility help dialog assistive technologies label telling users how to exit the dialog.",
 	"Below, you can find a list of keyboard shortcuts that can be used in the editor.": "Accessibility help dialog text explaining what can be found in that dialog.",
 	"(may require <kbd>Fn</kbd>)": "Accessibility help dialog text displayed next to keystrokes that may require the Fn key on Mac.",
+	"Accessibility": "The label for the button that opens the Accessibility help dialog from the application menu bar.",
 	"Accessibility help": "Accessibility help dialog title.",
 	"Press %0 for help.": "Assistive technologies label added to each editor editing area informing users about the possibility of opening the accessibility help dialog.",
 	"Move focus in and out of an active dialog window": "Keystroke description for assistive technologies: keystroke for moving focus out of an active dialog window."

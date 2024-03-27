@@ -7,7 +7,7 @@
  * @module list/todolist/todolistui
  */
 
-import { createUIComponent } from '../list/utils.js';
+import { createUIComponents } from '../list/utils.js';
 import { icons, Plugin } from 'ckeditor5/src/core.js';
 
 /**
@@ -28,6 +28,6 @@ export default class TodoListUI extends Plugin {
 	public init(): void {
 		const t = this.editor.t;
 
-		createUIComponent( this.editor, 'todoList', t( 'To-do List' ), icons.todoList );
+		createUIComponents( this.editor, 'todoList', t( 'To-do List' ), icons.todoList );
 	}
 }

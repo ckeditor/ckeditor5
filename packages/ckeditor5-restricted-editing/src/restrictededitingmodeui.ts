@@ -7,14 +7,12 @@
  * @module restricted-editing/restrictededitingmodeui
  */
 
-import {
-	Plugin,
-	type Command
-} from 'ckeditor5/src/core.js';
+import { Plugin, type Command } from 'ckeditor5/src/core.js';
 import {
 	ViewModel,
 	createDropdown,
 	addListToDropdown,
+	MenuBarMenuListItemButtonView,
 	type ButtonExecuteEvent,
 	type ListDropdownItemDefinition
 } from 'ckeditor5/src/ui.js';
@@ -76,6 +74,43 @@ export default class RestrictedEditingModeUI extends Plugin {
 
 			return dropdownView;
 		} );
+
+		editor.ui.componentFactory.add(
+			'menuBar:restrictedEditingPrevious',
+			() => this._createMenuBarButton( t( 'Previous editable region' ), 'goToPreviousRestrictedEditingException', 'Shift+Tab' )
+		);
+
+		editor.ui.componentFactory.add(
+			'menuBar:restrictedEditingNext',
+			() => this._createMenuBarButton( t( 'Next editable region' ), 'goToNextRestrictedEditingException', 'Tab' )
+		);
+	}
+
+	/**
+	 * Creates a button for restricted editing command to use in menu bar.
+	 */
+	private _createMenuBarButton( label: string, commandName: string, keystroke: string ): MenuBarMenuListItemButtonView {
+		const editor = this.editor;
+		const command = editor.commands.get( commandName )!;
+		const view = new MenuBarMenuListItemButtonView( editor.locale );
+
+		view.set( {
+			label,
+			keystroke,
+			tooltip: true,
+			isEnabled: true,
+			isOn: false
+		} );
+
+		view.bind( 'isEnabled' ).to( command );
+
+		// Execute the command.
+		this.listenTo( view, 'execute', () => {
+			editor.execute( commandName );
+			editor.editing.view.focus();
+		} );
+
+		return view;
 	}
 
 	/**
@@ -88,7 +123,7 @@ export default class RestrictedEditingModeUI extends Plugin {
 	private _getButtonDefinition( commandName: string, label: string, keystroke: string ): ListDropdownItemDefinition {
 		const editor = this.editor;
 		const command: Command = editor.commands.get( commandName )!;
-		const definition = {
+		const definition: ListDropdownItemDefinition = {
 			type: 'button' as const,
 			model: new ViewModel( {
 				label,

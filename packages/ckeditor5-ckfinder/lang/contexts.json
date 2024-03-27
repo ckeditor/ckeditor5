@@ -1,5 +1,6 @@
 {
 	"Insert image or file": "Toolbar button tooltip for inserting an image or file via a CKFinder file browser.",
+  	"Image or file": "The label for the button that opens the dialog for inserting an image or file via a CKFinder from the application menu bar.",
 	"Could not obtain resized image URL.": "Error message displayed when inserting a resized version of an image failed.",
 	"Selecting resized image failed": "Title of a notification displayed when inserting a resized version of an image failed.",
 	"Could not insert image at the current position.": "Error message displayed when an image cannot be inserted at the current position.",

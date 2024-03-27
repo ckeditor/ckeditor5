@@ -16,7 +16,9 @@ import {
 	focusChildOnDropdownOpen,
 	type ColorSelectorExecuteEvent,
 	type ColorSelectorColorPickerCancelEvent,
-	type ColorSelectorColorPickerShowEvent
+	type ColorSelectorColorPickerShowEvent,
+	MenuBarMenuView,
+	ColorSelectorView
 } from 'ckeditor5/src/ui.js';
 
 import {
@@ -207,6 +209,70 @@ export default class ColorUI extends Plugin {
 			);
 
 			return dropdownView;
+		} );
+
+		// Register menu bar button..
+		editor.ui.componentFactory.add( `menuBar:${ this.componentName }`, locale => {
+			const menuView = new MenuBarMenuView( locale );
+
+			menuView.buttonView.set( {
+				label: this.dropdownLabel,
+				icon: this.icon
+			} );
+
+			menuView.bind( 'isEnabled' ).to( command );
+
+			// Font color sub-menu rendering is deferred once it gets open to improve performance (#6192).
+			let contentRendered = false;
+
+			const colorSelectorView = new ColorSelectorView( locale, {
+				colors: localizedColors.map( option => ( {
+					label: option.label,
+					color: option.model,
+					options: {
+						hasBorder: option.hasBorder
+					}
+				} ) ),
+				columns: this.columns,
+				removeButtonLabel: t( 'Remove color' ),
+				colorPickerLabel: t( 'Color picker' ),
+				documentColorsLabel: documentColorsCount !== 0 ? t( 'Document colors' ) : '',
+				documentColorsCount: documentColorsCount === undefined ? this.columns : documentColorsCount,
+				colorPickerViewConfig: false
+			} );
+
+			colorSelectorView.bind( 'selectedColor' ).to( command, 'value' );
+
+			colorSelectorView.delegate( 'execute' ).to( menuView );
+			colorSelectorView.on<ColorSelectorExecuteEvent>( 'execute', ( evt, data ) => {
+				editor.execute( this.commandName, {
+					value: data.value,
+					batch: this._undoStepBatch
+				} );
+
+				editor.editing.view.focus();
+			} );
+
+			menuView.on( 'change:isOpen', ( evt, name, isVisible ) => {
+				if ( !contentRendered ) {
+					contentRendered = true;
+
+					colorSelectorView!.appendUI();
+				}
+
+				if ( isVisible ) {
+					if ( documentColorsCount !== 0 ) {
+						colorSelectorView!.updateDocumentColors( editor.model, this.componentName );
+					}
+
+					colorSelectorView!.updateSelectedColors();
+					colorSelectorView!.showColorGridsFragment();
+				}
+			} );
+
+			menuView.panelView.children.add( colorSelectorView );
+
+			return menuView;
 		} );
 	}
 }

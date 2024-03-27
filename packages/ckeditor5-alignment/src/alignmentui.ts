@@ -8,10 +8,18 @@
  */
 
 import { Plugin, icons } from 'ckeditor5/src/core.js';
-import { ButtonView, createDropdown, addToolbarToDropdown } from 'ckeditor5/src/ui.js';
+import {
+	ButtonView,
+	createDropdown,
+	addToolbarToDropdown,
+	MenuBarMenuListItemButtonView,
+	MenuBarMenuListView,
+	MenuBarMenuView,
+	MenuBarMenuListItemView
+} from 'ckeditor5/src/ui.js';
 
 import { isSupported, normalizeAlignmentOptions } from './utils.js';
-import type { SupportedOption } from './alignmentconfig.js';
+import type { AlignmentFormat, SupportedOption } from './alignmentconfig.js';
 import type AlignmentCommand from './alignmentcommand.js';
 
 const iconsMap = new Map( [
@@ -64,22 +72,67 @@ export default class AlignmentUI extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
-		const componentFactory = editor.ui.componentFactory;
-		const t = editor.t;
 		const options = normalizeAlignmentOptions( editor.config.get( 'alignment.options' )! );
 
 		options
 			.map( option => option.name )
 			.filter( isSupported )
-			.forEach( option => this._addButton( option ) );
+			.forEach( option => this._addButtonToFactory( option ) );
 
-		componentFactory.add( 'alignment', locale => {
+		this._addToolbarDropdown( options );
+		this._addMenuBarMenu( options );
+	}
+
+	/**
+	 * Helper method for initializing the button and linking it with an appropriate command.
+	 *
+	 * @param option The name of the alignment option for which the button is added.
+	 */
+	private _addButtonToFactory( option: SupportedOption ): void {
+		const editor = this.editor;
+
+		editor.ui.componentFactory.add( `alignment:${ option }`, locale => {
+			const command: AlignmentCommand = editor.commands.get( 'alignment' )!;
+			const buttonView = new ButtonView( locale );
+
+			buttonView.set( {
+				label: this.localizedOptionTitles[ option ],
+				icon: iconsMap.get( option ),
+				tooltip: true,
+				isToggleable: true
+			} );
+
+			// Bind button model to command.
+			buttonView.bind( 'isEnabled' ).to( command );
+			buttonView.bind( 'isOn' ).to( command, 'value', value => value === option );
+
+			// Execute command.
+			this.listenTo( buttonView, 'execute', () => {
+				editor.execute( 'alignment', { value: option } );
+				editor.editing.view.focus();
+			} );
+
+			return buttonView;
+		} );
+	}
+
+	/**
+	 * Helper method for initializing the toolnar dropdown and linking it with an appropriate command.
+	 *
+	 * @param option The name of the alignment option for which the button is added.
+	 */
+	private _addToolbarDropdown( options: Array<AlignmentFormat> ): void {
+		const editor = this.editor;
+		const factory = editor.ui.componentFactory;
+
+		factory.add( 'alignment', locale => {
 			const dropdownView = createDropdown( locale );
+			const t = locale.t;
 
 			// Add existing alignment buttons to dropdown's toolbar.
 			addToolbarToDropdown(
 				dropdownView,
-				() => options.map( option => componentFactory.create( `alignment:${ option.name }` ) ) as Array<ButtonView>,
+				() => options.map( option => factory.create( `alignment:${ option.name }` ) ) as Array<ButtonView>,
 				{
 					enableActiveItemFocusOnDropdownOpen: true,
 					isVertical: true,
@@ -120,35 +173,59 @@ export default class AlignmentUI extends Plugin {
 	}
 
 	/**
-	 * Helper method for initializing the button and linking it with an appropriate command.
+	 * Creates a menu for all alignment options to use either in menu bar.
 	 *
-	 * @param option The name of the alignment option for which the button is added.
+	 * @param options Normalized alignment options from config.
 	 */
-	private _addButton( option: SupportedOption ): void {
+	private _addMenuBarMenu( options: Array<AlignmentFormat> ): void {
 		const editor = this.editor;
 
-		editor.ui.componentFactory.add( `alignment:${ option }`, locale => {
+		editor.ui.componentFactory.add( 'menuBar:alignment', locale => {
 			const command: AlignmentCommand = editor.commands.get( 'alignment' )!;
-			const buttonView = new ButtonView( locale );
+			const t = locale.t;
+			const menuView = new MenuBarMenuView( locale );
+			const listView = new MenuBarMenuListView( locale );
 
-			buttonView.set( {
-				label: this.localizedOptionTitles[ option ],
-				icon: iconsMap.get( option ),
-				tooltip: true,
-				isToggleable: true
+			listView.set( {
+				ariaLabel: t( 'Alignment' ),
+				role: 'menu'
 			} );
 
-			// Bind button model to command.
-			buttonView.bind( 'isEnabled' ).to( command );
-			buttonView.bind( 'isOn' ).to( command, 'value', value => value === option );
-
-			// Execute command.
-			this.listenTo( buttonView, 'execute', () => {
-				editor.execute( 'alignment', { value: option } );
-				editor.editing.view.focus();
+			menuView.buttonView.set( {
+				label: t( 'Alignment' )
 			} );
 
-			return buttonView;
+			for ( const option of options ) {
+				const listItemView = new MenuBarMenuListItemView( locale, menuView );
+				const buttonView = new MenuBarMenuListItemButtonView( locale );
+
+				buttonView.extendTemplate( {
+					attributes: {
+						'aria-checked': buttonView.bindTemplate.to( 'isOn' )
+					}
+				} );
+
+				buttonView.delegate( 'execute' ).to( menuView );
+				buttonView.set( {
+					label: this.localizedOptionTitles[ option.name ],
+					icon: iconsMap.get( option.name )
+				} );
+
+				buttonView.on( 'execute', () => {
+					editor.execute( 'alignment', { value: option.name } );
+
+					editor.editing.view.focus();
+				} );
+
+				buttonView.bind( 'isOn' ).to( command, 'value', value => value === option.name );
+
+				listItemView.children.add( buttonView );
+				listView.items.add( listItemView );
+			}
+
+			menuView.panelView.children.add( listView );
+
+			return menuView;
 		} );
 	}
 }

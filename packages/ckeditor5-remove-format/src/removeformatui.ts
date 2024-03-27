@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import { ButtonView } from 'ckeditor5/src/ui.js';
+import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 
 import type RemoveFormatCommand from './removeformatcommand.js';
 
@@ -33,27 +33,43 @@ export default class RemoveFormatUI extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
-		const t = editor.t;
 
-		editor.ui.componentFactory.add( REMOVE_FORMAT, locale => {
-			const command: RemoveFormatCommand = editor.commands.get( REMOVE_FORMAT )!;
-			const view = new ButtonView( locale );
+		editor.ui.componentFactory.add( REMOVE_FORMAT, () => {
+			const view = this._createButton( ButtonView );
 
 			view.set( {
-				label: t( 'Remove Format' ),
-				icon: removeFormatIcon,
 				tooltip: true
-			} );
-
-			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
-
-			// Execute the command.
-			this.listenTo( view, 'execute', () => {
-				editor.execute( REMOVE_FORMAT );
-				editor.editing.view.focus();
 			} );
 
 			return view;
 		} );
+
+		editor.ui.componentFactory.add( `menuBar:${ REMOVE_FORMAT }`, () => this._createButton( MenuBarMenuListItemButtonView ) );
+	}
+
+	/**
+	 * Creates a button for remove format command to use either in toolbar or in menu bar.
+	 */
+	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
+		const editor = this.editor;
+		const locale = editor.locale;
+		const command: RemoveFormatCommand = editor.commands.get( REMOVE_FORMAT )!;
+		const view = new ButtonClass( editor.locale ) as InstanceType<T>;
+		const t = locale.t;
+
+		view.set( {
+			label: t( 'Remove Format' ),
+			icon: removeFormatIcon
+		} );
+
+		view.bind( 'isEnabled' ).to( command, 'isEnabled' );
+
+		// Execute the command.
+		this.listenTo( view, 'execute', () => {
+			editor.execute( REMOVE_FORMAT );
+			editor.editing.view.focus();
+		} );
+
+		return view;
 	}
 }

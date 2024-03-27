@@ -345,7 +345,7 @@ describe( 'ListPropertiesUI', () => {
 
 						styleButtonView.fire( 'execute' );
 
-						sinon.assert.calledWithExactly( editor.execute, 'listStyle', { type: 'default' } );
+						sinon.assert.calledWithExactly( editor.execute, 'bulletedList' );
 						sinon.assert.calledOnce( editor.editing.view.focus );
 						sinon.assert.callOrder( editor.execute, editor.editing.view.focus );
 					} );
@@ -728,7 +728,7 @@ describe( 'ListPropertiesUI', () => {
 
 						styleButtonView.fire( 'execute' );
 
-						sinon.assert.calledWithExactly( editor.execute, 'listStyle', { type: 'default' } );
+						sinon.assert.calledWithExactly( editor.execute, 'numberedList' );
 						sinon.assert.calledOnce( editor.editing.view.focus );
 						sinon.assert.callOrder( editor.execute, editor.editing.view.focus );
 					} );

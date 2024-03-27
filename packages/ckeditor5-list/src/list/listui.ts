@@ -7,8 +7,7 @@
  * @module list/list/listui
  */
 
-import { createUIComponent } from './utils.js';
-
+import { createUIComponents } from './utils.js';
 import { icons, Plugin } from 'ckeditor5/src/core.js';
 
 /**
@@ -30,7 +29,7 @@ export default class ListUI extends Plugin {
 		const t = this.editor.t;
 
 		// Create two buttons and link them with numberedList and bulletedList commands.
-		createUIComponent( this.editor, 'numberedList', t( 'Numbered List' ), icons.numberedList );
-		createUIComponent( this.editor, 'bulletedList', t( 'Bulleted List' ), icons.bulletedList );
+		createUIComponents( this.editor, 'numberedList', t( 'Numbered List' ), icons.numberedList );
+		createUIComponents( this.editor, 'bulletedList', t( 'Bulleted List' ), icons.bulletedList );
 	}
 }
