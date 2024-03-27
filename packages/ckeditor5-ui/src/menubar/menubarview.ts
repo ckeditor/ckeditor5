@@ -156,6 +156,8 @@ export default class MenuBarView extends View implements FocusableView {
 			menuView.delegate( ...EVENT_NAME_DELEGATES ).to( this, name => 'menu:' + name );
 		}
 
+		menuView._attachBehaviors();
+
 		this.menus.push( menuView );
 	}
 
@@ -287,6 +289,7 @@ export default class MenuBarView extends View implements FocusableView {
 	private _registerMenuTree( componentView: MenuBarMenuView | MenuBarMenuListItemButtonView, parentMenuView: MenuBarMenuView ) {
 		if ( !( componentView instanceof MenuBarMenuView ) ) {
 			componentView.delegate( 'mouseenter' ).to( parentMenuView );
+
 			return;
 		}
 
@@ -297,6 +300,7 @@ export default class MenuBarView extends View implements FocusableView {
 
 		if ( !menuBarItemsList ) {
 			componentView.delegate( 'mouseenter' ).to( parentMenuView );
+
 			return;
 		}
 
