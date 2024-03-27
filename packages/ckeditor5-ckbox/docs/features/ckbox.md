@@ -259,18 +259,16 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 If you want to allow CKBox to edit external images, not hosted by the file manager (for example, pasted via URL) you need to whitelist the URLs of the images. You can do this using the {@link module:ckbox/ckboxconfig~CKBoxConfig#allowExternalImagesEditing `config.ckbox.allowExternalImagesEditing`} option:
 
 ```js
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { CKBox } from '@ckeditor/ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ CKBox, /* ... */ ],
-		toolbar: [ 'ckbox', /* ... */ ],
-		ckbox: {
-			allowExternalImagesEditing: [ 'origin', /^cksource.com/ ]
-		}
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ CKBox, /* ... */ ],
+	toolbar: [ 'ckbox', /* ... */ ],
+	ckbox: {
+		allowExternalImagesEditing: [ 'origin', /^cksource.com/ ]
+	}
+} )
+.then( /* ... */ );
 ```
 
 The image is editable if this option is:
