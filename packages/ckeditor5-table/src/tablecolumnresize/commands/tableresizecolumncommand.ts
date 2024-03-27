@@ -9,8 +9,6 @@
 
 import { Command } from 'ckeditor5/src/core.js';
 
-import type TableUtils from '../tableutils.js';
-
 /**
  * The resize table column command.
  *
@@ -22,13 +20,13 @@ import type TableUtils from '../tableutils.js';
  * editor.execute( 'resizeColumn', { width: 0.25 } );
  * ```
  */
-export default class ResizeColumnCommand extends Command {
+export default class TableResizeColumnCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
 	public override refresh(): void {
 		const selection = this.editor.model.document.selection;
-		const tableUtils: TableUtils = this.editor.plugins.get( 'TableUtils' );
+		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 		const isAnyCellSelected = !!tableUtils.getSelectionAffectedTableCells( selection ).length;
 
 		this.isEnabled = isAnyCellSelected;

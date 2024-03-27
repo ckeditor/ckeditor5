@@ -29,6 +29,7 @@ export { default as TableSelection } from './tableselection.js';
 export { default as TableUtils } from './tableutils.js';
 export { default as TableColumnResize } from './tablecolumnresize.js';
 export { default as TableColumnResizeEditing } from './tablecolumnresize/tablecolumnresizeediting.js';
+export { default as TableColumnResizeUI } from './tablecolumnresize/tablecolumnresizeui.js';
 
 export type { TableConfig } from './tableconfig.js';
 export type { default as InsertColumnCommand } from './commands/insertcolumncommand.js';

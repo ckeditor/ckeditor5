@@ -19,6 +19,7 @@ import type {
 	TableClipboard,
 	TableColumnResize,
 	TableColumnResizeEditing,
+	TableColumnResizeUI,
 	TableEditing,
 	TableKeyboard,
 	TableMouse,
@@ -85,6 +86,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ TableCellWidthEditing.pluginName ]: TableCellWidthEditing;
 		[ TableClipboard.pluginName ]: TableClipboard;
 		[ TableColumnResize.pluginName ]: TableColumnResize;
+		[ TableColumnResizeUI.pluginName ]: TableColumnResizeUI;
 		[ TableColumnResizeEditing.pluginName ]: TableColumnResizeEditing;
 		[ TableEditing.pluginName ]: TableEditing;
 		[ TableKeyboard.pluginName ]: TableKeyboard;

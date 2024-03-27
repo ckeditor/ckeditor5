@@ -10,6 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core.js';
 import TableColumnResizeEditing from './tablecolumnresize/tablecolumnresizeediting.js';
 import TableCellWidthEditing from './tablecellwidth/tablecellwidthediting.js';
+import TableColumnResizeUI from './tablecolumnresize/tablecolumnresizeui.js';
 
 import '../theme/tablecolumnresize.css';
 
@@ -23,7 +24,7 @@ export default class TableColumnResize extends Plugin {
 	 * @inheritDoc
  	 */
 	public static get requires() {
-		return [ TableColumnResizeEditing, TableCellWidthEditing ] as const;
+		return [ TableColumnResizeEditing, TableColumnResizeUI, TableCellWidthEditing ] as const;
 	}
 
 	/**
