@@ -293,7 +293,7 @@ ClassicEditor
 		plugins: [ CKBox, /* ... */ ],
 		toolbar: [ 'ckbox', /* ... */ ],
 		ckbox: {
-			allowExternalImagesEditing: [ 'origin', cksource.com ]
+			allowExternalImagesEditing: [ 'origin', /^cksource.com/ ]
 		}
 	} )
 	.then( /* ... */ )
