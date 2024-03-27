@@ -492,7 +492,7 @@ import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 
 // Create a plugin that brings a button that toggles the visibility of a dialog window.
-// Read more about creating the plugins here: https://ckeditor.com/docs/ckeditor5/latest/installation/plugins/plugins.html.
+// Read more about creating the plugins here: https://ckeditor.com/docs/ckeditor5/latest/framework/architecture/plugins.html.
 class MinimalisticDialog extends Plugin {
 	// Make sure the "Dialog" plugin is loaded.
 	get requires() {
@@ -601,7 +601,7 @@ import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 
 // Create a plugin that brings a button which toggles the visibility of a modal window.
-// Read more about creating the plugins here: https://ckeditor.com/docs/ckeditor5/latest/installation/plugins/plugins.html.
+// Read more about creating the plugins here: https://ckeditor.com/docs/ckeditor5/latest/framework/architecture/plugins.html.
 class MinimalisticModal extends Plugin {
 	// Make sure the "Dialog" plugin is loaded.
 	get requires() {

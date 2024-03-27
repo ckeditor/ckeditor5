@@ -1,7 +1,7 @@
 ---
 category: framework-contributing
 meta-title: Code style | CKEditor 5 Framework Documentation
-order: 30
+order: 40
 modified_at: 2022-11-03
 ---
 
@@ -153,13 +153,13 @@ class Foo extends Plugin {
 		super( editor );
 
 		/**
-		 * Some documentation...
-		 */
+		* Some documentation...
+		*/
 		this.foo = new Foo();
 
 		/**
-		 * Some documentation...
-		 */
+		* Some documentation...
+		*/
 		this.isBar = false;
 	}
 
@@ -370,31 +370,31 @@ Example:
 ```js
 class Foo {
 	/**
-	 * The constructor (public, as its visibility isn't defined).
-	 */
+	* The constructor (public, as its visibility isn't defined).
+	*/
 	constructor() {
 		/**
-		 * Public property.
-		 */
+		* Public property.
+		*/
 		this.foo = 1;
 
 		/**
-		 * Protected property.
-		 *
-		 * @protected
-		 */
+		* Protected property.
+		*
+		* @protected
+		*/
 		this._bar = 1;
 
 		/**
-		 * @private
-		 * @property {Number} _bom
-		 */
+		* @private
+		* @property {Number} _bom
+		*/
 		this[ Symbol( 'bom' ) ] = 1;
 	}
 
 	/**
-	 * @private
-	 */
+	* @private
+	*/
 	_somePrivateMethod() {}
 }
 
@@ -875,7 +875,7 @@ throw new CKEditorError( 'editor-wrong-element', this );
 
 To make CKEditor&nbsp;5 plugins compatible with each other, we needed to introduce limitations when importing files from packages.
 
-Packages marked as "Base DLL build" can import between themselves without any restrictions. Names of these packages are specified in the {@link installation/advanced/dll-builds#anatomy-of-a-dll-build DLL builds} guide.
+Packages marked as "Base DLL build" can import between themselves without any restrictions. Names of these packages are specified in the {@link getting-started/advanced/dll-builds#anatomy-of-a-dll-build DLL builds} guide.
 
 The other CKEditor&nbsp;5 features (non-DLL) can import "Base DLL" packages using the `ckeditor5` package.
 
@@ -1027,8 +1027,8 @@ class ClassWithSecrets {
 ```ts
 class ClassWithSecrets {
 	/**
-	 * @internal
-	 */
+	* @internal
+	*/
 	private _shouldNotBeEmitted: string;
 }
 ```

@@ -62,8 +62,8 @@ docs/installation/getting-started/api-and-events.md,1,8,5.47,7.01,7.74,64.19,10.
 docs/installation/getting-started/configuration.md,1,17,6.9,9.11,7.87,62.04,10.41,39.14,11.04
 docs/installation/getting-started/editor-lifecycle.md,2,9,9.05,10.93,10.09,49.37,12.83,39.29,12.89
 docs/installation/getting-started/extending-features.md,2,5,6.25,9.24,8.27,55.19,9.96,36.5,10.43
-docs/installation/getting-started/getting-and-setting-data.md,0,9,5.92,7.79,7.82,62.74,10.43,33.57,10.69
-docs/installation/getting-started/predefined-builds.md,4,81,6.42,9.02,8.06,58.58,10.96,35.75,11.57
+docs/installation/legacy/leagacy-getting-started/getting-and-setting-data.md,0,9,5.92,7.79,7.82,62.74,10.43,33.57,10.69
+docs/installation/legacy-getting-started/predefined-builds.md,4,81,6.42,9.02,8.06,58.58,10.96,35.75,11.57
 docs/installation/getting-started/quick-start-other.md,6,37,6.43,9.12,7.2,64.4,9.05,34.85,10.49
 docs/installation/getting-started/quick-start.md,6,32,8.15,10.03,9.17,55.16,12.48,39.36,12.44
 docs/installation/index.md,0,10,6.88,8.82,8.01,62.08,11.85,34.92,12.16

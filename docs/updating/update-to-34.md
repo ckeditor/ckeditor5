@@ -30,7 +30,7 @@ Listed below are the most important changes that require your attention when upg
 
 ### Additional dependencies in CKEditor&nbsp;5 Collaboration Features
 
-The {@link installation/advanced/dll-builds DLL builds} support was introduced for revision history. As a result, some imports, plugin requirements and cross-package dependencies have changed to allow for the new building process. From now on, additional plugins will be required, when certain CKEditor&nbsp;5 collaboration features are added to the editor.
+The {@link getting-started/advanced/dll-builds DLL builds} support was introduced for revision history. As a result, some imports, plugin requirements and cross-package dependencies have changed to allow for the new building process. From now on, additional plugins will be required, when certain CKEditor&nbsp;5 collaboration features are added to the editor.
 
 **{@link module:real-time-collaboration/realtimecollaborativerevisionhistory~RealTimeCollaborativeRevisionHistory}** will require adding {@link module:revision-history/revisionhistory~RevisionHistory} to the list of the editor plugins:
 

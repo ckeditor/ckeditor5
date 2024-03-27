@@ -386,7 +386,7 @@ ClassicEditor
 		],
 		toolbar: [
 			'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|',
-			'abbreviation'												  // ADDED
+			'abbreviation'												 // ADDED
 		]
 	} )
 	.then( editor => {

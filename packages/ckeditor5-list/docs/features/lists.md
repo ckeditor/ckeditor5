@@ -34,12 +34,6 @@ You can also use Markdown code recognized by the {@link features/autoformat auto
 
 Besides the basic functionality of creating ordered and unordered lists, CKEditor&nbsp;5 offers formatting tools that let you control the lists. You can enable features such as more styles for list markers, setting the start index, or reversing the list order separately or all at once. Check out the individual demos below or see all list properties working together in the {@link examples/builds/full-featured-editor full-featured editor example}.
 
-<info-box info>
-	The {@link module:list/listproperties~ListProperties list properties feature} is enabled by default in the {@link installation/getting-started/predefined-builds#document-editor document editor build}.
-
-	See the {@link features/lists-installation#list-properties list properties} installation section to learn how to enable these in your editor.
-</info-box>
-
 ### List styles
 
 The list style feature introduces some more styles for the list item markers. When {@link module:list/listconfig~ListPropertiesConfig#styles enabled}, it adds 3 styles for unordered lists and 6 styles for ordered lists to choose from. The user will be able to set or change the list style via the dropdown. It opens when you click the arrow next to the appropriate list button in the toolbar.
@@ -100,24 +94,24 @@ The {@link module:list/list~List} plugin registers:
 The {@link module:list/listproperties~ListProperties} plugin registers:
 
 * The {@link module:list/listproperties/liststylecommand~ListStyleCommand `listStyle`} command. It accepts the `type` of the list style to set. If not set, it uses the default marker (usually decimal).
-    ```js
-    editor.execute( 'listStyle', { type: 'lower-roman' } );
-    ```
-    The available types are:
+	```js
+	editor.execute( 'listStyle', { type: 'lower-roman' } );
+	```
+	The available types are:
 
-    * For bulleted lists: `'disc'`, `'circle'`, and `'square'`.
-    * For numbered lists: `'decimal'`, `'decimal-leading-zero'`, `'lower-roman'`, `'upper-roman'`, `'lower-latin'`, and `'upper-latin'`.
+	* For bulleted lists: `'disc'`, `'circle'`, and `'square'`.
+	* For numbered lists: `'decimal'`, `'decimal-leading-zero'`, `'lower-roman'`, `'upper-roman'`, `'lower-latin'`, and `'upper-latin'`.
 * The {@link module:list/listproperties/liststartcommand~ListStartCommand `listStart`} command. It is a number and defaults to `1` (meaning a list starts with `1`). If enabled, it accepts a numerical value for the `start` attribute.
 
 	```js
-    editor.execute( 'listStart', { startIndex: 3 } );
-    ```
+	editor.execute( 'listStart', { startIndex: 3 } );
+	```
 
 * The {@link module:list/listproperties/listreversedcommand~ListReversedCommand `listReversed`} command. It is a Boolean and defaults to `false` (meaning the list order is ascending).
 
 	```js
-    editor.execute( 'listReversed', { reversed: true } );
-    ```
+	editor.execute( 'listReversed', { reversed: true } );
+	```
 
 * The `numberedList` UI split button. It overrides the UI button registered by the `List` plugin.
 * The `bulletedList` UI split button. It overrides the UI button registered by the `List` plugin.

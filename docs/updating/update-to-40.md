@@ -337,7 +337,7 @@ We simplified the `srcset` model attribute that provides parameters for responsi
 
 #### Changes to content styles
 
-This release updated editor content styles. This means you need to update them in your editor implementation to avoid any discrepancies. Refer to the {@link installation/advanced/content-styles Content styles} guide to learn how to generate the style sheet.
+This release updated editor content styles. This means you need to update them in your editor implementation to avoid any discrepancies. Refer to the {@link getting-started/advanced/content-styles Content styles} guide to learn how to generate the style sheet.
 
 ### Changes to the comments feature
 
@@ -413,7 +413,7 @@ If your custom integration manually adds deleted comment threads to `CommentsRep
 
 ### New balloon block editor icon
 
-We have changed the default {@link features/blocktoolbar balloon block editor toolbar} indicator icon from the pilcrow icon (`¶`) to the braille pattern dots icon (`⠿`). The new icon better corresponds to the dual function of the indicator, which you may use to both invoke the balloon toolbar and to drag to content block around.
+We have changed the default {@link getting-started/setup/toolbar#block-toolbar balloon block editor toolbar} indicator icon from the pilcrow icon (`¶`) to the braille pattern dots icon (`⠿`). The new icon better corresponds to the dual function of the indicator, which you may use to both invoke the balloon toolbar and to drag to content block around.
 
 While `⠿` is now a default, you can still configure it, for example:
 

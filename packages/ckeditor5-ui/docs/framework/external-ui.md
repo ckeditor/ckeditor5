@@ -121,8 +121,8 @@ With the Bootstrap framework loaded in the web page, you can define the actual U
 		<!-- The headings dropdown. -->
 		<div class="btn-group mr-2" role="group" aria-label="Headings">
 			<div class="dropdown" id="heading">
-			  <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Headings</span></button>
-			  <div class="dropdown-menu" aria-labelledby="heading-button"></div>
+			 <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Headings</span></button>
+			 <div class="dropdown-menu" aria-labelledby="heading-button"></div>
 			</div>
 		</div>
 
@@ -493,4 +493,4 @@ BootstrapEditor
 	} );
 ```
 
-Once everything works as expected, you may want to create a custom build of your editor to ship it across the applications. To learn more check out the {@link installation/getting-started/quick-start-other#building-the-editor-from-source Creating custom builds guide}.
+Once everything works as expected, you may want to create a custom build of your editor to ship it across the applications. To learn more check out the {@link getting-started/legacy-getting-started/quick-start-other#building-the-editor-from-source Creating custom builds guide}.

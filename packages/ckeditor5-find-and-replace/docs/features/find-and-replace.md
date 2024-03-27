@@ -26,46 +26,32 @@ Use the find and replace toolbar button {@icon @ckeditor/ckeditor5-find-and-repl
 By default, the find and replace form displays inside a dialog. That allows for keeping it open while editing the document at the same time. Alternatively, you can display the feature in a dropdown. To do this, use the {@link module:find-and-replace/findandreplaceconfig~FindAndReplaceConfig `config.findAndReplace.uiType`} configuration option:
 
 ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		findAndReplace: {
-			uiType: 'dropdown'
-		}
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	findAndReplace: {
+		uiType: 'dropdown'
+	}
+} )
+.then( /* ... */ );
 ```
 
 {@snippet features/find-and-replace-dropdown}
 
 ## Installation
 
-<info-box info>
-	The find and replace feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
-</info-box>
-
-To add this feature to your editor, install the [`@ckeditor/ckeditor5-find-and-replace`](https://www.npmjs.com/package/@ckeditor/ckeditor5-find-and-replace) package:
-
-```
-npm install --save @ckeditor/ckeditor5-find-and-replace
-```
-
-Then add the `FindAndReplace` plugin to your plugin list:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { FindAndReplace } from '@ckeditor/ckeditor5-find-and-replace';
+import { ClassicEditor, FindAndReplace } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ FindAndReplace, /* ... */ ],
-		toolbar: [ 'findAndReplace', /* ... */ ],
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ FindAndReplace, /* ... */ ],
+	toolbar: [ 'findAndReplace', /* ... */ ],
+} )
+.then( /* ... */ );
 ```
 
 <info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
+	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
 </info-box>
 
 ## Related features

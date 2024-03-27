@@ -331,12 +331,12 @@ class Button extends View {
 	}
 
 	/**
-	 * Focuses the button.
-	 *
-	 * @param {Boolean} force When `true`, the button will be focused again, even if already
-	 * focused in DOM.
-	 * @returns {Boolean} `true` when the DOM element was focused in DOM, `false` otherwise.
-	 */
+	* Focuses the button.
+	*
+	* @param {Boolean} force When `true`, the button will be focused again, even if already
+	* focused in DOM.
+	* @returns {Boolean} `true` when the DOM element was focused in DOM, `false` otherwise.
+	*/
 	focus( force ) {
 		console.log( `Focusing button, force argument="${ force }"` );
 

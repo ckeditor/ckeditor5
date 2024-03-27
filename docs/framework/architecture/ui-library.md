@@ -235,13 +235,13 @@ EditorUIView
 	├── "main" collection
 	│	└── InlineEditableUIView
 	└── "body" collection
-		 ├── BalloonPanelView
-		 │	└── "content" collection
-		 │		└── ToolbarView
-		 ├── BalloonPanelView
-		 │	└── "content" collection
-		 │		└── ...
-		 └── ...
+		├── BalloonPanelView
+		│	└── "content" collection
+		│		└── ToolbarView
+		├── BalloonPanelView
+		│	└── "content" collection
+		│		└── ...
+		└── ...
 ```
 
 ## Using the existing components
@@ -455,9 +455,9 @@ The framework provides the UI dialog component. The dialog system in CKEditor&nb
 
 Dialog is a pop-up window that does not close when the user clicks outside of it. It allows for interacting with the editor and its content while being open (unless it is a modal, which blocks the interaction with the rest of the page until closed). A dialog is also {@link module:ui/bindings/draggableviewmixin~DraggableViewMixin draggable} with a mouse or touch if you configure it to display a [header](#header). Only one dialog can be open at a time &ndash; opening another one closes the previously visible one.
 
-Check out these {@link installation/plugins/plugins example plugins} that display:
-* A {@link framework/architecture/ui-components#dialog dialog window}.
-* A {@link framework/architecture/ui-components#modal modal window}.
+Check out these {@link framework/architecture/plugins example plugins} that display:
+* a {@link framework/architecture/ui-components#dialog dialog window},
+* a {@link framework/architecture/ui-components#modal modal window}.
 
 Learn more about the [structure and behavior](#structure-and-behavior) of dialog windows.
 

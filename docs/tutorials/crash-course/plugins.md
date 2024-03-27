@@ -43,11 +43,12 @@ Since the `Essentials` plugin does not define block-level containers, we also in
 
 The editor we created so far still lacks many features, such as support for headings, tables, block quotes, and much more. You can add them using plugins, of course.
 
-For a list of plugins, usage examples, installation, and configuration options, see the {@link installation/plugins/features-html-output-overview Plugins and HTML output} guide.
+For a list of plugins, usage examples, installation, and configuration options, see the {@link framework/architecture/plugins#plugins-and-html-output Plugins and HTML output} guide.
 
+<!-- marked for probable removal
 ## Predefined builds
 
-The fact that individual plugins add support for such minor features as typing, <kbd>Enter</kbd>, or `<p>` does not mean that you have to browse through the long list of plugins and painstakingly install the ones you need to get a good typing experience. You can do that if you want to have full control over the editor. But if that is not your thing, you can use one of the {@link installation/getting-started/predefined-builds predefined builds} with the most important and popular plugins already installed and configured.
+The fact that individual plugins add support for such minor features as typing, <kbd>Enter</kbd>, or `<p>` does not mean that you have to browse through the long list of plugins and painstakingly install the ones you need to get a good typing experience. You can do that if you want to have full control over the editor. But if that is not your thing, you can use one of the {@link getting-started/legacy-getting-started/predefined-builds predefined builds} with the most important and popular plugins already installed and configured. -->
 
 ## Creating custom plugins
 

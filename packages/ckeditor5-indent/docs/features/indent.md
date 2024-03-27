@@ -31,21 +31,19 @@ The rich-text editor from the {@link features/indent#demo demo} section above us
 You can change that value to, for example, `1em`:
 
 ```js
-import { Indent } from '@ckeditor/ckeditor5-indent';
+import { ClassicEditor, Indent } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Indent, /* ... */ ],
-		toolbar: {
-			items: [ 'heading', '|', 'outdent', 'indent', '|', 'bulletedList', 'numberedList', '|', 'undo', 'redo' ]
-		},
-		indentBlock: {
-			offset: 1,
-			unit: 'em'
-		}
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Indent, /* ... */ ],
+	toolbar: {
+		items: [ 'heading', '|', 'outdent', 'indent', '|', 'bulletedList', 'numberedList', '|', 'undo', 'redo' ]
+	},
+	indentBlock: {
+		offset: 1,
+		unit: 'em'
+	}
+} )
+.then( /* ... */ );
 ```
 
 ### Using CSS classes
@@ -55,24 +53,22 @@ If you want more semantics in your content, use CSS classes instead of fixed ind
 Here is how you can configure the block indentation feature to set indentation by applying one of the defined CSS classes:
 
 ```js
-import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
+import { ClassicEditor, Indent, IndentBlock } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Indent, IndentBlock, /* ... */ ],
-		toolbar: {
-			items: [ 'heading', '|', 'outdent', 'indent', '|', 'bulletedList', 'numberedList', '|', 'undo', 'redo' ]
-		},
-		indentBlock: {
-			classes: [
-				'custom-block-indent-a', // First step - smallest indentation.
-				'custom-block-indent-b',
-				'custom-block-indent-c'  // Last step - biggest indentation.
-			]
-		}
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Indent, IndentBlock, /* ... */ ],
+	toolbar: {
+		items: [ 'heading', '|', 'outdent', 'indent', '|', 'bulletedList', 'numberedList', '|', 'undo', 'redo' ]
+	},
+	indentBlock: {
+		classes: [
+			'custom-block-indent-a', // First step - smallest indentation.
+			'custom-block-indent-b',
+			'custom-block-indent-c'  // Last step - biggest indentation.
+		]
+	}
+} )
+.then( /* ... */ );
 ```
 
 Using classes instead of fixed units (`px` or `em`) has another advantage &ndash; you retain control over what indentation levels are used in the documents. For instance, you can limit indentation to 2 or 3 different levels and there is no way the users can go beyond that. In the example above, the `.custom-block-indent-c` class level is the maximum allowed indentation value. This should help keep your content clean and predictable.
@@ -96,7 +92,7 @@ In the demo below the CSS classes are defined as follows:
 ```
 
 <info-box>
-	Note that for <abbr title="right-to-left">RTL</abbr> content, `'margin-right'` should be used instead. Learn more about {@link features/ui-language#setting-the-language-of-the-content configuring language of the editor content}.
+	Note that for <abbr title="right-to-left">RTL</abbr> content, `'margin-right'` should be used instead. Learn more about {@link getting-started/setup/ui-language#setting-the-language-of-the-content configuring language of the editor content}.
 </info-box>
 
 {@snippet features/custom-indent-block-classes}
@@ -116,32 +112,20 @@ This means that if you want to allow indenting lists only, you can do that by lo
 
 ## Installation
 
-<info-box info>
-	The block indent feature is enabled by default in the {@link installation/getting-started/predefined-builds#document-editor document editor build} and {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
-</info-box>
-
-To add this feature to your editor, install the [`@ckeditor/ckeditor5-indent`](https://www.npmjs.com/package/@ckeditor/ckeditor5-indent) package:
-
-```bash
-npm install --save @ckeditor/ckeditor5-indent
-```
-
-Then add it to your plugin list and the toolbar configuration:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
+import { ClassicEditor, Indent, IndentBlock } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Indent, IndentBlock, /* ... */ ],
-		toolbar: [ 'outdent', 'indent', /* ... */ ]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Indent, IndentBlock, /* ... */ ],
+	toolbar: [ 'outdent', 'indent', /* ... */ ]
+} )
+.then( /* ... */ );
 ```
 
 <info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
+	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
 </info-box>
 
 ## Related features
