@@ -578,12 +578,13 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 				groupId: 'aiTools',
 				items: [
 					'menuBar:aiAssistant',
-					'menuBar:trackChanges'
+					'menuBar:aiCommands'
 				]
 			},
 			{
 				groupId: 'tools',
 				items: [
+					'menuBar:trackChanges',
 					'menuBar:commentsArchive',
 					'menuBar:revisionHistory'
 				]
