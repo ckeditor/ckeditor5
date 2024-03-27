@@ -193,8 +193,108 @@ describe( 'upcastTable()', () => {
 		);
 
 		expectModel(
-			'<table>' +
+			'<table footerRows="1">' +
 			'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+			'</table>'
+		);
+	} );
+
+	it( 'should create table model from table with one tfoot with more then one row', () => {
+		editor.setData(
+			'<table>' +
+			'<tfoot>' +
+			'<tr><td>1</td></tr>' +
+			'<tr><td>2</td></tr>' +
+			'<tr><td>3</td></tr>' +
+			'</tfoot>' +
+			'</table>'
+		);
+
+		expectModel(
+			'<table footerRows="3">' +
+			'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+			'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
+			'<tableRow><tableCell><paragraph>3</paragraph></tableCell></tableRow>' +
+			'</table>'
+		);
+	} );
+
+	it( 'should create table model from table with two tfoots with one row', () => {
+		editor.setData(
+			'<table>' +
+			'<tfoot><tr><td>3</td></tr></tfoot>' +
+			'<tbody><tr><td>1</td></tr></tbody>' +
+			'<tfoot><tr><td>2</td></tr></tfoot>' +
+			'</table>'
+		);
+
+		expectModel(
+			'<table footerRows="1">' +
+			'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+			'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
+			'<tableRow><tableCell><paragraph>3</paragraph></tableCell></tableRow>' +
+			'</table>'
+		);
+	} );
+
+	it( 'should create table model from table with tfoot before the tbody', () => {
+		editor.setData(
+			'<table>' +
+			'<tfoot><tr><td>2</td></tr></tfoot>' +
+			'<tbody><tr><td>1</td></tr></tbody>' +
+			'</table>'
+		);
+
+		expectModel(
+			'<table footerRows="1">' +
+			'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+			'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
+			'</table>'
+		);
+	} );
+
+	it( 'should create table model from table with thead and tfoot', () => {
+		editor.setData(
+			'<table>' +
+			'<thead><tr><td>1</td></tr></thead>' +
+			'<tfoot><tr><td>2</td></tr></tfoot>' +
+			'</table>'
+		);
+
+		expectModel(
+			'<table footerRows="1" headingRows="1">' +
+			'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+			'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
+			'</table>'
+		);
+	} );
+
+	it( 'should create table model from table with thead and tfoot with more than one row', () => {
+		editor.setData(
+			'<table>' +
+			'<thead>' +
+			'<tr><td>1</td></tr>' +
+			'<tr><td>2</td></tr>' +
+			'</thead>' +
+			'<tbody>' +
+			'<tr><td>3</td></tr>' +
+			'<tr><td>4</td></tr>' +
+			'</tbody>' +
+			'<tfoot>' +
+			'<tr><td>5</td></tr>' +
+			'<tr><td>6</td></tr>' +
+			'</tfoot>' +
+			'</table>'
+		);
+
+		expectModel(
+			'<table footerRows="2" headingRows="2">' +
+			'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+			'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
+			'<tableRow><tableCell><paragraph>3</paragraph></tableCell></tableRow>' +
+			'<tableRow><tableCell><paragraph>4</paragraph></tableCell></tableRow>' +
+			'<tableRow><tableCell><paragraph>5</paragraph></tableCell></tableRow>' +
+			'<tableRow><tableCell><paragraph>6</paragraph></tableCell></tableRow>' +
 			'</table>'
 		);
 	} );
@@ -290,6 +390,7 @@ describe( 'upcastTable()', () => {
 		editor.setData(
 			'<div>foo' +
 			'<table>' +
+			'<tfoot><tr><td>3</td></tr></tfoot>' +
 			'<tbody><tr><td>2</td></tr></tbody>' +
 			'<thead><tr><td>1</td></tr></thead>' +
 			'</table>' +
@@ -298,9 +399,10 @@ describe( 'upcastTable()', () => {
 
 		expectModel(
 			'<div>foo</div>' +
-			'<table headingRows="1">' +
+			'<table footerRows="1" headingRows="1">' +
 			'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 			'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
+			'<tableRow><tableCell><paragraph>3</paragraph></tableCell></tableRow>' +
 			'</table>' +
 			'<div>bar</div>'
 		);
@@ -917,7 +1019,7 @@ describe( 'upcastTable()', () => {
 			);
 
 			expectModel(
-				'<table>' +
+				'<table footerRows="1">' +
 				'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 				'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
 				'<tableRow><tableCell><paragraph>3</paragraph></tableCell></tableRow>' +

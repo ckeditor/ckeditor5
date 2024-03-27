@@ -92,7 +92,7 @@ export default class TableStyleSupport extends Plugin {
 			return block.name == 'tableCell';
 		}
 
-		if ( [ 'thead', 'tbody' ].includes( definition.element ) ) {
+		if ( [ 'thead', 'tbody', 'tfoot' ].includes( definition.element ) ) {
 			return block.name == 'table';
 		}
 
@@ -124,13 +124,16 @@ export default class TableStyleSupport extends Plugin {
 			}
 		}
 
-		if ( [ 'thead', 'tbody' ].includes( definition.element ) ) {
+		if ( [ 'thead', 'tbody', 'tfoot' ].includes( definition.element ) ) {
 			const headingRows = block.getAttribute( 'headingRows' ) as number || 0;
+			const footerRows = block.getAttribute( 'footerRows' ) as number || 0;
 
 			if ( definition.element == 'thead' ) {
 				return headingRows > 0;
+			} else if ( definition.element == 'tfoot' ) {
+				return footerRows > 0;
 			} else {
-				return headingRows < this._tableUtils.getRows( block );
+				return headingRows + footerRows < this._tableUtils.getRows( block );
 			}
 		}
 

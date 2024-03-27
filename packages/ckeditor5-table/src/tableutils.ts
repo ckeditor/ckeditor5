@@ -115,6 +115,7 @@ export default class TableUtils extends Plugin {
 	 * @param options.columns The number of columns to create. Default value is 2.
 	 * @param options.headingRows The number of heading rows. Default value is 0.
 	 * @param options.headingColumns The number of heading columns. Default value is 0.
+	 * @param options.footerRows The number of footer rows. Default value is 0.
 	 * @returns The created table element.
 	 */
 	public createTable(
@@ -124,12 +125,14 @@ export default class TableUtils extends Plugin {
 			columns?: number;
 			headingRows?: number;
 			headingColumns?: number;
+			footerRows?: number;
 		}
 	): Element {
 		const table = writer.createElement( 'table' );
 
 		const rows = options.rows || 2;
 		const columns = options.columns || 2;
+		const footerRows = options.footerRows || 0;
 
 		createEmptyRows( writer, table, 0, rows, columns );
 
@@ -139,6 +142,10 @@ export default class TableUtils extends Plugin {
 
 		if ( options.headingColumns ) {
 			updateNumericAttribute( 'headingColumns', Math.min( options.headingColumns, columns ), table, writer, 0 );
+		}
+
+		if ( footerRows ) {
+			updateNumericAttribute( 'footerRows', Math.min( footerRows, rows ), table, writer, 0 );
 		}
 
 		return table;
@@ -198,10 +205,16 @@ export default class TableUtils extends Plugin {
 
 		model.change( writer => {
 			const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
+			const footerRows = table.getAttribute( 'footerRows' ) as number || 0;
 
 			// Inserting rows inside heading section requires to update `headingRows` attribute as the heading section will grow.
 			if ( headingRows > insertAt ) {
 				updateNumericAttribute( 'headingRows', headingRows + rowsToInsert, table, writer, 0 );
+			}
+
+			// Inserting rows inside footer section requires to update `footerRows` attribute as the footer section will grow.
+			if ( rows - footerRows < insertAt ) {
+				updateNumericAttribute( 'footerRows', footerRows + rowsToInsert, table, writer, 0 );
 			}
 
 			// Inserting at the end or at the beginning of a table doesn't require to calculate anything special.
@@ -423,8 +436,9 @@ export default class TableUtils extends Plugin {
 				updateNumericAttribute( 'rowspan', rowspan, cell, writer );
 			}
 
-			// 2d. Adjust heading rows if removed rows were in a heading section.
+			// 2d. Adjust heading and footer rows if removed rows were in a heading or footer section.
 			updateHeadingRows( table, indexesObject, writer );
+			updateFooterRows( table, indexesObject, writer, rowCount );
 
 			// 2e. Remove empty columns (without anchored cells) if there are any.
 			if ( !removeEmptyColumns( table, this ) ) {
@@ -748,6 +762,7 @@ export default class TableUtils extends Plugin {
 			if ( rowspan < numberOfCells ) {
 				// We already split the cell in check one so here we split to the remaining number of cells only.
 				const cellsToInsert = numberOfCells - rowspan;
+				const rowCountBefore = this.getRows( table );
 
 				// This check is needed since we need to check if there are any cells from previous rows than spans over this cell's row.
 				const tableMap = [ ...new TableWalker( table, { startRow: 0, endRow: splitCellRow } ) ];
@@ -779,6 +794,14 @@ export default class TableUtils extends Plugin {
 
 				if ( headingRows > splitCellRow ) {
 					updateNumericAttribute( 'headingRows', headingRows + cellsToInsert, table, writer );
+				}
+
+				// Update footer rows if split cell is in footer section.
+				const footerRows = table.getAttribute( 'footerRows' ) as number || 0;
+				const footerIndex = rowCountBefore - footerRows;
+
+				if ( footerIndex <= splitCellRow ) {
+					updateNumericAttribute( 'footerRows', footerRows + cellsToInsert, table, writer );
 				}
 			}
 		} );
@@ -1040,6 +1063,8 @@ export default class TableUtils extends Plugin {
 	 *  │ c │ c │ d │ d │
 	 *  ├───┼───┼───┼───┤
 	 *  │ c │ c │ d │ d │
+	 *  ├───┼───┼───┼───┤
+	 *  │ e │ e │ f │ f │  ← footer row
 	 *  └───┴───┴───┴───┘
 	 */
 	private _areCellInTheSameTableSection( tableCells: Array<Element> ): boolean {
@@ -1047,9 +1072,14 @@ export default class TableUtils extends Plugin {
 
 		const rowIndexes = this.getRowIndexes( tableCells );
 		const headingRows = parseInt( table.getAttribute( 'headingRows' ) as string ) || 0;
+		const footerRows = parseInt( table.getAttribute( 'footerRows' ) as string ) || 0;
+		const footerIndex = this.getRows( table ) - footerRows;
 
 		// Calculating row indexes is a bit cheaper so if this check fails we can't merge.
-		if ( !this._areIndexesInSameSection( rowIndexes, headingRows ) ) {
+		if (
+			!this._areIndexesInSameHeadingSection( rowIndexes, headingRows ) ||
+			!this._areIndexesInSameFooterSection( rowIndexes, footerIndex )
+		) {
 			return false;
 		}
 
@@ -1057,17 +1087,27 @@ export default class TableUtils extends Plugin {
 		const headingColumns = parseInt( table.getAttribute( 'headingColumns' ) as string ) || 0;
 
 		// Similarly cells must be in same column section.
-		return this._areIndexesInSameSection( columnIndexes, headingColumns );
+		return this._areIndexesInSameHeadingSection( columnIndexes, headingColumns );
 	}
 
 	/**
 	 * Unified check if table rows/columns indexes are in the same heading/body section.
 	 */
-	private _areIndexesInSameSection( { first, last }: IndexesObject, headingSectionSize: number ): boolean {
+	private _areIndexesInSameHeadingSection( { first, last }: IndexesObject, headingSectionSize: number ): boolean {
 		const firstCellIsInHeading = first < headingSectionSize;
 		const lastCellIsInHeading = last < headingSectionSize;
 
 		return firstCellIsInHeading === lastCellIsInHeading;
+	}
+
+	/**
+	 * Unified check if table rows indexes are in the same footer section.
+	 */
+	private _areIndexesInSameFooterSection( { first, last }: IndexesObject, footerIndex: number ): boolean {
+		const firstCellIsInFooter = first >= footerIndex;
+		const lastCellIsInFooter = last >= footerIndex;
+
+		return firstCellIsInFooter === lastCellIsInFooter;
 	}
 }
 
@@ -1149,6 +1189,20 @@ function updateHeadingRows( table: Element, { first, last }: IndexesObject, writ
 		const newRows = last < headingRows ? headingRows - ( last - first + 1 ) : first;
 
 		updateNumericAttribute( 'headingRows', newRows, table, writer, 0 );
+	}
+}
+
+/**
+ * Calculates a new footer rows value for removing rows from footer section.
+ */
+function updateFooterRows( table: Element, { first, last }: IndexesObject, writer: Writer, rowCount: number ) {
+	const footerRows = table.getAttribute( 'footerRows' ) as number || 0;
+	const footerIndex = rowCount - footerRows;
+
+	if ( last >= footerIndex ) {
+		const newRows = first >= footerIndex ? footerRows - ( last - first + 1 ) : rowCount - 1 - last;
+
+		updateNumericAttribute( 'footerRows', newRows, table, writer, 0 );
 	}
 }
 
