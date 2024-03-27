@@ -34,6 +34,7 @@
     "directory": "packages/ckeditor5-cloud-services"
   },
   "files": [
+    "dist",
     "lang",
     "src/**/*.js",
     "src/**/*.d.ts",
@@ -44,6 +45,7 @@
   ],
   "scripts": {
     "dll:build": "webpack",
-    "build": "tsc -p ./tsconfig.json"
+    "build": "tsc -p ./tsconfig.json",
+    "build:node": "node ../../scripts/build-package.mjs"
   }
 }

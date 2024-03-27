@@ -1,0 +1,12 @@
+/**
+ * The configuration used for new installation methods. The slightly different
+ * configuration from the main `tsconfig.json` is due to the fact that we use
+ * Rollup to build the project instead of using `tsc`.
+ */
+{
+  "extends": "./tsconfig.json",
+	"compilerOptions": {
+		"module": "ESNext",
+		"moduleResolution": "bundler"
+	}
+}

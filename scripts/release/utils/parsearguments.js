@@ -19,7 +19,8 @@ module.exports = function parseArguments( cliArguments ) {
 			'nightly',
 			'verbose',
 			'compile-only',
-			'ci'
+			'ci',
+			'external'
 		],
 
 		number: [
@@ -41,7 +42,8 @@ module.exports = function parseArguments( cliArguments ) {
 			branch: 'release',
 			'npm-tag': 'staging',
 			verbose: false,
-			ci: false
+			ci: false,
+			external: true
 		}
 	};
 
@@ -72,6 +74,8 @@ module.exports = function parseArguments( cliArguments ) {
  * @typedef {Object} ReleaseOptions
  *
  * @property {Boolean} nightly
+ *
+ * @property {Boolean} external
  *
  * @property {Boolean} [compileOnly=false]
  *

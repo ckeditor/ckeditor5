@@ -1,5 +1,5 @@
 /*
- * The configuration is used when releasing the `ckeditor5` package.
+ * The configuration used when releasing the `ckeditor5` package.
  */
 {
   "extends": "./tsconfig.release.json",

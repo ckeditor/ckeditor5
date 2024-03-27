@@ -8,7 +8,7 @@
  */
 
 export { default as PasteFromOffice } from './pastefromoffice.js';
-export { Normalizer, type NormalizerData } from './normalizer.js';
+export type { Normalizer, NormalizerData } from './normalizer.js';
 export { default as MSWordNormalizer } from './normalizers/mswordnormalizer.js';
 export { parseHtml } from './filters/parse.js';
 

@@ -8,6 +8,6 @@
  */
 
 export { default as WordCount, type WordCountUpdateEvent } from './wordcount.js';
-export { WordCountConfig } from './wordcountconfig.js';
+export type { WordCountConfig } from './wordcountconfig.js';
 
 import './augmentation.js';

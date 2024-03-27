@@ -24,9 +24,6 @@ import type Text from './text.js';
 
 import { CKEditorError, compareArrays } from '@ckeditor/ckeditor5-utils';
 
-// To check if component is loaded more than once.
-import '@ckeditor/ckeditor5-utils/src/version.js';
-
 /**
  * Represents a position in the model tree.
  *

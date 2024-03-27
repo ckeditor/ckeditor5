@@ -72,6 +72,7 @@
     "directory": "packages/ckeditor5-show-blocks"
   },
   "files": [
+    "dist",
     "lang",
     "src/**/*.js",
     "src/**/*.d.ts",
@@ -81,7 +82,8 @@
     "CHANGELOG.md"
   ],
   "scripts": {
+    "dll:build": "webpack",
     "build": "tsc -p ./tsconfig.json",
-    "dll:build": "webpack"
+    "build:node": "node ../../scripts/build-package.mjs"
   }
 }

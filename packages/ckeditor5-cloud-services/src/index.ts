@@ -9,7 +9,7 @@
 
 export { default as CloudServices } from './cloudservices.js';
 export { default as CloudServicesCore } from './cloudservicescore.js';
-export { TokenUrl, type CloudServicesConfig } from './cloudservicesconfig.js';
+export type { TokenUrl, CloudServicesConfig } from './cloudservicesconfig.js';
 export type { default as Token, InitializedToken } from './token/token.js';
 export type { default as UploadGateway } from './uploadgateway/uploadgateway.js';
 export type { default as FileUploader } from './uploadgateway/fileuploader.js';
