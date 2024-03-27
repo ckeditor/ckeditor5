@@ -4,6 +4,7 @@
 	"Insert column left": "Label for the insert table column to the left of the current one button.",
 	"Insert column right": "Label for the insert table column to the right of the current one button.",
 	"Delete column": "Label for the delete table column button.",
+	"Resize column": "Label for the resize table column button.",
 	"Select column": "Label for the select the entire table column button.",
 	"Column": "Label for the table column dropdown button.",
 	"Header row": "Label for the set/unset table header row button.",

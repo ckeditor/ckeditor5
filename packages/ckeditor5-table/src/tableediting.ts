@@ -25,6 +25,7 @@ import SetHeaderColumnCommand from './commands/setheadercolumncommand.js';
 import MergeCellsCommand from './commands/mergecellscommand.js';
 import SelectRowCommand from './commands/selectrowcommand.js';
 import SelectColumnCommand from './commands/selectcolumncommand.js';
+import ResizeColumnCommand from './commands/resizecolumncommand.js';
 import TableUtils from '../src/tableutils.js';
 
 import injectTableLayoutPostFixer from './converters/table-layout-post-fixer.js';
@@ -199,6 +200,7 @@ export default class TableEditing extends Plugin {
 
 		editor.commands.add( 'selectTableRow', new SelectRowCommand( editor ) );
 		editor.commands.add( 'selectTableColumn', new SelectColumnCommand( editor ) );
+		editor.commands.add( 'resizeTableColumn', new ResizeColumnCommand( editor ) );
 
 		injectTableLayoutPostFixer( model );
 		injectTableCellParagraphPostFixer( model );

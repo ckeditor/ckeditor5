@@ -127,6 +127,13 @@ export default class TableUI extends Plugin {
 						commandName: 'selectTableColumn',
 						label: t( 'Select column' )
 					}
+				},
+				{
+					type: 'button',
+					model: {
+						commandName: 'resizeTableColumn',
+						label: t( 'Resize column' )
+					}
 				}
 			] as Array<ListDropdownItemDefinition>;
 
