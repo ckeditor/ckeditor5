@@ -600,7 +600,8 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 			{
 				groupId: 'tools',
 				items: [
-					'menuBar:commentsArchive'
+					'menuBar:commentsArchive',
+					'menuBar:revisionHistory'
 				]
 			}
 		]
