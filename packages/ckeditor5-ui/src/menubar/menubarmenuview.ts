@@ -148,6 +148,21 @@ export default class MenuBarMenuView extends View implements FocusableView {
 		// Listen for keystrokes coming from within #element.
 		this.keystrokes.listenTo( this.element! );
 
+		MenuBarMenuBehaviors.closeOnEscKey( this );
+
+		this._repositionPanelOnOpen();
+	}
+
+	// For now, this method cannot be called in the render process because the `parentMenuView` may be assigned
+	// after the rendering process.
+	//
+	// TODO: We should reconsider the way we handle this logic.
+	/**
+	 * Attach all keyboard behaviors for the menu bar view.
+	 *
+	 * @internal
+	 */
+	public _attachBehaviors(): void {
 		// Top-level menus.
 		if ( !this.parentMenuView ) {
 			this._propagateArrowKeystrokeEvents();
@@ -160,10 +175,6 @@ export default class MenuBarMenuView extends View implements FocusableView {
 			MenuBarMenuBehaviors.closeOnArrowLeftKey( this );
 			MenuBarMenuBehaviors.closeOnParentClose( this );
 		}
-
-		MenuBarMenuBehaviors.closeOnEscKey( this );
-
-		this._repositionPanelOnOpen();
 	}
 
 	/**
