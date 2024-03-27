@@ -61,6 +61,7 @@ describe( 'Alignment UI', () => {
 			expect( button ).to.have.property( 'icon' );
 			expect( button ).to.have.property( 'tooltip', true );
 			expect( button ).to.have.property( 'isToggleable', true );
+			expect( button ).to.have.property( 'tooltipPosition', 's' );
 		} );
 
 		it( 'has isOn bound to command\'s value', () => {
@@ -103,6 +104,7 @@ describe( 'Alignment UI', () => {
 			expect( button ).to.have.property( 'label', 'Align right' );
 			expect( button ).to.have.property( 'icon' );
 			expect( button ).to.have.property( 'tooltip', true );
+			expect( button ).to.have.property( 'tooltipPosition', 's' );
 		} );
 
 		it( 'has isOn bound to command\'s value', () => {
@@ -145,6 +147,7 @@ describe( 'Alignment UI', () => {
 			expect( button ).to.have.property( 'label', 'Align center' );
 			expect( button ).to.have.property( 'icon' );
 			expect( button ).to.have.property( 'tooltip', true );
+			expect( button ).to.have.property( 'tooltipPosition', 's' );
 		} );
 
 		it( 'has isOn bound to command\'s value', () => {
@@ -187,6 +190,7 @@ describe( 'Alignment UI', () => {
 			expect( button ).to.have.property( 'label', 'Justify' );
 			expect( button ).to.have.property( 'icon' );
 			expect( button ).to.have.property( 'tooltip', true );
+			expect( button ).to.have.property( 'tooltipPosition', 's' );
 		} );
 
 		it( 'has isOn bound to command\'s value', () => {
@@ -269,6 +273,42 @@ describe( 'Alignment UI', () => {
 			expect( items.includes( 'Align right' ) ).to.be.true;
 			expect( items.includes( 'Align center' ) ).to.be.true;
 			expect( items.includes( 'Justify' ) ).to.be.true;
+		} );
+
+		it( 'tooltips pinned to buttons should be aligned on east', () => {
+			// Make sure that toolbar view is not created before first dropdown open.
+			expect( dropdown.toolbarView ).to.be.undefined;
+
+			// Trigger toolbar view creation (lazy init).
+			dropdown.isOpen = true;
+
+			const items = [ ...dropdown.toolbarView.items ].map( item => item.tooltipPosition );
+
+			expect( items ).to.have.length( 4 );
+			expect( items.every( item => item === 'e' ) ).to.be.true;
+		} );
+
+		it( 'tooltips pinned to buttons should be aligned on west (RTL ui)', async () => {
+			// Clean up the editor created in main test suite hook.
+			await editor.destroy();
+
+			const newEditor = await ClassicTestEditor.create( element, {
+				language: {
+					content: 'ar',
+					ui: 'ar'
+				},
+				plugins: [ AlignmentEditing, AlignmentUI ]
+			} );
+
+			dropdown = newEditor.ui.componentFactory.create( 'alignment' );
+			dropdown.isOpen = true;
+
+			const items = [ ...dropdown.toolbarView.items ].map( item => item.tooltipPosition );
+
+			expect( items ).to.have.length( 4 );
+			expect( items.every( item => item === 'w' ) ).to.be.true;
+
+			await newEditor.destroy();
 		} );
 
 		it( 'should use icon related to current command value', () => {
