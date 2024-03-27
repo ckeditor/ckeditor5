@@ -30,7 +30,7 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import { _clear as clearTranslations, add as addTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
 
 describe( 'CodeBlockEditing', () => {
-	let editor, element, model, view, viewDoc;
+	let editor, element, model, view, viewDoc, root;
 
 	before( () => {
 		addTranslations( 'en', {
@@ -60,6 +60,7 @@ describe( 'CodeBlockEditing', () => {
 				model = editor.model;
 				view = editor.editing.view;
 				viewDoc = view.document;
+				root = model.document.getRoot();
 			} );
 	} );
 
@@ -1788,4 +1789,216 @@ describe( 'CodeBlockEditing', () => {
 			} );
 		} );
 	} );
+
+	describe( 'accessibility', () => {
+		let announcerSpy;
+
+		beforeEach( () => {
+			announcerSpy = sinon.spy( editor.ui.ariaLiveAnnouncer, 'announce' );
+		} );
+
+		it( 'should announce enter and leave code block with specified language label', () => {
+			setModelData( model, join( codeblock( 'css' ), tag( 'paragraph' ) ) );
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 0, 0 ], root, [ 0, 1 ] ) );
+			} );
+
+			expect( announcerSpy ).to.be.calledWithExactly( 'codeBlocks', 'Entering CSS code snippet', 'assertive' );
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 1, 0 ], root, [ 1, 1 ] ) );
+			} );
+
+			expect( announcerSpy ).to.be.calledWithExactly( 'codeBlocks', 'Leaving CSS code snippet', 'assertive' );
+		} );
+
+		it( 'should announce enter and leave code block without language label', () => {
+			setModelData( model, join( codeblock( 'FooBar' ), tag( 'paragraph' ) ) );
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 0, 0 ], root, [ 0, 1 ] ) );
+			} );
+
+			expect( announcerSpy ).to.be.calledWithExactly( 'codeBlocks', 'Entering code snippet', 'assertive' );
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 1, 0 ], root, [ 1, 1 ] ) );
+			} );
+
+			expect( announcerSpy ).to.be.calledWithExactly( 'codeBlocks', 'Leaving code snippet', 'assertive' );
+		} );
+
+		it( 'should announce sequential entry and exit of a code block with paragraph between', () => {
+			setModelData( model, join( codeblock( 'php' ), tag( 'paragraph' ), codeblock( 'css' ) ) );
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 0, 0 ], root, [ 0, 1 ] ) );
+			} );
+
+			expect( announcerSpy ).to.be.calledWithExactly( 'codeBlocks', 'Entering PHP code snippet', 'assertive' );
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 1, 0 ], root, [ 1, 1 ] ) );
+			} );
+
+			expect( announcerSpy ).to.be.calledWithExactly( 'codeBlocks', 'Leaving PHP code snippet', 'assertive' );
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 2, 0 ], root, [ 2, 1 ] ) );
+			} );
+
+			expect( announcerSpy ).to.be.calledWithExactly( 'codeBlocks', 'Entering CSS code snippet', 'assertive' );
+		} );
+
+		it( 'should announce sequential entry and exit of a code block that starts immediately after another code block', () => {
+			setModelData(
+				model,
+				join(
+					codeblock( 'css' ),
+					codeblock( 'php' ),
+					tag( 'paragraph' )
+				)
+			);
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 0, 0 ], root, [ 0, 1 ] ) );
+			} );
+
+			expect( announcerSpy ).to.be.calledWithExactly( 'codeBlocks', 'Entering CSS code snippet', 'assertive' );
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 1, 0 ], root, [ 1, 1 ] ) );
+			} );
+
+			expect( announcerSpy ).to.be.calledWithExactly(
+				'codeBlocks',
+				'Leaving CSS code snippet, entering PHP code snippet',
+				'assertive'
+			);
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 2, 0 ], root, [ 2, 1 ] ) );
+			} );
+
+			expect( announcerSpy ).to.be.calledWithExactly(
+				'codeBlocks',
+				'Leaving PHP code snippet',
+				'assertive'
+			);
+		} );
+
+		it( 'should announce random enter and exit of a code block that starts immediately after another code block', () => {
+			setModelData(
+				model,
+				join(
+					codeblock( 'css' ),
+					codeblock( 'php' ),
+					codeblock( 'ruby' ),
+					codeblock( 'xml' ),
+					codeblock( 'FooBar' )
+				)
+			);
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 2, 0 ], root, [ 2, 1 ] ) );
+			} );
+
+			expect( announcerSpy ).to.be.calledWithExactly( 'codeBlocks', 'Entering Ruby code snippet', 'assertive' );
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 0, 0 ], root, [ 0, 1 ] ) );
+			} );
+
+			expect( announcerSpy ).to.be.calledWithExactly(
+				'codeBlocks',
+				'Leaving Ruby code snippet, entering CSS code snippet',
+				'assertive'
+			);
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 3, 0 ], root, [ 3, 1 ] ) );
+			} );
+
+			expect( announcerSpy ).to.be.calledWithExactly(
+				'codeBlocks',
+				'Leaving CSS code snippet, entering XML code snippet',
+				'assertive'
+			);
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 4, 0 ], root, [ 4, 1 ] ) );
+			} );
+
+			expect( announcerSpy ).to.be.calledWithExactly(
+				'codeBlocks',
+				'Leaving XML code snippet, entering code snippet',
+				'assertive'
+			);
+		} );
+
+		it( 'should force trigger announce if leaving and entering again code block with the same language', () => {
+			setModelData( model, join( codeblock( 'css' ), codeblock( 'css' ) ) );
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 0, 0 ], root, [ 0, 1 ] ) );
+			} );
+
+			expect( announcerSpy ).to.be.calledWithExactly( 'codeBlocks', 'Entering CSS code snippet', 'assertive' );
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 1, 0 ], root, [ 1, 1 ] ) );
+			} );
+
+			expect( announcerSpy ).to.be.calledWithExactly(
+				'codeBlocks',
+				'Leaving CSS code snippet, entering CSS code snippet',
+				'assertive'
+			);
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 0, 0 ], root, [ 0, 1 ] ) );
+			} );
+
+			expect( announcerSpy ).to.be.calledWithExactly(
+				'codeBlocks',
+				'Leaving CSS code snippet, entering CSS code snippet.',
+				'assertive'
+			);
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 1, 0 ], root, [ 1, 1 ] ) );
+			} );
+
+			expect( announcerSpy ).to.be.calledWithExactly(
+				'codeBlocks',
+				'Leaving CSS code snippet, entering CSS code snippet',
+				'assertive'
+			);
+		} );
+	} );
+
+	function join( ...lines ) {
+		return lines.filter( Boolean ).join( '' );
+	}
+
+	function tag( name, attributes = {}, content = 'Example' ) {
+		const formattedAttributes = Object
+			.entries( attributes || {} )
+			.map( ( [ key, value ] ) => `${ key }="${ value }"` )
+			.join( ' ' );
+
+		return `<${ name }${ formattedAttributes ? ` ${ formattedAttributes }` : '' }>${ content }</${ name }>`;
+	}
+
+	function codeblock( language, content = 'Example code' ) {
+		return tag( 'codeBlock', { language }, content );
+	}
+
+	function createRange( startElement, startPath, endElement, endPath ) {
+		return model.createRange(
+			model.createPositionFromPath( startElement, startPath ),
+			model.createPositionFromPath( endElement, endPath )
+		);
+	}
 } );
