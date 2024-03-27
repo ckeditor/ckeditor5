@@ -77,17 +77,13 @@ export default class RestrictedEditingModeUI extends Plugin {
 			const menuView = new MenuBarMenuView( locale );
 			const listView = new MenuBarMenuListView( locale );
 
-			menuView.set( {
-				class: 'ck-heading-dropdown'
-			} );
-
 			listView.set( {
-				ariaLabel: t( 'Restricted editing' ),
+				ariaLabel: t( 'Navigate editable regions' ),
 				role: 'menu'
 			} );
 
 			menuView.buttonView.set( {
-				label: t( 'Restricted editing' )
+				label: t( 'Navigate editable regions' )
 			} );
 
 			menuView.panelView.children.add( listView );
