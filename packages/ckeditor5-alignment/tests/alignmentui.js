@@ -288,7 +288,7 @@ describe( 'Alignment UI', () => {
 			expect( items.every( item => item === 'e' ) ).to.be.true;
 		} );
 
-		it( 'tooltips pinned to buttons should be aligned on west (RTL content)', async () => {
+		it( 'tooltips pinned to buttons should be aligned on west (RTL ui)', async () => {
 			// Clean up the editor created in main test suite hook.
 			await editor.destroy();
 
