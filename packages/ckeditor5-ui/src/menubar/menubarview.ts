@@ -100,13 +100,13 @@ export default class MenuBarView extends View implements FocusableView {
 	 * See the {@link module:core/editor/editorconfig~EditorConfig#menuBar menu bar} in the editor
 	 * configuration reference to learn how to configure the menu bar.
 	 */
-	public fillFromConfig( config: MenuBarConfig | undefined, componentFactory: ComponentFactory ): void {
+	public fillFromConfig( config: MenuBarConfig, componentFactory: ComponentFactory ): void {
 		const locale = this.locale!;
 		const topLevelCategoryMenuViews = normalizeMenuBarConfig( {
 			locale,
 			componentFactory,
 			config
-		} ).items.map( menuDefinition => this._createMenu( {
+		} )!.items.map( menuDefinition => this._createMenu( {
 			componentFactory,
 			menuDefinition
 		} ) );
@@ -307,7 +307,7 @@ export default class MenuBarView extends View implements FocusableView {
 	}
 }
 
-export type MenuBarConfig = Array<MenuBarMenuDefinition> | MenuBarConfigObject;
+export type MenuBarConfig = Array<MenuBarMenuDefinition> | MenuBarConfigObject | 'default';
 
 export type MenuBarConfigObject = {
 	items: Array<MenuBarMenuDefinition>;

@@ -155,12 +155,18 @@ export default class ClassicEditorUI extends EditorUI {
 	 */
 	private _initMenuBar(): void {
 		const editor = this.editor;
+		const config = editor.config.get( 'menuBar' );
+
+		if ( !config ) {
+			return;
+		}
+
 		const menuBarViewElement = this.view.menuBarView.element!;
 		const view = this.view;
 
 		this.focusTracker.add( menuBarViewElement );
 		editor.keystrokes.listenTo( menuBarViewElement );
-		view.menuBarView.fillFromConfig( editor.config.get( 'menuBar' ), this.componentFactory );
+		view.menuBarView.fillFromConfig( config, this.componentFactory );
 
 		editor.keystrokes.set( 'Esc', ( data, cancel ) => {
 			if ( menuBarViewElement.contains( this.focusTracker.focusedElement ) ) {

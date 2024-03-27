@@ -636,12 +636,17 @@ export function normalizeMenuBarConfig( {
 	locale: Locale;
 	componentFactory: ComponentFactory;
 	config: Readonly<MenuBarConfig> | undefined;
-} ): MenuBarConfigObject {
+} ): MenuBarConfigObject | null {
+	// The integrator didn't specify any configuration so we don't use menu bar.
+	if ( !config ) {
+		return null;
+	}
+
 	let configObject: DeepReadonly<RequiredMenuBarConfigObject>;
 	let isUsingDefaultConfig = false;
 
-	// The integrator didn't specify any configuration so we use the default one.
-	if ( !config ) {
+	// The integrator chose default configuration.
+	if ( config == 'default' ) {
 		configObject = {
 			items: cloneDeep( DefaultMenuBarItems ) as Array<MenuBarMenuDefinition>,
 			addItems: [],
