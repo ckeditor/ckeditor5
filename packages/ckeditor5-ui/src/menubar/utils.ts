@@ -507,6 +507,8 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 			{
 				groupId: 'insert',
 				items: [
+					'menuBar:insertTemplate',
+					'menuBar:ckbox',
 					'menuBar:ckfinder',
 					'menuBar:imageUpload',
 					'menuBar:blockQuote',
@@ -589,7 +591,7 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 		label: 'Tools',
 		groups: [
 			{
-				groupId: 'aitools',
+				groupId: 'aiTools',
 				items: [
 					'menuBar:aiAssistant',
 					'menuBar:aiCommands'
@@ -598,7 +600,9 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 			{
 				groupId: 'tools',
 				items: [
-					'menuBar:trackChanges'
+					'menuBar:trackChanges',
+					'menuBar:commentsArchive',
+					'menuBar:revisionHistory'
 				]
 			}
 		]
