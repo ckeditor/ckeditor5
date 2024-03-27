@@ -63,7 +63,7 @@ import {
 	TextTransformation
 	} from 'ckeditor5';
 // Premium plugin.
-import { ExportPdf } from 'ckeditor5premium-features';
+import { ExportPdf } from 'ckeditor5-premium-features';
 
 
 
