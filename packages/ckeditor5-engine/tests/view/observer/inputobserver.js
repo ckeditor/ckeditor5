@@ -59,6 +59,34 @@ describe( 'InputObserver', () => {
 		sinon.assert.calledOnce( beforeInputSpy );
 	} );
 
+	it( 'should not dispatch focus event if the document has focus', () => {
+		viewDocument.isFocused = true;
+
+		const mockDispatchEvent = sinon.spy();
+		fireMockNativeBeforeInput( {
+			inputType: 'foo',
+			currentTarget: {
+				dispatchEvent: mockDispatchEvent
+			}
+		} );
+
+		expect( mockDispatchEvent.callCount ).to.equal( 0 );
+	} );
+
+	it( 'should dispatch focus event if the document does not have focus', () => {
+		viewDocument.isFocused = false;
+
+		const mockDispatchEvent = sinon.spy();
+		fireMockNativeBeforeInput( {
+			inputType: 'foo',
+			currentTarget: {
+				dispatchEvent: mockDispatchEvent
+			}
+		} );
+
+		expect( mockDispatchEvent.callCount ).to.equal( 1 );
+	} );
+
 	describe( 'event data', () => {
 		it( 'should contain #eventType', () => {
 			fireMockNativeBeforeInput( {
