@@ -54,7 +54,7 @@ describe( 'PasteFromOffice - filters', () => {
 			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<table><tbody><tr><td>123</td></tr></tbody></table>' );
 		} );
 
-		it( 'should remove "w:sdt" element', () => {
+		it( 'should remove "w:sdt" element (and empty "o:p", and empty "w:sdtpr")', () => {
 			const inputData =
 				'<w:sdt title="Your Name:" sdttag="Your Name:" id="-1681114201">' +
 					'<div>' +
@@ -71,7 +71,7 @@ describe( 'PasteFromOffice - filters', () => {
 			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
 				'<div>' +
 					'<h1>' +
-						'<span lang="EN-US">Microsoft Office User<o:p></o:p><w:sdtpr></w:sdtpr></span>' +
+						'<span lang="EN-US">Microsoft Office User</span>' +
 					'</h1>' +
 				'</div>'
 			);
