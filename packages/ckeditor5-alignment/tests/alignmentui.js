@@ -288,6 +288,30 @@ describe( 'Alignment UI', () => {
 			expect( items.every( item => item === 'e' ) ).to.be.true;
 		} );
 
+		it( 'tooltips pinned to buttons should be aligned on west (RTL content)', async () => {
+			// Clean up the editor created in main test suite hook.
+			await editor.destroy();
+
+			const newEditor = await ClassicTestEditor.create( element, {
+				language: {
+					content: 'ar'
+				},
+				plugins: [ AlignmentEditing, AlignmentUI ]
+			} );
+
+			sinon.stub( newEditor.locale, 'uiLanguageDirection' ).value( 'rtl' );
+
+			dropdown = newEditor.ui.componentFactory.create( 'alignment' );
+			dropdown.isOpen = true;
+
+			const items = [ ...dropdown.toolbarView.items ].map( item => item.tooltipPosition );
+
+			expect( items ).to.have.length( 4 );
+			expect( items.every( item => item === 'w' ) ).to.be.true;
+
+			await newEditor.destroy();
+		} );
+
 		it( 'should use icon related to current command value', () => {
 			// Make sure that toolbar view is not created before first dropdown open.
 			expect( dropdown.toolbarView ).to.be.undefined;

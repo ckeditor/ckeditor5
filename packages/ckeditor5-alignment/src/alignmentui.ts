@@ -76,11 +76,12 @@ export default class AlignmentUI extends Plugin {
 
 		componentFactory.add( 'alignment', locale => {
 			const dropdownView = createDropdown( locale );
+			const tooltipPosition = locale.uiLanguageDirection === 'rtl' ? 'w' : 'e';
 
 			// Add existing alignment buttons to dropdown's toolbar.
 			addToolbarToDropdown(
 				dropdownView,
-				() => options.map( option => this._createButton( locale, option.name, { tooltipPosition: 'e' } ) ) as Array<ButtonView>,
+				() => options.map( option => this._createButton( locale, option.name, { tooltipPosition } ) ) as Array<ButtonView>,
 				{
 					enableActiveItemFocusOnDropdownOpen: true,
 					isVertical: true,
