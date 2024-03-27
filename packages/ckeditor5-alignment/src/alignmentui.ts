@@ -135,6 +135,7 @@ export default class AlignmentUI extends Plugin {
 				label: this.localizedOptionTitles[ option ],
 				icon: iconsMap.get( option ),
 				tooltip: true,
+				tooltipPosition: 'e',
 				isToggleable: true
 			} );
 

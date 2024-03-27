@@ -61,6 +61,7 @@ describe( 'Alignment UI', () => {
 			expect( button ).to.have.property( 'icon' );
 			expect( button ).to.have.property( 'tooltip', true );
 			expect( button ).to.have.property( 'isToggleable', true );
+			expect( button ).to.have.property( 'tooltipPosition', 'e' );
 		} );
 
 		it( 'has isOn bound to command\'s value', () => {
@@ -103,6 +104,7 @@ describe( 'Alignment UI', () => {
 			expect( button ).to.have.property( 'label', 'Align right' );
 			expect( button ).to.have.property( 'icon' );
 			expect( button ).to.have.property( 'tooltip', true );
+			expect( button ).to.have.property( 'tooltipPosition', 'e' );
 		} );
 
 		it( 'has isOn bound to command\'s value', () => {
@@ -145,6 +147,7 @@ describe( 'Alignment UI', () => {
 			expect( button ).to.have.property( 'label', 'Align center' );
 			expect( button ).to.have.property( 'icon' );
 			expect( button ).to.have.property( 'tooltip', true );
+			expect( button ).to.have.property( 'tooltipPosition', 'e' );
 		} );
 
 		it( 'has isOn bound to command\'s value', () => {
@@ -187,6 +190,7 @@ describe( 'Alignment UI', () => {
 			expect( button ).to.have.property( 'label', 'Justify' );
 			expect( button ).to.have.property( 'icon' );
 			expect( button ).to.have.property( 'tooltip', true );
+			expect( button ).to.have.property( 'tooltipPosition', 'e' );
 		} );
 
 		it( 'has isOn bound to command\'s value', () => {
