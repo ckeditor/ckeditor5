@@ -28,6 +28,7 @@ function initEditor() {
 			console.log( 'Editor was initialized', newEditor );
 			console.log( 'You can now play with it using global `editor` and `editable` variables.' );
 
+			document.querySelector( '.menubar-container' ).appendChild( newEditor.ui.view.menuBarView.element );
 			document.querySelector( '.toolbar-container' ).appendChild( newEditor.ui.view.toolbar.element );
 			document.querySelector( '.editable-container' ).appendChild( newEditor.ui.view.editable.element );
 

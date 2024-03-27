@@ -20,6 +20,7 @@
 				border-bottom-width: 1px;
 			}
 
+			& .ck-menu-bar,
 			& .ck-toolbar {
 				border: 0;
 			}

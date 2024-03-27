@@ -9,4 +9,5 @@
 	background: var(--ck-color-base-background);
 	padding: var(--ck-spacing-small);
 	gap: var(--ck-spacing-small);
+	border: 1px solid var(--ck-color-toolbar-border);
 }
