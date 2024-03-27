@@ -89,8 +89,8 @@ export default class RestrictedEditingModeUI extends Plugin {
 			menuView.panelView.children.add( listView );
 
 			BUTTON_TEMPLATES.forEach( ( { commandName, label, keystroke } ) => {
-				const buttonView = this._createMenuBarButton( t( label ), commandName, keystroke );
 				const listItemView = new MenuBarMenuListItemView( locale, menuView );
+				const buttonView = this._createMenuBarButton( t( label ), commandName, keystroke );
 
 				listItemView.children.add( buttonView );
 				listView.items.add( listItemView );
