@@ -234,6 +234,10 @@ describe( 'widget utils', () => {
 			expect( element.getAttribute( 'role' ) ).to.equal( 'textbox' );
 		} );
 
+		it( 'should add proper tabindex', () => {
+			expect( element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
+		} );
+
 		it( 'should add label if it was passed through options', () => {
 			toWidgetEditable( element, writer, { label: 'foo' } );
 			expect( element.getAttribute( 'aria-label' ) ).to.equal( 'foo' );

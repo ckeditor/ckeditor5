@@ -594,7 +594,7 @@ describe( 'TodoListEditing', () => {
 								'<tbody>' +
 									'<tr>' +
 										'<td class="ck-editor__editable ck-editor__nested-editable" ' +
-											'contenteditable="true" role="textbox">' +
+											'contenteditable="true" role="textbox" tabindex="-1">' +
 											'<span class="ck-table-bogus-paragraph">foo</span>' +
 										'</td>' +
 									'</tr>' +

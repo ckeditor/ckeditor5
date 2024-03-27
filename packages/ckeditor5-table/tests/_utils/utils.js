@@ -380,6 +380,7 @@ function makeRows( tableData, options ) {
 					attributes.class = getClassToSet( attributes );
 					attributes.contenteditable = 'true';
 					attributes.role = 'textbox';
+					attributes.tabindex = '-1';
 				}
 
 				if ( isObject ) {

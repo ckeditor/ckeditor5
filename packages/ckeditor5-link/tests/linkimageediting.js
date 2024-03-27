@@ -520,7 +520,7 @@ describe( 'LinkImageEditing', () => {
 								'</a>' +
 								'<figcaption aria-label="Caption for image: alt text" ' +
 									'class="ck-editor__editable ck-editor__nested-editable" ' +
-									'contenteditable="true" data-placeholder="Enter image caption" role="textbox">' +
+									'contenteditable="true" data-placeholder="Enter image caption" role="textbox" tabindex="-1">' +
 										'Foo Bar.' +
 								'</figcaption>' +
 							'</figure>'

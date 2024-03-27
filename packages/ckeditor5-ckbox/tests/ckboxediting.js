@@ -789,7 +789,8 @@ describe( 'CKBoxEditing', () => {
 								'class="ck-editor__editable ck-editor__nested-editable" ' +
 								'contenteditable="true" ' +
 								'data-placeholder="Enter image caption" ' +
-								'role="textbox">' +
+								'role="textbox" ' +
+								'tabindex="-1">' +
 								'<a data-ckbox-resource-id="link-id" href="/assets/sample.png">Text of the caption</a>' +
 							'</figcaption>' +
 						'</figure>'

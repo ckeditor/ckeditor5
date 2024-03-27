@@ -287,6 +287,7 @@ export function toWidgetEditable(
 	writer.addClass( [ 'ck-editor__editable', 'ck-editor__nested-editable' ], editable );
 
 	writer.setAttribute( 'role', 'textbox', editable );
+	writer.setAttribute( 'tabindex', '-1', editable );
 
 	if ( options.label ) {
 		writer.setAttribute( 'aria-label', options.label, editable );
