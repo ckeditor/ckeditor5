@@ -596,17 +596,20 @@
 							"name": "Crash course",
 							"id": "crash-course",
 							"slug": "crash-course",
+							"folded": true,
 							"order": 10
 						},
 						{
 							"name": "Creating an advanced plugin",
 							"id": "abbreviation-plugin",
 							"slug": "abbreviation-plugin",
+							"folded": true,
 							"order": 20
 						},
 						{
 							"name": "Using widgets",
 							"id": "widget-tutorials",
+							"folded": true,
 							"slug": "widgets",
 							"order": 30
 						}
@@ -622,9 +625,9 @@
 						{
 							"name": "Package Generator",
 							"id": "package-generator",
+							"folded": true,
 							"slug": "package-generator",
-							"order": 300,
-							"folded": true
+							"order": 300
 						}
 					]
 				},
@@ -664,15 +667,16 @@
 						{
 							"name": "User interface",
 							"id": "framework-deep-dive-ui",
+							"folded": true,
 							"slug": "ui",
-							"order": 110,
-							"folded": true
+							"order": 110
 						}
 					]
 				},
 				{
 					"name": "Contributing",
 					"id": "framework-contributing",
+					"folded": true,
 					"slug": "contributing",
 					"order": 600
 				}
