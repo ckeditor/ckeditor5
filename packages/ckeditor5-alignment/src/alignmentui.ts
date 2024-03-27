@@ -7,8 +7,8 @@
  * @module alignment/alignmentui
  */
 
-import { Plugin, icons, type ExcludeMethodNames } from 'ckeditor5/src/core.js';
-import { ButtonView, createDropdown, addToolbarToDropdown } from 'ckeditor5/src/ui.js';
+import { Plugin, icons } from 'ckeditor5/src/core.js';
+import { ButtonView, createDropdown, addToolbarToDropdown, type Button } from 'ckeditor5/src/ui.js';
 import type { Locale } from 'ckeditor5/src/utils.js';
 
 import { isSupported, normalizeAlignmentOptions } from './utils.js';
@@ -141,7 +141,7 @@ export default class AlignmentUI extends Plugin {
 	private _createButton(
 		locale: Locale,
 		option: SupportedOption,
-		buttonAttrs: Partial<ExcludeMethodNames<ButtonView>> = {}
+		buttonAttrs: Partial<Button> = {}
 	): ButtonView {
 		const editor = this.editor;
 		const command: AlignmentCommand = editor.commands.get( 'alignment' )!;
