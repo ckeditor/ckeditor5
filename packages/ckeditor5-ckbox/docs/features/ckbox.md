@@ -308,7 +308,7 @@ The image is editable if this option is:
 * an array of the above and the image URL matches one of the array elements.
 
 <info-box warning>
-	The whitelisted image resources must have CORS enabled.
+	The whitelisted image resources must have <acronym title="Cross-origin resource sharing">CORS</acronym> enabled.
 </info-box>
 
 ## Common API
