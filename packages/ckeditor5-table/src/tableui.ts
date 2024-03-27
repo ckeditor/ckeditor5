@@ -162,6 +162,12 @@ export default class TableUI extends Plugin {
 				}
 			] as Array<ListDropdownItemDefinition>;
 
+			if ( editor.plugins.has( 'TableColumnResizeUI' ) ) {
+				const resizeUI = editor.plugins.get( 'TableColumnResizeUI' );
+
+				options.push( resizeUI._createDropdownEntry() );
+			}
+
 			return this._prepareDropdown( t( 'Column' ), tableColumnIcon, options, locale );
 		} );
 
@@ -285,11 +291,17 @@ export default class TableUI extends Plugin {
 		} );
 
 		this.listenTo( dropdownView, 'execute', evt => {
-			editor.execute( ( evt.source as any ).commandName );
+			if ( 'onClick' in evt.source ) {
+				( evt.source as any ).onClick();
+			} else {
+				if ( 'commandName' in evt.source ) {
+					editor.execute( ( evt.source as any ).commandName );
+				}
 
-			// Toggling a switch button view should not move the focus to the editable.
-			if ( !( evt.source instanceof SwitchButtonView ) ) {
-				editor.editing.view.focus();
+				if ( !( evt.source instanceof SwitchButtonView ) ) {
+					// Toggling a switch button view should not move the focus to the editable.
+					editor.editing.view.focus();
+				}
 			}
 		} );
 
@@ -377,7 +389,7 @@ function addListOption(
 	commands: Array<Command>,
 	itemDefinitions: Collection<ListDropdownItemDefinition>
 ) {
-	if ( option.type === 'button' || option.type === 'switchbutton' ) {
+	if ( ( option.type === 'button' || option.type === 'switchbutton' ) && !( option.model instanceof ViewModel ) ) {
 		const model = option.model = new ViewModel( option.model );
 		const { commandName, bindIsOn } = option.model;
 		const command = editor.commands.get( commandName as string )!;

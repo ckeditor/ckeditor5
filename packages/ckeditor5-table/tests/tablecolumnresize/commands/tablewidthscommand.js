@@ -10,9 +10,9 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
 
-import TableColumnResize from '../../src/tablecolumnresize.js';
-import Table from '../../src/table.js';
-import { modelTable } from '../_utils/utils.js';
+import TableColumnResize from '../../../src/tablecolumnresize.js';
+import Table from '../../../src/table.js';
+import { modelTable } from '../../_utils/utils.js';
 
 describe( 'TableWidthsCommand', () => {
 	let model, editor, editorElement, command;

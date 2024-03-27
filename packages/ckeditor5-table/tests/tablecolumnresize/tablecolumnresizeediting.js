@@ -46,7 +46,7 @@ import {
 	getTableColumnsWidths,
 	getColumnGroupElement
 } from '../../src/tablecolumnresize/utils.js';
-import TableWidthsCommand from '../../src/tablecolumnresize/tablewidthscommand.js';
+import TableWidthsCommand from '../../src/tablecolumnresize/commands/tablewidthscommand.js';
 import WidgetResize from '@ckeditor/ckeditor5-widget/src/widgetresize.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { Undo } from '@ckeditor/ckeditor5-undo';
@@ -724,7 +724,7 @@ describe( 'TableColumnResizeEditing', () => {
 		} );
 
 		describe( 'model change integration', () => {
-			describe( 'and the widhtStrategy is "manualWidth"', () => {
+			describe( 'and the widthStrategy is "manualWidth"', () => {
 				it( 'should create resizers when table is inserted', () => {
 					editor.execute( 'insertTable' );
 

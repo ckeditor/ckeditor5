@@ -313,7 +313,7 @@ export function getDomCellOuterWidth( domCell: HTMLElement ): number {
 	// In the 'border-box' box sizing algorithm, the element's width
 	// already includes the padding and border width (#12335).
 	if ( styles.boxSizing === 'border-box' ) {
-		return parseInt( styles.width );
+		return parseFloat( styles.width );
 	} else {
 		return parseFloat( styles.width ) +
 			parseFloat( styles.paddingLeft ) +

@@ -4,12 +4,12 @@
  */
 
 /**
- * @module table/tablecolumnresize/tablewidthscommand
+ * @module table/tablecolumnresize/commands/tablewidthscommand
  */
 
 import type { Element } from 'ckeditor5/src/engine.js';
 import { Command } from 'ckeditor5/src/core.js';
-import { normalizeColumnWidths } from './utils.js';
+import { normalizeColumnWidths } from '../utils.js';
 
 /**
  * Command used by the {@link module:table/tablecolumnresize~TableColumnResize Table column resize feature} that

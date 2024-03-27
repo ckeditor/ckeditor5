@@ -19,6 +19,7 @@ import type {
 	TableClipboard,
 	TableColumnResize,
 	TableColumnResizeEditing,
+	TableColumnResizeUI,
 	TableEditing,
 	TableKeyboard,
 	TableMouse,
@@ -29,6 +30,7 @@ import type {
 	TableToolbar,
 	TableUI,
 	TableUtils,
+	TableColumnResizeUtils,
 	PlainTableOutput,
 
 	// Commands
@@ -56,6 +58,7 @@ import type {
 	TableCellWidthCommand,
 	TableAlignmentCommand,
 	TableBackgroundColorCommand,
+	TableColumnResizeCommand,
 	TableBorderColorCommand,
 	TableBorderStyleCommand,
 	TableBorderWidthCommand,
@@ -85,6 +88,8 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ TableCellWidthEditing.pluginName ]: TableCellWidthEditing;
 		[ TableClipboard.pluginName ]: TableClipboard;
 		[ TableColumnResize.pluginName ]: TableColumnResize;
+		[ TableColumnResizeUtils.pluginName ]: TableColumnResizeUtils;
+		[ TableColumnResizeUI.pluginName ]: TableColumnResizeUI;
 		[ TableColumnResizeEditing.pluginName ]: TableColumnResizeEditing;
 		[ TableEditing.pluginName ]: TableEditing;
 		[ TableKeyboard.pluginName ]: TableKeyboard;
@@ -135,5 +140,6 @@ declare module '@ckeditor/ckeditor5-core' {
 		tableBorderWidth: TableBorderWidthCommand;
 		tableHeight: TableHeightCommand;
 		tableWidth: TableWidthCommand;
+		resizeTableColumn: TableColumnResizeCommand;
 	}
 }

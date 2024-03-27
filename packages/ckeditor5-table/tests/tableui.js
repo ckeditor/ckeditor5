@@ -11,6 +11,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import TableEditing from '../src/tableediting.js';
 import TableUI from '../src/tableui.js';
+import TableColumnResize from '../src/tablecolumnresize.js';
 import InsertTableView from '../src/ui/inserttableview.js';
 import SwitchButtonView from '@ckeditor/ckeditor5-ui/src/button/switchbuttonview.js';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
@@ -32,17 +33,11 @@ describe( 'TableUI', () => {
 		clearTranslations();
 	} );
 
-	beforeEach( () => {
+	beforeEach( async () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
 
-		return ClassicTestEditor
-			.create( element, {
-				plugins: [ TableEditing, TableUI ]
-			} )
-			.then( newEditor => {
-				editor = newEditor;
-			} );
+		editor = await createEditor();
 	} );
 
 	afterEach( () => {
@@ -354,6 +349,33 @@ describe( 'TableUI', () => {
 		} );
 	} );
 
+	describe( 'resize table column integration', () => {
+		it( 'resize column entry is present in dropdown when ResizeTableColumnUI plugin is present', async () => {
+			await editor.destroy();
+
+			editor = await createEditor( {
+				plugins: [ TableEditing, TableUI, TableColumnResize ]
+			} );
+
+			const dropdown = editor.ui.componentFactory.create( 'tableColumn' );
+
+			dropdown.render();
+			dropdown.isOpen = true;
+
+			const listView = dropdown.listView;
+			const labels = listView.items.map( item => item instanceof ListSeparatorView ? '|' : item.children.first.label );
+
+			expect( labels ).to.deep.equal(
+				[
+					'Header column', '|',
+					'Insert column left', 'Insert column right',
+					'Delete column', 'Select column',
+					'Resize column'
+				]
+			);
+		} );
+	} );
+
 	describe( 'tableColumn dropdown', () => {
 		let dropdown;
 
@@ -386,7 +408,11 @@ describe( 'TableUI', () => {
 			const labels = listView.items.map( item => item instanceof ListSeparatorView ? '|' : item.children.first.label );
 
 			expect( labels ).to.deep.equal(
-				[ 'Header column', '|', 'Insert column left', 'Insert column right', 'Delete column', 'Select column' ]
+				[
+					'Header column', '|',
+					'Insert column left', 'Insert column right',
+					'Delete column', 'Select column'
+				]
 			);
 		} );
 
@@ -710,4 +736,11 @@ describe( 'TableUI', () => {
 			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'mergeTableCellUp' );
 		} );
 	} );
+
+	async function createEditor( config ) {
+		return ClassicTestEditor.create( element, {
+			plugins: [ TableEditing, TableUI ],
+			...config
+		} );
+	}
 } );

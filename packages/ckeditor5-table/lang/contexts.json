@@ -4,6 +4,7 @@
 	"Insert column left": "Label for the insert table column to the left of the current one button.",
 	"Insert column right": "Label for the insert table column to the right of the current one button.",
 	"Delete column": "Label for the delete table column button.",
+	"Resize column": "Label for the resize table column button.",
 	"Select column": "Label for the select the entire table column button.",
 	"Column": "Label for the table column dropdown button.",
 	"Header row": "Label for the set/unset table header row button.",
@@ -63,5 +64,8 @@
 	"Move the selection to the previous cell": "Keystroke description for assistive technologies: keystroke for moving the selection to the previous cell.",
 	"Insert a new table row (when in the last cell of a table)": "Keystroke description for assistive technologies: keystroke for inserting a new table row.",
 	"Navigate through the table": "Keystroke description for assistive technologies: keystroke for navigating through the table.",
-	"Table": "The accessible label of the menu bar button that displays a user interface to insert a table into editor content."
+	"Table": "The accessible label of the menu bar button that displays a user interface to insert a table into editor content.",
+	"Column width in pixels": "The label for the column width input.",
+	"Column width must not be empty.": "Text used as error label when user submitted resize table column form with blank value.",
+	"Incorrect column width value.": "Text used as error label when user submitted resize table column form with incorrect value."
 }

@@ -28,7 +28,9 @@ export { default as TableKeyboard } from './tablekeyboard.js';
 export { default as TableSelection } from './tableselection.js';
 export { default as TableUtils } from './tableutils.js';
 export { default as TableColumnResize } from './tablecolumnresize.js';
+export { default as TableColumnResizeUtils } from './tablecolumnresize/tablecolumnresizeutils.js';
 export { default as TableColumnResizeEditing } from './tablecolumnresize/tablecolumnresizeediting.js';
+export { default as TableColumnResizeUI } from './tablecolumnresize/tablecolumnresizeui.js';
 
 export type { TableConfig } from './tableconfig.js';
 export type { default as InsertColumnCommand } from './commands/insertcolumncommand.js';
@@ -60,5 +62,6 @@ export type { default as TableBorderStyleCommand } from './tableproperties/comma
 export type { default as TableBorderWidthCommand } from './tableproperties/commands/tableborderwidthcommand.js';
 export type { default as TableHeightCommand } from './tableproperties/commands/tableheightcommand.js';
 export type { default as TableWidthCommand } from './tableproperties/commands/tablewidthcommand.js';
+export type { default as TableColumnResizeCommand } from './tablecolumnresize/commands/tablecolumnresizecommand.js';
 
 import './augmentation.js';
