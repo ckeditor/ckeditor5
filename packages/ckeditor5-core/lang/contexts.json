@@ -23,5 +23,5 @@
 	"Move focus between form fields (inputs, buttons, etc.)": "Keystroke description for assistive technologies: keystroke for moving between fields.",
 	"Move focus to the toolbar, navigate between toolbars": "Keystroke description for assistive technologies: keystroke for moving focus to the toolbar.",
 	"Navigate through the toolbar": "Keystroke description for assistive technologies: keystroke for navigating through the toolbar.",
-	"Execute the currently focused button": "Keystroke description for assistive technologies: keystroke for executing currently focused button."
+	"Execute the currently focused button. Executing buttons that interact with the editor content moves the focus back to the content.": "Keystroke description for assistive technologies: keystroke for executing currently focused button."
 }
