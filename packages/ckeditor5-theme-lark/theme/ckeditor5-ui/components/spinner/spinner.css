@@ -11,6 +11,10 @@
 	width: var(--ck-toolbar-spinner-size);
 	height: var(--ck-toolbar-spinner-size);
 	animation: 1.5s infinite rotate linear;
+
+	@media (prefers-reduced-motion: reduce) {
+		animation-duration: 3s;
+	}
 }
 
 .ck.ck-spinner {
@@ -26,4 +30,3 @@
 		transform: rotate(360deg)
 	}
 }
-

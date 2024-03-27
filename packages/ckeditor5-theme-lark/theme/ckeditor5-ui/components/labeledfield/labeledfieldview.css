@@ -53,6 +53,10 @@
 				transform var(--ck-labeled-field-view-transition),
 				padding var(--ck-labeled-field-view-transition),
 				background var(--ck-labeled-field-view-transition);
+
+			@media (prefers-reduced-motion: reduce) {
+				transition: none;
+			}
 		}
 	}
 
