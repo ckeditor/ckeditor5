@@ -71,7 +71,6 @@
   },
   "scripts": {
     "build": "webpack --mode production",
-    "postbuild": "tsc -p ./tsconfig.types.json",
-    "build:kowalski": "echo \"Skip\""
+    "postbuild": "tsc -p ./tsconfig.types.json"
   }
 }
