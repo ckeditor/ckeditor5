@@ -601,7 +601,7 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 			 * They are already built into that editor build and now get added for the second time as dependencies
 			 * of the plugin you are installing.
 			 *
-			 * Read more about {@glink framework/plugins/installing-plugins Installing plugins}.
+			 * Read more about {@glink getting-started/setup/installing-plugins Installing plugins}.
 			 *
 			 * @error plugincollection-plugin-name-conflict
 			 * @param pluginName The duplicated plugin name.

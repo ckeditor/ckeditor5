@@ -36,7 +36,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 ```
 
 <info-box info>
-	Read more about {@link framework/plugins/installing-plugins installing plugins} and {@link getting-started/setup/toolbar toolbar configuration}.
+	Read more about {@link getting-started/setup/installing-plugins installing plugins} and {@link getting-started/setup/toolbar toolbar configuration}.
 </info-box>
 
 ## Known issues

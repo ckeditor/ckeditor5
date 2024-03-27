@@ -189,7 +189,7 @@ Create your own CKEditor&nbsp;5 build with customized plugins, toolbar and langu
 
 This option requires making changes to a {@link getting-started/legacy-getting-started/quick-start-other#building-the-editor-from-source predefined build} of your choice. Much like in [the case of online builder](#integrating-a-build-from-the-online-builder), you then need to place the custom editor's folder next to `src/` directory and add it as a dependency using `yarn add file` command.
 
-Read more about customising a predefined build in the {@link framework/plugins/installing-plugins Installing plugins} guide.
+Read more about customising a predefined build in the {@link getting-started/setup/installing-plugins Installing plugins} guide.
 
 ### Integrating the editor from source
 
@@ -447,7 +447,7 @@ yarn add \
 	@ckeditor/ckeditor5-basic-styles
 ```
 
-All packages (excluding `@ckeditor/ckeditor5-dev-*` and `@ckeditor/ckeditor5-react`) {@link framework/plugins/installing-plugins#requirements must have the same version as the base editor package}.
+All packages (excluding `@ckeditor/ckeditor5-dev-*` and `@ckeditor/ckeditor5-react`) {@link getting-started/setup/installing-plugins#requirements must have the same version as the base editor package}.
 
 #### Modifying the webpack configuration
 

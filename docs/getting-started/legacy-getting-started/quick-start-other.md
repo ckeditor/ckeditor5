@@ -24,7 +24,7 @@ Available paths:
 
 Although the CKEditor&nbsp;5 WYSIWYG editor comes with handy {@link getting-started/legacy-getting-started/predefined-builds predefined builds}, sometimes you need more flexibility. A need for more customized editors arises. Some of the reasons for creating custom builds are:
 
-* Adding {@link framework/plugins/plugins plugin-driven features} not included in the existing builds.
+* Adding {@link framework/architecture/plugins plugin-driven features} not included in the existing builds.
 * Removing unnecessary features present in a build.
 * Designing a {@link getting-started/setup/toolbar customized toolbar experience}.
 * Changing the {@link getting-started/legacy-getting-started/predefined-builds#available-builds editor type build}.
@@ -158,7 +158,7 @@ npm install @ckeditor/ckeditor5-alignment
 ```
 
 <info-box hint>
-	Check out our dedicated guide if you want to use JavaScript packages or learn more about {@link framework/plugins/installing-plugins installing plugins}.
+	Check out our dedicated guide if you want to use JavaScript packages or learn more about {@link getting-started/setup/installing-plugins installing plugins}.
 </info-box>
 
 ### Updating build configuration
@@ -277,10 +277,6 @@ After modifying the configuration or source code, you can rebuild the project to
 npm run build
 ```
 
-<info-box hint>
-	If you do not have the build script, learn more about {@link framework/plugins/installing-plugins#building-an-editor building an editor}.
-</info-box>
-
 ### Running the editor
 
 You can validate whether your new build works by opening the `sample/index.html` file in a browser (via HTTP, not as a local file). Make sure to **clear the cache**.
@@ -378,7 +374,7 @@ module.exports = {
 
 ### Creating an editor
 
-You can now install some of the CKEditor&nbsp;5 Framework packages which will allow you to initialize a simple rich-text editor. Keep in mind, however, that all packages (excluding `@ckeditor/ckeditor5-dev-*`) {@link framework/plugins/installing-plugins#requirements must have the same version as the base editor package}.
+You can now install some of the CKEditor&nbsp;5 Framework packages which will allow you to initialize a simple rich-text editor. Keep in mind, however, that all packages (excluding `@ckeditor/ckeditor5-dev-*`) {@link getting-started/setup/installing-plugins#requirements must have the same version as the base editor package}.
 
 You can start with the {@link examples/builds/classic-editor classic editor} with a small set of features.
 
@@ -401,7 +397,7 @@ Based on these packages you can create a simple application.
 <info-box warning>
 	In this guide, the editor class is used directly, so you use `@ckeditor/ckeditor5-editor-classic` instead of `@ckeditor/ckeditor5-build-classic`.
 
-	No {@link getting-started/legacy-getting-started/predefined-builds predefined editor builds} are used, because adding new plugins to these requires rebuilding them anyway. This can be done by {@link framework/plugins/installing-plugins customizing a build} or by including the CKEditor&nbsp;5 source into your application (like in this guide).
+	No {@link getting-started/legacy-getting-started/predefined-builds predefined editor builds} are used, because adding new plugins to these requires rebuilding them anyway. This can be done by {@link getting-started/setup/installing-plugins customizing a build} or by including the CKEditor&nbsp;5 source into your application (like in this guide).
 </info-box>
 
 ```js

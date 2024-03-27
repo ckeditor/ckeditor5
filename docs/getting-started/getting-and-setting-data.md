@@ -171,7 +171,7 @@ To handle the former situation you can listen to the native [`window#beforeunloa
 The example below shows how all these mechanisms can be used together to enable or disable a "Save" button and block the user from leaving the page without saving the data.
 
 <info-box>
-	The {@link module:core/pendingactions~PendingActions} plugin is unavailable in any of the builds by default so you need to {@link framework/plugins/installing-plugins install it}.
+	The {@link module:core/pendingactions~PendingActions} plugin is unavailable in any of the builds by default so you need to {@link getting-started/setup/installing-plugins install it}.
 </info-box>
 
 ```js

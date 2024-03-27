@@ -343,7 +343,7 @@ Note: In CKEditor&nbsp;5, the number of options was reduced on purpose. Configur
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-extraPlugins"><code>extraPlugins</code></a></td>
-			<td>Learn how to {@link framework/plugins/installing-plugins install plugins in CKEditor&nbsp;5}.</td>
+			<td>Learn how to {@link getting-started/setup/installing-plugins install plugins in CKEditor&nbsp;5}.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-fileTools_defaultFileName"><code>fileTools_defaultFileName</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-fileTools_requestHeaders"><code>fileTools_requestHeaders</code></a></td>
@@ -537,7 +537,7 @@ Note: In CKEditor&nbsp;5, the number of options was reduced on purpose. Configur
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-plugins"><code>plugins</code></a></td>
-			<td>See the {@link module:core/editor/editorconfig~EditorConfig#plugins <code>plugins</code>} configuration option. The way how plugins are enabled in CKEditor&nbsp;5 has changed in general. Check the articles about {@link framework/plugins/plugins plugins} and {@link getting-started/legacy-getting-started/quick-start-other custom builds} for more information.</td>
+			<td>See the {@link module:core/editor/editorconfig~EditorConfig#plugins <code>plugins</code>} configuration option. The way how plugins are enabled in CKEditor&nbsp;5 has changed in general. Check the articles about {@link framework/architecture/plugins plugins} and {@link getting-started/legacy-getting-started/quick-start-other custom builds} for more information.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-protectedSource"><code>protectedSource</code></a></td>

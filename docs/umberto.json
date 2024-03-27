@@ -80,8 +80,8 @@
 		"builds/guides/development/custom-builds.html": "installation/legacy-getting-started/quick-start.html#creating-custom-builds",
 		"builds/guides/development/dll-builds.html": "installation/advanced/alternative-setups/dll-builds.html",
 		"builds/guides/development/dll-builds-collaboration-features.html": "installation/advanced/alternative-setups/dll-builds-collaboration-features.html",
-		"builds/guides/development/installing-plugins.html": "framework/plugins/installing-plugins.html",
-		"builds/guides/development/plugins.html": "installation/plugins/plugins.html",
+		"builds/guides/development/installing-plugins.html": "getting-started/setup/installing-plugins.html",
+		"builds/guides/development/plugins.html": "framework/architecture/plugins.html",
 		"builds/guides/faq.html": "framework/tutorials/index.html",
 		"builds/guides/integration/advanced-setup.html": "installation/legacy-getting-started/quick-start-other.html",
 		"builds/guides/integration/advanced-setup.html#creating-super-builds": "installation/advanced/using-two-editors.html#creating-super-builds",
@@ -89,7 +89,7 @@
 		"builds/guides/integration/configuration.html": "installationlegacy-/getting-started/configuration.html",
 		"builds/guides/integration/content-styles.html": "installation/legacy/advanced/content-styles.html",
 		"builds/guides/integration/csp.html": "installation/advanced/csp.html",
-		"builds/guides/integration/features-html-output-overview.html": "installation/plugins/features-html-output-overview.html",
+		"builds/guides/integration/features-html-output-overview.html": "framework/architecture/plugins.html#plugins-and-html-output",
 		"builds/guides/integration/frameworks/angular.html": "installation/frameworks/angular.html",
 		"builds/guides/integration/frameworks/css.html": "installation/frameworks/css.html",
 		"builds/guides/integration/frameworks/overview.html": "installation/frameworks/overview.html",
@@ -98,7 +98,7 @@
 		"builds/guides/integration/frameworks/vuejs-v3.html": "installation/integrations/vuejs-v3.html",
 		"builds/guides/integration/frameworks/vuejs.html": "installation/integrations/vuejs-v3.html",
 		"builds/guides/integration/installation.html": "installation/legacy-getting-started/quick-start.html",
-		"builds/guides/integration/installing-plugins.html": "framework/plugins/installing-plugins.html",
+		"builds/guides/integration/installing-plugins.html": "getting-started/setup/installing-plugins.html",
 		"builds/guides/integration/saving-data.html": "installation/legacy-getting-started/getting-and-setting-data.html",
 		"installation/integrations/drupal.html": "installation/integrations/drupal-real-time-collaboration.html",
 		"builds/guides/migrate.html": "updating/ckeditor4/migration-from-ckeditor-4.html",
@@ -227,9 +227,9 @@
 		"framework/guides/development-tools.html": "framework/develpment-tools/inspector.html",
 		"framework/development-tools.html": "framework/develpment-tools/inspector.html",
 		"framework/guides/overview.html": "framework/index.html",
-		"framework/guides/plugins/package-generator.html": "framework/plugins/package-generator/using-package-generator.html",
-		"framework/guides/plugins/package-generator/javascript-package.html": "framework/plugins/package-generator/javascript-package.html",
-		"framework/guides/plugins/package-generator/typescript-package.html": "framework/plugins/package-generator/typescript-package.html",
+		"framework/guides/plugins/package-generator.html": "framework/develpment-tools/package-generator/using-package-generator.html",
+		"framework/guides/plugins/package-generator/javascript-package.html": "framework/develpment-tools/package-generator/javascript-package.html",
+		"framework/guides/plugins/package-generator/typescript-package.html": "framework/develpment-tools/package-generator/typescript-package.html",
 		"framework/guides/plugins/simple-plugin/abbreviation-plugin-level-1.html": "framework/tutorials/abbreviation-plugin/abbreviation-plugin-level-1.html",
 		"framework/guides/plugins/simple-plugin/abbreviation-plugin-level-2.html": "framework/tutorials/abbreviation-plugin/abbreviation-plugin-level-2.html",
 		"framework/guides/plugins/simple-plugin/abbreviation-plugin-level-3.html": "framework/tutorials/abbreviation-plugin/abbreviation-plugin-level-3.html",
@@ -254,8 +254,8 @@
 		"installation/advanced/advanced-setup.html": "installation/legacy-getting-started/quick-start-other.html",
 		"installation/advanced/alternative-setups/integrating-from-source.html": "installation/advanced/alternative-setups/integrating-from-source-webpack.html",
 		"installation/advanced/alternative-setups/predefined-builds.html": "installation/legacy-getting-started/predefined-builds.html",
-		"installation/advanced/features-html-output-overview.html": "installation/plugins/features-html-output-overview.html",
-		"installation/advanced/plugins.html": "installation/plugins/plugins.html",
+		"installation/advanced/features-html-output-overview.html": "framework/architecture/plugins.html#plugins-and-html-output",
+		"installation/advanced/plugins.html": "framework/architecture/plugins.html",
 		"installation/advanced/saving-data.html": "installation/legacy-getting-started/getting-and-setting-data.html",
 		"installation/frameworks/angular.html": "installation/integrations/angular.html",
 		"installation/frameworks/css.html": "installation/integrations/css.html",
@@ -272,7 +272,7 @@
 		"installation/getting-started/frameworks/vuejs-v2.html": "installation/integrations/vuejs-v2.html",
 		"installation/getting-started/frameworks/vuejs-v3.html": "installation/integrations/vuejs-v3.html",
 		"installation/legacy/leagacy-getting-started/getting-and-setting-data.html#autosave-feature": "features/autosave.html",
-		"installation/getting-started/installing-plugins.html": "framework/plugins/installing-plugins.html",
+		"installation/getting-started/installing-plugins.html": "getting-started/setup/installing-plugins.html",
 		"installation/getting-started/maintenance.html": "updating/maintaining.html",
 		"installation/getting-started/migration-from-ckeditor-4.html": "updating/ckeditor4/migration-from-ckeditor-4.html",
 		"installation/legacy-getting-started/predefined-builds.html#build-customization": "installation/legacy-getting-started/quick-start-other.html#build-customization",
@@ -308,9 +308,7 @@
 		"updating/migration-to-35.html": "updating/guides/update-to-35.html",
 		"updating/updating.html": "updating/updating-ckeditor-5.html",
 		"installation/integrations/other.html": "getting-started/integrations/overview.html",
-		"installation/plugins/plugins.html": "framework/plugins/plugins.html",
-		"installation/plugins/features-html-output-overview.html": "framework/plugins/features-html-output-overview.html",
-		"installation/plugins/installing-plugins.html": "framework/plugins/installing-plugins.html",
+		"installation/plugins/installing-plugins.html": "getting-started/setup//installing-plugins.html",
 		"installation/getting-started/editor-lifecycle.html": "getting-started/setup/configuration.html",
 		"installation/working-with-typescript.html": "getting-started/setup/working-with-typescript.html",
 		"installation/getting-started/configuration.html": "installation/getting-started/configuration.html",
@@ -598,17 +596,20 @@
 							"name": "Crash course",
 							"id": "crash-course",
 							"slug": "crash-course",
+							"folded": true,
 							"order": 10
 						},
 						{
 							"name": "Creating an advanced plugin",
 							"id": "abbreviation-plugin",
 							"slug": "abbreviation-plugin",
+							"folded": true,
 							"order": 20
 						},
 						{
 							"name": "Using widgets",
 							"id": "widget-tutorials",
+							"folded": true,
 							"slug": "widgets",
 							"order": 30
 						}
@@ -619,22 +620,22 @@
 					"id": "development-tools",
 					"slug": "develpment-tools",
 					"folded": true,
-					"order": 200
+					"order": 200,
+					"categories": [
+						{
+							"name": "Package Generator",
+							"id": "package-generator",
+							"folded": true,
+							"slug": "package-generator",
+							"order": 300
+						}
+					]
 				},
 				{
 					"name": "Plugins",
 					"id": "plugins",
 					"slug": "plugins",
-					"order": 300,
-					"categories": [
-						{
-							"name": "Package Generator",
-							"id": "package-generator",
-							"slug": "package-generator",
-							"order": 100,
-							"folded": true
-						}
-					]
+					"order": 300
 				},
 				{
 					"name": "Architecture",
@@ -666,15 +667,16 @@
 						{
 							"name": "User interface",
 							"id": "framework-deep-dive-ui",
+							"folded": true,
 							"slug": "ui",
-							"order": 110,
-							"folded": true
+							"order": 110
 						}
 					]
 				},
 				{
 					"name": "Contributing",
 					"id": "framework-contributing",
+					"folded": true,
 					"slug": "contributing",
 					"order": 600
 				}
