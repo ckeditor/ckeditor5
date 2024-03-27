@@ -636,21 +636,17 @@ export function normalizeMenuBarConfig( {
 	locale: Locale;
 	componentFactory: ComponentFactory;
 	config: Readonly<MenuBarConfig> | undefined;
-} ): MenuBarConfigObject | null {
-	// The integrator didn't specify any configuration so we don't use menu bar.
-	if ( !config ) {
-		return null;
-	}
-
+} ): RequiredMenuBarConfigObject {
 	let configObject: DeepReadonly<RequiredMenuBarConfigObject>;
 	let isUsingDefaultConfig = false;
 
-	// The integrator chose default configuration.
-	if ( config == 'default' ) {
+	// The integrator didn't specify any configuration so we use default one.
+	if ( !config ) {
 		configObject = {
 			items: cloneDeep( DefaultMenuBarItems ) as Array<MenuBarMenuDefinition>,
 			addItems: [],
-			removeItems: []
+			removeItems: [],
+			isVisible: true
 		};
 
 		isUsingDefaultConfig = true;
@@ -660,16 +656,18 @@ export function normalizeMenuBarConfig( {
 		configObject = {
 			items: config,
 			addItems: [],
-			removeItems: []
+			removeItems: [],
+			isVisible: true
 		};
 	}
 	// The integrator specified the config as an object but without items. Let's give them defaults but respect their
 	// additions and removals.
-	else if ( !( 'items' in config ) ) {
+	else if ( !( 'items' in config ) || !config.items ) {
 		configObject = {
 			items: cloneDeep( DefaultMenuBarItems ) as Array<MenuBarMenuDefinition>,
 			addItems: [],
 			removeItems: [],
+			isVisible: true,
 			...config
 		};
 
@@ -678,9 +676,11 @@ export function normalizeMenuBarConfig( {
 	// The integrator specified the config as an object and there are items there. Let's take it as it is.
 	else {
 		configObject = {
+			items: config.items,
 			removeItems: [],
 			addItems: [],
-			...config as MenuBarConfigObject
+			isVisible: true,
+			...config
 		};
 	}
 

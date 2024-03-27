@@ -157,10 +157,6 @@ export default class ClassicEditorUI extends EditorUI {
 		const editor = this.editor;
 		const config = editor.config.get( 'menuBar' );
 
-		if ( !config ) {
-			return;
-		}
-
 		const menuBarViewElement = this.view.menuBarView.element!;
 		const view = this.view;
 
