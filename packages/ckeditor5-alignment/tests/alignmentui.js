@@ -294,12 +294,11 @@ describe( 'Alignment UI', () => {
 
 			const newEditor = await ClassicTestEditor.create( element, {
 				language: {
-					content: 'ar'
+					content: 'ar',
+					ui: 'ar'
 				},
 				plugins: [ AlignmentEditing, AlignmentUI ]
 			} );
-
-			sinon.stub( newEditor.locale, 'uiLanguageDirection' ).value( 'rtl' );
 
 			dropdown = newEditor.ui.componentFactory.create( 'alignment' );
 			dropdown.isOpen = true;
