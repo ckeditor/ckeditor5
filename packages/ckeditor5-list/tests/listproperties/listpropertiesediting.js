@@ -750,6 +750,88 @@ describe( 'ListPropertiesEditing', () => {
 			} );
 		} );
 
+		describe( 'conversion', () => {
+			describe( 'upcast', () => {
+				beforeEach( () => {
+					const newListTypeDefinitions = [
+						{ listType: 'customNumbered', viewElementName: 'ol' },
+						{ listType: 'customBulleted', viewElementName: 'ul' }
+					];
+
+					newListTypeDefinitions.forEach( listDef => {
+						editor.conversion.for( 'upcast' ).add( dispatcher => {
+							dispatcher.on(
+								`element:${ listDef.viewElementName }`,
+								( evt, data, conversionApi ) => {
+									const viewItem = data.viewItem;
+
+									if ( !data.modelRange ) {
+										Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
+									}
+
+									if ( !conversionApi.consumable.test( viewItem, { classes: 'foo' } ) ) {
+										return;
+									}
+
+									const items = Array.from( data.modelRange.getItems( { shallow: true } ) )
+										.filter( item => model.schema.checkAttribute( item, 'listItemId' ) );
+
+									if ( !items.length ) {
+										return;
+									}
+
+									conversionApi.consumable.consume( viewItem, { classes: 'foo' } );
+
+									const referenceIndent = items[ 0 ].getAttribute( 'listIndent' );
+
+									for ( const item of items ) {
+										if ( item.getAttribute( 'listIndent' ) == referenceIndent ) {
+											conversionApi.writer.setAttribute( 'listType', listDef.listType, item );
+										}
+									}
+								},
+								{ priority: 'low' }
+							);
+						} );
+					} );
+
+					stubUid();
+				} );
+
+				it( 'should upcast `start` attribute for customNumbered list', () => {
+					editor.setData( '<ol class="foo" start="7"><li>Foo</li></ol>' );
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
+						'<paragraph listIndent="0" listItemId="a00" listStart="7" listType="customNumbered">Foo</paragraph>'
+					);
+				} );
+
+				it( 'should upcast `start` attribute for standard numbered list', () => {
+					editor.setData( '<ol start="7"><li>Foo</li></ol>' );
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
+						'<paragraph listIndent="0" listItemId="a00" listStart="7" listType="numbered">Foo</paragraph>'
+					);
+				} );
+
+				it( 'should not upcast `start` attribute for customBulleted list', () => {
+					editor.setData( '<ul class="foo" start="7"><li>Foo</li></ul>' );
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
+						'<paragraph listIndent="0" listItemId="a00" listType="customBulleted">Foo</paragraph>'
+					);
+				} );
+
+				it( 'should not upcast `start` attribute for standard bulleted list', () => {
+					editor.setData( '<ul start="7"><li>Foo</li></ul>' );
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
+						'<paragraph listIndent="0" listItemId="a00" listType="bulleted">Foo</paragraph>'
+					);
+				} );
+			} );
+		} );
+
 		describe( 'post-fixer', () => {
 			it( 'should ensure that all item in a single list have the same `listStart` attribute', () => {
 				setData( model, modelList( `

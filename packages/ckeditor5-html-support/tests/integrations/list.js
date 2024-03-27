@@ -81,7 +81,7 @@ describe( 'ListElementSupport', () => {
 		expect( editor.getData() ).to.equal( '<p data-foo="bar-p">1.</p>' );
 	} );
 
-	it( 'removes list attributes when list type changed', () => {
+	it( 'removes list attributes when list type changed (numbered -> bulleted)', () => {
 		dataFilter.allowElement( /^.*$/ );
 		dataFilter.allowAttributes( { name: /^.*$/, attributes: true } );
 		dataFilter.allowAttributes( { name: /^.*$/, classes: true } );
@@ -102,6 +102,138 @@ describe( 'ListElementSupport', () => {
 					'<p data-foo="bar-p">1.</p>' +
 				'</li>' +
 			'</ul>'
+		);
+	} );
+
+	it( 'removes list attributes when list type changed (bulleted -> numbered)', () => {
+		dataFilter.allowElement( /^.*$/ );
+		dataFilter.allowAttributes( { name: /^.*$/, attributes: true } );
+		dataFilter.allowAttributes( { name: /^.*$/, classes: true } );
+
+		editor.setData(
+			'<ul data-foo="bar-list">' +
+				'<li data-foo="bar-item">' +
+					'<p data-foo="bar-p">1.</p>' +
+				'</li>' +
+			'</ul>'
+		);
+
+		editor.commands.get( 'numberedList' ).execute();
+
+		expect( editor.getData() ).to.equal(
+			'<ol>' +
+				'<li data-foo="bar-item">' +
+					'<p data-foo="bar-p">1.</p>' +
+				'</li>' +
+			'</ol>'
+		);
+	} );
+
+	it( 'does not remove list attributes when list type changed (numbered -> customNumbered)', () => {
+		dataFilter.allowElement( /^.*$/ );
+		dataFilter.allowAttributes( { name: /^.*$/, attributes: true } );
+		dataFilter.allowAttributes( { name: /^.*$/, classes: true } );
+
+		editor.setData(
+			'<ol data-foo="bar-list">' +
+				'<li data-foo="bar-item">' +
+					'<p data-foo="bar-p">1.</p>' +
+				'</li>' +
+			'</ol>'
+		);
+
+		model.change( writer => {
+			writer.setAttribute( 'listType', 'customNumbered', model.document.getRoot().getChild( 0 ) );
+		} );
+
+		expect( editor.getData() ).to.equal(
+			'<ol data-foo="bar-list">' +
+				'<li data-foo="bar-item">' +
+					'<p data-foo="bar-p">1.</p>' +
+				'</li>' +
+			'</ol>'
+		);
+	} );
+
+	it( 'does not remove list attributes when list type changed (bulleted -> customBulleted)', () => {
+		dataFilter.allowElement( /^.*$/ );
+		dataFilter.allowAttributes( { name: /^.*$/, attributes: true } );
+		dataFilter.allowAttributes( { name: /^.*$/, classes: true } );
+
+		editor.setData(
+			'<ul data-foo="bar-list">' +
+				'<li data-foo="bar-item">' +
+					'<p data-foo="bar-p">1.</p>' +
+				'</li>' +
+			'</ul>'
+		);
+
+		model.change( writer => {
+			writer.setAttribute( 'listType', 'customBulleted', model.document.getRoot().getChild( 0 ) );
+		} );
+
+		expect( editor.getData() ).to.equal(
+			'<ul data-foo="bar-list">' +
+				'<li data-foo="bar-item">' +
+					'<p data-foo="bar-p">1.</p>' +
+				'</li>' +
+			'</ul>'
+		);
+	} );
+
+	it( 'removes list attributes when list type changed (customNumbered -> bulleted)', () => {
+		dataFilter.allowElement( /^.*$/ );
+		dataFilter.allowAttributes( { name: /^.*$/, attributes: true } );
+		dataFilter.allowAttributes( { name: /^.*$/, classes: true } );
+
+		editor.setData(
+			'<ol data-foo="bar-list">' +
+				'<li data-foo="bar-item">' +
+					'<p data-foo="bar-p">1.</p>' +
+				'</li>' +
+			'</ol>'
+		);
+
+		model.change( writer => {
+			writer.setAttribute( 'listType', 'customNumbered', model.document.getRoot().getChild( 0 ) );
+		} );
+
+		editor.commands.get( 'bulletedList' ).execute();
+
+		expect( editor.getData() ).to.equal(
+			'<ul>' +
+				'<li data-foo="bar-item">' +
+					'<p data-foo="bar-p">1.</p>' +
+				'</li>' +
+			'</ul>'
+		);
+	} );
+
+	it( 'removes list attributes when list type changed (customBulleted -> numbered)', () => {
+		dataFilter.allowElement( /^.*$/ );
+		dataFilter.allowAttributes( { name: /^.*$/, attributes: true } );
+		dataFilter.allowAttributes( { name: /^.*$/, classes: true } );
+
+		editor.setData(
+			'<ul data-foo="bar-list">' +
+				'<li data-foo="bar-item">' +
+					'<p data-foo="bar-p">1.</p>' +
+				'</li>' +
+			'</ul>'
+		);
+
+		model.change( writer => {
+			writer.setAttribute( 'listType', 'customBulleted', model.document.getRoot().getChild( 0 ) );
+		} );
+
+		editor.commands.get( 'numberedList' ).execute();
+
+		expect( editor.getData() ).to.equal(
+			'<ol>' +
+				'<li data-foo="bar-item">' +
+					'<p data-foo="bar-p">1.</p>' +
+				'</li>' +
+			'</ol>'
 		);
 	} );
 

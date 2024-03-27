@@ -11,7 +11,8 @@ import { Command } from 'ckeditor5/src/core.js';
 import { first } from 'ckeditor5/src/utils.js';
 import {
 	expandListBlocksToCompleteList,
-	isListItemBlock
+	isListItemBlock,
+	isNumberedListType
 } from '../list/utils/model.js';
 
 /**
@@ -46,7 +47,10 @@ export default class ListStartCommand extends Command {
 		const document = model.document;
 
 		let blocks = Array.from( document.selection.getSelectedBlocks() )
-			.filter( block => isListItemBlock( block ) && block.getAttribute( 'listType' ) == 'numbered' );
+			.filter( block =>
+				isListItemBlock( block ) &&
+				isNumberedListType( block.getAttribute( 'listType' ) )
+			);
 
 		blocks = expandListBlocksToCompleteList( blocks );
 
@@ -68,7 +72,11 @@ export default class ListStartCommand extends Command {
 
 		const block = first( document.selection.getSelectedBlocks() );
 
-		if ( block && isListItemBlock( block ) && block.getAttribute( 'listType' ) == 'numbered' ) {
+		if (
+			block &&
+			isListItemBlock( block ) &&
+			isNumberedListType( block.getAttribute( 'listType' ) )
+		) {
 			return block.getAttribute( 'listStart' ) as number;
 		}
 

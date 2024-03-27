@@ -69,6 +69,18 @@ describe( 'ListStartCommand', () => {
 			expect( listStartCommand.isEnabled ).to.be.false;
 		} );
 
+		it( 'should be false if selection is inside a listItem (listType: customBulleted)', () => {
+			setData( model, '<paragraph listType="customBulleted" listStart="1" listItemId="a" listIndent="0">foo[]</paragraph>' );
+
+			expect( listStartCommand.isEnabled ).to.be.false;
+		} );
+
+		it( 'should be true if selection is inside a listItem (listType: customNumbered)', () => {
+			setData( model, '<paragraph listType="customNumbered" listStart="1" listItemId="a" listIndent="0">foo[]</paragraph>' );
+
+			expect( listStartCommand.isEnabled ).to.be.true;
+		} );
+
 		it( 'should be true if selection is inside a listItem (collapsed selection)', () => {
 			setData( model, modelList( [ '# Foo[] {start:2}' ] ) );
 
@@ -112,6 +124,18 @@ describe( 'ListStartCommand', () => {
 			setData( model, modelList( [ '* Foo[]' ] ) );
 
 			expect( listStartCommand.value ).to.be.null;
+		} );
+
+		it( 'should return null if selection is inside a listItem (listType: customBulleted)', () => {
+			setData( model, '<paragraph listType="customBulleted" listStart="1" listItemId="a" listIndent="0">foo[]</paragraph>' );
+
+			expect( listStartCommand.value ).to.be.null;
+		} );
+
+		it( 'should return the value if selection is inside a listItem (listType: customNumbered)', () => {
+			setData( model,	'<paragraph listType="customNumbered" listStart="1" listItemId="a" listIndent="0">foo[]</paragraph>' );
+
+			expect( listStartCommand.value ).to.equal( 1 );
 		} );
 
 		it( 'should return the value of `listStart` attribute if selection is inside a list item (collapsed selection)', () => {
@@ -403,6 +427,16 @@ describe( 'ListStartCommand', () => {
 			listStartCommand.execute( { startIndex: -2 } );
 
 			expect( getData( model ) ).to.equalMarkup( modelList( [ '# 1.[] {start:1}' ] ) );
+		} );
+
+		it( 'should set the `listStart` attribute for collapsed selection (listType: customNumbered)', () => {
+			setData( model, '<paragraph listType="customNumbered" listStart="1" listItemId="a" listIndent="0">foo[]</paragraph>' );
+
+			listStartCommand.execute( { startIndex: 6 } );
+
+			expect( getData( model ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemId="a" listStart="6" listType="customNumbered">foo[]</paragraph>'
+			);
 		} );
 	} );
 } );

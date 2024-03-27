@@ -20,6 +20,7 @@ import type {
 import { uid, toArray, type ArrayOrItem } from 'ckeditor5/src/utils.js';
 
 import ListWalker, { iterateSiblingListBlocks } from './listwalker.js';
+import { type ListTypeOptions } from '../listediting.js';
 
 /**
  * The list item ID generator.
@@ -46,7 +47,7 @@ export class ListItemUid {
 export interface ListElement extends Element {
 	getAttribute( key: 'listItemId' ): string;
 	getAttribute( key: 'listIndent' ): number;
-	getAttribute( key: 'listType' ): 'numbered' | 'bulleted' | 'todo';
+	getAttribute( key: 'listType' ): ListTypeOptions;
 	getAttribute( key: string ): unknown;
 }
 
@@ -564,6 +565,13 @@ export function getSelectedBlockObject( model: Model ): Element | null {
  */
 export function canBecomeSimpleListItem( block: Element, schema: Schema ): boolean {
 	return schema.checkChild( block.parent as Element, 'listItem' ) && schema.checkChild( block, '$text' ) && !schema.isObject( block );
+}
+
+/**
+ * Returns true if listType is of type `numbered` or `customNumbered`.
+ */
+export function isNumberedListType( listType: ListTypeOptions ): boolean {
+	return listType == 'numbered' || listType == 'customNumbered';
 }
 
 /**

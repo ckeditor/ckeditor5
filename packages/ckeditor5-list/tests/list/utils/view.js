@@ -297,6 +297,14 @@ describe( 'List - utils - view', () => {
 			expect( getViewElementNameForListType( 'bulleted' ) ).to.equal( 'ul' );
 		} );
 
+		it( 'should return "ol" for customNumbered type', () => {
+			expect( getViewElementNameForListType( 'customNumbered' ) ).to.equal( 'ol' );
+		} );
+
+		it( 'should return "ul" for customBulleted type', () => {
+			expect( getViewElementNameForListType( 'customBulleted' ) ).to.equal( 'ul' );
+		} );
+
 		it( 'should return "ul" for other types', () => {
 			expect( getViewElementNameForListType( 'foo' ) ).to.equal( 'ul' );
 			expect( getViewElementNameForListType( 'bar' ) ).to.equal( 'ul' );
