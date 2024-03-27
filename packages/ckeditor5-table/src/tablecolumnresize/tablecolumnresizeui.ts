@@ -117,8 +117,10 @@ export default class TableColumnResizeUI extends Plugin {
 		this._form.render();
 
 		this.listenTo<TableColumnResizeFormViewSubmitEvent>( this._form, 'submit', () => {
+			const { value } = this._inputViewElement.element!;
+
 			editor.execute( 'resizeTableColumn', {
-				newValue: this._form!.labeledInput.fieldView.element!.value
+				newValue: Number.parseInt( value, 10 )
 			} );
 
 			this._hideForm( true );
@@ -215,5 +217,12 @@ export default class TableColumnResizeUI extends Plugin {
 	 */
 	private get _isInBalloon(): boolean {
 		return !!this._balloon && this._balloon.hasView( this._form! );
+	}
+
+	/**
+	 * Returns input field view element rendered by the {@link #_form}.
+	 */
+	private get _inputViewElement() {
+		return this._form!.labeledInput.fieldView!;
 	}
 }

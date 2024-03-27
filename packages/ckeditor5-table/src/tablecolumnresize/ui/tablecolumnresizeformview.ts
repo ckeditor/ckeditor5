@@ -13,11 +13,12 @@ import {
 	LabeledFieldView,
 	View,
 	ViewCollection,
-	createLabeledInputText,
+	createLabeledInputNumber,
 	submitHandler,
 	type InputView,
 	type FocusableView
 } from 'ckeditor5/src/ui.js';
+
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
 import { icons } from 'ckeditor5/src/core.js';
 
@@ -189,9 +190,9 @@ export default class TableColumnResizeFormView extends View {
 	 */
 	private _createLabeledInputView(): LabeledFieldView<InputView> {
 		const t = this.locale!.t;
-		const labeledInput = new LabeledFieldView<InputView>( this.locale, createLabeledInputText );
+		const labeledInput = new LabeledFieldView<InputView>( this.locale, createLabeledInputNumber );
 
-		labeledInput.label = t( 'Text alternative' );
+		labeledInput.label = t( 'Column width' );
 
 		return labeledInput;
 	}
