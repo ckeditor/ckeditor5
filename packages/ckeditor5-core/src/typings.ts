@@ -12,3 +12,7 @@ export type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 export type NonEmptyArray<A> = Array<A> & {
 	0: A;
   };
+
+export type ExcludeMethodNames<T> = Pick<T, {
+    [K in keyof T]: T[K] extends Function ? never : K
+}[keyof T]>;

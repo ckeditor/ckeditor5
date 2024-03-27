@@ -7,8 +7,9 @@
  * @module alignment/alignmentui
  */
 
-import { Plugin, icons } from 'ckeditor5/src/core.js';
+import { Plugin, icons, type ExcludeMethodNames } from 'ckeditor5/src/core.js';
 import { ButtonView, createDropdown, addToolbarToDropdown } from 'ckeditor5/src/ui.js';
+import type { Locale } from 'ckeditor5/src/utils.js';
 
 import { isSupported, normalizeAlignmentOptions } from './utils.js';
 import type { SupportedOption } from './alignmentconfig.js';
@@ -79,7 +80,7 @@ export default class AlignmentUI extends Plugin {
 			// Add existing alignment buttons to dropdown's toolbar.
 			addToolbarToDropdown(
 				dropdownView,
-				() => options.map( option => componentFactory.create( `alignment:${ option.name }` ) ) as Array<ButtonView>,
+				() => options.map( option => this._createButton( locale, option.name, { tooltipPosition: 'e' } ) ) as Array<ButtonView>,
 				{
 					enableActiveItemFocusOnDropdownOpen: true,
 					isVertical: true,
@@ -127,29 +128,43 @@ export default class AlignmentUI extends Plugin {
 	private _addButton( option: SupportedOption ): void {
 		const editor = this.editor;
 
-		editor.ui.componentFactory.add( `alignment:${ option }`, locale => {
-			const command: AlignmentCommand = editor.commands.get( 'alignment' )!;
-			const buttonView = new ButtonView( locale );
+		editor.ui.componentFactory.add( `alignment:${ option }`, locale => this._createButton( locale, option ) );
+	}
 
-			buttonView.set( {
-				label: this.localizedOptionTitles[ option ],
-				icon: iconsMap.get( option ),
-				tooltip: true,
-				tooltipPosition: 'e',
-				isToggleable: true
-			} );
+	/**
+	 * Helper method for creating the button view element.
+	 *
+	 * @param locale Editor locale.
+	 * @param option The name of the alignment option for which the button is added.
+	 * @param buttonAttrs Optional parameters passed to button view instance.
+	 */
+	private _createButton(
+		locale: Locale,
+		option: SupportedOption,
+		buttonAttrs: Partial<ExcludeMethodNames<ButtonView>> = {}
+	): ButtonView {
+		const editor = this.editor;
+		const command: AlignmentCommand = editor.commands.get( 'alignment' )!;
+		const buttonView = new ButtonView( locale );
 
-			// Bind button model to command.
-			buttonView.bind( 'isEnabled' ).to( command );
-			buttonView.bind( 'isOn' ).to( command, 'value', value => value === option );
-
-			// Execute command.
-			this.listenTo( buttonView, 'execute', () => {
-				editor.execute( 'alignment', { value: option } );
-				editor.editing.view.focus();
-			} );
-
-			return buttonView;
+		buttonView.set( {
+			label: this.localizedOptionTitles[ option ],
+			icon: iconsMap.get( option ),
+			tooltip: true,
+			isToggleable: true,
+			...buttonAttrs
 		} );
+
+		// Bind button model to command.
+		buttonView.bind( 'isEnabled' ).to( command );
+		buttonView.bind( 'isOn' ).to( command, 'value', value => value === option );
+
+		// Execute command.
+		this.listenTo( buttonView, 'execute', () => {
+			editor.execute( 'alignment', { value: option } );
+			editor.editing.view.focus();
+		} );
+
+		return buttonView;
 	}
 }
