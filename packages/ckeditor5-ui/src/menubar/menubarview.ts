@@ -28,7 +28,7 @@ import MenuBarMenuListItemButtonView from './menubarmenulistitembuttonview.js';
 import MenuBarMenuListItemFileDialogButtonView from './menubarmenulistitemfiledialogbuttonview.js';
 import {
 	MenuBarBehaviors,
-	normalizeMenuBarConfig
+	processMenuBarConfig
 } from './utils.js';
 
 const EVENT_NAME_DELEGATES = [ 'mouseenter', 'arrowleft', 'arrowright', 'change:isOpen' ] as const;
@@ -101,13 +101,15 @@ export default class MenuBarView extends View implements FocusableView {
 	 * See the {@link module:core/editor/editorconfig~EditorConfig#menuBar menu bar} in the editor
 	 * configuration reference to learn how to configure the menu bar.
 	 */
-	public fillFromConfig( config: MenuBarConfig | undefined, componentFactory: ComponentFactory ): void {
+	public fillFromConfig( config: NormalizedMenuBarConfigObject, componentFactory: ComponentFactory ): void {
 		const locale = this.locale!;
-		const topLevelCategoryMenuViews = normalizeMenuBarConfig( {
+		const processedConfig = processMenuBarConfig( {
+			normalizedConfig: config,
 			locale,
-			componentFactory,
-			config
-		} ).items.map( menuDefinition => this._createMenu( {
+			componentFactory
+		} );
+
+		const topLevelCategoryMenuViews = processedConfig.items.map( menuDefinition => this._createMenu( {
 			componentFactory,
 			menuDefinition
 		} ) );
@@ -339,12 +341,17 @@ export default class MenuBarView extends View implements FocusableView {
 	}
 }
 
-export type MenuBarConfig = Array<MenuBarMenuDefinition> | MenuBarConfigObject;
+export type MenuBarConfig = MenuBarConfigObject;
 
 export type MenuBarConfigObject = {
-	items: Array<MenuBarMenuDefinition>;
+	items?: Array<MenuBarMenuDefinition>;
 	removeItems?: Array<string>;
 	addItems?: Array<MenuBarConfigAddedItem | MenuBarConfigAddedGroup | MenuBarConfigAddedMenu>;
+	isVisible?: boolean;
+};
+
+export type NormalizedMenuBarConfigObject = Required<MenuBarConfigObject> & {
+	isUsingDefaultConfig: boolean;
 };
 
 export type MenuBarMenuGroupDefinition = {
