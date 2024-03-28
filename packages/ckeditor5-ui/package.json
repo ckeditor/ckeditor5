@@ -73,6 +73,6 @@
   ],
   "scripts": {
     "build": "tsc -p ./tsconfig.json",
-    "build:kowalski": "node ../../scripts/build-package.mjs"
+    "build:node": "node ../../scripts/build-package.mjs"
   }
 }
