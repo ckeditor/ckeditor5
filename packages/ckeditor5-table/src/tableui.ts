@@ -53,6 +53,7 @@ export default class TableUI extends Plugin {
 		const t = this.editor.t;
 		const contentLanguageDirection = editor.locale.contentLanguageDirection;
 		const isContentLtr = contentLanguageDirection === 'ltr';
+		const resizeUI = editor.plugins.get( 'TableColumnResizeUI' );
 
 		editor.ui.componentFactory.add( 'insertTable', locale => {
 			const command: InsertTableCommand = editor.commands.get( 'insertTable' )!;
@@ -127,7 +128,8 @@ export default class TableUI extends Plugin {
 						commandName: 'selectTableColumn',
 						label: t( 'Select column' )
 					}
-				}
+				},
+				resizeUI._createDropdownEntry()
 			] as Array<ListDropdownItemDefinition>;
 
 			return this._prepareDropdown( t( 'Column' ), tableColumnIcon, options, locale );
@@ -253,7 +255,11 @@ export default class TableUI extends Plugin {
 		} );
 
 		this.listenTo( dropdownView, 'execute', evt => {
-			editor.execute( ( evt.source as any ).commandName );
+			if ( 'commandName' in evt.source ) {
+				editor.execute( ( evt.source as any ).commandName );
+			} else if ( 'onClick' in evt.source ) {
+				( evt.source as any ).onClick();
+			}
 
 			// Toggling a switch button view should not move the focus to the editable.
 			if ( !( evt.source instanceof SwitchButtonView ) ) {
@@ -345,7 +351,7 @@ function addListOption(
 	commands: Array<Command>,
 	itemDefinitions: Collection<ListDropdownItemDefinition>
 ) {
-	if ( option.type === 'button' || option.type === 'switchbutton' ) {
+	if ( ( option.type === 'button' || option.type === 'switchbutton' ) && !( option.model instanceof ViewModel ) ) {
 		const model = option.model = new ViewModel( option.model );
 		const { commandName, bindIsOn } = option.model;
 		const command = editor.commands.get( commandName as string )!;

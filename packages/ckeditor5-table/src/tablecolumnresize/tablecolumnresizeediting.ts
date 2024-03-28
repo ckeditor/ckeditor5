@@ -34,7 +34,7 @@ import TableEditing from '../tableediting.js';
 import TableUtils from '../tableutils.js';
 import TableWalker from '../tablewalker.js';
 
-import TableWidthsCommand from './tablewidthscommand.js';
+import TableWidthsCommand from './commands/tablewidthscommand.js';
 
 import { downcastTableResizedClass, upcastColgroupElement } from './converters.js';
 
