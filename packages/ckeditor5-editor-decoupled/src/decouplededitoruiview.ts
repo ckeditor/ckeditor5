@@ -7,7 +7,7 @@
  * @module editor-decoupled/decouplededitoruiview
  */
 
-import { EditorUIView, InlineEditableUIView, MenuBarView, ToolbarView, View } from 'ckeditor5/src/ui.js';
+import { EditorUIView, InlineEditableUIView, MenuBarView, ToolbarView } from 'ckeditor5/src/ui.js';
 import type { Locale } from 'ckeditor5/src/utils.js';
 import type { EditingView } from 'ckeditor5/src/engine.js';
 
