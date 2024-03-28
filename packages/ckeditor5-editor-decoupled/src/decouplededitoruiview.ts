@@ -13,8 +13,9 @@ import type { EditingView } from 'ckeditor5/src/engine.js';
 
 /**
  * The decoupled editor UI view. It is a virtual view providing an inline
- * {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#editable} and a
- * {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#toolbar}, but without any
+ * {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#editable},
+ * {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#toolbar}, and a
+ * {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#menuBarView} but without any
  * specific arrangement of the components in the DOM.
  *
  * See {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`}
