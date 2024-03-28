@@ -82,12 +82,17 @@ export default class Accessibility {
 							keystroke: [ [ 'Tab' ], [ 'Shift+Tab' ] ]
 						},
 						{
+							label: t( 'Move focus to the menu bar, navigate between menu bars' ),
+							keystroke: 'Alt+F9',
+							mayRequireFn: true
+						},
+						{
 							label: t( 'Move focus to the toolbar, navigate between toolbars' ),
 							keystroke: 'Alt+F10',
 							mayRequireFn: true
 						},
 						{
-							label: t( 'Navigate through the toolbar' ),
+							label: t( 'Navigate through the toolbar or menu bar' ),
 							keystroke: [ [ 'arrowup' ], [ 'arrowright' ], [ 'arrowdown' ], [ 'arrowleft' ] ]
 						},
 						{
