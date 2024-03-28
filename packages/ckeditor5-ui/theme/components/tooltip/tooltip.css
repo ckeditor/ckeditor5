@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
- @import "../../mixins/_unselectable.css";
+@import "../../mixins/_unselectable.css";
 
 .ck.ck-balloon-panel.ck-tooltip {
 	@mixin ck-unselectable;
