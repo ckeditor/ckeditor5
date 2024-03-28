@@ -49,35 +49,22 @@ const cssFilesPathsList = globSync( '**/*.css', globOptions )
 	.map( item => upath.normalize( item ) );
 
 cssFilesPathsList.forEach( filePath => {
-	const fileContent = fs.readFileSync( upath.join( THEME_LARK_DIR_PATH, filePath ), 'utf-8' );
+	const importPathsList = getImportPathsList( filePath );
 
-	// Remove all comments (included commented code).
-	const fileContentWithoutComments = fileContent.replaceAll( REGEX_FOR_MATCHING_COMMENTS, '' );
-
-	// Check if files other than `index.css` has `@import`.
-	const matchList = [ ...fileContentWithoutComments.matchAll( REGEX_FOR_INDEX_IMPORTS ) ];
-	const matchSimplifiedList = matchList.map( item => item[ 0 ] );
-
-	if ( !matchSimplifiedList.length ) {
+	if ( !importPathsList.length ) {
 		return;
 	}
 
 	// Add paths to already imported files so we can exclude them from not imported ones.
-	matchSimplifiedList.forEach( item => {
+	importPathsList.forEach( item => {
 		listOfImportsFoundInSubfolders.push( upath.join( upath.dirname( filePath ), item ) );
 	} );
 } );
 
-// Get content of `index.css` - main aggregator of `CSS`files.
-const indexCssContent = fs.readFileSync( upath.join( THEME_LARK_DIR_PATH, 'index.css' ), 'utf-8' );
-
-// Remove all comments (included commented code).
-const cssContentWithoutComments = indexCssContent.replaceAll( REGEX_FOR_MATCHING_COMMENTS, '' );
-const importsList = [ ...cssContentWithoutComments.matchAll( REGEX_FOR_INDEX_IMPORTS ) ]
-	.map( item => upath.normalize( item[ 0 ] ) );
+const importPathsListFromIndex = getImportPathsList( 'index.css' );
 
 // Merge imported file paths gathered from `index.css` and from other `CSS` files.
-const importedFiles = [ ...importsList, ...listOfImportsFoundInSubfolders ]
+const importedFiles = [ ...importPathsListFromIndex, ...listOfImportsFoundInSubfolders ]
 	.map( importPath => upath.normalize( importPath ) );
 const notImportedFiles = cssFilesPathsList.filter( x => !importedFiles.includes( x ) );
 
@@ -89,4 +76,18 @@ if ( notImportedFiles.length ) {
 	process.exitCode = 1;
 } else {
 	console.log( chalk.red.green( '\nAll CSS files from "theme" directory of "theme-lark" package are imported in "index.css".' ) );
+}
+
+/**
+ *
+ * @param {String} filePathToCheck Path to `CSS` file.
+ */
+function getImportPathsList( filePathToCheck ) {
+	const fileContent = fs.readFileSync( upath.join( THEME_LARK_DIR_PATH, filePathToCheck ), 'utf-8' );
+
+	// Remove all comments (included commented code).
+	const contentWithoutComments = fileContent.replaceAll( REGEX_FOR_MATCHING_COMMENTS, '' );
+
+	return [ ...contentWithoutComments.matchAll( REGEX_FOR_INDEX_IMPORTS ) ]
+		.map( item => upath.normalize( item[ 0 ] ) );
 }
