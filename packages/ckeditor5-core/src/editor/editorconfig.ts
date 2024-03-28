@@ -187,8 +187,22 @@ export interface EditorConfig {
 	 * {@glink examples/builds/classic-editor Classic editor} and {@glink examples/builds/document-editor Document editor}
 	 * support this feature. Setting the `config.menuBar` configuration for other editor types will have no effect.
 	 *
-	 * **Note**: You do not have set this configuration in order to to use the menu bar.
-	 * By default, a {@link module:ui/menubar/utils#DefaultMenuBarItems default configuration} is used that already includes
+	 * **Note**: The menu bar is disabled in the {@glink examples/builds/classic-editor Classic editor} by default. Set the
+	 * `isVisible` configuration flag to `true` in order to enable it:
+	 *
+	 * ```ts
+	 * ClassicEditor
+	 * 	.create( document.querySelector( '#editor' ), {
+	 * 		menuBar: {
+	 * 			isVisible: true
+	 * 		}
+	 * 	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
+	 * ```
+	 *
+	 * **Note**: You do not have set the `items` property in this configuration in order to to use the menu bar.
+	 * By default, a {@link module:ui/menubar/utils#DefaultMenuBarItems default set of items} is used that already includes
 	 * **all core editor features**. For you convenience, there are `config.menuBar.addItems` and
 	 * `config.menuBar.removeItems` options available that will help you adjust the default configuration without setting the
 	 * entire menu bar structure from scratch (see below).
