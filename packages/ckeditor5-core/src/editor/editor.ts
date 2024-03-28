@@ -300,8 +300,6 @@ export default abstract class Editor extends ObservableMixin() {
 		this.config.define( 'plugins', availablePlugins );
 		this.config.define( this._context._getEditorConfig() );
 
-		this.plugins = new PluginCollection<Editor>( this, availablePlugins, this._context.plugins );
-
 		this.locale = this._context.locale;
 		this.t = this.locale.t;
 
@@ -334,6 +332,8 @@ export default abstract class Editor extends ObservableMixin() {
 		this.keystrokes.listenTo( this.editing.view.document );
 
 		this.accessibility = new Accessibility( this );
+
+		this.plugins = new PluginCollection<Editor>( this, availablePlugins, this._context.plugins );
 	}
 
 	/**
