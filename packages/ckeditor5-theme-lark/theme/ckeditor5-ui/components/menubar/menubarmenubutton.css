@@ -81,8 +81,15 @@
 		}
 
 		& > .ck-menu-bar__menu__button__arrow {
-			transform: rotate(-90deg);
 			width: var(--ck-dropdown-arrow-size);
+
+			@mixin ck-dir ltr {
+				transform: rotate(-90deg);
+			}
+
+			@mixin ck-dir rtl {
+				transform: rotate(90deg);
+			}
 		}
 
 		&.ck-disabled > .ck-menu-bar__menu__button__arrow {
