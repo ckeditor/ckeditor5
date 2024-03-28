@@ -92,7 +92,8 @@ export default class DecoupledEditorUIView extends EditorUIView {
 				class: [
 					'ck-reset_all',
 					'ck-rounded-corners'
-				]
+				],
+				dir: locale.uiLanguageDirection
 			}
 		} );
 	}
