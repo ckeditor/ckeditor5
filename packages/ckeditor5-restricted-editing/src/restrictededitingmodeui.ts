@@ -14,11 +14,16 @@ import {
 	addListToDropdown,
 	MenuBarMenuListItemButtonView,
 	type ButtonExecuteEvent,
-	type ListDropdownItemDefinition
+	type ListDropdownItemDefinition, MenuBarMenuView, MenuBarMenuListView, MenuBarMenuListItemView
 } from 'ckeditor5/src/ui.js';
 import { Collection } from 'ckeditor5/src/utils.js';
 
 import lockIcon from '../theme/icons/contentlock.svg';
+
+const BUTTON_TEMPLATES = [
+	{ commandName: 'goToPreviousRestrictedEditingException', label: 'Previous editable region', keystroke: 'Shift+Tab' },
+	{ commandName: 'goToNextRestrictedEditingException', label: 'Next editable region', keystroke: 'Tab' }
+];
 
 /**
  * The restricted editing mode UI feature.
@@ -45,16 +50,9 @@ export default class RestrictedEditingModeUI extends Plugin {
 			const dropdownView = createDropdown( locale );
 			const listItems = new Collection<ListDropdownItemDefinition>();
 
-			listItems.add( this._getButtonDefinition(
-				'goToPreviousRestrictedEditingException',
-				t( 'Previous editable region' ),
-				'Shift+Tab'
-			) );
-			listItems.add( this._getButtonDefinition(
-				'goToNextRestrictedEditingException',
-				t( 'Next editable region' ),
-				'Tab'
-			) );
+			BUTTON_TEMPLATES.forEach( ( { commandName, label, keystroke } ) => {
+				listItems.add( this._getButtonDefinition( commandName, t( label ), keystroke ) );
+			} );
 
 			addListToDropdown( dropdownView, listItems );
 
@@ -73,6 +71,34 @@ export default class RestrictedEditingModeUI extends Plugin {
 			} );
 
 			return dropdownView;
+		} );
+
+		editor.ui.componentFactory.add( 'menuBar:restrictedEditing', locale => {
+			const menuView = new MenuBarMenuView( locale );
+			const listView = new MenuBarMenuListView( locale );
+
+			listView.set( {
+				ariaLabel: t( 'Navigate editable regions' ),
+				role: 'menu'
+			} );
+
+			menuView.buttonView.set( {
+				label: t( 'Navigate editable regions' )
+			} );
+
+			menuView.panelView.children.add( listView );
+
+			BUTTON_TEMPLATES.forEach( ( { commandName, label, keystroke } ) => {
+				const listItemView = new MenuBarMenuListItemView( locale, menuView );
+				const buttonView = this._createMenuBarButton( t( label ), commandName, keystroke );
+
+				buttonView.delegate( 'execute' ).to( menuView );
+
+				listItemView.children.add( buttonView );
+				listView.items.add( listItemView );
+			} );
+
+			return menuView;
 		} );
 
 		editor.ui.componentFactory.add(
@@ -97,7 +123,6 @@ export default class RestrictedEditingModeUI extends Plugin {
 		view.set( {
 			label,
 			keystroke,
-			tooltip: true,
 			isEnabled: true,
 			isOn: false
 		} );
