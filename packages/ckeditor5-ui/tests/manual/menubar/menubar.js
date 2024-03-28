@@ -150,7 +150,8 @@ function createEditor( selector, uiLanguageCode, extraConfig ) {
 			},
 
 			menuBar: {
-				...extraConfig
+				...extraConfig,
+				isVisible: true
 			}
 		} )
 		.then( editor => {
