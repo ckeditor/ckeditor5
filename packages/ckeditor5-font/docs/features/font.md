@@ -32,6 +32,36 @@ The plugin enables the following features in the rich-text editor:
 	You can remove all font formatting with the {@link features/remove-format remove format} feature.
 </info-box>
 
+## Installation
+
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+
+```js
+import { ClassicEditor, Font } from 'ckeditor5';
+
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Font, /* ... */ ],
+	toolbar: [ 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', /* ... */ ]
+} )
+.then( /* ... */ );
+```
+
+You can also add just one or a selected few of the font features to your plugin list and the toolbar configuration:
+
+```js
+import { ClassicEditor, FontFamily } from 'ckeditor5';
+
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ FontFamily, /* ... */ ],
+	toolbar: [ 'fontFamily', /* ... */ ]
+} )
+.then( /* ... */ );
+```
+
+<info-box info>
+	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
+</info-box>
+
 ## Configuring the font family feature
 
 You can configure which font family options are supported by the WYSIWYG editor. Use the {@link module:font/fontconfig~FontFamilyConfig#options `config.fontFamily.options`} configuration option to do so.
@@ -366,36 +396,6 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 } )
 .then( /* ... */ );
 ```
-
-## Installation
-
-After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
-
-```js
-import { ClassicEditor, Font } from 'ckeditor5';
-
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Font, /* ... */ ],
-	toolbar: [ 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', /* ... */ ]
-} )
-.then( /* ... */ );
-```
-
-You can also add just one or a selected few of the font features to your plugin list and the toolbar configuration:
-
-```js
-import { ClassicEditor, FontFamily } from 'ckeditor5';
-
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ FontFamily, /* ... */ ],
-	toolbar: [ 'fontFamily', /* ... */ ]
-} )
-.then( /* ... */ );
-```
-
-<info-box info>
-	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
-</info-box>
 
 ## Related features
 

@@ -40,39 +40,6 @@ By using this feature, the users of your application will be able to create temp
 	See also the {@link features/read-only read-only feature} that lets you turn the entire WYSIWYG editor into read-only mode. You can also read the [dedicated blog post](https://ckeditor.com/blog/feature-of-the-month-restricted-editing-modes/) about write-restricted editor modes.
 </info-box>
 
-## Configuration
-
-You can configure which features should be available in the restricted mode. For instance, the following configuration allows the users to type, delete but also to bold text.
-
-```js
-import { ClassicEditor, RestrictedEditingMode, Bold } from 'ckeditor5';
-
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Bold, RestrictedEditingMode, /* ... */ ],
-	toolbar: [ 'bold', '|', 'restrictedEditing', /* ... */ ],
-	restrictedEditing: {
-		allowedCommands: [ 'bold' ]
-	}
-} )
-.then( /* ... */ );
-```
-
-**Note**: Typing and deleting text is always possible in restricted editing regions. For more information, check out the {@link module:restricted-editing/restrictededitingconfig~RestrictedEditingConfig `config.restrictedEditing`} documentation.
-
-### Enabling commands in the restricted editing mode
-
-The restricted editing mode allows modifying the editor content only in designated regions. Outside these regions, most of the editor commands are turned off by default. If you wish to enable some commands outside the restricted editing regions, you can use the {@link module:restricted-editing/restrictededitingmodeediting~RestrictedEditingModeEditing#enableCommand `RestrictedEditingModeEditing.enableCommand()`} method. You must execute this method in the {@link module:core/plugin~PluginInterface#afterInit `afterInit()`} callback of an editor plugin.
-
-```js
-import { ClassicEditor, Plugin } from 'ckeditor5';
-
-class MyPlugin extends Plugin {
-	afterInit() {
-		this.editor.plugins.get( 'RestrictedEditingModeEditing' ).enableCommand( 'myCommand' );
-	}
-}
-```
-
 ## Installation
 
 After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration.
@@ -108,6 +75,39 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 <info-box info>
 	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
 </info-box>
+
+## Configuration
+
+You can configure which features should be available in the restricted mode. For instance, the following configuration allows the users to type, delete but also to bold text.
+
+```js
+import { ClassicEditor, RestrictedEditingMode, Bold } from 'ckeditor5';
+
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Bold, RestrictedEditingMode, /* ... */ ],
+	toolbar: [ 'bold', '|', 'restrictedEditing', /* ... */ ],
+	restrictedEditing: {
+		allowedCommands: [ 'bold' ]
+	}
+} )
+.then( /* ... */ );
+```
+
+**Note**: Typing and deleting text is always possible in restricted editing regions. For more information, check out the {@link module:restricted-editing/restrictededitingconfig~RestrictedEditingConfig `config.restrictedEditing`} documentation.
+
+### Enabling commands in the restricted editing mode
+
+The restricted editing mode allows modifying the editor content only in designated regions. Outside these regions, most of the editor commands are turned off by default. If you wish to enable some commands outside the restricted editing regions, you can use the {@link module:restricted-editing/restrictededitingmodeediting~RestrictedEditingModeEditing#enableCommand `RestrictedEditingModeEditing.enableCommand()`} method. You must execute this method in the {@link module:core/plugin~PluginInterface#afterInit `afterInit()`} callback of an editor plugin.
+
+```js
+import { ClassicEditor, Plugin } from 'ckeditor5';
+
+class MyPlugin extends Plugin {
+	afterInit() {
+		this.editor.plugins.get( 'RestrictedEditingModeEditing' ).enableCommand( 'myCommand' );
+	}
+}
+```
 
 ## Related features
 

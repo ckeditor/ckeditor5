@@ -25,6 +25,27 @@ You can type the "@" character to invoke the mention autocomplete UI. The demo b
 
 You can read more about possible implementations of the mention feature in a [dedicated blog post](https://ckeditor.com/blog/mentions-in-ckeditor-5-feature-of-the-month/).
 
+## Installation
+
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+
+```js
+import { ClassicEditor, Mention } from 'ckeditor5';
+
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Mention, /* ... */ ],
+	mention: {
+		// Configuration.
+		// ...
+	}
+} )
+.then( /* ... */ );
+```
+
+<info-box info>
+	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
+</info-box>
+
 ## Configuration
 
 The minimal configuration of the mention feature requires defining a {@link module:mention/mentionconfig~MentionFeed `feed`} and a {@link module:mention/mentionconfig~MentionFeed `marker`}. You can also define the `minimumCharacters` parameter, setting the number of letters after which the autocomplete panel will show up. Moreover, feed items' IDs may include whitespaces.
@@ -486,27 +507,6 @@ The mention feature uses the power of [CSS variables](https://developer.mozilla.
 ### Comments with mentions
 
 It is possible to configure the Mentions feature to work with the {@link features/comments Comments feature}. Here you can find {@link features/annotations-custom-configuration#comment-editor-configuration detailed guidance on that matter}.
-
-## Installation
-
-After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
-
-```js
-import { ClassicEditor, Mention } from 'ckeditor5';
-
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Mention, /* ... */ ],
-	mention: {
-		// Configuration.
-		// ...
-	}
-} )
-.then( /* ... */ );
-```
-
-<info-box info>
-	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
-</info-box>
 
 ## Related features
 

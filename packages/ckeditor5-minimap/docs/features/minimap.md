@@ -25,6 +25,57 @@ Scroll the content, and the minimap in the sidebar will show your current locati
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
+## Installation
+
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+
+```js
+import { DecoupledEditor, Minimap } from 'ckeditor5';
+
+DecoupledEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Minimap, /* ... */ ],
+	minimap: {
+		// Reference to the container element as shown in the configuration section of the guide
+		// ...
+	}
+} )
+.then( /* ... */ );
+```
+
+<info-box>
+	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
+</info-box>
+
+## Configuration
+
+<info-box>
+	For more technical details, please check the {@link module:minimap/minimapconfig~MinimapConfig plugin configuration API}.
+</info-box>
+
+### Minimap container
+
+The container element is essential for the minimap to render. You should pass the reference to the container element in {@link module:minimap/minimapconfig~MinimapConfig#container `config.minimap.container`}. Note that it must have a fixed `width` and `overflow: hidden` when the editor is created:
+
+```js
+import { DecoupledEditor, Minimap } from 'ckeditor5';
+
+DecoupledEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Minimap, /* ... */ ],
+	minimap: {
+		container: document.querySelector( '.minimap-container' )
+	}
+} )
+.then( /* ... */ );
+```
+
+### Content styles and classes
+
+The minimap feature uses `<iframe>` internally. For a proper look and operation, it is essential for the content (clone) inside the `<iframe>` to have exactly the same styles as the main editor document. If the content of your editor inherits styles from parent containers, you may need to pass the class names of these containers in the feature configuration to maintain style parity. See the {@link module:minimap/minimapconfig~MinimapConfig#extraClasses detailed classes documentation} to learn more.
+
+<info-box>
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+</info-box>
+
 ### Demo configuration
 
 To configure the editor as [presented above](#demo), you can use the following DOM structure:
@@ -124,57 +175,6 @@ DecoupledEditor.create( document.querySelector( '#editor-content' ), {
 	toolbarContainer.appendChild( editor.ui.view.toolbar.element );
 } );
 ```
-
-## Installation
-
-After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
-
-```js
-import { DecoupledEditor, Minimap } from 'ckeditor5';
-
-DecoupledEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Minimap, /* ... */ ],
-	minimap: {
-		// Reference to the container element as shown in the configuration section of the guide
-		// ...
-	}
-} )
-.then( /* ... */ );
-```
-
-<info-box>
-	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
-</info-box>
-
-## Configuration
-
-<info-box>
-	For more technical details, please check the {@link module:minimap/minimapconfig~MinimapConfig plugin configuration API}.
-</info-box>
-
-### Minimap container
-
-The container element is essential for the minimap to render. You should pass the reference to the container element in {@link module:minimap/minimapconfig~MinimapConfig#container `config.minimap.container`}. Note that it must have a fixed `width` and `overflow: hidden` when the editor is created:
-
-```js
-import { DecoupledEditor, Minimap } from 'ckeditor5';
-
-DecoupledEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Minimap, /* ... */ ],
-	minimap: {
-		container: document.querySelector( '.minimap-container' )
-	}
-} )
-.then( /* ... */ );
-```
-
-### Content styles and classes
-
-The minimap feature uses `<iframe>` internally. For a proper look and operation, it is essential for the content (clone) inside the `<iframe>` to have exactly the same styles as the main editor document. If the content of your editor inherits styles from parent containers, you may need to pass the class names of these containers in the feature configuration to maintain style parity. See the {@link module:minimap/minimapconfig~MinimapConfig#extraClasses detailed classes documentation} to learn more.
-
-<info-box>
-	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
-</info-box>
 
 ## Related features
 

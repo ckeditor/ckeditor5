@@ -19,23 +19,6 @@ Use the find and replace toolbar button {@icon @ckeditor/ckeditor5-find-and-repl
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
-## Configuration
-
-### Configuring the UI type
-
-By default, the find and replace form displays inside a dialog. That allows for keeping it open while editing the document at the same time. Alternatively, you can display the feature in a dropdown. To do this, use the {@link module:find-and-replace/findandreplaceconfig~FindAndReplaceConfig `config.findAndReplace.uiType`} configuration option:
-
-```js
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	findAndReplace: {
-		uiType: 'dropdown'
-	}
-} )
-.then( /* ... */ );
-```
-
-{@snippet features/find-and-replace-dropdown}
-
 ## Installation
 
 After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
@@ -53,6 +36,23 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 <info-box info>
 	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
 </info-box>
+
+## Configuration
+
+### Configuring the UI type
+
+By default, the find and replace form displays inside a dialog. That allows for keeping it open while editing the document at the same time. Alternatively, you can display the feature in a dropdown. To do this, use the {@link module:find-and-replace/findandreplaceconfig~FindAndReplaceConfig `config.findAndReplace.uiType`} configuration option:
+
+```js
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	findAndReplace: {
+		uiType: 'dropdown'
+	}
+} )
+.then( /* ... */ );
+```
+
+{@snippet features/find-and-replace-dropdown}
 
 ## Related features
 

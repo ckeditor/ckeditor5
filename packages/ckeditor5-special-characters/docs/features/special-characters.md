@@ -20,6 +20,26 @@ Use the special characters toolbar button {@icon @ckeditor/ckeditor5-special-cha
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
+## Installation
+
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+
+```js
+// Core plugin provides the API for the management of special characters and their categories.
+// The other provide a basic set of special characters.
+import { ClassicEditor, SpecialCharacters, SpecialCharactersEssentials } from 'ckeditor5';
+
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ SpecialCharacters, SpecialCharactersEssentials, /* ... */ ],
+	toolbar: [ 'specialCharacters', /* ... */ ],
+} )
+.then( /* ... */ );
+```
+
+<info-box info>
+	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
+</info-box>
+
 ## Configuration
 
 By default, a few categories of special characters have been defined. You can easily customize the special characters available in your WYSIWYG editor installation by adding new categories, extending the existing ones, or removing them altogether.
@@ -158,26 +178,6 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 } )
 	.then( ... );
 ```
-
-## Installation
-
-After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
-
-```js
-// Core plugin provides the API for the management of special characters and their categories.
-// The other provide a basic set of special characters.
-import { ClassicEditor, SpecialCharacters, SpecialCharactersEssentials } from 'ckeditor5';
-
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ SpecialCharacters, SpecialCharactersEssentials, /* ... */ ],
-	toolbar: [ 'specialCharacters', /* ... */ ],
-} )
-.then( /* ... */ );
-```
-
-<info-box info>
-	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
-</info-box>
 
 ## Common API
 

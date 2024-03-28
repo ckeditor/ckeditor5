@@ -18,6 +18,24 @@ Click inside a paragraph or a header and use the toolbar dropdown {@icon @ckedit
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
+## Installation
+
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+
+```js
+import { ClassicEditor, Alignment } from 'ckeditor5';
+
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Alignment, /* ... */ ],
+	toolbar: [ 'alignment', /* ... */ ]
+} )
+.then( /* ... */ );
+```
+
+<info-box info>
+	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
+</info-box>
+
 ## Configuring alignment options
 
 ### Defining available options
@@ -83,24 +101,6 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 ```
 
 {@snippet features/custom-text-alignment-toolbar}
-
-## Installation
-
-After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
-
-```js
-import { ClassicEditor, Alignment } from 'ckeditor5';
-
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Alignment, /* ... */ ],
-	toolbar: [ 'alignment', /* ... */ ]
-} )
-.then( /* ... */ );
-```
-
-<info-box info>
-	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
-</info-box>
 
 ## Related features
 
