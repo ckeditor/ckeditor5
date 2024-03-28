@@ -6,26 +6,18 @@
 /* globals window, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import Table from '@ckeditor/ckeditor5-table/src/table.js';
 
 import StandardEditingMode from '../../src/standardeditingmode.js';
 import RestrictedEditingMode from '../../src/restrictededitingmode.js';
-import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert.js';
-import ImageInline from '@ckeditor/ckeditor5-image/src/imageinline.js';
-import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder.js';
-import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter.js';
+import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
+
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
+import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage.js';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload.js';
-import { UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
-import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
-import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
-import { Heading } from '@ckeditor/ckeditor5-heading';
-import { Indent } from '@ckeditor/ckeditor5-indent';
-import { Link } from '@ckeditor/ckeditor5-link';
-import { List } from '@ckeditor/ckeditor5-list';
-import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
+import { ImageInsert } from '@ckeditor/ckeditor5-image';
 
 const restrictedModeButton = document.getElementById( 'mode-restricted' );
 const standardModeButton = document.getElementById( 'mode-standard' );
@@ -49,31 +41,18 @@ async function startMode( selectedMode ) {
 
 async function startStandardEditingMode() {
 	await reloadEditor( {
-		plugins: [
-			Essentials,
-			Autoformat,
-			BlockQuote,
-			Bold,
-			Heading,
-			Indent,
-			Italic,
-			Link,
-			List,
-			MediaEmbed,
-			Paragraph,
-			TableToolbar,
-			Table,
-			StandardEditingMode,
-			ImageInline,
-			ImageInsert,
-			CKFinder,
-			CKFinderUploadAdapter
-		],
+		plugins: [ ArticlePluginSet, Table, EasyImage, ImageInsert, ImageUpload, CloudServices, StandardEditingMode ],
 		toolbar: [
 			'heading', '|', 'bold', 'italic', 'link', '|',
-			'bulletedList', 'numberedList', 'blockQuote', 'insertTable', '|',
-			'restrictedEditingException', '|', 'undo', 'redo', 'insertImage'
+			'bulletedList', 'numberedList', 'blockQuote', 'insertTable', 'insertImage', '|',
+			'restrictedEditingException', '|', 'undo', 'redo'
 		],
+		image: {
+			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative' ],
+			insert: {
+				type: 'auto'
+			}
+		},
 		table: {
 			contentToolbar: [
 				'tableColumn',
@@ -81,10 +60,7 @@ async function startStandardEditingMode() {
 				'mergeTableCells'
 			]
 		},
-		ckfinder: {
-			// eslint-disable-next-line max-len
-			uploadUrl: 'https://ckeditor.com/apps/ckfinder/3.5.0/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
-		},
+		cloudServices: CS_CONFIG,
 		updateSourceElementOnDestroy: true
 	} );
 }
@@ -109,39 +85,22 @@ function MyPlugin( editor ) {
 async function startRestrictedEditingMode() {
 	await reloadEditor( {
 		plugins: [
-			ImageUpload,
-			RestrictedEditingMode,
-			MyPlugin,
-			ImageInline,
-			ImageInsert,
-			CKFinderUploadAdapter,
-			CKFinder,
-			Essentials,
-			Autoformat,
-			BlockQuote,
-			Bold,
-			Heading,
-			Indent,
-			Italic,
-			Link,
-			List,
-			MediaEmbed,
-			Paragraph,
-			Table,
-			TableToolbar
+			ArticlePluginSet, Table, TableToolbar, EasyImage, ImageInsert, ImageUpload, CloudServices, RestrictedEditingMode, MyPlugin
 		],
-		toolbar: [ 'bold', 'italic', 'link', '|', 'restrictedEditing', '|', 'undo', 'redo', 'insertImage', 'insertTable' ],
+		toolbar: [ 'bold', 'italic', 'link', 'insertImage', '|', 'restrictedEditing', '|', 'undo', 'redo' ],
+		image: {
+			insert: {
+				type: 'inline'
+			}
+		},
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ],
 			tableToolbar: [ 'bold', 'italic' ]
 		},
 		restrictedEditing: {
-			allowedCommands: [ 'imageInsert', 'imageUpload', 'insertTable' ]
+			allowedCommands: [ 'imageInsert', 'imageUpload' ]
 		},
-		ckfinder: {
-			// eslint-disable-next-line max-len
-			uploadUrl: 'https://ckeditor.com/apps/ckfinder/3.5.0/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
-		},
+		cloudServices: CS_CONFIG,
 		updateSourceElementOnDestroy: true
 	} );
 }
@@ -152,10 +111,4 @@ async function reloadEditor( config ) {
 	}
 
 	window.editor = await ClassicEditor.create( document.querySelector( '#editor' ), config );
-
-	window.editor.plugins.get( 'FileRepository' ).createUploadAdapter = loader => {
-		const adapterMock = new UploadAdapterMock( loader );
-
-		return adapterMock;
-	};
 }

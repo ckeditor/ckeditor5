@@ -14,7 +14,6 @@ import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.j
 import StrikethroughEditing from '@ckeditor/ckeditor5-basic-styles/src/strikethrough/strikethroughediting.js';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
-import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting.js';
 import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting.js';
 import InsertImageCommand from '@ckeditor/ckeditor5-image/src/image/insertimagecommand.js';
 
@@ -383,7 +382,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 	describe( 'editing behavior', () => {
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( { plugins: [
-				Paragraph, Typing, RestrictedEditingModeEditing, ClipboardPipeline, ImageEditing, ImageInlineEditing
+				Paragraph, Typing, RestrictedEditingModeEditing, ClipboardPipeline, ImageInlineEditing
 			] } );
 			model = editor.model;
 		} );
