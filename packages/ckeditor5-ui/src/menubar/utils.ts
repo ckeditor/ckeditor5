@@ -82,7 +82,7 @@ export const MenuBarBehaviors = {
 	 * If the menubar is closed, the arrow keys only move focus between top-level menu buttons.
 	 */
 	focusCycleMenusOnArrows( menuBarView: MenuBarView ): void {
-		const isContentRTL = menuBarView.locale!.contentLanguageDirection === 'rtl';
+		const isContentRTL = menuBarView.locale!.uiLanguageDirection === 'rtl';
 
 		menuBarView.on<MenuBarMenuArrowRightEvent>( 'menu:arrowright', evt => {
 			cycleTopLevelMenus( evt.source as MenuBarMenuView, isContentRTL ? -1 : 1 );
@@ -186,7 +186,7 @@ export const MenuBarMenuBehaviors = {
 	 * Open the menu on the right arrow key press. This allows for navigating to sub-menus using the keyboard.
 	 */
 	openOnArrowRightKey( menuView: MenuBarMenuView ): void {
-		const keystroke = menuView.locale!.contentLanguageDirection === 'rtl' ? 'arrowleft' : 'arrowright';
+		const keystroke = menuView.locale!.uiLanguageDirection === 'rtl' ? 'arrowleft' : 'arrowright';
 
 		menuView.keystrokes.set( keystroke, ( data, cancel ) => {
 			if ( menuView.focusTracker.focusedElement !== menuView.buttonView.element ) {
@@ -232,7 +232,7 @@ export const MenuBarMenuBehaviors = {
 	 * Closes the menu on the right left key press. This allows for navigating to sub-menus using the keyboard.
 	 */
 	closeOnArrowLeftKey( menuView: MenuBarMenuView ): void {
-		const keystroke = menuView.locale!.contentLanguageDirection === 'rtl' ? 'arrowright' : 'arrowleft';
+		const keystroke = menuView.locale!.uiLanguageDirection === 'rtl' ? 'arrowright' : 'arrowleft';
 
 		menuView.keystrokes.set( keystroke, ( data, cancel ) => {
 			if ( menuView.isOpen ) {
