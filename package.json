@@ -90,6 +90,7 @@
     "@ckeditor/ckeditor5-ai": "41.2.1",
     "@ckeditor/ckeditor5-case-change": "41.2.1",
     "@ckeditor/ckeditor5-comments": "41.2.1",
+    "@ckeditor/ckeditor5-dev-build-tools": "^39.7.0-alpha.1",
     "@ckeditor/ckeditor5-dev-bump-year": "^39.0.0",
     "@ckeditor/ckeditor5-dev-ci": "^39.0.0",
     "@ckeditor/ckeditor5-dev-dependency-checker": "^39.0.0",
@@ -202,8 +203,9 @@
     "collect-svg-icons": "node scripts/collect-svg-icons.js",
     "check-dependencies": "ckeditor5-dev-dependency-checker",
     "check-dependencies:versions-match": "node ./scripts/ci/check-dependencies-versions-match.js",
-    "build:kowalski": "node ./scripts/build-ckeditor5.mjs",
-    "check-theme-lark-imports": "node ./scripts/check-theme-lark-imports.js"
+    "check-theme-lark-imports": "node ./scripts/check-theme-lark-imports.js",
+    "check-packages-lists": "node ./scripts/check-packages-lists.js",
+    "build:node": "node ./scripts/build-ckeditor5.mjs"
   },
   "lint-staged": {
     "**/*.{js,ts}": [

@@ -17,7 +17,6 @@
     "@ckeditor/ckeditor5-ui": "41.2.1"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-build-tools": "^39.7.0-alpha.1",
     "@ckeditor/ckeditor5-dev-utils": "^39.0.0",
     "@ckeditor/ckeditor5-editor-classic": "41.2.1",
     "@ckeditor/ckeditor5-editor-balloon": "41.2.1",
@@ -85,6 +84,6 @@
   "scripts": {
     "dll:build": "webpack",
     "build": "tsc -p ./tsconfig.json",
-    "build:kowalski": "node ../../scripts/build-package.mjs"
+    "build:node": "node ../../scripts/build-package.mjs"
   }
 }
