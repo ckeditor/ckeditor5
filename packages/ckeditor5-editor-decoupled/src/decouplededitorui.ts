@@ -13,6 +13,7 @@ import {
 
 import {
 	EditorUI,
+	normalizeMenuBarConfig,
 	type EditorUIReadyEvent
 } from 'ckeditor5/src/ui.js';
 
@@ -121,7 +122,10 @@ export default class DecoupledEditorUI extends EditorUI {
 
 		this.focusTracker.add( menuBarViewElement );
 		editor.keystrokes.listenTo( menuBarViewElement );
-		view.menuBarView.fillFromConfig( editor.config.get( 'menuBar' ), this.componentFactory );
+
+		const normalizedMenuBarConfig = normalizeMenuBarConfig( editor.config.get( 'menuBar' ) || {} );
+
+		view.menuBarView.fillFromConfig( normalizedMenuBarConfig, this.componentFactory );
 
 		editor.keystrokes.set( 'Esc', ( data, cancel ) => {
 			if ( menuBarViewElement.contains( this.focusTracker.focusedElement ) ) {
