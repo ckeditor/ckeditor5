@@ -11,6 +11,7 @@ import type { Editor, ElementApi } from 'ckeditor5/src/core.js';
 import {
 	EditorUI,
 	normalizeToolbarConfig,
+	normalizeMenuBarConfig,
 	DialogView,
 	type EditorUIReadyEvent,
 	type DialogViewMoveToEvent,
@@ -38,6 +39,11 @@ export default class ClassicEditorUI extends EditorUI {
 	private readonly _toolbarConfig: ReturnType<typeof normalizeToolbarConfig>;
 
 	/**
+	 * A normalized `config.menuBar` object.
+	 */
+	private readonly _menuBarConfig: ReturnType<typeof normalizeMenuBarConfig>;
+
+	/**
 	 * The element replacer instance used to hide the editor's source element.
 	 */
 	private readonly _elementReplacer: ElementReplacer;
@@ -53,6 +59,10 @@ export default class ClassicEditorUI extends EditorUI {
 
 		this.view = view;
 		this._toolbarConfig = normalizeToolbarConfig( editor.config.get( 'toolbar' ) );
+
+		// We use config.define in ClassicEditor, there will always be some configuration.
+		this._menuBarConfig = normalizeMenuBarConfig( editor.config.get( 'menuBar' )! );
+
 		this._elementReplacer = new ElementReplacer();
 
 		this.listenTo<ViewScrollToTheSelectionEvent>(
@@ -154,15 +164,17 @@ export default class ClassicEditorUI extends EditorUI {
 	 * Initializes the editor menu bar.
 	 */
 	private _initMenuBar(): void {
-		const editor = this.editor;
-		const config = editor.config.get( 'menuBar' );
+		if ( !this._menuBarConfig.isVisible ) {
+			return;
+		}
 
+		const editor = this.editor;
 		const menuBarViewElement = this.view.menuBarView.element!;
 		const view = this.view;
 
 		this.focusTracker.add( menuBarViewElement );
 		editor.keystrokes.listenTo( menuBarViewElement );
-		view.menuBarView.fillFromConfig( config, this.componentFactory );
+		view.menuBarView.fillFromConfig( this._menuBarConfig, this.componentFactory );
 
 		editor.keystrokes.set( 'Esc', ( data, cancel ) => {
 			if ( menuBarViewElement.contains( this.focusTracker.focusedElement ) ) {

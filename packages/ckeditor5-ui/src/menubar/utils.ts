@@ -20,7 +20,8 @@ import type {
 	MenuBarConfigObject,
 	MenuBarConfigAddedGroup,
 	MenuBarConfigAddedMenu,
-	MenuBarConfigAddedPosition
+	MenuBarConfigAddedPosition,
+	NormalizedMenuBarConfigObject
 } from './menubarview.js';
 import { cloneDeep } from 'lodash-es';
 import type { FocusableView } from '../focuscycler.js';
@@ -35,7 +36,6 @@ import type ComponentFactory from '../componentfactory.js';
 
 const NESTED_PANEL_HORIZONTAL_OFFSET = 5;
 
-type RequiredMenuBarConfigObject = Required<MenuBarConfigObject>;
 type DeepReadonly<T> = Readonly<{
 	[K in keyof T]:
 		T[K] extends string ? Readonly<T[K]>
@@ -622,58 +622,22 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 ];
 
 /**
- * Performs a cleanup and normalization of the menu bar configuration and returns a config
- * clone with the following modifications:
- *
- * * Removed components that are not available in the component factory,
- * * Removed obsolete separators,
- * * Purged empty menus,
- * * Localized top-level menu labels.
+ * Performs a cleanup and normalization of the menu bar configuration.
  */
-export function normalizeMenuBarConfig( {
-	locale,
-	componentFactory,
-	config
-}: {
-	locale: Locale;
-	componentFactory: ComponentFactory;
-	config: Readonly<MenuBarConfig> | undefined;
-} ): RequiredMenuBarConfigObject {
-	let configObject: DeepReadonly<RequiredMenuBarConfigObject>;
-	let isUsingDefaultConfig = false;
+export function normalizeMenuBarConfig( config: Readonly<MenuBarConfig> ): NormalizedMenuBarConfigObject {
+	let configObject: NormalizedMenuBarConfigObject;
 
-	// The integrator didn't specify any configuration so we use default one.
-	if ( !config ) {
-		configObject = {
-			items: cloneDeep( DefaultMenuBarItems ) as Array<MenuBarMenuDefinition>,
-			addItems: [],
-			removeItems: [],
-			isVisible: true
-		};
-
-		isUsingDefaultConfig = true;
-	}
-	// The integrator specified the config as an array. Let's convert it into a generic object config.
-	else if ( Array.isArray( config ) ) {
-		configObject = {
-			items: config,
-			addItems: [],
-			removeItems: [],
-			isVisible: true
-		};
-	}
 	// The integrator specified the config as an object but without items. Let's give them defaults but respect their
 	// additions and removals.
-	else if ( !( 'items' in config ) || !config.items ) {
+	if ( !( 'items' in config ) || !config.items ) {
 		configObject = {
 			items: cloneDeep( DefaultMenuBarItems ) as Array<MenuBarMenuDefinition>,
 			addItems: [],
 			removeItems: [],
 			isVisible: true,
+			isUsingDefaultConfig: true,
 			...config
 		};
-
-		isUsingDefaultConfig = true;
 	}
 	// The integrator specified the config as an object and there are items there. Let's take it as it is.
 	else {
@@ -682,16 +646,37 @@ export function normalizeMenuBarConfig( {
 			removeItems: [],
 			addItems: [],
 			isVisible: true,
+			isUsingDefaultConfig: false,
 			...config
 		};
 	}
 
-	const configClone = cloneDeep( configObject ) as RequiredMenuBarConfigObject;
+	return configObject;
+}
 
-	handleRemovals( configObject, configClone );
-	handleAdditions( configObject, configClone );
-	purgeUnavailableComponents( configObject, configClone, componentFactory, isUsingDefaultConfig );
-	purgeEmptyMenus( configObject, configClone, isUsingDefaultConfig );
+/**
+ * Processes a normalized menu bar config and returns a config clone with the following modifications:
+ *
+ * * Removed components that are not available in the component factory,
+ * * Removed obsolete separators,
+ * * Purged empty menus,
+ * * Localized top-level menu labels.
+ */
+export function processMenuBarConfig( {
+	normalizedConfig,
+	locale,
+	componentFactory
+}: {
+	normalizedConfig: NormalizedMenuBarConfigObject;
+	locale: Locale;
+	componentFactory: ComponentFactory;
+} ): NormalizedMenuBarConfigObject {
+	const configClone = cloneDeep( normalizedConfig ) as NormalizedMenuBarConfigObject;
+
+	handleRemovals( normalizedConfig, configClone );
+	handleAdditions( normalizedConfig, configClone );
+	purgeUnavailableComponents( normalizedConfig, configClone, componentFactory );
+	purgeEmptyMenus( normalizedConfig, configClone );
 	localizeTopLevelCategories( configClone, locale );
 
 	return configClone;
@@ -703,8 +688,8 @@ export function normalizeMenuBarConfig( {
  * was not found in the configuration.
  */
 function handleRemovals(
-	originalConfig: DeepReadonly<RequiredMenuBarConfigObject>,
-	config: RequiredMenuBarConfigObject
+	originalConfig: NormalizedMenuBarConfigObject,
+	config: NormalizedMenuBarConfigObject
 ) {
 	const itemsToBeRemoved = config.removeItems;
 	const successfullyRemovedItems: Array<string> = [];
@@ -772,8 +757,8 @@ function handleRemovals(
  * positions in the menu bar. If the position does not exist, a warning is logged.
  */
 function handleAdditions(
-	originalConfig: DeepReadonly<RequiredMenuBarConfigObject>,
-	config: RequiredMenuBarConfigObject
+	originalConfig: NormalizedMenuBarConfigObject,
+	config: NormalizedMenuBarConfigObject
 ) {
 	const itemsToBeAdded = config.addItems;
 	const successFullyAddedItems: typeof itemsToBeAdded = [];
@@ -886,7 +871,7 @@ function handleAdditions(
  * Handles adding a sub-menu or an item into a group. The logic is the same for both cases.
  */
 function addMenuOrItemToGroup(
-	config: RequiredMenuBarConfigObject,
+	config: NormalizedMenuBarConfigObject,
 	itemOrMenuToAdd: string | MenuBarMenuDefinition,
 	relativeId: string | null,
 	relation: 'start' | 'end' | 'before' | 'after'
@@ -938,10 +923,9 @@ function addMenuOrItemToGroup(
  * not be instantiated. Warns about missing components if the menu bar configuration was specified by the user.
  */
 function purgeUnavailableComponents(
-	originalConfig: DeepReadonly<RequiredMenuBarConfigObject>,
-	config: RequiredMenuBarConfigObject,
-	componentFactory: ComponentFactory,
-	isUsingDefaultConfig: boolean
+	originalConfig: DeepReadonly<NormalizedMenuBarConfigObject>,
+	config: NormalizedMenuBarConfigObject,
+	componentFactory: ComponentFactory
 ) {
 	walkConfigMenus( config.items, menuDefinition => {
 		for ( const groupDefinition of menuDefinition.groups ) {
@@ -952,7 +936,7 @@ function purgeUnavailableComponents(
 				// every possible feature. This is why we do not want to log warnings about unavailable items for the default config
 				// because they would show up in almost every integration. If the configuration has been provided by
 				// the integrator, on the other hand, then these warnings bring value.
-				if ( isItemUnavailable && !isUsingDefaultConfig ) {
+				if ( isItemUnavailable && !config.isUsingDefaultConfig ) {
 					/**
 					 * There was a problem processing the configuration of the menu bar. The item with the given
 					 * name does not exist so it was omitted when rendering the menu bar.
@@ -989,10 +973,10 @@ function purgeUnavailableComponents(
  * the configuration populated menus using these components exclusively.
  */
 function purgeEmptyMenus(
-	originalConfig: DeepReadonly<RequiredMenuBarConfigObject>,
-	config: RequiredMenuBarConfigObject,
-	isUsingDefaultConfig: boolean
+	originalConfig: NormalizedMenuBarConfigObject,
+	config: NormalizedMenuBarConfigObject
 ) {
+	const isUsingDefaultConfig = config.isUsingDefaultConfig;
 	let wasSubMenuPurged = false;
 
 	// Purge top-level menus.
@@ -1043,13 +1027,13 @@ function purgeEmptyMenus(
 	if ( wasSubMenuPurged ) {
 		// The config is walked from the root to the leaves so if anything gets removed, we need to re-run the
 		// whole process because it could've affected parents.
-		purgeEmptyMenus( originalConfig, config, isUsingDefaultConfig );
+		purgeEmptyMenus( originalConfig, config );
 	}
 }
 
 function warnAboutEmptyMenu(
-	originalConfig: DeepReadonly<RequiredMenuBarConfigObject>,
-	emptyMenuConfig: MenuBarMenuDefinition | DeepReadonly<RequiredMenuBarConfigObject>,
+	originalConfig: NormalizedMenuBarConfigObject,
+	emptyMenuConfig: MenuBarMenuDefinition | DeepReadonly<NormalizedMenuBarConfigObject>,
 	isUsingDefaultConfig: boolean
 ) {
 	if ( isUsingDefaultConfig ) {
@@ -1080,7 +1064,7 @@ function warnAboutEmptyMenu(
 /**
  * Localizes the user-config using pre-defined localized category labels.
  */
-function localizeTopLevelCategories( config: RequiredMenuBarConfigObject, locale: Locale ) {
+function localizeTopLevelCategories( config: NormalizedMenuBarConfigObject, locale: Locale ) {
 	const t = locale.t;
 	const localizedCategoryLabels: Record<string, string> = {
 		'Edit': t( 'Edit' ),
@@ -1102,7 +1086,7 @@ function localizeTopLevelCategories( config: RequiredMenuBarConfigObject, locale
  * Recursively visits all menu definitions in the config and calls the callback for each of them.
  */
 function walkConfigMenus(
-	definition: RequiredMenuBarConfigObject[ 'items' ] | MenuBarMenuDefinition,
+	definition: NormalizedMenuBarConfigObject[ 'items' ] | MenuBarMenuDefinition,
 	callback: ( definition: MenuBarMenuDefinition ) => void
 ) {
 	if ( Array.isArray( definition ) ) {

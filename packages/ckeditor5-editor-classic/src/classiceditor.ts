@@ -74,9 +74,7 @@ export default class ClassicEditor extends ElementApiMixin( Editor ) {
 
 		super( config );
 
-		this.config.define( 'menuBar', {
-			isVisible: false
-		} );
+		this.config.define( 'menuBar.isVisible', false );
 
 		if ( this.config.get( 'initialData' ) === undefined ) {
 			this.config.set( 'initialData', getInitialData( sourceElementOrData ) );
@@ -91,11 +89,10 @@ export default class ClassicEditor extends ElementApiMixin( Editor ) {
 		const shouldToolbarGroupWhenFull = !this.config.get( 'toolbar.shouldNotGroupWhenFull' );
 
 		const menuBarConfig = this.config.get( 'menuBar' )!;
-		const useMenuBar = Array.isArray( menuBarConfig ) || menuBarConfig.isVisible;
 
 		const view = new ClassicEditorUIView( this.locale, this.editing.view, {
 			shouldToolbarGroupWhenFull,
-			useMenuBar
+			useMenuBar: menuBarConfig.isVisible
 		} );
 
 		this.ui = new ClassicEditorUI( this, view );
