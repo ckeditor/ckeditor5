@@ -49,7 +49,7 @@
 
 	&.ck-menu-bar__menu__panel_position_ws,
 	&.ck-menu-bar__menu__panel_position_wn {
-		left: calc( -100% + var(--ck-menu-bar-nested-menu-horizontal-offset) );
+		right: calc( 100% - var(--ck-menu-bar-nested-menu-horizontal-offset) );
 	}
 
 	&.ck-menu-bar__menu__panel_position_ws {
