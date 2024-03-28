@@ -16,7 +16,7 @@ import type {
 	ListEditingPostFixerEvent,
 	LegacyIndentCommand,
 	ListIndentCommand,
-	ListTypeOptions,
+	ListType,
 	ListUtils
 } from '@ckeditor/ckeditor5-list';
 
@@ -230,7 +230,7 @@ function viewToModelListAttributeConverter( attributeName: string, dataFilter: D
 /**
  * Returns HTML attribute name based on provided list type.
  */
-function getAttributeFromListType( listType: ListTypeOptions ) {
+function getAttributeFromListType( listType: ListType ) {
 	return listType === 'numbered' || listType == 'customNumbered' ?
 		'htmlOlAttributes' :
 		'htmlUlAttributes';

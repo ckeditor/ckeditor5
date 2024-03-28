@@ -84,13 +84,13 @@ import '../../theme/list.css';
  */
 const LIST_BASE_ATTRIBUTES = [ 'listType', 'listIndent', 'listItemId' ];
 
-export type ListTypeOptions = 'numbered' | 'bulleted' | 'todo' | 'customNumbered' | 'customBulleted';
+export type ListType = 'numbered' | 'bulleted' | 'todo' | 'customNumbered' | 'customBulleted';
 
 /**
  * Map of model attributes applicable to list blocks.
  */
 export interface ListItemAttributesMap {
-	listType?: ListTypeOptions;
+	listType?: ListType;
 	listIndent?: number;
 	listItemId?: string;
 }
@@ -167,6 +167,9 @@ export default class ListEditing extends Plugin {
 		// Register commands.
 		editor.commands.add( 'numberedList', new ListCommand( editor, 'numbered' ) );
 		editor.commands.add( 'bulletedList', new ListCommand( editor, 'bulleted' ) );
+
+		editor.commands.add( 'customNumberedList', new ListCommand(	editor,	'customNumbered', {	multiLevel: true } ) );
+		editor.commands.add( 'customBulletedList', new ListCommand( editor, 'customBulleted', {	multiLevel: true } ) );
 
 		editor.commands.add( 'indentList', new ListIndentCommand( editor, 'forward' ) );
 		editor.commands.add( 'outdentList', new ListIndentCommand( editor, 'backward' ) );
