@@ -384,42 +384,44 @@ export interface EditorConfig {
 	 * ```ts
 	 * ClassicEditor
 	 * 	.create( document.querySelector( '#editor' ), {
-	 * 		menuBar: [
-	 * 			{
-	 * 				menuId: 'formatting',
-	 * 				label: 'Formatting',
-	 * 				groups: [
-	 * 					{
-	 * 						groupId: 'basicStyles',
-	 * 						items: [
-	 * 							'menuBar:bold',
-	 * 							'menuBar:italic',
-	 * 						]
-	 * 					},
-	 * 					{
-	 * 						groupId: 'misc',
-	 * 						items: [
-	 * 							'menuBar:heading',
-	 * 							'menuBar:bulletedList',
-	 * 							'menuBar:numberedList'
-	 * 						]
-	 * 					}
-	 * 				]
-	 * 			},
-	 * 			{
-	 * 				menuId: 'myButtons',
-	 * 				label: 'My actions',
-	 * 				groups: [
-	 * 					{
-	 * 						groupId: 'undo',
-	 * 						items: [
-	 * 							'myButton1',
-	 * 							'myButton2'
-	 * 						]
-	 * 					}
-	 * 				]
-	 * 			}
-	 * 		]
+	 * 		menuBar: {
+	 * 			items: [
+	 * 				{
+	 * 					menuId: 'formatting',
+	 * 					label: 'Formatting',
+	 * 					groups: [
+	 * 						{
+	 * 							groupId: 'basicStyles',
+	 * 							items: [
+	 * 								'menuBar:bold',
+	 * 								'menuBar:italic',
+	 * 							]
+	 * 						},
+	 * 						{
+	 * 							groupId: 'misc',
+	 * 							items: [
+	 * 								'menuBar:heading',
+	 * 								'menuBar:bulletedList',
+	 * 								'menuBar:numberedList'
+	 * 							]
+	 * 						}
+	 * 					]
+	 * 				},
+	 * 				{
+	 * 					menuId: 'myButtons',
+	 * 					label: 'My actions',
+	 * 					groups: [
+	 * 						{
+	 * 							groupId: 'undo',
+	 * 							items: [
+	 * 								'myButton1',
+	 * 								'myButton2'
+	 * 							]
+	 * 						}
+	 * 					]
+	 * 				}
+	 * 			]
+	 * 		}
 	 * 	} )
 	 * 	.then( ... )
 	 * 	.catch( ... );

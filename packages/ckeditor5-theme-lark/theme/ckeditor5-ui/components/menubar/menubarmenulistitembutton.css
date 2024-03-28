@@ -6,6 +6,11 @@
 .ck.ck-menu-bar__menu .ck-button.ck-menu-bar__menu__item__button {
 	border-radius: 0;
 
+	/* Spacing in buttons that miss the icon. */
+	&:not(:has(.ck-button__icon)) > .ck-button__label {
+		margin-left: calc(var(--ck-icon-size) - var(--ck-spacing-small));
+	}
+
 	& > .ck-spinner-container,
 	& > .ck-spinner-container .ck-spinner {
 		/* These styles correspond to .ck-icon so that the spinner seamlessly replaces the icon. */
