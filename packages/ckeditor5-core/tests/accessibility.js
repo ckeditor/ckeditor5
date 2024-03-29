@@ -80,7 +80,8 @@ describe( 'Accessibility', () => {
 											[ 'Enter' ],
 											[ 'Space' ]
 										],
-										label: 'Execute the currently focused button'
+										// eslint-disable-next-line max-len
+										label: 'Execute the currently focused button. Executing buttons that interact with the editor content moves the focus back to the content.'
 									}
 								],
 								label: undefined

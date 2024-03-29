@@ -4,8 +4,5 @@
  */
 
 .ck.ck-balloon-panel.ck-tooltip {
-	/* Keep tooltips transparent for any interactions. */
-	pointer-events: none;
-
 	z-index: calc( var(--ck-z-dialog) + 100 );
 }
