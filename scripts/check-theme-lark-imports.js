@@ -79,6 +79,7 @@ if ( notImportedFiles.length ) {
 }
 
 /**
+ * Returns list of normalized paths of imported `CSS` files found in given `CSS` file.
  *
  * @param {String} filePathToCheck Path to `CSS` file.
  */
