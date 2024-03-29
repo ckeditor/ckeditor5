@@ -30,6 +30,24 @@ CKEditor&nbsp;5 allows for typing both at the inner and outer boundaries of link
 
 {@img assets/img/typing-before.gif 770 The animation shows typing before the link in CKEditor&nbsp;5 rich text editor.}
 
+## Installation
+
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+
+```js
+import { ClassicEditor, AutoLink, Link } from 'ckeditor5';
+
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Link, AutoLink, /* ... */ ],
+	toolbar: [ 'link', /* ... */ ],
+} )
+.then( /* ... */ );
+```
+
+<info-box info>
+	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
+</info-box>
+
 ## Custom link attributes (decorators)
 
 By default, all links created in the editor have the `href="..."` attribute in the {@link getting-started/getting-and-setting-data#getting-the-editor-data-with-getdata editor data}. If you want your links to have additional link attributes, {@link module:link/linkconfig~LinkConfig#decorators link decorators} provide an easy way to configure and manage them.
@@ -269,24 +287,6 @@ To use the autolink function, press <kbd>Space</kbd>, <kbd>Enter</kbd>, or <kbd>
 </info-box>
 
 {@snippet features/autolink}
-
-## Installation
-
-After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
-
-```js
-import { ClassicEditor, AutoLink, Link } from 'ckeditor5';
-
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Link, AutoLink, /* ... */ ],
-	toolbar: [ 'link', /* ... */ ],
-} )
-.then( /* ... */ );
-```
-
-<info-box info>
-	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
-</info-box>
 
 ## Common API
 

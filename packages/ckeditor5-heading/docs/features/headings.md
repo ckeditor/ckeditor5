@@ -39,6 +39,32 @@ The heading feature lets you also use a set of heading buttons instead of the dr
 
 {@snippet features/heading-buttons}
 
+## Installation
+
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+
+```js
+import { ClassicEditor, Heading } from 'ckeditor5';
+
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Heading, /* ... */ ],
+	toolbar: [ 'heading', /* ... */ ]
+} )
+.then( /* ... */ );
+```
+
+### Installation with toolbar heading buttons
+
+To configure the toolbar buttons for styling text as headings and paragraphs, you need to import the following into your plugin list and configuration:
+
+```js
+import { ClassicEditor, HeadingButtonsUI, ParagraphButtonUI } from 'ckeditor5';
+```
+
+<info-box info>
+	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
+</info-box>
+
 ## Configuration
 
 ### Configuring heading levels
@@ -142,33 +168,6 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 .then( /* ... */ );
 ```
 {@snippet features/custom-heading-buttons}
-
-
-## Installation
-
-After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
-
-```js
-import { ClassicEditor, Heading } from 'ckeditor5';
-
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Heading, /* ... */ ],
-	toolbar: [ 'heading', /* ... */ ]
-} )
-.then( /* ... */ );
-```
-
-### Installation with toolbar heading buttons
-
-To configure the toolbar buttons for styling text as headings and paragraphs, you need to import the following into your plugin list and configuration:
-
-```js
-import { ClassicEditor, HeadingButtonsUI, ParagraphButtonUI } from 'ckeditor5';
-```
-
-<info-box info>
-	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
-</info-box>
 
 ## Related features
 

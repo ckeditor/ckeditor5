@@ -19,6 +19,24 @@ Select the content you want to clean up and press the remove format button {@ico
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
+## Installation
+
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+
+```js
+import { ClassicEditor, RemoveFormat } from 'ckeditor5';
+
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ RemoveFormat, /* ... */ ],
+	toolbar: [ 'removeFormat', /* ... */ ]
+} )
+.then( /* ... */ );
+```
+
+<info-box info>
+	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
+</info-box>
+
 ## Configuring the remove format feature
 
 This feature has no integration–level configuration. Once enabled, it works out–of–the–box with all {@link features/index core editor features}.
@@ -66,24 +84,6 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 ```
 
 From now on, the remove format button should also remove links in the content. {@link module:engine/model/schema~Schema#setAttributeProperties Learn more about attribute properties.}
-
-## Installation
-
-After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
-
-```js
-import { ClassicEditor, RemoveFormat } from 'ckeditor5';
-
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ RemoveFormat, /* ... */ ],
-	toolbar: [ 'removeFormat', /* ... */ ]
-} )
-.then( /* ... */ );
-```
-
-<info-box info>
-	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
-</info-box>
 
 ## Related features
 

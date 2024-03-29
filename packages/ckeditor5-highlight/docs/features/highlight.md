@@ -19,6 +19,24 @@ Select the text you want to highlight. Then use the highlight toolbar button {@i
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
+## Installation
+
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+
+```js
+import { ClassicEditor, Highlight } from 'ckeditor5';
+
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Highlight, /* ... */ ],
+	toolbar: [ 'highlight', /* ... */ ]
+} )
+.then( /* ... */ );
+```
+
+<info-box info>
+	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
+</info-box>
+
 ## Configuring the highlight options
 
 The highlight feature comes with flexible configuration options.
@@ -162,24 +180,6 @@ Then, update the classes in the style sheet so the content corresponds to the UI
 ```
 
 {@snippet features/custom-highlight-colors-inline}
-
-## Installation
-
-After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
-
-```js
-import { ClassicEditor, Highlight } from 'ckeditor5';
-
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Highlight, /* ... */ ],
-	toolbar: [ 'highlight', /* ... */ ]
-} )
-.then( /* ... */ );
-```
-
-<info-box info>
-	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
-</info-box>
 
 ## Related features
 

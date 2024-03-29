@@ -43,6 +43,23 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 } );
 ```
 
+## Installation
+
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+
+```js
+import { ClassicEditor, WordCount } from 'ckeditor5';
+
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ WordCount, /* ... */ ],
+} )
+.then( /* ... */ );
+```
+
+<info-box info>
+	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
+</info-box>
+
 ## Configuration
 
 The word count and character count feature is quite flexible and there are a few configuration options available.
@@ -224,24 +241,6 @@ Here is the HTML structure used to create the customized word and character coun
 	</div>
 </div>
 ```
-
-## Installation
-
-After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
-
-```js
-import { ClassicEditor, WordCount } from 'ckeditor5';
-
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ WordCount, /* ... */ ],
-} )
-.then( /* ... */ );
-```
-
-<info-box info>
-	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
-</info-box>
-
 
 ## Related features
 

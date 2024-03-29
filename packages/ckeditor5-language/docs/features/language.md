@@ -24,6 +24,23 @@ The text part language feature is especially useful when your content includes t
 
 The text part language feature implements the [WCAG 3.1.2 Language of Parts](https://www.w3.org/TR/UNDERSTANDING-WCAG20/meaning-other-lang-id.html) specification.
 
+## Installation
+
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+
+```js
+import { ClassicEditor, TextPartLanguage } from 'ckeditor5';
+
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ TextPartLanguage, /* ... */ ],
+	toolbar: [ 'textPartLanguage', /* ... */ ]
+} )
+.then( /* ... */ );
+```
+
+<info-box info>
+	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
+</info-box>
 
 ## Configuring available languages
 
@@ -46,24 +63,6 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 } )
 .then( /* ... */ );
 ```
-
-## Installation
-
-After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
-
-```js
-import { ClassicEditor, TextPartLanguage } from 'ckeditor5';
-
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ TextPartLanguage, /* ... */ ],
-	toolbar: [ 'textPartLanguage', /* ... */ ]
-} )
-.then( /* ... */ );
-```
-
-<info-box info>
-	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
-</info-box>
 
 ## Related features
 

@@ -31,7 +31,7 @@ When the {@link features/ckbox CKBox file manager} is enabled in your CKEditor&n
 
 ## Drag and drop of content blocks
 
-Since v40.0.0, the drag and drop plugin fully supports dragging content blocks such as paragraphs, tables, or lists inside the editor by default. This allows you to select an entire block or multiple blocks, and move them before or after other blocks.
+The drag and drop plugin fully supports dragging content blocks such as paragraphs, tables, or lists inside the editor by default. This allows you to select an entire block or multiple blocks, and move them before or after other blocks.
 
 The drag and drop functions include:
 

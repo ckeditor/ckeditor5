@@ -27,29 +27,6 @@ The editor below is configured to output GitHub Flavored Markdown. Edit the cont
 
 Please remember that Markdown syntax is really simple and it does not cover all the rich-text features. Some features provided by CKEditor&nbsp;5 will thus work as intended only when output to HTML as they have no Markdown equivalent.
 
-## Extending formatting support
-If you need more extensive Markdown support for formatting elements (for example, having the `title` attribute on links represented as `[Foo Bar](https://foo.bar "My link title")`), you can also install {@link features/general-html-support General HTML Support}. This advanced feature allows the integrators to provide additional tags, elements, and attributes, not yet supported by other CKEditor&nbsp;5 plugins and extend the formatting capabilities.
-
-## The Markdown data processor
-
-The Markdown plugin uses a {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor} (implemented by the {@link module:markdown-gfm/gfmdataprocessor~GFMDataProcessor} class) which changes the default output from HTML to Markdown. This means that you can {@link module:core/editor/editor~Editor#setData set} or {@link module:core/editor/editor~Editor#getData get} data from the editor in the Markdown format:
-
-```js
-editor.getData(); // -> 'This is [CKEditor&nbsp;5](https://ckeditor.com).'
-
-editor.setData( 'This is **bold**.' );
-```
-
-The data processor outputs the GFM Markdown syntax. "GFM" stands for "GitHub Flavored Markdown" &ndash; a Markdown dialect used by [GitHub](https://github.com). Markdown lacks any formal specification (although the [CommonMark](https://commonmark.org/) initiative aims to close this gap) and has many dialects, often incompatible with one another.
-
-When converting the output produced by this data processor, make sure to use a compatible Markdown-to-HTML converter (for example, the [marked](https://www.npmjs.com/package/marked) library).
-
-<info-box info>
-	While the CKEditor&nbsp;5 architecture supports changing the data format, in most scenarios we do recommend sticking to the default format which is HTML (supported by the {@link module:engine/dataprocessor/htmldataprocessor~HtmlDataProcessor}). HTML remains [the best standard for rich-text data](https://medium.com/content-uneditable/a-standard-for-rich-text-data-4b3a507af552).
-
-	And please do remember &ndash; using Markdown [does not automatically make your application or website secure](https://github.com/ckeditor/ckeditor5-markdown-gfm/issues/16#issuecomment-375752994).
-</info-box>
-
 ## Installation
 
 After {@link getting-started/quick-start installing the editor}, add the {@link module:markdown-gfm/markdown~Markdown} plugin to the editor configuration. It will change the default {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor} to the {@link module:markdown-gfm/gfmdataprocessor~GFMDataProcessor}:
@@ -77,6 +54,29 @@ ClassicEditor.create( document.querySelector( '#snippet-markdown' ), {
 
 <info-box info>
 	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
+</info-box>
+
+## Extending formatting support
+If you need more extensive Markdown support for formatting elements (for example, having the `title` attribute on links represented as `[Foo Bar](https://foo.bar "My link title")`), you can also install {@link features/general-html-support General HTML Support}. This advanced feature allows the integrators to provide additional tags, elements, and attributes, not yet supported by other CKEditor&nbsp;5 plugins and extend the formatting capabilities.
+
+## The Markdown data processor
+
+The Markdown plugin uses a {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor} (implemented by the {@link module:markdown-gfm/gfmdataprocessor~GFMDataProcessor} class) which changes the default output from HTML to Markdown. This means that you can {@link module:core/editor/editor~Editor#setData set} or {@link module:core/editor/editor~Editor#getData get} data from the editor in the Markdown format:
+
+```js
+editor.getData(); // -> 'This is [CKEditor&nbsp;5](https://ckeditor.com).'
+
+editor.setData( 'This is **bold**.' );
+```
+
+The data processor outputs the GFM Markdown syntax. "GFM" stands for "GitHub Flavored Markdown" &ndash; a Markdown dialect used by [GitHub](https://github.com). Markdown lacks any formal specification (although the [CommonMark](https://commonmark.org/) initiative aims to close this gap) and has many dialects, often incompatible with one another.
+
+When converting the output produced by this data processor, make sure to use a compatible Markdown-to-HTML converter (for example, the [marked](https://www.npmjs.com/package/marked) library).
+
+<info-box info>
+	While the CKEditor&nbsp;5 architecture supports changing the data format, in most scenarios we do recommend sticking to the default format which is HTML (supported by the {@link module:engine/dataprocessor/htmldataprocessor~HtmlDataProcessor}). HTML remains [the best standard for rich-text data](https://medium.com/content-uneditable/a-standard-for-rich-text-data-4b3a507af552).
+
+	And please do remember &ndash; using Markdown [does not automatically make your application or website secure](https://github.com/ckeditor/ckeditor5-markdown-gfm/issues/16#issuecomment-375752994).
 </info-box>
 
 ## Known issues

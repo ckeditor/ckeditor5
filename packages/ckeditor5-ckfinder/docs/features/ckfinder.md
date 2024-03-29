@@ -62,6 +62,24 @@ You can use this feature in the rich-text editor in two different ways:
 
 	Check out the [CKFinder file manager website](https://ckeditor.com/ckfinder/) to learn more about the features you can use in your project.
 
+## Installation
+
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+
+```js
+import { ClassicEditor, CKFinder } from 'ckeditor5';
+
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ CKFinder, /* ... */ ],
+	toolbar: [ 'ckfinder', 'uploadImage', /* ... */ ], // Depending on your preference.
+	ckfinder: {
+		// Feature configuration.
+		// ...
+	}
+} )
+.then( /* ... */ );
+```
+
 ## Configuration
 
 The feature is configurable by using the {@link module:ckfinder/ckfinderconfig~CKFinderConfig `config.ckfinder`} object.
@@ -170,24 +188,6 @@ By default, users can upload `jpeg`, `png`, `gif`, `bmp`, `webp`, and `tiff` fil
 #### Server-side configuration
 
 Use the `allowedExtensions` configuration option to define the file extension allowed to be uploaded with CKFinder for a particular resource type. Refer to the [relevant server-side connector documentation](https://ckeditor.com/docs/ckfinder/latest/) to learn more.
-
-## Installation
-
-After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
-
-```js
-import { ClassicEditor, CKFinder } from 'ckeditor5';
-
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ CKFinder, /* ... */ ],
-	toolbar: [ 'ckfinder', 'uploadImage', /* ... */ ], // Depending on your preference.
-	ckfinder: {
-		// Feature configuration.
-		// ...
-	}
-} )
-.then( /* ... */ );
-```
 
 ## Common API
 
