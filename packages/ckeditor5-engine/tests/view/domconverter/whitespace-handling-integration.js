@@ -732,6 +732,24 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 						.to.equal( '<p>&nbsp; &nbsp; foo &nbsp; &nbsp;bar &nbsp; &nbsp;</p>' );
 				}
 			} );
+
+			it( 'a surrounding <pre> will take precedence over an element that sets white-space to collapse', () => {
+				for ( const collapseWhiteSpace of collapseWhiteSpaceValues ) {
+					editor.setData(
+						'<pre>' +
+							`<span style="white-space: ${ collapseWhiteSpace };">` +
+								'    foo    bar    ' +
+							'</span>' +
+						'</pre>'
+					);
+
+					expect( getData( editor.model, { withoutSelection: true } ) )
+						.to.equal( '<paragraph>    foo    bar    </paragraph>' );
+
+					expect( editor.getData() )
+						.to.equal( '<p>&nbsp; &nbsp; foo &nbsp; &nbsp;bar &nbsp; &nbsp;</p>' );
+				}
+			} );
 		} );
 
 		it( 'in nested blocks', () => {
