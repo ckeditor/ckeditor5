@@ -434,6 +434,12 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 				items: [
 					'menuBar:importWord'
 				]
+			},
+			{
+				groupId: 'revisionHistory',
+				items: [
+					'menuBar:revisionHistory'
+				]
 			}
 		]
 	},
@@ -479,10 +485,9 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 				]
 			},
 			{
-				groupId: 'standardEditingMode',
+				groupId: 'restrictedEditingException',
 				items: [
-					'menuBar:restrictedEditingException',
-					'menuBar:restrictedEditing'
+					'menuBar:restrictedEditingException'
 				]
 			}
 		]
@@ -492,20 +497,42 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 		label: 'Insert',
 		groups: [
 			{
-				groupId: 'insert',
+				groupId: 'insertGroup1',
 				items: [
-					'menuBar:insertTemplate',
+					'menuBar:imageUpload',
 					'menuBar:ckbox',
 					'menuBar:ckfinder',
-					'menuBar:imageUpload',
-					'menuBar:blockQuote',
+					'menuBar:insertTable'
+				]
+			},
+			{
+				groupId: 'insertGroup2',
+				items: [
 					'menuBar:link',
-					'menuBar:comment',
-					'menuBar:htmlEmbed',
-					'menuBar:pageBreak',
-					'menuBar:horizontalLine',
+					'menuBar:comment'
+				]
+			},
+			{
+				groupId: 'insertGroup3',
+				items: [
+					'menuBar:insertTemplate',
+					'menuBar:blockQuote',
 					'menuBar:codeBlock',
+					'menuBar:htmlEmbed'
+				]
+			},
+			{
+				groupId: 'insertGroup4',
+				items: [
+					'menuBar:horizontalLine',
+					'menuBar:pageBreak',
 					'menuBar:tableOfContents'
+				]
+			},
+			{
+				groupId: 'restrictedEditing',
+				items: [
+					'menuBar:restrictedEditing'
 				]
 			}
 		]
@@ -515,21 +542,54 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 		label: 'Format',
 		groups: [
 			{
-				groupId: 'table',
+				groupId: 'textAndFont',
 				items: [
-					'menuBar:insertTable'
-				]
-			},
-			{
-				groupId: 'basicStyles',
-				items: [
-					'menuBar:bold',
-					'menuBar:italic',
-					'menuBar:underline',
-					'menuBar:strikethrough',
-					'menuBar:subscript',
-					'menuBar:superscript',
-					'menuBar:code'
+					{
+						menuId: 'text',
+						label: 'Text',
+						groups: [
+							{
+								groupId: 'basicStyles',
+								items: [
+									'menuBar:bold',
+									'menuBar:italic',
+									'menuBar:underline',
+									'menuBar:strikethrough',
+									'menuBar:superscript',
+									'menuBar:subscript',
+									'menuBar:code',
+									'menuBar:textPartLanguage'
+								]
+							}
+						]
+					},
+					{
+						menuId: 'font',
+						label: 'Font',
+						groups: [
+							{
+								groupId: 'fontProperties',
+								items: [
+									'menuBar:fontSize',
+									'menuBar:fontFamily'
+								]
+							},
+							{
+								groupId: 'fontColors',
+								items: [
+									'menuBar:fontColor',
+									'menuBar:fontBackgroundColor'
+								]
+							},
+							{
+								groupId: 'highlight',
+								items: [
+									'menuBar:highlight'
+								]
+							}
+						]
+					},
+					'menuBar:heading'
 				]
 			},
 			{
@@ -541,29 +601,17 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 				]
 			},
 			{
-				groupId: 'heading',
-				items: [
-					'menuBar:caseChange',
-					'menuBar:heading',
-					'menuBar:alignment',
-					'menuBar:fontSize',
-					'menuBar:fontFamily',
-					'menuBar:highlight',
-					'menuBar:textPartLanguage'
-				]
-			},
-			{
 				groupId: 'indent',
 				items: [
+					'menuBar:alignment',
 					'menuBar:indent',
 					'menuBar:outdent'
 				]
 			},
 			{
-				groupId: 'fontColor',
+				groupId: 'caseChange',
 				items: [
-					'menuBar:fontColor',
-					'menuBar:fontBackgroundColor'
+					'menuBar:caseChange'
 				]
 			},
 			{
@@ -589,8 +637,8 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 				groupId: 'tools',
 				items: [
 					'menuBar:trackChanges',
-					'menuBar:commentsArchive',
-					'menuBar:revisionHistory'
+					'menuBar:commentsArchive'
+
 				]
 			}
 		]
@@ -665,7 +713,7 @@ export function processMenuBarConfig( {
 	handleAdditions( normalizedConfig, configClone );
 	purgeUnavailableComponents( normalizedConfig, configClone, componentFactory );
 	purgeEmptyMenus( normalizedConfig, configClone );
-	localizeTopLevelCategories( configClone, locale );
+	localizeMenuLabels( configClone, locale );
 
 	return configClone;
 }
@@ -1052,22 +1100,28 @@ function warnAboutEmptyMenu(
 /**
  * Localizes the user-config using pre-defined localized category labels.
  */
-function localizeTopLevelCategories( config: NormalizedMenuBarConfigObject, locale: Locale ) {
+function localizeMenuLabels( config: NormalizedMenuBarConfigObject, locale: Locale ) {
 	const t = locale.t;
 	const localizedCategoryLabels: Record<string, string> = {
+		// Top-level categories.
+		'File': t( 'File' ),
 		'Edit': t( 'Edit' ),
-		'Format': t( 'Format' ),
 		'View': t( 'View' ),
 		'Insert': t( 'Insert' ),
+		'Format': t( 'Format' ),
+		'Tools': t( 'Tools' ),
 		'Help': t( 'Help' ),
-		'Tools': t( 'Tools' )
+
+		// Sub-menus.
+		'Text': t( 'Text' ),
+		'Font': t( 'Font' )
 	};
 
-	for ( const categoryDef of config.items ) {
-		if ( categoryDef.label in localizedCategoryLabels ) {
-			categoryDef.label = localizedCategoryLabels[ categoryDef.label ];
+	walkConfigMenus( config.items, definition => {
+		if ( definition.label in localizedCategoryLabels ) {
+			definition.label = localizedCategoryLabels[ definition.label ];
 		}
-	}
+	} );
 }
 
 /**

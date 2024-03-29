@@ -50,7 +50,8 @@ describe( 'MenuBarView', () => {
 		addTranslations( 'pl', {
 			'Edit': 'Edycja',
 			'Format': 'Formatowanie',
-			'View': 'Widok'
+			'View': 'Widok',
+			'Sub-menu': 'Pod-menu'
 		} );
 	} );
 
@@ -283,28 +284,32 @@ describe( 'MenuBarView', () => {
 					const locale = new Locale( { uiLanguage: 'pl' } );
 					const menuBarView = new MenuBarView( locale );
 
-					menuBarView.fillFromConfig( [
-						{
-							menuId: 'edit',
-							label: 'Edit',
-							groups: [
-								{
-									groupId: '1',
-									items: [ 'item1' ]
-								}
-							]
-						},
-						{
-							menuId: 'format',
-							label: 'Format',
-							groups: [
-								{
-									groupId: '1',
-									items: [ 'item1' ]
-								}
-							]
-						}
-					], factory );
+					menuBarView.fillFromConfig( {
+						addItems: [],
+						removeItems: [],
+						items: [
+							{
+								menuId: 'edit',
+								label: 'Edit',
+								groups: [
+									{
+										groupId: '1',
+										items: [ 'item1' ]
+									}
+								]
+							},
+							{
+								menuId: 'format',
+								label: 'Format',
+								groups: [
+									{
+										groupId: '1',
+										items: [ 'item1' ]
+									}
+								]
+							}
+						]
+					}, factory );
 
 					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
 						{
@@ -317,6 +322,71 @@ describe( 'MenuBarView', () => {
 							label: 'Formatowanie', isOpen: true, isFocused: false,
 							items: [
 								{ label: 'item1', isFocused: false }
+							]
+						}
+					] );
+
+					menuBarView.destroy();
+				} );
+
+				it( 'should localize sub-menu labels from the config', () => {
+					const locale = new Locale( { uiLanguage: 'pl' } );
+					const menuBarView = new MenuBarView( locale );
+
+					menuBarView.fillFromConfig( {
+						addItems: [],
+						removeItems: [],
+						items: [
+							{
+								menuId: 'edit',
+								label: 'Edit',
+								groups: [
+									{
+										groupId: '1',
+										items: [ 'item1' ]
+									}
+								]
+							},
+							{
+								menuId: 'format',
+								label: 'Format',
+								groups: [
+									{
+										groupId: '1',
+										items: [
+											{
+												menuId: '1.1',
+												label: 'Pod-menu',
+												groups: [
+													{
+														groupId: '1.1.1',
+														items: [ 'item1' ]
+													}
+												]
+											}
+										]
+									}
+								]
+							}
+						]
+					}, factory );
+
+					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+						{
+							label: 'Edycja', isOpen: true, isFocused: false,
+							items: [
+								{ label: 'item1', isFocused: false }
+							]
+						},
+						{
+							label: 'Formatowanie', isOpen: true, isFocused: false,
+							items: [
+								{
+									label: 'Pod-menu', isOpen: true, isFocused: false,
+									items: [
+										{ label: 'item1', isFocused: false }
+									]
+								}
 							]
 						}
 					] );
@@ -648,7 +718,6 @@ describe( 'MenuBarView', () => {
 
 			describe( 'default config', () => {
 				it( 'should normalize the config as if it was a user config but without warnings', () => {
-					// Test top category localization.
 					const locale = new Locale( { uiLanguage: 'pl' } );
 					const menuBarView = new MenuBarView( locale );
 
@@ -678,7 +747,6 @@ describe( 'MenuBarView', () => {
 				} );
 
 				it( 'should not warn if the bar became empty because there were no components in the factory', () => {
-					// Test top category localization.
 					const locale = new Locale( { uiLanguage: 'pl' } );
 					const menuBarView = new MenuBarView( locale );
 					const spy = sinon.spy( console, 'warn' );
