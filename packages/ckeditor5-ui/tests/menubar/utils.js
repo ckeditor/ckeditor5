@@ -14,7 +14,9 @@ import {
 import {
 	ComponentFactory,
 	MenuBarMenuView,
-	MenuBarView, normalizeMenuBarConfig
+	MenuBarView,
+	normalizeMenuBarConfig,
+	DefaultMenuBarItems
 } from '../../src/index.js';
 import {
 	barDump,
@@ -548,7 +550,7 @@ describe( 'MenuBarView utils', () => {
 					);
 				} );
 
-				describe( 'rtl', () => {
+				describe( 'RTL content', () => {
 					let menuBarView;
 
 					beforeEach( () => {
@@ -1056,7 +1058,7 @@ describe( 'MenuBarView utils', () => {
 					sinon.assert.notCalled( keyEvtData.stopPropagation );
 				} );
 
-				describe( 'rtl', () => {
+				describe( 'RTL content', () => {
 					let menuBarView;
 
 					beforeEach( () => {
@@ -1135,7 +1137,7 @@ describe( 'MenuBarView utils', () => {
 					);
 				} );
 
-				describe( 'rtl', () => {
+				describe( 'RTL content', () => {
 					let menuBarView;
 
 					beforeEach( () => {
@@ -1375,6 +1377,47 @@ describe( 'MenuBarView utils', () => {
 				left: 105,
 				top: 50
 			} );
+		} );
+	} );
+
+	describe( 'normalizeMenuBarConfig', () => {
+		it( 'should normalize menu bar config with default values when items are not provided', () => {
+			const config = {};
+			const normalizedConfig = normalizeMenuBarConfig( config );
+
+			expect( normalizedConfig.items ).to.be.an( 'array' ).that.deep.equals( DefaultMenuBarItems );
+			expect( normalizedConfig.addItems ).to.be.an( 'array' ).that.deep.equals( [] );
+			expect( normalizedConfig.removeItems ).to.be.an( 'array' ).that.deep.equals( [] );
+			expect( normalizedConfig.isVisible ).to.be.true;
+			expect( normalizedConfig.isUsingDefaultConfig ).to.be.true;
+		} );
+
+		it( 'should keep provided items unchanged when items are already provided', () => {
+			const items = [ 'menuBar:undo', 'menuBar:redo' ];
+			const config = { items };
+
+			const normalizedConfig = normalizeMenuBarConfig( config );
+
+			expect( normalizedConfig.items ).to.be.an( 'array' ).that.deep.equals( items );
+			expect( normalizedConfig.addItems ).to.be.an( 'array' ).that.deep.equals( [] );
+			expect( normalizedConfig.removeItems ).to.be.an( 'array' ).that.deep.equals( [] );
+			expect( normalizedConfig.isVisible ).to.be.true;
+			expect( normalizedConfig.isUsingDefaultConfig ).to.be.false;
+		} );
+
+		it( 'should merge provided config with default values when items are not provided', () => {
+			const config = {
+				isVisible: false,
+				addItems: [ { item: 'menuBar:undo', position: 'end:basicStyles' } ],
+				removeItems: [ 'menuBar:redo' ]
+			};
+			const normalizedConfig = normalizeMenuBarConfig( config );
+
+			expect( normalizedConfig.items ).to.be.an( 'array' ).that.deep.equals( DefaultMenuBarItems );
+			expect( normalizedConfig.addItems ).to.be.an( 'array' ).that.deep.equals( config.addItems );
+			expect( normalizedConfig.removeItems ).to.be.an( 'array' ).that.deep.equals( config.removeItems );
+			expect( normalizedConfig.isVisible ).to.be.false;
+			expect( normalizedConfig.isUsingDefaultConfig ).to.be.true;
 		} );
 	} );
 
