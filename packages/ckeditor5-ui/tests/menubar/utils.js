@@ -14,7 +14,7 @@ import {
 import {
 	ComponentFactory,
 	MenuBarMenuView,
-	MenuBarView
+	MenuBarView, normalizeMenuBarConfig
 } from '../../src/index.js';
 import {
 	barDump,
@@ -45,77 +45,76 @@ describe( 'MenuBarView utils', () => {
 	} );
 
 	describe( 'MenuBarBehaviors', () => {
-		let menuBarView;
+		let menuBarView, config;
 
 		beforeEach( () => {
-			menuBarView = new MenuBarView( locale );
-			menuBarView.render();
+			config = {
+				items: [
+					{
+						menuId: 'A',
+						label: 'A',
+						groups: [
+							{
+								groupId: 'A1',
+								items: [
+									'A#1',
+									{
+										menuId: 'AA',
+										label: 'AA',
+										groups: [
+											{
+												groupId: 'AA1',
+												items: [
+													'AA#1',
+													'AAA (from-factory)'
+												]
+											}
+										]
+									},
+									{
+										menuId: 'AB',
+										label: 'AB',
+										groups: [
+											{
+												groupId: 'AB1',
+												items: [
+													'AB#1'
+												]
+											}
+										]
+									}
+								]
+							}
+						]
+					},
+					{
+						menuId: 'B',
+						label: 'B',
+						groups: [
+							{
+								groupId: 'B1',
+								items: [
+									'B#1'
+								]
+							}
+						]
+					},
+					{
+						menuId: 'C',
+						label: 'C',
+						groups: [
+							{
+								groupId: 'C1',
+								items: [
+									'C#1'
+								]
+							}
+						]
+					}
+				]
+			};
 
-			document.body.appendChild( menuBarView.element );
-
-			menuBarView.fillFromConfig( [
-				{
-					menuId: 'A',
-					label: 'A',
-					groups: [
-						{
-							groupId: 'A1',
-							items: [
-								'A#1',
-								{
-									menuId: 'AA',
-									label: 'AA',
-									groups: [
-										{
-											groupId: 'AA1',
-											items: [
-												'AA#1',
-												'AAA (from-factory)'
-											]
-										}
-									]
-								},
-								{
-									menuId: 'AB',
-									label: 'AB',
-									groups: [
-										{
-											groupId: 'AB1',
-											items: [
-												'AB#1'
-											]
-										}
-									]
-								}
-							]
-						}
-					]
-				},
-				{
-					menuId: 'B',
-					label: 'B',
-					groups: [
-						{
-							groupId: 'B1',
-							items: [
-								'B#1'
-							]
-						}
-					]
-				},
-				{
-					menuId: 'C',
-					label: 'C',
-					groups: [
-						{
-							groupId: 'C1',
-							items: [
-								'C#1'
-							]
-						}
-					]
-				}
-			], factory );
+			menuBarView = initMenuBar( locale, config );
 		} );
 
 		afterEach( () => {
@@ -548,6 +547,64 @@ describe( 'MenuBarView utils', () => {
 						]
 					);
 				} );
+
+				describe( 'rtl', () => {
+					let menuBarView;
+
+					beforeEach( () => {
+						const rtlLocale = new Locale( { uiLanguage: 'ar' } );
+
+						menuBarView = initMenuBar( rtlLocale, config );
+					} );
+
+					afterEach( () => {
+						menuBarView.element.remove();
+					} );
+
+					it( 'should move focus horizontally across top-level menu buttons in reverse order', () => {
+						const menuA = getMenuByLabel( menuBarView, 'A' );
+						const menuC = getMenuByLabel( menuBarView, 'C' );
+
+						menuA.buttonView.focus();
+						menuA.fire( 'arrowleft' );
+
+						expect( barDump( menuBarView ) ).to.deep.equal(
+							[
+								{
+									label: 'A', isOpen: false, isFocused: false,
+									items: []
+								},
+								{
+									label: 'B', isOpen: false, isFocused: true,
+									items: []
+								},
+								{
+									label: 'C', isOpen: false, isFocused: false,
+									items: []
+								}
+							]
+						);
+
+						menuC.fire( 'arrowright' );
+
+						expect( barDump( menuBarView ) ).to.deep.equal(
+							[
+								{
+									label: 'A', isOpen: false, isFocused: false,
+									items: []
+								},
+								{
+									label: 'B', isOpen: false, isFocused: true,
+									items: []
+								},
+								{
+									label: 'C', isOpen: false, isFocused: false,
+									items: []
+								}
+							]
+						);
+					} );
+				} );
 			} );
 
 			describe( 'when the menu bar is open', () => {
@@ -726,20 +783,22 @@ describe( 'MenuBarView utils', () => {
 
 				document.body.appendChild( menuBarView.element );
 
-				menuBarView.fillFromConfig( [
-					{
-						menuId: 'A',
-						label: 'A',
-						groups: [
-							{
-								groupId: 'A1',
-								items: [
-									'A#1'
-								]
-							}
-						]
-					}
-				], factory );
+				menuBarView.fillFromConfig( normalizeMenuBarConfig( {
+					items: [
+						{
+							menuId: 'A',
+							label: 'A',
+							groups: [
+								{
+									groupId: 'A1',
+									items: [
+										'A#1'
+									]
+								}
+							]
+						}
+					]
+				} ), factory );
 			} );
 
 			afterEach( () => {
@@ -811,40 +870,39 @@ describe( 'MenuBarView utils', () => {
 		} );
 
 		describe( 'for sub-menu', () => {
-			let menuBarView;
+			let menuBarView, config;
 
 			beforeEach( () => {
-				menuBarView = new MenuBarView( locale );
-				menuBarView.render();
+				config = {
+					items: [
+						{
+							menuId: 'A',
+							label: 'A',
+							groups: [
+								{
+									groupId: 'A1',
+									items: [
+										'A#1',
+										{
+											menuId: 'AA',
+											label: 'AA',
+											groups: [
+												{
+													groupId: 'AA1',
+													items: [
+														'AA#1'
+													]
+												}
+											]
+										}
+									]
+								}
+							]
+						}
+					]
+				};
 
-				document.body.appendChild( menuBarView.element );
-
-				menuBarView.fillFromConfig( [
-					{
-						menuId: 'A',
-						label: 'A',
-						groups: [
-							{
-								groupId: 'A1',
-								items: [
-									'A#1',
-									{
-										menuId: 'AA',
-										label: 'AA',
-										groups: [
-											{
-												groupId: 'AA1',
-												items: [
-													'AA#1'
-												]
-											}
-										]
-									}
-								]
-							}
-						]
-					}
-				], factory );
+				menuBarView = initMenuBar( locale, config );
 			} );
 
 			afterEach( () => {
@@ -997,6 +1055,53 @@ describe( 'MenuBarView utils', () => {
 					sinon.assert.notCalled( keyEvtData.preventDefault );
 					sinon.assert.notCalled( keyEvtData.stopPropagation );
 				} );
+
+				describe( 'rtl', () => {
+					let menuBarView;
+
+					beforeEach( () => {
+						const rtlLocale = new Locale( { uiLanguage: 'ar' } );
+
+						menuBarView = initMenuBar( rtlLocale, config );
+					} );
+
+					afterEach( () => {
+						menuBarView.element.remove();
+					} );
+
+					it( 'should open the menu upon arrow left key press', () => {
+						const menuA = getMenuByLabel( menuBarView, 'A' );
+						const keyEvtData = {
+							keyCode: 37, // arrow left
+							preventDefault: sinon.spy(),
+							stopPropagation: sinon.spy()
+						};
+
+						menuA.isOpen = true;
+
+						const menuAA = getMenuByLabel( menuBarView, 'AA' );
+
+						menuAA.buttonView.focus();
+						menuAA.keystrokes.press( keyEvtData );
+
+						expect( barDump( menuBarView ) ).to.deep.equal(
+							[
+								{
+									label: 'A', isOpen: true, isFocused: false,
+									items: [
+										{ label: 'A#1', isFocused: false },
+										{ label: 'AA', isFocused: false, isOpen: true, items: [
+											{ label: 'AA#1', isFocused: true }
+										] }
+									]
+								}
+							]
+						);
+
+						sinon.assert.calledOnce( keyEvtData.preventDefault );
+						sinon.assert.calledOnce( keyEvtData.stopPropagation );
+					} );
+				} );
 			} );
 
 			describe( 'closeOnArrowLeftKey()', () => {
@@ -1028,6 +1133,50 @@ describe( 'MenuBarView utils', () => {
 							}
 						]
 					);
+				} );
+
+				describe( 'rtl', () => {
+					let menuBarView;
+
+					beforeEach( () => {
+						const rtlLocale = new Locale( { uiLanguage: 'ar' } );
+
+						menuBarView = initMenuBar( rtlLocale, config );
+					} );
+
+					afterEach( () => {
+						menuBarView.element.remove();
+					} );
+
+					it( 'should close the menu upon arrow right key press', () => {
+						const menuA = getMenuByLabel( menuBarView, 'A' );
+
+						menuA.isOpen = true;
+
+						const menuAA = getMenuByLabel( menuBarView, 'AA' );
+						const keyEvtData = {
+							keyCode: 39, // arrow right
+							preventDefault: sinon.spy(),
+							stopPropagation: sinon.spy()
+						};
+
+						menuAA.isOpen = true;
+						menuAA.keystrokes.press( keyEvtData );
+
+						expect( barDump( menuBarView ) ).to.deep.equal(
+							[
+								{
+									label: 'A', isOpen: true, isFocused: false,
+									items: [
+										{ label: 'A#1', isFocused: false },
+										{ label: 'AA', isFocused: true, isOpen: false, items: [
+											{ label: 'AA#1', isFocused: false }
+										] }
+									]
+								}
+							]
+						);
+					} );
 				} );
 			} );
 
@@ -1064,32 +1213,34 @@ describe( 'MenuBarView utils', () => {
 			menuBarView.render();
 			document.body.appendChild( menuBarView.element );
 
-			menuBarView.fillFromConfig( [
-				{
-					menuId: 'A',
-					label: 'A',
-					groups: [
-						{
-							groupId: 'A1',
-							items: [
-								'A#1',
-								{
-									menuId: 'AA',
-									label: 'AA',
-									groups: [
-										{
-											groupId: 'AA1',
-											items: [
-												'AA#1'
-											]
-										}
-									]
-								}
-							]
-						}
-					]
-				}
-			], factory );
+			menuBarView.fillFromConfig( normalizeMenuBarConfig( {
+				items: [
+					{
+						menuId: 'A',
+						label: 'A',
+						groups: [
+							{
+								groupId: 'A1',
+								items: [
+									'A#1',
+									{
+										menuId: 'AA',
+										label: 'AA',
+										groups: [
+											{
+												groupId: 'AA1',
+												items: [
+													'AA#1'
+												]
+											}
+										]
+									}
+								]
+							}
+						]
+					}
+				]
+			} ), factory );
 
 			const menuA = getMenuByLabel( menuBarView, 'A' );
 
@@ -1226,4 +1377,15 @@ describe( 'MenuBarView utils', () => {
 			} );
 		} );
 	} );
+
+	function initMenuBar( locale, config ) {
+		const menuBarView = new MenuBarView( locale );
+		menuBarView.render();
+
+		document.body.appendChild( menuBarView.element );
+
+		menuBarView.fillFromConfig( normalizeMenuBarConfig( config ), factory );
+
+		return menuBarView;
+	}
 } );

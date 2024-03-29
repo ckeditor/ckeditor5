@@ -7,7 +7,9 @@
 
 import {
 	MenuBarMenuListItemButtonView,
-	MenuBarMenuView
+	MenuBarMenuView,
+	MenuBarMenuListView,
+	MenuBarMenuListItemView
 } from '../../../src/index.js';
 import ListSeparatorView from '../../../src/list/listseparatorview.js';
 
@@ -62,6 +64,33 @@ export function getButtonCreator( label, locale ) {
 		const buttonView = new MenuBarMenuListItemButtonView( locale );
 		buttonView.label = label;
 		return buttonView;
+	};
+}
+
+/**
+ * Returns a component factory-friendly callback that creates a menu.
+ * This callback creates a menu containing the provided items, which should either be valid menu items or callbacks to create them.
+ */
+export function getMenuCreator( definition, locale ) {
+	const { label, items } = definition;
+
+	return () => {
+		const menuView = new MenuBarMenuView( locale );
+		menuView.buttonView.label = label;
+
+		const menuBarMenuListView = new MenuBarMenuListView( locale );
+
+		items.forEach( item => {
+			const listItemView = new MenuBarMenuListItemView( locale, menuView );
+			const subMenuView = typeof item === 'function' ? item() : item;
+
+			listItemView.children.add( subMenuView );
+			menuBarMenuListView.items.add( listItemView );
+		} );
+
+		menuView.panelView.children.add( menuBarMenuListView );
+
+		return menuView;
 	};
 }
 
