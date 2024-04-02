@@ -3,30 +3,13 @@ Changelog
 
 ## [41.3.0-alpha.2](https://github.com/ckeditor/ckeditor5/compare/v41.2.1...v41.3.0-alpha.2) (April 2, 2024)
 
-### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
+We are happy to announce the release of CKEditor&nbsp;5 v41.3.0-alpha.2.
 
-* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The CSS custom property `--ck-color-image-caption-highligted-background` has been renamed to `--ck-color-image-caption-highlighted-background`. Please make sure to update your custom CSS accordingly.
+This release is intended to improve the build speed in bundlers when using the `ckeditor5` npm package and to improve typings for translations.
 
-### Features
+For instructions on how to use the new installation methods, see the [v41.3.0-alpha.0 Release Notes](https://github.com/ckeditor/ckeditor5/releases/tag/v41.3.0-alpha.0).
 
-* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Added the `tabindex` DOM attribute support to the `InputBase` class. ([commit](https://github.com/ckeditor/ckeditor5/commit/5a399811c3c21644f1b6e782236b60e6d2097add))
-* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Added `aria-label` attribute support to the `InputBase` class. ([commit](https://github.com/ckeditor/ckeditor5/commit/952cd7599bf623ea2a9be92dbde1a01e8ff73daa))
-
-### Bug fixes
-
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Increase priority of AI selection markers to display them over the overlaping comments. Closes [#6014](git+https://github.com/cksource/ckeditor5-commercial/issues/6014).
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Copying the content with markers will no longer trigger the `change:data` event. Closes [#15943](https://github.com/ckeditor/ckeditor5/issues/15943). ([commit](https://github.com/ckeditor/ckeditor5/commit/39a77912905694a61e8da4c42dd1b36f76fde400))
-* **[heading](https://www.npmjs.com/package/@ckeditor/ckeditor5-heading)**: An accessible button label should describe the state and the name of the feature for optimal UX. ([commit](https://github.com/ckeditor/ckeditor5/commit/571bcf5d0224ffe97037c92391cab3c78dc54820))
-* **[language](https://www.npmjs.com/package/@ckeditor/ckeditor5-language)**: An accessible button label should describe the state and the name of the feature for optimal UX. ([commit](https://github.com/ckeditor/ckeditor5/commit/571bcf5d0224ffe97037c92391cab3c78dc54820))
-* **[minimap](https://www.npmjs.com/package/@ckeditor/ckeditor5-minimap)**: The minimap should not steal DOM focus while tabbing across the document. ([commit](https://github.com/ckeditor/ckeditor5/commit/54eae6a1bb1a72d42f00b43fcf7f7f0b167507ba))
-* **[pagination](https://www.npmjs.com/package/@ckeditor/ckeditor5-pagination)**: Pagination page number input should not participate in web page navigation on tab key press to comply with WCAG recommendations (see [ckeditor/ckeditor5#16025](https://github.com/ckeditor/ckeditor5/issues/16025)).
-* **[pagination](https://www.npmjs.com/package/@ckeditor/ckeditor5-pagination)**: The current page input in the toolbar should be accessible to screen readers. See [ckeditor/ckeditor5#16028](https://github.com/ckeditor/ckeditor5/issues/16028).
-
-### Other changes
-
-* **[clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard)**: By default, markers will not be copied if they are only partially selected. ([commit](https://github.com/ckeditor/ckeditor5/commit/39a77912905694a61e8da4c42dd1b36f76fde400))
-* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Fixed a typo in the name of CSS custom property for the highlighted state of an image caption. ([commit](https://github.com/ckeditor/ckeditor5/commit/e9f0c137619b828ccb5a8e1611f4076f2ec852a6))
-* **[mention](https://www.npmjs.com/package/@ckeditor/ckeditor5-mention)**: Export MentionsView, MentionListItemView, DomWrapperView classes and MentionFeedObjectItem type. Closes [#16044](https://github.com/ckeditor/ckeditor5/issues/16044). ([commit](https://github.com/ckeditor/ckeditor5/commit/9a62fc866f34bf5846fabe9afa5069546e9b582a))
+For more general information about the new installation methods, see the [announcement post](https://github.com/ckeditor/ckeditor5/issues/15502).
 
 ### Released packages
 
@@ -35,96 +18,92 @@ Check out the [Versioning policy](https://ckeditor.com/docs/ckeditor5/latest/fra
 <details>
 <summary>Released packages (summary)</summary>
 
-Minor releases (contain minor breaking changes):
+New packages:
 
-* [@ckeditor/ckeditor5-image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-
-Releases containing new features:
-
-* [@ckeditor/ckeditor5-ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
+* [ckeditor5-premium-features](https://www.npmjs.com/package/ckeditor5-premium-features/v/41.3.0-alpha.2): v41.3.0-alpha.2
 
 Other releases:
 
-* [@ckeditor/ckeditor5-adapter-ckfinder](https://www.npmjs.com/package/@ckeditor/ckeditor5-adapter-ckfinder/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-adapter-ckfinder](https://www.npmjs.com/package/@ckeditor/ckeditor5-adapter-ckfinder/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
 * [@ckeditor/ckeditor5-ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-alignment](https://www.npmjs.com/package/@ckeditor/ckeditor5-alignment/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-autoformat](https://www.npmjs.com/package/@ckeditor/ckeditor5-autoformat/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-autosave](https://www.npmjs.com/package/@ckeditor/ckeditor5-autosave/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-basic-styles](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-block-quote](https://www.npmjs.com/package/@ckeditor/ckeditor5-block-quote/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-build-balloon](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-balloon/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-build-balloon-block](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-balloon-block/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-build-classic](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-build-decoupled-document](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-decoupled-document/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-build-inline](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-inline/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-build-multi-root](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-multi-root/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-alignment](https://www.npmjs.com/package/@ckeditor/ckeditor5-alignment/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-autoformat](https://www.npmjs.com/package/@ckeditor/ckeditor5-autoformat/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-autosave](https://www.npmjs.com/package/@ckeditor/ckeditor5-autosave/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-basic-styles](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-block-quote](https://www.npmjs.com/package/@ckeditor/ckeditor5-block-quote/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-build-balloon](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-balloon/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-build-balloon-block](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-balloon-block/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-build-classic](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-build-decoupled-document](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-decoupled-document/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-build-inline](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-inline/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-build-multi-root](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-multi-root/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
 * [@ckeditor/ckeditor5-case-change](https://www.npmjs.com/package/@ckeditor/ckeditor5-case-change/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-ckbox](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-ckfinder](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckfinder/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-cloud-services](https://www.npmjs.com/package/@ckeditor/ckeditor5-cloud-services/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-code-block](https://www.npmjs.com/package/@ckeditor/ckeditor5-code-block/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-ckbox](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-ckfinder](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckfinder/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-cloud-services](https://www.npmjs.com/package/@ckeditor/ckeditor5-cloud-services/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-code-block](https://www.npmjs.com/package/@ckeditor/ckeditor5-code-block/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
 * [@ckeditor/ckeditor5-collaboration-core](https://www.npmjs.com/package/@ckeditor/ckeditor5-collaboration-core/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
 * [@ckeditor/ckeditor5-comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
 * [@ckeditor/ckeditor5-document-outline](https://www.npmjs.com/package/@ckeditor/ckeditor5-document-outline/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-easy-image](https://www.npmjs.com/package/@ckeditor/ckeditor5-easy-image/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-editor-balloon](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-balloon/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-editor-classic](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-classic/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-editor-decoupled](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-decoupled/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-editor-inline](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-inline/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-editor-multi-root](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-multi-root/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-enter](https://www.npmjs.com/package/@ckeditor/ckeditor5-enter/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-essentials](https://www.npmjs.com/package/@ckeditor/ckeditor5-essentials/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-easy-image](https://www.npmjs.com/package/@ckeditor/ckeditor5-easy-image/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-editor-balloon](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-balloon/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-editor-classic](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-classic/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-editor-decoupled](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-decoupled/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-editor-inline](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-inline/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-editor-multi-root](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-multi-root/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-enter](https://www.npmjs.com/package/@ckeditor/ckeditor5-enter/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-essentials](https://www.npmjs.com/package/@ckeditor/ckeditor5-essentials/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
 * [@ckeditor/ckeditor5-export-pdf](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-pdf/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
 * [@ckeditor/ckeditor5-export-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-word/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-find-and-replace](https://www.npmjs.com/package/@ckeditor/ckeditor5-find-and-replace/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-font](https://www.npmjs.com/package/@ckeditor/ckeditor5-font/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-find-and-replace](https://www.npmjs.com/package/@ckeditor/ckeditor5-find-and-replace/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-font](https://www.npmjs.com/package/@ckeditor/ckeditor5-font/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
 * [@ckeditor/ckeditor5-format-painter](https://www.npmjs.com/package/@ckeditor/ckeditor5-format-painter/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-heading](https://www.npmjs.com/package/@ckeditor/ckeditor5-heading/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-highlight](https://www.npmjs.com/package/@ckeditor/ckeditor5-highlight/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-horizontal-line](https://www.npmjs.com/package/@ckeditor/ckeditor5-horizontal-line/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-html-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-embed/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-heading](https://www.npmjs.com/package/@ckeditor/ckeditor5-heading/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-highlight](https://www.npmjs.com/package/@ckeditor/ckeditor5-highlight/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-horizontal-line](https://www.npmjs.com/package/@ckeditor/ckeditor5-horizontal-line/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-html-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-embed/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
 * [@ckeditor/ckeditor5-import-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-import-word/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-indent](https://www.npmjs.com/package/@ckeditor/ckeditor5-indent/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-language](https://www.npmjs.com/package/@ckeditor/ckeditor5-language/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-markdown-gfm](https://www.npmjs.com/package/@ckeditor/ckeditor5-markdown-gfm/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-media-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-mention](https://www.npmjs.com/package/@ckeditor/ckeditor5-mention/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-minimap](https://www.npmjs.com/package/@ckeditor/ckeditor5-minimap/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-indent](https://www.npmjs.com/package/@ckeditor/ckeditor5-indent/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-language](https://www.npmjs.com/package/@ckeditor/ckeditor5-language/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-markdown-gfm](https://www.npmjs.com/package/@ckeditor/ckeditor5-markdown-gfm/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-media-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-mention](https://www.npmjs.com/package/@ckeditor/ckeditor5-mention/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-minimap](https://www.npmjs.com/package/@ckeditor/ckeditor5-minimap/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
 * [@ckeditor/ckeditor5-operations-compressor](https://www.npmjs.com/package/@ckeditor/ckeditor5-operations-compressor/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-page-break](https://www.npmjs.com/package/@ckeditor/ckeditor5-page-break/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-page-break](https://www.npmjs.com/package/@ckeditor/ckeditor5-page-break/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
 * [@ckeditor/ckeditor5-pagination](https://www.npmjs.com/package/@ckeditor/ckeditor5-pagination/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-paragraph](https://www.npmjs.com/package/@ckeditor/ckeditor5-paragraph/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-paste-from-office](https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-paragraph](https://www.npmjs.com/package/@ckeditor/ckeditor5-paragraph/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-paste-from-office](https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
 * [@ckeditor/ckeditor5-paste-from-office-enhanced](https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office-enhanced/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
 * [@ckeditor/ckeditor5-real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-remove-format](https://www.npmjs.com/package/@ckeditor/ckeditor5-remove-format/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-restricted-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-restricted-editing/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-remove-format](https://www.npmjs.com/package/@ckeditor/ckeditor5-remove-format/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-restricted-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-restricted-editing/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
 * [@ckeditor/ckeditor5-revision-history](https://www.npmjs.com/package/@ckeditor/ckeditor5-revision-history/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-select-all](https://www.npmjs.com/package/@ckeditor/ckeditor5-select-all/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-show-blocks](https://www.npmjs.com/package/@ckeditor/ckeditor5-show-blocks/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-select-all](https://www.npmjs.com/package/@ckeditor/ckeditor5-select-all/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-show-blocks](https://www.npmjs.com/package/@ckeditor/ckeditor5-show-blocks/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
 * [@ckeditor/ckeditor5-slash-command](https://www.npmjs.com/package/@ckeditor/ckeditor5-slash-command/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-source-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-source-editing/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-special-characters](https://www.npmjs.com/package/@ckeditor/ckeditor5-special-characters/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-style](https://www.npmjs.com/package/@ckeditor/ckeditor5-style/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-source-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-source-editing/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-special-characters](https://www.npmjs.com/package/@ckeditor/ckeditor5-special-characters/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-style](https://www.npmjs.com/package/@ckeditor/ckeditor5-style/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
 * [@ckeditor/ckeditor5-template](https://www.npmjs.com/package/@ckeditor/ckeditor5-template/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-theme-lark](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-theme-lark](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
 * [@ckeditor/ckeditor5-track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-typing](https://www.npmjs.com/package/@ckeditor/ckeditor5-typing/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-undo](https://www.npmjs.com/package/@ckeditor/ckeditor5-undo/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-upload](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-watchdog](https://www.npmjs.com/package/@ckeditor/ckeditor5-watchdog/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [@ckeditor/ckeditor5-word-count](https://www.npmjs.com/package/@ckeditor/ckeditor5-word-count/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [ckeditor5-collaboration](https://www.npmjs.com/package/ckeditor5-collaboration/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
-* [ckeditor5-premium-features](https://www.npmjs.com/package/ckeditor5-premium-features/v/41.3.0-alpha.2): v41.2.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-typing](https://www.npmjs.com/package/@ckeditor/ckeditor5-typing/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-undo](https://www.npmjs.com/package/@ckeditor/ckeditor5-undo/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-upload](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-watchdog](https://www.npmjs.com/package/@ckeditor/ckeditor5-watchdog/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
+* [@ckeditor/ckeditor5-word-count](https://www.npmjs.com/package/@ckeditor/ckeditor5-word-count/v/41.3.0-alpha.2): v41.3.0-alpha.1 => v41.3.0-alpha.2
 </details>
 
 
