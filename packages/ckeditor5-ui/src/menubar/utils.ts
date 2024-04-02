@@ -499,7 +499,7 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 			{
 				groupId: 'insertGroup1',
 				items: [
-					'menuBar:imageUpload',
+					'menuBar:uploadImage',
 					'menuBar:ckbox',
 					'menuBar:ckfinder',
 					'menuBar:insertTable'
@@ -557,7 +557,12 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 									'menuBar:strikethrough',
 									'menuBar:superscript',
 									'menuBar:subscript',
-									'menuBar:code',
+									'menuBar:code'
+								]
+							},
+							{
+								groupId: 'textPartLanguage',
+								items: [
 									'menuBar:textPartLanguage'
 								]
 							}

@@ -72,10 +72,8 @@ export default class IndentUI extends Plugin {
 		icon: string
 	): InstanceType<T> {
 		const editor = this.editor;
-		const locale = editor.locale;
 		const command = editor.commands.get( commandName )!;
 		const view = new ButtonClass( editor.locale ) as InstanceType<T>;
-		const t = locale.t;
 
 		view.set( {
 			label,

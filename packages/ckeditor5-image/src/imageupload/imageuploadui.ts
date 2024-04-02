@@ -53,7 +53,7 @@ export default class ImageUploadUI extends Plugin {
 		editor.ui.componentFactory.add( 'uploadImage', toolbarComponentCreator );
 		editor.ui.componentFactory.add( 'imageUpload', toolbarComponentCreator );
 
-		editor.ui.componentFactory.add( 'menuBar:imageUpload', () => {
+		editor.ui.componentFactory.add( 'menuBar:uploadImage', () => {
 			const button = this._createButton( MenuBarMenuListItemFileDialogButtonView );
 
 			button.label = t( 'Image from computer' );
@@ -117,8 +117,7 @@ export default class ImageUploadUI extends Plugin {
 			acceptedType: imageTypes.map( type => `image/${ type }` ).join( ',' ),
 			allowMultipleFiles: true,
 			label: t( 'Upload image from computer' ),
-			icon: icons.imageUpload,
-			tooltip: true
+			icon: icons.imageUpload
 		} );
 
 		view.bind( 'isEnabled' ).to( command );
