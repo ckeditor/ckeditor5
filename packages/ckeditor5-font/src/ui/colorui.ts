@@ -220,7 +220,7 @@ export default class ColorUI extends Plugin {
 				icon: this.icon
 			} );
 
-			menuView.buttonView.bind( 'isEnabled' ).to( command );
+			menuView.bind( 'isEnabled' ).to( command );
 
 			// Font color sub-menu rendering is deferred once it gets open to improve performance (#6192).
 			let contentRendered = false;

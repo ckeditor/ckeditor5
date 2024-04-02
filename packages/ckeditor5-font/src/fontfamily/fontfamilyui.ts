@@ -92,7 +92,7 @@ export default class FontFamilyUI extends Plugin {
 				icon: fontFamilyIcon
 			} );
 
-			menuView.buttonView.bind( 'isEnabled' ).to( command );
+			menuView.bind( 'isEnabled' ).to( command );
 
 			const listView = new MenuBarMenuListView( locale );
 
