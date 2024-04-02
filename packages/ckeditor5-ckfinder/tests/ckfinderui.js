@@ -14,6 +14,7 @@ import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uplo
 import { icons } from 'ckeditor5/src/core.js';
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import MenuBarMenuListItemButtonView from '@ckeditor/ckeditor5-ui/src/menubar/menubarmenulistitembuttonview.js';
 
 import CKFinder from '../src/ckfinder.js';
 import Model from '@ckeditor/ckeditor5-ui/src/model.js';
@@ -43,10 +44,6 @@ describe( 'CKFinderUI', () => {
 		return editor.destroy();
 	} );
 
-	it( 'should add the "ckfinder" component to the factory', () => {
-		expect( button ).to.be.instanceOf( ButtonView );
-	} );
-
 	describe( 'toolbar button', () => {
 		beforeEach( () => {
 			button = editor.ui.componentFactory.create( 'ckfinder' );
@@ -57,6 +54,10 @@ describe( 'CKFinderUI', () => {
 		it( 'should enable tooltips for the #buttonView', () => {
 			expect( button.tooltip ).to.be.true;
 		} );
+
+		it( 'should add the "ckfinder" component to the factory', () => {
+			expect( button ).to.be.instanceOf( ButtonView );
+		} );
 	} );
 
 	describe( 'menu bar button', () => {
@@ -65,6 +66,10 @@ describe( 'CKFinderUI', () => {
 		} );
 
 		testButton( 'Image or file' );
+
+		it( 'should add the "ckfinder" component to the factory', () => {
+			expect( button ).to.be.instanceOf( MenuBarMenuListItemButtonView );
+		} );
 	} );
 
 	describe( 'InsertImageUI integration', () => {
