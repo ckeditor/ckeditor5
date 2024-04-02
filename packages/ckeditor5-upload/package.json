@@ -18,7 +18,8 @@
   "devDependencies": {
     "typescript": "5.0.4",
     "webpack": "^5.58.1",
-    "webpack-cli": "^4.9.0"
+    "webpack-cli": "^4.9.0",
+    "@ckeditor/ckeditor5-ui": "41.2.1"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "GPL-2.0-or-later",
