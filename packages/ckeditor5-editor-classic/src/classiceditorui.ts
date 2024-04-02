@@ -61,7 +61,7 @@ export default class ClassicEditorUI extends EditorUI {
 		this._toolbarConfig = normalizeToolbarConfig( editor.config.get( 'toolbar' ) );
 
 		// We use config.define in ClassicEditor, there will always be some configuration.
-		this._menuBarConfig = normalizeMenuBarConfig( editor.config.get( 'menuBar' )! );
+		this._menuBarConfig = normalizeMenuBarConfig( editor.config.get( 'menuBar' ) || {} );
 
 		this._elementReplacer = new ElementReplacer();
 

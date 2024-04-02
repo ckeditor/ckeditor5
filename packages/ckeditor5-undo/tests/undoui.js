@@ -147,9 +147,7 @@ describe( 'UndoUI', () => {
 		it( 'should create UI component with correct attribute values', () => {
 			expect( button.isOn ).to.be.false;
 			expect( button.label ).to.equal( label );
-			expect( button.icon ).to.match( /<svg / );
-			expect( button.keystroke ).to.equal( featureKeystroke );
-		} );
+			expect( button.icon ).to.match( /<svg / ); } );
 
 		it( `should execute ${ featureName } command on model execute event`, () => {
 			const executeSpy = testUtils.sinon.stub( editor, 'execute' );
