@@ -95,6 +95,25 @@ describe( 'Accessibility', () => {
 		] );
 	} );
 
+	it( 'should add info specific to the menu bar when available', () => {
+		const editor = new Editor( {
+			menuBar: {
+				isVisible: true
+			}
+		} );
+
+		const accessibility = editor.accessibility;
+		const keystrokes = serializeKeystrokes( accessibility.keystrokeInfos );
+
+		expect( keystrokes[ 1 ][ 1 ].groups[ 0 ][ 1 ].keystrokes ).to.deep.include( {
+			label: 'Move focus to the menu bar, navigate between menu bars',
+			keystroke: 'Alt+F9',
+			mayRequireFn: true
+		} );
+
+		editor.destroy();
+	} );
+
 	describe( 'addKeystrokeInfoCategory()', () => {
 		it( 'should add a new category', () => {
 			accessibility.addKeystrokeInfoCategory( {

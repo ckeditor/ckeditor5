@@ -2092,6 +2092,8 @@ describe( 'MenuBarView', () => {
 		} );
 
 		it( 'should not focus anything unless there are some menus', () => {
+			testUtils.sinon.stub( console, 'warn' );
+
 			menuBarView.fillFromConfig( normalizeMenuBarConfig( {
 				items: []
 			} ), factory );
