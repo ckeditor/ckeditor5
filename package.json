@@ -203,6 +203,7 @@
     "collect-svg-icons": "node scripts/collect-svg-icons.js",
     "check-dependencies": "ckeditor5-dev-dependency-checker",
     "check-dependencies:versions-match": "node ./scripts/ci/check-dependencies-versions-match.js",
+    "check-theme-lark-imports": "node ./scripts/check-theme-lark-imports.js",
     "check-packages-lists": "node ./scripts/check-packages-lists.js",
     "build:node": "node ./scripts/build-ckeditor5.mjs"
   },
