@@ -47,13 +47,13 @@ export default class HeadingUI extends Plugin {
 		const options = getLocalizedOptions( editor );
 		const defaultTitle = t( 'Choose heading' );
 		const accessibleLabel = t( 'Heading' );
-		const headingCommand: HeadingCommand = editor.commands.get( 'heading' )!;
-		const paragraphCommand: ParagraphCommand = editor.commands.get( 'paragraph' )!;
 
 		// Register UI component.
 		editor.ui.componentFactory.add( 'heading', locale => {
 			const titles: Record<string, string> = {};
 			const itemDefinitions: Collection<ListDropdownItemDefinition> = new Collection();
+			const headingCommand: HeadingCommand = editor.commands.get( 'heading' )!;
+			const paragraphCommand: ParagraphCommand = editor.commands.get( 'paragraph' )!;
 			const commands: Array<Command> = [ headingCommand ];
 
 			for ( const option of options ) {
@@ -153,6 +153,8 @@ export default class HeadingUI extends Plugin {
 
 		editor.ui.componentFactory.add( 'menuBar:heading', locale => {
 			const menuView = new MenuBarMenuView( locale );
+			const headingCommand: HeadingCommand = editor.commands.get( 'heading' )!;
+			const paragraphCommand: ParagraphCommand = editor.commands.get( 'paragraph' )!;
 			const commands: Array<Command> = [ headingCommand ];
 			const listView = new MenuBarMenuListView( locale );
 
@@ -189,6 +191,7 @@ export default class HeadingUI extends Plugin {
 
 				buttonView.on<ButtonExecuteEvent>( 'execute', () => {
 					const commandName = option.model === 'paragraph' ? 'paragraph' : 'heading';
+
 					editor.execute( commandName, { value: option.model } );
 					editor.editing.view.focus();
 				} );
