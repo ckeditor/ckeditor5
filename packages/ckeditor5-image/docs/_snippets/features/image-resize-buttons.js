@@ -39,6 +39,12 @@ ClassicEditor
 					icon: 'original'
 				},
 				{
+					name: 'resizeImage:custom',
+					label: 'Custom',
+					value: 'custom',
+					icon: 'custom'
+				},
+				{
 					name: 'resizeImage:20',
 					label: '20%',
 					value: '20',
@@ -55,6 +61,7 @@ ClassicEditor
 				'resizeImage:20',
 				'resizeImage:40',
 				'resizeImage:original',
+				'resizeImage:custom',
 				'|',
 				'ckboxImageEdit'
 			]

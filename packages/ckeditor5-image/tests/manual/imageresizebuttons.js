@@ -84,6 +84,11 @@ const imageConfig2 = {
 			icon: 'original'
 		},
 		{
+			name: 'resizeImage:custom',
+			value: 'custom',
+			icon: 'custom'
+		},
+		{
 			name: 'resizeImage:50',
 			value: '50',
 			icon: 'medium'
@@ -102,7 +107,8 @@ const imageConfig2 = {
 		'toggleImageCaption', '|',
 		'resizeImage:50',
 		'resizeImage:75',
-		'resizeImage:original'
+		'resizeImage:original',
+		'resizeImage:custom'
 	]
 };
 
