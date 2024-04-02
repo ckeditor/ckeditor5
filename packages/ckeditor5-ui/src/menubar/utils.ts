@@ -189,7 +189,7 @@ export const MenuBarMenuBehaviors = {
 		const keystroke = menuView.locale!.uiLanguageDirection === 'rtl' ? 'arrowleft' : 'arrowright';
 
 		menuView.keystrokes.set( keystroke, ( data, cancel ) => {
-			if ( menuView.focusTracker.focusedElement !== menuView.buttonView.element ) {
+			if ( menuView.focusTracker.focusedElement !== menuView.buttonView.element || !menuView.isEnabled ) {
 				return;
 			}
 

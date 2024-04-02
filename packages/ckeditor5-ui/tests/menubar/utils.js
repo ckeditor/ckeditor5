@@ -1090,6 +1090,38 @@ describe( 'MenuBarView utils', () => {
 					sinon.assert.notCalled( keyEvtData.stopPropagation );
 				} );
 
+				it( 'should not open a disabled menu', () => {
+					const menuA = getMenuByLabel( menuBarView, 'A' );
+					const keyEvtData = {
+						keyCode: keyCodes.arrowright,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+
+					menuA.isOpen = true;
+
+					const menuAA = getMenuByLabel( menuBarView, 'AA' );
+
+					menuAA.isEnabled = false;
+					menuAA.buttonView.focus();
+					menuAA.keystrokes.press( keyEvtData );
+
+					expect( barDump( menuBarView ) ).to.deep.equal(
+						[
+							{
+								label: 'A', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'A#1', isFocused: false },
+									{ label: 'AA', isFocused: true, isOpen: false, items: [] }
+								]
+							}
+						]
+					);
+
+					sinon.assert.notCalled( keyEvtData.preventDefault );
+					sinon.assert.notCalled( keyEvtData.stopPropagation );
+				} );
+
 				describe( 'RTL content', () => {
 					let menuBarView;
 
