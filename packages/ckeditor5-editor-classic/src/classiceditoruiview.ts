@@ -32,17 +32,12 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 	/**
 	 * Menu bar view instance.
 	 */
-	public readonly menuBarView: MenuBarView;
+	public readonly menuBarView?: MenuBarView;
 
 	/**
 	 * Editable UI view.
 	 */
 	public readonly editable: InlineEditableUIView;
-
-	/**
-	 * Flag that indicates if menu bar should be used.
-	 */
-	private _useMenuBar?: boolean;
 
 	/**
 	 * Creates an instance of the classic editor UI view.
@@ -70,9 +65,9 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 			shouldGroupWhenFull: options.shouldToolbarGroupWhenFull
 		} );
 
-		this._useMenuBar = options.useMenuBar;
-
-		this.menuBarView = new MenuBarView( locale );
+		if ( options.useMenuBar ) {
+			this.menuBarView = new MenuBarView( locale );
+		}
 
 		this.editable = new InlineEditableUIView( locale, editingView );
 	}
@@ -83,7 +78,7 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 	public override render(): void {
 		super.render();
 
-		if ( this._useMenuBar ) {
+		if ( this.menuBarView ) {
 			// Set toolbar as a child of a stickyPanel and makes toolbar sticky.
 			this.stickyPanel.content.addMany( [ this.menuBarView, this.toolbar ] );
 		} else {

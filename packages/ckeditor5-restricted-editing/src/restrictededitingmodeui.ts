@@ -20,11 +20,6 @@ import { Collection } from 'ckeditor5/src/utils.js';
 
 import lockIcon from '../theme/icons/contentlock.svg';
 
-const BUTTON_TEMPLATES = [
-	{ commandName: 'goToPreviousRestrictedEditingException', label: 'Previous editable region', keystroke: 'Shift+Tab' },
-	{ commandName: 'goToNextRestrictedEditingException', label: 'Next editable region', keystroke: 'Tab' }
-];
-
 /**
  * The restricted editing mode UI feature.
  *
@@ -50,8 +45,8 @@ export default class RestrictedEditingModeUI extends Plugin {
 			const dropdownView = createDropdown( locale );
 			const listItems = new Collection<ListDropdownItemDefinition>();
 
-			BUTTON_TEMPLATES.forEach( ( { commandName, label, keystroke } ) => {
-				listItems.add( this._getButtonDefinition( commandName, t( label ), keystroke ) );
+			this._getButtonDefinitions().forEach( ( { commandName, label, keystroke } ) => {
+				listItems.add( this._getButtonDefinition( commandName, label, keystroke ) );
 			} );
 
 			addListToDropdown( dropdownView, listItems );
@@ -89,9 +84,9 @@ export default class RestrictedEditingModeUI extends Plugin {
 
 			menuView.panelView.children.add( listView );
 
-			BUTTON_TEMPLATES.forEach( ( { commandName, label, keystroke } ) => {
+			this._getButtonDefinitions().forEach( ( { commandName, label, keystroke } ) => {
 				const listItemView = new MenuBarMenuListItemView( locale, menuView );
-				const buttonView = this._createMenuBarButton( t( label ), commandName, keystroke );
+				const buttonView = this._createMenuBarButton( label, commandName, keystroke );
 
 				buttonView.delegate( 'execute' ).to( menuView );
 
@@ -131,7 +126,7 @@ export default class RestrictedEditingModeUI extends Plugin {
 
 	/**
 	 * Returns a definition of the navigation button to be used in the dropdown.
-
+	 *
 	 * @param commandName The name of the command that the button represents.
 	 * @param label The translated label of the button.
 	 * @param keystroke The button keystroke.
@@ -153,5 +148,19 @@ export default class RestrictedEditingModeUI extends Plugin {
 		definition.model.bind( 'isEnabled' ).to( command, 'isEnabled' );
 
 		return definition;
+	}
+
+	/**
+	 * Returns definitions for UI buttons.
+	 *
+	 * @internal
+	 */
+	private _getButtonDefinitions() {
+		const t = this.editor.locale.t;
+
+		return [
+			{ commandName: 'goToPreviousRestrictedEditingException', label: t( 'Previous editable region' ), keystroke: 'Shift+Tab' },
+			{ commandName: 'goToNextRestrictedEditingException', label: t( 'Next editable region' ), keystroke: 'Tab' }
+		];
 	}
 }

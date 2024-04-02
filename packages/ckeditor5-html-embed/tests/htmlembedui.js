@@ -53,7 +53,7 @@ describe( 'HtmlEmbedUI', () => {
 			button = editor.ui.componentFactory.create( 'menuBar:htmlEmbed' );
 		} );
 
-		testButton( 'htmlEmbed', 'HTML', MenuBarMenuListItemButtonView );
+		testButton( 'htmlEmbed', 'HTML snippet', MenuBarMenuListItemButtonView );
 	} );
 
 	function testButton( featureName, label, Component ) {
