@@ -47,7 +47,7 @@ export default class HtmlEmbedUI extends Plugin {
 			const buttonView = this._createButton( MenuBarMenuListItemButtonView );
 
 			buttonView.set( {
-				label: t( 'HTML' )
+				label: t( 'HTML snippet' )
 			} );
 
 			return buttonView;
