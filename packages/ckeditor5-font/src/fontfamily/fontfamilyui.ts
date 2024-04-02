@@ -92,6 +92,8 @@ export default class FontFamilyUI extends Plugin {
 				icon: fontFamilyIcon
 			} );
 
+			menuView.bind( 'isEnabled' ).to( command );
+
 			const listView = new MenuBarMenuListView( locale );
 
 			for ( const definition of listOptions ) {

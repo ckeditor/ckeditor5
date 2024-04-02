@@ -17,7 +17,7 @@ import {
 	MenuBarMenuView,
 	MenuBarView
 } from '../../src/index.js';
-import { MenuBarBehaviors } from '../../src/menubar/utils.js';
+import { MenuBarBehaviors, normalizeMenuBarConfig } from '../../src/menubar/utils.js';
 import {
 	Locale,
 	wait
@@ -31,6 +31,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import {
 	barDump,
 	getButtonCreator,
+	getMenuCreator,
 	getItemByLabel,
 	getMenuByLabel
 } from './_utils/utils.js';
@@ -42,16 +43,16 @@ describe( 'MenuBarView', () => {
 
 	before( () => {
 		addTranslations( 'en', {
-			'Edit': 'Edit',
-			'Format': 'Format',
-			'View': 'View'
+			'MENU_BAR_MENU_EDIT': 'Edit',
+			'MENU_BAR_MENU_FORMAT': 'Format',
+			'MENU_BAR_MENU_VIEW': 'View'
 		} );
 
 		addTranslations( 'pl', {
-			'Edit': 'Edycja',
-			'Format': 'Formatowanie',
-			'View': 'Widok',
-			'Sub-menu': 'Pod-menu'
+			'MENU_BAR_MENU_EDIT': 'Edycja',
+			'MENU_BAR_MENU_FORMAT': 'Formatowanie',
+			'MENU_BAR_MENU_VIEW': 'Widok',
+			'MENU_BAR_MENU_SUB_MENU': 'Pod-menu'
 		} );
 	} );
 
@@ -113,28 +114,30 @@ describe( 'MenuBarView', () => {
 
 			it( 'should be a sum of #isOpen of top-level sub-menus and never go false when going ' +
 				'from one sub-menu to another', async () => {
-				menuBarView.fillFromConfig( [
-					{
-						menuId: 'top2',
-						label: 'Top 2',
-						groups: [
-							{
-								groupId: '1',
-								items: [ 'item1' ]
-							}
-						]
-					},
-					{
-						menuId: 'top2',
-						label: 'Top 2',
-						groups: [
-							{
-								groupId: '2',
-								items: [ 'item2' ]
-							}
-						]
-					}
-				], factory );
+				menuBarView.fillFromConfig( normalizeMenuBarConfig( {
+					items: [
+						{
+							menuId: 'top2',
+							label: 'Top 2',
+							groups: [
+								{
+									groupId: '1',
+									items: [ 'item1' ]
+								}
+							]
+						},
+						{
+							menuId: 'top2',
+							label: 'Top 2',
+							groups: [
+								{
+									groupId: '2',
+									items: [ 'item2' ]
+								}
+							]
+						}
+					]
+				} ), factory );
 
 				const changeSpy = sinon.spy();
 
@@ -186,7 +189,7 @@ describe( 'MenuBarView', () => {
 	} );
 
 	describe( 'fillFromConfig()', () => {
-		it( 'should use the default config if none was provided (array format)', () => {
+		it( 'should use the default config if none was provided', () => {
 			const locale = new Locale();
 			const menuBarView = new MenuBarView( locale );
 
@@ -196,7 +199,7 @@ describe( 'MenuBarView', () => {
 			factory.add( 'menuBar:blockQuote', getButtonCreator( 'menuBar:blockQuote', locale ) );
 			factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
 
-			menuBarView.fillFromConfig( undefined, factory );
+			menuBarView.fillFromConfig( normalizeMenuBarConfig( {} ), factory );
 
 			expect( menuBarView.menus.map( menuView => menuView.buttonView.label ) ).to.have.members( [
 				'Edit', 'View', 'Insert', 'Format'
@@ -205,7 +208,7 @@ describe( 'MenuBarView', () => {
 			menuBarView.destroy();
 		} );
 
-		it( 'should use a default items config if the configuration was specified as an object (object format)', () => {
+		it( 'should use a default items config if the configuration was specified as an object', () => {
 			const locale = new Locale();
 			const menuBarView = new MenuBarView( locale );
 
@@ -215,7 +218,7 @@ describe( 'MenuBarView', () => {
 			factory.add( 'menuBar:blockQuote', getButtonCreator( 'menuBar:blockQuote', locale ) );
 			factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
 
-			menuBarView.fillFromConfig( {
+			menuBarView.fillFromConfig( normalizeMenuBarConfig( {
 				addItems: [
 					{
 						item: 'menuBar:undo',
@@ -225,7 +228,7 @@ describe( 'MenuBarView', () => {
 				removeItems: [
 					'menuBar:bold'
 				]
-			}, factory );
+			} ), factory );
 
 			expect( menuBarView.menus.map( menuView => menuView.buttonView.label ) ).to.have.members( [
 				'Edit', 'View', 'Insert', 'Format'
@@ -240,7 +243,7 @@ describe( 'MenuBarView', () => {
 
 			factory.add( 'menuBar:undo', getButtonCreator( 'menuBar:undo', locale ) );
 
-			menuBarView.fillFromConfig( {
+			menuBarView.fillFromConfig( normalizeMenuBarConfig( {
 				items: [
 					{
 						menuId: 'M1',
@@ -255,7 +258,7 @@ describe( 'MenuBarView', () => {
 						]
 					}
 				]
-			}, factory );
+			} ), factory );
 
 			expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal(
 				[
@@ -284,7 +287,7 @@ describe( 'MenuBarView', () => {
 					const locale = new Locale( { uiLanguage: 'pl' } );
 					const menuBarView = new MenuBarView( locale );
 
-					menuBarView.fillFromConfig( {
+					menuBarView.fillFromConfig( normalizeMenuBarConfig( {
 						addItems: [],
 						removeItems: [],
 						items: [
@@ -309,7 +312,7 @@ describe( 'MenuBarView', () => {
 								]
 							}
 						]
-					}, factory );
+					} ), factory );
 
 					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
 						{
@@ -333,7 +336,7 @@ describe( 'MenuBarView', () => {
 					const locale = new Locale( { uiLanguage: 'pl' } );
 					const menuBarView = new MenuBarView( locale );
 
-					menuBarView.fillFromConfig( {
+					menuBarView.fillFromConfig( normalizeMenuBarConfig( {
 						addItems: [],
 						removeItems: [],
 						items: [
@@ -369,7 +372,7 @@ describe( 'MenuBarView', () => {
 								]
 							}
 						]
-					}, factory );
+					} ), factory );
 
 					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
 						{
@@ -397,21 +400,23 @@ describe( 'MenuBarView', () => {
 				it( 'should warn about unavailable components', () => {
 					const locale = new Locale();
 					const menuBarView = new MenuBarView( locale );
-					const config = [
-						{
-							menuId: 'A',
-							label: 'A',
-							groups: [
-								{
-									groupId: '1',
-									items: [
-										'item1',
-										'unavailable'
-									]
-								}
-							]
-						}
-					];
+					const config = normalizeMenuBarConfig( {
+						items: [
+							{
+								menuId: 'A',
+								label: 'A',
+								groups: [
+									{
+										groupId: '1',
+										items: [
+											'item1',
+											'unavailable'
+										]
+									}
+								]
+							}
+						]
+					} );
 
 					menuBarView.fillFromConfig( config, factory );
 
@@ -427,12 +432,8 @@ describe( 'MenuBarView', () => {
 					sinon.assert.callCount( console.warn, 1 );
 
 					sinon.assert.calledWith( console.warn.getCall( 0 ), 'menu-bar-item-unavailable', {
-						menuBarConfig: {
-							addItems: [],
-							removeItems: [],
-							items: config
-						},
-						parentMenuConfig: config[ 0 ],
+						menuBarConfig: config,
+						parentMenuConfig: config.items[ 0 ],
 						componentName: 'unavailable'
 					}, sinon.match.string );
 
@@ -442,48 +443,50 @@ describe( 'MenuBarView', () => {
 				it( 'should get rid of empty menus and warn about them', () => {
 					const locale = new Locale();
 					const menuBarView = new MenuBarView( locale );
-					const config = [
-						{
-							menuId: 'A',
-							label: 'A',
-							groups: [
-								{
-									groupId: 'A1',
-									items: [
-										'item1'
-									]
-								}
-							]
-						},
-						{
-							menuId: 'B',
-							label: 'B',
-							groups: [
-								{
-									groupId: 'B1',
-									items: [
-										'item1',
-										{
-											menuId: 'BA (empty)',
-											label: 'BA (empty)',
-											groups: [
-												{
-													groupId: 'BA1',
-													items: [
-														{
-															menuId: 'BAA (empty)',
-															label: 'BAA (empty)',
-															groups: []
-														}
-													]
-												}
-											]
-										}
-									]
-								}
-							]
-						}
-					];
+					const config = normalizeMenuBarConfig( {
+						items: [
+							{
+								menuId: 'A',
+								label: 'A',
+								groups: [
+									{
+										groupId: 'A1',
+										items: [
+											'item1'
+										]
+									}
+								]
+							},
+							{
+								menuId: 'B',
+								label: 'B',
+								groups: [
+									{
+										groupId: 'B1',
+										items: [
+											'item1',
+											{
+												menuId: 'BA (empty)',
+												label: 'BA (empty)',
+												groups: [
+													{
+														groupId: 'BA1',
+														items: [
+															{
+																menuId: 'BAA (empty)',
+																label: 'BAA (empty)',
+																groups: []
+															}
+														]
+													}
+												]
+											}
+										]
+									}
+								]
+							}
+						]
+					} );
 
 					menuBarView.fillFromConfig( config, factory );
 
@@ -505,20 +508,12 @@ describe( 'MenuBarView', () => {
 					sinon.assert.callCount( console.warn, 2 );
 
 					sinon.assert.calledWithExactly( console.warn.firstCall, 'menu-bar-menu-empty', {
-						menuBarConfig: {
-							addItems: [],
-							removeItems: [],
-							items: config
-						},
+						menuBarConfig: config,
 						emptyMenuConfig: { menuId: 'BAA (empty)', label: 'BAA (empty)', groups: [] }
 					}, sinon.match.string );
 
 					sinon.assert.calledWithExactly( console.warn.secondCall, 'menu-bar-menu-empty', {
-						menuBarConfig: {
-							addItems: [],
-							removeItems: [],
-							items: config
-						},
+						menuBarConfig: config,
 						emptyMenuConfig: { menuId: 'BA (empty)', label: 'BA (empty)', groups: [] }
 					}, sinon.match.string );
 
@@ -529,48 +524,50 @@ describe( 'MenuBarView', () => {
 					const locale = new Locale();
 					const menuBarView = new MenuBarView( locale );
 
-					const config = [
-						{
-							menuId: 'A',
-							label: 'A',
-							groups: [
-								{
-									groupId: 'A1',
-									items: [
-										'invalid'
-									]
-								}
-							]
-						},
-						{
-							menuId: 'B',
-							label: 'B',
-							groups: [
-								{
-									groupId: 'B1',
-									items: [
-										'invalid',
-										{
-											menuId: 'BA (empty)',
-											label: 'BA (empty)',
-											groups: [
-												{
-													groupId: 'BA1',
-													items: [
-														{
-															menuId: 'BAA (empty)',
-															label: 'BAA (empty)',
-															groups: []
-														}
-													]
-												}
-											]
-										}
-									]
-								}
-							]
-						}
-					];
+					const config = normalizeMenuBarConfig( {
+						items: [
+							{
+								menuId: 'A',
+								label: 'A',
+								groups: [
+									{
+										groupId: 'A1',
+										items: [
+											'invalid'
+										]
+									}
+								]
+							},
+							{
+								menuId: 'B',
+								label: 'B',
+								groups: [
+									{
+										groupId: 'B1',
+										items: [
+											'invalid',
+											{
+												menuId: 'BA (empty)',
+												label: 'BA (empty)',
+												groups: [
+													{
+														groupId: 'BA1',
+														items: [
+															{
+																menuId: 'BAA (empty)',
+																label: 'BAA (empty)',
+																groups: []
+															}
+														]
+													}
+												]
+											}
+										]
+									}
+								]
+							}
+						]
+					} );
 
 					menuBarView.fillFromConfig( config, factory );
 
@@ -579,72 +576,40 @@ describe( 'MenuBarView', () => {
 					sinon.assert.callCount( console.warn, 7 );
 
 					sinon.assert.calledWithExactly( console.warn.getCall( 0 ), 'menu-bar-item-unavailable', {
-						menuBarConfig: {
-							addItems: [],
-							removeItems: [],
-							items: config
-						},
-						parentMenuConfig: config[ 0 ],
+						menuBarConfig: config,
+						parentMenuConfig: config.items[ 0 ],
 						componentName: 'invalid'
 					}, sinon.match.string );
 
 					sinon.assert.calledWithExactly( console.warn.getCall( 1 ), 'menu-bar-item-unavailable', {
-						menuBarConfig: {
-							addItems: [],
-							removeItems: [],
-							items: config
-						},
-						parentMenuConfig: config[ 1 ],
+						menuBarConfig: config,
+						parentMenuConfig: config.items[ 1 ],
 						componentName: 'invalid'
 					}, sinon.match.string );
 
 					sinon.assert.calledWithExactly( console.warn.getCall( 2 ), 'menu-bar-menu-empty', {
-						menuBarConfig: {
-							addItems: [],
-							removeItems: [],
-							items: config
-						},
+						menuBarConfig: config,
 						emptyMenuConfig: { menuId: 'BAA (empty)', label: 'BAA (empty)', groups: [] }
 					}, sinon.match.string );
 
 					sinon.assert.calledWithExactly( console.warn.getCall( 3 ), 'menu-bar-menu-empty', {
-						menuBarConfig: {
-							addItems: [],
-							removeItems: [],
-							items: config
-						},
+						menuBarConfig: config,
 						emptyMenuConfig: { menuId: 'A', label: 'A', groups: [] }
 					}, sinon.match.string );
 
 					sinon.assert.calledWithExactly( console.warn.getCall( 4 ), 'menu-bar-menu-empty', {
-						menuBarConfig: {
-							addItems: [],
-							removeItems: [],
-							items: config
-						},
+						menuBarConfig: config,
 						emptyMenuConfig: { menuId: 'BA (empty)', label: 'BA (empty)', groups: [] }
 					}, sinon.match.string );
 
 					sinon.assert.calledWithExactly( console.warn.getCall( 5 ), 'menu-bar-menu-empty', {
-						menuBarConfig: {
-							addItems: [],
-							removeItems: [],
-							items: config
-						},
+						menuBarConfig: config,
 						emptyMenuConfig: { menuId: 'B', label: 'B', groups: [] }
 					}, sinon.match.string );
 
 					sinon.assert.calledWithExactly( console.warn.getCall( 6 ), 'menu-bar-menu-empty', {
-						menuBarConfig: {
-							addItems: [],
-							removeItems: [],
-							items: config
-						},
-						emptyMenuConfig: {
-							addItems: [],
-							removeItems: [],
-							items: config
-						}
+						menuBarConfig: config,
+						emptyMenuConfig: config
 					}, sinon.match.string );
 
 					menuBarView.destroy();
@@ -654,48 +619,50 @@ describe( 'MenuBarView', () => {
 					const locale = new Locale();
 					const menuBarView = new MenuBarView( locale );
 
-					menuBarView.fillFromConfig( [
-						{
-							menuId: 'A',
-							label: 'A',
-							groups: [
-								{
-									groupId: 'A1',
-									items: [
-										'item1'
-									]
-								}
-							]
-						},
-						{
-							menuId: 'B',
-							label: 'B',
-							groups: [
-								{
-									groupId: 'B1',
-									items: [
-										'item2',
-										{
-											menuId: 'BA (empty)',
-											label: 'BA (empty)',
-											groups: [
-												{
-													groupId: 'BA1',
-													items: [
-														{
-															menuId: 'BAA (empty)',
-															label: 'BAA (empty)',
-															groups: []
-														}
-													]
-												}
-											]
-										}
-									]
-								}
-							]
-						}
-					], factory );
+					menuBarView.fillFromConfig( normalizeMenuBarConfig( {
+						items: [
+							{
+								menuId: 'A',
+								label: 'A',
+								groups: [
+									{
+										groupId: 'A1',
+										items: [
+											'item1'
+										]
+									}
+								]
+							},
+							{
+								menuId: 'B',
+								label: 'B',
+								groups: [
+									{
+										groupId: 'B1',
+										items: [
+											'item2',
+											{
+												menuId: 'BA (empty)',
+												label: 'BA (empty)',
+												groups: [
+													{
+														groupId: 'BA1',
+														items: [
+															{
+																menuId: 'BAA (empty)',
+																label: 'BAA (empty)',
+																groups: []
+															}
+														]
+													}
+												]
+											}
+										]
+									}
+								]
+							}
+						]
+					} ), factory );
 
 					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
 						{
@@ -726,7 +693,7 @@ describe( 'MenuBarView', () => {
 					factory.add( 'menuBar:sourceEditing', getButtonCreator( 'menuBar:sourceEditing', locale ) );
 
 					// Pass undefined to force the default config.
-					menuBarView.fillFromConfig( undefined, factory );
+					menuBarView.fillFromConfig( normalizeMenuBarConfig( {} ), factory );
 
 					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
 						{
@@ -752,7 +719,7 @@ describe( 'MenuBarView', () => {
 					const spy = sinon.spy( console, 'warn' );
 
 					// Pass undefined to force the default config.
-					menuBarView.fillFromConfig( undefined, factory );
+					menuBarView.fillFromConfig( normalizeMenuBarConfig( {} ), factory );
 
 					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [] );
 
@@ -771,17 +738,25 @@ describe( 'MenuBarView', () => {
 					factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
 
 					// Pass undefined to force the default config.
-					menuBarView.fillFromConfig( {
+					menuBarView.fillFromConfig( normalizeMenuBarConfig( {
 						removeItems: [
 							'menuBar:bold'
 						]
-					}, factory );
+					} ), factory );
 
 					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
 						{
 							label: 'Format', isOpen: true, isFocused: false,
 							items: [
-								{ label: 'menuBar:italic', isFocused: false }
+								{
+									label: 'Text',
+									isFocused: false,
+									isOpen: true,
+									items: [ {
+										label: 'menuBar:italic',
+										isFocused: false
+									} ]
+								}
 							]
 						}
 					] );
@@ -797,11 +772,11 @@ describe( 'MenuBarView', () => {
 					factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
 					factory.add( 'menuBar:bulletedList', getButtonCreator( 'menuBar:bulletedList', locale ) );
 
-					menuBarView.fillFromConfig( {
+					menuBarView.fillFromConfig( normalizeMenuBarConfig( {
 						removeItems: [
 							'basicStyles'
 						]
-					}, factory );
+					} ), factory );
 
 					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
 						{
@@ -823,7 +798,7 @@ describe( 'MenuBarView', () => {
 					factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
 					factory.add( 'menuBar:bulletedList', getButtonCreator( 'menuBar:bulletedList', locale ) );
 
-					menuBarView.fillFromConfig( {
+					menuBarView.fillFromConfig( normalizeMenuBarConfig( {
 						items: [
 							{
 								menuId: 'A',
@@ -853,7 +828,7 @@ describe( 'MenuBarView', () => {
 						removeItems: [
 							'AAA'
 						]
-					}, factory );
+					} ), factory );
 
 					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
 						{
@@ -876,11 +851,11 @@ describe( 'MenuBarView', () => {
 					factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
 					factory.add( 'menuBar:blockQuote', getButtonCreator( 'menuBar:blockQuote', locale ) );
 
-					menuBarView.fillFromConfig( {
+					menuBarView.fillFromConfig( normalizeMenuBarConfig( {
 						removeItems: [
 							'format'
 						]
-					}, factory );
+					} ), factory );
 
 					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
 						{
@@ -903,7 +878,7 @@ describe( 'MenuBarView', () => {
 					factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
 					factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
 
-					const config = {
+					const config = normalizeMenuBarConfig( {
 						items: [
 							{
 								menuId: 'A',
@@ -922,7 +897,7 @@ describe( 'MenuBarView', () => {
 						removeItems: [
 							'doesNotExist'
 						]
-					};
+					} );
 
 					menuBarView.fillFromConfig( config, factory );
 
@@ -951,11 +926,11 @@ describe( 'MenuBarView', () => {
 
 					factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
 
-					const config = {
+					const config = normalizeMenuBarConfig( {
 						removeItems: [
 							'doesNotExist'
 						]
-					};
+					} );
 
 					menuBarView.fillFromConfig( config, factory );
 
@@ -977,7 +952,7 @@ describe( 'MenuBarView', () => {
 						factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
 						factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
 
-						menuBarView.fillFromConfig( {
+						menuBarView.fillFromConfig( normalizeMenuBarConfig( {
 							addItems: [
 								{
 									menu: {
@@ -993,7 +968,7 @@ describe( 'MenuBarView', () => {
 									position: 'start'
 								}
 							]
-						}, factory );
+						} ), factory );
 
 						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
 							{
@@ -1005,8 +980,14 @@ describe( 'MenuBarView', () => {
 							{
 								label: 'Format', isOpen: true, isFocused: false,
 								items: [
-									{ label: 'menuBar:bold', isFocused: false },
-									{ label: 'menuBar:italic', isFocused: false }
+									{
+										label: 'Text', isOpen: true, isFocused: false,
+										items: [
+											{ label: 'menuBar:bold', isFocused: false },
+											{ label: 'menuBar:italic', isFocused: false }
+										]
+									}
+
 								]
 							}
 						] );
@@ -1021,7 +1002,7 @@ describe( 'MenuBarView', () => {
 						factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
 						factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
 
-						menuBarView.fillFromConfig( {
+						menuBarView.fillFromConfig( normalizeMenuBarConfig( {
 							addItems: [
 								{
 									menu: {
@@ -1037,14 +1018,19 @@ describe( 'MenuBarView', () => {
 									position: 'end'
 								}
 							]
-						}, factory );
+						} ), factory );
 
 						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
 							{
 								label: 'Format', isOpen: true, isFocused: false,
 								items: [
-									{ label: 'menuBar:bold', isFocused: false },
-									{ label: 'menuBar:italic', isFocused: false }
+									{
+										label: 'Text', isOpen: true, isFocused: false,
+										items: [
+											{ label: 'menuBar:bold', isFocused: false },
+											{ label: 'menuBar:italic', isFocused: false }
+										]
+									}
 								]
 							},
 							{
@@ -1066,7 +1052,7 @@ describe( 'MenuBarView', () => {
 						factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
 						factory.add( 'menuBar:blockQuote', getButtonCreator( 'menuBar:blockQuote', locale ) );
 
-						menuBarView.fillFromConfig( {
+						menuBarView.fillFromConfig( normalizeMenuBarConfig( {
 							addItems: [
 								{
 									menu: {
@@ -1082,7 +1068,7 @@ describe( 'MenuBarView', () => {
 									position: 'beofre:format'
 								}
 							]
-						}, factory );
+						} ), factory );
 
 						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
 							{
@@ -1100,8 +1086,13 @@ describe( 'MenuBarView', () => {
 							{
 								label: 'Format', isOpen: true, isFocused: false,
 								items: [
-									{ label: 'menuBar:bold', isFocused: false },
-									{ label: 'menuBar:italic', isFocused: false }
+									{
+										label: 'Text', isOpen: true, isFocused: false,
+										items: [
+											{ label: 'menuBar:bold', isFocused: false },
+											{ label: 'menuBar:italic', isFocused: false }
+										]
+									}
 								]
 							}
 
@@ -1118,7 +1109,7 @@ describe( 'MenuBarView', () => {
 						factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
 						factory.add( 'menuBar:blockQuote', getButtonCreator( 'menuBar:blockQuote', locale ) );
 
-						menuBarView.fillFromConfig( {
+						menuBarView.fillFromConfig( normalizeMenuBarConfig( {
 							addItems: [
 								{
 									menu: {
@@ -1134,7 +1125,7 @@ describe( 'MenuBarView', () => {
 									position: 'after:insert'
 								}
 							]
-						}, factory );
+						} ), factory );
 
 						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
 							{
@@ -1152,8 +1143,13 @@ describe( 'MenuBarView', () => {
 							{
 								label: 'Format', isOpen: true, isFocused: false,
 								items: [
-									{ label: 'menuBar:bold', isFocused: false },
-									{ label: 'menuBar:italic', isFocused: false }
+									{
+										label: 'Text', isOpen: true, isFocused: false,
+										items: [
+											{ label: 'menuBar:bold', isFocused: false },
+											{ label: 'menuBar:italic', isFocused: false }
+										]
+									}
 								]
 							}
 
@@ -1171,7 +1167,7 @@ describe( 'MenuBarView', () => {
 						factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
 						factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
 
-						menuBarView.fillFromConfig( {
+						menuBarView.fillFromConfig( normalizeMenuBarConfig( {
 							addItems: [
 								{
 									menu: {
@@ -1187,21 +1183,24 @@ describe( 'MenuBarView', () => {
 									position: 'start:basicStyles'
 								}
 							]
-						}, factory );
+						} ), factory );
 
 						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
 							{
 								label: 'Format', isOpen: true, isFocused: false,
-								items: [
-									{
-										label: 'My menu', isOpen: true, isFocused: false,
-										items: [
-											{ label: 'menuBar:italic', isFocused: false }
-										]
-									},
-									{ label: 'menuBar:bold', isFocused: false },
-									{ label: 'menuBar:italic', isFocused: false }
-								]
+								items: [ {
+									label: 'Text', isOpen: true, isFocused: false,
+									items: [
+										{
+											label: 'My menu', isOpen: true, isFocused: false,
+											items: [
+												{ label: 'menuBar:italic', isFocused: false }
+											]
+										},
+										{ label: 'menuBar:bold', isFocused: false },
+										{ label: 'menuBar:italic', isFocused: false }
+									]
+								} ]
 							}
 
 						] );
@@ -1216,7 +1215,7 @@ describe( 'MenuBarView', () => {
 						factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
 						factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
 
-						menuBarView.fillFromConfig( {
+						menuBarView.fillFromConfig( normalizeMenuBarConfig( {
 							addItems: [
 								{
 									menu: {
@@ -1232,18 +1231,23 @@ describe( 'MenuBarView', () => {
 									position: 'end:basicStyles'
 								}
 							]
-						}, factory );
+						} ), factory );
 
 						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
 							{
 								label: 'Format', isOpen: true, isFocused: false,
 								items: [
-									{ label: 'menuBar:bold', isFocused: false },
-									{ label: 'menuBar:italic', isFocused: false },
 									{
-										label: 'My menu', isOpen: true, isFocused: false,
+										label: 'Text', isOpen: true, isFocused: false,
 										items: [
-											{ label: 'menuBar:italic', isFocused: false }
+											{ label: 'menuBar:bold', isFocused: false },
+											{ label: 'menuBar:italic', isFocused: false },
+											{
+												label: 'My menu', isOpen: true, isFocused: false,
+												items: [
+													{ label: 'menuBar:italic', isFocused: false }
+												]
+											}
 										]
 									}
 								]
@@ -1261,7 +1265,7 @@ describe( 'MenuBarView', () => {
 						factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
 						factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
 
-						menuBarView.fillFromConfig( {
+						menuBarView.fillFromConfig( normalizeMenuBarConfig( {
 							addItems: [
 								{
 									menu: {
@@ -1277,21 +1281,24 @@ describe( 'MenuBarView', () => {
 									position: 'after:menuBar:bold'
 								}
 							]
-						}, factory );
+						} ), factory );
 
 						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
 							{
 								label: 'Format', isOpen: true, isFocused: false,
-								items: [
-									{ label: 'menuBar:bold', isFocused: false },
-									{
-										label: 'My menu', isOpen: true, isFocused: false,
-										items: [
-											{ label: 'menuBar:italic', isFocused: false }
-										]
-									},
-									{ label: 'menuBar:italic', isFocused: false }
-								]
+								items: [ {
+									label: 'Text', isOpen: true, isFocused: false,
+									items: [
+										{ label: 'menuBar:bold', isFocused: false },
+										{
+											label: 'My menu', isOpen: true, isFocused: false,
+											items: [
+												{ label: 'menuBar:italic', isFocused: false }
+											]
+										},
+										{ label: 'menuBar:italic', isFocused: false }
+									]
+								} ]
 							}
 
 						] );
@@ -1306,7 +1313,7 @@ describe( 'MenuBarView', () => {
 						factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
 						factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
 
-						menuBarView.fillFromConfig( {
+						menuBarView.fillFromConfig( normalizeMenuBarConfig( {
 							addItems: [
 								{
 									menu: {
@@ -1322,20 +1329,25 @@ describe( 'MenuBarView', () => {
 									position: 'before:menuBar:italic'
 								}
 							]
-						}, factory );
+						} ), factory );
 
 						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
 							{
 								label: 'Format', isOpen: true, isFocused: false,
 								items: [
-									{ label: 'menuBar:bold', isFocused: false },
 									{
-										label: 'My menu', isOpen: true, isFocused: false,
+										label: 'Text', isOpen: true, isFocused: false,
 										items: [
+											{ label: 'menuBar:bold', isFocused: false },
+											{
+												label: 'My menu', isOpen: true, isFocused: false,
+												items: [
+													{ label: 'menuBar:italic', isFocused: false }
+												]
+											},
 											{ label: 'menuBar:italic', isFocused: false }
 										]
-									},
-									{ label: 'menuBar:italic', isFocused: false }
+									}
 								]
 							}
 
@@ -1353,7 +1365,7 @@ describe( 'MenuBarView', () => {
 						factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
 						factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
 
-						menuBarView.fillFromConfig( {
+						menuBarView.fillFromConfig( normalizeMenuBarConfig( {
 							addItems: [
 								{
 									group: {
@@ -1365,7 +1377,7 @@ describe( 'MenuBarView', () => {
 									position: 'start:format'
 								}
 							]
-						}, factory );
+						} ), factory );
 
 						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
 							{
@@ -1373,8 +1385,13 @@ describe( 'MenuBarView', () => {
 								items: [
 									{ label: 'menuBar:italic', isFocused: false },
 									'-',
-									{ label: 'menuBar:bold', isFocused: false },
-									{ label: 'menuBar:italic', isFocused: false }
+									{
+										label: 'Text', isOpen: true, isFocused: false,
+										items: [
+											{ label: 'menuBar:bold', isFocused: false },
+											{ label: 'menuBar:italic', isFocused: false }
+										]
+									}
 								]
 							}
 
@@ -1390,7 +1407,7 @@ describe( 'MenuBarView', () => {
 						factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
 						factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
 
-						menuBarView.fillFromConfig( {
+						menuBarView.fillFromConfig( normalizeMenuBarConfig( {
 							addItems: [
 								{
 									group: {
@@ -1402,14 +1419,25 @@ describe( 'MenuBarView', () => {
 									position: 'end:format'
 								}
 							]
-						}, factory );
+						} ), factory );
 
 						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
 							{
 								label: 'Format', isOpen: true, isFocused: false,
 								items: [
-									{ label: 'menuBar:bold', isFocused: false },
-									{ label: 'menuBar:italic', isFocused: false },
+									{
+										label: 'Text', isFocused: false, isOpen: true,
+										items: [
+											{
+												isFocused: false,
+												label: 'menuBar:bold'
+											},
+											{
+												isFocused: false,
+												label: 'menuBar:italic'
+											}
+										]
+									},
 									'-',
 									{ label: 'menuBar:italic', isFocused: false }
 								]
@@ -1427,7 +1455,7 @@ describe( 'MenuBarView', () => {
 						factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
 						factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
 
-						menuBarView.fillFromConfig( {
+						menuBarView.fillFromConfig( normalizeMenuBarConfig( {
 							addItems: [
 								{
 									group: {
@@ -1439,16 +1467,21 @@ describe( 'MenuBarView', () => {
 									position: 'before:basicStyles'
 								}
 							]
-						}, factory );
+						} ), factory );
 
 						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
 							{
 								label: 'Format', isOpen: true, isFocused: false,
 								items: [
-									{ label: 'menuBar:italic', isFocused: false },
-									'-',
-									{ label: 'menuBar:bold', isFocused: false },
-									{ label: 'menuBar:italic', isFocused: false }
+									{
+										label: 'Text', isOpen: true, isFocused: false,
+										items: [
+											{ label: 'menuBar:italic', isFocused: false },
+											'-',
+											{ label: 'menuBar:bold', isFocused: false },
+											{ label: 'menuBar:italic', isFocused: false }
+										]
+									}
 								]
 							}
 
@@ -1464,7 +1497,7 @@ describe( 'MenuBarView', () => {
 						factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
 						factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
 
-						menuBarView.fillFromConfig( {
+						menuBarView.fillFromConfig( normalizeMenuBarConfig( {
 							addItems: [
 								{
 									group: {
@@ -1476,16 +1509,21 @@ describe( 'MenuBarView', () => {
 									position: 'after:basicStyles'
 								}
 							]
-						}, factory );
+						} ), factory );
 
 						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
 							{
 								label: 'Format', isOpen: true, isFocused: false,
 								items: [
-									{ label: 'menuBar:bold', isFocused: false },
-									{ label: 'menuBar:italic', isFocused: false },
-									'-',
-									{ label: 'menuBar:italic', isFocused: false }
+									{
+										label: 'Text', isOpen: true, isFocused: false,
+										items: [
+											{ label: 'menuBar:bold', isFocused: false },
+											{ label: 'menuBar:italic', isFocused: false },
+											'-',
+											{ label: 'menuBar:italic', isFocused: false }
+										]
+									}
 								]
 							}
 
@@ -1503,22 +1541,27 @@ describe( 'MenuBarView', () => {
 						factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
 						factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
 
-						menuBarView.fillFromConfig( {
+						menuBarView.fillFromConfig( normalizeMenuBarConfig( {
 							addItems: [
 								{
 									item: 'menuBar:italic',
 									position: 'start:basicStyles'
 								}
 							]
-						}, factory );
+						} ), factory );
 
 						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
 							{
 								label: 'Format', isOpen: true, isFocused: false,
 								items: [
-									{ label: 'menuBar:italic', isFocused: false },
-									{ label: 'menuBar:bold', isFocused: false },
-									{ label: 'menuBar:italic', isFocused: false }
+									{
+										label: 'Text', isOpen: true, isFocused: false,
+										items: [
+											{ label: 'menuBar:italic', isFocused: false },
+											{ label: 'menuBar:bold', isFocused: false },
+											{ label: 'menuBar:italic', isFocused: false }
+										]
+									}
 								]
 							}
 
@@ -1534,22 +1577,27 @@ describe( 'MenuBarView', () => {
 						factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
 						factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
 
-						menuBarView.fillFromConfig( {
+						menuBarView.fillFromConfig( normalizeMenuBarConfig( {
 							addItems: [
 								{
 									item: 'menuBar:italic',
 									position: 'end:basicStyles'
 								}
 							]
-						}, factory );
+						} ), factory );
 
 						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
 							{
 								label: 'Format', isOpen: true, isFocused: false,
 								items: [
-									{ label: 'menuBar:bold', isFocused: false },
-									{ label: 'menuBar:italic', isFocused: false },
-									{ label: 'menuBar:italic', isFocused: false }
+									{
+										label: 'Text', isOpen: true, isFocused: false,
+										items: [
+											{ label: 'menuBar:bold', isFocused: false },
+											{ label: 'menuBar:italic', isFocused: false },
+											{ label: 'menuBar:italic', isFocused: false }
+										]
+									}
 								]
 							}
 						] );
@@ -1564,14 +1612,14 @@ describe( 'MenuBarView', () => {
 						factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
 						factory.add( 'menuBar:blockQuote', getButtonCreator( 'menuBar:blockQuote', locale ) );
 
-						menuBarView.fillFromConfig( {
+						menuBarView.fillFromConfig( normalizeMenuBarConfig( {
 							addItems: [
 								{
 									item: 'menuBar:bold',
 									position: 'before:menuBar:blockQuote'
 								}
 							]
-						}, factory );
+						} ), factory );
 
 						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
 							{
@@ -1584,7 +1632,12 @@ describe( 'MenuBarView', () => {
 							{
 								label: 'Format', isOpen: true, isFocused: false,
 								items: [
-									{ label: 'menuBar:bold', isFocused: false }
+									{
+										label: 'Text', isOpen: true, isFocused: false,
+										items: [
+											{ label: 'menuBar:bold', isFocused: false }
+										]
+									}
 								]
 							}
 						] );
@@ -1599,14 +1652,14 @@ describe( 'MenuBarView', () => {
 						factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
 						factory.add( 'menuBar:blockQuote', getButtonCreator( 'menuBar:blockQuote', locale ) );
 
-						menuBarView.fillFromConfig( {
+						menuBarView.fillFromConfig( normalizeMenuBarConfig( {
 							addItems: [
 								{
 									item: 'menuBar:bold',
 									position: 'after:menuBar:blockQuote'
 								}
 							]
-						}, factory );
+						} ), factory );
 
 						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
 							{
@@ -1614,12 +1667,20 @@ describe( 'MenuBarView', () => {
 								items: [
 									{ label: 'menuBar:blockQuote', isFocused: false },
 									{ label: 'menuBar:bold', isFocused: false }
+
 								]
 							},
 							{
 								label: 'Format', isOpen: true, isFocused: false,
 								items: [
-									{ label: 'menuBar:bold', isFocused: false }
+									{
+										label: 'Text',
+										isFocused: false,
+										isOpen: true,
+										items: [
+											{ label: 'menuBar:bold', isFocused: false }
+										]
+									}
 								]
 							}
 						] );
@@ -1637,7 +1698,7 @@ describe( 'MenuBarView', () => {
 					factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
 					factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
 
-					menuBarView.fillFromConfig( {
+					menuBarView.fillFromConfig( normalizeMenuBarConfig( {
 						addItems: [
 							{
 								item: 'menuBar:italic',
@@ -1653,14 +1714,19 @@ describe( 'MenuBarView', () => {
 								position: 'doesNotExistEither'
 							}
 						]
-					}, factory );
+					} ), factory );
 
 					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
 						{
 							label: 'Format', isOpen: true, isFocused: false,
 							items: [
-								{ label: 'menuBar:bold', isFocused: false },
-								{ label: 'menuBar:italic', isFocused: false }
+								{
+									label: 'Text', isOpen: true, isFocused: false,
+									items: [
+										{ label: 'menuBar:bold', isFocused: false },
+										{ label: 'menuBar:italic', isFocused: false }
+									]
+								}
 							]
 						}
 					] );
@@ -1705,6 +1771,19 @@ describe( 'MenuBarView', () => {
 					menuView.buttonView.label = 'AAA (from-factory)';
 					return menuView;
 				} );
+				factory.add( 'AAA#2 (custom multi-level menu)', getMenuCreator( {
+					label: 'AAA#2 (first sub-menu)',
+					items: [
+						getMenuCreator( {
+							label: 'AAA#2 (second sub-menu)',
+							items: [
+								getButtonCreator( 'AAA#2', locale )
+							]
+						}, locale )
+					]
+				},
+				locale
+				) );
 				factory.add( 'B#1', getButtonCreator( 'B#1', locale ) );
 				factory.add( 'B#2', getButtonCreator( 'B#2', locale ) );
 				factory.add( 'B#3 (incorrect)', () => {
@@ -1713,53 +1792,56 @@ describe( 'MenuBarView', () => {
 					return buttonView;
 				} );
 
-				menuBarView.fillFromConfig( [
-					{
-						id: 'A',
-						label: 'A',
-						groups: [
-							{
-								groupId: 'A1',
-								items: [
-									'A#1',
-									'A#2'
-								]
-							},
-							{
-								groupId: 'A2',
-								items: [
-									{
-										id: 'AA',
-										label: 'AA',
-										groups: [
-											{
-												groupId: 'AA1',
-												items: [
-													'AA#1',
-													'AAA (from-factory)'
-												]
-											}
-										]
-									}
-								]
-							}
-						]
-					},
-					{
-						id: 'B',
-						label: 'B',
-						groups: [
-							{
-								groupId: 'B1',
-								items: [
-									'B#1',
-									'B#2',
-									'B#3 (incorrect)'
-								]
-							}
-						]
-					}
-				], factory );
+				menuBarView.fillFromConfig( normalizeMenuBarConfig( {
+					items: [
+						{
+							id: 'A',
+							label: 'A',
+							groups: [
+								{
+									groupId: 'A1',
+									items: [
+										'A#1',
+										'A#2'
+									]
+								},
+								{
+									groupId: 'A2',
+									items: [
+										{
+											id: 'AA',
+											label: 'AA',
+											groups: [
+												{
+													groupId: 'AA1',
+													items: [
+														'AA#1',
+														'AAA (from-factory)',
+														'AAA#2 (custom multi-level menu)'
+													]
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							id: 'B',
+							label: 'B',
+							groups: [
+								{
+									groupId: 'B1',
+									items: [
+										'B#1',
+										'B#2',
+										'B#3 (incorrect)'
+									]
+								}
+							]
+						}
+					]
+				} ), factory );
 
 				menuBarView.render();
 
@@ -1814,7 +1896,19 @@ describe( 'MenuBarView', () => {
 									{
 										label: 'AAA (from-factory)', isOpen: true, isFocused: false,
 										items: []
+									},
+									{
+										label: 'AAA#2 (first sub-menu)', isOpen: true, isFocused: false,
+										items: [
+											{
+												label: 'AAA#2 (second sub-menu)', isOpen: true, isFocused: false,
+												items: [
+													{ label: 'AAA#2', isFocused: false }
+												]
+											}
+										]
 									}
+
 								]
 							}
 						]
@@ -1828,7 +1922,7 @@ describe( 'MenuBarView', () => {
 				] );
 
 				expect( menuBarView.menus.map( menuView => menuView.buttonView.label ) ).to.have.members( [
-					'A', 'B', 'AA', 'AAA (from-factory)'
+					'A', 'B', 'AA', 'AAA (from-factory)', 'AAA#2 (first sub-menu)', 'AAA#2 (second sub-menu)'
 				] );
 			} );
 
@@ -1898,6 +1992,19 @@ describe( 'MenuBarView', () => {
 
 						expect( getMenuByLabel( menuBarView, 'A' ).isOpen ).to.be.false;
 					} );
+
+					it( 'should set the correct parent element of custom multi-level sub-menu', () => {
+						getMenuByLabel( menuBarView, 'AA' ).isOpen = true;
+
+						const firstSubMenuViewAAA = getMenuByLabel( menuBarView, 'AAA#2 (first sub-menu)' );
+
+						firstSubMenuViewAAA.isOpen = true;
+
+						const secondSubMenuViewAAA = getMenuByLabel( menuBarView, 'AAA#2 (second sub-menu)' );
+
+						expect( firstSubMenuViewAAA.parentMenuView.buttonView.label ).to.equal( 'AA' );
+						expect( secondSubMenuViewAAA.parentMenuView.buttonView.label ).to.equal( 'AAA#2 (first sub-menu)' );
+					} );
 				} );
 			} );
 		} );
@@ -1948,32 +2055,34 @@ describe( 'MenuBarView', () => {
 
 	describe( 'focus()', () => {
 		it( 'should focus the first top-level sub-menu', () => {
-			menuBarView.fillFromConfig( [
-				{
-					menuId: 'edit',
-					label: 'Edit',
-					groups: [
-						{
-							groupId: '1',
-							items: [
-								'item1'
-							]
-						}
-					]
-				},
-				{
-					menuId: 'format',
-					label: 'Format',
-					groups: [
-						{
-							groupId: '1',
-							items: [
-								'item1'
-							]
-						}
-					]
-				}
-			], factory );
+			menuBarView.fillFromConfig( normalizeMenuBarConfig( {
+				items: [
+					{
+						menuId: 'edit',
+						label: 'Edit',
+						groups: [
+							{
+								groupId: '1',
+								items: [
+									'item1'
+								]
+							}
+						]
+					},
+					{
+						menuId: 'format',
+						label: 'Format',
+						groups: [
+							{
+								groupId: '1',
+								items: [
+									'item1'
+								]
+							}
+						]
+					}
+				]
+			} ), factory );
 
 			const spy = sinon.spy( getMenuByLabel( menuBarView, 'Edit' ), 'focus' );
 
@@ -1981,36 +2090,50 @@ describe( 'MenuBarView', () => {
 
 			sinon.assert.calledOnce( spy );
 		} );
+
+		it( 'should not focus anything unless there are some menus', () => {
+			testUtils.sinon.stub( console, 'warn' );
+
+			menuBarView.fillFromConfig( normalizeMenuBarConfig( {
+				items: []
+			} ), factory );
+
+			expect( () => {
+				menuBarView.focus();
+			} ).to.not.throw();
+		} );
 	} );
 
 	describe( 'close()', () => {
 		it( 'should close all top-level sub-menus', () => {
-			menuBarView.fillFromConfig( [
-				{
-					menuId: 'edit',
-					label: 'Edit',
-					groups: [
-						{
-							groupId: '1',
-							items: [
-								'item1'
-							]
-						}
-					]
-				},
-				{
-					menuId: 'format',
-					label: 'Format',
-					groups: [
-						{
-							groupId: '1',
-							items: [
-								'item1'
-							]
-						}
-					]
-				}
-			], factory );
+			menuBarView.fillFromConfig( normalizeMenuBarConfig( {
+				items: [
+					{
+						menuId: 'edit',
+						label: 'Edit',
+						groups: [
+							{
+								groupId: '1',
+								items: [
+									'item1'
+								]
+							}
+						]
+					},
+					{
+						menuId: 'format',
+						label: 'Format',
+						groups: [
+							{
+								groupId: '1',
+								items: [
+									'item1'
+								]
+							}
+						]
+					}
+				]
+			} ), factory );
 
 			menuBarView.render();
 

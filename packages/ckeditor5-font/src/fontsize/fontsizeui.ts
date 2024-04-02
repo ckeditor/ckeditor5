@@ -97,6 +97,8 @@ export default class FontSizeUI extends Plugin {
 				icon: fontSizeIcon
 			} );
 
+			menuView.bind( 'isEnabled' ).to( command );
+
 			const listView = new MenuBarMenuListView( locale );
 
 			for ( const definition of listOptions ) {

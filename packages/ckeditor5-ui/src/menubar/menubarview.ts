@@ -134,7 +134,9 @@ export default class MenuBarView extends View implements FocusableView {
 	 * Focuses the menu bar.
 	 */
 	public focus(): void {
-		this.children.first!.focus();
+		if ( this.children.first ) {
+			this.children.first.focus();
+		}
 	}
 
 	/**
@@ -286,6 +288,7 @@ export default class MenuBarView extends View implements FocusableView {
 	/**
 	 * Checks component and its children recursively and calls {@link #registerMenu}
 	 * for each item that is {@link module:ui/menubar/menubarmenuview~MenuBarMenuView}.
+	 *
 	 * @internal
 	 */
 	private _registerMenuTree( componentView: MenuBarMenuView | MenuBarMenuListItemButtonView, parentMenuView: MenuBarMenuView ) {

@@ -91,6 +91,14 @@ describe( 'MenuBarMenuView', () => {
 
 				expect( menuView.buttonView.isOn ).to.be.true;
 			} );
+
+			it( 'should have #isEnabled state bound to the menu\'s #isEnabled', () => {
+				menuView.isEnabled = true;
+				expect( menuView.buttonView.isEnabled ).to.be.true;
+
+				menuView.isEnabled = false;
+				expect( menuView.buttonView.isEnabled ).to.be.false;
+			} );
 		} );
 
 		describe( '#panelView', () => {
@@ -204,68 +212,6 @@ describe( 'MenuBarMenuView', () => {
 				sinon.assert.calledOnce( spyLeft );
 				sinon.assert.calledOnce( keyEvtDataRight.preventDefault );
 				sinon.assert.calledOnce( keyEvtDataLeft.preventDefault );
-			} );
-
-			it( 'should enable a behavior that opens and focuses the panel on arrow down key', () => {
-				const spy = sinon.spy( MenuBarMenuBehaviors, 'openAndFocusPanelOnArrowDownKey' );
-
-				menuView.render();
-
-				sinon.assert.calledOnceWithExactly( spy, menuView );
-			} );
-
-			it( 'should enable a behavior that toggles visibility of the menu upon clicking', () => {
-				const spy = sinon.spy( MenuBarMenuBehaviors, 'toggleOnButtonClick' );
-
-				menuView.render();
-
-				sinon.assert.calledOnceWithExactly( spy, menuView );
-			} );
-		} );
-
-		describe( 'sub-menu', () => {
-			let parentMenuView;
-
-			beforeEach( () => {
-				parentMenuView = new MenuBarMenuView( locale );
-
-				menuView.parentMenuView = parentMenuView;
-			} );
-
-			afterEach( () => {
-				parentMenuView.destroy();
-			} );
-
-			it( 'should enable a behavior that opens the menu upon clicking (but does not close it)', () => {
-				const spy = sinon.spy( MenuBarMenuBehaviors, 'openOnButtonClick' );
-
-				menuView.render();
-
-				sinon.assert.calledOnceWithExactly( spy, menuView );
-			} );
-
-			it( 'should enable a behavior that opens the menu upon arrow right key press', () => {
-				const spy = sinon.spy( MenuBarMenuBehaviors, 'openOnArrowRightKey' );
-
-				menuView.render();
-
-				sinon.assert.calledOnceWithExactly( spy, menuView );
-			} );
-
-			it( 'should enable a behavior that closes the menu upon arrow left key press', () => {
-				const spy = sinon.spy( MenuBarMenuBehaviors, 'closeOnArrowLeftKey' );
-
-				menuView.render();
-
-				sinon.assert.calledOnceWithExactly( spy, menuView );
-			} );
-
-			it( 'should enable a behavior that closes the menu when its parent closes', () => {
-				const spy = sinon.spy( MenuBarMenuBehaviors, 'closeOnParentClose' );
-
-				menuView.render();
-
-				sinon.assert.calledOnceWithExactly( spy, menuView );
 			} );
 		} );
 
@@ -401,6 +347,72 @@ describe( 'MenuBarMenuView', () => {
 				menuView.render();
 				document.body.appendChild( menuView.element );
 			}
+		} );
+	} );
+
+	describe( '_attachBehaviors', () => {
+		describe( 'top-level menu', () => {
+			it( 'should enable a behavior that opens and focuses the panel on arrow down key', () => {
+				const spy = sinon.spy( MenuBarMenuBehaviors, 'openAndFocusPanelOnArrowDownKey' );
+
+				menuView._attachBehaviors();
+
+				sinon.assert.calledOnceWithExactly( spy, menuView );
+			} );
+
+			it( 'should enable a behavior that toggles visibility of the menu upon clicking', () => {
+				const spy = sinon.spy( MenuBarMenuBehaviors, 'toggleOnButtonClick' );
+
+				menuView._attachBehaviors();
+
+				sinon.assert.calledOnceWithExactly( spy, menuView );
+			} );
+		} );
+
+		describe( 'sub-menu', () => {
+			let parentMenuView;
+
+			beforeEach( () => {
+				parentMenuView = new MenuBarMenuView( locale );
+
+				menuView.parentMenuView = parentMenuView;
+			} );
+
+			afterEach( () => {
+				parentMenuView.destroy();
+			} );
+
+			it( 'should enable a behavior that opens the menu upon clicking (but does not close it)', () => {
+				const spy = sinon.spy( MenuBarMenuBehaviors, 'openOnButtonClick' );
+
+				menuView._attachBehaviors();
+
+				sinon.assert.calledOnceWithExactly( spy, menuView );
+			} );
+
+			it( 'should enable a behavior that opens the menu upon arrow right key press', () => {
+				const spy = sinon.spy( MenuBarMenuBehaviors, 'openOnArrowRightKey' );
+
+				menuView._attachBehaviors();
+
+				sinon.assert.calledOnceWithExactly( spy, menuView );
+			} );
+
+			it( 'should enable a behavior that closes the menu upon arrow left key press', () => {
+				const spy = sinon.spy( MenuBarMenuBehaviors, 'closeOnArrowLeftKey' );
+
+				menuView._attachBehaviors();
+
+				sinon.assert.calledOnceWithExactly( spy, menuView );
+			} );
+
+			it( 'should enable a behavior that closes the menu when its parent closes', () => {
+				const spy = sinon.spy( MenuBarMenuBehaviors, 'closeOnParentClose' );
+
+				menuView._attachBehaviors();
+
+				sinon.assert.calledOnceWithExactly( spy, menuView );
+			} );
 		} );
 	} );
 } );

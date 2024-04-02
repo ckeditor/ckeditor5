@@ -102,7 +102,7 @@ export default class MenuBarMenuView extends View implements FocusableView {
 
 		this.buttonView = new MenuBarMenuButtonView( locale );
 		this.buttonView.delegate( 'mouseenter' ).to( this );
-		this.buttonView.bind( 'isOn' ).to( this, 'isOpen' );
+		this.buttonView.bind( 'isOn', 'isEnabled' ).to( this, 'isOpen', 'isEnabled' );
 
 		this.panelView = new MenuBarMenuPanelView( locale );
 		this.panelView.bind( 'isVisible' ).to( this, 'isOpen' );
