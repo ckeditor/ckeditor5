@@ -19,6 +19,7 @@ import type {
 } from 'ckeditor5/src/engine.js';
 
 import ListEditing, {
+	type ListType,
 	type ListEditingCheckAttributesEvent,
 	type ListEditingPostFixerEvent,
 	type ListItemAttributesMap
@@ -35,6 +36,9 @@ import {
 	getTypeAttributeFromListStyleType
 } from './utils/style.js';
 import ListPropertiesUtils from './listpropertiesutils.js';
+import {
+	isNumberedListType
+} from '../list/utils/model.js';
 
 import type { ListIndentCommandAfterExecuteEvent } from '../list/listindentcommand.js';
 import type { ListPropertiesConfig } from '../listconfig.js';
@@ -375,7 +379,7 @@ function createAttributeStrategies( enabledProperties: ListPropertiesConfig ) {
 			},
 
 			appliesToListItem( item ) {
-				return item.getAttribute( 'listType' ) == 'numbered';
+				return isNumberedListType( item.getAttribute( 'listType' ) as ListType );
 			},
 
 			hasValidAttribute( item ) {
