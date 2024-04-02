@@ -421,6 +421,14 @@ describe( 'Alignment UI', () => {
 			submenu = editor.ui.componentFactory.create( 'menuBar:alignment' );
 		} );
 
+		it( 'has isEnabled bound to command\'s isEnabled', () => {
+			command.isEnabled = true;
+			expect( submenu ).to.have.property( 'isEnabled', true );
+
+			command.isEnabled = false;
+			expect( submenu ).to.have.property( 'isEnabled', false );
+		} );
+
 		testMenuBarButton( 0, 'left', 'right', 'Align left' );
 		testMenuBarButton( 1, 'right', 'left', 'Align right' );
 		testMenuBarButton( 2, 'center', 'left', 'Align center' );

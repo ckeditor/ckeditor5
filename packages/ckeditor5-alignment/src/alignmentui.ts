@@ -186,6 +186,8 @@ export default class AlignmentUI extends Plugin {
 			const menuView = new MenuBarMenuView( locale );
 			const listView = new MenuBarMenuListView( locale );
 
+			menuView.bind( 'isEnabled' ).to( command );
+
 			listView.set( {
 				ariaLabel: t( 'Text alignment' ),
 				role: 'menu'

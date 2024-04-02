@@ -275,6 +275,7 @@ export default class HighlightUI extends Plugin {
 				label: t( 'Highlight' ),
 				icon: getIconForType( 'marker' )
 			} );
+			menuView.bind( 'isEnabled' ).to( command );
 			menuView.buttonView.iconView.fillColor = 'transparent';
 
 			const listView = new MenuBarMenuListView( locale );

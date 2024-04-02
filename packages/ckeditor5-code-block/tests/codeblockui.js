@@ -127,6 +127,14 @@ describe( 'CodeBlockUI', () => {
 			languagesListView = subMenu.panelView.children.first;
 		} );
 
+		it( 'has isEnabled bound to command\'s isEnabled', () => {
+			command.isEnabled = true;
+			expect( subMenu ).to.have.property( 'isEnabled', true );
+
+			command.isEnabled = false;
+			expect( subMenu ).to.have.property( 'isEnabled', false );
+		} );
+
 		describe( 'language list', () => {
 			testLanguagesList();
 

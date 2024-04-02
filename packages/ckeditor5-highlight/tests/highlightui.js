@@ -345,6 +345,14 @@ describe( 'HighlightUI', () => {
 			expect( menuView.buttonView.iconView.fillColor ).to.equal( 'transparent' );
 		} );
 
+		it( 'has isEnabled bound to command\'s isEnabled', () => {
+			command.isEnabled = true;
+			expect( menuView ).to.have.property( 'isEnabled', true );
+
+			command.isEnabled = false;
+			expect( menuView ).to.have.property( 'isEnabled', false );
+		} );
+
 		describe( 'list of options', () => {
 			it( 'should use correct components to create options', () => {
 				expect(

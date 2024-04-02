@@ -102,6 +102,8 @@ export default class CodeBlockUI extends Plugin {
 				icon: icons.codeBlock
 			} );
 
+			menuView.bind( 'isEnabled' ).to( command );
+
 			const listView = new MenuBarMenuListView( locale );
 
 			listView.set( {
