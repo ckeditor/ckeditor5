@@ -84,9 +84,6 @@ export default class FindAndReplaceUI extends Plugin {
 				view.bind( 'isEnabled' ).to( findCommand );
 			} else {
 				view = this._createDialogButtonForToolbar();
-
-				// Button should be disabled when in source editing mode. See #10001.
-				view.bind( 'isEnabled' ).to( findCommand );
 			}
 
 			editor.keystrokes.set( 'Ctrl+F', ( data, cancelEvent ) => {
@@ -216,8 +213,13 @@ export default class FindAndReplaceUI extends Plugin {
 	 */
 	private _createDialogButtonForMenuBar(): MenuBarMenuListItemButtonView {
 		const buttonView = this._createButton( MenuBarMenuListItemButtonView );
+		const dialogPlugin = this.editor.plugins.get( 'Dialog' );
 
 		buttonView.on( 'execute', () => {
+			if ( dialogPlugin.id === 'findAndReplace' ) {
+				dialogPlugin.hide();
+				return;
+			}
 			this._showDialog();
 		} );
 
@@ -229,8 +231,12 @@ export default class FindAndReplaceUI extends Plugin {
 	 */
 	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
 		const editor = this.editor;
+		const findCommand = editor.commands.get( 'find' )!;
 		const buttonView = new ButtonClass( editor.locale ) as InstanceType<T>;
 		const t = editor.locale.t;
+
+		// Button should be disabled when in source editing mode. See #10001.
+		buttonView.bind( 'isEnabled' ).to( findCommand );
 
 		buttonView.set( {
 			icon: loupeIcon,
