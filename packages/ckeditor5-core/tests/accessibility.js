@@ -73,14 +73,15 @@ describe( 'Accessibility', () => {
 											[ 'arrowdown' ],
 											[ 'arrowleft' ]
 										],
-										label: 'Navigate through the toolbar'
+										label: 'Navigate through the toolbar or menu bar'
 									},
 									{
 										keystroke: [
 											[ 'Enter' ],
 											[ 'Space' ]
 										],
-										label: 'Execute the currently focused button'
+										// eslint-disable-next-line max-len
+										label: 'Execute the currently focused button. Executing buttons that interact with the editor content moves the focus back to the content.'
 									}
 								],
 								label: undefined

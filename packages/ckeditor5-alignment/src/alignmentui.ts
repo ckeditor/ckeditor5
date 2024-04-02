@@ -9,14 +9,16 @@
 
 import { Plugin, icons } from 'ckeditor5/src/core.js';
 import {
+	type Button,
 	ButtonView,
 	createDropdown,
 	addToolbarToDropdown,
+	MenuBarMenuListItemView,
 	MenuBarMenuListItemButtonView,
-	MenuBarMenuListView,
 	MenuBarMenuView,
-	MenuBarMenuListItemView
+	MenuBarMenuListView
 } from 'ckeditor5/src/ui.js';
+import type { Locale } from 'ckeditor5/src/utils.js';
 
 import { isSupported, normalizeAlignmentOptions } from './utils.js';
 import type { AlignmentFormat, SupportedOption } from './alignmentconfig.js';
@@ -77,7 +79,7 @@ export default class AlignmentUI extends Plugin {
 		options
 			.map( option => option.name )
 			.filter( isSupported )
-			.forEach( option => this._addButtonToFactory( option ) );
+			.forEach( option => this._addButton( option ) );
 
 		this._addToolbarDropdown( options );
 		this._addMenuBarMenu( options );
@@ -88,32 +90,47 @@ export default class AlignmentUI extends Plugin {
 	 *
 	 * @param option The name of the alignment option for which the button is added.
 	 */
-	private _addButtonToFactory( option: SupportedOption ): void {
+	private _addButton( option: SupportedOption ): void {
 		const editor = this.editor;
 
-		editor.ui.componentFactory.add( `alignment:${ option }`, locale => {
-			const command: AlignmentCommand = editor.commands.get( 'alignment' )!;
-			const buttonView = new ButtonView( locale );
+		editor.ui.componentFactory.add( `alignment:${ option }`, locale => this._createButton( locale, option ) );
+	}
 
-			buttonView.set( {
-				label: this.localizedOptionTitles[ option ],
-				icon: iconsMap.get( option ),
-				tooltip: true,
-				isToggleable: true
-			} );
+	/**
+	 * Helper method for creating the button view element.
+	 *
+	 * @param locale Editor locale.
+	 * @param option The name of the alignment option for which the button is added.
+	 * @param buttonAttrs Optional parameters passed to button view instance.
+	 */
+	private _createButton(
+		locale: Locale,
+		option: SupportedOption,
+		buttonAttrs: Partial<Button> = {}
+	): ButtonView {
+		const editor = this.editor;
+		const command: AlignmentCommand = editor.commands.get( 'alignment' )!;
+		const buttonView = new ButtonView( locale );
 
-			// Bind button model to command.
-			buttonView.bind( 'isEnabled' ).to( command );
-			buttonView.bind( 'isOn' ).to( command, 'value', value => value === option );
-
-			// Execute command.
-			this.listenTo( buttonView, 'execute', () => {
-				editor.execute( 'alignment', { value: option } );
-				editor.editing.view.focus();
-			} );
-
-			return buttonView;
+		buttonView.set( {
+			label: this.localizedOptionTitles[ option ],
+			icon: iconsMap.get( option ),
+			tooltip: true,
+			isToggleable: true,
+			...buttonAttrs
 		} );
+
+		// Bind button model to command.
+		buttonView.bind( 'isEnabled' ).to( command );
+		buttonView.bind( 'isOn' ).to( command, 'value', value => value === option );
+
+		// Execute command.
+		this.listenTo( buttonView, 'execute', () => {
+			editor.execute( 'alignment', { value: option } );
+			editor.editing.view.focus();
+		} );
+
+		return buttonView;
 	}
 
 	/**
@@ -127,12 +144,13 @@ export default class AlignmentUI extends Plugin {
 
 		factory.add( 'alignment', locale => {
 			const dropdownView = createDropdown( locale );
+			const tooltipPosition = locale.uiLanguageDirection === 'rtl' ? 'w' : 'e';
 			const t = locale.t;
 
 			// Add existing alignment buttons to dropdown's toolbar.
 			addToolbarToDropdown(
 				dropdownView,
-				() => options.map( option => factory.create( `alignment:${ option.name }` ) ) as Array<ButtonView>,
+				() => options.map( option => this._createButton( locale, option.name, { tooltipPosition } ) ) as Array<ButtonView>,
 				{
 					enableActiveItemFocusOnDropdownOpen: true,
 					isVertical: true,
@@ -186,13 +204,15 @@ export default class AlignmentUI extends Plugin {
 			const menuView = new MenuBarMenuView( locale );
 			const listView = new MenuBarMenuListView( locale );
 
+			menuView.bind( 'isEnabled' ).to( command );
+
 			listView.set( {
-				ariaLabel: t( 'Alignment' ),
+				ariaLabel: t( 'Text alignment' ),
 				role: 'menu'
 			} );
 
 			menuView.buttonView.set( {
-				label: t( 'Alignment' )
+				label: t( 'Text alignment' )
 			} );
 
 			for ( const option of options ) {
@@ -218,6 +238,7 @@ export default class AlignmentUI extends Plugin {
 				} );
 
 				buttonView.bind( 'isOn' ).to( command, 'value', value => value === option.name );
+				buttonView.bind( 'isEnabled' ).to( command, 'isEnabled' );
 
 				listItemView.children.add( buttonView );
 				listView.items.add( listItemView );

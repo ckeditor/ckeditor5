@@ -242,7 +242,7 @@ You can also use the **Insert paragraph** handles on the bottom or top edge of t
 
 ## Image editing
 
-While the image feature does not provide native image editing support, the {@link features/ckbox CKBox premium feature} provides basic editing capabilities such as cropping to presets, flipping, or rotating.
+While the image feature does not provide native image editing support, the {@link features/ckbox CKBox premium feature} provides basic editing capabilities such as cropping to presets, flipping, or rotating. By default, images hosted in CKBox are always editable. You can also enable {@link features/ckbox#editing-external-images editing external images}.
 
 ## Contribute
 
