@@ -499,7 +499,7 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 			{
 				groupId: 'insertGroup1',
 				items: [
-					'menuBar:imageUpload',
+					'menuBar:uploadImage',
 					'menuBar:ckbox',
 					'menuBar:ckfinder',
 					'menuBar:insertTable'
