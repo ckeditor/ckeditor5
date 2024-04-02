@@ -45,6 +45,14 @@ describe( 'BlockQuoteUI', () => {
 			expect( button ).to.have.property( 'isToggleable', true );
 		} );
 
+		it( 'has isOn bound to command\'s value', () => {
+			command.value = false;
+			expect( button ).to.have.property( 'isOn', false );
+
+			command.value = true;
+			expect( button ).to.have.property( 'isOn', true );
+		} );
+
 		testButton();
 	} );
 
@@ -63,14 +71,6 @@ describe( 'BlockQuoteUI', () => {
 	} );
 
 	function testButton() {
-		it( 'has isOn bound to command\'s value', () => {
-			command.value = false;
-			expect( button ).to.have.property( 'isOn', false );
-
-			command.value = true;
-			expect( button ).to.have.property( 'isOn', true );
-		} );
-
 		it( 'has isEnabled bound to command\'s isEnabled', () => {
 			command.isEnabled = true;
 			expect( button ).to.have.property( 'isEnabled', true );
