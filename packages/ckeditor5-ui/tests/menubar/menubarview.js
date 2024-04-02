@@ -43,16 +43,16 @@ describe( 'MenuBarView', () => {
 
 	before( () => {
 		addTranslations( 'en', {
-			'Edit': 'Edit',
-			'Format': 'Format',
-			'View': 'View'
+			'MENU_BAR_MENU_EDIT': 'Edit',
+			'MENU_BAR_MENU_FORMAT': 'Format',
+			'MENU_BAR_MENU_VIEW': 'View'
 		} );
 
 		addTranslations( 'pl', {
-			'Edit': 'Edycja',
-			'Format': 'Formatowanie',
-			'View': 'Widok',
-			'Sub-menu': 'Pod-menu'
+			'MENU_BAR_MENU_EDIT': 'Edycja',
+			'MENU_BAR_MENU_FORMAT': 'Formatowanie',
+			'MENU_BAR_MENU_VIEW': 'Widok',
+			'MENU_BAR_MENU_SUB_MENU': 'Pod-menu'
 		} );
 	} );
 

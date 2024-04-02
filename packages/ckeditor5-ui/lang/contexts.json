@@ -38,13 +38,14 @@
 	"Accessibility help": "Accessibility help dialog title.",
 	"Press %0 for help.": "Assistive technologies label added to each editor editing area informing users about the possibility of opening the accessibility help dialog.",
 	"Move focus in and out of an active dialog window": "Keystroke description for assistive technologies: keystroke for moving focus out of an active dialog window.",
-	"File": "The label of the top-level application menu bar menu containing buttons and features related to the whole document (e.g. export to PDF, import from Word, etc.).",
-	"Edit": "The label of the top-level application menu bar menu containing buttons and features related to general editing (e.g. undo, redo, select all, etc.).",
-	"View": "The label of the top-level application menu bar menu containing buttons and features related to the view of the editor (e.g. show source).",
-	"Insert": "The label of the top-level application menu bar menu containing buttons and features that insert content (e.g. insert table, insert image, etc.).",
-	"Format": "The label of the top-level application menu bar menu containing buttons and features related to content formatting (e.g. bold, font color, heading, etc.).",
-	"Tools": "The label of the top-level application menu bar menu containing various editor tools (e.g. AI assistant, track changes, etc.).",
-	"Help": "The label of the top-level application menu bar menu containing buttons and features helping users to learn about the editor (e.g. accessibility help).",
-	"Text": "The label of the application menu bar menu containing buttons and features that apply formatting to a text (e.g. bold, italic, etc.).",
-	"Font": "The label of the application menu bar menu containing buttons and features that control the font of the edited content (e.g. font size, font color, etc.)."
+	"MENU_BAR_MENU_FILE": "The label of the top-level application menu bar menu containing buttons and features related to the whole document (e.g. export to PDF, import from Word, etc.).",
+	"MENU_BAR_MENU_EDIT": "The label of the top-level application menu bar menu containing buttons and features related to general editing (e.g. undo, redo, select all, etc.).",
+	"MENU_BAR_MENU_VIEW": "The label of the top-level application menu bar menu containing buttons and features related to the view of the editor (e.g. show source).",
+	"MENU_BAR_MENU_INSERT": "The label of the top-level application menu bar menu containing buttons and features that insert content (e.g. insert table, insert image, etc.).",
+	"MENU_BAR_MENU_FORMAT": "The label of the top-level application menu bar menu containing buttons and features related to content formatting (e.g. bold, font color, heading, etc.).",
+	"MENU_BAR_MENU_TOOLS": "The label of the top-level application menu bar menu containing various editor tools (e.g. AI assistant, track changes, etc.).",
+	"MENU_BAR_MENU_HELP": "The label of the top-level application menu bar menu containing buttons and features helping users to learn about the editor (e.g. accessibility help).",
+	"MENU_BAR_MENU_TEXT": "The label of the application menu bar menu containing buttons and features that apply formatting to a text (e.g. bold, italic, etc.).",
+	"MENU_BAR_MENU_FONT": "The label of the application menu bar menu containing buttons and features that control the font of the edited content (e.g. font size, font color, etc.).",
+	"Editor menu bar": "The accessible label of the editor menu bar used by assistive technologies."
 }

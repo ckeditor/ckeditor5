@@ -1109,17 +1109,44 @@ function localizeMenuLabels( config: NormalizedMenuBarConfigObject, locale: Loca
 	const t = locale.t;
 	const localizedCategoryLabels: Record<string, string> = {
 		// Top-level categories.
-		'File': t( 'File' ),
-		'Edit': t( 'Edit' ),
-		'View': t( 'View' ),
-		'Insert': t( 'Insert' ),
-		'Format': t( 'Format' ),
-		'Tools': t( 'Tools' ),
-		'Help': t( 'Help' ),
+		'File': t( {
+			string: 'File',
+			id: 'MENU_BAR_MENU_FILE'
+		} ),
+		'Edit': t( {
+			string: 'Edit',
+			id: 'MENU_BAR_MENU_EDIT'
+		} ),
+		'View': t( {
+			string: 'View',
+			id: 'MENU_BAR_MENU_VIEW'
+		} ),
+		'Insert': t( {
+			string: 'Insert',
+			id: 'MENU_BAR_MENU_INSERT'
+		} ),
+		'Format': t( {
+			string: 'Format',
+			id: 'MENU_BAR_MENU_FORMAT'
+		} ),
+		'Tools': t( {
+			string: 'Tools',
+			id: 'MENU_BAR_MENU_TOOLS'
+		} ),
+		'Help': t( {
+			string: 'Help',
+			id: 'MENU_BAR_MENU_HELP'
+		} ),
 
 		// Sub-menus.
-		'Text': t( 'Text' ),
-		'Font': t( 'Font' )
+		'Text': t( {
+			string: 'Text',
+			id: 'MENU_BAR_MENU_TEXT'
+		} ),
+		'Font': t( {
+			string: 'Font',
+			id: 'MENU_BAR_MENU_FONT'
+		} )
 	};
 
 	walkConfigMenus( config.items, definition => {
