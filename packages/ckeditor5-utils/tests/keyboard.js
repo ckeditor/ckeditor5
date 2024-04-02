@@ -27,6 +27,11 @@ describe( 'Keyboard', () => {
 			expect( keyCodes.z ).to.equal( 90 );
 		} );
 
+		it( 'contains page up and down keys', () => {
+			expect( keyCodes.pageup ).to.equal( 33 );
+			expect( keyCodes.pagedown ).to.equal( 34 );
+		} );
+
 		it( 'modifiers and other keys', () => {
 			expect( keyCodes.delete ).to.equal( 46 );
 			expect( keyCodes.ctrl ).to.equal( 0x110000 );
@@ -307,6 +312,11 @@ describe( 'Keyboard', () => {
 				expect( getEnvKeystrokeText( 'Arrowup' ) ).to.equal( '↑' );
 				expect( getEnvKeystrokeText( 'Arrowright' ) ).to.equal( '→' );
 				expect( getEnvKeystrokeText( 'Arrowdown' ) ).to.equal( '↓' );
+			} );
+
+			it( 'uses human readable labels for Page up and Page down', () => {
+				expect( getEnvKeystrokeText( 'pageup' ) ).to.equal( 'Page Up' );
+				expect( getEnvKeystrokeText( 'pagedown' ) ).to.equal( 'Page Down' );
 			} );
 		} );
 

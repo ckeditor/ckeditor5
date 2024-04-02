@@ -37,7 +37,8 @@ import {
  */
 export function transformListItemLikeElementsIntoLists(
 	documentFragment: ViewDocumentFragment,
-	stylesString: string
+	stylesString: string,
+	hasMultiLevelListPlugin: boolean
 ): void {
 	if ( !documentFragment.childCount ) {
 		return;
@@ -93,7 +94,7 @@ export function transformListItemLikeElementsIntoLists(
 						listStyle.startIndex = encounteredLists[ originalListId ];
 					}
 
-					const listElement = createNewEmptyList( listStyle, writer );
+					const listElement = createNewEmptyList( listStyle, writer, hasMultiLevelListPlugin );
 
 					// Apply list padding only if we have margins for the item and the parent item.
 					if (
@@ -306,6 +307,16 @@ function detectListStyle( listLikeItem: ListLikeElement, stylesString: string ) 
 	const listStyleRegexp = new RegExp( `@list l${ listLikeItem.id }:level${ listLikeItem.indent }\\s*({[^}]*)`, 'gi' );
 	const listStyleTypeRegex = /mso-level-number-format:([^;]{0,100});/gi;
 	const listStartIndexRegex = /mso-level-start-at:\s{0,100}([0-9]{0,10})\s{0,100};/gi;
+	const legalStyleListRegex = new RegExp( `@list\\s+l${ listLikeItem.id }:level\\d\\s*{[^{]*mso-level-text:"%\\d\\\\.`, 'gi' );
+	const multiLevelNumberFormatTypeRegex = new RegExp( `@list l${ listLikeItem.id }:level\\d\\s*{[^{]*mso-level-number-format:`, 'gi' );
+
+	const legalStyleListMatch = legalStyleListRegex.exec( stylesString );
+	const multiLevelNumberFormatMatch = multiLevelNumberFormatTypeRegex.exec( stylesString );
+
+	// Multi level lists in Word have mso-level-number-format attribute except legal lists,
+	// so we used that. If list has legal list match and doesn't has mso-level-number-format
+	// then this is legal-list.
+	const islegalStyleList = legalStyleListMatch && !multiLevelNumberFormatMatch;
 
 	const listStyleMatch = listStyleRegexp.exec( stylesString );
 
@@ -338,12 +349,17 @@ function detectListStyle( listLikeItem: ListLikeElement, stylesString: string ) 
 				startIndex = parseInt( listStartIndexMatch[ 1 ] );
 			}
 		}
+
+		if ( islegalStyleList ) {
+			type = 'ol';
+		}
 	}
 
 	return {
 		type,
 		startIndex,
-		style: mapListStyleDefinition( listStyleType )
+		style: mapListStyleDefinition( listStyleType ),
+		isLegalStyleList: islegalStyleList
 	};
 }
 
@@ -443,7 +459,8 @@ function mapListStyleDefinition( value: string ) {
  */
 function createNewEmptyList(
 	listStyle: ReturnType<typeof detectListStyle>,
-	writer: UpcastWriter
+	writer: UpcastWriter,
+	hasMultiLevelListPlugin: boolean
 ) {
 	const list = writer.createElement( listStyle.type );
 
@@ -455,6 +472,10 @@ function createNewEmptyList(
 
 	if ( listStyle.startIndex && listStyle.startIndex > 1 ) {
 		writer.setAttribute( 'start', listStyle.startIndex, list );
+	}
+
+	if ( listStyle.isLegalStyleList && hasMultiLevelListPlugin ) {
+		writer.addClass( 'legal-list', list );
 	}
 
 	return list;
