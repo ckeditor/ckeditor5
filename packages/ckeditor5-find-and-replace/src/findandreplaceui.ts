@@ -218,8 +218,10 @@ export default class FindAndReplaceUI extends Plugin {
 		buttonView.on( 'execute', () => {
 			if ( dialogPlugin.id === 'findAndReplace' ) {
 				dialogPlugin.hide();
+
 				return;
 			}
+
 			this._showDialog();
 		} );
 
