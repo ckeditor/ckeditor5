@@ -40,7 +40,7 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 	public readonly editable: InlineEditableUIView;
 
 	/**
-	 * TODO
+	 * Flag that indicates if menu bar should be used.
 	 */
 	private _useMenuBar?: boolean;
 

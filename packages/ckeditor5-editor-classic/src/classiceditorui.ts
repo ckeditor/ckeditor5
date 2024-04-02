@@ -13,9 +13,10 @@ import {
 	normalizeToolbarConfig,
 	normalizeMenuBarConfig,
 	DialogView,
-	type EditorUIReadyEvent,
 	type DialogViewMoveToEvent,
-	type Dialog
+	type Dialog,
+	type EditorUIReadyEvent,
+	type UIViewRenderEvent
 } from 'ckeditor5/src/ui.js';
 import {
 	enablePlaceholder,
@@ -168,27 +169,17 @@ export default class ClassicEditorUI extends EditorUI {
 			return;
 		}
 
-		const editor = this.editor;
-		const menuBarViewElement = this.view.menuBarView.element!;
 		const view = this.view;
 
-		this.focusTracker.add( menuBarViewElement );
-		editor.keystrokes.listenTo( menuBarViewElement );
+		if ( view.menuBarView.isRendered ) {
+			this._setupMenuBarBehaviors( this.view.menuBarView.element! );
+		} else {
+			view.menuBarView.once<UIViewRenderEvent>( 'render', () => {
+				this._setupMenuBarBehaviors( this.view.menuBarView.element! );
+			} );
+		}
+
 		view.menuBarView.fillFromConfig( this._menuBarConfig, this.componentFactory );
-
-		editor.keystrokes.set( 'Esc', ( data, cancel ) => {
-			if ( menuBarViewElement.contains( this.focusTracker.focusedElement ) ) {
-				editor.editing.view.focus();
-				cancel();
-			}
-		} );
-
-		editor.keystrokes.set( 'Alt+F9', ( data, cancel ) => {
-			if ( !menuBarViewElement.contains( this.focusTracker.focusedElement ) ) {
-				this.view.menuBarView.focus();
-				cancel();
-			}
-		} );
 	}
 
 	/**
@@ -290,6 +281,29 @@ export default class ClassicEditorUI extends EditorUI {
 				}
 			}, { priority: 'high' } );
 		}, { priority: 'low' } );
+	}
+
+	/**
+	 * Handles focus and keystrokes for menu bar element.
+	 */
+	private _setupMenuBarBehaviors( menuBarViewElement: HTMLElement ) {
+		const editor = this.editor;
+		this.focusTracker.add( menuBarViewElement );
+		editor.keystrokes.listenTo( menuBarViewElement );
+
+		editor.keystrokes.set( 'Esc', ( data, cancel ) => {
+			if ( menuBarViewElement.contains( this.focusTracker.focusedElement ) ) {
+				editor.editing.view.focus();
+				cancel();
+			}
+		} );
+
+		editor.keystrokes.set( 'Alt+F9', ( data, cancel ) => {
+			if ( !menuBarViewElement.contains( this.focusTracker.focusedElement ) ) {
+				this.view.menuBarView.focus();
+				cancel();
+			}
+		} );
 	}
 }
 
