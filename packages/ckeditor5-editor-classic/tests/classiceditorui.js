@@ -778,6 +778,9 @@ describe( 'Focus handling and navigation between editing root and editor menu ba
 			toolbar: [ 'imageTextAlternative' ],
 			image: {
 				toolbar: [ 'toggleImageCaption' ]
+			},
+			menuBar: {
+				isVisible: true
 			}
 		} );
 

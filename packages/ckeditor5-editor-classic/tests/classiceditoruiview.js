@@ -8,7 +8,6 @@ import EditingView from '@ckeditor/ckeditor5-engine/src/view/view.js';
 import StickyPanelView from '@ckeditor/ckeditor5-ui/src/panel/sticky/stickypanelview.js';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview.js';
 import MenuBarView from '@ckeditor/ckeditor5-ui/src/menubar/menubarview.js';
-import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview.js';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale.js';
 import createRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
 
@@ -56,8 +55,8 @@ describe( 'ClassicEditorUIView', () => {
 				expect( view.toolbar.locale ).to.equal( locale );
 			} );
 
-			it( 'is put into the "stickyPanel.content" collection as second element', () => {
-				expect( view.stickyPanel.content.get( 1 ) ).to.euqal( view.toolbar );
+			it( 'is put into the "stickyPanel.content" collection', () => {
+				expect( view.stickyPanel.content.get( 0 ) ).to.equal( view.toolbar );
 			} );
 
 			describe( 'automatic items grouping', () => {
@@ -84,36 +83,8 @@ describe( 'ClassicEditorUIView', () => {
 		} );
 
 		describe( '#menuBarView', () => {
-			it( 'is created', () => {
-				expect( view.menuBarView ).to.be.instanceof( MenuBarView );
-			} );
-
-			it( 'is given a locale object', () => {
-				expect( view.menuBarView.locale ).to.equal( locale );
-			} );
-
-			it( 'is put into the "stickyPanel.content" collection as first element', () => {
-				expect( view.stickyPanel.content.get( 0 ) ).to.equal( view.menuBarView );
-			} );
-		} );
-
-		describe( '#editable', () => {
-			it( 'is created', () => {
-				expect( view.editable ).to.be.instanceof( InlineEditableUIView );
-			} );
-
-			it( 'is given a locale object', () => {
-				expect( view.editable.locale ).to.equal( locale );
-			} );
-
-			it( 'is put into the "main" collection', () => {
-				expect( view.main.get( 0 ) ).to.equal( view.editable );
-			} );
-
-			it( 'is given an accessible aria label', () => {
-				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Editor editing area: main' );
-
-				view.destroy();
+			it( 'is not created', () => {
+				expect( view.menuBarView ).to.be.undefined;
 			} );
 		} );
 	} );
@@ -147,6 +118,7 @@ describe( 'ClassicEditorUIView', () => {
 
 			it( 'is put into the "stickyPanel.content" collection', () => {
 				expect( view.stickyPanel.content.get( 0 ) ).to.equal( view.menuBarView );
+				expect( view.stickyPanel.content.get( 1 ) ).to.equal( view.toolbar );
 			} );
 		} );
 	} );

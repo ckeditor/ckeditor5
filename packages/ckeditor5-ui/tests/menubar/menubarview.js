@@ -2090,6 +2090,16 @@ describe( 'MenuBarView', () => {
 
 			sinon.assert.calledOnce( spy );
 		} );
+
+		it( 'should not focus anything unless there are some menus', () => {
+			menuBarView.fillFromConfig( normalizeMenuBarConfig( {
+				items: []
+			} ), factory );
+
+			expect( () => {
+				menuBarView.focus();
+			} ).to.not.throw();
+		} );
 	} );
 
 	describe( 'close()', () => {

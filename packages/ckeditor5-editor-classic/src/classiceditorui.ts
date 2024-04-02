@@ -15,8 +15,7 @@ import {
 	DialogView,
 	type DialogViewMoveToEvent,
 	type Dialog,
-	type EditorUIReadyEvent,
-	type UIViewRenderEvent
+	type EditorUIReadyEvent
 } from 'ckeditor5/src/ui.js';
 import {
 	enablePlaceholder,
@@ -165,19 +164,13 @@ export default class ClassicEditorUI extends EditorUI {
 	 * Initializes the editor menu bar.
 	 */
 	private _initMenuBar(): void {
-		if ( !this._menuBarConfig.isVisible ) {
+		const view = this.view;
+
+		if ( !view.menuBarView ) {
 			return;
 		}
 
-		const view = this.view;
-
-		if ( view.menuBarView.isRendered ) {
-			this._setupMenuBarBehaviors( this.view.menuBarView.element! );
-		} else {
-			view.menuBarView.once<UIViewRenderEvent>( 'render', () => {
-				this._setupMenuBarBehaviors( this.view.menuBarView.element! );
-			} );
-		}
+		this._setupMenuBarBehaviors( view.menuBarView.element! );
 
 		view.menuBarView.fillFromConfig( this._menuBarConfig, this.componentFactory );
 	}
@@ -300,7 +293,7 @@ export default class ClassicEditorUI extends EditorUI {
 
 		editor.keystrokes.set( 'Alt+F9', ( data, cancel ) => {
 			if ( !menuBarViewElement.contains( this.focusTracker.focusedElement ) ) {
-				this.view.menuBarView.focus();
+				this.view.menuBarView!.focus();
 				cancel();
 			}
 		} );

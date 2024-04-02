@@ -134,7 +134,9 @@ export default class MenuBarView extends View implements FocusableView {
 	 * Focuses the menu bar.
 	 */
 	public focus(): void {
-		this.children.first!.focus();
+		if ( this.children.first ) {
+			this.children.first.focus();
+		}
 	}
 
 	/**
