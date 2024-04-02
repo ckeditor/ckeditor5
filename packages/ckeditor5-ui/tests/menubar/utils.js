@@ -330,6 +330,38 @@ describe( 'MenuBarView utils', () => {
 						]
 					);
 				} );
+
+				it( 'should never toggle disabled menus open', () => {
+					const menuA = getMenuByLabel( menuBarView, 'A' );
+
+					menuA.isOpen = true;
+
+					const menuAA = getMenuByLabel( menuBarView, 'AA' );
+
+					menuAA.isEnabled = false;
+					menuAA.buttonView.fire( 'mouseenter' );
+
+					expect( barDump( menuBarView ) ).to.deep.equal(
+						[
+							{
+								label: 'A', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'A#1', isFocused: false },
+									{ label: 'AA', isOpen: false, isFocused: true, items: [] },
+									{ label: 'AB', isOpen: false, isFocused: false, items: [] }
+								]
+							},
+							{
+								label: 'B', isOpen: false, isFocused: false,
+								items: []
+							},
+							{
+								label: 'C', isOpen: false, isFocused: false,
+								items: []
+							}
+						]
+					);
+				} );
 			} );
 		} );
 

@@ -91,6 +91,14 @@ describe( 'MenuBarMenuView', () => {
 
 				expect( menuView.buttonView.isOn ).to.be.true;
 			} );
+
+			it( 'should have #isEnabled state bound to the menu\'s #isEnabled', () => {
+				menuView.isEnabled = true;
+				expect( menuView.buttonView.isEnabled ).to.be.true;
+
+				menuView.isEnabled = false;
+				expect( menuView.buttonView.isEnabled ).to.be.false;
+			} );
 		} );
 
 		describe( '#panelView', () => {
