@@ -117,4 +117,37 @@ describe( 'ClassicEditorUIView', () => {
 			} );
 		} );
 	} );
+
+	describe( 'with menu bar', () => {
+		let locale, view, editingView, editingViewRoot;
+
+		testUtils.createSinonSandbox();
+
+		beforeEach( () => {
+			locale = new Locale();
+			editingView = new EditingView();
+			editingViewRoot = createRoot( editingView.document );
+			view = new ClassicEditorUIView( locale, editingView, { useMenuBar: true } );
+			view.editable.name = editingViewRoot.rootName;
+			view.render();
+		} );
+
+		afterEach( () => {
+			view.destroy();
+		} );
+
+		describe( '#menuBarView', () => {
+			it( 'is created', () => {
+				expect( view.menuBarView ).to.be.instanceof( MenuBarView );
+			} );
+
+			it( 'is given a locale object', () => {
+				expect( view.menuBarView.locale ).to.equal( locale );
+			} );
+
+			it( 'is put into the "stickyPanel.content" collection', () => {
+				expect( view.stickyPanel.content.get( 0 ) ).to.equal( view.menuBarView );
+			} );
+		} );
+	} );
 } );

@@ -9,13 +9,16 @@ import RemoveFormat from '../src/removeformat.js';
 import RemoveFormatUI from '../src/removeformatui.js';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 import {
 	_clear as clearTranslations,
 	add as addTranslations
 } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
 
+import removeFormatIcon from '../theme/icons/remove-format.svg';
+
 describe( 'RemoveFormatUI', () => {
-	let editor, command, element, button;
+	let editor, element, button;
 
 	testUtils.createSinonSandbox();
 
@@ -43,7 +46,6 @@ describe( 'RemoveFormatUI', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-				command = editor.commands.get( 'removeFormat' );
 				button = editor.ui.componentFactory.create( 'removeFormat' );
 			} );
 	} );
@@ -54,54 +56,58 @@ describe( 'RemoveFormatUI', () => {
 		return editor.destroy();
 	} );
 
-	describe( 'removeformat button', () => {
-		describe( 'is bound to the command state', () => {
-			it( 'isEnabled', () => {
-				command.isEnabled = false;
-
-				expect( button.isEnabled ).to.be.false;
-
-				command.isEnabled = true;
-				expect( button.isEnabled ).to.be.true;
-			} );
+	describe( 'the "removeFormat" toolbar button', () => {
+		beforeEach( () => {
+			button = editor.ui.componentFactory.create( 'removeFormat' );
 		} );
 
-		it( 'should change relay execute to the command', () => {
-			const commandSpy = testUtils.sinon.spy( command, 'execute' );
+		testButton( 'removeFormat', 'Remove Format', ButtonView );
+
+		it( 'should have tooltip', () => {
+			expect( button.tooltip ).to.be.true;
+		} );
+	} );
+
+	describe( 'the "menuBar:removeFormat" menu bar button', () => {
+		beforeEach( () => {
+			button = editor.ui.componentFactory.create( 'menuBar:removeFormat' );
+		} );
+
+		testButton( 'removeFormat', 'Remove Format', MenuBarMenuListItemButtonView );
+	} );
+
+	function testButton( featureName, label, Component ) {
+		it( 'should register feature component', () => {
+			expect( button ).to.be.instanceOf( Component );
+		} );
+
+		it( 'should create UI component with correct attribute values', () => {
+			expect( button.isOn ).to.be.false;
+			expect( button.label ).to.equal( label );
+			expect( button.icon ).to.equal( removeFormatIcon );
+		} );
+
+		it( `should execute ${ featureName } command on model execute event and focus the view`, () => {
+			const executeSpy = testUtils.sinon.stub( editor, 'execute' );
+			const focusSpy = testUtils.sinon.stub( editor.editing.view, 'focus' );
 
 			button.fire( 'execute' );
 
-			sinon.assert.calledOnce( commandSpy );
+			sinon.assert.calledOnceWithExactly( executeSpy, featureName );
+			sinon.assert.calledOnce( focusSpy );
+			sinon.assert.callOrder( executeSpy, focusSpy );
 		} );
 
-		describe( 'localization', () => {
-			beforeEach( () => {
-				return localizedEditor();
-			} );
+		it( `should bind #isEnabled to ${ featureName } command`, () => {
+			const command = editor.commands.get( featureName );
 
-			it( 'label localized correctly', () => {
-				expect( button.label ).to.equal( 'Usuń formatowanie' );
-			} );
+			expect( button.isOn ).to.be.false;
 
-			function localizedEditor() {
-				const editorElement = document.createElement( 'div' );
-				document.body.appendChild( editorElement );
+			const initState = command.isEnabled;
+			expect( button.isEnabled ).to.equal( initState );
 
-				return ClassicTestEditor
-					.create( editorElement, {
-						plugins: [ RemoveFormat, RemoveFormatUI ],
-						toolbar: [ 'removeFormat' ],
-						language: 'pl'
-					} )
-					.then( newEditor => {
-						button = newEditor.ui.componentFactory.create( 'removeFormat' );
-						command = newEditor.commands.get( 'removeFormat' );
-
-						editorElement.remove();
-
-						return newEditor.destroy();
-					} );
-			}
+			command.isEnabled = !initState;
+			expect( button.isEnabled ).to.equal( !initState );
 		} );
-	} );
+	}
 } );

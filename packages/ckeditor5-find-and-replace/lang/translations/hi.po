@@ -68,3 +68,7 @@ msgstr "टिप:उसे बदलने के लिए पहले कु
 msgctxt "The label and the tooltip of the options dropdown button in the find and replace form."
 msgid "Advanced options"
 msgstr "एडवांस्ड विकल्प"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for opening the find and replace UI."
+msgid "Find in the document"
+msgstr "डॉक्युमेंट में खोजें"

@@ -14,6 +14,7 @@ import SelectAll from '@ckeditor/ckeditor5-select-all/src/selectall.js';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
+import { AccessibilityHelp } from '@ckeditor/ckeditor5-ui';
 
 describe( 'Essentials preset', () => {
 	let editor, editorElement;
@@ -39,6 +40,7 @@ describe( 'Essentials preset', () => {
 	} );
 
 	it( 'should load all its dependencies', () => {
+		expect( editor.plugins.get( AccessibilityHelp ) ).to.be.instanceOf( AccessibilityHelp );
 		expect( editor.plugins.get( Clipboard ) ).to.be.instanceOf( Clipboard );
 		expect( editor.plugins.get( Enter ) ).to.be.instanceOf( Enter );
 		expect( editor.plugins.get( SelectAll ) ).to.be.instanceOf( SelectAll );

@@ -144,3 +144,27 @@ msgstr "एडिटर डायलॉग"
 msgctxt "The label and the tooltip for the close button in the dialog header."
 msgid "Close"
 msgstr "बंद करें"
+
+msgctxt "Accessibility help dialog assistive technologies label telling users how to exit the dialog."
+msgid "Help Contents. To close this dialog press ESC."
+msgstr "हेल्प कॉन्टेंट्स. इस डायलॉग को बंद करने के लिए ESC दबाएँ."
+
+msgctxt "Accessibility help dialog text explaining what can be found in that dialog."
+msgid "Below, you can find a list of keyboard shortcuts that can be used in the editor."
+msgstr "नीचे, आप उन कीबोर्ड शॉर्टकट्स की एक लिस्ट देख सकते हैं जिनका इस्तेमाल एडिटर में किया जा सकता है."
+
+msgctxt "Accessibility help dialog text displayed next to keystrokes that may require the Fn key on Mac."
+msgid "(may require <kbd>Fn</kbd>)"
+msgstr "(इसके लिए <kbd>Fn</kbd> की ज़रूरत हो सकती है)"
+
+msgctxt "Accessibility help dialog title."
+msgid "Accessibility help"
+msgstr "एक्सेसिबिलिटी हेल्प"
+
+msgctxt "Assistive technologies label added to each editor editing area informing users about the possibility of opening the accessibility help dialog."
+msgid "Press %0 for help."
+msgstr "हेल्प के लिए %0 दबाएँ."
+
+msgctxt "Keystroke description for assistive technologies: keystroke for moving focus out of an active dialog window."
+msgid "Move focus in and out of an active dialog window"
+msgstr "एक एक्टिव डायलॉग विंडो में फ़ोकस को अंदर और बाहर मूव करें"

@@ -30,5 +30,21 @@
 	"No results found": "The main text of the message shown to the user when given query does not match any results.",
 	"No searchable items": "The main text of the message shown to the user when no results are available.",
 	"Editor dialog": "A default label of a dialog window displayed on top the editor.",
-	"Close": "The label and the tooltip for the close button in the dialog header."
+	"Close": "The label and the tooltip for the close button in the dialog header.",
+	"Help Contents. To close this dialog press ESC.": "Accessibility help dialog assistive technologies label telling users how to exit the dialog.",
+	"Below, you can find a list of keyboard shortcuts that can be used in the editor.": "Accessibility help dialog text explaining what can be found in that dialog.",
+	"(may require <kbd>Fn</kbd>)": "Accessibility help dialog text displayed next to keystrokes that may require the Fn key on Mac.",
+	"Accessibility": "The label for the button that opens the Accessibility help dialog from the application menu bar.",
+	"Accessibility help": "Accessibility help dialog title.",
+	"Press %0 for help.": "Assistive technologies label added to each editor editing area informing users about the possibility of opening the accessibility help dialog.",
+	"Move focus in and out of an active dialog window": "Keystroke description for assistive technologies: keystroke for moving focus out of an active dialog window.",
+	"File": "The label of the top-level application menu bar menu containing buttons and features related to the whole document (e.g. export to PDF, import from Word, etc.).",
+	"Edit": "The label of the top-level application menu bar menu containing buttons and features related to general editing (e.g. undo, redo, select all, etc.).",
+	"View": "The label of the top-level application menu bar menu containing buttons and features related to the view of the editor (e.g. show source).",
+	"Insert": "The label of the top-level application menu bar menu containing buttons and features that insert content (e.g. insert table, insert image, etc.).",
+	"Format": "The label of the top-level application menu bar menu containing buttons and features related to content formatting (e.g. bold, font color, heading, etc.).",
+	"Tools": "The label of the top-level application menu bar menu containing various editor tools (e.g. AI assistant, track changes, etc.).",
+	"Help": "The label of the top-level application menu bar menu containing buttons and features helping users to learn about the editor (e.g. accessibility help).",
+	"Text": "The label of the application menu bar menu containing buttons and features that apply formatting to a text (e.g. bold, italic, etc.).",
+	"Font": "The label of the application menu bar menu containing buttons and features that control the font of the edited content (e.g. font size, font color, etc.)."
 }

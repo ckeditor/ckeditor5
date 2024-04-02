@@ -334,7 +334,7 @@ function assertNodeIsNotSelected( model, path ) {
 // Formats table cell attributes
 //
 // @param {Object} attributes Attributes of a cell.
-function formatAttributes( attributes ) {
+export function formatAttributes( attributes ) {
 	let attributesString = '';
 
 	if ( attributes ) {

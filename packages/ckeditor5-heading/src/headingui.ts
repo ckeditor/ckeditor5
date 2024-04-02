@@ -47,13 +47,13 @@ export default class HeadingUI extends Plugin {
 		const options = getLocalizedOptions( editor );
 		const defaultTitle = t( 'Choose heading' );
 		const accessibleLabel = t( 'Heading' );
-		const headingCommand: HeadingCommand = editor.commands.get( 'heading' )!;
-		const paragraphCommand: ParagraphCommand = editor.commands.get( 'paragraph' )!;
 
 		// Register UI component.
 		editor.ui.componentFactory.add( 'heading', locale => {
 			const titles: Record<string, string> = {};
 			const itemDefinitions: Collection<ListDropdownItemDefinition> = new Collection();
+			const headingCommand: HeadingCommand = editor.commands.get( 'heading' )!;
+			const paragraphCommand: ParagraphCommand = editor.commands.get( 'paragraph' )!;
 			const commands: Array<Command> = [ headingCommand ];
 
 			for ( const option of options ) {
@@ -111,8 +111,8 @@ export default class HeadingUI extends Plugin {
 				return areEnabled.some( isEnabled => isEnabled );
 			} );
 
-			dropdownView.buttonView.bind( 'label' ).to( headingCommand, 'value', paragraphCommand, 'value', ( value, para ) => {
-				const whichModel = value || para && 'paragraph';
+			dropdownView.buttonView.bind( 'label' ).to( headingCommand, 'value', paragraphCommand, 'value', ( heading, paragraph ) => {
+				const whichModel = paragraph ? 'paragraph' : heading;
 
 				if ( typeof whichModel === 'boolean' ) {
 					return defaultTitle;
@@ -124,6 +124,21 @@ export default class HeadingUI extends Plugin {
 				}
 
 				return titles[ whichModel ];
+			} );
+
+			dropdownView.buttonView.bind( 'ariaLabel' ).to( headingCommand, 'value', paragraphCommand, 'value', ( heading, paragraph ) => {
+				const whichModel = paragraph ? 'paragraph' : heading;
+
+				if ( typeof whichModel === 'boolean' ) {
+					return accessibleLabel;
+				}
+
+				// If none of the commands is active, display default title.
+				if ( !titles[ whichModel ] ) {
+					return accessibleLabel;
+				}
+
+				return `${ titles[ whichModel ] }, ${ accessibleLabel }`;
 			} );
 
 			// Execute command when an item from the dropdown is selected.
@@ -138,6 +153,8 @@ export default class HeadingUI extends Plugin {
 
 		editor.ui.componentFactory.add( 'menuBar:heading', locale => {
 			const menuView = new MenuBarMenuView( locale );
+			const headingCommand: HeadingCommand = editor.commands.get( 'heading' )!;
+			const paragraphCommand: ParagraphCommand = editor.commands.get( 'paragraph' )!;
 			const commands: Array<Command> = [ headingCommand ];
 			const listView = new MenuBarMenuListView( locale );
 
@@ -169,10 +186,12 @@ export default class HeadingUI extends Plugin {
 					class: option.class
 				} );
 
+				buttonView.bind( 'ariaChecked' ).to( buttonView, 'isOn' );
 				buttonView.delegate( 'execute' ).to( menuView );
 
 				buttonView.on<ButtonExecuteEvent>( 'execute', () => {
 					const commandName = option.model === 'paragraph' ? 'paragraph' : 'heading';
+
 					editor.execute( commandName, { value: option.model } );
 					editor.editing.view.focus();
 				} );

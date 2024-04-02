@@ -19,6 +19,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar.js';
 import Image from '@ckeditor/ckeditor5-image/src/image.js';
 import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle.js';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
 
 describe( 'TableToolbar', () => {
 	testUtils.createSinonSandbox();
@@ -32,7 +33,7 @@ describe( 'TableToolbar', () => {
 
 			return ClassicTestEditor
 				.create( editorElement, {
-					plugins: [ Paragraph, Image, ImageStyle, ImageToolbar, Table, TableToolbar, FakeButton ],
+					plugins: [ Paragraph, Image, ImageStyle, ImageToolbar, Table, TableToolbar, FakeButton, ClipboardPipeline ],
 					image: {
 						toolbar: [ 'imageStyle:block', 'imageStyle:side' ]
 					},
@@ -65,7 +66,7 @@ describe( 'TableToolbar', () => {
 			global.document.body.appendChild( editorElement );
 
 			return ClassicTestEditor.create( editorElement, {
-				plugins: [ TableToolbar ]
+				plugins: [ TableToolbar, ClipboardPipeline ]
 			} )
 				.then( editor => {
 					const widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
@@ -257,7 +258,7 @@ describe( 'TableToolbar', () => {
 			document.body.appendChild( element );
 
 			return ClassicTestEditor.create( element, {
-				plugins: [ Paragraph, Table, TableToolbar, FakeButton ],
+				plugins: [ Paragraph, Table, TableToolbar, FakeButton, ClipboardPipeline ],
 				table: {
 					tableToolbar: [ 'fake_button' ]
 				}

@@ -9,7 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import { MenuBarMenuListItemButtonView, ButtonView } from 'ckeditor5/src/ui.js';
-import type AttributeCommand from '../attributecommand.js';
+import { getButtonCreator } from '../utils.js';
 
 import italicIcon from '../../theme/icons/italic.svg';
 
@@ -31,11 +31,20 @@ export default class ItalicUI extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
-		const command: AttributeCommand = editor.commands.get( ITALIC )!;
+		const command = editor.commands.get( ITALIC )!;
+		const t = editor.locale.t;
+		const createButton = getButtonCreator( {
+			editor,
+			commandName: ITALIC,
+			plugin: this,
+			icon: italicIcon,
+			keystroke: 'CTRL+I',
+			label: t( 'Italic' )
+		} );
 
 		// Add bold button to feature components.
 		editor.ui.componentFactory.add( ITALIC, () => {
-			const buttonView = this._createButton( ButtonView );
+			const buttonView = createButton( ButtonView );
 
 			buttonView.set( {
 				tooltip: true
@@ -47,35 +56,7 @@ export default class ItalicUI extends Plugin {
 		} );
 
 		editor.ui.componentFactory.add( 'menuBar:' + ITALIC, () => {
-			return this._createButton( MenuBarMenuListItemButtonView );
+			return createButton( MenuBarMenuListItemButtonView );
 		} );
-	}
-
-	/**
-	 * Creates a button for italic command to use either in toolbar or in menu bar.
-	 */
-	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
-		const editor = this.editor;
-		const locale = editor.locale;
-		const command: AttributeCommand = editor.commands.get( ITALIC )!;
-		const view = new ButtonClass( editor.locale ) as InstanceType<T>;
-		const t = locale.t;
-
-		view.set( {
-			label: t( 'Italic' ),
-			icon: italicIcon,
-			keystroke: 'CTRL+I',
-			isToggleable: true
-		} );
-
-		view.bind( 'isEnabled' ).to( command, 'isEnabled' );
-
-		// Execute the command.
-		this.listenTo( view, 'execute', () => {
-			editor.execute( ITALIC );
-			editor.editing.view.focus();
-		} );
-
-		return view;
 	}
 }

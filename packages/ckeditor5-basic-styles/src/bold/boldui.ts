@@ -9,7 +9,7 @@
 
 import { Plugin, icons } from 'ckeditor5/src/core.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
-import type AttributeCommand from '../attributecommand.js';
+import { getButtonCreator } from '../utils.js';
 
 const BOLD = 'bold';
 
@@ -29,11 +29,20 @@ export default class BoldUI extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
-		const command: AttributeCommand = editor.commands.get( BOLD )!;
+		const t = editor.locale.t;
+		const command = editor.commands.get( BOLD )!;
+		const createButton = getButtonCreator( {
+			editor,
+			commandName: BOLD,
+			plugin: this,
+			icon: icons.bold,
+			label: t( 'Bold' ),
+			keystroke: 'CTRL+B'
+		} );
 
 		// Add bold button to feature components.
 		editor.ui.componentFactory.add( BOLD, () => {
-			const buttonView = this._createButton( ButtonView );
+			const buttonView = createButton( ButtonView );
 
 			buttonView.set( {
 				tooltip: true
@@ -45,35 +54,7 @@ export default class BoldUI extends Plugin {
 		} );
 
 		editor.ui.componentFactory.add( 'menuBar:' + BOLD, () => {
-			return this._createButton( MenuBarMenuListItemButtonView );
+			return createButton( MenuBarMenuListItemButtonView );
 		} );
-	}
-
-	/**
-	 * Creates a button for bold command to use either in toolbar or in menu bar.
-	 */
-	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
-		const editor = this.editor;
-		const locale = editor.locale;
-		const command: AttributeCommand = editor.commands.get( BOLD )!;
-		const view = new ButtonClass( editor.locale ) as InstanceType<T>;
-		const t = locale.t;
-
-		view.set( {
-			label: t( 'Bold' ),
-			icon: icons.bold,
-			keystroke: 'CTRL+B',
-			isToggleable: true
-		} );
-
-		view.bind( 'isEnabled' ).to( command, 'isEnabled' );
-
-		// Execute the command.
-		this.listenTo( view, 'execute', () => {
-			editor.execute( BOLD );
-			editor.editing.view.focus();
-		} );
-
-		return view;
 	}
 }

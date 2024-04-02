@@ -11,11 +11,17 @@ import type { Locale } from '@ckeditor/ckeditor5-utils';
 import ListView from '../list/listview.js';
 
 /**
- * TODO
+ * A list of menu bar items, a child of {@link module:ui/menubar/menubarmenuview~MenuBarMenuView#panelView}.
+ *
+ * Use this class to create a list of items (options, buttons) to be displayed in a menu bar.
+ *
+ * To populate this list, use {@link module:ui/menubar/menubarmenulistitemview~MenuBarMenuListItemView} instances.
  */
 export default class MenuBarMenuListView extends ListView {
 	/**
-	 * TODO
+	 * Creates an instance of the list view.
+	 *
+	 * @param locale The localization services instance.
 	 */
 	constructor( locale: Locale ) {
 		super( locale );

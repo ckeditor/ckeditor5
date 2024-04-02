@@ -54,6 +54,7 @@ export default class MinimapIframeView extends IframeView {
 
 		this.extendTemplate( {
 			attributes: {
+				tabindex: -1,
 				class: [
 					'ck-minimap__iframe'
 				],

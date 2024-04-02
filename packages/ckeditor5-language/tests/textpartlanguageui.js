@@ -13,9 +13,10 @@ import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import TextPartLanguageEditing from '../src/textpartlanguageediting.js';
 import TextPartLanguageUI from '../src/textpartlanguageui.js';
+import { MenuBarMenuView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'TextPartLanguageUI', () => {
-	let editor, editorElement, dropdown, command;
+	let editor, editorElement, command;
 
 	testUtils.createSinonSandbox();
 
@@ -30,8 +31,6 @@ describe( 'TextPartLanguageUI', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-				dropdown = editor.ui.componentFactory.create( 'textPartLanguage' );
-
 				command = editor.commands.get( 'textPartLanguage' );
 
 				// Set data so the commands will be enabled.
@@ -46,125 +45,232 @@ describe( 'TextPartLanguageUI', () => {
 	} );
 
 	describe( 'init()', () => {
-		it( 'should register options feature component', () => {
-			const dropdown = editor.ui.componentFactory.create( 'textPartLanguage' );
+		describe( 'toolbar drop-down', () => {
+			let dropdownView;
 
-			expect( dropdown ).to.be.instanceOf( DropdownView );
-			expect( dropdown.buttonView.isEnabled ).to.be.true;
-			expect( dropdown.buttonView.isOn ).to.be.false;
-			expect( dropdown.buttonView.label ).to.equal( 'Choose language' );
-			expect( dropdown.buttonView.tooltip ).to.equal( 'Language' );
-			expect( dropdown.buttonView.ariaLabel ).to.equal( 'Language' );
-			expect( dropdown.buttonView.ariaLabelledBy ).to.be.undefined;
-			expect( dropdown.listView ).to.be.undefined;
-		} );
+			beforeEach( () => {
+				dropdownView = editor.ui.componentFactory.create( 'textPartLanguage' );
+			} );
 
-		it( 'should lazy init language list dropdown', () => {
-			const dropdown = editor.ui.componentFactory.create( 'textPartLanguage' );
+			afterEach( () => {
+				dropdownView.destroy();
+			} );
 
-			dropdown.isOpen = true;
+			it( 'should be registered', () => {
+				expect( dropdownView ).to.be.instanceOf( DropdownView );
+				expect( dropdownView.buttonView.isEnabled ).to.be.true;
+				expect( dropdownView.buttonView.isOn ).to.be.false;
+				expect( dropdownView.buttonView.label ).to.equal( 'Choose language' );
+				expect( dropdownView.buttonView.tooltip ).to.equal( 'Language' );
+				expect( dropdownView.buttonView.ariaLabel ).to.equal( 'Language' );
+				expect( dropdownView.buttonView.ariaLabelledBy ).to.be.undefined;
+			} );
 
-			expect( dropdown ).to.be.instanceOf( DropdownView );
-			expect( dropdown.buttonView.isEnabled ).to.be.true;
-			expect( dropdown.buttonView.isOn ).to.be.true;
-			expect( dropdown.buttonView.label ).to.equal( 'Choose language' );
-			expect( dropdown.buttonView.tooltip ).to.equal( 'Language' );
-			expect( dropdown.listView.items.first.children.first.label ).to.equal( 'Remove language' );
-		} );
+			it( 'should lazy init language list dropdown', () => {
+				dropdownView.isOpen = true;
 
-		it( 'should execute textPartLanguage command on model (no language selected)', () => {
-			const executeSpy = testUtils.sinon.spy( command, 'execute' );
-			const dropdown = editor.ui.componentFactory.create( 'textPartLanguage' );
+				expect( dropdownView ).to.be.instanceOf( DropdownView );
+				expect( dropdownView.buttonView.isEnabled ).to.be.true;
+				expect( dropdownView.buttonView.isOn ).to.be.true;
+				expect( dropdownView.buttonView.label ).to.equal( 'Choose language' );
+				expect( dropdownView.buttonView.tooltip ).to.equal( 'Language' );
+				expect( dropdownView.listView.items.first.children.first.label ).to.equal( 'Remove language' );
+			} );
 
-			dropdown.fire( 'execute' );
+			it( 'should execute textPartLanguage command on model (no language selected)', () => {
+				const executeSpy = testUtils.sinon.spy( command, 'execute' );
 
-			sinon.assert.calledOnce( executeSpy );
-			sinon.assert.calledWithExactly( executeSpy,
-				{ languageCode: undefined, textDirection: undefined } );
-		} );
+				dropdownView.fire( 'execute' );
 
-		it( 'should execute textPartLanguage command on model (language selected)', () => {
-			const executeSpy = testUtils.sinon.spy( command, 'execute' );
-			const dropdown = editor.ui.componentFactory.create( 'textPartLanguage' );
+				sinon.assert.calledOnce( executeSpy );
+				sinon.assert.calledWithExactly( executeSpy,
+					{ languageCode: undefined, textDirection: undefined } );
+			} );
 
-			dropdown.languageCode = 'fr';
-			dropdown.textDirection = 'ltr';
-			dropdown.fire( 'execute' );
+			it( 'should execute textPartLanguage command on model (language selected)', () => {
+				const executeSpy = testUtils.sinon.spy( command, 'execute' );
 
-			sinon.assert.calledOnce( executeSpy );
-			sinon.assert.calledWithExactly( executeSpy,
-				{ languageCode: 'fr', textDirection: 'ltr' } );
-		} );
+				dropdownView.languageCode = 'fr';
+				dropdownView.textDirection = 'ltr';
+				dropdownView.fire( 'execute' );
 
-		it( 'should focus view after command execution', () => {
-			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
-			const dropdown = editor.ui.componentFactory.create( 'textPartLanguage' );
+				sinon.assert.calledOnce( executeSpy );
+				sinon.assert.calledWithExactly( executeSpy,
+					{ languageCode: 'fr', textDirection: 'ltr' } );
+			} );
 
-			dropdown.languageCode = 'fr';
-			dropdown.fire( 'execute' );
+			it( 'should focus view after command execution', () => {
+				const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 
-			sinon.assert.calledOnce( focusSpy );
-		} );
+				dropdownView.languageCode = 'fr';
+				dropdownView.fire( 'execute' );
 
-		it( 'should add custom CSS class to dropdown', () => {
-			const dropdown = editor.ui.componentFactory.create( 'textPartLanguage' );
+				sinon.assert.calledOnce( focusSpy );
+			} );
 
-			dropdown.render();
+			it( 'should add custom CSS class to dropdown', () => {
+				dropdownView.render();
 
-			expect( dropdown.element.classList.contains( 'ck-text-fragment-language-dropdown' ) ).to.be.true;
-		} );
+				expect( dropdownView.element.classList.contains( 'ck-text-fragment-language-dropdown' ) ).to.be.true;
+			} );
 
-		describe( 'listview', () => {
-			it( 'should have properties set', () => {
-				// Trigger lazy init.
-				dropdown.isOpen = true;
+			describe( 'listview', () => {
+				it( 'should have properties set', () => {
+					// Trigger lazy init.
+					dropdownView.isOpen = true;
 
-				const listView = dropdown.listView;
+					const listView = dropdownView.listView;
 
-				expect( listView.element.role ).to.equal( 'menu' );
-				expect( listView.element.ariaLabel ).to.equal( 'Language' );
+					expect( listView.element.role ).to.equal( 'menu' );
+					expect( listView.element.ariaLabel ).to.equal( 'Language' );
+				} );
+			} );
+
+			describe( 'model to command binding', () => {
+				it( 'isEnabled', () => {
+					command.isEnabled = false;
+
+					expect( dropdownView.buttonView.isEnabled ).to.be.false;
+
+					command.isEnabled = true;
+					expect( dropdownView.buttonView.isEnabled ).to.be.true;
+
+					command.isEnabled = false;
+					expect( dropdownView.buttonView.isEnabled ).to.be.false;
+				} );
+
+				it( 'label', () => {
+					command.value = false;
+
+					expect( dropdownView.buttonView.label ).to.equal( 'Choose language' );
+
+					command.value = 'fr:ltr';
+					expect( dropdownView.buttonView.label ).to.equal( 'French' );
+
+					command.value = 'ar:rtl';
+					expect( dropdownView.buttonView.label ).to.equal( 'Arabic' );
+				} );
+
+				it( 'ariaLabel', () => {
+					command.value = false;
+
+					expect( dropdownView.buttonView.ariaLabel ).to.equal( 'Language' );
+
+					command.value = 'fr:ltr';
+					expect( dropdownView.buttonView.ariaLabel ).to.equal( 'French, Language' );
+
+					command.value = 'ar:rtl';
+					expect( dropdownView.buttonView.ariaLabel ).to.equal( 'Arabic, Language' );
+				} );
+
+				it( 'reflects the #value of the command', () => {
+					// Trigger lazy init.
+					dropdownView.isOpen = true;
+
+					const listView = dropdownView.listView;
+
+					setData( editor.model, '<paragraph>[<$text language="fr:ltr">te]xt</$text></paragraph>' );
+
+					expect( getListViewItems( listView ).map( item => item.children.first.isOn ) ).to.deep.equal( [
+						false,
+						false,
+						true,
+						false
+					] );
+				} );
 			} );
 		} );
 
-		describe( 'model to command binding', () => {
-			it( 'isEnabled', () => {
-				command.isEnabled = false;
+		describe( 'menu bar menu', () => {
+			let menuView;
 
-				expect( dropdown.buttonView.isEnabled ).to.be.false;
-
-				command.isEnabled = true;
-				expect( dropdown.buttonView.isEnabled ).to.be.true;
-
-				command.isEnabled = false;
-				expect( dropdown.buttonView.isEnabled ).to.be.false;
+			beforeEach( () => {
+				menuView = editor.ui.componentFactory.create( 'menuBar:textPartLanguage' );
 			} );
 
-			it( 'label', () => {
-				command.value = false;
-
-				expect( dropdown.buttonView.label ).to.equal( 'Choose language' );
-
-				command.value = 'fr:ltr';
-				expect( dropdown.buttonView.label ).to.equal( 'French' );
-
-				command.value = 'ar:rtl';
-				expect( dropdown.buttonView.label ).to.equal( 'Arabic' );
+			afterEach( () => {
+				menuView.destroy();
 			} );
 
-			it( 'reflects the #value of the command', () => {
-				// Trigger lazy init.
-				dropdown.isOpen = true;
+			it( 'should be registered', () => {
+				expect( menuView ).to.be.instanceOf( MenuBarMenuView );
+				expect( menuView.buttonView.isEnabled ).to.be.true;
+				expect( menuView.buttonView.isOn ).to.be.false;
+				expect( menuView.buttonView.label ).to.equal( 'Language' );
+				expect( menuView.listView ).to.be.undefined;
+			} );
 
-				const listView = dropdown.listView;
+			it( 'should execute textPartLanguage command on model (no language selected)', () => {
+				const executeSpy = testUtils.sinon.spy( command, 'execute' );
 
-				setData( editor.model, '<paragraph>[<$text language="fr:ltr">te]xt</$text></paragraph>' );
+				menuView.fire( 'execute' );
 
-				expect( getListViewItems( listView ).map( item => item.children.first.isOn ) ).to.deep.equal( [
-					false,
-					false,
-					true,
-					false
-				] );
+				sinon.assert.calledOnce( executeSpy );
+				sinon.assert.calledWithExactly( executeSpy,
+					{ languageCode: undefined, textDirection: undefined } );
+			} );
+
+			it( 'should execute textPartLanguage command on model (language selected)', () => {
+				const executeSpy = testUtils.sinon.spy( command, 'execute' );
+
+				menuView.languageCode = 'fr';
+				menuView.textDirection = 'ltr';
+				menuView.fire( 'execute' );
+
+				sinon.assert.calledOnce( executeSpy );
+				sinon.assert.calledWithExactly( executeSpy,
+					{ languageCode: 'fr', textDirection: 'ltr' } );
+			} );
+
+			it( 'should focus view after command execution', () => {
+				const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+
+				menuView.languageCode = 'fr';
+				menuView.fire( 'execute' );
+
+				sinon.assert.calledOnce( focusSpy );
+			} );
+
+			describe( 'listview', () => {
+				it( 'should have properties set', () => {
+					// Trigger lazy init.
+					menuView.isOpen = true;
+
+					const listView = menuView.panelView.children.first;
+
+					expect( listView.element.role ).to.equal( 'menu' );
+					expect( listView.element.ariaLabel ).to.equal( 'Language' );
+				} );
+			} );
+
+			describe( 'model to command binding', () => {
+				it( 'isEnabled', () => {
+					command.isEnabled = false;
+
+					expect( menuView.buttonView.isEnabled ).to.be.false;
+
+					command.isEnabled = true;
+					expect( menuView.buttonView.isEnabled ).to.be.true;
+
+					command.isEnabled = false;
+					expect( menuView.buttonView.isEnabled ).to.be.false;
+				} );
+
+				it( 'reflects the #value of the command', () => {
+					// Trigger lazy init.
+					menuView.isOpen = true;
+
+					const listView = menuView.panelView.children.first;
+
+					setData( editor.model, '<paragraph>[<$text language="fr:ltr">te]xt</$text></paragraph>' );
+
+					expect( getListViewItems( listView ).map( item => item.children.first.isOn ) ).to.deep.equal( [
+						false,
+						false,
+						true,
+						false
+					] );
+				} );
 			} );
 		} );
 	} );

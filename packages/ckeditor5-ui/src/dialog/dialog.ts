@@ -65,11 +65,23 @@ export default class Dialog extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
+		const t = editor.t;
+
 		this._initShowHideListeners();
 		this._initFocusToggler();
 		this._initMultiRootIntegration();
 
 		this.set( 'id', null );
+
+		// Add the information about the keystroke to the accessibility database.
+		editor.accessibility.addKeystrokeInfos( {
+			categoryId: 'navigation',
+			keystrokes: [ {
+				label: t( 'Move focus in and out of an active dialog window' ),
+				keystroke: 'Ctrl+F6',
+				mayRequireFn: true
+			} ]
+		} );
 	}
 
 	/**

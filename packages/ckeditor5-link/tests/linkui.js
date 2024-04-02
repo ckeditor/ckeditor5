@@ -26,6 +26,9 @@ import LinkEditing from '../src/linkediting.js';
 import LinkUI from '../src/linkui.js';
 import LinkFormView from '../src/ui/linkformview.js';
 import LinkActionsView from '../src/ui/linkactionsview.js';
+import { MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
+
+import linkIcon from '../theme/icons/link.svg';
 
 describe( 'LinkUI', () => {
 	let editor, linkUIFeature, linkButton, balloon, formView, actionsView, editorElement;
@@ -67,6 +70,21 @@ describe( 'LinkUI', () => {
 		expect( editor.plugins.get( ContextualBalloon ) ).to.be.instanceOf( ContextualBalloon );
 	} );
 
+	it( 'should add keystroke accessibility info', () => {
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
+			label: 'Create link',
+			keystroke: 'Ctrl+K'
+		} );
+
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
+			label: 'Move out of a link',
+			keystroke: [
+				[ 'arrowleft', 'arrowleft' ],
+				[ 'arrowright', 'arrowright' ]
+			]
+		} );
+	} );
+
 	describe( 'init', () => {
 		it( 'should register click observer', () => {
 			expect( editor.editing.view.getObserver( ClickObserver ) ).to.be.instanceOf( ClickObserver );
@@ -80,38 +98,62 @@ describe( 'LinkUI', () => {
 			expect( linkUIFeature.formView ).to.be.null;
 		} );
 
-		describe( 'link toolbar button', () => {
-			it( 'should be registered', () => {
-				expect( linkButton ).to.be.instanceOf( ButtonView );
+		describe( 'the "link" toolbar button', () => {
+			beforeEach( () => {
+				linkButton = editor.ui.componentFactory.create( 'link' );
 			} );
 
-			it( 'should be toggleable button', () => {
+			testButton( 'link', 'Link', ButtonView );
+
+			it( 'should have #tooltip', () => {
+				expect( linkButton.tooltip ).to.be.true;
+			} );
+
+			it( 'should have #isToggleable', () => {
 				expect( linkButton.isToggleable ).to.be.true;
 			} );
+		} );
 
-			it( 'should be bound to the link command', () => {
-				const command = editor.commands.get( 'link' );
-
-				command.isEnabled = true;
-				command.value = 'http://ckeditor.com';
-
-				expect( linkButton.isOn ).to.be.true;
-				expect( linkButton.isEnabled ).to.be.true;
-
-				command.isEnabled = false;
-				command.value = undefined;
-
-				expect( linkButton.isOn ).to.be.false;
-				expect( linkButton.isEnabled ).to.be.false;
+		describe( 'the "menuBar:link" menu bar button', () => {
+			beforeEach( () => {
+				linkButton = editor.ui.componentFactory.create( 'menuBar:link' );
 			} );
 
-			it( 'should call #_showUI upon #execute', () => {
+			testButton( 'link', 'Link', MenuBarMenuListItemButtonView );
+		} );
+
+		function testButton( featureName, label, Component ) {
+			it( 'should register feature component', () => {
+				expect( linkButton ).to.be.instanceOf( Component );
+			} );
+
+			it( 'should create UI component with correct attribute values', () => {
+				expect( linkButton.isOn ).to.be.false;
+				expect( linkButton.label ).to.equal( label );
+				expect( linkButton.icon ).to.equal( linkIcon );
+				expect( linkButton.keystroke ).to.equal( 'Ctrl+K' );
+			} );
+
+			it( 'should display the link UI when executed', () => {
 				const spy = testUtils.sinon.stub( linkUIFeature, '_showUI' ).returns( {} );
 
 				linkButton.fire( 'execute' );
+
 				sinon.assert.calledWithExactly( spy, true );
 			} );
-		} );
+
+			it( `should bind #isEnabled to ${ featureName } command`, () => {
+				const command = editor.commands.get( featureName );
+
+				expect( linkButton.isOn ).to.be.false;
+
+				const initState = command.isEnabled;
+				expect( linkButton.isEnabled ).to.equal( initState );
+
+				command.isEnabled = !initState;
+				expect( linkButton.isEnabled ).to.equal( !initState );
+			} );
+		}
 	} );
 
 	describe( '_showUI()', () => {

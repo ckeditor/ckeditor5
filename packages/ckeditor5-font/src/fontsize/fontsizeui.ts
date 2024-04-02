@@ -12,7 +12,11 @@ import {
 	ViewModel,
 	createDropdown,
 	addListToDropdown,
-	type ListDropdownItemDefinition
+	type ListDropdownButtonDefinition,
+	MenuBarMenuView,
+	MenuBarMenuListView,
+	MenuBarMenuListItemView,
+	MenuBarMenuListItemButtonView
 } from 'ckeditor5/src/ui.js';
 import { Collection } from 'ckeditor5/src/utils.js';
 
@@ -48,11 +52,13 @@ export default class FontSizeUI extends Plugin {
 		const command: FontSizeCommand = editor.commands.get( FONT_SIZE )!;
 		const accessibleLabel = t( 'Font Size' );
 
+		const listOptions = _prepareListOptions( options, command );
+
 		// Register UI component.
 		editor.ui.componentFactory.add( FONT_SIZE, locale => {
 			const dropdownView = createDropdown( locale );
 
-			addListToDropdown( dropdownView, () => _prepareListOptions( options, command ), {
+			addListToDropdown( dropdownView, listOptions, {
 				role: 'menu',
 				ariaLabel: accessibleLabel
 			} );
@@ -81,6 +87,43 @@ export default class FontSizeUI extends Plugin {
 			} );
 
 			return dropdownView;
+		} );
+
+		editor.ui.componentFactory.add( `menuBar:${ FONT_SIZE }`, locale => {
+			const menuView = new MenuBarMenuView( locale );
+
+			menuView.buttonView.set( {
+				label: accessibleLabel,
+				icon: fontSizeIcon
+			} );
+
+			menuView.bind( 'isEnabled' ).to( command );
+
+			const listView = new MenuBarMenuListView( locale );
+
+			for ( const definition of listOptions ) {
+				const listItemView = new MenuBarMenuListItemView( locale, menuView );
+				const buttonView = new MenuBarMenuListItemButtonView( locale );
+
+				buttonView.bind( ...Object.keys( definition.model ) as Array<keyof MenuBarMenuListItemButtonView> ).to( definition.model );
+				buttonView.bind( 'ariaChecked' ).to( buttonView, 'isOn' );
+				buttonView.delegate( 'execute' ).to( menuView );
+
+				buttonView.on( 'execute', () => {
+					editor.execute( ( definition.model as any ).commandName, {
+						value: ( definition.model as any ).commandParam
+					} );
+
+					editor.editing.view.focus();
+				} );
+
+				listItemView.children.add( buttonView );
+				listView.items.add( listItemView );
+			}
+
+			menuView.panelView.children.add( listView );
+
+			return menuView;
 		} );
 	}
 
@@ -122,8 +165,8 @@ export default class FontSizeUI extends Plugin {
 /**
  * Prepares FontSize dropdown items.
  */
-function _prepareListOptions( options: Array<FontSizeOption>, command: FontSizeCommand ): Collection<ListDropdownItemDefinition> {
-	const itemDefinitions = new Collection<ListDropdownItemDefinition>();
+function _prepareListOptions( options: Array<FontSizeOption>, command: FontSizeCommand ): Collection<ListDropdownButtonDefinition> {
+	const itemDefinitions = new Collection<ListDropdownButtonDefinition>();
 
 	for ( const option of options ) {
 		const def = {

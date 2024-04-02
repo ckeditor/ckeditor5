@@ -40,6 +40,11 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 	public readonly editable: InlineEditableUIView;
 
 	/**
+	 * Flag that indicates if menu bar should be used.
+	 */
+	private _useMenuBar?: boolean;
+
+	/**
 	 * Creates an instance of the classic editor UI view.
 	 *
 	 * @param locale The {@link module:core/editor/editor~Editor#locale} instance.
@@ -54,6 +59,7 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 		editingView: EditingView,
 		options: {
 			shouldToolbarGroupWhenFull?: boolean;
+			useMenuBar?: boolean;
 		} = {}
 	) {
 		super( locale );
@@ -63,6 +69,8 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 		this.toolbar = new ToolbarView( locale, {
 			shouldGroupWhenFull: options.shouldToolbarGroupWhenFull
 		} );
+
+		this._useMenuBar = options.useMenuBar;
 
 		this.menuBarView = new MenuBarView( locale );
 
@@ -75,8 +83,12 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 	public override render(): void {
 		super.render();
 
-		// Set toolbar as a child of a stickyPanel and makes toolbar sticky.
-		this.stickyPanel.content.addMany( [ this.menuBarView, this.toolbar ] );
+		if ( this._useMenuBar ) {
+			// Set toolbar as a child of a stickyPanel and makes toolbar sticky.
+			this.stickyPanel.content.addMany( [ this.menuBarView, this.toolbar ] );
+		} else {
+			this.stickyPanel.content.add( this.toolbar );
+		}
 
 		this.top.add( this.stickyPanel );
 		this.main.add( this.editable );

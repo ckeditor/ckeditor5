@@ -284,6 +284,8 @@ function initEditor( editorName, editorClass, direction = 'ltr', customCallback?
 		],
 		toolbar: {
 			items: [
+				'accessibilityHelp',
+				'|',
 				'heading', 'bold', 'italic', 'link', 'sourceediting',
 				'-',
 				'findAndReplace', 'modalWithText', 'yesNoModal', ...POSSIBLE_DIALOG_POSITIONS
