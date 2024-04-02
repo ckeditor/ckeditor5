@@ -304,10 +304,6 @@ function getStyleButtonCreator( {
 				else if ( listStyleCommand.value !== type ) {
 					editor.execute( 'listStyle', { type } );
 				}
-				// If the style was the same, remove it (the button works as an off toggle).
-				else {
-					editor.execute( 'listStyle', { type: listStyleCommand.defaultType } );
-				}
 			}
 			// Otherwise, leave the creation of the styled list to the `ListStyleCommand`.
 			else {
