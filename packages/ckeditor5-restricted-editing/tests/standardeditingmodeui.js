@@ -9,12 +9,15 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 
 import StandardEditingModeUI from '../src/standardeditingmodeui.js';
 import StandardEditingModeEditing from '../src/standardeditingmodeediting.js';
 
+import unlockIcon from '../theme/icons/contentunlock.svg';
+
 describe( 'StandardEditingModeUI', () => {
-	let editor, buttonView, editorElement;
+	let editor, button, editorElement;
 
 	testUtils.createSinonSandbox();
 
@@ -25,8 +28,6 @@ describe( 'StandardEditingModeUI', () => {
 		editor = await ClassicTestEditor.create( editorElement, {
 			plugins: [ Paragraph, StandardEditingModeEditing, StandardEditingModeUI ]
 		} );
-
-		buttonView = editor.ui.componentFactory.create( 'restrictedEditingException' );
 	} );
 
 	afterEach( () => {
@@ -34,32 +35,115 @@ describe( 'StandardEditingModeUI', () => {
 		return editor.destroy();
 	} );
 
-	it( 'should register a button', () => {
-		expect( buttonView ).to.be.instanceOf( ButtonView );
-		expect( buttonView.isOn ).to.be.false;
-		expect( buttonView.label ).to.equal( 'Enable editing' );
-		expect( buttonView.icon ).to.match( /<svg / );
-		expect( buttonView.isToggleable ).to.be.true;
+	describe( 'the "restrictedEditingException" toolbar button', () => {
+		beforeEach( () => {
+			button = editor.ui.componentFactory.create( 'restrictedEditingException' );
+		} );
+
+		testButton( 'restrictedEditingException', [ 'Enable editing', 'Disable editing' ], ButtonView );
+
+		it( 'should have #tooltip', () => {
+			expect( button.tooltip ).to.be.true;
+		} );
+
+		it( 'should have #isToggleable', () => {
+			expect( button.isToggleable ).to.be.true;
+		} );
 	} );
 
-	it( 'should execute a command on the button "execute" event', () => {
-		const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+	describe( 'the "menuBar:restrictedEditingException" menu bar button', () => {
+		beforeEach( () => {
+			button = editor.ui.componentFactory.create( 'menuBar:restrictedEditingException' );
+		} );
 
-		buttonView.fire( 'execute' );
-
-		sinon.assert.calledOnce( executeSpy );
+		testButton( 'restrictedEditingException', [ 'Enable editing', 'Disable editing' ], MenuBarMenuListItemButtonView );
 	} );
 
-	it( 'should bind a button to the command', () => {
-		const command = editor.commands.get( 'restrictedEditingException' );
+	function testButton( featureName, labels, Component ) {
+		it( 'should register feature component', () => {
+			expect( button ).to.be.instanceOf( Component );
+		} );
 
-		expect( buttonView.isOn ).to.be.false;
-		expect( buttonView.isEnabled ).to.be.true;
+		it( 'should create UI component with correct attribute values', () => {
+			expect( button.isOn ).to.be.false;
+			expect( button.label ).to.equal( labels[ 0 ] );
+			expect( button.icon ).to.equal( unlockIcon );
+		} );
 
-		command.value = true;
-		expect( buttonView.isOn ).to.be.true;
+		it( `should execute ${ featureName } command on model execute event and focus the view`, () => {
+			const executeSpy = testUtils.sinon.stub( editor, 'execute' );
+			const focusSpy = testUtils.sinon.stub( editor.editing.view, 'focus' );
 
-		command.isEnabled = false;
-		expect( buttonView.isEnabled ).to.be.false;
-	} );
+			button.fire( 'execute' );
+
+			sinon.assert.calledOnceWithExactly( executeSpy, featureName );
+			sinon.assert.calledOnce( focusSpy );
+			sinon.assert.callOrder( executeSpy, focusSpy );
+		} );
+
+		it( `should bind #isEnabled to ${ featureName } command`, () => {
+			const command = editor.commands.get( featureName );
+
+			expect( button.isOn ).to.be.false;
+
+			const initState = command.isEnabled;
+			expect( button.isEnabled ).to.equal( initState );
+
+			command.isEnabled = !initState;
+			expect( button.isEnabled ).to.equal( !initState );
+		} );
+
+		it( `should bind #isOn to ${ featureName } command`, () => {
+			const command = editor.commands.get( featureName );
+
+			expect( button.isOn ).to.be.false;
+
+			command.value = true;
+			expect( button.isOn ).to.be.true;
+
+			command.value = false;
+			expect( button.isOn ).to.be.false;
+		} );
+
+		it( `should bind #label to ${ featureName } command`, () => {
+			const command = editor.commands.get( featureName );
+
+			expect( button.label ).to.equal( labels[ 0 ] );
+
+			command.value = true;
+			expect( button.label ).to.equal( labels[ 1 ] );
+
+			command.value = false;
+			expect( button.label ).to.equal( labels[ 0 ] );
+		} );
+	}
+
+	// it( 'should register a button', () => {
+	// 	expect( button ).to.be.instanceOf( ButtonView );
+	// 	expect( button.isOn ).to.be.false;
+	// 	expect( button.label ).to.equal( 'Enable editing' );
+	// 	expect( button.icon ).to.match( /<svg / );
+	// 	expect( button.isToggleable ).to.be.true;
+	// } );
+
+	// it( 'should execute a command on the button "execute" event', () => {
+	// 	const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+
+	// 	button.fire( 'execute' );
+
+	// 	sinon.assert.calledOnce( executeSpy );
+	// } );
+
+	// it( 'should bind a button to the command', () => {
+	// 	const command = editor.commands.get( 'restrictedEditingException' );
+
+	// 	expect( button.isOn ).to.be.false;
+	// 	expect( button.isEnabled ).to.be.true;
+
+	// 	command.value = true;
+	// 	expect( button.isOn ).to.be.true;
+
+	// 	command.isEnabled = false;
+	// 	expect( button.isEnabled ).to.be.false;
+	// } );
 } );

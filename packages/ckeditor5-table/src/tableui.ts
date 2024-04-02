@@ -15,7 +15,8 @@ import {
 	SplitButtonView,
 	SwitchButtonView,
 	type DropdownView,
-	type ListDropdownItemDefinition
+	type ListDropdownItemDefinition,
+	MenuBarMenuView
 } from 'ckeditor5/src/ui.js';
 import { Collection, type Locale } from 'ckeditor5/src/utils.js';
 
@@ -31,6 +32,7 @@ import type MergeCellsCommand from './commands/mergecellscommand.js';
  * The table UI plugin. It introduces:
  *
  * * The `'insertTable'` dropdown,
+ * * The `'menuBar:insertTable'` menu bar menu,
  * * The `'tableColumn'` dropdown,
  * * The `'tableRow'` dropdown,
  * * The `'mergeTableCells'` split button.
@@ -87,6 +89,30 @@ export default class TableUI extends Plugin {
 			} );
 
 			return dropdownView;
+		} );
+
+		editor.ui.componentFactory.add( 'menuBar:insertTable', locale => {
+			const command: InsertTableCommand = editor.commands.get( 'insertTable' )!;
+			const menuView = new MenuBarMenuView( locale );
+			const insertTableView = new InsertTableView( locale );
+
+			insertTableView.delegate( 'execute' ).to( menuView );
+
+			insertTableView.on( 'execute', () => {
+				editor.execute( 'insertTable', { rows: insertTableView.rows, columns: insertTableView.columns } );
+				editor.editing.view.focus();
+			} );
+
+			menuView.buttonView.set( {
+				label: t( 'Table' ),
+				icon: icons.table
+			} );
+
+			menuView.panelView.children.add( insertTableView );
+
+			menuView.bind( 'isEnabled' ).to( command );
+
+			return menuView;
 		} );
 
 		editor.ui.componentFactory.add( 'tableColumn', locale => {

@@ -28,8 +28,6 @@ describe( 'BoldUI', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-
-				boldView = editor.ui.componentFactory.create( 'bold' );
 			} );
 	} );
 
@@ -39,38 +37,61 @@ describe( 'BoldUI', () => {
 		return editor.destroy();
 	} );
 
-	it( 'should register bold feature component', () => {
-		expect( boldView ).to.be.instanceOf( ButtonView );
-		expect( boldView.isOn ).to.be.false;
-		expect( boldView.label ).to.equal( 'Bold' );
-		expect( boldView.icon ).to.match( /<svg / );
-		expect( boldView.keystroke ).to.equal( 'CTRL+B' );
-		expect( boldView.isToggleable ).to.be.true;
+	describe( 'toolbar button', () => {
+		beforeEach( () => {
+			boldView = editor.ui.componentFactory.create( 'bold' );
+		} );
+
+		testButton();
+
+		it( 'should bind `isOn` to bold command', () => {
+			const command = editor.commands.get( 'bold' );
+
+			expect( boldView.isOn ).to.be.false;
+
+			command.value = true;
+			expect( boldView.isOn ).to.be.true;
+		} );
 	} );
 
-	it( 'should execute bold command on model execute event', () => {
-		const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+	describe( 'menu bar button', () => {
+		beforeEach( () => {
+			boldView = editor.ui.componentFactory.create( 'menuBar:bold' );
+		} );
 
-		boldView.fire( 'execute' );
-
-		sinon.assert.calledOnce( executeSpy );
-		sinon.assert.calledWithExactly( executeSpy, 'bold' );
+		testButton();
 	} );
 
-	it( 'should bind model to bold command', () => {
-		const command = editor.commands.get( 'bold' );
+	function testButton() {
+		it( 'should register bold feature component', () => {
+			expect( boldView ).to.be.instanceOf( ButtonView );
+			expect( boldView.isOn ).to.be.false;
+			expect( boldView.label ).to.equal( 'Bold' );
+			expect( boldView.icon ).to.match( /<svg / );
+			expect( boldView.keystroke ).to.equal( 'CTRL+B' );
+			expect( boldView.isToggleable ).to.be.true;
+		} );
 
-		expect( boldView.isOn ).to.be.false;
-		expect( boldView.isEnabled ).to.be.true;
+		it( 'should execute bold command on model execute event', () => {
+			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
-		command.value = true;
-		expect( boldView.isOn ).to.be.true;
+			boldView.fire( 'execute' );
 
-		command.isEnabled = false;
-		expect( boldView.isEnabled ).to.be.false;
-	} );
+			sinon.assert.calledOnce( executeSpy );
+			sinon.assert.calledWithExactly( executeSpy, 'bold' );
+		} );
 
-	it( 'should set keystroke in the model', () => {
-		expect( boldView.keystroke ).to.equal( 'CTRL+B' );
-	} );
+		it( 'should bind `isEnabled` to bold command', () => {
+			const command = editor.commands.get( 'bold' );
+
+			expect( boldView.isEnabled ).to.be.true;
+
+			command.isEnabled = false;
+			expect( boldView.isEnabled ).to.be.false;
+		} );
+
+		it( 'should set keystroke in the model', () => {
+			expect( boldView.keystroke ).to.equal( 'CTRL+B' );
+		} );
+	}
 } );

@@ -60,6 +60,9 @@ async function startStandardEditingMode() {
 				'mergeTableCells'
 			]
 		},
+		menuBar: {
+			isVisible: true
+		},
 		cloudServices: CS_CONFIG,
 		updateSourceElementOnDestroy: true
 	} );
@@ -97,11 +100,14 @@ async function startRestrictedEditingMode() {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ],
 			tableToolbar: [ 'bold', 'italic' ]
 		},
+		updateSourceElementOnDestroy: true,
+		menuBar: {
+			isVisible: true
+		},
 		restrictedEditing: {
 			allowedCommands: [ 'imageInsert', 'imageUpload' ]
 		},
-		cloudServices: CS_CONFIG,
-		updateSourceElementOnDestroy: true
+		cloudServices: CS_CONFIG
 	} );
 }
 

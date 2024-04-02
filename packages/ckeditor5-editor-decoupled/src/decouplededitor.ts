@@ -41,7 +41,8 @@ import { isElement as _isElement } from 'lodash-es';
  * In order to create a decoupled editor instance, use the static
  * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`} method.
  *
- * Note that you will need to attach the editor toolbar to your web page manually, in a desired place, after the editor is initialized.
+ * Note that you will need to attach the editor toolbar and menu bar to your web page manually, in a desired place,
+ * after the editor is initialized.
  *
  * # Decoupled editor and document editor build
  *

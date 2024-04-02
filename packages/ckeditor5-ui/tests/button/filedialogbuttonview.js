@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import FileDialogButtonView from '../../src/ui/filedialogbuttonview.js';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
-import View from '@ckeditor/ckeditor5-ui/src/view.js';
+import FileDialogButtonView from '../../src/button/filedialogbuttonview.ts';
+import ButtonView from '../../src/button/buttonview.js';
+import View from '../../src/view.js';
 
 describe( 'FileDialogButtonView', () => {
 	let view, localeMock;
