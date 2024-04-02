@@ -62,7 +62,7 @@ export const MenuBarBehaviors = {
 			for ( const menuView of menuBarView.menus ) {
 				// @if CK_DEBUG_MENU_BAR // const wasOpen = menuView.isOpen;
 
-				menuView.isOpen = evt.path.includes( menuView );
+				menuView.isOpen = evt.path.includes( menuView ) && menuView.isEnabled;
 
 				// @if CK_DEBUG_MENU_BAR // if ( wasOpen !== menuView.isOpen ) {
 				// @if CK_DEBUG_MENU_BAR // console.log( '[BEHAVIOR] toggleMenusAndFocusItemsOnHover(): Toggle',
@@ -189,7 +189,7 @@ export const MenuBarMenuBehaviors = {
 		const keystroke = menuView.locale!.uiLanguageDirection === 'rtl' ? 'arrowleft' : 'arrowright';
 
 		menuView.keystrokes.set( keystroke, ( data, cancel ) => {
-			if ( menuView.focusTracker.focusedElement !== menuView.buttonView.element ) {
+			if ( menuView.focusTracker.focusedElement !== menuView.buttonView.element || !menuView.isEnabled ) {
 				return;
 			}
 

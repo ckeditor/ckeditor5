@@ -83,7 +83,8 @@ export default class RestrictedEditingModeUI extends Plugin {
 			} );
 
 			menuView.buttonView.set( {
-				label: t( 'Navigate editable regions' )
+				label: t( 'Navigate editable regions' ),
+				icon: lockIcon
 			} );
 
 			menuView.panelView.children.add( listView );
@@ -100,16 +101,6 @@ export default class RestrictedEditingModeUI extends Plugin {
 
 			return menuView;
 		} );
-
-		editor.ui.componentFactory.add(
-			'menuBar:restrictedEditingPrevious',
-			() => this._createMenuBarButton( t( 'Previous editable region' ), 'goToPreviousRestrictedEditingException', 'Shift+Tab' )
-		);
-
-		editor.ui.componentFactory.add(
-			'menuBar:restrictedEditingNext',
-			() => this._createMenuBarButton( t( 'Next editable region' ), 'goToNextRestrictedEditingException', 'Tab' )
-		);
 	}
 
 	/**

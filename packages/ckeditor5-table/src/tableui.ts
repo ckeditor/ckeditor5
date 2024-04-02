@@ -32,6 +32,7 @@ import type MergeCellsCommand from './commands/mergecellscommand.js';
  * The table UI plugin. It introduces:
  *
  * * The `'insertTable'` dropdown,
+ * * The `'menuBar:insertTable'` menu bar menu,
  * * The `'tableColumn'` dropdown,
  * * The `'tableRow'` dropdown,
  * * The `'mergeTableCells'` split button.
@@ -91,6 +92,7 @@ export default class TableUI extends Plugin {
 		} );
 
 		editor.ui.componentFactory.add( 'menuBar:insertTable', locale => {
+			const command: InsertTableCommand = editor.commands.get( 'insertTable' )!;
 			const menuView = new MenuBarMenuView( locale );
 			const insertTableView = new InsertTableView( locale );
 
@@ -107,6 +109,8 @@ export default class TableUI extends Plugin {
 			} );
 
 			menuView.panelView.children.add( insertTableView );
+
+			menuView.bind( 'isEnabled' ).to( command );
 
 			return menuView;
 		} );
