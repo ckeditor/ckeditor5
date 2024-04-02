@@ -22,6 +22,7 @@ import { icons } from 'ckeditor5/src/core.js';
 
 import CKBoxUI from '../src/ckboxui.js';
 import CKBoxEditing from '../src/ckboxediting.js';
+import { MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'CKBoxUI', () => {
 	let editorElement, editor, button, command, originalCKBox;
@@ -72,10 +73,6 @@ describe( 'CKBoxUI', () => {
 		expect( CKBoxUI.pluginName ).to.equal( 'CKBoxUI' );
 	} );
 
-	it( 'should add the "ckbox" component to the factory if the "ckbox" command exists', () => {
-		expect( button ).to.be.instanceOf( ButtonView );
-	} );
-
 	it( 'should not add the "ckbox" component to the factory if the "ckbox" command does not exist', async () => {
 		delete window.CKBox;
 
@@ -100,6 +97,7 @@ describe( 'CKBoxUI', () => {
 		} );
 
 		expect( editor.ui.componentFactory.has( 'ckbox' ) ).to.be.false;
+		expect( editor.ui.componentFactory.has( 'menuBar:ckbox' ) ).to.be.false;
 		expect( editor.commands.get( 'ckbox' ) ).to.be.undefined;
 
 		editorElement.remove();
@@ -107,45 +105,24 @@ describe( 'CKBoxUI', () => {
 		await editor.destroy();
 	} );
 
-	describe( 'button', () => {
-		it( 'should bind #isEnabled to the command', () => {
-			command.isEnabled = true;
-			expect( button.isEnabled ).to.be.true;
-
-			command.isEnabled = false;
-			expect( button.isEnabled ).to.be.false;
+	describe( 'toolbar button', () => {
+		beforeEach( () => {
+			button = editor.ui.componentFactory.create( 'ckbox' );
 		} );
 
-		it( 'should bind #isOn to the command', () => {
-			command.value = true;
-			expect( button.isOn ).to.be.true;
-
-			command.value = false;
-			expect( button.isOn ).to.be.false;
-		} );
-
-		it( 'should set a #label of the #buttonView', () => {
-			expect( button.label ).to.equal( 'Open file manager' );
-		} );
-
-		it( 'should set an #icon of the #buttonView', () => {
-			expect( button.icon ).to.equal( icons.browseFiles );
-		} );
+		testButton( ButtonView );
 
 		it( 'should enable tooltips for the #buttonView', () => {
 			expect( button.tooltip ).to.be.true;
 		} );
+	} );
 
-		it( 'should execute the command afer firing the event', () => {
-			const executeSpy = sinon.spy( editor, 'execute' );
-
-			command.on( 'ckbox', eventInfo => eventInfo.stop(), { priority: 'high' } );
-
-			button.fire( 'execute' );
-
-			expect( executeSpy.calledOnce ).to.be.true;
-			expect( executeSpy.args[ 0 ][ 0 ] ).to.equal( 'ckbox' );
+	describe( 'menu bar button', () => {
+		beforeEach( () => {
+			button = editor.ui.componentFactory.create( 'menuBar:ckbox' );
 		} );
+
+		testButton( MenuBarMenuListItemButtonView );
 	} );
 
 	describe( 'InsertImageUI integration', () => {
@@ -225,6 +202,47 @@ describe( 'CKBoxUI', () => {
 			expect( dropdown.isOpen ).to.be.false;
 		} );
 	} );
+
+	function testButton( Component ) {
+		it( 'should add the "ckbox" component to the factory if the "ckbox" command exists', () => {
+			expect( button ).to.be.instanceOf( Component );
+		} );
+
+		it( 'should bind #isEnabled to the command', () => {
+			command.isEnabled = true;
+			expect( button.isEnabled ).to.be.true;
+
+			command.isEnabled = false;
+			expect( button.isEnabled ).to.be.false;
+		} );
+
+		it( 'should bind #isOn to the command', () => {
+			command.value = true;
+			expect( button.isOn ).to.be.true;
+
+			command.value = false;
+			expect( button.isOn ).to.be.false;
+		} );
+
+		it( 'should set a #label of the #buttonView', () => {
+			expect( button.label ).to.equal( 'Open file manager' );
+		} );
+
+		it( 'should set an #icon of the #buttonView', () => {
+			expect( button.icon ).to.equal( icons.browseFiles );
+		} );
+
+		it( 'should execute the command afer firing the event', () => {
+			const executeSpy = sinon.spy( editor, 'execute' );
+
+			command.on( 'ckbox', eventInfo => eventInfo.stop(), { priority: 'high' } );
+
+			button.fire( 'execute' );
+
+			expect( executeSpy.calledOnce ).to.be.true;
+			expect( executeSpy.args[ 0 ][ 0 ] ).to.equal( 'ckbox' );
+		} );
+	}
 
 	function mockAssetManagerIntegration() {
 		const insertImageUI = editor.plugins.get( 'ImageInsertUI' );

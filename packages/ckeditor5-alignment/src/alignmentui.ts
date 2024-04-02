@@ -187,12 +187,12 @@ export default class AlignmentUI extends Plugin {
 			const listView = new MenuBarMenuListView( locale );
 
 			listView.set( {
-				ariaLabel: t( 'Alignment' ),
+				ariaLabel: t( 'Text alignment' ),
 				role: 'menu'
 			} );
 
 			menuView.buttonView.set( {
-				label: t( 'Alignment' )
+				label: t( 'Text alignment' )
 			} );
 
 			for ( const option of options ) {
@@ -218,6 +218,7 @@ export default class AlignmentUI extends Plugin {
 				} );
 
 				buttonView.bind( 'isOn' ).to( command, 'value', value => value === option.name );
+				buttonView.bind( 'isEnabled' ).to( command, 'isEnabled' );
 
 				listItemView.children.add( buttonView );
 				listView.items.add( listItemView );

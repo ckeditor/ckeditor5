@@ -104,6 +104,10 @@ export default class CodeBlockUI extends Plugin {
 
 			const listView = new MenuBarMenuListView( locale );
 
+			listView.set( {
+				ariaLabel: t( 'Insert code block' )
+			} );
+
 			for ( const definition of itemDefinitions ) {
 				const listItemView = new MenuBarMenuListItemView( locale, menuView );
 				const buttonView = new MenuBarMenuListItemButtonView( locale );
