@@ -30,7 +30,7 @@ module.exports = async function updateVersionReferences( { version, releaseDate 
 		},
 		{
 			file: upath.join( 'packages', 'ckeditor5-utils', 'src', 'version.ts' ),
-			pattern: /(?<=const version = ')\d+\.\d+\.\d+(?=';)/,
+			pattern: /(?<=const version = ')[^']+(?=';)/,
 			value: version
 		},
 		{
