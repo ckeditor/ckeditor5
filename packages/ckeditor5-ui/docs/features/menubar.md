@@ -12,7 +12,7 @@ The toolbar is the most basic user interface element of CKEditor&nbsp;5 that giv
 
 ## Demo
 
-Below is a sample menu bar with a basic set of features. Menu items can be easily added or removed. Read on to learn how to do that.
+Below is a demo presenting a sample menu bar for an editor with a basic set of features. Menu items can be easily added or removed. Read on to learn how to do that.
 
 {@snippet features/menubar-basic}
 
