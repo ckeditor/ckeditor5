@@ -20,7 +20,7 @@ _Released on April 10, 2024._
 
 ### Legacy lists compatibility
 
-As of this release, the {@link module:list/legacylist~LegacyList legacy lists plugin} (lists v.1 ) is no longer compatible with the {@link features/paste-from-office paste from Office} feature. List items will be added as paragraphs instead. Please consider {@link updating/update-to-41#breaking-changes-to-the-list-plugin upgrading to the modern list plugin} to avoid it.
+As of this release, due to a bug that needed fixing, the {@link module:list/legacylist~LegacyList legacy lists plugin} (lists v.1 ) is no longer compatible with the {@link features/paste-from-office paste from Office} feature. List items will be added as paragraphs instead. Please consider {@link updating/update-to-41#breaking-changes-to-the-list-plugin upgrading to the modern list plugin} to avoid it.
 
 
 ## Update to CKEditor&nbsp;5 v41.0.0
