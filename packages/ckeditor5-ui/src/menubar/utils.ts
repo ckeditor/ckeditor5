@@ -414,20 +414,255 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
  * them from components referenced by the {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar configuration}, for instance,
  * `'menuBar:bold'` is a menu bar button but `'bold'` is a toolbar button.
  *
- * The default menu bar items include the following groups and features:
+ * This is the preset menu bar structure:
  *
- * * **File**: Export to PDF, Export to Word, Import from Word, Revision history
- * * **Edit**: Undo, Redo, Select all, Find and replace
- * * **View**: Source editing, Show block, Editable region
- * * **Insert**: Image upload, Open CKBox, Open CKFinder, Insert table, Insert link, Comment, Template, Block quote, Code block,
- * Embed HTML, Horizontal line, Page break, Table of contents, Restricted editing
- * * **Format**: Bold, Italic, Underline, Strikethrough, Superscript, Subscript, Code, Text part language,
- * Font size, Font Family, Font color, Font background color, Highlight, Unordered list,
- * Ordered list, To-do list, Alignment, Indent, Outdent, Case change, Remove format
- * * **Tools**: AI Assistant, AI commands, Track changes, Comment archive
- * * **Help**: Accessibility help
+ * ```ts
+ * export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> = [
+ * {
+ * 	menuId: 'file',
+ * 	label: 'File',
+ * 	groups: [
+ * 		{
+ * 			groupId: 'export',
+ * 			items: [
+ * 				'menuBar:exportPdf',
+ * 				'menuBar:exportWord'
+ * 			]
+ * 		},
+ * 		{
+ * 			groupId: 'import',
+ * 			items: [
+ * 				'menuBar:importWord'
+ * 			]
+ * 		},
+ * 		{
+ * 			groupId: 'revisionHistory',
+ * 			items: [
+ * 				'menuBar:revisionHistory'
+ * 			]
+ * 		}
+ * 	]
+ * },
+ * {
+ * 	menuId: 'edit',
+ * 	label: 'Edit',
+ * 	groups: [
+ * 		{
+ * 			groupId: 'undo',
+ * 			items: [
+ * 				'menuBar:undo',
+ * 				'menuBar:redo'
+ * 			]
+ * 		},
+ * 		{
+ * 			groupId: 'selectAll',
+ * 			items: [
+ * 				'menuBar:selectAll'
+ * 			]
+ * 		},
+ * 		{
+ * 			groupId: 'findAndReplace',
+ * 			items: [
+ * 				'menuBar:findAndReplace'
+ * 			]
+ * 		}
+ * 	]
+ * },
+ * {
+ * 	menuId: 'view',
+ * 	label: 'View',
+ * 	groups: [
+ * 		{
+ * 			groupId: 'sourceEditing',
+ * 			items: [
+ * 				'menuBar:sourceEditing'
+ * 			]
+ * 		},
+ * 		{
+ * 			groupId: 'showBlocks',
+ * 			items: [
+ * 				'menuBar:showBlocks'
+ * 			]
+ * 		},
+ * 		{
+ * 			groupId: 'restrictedEditingException',
+ * 			items: [
+ * 				'menuBar:restrictedEditingException'
+ * 			]
+ * 		}
+ * 	]
+ * },
+ * {
+ * 	menuId: 'insert',
+ * 	label: 'Insert',
+ * 	groups: [
+ * 		{
+ * 			groupId: 'insertGroup1',
+ * 			items: [
+ * 				'menuBar:uploadImage',
+ * 				'menuBar:ckbox',
+ * 				'menuBar:ckfinder',
+ * 				'menuBar:insertTable'
+ * 			]
+ * 		},
+ * 		{
+ * 			groupId: 'insertGroup2',
+ * 			items: [
+ * 				'menuBar:link',
+ * 				'menuBar:comment'
+ * 			]
+ * 		},
+ * 		{
+ * 			groupId: 'insertGroup3',
+ * 			items: [
+ * 				'menuBar:insertTemplate',
+ * 				'menuBar:blockQuote',
+ * 				'menuBar:codeBlock',
+ * 				'menuBar:htmlEmbed'
+ * 			]
+ * 		},
+ * 		{
+ * 			groupId: 'insertGroup4',
+ * 			items: [
+ * 				'menuBar:horizontalLine',
+ * 				'menuBar:pageBreak',
+ * 				'menuBar:tableOfContents'
+ * 			]
+ * 		},
+ * 		{
+ * 			groupId: 'restrictedEditing',
+ * 			items: [
+ * 				'menuBar:restrictedEditing'
+ * 			]
+ * 		}
+ * 	]
+ * },
+ * {
+ * 	menuId: 'format',
+ * 	label: 'Format',
+ * 	groups: [
+ * 		{
+ * 			groupId: 'textAndFont',
+ * 			items: [
+ * 				{
+ * 					menuId: 'text',
+ * 					label: 'Text',
+ * 					groups: [
+ * 						{
+ * 							groupId: 'basicStyles',
+ * 							items: [
+ * 								'menuBar:bold',
+ * 								'menuBar:italic',
+ * 								'menuBar:underline',
+ * 								'menuBar:strikethrough',
+ * 								'menuBar:superscript',
+ * 								'menuBar:subscript',
+ * 								'menuBar:code'
+ * 							]
+ * 						},
+ * 						{
+ * 							groupId: 'textPartLanguage',
+ * 							items: [
+ * 								'menuBar:textPartLanguage'
+ * 							]
+ * 						}
+ * 					]
+ * 				},
+ * 				{
+ * 					menuId: 'font',
+ * 					label: 'Font',
+ * 					groups: [
+ * 						{
+ * 							groupId: 'fontProperties',
+ * 							items: [
+ * 								'menuBar:fontSize',
+ * 								'menuBar:fontFamily'
+ * 							]
+ * 						},
+ * 						{
+ * 							groupId: 'fontColors',
+ * 							items: [
+ * 								'menuBar:fontColor',
+ * 								'menuBar:fontBackgroundColor'
+ * 							]
+ * 						},
+ * 						{
+ * 							groupId: 'highlight',
+ * 							items: [
+ * 								'menuBar:highlight'
+ * 							]
+ * 						}
+ * 					]
+ * 				},
+ * 				'menuBar:heading'
+ * 			]
+ * 		},
+ * 		{
+ * 			groupId: 'list',
+ * 			items: [
+ * 				'menuBar:bulletedList',
+ * 				'menuBar:numberedList',
+ * 				'menuBar:todoList'
+ * 			]
+ * 		},
+ * 		{
+ * 			groupId: 'indent',
+ * 			items: [
+ * 				'menuBar:alignment',
+ * 				'menuBar:indent',
+ * 				'menuBar:outdent'
+ * 			]
+ * 		},
+ * 		{
+ * 			groupId: 'caseChange',
+ * 			items: [
+ * 				'menuBar:caseChange'
+ * 			]
+ * 		},
+ * 		{
+ * 			groupId: 'removeFormat',
+ * 			items: [
+ * 				'menuBar:removeFormat'
+ * 			]
+ * 		}
+ * 	]
+ * },
+ * {
+ * 	menuId: 'tools',
+ * 	label: 'Tools',
+ * 	groups: [
+ * 		{
+ * 			groupId: 'aiTools',
+ * 			items: [
+ * 				'menuBar:aiAssistant',
+ * 				'menuBar:aiCommands'
+ * 			]
+ * 		},
+ * 		{
+ * 			groupId: 'tools',
+ * 			items: [
+ * 				'menuBar:trackChanges',
+ * 				'menuBar:commentsArchive'
+ * 			]
+ * 		}
+ * 	]
+ * },
+ * {
+ * 	menuId: 'help',
+ * 	label: 'Help',
+ * 	groups: [
+ * 		{
+ * 			groupId: 'help',
+ * 			items: [
+ * 				'menuBar:accessibilityHelp'
+ * 			]
+ * 		}
+ * 	]
+ * }
+ * ];
+ * ```
  *
- * The user can customize the menu bar using the `config.menuBar.removeItems` and `config.menuBar.addItems` properties.
+ * The menu bar can be customized using the `config.menuBar.removeItems` and `config.menuBar.addItems` properties.
  */
 export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> = [
 	{

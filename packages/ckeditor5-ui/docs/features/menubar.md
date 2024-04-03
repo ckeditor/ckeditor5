@@ -51,28 +51,8 @@ ClassicEditor
 
 The menu bar comes with a {@link module:ui/menubar/utils#DefaultMenuBarItems predefined set of features} for convenience.
 
-<info-box>
-	If not all these plugins are added to the editor, the missing items will simply not display in the menu.
-</info-box>
+If not all these plugins are added to the editor, the missing items will simply not display in the menu.
 
-The default preset contains the following menu items:
-
-* File
-Export to PDF, Export to Word, Import from Word, Revision history
-* Edit
-Undo, Redo, Select all, Find and replace
-* View
-Source editing, Show block, Editable region
-* Insert
-Image upload, Open CKBox, Open CKFinder, Insert table, Insert link, Comment, Template, Block quote, Code block, Embed HTML, Horizontal line, Page break, Table of contents, Restricted editing
-* Format
-Bold, Italic, Underline, Strikethrough, Superscript, Subscript, Code, Text part language, Font size, Font Family, Font color, Font background color, Highlight, Unordered list, Ordered list, To-do list, Alignment, Indent, Outdent, Case change, Remove format
-* Tools
-AI Assistant, AI commands, Track changes, Comment archive
-* Help
-Accessibility help
-
-<!-- We may decide to rewrite the API instructions into this guide -->
 ### The editor menu bar configuration
 
 The menu bar can be configured using the `config.menuBar` option and its `config.menuBar.removeItems` and `config.menuBar.addItems` properties. Please refer to the {@link module:core/editor/editorconfig~EditorConfig#menuBar `config.menuBar` API documentation} for details on how to do it.
