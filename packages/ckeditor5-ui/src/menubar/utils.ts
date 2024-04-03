@@ -414,8 +414,20 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
  * them from components referenced by the {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar configuration}, for instance,
  * `'menuBar:bold'` is a menu bar button but `'bold'` is a toolbar button.
  *
- * TODO: This configuration has to be listed in API docs for developers to learn its structure
- * and to be able to customize it using `config.menuBar.removeItems` and `config.menuBar.addItems` properties.
+ * The default menu bar items include the following groups and features:
+ *
+ * * **File**: Export to PDF, Export to Word, Import from Word, Revision history
+ * * **Edit**: Undo, Redo, Select all, Find and replace
+ * * **View**: Source editing, Show block, Editable region
+ * * **Insert**: Image upload, Open CKBox, Open CKFinder, Insert table, Insert link, Comment, Template, Block quote, Code block,
+ * Embed HTML, Horizontal line, Page break, Table of contents, Restricted editing
+ * * **Format**: Bold, Italic, Underline, Strikethrough, Superscript, Subscript, Code, Text part language,
+ * Font size, Font Family, Font color, Font background color, Highlight, Unordered list,
+ * Ordered list, To-do list, Alignment, Indent, Outdent, Case change, Remove format
+ * * **Tools**: AI Assistant, AI commands, Track changes, Comment archive
+ * * **Help**: Accessibility help
+ *
+ * The user can customize the menu bar using the `config.menuBar.removeItems` and `config.menuBar.addItems` properties.
  */
 export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> = [
 	{

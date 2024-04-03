@@ -8,17 +8,21 @@ order: 30
 
 # Menu bar
 
-The toolbar is the most basic user interface element of CKEditor&nbsp;5 that gives you convenient access to all its features. It has buttons and dropdowns that you can use to format, manage, insert, and change elements of your content.
+The toolbar is the most basic user interface element of CKEditor&nbsp;5 that gives you the convenient access to all editing options. The menu bar gives you easy access to the plethora of functions, while maintaining a clear, tidy and highly effective toolbar offering just the most important features at hand. This familiar experience popular in large editing desktop and online packages improves usability and efficiency.
 
 ## Demo
 
-Below is a demo presenting a sample menu bar for an editor with a basic set of features. Menu items can be easily added or removed. Read on to learn how to do that.
+Below is a demo presenting a sample menu bar for an editor with a basic set of features.
 
 {@snippet features/menubar-basic}
 
 <info-box info>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
+
+The menu bar will be automatically filled with features available in the editor and present in the [default preset](#default-menu-bar-preset). If some of the defaults are not installed (like in the demo above), they will simply not be displayed.
+
+You can easily remove some of the presets or add more items, including menu items for custom features. The structure can also be arranged to suit particular needs.
 
 ## Configuration
 
@@ -61,7 +65,7 @@ Source editing, Show block, Editable region
 * Insert
 Image upload, Open CKBox, Open CKFinder, Insert table, Insert link, Comment, Template, Block quote, Code block, Embed HTML, Horizontal line, Page break, Table of contents, Restricted editing
 * Format
-Bold, Italic, Underline, Strikethrough, Superscript, Subscript, Code, Text part language, Font size, Font Family, Font color, Font background color, Unordered list, Ordered list, To-do list, Alignment, Indent, Outdent, Case change, Remove format
+Bold, Italic, Underline, Strikethrough, Superscript, Subscript, Code, Text part language, Font size, Font Family, Font color, Font background color, Highlight, Unordered list, Ordered list, To-do list, Alignment, Indent, Outdent, Case change, Remove format
 * Tools
 AI Assistant, AI commands, Track changes, Comment archive
 * Help
