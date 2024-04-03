@@ -17,7 +17,4 @@ export { default as Base64UploadAdapter } from './adapters/base64uploadadapter.j
 export { default as SimpleUploadAdapter } from './adapters/simpleuploadadapter.js';
 export type { SimpleUploadConfig } from './uploadconfig.js';
 
-// Backward compatibility for DLLs.
-export { FileDialogButtonView } from '@ckeditor/ckeditor5-ui';
-
 import './augmentation.js';
