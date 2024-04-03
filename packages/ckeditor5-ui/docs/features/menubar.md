@@ -46,6 +46,7 @@ ClassicEditor
 		console.log( error );
 	} );
 ```
+
 ### Default menu bar preset
 
 The menu bar comes with a {@link module:ui/menubar/utils#DefaultMenuBarItems predefined set of features} for convenience.
