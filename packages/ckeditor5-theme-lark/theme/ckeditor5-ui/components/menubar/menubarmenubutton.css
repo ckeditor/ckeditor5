@@ -44,6 +44,7 @@
 	&.ck-menu-bar__menu_top-level > .ck-menu-bar__menu__button {
 		padding: var(--ck-spacing-small) var(--ck-spacing-medium);
 		min-height: unset;
+		line-height: normal;
 
 		& .ck-button__label {
 			width: unset;
