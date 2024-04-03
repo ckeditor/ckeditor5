@@ -11,7 +11,7 @@ import BlockQuoteUI from '../src/blockquoteui.js';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 describe( 'BlockQuoteUI', () => {
-	let editor, command, element;
+	let editor, command, element, button;
 
 	beforeEach( () => {
 		element = document.createElement( 'div' );
@@ -33,10 +33,12 @@ describe( 'BlockQuoteUI', () => {
 		return editor.destroy();
 	} );
 
-	describe( 'blockQuote button', () => {
-		it( 'has the base properties', () => {
-			const button = editor.ui.componentFactory.create( 'blockQuote' );
+	describe( 'toolbar block quote button', () => {
+		beforeEach( () => {
+			button = editor.ui.componentFactory.create( 'blockQuote' );
+		} );
 
+		it( 'has the base properties', () => {
 			expect( button ).to.have.property( 'label', 'Block quote' );
 			expect( button ).to.have.property( 'icon' );
 			expect( button ).to.have.property( 'tooltip', true );
@@ -44,8 +46,6 @@ describe( 'BlockQuoteUI', () => {
 		} );
 
 		it( 'has isOn bound to command\'s value', () => {
-			const button = editor.ui.componentFactory.create( 'blockQuote' );
-
 			command.value = false;
 			expect( button ).to.have.property( 'isOn', false );
 
@@ -53,9 +53,25 @@ describe( 'BlockQuoteUI', () => {
 			expect( button ).to.have.property( 'isOn', true );
 		} );
 
-		it( 'has isEnabled bound to command\'s isEnabled', () => {
-			const button = editor.ui.componentFactory.create( 'blockQuote' );
+		testButton();
+	} );
 
+	describe( 'menu bar block quote button', () => {
+		beforeEach( () => {
+			button = editor.ui.componentFactory.create( 'menuBar:blockQuote' );
+		} );
+
+		it( 'has the base properties', () => {
+			expect( button ).to.have.property( 'label', 'Block quote' );
+			expect( button ).to.have.property( 'icon' );
+			expect( button ).to.have.property( 'isToggleable', true );
+		} );
+
+		testButton();
+	} );
+
+	function testButton() {
+		it( 'has isEnabled bound to command\'s isEnabled', () => {
 			command.isEnabled = true;
 			expect( button ).to.have.property( 'isEnabled', true );
 
@@ -64,8 +80,6 @@ describe( 'BlockQuoteUI', () => {
 		} );
 
 		it( 'executes command when it\'s executed', () => {
-			const button = editor.ui.componentFactory.create( 'blockQuote' );
-
 			const spy = sinon.stub( editor, 'execute' );
 
 			button.fire( 'execute' );
@@ -73,5 +87,5 @@ describe( 'BlockQuoteUI', () => {
 			expect( spy.calledOnce ).to.be.true;
 			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'blockQuote' );
 		} );
-	} );
+	}
 } );

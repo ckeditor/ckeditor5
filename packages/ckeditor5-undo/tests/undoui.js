@@ -11,10 +11,11 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import UndoEditing from '../src/undoediting.js';
 import UndoUI from '../src/undoui.js';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import MenuBarMenuListItemButtonView from '@ckeditor/ckeditor5-ui/src/menubar/menubarmenulistitembuttonview.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'UndoUI', () => {
-	let editor, editorElement;
+	let editor, editorElement, button;
 
 	testUtils.createSinonSandbox();
 
@@ -34,8 +35,49 @@ describe( 'UndoUI', () => {
 		return editor.destroy();
 	} );
 
-	testButton( 'undo', 'Undo', 'CTRL+Z' );
-	testButton( 'redo', 'Redo', 'CTRL+Y' );
+	describe( 'toolbar', () => {
+		describe( 'undo button', () => {
+			beforeEach( () => {
+				button = editor.ui.componentFactory.create( 'undo' );
+			} );
+
+			testButton( 'undo', 'Undo', 'CTRL+Z', ButtonView );
+
+			it( 'should have tooltip', () => {
+				expect( button.tooltip ).to.be.true;
+			} );
+		} );
+
+		describe( 'redo button', () => {
+			beforeEach( () => {
+				button = editor.ui.componentFactory.create( 'redo' );
+			} );
+
+			testButton( 'redo', 'Redo', 'CTRL+Y', ButtonView );
+
+			it( 'should have tooltip', () => {
+				expect( button.tooltip ).to.be.true;
+			} );
+		} );
+	} );
+
+	describe( 'menu bar', () => {
+		describe( 'undo button', () => {
+			beforeEach( () => {
+				button = editor.ui.componentFactory.create( 'menuBar:undo' );
+			} );
+
+			testButton( 'undo', 'Undo', 'CTRL+Z', MenuBarMenuListItemButtonView );
+		} );
+
+		describe( 'redo button', () => {
+			beforeEach( () => {
+				button = editor.ui.componentFactory.create( 'menuBar:redo' );
+			} );
+
+			testButton( 'redo', 'Redo', 'CTRL+Y', MenuBarMenuListItemButtonView );
+		} );
+	} );
 
 	describe( 'icons', () => {
 		describe( 'left–to–right UI', () => {
@@ -97,49 +139,39 @@ describe( 'UndoUI', () => {
 		} );
 	} );
 
-	function testButton( featureName, label, featureKeystroke ) {
-		describe( `${ featureName } button`, () => {
-			let button;
+	function testButton( featureName, label, featureKeystroke, Component ) {
+		it( 'should register feature component', () => {
+			expect( button ).to.be.instanceOf( Component );
+		} );
 
-			beforeEach( () => {
-				button = editor.ui.componentFactory.create( featureName );
-			} );
+		it( 'should create UI component with correct attribute values', () => {
+			expect( button.isOn ).to.be.false;
+			expect( button.label ).to.equal( label );
+			expect( button.icon ).to.match( /<svg / ); } );
 
-			it( 'should register feature component', () => {
-				expect( button ).to.be.instanceOf( ButtonView );
-			} );
+		it( `should execute ${ featureName } command on model execute event`, () => {
+			const executeSpy = testUtils.sinon.stub( editor, 'execute' );
 
-			it( 'should create UI component with correct attribute values', () => {
-				expect( button.isOn ).to.be.false;
-				expect( button.label ).to.equal( label );
-				expect( button.icon ).to.match( /<svg / );
-				expect( button.keystroke ).to.equal( featureKeystroke );
-			} );
+			button.fire( 'execute' );
 
-			it( `should execute ${ featureName } command on model execute event`, () => {
-				const executeSpy = testUtils.sinon.stub( editor, 'execute' );
+			sinon.assert.calledOnce( executeSpy );
+			sinon.assert.calledWithExactly( executeSpy, featureName );
+		} );
 
-				button.fire( 'execute' );
+		it( `should bind model to ${ featureName } command`, () => {
+			const command = editor.commands.get( featureName );
 
-				sinon.assert.calledOnce( executeSpy );
-				sinon.assert.calledWithExactly( executeSpy, featureName );
-			} );
+			expect( button.isOn ).to.be.false;
 
-			it( `should bind model to ${ featureName } command`, () => {
-				const command = editor.commands.get( featureName );
+			const initState = command.isEnabled;
+			expect( button.isEnabled ).to.equal( initState );
 
-				expect( button.isOn ).to.be.false;
+			command.isEnabled = !initState;
+			expect( button.isEnabled ).to.equal( !initState );
+		} );
 
-				const initState = command.isEnabled;
-				expect( button.isEnabled ).to.equal( initState );
-
-				command.isEnabled = !initState;
-				expect( button.isEnabled ).to.equal( !initState );
-			} );
-
-			it( 'should set keystroke in the model', () => {
-				expect( button.keystroke ).to.equal( featureKeystroke );
-			} );
+		it( 'should set keystroke in the model', () => {
+			expect( button.keystroke ).to.equal( featureKeystroke );
 		} );
 	}
 } );

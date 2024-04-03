@@ -22,13 +22,16 @@ const msWordMatch2 = /xmlns:o="urn:schemas-microsoft-com/i;
 export default class MSWordNormalizer implements Normalizer {
 	public readonly document: ViewDocument;
 
+	public readonly hasMultiLevelListPlugin: boolean;
+
 	/**
 	 * Creates a new `MSWordNormalizer` instance.
 	 *
 	 * @param document View document.
 	 */
-	constructor( document: ViewDocument ) {
+	constructor( document: ViewDocument, hasMultiLevelListPlugin: boolean = false ) {
 		this.document = document;
+		this.hasMultiLevelListPlugin = hasMultiLevelListPlugin;
 	}
 
 	/**
@@ -44,7 +47,7 @@ export default class MSWordNormalizer implements Normalizer {
 	public execute( data: NormalizerData ): void {
 		const { body: documentFragment, stylesString } = data._parsedData;
 
-		transformListItemLikeElementsIntoLists( documentFragment, stylesString );
+		transformListItemLikeElementsIntoLists( documentFragment, stylesString, this.hasMultiLevelListPlugin );
 		replaceImagesSourceWithBase64( documentFragment, data.dataTransfer.getData( 'text/rtf' ) );
 		removeMSAttributes( documentFragment );
 

@@ -46,7 +46,7 @@ describe( 'RestrictedEditingModeUI', () => {
 		} );
 	} );
 
-	describe( 'restricted editing dropdown', () => {
+	describe( 'restricted editing toolbar dropdown', () => {
 		let dropdown;
 
 		beforeEach( () => {
@@ -135,6 +135,119 @@ describe( 'RestrictedEditingModeUI', () => {
 				sinon.assert.calledWith( spy.firstCall, 'goToPreviousRestrictedEditingException' );
 
 				goToNextButton.fire( 'execute' );
+				sinon.assert.calledWith( spy.secondCall, 'goToNextRestrictedEditingException' );
+			} );
+		} );
+	} );
+
+	describe( 'restricted editing menu bar menu', () => {
+		let menuView;
+
+		beforeEach( () => {
+			menuView = editor.ui.componentFactory.create( 'menuBar:restrictedEditing' );
+		} );
+
+		it( 'the button should have basic properties', () => {
+			const button = menuView.buttonView;
+
+			expect( button ).to.have.property( 'label', 'Navigate editable regions' );
+			expect( button ).to.have.property( 'icon', lockIcon );
+			expect( button ).to.have.property( 'isEnabled', true );
+			expect( button ).to.have.property( 'isOn', false );
+		} );
+
+		it( 'should set basic properties on the list', () => {
+			const listView = menuView.panelView.children.first;
+
+			expect( listView ).to.have.property( 'ariaLabel', 'Navigate editable regions' );
+			expect( listView ).to.have.property( 'role', 'menu' );
+		} );
+
+		describe( 'exceptions navigation buttons', () => {
+			let backwardButton, forwardButton;
+
+			beforeEach( () => {
+				menuView.render();
+				document.body.appendChild( menuView.element );
+
+				menuView.isOpen = true;
+
+				backwardButton = menuView.panelView.children.first.items.first.children.first;
+				forwardButton = menuView.panelView.children.first.items.last.children.first;
+			} );
+
+			afterEach( () => {
+				menuView.element.remove();
+			} );
+
+			it( 'should delegate #execute to the menu view', () => {
+				const executeSpy = sinon.spy();
+
+				menuView.on( 'execute', executeSpy );
+
+				backwardButton.fire( 'execute' );
+				sinon.assert.calledOnce( executeSpy );
+
+				forwardButton.fire( 'execute' );
+				sinon.assert.calledTwice( executeSpy );
+			} );
+
+			it( 'should have #isEnabled bound to their respective commands to the command', () => {
+				goToPreviousCommand.isEnabled = true;
+				goToNextCommand.isEnabled = true;
+
+				expect( backwardButton.isEnabled ).to.be.true;
+				expect( forwardButton.isEnabled ).to.be.true;
+
+				goToPreviousCommand.isEnabled = false;
+				goToNextCommand.isEnabled = true;
+
+				expect( backwardButton.isEnabled ).to.be.false;
+				expect( forwardButton.isEnabled ).to.be.true;
+
+				goToPreviousCommand.isEnabled = false;
+				goToNextCommand.isEnabled = false;
+
+				expect( backwardButton.isEnabled ).to.be.false;
+				expect( forwardButton.isEnabled ).to.be.false;
+			} );
+
+			it( 'should have one that goes backward', () => {
+				expect( backwardButton.isOn ).to.be.false;
+				expect( backwardButton.withText ).to.be.true;
+				expect( backwardButton.withKeystroke ).to.be.true;
+				expect( backwardButton.label ).to.equal( 'Previous editable region' );
+				expect( backwardButton.keystroke ).to.equal( 'Shift+Tab' );
+			} );
+
+			it( 'should have one that goes forward', () => {
+				expect( forwardButton.isOn ).to.be.false;
+				expect( forwardButton.withText ).to.be.true;
+				expect( forwardButton.withKeystroke ).to.be.true;
+				expect( forwardButton.label ).to.equal( 'Next editable region' );
+				expect( forwardButton.keystroke ).to.equal( 'Tab' );
+			} );
+
+			it( 'should focus the view after executing the command', () => {
+				const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+
+				backwardButton.fire( 'execute' );
+				sinon.assert.calledOnce( focusSpy );
+
+				forwardButton.fire( 'execute' );
+				sinon.assert.calledTwice( focusSpy );
+			} );
+
+			it( 'should execute their corresponding commands', () => {
+				goToPreviousCommand.isEnabled = true;
+				goToNextCommand.isEnabled = true;
+
+				const spy = sinon.spy( editor, 'execute' );
+
+				backwardButton.fire( 'execute' );
+				sinon.assert.calledWith( spy.firstCall, 'goToPreviousRestrictedEditingException' );
+
+				forwardButton.fire( 'execute' );
 				sinon.assert.calledWith( spy.secondCall, 'goToNextRestrictedEditingException' );
 			} );
 		} );

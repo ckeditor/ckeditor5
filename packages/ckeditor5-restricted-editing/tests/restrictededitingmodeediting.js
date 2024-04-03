@@ -14,6 +14,9 @@ import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.j
 import StrikethroughEditing from '@ckeditor/ckeditor5-basic-styles/src/strikethrough/strikethroughediting.js';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
+import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting.js';
+import InsertImageCommand from '@ckeditor/ckeditor5-image/src/image/insertimagecommand.js';
+
 import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
 
 import RestrictedEditingModeEditing from './../src/restrictededitingmodeediting.js';
@@ -319,7 +322,8 @@ describe( 'RestrictedEditingModeEditing', () => {
 				).to.equalMarkup(
 					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 					'<div class="ck ck-widget__selection-handle"></div>' +
-					'<table><tbody><tr><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
+					'<table><tbody><tr><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox" ' +
+					'tabindex="-1">' +
 					'<span class="ck-table-bogus-paragraph"><span class="restricted-editing-exception"><b>foo bar baz</b></span></span>' +
 					'</td></tr></tbody></table>' +
 					'</figure>'
@@ -378,7 +382,9 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 	describe( 'editing behavior', () => {
 		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, RestrictedEditingModeEditing, ClipboardPipeline ] } );
+			editor = await VirtualTestEditor.create( { plugins: [
+				Paragraph, Typing, RestrictedEditingModeEditing, ClipboardPipeline, ImageInlineEditing
+			] } );
 			model = editor.model;
 		} );
 
@@ -452,7 +458,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 			expect( getModelData( model ) ).to.equalMarkup( '<paragraph>foo bX[]ar baz</paragraph>' );
 		} );
 
-		it( 'should extend maker when typing on the marker boundary (end)', () => {
+		it( 'should extend marker when typing on the marker boundary (end)', () => {
 			setModelData( model, '<paragraph>foo bar[] baz</paragraph>' );
 			const firstParagraph = model.document.getRoot().getChild( 0 );
 
@@ -467,6 +473,68 @@ describe( 'RestrictedEditingModeEditing', () => {
 			editor.execute( 'insertText', { text: 'X' } );
 
 			expect( getModelData( model ) ).to.equalMarkup( '<paragraph>foo barX[] baz</paragraph>' );
+			const markerRange = editor.model.markers.get( 'restrictedEditingException:1' ).getRange();
+			const expectedRange = model.createRange(
+				model.createPositionAt( firstParagraph, 4 ),
+				model.createPositionAt( firstParagraph, 8 )
+			);
+
+			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+		} );
+
+		it( 'should extend marker when inserting inline image on the marker boundary (end)', () => {
+			setModelData( model, '<paragraph>foo bar[] baz</paragraph>' );
+			const imgSrc = 'foo/bar.jpg';
+			const firstParagraph = model.document.getRoot().getChild( 0 );
+			// We don't use `editor.execute( ... )` because it requires adding Image plugin into VirtualTestEditor,
+			// so it's impossible because it doesn't has 'ui' which Image package requires. So we are simply using
+			// `new InsertImageCommand()` command.
+			const command = new InsertImageCommand( editor );
+
+			model.change( writer => {
+				writer.addMarker( 'restrictedEditingException:1', {
+					range: writer.createRange( writer.createPositionAt( firstParagraph, 4 ), writer.createPositionAt( firstParagraph, 7 ) ),
+					usingOperation: true,
+					affectsData: true
+				} );
+			} );
+
+			command.execute( { source: imgSrc } );
+
+			expect( getModelData( model ) ).to.equalMarkup(
+				'<paragraph>foo bar[<imageInline src="foo/bar.jpg"></imageInline>] baz</paragraph>'
+			);
+			const markerRange = editor.model.markers.get( 'restrictedEditingException:1' ).getRange();
+			const expectedRange = model.createRange(
+				model.createPositionAt( firstParagraph, 4 ),
+				model.createPositionAt( firstParagraph, 8 )
+			);
+
+			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+		} );
+
+		it( 'should extend marker when inserting inline image on the marker boundary (start)', () => {
+			setModelData( model, '<paragraph>foo []bar baz</paragraph>' );
+			const imgSrc = 'foo/bar.jpg';
+			const firstParagraph = model.document.getRoot().getChild( 0 );
+			// We don't use `editor.execute( ... )` because it requires adding Image plugin into VirtualTestEditor,
+			// so it's impossible because it doesn't has 'ui' which Image package requires. So we are simply using
+			// `new InsertImageCommand()` command.
+			const command = new InsertImageCommand( editor );
+
+			model.change( writer => {
+				writer.addMarker( 'restrictedEditingException:1', {
+					range: writer.createRange( writer.createPositionAt( firstParagraph, 4 ), writer.createPositionAt( firstParagraph, 7 ) ),
+					usingOperation: true,
+					affectsData: true
+				} );
+			} );
+
+			command.execute( { source: imgSrc } );
+
+			expect( getModelData( model ) ).to.equalMarkup(
+				'<paragraph>foo [<imageInline src="foo/bar.jpg"></imageInline>]bar baz</paragraph>'
+			);
 			const markerRange = editor.model.markers.get( 'restrictedEditingException:1' ).getRange();
 			const expectedRange = model.createRange(
 				model.createPositionAt( firstParagraph, 4 ),

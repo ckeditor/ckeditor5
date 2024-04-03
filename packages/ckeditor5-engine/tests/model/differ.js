@@ -2703,7 +2703,7 @@ describe( 'Differ', () => {
 				expect( differ.getChangedRoots().length ).to.equal( 0 );
 
 				// It has changes in graveyard!
-				expect( differ.hasDataChanges() ).to.be.true;
+				expect( differ.hasDataChanges() ).to.be.false;
 			} );
 		} );
 

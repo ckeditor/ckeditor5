@@ -10,9 +10,11 @@ import HtmlEmbedEditing from '../src/htmlembedediting.js';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import HtmlEmbedUI from '../src/htmlembedui.js';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import { MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
+import { icons } from 'ckeditor5/src/core.js';
 
 describe( 'HtmlEmbedUI', () => {
-	let element, editor, htmlEmbedView;
+	let element, editor, button;
 
 	testUtils.createSinonSandbox();
 
@@ -26,8 +28,6 @@ describe( 'HtmlEmbedUI', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-
-				htmlEmbedView = editor.ui.componentFactory.create( 'htmlEmbed' );
 			} );
 	} );
 
@@ -36,34 +36,62 @@ describe( 'HtmlEmbedUI', () => {
 		return editor.destroy();
 	} );
 
-	it( 'should register htmlEmbed feature component', () => {
-		expect( htmlEmbedView ).to.be.instanceOf( ButtonView );
-		expect( htmlEmbedView.label ).to.equal( 'Insert HTML' );
-		expect( htmlEmbedView.icon ).to.match( /<svg / );
-		expect( htmlEmbedView.isToggleable ).to.be.false;
+	describe( 'the "htmlEmbed" toolbar button', () => {
+		beforeEach( () => {
+			button = editor.ui.componentFactory.create( 'htmlEmbed' );
+		} );
+
+		testButton( 'htmlEmbed', 'Insert HTML', ButtonView );
+
+		it( 'should have #tooltip', () => {
+			expect( button.tooltip ).to.be.true;
+		} );
 	} );
 
-	it( 'should execute htmlEmbed command on model execute event', () => {
-		const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+	describe( 'the "menuBar:htmlEmbed" menu bar button', () => {
+		beforeEach( () => {
+			button = editor.ui.componentFactory.create( 'menuBar:htmlEmbed' );
+		} );
 
-		htmlEmbedView.fire( 'execute' );
-
-		sinon.assert.calledOnce( executeSpy );
-		sinon.assert.calledWithExactly( executeSpy, 'htmlEmbed' );
+		testButton( 'htmlEmbed', 'HTML snippet', MenuBarMenuListItemButtonView );
 	} );
 
-	it( 'should bind model to htmlEmbed command', () => {
-		const command = editor.commands.get( 'htmlEmbed' );
+	function testButton( featureName, label, Component ) {
+		it( 'should register feature component', () => {
+			expect( button ).to.be.instanceOf( Component );
+		} );
 
-		expect( htmlEmbedView.isEnabled ).to.be.true;
+		it( 'should create UI component with correct attribute values', () => {
+			expect( button.isOn ).to.be.false;
+			expect( button.label ).to.equal( label );
+			expect( button.icon ).to.equal( icons.html );
+		} );
 
-		command.isEnabled = false;
-		expect( htmlEmbedView.isEnabled ).to.be.false;
-	} );
+		it( `should execute ${ featureName } command on model execute event and focus the view then switch to edit source mode` +
+			'after inserting the element', () => {
+			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 
-	it( 'should switch to edit source mode after inserting the element', () => {
-		htmlEmbedView.fire( 'execute' );
+			button.fire( 'execute' );
 
-		expect( document.activeElement.tagName ).to.equal( 'TEXTAREA' );
-	} );
+			sinon.assert.calledOnceWithExactly( executeSpy, featureName );
+			sinon.assert.calledOnce( focusSpy );
+			sinon.assert.callOrder( executeSpy, focusSpy );
+
+			expect( document.activeElement.tagName ).to.equal( 'TEXTAREA' );
+			expect( document.activeElement.classList.contains( 'raw-html-embed__source' ) ).to.be.true;
+		} );
+
+		it( `should bind #isEnabled to ${ featureName } command`, () => {
+			const command = editor.commands.get( featureName );
+
+			expect( button.isOn ).to.be.false;
+
+			const initState = command.isEnabled;
+			expect( button.isEnabled ).to.equal( initState );
+
+			command.isEnabled = !initState;
+			expect( button.isEnabled ).to.equal( !initState );
+		} );
+	}
 } );

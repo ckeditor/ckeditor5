@@ -11,6 +11,7 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import env from '@ckeditor/ckeditor5-utils/src/env.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import MenuBarMenuListItemButtonView from '@ckeditor/ckeditor5-ui/src/menubar/menubarmenulistitembuttonview.js';
 import DialogView from '@ckeditor/ckeditor5-ui/src/dialog/dialogview.js';
 import FindAndReplaceUI from '../src/findandreplaceui.js';
 import FindAndReplace from '../src/findandreplace.js';
@@ -30,7 +31,7 @@ describe( 'FindAndReplaceUI', () => {
 
 	describe( 'init()', () => {
 		describe( 'with the default UI type config (dialog)', () => {
-			let toolbarButtonView, dialogPlugin, dialogView;
+			let toolbarButtonView, menuBarButtonView, dialogPlugin, dialogView;
 
 			beforeEach( () => {
 				editorElement = global.document.createElement( 'div' );
@@ -43,6 +44,7 @@ describe( 'FindAndReplaceUI', () => {
 					.then( async newEditor => {
 						editor = newEditor;
 						toolbarButtonView = editor.ui.componentFactory.create( 'findAndReplace' );
+						menuBarButtonView = editor.ui.componentFactory.create( 'menuBar:findAndReplace' );
 						findCommand = editor.commands.get( 'find' );
 						plugin = editor.plugins.get( 'FindAndReplaceUI' );
 						dialogPlugin = editor.plugins.get( 'Dialog' );
@@ -74,6 +76,10 @@ describe( 'FindAndReplaceUI', () => {
 				expect( toolbarButtonView ).to.be.instanceOf( ButtonView );
 			} );
 
+			it( 'should register a menu bar button UI compontent', () => {
+				expect( menuBarButtonView ).to.be.instanceOf( MenuBarMenuListItemButtonView );
+			} );
+
 			it( 'should display a form inside a dialog', () => {
 				expect( dialogView ).to.be.instanceOf( DialogView );
 				expect( form ).to.be.instanceOf( FindAndReplaceFormView );
@@ -96,118 +102,137 @@ describe( 'FindAndReplaceUI', () => {
 			} );
 
 			describe( 'findAndReplace button', () => {
-				it( 'should be disabled when find command is disabled', () => {
-					findCommand.isEnabled = true;
-					expect( toolbarButtonView ).to.have.property( 'isEnabled', true );
+				let button;
 
-					findCommand.isEnabled = false;
-					expect( toolbarButtonView ).to.have.property( 'isEnabled', false );
-				} );
-
-				describe( 'upon dialog open', () => {
-					it( 'CSS transitions should be disabled to avoid unnecessary animations (and then enable them again)', () => {
-						// (#10008)
-						const disableCssTransitionsSpy = sinon.spy( form, 'disableCssTransitions' );
-						const enableCssTransitionsSpy = sinon.spy( form, 'enableCssTransitions' );
-						const selectSpy = sinon.spy( form._findInputView.fieldView, 'select' );
-
-						// Reopen the dialog.
-						toolbarButtonView.fire( 'execute' );
-						toolbarButtonView.fire( 'execute' );
-
-						sinon.assert.callOrder( disableCssTransitionsSpy, selectSpy, enableCssTransitionsSpy );
-					} );
-
-					it( 'the form should be reset', () => {
-						const spy = sinon.spy( form, 'reset' );
-
-						// Reopen the dialog.
-						toolbarButtonView.fire( 'execute' );
-						toolbarButtonView.fire( 'execute' );
-
-						sinon.assert.calledOnce( spy );
-					} );
-
-					it( 'the find input content should be selected', () => {
-						const spy = sinon.spy( form._findInputView.fieldView, 'select' );
-
-						// Reopen the dialog.
-						toolbarButtonView.fire( 'execute' );
-						toolbarButtonView.fire( 'execute' );
-
-						sinon.assert.calledOnce( spy );
-					} );
-
-					it( 'the form input content should be focused', async () => {
-						const spy = sinon.spy( form, 'focus' );
-
-						// Reopen the dialog.
-						toolbarButtonView.fire( 'execute' );
-						toolbarButtonView.fire( 'execute' );
-
-						// Wait until it's not transparent.
-						await wait( 20 );
-
-						sinon.assert.calledOnce( spy );
-					} );
-
-					it( 'all actions should be executed using the "low" priority to let the default open lister act first', async () => {
-						const spy = sinon.spy();
-						const selectSpy = sinon.spy( form._findInputView.fieldView, 'select' );
-
-						dialogPlugin.on( 'show', () => {
-							spy();
-						} );
-
-						// Reopen the dialog.
-						toolbarButtonView.fire( 'execute' );
-						toolbarButtonView.fire( 'execute' );
-
-						// Wait until it's not transparent.
-						await wait( 20 );
-
-						sinon.assert.callOrder( spy, selectSpy );
-					} );
-				} );
-
-				describe( 'upon dialog close', () => {
-					it( 'the #searchReseted event should be emitted', () => {
-						const spy = sinon.spy();
-
-						plugin.on( 'searchReseted', spy );
-
-						// Close the dialog.
-						toolbarButtonView.fire( 'execute' );
-
-						sinon.assert.calledOnce( spy );
-					} );
-				} );
-
-				describe( 'button', () => {
-					it( 'should set an #icon of the #buttonView', () => {
-						expect( toolbarButtonView.icon ).to.equal( loupeIcon );
-					} );
-
-					it( 'should set a #label of the #buttonView', () => {
-						expect( toolbarButtonView.label ).to.equal( 'Find and replace' );
+				describe( 'in toolbar', () => {
+					beforeEach( () => {
+						button = toolbarButtonView;
 					} );
 
 					it( 'should set a #tooltip of the #buttonView', () => {
-						expect( toolbarButtonView.tooltip ).to.be.true;
+						expect( button.tooltip ).to.be.true;
+					} );
+
+					testButton();
+				} );
+
+				describe( 'in menu bar', () => {
+					beforeEach( () => {
+						button = menuBarButtonView;
+					} );
+
+					testButton();
+				} );
+
+				function testButton() {
+					describe( 'upon dialog open', () => {
+						it( 'CSS transitions should be disabled to avoid unnecessary animations (and then enable them again)', () => {
+							// (#10008)
+							const disableCssTransitionsSpy = sinon.spy( form, 'disableCssTransitions' );
+							const enableCssTransitionsSpy = sinon.spy( form, 'enableCssTransitions' );
+							const selectSpy = sinon.spy( form._findInputView.fieldView, 'select' );
+
+							// Reopen the dialog.
+							button.fire( 'execute' );
+							button.fire( 'execute' );
+
+							sinon.assert.callOrder( disableCssTransitionsSpy, selectSpy, enableCssTransitionsSpy );
+						} );
+
+						it( 'the form should be reset', () => {
+							const spy = sinon.spy( form, 'reset' );
+
+							// Reopen the dialog.
+							button.fire( 'execute' );
+							button.fire( 'execute' );
+
+							sinon.assert.calledOnce( spy );
+						} );
+
+						it( 'the find input content should be selected', () => {
+							const spy = sinon.spy( form._findInputView.fieldView, 'select' );
+
+							// Reopen the dialog.
+							button.fire( 'execute' );
+							button.fire( 'execute' );
+
+							sinon.assert.calledOnce( spy );
+						} );
+
+						it( 'the form input content should be focused', async () => {
+							const spy = sinon.spy( form, 'focus' );
+
+							// Reopen the dialog.
+							button.fire( 'execute' );
+							button.fire( 'execute' );
+
+							// Wait until it's not transparent.
+							await wait( 20 );
+
+							sinon.assert.calledOnce( spy );
+						} );
+
+						it( 'all actions should be executed using the "low" priority to let the default open lister act first',
+							async () => {
+								const spy = sinon.spy();
+								const selectSpy = sinon.spy( form._findInputView.fieldView, 'select' );
+
+								dialogPlugin.on( 'show', () => {
+									spy();
+								} );
+
+								// Reopen the dialog.
+								button.fire( 'execute' );
+								button.fire( 'execute' );
+
+								// Wait until it's not transparent.
+								await wait( 20 );
+
+								sinon.assert.callOrder( spy, selectSpy );
+							} );
+					} );
+
+					describe( 'upon dialog close', () => {
+						it( 'the #searchReseted event should be emitted', () => {
+							const spy = sinon.spy();
+
+							plugin.on( 'searchReseted', spy );
+
+							// Close the dialog.
+							button.fire( 'execute' );
+
+							sinon.assert.calledOnce( spy );
+						} );
+					} );
+
+					it( 'should be disabled when find command is disabled', () => {
+						findCommand.isEnabled = true;
+						expect( toolbarButtonView ).to.have.property( 'isEnabled', true );
+
+						findCommand.isEnabled = false;
+						expect( toolbarButtonView ).to.have.property( 'isEnabled', false );
+					} );
+
+					it( 'should set an #icon of the #buttonView', () => {
+						expect( button.icon ).to.equal( loupeIcon );
+					} );
+
+					it( 'should set a #label of the #buttonView', () => {
+						expect( button.label ).to.equal( 'Find and replace' );
 					} );
 
 					it( 'should set a #keystroke of the #buttonView', () => {
-						expect( toolbarButtonView.keystroke ).to.equal( 'CTRL+F' );
+						expect( button.keystroke ).to.equal( 'CTRL+F' );
 					} );
 
 					it( 'should not open the dialog when command is disabled and CTRL+F was pressed', () => {
 						// Close the dialog.
-						toolbarButtonView.fire( 'execute' );
+						dialogPlugin.hide();
 
 						findCommand.isEnabled = false;
 
 						expect( dialogPlugin.isOpen ).to.be.false;
-						expect( toolbarButtonView.isEnabled ).to.be.false;
+						expect( button.isEnabled ).to.be.false;
 
 						const keyEventData = ( {
 							keyCode: keyCodes.f,
@@ -227,7 +252,7 @@ describe( 'FindAndReplaceUI', () => {
 
 					it( 'should open the dialog if dialog was closed and CTRL+F was pressed', () => {
 						// Close the dialog.
-						toolbarButtonView.fire( 'execute' );
+						dialogPlugin.hide();
 
 						const spy = sinon.spy( form._findInputView.fieldView, 'select' );
 
@@ -293,7 +318,7 @@ describe( 'FindAndReplaceUI', () => {
 						expect( dialogPlugin.isOpen ).to.be.true;
 						expect( form._focusTracker.focusedElement ).to.equal( form._findButtonView );
 					} );
-				} );
+				}
 			} );
 
 			describe( 'form events and bindings', () => {

@@ -8,6 +8,7 @@
  */
 
 import type { DowncastWriter, ViewAttributeElement, ViewDocumentFragment, ViewElement, ViewNode } from 'ckeditor5/src/engine.js';
+import { type ListType } from '../listediting.js';
 
 /**
  * Checks if view element is a list type (ul or ol).
@@ -96,7 +97,7 @@ export function getIndent( listItem: ViewElement ): number {
 export function createListElement(
 	writer: DowncastWriter,
 	indent: number,
-	type: 'bulleted' | 'numbered' | 'todo',
+	type: ListType,
 	id = getViewElementIdForListType( type, indent )
 ): ViewAttributeElement {
 	// Negative priorities so that restricted editing attribute won't wrap lists.
@@ -128,8 +129,8 @@ export function createListItemElement(
  *
  * @internal
  */
-export function getViewElementNameForListType( type?: 'bulleted' | 'numbered' | 'todo' ): 'ol' | 'ul' {
-	return type == 'numbered' ? 'ol' : 'ul';
+export function getViewElementNameForListType( type?: ListType ): 'ol' | 'ul' {
+	return type == 'numbered' || type == 'customNumbered' ? 'ol' : 'ul';
 }
 
 /**
@@ -137,6 +138,6 @@ export function getViewElementNameForListType( type?: 'bulleted' | 'numbered' | 
  *
  * @internal
  */
-export function getViewElementIdForListType( type?: 'bulleted' | 'numbered' | 'todo', indent?: number ): string {
+export function getViewElementIdForListType( type?: ListType, indent?: number ): string {
 	return `list-${ type }-${ indent }`;
 }
