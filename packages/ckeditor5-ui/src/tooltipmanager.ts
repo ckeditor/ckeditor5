@@ -288,14 +288,14 @@ export default class TooltipManager extends DomEmitterMixin() {
 	private _onEnterOrFocus( evt: EventInfo, { target }: any ) {
 		const elementWithTooltipAttribute = getDescendantWithTooltip( target );
 
-		// Unpin if element is focused, regardless of whether it contains a label or not.
-		// It also prevents tooltips from overlapping the menu bar
-		if ( evt.name === 'focus' ) {
-			this._unpinTooltip();
-		}
-
 		// Abort when there's no descendant needing tooltip.
 		if ( !elementWithTooltipAttribute ) {
+			// Unpin if element is focused, regardless of whether it contains a label or not.
+			// It also prevents tooltips from overlapping the menu bar
+			if ( evt.name === 'focus' ) {
+				this._unpinTooltip();
+			}
+
 			return;
 		}
 
@@ -306,10 +306,7 @@ export default class TooltipManager extends DomEmitterMixin() {
 			return;
 		}
 
-		if ( evt.name === 'mouseenter' ) {
-			this._unpinTooltip();
-		}
-
+		this._unpinTooltip();
 		this._pinTooltipDebounced( elementWithTooltipAttribute, getTooltipData( elementWithTooltipAttribute ) );
 	}
 

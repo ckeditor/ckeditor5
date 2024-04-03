@@ -441,17 +441,13 @@ describe( 'TooltipManager', () => {
 					} );
 				} );
 
-				it( 'should show up for the first element the mouse entered (last element has no tooltip)', () => {
+				it( 'should not show up for the first element the focus (last element has no tooltip)', () => {
 					utils.dispatchFocus( elements.a );
 					utils.dispatchFocus( elements.unrelated );
 
 					utils.waitForTheTooltipToShow( clock );
 
-					sinon.assert.calledOnce( pinSpy );
-					sinon.assert.calledWith( pinSpy, {
-						target: elements.a,
-						positions: sinon.match.array
-					} );
+					sinon.assert.notCalled( pinSpy );
 				} );
 			} );
 		} );
