@@ -441,7 +441,7 @@ describe( 'TooltipManager', () => {
 					} );
 				} );
 
-				it( 'should not show up for the first element the focus (last element has no tooltip)', () => {
+				it( 'should not show up anchor after focus unrelated element without tooltip', () => {
 					utils.dispatchFocus( elements.a );
 					utils.dispatchFocus( elements.unrelated );
 
