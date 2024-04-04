@@ -61,8 +61,9 @@ export const MenuBarBehaviors = {
 
 			for ( const menuView of menuBarView.menus ) {
 				// @if CK_DEBUG_MENU_BAR // const wasOpen = menuView.isOpen;
-
-				menuView.isOpen = evt.path.includes( menuView ) && menuView.isEnabled;
+				menuView.isOpen = (
+					evt.path.includes( menuView ) || ( evt.source as any ).element.contains( menuView.element )
+				) && menuView.isEnabled;
 
 				// @if CK_DEBUG_MENU_BAR // if ( wasOpen !== menuView.isOpen ) {
 				// @if CK_DEBUG_MENU_BAR // console.log( '[BEHAVIOR] toggleMenusAndFocusItemsOnHover(): Toggle',
