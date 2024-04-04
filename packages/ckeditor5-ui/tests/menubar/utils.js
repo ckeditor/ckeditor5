@@ -331,6 +331,70 @@ describe( 'MenuBarView utils', () => {
 					);
 				} );
 
+				it( 'should toggle menus and move focus while moving the mouse (item -> list-item)', () => {
+					const menuA = getMenuByLabel( menuBarView, 'A' );
+
+					menuA.isOpen = true;
+
+					const menuAA = getMenuByLabel( menuBarView, 'AA' );
+
+					menuAA.isOpen = true;
+
+					const menuAAListItem = menuA.panelView.children.first.items.get( 1 );
+
+					menuAA.buttonView.fire( 'execute' );
+
+					expect( barDump( menuBarView ) ).to.deep.equal(
+						[
+							{
+								label: 'A', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'A#1', isFocused: false },
+									{ label: 'AA', isOpen: true, isFocused: false, items: [
+										{ label: 'AA#1', isFocused: true },
+										{ label: 'AAA (from-factory)', isOpen: false, isFocused: false, items: [] }
+									] },
+									{ label: 'AB', isOpen: false, isFocused: false, items: [] }
+								]
+							},
+							{
+								label: 'B', isOpen: false, isFocused: false,
+								items: []
+							},
+							{
+								label: 'C', isOpen: false, isFocused: false,
+								items: []
+							}
+						]
+					);
+
+					menuAAListItem.fire( 'mouseenter' );
+
+					expect( barDump( menuBarView ) ).to.deep.equal(
+						[
+							{
+								label: 'A', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'A#1', isFocused: false },
+									{ label: 'AA', isOpen: true, isFocused: true, items: [
+										{ label: 'AA#1', isFocused: false },
+										{ label: 'AAA (from-factory)', isOpen: false, isFocused: false, items: [] }
+									] },
+									{ label: 'AB', isOpen: false, isFocused: false, items: [] }
+								]
+							},
+							{
+								label: 'B', isOpen: false, isFocused: false,
+								items: []
+							},
+							{
+								label: 'C', isOpen: false, isFocused: false,
+								items: []
+							}
+						]
+					);
+				} );
+
 				it( 'should never toggle disabled menus open', () => {
 					const menuA = getMenuByLabel( menuBarView, 'A' );
 
