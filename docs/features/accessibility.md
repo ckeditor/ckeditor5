@@ -11,7 +11,7 @@ CKEditor&nbsp;5 incorporates various accessibility features, including keyboard 
 
 ## Conformance with WCAG 2.x and Section 508
 
-CKEditor 5 is compliant with [Web Content Accessibility Guidelines 2.2](https://www.w3.org/TR/WCAG22/) (<acronym title="Web Content Accessibility Guidelines">WCAG</acronym>) 2.2 levels A and AA and [Section 508 of the Rehabilitation Act](https://www.access-board.gov/ict/) unless stated otherwise in the [Accessibility Conformance Report](#accessibility-conformance-report-vpat).
+CKEditor&nbsp;5 is compliant with [Web Content Accessibility Guidelines 2.2](https://www.w3.org/TR/WCAG22/) (<acronym title="Web Content Accessibility Guidelines">WCAG</acronym>) 2.2 levels A and AA and [Section 508 of the Rehabilitation Act](https://www.access-board.gov/ict/) unless stated otherwise in the [Accessibility Conformance Report](#accessibility-conformance-report-vpat).
 
 * [Web Content Accessibility Guidelines 2.2](https://www.w3.org/TR/WCAG22/) (<acronym title="Web Content Accessibility Guidelines">WCAG</acronym>) provides international standards for making web content accessible to individuals with disabilities, ensuring that web applications are perceivable, operable, understandable, and robust for all users.
 * [Section 508 of the Rehabilitation Act](https://www.access-board.gov/ict/) mandates that federal agencies’ electronic and information technology is accessible to people with disabilities, establishing guidelines to achieve this goal.
