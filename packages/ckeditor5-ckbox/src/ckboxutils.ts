@@ -29,7 +29,7 @@ export default class CKBoxUtils extends Plugin {
 	/**
 	 * CKEditor Cloud Services access token.
 	 */
-	private _token!: InitializedToken;
+	private _token!: Promise<InitializedToken>;
 
 	/**
 	 * @inheritDoc
@@ -48,7 +48,7 @@ export default class CKBoxUtils extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public async init(): Promise<void> {
+	public init(): void {
 		const editor = this.editor;
 		const hasConfiguration = !!editor.config.get( 'ckbox' );
 		const isLibraryLoaded = !!window.CKBox;
@@ -94,27 +94,27 @@ export default class CKBoxUtils extends Plugin {
 		}
 
 		if ( ckboxTokenUrl == cloudServicesTokenUrl ) {
-			this._token = cloudServices.token!;
+			this._token = Promise.resolve( cloudServices.token! );
 		} else {
-			this._token = await cloudServices.registerTokenUrl( ckboxTokenUrl );
+			this._token = cloudServices.registerTokenUrl( ckboxTokenUrl );
 		}
 	}
 
 	/**
 	 * Returns a token used by the CKBox plugin for communication with the CKBox service.
 	 */
-	public getToken(): InitializedToken {
+	public getToken(): Promise<InitializedToken> {
 		return this._token;
 	}
 
 	/**
 	 * The ID of workspace to use when uploading an image.
 	 */
-	public getWorkspaceId(): string {
+	public async getWorkspaceId(): Promise<string> {
 		const t = this.editor.t;
 		const cannotAccessDefaultWorkspaceError = t( 'Cannot access default workspace.' );
 		const defaultWorkspaceId = this.editor.config.get( 'ckbox.defaultUploadWorkspaceId' );
-		const workspaceId = getWorkspaceId( this._token, defaultWorkspaceId );
+		const workspaceId = getWorkspaceId( await this._token, defaultWorkspaceId );
 
 		if ( workspaceId == null ) {
 			/**
@@ -222,17 +222,17 @@ export default class CKBoxUtils extends Plugin {
 			return undefined;
 		}
 
-		function fetchCategories( offset: number ): Promise<{ totalCount: number; items: Array<AvailableCategory> }> {
+		async function fetchCategories( offset: number ): Promise<{ totalCount: number; items: Array<AvailableCategory> }> {
 			const categoryUrl = new URL( 'categories', serviceOrigin );
 
 			categoryUrl.searchParams.set( 'limit', String( ITEMS_PER_REQUEST ) );
 			categoryUrl.searchParams.set( 'offset', String( offset ) );
-			categoryUrl.searchParams.set( 'workspaceId', workspaceId );
+			categoryUrl.searchParams.set( 'workspaceId', await workspaceId );
 
 			return sendHttpRequest( {
 				url: categoryUrl,
 				signal,
-				authorization: token.value
+				authorization: ( await token ).value
 			} );
 		}
 	}

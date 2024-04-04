@@ -310,7 +310,7 @@ export default class CKBoxImageEditCommand extends Command {
 		const response: CKBoxRawAssetDataDefinition = await sendHttpRequest( {
 			url,
 			signal,
-			authorization: ckboxUtils.getToken().value
+			authorization: ( await ckboxUtils.getToken() ).value
 		} );
 		const status = response.metadata!.metadataProcessingStatus;
 
