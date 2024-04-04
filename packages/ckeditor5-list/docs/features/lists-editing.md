@@ -18,9 +18,9 @@ To edit a block inside a list item, press <kbd>Enter</kbd> to create a new line 
 
 {@img assets/img/adding-list-items.gif 860 Editing a block list item.}
 
-## Multi-level lists
+## Managing lists with keyboard
 
-Multi-level lists allow nesting list levels. Press <kbd>Enter</kbd> to create a new list item. Press <kbd>Tab</kbd> to nest the item, press <kbd>Enter</kbd> again to turn the item into a higher level in the list.
+Press <kbd>Enter</kbd> to create a new list item. Press <kbd>Tab</kbd> to nest the item (in multi-level lists) or indent it (in regular lists). Press <kbd>Enter</kbd> to turn an item into a higher level in the list or to remove it completely.
 
 {@img assets/img/adding-multi-list-items.gif 836 Editing a multi-level list item.}
 
