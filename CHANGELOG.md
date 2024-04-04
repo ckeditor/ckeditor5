@@ -1,36 +1,42 @@
 Changelog
 =========
 
-## [41.3.0](https://github.com/ckeditor/ckeditor5/compare/v41.2.1...v41.3.0) (April 4, 2024)
+## [41.3.0](https://github.com/ckeditor/ckeditor5/compare/v41.2.1...v41.3.0) (April 10, 2024)
+
+We are happy to announce the release of CKEditor 5 v41.3.0.
+
+### Release highlights
+
+* TBA.
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The CSS custom property `--ck-color-image-caption-highligted-background` has been renamed to `--ck-color-image-caption-highlighted-background`. Please make sure to update your custom CSS accordingly.
-* **[real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration)**: The user name displayed next to the user maker in the edited content is no longer a CSS pseudo-element. Use the `.ck-user__marker-tooltip` CSS class to customize user names instead.
+* **[real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration)**: The username displayed next to the user maker in the edited content is no longer a CSS pseudo-element. Use the `.ck-user__marker-tooltip` CSS class to customize usernames instead.
 
 ### Features
 
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Partially selected comment markers will no longer be copied unless fully selected, regardless of the copy mode set in the configuration.
 * **[list-multi-level](https://www.npmjs.com/package/@ckeditor/ckeditor5-list-multi-level)**: Introduced the multi-level list with legal style list numbering.
 * **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Introduced the multi-level list with legal style list numbering.
-* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Added the `tabindex` DOM attribute support to the `InputBase` class. ([commit](https://github.com/ckeditor/ckeditor5/commit/5a399811c3c21644f1b6e782236b60e6d2097add))
-* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Added `aria-label` attribute support to the `InputBase` class. ([commit](https://github.com/ckeditor/ckeditor5/commit/952cd7599bf623ea2a9be92dbde1a01e8ff73daa))
-* **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: Added Page Up and Page Down keys to the keyboard utilities (`keyCodes`, `getEnvKeystrokeText()`). ([commit](https://github.com/ckeditor/ckeditor5/commit/0c64f2abda6a25ca0cd76c3ca7995b75f57d3104))
+* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Added the `[tabindex]` DOM attribute support to the `InputBase` class. ([commit](https://github.com/ckeditor/ckeditor5/commit/5a399811c3c21644f1b6e782236b60e6d2097add))
+* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Added `[aria-label]` attribute support to the `InputBase` class. ([commit](https://github.com/ckeditor/ckeditor5/commit/952cd7599bf623ea2a9be92dbde1a01e8ff73daa))
+* **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: Added <kbd>Page Up</kbd> and <kbd>Page Down</kbd> keys to the keyboard utilities (`keyCodes`, `getEnvKeystrokeText()`). ([commit](https://github.com/ckeditor/ckeditor5/commit/0c64f2abda6a25ca0cd76c3ca7995b75f57d3104))
 * Implemented the application menu bar that contains various options and commands for controlling and navigating the editor. Closes [#15894](https://github.com/ckeditor/ckeditor5/issues/15894). ([commit](https://github.com/ckeditor/ckeditor5/commit/f072048026c5407467e343c116c71ff5a9d236b4))
 
 ### Bug fixes
 
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Increase priority of AI selection markers to display them over the overlaping comments. Closes [#6014](git+https://github.com/cksource/ckeditor5-commercial/issues/6014).
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Increased the priority of AI selection markers to display them over the overlapping comments.
 * **[alignment](https://www.npmjs.com/package/@ckeditor/ckeditor5-alignment)**: Tooltips for buttons inside the alignment dropdown should not obscure adjacent buttons. Closes [#16109](https://github.com/ckeditor/ckeditor5/issues/16109). ([commit](https://github.com/ckeditor/ckeditor5/commit/64b51c47fe27354aac4795c699f7a19a86ac5242))
 * **[document-outline](https://www.npmjs.com/package/@ckeditor/ckeditor5-document-outline)**: Should not throw errors while pasting and cutting in document outline feature.
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Copying the content with markers will no longer trigger the `change:data` event. Closes [#15943](https://github.com/ckeditor/ckeditor5/issues/15943). ([commit](https://github.com/ckeditor/ckeditor5/commit/39a77912905694a61e8da4c42dd1b36f76fde400))
 * **[heading](https://www.npmjs.com/package/@ckeditor/ckeditor5-heading)**: An accessible button label should describe the state and the name of the feature for optimal UX. ([commit](https://github.com/ckeditor/ckeditor5/commit/571bcf5d0224ffe97037c92391cab3c78dc54820))
 * **[language](https://www.npmjs.com/package/@ckeditor/ckeditor5-language)**: An accessible button label should describe the state and the name of the feature for optimal UX. ([commit](https://github.com/ckeditor/ckeditor5/commit/571bcf5d0224ffe97037c92391cab3c78dc54820))
 * **[minimap](https://www.npmjs.com/package/@ckeditor/ckeditor5-minimap)**: The minimap should not steal DOM focus while tabbing across the document. ([commit](https://github.com/ckeditor/ckeditor5/commit/54eae6a1bb1a72d42f00b43fcf7f7f0b167507ba))
-* **[pagination](https://www.npmjs.com/package/@ckeditor/ckeditor5-pagination)**: Pagination navigation buttons should both scroll the document and move the selection (accessibility). Added keyboard shortcuts for navigating through the document.
-* **[pagination](https://www.npmjs.com/package/@ckeditor/ckeditor5-pagination)**: Pagination page number input should not participate in web page navigation on tab key press to comply with WCAG recommendations (see [ckeditor/ckeditor5#16025](https://github.com/ckeditor/ckeditor5/issues/16025)).
+* **[pagination](https://www.npmjs.com/package/@ckeditor/ckeditor5-pagination)**: The pagination navigation buttons should both scroll the document and move the selection (accessibility). Added keyboard shortcuts for navigating through the document.
+* **[pagination](https://www.npmjs.com/package/@ckeditor/ckeditor5-pagination)**: The pagination page number input should not participate in web page navigation on tab key press to comply with WCAG recommendations (see [ckeditor/ckeditor5#16025](https://github.com/ckeditor/ckeditor5/issues/16025)).
 * **[pagination](https://www.npmjs.com/package/@ckeditor/ckeditor5-pagination)**: The current page input in the toolbar should be accessible to screen readers. See [ckeditor/ckeditor5#16028](https://github.com/ckeditor/ckeditor5/issues/16028).
-* **[paste-from-office](https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office)**: Paste from Office should not break the list on the following blocks in the same list item or deduce a start attribute for a split list. Closes [#11210](https://github.com/ckeditor/ckeditor5/issues/11210), [#15964](https://github.com/ckeditor/ckeditor5/issues/15964). ([commit](https://github.com/ckeditor/ckeditor5/commit/a25e3f2a7e3c3d94ac04bbf900ff2de739c1939f))
+* **[paste-from-office](https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office)**: The paste from office feature should not break the list on the following blocks in the same list item or deduce a start attribute for a split list. Closes [#11210](https://github.com/ckeditor/ckeditor5/issues/11210), [#15964](https://github.com/ckeditor/ckeditor5/issues/15964). ([commit](https://github.com/ckeditor/ckeditor5/commit/a25e3f2a7e3c3d94ac04bbf900ff2de739c1939f))
 * **[real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration)**: Users should be able to move the mouse cursor to the user name displayed next to the user marker and dismiss it using the Esc key.
 * **[restricted-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-restricted-editing)**: It should be possible to remove an image placed inside an editable field in restricted editing mode. Closes [#15521](https://github.com/ckeditor/ckeditor5/issues/15521). ([commit](https://github.com/ckeditor/ckeditor5/commit/b4f159c00831fefd3b99afd4c362a2f1d8f4aa63))
 * **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Users should be able to move the mouse cursor to a UI tooltip without closing it. ([commit](https://github.com/ckeditor/ckeditor5/commit/7df13e970b56542b43b723bec8b4cbcb877a32a4))
