@@ -134,6 +134,20 @@ describe( 'DataController', () => {
 
 			expect( stringify( output ) ).to.equal( 'foo' );
 		} );
+
+		it( 'should parse template with children', () => {
+			schema.register( 'container', { inheritAllFrom: '$block' } );
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+			schema.extend( 'paragraph', { allowIn: [ 'container' ] } );
+
+			upcastHelpers.elementToElement( { view: 'template', model: 'container' } );
+			upcastHelpers.elementToElement( { view: 'p', model: 'paragraph' } );
+
+			const output = data.parse( '<template><p>foo</p></template>' );
+
+			expect( output ).to.instanceof( ModelDocumentFragment );
+			expect( stringify( output ) ).to.equal( '<container><paragraph>foo</paragraph></container>' );
+		} );
 	} );
 
 	describe( 'toModel()', () => {
