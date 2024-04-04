@@ -5,6 +5,7 @@
 
 .ck.ck-menu-bar {
 	display: flex;
+	flex-wrap: wrap;
 	justify-content: flex-start;
 	background: var(--ck-color-base-background);
 	padding: var(--ck-spacing-small);

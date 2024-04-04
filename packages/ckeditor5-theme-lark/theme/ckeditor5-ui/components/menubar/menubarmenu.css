@@ -7,3 +7,7 @@
 	/* Enable font size inheritance, which allows fluid UI scaling. */
 	font-size: inherit;
 }
+
+.ck.ck-menu-bar__menu_top-level > button {
+	max-width: 200px;
+}
