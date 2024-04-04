@@ -1,41 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="utf-8">
 	<title>CKEditor 5 – classic editor build – development sample</title>
-	<style>
-		body {
-			max-width: 800px;
-			margin: 20px auto;
-		}
-	</style>
+	<link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<h1>CKEditor 5 – classic editor build – development sample</h1>
+	<h1>CKEditor 5 – classic editor build – development sample</h1>
 
-<div id="editor">
-	<h2>Sample</h2>
+	<div id="presence-list-container"></div>
 
-	<p>This is an instance of the <a href="https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/predefined-builds.html#classic-editor">classic editor build</a>.</p>
+	<div id="editor-container">
+		<div class="container">
+			<div id="editor">
+				<p>Let's edit this together!</p>
+			</div>
+			<div class="sidebar" id="sidebar"></div>
+		</div>
+	</div>
 
-	<figure class="image">
-		<img src="../tests/manual/sample.jpg" alt="Autumn fields" />
-	</figure>
+	<div id="revision-viewer-container">
+		<div class="container">
+			<div id="revision-viewer-editor"></div>
+			<div class="sidebar" id="revision-viewer-sidebar"></div>
+		</div>
+	</div>
 
-	<p>You can use this sample to validate whether your <a href="https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/custom-builds.html">custom build</a> works fine.</p>
-</div>
 
-<script src="../build/ckeditor.js"></script>
-<script>
-	ClassicEditor.create( document.querySelector( '#editor' ) )
-		.then( editor => {
-			window.editor = editor;
-		} )
-		.catch( error => {
-			console.error( 'There was a problem initializing the editor.', error );
-		} );
-</script>
+	<script src="../build/ckeditor.js"></script>
+	<script>
+		ClassicEditor.create(document.querySelector('#editor'), {
+			cloudServices: {
+				tokenUrl: 'http://localhost:1337',
+				uploadUrl: 'https://{ORG_ID}.cke-cs.com/easyimage/upload/',
+				webSocketUrl: 'wss://{ORG_ID}.cke-cs.com/ws'
+			},
+			sidebar: {
+				container: document.querySelector('#sidebar'),
+				preventScrollOutOfView: true
+			},
+			collaboration: {
+				channelId: 'test-document1'
+			},
+			presenceList: {
+				container: document.querySelector('#presence-list-container'),
+				displayMe: true
+			},
+			comments: {
+				editorConfig: {
+					extraPlugins: ClassicEditor.builtinPlugins.filter(plugin => {
+						return ['Bold', 'Italic', 'Underline', 'List', 'Autoformat'].includes(plugin.pluginName);
+					})
+				}
+			},
+			revisionHistory: {
+				editorContainer: document.querySelector('#editor-container'),
+				viewerContainer: document.querySelector('#revision-viewer-container'),
+				viewerEditorElement: document.querySelector('#revision-viewer-editor'),
+				viewerSidebarContainer: document.querySelector('#revision-viewer-sidebar')
+			}
+		})
+			.then(editor => {
+				window.editor = editor;
+			})
+			.catch(error => {
+				console.error('There was a problem initializing the editor.', error);
+			});
+	</script>
 
 </body>
+
 </html>

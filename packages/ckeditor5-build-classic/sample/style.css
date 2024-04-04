@@ -1,0 +1,34 @@
+body {
+	max-width: 800px;
+	margin: 20px auto;
+}
+
+.container {
+	display: flex;
+	position: relative;
+	width: 1000px;
+}
+
+.container > .ck.ck-editor {
+	width: 100%;
+}
+
+.sidebar {
+	border: 1px solid #c4c4c4;
+	margin-left: -1px;
+	background: #fafafa;
+}
+
+#sidebar {
+	min-width: 300px;
+	padding: 0 10px;
+	overflow: hidden;
+}
+
+#revision-viewer-container {
+	display: none;
+}
+
+#revision-viewer-sidebar {
+	min-width: 320px;
+}

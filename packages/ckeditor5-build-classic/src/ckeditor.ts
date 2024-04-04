@@ -15,7 +15,14 @@ import { CKBox } from '@ckeditor/ckeditor5-ckbox';
 import { CKFinder } from '@ckeditor/ckeditor5-ckfinder';
 import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
 import { Heading } from '@ckeditor/ckeditor5-heading';
-import { Image, ImageCaption, ImageStyle, ImageToolbar, ImageUpload, PictureEditing } from '@ckeditor/ckeditor5-image';
+import {
+	Image,
+	ImageCaption,
+	ImageStyle,
+	ImageToolbar,
+	ImageUpload,
+	PictureEditing,
+} from '@ckeditor/ckeditor5-image';
 import { Indent } from '@ckeditor/ckeditor5-indent';
 import { Link } from '@ckeditor/ckeditor5-link';
 import { List } from '@ckeditor/ckeditor5-list';
@@ -25,6 +32,13 @@ import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office';
 import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
 import { TextTransformation } from '@ckeditor/ckeditor5-typing';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
+import { RealTimeCollaborativeEditing } from '@ckeditor/ckeditor5-real-time-collaboration';
+import { PresenceList } from '@ckeditor/ckeditor5-real-time-collaboration';
+import { Comments } from '@ckeditor/ckeditor5-comments';
+import { RealTimeCollaborativeComments } from '@ckeditor/ckeditor5-real-time-collaboration';
+import { RealTimeCollaborativeRevisionHistory } from '@ckeditor/ckeditor5-real-time-collaboration';
+import { RevisionHistory } from '@ckeditor/ckeditor5-revision-history';
+import { TrackChanges } from '@ckeditor/ckeditor5-track-changes';
 
 export default class ClassicEditor extends ClassicEditorBase {
 	public static override builtinPlugins = [
@@ -53,18 +67,45 @@ export default class ClassicEditor extends ClassicEditorBase {
 		PictureEditing,
 		Table,
 		TableToolbar,
-		TextTransformation
+		TextTransformation,
+		RealTimeCollaborativeEditing,
+		PresenceList,
+		RealTimeCollaborativeRevisionHistory,
+		RevisionHistory,
+		RealTimeCollaborativeComments,
+		Comments,
+		TrackChanges,
 	];
 
 	public static override defaultConfig = {
 		toolbar: {
 			items: [
-				'undo', 'redo',
-				'|', 'heading',
-				'|', 'bold', 'italic',
-				'|', 'link', 'uploadImage', 'insertTable', 'blockQuote', 'mediaEmbed',
-				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
-			]
+				'undo',
+				'redo',
+				'|',
+				'revisionHistory',
+				'|',
+				'trackChanges',
+				'|',
+				'comment',
+				'commentsArchive',
+				'|',
+				'heading',
+				'|',
+				'bold',
+				'italic',
+				'|',
+				'link',
+				'uploadImage',
+				'insertTable',
+				'blockQuote',
+				'mediaEmbed',
+				'|',
+				'bulletedList',
+				'numberedList',
+				'outdent',
+				'indent',
+			],
 		},
 		image: {
 			toolbar: [
@@ -73,17 +114,13 @@ export default class ClassicEditor extends ClassicEditorBase {
 				'imageStyle:side',
 				'|',
 				'toggleImageCaption',
-				'imageTextAlternative'
-			]
+				'imageTextAlternative',
+			],
 		},
 		table: {
-			contentToolbar: [
-				'tableColumn',
-				'tableRow',
-				'mergeTableCells'
-			]
+			contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells'],
 		},
 		// This value must be kept in sync with the language defined in webpack.config.js.
-		language: 'en'
+		language: 'en',
 	};
 }
