@@ -155,7 +155,7 @@ msgstr "(може да изисква <kbd>Fn</kbd>)"
 
 msgctxt "The label for the button that opens the Accessibility help dialog from the application menu bar."
 msgid "Accessibility"
-msgstr ""
+msgstr "Достъпност"
 
 msgctxt "Accessibility help dialog title."
 msgid "Accessibility help"
@@ -171,7 +171,7 @@ msgstr "Приближаване и отдалечаване на фокуса �
 
 msgctxt "The label of the top-level application menu bar menu containing buttons and features related to the whole document (e.g. export to PDF, import from Word, etc.)."
 msgid "MENU_BAR_MENU_FILE"
-msgstr ""
+msgstr "Файл"
 
 msgctxt "The label of the top-level application menu bar menu containing buttons and features related to general editing (e.g. undo, redo, select all, etc.)."
 msgid "MENU_BAR_MENU_EDIT"
@@ -179,7 +179,7 @@ msgstr "Редактирай"
 
 msgctxt "The label of the top-level application menu bar menu containing buttons and features related to the view of the editor (e.g. show source)."
 msgid "MENU_BAR_MENU_VIEW"
-msgstr ""
+msgstr "Преглед"
 
 msgctxt "The label of the top-level application menu bar menu containing buttons and features that insert content (e.g. insert table, insert image, etc.)."
 msgid "MENU_BAR_MENU_INSERT"
@@ -187,15 +187,15 @@ msgstr "Вмъкни"
 
 msgctxt "The label of the top-level application menu bar menu containing buttons and features related to content formatting (e.g. bold, font color, heading, etc.)."
 msgid "MENU_BAR_MENU_FORMAT"
-msgstr ""
+msgstr "Формат"
 
 msgctxt "The label of the top-level application menu bar menu containing various editor tools (e.g. AI assistant, track changes, etc.)."
 msgid "MENU_BAR_MENU_TOOLS"
-msgstr ""
+msgstr "Инструменти"
 
 msgctxt "The label of the top-level application menu bar menu containing buttons and features helping users to learn about the editor (e.g. accessibility help)."
 msgid "MENU_BAR_MENU_HELP"
-msgstr ""
+msgstr "Помощ"
 
 msgctxt "The label of the application menu bar menu containing buttons and features that apply formatting to a text (e.g. bold, italic, etc.)."
 msgid "MENU_BAR_MENU_TEXT"
@@ -203,8 +203,8 @@ msgstr "Текст"
 
 msgctxt "The label of the application menu bar menu containing buttons and features that control the font of the edited content (e.g. font size, font color, etc.)."
 msgid "MENU_BAR_MENU_FONT"
-msgstr ""
+msgstr "Шрифт"
 
 msgctxt "The accessible label of the editor menu bar used by assistive technologies."
 msgid "Editor menu bar"
-msgstr ""
+msgstr "Редактор на лентата с менюта"
