@@ -13,13 +13,13 @@ The menu bar is a user interface component that gives you access to all features
 
 As the menu bar gathers all the editor features, the toolbar can be simple and tidy, providing only the most essential and commonly used features. This is especially welcome in heavily-featured editor integrations. 
 
-For your convenience, the menu bar provides a default preset structure, based on the plugins loaded in the editor. However, you can arrange it to suit your needs, remove unnecessary items, as well as add menu items related to your custom features.
+For your convenience, the menu bar provides a {@link module:ui/menubar/utils#DefaultMenuBarItems default preset structure}, based on the plugins loaded in the editor. However, you can arrange it to suit your needs, remove unnecessary items, as well as add menu items related to your custom features.
 
 ## Demo
 
-The demo below presents all items available in the menu bar.
+The demo below presents all items available in the menu bar preset settings.
 
-{@snippet examples/menubar}
+{@snippet features/menubar}
 
 You can easily remove some presets or add more items, including menu items for custom features. The structure can also be arranged to suit particular needs.
 
@@ -46,8 +46,8 @@ ClassicEditor
 When using the Decoupled editor, you will need to insert the menu bar in a desired place yourself. The menu bar HTML element is available under `editor.ui.menuBarView.element` property.
 
 ```html
-    <div id="menuBarContainer"></div>
-    <div id="editor"><p>Document content.</p></div>
+	<div id="menuBarContainer"></div>
+	<div id="editor"><p>Document content.</p></div>
 ```
 
 ```js
@@ -55,7 +55,7 @@ DecoupledEditor
 	.create( document.querySelector( '#editor' ), {
 		toolbar: [ 'undo', 'redo', 'bold', 'italic', 'numberedList', 'bulletedList' ],
 	} )
-    .then( editor => {
+	.then( editor => {
 		document.getElementById( '#menuBarContainer' ).appendChild( editor.ui.view.menuBarView.element );
 	} );
 ```
