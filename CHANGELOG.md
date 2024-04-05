@@ -9,22 +9,24 @@ We are happy to announce the release of CKEditor 5 v41.3.0.
 
 #### Multi-level lists ⭐️
 
-CKEditor 5's latest update brings a new premium feature: Multi-level lists feature. It allows for easy creation and modification of numbered lists with counters (`1., 1.1., 1.1.1`), crucial for clear referencing and hierarchical organization in complex documents. The feature ensures compatibility with Microsoft Word. When lists with such formatting are pasted to the editor, the numbering format and counters are retained.
+CKEditor 5's latest update brings a new premium feature: the [Multi-level lists](https://ckeditor.com/docs/ckeditor5/latest/features/lists/multi-level-lists.html) feature. It allows for easy creation and modification of numbered lists with counters (`1., 1.1., 1.1.1`), crucial for clear referencing and hierarchical organization in complex documents. The feature ensures compatibility with Microsoft Word. When lists with such formatting are pasted to the editor, the numbering format and counters are retained.
 
 #### Paste from Office improvements for lists
 
-No more breaking numbering of lists when they are pasted from Office. Previously whenever a list were split by paragraphs, the counter started again from 1. With our latest improvement, the counter is correctly presereved. Moreover, if you use Paste from Office Enhanced ⭐️, the paragraphs will be merged into list items, to ensure proper, semantic content.
+No more breaking numbering of lists when they are pasted from Office. Previously whenever a list were split by paragraphs, the counter started again from 1. With our latest improvement, the counter is correctly preserved. Moreover, if you use Paste from Office Enhanced ⭐️, the paragraphs will be merged into list items, to ensure proper, semantic content.
 
-⚠️ If you use `LegacyList` plugin to prolong the migration to the new List implementation, bear in mind that from this release Paste from Office stops working for the lists' implementation you're using. Migrate to `List` to maintain pasting lists functionality.
+⚠️ If you use the `LegacyList` plugin to prolong the migration to the new list implementation, bear in mind that from this release Paste from Office stops working for the lists' implementation you are using. Migrate to `List` to maintain pasting lists functionality.
 
 #### Menu bar
 
-...
+The menu bar is a user interface component popular in large editing desktop and online packages. It gives you access to all features provided by the editor, organized in menus and categories and improves usability of the editor, keeping the toolbar can be simple and tidy. This is especially welcome in heavily-featured editor integrations. 
+
+Current release bring this battle-hardened solution to CKEditor 5! The [menu bar](https://ckeditor.com/docs/ckeditor5/latest/features/toolbar/menubar.html) can easily be enabled in selected editor types, comes with a handy features preset and is also highly configurable.
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The CSS custom property `--ck-color-image-caption-highligted-background` has been renamed to `--ck-color-image-caption-highlighted-background`. Please make sure to update your custom CSS accordingly.
-* **[real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration)**: The username displayed next to the user maker in the edited content is no longer a CSS pseudo-element. Use the `.ck-user__marker-tooltip` CSS class to customize usernames instead.
+* **[real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration)**: The username displayed next to the user marker in the edited content is no longer a CSS pseudo-element. Use the `.ck-user__marker-tooltip` CSS class to customize usernames instead.
 
 ### Features
 
@@ -32,8 +34,8 @@ No more breaking numbering of lists when they are pasted from Office. Previously
 * **[list-multi-level](https://www.npmjs.com/package/@ckeditor/ckeditor5-list-multi-level)**: Introduced the multi-level list with legal style list numbering.
 * **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Introduced the multi-level list with legal style list numbering.
 * **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Added the `[tabindex]` DOM attribute support to the `InputBase` class. ([commit](https://github.com/ckeditor/ckeditor5/commit/5a399811c3c21644f1b6e782236b60e6d2097add))
-* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Added `[aria-label]` attribute support to the `InputBase` class. ([commit](https://github.com/ckeditor/ckeditor5/commit/952cd7599bf623ea2a9be92dbde1a01e8ff73daa))
-* **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: Added <kbd>Page Up</kbd> and <kbd>Page Down</kbd> keys to the keyboard utilities (`keyCodes`, `getEnvKeystrokeText()`). ([commit](https://github.com/ckeditor/ckeditor5/commit/0c64f2abda6a25ca0cd76c3ca7995b75f57d3104))
+* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Added the `[aria-label]` attribute support to the `InputBase` class. ([commit](https://github.com/ckeditor/ckeditor5/commit/952cd7599bf623ea2a9be92dbde1a01e8ff73daa))
+* **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: Added the <kbd>Page Up</kbd> and <kbd>Page Down</kbd> keys to the keyboard utilities (`keyCodes`, `getEnvKeystrokeText()`). ([commit](https://github.com/ckeditor/ckeditor5/commit/0c64f2abda6a25ca0cd76c3ca7995b75f57d3104))
 * Implemented the application menu bar that contains various options and commands for controlling and navigating the editor. Closes [#15894](https://github.com/ckeditor/ckeditor5/issues/15894). ([commit](https://github.com/ckeditor/ckeditor5/commit/f072048026c5407467e343c116c71ff5a9d236b4))
 
 ### Bug fixes
@@ -48,11 +50,11 @@ No more breaking numbering of lists when they are pasted from Office. Previously
 * **[pagination](https://www.npmjs.com/package/@ckeditor/ckeditor5-pagination)**: The pagination navigation buttons should both scroll the document and move the selection (accessibility). Added keyboard shortcuts for navigating through the document.
 * **[pagination](https://www.npmjs.com/package/@ckeditor/ckeditor5-pagination)**: The pagination page number input should not participate in web page navigation on tab key press to comply with WCAG recommendations (see [ckeditor/ckeditor5#16025](https://github.com/ckeditor/ckeditor5/issues/16025)).
 * **[pagination](https://www.npmjs.com/package/@ckeditor/ckeditor5-pagination)**: The current page input in the toolbar should be accessible to screen readers. See [ckeditor/ckeditor5#16028](https://github.com/ckeditor/ckeditor5/issues/16028).
-* **[paste-from-office](https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office)**: The paste from office feature should not break the list on the following blocks in the same list item or deduce a start attribute for a split list. Closes [#11210](https://github.com/ckeditor/ckeditor5/issues/11210), [#15964](https://github.com/ckeditor/ckeditor5/issues/15964). ([commit](https://github.com/ckeditor/ckeditor5/commit/a25e3f2a7e3c3d94ac04bbf900ff2de739c1939f))
-* **[real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration)**: Users should be able to move the mouse cursor to the user name displayed next to the user marker and dismiss it using the Esc key.
+* **[paste-from-office](https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office)**: The paste from Office feature should not break the list on the following blocks in the same list item or deduce a start attribute for a split list. Closes [#11210](https://github.com/ckeditor/ckeditor5/issues/11210), [#15964](https://github.com/ckeditor/ckeditor5/issues/15964). ([commit](https://github.com/ckeditor/ckeditor5/commit/a25e3f2a7e3c3d94ac04bbf900ff2de739c1939f))
+* **[real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration)**: Users should be able to move the mouse cursor to the user name displayed next to the user marker and dismiss it using the <kbd>Esc</kbd> key.
 * **[restricted-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-restricted-editing)**: It should be possible to remove an image placed inside an editable field in restricted editing mode. Closes [#15521](https://github.com/ckeditor/ckeditor5/issues/15521). ([commit](https://github.com/ckeditor/ckeditor5/commit/b4f159c00831fefd3b99afd4c362a2f1d8f4aa63))
 * **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Users should be able to move the mouse cursor to a UI tooltip without closing it. ([commit](https://github.com/ckeditor/ckeditor5/commit/7df13e970b56542b43b723bec8b4cbcb877a32a4))
-* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Users should be able to close UI tooltips using the Esc key. ([commit](https://github.com/ckeditor/ckeditor5/commit/7df13e970b56542b43b723bec8b4cbcb877a32a4))
+* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Users should be able to close UI tooltips using the <kbd>Esc</kbd> key. ([commit](https://github.com/ckeditor/ckeditor5/commit/7df13e970b56542b43b723bec8b4cbcb877a32a4))
 * **[watchdog](https://www.npmjs.com/package/@ckeditor/ckeditor5-watchdog)**: `EditorWatchdog` will no longer crash when the application is refreshed before completing the editor initialization or destruction. Closes [#15980](https://github.com/ckeditor/ckeditor5/issues/15980). ([commit](https://github.com/ckeditor/ckeditor5/commit/90aeb2765b1f34f3894b4299ae805ef27869b6ff))
 * **[widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget)**: Native browser `tab` key support should be disabled for cycling nested editable elements inside the editor. Closes [#15506](https://github.com/ckeditor/ckeditor5/issues/15506). ([commit](https://github.com/ckeditor/ckeditor5/commit/e55c6c1cf7309584fa6babc214e6fa339f6b0798))
 
