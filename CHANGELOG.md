@@ -7,7 +7,19 @@ We are happy to announce the release of CKEditor 5 v41.3.0.
 
 ### Release highlights
 
-* TBA.
+#### Multi-level lists ⭐️
+
+CKEditor 5's latest update brings a new premium feature: Multi-level lists feature. It allows for easy creation and modification of numbered lists with counters (`1., 1.1., 1.1.1`), crucial for clear referencing and hierarchical organization in complex documents. The feature ensures compatibility with Microsoft Word. When lists with such formatting are pasted to the editor, the numbering format and counters are retained.
+
+#### Paste from Office improvements for lists
+
+No more breaking numbering of lists when they are pasted from Office. Previously whenever a list were split by paragraphs, the counter started again from 1. With our latest improvement, the counter is correctly presereved. Moreover, if you use Paste from Office Enhanced ⭐️, the paragraphs will be merged into list items, to ensure proper, semantic content.
+
+⚠️ If you use `LegacyList` plugin to prolong the migration to the new List implementation, bear in mind that from this release Paste from Office stops working for the lists' implementation you're using. Migrate to `List` to maintain pasting lists functionality.
+
+#### Menu bar
+
+...
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
