@@ -12,6 +12,13 @@
 		display: none;
 	}
 
+	& .ck-button {
+		&.ck-button-save,
+		&.ck-button-cancel {
+			max-height: 30px;
+		}
+	}
+
 	@mixin ck-media-phone {
 		flex-wrap: wrap;
 
@@ -40,6 +47,7 @@
 		&.ck-button-save,
 		&.ck-button-cancel {
 			margin-top: var(--ck-spacing-medium);
+			max-height: initial;
 		}
 	}
 }
