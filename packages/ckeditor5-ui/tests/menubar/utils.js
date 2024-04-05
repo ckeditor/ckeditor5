@@ -331,16 +331,15 @@ describe( 'MenuBarView utils', () => {
 					);
 				} );
 
-				it( 'should toggle menus and move focus while moving the mouse (item -> list-item)', () => {
+				it( 'should keep the menu open while moving the mouse to list item (parent element)', () => {
 					const menuA = getMenuByLabel( menuBarView, 'A' );
 
 					menuA.isOpen = true;
 
+					const parentMenuAAListItem = menuA.panelView.children.first.items.get( 1 );
 					const menuAA = getMenuByLabel( menuBarView, 'AA' );
 
 					menuAA.isOpen = true;
-
-					const menuAAListItem = menuA.panelView.children.first.items.get( 1 );
 
 					menuAA.buttonView.fire( 'execute' );
 
@@ -368,7 +367,7 @@ describe( 'MenuBarView utils', () => {
 						]
 					);
 
-					menuAAListItem.fire( 'mouseenter' );
+					parentMenuAAListItem.fire( 'mouseenter' );
 
 					expect( barDump( menuBarView ) ).to.deep.equal(
 						[
