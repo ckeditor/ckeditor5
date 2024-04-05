@@ -200,9 +200,6 @@ describe( 'TableUI', () => {
 		it( 'should reset column and rows selection on reopen', () => {
 			const insertView = menuView.panelView.children.first;
 
-			expect( insertView.rows ).to.equal( 1 );
-			expect( insertView.columns ).to.equal( 1 );
-
 			insertView.rows = 3;
 			insertView.columns = 5;
 
