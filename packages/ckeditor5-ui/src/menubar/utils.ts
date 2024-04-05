@@ -418,9 +418,257 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
  * them from components referenced by the {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar configuration}, for instance,
  * `'menuBar:bold'` is a menu bar button but `'bold'` is a toolbar button.
  *
- * TODO: This configuration has to be listed in API docs for developers to learn its structure
- * and to be able to customize it using `config.menuBar.removeItems` and `config.menuBar.addItems` properties.
+ * Below is the preset menu bar structure (the default value of `config.menuBar.items` property):
+ *
+ * ```ts
+ * [
+ * 	{
+ * 		menuId: 'file',
+ * 		label: 'File',
+ * 		groups: [
+ * 			{
+ * 				groupId: 'export',
+ * 				items: [
+ * 					'menuBar:exportPdf',
+ * 					'menuBar:exportWord'
+ * 				]
+ * 			},
+ * 			{
+ * 				groupId: 'import',
+ * 				items: [
+ * 					'menuBar:importWord'
+ * 				]
+ * 			},
+ * 			{
+ * 				groupId: 'revisionHistory',
+ * 				items: [
+ * 					'menuBar:revisionHistory'
+ * 				]
+ * 			}
+ * 		]
+ * 	},
+ * 	{
+ * 		menuId: 'edit',
+ * 		label: 'Edit',
+ * 		groups: [
+ * 			{
+ * 				groupId: 'undo',
+ * 				items: [
+ * 					'menuBar:undo',
+ * 					'menuBar:redo'
+ * 				]
+ * 			},
+ * 			{
+ * 				groupId: 'selectAll',
+ * 				items: [
+ * 					'menuBar:selectAll'
+ * 				]
+ * 			},
+ * 			{
+ * 				groupId: 'findAndReplace',
+ * 				items: [
+ * 					'menuBar:findAndReplace'
+ * 				]
+ * 			}
+ * 		]
+ * 	},
+ * 	{
+ * 		menuId: 'view',
+ * 		label: 'View',
+ * 		groups: [
+ * 			{
+ * 				groupId: 'sourceEditing',
+ * 				items: [
+ * 					'menuBar:sourceEditing'
+ * 				]
+ * 			},
+ * 			{
+ * 				groupId: 'showBlocks',
+ * 				items: [
+ * 					'menuBar:showBlocks'
+ * 				]
+ * 			},
+ * 			{
+ * 				groupId: 'restrictedEditingException',
+ * 				items: [
+ * 					'menuBar:restrictedEditingException'
+ * 				]
+ * 			}
+ * 		]
+ * 	},
+ * 	{
+ * 		menuId: 'insert',
+ * 		label: 'Insert',
+ * 		groups: [
+ * 			{
+ * 				groupId: 'insertMainWidgets',
+ * 				items: [
+ * 					'menuBar:uploadImage',
+ * 					'menuBar:ckbox',
+ * 					'menuBar:ckfinder',
+ * 					'menuBar:insertTable'
+ * 				]
+ * 			},
+ * 			{
+ * 				groupId: 'insertInline',
+ * 				items: [
+ * 					'menuBar:link',
+ * 					'menuBar:comment'
+ * 				]
+ * 			},
+ * 			{
+ * 				groupId: 'insertMinorWidgets',
+ * 				items: [
+ * 					'menuBar:insertTemplate',
+ * 					'menuBar:blockQuote',
+ * 					'menuBar:codeBlock',
+ * 					'menuBar:htmlEmbed'
+ * 				]
+ * 			},
+ * 			{
+ * 				groupId: 'insertStructureWidgets',
+ * 				items: [
+ * 					'menuBar:horizontalLine',
+ * 					'menuBar:pageBreak',
+ * 					'menuBar:tableOfContents'
+ * 				]
+ * 			},
+ * 			{
+ * 				groupId: 'restrictedEditing',
+ * 				items: [
+ * 					'menuBar:restrictedEditing'
+ * 				]
+ * 			}
+ * 		]
+ * 	},
+ * 	{
+ * 		menuId: 'format',
+ * 		label: 'Format',
+ * 		groups: [
+ * 			{
+ * 				groupId: 'textAndFont',
+ * 				items: [
+ * 					{
+ * 						menuId: 'text',
+ * 						label: 'Text',
+ * 						groups: [
+ * 							{
+ * 								groupId: 'basicStyles',
+ * 								items: [
+ * 									'menuBar:bold',
+ * 									'menuBar:italic',
+ * 									'menuBar:underline',
+ * 									'menuBar:strikethrough',
+ * 									'menuBar:superscript',
+ * 									'menuBar:subscript',
+ * 									'menuBar:code'
+ * 								]
+ * 							},
+ * 							{
+ * 								groupId: 'textPartLanguage',
+ * 								items: [
+ * 									'menuBar:textPartLanguage'
+ * 								]
+ * 							}
+ * 						]
+ * 					},
+ * 					{
+ * 						menuId: 'font',
+ * 						label: 'Font',
+ * 						groups: [
+ * 							{
+ * 								groupId: 'fontProperties',
+ * 								items: [
+ * 									'menuBar:fontSize',
+ * 									'menuBar:fontFamily'
+ * 								]
+ * 							},
+ * 							{
+ * 								groupId: 'fontColors',
+ * 								items: [
+ * 									'menuBar:fontColor',
+ * 									'menuBar:fontBackgroundColor'
+ * 								]
+ * 							},
+ * 							{
+ * 								groupId: 'highlight',
+ * 								items: [
+ * 									'menuBar:highlight'
+ * 								]
+ * 							}
+ * 						]
+ * 					},
+ * 					'menuBar:heading'
+ * 				]
+ * 			},
+ * 			{
+ * 				groupId: 'list',
+ * 				items: [
+ * 					'menuBar:bulletedList',
+ * 					'menuBar:numberedList',
+ * 					'menuBar:todoList'
+ * 				]
+ * 			},
+ * 			{
+ * 				groupId: 'indent',
+ * 				items: [
+ * 					'menuBar:alignment',
+ * 					'menuBar:indent',
+ * 					'menuBar:outdent'
+ * 				]
+ * 			},
+ * 			{
+ * 				groupId: 'caseChange',
+ * 				items: [
+ * 					'menuBar:caseChange'
+ * 				]
+ * 			},
+ * 			{
+ * 				groupId: 'removeFormat',
+ * 				items: [
+ * 					'menuBar:removeFormat'
+ * 				]
+ * 			}
+ * 		]
+ * 	},
+ * 	{
+ * 		menuId: 'tools',
+ * 		label: 'Tools',
+ * 		groups: [
+ * 			{
+ * 				groupId: 'aiTools',
+ * 				items: [
+ * 					'menuBar:aiAssistant',
+ * 					'menuBar:aiCommands'
+ * 				]
+ * 			},
+ * 			{
+ * 				groupId: 'tools',
+ * 				items: [
+ * 					'menuBar:trackChanges',
+ * 					'menuBar:commentsArchive'
+ * 				]
+ * 			}
+ * 		]
+ * 	},
+ * 	{
+ * 		menuId: 'help',
+ * 		label: 'Help',
+ * 		groups: [
+ * 			{
+ * 				groupId: 'help',
+ * 				items: [
+ * 					'menuBar:accessibilityHelp'
+ * 				]
+ * 			}
+ * 		]
+ * 	}
+ * ];
+ * ```
+ *
+ * The menu bar can be customized using the `config.menuBar.removeItems` and `config.menuBar.addItems` properties.
  */
+// **NOTE: Whenever you make changes to this value, reflect it in the documentation above!**
 export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> = [
 	{
 		menuId: 'file',
@@ -501,7 +749,7 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 		label: 'Insert',
 		groups: [
 			{
-				groupId: 'insertGroup1',
+				groupId: 'insertMainWidgets',
 				items: [
 					'menuBar:uploadImage',
 					'menuBar:ckbox',
@@ -510,14 +758,14 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 				]
 			},
 			{
-				groupId: 'insertGroup2',
+				groupId: 'insertInline',
 				items: [
 					'menuBar:link',
 					'menuBar:comment'
 				]
 			},
 			{
-				groupId: 'insertGroup3',
+				groupId: 'insertMinorWidgets',
 				items: [
 					'menuBar:insertTemplate',
 					'menuBar:blockQuote',
@@ -526,7 +774,7 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 				]
 			},
 			{
-				groupId: 'insertGroup4',
+				groupId: 'insertStructureWidgets',
 				items: [
 					'menuBar:horizontalLine',
 					'menuBar:pageBreak',
