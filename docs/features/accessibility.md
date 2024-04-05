@@ -20,7 +20,7 @@ CKEditor&nbsp;5 strives for conformance with the standards and we welcome your [
 
 ## Recommended software
 
-For optimal screen reader experience, we recommend using th Google Chrome and <acronym title="NonVisual Desktop Access">NVDA</acronym> (Windows) or Safari and VoiceOver (macOS).
+For optimal screen reader experience, we recommend using Google Chrome and <acronym title="NonVisual Desktop Access">NVDA</acronym> (Windows) or Safari and VoiceOver (macOS).
 
 ## Accessibility Conformance Report (VPAT)
 
