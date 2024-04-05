@@ -98,8 +98,8 @@ export default class TableUI extends Plugin {
 
 			insertTableView.delegate( 'execute' ).to( menuView );
 
-			menuView.on<ObservableChangeEvent<boolean>>( 'change:isOpen', ( e, name, isOpen ) => {
-				if ( isOpen ) {
+			menuView.on<ObservableChangeEvent<boolean>>( 'change:isOpen', ( event, name, isOpen ) => {
+				if ( !isOpen ) {
 					insertTableView.reset();
 				}
 			} );

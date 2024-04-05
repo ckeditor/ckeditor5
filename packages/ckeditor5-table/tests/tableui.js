@@ -207,6 +207,10 @@ describe( 'TableUI', () => {
 			insertView.columns = 5;
 
 			menuView.isOpen = false;
+
+			expect( insertView.rows ).to.equal( 1 );
+			expect( insertView.columns ).to.equal( 1 );
+
 			menuView.isOpen = true;
 
 			expect( insertView.rows ).to.equal( 1 );
