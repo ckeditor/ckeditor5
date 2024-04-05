@@ -8,6 +8,7 @@
  */
 
 import clickOutsideHandler from '../bindings/clickoutsidehandler.js';
+import MenuBarMenuListItemView from './menubarmenulistitemview.js';
 import type MenuBarMenuView from './menubarmenuview.js';
 import type {
 	default as MenuBarView,
@@ -62,7 +63,10 @@ export const MenuBarBehaviors = {
 			for ( const menuView of menuBarView.menus ) {
 				// @if CK_DEBUG_MENU_BAR // const wasOpen = menuView.isOpen;
 
-				menuView.isOpen = evt.path.includes( menuView ) && menuView.isEnabled;
+				const pathLeaf = evt.path[ 0 ];
+				const isListItemContainingMenu = pathLeaf instanceof MenuBarMenuListItemView && pathLeaf.children.first === menuView;
+
+				menuView.isOpen = ( evt.path.includes( menuView ) || isListItemContainingMenu ) && menuView.isEnabled;
 
 				// @if CK_DEBUG_MENU_BAR // if ( wasOpen !== menuView.isOpen ) {
 				// @if CK_DEBUG_MENU_BAR // console.log( '[BEHAVIOR] toggleMenusAndFocusItemsOnHover(): Toggle',
