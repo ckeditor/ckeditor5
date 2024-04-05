@@ -2,12 +2,12 @@
 category: features
 classes: keyboard-shortcuts
 meta-title: Accessibility support | CKEditor 5 Documentation
-modified_at: 2024-03-06
+modified_at: 2024-04-05
 ---
 
 # Accessibility support
 
-CKEditor&nbsp;5 incorporates various accessibility features, including keyboard navigation, screen reader support (<acronym title="Accessible Rich Internet Applications">ARIA</acronym> attributes), and robust semantic output markup. For a more detailed overview and the current status of editor accessibility, please continue reading below.
+CKEditor&nbsp;5 incorporates various accessibility features, including keyboard navigation, screen reader support (<acronym title="Accessible Rich Internet Applications">ARIA</acronym> attributes), and robust semantic output markup. This guide provides a detailed overview and presents the current status of editor accessibility.
 
 ## Conformance with WCAG 2.x and Section 508
 
@@ -16,7 +16,7 @@ CKEditor&nbsp;5 is compliant with [Web Content Accessibility Guidelines 2.2](htt
 * [Web Content Accessibility Guidelines 2.2](https://www.w3.org/TR/WCAG22/) (<acronym title="Web Content Accessibility Guidelines">WCAG</acronym>) provides international standards for making web content accessible to individuals with disabilities, ensuring that web applications are perceivable, operable, understandable, and robust for all users.
 * [Section 508 of the Rehabilitation Act](https://www.access-board.gov/ict/) mandates that federal agencies’ electronic and information technology is accessible to people with disabilities, establishing guidelines to achieve this goal.
 
-CKEditor&nbsp;5 strives for conformance with the standards and we welcome your [feedback](#accessibility-feedback-and-bugs) on the accessibility of our software.
+CKEditor&nbsp;5 strives for conformance with these standards and we welcome your [feedback](#accessibility-feedback-and-bugs) on the accessibility of our software.
 
 ## Recommended software
 
@@ -144,7 +144,7 @@ These keyboard shortcuts allow for quick access to content editing features.
 	</tbody>
 </table>
 
-#### Keystrokes that can be used when a widget is selected (for example: image, table, etc.)
+#### Keystrokes that can be used when a widget is selected (such as image, table, etc.)
 
 <table>
 	<thead>
@@ -330,4 +330,4 @@ Learn how integrators can {@link tutorials/crash-course/keystrokes#adding-keyboa
 
 ## Accessibility feedback and bugs
 
-We welcome your feedback on the accessibility of CKEditor&nbsp;5. You can find the [current list of accessibility issues](https://github.com/ckeditor/ckeditor5/issues?q=is%3Aopen+is%3Aissue+label%3Adomain%3Aaccessibility) on GitHub. Learn how to [report issues](https://ckeditor.com/docs/ckeditor5/latest/support/reporting-issues.html).
+We welcome your feedback on the accessibility of CKEditor&nbsp;5. You can find the [current list of accessibility issues](https://github.com/ckeditor/ckeditor5/issues?q=is%3Aopen+is%3Aissue+label%3Adomain%3Aaccessibility) on GitHub. Learn how to {@link support/reporting-issues report issues}.
