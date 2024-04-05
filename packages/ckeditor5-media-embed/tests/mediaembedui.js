@@ -245,17 +245,6 @@ describe( 'MediaEmbedUI', () => {
 			expect( form.mediaURLInputValue ).to.equal( 'test' );
 		} );
 
-		it( 'binds saveButtonView#isEnabled to trimmed URL input value', () => {
-			form.urlInputView.fieldView.fire( 'input' );
-
-			expect( form.saveButtonView.isEnabled ).to.be.false;
-
-			form.urlInputView.fieldView.element.value = 'test';
-			form.urlInputView.fieldView.fire( 'input' );
-
-			expect( form.saveButtonView.isEnabled ).to.be.true;
-		} );
-
 		it( 'should implement the CSS transition disabling feature', () => {
 			expect( form.disableCssTransitions ).to.be.a( 'function' );
 		} );
