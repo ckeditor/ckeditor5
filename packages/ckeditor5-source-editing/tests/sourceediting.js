@@ -794,6 +794,41 @@ describe( 'SourceEditing', () => {
 			sinon.assert.calledTwice( updateSpy );
 		} );
 	} );
+
+	it( 'should disable CommentsArchiveUI plugin when disabling commands.', async () => {
+		class TestCommentsArchiveUIPlugin extends Plugin {
+			static get pluginName() {
+				return 'CommentsArchiveUI';
+			}
+			static get requires() {
+				return [];
+			}
+		}
+
+		const editorElement = document.body.appendChild( document.createElement( 'div' ) );
+
+		const editor = await ClassicEditor.create( editorElement, {
+			plugins: [ Paragraph, Heading, SourceEditing, TestCommentsArchiveUIPlugin ],
+			toolbar: [ 'heading' ]
+		} );
+
+		const sourceEditingPlugin = editor.plugins.get( 'SourceEditing' );
+		const commentsArchivePlugin = editor.plugins.get( 'CommentsArchiveUI' );
+
+		expect( commentsArchivePlugin.isEnabled ).to.be.true;
+
+		sourceEditingPlugin._disableCommands();
+
+		expect( commentsArchivePlugin.isEnabled ).to.be.false;
+
+		sourceEditingPlugin._enableCommands();
+
+		expect( commentsArchivePlugin.isEnabled ).to.be.true;
+
+		editorElement.remove();
+
+		editor.destroy();
+	} );
 } );
 
 describe( 'SourceEditing - integration with Markdown', () => {
