@@ -7,6 +7,7 @@ import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteedi
 import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
+import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting.js';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo';
 import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block';
 import { Plugin } from '@ckeditor/ckeditor5-core';
@@ -28,7 +29,15 @@ describe( 'ListEditing - conversion - custom list marker - changes', () => {
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
 			plugins: [
-				Paragraph, ListEditing, BlockQuoteEditing, TableEditing, CodeBlockEditing, HeadingEditing, UndoEditing, CustomMarkers
+				Paragraph,
+				ListEditing,
+				BlockQuoteEditing,
+				TableEditing,
+				CodeBlockEditing,
+				HeadingEditing,
+				ImageInlineEditing,
+				UndoEditing,
+				CustomMarkers
 			]
 		} );
 
@@ -931,6 +940,32 @@ describe( 'ListEditing - conversion - custom list marker - changes', () => {
 				);
 
 				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+			} );
+
+			it( 'deleting softbreak from list item should not remove marker', () => {
+				test.remove(
+					'<paragraph listIndent="0" listItemId="a" listType="numbered" listMarker="A">' +
+						'a' +
+						'[<softBreak></softBreak>]' +
+					'</paragraph>',
+
+					'<ol>' +
+						'<li><span class="ck-list-bogus-paragraph"><span class="list-marker" data-marker="A"></span>a</span></li>' +
+					'</ol>'
+				);
+			} );
+
+			it( 'deleting inline image from list item should not remove marker', () => {
+				test.remove(
+					'<paragraph listIndent="0" listItemId="a" listType="numbered" listMarker="A">' +
+						'a' +
+						'[<imageInline></imageInline>]' +
+					'</paragraph>',
+
+					'<ol>' +
+						'<li><span class="ck-list-bogus-paragraph"><span class="list-marker" data-marker="A"></span>a</span></li>' +
+					'</ol>'
+				);
 			} );
 		} );
 
@@ -2574,6 +2609,42 @@ describe( 'ListEditing - conversion - custom list marker - changes', () => {
 							'<span class="ck-list-bogus-paragraph"><span class="list-marker" data-marker="B"></span>b</span>' +
 							'<ol>' +
 								'<li><span class="ck-list-bogus-paragraph"><span class="list-marker" data-marker="C"></span>c</span></li>' +
+							'</ol>' +
+						'</li>' +
+					'</ol>'
+				);
+			} );
+
+			it( 'deleting softbreak from nested list item should not remove marker', () => {
+				test.remove(
+					'<paragraph listIndent="0" listItemId="a" listType="numbered" listMarker="A">b</paragraph>' +
+					'<paragraph listIndent="1" listItemId="b" listType="numbered" listMarker="B">' +
+						'b' +
+						'[<softBreak></softBreak>]' +
+					'</paragraph>',
+
+					'<ol>' +
+						'<li><span class="ck-list-bogus-paragraph"><span class="list-marker" data-marker="A"></span>b</span>' +
+							'<ol>' +
+								'<li><span class="ck-list-bogus-paragraph"><span class="list-marker" data-marker="B"></span>b</span></li>' +
+							'</ol>' +
+						'</li>' +
+					'</ol>'
+				);
+			} );
+
+			it( 'deleting inline image from nested list item should not remove marker', () => {
+				test.remove(
+					'<paragraph listIndent="0" listItemId="a" listType="numbered" listMarker="A">b</paragraph>' +
+					'<paragraph listIndent="1" listItemId="b" listType="numbered" listMarker="B">' +
+						'b' +
+						'[<imageInline></imageInline>]' +
+					'</paragraph>',
+
+					'<ol>' +
+						'<li><span class="ck-list-bogus-paragraph"><span class="list-marker" data-marker="A"></span>b</span>' +
+							'<ol>' +
+								'<li><span class="ck-list-bogus-paragraph"><span class="list-marker" data-marker="B"></span>b</span></li>' +
 							'</ol>' +
 						'</li>' +
 					'</ol>'

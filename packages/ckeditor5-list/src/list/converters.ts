@@ -25,7 +25,8 @@ import {
 	type DowncastRemoveEvent,
 	type EditingView,
 	type MapperModelToViewPositionEvent,
-	type ViewTreeWalker
+	type ViewTreeWalker,
+	type Schema
 } from 'ckeditor5/src/engine.js';
 
 import type { GetCallback } from 'ckeditor5/src/utils.js';
@@ -389,9 +390,16 @@ export function listItemDowncastConverter(
 /**
  * The 'remove' downcast converter for custom markers.
  */
-export function listItemDowncastRemoveConverter(): GetCallback<DowncastRemoveEvent> {
+export function listItemDowncastRemoveConverter( schema: Schema ): GetCallback<DowncastRemoveEvent> {
 	return ( evt, data, conversionApi ) => {
 		const { writer, mapper } = conversionApi;
+		const elementName = evt.name.split( ':' )[ 1 ];
+
+		// Do not remove marker if the deleted element is some inline object inside paragraph.
+		// See https://github.com/cksource/ckeditor5-internal/issues/3680.
+		if ( !schema.checkAttribute( elementName, 'listItemId' ) ) {
+			return;
+		}
 
 		// Find the view range start position by mapping the model position at which the remove happened.
 		const viewStart = mapper.toViewPosition( data.position );

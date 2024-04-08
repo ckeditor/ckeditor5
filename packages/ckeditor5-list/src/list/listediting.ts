@@ -480,7 +480,7 @@ export default class ListEditing extends Plugin {
 					listItemDowncastConverter( attributeNames, this._downcastStrategies, model )
 				);
 
-				dispatcher.on<DowncastRemoveEvent>( 'remove', listItemDowncastRemoveConverter() );
+				dispatcher.on<DowncastRemoveEvent>( 'remove', listItemDowncastRemoveConverter( model.schema ) );
 			} );
 
 		editor.conversion.for( 'dataDowncast' )
