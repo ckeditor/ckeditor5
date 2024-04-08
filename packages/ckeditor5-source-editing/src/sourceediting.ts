@@ -331,11 +331,11 @@ export default class SourceEditing extends Plugin {
 		}
 
 		// Comments archive UI plugin will be disabled manually too.
-		const commentsArchivePlugin = editor.plugins.get( 'CommentsArchiveUI' ) as Plugin | undefined;
-
-		if ( commentsArchivePlugin ) {
-			commentsArchivePlugin.forceDisabled( COMMAND_FORCE_DISABLE_ID );
+		if ( !editor.plugins.has( 'CommentsArchiveUI' ) ) {
+			return;
 		}
+
+		( editor.plugins.get( 'CommentsArchiveUI' ) as Plugin ).forceDisabled( COMMAND_FORCE_DISABLE_ID );
 	}
 
 	/**
@@ -349,11 +349,11 @@ export default class SourceEditing extends Plugin {
 		}
 
 		// Comments archive UI plugin will be enabled manually too.
-		const commentsArchivePlugin = editor.plugins.get( 'CommentsArchiveUI' ) as Plugin | undefined;
-
-		if ( commentsArchivePlugin ) {
-			commentsArchivePlugin.clearForceDisabled( COMMAND_FORCE_DISABLE_ID );
+		if ( !editor.plugins.has( 'CommentsArchiveUI' ) ) {
+			return;
 		}
+
+		( editor.plugins.get( 'CommentsArchiveUI' ) as Plugin ).clearForceDisabled( COMMAND_FORCE_DISABLE_ID );
 	}
 
 	/**
