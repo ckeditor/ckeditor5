@@ -885,7 +885,7 @@ The table below presents the list of all plugins included in various builds. <!-
 				<li><a href="https://ckeditor.com/docs/ckeditor5/latest/api/select-all.html">SelectAll</a></li>
 				<li><a href="https://ckeditor.com/docs/ckeditor5/latest/api/typing.html">Typing</a></li>
 				<li><a href="https://ckeditor.com/docs/ckeditor5/latest/api/undo.html">Undo</a></li>
-				<li><a href="https://ckeditor.com/docs/ckeditor5/latest/features/keyboard-support.html#displaying-keyboard-shortcuts-in-the-editor">Accessibility help dialog</a></li>
+				<li><a href="https://ckeditor.com/docs/ckeditor5/latest/features/accessibility.html#displaying-keyboard-shortcuts-in-the-editor">Accessibility help dialog</a></li>
 				</ul>
 				</td>
 				<td style="text-align:center; width:70px">✅</td>
