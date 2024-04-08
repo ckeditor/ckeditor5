@@ -4,7 +4,7 @@
  */
 
 /**
- * @module image/imagetextalternative/imagetextalternativeui
+ * @module image/imageresize/imagecustomresizeui
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
@@ -65,7 +65,7 @@ export default class ImageCustomResizeUI extends Plugin {
 	}
 
 	/**
-	 * Creates the {@link module:image/imagetextalternative/ui/textalternativeformview~ImageCustomResizeFormView}
+	 * Creates the {@link module:image/imageresize/ui/imagecustomresizeformview~ImageCustomResizeFormView}
 	 * form.
 	 */
 	private _createForm( units: string ): void {

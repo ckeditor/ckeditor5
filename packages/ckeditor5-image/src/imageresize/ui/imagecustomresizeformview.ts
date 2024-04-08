@@ -4,7 +4,7 @@
  */
 
 /**
- * @module image/imagetextalternative/ui/textalternativeformview
+ * @module image/imageresize/ui/imagecustomresizeformview
  */
 
 import {
@@ -29,7 +29,7 @@ import '../../../theme/imagecustomresizeform.css';
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 
 /**
- * The TextAlternativeFormView class.
+ * The ImageCustomResizeFormView class.
  */
 export default class ImageCustomResizeFormView extends View {
 	/**
@@ -212,7 +212,7 @@ export default class ImageCustomResizeFormView extends View {
 /**
  * Fired when the form view is submitted.
  *
- * @eventName ~TextAlternativeFormView#submit
+ * @eventName ~ImageCustomResizeFormView#submit
  */
 export type ImageCustomResizeFormViewSubmitEvent = {
 	name: 'submit';
@@ -222,7 +222,7 @@ export type ImageCustomResizeFormViewSubmitEvent = {
 /**
  * Fired when the form view is canceled.
  *
- * @eventName ~TextAlternativeFormView#cancel
+ * @eventName ~ImageCustomResizeFormView#cancel
  */
 export type ImageCustomResizeFormViewCancelEvent = {
 	name: 'cancel';
