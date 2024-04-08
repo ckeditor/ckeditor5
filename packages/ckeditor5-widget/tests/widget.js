@@ -17,7 +17,7 @@ import { toWidget } from '../src/utils.js';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import { getCode, keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import toArray from '@ckeditor/ckeditor5-utils/src/toarray.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import env from '@ckeditor/ckeditor5-utils/src/env.js';
@@ -1325,9 +1325,114 @@ describe( 'Widget', () => {
 			} );
 		} );
 
-		function test( name, data, actions, expected, expectedView, contentLanguageDirection = 'ltr' ) {
+		describe( 'selection on widget and inside it (tab, shift+tab, esc)', () => {
+			test(
+				'should move selection into nested editable',
+				'<paragraph>foo</paragraph>[<widget><nested>a</nested><nested>b</nested></widget>]<paragraph>bar</paragraph>',
+				keyCodes.tab,
+				'<paragraph>foo</paragraph><widget><nested>[]a</nested><nested>b</nested></widget><paragraph>bar</paragraph>',
+				undefined,
+				undefined,
+				{ preventDefault: 1 }
+			);
+
+			test(
+				'should not move selection into nested editable if shift tab was pressed',
+				'<paragraph>foo</paragraph>[<widget><nested>a</nested><nested>b</nested></widget>]<paragraph>bar</paragraph>',
+				{ keyCode: keyCodes.tab, shiftKey: true },
+				'<paragraph>foo</paragraph>[<widget><nested>a</nested><nested>b</nested></widget>]<paragraph>bar</paragraph>',
+				undefined,
+				undefined,
+				{ preventDefault: 0 }
+			);
+
+			test(
+				'should not move selection when widget is not selected',
+				'<paragraph>[foo]</paragraph><widget><nested>a</nested><nested>b</nested></widget><paragraph>bar</paragraph>',
+				keyCodes.tab,
+				'<paragraph>[foo]</paragraph><widget><nested>a</nested><nested>b</nested></widget><paragraph>bar</paragraph>',
+				undefined,
+				undefined,
+				{ preventDefault: 0 }
+			);
+
+			test(
+				'should not move selection when non-widget element is selected',
+				'<paragraph>foo[<inline></inline>]</paragraph><widget><nested>a</nested><nested>b</nested></widget>',
+				keyCodes.tab,
+				'<paragraph>foo[<inline></inline>]</paragraph><widget><nested>a</nested><nested>b</nested></widget>',
+				undefined,
+				undefined,
+				{ preventDefault: 0 }
+			);
+
+			test(
+				'should not move selection when non-widget element is selected inside nested editable',
+				'<paragraph>foo</paragraph><widget><nested>[<inline></inline>]</nested><nested>b</nested></widget>',
+				keyCodes.tab,
+				'<paragraph>foo</paragraph><widget><nested>[<inline></inline>]</nested><nested>b</nested></widget>',
+				undefined,
+				undefined,
+				{ preventDefault: 0 }
+			);
+
+			test(
+				'should not move selection when widget has no nested editable',
+				'<paragraph>foo</paragraph>[<widget></widget>]<paragraph>bar</paragraph>',
+				keyCodes.tab,
+				'<paragraph>foo</paragraph>[<widget></widget>]<paragraph>bar</paragraph>',
+				undefined,
+				undefined,
+				{ preventDefault: 0 }
+			);
+
+			test(
+				'should select widget when shift+tab pressed inside nested editable',
+				'<paragraph>foo</paragraph><widget><nested>a[]bc</nested></widget><paragraph>bar</paragraph>',
+				{ keyCode: keyCodes.tab, shiftKey: true },
+				'<paragraph>foo</paragraph>[<widget><nested>abc</nested></widget>]<paragraph>bar</paragraph>',
+				undefined,
+				undefined,
+				{ preventDefault: 1 }
+			);
+
+			test(
+				'should not change selection when shift+tab pressed outside widget',
+				'<paragraph>foo[]</paragraph><widget><nested>abc</nested></widget><paragraph>bar</paragraph>',
+				{ keyCode: keyCodes.tab, shiftKey: true },
+				'<paragraph>foo[]</paragraph><widget><nested>abc</nested></widget><paragraph>bar</paragraph>',
+				undefined,
+				undefined,
+				{ preventDefault: 0 }
+			);
+
+			test(
+				'should select widget when esc pressed inside nested editable',
+				'<paragraph>foo</paragraph><widget><nested>a[]bc</nested></widget><paragraph>bar</paragraph>',
+				keyCodes.esc,
+				'<paragraph>foo</paragraph>[<widget><nested>abc</nested></widget>]<paragraph>bar</paragraph>',
+				undefined,
+				undefined,
+				{ preventDefault: 1 }
+			);
+
+			test(
+				'should not change selection when esc pressed outside widget',
+				'<paragraph>foo[]</paragraph><widget><nested>abc</nested></widget><paragraph>bar</paragraph>',
+				keyCodes.esc,
+				'<paragraph>foo[]</paragraph><widget><nested>abc</nested></widget><paragraph>bar</paragraph>',
+				undefined,
+				undefined,
+				{ preventDefault: 0 }
+			);
+		} );
+
+		function test( name, data, actions, expected, expectedView, contentLanguageDirection = 'ltr', stubCalls = null ) {
 			it( name, () => {
 				testUtils.sinon.stub( editor.locale, 'contentLanguageDirection' ).value( contentLanguageDirection );
+
+				const preventDefaultSpy = sinon.spy();
+				const stopPropagationSpy = sinon.spy();
 
 				actions = toArray( actions );
 				actions = actions.map( action => {
@@ -1336,7 +1441,10 @@ describe( 'Widget', () => {
 					}
 
 					return {
-						keyCode: action
+						keyCode: action,
+						get keystroke() {
+							return getCode( this );
+						}
 					};
 				} );
 
@@ -1345,7 +1453,11 @@ describe( 'Widget', () => {
 				for ( const action of actions ) {
 					viewDocument.fire( 'keydown', new DomEventData(
 						viewDocument,
-						{ target: document.createElement( 'div' ), preventDefault() {}, stopPropagation() {} },
+						{
+							target: document.createElement( 'div' ),
+							preventDefault: preventDefaultSpy,
+							stopPropagation: stopPropagationSpy
+						},
 						action
 					) );
 				}
@@ -1354,6 +1466,10 @@ describe( 'Widget', () => {
 
 				if ( expectedView ) {
 					expect( getViewData( view ) ).to.equal( expectedView );
+				}
+
+				if ( stubCalls ) {
+					expect( preventDefaultSpy.callCount, 'preventDefault' ).to.equal( stubCalls.preventDefault );
 				}
 			} );
 		}

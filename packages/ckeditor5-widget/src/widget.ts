@@ -207,6 +207,10 @@ export default class Widget extends Plugin {
 				return;
 			}
 
+			if ( data.shiftKey ) {
+				return;
+			}
+
 			if ( this._selectFirstNestedEditable() ) {
 				data.preventDefault();
 				evt.stop();
@@ -545,16 +549,11 @@ export default class Widget extends Plugin {
 		const view = this.editor.editing.view;
 		const viewDocument = view.document;
 
-		const selectedElement = viewDocument.selection.getSelectedElement();
-
-		if ( !selectedElement || !isWidget( selectedElement ) ) {
-			return false;
-		}
-
-		for ( const item of view.createRangeIn( selectedElement ).getItems() ) {
+		for ( const item of viewDocument.selection.getFirstRange()!.getItems() ) {
 			if ( item.is( 'element' ) && item.is( 'editableElement' ) ) {
 				const modelElement = editor.editing.mapper.toModelElement( item );
 
+				/* istanbul ignore next -- @preserve */
 				if ( !modelElement ) {
 					continue;
 				}
@@ -587,10 +586,6 @@ export default class Widget extends Plugin {
 			positionParent.parent as ViewElement :
 			positionParent as ViewElement;
 
-		if ( !isInsideNestedEditable( positionParentElement ) ) {
-			return false;
-		}
-
 		const viewElement = positionParentElement.findAncestor( isWidget );
 
 		if ( !viewElement ) {
@@ -599,6 +594,7 @@ export default class Widget extends Plugin {
 
 		const modelElement = mapper.toModelElement( viewElement );
 
+		/* istanbul ignore next -- @preserve */
 		if ( !modelElement ) {
 			return false;
 		}
