@@ -23,4 +23,4 @@ msgstr "Lähde"
 
 msgctxt "The accessible label of the menu bar button that changes the editor mode to raw source (HTML) editing."
 msgid "Show source"
-msgstr ""
+msgstr "Näytä lähde"

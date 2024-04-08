@@ -107,7 +107,7 @@ msgstr "ย้ายโฟกัสระหว่างช่องฟอร์
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the menu bar."
 msgid "Move focus to the menu bar, navigate between menu bars"
-msgstr ""
+msgstr "ย้ายโฟกัสไปที่แถบเมนู นำทางระหว่างแถบเมนูต่างๆ"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the toolbar."
 msgid "Move focus to the toolbar, navigate between toolbars"
@@ -115,11 +115,11 @@ msgstr "ย้ายโฟกัสไปยังแถบเครื่อง
 
 msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the toolbar."
 msgid "Navigate through the toolbar or menu bar"
-msgstr ""
+msgstr "นำทางในแถบเครื่องมือหรือแถบเมนู"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for executing currently focused button."
 msgid "Execute the currently focused button. Executing buttons that interact with the editor content moves the focus back to the content."
-msgstr ""
+msgstr "ปฏิบัติตามปุ่มที่โฟกัสในขณะนี้ การปฏิบัติตามปุ่มที่โต้ตอบกับเนื้อหาของตัวแก้ไขจะย้ายโฟกัสกลับไปยังเนื้อหา"
 
 msgctxt "Label of the button confirming the changes done in the current interface."
 msgid "Accept"
