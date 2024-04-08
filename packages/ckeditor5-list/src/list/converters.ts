@@ -414,6 +414,7 @@ export function listItemDowncastRemoveConverter( schema: Schema ): GetCallback<D
 		// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
 		const viewElement = viewRange.end.nodeBefore as ViewElement | null;
 
+		/* istanbul ignore next -- @preserve */
 		if ( !viewElement ) {
 			return;
 		}
