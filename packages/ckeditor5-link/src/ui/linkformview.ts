@@ -379,7 +379,8 @@ export default class LinkFormView extends View {
 }
 
 /**
- * Callback used by {@link ~LinkFormView} to check if passed form value is valid..
+ * Callback used by {@link ~LinkFormView} to check if passed form value is valid.
+ * If `undefined` is returned, it is assumed that the form value passed is correct and there is no error.
  */
 export type LinkFormValidatorCallback = ( form: LinkFormView ) => string | undefined;
 
