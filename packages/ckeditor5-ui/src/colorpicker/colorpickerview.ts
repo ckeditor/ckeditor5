@@ -9,7 +9,7 @@
 
 import { convertColor, convertToHex, registerCustomElement, type ColorPickerViewConfig } from './utils.js';
 
-import type { HexColor, Maybe } from '@ckeditor/ckeditor5-core';
+import type { HexColor } from '@ckeditor/ckeditor5-core';
 import { type Locale, global, env } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunc } from 'lodash-es';
 import View from '../view.js';
