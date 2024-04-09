@@ -67,7 +67,7 @@ document.querySelector( '#submit' ).addEventListener( 'click', () => {
 
 This is the classic way of integrating the editor. It is typically used in simpler CMSes, forums, comment sections, etc.
 
-This approach is only available in the {@link getting-started/legacy-getting-started/predefined-builds#classic-editor Classic editor} and only if the editor was used to replace a `<textarea>` element:
+This approach is only available in the Classic editor and only if the editor was used to replace a `<textarea>` element:
 
 ```html
 <!DOCTYPE html>

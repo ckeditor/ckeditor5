@@ -40,17 +40,6 @@ CKEditor&nbsp;5 is also compatible with popular CSS frameworks such as Bootstrap
 
 We plan to provide more integrations with time. We would like to [hear your ideas](https://github.com/ckeditor/ckeditor5/issues/1002) about what we should work on next.
 
-<!-- ### How do I use CKEditor&nbsp;5 if my framework does not have an official integration?
-
-CKEditor&nbsp;5 should be compatible with your framework and initializing it usually requires a single method call. A tighter integration of CKEditor&nbsp;5 with your framework may require using an existing or writing a new adapter (integration layer) to communicate your framework with CKEditor&nbsp;5.
-
-When checking how to integrate CKEditor&nbsp;5 with your framework, you can follow these steps:
-
-* If no official integrations (listed above) are available, search for community-driven integrations. Most of them are available on [npm](https://www.npmjs.com/).
-* If none exists, integrate CKEditor&nbsp;5 with your framework by yourself.
-
-CKEditor&nbsp;5 offers {@link getting-started/legacy-getting-started/predefined-builds predefined builds} that expose a rich JavaScript API, which you can use to {@link getting-started/legacy-getting-started/editor-lifecycle#creating-an-editor-with-create create editors} and {@link getting-started/getting-and-setting-data#setting-the-editor-data-with-setdata control them}. -->
-
 ## Configuring CKEditor&nbsp;5
 
 Once you install your copy of CKEditor&nbsp;5, take some time to {@link getting-started/setup/configuration configure it} before first use. Set up data-saving methods, editor toolbars, and UI.

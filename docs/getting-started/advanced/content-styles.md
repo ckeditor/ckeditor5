@@ -18,7 +18,7 @@ Some {@link features/index core editor features} bring additional CSS to control
 
 {@img assets/img/builds-content-styles.png 823 Editor content styles.}
 
-Content styles are bundled along with editor UI styles and, together with the JavaScript code of CKEditor&nbsp;5, they create a monolithic structure called an {@link getting-started/legacy-getting-started/predefined-builds#available-builds editor build}. By default, content styles are inseparable from the rest of the editor. This means there is no CSS file containing them you could take straight from the editor and use in your application (as opposed to the CKEditor 4 `contents.css` file). To get the editor content styles, for instance, for the frontend of your application, you will have to take additional steps described in this guide.
+Content styles are bundled along with editor UI styles and, together with the JavaScript code of CKEditor&nbsp;5, they create a monolithic structure called an editor build. By default, content styles are inseparable from the rest of the editor. This means there is no CSS file containing them you could take straight from the editor and use in your application (as opposed to the CKEditor 4 `contents.css` file). To get the editor content styles, for instance, for the frontend of your application, you will have to take additional steps described in this guide.
 
 ## Sharing content styles between frontend and backend
 

@@ -1,9 +1,9 @@
 ---
 title: Menu bar
-category: features-toolbar
+category: setup
 meta-title: Menu bar | CKEditor 5 Documentation
 modified_at: 2024-04-05
-order: 30
+order: 25
 classes: main__content--no-toc
 toc: false
 ---

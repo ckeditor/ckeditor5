@@ -9,7 +9,7 @@ order: 10
 	This is a legacy guide kept for users' convenience. If you are looking for current CKEditor 5 installation instructions, please refer to the newest version of the {@link getting-started/quick-start CKEditor 5 Quick Start} guide.
 </info-box>
 
-The ability to use two or more types of rich text editors on one page is a common requirement. For instance, you may want to use the {@link getting-started/legacy-getting-started/predefined-builds#classic-editor classic editor} next to a couple of {@link getting-started/legacy-getting-started/predefined-builds#inline-editor inline editors}.
+The ability to use two or more types of rich text editors on one page is a common requirement. For instance, you may want to use the classic editor next to a couple of inline editors.
 
 **Do not load two builds on one page.** This is a mistake that leads to:
 
@@ -139,13 +139,13 @@ Finally, when webpack finishes compiling your super build, you can change the `s
 <div id="classic-editor">
 	<h2>Sample</h2>
 
-	<p>This is an instance of the <a href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/legacy/installation-methods/predefined-builds.html#classic-editor">classic editor build</a>.</p>
+	<p>This is an instance of the classic editor build.</p>
 </div>
 
 <div id="inline-editor">
 	<h2>Sample</h2>
 
-	<p>This is an instance of the <a href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/legacy/installation-methods/predefined-builds.html#inline-editor">inline editor build</a>.</p>
+	<p>This is an instance of the inline editor build.</p>
 </div>
 
 <script src="../build/ckeditor.js"></script>

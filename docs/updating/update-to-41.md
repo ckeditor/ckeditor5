@@ -49,7 +49,7 @@ Unless you need to specifically use the old plugin in your integration, there is
 If you do not want to use block elements in your lists, you can {@link features/lists-editing#simple-lists turn off this functionality} with the configuration option instead of sticking to the old plugins.
 
 <info-box>
-	We have replaced the old list plugins in all {@link getting-started/legacy-getting-started/predefined-builds predefined builds} with the current ones.
+	We have replaced the old list plugins with the current ones.
 </info-box>
 
 #### Renaming of the plugins
