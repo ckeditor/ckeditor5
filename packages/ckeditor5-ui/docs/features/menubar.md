@@ -44,7 +44,7 @@ ClassicEditor
 
 ### Decoupled editor
 
-When using the Decoupled editor, you will need to insert the menu bar in a desired place yourself. The menu bar HTML element is available under `editor.ui.menuBarView.element` property.
+When using the Decoupled editor, you will need to insert the menu bar in a desired place yourself. The menu bar HTML element is available under the `editor.ui.menuBarView.element` property.
 
 ```html
 	<div id="menuBarContainer"></div>
