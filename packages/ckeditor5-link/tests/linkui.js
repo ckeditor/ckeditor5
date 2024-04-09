@@ -423,7 +423,8 @@ describe( 'LinkUI', () => {
 				linkUIFeature._showUI();
 
 				formView.fire( 'submit' );
-				expect( formView.urlInputView.errorText ).not.to.be.null;
+
+				expect( formView.urlInputView.errorText ).to.be.equal( 'Link URL must not be empty.' );
 			} );
 
 			it( 'should reset error form status after filling empty link', () => {
@@ -437,7 +438,7 @@ describe( 'LinkUI', () => {
 				linkUIFeature._showUI();
 
 				formView.fire( 'submit' );
-				expect( formView.urlInputView.errorText ).not.to.be.null;
+				expect( formView.urlInputView.errorText ).to.be.equal( 'Link URL must not be empty.' );
 
 				formView.urlInputView.fieldView.value = 'http://cksource.com';
 				formView.fire( 'submit' );
@@ -455,7 +456,7 @@ describe( 'LinkUI', () => {
 				linkUIFeature._showUI();
 
 				formView.fire( 'submit' );
-				expect( formView.urlInputView.errorText ).not.to.be.null;
+				expect( formView.urlInputView.errorText ).to.be.equal( 'Link URL must not be empty.' );
 
 				linkUIFeature._hideUI();
 				linkUIFeature._showUI();
