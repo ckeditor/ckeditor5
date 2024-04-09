@@ -107,6 +107,7 @@
     "@ckeditor/ckeditor5-format-painter": "41.2.1",
     "@ckeditor/ckeditor5-import-word": "41.2.1",
     "@ckeditor/ckeditor5-inspector": "^4.0.0",
+    "@ckeditor/ckeditor5-list-multi-level": "0.0.1",
     "@ckeditor/ckeditor5-mermaid": "ckeditor/ckeditor5-mermaid#v0.0.2",
     "@ckeditor/ckeditor5-pagination": "41.2.1",
     "@ckeditor/ckeditor5-paste-from-office-enhanced": "41.2.1",

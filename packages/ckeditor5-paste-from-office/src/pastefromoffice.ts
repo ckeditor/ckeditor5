@@ -54,8 +54,9 @@ export default class PasteFromOffice extends Plugin {
 		const clipboardPipeline: ClipboardPipeline = editor.plugins.get( 'ClipboardPipeline' );
 		const viewDocument = editor.editing.view.document;
 		const normalizers: Array<Normalizer> = [];
+		const hasMultiLevelListPlugin = this.editor.plugins.has( 'MultiLevelList' );
 
-		normalizers.push( new MSWordNormalizer( viewDocument ) );
+		normalizers.push( new MSWordNormalizer( viewDocument, hasMultiLevelListPlugin ) );
 		normalizers.push( new GoogleDocsNormalizer( viewDocument ) );
 		normalizers.push( new GoogleSheetsNormalizer( viewDocument ) );
 

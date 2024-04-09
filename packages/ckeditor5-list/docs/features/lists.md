@@ -72,11 +72,81 @@ Click the second list and use the ordered list {@icon @ckeditor/ckeditor5-core/t
 	You can see all the list properties together in action in the {@link examples/builds/full-featured-editor Feature-rich editor} and {@link examples/builds/document-editor Document editor} examples.
 </info-box>
 
+## Installation
+
+The `List` plugin provides the {@link features/lists ordered (numbered) and unordered (bulleted) features} for CKEditor&nbsp;5. {@link features/lists#list-properties Additional list properties}, such as list marker styles, start index, or reversed list order, are provided by the `ListProperties` plugin.
+
+### List feature
+
+<info-box info>
+	The list feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}. The installation instructions are for developers interested in building their own, custom rich text editor.
+</info-box>
+
+To add this feature to your editor, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:
+
+```
+npm install --save @ckeditor/ckeditor5-list
+```
+
+Then add the `List` plugin to your plugin list and the toolbar configuration:
+
+```js
+import { List } from '@ckeditor/ckeditor5-list';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ List, /* ... */ ],
+		toolbar: [ 'bulletedList', 'numberedList', /* ... */ ]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+### List properties
+
+<info-box info>
+	The {@link module:list/listproperties~ListProperties list properties feature} is enabled by default in the {@link installation/getting-started/predefined-builds#document-editor document editor build}.
+</info-box>
+
+To enable the list properties feature for ordered and unordered lists, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:
+
+```
+npm install --save @ckeditor/ckeditor5-list
+```
+
+Then add the `ListProperties` plugin to your plugin list and configure the toolbar.
+
+To enable selected sub-features of the list properties, add their configuration to your editor. Set `true` for each feature you want to enable:
+
+```js
+import { ListProperties } from '@ckeditor/ckeditor5-list';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ ListProperties, /* ... */ ],
+		toolbar: [ 'bulletedList', 'numberedList', /* ... */ ],
+		list: {
+			properties: {
+				styles: true,
+				startIndex: true,
+				reversed: true
+			}
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+<info-box warning>
+	The {@link module:list/listproperties~ListProperties} feature overrides UI button implementations from the {@link module:list/list/listui~ListUI}.
+</info-box>
+
 ## Related features
 
 These CKEditor&nbsp;5 features provide similar functionality:
 
 * {@link features/todo-lists To-do lists} &ndash; Create a list of interactive checkboxes with labels.
+* {@link features/multi-level-lists Multi-level lists} &ndash; Multi-level lists allow the user to set different markers (symbols, text or numbers) to display at each level of the list.
 * {@link features/indent Block indentation} &ndash; Set indentation for text blocks such as paragraphs or headings and lists.
 * {@link features/autoformat Autoformatting} &ndash; Format the text on the go with Markdown code.
 

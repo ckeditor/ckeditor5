@@ -11,6 +11,7 @@ import type { ArrayOrItem, Translations } from '@ckeditor/ckeditor5-utils';
 import type Context from '../context.js';
 import type { PluginConstructor } from '../plugin.js';
 import type Editor from './editor.js';
+import type { MenuBarConfig } from '@ckeditor/ckeditor5-ui';
 
 /**
  * CKEditor configuration options.
@@ -179,6 +180,269 @@ export interface EditorConfig {
 	 * the localization options and translation process.
 	 */
 	language?: string | LanguageConfig;
+
+	/**
+	 * The editor menu bar configuration.
+	 *
+	 * **Note**: The menu bar is not available in all editor types. Currently, only the
+	 * {@glink examples/builds/classic-editor Classic editor} and {@glink examples/builds/document-editor Document editor}
+	 * support this feature. Setting the `config.menuBar` configuration for other editor types will have no effect.
+	 *
+	 * **Note**: The menu bar is disabled in the {@glink examples/builds/classic-editor Classic editor} by default. Set the
+	 * `isVisible` configuration flag to `true` in order to enable it:
+	 *
+	 * ```ts
+	 * ClassicEditor
+	 * 	.create( document.querySelector( '#editor' ), {
+	 * 		menuBar: {
+	 * 			isVisible: true
+	 * 		}
+	 * 	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
+	 * ```
+	 *
+	 * **Note**: You do not have set the `items` property in this configuration in order to to use the menu bar.
+	 * By default, a {@link module:ui/menubar/utils#DefaultMenuBarItems default set of items} is used that already includes
+	 * **all core editor features**. For you convenience, there are `config.menuBar.addItems` and
+	 * `config.menuBar.removeItems` options available that will help you adjust the default configuration without setting the
+	 * entire menu bar structure from scratch (see below).
+	 *
+	 * **Note**: Please make sure that features (editor plugins) that bring specific menu bar buttons are loaded. For instance,
+	 * the "Bold" button will not show up in the menu bar unless the {@glink features/basic-styles basic styles} feature is loaded
+	 * (a warning will be logged in the console). {@link module:core/editor/editorconfig~EditorConfig#plugins Learn more} about loading
+	 * plugins.
+	 *
+	 * **Removing items from the menu bar**
+	 *
+	 * Use can use the `config.menuBar.removeItems` option to remove items from the default menu bar configuration. You can
+	 * remove individual buttons (e.g. "Bold" or "Block quote"), item groups (e.g. the basic styles section that
+	 * includes multiple buttons such as "Bold", "Italic", "Underline", etc.), or menus (e.g. the "Insert" menu). Please
+	 * refer to the {@link module:ui/menubar/utils#DefaultMenuBarItems default configuration} to see default buttons/groups/menus
+	 * and their structure.
+	 *
+	 * To remove individual buttons from the menu bar:
+	 *
+	 * ```ts
+	 * ClassicEditor
+	 * 	.create( document.querySelector( '#editor' ), {
+	 * 		menuBar: {
+	 * 			// Removes "Bold" and "Block quote" buttons from their respective menus.
+	 * 			removeItems: [ 'menuBar:bold', 'menuBar:blockQuote' ]
+	 * 		}
+	 * 	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
+	 * ```
+	 *
+	 * To remove a buttons group from the menu bar:
+	 *
+	 * ```ts
+	 * ClassicEditor
+	 * 	.create( document.querySelector( '#editor' ), {
+	 * 		menuBar: {
+	 * 			// Removes the entire basic styles group ("Bold", "Italic", "Underline", etc.) from the "Format" menu.
+	 * 			removeItems: [ 'basicStyles' ]
+	 * 		}
+	 * 	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
+	 * ```
+	 *
+	 * To remove a menu from the menu bar:
+	 *
+	 * ```ts
+	 * ClassicEditor
+	 * 	.create( document.querySelector( '#editor' ), {
+	 * 		menuBar: {
+	 * 			// Removes the whole top-level "Insert" menu from the menu bar.
+	 * 			removeItems: [ 'insert' ]
+	 * 		}
+	 * 	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
+	 * ```
+	 *
+	 * **Adding items to the menu bar**
+	 *
+	 * Using the `config.menuBar.addItems` option you can add individual buttons, button groups or entire menus to the structure
+	 * of the menu bar. Please refer to the {@link module:ui/menubar/utils#DefaultMenuBarItems default configuration} to learn about the
+	 * names of buttons and positions they can be added at.
+	 *
+	 * Each entry in the `config.menuBar.addItems` is an object with one of the following properties:
+	 * * `item` &ndash; A name of the button to be added to a specific button group (e.g. `'menuBar:bold'` or `'myButton'`),
+	 * * `menu` &ndash; A {@link module:ui/menubar/menubarview#MenuBarMenuDefinition definition of a menu} that should be added to
+	 * the menu bar,
+	 * * `group` &ndash; A {@link module:ui/menubar/menubarview#MenuBarMenuGroupDefinition definition of a button group} that should be
+	 * added to a specific menu.
+	 *
+	 * Additionally, each entry must define the `position` property that accepts the following values:
+	 * * `'start'` &ndash; Adds a top-level menu (e.g. "Format", "Insert", etc.) at the beginning of the menu bar,
+	 * * `'start:GROUP_OR_MENU'` &ndash; Adds a button/group at the beginning of the specific group/menu,
+	 * * `'end'` &ndash; Adds a top-level menu (e.g. "Format", "Insert", etc.) at the end of the menu bar,
+	 * * `'end:GROUP_OR_MENU'` &ndash; Adds a button/group at the end of the specific group/menu,
+	 * * `'after:BUTTON_OR_GROUP_OR_MENU'` &ndash; Adds a button/group/menu right after the specific button/group/menu,
+	 * * `'before:BUTTON_OR_GROUP_OR_MENU'` &ndash; Adds a button/group/menu right after the specific button/group/menu.
+	 *
+	 * To add a new top-level menu with specific buttons at the end of the menu bar:
+	 *
+	 * ```ts
+	 *  ClassicEditor
+	 * 	.create( document.querySelector( '#editor' ), {
+	 * 		menuBar: {
+	 *  		addItems: [
+	 * 				{
+	 * 					menu: {
+	 * 						menuId: 'my-menu',
+	 * 						label: 'My menu',
+	 * 						groups: [
+	 * 							{
+	 * 								groupId: 'my-buttons',
+	 * 								items: [
+	 * 									'menuBar:bold',
+	 * 									'menuBar:italic',
+	 * 									'menuBar:underline'
+	 * 								]
+	 * 							}
+	 * 						]
+	 * 					},
+	 * 					position: 'end'
+	 * 				}
+	 * 			]
+	 * 		}
+	 * 	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
+	 * ```
+	 *
+	 * To add a new group of buttons to the "Format" menu after basic styles buttons ("Bold", "Italic", "Underline", etc.):
+	 *
+	 * ```ts
+	 *  ClassicEditor
+	 * 	.create( document.querySelector( '#editor' ), {
+	 * 		menuBar: {
+	 *  		addItems: [
+	 * 				{
+	 * 					group: {
+	 * 						groupId: 'my-buttons',
+	 * 						items: [
+	 * 							'myButton1',
+	 * 							'myButton2',
+	 * 						]
+	 * 					},
+	 * 					position: 'after:basicStyles'
+	 * 				}
+	 * 			]
+	 * 		}
+	 * 	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
+	 * ```
+	 *
+	 * To add a new button to the basic styles group ("Bold", "Italic", "Underline", etc.) in the "Format" menu:
+	 *
+	 * ```ts
+	 *  ClassicEditor
+	 * 	.create( document.querySelector( '#editor' ), {
+	 * 		menuBar: {
+	 *  		addItems: [
+	 * 				{
+	 * 					item: 'myButton',
+	 * 					position: 'end:basicStyles'
+	 * 				}
+	 * 			]
+	 * 		}
+	 * 	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
+	 * ```
+	 *
+	 * To add a new sub-menu in the "Format" menu:
+	 *
+	 * ```ts
+	 *  ClassicEditor
+	 * 	.create( document.querySelector( '#editor' ), {
+	 * 		menuBar: {
+	 *  		addItems: [
+	 * 				{
+	 * 					menu: {
+	 * 						menuId: 'my-sub-menu',
+	 * 						label: 'My sub-menu',
+	 * 						groups: [
+	 * 							{
+	 * 								groupId: 'my-buttons',
+	 * 								items: [
+	 * 									'myButton1',
+	 * 									'myButton2',
+	 * 								]
+	 * 							}
+	 * 						]
+	 * 					},
+	 * 					position: 'after:basicStyles'
+	 * 				}
+	 * 			]
+	 * 		}
+	 * 	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
+	 * ```
+	 *
+	 * **Defining menu bar from scratch**
+	 *
+	 * If the `config.menuBar.addItems` and `config.menuBar.removeItems` options are not enough to adjust the
+	 * {@link module:ui/menubar/utils#DefaultMenuBarItems default configuration}, you can set the menu bar structure from scratch.
+	 *
+	 * For instance, to create a minimalistic menu bar configuration with just two main categories (menus), the first one
+	 * containing some of the buttons delivered by the default configuration and the second one containing custom buttons
+	 * brought by 3rd-party plugins, use the following code snippet:
+	 *
+	 * ```ts
+	 * ClassicEditor
+	 * 	.create( document.querySelector( '#editor' ), {
+	 * 		menuBar: {
+	 * 			items: [
+	 * 				{
+	 * 					menuId: 'formatting',
+	 * 					label: 'Formatting',
+	 * 					groups: [
+	 * 						{
+	 * 							groupId: 'basicStyles',
+	 * 							items: [
+	 * 								'menuBar:bold',
+	 * 								'menuBar:italic',
+	 * 							]
+	 * 						},
+	 * 						{
+	 * 							groupId: 'misc',
+	 * 							items: [
+	 * 								'menuBar:heading',
+	 * 								'menuBar:bulletedList',
+	 * 								'menuBar:numberedList'
+	 * 							]
+	 * 						}
+	 * 					]
+	 * 				},
+	 * 				{
+	 * 					menuId: 'myButtons',
+	 * 					label: 'My actions',
+	 * 					groups: [
+	 * 						{
+	 * 							groupId: 'undo',
+	 * 							items: [
+	 * 								'myButton1',
+	 * 								'myButton2'
+	 * 							]
+	 * 						}
+	 * 					]
+	 * 				}
+	 * 			]
+	 * 		}
+	 * 	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
+	 * ```
+	 */
+	menuBar?: MenuBarConfig;
 
 	/**
 	 * Specifies the text displayed in the editor when there is no content (editor is empty). It is intended to

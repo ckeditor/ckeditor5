@@ -31,7 +31,9 @@ const keyCodesToGlyphs: { [key: number]: string } = {
 	38: '↑',
 	39: '→',
 	40: '↓',
-	9: '⇥'
+	9: '⇥',
+	33: 'Page Up',
+	34: 'Page Down'
 } as const;
 
 /**
@@ -245,6 +247,8 @@ export function isForwardArrowKeyCode(
 
 function generateKnownKeyCodes(): { readonly [ keyCode: string ]: number } {
 	const keyCodes: { [keyCode: string]: number } = {
+		pageup: 33,
+		pagedown: 34,
 		arrowleft: 37,
 		arrowup: 38,
 		arrowright: 39,

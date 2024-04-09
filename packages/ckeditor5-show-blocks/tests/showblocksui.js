@@ -6,13 +6,18 @@
 import { global } from '@ckeditor/ckeditor5-utils';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
-import { ButtonView } from '@ckeditor/ckeditor5-ui';
+import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import ShowBlocksEditing from '../src/showblocksediting.js';
 import ShowBlocksUI from '../src/showblocksui.js';
 
+import showBlocksIcon from '../theme/icons/show-blocks.svg';
+
 describe( 'ShowBlocksUI', () => {
 	let editor, element, button;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		element = global.document.createElement( 'div' );
@@ -24,7 +29,6 @@ describe( 'ShowBlocksUI', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-				button = editor.ui.componentFactory.create( 'showBlocks' );
 			} );
 	} );
 
@@ -38,62 +42,77 @@ describe( 'ShowBlocksUI', () => {
 		expect( ShowBlocksUI.pluginName ).to.equal( 'ShowBlocksUI' );
 	} );
 
-	describe( 'the "showBlocks" button', () => {
-		it( 'should be an instance of ButtonView', () => {
-			expect( button ).to.be.instanceOf( ButtonView );
+	describe( 'the "showBlocks" toolbar button', () => {
+		beforeEach( () => {
+			button = editor.ui.componentFactory.create( 'showBlocks' );
 		} );
 
-		it( 'should have a label', () => {
-			expect( button.label ).to.equal( 'Show blocks' );
-		} );
+		testButton( 'showBlocks', 'Show blocks', ButtonView );
 
-		it( 'should have an icon', () => {
-			expect( button.icon ).to.match( /^<svg/ );
-		} );
-
-		it( 'should have a tooltip', () => {
+		it( 'should have tooltip', () => {
 			expect( button.tooltip ).to.be.true;
 		} );
 
-		it( 'should have #isEnabled bound to the command isEnabled', () => {
-			expect( button.isEnabled ).to.be.true;
+		it( 'should have an icon', () => {
+			expect( button.icon ).to.equal( showBlocksIcon );
+		} );
+	} );
 
-			editor.commands.get( 'showBlocks' ).isEnabled = false;
-
-			expect( button.isEnabled ).to.be.false;
+	describe( 'the menuBar:showBlocks menu bar button', () => {
+		beforeEach( () => {
+			button = editor.ui.componentFactory.create( 'menuBar:showBlocks' );
 		} );
 
-		it( 'should have #isOn bound to the command value', () => {
-			editor.commands.get( 'showBlocks' ).value = false;
+		testButton( 'showBlocks', 'Show blocks', MenuBarMenuListItemButtonView );
+	} );
 
+	function testButton( featureName, label, Component ) {
+		it( 'should register feature component', () => {
+			expect( button ).to.be.instanceOf( Component );
+		} );
+
+		it( 'should create UI component with correct attribute values', () => {
 			expect( button.isOn ).to.be.false;
-
-			editor.commands.get( 'showBlocks' ).value = true;
-
-			expect( button.isOn ).to.be.true;
+			expect( button.label ).to.equal( label );
 		} );
 
-		it( 'should have #isOn bound to the mode of SourceEditing plugin', async () => {
-			editor.commands.get( 'showBlocks' ).value = true;
-
-			editor.plugins.get( 'SourceEditing' ).isSourceEditingMode = true;
-
-			expect( button.isOn ).to.be.false;
-
-			editor.plugins.get( 'SourceEditing' ).isSourceEditingMode = false;
-
-			expect( button.isOn ).to.be.true;
-		} );
-
-		it( 'should execute the "showBlocks" command and focus the editing view', () => {
-			sinon.spy( editor, 'execute' );
-			sinon.spy( editor.editing.view, 'focus' );
+		it( `should execute ${ featureName } command on model execute event and focus the view`, () => {
+			const executeSpy = testUtils.sinon.stub( editor, 'execute' );
+			const focusSpy = testUtils.sinon.stub( editor.editing.view, 'focus' );
 
 			button.fire( 'execute' );
 
-			sinon.assert.calledOnce( editor.execute );
-			sinon.assert.calledWithExactly( editor.execute, 'showBlocks' );
-			sinon.assert.calledOnce( editor.editing.view.focus );
+			sinon.assert.calledOnceWithExactly( executeSpy, featureName );
+			sinon.assert.calledOnce( focusSpy );
+			sinon.assert.callOrder( executeSpy, focusSpy );
 		} );
-	} );
+
+		it( `should bind #isEnabled to ${ featureName } command`, () => {
+			const command = editor.commands.get( featureName );
+
+			expect( button.isOn ).to.be.false;
+
+			const initState = command.isEnabled;
+			expect( button.isEnabled ).to.equal( initState );
+
+			command.isEnabled = !initState;
+			expect( button.isEnabled ).to.equal( !initState );
+		} );
+
+		it( `should bind #isOn to ${ featureName } command`, () => {
+			const command = editor.commands.get( featureName );
+
+			command.value = false;
+			command.isEnabled = true;
+			expect( button.isOn ).to.be.false;
+
+			command.value = true;
+			command.isEnabled = true;
+			expect( button.isOn ).to.be.true;
+
+			command.value = true;
+			command.isEnabled = false;
+			expect( button.isOn ).to.be.false;
+		} );
+	}
 } );

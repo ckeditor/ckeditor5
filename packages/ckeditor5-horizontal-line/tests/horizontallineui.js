@@ -10,11 +10,13 @@ import HorizontalLineEditing from '../src/horizontallineediting.js';
 import HorizontalLineUI from '../src/horizontallineui.js';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { icons } from 'ckeditor5/src/core.js';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'HorizontalLineUI', () => {
-	let editor, editorElement, horizontalLineView;
+	let editor, editorElement, button;
 
 	testUtils.createSinonSandbox();
 
@@ -28,8 +30,6 @@ describe( 'HorizontalLineUI', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-
-				horizontalLineView = editor.ui.componentFactory.create( 'horizontalLine' );
 			} );
 	} );
 
@@ -40,28 +40,58 @@ describe( 'HorizontalLineUI', () => {
 			} );
 	} );
 
-	it( 'should register horizontalLine feature component', () => {
-		expect( horizontalLineView ).to.be.instanceOf( ButtonView );
-		expect( horizontalLineView.label ).to.equal( 'Horizontal line' );
-		expect( horizontalLineView.icon ).to.match( /<svg / );
-		expect( horizontalLineView.isToggleable ).to.be.false;
+	describe( 'the "horizontalLine" toolbar button', () => {
+		beforeEach( () => {
+			button = editor.ui.componentFactory.create( 'horizontalLine' );
+		} );
+
+		testButton( 'horizontalLine', 'Horizontal line', ButtonView );
+
+		it( 'should have tooltip', () => {
+			expect( button.tooltip ).to.be.true;
+		} );
 	} );
 
-	it( 'should execute horizontalLine command on model execute event', () => {
-		const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+	describe( 'the "menuBar:horizontalLine" menu bar button', () => {
+		beforeEach( () => {
+			button = editor.ui.componentFactory.create( 'menuBar:horizontalLine' );
+		} );
 
-		horizontalLineView.fire( 'execute' );
-
-		sinon.assert.calledOnce( executeSpy );
-		sinon.assert.calledWithExactly( executeSpy, 'horizontalLine' );
+		testButton( 'horizontalLine', 'Horizontal line', MenuBarMenuListItemButtonView );
 	} );
 
-	it( 'should bind model to horizontalLine command', () => {
-		const command = editor.commands.get( 'horizontalLine' );
+	function testButton( featureName, label, Component ) {
+		it( 'should register feature component', () => {
+			expect( button ).to.be.instanceOf( Component );
+		} );
 
-		expect( horizontalLineView.isEnabled ).to.be.true;
+		it( 'should create UI component with correct attribute values', () => {
+			expect( button.isOn ).to.be.false;
+			expect( button.label ).to.equal( label );
+			expect( button.icon ).to.equal( icons.horizontalLine );
+		} );
 
-		command.isEnabled = false;
-		expect( horizontalLineView.isEnabled ).to.be.false;
-	} );
+		it( `should execute ${ featureName } command on model execute event and focus the view`, () => {
+			const executeSpy = testUtils.sinon.stub( editor, 'execute' );
+			const focusSpy = testUtils.sinon.stub( editor.editing.view, 'focus' );
+
+			button.fire( 'execute' );
+
+			sinon.assert.calledOnceWithExactly( executeSpy, featureName );
+			sinon.assert.calledOnce( focusSpy );
+			sinon.assert.callOrder( executeSpy, focusSpy );
+		} );
+
+		it( `should bind #isEnabled to ${ featureName } command`, () => {
+			const command = editor.commands.get( featureName );
+
+			expect( button.isOn ).to.be.false;
+
+			const initState = command.isEnabled;
+			expect( button.isEnabled ).to.equal( initState );
+
+			command.isEnabled = !initState;
+			expect( button.isEnabled ).to.equal( !initState );
+		} );
+	}
 } );
