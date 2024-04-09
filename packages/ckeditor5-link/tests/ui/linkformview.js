@@ -173,6 +173,14 @@ describe( 'LinkFormView', () => {
 		} );
 	} );
 
+	describe( 'resetFormStatus()', () => {
+		it( 'should clear form input errors', () => {
+			view.urlInputView.errorText = 'Error';
+			view.resetFormStatus();
+			expect( view.urlInputView.errorText ).to.be.null;
+		} );
+	} );
+
 	describe( 'destroy()', () => {
 		it( 'should destroy the FocusTracker instance', () => {
 			const destroySpy = sinon.spy( view.focusTracker, 'destroy' );
