@@ -86,8 +86,7 @@ a.ck.ck-button {
 			margin-right: var(--ck-spacing-large);
 		}
 
-		font-weight: bold;
-		opacity: .7;
+		opacity: .5;
 	}
 
 	/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/70 */

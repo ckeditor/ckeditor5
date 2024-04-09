@@ -35,6 +35,17 @@ describe( 'Enter feature', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have pluginName', () => {
+		expect( Enter.pluginName ).to.equal( 'Enter' );
+	} );
+
+	it( 'should add keystroke accessibility info', () => {
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
+			label: 'Insert a hard break (a new paragraph)',
+			keystroke: 'Enter'
+		} );
+	} );
+
 	it( 'creates the commands', () => {
 		expect( editor.commands.get( 'enter' ) ).to.be.instanceof( EnterCommand );
 	} );

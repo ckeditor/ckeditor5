@@ -11,12 +11,19 @@ export { default as Clipboard } from './clipboard.js';
 export {
 	default as ClipboardPipeline,
 	type ClipboardContentInsertionEvent,
+	type ClipboardContentInsertionData,
 	type ClipboardInputTransformationEvent,
 	type ClipboardInputTransformationData,
 	type ClipboardOutputTransformationEvent,
 	type ClipboardOutputTransformationData,
 	type ViewDocumentClipboardOutputEvent
 } from './clipboardpipeline.js';
+
+export {
+	default as ClipboardMarkersUtils,
+	type ClipboardMarkerRestrictedAction,
+	type ClipboardMarkerConfiguration
+} from './clipboardmarkersutils.js';
 
 export type {
 	ClipboardEventData

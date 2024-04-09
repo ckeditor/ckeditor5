@@ -14,6 +14,7 @@ import { Enter, ShiftEnter } from 'ckeditor5/src/enter.js';
 import { SelectAll } from 'ckeditor5/src/select-all.js';
 import { Typing } from 'ckeditor5/src/typing.js';
 import { Undo } from 'ckeditor5/src/undo.js';
+import { AccessibilityHelp } from 'ckeditor5/src/ui.js';
 
 /**
  * A plugin including all essential editing features. It represents a set of features that enables similar functionalities
@@ -36,7 +37,7 @@ export default class Essentials extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ Clipboard, Enter, SelectAll, ShiftEnter, Typing, Undo ] as const;
+		return [ AccessibilityHelp, Clipboard, Enter, SelectAll, ShiftEnter, Typing, Undo ] as const;
 	}
 
 	/**

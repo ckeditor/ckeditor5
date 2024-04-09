@@ -201,7 +201,7 @@ describe( 'ImageCaptionEditing', () => {
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img src="img.png"></img>' +
 						'<figcaption aria-label="Caption for the image" class="ck-editor__editable ck-editor__nested-editable" ' +
-							'contenteditable="true" data-placeholder="Enter image caption" role="textbox">' +
+							'contenteditable="true" data-placeholder="Enter image caption" role="textbox" tabindex="-1">' +
 							'Foo bar baz.' +
 						'</figcaption>' +
 					'</figure>'
@@ -257,7 +257,7 @@ describe( 'ImageCaptionEditing', () => {
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img src="img.png"></img>' +
 						'<figcaption aria-label="Caption for the image" class="ck-editor__editable ck-editor__nested-editable" ' +
-							'contenteditable="true" data-placeholder="Enter image caption" role="textbox">' +
+							'contenteditable="true" data-placeholder="Enter image caption" role="textbox" tabindex="-1">' +
 							'foo bar' +
 						'</figcaption>' +
 					'</figure>'
@@ -280,7 +280,7 @@ describe( 'ImageCaptionEditing', () => {
 						'<img src="img.png"></img>' +
 						'<figcaption aria-label="Caption for the image" ' +
 							'class="ck-editor__editable ck-editor__nested-editable ck-placeholder" ' +
-							'contenteditable="true" data-placeholder="Enter image caption" role="textbox">' +
+							'contenteditable="true" data-placeholder="Enter image caption" role="textbox" tabindex="-1">' +
 						'</figcaption>' +
 					'</figure>'
 				);
@@ -301,7 +301,7 @@ describe( 'ImageCaptionEditing', () => {
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img src="img.png"></img>' +
 						'<figcaption aria-label="Caption for the image" class="ck-editor__editable ck-editor__nested-editable" ' +
-							'contenteditable="true" data-placeholder="Enter image caption" role="textbox">baz</figcaption>' +
+							'contenteditable="true" data-placeholder="Enter image caption" role="textbox" tabindex="-1">baz</figcaption>' +
 					'</figure>'
 				);
 			} );
@@ -338,7 +338,8 @@ describe( 'ImageCaptionEditing', () => {
 						'<img src="img.png"></img>' +
 						'<figcaption aria-label="Caption for the image" ' +
 							'class="ck-editor__editable ck-editor__nested-editable highlight-yellow" ' +
-							'contenteditable="true" data-foo="yellow" data-placeholder="Enter image caption" role="textbox">' +
+							'contenteditable="true" data-foo="yellow" data-placeholder="Enter image caption" role="textbox" ' +
+							'tabindex="-1">' +
 							'Foo bar baz.' +
 						'</figcaption>' +
 					'</figure>'
@@ -352,7 +353,7 @@ describe( 'ImageCaptionEditing', () => {
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img src="img.png"></img>' +
 						'<figcaption aria-label="Caption for the image" class="ck-editor__editable ck-editor__nested-editable" ' +
-								'contenteditable="true" data-placeholder="Enter image caption" role="textbox">' +
+								'contenteditable="true" data-placeholder="Enter image caption" role="textbox" tabindex="-1">' +
 							'Foo bar baz.' +
 						'</figcaption>' +
 					'</figure>'
@@ -451,7 +452,7 @@ describe( 'ImageCaptionEditing', () => {
 				'[<figure class="ck-widget image" contenteditable="false">' +
 					'<img alt="" src=""></img>' +
 					'<figcaption aria-label="Caption for the image" class="ck-editor__editable ck-editor__nested-editable" ' +
-						'contenteditable="true" data-placeholder="Enter image caption" role="textbox">' +
+						'contenteditable="true" data-placeholder="Enter image caption" role="textbox" tabindex="-1">' +
 						'foo bar' +
 					'</figcaption>' +
 				'</figure>]' +
@@ -481,7 +482,7 @@ describe( 'ImageCaptionEditing', () => {
 					'<img alt="" src=""></img>' +
 					'<figcaption aria-label="Caption for the image" ' +
 						'class="ck-editor__editable ck-editor__nested-editable ck-placeholder" ' +
-						'contenteditable="true" data-placeholder="Enter image caption" role="textbox"></figcaption>' +
+						'contenteditable="true" data-placeholder="Enter image caption" role="textbox" tabindex="-1"></figcaption>' +
 				'</figure>]' +
 				'<p></p>'
 			);
@@ -533,7 +534,7 @@ describe( 'ImageCaptionEditing', () => {
 					'<img src=""></img>' +
 					'<figcaption aria-label="Caption for the image" ' +
 						'class="ck-editor__editable ck-editor__nested-editable ck-placeholder" ' +
-						'contenteditable="true" data-placeholder="Enter image caption" role="textbox">' +
+						'contenteditable="true" data-placeholder="Enter image caption" role="textbox" tabindex="-1">' +
 					'</figcaption>' +
 				'</figure>]'
 			);
@@ -548,7 +549,7 @@ describe( 'ImageCaptionEditing', () => {
 					'<img src=""></img>' +
 					'<figcaption aria-label="Caption for the image" ' +
 						'class="ck-editor__editable ck-editor__nested-editable ck-placeholder" ' +
-						'contenteditable="true" data-placeholder="Enter image caption" role="textbox">' +
+						'contenteditable="true" data-placeholder="Enter image caption" role="textbox" tabindex="-1">' +
 					'</figcaption>' +
 				'</figure>'
 			);
@@ -565,7 +566,7 @@ describe( 'ImageCaptionEditing', () => {
 					'<img src=""></img>' +
 					'<figcaption aria-label="Caption for the image" ' +
 						'class="ck-editor__editable ck-editor__nested-editable ck-placeholder" ' +
-						'contenteditable="true" data-placeholder="Enter image caption" role="textbox">' +
+						'contenteditable="true" data-placeholder="Enter image caption" role="textbox" tabindex="-1">' +
 					'</figcaption>' +
 				'</figure>]'
 			);
@@ -585,7 +586,7 @@ describe( 'ImageCaptionEditing', () => {
 					'<img src=""></img>' +
 					'<figcaption aria-label="Caption for the image" ' +
 						'class="ck-editor__editable ck-editor__nested-editable ck-editor__nested-editable_focused ck-placeholder" ' +
-						'contenteditable="true" data-placeholder="Enter image caption" role="textbox">[]' +
+						'contenteditable="true" data-placeholder="Enter image caption" role="textbox" tabindex="-1">[]' +
 					'</figcaption>' +
 				'</figure>'
 			);
@@ -599,7 +600,7 @@ describe( 'ImageCaptionEditing', () => {
 				'[<figure class="ck-widget image" contenteditable="false">' +
 					'<img src=""></img>' +
 					'<figcaption aria-label="Caption for the image" class="ck-editor__editable ck-editor__nested-editable" ' +
-						'contenteditable="true" data-placeholder="Enter image caption" role="textbox">foo bar</figcaption>' +
+						'contenteditable="true" data-placeholder="Enter image caption" role="textbox" tabindex="-1">foo bar</figcaption>' +
 				'</figure>]'
 			);
 		} );
@@ -617,7 +618,7 @@ describe( 'ImageCaptionEditing', () => {
 					'<img src=""></img>' +
 					'<figcaption aria-label="Caption for the image" ' +
 						'class="ck-editor__editable ck-editor__nested-editable ck-placeholder" ' +
-						'contenteditable="true" data-placeholder="Enter image caption" role="textbox">' +
+						'contenteditable="true" data-placeholder="Enter image caption" role="textbox" tabindex="-1">' +
 					'</figcaption>' +
 				'</figure>'
 			);
@@ -635,7 +636,7 @@ describe( 'ImageCaptionEditing', () => {
 					'<img src=""></img>' +
 					'<figcaption aria-label="Caption for the image" ' +
 						'class="ck-editor__editable ck-editor__nested-editable ck-placeholder" ' +
-						'contenteditable="true" data-placeholder="Enter image caption" role="textbox">' +
+						'contenteditable="true" data-placeholder="Enter image caption" role="textbox" tabindex="-1">' +
 						'[]' +
 					'</figcaption>' +
 				'</figure>'
@@ -656,7 +657,7 @@ describe( 'ImageCaptionEditing', () => {
 					'<img src=""></img>' +
 					'<figcaption aria-label="Caption for the image" ' +
 						'class="ck-editor__editable ck-editor__nested-editable ck-placeholder" ' +
-						'contenteditable="true" data-placeholder="Enter image caption" role="textbox"></figcaption>' +
+						'contenteditable="true" data-placeholder="Enter image caption" role="textbox" tabindex="-1"></figcaption>' +
 				'</figure>]'
 			);
 		} );
@@ -675,13 +676,13 @@ describe( 'ImageCaptionEditing', () => {
 				'<figure class="ck-widget image" contenteditable="false">' +
 					'<img src=""></img>' +
 					'<figcaption aria-label="Caption for the image" class="ck-editor__editable ck-editor__nested-editable" ' +
-						'contenteditable="true" data-placeholder="Enter image caption" role="textbox">foo bar</figcaption>' +
+						'contenteditable="true" data-placeholder="Enter image caption" role="textbox" tabindex="-1">foo bar</figcaption>' +
 				'</figure>' +
 				'[<figure class="ck-widget image" contenteditable="false">' +
 					'<img src=""></img>' +
 					'<figcaption aria-label="Caption for the image" ' +
 						'class="ck-editor__editable ck-editor__nested-editable ck-placeholder" ' +
-						'contenteditable="true" data-placeholder="Enter image caption" role="textbox"></figcaption>' +
+						'contenteditable="true" data-placeholder="Enter image caption" role="textbox" tabindex="-1"></figcaption>' +
 				'</figure>]'
 			);
 		} );
@@ -696,7 +697,7 @@ describe( 'ImageCaptionEditing', () => {
 					'<img src="img.png"></img>' +
 					'<figcaption aria-label="Caption for the image" ' +
 						'class="ck-editor__editable ck-editor__nested-editable ck-placeholder" ' +
-						'contenteditable="false" data-placeholder="Enter image caption" role="textbox"></figcaption>' +
+						'contenteditable="false" data-placeholder="Enter image caption" role="textbox" tabindex="-1"></figcaption>' +
 				'</figure>]'
 			);
 		} );
@@ -722,7 +723,7 @@ describe( 'ImageCaptionEditing', () => {
 						'<img src=""></img>' +
 						'<figcaption aria-label="Caption for the image" ' +
 							'class="ck-editor__editable ck-editor__nested-editable ck-placeholder" ' +
-							'contenteditable="true" data-placeholder="Enter image caption" role="textbox">' +
+							'contenteditable="true" data-placeholder="Enter image caption" role="textbox" tabindex="-1">' +
 						'</figcaption>' +
 					'</figure>'
 				);
@@ -735,7 +736,7 @@ describe( 'ImageCaptionEditing', () => {
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img src=""></img>' +
 						'<figcaption aria-label="Caption for the image" class="ck-editor__editable ck-editor__nested-editable" ' +
-							'contenteditable="true" data-placeholder="Enter image caption" role="textbox">' +
+							'contenteditable="true" data-placeholder="Enter image caption" role="textbox" tabindex="-1">' +
 							'{foo bar baz}' +
 						'</figcaption>' +
 					'</figure>'

@@ -10,6 +10,7 @@ import MultiRootEditor from '@ckeditor/ckeditor5-editor-multi-root/src/multiroot
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
 import { Comments } from '@ckeditor/ckeditor5-comments';
 import { TrackChanges } from '@ckeditor/ckeditor5-track-changes';
 import Suggestion from '@ckeditor/ckeditor5-track-changes/src/suggestion.js';
@@ -210,6 +211,34 @@ describe( 'EditorWatchdog', () => {
 
 			await watchdog.destroy();
 		} );
+
+		it( 'should create an editor instance after the ongoing destruction process has been finished', async () => {
+			const watchdog = new EditorWatchdog( ClassicTestEditor );
+
+			// It simulates the process of creating a new instance of the editor and immediately destroying it.
+			const simulateRefreshApp = async () => {
+				watchdog.create( element, {
+					initialData: '<p>foo</p>',
+					plugins: [ Paragraph ]
+				} );
+
+				watchdog.destroy();
+			};
+
+			// We do not wait for the completion of this process, which simulates the real case when the app is immediately
+			// restarted and the initial process of the new app is called without waiting for the previous process to finish.
+			simulateRefreshApp();
+
+			await watchdog.create( element, {
+				initialData: '<p>foo</p>',
+				plugins: [ Paragraph ]
+			} );
+
+			expect( watchdog.editor ).to.not.be.null;
+			expect( watchdog.state ).to.equal( 'ready' );
+
+			await watchdog.destroy();
+		} );
 	} );
 
 	describe( 'editor', () => {
@@ -266,7 +295,7 @@ describe( 'EditorWatchdog', () => {
 
 		it( 'should support comment threads', async () => {
 			await watchdog.create( '<p>Foo bar</p>', {
-				plugins: [ Paragraph, UsersInit, Comments, TrackChanges ],
+				plugins: [ Paragraph, UsersInit, Comments, TrackChanges, Clipboard ],
 				licenseKey: 'uI0zfya2yTle649FSKlQCRsBSez+W4Vh5reIiKp0uDVYRCuPjaPYlf8=',
 				comments: {
 					editorConfig: {}
@@ -312,7 +341,7 @@ describe( 'EditorWatchdog', () => {
 
 		it( 'should support suggestions', async () => {
 			await watchdog.create( '<p>Foo bar</p>', {
-				plugins: [ Paragraph, UsersInit, Comments, TrackChanges ],
+				plugins: [ Paragraph, UsersInit, Comments, TrackChanges, Clipboard ],
 				licenseKey: 'uI0zfya2yTle649FSKlQCRsBSez+W4Vh5reIiKp0uDVYRCuPjaPYlf8=',
 				comments: {
 					editorConfig: {}
@@ -387,7 +416,7 @@ describe( 'EditorWatchdog', () => {
 			}
 
 			await watchdog.create( '<p>Foo bar</p>', {
-				plugins: [ Paragraph, UsersInit, Comments, TrackChanges, InitPlugin ],
+				plugins: [ Paragraph, UsersInit, Comments, Clipboard, TrackChanges, InitPlugin ],
 				licenseKey: 'uI0zfya2yTle649FSKlQCRsBSez+W4Vh5reIiKp0uDVYRCuPjaPYlf8=',
 				comments: {
 					editorConfig: {}
@@ -453,7 +482,7 @@ describe( 'EditorWatchdog', () => {
 			}
 
 			await watchdog.create( '<p>Foo bar</p>', {
-				plugins: [ Paragraph, UsersInit, Comments, TrackChanges, InitPlugin ],
+				plugins: [ Paragraph, UsersInit, Comments, Clipboard, TrackChanges, InitPlugin ],
 				licenseKey: 'uI0zfya2yTle649FSKlQCRsBSez+W4Vh5reIiKp0uDVYRCuPjaPYlf8=',
 				comments: {
 					editorConfig: {}
@@ -1245,6 +1274,21 @@ describe( 'EditorWatchdog', () => {
 			await watchdog.destroy();
 
 			sinon.assert.calledTwice( spy );
+		} );
+
+		it( 'should destroy the editor after finishing the ongoing creation process', async () => {
+			const watchdog = new EditorWatchdog( ClassicTestEditor );
+
+			// Do not wait for the creation process to finish.
+			watchdog.create( element, {
+				initialData: '<p>foo</p>',
+				plugins: [ Paragraph ]
+			} );
+
+			await watchdog.destroy();
+
+			expect( watchdog.editor ).to.equal( null );
+			expect( watchdog.state ).to.equal( 'destroyed' );
 		} );
 	} );
 

@@ -24,6 +24,7 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import LegacyListEditing from '../../src/legacylist/legacylistediting.js';
 import ListIndentCommand from '../../src/list/listindentcommand.js';
 import ListSplitCommand from '../../src/list/listsplitcommand.js';
+import ListCommand from '../../src/list/listcommand.js';
 import { isFirstBlockOfListItem } from '../../src/list/utils/model.js';
 
 import stubUid from './_utils/uid.js';
@@ -72,6 +73,22 @@ describe( 'ListEditing', () => {
 		expect( ListEditing.pluginName ).to.equal( 'ListEditing' );
 	} );
 
+	it( 'should add keystroke accessibility info', () => {
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'list' ).label ).to.equal(
+			'Keystrokes that can be used in a list'
+		);
+
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'list' ).keystrokes ).to.deep.include( {
+			label: 'Increase list item indent',
+			keystroke: 'Tab'
+		} );
+
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'list' ).keystrokes ).to.deep.include( {
+			label: 'Decrease list item indent',
+			keystroke: 'Shift+Tab'
+		} );
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( ListEditing ) ).to.be.instanceOf( ListEditing );
 	} );
@@ -118,6 +135,18 @@ describe( 'ListEditing', () => {
 	} );
 
 	describe( 'commands', () => {
+		it( 'should register list commands (numbered, bulleted, custom numbered, custom bulleted)', () => {
+			const numbered = editor.commands.get( 'numberedList' );
+			const bulleted = editor.commands.get( 'bulletedList' );
+			const customNumbered = editor.commands.get( 'customNumberedList' );
+			const customBulleted = editor.commands.get( 'customBulletedList' );
+
+			expect( numbered ).to.be.instanceOf( ListCommand );
+			expect( bulleted ).to.be.instanceOf( ListCommand );
+			expect( customNumbered ).to.be.instanceOf( ListCommand );
+			expect( customBulleted ).to.be.instanceOf( ListCommand );
+		} );
+
 		it( 'should register indent list command', () => {
 			const command = editor.commands.get( 'indentList' );
 

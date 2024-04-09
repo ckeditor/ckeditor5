@@ -39,6 +39,15 @@ describe( 'ImageInsertViaUrlUI', () => {
 		expect( ImageInsertViaUrlUI.pluginName ).to.equal( 'ImageInsertViaUrlUI' );
 	} );
 
+	// https://github.com/ckeditor/ckeditor5/issues/15869
+	it( 'should work if ImageInsertViaUrl plugin is specified before Image', async () => {
+		await createEditor( {
+			plugins: [ ImageInsertViaUrl, Image ]
+		} );
+
+		editor.ui.componentFactory.create( 'insertImage' );
+	} );
+
 	describe( 'single integration', () => {
 		beforeEach( async () => {
 			await createEditor( {

@@ -187,6 +187,36 @@ describe( 'CKBoxEditing', () => {
 
 			await editor.destroy();
 		} );
+
+		describe( 'CKBox loaded before the ImageBlock and ImageInline plugins', () => {
+			let editor, model, originalCKBox;
+
+			beforeEach( async () => {
+				TokenMock.initialToken = 'ckbox-token';
+
+				originalCKBox = window.CKBox;
+				window.CKBox = {};
+
+				editor = await createTestEditor( {
+					ckbox: {
+						tokenUrl: 'http://cs.example.com'
+					}
+				}, true );
+
+				model = editor.model;
+			} );
+
+			afterEach( async () => {
+				window.CKBox = originalCKBox;
+				await editor.destroy();
+			} );
+
+			// https://github.com/ckeditor/ckeditor5/issues/15581
+			it( 'should extend the schema rules for imageBlock and imageInline', () => {
+				expect( model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'ckboxImageId' ) ).to.be.true;
+				expect( model.schema.checkAttribute( [ '$root', '$block', 'imageInline' ], 'ckboxImageId' ) ).to.be.true;
+			} );
+		} );
 	} );
 
 	describe( 'conversion', () => {
@@ -759,7 +789,8 @@ describe( 'CKBoxEditing', () => {
 								'class="ck-editor__editable ck-editor__nested-editable" ' +
 								'contenteditable="true" ' +
 								'data-placeholder="Enter image caption" ' +
-								'role="textbox">' +
+								'role="textbox" ' +
+								'tabindex="-1">' +
 								'<a data-ckbox-resource-id="link-id" href="/assets/sample.png">Text of the caption</a>' +
 							'</figcaption>' +
 						'</figure>'
@@ -1802,22 +1833,29 @@ describe( 'CKBoxEditing', () => {
 	} );
 } );
 
-function createTestEditor( config = {} ) {
+function createTestEditor( config = {}, loadCKBoxFirst = false ) {
+	const plugins = [
+		Paragraph,
+		ImageBlockEditing,
+		ImageInlineEditing,
+		ImageCaptionEditing,
+		LinkEditing,
+		LinkImageEditing,
+		PictureEditing,
+		ImageUploadEditing,
+		ImageUploadProgress,
+		CloudServices,
+		CKBoxUploadAdapter
+	];
+
+	if ( loadCKBoxFirst ) {
+		plugins.unshift( CKBoxEditing );
+	} else {
+		plugins.push( CKBoxEditing );
+	}
+
 	return VirtualTestEditor.create( {
-		plugins: [
-			Paragraph,
-			ImageBlockEditing,
-			ImageInlineEditing,
-			ImageCaptionEditing,
-			LinkEditing,
-			LinkImageEditing,
-			PictureEditing,
-			ImageUploadEditing,
-			ImageUploadProgress,
-			CloudServices,
-			CKBoxUploadAdapter,
-			CKBoxEditing
-		],
+		plugins,
 		substitutePlugins: [
 			CloudServicesCoreMock
 		],

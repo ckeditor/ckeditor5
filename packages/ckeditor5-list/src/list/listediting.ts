@@ -24,7 +24,9 @@ import type {
 	ViewDocumentTabEvent,
 	ViewElement,
 	ViewAttributeElement,
-	Writer
+	Writer,
+	DowncastRemoveEvent,
+	MapperModelToViewPositionEvent
 } from 'ckeditor5/src/engine.js';
 
 import { Delete, type ViewDocumentDeleteEvent } from 'ckeditor5/src/typing.js';
@@ -39,7 +41,9 @@ import ListUtils from './listutils.js';
 
 import {
 	bogusParagraphCreator,
+	createModelToViewPositionMapper,
 	listItemDowncastConverter,
+	listItemDowncastRemoveConverter,
 	listItemUpcastConverter,
 	listUpcastCleanList,
 	reconvertItemsOnDataChange
@@ -80,11 +84,13 @@ import '../../theme/list.css';
  */
 const LIST_BASE_ATTRIBUTES = [ 'listType', 'listIndent', 'listItemId' ];
 
+export type ListType = 'numbered' | 'bulleted' | 'todo' | 'customNumbered' | 'customBulleted';
+
 /**
  * Map of model attributes applicable to list blocks.
  */
 export interface ListItemAttributesMap {
-	listType?: 'numbered' | 'bulleted' | 'todo';
+	listType?: ListType;
 	listIndent?: number;
 	listItemId?: string;
 }
@@ -162,6 +168,9 @@ export default class ListEditing extends Plugin {
 		editor.commands.add( 'numberedList', new ListCommand( editor, 'numbered' ) );
 		editor.commands.add( 'bulletedList', new ListCommand( editor, 'bulleted' ) );
 
+		editor.commands.add( 'customNumberedList', new ListCommand(	editor,	'customNumbered', {	multiLevel: true } ) );
+		editor.commands.add( 'customBulletedList', new ListCommand( editor, 'customBulleted', {	multiLevel: true } ) );
+
 		editor.commands.add( 'indentList', new ListIndentCommand( editor, 'forward' ) );
 		editor.commands.add( 'outdentList', new ListIndentCommand( editor, 'backward' ) );
 
@@ -177,6 +186,7 @@ export default class ListEditing extends Plugin {
 		this._setupEnterIntegration();
 		this._setupTabIntegration();
 		this._setupClipboardIntegration();
+		this._setupAccessibilityIntegration();
 	}
 
 	/**
@@ -469,6 +479,8 @@ export default class ListEditing extends Plugin {
 					'attribute',
 					listItemDowncastConverter( attributeNames, this._downcastStrategies, model )
 				);
+
+				dispatcher.on<DowncastRemoveEvent>( 'remove', listItemDowncastRemoveConverter() );
 			} );
 
 		editor.conversion.for( 'dataDowncast' )
@@ -483,6 +495,11 @@ export default class ListEditing extends Plugin {
 					listItemDowncastConverter( attributeNames, this._downcastStrategies, model, { dataPipeline: true } )
 				);
 			} );
+
+		const modelToViewPositionMapper = createModelToViewPositionMapper( this._downcastStrategies, editor.editing.view );
+
+		editor.editing.mapper.on<MapperModelToViewPositionEvent>( 'modelToViewPosition', modelToViewPositionMapper );
+		editor.data.mapper.on<MapperModelToViewPositionEvent>( 'modelToViewPosition', modelToViewPositionMapper );
 
 		this.listenTo<DocumentChangeEvent>(
 			model.document,
@@ -598,6 +615,29 @@ export default class ListEditing extends Plugin {
 			} );
 		} );
 	}
+
+	/**
+	 * Informs editor accessibility features about keystrokes brought by the plugin.
+	 */
+	private _setupAccessibilityIntegration() {
+		const editor = this.editor;
+		const t = editor.t;
+
+		editor.accessibility.addKeystrokeInfoGroup( {
+			id: 'list',
+			label: t( 'Keystrokes that can be used in a list' ),
+			keystrokes: [
+				{
+					label: t( 'Increase list item indent' ),
+					keystroke: 'Tab'
+				},
+				{
+					label: t( 'Decrease list item indent' ),
+					keystroke: 'Shift+Tab'
+				}
+			]
+		} );
+	}
 }
 
 /**
@@ -659,6 +699,12 @@ export interface ItemMarkerDowncastStrategy {
 	 * or only the marker element should be wrapped.
 	 */
 	canWrapElement?( modelElement: Element ): boolean;
+
+	/**
+	 * Should return true if the custom marker can be injected into a given list block.
+	 * Otherwise, custom marker view element is always injected before the block element.
+	 */
+	canInjectMarkerIntoElement?( modelElement: Element ): boolean;
 }
 
 /**

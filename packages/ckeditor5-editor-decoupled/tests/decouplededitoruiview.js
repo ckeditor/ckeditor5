@@ -8,6 +8,7 @@
 import DecoupledEditorUIView from '../src/decouplededitoruiview.js';
 import EditingView from '@ckeditor/ckeditor5-engine/src/view/view.js';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview.js';
+import MenuBarView from '@ckeditor/ckeditor5-ui/src/menubar/menubarview.js';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview.js';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale.js';
 import createRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
@@ -66,6 +67,20 @@ describe( 'DecoupledEditorUIView', () => {
 
 					return view.destroy();
 				} );
+			} );
+		} );
+
+		describe( '#menuBarView', () => {
+			it( 'is created', () => {
+				expect( view.menuBarView ).to.be.instanceof( MenuBarView );
+			} );
+
+			it( 'is given a locale object', () => {
+				expect( view.menuBarView.locale ).to.equal( locale );
+			} );
+
+			it( 'is not rendered', () => {
+				expect( view.menuBarView.isRendered ).to.be.false;
 			} );
 		} );
 

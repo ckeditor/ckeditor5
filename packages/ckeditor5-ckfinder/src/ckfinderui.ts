@@ -8,7 +8,7 @@
  */
 
 import { icons, Plugin } from 'ckeditor5/src/core.js';
-import { ButtonView } from 'ckeditor5/src/ui.js';
+import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 import type { ImageInsertUI } from '@ckeditor/ckeditor5-image';
 
 import type CKFinderCommand from './ckfindercommand.js';
@@ -33,33 +33,32 @@ export default class CKFinderUI extends Plugin {
 		const t = editor.t;
 
 		componentFactory.add( 'ckfinder', locale => {
-			const command: CKFinderCommand = editor.commands.get( 'ckfinder' )!;
-
-			const button = new ButtonView( locale );
+			const button = this._createButton( ButtonView );
+			const t = locale.t;
 
 			button.set( {
 				label: t( 'Insert image or file' ),
-				icon: icons.browseFiles,
 				tooltip: true
 			} );
 
-			button.bind( 'isEnabled' ).to( command );
+			return button;
+		} );
 
-			button.on( 'execute', () => {
-				editor.execute( 'ckfinder' );
-				editor.editing.view.focus();
-			} );
+		componentFactory.add( 'menuBar:ckfinder', locale => {
+			const button = this._createButton( MenuBarMenuListItemButtonView );
+			const t = locale.t;
+
+			button.label = t( 'Image or file' );
 
 			return button;
 		} );
 
 		if ( editor.plugins.has( 'ImageInsertUI' ) ) {
 			const imageInsertUI: ImageInsertUI = editor.plugins.get( 'ImageInsertUI' );
-			const command: CKFinderCommand = editor.commands.get( 'ckfinder' )!;
 
 			imageInsertUI.registerIntegration( {
 				name: 'assetManager',
-				observable: command,
+				observable: () => editor.commands.get( 'ckfinder' )!,
 
 				buttonViewCreator: () => {
 					const button = this.editor.ui.componentFactory.create( 'ckfinder' ) as ButtonView;
@@ -91,5 +90,26 @@ export default class CKFinderUI extends Plugin {
 				}
 			} );
 		}
+	}
+
+	/**
+	 * Creates a button for CKFinder command to use either in toolbar or in menu bar.
+	 */
+	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
+		const editor = this.editor;
+		const locale = editor.locale;
+		const view = new ButtonClass( locale ) as InstanceType<T>;
+		const command: CKFinderCommand = editor.commands.get( 'ckfinder' )!;
+
+		view.icon = icons.browseFiles;
+
+		view.bind( 'isEnabled' ).to( command );
+
+		view.on( 'execute', () => {
+			editor.execute( 'ckfinder' );
+			editor.editing.view.focus();
+		} );
+
+		return view;
 	}
 }

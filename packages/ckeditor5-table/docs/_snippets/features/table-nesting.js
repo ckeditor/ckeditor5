@@ -5,6 +5,8 @@
 
 /* globals ClassicEditor, CKEditorPlugins, console, window, document */
 
+import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
+
 const COLOR_PALETTE = [
 	{
 		color: 'hsl(0, 0%, 0%)',
@@ -122,7 +124,8 @@ ClassicEditor
 			}
 		},
 		ckbox: {
-			allowExternalImagesEditing: [ /^data:/, 'origin' ],
+			tokenUrl: TOKEN_URL,
+			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 			forceDemoLabel: true
 		}
 	} )

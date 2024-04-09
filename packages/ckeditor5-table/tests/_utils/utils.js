@@ -334,7 +334,7 @@ function assertNodeIsNotSelected( model, path ) {
 // Formats table cell attributes
 //
 // @param {Object} attributes Attributes of a cell.
-function formatAttributes( attributes ) {
+export function formatAttributes( attributes ) {
 	let attributesString = '';
 
 	if ( attributes ) {
@@ -380,6 +380,7 @@ function makeRows( tableData, options ) {
 					attributes.class = getClassToSet( attributes );
 					attributes.contenteditable = 'true';
 					attributes.role = 'textbox';
+					attributes.tabindex = '-1';
 				}
 
 				if ( isObject ) {

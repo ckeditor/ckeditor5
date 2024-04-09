@@ -68,3 +68,59 @@ msgstr "फ़ाइल मैनेजर से इमेज इन्सर�
 msgctxt "The label for the replace image with the file manager toolbar button."
 msgid "Replace image with file manager"
 msgstr "इमेज को फ़ाइल मैनेजर से बदलें"
+
+msgctxt "The button label for the object (e.g. image, table) toolbar for hiding the attached caption."
+msgid "Toggle caption off"
+msgstr "कैप्शन को टॉगल बंद करें"
+
+msgctxt "The button label for the object (e.g. image, table) toolbar for showing the attached caption."
+msgid "Toggle caption on"
+msgstr "कैप्शन का टॉगल ऑन करें"
+
+msgctxt "Accessibility help dialog category header text for keystrokes related to content creation."
+msgid "Content editing keystrokes"
+msgstr "कॉन्टेंट एडिटिंग कीस्ट्रोक्स"
+
+msgctxt "Accessibility help dialog text further explaining the purpose of the \"Content editing keystrokes\" category."
+msgid "These keyboard shortcuts allow for quick access to content editing features."
+msgstr "ये कीबोर्ड शॉर्टकट्स कॉन्टेंट एडिटिंग फ़ीचर्स तक पहुँचना आसान बनाते हैं."
+
+msgctxt "Accessibility help dialog category header text for keystrokes related to navigation in the user interface."
+msgid "User interface and content navigation keystrokes"
+msgstr "यूज़र इंटरफ़ेस और कॉन्टेंट नैविगेशन कीस्ट्रोक्स"
+
+msgctxt "Accessibility help dialog text further explaining the purpose of the \"User interface and content navigation keystrokes\" category."
+msgid "Use the following keystrokes for more efficient navigation in the CKEditor 5 user interface."
+msgstr "CKEditor 5 यूज़र इंटरफ़ेस में और बेहतरीन नैविगेशन के लिए इन कीस्ट्रोक्स का इस्तेमाल करें."
+
+msgctxt "Keystroke description for assistive technologies: keystroke for closing contextual balloons, dropdowns, and dialogs."
+msgid "Close contextual balloons, dropdowns, and dialogs"
+msgstr "कॉन्टेक्सचुअल बलून्स, ड्रॉपडाउन्स और डायलॉग्स को बंद करें"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for opening the accessibility help dialog."
+msgid "Open the accessibility help dialog"
+msgstr "एक्सेसिबिलिटी हेल्प डायलॉग को खोलें"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for moving between fields."
+msgid "Move focus between form fields (inputs, buttons, etc.)"
+msgstr "फ़ॉर्म फ़ील्ड्स (इनपुट्स, बटन्स, आदि) के बीच फ़ोकस को मूव करें"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the menu bar."
+msgid "Move focus to the menu bar, navigate between menu bars"
+msgstr ""
+
+msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the toolbar."
+msgid "Move focus to the toolbar, navigate between toolbars"
+msgstr "फ़ोकस को टूलबार पर ले जाएँ, टूलबार्स के बीच नैविगेट करें"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the toolbar."
+msgid "Navigate through the toolbar or menu bar"
+msgstr ""
+
+msgctxt "Keystroke description for assistive technologies: keystroke for executing currently focused button."
+msgid "Execute the currently focused button. Executing buttons that interact with the editor content moves the focus back to the content."
+msgstr ""
+
+msgctxt "Label of the button confirming the changes done in the current interface."
+msgid "Accept"
+msgstr "स्वीकार करें"

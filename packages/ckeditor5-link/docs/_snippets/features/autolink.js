@@ -5,6 +5,8 @@
 
 /* globals console, window, document, ClassicEditor, CS_CONFIG, CKEditorPlugins */
 
+import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
+
 ClassicEditor
 	.create( document.querySelector( '#snippet-autolink' ), {
 		cloudServices: CS_CONFIG,
@@ -20,6 +22,7 @@ ClassicEditor
 			]
 		},
 		ckbox: {
+			tokenUrl: TOKEN_URL,
 			forceDemoLabel: true
 		},
 		ui: {

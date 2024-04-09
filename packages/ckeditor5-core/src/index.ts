@@ -17,6 +17,8 @@ export { default as Context, type ContextConfig } from './context.js';
 export { default as ContextPlugin, type ContextPluginDependencies } from './contextplugin.js';
 export { type EditingKeystrokeCallback } from './editingkeystrokehandler.js';
 
+export type { PartialBy, NonEmptyArray } from './typings.js';
+
 export { default as Editor, type EditorReadyEvent, type EditorDestroyEvent } from './editor/editor.js';
 export type {
 	EditorConfig,
@@ -32,6 +34,13 @@ export { default as ElementApiMixin, type ElementApi } from './editor/utils/elem
 export { default as secureSourceElement } from './editor/utils/securesourceelement.js';
 
 export { default as PendingActions, type PendingAction } from './pendingactions.js';
+
+export type {
+	KeystrokeInfos as KeystrokeInfoDefinitions,
+	KeystrokeInfoGroup as KeystrokeInfoGroupDefinition,
+	KeystrokeInfoCategory as KeystrokeInfoCategoryDefinition,
+	KeystrokeInfoDefinition as KeystrokeInfoDefinition
+} from './accessibility.js';
 
 import cancel from './../theme/icons/cancel.svg';
 import caption from './../theme/icons/caption.svg';

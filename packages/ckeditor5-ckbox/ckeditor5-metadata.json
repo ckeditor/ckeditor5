@@ -9,7 +9,10 @@
 			"requires": [
 				"CloudServices",
 				"Link",
-				"Image",
+				[
+					"ImageBlock",
+					"ImageInline"
+				],
 				"ImageUpload",
 				"PictureEditing"
 			],

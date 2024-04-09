@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import { ButtonView } from 'ckeditor5/src/ui.js';
+import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 
 import showBlocksIcon from '../theme/icons/show-blocks.svg';
 import '../theme/showblocks.css';
@@ -33,28 +33,45 @@ export default class ShowBlocksUI extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 
-		editor.ui.componentFactory.add( 'showBlocks', locale => {
-			const command = editor.commands.get( 'showBlocks' )!;
-			const view = new ButtonView( locale );
-			const t = locale.t;
+		editor.ui.componentFactory.add( 'showBlocks', () => {
+			const buttonView = this._createButton( ButtonView );
 
-			view.set( {
-				label: t( 'Show blocks' ),
-				icon: showBlocksIcon,
-				tooltip: true
+			buttonView.set( {
+				tooltip: true,
+				icon: showBlocksIcon
 			} );
 
-			view.bind( 'isOn' ).to( command, 'value', command, 'isEnabled',
-				( value, isEnabled ) => value && isEnabled );
-			view.bind( 'isEnabled' ).to( command );
-
-			// Execute the command.
-			this.listenTo( view, 'execute', () => {
-				editor.execute( 'showBlocks' );
-				editor.editing.view.focus();
-			} );
-
-			return view;
+			return buttonView;
 		} );
+
+		editor.ui.componentFactory.add( 'menuBar:showBlocks', () => {
+			return this._createButton( MenuBarMenuListItemButtonView );
+		} );
+	}
+
+	/**
+	 * Creates a button for show blocks command to use either in toolbar or in menu bar.
+	 */
+	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
+		const editor = this.editor;
+		const locale = editor.locale;
+		const command = editor.commands.get( 'showBlocks' )!;
+		const view = new ButtonClass( locale ) as InstanceType<T>;
+		const t = locale.t;
+
+		view.set( {
+			label: t( 'Show blocks' )
+		} );
+
+		view.bind( 'isEnabled' ).to( command );
+		view.bind( 'isOn' ).to( command, 'value', command, 'isEnabled', ( value, isEnabled ) => value && isEnabled );
+
+		// Execute the command.
+		this.listenTo( view, 'execute', () => {
+			editor.execute( 'showBlocks' );
+			editor.editing.view.focus();
+		} );
+
+		return view;
 	}
 }

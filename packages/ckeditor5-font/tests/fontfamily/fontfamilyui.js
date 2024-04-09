@@ -56,7 +56,7 @@ describe( 'FontFamilyUI', () => {
 		return editor.destroy();
 	} );
 
-	describe( 'fontFamily Dropdown', () => {
+	describe( 'toolbar dropdown', () => {
 		let dropdown;
 
 		beforeEach( () => {
@@ -264,6 +264,59 @@ describe( 'FontFamilyUI', () => {
 
 				expect( listView.element.role ).to.equal( 'menu' );
 				expect( listView.element.ariaLabel ).to.equal( 'Font Family' );
+			} );
+		} );
+	} );
+
+	describe( 'menu bar', () => {
+		let subMenu;
+
+		beforeEach( () => {
+			command = editor.commands.get( 'fontFamily' );
+			subMenu = editor.ui.componentFactory.create( 'menuBar:fontFamily' );
+		} );
+
+		it( 'button has the base properties', () => {
+			const button = subMenu.buttonView;
+
+			expect( button ).to.have.property( 'label', 'Font Family' );
+			expect( button ).to.have.property( 'icon', fontFamilyIcon );
+		} );
+
+		it( 'button has binding to isEnabled', () => {
+			command.isEnabled = false;
+
+			expect( subMenu.buttonView.isEnabled ).to.be.false;
+
+			command.isEnabled = true;
+			expect( subMenu.buttonView.isEnabled ).to.be.true;
+		} );
+
+		describe( 'font family sub menu button', () => {
+			let buttonArial;
+
+			beforeEach( () => {
+				buttonArial = subMenu.panelView.children.first.items.get( 1 ).children.first;
+			} );
+
+			it( 'should focus view after command execution', () => {
+				const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+				const executeSpy = sinon.stub( editor, 'execute' );
+
+				buttonArial.fire( 'execute' );
+
+				sinon.assert.calledOnce( focusSpy );
+				sinon.assert.calledOnce( executeSpy );
+				sinon.assert.calledWithExactly( executeSpy.firstCall, 'fontFamily', {
+					value: 'Arial, Helvetica, sans-serif'
+				} );
+			} );
+
+			it( 'sets item\'s #isOn depending on the value of the CodeBlockCommand', () => {
+				expect( buttonArial.isOn ).to.be.false;
+
+				command.value = 'Arial, Helvetica, sans-serif';
+				expect( buttonArial.isOn ).to.be.true;
 			} );
 		} );
 	} );
