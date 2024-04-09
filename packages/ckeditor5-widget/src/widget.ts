@@ -550,7 +550,7 @@ export default class Widget extends Plugin {
 		const viewDocument = view.document;
 
 		for ( const item of viewDocument.selection.getFirstRange()!.getItems() ) {
-			if ( item.is( 'element' ) && item.is( 'editableElement' ) ) {
+			if ( item.is( 'editableElement' ) ) {
 				const modelElement = editor.editing.mapper.toModelElement( item );
 
 				/* istanbul ignore next -- @preserve */
