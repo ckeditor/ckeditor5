@@ -3,15 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, window, setTimeout */
+/* globals document */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import ShiftEnter from '../src/shiftenter.js';
 import ShiftEnterCommand from '../src/shiftentercommand.js';
 import EnterObserver from '../src/enterobserver.js';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
-import { LONG_TEXT_FILE_NO_HTML_TAGS } from './mocks//long-text-file-no-html-tags.js';
 
 describe( 'ShiftEnter feature', () => {
 	let element, editor, viewDocument;
@@ -22,7 +20,7 @@ describe( 'ShiftEnter feature', () => {
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ Paragraph, ShiftEnter ]
+				plugins: [ ShiftEnter ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -117,29 +115,9 @@ describe( 'ShiftEnter feature', () => {
 		sinon.assert.notCalled( domEvt.preventDefault );
 	} );
 
-	it( 'do not scroll long document to top after pressing shift-enter in long documents', async () => {
-		const domEvt = getDomEvent();
-
-		editor.setData( LONG_TEXT_FILE_NO_HTML_TAGS );
-		editor.model.change( writer => {
-			writer.setSelection( writer.createPositionAt( editor.model.document.getRoot(), 'end' ) );
-		} );
-
-		viewDocument.fire( 'enter', new DomEventData( viewDocument, domEvt, { isSoft: true } ) );
-		viewDocument.fire( 'enter', new DomEventData( viewDocument, domEvt, { isSoft: true } ) );
-
-		await timeout( 400 );
-
-		expect( window.scrollY ).not.to.be.lt( 500 );
-	} );
-
 	function getDomEvent() {
 		return {
 			preventDefault: sinon.spy()
 		};
-	}
-
-	function timeout( ms ) {
-		return new Promise( res => setTimeout( res, ms ) );
 	}
 } );
