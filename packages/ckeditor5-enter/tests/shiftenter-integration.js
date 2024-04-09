@@ -46,12 +46,18 @@ describe( 'ShiftEnter integration', () => {
 		expect( getViewData( editor.editing.view, options ) ).to.equal( '<p>First line.<br></br>Second line.</p>' );
 	} );
 
-	it( 'INLINE_FILLER should be inserted before last <br> in the paragraph', () => {
+	it( 'BLOCK_FILLER should be inserted after <br> in the paragraph (data pipeline)', () => {
 		setModelData( model, '<paragraph>[]</paragraph>' );
 
 		editor.execute( 'shiftEnter' );
 
 		expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p><br>&nbsp;</p>' );
+	} );
+
+	it( 'INLINE_FILLER should be inserted before last <br> (BLOCK_FILLER) in the paragraph (editing pipeline)', () => {
+		setModelData( model, '<paragraph>[]</paragraph>' );
+
+		editor.execute( 'shiftEnter' );
 
 		expect( editor.ui.view.editable.element.innerHTML ).to.equal(
 			`<p><br>${ INLINE_FILLER }<br data-cke-filler="true"></p>`
