@@ -2,8 +2,8 @@
 menu-title: Lists editing behavior
 meta-title: Lists editing behavior | CKEditor 5 Documentation
 category: features-lists
-order: 30
-modified_at: 2024-01-02
+order: 40
+modified_at: 2024-04-01
 ---
 
 # Lists editing behavior
@@ -17,6 +17,12 @@ Since version 41.0.0, the list feature allows any part of the content to be part
 To edit a block inside a list item, press <kbd>Enter</kbd> to create a new line and then <kbd>Backspace</kbd> to remove the new list item marker. Keep on entering content. Observe this behavior in the screencast below.
 
 {@img assets/img/adding-list-items.gif 860 Editing a block list item.}
+
+## Managing lists with keyboard
+
+Press <kbd>Enter</kbd> to create a new list item. Press <kbd>Tab</kbd> to nest the item (in multi-level lists) or indent it (in regular lists). Press <kbd>Enter</kbd> to turn an item into a higher level in the list or to remove it completely.
+
+{@img assets/img/adding-multi-list-items.gif 836 Editing a multi-level list item.}
 
 ## Simple lists
 

@@ -11,7 +11,7 @@
 			"name": "Accessibility help",
 			"className": "AccessibilityHelp",
 			"description": "Displays all editor keyboard shortcuts in a dialog window.",
-			"docs": "features/keyboard-support.html",
+			"docs": "features/accessibility.html",
 			"path": "src/editorui/accessibilityhelp/accessibilityhelp.js",
 			"uiComponents": [
 				{

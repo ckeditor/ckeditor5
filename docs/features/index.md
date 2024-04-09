@@ -121,18 +121,6 @@ The editor supports {@link features/paste-plain-text pasting plain text} and {@l
 
 If you want to migrate from CKEditor 4 to CKEditor&nbsp;5, check the {@link updating/migration-from-ckeditor-4 migration guide}.
 
-<!-- This needs to be demolished
-
-## Feature availability
-
-Predefined {@link getting-started/legacy-getting-started/predefined-builds CKEditor&nbsp;5 builds} have plenty of these features available out-of-the-box, like {@link features/autoformat autoformatting} or {@link features/keyboard-support keyboard support}.
-
-However, you need to include some presented features manually in your CKEditor&nbsp;5 build, for example, the {@link features/markdown Markdown processor} which outputs Markdown instead of HTML. You can add these plugins to a custom build with the [CKEditor&nbsp;5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
-
-You can refer to the {@link getting-started/legacy-getting-started/predefined-builds#list-of-plugins-included-in-the-ckeditor-5-predefined-builds full list of features available in each build} for details.
-
-We also offer the flexibility of the {@link getting-started/advanced/dll-builds DLL builds}. They enable the addition of new plugins into an existing build without the need to rebuild the installation. -->
-
 ## Feature examples
 
 We present each rich-text editor feature on a separate page. It includes one or more working demos showcasing a feature along with some customization ideas that you can use in your implementation.
