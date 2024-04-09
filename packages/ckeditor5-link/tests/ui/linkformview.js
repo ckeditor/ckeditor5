@@ -173,6 +173,37 @@ describe( 'LinkFormView', () => {
 		} );
 	} );
 
+	describe( 'isValid()', () => {
+		it( 'should reset error after successful validation', () => {
+			const view = new LinkFormView( { t: () => {} }, { manualDecorators: [] }, [
+				() => undefined
+			] );
+
+			expect( view.isValid() ).to.be.true;
+			expect( view.urlInputView.errorText ).to.be.null;
+		} );
+
+		it( 'should display first error returned from validators list', () => {
+			const view = new LinkFormView( { t: () => {} }, { manualDecorators: [] }, [
+				() => undefined,
+				() => 'Foo bar',
+				() => 'Another error'
+			] );
+
+			expect( view.isValid() ).to.be.false;
+			expect( view.urlInputView.errorText ).to.be.equal( 'Foo bar' );
+		} );
+
+		it( 'should pass view reference as argument to validator', () => {
+			const validatorSpy = sinon.spy();
+			const view = new LinkFormView( { t: () => {} }, { manualDecorators: [] }, [ validatorSpy ] );
+
+			view.isValid();
+
+			expect( validatorSpy ).to.be.calledOnceWithExactly( view );
+		} );
+	} );
+
 	describe( 'resetFormStatus()', () => {
 		it( 'should clear form input errors', () => {
 			view.urlInputView.errorText = 'Error';
