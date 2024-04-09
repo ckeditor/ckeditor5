@@ -373,8 +373,14 @@ export default class LinkFormView extends View {
 	 * **Note**: Do not confuse it with the {@link module:ui/inputtext/inputtextview~InputTextView#value}
 	 * which works one way only and may not represent the actual state of the component in the DOM.
 	 */
-	public get url(): string {
-		return this.urlInputView.fieldView.element!.value.trim();
+	public get url(): string | null {
+		const { element } = this.urlInputView.fieldView;
+
+		if ( !element ) {
+			return null;
+		}
+
+		return element.value.trim();
 	}
 }
 

@@ -765,7 +765,7 @@ function getFormValidators( editor: Editor ): Array<LinkFormValidatorCallback> {
 
 	return [
 		form => {
-			if ( !allowCreatingEmptyLinks && !form.url.length ) {
+			if ( !allowCreatingEmptyLinks && !form.url!.length ) {
 				return t( 'Link URL must not be empty.' );
 			}
 		}

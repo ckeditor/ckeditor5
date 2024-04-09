@@ -214,6 +214,20 @@ describe( 'LinkFormView', () => {
 		} );
 	} );
 
+	describe( 'URL getter', () => {
+		it( 'null value should be returned in URL getter if element is null', () => {
+			view.urlInputView.fieldView.element = null;
+
+			expect( view.url ).to.be.equal( null );
+		} );
+
+		it( 'trimmed DOM input value should be returned in URL getter', () => {
+			view.urlInputView.fieldView.element.value = '  https://cksource.com/  ';
+
+			expect( view.url ).to.be.equal( 'https://cksource.com/' );
+		} );
+	} );
+
 	describe( 'manual decorators', () => {
 		let view, collection, linkCommand;
 
