@@ -23,4 +23,4 @@ msgstr "소스"
 
 msgctxt "The accessible label of the menu bar button that changes the editor mode to raw source (HTML) editing."
 msgid "Show source"
-msgstr ""
+msgstr "소스 표시"
