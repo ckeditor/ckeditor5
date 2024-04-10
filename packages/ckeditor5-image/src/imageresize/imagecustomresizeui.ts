@@ -69,12 +69,12 @@ export default class ImageCustomResizeUI extends Plugin {
 	 * Creates the {@link module:image/imageresize/ui/imagecustomresizeformview~ImageCustomResizeFormView}
 	 * form.
 	 */
-	private _createForm( units: string ): void {
+	private _createForm( unit: string ): void {
 		const editor = this.editor;
 
 		this._balloon = this.editor.plugins.get( 'ContextualBalloon' );
 
-		this._form = new ( CssTransitionDisablerMixin( ImageCustomResizeFormView ) )( editor.locale, units, getFormValidators( editor ) );
+		this._form = new ( CssTransitionDisablerMixin( ImageCustomResizeFormView ) )( editor.locale, unit, getFormValidators( editor ) );
 
 		// Render the form so its #element is available for clickOutsideHandler.
 		this._form.render();
@@ -113,13 +113,13 @@ export default class ImageCustomResizeUI extends Plugin {
 	 *
 	 * @internal
 	 */
-	public _showForm( units: string ): void {
+	public _showForm( unit: string ): void {
 		if ( this._isVisible ) {
 			return;
 		}
 
 		if ( !this._form ) {
-			this._createForm( units );
+			this._createForm( unit );
 		}
 
 		const editor = this.editor;
@@ -140,8 +140,10 @@ export default class ImageCustomResizeUI extends Plugin {
 		// the command. If the user typed in the input, then canceled the balloon (`labeledInput#value`
 		// stays unaltered) and re-opened it without changing the value of the command, they would see the
 		// old value instead of the actual value of the command.
-		labeledInput.fieldView.value = labeledInput.fieldView.element!.value = command.value && command.value.width ?
-			Number.parseFloat( command.value.width ).toFixed( 1 ) : '';
+		const currentParsedWidth = command.getSelectedImageWidthInUnits( unit );
+		const initialInputValue = currentParsedWidth ? currentParsedWidth.value.toFixed( 1 ) : '';
+
+		labeledInput.fieldView.value = labeledInput.fieldView.element!.value = initialInputValue;
 
 		this._form!.labeledInput.fieldView.select();
 		this._form!.enableCssTransitions();
