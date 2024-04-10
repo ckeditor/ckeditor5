@@ -45,7 +45,7 @@ CKEditor&nbsp;5 is a TypeScript project. Starting from v37.0.0, it offers native
 
 ### CKEditor&nbsp;5 advanced installation
 
-For more advanced users or those who need to integrate CKEditor&nbsp;5 with their applications, we prepared integrations with popular JavaScript frameworks]:
+For more advanced users or those who need to integrate CKEditor&nbsp;5 with their applications, we prepared integrations with popular JavaScript frameworks:
   * [Angular](https://ckeditor.com/docs/ckeditor5/latest/getting-started/installation//angular.html)
   * [React](https://ckeditor.com/docs/ckeditor5/latest/getting-started/installation/react.html)
   * [Vue](https://ckeditor.com/docs/ckeditor5/latest/getting-started/installation/vuejs-v3.html)
