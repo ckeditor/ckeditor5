@@ -331,6 +331,69 @@ describe( 'MenuBarView utils', () => {
 					);
 				} );
 
+				it( 'should keep the menu open while moving the mouse to list item (parent element)', () => {
+					const menuA = getMenuByLabel( menuBarView, 'A' );
+
+					menuA.isOpen = true;
+
+					const parentMenuAAListItem = menuA.panelView.children.first.items.get( 1 );
+					const menuAA = getMenuByLabel( menuBarView, 'AA' );
+
+					menuAA.isOpen = true;
+
+					menuAA.buttonView.fire( 'execute' );
+
+					expect( barDump( menuBarView ) ).to.deep.equal(
+						[
+							{
+								label: 'A', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'A#1', isFocused: false },
+									{ label: 'AA', isOpen: true, isFocused: false, items: [
+										{ label: 'AA#1', isFocused: true },
+										{ label: 'AAA (from-factory)', isOpen: false, isFocused: false, items: [] }
+									] },
+									{ label: 'AB', isOpen: false, isFocused: false, items: [] }
+								]
+							},
+							{
+								label: 'B', isOpen: false, isFocused: false,
+								items: []
+							},
+							{
+								label: 'C', isOpen: false, isFocused: false,
+								items: []
+							}
+						]
+					);
+
+					parentMenuAAListItem.fire( 'mouseenter' );
+
+					expect( barDump( menuBarView ) ).to.deep.equal(
+						[
+							{
+								label: 'A', isOpen: true, isFocused: false,
+								items: [
+									{ label: 'A#1', isFocused: false },
+									{ label: 'AA', isOpen: true, isFocused: true, items: [
+										{ label: 'AA#1', isFocused: false },
+										{ label: 'AAA (from-factory)', isOpen: false, isFocused: false, items: [] }
+									] },
+									{ label: 'AB', isOpen: false, isFocused: false, items: [] }
+								]
+							},
+							{
+								label: 'B', isOpen: false, isFocused: false,
+								items: []
+							},
+							{
+								label: 'C', isOpen: false, isFocused: false,
+								items: []
+							}
+						]
+					);
+				} );
+
 				it( 'should never toggle disabled menus open', () => {
 					const menuA = getMenuByLabel( menuBarView, 'A' );
 

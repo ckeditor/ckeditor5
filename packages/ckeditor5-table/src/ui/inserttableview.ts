@@ -160,6 +160,16 @@ export default class InsertTableView extends View {
 	}
 
 	/**
+	 * Resets the rows and columns selection.
+	 */
+	public reset(): void {
+		this.set( {
+			rows: 1,
+			columns: 1
+		} );
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	public focus(): void {

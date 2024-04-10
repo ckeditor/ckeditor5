@@ -23,7 +23,7 @@ msgstr "ছবি অথবা ফাইল ঢোকান"
 
 msgctxt "The label for the button that opens the dialog for inserting an image or file via a CKFinder from the application menu bar."
 msgid "Image or file"
-msgstr ""
+msgstr "ছবি বা ফাইল"
 
 msgctxt "Error message displayed when inserting a resized version of an image failed."
 msgid "Could not obtain resized image URL."

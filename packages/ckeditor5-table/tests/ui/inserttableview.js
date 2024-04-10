@@ -222,6 +222,20 @@ describe( 'InsertTableView', () => {
 			} );
 		} );
 	} );
+
+	describe( 'reset()', () => {
+		it( 'should set rows and columns properties to 1', () => {
+			view.focusTracker.focusedElement = view.items.get( 24 ).element;
+
+			expect( view.columns ).to.equal( 5 );
+			expect( view.rows ).to.equal( 3 );
+
+			view.reset();
+
+			expect( view.columns ).to.equal( 1 );
+			expect( view.rows ).to.equal( 1 );
+		} );
+	} );
 } );
 
 function dispatchEvent( el, domEvtName ) {

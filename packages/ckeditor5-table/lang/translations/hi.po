@@ -275,4 +275,4 @@ msgstr "टेबल में नैविगेट करें"
 
 msgctxt "The accessible label of the menu bar button that displays a user interface to insert a table into editor content."
 msgid "Table"
-msgstr ""
+msgstr "टेबल"
