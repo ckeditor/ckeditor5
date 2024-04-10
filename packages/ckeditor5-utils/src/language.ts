@@ -14,6 +14,7 @@ export type LanguageDirection = 'ltr' | 'rtl';
 
 const RTL_LANGUAGE_CODES = [
 	'ar', 'ara', // Arabic
+	'dv', 'div', // Dhivehi
 	'fa', 'per', 'fas', // Persian
 	'he', 'heb', // Hebrew
 	'ku', 'kur', // Kurdish

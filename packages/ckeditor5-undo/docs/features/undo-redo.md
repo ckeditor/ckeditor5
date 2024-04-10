@@ -26,7 +26,7 @@ All operations of the undo feature are remembered and organized into batches tha
 
 The selective undo is heavily used in {@link features/real-time-collaboration real-time collaboration} environments. In such a scenario, a specific user should only be able to revert their changes, while keeping the changes made by other users intact (unless there is an editing conflict). By omitting some changes and going down the stack, it is possible to only revert selected changes.
 
-The feature supports both toolbar buttons and {@link features/keyboard-support keyboard shortcuts} for convenient and easy operation.
+The feature supports both toolbar buttons and {@link features/accessibility#keyboard-shortcuts keyboard shortcuts} for convenient and easy operation.
 
 ## Installation
 

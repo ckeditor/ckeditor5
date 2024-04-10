@@ -4,7 +4,7 @@
  */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { AccessibilityHelp, ButtonView } from '../../../src/index.js';
+import { AccessibilityHelp, ButtonView, MenuBarMenuListItemButtonView } from '../../../src/index.js';
 import { env, global, keyCodes } from '@ckeditor/ckeditor5-utils';
 import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
 import AccessibilityHelpContentView from '../../../src/editorui/accessibilityhelp/accessibilityhelpcontentview.js';
@@ -47,23 +47,6 @@ describe( 'AccessibilityHelp', () => {
 	} );
 
 	describe( 'init()', () => {
-		it( 'should register the "accessibilityHelp" button in the factory that opens the dialog', () => {
-			const buttonView = editor.ui.componentFactory.create( 'accessibilityHelp' );
-			const dialogShowSpy = sinon.spy();
-			dialogPlugin.on( 'show:accessibilityHelp', dialogShowSpy );
-
-			expect( buttonView ).to.be.instanceOf( ButtonView );
-			expect( buttonView.isOn ).to.be.false;
-			expect( buttonView.label ).to.equal( 'Accessibility help' );
-			expect( buttonView.icon ).to.match( /<svg / );
-			expect( buttonView.tooltip ).to.be.true;
-			expect( buttonView.keystroke ).to.equal( 'Alt+0' );
-
-			buttonView.fire( 'execute' );
-
-			sinon.assert.calledOnce( dialogShowSpy );
-		} );
-
 		it( 'should register Alt+0 keystroke that shows the dialog and cancels the event', () => {
 			const dialogShowSpy = sinon.spy();
 			const keyEventData = {
@@ -81,6 +64,55 @@ describe( 'AccessibilityHelp', () => {
 			expect( keyEventData.preventDefault.calledOnce ).to.be.true;
 
 			sinon.assert.calledOnce( dialogShowSpy );
+		} );
+
+		describe( 'UI buttons', () => {
+			let button;
+
+			describe( 'toolbar', () => {
+				beforeEach( () => {
+					button = editor.ui.componentFactory.create( 'accessibilityHelp' );
+				} );
+
+				testButton( 'Accessibility help', 'Alt+0', ButtonView );
+
+				it( 'should have tooltip', () => {
+					expect( button.tooltip ).to.be.true;
+				} );
+			} );
+
+			describe( 'menu bar', () => {
+				beforeEach( () => {
+					button = editor.ui.componentFactory.create( 'menuBar:accessibilityHelp' );
+				} );
+
+				testButton( 'Accessibility', 'Alt+0', MenuBarMenuListItemButtonView );
+			} );
+
+			function testButton( label, featureKeystroke, Component ) {
+				it( 'should register feature component', () => {
+					expect( button ).to.be.instanceOf( Component );
+				} );
+
+				it( 'should create UI component with correct attribute values', () => {
+					expect( button.isOn ).to.be.false;
+					expect( button.label ).to.equal( label );
+					expect( button.icon ).to.match( /<svg / );
+				} );
+
+				it( 'should show dialog  on model execute event', () => {
+					const dialogShowSpy = sinon.spy();
+					dialogPlugin.on( 'show:accessibilityHelp', dialogShowSpy );
+
+					button.fire( 'execute' );
+
+					sinon.assert.calledOnce( dialogShowSpy );
+				} );
+
+				it( 'should set keystroke in the model', () => {
+					expect( button.keystroke ).to.equal( featureKeystroke );
+				} );
+			}
 		} );
 
 		describe( 'editor editing view root integration', () => {

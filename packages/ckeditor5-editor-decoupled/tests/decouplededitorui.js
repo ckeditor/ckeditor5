@@ -11,6 +11,7 @@ import DecoupledEditor from '../src/decouplededitor.js';
 import DecoupledEditorUI from '../src/decouplededitorui.js';
 import DecoupledEditorUIView from '../src/decouplededitoruiview.js';
 import EditorUI from '@ckeditor/ckeditor5-ui/src/editorui/editorui.js';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { Image, ImageCaption, ImageToolbar } from '@ckeditor/ckeditor5-image';
 
@@ -311,7 +312,7 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 			ui.focusTracker.isFocused = true;
 			ui.focusTracker.focusedElement = domRoot;
 
-			pressAltF10();
+			pressAltF10( editor );
 
 			sinon.assert.calledOnce( spy );
 		} );
@@ -323,11 +324,11 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
 
 			// Focus the toolbar.
-			pressAltF10();
+			pressAltF10( editor );
 			ui.focusTracker.focusedElement = toolbarView.element;
 
 			// Try Alt+F10 again.
-			pressAltF10();
+			pressAltF10( editor );
 
 			sinon.assert.calledOnce( toolbarFocusSpy );
 			sinon.assert.notCalled( domRootFocusSpy );
@@ -347,7 +348,7 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 			);
 
 			// Focus the image balloon toolbar.
-			pressAltF10();
+			pressAltF10( editor );
 			ui.focusTracker.focusedElement = imageToolbar.element;
 
 			sinon.assert.calledOnce( imageToolbarSpy );
@@ -368,10 +369,10 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
 
 			// Focus the toolbar.
-			pressAltF10();
+			pressAltF10( editor );
 			ui.focusTracker.focusedElement = toolbarView.element;
 
-			pressEsc();
+			pressEsc( editor );
 
 			sinon.assert.callOrder( toolbarFocusSpy, domRootFocusSpy );
 		} );
@@ -382,29 +383,115 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 
 			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
 
-			pressEsc();
+			pressEsc( editor );
 
 			sinon.assert.notCalled( domRootFocusSpy );
 			sinon.assert.notCalled( toolbarFocusSpy );
 		} );
 	} );
+} );
 
-	function pressAltF10() {
-		editor.keystrokes.press( {
-			keyCode: keyCodes.f10,
-			altKey: true,
-			preventDefault: sinon.spy(),
-			stopPropagation: sinon.spy()
-		} );
-	}
+describe( 'Focus handling and navigation between editing root and menu bar', () => {
+	let editorElement, editor, ui, menuBarView, domRoot;
 
-	function pressEsc() {
-		editor.keystrokes.press( {
-			keyCode: keyCodes.esc,
-			preventDefault: sinon.spy(),
-			stopPropagation: sinon.spy()
+	testUtils.createSinonSandbox();
+
+	beforeEach( async () => {
+		editorElement = document.body.appendChild( document.createElement( 'div' ) );
+
+		editor = await DecoupledEditor.create( editorElement, {
+			plugins: [ Paragraph, Heading, Image, ImageToolbar, ImageCaption ],
+			toolbar: [ 'imageTextAlternative' ],
+			image: {
+				toolbar: [ 'toggleImageCaption' ]
+			}
 		} );
-	}
+
+		domRoot = editor.editing.view.domRoots.get( 'main' );
+
+		ui = editor.ui;
+		menuBarView = ui.view.menuBarView;
+
+		document.body.appendChild( menuBarView.element );
+	} );
+
+	afterEach( () => {
+		editorElement.remove();
+		menuBarView.element.remove();
+
+		return editor.destroy();
+	} );
+
+	describe( 'Focusing menu bar on Alt+F9 key press', () => {
+		beforeEach( () => {
+			ui.focusTracker.isFocused = true;
+			ui.focusTracker.focusedElement = domRoot;
+		} );
+
+		it( 'should focus the menu bar when the focus is in the editing root', () => {
+			const spy = testUtils.sinon.spy( menuBarView, 'focus' );
+
+			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
+
+			ui.focusTracker.isFocused = true;
+			ui.focusTracker.focusedElement = domRoot;
+
+			pressAltF9( editor );
+
+			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'should do nothing if the menu bar is already focused', () => {
+			const domRootFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
+			const menuBarFocusSpy = testUtils.sinon.spy( menuBarView, 'focus' );
+
+			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
+
+			// Focus the toolbar.
+			pressAltF9( editor );
+			ui.focusTracker.focusedElement = menuBarView.element;
+
+			// Try Alt+F9 again.
+			pressAltF9( editor );
+
+			sinon.assert.calledOnce( menuBarFocusSpy );
+			sinon.assert.notCalled( domRootFocusSpy );
+		} );
+	} );
+
+	describe( 'Restoring focus on Esc key press', () => {
+		beforeEach( () => {
+			ui.focusTracker.isFocused = true;
+			ui.focusTracker.focusedElement = domRoot;
+		} );
+
+		it( 'should move the focus back from the main toolbar to the editing root', () => {
+			const domRootFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
+			const menuBarFocusSpy = testUtils.sinon.spy( menuBarView, 'focus' );
+
+			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
+
+			// Focus the menu bar.
+			pressAltF9( editor );
+			ui.focusTracker.focusedElement = menuBarView.element;
+
+			pressEsc( editor );
+
+			sinon.assert.callOrder( menuBarFocusSpy, domRootFocusSpy );
+		} );
+
+		it( 'should do nothing if it was pressed when menu bar was not focused', () => {
+			const domRootFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
+			const menuBarFocusSpy = testUtils.sinon.spy( menuBarView, 'focus' );
+
+			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
+
+			pressEsc( editor );
+
+			sinon.assert.notCalled( domRootFocusSpy );
+			sinon.assert.notCalled( menuBarFocusSpy );
+		} );
+	} );
 } );
 
 function viewCreator( name ) {
@@ -416,6 +503,32 @@ function viewCreator( name ) {
 
 		return view;
 	};
+}
+
+function pressAltF9( editor ) {
+	editor.keystrokes.press( {
+		keyCode: keyCodes.f9,
+		altKey: true,
+		preventDefault: sinon.spy(),
+		stopPropagation: sinon.spy()
+	} );
+}
+
+function pressAltF10( editor ) {
+	editor.keystrokes.press( {
+		keyCode: keyCodes.f10,
+		altKey: true,
+		preventDefault: sinon.spy(),
+		stopPropagation: sinon.spy()
+	} );
+}
+
+function pressEsc( editor ) {
+	editor.keystrokes.press( {
+		keyCode: keyCodes.esc,
+		preventDefault: sinon.spy(),
+		stopPropagation: sinon.spy()
+	} );
 }
 
 class VirtualDecoupledTestEditor extends VirtualTestEditor {

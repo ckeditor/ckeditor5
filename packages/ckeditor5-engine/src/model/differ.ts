@@ -385,7 +385,7 @@ export default class Differ {
 	 * * changes of markers' `affectsData` property.
 	 */
 	public hasDataChanges(): boolean {
-		if ( this._changesInElement.size > 0 ) {
+		if ( this.getChanges().length ) {
 			return true;
 		}
 

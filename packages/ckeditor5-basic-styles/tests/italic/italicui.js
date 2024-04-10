@@ -30,8 +30,6 @@ describe( 'ItalicUI', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-
-				italicView = editor.ui.componentFactory.create( 'italic' );
 			} );
 	} );
 
@@ -41,53 +39,76 @@ describe( 'ItalicUI', () => {
 		return editor.destroy();
 	} );
 
-	it( 'should register italic feature component', () => {
-		expect( italicView ).to.be.instanceOf( ButtonView );
-		expect( italicView.isOn ).to.be.false;
-		expect( italicView.label ).to.equal( 'Italic' );
-		expect( italicView.icon ).to.match( /<svg / );
-		expect( italicView.keystroke ).to.equal( 'CTRL+I' );
-		expect( italicView.isToggleable ).to.be.true;
-	} );
-
-	it( 'should execute italic command on model execute event', () => {
-		const executeSpy = testUtils.sinon.spy( editor, 'execute' );
-
-		italicView.fire( 'execute' );
-
-		sinon.assert.calledOnce( executeSpy );
-		sinon.assert.calledWithExactly( executeSpy, 'italic' );
-	} );
-
-	it( 'should bind model to italic command', () => {
-		const command = editor.commands.get( 'italic' );
-
-		expect( italicView.isOn ).to.be.false;
-		expect( italicView.isEnabled ).to.be.true;
-
-		command.value = true;
-		expect( italicView.isOn ).to.be.true;
-
-		command.isEnabled = false;
-		expect( italicView.isEnabled ).to.be.false;
-	} );
-
-	it( 'should set keystroke in the model', () => {
-		expect( italicView.keystroke ).to.equal( 'CTRL+I' );
-	} );
-
-	it( 'should set editor keystroke', () => {
-		const spy = sinon.spy( editor, 'execute' );
-
-		const wasHandled = editor.keystrokes.press( {
-			keyCode: keyCodes.i,
-			ctrlKey: !env.isMac,
-			metaKey: env.isMac,
-			preventDefault: sinon.spy(),
-			stopPropagation: sinon.spy()
+	describe( 'toolbar button', () => {
+		beforeEach( () => {
+			italicView = editor.ui.componentFactory.create( 'italic' );
 		} );
 
-		expect( wasHandled ).to.be.true;
-		expect( spy.calledOnce ).to.be.true;
+		testButton();
+
+		it( 'should bind `isOn` to italic command', () => {
+			const command = editor.commands.get( 'italic' );
+
+			expect( italicView.isOn ).to.be.false;
+
+			command.value = true;
+			expect( italicView.isOn ).to.be.true;
+		} );
 	} );
+
+	describe( 'menu bar button', () => {
+		beforeEach( () => {
+			italicView = editor.ui.componentFactory.create( 'menuBar:italic' );
+		} );
+
+		testButton();
+	} );
+
+	function testButton() {
+		it( 'should register italic feature component', () => {
+			expect( italicView ).to.be.instanceOf( ButtonView );
+			expect( italicView.isOn ).to.be.false;
+			expect( italicView.label ).to.equal( 'Italic' );
+			expect( italicView.icon ).to.match( /<svg / );
+			expect( italicView.keystroke ).to.equal( 'CTRL+I' );
+			expect( italicView.isToggleable ).to.be.true;
+		} );
+
+		it( 'should execute italic command on model execute event', () => {
+			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+
+			italicView.fire( 'execute' );
+
+			sinon.assert.calledOnce( executeSpy );
+			sinon.assert.calledWithExactly( executeSpy, 'italic' );
+		} );
+
+		it( 'should bind model to italic command', () => {
+			const command = editor.commands.get( 'italic' );
+
+			expect( italicView.isEnabled ).to.be.true;
+
+			command.isEnabled = false;
+			expect( italicView.isEnabled ).to.be.false;
+		} );
+
+		it( 'should set keystroke in the model', () => {
+			expect( italicView.keystroke ).to.equal( 'CTRL+I' );
+		} );
+
+		it( 'should set editor keystroke', () => {
+			const spy = sinon.spy( editor, 'execute' );
+
+			const wasHandled = editor.keystrokes.press( {
+				keyCode: keyCodes.i,
+				ctrlKey: !env.isMac,
+				metaKey: env.isMac,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			} );
+
+			expect( wasHandled ).to.be.true;
+			expect( spy.calledOnce ).to.be.true;
+		} );
+	}
 } );

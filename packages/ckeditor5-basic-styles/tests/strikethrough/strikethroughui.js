@@ -30,8 +30,6 @@ describe( 'StrikethroughUI', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-
-				strikeView = editor.ui.componentFactory.create( 'strikethrough' );
 			} );
 	} );
 
@@ -41,56 +39,79 @@ describe( 'StrikethroughUI', () => {
 		return editor.destroy();
 	} );
 
-	it( 'should register strikethrough feature component', () => {
-		expect( strikeView ).to.be.instanceOf( ButtonView );
-		expect( strikeView.isOn ).to.be.false;
-		expect( strikeView.label ).to.equal( 'Strikethrough' );
-		expect( strikeView.icon ).to.match( /<svg / );
-		expect( strikeView.keystroke ).to.equal( 'CTRL+SHIFT+X' );
-		expect( strikeView.isToggleable ).to.be.true;
+	describe( 'toolbar button', () => {
+		beforeEach( () => {
+			strikeView = editor.ui.componentFactory.create( 'strikethrough' );
+		} );
+
+		testButton();
+
+		it( 'should bind `isOn` to strikethrough command', () => {
+			const command = editor.commands.get( 'strikethrough' );
+
+			expect( strikeView.isOn ).to.be.false;
+
+			command.value = true;
+			expect( strikeView.isOn ).to.be.true;
+		} );
 	} );
 
-	it( 'should execute strikethrough command on model execute event', () => {
-		const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+	describe( 'menu bar button', () => {
+		beforeEach( () => {
+			strikeView = editor.ui.componentFactory.create( 'menuBar:strikethrough' );
+		} );
 
-		strikeView.fire( 'execute' );
-
-		sinon.assert.calledOnce( executeSpy );
-		sinon.assert.calledWithExactly( executeSpy, 'strikethrough' );
+		testButton();
 	} );
 
-	it( 'should bind model to strikethrough command', () => {
-		const command = editor.commands.get( 'strikethrough' );
+	function testButton() {
+		it( 'should register strikethrough feature component', () => {
+			expect( strikeView ).to.be.instanceOf( ButtonView );
+			expect( strikeView.isOn ).to.be.false;
+			expect( strikeView.label ).to.equal( 'Strikethrough' );
+			expect( strikeView.icon ).to.match( /<svg / );
+			expect( strikeView.keystroke ).to.equal( 'CTRL+SHIFT+X' );
+			expect( strikeView.isToggleable ).to.be.true;
+		} );
 
-		expect( strikeView.isOn ).to.be.false;
-		expect( strikeView.isEnabled ).to.be.true;
+		it( 'should execute strikethrough command on model execute event', () => {
+			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
-		command.value = true;
-		expect( strikeView.isOn ).to.be.true;
+			strikeView.fire( 'execute' );
 
-		command.isEnabled = false;
-		expect( strikeView.isEnabled ).to.be.false;
-	} );
+			sinon.assert.calledOnce( executeSpy );
+			sinon.assert.calledWithExactly( executeSpy, 'strikethrough' );
+		} );
 
-	it( 'should set keystroke in the model', () => {
-		expect( strikeView.keystroke ).to.equal( 'CTRL+SHIFT+X' );
-	} );
+		it( 'should bind model to strikethrough command', () => {
+			const command = editor.commands.get( 'strikethrough' );
 
-	it( 'should set editor keystroke', () => {
-		const spy = sinon.spy( editor, 'execute' );
-		const keyEventData = {
-			keyCode: keyCodes.x,
-			shiftKey: true,
-			ctrlKey: !env.isMac,
-			metaKey: env.isMac,
-			preventDefault: sinon.spy(),
-			stopPropagation: sinon.spy()
-		};
+			expect( strikeView.isEnabled ).to.be.true;
 
-		const wasHandled = editor.keystrokes.press( keyEventData );
+			command.isEnabled = false;
+			expect( strikeView.isEnabled ).to.be.false;
+		} );
 
-		expect( wasHandled ).to.be.true;
-		expect( spy.calledOnce ).to.be.true;
-		expect( keyEventData.preventDefault.calledOnce ).to.be.true;
-	} );
+		it( 'should set keystroke in the model', () => {
+			expect( strikeView.keystroke ).to.equal( 'CTRL+SHIFT+X' );
+		} );
+
+		it( 'should set editor keystroke', () => {
+			const spy = sinon.spy( editor, 'execute' );
+			const keyEventData = {
+				keyCode: keyCodes.x,
+				shiftKey: true,
+				ctrlKey: !env.isMac,
+				metaKey: env.isMac,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+
+			const wasHandled = editor.keystrokes.press( keyEventData );
+
+			expect( wasHandled ).to.be.true;
+			expect( spy.calledOnce ).to.be.true;
+			expect( keyEventData.preventDefault.calledOnce ).to.be.true;
+		} );
+	}
 } );

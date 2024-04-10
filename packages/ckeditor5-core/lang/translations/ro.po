@@ -105,14 +105,22 @@ msgctxt "Keystroke description for assistive technologies: keystroke for moving 
 msgid "Move focus between form fields (inputs, buttons, etc.)"
 msgstr "Schimbă elementul activ între câmpurile unui formular (câmpuri de introducere text, butoane etc.)"
 
+msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the menu bar."
+msgid "Move focus to the menu bar, navigate between menu bars"
+msgstr "Transferarea focusului pe bara de meniu, navigarea între barele de meniu"
+
 msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the toolbar."
 msgid "Move focus to the toolbar, navigate between toolbars"
 msgstr "Mută focalizarea pe bara de instrumente, navighează prin barele de instrumente"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the toolbar."
-msgid "Navigate through the toolbar"
-msgstr "Navighează prin bara de instrumente"
+msgid "Navigate through the toolbar or menu bar"
+msgstr "Navigare prin bara de instrumente sau bara de meniuri"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for executing currently focused button."
-msgid "Execute the currently focused button"
-msgstr "Executarea comanda butonului activ în acel moment"
+msgid "Execute the currently focused button. Executing buttons that interact with the editor content moves the focus back to the content."
+msgstr "Execută butonul focalizat în prezent. Executarea butoanelor care interacționează cu conținutul editorului mută focalizarea înapoi pe conținut."
+
+msgctxt "Label of the button confirming the changes done in the current interface."
+msgid "Accept"
+msgstr "Acceptă"

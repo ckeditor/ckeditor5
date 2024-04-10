@@ -133,6 +133,11 @@ export default class TooltipManager extends DomEmitterMixin() {
 	 */
 	private _pinTooltipDebounced!: DebouncedFunc<( targetDomElement: HTMLElement, data: TooltipData ) => void>;
 
+	/**
+	 * A debounced version of {@link #_unpinTooltip}. Tooltips hide with a delay to allow hovering of their titles.
+	 */
+	private _unpinTooltipDebounced!: DebouncedFunc<VoidFunction>;
+
 	private readonly _watchdogExcluded!: true;
 
 	/**
@@ -189,7 +194,9 @@ export default class TooltipManager extends DomEmitterMixin() {
 		} );
 
 		this._pinTooltipDebounced = debounce( this._pinTooltip, 600 );
+		this._unpinTooltipDebounced = debounce( this._unpinTooltip, 400 );
 
+		this.listenTo( global.document, 'keydown', this._onKeyDown.bind( this ), { useCapture: true } );
 		this.listenTo( global.document, 'mouseenter', this._onEnterOrFocus.bind( this ), { useCapture: true } );
 		this.listenTo( global.document, 'mouseleave', this._onLeaveOrBlur.bind( this ), { useCapture: true } );
 
@@ -260,16 +267,35 @@ export default class TooltipManager extends DomEmitterMixin() {
 	}
 
 	/**
+	 * Handles hiding tooltips on `keydown` in DOM.
+	 *
+	 * @param evt An object containing information about the fired event.
+	 * @param domEvent The DOM event.
+	 */
+	private _onKeyDown( evt: EventInfo, domEvent: KeyboardEvent ) {
+		if ( domEvent.key === 'Escape' && this._currentElementWithTooltip ) {
+			this._unpinTooltip();
+			domEvent.stopPropagation();
+		}
+	}
+
+	/**
 	 * Handles displaying tooltips on `mouseenter` and `focus` in DOM.
 	 *
 	 * @param evt An object containing information about the fired event.
 	 * @param domEvent The DOM event.
 	 */
-	private _onEnterOrFocus( evt: unknown, { target }: any ) {
+	private _onEnterOrFocus( evt: EventInfo, { target }: any ) {
 		const elementWithTooltipAttribute = getDescendantWithTooltip( target );
 
 		// Abort when there's no descendant needing tooltip.
 		if ( !elementWithTooltipAttribute ) {
+			// Unpin if element is focused, regardless of whether it contains a label or not.
+			// It also prevents tooltips from overlapping the menu bar
+			if ( evt.name === 'focus' ) {
+				this._unpinTooltip();
+			}
+
 			return;
 		}
 
@@ -281,7 +307,6 @@ export default class TooltipManager extends DomEmitterMixin() {
 		}
 
 		this._unpinTooltip();
-
 		this._pinTooltipDebounced( elementWithTooltipAttribute, getTooltipData( elementWithTooltipAttribute ) );
 	}
 
@@ -298,10 +323,21 @@ export default class TooltipManager extends DomEmitterMixin() {
 				return;
 			}
 
+			const balloonElement = this.balloonPanelView.element;
+			const isEnteringBalloon = balloonElement && ( balloonElement === relatedTarget || balloonElement.contains( relatedTarget ) );
+			const isLeavingBalloon = !isEnteringBalloon && target === balloonElement;
+
+			// Do not hide the tooltip when the user moves the cursor over it.
+			if ( isEnteringBalloon ) {
+				this._unpinTooltipDebounced.cancel();
+				return;
+			}
+
 			// If a tooltip is currently visible, don't act for a targets other than the one it is attached to.
+			// The only exception is leaving balloon, in this scenario tooltip should be closed.
 			// For instance, a random mouseleave far away in the page should not unpin the tooltip that was pinned because
 			// of a previous focus. Only leaving the same element should hide the tooltip.
-			if ( this._currentElementWithTooltip && target !== this._currentElementWithTooltip ) {
+			if ( !isLeavingBalloon && this._currentElementWithTooltip && target !== this._currentElementWithTooltip ) {
 				return;
 			}
 
@@ -309,13 +345,12 @@ export default class TooltipManager extends DomEmitterMixin() {
 			const relatedDescendantWithTooltip = getDescendantWithTooltip( relatedTarget );
 
 			// Unpin when the mouse was leaving element with a tooltip to a place which does not have or has a different tooltip.
-			// Note that this should happen whether the tooltip is already visible or not, for instance, it could be invisible but queued
-			// (debounced): it should get canceled.
-			if ( descendantWithTooltip && descendantWithTooltip !== relatedDescendantWithTooltip ) {
-				this._unpinTooltip();
+			// Note that this should happen whether the tooltip is already visible or not, for instance,
+			// it could be invisible but queued (debounced): it should get canceled.
+			if ( isLeavingBalloon || ( descendantWithTooltip && descendantWithTooltip !== relatedDescendantWithTooltip ) ) {
+				this._unpinTooltipDebounced();
 			}
-		}
-		else {
+		} else {
 			// If a tooltip is currently visible, don't act for a targets other than the one it is attached to.
 			// For instance, a random blur in the web page should not unpin the tooltip that was pinned because of a previous mouseenter.
 			if ( this._currentElementWithTooltip && target !== this._currentElementWithTooltip ) {
@@ -324,7 +359,7 @@ export default class TooltipManager extends DomEmitterMixin() {
 
 			// Note that unpinning should happen whether the tooltip is already visible or not, for instance, it could be invisible but
 			// queued (debounced): it should get canceled (e.g. quick focus then quick blur using the keyboard).
-			this._unpinTooltip();
+			this._unpinTooltipDebounced();
 		}
 	}
 
@@ -361,6 +396,8 @@ export default class TooltipManager extends DomEmitterMixin() {
 		targetDomElement: HTMLElement,
 		{ text, position, cssClass }: TooltipData
 	): void {
+		this._unpinTooltip();
+
 		// Use the body collection of the first editor.
 		const bodyViewCollection = first( TooltipManager._editors.values() )!.ui.view.body;
 
@@ -404,6 +441,7 @@ export default class TooltipManager extends DomEmitterMixin() {
 	 * Unpins the tooltip and cancels all queued pinning.
 	 */
 	private _unpinTooltip() {
+		this._unpinTooltipDebounced.cancel();
 		this._pinTooltipDebounced.cancel();
 
 		this.balloonPanelView.unpin();
@@ -414,6 +452,7 @@ export default class TooltipManager extends DomEmitterMixin() {
 
 		this._currentElementWithTooltip = null;
 		this._currentTooltipPosition = null;
+		this.tooltipTextView.text = '';
 
 		if ( this._resizeObserver ) {
 			this._resizeObserver.destroy();

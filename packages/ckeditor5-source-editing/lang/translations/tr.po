@@ -20,3 +20,7 @@ msgstr ""
 msgctxt "The label of the source editing feature toolbar button."
 msgid "Source"
 msgstr "Kaynak"
+
+msgctxt "The accessible label of the menu bar button that changes the editor mode to raw source (HTML) editing."
+msgid "Show source"
+msgstr "Kaynağı göster"

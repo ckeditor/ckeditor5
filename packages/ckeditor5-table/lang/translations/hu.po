@@ -272,3 +272,7 @@ msgstr "Új sor beillesztése a táblázatba (a táblázat utolsó cellájában)
 msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the table."
 msgid "Navigate through the table"
 msgstr "Navigáció a táblázatban"
+
+msgctxt "The accessible label of the menu bar button that displays a user interface to insert a table into editor content."
+msgid "Table"
+msgstr "Táblázat"

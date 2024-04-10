@@ -52,6 +52,7 @@ export default class Accessibility {
 	 */
 	constructor( editor: Editor ) {
 		this._editor = editor;
+		const isMenuBarVisible = editor.config.get( 'menuBar.isVisible' );
 
 		const t = editor.locale.t;
 
@@ -61,6 +62,45 @@ export default class Accessibility {
 			description: t( 'These keyboard shortcuts allow for quick access to content editing features.' )
 		} );
 
+		const navigationKeystrokes = [
+			{
+				label: t( 'Close contextual balloons, dropdowns, and dialogs' ),
+				keystroke: 'Esc'
+			},
+			{
+				label: t( 'Open the accessibility help dialog' ),
+				keystroke: 'Alt+0'
+			},
+			{
+				label: t( 'Move focus between form fields (inputs, buttons, etc.)' ),
+				keystroke: [ [ 'Tab' ], [ 'Shift+Tab' ] ]
+			},
+			{
+				label: t( 'Move focus to the toolbar, navigate between toolbars' ),
+				keystroke: 'Alt+F10',
+				mayRequireFn: true
+			},
+			{
+				label: t( 'Navigate through the toolbar or menu bar' ),
+				keystroke: [ [ 'arrowup' ], [ 'arrowright' ], [ 'arrowdown' ], [ 'arrowleft' ] ]
+			},
+			{
+				// eslint-disable-next-line max-len
+				label: t( 'Execute the currently focused button. Executing buttons that interact with the editor content moves the focus back to the content.' ),
+				keystroke: [ [ 'Enter' ], [ 'Space' ] ]
+			}
+		];
+
+		if ( isMenuBarVisible ) {
+			navigationKeystrokes.push(
+				{
+					label: t( 'Move focus to the menu bar, navigate between menu bars' ),
+					keystroke: 'Alt+F9',
+					mayRequireFn: true
+				}
+			);
+		}
+
 		this.addKeystrokeInfoCategory( {
 			id: 'navigation',
 			label: t( 'User interface and content navigation keystrokes' ),
@@ -68,33 +108,7 @@ export default class Accessibility {
 			groups: [
 				{
 					id: 'common',
-					keystrokes: [
-						{
-							label: t( 'Close contextual balloons, dropdowns, and dialogs' ),
-							keystroke: 'Esc'
-						},
-						{
-							label: t( 'Open the accessibility help dialog' ),
-							keystroke: 'Alt+0'
-						},
-						{
-							label: t( 'Move focus between form fields (inputs, buttons, etc.)' ),
-							keystroke: [ [ 'Tab' ], [ 'Shift+Tab' ] ]
-						},
-						{
-							label: t( 'Move focus to the toolbar, navigate between toolbars' ),
-							keystroke: 'Alt+F10',
-							mayRequireFn: true
-						},
-						{
-							label: t( 'Navigate through the toolbar' ),
-							keystroke: [ [ 'arrowup' ], [ 'arrowright' ], [ 'arrowdown' ], [ 'arrowleft' ] ]
-						},
-						{
-							label: t( 'Execute the currently focused button' ),
-							keystroke: [ [ 'Enter' ], [ 'Space' ] ]
-						}
-					]
+					keystrokes: navigationKeystrokes
 				}
 			]
 		} );

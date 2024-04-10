@@ -8,8 +8,18 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import { ViewModel, createDropdown, addListToDropdown, type ListDropdownItemDefinition } from 'ckeditor5/src/ui.js';
-import { Collection } from 'ckeditor5/src/utils.js';
+import {
+	addListToDropdown,
+	createDropdown,
+	ListSeparatorView,
+	MenuBarMenuView,
+	MenuBarMenuListView,
+	MenuBarMenuListItemView,
+	MenuBarMenuListItemButtonView,
+	ViewModel,
+	type ListDropdownItemDefinition
+} from 'ckeditor5/src/ui.js';
+import { Collection, type LanguageDirection } from 'ckeditor5/src/utils.js';
 import { stringifyLanguageAttribute } from './utils.js';
 import type TextPartLanguageCommand from './textpartlanguagecommand.js';
 
@@ -32,55 +42,16 @@ export default class TextPartLanguageUI extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 		const t = editor.t;
-		const options = editor.config.get( 'language.textPartLanguage' )!;
 		const defaultTitle = t( 'Choose language' );
-		const removeTitle = t( 'Remove language' );
 		const accessibleLabel = t( 'Language' );
 
 		// Register UI component.
 		editor.ui.componentFactory.add( 'textPartLanguage', locale => {
-			const itemDefinitions = new Collection<ListDropdownItemDefinition>();
-			const titles: Record<string, string> = {};
-
-			const languageCommand: TextPartLanguageCommand = editor.commands.get( 'textPartLanguage' )!;
-
-			// Item definition with false `languageCode` will behave as remove lang button.
-			itemDefinitions.add( {
-				type: 'button',
-				model: new ViewModel( {
-					label: removeTitle,
-					languageCode: false,
-					withText: true
-				} )
-			} );
-
-			itemDefinitions.add( {
-				type: 'separator'
-			} );
-
-			for ( const option of options ) {
-				const def = {
-					type: 'button' as const,
-					model: new ViewModel( {
-						label: option.title,
-						languageCode: option.languageCode,
-						role: 'menuitemradio',
-						textDirection: option.textDirection,
-						withText: true
-					} )
-				};
-
-				const language = stringifyLanguageAttribute( option.languageCode, option.textDirection );
-
-				def.model.bind( 'isOn' ).to( languageCommand, 'value', value => value === language );
-
-				itemDefinitions.add( def );
-
-				titles[ language ] = option.title;
-			}
+			const { definitions, titles } = this._getItemMetadata();
+			const languageCommand = editor.commands.get( 'textPartLanguage' )!;
 
 			const dropdownView = createDropdown( locale );
-			addListToDropdown( dropdownView, itemDefinitions, {
+			addListToDropdown( dropdownView, definitions, {
 				ariaLabel: accessibleLabel,
 				role: 'menu'
 			} );
@@ -106,6 +77,16 @@ export default class TextPartLanguageUI extends Plugin {
 				return ( value && titles[ value ] ) || defaultTitle;
 			} );
 
+			dropdownView.buttonView.bind( 'ariaLabel' ).to( languageCommand, 'value', value => {
+				const selectedLanguageTitle = value && titles[ value ];
+
+				if ( !selectedLanguageTitle ) {
+					return accessibleLabel;
+				}
+
+				return `${ selectedLanguageTitle }, ${ accessibleLabel }`;
+			} );
+
 			// Execute command when an item from the dropdown is selected.
 			this.listenTo( dropdownView, 'execute', evt => {
 				languageCommand.execute( {
@@ -118,5 +99,112 @@ export default class TextPartLanguageUI extends Plugin {
 
 			return dropdownView;
 		} );
+
+		// Register menu bar UI component.
+		editor.ui.componentFactory.add( 'menuBar:textPartLanguage', locale => {
+			const { definitions } = this._getItemMetadata();
+			const languageCommand = editor.commands.get( 'textPartLanguage' )!;
+
+			const menuView = new MenuBarMenuView( locale );
+
+			menuView.buttonView.set( {
+				label: accessibleLabel
+			} );
+
+			const listView = new MenuBarMenuListView( locale );
+
+			listView.set( {
+				ariaLabel: t( 'Language' ),
+				role: 'menu'
+			} );
+
+			for ( const definition of definitions ) {
+				if ( definition.type != 'button' ) {
+					listView.items.add( new ListSeparatorView( locale ) );
+					continue;
+				}
+
+				const listItemView = new MenuBarMenuListItemView( locale, menuView );
+				const buttonView = new MenuBarMenuListItemButtonView( locale );
+
+				buttonView.bind( ...Object.keys( definition.model ) as Array<keyof MenuBarMenuListItemButtonView> ).to( definition.model );
+				buttonView.bind( 'ariaChecked' ).to( buttonView, 'isOn' );
+				buttonView.delegate( 'execute' ).to( menuView );
+
+				listItemView.children.add( buttonView );
+				listView.items.add( listItemView );
+			}
+
+			menuView.bind( 'isEnabled' ).to( languageCommand, 'isEnabled' );
+			menuView.panelView.children.add( listView );
+			menuView.on( 'execute', evt => {
+				languageCommand.execute( {
+					languageCode: ( evt.source as any ).languageCode as string,
+					textDirection: ( evt.source as any ).textDirection as LanguageDirection
+				} );
+
+				editor.editing.view.focus();
+			} );
+
+			return menuView;
+		} );
+	}
+
+	/**
+	 * Returns metadata for dropdown and menu items.
+	 */
+	private _getItemMetadata(): ItemMetadata {
+		const editor = this.editor;
+		const itemDefinitions = new Collection<ListDropdownItemDefinition>();
+		const titles: Record<string, string> = {};
+		const languageCommand: TextPartLanguageCommand = editor.commands.get( 'textPartLanguage' )!;
+		const options = editor.config.get( 'language.textPartLanguage' )!;
+		const t = editor.locale.t;
+		const removeTitle = t( 'Remove language' );
+
+		// Item definition with false `languageCode` will behave as remove lang button.
+		itemDefinitions.add( {
+			type: 'button',
+			model: new ViewModel( {
+				label: removeTitle,
+				languageCode: false,
+				withText: true
+			} )
+		} );
+
+		itemDefinitions.add( {
+			type: 'separator'
+		} );
+
+		for ( const option of options ) {
+			const def = {
+				type: 'button' as const,
+				model: new ViewModel( {
+					label: option.title,
+					languageCode: option.languageCode,
+					role: 'menuitemradio',
+					textDirection: option.textDirection,
+					withText: true
+				} )
+			};
+
+			const language = stringifyLanguageAttribute( option.languageCode, option.textDirection );
+
+			def.model.bind( 'isOn' ).to( languageCommand, 'value', value => value === language );
+
+			itemDefinitions.add( def );
+
+			titles[ language ] = option.title;
+		}
+
+		return {
+			definitions: itemDefinitions,
+			titles
+		};
 	}
 }
+
+type ItemMetadata = {
+	definitions: Collection<ListDropdownItemDefinition>;
+	titles: Record<string, string>;
+};

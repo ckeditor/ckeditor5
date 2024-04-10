@@ -50,297 +50,341 @@ describe( 'Alignment UI', () => {
 		} );
 	} );
 
-	describe( 'alignment:left button', () => {
-		beforeEach( () => {
-			command = editor.commands.get( 'alignment' );
-			button = editor.ui.componentFactory.create( 'alignment:left' );
+	describe( 'toolbar', () => {
+		describe( 'alignment:left button', () => {
+			beforeEach( () => {
+				command = editor.commands.get( 'alignment' );
+				button = editor.ui.componentFactory.create( 'alignment:left' );
+			} );
+
+			it( 'has the base properties', () => {
+				expect( button ).to.have.property( 'label', 'Align left' );
+				expect( button ).to.have.property( 'icon' );
+				expect( button ).to.have.property( 'tooltip', true );
+				expect( button ).to.have.property( 'isToggleable', true );
+				expect( button ).to.have.property( 'tooltipPosition', 's' );
+			} );
+
+			it( 'has isOn bound to command\'s value', () => {
+				command.value = false;
+				expect( button ).to.have.property( 'isOn', false );
+
+				command.value = 'left';
+				expect( button ).to.have.property( 'isOn', true );
+
+				command.value = 'justify';
+				expect( button ).to.have.property( 'isOn', false );
+			} );
+
+			it( 'has isEnabled bound to command\'s isEnabled', () => {
+				command.isEnabled = true;
+				expect( button ).to.have.property( 'isEnabled', true );
+
+				command.isEnabled = false;
+				expect( button ).to.have.property( 'isEnabled', false );
+			} );
+
+			it( 'executes command when it\'s executed', () => {
+				const spy = sinon.stub( editor, 'execute' );
+
+				button.fire( 'execute' );
+
+				expect( spy.calledOnce ).to.be.true;
+				expect( spy.args[ 0 ][ 0 ] ).to.equal( 'alignment' );
+				expect( spy.args[ 0 ][ 1 ] ).to.deep.equal( { value: 'left' } );
+			} );
 		} );
 
-		it( 'has the base properties', () => {
-			expect( button ).to.have.property( 'label', 'Align left' );
-			expect( button ).to.have.property( 'icon' );
-			expect( button ).to.have.property( 'tooltip', true );
-			expect( button ).to.have.property( 'isToggleable', true );
+		describe( 'alignment:right button', () => {
+			beforeEach( () => {
+				command = editor.commands.get( 'alignment' );
+				button = editor.ui.componentFactory.create( 'alignment:right' );
+			} );
+
+			it( 'has the base properties', () => {
+				expect( button ).to.have.property( 'label', 'Align right' );
+				expect( button ).to.have.property( 'icon' );
+				expect( button ).to.have.property( 'tooltip', true );
+				expect( button ).to.have.property( 'tooltipPosition', 's' );
+			} );
+
+			it( 'has isOn bound to command\'s value', () => {
+				command.value = false;
+				expect( button ).to.have.property( 'isOn', false );
+
+				command.value = 'right';
+				expect( button ).to.have.property( 'isOn', true );
+
+				command.value = 'justify';
+				expect( button ).to.have.property( 'isOn', false );
+			} );
+
+			it( 'has isEnabled bound to command\'s isEnabled', () => {
+				command.isEnabled = true;
+				expect( button ).to.have.property( 'isEnabled', true );
+
+				command.isEnabled = false;
+				expect( button ).to.have.property( 'isEnabled', false );
+			} );
+
+			it( 'executes command when it\'s executed', () => {
+				const spy = sinon.stub( editor, 'execute' );
+
+				button.fire( 'execute' );
+
+				expect( spy.calledOnce ).to.be.true;
+				expect( spy.args[ 0 ][ 0 ] ).to.equal( 'alignment' );
+				expect( spy.args[ 0 ][ 1 ] ).to.deep.equal( { value: 'right' } );
+			} );
 		} );
 
-		it( 'has isOn bound to command\'s value', () => {
-			command.value = false;
-			expect( button ).to.have.property( 'isOn', false );
+		describe( 'alignment:center button', () => {
+			beforeEach( () => {
+				command = editor.commands.get( 'alignment' );
+				button = editor.ui.componentFactory.create( 'alignment:center' );
+			} );
 
-			command.value = 'left';
-			expect( button ).to.have.property( 'isOn', true );
+			it( 'has the base properties', () => {
+				expect( button ).to.have.property( 'label', 'Align center' );
+				expect( button ).to.have.property( 'icon' );
+				expect( button ).to.have.property( 'tooltip', true );
+				expect( button ).to.have.property( 'tooltipPosition', 's' );
+			} );
 
-			command.value = 'justify';
-			expect( button ).to.have.property( 'isOn', false );
+			it( 'has isOn bound to command\'s value', () => {
+				command.value = false;
+				expect( button ).to.have.property( 'isOn', false );
+
+				command.value = 'center';
+				expect( button ).to.have.property( 'isOn', true );
+
+				command.value = 'justify';
+				expect( button ).to.have.property( 'isOn', false );
+			} );
+
+			it( 'has isEnabled bound to command\'s isEnabled', () => {
+				command.isEnabled = true;
+				expect( button ).to.have.property( 'isEnabled', true );
+
+				command.isEnabled = false;
+				expect( button ).to.have.property( 'isEnabled', false );
+			} );
+
+			it( 'executes command when it\'s executed', () => {
+				const spy = sinon.stub( editor, 'execute' );
+
+				button.fire( 'execute' );
+
+				expect( spy.calledOnce ).to.be.true;
+				expect( spy.args[ 0 ][ 0 ] ).to.equal( 'alignment' );
+				expect( spy.args[ 0 ][ 1 ] ).to.deep.equal( { value: 'center' } );
+			} );
 		} );
 
-		it( 'has isEnabled bound to command\'s isEnabled', () => {
-			command.isEnabled = true;
-			expect( button ).to.have.property( 'isEnabled', true );
+		describe( 'alignment:justify button', () => {
+			beforeEach( () => {
+				command = editor.commands.get( 'alignment' );
+				button = editor.ui.componentFactory.create( 'alignment:justify' );
+			} );
 
-			command.isEnabled = false;
-			expect( button ).to.have.property( 'isEnabled', false );
+			it( 'has the base properties', () => {
+				expect( button ).to.have.property( 'label', 'Justify' );
+				expect( button ).to.have.property( 'icon' );
+				expect( button ).to.have.property( 'tooltip', true );
+				expect( button ).to.have.property( 'tooltipPosition', 's' );
+			} );
+
+			it( 'has isOn bound to command\'s value', () => {
+				command.value = false;
+				expect( button ).to.have.property( 'isOn', false );
+
+				command.value = 'justify';
+				expect( button ).to.have.property( 'isOn', true );
+
+				command.value = 'center';
+				expect( button ).to.have.property( 'isOn', false );
+			} );
+
+			it( 'has isEnabled bound to command\'s isEnabled', () => {
+				command.isEnabled = true;
+				expect( button ).to.have.property( 'isEnabled', true );
+
+				command.isEnabled = false;
+				expect( button ).to.have.property( 'isEnabled', false );
+			} );
+
+			it( 'executes command when it\'s executed', () => {
+				const spy = sinon.stub( editor, 'execute' );
+
+				button.fire( 'execute' );
+
+				expect( spy.calledOnce ).to.be.true;
+				expect( spy.args[ 0 ][ 0 ] ).to.equal( 'alignment' );
+				expect( spy.args[ 0 ][ 1 ] ).to.deep.equal( { value: 'justify' } );
+			} );
 		} );
 
-		it( 'executes command when it\'s executed', () => {
-			const spy = sinon.stub( editor, 'execute' );
-
-			button.fire( 'execute' );
-
-			expect( spy.calledOnce ).to.be.true;
-			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'alignment' );
-			expect( spy.args[ 0 ][ 1 ] ).to.deep.equal( { value: 'left' } );
-		} );
-	} );
-
-	describe( 'alignment:right button', () => {
-		beforeEach( () => {
-			command = editor.commands.get( 'alignment' );
-			button = editor.ui.componentFactory.create( 'alignment:right' );
-		} );
-
-		it( 'has the base properties', () => {
-			expect( button ).to.have.property( 'label', 'Align right' );
-			expect( button ).to.have.property( 'icon' );
-			expect( button ).to.have.property( 'tooltip', true );
-		} );
-
-		it( 'has isOn bound to command\'s value', () => {
-			command.value = false;
-			expect( button ).to.have.property( 'isOn', false );
-
-			command.value = 'right';
-			expect( button ).to.have.property( 'isOn', true );
-
-			command.value = 'justify';
-			expect( button ).to.have.property( 'isOn', false );
-		} );
-
-		it( 'has isEnabled bound to command\'s isEnabled', () => {
-			command.isEnabled = true;
-			expect( button ).to.have.property( 'isEnabled', true );
-
-			command.isEnabled = false;
-			expect( button ).to.have.property( 'isEnabled', false );
-		} );
-
-		it( 'executes command when it\'s executed', () => {
-			const spy = sinon.stub( editor, 'execute' );
-
-			button.fire( 'execute' );
-
-			expect( spy.calledOnce ).to.be.true;
-			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'alignment' );
-			expect( spy.args[ 0 ][ 1 ] ).to.deep.equal( { value: 'right' } );
-		} );
-	} );
-
-	describe( 'alignment:center button', () => {
-		beforeEach( () => {
-			command = editor.commands.get( 'alignment' );
-			button = editor.ui.componentFactory.create( 'alignment:center' );
-		} );
-
-		it( 'has the base properties', () => {
-			expect( button ).to.have.property( 'label', 'Align center' );
-			expect( button ).to.have.property( 'icon' );
-			expect( button ).to.have.property( 'tooltip', true );
-		} );
-
-		it( 'has isOn bound to command\'s value', () => {
-			command.value = false;
-			expect( button ).to.have.property( 'isOn', false );
+		describe( 'alignment', () => {
+			let dropdown;
 
-			command.value = 'center';
-			expect( button ).to.have.property( 'isOn', true );
-
-			command.value = 'justify';
-			expect( button ).to.have.property( 'isOn', false );
-		} );
-
-		it( 'has isEnabled bound to command\'s isEnabled', () => {
-			command.isEnabled = true;
-			expect( button ).to.have.property( 'isEnabled', true );
+			beforeEach( () => {
+				command = editor.commands.get( 'alignment' );
+				dropdown = editor.ui.componentFactory.create( 'alignment' );
+			} );
 
-			command.isEnabled = false;
-			expect( button ).to.have.property( 'isEnabled', false );
-		} );
+			it( '#buttonView has the base properties', () => {
+				const button = dropdown.buttonView;
 
-		it( 'executes command when it\'s executed', () => {
-			const spy = sinon.stub( editor, 'execute' );
+				expect( button ).to.have.property( 'label', 'Text alignment' );
+				expect( button ).to.have.property( 'icon' );
+				expect( button ).to.have.property( 'tooltip', true );
+			} );
 
-			button.fire( 'execute' );
+			it( 'should add custom CSS class to dropdown', () => {
+				dropdown.render();
 
-			expect( spy.calledOnce ).to.be.true;
-			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'alignment' );
-			expect( spy.args[ 0 ][ 1 ] ).to.deep.equal( { value: 'center' } );
-		} );
-	} );
+				expect( dropdown.element.classList.contains( 'ck-alignment-dropdown' ) ).to.be.true;
+			} );
 
-	describe( 'alignment:justify button', () => {
-		beforeEach( () => {
-			command = editor.commands.get( 'alignment' );
-			button = editor.ui.componentFactory.create( 'alignment:justify' );
-		} );
+			it( '#toolbarView has the basic properties', () => {
+				// Make sure that toolbar view is not created before first dropdown open.
+				expect( dropdown.toolbarView ).to.be.undefined;
 
-		it( 'has the base properties', () => {
-			expect( button ).to.have.property( 'label', 'Justify' );
-			expect( button ).to.have.property( 'icon' );
-			expect( button ).to.have.property( 'tooltip', true );
-		} );
+				// Trigger toolbar view creation (lazy init).
+				dropdown.isOpen = true;
 
-		it( 'has isOn bound to command\'s value', () => {
-			command.value = false;
-			expect( button ).to.have.property( 'isOn', false );
+				const toolbarView = dropdown.toolbarView;
 
-			command.value = 'justify';
-			expect( button ).to.have.property( 'isOn', true );
+				expect( toolbarView ).to.have.property( 'isVertical', true );
+				expect( toolbarView ).to.have.property( 'ariaLabel', 'Text alignment toolbar' );
+			} );
 
-			command.value = 'center';
-			expect( button ).to.have.property( 'isOn', false );
-		} );
+			it( 'should hold defined buttons', () => {
+				// Make sure that toolbar view is not created before first dropdown open.
+				expect( dropdown.toolbarView ).to.be.undefined;
 
-		it( 'has isEnabled bound to command\'s isEnabled', () => {
-			command.isEnabled = true;
-			expect( button ).to.have.property( 'isEnabled', true );
+				// Trigger toolbar view creation (lazy init).
+				dropdown.isOpen = true;
 
-			command.isEnabled = false;
-			expect( button ).to.have.property( 'isEnabled', false );
-		} );
+				const items = [ ...dropdown.toolbarView.items ].map( item => item.label );
 
-		it( 'executes command when it\'s executed', () => {
-			const spy = sinon.stub( editor, 'execute' );
+				expect( items ).to.have.length( 4 );
 
-			button.fire( 'execute' );
+				expect( items.includes( 'Align left' ) ).to.be.true;
+				expect( items.includes( 'Align right' ) ).to.be.true;
+				expect( items.includes( 'Align center' ) ).to.be.true;
+				expect( items.includes( 'Justify' ) ).to.be.true;
+			} );
 
-			expect( spy.calledOnce ).to.be.true;
-			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'alignment' );
-			expect( spy.args[ 0 ][ 1 ] ).to.deep.equal( { value: 'justify' } );
-		} );
-	} );
+			it( 'tooltips pinned to buttons should be aligned on east', () => {
+				// Make sure that toolbar view is not created before first dropdown open.
+				expect( dropdown.toolbarView ).to.be.undefined;
 
-	describe( 'alignment', () => {
-		let dropdown;
+				// Trigger toolbar view creation (lazy init).
+				dropdown.isOpen = true;
 
-		beforeEach( () => {
-			command = editor.commands.get( 'alignment' );
-			dropdown = editor.ui.componentFactory.create( 'alignment' );
-		} );
+				const items = [ ...dropdown.toolbarView.items ].map( item => item.tooltipPosition );
 
-		it( '#buttonView has the base properties', () => {
-			const button = dropdown.buttonView;
+				expect( items ).to.have.length( 4 );
+				expect( items.every( item => item === 'e' ) ).to.be.true;
+			} );
 
-			expect( button ).to.have.property( 'label', 'Text alignment' );
-			expect( button ).to.have.property( 'icon' );
-			expect( button ).to.have.property( 'tooltip', true );
-		} );
+			it( 'tooltips pinned to buttons should be aligned on west (RTL ui)', async () => {
+				// Clean up the editor created in main test suite hook.
+				await editor.destroy();
 
-		it( 'should add custom CSS class to dropdown', () => {
-			dropdown.render();
+				const newEditor = await ClassicTestEditor.create( element, {
+					language: {
+						content: 'ar',
+						ui: 'ar'
+					},
+					plugins: [ AlignmentEditing, AlignmentUI ]
+				} );
 
-			expect( dropdown.element.classList.contains( 'ck-alignment-dropdown' ) ).to.be.true;
-		} );
+				dropdown = newEditor.ui.componentFactory.create( 'alignment' );
+				dropdown.isOpen = true;
 
-		it( '#toolbarView has the basic properties', () => {
-			// Make sure that toolbar view is not created before first dropdown open.
-			expect( dropdown.toolbarView ).to.be.undefined;
+				const items = [ ...dropdown.toolbarView.items ].map( item => item.tooltipPosition );
 
-			// Trigger toolbar view creation (lazy init).
-			dropdown.isOpen = true;
+				expect( items ).to.have.length( 4 );
+				expect( items.every( item => item === 'w' ) ).to.be.true;
 
-			const toolbarView = dropdown.toolbarView;
+				await newEditor.destroy();
+			} );
 
-			expect( toolbarView ).to.have.property( 'isVertical', true );
-			expect( toolbarView ).to.have.property( 'ariaLabel', 'Text alignment toolbar' );
-		} );
+			it( 'should use icon related to current command value', () => {
+				// Make sure that toolbar view is not created before first dropdown open.
+				expect( dropdown.toolbarView ).to.be.undefined;
 
-		it( 'should hold defined buttons', () => {
-			// Make sure that toolbar view is not created before first dropdown open.
-			expect( dropdown.toolbarView ).to.be.undefined;
+				// Trigger toolbar view creation (lazy init).
+				dropdown.isOpen = true;
 
-			// Trigger toolbar view creation (lazy init).
-			dropdown.isOpen = true;
+				expect( dropdown.buttonView.icon ).to.equal( alignLeftIcon );
 
-			const items = [ ...dropdown.toolbarView.items ].map( item => item.label );
+				command.value = 'right';
 
-			expect( items ).to.have.length( 4 );
+				expect( dropdown.buttonView.icon ).to.equal( alignRightIcon );
+			} );
 
-			expect( items.includes( 'Align left' ) ).to.be.true;
-			expect( items.includes( 'Align right' ) ).to.be.true;
-			expect( items.includes( 'Align center' ) ).to.be.true;
-			expect( items.includes( 'Justify' ) ).to.be.true;
-		} );
+			it( 'should be disabled if command is not enabled', () => {
+				// Make sure that toolbar view is not created before first dropdown open.
+				expect( dropdown.toolbarView ).to.be.undefined;
 
-		it( 'should use icon related to current command value', () => {
-			// Make sure that toolbar view is not created before first dropdown open.
-			expect( dropdown.toolbarView ).to.be.undefined;
+				// Trigger toolbar view creation (lazy init).
+				dropdown.isOpen = true;
 
-			// Trigger toolbar view creation (lazy init).
-			dropdown.isOpen = true;
+				command.isEnabled = true;
+				expect( dropdown.isEnabled ).to.be.true;
 
-			expect( dropdown.buttonView.icon ).to.equal( alignLeftIcon );
+				command.isEnabled = false;
+				expect( dropdown.isEnabled ).to.be.false;
+			} );
 
-			command.value = 'right';
+			it( 'should focus the first active button when dropdown is opened', () => {
+				dropdown.render();
+				document.body.appendChild( dropdown.element );
 
-			expect( dropdown.buttonView.icon ).to.equal( alignRightIcon );
-		} );
+				// Make sure that toolbar view is not created before first dropdown open.
+				expect( dropdown.toolbarView ).to.be.undefined;
 
-		it( 'should be disabled if command is not enabled', () => {
-			// Make sure that toolbar view is not created before first dropdown open.
-			expect( dropdown.toolbarView ).to.be.undefined;
+				// Trigger toolbar view creation (lazy init).
+				dropdown.isOpen = true;
+				dropdown.isOpen = false;
 
-			// Trigger toolbar view creation (lazy init).
-			dropdown.isOpen = true;
+				const buttonAlignLeft = dropdown.toolbarView.items.get( 0 );
+				const buttonAlignRight = dropdown.toolbarView.items.get( 1 );
+				const spy = sinon.spy( buttonAlignRight, 'focus' );
 
-			command.isEnabled = true;
-			expect( dropdown.isEnabled ).to.be.true;
+				buttonAlignLeft.isOn = false;
+				buttonAlignRight.isOn = true;
+				dropdown.isOpen = true;
+				sinon.assert.calledOnce( spy );
 
-			command.isEnabled = false;
-			expect( dropdown.isEnabled ).to.be.false;
-		} );
+				dropdown.element.remove();
+			} );
 
-		it( 'should focus the first active button when dropdown is opened', () => {
-			dropdown.render();
-			document.body.appendChild( dropdown.element );
+			it( 'should return focus to editable after executing a command', () => {
+				// Make sure that toolbar view is not created before first dropdown open.
+				expect( dropdown.toolbarView ).to.be.undefined;
 
-			// Make sure that toolbar view is not created before first dropdown open.
-			expect( dropdown.toolbarView ).to.be.undefined;
+				// Trigger toolbar view creation (lazy init).
+				dropdown.isOpen = true;
 
-			// Trigger toolbar view creation (lazy init).
-			dropdown.isOpen = true;
-			dropdown.isOpen = false;
+				const buttonAlignLeft = dropdown.toolbarView.items.get( 0 );
+				const spy = sinon.spy( editor.editing.view, 'focus' );
+				dropdown.render();
 
-			const buttonAlignLeft = dropdown.toolbarView.items.get( 0 );
-			const buttonAlignRight = dropdown.toolbarView.items.get( 1 );
-			const spy = sinon.spy( buttonAlignRight, 'focus' );
+				buttonAlignLeft.fire( 'execute' );
 
-			buttonAlignLeft.isOn = false;
-			buttonAlignRight.isOn = true;
-			dropdown.isOpen = true;
-			sinon.assert.calledOnce( spy );
-
-			dropdown.element.remove();
-		} );
-
-		it( 'should return focus to editable after executing a command', () => {
-			// Make sure that toolbar view is not created before first dropdown open.
-			expect( dropdown.toolbarView ).to.be.undefined;
-
-			// Trigger toolbar view creation (lazy init).
-			dropdown.isOpen = true;
-
-			const buttonAlignLeft = dropdown.toolbarView.items.get( 0 );
-			const spy = sinon.spy( editor.editing.view, 'focus' );
-			dropdown.render();
-
-			buttonAlignLeft.fire( 'execute' );
-
-			// The focus is called twice - once by the button itself
-			// and once by the dropdown it is in.
-			sinon.assert.calledTwice( spy );
+				// The focus is called twice - once by the button itself
+				// and once by the dropdown it is in.
+				sinon.assert.calledTwice( spy );
+			} );
 		} );
 
 		describe( 'config', () => {
+			let dropdown;
+
 			beforeEach( async () => {
 				// Clean up the editor created in main test suite hook.
 				await editor.destroy();
@@ -407,5 +451,104 @@ describe( 'Alignment UI', () => {
 				expect( dropdown.buttonView.icon ).to.equal( button.icon );
 			} );
 		} );
+	} );
+
+	describe( 'menu bar', () => {
+		let submenu;
+
+		beforeEach( () => {
+			command = editor.commands.get( 'alignment' );
+			submenu = editor.ui.componentFactory.create( 'menuBar:alignment' );
+		} );
+
+		it( 'has isEnabled bound to command\'s isEnabled', () => {
+			command.isEnabled = true;
+			expect( submenu ).to.have.property( 'isEnabled', true );
+
+			command.isEnabled = false;
+			expect( submenu ).to.have.property( 'isEnabled', false );
+		} );
+
+		testMenuBarButton( 0, 'left', 'right', 'Align left' );
+		testMenuBarButton( 1, 'right', 'left', 'Align right' );
+		testMenuBarButton( 2, 'center', 'left', 'Align center' );
+		testMenuBarButton( 3, 'justify', 'left', 'Justify' );
+
+		it( '#buttonView has the base properties', () => {
+			const button = submenu.buttonView;
+
+			expect( button ).to.have.property( 'label', 'Text alignment' );
+			expect( button ).to.have.property( 'icon' );
+		} );
+
+		it( 'should hold defined buttons', () => {
+			// Make sure that toolbar view is not created before first dropdown open.
+			const listView = submenu.panelView.children.get( 0 );
+
+			expect( listView ).not.to.be.undefined;
+
+			const items = [ ...listView.items ].map( item => item.children.get( 0 ).label );
+
+			expect( items ).to.have.length( 4 );
+
+			expect( items.includes( 'Align left' ) ).to.be.true;
+			expect( items.includes( 'Align right' ) ).to.be.true;
+			expect( items.includes( 'Align center' ) ).to.be.true;
+			expect( items.includes( 'Justify' ) ).to.be.true;
+		} );
+
+		function testMenuBarButton( index, commandValue, anotherCommandValue, label ) {
+			let button;
+
+			describe( 'alignment:' + commandValue + ' button', () => {
+				beforeEach( () => {
+					command = editor.commands.get( 'alignment' );
+					const submenu = editor.ui.componentFactory.create( 'menuBar:alignment' );
+					button = submenu.panelView.children.get( 0 ).items.get( index ).children.get( 0 );
+				} );
+
+				it( 'has the base properties', () => {
+					expect( button ).to.have.property( 'label', label );
+					expect( button ).to.have.property( 'icon' );
+				} );
+
+				it( 'has isOn bound to command\'s value', () => {
+					command.value = false;
+					expect( button ).to.have.property( 'isOn', false );
+
+					command.value = commandValue;
+					expect( button ).to.have.property( 'isOn', true );
+
+					command.value = anotherCommandValue;
+					expect( button ).to.have.property( 'isOn', false );
+				} );
+
+				it( 'has isEnabled bound to command\'s isEnabled', () => {
+					command.isEnabled = true;
+					expect( button ).to.have.property( 'isEnabled', true );
+
+					command.isEnabled = false;
+					expect( button ).to.have.property( 'isEnabled', false );
+				} );
+
+				it( 'executes command when it\'s executed', () => {
+					const spy = sinon.stub( editor, 'execute' );
+
+					button.fire( 'execute' );
+
+					expect( spy.calledOnce ).to.be.true;
+					expect( spy.args[ 0 ][ 0 ] ).to.equal( 'alignment' );
+					expect( spy.args[ 0 ][ 1 ] ).to.deep.equal( { value: commandValue } );
+				} );
+
+				it( 'should return focus to editable after executing a command', () => {
+					const spy = sinon.spy( editor.editing.view, 'focus' );
+
+					button.fire( 'execute' );
+
+					sinon.assert.calledOnce( spy );
+				} );
+			} );
+		}
 	} );
 } );

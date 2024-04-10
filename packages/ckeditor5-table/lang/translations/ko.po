@@ -272,3 +272,7 @@ msgstr "새 표 행 삽입(표의 마지막 셀에 있을 때)"
 msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the table."
 msgid "Navigate through the table"
 msgstr "표 탐색"
+
+msgctxt "The accessible label of the menu bar button that displays a user interface to insert a table into editor content."
+msgid "Table"
+msgstr "표"

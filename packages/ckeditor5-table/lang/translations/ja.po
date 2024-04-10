@@ -272,3 +272,7 @@ msgstr "新しいテーブル行を挿入する（テーブルの最終セルに
 msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the table."
 msgid "Navigate through the table"
 msgstr "テーブル内を移動する"
+
+msgctxt "The accessible label of the menu bar button that displays a user interface to insert a table into editor content."
+msgid "Table"
+msgstr "テーブル"

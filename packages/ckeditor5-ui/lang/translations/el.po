@@ -125,10 +125,6 @@ msgctxt "Label of an input field for typing colors in the HEX color format."
 msgid "HEX"
 msgstr "Δεκαεξαδική μορφή χρωμάτων"
 
-msgctxt "Label of the button closing the color picker and confirming the changes done in the color selector component."
-msgid "Accept"
-msgstr "Αποδοχή"
-
 msgctxt "The main text of the message shown to the user when given query does not match any results."
 msgid "No results found"
 msgstr "Δεν βρέθηκαν αποτελέσματα"
@@ -157,6 +153,10 @@ msgctxt "Accessibility help dialog text displayed next to keystrokes that may re
 msgid "(may require <kbd>Fn</kbd>)"
 msgstr "(μπορεί να απαιτείται το <kbd> Fn</kbd>)"
 
+msgctxt "The label for the button that opens the Accessibility help dialog from the application menu bar."
+msgid "Accessibility"
+msgstr "Προσβασιμότητα"
+
 msgctxt "Accessibility help dialog title."
 msgid "Accessibility help"
 msgstr "Βοήθεια προσβασιμότητας"
@@ -168,3 +168,43 @@ msgstr "Πατήστε %0 για βοήθεια."
 msgctxt "Keystroke description for assistive technologies: keystroke for moving focus out of an active dialog window."
 msgid "Move focus in and out of an active dialog window"
 msgstr "Μετακίνηση της εστίασης από ένα ενεργό παράθυρο διαλόγου"
+
+msgctxt "The label of the top-level application menu bar menu containing buttons and features related to the whole document (e.g. export to PDF, import from Word, etc.)."
+msgid "MENU_BAR_MENU_FILE"
+msgstr "Αρχείο"
+
+msgctxt "The label of the top-level application menu bar menu containing buttons and features related to general editing (e.g. undo, redo, select all, etc.)."
+msgid "MENU_BAR_MENU_EDIT"
+msgstr "Επεξεργασία"
+
+msgctxt "The label of the top-level application menu bar menu containing buttons and features related to the view of the editor (e.g. show source)."
+msgid "MENU_BAR_MENU_VIEW"
+msgstr "Προβολή"
+
+msgctxt "The label of the top-level application menu bar menu containing buttons and features that insert content (e.g. insert table, insert image, etc.)."
+msgid "MENU_BAR_MENU_INSERT"
+msgstr "Εισαγωγή"
+
+msgctxt "The label of the top-level application menu bar menu containing buttons and features related to content formatting (e.g. bold, font color, heading, etc.)."
+msgid "MENU_BAR_MENU_FORMAT"
+msgstr "Μορφή"
+
+msgctxt "The label of the top-level application menu bar menu containing various editor tools (e.g. AI assistant, track changes, etc.)."
+msgid "MENU_BAR_MENU_TOOLS"
+msgstr "Εργαλεία"
+
+msgctxt "The label of the top-level application menu bar menu containing buttons and features helping users to learn about the editor (e.g. accessibility help)."
+msgid "MENU_BAR_MENU_HELP"
+msgstr "Βοήθεια"
+
+msgctxt "The label of the application menu bar menu containing buttons and features that apply formatting to a text (e.g. bold, italic, etc.)."
+msgid "MENU_BAR_MENU_TEXT"
+msgstr "Κείμενο"
+
+msgctxt "The label of the application menu bar menu containing buttons and features that control the font of the edited content (e.g. font size, font color, etc.)."
+msgid "MENU_BAR_MENU_FONT"
+msgstr "Γραμματοσειρά"
+
+msgctxt "The accessible label of the editor menu bar used by assistive technologies."
+msgid "Editor menu bar"
+msgstr "Γραμμή μενού επεξεργαστή"
