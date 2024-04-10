@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-word-count",
-  "version": "41.2.1",
+  "version": "41.3.0",
   "description": "Word and character count feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -14,24 +14,24 @@
   "main": "src/index.ts",
   "dependencies": {
     "lodash-es": "4.17.21",
-    "ckeditor5": "41.2.1"
+    "ckeditor5": "41.3.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "41.2.1",
-    "@ckeditor/ckeditor5-block-quote": "41.2.1",
-    "@ckeditor/ckeditor5-core": "41.2.1",
+    "@ckeditor/ckeditor5-basic-styles": "41.3.0",
+    "@ckeditor/ckeditor5-block-quote": "41.3.0",
+    "@ckeditor/ckeditor5-core": "41.3.0",
     "@ckeditor/ckeditor5-dev-utils": "^39.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "41.2.1",
-    "@ckeditor/ckeditor5-editor-multi-root": "41.2.1",
-    "@ckeditor/ckeditor5-engine": "41.2.1",
-    "@ckeditor/ckeditor5-enter": "41.2.1",
-    "@ckeditor/ckeditor5-image": "41.2.1",
-    "@ckeditor/ckeditor5-link": "41.2.1",
-    "@ckeditor/ckeditor5-list": "41.2.1",
-    "@ckeditor/ckeditor5-paragraph": "41.2.1",
-    "@ckeditor/ckeditor5-table": "41.2.1",
-    "@ckeditor/ckeditor5-theme-lark": "41.2.1",
-    "@ckeditor/ckeditor5-utils": "41.2.1",
+    "@ckeditor/ckeditor5-editor-classic": "41.3.0",
+    "@ckeditor/ckeditor5-editor-multi-root": "41.3.0",
+    "@ckeditor/ckeditor5-engine": "41.3.0",
+    "@ckeditor/ckeditor5-enter": "41.3.0",
+    "@ckeditor/ckeditor5-image": "41.3.0",
+    "@ckeditor/ckeditor5-link": "41.3.0",
+    "@ckeditor/ckeditor5-list": "41.3.0",
+    "@ckeditor/ckeditor5-paragraph": "41.3.0",
+    "@ckeditor/ckeditor5-table": "41.3.0",
+    "@ckeditor/ckeditor5-theme-lark": "41.3.0",
+    "@ckeditor/ckeditor5-utils": "41.3.0",
     "typescript": "5.0.4",
     "webpack": "^5.58.1",
     "webpack-cli": "^4.9.0"

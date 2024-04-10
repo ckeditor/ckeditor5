@@ -18,7 +18,7 @@ import {
 	type ListDropdownItemDefinition,
 	MenuBarMenuView
 } from 'ckeditor5/src/ui.js';
-import { Collection, type Locale } from 'ckeditor5/src/utils.js';
+import { Collection, type ObservableChangeEvent, type Locale } from 'ckeditor5/src/utils.js';
 
 import InsertTableView from './ui/inserttableview.js';
 
@@ -97,6 +97,12 @@ export default class TableUI extends Plugin {
 			const insertTableView = new InsertTableView( locale );
 
 			insertTableView.delegate( 'execute' ).to( menuView );
+
+			menuView.on<ObservableChangeEvent<boolean>>( 'change:isOpen', ( event, name, isOpen ) => {
+				if ( !isOpen ) {
+					insertTableView.reset();
+				}
+			} );
 
 			insertTableView.on( 'execute', () => {
 				editor.execute( 'insertTable', { rows: insertTableView.rows, columns: insertTableView.columns } );

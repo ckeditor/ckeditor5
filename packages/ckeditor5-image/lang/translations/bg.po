@@ -87,7 +87,7 @@ msgstr "Качване на изображение от компютър"
 
 msgctxt "The label for the upload image from computer menu bar button."
 msgid "Image from computer"
-msgstr ""
+msgstr "Изображение от компютър"
 
 msgctxt "The label for the replace image by upload from computer toolbar button."
 msgid "Replace image from computer"

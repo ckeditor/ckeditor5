@@ -55,7 +55,7 @@ ClassicEditor
 
 ## Related features
 
-* {@link features/keyboard-support Keyboard shortcuts} &ndash; Check other popular keyboard shortcuts supported by CKEditor&nbsp;5.
+* {@link features/accessibility#keyboard-shortcuts Keyboard shortcuts} &ndash; Check other popular keyboard shortcuts supported by CKEditor&nbsp;5.
 
 ## Common API
 
