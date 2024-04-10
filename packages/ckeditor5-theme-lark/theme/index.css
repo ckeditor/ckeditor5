@@ -28,6 +28,12 @@
 @import "./ckeditor5-ui/components/labeledfield/labeledfieldview.css";
 @import "./ckeditor5-ui/components/labeledinput/labeledinput.css";
 @import "./ckeditor5-ui/components/list/list.css";
+@import "./ckeditor5-ui/components/menubar/menubar.css";
+@import "./ckeditor5-ui/components/menubar/menubarmenu.css";
+@import "./ckeditor5-ui/components/menubar/menubarmenubutton.css";
+@import "./ckeditor5-ui/components/menubar/menubarmenulistitem.css";
+@import "./ckeditor5-ui/components/menubar/menubarmenulistitembutton.css";
+@import "./ckeditor5-ui/components/menubar/menubarmenupanel.css";
 @import "./ckeditor5-ui/components/panel/balloonpanel.css";
 @import "./ckeditor5-ui/components/panel/balloonrotator.css";
 @import "./ckeditor5-ui/components/panel/fakepanel.css";
