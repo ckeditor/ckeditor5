@@ -189,9 +189,11 @@ export default class ResizeState extends ObservableMixin() {
 }
 
 /**
- * Calculates a relative width of a `domResizeHost` compared to its ancestor in percents.
+ * Calculates a relative width of a `domResizeHost` compared to its ancestor in pixels.
+ *
+ * @internal
  */
-function calculateHostPercentageWidth( domResizeHost: HTMLElement, resizeHostRect: Rect ) {
+export function calculateHostWidth( domResizeHost: HTMLElement ): number {
 	const domResizeHostParent = domResizeHost.parentElement;
 
 	// Need to use computed style as it properly excludes parent's paddings from the returned value.
@@ -217,7 +219,14 @@ function calculateHostPercentageWidth( domResizeHost: HTMLElement, resizeHostRec
 		);
 	}
 
-	return resizeHostRect.width / parentWidth * 100;
+	return parentWidth;
+}
+
+/**
+ * Calculates a relative width of a `domResizeHost` compared to its ancestor in percents.
+ */
+function calculateHostPercentageWidth( domResizeHost: HTMLElement, resizeHostRect: Rect ) {
+	return resizeHostRect.width / calculateHostWidth( domResizeHost ) * 100;
 }
 
 /**

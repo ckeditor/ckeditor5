@@ -8,6 +8,7 @@
  */
 
 import { Command } from 'ckeditor5/src/core.js';
+import { calculateHostWidth } from 'ckeditor5/src/widget.js';
 
 import type ImageUtils from '../imageutils.js';
 import { tryParseDimensionWithUnit, type DimensionWithUnit } from './utils/tryparseimensionwithunit.js';
@@ -84,6 +85,7 @@ export default class ResizeImageCommand extends Command {
 	 *
 	 * 	* If image is not selected or command is disabled then `null` will be returned.
 	 * 	* If image is not fully loaded (and it is impossible to determine its natural size) then `null` will be returned.
+	 *  * If `targetUnit` percentage is passed then it will return width percentage of image related to its accessors.
 	 *
 	 * @param targetUnit Unit in which dimension will be returned.
 	 * @returns Parsed dimension with unit.
@@ -109,25 +111,22 @@ export default class ResizeImageCommand extends Command {
 
 		const imageModelElement = imageUtils.getClosestSelectedImageElement( editor.model.document.selection )!;
 		const imageViewElement = editing.mapper.toViewElement( imageModelElement );
-		const imageDOMElement = editing.view.domConverter
-			.mapViewToDom( imageViewElement! )!
-			.querySelector( 'img' ) as HTMLImageElement;
+		const imageDOMElement = editing.view.domConverter.mapViewToDom( imageViewElement! )!;
 
-		if ( !imageDOMElement || !imageDOMElement.naturalWidth ) {
-			return null;
-		}
+		const imageHolderWidth = imageDOMElement.getBoundingClientRect().width;
+		const imageParentWidth = calculateHostWidth( imageDOMElement );
 
 		// "%" -> "px" conversion
 		if ( targetUnit === 'px' ) {
 			return {
-				value: imageDOMElement.naturalWidth * parsedWidth.value / 100,
+				value: ( imageHolderWidth / imageParentWidth ) * parsedWidth.value,
 				unit: 'px'
 			};
 		}
 
 		// "px" -> "%" conversion
 		return {
-			value: parsedWidth.value / imageDOMElement.naturalWidth * 100,
+			value: parsedWidth.value / imageParentWidth * 100,
 			unit: '%'
 		};
 	}
