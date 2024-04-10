@@ -226,7 +226,13 @@ export function calculateHostWidth( domResizeHost: HTMLElement ): number {
  * Calculates a relative width of a `domResizeHost` compared to its ancestor in percents.
  */
 function calculateHostPercentageWidth( domResizeHost: HTMLElement, resizeHostRect: Rect ) {
-	return resizeHostRect.width / calculateHostWidth( domResizeHost ) * 100;
+	const parentWidth = calculateHostWidth( domResizeHost );
+
+	if ( !parentWidth ) {
+		return 0;
+	}
+
+	return resizeHostRect.width / parentWidth * 100;
 }
 
 /**
