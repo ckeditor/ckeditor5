@@ -105,14 +105,22 @@ msgctxt "Keystroke description for assistive technologies: keystroke for moving 
 msgid "Move focus between form fields (inputs, buttons, etc.)"
 msgstr "फ़ॉर्म फ़ील्ड्स (इनपुट्स, बटन्स, आदि) के बीच फ़ोकस को मूव करें"
 
+msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the menu bar."
+msgid "Move focus to the menu bar, navigate between menu bars"
+msgstr "फ़ोकस को मेनू बार पर ले जाएँ, मेनू बार के बीच नेविगेट करें"
+
 msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the toolbar."
 msgid "Move focus to the toolbar, navigate between toolbars"
 msgstr "फ़ोकस को टूलबार पर ले जाएँ, टूलबार्स के बीच नैविगेट करें"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the toolbar."
-msgid "Navigate through the toolbar"
-msgstr "टूलबार में नैविगेट करें"
+msgid "Navigate through the toolbar or menu bar"
+msgstr "टूलबार या मेनू बार के माध्यम से नेविगेट करें"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for executing currently focused button."
-msgid "Execute the currently focused button"
-msgstr "वर्तमान में फ़ोकस किए जा रहे बटन को एग्ज़िक्युट करें"
+msgid "Execute the currently focused button. Executing buttons that interact with the editor content moves the focus back to the content."
+msgstr "वर्तमान में फोकस्ड बटन दबाएँ. एडिटर के कंटेंट के साथ इंटरैक्ट करने वाले बटनों को दबाने से फोकस वापस कंटेंट पर आ जाता है."
+
+msgctxt "Label of the button confirming the changes done in the current interface."
+msgid "Accept"
+msgstr "स्वीकार करें"

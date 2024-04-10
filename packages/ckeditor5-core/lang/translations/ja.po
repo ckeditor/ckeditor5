@@ -105,14 +105,22 @@ msgctxt "Keystroke description for assistive technologies: keystroke for moving 
 msgid "Move focus between form fields (inputs, buttons, etc.)"
 msgstr "フォーカスをフォームフィールド（入力欄、ボタンなど）間で移動させる"
 
+msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the menu bar."
+msgid "Move focus to the menu bar, navigate between menu bars"
+msgstr "フォーカスをメニューバーに移し、メニューバー間で移動"
+
 msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the toolbar."
 msgid "Move focus to the toolbar, navigate between toolbars"
 msgstr "フォーカスをツールバーへ移動させて、ツールバーを操作する"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the toolbar."
-msgid "Navigate through the toolbar"
-msgstr "ツールバー内を移動する"
+msgid "Navigate through the toolbar or menu bar"
+msgstr "ツールバーまたはメニューバー内を移動"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for executing currently focused button."
-msgid "Execute the currently focused button"
-msgstr "現在フォーカスしているボタンを実行する"
+msgid "Execute the currently focused button. Executing buttons that interact with the editor content moves the focus back to the content."
+msgstr "現在フォーカスしているボタンを実行。エディターコンテンツに作用するボタンを実行するとフォーカスはコンテンツに戻ります。"
+
+msgctxt "Label of the button confirming the changes done in the current interface."
+msgid "Accept"
+msgstr "同意します"

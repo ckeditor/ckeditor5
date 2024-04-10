@@ -105,14 +105,22 @@ msgctxt "Keystroke description for assistive technologies: keystroke for moving 
 msgid "Move focus between form fields (inputs, buttons, etc.)"
 msgstr "ফর্ম ফিল্ডের (ইনপুট, বাটন, ইত্যাদি) মধ্যে ফোকাস স্থানান্তর করুন"
 
+msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the menu bar."
+msgid "Move focus to the menu bar, navigate between menu bars"
+msgstr "মেনু বারে ফোকাস সরিয়ে নিন, মেনু বারের মধ্যে নেভিগেট করুন"
+
 msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the toolbar."
 msgid "Move focus to the toolbar, navigate between toolbars"
 msgstr "টুলবারে ফোকাস স্থানান্তর করুন, টুলবারগুলির মধ্যে নেভিগেট করুন"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the toolbar."
-msgid "Navigate through the toolbar"
-msgstr "টুলবারের মধ্য দিয়ে নেভিগেট করুন"
+msgid "Navigate through the toolbar or menu bar"
+msgstr "টুলবার বা মেনু বারের মাধ্যমে নেভিগেট করুন"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for executing currently focused button."
-msgid "Execute the currently focused button"
-msgstr "বর্তমানে ফোকাস করা বাটনটি কার্যকর করুন"
+msgid "Execute the currently focused button. Executing buttons that interact with the editor content moves the focus back to the content."
+msgstr "বর্তমানে ফোকাস করা বোতামটি কার্যকর করুন। ইডিটর বিষয়বস্তুর সাথে ইন্টারঅ্যাক্ট করা বোতাম কার্যকর করা ফোকাসকে বিষয়বস্তুর দিকে ফিরিয়ে নেয়।"
+
+msgctxt "Label of the button confirming the changes done in the current interface."
+msgid "Accept"
+msgstr "গ্রহণ করুন"

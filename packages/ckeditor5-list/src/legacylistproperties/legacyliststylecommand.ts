@@ -117,6 +117,7 @@ export default class LegacyListStyleCommand extends Command {
 
 		const listType = getListTypeFromListStyleType( options.type );
 
+		/* istanbul ignore next -- @preserve */
 		if ( !listType ) {
 			return;
 		}

@@ -14,7 +14,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import { _clear as clearTranslations, add as addTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
 
 describe( 'CodeBlockUI', () => {
-	let editor, command, element;
+	let editor, command, element, languagesListView;
 
 	before( () => {
 		addTranslations( 'en', {
@@ -50,6 +50,133 @@ describe( 'CodeBlockUI', () => {
 		return editor.destroy();
 	} );
 
+	describe( 'toolbar', () => {
+		let button;
+
+		beforeEach( () => {
+			const dropdown = editor.ui.componentFactory.create( 'codeBlock' );
+			button = dropdown.buttonView;
+			dropdown.isOpen = true;
+			languagesListView = dropdown.listView;
+		} );
+
+		it( 'should execute the command with the "usePreviousLanguageChoice" option set to "true"', () => {
+			const executeSpy = sinon.stub( editor, 'execute' );
+			const focusSpy = sinon.stub( editor.editing.view, 'focus' );
+
+			button.fire( 'execute' );
+
+			sinon.assert.calledOnce( executeSpy );
+			sinon.assert.calledOnce( focusSpy );
+			sinon.assert.calledWithExactly( executeSpy.firstCall, 'codeBlock', {
+				usePreviousLanguageChoice: true
+			} );
+		} );
+
+		it( 'has the base properties', () => {
+			expect( button ).to.have.property( 'label', 'Insert code block' );
+			expect( button ).to.have.property( 'icon', icons.codeBlock );
+			expect( button ).to.have.property( 'tooltip', true );
+			expect( button ).to.have.property( 'isToggleable', true );
+		} );
+
+		it( 'has #isOn bound to command\'s value', () => {
+			command.value = false;
+			expect( button ).to.have.property( 'isOn', false );
+
+			command.value = true;
+			expect( button ).to.have.property( 'isOn', true );
+		} );
+
+		describe( 'language list', () => {
+			testLanguagesList();
+
+			it( 'uses localized "Plain text" label', async () => {
+				await editor.destroy();
+
+				return ClassicTestEditor
+					.create( element, {
+						language: 'pl',
+						plugins: [ CodeBlockEditing, CodeBlockUI ]
+					} )
+					.then( newEditor => {
+						const editor = newEditor;
+						const dropdown = editor.ui.componentFactory.create( 'codeBlock' );
+
+						// Make sure that list view is not created before first dropdown open.
+						expect( dropdown.listView ).to.be.undefined;
+
+						// Trigger list view creation (lazy init).
+						dropdown.isOpen = true;
+
+						const listView = dropdown.listView;
+
+						expect( listView.items.first.children.first.label ).to.equal( 'Zwykły tekst' );
+
+						return editor.destroy();
+					} );
+			} );
+		} );
+	} );
+
+	describe( 'menu bar', () => {
+		let subMenu;
+
+		beforeEach( () => {
+			subMenu = editor.ui.componentFactory.create( 'menuBar:codeBlock' );
+			languagesListView = subMenu.panelView.children.first;
+		} );
+
+		it( 'has isEnabled bound to command\'s isEnabled', () => {
+			command.isEnabled = true;
+			expect( subMenu ).to.have.property( 'isEnabled', true );
+
+			command.isEnabled = false;
+			expect( subMenu ).to.have.property( 'isEnabled', false );
+		} );
+
+		describe( 'language list', () => {
+			testLanguagesList();
+
+			it( 'uses localized "Plain text" label', async () => {
+				await editor.destroy();
+
+				return ClassicTestEditor
+					.create( element, {
+						language: 'pl',
+						plugins: [ CodeBlockEditing, CodeBlockUI ]
+					} )
+					.then( newEditor => {
+						const editor = newEditor;
+						const subMenu = editor.ui.componentFactory.create( 'menuBar:codeBlock' );
+						const listView = subMenu.panelView.children.first;
+
+						expect( listView.items.first.children.first.label ).to.equal( 'Zwykły tekst' );
+
+						return editor.destroy();
+					} );
+			} );
+
+			it( 'executes the command with forceValue=false when codeblock already has selected language set', () => {
+				const executeSpy = sinon.stub( editor, 'execute' );
+				const focusSpy = sinon.stub( editor.editing.view, 'focus' );
+				const cSharpButton = languagesListView.items.get( 2 ).children.first;
+
+				command.value = 'cs';
+
+				expect( cSharpButton.label ).to.equal( 'C#' );
+				cSharpButton.fire( 'execute' );
+
+				sinon.assert.calledOnce( executeSpy );
+				sinon.assert.calledOnce( focusSpy );
+				sinon.assert.calledWithExactly( executeSpy.firstCall, 'codeBlock', {
+					language: 'cs',
+					forceValue: false
+				} );
+			} );
+		} );
+	} );
+
 	describe( 'codeBlock dropdown', () => {
 		it( 'has #class set', () => {
 			const dropdown = editor.ui.componentFactory.create( 'codeBlock' );
@@ -66,23 +193,92 @@ describe( 'CodeBlockUI', () => {
 			command.isEnabled = false;
 			expect( dropdown ).to.have.property( 'isEnabled', false );
 		} );
+	} );
+
+	function testLanguagesList() {
+		it( 'corresponds to the config', () => {
+			expect( languagesListView.items
+				.map( item => {
+					const { label, withText } = item.children.first;
+
+					return { label, withText };
+				} ) )
+				.to.deep.equal( [
+					{
+						label: 'Plain text',
+						withText: true
+					},
+					{
+						label: 'C',
+						withText: true
+					},
+					{
+						label: 'C#',
+						withText: true
+					},
+					{
+						label: 'C++',
+						withText: true
+					},
+					{
+						label: 'CSS',
+						withText: true
+					},
+					{
+						label: 'Diff',
+						withText: true
+					},
+					{
+						label: 'HTML',
+						withText: true
+					},
+					{
+						label: 'Java',
+						withText: true
+					},
+					{
+						label: 'JavaScript',
+						withText: true
+					},
+					{
+						label: 'PHP',
+						withText: true
+					},
+					{
+						label: 'Python',
+						withText: true
+					},
+					{
+						label: 'Ruby',
+						withText: true
+					},
+					{
+						label: 'TypeScript',
+						withText: true
+					},
+					{
+						label: 'XML',
+						withText: true
+					}
+				] );
+		} );
+
+		it( 'sets item\'s #isOn depending on the value of the CodeBlockCommand', () => {
+			expect( languagesListView.items.get( 2 ).children.first.isOn ).to.be.false;
+
+			command.value = 'cs';
+			expect( languagesListView.items.get( 2 ).children.first.isOn ).to.be.true;
+		} );
+
+		it( 'should have properties set', () => {
+			expect( languagesListView.element.role ).to.equal( 'menu' );
+			expect( languagesListView.element.ariaLabel ).to.equal( 'Insert code block' );
+		} );
 
 		it( 'executes the command when executed one of the available language buttons from the list', () => {
-			const dropdown = editor.ui.componentFactory.create( 'codeBlock' );
-
-			dropdown.render();
-			document.body.appendChild( dropdown.element );
-
-			// Make sure that list view is not created before first dropdown open.
-			expect( dropdown.listView ).to.be.undefined;
-
-			// Trigger list view creation (lazy init).
-			dropdown.isOpen = true;
-
 			const executeSpy = sinon.stub( editor, 'execute' );
 			const focusSpy = sinon.stub( editor.editing.view, 'focus' );
-			const listView = dropdown.panelView.children.first;
-			const cSharpButton = listView.items.get( 2 ).children.first;
+			const cSharpButton = languagesListView.items.get( 2 ).children.first;
 
 			expect( cSharpButton.label ).to.equal( 'C#' );
 			cSharpButton.fire( 'execute' );
@@ -93,181 +289,6 @@ describe( 'CodeBlockUI', () => {
 				language: 'cs',
 				forceValue: true
 			} );
-
-			dropdown.element.remove();
 		} );
-
-		describe( 'language list', () => {
-			it( 'corresponds to the config', () => {
-				const dropdown = editor.ui.componentFactory.create( 'codeBlock' );
-
-				// Make sure that list view is not created before first dropdown open.
-				expect( dropdown.listView ).to.be.undefined;
-
-				// Trigger list view creation (lazy init).
-				dropdown.isOpen = true;
-
-				const listView = dropdown.panelView.children.first;
-
-				expect( listView.items
-					.map( item => {
-						const { label, withText } = item.children.first;
-
-						return { label, withText };
-					} ) )
-					.to.deep.equal( [
-						{
-							label: 'Plain text',
-							withText: true
-						},
-						{
-							label: 'C',
-							withText: true
-						},
-						{
-							label: 'C#',
-							withText: true
-						},
-						{
-							label: 'C++',
-							withText: true
-						},
-						{
-							label: 'CSS',
-							withText: true
-						},
-						{
-							label: 'Diff',
-							withText: true
-						},
-						{
-							label: 'HTML',
-							withText: true
-						},
-						{
-							label: 'Java',
-							withText: true
-						},
-						{
-							label: 'JavaScript',
-							withText: true
-						},
-						{
-							label: 'PHP',
-							withText: true
-						},
-						{
-							label: 'Python',
-							withText: true
-						},
-						{
-							label: 'Ruby',
-							withText: true
-						},
-						{
-							label: 'TypeScript',
-							withText: true
-						},
-						{
-							label: 'XML',
-							withText: true
-						}
-					] );
-			} );
-
-			it( 'sets item\'s #isOn depending on the value of the CodeBlockCommand', () => {
-				const dropdown = editor.ui.componentFactory.create( 'codeBlock' );
-
-				// Make sure that list view is not created before first dropdown open.
-				expect( dropdown.listView ).to.be.undefined;
-
-				// Trigger list view creation (lazy init).
-				dropdown.isOpen = true;
-
-				const listView = dropdown.panelView.children.first;
-
-				expect( listView.items.get( 2 ).children.first.isOn ).to.be.false;
-
-				command.value = 'cs';
-				expect( listView.items.get( 2 ).children.first.isOn ).to.be.true;
-			} );
-
-			it( 'uses localized "Plain text" label', async () => {
-				await editor.destroy();
-
-				return ClassicTestEditor
-					.create( element, {
-						language: 'pl',
-						plugins: [ CodeBlockEditing, CodeBlockUI ]
-					} )
-					.then( newEditor => {
-						const editor = newEditor;
-
-						const dropdown = editor.ui.componentFactory.create( 'codeBlock' );
-
-						// Make sure that list view is not created before first dropdown open.
-						expect( dropdown.listView ).to.be.undefined;
-
-						// Trigger list view creation (lazy init).
-						dropdown.isOpen = true;
-
-						const listView = dropdown.panelView.children.first;
-
-						expect( listView.items.first.children.first.label ).to.equal( 'Zwykły tekst' );
-
-						return editor.destroy();
-					} );
-			} );
-
-			it( 'should have properties set', () => {
-				const dropdown = editor.ui.componentFactory.create( 'codeBlock' );
-
-				// Trigger list view creation (lazy init).
-				dropdown.isOpen = true;
-
-				const listView = dropdown.listView;
-
-				expect( listView.element.role ).to.equal( 'menu' );
-				expect( listView.element.ariaLabel ).to.equal( 'Insert code block' );
-			} );
-		} );
-
-		describe( 'button', () => {
-			it( 'has the base properties', () => {
-				const dropdown = editor.ui.componentFactory.create( 'codeBlock' );
-				const button = dropdown.buttonView;
-
-				expect( button ).to.have.property( 'label', 'Insert code block' );
-				expect( button ).to.have.property( 'icon', icons.codeBlock );
-				expect( button ).to.have.property( 'tooltip', true );
-				expect( button ).to.have.property( 'isToggleable', true );
-			} );
-
-			it( 'has #isOn bound to command\'s value', () => {
-				const dropdown = editor.ui.componentFactory.create( 'codeBlock' );
-				const button = dropdown.buttonView;
-
-				command.value = false;
-				expect( button ).to.have.property( 'isOn', false );
-
-				command.value = true;
-				expect( button ).to.have.property( 'isOn', true );
-			} );
-
-			it( 'should execute the command with the "usePreviousLanguageChoice" option set to "true"', () => {
-				const dropdown = editor.ui.componentFactory.create( 'codeBlock' );
-				const button = dropdown.buttonView;
-				const executeSpy = sinon.stub( editor, 'execute' );
-				const focusSpy = sinon.stub( editor.editing.view, 'focus' );
-
-				button.fire( 'execute' );
-
-				sinon.assert.calledOnce( executeSpy );
-				sinon.assert.calledOnce( focusSpy );
-				sinon.assert.calledWithExactly( executeSpy.firstCall, 'codeBlock', {
-					usePreviousLanguageChoice: true
-				} );
-			} );
-		} );
-	} );
+	}
 } );
