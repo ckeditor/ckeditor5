@@ -74,6 +74,7 @@
 		"@ckeditor/ckeditor5-export-word",
 		"@ckeditor/ckeditor5-format-painter",
 		"@ckeditor/ckeditor5-import-word",
+		"@ckeditor/ckeditor5-list-multi-level",
 		"@ckeditor/ckeditor5-operations-compressor",
 		"@ckeditor/ckeditor5-pagination",
 		"@ckeditor/ckeditor5-paste-from-office-enhanced",
