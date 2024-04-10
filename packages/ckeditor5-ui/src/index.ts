@@ -20,7 +20,7 @@ export { default as AccessibilityHelp } from './editorui/accessibilityhelp/acces
 
 export { default as BodyCollection } from './editorui/bodycollection.js';
 
-export { default as Button, type ButtonExecuteEvent } from './button/button.js';
+export type { default as Button, ButtonExecuteEvent } from './button/button.js';
 export type { default as ButtonLabel } from './button/buttonlabel.js';
 export { default as ButtonView } from './button/buttonview.js';
 export { default as ButtonLabelView } from './button/buttonlabelview.js';
