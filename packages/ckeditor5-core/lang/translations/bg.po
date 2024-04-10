@@ -105,14 +105,22 @@ msgctxt "Keystroke description for assistive technologies: keystroke for moving 
 msgid "Move focus between form fields (inputs, buttons, etc.)"
 msgstr "Преместване на фокуса между полетата (въвеждане, бутони и др.)"
 
+msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the menu bar."
+msgid "Move focus to the menu bar, navigate between menu bars"
+msgstr "Преместете фокуса върху лентата с менюта, навигирайте между лентите с менюта"
+
 msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the toolbar."
 msgid "Move focus to the toolbar, navigate between toolbars"
 msgstr "Преместване на фокуса върху лентата с инструменти, навигация между инструментите"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the toolbar."
-msgid "Navigate through the toolbar"
-msgstr "Навигация през лентата с инструменти"
+msgid "Navigate through the toolbar or menu bar"
+msgstr "Навигирайте през лентата с инструменти или лентата с менюта"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for executing currently focused button."
-msgid "Execute the currently focused button"
-msgstr "Изпълнение на бутона, който е на фокус в момента"
+msgid "Execute the currently focused button. Executing buttons that interact with the editor content moves the focus back to the content."
+msgstr "Изпълнете текущо фокусирания бутон. Изпълнението на бутони, които взаимодействат със съдържанието на редактора, премества фокуса обратно към съдържанието."
+
+msgctxt "Label of the button confirming the changes done in the current interface."
+msgid "Accept"
+msgstr "Приемане"

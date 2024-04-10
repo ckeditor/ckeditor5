@@ -272,3 +272,7 @@ msgstr "插入新的表格橫排（當位於表格的最後一個單元格時）
 msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the table."
 msgid "Navigate through the table"
 msgstr "在表格中移動"
+
+msgctxt "The accessible label of the menu bar button that displays a user interface to insert a table into editor content."
+msgid "Table"
+msgstr "表格"

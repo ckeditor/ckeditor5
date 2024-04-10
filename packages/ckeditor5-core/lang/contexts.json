@@ -21,7 +21,9 @@
 	"Close contextual balloons, dropdowns, and dialogs": "Keystroke description for assistive technologies: keystroke for closing contextual balloons, dropdowns, and dialogs.",
 	"Open the accessibility help dialog": "Keystroke description for assistive technologies: keystroke for opening the accessibility help dialog.",
 	"Move focus between form fields (inputs, buttons, etc.)": "Keystroke description for assistive technologies: keystroke for moving between fields.",
+	"Move focus to the menu bar, navigate between menu bars": "Keystroke description for assistive technologies: keystroke for moving focus to the menu bar.",
 	"Move focus to the toolbar, navigate between toolbars": "Keystroke description for assistive technologies: keystroke for moving focus to the toolbar.",
-	"Navigate through the toolbar": "Keystroke description for assistive technologies: keystroke for navigating through the toolbar.",
-	"Execute the currently focused button": "Keystroke description for assistive technologies: keystroke for executing currently focused button."
+	"Navigate through the toolbar or menu bar": "Keystroke description for assistive technologies: keystroke for navigating through the toolbar.",
+	"Execute the currently focused button. Executing buttons that interact with the editor content moves the focus back to the content.": "Keystroke description for assistive technologies: keystroke for executing currently focused button.",
+	"Accept": "Label of the button confirming the changes done in the current interface."
 }

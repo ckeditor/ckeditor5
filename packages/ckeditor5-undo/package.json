@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-undo",
-  "version": "41.2.1",
+  "version": "41.3.0",
   "description": "Undo feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -13,20 +13,20 @@
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "41.2.1",
-    "@ckeditor/ckeditor5-engine": "41.2.1",
-    "@ckeditor/ckeditor5-ui": "41.2.1"
+    "@ckeditor/ckeditor5-core": "41.3.0",
+    "@ckeditor/ckeditor5-engine": "41.3.0",
+    "@ckeditor/ckeditor5-ui": "41.3.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "41.2.1",
-    "@ckeditor/ckeditor5-clipboard": "41.2.1",
-    "@ckeditor/ckeditor5-editor-classic": "41.2.1",
-    "@ckeditor/ckeditor5-enter": "41.2.1",
-    "@ckeditor/ckeditor5-heading": "41.2.1",
-    "@ckeditor/ckeditor5-paragraph": "41.2.1",
-    "@ckeditor/ckeditor5-typing": "41.2.1",
-    "@ckeditor/ckeditor5-table": "41.2.1",
-    "@ckeditor/ckeditor5-utils": "41.2.1",
+    "@ckeditor/ckeditor5-basic-styles": "41.3.0",
+    "@ckeditor/ckeditor5-clipboard": "41.3.0",
+    "@ckeditor/ckeditor5-editor-classic": "41.3.0",
+    "@ckeditor/ckeditor5-enter": "41.3.0",
+    "@ckeditor/ckeditor5-heading": "41.3.0",
+    "@ckeditor/ckeditor5-paragraph": "41.3.0",
+    "@ckeditor/ckeditor5-typing": "41.3.0",
+    "@ckeditor/ckeditor5-table": "41.3.0",
+    "@ckeditor/ckeditor5-utils": "41.3.0",
     "typescript": "5.0.4",
     "webpack": "^5.58.1",
     "webpack-cli": "^4.9.0"

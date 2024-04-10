@@ -272,3 +272,7 @@ msgstr "Vložit nový řádek tabulky (když jste v poslední buňce tabulky)"
 msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the table."
 msgid "Navigate through the table"
 msgstr "Procházet tabulkou"
+
+msgctxt "The accessible label of the menu bar button that displays a user interface to insert a table into editor content."
+msgid "Table"
+msgstr "Tabulka"

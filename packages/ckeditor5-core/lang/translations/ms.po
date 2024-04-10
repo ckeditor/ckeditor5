@@ -105,14 +105,22 @@ msgctxt "Keystroke description for assistive technologies: keystroke for moving 
 msgid "Move focus between form fields (inputs, buttons, etc.)"
 msgstr "Alihkan fokus antara medan borang (input, butang, dll.)"
 
+msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the menu bar."
+msgid "Move focus to the menu bar, navigate between menu bars"
+msgstr "Alihkan fokus ke bar menu, navigasi antara bar menu"
+
 msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the toolbar."
 msgid "Move focus to the toolbar, navigate between toolbars"
 msgstr "Alihkan fokus ke bar alat, navigasi antara bar alat"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the toolbar."
-msgid "Navigate through the toolbar"
-msgstr "Navigasi melalui bar alat"
+msgid "Navigate through the toolbar or menu bar"
+msgstr "Navigasi melalui bar alat atau bar menu"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for executing currently focused button."
-msgid "Execute the currently focused button"
-msgstr "Laksanakan butang yang sedang difokuskan"
+msgid "Execute the currently focused button. Executing buttons that interact with the editor content moves the focus back to the content."
+msgstr "Laksanakan butang yang sedang difokuskan. Melaksanakan butang yang berinteraksi dengan kandungan penyunting mengalihkan fokus kembali ke kandungan."
+
+msgctxt "Label of the button confirming the changes done in the current interface."
+msgid "Accept"
+msgstr "Terima"

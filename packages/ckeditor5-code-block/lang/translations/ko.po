@@ -24,3 +24,7 @@ msgstr "코드 블럭 삽입"
 msgctxt "A language of the code block in the editor content when no specific programming language is associated with it."
 msgid "Plain text"
 msgstr "평문"
+
+msgctxt "The accessible label of the menu bar button that inserts a code block into editor content."
+msgid "Code block"
+msgstr "코드 블록"

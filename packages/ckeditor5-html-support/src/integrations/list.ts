@@ -15,7 +15,9 @@ import type {
 	ListEditing,
 	ListEditingPostFixerEvent,
 	LegacyIndentCommand,
-	ListIndentCommand
+	ListIndentCommand,
+	ListType,
+	ListUtils
 } from '@ckeditor/ckeditor5-list';
 
 import { getHtmlAttributeName, setViewAttributes } from '../utils.js';
@@ -53,6 +55,7 @@ export default class ListElementSupport extends Plugin {
 		const conversion = editor.conversion;
 		const dataFilter = editor.plugins.get( DataFilter );
 		const listEditing: ListEditing = editor.plugins.get( 'ListEditing' );
+		const listUtils: ListUtils = editor.plugins.get( 'ListUtils' );
 		const viewElements = [ 'ul', 'ol', 'li' ];
 
 		// Register downcast strategy.
@@ -144,12 +147,12 @@ export default class ListElementSupport extends Plugin {
 			for ( const { node } of listNodes ) {
 				const listType = node.getAttribute( 'listType' );
 
-				if ( listType !== 'numbered' && node.getAttribute( 'htmlOlAttributes' ) ) {
+				if ( !listUtils.isNumberedListType( listType ) && node.getAttribute( 'htmlOlAttributes' ) ) {
 					writer.removeAttribute( 'htmlOlAttributes', node );
 					evt.return = true;
 				}
 
-				if ( listType === 'numbered' && node.getAttribute( 'htmlUlAttributes' ) ) {
+				if ( listUtils.isNumberedListType( listType ) && node.getAttribute( 'htmlUlAttributes' ) ) {
 					writer.removeAttribute( 'htmlUlAttributes', node );
 					evt.return = true;
 				}
@@ -227,8 +230,8 @@ function viewToModelListAttributeConverter( attributeName: string, dataFilter: D
 /**
  * Returns HTML attribute name based on provided list type.
  */
-function getAttributeFromListType( listType: 'bulleted' | 'numbered' | 'todo' ) {
-	return listType === 'numbered' ?
+function getAttributeFromListType( listType: ListType ) {
+	return listType === 'numbered' || listType == 'customNumbered' ?
 		'htmlOlAttributes' :
 		'htmlUlAttributes';
 }

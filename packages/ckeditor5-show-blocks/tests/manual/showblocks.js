@@ -15,8 +15,6 @@ import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { ExportPdf } from '@ckeditor/ckeditor5-export-pdf';
-import { ExportWord } from '@ckeditor/ckeditor5-export-word';
 import { FindAndReplace } from '@ckeditor/ckeditor5-find-and-replace';
 import { Font } from '@ckeditor/ckeditor5-font';
 import { Heading } from '@ckeditor/ckeditor5-heading';
@@ -35,7 +33,6 @@ import {
 	ImageUpload,
 	PictureEditing
 } from '@ckeditor/ckeditor5-image';
-import { ImportWord } from '@ckeditor/ckeditor5-import-word';
 import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
 import { AutoLink, Link, LinkImage } from '@ckeditor/ckeditor5-link';
 import { DocumentList, DocumentListProperties } from '@ckeditor/ckeditor5-list';
@@ -60,8 +57,8 @@ ClassicEditor
 			Autoformat, BlockQuote, Bold, Heading, Image, ImageCaption,
 			ImageStyle, ImageToolbar, Indent, Italic, Link, DocumentList, MediaEmbed,
 			Paragraph, Table, TableToolbar, Alignment, AutoImage, AutoLink,
-			CloudServices, Code, CodeBlock, Essentials, ExportPdf, EasyImage,
-			ExportWord, ImportWord, FindAndReplace, Font, Highlight, HorizontalLine,
+			CloudServices, Code, CodeBlock, Essentials, EasyImage,
+			FindAndReplace, Font, Highlight, HorizontalLine,
 			HtmlEmbed, GeneralHtmlSupport, ImageInsert, ImageResize, ImageUpload, IndentBlock,
 			LinkImage, DocumentListProperties, Mention, PageBreak, PasteFromOffice,
 			PictureEditing, RemoveFormat, SourceEditing, SpecialCharacters,
@@ -77,8 +74,6 @@ ClassicEditor
 				'undo', 'redo',
 				'|',
 				'sourceEditing',
-				'|',
-				'exportPdf', 'exportWord', 'importWord',
 				'|',
 				'findAndReplace', 'selectAll',
 				'|',

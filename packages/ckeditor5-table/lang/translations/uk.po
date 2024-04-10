@@ -272,3 +272,7 @@ msgstr "Вставити новий рядок таблиці (якщо в ос�
 msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the table."
 msgid "Navigate through the table"
 msgstr "Навігація по таблиці"
+
+msgctxt "The accessible label of the menu bar button that displays a user interface to insert a table into editor content."
+msgid "Table"
+msgstr "Таблиця"

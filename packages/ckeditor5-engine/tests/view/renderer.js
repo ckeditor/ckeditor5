@@ -769,6 +769,56 @@ describe( 'Renderer', () => {
 			renderAndExpectNoChanges( renderer, domRoot );
 		} );
 
+		// See https://github.com/ckeditor/ckeditor5/issues/14028.
+		it( 'should add and remove inline filler in case <p><br>[]</p>', () => {
+			const domSelection = document.getSelection();
+
+			// Step 1: <p><br>{}</p>
+			const { view: viewP, selection: newSelection } = parse(
+				'<container:p><empty:br/>[]</container:p>' );
+
+			viewRoot._appendChild( viewP );
+			selection._setTo( newSelection );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			const domP = domRoot.childNodes[ 0 ];
+
+			expect( domP.childNodes.length ).to.equal( 3 );
+			expect( domP.childNodes[ 0 ].tagName.toLowerCase() ).to.equal( 'br' );
+			expect( domP.childNodes[ 1 ].data ).to.equal( INLINE_FILLER );
+			expect( domConverter.isBlockFiller( domP.childNodes[ 2 ] ) ).to.be.true;
+
+			expect( domSelection.rangeCount ).to.equal( 1 );
+			expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domP.childNodes[ 1 ] );
+			expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( INLINE_FILLER_LENGTH );
+			expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
+
+			// Step 2: No mutation on second render
+			renderer.markToSync( 'children', viewP );
+			renderAndExpectNoChanges( renderer, domRoot );
+
+			// Step 3: <p>{}<br></p>
+			selection._setTo( ViewRange._createFromParentsAndOffsets(
+				viewP.getChild( 0 ), 0, viewP.getChild( 0 ), 0 ) );
+
+			renderer.render();
+
+			expect( domP.childNodes.length ).to.equal( 2 );
+			expect( domP.childNodes[ 0 ].tagName.toLowerCase() ).to.equal( 'br' );
+			expect( domConverter.isBlockFiller( domP.childNodes[ 1 ] ) ).to.be.true;
+
+			expect( domSelection.rangeCount ).to.equal( 1 );
+			expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domP.childNodes[ 0 ].childNodes[ 0 ] );
+			expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( INLINE_FILLER_LENGTH );
+			expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
+
+			// Step 4: No mutation on second render
+			renderer.markToSync( 'children', viewP );
+			renderAndExpectNoChanges( renderer, domRoot );
+		} );
+
 		it( 'should not add inline filler in case <p><b>foo</b>[]</p> on Android', () => {
 			testUtils.sinon.stub( env, 'isAndroid' ).value( true );
 

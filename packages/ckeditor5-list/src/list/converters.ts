@@ -21,7 +21,12 @@ import {
 	type UpcastElementEvent,
 	type ViewDocumentFragment,
 	type ViewElement,
-	type ViewRange
+	type ViewRange,
+	type DowncastRemoveEvent,
+	type EditingView,
+	type MapperModelToViewPositionEvent,
+	type ViewTreeWalker,
+	type Schema
 } from 'ckeditor5/src/engine.js';
 
 import type { GetCallback } from 'ckeditor5/src/utils.js';
@@ -383,6 +388,43 @@ export function listItemDowncastConverter(
 }
 
 /**
+ * The 'remove' downcast converter for custom markers.
+ */
+export function listItemDowncastRemoveConverter( schema: Schema ): GetCallback<DowncastRemoveEvent> {
+	return ( evt, data, conversionApi ) => {
+		const { writer, mapper } = conversionApi;
+		const elementName = evt.name.split( ':' )[ 1 ];
+
+		// Do not remove marker if the deleted element is some inline object inside paragraph.
+		// See https://github.com/cksource/ckeditor5-internal/issues/3680.
+		if ( !schema.checkAttribute( elementName, 'listItemId' ) ) {
+			return;
+		}
+
+		// Find the view range start position by mapping the model position at which the remove happened.
+		const viewStart = mapper.toViewPosition( data.position );
+
+		const modelEnd = data.position.getShiftedBy( data.length );
+		const viewEnd = mapper.toViewPosition( modelEnd, { isPhantom: true } );
+
+		// Trim the range to remove in case some UI elements are on the view range boundaries.
+		const viewRange = writer.createRange( viewStart, viewEnd ).getTrimmed();
+
+		// Use positions mapping instead of mapper.toViewElement( listItem ) to find outermost view element.
+		// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
+		const viewElement = viewRange.end.nodeBefore as ViewElement | null;
+
+		/* istanbul ignore next -- @preserve */
+		if ( !viewElement ) {
+			return;
+		}
+
+		// Remove custom item marker.
+		removeCustomMarkerElements( viewElement, writer, mapper );
+	};
+}
+
+/**
  * Returns the bogus paragraph view element creator. A bogus paragraph is used if a list item contains only a single block or nested list.
  *
  * @internal
@@ -428,31 +470,88 @@ export function findMappedViewElement( element: Element, mapper: Mapper, model: 
 }
 
 /**
+ * The model to view custom position mapping for cases when marker is injected at the beginning of a block.
+ */
+export function createModelToViewPositionMapper(
+	strategies: Array<DowncastStrategy>,
+	view: EditingView
+): GetCallback<MapperModelToViewPositionEvent> {
+	return ( evt, data ) => {
+		if ( data.modelPosition.offset > 0 ) {
+			return;
+		}
+
+		const positionParent = data.modelPosition.parent;
+
+		if ( !isListItemBlock( positionParent ) ) {
+			return;
+		}
+
+		if ( !strategies.some( strategy => (
+			strategy.scope == 'itemMarker' &&
+			strategy.canInjectMarkerIntoElement &&
+			strategy.canInjectMarkerIntoElement( positionParent )
+		) ) ) {
+			return;
+		}
+
+		const viewElement = data.mapper.toViewElement( positionParent )!;
+		const viewRange = view.createRangeIn( viewElement );
+
+		const viewWalker = viewRange.getWalker();
+		let positionAfterLastMarker = viewRange.start;
+
+		for ( const { item } of viewWalker ) {
+			// Walk only over the non-mapped elements (UIElements, AttributeElements, $text, or any other element without mapping).
+			if ( item.is( 'element' ) && data.mapper.toModelElement( item ) || item.is( '$textProxy' ) ) {
+				break;
+			}
+
+			if ( item.is( 'element' ) && item.getCustomProperty( 'listItemMarker' ) ) {
+				positionAfterLastMarker = view.createPositionAfter( item );
+
+				// Jump over the content of the marker (this is not needed for UIElement but required for other element types).
+				viewWalker.skip( ( { previousPosition } ) => !previousPosition.isEqual( positionAfterLastMarker ) );
+			}
+		}
+
+		data.viewPosition = positionAfterLastMarker;
+	};
+}
+
+/**
  * Removes a custom marker elements and item wrappers related to that marker.
  */
 function removeCustomMarkerElements( viewElement: ViewElement, viewWriter: DowncastWriter, mapper: Mapper ): void {
 	// Remove item wrapper.
 	while ( viewElement.parent!.is( 'attributeElement' ) && viewElement.parent!.getCustomProperty( 'listItemWrapper' ) ) {
-		viewWriter.unwrap( viewWriter.createRangeIn( viewElement.parent ), viewElement.parent );
+		viewWriter.unwrap( viewWriter.createRangeOn( viewElement ), viewElement.parent );
 	}
 
 	// Remove custom item markers.
-	const viewWalker = viewWriter.createPositionBefore( viewElement ).getWalker( { direction: 'backward' } );
-	const markersToRemove = [];
+	const markersToRemove: Array<ViewElement> = [];
 
-	for ( const { item } of viewWalker ) {
-		// Walk only over the non-mapped elements between list item blocks.
-		if ( item.is( 'element' ) && mapper.toModelElement( item ) ) {
-			break;
-		}
+	// Markers before a block.
+	collectMarkersToRemove( viewWriter.createPositionBefore( viewElement ).getWalker( { direction: 'backward' } ) );
 
-		if ( item.is( 'element' ) && item.getCustomProperty( 'listItemMarker' ) ) {
-			markersToRemove.push( item );
-		}
-	}
+	// Markers inside a block.
+	collectMarkersToRemove( viewWriter.createRangeIn( viewElement ).getWalker() );
 
 	for ( const marker of markersToRemove ) {
 		viewWriter.remove( marker );
+	}
+
+	function collectMarkersToRemove( viewWalker: ViewTreeWalker ) {
+		for ( const { item } of viewWalker ) {
+			// Walk only over the non-mapped elements (UIElements, AttributeElements, $text, or any other element without mapping).
+			if ( item.is( 'element' ) && mapper.toModelElement( item ) ) {
+				break;
+			}
+
+			if ( item.is( 'element' ) && item.getCustomProperty( 'listItemMarker' ) ) {
+				markersToRemove.push( item );
+			}
+		}
 	}
 }
 
@@ -486,12 +585,17 @@ function insertCustomMarkerElements(
 		}
 
 		writer.setCustomProperty( 'listItemMarker', true, markerElement );
-		writer.insert( viewRange.start, markerElement );
 
-		viewRange = writer.createRange(
-			writer.createPositionBefore( markerElement ),
-			writer.createPositionAfter( viewElement )
-		);
+		if ( strategy.canInjectMarkerIntoElement && strategy.canInjectMarkerIntoElement( listItem ) ) {
+			writer.insert( writer.createPositionAt( viewElement, 0 ), markerElement );
+		} else {
+			writer.insert( viewRange.start, markerElement );
+
+			viewRange = writer.createRange(
+				writer.createPositionBefore( markerElement ),
+				writer.createPositionAfter( viewElement )
+			);
+		}
 
 		// Wrap the marker and optionally the first block with an attribute element (label for to-do lists).
 		if ( !strategy.createWrapperElement || !strategy.canWrapElement ) {

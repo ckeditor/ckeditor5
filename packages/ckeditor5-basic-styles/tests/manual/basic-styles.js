@@ -19,7 +19,8 @@ import Superscript from '../../src/superscript.js';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Essentials, Paragraph, Bold, Italic, Strikethrough, Underline, Code, Subscript, Superscript ],
-		toolbar: [ 'bold', 'italic', 'strikethrough', 'underline', 'code', 'undo', 'redo', 'subscript', 'superscript' ]
+		toolbar: [ 'bold', 'italic', 'strikethrough', 'underline', 'code', 'undo', 'redo', 'subscript', 'superscript' ],
+		menuBar: { isVisible: true }
 	} )
 	.then( editor => {
 		window.editor = editor;

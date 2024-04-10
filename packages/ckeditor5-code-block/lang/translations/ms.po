@@ -24,3 +24,7 @@ msgstr "Masukkan blok kod"
 msgctxt "A language of the code block in the editor content when no specific programming language is associated with it."
 msgid "Plain text"
 msgstr "Teks kosong"
+
+msgctxt "The accessible label of the menu bar button that inserts a code block into editor content."
+msgid "Code block"
+msgstr "Sekatan kod"

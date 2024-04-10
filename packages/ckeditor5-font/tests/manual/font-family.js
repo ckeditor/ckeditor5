@@ -43,6 +43,7 @@ async function reloadEditor( options = {} ) {
 		toolbar: [
 			'heading', '|', 'fontFamily', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
 		],
+		menuBar: { isVisible: true },
 		fontFamily: {}
 	};
 

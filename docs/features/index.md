@@ -17,7 +17,7 @@ CKEditor&nbsp;5 has many features, and the number is constantly growing. You can
 
 ## Using CKEditor&nbsp;5 features
 
-Most of the editor features are accessible from a {@link features/toolbar highly configurable toolbar} (in fact, there are {@link features/blocktoolbar two of those}) offering buttons and dropdowns. Some features also have a dedicated contextual toolbar. You can also execute plenty of actions with {@link features/keyboard-support keyboard shortcuts}.  CKEditor&nbsp;5 offers a dedicated {@link features/keyboard-support#displaying-keyboard-shortcuts-in-the-editor accessibility help dialog} that displays a list of all available keyboard shortcuts in a dialog. It can be opened by pressing <kbd>Alt</kbd> + <kbd>0</kbd> (on Windows) or <kbd>Option</kbd> + <kbd>0</kbd> (on macOS) or via toolbar. The entire user interface comes with a {@link features/ui-language multitude of translations} and it supports Right-to-Left (RTL) languages.
+Most of the editor features are accessible from a {@link features/toolbar highly configurable toolbar} (in fact, there are {@link features/blocktoolbar two of those}) offering buttons and dropdowns. Some features also have a dedicated contextual toolbar. You can also execute plenty of actions with {@link features/accessibility#keyboard-shortcuts keyboard shortcuts}.  CKEditor&nbsp;5 offers a dedicated {@link features/accessibility#displaying-keyboard-shortcuts-in-the-editor accessibility help dialog} that displays a list of all available keyboard shortcuts in a dialog. It can be opened by pressing <kbd>Alt</kbd> + <kbd>0</kbd> (on Windows) or <kbd>Option</kbd> + <kbd>0</kbd> (on macOS) or via toolbar. The entire user interface comes with a {@link features/ui-language multitude of translations} and it supports Right-to-Left (RTL) languages.
 
 ## CKEditor&nbsp;5 WYSIWYG editor features and functions
 
@@ -123,7 +123,7 @@ If you want to migrate from CKEditor 4 to CKEditor&nbsp;5, check the {@link upda
 
 ## Feature availability
 
-Predefined {@link installation/getting-started/predefined-builds CKEditor&nbsp;5 builds} have plenty of these features available out-of-the-box, like {@link features/autoformat autoformatting} or {@link features/keyboard-support keyboard support}.
+Predefined {@link installation/getting-started/predefined-builds CKEditor&nbsp;5 builds} have plenty of these features available out-of-the-box, like {@link features/autoformat autoformatting} or {@link features/accessibility#keyboard-shortcuts keyboard support}.
 
 However, you need to include some presented features manually in your CKEditor&nbsp;5 build, for example, the {@link features/markdown Markdown processor} which outputs Markdown instead of HTML. You can add these plugins to a custom build with the [CKEditor&nbsp;5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
 

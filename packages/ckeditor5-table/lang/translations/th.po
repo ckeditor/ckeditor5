@@ -272,3 +272,7 @@ msgstr "แทรกแถวในตารางใหม่ (เมื่อ�
 msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the table."
 msgid "Navigate through the table"
 msgstr "นำทางผ่านตาราง"
+
+msgctxt "The accessible label of the menu bar button that displays a user interface to insert a table into editor content."
+msgid "Table"
+msgstr "ตาราง"
