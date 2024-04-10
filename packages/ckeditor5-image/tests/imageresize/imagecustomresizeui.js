@@ -19,7 +19,7 @@ import ImageStyle from '../../src/imagestyle.js';
 import { IMAGE_SRC_FIXTURE } from './_utils/utils.js';
 
 describe( 'ImageCustomResizeUI', () => {
-	let element, model, modelRoot, editor, dropdown, button, command, plugin, balloon, form;
+	let element, model, modelRoot, editor, dropdown, button, command, plugin, balloon;
 
 	beforeEach( async () => {
 		element = document.createElement( 'div' );
@@ -35,7 +35,6 @@ describe( 'ImageCustomResizeUI', () => {
 
 		plugin = editor.plugins.get( ImageCustomResizeUI );
 		command = editor.commands.get( 'resizeImage' );
-		form = plugin._form;
 
 		balloon = editor.plugins.get( 'ContextualBalloon' );
 		dropdown = editor.ui.componentFactory.create( 'imageResize' );
