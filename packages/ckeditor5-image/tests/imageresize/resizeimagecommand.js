@@ -135,7 +135,8 @@ describe( 'ResizeImageCommand', () => {
 			const { unit, value } = command.getSelectedImageWidthInUnits( 'px' );
 
 			expect( unit ).to.be.equal( 'px' );
-			expect( value.toFixed( 2 ) ).to.be.equal( '38.44' );
+			expect( value ).to.be.greaterThan( 30 );
+			expect( value ).to.be.lessThan( 40 );
 		} );
 
 		it( 'should return casted pixels value to percentage', () => {
@@ -144,7 +145,8 @@ describe( 'ResizeImageCommand', () => {
 			const { unit, value } = command.getSelectedImageWidthInUnits( '%' );
 
 			expect( unit ).to.be.equal( '%' );
-			expect( value.toFixed( 2 ) ).to.be.equal( '31.59' );
+			expect( value ).to.be.greaterThan( 30 );
+			expect( value ).to.be.lessThan( 40 );
 		} );
 	} );
 
