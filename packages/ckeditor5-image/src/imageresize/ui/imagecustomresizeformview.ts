@@ -73,14 +73,18 @@ export default class ImageCustomResizeFormView extends View {
 	protected readonly _focusCycler: FocusCycler;
 
 	/**
+	 * An array of form validators used by {@link #isValid}.
+	 */
+	private readonly _validators: Array<ImageCustomResizeFormValidatorCallback>;
+
+	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale, unit: string ) {
+	constructor( locale: Locale, unit: string, validators: Array<ImageCustomResizeFormValidatorCallback> ) {
 		super( locale );
 		const t = this.locale!.t;
 
 		this.focusTracker = new FocusTracker();
-
 		this.keystrokes = new KeystrokeHandler();
 		this.unit = unit;
 
@@ -92,6 +96,7 @@ export default class ImageCustomResizeFormView extends View {
 		this.cancelButtonView = this._createButton( t( 'Cancel' ), icons.cancel, 'ck-button-cancel', 'cancel' );
 
 		this._focusables = new ViewCollection();
+		this._validators = validators;
 
 		this._focusCycler = new FocusCycler( {
 			focusables: this._focusables,
@@ -197,7 +202,7 @@ export default class ImageCustomResizeFormView extends View {
 		const t = this.locale!.t;
 		const labeledInput = new LabeledFieldView<InputNumberView>( this.locale, createLabeledInputNumber );
 
-		const possibleRange = this.unit === '%' ? { min: 5, max: 350 } : { min: 50, max: 2400 };
+		const possibleRange = this.unit === '%' ? { min: 1, max: 750 } : { min: 1, max: 16_000 };
 
 		labeledInput.label = t( 'Resize image (in %0)', this.unit );
 		labeledInput.fieldView.set( {
@@ -207,7 +212,92 @@ export default class ImageCustomResizeFormView extends View {
 
 		return labeledInput;
 	}
+
+	/**
+	 * Validates the form and returns `false` when some fields are invalid.
+	 */
+	public isValid(): boolean {
+		this.resetFormStatus();
+
+		for ( const validator of this._validators ) {
+			const errorText = validator( this );
+
+			// One error per field is enough.
+			if ( errorText ) {
+				// Apply updated error.
+				this.labeledInput.errorText = errorText;
+
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Cleans up the supplementary error and information text of the {@link #urlInputView}
+	 * bringing them back to the state when the form has been displayed for the first time.
+	 *
+	 * See {@link #isValid}.
+	 */
+	public resetFormStatus(): void {
+		this.labeledInput.errorText = null;
+	}
+
+	/**
+	 * The native DOM `value` of the input element of {@link #labeledInput}.
+	 */
+	public get rawSize(): string | null {
+		const { element } = this.labeledInput.fieldView;
+
+		if ( !element ) {
+			return null;
+		}
+
+		return element.value;
+	}
+
+	/**
+	 * Get numeric value of size. Returns `null` if value of size input element in {@link #labeledInput}.is not a number.
+	 */
+	public get parsedSize(): number | null {
+		const { rawSize } = this;
+
+		if ( rawSize === null ) {
+			return null;
+		}
+
+		const parsed = Number.parseFloat( rawSize );
+
+		if ( Number.isNaN( parsed ) ) {
+			return null;
+		}
+
+		return parsed;
+	}
+
+	/**
+	 * Returns serialized image input size with unit.
+	 * Returns `null` if value of size input element in {@link #labeledInput}.is not a number.
+	 */
+	public get sizeWithUnits(): string | null {
+		const { parsedSize, unit } = this;
+
+		if ( parsedSize === null ) {
+			return null;
+		}
+
+		return `${ parsedSize }${ unit }`;
+	}
 }
+
+/**
+ * Callback used by {@link ~ImageCustomResizeFormView} to check if passed form value is valid.
+ *
+ * 	* If `undefined` is returned, it is assumed that the form value is correct and there is no error.
+ * 	* If string is returned, it is assumed that the form value is incorrect and the returned string is displayed in the error label
+ */
+export type ImageCustomResizeFormValidatorCallback = ( form: ImageCustomResizeFormView ) => string | undefined;
 
 /**
  * Fired when the form view is submitted.

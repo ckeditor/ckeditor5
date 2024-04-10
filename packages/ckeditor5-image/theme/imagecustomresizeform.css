@@ -18,6 +18,13 @@
 		display: none;
 	}
 
+	& .ck-button {
+		&.ck-button-save,
+		&.ck-button-cancel {
+			max-height: 30px;
+		}
+	}
+
 	& .ck-input {
 		width: 100%;
 		min-width: auto;
@@ -32,6 +39,11 @@
 
 		& .ck-button {
 			flex-basis: 50%;
+
+			&.ck-button-save,
+			&.ck-button-cancel {
+				max-height: initial;
+			}
 		}
 	}
 }

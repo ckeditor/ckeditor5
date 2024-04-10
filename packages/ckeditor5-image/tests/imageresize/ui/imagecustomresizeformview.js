@@ -20,7 +20,7 @@ describe( 'ImageColumnResizeFormView', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		view = new ImageCustomResizeFormView( { t: () => {} }, '%' );
+		view = new ImageCustomResizeFormView( { t: () => {} }, '%', [] );
 	} );
 
 	describe( 'constructor()', () => {
@@ -69,13 +69,13 @@ describe( 'ImageColumnResizeFormView', () => {
 		} );
 
 		it( 'possible input min / max range is different depending on passed unit', () => {
-			expect( view.labeledInput.fieldView.min ).to.be.equal( 5 );
-			expect( view.labeledInput.fieldView.max ).to.be.equal( 350 );
+			expect( view.labeledInput.fieldView.min ).to.be.equal( 1 );
+			expect( view.labeledInput.fieldView.max ).to.be.equal( 750 );
 
-			view = new ImageCustomResizeFormView( { t: () => {} }, 'px' );
+			view = new ImageCustomResizeFormView( { t: () => {} }, 'px', [] );
 
-			expect( view.labeledInput.fieldView.min ).to.be.equal( 50 );
-			expect( view.labeledInput.fieldView.max ).to.be.equal( 2400 );
+			expect( view.labeledInput.fieldView.min ).to.be.equal( 1 );
+			expect( view.labeledInput.fieldView.max ).to.be.equal( 16000 );
 		} );
 	} );
 
@@ -177,6 +177,117 @@ describe( 'ImageColumnResizeFormView', () => {
 			view.destroy();
 
 			sinon.assert.calledOnce( destroySpy );
+		} );
+	} );
+
+	describe( 'isValid()', () => {
+		it( 'should reset error after successful validation', () => {
+			const view = new ImageCustomResizeFormView( { t: () => {} }, '%', [
+				() => undefined
+			] );
+
+			expect( view.isValid() ).to.be.true;
+			expect( view.labeledInput.errorText ).to.be.null;
+		} );
+
+		it( 'should display first error returned from validators list', () => {
+			const view = new ImageCustomResizeFormView( { t: () => {} }, '%', [
+				() => undefined,
+				() => 'Foo bar',
+				() => 'Another error'
+			] );
+
+			expect( view.isValid() ).to.be.false;
+			expect( view.labeledInput.errorText ).to.be.equal( 'Foo bar' );
+		} );
+
+		it( 'should pass view reference as argument to validator', () => {
+			const validatorSpy = sinon.spy();
+			const view = new ImageCustomResizeFormView( { t: () => {} }, '%', [ validatorSpy ] );
+
+			view.isValid();
+
+			expect( validatorSpy ).to.be.calledOnceWithExactly( view );
+		} );
+	} );
+
+	describe( 'rawSize getter', () => {
+		beforeEach( () => {
+			view.render();
+		} );
+
+		it( 'should return null `rawSize` if element is `null`', () => {
+			view.labeledInput.fieldView.element = null;
+
+			expect( view.rawSize ).to.be.equal( null );
+		} );
+
+		it( 'should return raw unparsed value of input element in `rawSize`', () => {
+			view.labeledInput.fieldView.element.value = '1234';
+
+			expect( view.rawSize ).to.be.equal( '1234' );
+		} );
+	} );
+
+	describe( 'parsedSize getter', () => {
+		beforeEach( () => {
+			view.render();
+		} );
+
+		it( 'should return null `parsedSize` if element is `null`', () => {
+			view.labeledInput.fieldView.element = null;
+
+			expect( view.parsedSize ).to.be.equal( null );
+		} );
+
+		it( 'should return parsed value of input element in `parsedSize`', () => {
+			view.labeledInput.fieldView.element.value = '1234';
+			expect( view.parsedSize ).to.be.equal( 1234 );
+
+			view.labeledInput.fieldView.element.value = '1234.5';
+			expect( view.parsedSize ).to.be.equal( 1234.5 );
+		} );
+
+		it( 'should null if `rawSize` is not a number', () => {
+			view.labeledInput.fieldView.element.value = '1234';
+			sinon.stub( view, 'rawSize' ).get( () => 'Foo' );
+
+			expect( view.parsedSize ).to.be.equal( null );
+		} );
+	} );
+
+	describe( 'sizeWithUnits getter', () => {
+		beforeEach( () => {
+			view.render();
+		} );
+
+		it( 'should return null `sizeWithUnits` if element is `null`', () => {
+			view.labeledInput.fieldView.element = null;
+
+			expect( view.sizeWithUnits ).to.be.equal( null );
+		} );
+
+		it( 'should return parsed value of input element in `parsedSize`', () => {
+			view.labeledInput.fieldView.element.value = '1234';
+			expect( view.sizeWithUnits ).to.be.equal( '1234%' );
+
+			view.labeledInput.fieldView.element.value = '1234.5';
+			expect( view.sizeWithUnits ).to.be.equal( '1234.5%' );
+		} );
+
+		it( 'should null if `rawSize` is not a number', () => {
+			view.labeledInput.fieldView.element.value = '1234';
+			sinon.stub( view, 'rawSize' ).get( () => 'Foo' );
+
+			expect( view.sizeWithUnits ).to.be.equal( null );
+		} );
+	} );
+
+	describe( 'resetFormStatus()', () => {
+		it( 'should clear form input errors', () => {
+			view.labeledInput.errorText = 'Error';
+			view.resetFormStatus();
+			expect( view.labeledInput.errorText ).to.be.null;
 		} );
 	} );
 

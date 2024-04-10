@@ -19,7 +19,7 @@ import ImageStyle from '../../src/imagestyle.js';
 import { IMAGE_SRC_FIXTURE } from './_utils/utils.js';
 
 describe( 'ImageCustomResizeUI', () => {
-	let element, model, modelRoot, editor, dropdown, button, command, plugin, balloon;
+	let element, model, modelRoot, editor, dropdown, button, command, plugin, balloon, form;
 
 	beforeEach( async () => {
 		element = document.createElement( 'div' );
@@ -35,6 +35,7 @@ describe( 'ImageCustomResizeUI', () => {
 
 		plugin = editor.plugins.get( ImageCustomResizeUI );
 		command = editor.commands.get( 'resizeImage' );
+		form = plugin._form;
 
 		balloon = editor.plugins.get( 'ContextualBalloon' );
 		dropdown = editor.ui.componentFactory.create( 'imageResize' );
@@ -45,7 +46,7 @@ describe( 'ImageCustomResizeUI', () => {
 			.filter( Boolean )
 			.find( item => item.label === 'Custom' );
 
-		setModelData( model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedWidth="50%"></imageBlock>` );
+		setModelData( model, `[<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedWidth="50%"></imageBlock>]` );
 	} );
 
 	afterEach( async () => {
@@ -178,6 +179,58 @@ describe( 'ImageCustomResizeUI', () => {
 			sinon.assert.calledWithExactly( spy, 'resizeImage', {
 				width: '123%'
 			} );
+		} );
+
+		describe( 'form status', () => {
+			it( 'should show error form status if passed empty size', () => {
+				plugin._showForm();
+				fillFormSize( '' );
+				plugin._form.fire( 'submit' );
+				expect( getErrorLabel() ).to.be.equal( 'Custom resize value for the image must not be empty.' );
+			} );
+
+			it( 'should show error form status if passed incorrect size', () => {
+				plugin._showForm();
+				fillFormSize( 'for sure incorrect value' );
+				plugin._form.fire( 'submit' );
+				expect( getErrorLabel() ).to.be.equal( 'Incorrect custom resize value.' );
+			} );
+
+			it( 'should reset error form status after filling empty link', () => {
+				plugin._showForm();
+
+				fillFormSize( 'for sure incorrect value' );
+				plugin._form.fire( 'submit' );
+				expect( getErrorLabel() ).not.to.be.null;
+
+				fillFormSize( '123456' );
+				plugin._form.fire( 'submit' );
+				expect( getErrorLabel() ).to.be.null;
+			} );
+
+			it( 'should reset form status on show', () => {
+				plugin._showForm();
+				fillFormSize( 'for sure incorrect value' );
+				plugin._form.fire( 'submit' );
+
+				expect( getErrorLabel() ).not.to.be.null;
+
+				plugin._hideForm();
+				plugin._showForm();
+				expect( getErrorLabel() ).to.be.null;
+			} );
+
+			function getErrorLabel() {
+				return plugin._form.labeledInput.errorText;
+			}
+
+			function fillFormSize( size ) {
+				const { fieldView } = plugin._form.labeledInput;
+
+				// jasmine disallow to set non-number value in numeric input
+				fieldView.element.type = '';
+				fieldView.value = size;
+			}
 		} );
 
 		describe( 'blur', () => {

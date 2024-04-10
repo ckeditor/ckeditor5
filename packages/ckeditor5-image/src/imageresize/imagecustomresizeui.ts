@@ -7,7 +7,7 @@
  * @module image/imageresize/imagecustomresizeui
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import {
 	ContextualBalloon,
 	clickOutsideHandler,
@@ -18,6 +18,7 @@ import {
 import { getBalloonPositionData } from '../image/ui/utils.js';
 
 import ImageCustomResizeFormView, {
+	type ImageCustomResizeFormValidatorCallback,
 	type ImageCustomResizeFormViewCancelEvent,
 	type ImageCustomResizeFormViewSubmitEvent
 } from './ui/imagecustomresizeformview.js';
@@ -73,19 +74,19 @@ export default class ImageCustomResizeUI extends Plugin {
 
 		this._balloon = this.editor.plugins.get( 'ContextualBalloon' );
 
-		this._form = new ( CssTransitionDisablerMixin( ImageCustomResizeFormView ) )( editor.locale, units );
+		this._form = new ( CssTransitionDisablerMixin( ImageCustomResizeFormView ) )( editor.locale, units, getFormValidators( editor ) );
 
 		// Render the form so its #element is available for clickOutsideHandler.
 		this._form.render();
 
 		this.listenTo<ImageCustomResizeFormViewSubmitEvent>( this._form, 'submit', () => {
-			const { value } = this._inputViewElement.element!;
+			if ( this._form!.isValid() ) {
+				editor.execute( 'resizeImage', {
+					width: this._form!.sizeWithUnits
+				} );
 
-			editor.execute( 'resizeImage', {
-				width: `${ Number.parseFloat( value ) }${ units }`
-			} );
-
-			this._hideForm( true );
+				this._hideForm( true );
+			}
 		} );
 
 		this.listenTo<ImageCustomResizeFormViewCancelEvent>( this._form, 'cancel', () => {
@@ -126,6 +127,7 @@ export default class ImageCustomResizeUI extends Plugin {
 		const command = this.editor.commands.get( 'resizeImage' )!;
 
 		this._form!.disableCssTransitions();
+		this._form!.resetFormStatus();
 
 		if ( !this._isInBalloon ) {
 			this._balloon!.add( {
@@ -181,11 +183,25 @@ export default class ImageCustomResizeUI extends Plugin {
 	private get _isInBalloon(): boolean {
 		return !!this._balloon && this._balloon.hasView( this._form! );
 	}
+}
 
-	/**
-	 * Returns input field view element rendered by the {@link #_form}.
-	 */
-	private get _inputViewElement() {
-		return this._form!.labeledInput.fieldView!;
-	}
+/**
+ * Returns image resize form validation callbacks.
+ *
+ * @param editor Editor instance.
+ */
+function getFormValidators( editor: Editor ): Array<ImageCustomResizeFormValidatorCallback> {
+	const t = editor.t;
+
+	return [
+		form => {
+			if ( form.rawSize!.trim() === '' ) {
+				return t( 'Custom resize value for the image must not be empty.' );
+			}
+
+			if ( form.parsedSize === null ) {
+				return t( 'Incorrect custom resize value.' );
+			}
+		}
+	];
 }
