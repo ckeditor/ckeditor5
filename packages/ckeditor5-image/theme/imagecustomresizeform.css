@@ -18,6 +18,11 @@
 		display: none;
 	}
 
+	& .ck-input {
+		width: 100%;
+		min-width: auto;
+	}
+
 	@mixin ck-media-phone {
 		flex-wrap: wrap;
 
