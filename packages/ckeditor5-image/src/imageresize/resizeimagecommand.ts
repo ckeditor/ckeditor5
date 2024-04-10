@@ -111,7 +111,11 @@ export default class ResizeImageCommand extends Command {
 
 		const imageModelElement = imageUtils.getClosestSelectedImageElement( editor.model.document.selection )!;
 		const imageViewElement = editing.mapper.toViewElement( imageModelElement );
-		const imageDOMElement = editing.view.domConverter.mapViewToDom( imageViewElement! )!;
+		const imageDOMElement = editing.view.domConverter.mapViewToDom( imageViewElement! );
+
+		if ( !imageDOMElement ) {
+			return null;
+		}
 
 		const imageHolderWidth = imageDOMElement.getBoundingClientRect().width;
 		const imageParentWidth = calculateHostWidth( imageDOMElement );
@@ -126,7 +130,7 @@ export default class ResizeImageCommand extends Command {
 
 		// "px" -> "%" conversion
 		return {
-			value: parsedWidth.value / imageParentWidth * 100,
+			value: imageHolderWidth / imageParentWidth * 100,
 			unit: '%'
 		};
 	}

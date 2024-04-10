@@ -226,7 +226,7 @@ describe( 'ImageCustomResizeUI', () => {
 			function fillFormSize( size ) {
 				const { fieldView } = plugin._form.labeledInput;
 
-				// jasmine disallow to set non-number value in numeric input
+				// karma disallow to set non-number value in numeric input
 				fieldView.element.type = '';
 				fieldView.value = size;
 			}
