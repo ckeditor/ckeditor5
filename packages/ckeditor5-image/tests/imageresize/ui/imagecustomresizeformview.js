@@ -69,7 +69,7 @@ describe( 'ImageColumnResizeFormView', () => {
 		} );
 
 		it( 'possible input min / max range is different depending on passed unit', () => {
-			expect( view.labeledInput.fieldView.min ).to.be.equal( 1 );
+			expect( view.labeledInput.fieldView.min ).to.be.equal( 0.2 );
 			expect( view.labeledInput.fieldView.max ).to.be.equal( 750 );
 
 			view = new ImageCustomResizeFormView( { t: () => {} }, 'px', [] );
