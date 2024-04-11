@@ -9,7 +9,6 @@
 
 import type { Editor } from 'ckeditor5/src/core.js';
 import type { CodeBlockLanguageDefinition } from './codeblockconfig.js';
-import { first } from 'ckeditor5/src/utils.js';
 import type {
 	DocumentSelection,
 	Element,
@@ -21,6 +20,8 @@ import type {
 	ViewDocumentFragment,
 	ViewElement
 } from 'ckeditor5/src/engine.js';
+
+import { first, type LocaleTranslate } from 'ckeditor5/src/utils.js';
 
 /**
  * Returns code block languages as defined in `config.codeBlock.languages` but processed:
@@ -257,4 +258,33 @@ export function canBeCodeBlock( schema: Schema, element: Element ): boolean {
 	}
 
 	return schema.checkChild( element.parent as Element, 'codeBlock' );
+}
+
+/**
+ * Get the translated message read by the screen reader when you enter or exit an element with your cursor.
+ */
+export function getCodeBlockAriaAnnouncement(
+	t: LocaleTranslate,
+	languageDefs: Array<CodeBlockLanguageDefinition>,
+	element: Element,
+	direction: 'enter' | 'leave'
+): string {
+	const languagesToLabels = getPropertyAssociation( languageDefs, 'language', 'label' );
+	const codeBlockLanguage = element.getAttribute( 'language' ) as string;
+
+	if ( codeBlockLanguage in languagesToLabels ) {
+		const language = languagesToLabels[ codeBlockLanguage ];
+
+		if ( direction === 'enter' ) {
+			return t( 'Entering %0 code snippet', language );
+		}
+
+		return t( 'Leaving %0 code snippet', language );
+	}
+
+	if ( direction === 'enter' ) {
+		return t( 'Entering code snippet' );
+	}
+
+	return t( 'Leaving code snippet' );
 }

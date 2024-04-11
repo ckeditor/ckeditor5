@@ -7,6 +7,8 @@
  * @module code-block/codeblockediting
  */
 
+import { lowerFirst, upperFirst } from 'lodash-es';
+
 import { Plugin, type Editor, type MultiCommand } from 'ckeditor5/src/core.js';
 import { ShiftEnter, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter.js';
 
@@ -19,7 +21,8 @@ import {
 	type DowncastInsertEvent,
 	type UpcastElementEvent,
 	type UpcastTextEvent,
-	type Element
+	type Element,
+	type SelectionChangeRangeEvent
 } from 'ckeditor5/src/engine.js';
 
 import type { ListEditing } from '@ckeditor/ckeditor5-list';
@@ -30,7 +33,8 @@ import OutdentCodeBlockCommand from './outdentcodeblockcommand.js';
 import {
 	getNormalizedAndLocalizedLanguageDefinitions,
 	getLeadingWhiteSpaces,
-	rawSnippetTextToViewDocumentFragment
+	rawSnippetTextToViewDocumentFragment,
+	getCodeBlockAriaAnnouncement
 } from './utils.js';
 import {
 	modelToViewCodeBlockInsertion,
@@ -277,6 +281,70 @@ export default class CodeBlockEditing extends Plugin {
 			data.preventDefault();
 			evt.stop();
 		}, { context: 'pre' } );
+
+		this._initAriaAnnouncements( );
+	}
+
+	/**
+	 * Observe when user enters or leaves code block and set proper aria value in global live announcer.
+	 * This allows screen readers to indicate when the user has entered and left the specified code block.
+	 *
+	 * @internal
+	 */
+	private _initAriaAnnouncements( ) {
+		const { model, ui, t } = this.editor;
+		const languageDefs = getNormalizedAndLocalizedLanguageDefinitions( this.editor );
+
+		let lastFocusedCodeBlock: Element | null = null;
+		let lastAnnouncement: string | null = null;
+
+		const joinAnnouncements = ( announcements: Array<string> ) => upperFirst(
+			announcements
+				.map( lowerFirst )
+				.join( ', ' )
+		);
+
+		model.document.selection.on<SelectionChangeRangeEvent>( 'change:range', () => {
+			const focusParent = model.document.selection.focus!.parent;
+
+			if ( lastFocusedCodeBlock === focusParent || !focusParent.is( 'element' ) ) {
+				return;
+			}
+
+			const announcements: Array<string> = [];
+
+			if ( lastFocusedCodeBlock && lastFocusedCodeBlock.is( 'element', 'codeBlock' ) ) {
+				announcements.push( getCodeBlockAriaAnnouncement( t, languageDefs, lastFocusedCodeBlock, 'leave' ) );
+			}
+
+			if ( focusParent.is( 'element', 'codeBlock' ) ) {
+				announcements.push( getCodeBlockAriaAnnouncement( t, languageDefs, focusParent, 'enter' ) );
+			}
+
+			if ( ui && announcements.length ) {
+				let announcement = joinAnnouncements( announcements );
+
+				// Handle edge case when:
+				//
+				// 	1. user enters code block #1 with PHP language.
+				//  2. user enters code block #2 with PHP language.
+				//	3. user leaves code block #2 and comes back to code block #1 with identical language
+				//
+				// In this scenario `announcement` will be identical (`Leaving PHP code block, entering PHP code block`)
+				// Screen reader will not detect this change because `aria-live` is identical with previous one and
+				// will skip reading the label.
+				//
+				// Try to bypass this issue by toggling non readable character at the end of phrase.
+				if ( lastAnnouncement === announcement ) {
+					announcement += '.';
+				}
+
+				ui.ariaLiveAnnouncer.announce( 'codeBlocks', announcement, 'assertive' );
+				lastAnnouncement = announcement;
+			}
+
+			lastFocusedCodeBlock = focusParent;
+		} );
 	}
 }
 
