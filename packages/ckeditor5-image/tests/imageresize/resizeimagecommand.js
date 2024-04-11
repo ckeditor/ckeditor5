@@ -14,7 +14,6 @@ import ImageResizeEditing from '../../src/imageresize/imageresizeediting.js';
 import ImageCaptionEditing from '../../src/imagecaption/imagecaptionediting.js';
 import Image from '../../src/image.js';
 import ImageStyle from '../../src/imagestyle.js';
-import { IMAGE_SRC_FIXTURE } from './_utils/utils.js';
 
 /* eslint-disable no-undef */
 

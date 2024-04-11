@@ -18,7 +18,7 @@ import { getSelectedImageWidthInUnits } from '../../../src/imageresize/utils/get
 /* eslint-disable no-undef */
 
 describe( 'ResizeImageCommand', () => {
-	let editor, model, command, editorElement;
+	let editor, model, editorElement;
 
 	beforeEach( async () => {
 		editorElement = document.createElement( 'div' );
