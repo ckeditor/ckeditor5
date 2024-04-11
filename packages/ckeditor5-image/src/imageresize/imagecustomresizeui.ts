@@ -16,6 +16,7 @@ import {
 } from 'ckeditor5/src/ui.js';
 
 import { getBalloonPositionData } from '../image/ui/utils.js';
+import { getSelectedImageWidthInUnits } from './utils/getselectedimagewidthinunits.js';
 
 import ImageCustomResizeFormView, {
 	type ImageCustomResizeFormValidatorCallback,
@@ -126,7 +127,6 @@ export default class ImageCustomResizeUI extends Plugin {
 
 		const editor = this.editor;
 		const labeledInput = this._form!.labeledInput;
-		const command = this.editor.commands.get( 'resizeImage' )!;
 
 		this._form!.disableCssTransitions();
 		this._form!.resetFormStatus();
@@ -142,7 +142,7 @@ export default class ImageCustomResizeUI extends Plugin {
 		// the command. If the user typed in the input, then canceled the balloon (`labeledInput#value`
 		// stays unaltered) and re-opened it without changing the value of the command, they would see the
 		// old value instead of the actual value of the command.
-		const currentParsedWidth = command.getSelectedImageWidthInUnits( unit );
+		const currentParsedWidth = getSelectedImageWidthInUnits( this.editor, unit );
 		const initialInputValue = currentParsedWidth ? currentParsedWidth.value.toFixed( 1 ) : '';
 
 		labeledInput.fieldView.value = labeledInput.fieldView.element!.value = initialInputValue;

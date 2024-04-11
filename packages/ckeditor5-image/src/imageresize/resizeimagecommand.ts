@@ -8,10 +8,7 @@
  */
 
 import { Command } from 'ckeditor5/src/core.js';
-import { calculateHostWidth } from 'ckeditor5/src/widget.js';
-
 import type ImageUtils from '../imageutils.js';
-import { tryParseDimensionWithUnit, type DimensionWithUnit } from './utils/tryparseimensionwithunit.js';
 
 /**
  * The resize image command. Currently, it only supports the width attribute.
@@ -78,60 +75,5 @@ export default class ResizeImageCommand extends Command {
 				imageUtils.setImageNaturalSizeAttributes( imageElement );
 			} );
 		}
-	}
-
-	/**
-	 * Returns image width in specified units.
-	 *
-	 * 	* If image is not selected or command is disabled then `null` will be returned.
-	 * 	* If image is not fully loaded (and it is impossible to determine its natural size) then `null` will be returned.
-	 *  * If `targetUnit` percentage is passed then it will return width percentage of image related to its accessors.
-	 *
-	 * @param targetUnit Unit in which dimension will be returned.
-	 * @returns Parsed dimension with unit.
-	 */
-	public getSelectedImageWidthInUnits( targetUnit: string ): DimensionWithUnit | null {
-		const { editor, isEnabled, value } = this;
-		const { editing } = editor;
-		const imageUtils = editor.plugins.get( 'ImageUtils' );
-
-		if ( !isEnabled || !value ) {
-			return null;
-		}
-
-		const parsedWidth = tryParseDimensionWithUnit( value.width );
-
-		if ( !parsedWidth ) {
-			return null;
-		}
-
-		if ( parsedWidth.unit === targetUnit ) {
-			return parsedWidth;
-		}
-
-		const imageModelElement = imageUtils.getClosestSelectedImageElement( editor.model.document.selection )!;
-		const imageViewElement = editing.mapper.toViewElement( imageModelElement );
-		const imageDOMElement = editing.view.domConverter.mapViewToDom( imageViewElement! );
-
-		if ( !imageDOMElement ) {
-			return null;
-		}
-
-		const imageHolderWidth = imageDOMElement.getBoundingClientRect().width;
-		const imageParentWidth = calculateHostWidth( imageDOMElement );
-
-		// "%" -> "px" conversion
-		if ( targetUnit === 'px' ) {
-			return {
-				value: ( imageHolderWidth / imageParentWidth ) * parsedWidth.value,
-				unit: 'px'
-			};
-		}
-
-		// "px" -> "%" conversion
-		return {
-			value: imageHolderWidth / imageParentWidth * 100,
-			unit: '%'
-		};
 	}
 }

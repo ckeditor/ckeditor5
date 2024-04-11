@@ -91,65 +91,6 @@ describe( 'ResizeImageCommand', () => {
 		} );
 	} );
 
-	describe( 'getSelectedImageWidthInUnits()', () => {
-		it( 'should return selected image width in pixels', () => {
-			setData( model, '[<imageBlock resizedWidth="50px"></imageBlock>]' );
-
-			expect( command.getSelectedImageWidthInUnits( 'px' ) ).to.deep.equal( {
-				value: 50,
-				unit: 'px'
-			} );
-		} );
-
-		it( 'should return null if image is not selected', () => {
-			setData( model, '<imageBlock resizedWidth="0px"></imageBlock><paragraph>[abc]</paragraph>' );
-
-			expect( command.getSelectedImageWidthInUnits( 'px' ) ).to.equal( null );
-		} );
-
-		it( 'should return null if command is disabled', () => {
-			setData( model, '[<imageBlock resizedWidth="10px"></imageBlock>]' );
-
-			command.isEnabled = false;
-			expect( command.getSelectedImageWidthInUnits( 'px' ) ).to.equal( null );
-		} );
-
-		it( 'should return null if command value.width is malformed', () => {
-			setData( model, '[<imageBlock resizedWidth="0px"></imageBlock>]' );
-
-			command.value.width = 'foobar';
-
-			expect( command.getSelectedImageWidthInUnits( 'px' ) ).to.equal( null );
-		} );
-
-		it( 'should return null if DOM mapping of view element is not found', () => {
-			sinon.stub( editor.editing.view.domConverter, 'mapViewToDom' ).returns( null );
-
-			setData( model, '[<imageBlock resizedWidth="10px"></imageBlock>]' );
-			expect( command.getSelectedImageWidthInUnits( '%' ) ).to.equal( null );
-		} );
-
-		it( 'should return casted percentage value to pixels', () => {
-			setData( model, `[<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedWidth="62%"></imageBlock>]` );
-
-			const { unit, value } = command.getSelectedImageWidthInUnits( 'px' );
-
-			expect( unit ).to.be.equal( 'px' );
-			expect( value ).to.be.greaterThan( 30 );
-			expect( value ).to.be.lessThan( 40 );
-		} );
-
-		it( 'should return casted pixels value to percentage', () => {
-			setData( model, `[<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedWidth="380px"></imageBlock>]` );
-
-			const { unit, value } = command.getSelectedImageWidthInUnits( '%' );
-
-			expect( unit ).to.be.equal( '%' );
-			expect( value ).to.be.greaterThan( 30 );
-			expect( value ).to.be.lessThan( 40 );
-		} );
-	} );
-
 	describe( 'execute()', () => {
 		it( 'sets image resizedWidth', () => {
 			setData( model, '[<imageBlock resizedWidth="50px"></imageBlock>]' );
