@@ -7,6 +7,7 @@
  * @module ui/arialiveannouncer
  */
 
+import type { DomConverter } from '@ckeditor/ckeditor5-engine';
 import type { Editor } from '@ckeditor/ckeditor5-core';
 import type { Locale, ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 import type ViewCollection from './viewcollection.js';
@@ -100,7 +101,7 @@ export default class AriaLiveAnnouncer {
 		let regionView = this.view.regionViews.find( view => view.regionName === regionName );
 
 		if ( !regionView ) {
-			regionView = new AriaLiveAnnouncerRegionView( this.view.locale! );
+			regionView = new AriaLiveAnnouncerRegionView( this.view.locale!, editor.data.htmlProcessor.domConverter );
 			this.view.regionViews.add( regionView );
 		}
 
@@ -184,7 +185,7 @@ export class AriaLiveAnnouncerRegionView extends View {
 	 */
 	declare public regionName: string;
 
-	constructor( locale: Locale ) {
+	constructor( locale: Locale, domConverter: DomConverter ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
@@ -204,7 +205,11 @@ export class AriaLiveAnnouncerRegionView extends View {
 		} );
 
 		this.on<ObservableChangeEvent<string>>( 'change:content', ( evt, name, content ) => {
-			this.element![ this.isUnsafeHTML ? 'innerHTML' : 'innerText' ] = content;
+			if ( this.isUnsafeHTML ) {
+				domConverter.setContentOf( this.element!, content );
+			} else {
+				this.element!.innerText = content;
+			}
 		} );
 	}
 }
