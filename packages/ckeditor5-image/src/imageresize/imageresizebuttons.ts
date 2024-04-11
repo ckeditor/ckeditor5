@@ -224,7 +224,7 @@ export default class ImageResizeButtons extends Plugin {
 			return option.label;
 		} else if ( forTooltip ) {
 			if ( isCustomImageResizeOption( option ) ) {
-				return t( 'Resize image to the custom size' );
+				return t( 'Custom image size' );
 			} else if ( option.value ) {
 				return t( 'Resize image to %0', option.value + this._resizeUnit );
 			} else {

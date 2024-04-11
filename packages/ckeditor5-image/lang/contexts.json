@@ -25,7 +25,7 @@
 	"Resize image to the original size": "The accessibility label of the standalone image resize reset option button in the image toolbar for screen readers.",
 	"Resize image (in %0)": "The label for image resize balloon input.",
 	"Original": "The default label for the resize option that resets the size of the image.",
-	"Resize image to the custom size": "The accessibility label of the standalone image resize custom option button in the image toolbar for screen readers.",
+	"Custom image size": "The accessibility label of the standalone image resize custom option button in the image toolbar for screen readers.",
 	"Custom": "The label for the resize option that allows user to enter custom size of the image.",
 	"Image resize list": "The accessibility label of the image resize dropdown for screen readers.",
 	"Insert": "The label of the form submit button if the image source URL input has no value.",

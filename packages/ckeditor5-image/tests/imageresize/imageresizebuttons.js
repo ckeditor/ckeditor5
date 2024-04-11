@@ -314,7 +314,7 @@ describe( 'ImageResizeButtons', () => {
 
 			buttonViewCustom.render();
 
-			expect( buttonViewCustom.tooltip ).to.equal( 'Resize image to the custom size' );
+			expect( buttonViewCustom.tooltip ).to.equal( 'Custom image size' );
 		} );
 
 		it( 'should be created with a proper tooltip, depends on the set value', () => {
