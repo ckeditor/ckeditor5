@@ -8,7 +8,7 @@
  */
 import { Rect } from 'ckeditor5/src/utils.js';
 
-import { calculateHostWidth } from 'ckeditor5/src/widget.js';
+import { calculateResizeHostAncestorWidth } from 'ckeditor5/src/widget.js';
 import type { Editor } from 'ckeditor5/src/core.js';
 
 import { tryParseDimensionWithUnit, type DimensionWithUnit } from './tryparseimensionwithunit.js';
@@ -49,7 +49,7 @@ export function getSelectedImageWidthInUnits( editor: Editor, targetUnit: string
 	const imageDOMElement = editing.view.domConverter.mapViewToDom( imageViewElement! )!;
 
 	const imageHolderWidth = new Rect( imageDOMElement ).width;
-	const imageParentWidth = calculateHostWidth( imageDOMElement );
+	const imageParentWidth = calculateResizeHostAncestorWidth( imageDOMElement );
 
 	// "%" -> "px" conversion
 	if ( targetUnit === 'px' ) {
