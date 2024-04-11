@@ -9,7 +9,7 @@ We are happy to announce the release of CKEditor 5 v41.3.0.
 
 #### Multi-level lists ⭐️
 
-CKEditor 5's latest update brings a new premium feature: the [Multi-level lists](https://ckeditor.com/docs/ckeditor5/latest/features/lists/multi-level-lists.html) feature. It allows for easy creation and modification of numbered lists with counters (`1., 1.1., 1.1.1`), crucial for clear referencing and hierarchical organization in complex documents. The feature ensures compatibility with Microsoft Word. When lists with such formatting are pasted to the editor, the numbering format and counters are retained.
+CKEditor 5's latest update brings a new premium feature: the [Multi-level lists](https://ckeditor.com/docs/ckeditor5/latest/features/lists/multi-level-lists.html) feature. It allows for easy creation and modification of numbered lists with counters (`1., 1.1., 1.1.1.`), crucial for clear referencing and hierarchical organization in complex documents. The feature ensures compatibility with Microsoft Word. When lists with such formatting are pasted to the editor, the numbering format and counters are retained.
 
 #### Paste from Office improvements for lists
 
@@ -184,7 +184,7 @@ Other releases:
 
 We are happy to announce the release of CKEditor&nbsp;5 v41.3.0-alpha.4.
 
-This release is intended to improve the build speed in bundlers when using the `ckeditor5` npm package and to improve typings for translations.
+This release is intended to improve the build speed in bundlers when using the `ckeditor5` npm package and to improve types for translations.
 
 For instructions on how to use the new installation methods, see the [v41.3.0-alpha.0 Release Notes](https://github.com/ckeditor/ckeditor5/releases/tag/v41.3.0-alpha.0).
 
@@ -290,7 +290,7 @@ Other releases:
 
 We are happy to announce the release of CKEditor&nbsp;5 v41.3.0-alpha.3.
 
-This release is intended to improve the build speed in bundlers when using the `ckeditor5` npm package and to improve typings for translations.
+This release is intended to improve the build speed in bundlers when using the `ckeditor5` npm package and to improve types for translations.
 
 For instructions on how to use the new installation methods, see the [v41.3.0-alpha.0 Release Notes](https://github.com/ckeditor/ckeditor5/releases/tag/v41.3.0-alpha.0).
 
