@@ -7,7 +7,6 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget.js';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import ResizeImageCommand from '../../../src/imageresize/resizeimagecommand.js';
 import ImageResizeEditing from '../../../src/imageresize/imageresizeediting.js';
 import ImageCaptionEditing from '../../../src/imagecaption/imagecaptionediting.js';
 import Image from '../../../src/image.js';
@@ -83,8 +82,6 @@ describe( 'ResizeImageCommand', () => {
 		} );
 
 		model = editor.model;
-		command = new ResizeImageCommand( editor );
-
 		return editor;
 	}
 } );
