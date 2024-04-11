@@ -996,11 +996,11 @@ describe( 'TodoListEditing', () => {
 		} );
 
 		function expectNotToAnnounce( message ) {
-			expect( announcerSpy ).not.to.be.calledWithExactly( 'todoList', message );
+			expect( announcerSpy ).not.to.be.calledWithExactly( message );
 		}
 
 		function expectAnnounce( message ) {
-			expect( announcerSpy ).to.be.calledWithExactly( 'todoList', message );
+			expect( announcerSpy ).to.be.calledWithExactly( message );
 		}
 
 		function moveSelection( startPath, endPath ) {

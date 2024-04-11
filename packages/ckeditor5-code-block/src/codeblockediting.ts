@@ -297,36 +297,19 @@ export default class CodeBlockEditing extends Plugin {
 
 		let lastFocusedCodeBlock: Element | null = null;
 
-		const joinAnnouncements = ( announcements: Array<string> ) => upperFirst(
-			announcements
-				.map( lowerFirst )
-				.join( ', ' )
-		);
-
 		model.document.selection.on<SelectionChangeRangeEvent>( 'change:range', () => {
 			const focusParent = model.document.selection.focus!.parent;
 
-			if ( lastFocusedCodeBlock === focusParent || !focusParent.is( 'element' ) ) {
+			if ( !ui || lastFocusedCodeBlock === focusParent || !focusParent.is( 'element' ) ) {
 				return;
 			}
 
-			const announcements: Array<string> = [];
-
 			if ( lastFocusedCodeBlock && lastFocusedCodeBlock.is( 'element', 'codeBlock' ) ) {
-				announcements.push( getCodeBlockAriaAnnouncement( t, languageDefs, lastFocusedCodeBlock, 'leave' ) );
+				ui.ariaLiveAnnouncer.announce( getCodeBlockAriaAnnouncement( t, languageDefs, lastFocusedCodeBlock, 'leave' ) );
 			}
 
 			if ( focusParent.is( 'element', 'codeBlock' ) ) {
-				announcements.push( getCodeBlockAriaAnnouncement( t, languageDefs, focusParent, 'enter' ) );
-			}
-
-			if ( ui && announcements.length ) {
-				const announcement = joinAnnouncements( announcements );
-
-				ui.ariaLiveAnnouncer.announce( 'codeBlocks', announcement, {
-					politeness: 'assertive',
-					allowReadAgain: true
-				} );
+				ui.ariaLiveAnnouncer.announce( getCodeBlockAriaAnnouncement( t, languageDefs, focusParent, 'enter' ) );
 			}
 
 			lastFocusedCodeBlock = focusParent;

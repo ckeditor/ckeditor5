@@ -739,11 +739,11 @@ describe( 'LegacyTodoListEditing', () => {
 		} );
 
 		function expectNotToAnnounce( message ) {
-			expect( announcerSpy ).not.to.be.calledWithExactly( 'legacyTodoList', message );
+			expect( announcerSpy ).not.to.be.calledWithExactly( message );
 		}
 
 		function expectAnnounce( message ) {
-			expect( announcerSpy ).to.be.calledWithExactly( 'legacyTodoList', message );
+			expect( announcerSpy ).to.be.calledWithExactly( message );
 		}
 
 		function moveSelection( startPath, endPath ) {

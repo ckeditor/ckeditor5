@@ -1837,12 +1837,14 @@ describe( 'CodeBlockEditing', () => {
 			} );
 
 			expectAnnounce( 'Entering PHP code snippet' );
+			announcerSpy.resetHistory();
 
 			model.change( writer => {
 				writer.setSelection( createRange( root, [ 1, 0 ], root, [ 1, 1 ] ) );
 			} );
 
 			expectAnnounce( 'Leaving PHP code snippet' );
+			announcerSpy.resetHistory();
 
 			model.change( writer => {
 				writer.setSelection( createRange( root, [ 2, 0 ], root, [ 2, 1 ] ) );
@@ -1866,12 +1868,15 @@ describe( 'CodeBlockEditing', () => {
 			} );
 
 			expectAnnounce( 'Entering CSS code snippet' );
+			announcerSpy.resetHistory();
 
 			model.change( writer => {
 				writer.setSelection( createRange( root, [ 1, 0 ], root, [ 1, 1 ] ) );
 			} );
 
-			expectAnnounce( 'Leaving CSS code snippet, entering PHP code snippet' );
+			expectAnnounce( 'Leaving CSS code snippet' );
+			expectAnnounce( 'Entering PHP code snippet' );
+			announcerSpy.resetHistory();
 
 			model.change( writer => {
 				writer.setSelection( createRange( root, [ 2, 0 ], root, [ 2, 1 ] ) );
@@ -1897,35 +1902,34 @@ describe( 'CodeBlockEditing', () => {
 			} );
 
 			expectAnnounce( 'Entering Ruby code snippet' );
+			announcerSpy.resetHistory();
 
 			model.change( writer => {
 				writer.setSelection( createRange( root, [ 0, 0 ], root, [ 0, 1 ] ) );
 			} );
 
-			expectAnnounce( 'Leaving Ruby code snippet, entering CSS code snippet' );
+			expectAnnounce( 'Leaving Ruby code snippet' );
+			expectAnnounce( 'Entering CSS code snippet' );
+			announcerSpy.resetHistory();
 
 			model.change( writer => {
 				writer.setSelection( createRange( root, [ 3, 0 ], root, [ 3, 1 ] ) );
 			} );
 
-			expectAnnounce( 'Leaving CSS code snippet, entering XML code snippet' );
+			expectAnnounce( 'Leaving CSS code snippet' );
+			expectAnnounce( 'Entering XML code snippet' );
+			announcerSpy.resetHistory();
 
 			model.change( writer => {
 				writer.setSelection( createRange( root, [ 4, 0 ], root, [ 4, 1 ] ) );
 			} );
 
-			expectAnnounce( 'Leaving XML code snippet, entering code snippet' );
+			expectAnnounce( 'Leaving XML code snippet' );
+			expectAnnounce( 'Entering code snippet' );
 		} );
 
 		function expectAnnounce( message ) {
-			expect( announcerSpy ).to.be.calledWithExactly(
-				'codeBlocks',
-				message,
-				{
-					politeness: 'assertive',
-					allowReadAgain: true
-				}
-			);
+			expect( announcerSpy ).to.be.calledWithExactly( message );
 		}
 	} );
 
