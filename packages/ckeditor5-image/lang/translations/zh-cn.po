@@ -85,6 +85,10 @@ msgctxt "The label for the upload image from computer toolbar button."
 msgid "Upload image from computer"
 msgstr "从电脑上传图片"
 
+msgctxt "The label for the upload image from computer menu bar button."
+msgid "Image from computer"
+msgstr "从计算机中选择图片"
+
 msgctxt "The label for the replace image by upload from computer toolbar button."
 msgid "Replace image from computer"
 msgstr "从电脑替换图片"

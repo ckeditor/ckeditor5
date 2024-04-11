@@ -105,14 +105,22 @@ msgctxt "Keystroke description for assistive technologies: keystroke for moving 
 msgid "Move focus between form fields (inputs, buttons, etc.)"
 msgstr "Odağı, form alanları (girdiler, düğmeler vb.) arasında taşı"
 
+msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the menu bar."
+msgid "Move focus to the menu bar, navigate between menu bars"
+msgstr "Odağı menü çubuğuna taşıyın, menü çubukları arasında gezinin"
+
 msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the toolbar."
 msgid "Move focus to the toolbar, navigate between toolbars"
 msgstr "Odağı araç çubuğuna taşı, araç çubukları arasında gezin"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the toolbar."
-msgid "Navigate through the toolbar"
-msgstr "Araç çubuğunda gezin"
+msgid "Navigate through the toolbar or menu bar"
+msgstr "Araç çubuğu veya menü çubuğunda gezinme"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for executing currently focused button."
-msgid "Execute the currently focused button"
-msgstr "Şimdi odaklanılan düğmeyi çalıştır"
+msgid "Execute the currently focused button. Executing buttons that interact with the editor content moves the focus back to the content."
+msgstr "O anda odaklanılan düğmeyi çalıştırın. Düzenleyici içeriğiyle etkileşime giren düğmelerin çalıştırılması, odağı içeriğe geri taşır."
+
+msgctxt "Label of the button confirming the changes done in the current interface."
+msgid "Accept"
+msgstr "Kabul et"

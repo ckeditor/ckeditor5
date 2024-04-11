@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
-import { ButtonView } from '@ckeditor/ckeditor5-ui';
+import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 
 import selectAllIcon from '../theme/icons/select-all.svg';
 
@@ -33,27 +33,45 @@ export default class SelectAllUI extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 
-		editor.ui.componentFactory.add( 'selectAll', locale => {
-			const command = editor.commands.get( 'selectAll' )!;
-			const view = new ButtonView( locale );
-			const t = locale.t;
+		editor.ui.componentFactory.add( 'selectAll', () => {
+			const buttonView = this._createButton( ButtonView );
 
-			view.set( {
-				label: t( 'Select all' ),
-				icon: selectAllIcon,
-				keystroke: 'Ctrl+A',
+			buttonView.set( {
 				tooltip: true
 			} );
 
-			view.bind( 'isEnabled' ).to( command, 'isEnabled' );
-
-			// Execute the command.
-			this.listenTo( view, 'execute', () => {
-				editor.execute( 'selectAll' );
-				editor.editing.view.focus();
-			} );
-
-			return view;
+			return buttonView;
 		} );
+
+		editor.ui.componentFactory.add( 'menuBar:selectAll', () => {
+			return this._createButton( MenuBarMenuListItemButtonView );
+		} );
+	}
+
+	/**
+	 * Creates a button for select all command to use either in toolbar or in menu bar.
+	 */
+	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
+		const editor = this.editor;
+		const locale = editor.locale;
+		const command = editor.commands.get( 'selectAll' )!;
+		const view = new ButtonClass( editor.locale ) as InstanceType<T>;
+		const t = locale.t;
+
+		view.set( {
+			label: t( 'Select all' ),
+			icon: selectAllIcon,
+			keystroke: 'Ctrl+A'
+		} );
+
+		view.bind( 'isEnabled' ).to( command, 'isEnabled' );
+
+		// Execute the command.
+		this.listenTo( view, 'execute', () => {
+			editor.execute( 'selectAll' );
+			editor.editing.view.focus();
+		} );
+
+		return view;
 	}
 }

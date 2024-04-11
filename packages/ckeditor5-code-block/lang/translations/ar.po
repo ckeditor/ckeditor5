@@ -24,3 +24,7 @@ msgstr "إدراج كتلة تعليمات برمجية"
 msgctxt "A language of the code block in the editor content when no specific programming language is associated with it."
 msgid "Plain text"
 msgstr "نص عادي"
+
+msgctxt "The accessible label of the menu bar button that inserts a code block into editor content."
+msgid "Code block"
+msgstr "كتلة تعليمات برمجية"

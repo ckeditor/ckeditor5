@@ -11,6 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import MenuBarMenuListItemButtonView from '@ckeditor/ckeditor5-ui/src/menubar/menubarmenulistitembuttonview.js';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview.js';
 import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions.js';
 import Markdown from '@ckeditor/ckeditor5-markdown-gfm/src/markdown.js';
@@ -55,73 +56,21 @@ describe( 'SourceEditing', () => {
 	} );
 
 	describe( 'initialization', () => {
-		it( 'should register a feature component', () => {
-			expect( button ).to.be.instanceOf( ButtonView );
-			expect( button.isEnabled ).to.be.true;
-			expect( button.isOn ).to.be.false;
-			expect( button.tooltip ).to.be.true;
-			expect( button.label ).to.equal( 'Source' );
-			expect( button.class ).to.equal( 'ck-source-editing-button' );
+		describe( 'in toolbar', () => {
+			testButton( 'Source', ButtonView );
+
+			it( 'should have tooltip and proper class', () => {
+				expect( button.tooltip ).to.be.true;
+				expect( button.class ).to.equal( 'ck-source-editing-button' );
+			} );
 		} );
 
-		it( 'should disable button if plugin is disabled', () => {
-			plugin.forceDisabled( 'disablePlugin' );
+		describe( 'in menu bar', () => {
+			beforeEach( () => {
+				button = editor.ui.componentFactory.create( 'menuBar:sourceEditing' );
+			} );
 
-			expect( button.isEnabled ).to.be.false;
-
-			plugin.clearForceDisabled( 'disablePlugin' );
-
-			expect( button.isEnabled ).to.be.true;
-		} );
-
-		it( 'should disable button if editor is in read-only mode', () => {
-			editor.enableReadOnlyMode( 'unit-test' );
-
-			expect( button.isEnabled ).to.be.false;
-
-			editor.disableReadOnlyMode( 'unit-test' );
-
-			expect( button.isEnabled ).to.be.true;
-		} );
-
-		it( 'should disable button if there is a pending action', () => {
-			const pendingActionsPlugin = editor.plugins.get( PendingActions );
-
-			const action = pendingActionsPlugin.add( 'Action' );
-
-			expect( button.isEnabled ).to.be.false;
-
-			pendingActionsPlugin.remove( action );
-
-			expect( button.isEnabled ).to.be.true;
-		} );
-
-		it( 'should bind button to the plugin property', () => {
-			plugin.isSourceEditingMode = false;
-
-			expect( button.isOn ).to.be.false;
-
-			plugin.isSourceEditingMode = true;
-
-			expect( button.isOn ).to.be.true;
-		} );
-
-		it( 'should toggle the plugin property after execution', () => {
-			const spy = sinon.spy();
-
-			plugin.on( 'change:isSourceEditingMode', spy );
-
-			button.fire( 'execute' );
-
-			expect( plugin.isSourceEditingMode ).to.be.true;
-			expect( spy.calledOnce ).to.be.true;
-			expect( spy.firstCall.args[ 2 ] ).to.be.true;
-
-			button.fire( 'execute' );
-
-			expect( plugin.isSourceEditingMode ).to.be.false;
-			expect( spy.calledTwice ).to.be.true;
-			expect( spy.secondCall.args[ 2 ] ).to.be.false;
+			testButton( 'Show source', MenuBarMenuListItemButtonView );
 		} );
 
 		it( 'should throw when real-time collaboration plugin is loaded', async () => {
@@ -260,6 +209,75 @@ describe( 'SourceEditing', () => {
 
 			await editor.destroy();
 		} );
+
+		function testButton( label, Component ) {
+			it( 'should register a feature component', () => {
+				expect( button ).to.be.instanceOf( Component );
+				expect( button.isEnabled ).to.be.true;
+				expect( button.isOn ).to.be.false;
+				expect( button.label ).to.equal( label );
+			} );
+
+			it( 'should disable button if plugin is disabled', () => {
+				plugin.forceDisabled( 'disablePlugin' );
+
+				expect( button.isEnabled ).to.be.false;
+
+				plugin.clearForceDisabled( 'disablePlugin' );
+
+				expect( button.isEnabled ).to.be.true;
+			} );
+
+			it( 'should disable button if editor is in read-only mode', () => {
+				editor.enableReadOnlyMode( 'unit-test' );
+
+				expect( button.isEnabled ).to.be.false;
+
+				editor.disableReadOnlyMode( 'unit-test' );
+
+				expect( button.isEnabled ).to.be.true;
+			} );
+
+			it( 'should disable button if there is a pending action', () => {
+				const pendingActionsPlugin = editor.plugins.get( PendingActions );
+
+				const action = pendingActionsPlugin.add( 'Action' );
+
+				expect( button.isEnabled ).to.be.false;
+
+				pendingActionsPlugin.remove( action );
+
+				expect( button.isEnabled ).to.be.true;
+			} );
+
+			it( 'should bind button to the plugin property', () => {
+				plugin.isSourceEditingMode = false;
+
+				expect( button.isOn ).to.be.false;
+
+				plugin.isSourceEditingMode = true;
+
+				expect( button.isOn ).to.be.true;
+			} );
+
+			it( 'should toggle the plugin property after execution', () => {
+				const spy = sinon.spy();
+
+				plugin.on( 'change:isSourceEditingMode', spy );
+
+				button.fire( 'execute' );
+
+				expect( plugin.isSourceEditingMode ).to.be.true;
+				expect( spy.calledOnce ).to.be.true;
+				expect( spy.firstCall.args[ 2 ] ).to.be.true;
+
+				button.fire( 'execute' );
+
+				expect( plugin.isSourceEditingMode ).to.be.false;
+				expect( spy.calledTwice ).to.be.true;
+				expect( spy.secondCall.args[ 2 ] ).to.be.false;
+			} );
+		}
 	} );
 
 	describe( 'default listener', () => {
@@ -775,6 +793,41 @@ describe( 'SourceEditing', () => {
 
 			sinon.assert.calledTwice( updateSpy );
 		} );
+	} );
+
+	it( 'should disable CommentsArchiveUI plugin when disabling commands.', async () => {
+		class TestCommentsArchiveUIPlugin extends Plugin {
+			static get pluginName() {
+				return 'CommentsArchiveUI';
+			}
+			static get requires() {
+				return [];
+			}
+		}
+
+		const editorElement = document.body.appendChild( document.createElement( 'div' ) );
+
+		const editor = await ClassicEditor.create( editorElement, {
+			plugins: [ Paragraph, Heading, SourceEditing, TestCommentsArchiveUIPlugin ],
+			toolbar: [ 'heading' ]
+		} );
+
+		const sourceEditingPlugin = editor.plugins.get( 'SourceEditing' );
+		const commentsArchivePlugin = editor.plugins.get( 'CommentsArchiveUI' );
+
+		expect( commentsArchivePlugin.isEnabled ).to.be.true;
+
+		sourceEditingPlugin._disableCommands();
+
+		expect( commentsArchivePlugin.isEnabled ).to.be.false;
+
+		sourceEditingPlugin._enableCommands();
+
+		expect( commentsArchivePlugin.isEnabled ).to.be.true;
+
+		editorElement.remove();
+
+		editor.destroy();
 	} );
 } );
 

@@ -59,7 +59,7 @@ ClassicEditor
 
 		window.attachTourBalloon( {
 			target: window.findToolbarItem( editor.ui.view.toolbar,
-				item => item.buttonView && item.buttonView.label && item.buttonView.label === 'WProofreader' ),
+				item => item?.buttonView?.label === 'WProofreader text checker' ),
 			text: 'Click for spell and grammar checking.',
 			editor
 		} );

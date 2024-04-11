@@ -4,10 +4,12 @@
  */
 
 /**
- * @module upload/ui/filedialogbuttonview
+ * @module ui/button/filedialogbuttonview
  */
 
-import { ButtonView, View, type ButtonExecuteEvent } from '@ckeditor/ckeditor5-ui';
+import View from '../view.js';
+import ButtonView from './buttonview.js';
+import type { ButtonExecuteEvent } from './button.js';
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 

@@ -139,6 +139,9 @@ ClassicEditor
 				}
 			]
 		},
+		menuBar: {
+			isVisible: true
+		},
 		link: {
 			decorators: {
 				isExternal: {

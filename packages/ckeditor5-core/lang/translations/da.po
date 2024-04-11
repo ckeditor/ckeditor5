@@ -105,14 +105,22 @@ msgctxt "Keystroke description for assistive technologies: keystroke for moving 
 msgid "Move focus between form fields (inputs, buttons, etc.)"
 msgstr "Flyt fokus mellem formularfelter (input, knapper, osv.)"
 
+msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the menu bar."
+msgid "Move focus to the menu bar, navigate between menu bars"
+msgstr "Flyt fokus til menulinjen, naviger mellem menulinjerne"
+
 msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the toolbar."
 msgid "Move focus to the toolbar, navigate between toolbars"
 msgstr "Flyt fokus til værktøjslinjen, naviger mellem værktøjslinjer"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the toolbar."
-msgid "Navigate through the toolbar"
-msgstr "Naviger gennem værktøjslinjen"
+msgid "Navigate through the toolbar or menu bar"
+msgstr "Naviger gennem værktøjslinjen eller menulinjen"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for executing currently focused button."
-msgid "Execute the currently focused button"
-msgstr "Brug den knap, der i øjeblikket er i fokus"
+msgid "Execute the currently focused button. Executing buttons that interact with the editor content moves the focus back to the content."
+msgstr "Udfør den aktuelt fokuserede knap. Udførelse af knapper, der interagerer med editorens indhold, flytter fokus tilbage til indholdet."
+
+msgctxt "Label of the button confirming the changes done in the current interface."
+msgid "Accept"
+msgstr "Accepter"

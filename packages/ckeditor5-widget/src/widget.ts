@@ -22,13 +22,16 @@ import {
 	type ViewDocumentMouseDownEvent,
 	type ViewElement,
 	type Schema,
-	type Position
+	type Position,
+	type ViewDocumentTabEvent,
+	type ViewDocumentKeyDownEvent
 } from '@ckeditor/ckeditor5-engine';
 
 import { Delete, type ViewDocumentDeleteEvent } from '@ckeditor/ckeditor5-typing';
 
 import {
 	env,
+	keyCodes,
 	getLocalizedArrowKeyCodeDirection,
 	type EventInfo,
 	type KeystrokeInfo
@@ -195,6 +198,48 @@ export default class Widget extends Plugin {
 				evt.stop();
 			}
 		}, { context: '$root' } );
+
+		// Handle Tab key while a widget is selected.
+		this.listenTo<ViewDocumentTabEvent>( viewDocument, 'tab', ( evt, data ) => {
+			// This event could be triggered from inside the widget, but we are interested
+			// only when the widget is selected itself.
+			if ( evt.eventPhase != 'atTarget' ) {
+				return;
+			}
+
+			if ( data.shiftKey ) {
+				return;
+			}
+
+			if ( this._selectFirstNestedEditable() ) {
+				data.preventDefault();
+				evt.stop();
+			}
+		}, { context: isWidget, priority: 'low' } );
+
+		// Handle Shift+Tab key while caret inside a widget editable.
+		this.listenTo<ViewDocumentTabEvent>( viewDocument, 'tab', ( evt, data ) => {
+			if ( !data.shiftKey ) {
+				return;
+			}
+
+			if ( this._selectAncestorWidget() ) {
+				data.preventDefault();
+				evt.stop();
+			}
+		}, { priority: 'low' } );
+
+		// Handle Esc key while inside a nested editable.
+		this.listenTo<ViewDocumentKeyDownEvent>( viewDocument, 'keydown', ( evt, data ) => {
+			if ( data.keystroke != keyCodes.esc ) {
+				return;
+			}
+
+			if ( this._selectAncestorWidget() ) {
+				data.preventDefault();
+				evt.stop();
+			}
+		}, { priority: 'low' } );
 
 		// Add the information about the keystrokes to the accessibility database.
 		editor.accessibility.addKeystrokeInfoGroup( {
@@ -494,6 +539,71 @@ export default class Widget extends Plugin {
 		}
 
 		this._previouslySelected.clear();
+	}
+
+	/**
+	 * Moves the document selection into the first nested editable.
+	 */
+	private _selectFirstNestedEditable(): boolean {
+		const editor = this.editor;
+		const view = this.editor.editing.view;
+		const viewDocument = view.document;
+
+		for ( const item of viewDocument.selection.getFirstRange()!.getItems() ) {
+			if ( item.is( 'editableElement' ) ) {
+				const modelElement = editor.editing.mapper.toModelElement( item );
+
+				/* istanbul ignore next -- @preserve */
+				if ( !modelElement ) {
+					continue;
+				}
+
+				const position = editor.model.createPositionAt( modelElement, 0 );
+				const newRange = editor.model.schema.getNearestSelectionRange( position, 'forward' );
+
+				editor.model.change( writer => {
+					writer.setSelection( newRange );
+				} );
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Updates the document selection so that it selects first ancestor widget.
+	 */
+	private _selectAncestorWidget(): boolean {
+		const editor = this.editor;
+		const mapper = editor.editing.mapper;
+		const selection = editor.editing.view.document.selection;
+
+		const positionParent = selection.getFirstPosition()!.parent;
+
+		const positionParentElement = positionParent.is( '$text' ) ?
+			positionParent.parent as ViewElement :
+			positionParent as ViewElement;
+
+		const viewElement = positionParentElement.findAncestor( isWidget );
+
+		if ( !viewElement ) {
+			return false;
+		}
+
+		const modelElement = mapper.toModelElement( viewElement );
+
+		/* istanbul ignore next -- @preserve */
+		if ( !modelElement ) {
+			return false;
+		}
+
+		editor.model.change( writer => {
+			writer.setSelection( modelElement, 'on' );
+		} );
+
+		return true;
 	}
 }
 

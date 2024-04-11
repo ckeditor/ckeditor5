@@ -62,5 +62,6 @@
 	"Move the selection to the next cell": "Keystroke description for assistive technologies: keystroke for moving the selection to the next cell.",
 	"Move the selection to the previous cell": "Keystroke description for assistive technologies: keystroke for moving the selection to the previous cell.",
 	"Insert a new table row (when in the last cell of a table)": "Keystroke description for assistive technologies: keystroke for inserting a new table row.",
-	"Navigate through the table": "Keystroke description for assistive technologies: keystroke for navigating through the table."
+	"Navigate through the table": "Keystroke description for assistive technologies: keystroke for navigating through the table.",
+	"Table": "The accessible label of the menu bar button that displays a user interface to insert a table into editor content."
 }
