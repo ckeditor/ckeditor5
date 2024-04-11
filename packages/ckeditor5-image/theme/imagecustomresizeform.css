@@ -27,7 +27,7 @@
 
 	& .ck-input {
 		width: 100%;
-		min-width: auto;
+		min-width: 0;
 	}
 
 	@mixin ck-media-phone {

@@ -86,6 +86,8 @@ export default class ImageCustomResizeUI extends Plugin {
 				} );
 
 				this._hideForm( true );
+			} else {
+				this._balloon!.updatePosition();
 			}
 		} );
 
