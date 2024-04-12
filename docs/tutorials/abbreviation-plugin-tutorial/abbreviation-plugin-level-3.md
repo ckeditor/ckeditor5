@@ -284,7 +284,7 @@ We will start by simply moving there the action we already created for `submit` 
 ```js
 // abbreviation/abbreviationcommand.js
 
-import { Command } from '@ckeditor/ckeditor5-core';
+import { Command } from 'ckeditor5';
 
 export default class AbbreviationCommand extends Command {
 	execute( { title, abbr } ) {

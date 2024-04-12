@@ -103,8 +103,8 @@ import {
 	View,
 	LabeledFieldView,
 	createLabeledInputText,
-	ButtonView,
-	icons	// ADDED
+	ButtonView,		// ADDED
+	icons			// ADDED
 	} from 'ckeditor5';
 
 export default class FormView extends View {
