@@ -22,7 +22,13 @@ The easiest way to set up your project is to grab the starter files from the [Gi
 
 The editor has already been created in the `main.js` file with some basic plugins. All you need to do is clone the repository, navigate to the [starter-files directory](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/abbreviation-plugin/starter-files), run the `npm install` command, and you can start coding right away.
 
-You can just use the `npm run dev` command to run your application. Whenever you want to check anything in the browser, save the changes and run application again.
+```bash
+git clone https://github.com/ckeditor/ckeditor5-tutorials-examples;
+cd ckeditor5-tutorials-examples/abbreviation-plugin/starter-files;
+
+npm install;
+npm run dev;
+```
 
 <info-box>
 	The starter files come with the {@link framework/development-tools/inspector CKEditor&nbsp;5 Inspector} attached to the editor, so you can debug and observe what is happening in the model and the view layers. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
