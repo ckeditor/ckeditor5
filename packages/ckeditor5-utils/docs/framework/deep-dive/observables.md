@@ -12,7 +12,7 @@ Observables are common building blocks of the {@link framework/index CKEditor&nb
 Any class can become observable; all you need to do is mix the {@link module:utils/observablemixin~Observable} into it:
 
 ```js
-import { ObservableMixin, mix } from '@ckeditor/ckeditor5-utils';
+import { ObservableMixin, mix } from 'ckeditor5';
 
 class AnyClass {
 	// Any class definition.

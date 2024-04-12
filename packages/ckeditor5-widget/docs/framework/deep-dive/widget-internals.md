@@ -44,20 +44,19 @@ Although the {@link module:widget/widgettypearound/widgettypearound~WidgetTypeAr
 Use the {@link module:core/plugin~Plugin#forceDisabled `forceDisabled()`} method of the plugin to disable it on the fly like in the snippet below:
 
 ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		// The editor's configuration.
-		// ...
-	} )
-	.then( editor => {
-		const widgetTypeAroundPlugin = editor.plugins.get( 'WidgetTypeAround' );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	// The editor's configuration.
+	// ...
+} )
+.then( editor => {
+	const widgetTypeAroundPlugin = editor.plugins.get( 'WidgetTypeAround' );
 
-		// Disable the widget type around plugin.
-		widgetTypeAroundPlugin.forceDisabled( 'MyApplication' );
-	} )
-	.catch( err => {
-		console.error( err.stack );
-	} );
+	// Disable the widget type around plugin.
+	widgetTypeAroundPlugin.forceDisabled( 'MyApplication' );
+} )
+.catch( err => {
+	console.error( err.stack );
+} );
 ```
 
 You can always re–enable the plugin using the following snippet

@@ -107,7 +107,7 @@ Let's define the 3 components.
 
 import AbbreviationEditing from './abbreviationediting';
 import AbbreviationUI from './abbreviationui';
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from 'ckeditor5';
 
 export default class Abbreviation extends Plugin {
 	static get requires() {
@@ -119,7 +119,7 @@ export default class Abbreviation extends Plugin {
 ```js
 // abbreviation/abbreviationui.js
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from 'ckeditor5';
 
 export default class AbbreviationUI extends Plugin {
 	init() {
@@ -131,7 +131,7 @@ export default class AbbreviationUI extends Plugin {
 ```js
 // abbreviation/abbreviationediting.js
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from 'ckeditor5';
 
 export default class AbbreviationEditing extends Plugin {
 	init() {
@@ -199,7 +199,7 @@ Update the `AbbreviationEditing` plugin with this definition:
 ```js
 // abbreviation/abbreviationediting.js)
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from 'ckeditor5';
 
 export default class AbbreviationEditing extends Plugin {
 	init() {
@@ -238,7 +238,7 @@ We will need to use a callback function, in order to get the title stored as a m
 ```js
 // abbreviation/abbreviationediting.js
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from 'ckeditor5';
 
 export default class AbbreviationEditing extends Plugin {
 	init() {
@@ -281,7 +281,7 @@ We also need to grab the title value from content and use it in the model. We ca
 ```js
 // abbreviation/abbreviationediting.js
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from 'ckeditor5';
 
 export default class AbbreviationEditing extends Plugin {
 	init() {
@@ -391,7 +391,7 @@ We will use the {@link module:engine/model/model~Model#insertContent `writer.ins
 ```js
 // abbreviation/abbreviationui.js
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from 'ckeditor5';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
 
 class AbbreviationUI extends Plugin {
@@ -437,7 +437,7 @@ import { Heading } from '@ckeditor/ckeditor5-heading';
 import { List } from '@ckeditor/ckeditor5-list';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from 'ckeditor5';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
 
 class AbbreviationUI extends Plugin {

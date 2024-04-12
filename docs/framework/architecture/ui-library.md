@@ -251,7 +251,7 @@ The framework provides some common {@link api/ui components} like {@link module:
 For example, to create a toolbar with some buttons inside, you need to import the `ToolbarView` and `ButtonView` classes first:
 
 ```js
-import { ButtonView, ToolbarView } from '@ckeditor/ckeditor5-ui';
+import { ButtonView, ToolbarView } from 'ckeditor5';
 ```
 
 Create the toolbar and a couple of buttons with labels first. Then append the buttons to the toolbar:
@@ -315,7 +315,7 @@ The framework provides a set of helpers to make the dropdown creation process ea
 The {@link module:ui/dropdown/utils~createDropdown} helper creates a {@link module:ui/dropdown/dropdownview~DropdownView} with either a {@link module:ui/button/buttonview~ButtonView} or a {@link module:ui/dropdown/button/splitbuttonview~SplitButtonView}.
 
 ```js
-import { createDropdown, SplitButtonView } from '@ckeditor/ckeditor5-ui';
+import { createDropdown, SplitButtonView } from 'ckeditor5';
 
 const dropdownView = createDropdown( locale, SplitButtonView );
 ```
@@ -389,8 +389,7 @@ dropdownView.buttonView.set( {
 The {@link module:ui/list/listview~ListView} can be added to a dropdown using the {@link module:ui/dropdown/utils~addListToDropdown} helper.
 
 ```js
-import { ViewModel, addListToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui';
-import { Collection } from '@ckeditor/ckeditor5-utils';
+import { ViewModel, addListToDropdown, createDropdown, Collection } from 'ckeditor5';
 
 // The default dropdown.
 const dropdownView = createDropdown( locale );
@@ -423,7 +422,7 @@ addListToDropdown( dropdownView, items );
 A {@link module:ui/toolbar/toolbarview~ToolbarView} can be added to a dropdown using the {@link module:ui/dropdown/utils~addToolbarToDropdown} helper.
 
 ```js
-import { ButtonView, SplitButtonView, addToolbarToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui';
+import { ButtonView, SplitButtonView, addToolbarToDropdown, createDropdown } from 'ckeditor5';
 
 
 const buttons = [];
@@ -760,7 +759,7 @@ The `onShow` callback allows you to manipulate the dialog values or set addition
 
 ```js
 // Import necessary classes.
-import { View, InputTextView } from '@ckeditor/ckeditor5-ui';
+import { View, InputTextView } from 'ckeditor5';
 
 // Create an input.
 const input = new InputTextView();
@@ -852,7 +851,7 @@ The framework offers built-in classes that help manage keystrokes and focus in t
 The {@link module:utils/focustracker~FocusTracker `FocusTracker`} class can observe some HTML elements and determine if one of them is focused either by the user (clicking, typing) or using the `HTMLElement.focus()` DOM method.
 
 ```js
-import { FocusTracker } from '@ckeditor/ckeditor5-utils';
+import { FocusTracker } from 'ckeditor5';
 
 // More imports.
 // ...
@@ -888,7 +887,7 @@ Learn more about the focus tracker class in the {@link framework/deep-dive/focus
 The {@link module:utils/keystrokehandler~KeystrokeHandler `KeystrokeHandler`} listens to the keystroke events fired by an HTML element or any of its descendants. It executes pre-defined actions when the keystroke is pressed. Usually, each [view](#views) creates its keystroke handler instance. It takes care of the keystrokes fired by the elements the view has rendered.
 
 ```js
-import { KeystrokeHandler } from '@ckeditor/ckeditor5-utils';
+import { KeystrokeHandler } from 'ckeditor5';
 
 // More imports.
 // ...

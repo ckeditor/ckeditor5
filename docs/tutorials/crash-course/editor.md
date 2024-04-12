@@ -30,7 +30,7 @@ Open the `src/main.js` file and add the following code:
 
 ```js
 // Import the editor
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { ClassicEditor } from 'ckeditor5';
 
 // Get the HTML element with the ID of 'app'.
 const element = document.querySelector( '#app' );
@@ -49,8 +49,7 @@ The editor itself does not do much - it is just an empty shell at this stage. Wh
 
 ```js
 // Add these two imports.
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Essentials, Paragraph } from 'ckeditor5';
 
 // Update the call to the `create()` method.
 const editor = await ClassicEditor.create( element, {

@@ -11,7 +11,7 @@ Emitters are heavily used throughout the entire editor architecture. They are th
 Any class can become an event emitter. All you need to do is mix the {@link module:utils/emittermixin~Emitter} into it:
 
 ```js
-import { EmitterMixin, mix } from '@ckeditor/ckeditor5-utils';
+import { EmitterMixin, mix } from 'ckeditor5';
 
 class AnyClass {
 	// Class's code.
@@ -150,7 +150,7 @@ All passed arguments will be available in all listeners that are added to the ev
 It is sometimes useful to know if an event was stopped by any of the listeners. There is an alternative way of firing an event just for that:
 
 ```js
-import { EventInfo } from '@ckeditor/ckeditor5-utils';
+import { EventInfo } from 'ckeditor5';
 
 // Prepare the event info...
 const eventInfo = new EventInfo( this, 'eventName' );
@@ -287,7 +287,7 @@ this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
 Listeners registered in the context of a custom callback function:
 
 ```js
-import { isWidget } from '@ckeditor/ckeditor5-widget';
+import { isWidget } from 'ckeditor5';
 
 this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
 	// Listener's code.

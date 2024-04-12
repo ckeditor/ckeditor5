@@ -189,7 +189,7 @@ Any UI {@link framework/architecture/ui-library#views view} can be focusable. To
 </info-box>
 
 ```js
-import { View } from '@ckeditor/ckeditor5-ui';
+import { View } from 'ckeditor5';
 
 class MyListItemView extends View {
 	constructor( locale, text ) {
@@ -219,7 +219,7 @@ class MyListItemView extends View {
 If a view has many focusable children (like a list), the `focus()` method should focus the first child:
 
 ```js
-import { View } from '@ckeditor/ckeditor5-ui';
+import { View } from 'ckeditor5';
 
 class MyListView extends View {
 	constructor( locale ) {
@@ -291,8 +291,7 @@ The continuity of editor focus is maintained **only** when the global focus trac
 Take a look at the following example of a list that has multiple items, a classic use case for a focus tracker:
 
 ```js
-import { View } from '@ckeditor/ckeditor5-ui';
-import { FocusTracker } from '@ckeditor/ckeditor5-utils';
+import { View, FocusTracker } from 'ckeditor5';
 
 class MyListView extends View {
 	constructor( locale ) {
@@ -364,8 +363,7 @@ The {@link module:utils/keystrokehandler~KeystrokeHandler} helper class allows r
 However, in the context of focus management, it is used by the [focus cycler](#using-the-focuscycler-class) you will get familiar with in the next section. You can learn more about the {@link module:utils/keystrokehandler~KeystrokeHandler} class in the API documentation but for now, you should only know how to create and initialize it before moving forward:
 
 ```js
-import { FocusCycler, View } from '@ckeditor/ckeditor5-ui';
-import { FocusTracker, KeystrokeHandler } from '@ckeditor/ckeditor5-utils';
+import { FocusCycler, View, FocusTracker, KeystrokeHandler } from 'ckeditor5';
 
 export default class MyListView extends View {
 	constructor( locale ) {
@@ -408,8 +406,7 @@ Each focus cycler instance works together with a [focus tracker](#using-the-focu
 Take a look at the example list class using focus cycler, keystroke handler and focus tracker instances together to enable the keyboard navigation. First, all the helpers must be created:
 
 ```js
-import { FocusCycler, View } from '@ckeditor/ckeditor5-ui';
-import { FocusTracker, KeystrokeHandler } from '@ckeditor/ckeditor5-utils';
+import { FocusCycler, View, FocusTracker, KeystrokeHandler } from 'ckeditor5';
 
 class MyListView extends View {
 	constructor( locale ) {
@@ -504,8 +501,7 @@ class MyListView extends View {
 The complete code of a list class that hosts multiple item views and supports the keyboard navigation across them (when it gets focused) looks as follows:
 
 ```js
-import { FocusCycler, View } from '@ckeditor/ckeditor5-ui';
-import { FocusTracker, KeystrokeHandler } from '@ckeditor/ckeditor5-utils';
+import { FocusCycler, View, FocusTracker, KeystrokeHandler } from 'ckeditor5';
 
 class MyListView extends View {
 	constructor( locale ) {

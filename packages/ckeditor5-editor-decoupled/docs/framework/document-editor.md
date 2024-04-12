@@ -26,25 +26,24 @@ Document editor can be created using the existing data container in the DOM. It 
 </info-box>
 
 ```js
-import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document/src/ckeditor';
+import { DecoupledEditor } from 'ckeditor5';
 
-DecoupledEditor
-	.create( document.querySelector( '.document-editor__editable' ), {
-		cloudServices: {
-			// A configuration of CKEditor Cloud Services.
-			// ...
-		}
-	} )
-	.then( editor => {
-		const toolbarContainer = document.querySelector( '.document-editor__toolbar' );
+DecoupledEditor.create( document.querySelector( '.document-editor__editable' ), {
+	cloudServices: {
+		// A configuration of CKEditor Cloud Services.
+		// ...
+	}
+} )
+.then( editor => {
+	const toolbarContainer = document.querySelector( '.document-editor__toolbar' );
 
-		toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+	toolbarContainer.appendChild( editor.ui.view.toolbar.element );
 
-		window.editor = editor;
-	} )
-	.catch( err => {
-		console.error( err );
-	} );
+	window.editor = editor;
+} )
+.catch( err => {
+	console.error( err );
+} );
 ```
 
 You may have noticed that you have to make sure the editor UI is injected into your application after it fires the {@link module:ui/editorui/editorui~EditorUI#event:ready `EditorUI#ready`} event. The toolbar element can be found under `editor.ui.view.toolbar.element`.

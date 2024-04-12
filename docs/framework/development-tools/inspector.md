@@ -53,14 +53,13 @@ Now you can load CKEditor 5 inspector by using the newly created bookmark.
 Attach the inspector to the editor instance when {@link getting-started/legacy-getting-started/editor-lifecycle#creating-an-editor-with-create created} using the `CKEditorInspector.attach()` method:
 
 ```js
-ClassicEditor
-	.create( /* ... */ )
-	.then( editor => {
-		CKEditorInspector.attach( editor );
-	} )
-	.catch( error => {
-		console.error( error );
-	} );
+ClassicEditor.create( /* ... */ )
+.then( editor => {
+	CKEditorInspector.attach( editor );
+} )
+.catch( error => {
+	console.error( error );
+} );
 ```
 
 The inspector will show up at the bottom of the screen.
