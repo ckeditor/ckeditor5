@@ -107,7 +107,7 @@ msgstr "Fókusz mozgatása a mezők között (inputok, gombok, stb.)"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the menu bar."
 msgid "Move focus to the menu bar, navigate between menu bars"
-msgstr ""
+msgstr "Fókusz áthelyezése a menüsorra, navigálás a menüsorok között"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the toolbar."
 msgid "Move focus to the toolbar, navigate between toolbars"
@@ -115,11 +115,11 @@ msgstr "Fókusz mozgatása az eszköztárhoz, navigáció az eszköztárak köz�
 
 msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the toolbar."
 msgid "Navigate through the toolbar or menu bar"
-msgstr ""
+msgstr "Navigálás az eszköztáron vagy a menüsoron keresztül"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for executing currently focused button."
 msgid "Execute the currently focused button. Executing buttons that interact with the editor content moves the focus back to the content."
-msgstr ""
+msgstr "Az aktuálisan fókuszált gomb végrehajtása. A szerkesztő tartalmával interakcióba lépő gombok végrehajtása visszahelyezi a fókuszt a tartalomra."
 
 msgctxt "Label of the button confirming the changes done in the current interface."
 msgid "Accept"

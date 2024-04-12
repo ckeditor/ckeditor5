@@ -107,7 +107,7 @@ msgstr "Μετακίνηση της εστίασης μεταξύ των πεδ�
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the menu bar."
 msgid "Move focus to the menu bar, navigate between menu bars"
-msgstr ""
+msgstr "Μετακίνηση της εστίασης στη γραμμή μενού, πλοήγηση μεταξύ των γραμμών μενού"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the toolbar."
 msgid "Move focus to the toolbar, navigate between toolbars"
@@ -115,11 +115,11 @@ msgstr "Μετακίνηση της εστίασης στη γραμμή εργ�
 
 msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the toolbar."
 msgid "Navigate through the toolbar or menu bar"
-msgstr ""
+msgstr "Πλοήγηση μέσω της γραμμής εργαλείων ή της γραμμής μενού"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for executing currently focused button."
 msgid "Execute the currently focused button. Executing buttons that interact with the editor content moves the focus back to the content."
-msgstr ""
+msgstr "Εκτέλεση του τρέχοντος εστιασμένου κουμπιού. Η εκτέλεση κουμπιών που αλληλεπιδρούν με το περιεχόμενο του συντάκτη μετακινεί την εστίαση πίσω στο περιεχόμενο."
 
 msgctxt "Label of the button confirming the changes done in the current interface."
 msgid "Accept"

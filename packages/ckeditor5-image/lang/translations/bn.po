@@ -87,7 +87,7 @@ msgstr "কম্পিউটার থেকে ছবি আপলোড ক�
 
 msgctxt "The label for the upload image from computer menu bar button."
 msgid "Image from computer"
-msgstr ""
+msgstr "কম্পিউটার থেকে ছবি"
 
 msgctxt "The label for the replace image by upload from computer toolbar button."
 msgid "Replace image from computer"
