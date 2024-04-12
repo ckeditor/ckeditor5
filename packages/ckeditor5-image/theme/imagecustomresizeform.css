@@ -25,16 +25,16 @@
 		}
 	}
 
-	& .ck-input {
-		width: 100%;
-		min-width: 0;
-	}
-
 	@mixin ck-media-phone {
 		flex-wrap: wrap;
 
 		& .ck-labeled-field-view {
 			flex-basis: 100%;
+		}
+
+		& .ck-input {
+			width: 100%;
+			min-width: 0;
 		}
 
 		& .ck-button {

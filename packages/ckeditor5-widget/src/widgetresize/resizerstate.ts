@@ -10,7 +10,7 @@
 import { ObservableMixin, Rect } from '@ckeditor/ckeditor5-utils';
 
 import type { ResizerOptions } from '../widgetresize.js';
-import { calculateResizeHostPercentageWidth } from '../utils/calculateresizehostancestorwidth.js';
+import { calculateResizeHostPercentageWidth } from '../utils.js';
 
 /**
  * Stores the internal state of a single resizable object.
