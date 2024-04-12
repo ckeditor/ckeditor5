@@ -185,14 +185,14 @@ describe( 'ImageCustomResizeUI', () => {
 				plugin._showForm();
 				fillFormSize( '' );
 				plugin._form.fire( 'submit' );
-				expect( getErrorLabel() ).to.be.equal( 'Custom resize value for the image must not be empty.' );
+				expect( getErrorLabel() ).to.be.equal( 'The value must not be empty.' );
 			} );
 
 			it( 'should show error form status if passed incorrect size', () => {
 				plugin._showForm();
 				fillFormSize( 'for sure incorrect value' );
 				plugin._form.fire( 'submit' );
-				expect( getErrorLabel() ).to.be.equal( 'Incorrect custom resize value.' );
+				expect( getErrorLabel() ).to.be.equal( 'The value should be a plain number.' );
 			} );
 
 			it( 'should reset error form status after filling empty link', () => {

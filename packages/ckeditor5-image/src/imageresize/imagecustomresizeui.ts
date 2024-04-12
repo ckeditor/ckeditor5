@@ -209,11 +209,11 @@ function getFormValidators( editor: Editor ): Array<ImageCustomResizeFormValidat
 	return [
 		form => {
 			if ( form.rawSize!.trim() === '' ) {
-				return t( 'Custom resize value for the image must not be empty.' );
+				return t( 'The value must not be empty.' );
 			}
 
 			if ( form.parsedSize === null ) {
-				return t( 'Incorrect custom resize value.' );
+				return t( 'The value should be a plain number.' );
 			}
 		}
 	];
