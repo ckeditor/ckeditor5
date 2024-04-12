@@ -213,9 +213,12 @@ export default class LinkUI extends Plugin {
 				const parsedUrl = addLinkProtocolIfApplicable( value, defaultProtocol );
 				editor.execute( 'link', parsedUrl, formView.getDecoratorSwitchesState() );
 				this._closeFormView();
-			} else if ( this._balloon.visibleStack ) {
-				this._balloon.updatePosition();
 			}
+		} );
+
+		// Update balloon position when form error changes.
+		this.listenTo( formView.urlInputView, 'change:errorText', () => {
+			editor.ui.update();
 		} );
 
 		// Hide the panel after clicking the "Cancel" button.
