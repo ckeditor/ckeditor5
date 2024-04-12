@@ -202,11 +202,8 @@ export default class ImageCustomResizeFormView extends View {
 		const t = this.locale!.t;
 		const labeledInput = new LabeledFieldView<InputNumberView>( this.locale, createLabeledInputNumber );
 
-		const possibleRange = this.unit === '%' ? { min: 0.2, max: 100 } : { min: 1, max: 16_000 };
-
 		labeledInput.label = t( 'Resize image (in %0)', this.unit );
 		labeledInput.fieldView.set( {
-			...possibleRange,
 			step: 0.1
 		} );
 

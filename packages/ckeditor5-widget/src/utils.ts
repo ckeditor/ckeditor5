@@ -453,7 +453,7 @@ function addSelectionHandle( widgetElement: ViewContainerElement, writer: Downca
  * Searches up to 5 levels above the specified element and returns the width of the found ancestor element.
  *
  * @param domResizeHost Resize host DOM element.
- * @returns Width of ancestor element.
+ * @returns Width of ancestor element in pixels.
  */
 export function calculateResizeHostAncestorWidth( domResizeHost: HTMLElement ): number {
 	const domResizeHostParent = domResizeHost.parentElement;

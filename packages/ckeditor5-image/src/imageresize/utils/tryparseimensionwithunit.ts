@@ -6,10 +6,6 @@
 /**
  * @module image/imageresize/utils/tryparsedimensionwithunit
  */
-export type DimensionWithUnit = {
-	value: number;
-	unit: string;
-};
 
 /**
  * Parses provided string with dimension value and returns extracted numeric value and unit.
@@ -42,3 +38,34 @@ export function tryParseDimensionWithUnit( dimension: string | null | undefined 
 		unit
 	};
 }
+
+/**
+ * Converts dimension between `px` -> `%` and `%` -> `px`.
+ *
+ * @param parentDimensionPx	Dimension of parent element that contains measured element.
+ * @param dimension Measured element dimension.
+ * @returns Casted dimension.
+ */
+export function tryCastDimensionsToUnit( parentDimensionPx: number, dimension: DimensionWithUnit, targetUnit: string ): DimensionWithUnit {
+	// "%" -> "px" conversion
+	if ( targetUnit === 'px' ) {
+		return {
+			value: dimension.value,
+			unit: 'px'
+		};
+	}
+
+	// "px" -> "%" conversion
+	return {
+		value: dimension.value / parentDimensionPx * 100,
+		unit: '%'
+	};
+}
+
+/**
+ * @internal
+ */
+export type DimensionWithUnit = {
+	value: number;
+	unit: string;
+};

@@ -23,6 +23,7 @@ import ImageCustomResizeFormView, {
 	type ImageCustomResizeFormViewCancelEvent,
 	type ImageCustomResizeFormViewSubmitEvent
 } from './ui/imagecustomresizeformview.js';
+import { getSelectedImagePossibleResizeRange } from './utils/getselectedimagepossibleresizerange.js';
 
 /**
  * The custom resize image UI plugin.
@@ -142,10 +143,18 @@ export default class ImageCustomResizeUI extends Plugin {
 		// the command. If the user typed in the input, then canceled the balloon (`labeledInput#value`
 		// stays unaltered) and re-opened it without changing the value of the command, they would see the
 		// old value instead of the actual value of the command.
-		const currentParsedWidth = getSelectedImageWidthInUnits( this.editor, unit );
+		const currentParsedWidth = getSelectedImageWidthInUnits( editor, unit );
 		const initialInputValue = currentParsedWidth ? currentParsedWidth.value.toFixed( 1 ) : '';
+		const possibleRange = getSelectedImagePossibleResizeRange( editor, unit );
 
 		labeledInput.fieldView.value = labeledInput.fieldView.element!.value = initialInputValue;
+
+		if ( possibleRange ) {
+			Object.assign( labeledInput.fieldView, {
+				min: possibleRange.lower,
+				max: possibleRange.upper
+			} );
+		}
 
 		this._form!.labeledInput.fieldView.select();
 		this._form!.enableCssTransitions();

@@ -6,62 +6,50 @@
 /**
  * @module image/imageresize/utils/getselectedimagewidthinunits
  */
+
 import { Rect } from 'ckeditor5/src/utils.js';
 
 import { calculateResizeHostAncestorWidth } from 'ckeditor5/src/widget.js';
 import type { Editor } from 'ckeditor5/src/core.js';
 
-import { tryParseDimensionWithUnit, type DimensionWithUnit } from './tryparseimensionwithunit.js';
+import { tryCastDimensionsToUnit, tryParseDimensionWithUnit, type DimensionWithUnit } from './tryparseimensionwithunit.js';
+import { getSelectedImageEditorNodes } from './getselectedimagedomnode.js';
 
 /**
- * Returns image width in specified units.
+ * Returns image width in specified units. It is width of image after resize.
  *
  * 	* If image is not selected or command is disabled then `null` will be returned.
  * 	* If image is not fully loaded (and it is impossible to determine its natural size) then `null` will be returned.
  *	* If `targetUnit` percentage is passed then it will return width percentage of image related to its accessors.
  *
+ * @param editor Editor instance.
  * @param targetUnit Unit in which dimension will be returned.
- * @returns Parsed dimension with unit.
+ * @returns Parsed image width after resize (with unit).
  */
 export function getSelectedImageWidthInUnits( editor: Editor, targetUnit: string ): DimensionWithUnit | null {
-	const { editing } = editor;
+	const imageNodes = getSelectedImageEditorNodes( editor );
 
-	const imageUtils = editor.plugins.get( 'ImageUtils' );
-	const imageModelElement = imageUtils.getClosestSelectedImageElement( editor.model.document.selection );
-
-	if ( !imageModelElement ) {
+	if ( !imageNodes ) {
 		return null;
 	}
 
-	const parsedWidth = tryParseDimensionWithUnit(
-		imageModelElement.getAttribute( 'resizedWidth' ) as string || null
+	const parsedResizedWidth = tryParseDimensionWithUnit(
+		imageNodes.model.getAttribute( 'resizedWidth' ) as string || null
 	);
 
-	if ( !parsedWidth ) {
+	if ( !parsedResizedWidth ) {
 		return null;
 	}
 
-	if ( parsedWidth.unit === targetUnit ) {
-		return parsedWidth;
+	if ( parsedResizedWidth.unit === targetUnit ) {
+		return parsedResizedWidth;
 	}
 
-	const imageViewElement = editing.mapper.toViewElement( imageModelElement );
-	const imageDOMElement = editing.view.domConverter.mapViewToDom( imageViewElement! )!;
-
-	const imageHolderWidth = new Rect( imageDOMElement ).width;
-	const imageParentWidth = calculateResizeHostAncestorWidth( imageDOMElement );
-
-	// "%" -> "px" conversion
-	if ( targetUnit === 'px' ) {
-		return {
-			value: ( imageHolderWidth / imageParentWidth ) * parsedWidth.value,
-			unit: 'px'
-		};
-	}
-
-	// "px" -> "%" conversion
-	return {
-		value: imageHolderWidth / imageParentWidth * 100,
-		unit: '%'
+	const imageParentWidthPx = calculateResizeHostAncestorWidth( imageNodes.dom );
+	const imageHolderDimension = {
+		unit: 'px',
+		value: new Rect( imageNodes.dom ).width
 	};
+
+	return tryCastDimensionsToUnit( imageParentWidthPx, imageHolderDimension, targetUnit );
 }
