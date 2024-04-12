@@ -33,7 +33,7 @@ In the `FormView` constructor we define a template for our abbreviation form. We
 ```js
 // abbreviation/abbreviationview.js
 
-import { View } from '@ckeditor/ckeditor5-ui';
+import { View } from 'ckeditor5';
 
 export default class FormView extends View {
 	constructor( locale ) {
@@ -66,7 +66,7 @@ import {
 	View,
 	LabeledFieldView,				// ADDED
 	createLabeledInputText			// ADDED
-	} from '@ckeditor/ckeditor5-ui';
+	} from 'ckeditor5';
 
 export default class FormView extends View {
 	constructor( locale ) {
@@ -103,9 +103,9 @@ import {
 	View,
 	LabeledFieldView,
 	createLabeledInputText,
-	ButtonView										// ADDED
-	} from '@ckeditor/ckeditor5-ui';
-import { icons } from '@ckeditor/ckeditor5-core';	// ADDED
+	ButtonView,
+	icons	// ADDED
+	} from 'ckeditor5';
 
 export default class FormView extends View {
 	constructor( locale ) {
@@ -232,9 +232,8 @@ Import it into `AbbreviationUI`:
 ```js
 // abbreviation/abbreviationui.js
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
-import { ButtonView } from '@ckeditor/ckeditor5-ui';
-import './styles.css';											// ADDED
+import { ButtonView, Plugin } from 'ckeditor5';
+import './styles.css';		// ADDED
 
 export default class AbbreviationUI extends Plugin {
 	// Definition of Abbreviation UI class.
@@ -260,9 +259,9 @@ import {
 	LabeledFieldView,
 	createLabeledInputText,
 	ButtonView,
-	submitHandler									// ADDED
-	} from '@ckeditor/ckeditor5-ui';
-import { icons } from '@ckeditor/ckeditor5-core';
+	icons,
+	submitHandler	// ADDED
+	} from 'ckeditor5';
 
 export default class FormView extends View {
 	constructor( locale ) {
@@ -282,7 +281,7 @@ export default class FormView extends View {
 				// Attributes of a form template.
 				// ...
 			},
-			children: this.childViews				// ADDED
+			children: this.childViews	// ADDED
 		} );
 	}
 
@@ -323,8 +322,7 @@ This is where we ended up with our UI in the first part of the tutorial.
 ```js
 // abbreviation/abbreviationui.js
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
-import { ButtonView } from '@ckeditor/ckeditor5-ui';
+import { ButtonView, Plugin } from 'ckeditor5';
 
 export default class AbbreviationUI extends Plugin {
 	init() {
@@ -367,9 +365,12 @@ Finally, we add our balloon and the form view to the `init()` method.
 ```js
 // abbreviation/abbreviationui.js
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
-import { ButtonView, ContextualBalloon } from '@ckeditor/ckeditor5-ui'; // ADDED
-import FormView from './abbreviationview';								// ADDED
+import { 
+	ButtonView,
+	ContextualBalloon,						// ADDED
+	Plugin
+	} from 'ckeditor5';
+import FormView from './abbreviationview';	// ADDED
 
 export default class AbbreviationUI extends Plugin {
 	static get requires() {
@@ -541,7 +542,7 @@ Additionally, we will import the `clickOutsideHandler()` method, which will take
 // Previously imported packages.
 // ...
 
-import { ContextualBalloon, clickOutsideHandler } from '@ckeditor/ckeditor5-ui'; // ADDED
+import { ContextualBalloon, clickOutsideHandler } from 'ckeditor5'; // ADDED
 
 export default class AbbreviationUI extends Plugin {
 	static get requires() {

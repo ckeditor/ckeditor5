@@ -41,9 +41,10 @@ import {
 	createLabeledInputText,
 	ButtonView,
 	submitHandler,
-} from '@ckeditor/ckeditor5-ui';
-import { FocusTracker, KeystrokeHandler } from '@ckeditor/ckeditor5-utils'; // ADDED
-import { icons } from '@ckeditor/ckeditor5-core';
+	icons,
+	FocusTracker,		// ADDED
+	KeystrokeHandler,	// ADDED
+} from 'ckeditor5';
 
 export default class FormView extends View {
 	constructor( locale ) {
@@ -97,10 +98,11 @@ import {
 	createLabeledInputText,
 	ButtonView,
 	submitHandler,
-	FocusCycler																// ADDED
-} from '@ckeditor/ckeditor5-ui';
-import { FocusTracker, KeystrokeHandler } from '@ckeditor/ckeditor5-utils';
-import { icons } from '@ckeditor/ckeditor5-core';
+	FocusTracker,
+	KeystrokeHandler,
+	icons,
+	FocusCycler		// ADDED
+} from 'ckeditor5';
 
 export default class FormView extends View {
 	constructor( locale ) {
@@ -303,8 +305,8 @@ Now, let's initialize our `AbbreviationCommand`, by adding it to the list of edi
 ```js
 // abreviation/abbreviationediting.js
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
-import AbbreviationCommand from './abbreviationcommand';			// ADDED
+import { Plugin } from 'ckeditor5';
+import AbbreviationCommand from './abbreviationcommand';	// ADDED
 
 export default class AbbreviationEditing extends Plugin {
 	init() {
@@ -369,7 +371,7 @@ Before we do that, we may want to check if the command can be used at all on a g
 ```js
 // abbreviation/abbreviationcommand.js
 
-import { Command } from '@ckeditor/ckeditor5-core';
+import { Command } from 'ckeditor5';
 
 export default class AbbreviationCommand extends Command {
 	refresh() {
@@ -397,9 +399,11 @@ Then, we change the value of the command. We will get the abbreviation text usin
 ```js
 // abbreviation/abbreviationcommand.js
 
-import { Command } from '@ckeditor/ckeditor5-core';
-import { findAttributeRange } from '@ckeditor/ckeditor5-typing'; 	// ADDED
-import getRangeText from './utils.js';														// ADDED
+import { 
+	Command,
+	findAttributeRange						// ADDED
+	} from 'ckeditor5';
+import getRangeText from './utils.js';		// ADDED
 
 export default class AbbreviationCommand extends Command {
 	refresh() {
@@ -661,7 +665,7 @@ The user might place the abbreviation inside a text, which already has some othe
 
 // More imports.
 // ...
-import { toMap } from '@ckeditor/ckeditor5-utils';					// ADDED
+import { toMap } from 'ckeditor5';		// ADDED
 
 export default class AbbreviationCommand extends Command {
 	refresh() {

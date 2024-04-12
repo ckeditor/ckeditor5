@@ -18,29 +18,34 @@ If you want to see the final product of this tutorial before you plunge in, chec
 
 ## Let's start!
 
-The easiest way to set up your project is to grab the starter files from the [GitHub repository for this tutorial](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/abbreviation-plugin). We gathered all the necessary dependencies there, including some CKEditor&nbsp;5 packages and other files needed to build the editor.
+The easiest way to set up your project is to grab the starter files from the [GitHub repository for this tutorial](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/abbreviation-plugin). We gathered all the necessary dependencies there, including some CKEditor&nbsp;5 packages and other files needed to start the editor.
 
-The editor has already been created in the `app.js` file with some basic plugins. All you need to do is clone the repository, navigate to the [starter-files directory](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/abbreviation-plugin/starter-files), run the `npm install` command, and you can start coding right away.
+The editor has already been created in the `main.js` file with some basic plugins. All you need to do is clone the repository, navigate to the [starter-files directory](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/abbreviation-plugin/starter-files), run the `npm install` command, and you can start coding right away.
 
-The webpack is also already configured, so you can just use the `npm run build` command to build your application. Whenever you want to check anything in the browser, save the changes and run build again. Then, refresh the page in your browser (remember to turn off caching, so that new changes are displayed instantly).
+You can just use the `npm run dev` command to run your application. Whenever you want to check anything in the browser, save the changes and run application again.
 
 <info-box>
 	The starter files come with the {@link framework/development-tools/inspector CKEditor&nbsp;5 Inspector} attached to the editor, so you can debug and observe what is happening in the model and the view layers. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
-If you want to set up the project yourself, you should follow the steps listed in the {@link framework/quick-start the "Quick start" section}. Additionally, you will need to install the [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckeditor5-core) package, which contains the `Plugin` class, and the [`@ckeditor/ckeditor5-ui`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui) package, which contains the UI library and the framework.
+If you want to set up the project yourself, you should follow the steps listed in the {@link framework/quick-start the "Quick start" section}.
 
-Your entry point to the plugin is `app.js`:
+Your entry point to the plugin is `main.js`:
 
 ```js
-// app.js
+// main.js
+import { 
+	ClassicEditor,
+	Essentials,
+	Paragraph,
+	Heading,
+	List,
+	Bold,
+	Italic
+} from 'ckeditor5';
+import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { Heading } from '@ckeditor/ckeditor5-heading';
-import { List } from '@ckeditor/ckeditor5-list';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import 'ckeditor5/dist/index.css';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -87,28 +92,23 @@ Our abbreviation plugin is divided into three components &ndash; `Abbreviation`,
 We put them in the `/abbreviation` directory. We will be adding more files the in the next parts of the tutorial. This is our directory structure:
 
 ```
-├── app.js
-├── dist
-│   ├── bundle.js
-│   └── bundle.js.map
+├── main.js
 ├── index.html
-├── node_modules
 ├── package.json
 ├── abbreviation
 │   ├── abbreviation.js
 │   ├── abbreviationediting.js
 │   └── abbreviationui.js
-└── webpack.config.js
 ```
 
-Take a look at the 3 components, which have already been defined and imported into `app.js`.
+Take a look at the 3 components, which have already been defined and imported into `main.js`.
 
 `AbbreviationUI`:
 
 ```js
 // abbreviation/abbreviationui.js
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from 'ckeditor5';
 
 export default class AbbreviationUI extends Plugin {
 	init() {
@@ -122,7 +122,7 @@ export default class AbbreviationUI extends Plugin {
 ```js
 // abbreviation/abbreviationediting.js
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from 'ckeditor5';
 
 export default class AbbreviationEditing extends Plugin {
 	init() {
@@ -138,7 +138,7 @@ export default class AbbreviationEditing extends Plugin {
 
 import AbbreviationEditing from './abbreviationediting';
 import AbbreviationUI from './abbreviationui';
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from 'ckeditor5';
 
 export default class Abbreviation extends Plugin {
 	static get requires() {
@@ -147,19 +147,21 @@ export default class Abbreviation extends Plugin {
 }
 ```
 
-Now we need to load the `Abbreviation` plugin in our `app.js` file. The editor will load the `AbbreviationUI` and the `AbbreviationEditing` components by itself, as they are required by our "glue" plugin.
+Now we need to load the `Abbreviation` plugin in our `main.js` file. The editor will load the `AbbreviationUI` and the `AbbreviationEditing` components by itself, as they are required by our "glue" plugin.
 
 ```js
-// app.js
+// main.js
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { Heading } from '@ckeditor/ckeditor5-heading';
-import { List } from '@ckeditor/ckeditor5-list';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-
-import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
+import { 
+	ClassicEditor,
+	Essentials,
+	Paragraph,
+	Heading,
+	List,
+	Bold,
+	Italic
+} from 'ckeditor5';
+import 'ckeditor5/dist/index.css';
 
 import Abbreviation from './abbreviation/abbreviation';					// ADDED
 
@@ -210,7 +212,7 @@ Update the `AbbreviationEditing` plugin with this definition:
 ```js
 // abbreviation/abbreviationediting.js
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from 'ckeditor5';
 
 export default class AbbreviationEditing extends Plugin {
 	init() {
@@ -249,7 +251,7 @@ We will need to use a callback function to get the title stored as a model attri
 ```js
 // abbreviation/abbreviationediting.js
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from 'ckeditor5';
 
 export default class AbbreviationEditing extends Plugin {
 	init() {
@@ -292,7 +294,7 @@ We also need to grab the title value from the content and use it in the model. W
 ```js
 // abbreviation/abbreviationediting.js
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from 'ckeditor5';
 
 export default class AbbreviationEditing extends Plugin {
 	init() {
@@ -346,8 +348,7 @@ We need to register it in the editor's UI `componentFactory`, so it can be displ
 ```js
 // abbreviation/abbreviationui.js
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
-import { ButtonView } from '@ckeditor/ckeditor5-ui';
+import { ButtonView, Plugin } from 'ckeditor5';
 
 export default class AbbreviationUI extends Plugin {
 	init() {
@@ -365,17 +366,21 @@ export default class AbbreviationUI extends Plugin {
 	}
 }
 ```
-We passed the name of the button in the `componentFactory.add`, so it is now available to use in the toolbar configuration. We can now simply add it to the toolbar in `app.js`:
+We passed the name of the button in the `componentFactory.add`, so it is now available to use in the toolbar configuration. We can now simply add it to the toolbar in `main.js`:
 
 ```js
-// app.js
+// main.js
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { Heading } from '@ckeditor/ckeditor5-heading';
-import { List } from '@ckeditor/ckeditor5-list';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { 
+	ClassicEditor,
+	Essentials,
+	Paragraph,
+	Heading,
+	List,
+	Bold,
+	Italic
+} from 'ckeditor5';
+import 'ckeditor5/dist/index.css';
 
 import Abbreviation from './abbreviation/abbreviation';
 
@@ -404,8 +409,7 @@ We will use the `insertContent()` method to insert our abbreviation and its titl
 ```js
 // abbreviation/abbreviationui.js
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
-import { ButtonView } from '@ckeditor/ckeditor5-ui';
+import { ButtonView, Plugin } from 'ckeditor5';
 
 export default class AbbreviationUI extends Plugin {
 	init() {
