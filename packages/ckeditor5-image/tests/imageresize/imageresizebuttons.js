@@ -12,6 +12,7 @@ import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
 import View from '@ckeditor/ckeditor5-ui/src/view.js';
 import ImageResizeButtons from '../../src/imageresize/imageresizebuttons.js';
+import ImageCustomResizeUI from '../../src/imageresize/imagecustomresizeui.js';
 import ImageStyle from '../../src/imagestyle.js';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
 import Table from '@ckeditor/ckeditor5-table/src/table.js';
@@ -56,7 +57,7 @@ describe( 'ImageResizeButtons', () => {
 
 		editor = await ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResizeButtons ],
+				plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResizeButtons, ImageCustomResizeUI ],
 				image: {
 					resizeOptions
 				}
@@ -211,7 +212,7 @@ describe( 'ImageResizeButtons', () => {
 		beforeEach( async () => {
 			editor = await ClassicTestEditor
 				.create( editorElement, {
-					plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResizeButtons ],
+					plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResizeButtons, ImageCustomResizeUI ],
 					image: {
 						resizeUnit: '%',
 						resizeOptions: [ {

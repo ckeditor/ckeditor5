@@ -7,10 +7,11 @@ import ImageResize from '../../src/imageresize.js';
 import ImageResizeButtons from '../../src/imageresize/imageresizebuttons.js';
 import ImageResizeEditing from '../../src/imageresize/imageresizeediting.js';
 import ImageResizeHandles from '../../src/imageresize/imageresizehandles.js';
+import ImageCustomResizeUI from '../../src/imageresize/imagecustomresizeui.js';
 
 describe( 'ImageResize', () => {
-	it( 'should require "ImageResizeEditing", "ImageResizeHandles", and "ImageResizeButtons"', () => {
-		expect( ImageResize.requires ).to.deep.equal( [ ImageResizeEditing, ImageResizeHandles, ImageResizeButtons ] );
+	it( 'should require "ImageResizeEditing", "ImageResizeHandles", "ImageCustomResizeUI", and "ImageResizeButtons"', () => {
+		expect( ImageResize.requires ).to.deep.equal( [ ImageResizeEditing, ImageResizeHandles, ImageCustomResizeUI, ImageResizeButtons ] );
 	} );
 
 	it( 'should be named', () => {

@@ -27,7 +27,7 @@ describe( 'ImageCustomResizeUI', () => {
 
 		editor = await ClassicTestEditor
 			.create( element, {
-				plugins: [ Image, ImageStyle, Paragraph, ImageResizeButtons, Table ]
+				plugins: [ Image, ImageStyle, Paragraph, ImageCustomResizeUI, ImageResizeButtons, Table ]
 			} );
 
 		model = editor.model;

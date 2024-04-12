@@ -20,7 +20,6 @@ import {
 import { CKEditorError, Collection, type Locale } from 'ckeditor5/src/utils.js';
 
 import ImageResizeEditing from './imageresizeediting.js';
-import ImageCustomResizeUI from './imagecustomresizeui.js';
 
 import type ResizeImageCommand from './resizeimagecommand.js';
 import type { ImageResizeOption } from '../imageconfig.js';
@@ -43,7 +42,7 @@ export default class ImageResizeButtons extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ ImageResizeEditing, ImageCustomResizeUI ] as const;
+		return [ ImageResizeEditing ] as const;
 	}
 
 	/**
@@ -91,8 +90,6 @@ export default class ImageResizeButtons extends Plugin {
 	 * @param resizeOption A model of the resize option.
 	 */
 	private _registerImageResizeButton( option: ImageResizeOption ): void {
-		const customResizeUI = this.editor.plugins.get( 'ImageCustomResizeUI' );
-
 		const editor = this.editor;
 		const { name, value, icon } = option;
 
@@ -130,7 +127,9 @@ export default class ImageResizeButtons extends Plugin {
 			// Bind button to the command.
 			button.bind( 'isEnabled' ).to( this );
 
-			if ( isCustomImageResizeOption( option ) ) {
+			if ( editor.plugins.has( 'ImageCustomResizeUI' ) && isCustomImageResizeOption( option ) ) {
+				const customResizeUI = editor.plugins.get( 'ImageCustomResizeUI' );
+
 				this.listenTo( button, 'execute', () => {
 					customResizeUI._showForm( this._resizeUnit );
 				} );
@@ -252,7 +251,7 @@ export default class ImageResizeButtons extends Plugin {
 		options: Array<ImageResizeOption>,
 		command: ResizeImageCommand
 	): Collection<ListDropdownItemDefinition> {
-		const customResizeUI = this.editor.plugins.get( 'ImageCustomResizeUI' );
+		const { editor } = this;
 		const itemDefinitions = new Collection<ListDropdownItemDefinition>();
 
 		const optionsWithSerializedValues = options.map( option => {
@@ -279,7 +278,9 @@ export default class ImageResizeButtons extends Plugin {
 		for ( const option of optionsWithSerializedValues ) {
 			let definition: ListDropdownItemDefinition | null = null;
 
-			if ( isCustomImageResizeOption( option ) ) {
+			if ( editor.plugins.has( 'ImageCustomResizeUI' ) && isCustomImageResizeOption( option ) ) {
+				const customResizeUI = editor.plugins.get( 'ImageCustomResizeUI' );
+
 				definition = {
 					type: 'button',
 					model: new ViewModel( {
