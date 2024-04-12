@@ -151,8 +151,8 @@ export default class ImageCustomResizeUI extends Plugin {
 
 		if ( possibleRange ) {
 			Object.assign( labeledInput.fieldView, {
-				min: possibleRange.lower,
-				max: possibleRange.upper
+				min: possibleRange.lower.toFixed( 1 ),
+				max: possibleRange.upper.toFixed( 1 )
 			} );
 		}
 
