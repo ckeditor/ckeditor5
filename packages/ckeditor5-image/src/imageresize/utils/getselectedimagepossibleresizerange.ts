@@ -10,8 +10,8 @@
 import type { Editor } from 'ckeditor5/src/core.js';
 
 import { calculateResizeHostAncestorWidth } from 'ckeditor5/src/widget.js';
-import { getSelectedImageEditorNodes } from './getselectedimagedomnode.js';
-import { tryCastDimensionsToUnit, tryParseDimensionWithUnit } from './tryparseimensionwithunit.js';
+import { getSelectedImageEditorNodes } from './getselectedimageeditornodes.js';
+import { tryCastDimensionsToUnit, tryParseDimensionWithUnit } from './tryparsedimensionwithunit.js';
 
 /**
  * Returns min and max value of resize image in specified unit.

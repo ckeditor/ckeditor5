@@ -12,8 +12,8 @@ import { Rect } from 'ckeditor5/src/utils.js';
 import { calculateResizeHostAncestorWidth } from 'ckeditor5/src/widget.js';
 import type { Editor } from 'ckeditor5/src/core.js';
 
-import { tryCastDimensionsToUnit, tryParseDimensionWithUnit, type DimensionWithUnit } from './tryparseimensionwithunit.js';
-import { getSelectedImageEditorNodes } from './getselectedimagedomnode.js';
+import { tryCastDimensionsToUnit, tryParseDimensionWithUnit, type DimensionWithUnit } from './tryparsedimensionwithunit.js';
+import { getSelectedImageEditorNodes } from './getselectedimageeditornodes.js';
 
 /**
  * Returns image width in specified units. It is width of image after resize.

@@ -232,7 +232,7 @@ export default class ImageCustomResizeFormView extends View {
 	}
 
 	/**
-	 * Cleans up the supplementary error and information text of the {@link #urlInputView}
+	 * Cleans up the supplementary error and information text of the {@link #labeledInput}
 	 * bringing them back to the state when the form has been displayed for the first time.
 	 *
 	 * See {@link #isValid}.

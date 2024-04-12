@@ -4,7 +4,7 @@
  */
 
 /**
- * @module image/imageresize/utils/getselectedimagewidthinunits
+ * @module image/imageresize/utils/getselectedimageeditornodes
  */
 
 import type { ViewElement, Element } from 'ckeditor5/src/engine.js';

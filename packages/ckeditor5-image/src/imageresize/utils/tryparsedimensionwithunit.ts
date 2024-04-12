@@ -15,8 +15,8 @@
  * 	* If numeric value part of string is not a number then `null` is returned.
  *
  * Example:
- * 	"222px" => { value: 222, unit: "px" }
- *	"99%" => { value: 99, unit: "%" }
+ * 	`"222px"` => `{ value: 222, unit: "px" }`
+ *	`"99%"` => `{ value: 99, unit: "%" }`
 
  * @param dimension Unsafe string with dimension.
  * @returns Parsed dimension with extracted numeric value and units.
