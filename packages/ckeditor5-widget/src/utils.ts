@@ -450,10 +450,13 @@ function addSelectionHandle( widgetElement: ViewContainerElement, writer: Downca
 }
 
 /**
- * Searches up to 5 levels above the specified element and returns the width of the found ancestor element.
+ * Starting from a DOM resize host element (an element that receives dimensions as a result of resizing),
+ * this helper returns the width of the found ancestor element.
  *
- * @param domResizeHost Resize host DOM element.
- * @returns Width of ancestor element in pixels.
+ * **Note**: This helper searches up to 5 levels of ancestors only.
+ *
+ * @param domResizeHost Resize host DOM element that receives dimensions as a result of resizing.
+ * @returns Width of ancestor element in pixels or 0 if no ancestor with a computed width has been found.
  */
 export function calculateResizeHostAncestorWidth( domResizeHost: HTMLElement ): number {
 	const domResizeHostParent = domResizeHost.parentElement;
