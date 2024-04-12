@@ -184,11 +184,11 @@ export interface EditorConfig {
 	 * The editor menu bar configuration.
 	 *
 	 * **Note**: The menu bar is not available in all editor types. Currently, only the
-	 * {@glink examples/builds/classic-editor Classic editor} and {@glink examples/builds/document-editor Document editor}
+	 * {@link module:editor-classic/classiceditor~ClassicEditor Classic editor} and
+	 * {@link module:editor-decoupled/decouplededitor~DecoupledEditor Decoupled editor}
 	 * support this feature. Setting the `config.menuBar` configuration for other editor types will have no effect.
 	 *
-	 * **Note**: The menu bar is disabled in the {@glink examples/builds/classic-editor Classic editor} by default. Set the
-	 * `isVisible` configuration flag to `true` in order to enable it:
+	 * In Classic editor, the menu bar is hidden by default. Set the `isVisible` configuration flag to `true` in order to show it:
 	 *
 	 * ```ts
 	 * ClassicEditor
@@ -197,26 +197,32 @@ export interface EditorConfig {
 	 * 			isVisible: true
 	 * 		}
 	 * 	} )
-	 * 	.then( ... )
-	 * 	.catch( ... );
+	 * 	.then( ... );
 	 * ```
 	 *
-	 * **Note**: You do not have set the `items` property in this configuration in order to to use the menu bar.
+	 * When using the Decoupled editor, you will need to insert the menu bar in a desired place yourself. For example:
+	 *
+	 * ```ts
+	 * DecoupledEditor
+	 * 	.create( document.querySelector( '#editor' ), {
+	 * 		toolbar: [ 'undo', 'redo', 'bold', 'italic', 'numberedList', 'bulletedList' ],
+	 * 	} )
+	 *  .then( editor => {
+	 * 		document.getElementById( '#menuBarContainer' ).appendChild( editor.ui.view.menuBarView.element );
+	 * 	} );
+	 * ```
+	 *
+	 * **Note**: You do not have to set the `items` property in this configuration in order to use the menu bar.
 	 * By default, a {@link module:ui/menubar/utils#DefaultMenuBarItems default set of items} is used that already includes
-	 * **all core editor features**. For you convenience, there are `config.menuBar.addItems` and
+	 * **all core editor features**. For your convenience, there are `config.menuBar.addItems` and
 	 * `config.menuBar.removeItems` options available that will help you adjust the default configuration without setting the
 	 * entire menu bar structure from scratch (see below).
 	 *
-	 * **Note**: Please make sure that features (editor plugins) that bring specific menu bar buttons are loaded. For instance,
-	 * the "Bold" button will not show up in the menu bar unless the {@glink features/basic-styles basic styles} feature is loaded
-	 * (a warning will be logged in the console). {@link module:core/editor/editorconfig~EditorConfig#plugins Learn more} about loading
-	 * plugins.
-	 *
 	 * **Removing items from the menu bar**
 	 *
-	 * Use can use the `config.menuBar.removeItems` option to remove items from the default menu bar configuration. You can
+	 * You can use the `config.menuBar.removeItems` option to remove items from the default menu bar configuration. You can
 	 * remove individual buttons (e.g. "Bold" or "Block quote"), item groups (e.g. the basic styles section that
-	 * includes multiple buttons such as "Bold", "Italic", "Underline", etc.), or menus (e.g. the "Insert" menu). Please
+	 * includes multiple buttons such as "Bold", "Italic", "Underline", etc.), or whole menus (e.g. the "Insert" menu). Please
 	 * refer to the {@link module:ui/menubar/utils#DefaultMenuBarItems default configuration} to see default buttons/groups/menus
 	 * and their structure.
 	 *
@@ -230,11 +236,10 @@ export interface EditorConfig {
 	 * 			removeItems: [ 'menuBar:bold', 'menuBar:blockQuote' ]
 	 * 		}
 	 * 	} )
-	 * 	.then( ... )
-	 * 	.catch( ... );
+	 * 	.then( ... );
 	 * ```
 	 *
-	 * To remove a buttons group from the menu bar:
+	 * To remove a group of buttons from the menu bar:
 	 *
 	 * ```ts
 	 * ClassicEditor
@@ -244,8 +249,7 @@ export interface EditorConfig {
 	 * 			removeItems: [ 'basicStyles' ]
 	 * 		}
 	 * 	} )
-	 * 	.then( ... )
-	 * 	.catch( ... );
+	 * 	.then( ... );
 	 * ```
 	 *
 	 * To remove a menu from the menu bar:
@@ -258,17 +262,20 @@ export interface EditorConfig {
 	 * 			removeItems: [ 'insert' ]
 	 * 		}
 	 * 	} )
-	 * 	.then( ... )
-	 * 	.catch( ... );
+	 * 	.then( ... );
 	 * ```
 	 *
 	 * **Adding items to the menu bar**
 	 *
 	 * Using the `config.menuBar.addItems` option you can add individual buttons, button groups or entire menus to the structure
-	 * of the menu bar. Please refer to the {@link module:ui/menubar/utils#DefaultMenuBarItems default configuration} to learn about the
-	 * names of buttons and positions they can be added at.
+	 * of the menu bar. You can add existing components that you removed from their original position, or add your own components.
+	 *
+	 * **Note**: When adding items please make sure that features (editor plugins) that bring specific menu bar items are loaded.
+	 * For instance, the "Bold" button will not show up in the menu bar unless the {@glink features/basic-styles basic styles} feature is
+	 * loaded. {@link module:core/editor/editorconfig~EditorConfig#plugins Learn more} about loading plugins.
 	 *
 	 * Each entry in the `config.menuBar.addItems` is an object with one of the following properties:
+	 *
 	 * * `item` &ndash; A name of the button to be added to a specific button group (e.g. `'menuBar:bold'` or `'myButton'`),
 	 * * `menu` &ndash; A {@link module:ui/menubar/menubarview#MenuBarMenuDefinition definition of a menu} that should be added to
 	 * the menu bar,
@@ -282,6 +289,9 @@ export interface EditorConfig {
 	 * * `'end:GROUP_OR_MENU'` &ndash; Adds a button/group at the end of the specific group/menu,
 	 * * `'after:BUTTON_OR_GROUP_OR_MENU'` &ndash; Adds a button/group/menu right after the specific button/group/menu,
 	 * * `'before:BUTTON_OR_GROUP_OR_MENU'` &ndash; Adds a button/group/menu right after the specific button/group/menu.
+	 *
+	 * Please refer to the {@link module:ui/menubar/utils#DefaultMenuBarItems default configuration} to learn about the
+	 * names of buttons and positions they can be added at.
 	 *
 	 * To add a new top-level menu with specific buttons at the end of the menu bar:
 	 *
@@ -310,8 +320,7 @@ export interface EditorConfig {
 	 * 			]
 	 * 		}
 	 * 	} )
-	 * 	.then( ... )
-	 * 	.catch( ... );
+	 * 	.then( ... );
 	 * ```
 	 *
 	 * To add a new group of buttons to the "Format" menu after basic styles buttons ("Bold", "Italic", "Underline", etc.):
@@ -334,8 +343,7 @@ export interface EditorConfig {
 	 * 			]
 	 * 		}
 	 * 	} )
-	 * 	.then( ... )
-	 * 	.catch( ... );
+	 * 	.then( ... );
 	 * ```
 	 *
 	 * To add a new button to the basic styles group ("Bold", "Italic", "Underline", etc.) in the "Format" menu:
@@ -352,8 +360,7 @@ export interface EditorConfig {
 	 * 			]
 	 * 		}
 	 * 	} )
-	 * 	.then( ... )
-	 * 	.catch( ... );
+	 * 	.then( ... );
 	 * ```
 	 *
 	 * To add a new sub-menu in the "Format" menu:
@@ -382,8 +389,7 @@ export interface EditorConfig {
 	 * 			]
 	 * 		}
 	 * 	} )
-	 * 	.then( ... )
-	 * 	.catch( ... );
+	 * 	.then( ... );
 	 * ```
 	 *
 	 * **Defining menu bar from scratch**
@@ -391,9 +397,7 @@ export interface EditorConfig {
 	 * If the `config.menuBar.addItems` and `config.menuBar.removeItems` options are not enough to adjust the
 	 * {@link module:ui/menubar/utils#DefaultMenuBarItems default configuration}, you can set the menu bar structure from scratch.
 	 *
-	 * For instance, to create a minimalistic menu bar configuration with just two main categories (menus), the first one
-	 * containing some of the buttons delivered by the default configuration and the second one containing custom buttons
-	 * brought by 3rd-party plugins, use the following code snippet:
+	 * For instance, to create a minimalistic menu bar configuration with just two main categories (menus), use the following code snippet:
 	 *
 	 * ```ts
 	 * ClassicEditor
@@ -437,8 +441,7 @@ export interface EditorConfig {
 	 * 			]
 	 * 		}
 	 * 	} )
-	 * 	.then( ... )
-	 * 	.catch( ... );
+	 * 	.then( ... );
 	 * ```
 	 */
 	menuBar?: MenuBarConfig;

@@ -107,7 +107,7 @@ msgstr "Mover o foco entre os campos do formulário (entradas, botões, etc.)"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the menu bar."
 msgid "Move focus to the menu bar, navigate between menu bars"
-msgstr ""
+msgstr "Mover o foco para a barra de menu, navegar entre as barras de menu"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the toolbar."
 msgid "Move focus to the toolbar, navigate between toolbars"
@@ -115,11 +115,11 @@ msgstr "Mover o foco para a barra de ferramentas, navegar entre barras de ferram
 
 msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the toolbar."
 msgid "Navigate through the toolbar or menu bar"
-msgstr ""
+msgstr "Navegar pela barra de ferramentas ou pela barra de menu"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for executing currently focused button."
 msgid "Execute the currently focused button. Executing buttons that interact with the editor content moves the focus back to the content."
-msgstr ""
+msgstr "Executar o botão atualmente em foco. A execução de botões que interagem com o conteúdo do editor coloca novamente o foco sobre o conteúdo."
 
 msgctxt "Label of the button confirming the changes done in the current interface."
 msgid "Accept"

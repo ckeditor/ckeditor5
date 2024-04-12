@@ -11,6 +11,7 @@ import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
 import Delete from '@ckeditor/ckeditor5-typing/src/delete.js';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
 import ShiftEnter from '../src/shiftenter.js';
+import { INLINE_FILLER } from '@ckeditor/ckeditor5-engine/src/view/filler.js';
 
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
@@ -45,13 +46,22 @@ describe( 'ShiftEnter integration', () => {
 		expect( getViewData( editor.editing.view, options ) ).to.equal( '<p>First line.<br></br>Second line.</p>' );
 	} );
 
-	it( 'BLOCK_FILLER should be inserted after <br> in the paragraph', () => {
+	it( 'BLOCK_FILLER should be inserted after <br> in the paragraph (data pipeline)', () => {
 		setModelData( model, '<paragraph>[]</paragraph>' );
 
 		editor.execute( 'shiftEnter' );
 
 		expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p><br>&nbsp;</p>' );
-		expect( editor.ui.view.editable.element.innerHTML ).to.equal( '<p><br><br data-cke-filler="true"></p>' );
+	} );
+
+	it( 'INLINE_FILLER should be inserted before last <br> (BLOCK_FILLER) in the paragraph (editing pipeline)', () => {
+		setModelData( model, '<paragraph>[]</paragraph>' );
+
+		editor.execute( 'shiftEnter' );
+
+		expect( editor.ui.view.editable.element.innerHTML ).to.equal(
+			`<p><br>${ INLINE_FILLER }<br data-cke-filler="true"></p>`
+		);
 	} );
 
 	it( 'should not inherit text attributes before the "softBreak" element', () => {

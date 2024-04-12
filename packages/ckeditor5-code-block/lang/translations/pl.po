@@ -27,4 +27,4 @@ msgstr "Zwykły tekst"
 
 msgctxt "The accessible label of the menu bar button that inserts a code block into editor content."
 msgid "Code block"
-msgstr ""
+msgstr "Blok kodu"
