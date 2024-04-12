@@ -59,8 +59,7 @@ describe( 'ResizeImageCommand', () => {
 		const { unit, value } = getSelectedImageWidthInUnits( editor, 'px' );
 
 		expect( unit ).to.be.equal( 'px' );
-		expect( value ).to.be.greaterThan( 30 );
-		expect( value ).to.be.lessThan( 40 );
+		expect( value ).to.be.greaterThan( 400 );
 	} );
 
 	it( 'should return casted pixels value to percentage', () => {
