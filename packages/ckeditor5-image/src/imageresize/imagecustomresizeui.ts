@@ -88,9 +88,12 @@ export default class ImageCustomResizeUI extends Plugin {
 				} );
 
 				this._hideForm( true );
-			} else {
-				this._balloon!.updatePosition();
 			}
+		} );
+
+		// Update balloon position when form error changes.
+		this.listenTo( this._form.labeledInput, 'change:errorText', () => {
+			editor.ui.update();
 		} );
 
 		this.listenTo<ImageCustomResizeFormViewCancelEvent>( this._form, 'cancel', () => {
