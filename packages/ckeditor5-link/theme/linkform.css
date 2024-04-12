@@ -7,16 +7,10 @@
 
 .ck.ck-link-form {
 	display: flex;
+	align-items: flex-start;
 
 	& .ck-label {
 		display: none;
-	}
-
-	& .ck-button {
-		&.ck-button-save,
-		&.ck-button-cancel {
-			max-height: 30px;
-		}
 	}
 
 	@mixin ck-media-phone {
@@ -47,7 +41,6 @@
 		&.ck-button-save,
 		&.ck-button-cancel {
 			margin-top: var(--ck-spacing-medium);
-			max-height: initial;
 		}
 	}
 }
