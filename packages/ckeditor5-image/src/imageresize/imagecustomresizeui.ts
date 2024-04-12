@@ -91,7 +91,7 @@ export default class ImageCustomResizeUI extends Plugin {
 			}
 		} );
 
-		// Update balloon position when form error changes.
+		// Update balloon position when form error label is added .
 		this.listenTo( this._form.labeledInput, 'change:errorText', () => {
 			editor.ui.update();
 		} );
