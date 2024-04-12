@@ -1582,9 +1582,9 @@ describe( 'LinkUI', () => {
 			} );
 
 			it( 'should not allow submitting empty form when link is required', () => {
-				const executeSpy = sinon.spy( editor, 'execute' );
-
 				return createEditorWithEmptyLinks( false ).then( ( { editor, formView } ) => {
+					const executeSpy = sinon.spy( editor, 'execute' );
+
 					formView.urlInputView.fieldView.value = '';
 					formView.fire( 'submit' );
 
