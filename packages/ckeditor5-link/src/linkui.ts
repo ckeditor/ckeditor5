@@ -213,6 +213,8 @@ export default class LinkUI extends Plugin {
 				const parsedUrl = addLinkProtocolIfApplicable( value, defaultProtocol );
 				editor.execute( 'link', parsedUrl, formView.getDecoratorSwitchesState() );
 				this._closeFormView();
+			} else {
+				this._balloon.updatePosition();
 			}
 		} );
 
