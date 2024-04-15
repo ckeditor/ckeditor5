@@ -155,6 +155,7 @@ describe( 'MediaEmbedUI', () => {
 			it( 'executes the command and closes the UI (if the form is valid)', async () => {
 				const viewFocusSpy = sinon.spy( editor.editing.view, 'focus' );
 				const commandSpy = sinon.spy( editor.commands.get( 'mediaEmbed' ), 'execute' );
+				const updateSpy = sinon.spy( editor.ui, 'update' );
 
 				// The form is invalid.
 				form.url = 'https://invalid/url';
@@ -165,7 +166,9 @@ describe( 'MediaEmbedUI', () => {
 
 				sinon.assert.notCalled( commandSpy );
 				sinon.assert.notCalled( viewFocusSpy );
+
 				expect( dropdown.isOpen ).to.be.true;
+				expect( updateSpy ).to.be.calledOnce;
 
 				// The form is valid.
 				form.url = 'https://valid/url';
@@ -179,6 +182,7 @@ describe( 'MediaEmbedUI', () => {
 				await wait( 10 );
 
 				expect( dropdown.isOpen ).to.be.false;
+				expect( updateSpy ).to.be.calledTwice;
 			} );
 		} );
 
