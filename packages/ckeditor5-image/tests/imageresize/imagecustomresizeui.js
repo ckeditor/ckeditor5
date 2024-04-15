@@ -219,6 +219,19 @@ describe( 'ImageCustomResizeUI', () => {
 				expect( getErrorLabel() ).to.be.null;
 			} );
 
+			it( 'should update ui on error due to change ballon position', () => {
+				const updateSpy = sinon.spy( editor.ui, 'update' );
+
+				plugin._showForm();
+				fillFormSize( 'for sure incorrect value' );
+
+				expect( updateSpy ).not.to.be.called;
+
+				plugin._form.fire( 'submit' );
+
+				expect( updateSpy ).to.be.calledOnce;
+			} );
+
 			function getErrorLabel() {
 				return plugin._form.labeledInput.errorText;
 			}
