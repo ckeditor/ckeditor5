@@ -413,6 +413,23 @@ describe( 'LinkUI', () => {
 		} );
 
 		describe( 'form status', () => {
+			it( 'should update ui on error due to change ballon position', () => {
+				const updateSpy = sinon.spy( editor.ui, 'update' );
+
+				linkUIFeature._createViews();
+				formView = linkUIFeature.formView;
+				actionsView = linkUIFeature.actionsView;
+				formView.render();
+
+				setModelData( editor.model, '<paragraph>[foo]</paragraph>' );
+
+				linkUIFeature._showUI();
+
+				expect( updateSpy ).not.to.be.called;
+				formView.fire( 'submit' );
+				expect( updateSpy ).to.be.calledOnce;
+			} );
+
 			it( 'should show error form status if passed empty link', () => {
 				linkUIFeature._createViews();
 				formView = linkUIFeature.formView;
