@@ -1,11 +1,19 @@
 Changelog
 =========
 
-## [41.3.1](https://github.com/ckeditor/ckeditor5/compare/v41.3.0...v41.3.1) (April 15, 2024)
+## [41.3.1](https://github.com/ckeditor/ckeditor5/compare/v41.3.0...v41.3.1) (April 16, 2024)
 
-### Other changes
+We are happy to announce the release of CKEditor 5 v41.3.1.
 
-* **[template](https://www.npmjs.com/package/@ckeditor/ckeditor5-template)**: Fixed the types in the template config.
+The release addresses a vulnerability identified in the `[protobuf.js](https://www.npmjs.com/package/protobufjs)` package (`[CVE-2023-36665](https://nvd.nist.gov/vuln/detail/CVE-2023-36665)`), used within our **`[@ckeditor/ckeditor5-operations-compressor](https://www.npmjs.com/package/@ckeditor/ckeditor5-operations-compressor)`** package for real-time collaboration.
+
+Our analysis confirms that **this vulnerability does not affect CKEditor 5**. None of the vulnerable code in the `protobuf.js` package is utilized in CKEditor 5, as we use protobuf’s `minimal` build type.
+
+This release primarily aims to ensure that our customers using real-time collaboration features do not encounter unnecessary security alerts from their scanning tools. We are committed to maintaining the highest security standards, and this update reflects our ongoing efforts to safeguard user environments proactively.
+
+### Bug fixes
+
+* **[template](https://www.npmjs.com/package/@ckeditor/ckeditor5-template)**: Fixed the `TemplateDefinition#data` type in the `@ckeditor/ckeditor5-template` config. Now, it should be possible to define a string or a function returning a string instead of a function returning a string .
 
 ### Released packages
 
