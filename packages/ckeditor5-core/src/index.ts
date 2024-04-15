@@ -76,6 +76,7 @@ import objectLeft from './../theme/icons/object-inline-left.svg';
 import objectRight from './../theme/icons/object-inline-right.svg';
 
 import objectSizeFull from './../theme/icons/object-size-full.svg';
+import objectSizeCustom from './../theme/icons/object-size-custom.svg';
 import objectSizeLarge from './../theme/icons/object-size-large.svg';
 import objectSizeSmall from './../theme/icons/object-size-small.svg';
 import objectSizeMedium from './../theme/icons/object-size-medium.svg';
@@ -158,6 +159,7 @@ export const icons = {
 	objectBlockLeft,
 	objectBlockRight,
 
+	objectSizeCustom,
 	objectSizeFull,
 	objectSizeLarge,
 	objectSizeSmall,
