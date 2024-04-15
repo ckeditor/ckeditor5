@@ -311,7 +311,7 @@ export default class ColorPickerView extends View {
 	}
 
 	/**
-	 * Cleans up the supplementary error and information text of the {@link #urlInputView}
+	 * Cleans up the supplementary error and information text of input inside the {@link #hexInputRow}
 	 * bringing them back to the state when the form has been displayed for the first time.
 	 *
 	 * See {@link #isValid}.
