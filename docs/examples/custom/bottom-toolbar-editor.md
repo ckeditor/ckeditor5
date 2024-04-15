@@ -25,30 +25,44 @@ The presented combination of the UI and editor's features works best for integra
 
 ```js
 
-import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document/src/ckeditor';
-import { Plugin } from 'ckeditor5';
-
-import { Alignment } from '@ckeditor/ckeditor5-alignment';
-import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
-import { Bold, Italic, Strikethrough, Subscript, Superscript, Underline } from '@ckeditor/ckeditor5-basic-styles';
-import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
-import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { Font } from '@ckeditor/ckeditor5-font';
-import { Heading } from '@ckeditor/ckeditor5-heading';
-import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
-import { Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar, ImageUpload } from '@ckeditor/ckeditor5-image';
-import { Indent } from '@ckeditor/ckeditor5-indent';
-import { Link } from '@ckeditor/ckeditor5-link';
-import { List } from '@ckeditor/ckeditor5-list';
-import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
-import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
-import { DropdownButtonView, DropdownPanelView, DropdownView, ToolbarView } from '@ckeditor/ckeditor5-ui';
-
+import {
+	DecoupledEditor,
+	Plugin,
+	Alignment,
+	Autoformat,
+	Bold,
+	Italic,
+	Strikethrough,
+	Subscript,
+	Superscript,
+	Underline,
+	BlockQuote,
+	clickOutsideHandler,
+	Essentials,
+	Font,
+	Heading,
+	HorizontalLine,
+	Image,
+	ImageCaption,
+	ImageResize,
+	ImageStyle,
+	ImageToolbar,
+	ImageUpload,
+	Indent,
+	Link,
+	List,
+	MediaEmbed,
+	Paragraph,
+	RemoveFormat,
+	Table,
+	TableToolbar,
+	DropdownButtonView,
+	DropdownPanelView,
+	DropdownView,
+	ToolbarView
+	} from 'ckeditor5';
+import { EasyImage } from 'ckeditor5-premium-features';
 import fontColorIcon from '@ckeditor/ckeditor5-font/theme/icons/font-color.svg';
-import { clickOutsideHandler } from '@ckeditor/ckeditor5-ui';
 
 class FormattingOptions extends Plugin {
 	/**
