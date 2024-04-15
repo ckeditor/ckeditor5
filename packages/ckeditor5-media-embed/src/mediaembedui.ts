@@ -93,6 +93,11 @@ export default class MediaEmbedUI extends Plugin {
 			form.delegate( 'submit', 'cancel' ).to( dropdown );
 			form.urlInputView.fieldView.bind( 'value' ).to( command, 'value' );
 
+			// Update balloon position when form error changes.
+			form.urlInputView.on( 'change:errorText', () => {
+				editor.ui.update();
+			} );
+
 			// Form elements should be read-only when corresponding commands are disabled.
 			form.urlInputView.bind( 'isEnabled' ).to( command, 'isEnabled' );
 		} );
