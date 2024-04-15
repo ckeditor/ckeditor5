@@ -141,15 +141,14 @@ document.getElementById( 'button-bold' ).append( boldButton.element );
 To get a button with an icon, import it first. Then set the `icon` property on the button. You can also add a custom icon to the dropdown by {@link framework/architecture/ui-library#setting-label-icon-and-tooltip providing the entire XML string of the icon}. There are also classes you can use to style icons appropriately.
 
 ```js
-import { ButtonView } from 'ckeditor5';
-import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg'
+import { ButtonView, icons } from 'ckeditor5';
 
 const saveButton = new ButtonView();
 
 saveButton.set( {
 	label: 'Save',
 	withText: false,
-	icon: checkIcon,
+	icon: icons.check,
 	class: 'ck-button-save'
 } );
 saveButton.render();
@@ -318,11 +317,12 @@ Inside a dropdown, you can put a list. To do so, you can use the {@link module:u
 
 ```js
 import {
-	addListToDropdown,
-	createDropdown,
-	ViewModel
-} from '@ckeditor/ckeditor5-ui';
-import { Collection, Locale } from 'ckeditor5';
+    addListToDropdown,
+    Collection,
+    createDropdown,
+    Locale,
+    ViewModel
+} from 'ckeditor5';
 
 const locale = new Locale();
 
@@ -360,20 +360,19 @@ You can use the {@link module:ui/dropdown/utils#addToolbarToDropdown `addToolbar
 ```js
 import {
 	addToolbarToDropdown,
+	icons,
 	ButtonView,
 	createDropdown,
 	Locale
-	} from 'ckeditor5';
-import boldIcon from '@ckeditor/ckeditor5-core/theme/icons/bold.svg';
-import italicIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg';
+} from 'ckeditor5';
 
 const locale = new Locale();
 
 const bold = new ButtonView();
 const italic = new ButtonView();
 
-bold.set( { label: 'Bold', withText: false, icon: boldIcon  } );
-italic.set( { label: 'Italic', withText: false, icon: italicIcon  } );
+bold.set( { label: 'Bold', withText: false, icon: icons.bold  } );
+italic.set( { label: 'Italic', withText: false, icon: icons.italic  } );
 
 const buttons = [ bold, italic ];
 
@@ -397,19 +396,18 @@ import {
 	addToolbarToDropdown,
 	ButtonView,
 	createDropdown,
+	icons,
 	SplitButtonViewm,
 	Locale
-	} from 'ckeditor5';
-import boldIcon from '@ckeditor/ckeditor5-core/theme/icons/bold.svg';
-import italicIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg';
+} from 'ckeditor5';
 
 const locale = new Locale();
 
 const bold = new ButtonView();
 const italic = new ButtonView();
 
-bold.set( { label: 'Bold', withText: false, icon: boldIcon  } );
-italic.set( { label: 'Italic', withText: false, icon: italicIcon  } );
+bold.set( { label: 'Bold', withText: false, icon: icons.bold  } );
+italic.set( { label: 'Italic', withText: false, icon: icons.italic  } );
 
 const buttons = [ bold, italic ];
 
@@ -435,10 +433,7 @@ Dropdowns use buttons. Because of that, states and properties remain the same.
 Buttons in dropdowns are enabled and clickable by default. You can also set the state explicitly by adding the {@link module:ui/dropdown/button/dropdownbutton~DropdownButton#isEnabled `isEnabled`} property with a `true` value.
 
 ```js
-import {
-	createDropdown,
-	Locale
-	} from 'ckeditor5';
+import { createDropdown, Locale } from 'ckeditor5';
 
 const locale = new Locale();
 
@@ -458,10 +453,7 @@ document.getElementById( 'dropdown-enabled' ).append( enabledDropdown.element );
 To disable a button, set the {@link module:ui/dropdown/button/dropdownbutton~DropdownButton#isEnabled `isEnabled`} property to `false`. It prevents the dropdown from being expanded.
 
 ```js
-import {
-	createDropdown,
-	Locale
-	} from 'ckeditor5';
+import { createDropdown, Locale } from 'ckeditor5';
 
 const locale = new Locale();
 
@@ -494,7 +486,7 @@ import {
 	Essentials,
 	Bold,
 	Italic
-	} from 'ckeditor5';
+} from 'ckeditor5';
 
 // Create a plugin that brings a button that toggles the visibility of a dialog window.
 // Read more about creating the plugins here: https://ckeditor.com/docs/ckeditor5/latest/framework/architecture/plugins.html.
@@ -604,7 +596,7 @@ import {
 	Essentials,
 	Bold,
 	Italic
-	} from 'ckeditor5';
+} from 'ckeditor5';
 
 // Create a plugin that brings a button which toggles the visibility of a modal window.
 // Read more about creating the plugins here: https://ckeditor.com/docs/ckeditor5/latest/framework/architecture/plugins.html.
@@ -702,12 +694,11 @@ See the guide about the {@link framework/architecture/ui-library#dialogs-and-mod
 The CKEditor&nbsp;5 library has a collection of icons representing different editor functionalities. Icons are SVG files and follow the style of the surrounding text. You can instantiate an icon with the {@link module:ui/icon/iconview~IconView `IconView`} class. The {@link module:ui/icon/iconview~IconView#content `content`} property stores the SVG source of the icon.
 
 ```js
-import { IconView } from 'ckeditor5';
-import boldIcon from '@ckeditor/ckeditor5-core/theme/icons/bold.svg';
+import { icons, IconView } from 'ckeditor5';
 
 const icon = new IconView();
 
-icon.content = boldIcon;
+icon.content = icons.bold;
 icon.render();
 
 document.getElementById( 'icon-bold' ).append( icon.element );
@@ -716,108 +707,110 @@ document.getElementById( 'icon-bold' ).append( icon.element );
 CKEditor&nbsp;5 features use different icons. You can find them in their respective packages. Here is a list of all available icons.
 
 ```js
-import boldIcon from '@ckeditor/ckeditor5-core/theme/icons/bold.svg';
-import italic from '@ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg';
-import underline from '@ckeditor/ckeditor5-basic-styles/theme/icons/underline.svg';
-import code from '@ckeditor/ckeditor5-basic-styles/theme/icons/code.svg';
-import strikethrough from '@ckeditor/ckeditor5-basic-styles/theme/icons/strikethrough.svg';
-import subscript from '@ckeditor/ckeditor5-basic-styles/theme/icons/subscript.svg';
-import superscript from '@ckeditor/ckeditor5-basic-styles/theme/icons/superscript.svg';
+import { icons } from 'ckeditor5';
 
-import browseFiles from '@ckeditor/ckeditor5-core/theme/icons/browse-files.svg';
+console.log( icons.bold );
+console.log( icons.italic );
+console.log( icons.underline );
+console.log( icons.code );
+console.log( icons.strikethrough );
+console.log( icons.subscript );
+console.log( icons.superscript );
 
-import codeBlock from '@ckeditor/ckeditor5-core/theme/icons/codeblock.svg';
+console.log( icons.browserFiles );
 
-import cancel from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
-import caption from '@ckeditor/ckeditor5-core/theme/icons/caption.svg';
-import check from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
-import cog from '@ckeditor/ckeditor5-core/theme/icons/cog.svg';
-import eraser from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
-import lowVision from '@ckeditor/ckeditor5-core/theme/icons/low-vision.svg';
-import textAlternative from '@ckeditor/ckeditor5-core/theme/icons/text-alternative.svg';
-import image from '@ckeditor/ckeditor5-core/theme/icons/image.svg';
-import alignBottom from '@ckeditor/ckeditor5-core/theme/icons/align-bottom.svg';
-import alignMiddle from '@ckeditor/ckeditor5-core/theme/icons/align-middle.svg';
-import alignTop from '@ckeditor/ckeditor5-core/theme/icons/align-top.svg';
-import alignLeft from '@ckeditor/ckeditor5-core/theme/icons/align-left.svg';
-import alignCenter from '@ckeditor/ckeditor5-core/theme/icons/align-center.svg';
-import alignRight from '@ckeditor/ckeditor5-core/theme/icons/align-right.svg';
-import alignJustify from '@ckeditor/ckeditor5-core/theme/icons/align-justify.svg';
-import objectLeft from '@ckeditor/ckeditor5-core/theme/icons/object-left.svg';
-import objectCenter from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
-import objectRight from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';
-import objectFullWidth from '@ckeditor/ckeditor5-core/theme/icons/object-full-width.svg';
-import objectInline from '@ckeditor/ckeditor5-core/theme/icons/object-inline.svg';
-import objectBlockLeft from '@ckeditor/ckeditor5-core/theme/icons/object-left.svg';
-import objectBlockRight from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';
-import objectSizeFull from '@ckeditor/ckeditor5-core/theme/icons/object-size-full.svg';
-import objectSizeLarge from '@ckeditor/ckeditor5-core/theme/icons/object-size-large.svg';
-import objectSizeSmall from '@ckeditor/ckeditor5-core/theme/icons/object-size-small.svg';
-import objectSizeMedium from '@ckeditor/ckeditor5-core/theme/icons/object-size-medium.svg';
-import pencil from '@ckeditor/ckeditor5-core/theme/icons/pencil.svg';
-import pilcrow from '@ckeditor/ckeditor5-core/theme/icons/pilcrow.svg';
-import quote from '@ckeditor/ckeditor5-core/theme/icons/quote.svg';
-import threeVerticalDots from '@ckeditor/ckeditor5-core/theme/icons/three-vertical-dots.svg';
+console.log( icons.codeBlock );
 
-import fontFamily from '@ckeditor/ckeditor5-font/theme/icons/font-family.svg';
-import fontSize from '@ckeditor/ckeditor5-font/theme/icons/font-size.svg';
-import fontColor from '@ckeditor/ckeditor5-font/theme/icons/font-color.svg';
-import fontBackground from '@ckeditor/ckeditor5-font/theme/icons/font-background.svg';
+console.log( icons.cancel );
+console.log( icons.caption );
+console.log( icons.check );
+console.log( icons.cog );
+console.log( icons.eraser );
+console.log( icons.lowVision );
+console.log( icons.textAlternative );
+console.log( icons.image );
+console.log( icons.alignBottom );
+console.log( icons.alignMiddle );
+console.log( icons.alignTop );
+console.log( icons.alignLeft );
+console.log( icons.alignCenter );
+console.log( icons.alignRight );
+console.log( icons.alignJustify );
+console.log( icons.objectLeft );
+console.log( icons.objectCenter );
+console.log( icons.objectRight );
+console.log( icons.objectFullWidth );
+console.log( icons.objectInline );
+console.log( icons.objectBlockLeft );
+console.log( icons.objectBlockRight );
+console.log( icons.objectFullSize );
+console.log( icons.objectSizeLarge );
+console.log( icons.objectSizeSmall );
+console.log( icons.objectSizeMedium );
+console.log( icons.pencil );
+console.log( icons.pilcrow );
+console.log( icons.quote );
+console.log( icons.threeVerticalDots );
 
-import heading1 from '@ckeditor/ckeditor5-core/theme/icons/heading1.svg';
-import heading2 from '@ckeditor/ckeditor5-core/theme/icons/heading2.svg';
-import heading3 from '@ckeditor/ckeditor5-core/theme/icons/heading3.svg';
-import heading4 from '@ckeditor/ckeditor5-core/theme/icons/heading4.svg';
-import heading5 from '@ckeditor/ckeditor5-core/theme/icons/heading5.svg';
-import heading6 from '@ckeditor/ckeditor5-core/theme/icons/heading6.svg';
+console.log( icons.fontFamily );
+console.log( icons.fontSize );
+console.log( icons.fontColor );
+console.log( icons.fontBackground );
 
-import indent from '@ckeditor/ckeditor5-core/theme/icons/indent.svg';
-import outdent from '@ckeditor/ckeditor5-core/theme/icons/outdent.svg';
+console.log( icons.heading1 );
+console.log( icons.heading2 );
+console.log( icons.heading3 );
+console.log( icons.heading4 );
+console.log( icons.heading5 );
+console.log( icons.heading6 );
 
-import marker from '@ckeditor/ckeditor5-highlight/theme/icons/marker.svg';
-import pen from '@ckeditor/ckeditor5-highlight/theme/icons/pen.svg';
+console.log( icons.indent );
+console.log( icons.outdent );
 
-import html from '@ckeditor/ckeditor5-core/theme/icons/html.svg';
+console.log( icons.marker );
+console.log( icons.pen );
 
-import link from '@ckeditor/ckeditor5-link/theme/icons/link.svg';
-import unlink from '@ckeditor/ckeditor5-link/theme/icons/unlink.svg';
+console.log( icons.html );
 
-import bulletedList from '@ckeditor/ckeditor5-core/theme/icons/bulletedlist.svg';
-import numberedList from '@ckeditor/ckeditor5-core/theme/icons/numberedlist.svg';
-import todoList from '@ckeditor/ckeditor5-core/theme/icons/todolist.svg';
+console.log( icons.link );
+console.log( icons.unlink );
 
-import media from '@ckeditor/ckeditor5-media-embed/theme/icons/media.svg';
+console.log( icons.bulletedList );
+console.log( icons.numberedList );
+console.log( icons.todoList );
 
-import pageBreak from '@ckeditor/ckeditor5-page-break/theme/icons/pagebreak.svg';
+console.log( icons.media );
 
-import paragraph from '@ckeditor/ckeditor5-core/theme/icons/paragraph.svg';
+console.log( icons.pageBreak );
 
-import removeFormat from '@ckeditor/ckeditor5-remove-format/theme/icons/remove-format.svg';
+console.log( icons.paragraph );
 
-import contentLock from '@ckeditor/ckeditor5-restricted-editing/theme/icons/contentlock.svg';
-import contentUnlock from '@ckeditor/ckeditor5-restricted-editing/theme/icons/contentunlock.svg';
+console.log( icons.removeFormat );
 
-import selectAll from '@ckeditor/ckeditor5-select-all/theme/icons/select-all.svg';
+console.log( icons.contentLock );
+console.log( icons.contentUnlock );
 
-import sourceEditing from '@ckeditor/ckeditor5-source-editing/theme/icons/source-editing.svg';
+console.log( icons.selectAll );
 
-import specialCharacters from '@ckeditor/ckeditor5-special-characters/theme/icons/specialcharacters.svg';
+console.log( icons.sourceEditing );
 
-import table from '@ckeditor/ckeditor5-core/theme/icons/table.svg';
-import tableRow from '@ckeditor/ckeditor5-table/theme/icons/table-row.svg';
-import tableColumn from '@ckeditor/ckeditor5-table/theme/icons/table-column.svg';
-import tableMergeCell from '@ckeditor/ckeditor5-table/theme/icons/table-merge-cell.svg';
-import tableCellProperties from '@ckeditor/ckeditor5-table/theme/icons/table-cell-properties.svg';
-import tableProperties from '@ckeditor/ckeditor5-table/theme/icons/table-properties.svg';
+console.log( icons.specialCharacters );
 
-import nextArrow from '@ckeditor/ckeditor5-core/theme/icons/next-arrow.svg';
-import previousArrow from '@ckeditor/ckeditor5-core/theme/icons/previous-arrow.svg';
+console.log( icons.table );
+console.log( icons.tableRow );
+console.log( icons.tableColumn );
+console.log( icons.tableMergeCell );
+console.log( icons.tableCellProperties );
+console.log( icons.tableProperties );
 
-import undo from '@ckeditor/ckeditor5-core/theme/icons/undo.svg';
-import redo from '@ckeditor/ckeditor5-core/theme/icons/redo.svg';
+console.log( icons.nextArrow );
+console.log( icons.previousArrow );
 
-import history from '@ckeditor/ckeditor5-core/theme/icons/history.svg';
-import loupe from '@ckeditor/ckeditor5-core/theme/icons/loupe.svg';
+console.log( icons.undo );
+console.log( icons.redo );
+
+console.log( icons.history );
+console.log( icons.loupe );
 ```
 
 You can also {@link framework/architecture/ui-library#setting-label-icon-and-tooltip add a custom icon to the dropdown} by providing the entire XML string of the icon
@@ -838,11 +831,7 @@ To create them, use the {@link module:ui/labeledfield/labeledfieldview~LabeledFi
 To create a text field, pass the {@link module:ui/labeledfield/utils#createLabeledInputText `createLabeledInputText()`} helper function as the second parameter to the {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView `LabeledFieldView`} class.
 
 ```js
-import {
-	createLabeledInputText,
-	LabeledFieldView,
-	Locale
-	} from 'ckeditor5';
+import { createLabeledInputText, LabeledFieldView, Locale } from 'ckeditor5';
 
 const locale = new Locale();
 
@@ -858,11 +847,7 @@ document.getElementById( 'input-text' ).append( textInput.element );
 To create a number field, pass the {@link module:ui/labeledfield/utils#createLabeledInputNumber `createLabeledInputNumber()`} helper function as the second parameter to the {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView `LabeledFieldView`} class.
 
 ```js
-import {
-	createLabeledInputNumber,
-	LabeledFieldView,
-	Locale
-	} from 'ckeditor5';
+import { createLabeledInputNumber, LabeledFieldView, Locale } from 'ckeditor5';
 
 const locale = new Locale();
 
@@ -884,11 +869,7 @@ Similarly to buttons, inputs can be enabled or disabled. The property names rema
 Inputs are enabled by default. You can also set the state explicitly by adding the {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#isEnabled `isEnabled`} property with a `true` value.
 
 ```js
-import {
-	createLabeledInputText,
-	LabeledFieldView,
-	Locale
-	} from 'ckeditor5';
+import { createLabeledInputText, LabeledFieldView, Locale } from 'ckeditor5';
 
 const locale = new Locale();
 
@@ -904,11 +885,7 @@ document.getElementById( 'input-enabled' ).append( enabledInput.element );
 To disable an input, set the {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#isEnabled `isEnabled`} property to `false`. It prevents the input from getting users' data.
 
 ```js
-import {
-	createLabeledInputText,
-	LabeledFieldView,
-	Locale
-	} from 'ckeditor5';
+import { createLabeledInputText, LabeledFieldView, Locale } from 'ckeditor5';
 
 const locale = new Locale();
 
@@ -938,11 +915,7 @@ Some sub-components and classes that can help with better presentation of the re
 * To highlight some results (or some text in general), you can use the {@link module:ui/highlightedtext/highlightedtextview~HighlightedTextView `HighlightedTextView`} class.
 
 ```js
-import {
-	ListView,
-	SearchTextView,
-	Locale
-	} from '@ckeditor/ckeditor5-utils';
+import { ListView, SearchTextView, Locale } from 'ckeditor5';
 
 const locale = new Locale();
 
@@ -1017,11 +990,7 @@ A toolbar is a base for other components. Usually, you would put other UI elemen
 You can put different UI elements inside a toolbar. A simple text node is one example. You can use the {@link module:ui/toolbar/toolbarview~ToolbarView#items `items`} property to add a component to a toolbar.
 
 ```js
-import {
-	ToolbarView,
-	View,
-	Locale
-	} from 'ckeditor5';
+import { ToolbarView, View,	Locale } from 'ckeditor5';
 
 const locale = new Locale();
 
@@ -1042,11 +1011,7 @@ document.getElementById( 'toolbar-text' ).append( toolbarText.element );
 You can place any previously listed button inside a toolbar.
 
 ```js
-import {
-	ButtonView,
-	ToolbarView,
-	Locale
-	} from 'ckeditor5';
+import { ButtonView, ToolbarView, Locale } from 'ckeditor5';
 
 const locale = new Locale();
 
@@ -1067,11 +1032,7 @@ document.getElementById( 'toolbar-button' ).append( toolbarButton.element );
 A toolbar automatically wraps if you add more items and the space is limited.
 
 ```js
-import {
-	ButtonView,
-	ToolbarView,
-	Locale
-	} from '@ckeditor/ckeditor5-utils';
+import { ButtonView, ToolbarView, Locale } from 'ckeditor5';
 
 const locale = new Locale();
 
@@ -1098,12 +1059,7 @@ document.getElementById( 'toolbar-wrap' ).append( toolbarWrap.element );
 You can divide toolbar elements with a separator to create logically connected groups. To instantiate a separator, use the {@link module:ui/toolbar/toolbarseparatorview~ToolbarSeparatorView `ToolbarSeparatorView`} class. Adding the created instance between desired components will separate them visually.
 
 ```js
-import {
-	ButtonView,
-	ToolbarSeparatorView,
-	ToolbarView,
-	Locale
-	} from 'ckeditor5';
+import { ButtonView, ToolbarSeparatorView, ToolbarView,	Locale } from 'ckeditor5';
 
 const locale = new Locale();
 
@@ -1131,8 +1087,7 @@ document.getElementById( 'toolbar-separator' ).append( toolbarSeparator.element 
 By default, a toolbar has one row. However, it can span into multiple rows. You can instantiate a line break with the {@link module:ui/toolbar/toolbarlinebreakview~ToolbarLineBreakView `ToolbarLineBreakView`} class. Adding the created instance after a desired component will place the following UI elements into the next row.
 
 ```js
-import { ButtonView, ToolbarView, Locale } from 'ckeditor5';
-import ToolbarLineBreakView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarlinebreakview';
+import { ButtonView, ToolbarLineBreakView, ToolbarView, Locale } from 'ckeditor5';
 
 const locale = new Locale();
 
@@ -1160,7 +1115,7 @@ document.getElementById( 'toolbar-multirow' ).append( toolbarMultiRow.element );
 There is also a smaller version of a toolbar. To get a compact toolbar, set the {@link module:ui/toolbar/toolbarview~ToolbarView#isCompact `isCompact`} property to `true`.
 
 ```js
-import { ButtonView, ToolbarView, Locale } from '@ckeditor/ckeditor5-utils';
+import { ButtonView, ToolbarView, Locale } from 'ckeditor5';
 
 const locale = new Locale();
 
