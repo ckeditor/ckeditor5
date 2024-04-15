@@ -20,7 +20,8 @@ import type {
 	ModelPostFixer,
 	Range,
 	SchemaAttributeCheckCallback,
-	SchemaChildCheckCallback
+	SchemaChildCheckCallback,
+	ViewDocumentTabEvent
 } from 'ckeditor5/src/engine.js';
 import type { BaseEvent, GetCallback } from 'ckeditor5/src/utils.js';
 import type { InsertTextCommand, InsertTextCommandExecuteEvent } from 'ckeditor5/src/typing.js';
@@ -110,8 +111,22 @@ export default class RestrictedEditingModeEditing extends Plugin {
 			new RestrictedEditingModeNavigationCommand( editor, 'forward' )
 		);
 
-		editor.keystrokes.set( 'Tab', getCommandExecuter( editor, 'goToNextRestrictedEditingException' ) );
-		editor.keystrokes.set( 'Shift+Tab', getCommandExecuter( editor, 'goToPreviousRestrictedEditingException' ) );
+		this.listenTo<ViewDocumentTabEvent>( editingView.document, 'tab', ( evt, data ) => {
+			const commandName = !data.shiftKey ? 'goToNextRestrictedEditingException' : 'goToPreviousRestrictedEditingException';
+			const command: Command = editor.commands.get( commandName )!;
+
+			if ( command.isEnabled ) {
+				editor.execute( commandName );
+
+				// Stop the event in the DOM: no listener in the web page will be triggered by this event.
+				data.preventDefault();
+				data.stopPropagation();
+			}
+
+			// Stop the event bubbling in the editor: no more callbacks will be executed for this keystroke.
+			evt.stop();
+		}, { context: '$capture' } );
+
 		editor.keystrokes.set( 'Ctrl+A', getSelectAllHandler( editor ) );
 
 		editingView.change( writer => {
@@ -332,20 +347,6 @@ export default class RestrictedEditingModeEditing extends Plugin {
 			command.forceDisabled( COMMAND_FORCE_DISABLE_ID );
 		}
 	}
-}
-
-/**
- * Helper method for executing enabled commands only.
- */
-function getCommandExecuter( editor: Editor, commandName: string ): EditingKeystrokeCallback {
-	return ( _, cancel ) => {
-		const command: Command = editor.commands.get( commandName )!;
-
-		if ( command.isEnabled ) {
-			editor.execute( commandName );
-			cancel();
-		}
-	};
 }
 
 /**
