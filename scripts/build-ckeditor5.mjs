@@ -7,6 +7,7 @@
 
 /* eslint-env node */
 
+import { rm, copyFile } from 'fs/promises';
 import upath from 'upath';
 import chalk from 'chalk';
 import { build } from '@ckeditor/ckeditor5-dev-build-tools';
@@ -25,36 +26,58 @@ function dist( path ) {
 	/**
 	 * Step 1
 	 */
-	console.log( chalk.green( '1/2: Generating NPM build...' ) );
+	console.log( chalk.green( '1/3: Generating NPM build...' ) );
 
 	await build( {
 		output: dist( 'index.js' ),
 		tsconfig,
 		banner,
-		external: [],
 		sourceMap: true,
+		external: [],
 
 		/**
 		 * Because this build runs first, it cleans up the old output folder
 		 * and generates TypeScript declarations and translation files.
-		 * We don't want to do this for other bundles.
+		 * We don't want to repeat this in other steps.
 		 */
 		clean: true,
 		declarations: true,
 		translations: 'packages/**/*.po'
 	} );
 
+	await rm( dist( 'index.js' ) );
+	await rm( dist( 'index.js.map' ) );
+
 	/**
 	 * Step 2
 	 */
-	console.log( chalk.green( '2/2: Generating browser build...' ) );
+	console.log( chalk.green( '2/3: Generating `index.js` for the NPM build...' ) );
+
+	await build( {
+		output: dist( 'tmp/index.js' ),
+		tsconfig,
+		banner,
+		sourceMap: true,
+		external: [
+			'ckeditor5'
+		],
+	} );
+
+	await copyFile( dist( 'tmp/index.js' ), dist( 'index.js' ) );
+	await copyFile( dist( 'tmp/index.js.map' ), dist( 'index.js.map' ) );
+	await rm( dist( 'tmp' ), { recursive: true } );
+
+	/**
+	 * Step 3
+	 */
+	console.log( chalk.green( '3/3: Generating browser build...' ) );
 
 	await build( {
 		output: dist( 'index.browser.js' ),
 		tsconfig,
 		banner,
-		external: [],
 		sourceMap: true,
-		minify: true
+		minify: true,
+		external: []
 	} );
 } )();
