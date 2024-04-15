@@ -44,7 +44,6 @@ module.exports = function getCKEditor5PackageJson() {
 			'build/ckeditor5-dll.js',
 			'build/ckeditor5-dll.manifest.json',
 			'build/translations/*.js',
-			'packages-lists.json',
 			// npm default files.
 			'CHANGELOG.md',
 			'LICENSE.md',

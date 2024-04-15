@@ -132,10 +132,6 @@ jobs:
           when: always
           name: Check if all CSS files from the "ckeditor5-theme-lark" are imported in "index.css" file
           command: yarn run check-theme-lark-imports
-      - run:
-          when: always
-          name: Checks if all available packages of "ckeditor5" and "ckeditor5-premium-features" are on the list in "packages-lists.json" file
-          command: yarn run check-packages-lists
 
   cke5_coverage:
     machine: true
