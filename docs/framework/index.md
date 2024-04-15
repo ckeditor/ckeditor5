@@ -64,6 +64,5 @@ There come times when you do not need deep-dive guides, elaborate solutions, and
 
 To start using the framework refer to:
 
-* The {@link framework/quick-start Quick start} guide.
 * The {@link framework/architecture/intro Introduction to the framework architecture} guide.
 * The {@link tutorials/crash-course/editor step-by-step crash course}.

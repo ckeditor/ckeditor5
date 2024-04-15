@@ -9,7 +9,7 @@ feedback-widget: false
 
 # Introduction to CKEditor&nbsp;5 architecture
 
-This guide introduces the main pillars of the CKEditor&nbsp;5 architecture. It is assumed that you have read the {@link framework/index Framework's overview} and saw some code in the {@link framework/quick-start Quick start} guide. This should help you go through the next steps.
+This guide introduces the main pillars of the CKEditor&nbsp;5 architecture. It is assumed that you have read the {@link framework/index Framework's overview} and saw some code already. This should help you go through the next steps.
 
 ## Main components
 

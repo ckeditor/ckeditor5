@@ -8,7 +8,7 @@ order: 25
 This guide will show you how to create a simple abbreviation plugin for CKEditor&nbsp;5.
 
 <info-box>
-	Before you get to work, you should check out the {@link framework/quick-start Quick start} guide first to set up the framework and building tools. Be sure to check out the {@link framework/using-package-generatorpackage generator guide} as well.
+	Before you get to work,be sure to check out the {@link framework/using-package-generatorpackage generator guide}.
 </info-box>
 
 We’ll create a toolbar button that lets the users insert abbreviations into their document.  The abbreviations will use [the `<abbr>` <abbr title="HyperText Markup Language"> HTML </abbr> element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/abbr), with a ‘title’ attribute that will show up in a tooltip when the user hovers over the element.
