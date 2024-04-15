@@ -17,7 +17,7 @@ export { default as Context, type ContextConfig } from './context.js';
 export { default as ContextPlugin, type ContextPluginDependencies } from './contextplugin.js';
 export { type EditingKeystrokeCallback } from './editingkeystrokehandler.js';
 
-export type { PartialBy, NonEmptyArray } from './typings.js';
+export type { PartialBy, NonEmptyArray, HexColor } from './typings.js';
 
 export { default as Editor, type EditorReadyEvent, type EditorDestroyEvent } from './editor/editor.js';
 export type {
