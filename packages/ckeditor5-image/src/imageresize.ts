@@ -11,6 +11,7 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import ImageResizeButtons from './imageresize/imageresizebuttons.js';
 import ImageResizeEditing from './imageresize/imageresizeediting.js';
 import ImageResizeHandles from './imageresize/imageresizehandles.js';
+import ImageCustomResizeUI from './imageresize/imagecustomresizeui.js';
 
 import '../theme/imageresize.css';
 
@@ -24,7 +25,7 @@ export default class ImageResize extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ ImageResizeEditing, ImageResizeHandles, ImageResizeButtons ] as const;
+		return [ ImageResizeEditing, ImageResizeHandles, ImageCustomResizeUI, ImageResizeButtons ] as const;
 	}
 
 	/**

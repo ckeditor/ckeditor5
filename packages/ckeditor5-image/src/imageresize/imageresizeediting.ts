@@ -42,26 +42,33 @@ export default class ImageResizeEditing extends Plugin {
 
 		editor.config.define( 'image', {
 			resizeUnit: '%',
-			resizeOptions: [ {
-				name: 'resizeImage:original',
-				value: null,
-				icon: 'original'
-			},
-			{
-				name: 'resizeImage:25',
-				value: '25',
-				icon: 'small'
-			},
-			{
-				name: 'resizeImage:50',
-				value: '50',
-				icon: 'medium'
-			},
-			{
-				name: 'resizeImage:75',
-				value: '75',
-				icon: 'large'
-			} ]
+			resizeOptions: [
+				{
+					name: 'resizeImage:original',
+					value: null,
+					icon: 'original'
+				},
+				{
+					name: 'resizeImage:custom',
+					value: 'custom',
+					icon: 'custom'
+				},
+				{
+					name: 'resizeImage:25',
+					value: '25',
+					icon: 'small'
+				},
+				{
+					name: 'resizeImage:50',
+					value: '50',
+					icon: 'medium'
+				},
+				{
+					name: 'resizeImage:75',
+					value: '75',
+					icon: 'large'
+				}
+			]
 		} );
 	}
 

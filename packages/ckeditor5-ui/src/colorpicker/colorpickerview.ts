@@ -9,6 +9,7 @@
 
 import { convertColor, convertToHex, registerCustomElement, type ColorPickerViewConfig } from './utils.js';
 
+import type { HexColor } from '@ckeditor/ckeditor5-core';
 import { type Locale, global, env } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunc } from 'lodash-es';
 import View from '../view.js';
@@ -243,10 +244,9 @@ export default class ColorPickerView extends View {
 	 * @private
 	 */
 	private _createInputRow(): ColorPickerInputRowView {
-		const hashView = new HashView();
 		const colorInput = this._createColorInput();
 
-		return new ColorPickerInputRowView( this.locale!, [ hashView, colorInput ] );
+		return new ColorPickerInputRowView( this.locale!, colorInput );
 	}
 
 	/**
@@ -278,25 +278,46 @@ export default class ColorPickerView extends View {
 			const inputValue = labeledInput.fieldView.element!.value;
 
 			if ( inputValue ) {
-				// Trim the whitespace.
-				const trimmedValue = inputValue.trim();
+				const maybeHexColor = tryParseHexColor( inputValue );
 
-				// Drop the `#` from the beginning if present.
-				const hashlessInput = trimmedValue.startsWith( '#' ) ? trimmedValue.substring( 1 ) : trimmedValue;
-
-				// Check if it's a hex color (3,4,6 or 8 chars long and with proper characters).
-				const isValidHexColor = [ 3, 4, 6, 8 ].includes( hashlessInput.length ) &&
-					/(([0-9a-fA-F]{2}){3,4}|([0-9a-fA-F]){3,4})/.test( hashlessInput );
-
-				if ( isValidHexColor ) {
+				if ( maybeHexColor ) {
 					// If so, set the color.
 					// Otherwise, do nothing.
-					this._debounceColorPickerEvent( '#' + hashlessInput );
+					this._debounceColorPickerEvent( maybeHexColor );
 				}
 			}
 		} );
 
 		return labeledInput;
+	}
+
+	/**
+	 * Validates the view and returns `false` when some fields are invalid.
+	 */
+	public isValid(): boolean {
+		const { t } = this.locale!;
+
+		this.resetValidationStatus();
+
+		// One error per field is enough.
+		if ( !this.hexInputRow.getParsedColor() ) {
+			// Apply updated error.
+			this.hexInputRow.inputView.errorText = t( 'Please enter a valid color (e.g. "ff0000").' );
+
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Cleans up the supplementary error and information text of input inside the {@link #hexInputRow}
+	 * bringing them back to the state when the form has been displayed for the first time.
+	 *
+	 * See {@link #isValid}.
+	 */
+	public resetValidationStatus(): void {
+		this.hexInputRow.inputView.errorText = null;
 	}
 }
 
@@ -367,14 +388,24 @@ class ColorPickerInputRowView extends View {
 	public readonly children: ViewCollection;
 
 	/**
+	 * Hex input view element.
+	 */
+	public readonly inputView: LabeledFieldView<InputTextView>;
+
+	/**
 	 * Creates an instance of the form row class.
 	 *
 	 * @param locale The locale instance.
+	 * @param inputView Hex color input element.
 	 */
-	constructor( locale: Locale, children?: Array<View> ) {
+	constructor( locale: Locale, inputView: LabeledFieldView<InputTextView> ) {
 		super( locale );
 
-		this.children = this.createCollection( children );
+		this.inputView = inputView;
+		this.children = this.createCollection( [
+			new HashView(),
+			this.inputView
+		] );
 
 		this.setTemplate( {
 			tag: 'div',
@@ -386,6 +417,13 @@ class ColorPickerInputRowView extends View {
 			},
 			children: this.children
 		} );
+	}
+
+	/**
+	 * Returns false if color input value is not in hex format.
+	 */
+	public getParsedColor(): HexColor | null {
+		return tryParseHexColor( this.inputView.fieldView.element!.value );
 	}
 }
 
@@ -405,3 +443,30 @@ export type ColorPickerColorSelectedEvent = {
 		color: string;
 	} ];
 };
+
+/**
+ * Trim spaces from provided color and check if hex is valid.
+ *
+ * @param color Unsafe color string.
+ * @returns Null if provided color is not hex value.
+ * @export
+ */
+export function tryParseHexColor<S extends string>( color: S | null | undefined ): HexColor<S> | null {
+	if ( !color ) {
+		return null;
+	}
+
+	const hashLessColor = color.trim().replace( /^#/, '' );
+
+	// Incorrect length.
+	if ( ![ 3, 4, 6, 8 ].includes( hashLessColor.length ) ) {
+		return null;
+	}
+
+	// Incorrect characters.
+	if ( !/^(([0-9a-fA-F]{2}){3,4}|([0-9a-fA-F]){3,4})$/.test( hashLessColor ) ) {
+		return null;
+	}
+
+	return `#${ hashLessColor }` as `#${ S }`;
+}
