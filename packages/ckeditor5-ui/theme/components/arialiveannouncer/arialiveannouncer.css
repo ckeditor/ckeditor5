@@ -8,3 +8,7 @@
 	left: -10000px;
 	top: -10000px;
 }
+
+.ck.ck-aria-live-region-list {
+	list-style-type: none;
+}
