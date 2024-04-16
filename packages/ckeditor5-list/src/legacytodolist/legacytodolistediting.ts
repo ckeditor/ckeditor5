@@ -19,7 +19,9 @@ import type {
 	ViewDocumentArrowKeyEvent,
 	ViewDocumentKeyDownEvent,
 	AttributeOperation,
-	RenameOperation
+	RenameOperation,
+	SelectionChangeRangeEvent,
+	DocumentFragment
 } from 'ckeditor5/src/engine.js';
 
 import { Plugin } from 'ckeditor5/src/core.js';
@@ -188,6 +190,8 @@ export default class LegacyTodoListEditing extends Plugin {
 
 			return hasChanged;
 		} );
+
+		this._initAriaAnnouncements();
 	}
 
 	/**
@@ -207,6 +211,35 @@ export default class LegacyTodoListEditing extends Plugin {
 			writer.setSelection( listItem, 'end' );
 			editor.execute( 'checkTodoList' );
 			writer.setSelection( previousSelectionRanges );
+		} );
+	}
+
+	/**
+	 * Observe when user enters or leaves todo list and set proper aria value in global live announcer.
+	 * This allows screen readers to indicate when the user has entered and left the specified todo list.
+	 *
+	 * @internal
+	 */
+	private _initAriaAnnouncements( ) {
+		const { model, ui, t } = this.editor;
+		let lastFocusedCodeBlock: Element | DocumentFragment | null = null;
+
+		if ( !ui ) {
+			return;
+		}
+
+		model.document.selection.on<SelectionChangeRangeEvent>( 'change:range', () => {
+			const focusParent = model.document.selection.focus!.parent;
+			const lastElementIsTodoList = isLegacyTodoListItemElement( lastFocusedCodeBlock );
+			const currentElementIsTodoList = isLegacyTodoListItemElement( focusParent );
+
+			if ( lastElementIsTodoList && !currentElementIsTodoList ) {
+				ui.ariaLiveAnnouncer.announce( t( 'Leaving a to-do list' ) );
+			} else if ( !lastElementIsTodoList && currentElementIsTodoList ) {
+				ui.ariaLiveAnnouncer.announce( t( 'Entering a to-do list' ) );
+			}
+
+			lastFocusedCodeBlock = focusParent;
 		} );
 	}
 }
@@ -248,4 +281,11 @@ function jumpOverCheckmarkOnSideArrowKeyPress( model: Model, locale: Locale ): G
 			eventInfo.stop();
 		}
 	};
+}
+
+/**
+ * Returns true if the given element is a list item model element of a to-do list.
+ */
+function isLegacyTodoListItemElement( element: Element | DocumentFragment | null ): boolean {
+	return !!element && element.is( 'element', 'listItem' ) && element.getAttribute( 'listType' ) === 'todo';
 }
