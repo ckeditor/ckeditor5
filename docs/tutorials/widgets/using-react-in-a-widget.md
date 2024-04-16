@@ -283,7 +283,7 @@ Here is the full source code of the `ProductPreviewEditing` editor plugin:
 ```js
 // ckeditor/productpreviewediting.js
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from 'ckeditor5';
 import { Widget, toWidget } from '@ckeditor/ckeditor5-widget';
 
 import InsertProductPreviewCommand from './insertproductpreviewcommand';
@@ -1132,7 +1132,7 @@ root.render(<App
 ```js
 // ckeditor/productpreviewediting.js
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from 'ckeditor5';
 import { Widget, toWidget } from '@ckeditor/ckeditor5-widget';
 
 import InsertProductPreviewCommand from './insertproductpreviewcommand';

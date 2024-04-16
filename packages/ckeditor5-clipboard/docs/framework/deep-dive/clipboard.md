@@ -138,7 +138,7 @@ import {
 	Plugin,
 	ButtonView,
 	plainTextToHtml
-} from 'ckeditor5';
+	} from 'ckeditor5';
 
 class PastePlainText extends Plugin {
 	static get pluginName() {

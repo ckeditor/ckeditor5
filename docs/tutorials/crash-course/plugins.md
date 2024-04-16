@@ -13,8 +13,7 @@ modified_at: 2023-08-16
 In the previous chapter of this tutorial, we learned that the editor is just an empty shell, and what gives the editor almost all of its functionality are the plugins. We also installed two plugins to be able to type in the editor.
 
 ```js
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Essentials, Paragraph } from 'ckeditor5';
 
 const editor = await ClassicEditor.create( element, {
 	plugins: [

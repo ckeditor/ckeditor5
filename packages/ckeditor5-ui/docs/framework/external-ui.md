@@ -18,32 +18,34 @@ The ready–to–use builds of CKEditor like {@link examples/builds/classic-edit
 
 ```js
 // Basic classes to create an editor.
-import { Editor } from '@ckeditor/ckeditor5-core';
-import { ComponentFactory, EditorUI, EditorUIView, InlineEditableUIView } from '@ckeditor/ckeditor5-ui';
-import { ElementReplacer, FocusTracker } from '@ckeditor/ckeditor5-utils';
-
+import {
+	Editor,
+	ComponentFactory,
+	EditorUI,
+	EditorUIView,
+	InlineEditableUIView,
+	ElementReplacer,
+	FocusTracker,
 // Interfaces to extend the basic Editor API.
-import { ElementApiMixin } from '@ckeditor/ckeditor5-core';
-
+	ElementApiMixin,
 // Helper function for adding interfaces to the Editor class.
-import { mix } from '@ckeditor/ckeditor5-utils';
-
+	mix,
 // Helper function that gets the data from an HTML element that the Editor is attached to.
-import { getDataFromElement } from '@ckeditor/ckeditor5-utils';
-
+	getDataFromElement,
 // Helper function that binds the editor with an HTMLForm element.
-import { attachToForm } from '@ckeditor/ckeditor5-core';
-
+	attachToForm,
 // Basic features that every editor should enable.
-import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
-import { Enter } from '@ckeditor/ckeditor5-enter';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { Typing } from '@ckeditor/ckeditor5-typing';
-import { UndoEditing } from '@ckeditor/ckeditor5-undo';
-
+	Clipboard,
+	Enter,
+	Paragraph,
+	Typing,
+	UndoEditing,
 // Basic features associated with the edited content.
-import { BoldEditing, ItalicEditing, UnderlineEditing } from '@ckeditor/ckeditor5-basic-styles';
-import { HeadingEditing } from '@ckeditor/ckeditor5-heading';
+	BoldEditing,
+	ItalicEditing,
+	UnderlineEditing,
+	HeadingEditing
+	} from 'ckeditor5';
 ```
 
 <info-box info>
@@ -478,19 +480,18 @@ _setupBootstrapHeadingDropdown() {
 When the editor classes and the user interface are ready, it is time to run the editor. Just make sure all the plugins are loaded and the right DOM element is passed to `BootstrapEditor#create`:
 
 ```js
-BootstrapEditor
-	.create( $( '#editor' ).get( 0 ), {
-		plugins: [
-			Clipboard, Enter, Typing, Paragraph,
-			BoldEditing, ItalicEditing, UnderlineEditing, HeadingEditing, UndoEditing
-		]
-	} )
-	.then( editor => {
-		window.editor = editor;
-	} )
-	.catch( err => {
-		console.error( err.stack );
-	} );
+BootstrapEditor.create( $( '#editor' ).get( 0 ), {
+	plugins: [
+		Clipboard, Enter, Typing, Paragraph,
+		BoldEditing, ItalicEditing, UnderlineEditing, HeadingEditing, UndoEditing
+	]
+} )
+.then( editor => {
+	window.editor = editor;
+} )
+.catch( err => {
+	console.error( err.stack );
+} );
 ```
 
 Once everything works as expected, you may want to create a custom build of your editor to ship it across the applications. To learn more check out the {@link getting-started/legacy-getting-started/quick-start-other#building-the-editor-from-source Creating custom builds guide}.
