@@ -25,52 +25,7 @@ The easiest way to use CKEditor&nbsp;5 in your React application is by choosing 
 
 ## Quick start
 
-This guide assumes you already have a React project. If you want to create a new one, you can use the [`create-react-app`](https://create-react-app.dev/) CLI. It allows you to create and customize your project with templates. For example, you can set up your project with TypeScript support.
-
-Install the [CKEditor&nbsp;5 WYSIWYG editor component for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) and the {@link getting-started/legacy-getting-started/predefined-builds#available-builds editor build of your choice}. Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
-
-```bash
-npm install --save @ckeditor/ckeditor5-react @ckeditor/ckeditor5-build-classic
-```
-
-Use the `<CKEditor>` component inside your project:
-
-```tsx
-// App.jsx / App.tsx
-
-import React, { Component } from 'react';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-
-class App extends Component {
-	render() {
-		return (
-			<div className="App">
-				<h2>Using CKEditor&nbsp;5 build in React</h2>
-				<CKEditor
-					editor={ ClassicEditor }
-					data="<p>Hello from CKEditor&nbsp;5!</p>"
-					onReady={ editor => {
-						// You can store the "editor" and use when it is needed.
-						console.log( 'Editor is ready to use!', editor );
-					} }
-					onChange={ ( event ) => {
-						console.log( event );
-					} }
-					onBlur={ ( event, editor ) => {
-						console.log( 'Blur.', editor );
-					} }
-					onFocus={ ( event, editor ) => {
-						console.log( 'Focus.', editor );
-					} }
-				/>
-			</div>
-		);
-	}
-}
-
-export default App;
-```
+Update npm install.
 
 ## Component properties
 
