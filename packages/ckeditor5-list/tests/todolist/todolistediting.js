@@ -970,10 +970,10 @@ describe( 'TodoListEditing', () => {
 			);
 
 			moveSelection( [ 1, 0 ], [ 1, 1 ] );
-			expectAnnounce( 'Entering todo list' );
+			expectAnnounce( 'Entering a to-do list' );
 
 			moveSelection( [ 3, 0 ], [ 3, 1 ] );
-			expectAnnounce( 'Leaving todo list' );
+			expectAnnounce( 'Leaving a to-do list' );
 		} );
 
 		it( 'should announce entering and leaving list once, even if there is nested list', () => {
@@ -986,13 +986,13 @@ describe( 'TodoListEditing', () => {
 			);
 
 			moveSelection( [ 1, 0 ], [ 1, 1 ] );
-			expectAnnounce( 'Entering todo list' );
+			expectAnnounce( 'Entering a to-do list' );
 
 			moveSelection( [ 2, 0 ], [ 2, 1 ] );
-			expectNotToAnnounce( 'Leaving todo list' );
+			expectNotToAnnounce( 'Leaving a to-do list' );
 
 			moveSelection( [ 4, 0 ], [ 4, 1 ] );
-			expectAnnounce( 'Leaving todo list' );
+			expectAnnounce( 'Leaving a to-do list' );
 		} );
 
 		function expectNotToAnnounce( message ) {

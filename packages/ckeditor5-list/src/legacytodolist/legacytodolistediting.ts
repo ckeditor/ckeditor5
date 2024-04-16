@@ -234,9 +234,9 @@ export default class LegacyTodoListEditing extends Plugin {
 			const currentElementIsTodoList = isLegacyTodoListItemElement( focusParent );
 
 			if ( lastElementIsTodoList && !currentElementIsTodoList ) {
-				ui.ariaLiveAnnouncer.announce( t( 'Leaving todo list' ) );
+				ui.ariaLiveAnnouncer.announce( t( 'Leaving a to-do list' ) );
 			} else if ( !lastElementIsTodoList && currentElementIsTodoList ) {
-				ui.ariaLiveAnnouncer.announce( t( 'Entering todo list' ) );
+				ui.ariaLiveAnnouncer.announce( t( 'Entering a to-do list' ) );
 			}
 
 			lastFocusedCodeBlock = focusParent;
