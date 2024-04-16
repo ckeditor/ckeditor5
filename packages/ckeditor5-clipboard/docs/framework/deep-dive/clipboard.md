@@ -29,6 +29,7 @@ When the user pastes or drops content into the editor, the browser fires an even
 The clipboard feature listens to the `view.Document#clipboardInput`, `ClipboardPipeline#inputTransformation`, and `ClipboardPipeline#contentInsertion` events using {@link framework/deep-dive/event-system#listener-priorities low priority listeners}. This means that adding a normal listener and calling `evt.stop()` allows overriding the behavior implemented by the clipboard feature. It is a similar mechanism to the DOM's `evt.preventDefault()` that lets you override the default browser behavior.
 
 ### Input pipeline events overview
+
 ```plaintext
  ┌──────────────────────┐          ┌──────────────────────┐
  │     view.Document    │          │     view.Document    │
@@ -138,7 +139,7 @@ import {
 	Plugin,
 	ButtonView,
 	plainTextToHtml
-	} from 'ckeditor5';
+} from 'ckeditor5';
 
 class PastePlainText extends Plugin {
 	static get pluginName() {
