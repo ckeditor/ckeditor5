@@ -26,26 +26,26 @@ import {
 	InlineEditableUIView,
 	ElementReplacer,
 	FocusTracker,
-// Interfaces to extend the basic Editor API.
+	// Interfaces to extend the basic Editor API.
 	ElementApiMixin,
-// Helper function for adding interfaces to the Editor class.
+	// Helper function for adding interfaces to the Editor class.
 	mix,
-// Helper function that gets the data from an HTML element that the Editor is attached to.
+	// Helper function that gets the data from an HTML element that the Editor is attached to.
 	getDataFromElement,
-// Helper function that binds the editor with an HTMLForm element.
+	// Helper function that binds the editor with an HTMLForm element.
 	attachToForm,
-// Basic features that every editor should enable.
+	// Basic features that every editor should enable.
 	Clipboard,
 	Enter,
 	Paragraph,
 	Typing,
 	UndoEditing,
-// Basic features associated with the edited content.
+	// Basic features associated with the edited content.
 	BoldEditing,
 	ItalicEditing,
 	UnderlineEditing,
 	HeadingEditing
-	} from 'ckeditor5';
+} from 'ckeditor5';
 ```
 
 <info-box info>
