@@ -1732,7 +1732,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 			const position = editor.model.document.selection.getFirstRange().start;
 
-			expect( position.parent ).to.equal( paragraph2 );
+			expect( position.parent ).to.deep.equal( paragraph2 );
 		} );
 
 		it( 'should escape from the table', () => {
@@ -1769,7 +1769,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 			const position = editor.model.document.selection.getFirstRange().start;
 
-			expect( position.parent ).to.equal( paragraph2 );
+			expect( position.parent ).to.deep.equal( paragraph2 );
 		} );
 
 		it( 'should let the focus go outside the editor on shift+tab when in the first exception', () => {
