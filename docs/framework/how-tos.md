@@ -26,7 +26,7 @@ The height of the editing area can be easily controlled with CSS.
 The easiest way is to use webpack's [`NormalModuleReplacementPlugin`](https://webpack.js.org/plugins/normal-module-replacement-plugin/) plugin. For example, to replace the bold icon, use the following code in your `webpack.config.js`:
 
 ```js
-...
+// ...
 plugins: [
 	new webpack.NormalModuleReplacementPlugin(
 		/bold\.svg/,
