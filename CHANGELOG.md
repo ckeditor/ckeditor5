@@ -133,9 +133,11 @@ Current release brings this battle-hardened solution to CKEditor 5! The [menu ba
 
 #### Updated keyboard navigation
 
-In this release we fixed the <kbd>TAB</kbd> navigation. So far it worked a bit randomly, for example, when being with cursor at the end of the end of the editable, the <kbd>TAB</kbd> could navigate you to the image caption on the top. That was a default browser behavior. We decided to take an approach in which the <kbd>TAB</kbd> (and <kbd>SHIFT</kbd>+<kbd>TAB</kbd>), navigate to the next focusable field or element outside the editor, so that the users can quickly navigate fields or links on a page. The navigation in the editor itself should be done by arrows.
+This release brings in a fix for keyboard navigation with the <kbd>Tab</kbd> key. Before, it followed the default browser behavior, which could produce somewhat random effects. For example, when the cursor was positioned at the end of the end of the editable, the <kbd>Tab</kbd> keystroke could navigate you to the image caption on the top.
 
-There is one exception to the <kbd>TAB</kbd> behavior. When a widget is selected, the <kbd>TAB</kbd> key will move the selection to the first nested editable, like a caption in an image. Pressing the <kbd>Esc</kbd> key, while inside a nested editable, will move the selection to the closest ancestor widget, for example: moving from an image caption to selecting the whole image widget.
+We changed it to an approach in which the <kbd>Tab</kbd> (and <kbd>Shift</kbd>+<kbd>Tab</kbd>), navigate to the next focusable field or an element outside the editor, so that the users can quickly navigate fields or links on the page. The navigation in the editor itself should be done by arrows, rather.
+
+There is one exception to the <kbd>Tab</kbd> behavior. When a widget is selected, the <kbd>Tab</kbd> key will move the selection to the first nested editable, such as a caption of an image. Pressing the <kbd>Esc</kbd> key, while inside a nested editable, will move the selection to the closest ancestor widget, for example: moving from an image caption to selecting the whole image widget.
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
