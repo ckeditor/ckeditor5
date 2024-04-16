@@ -39,9 +39,7 @@ describe( 'TodoListEditing', () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ Paragraph, TodoListEditing, BlockQuoteEditing, TableEditing, HeadingEditing, AlignmentEditing ]
-		} );
+		editor = await createEditor();
 
 		model = editor.model;
 		modelRoot = model.document.getRoot();
@@ -961,6 +959,33 @@ describe( 'TodoListEditing', () => {
 			announcerSpy = sinon.spy( editor.ui.ariaLiveAnnouncer, 'announce' );
 		} );
 
+		it( 'should announce entering and leaving list (multiBlock = false)', async () => {
+			await editor.destroy();
+
+			editor = await createEditor( {
+				list: {
+					multiBlock: false
+				}
+			} );
+
+			model = editor.model;
+			modelRoot = model.document.getRoot();
+			announcerSpy = sinon.spy( editor.ui.ariaLiveAnnouncer, 'announce' );
+
+			setModelData( model,
+				'<paragraph>[Foo]</paragraph>' +
+				'<listItem listType="todo" listIndent="0">1</listItem>' +
+				'<listItem listType="todo" listIndent="0" todoListChecked="true">2</listItem>' +
+				'<paragraph>Foo</paragraph>'
+			);
+
+			moveSelection( [ 1, 0 ], [ 1, 1 ] );
+			expectAnnounce( 'Entering a to-do list' );
+
+			moveSelection( [ 3, 0 ], [ 3, 1 ] );
+			expectAnnounce( 'Leaving a to-do list' );
+		} );
+
 		it( 'should announce entering and leaving list', () => {
 			setModelData( model,
 				'<paragraph>[Foo]</paragraph>' +
@@ -1275,6 +1300,13 @@ describe( 'TodoListEditing', () => {
 			} );
 		} );
 	} );
+
+	async function createEditor( config = {} ) {
+		return ClassicTestEditor.create( editorElement, {
+			plugins: [ Paragraph, TodoListEditing, BlockQuoteEditing, TableEditing, HeadingEditing, AlignmentEditing ],
+			...config
+		} );
+	}
 
 	function testUpcast( input, output ) {
 		editor.setData( input );

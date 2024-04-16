@@ -555,5 +555,13 @@ function isLabelElement( viewElement: ViewElement | ViewDocumentFragment | null 
  * Returns true if the given element is a list item model element of a to-do list.
  */
 function isTodoListItemElement( element: Element | DocumentFragment | null ): boolean {
-	return !!element && element.is( 'element', 'paragraph' ) && element.getAttribute( 'listType' ) == 'todo';
+	if ( !element ) {
+		return false;
+	}
+
+	if ( !element.is( 'element', 'paragraph' ) && !element.is( 'element', 'listItem' ) ) {
+		return false;
+	}
+
+	return element.getAttribute( 'listType' ) == 'todo';
 }
