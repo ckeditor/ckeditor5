@@ -30,7 +30,7 @@ To sum up: you need to start using the framework as soon as existing builds do n
 
 ## Contents of this section
 
-This section of CKEditor&nbsp;5 documentation provides the following resources:
+This section of CKEditor&nbsp;5 documentation provides the following resources accessible from the left-hand menu<span class="navigation-hint_mobile"> (or **main menu button in the upper-left corner** on mobile systems)</span>:
 
 * Tutorials &ndash; A crash course, a basic tutorial and advanced guides for any developers keep on writing their own CKEditor&nbsp;5 plugins.
 * Development tools &ndash; A set of useful tooling and resources for anyone wanting to develop their editor.

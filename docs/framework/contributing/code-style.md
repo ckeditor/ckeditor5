@@ -638,7 +638,7 @@ All buttons should follow the **verb + noun** or the **noun** convention. Exampl
 
 #### Commands
 
-As for commands, it is trickier. There are more combinations possible of their names than there are for buttons. Examples:
+As for commands, it is trickier. There are more possible combinations of their names than there are for buttons. Examples:
 
 * The **feature-related** convention:
 	* **noun-based** case:
@@ -827,7 +827,7 @@ Even if the import statement works locally, it will throw an error when develope
 ```js
 // Assume we edit a file located in the path: `packages/ckeditor5-engine/src/model/model.js`
 
-import { CKEditorError } from 'ckeditor5';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 ```
 
 [History of the change.](https://github.com/ckeditor/ckeditor5/issues/7128)
@@ -886,11 +886,11 @@ When importing modules from the `ckeditor5` package, all imports must come from 
 ```js
 // Assume we edit a file located in the path: `packages/ckeditor5-basic-styles/src/bold.js`
 
-import { Plugin } from 'ckeditor5';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 // The import uses the `ckeditor5` package, but the specified path does not exist when installing the package from npm.
 
-import { Plugin } from 'ckeditor5';
+import { Plugin } from 'ckeditor5/packages/ckeditor5-core';
 ```
 
 👍&nbsp; Examples of correct code for this rule:
@@ -908,7 +908,7 @@ Also, non-DLL packages should not import between non-DLL packages to avoid code 
 ```js
 // Assume we edit a file located in the path: `packages/ckeditor5-link/src/linkimage.js`
 
-import { createImageViewElement } from 'ckeditor5'
+import { createImageViewElement } from '@ckeditor/ckeditor5-image'
 ```
 
 To use the `createImageViewElement()` function, consider implementing a utility plugin that will expose the required function in the `ckeditor5-image` package.
@@ -928,7 +928,7 @@ import { Plugin } from 'ckeditor5/src/core';
 ```js
 // Assume we edit a file located in the path: `packages/ckeditor5-widget/src/widget.js`
 
-import { Plugin } from 'ckeditor5';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 ```
 
 History of changes:
@@ -940,9 +940,9 @@ History of changes:
 ### Cross package imports: `ckeditor5-rules/no-cross-package-imports`
 
 It is allowed to import modules from other packages:
-<!-- No idea whatsoever what to do with this passage -->
+
 ```js
-import { toArray } from 'ckeditor5';
+import { toArray } from 'ckeditor5/src/utils';
 ```
 
 However, some packages cannot import modules from CKEditor&nbsp;5 as it could lead to code duplication and errors in runtime. Hence, the rule disables this kind of import.
@@ -1096,7 +1096,7 @@ import Table from '@ckeditor/ckeditor5-table/src/table';
 
 ```ts
 // ✔️ Importing from the main entry point is allowed.
-import { Table } from 'ckeditor5';
+import { Table } from '@ckeditor/ckeditor5-table';
 ```
 
 ### Require `as const`: `ckeditor5-rules/require-as-const-returns-in-methods`

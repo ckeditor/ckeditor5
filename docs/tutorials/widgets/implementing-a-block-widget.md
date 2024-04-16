@@ -18,9 +18,7 @@ You will build a "Simple box" feature which will allow the user to insert a cust
 
 ## Before you start
 
-While it is not strictly necessary to read the {@link framework/quick-start Quick start} guide before going through this tutorial, it may help you to get more comfortable with CKEditor&nbsp;5 Framework before you dive into this tutorial.
-
-The tutorial will also reference various parts of the {@link framework/architecture/intro CKEditor&nbsp;5 architecture} section as you go. While reading them is not necessary to finish this tutorial, it is recommended to read these guides at some point to get a better understanding of the mechanisms used in this tutorial.
+This tutorial will reference various parts of the {@link framework/architecture/intro CKEditor&nbsp;5 architecture} section as you go. While reading them is not necessary to finish this tutorial, it is recommended to read these guides at some point to get a better understanding of the mechanisms used in this tutorial.
 
 <info-box>
 	If you want to use your own event handler for events triggered by your widget, you must wrap it with a container that has a `data-cke-ignore-events` attribute to exclude it from the editor's default handlers. Refer to {@link framework/deep-dive/widget-internals#exclude-dom-events-from-default-handlers Exclude DOM events from default handlers} for more details.
