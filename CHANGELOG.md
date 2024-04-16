@@ -127,9 +127,17 @@ No more breaking numbering of lists when they are pasted from Office. Previously
 
 #### Menu bar
 
-The menu bar is a user interface component popular in large editing desktop and online packages. It gives you access to all features provided by the editor, organized in menus and categories and improves usability of the editor, keeping the toolbar can be simple and tidy. This is especially welcome in heavily-featured editor integrations. 
+The menu bar is a user interface component popular in large editing desktop and online packages. It gives you access to all features provided by the editor, organized in menus and categories and improves usability of the editor, keeping the toolbar can be simple and tidy. This is especially welcome in heavily-featured editor integrations.
 
 Current release brings this battle-hardened solution to CKEditor 5! The [menu bar](https://ckeditor.com/docs/ckeditor5/latest/features/toolbar/menubar.html) can easily be enabled in selected editor types, comes with a handy features preset and is also highly configurable.
+
+#### Updated keyboard navigation
+
+This release brings in a fix for keyboard navigation with the <kbd>Tab</kbd> key. Before, it followed the default browser behavior, which could produce somewhat random effects. For example, when the cursor was positioned at the end of the end of the editable, the <kbd>Tab</kbd> keystroke could navigate you to the image caption on the top.
+
+We changed it to an approach in which the <kbd>Tab</kbd> (and <kbd>Shift</kbd>+<kbd>Tab</kbd>), navigate to the next focusable field or an element outside the editor, so that the users can quickly navigate fields or links on the page. The navigation in the editor itself should be done by arrows, rather.
+
+There is one exception to the <kbd>Tab</kbd> behavior. When a widget is selected, the <kbd>Tab</kbd> key will move the selection to the first nested editable, such as a caption of an image. Pressing the <kbd>Esc</kbd> key, while inside a nested editable, will move the selection to the closest ancestor widget, for example: moving from an image caption to selecting the whole image widget.
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 

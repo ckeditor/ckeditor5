@@ -172,6 +172,10 @@ These keyboard shortcuts allow for quick access to content editing features.
 			<td>Move the caret to allow typing directly after a widget</td>
 			<td colspan="2"><kbd>↓</kbd>, <kbd>→</kbd></td>
 		</tr>
+		<tr>
+			<td>After entering a nested editable, move the selection to the closest ancestor widget. For example: move from an image caption to the whole image widget.</td>
+			<td colspan="2"><kbd>Tab</kbd> then <kbd>Esc</kbd></td>
+		</tr>
 	</tbody>
 </table>
 
@@ -288,6 +292,10 @@ Use the following keystrokes for more efficient navigation in the CKEditor&nbsp;
 		<tr>
 			<td>Navigate through the toolbar or menu bar</td>
 			<td colspan="2"><kbd>↑</kbd>, <kbd>→</kbd>, <kbd>↓</kbd>, <kbd>←</kbd></td>
+		</tr>
+		<tr>
+			<td>Navigate to the next focusable field or an element outside the editor</td>
+			<td colspan="2"><kbd>Tab</kbd>, <kbd>Shift</kbd>+<kbd>Tab</kbd>
 		</tr>
 		<tr>
 			<td>Execute the currently focused button. Executing buttons that interact with the editor content moves the focus back to the content.</td>
