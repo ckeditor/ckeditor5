@@ -13,7 +13,6 @@ export {
 	type UploadResponse,
 	type FileLoader
 } from './filerepository.js';
-export { default as FileDialogButtonView } from './ui/filedialogbuttonview.js';
 export { default as Base64UploadAdapter } from './adapters/base64uploadadapter.js';
 export { default as SimpleUploadAdapter } from './adapters/simpleuploadadapter.js';
 export type { SimpleUploadConfig } from './uploadconfig.js';

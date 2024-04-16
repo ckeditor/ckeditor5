@@ -272,3 +272,7 @@ msgstr "Insert a new table row (when in the last cell of a table)"
 msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the table."
 msgid "Navigate through the table"
 msgstr "Navigate through the table"
+
+msgctxt "The accessible label of the menu bar button that displays a user interface to insert a table into editor content."
+msgid "Table"
+msgstr "Table"

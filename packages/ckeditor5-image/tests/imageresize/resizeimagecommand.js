@@ -3,48 +3,39 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Widget from '@ckeditor/ckeditor5-widget/src/widget.js';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import ResizeImageCommand from '../../src/imageresize/resizeimagecommand.js';
 import ImageResizeEditing from '../../src/imageresize/imageresizeediting.js';
+import ImageCaptionEditing from '../../src/imagecaption/imagecaptionediting.js';
+import Image from '../../src/image.js';
+import ImageStyle from '../../src/imagestyle.js';
 
 /* eslint-disable no-undef */
 
 describe( 'ResizeImageCommand', () => {
-	let editor, model, command;
+	let editor, model, command, editorElement;
 
 	beforeEach( async () => {
-		editor = await ModelTestEditor.create( {
-			plugins: [ ImageResizeEditing ]
-		} );
-		model = editor.model;
-		command = new ResizeImageCommand( editor );
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
 
-		model.schema.register( 'p', { inheritAllFrom: '$block' } );
-
-		model.schema.register( 'imageBlock', {
-			isObject: true,
-			isBlock: true,
-			allowWhere: '$block',
-			allowAttributes: 'resizedWidth'
-		} );
-
-		model.schema.register( 'caption', {
-			allowContentOf: '$block',
-			allowIn: 'imageBlock',
-			isLimit: true
-		} );
+		editor = await createEditor();
 	} );
 
 	afterEach( async () => {
-		return editor.destroy();
+		editorElement.remove();
+
+		await editor.destroy();
 	} );
 
 	describe( '#isEnabled', () => {
 		it( 'is true when image is selected', () => {
-			setData( model, '<p>x</p>[<imageBlock resizedWidth="50px"></imageBlock>]<p>x</p>' );
+			setData( model, '<paragraph>x</paragraph>[<imageBlock resizedWidth="50px"></imageBlock>]<paragraph>x</paragraph>' );
 
 			expect( command ).to.have.property( 'isEnabled', true );
 		} );
@@ -56,13 +47,18 @@ describe( 'ResizeImageCommand', () => {
 		} );
 
 		it( 'is false when image is not selected', () => {
-			setData( model, '<p>x[]</p><imageBlock resizedWidth="50px"></imageBlock>' );
+			setData( model, '<paragraph>x[]</paragraph><imageBlock resizedWidth="50px"></imageBlock>' );
 
 			expect( command ).to.have.property( 'isEnabled', false );
 		} );
 
 		it( 'is false when more than one image is selected', () => {
-			setData( model, '<p>x</p>[<imageBlock resizedWidth="50px"></imageBlock><imageBlock resizedWidth="50px"></imageBlock>]' );
+			setData(
+				model,
+				'<paragraph>x</paragraph>' +
+				'[<imageBlock resizedWidth="50px"></imageBlock>' +
+				'<imageBlock resizedWidth="50px"></imageBlock>]'
+			);
 
 			expect( command ).to.have.property( 'isEnabled', false );
 		} );
@@ -70,13 +66,13 @@ describe( 'ResizeImageCommand', () => {
 
 	describe( '#value', () => {
 		it( 'is null when image is not selected', () => {
-			setData( model, '<p>x[]</p><imageBlock resizedWidth="50px"></imageBlock>' );
+			setData( model, '<paragraph>x[]</paragraph><imageBlock resizedWidth="50px"></imageBlock>' );
 
 			expect( command ).to.have.property( 'value', null );
 		} );
 
 		it( 'is set to an object with a width property (and height set to null) when a block image is selected', () => {
-			setData( model, '<p>x</p>[<imageBlock resizedWidth="50px"></imageBlock>]<p>x</p>' );
+			setData( model, '<paragraph>x</paragraph>[<imageBlock resizedWidth="50px"></imageBlock>]<paragraph>x</paragraph>' );
 
 			expect( command ).to.have.deep.property( 'value', { width: '50px', height: null } );
 		} );
@@ -88,7 +84,7 @@ describe( 'ResizeImageCommand', () => {
 		} );
 
 		it( 'is set to null if image does not have the resizedWidth set', () => {
-			setData( model, '<p>x</p>[<imageBlock></imageBlock>]<p>x</p>' );
+			setData( model, '<paragraph>x</paragraph>[<imageBlock></imageBlock>]<paragraph>x</paragraph>' );
 
 			expect( command ).to.have.property( 'value', null );
 		} );
@@ -189,5 +185,19 @@ describe( 'ResizeImageCommand', () => {
 
 	function timeout( ms ) {
 		return new Promise( res => setTimeout( res, ms ) );
+	}
+
+	async function createEditor( config ) {
+		const editor = await ClassicEditor.create( editorElement, config || {
+			plugins: [ Widget, Image, ImageStyle, ImageCaptionEditing, ImageResizeEditing, Paragraph ],
+			image: {
+				resizeUnit: 'px'
+			}
+		} );
+
+		model = editor.model;
+		command = new ResizeImageCommand( editor );
+
+		return editor;
 	}
 } );

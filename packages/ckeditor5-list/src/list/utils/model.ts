@@ -19,7 +19,8 @@ import type {
 
 import { uid, toArray, type ArrayOrItem } from 'ckeditor5/src/utils.js';
 
-import ListWalker, { iterateSiblingListBlocks } from './listwalker.js';
+import ListWalker, { type ListWalkerOptions, iterateSiblingListBlocks } from './listwalker.js';
+import { type ListType } from '../listediting.js';
 
 /**
  * The list item ID generator.
@@ -46,7 +47,7 @@ export class ListItemUid {
 export interface ListElement extends Element {
 	getAttribute( key: 'listItemId' ): string;
 	getAttribute( key: 'listIndent' ): number;
-	getAttribute( key: 'listType' ): 'numbered' | 'bulleted' | 'todo';
+	getAttribute( key: 'listType' ): ListType;
 	getAttribute( key: string ): unknown;
 }
 
@@ -129,18 +130,21 @@ export function getNestedListBlocks( listItem: Element ): Array<ListElement> {
  *
  * @internal
  * @param listItem Starting list item element.
+ * @param options Additional list walker options to modify the range of returned list items.
  */
-export function getListItems( listItem: Element ): Array<ListElement> {
+export function getListItems( listItem: Element, options?: ListWalkerOptions ): Array<ListElement> {
 	const backwardBlocks = new ListWalker( listItem, {
 		sameIndent: true,
-		sameAttributes: 'listType'
+		sameAttributes: 'listType',
+		...options
 	} );
 
 	const forwardBlocks = new ListWalker( listItem, {
 		sameIndent: true,
 		sameAttributes: 'listType',
 		includeSelf: true,
-		direction: 'forward'
+		direction: 'forward',
+		...options
 	} );
 
 	return [
@@ -564,6 +568,13 @@ export function getSelectedBlockObject( model: Model ): Element | null {
  */
 export function canBecomeSimpleListItem( block: Element, schema: Schema ): boolean {
 	return schema.checkChild( block.parent as Element, 'listItem' ) && schema.checkChild( block, '$text' ) && !schema.isObject( block );
+}
+
+/**
+ * Returns true if listType is of type `numbered` or `customNumbered`.
+ */
+export function isNumberedListType( listType: ListType ): boolean {
+	return listType == 'numbered' || listType == 'customNumbered';
 }
 
 /**

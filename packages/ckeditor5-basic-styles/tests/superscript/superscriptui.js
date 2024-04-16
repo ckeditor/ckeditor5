@@ -28,8 +28,6 @@ describe( 'SuperscriptUI', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-
-				superView = editor.ui.componentFactory.create( 'superscript' );
 			} );
 	} );
 
@@ -39,33 +37,56 @@ describe( 'SuperscriptUI', () => {
 		return editor.destroy();
 	} );
 
-	it( 'should register superscript feature component', () => {
-		expect( superView ).to.be.instanceOf( ButtonView );
-		expect( superView.isOn ).to.be.false;
-		expect( superView.label ).to.equal( 'Superscript' );
-		expect( superView.icon ).to.match( /<svg / );
-		expect( superView.isToggleable ).to.be.true;
+	describe( 'toolbar button', () => {
+		beforeEach( () => {
+			superView = editor.ui.componentFactory.create( 'superscript' );
+		} );
+
+		testButton();
+
+		it( 'should bind `isOn` to superscript command', () => {
+			const command = editor.commands.get( 'superscript' );
+
+			expect( superView.isOn ).to.be.false;
+
+			command.value = true;
+			expect( superView.isOn ).to.be.true;
+		} );
 	} );
 
-	it( 'should execute superscript command on model execute event', () => {
-		const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+	describe( 'menu bar button', () => {
+		beforeEach( () => {
+			superView = editor.ui.componentFactory.create( 'menuBar:superscript' );
+		} );
 
-		superView.fire( 'execute' );
-
-		sinon.assert.calledOnce( executeSpy );
-		sinon.assert.calledWithExactly( executeSpy, 'superscript' );
+		testButton();
 	} );
 
-	it( 'should bind model to superscript command', () => {
-		const command = editor.commands.get( 'superscript' );
+	function testButton() {
+		it( 'should register superscript feature component', () => {
+			expect( superView ).to.be.instanceOf( ButtonView );
+			expect( superView.isOn ).to.be.false;
+			expect( superView.label ).to.equal( 'Superscript' );
+			expect( superView.icon ).to.match( /<svg / );
+			expect( superView.isToggleable ).to.be.true;
+		} );
 
-		expect( superView.isOn ).to.be.false;
-		expect( superView.isEnabled ).to.be.true;
+		it( 'should execute superscript command on model execute event', () => {
+			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
-		command.value = true;
-		expect( superView.isOn ).to.be.true;
+			superView.fire( 'execute' );
 
-		command.isEnabled = false;
-		expect( superView.isEnabled ).to.be.false;
-	} );
+			sinon.assert.calledOnce( executeSpy );
+			sinon.assert.calledWithExactly( executeSpy, 'superscript' );
+		} );
+
+		it( 'should bind model to superscript command', () => {
+			const command = editor.commands.get( 'superscript' );
+
+			expect( superView.isEnabled ).to.be.true;
+
+			command.isEnabled = false;
+			expect( superView.isEnabled ).to.be.false;
+		} );
+	}
 } );

@@ -17,7 +17,7 @@ The paste from Google Docs feature lets you paste content from Google Docs and p
 
 ## Demo
 
-To test pasting from Google Docs, open the [sample Google Docs document](https://docs.google.com/document/d/1a9YzJidjxRPrxY9BL4ZReNFkPAgd_ItnZoFxcjSiJ4U/edit?usp=sharing). Then copy its content and paste it into the editor below.
+To test pasting from Google Docs, open the [sample Google Docs document](https://docs.google.com/document/d/1pjLA5P0SKVtimJSiCgtMjHrmZWCB3TqqgpFdRoCS9gU/edit). Then copy its content and paste it into the editor below.
 
 {@snippet features/paste-from-office}
 

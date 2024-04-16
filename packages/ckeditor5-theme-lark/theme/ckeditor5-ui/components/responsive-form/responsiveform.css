@@ -37,7 +37,8 @@
 		& .ck-labeled-field-view {
 			margin: var(--ck-spacing-large) var(--ck-spacing-large) 0;
 
-			& .ck-input-text {
+			& .ck-input-text,
+			& .ck-input-number {
 				min-width: 0;
 				width: 100%;
 			}

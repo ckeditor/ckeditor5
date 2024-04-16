@@ -6,6 +6,7 @@
 /**
  * @module image/imageresize/imageresizebuttons
  */
+import { map } from 'lodash-es';
 
 import { Plugin, icons, type Editor } from 'ckeditor5/src/core.js';
 import {
@@ -19,6 +20,7 @@ import {
 import { CKEditorError, Collection, type Locale } from 'ckeditor5/src/utils.js';
 
 import ImageResizeEditing from './imageresizeediting.js';
+
 import type ResizeImageCommand from './resizeimagecommand.js';
 import type { ImageResizeOption } from '../imageconfig.js';
 
@@ -26,6 +28,7 @@ const RESIZE_ICONS = {
 	small: icons.objectSizeSmall,
 	medium: icons.objectSizeMedium,
 	large: icons.objectSizeLarge,
+	custom: icons.objectSizeCustom,
 	original: icons.objectSizeFull
 };
 
@@ -89,7 +92,6 @@ export default class ImageResizeButtons extends Plugin {
 	private _registerImageResizeButton( option: ImageResizeOption ): void {
 		const editor = this.editor;
 		const { name, value, icon } = option;
-		const optionValueWithUnit = value ? value + this._resizeUnit : null;
 
 		editor.ui.componentFactory.add( name, locale => {
 			const button = new ButtonView( locale );
@@ -124,11 +126,22 @@ export default class ImageResizeButtons extends Plugin {
 
 			// Bind button to the command.
 			button.bind( 'isEnabled' ).to( this );
-			button.bind( 'isOn' ).to( command, 'value', getIsOnButtonCallback( optionValueWithUnit ) );
 
-			this.listenTo( button, 'execute', () => {
-				editor.execute( 'resizeImage', { width: optionValueWithUnit } );
-			} );
+			if ( editor.plugins.has( 'ImageCustomResizeUI' ) && isCustomImageResizeOption( option ) ) {
+				const customResizeUI = editor.plugins.get( 'ImageCustomResizeUI' );
+
+				this.listenTo( button, 'execute', () => {
+					customResizeUI._showForm( this._resizeUnit );
+				} );
+			} else {
+				const optionValueWithUnit = value ? value + this._resizeUnit : null;
+
+				button.bind( 'isOn' ).to( command, 'value', getIsOnButtonCallback( optionValueWithUnit ) );
+
+				this.listenTo( button, 'execute', () => {
+					editor.execute( 'resizeImage', { width: optionValueWithUnit } );
+				} );
+			}
 
 			return button;
 		} );
@@ -179,8 +192,12 @@ export default class ImageResizeButtons extends Plugin {
 
 			// Execute command when an item from the dropdown is selected.
 			this.listenTo( dropdownView, 'execute', evt => {
-				editor.execute( ( evt.source as any ).commandName, { width: ( evt.source as any ).commandValue } );
-				editor.editing.view.focus();
+				if ( 'onClick' in evt.source ) {
+					( evt.source as any ).onClick();
+				} else {
+					editor.execute( ( evt.source as any ).commandName, { width: ( evt.source as any ).commandValue } );
+					editor.editing.view.focus();
+				}
 			} );
 
 			return dropdownView;
@@ -205,13 +222,17 @@ export default class ImageResizeButtons extends Plugin {
 		if ( option.label ) {
 			return option.label;
 		} else if ( forTooltip ) {
-			if ( option.value ) {
+			if ( isCustomImageResizeOption( option ) ) {
+				return t( 'Custom image size' );
+			} else if ( option.value ) {
 				return t( 'Resize image to %0', option.value + this._resizeUnit );
 			} else {
 				return t( 'Resize image to the original size' );
 			}
 		} else {
-			if ( option.value ) {
+			if ( isCustomImageResizeOption( option ) ) {
+				return t( 'Custom' );
+			} else if ( option.value ) {
 				return option.value + this._resizeUnit;
 			} else {
 				return t( 'Original' );
@@ -230,29 +251,81 @@ export default class ImageResizeButtons extends Plugin {
 		options: Array<ImageResizeOption>,
 		command: ResizeImageCommand
 	): Collection<ListDropdownItemDefinition> {
+		const { editor } = this;
 		const itemDefinitions = new Collection<ListDropdownItemDefinition>();
 
-		options.map( option => {
-			const optionValueWithUnit = option.value ? option.value + this._resizeUnit : null;
-			const definition: ListDropdownItemDefinition = {
-				type: 'button',
-				model: new ViewModel( {
-					commandName: 'resizeImage',
-					commandValue: optionValueWithUnit,
-					label: this._getOptionLabelValue( option ),
-					role: 'menuitemradio',
-					withText: true,
-					icon: null
-				} )
+		const optionsWithSerializedValues = options.map( option => {
+			if ( isCustomImageResizeOption( option ) ) {
+				return {
+					...option,
+					valueWithUnits: 'custom'
+				};
+			}
+
+			if ( !option.value ) {
+				return {
+					...option,
+					valueWithUnits: null
+				};
+			}
+
+			return {
+				...option,
+				valueWithUnits: `${ option.value }${ this._resizeUnit }`
 			};
-
-			definition.model.bind( 'isOn' ).to( command, 'value', getIsOnButtonCallback( optionValueWithUnit ) );
-
-			itemDefinitions.add( definition );
 		} );
+
+		for ( const option of optionsWithSerializedValues ) {
+			let definition: ListDropdownItemDefinition | null = null;
+
+			if ( editor.plugins.has( 'ImageCustomResizeUI' ) && isCustomImageResizeOption( option ) ) {
+				const customResizeUI = editor.plugins.get( 'ImageCustomResizeUI' );
+
+				definition = {
+					type: 'button',
+					model: new ViewModel( {
+						label: this._getOptionLabelValue( option ),
+						role: 'menuitemradio',
+						withText: true,
+						icon: null,
+						onClick: () => {
+							customResizeUI._showForm( this._resizeUnit );
+						}
+					} )
+				};
+
+				const allDropdownValues = map( optionsWithSerializedValues, 'valueWithUnits' );
+
+				definition.model.bind( 'isOn' ).to( command, 'value', getIsOnCustomButtonCallback( allDropdownValues ) );
+			} else {
+				definition = {
+					type: 'button',
+					model: new ViewModel( {
+						commandName: 'resizeImage',
+						commandValue: option.valueWithUnits,
+						label: this._getOptionLabelValue( option ),
+						role: 'menuitemradio',
+						withText: true,
+						icon: null
+					} )
+				};
+
+				definition.model.bind( 'isOn' ).to( command, 'value', getIsOnButtonCallback( option.valueWithUnits ) );
+			}
+
+			definition.model.bind( 'isEnabled' ).to( command, 'isEnabled' );
+			itemDefinitions.add( definition );
+		}
 
 		return itemDefinitions;
 	}
+}
+
+/**
+ * A helper that checks if provided option triggers custom resize balloon.
+ */
+function isCustomImageResizeOption( option: ImageResizeOption ) {
+	return option.value === 'custom';
 }
 
 /**
@@ -267,4 +340,13 @@ function getIsOnButtonCallback( value: string | null ): ( commandValue: unknown 
 
 		return objectCommandValue !== null && objectCommandValue.width === value;
 	};
+}
+
+/**
+ * A helper function for setting the `isOn` state of custom size button in value bindings.
+ */
+function getIsOnCustomButtonCallback( allDropdownValues: Array<string | null> ): ( commandValue: unknown ) => boolean {
+	return ( commandValue: unknown ): boolean => !allDropdownValues.some(
+		dropdownValue => getIsOnButtonCallback( dropdownValue )( commandValue )
+	);
 }

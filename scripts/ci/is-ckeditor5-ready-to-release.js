@@ -13,7 +13,13 @@ const { execSync } = require( 'child_process' );
 const releaseTools = require( '@ckeditor/ckeditor5-dev-release-tools' );
 const semver = require( 'semver' );
 
-const latestPublishedVersion = execSync( 'npm view ckeditor5@latest version', { encoding: 'utf-8' } ).trim();
+// `@staging` and `@latest` share usually the same versions.
+//
+// However, while publishing a new release, the `@staging` tag will contain the new release,
+// while `@latest` still points to the previous one, because we need to verify the release before making it public.
+//
+// To avoid triggering a new job (from a release commit), we must use the `@staging` tag.
+const latestPublishedVersion = execSync( 'npm view ckeditor5@staging version', { encoding: 'utf-8' } ).trim();
 const changelogVersion = releaseTools.getLastFromChangelog();
 
 if ( getVersionTag( changelogVersion ) !== 'latest' ) {

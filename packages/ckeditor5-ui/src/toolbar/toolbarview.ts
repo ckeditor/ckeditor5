@@ -415,7 +415,8 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 					 * name does not exist so it was omitted when rendering the toolbar.
 					 *
 					 * This warning usually shows up when the {@link module:core/plugin~Plugin} which is supposed
-					 * to provide a toolbar item has not been loaded or there is a typo in the configuration.
+					 * to provide a toolbar item has not been loaded or there is a typo in the
+					 * {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar configuration}.
 					 *
 					 * Make sure the plugin responsible for this toolbar item is loaded and the toolbar configuration
 					 * is correct, e.g. {@link module:basic-styles/bold~Bold} is loaded for the `'bold'` toolbar item.

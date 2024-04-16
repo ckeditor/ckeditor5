@@ -105,14 +105,22 @@ msgctxt "Keystroke description for assistive technologies: keystroke for moving 
 msgid "Move focus between form fields (inputs, buttons, etc.)"
 msgstr "Przenosi fokus pomiędzy polami formularza (polami wprowadzania, przyciskami itd.)"
 
+msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the menu bar."
+msgid "Move focus to the menu bar, navigate between menu bars"
+msgstr "Zmień ukierunkowanie na pasek menu, nawiguj między paskami menu"
+
 msgctxt "Keystroke description for assistive technologies: keystroke for moving focus to the toolbar."
 msgid "Move focus to the toolbar, navigate between toolbars"
 msgstr "Przenosi fokus na pasek narzędzi, umożliwia poruszanie się pomiędzy paskami narzędzi"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the toolbar."
-msgid "Navigate through the toolbar"
-msgstr "Umożliwia poruszanie się po pasku narzędzi"
+msgid "Navigate through the toolbar or menu bar"
+msgstr "Nawiguj za pomocą paska narzędzi lub paska menu"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for executing currently focused button."
-msgid "Execute the currently focused button"
-msgstr "Uruchamia przycisk będący aktualnie w fokusie"
+msgid "Execute the currently focused button. Executing buttons that interact with the editor content moves the focus back to the content."
+msgstr "Uruchom aktualnie aktywny przycisk. Uruchomienie przycisków wchodzących w interakcję z zawartością edytora przywraca ukierunkowanie na zawartość."
+
+msgctxt "Label of the button confirming the changes done in the current interface."
+msgid "Accept"
+msgstr "Zaakceptuj"

@@ -125,10 +125,6 @@ msgctxt "Label of an input field for typing colors in the HEX color format."
 msgid "HEX"
 msgstr "HEX"
 
-msgctxt "Label of the button closing the color picker and confirming the changes done in the color selector component."
-msgid "Accept"
-msgstr "Acceptă"
-
 msgctxt "The main text of the message shown to the user when given query does not match any results."
 msgid "No results found"
 msgstr "Nu au fost găsite rezultate"
@@ -157,6 +153,10 @@ msgctxt "Accessibility help dialog text displayed next to keystrokes that may re
 msgid "(may require <kbd>Fn</kbd>)"
 msgstr "(poate fi necesar să apăsați <kbd>Fn</kbd>)"
 
+msgctxt "The label for the button that opens the Accessibility help dialog from the application menu bar."
+msgid "Accessibility"
+msgstr "Accesibilitate"
+
 msgctxt "Accessibility help dialog title."
 msgid "Accessibility help"
 msgstr "Ajutor pentru accesibilitate"
@@ -168,3 +168,43 @@ msgstr "Apăsați %0] pentru ajutor."
 msgctxt "Keystroke description for assistive technologies: keystroke for moving focus out of an active dialog window."
 msgid "Move focus in and out of an active dialog window"
 msgstr "Comutează focalizarea într-o fereastră de dialog activă și în afara acesteia"
+
+msgctxt "The label of the top-level application menu bar menu containing buttons and features related to the whole document (e.g. export to PDF, import from Word, etc.)."
+msgid "MENU_BAR_MENU_FILE"
+msgstr "Fișier"
+
+msgctxt "The label of the top-level application menu bar menu containing buttons and features related to general editing (e.g. undo, redo, select all, etc.)."
+msgid "MENU_BAR_MENU_EDIT"
+msgstr "Editează"
+
+msgctxt "The label of the top-level application menu bar menu containing buttons and features related to the view of the editor (e.g. show source)."
+msgid "MENU_BAR_MENU_VIEW"
+msgstr "Vizualizare"
+
+msgctxt "The label of the top-level application menu bar menu containing buttons and features that insert content (e.g. insert table, insert image, etc.)."
+msgid "MENU_BAR_MENU_INSERT"
+msgstr "Inserează"
+
+msgctxt "The label of the top-level application menu bar menu containing buttons and features related to content formatting (e.g. bold, font color, heading, etc.)."
+msgid "MENU_BAR_MENU_FORMAT"
+msgstr "Formatare"
+
+msgctxt "The label of the top-level application menu bar menu containing various editor tools (e.g. AI assistant, track changes, etc.)."
+msgid "MENU_BAR_MENU_TOOLS"
+msgstr "Instrumente"
+
+msgctxt "The label of the top-level application menu bar menu containing buttons and features helping users to learn about the editor (e.g. accessibility help)."
+msgid "MENU_BAR_MENU_HELP"
+msgstr "Ajutor"
+
+msgctxt "The label of the application menu bar menu containing buttons and features that apply formatting to a text (e.g. bold, italic, etc.)."
+msgid "MENU_BAR_MENU_TEXT"
+msgstr "Text"
+
+msgctxt "The label of the application menu bar menu containing buttons and features that control the font of the edited content (e.g. font size, font color, etc.)."
+msgid "MENU_BAR_MENU_FONT"
+msgstr "Font"
+
+msgctxt "The accessible label of the editor menu bar used by assistive technologies."
+msgid "Editor menu bar"
+msgstr "Bara de meniuri a editorului"
