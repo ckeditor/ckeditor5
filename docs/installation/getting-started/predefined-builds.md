@@ -1186,6 +1186,16 @@ The table below presents the list of all plugins included in various builds. <!-
 				<td style="text-align:center; width:70px">✅</td>
 			</tr>
 			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/multi-level-lists.html">MultiLevelList</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
 				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/page-break.html">PageBreak</a></td>
 				<td style="text-align:center; width:70px">❌</td>
 				<td style="text-align:center; width:70px">❌</td>
