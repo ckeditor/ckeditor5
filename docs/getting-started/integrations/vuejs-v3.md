@@ -42,7 +42,7 @@ Update npm install.
 If you do not want the CKEditor&nbsp;5 component to be enabled globally, you can skip the `use()` part entirely. Instead, configure it in the `components` property of your view.
 
 <info-box>
-	Make sure `CKEditor` and `ClassicEditor` are accessible depending on the integration scenario: as [direct script includes](#direct-script-include) or [ES6 module imports](#using-es6-modules).
+	Make sure `CKEditor` and `ClassicEditor` are accessible depending on the integration scenario: as direct script includes or ES6 module imports.
 </info-box>
 
 ```html
@@ -518,14 +518,14 @@ CKEditor&nbsp;5 supports {@link getting-started/setup/ui-language multiple UI la
 
 When using one of the {@link getting-started/legacy-getting-started/predefined-builds predefined builds}, you need to import the translations first.
 
-* When using a [direct script include](#direct-script-include):
+* When using a direct script include:
 	```html
 	<!-- Import translations for the German language. -->
 	<script src="../node_modules/@ckeditor/ckeditor5-build-classic/build/translations/de.js"></script>
 	<script src="../node_modules/@ckeditor/ckeditor5-build-classic/build/ckeditor.js"></script>
 	<script src="../node_modules/@ckeditor/ckeditor5-vue/dist/ckeditor.js"></script>
 	```
-* When using [ES6 modules](#using-es6-modules):
+* When using ES6 modules:
 	```js
 	import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 

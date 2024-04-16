@@ -21,9 +21,7 @@ order: 40
 
 CKEditor&nbsp;5 consists of the {@link getting-started/legacy-getting-started/predefined-builds ready-to-use editor builds} and the {@link framework/index CKEditor&nbsp;5 Framework} upon which the builds are based.
 
-The easiest way to use CKEditor&nbsp;5 in your Vue.js application is by choosing one of the {@link getting-started/legacy-getting-started/predefined-builds#available-builds rich text editor builds} and simply passing it to the configuration of the Vue.js component. Read more about this solution in the [Quick start](#quick-start) section.
-
-Additionally, you can [integrate CKEditor&nbsp;5 from source](#using-ckeditor-from-source) which is a much more flexible and powerful solution, but requires some additional configuration.
+To rewrite.
 
 <info-box>
 	The {@link features/watchdog watchdog feature} is available for the {@link getting-started/integrations/react React} and {@link getting-started/integrations/angular Angular} integrations, but is not supported in Vue yet.
@@ -36,10 +34,6 @@ Update npm install.
 ## Using the component locally
 
 If you do not want the CKEditor component to be enabled globally, you can skip the `Vue.use( CKEditor )` part entirely. Instead, configure it in the `components` property of your view.
-
-<info-box>
-	Make sure `CKEditor` and `ClassicEditor` are accessible depending on the integration scenario: as [direct script includes](#direct-script-include) or [ES6 module imports](#using-es6-modules).
-</info-box>
 
 ```html
 <template>
@@ -336,7 +330,7 @@ new Vue( {
 ```
 
 <info-box>
-	Instead of calling `Vue.use()`, you can always [use the component locally](#using-the-component-locally).
+	Instead of calling `Vue.use()`, you can always use the component locally.
 </info-box>
 
 Now all you need to do is specify the list of rich text editor options (**including plugins**) in the `editorConfig` data property:
@@ -439,14 +433,14 @@ CKEditor&nbsp;5 supports {@link getting-started/setup/ui-language multiple UI la
 
 When using one of the {@link getting-started/legacy-getting-started/predefined-builds predefined builds}, you need to import the translations first.
 
-* When using a [direct script include](#direct-script-include):
+* When using a direct script include:
 	```html
 	<!-- Import translations for the German language. -->
 	<script src="../node_modules/@ckeditor/ckeditor5-build-classic/build/translations/de.js"></script>
 	<script src="../node_modules/@ckeditor/ckeditor5-build-classic/build/ckeditor.js"></script>
 	<script src="../node_modules/@ckeditor/ckeditor5-vue2/dist/ckeditor.js"></script>
 	```
-* When using [ES6 modules](#using-es6-modules):
+* When using ES6 modules:
 	```js
 	import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
@@ -480,7 +474,7 @@ For more information, please refer to the {@link getting-started/setup/ui-langua
 
 ### CKEditor&nbsp;5 built from source
 
-Using the editor [built from source](#using-ckeditor-from-source) requires you to modify the webpack configuration. Pass the `language` (also `additionalLanguages`) to the constructor of  [`CKEditorTranslationsPlugin`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations) to localize your editor:
+Using the editor built from source requires you to modify the webpack configuration. Pass the `language` (also `additionalLanguages`) to the constructor of  [`CKEditorTranslationsPlugin`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations) to localize your editor:
 
 ```js
 // vue.config.js
@@ -544,7 +538,7 @@ This directive specifies the editor to be used by the component. It must directl
 ```
 
 <info-box>
-	To use more than one rich text editor build in your application, you will need to configure it [from source](#using-ckeditor-from-source) or use a {@link getting-started/advanced/using-two-editors "super build"}.
+	To use more than one rich text editor build in your application, you will need to configure it from source or use a {@link getting-started/advanced/using-two-editors "super build"}.
 </info-box>
 
 ### `tag-name`
