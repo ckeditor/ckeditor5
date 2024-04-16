@@ -269,6 +269,7 @@ In this example, you remove the premium collaboration features and several other
 					// Replace it on production website with other solutions:
 					// https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html
 					// 'Base64UploadAdapter',
+					'MultiLevelList',
 					'RealTimeCollaborativeComments',
 					'RealTimeCollaborativeTrackChanges',
 					'RealTimeCollaborativeRevisionHistory',
