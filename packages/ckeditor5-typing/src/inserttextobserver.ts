@@ -128,8 +128,7 @@ export default class InsertTextObserver extends Observer {
 			//     `beforeinput` would come with just the range it's changing and we'd need to calculate that.
 			// We decided to go with the 2nd option for its simplicity and stability.
 			viewDocument.fire( 'insertText', new DomEventData( view, domEvent, {
-				text: data,
-				selection: viewDocument.selection
+				text: data
 			} ) );
 		}, { priority: 'lowest' } );
 	}
