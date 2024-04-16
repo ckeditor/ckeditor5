@@ -408,7 +408,7 @@ Having implemented the adapter, you must figure out how to enable it in the WYSI
 You are going to extend the basic implementation presented in ["The anatomy of the adapter"](#the-anatomy-of-the-adapter) section of this guide so your custom adapter becomes an editor plugin. To do that, create a simple standalone plugin (`MyCustomUploadAdapterPlugin`) that will {@link module:upload/filerepository~FileRepository#createLoader create an instance of the file loader} and glue it with your custom `MyUploadAdapter`.
 
 ```js
-import ClassicEditor from 'ckeditor5';
+import { ClassicEditor } from 'ckeditor5';
 
 class MyUploadAdapter {
 	// MyUploadAdapter class definition.
