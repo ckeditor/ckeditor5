@@ -23,7 +23,9 @@ The webpack is also already configured, so you can just use the `npm run build` 
 
 ### DIY path with setting up the environment from the scratch
 
-You need to install the following dependencies that will be necessary to proceed:
+If you want to set up the project yourself, you should follow the steps listed in the {@link framework/quick-start#lets-start Let's start section} of the Quick Start guide.
+
+When this is done, you need to install the following dependencies that will be necessary to proceed:
 
 ```bash
 npm install --save \
@@ -46,26 +48,25 @@ We are going to write the whole plugin in your base `app.js` file. It should loo
 ```js
 // app.js
 
-import {
-	ClassicEditor,
-	Essentials,
-	Paragraph,
-	Heading,
-	List,
-	Bold,
-	Italic
-	} from 'ckeditor5';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import List from '@ckeditor/ckeditor5-list/src/list';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic ],
-	toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList' ]
-} )
-.then( editor => {
-	console.log( 'Editor was initialized', editor );
-} )
-.catch( error => {
-	console.error( error.stack );
-} );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic ],
+		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList' ]
+	} )
+	.then( editor => {
+		console.log( 'Editor was initialized', editor );
+	} )
+	.catch( error => {
+		console.error( error.stack );
+	} );
 ```
 
 Your `index.html` should look as listed below. The editor will load with the HTML content you put inside the `<div id="editor">` tags.
@@ -103,16 +104,13 @@ All features in the CKEditor 5 are powered by plugins. To create our custom time
 We can now create a `Timestamp` class that extends the basic `Plugin` class. After we define it, we can add it to the editor's plugins array.
 
 ```js
-import {
-	ClassicEditor,
-	Essentials,
-	Paragraph,
-	Heading,
-	List,
-	Bold,
-	Italic,
-	Plugin
-	} from 'ckeditor5';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import List from '@ckeditor/ckeditor5-list/src/list';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
@@ -122,19 +120,20 @@ class Timestamp extends Plugin {
 	}
 }
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	// Add the Timestamp plugin to config.plugins array.
-	plugins: [
-		Essentials, Paragraph, Heading, List, Bold, Italic, Timestamp
-	],
-	toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList' ]
-} )
-.then( editor => {
-	console.log( 'Editor was initialized', editor );
-} )
-.catch( error => {
-	console.error( error.stack );
-} );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		// Add the Timestamp plugin to config.plugins array.
+		plugins: [
+			Essentials, Paragraph, Heading, List, Bold, Italic, Timestamp
+		],
+		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList' ]
+	} )
+	.then( editor => {
+		console.log( 'Editor was initialized', editor );
+	} )
+	.catch( error => {
+		console.error( error.stack );
+	} );
 ```
 
 Rebuild the editor and check in your console whether the timestamp was initialized. You should see this in the browser (on the left) and in the browser's development console (on the right):
@@ -152,7 +151,7 @@ We also need to register our button in the editor's UI `componentFactory`, so it
 ```js
 // Imports from the previous example
 // ...
-import ButtonView from 'ckeditor5';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 class Timestamp extends Plugin {
 	init() {
@@ -173,21 +172,23 @@ class Timestamp extends Plugin {
 	}
 }
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [
-		Essentials, Paragraph, Heading, List, Bold, Italic, Timestamp
-	],
-	// Add the Timestamp button to the config.toolbar array.
-	toolbar: [
-		'heading', 'bold', 'italic', 'numberedList', 'bulletedList', 'timestamp'
-	]
-} )
-.then( editor => {
-	console.log( 'Editor was initialized', editor );
-} )
-.catch( error => {
-	console.error( error.stack );
-} );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [
+			Essentials, Paragraph, Heading, List, Bold, Italic, Timestamp
+		],
+		// Add the Timestamp button to the config.toolbar array.
+		toolbar: [
+			'heading', 'bold', 'italic', 'numberedList', 'bulletedList', 'timestamp'
+		]
+	} )
+	.then( editor => {
+		console.log( 'Editor was initialized', editor );
+	} )
+	.catch( error => {
+		console.error( error.stack );
+	} );
+
 ```
 
 Rebuild the editor, and you should be able to see the timestamp button. It does not do anything just yet, so let's change that.

@@ -29,8 +29,10 @@ The test environment you set up displays the "Hello world!" on the page. Let's l
 Open the `src/main.js` file and add the following code:
 
 ```js
-// Import the editor
+// Import the editor.
 import { ClassicEditor } from 'ckeditor5';
+// Import the styles.
+import 'ckeditor5/dist/index.css';
 
 // Get the HTML element with the ID of 'app'.
 const element = document.querySelector( '#app' );
@@ -48,7 +50,7 @@ However, you may have noticed that the "Hello world!" text does not appear in th
 The editor itself does not do much - it is just an empty shell at this stage. What gives the editor almost all of its functionality are the plugins. We will talk more about plugins in the next chapter, but for now, let's just install two plugins that provide the bare minimum needed to type in the editor.
 
 ```js
-// Add these two imports.
+// Import plugins.
 import { Essentials, Paragraph } from 'ckeditor5';
 
 // Update the call to the `create()` method.

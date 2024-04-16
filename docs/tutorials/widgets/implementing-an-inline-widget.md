@@ -191,7 +191,7 @@ The master (glue) plugin:
 ```js
 // placeholder/placeholder.js
 
-import { Plugin } from 'ckeditor5';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import PlaceholderEditing from './placeholderediting';
 import PlaceholderUI from './placeholderui';
@@ -208,7 +208,7 @@ The UI part (empty for now):
 ```js
 // placeholder/placeholderui.js
 
-import { Plugin } from 'ckeditor5';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 export default class PlaceholderUI extends Plugin {
 	init() {
@@ -222,7 +222,7 @@ And the editing part (empty for now):
 ```js
 // placeholder/placeholderediting.js
 
-import { Plugin } from 'ckeditor5';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 export default class PlaceholderEditing extends Plugin {
 	init() {
@@ -252,7 +252,7 @@ You will also use this opportunity to import the theme file (`theme/placeholder.
 ```js
 // placeholder/placeholderediting.js
 
-import { Plugin } from 'ckeditor5';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import './theme/placeholder.css';                                              // ADDED
 
@@ -293,7 +293,7 @@ The HTML structure (data output) of the converter will be a `<span>` with a `pla
 * {@link framework/deep-dive/conversion/downcast **Downcast conversion**}. The model-to-view conversion will be slightly different for "editing" and "data" pipelines as the "editing downcast" pipeline will use widget utilities to enable widget-specific behavior in the editing view. In both pipelines, the element will be rendered using the same structure.
 
 ```js
-import { Plugin } from 'ckeditor5';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 // ADDED 2 imports
 import { Widget, toWidget } from '@ckeditor/ckeditor5-widget';
@@ -428,7 +428,7 @@ Import the created command and add it to the editor commands:
 ```js
 // placeholder/placeholderediting.js
 
-import { Plugin } from 'ckeditor5';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import { Widget, toWidget  } from '@ckeditor/ckeditor5-widget';
 
 import PlaceholderCommand from './placeholdercommand';                         // ADDED
@@ -500,7 +500,7 @@ Fortunately, CKEditor&nbsp;5 {@link module:engine/conversion/mapper~Mapper#event
 ```js
 // placeholder/placeholderediting.js
 
-import { Plugin } from 'ckeditor5';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 // MODIFIED
 import {
@@ -557,7 +557,7 @@ In this tutorial, you will create a dropdown with a list of available placeholde
 ```js
 // placeholder/placeholderui.js
 
-import { Plugin } from 'ckeditor5';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import { ViewModel, addListToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui';
 import { Collection } from '@ckeditor/ckeditor5-utils';
 

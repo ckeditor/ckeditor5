@@ -41,10 +41,9 @@ import {
 	createLabeledInputText,
 	ButtonView,
 	submitHandler,
-	FocusTracker,				// ADDED
-	KeystrokeHandler,			// ADDED
-	icons
-	} from 'ckeditor5';
+} from '@ckeditor/ckeditor5-ui';
+import { FocusTracker, KeystrokeHandler } from '@ckeditor/ckeditor5-utils'; // ADDED
+import { icons } from '@ckeditor/ckeditor5-core';
 
 export default class FormView extends View {
 	constructor( locale ) {
@@ -58,7 +57,7 @@ export default class FormView extends View {
 		// ...
 	}
 
-	render() {
+    render() {
 		// View.render() invocation and adding a submit handler.
 		// ...
 
@@ -69,7 +68,7 @@ export default class FormView extends View {
 
 		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element );
-	}
+    }
 
 	destroy() {
 		super.destroy();
@@ -98,11 +97,10 @@ import {
 	createLabeledInputText,
 	ButtonView,
 	submitHandler,
-	FocusCycler,																// ADDED
-	FocusTracker,
-	KeystrokeHandler,
-	icons
-	} from '@ckeditor/ckeditor5-core';
+	FocusCycler																// ADDED
+} from '@ckeditor/ckeditor5-ui';
+import { FocusTracker, KeystrokeHandler } from '@ckeditor/ckeditor5-utils';
+import { icons } from '@ckeditor/ckeditor5-core';
 
 export default class FormView extends View {
 	constructor( locale ) {
@@ -284,7 +282,7 @@ We will start by simply moving there the action we already created for `submit` 
 ```js
 // abbreviation/abbreviationcommand.js
 
-import { Command } from 'ckeditor5';
+import { Command } from '@ckeditor/ckeditor5-core';
 
 export default class AbbreviationCommand extends Command {
 	execute( { title, abbr } ) {
@@ -305,7 +303,7 @@ Now, let's initialize our `AbbreviationCommand`, by adding it to the list of edi
 ```js
 // abreviation/abbreviationediting.js
 
-import { Plugin } from 'ckeditor5';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import AbbreviationCommand from './abbreviationcommand';			// ADDED
 
 export default class AbbreviationEditing extends Plugin {
@@ -371,7 +369,7 @@ Before we do that, we may want to check if the command can be used at all on a g
 ```js
 // abbreviation/abbreviationcommand.js
 
-import { Command } from 'ckeditor5';
+import { Command } from '@ckeditor/ckeditor5-core';
 
 export default class AbbreviationCommand extends Command {
 	refresh() {
@@ -399,10 +397,9 @@ Then, we change the value of the command. We will get the abbreviation text usin
 ```js
 // abbreviation/abbreviationcommand.js
 
-import { Command,
-	findAttributeRange										 	// ADDED
-	 } from 'ckeditor5';
-import getRangeText from './utils.js';								// ADDED
+import { Command } from '@ckeditor/ckeditor5-core';
+import { findAttributeRange } from '@ckeditor/ckeditor5-typing'; 	// ADDED
+import getRangeText from './utils.js';														// ADDED
 
 export default class AbbreviationCommand extends Command {
 	refresh() {

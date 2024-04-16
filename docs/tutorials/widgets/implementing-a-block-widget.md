@@ -18,6 +18,8 @@ You will build a "Simple box" feature which will allow the user to insert a cust
 
 ## Before you start
 
+While it is not strictly necessary to read the {@link framework/quick-start Quick start} guide before going through this tutorial, it may help you to get more comfortable with CKEditor&nbsp;5 Framework before you dive into this tutorial.
+
 The tutorial will also reference various parts of the {@link framework/architecture/intro CKEditor&nbsp;5 architecture} section as you go. While reading them is not necessary to finish this tutorial, it is recommended to read these guides at some point to get a better understanding of the mechanisms used in this tutorial.
 
 <info-box>
@@ -211,7 +213,7 @@ First, the master (glue) plugin. Its role is to simply load the "editing" and "U
 
 import SimpleBoxEditing from './simpleboxediting';
 import SimpleBoxUI from './simpleboxui';
-import { Plugin } from 'ckeditor5';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 export default class SimpleBox extends Plugin {
 	static get requires() {
@@ -225,7 +227,7 @@ Now, the remaining two plugins:
 ```js
 // simplebox/simpleboxui.js
 
-import { Plugin } from 'ckeditor5';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 export default class SimpleBoxUI extends Plugin {
 	init() {
@@ -237,7 +239,7 @@ export default class SimpleBoxUI extends Plugin {
 ```js
 // simplebox/simpleboxediting.js
 
-import { Plugin } from 'ckeditor5';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 export default class SimpleBoxEditing extends Plugin {
 	init() {
@@ -313,7 +315,7 @@ Update the `SimpleBoxEditing` plugin with this definition.
 ```js
 // simplebox/simpleboxediting.js
 
-import { Plugin } from 'ckeditor5';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 export default class SimpleBoxEditing extends Plugin {
 	init() {
@@ -390,7 +392,7 @@ You need to define converters for 3 model elements. Update the `SimpleBoxEditing
 ```js
 // simplebox/simpleboxediting.js
 
-import { Plugin } from 'ckeditor5';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 export default class SimpleBoxEditing extends Plugin {
 	init() {
@@ -607,7 +609,7 @@ Additionally, you need to ensure that the {@link module:widget/widget~Widget `Wi
 ```js
 // simplebox/simpleboxediting.js
 
-import { Plugin } from 'ckeditor5';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 // ADDED 2 imports.
 import { Widget, toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget';
@@ -786,7 +788,7 @@ Import the command and register it in the `SimpleBoxEditing` plugin:
 ```js
 // simplebox/simpleboxediting.js
 
-import { Plugin } from 'ckeditor5';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import { Widget, toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget';
 
 import InsertSimpleBoxCommand from './insertsimpleboxcommand';                 // ADDED
@@ -916,7 +918,7 @@ See what it looks like in practice and extend the `SimpleBoxUI` plugin [created 
 // simplebox/simpleboxui.js
 
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
-import { Plugin } from 'ckeditor5';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 export default class SimpleBoxUI extends Plugin {
 	init() {
@@ -997,7 +999,7 @@ import { List } from '@ckeditor/ckeditor5-list';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 import { Command, Plugin } from '@ckeditor/ckeditor5-core';
-import { ButtonView } from 'ckeditor5';
+import { ButtonView } from '@ckeditor/ckeditor5-ui';
 import { Widget, toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget';
 
 class SimpleBox extends Plugin {
