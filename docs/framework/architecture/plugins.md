@@ -33,10 +33,8 @@ Common use cases for plugins are:
 
 Creating your own plugins is a straightforward task but it requires good knowledge about some aspects of the CKEditor&nbsp;5 development environment. The following resources are recommended as a starting point:
 
-* The {@link tutorials/crash-course/editor Plugin development} guide.
-* The {@link framework/development-tools/package-generator/using-package-generator Using package generator} guide, that provides a plugin development environment.
-* The {@link framework/quick-start CKEditor&nbsp;5 Framework Quick start} guide.
-<!-- * {@link getting-started/legacy-getting-started/quick-start-other#building-the-editor-from-source Creating custom builds} which is necessary to have your plugin included inside a CKEditor&nbsp;5 build. -->
+* The {@link tutorials/crash-course/editor Plugin development guide}.
+* The {@link framework/development-tools/package-generator/using-package-generator Using package generator}, that provides a plugin development environment.
 
 A good understanding of the {@link framework/index CKEditor&nbsp;5 Framework} is also welcome when it comes to creating plugins.
 

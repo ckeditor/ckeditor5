@@ -211,16 +211,15 @@ class PastePlainTextCommand extends Command {
 	}
 }
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Essentials, Paragraph, Bold, Italic, PastePlainText ],
-		toolbar: [ 'bold', 'italic', 'pastePlainText' ],
-		// More of the editor's configuration.
-		// ...
-	} )
-	.catch( error => {
-    	console.log( error );
-	} );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Essentials, Paragraph, Bold, Italic, PastePlainText ],
+	toolbar: [ 'bold', 'italic', 'pastePlainText' ],
+	// More of the editor's configuration.
+	// ...
+} )
+.catch( error => {
+	console.log( error );
+} );
 ```
 
 ## Output pipeline
