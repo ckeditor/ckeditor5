@@ -5,7 +5,7 @@ Changelog
 
 We are happy to announce the release of CKEditor 5 v41.3.1.
 
-The release addresses a vulnerability identified in the `[protobuf.js](https://www.npmjs.com/package/protobufjs)` package (`[CVE-2023-36665](https://nvd.nist.gov/vuln/detail/CVE-2023-36665)`), used within our **`[@ckeditor/ckeditor5-operations-compressor](https://www.npmjs.com/package/@ckeditor/ckeditor5-operations-compressor)`** package for real-time collaboration.
+The release addresses a vulnerability identified in the [`protobuf.js`](https://www.npmjs.com/package/protobufjs) package ([`CVE-2023-36665`](https://nvd.nist.gov/vuln/detail/CVE-2023-36665)), used within our **[`@ckeditor/ckeditor5-operations-compressor`](https://www.npmjs.com/package/@ckeditor/ckeditor5-operations-compressor)** package for real-time collaboration.
 
 Our analysis confirms that **this vulnerability does not affect CKEditor 5**. None of the vulnerable code in the `protobuf.js` package is utilized in CKEditor 5, as we use protobuf’s `minimal` build type.
 
@@ -13,7 +13,7 @@ This release primarily aims to ensure that our customers using real-time collabo
 
 ### Bug fixes
 
-* **[template](https://www.npmjs.com/package/@ckeditor/ckeditor5-template)**: Fixed the `TemplateDefinition#data` type in the `@ckeditor/ckeditor5-template` config. Now, it should be possible to define a string or a function returning a string instead of a function returning a string .
+* **[template](https://www.npmjs.com/package/@ckeditor/ckeditor5-template)**: Fixed the `TemplateDefinition#data` type in the `@ckeditor/ckeditor5-template` config. Now, it should be possible to define a string or a function returning a string instead of just a function returning a string.
 
 ### Released packages
 
