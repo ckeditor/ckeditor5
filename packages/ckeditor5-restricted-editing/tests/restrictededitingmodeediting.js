@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* global document */
+
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
@@ -18,6 +20,8 @@ import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlinee
 import InsertImageCommand from '@ckeditor/ckeditor5-image/src/image/insertimagecommand.js';
 
 import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import Table from '@ckeditor/ckeditor5-table/src/table.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 import RestrictedEditingModeEditing from './../src/restrictededitingmodeediting.js';
 import RestrictedEditingModeNavigationCommand from '../src/restrictededitingmodenavigationcommand.js';
@@ -1582,11 +1586,14 @@ describe( 'RestrictedEditingModeEditing', () => {
 	} );
 
 	describe( 'exception cycling with the keyboard', () => {
-		let view, domEvtDataStub;
+		let view, domEvtDataStub, element;
 
 		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( {
-				plugins: [ Paragraph, RestrictedEditingModeEditing, BoldEditing, ClipboardPipeline ]
+			element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
+			editor = await ClassicTestEditor.create( element, {
+				plugins: [ Paragraph, RestrictedEditingModeEditing, BoldEditing, ClipboardPipeline, Table ]
 			} );
 
 			model = editor.model;
@@ -1602,6 +1609,8 @@ describe( 'RestrictedEditingModeEditing', () => {
 		} );
 
 		afterEach( () => {
+			element.remove();
+
 			return editor.destroy();
 		} );
 
@@ -1680,13 +1689,87 @@ describe( 'RestrictedEditingModeEditing', () => {
 				} );
 			} );
 
-			domEvtDataStub.keyCode += getCode( 'Shift' );
+			domEvtDataStub.shiftKey = true;
 			view.document.fire( 'keydown', domEvtDataStub );
 
 			sinon.assert.calledOnce( editor.execute );
 			sinon.assert.calledWithExactly( editor.execute, 'goToPreviousRestrictedEditingException' );
 			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+		} );
+
+		it( 'should get into the table', () => {
+			setModelData( model, `
+				<paragraph>foo[]</paragraph>
+				<table><tableRow><tableCell><paragraph>bar</paragraph></tableCell></tableRow></table>
+			` );
+
+			const paragraph = model.document.getRoot().getChild( 0 );
+			const paragraph2 = model.document.getRoot().getChild( 1 ).getChild( 0 ).getChild( 0 ).getChild( 0 );
+
+			model.change( writer => {
+				writer.addMarker( 'restrictedEditingException:1', {
+					range: writer.createRange( writer.createPositionAt( paragraph, 0 ), writer.createPositionAt( paragraph, 3 ) ),
+					usingOperation: true,
+					affectsData: true
+				} );
+			} );
+
+			model.change( writer => {
+				writer.addMarker( 'restrictedEditingException:2', {
+					range: writer.createRange( writer.createPositionAt( paragraph2, 0 ), writer.createPositionAt( paragraph2, 3 ) ),
+					usingOperation: true,
+					affectsData: true
+				} );
+			} );
+
+			view.document.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.calledOnce( editor.execute );
+			sinon.assert.calledWithExactly( editor.execute, 'goToNextRestrictedEditingException' );
+			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+
+			const position = editor.model.document.selection.getFirstRange().start;
+
+			expect( position.parent ).to.equal( paragraph2 );
+		} );
+
+		it( 'should escape from the table', () => {
+			setModelData( model, `
+				<table><tableRow><tableCell><paragraph>bar[]</paragraph></tableCell></tableRow></table>
+				<paragraph>foo</paragraph>
+			` );
+
+			const paragraph = model.document.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 ).getChild( 0 );
+			const paragraph2 = model.document.getRoot().getChild( 1 );
+
+			model.change( writer => {
+				writer.addMarker( 'restrictedEditingException:1', {
+					range: writer.createRange( writer.createPositionAt( paragraph, 0 ), writer.createPositionAt( paragraph, 3 ) ),
+					usingOperation: true,
+					affectsData: true
+				} );
+			} );
+
+			model.change( writer => {
+				writer.addMarker( 'restrictedEditingException:2', {
+					range: writer.createRange( writer.createPositionAt( paragraph2, 0 ), writer.createPositionAt( paragraph2, 3 ) ),
+					usingOperation: true,
+					affectsData: true
+				} );
+			} );
+
+			view.document.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.calledOnce( editor.execute );
+			sinon.assert.calledWithExactly( editor.execute, 'goToNextRestrictedEditingException' );
+			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+
+			const position = editor.model.document.selection.getFirstRange().start;
+
+			expect( position.parent ).to.equal( paragraph2 );
 		} );
 
 		it( 'should let the focus go outside the editor on shift+tab when in the first exception', () => {
