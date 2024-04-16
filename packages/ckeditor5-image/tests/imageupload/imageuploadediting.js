@@ -1415,7 +1415,7 @@ describe( 'ImageUploadEditing', () => {
 		} );
 
 		function expectAnnounce( message ) {
-			expect( announcerSpy ).to.be.calledWithExactly( 'imageUpload', message );
+			expect( announcerSpy ).to.be.calledWithExactly( message );
 		}
 	} );
 

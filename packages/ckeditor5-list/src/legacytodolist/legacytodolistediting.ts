@@ -228,21 +228,15 @@ export default class LegacyTodoListEditing extends Plugin {
 			return;
 		}
 
-		ui.ariaLiveAnnouncer.registerRegion( 'legacyTodoList' );
-
-		const announce = ( message: string ) => {
-			ui.ariaLiveAnnouncer.announce( 'legacyTodoList', message );
-		};
-
 		model.document.selection.on<SelectionChangeRangeEvent>( 'change:range', () => {
 			const focusParent = model.document.selection.focus!.parent;
 			const lastElementIsTodoList = isLegacyTodoListItemElement( lastFocusedCodeBlock );
 			const currentElementIsTodoList = isLegacyTodoListItemElement( focusParent );
 
 			if ( lastElementIsTodoList && !currentElementIsTodoList ) {
-				announce( t( 'Leaving todo list' ) );
+				ui.ariaLiveAnnouncer.announce( t( 'Leaving todo list' ) );
 			} else if ( !lastElementIsTodoList && currentElementIsTodoList ) {
-				announce( t( 'Entering todo list' ) );
+				ui.ariaLiveAnnouncer.announce( t( 'Entering todo list' ) );
 			}
 
 			lastFocusedCodeBlock = focusParent;
