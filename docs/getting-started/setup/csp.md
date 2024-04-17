@@ -18,7 +18,7 @@ CKEditor&nbsp;5 is compatible with applications that use [<abbr title="Content S
 The recommended CSP configuration that allows the rich-text editor to run out–of–the–box with all standard features using the content like images or media from external hosts looks as follows:
 
 ```
-default-src 'none'; connect-src 'self'; script-src 'self'; img-src * data:; frame-src *
+default-src 'none'; connect-src 'self'; script-src 'self'; img-src * data:; style-src 'self'; frame-src *
 ```
 
 ## Impact of CSP on editor features
@@ -54,7 +54,7 @@ Some CSP directives have an impact on certain rich-text editor features. Here is
 Knowing the role of each directive, the strictest set of rules that allows CKEditor&nbsp;5 to run is as follows:
 
 ```
-default-src 'none'; connect-src 'self'; script-src 'self'; img-src 'self'; frame-src 'self'
+default-src 'none'; connect-src 'self'; script-src 'self'; img-src 'self'; style-src 'self'; frame-src 'self'
 ```
 
 This comes with some trade–offs, though. For example, it requires you to:
