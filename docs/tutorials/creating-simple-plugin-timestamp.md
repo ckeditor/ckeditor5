@@ -18,10 +18,10 @@ The easiest way to set up your project is to grab the starter files from our [Gi
 The editor has already been created in the `app.js` file with some basic plugins. All you need to do is clone the repository, run the `npm install` command, and you can start coding right away.
 
 ```bash
-git clone https://github.com/ckeditor/ckeditor5-tutorials-examples /
-cd ckeditor5-tutorials-examples/timestamp-plugin/starter-files /
+git clone https://github.com/ckeditor/ckeditor5-tutorials-examples
+cd ckeditor5-tutorials-examples/timestamp-plugin/starter-files
 
-npm install /
+npm install
 npm run dev
 ```
 
