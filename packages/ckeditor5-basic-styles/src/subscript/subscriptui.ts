@@ -32,6 +32,8 @@ export default class SubscriptUI extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 		const t = editor.locale.t;
+		const command = editor.commands.get( SUBSCRIPT )!;
+
 		const createButton = getButtonCreator( {
 			editor,
 			commandName: SUBSCRIPT,
@@ -43,7 +45,6 @@ export default class SubscriptUI extends Plugin {
 		// Add subscript button to feature components.
 		editor.ui.componentFactory.add( SUBSCRIPT, () => {
 			const buttonView = createButton( ButtonView );
-			const command = editor.commands.get( SUBSCRIPT )!;
 
 			buttonView.set( {
 				tooltip: true
@@ -56,7 +57,15 @@ export default class SubscriptUI extends Plugin {
 		} );
 
 		editor.ui.componentFactory.add( 'menuBar:' + SUBSCRIPT, () => {
-			return createButton( MenuBarMenuListItemButtonView );
+			const buttonView = createButton( MenuBarMenuListItemButtonView );
+
+			buttonView.set( {
+				role: 'menuitemcheckbox'
+			} );
+
+			buttonView.bind( 'isOn' ).to( command, 'value' );
+
+			return buttonView;
 		} );
 	}
 }

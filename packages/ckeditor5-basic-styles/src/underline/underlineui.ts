@@ -56,7 +56,15 @@ export default class UnderlineUI extends Plugin {
 		} );
 
 		editor.ui.componentFactory.add( 'menuBar:' + UNDERLINE, () => {
-			return createButton( MenuBarMenuListItemButtonView );
+			const buttonView = createButton( MenuBarMenuListItemButtonView );
+
+			buttonView.set( {
+				role: 'menuitemcheckbox'
+			} );
+
+			buttonView.bind( 'isOn' ).to( command, 'value' );
+
+			return buttonView;
 		} );
 	}
 }

@@ -786,6 +786,7 @@ describe( 'CKBoxEditing', () => {
 							'</picture>' +
 							'<figcaption ' +
 								'aria-label="Caption for the image" ' +
+								'aria-placeholder="Enter image caption" ' +
 								'class="ck-editor__editable ck-editor__nested-editable" ' +
 								'contenteditable="true" ' +
 								'data-placeholder="Enter image caption" ' +
