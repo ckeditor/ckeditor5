@@ -275,4 +275,4 @@ msgstr "在表格中进行导览"
 
 msgctxt "The accessible label of the menu bar button that displays a user interface to insert a table into editor content."
 msgid "Table"
-msgstr ""
+msgstr "表格"

@@ -27,4 +27,4 @@ msgstr "평문"
 
 msgctxt "The accessible label of the menu bar button that inserts a code block into editor content."
 msgid "Code block"
-msgstr ""
+msgstr "코드 블록"

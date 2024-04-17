@@ -29,5 +29,7 @@
 	"Reversed order": "The label of the switch button that reverses the order of the numbered list.",
 	"Keystrokes that can be used in a list": "Accessibility help dialog header text displayed before the list of keystrokes that can be used in a list.",
 	"Increase list item indent": "Keystroke description for assistive technologies: keystroke for increasing list item indentation.",
-	"Decrease list item indent": "Keystroke description for assistive technologies: keystroke for decreasing list item indentation."
+	"Decrease list item indent": "Keystroke description for assistive technologies: keystroke for decreasing list item indentation.",
+	"Entering a to-do list": "Assistive technologies label for entering the to-do list.",
+	"Leaving a to-do list": "Assistive technologies label for leaving the to-do list."
 }
