@@ -17,9 +17,11 @@ CKEditor&nbsp;5 does not support server-side rendering yet, but you can integrat
 
 ## Preparing a build
 
-First, you will use the Builder. It is a web UI that lets you create a custom build of CKEditor&nbsp;5 and download the code as a `.zip` package.
+First, you will use the [online builder](https://ckeditor.com/ckeditor-5/online-builder/). It is a web UI that lets you create a custom build of CKEditor&nbsp;5 and download the code as a `.zip` package.
 
-Update npm install?
+The online builder is a powerful tool that lets you effortlessly create a rich text editor tailored to your needs. With the online builder, you can choose the desired editor type and plugins, configure the toolbar, and choose the UI language for your editor.
+
+You can learn more about creating custom builds of CKEditor&nbsp;5 with the online builder in the {@link getting-started/legacy-getting-started/quick-start-other#creating-custom-builds-with-online-builder Customized installation} guide.
 
 ## Setting up the project
 
