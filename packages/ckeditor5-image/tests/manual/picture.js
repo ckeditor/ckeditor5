@@ -64,6 +64,11 @@ ClassicEditor
 					value: null
 				},
 				{
+					name: 'resizeImage:custom',
+					label: 'Custom size',
+					value: 'custom'
+				},
+				{
 					name: 'resizeImage:50',
 					label: '50%',
 					value: '50'

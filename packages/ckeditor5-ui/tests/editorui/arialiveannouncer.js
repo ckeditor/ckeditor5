@@ -28,17 +28,17 @@ describe( 'AriaLiveAnnouncer', () => {
 
 	describe( 'announce()', () => {
 		it( 'should create, then add the view to the body collection', () => {
-			expect( announcer.view ).to.be.undefined;
+			expect( announcer.view ).not.to.be.undefined;
 
-			announcer.announce( 'foo', 'bar' );
+			announcer.announce( 'bar' );
 
 			expect( announcer.view ).to.be.instanceOf( AriaLiveAnnouncerView );
-			expect( announcer.view.regionViews.length ).to.equal( 1 );
+			expect( announcer.view.regionViews.length ).to.equal( 2 );
 			expect( editor.ui.view.body.has( announcer.view ) ).to.be.true;
 		} );
 
 		it( 'should create the view from template upon first use', () => {
-			announcer.announce( 'foo', 'bar' );
+			announcer.announce( 'bar' );
 
 			expect( announcer.view.element.tagName ).to.equal( 'DIV' );
 			expect( announcer.view.element.className.includes( 'ck' ) ).to.be.true;
@@ -46,71 +46,148 @@ describe( 'AriaLiveAnnouncer', () => {
 		} );
 
 		it( 'should create a new region (if does not exist) and set its text', () => {
-			announcer.announce( 'foo', 'bar' );
+			announcer.announce( 'bar' );
 
-			expect( announcer.view.regionViews.length ).to.equal( 1 );
+			expect( announcer.view.regionViews.length ).to.equal( 2 );
 
 			const firstRegion = announcer.view.regionViews.first;
 
 			expect( firstRegion ).to.be.instanceOf( AriaLiveAnnouncerRegionView );
-			expect( firstRegion.regionName ).to.equal( 'foo' );
-			expect( firstRegion.text ).to.equal( 'bar' );
 			expect( firstRegion.politeness ).to.equal( 'polite' );
 			expect( firstRegion.element.parentNode ).to.equal( announcer.view.element );
 
 			expect( firstRegion.element.getAttribute( 'role' ) ).to.equal( 'region' );
 			expect( firstRegion.element.getAttribute( 'aria-live' ) ).to.equal( 'polite' );
-			expect( firstRegion.element.innerHTML ).to.equal( 'bar' );
-			expect( firstRegion.element.dataset.region ).to.equal( 'foo' );
+			expect( firstRegion.element.querySelector( 'li' ).innerHTML ).to.equal( 'bar' );
 		} );
 
 		it( 'should set a new text in an existing region', () => {
-			announcer.announce( 'foo', 'bar' );
-			announcer.announce( 'foo', 'baz' );
+			announcer.announce( 'bar' );
+			announcer.announce( 'baz' );
 
-			expect( announcer.view.regionViews.length ).to.equal( 1 );
+			expect( announcer.view.regionViews.length ).to.equal( 2 );
 
 			const firstRegion = announcer.view.regionViews.first;
 
 			expect( firstRegion ).to.be.instanceOf( AriaLiveAnnouncerRegionView );
-			expect( firstRegion.regionName ).to.equal( 'foo' );
-			expect( firstRegion.text ).to.equal( 'baz' );
 			expect( firstRegion.politeness ).to.equal( 'polite' );
 			expect( firstRegion.element.parentNode ).to.equal( announcer.view.element );
 
 			expect( firstRegion.element.getAttribute( 'role' ) ).to.equal( 'region' );
 			expect( firstRegion.element.getAttribute( 'aria-live' ) ).to.equal( 'polite' );
-			expect( firstRegion.element.innerHTML ).to.equal( 'baz' );
-			expect( firstRegion.element.dataset.region ).to.equal( 'foo' );
+			expect( firstRegion.element.querySelector( 'li:last-child' ).innerHTML ).to.equal( 'baz' );
 		} );
 
-		it( 'should be able to create more than a single region', () => {
-			announcer.announce( 'foo', 'bar' );
-			announcer.announce( 'baz', 'qux' );
+		it( 'should be able to create region depending on politeness', () => {
+			announcer.announce( 'foo', 'polite' );
+			announcer.announce( 'bar', 'polite' );
+
+			announcer.announce( 'qux', 'assertive' );
 
 			expect( announcer.view.regionViews.length ).to.equal( 2 );
 
 			const firstRegion = announcer.view.regionViews.first;
 			const lastRegion = announcer.view.regionViews.last;
 
-			expect( firstRegion.regionName ).to.equal( 'foo' );
-			expect( firstRegion.text ).to.equal( 'bar' );
 			expect( firstRegion.politeness ).to.equal( 'polite' );
 			expect( firstRegion.element.parentNode ).to.equal( announcer.view.element );
+			expect( firstRegion.element.querySelector( 'li:first-child' ).innerText ).to.equal( 'foo' );
+			expect( firstRegion.element.querySelector( 'li:last-child' ).innerText ).to.equal( 'bar' );
+			expect( firstRegion.element.querySelectorAll( 'li' ).length ).to.equal( 2 );
 
-			expect( lastRegion.regionName ).to.equal( 'baz' );
-			expect( lastRegion.text ).to.equal( 'qux' );
-			expect( lastRegion.politeness ).to.equal( 'polite' );
+			expect( lastRegion.politeness ).to.equal( 'assertive' );
 			expect( lastRegion.element.parentNode ).to.equal( announcer.view.element );
+			expect( lastRegion.element.querySelector( 'li:first-child' ).innerText ).to.equal( 'qux' );
+			expect( lastRegion.element.querySelectorAll( 'li' ).length ).to.equal( 1 );
 		} );
 
 		it( 'should be able to set the politeness of the announcement', () => {
-			announcer.announce( 'foo', 'bar', 'assertive' );
+			announcer.announce( 'bar', 'assertive' );
+
+			const lastRegion = announcer.view.regionViews.last;
+
+			expect( lastRegion.politeness ).to.equal( 'assertive' );
+			expect( lastRegion.element.getAttribute( 'aria-live' ) ).to.equal( 'assertive' );
+		} );
+
+		it( 'should be possible to read selected text with HTML tags', () => {
+			announcer.announce( '<h1>Foo</h1>', {
+				politeness: 'polite',
+				isUnsafeHTML: true
+			} );
 
 			const firstRegion = announcer.view.regionViews.first;
 
-			expect( firstRegion.politeness ).to.equal( 'assertive' );
-			expect( firstRegion.element.getAttribute( 'aria-live' ) ).to.equal( 'assertive' );
+			expect( firstRegion.element.querySelector( 'li' ).innerHTML ).to.equal( '<h1>Foo</h1>' );
 		} );
 	} );
+} );
+
+describe( 'AriaLiveAnnouncerRegionView', () => {
+	let editor, sourceElement, announcerRegionView;
+
+	testUtils.createSinonSandbox();
+
+	beforeEach( async () => {
+		sinon.useFakeTimers( { now: Date.now() } );
+		sourceElement = document.createElement( 'div' );
+		document.body.appendChild( sourceElement );
+		editor = await ClassicEditor.create( sourceElement );
+
+		announcerRegionView = new AriaLiveAnnouncerRegionView( editor, 'polite' );
+		announcerRegionView.render();
+	} );
+
+	afterEach( async () => {
+		sinon.restore();
+		sourceElement.remove();
+
+		if ( editor ) {
+			await editor.destroy();
+		}
+	} );
+
+	it( 'there should be no announcements after init', () => {
+		expect( queryAllMessages().length ).to.be.equal( 0 );
+	} );
+
+	it( 'should prune old announcements using interval', () => {
+		announcerRegionView.announce( { announcement: 'Foo' } );
+		announcerRegionView.announce( { announcement: 'Bar' } );
+		expect( queryAllMessages().length ).to.be.equal( 2 );
+
+		sinon.clock.tick( 12000 );
+		expect( queryAllMessages().length ).to.be.equal( 0 );
+
+		announcerRegionView.announce( { announcement: 'Foo' } );
+		expect( queryAllMessages().length ).to.be.equal( 1 );
+
+		sinon.clock.tick( 6000 );
+		expect( queryAllMessages().length ).to.be.equal( 0 );
+	} );
+
+	it( 'should properly set and destroy interval', async () => {
+		expect( announcerRegionView._pruneAnnouncementsInterval ).not.to.be.null;
+
+		await editor.destroy();
+		editor = null;
+
+		expect( announcerRegionView._pruneAnnouncementsInterval ).to.be.null;
+	} );
+
+	describe( 'announce()', () => {
+		it( 'should append non-empty announcement', () => {
+			announcerRegionView.announce( { announcement: 'Hello World' } );
+			expect( queryAllMessages() ).to.be.deep.equal( [ 'Hello World' ] );
+		} );
+
+		it( 'should not append empty announcement', () => {
+			announcerRegionView.announce( { announcement: '' } );
+			expect( queryAllMessages().length ).to.be.equal( 0 );
+		} );
+	} );
+
+	function queryAllMessages() {
+		return [ ...announcerRegionView.element.querySelectorAll( 'div[role="region"] ul li' ) ].map( element => element.innerHTML );
+	}
 } );
