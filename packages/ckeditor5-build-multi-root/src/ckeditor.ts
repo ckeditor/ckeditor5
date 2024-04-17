@@ -3,87 +3,224 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-// The editor creator to use.
 import { MultiRootEditor as MultiRootEditorBase } from '@ckeditor/ckeditor5-editor-multi-root';
 
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { CKFinderUploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
+import { Alignment } from '@ckeditor/ckeditor5-alignment';
+import { AnnotationsUIs, Comments, WideSidebar } from '@ckeditor/ckeditor5-comments';
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
-import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
-import { CKFinder } from '@ckeditor/ckeditor5-ckfinder';
-import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
+import { Bold, Italic, Strikethrough, Underline, Subscript, Superscript } from '@ckeditor/ckeditor5-basic-styles';
+import { CKFinderUploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
+import type { EditorConfig } from '@ckeditor/ckeditor5-core';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { FindAndReplace } from '@ckeditor/ckeditor5-find-and-replace';
+import { FontBackgroundColor, FontColor, FontFamily, FontSize } from '@ckeditor/ckeditor5-font';
 import { Heading } from '@ckeditor/ckeditor5-heading';
-import { Image, ImageCaption, ImageStyle, ImageToolbar, ImageUpload, PictureEditing } from '@ckeditor/ckeditor5-image';
-import { Indent } from '@ckeditor/ckeditor5-indent';
+import { Highlight } from '@ckeditor/ckeditor5-highlight';
+import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
+import {
+	Image,
+	ImageCaption,
+	ImageResize,
+	ImageStyle,
+	ImageToolbar,
+	ImageUpload,
+	ImageTextAlternative,
+	PictureEditing
+} from '@ckeditor/ckeditor5-image';
+import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
 import { Link } from '@ckeditor/ckeditor5-link';
-import { List } from '@ckeditor/ckeditor5-list';
+import { List, ListProperties, TodoList } from '@ckeditor/ckeditor5-list';
 import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
+import { Mention } from '@ckeditor/ckeditor5-mention';
+import { PageBreak } from '@ckeditor/ckeditor5-page-break';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office';
-import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
+import {
+	PresenceList,
+	RealTimeCollaborativeComments,
+	RealTimeCollaborativeEditing
+} from '@ckeditor/ckeditor5-real-time-collaboration';
+import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
+import {
+	Table,
+	TableCaption,
+	TableCellProperties,
+	TableColumnResize,
+	TableProperties,
+	TableToolbar,
+} from '@ckeditor/ckeditor5-table';
 import { TextTransformation } from '@ckeditor/ckeditor5-typing';
-import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
+import { TrackChanges } from '@ckeditor/ckeditor5-track-changes';
+import { Undo } from '@ckeditor/ckeditor5-undo';``
+import WProofreader from '@webspellchecker/wproofreader-ckeditor5/src/wproofreader';
 
-export default class MultiRootEditor extends MultiRootEditorBase {
+import {
+	CodeBlockConfiguration,
+	HeadingConfiguration,
+	ImageConfiguration,
+	LanguageConfig,
+	MentionCustomization,
+	NumericFontSizeConfig,
+	TableConfiguration
+} from './helpers';
+
+interface MultirootEditorConfig extends EditorConfig {
+	codeBlock: { languages: LanguageConfig[] },
+}
+
+class Editor extends MultiRootEditorBase {
 	public static override builtinPlugins = [
-		Essentials,
-		CKFinderUploadAdapter,
+		Alignment,
+		AnnotationsUIs,
 		Autoformat,
-		Bold,
-		Italic,
 		BlockQuote,
-		CKBox,
-		CKFinder,
+		Bold,
 		CloudServices,
-		EasyImage,
+		Comments,
+		Essentials,
+		FindAndReplace,
+		FontBackgroundColor,
+		FontColor,
+		FontFamily,
+		FontSize,
 		Heading,
+		Highlight,
+		HorizontalLine,
 		Image,
 		ImageCaption,
+		ImageResize,
 		ImageStyle,
 		ImageToolbar,
 		ImageUpload,
+		ImageTextAlternative,
 		Indent,
+		IndentBlock,
+		Italic,
 		Link,
 		List,
+		ListProperties,
 		MediaEmbed,
+		Mention,
+		MentionCustomization,
+		PageBreak,
 		Paragraph,
 		PasteFromOffice,
 		PictureEditing,
+		PresenceList,
+		RealTimeCollaborativeComments,
+		RealTimeCollaborativeEditing,
+		RemoveFormat,
+		Strikethrough,
+		Subscript,
+		Superscript,
 		Table,
+		TableCaption,
+		TableCellProperties,
+		TableColumnResize,
+		TableProperties,
 		TableToolbar,
-		TextTransformation
+		TextTransformation,
+		TodoList,
+		TrackChanges,
+		Underline,
+		CKFinderUploadAdapter,
+		Undo,
+		WideSidebar,
+		WProofreader
 	];
 
-	public static override defaultConfig = {
-		toolbar: {
+	private static toolbarItems = [
+		'undo',
+		'redo',
+		'|',
+		'heading',
+		'|',
+		'fontSize',
+		{
+			label: 'Text Styles',
+			icon: 'bold',
 			items: [
-				'undo', 'redo',
-				'|', 'heading',
-				'|', 'bold', 'italic',
-				'|', 'link', 'uploadImage', 'insertTable', 'blockQuote', 'mediaEmbed',
-				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
-			]
-		},
-		image: {
-			toolbar: [
-				'imageStyle:inline',
-				'imageStyle:block',
-				'imageStyle:side',
+				'bold',
+				'italic',
+				'underline',
+				'fontColor',
+				'highlight',
 				'|',
-				'toggleImageCaption',
-				'imageTextAlternative'
+				'alignment',
+				'bulletedList',
+				'numberedList',
+				'indent',
+				'outdent',
+				'|',
+				'link',
+				'comment',
+				'insertTable',
+				'|',
+				'findAndReplace',
+				'strikethrough',
+				'subscript',
+				'superscript',
+				'trackChanges'
 			]
 		},
-		table: {
-			contentToolbar: [
-				'tableColumn',
-				'tableRow',
-				'mergeTableCells'
-			]
+		'fontColor',
+		'italic',
+		'underline',
+		'fontBackgroundColor',
+		'|',
+		'alignment',
+		'bulletedList',
+		'numberedList',
+		'outdent',
+		'indent',
+		'pageBreak',
+		'|',
+		'link',
+		'imageUpload',
+		'insertTable',
+		'|',
+		'findAndReplace',
+		'removeFormat',
+		'wproofreader',
+		'blockQuote',
+		'horizontalLine'
+	]
+
+	public static override defaultConfig: MultirootEditorConfig = {
+		toolbar: {
+			items: Editor.toolbarItems
 		},
-		// This value must be kept in sync with the language defined in webpack.config.js.
-		language: 'en'
+		fontSize: NumericFontSizeConfig,
+		language: 'en',
+		codeBlock: CodeBlockConfiguration,
+		list: {
+			properties: {
+				startIndex: true
+			}
+		},
+		link: {
+			defaultProtocol: 'https://'
+		},
+		image: ImageConfiguration,
+		indentBlock: {
+			offset: 1,
+			unit: 'em'
+		},
+		table: TableConfiguration,
+		comments: {
+			editorConfig: {
+				extraPlugins: [
+					Autoformat,
+					Bold,
+					Italic,
+					List
+				]
+			}
+		},
+		heading: HeadingConfiguration,
 	};
 }
+
+export default Editor;

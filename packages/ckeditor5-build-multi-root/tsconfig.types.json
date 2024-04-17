@@ -8,6 +8,7 @@
 	},
 	"include": [
 		"src",
-		"../../typings"
+		"../../typings",
+		"./types"
 	]
 }

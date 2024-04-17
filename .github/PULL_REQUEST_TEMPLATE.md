@@ -1,9 +1,14 @@
-### Suggested merge commit message ([convention](https://ckeditor.com/docs/ckeditor5/latest/framework/contributing/git-commit-message-convention.html))
+## Description
+<!--- Writing a great description is important as it helps your teammates understand and review your changes. -->
 
-Type: Message. Closes #000.
 
----
+## Screenshots
+<!--- Attach screenshots if you introduced any UI changes. -->
 
-### Additional information
 
-_For example – encountered issues, assumptions you had to make, other affected tickets, etc._
+## Testing
+<!--- Writing good tests is important as it helps you ensure your code adheres to the desired functionality -->
+
+- [ ] I have added or updated tests that prove my fix is effective or that my feature works
+
+<!--- If you haven't, please tell us here why tests are not needed. -->
