@@ -59,7 +59,7 @@ As of version 37.0.0, CKEditor&nbsp;5 provides native TypeScript types, so commu
 	import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 	// Do:
-	import { Plugin } from '@ckeditor/ckeditor5-core';
+	import { Plugin } from 'ckeditor5';
 	```
 
 3. Adjust your `tsconfig.json` to include at least:

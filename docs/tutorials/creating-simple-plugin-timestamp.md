@@ -23,7 +23,7 @@ The webpack is also already configured, so you can just use the `npm run build` 
 
 ### DIY path with setting up the environment from the scratch
 
-If you want to set up the project yourself, you should follow the steps listed in the {@link framework/quick-start#lets-start Let's start section} of the Quick Start guide.
+If you want to set up the project yourself, you should follow the steps listed in the Quick Start guide.
 
 When this is done, you need to install the following dependencies that will be necessary to proceed:
 

@@ -26,7 +26,7 @@ The height of the editing area can be easily controlled with CSS.
 The easiest way is to use webpack's [`NormalModuleReplacementPlugin`](https://webpack.js.org/plugins/normal-module-replacement-plugin/) plugin. For example, to replace the bold icon, use the following code in your `webpack.config.js`:
 
 ```js
-...
+// ...
 plugins: [
 	new webpack.NormalModuleReplacementPlugin(
 		/bold\.svg/,
@@ -297,7 +297,7 @@ for ( const range of wordRanges ) {
 
 ```js
 // Add observer for double click and extend a generic DomEventObserver class by a native DOM dblclick event:
-import { DomEventObserver } from 'ckeditor5/src/engine';
+import { DomEventObserver } from 'ckeditor5';
 
 class DoubleClickObserver extends DomEventObserver {
 	constructor( view ) {
@@ -333,8 +333,7 @@ There are many observers provided with our features, and you should check if the
 ### How to create a widget with a single view element and multiple/nested model elements?
 
 ```js
-import { Plugin } from 'ckeditor5/src/core';
-import { toWidget, toWidgetEditable } from 'ckeditor5/src/widget';
+import { Plugin, toWidget, toWidgetEditable } from 'ckeditor5'
 
 class Forms extends Plugin {
 	init() {
@@ -445,9 +444,7 @@ class Forms extends Plugin {
 ### How to add a custom button to the link dialog?
 
 ```js
-import { ButtonView } from '@ckeditor/ckeditor5-ui';
-import { Plugin } from 'ckeditor5/src/core';
-import { LinkUI } from '@ckeditor/ckeditor5-link';
+import { ButtonView, Plugin, LinkUI } from 'ckeditor5';
 
 class InternalLink extends Plugin {
 	init() {

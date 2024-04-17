@@ -29,6 +29,7 @@ When the user pastes or drops content into the editor, the browser fires an even
 The clipboard feature listens to the `view.Document#clipboardInput`, `ClipboardPipeline#inputTransformation`, and `ClipboardPipeline#contentInsertion` events using {@link framework/deep-dive/event-system#listener-priorities low priority listeners}. This means that adding a normal listener and calling `evt.stop()` allows overriding the behavior implemented by the clipboard feature. It is a similar mechanism to the DOM's `evt.preventDefault()` that lets you override the default browser behavior.
 
 ### Input pipeline events overview
+
 ```plaintext
  ┌──────────────────────┐          ┌──────────────────────┐
  │     view.Document    │          │     view.Document    │
@@ -128,16 +129,17 @@ You can use the knowledge from the earlier sections to create a complete plugin.
 If you are not familiar with creating plugins in CKEditor&nbsp;5, start by reading the {@link tutorials/crash-course/editor Creating a simple plugin} guide. You will get a better understanding of what happens in the code below.
 
 ```js
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-
-import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-
-import { Command, Plugin } from '@ckeditor/ckeditor5-core';
-import { ButtonView } from '@ckeditor/ckeditor5-ui';
-
-import { plainTextToHtml } from '@ckeditor/ckeditor5-clipboard';
+import {
+	ClassicEditor,
+	Bold,
+	Italic,
+	Essentials,
+	Paragraph,
+	Command,
+	Plugin,
+	ButtonView,
+	plainTextToHtml
+} from 'ckeditor5';
 
 class PastePlainText extends Plugin {
 	static get pluginName() {
@@ -210,16 +212,15 @@ class PastePlainTextCommand extends Command {
 	}
 }
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Essentials, Paragraph, Bold, Italic, PastePlainText ],
-		toolbar: [ 'bold', 'italic', 'pastePlainText' ],
-		// More of the editor's configuration.
-		// ...
-	} )
-	.catch( error => {
-    	console.log( error );
-	} );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Essentials, Paragraph, Bold, Italic, PastePlainText ],
+	toolbar: [ 'bold', 'italic', 'pastePlainText' ],
+	// More of the editor's configuration.
+	// ...
+} )
+.catch( error => {
+	console.log( error );
+} );
 ```
 
 ## Output pipeline
