@@ -7,6 +7,7 @@
  * @module ui/arialiveannouncer
  */
 
+import type { DomConverter } from '@ckeditor/ckeditor5-engine';
 import type { Editor } from '@ckeditor/ckeditor5-core';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 import type ViewCollection from './viewcollection.js';
@@ -35,9 +36,10 @@ export const AriaLiveAnnouncerPoliteness = {
  * These announcements are consumed and propagated by screen readers and give users a better understanding of the current
  * state of the editor.
  *
- * To announce a state change to an editor feature named `'Some feature'`, use the {@link #announce} method:
+ * To announce a state change to an editor use the {@link #announce} method:
+ *
  * ```ts
- * editor.ui.ariaLiveAnnouncer.announce( 'Some feature', 'Text of an announcement.' );
+ * editor.ui.ariaLiveAnnouncer.announce( 'Text of an announcement.' );
  * ```
  */
 export default class AriaLiveAnnouncer {
@@ -56,49 +58,61 @@ export default class AriaLiveAnnouncer {
 	 */
 	constructor( editor: Editor ) {
 		this.editor = editor;
+
+		/**
+		 * Some screen readers only look at changes in the aria-live region.
+		 * They might not read a region that already has content when it is added.
+		 * To stop this problem, make sure to set up regions for all politeness settings when the editor starts.
+		 */
+		editor.once( 'ready', () => {
+			for ( const politeness of Object.values( AriaLiveAnnouncerPoliteness ) ) {
+				this.announce( '', politeness );
+			}
+		} );
 	}
 
 	/**
-	 * Sets an announcement text to an aria region associated with a specific editor feature. The text is then
-	 * announced by a screen reader to the user.
+	 * Sets an announcement text to an aria region that is then announced by a screen reader to the user.
 	 *
-	 * If the aria region of a given name does not exist, it will be created and can be re-used later. The name of the region
-	 * groups announcements originating from a specific editor feature and does not get announced by a screen reader.
-	 *
-	 * Using multiple regions allows for many announcements to be emitted in a short period of time. Changes to ARIA-live announcements
-	 * are captured by a screen reader and read out in the order they were emitted.
+	 * If the aria region of a specified politeness does not exist, it will be created and can be re-used later.
 	 *
 	 * The default announcement politeness level is `'polite'`.
 	 *
 	 * ```ts
 	 * // Most screen readers will queue announcements from multiple aria-live regions and read them out in the order they were emitted.
- 	 * editor.ui.ariaLiveAnnouncer.announce( 'image', 'Image uploaded.' );
- 	 * editor.ui.ariaLiveAnnouncer.announce( 'network', 'Connection lost. Reconnecting.' );
+ 	 * editor.ui.ariaLiveAnnouncer.announce( 'Image uploaded.' );
+ 	 * editor.ui.ariaLiveAnnouncer.announce( 'Connection lost. Reconnecting.' );
  	 * ```
 	 */
 	public announce(
-		regionName: string,
-		announcementText: string,
-		politeness: typeof AriaLiveAnnouncerPoliteness[ keyof typeof AriaLiveAnnouncerPoliteness ] = AriaLiveAnnouncerPoliteness.POLITE
+		announcement: string,
+		attributes: AriaLiveAnnouncerPolitenessValue | AriaLiveAnnounceConfig = AriaLiveAnnouncerPoliteness.POLITE
 	): void {
 		const editor = this.editor;
+
+		if ( !editor.ui.view ) {
+			return;
+		}
 
 		if ( !this.view ) {
 			this.view = new AriaLiveAnnouncerView( editor.locale );
 			editor.ui.view.body.add( this.view );
 		}
 
-		let regionView = this.view.regionViews.find( view => view.regionName === regionName );
+		const { politeness, isUnsafeHTML }: AriaLiveAnnounceConfig = typeof attributes === 'string' ? {
+			politeness: attributes
+		} : attributes;
 
-		if ( !regionView ) {
-			regionView = new AriaLiveAnnouncerRegionView( this.view.locale! );
-			this.view.regionViews.add( regionView );
+		let politenessRegionView = this.view.regionViews.find( view => view.politeness === politeness );
+
+		if ( !politenessRegionView ) {
+			politenessRegionView = new AriaLiveAnnouncerRegionView( editor, politeness );
+			this.view.regionViews.add( politenessRegionView );
 		}
 
-		regionView.set( {
-			regionName,
-			text: announcementText,
-			politeness
+		politenessRegionView.announce( {
+			announcement,
+			isUnsafeHTML
 		} );
 	}
 }
@@ -131,43 +145,98 @@ export class AriaLiveAnnouncerView extends View {
 }
 
 /**
- * The view that represents a single `aria-live` region (e.g. for a specific editor feature) and its text.
+ * The view that represents a single `aria-live`.
  */
 export class AriaLiveAnnouncerRegionView extends View {
 	/**
-	 * Current text of the region.
-	 */
-	declare public text: string;
-
-	/**
 	 * Current politeness level of the region.
 	 */
-	declare public politeness: typeof AriaLiveAnnouncerPoliteness[ keyof typeof AriaLiveAnnouncerPoliteness ];
+	public readonly politeness: AriaLiveAnnouncerPolitenessValue;
 
 	/**
-	 * A unique name of the region, usually associated with a specific editor feature or system.
+	 * DOM converter used to sanitize unsafe HTML passed to {@link #announce} method.
 	 */
-	declare public regionName: string;
+	private _domConverter: DomConverter;
 
-	constructor( locale: Locale ) {
-		super( locale );
+	/**
+	 * Interval used to remove additions. It prevents accumulation of added nodes in region.
+	 */
+	private _pruneAnnouncementsInterval: ReturnType<typeof setInterval> | null;
 
-		const bind = this.bindTemplate;
-
-		this.set( 'regionName', '' );
-		this.set( 'text', '' );
-		this.set( 'politeness', AriaLiveAnnouncerPoliteness.POLITE );
+	constructor( editor: Editor, politeness: AriaLiveAnnouncerPolitenessValue ) {
+		super( editor.locale );
 
 		this.setTemplate( {
 			tag: 'div',
 			attributes: {
 				role: 'region',
-				'data-region': bind.to( 'regionName' ),
-				'aria-live': bind.to( 'politeness' )
+				'aria-live': politeness,
+				'aria-relevant': 'additions'
 			},
 			children: [
-				{ text: bind.to( 'text' ) }
+				{
+					tag: 'ul',
+					attributes: {
+						class: [
+							'ck',
+							'ck-aria-live-region-list'
+						]
+					}
+				}
 			]
 		} );
+
+		editor.on( 'destroy', () => {
+			if ( this._pruneAnnouncementsInterval !== null ) {
+				clearInterval( this._pruneAnnouncementsInterval! );
+				this._pruneAnnouncementsInterval = null;
+			}
+		} );
+
+		this.politeness = politeness;
+		this._domConverter = editor.data.htmlProcessor.domConverter;
+		this._pruneAnnouncementsInterval = setInterval( () => {
+			if ( this.element && this._listElement!.firstChild ) {
+				this._listElement!.firstChild!.remove();
+			}
+		}, 5000 );
+	}
+
+	/**
+	 * Appends new announcement to region.
+	 */
+	public announce( { announcement, isUnsafeHTML }: AriaLiveAppendContentAttributes ): void {
+		if ( !announcement.trim().length ) {
+			return;
+		}
+
+		const messageListItem = document.createElement( 'li' );
+
+		if ( isUnsafeHTML ) {
+			this._domConverter.setContentOf( messageListItem, announcement );
+		} else {
+			messageListItem.innerText = announcement;
+		}
+
+		this._listElement!.appendChild( messageListItem );
+	}
+
+	/**
+	 * Return current announcements list HTML element.
+	 */
+	private get _listElement(): HTMLElement | null {
+		return this.element!.querySelector( 'ul' )!;
 	}
 }
+
+type AriaLiveAnnouncerPolitenessValue = typeof AriaLiveAnnouncerPoliteness[ keyof typeof AriaLiveAnnouncerPoliteness ];
+
+type AriaLiveAppendContentAttributes = {
+	announcement: string;
+	isUnsafeHTML?: boolean;
+};
+
+type AriaLiveAnnounceConfig = {
+	politeness: AriaLiveAnnouncerPolitenessValue;
+	isUnsafeHTML?: boolean;
+};
