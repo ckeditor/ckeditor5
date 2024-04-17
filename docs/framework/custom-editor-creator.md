@@ -16,8 +16,7 @@ This guide goes through the process of implementing a custom, multi-root editor.
 The `*Editor` class is the main class of each editor type. It initializes the whole editor and its UI parts. The custom creator class should extend the {@link module:core/editor/editor~Editor base `Editor` class}. For a multi-root editor, it may look like below:
 
 ```js
-import { Editor } from '@ckeditor/ckeditor5-core';
-import { getDataFromElement, setDataInElement } from '@ckeditor/ckeditor5-utils';
+import { Editor, getDataFromElement, setDataInElement } from 'ckeditor5';
 
 /**
  * The multi-root editor implementation. It provides inline editables and a single toolbar.
@@ -118,8 +117,7 @@ class MultirootEditor extends Editor {
 The `*EditorUI` class is the main UI class that initializes UI components (the main view and the toolbar) and sets up mechanisms like {@link framework/deep-dive/focus-tracking#using-the-focustracker-class focus tracker} or placeholder management. The custom `*EditorUI` class should extend the {@link module:ui/editorui/editorui~EditorUI base `EditorUI` class} like below:
 
 ```js
-import { EditorUI } from '@ckeditor/ckeditor5-ui';
-import { enablePlaceholder } from '@ckeditor/ckeditor5-engine';
+import { EditorUI, enablePlaceholder } from 'ckeditor5';
 
 /**
  * The multi-root editor UI class.
@@ -297,7 +295,7 @@ class MultirootEditorUI extends EditorUI {
 Finally, the `*EditorUIView` class is responsible for registering and handling all editable elements and for creating the editor toolbar. The custom `*EditorUIView` class should extend the {@link module:ui/editorui/editoruiview~EditorUIView base `EditorUIView` class}:
 
 ```js
-import { EditorUIView, InlineEditableUIView, Template, ToolbarView } from '@ckeditor/ckeditor5-ui';
+import { EditorUIView, InlineEditableUIView, Template, ToolbarView } from 'ckeditor5';
 
 /**
  * The multi-root editor UI view. It is a virtual view providing an inline editable, but without
