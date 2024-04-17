@@ -13,82 +13,17 @@ We will create a toolbar button that will insert the current date and time at th
 
 ## Let's start!
 
-### Quick start with the starter repository
-
-The easiest way to set up your project is to grab the starter files from our [GitHub repository for this tutorial](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/timestamp-plugin). We gathered all the necessary dependencies there, including some CKEditor 5 packages and other files needed to build the editor. If you want to set everything up by yourself, please move to the [DIY path](#diy-path-with-setting-up-the-environment-from-the-scratch).
+The easiest way to set up your project is to grab the starter files from our [GitHub repository for this tutorial](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/timestamp-plugin). We gathered all the necessary dependencies there, including some CKEditor 5 packages and other files needed to run the editor.
 
 The editor has already been created in the `app.js` file with some basic plugins. All you need to do is clone the repository, run the `npm install` command, and you can start coding right away.
 
 ```bash
-git clone https://github.com/ckeditor/ckeditor5-tutorials-examples;
-cd ckeditor5-tutorials-examples/timestamp-plugin/starter-files;
+git clone https://github.com/ckeditor/ckeditor5-tutorials-examples /
+cd ckeditor5-tutorials-examples/timestamp-plugin/starter-files /
 
-npm install;
-npm run dev;
+npm install /
+npm run dev
 ```
-
-### DIY path with setting up the environment from the scratch
-
-If you want to set up the project yourself, you should follow the steps listed in the Quick Start guide.
-
-When this is done, you need to install the following dependencies that will be necessary to proceed:
-
-```bash
-npm install ckeditor5
-```
-
- We are going to write the whole plugin in your base `app.js` file. It should look like the code listed below.
-
-```js
-// app.js
-
-import { 
-	ClassicEditor,
-	Essentials,
-	Paragraph,
-	Heading,
-	List,
-	Bold,
-	Italic
-} from 'ckeditor5';
-import 'ckeditor5/dist/index.css';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic ],
-		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList' ]
-	} )
-	.then( editor => {
-		console.log( 'Editor was initialized', editor );
-	} )
-	.catch( error => {
-		console.error( error.stack );
-	} );
-```
-
-Your `index.html` should look as listed below. The editor will load with the HTML content you put inside the `<div id="editor">` tags.
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>CKEditor 5 Framework – timestamp plugin</title>
-	</head>
-	<body>
-		<div id="editor">
-			<h2>Timestamp plugin</h2>
-			<p>Press the timestamp button to insert the current date and time.</p>
-		</div>
-
-		<script src="dist/bundle.js"></script>
-	</body>
-</html>
-```
-
-Now you just need to run application.
-
-After opening the `index.html` in the browser, you should be able to see the working editor ready for plugin development.
 
 ## Creating a plugin
 
@@ -131,7 +66,7 @@ ClassicEditor
 	} );
 ```
 
-Rebuild the editor and check in your console whether the timestamp was initialized. You should see this in the browser (on the left) and in the browser's development console (on the right):
+The development server will refresh. The initialization of the timestamp plugin should be visible. You should see this in the browser (on the left) and the browser's development console (on the right):
 
 {@img assets/img/timestamp-1.png Screenshot of the editor and the console showing 'Editor was initialized".}
 
@@ -184,7 +119,7 @@ ClassicEditor
 
 ```
 
-Rebuild the editor, and you should be able to see the timestamp button. It does not do anything just yet, so let's change that.
+Now, you should be able to see the timestamp button. It does not do anything just yet, so let's change that.
 
 ## Inserting a timestamp
 
@@ -225,7 +160,7 @@ class Timestamp extends Plugin {
 }
 ```
 
-Well done! When you rebuild the editor, you should be able to see that your timestamp plugin is working.
+Well done! You implemented a CKEditor 5 plugin. You should be able to click and see that it works.
 
 ## Demo
 
