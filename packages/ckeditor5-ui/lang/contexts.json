@@ -46,5 +46,6 @@
 	"MENU_BAR_MENU_HELP": "The label of the top-level application menu bar menu containing buttons and features helping users to learn about the editor (e.g. accessibility help).",
 	"MENU_BAR_MENU_TEXT": "The label of the application menu bar menu containing buttons and features that apply formatting to a text (e.g. bold, italic, etc.).",
 	"MENU_BAR_MENU_FONT": "The label of the application menu bar menu containing buttons and features that control the font of the edited content (e.g. font size, font color, etc.).",
-	"Editor menu bar": "The accessible label of the editor menu bar used by assistive technologies."
+	"Editor menu bar": "The accessible label of the editor menu bar used by assistive technologies.",
+	"Please enter a valid color (e.g. \"ff0000\").": "An error text displayed when user attempted to enter an color that is not in HEX format."
 }

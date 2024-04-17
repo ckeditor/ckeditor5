@@ -9,12 +9,12 @@
 
 import CKEditorError from './ckeditorerror.js';
 
-const version = '41.3.0';
+const version = '41.3.1';
 
 export default version;
 
 // The second argument is not a month. It is `monthIndex` and starts from `0`.
-export const releaseDate = new Date( 2024, 3, 10 );
+export const releaseDate = new Date( 2024, 3, 16 );
 
 declare global {
 	// eslint-disable-next-line no-var
@@ -60,9 +60,7 @@ if ( globalThis.CKEDITOR_VERSION ) {
 	 *
 	 * This scenario is very similar to the previous one, but has a different origin.
 	 *
-	 * Let's assume that you wanted to use CKEditor 5 from source, as explained in the
-	 * {@glink getting-started/legacy/advanced/alternative-setups/integrating-from-source-webpack "Building from source"} section
-	 * or in the {@glink framework/quick-start "Quick start"} guide of CKEditor 5 Framework.
+	 * Let's assume that you wanted to use CKEditor 5 from source.
 	 *
 	 * The correct way to do so is to import an editor and plugins and run them together like this:
 	 *

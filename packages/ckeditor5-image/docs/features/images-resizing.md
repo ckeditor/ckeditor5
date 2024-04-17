@@ -68,6 +68,11 @@ const imageConfiguration = {
 			label: 'Original'
 		},
 		{
+			name: 'resizeImage:custom',
+			label: 'Custom',
+			value: 'custom'
+		},
+		{
 			name: 'resizeImage:40',
 			value: '40',
 			label: '40%'
@@ -109,6 +114,11 @@ const imageConfiguration = {
 			icon: 'original'
 		},
 		{
+			name: 'resizeImage:custom',
+			value: 'custom',
+			icon: 'custom'
+		},
+		{
 			name: 'resizeImage:50',
 			value: '50',
 			icon: 'medium'
@@ -123,6 +133,7 @@ const imageConfiguration = {
 		'resizeImage:50',
 		'resizeImage:75',
 		'resizeImage:original',
+		'resizeImage:custom',
 		// More toolbar options.
 		// ...
 	]
@@ -154,6 +165,11 @@ ClassicEditor
 				icon: 'original'
 			},
 			{
+				name: 'resizeImage:custom',
+				value: 'custom',
+				icon: 'custom'
+			},
+			{
 				name: 'resizeImage:50',
 				value: '50',
 				icon: 'medium'
@@ -168,6 +184,7 @@ ClassicEditor
 			'resizeImage:50',
 			'resizeImage:75',
 			'resizeImage:original',
+			'resizeImage:custom',
 			// More toolbar options.
 			// ...
 		] }
@@ -239,6 +256,11 @@ ClassicEditor
 					name: 'resizeImage:original',
 					label: 'Original',
 					value: null
+				},
+				{
+					name: 'resizeImage:custom',
+					label: 'Custom',
+					value: 'custom'
 				},
 				{
 					name: 'resizeImage:100',

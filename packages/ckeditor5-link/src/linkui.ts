@@ -7,7 +7,7 @@
  * @module link/linkui
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import {
 	ClickObserver,
 	type ViewAttributeElement,
@@ -26,7 +26,7 @@ import {
 import type { PositionOptions } from 'ckeditor5/src/utils.js';
 import { isWidget } from 'ckeditor5/src/widget.js';
 
-import LinkFormView from './ui/linkformview.js';
+import LinkFormView, { type LinkFormValidatorCallback } from './ui/linkformview.js';
 import LinkActionsView from './ui/linkactionsview.js';
 import type LinkCommand from './linkcommand.js';
 import type UnlinkCommand from './unlinkcommand.js';
@@ -195,28 +195,30 @@ export default class LinkUI extends Plugin {
 		const editor = this.editor;
 		const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
 		const defaultProtocol = editor.config.get( 'link.defaultProtocol' );
-		const allowCreatingEmptyLinks = editor.config.get( 'link.allowCreatingEmptyLinks' );
 
-		const formView = new ( CssTransitionDisablerMixin( LinkFormView ) )( editor.locale, linkCommand );
+		const formView = new ( CssTransitionDisablerMixin( LinkFormView ) )( editor.locale, linkCommand, getFormValidators( editor ) );
 
 		formView.urlInputView.fieldView.bind( 'value' ).to( linkCommand, 'value' );
 
 		// Form elements should be read-only when corresponding commands are disabled.
 		formView.urlInputView.bind( 'isEnabled' ).to( linkCommand, 'isEnabled' );
 
-		// Disable the "save" button if the command is disabled or the input is empty despite being required.
-		formView.saveButtonView.bind( 'isEnabled' ).to(
-			linkCommand, 'isEnabled',
-			formView.urlInputView, 'isEmpty',
-			( isCommandEnabled, isInputEmpty ) => isCommandEnabled && ( allowCreatingEmptyLinks || !isInputEmpty )
-		);
+		// Disable the "save" button if the command is disabled.
+		formView.saveButtonView.bind( 'isEnabled' ).to( linkCommand, 'isEnabled' );
 
 		// Execute link command after clicking the "Save" button.
 		this.listenTo( formView, 'submit', () => {
-			const { value } = formView.urlInputView.fieldView.element!;
-			const parsedUrl = addLinkProtocolIfApplicable( value, defaultProtocol );
-			editor.execute( 'link', parsedUrl, formView.getDecoratorSwitchesState() );
-			this._closeFormView();
+			if ( formView.isValid() ) {
+				const { value } = formView.urlInputView.fieldView.element!;
+				const parsedUrl = addLinkProtocolIfApplicable( value, defaultProtocol );
+				editor.execute( 'link', parsedUrl, formView.getDecoratorSwitchesState() );
+				this._closeFormView();
+			}
+		} );
+
+		// Update balloon position when form error changes.
+		this.listenTo( formView.urlInputView, 'change:errorText', () => {
+			editor.ui.update();
 		} );
 
 		// Hide the panel after clicking the "Cancel" button.
@@ -384,6 +386,7 @@ export default class LinkUI extends Plugin {
 		const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
 
 		this.formView!.disableCssTransitions();
+		this.formView!.resetFormStatus();
 
 		this._balloon.add( {
 			view: this.formView!,
@@ -754,4 +757,22 @@ export default class LinkUI extends Plugin {
  */
 function findLinkElementAncestor( position: ViewPosition ): ViewAttributeElement | null {
 	return position.getAncestors().find( ( ancestor ): ancestor is ViewAttributeElement => isLinkElement( ancestor ) ) || null;
+}
+
+/**
+ * Returns link form validation callbacks.
+ *
+ * @param editor Editor instance.
+ */
+function getFormValidators( editor: Editor ): Array<LinkFormValidatorCallback> {
+	const t = editor.t;
+	const allowCreatingEmptyLinks = editor.config.get( 'link.allowCreatingEmptyLinks' );
+
+	return [
+		form => {
+			if ( !allowCreatingEmptyLinks && !form.url!.length ) {
+				return t( 'Link URL must not be empty.' );
+			}
+		}
+	];
 }

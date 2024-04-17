@@ -112,7 +112,7 @@
 		{
 			"name": "Image resize",
 			"className": "ImageResize",
-			"description": "Allows for resizing images using handles.",
+			"description": "Allows for resizing images using handles and offers the UI fine tune the sizes.",
 			"docs": "features/images/images-resizing.html",
 			"path": "src/imageresize.js",
 			"requires": [

@@ -18,37 +18,38 @@ The editor below runs a completely custom user interface written in [Bootstrap](
 
 ```js
 // Basic classes to create an editor.
-import { Editor } from '@ckeditor/ckeditor5-core';
-import { EditorUI, EditorUIView, InlineEditableUIView } from '@ckeditor/ckeditor5-ui';
-import { ElementReplacer } from '@ckeditor/ckeditor5-utils';
-
+import {
+	Editor,
+	EditorUI,
+	EditorUIView,
+	InlineEditableUIView,
+	ElementReplacer,
 // Interfaces to extend basic Editor API.
-import { ElementApiMixin } from '@ckeditor/ckeditor5-core';
-
+	ElementApiMixin,
 // Helper function for adding interfaces to the Editor class.
-import { mix } from '@ckeditor/ckeditor5-utils';
-
+	mix,
 // Helper function that gets data from HTML element that the Editor is attached to.
-import { getDataFromElement } from '@ckeditor/ckeditor5-utils';
-
+	getDataFromElement,
 // Helper function that binds editor with HTMLForm element.
-import { attachToForm } from '@ckeditor/ckeditor5-core';
-
+	attachToForm,
 // Basic features that every editor should enable.
-import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
-import { Enter } from '@ckeditor/ckeditor5-enter';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { Typing } from '@ckeditor/ckeditor5-typing';
-import { UndoEditing } from '@ckeditor/ckeditor5-undo';
-
+	Clipboard,
+	Enter,
+	Paragraph,
+	Typing,
+	UndoEditing,
 // Basic features to associated with the edited content.
-import { BoldEditing, ItalicEditing, UnderlineEditing } from '@ckeditor/ckeditor5-basic-styles';
-import { HeadingEditing } from '@ckeditor/ckeditor5-heading';
-
+	BoldEditing,
+	ItalicEditing,
+	UnderlineEditing,
+	HeadingEditing,
 // The easy image integration.
-import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
-import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
-import { Image, ImageUpload } from '@ckeditor/ckeditor5-image';
+	CloudServices,
+	Image,
+	ImageUpload
+	} from 'ckeditor5';
+
+import { EasyImage } from 'ckeditor5-premium-features';
 
 // Extending the Editor class, which brings base editor API.
 export default class BootstrapEditor extends ElementApiMixin( Editor ) {

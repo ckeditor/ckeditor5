@@ -197,11 +197,18 @@ export default class ColorPickerFragmentView extends View {
 	}
 
 	/**
+	 * Reset validation messages.
+	 */
+	public resetValidationStatus(): void {
+		this.colorPickerView!.resetValidationStatus();
+	}
+
+	/**
 	 * When color picker is focused and "enter" is pressed it executes command.
 	 */
 	private _executeOnEnterPress(): void {
 		this.keystrokes.set( 'enter', evt => {
-			if ( this.isVisible && this.focusTracker.focusedElement !== this.cancelButtonView.element ) {
+			if ( this.isVisible && this.focusTracker.focusedElement !== this.cancelButtonView.element && this.colorPickerView!.isValid() ) {
 				this.fire( 'execute', {
 					value: this.selectedColor!
 				} );
@@ -300,10 +307,12 @@ export default class ColorPickerFragmentView extends View {
 		} );
 
 		saveButtonView.on( 'execute', () => {
-			this.fire<ColorSelectorExecuteEvent>( 'execute', {
-				source: 'colorPickerSaveButton',
-				value: this.selectedColor!
-			} );
+			if ( this.colorPickerView!.isValid() ) {
+				this.fire<ColorSelectorExecuteEvent>( 'execute', {
+					source: 'colorPickerSaveButton',
+					value: this.selectedColor!
+				} );
+			}
 		} );
 
 		cancelButtonView.on( 'execute', () => {
