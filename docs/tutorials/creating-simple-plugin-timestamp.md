@@ -7,7 +7,7 @@ modified_at: 2022-07-15
 
 # Creating a basic plugin
 
-This guide will show you how to create a simple, basic plugin that will let the users insert timestamps into their content. This is a beginner-friendly tutorial, perfect for your first interaction with the CKEditor 5 framework. While is not necessary to be familiar with the {@link tutorials/crash-course/editor CKEditor 5 Crash course} to follow it, you should consider reading that one, too.
+This guide will show you how to create a simple, basic plugin that will let the users insert timestamps into their content. This is a beginner-friendly tutorial, perfect for your first interaction with the CKEditor 5 framework. While it is not necessary to be familiar with the {@link tutorials/crash-course/editor CKEditor 5 Crash course} to follow it, you should consider reading that one, too.
 
 We will create a toolbar button that will insert the current date and time at the caret position into the document. If you want to see the final product of this tutorial before you plunge in, check out the [live demo](#demo) below.
 
@@ -130,7 +130,7 @@ ClassicEditor
 
 ```
 
-Now, you should be able to see the timestamp button. It does not do anything just yet, so let's change that.
+Now, you should be able to see the <kbd>Timestamp</kbd> button. It does not do anything just yet, so let's change that.
 
 ## Inserting a timestamp
 
@@ -180,6 +180,8 @@ class Timestamp extends Plugin {
 Well done! You implemented a CKEditor 5 plugin. You should be able to click and see that it works.
 
 ## Demo
+
+See the result in action.
 
 {@snippet tutorials/timestamp-plugin}
 

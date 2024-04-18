@@ -16,7 +16,7 @@ If you want to see the final product of this tutorial before you plunge in, chec
 
 ## Improving accessibility
 
-First, we make our plugin accessible for users who rely on keyboards for navigation. We want to ensure that pressing <kbd>Tab</kbd> and <kbd>Shift</kbd> + <kbd>Tab</kbd> will move focus around in the form view, and pressing `esc` will close it.
+First, we make our plugin accessible for users who rely on keyboards for navigation. We want to ensure that pressing <kbd>Tab</kbd> and <kbd>Shift</kbd> + <kbd>Tab</kbd> will move focus around in the form view, and pressing <kbd>Esc</kbd> will close it.
 
 <info-box>
 	To improve the accessibility of the plugin, it is important to understand how keystroke and focus management works in the CKEditor&nbsp;5 framework. We recommend you {@link framework/architecture/ui-library#keystrokes-and-focus-management read up on the basics}, or do a {@link framework/deep-dive/focus-tracking deep dive into focus tracking}.
@@ -268,7 +268,7 @@ Our new functionality should work now, check it out yourself! It does not recogn
 Our plugin does what we want it to do, so why complicate things by adding a command? Well, a command not only executes an action but also automatically reacts when any changes are applied to the model.
 
 <info-box>
-	A command in CKEditor&nbsp;5 is a combination of an action and a state. The state of the command gets refreshed whenever anything changes in the model. We highly recommend {@link framework/architecture/core-editor-architecture#commands reading about commands} before we move on.
+	A command in CKEditor&nbsp;5 is a combination of an action and a state. The state of the command gets refreshed whenever anything changes in the model. We highly recommend {@link framework/architecture/core-editor-architecture#commands reading about commands} before moving on.
 </info-box>
 
 When the user makes a selection in the editor, the command will automatically check if there is an abbreviation there. It will also ensure that the command is only enabled where the "abbreviation" attribute can be set on the current model selection (not on images, for instance).
@@ -359,7 +359,7 @@ export default class AbbreviationUI extends Plugin {
 }
 ```
 
-The command should now work, and pressing the `submit` button should have the same effect as it did before. We can now explore some additional functionalities. You can check it out now in the CKEditor&nbsp;5 Inspector.
+The command should now work, and pressing the <kbd>Submit</kbd> button should have the same effect as it did before. We can now explore some additional functionalities. You can check it out now in the CKEditor&nbsp;5 Inspector.
 
 {@img assets/img/abbreviation-part3-1.png Screenshot of the CKEditor&nbsp;5 inspector showing the `addAbbreviation` command.}
 
@@ -722,6 +722,8 @@ export default class AbbreviationCommand extends Command {
 The command is now done, check how it works by trying all our different cases - selection collapsed, not collapsed, inside an existing abbreviation, etc.
 
 ## Demo
+
+See the result in action.
 
 {@snippet tutorials/abbreviation-level-3}
 
