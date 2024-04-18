@@ -13,15 +13,11 @@ modified_at: 2023-11-14
 
 Next.js 13 introduced a new App Router as an alternative to the previous Pages Router. App Router supports server components and is more server-centric than Pages Router, which is client-side oriented.
 
-CKEditor&nbsp;5 does not support server-side rendering yet, but you can integrate it with the Next.js framework. In this guide, you will add the editor to a Next.js project using both routing paradigms. For this purpose, you will need [Next.js CLI](https://nextjs.org/docs/pages/api-reference/create-next-app), [CKEditor&nbsp;5 online builder](https://ckeditor.com/ckeditor-5/online-builder/), and the official {@link getting-started/integrations/react CKEditor&nbsp;5 React component}.
+CKEditor&nbsp;5 does not support server-side rendering yet, but you can integrate it with the Next.js framework. In this guide, you will add the editor to a Next.js project using both routing paradigms. For this purpose, you will need [Next.js CLI](https://nextjs.org/docs/pages/api-reference/create-next-app), CKEditor&nbsp;5 Builder<!-- add Builder link -->, and the official {@link getting-started/integrations/react CKEditor&nbsp;5 React component}.
 
-## Preparing a build
+## Quick start
 
-First, you will use the [online builder](https://ckeditor.com/ckeditor-5/online-builder/). It is a web UI that lets you create a custom build of CKEditor&nbsp;5 and download the code as a `.zip` package.
-
-The online builder is a powerful tool that lets you effortlessly create a rich text editor tailored to your needs. With the online builder, you can choose the desired editor type and plugins, configure the toolbar, and choose the UI language for your editor.
-
-You can learn more about creating custom builds of CKEditor&nbsp;5 with the online builder in the {@link getting-started/legacy-getting-started/quick-start-other#creating-custom-builds-with-online-builder Customized installation} guide.
+The easiest way to use CKEditor&nbsp;5 in your Next.js application is preparing an editor build with Builder<!-- add Builder link --> and integrating it with your project. Prepare an editor with the desired set of features and download it.
 
 ## Setting up the project
 

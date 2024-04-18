@@ -15,7 +15,7 @@ order: 30
 	</a>
 </p>
 
-Rewrite into.
+React lets you build user interfaces out of individual pieces called components. CKEditor&nbsp;5 can be used as one of such components.
 
 <info-box hint>
 	Starting from version 6.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link getting-started/setup/working-with-typescript TypeScript support}.

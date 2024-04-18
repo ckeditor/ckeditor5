@@ -15,11 +15,11 @@ order: 50
 	</a>
 </p>
 
-<info-box>
+<!-- <info-box>
 	**Important**: This guide is about the CKEditor&nbsp;5 integration with Vue.js 3+. To learn more about the integration with Vue.js 2.x, check out the {@link getting-started/integrations/vuejs-v2 "Rich text editor component for Vue.js 2.x"} guide.
-</info-box>
+</info-box> -->
 
-Rewrite into.
+Vue.js is a versatile framework for building web user interfaces.
 
 <info-box hint>
 	Starting from version 5.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link getting-started/setup/working-with-typescript TypeScript support}.
