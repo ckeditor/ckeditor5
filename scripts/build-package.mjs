@@ -7,14 +7,13 @@
 
 /* eslint-env node */
 
+import { createRequire } from 'module';
 import upath from 'upath';
 import { build } from '@ckeditor/ckeditor5-dev-build-tools';
 
 ( async () => {
-	const { default: pkg } = await import(
-		upath.resolve( process.cwd(), './package.json' ),
-		{ with: { type: 'json' } }
-	);
+	const require = createRequire( import.meta.url );
+	const pkg = require( upath.resolve( process.cwd(), './package.json' ) );
 
 	await build( {
 		input: 'src/index.ts',

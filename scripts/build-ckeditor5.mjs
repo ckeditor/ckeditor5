@@ -60,7 +60,7 @@ function dist( path ) {
 		sourceMap: true,
 		external: [
 			'ckeditor5'
-		],
+		]
 	} );
 
 	await copyFile( dist( 'tmp/index.js' ), dist( 'index.js' ) );
@@ -73,11 +73,13 @@ function dist( path ) {
 	console.log( chalk.green( '3/3: Generating browser build...' ) );
 
 	await build( {
-		output: dist( 'index.browser.js' ),
+		output: dist( 'browser/index.js' ),
 		tsconfig,
 		banner,
 		sourceMap: true,
 		minify: true,
+		browser: true,
+		name: 'ckeditor5',
 		external: []
 	} );
 } )();

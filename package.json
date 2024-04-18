@@ -161,7 +161,7 @@
     "webpack": "^5.58.1"
   },
   "engines": {
-    "node": ">=18.20.0"
+    "node": ">=18.0.0"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "GPL-2.0-or-later",
