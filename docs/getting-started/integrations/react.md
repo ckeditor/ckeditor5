@@ -15,7 +15,7 @@ order: 30
 	</a>
 </p>
 
-Rewrite everything.
+Rewrite into.
 
 <info-box hint>
 	Starting from version 6.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link getting-started/setup/working-with-typescript TypeScript support}.
@@ -25,7 +25,7 @@ Rewrite everything.
 
 ### Using the Builder
 
-Update
+The easiest way to use CKEditor&nbsp;5 in your Vue.js application is preparing an editor build with Builder<!-- add Builder link --> and using it in your application.
 
 ### Installing from npm
 
@@ -227,7 +227,7 @@ class App extends Component {
 export default App;
 ```
 
-#### Using the editor with collaboration plugins
+### Using the editor with collaboration plugins
 
 The easiest way to integrate {@link features/collaboration collaboration plugins} in a React application is to build the editor from source including the collaboration plugins together with the React application.
 
