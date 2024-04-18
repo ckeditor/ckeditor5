@@ -23,69 +23,16 @@ The easiest way to set up your project is to grab the starter files from the [Gi
 The editor has already been created in the `main.js` file with some basic plugins. All you need to do is clone the repository, navigate to the [starter-files directory](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/abbreviation-plugin/starter-files), run the `npm install` command, and you can start coding right away.
 
 ```bash
-git clone https://github.com/ckeditor/ckeditor5-tutorials-examples;
-cd ckeditor5-tutorials-examples/abbreviation-plugin/starter-files;
+git clone https://github.com/ckeditor/ckeditor5-tutorials-examples
+cd ckeditor5-tutorials-examples/abbreviation-plugin/starter-files
 
-npm install;
-npm run dev;
+npm install
+npm run dev
 ```
 
 <info-box>
 	The starter files come with the {@link framework/development-tools/inspector CKEditor&nbsp;5 Inspector} attached to the editor, so you can debug and observe what is happening in the model and the view layers. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
-
-If you want to set up the project yourself, you will need to install the [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckeditor5-core) package, which contains the `Plugin` class, and the [`@ckeditor/ckeditor5-ui`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui) package, which contains the UI library and the framework.
-
-Your entry point to the plugin is `main.js`:
-
-```js
-// main.js
-import { 
-	ClassicEditor,
-	Essentials,
-	Paragraph,
-	Heading,
-	List,
-	Bold,
-	Italic
-} from 'ckeditor5';
-import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
-
-import 'ckeditor5/dist/index.css';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic ],
-		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList' ]
-	} )
-	.then( editor => {
-		console.log( 'Editor was initialized', editor );
-		CKEditorInspector.attach( editor );
-	} )
-	.catch( error => {
-		console.error( error.stack );
-	} );
-```
-
-Now take look at `index.html`. We added the `<abbr>` element. It will not work just yet, but we will fix that in a couple of steps.
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>CKEditor 5 Framework – Abbreviation plugin</title>
-	</head>
-	<body>
-		<div id="editor">
- 			<h2>Abbreviation plugin</h2>
-			<p>CKEditor5 is a modern, feature-rich, world-class <abbr title="What You See Is What You Get">WYSIWYG</abbr> editor.</p>
-		</div>
-
-		<script src="dist/bundle.js"></script>
-	</body>
-</html>
-```
 
 ## Plugin structure
 
@@ -97,7 +44,7 @@ Our abbreviation plugin is divided into three components &ndash; `Abbreviation`,
 
 We put them in the `/abbreviation` directory. We will be adding more files the in the next parts of the tutorial. This is our directory structure:
 
-```
+```plain
 ├── main.js
 ├── index.html
 ├── package.json
@@ -187,7 +134,7 @@ ClassicEditor
 	} );
 ```
 
-Rebuild the project now, refresh the browser and you should see that the `AbbreviationEditing` and `AbbreviationUI` plugins were loaded.
+You should see that the `AbbreviationEditing` and `AbbreviationUI` plugins were loaded.
 
 ## The model and the view layers
 
@@ -341,7 +288,7 @@ export default class AbbreviationEditing extends Plugin {
 }
 ```
 
-Thanks to the upcast conversion, our abbreviation added in the `index.html` should work now. Rebuild the editor and check it out yourself.
+Thanks to the upcast conversion, our abbreviation added in the `index.html` should work now. The changes should be visible after the development server refresh.
 
 {@img assets/img/abbreviation-part1-3.png Screenshot of the editor showing working abbreviation.}
 
@@ -372,6 +319,7 @@ export default class AbbreviationUI extends Plugin {
 	}
 }
 ```
+
 We passed the name of the button in the `componentFactory.add`, so it is now available to use in the toolbar configuration. We can now simply add it to the toolbar in `main.js`:
 
 ```js
@@ -458,4 +406,3 @@ If you got lost at any point, this is [the final implementation of the plugin](h
 
 	That's it for the first part of this tutorial! Your plugin should now work (at least in its most basic form). Move on to the {@link tutorials/abbreviation-plugin-tutorial/abbreviation-plugin-level-2 second part}, where you will create a balloon with a form to get user's input, replacing our hard-coded "WYSIWYG" abbreviation.
 </info-box>
-
