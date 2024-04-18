@@ -18,7 +18,7 @@ import type { AlignmentFormat, SupportedOption } from './alignmentconfig.js';
  * * `'center'`,
  * * `'justify'`
  */
-export const supportedOptions: ReadonlyArray<SupportedOption> = [ 'left', 'right', 'center', 'justify' ];
+export const supportedOptions: ReadonlyArray<SupportedOption> = [ 'left', 'right', 'center', 'justify', 'test' ];
 
 /**
  * Checks whether the passed option is supported by {@link module:alignment/alignmentediting~AlignmentEditing}.
