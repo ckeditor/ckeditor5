@@ -31,11 +31,6 @@ import type { MenuBarConfig } from '@ckeditor/ckeditor5-ui';
  * 	.then( ... )
  * 	.catch( ... );
  * ```
- *
- * ------TODO redirect to proper guide--------
- * Check the {@glink getting-started/legacy/installation-methods/predefined-builds Configuration} guide for more information
- * about setting configuration options.
- * -------------------------------------------
  */
 export interface EditorConfig {
 	context?: Context;
