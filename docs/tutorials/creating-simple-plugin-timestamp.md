@@ -79,7 +79,18 @@ Once we create a new instance of `ButtonView`, we will be able to customize it b
 We also need to register our button in the editor's UI `componentFactory`, so it can be displayed in the toolbar. To do it, we will pass the name of the button in the `componentFactory.add` method, to be able to add it into the {@link getting-started/setup/toolbar toolbar} array.
 
 ```js
-import { /* Imports from the previous example ... , */ ButtonView } from 'ckeditor5';
+import { 
+	ClassicEditor,
+	Essentials,
+	Paragraph,
+	Heading,
+	List,
+	Bold,
+	Italic,
+	Plugin,
+	ButtonView
+} from 'ckeditor5';
+import 'ckeditor5/dist/index.css';
 
 class Timestamp extends Plugin {
 	init() {
@@ -137,22 +148,28 @@ We will use the `insertContent()` method to insert our timestamp into the docume
 class Timestamp extends Plugin {
 	init() {
 		const editor = this.editor;
-
+		// The button must be registered among the UI components of the editor
+		// to be displayed in the toolbar.
 		editor.ui.componentFactory.add( 'timestamp', () => {
-			// Button-related code from the previous example
-			// ...
+			// The button will be an instance of ButtonView.
+			const button = new ButtonView();
+
+			button.set( {
+				label: 'Timestamp',
+				withText: true
+			} );
 
 			// Execute a callback function when the button is clicked.
-			button.on( 'execute', () => {
-				const now = new Date();
+            button.on( 'execute', () => {
+                const now = new Date();
 
-				// Change the model using the model writer.
-				editor.model.change( writer => {
+                // Change the model using the model writer.
+                editor.model.change( writer => {
 
-					// Insert the text at the user's current position.
-					editor.model.insertContent( writer.createText( now.toString() ) );
-				} );
-			} );
+                    // Insert the text at the user's current position.
+                    editor.model.insertContent( writer.createText( now.toString() ) );
+                } );
+            } );
 
 			return button;
 		} );
