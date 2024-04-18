@@ -129,7 +129,7 @@ export default class SelectionObserver extends Observer {
 
 			// Make sure that model selection is up-to-date at the end of selecting process.
 			// Sometimes `selectionchange` events could arrive after the `mouseup` event and that selection could be already outdated.
-			this._handleSelectionChange( null, domDocument );
+			this._handleSelectionChange( domDocument );
 
 			this.document.isSelecting = false;
 
@@ -178,7 +178,7 @@ export default class SelectionObserver extends Observer {
 				return;
 			}
 
-			this._handleSelectionChange( domEvent, domDocument );
+			this._handleSelectionChange( domDocument );
 
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.groupEnd();
@@ -191,7 +191,7 @@ export default class SelectionObserver extends Observer {
 
 		// On composition start upcast the selection, so it includes composed text to be replaced on composition end.
 		this.listenTo<ViewDocumentCompositionStartEvent>( this.view.document, 'compositionstart', () => {
-			this._handleSelectionChange( null, domDocument );
+			this._handleSelectionChange( domDocument );
 		}, { priority: 'lowest' } );
 
 		this._documents.add( domDocument );
@@ -228,10 +228,9 @@ export default class SelectionObserver extends Observer {
 	 * a selection changes and fires {@link module:engine/view/document~Document#event:selectionChange} event on every change
 	 * and {@link module:engine/view/document~Document#event:selectionChangeDone} when a selection stop changing.
 	 *
-	 * @param domEvent DOM event.
 	 * @param domDocument DOM document.
 	 */
-	private _handleSelectionChange( domEvent: unknown, domDocument: Document ) {
+	private _handleSelectionChange( domDocument: Document ) {
 		if ( !this.isEnabled ) {
 			return;
 		}
