@@ -3,30 +3,13 @@ Changelog
 
 ## [41.4.0-alpha.0](https://github.com/ckeditor/ckeditor5/compare/v41.3.1...v41.4.0-alpha.0) (April 18, 2024)
 
-### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
+We are happy to announce the release of CKEditor 5 v41.4.0-alpha.0.
 
-* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The region name argument of the `AriaLiveAnnouncer#announce()`  method has been dropped. Please check out the latest API documentation for more information.
+This release is intended to add a UMD build to the new installation methods.
 
-### Features
+For instructions on how to use the new installation methods, see the [v41.3.0-alpha.0 Release Notes](https://github.com/ckeditor/ckeditor5/releases/tag/v41.3.0-alpha.0).
 
-* **[code-block](https://www.npmjs.com/package/@ckeditor/ckeditor5-code-block)**: Introduced screen reader announcements for entering or exiting code blocks in the editor content. Closes [#16053](https://github.com/ckeditor/ckeditor5/issues/16053). ([commit](https://github.com/ckeditor/ckeditor5/commit/c451c9ec247e73fe5d67c45265e4daf510717f05))
-* **[format-painter](https://www.npmjs.com/package/@ckeditor/ckeditor5-format-painter)**: Introduced keyboard shortcuts for copy (Ctrl+Shift+C) and paste (Ctrl+Shift+V) formatting in the document editor. Added the ability to cancel copying formatting using the Esc key.
-* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Introduced screen reader announcements for various actions and events in the editor. ([commit](https://github.com/ckeditor/ckeditor5/commit/c451c9ec247e73fe5d67c45265e4daf510717f05))
-* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Added the custom image width input option to the image toolbar, as an alternative to drag-and-drop resizing. ([commit](https://github.com/ckeditor/ckeditor5/commit/7c0d75218b6d54b8673a57e075dfe6468429bd9e))
-* **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: An error message should appear in the link editing form when submitting an empty link. ([commit](https://github.com/ckeditor/ckeditor5/commit/caea11e431fc56f911f4cf4ad4f73bc74d36a8b9))
-* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: Introduced screen reader announcements for various actions and events in the editor. ([commit](https://github.com/ckeditor/ckeditor5/commit/c451c9ec247e73fe5d67c45265e4daf510717f05))
-* **[media-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed)**: An error message should appear when submitting an empty URL in the media embed form. ([commit](https://github.com/ckeditor/ckeditor5/commit/caea11e431fc56f911f4cf4ad4f73bc74d36a8b9))
-* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Introduced screen reader announcements for various actions and events in the editor. ([commit](https://github.com/ckeditor/ckeditor5/commit/c451c9ec247e73fe5d67c45265e4daf510717f05))
-* Introduced accessible screen reader announcements for various actions and events in the editor, including text case change, AI Assistant interactions, template list filtering, and document exports to Word and PDF.
-
-### Bug fixes
-
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: An inline filler should be rendered after a BR just before a block filler so that scrolling to selection could properly find the client rect. Closes [#14028](https://github.com/ckeditor/ckeditor5/issues/14028). ([commit](https://github.com/ckeditor/ckeditor5/commit/5c0cd22c7030eda3bee2e95464c7082e45cf955a))
-* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The color picker should not allow for saving incorrect HEX color values. Added an error message when the color is invalid. ([commit](https://github.com/ckeditor/ckeditor5/commit/caea11e431fc56f911f4cf4ad4f73bc74d36a8b9))
-
-### Other changes
-
-* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Refactored the `AriaLiveAnnouncer` utility to use the `aria-relevant` attribute and make concurrent announcements queued by screen readers. ([commit](https://github.com/ckeditor/ckeditor5/commit/c451c9ec247e73fe5d67c45265e4daf510717f05))
+For more general information about the new installation methods, see the [announcement post](https://github.com/ckeditor/ckeditor5/issues/15502).
 
 ### Released packages
 
