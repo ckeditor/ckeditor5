@@ -15,13 +15,7 @@ order: 30
 	</a>
 </p>
 
-CKEditor&nbsp;5 consists of the {@link getting-started/legacy-getting-started/predefined-builds ready-to-use editor builds} and the {@link framework/index CKEditor&nbsp;5 Framework} upon which the builds are based.
-
-Currently, the CKEditor&nbsp;5 component for Angular supports integrating CKEditor&nbsp;5 only via builds. Integrating {@link getting-started/advanced/integrating-from-source-webpack CKEditor&nbsp;5 built from source} is not possible yet due to the lack of ability to [adjust webpack configuration in `angular-cli`](https://github.com/angular/angular-cli/issues/10618).
-
-<info-box>
-	While there is no support to integrate CKEditor&nbsp;5 from source yet, you can still {@link getting-started/legacy-getting-started/quick-start-other#customizing-builds create a custom build of CKEditor&nbsp;5} and include it in your Angular application.
-</info-box>
+Angular is a TypeScript-based, free and open-source single-page web application framework. The CKEditor&nbsp;5 component for Angular supports integrating CKEditor&nbsp;5 via builds. You can get one from the Builder.
 
 <info-box hint>
 	Starting from version 6.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link getting-started/setup/working-with-typescript TypeScript support}.
@@ -98,7 +92,7 @@ npm install --save @ckeditor/ckeditor5-angular
 	If you do not have an existing project, you can use the [Angular CLI](https://angular.io/cli) to create a new one.
 </info-box>
 
-Install one of the {@link getting-started/legacy-getting-started/predefined-builds CKEditor&nbsp;5 predefined builds} or [create a custom one](#using-a-custom-ckeditor-5-build).
+Install one of the {@link getting-started/legacy-getting-started/predefined-builds CKEditor&nbsp;5 predefined builds}<!-- well this definitely needs some love --> or get one from Builder<!-- add Builder link -->.
 
 This tutorial assumes that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
 
@@ -175,165 +169,6 @@ Finally, use the `<ckeditor>` tag in the template to run the rich text editor:
 ```
 
 Rebuild your application and CKEditor&nbsp;5 should greet you with a "Hello, world!"
-
-### Using the Document editor build
-
-If you want to use the {@link framework/document-editor document editor build}, you need to {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create add the toolbar to the DOM manually}.
-
-```ts
-// app.component.ts
-
-import { Component } from '@angular/core';
-import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
-
-@Component( {
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: [ './app.component.css' ]
-} )
-export class AppComponent {
-  title = 'angular';
-  public Editor = DecoupledEditor;
-
-  public onReady( editor: DecoupledEditor ): void {
-    const element = editor.ui.getEditableElement()!;
-    const parent = element.parentElement!;
-
-    parent.insertBefore(
-      editor.ui.view.toolbar.element!,
-      element
-    );
-  }
-}
-```
-
-And then, in the template:
-
-```html
-<!-- app.component.html -->
-
-<ckeditor [editor]="Editor" data="<p>Hello, world!</p>" (ready)="onReady($event)"></ckeditor>
-```
-
-### Using a custom CKEditor&nbsp;5 build
-
-If you want to add more plugins to an existing build or customize something that cannot be controlled with the {@link getting-started/setup/configuration editor configuration} you need to create a custom build first, as described in the {@link getting-started/legacy-getting-started/quick-start-other#building-the-editor-from-source Building the editor from source} guide.
-
-By completing the above tutorial you should get a generated `ckeditor.js` file (and corresponding translation files). In the next step you should copy it to the `src` directory and import it to the component file.
-
-```ts
-// app.component.ts
-
-import * as Editor from 'path/to/the/ckeditor';
-
-@Component( {
-	// ...
-} )
-export class MyComponent {
-	public Editor = Editor;
-	// ...
-}
-```
-
-Note that to allow importing JavaScript files without providing their corresponding types you need to set `allowJs` to `true` in the `tsconfig.json` file. Also, make sure that you target `ES6` or higher, otherwise you are likely to end up with a [weird transpilation error](https://github.com/ckeditor/ckeditor5-angular/issues/20) in the production build.
-
-```json
-// tsconfig.json
-
-"compilerOptions": {
-	"allowJs": true,
-	"target": "es2015"
-	// other options
-}
-```
-
-<info-box>
-	If you cannot set the target higher than `es5`, try to set `"buildOptimizer": false` which will produce a bigger, but correct production build.
-</info-box>
-
-### Integrating a build from the online builder
-
-This guide assumes that you have created a zip archive with the editor built using the [CKEditor&nbsp;5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
-
-Unpack it into you application's main directory. The directory with the editor build cannot be placed inside the `src/` directory as Node will return an error. Because of that, we recommend placing the directory next to the `src/` and `node_modules/` folders:
-
-```
-├── ckeditor5
-│   ├── build
-│   ├── sample
-│   ├── src
-│   ├── ...
-│   ├── package.json
-│   └── webpack.config.js
-├── node_modules
-├── src
-├── ...
-└── package.json
-```
-
-Then, add the package located in the `ckeditor5` directory as a dependency of your project:
-
-```
-npm install ./ckeditor5
-```
-
-Now, import the build in your application:
-
-```ts
-// app.component.ts
-
-import { Component } from '@angular/core';
-import Editor from 'ckeditor5-custom-build/build/ckeditor';
-
-@Component( {
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
-} )
-export class AppComponent {
-  title = 'customEditor';
-  public Editor = Editor;
-}
-```
-
-### Using the editor with collaboration plugins
-
-The easiest way to integrate {@link features/collaboration collaboration plugins} in an Angular application is to create a custom build first and then import it from the Angular application. See [Using a custom CKEditor&nbsp;5 build](#using-a-custom-ckeditor-5-build).
-
-<info-box>
-	For such a scenario we provide a few **ready-to-use integrations** featuring collaborative editing in Angular applications:
-
-	* [CKEditor&nbsp;5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-angular)
-	* [CKEditor&nbsp;5 with real-time collaboration and revision history features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-revision-history-for-angular)
-	* [CKEditor&nbsp;5 with the revision history feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/revision-history-for-angular)
-	* [CKEditor&nbsp;5 with the track changes feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/track-changes-for-angular)
-
-	It is not mandatory to build applications on top of the above samples, however, they should help you get started.
-</info-box>
-
-## Integration with `ngModel`
-
-The component implements the [`ControlValueAccessor`](https://angular.io/api/forms/ControlValueAccessor) interface and works with the `ngModel`. Here is how to use it:
-
-Create some model in your component to share with the editor:
-
-```ts
-@Component( {
-	// ...
-} )
-export class MyComponent {
-	public model = {
-		editorData: '<p>Hello, world!</p>'
-	};
-	// ...
-}
-```
-
-Use the model in the template to enable a two–way data binding:
-
-```html
-<ckeditor [(ngModel)]="model.editorData" [editor]="Editor"></ckeditor>
-```
 
 ## Supported `@Input` properties
 
@@ -540,7 +375,87 @@ Fired when the editor crashes. Once the editor is crashed, the internal watchdog
 	Prior to ckeditor5-angular `v7.0.1`, this event was not fired for crashes during the editor initialization.
 </info-box>
 
-## Styling
+## How to?
+
+### Using the Document editor build
+
+If you want to use the {@link framework/document-editor document editor build}, you need to {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create add the toolbar to the DOM manually}.
+
+```ts
+// app.component.ts
+
+import { Component } from '@angular/core';
+import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
+
+@Component( {
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: [ './app.component.css' ]
+} )
+export class AppComponent {
+  title = 'angular';
+  public Editor = DecoupledEditor;
+
+  public onReady( editor: DecoupledEditor ): void {
+	const element = editor.ui.getEditableElement()!;
+	const parent = element.parentElement!;
+
+	parent.insertBefore(
+	  editor.ui.view.toolbar.element!,
+	  element
+	);
+  }
+}
+```
+
+And then, in the template:
+
+```html
+<!-- app.component.html -->
+
+<ckeditor [editor]="Editor" data="<p>Hello, world!</p>" (ready)="onReady($event)"></ckeditor>
+```
+
+### Using the editor with collaboration plugins
+
+The easiest way to integrate {@link features/collaboration collaboration plugins} in an Angular application is to create a custom build with Builder<!-- add Builder link --> first and then import it from the Angular application.
+
+<info-box>
+	For such a scenario we provide a few **ready-to-use integrations** featuring collaborative editing in Angular applications:
+
+	* [CKEditor&nbsp;5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-angular)
+	* [CKEditor&nbsp;5 with real-time collaboration and revision history features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-revision-history-for-angular)
+	* [CKEditor&nbsp;5 with the revision history feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/revision-history-for-angular)
+	* [CKEditor&nbsp;5 with the track changes feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/track-changes-for-angular)
+
+	It is not mandatory to build applications on top of the above samples, however, they should help you get started.
+</info-box>
+
+## Integration with `ngModel`
+
+The component implements the [`ControlValueAccessor`](https://angular.io/api/forms/ControlValueAccessor) interface and works with the `ngModel`. Here is how to use it:
+
+Create some model in your component to share with the editor:
+
+```ts
+@Component( {
+	// ...
+} )
+export class MyComponent {
+	public model = {
+		editorData: '<p>Hello, world!</p>'
+	};
+	// ...
+}
+```
+
+Use the model in the template to enable a two–way data binding:
+
+```html
+<ckeditor [(ngModel)]="model.editorData" [editor]="Editor"></ckeditor>
+```
+
+### Styling
 
 The CKEditor&nbsp;5 rich text editor component for Angular can be styled using the component style sheet or using a global style sheet. See how to set the CKEditor&nbsp;5 component's height using these two approaches.
 
@@ -567,7 +482,7 @@ Then in the parent component add the relative path to the above style sheet:
 } )
 ```
 
-### Setting the height via a global style sheet
+#### Setting the height via a global style sheet
 
 To style the component using a global style sheet, first, create it:
 
@@ -593,7 +508,7 @@ Then, add it in the `angular.json` configuration file:
 }
 ```
 
-### Setting the placeholder
+#### Setting the placeholder
 
 To display {@link features/editor-placeholder the placeholder} in the main editable element, set the `placeholder` field in the CKEditor&nbsp;5 rich text editor component configuration:
 
@@ -608,7 +523,7 @@ export class MyComponent {
 }
 ```
 
-## Accessing the editor instance
+### Accessing the editor instance
 
 The CKEditor&nbsp;5 rich text editor component provides all the functionality needed for most use cases. When access to the full CKEditor&nbsp;5 API is needed you can get the editor instance with an additional step.
 
@@ -637,7 +552,7 @@ export class MyComponent {
 	The editor creation is asynchronous so the `editorInstance` will not be available until the editor is created. If you want to make changes to an editor that has just been created, a better option would be getting the CKEditor&nbsp;5 instance on the [`ready`](#ready) event.
 </info-box>
 
-## Localization
+### Localization
 
 The CKEditor&nbsp;5 rich text editor component can be localized in two steps.
 
@@ -666,7 +581,7 @@ By adding paths to translation files to the `"scripts"` array in `angular.json`:
 }
 ```
 
-### Configuring the language
+#### Configuring the language
 
 Then, you need to configure the editor to use the given language:
 
@@ -683,21 +598,6 @@ export class MyComponent {
 ```
 
 For advanced usage see the {@link getting-started/setup/ui-language Setting the UI language} guide.
-
-## Common issues
-
-### zone.js
-
-There is a repeatable issue with zone.js library when upgrading to new Angular versions. The ngOnDestroy handler crashes throwing:
-```
-ERROR Error: Uncaught (in promise): TypeError: Cannot read property 'data-ck-expando' of undefined
-TypeError: Cannot read property 'data-ck-expando' of undefined
-```
-
-Workaround: in `polyfills.js` import zone.js using `import zone.js/dist/zone.js` instead of `import 'zone.js'`.
-More details:
-- [https://github.com/ckeditor/ckeditor5-angular/issues/109](https://github.com/ckeditor/ckeditor5-angular/issues/109)
-- [https://github.com/angular/angular/tree/master/packages/zone.js#breaking-changes-since-zonejs-v0111](https://github.com/angular/angular/tree/master/packages/zone.js#breaking-changes-since-zonejs-v0111)
 
 ## Contributing and reporting issues
 
