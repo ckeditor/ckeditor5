@@ -213,8 +213,8 @@ export default class AbbreviationEditing extends Plugin {
 	}
 
 	_defineSchema() {
-	// Previously defined schema.
-	// ...
+		// Previously defined schema.
+		// ...
 	}
 
 	_defineConverters() {									// ADDED
@@ -251,21 +251,21 @@ import { Plugin } from 'ckeditor5';
 
 export default class AbbreviationEditing extends Plugin {
 	init() {
-	// Schema and converters initialization.
-	// ...
+		// Schema and converters initialization.
+		// ...
 	}
 
 	_defineSchema() {
-	// Previously defined schema.
-	// ...
+		// Previously defined schema.
+		// ...
 	}
 
 	_defineConverters() {
 		const conversion = this.editor.conversion;
 
 		conversion.for( 'downcast' ).attributeToElement(
-		// Code responsible for downcast conversion.
-		// ...
+			// Code responsible for downcast conversion.
+			// ...
 		);
 
 		// Conversion from a view element to a model attribute.

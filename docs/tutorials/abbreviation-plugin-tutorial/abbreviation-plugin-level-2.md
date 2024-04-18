@@ -66,7 +66,7 @@ import {
 	View,
 	LabeledFieldView,				// ADDED
 	createLabeledInputText			// ADDED
-	} from 'ckeditor5';
+} from 'ckeditor5';
 
 export default class FormView extends View {
 	constructor( locale ) {
@@ -105,7 +105,7 @@ import {
 	createLabeledInputText,
 	ButtonView,		// ADDED
 	icons			// ADDED
-	} from 'ckeditor5';
+} from 'ckeditor5';
 
 export default class FormView extends View {
 	constructor( locale ) {
@@ -192,6 +192,7 @@ export default class FormView extends View {
 	}
 }
 ```
+
 ### Adding styles
 
 We use `styles.css` to style the new UI elements. Let's add some padding to our form and use the [CSS grid layout](https://developer.mozilla.org/en-US/docs/Web/CSS/grid) to nicely display all four elements of the form.
@@ -227,6 +228,7 @@ We will use our set spacing variables to keep things uniform.
 }
 
 ```
+
 Import it into `AbbreviationUI`:
 
 ```js
@@ -261,7 +263,7 @@ import {
 	ButtonView,
 	icons,
 	submitHandler	// ADDED
-	} from 'ckeditor5';
+} from 'ckeditor5';
 
 export default class FormView extends View {
 	constructor( locale ) {
@@ -528,6 +530,7 @@ Our plugin is finally doing what it is supposed to. The last thing is to hide it
 ## Hiding the form view
 
 We will need to hide the form view in these three situations:
+
 * after the user submits the form;
 * when the user clicks the "Cancel" button;
 * when the user clicks outside of the balloon.
