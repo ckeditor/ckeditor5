@@ -489,6 +489,12 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
  * 				]
  * 			},
  * 			{
+ * 				groupId: 'mergeTagsPreview',
+ * 				items: [
+ * 					'menuBar:mergeTagsPreview'
+ * 				]
+ * 			},
+ * 			{
  * 				groupId: 'restrictedEditingException',
  * 				items: [
  * 					'menuBar:restrictedEditingException'
@@ -513,7 +519,8 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
  * 				groupId: 'insertInline',
  * 				items: [
  * 					'menuBar:link',
- * 					'menuBar:comment'
+ * 					'menuBar:comment',
+ * 					'menuBar:insertMergeTag'
  * 				]
  * 			},
  * 			{
@@ -737,6 +744,12 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 				]
 			},
 			{
+				groupId: 'mergeTagsPreview',
+				items: [
+					'menuBar:mergeTagsPreview'
+				]
+			},
+			{
 				groupId: 'restrictedEditingException',
 				items: [
 					'menuBar:restrictedEditingException'
@@ -761,7 +774,8 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 				groupId: 'insertInline',
 				items: [
 					'menuBar:link',
-					'menuBar:comment'
+					'menuBar:comment',
+					'menuBar:insertMergeTag'
 				]
 			},
 			{
