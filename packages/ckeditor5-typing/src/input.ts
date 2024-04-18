@@ -14,11 +14,8 @@ import InsertTextCommand from './inserttextcommand.js';
 import InsertTextObserver, { type ViewDocumentInsertTextEvent } from './inserttextobserver.js';
 
 import {
-	LivePosition,
 	type Model,
-	type Position,
 	type ViewDocumentCompositionStartEvent,
-	type ViewDocumentInputEvent,
 	type ViewDocumentKeyDownEvent
 } from '@ckeditor/ckeditor5-engine';
 
@@ -32,16 +29,6 @@ export default class Input extends Plugin {
 	public static get pluginName() {
 		return 'Input' as const;
 	}
-
-	/**
-	 * TODO
-	 */
-	private _compositionRangeStart: LivePosition | null = null;
-
-	/**
-	 * TODO
-	 */
-	private _compositionRangeEnd: LivePosition | null = null;
 
 	/**
 	 * @inheritDoc
@@ -77,13 +64,6 @@ export default class Input extends Plugin {
 				modelRanges = Array.from( viewSelection.getRanges() ).map( viewRange => {
 					return editor.editing.mapper.toModelRange( viewRange );
 				} );
-			}
-			else if ( this._compositionRangeStart && this._compositionRangeEnd ) {
-				modelRanges = [ model.createRange( this._compositionRangeStart, this._compositionRangeEnd ) ];
-				this._compositionRangeStart.detach();
-				this._compositionRangeEnd.detach();
-				this._compositionRangeStart = null;
-				this._compositionRangeEnd = null;
 			}
 			else {
 				modelRanges = Array.from( modelSelection.getRanges() );
@@ -161,8 +141,6 @@ export default class Input extends Plugin {
 			// Note: The priority must precede the CompositionObserver handler to call it before
 			// the renderer is blocked, because we want to render this change.
 			this.listenTo<ViewDocumentCompositionStartEvent>( view.document, 'compositionstart', () => {
-				this._updateCompositionRange( modelSelection.getFirstPosition()!, modelSelection.getLastPosition()! );
-
 				if ( modelSelection.isCollapsed ) {
 					return;
 				}
@@ -179,58 +157,7 @@ export default class Input extends Plugin {
 
 				deleteSelectionContent( model, insertTextCommand );
 			} );
-
-			this.listenTo<ViewDocumentInputEvent>( view.document, 'beforeinput', ( evt, data ) => {
-				const { targetRanges, inputType } = data;
-
-				if ( ![ 'deleteCompositionText', 'insertCompositionText', 'insertFromComposition' ].includes( inputType ) ) {
-					return;
-				}
-
-				if ( !this._compositionRangeStart || !this._compositionRangeEnd || !targetRanges.length ) {
-					return;
-				}
-
-				const modelTargetRange = editor.editing.mapper.toModelRange( targetRanges[ 0 ] );
-
-				if ( modelTargetRange.start.isBefore( this._compositionRangeStart.toPosition() ) ) {
-					this._updateCompositionRange( modelTargetRange.start, this._compositionRangeEnd.toPosition() );
-				}
-			}, { priority: 'high' } );
 		}
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public override destroy(): void {
-		super.destroy();
-
-		if ( this._compositionRangeStart ) {
-			this._compositionRangeStart.detach();
-		}
-
-		if ( this._compositionRangeEnd ) {
-			this._compositionRangeEnd.detach();
-		}
-	}
-
-	/**
-	 * TODO
-	 */
-	private _updateCompositionRange( start: Position, end: Position ): void {
-		if ( this._compositionRangeStart ) {
-			this._compositionRangeStart.detach();
-		}
-
-		if ( this._compositionRangeEnd ) {
-			this._compositionRangeEnd.detach();
-		}
-
-		// Using LivePosition-s so it adjusts to the changes in the model.
-		// Stickiness to the outside so deleted range content won't make it a graveyard positions.
-		this._compositionRangeStart = LivePosition.fromPosition( start, 'toPrevious' );
-		this._compositionRangeEnd = LivePosition.fromPosition( end, 'toNext' );
 	}
 }
 

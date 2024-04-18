@@ -11,6 +11,7 @@
 
 import Observer from './observer.js';
 import MutationObserver from './mutationobserver.js';
+import FocusObserver from './focusobserver.js';
 import { env } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunc } from 'lodash-es';
 
@@ -18,7 +19,7 @@ import type View from '../view.js';
 import type DocumentSelection from '../documentselection.js';
 import type DomConverter from '../domconverter.js';
 import type Selection from '../selection.js';
-import FocusObserver from './focusobserver.js';
+import type { ViewDocumentCompositionStartEvent } from './compositionobserver.js';
 
 type DomSelection = globalThis.Selection;
 
@@ -187,6 +188,11 @@ export default class SelectionObserver extends Observer {
 			// using their mouse).
 			this._documentIsSelectingInactivityTimeoutDebounced();
 		} );
+
+		// On composition start upcast the selection, so it includes composed text to be replaced on composition end.
+		this.listenTo<ViewDocumentCompositionStartEvent>( this.view.document, 'compositionstart', () => {
+			this._handleSelectionChange( null, domDocument );
+		}, { priority: 'lowest' } );
 
 		this._documents.add( domDocument );
 	}
