@@ -322,6 +322,7 @@ export default class AbbreviationEditing extends Plugin {
 	// ...
 }
 ```
+
 We can now replace the action called on `submit` with our new command, passing it into editor's `execute()` method, along with the abbreviation and title values.
 
 ```js
@@ -402,7 +403,7 @@ Then, we change the value of the command. We will get the abbreviation text usin
 import { 
 	Command,
 	findAttributeRange						// ADDED
-	} from 'ckeditor5';
+} from 'ckeditor5';
 import getRangeText from './utils.js';		// ADDED
 
 export default class AbbreviationCommand extends Command {
