@@ -178,7 +178,9 @@ The `CKEditorContext` component supports the following properties:
 	An example build that exposes both context and classic editor can be found in the [CKEditor&nbsp;5 collaboration sample](https://github.com/ckeditor/ckeditor5-collaboration-samples/blob/master/real-time-collaboration-comments-outside-of-editor-for-react).
 </info-box>
 
-## Using the document editor build
+## How to?
+
+### Using the document editor build
 
 If you use the {@link framework/document-editor document (decoupled) editor}, you need to {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create add the toolbar to the DOM manually}:
 
@@ -225,7 +227,7 @@ class App extends Component {
 export default App;
 ```
 
-### Using the editor with collaboration plugins
+#### Using the editor with collaboration plugins
 
 The easiest way to integrate {@link features/collaboration collaboration plugins} in a React application is to build the editor from source including the collaboration plugins together with the React application.
 
@@ -242,49 +244,11 @@ The easiest way to integrate {@link features/collaboration collaboration plugins
 
 Note: These integrations are meant to be as simple as possible, so they do not use the Create React App CLI. However, you should have no problem starting from `CRA` after reading the sections below.
 
-## The `JavaScript heap out of memory` error
-
-When building the application for the production using the `yarn build` command, it may produce an error related to the memory available on the build machine:
-
-```plain
-<--- Last few GCs --->
-
-[32550:0x110008000]    42721 ms: Scavenge (reduce) 4061.0 (4069.6) -> 4060.5 (4070.8) MB, 4.3 / 0.0 ms  (average mu = 0.358, current mu = 0.374) allocation failure
-[32550:0x110008000]    42726 ms: Scavenge (reduce) 4061.2 (4069.8) -> 4060.6 (4071.3) MB, 4.0 / 0.0 ms  (average mu = 0.358, current mu = 0.374) allocation failure
-[32550:0x110008000]    42730 ms: Scavenge (reduce) 4061.4 (4073.3) -> 4060.9 (4073.3) MB, 3.7 / 0.0 ms  (average mu = 0.358, current mu = 0.374) allocation failure
-
-<--- JS stacktrace --->
-
-FATAL ERROR: Ineffective mark-compacts near heap limit Allocation failed - JavaScript heap out of memory
- 1: 0x1012e4da5 node::Abort() (.cold.1) [/usr/local/bin/node]
-```
-
-This issue has not been fixed yet, however, there is a workaround for this. Increasing the available memory for Node.js using the `--max_old_space_size` modifier should resolve the problem.
-
-```bash
-node --max_old_space_size=4096 node_modules/.bin/react-scripts build
-```
-
-The memory limit can be set globally as well:
-
-```bash
-# Save it in the `.bash_profile` file to avoid typing it after rebooting the machine.
-export NODE_OPTIONS="--max-old-space-size=4096"
-
-yarn build
-```
-
-It can also be set on-demand, per command call:
-
-```bash
-NODE_OPTIONS="--max-old-space-size=4096" yarn build
-```
-
-## Localization
+### Localization
 
 CKEditor&nbsp;5 supports {@link getting-started/setup/ui-language multiple UI languages}, and so does the official React component. Follow the instructions below to translate CKEditor&nbsp;5 in your React application.
 
-### Predefined builds
+#### Predefined builds
 
 When using one of the {@link getting-started/legacy-getting-started/predefined-builds predefined builds} or the editor built by the [online builder](https://ckeditor.com/ckeditor-5/online-builder/), you need to import the translations first:
 
@@ -325,7 +289,7 @@ Then, {@link getting-started/setup/configuration configure} the language of the 
 
 For more information, please refer to the {@link getting-started/setup/ui-language Setting the UI language} guide.
 
-### CKEditor&nbsp;5 built from source
+#### CKEditor&nbsp;5 built from source
 
 Using the editor built from source requires you to modify the webpack configuration. First, install the [official translations webpack plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations) that allows localizing editor builds:
 

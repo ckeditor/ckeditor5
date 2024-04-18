@@ -215,26 +215,26 @@ Finally, import the build in your application:
 
 ```html
 <template>
-    <div id="app">
-        <ckeditor :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor>
-    </div>
+	<div id="app">
+		<ckeditor :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor>
+	</div>
 </template>
 
 <script>
-    import Editor from 'ckeditor5-custom-build/build/ckeditor';
+	import Editor from 'ckeditor5-custom-build/build/ckeditor';
 
-    export default {
-        name: 'app',
-        data() {
-            return {
-                editor: Editor,
-                editorData: '<p>Content of the editor.</p>',
-                editorConfig: {
-                    // The configuration of the editor.
-                }
-            };
-        }
-    }
+	export default {
+		name: 'app',
+		data() {
+			return {
+				editor: Editor,
+				editorData: '<p>Content of the editor.</p>',
+				editorConfig: {
+					// The configuration of the editor.
+				}
+			};
+		}
+	}
 </script>
 ```
 
@@ -292,13 +292,13 @@ import ckeditor5 from '@ckeditor/vite-plugin-ckeditor5';
 
 export default defineConfig( {
   plugins: [
-    vue(),
-    ckeditor5( { theme: require.resolve( '@ckeditor/ckeditor5-theme-lark' ) } )
+	vue(),
+	ckeditor5( { theme: require.resolve( '@ckeditor/ckeditor5-theme-lark' ) } )
   ],
   resolve: {
-    alias: {
-      '@': fileURLToPath( new URL( './src', import.meta.url ) )
-    }
+	alias: {
+	  '@': fileURLToPath( new URL( './src', import.meta.url ) )
+	}
   }
 } );
 ```
@@ -342,11 +342,11 @@ First, install the necessary dependencies:
 
 ```bash
 npm install --save \
-    @ckeditor/ckeditor5-vue \
-    @ckeditor/ckeditor5-dev-translations \
-    @ckeditor/ckeditor5-dev-utils \
-    postcss-loader@4 \
-    raw-loader@4
+	@ckeditor/ckeditor5-vue \
+	@ckeditor/ckeditor5-dev-translations \
+	@ckeditor/ckeditor5-dev-utils \
+	postcss-loader@4 \
+	raw-loader@4
 ```
 
 Edit the `vue.config.js` file and use the following configuration. If the file is not present, create it in the root of the application (that is, next to `package.json`). And if you are using TypeScript, the configuration can remain the same.
@@ -431,7 +431,7 @@ module.exports = {
 ```
 
 <info-box>
-    By default, the Vue CLI uses [`file-loader`](https://webpack.js.org/loaders/file-loader/) for all SVG files. The `file-loader` copies the file to the output directory and resolves imports into URLs. The CKEditor's UI components use SVG {@link module:ui/icon/iconview~IconView#content source directly} so the theme icons must be loaded using [`raw-loader`](https://webpack.js.org/loaders/raw-loader). If your project uses different approach than CKEditor's UI library you must create different webpack loader rules for your project's SVG files and the CKEditor's ones.
+	By default, the Vue CLI uses [`file-loader`](https://webpack.js.org/loaders/file-loader/) for all SVG files. The `file-loader` copies the file to the output directory and resolves imports into URLs. The CKEditor's UI components use SVG {@link module:ui/icon/iconview~IconView#content source directly} so the theme icons must be loaded using [`raw-loader`](https://webpack.js.org/loaders/raw-loader). If your project uses different approach than CKEditor's UI library you must create different webpack loader rules for your project's SVG files and the CKEditor's ones.
 </info-box>
 
 ### Installing plugins
@@ -539,7 +539,7 @@ Then, besides specifying the list of rich text editor options, add the `lang` pr
 
 <template>
   <div id="app">
-      <ckeditor :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor>
+	  <ckeditor :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor>
   </div>
 </template>
 
@@ -554,32 +554,32 @@ Then, besides specifying the list of rich text editor options, add the `lang` pr
   import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
   export default {
-      name: 'app',
-      data() {
-          return {
-              editor: ClassicEditor,
-              editorData: '<p>Content of the editor.</p>',
-              editorConfig: {
-                  plugins: [
-                      Essentials,
-                      Bold,
-                      Italic,
-                      Link,
-                      Paragraph
-                  ],
+	  name: 'app',
+	  data() {
+		  return {
+			  editor: ClassicEditor,
+			  editorData: '<p>Content of the editor.</p>',
+			  editorConfig: {
+				  plugins: [
+					  Essentials,
+					  Bold,
+					  Italic,
+					  Link,
+					  Paragraph
+				  ],
 
-                  toolbar: {
-                      items: [
-                          'bold',
-                          'italic',
-                          'link',
-                          'undo',
-                          'redo'
-                      ]
-                  }
-              }
-          };
-      }
+				  toolbar: {
+					  items: [
+						  'bold',
+						  'italic',
+						  'link',
+						  'undo',
+						  'redo'
+					  ]
+				  }
+			  }
+		  };
+	  }
   };
 </script>
 ```
