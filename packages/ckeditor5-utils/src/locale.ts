@@ -201,6 +201,6 @@ function interpolateString( string: string, values: ReadonlyArray<any> ): string
 export type Translations = {
 	[ language: string ]: {
 		dictionary: { [ messageId: string ]: string | ReadonlyArray<string> };
-		getPluralForm: ( ( n: number ) => number | boolean ) | null;
+		getPluralForm?: ( ( n: number ) => number | boolean ) | null;
 	};
 };
