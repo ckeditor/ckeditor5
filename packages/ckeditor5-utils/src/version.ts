@@ -9,7 +9,7 @@
 
 import CKEditorError from './ckeditorerror.js';
 
-const version = '41.4.0-alpha.0';
+const version = '41.3.1';
 
 export default version;
 
