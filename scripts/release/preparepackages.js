@@ -151,7 +151,7 @@ const tasks = new Listr( [
 					}
 				},
 				{
-					title: 'Building `ckeditor5-*` packages using `Rollup` bundler.',
+					title: 'Building the `dist/` directory for `ckeditor5-*` packages.',
 					task: ( ctx, task ) => {
 						return releaseTools.executeInParallel( {
 							packagesDirectory: PACKAGES_DIRECTORY,
