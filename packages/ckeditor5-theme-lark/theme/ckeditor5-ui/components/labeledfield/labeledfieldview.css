@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -25,17 +25,18 @@
 
 			@mixin ck-dir ltr {
 				left: 0px;
+				transform-origin: 0 0;
+				/* By default, display the label scaled down above the field. */
+				transform: translate(var(--ck-spacing-medium), -6px) scale(.75);
 			}
 
 			@mixin ck-dir rtl {
 				right: 0px;
+				transform-origin: 100% 0;
+				transform: translate(calc(-1 * var(--ck-spacing-medium)), -6px) scale(.75);
 			}
 
 			pointer-events: none;
-			transform-origin: 0 0;
-
-			/* By default, display the label scaled down above the field. */
-			transform: translate(var(--ck-spacing-medium), -6px) scale(.75);
 
 			background: var(--ck-color-labeled-field-label-background);
 			padding: 0 calc(.5 * var(--ck-font-size-tiny));
@@ -86,8 +87,8 @@
 
 	/* Fields that are disabled or not focused and without a placeholder should have full-sized labels. */
 	/* stylelint-disable-next-line no-descending-specificity */
-	&.ck-disabled.ck-labeled-field-view_empty > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label,
-	&.ck-labeled-field-view_empty:not(.ck-labeled-field-view_focused):not(.ck-labeled-field-view_placeholder) > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label {
+	&.ck-disabled.ck-labeled-field-view_empty:not(.ck-labeled-field-view_placeholder) > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label,
+	&.ck-labeled-field-view_empty:not(.ck-labeled-field-view_focused):not(.ck-labeled-field-view_placeholder):not(.ck-error) > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label {
 		@mixin ck-dir ltr {
 			transform: translate(var(--ck-labeled-field-label-default-position-x), var(--ck-labeled-field-label-default-position-y)) scale(1);
 		}

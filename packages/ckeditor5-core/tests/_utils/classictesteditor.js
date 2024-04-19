@@ -1,20 +1,19 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* eslint-disable new-cap */
 
-import Editor from '../../src/editor/editor';
-import ElementApiMixin from '../../src/editor/utils/elementapimixin';
-import DataApiMixin from '../../src/editor/utils/dataapimixin';
-import EditorUI from '@ckeditor/ckeditor5-ui/src/editorui/editorui';
-import BoxedEditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/boxed/boxededitoruiview';
-import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
-import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
-import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
+import Editor from '../../src/editor/editor.js';
+import ElementApiMixin from '../../src/editor/utils/elementapimixin.js';
+import EditorUI from '@ckeditor/ckeditor5-ui/src/editorui/editorui.js';
+import BoxedEditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/boxed/boxededitoruiview.js';
+import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer.js';
+import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview.js';
+import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement.js';
 import { isElement } from 'lodash-es';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 
 /**
  * A simplified classic editor. Useful for testing features.
@@ -22,7 +21,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * @memberOf tests.core._utils
  * @extends core.editor.Editor
  */
-export default class ClassicTestEditor extends DataApiMixin( ElementApiMixin( Editor ) ) {
+export default class ClassicTestEditor extends ElementApiMixin( Editor ) {
 	/**
 	 * @inheritDoc
 	 */
@@ -33,8 +32,22 @@ export default class ClassicTestEditor extends DataApiMixin( ElementApiMixin( Ed
 			this.sourceElement = sourceElementOrData;
 		}
 
+		// Editor in paragraph-only mode
+		const isInline = config && config.useInlineRoot;
+
+		if ( isInline ) {
+			this.model.schema.register( '$inlineRoot', {
+				isLimit: true,
+				isInline: true
+			} );
+
+			this.model.schema.extend( '$text', {
+				allowIn: '$inlineRoot'
+			} );
+		}
+
 		// Create the ("main") root element of the model tree.
-		this.model.document.createRoot();
+		this.model.document.createRoot( isInline ? '$inlineRoot' : '$root' );
 
 		this.ui = new ClassicTestEditorUI( this, new BoxedEditorUIView( this.locale ) );
 

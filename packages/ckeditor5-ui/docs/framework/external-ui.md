@@ -23,7 +23,7 @@ import { ComponentFactory, EditorUI, EditorUIView, InlineEditableUIView } from '
 import { ElementReplacer, FocusTracker } from '@ckeditor/ckeditor5-utils';
 
 // Interfaces to extend the basic Editor API.
-import { DataApiMixin, ElementApiMixin } from '@ckeditor/ckeditor5-core';
+import { ElementApiMixin } from '@ckeditor/ckeditor5-core';
 
 // Helper function for adding interfaces to the Editor class.
 import { mix } from '@ckeditor/ckeditor5-utils';
@@ -52,11 +52,11 @@ import { HeadingEditing } from '@ckeditor/ckeditor5-heading';
 	Respectively, `ItalicEditing`, `UnderlineEditing`, `HeadingEditing`, and `UndoEditing` are also imported.
 </info-box>
 
-Having imported the very basic editor components, you can define the custom `BootstrapEditor` class that extends the {@link module:core/editor/editor~Editor `Editor`}:
+After importing the basic editor components, you can define the custom `BootstrapEditor` class that extends the {@link module:core/editor/editor~Editor `Editor`}:
 
 ```js
 // Extending the Editor class, which brings the base editor API.
-export default class BootstrapEditor extends Editor {
+export default class BootstrapEditor extends ElementApiMixin( Editor ) {
 	constructor( element, config ) {
 		super( config );
 
@@ -101,15 +101,11 @@ export default class BootstrapEditor extends Editor {
 		} );
 	}
 }
-
-// Mixing interfaces, which extends the basic editor API.
-mix( BootstrapEditor, DataApiMixin );
-mix( BootstrapEditor, ElementApiMixin );
 ```
 
 ## Creating the Bootstrap UI
 
-Although the editor is ready to use, it is just a bare editable area &mdash; that is not of much use to the users. You need to give it an actual interface with the toolbar and buttons.
+Although the editor is ready to use, it is just a bare editable area &ndash; that is not of much use to the users. You need to give it an actual interface with the toolbar and buttons.
 
 <info-box hint>
 	Refer to the Bootstrap [Getting started](https://getbootstrap.com/docs/4.0/getting-started/introduction/) guide to learn how to include Bootstrap in your web page.
@@ -213,7 +209,7 @@ as different headings are selected. */
 
 ## Binding the UI with the editor
 
-At this stage, you should bind the editor created at the very beginning of this guide with the Bootstrap UI defined in HTML. All the UI logic will be wrapped into a separate class matching the `EditorUI` {@link module:ui/editorui/editorui~EditorUI interface}. You may have noticed this line in the constructor of the `BootstrapEditor`:
+At this stage, you should bind the editor created at the beginning of this guide with the Bootstrap UI defined in HTML. All the UI logic will be wrapped into a separate class matching the `EditorUI` {@link module:ui/editorui/editorui~EditorUI interface}. You may have noticed this line in the constructor of the `BootstrapEditor`:
 
 ```js
 this.ui = new BootstrapEditorUI( this );
@@ -327,13 +323,13 @@ class BootstrapEditorUI extends EditorUI {
 }
 ```
 
-Almost every feature in the editor defines some command, e.g. {@link module:heading/headingcommand~HeadingCommand} or {@link module:undo/undocommand~UndoCommand}. Commands can be executed:
+Almost every feature in the editor defines some command, for example, {@link module:heading/headingcommand~HeadingCommand} or {@link module:undo/undocommand~UndoCommand}. Commands can be executed:
 
 ```js
 editor.execute( 'undo' );
 ```
 
-But they also come with default observable properties like `value` and `isEnabled`. These are the entry points when it comes to creating a custom user interface because their values represent the actual state of the editor and can be followed in simple event listeners:
+They also come with default observable properties like `value` and `isEnabled`. These are the entry points when it comes to creating a custom user interface because their values represent the actual state of the editor. You can follow them in simple event listeners:
 
 ```js
 const command = editor.commands.get( 'undo' );

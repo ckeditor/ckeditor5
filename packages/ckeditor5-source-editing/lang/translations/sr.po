@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -15,7 +15,12 @@ msgstr ""
 "Language-Team: Serbian (https://app.transifex.com/ckeditor/teams/11143/sr/)\n"
 "Language: sr\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "The label of the source editing feature toolbar button."
 msgid "Source"
 msgstr "Извор"
+
+msgctxt "The accessible label of the menu bar button that changes the editor mode to raw source (HTML) editing."
+msgid "Show source"
+msgstr "Pokaži izvor"

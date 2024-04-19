@@ -1,16 +1,16 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document */
 
-import DowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
-import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
-import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
-import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
-import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';
-import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
+import DowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter.js';
+import ViewText from '@ckeditor/ckeditor5-engine/src/view/text.js';
+import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element.js';
+import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position.js';
+import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement.js';
+import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document.js';
 import {
 	toWidget,
 	isWidget,
@@ -21,14 +21,14 @@ import {
 	findOptimalInsertionRange,
 	viewToModelPositionOutsideModelElement,
 	WIDGET_CLASS_NAME
-} from '../src/utils';
-import UIElement from '@ckeditor/ckeditor5-engine/src/view/uielement';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import Model from '@ckeditor/ckeditor5-engine/src/model/model';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import Mapper from '@ckeditor/ckeditor5-engine/src/conversion/mapper';
-import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
-import ModelText from '@ckeditor/ckeditor5-engine/src/model/text';
+} from '../src/utils.js';
+import UIElement from '@ckeditor/ckeditor5-engine/src/view/uielement.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import Model from '@ckeditor/ckeditor5-engine/src/model/model.js';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import Mapper from '@ckeditor/ckeditor5-engine/src/conversion/mapper.js';
+import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element.js';
+import ModelText from '@ckeditor/ckeditor5-engine/src/model/text.js';
 
 describe( 'widget utils', () => {
 	let element, writer, viewDocument;
@@ -232,6 +232,10 @@ describe( 'widget utils', () => {
 
 		it( 'should add proper role', () => {
 			expect( element.getAttribute( 'role' ) ).to.equal( 'textbox' );
+		} );
+
+		it( 'should add proper tabindex', () => {
+			expect( element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
 		} );
 
 		it( 'should add label if it was passed through options', () => {

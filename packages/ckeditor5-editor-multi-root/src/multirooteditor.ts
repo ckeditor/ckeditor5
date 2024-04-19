@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,11 +10,10 @@
 import {
 	Editor,
 	Context,
-	DataApiMixin,
 	secureSourceElement,
 	type EditorConfig,
 	type EditorReadyEvent
-} from 'ckeditor5/src/core';
+} from 'ckeditor5/src/core.js';
 
 import {
 	CKEditorError,
@@ -23,12 +22,12 @@ import {
 	logWarning,
 	type CollectionAddEvent,
 	type DecoratedMethodEvent
-} from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/utils.js';
 
-import { ContextWatchdog, EditorWatchdog } from 'ckeditor5/src/watchdog';
+import { ContextWatchdog, EditorWatchdog } from 'ckeditor5/src/watchdog.js';
 
-import MultiRootEditorUI from './multirooteditorui';
-import MultiRootEditorUIView from './multirooteditoruiview';
+import MultiRootEditorUI from './multirooteditorui.js';
+import MultiRootEditorUIView from './multirooteditoruiview.js';
 
 import { isElement as _isElement } from 'lodash-es';
 import {
@@ -36,7 +35,7 @@ import {
 	type ViewRootEditableElement,
 	type Writer,
 	type ModelCanEditAtEvent
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
 /**
  * The {@glink installation/getting-started/predefined-builds#multi-root-editor multi-root editor} implementation.
@@ -68,7 +67,7 @@ import {
  * Read more about initializing the editor from source or as a build in
  * {@link module:editor-multi-root/multirooteditor~MultiRootEditor.create `MultiRootEditor.create()`}.
  */
-export default class MultiRootEditor extends DataApiMixin( Editor ) {
+export default class MultiRootEditor extends Editor {
 	/**
 	 * @inheritDoc
 	 */
@@ -188,7 +187,7 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 				}
 
 				for ( const key of Object.keys( attributes ) ) {
-					this._registeredRootsAttributesKeys.add( key );
+					this.registerRootAttribute( key );
 				}
 			}
 
@@ -386,9 +385,10 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	 * editor.addRoot( 'myRoot', { attributes: { isCollapsed: true, index: 4 } } );
 	 * ```
 	 *
-	 * See also {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes `rootsAttributes` configuration option}.
+	 * Note that attributes added together with a root are automatically registered.
 	 *
-	 * Note that attributes keys of attributes added in `attributes` option are also included in {@link #getRootsAttributes} return value.
+	 * See also {@link ~MultiRootEditor#registerRootAttribute `MultiRootEditor#registerRootAttribute()`} and
+	 * {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes `config.rootsAttributes` configuration option}.
 	 *
 	 * By setting `isUndoable` flag to `true`, you can allow for detaching the root using the undo feature.
 	 *
@@ -414,26 +414,23 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 		rootName: string,
 		{ data = '', attributes = {}, elementName = '$root', isUndoable = false }: AddRootOptions = {}
 	): void {
-		const dataController = this.data;
-		const registeredKeys = this._registeredRootsAttributesKeys;
+		const _addRoot = ( writer: Writer ) => {
+			const root = writer.addRoot( rootName, elementName );
+
+			if ( data ) {
+				writer.insert( this.data.parse( data, root ), root, 0 );
+			}
+
+			for ( const key of Object.keys( attributes ) ) {
+				this.registerRootAttribute( key );
+				writer.setAttribute( key, attributes[ key ], root );
+			}
+		};
 
 		if ( isUndoable ) {
 			this.model.change( _addRoot );
 		} else {
 			this.model.enqueueChange( { isUndoable: false }, _addRoot );
-		}
-
-		function _addRoot( writer: Writer ) {
-			const root = writer.addRoot( rootName, elementName );
-
-			if ( data ) {
-				writer.insert( dataController.parse( data, root ), root, 0 );
-			}
-
-			for ( const key of Object.keys( attributes ) ) {
-				registeredKeys.add( key );
-				writer.setAttribute( key, attributes[ key ], root );
-			}
 		}
 	}
 
@@ -550,6 +547,11 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	 *
 	 * This method is {@link module:utils/observablemixin~Observable#decorate decorated}.
 	 *
+	 * Note that attributes loaded together with a root are automatically registered.
+	 *
+	 * See also {@link ~MultiRootEditor#registerRootAttribute `MultiRootEditor#registerRootAttribute()`} and
+	 * {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes `config.rootsAttributes` configuration option}.
+	 *
 	 * When this method is used in real-time collaboration environment, its effects become asynchronous as the editor will first synchronize
 	 * with the remote editing session, before the root is added to the editor.
 	 *
@@ -572,7 +574,7 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 			}
 
 			for ( const key of Object.keys( attributes ) ) {
-				this._registeredRootsAttributesKeys.add( key );
+				this.registerRootAttribute( key );
 
 				writer.setAttribute( key, attributes[ key ], root );
 			}
@@ -606,8 +608,8 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	/**
 	 * Returns attributes for all attached roots.
 	 *
-	 * Note: only attributes specified in {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes `rootsAttributes`}
-	 * configuration option will be returned.
+	 * Note: all and only {@link ~MultiRootEditor#registerRootAttribute registered} roots attributes will be returned.
+	 * If a registered root attribute is not set for a given root, `null` will be returned.
 	 *
 	 * @returns Object with roots attributes. Keys are roots names, while values are attributes set on given root.
 	 */
@@ -624,10 +626,8 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	/**
 	 * Returns attributes for the specified root.
 	 *
-	 * Note: only attributes specified in {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes `rootsAttributes`}
-	 * configuration option will be returned.
-	 *
-	 * @param rootName
+	 * Note: all and only {@link ~MultiRootEditor#registerRootAttribute registered} roots attributes will be returned.
+	 * If a registered root attribute is not set for a given root, `null` will be returned.
 	 */
 	public getRootAttributes( rootName: string ): RootAttributes {
 		const rootAttributes: RootAttributes = {};
@@ -638,6 +638,25 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 		}
 
 		return rootAttributes;
+	}
+
+	/**
+	 * Registers given string as a root attribute key. Registered root attributes are added to
+	 * {@link module:engine/model/schema~Schema schema}, and also returned by
+	 * {@link ~MultiRootEditor#getRootAttributes `getRootAttributes()`} and
+	 * {@link ~MultiRootEditor#getRootsAttributes `getRootsAttributes()`}.
+	 *
+	 * Note: attributes passed in {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes `config.rootsAttributes`} are
+	 * automatically registered as the editor is initialized. However, registering the same attribute twice does not have any negative
+	 * impact, so it is recommended to use this method in any feature that uses roots attributes.
+	 */
+	public registerRootAttribute( key: string ): void {
+		if ( this._registeredRootsAttributesKeys.has( key ) ) {
+			return;
+		}
+
+		this._registeredRootsAttributesKeys.add( key );
+		this.editing.model.schema.extend( '$root', { allowAttributes: key } );
 	}
 
 	/**

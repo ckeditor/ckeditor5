@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,21 +7,21 @@
  * @module engine/view/domconverter
  */
 
-/* globals Node, NodeFilter, DOMParser, Text */
+/* globals Node, NodeFilter, DOMParser */
 
-import ViewText from './text';
-import ViewElement from './element';
-import ViewUIElement from './uielement';
-import ViewPosition from './position';
-import ViewRange from './range';
-import ViewSelection from './selection';
-import ViewDocumentFragment from './documentfragment';
-import ViewTreeWalker from './treewalker';
-import { default as Matcher, type MatcherPattern } from './matcher';
+import ViewText from './text.js';
+import ViewElement from './element.js';
+import ViewUIElement from './uielement.js';
+import ViewPosition from './position.js';
+import ViewRange from './range.js';
+import ViewSelection from './selection.js';
+import ViewDocumentFragment from './documentfragment.js';
+import ViewTreeWalker from './treewalker.js';
+import { default as Matcher, type MatcherPattern } from './matcher.js';
 import {
 	BR_FILLER, INLINE_FILLER_LENGTH, NBSP_FILLER, MARKED_NBSP_FILLER,
 	getDataWithoutFiller, isInlineFiller, startsWithFiller
-} from './filler';
+} from './filler.js';
 
 import {
 	global,
@@ -31,15 +31,16 @@ import {
 	isText,
 	isComment,
 	isValidAttributeName,
-	first
+	first,
+	env
 } from '@ckeditor/ckeditor5-utils';
 
-import type ViewNode from './node';
-import type Document from './document';
-import type DocumentSelection from './documentselection';
-import type EditableElement from './editableelement';
-import type ViewTextProxy from './textproxy';
-import type ViewRawElement from './rawelement';
+import type ViewNode from './node.js';
+import type Document from './document.js';
+import type DocumentSelection from './documentselection.js';
+import type EditableElement from './editableelement.js';
+import type ViewTextProxy from './textproxy.js';
+import type ViewRawElement from './rawelement.js';
 
 type DomNode = globalThis.Node;
 type DomElement = globalThis.HTMLElement;
@@ -145,6 +146,11 @@ export default class DomConverter {
 	 * Matcher for inline object view elements. This is an extension of a simple {@link #inlineObjectElements} array of element names.
 	 */
 	private readonly _inlineObjectElementMatcher = new Matcher();
+
+	/**
+	 * Set of elements with temporary custom properties that require clearing after render.
+	 */
+	private readonly _elementsWithTemporaryCustomProperties = new Set<ViewElement | ViewDocumentFragment>();
 
 	/**
 	 * Creates a DOM converter.
@@ -343,6 +349,26 @@ export default class DomConverter {
 		domElement.append( fragment );
 	}
 
+	public viewToDom(
+		viewNode: ViewText,
+		options?: { bind?: boolean; withChildren?: boolean }
+	): DomText;
+
+	public viewToDom(
+		viewNode: ViewElement,
+		options?: { bind?: boolean; withChildren?: boolean }
+	): DomElement;
+
+	public viewToDom(
+		viewNode: ViewNode,
+		options?: { bind?: boolean; withChildren?: boolean }
+	): DomNode;
+
+	public viewToDom(
+		viewNode: ViewDocumentFragment,
+		options?: { bind?: boolean; withChildren?: boolean }
+	): DomDocumentFragment;
+
 	/**
 	 * Converts the view to the DOM. For all text nodes, not bound elements and document fragments new items will
 	 * be created. For bound elements and document fragments the method will return corresponding items.
@@ -362,75 +388,83 @@ export default class DomConverter {
 
 			return this._domDocument.createTextNode( textData );
 		} else {
-			if ( this.mapViewToDom( viewNode as ViewElement ) ) {
-				return this.mapViewToDom( viewNode as ViewElement )!;
+			const viewElementOrFragment = viewNode as ViewElement | ViewDocumentFragment;
+
+			if ( this.mapViewToDom( viewElementOrFragment ) ) {
+				// Do not reuse element that is marked to not reuse (for example an IMG element
+				// so it can immediately display a placeholder background instead of waiting for the new src to load).
+				if ( viewElementOrFragment.getCustomProperty( 'editingPipeline:doNotReuseOnce' ) ) {
+					this._elementsWithTemporaryCustomProperties.add( viewElementOrFragment );
+				} else {
+					return this.mapViewToDom( viewElementOrFragment )!;
+				}
 			}
 
 			let domElement: DomElement | DomDocumentFragment | DomComment;
 
-			if ( viewNode.is( 'documentFragment' ) ) {
+			if ( viewElementOrFragment.is( 'documentFragment' ) ) {
 				// Create DOM document fragment.
 				domElement = this._domDocument.createDocumentFragment();
 
 				if ( options.bind ) {
-					this.bindDocumentFragments( domElement, viewNode );
+					this.bindDocumentFragments( domElement, viewElementOrFragment );
 				}
-			} else if ( viewNode.is( 'uiElement' ) ) {
-				if ( viewNode.name === '$comment' ) {
-					domElement = this._domDocument.createComment( viewNode.getCustomProperty( '$rawContent' ) as string );
+			} else if ( viewElementOrFragment.is( 'uiElement' ) ) {
+				if ( viewElementOrFragment.name === '$comment' ) {
+					domElement = this._domDocument.createComment( viewElementOrFragment.getCustomProperty( '$rawContent' ) as string );
 				} else {
 					// UIElement has its own render() method (see #799).
-					domElement = viewNode.render( this._domDocument, this );
+					domElement = viewElementOrFragment.render( this._domDocument, this );
 				}
 
 				if ( options.bind ) {
-					this.bindElements( domElement as DomElement, viewNode );
+					this.bindElements( domElement as DomElement, viewElementOrFragment );
 				}
 
 				return domElement;
 			} else {
 				// Create DOM element.
-				if ( this._shouldRenameElement( ( viewNode as ViewElement ).name ) ) {
-					_logUnsafeElement( ( viewNode as ViewElement ).name );
+				if ( this._shouldRenameElement( viewElementOrFragment.name ) ) {
+					_logUnsafeElement( viewElementOrFragment.name );
 
-					domElement = this._createReplacementDomElement( ( viewNode as ViewElement ).name );
-				} else if ( ( viewNode as ViewElement ).hasAttribute( 'xmlns' ) ) {
+					domElement = this._createReplacementDomElement( viewElementOrFragment.name );
+				} else if ( viewElementOrFragment.hasAttribute( 'xmlns' ) ) {
 					domElement = this._domDocument.createElementNS(
-						( viewNode as ViewElement ).getAttribute( 'xmlns' )!,
-						( viewNode as ViewElement ).name
+						viewElementOrFragment.getAttribute( 'xmlns' )!,
+						viewElementOrFragment.name
 					) as HTMLElement;
 				} else {
-					domElement = this._domDocument.createElement( ( viewNode as ViewElement ).name );
+					domElement = this._domDocument.createElement( viewElementOrFragment.name );
 				}
 
 				// RawElement take care of their children in RawElement#render() method which can be customized
 				// (see https://github.com/ckeditor/ckeditor5/issues/4469).
-				if ( viewNode.is( 'rawElement' ) ) {
-					viewNode.render( domElement, this );
+				if ( viewElementOrFragment.is( 'rawElement' ) ) {
+					viewElementOrFragment.render( domElement, this );
 				}
 
 				if ( options.bind ) {
-					this.bindElements( domElement, ( viewNode as ViewElement ) );
+					this.bindElements( domElement, viewElementOrFragment );
 				}
 
 				// Copy element's attributes.
-				for ( const key of ( viewNode as ViewElement ).getAttributeKeys() ) {
+				for ( const key of viewElementOrFragment.getAttributeKeys() ) {
 					this.setDomElementAttribute(
 						domElement,
 						key,
-						( viewNode as ViewElement ).getAttribute( key )!,
-						( viewNode as ViewElement )
+						viewElementOrFragment.getAttribute( key )!,
+						viewElementOrFragment
 					);
 				}
 			}
 
 			if ( options.withChildren !== false ) {
-				for ( const child of this.viewChildrenToDom( viewNode as ViewElement, options ) ) {
-					domElement!.appendChild( child );
+				for ( const child of this.viewChildrenToDom( viewElementOrFragment, options ) ) {
+					domElement.appendChild( child );
 				}
 			}
 
-			return domElement!;
+			return domElement;
 		}
 	}
 
@@ -509,7 +543,7 @@ export default class DomConverter {
 	 * @returns DOM nodes.
 	 */
 	public* viewChildrenToDom(
-		viewElement: ViewElement,
+		viewElement: ViewElement | ViewDocumentFragment,
 		options: { bind?: boolean; withChildren?: boolean } = {}
 	): IterableIterator<Node> {
 		const fillerPositionOffset = viewElement.getFillerOffset && viewElement.getFillerOffset();
@@ -732,6 +766,11 @@ export default class DomConverter {
 	 * @returns View selection.
 	 */
 	public domSelectionToView( domSelection: DomSelection ): ViewSelection {
+		// See: https://github.com/ckeditor/ckeditor5/issues/9635.
+		if ( isGeckoRestrictedDomSelection( domSelection ) ) {
+			return new ViewSelection( [] );
+		}
+
 		// DOM selection might be placed in fake selection container.
 		// If container contains fake selection - return corresponding view selection.
 		if ( domSelection.rangeCount === 1 ) {
@@ -1233,6 +1272,19 @@ export default class DomConverter {
 	 */
 	public registerInlineObjectMatcher( pattern: MatcherPattern ): void {
 		this._inlineObjectElementMatcher.add( pattern );
+	}
+
+	/**
+	 * Clear temporary custom properties.
+	 *
+	 * @internal
+	 */
+	public _clearTemporaryCustomProperties(): void {
+		for ( const element of this._elementsWithTemporaryCustomProperties ) {
+			element._removeCustomProperty( 'editingPipeline:doNotReuseOnce' );
+		}
+
+		this._elementsWithTemporaryCustomProperties.clear();
 	}
 
 	/**
@@ -1742,7 +1794,7 @@ function forEachDomElementAncestor( element: DomElement, callback: ( node: DomEl
 	let node: DomElement | null = element;
 
 	while ( node ) {
-		callback( node as DomElement );
+		callback( node );
 		node = node.parentElement;
 	}
 }
@@ -1785,6 +1837,31 @@ function _logUnsafeElement( elementName: string ): void {
 	if ( elementName === 'style' ) {
 		logWarning( 'domconverter-unsafe-style-element-detected' );
 	}
+}
+
+/**
+ * In certain cases, Firefox mysteriously assigns so called "restricted objects" to native DOM Range properties.
+ * Any attempt at accessing restricted object's properties causes errors.
+ * See: https://github.com/ckeditor/ckeditor5/issues/9635.
+ */
+function isGeckoRestrictedDomSelection( domSelection: DomSelection ): boolean {
+	if ( !env.isGecko ) {
+		return false;
+	}
+
+	if ( !domSelection.rangeCount ) {
+		return false;
+	}
+
+	const container = domSelection.getRangeAt( 0 ).startContainer;
+
+	try {
+		Object.prototype.toString.call( container );
+	} catch ( error ) {
+		return true;
+	}
+
+	return false;
 }
 
 /**

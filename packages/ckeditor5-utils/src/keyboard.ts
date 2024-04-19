@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,9 +9,9 @@
  * @module utils/keyboard
  */
 
-import type { LanguageDirection } from './language';
-import CKEditorError from './ckeditorerror';
-import env from './env';
+import type { LanguageDirection } from './language.js';
+import CKEditorError from './ckeditorerror.js';
+import env from './env.js';
 
 const modifiersToGlyphsMac = {
 	ctrl: '⌃',
@@ -24,6 +24,16 @@ const modifiersToGlyphsNonMac = {
 	ctrl: 'Ctrl+',
 	alt: 'Alt+',
 	shift: 'Shift+'
+} as const;
+
+const keyCodesToGlyphs: { [key: number]: string } = {
+	37: '←',
+	38: '↑',
+	39: '→',
+	40: '↓',
+	9: '⇥',
+	33: 'Page Up',
+	34: 'Page Down'
 } as const;
 
 /**
@@ -41,8 +51,18 @@ const modifiersToGlyphsNonMac = {
  */
 export const keyCodes = generateKnownKeyCodes();
 
-const keyCodeNames = Object.fromEntries(
-	Object.entries( keyCodes ).map( ( [ name, code ] ) => [ code, name.charAt( 0 ).toUpperCase() + name.slice( 1 ) ] )
+const keyCodeNames: { readonly [ keyCode: number ]: string } = Object.fromEntries(
+	Object.entries( keyCodes ).map( ( [ name, code ] ) => {
+		let prettyKeyName;
+
+		if ( code in keyCodesToGlyphs ) {
+			prettyKeyName = keyCodesToGlyphs[ code ];
+		} else {
+			prettyKeyName = name.charAt( 0 ).toUpperCase() + name.slice( 1 );
+		}
+
+		return [ code, prettyKeyName ];
+	} )
 );
 
 /**
@@ -121,7 +141,7 @@ export function parseKeystroke( keystroke: string | ReadonlyArray<number | strin
 export function getEnvKeystrokeText( keystroke: string ): string {
 	let keystrokeCode = parseKeystroke( keystroke );
 
-	const modifiersToGlyphs = Object.entries( env.isMac ? modifiersToGlyphsMac : modifiersToGlyphsNonMac );
+	const modifiersToGlyphs = Object.entries( ( env.isMac || env.isiOS ) ? modifiersToGlyphsMac : modifiersToGlyphsNonMac );
 
 	const modifiers = modifiersToGlyphs.reduce( ( modifiers, [ name, glyph ] ) => {
 		// Modifier keys are stored as a bit mask so extract those from the keystroke code.
@@ -202,7 +222,7 @@ function getEnvKeyCode( key: string ): number {
 
 	const code = getCode( key );
 
-	return env.isMac && code == keyCodes.ctrl ? keyCodes.cmd : code;
+	return ( env.isMac || env.isiOS ) && code == keyCodes.ctrl ? keyCodes.cmd : code;
 }
 
 /**
@@ -227,6 +247,8 @@ export function isForwardArrowKeyCode(
 
 function generateKnownKeyCodes(): { readonly [ keyCode: string ]: number } {
 	const keyCodes: { [keyCode: string]: number } = {
+		pageup: 33,
+		pagedown: 34,
 		arrowleft: 37,
 		arrowup: 38,
 		arrowright: 39,
@@ -264,9 +286,19 @@ function generateKnownKeyCodes(): { readonly [ keyCode: string ]: number } {
 	}
 
 	// other characters
-	for ( const char of '`-=[];\',./\\' ) {
-		keyCodes[ char ] = char.charCodeAt( 0 );
-	}
+	Object.assign( keyCodes, {
+		'\'': 222,
+		',': 108,
+		'-': 109,
+		'.': 110,
+		'/': 111,
+		';': 186,
+		'=': 187,
+		'[': 219,
+		'\\': 220,
+		']': 221,
+		'`': 223
+	} );
 
 	return keyCodes;
 }

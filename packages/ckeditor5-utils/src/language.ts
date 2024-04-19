@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -14,6 +14,7 @@ export type LanguageDirection = 'ltr' | 'rtl';
 
 const RTL_LANGUAGE_CODES = [
 	'ar', 'ara', // Arabic
+	'dv', 'div', // Dhivehi
 	'fa', 'per', 'fas', // Persian
 	'he', 'heb', // Hebrew
 	'ku', 'kur', // Kurdish

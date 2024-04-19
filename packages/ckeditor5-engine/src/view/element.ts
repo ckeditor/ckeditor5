@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,15 +7,15 @@
  * @module engine/view/element
  */
 
-import Node from './node';
-import Text from './text';
-import TextProxy from './textproxy';
+import Node from './node.js';
+import Text from './text.js';
+import TextProxy from './textproxy.js';
 import { isIterable, toArray, toMap, type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
-import { default as Matcher, type MatcherPattern } from './matcher';
-import { default as StylesMap, type StyleValue } from './stylesmap';
+import { default as Matcher, type MatcherPattern } from './matcher.js';
+import { default as StylesMap, type StyleValue } from './stylesmap.js';
 
-import type Document from './document';
-import type Item from './item';
+import type Document from './document.js';
+import type Item from './item.js';
 
 // @if CK_DEBUG_ENGINE // const { convertMapToTags } = require( '../dev-utils/utils' );
 
@@ -720,7 +720,7 @@ export default class Element extends Node {
 	 * @internal
 	 * @fires change
 	 */
-	public _removeClass( className: string | Array<string> ): void {
+	public _removeClass( className: ArrayOrItem<string> ): void {
 		this._fireChange( 'attributes', this );
 
 		for ( const name of toArray( className ) ) {

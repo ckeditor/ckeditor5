@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Romanian (https://app.transifex.com/ckeditor/teams/11143/ro/)\n"
 "Language: ro\n"
 "Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Toolbar button tooltip for the Numbered List feature."
 msgid "Numbered List"
@@ -116,6 +117,10 @@ msgctxt "The label of the input allowing to change the start index of a numbered
 msgid "Start at"
 msgstr "Începe de la"
 
+msgctxt "The error message displayed when the numbered list start index input value is not a valid number."
+msgid "Invalid start index value."
+msgstr "Valoare incorectă a indicelui de pornire."
+
 msgctxt "The error message displayed when the numbered list start index input value is invalid."
 msgid "Start index must be greater than 0."
 msgstr "Indexul de pornire trebuie să fie mai mare de 0."
@@ -123,3 +128,15 @@ msgstr "Indexul de pornire trebuie să fie mai mare de 0."
 msgctxt "The label of the switch button that reverses the order of the numbered list."
 msgid "Reversed order"
 msgstr "Ordine inversată"
+
+msgctxt "Accessibility help dialog header text displayed before the list of keystrokes that can be used in a list."
+msgid "Keystrokes that can be used in a list"
+msgstr "Comenzi din tastatură care pot fi utilizate într-o listă"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for increasing list item indentation."
+msgid "Increase list item indent"
+msgstr "Incrementează indentarea elementelor din listă"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for decreasing list item indentation."
+msgid "Decrease list item indent"
+msgstr "Decrementează indentarea elementelor din listă"

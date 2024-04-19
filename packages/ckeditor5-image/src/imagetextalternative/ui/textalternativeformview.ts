@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -15,10 +15,11 @@ import {
 	ViewCollection,
 	createLabeledInputText,
 	submitHandler,
-	type InputView
-} from 'ckeditor5/src/ui';
-import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
-import { icons } from 'ckeditor5/src/core';
+	type InputView,
+	type FocusableView
+} from 'ckeditor5/src/ui.js';
+import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
+import { icons } from 'ckeditor5/src/core.js';
 
 import '../../../theme/textalternativeform.css';
 
@@ -58,7 +59,7 @@ export default class TextAlternativeFormView extends View {
 	/**
 	 * A collection of views which can be focused in the form.
 	 */
-	protected readonly _focusables: ViewCollection;
+	protected readonly _focusables: ViewCollection<FocusableView>;
 
 	/**
 	 * Helps cycling over {@link #_focusables} in the form.
@@ -195,3 +196,23 @@ export default class TextAlternativeFormView extends View {
 		return labeledInput;
 	}
 }
+
+/**
+ * Fired when the form view is submitted.
+ *
+ * @eventName ~TextAlternativeFormView#submit
+ */
+export type TextAlternativeFormViewSubmitEvent = {
+	name: 'submit';
+	args: [];
+};
+
+/**
+ * Fired when the form view is canceled.
+ *
+ * @eventName ~TextAlternativeFormView#cancel
+ */
+export type TextAlternativeFormViewCancelEvent = {
+	name: 'cancel';
+	args: [];
+};

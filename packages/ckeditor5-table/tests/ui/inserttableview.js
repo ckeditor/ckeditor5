@@ -1,12 +1,12 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document, Event */
 
 import { ViewCollection, ButtonView } from '@ckeditor/ckeditor5-ui';
-import InsertTableView from '../../src/ui/inserttableview';
+import InsertTableView from '../../src/ui/inserttableview.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils';
 
 describe( 'InsertTableView', () => {
@@ -220,6 +220,20 @@ describe( 'InsertTableView', () => {
 				sinon.assert.calledOnce( keyEvtData.stopPropagation );
 				sinon.assert.calledOnce( spy );
 			} );
+		} );
+	} );
+
+	describe( 'reset()', () => {
+		it( 'should set rows and columns properties to 1', () => {
+			view.focusTracker.focusedElement = view.items.get( 24 ).element;
+
+			expect( view.columns ).to.equal( 5 );
+			expect( view.rows ).to.equal( 3 );
+
+			view.reset();
+
+			expect( view.columns ).to.equal( 1 );
+			expect( view.rows ).to.equal( 1 );
 		} );
 	} );
 } );

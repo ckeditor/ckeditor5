@@ -6,7 +6,7 @@ category: api-reference
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-core.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-core)
 
-This package implements the core editor architecture &mdash; a set of classes and interfaces which glue everything together.
+This package implements the core editor architecture &ndash; a set of classes and interfaces which glue everything together.
 
 Together with the {@link api/engine editing engine} and the {@link api/ui standard UI library} they create a platform for implementing rich text editors.
 

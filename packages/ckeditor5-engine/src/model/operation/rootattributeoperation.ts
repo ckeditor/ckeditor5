@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,13 +7,13 @@
  * @module engine/model/operation/rootattributeoperation
  */
 
-import Operation from './operation';
+import Operation from './operation.js';
 
-import type Document from '../document';
-import type RootElement from '../rootelement';
+import type Document from '../document.js';
+import type RootElement from '../rootelement.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
-import type { Selectable } from '../selection';
+import type { Selectable } from '../selection.js';
 
 /**
  * Operation to change root element's attribute. Using this class you can add, remove or change value of the attribute.

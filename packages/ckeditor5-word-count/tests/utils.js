@@ -1,22 +1,22 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { modelElementToPlainText } from '../src/utils';
+import { modelElementToPlainText } from '../src/utils.js';
 
-import Element from '@ckeditor/ckeditor5-engine/src/model/element';
-import Text from '@ckeditor/ckeditor5-engine/src/model/text';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
-import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
-import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting';
-import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
+import Element from '@ckeditor/ckeditor5-engine/src/model/element.js';
+import Text from '@ckeditor/ckeditor5-engine/src/model/text.js';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
+import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
+import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
+import LegacyListEditing from '@ckeditor/ckeditor5-list/src/legacylist/legacylistediting.js';
+import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
+import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
 
 describe( 'utils', () => {
 	describe( 'modelElementToPlainText()', () => {
@@ -39,7 +39,9 @@ describe( 'utils', () => {
 			beforeEach( () => {
 				return VirtualTestEditor
 					.create( {
-						plugins: [ Enter, ShiftEnter, Paragraph, BoldEditing, LinkEditing, BlockQuoteEditing, ListEditing, TableEditing ]
+						plugins: [
+							Enter, ShiftEnter, Paragraph, BoldEditing, LinkEditing, BlockQuoteEditing, LegacyListEditing, TableEditing
+						]
 					} )
 					.then( newEditor => {
 						editor = newEditor;

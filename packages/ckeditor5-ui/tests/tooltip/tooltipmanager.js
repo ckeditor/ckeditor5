@@ -1,21 +1,21 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, MouseEvent, Event */
+/* global document, MouseEvent, Event, KeyboardEvent */
 
-import EditorUI from '../../src/editorui/editorui';
-import View from '../../src/view';
-import BalloonPanelView from '../../src/panel/balloon/balloonpanelview';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import EditorUI from '../../src/editorui/editorui.js';
+import View from '../../src/view.js';
+import BalloonPanelView from '../../src/panel/balloon/balloonpanelview.js';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import TooltipManager from '../../src/tooltipmanager';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import TooltipManager from '../../src/tooltipmanager.js';
 import { Editor } from '@ckeditor/ckeditor5-core';
 
 describe( 'TooltipManager', () => {
@@ -441,17 +441,13 @@ describe( 'TooltipManager', () => {
 					} );
 				} );
 
-				it( 'should show up for the first element the mouse entered (last element has no tooltip)', () => {
+				it( 'should not show up anchor after focus unrelated element without tooltip', () => {
 					utils.dispatchFocus( elements.a );
 					utils.dispatchFocus( elements.unrelated );
 
 					utils.waitForTheTooltipToShow( clock );
 
-					sinon.assert.calledOnce( pinSpy );
-					sinon.assert.calledWith( pinSpy, {
-						target: elements.a,
-						positions: sinon.match.array
-					} );
+					sinon.assert.notCalled( pinSpy );
 				} );
 			} );
 		} );
@@ -551,6 +547,24 @@ describe( 'TooltipManager', () => {
 				} );
 			} );
 		} );
+
+		it( 'should update the position if the attribute was changed', async () => {
+			utils.dispatchMouseEnter( elements.a );
+			utils.waitForTheTooltipToShow( clock );
+			clock.restore();
+
+			// ResizeObserver is asynchronous.
+			await wait( 100 );
+
+			expect( elements.a.dataset.ckeTooltipPosition ).to.equal( undefined );
+			sinon.assert.calledOnce( pinSpy );
+
+			elements.a.dataset.ckeTooltipPosition = 'e';
+
+			await wait( 100 );
+
+			sinon.assert.calledTwice( pinSpy );
+		} );
 	} );
 
 	describe( 'hiding tooltips', () => {
@@ -585,6 +599,45 @@ describe( 'TooltipManager', () => {
 			clock.restore();
 		} );
 
+		describe( 'on keydown', () => {
+			it( 'should work if `Escape` keyboard keydown event occurs and tooltip opened', () => {
+				utils.dispatchMouseEnter( elements.a );
+				utils.waitForTheTooltipToShow( clock );
+
+				sinon.assert.calledOnce( pinSpy );
+
+				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
+
+				const event = new KeyboardEvent( 'keydown', { key: 'Escape' } );
+				const stopPropagationSpy = sinon.spy( event, 'stopPropagation' );
+
+				element.dispatchEvent( event );
+				utils.waitForTheTooltipToHide( clock );
+
+				sinon.assert.calledOnce( stopPropagationSpy );
+				sinon.assert.calledOnce( unpinSpy );
+			} );
+
+			it( 'should not work if `A` keyboard keydown event occurs and tooltip opened', () => {
+				utils.dispatchMouseEnter( elements.a );
+				utils.waitForTheTooltipToShow( clock );
+
+				sinon.assert.calledOnce( pinSpy );
+
+				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
+				utils.dispatchKeydown( document, 'A' );
+
+				utils.waitForTheTooltipToHide( clock );
+				sinon.assert.notCalled( unpinSpy );
+			} );
+
+			it( 'should not throw exception if there is no opened tooltip and `Escape` keydown event occurs', () => {
+				expect( () => {
+					utils.dispatchKeydown( document, 'Escape' );
+				} ).not.to.throw();
+			} );
+		} );
+
 		describe( 'on mouseleave', () => {
 			it( 'should not work for unrelated event targets such as DOM document', () => {
 				utils.dispatchMouseEnter( elements.a );
@@ -595,7 +648,37 @@ describe( 'TooltipManager', () => {
 				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
 				utils.dispatchMouseLeave( document );
 
+				utils.waitForTheTooltipToHide( clock );
 				sinon.assert.notCalled( unpinSpy );
+			} );
+
+			it( 'should not work if the tooltip is currently pinned and' +
+				'the event target is element and relatedTarget is balloon element', () => {
+				utils.dispatchMouseEnter( elements.a );
+				utils.waitForTheTooltipToShow( clock );
+
+				sinon.assert.calledOnce( pinSpy );
+
+				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
+
+				utils.dispatchMouseLeave( elements.a, tooltipManager.balloonPanelView.element );
+
+				utils.waitForTheTooltipToHide( clock );
+				sinon.assert.notCalled( unpinSpy );
+			} );
+
+			it( 'should work if the tooltip is currently pinned and' +
+				'the event target is balloon element and relatedTarget is something else', () => {
+				utils.dispatchMouseEnter( elements.a );
+				utils.waitForTheTooltipToShow( clock );
+
+				sinon.assert.calledOnce( pinSpy );
+
+				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
+				utils.dispatchMouseLeave( tooltipManager.balloonPanelView.element, elements.b );
+
+				utils.waitForTheTooltipToHide( clock );
+				sinon.assert.calledOnce( unpinSpy );
 			} );
 
 			it( 'should not work if the tooltip is currently pinned and the event target is different than the current element', () => {
@@ -607,6 +690,7 @@ describe( 'TooltipManager', () => {
 				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
 				utils.dispatchMouseLeave( elements.b );
 
+				utils.waitForTheTooltipToHide( clock );
 				sinon.assert.notCalled( unpinSpy );
 			} );
 
@@ -614,23 +698,25 @@ describe( 'TooltipManager', () => {
 				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
 				utils.dispatchMouseLeave( elements.unrelated );
 
+				utils.waitForTheTooltipToHide( clock );
 				sinon.assert.notCalled( unpinSpy );
 			} );
 
 			it( 'should unpin the tooltip when moving from one element with a tooltip to another element with a tooltip quickly' +
-				'before the tooltip shows for the first tooltip (cancellin the queued pinning)', () => {
+				'before the tooltip shows for the first tooltip (cancelling the queued pinning)', () => {
 				utils.dispatchMouseEnter( elements.a );
 
 				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
 				utils.dispatchMouseLeave( elements.childOfA, elements.a );
 
+				utils.waitForTheTooltipToHide( clock );
 				sinon.assert.calledOnce( unpinSpy );
 
 				utils.waitForTheTooltipToShow( clock );
 				sinon.assert.notCalled( pinSpy );
 			} );
 
-			it( 'should immediatelly unpin the tooltip otherwise', () => {
+			it( 'should unpin the tooltip otherwise', () => {
 				utils.dispatchMouseEnter( elements.a );
 				utils.waitForTheTooltipToShow( clock );
 
@@ -639,7 +725,27 @@ describe( 'TooltipManager', () => {
 				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
 				utils.dispatchMouseLeave( elements.a );
 
+				utils.waitForTheTooltipToHide( clock );
 				sinon.assert.calledOnce( unpinSpy );
+			} );
+
+			it( 'should cancel pending unpin when hovered another tooltip', () => {
+				utils.dispatchMouseEnter( elements.a );
+				utils.waitForTheTooltipToShow( clock );
+
+				sinon.assert.calledOnce( pinSpy );
+				utils.dispatchMouseLeave( elements.a );
+
+				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
+				const debounceCancelUnpinSpy = sinon.spy( tooltipManager._unpinTooltipDebounced, 'cancel' );
+
+				utils.dispatchMouseEnter( elements.b );
+
+				sinon.assert.calledOnce( debounceCancelUnpinSpy );
+				sinon.assert.calledOnce( unpinSpy );
+
+				utils.waitForTheTooltipToHide( clock );
+				sinon.assert.calledThrice( unpinSpy );
 			} );
 		} );
 
@@ -653,6 +759,7 @@ describe( 'TooltipManager', () => {
 				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
 				utils.dispatchBlur( elements.unrelated );
 
+				utils.waitForTheTooltipToHide( clock );
 				sinon.assert.notCalled( unpinSpy );
 			} );
 
@@ -665,6 +772,7 @@ describe( 'TooltipManager', () => {
 				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
 				utils.dispatchBlur( elements.a );
 
+				utils.waitForTheTooltipToHide( clock );
 				sinon.assert.calledOnce( unpinSpy );
 			} );
 
@@ -672,6 +780,7 @@ describe( 'TooltipManager', () => {
 				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
 				utils.dispatchBlur( elements.unrelated );
 
+				utils.waitForTheTooltipToHide( clock );
 				sinon.assert.calledOnce( unpinSpy );
 			} );
 		} );
@@ -681,6 +790,7 @@ describe( 'TooltipManager', () => {
 				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
 				utils.dispatchScroll( elements.a );
 
+				utils.waitForTheTooltipToHide( clock );
 				sinon.assert.notCalled( unpinSpy );
 			} );
 
@@ -693,7 +803,7 @@ describe( 'TooltipManager', () => {
 
 				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
 				utils.dispatchScroll( document );
-
+				utils.waitForTheTooltipToHide( clock );
 				sinon.assert.notCalled( unpinSpy );
 			} );
 
@@ -705,7 +815,7 @@ describe( 'TooltipManager', () => {
 
 				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
 				utils.dispatchScroll( elements.a );
-
+				utils.waitForTheTooltipToHide( clock );
 				sinon.assert.calledOnce( unpinSpy );
 			} );
 
@@ -717,7 +827,7 @@ describe( 'TooltipManager', () => {
 
 				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
 				utils.dispatchScroll( elements.unrelated );
-
+				utils.waitForTheTooltipToHide( clock );
 				sinon.assert.calledOnce( unpinSpy );
 			} );
 		} );
@@ -770,6 +880,23 @@ describe( 'TooltipManager', () => {
 
 				sinon.assert.calledOnce( unpinSpy );
 			} );
+		} );
+
+		it( 'when the tooltip text gets removed', async () => {
+			utils.dispatchMouseEnter( elements.a );
+			utils.waitForTheTooltipToShow( clock );
+			clock.restore();
+
+			// ResizeObserver is asynchronous.
+			await wait( 100 );
+
+			unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
+
+			elements.a.dataset.ckeTooltipText = '';
+
+			await wait( 100 );
+
+			sinon.assert.calledOnce( unpinSpy );
 		} );
 	} );
 
@@ -848,8 +975,10 @@ describe( 'TooltipManager', () => {
 			sinon.assert.calledTwice( pinSpy );
 
 			utils.dispatchMouseLeave( elements.a );
+			utils.waitForTheTooltipToHide( clock );
 
 			editor.ui.update();
+
 			sinon.assert.calledTwice( pinSpy );
 		} );
 
@@ -935,8 +1064,16 @@ function getUtils() {
 			clock.tick( 650 );
 		},
 
+		waitForTheTooltipToHide: clock => {
+			clock.tick( 650 );
+		},
+
 		dispatchMouseEnter: element => {
 			element.dispatchEvent( new MouseEvent( 'mouseenter' ) );
+		},
+
+		dispatchKeydown: ( element, key ) => {
+			element.dispatchEvent( new KeyboardEvent( 'keydown', { key } ) );
 		},
 
 		dispatchMouseLeave: ( element, relatedTarget ) => {

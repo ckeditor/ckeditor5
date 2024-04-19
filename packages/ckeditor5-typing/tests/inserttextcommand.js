@@ -1,15 +1,15 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import InsertTextCommand from '../src/inserttextcommand';
-import ChangeBuffer from '../src/utils/changebuffer';
-import Input from '../src/input';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import InsertTextCommand from '../src/inserttextcommand.js';
+import ChangeBuffer from '../src/utils/changebuffer.js';
+import Input from '../src/input.js';
 
 describe( 'InsertTextCommand', () => {
 	let editor, model, doc, buffer, inputCommand;
@@ -31,6 +31,7 @@ describe( 'InsertTextCommand', () => {
 
 				model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 				model.schema.register( 'heading1', { inheritAllFrom: '$block' } );
+				model.schema.extend( '$text', { allowAttributes: 'bold' } );
 			} );
 	} );
 
@@ -428,6 +429,62 @@ describe( 'InsertTextCommand', () => {
 			function getCurrentBatch() {
 				return editor.model.change( writer => writer.batch );
 			}
+		} );
+
+		describe( 'applies document selection attributes', () => {
+			it( 'insert using the DocumentSelection as insertText target', () => {
+				setData( model, '<paragraph>foo[]</paragraph>' );
+
+				model.change( writer => {
+					writer.setSelectionAttribute( 'bold', true );
+				} );
+
+				expect( getData( model ) ).to.equal( '<paragraph>foo<$text bold="true">[]</$text></paragraph>' );
+
+				editor.execute( 'insertText', {
+					text: 'bar'
+				} );
+
+				expect( getData( model ) ).to.equal( '<paragraph>foo<$text bold="true">bar[]</$text></paragraph>' );
+			} );
+
+			it( 'insert using a static selection as insertText target', () => {
+				setData( model, '<paragraph>foo[]</paragraph>' );
+
+				model.change( writer => {
+					writer.setSelectionAttribute( 'bold', true );
+				} );
+
+				expect( getData( model ) ).to.equal( '<paragraph>foo<$text bold="true">[]</$text></paragraph>' );
+
+				editor.execute( 'insertText', {
+					text: 'bar',
+					selection: model.createSelection( doc.getRoot().getChild( 0 ), 0 )
+				} );
+
+				expect( getData( model ) ).to.equal( '<paragraph><$text bold="true">bar[]</$text>foo</paragraph>' );
+			} );
+
+			it( 'replace using the DocumentSelection as insertText target', () => {
+				setData( model, '<paragraph>foo<$text bold="true">[bar]</$text></paragraph>' );
+
+				editor.execute( 'insertText', {
+					text: 'abc'
+				} );
+
+				expect( getData( model ) ).to.equal( '<paragraph>foo<$text bold="true">abc[]</$text></paragraph>' );
+			} );
+
+			it( 'replace using a static selection as insertText target', () => {
+				setData( model, '<paragraph>foo<$text bold="true">[bar]</$text></paragraph>' );
+
+				editor.execute( 'insertText', {
+					text: 'abc',
+					selection: model.createSelection( doc.selection )
+				} );
+
+				expect( getData( model ) ).to.equal( '<paragraph>foo<$text bold="true">abc[]</$text></paragraph>' );
+			} );
 		} );
 	} );
 

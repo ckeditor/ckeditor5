@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,7 @@
  * @module utils/dom/createelement
  */
 
-import isIterable from '../isiterable';
+import isIterable from '../isiterable.js';
 import { isString } from 'lodash-es';
 
 /**
@@ -24,30 +24,6 @@ type SVGElementAttributes = HTMLElementAttributes & { xmlns: string };
  * Element or elements that will be added to the created element as children. Strings will be automatically turned into Text nodes.
  */
 type ChildrenElements = Node | string | Iterable<Node | string>;
-
-/**
- * Creates an HTML element with attributes and children elements.
- *
- * ```ts
- * createElement( document, 'p' ); // <p>
- * createElement( document, 'p', { class: 'foo' } ); // <p class="foo">
- * createElement( document, 'p', null, 'foo' ); // <p>foo</p>
- * createElement( document, 'p', null, [ createElement(...) ] ); // <p><...></p>
- * ```
- *
- * @label HTML_ELEMENT
- * @param doc Document used to create the element.
- * @param name Name of the HTML element.
- * @param attributes Object where keys represent attribute keys and values represent attribute values.
- * @param children Child or any iterable of children. Strings will be automatically turned into Text nodes.
- * @returns HTML element.
- */
-export default function createElement<T extends keyof HTMLElementTagNameMap>(
-	doc: Document,
-	name: T,
-	attributes?: HTMLElementAttributes,
-	children?: ChildrenElements
-): HTMLElementTagNameMap[T];
 
 /**
  * Creates an SVG element with attributes and children elements.
@@ -72,6 +48,30 @@ export default function createElement<T extends keyof SVGElementTagNameMap>(
 	attributes: SVGElementAttributes,
 	children?: ChildrenElements
 ): SVGElementTagNameMap[T];
+
+/**
+ * Creates an HTML element with attributes and children elements.
+ *
+ * ```ts
+ * createElement( document, 'p' ); // <p>
+ * createElement( document, 'p', { class: 'foo' } ); // <p class="foo">
+ * createElement( document, 'p', null, 'foo' ); // <p>foo</p>
+ * createElement( document, 'p', null, [ createElement(...) ] ); // <p><...></p>
+ * ```
+ *
+ * @label HTML_ELEMENT
+ * @param doc Document used to create the element.
+ * @param name Name of the HTML element.
+ * @param attributes Object where keys represent attribute keys and values represent attribute values.
+ * @param children Child or any iterable of children. Strings will be automatically turned into Text nodes.
+ * @returns HTML element.
+ */
+export default function createElement<T extends keyof HTMLElementTagNameMap>(
+	doc: Document,
+	name: T,
+	attributes?: HTMLElementAttributes,
+	children?: ChildrenElements
+): HTMLElementTagNameMap[T];
 
 /**
  * Creates an HTML or SVG element with attributes and children elements.

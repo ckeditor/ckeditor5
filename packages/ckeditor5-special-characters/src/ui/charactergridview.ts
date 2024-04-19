@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -12,13 +12,13 @@ import {
 	ButtonView,
 	addKeyboardHandlingForGrid,
 	type ViewCollection
-} from 'ckeditor5/src/ui';
+} from 'ckeditor5/src/ui.js';
 import {
 	KeystrokeHandler,
 	FocusTracker,
 	global,
 	type Locale
-} from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/utils.js';
 
 import '../../theme/charactergrid.css';
 

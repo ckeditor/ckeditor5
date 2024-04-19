@@ -1,22 +1,22 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals console */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
 
-import UploadImageCommand from '../../src/imageupload/uploadimagecommand';
-import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
+import UploadImageCommand from '../../src/imageupload/uploadimagecommand.js';
+import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository.js';
 
-import { createNativeFileMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
-import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import ImageBlockEditing from '../../src/image/imageblockediting';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ImageInlineEditing from '../../src/image/imageinlineediting';
+import { createNativeFileMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
+import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import ImageBlockEditing from '../../src/image/imageblockediting.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import ImageInlineEditing from '../../src/image/imageinlineediting.js';
 
 describe( 'UploadImageCommand', () => {
 	let editor, command, model, fileRepository;
@@ -33,7 +33,8 @@ describe( 'UploadImageCommand', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ FileRepository, ImageBlockEditing, ImageInlineEditing, Paragraph, UploadAdapterPluginMock ]
+				plugins: [ FileRepository, ImageBlockEditing, ImageInlineEditing, Paragraph, UploadAdapterPluginMock ],
+				image: { insert: { type: 'auto' } }
 			} )
 			.then( newEditor => {
 				editor = newEditor;

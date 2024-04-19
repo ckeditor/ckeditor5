@@ -1,23 +1,23 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
-import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
-import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import Command from '@ckeditor/ckeditor5-core/src/command.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting.js';
+import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
+import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification.js';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 
-import CKFinder from '../src/ckfinder';
-import CKFinderEditing from '../src/ckfinderediting';
-import Image from '@ckeditor/ckeditor5-image/src/image';
-import Link from '@ckeditor/ckeditor5-link/src/link';
-import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
-import ImageBlock from '@ckeditor/ckeditor5-image/src/imageblock';
-import ImageInline from '@ckeditor/ckeditor5-image/src/imageinline';
+import CKFinder from '../src/ckfinder.js';
+import CKFinderEditing from '../src/ckfinderediting.js';
+import Image from '@ckeditor/ckeditor5-image/src/image.js';
+import Link from '@ckeditor/ckeditor5-link/src/link.js';
+import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter.js';
+import ImageBlock from '@ckeditor/ckeditor5-image/src/imageblock.js';
+import ImageInline from '@ckeditor/ckeditor5-image/src/imageinline.js';
 
 describe( 'CKFinderEditing', () => {
 	let editorElement, editor;

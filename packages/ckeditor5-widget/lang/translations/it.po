@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Italian (https://app.transifex.com/ckeditor/teams/11143/it/)\n"
 "Language: it\n"
 "Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "The label used by assistive technologies describing a toolbar attached to a widget."
 msgid "Widget toolbar"
@@ -28,6 +29,26 @@ msgctxt "The title displayed when a mouse is over a button that inserts a paragr
 msgid "Insert paragraph after block"
 msgstr "Inserisci paragrafo dopo blocco"
 
-msgctxt "Information to be read by screen reader about shortcuts to type around a widget"
+msgctxt "Information to be read by screen reader about shortcuts to type around a widget."
 msgid "Press Enter to type after or press Shift + Enter to type before the widget"
 msgstr "Premere Invio per inserire dopo il widget o premere Maiusc + Invio per inserire prima del widget"
+
+msgctxt "Accessibility help dialog section title for widget plugin keystrokes."
+msgid "Keystrokes that can be used when a widget is selected (for example: image, table, etc.)"
+msgstr "Tasti che possono essere utilizzati quando viene selezionato un widget (ad esempio: immagine, tabella ecc.)"
+
+msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that inserts a paragraph after a widget."
+msgid "Insert a new paragraph directly after a widget"
+msgstr "Inserisce un nuovo paragrafo direttamente dopo un widget"
+
+msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that inserts a paragraph before a widget."
+msgid "Insert a new paragraph directly before a widget"
+msgstr "Inserisce un nuovo paragrafo direttamente prima di un widget"
+
+msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that moves the caret before a widget."
+msgid "Move the caret to allow typing directly before a widget"
+msgstr "Sposta il cursore per consentire la digitazione direttamente prima di un widget"
+
+msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that moves the caret after a widget."
+msgid "Move the caret to allow typing directly after a widget"
+msgstr "Sposta il cursore per consentire la digitazione direttamente dopo un widget"

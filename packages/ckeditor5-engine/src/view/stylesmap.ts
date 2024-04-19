@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -11,8 +11,6 @@ import { get, isObject, merge, set, unset } from 'lodash-es';
 
 /**
  * Styles map. Allows handling (adding, removing, retrieving) a set of style rules (usually, of an element).
- *
- * The styles map is capable of normalizing style names so e.g. the following operations are possible:
  */
 export default class StylesMap {
 	/**
@@ -21,7 +19,7 @@ export default class StylesMap {
 	 *
 	 * When no style processor rules are defined it acts as simple key-value storage.
 	 */
-	private _styles: Record<string, string>;
+	private _styles: Styles;
 
 	/**
 	 * An instance of the {@link module:engine/view/stylesmap~StylesProcessor}.
@@ -41,9 +39,8 @@ export default class StylesMap {
 	 */
 	public get isEmpty(): boolean {
 		const entries = Object.entries( this._styles );
-		const from = Array.from( entries );
 
-		return !from.length;
+		return !entries.length;
 	}
 
 	/**
@@ -67,7 +64,7 @@ export default class StylesMap {
 	public setTo( inlineStyle: string ): void {
 		this.clear();
 
-		const parsedStyles = Array.from( parseInlineStyles( inlineStyle ).entries() );
+		const parsedStyles = parseInlineStyles( inlineStyle );
 
 		for ( const [ key, value ] of parsedStyles ) {
 			this._styleProcessor.toNormalizedForm( key, value, this._styles );
@@ -304,7 +301,7 @@ export default class StylesMap {
 			return '';
 		}
 
-		return this._getStylesEntries()
+		return this.getStylesEntries()
 			.map( arr => arr.join( ':' ) )
 			.sort()
 			.join( ';' ) + ';';
@@ -373,7 +370,7 @@ export default class StylesMap {
 
 		if ( this._styles[ propertyName ] && !isObject( this._styles[ propertyName ] ) ) {
 			// Try return styles set directly - values that are not parsed.
-			return this._styles[ propertyName ];
+			return this._styles[ propertyName ] as string;
 		}
 
 		const styles = this._styleProcessor.getReducedForm( propertyName, this._styles );
@@ -412,7 +409,7 @@ export default class StylesMap {
 			return this._styleProcessor.getStyleNames( this._styles );
 		}
 
-		const entries = this._getStylesEntries();
+		const entries = this.getStylesEntries();
 
 		return entries.map( ( [ key ] ) => key );
 	}
@@ -427,7 +424,7 @@ export default class StylesMap {
 	/**
 	 * Returns normalized styles entries for further processing.
 	 */
-	private _getStylesEntries(): Array<PropertyDescriptor> {
+	public getStylesEntries(): Array<PropertyDescriptor> {
 		const parsed: Array<PropertyDescriptor> = [];
 
 		const keys = Object.keys( this._styles );
@@ -458,7 +455,7 @@ export default class StylesMap {
 			return;
 		}
 
-		const isParentEmpty = !Array.from( Object.keys( parentObject ) ).length;
+		const isParentEmpty = !Object.keys( parentObject ).length;
 
 		if ( isParentEmpty ) {
 			this.remove( parentPath );
@@ -645,7 +642,7 @@ export class StylesProcessor {
 			...Object.keys( styles )
 		] );
 
-		return Array.from( styleNamesKeysSet.values() );
+		return Array.from( styleNamesKeysSet );
 	}
 
 	/**
@@ -953,7 +950,7 @@ function appendStyleValue( stylesObject: Styles, nameOrPath: string, valueOrObje
 }
 
 /**
- * A CSS style property descriptor that contains tuplet of two strings:
+ * A CSS style property descriptor that contains tuple of two strings:
  *
  * - first string describes property name
  * - second string describes property value

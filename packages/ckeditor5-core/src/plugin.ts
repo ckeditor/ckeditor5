@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -11,7 +11,7 @@
 
 import { ObservableMixin, type ObservableSetEvent, type EventInfo } from '@ckeditor/ckeditor5-utils';
 
-import type Editor from './editor/editor';
+import type Editor from './editor/editor.js';
 
 /**
  * The base class for CKEditor plugin classes.
@@ -211,7 +211,7 @@ export interface PluginInterface {
 	 *
 	 * **Note:** This method is optional. A plugin instance does not need to have it defined.
 	 */
-	destroy(): Promise<unknown> | null | undefined | void;
+	destroy?(): Promise<unknown> | null | undefined | void;
 }
 
 /**

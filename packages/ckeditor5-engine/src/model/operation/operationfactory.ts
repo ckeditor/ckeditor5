@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,19 +7,19 @@
  * @module engine/model/operation/operationfactory
  */
 
-import AttributeOperation from './attributeoperation';
-import InsertOperation from './insertoperation';
-import MarkerOperation from './markeroperation';
-import MoveOperation from './moveoperation';
-import NoOperation from './nooperation';
-import Operation from './operation';
-import RenameOperation from './renameoperation';
-import RootAttributeOperation from './rootattributeoperation';
-import RootOperation from './rootoperation';
-import SplitOperation from './splitoperation';
-import MergeOperation from './mergeoperation';
+import AttributeOperation from './attributeoperation.js';
+import InsertOperation from './insertoperation.js';
+import MarkerOperation from './markeroperation.js';
+import MoveOperation from './moveoperation.js';
+import NoOperation from './nooperation.js';
+import Operation from './operation.js';
+import RenameOperation from './renameoperation.js';
+import RootAttributeOperation from './rootattributeoperation.js';
+import RootOperation from './rootoperation.js';
+import SplitOperation from './splitoperation.js';
+import MergeOperation from './mergeoperation.js';
 
-import type Document from '../document';
+import type Document from '../document.js';
 
 const operations: {
 	[ className: string ]: {

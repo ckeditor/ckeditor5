@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -11,31 +11,28 @@
 
 import {
 	Plugin,
-	icons,
 	type Editor
 } from '@ckeditor/ckeditor5-core';
 
 import {
 	Rect,
 	ResizeObserver,
-	getOptimalPosition,
 	toUnit,
 	type ObservableChangeEvent
 } from '@ckeditor/ckeditor5-utils';
 
 import type { DocumentSelectionChangeRangeEvent } from '@ckeditor/ckeditor5-engine';
 
-import BlockButtonView from './blockbuttonview';
-import BalloonPanelView from '../../panel/balloon/balloonpanelview';
-import ToolbarView from '../toolbarview';
-import clickOutsideHandler from '../../bindings/clickoutsidehandler';
-import normalizeToolbarConfig from '../normalizetoolbarconfig';
+import BlockButtonView from './blockbuttonview.js';
+import BalloonPanelView from '../../panel/balloon/balloonpanelview.js';
+import ToolbarView, { NESTED_TOOLBAR_ICONS } from '../toolbarview.js';
+import clickOutsideHandler from '../../bindings/clickoutsidehandler.js';
+import normalizeToolbarConfig from '../normalizetoolbarconfig.js';
 
-import type { ButtonExecuteEvent } from '../../button/button';
-import type { EditorUIUpdateEvent } from '../../editorui/editorui';
+import type { ButtonExecuteEvent } from '../../button/button.js';
+import type { EditorUIReadyEvent, EditorUIUpdateEvent } from '../../editorui/editorui.js';
 
 const toPx = toUnit( 'px' );
-const { pilcrow } = icons;
 
 /**
  * The block toolbar plugin.
@@ -106,8 +103,6 @@ export default class BlockToolbar extends Plugin {
 	 *
 	 * **Note**: Used only when `shouldNotGroupWhenFull` was **not** set in the
 	 * {@link module:core/editor/editorconfig~EditorConfig#blockToolbar configuration}.
-	 *
-	 * **Note:** Created in {@link #afterInit}.
 	 */
 	private _resizeObserver: ResizeObserver | null = null;
 
@@ -148,6 +143,20 @@ export default class BlockToolbar extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
+		const t = editor.t;
+
+		const editBlockText = t( 'Click to edit block' );
+		const dragToMoveText = t( 'Drag to move' );
+		const editBlockLabel = t( 'Edit block' );
+
+		const isDragDropBlockToolbarPluginLoaded = editor.plugins.has( 'DragDropBlockToolbar' );
+		const label = isDragDropBlockToolbarPluginLoaded ? `${ editBlockText }\n${ dragToMoveText }` : editBlockLabel;
+
+		this.buttonView.label = label;
+
+		if ( isDragDropBlockToolbarPluginLoaded ) {
+			this.buttonView.element!.dataset.ckeTooltipClass = 'ck-tooltip_multi-line';
+		}
 
 		// Hides panel on a direct selection change.
 		this.listenTo<DocumentSelectionChangeRangeEvent>( editor.model.document.selection, 'change:range', ( evt, data ) => {
@@ -180,20 +189,17 @@ export default class BlockToolbar extends Plugin {
 			beforeFocus: () => this._showPanel(),
 			afterBlur: () => this._hidePanel()
 		} );
-	}
 
-	/**
-	 * Fills the toolbar with its items based on the configuration.
-	 *
-	 * **Note:** This needs to be done after all plugins are ready.
-	 */
-	public afterInit(): void {
-		this.toolbarView.fillFromConfig( this._blockToolbarConfig, this.editor.ui.componentFactory );
+		// Fills the toolbar with its items based on the configuration.
+		// This needs to be done after all plugins are ready.
+		editor.ui.once<EditorUIReadyEvent>( 'ready', () => {
+			this.toolbarView.fillFromConfig( this._blockToolbarConfig, this.editor.ui.componentFactory );
 
-		// Hide panel before executing each button in the panel.
-		for ( const item of this.toolbarView.items ) {
-			item.on<ButtonExecuteEvent>( 'execute', () => this._hidePanel( true ), { priority: 'high' } );
-		}
+			// Hide panel before executing each button in the panel.
+			for ( const item of this.toolbarView.items ) {
+				item.on<ButtonExecuteEvent>( 'execute', () => this._hidePanel( true ), { priority: 'high' } );
+			}
+		} );
 	}
 
 	/**
@@ -256,10 +262,13 @@ export default class BlockToolbar extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 		const buttonView = new BlockButtonView( editor.locale );
+		const iconFromConfig = this._blockToolbarConfig.icon;
+
+		const icon = NESTED_TOOLBAR_ICONS[ iconFromConfig! ] || iconFromConfig || NESTED_TOOLBAR_ICONS.dragIndicator;
 
 		buttonView.set( {
 			label: t( 'Edit block' ),
-			icon: pilcrow,
+			icon,
 			withText: false
 		} );
 
@@ -430,29 +439,25 @@ export default class BlockToolbar extends Plugin {
 		// MDN says that 'normal' == ~1.2 on desktop browsers.
 		const contentLineHeight = parseInt( contentStyles.lineHeight, 10 ) || parseInt( contentStyles.fontSize, 10 ) * 1.2;
 
-		const position = getOptimalPosition( {
-			element: this.buttonView.element!,
-			target: targetElement,
-			positions: [
-				( contentRect, buttonRect ) => {
-					let left;
+		const buttonRect = new Rect( this.buttonView.element! );
+		const contentRect = new Rect( targetElement );
 
-					if ( this.editor.locale.uiLanguageDirection === 'ltr' ) {
-						left = editableRect.left - buttonRect.width;
-					} else {
-						left = editableRect.right;
-					}
+		let positionLeft;
 
-					return {
-						top: contentRect.top + contentPaddingTop + ( contentLineHeight - buttonRect.height ) / 2,
-						left
-					};
-				}
-			]
-		} );
+		if ( this.editor.locale.uiLanguageDirection === 'ltr' ) {
+			positionLeft = editableRect.left - buttonRect.width;
+		} else {
+			positionLeft = editableRect.right;
+		}
 
-		this.buttonView.top = position.top;
-		this.buttonView.left = position.left;
+		const positionTop = contentRect.top + contentPaddingTop + ( contentLineHeight - buttonRect.height ) / 2;
+
+		buttonRect.moveTo( positionLeft, positionTop );
+
+		const absoluteButtonRect = buttonRect.toAbsoluteRect();
+
+		this.buttonView.top = absoluteButtonRect.top;
+		this.buttonView.left = absoluteButtonRect.left;
 	}
 
 	/**

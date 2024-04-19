@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Catalan (https://app.transifex.com/ckeditor/teams/11143/ca/)\n"
 "Language: ca\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Toolbar button tooltip for the Numbered List feature."
 msgid "Numbered List"
@@ -116,6 +117,10 @@ msgctxt "The label of the input allowing to change the start index of a numbered
 msgid "Start at"
 msgstr "Començar a"
 
+msgctxt "The error message displayed when the numbered list start index input value is not a valid number."
+msgid "Invalid start index value."
+msgstr "Valor del número inicial no vàlid."
+
 msgctxt "The error message displayed when the numbered list start index input value is invalid."
 msgid "Start index must be greater than 0."
 msgstr "L'índex inicial ha de ser superior a 0."
@@ -123,3 +128,15 @@ msgstr "L'índex inicial ha de ser superior a 0."
 msgctxt "The label of the switch button that reverses the order of the numbered list."
 msgid "Reversed order"
 msgstr "Ordre invertit"
+
+msgctxt "Accessibility help dialog header text displayed before the list of keystrokes that can be used in a list."
+msgid "Keystrokes that can be used in a list"
+msgstr "Tecles que es poden emprar en una llista"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for increasing list item indentation."
+msgid "Increase list item indent"
+msgstr "Augmenta el sagnat de l'element de la llista"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for decreasing list item indentation."
+msgid "Decrease list item indent"
+msgstr "Redueix el sagnat de l'element de la llista"

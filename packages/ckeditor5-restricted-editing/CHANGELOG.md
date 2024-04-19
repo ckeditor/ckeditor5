@@ -5,21 +5,21 @@ All changes in the package are documented in the main repository. See: https://g
 
 Changes for the past releases are available below.
 
-## [19.0.0](https://github.com/ckeditor/ckeditor5-restricted-editing/compare/v18.0.0...v19.0.0) (2020-04-29)
+## [19.0.0](https://github.com/ckeditor/ckeditor5-restricted-editing/compare/v18.0.0...v19.0.0) (April 29, 2020)
 
 ### Other changes
 
 * Updated translations. ([4d7336d](https://github.com/ckeditor/ckeditor5-restricted-editing/commit/4d7336d))
 
 
-## [18.0.0](https://github.com/ckeditor/ckeditor5-restricted-editing/compare/v17.0.0...v18.0.0) (2020-03-19)
+## [18.0.0](https://github.com/ckeditor/ckeditor5-restricted-editing/compare/v17.0.0...v18.0.0) (March 19, 2020)
 
 ### Other changes
 
 * Updated translations. ([e2a6a7d](https://github.com/ckeditor/ckeditor5-restricted-editing/commit/e2a6a7d))
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-restricted-editing/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-restricted-editing/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 ### MAJOR BREAKING CHANGES
 
@@ -48,6 +48,6 @@ Changes for the past releases are available below.
 * Updated translations. ([c076842](https://github.com/ckeditor/ckeditor5-restricted-editing/commit/c076842))
 
 
-## [16.0.0](https://github.com/ckeditor/ckeditor5-restricted-editing/tree/v16.0.0) (2019-12-04)
+## [16.0.0](https://github.com/ckeditor/ckeditor5-restricted-editing/tree/v16.0.0) (December 4, 2019)
 
 The initial release.

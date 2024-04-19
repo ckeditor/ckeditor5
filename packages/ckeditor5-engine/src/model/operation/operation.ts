@@ -1,17 +1,17 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import type Batch from '../batch';
-import type Document from '../document';
-import type { Selectable } from '../selection';
-
 /**
  * @module engine/model/operation/operation
  */
+
+import type Batch from '../batch.js';
+import type Document from '../document.js';
+import type { Selectable } from '../selection.js';
 
 /**
  * Abstract base operation class.

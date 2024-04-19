@@ -1,28 +1,29 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document */
 
-import TableColumnResizeEditing from '../../src/tablecolumnresize/tablecolumnresizeediting';
-import TableColumnResize from '../../src/tablecolumnresize';
-import TableCaption from '../../src/tablecaption';
-import TableToolbar from '../../src/tabletoolbar';
-import Table from '../../src/table';
-import TableProperties from '../../src/tableproperties';
-import PlainTableOutput from '../../src/plaintableoutput';
+import TableColumnResizeEditing from '../../src/tablecolumnresize/tablecolumnresizeediting.js';
+import TableColumnResize from '../../src/tablecolumnresize.js';
+import TableCaption from '../../src/tablecaption.js';
+import TableToolbar from '../../src/tabletoolbar.js';
+import Table from '../../src/table.js';
+import TableProperties from '../../src/tableproperties.js';
+import PlainTableOutput from '../../src/plaintableoutput.js';
 
 // ClassicTestEditor can't be used, as it doesn't handle the focus, which is needed to test resizer visual cues.
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
-import HighlightEditing from '@ckeditor/ckeditor5-highlight/src/highlightediting';
-import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
+import HighlightEditing from '@ckeditor/ckeditor5-highlight/src/highlightediting.js';
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
 
-import { focusEditor } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils';
-import { modelTable } from '../_utils/utils';
+import { focusEditor } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils.js';
+import { modelTable } from '../_utils/utils.js';
 import {
 	getDomTable,
 	getModelTable,
@@ -35,19 +36,19 @@ import {
 	getDomTableCellRects,
 	tableColumnResizeMouseSimulator,
 	getDomResizer
-} from './_utils/utils';
+} from './_utils/utils.js';
 import {
 	COLUMN_MIN_WIDTH_IN_PIXELS
-} from '../../src/tablecolumnresize/constants';
+} from '../../src/tablecolumnresize/constants.js';
 import {
 	clamp,
 	getDomCellOuterWidth,
 	getTableColumnsWidths,
 	getColumnGroupElement
-} from '../../src/tablecolumnresize/utils';
-import TableWidthsCommand from '../../src/tablecolumnresize/tablewidthscommand';
-import WidgetResize from '@ckeditor/ckeditor5-widget/src/widgetresize';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+} from '../../src/tablecolumnresize/utils.js';
+import TableWidthsCommand from '../../src/tablecolumnresize/tablewidthscommand.js';
+import WidgetResize from '@ckeditor/ckeditor5-widget/src/widgetresize.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { Undo } from '@ckeditor/ckeditor5-undo';
 import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
 
@@ -322,6 +323,90 @@ describe( 'TableColumnResizeEditing', () => {
 					);
 				} );
 
+				it( 'should handle <col> with pt width', () => {
+					editor.setData(
+						`<figure class="table">
+							<table>
+								<colgroup>
+									<col style="width:30pt;">
+									<col style="width:30pt;">
+									<col style="width:60pt">
+								</colgroup>
+								<tbody>
+									<tr>
+										<td>11</td>
+										<td>12</td>
+										<td>13</td>
+									</tr>
+								</tbody>
+							</table>
+						</figure>`
+					);
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<table>' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<paragraph>11</paragraph>' +
+								'</tableCell>' +
+								'<tableCell>' +
+									'<paragraph>12</paragraph>' +
+								'</tableCell>' +
+								'<tableCell>' +
+									'<paragraph>13</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+							'<tableColumnGroup>' +
+								'<tableColumn columnWidth="25%"></tableColumn>' +
+								'<tableColumn columnWidth="25%"></tableColumn>' +
+								'<tableColumn columnWidth="50%"></tableColumn>' +
+							'</tableColumnGroup>' +
+						'</table>'
+					);
+				} );
+
+				it( 'should handle <col> with pt width summing to less than 100', () => {
+					editor.setData(
+						`<figure class="table">
+							<table>
+								<colgroup>
+									<col style="width:15pt;">
+									<col style="width:15pt;">
+									<col style="width:30pt">
+								</colgroup>
+								<tbody>
+									<tr>
+										<td>11</td>
+										<td>12</td>
+										<td>13</td>
+									</tr>
+								</tbody>
+							</table>
+						</figure>`
+					);
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<table>' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<paragraph>11</paragraph>' +
+								'</tableCell>' +
+								'<tableCell>' +
+									'<paragraph>12</paragraph>' +
+								'</tableCell>' +
+								'<tableCell>' +
+									'<paragraph>13</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+							'<tableColumnGroup>' +
+								'<tableColumn columnWidth="25%"></tableColumn>' +
+								'<tableColumn columnWidth="25%"></tableColumn>' +
+								'<tableColumn columnWidth="50%"></tableColumn>' +
+							'</tableColumnGroup>' +
+						'</table>'
+					);
+				} );
+
 				it( 'should adjust the missing column widths proportionally', () => {
 					editor.setData(
 						`<figure class="table">
@@ -478,6 +563,109 @@ describe( 'TableColumnResizeEditing', () => {
 								'<tableColumn columnWidth="33.33%"></tableColumn>' +
 								'<tableColumn columnWidth="33.33%"></tableColumn>' +
 								'<tableColumn columnWidth="33.34%"></tableColumn>' +
+							'</tableColumnGroup>' +
+						'</table>'
+					);
+				} );
+
+				it( 'should convert the `col[span]` attribute', () => {
+					editor.setData(
+						`<figure class="table">
+							<table>
+								<colgroup>
+									<col style="width:10%;" span="2">
+									<col style="width:50%;">
+									<col style="width:10%;" span="3">
+								</colgroup>
+								<tbody>
+									<tr>
+										<td>11</td>
+										<td>12</td>
+										<td>13</td>
+										<td>14</td>
+										<td>15</td>
+										<td>16</td>
+									</tr>
+								</tbody>
+							</table>
+						</figure>`
+					);
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<table>' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<paragraph>11</paragraph>' +
+								'</tableCell>' +
+								'<tableCell>' +
+									'<paragraph>12</paragraph>' +
+								'</tableCell>' +
+								'<tableCell>' +
+									'<paragraph>13</paragraph>' +
+								'</tableCell>' +
+								'<tableCell>' +
+									'<paragraph>14</paragraph>' +
+								'</tableCell>' +
+								'<tableCell>' +
+									'<paragraph>15</paragraph>' +
+								'</tableCell>' +
+								'<tableCell>' +
+									'<paragraph>16</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+							'<tableColumnGroup>' +
+								'<tableColumn columnWidth="10%"></tableColumn>' +
+								'<tableColumn columnWidth="10%"></tableColumn>' +
+								'<tableColumn columnWidth="50%"></tableColumn>' +
+								'<tableColumn columnWidth="10%"></tableColumn>' +
+								'<tableColumn columnWidth="10%"></tableColumn>' +
+								'<tableColumn columnWidth="10%"></tableColumn>' +
+							'</tableColumnGroup>' +
+						'</table>'
+					);
+				} );
+
+				it( 'should handle the `col[span]` attribute and missing cols', () => {
+					editor.setData(
+						`<figure class="table">
+							<table>
+								<colgroup>
+									<col style="width:10%;" span="2">
+									<col style="width:50%;">
+								</colgroup>
+								<tbody>
+									<tr>
+										<td>11</td>
+										<td>12</td>
+										<td>13</td>
+										<td>14</td>
+									</tr>
+								</tbody>
+							</table>
+						</figure>`
+					);
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<table>' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<paragraph>11</paragraph>' +
+								'</tableCell>' +
+								'<tableCell>' +
+									'<paragraph>12</paragraph>' +
+								'</tableCell>' +
+								'<tableCell>' +
+									'<paragraph>13</paragraph>' +
+								'</tableCell>' +
+								'<tableCell>' +
+									'<paragraph>14</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+							'<tableColumnGroup>' +
+								'<tableColumn columnWidth="10%"></tableColumn>' +
+								'<tableColumn columnWidth="10%"></tableColumn>' +
+								'<tableColumn columnWidth="50%"></tableColumn>' +
+								'<tableColumn columnWidth="30%"></tableColumn>' +
 							'</tableColumnGroup>' +
 						'</table>'
 					);
@@ -2502,7 +2690,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 					editor = await createEditor(
 						{ table: { contentToolbar: [ 'toggleTableCaption' ] } },
-						[ LinkEditing, HighlightEditing, Bold, TableToolbar, TableCaption ]
+						[ LinkEditing, HighlightEditing, Bold, TableToolbar, TableCaption, ClipboardPipeline ]
 					);
 					model = editor.model;
 				} );
@@ -2708,7 +2896,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 			beforeEach( async () => {
 				ghsEditor = await createEditor( {
-					plugins: [ Table, TableColumnResize, Paragraph, WidgetResize, GeneralHtmlSupport ],
+					plugins: [ Table, TableColumnResize, Paragraph, WidgetResize, GeneralHtmlSupport, ClipboardPipeline ],
 					htmlSupport: {
 						allow: [
 							{
@@ -2768,7 +2956,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 			beforeEach( async () => {
 				ptoEditor = await createEditor( {
-					plugins: [ Table, TableColumnResize, Paragraph, PlainTableOutput ]
+					plugins: [ Table, TableColumnResize, Paragraph, PlainTableOutput, ClipboardPipeline ]
 				} );
 			} );
 
@@ -2808,6 +2996,68 @@ describe( 'TableColumnResizeEditing', () => {
 					'</table>'
 				);
 			} );
+
+			it( 'should not scroll `tbody` inside `table` after scrolling to the selection in a cell.', () => {
+				setModelData( editor.model,
+					'<table tableWidth="100%">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<table tableWidth="90%">' +
+									'<tableRow>' +
+										'<tableCell>' +
+											'<paragraph></paragraph>' +
+										'</tableCell>' +
+										'<tableCell>' +
+											'<paragraph></paragraph>' +
+										'</tableCell>' +
+									'</tableRow>' +
+									'<tableRow>' +
+										'<tableCell>' +
+											'<paragraph></paragraph>' +
+										'</tableCell>' +
+										'<tableCell>' +
+											'<paragraph></paragraph>' +
+										'</tableCell>' +
+									'</tableRow>' +
+									'<tableRow>' +
+										'<tableCell>' +
+											'<paragraph></paragraph>' +
+										'</tableCell>' +
+										'<tableCell>' +
+											'<paragraph></paragraph>' +
+										'</tableCell>' +
+									'</tableRow>' +
+									'<tableRow>' +
+										'<tableCell>' +
+											'<paragraph>[]foo</paragraph>' +
+										'</tableCell>' +
+										'<tableCell>' +
+											'<paragraph>bar</paragraph>' +
+										'</tableCell>' +
+									'</tableRow>' +
+									'<tableColumnGroup>' +
+										'<tableColumn columnWidth="50%"></tableColumn>' +
+										'<tableColumn columnWidth="50%"></tableColumn>' +
+									'</tableColumnGroup>' +
+								'</table>' +
+							'</tableCell>' +
+						'</tableRow>' +
+						'<tableColumnGroup>' +
+							'<tableColumn columnWidth="100%"></tableColumn>' +
+						'</tableColumnGroup>' +
+					'</table>' + '<paragraph></paragraph>'.repeat( 50 )
+				);
+
+				const table = document.getElementsByTagName( 'tbody' )[ 0 ];
+				const shift = table.getBoundingClientRect().y - table.parentElement.getBoundingClientRect().y;
+
+				editor.editing.view.scrollToTheSelection( {
+					alignToTop: true,
+					forceScroll: true
+				} );
+
+				expect( table.getBoundingClientRect().y - table.parentElement.getBoundingClientRect().y ).to.be.equal( shift );
+			} );
 		} );
 
 		describe( 'multi-root editor integration', () => {
@@ -2820,7 +3070,7 @@ describe( 'TableColumnResizeEditing', () => {
 						bar: document.createElement( 'div' )
 					}, {
 						plugins: [
-							Paragraph, Table, TableColumnResize, Paragraph, WidgetResize
+							Paragraph, Table, TableColumnResize, Paragraph, WidgetResize, ClipboardPipeline
 						]
 					} );
 				tableColumnPlugin = multiRoot.plugins.get( 'TableColumnResizeEditing' );
@@ -2840,7 +3090,7 @@ describe( 'TableColumnResizeEditing', () => {
 	} );
 
 	async function createEditor( configCustomization, additionalPlugins ) {
-		const plugins = [ Table, TableColumnResize, TableColumnResizeEditing, Paragraph, WidgetResize, Undo ];
+		const plugins = [ Table, TableColumnResize, TableColumnResizeEditing, Paragraph, WidgetResize, Undo, ClipboardPipeline ];
 
 		if ( additionalPlugins ) {
 			plugins.push( ...additionalPlugins );

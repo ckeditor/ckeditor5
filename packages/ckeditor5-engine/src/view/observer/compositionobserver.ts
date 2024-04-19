@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,9 @@
  * @module engine/view/observer/compositionobserver
  */
 
-import DomEventObserver from './domeventobserver';
-import type View from '../view';
-import type DomEventData from './domeventdata';
+import DomEventObserver from './domeventobserver.js';
+import type View from '../view.js';
+import type DomEventData from './domeventdata.js';
 
 /**
  * {@link module:engine/view/document~Document#event:compositionstart Compositionstart},

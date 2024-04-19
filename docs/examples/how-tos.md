@@ -100,7 +100,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 
 ### How to get the editor instance object from the DOM element?
 
-If you have a reference to the editor editable's DOM element (the one with the `.ck-editor__editable` class and the `contenteditable` attribute), you can access the editor instance this editable element belongs to using the `ckeditorInstance` property:
+If you have a reference to the editor editable DOM element (the one with the `.ck-editor__editable` class and the `contenteditable` attribute), you can access the editor instance this editable element belongs to using the `ckeditorInstance` property:
 
 ```html
 <!-- The editable element in the editor's DOM structure. -->
@@ -168,7 +168,7 @@ const modelFragment = editor.data.toModel( viewFragment );
 editor.model.insertContent( modelFragment );
 ```
 
-Remember, if some element or attribute does not have declared converters (whether by the dedicated feature or {@link features/html/general-html-support General HTML support) plugin then those won't get inserted.
+Remember, if some element or attribute does not have declared converters (whether by the dedicated feature or {@link features/general-html-support General HTML support}) plugin then those will not get inserted.
 
 ### How to focus the editor?
 
@@ -198,7 +198,7 @@ editor.model.change( writer => {
 } );
 ```
 
-### How to delete all specific elements (e.g. block images) in the editor?
+### How to delete all specific elements (like block images) in the editor?
 
 ```js
 editor.model.change( writer => {
@@ -207,13 +207,13 @@ editor.model.change( writer => {
 
 	for ( const value of range.getWalker() ) {
 		if ( value.item.is( 'element', 'imageBlock' ) ) {
-			// a different `is` usage.
+			// A different `is` usage.
 			itemsToRemove.push( value.item );
 		}
 	}
 
 	for ( const item of itemsToRemove ) {
-		writer.remove( item ); // remove all of the items.
+		writer.remove( item ); // Remove all the items.
 	}
 } );
 ```
@@ -254,7 +254,46 @@ for ( const value of range.getWalker() ) {
 }
 ```
 
-### How to listen on a double click (e.g. link elements)?
+### How to find words in a document, and get their ranges?
+
+If you need to search a text fragment and remap it to its model position, use the following example. It will find all words available in the document root, create a model range based on these and feed them into the console.
+
+```js
+const model = editor.model;
+const rootElement = model.document.getRoot();
+const rootRange = model.createRangeIn( rootElement );
+const wordRanges = [];
+
+for ( const item of rootRange.getItems() ) {
+	// Find `$block` elements (those accept text).
+	if ( item.is( 'element' ) && model.schema.checkChild( item, '$text' ) ) {
+		// Get the whole text from block.
+		// Inline elements (like softBreak or imageInline) are replaced
+		// with a single whitespace to keep the position offset correct.
+		const blockText = Array.from( item.getChildren() )
+			.reduce( ( rangeText, item ) => rangeText + ( item.is( '$text' ) ? item.data : ' ' ), '' );
+
+		// Find all words.
+		for ( const match of blockText.matchAll( /\b\S+\b/g ) ) {
+			// The position in a text node is always parented by the block element.
+			const startPosition = model.createPositionAt( item, match.index );
+			const endPosition = model.createPositionAt( item, match.index + match[ 0 ].length );
+
+			wordRanges.push( model.createRange( startPosition, endPosition ) );
+		}
+	}
+}
+
+// Example usage of the collected words:
+for ( const range of wordRanges ) {
+	const fragment = model.getSelectedContent( model.createSelection( range ) );
+	const html = editor.data.stringify( fragment );
+
+	console.log( `[${ range.start.path }] - [${ range.end.path }]`, html );
+}
+```
+
+### How to listen on a double-click (for example, link elements)?
 
 ```js
 // Add observer for double click and extend a generic DomEventObserver class by a native DOM dblclick event:
@@ -399,6 +438,67 @@ class Forms extends Plugin {
 				} );
 			}
 		} );
+	}
+}
+```
+
+### How to add a custom button to the link dialog?
+
+```js
+import { ButtonView } from '@ckeditor/ckeditor5-ui';
+import { Plugin } from 'ckeditor5/src/core';
+import { LinkUI } from '@ckeditor/ckeditor5-link';
+
+class InternalLink extends Plugin {
+	init() {
+		const editor = this.editor;
+		const linkUI = editor.plugins.get( LinkUI );
+		const contextualBalloonPlugin = editor.plugins.get( 'ContextualBalloon' );
+
+		this.listenTo( contextualBalloonPlugin, 'change:visibleView', ( evt, name, visibleView ) => {
+			if ( visibleView === linkUI.formView ) {
+				// Detach the listener.
+				this.stopListening( contextualBalloonPlugin, 'change:visibleView' );
+
+				this.linkFormView = linkUI.formView;
+				this.button = this._createButton();
+
+				console.log( 'The link form view has been displayed', this.linkFormView );
+
+				// Render the button template.
+				this.button.render();
+
+				// Register the button under the link form view, it will handle its destruction.
+				this.linkFormView.registerChild( this.button );
+
+				// Inject the element into DOM.
+				this.linkFormView.element.insertBefore( this.button.element, this.linkFormView.saveButtonView.element );
+			}
+		} );
+	}
+
+	_createButton() {
+		const editor = this.editor;
+		const button = new ButtonView( this.locale );
+		const linkCommand = editor.commands.get( 'link' );
+
+		button.set( {
+			label: 'Internal link',
+			withText: true,
+			tooltip: true
+		} );
+
+		// This button should be also disabled when the link command is disabled.
+		// Try setting editor.isReadOnly = true to see it in action.
+		button.bind( 'isEnabled' ).to( linkCommand );
+
+		button.on( 'execute', () => {
+			// Do something (for emaple, open the popup), then update the link URL field's value.
+			// The line below will be executed inside some callback.
+			this.linkFormView.urlInputView.value = 'http://some.internal.link';
+		} );
+
+		return button;
 	}
 }
 ```

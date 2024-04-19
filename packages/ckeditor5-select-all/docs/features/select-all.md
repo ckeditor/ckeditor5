@@ -4,8 +4,6 @@ meta-title: Select all | CKEditor 5 Documentation
 category: features
 ---
 
-{@snippet features/build-select-all-source}
-
 The select all feature lets you select the entire content using the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>A</kbd> keystroke or a toolbar button. This way you can clear or copy all the content in one move.
 
 ## Demo
@@ -19,7 +17,7 @@ Press <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>A</kbd> or use the toolbar button {@ic
 {@snippet features/select-all}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Installation
@@ -57,13 +55,13 @@ ClassicEditor
 
 ## Related features
 
-* {@link features/keyboard-support Keyboard shortcuts} &ndash; Check other popular keyboard shortcuts supported by CKEditor&nbsp;5.
+* {@link features/accessibility#keyboard-shortcuts Keyboard shortcuts} &ndash; Check other popular keyboard shortcuts supported by CKEditor&nbsp;5.
 
 ## Common API
 
 The {@link module:select-all/selectall~SelectAll} plugin registers the `'selectAll'` UI button component and the `'selectAll'` command implemented by {@link module:select-all/selectallcommand~SelectAllCommand}.
 
-The command can be executed using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
+You can execute the command using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
 
 ```js
 // Select the entire content of the editor.

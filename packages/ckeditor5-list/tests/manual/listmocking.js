@@ -1,34 +1,34 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals console, window, document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import Indent from '@ckeditor/ckeditor5-indent/src/indent';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
-import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
+import Indent from '@ckeditor/ckeditor5-indent/src/indent.js';
+import Widget from '@ckeditor/ckeditor5-widget/src/widget.js';
+import Table from '@ckeditor/ckeditor5-table/src/table.js';
+import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
+import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils.js';
 import {
 	parse as parseModel,
 	setData as setModelData,
 	getData as getModelData
-} from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+} from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import { modelList, stringifyList } from '../documentlist/_utils/utils';
-import DocumentList from '../../src/documentlist';
+import { modelList, stringifyList } from '../list/_utils/utils.js';
+import List from '../../src/list.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Enter, Typing, Heading, Paragraph, Undo, Clipboard, DocumentList, Indent, Widget, Table, TableToolbar ],
+		plugins: [ Enter, Typing, Heading, Paragraph, Undo, Clipboard, List, Indent, Widget, Table, TableToolbar ],
 		toolbar: [ 'heading', '|', 'bulletedList', 'numberedList', 'outdent', 'indent', '|', 'insertTable', '|', 'undo', 'redo' ],
 		table: {
 			contentToolbar: [
@@ -214,4 +214,3 @@ document.getElementById( 'btn-process-editor-model' ).addEventListener( 'click',
 document.getElementById( 'btn-copy-output' ).addEventListener( 'click', copyOutput );
 document.getElementById( 'data-input' ).addEventListener( 'paste', onPaste );
 document.getElementById( 'chbx-highlight-lists' ).addEventListener( 'change', onHighlightChange );
-

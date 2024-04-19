@@ -1,29 +1,31 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document, window, btoa */
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
-import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
-import LinkImageEditing from '@ckeditor/ckeditor5-link/src/linkimageediting';
-import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting';
-import ImageUploadEditing from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting';
-import ImageUploadProgress from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadprogress';
-import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
-import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting';
-import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import CloudServicesCoreMock from './_utils/cloudservicescoremock';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
+import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
+import LinkImageEditing from '@ckeditor/ckeditor5-link/src/linkimageediting.js';
+import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting.js';
+import ImageUploadEditing from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting.js';
+import ImageUploadProgress from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadprogress.js';
+import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
+import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting.js';
+import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting.js';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import CloudServicesCoreMock from './_utils/cloudservicescoremock.js';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
 
-import CKBoxEditing from '../src/ckboxediting';
-import CKBoxCommand from '../src/ckboxcommand';
+import CKBoxEditing from '../src/ckboxediting.js';
+import CKBoxCommand from '../src/ckboxcommand.js';
+import { blurHashToDataUrl } from '../src/utils.js';
 
 describe( 'CKBoxCommand', () => {
 	let editor, model, command, originalCKBox;
@@ -148,6 +150,14 @@ describe( 'CKBoxCommand', () => {
 
 	describe( 'events', () => {
 		describe( 'opening dialog ("ckbox:open")', () => {
+			beforeEach( () => {
+				sinon.useFakeTimers( { now: Date.now() } );
+			} );
+
+			afterEach( () => {
+				sinon.restore();
+			} );
+
 			it( 'should create a wrapper if it is not yet created and mount it in the document body', () => {
 				command.execute();
 
@@ -205,6 +215,7 @@ describe( 'CKBoxCommand', () => {
 						language: 'es',
 						serviceOrigin: 'https://service.ckeditor.com',
 						tokenUrl: 'token-url',
+						forceDemoLabel: true,
 						unsupportedOption: 'bar'
 					}
 				} );
@@ -222,6 +233,7 @@ describe( 'CKBoxCommand', () => {
 				expect( options ).to.have.property( 'language', 'es' );
 				expect( options ).to.have.property( 'serviceOrigin', 'https://service.ckeditor.com' );
 				expect( options ).to.have.property( 'tokenUrl', 'token-url' );
+				expect( options ).to.have.property( 'forceDemoLabel', true );
 				expect( options ).to.not.have.property( 'defaultUploadCategories' );
 				expect( options ).to.not.have.property( 'ignoreDataId' );
 				expect( options ).to.not.have.property( 'unsupportedOption' );
@@ -259,6 +271,24 @@ describe( 'CKBoxCommand', () => {
 
 				expect( spy.callCount ).to.equal( 1 );
 				expect( command._wrapper ).to.equal( null );
+			} );
+
+			it( 'should focus view after closing the CKBox dialog', () => {
+				const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+
+				const openSpy = sinon.spy();
+				const closeSpy = sinon.spy();
+
+				command.on( 'ckbox:open', openSpy );
+				command.execute();
+
+				command.on( 'ckbox:close', closeSpy );
+				onClose();
+
+				expect( openSpy.callCount ).to.equal( 1 );
+				expect( closeSpy.callCount ).to.equal( 1 );
+
+				sinon.assert.calledOnce( focusSpy );
 			} );
 		} );
 
@@ -322,6 +352,26 @@ describe( 'CKBoxCommand', () => {
 								url: 'https://example.com/workspace1/assets/link-id2/file'
 							}
 						}
+					],
+					imagesWithBlurHash: [
+						{
+							data: {
+								id: 'image-id3',
+								extension: 'png',
+								metadata: {
+									width: 200,
+									height: 100,
+									blurHash: 'KTF55N=ZR4PXSirp5ZOZW9'
+								},
+								name: 'image3',
+								imageUrls: {
+									120: 'https://example.com/workspace1/assets/image-id3/images/120.webp',
+									200: 'https://example.com/workspace1/assets/image-id3/images/200.webp',
+									default: 'https://example.com/workspace1/assets/image-id3/images/200.png'
+								},
+								url: 'https://example.com/workspace1/assets/image-id2/file'
+							}
+						}
 					]
 				};
 			} );
@@ -379,6 +429,8 @@ describe( 'CKBoxCommand', () => {
 										type: 'image/webp'
 									}
 								],
+								imageWidth: 100,
+								imageHeight: 100,
 								imageTextAlternative: ''
 							}
 						},
@@ -396,6 +448,8 @@ describe( 'CKBoxCommand', () => {
 										type: 'image/webp'
 									}
 								],
+								imageWidth: 200,
+								imageHeight: 200,
 								imageTextAlternative: 'foo'
 							}
 						},
@@ -518,8 +572,10 @@ describe( 'CKBoxCommand', () => {
 						'[<imageInline ' +
 							'alt="" ' +
 							'ckboxImageId="image-id1" ' +
+							'height="100" ' +
 							'sources="[object Object]" ' +
-							'src="https://example.com/workspace1/assets/image-id1/images/100.png">' +
+							'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
+							'width="100">' +
 						'</imageInline>]' +
 					'</paragraph>'
 				);
@@ -536,7 +592,52 @@ describe( 'CKBoxCommand', () => {
 								type: 'image/webp'
 							}
 						],
-						src: 'https://example.com/workspace1/assets/image-id1/images/100.png'
+						src: 'https://example.com/workspace1/assets/image-id1/images/100.png',
+						width: 100,
+						height: 100
+					}
+				} );
+			} );
+
+			it( 'should insert an image inline (with blurhash placeholder)', () => {
+				const spy = sinon.spy( editor, 'execute' );
+				const placeholder = blurHashToDataUrl( assets.imagesWithBlurHash[ 0 ].data.metadata.blurHash );
+
+				onChoose( [ assets.imagesWithBlurHash[ 0 ] ] );
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>' +
+						'foo' +
+						'[<imageInline ' +
+							'alt="" ' +
+							'ckboxImageId="image-id3" ' +
+							'height="100" ' +
+							'placeholder="' + placeholder + '" ' +
+							'sources="[object Object]" ' +
+							'src="https://example.com/workspace1/assets/image-id3/images/200.png" ' +
+							'width="200">' +
+						'</imageInline>]' +
+					'</paragraph>'
+				);
+
+				expect( spy.callCount ).to.equal( 1 );
+				expect( spy.args[ 0 ][ 0 ] ).to.equal( 'insertImage' );
+				expect( spy.args[ 0 ][ 1 ] ).to.deep.equal( {
+					source: {
+						alt: '',
+						sources: [
+							{
+								sizes: '(max-width: 200px) 100vw, 200px',
+								srcset:
+									'https://example.com/workspace1/assets/image-id3/images/120.webp 120w,' +
+									'https://example.com/workspace1/assets/image-id3/images/200.webp 200w',
+								type: 'image/webp'
+							}
+						],
+						src: 'https://example.com/workspace1/assets/image-id3/images/200.png',
+						width: 200,
+						height: 100,
+						placeholder
 					}
 				} );
 			} );
@@ -552,8 +653,10 @@ describe( 'CKBoxCommand', () => {
 					'[<imageBlock ' +
 						'alt="foo" ' +
 						'ckboxImageId="image-id2" ' +
+						'height="200" ' +
 						'sources="[object Object]" ' +
-						'src="https://example.com/workspace1/assets/image-id2/images/200.png">' +
+						'src="https://example.com/workspace1/assets/image-id2/images/200.png" ' +
+						'width="200">' +
 					'</imageBlock>]'
 				);
 
@@ -571,7 +674,51 @@ describe( 'CKBoxCommand', () => {
 								type: 'image/webp'
 							}
 						],
-						src: 'https://example.com/workspace1/assets/image-id2/images/200.png'
+						src: 'https://example.com/workspace1/assets/image-id2/images/200.png',
+						width: 200,
+						height: 200
+					}
+				} );
+			} );
+
+			it( 'should insert an image block (with blurhash placeholder)', () => {
+				const spy = sinon.spy( editor, 'execute' );
+				const placeholder = blurHashToDataUrl( assets.imagesWithBlurHash[ 0 ].data.metadata.blurHash );
+
+				setModelData( model, '<paragraph>[]</paragraph>' );
+
+				onChoose( [ assets.imagesWithBlurHash[ 0 ] ] );
+
+				expect( getModelData( model ) ).to.equal(
+					'[<imageBlock ' +
+						'alt="" ' +
+						'ckboxImageId="image-id3" ' +
+						'height="100" ' +
+						'placeholder="' + placeholder + '" ' +
+						'sources="[object Object]" ' +
+						'src="https://example.com/workspace1/assets/image-id3/images/200.png" ' +
+						'width="200">' +
+					'</imageBlock>]'
+				);
+
+				expect( spy.callCount ).to.equal( 1 );
+				expect( spy.args[ 0 ][ 0 ] ).to.equal( 'insertImage' );
+				expect( spy.args[ 0 ][ 1 ] ).to.deep.equal( {
+					source: {
+						alt: '',
+						sources: [
+							{
+								sizes: '(max-width: 200px) 100vw, 200px',
+								srcset:
+									'https://example.com/workspace1/assets/image-id3/images/120.webp 120w,' +
+									'https://example.com/workspace1/assets/image-id3/images/200.webp 200w',
+								type: 'image/webp'
+							}
+						],
+						src: 'https://example.com/workspace1/assets/image-id3/images/200.png',
+						width: 200,
+						height: 100,
+						placeholder
 					}
 				} );
 			} );
@@ -588,8 +735,10 @@ describe( 'CKBoxCommand', () => {
 						'[<imageInline ' +
 							'alt="" ' +
 							'ckboxImageId="image-id1" ' +
+							'height="100" ' +
 							'sources="[object Object]" ' +
-							'src="https://example.com/workspace1/assets/image-id1/images/100.png">' +
+							'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
+							'width="100">' +
 						'</imageInline>]' +
 					'</paragraph>'
 				);
@@ -606,7 +755,9 @@ describe( 'CKBoxCommand', () => {
 								type: 'image/webp'
 							}
 						],
-						src: 'https://example.com/workspace1/assets/image-id1/images/100.png'
+						src: 'https://example.com/workspace1/assets/image-id1/images/100.png',
+						width: 100,
+						height: 100
 					}
 				} );
 			} );
@@ -729,8 +880,10 @@ describe( 'CKBoxCommand', () => {
 							'alt="" ' +
 							'bold="true" ' +
 							'ckboxImageId="image-id1" ' +
+							'height="100" ' +
 							'sources="[object Object]" ' +
-							'src="https://example.com/workspace1/assets/image-id1/images/100.png">' +
+							'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
+							'width="100">' +
 						'</imageInline>]' +
 					'</paragraph>'
 				);
@@ -747,7 +900,9 @@ describe( 'CKBoxCommand', () => {
 								type: 'image/webp'
 							}
 						],
-						src: 'https://example.com/workspace1/assets/image-id1/images/100.png'
+						src: 'https://example.com/workspace1/assets/image-id1/images/100.png',
+						width: 100,
+						height: 100
 					}
 				} );
 			} );
@@ -758,8 +913,8 @@ describe( 'CKBoxCommand', () => {
 				onChoose( [ assets.links[ 0 ], assets.images[ 0 ], assets.links[ 1 ], assets.images[ 1 ] ] );
 
 				expect( getModelData( model ) ).to.equal(
+					'<paragraph>foo</paragraph>' +
 					'<paragraph>' +
-						'foo' +
 						'<$text ' +
 							'ckboxLinkId="link-id1" ' +
 							'linkHref="https://example.com/workspace1/assets/link-id1/file?download=true">' +
@@ -768,9 +923,13 @@ describe( 'CKBoxCommand', () => {
 						'<imageInline ' +
 							'alt="" ' +
 							'ckboxImageId="image-id1" ' +
+							'height="100" ' +
 							'sources="[object Object]" ' +
-							'src="https://example.com/workspace1/assets/image-id1/images/100.png">' +
+							'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
+							'width="100">' +
 						'</imageInline>' +
+					'</paragraph>' +
+					'<paragraph>' +
 						'<$text ' +
 							'ckboxLinkId="link-id2" ' +
 							'linkHref="https://example.com/workspace1/assets/link-id2/file?download=true">' +
@@ -779,17 +938,21 @@ describe( 'CKBoxCommand', () => {
 						'[<imageInline ' +
 							'alt="foo" ' +
 							'ckboxImageId="image-id2" ' +
+							'height="200" ' +
 							'sources="[object Object]" ' +
-							'src="https://example.com/workspace1/assets/image-id2/images/200.png">' +
+							'src="https://example.com/workspace1/assets/image-id2/images/200.png" ' +
+							'width="200">' +
 						'</imageInline>]' +
 					'</paragraph>'
 				);
 
-				expect( spy.callCount ).to.equal( 4 );
-				expect( spy.args[ 0 ][ 0 ] ).to.equal( 'link' );
-				expect( spy.args[ 1 ][ 0 ] ).to.equal( 'insertImage' );
-				expect( spy.args[ 2 ][ 0 ] ).to.equal( 'link' );
-				expect( spy.args[ 3 ][ 0 ] ).to.equal( 'insertImage' );
+				expect( spy.callCount ).to.equal( 6 );
+				expect( spy.args[ 0 ][ 0 ] ).to.equal( 'insertParagraph' );
+				expect( spy.args[ 1 ][ 0 ] ).to.equal( 'link' );
+				expect( spy.args[ 2 ][ 0 ] ).to.equal( 'insertImage' );
+				expect( spy.args[ 3 ][ 0 ] ).to.equal( 'insertParagraph' );
+				expect( spy.args[ 4 ][ 0 ] ).to.equal( 'link' );
+				expect( spy.args[ 5 ][ 0 ] ).to.equal( 'insertImage' );
 			} );
 
 			it( 'should insert multiple images and links in mixed order - link, link, image, image', () => {
@@ -798,13 +961,15 @@ describe( 'CKBoxCommand', () => {
 				onChoose( [ ...assets.links, ...assets.images ] );
 
 				expect( getModelData( model ) ).to.equal(
+					'<paragraph>foo</paragraph>' +
 					'<paragraph>' +
-						'foo' +
 						'<$text ' +
 							'ckboxLinkId="link-id1" ' +
 							'linkHref="https://example.com/workspace1/assets/link-id1/file?download=true">' +
 							'file1' +
 						'</$text>' +
+					'</paragraph>' +
+					'<paragraph>' +
 						'<$text ' +
 							'ckboxLinkId="link-id2" ' +
 							'linkHref="https://example.com/workspace1/assets/link-id2/file?download=true">' +
@@ -813,23 +978,123 @@ describe( 'CKBoxCommand', () => {
 						'<imageInline ' +
 							'alt="" ' +
 							'ckboxImageId="image-id1" ' +
+							'height="100" ' +
 							'sources="[object Object]" ' +
-							'src="https://example.com/workspace1/assets/image-id1/images/100.png">' +
+							'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
+							'width="100">' +
 						'</imageInline>' +
 						'[<imageInline ' +
 							'alt="foo" ' +
 							'ckboxImageId="image-id2" ' +
+							'height="200" ' +
 							'sources="[object Object]" ' +
-							'src="https://example.com/workspace1/assets/image-id2/images/200.png">' +
+							'src="https://example.com/workspace1/assets/image-id2/images/200.png" ' +
+							'width="200">' +
 						'</imageInline>]' +
 					'</paragraph>'
 				);
 
-				expect( spy.callCount ).to.equal( 4 );
-				expect( spy.args[ 0 ][ 0 ] ).to.equal( 'link' );
+				expect( spy.callCount ).to.equal( 6 );
+				expect( spy.args[ 0 ][ 0 ] ).to.equal( 'insertParagraph' );
 				expect( spy.args[ 1 ][ 0 ] ).to.equal( 'link' );
-				expect( spy.args[ 2 ][ 0 ] ).to.equal( 'insertImage' );
-				expect( spy.args[ 3 ][ 0 ] ).to.equal( 'insertImage' );
+				expect( spy.args[ 2 ][ 0 ] ).to.equal( 'insertParagraph' );
+				expect( spy.args[ 3 ][ 0 ] ).to.equal( 'link' );
+				expect( spy.args[ 4 ][ 0 ] ).to.equal( 'insertImage' );
+				expect( spy.args[ 5 ][ 0 ] ).to.equal( 'insertImage' );
+			} );
+
+			it( 'should split heading and insert multiple links', () => {
+				setModelData( model, '<heading1>foo[]bar</heading1>' );
+				const spy = sinon.spy( editor, 'execute' );
+
+				onChoose( [ ...assets.links ] );
+
+				expect( getModelData( model ) ).to.equal(
+					'<heading1>foo</heading1>' +
+					'<paragraph>' +
+						'<$text ' +
+							'ckboxLinkId="link-id1" ' +
+							'linkHref="https://example.com/workspace1/assets/link-id1/file?download=true">' +
+							'file1' +
+						'</$text>' +
+					'</paragraph>' +
+					'<paragraph>' +
+						'[<$text ' +
+							'ckboxLinkId="link-id2" ' +
+							'linkHref="https://example.com/workspace1/assets/link-id2/file?download=true">' +
+							'file2' +
+						'</$text>]' +
+					'</paragraph>' +
+					'<heading1>bar</heading1>'
+				);
+
+				expect( spy.callCount ).to.equal( 4 );
+				expect( spy.args[ 0 ][ 0 ] ).to.equal( 'insertParagraph' );
+				expect( spy.args[ 1 ][ 0 ] ).to.equal( 'link' );
+				expect( spy.args[ 2 ][ 0 ] ).to.equal( 'insertParagraph' );
+				expect( spy.args[ 3 ][ 0 ] ).to.equal( 'link' );
+			} );
+
+			it( 'should insert multiple links before heading', () => {
+				setModelData( model, '<heading1>[]foobar</heading1>' );
+				const spy = sinon.spy( editor, 'execute' );
+
+				onChoose( [ ...assets.links ] );
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>' +
+						'<$text ' +
+							'ckboxLinkId="link-id1" ' +
+							'linkHref="https://example.com/workspace1/assets/link-id1/file?download=true">' +
+							'file1' +
+						'</$text>' +
+					'</paragraph>' +
+					'<paragraph>' +
+						'[<$text ' +
+							'ckboxLinkId="link-id2" ' +
+							'linkHref="https://example.com/workspace1/assets/link-id2/file?download=true">' +
+							'file2' +
+						'</$text>]' +
+					'</paragraph>' +
+					'<heading1>foobar</heading1>'
+				);
+
+				expect( spy.callCount ).to.equal( 4 );
+				expect( spy.args[ 0 ][ 0 ] ).to.equal( 'insertParagraph' );
+				expect( spy.args[ 1 ][ 0 ] ).to.equal( 'link' );
+				expect( spy.args[ 2 ][ 0 ] ).to.equal( 'insertParagraph' );
+				expect( spy.args[ 3 ][ 0 ] ).to.equal( 'link' );
+			} );
+
+			it( 'should insert multiple links after heading', () => {
+				setModelData( model, '<heading1>foobar[]</heading1>' );
+				const spy = sinon.spy( editor, 'execute' );
+
+				onChoose( [ ...assets.links ] );
+
+				expect( getModelData( model ) ).to.equal(
+					'<heading1>foobar</heading1>' +
+					'<paragraph>' +
+						'<$text ' +
+							'ckboxLinkId="link-id1" ' +
+							'linkHref="https://example.com/workspace1/assets/link-id1/file?download=true">' +
+							'file1' +
+						'</$text>' +
+					'</paragraph>' +
+					'<paragraph>' +
+						'[<$text ' +
+							'ckboxLinkId="link-id2" ' +
+							'linkHref="https://example.com/workspace1/assets/link-id2/file?download=true">' +
+							'file2' +
+						'</$text>]' +
+					'</paragraph>'
+				);
+
+				expect( spy.callCount ).to.equal( 4 );
+				expect( spy.args[ 0 ][ 0 ] ).to.equal( 'insertParagraph' );
+				expect( spy.args[ 1 ][ 0 ] ).to.equal( 'link' );
+				expect( spy.args[ 2 ][ 0 ] ).to.equal( 'insertParagraph' );
+				expect( spy.args[ 3 ][ 0 ] ).to.equal( 'link' );
 			} );
 
 			it( 'should insert only links if "insertImage" is disabled', () => {
@@ -840,13 +1105,15 @@ describe( 'CKBoxCommand', () => {
 				onChoose( [ ...assets.links, ...assets.images ] );
 
 				expect( getModelData( model ) ).to.equal(
+					'<paragraph>foo</paragraph>' +
 					'<paragraph>' +
-						'foo' +
 						'<$text ' +
 							'ckboxLinkId="link-id1" ' +
 							'linkHref="https://example.com/workspace1/assets/link-id1/file?download=true">' +
 							'file1' +
 						'</$text>' +
+					'</paragraph>' +
+					'<paragraph>' +
 						'[<$text ' +
 							'ckboxLinkId="link-id2" ' +
 							'linkHref="https://example.com/workspace1/assets/link-id2/file?download=true">' +
@@ -855,9 +1122,11 @@ describe( 'CKBoxCommand', () => {
 					'</paragraph>'
 				);
 
-				expect( spy.callCount ).to.equal( 2 );
-				expect( spy.args[ 0 ][ 0 ] ).to.equal( 'link' );
+				expect( spy.callCount ).to.equal( 4 );
+				expect( spy.args[ 0 ][ 0 ] ).to.equal( 'insertParagraph' );
 				expect( spy.args[ 1 ][ 0 ] ).to.equal( 'link' );
+				expect( spy.args[ 2 ][ 0 ] ).to.equal( 'insertParagraph' );
+				expect( spy.args[ 3 ][ 0 ] ).to.equal( 'link' );
 			} );
 
 			it( 'should insert only images if "link" is disabled', () => {
@@ -873,14 +1142,18 @@ describe( 'CKBoxCommand', () => {
 						'<imageInline ' +
 							'alt="" ' +
 							'ckboxImageId="image-id1" ' +
+							'height="100" ' +
 							'sources="[object Object]" ' +
-							'src="https://example.com/workspace1/assets/image-id1/images/100.png">' +
+							'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
+							'width="100">' +
 						'</imageInline>' +
 						'[<imageInline ' +
 							'alt="foo" ' +
 							'ckboxImageId="image-id2" ' +
+							'height="200" ' +
 							'sources="[object Object]" ' +
-							'src="https://example.com/workspace1/assets/image-id2/images/200.png">' +
+							'src="https://example.com/workspace1/assets/image-id2/images/200.png" ' +
+							'width="200">' +
 						'</imageInline>]' +
 					'</paragraph>'
 				);
@@ -898,6 +1171,14 @@ describe( 'CKBoxCommand', () => {
 				expect( command._chosenAssets.size ).to.equal( 0 );
 				expect( command._wrapper ).to.equal( null );
 			} );
+
+			it( 'should focus view after assets were chosen', () => {
+				const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+
+				onChoose( [ ...assets.images, ...assets.links ] );
+
+				sinon.assert.calledOnce( focusSpy );
+			} );
 		} );
 	} );
 } );
@@ -906,6 +1187,7 @@ function createTestEditor( config = {} ) {
 	return VirtualTestEditor.create( {
 		plugins: [
 			BoldEditing,
+			HeadingEditing,
 			Paragraph,
 			ImageBlockEditing,
 			ImageInlineEditing,
@@ -921,7 +1203,7 @@ function createTestEditor( config = {} ) {
 		substitutePlugins: [
 			CloudServicesCoreMock
 		],
+		image: { insert: { type: 'auto' } },
 		...config
 	} );
 }
-

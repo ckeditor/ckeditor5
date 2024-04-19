@@ -1,14 +1,14 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global Event, console */
 
-import ViewCollection from '../../src/viewcollection';
-import DropdownPanelView from '../../src/dropdown/dropdownpanelview';
-import View from '../../src/view';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import ViewCollection from '../../src/viewcollection.js';
+import DropdownPanelView from '../../src/dropdown/dropdownpanelview.js';
+import View from '../../src/view.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { LabeledFieldView, createLabeledInputText } from '@ckeditor/ckeditor5-ui';
 
 describe( 'DropdownPanelView', () => {

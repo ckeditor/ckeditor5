@@ -1,14 +1,14 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Image from '../src/image';
-import ImageTextAlternative from '../src/imagetextalternative';
-import ImageTextAlternativeEditing from '../src/imagetextalternative/imagetextalternativeediting';
-import ImageTextAlternativeUI from '../src/imagetextalternative/imagetextalternativeui';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Image from '../src/image.js';
+import ImageTextAlternative from '../src/imagetextalternative.js';
+import ImageTextAlternativeEditing from '../src/imagetextalternative/imagetextalternativeediting.js';
+import ImageTextAlternativeUI from '../src/imagetextalternative/imagetextalternativeui.js';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 
 describe( 'ImageTextAlternative', () => {
 	let editor, plugin, editorElement;

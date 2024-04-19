@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -12,6 +12,7 @@
 const upath = require( 'upath' );
 const { EventEmitter } = require( 'events' );
 const releaseTools = require( '@ckeditor/ckeditor5-dev-release-tools' );
+const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
 const { Listr } = require( 'listr2' );
 const updateVersionReferences = require( './utils/updateversionreferences' );
 const buildTsAndDllForCkeditor5Root = require( './utils/buildtsanddllforckeditor5root' );
@@ -55,7 +56,19 @@ const tasks = new Listr( [
 
 			return Promise.reject( 'Aborted due to errors.\n' + errors.map( message => `* ${ message }` ).join( '\n' ) );
 		},
-		skip: cliArguments.nightly
+		skip: () => {
+			// Nightly releases are not described in the changelog.
+			if ( cliArguments.nightly ) {
+				return true;
+			}
+
+			// When compiling the packages only, do not validate the release.
+			if ( cliArguments.compileOnly ) {
+				return true;
+			}
+
+			return false;
+		}
 	},
 	{
 		title: 'Preparation phase.',
@@ -91,6 +104,14 @@ const tasks = new Listr( [
 					}
 				}
 			], taskOptions );
+		},
+		skip: () => {
+			// When compiling the packages only, do not update any values.
+			if ( cliArguments.compileOnly ) {
+				return true;
+			}
+
+			return false;
 		}
 	},
 	{
@@ -166,10 +187,24 @@ const tasks = new Listr( [
 	},
 	{
 		title: 'Clean up phase.',
-		task: () => {
-			return releaseTools.cleanUpPackages( {
-				packagesDirectory: RELEASE_DIRECTORY
-			} );
+		task: ( _, task ) => {
+			return task.newListr( [
+				{
+					title: 'Removing files that will not be published.',
+					task: () => {
+						return releaseTools.cleanUpPackages( {
+							packagesDirectory: RELEASE_DIRECTORY,
+							packageJsonFieldsToRemove: defaults => [ ...defaults, 'engines' ]
+						} );
+					}
+				},
+				{
+					title: 'Removing local typings.',
+					task: () => {
+						return tools.shExec( 'yarn run release:clean', { async: true, verbosity: 'silent' } );
+					}
+				}
+			], taskOptions );
 		}
 	},
 	{
@@ -184,6 +219,19 @@ const tasks = new Listr( [
 					...ctx.updatedFiles
 				]
 			} );
+		},
+		skip: () => {
+			// Nightly releases are not stored in the repository.
+			if ( cliArguments.nightly ) {
+				return true;
+			}
+
+			// When compiling the packages only, do not commit anything.
+			if ( cliArguments.compileOnly ) {
+				return true;
+			}
+
+			return false;
 		}
 	}
 ], getListrOptions( cliArguments ) );

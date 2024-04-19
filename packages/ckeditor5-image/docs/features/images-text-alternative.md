@@ -13,12 +13,12 @@ Image text alternative (the `alt` attribute) helps screen reader users navigate 
 
 ## Demo
 
-The editor below has the base image feature enabled. Click any of the images and use the contextual image toolbar {@icon @ckeditor/ckeditor5-core/theme/icons/low-vision.svg Alternative text} to edit the text alternative.
+The editor below has the base image feature enabled. Click any of the images and use the contextual image toolbar {@icon @ckeditor/ckeditor5-core/theme/icons/text-alternative.svg Alternative text} to edit the text alternative.
 
 {@snippet features/image-text-alternative}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Additional feature information

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,9 @@
  * @module language/textpartlanguagecommand
  */
 
-import type { LanguageDirection } from 'ckeditor5/src/utils';
-import { Command } from 'ckeditor5/src/core';
-import { stringifyLanguageAttribute } from './utils';
+import type { LanguageDirection } from 'ckeditor5/src/utils.js';
+import { Command } from 'ckeditor5/src/core.js';
+import { stringifyLanguageAttribute } from './utils.js';
 
 /**
  * The text part language command plugin.

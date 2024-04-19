@@ -1,15 +1,17 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+/* globals setTimeout */
 
-import ImageInline from '../../src/image/imageinlineediting';
-import ImageBlockEditing from '../../src/image/imageblockediting';
-import ImageCaptionEditing from '../../src/imagecaption/imagecaptionediting';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+
+import ImageInline from '../../src/image/imageinlineediting.js';
+import ImageBlockEditing from '../../src/image/imageblockediting.js';
+import ImageCaptionEditing from '../../src/imagecaption/imagecaptionediting.js';
 
 describe( 'ImageTypeCommand', () => {
 	let editor, blockCommand, inlineCommand, model, root;
@@ -186,14 +188,14 @@ describe( 'ImageTypeCommand', () => {
 			it( 'should convert inline image with srcset attribute to block image', () => {
 				setModelData( model,
 					`<paragraph>
-						[<imageInline src="${ imgSrc }" srcset='{ "data": "small.png 148w, big.png 1024w" }'></imageInline>]
+						[<imageInline src="${ imgSrc }" srcset="small.png 148w, big.png 1024w"></imageInline>]
 					</paragraph>`
 				);
 
 				blockCommand.execute();
 
 				expect( getModelData( model ) ).to.equal(
-					`[<imageBlock src="${ imgSrc }" srcset="{"data":"small.png 148w, big.png 1024w"}"></imageBlock>]`
+					`[<imageBlock src="${ imgSrc }" srcset="small.png 148w, big.png 1024w"></imageBlock>]`
 				);
 			} );
 
@@ -238,6 +240,36 @@ describe( 'ImageTypeCommand', () => {
 
 				expect( result ).to.be.null;
 				expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+			} );
+
+			it( 'should set width and height attributes when converting inline image to block image', async () => {
+				setModelData( model,
+					'<paragraph>' +
+						'[<imageInline src="/assets/sample.png"></imageInline>]' +
+					'</paragraph>'
+				);
+
+				blockCommand.execute();
+				await timeout( 100 );
+
+				expect( getModelData( model ) ).to.equal(
+					'[<imageBlock height="96" src="/assets/sample.png" width="96"></imageBlock>]'
+				);
+			} );
+
+			it( 'should not set width and height when command `setImageSizes` parameter is false', async () => {
+				setModelData( model,
+					'<paragraph>' +
+						'[<imageInline src="/assets/sample.png"></imageInline>]' +
+					'</paragraph>'
+				);
+
+				blockCommand.execute( { setImageSizes: false } );
+				await timeout( 100 );
+
+				expect( getModelData( model ) ).to.equal(
+					'[<imageBlock src="/assets/sample.png"></imageBlock>]'
+				);
 			} );
 
 			describe( 'should preserve markers', () => {
@@ -423,14 +455,14 @@ describe( 'ImageTypeCommand', () => {
 
 			it( 'should convert block image with srcset attribute to inline image', () => {
 				setModelData( model,
-					`[<imageBlock src="${ imgSrc }" srcset='{ "data": "small.png 148w, big.png 1024w" }'></imageBlock>]`
+					`[<imageBlock src="${ imgSrc }" srcset="small.png 148w, big.png 1024w"></imageBlock>]`
 				);
 
 				inlineCommand.execute();
 
 				expect( getModelData( model ) ).to.equal(
 					'<paragraph>' +
-						`[<imageInline src="${ imgSrc }" srcset="{"data":"small.png 148w, big.png 1024w"}"></imageInline>]` +
+						`[<imageInline src="${ imgSrc }" srcset="small.png 148w, big.png 1024w"></imageInline>]` +
 					'</paragraph>'
 				);
 			} );
@@ -467,6 +499,28 @@ describe( 'ImageTypeCommand', () => {
 
 				expect( result ).to.be.null;
 				expect( getModelData( model ) ).to.equal( '<block>[]</block>' );
+			} );
+
+			it( 'should set width and height attributes when converting block image to inline image', async () => {
+				setModelData( model, '[<imageBlock src="/assets/sample.png"></imageBlock>]' );
+
+				inlineCommand.execute();
+				await timeout( 100 );
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>[<imageInline height="96" src="/assets/sample.png" width="96"></imageInline>]</paragraph>'
+				);
+			} );
+
+			it( 'should not set width and height when command `setImageSizes` parameter is false', async () => {
+				setModelData( model, '[<imageBlock src="/assets/sample.png"></imageBlock>]' );
+
+				inlineCommand.execute( { setImageSizes: false } );
+				await timeout( 100 );
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>[<imageInline src="/assets/sample.png"></imageInline>]</paragraph>'
+				);
 			} );
 
 			describe( 'should preserve markers', () => {
@@ -716,5 +770,9 @@ describe( 'ImageTypeCommand', () => {
 					'</paragraph>' );
 			} );
 		} );
+
+		function timeout( ms ) {
+			return new Promise( res => setTimeout( res, ms ) );
+		}
 	} );
 } );

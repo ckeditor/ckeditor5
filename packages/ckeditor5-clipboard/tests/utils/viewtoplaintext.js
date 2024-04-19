@@ -1,11 +1,11 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import viewToPlainText from '../../src/utils/viewtoplaintext';
+import viewToPlainText from '../../src/utils/viewtoplaintext.js';
 
-import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 describe( 'viewToPlainText()', () => {
 	function testViewToPlainText( viewString, expectedText ) {
@@ -64,7 +64,7 @@ describe( 'viewToPlainText()', () => {
 			'<container:p>Foo</container:p>' +
 			'<container:ul>' +
 				'<container:li>A</container:li>' +
-				'<container:li>B</container:li>' +
+				'<container:li><strong>B</strong></container:li>' +
 				'<container:li>C</container:li>' +
 			'</container:ul>' +
 			'<container:p>Bar</container:p>',
@@ -83,6 +83,35 @@ describe( 'viewToPlainText()', () => {
 			'<container:p>Bar</container:p>',
 
 			'Foo\n\nAlt\nCaption\n\nBar'
+		);
+	} );
+
+	it( 'should add two line breaks between document list items', () => {
+		testViewToPlainText(
+			'<container:p>Foo</container:p>' +
+			'<ul>' +
+				'<li><container:p>A</container:p></li>' +
+				'<li><container:p>B</container:p></li>' +
+				'<li><container:p>C</container:p></li>' +
+			'</ul>' +
+			'<container:p>Bar</container:p>',
+
+			'Foo\n\nA\n\nB\n\nC\n\nBar'
+		);
+	} );
+
+	it( 'should add line breaks between two document lists with one item each', () => {
+		testViewToPlainText(
+			'<container:p>Foo</container:p>' +
+			'<ul>' +
+				'<li><span>A</span></li>' +
+			'</ul>' +
+			'<ol>' +
+				'<li><span>B</span></li>' +
+			'</ol>' +
+			'<container:p>Bar</container:p>',
+
+			'Foo\n\nA\n\nB\n\nBar'
 		);
 	} );
 } );

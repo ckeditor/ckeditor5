@@ -1,46 +1,46 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals console, window, document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
-import AutoImage from '@ckeditor/ckeditor5-image/src/autoimage';
-import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
-import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
-import HtmlEmbed from '@ckeditor/ckeditor5-html-embed/src/htmlembed';
-import HtmlComment from '@ckeditor/ckeditor5-html-support/src/htmlcomment';
-import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
-import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
-import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak';
-import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
-import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
-import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
-import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
-import Indent from '@ckeditor/ckeditor5-indent/src/indent';
-import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import Link from '@ckeditor/ckeditor5-link/src/link';
-import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
-import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment.js';
+import AutoImage from '@ckeditor/ckeditor5-image/src/autoimage.js';
+import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock.js';
+import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage.js';
+import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline.js';
+import HtmlEmbed from '@ckeditor/ckeditor5-html-embed/src/htmlembed.js';
+import HtmlComment from '@ckeditor/ckeditor5-html-support/src/htmlcomment.js';
+import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize.js';
+import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage.js';
+import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak.js';
+import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
+import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption.js';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
+import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload.js';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
+import Image from '@ckeditor/ckeditor5-image/src/image.js';
+import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption.js';
+import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle.js';
+import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar.js';
+import Indent from '@ckeditor/ckeditor5-indent/src/indent.js';
+import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock.js';
+import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
+import Link from '@ckeditor/ckeditor5-link/src/link.js';
+import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Table from '@ckeditor/ckeditor5-table/src/table.js';
+import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
+import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat.js';
 
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
-import DocumentList from '../../src/documentlist';
+import List from '../../src/documentlist.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -48,7 +48,7 @@ ClassicEditor
 			Essentials, BlockQuote, Bold, Heading, Image, ImageCaption, ImageStyle, ImageToolbar, Indent, IndentBlock, Italic, Link,
 			MediaEmbed, Paragraph, Table, TableToolbar, CodeBlock, TableCaption, EasyImage, ImageResize, LinkImage,
 			AutoImage, HtmlEmbed, HtmlComment, Alignment, PageBreak, HorizontalLine, ImageUpload,
-			CloudServices, SourceEditing, DocumentList, Autoformat
+			CloudServices, SourceEditing, List, Autoformat
 		],
 		toolbar: [
 			'sourceEditing', '|',
@@ -93,7 +93,7 @@ ClassicEditor
 			],
 			toolbar: [
 				'imageTextAlternative', 'toggleImageCaption', '|',
-				'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', 'imageStyle:side', '|',
+				'imageStyle:inline', 'imageStyle:breakText', 'imageStyle:wrapText', '|',
 				'resizeImage'
 			]
 		},

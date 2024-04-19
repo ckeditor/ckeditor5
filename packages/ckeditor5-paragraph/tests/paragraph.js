@@ -1,21 +1,21 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Paragraph from '../src/paragraph';
-import ParagraphCommand from '../src/paragraphcommand';
-import InsertParagraphCommand from '../src/insertparagraphcommand';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import Paragraph from '../src/paragraph.js';
+import ParagraphCommand from '../src/paragraphcommand.js';
+import InsertParagraphCommand from '../src/insertparagraphcommand.js';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import {
 	getData as getModelData,
 	setData as setModelData,
 	stringify as stringifyModel
-} from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+} from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
-import ModelDocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment';
-import ModelText from '@ckeditor/ckeditor5-engine/src/model/text';
+import ModelDocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment.js';
+import ModelText from '@ckeditor/ckeditor5-engine/src/model/text.js';
 
 describe( 'Paragraph feature', () => {
 	let model, editor, doc, root;

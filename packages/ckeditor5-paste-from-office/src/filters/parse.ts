@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -14,9 +14,9 @@ import {
 	ViewDocument,
 	type StylesProcessor,
 	type ViewDocumentFragment
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
-import { normalizeSpacing, normalizeSpacerunSpans } from './space';
+import { normalizeSpacing, normalizeSpacerunSpans } from './space.js';
 
 /**
  * Parses the provided HTML extracting contents of `<body>` and `<style>` tags.
@@ -28,6 +28,10 @@ export function parseHtml( htmlString: string, stylesProcessor: StylesProcessor 
 
 	// Remove Word specific "if comments" so content inside is not omitted by the parser.
 	htmlString = htmlString.replace( /<!--\[if gte vml 1]>/g, '' );
+
+	// Clean the <head> section of MS Windows specific tags. See https://github.com/ckeditor/ckeditor5/issues/15333.
+	// The regular expression matches the <o:SmartTagType> tag with optional attributes (with or without values).
+	htmlString = htmlString.replace( /<o:SmartTagType(?:\s+[^\s>=]+(?:="[^"]*")?)*\s*\/?>/gi, '' );
 
 	const normalizedHtml = normalizeSpacing( cleanContentAfterBody( htmlString ) );
 

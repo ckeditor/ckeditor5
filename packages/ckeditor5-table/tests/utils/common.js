@@ -1,16 +1,17 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { setData as setModelData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import TableEditing from '../../src/tableediting';
-import { modelTable } from '../_utils/utils';
+import TableEditing from '../../src/tableediting.js';
+import { modelTable } from '../_utils/utils.js';
 
-import { isHeadingColumnCell } from '../../src/utils/common';
+import { getSelectionAffectedTable, isHeadingColumnCell } from '../../src/utils/common.js';
+import Selection from '@ckeditor/ckeditor5-engine/src/model/selection.js';
 
 describe( 'table utils', () => {
 	let editor, model, modelRoot, tableUtils;
@@ -71,6 +72,57 @@ describe( 'table utils', () => {
 				const tableCell = modelRoot.getNodeByPath( [ 0, 0, 1 ] );
 
 				expect( isHeadingColumnCell( tableUtils, tableCell ) ).to.be.false;
+			} );
+		} );
+
+		describe( 'getSelectionAffectedTable', () => {
+			it( 'should return null if table is not present', () => {
+				setModelData( model, '<paragraph>Foo[]</paragraph>' );
+				const selection = new Selection( model.createPositionFromPath( modelRoot, [ 0 ] ) );
+
+				const tableElement = getSelectionAffectedTable( selection );
+
+				expect( tableElement ).to.be.null;
+			} );
+
+			it( 'should return table if present higher in the model tree', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ]
+				] ) );
+
+				const selection = new Selection( model.createPositionFromPath( modelRoot, [ 0, 0, 0 ] ) );
+				const tableElement = getSelectionAffectedTable( selection );
+
+				expect( tableElement ).to.equal( modelRoot.getNodeByPath( [ 0 ] ) );
+			} );
+
+			it( 'should return table if selected', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ]
+				] ) );
+
+				const selection = new Selection( model.createRangeOn( modelRoot.getChild( 0 ) ) );
+				const tableElement = getSelectionAffectedTable( selection );
+
+				expect( tableElement ).to.equal( modelRoot.getNodeByPath( [ 0 ] ) );
+			} );
+
+			it( 'should return selected table if selected inside other table', () => {
+				const innerTable = modelTable( [
+					[ 'a', 'b' ],
+					[ 'c', 'd' ]
+				] );
+				setModelData( model, modelTable( [
+					[ innerTable, '01' ],
+					[ '10', '11' ]
+				] ) );
+
+				const selection = new Selection( model.createRangeOn( modelRoot.getNodeByPath( [ 0, 0, 0, 0 ] ) ) );
+				const tableElement = getSelectionAffectedTable( selection );
+
+				expect( tableElement ).to.equal( modelRoot.getNodeByPath( [ 0, 0, 0, 0 ] ) );
 			} );
 		} );
 	} );

@@ -1,16 +1,17 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals Event, document */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import ButtonView from '../../src/button/buttonview';
-import IconView from '../../src/icon/iconview';
-import View from '../../src/view';
-import ViewCollection from '../../src/viewcollection';
-import env from '@ckeditor/ckeditor5-utils/src/env';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import ButtonView from '../../src/button/buttonview.js';
+import IconView from '../../src/icon/iconview.js';
+import View from '../../src/view.js';
+import ViewCollection from '../../src/viewcollection.js';
+import env from '@ckeditor/ckeditor5-utils/src/env.js';
+import { ButtonLabelView } from '../../src/index.js';
 
 describe( 'ButtonView', () => {
 	let locale, view;
@@ -45,6 +46,64 @@ describe( 'ButtonView', () => {
 
 		it( 'creates #iconView', () => {
 			expect( view.iconView ).to.be.instanceOf( IconView );
+		} );
+
+		describe( 'label', () => {
+			it( 'uses ButtonLabelView by default', () => {
+				expect( view.labelView ).to.be.instanceOf( ButtonLabelView );
+
+				view.set( {
+					labelStyle: 'color: red',
+					label: 'bar'
+				} );
+
+				expect( view.labelView.id ).to.equal( view.element.getAttribute( 'aria-labelledby' ) );
+				expect( view.labelView.element.getAttribute( 'style' ) ).to.equal( 'color: red' );
+				expect( view.labelView.element.textContent ).to.equal( 'bar' );
+			} );
+
+			it( 'accepts a custom label instance that implements the same button label interface', () => {
+				class CustomLabel extends View {
+					constructor() {
+						super();
+
+						const bind = this.bindTemplate;
+
+						this.set( {
+							text: undefined,
+							style: undefined,
+							id: undefined
+						} );
+
+						this.setTemplate( {
+							tag: 'span',
+							attributes: {
+								id: bind.to( 'id' ),
+								style: bind.to( 'style' )
+							},
+							children: [
+								{ text: bind.to( 'text' ) }
+							]
+						} );
+					}
+				}
+
+				const view = new ButtonView( locale, new CustomLabel() );
+
+				view.set( {
+					labelStyle: 'color: red',
+					label: 'bar'
+				} );
+
+				view.render();
+
+				expect( view.labelView ).to.be.instanceOf( CustomLabel );
+				expect( view.labelView.element.id ).to.equal( view.element.getAttribute( 'aria-labelledby' ) );
+				expect( view.labelView.element.getAttribute( 'style' ) ).to.equal( 'color: red' );
+				expect( view.labelView.element.textContent ).to.equal( 'bar' );
+
+				view.destroy();
+			} );
 		} );
 	} );
 
@@ -298,20 +357,17 @@ describe( 'ButtonView', () => {
 				expect( view.element.hasAttribute( 'aria-pressed' ) ).to.be.false;
 			} );
 
-			it( '-checked reacts on #isOn', () => {
-				view.isOn = true;
-				expect( view.element.attributes[ 'aria-checked' ].value ).to.equal( 'true' );
-
-				view.isOn = false;
-				expect( view.element.hasAttribute( 'aria-checked' ) ).to.be.false;
-			} );
-
 			it( '-label reacts on #ariaLabel', () => {
 				view.ariaLabel = undefined;
 				expect( view.element.hasAttribute( 'aria-label' ) ).to.be.false;
 
 				view.ariaLabel = 'Foo';
 				expect( view.element.attributes[ 'aria-label' ].value ).to.equal( 'Foo' );
+			} );
+
+			it( '-checked is not present', () => {
+				view.isOn = true;
+				expect( view.element.hasAttribute( 'aria-checked' ) ).to.be.false;
 			} );
 		} );
 

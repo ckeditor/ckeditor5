@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,9 @@
  * @module link/utils/manualdecorator
  */
 
-import { ObservableMixin, type ArrayOrItem } from 'ckeditor5/src/utils';
-import type { MatcherPattern, MatcherObjectPattern } from 'ckeditor5/src/engine';
-import type { NormalizedLinkDecoratorManualDefinition } from '../utils';
+import { ObservableMixin, type ArrayOrItem } from 'ckeditor5/src/utils.js';
+import type { MatcherPattern, MatcherObjectPattern } from 'ckeditor5/src/engine.js';
+import type { NormalizedLinkDecoratorManualDefinition } from '../utils.js';
 
 /**
  * Helper class that stores manual decorators with observable {@link module:link/utils/manualdecorator~ManualDecorator#value}

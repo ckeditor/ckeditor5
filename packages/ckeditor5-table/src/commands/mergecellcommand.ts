@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -11,15 +11,15 @@ import type {
 	Element,
 	Node,
 	Writer
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
-import { Command, type Editor } from 'ckeditor5/src/core';
-import TableWalker from '../tablewalker';
-import { isHeadingColumnCell } from '../utils/common';
-import { removeEmptyRowsColumns } from '../utils/structure';
-import type { ArrowKeyCodeDirection } from 'ckeditor5/src/utils';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
+import TableWalker from '../tablewalker.js';
+import { isHeadingColumnCell } from '../utils/common.js';
+import { removeEmptyRowsColumns } from '../utils/structure.js';
+import type { ArrowKeyCodeDirection } from 'ckeditor5/src/utils.js';
 
-import type TableUtils from '../tableutils';
+import type TableUtils from '../tableutils.js';
 
 /**
  * The merge cell command.
@@ -164,7 +164,7 @@ function getHorizontalCell( tableCell: Element, direction: ArrowKeyCodeDirection
 	const tableRow = tableCell.parent!;
 	const table = tableRow.parent as Element;
 	const horizontalCell = direction == 'right' ? tableCell.nextSibling : tableCell.previousSibling;
-	const hasHeadingColumns = ( table.getAttribute( 'headingColumns' ) || 0 ) > 0;
+	const hasHeadingColumns = ( table.getAttribute( 'headingColumns' ) as number || 0 ) > 0;
 
 	if ( !horizontalCell ) {
 		return;

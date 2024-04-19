@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,21 +10,20 @@
 import {
 	Editor,
 	Context,
-	DataApiMixin,
 	ElementApiMixin,
 	attachToForm,
 	secureSourceElement,
 	type EditorConfig,
 	type EditorReadyEvent
-} from 'ckeditor5/src/core';
+} from 'ckeditor5/src/core.js';
 
-import { BalloonToolbar } from 'ckeditor5/src/ui';
-import { CKEditorError, getDataFromElement } from 'ckeditor5/src/utils';
+import { BalloonToolbar } from 'ckeditor5/src/ui.js';
+import { CKEditorError, getDataFromElement } from 'ckeditor5/src/utils.js';
 
-import { ContextWatchdog, EditorWatchdog } from 'ckeditor5/src/watchdog';
+import { ContextWatchdog, EditorWatchdog } from 'ckeditor5/src/watchdog.js';
 
-import BalloonEditorUI from './ballooneditorui';
-import BalloonEditorUIView from './ballooneditoruiview';
+import BalloonEditorUI from './ballooneditorui.js';
+import BalloonEditorUIView from './ballooneditoruiview.js';
 
 import { isElement as _isElement } from 'lodash-es';
 
@@ -52,7 +51,7 @@ import { isElement as _isElement } from 'lodash-es';
  * Read more about initializing the editor from source or as a build in
  * {@link module:editor-balloon/ballooneditor~BalloonEditor.create `BalloonEditor.create()`}.
  */
-export default class BalloonEditor extends DataApiMixin( ElementApiMixin( Editor ) ) {
+export default class BalloonEditor extends ElementApiMixin( Editor ) {
 	/**
 	 * @inheritDoc
 	 */

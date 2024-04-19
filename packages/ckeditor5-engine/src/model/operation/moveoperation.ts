@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,15 +7,15 @@
  * @module engine/model/operation/moveoperation
  */
 
-import Operation from './operation';
-import Position from '../position';
-import Range from '../range';
-import { _move } from './utils';
-import type { Selectable } from '../selection';
+import Operation from './operation.js';
+import Position from '../position.js';
+import Range from '../range.js';
+import { _move } from './utils.js';
+import type { Selectable } from '../selection.js';
 
 import { CKEditorError, compareArrays } from '@ckeditor/ckeditor5-utils';
 
-import type Document from '../document';
+import type Document from '../document.js';
 
 // @if CK_DEBUG_ENGINE // const ModelRange = require( '../range' ).default;
 

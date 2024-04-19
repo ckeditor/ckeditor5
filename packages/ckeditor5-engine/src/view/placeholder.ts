@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,11 +9,11 @@
 
 import '../../theme/placeholder.css';
 
-import type Document from './document';
-import type DowncastWriter from './downcastwriter';
-import type EditableElement from './editableelement';
-import type Element from './element';
-import type View from './view';
+import type Document from './document.js';
+import type DowncastWriter from './downcastwriter.js';
+import type EditableElement from './editableelement.js';
+import type Element from './element.js';
+import type View from './view.js';
 
 import { logWarning, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 

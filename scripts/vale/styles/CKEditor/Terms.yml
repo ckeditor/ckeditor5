@@ -1,0 +1,117 @@
+extends: substitution
+message: "Use '%s' instead of '%s'."
+level: error
+action:
+  name: replace
+swap:
+  "(?:kill|terminate|abort)": stop|exit|cancel|end
+  admin: administrator
+  a\.k\.a|aka: or|also known as
+  all caps: uppercase
+  alt: alternative
+  android: Android
+  Api|api: API
+  auto correct|auto-correct: autocorrect
+  auto format|auto-format: autoformat
+  auto formatting|auto-formatting: autoformatting
+  auto link|auto-link: autolink
+  auto save|auto-save: autosave
+  auto saving|auto-saving: autosaving
+  AWS Bedrock: Amazon Bedrock
+  back-end|back end|back–end: backend
+  backwards compatibility: backward compatibility
+  backwards compatible: backward compatible
+  boolean: Boolean
+  bugfix: bug fix
+  bugfixes: bug fixes
+  byproduct: by-product
+  builtin|built in: built-in
+  can not: cannot
+  check box: checkbox
+  Ckeditor|CKeditor|CK Editor|CK editor: CKEditor
+  Cksource|CKsource|CK Source: CKSource
+  clean-up: cleanup
+  click on: click|click in
+  clicking on: clicking|clicking in
+  config: configuration
+  data are: data is
+  deselect: clear
+  dev environment: development environment
+  dev server: development server
+  dialog box|dialogue box: dialog
+  docs: documentation
+  doctype: DOCTYPE
+  double click: double-click
+  drop-down: dropdown
+  drop-downs: dropdowns
+  dummy: placeholder|sample|fake
+  "(?:e-mail|Email|E-mail)": email
+  Fckeditor|FCkeditor|FCKEditor: FCKeditor
+  fewer data: less data
+  filename: file name
+  front-end|front end|front–end: frontend
+  git: Git
+  Github: GitHub
+  grayed-out|greyed-out: unavailable
+  hard code|hardcode: hard-code
+  hard coding|hardcoding: hard-coding
+  "[Ii]n order to": to
+  Javascript: JavaScript
+  (?<!.)JS: JavaScript
+  LINUX|linux: Linux
+  Lo-Dash|lodash: Lodash
+  lower case: lowercase
+  MacOS|Mac OS: macOS
+  markdown|MarkDown: Markdown
+  mark-up: markup
+  "(?:mongoDB|Mongodb|Mongo-db|Mongo DB)": MongoDB
+  "(?:MSExcel|MS Excel)": Microsoft Excel
+  "(?:MSOffice|MS Office)": Microsoft Office
+  "(?:MSWord|MS Word)": Microsoft Word
+  "(?:[nN]odejs|[nN]ode.JS|node.js)": Node.js
+  NPM: npm
+  non-real-time|non real-time|non real time|non-RTC: asynchronous
+  on Chrome: in Chrome
+  on Edge: in Edge
+  on Firefox: in Firefox
+  on-premise|on-prem: on-premises
+  plaintext|plain-text: plain text
+  plug-in: plugin
+  popup: pop-up
+  preconfigure: pre-configure
+  preconfigured: pre-configured
+  preformat: pre-format
+  preformatted: pre-formatted
+  premade: pre-made
+  prod: production environment
+  (?<!in) real time: real-time
+  regex: regular expression
+  repo: repository
+  right click: right-click
+  rule set: ruleset
+  SAAS: SaaS
+  sanity (?:check|test): check for completeness
+  semver: SemVer
+  spellcheck: spell check
+  spellchecker: spell checker
+  spellchecking: spell checking
+  stand alone|stand-alone: standalone
+  strike-through|strike through: strikethrough
+  stylesheet: style sheet
+  stylesheets: style sheets
+  super-build: superbuild
+  svg: SVG
+  titlecase: title case
+  (?i)todo list: to-do list
+  (?<!.)TS: TypeScript
+  Typescript: TypeScript
+  (?i)typings: types|type definitions
+  "un(?:check|select)": clear
+  upper case: uppercase
+  url(?!-parse): URL
+  utils: utilities
+  walk-through: walkthrough
+  Webpack: webpack
+  webpage: web page|page|website
+  web site: website
+  yarn: Yarn

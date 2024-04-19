@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Hindi (https://app.transifex.com/ckeditor/teams/11143/hi/)\n"
 "Language: hi\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "The label for the image widget."
 msgid "image widget"
@@ -67,6 +68,30 @@ msgstr "Enter image caption"
 msgctxt "The label for the insert image toolbar button."
 msgid "Insert image"
 msgstr "Insert image"
+
+msgctxt "The label for the replace image toolbar button."
+msgid "Replace image"
+msgstr "इमेज बदलें"
+
+msgctxt "The label for the upload image from computer toolbar button with visible label in insert image dropdown."
+msgid "Upload from computer"
+msgstr "कंप्यूटर से अपलोड करे"
+
+msgctxt "The label for the replace image by upload from computer toolbar button with visible label in insert image dropdown."
+msgid "Replace from computer"
+msgstr "कंप्यूटर से बदलें"
+
+msgctxt "The label for the upload image from computer toolbar button."
+msgid "Upload image from computer"
+msgstr "कंप्यूटर से इमेज अपलोड करें"
+
+msgctxt "The label for the upload image from computer menu bar button."
+msgid "Image from computer"
+msgstr "कंप्यूटर से इमेज"
+
+msgctxt "The label for the replace image by upload from computer toolbar button."
+msgid "Replace image from computer"
+msgstr "कंप्यूटर से इमेज बदलें"
 
 msgctxt "The title of the notification displayed when upload fails."
 msgid "Upload failed"

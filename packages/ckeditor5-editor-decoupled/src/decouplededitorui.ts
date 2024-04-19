@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,16 +9,17 @@
 
 import {
 	type Editor
-} from 'ckeditor5/src/core';
+} from 'ckeditor5/src/core.js';
 
 import {
 	EditorUI,
+	normalizeMenuBarConfig,
 	type EditorUIReadyEvent
-} from 'ckeditor5/src/ui';
+} from 'ckeditor5/src/ui.js';
 
-import { enablePlaceholder } from 'ckeditor5/src/engine';
+import { enablePlaceholder } from 'ckeditor5/src/engine.js';
 
-import type DecoupledEditorUIView from './decouplededitoruiview';
+import type DecoupledEditorUIView from './decouplededitoruiview.js';
 
 /**
  * The decoupled editor UI class.
@@ -80,6 +81,7 @@ export default class DecoupledEditorUI extends EditorUI {
 
 		this._initPlaceholder();
 		this._initToolbar();
+		this._initMenuBar();
 		this.fire<EditorUIReadyEvent>( 'ready' );
 	}
 
@@ -108,6 +110,36 @@ export default class DecoupledEditorUI extends EditorUI {
 
 		// Register the toolbar so it becomes available for Alt+F10 and Esc navigation.
 		this.addToolbar( view.toolbar );
+	}
+
+	/**
+	 * Initializes the editor menu bar.
+	 */
+	private _initMenuBar(): void {
+		const editor = this.editor;
+		const menuBarViewElement = this.view.menuBarView.element!;
+		const view = this.view;
+
+		this.focusTracker.add( menuBarViewElement );
+		editor.keystrokes.listenTo( menuBarViewElement );
+
+		const normalizedMenuBarConfig = normalizeMenuBarConfig( editor.config.get( 'menuBar' ) || {} );
+
+		view.menuBarView.fillFromConfig( normalizedMenuBarConfig, this.componentFactory );
+
+		editor.keystrokes.set( 'Esc', ( data, cancel ) => {
+			if ( menuBarViewElement.contains( this.focusTracker.focusedElement ) ) {
+				editor.editing.view.focus();
+				cancel();
+			}
+		} );
+
+		editor.keystrokes.set( 'Alt+F9', ( data, cancel ) => {
+			if ( !menuBarViewElement.contains( this.focusTracker.focusedElement ) ) {
+				this.view.menuBarView.focus();
+				cancel();
+			}
+		} );
 	}
 
 	/**

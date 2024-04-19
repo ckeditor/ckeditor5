@@ -13,7 +13,7 @@ Currently, our `highlight` plugin requires the user to click the button in the e
 
 ## Adding keyboard shortcuts
 
-A common shortcut for highlighting text is <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>H</kbd> (on Windows systems), so this is what we are going to use in our plugin. On MacOS these keystrokes will get automatically translated to <kbd>Cmd</kbd> + <kbd>Alt</kbd> + <kbd>H</kbd>
+A common shortcut for highlighting text is <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>H</kbd> (on Windows systems), so this is what we are going to use in our plugin. On macOS these keystrokes will get automatically translated to <kbd>Cmd</kbd> + <kbd>Alt</kbd> + <kbd>H</kbd>
 
 To execute the `highlight` command when those keys are pressed, add the following code to the end of the `Highlight` function:
 
@@ -30,6 +30,29 @@ editor.keystrokes.set( 'Ctrl+Alt+H', ( event, cancel ) => {
 } );
 ```
 
+## Adding shortcut information to the Accessibility help dialog
+
+The {@link features/accessibility#displaying-keyboard-shortcuts-in-the-editor Accessibility help dialog} displays a complete list of available keyboard shortcuts with their descriptions. It does not know about the [shortcut we just added](#adding-keyboard-shortcuts), though.
+
+The dialog reads from the {@link module:core/accessibility~Accessibility `editor.accessibility`} namespace where all the information about keystrokes and their accessible labels is stored. There is an API to add new entries: ({@link module:core/accessibility~Accessibility#addKeystrokeInfos}, {@link module:core/accessibility~Accessibility#addKeystrokeInfoGroup}, and {@link module:core/accessibility~Accessibility#addKeystrokeInfoCategory} methods).
+
+In this case, a simple `editor.accessibility.addKeystrokeInfos( ... )` is all you need for the Accessibility help dialog to learn about the new shortcut:
+
+```js
+const t = editor.t;
+
+editor.accessibility.addKeystrokeInfos( {
+	keystrokes: [
+		{
+			label: t( 'Highlight text' ),
+			keystroke: 'Ctrl+Alt+H'
+		}
+	]
+} );
+```
+
+You can learn more about the {@link module:ui/editorui/accessibilityhelp/accessibilityhelp~AccessibilityHelp} plugin and the {@link module:core/accessibility~Accessibility `editor.accessibility`} namespace in the API reference.
+
 ## Updating button tooltip
 
 When you hover over the "Undo" and "Redo" buttons, you will see a tooltip containing the name of the operation and their respective keyboard shortcuts. However, when hovering over the "Highlight" button, the keyboard shortcut is missing.
@@ -42,7 +65,7 @@ button.set( {
 	withText: true,
 	tooltip: true,
 	isToggleable: true,
-	keystroke: 'Ctrl+Alt+H' // Add this attribute
+	keystroke: 'Ctrl+Alt+H' // Add this attribute.
 } );
 ```
 
@@ -72,7 +95,7 @@ editor.editing.view.document.on( 'keydown:5570632', ( event, data ) => {
 
 As you can see above, we registered a listener that listens to the events fired when the <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>H</kbd> keys are pressed. When this happens, the callback is called and it executes the `highlight` command.
 
-To make sure that nothing unexpected happens (for example if some browser extension also uses this keyboard shortcut), we stop further propagation of the event to prevent any other DOM or framework listeners from reacting to this key combination and mark the event as handled.
+To make sure that nothing unexpected happens (for example if some browser extension also uses this keyboard shortcut), we stop further propagation of the event. This prevents any other DOM or framework listeners from reacting to this key combination and marks the event as handled.
 
 ## What's next
 

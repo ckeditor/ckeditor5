@@ -1,11 +1,11 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type { DowncastAttributeEvent, Element, UpcastElementEvent } from 'ckeditor5/src/engine';
-import { first, type GetCallback } from 'ckeditor5/src/utils';
-import type { ImageStyleOptionDefinition } from '../imageconfig';
+import type { DowncastAttributeEvent, Element, UpcastElementEvent } from 'ckeditor5/src/engine.js';
+import { first, type GetCallback } from 'ckeditor5/src/utils.js';
+import type { ImageStyleOptionDefinition } from '../imageconfig.js';
 
 /**
  * @module image/imagestyle/converters

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,14 +7,14 @@
  * @module engine/view/document
  */
 
-import DocumentSelection from './documentselection';
-import BubblingEmitterMixin from './observer/bubblingemittermixin';
+import DocumentSelection from './documentselection.js';
+import BubblingEmitterMixin from './observer/bubblingemittermixin.js';
 
 import { Collection, ObservableMixin } from '@ckeditor/ckeditor5-utils';
 
-import type { StylesProcessor } from './stylesmap';
-import type RootEditableElement from './rooteditableelement';
-import type DowncastWriter from './downcastwriter';
+import type { StylesProcessor } from './stylesmap.js';
+import type RootEditableElement from './rooteditableelement.js';
+import type DowncastWriter from './downcastwriter.js';
 
 // @if CK_DEBUG_ENGINE // const { logDocument } = require( '../dev-utils/utils' );
 
@@ -155,6 +155,8 @@ export default class Document extends BubblingEmitterMixin( ObservableMixin() ) 
 	 * 		// Let other post-fixers know that something changed.
 	 * 		return true;
 	 * 	}
+	 *
+	 * 	return false;
 	 * } );
 	 * ```
 	 *
@@ -175,7 +177,7 @@ export default class Document extends BubblingEmitterMixin( ObservableMixin() ) 
 	 * Destroys this instance. Makes sure that all observers are destroyed and listeners removed.
 	 */
 	public destroy(): void {
-		this.roots.map( root => root.destroy() );
+		this.roots.forEach( root => root.destroy() );
 		this.stopListening();
 	}
 
@@ -218,8 +220,6 @@ export type ViewDocumentPostFixer = ( writer: DowncastWriter ) => boolean;
  * * `children` - for child list changes,
  * * `attributes` - for element attributes changes,
  * * `text` - for text nodes changes.
- *
- * @typedef {String} module:engine/view/document~ChangeType
  */
 export type ChangeType = 'children' | 'attributes' | 'text';
 

@@ -1,15 +1,15 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import EditingController from '../../src/controller/editingcontroller';
+import EditingController from '../../src/controller/editingcontroller.js';
 
-import Model from '../../src/model/model';
-import ModelText from '../../src/model/text';
+import Model from '../../src/model/model.js';
+import ModelText from '../../src/model/text.js';
 
-import MarkerOperation from '../../src/model/operation/markeroperation';
-import { StylesProcessor } from '../../src/view/stylesmap';
+import MarkerOperation from '../../src/model/operation/markeroperation.js';
+import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'Bug ckeditor5-engine@1323', () => {
 	describe( 'constructor()', () => {

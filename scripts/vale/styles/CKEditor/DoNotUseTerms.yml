@@ -1,0 +1,25 @@
+---
+# Error: CKEditor.DoNotUseTerms
+#
+# Recommends alternatives to some phrases that shouldn't be used in technical documentation.
+extends: substitution
+ignorecase: true
+level: warning
+message: "%s"
+swap:
+  # Start each error message with "Do not use ..."
+  # Error messages must be single quoted.
+  and/or: 'Do not use "and/or". Depending on the context, use one of the following constructions: "a and b", "a or b", or "a, b, or both".'
+  basically: 'Do not use "basically". "Basically" is another term for "in principle" or "fundamentally".'
+  bear in mind|keep in mind that|note that|remember that: 'Do not use empty phrases like "bear/keep in mind", "note that", "remember that". They bring little value. Focus on the key message.'
+  congratulations: 'Do not use "congratulations" in technical information.'
+  debuggable: 'Do not use "debuggable". Rephrase the sentence to use the verb or noun debug. For example, change rebuild the debuggable version to rebuild the version that can be debugged.'
+  disable: 'Do not use "disable" to describe making a command or function inactive or unavailable. Replace with specific, plain language phrases, such as "turn off", "hide", "make unavailable", "make inactive", "block", or "remove".'
+  disabled: 'Do not use "disabled". As a state, replace "disabled" with descriptors such as "inactive", "unavailable", or "off".'
+  he|she: 'Do not user gender pronouns like "he" or "she". Use "they" instead or rewrite, for example to "you".'
+  his|her: 'Do not use gender pronouns like "his" or "her". Use "their" instead or rewrite, for example to "your".'
+  it is possible: 'Do not use "it is possible". Use "You can" instead.'
+  overhead: 'Do not use "overhead". Use terminology that is more specific. For example, write "running large queries can increase processor usage".'
+  please: 'Do not use "please" in technical documentation.'
+  respective|respectively: 'Do not use "respective" or "respectively". Rewrite to avoid using these words.'
+  ", that": 'Do not place a comma before "that".'

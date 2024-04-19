@@ -1,21 +1,21 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
+/* global document, window */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection.js';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import FindAndReplace from '../src/findandreplace';
-import FindAndReplaceUI from '../src/findandreplaceui';
-import FindAndReplaceEditing from '../src/findandreplaceediting';
+import FindAndReplace from '../src/findandreplace.js';
+import FindAndReplaceUI from '../src/findandreplaceui.js';
+import FindAndReplaceEditing from '../src/findandreplaceediting.js';
 
 describe( 'FindAndReplace', () => {
 	// Data with 8 blocks that can contain $text.
@@ -132,117 +132,250 @@ describe( 'FindAndReplace', () => {
 			stopSpy.restore();
 			stateClearSpy.restore();
 
-			expect( stopSpy.calledOnce ).to.true;
-			expect( stateClearSpy.calledOnce ).to.true;
+			expect( stopSpy.called ).to.true;
+			expect( stateClearSpy.called ).to.true;
 		} );
 	} );
 
 	describe( 'integration', () => {
-		let toolbarDropdownView;
-
-		beforeEach( () => {
-			toolbarDropdownView = editor.ui.view.toolbar.items
-				.find( item => item.buttonView && item.buttonView.label == 'Find and replace' );
-		} );
-
 		describe( 'mocks', () => {
-			// Verifying mocks from https://github.com/ckeditor/ckeditor5/issues/9719#issuecomment-857557024.
-			it( 'has a proper initial state', () => {
-				// "Initial state" mock.
-				editor.setData( LONG_TEXT );
+			describe( 'with dropdown UI', () => {
+				let toolbarDropdownView, newEditorElement, newEditor;
 
-				toolbarDropdownView.buttonView.fire( 'execute' );
+				beforeEach( async () => {
+					newEditorElement = document.createElement( 'div' );
 
-				expect( findAndReplaceUI.formView._findButtonView.isEnabled, 'findButtonView' ).to.be.true;
-				expect( findAndReplaceUI.formView._replaceAllButtonView.isEnabled, 'replaceAllButtonView' ).to.be.false;
-				expect( findAndReplaceUI.formView._replaceButtonView.isEnabled, 'replaceButtonView' ).to.be.false;
+					document.body.appendChild( newEditorElement );
+
+					newEditor = await ClassicEditor.create( newEditorElement, {
+						plugins: [ Essentials, Paragraph, BoldEditing, FindAndReplace, FindAndReplaceUI, FindAndReplaceEditing ],
+						toolbar: [ 'findAndReplace' ],
+						findAndReplace: {
+							uiType: 'dropdown'
+						}
+					} );
+
+					model = newEditor.model;
+					root = model.document.getRoot();
+
+					findAndReplaceEditing = newEditor.plugins.get( 'FindAndReplaceEditing' );
+					findAndReplaceUI = newEditor.plugins.get( 'FindAndReplaceUI' );
+
+					toolbarDropdownView = newEditor.ui.view.toolbar.items
+						.find( item => item.buttonView && item.buttonView.label == 'Find and replace' );
+				} );
+
+				afterEach( async () => {
+					await newEditor.destroy();
+
+					newEditorElement.remove();
+				} );
+
+				// Verifying mocks from https://github.com/ckeditor/ckeditor5/issues/9719#issuecomment-857557024.
+				it( 'has a proper initial state', () => {
+					// "Initial state" mock.
+					newEditor.setData( LONG_TEXT );
+
+					toolbarDropdownView.buttonView.fire( 'execute' );
+
+					expect( findAndReplaceUI.formView._findButtonView.isEnabled, 'findButtonView' ).to.be.true;
+					expect( findAndReplaceUI.formView._replaceAllButtonView.isEnabled, 'replaceAllButtonView' ).to.be.false;
+					expect( findAndReplaceUI.formView._replaceButtonView.isEnabled, 'replaceButtonView' ).to.be.false;
+				} );
+
+				it( 'retains text from previous search', () => {
+					// "Initial state with parameters" mock.
+					newEditor.setData( LONG_TEXT );
+
+					// First search.
+					toolbarDropdownView.buttonView.fire( 'execute' );
+					findAndReplaceUI.formView._findInputView.fieldView.value = 'cake';
+					findAndReplaceUI.formView._findButtonView.fire( 'execute' );
+					// Close the panel.
+					toolbarDropdownView.isOpen = false;
+
+					// Second search, should retain search text.
+					toolbarDropdownView.buttonView.fire( 'execute' );
+
+					expect( findAndReplaceUI.formView._findInputView.fieldView.value ).to.equal( 'cake' );
+					expect( findAndReplaceUI.formView._findButtonView.isEnabled, 'findButtonView' ).to.be.true;
+					expect( findAndReplaceUI.formView._replaceAllButtonView.isEnabled, 'replaceAllButtonView' ).to.be.false;
+					expect( findAndReplaceUI.formView._replaceButtonView.isEnabled, 'replaceButtonView' ).to.be.false;
+				} );
+
+				it( 'has a proper state when no results were found', () => {
+					// "No/one result found" mock.
+					newEditor.setData( LONG_TEXT );
+
+					// First search.
+					toolbarDropdownView.buttonView.fire( 'execute' );
+					findAndReplaceUI.formView._findInputView.fieldView.value = 'nothingtobefound';
+					findAndReplaceUI.formView._findButtonView.fire( 'execute' );
+
+					expect( findAndReplaceUI.formView._findNextButtonView.isEnabled, 'findNextButtonView' ).to.be.false;
+					expect( findAndReplaceUI.formView._findPrevButtonView.isEnabled, 'findPrevButtonView' ).to.be.false;
+					expect( findAndReplaceUI.formView._replaceAllButtonView.isEnabled, 'replaceAllButtonView' ).to.be.false;
+					expect( findAndReplaceUI.formView._replaceButtonView.isEnabled, 'replaceButtonView' ).to.be.false;
+				} );
+
+				it( 'shows counter with 0 of 0 when no results were found', () => {
+					// (#10014).
+					newEditor.setData( LONG_TEXT );
+
+					toolbarDropdownView.buttonView.fire( 'execute' );
+					findAndReplaceUI.formView._findInputView.fieldView.value = 'nothingtobefound';
+					findAndReplaceUI.formView._findButtonView.fire( 'execute' );
+
+					const domMatchCounter = findAndReplaceUI.formView.element.querySelector( '.ck-results-counter' );
+
+					expect( domMatchCounter.classList.contains( 'ck-hidden' ), 'counter visibility' ).to.be.false;
+					expect( domMatchCounter.innerText ).to.be.equal( '0 of 0' );
+				} );
+
+				it( 'has a proper state when a single result was found', () => {
+					// "No/one result found" mock.
+					newEditor.setData( LONG_TEXT );
+
+					// First search.
+					toolbarDropdownView.buttonView.fire( 'execute' );
+					findAndReplaceUI.formView._findInputView.fieldView.value = 'jujubes';
+					findAndReplaceUI.formView._findButtonView.fire( 'execute' );
+
+					expect( findAndReplaceUI.formView._findNextButtonView.isEnabled, 'findNextButtonView' ).to.be.false;
+					expect( findAndReplaceUI.formView._findPrevButtonView.isEnabled, 'findPrevButtonView' ).to.be.false;
+					expect( findAndReplaceUI.formView._replaceAllButtonView.isEnabled, 'replaceAllButtonView' ).to.be.true;
+					expect( findAndReplaceUI.formView._replaceButtonView.isEnabled, 'replaceButtonView' ).to.be.true;
+				} );
+
+				it( 'has a proper state when a multiple results were found', () => {
+					// "Found results" mock.
+					newEditor.setData( LONG_TEXT );
+
+					// First search.
+					toolbarDropdownView.buttonView.fire( 'execute' );
+					findAndReplaceUI.formView._findInputView.fieldView.value = 'cake';
+					findAndReplaceUI.formView._findButtonView.fire( 'execute' );
+
+					expect( findAndReplaceUI.formView._findNextButtonView.isEnabled, 'findNextButtonView' ).to.be.true;
+					expect( findAndReplaceUI.formView._findPrevButtonView.isEnabled, 'findPrevButtonView' ).to.be.true;
+					expect( findAndReplaceUI.formView._replaceAllButtonView.isEnabled, 'replaceAllButtonView' ).to.be.true;
+					expect( findAndReplaceUI.formView._replaceButtonView.isEnabled, 'replaceButtonView' ).to.be.true;
+				} );
+
+				it( 'panel is visible after clicking button\'s action area', () => {
+					newEditor.setData( LONG_TEXT );
+
+					toolbarDropdownView.buttonView.fire( 'execute' );
+
+					expect( toolbarDropdownView.panelView.isVisible ).to.be.true;
+				} );
 			} );
 
-			it( 'retains text from previous search', () => {
-				// "Initial state with parameters" mock.
-				editor.setData( LONG_TEXT );
+			describe( 'with dialog UI', () => {
+				let toolbarButtonView;
 
-				// First search.
-				toolbarDropdownView.buttonView.fire( 'execute' );
-				findAndReplaceUI.formView._findInputView.fieldView.value = 'cake';
-				findAndReplaceUI.formView._findButtonView.fire( 'execute' );
-				// Close the panel.
-				toolbarDropdownView.isOpen = false;
+				beforeEach( () => {
+					toolbarButtonView = editor.ui.view.toolbar.items
+						.find( item => item.label == 'Find and replace' );
+				} );
 
-				// Second search, should retain search text.
-				toolbarDropdownView.buttonView.fire( 'execute' );
+				// Verifying mocks from https://github.com/ckeditor/ckeditor5/issues/9719#issuecomment-857557024.
+				it( 'has a proper initial state', () => {
+					// "Initial state" mock.
+					editor.setData( LONG_TEXT );
 
-				expect( findAndReplaceUI.formView._findInputView.fieldView.value ).to.equal( 'cake' );
-				expect( findAndReplaceUI.formView._findButtonView.isEnabled, 'findButtonView' ).to.be.true;
-				expect( findAndReplaceUI.formView._replaceAllButtonView.isEnabled, 'replaceAllButtonView' ).to.be.false;
-				expect( findAndReplaceUI.formView._replaceButtonView.isEnabled, 'replaceButtonView' ).to.be.false;
-			} );
+					toolbarButtonView.fire( 'execute' );
 
-			it( 'has a proper state when no results were found', () => {
-				// "No/one result found" mock.
-				editor.setData( LONG_TEXT );
+					expect( findAndReplaceUI.formView._findButtonView.isEnabled, 'findButtonView' ).to.be.true;
+					expect( findAndReplaceUI.formView._replaceAllButtonView.isEnabled, 'replaceAllButtonView' ).to.be.false;
+					expect( findAndReplaceUI.formView._replaceButtonView.isEnabled, 'replaceButtonView' ).to.be.false;
+				} );
 
-				// First search.
-				toolbarDropdownView.buttonView.fire( 'execute' );
-				findAndReplaceUI.formView._findInputView.fieldView.value = 'nothingtobefound';
-				findAndReplaceUI.formView._findButtonView.fire( 'execute' );
+				it( 'retains text from previous search', async () => {
+					// "Initial state with parameters" mock.
+					editor.setData( LONG_TEXT );
 
-				expect( findAndReplaceUI.formView._findNextButtonView.isEnabled, 'findNextButtonView' ).to.be.false;
-				expect( findAndReplaceUI.formView._findPrevButtonView.isEnabled, 'findPrevButtonView' ).to.be.false;
-				expect( findAndReplaceUI.formView._replaceAllButtonView.isEnabled, 'replaceAllButtonView' ).to.be.false;
-				expect( findAndReplaceUI.formView._replaceButtonView.isEnabled, 'replaceButtonView' ).to.be.false;
-			} );
+					// First search.
+					toolbarButtonView.fire( 'execute' );
 
-			it( 'shows counter with 0 of 0 when no results were found', () => {
-				// (#10014).
-				editor.setData( LONG_TEXT );
+					await wait( 20 );
+					findAndReplaceUI.formView._findInputView.fieldView.value = 'cake';
+					findAndReplaceUI.formView._findButtonView.fire( 'execute' );
+					// Close the panel.
+					toolbarButtonView.fire( 'execute' );
 
-				toolbarDropdownView.buttonView.fire( 'execute' );
-				findAndReplaceUI.formView._findInputView.fieldView.value = 'nothingtobefound';
-				findAndReplaceUI.formView._findButtonView.fire( 'execute' );
+					// Second search, should retain search text.
+					toolbarButtonView.fire( 'execute' );
 
-				const domMatchCounter = findAndReplaceUI.formView.element.querySelector( '.ck-results-counter' );
+					await wait( 20 );
 
-				expect( domMatchCounter.classList.contains( 'ck-hidden' ), 'counter visibility' ).to.be.false;
-				expect( domMatchCounter.innerText ).to.be.equal( '0 of 0' );
-			} );
+					expect( findAndReplaceUI.formView._findInputView.fieldView.value ).to.equal( 'cake' );
+					expect( findAndReplaceUI.formView._findButtonView.isEnabled, 'findButtonView' ).to.be.true;
+					expect( findAndReplaceUI.formView._replaceAllButtonView.isEnabled, 'replaceAllButtonView' ).to.be.false;
+					expect( findAndReplaceUI.formView._replaceButtonView.isEnabled, 'replaceButtonView' ).to.be.false;
+				} );
 
-			it( 'has a proper state when a single result was found', () => {
-				// "No/one result found" mock.
-				editor.setData( LONG_TEXT );
+				it( 'has a proper state when no results were found', () => {
+					// "No/one result found" mock.
+					editor.setData( LONG_TEXT );
 
-				// First search.
-				toolbarDropdownView.buttonView.fire( 'execute' );
-				findAndReplaceUI.formView._findInputView.fieldView.value = 'jujubes';
-				findAndReplaceUI.formView._findButtonView.fire( 'execute' );
+					// First search.
+					toolbarButtonView.fire( 'execute' );
+					findAndReplaceUI.formView._findInputView.fieldView.value = 'nothingtobefound';
+					findAndReplaceUI.formView._findButtonView.fire( 'execute' );
 
-				expect( findAndReplaceUI.formView._findNextButtonView.isEnabled, 'findNextButtonView' ).to.be.false;
-				expect( findAndReplaceUI.formView._findPrevButtonView.isEnabled, 'findPrevButtonView' ).to.be.false;
-				expect( findAndReplaceUI.formView._replaceAllButtonView.isEnabled, 'replaceAllButtonView' ).to.be.true;
-				expect( findAndReplaceUI.formView._replaceButtonView.isEnabled, 'replaceButtonView' ).to.be.true;
-			} );
+					expect( findAndReplaceUI.formView._findNextButtonView.isEnabled, 'findNextButtonView' ).to.be.false;
+					expect( findAndReplaceUI.formView._findPrevButtonView.isEnabled, 'findPrevButtonView' ).to.be.false;
+					expect( findAndReplaceUI.formView._replaceAllButtonView.isEnabled, 'replaceAllButtonView' ).to.be.false;
+					expect( findAndReplaceUI.formView._replaceButtonView.isEnabled, 'replaceButtonView' ).to.be.false;
+				} );
 
-			it( 'has a proper state when a multiple results were found', () => {
-				// "Found results" mock.
-				editor.setData( LONG_TEXT );
+				it( 'shows counter with 0 of 0 when no results were found', async () => {
+					// (#10014).
+					editor.setData( LONG_TEXT );
 
-				// First search.
-				toolbarDropdownView.buttonView.fire( 'execute' );
-				findAndReplaceUI.formView._findInputView.fieldView.value = 'cake';
-				findAndReplaceUI.formView._findButtonView.fire( 'execute' );
+					toolbarButtonView.fire( 'execute' );
 
-				expect( findAndReplaceUI.formView._findNextButtonView.isEnabled, 'findNextButtonView' ).to.be.true;
-				expect( findAndReplaceUI.formView._findPrevButtonView.isEnabled, 'findPrevButtonView' ).to.be.true;
-				expect( findAndReplaceUI.formView._replaceAllButtonView.isEnabled, 'replaceAllButtonView' ).to.be.true;
-				expect( findAndReplaceUI.formView._replaceButtonView.isEnabled, 'replaceButtonView' ).to.be.true;
-			} );
+					await wait( 20 );
 
-			it( 'panel is visible after clicking button\'s action area', () => {
-				editor.setData( LONG_TEXT );
+					findAndReplaceUI.formView._findInputView.fieldView.value = 'nothingtobefound';
+					findAndReplaceUI.formView._findButtonView.fire( 'execute' );
 
-				toolbarDropdownView.buttonView.fire( 'execute' );
+					const domMatchCounter = findAndReplaceUI.formView.element.querySelector( '.ck-results-counter' );
 
-				expect( toolbarDropdownView.panelView.isVisible ).to.be.true;
+					expect( domMatchCounter.classList.contains( 'ck-hidden' ), 'counter visibility' ).to.be.false;
+					expect( domMatchCounter.innerText ).to.be.equal( '0 of 0' );
+				} );
+
+				it( 'has a proper state when a single result was found', () => {
+					// "No/one result found" mock.
+					editor.setData( LONG_TEXT );
+
+					// First search.
+					toolbarButtonView.fire( 'execute' );
+					findAndReplaceUI.formView._findInputView.fieldView.value = 'jujubes';
+					findAndReplaceUI.formView._findButtonView.fire( 'execute' );
+
+					expect( findAndReplaceUI.formView._findNextButtonView.isEnabled, 'findNextButtonView' ).to.be.false;
+					expect( findAndReplaceUI.formView._findPrevButtonView.isEnabled, 'findPrevButtonView' ).to.be.false;
+					expect( findAndReplaceUI.formView._replaceAllButtonView.isEnabled, 'replaceAllButtonView' ).to.be.true;
+					expect( findAndReplaceUI.formView._replaceButtonView.isEnabled, 'replaceButtonView' ).to.be.true;
+				} );
+
+				it( 'has a proper state when a multiple results were found', () => {
+					// "Found results" mock.
+					editor.setData( LONG_TEXT );
+
+					// First search.
+					toolbarButtonView.fire( 'execute' );
+					findAndReplaceUI.formView._findInputView.fieldView.value = 'cake';
+					findAndReplaceUI.formView._findButtonView.fire( 'execute' );
+
+					expect( findAndReplaceUI.formView._findNextButtonView.isEnabled, 'findNextButtonView' ).to.be.true;
+					expect( findAndReplaceUI.formView._findPrevButtonView.isEnabled, 'findPrevButtonView' ).to.be.true;
+					expect( findAndReplaceUI.formView._replaceAllButtonView.isEnabled, 'replaceAllButtonView' ).to.be.true;
+					expect( findAndReplaceUI.formView._replaceButtonView.isEnabled, 'replaceButtonView' ).to.be.true;
+				} );
 			} );
 		} );
 
@@ -477,6 +610,37 @@ describe( 'FindAndReplace', () => {
 			expect( findResults ).to.have.property( 'length', 5 );
 		} );
 
+		it( 'should update list of results on editor change (removed part of highlighted block)', () => {
+			editor.setData( LONG_TEXT );
+
+			const findResults = findAndReplaceEditing.find( 'CupCake' );
+
+			expect( findResults ).to.have.property( 'length', 1 );
+
+			model.change( writer => {
+				const selection = writer.createSelection( writer.createRange(
+					writer.createPositionAt( root.getChild( 0 ), 0 ),
+					writer.createPositionAt( root.getChild( 0 ), 2 )
+				) );
+
+				model.deleteContent( selection );
+			} );
+
+			expect( findResults ).to.have.property( 'length', 0 );
+		} );
+
+		it( 'should update list of results on editor change (find, remove all blocks and type search phrase in editor)', () => {
+			editor.setData( '' );
+
+			const findResults = findAndReplaceEditing.find( 'CupCake' );
+
+			expect( findResults ).to.have.property( 'length', 0 );
+
+			editor.setData( LONG_TEXT );
+
+			expect( findResults ).to.have.property( 'length', 1 );
+		} );
+
 		it( 'should update list of results on editor change (changed text in marker)', () => {
 			editor.setData( FOO_BAR_PARAGRAPH );
 
@@ -549,10 +713,25 @@ describe( 'FindAndReplace', () => {
 			expect( callbackSpy.callCount ).to.equal( 2 );
 		} );
 
-		it( 'should call a callback for changed blocks', () => {
+		it( 'should call a callback for changed blocks when pass string to find', () => {
 			editor.setData( LONG_TEXT );
 
-			const callbackSpy = sinon.spy();
+			const callbackSpy = sinon.spy( () => [] );
+
+			findAndReplaceEditing.find( callbackSpy );
+			callbackSpy.resetHistory();
+
+			model.change( writer => {
+				model.insertContent( writer.createText( 'Foo bears foo' ), root.getChild( 0 ), 0 );
+			} );
+
+			expect( callbackSpy.callCount ).to.equal( 1 );
+		} );
+
+		it( 'should call a callback for changed blocks when pass callback to find', () => {
+			editor.setData( LONG_TEXT );
+
+			const callbackSpy = sinon.spy( () => [] );
 			findAndReplaceEditing.find( callbackSpy );
 			callbackSpy.resetHistory();
 
@@ -641,5 +820,11 @@ describe( 'FindAndReplace', () => {
 		const spy = sinon.spy();
 		editor.commands.get( commandName ).on( 'execute', spy );
 		return spy;
+	}
+
+	function wait( time ) {
+		return new Promise( res => {
+			window.setTimeout( res, time );
+		} );
 	}
 } );

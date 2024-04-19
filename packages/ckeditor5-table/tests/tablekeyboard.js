@@ -1,28 +1,28 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import TableKeyboard from '../src/tablekeyboard';
-import Table from '../src/table';
-import TableEditing from '../src/tableediting';
-import TableSelection from '../src/tableselection';
-import { modelTable } from './_utils/utils';
+import TableKeyboard from '../src/tablekeyboard.js';
+import Table from '../src/table.js';
+import TableEditing from '../src/tableediting.js';
+import TableSelection from '../src/tableselection.js';
+import { modelTable } from './_utils/utils.js';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
-import MediaEmbedEditing from '@ckeditor/ckeditor5-media-embed/src/mediaembedediting';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
-import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
-import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
+import MediaEmbedEditing from '@ckeditor/ckeditor5-media-embed/src/mediaembedediting.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Image from '@ckeditor/ckeditor5-image/src/image.js';
+import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption.js';
+import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline.js';
+import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed.js';
 
-import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import env from '@ckeditor/ckeditor5-utils/src/env';
+import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import env from '@ckeditor/ckeditor5-utils/src/env.js';
 
 describe( 'TableKeyboard', () => {
 	let editor, model, modelRoot, tableSelection, tableKeyboard, selection, editorElement;
@@ -52,6 +52,32 @@ describe( 'TableKeyboard', () => {
 
 	it( 'should have pluginName', () => {
 		expect( TableKeyboard.pluginName ).to.equal( 'TableKeyboard' );
+	} );
+
+	it( 'should add keystroke accessibility info', () => {
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'table' ).label ).to.equal(
+			'Keystrokes that can be used in a table cell'
+		);
+
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'table' ).keystrokes ).to.deep.include( {
+			label: 'Move the selection to the next cell',
+			keystroke: 'Tab'
+		} );
+
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'table' ).keystrokes ).to.deep.include( {
+			label: 'Move the selection to the previous cell',
+			keystroke: 'Shift+Tab'
+		} );
+
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'table' ).keystrokes ).to.deep.include( {
+			label: 'Insert a new table row (when in the last cell of a table)',
+			keystroke: 'Tab'
+		} );
+
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'table' ).keystrokes ).to.deep.include( {
+			label: 'Navigate through the table',
+			keystroke: [ [ 'arrowup' ], [ 'arrowright' ], [ 'arrowdown' ], [ 'arrowleft' ] ]
+		} );
 	} );
 
 	describe( 'Tab key handling', () => {

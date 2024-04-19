@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,16 +9,14 @@
  * @module utils/translation-service
  */
 
-import CKEditorError from './ckeditorerror';
-import global from './dom/global';
+import type { Translations } from './locale.js';
+import CKEditorError from './ckeditorerror.js';
+import global from './dom/global.js';
+import { merge } from 'lodash-es';
+import { type ArrayOrItem } from './toarray.js';
 
 declare global {
-	var CKEDITOR_TRANSLATIONS: {
-		[ language: string ]: {
-			dictionary: { [ messageId: string ]: string | ReadonlyArray<string> };
-			getPluralForm?: ( n: number ) => number;
-		};
-	};
+	var CKEDITOR_TRANSLATIONS: Translations;
 }
 
 /* istanbul ignore else -- @preserve */
@@ -163,9 +161,15 @@ export function add(
  * @param language Target language.
  * @param message A message that will be translated.
  * @param quantity The number of elements for which a plural form should be picked from the target language dictionary.
+ * @param translations Translations passed in editor config, if not provided use the global `window.CKEDITOR_TRANSLATIONS`.
  * @returns Translated sentence.
  */
-export function _translate( language: string, message: Message, quantity: number = 1 ): string {
+export function _translate(
+	language: string,
+	message: Message,
+	quantity: number = 1,
+	translations?: Translations
+): string {
 	if ( typeof quantity !== 'number' ) {
 		/**
 		 * An incorrect value was passed to the translation function. This was probably caused
@@ -177,17 +181,18 @@ export function _translate( language: string, message: Message, quantity: number
 		throw new CKEditorError( 'translation-service-quantity-not-a-number', null, { quantity } );
 	}
 
-	const numberOfLanguages = getNumberOfLanguages();
+	const normalizedTranslations: Translations = translations || global.window.CKEDITOR_TRANSLATIONS;
+	const numberOfLanguages = getNumberOfLanguages( normalizedTranslations );
 
 	if ( numberOfLanguages === 1 ) {
 		// Override the language to the only supported one.
 		// This can't be done in the `Locale` class, because the translations comes after the `Locale` class initialization.
-		language = Object.keys( global.window.CKEDITOR_TRANSLATIONS )[ 0 ];
+		language = Object.keys( normalizedTranslations )[ 0 ];
 	}
 
 	const messageId = message.id || message.string;
 
-	if ( numberOfLanguages === 0 || !hasTranslation( language, messageId ) ) {
+	if ( numberOfLanguages === 0 || !hasTranslation( language, messageId, normalizedTranslations ) ) {
 		if ( quantity !== 1 ) {
 			// Return the default plural form that was passed in the `message.plural` parameter.
 			return message.plural!;
@@ -196,8 +201,8 @@ export function _translate( language: string, message: Message, quantity: number
 		return message.string;
 	}
 
-	const dictionary = global.window.CKEDITOR_TRANSLATIONS[ language ].dictionary;
-	const getPluralForm = global.window.CKEDITOR_TRANSLATIONS[ language ].getPluralForm || ( n => n === 1 ? 0 : 1 );
+	const dictionary = normalizedTranslations[ language ].dictionary;
+	const getPluralForm = normalizedTranslations[ language ].getPluralForm || ( n => n === 1 ? 0 : 1 );
 	const translation = dictionary[ messageId ];
 
 	if ( typeof translation === 'string' ) {
@@ -216,21 +221,34 @@ export function _translate( language: string, message: Message, quantity: number
  * @internal
  */
 export function _clear(): void {
-	global.window.CKEDITOR_TRANSLATIONS = {};
+	if ( global.window.CKEDITOR_TRANSLATIONS ) {
+		global.window.CKEDITOR_TRANSLATIONS = {};
+	}
+}
+
+/**
+ * If array then merge objects which are inside otherwise return given object.
+ *
+ * @internal
+ * @param translations Translations passed in editor config.
+ */
+export function _unifyTranslations(
+	translations?: ArrayOrItem<Translations>
+): Translations | undefined {
+	return Array.isArray( translations ) ?
+		translations.reduce( ( acc, translation ) => merge( acc, translation ) ) :
+		translations;
 }
 
 /**
  * Checks whether the dictionary exists and translation in that dictionary exists.
  */
-function hasTranslation( language: string, messageId: string ): boolean {
-	return (
-		!!global.window.CKEDITOR_TRANSLATIONS[ language ] &&
-		!!global.window.CKEDITOR_TRANSLATIONS[ language ].dictionary[ messageId ]
-	);
+function hasTranslation( language: string, messageId: string, translations: Translations ): boolean {
+	return !!translations[ language ] && !!translations[ language ].dictionary[ messageId ];
 }
 
-function getNumberOfLanguages(): number {
-	return Object.keys( global.window.CKEDITOR_TRANSLATIONS ).length;
+function getNumberOfLanguages( translations: Translations ): number {
+	return Object.keys( translations ).length;
 }
 
 /**

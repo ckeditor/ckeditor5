@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,14 +7,14 @@
  * @module engine/model/operation/detachoperation
  */
 
-import Operation from './operation';
-import Range from '../range';
-import { _remove } from './utils';
+import Operation from './operation.js';
+import Range from '../range.js';
+import { _remove } from './utils.js';
 
-import type Position from '../position';
+import type Position from '../position.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
-import type { Selectable } from '../selection';
+import type { Selectable } from '../selection.js';
 
 // @if CK_DEBUG_ENGINE // const ModelRange = require( '../range' ).default;
 

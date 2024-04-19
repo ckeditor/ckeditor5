@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,15 +7,15 @@
  * @module engine/model/operation/attributeoperation
  */
 
-import Operation from './operation';
-import { _setAttribute } from './utils';
-import Range from '../range';
+import Operation from './operation.js';
+import { _setAttribute } from './utils.js';
+import Range from '../range.js';
 
-import type Document from '../document';
+import type Document from '../document.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import { isEqual } from 'lodash-es';
-import type { Selectable } from '../selection';
+import type { Selectable } from '../selection.js';
 
 /**
  * Operation to change nodes' attribute.

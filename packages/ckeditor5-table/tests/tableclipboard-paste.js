@@ -1,32 +1,33 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import HorizontalLineEditing from '@ckeditor/ckeditor5-horizontal-line/src/horizontallineediting';
-import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting';
-import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting';
-import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Input from '@ckeditor/ckeditor5-typing/src/input';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { assertSelectedCells, modelTable, viewTable } from './_utils/utils';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
+import HorizontalLineEditing from '@ckeditor/ckeditor5-horizontal-line/src/horizontallineediting.js';
+import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting.js';
+import LegacyListEditing from '@ckeditor/ckeditor5-list/src/legacylist/legacylistediting.js';
+import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Input from '@ckeditor/ckeditor5-typing/src/input.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { assertSelectedCells, formatAttributes, modelTable, viewTable } from './_utils/utils.js';
+import { Range } from '@ckeditor/ckeditor5-engine';
+import TableEditing from '../src/tableediting.js';
+import TableCellPropertiesEditing from '../src/tablecellproperties/tablecellpropertiesediting.js';
+import TableCellWidthEditing from '../src/tablecellwidth/tablecellwidthediting.js';
+import TableWalker from '../src/tablewalker.js';
 
-import TableEditing from '../src/tableediting';
-import TableCellPropertiesEditing from '../src/tablecellproperties/tablecellpropertiesediting';
-import TableCellWidthEditing from '../src/tablecellwidth/tablecellwidthediting';
-import TableWalker from '../src/tablewalker';
-
-import TableClipboard from '../src/tableclipboard';
+import TableClipboard from '../src/tableclipboard.js';
+import TableColumnResize from '../src/tablecolumnresize.js';
 
 describe( 'table clipboard', () => {
-	let editor, model, modelRoot, tableSelection, viewDocument, element;
+	let editor, model, modelRoot, tableSelection, viewDocument, element, clipboardMarkersUtils, getUniqueMarkerNameStub;
 
 	testUtils.createSinonSandbox();
 
@@ -181,6 +182,75 @@ describe( 'table clipboard', () => {
 					[ '30', '31', '32', '33' ]
 				] )
 			);
+		} );
+
+		it( 'should adjust `<colgroup>` element while normalizing pasted table', async () => {
+			const editorWithColumnResize = await ClassicTestEditor.create( element, {
+				plugins: [ TableEditing, TableClipboard, Paragraph, Clipboard, TableColumnResize ]
+			} );
+
+			model = editorWithColumnResize.model;
+			modelRoot = model.document.getRoot();
+			viewDocument = editorWithColumnResize.editing.view.document;
+			tableSelection = editorWithColumnResize.plugins.get( 'TableSelection' );
+
+			model.change( writer => {
+				writer.insertElement( 'paragraph', modelRoot.getChild( 0 ), 'before' );
+				writer.setSelection( modelRoot.getChild( 0 ), 'before' );
+			} );
+
+			const table =
+				'<table>' +
+					'<colgroup>' +
+						'<col span="2" style="width:20%">' +
+						'</col>' +
+						'<col style="width:60%">' +
+						'</col>' +
+					'</colgroup>' +
+					'<tbody>' +
+						'<tr>' +
+							'<td colspan="3">foo</td>' +
+						'</tr>' +
+						'<tr>' +
+							'<td colspan="2">bar</td>' +
+							'<td>baz</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>';
+
+			const data = {
+				dataTransfer: createDataTransfer(),
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+
+			data.dataTransfer.setData( 'text/html', table );
+			viewDocument.fire( 'paste', data );
+
+			expect( getModelData( model ) ).to.equalMarkup(
+				'[<table>' +
+					'<tableRow>' +
+						'<tableCell colspan="2">' +
+							'<paragraph>foo</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>bar</paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>baz</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<tableColumnGroup>' +
+						'<tableColumn columnWidth="40%"></tableColumn>' +
+						'<tableColumn columnWidth="60%"></tableColumn>' +
+					'</tableColumnGroup>' +
+				'</table>]' +
+				'<paragraph></paragraph>'
+			);
+
+			await editorWithColumnResize.destroy();
 		} );
 
 		it( 'should not alter model.insertContent if no table pasted', () => {
@@ -3811,7 +3881,7 @@ describe( 'table clipboard', () => {
 		} );
 
 		it( 'handles mixed nested content in table cell', async () => {
-			await createEditor( [ ImageBlockEditing, ImageCaptionEditing, BlockQuoteEditing, HorizontalLineEditing, ListEditing ] );
+			await createEditor( [ ImageBlockEditing, ImageCaptionEditing, BlockQuoteEditing, HorizontalLineEditing, LegacyListEditing ] );
 
 			setModelData( model, modelTable( [
 				[ '00', '01', '02' ],
@@ -4002,6 +4072,412 @@ describe( 'table clipboard', () => {
 		} );
 	} );
 
+	describe( 'Clipboard integration - paste (marker scenarios)', () => {
+		beforeEach( async () => {
+			await createEditor();
+
+			clipboardMarkersUtils._registerMarkerToCopy( 'comment', {
+				allowedActions: [ 'copy' ],
+				duplicateOnPaste: true
+			} );
+
+			getUniqueMarkerNameStub = sinon
+				.stub( clipboardMarkersUtils, '_getUniqueMarkerName' )
+				.callsFake( markerName => {
+					if ( markerName.endsWith( 'uniq' ) ) {
+						return markerName;
+					}
+
+					return `${ markerName }:uniq`;
+				} );
+
+			markerConversion();
+		} );
+
+		it( 'should paste table with single marker to single cell', () => {
+			setModelData( model, modelTable( [ [ 'FooBarr' ] ] ) + modelTable( [ [ 'Test' ] ] ) );
+
+			model.change( writer => {
+				writer.setSelection( modelRoot.getNodeByPath( [ 1, 0, 0 ] ), 0 );
+			} );
+
+			pasteTable(
+				[ [ wrapWithHTMLMarker( 'FooBarr', 'comment', { name: 'paste' } ) ] ]
+			);
+
+			const paragraph = modelRoot.getNodeByPath( [ 1, 0, 0, 0 ] );
+
+			checkMarker( 'comment:paste:uniq', model.createRangeIn( paragraph ) );
+		} );
+
+		it( 'should paste table with multiple markers to multiple cells', () => {
+			setModelData( model, modelTable( [ [ 'FooBarr' ] ] ) + modelTable( [ [ 'Test' ] ] ) );
+
+			model.change( writer => {
+				writer.setSelection( modelRoot.getNodeByPath( [ 1, 0, 0 ] ), 0 );
+			} );
+
+			pasteTable(
+				[
+					[
+						wrapWithHTMLMarker( 'First', 'comment', { name: 'pre' } ),
+						wrapWithHTMLMarker( 'Second', 'comment', { name: 'post' } )
+					]
+				]
+			);
+
+			checkMarker( 'comment:pre:uniq', {
+				start: [ 1, 0, 0, 0, 0 ],
+				end: [ 1, 0, 0, 0, 5 ]
+			} );
+
+			checkMarker( 'comment:post:uniq', {
+				start: [ 1, 0, 1, 0, 0 ],
+				end: [ 1, 0, 1, 0, 6 ]
+			} );
+		} );
+
+		it( 'should paste table with multiple markers to single cell', () => {
+			setModelData( model, modelTable( [ [ 'FooBarr' ] ] ) + modelTable( [ [ 'Test' ] ] ) );
+
+			model.change( writer => {
+				writer.setSelection( modelRoot.getNodeByPath( [ 1, 0, 0 ] ), 0 );
+			} );
+
+			pasteTable(
+				[
+					[
+						wrapWithHTMLMarker( 'FooBarr', 'comment', { name: 'pre' } ) +
+						'foo fo fooo' +
+						wrapWithHTMLMarker( 'a foo bar fo bar', 'comment', { name: 'post' } )
+					]
+				]
+			);
+
+			checkMarker( 'comment:pre:uniq', {
+				start: [ 1, 0, 0, 0, 0 ],
+				end: [ 1, 0, 0, 0, 7 ]
+			} );
+
+			checkMarker( 'comment:post:uniq', {
+				start: [ 1, 0, 0, 0, 18 ],
+				end: [ 1, 0, 0, 0, 34 ]
+			} );
+		} );
+
+		it( 'should handle paste markers that contain markers', () => {
+			setModelData( model, modelTable( [ [ 'Hello World' ] ] ) + modelTable( [ [ 'Test' ] ] ) );
+
+			model.change( writer => {
+				writer.setSelection( modelRoot.getNodeByPath( [ 1, 0, 0 ] ), 0 );
+			} );
+
+			const innerMarker = wrapWithHTMLMarker( 'ello', 'comment', { name: 'inner' } );
+			const outerMarker = wrapWithHTMLMarker( 'H' + innerMarker + ' world', 'comment', { name: 'outer' } );
+
+			pasteTable(
+				[ [ outerMarker ] ]
+			);
+
+			checkMarker( 'comment:outer:uniq', {
+				start: [ 1, 0, 0, 0, 0 ],
+				end: [ 1, 0, 0, 0, 11 ]
+			} );
+
+			checkMarker( 'comment:inner:uniq', {
+				start: [ 1, 0, 0, 0, 1 ],
+				end: [ 1, 0, 0, 0, 5 ]
+			} );
+		} );
+
+		it( 'should not crash if user copy column to row with markers', () => {
+			setModelData( model, '' );
+			pasteTable(
+				[
+					[
+						wrapWithHTMLMarker( 'First', 'comment', { name: 'pre' } ),
+						''
+					],
+					[ '', '' ]
+				]
+			);
+
+			tableSelection.setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 0, 1 ] )
+			);
+
+			const data = {
+				dataTransfer: createDataTransfer(),
+				preventDefault: () => {},
+				stopPropagation: () => {}
+			};
+
+			viewDocument.fire( 'copy', data );
+
+			tableSelection.setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
+				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+			);
+
+			viewDocument.fire( 'paste', data );
+
+			expect( data.dataTransfer.getData( 'text/html' ) ).to.equal(
+				'<figure class="table"><table><tbody><tr><td><comment-start name="pre:uniq"></comment-start>' +
+				'First<comment-end name="pre:uniq"></comment-end></td><td>&nbsp;</td></tr></tbody></table></figure>'
+			);
+		} );
+
+		it( 'should paste table that is entirely wrapped in marker', () => {
+			setModelData( model, modelTable( [ [ 'A', 'B' ] ] ) + '<paragraph></paragraph>' );
+			appendMarker( 'comment:thread', {
+				start: [ 0 ],
+				end: [ 1 ]
+			} );
+
+			model.change( writer => {
+				writer.setSelection( writer.createRangeOn( modelRoot.getNodeByPath( [ 0 ] ) ) );
+			} );
+
+			const data = {
+				dataTransfer: createDataTransfer(),
+				preventDefault: () => {},
+				stopPropagation: () => {}
+			};
+
+			viewDocument.fire( 'copy', data );
+
+			model.change( writer => {
+				writer.setSelection( modelRoot.getNodeByPath( [ 1 ] ), 0 );
+			} );
+
+			viewDocument.fire( 'paste', data );
+
+			checkMarker( 'comment:thread', {
+				start: [ 0 ],
+				end: [ 1 ]
+			} );
+
+			checkMarker( 'comment:thread:uniq', {
+				start: [ 1 ],
+				end: [ 2 ]
+			} );
+		} );
+
+		describe( 'Markers duplications', () => {
+			beforeEach( () => {
+				let index = 0;
+
+				getUniqueMarkerNameStub.callsFake( markerName => {
+					const markerWithoutID = markerName.split( ':' ).slice( 0, 2 ).join( ':' );
+
+					return `${ markerWithoutID }:${ index++ }`;
+				} );
+			} );
+
+			it( 'should paste row with single marker as column with duplicated markers to empty last column', () => {
+				pasteTable(
+					[
+						[ '', '', '' ],
+						[ '', '', '' ],
+						[
+							wrapWithHTMLMarker( 'Foo', 'comment', { name: 'thread' } ),
+							'',
+							''
+						]
+					]
+				);
+
+				// copy whole last row
+				tableSelection.setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 2, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 2, 2 ] )
+				);
+
+				const data = {
+					dataTransfer: createDataTransfer(),
+					preventDefault: () => {},
+					stopPropagation: () => {}
+				};
+
+				viewDocument.fire( 'copy', data );
+
+				// paste into last column
+				tableSelection.setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 2 ] ),
+					modelRoot.getNodeByPath( [ 0, 2, 2 ] )
+				);
+
+				viewDocument.fire( 'paste', data );
+
+				// check if markers are present on proper positions
+				checkMarker( 'comment:thread:0', {
+					start: [ 0, 2, 0, 0, 0 ],
+					end: [ 0, 2, 0, 0, 3 ]
+				} );
+
+				checkMarker( 'comment:thread:2', {
+					start: [ 0, 2, 2, 0, 0 ],
+					end: [ 0, 2, 2, 0, 3 ]
+				} );
+
+				checkMarker( 'comment:thread:3', {
+					start: [ 0, 0, 2, 0, 0 ],
+					end: [ 0, 0, 2, 0, 3 ]
+				} );
+
+				checkMarker( 'comment:thread:4', {
+					start: [ 0, 1, 2, 0, 0 ],
+					end: [ 0, 1, 2, 0, 3 ]
+				} );
+			} );
+
+			it( 'should paste row with single marker as column with duplicated markers to non-empty first-column', () => {
+				pasteTable(
+					[
+						[ wrapWithHTMLMarker( 'Foo', 'comment', { name: 'thread' } ), '', '' ],
+						[ '', '', '' ],
+						[ '', '', '' ]
+					]
+				);
+
+				// copy whole first row
+				tableSelection.setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 0, 2 ] )
+				);
+
+				const data = {
+					dataTransfer: createDataTransfer(),
+					preventDefault: () => {},
+					stopPropagation: () => {}
+				};
+
+				viewDocument.fire( 'copy', data );
+
+				// paste into last column
+				tableSelection.setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 2, 0 ] )
+				);
+
+				viewDocument.fire( 'paste', data );
+
+				// check if markers are present on proper positions
+				checkMarker( 'comment:thread:2', {
+					start: [ 0, 2, 0, 0, 0 ],
+					end: [ 0, 2, 0, 0, 3 ]
+				} );
+
+				checkMarker( 'comment:thread:3', {
+					start: [ 0, 0, 0, 0, 0 ],
+					end: [ 0, 0, 0, 0, 3 ]
+				} );
+
+				checkMarker( 'comment:thread:4', {
+					start: [ 0, 1, 0, 0, 0 ],
+					end: [ 0, 1, 0, 0, 3 ]
+				} );
+			} );
+
+			it( 'should paste row with two markers to first column', () => {
+				pasteTable(
+					[
+						[ '', '' ],
+						[
+							wrapWithHTMLMarker( 'Foo', 'comment', { name: 'start' } ),
+							wrapWithHTMLMarker( 'Foo', 'comment', { name: 'end' } )
+						]
+					]
+				);
+
+				// copy whole last row
+				tableSelection.setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 1, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+				);
+
+				const data = {
+					dataTransfer: createDataTransfer(),
+					preventDefault: () => {},
+					stopPropagation: () => {}
+				};
+
+				viewDocument.fire( 'copy', data );
+
+				// paste into first column
+				tableSelection.setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 1, 0 ] )
+				);
+
+				viewDocument.fire( 'paste', data );
+
+				// check if markers are present on proper positions
+				checkMarker( 'comment:start:6', {
+					start: [ 0, 0, 0, 0, 0 ],
+					end: [ 0, 0, 0, 0, 3 ]
+				} );
+
+				checkMarker( 'comment:start:4', {
+					start: [ 0, 1, 0, 0, 0 ],
+					end: [ 0, 1, 0, 0, 3 ]
+				} );
+
+				checkMarker( 'comment:end:1', {
+					start: [ 0, 1, 1, 0, 0 ],
+					end: [ 0, 1, 1, 0, 3 ]
+				} );
+			} );
+		} );
+
+		function wrapWithHTMLMarker( contents, marker, attrs ) {
+			const formattedAttributes = formatAttributes( attrs );
+
+			return [
+				`<${ marker }-start${ formattedAttributes }></${ marker }-start>`,
+				contents,
+				`<${ marker }-end${ formattedAttributes }></${ marker }-end>`
+			].join( '' );
+		}
+
+		function appendMarker( name, { start, end } ) {
+			return editor.model.change( writer => {
+				const range = model.createRange(
+					model.createPositionFromPath( modelRoot, start ),
+					model.createPositionFromPath( modelRoot, end )
+				);
+
+				return writer.addMarker( name, { usingOperation: false, affectsData: true, range } );
+			} );
+		}
+
+		function checkMarker( name, range ) {
+			const marker = editor.model.markers.get( name );
+
+			expect( marker ).to.not.be.null;
+
+			if ( range instanceof Range ) {
+				expect( marker.getRange().isEqual( range ) ).to.be.true;
+			} else {
+				const markerRange = marker.getRange();
+
+				expect( markerRange.start.path ).to.deep.equal( range.start );
+				expect( markerRange.end.path ).to.deep.equal( range.end );
+			}
+		}
+
+		function markerConversion( ) {
+			editor.conversion.for( 'downcast' ).markerToData( {
+				model: 'comment'
+			} );
+
+			editor.conversion.for( 'upcast' ).dataToMarker( {
+				view: 'comment'
+			} );
+		}
+	} );
+
 	describe( 'getTableIfOnlyTableInContent()', () => {
 		let tableClipboard;
 
@@ -4136,6 +4612,7 @@ describe( 'table clipboard', () => {
 		modelRoot = model.document.getRoot();
 		viewDocument = editor.editing.view.document;
 		tableSelection = editor.plugins.get( 'TableSelection' );
+		clipboardMarkersUtils = editor.plugins.get( 'ClipboardMarkersUtils' );
 	}
 
 	function pasteHtml( editor, html ) {

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -26,13 +26,14 @@ import {
 
 import type { EditorUI } from '@ckeditor/ckeditor5-ui';
 
-import Context from '../context';
-import PluginCollection from '../plugincollection';
-import CommandCollection, { type CommandsMap } from '../commandcollection';
-import EditingKeystrokeHandler from '../editingkeystrokehandler';
+import Context from '../context.js';
+import PluginCollection from '../plugincollection.js';
+import CommandCollection, { type CommandsMap } from '../commandcollection.js';
+import EditingKeystrokeHandler from '../editingkeystrokehandler.js';
+import Accessibility from '../accessibility.js';
 
-import type { LoadedPlugins, PluginConstructor } from '../plugin';
-import type { EditorConfig } from './editorconfig';
+import type { LoadedPlugins, PluginConstructor } from '../plugin.js';
+import type { EditorConfig } from './editorconfig.js';
 
 /**
  * The class representing a basic, generic editor.
@@ -53,6 +54,11 @@ import type { EditorConfig } from './editorconfig';
  * (as most editor implementations do).
  */
 export default abstract class Editor extends ObservableMixin() {
+	/**
+	 * A namespace for the accessibility features of the editor.
+	 */
+	public readonly accessibility: Accessibility;
+
 	/**
 	 * Commands registered to the editor.
 	 *
@@ -275,17 +281,22 @@ export default abstract class Editor extends ObservableMixin() {
 
 		const constructor = this.constructor as typeof Editor;
 
-		// Prefer the language passed as the argument to the constructor instead of the constructor's `defaultConfig`, if both are set.
-		const language = config.language || ( constructor.defaultConfig && constructor.defaultConfig.language );
+		// We don't pass translations to the config, because its behavior of splitting keys
+		// with dots (e.g. `resize.width` => `resize: { width }`) breaks the translations.
+		const { translations: defaultTranslations, ...defaultConfig } = constructor.defaultConfig || {};
+		const { translations = defaultTranslations, ...rest } = config;
 
-		this._context = config.context || new Context( { language } );
+		// Prefer the language passed as the argument to the constructor instead of the constructor's `defaultConfig`, if both are set.
+		const language = config.language || defaultConfig.language;
+
+		this._context = config.context || new Context( { language, translations } );
 		this._context._addEditor( this, !config.context );
 
 		// Clone the plugins to make sure that the plugin array will not be shared
 		// between editors and make the watchdog feature work correctly.
 		const availablePlugins = Array.from( constructor.builtinPlugins || [] );
 
-		this.config = new Config<EditorConfig>( config, constructor.defaultConfig );
+		this.config = new Config<EditorConfig>( rest, defaultConfig );
 		this.config.define( 'plugins', availablePlugins );
 		this.config.define( this._context._getEditorConfig() );
 
@@ -321,6 +332,8 @@ export default abstract class Editor extends ObservableMixin() {
 
 		this.keystrokes = new EditingKeystrokeHandler( this );
 		this.keystrokes.listenTo( this.editing.view.document );
+
+		this.accessibility = new Accessibility( this );
 	}
 
 	/**
@@ -464,6 +477,68 @@ export default abstract class Editor extends ObservableMixin() {
 	}
 
 	/**
+	 * Sets the data in the editor.
+	 *
+	 * ```ts
+	 * editor.setData( '<p>This is editor!</p>' );
+	 * ```
+	 *
+	 * If your editor implementation uses multiple roots, you should pass an object with keys corresponding
+	 * to the editor root names and values equal to the data that should be set in each root:
+	 *
+	 * ```ts
+	 * editor.setData( {
+	 *     header: '<p>Content for header part.</p>',
+	 *     content: '<p>Content for main part.</p>',
+	 *     footer: '<p>Content for footer part.</p>'
+	 * } );
+	 * ```
+	 *
+	 * By default the editor accepts HTML. This can be controlled by injecting a different data processor.
+	 * See the {@glink features/markdown Markdown output} guide for more details.
+	 *
+	 * @param data Input data.
+	 */
+	public setData( data: string | Record<string, string> ): void {
+		this.data.set( data );
+	}
+
+	/**
+	 * Gets the data from the editor.
+	 *
+	 * ```ts
+	 * editor.getData(); // -> '<p>This is editor!</p>'
+	 * ```
+	 *
+	 * If your editor implementation uses multiple roots, you should pass root name as one of the options:
+	 *
+	 * ```ts
+	 * editor.getData( { rootName: 'header' } ); // -> '<p>Content for header part.</p>'
+	 * ```
+	 *
+	 * By default, the editor outputs HTML. This can be controlled by injecting a different data processor.
+	 * See the {@glink features/markdown Markdown output} guide for more details.
+	 *
+	 * A warning is logged when you try to retrieve data for a detached root, as most probably this is a mistake. A detached root should
+	 * be treated like it is removed, and you should not save its data. Note, that the detached root data is always an empty string.
+	 *
+	 * @param options Additional configuration for the retrieved data.
+	 * Editor features may introduce more configuration options that can be set through this parameter.
+	 * @param options.rootName Root name. Defaults to `'main'`.
+	 * @param options.trim Whether returned data should be trimmed. This option is set to `'empty'` by default,
+	 * which means that whenever editor content is considered empty, an empty string is returned. To turn off trimming
+	 * use `'none'`. In such cases exact content will be returned (for example `'<p>&nbsp;</p>'` for an empty editor).
+	 * @returns Output data.
+	 */
+	public getData( options?: {
+		rootName?: string;
+		trim?: 'empty' | 'none';
+		[ key: string ]: unknown;
+	} ): string {
+		return this.data.get( options );
+	}
+
+	/**
 	 * Loads and initializes plugins specified in the configuration.
 	 *
 	 * @returns A promise which resolves once the initialization is completed, providing an array of loaded plugins.
@@ -564,7 +639,7 @@ export default abstract class Editor extends ObservableMixin() {
 	 * * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`}
 	 * * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`}
 	 */
-	public static create( ...args: Array<unknown> ): void {
+	public static create( ...args: Array<unknown> ): void { // eslint-disable-line @typescript-eslint/no-unused-vars
 		throw new Error( 'This is an abstract method.' );
 	}
 }

@@ -1,16 +1,16 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document */
 
-import CloudServices from '../src/cloudservices';
-import CloudServicesCore from '../src/cloudservicescore';
-import Context from '@ckeditor/ckeditor5-core/src/context';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import TokenMock from './_utils/tokenmock';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import CloudServices from '../src/cloudservices.js';
+import CloudServicesCore from '../src/cloudservicescore.js';
+import Context from '@ckeditor/ckeditor5-core/src/context.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import TokenMock from './_utils/tokenmock.js';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 
 // CloudServices requires the `CloudServicesCore` plugin as a hard-requirement.
 // In order to mock the `Token` class, we create a new class that extend the `CloudServicesCore` plugin

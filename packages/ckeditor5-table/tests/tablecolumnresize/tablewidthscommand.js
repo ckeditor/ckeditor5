@@ -1,17 +1,18 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
 
-import TableColumnResize from '../../src/tablecolumnresize';
-import Table from '../../src/table';
-import { modelTable } from '../_utils/utils';
+import TableColumnResize from '../../src/tablecolumnresize.js';
+import Table from '../../src/table.js';
+import { modelTable } from '../_utils/utils.js';
 
 describe( 'TableWidthsCommand', () => {
 	let model, editor, editorElement, command;
@@ -21,7 +22,7 @@ describe( 'TableWidthsCommand', () => {
 		document.body.appendChild( editorElement );
 
 		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ Table, TableColumnResize, Paragraph ]
+			plugins: [ Table, TableColumnResize, Paragraph, ClipboardPipeline ]
 		} );
 
 		model = editor.model;

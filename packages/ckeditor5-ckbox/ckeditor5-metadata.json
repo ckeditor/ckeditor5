@@ -9,7 +9,10 @@
 			"requires": [
 				"CloudServices",
 				"Link",
-				"Image",
+				[
+					"ImageBlock",
+					"ImageInline"
+				],
 				"ImageUpload",
 				"PictureEditing"
 			],
@@ -17,7 +20,7 @@
 				{
 					"name": "ckbox",
 					"type": "Button",
-					"iconPath": "theme/icons/browse-files.svg"
+					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/browse-files.svg"
 				}
 			],
 			"htmlOutput": [
@@ -31,6 +34,23 @@
 						"data-ckbox-resource-id"
 					],
 					"_comment": "If `config.ckbox.ignoreDataId` is set to false (off), the asset ID as the `data-ckbox-resource-id` attribute is added on the inserted elements (by default)."
+				}
+			]
+		},
+		{
+			"name": "CKBox Image Edit",
+			"className": "CKBoxImageEdit",
+			"description": "Allows editing images.",
+			"docs": "features/file-management/ckbox.html",
+			"path": "src/ckboximageedit.js",
+			"requires": [
+				"CKBox"
+			],
+			"uiComponents": [
+				{
+					"name": "ckboxImageEdit",
+					"type": "Button",
+					"iconPath": "theme/icons/ckbox-image-edit.svg"
 				}
 			]
 		}

@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Hindi (https://app.transifex.com/ckeditor/teams/11143/hi/)\n"
 "Language: hi\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Label for the insert table toolbar button."
 msgid "Insert table"
@@ -248,14 +249,30 @@ msgctxt "The label used by assistive technologies describing a button that opens
 msgid "Color picker"
 msgstr "Color picker"
 
-msgctxt "The button label for the table toolbar hiding caption attached to the table."
-msgid "Toggle caption off"
-msgstr "कैप्शन को टॉगल बंद करें"
-
-msgctxt "The button label for the table toolbar showing caption attached to the table."
-msgid "Toggle caption on"
-msgstr "कैप्शन का टॉगल ऑन करें"
-
 msgctxt "The placeholder text for the table caption displayed when the caption is empty."
 msgid "Enter table caption"
 msgstr "टेबल कैप्शन एंटर करें"
+
+msgctxt "Accessibility help dialog header text displayed before the list of keystrokes that can be used in a table cell."
+msgid "Keystrokes that can be used in a table cell"
+msgstr "वे कीस्ट्रोक्स जिनका इस्तेमाल एक टेबल सेल में किया जा सकता है"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for moving the selection to the next cell."
+msgid "Move the selection to the next cell"
+msgstr "सेलेक्शन को अगले सेल में मूव करें"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for moving the selection to the previous cell."
+msgid "Move the selection to the previous cell"
+msgstr "सेलेक्शन को पिछले सेल में मूव करें"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for inserting a new table row."
+msgid "Insert a new table row (when in the last cell of a table)"
+msgstr "एक नई टेबल रो इंसर्ट करें (जब आप किसी टेबल के आख़िरी सेल में हों)"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the table."
+msgid "Navigate through the table"
+msgstr "टेबल में नैविगेट करें"
+
+msgctxt "The accessible label of the menu bar button that displays a user interface to insert a table into editor content."
+msgid "Table"
+msgstr "टेबल"

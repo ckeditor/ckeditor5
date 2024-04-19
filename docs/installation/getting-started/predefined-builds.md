@@ -45,7 +45,7 @@ There are several options to download predefined CKEditor&nbsp;5 builds:
 
 #### CDN
 
-Predefined CKEditor&nbsp;5 builds {@link installation/getting-started/quick-start can be loaded inside pages} directly from [CKEditor CDN](https://cdn.ckeditor.com/#ckeditor5), which is optimized for worldwide super-fast content delivery. When using CDN no download is actually needed.  CKEditor is hosted on servers spread across the globe &ndash; the scripts are loaded faster because they are served from the nearest locations to the end user. If the same version of CKEditor has already been downloaded (even on a different website), it is loaded from cache. Using CDN reduces the number of HTTP requests handled by your server so it speeds it up as well.
+Predefined CKEditor&nbsp;5 builds {@link installation/getting-started/quick-start can be loaded inside pages} directly from [CKEditor CDN](https://cdn.ckeditor.com/#ckeditor5), which is optimized for worldwide super-fast content delivery. When using CDN no download is actually needed. CKEditor is hosted on servers spread across the globe &ndash; the scripts are loaded faster because they are served from the nearest locations to the end user. If the same version of CKEditor has already been downloaded (even on a different website), it is loaded from cache. Using CDN reduces the number of HTTP requests handled by your server so it speeds it up as well.
 
 However, CDN only offers ready-to-use, predefined packages (CKEditor&nbsp;5 builds). This limits its customization capabilities.
 
@@ -104,14 +104,14 @@ Once the CKEditor script is loaded, you can {@link installation/getting-started/
 
 ### Classic editor
 
-Classic editor is what most users traditionally learnt to associate with a rich-text editor &mdash; a toolbar with an editing area placed in a specific position on the page, usually as a part of a form that you use to submit some content to the server.
+Classic editor is what most users traditionally learnt to associate with a rich-text editor &ndash; a toolbar with an editing area placed in a specific position on the page, usually as a part of a form that you use to submit some content to the server.
 
 During its initialization the editor hides the used editable element on the page and renders "instead" of it. This is why it is usually used to replace `<textarea>` elements.
 
 In CKEditor&nbsp;5 the concept of the "boxed" editor was reinvented:
 
  * The toolbar is now always visible when the user scrolls the page down.
- * The editor content is now placed inline in the page (without the surrounding `<iframe>` element) &mdash; it is now much easier to style it.
+ * The editor content is now placed inline in the page (without the surrounding `<iframe>` element). It is now much easier to style it.
  * By default the editor now grows automatically with the content.
 
 {@img assets/img/editor-classic.png 778 Screenshot of a classic editor.}
@@ -159,7 +159,7 @@ Full code example:
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>CKEditor&nbsp;5 – Classic editor</title>
+	<title>CKEditor 5 – Classic editor</title>
 	<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/classic/ckeditor.js"></script>
 </head>
 <body>
@@ -180,7 +180,7 @@ Full code example:
 
 ### Inline editor
 
-Inline editor comes with a floating toolbar that becomes visible when the editor is focused (e.g. by clicking it). Unlike classic editor, inline editor does not render *instead* of the given element, it simply makes it editable. As a consequence the styles of the edited content will be exactly the same before and after the editor is created.
+Inline editor comes with a floating toolbar that becomes visible when the editor is focused (for example, by clicking it). Unlike classic editor, inline editor does not render *instead* of the given element, it simply makes it editable. As a consequence the styles of the edited content will be exactly the same before and after the editor is created.
 
 A common scenario for using inline editor is offering users the possibility to edit content in its real location on a web page instead of doing it in a separate administration section.
 
@@ -229,7 +229,7 @@ Full code example:
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>CKEditor&nbsp;5 - Inline editor</title>
+	<title>CKEditor 5 - Inline editor</title>
 	<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/inline/ckeditor.js"></script>
 </head>
 <body>
@@ -250,7 +250,7 @@ Full code example:
 
 ### Balloon editor
 
-Balloon editor is very similar to inline editor. The difference between them is that the toolbar appears in a balloon next to the selection (when the selection is not empty):
+Balloon editor is similar to inline editor. The difference between them is that the toolbar appears in a balloon next to the selection (when the selection is not empty):
 
 {@img assets/img/editor-balloon.png 789 Screenshot of a balloon toolbar editor.}
 
@@ -297,7 +297,7 @@ Full example:
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>CKEditor&nbsp;5 – Balloon editor</title>
+	<title>CKEditor 5 – Balloon editor</title>
 	<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/balloon/ckeditor.js"></script>
 </head>
 <body>
@@ -367,7 +367,7 @@ Full code example:
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>CKEditor&nbsp;5 – Balloon block editor</title>
+	<title>CKEditor 5 – Balloon block editor</title>
 	<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/balloon-block/ckeditor.js"></script>
 </head>
 <body>
@@ -410,10 +410,10 @@ npm install --save @ckeditor/ckeditor5-build-decoupled-document
 
 Then bundle it together with your app.
 
-Call the {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`} method. The decoupled editor requires you to inject the toolbar into the DOM and the best place to do that is somewhere in the promise chain (e.g. one of the `then( () => { ... } )` blocks).
+Call the {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`} method. The decoupled editor requires you to inject the toolbar into the DOM and the best place to do that is somewhere in the promise chain (for example, one of the `then( () => { ... } )` blocks).
 
 <info-box>
-	The following snippet will run the document editor but to make the most of it check out the {@link framework/document-editor comprehensive tutorial} which explains step—by—step how to configure and style the application for the best editing experience.
+	The following snippet will run the document editor but to make the most of it check out the {@link framework/document-editor comprehensive tutorial} which explains step by step how to configure and style the application for the best editing experience.
 </info-box>
 
 ```html
@@ -438,7 +438,7 @@ Full code example:
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>CKEditor&nbsp;5 – Document editor</title>
+	<title>CKEditor 5 – Document editor</title>
 	<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/decoupled-document/ckeditor.js"></script>
 </head>
 <body>
@@ -554,7 +554,7 @@ Full code example:
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>CKEditor&nbsp;5 – multi-root editor build – development sample</title>
+	<title>CKEditor 5 – multi-root editor build – development sample</title>
 	<style>
 		body {
 			max-width: 800px;
@@ -677,10 +677,10 @@ Full code example:
 
 ### Superbuild
 
-The superbuild, available instantly from the CDN, is a preconfigured package that offers access to almost all available plugins and all predefined editor types.
+The superbuild, available instantly from the CDN, is a pre-configured package that offers access to almost all available plugins and all predefined editor types.
 
 <info-box>
-	Keep in mind that the superbuild contains a lot of code. You may not need all of it for your use case. It's best to use the superbuild for testing and evaluation purposes rather than in a production environment.
+	Keep in mind that the superbuild contains a lot of code. You may not need all of it for your use case. It is best to use the superbuild for testing and evaluation purposes rather than in a production environment.
 
 	For customized and efficient solutions in a production environment, we strongly advise using the {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder online builder} approach or {@link installation/getting-started/quick-start-other#building-the-editor-from-source building the editor from source}. You can also try out other predefined builds instead.
 </info-box>
@@ -777,6 +777,16 @@ The table below presents the list of all plugins included in various builds. <!-
 				<td style="text-align:center; width:70px">✅</td>
 			</tr>
 			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/case-change.html">Case change</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
 				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/file-management/ckbox.html">CKBox</a></td>
 				<td style="text-align:center; width:70px">✅</td>
 				<td style="text-align:center; width:70px">✅</td>
@@ -847,16 +857,6 @@ The table below presents the list of all plugins included in various builds. <!-
 				<td style="text-align:center; width:70px">✅</td>
 			</tr>
 			<tr>
-				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/document-lists.html">DocumentList</a> +</td>
-				<td style="text-align:center; width:70px">❌</td>
-				<td style="text-align:center; width:70px">❌</td>
-				<td style="text-align:center; width:70px">❌</td>
-				<td style="text-align:center; width:70px">❌</td>
-				<td style="text-align:center; width:70px">❌</td>
-				<td style="text-align:center; width:70px">❌</td>
-				<td style="text-align:center; width:70px">❌</td>
-			</tr>
-			<tr>
 				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/document-outline.html">DocumentOutline</a></td>
 				<td style="text-align:center; width:70px">❌</td>
 				<td style="text-align:center; width:70px">❌</td>
@@ -877,7 +877,17 @@ The table below presents the list of all plugins included in various builds. <!-
 				<td style="text-align:center; width:70px">✅</td>
 			</tr>
 			<tr>
-				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/api/essentials.html">Essentials</a> *</td>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/api/essentials.html">Essentials</a> *<br />
+				Includes:</br />
+				<ul>
+				<li><a href="https://ckeditor.com/docs/ckeditor5/latest/api/clipboard.html">Clipboard</a></li>
+				<li><a href="https://ckeditor.com/docs/ckeditor5/latest/api/enter.html">Enter/ShiftEnter</a></li>
+				<li><a href="https://ckeditor.com/docs/ckeditor5/latest/api/select-all.html">SelectAll</a></li>
+				<li><a href="https://ckeditor.com/docs/ckeditor5/latest/api/typing.html">Typing</a></li>
+				<li><a href="https://ckeditor.com/docs/ckeditor5/latest/api/undo.html">Undo</a></li>
+				<li><a href="https://ckeditor.com/docs/ckeditor5/latest/features/accessibility.html#displaying-keyboard-shortcuts-in-the-editor">Accessibility help dialog</a></li>
+				</ul>
+				</td>
 				<td style="text-align:center; width:70px">✅</td>
 				<td style="text-align:center; width:70px">✅</td>
 				<td style="text-align:center; width:70px">✅</td>
@@ -1126,7 +1136,7 @@ The table below presents the list of all plugins included in various builds. <!-
 				<td style="text-align:center; width:70px">✅</td>
 			</tr>
 			<tr>
-				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html">List</a> +</td>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html">List</a></td>
 				<td style="text-align:center; width:70px">✅</td>
 				<td style="text-align:center; width:70px">✅</td>
 				<td style="text-align:center; width:70px">✅</td>
@@ -1167,6 +1177,16 @@ The table below presents the list of all plugins included in various builds. <!-
 			</tr>
 			<tr>
 				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html">Mentions</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/multi-level-lists.html">MultiLevelList</a></td>
 				<td style="text-align:center; width:70px">❌</td>
 				<td style="text-align:center; width:70px">❌</td>
 				<td style="text-align:center; width:70px">❌</td>
@@ -1276,7 +1296,7 @@ The table below presents the list of all plugins included in various builds. <!-
 				<td style="text-align:center; width:70px">✅</td>
 			</tr>
 			<tr>
-				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/show-blocks.html">ShowBlocks</a> +</td>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/show-blocks.html">ShowBlocks</a></td>
 				<td style="text-align:center; width:70px">❌</td>
 				<td style="text-align:center; width:70px">❌</td>
 				<td style="text-align:center; width:70px">❌</td>
@@ -1459,16 +1479,14 @@ The table below presents the list of all plugins included in various builds. <!-
 
 **Important notes**
 Plugins denoted with an asterisk (*) are essential for the editor to work and should never be removed.
-The two list plugins denoted with a plus (+) can only be used separately.
-The document lists feature is required by the import from Word plugin to run correctly.
 
 ## UMD support
 
 Because builds are distributed as [UMD modules](https://github.com/umdjs/umd), editor classes can be retrieved in various ways:
 
-* by a [CommonJS](http://wiki.commonjs.org/wiki/CommonJS)-compatible loader (e.g. [webpack](https://webpack.js.org) or [Browserify](http://browserify.org/)),
-* by [RequireJS](http://requirejs.org/) (or any other AMD library),
-* from the global namespace if none of the above loaders is available.
+* By a [CommonJS](http://wiki.commonjs.org/wiki/CommonJS)-compatible loader (like [webpack](https://webpack.js.org) or [Browserify](http://browserify.org/)).
+* By [RequireJS](http://requirejs.org/) (or any other AMD library).
+* From the global namespace if none of these loaders is available.
 
 For example:
 

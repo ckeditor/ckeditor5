@@ -1,12 +1,12 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals console, document */
 
-import DecoupledEditor from '../../src/decouplededitor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import DecoupledEditor from '../../src/decouplededitor.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 
 const editorData = '<h2>Hello world</h2><p>This is the decoupled editor.</p><img src="sample.jpg" />';
 
@@ -42,7 +42,7 @@ function initEditor() {
 				toolbar: [
 					'imageStyle:inline',
 					'imageStyle:block',
-					'imageStyle:side',
+					'imageStyle:wrapText',
 					'|',
 					'imageTextAlternative'
 				]

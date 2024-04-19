@@ -1,28 +1,28 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import LinkImageEditing from '@ckeditor/ckeditor5-link/src/linkimageediting';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting.js';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
+import LinkImageEditing from '@ckeditor/ckeditor5-link/src/linkimageediting.js';
 
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import { NativeFileReaderMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { NativeFileReaderMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
 
-import ImageInlineEditing from '../src/image/imageinlineediting';
-import ImageBlockEditing from '../src/image/imageblockediting';
-import PictureEditing from '../src/pictureediting';
-import ImageEditing from '../src/image/imageediting';
-import ImageUtils from '../src/imageutils';
-import ImageResizeEditing from '../src/imageresize/imageresizeediting';
-import ImageCaptionEditing from '../src/imagecaption/imagecaptionediting';
-import ImageUploadEditing from '../src/imageupload/imageuploadediting';
+import ImageInlineEditing from '../src/image/imageinlineediting.js';
+import ImageBlockEditing from '../src/image/imageblockediting.js';
+import PictureEditing from '../src/pictureediting.js';
+import ImageEditing from '../src/image/imageediting.js';
+import ImageUtils from '../src/imageutils.js';
+import ImageResizeEditing from '../src/imageresize/imageresizeediting.js';
+import ImageCaptionEditing from '../src/imagecaption/imagecaptionediting.js';
+import ImageUploadEditing from '../src/imageupload/imageuploadediting.js';
 
 describe( 'PictureEditing', () => {
 	let editor, model, modelDocument, view, imageUtils;
@@ -230,7 +230,7 @@ describe( 'PictureEditing', () => {
 					expect( getModelData( model ) ).to.equal(
 						'<paragraph>[]' +
 							'foo' +
-							'<imageInline sources="[object Object]" src="/assets/sample.png" width="123px"></imageInline>' +
+							'<imageInline resizedWidth="123px" sources="[object Object]" src="/assets/sample.png"></imageInline>' +
 							'bar' +
 						'</paragraph>'
 					);
@@ -449,9 +449,9 @@ describe( 'PictureEditing', () => {
 
 					expect( getModelData( model ) ).to.equal(
 						'[<imageBlock ' +
+							'resizedWidth="123px" ' +
 							'sources="[object Object],[object Object]" ' +
-							'src="/assets/sample.png" ' +
-							'width="123px"' +
+							'src="/assets/sample.png"' +
 						'>' +
 							'<caption>Text of the caption</caption>' +
 						'</imageBlock>]'
@@ -492,9 +492,9 @@ describe( 'PictureEditing', () => {
 					expect( getModelData( model ) ).to.equal(
 						'[<imageBlock ' +
 							'linkHref="https://cksource.com" ' +
+							'resizedWidth="123px" ' +
 							'sources="[object Object]" ' +
-							'src="/assets/sample.png" ' +
-							'width="123px"' +
+							'src="/assets/sample.png"' +
 						'>' +
 							'<caption>Text of the caption</caption>' +
 						'</imageBlock>]'
@@ -1049,7 +1049,8 @@ describe( 'PictureEditing', () => {
 									'class="ck-editor__editable ck-editor__nested-editable" ' +
 									'contenteditable="true" ' +
 									'data-placeholder="Enter image caption" ' +
-									'role="textbox"' +
+									'role="textbox" ' +
+									'tabindex="-1"' +
 								'>' +
 									'Caption' +
 								'</figcaption>' +
@@ -1221,7 +1222,8 @@ describe( 'PictureEditing', () => {
 									'class="ck-editor__editable ck-editor__nested-editable" ' +
 									'contenteditable="true" ' +
 									'data-placeholder="Enter image caption" ' +
-									'role="textbox"' +
+									'role="textbox" ' +
+									'tabindex="-1"' +
 								'>' +
 									'Text of the caption' +
 								'</figcaption>' +
@@ -1385,7 +1387,8 @@ describe( 'PictureEditing', () => {
 										'class="ck-editor__editable ck-editor__nested-editable" ' +
 										'contenteditable="true" ' +
 										'data-placeholder="Enter image caption" ' +
-										'role="textbox"' +
+										'role="textbox" ' +
+										'tabindex="-1"' +
 									'>' +
 										'Caption' +
 									'</figcaption>' +
@@ -1431,7 +1434,8 @@ describe( 'PictureEditing', () => {
 										'class="ck-editor__editable ck-editor__nested-editable" ' +
 										'contenteditable="true" ' +
 										'data-placeholder="Enter image caption" ' +
-										'role="textbox"' +
+										'role="textbox" ' +
+										'tabindex="-1"' +
 									'>' +
 										'Text of the caption' +
 									'</figcaption>' +
@@ -1473,7 +1477,8 @@ describe( 'PictureEditing', () => {
 										'class="ck-editor__editable ck-editor__nested-editable" ' +
 										'contenteditable="true" ' +
 										'data-placeholder="Enter image caption" ' +
-										'role="textbox"' +
+										'role="textbox" ' +
+										'tabindex="-1"' +
 									'>' +
 										'Text of the caption' +
 									'</figcaption>' +
@@ -1873,7 +1878,8 @@ describe( 'PictureEditing', () => {
 					ImageBlockEditing, ImageInlineEditing,
 					LinkImageEditing, ImageResizeEditing, ImageCaptionEditing, ImageUploadEditing,
 					UploadAdapterPluginMock
-				]
+				],
+				image: { insert: { type: 'auto' } }
 			} );
 
 			model = editor.model;

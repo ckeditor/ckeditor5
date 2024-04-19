@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,7 @@
  * @module utils/eventinfo
  */
 
-import spy from './spy';
+import spy from './spy.js';
 
 /**
  * The event object passed to event callbacks. It is used to provide information about the event as well as a tool to

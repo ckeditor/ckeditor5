@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,15 +7,15 @@
  * @module engine/model/documentfragment
  */
 
-import TypeCheckable from './typecheckable';
-import Element from './element';
-import NodeList from './nodelist';
-import Text from './text';
-import TextProxy from './textproxy';
+import TypeCheckable from './typecheckable.js';
+import Element from './element.js';
+import NodeList from './nodelist.js';
+import Text from './text.js';
+import TextProxy from './textproxy.js';
 
-import type Item from './item';
-import type Node from './node';
-import type Range from './range';
+import type Item from './item.js';
+import type Node from './node.js';
+import type Range from './range.js';
 
 import { isIterable } from '@ckeditor/ckeditor5-utils';
 
@@ -379,7 +379,7 @@ DocumentFragment.prototype.is = function( type: string ): boolean {
 /**
  * Converts strings to Text and non-iterables to arrays.
  */
-function normalize( nodes: string | Item | Iterable<string | Item> ): Iterable<Node> {
+function normalize( nodes: string | Item | Iterable<string | Item> ): Array<Node> {
 	// Separate condition because string is iterable.
 	if ( typeof nodes == 'string' ) {
 		return [ new Text( nodes ) ];

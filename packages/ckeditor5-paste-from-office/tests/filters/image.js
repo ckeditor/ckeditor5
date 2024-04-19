@@ -1,16 +1,16 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 
-import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
-import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
+import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
-import { parseHtml } from '../../src/filters/parse';
-import { replaceImagesSourceWithBase64, _convertHexToBase64 } from '../../src/filters/image';
-import { browserFixtures } from '../_data/image/index';
+import { parseHtml } from '../../src/filters/parse.js';
+import { replaceImagesSourceWithBase64, _convertHexToBase64 } from '../../src/filters/image.js';
+import { browserFixtures } from '../_data/image/index.js';
 
 describe( 'PasteFromOffice - filters', () => {
 	describe( 'image', () => {

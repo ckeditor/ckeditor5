@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -19,6 +19,7 @@ const { globSync } = require( 'glob' );
 const fs = require( 'fs-extra' );
 const upath = require( 'upath' );
 const { execSync } = require( 'child_process' );
+const isCKEditor5PackageFactory = require( '../release/utils/isckeditor5packagefactory' );
 
 const versionsCache = {};
 const shouldFix = process.argv[ 2 ] === '--fix';
@@ -32,29 +33,48 @@ const [ packageJsons, pathMappings ] = getPackageJsons( [
 	'external/ckeditor5-commercial/package.json'
 ] );
 
-const expectedDependencies = getExpectedDepsVersions( packageJsons );
+main().catch( err => {
+	console.error( err );
 
-if ( shouldFix ) {
-	fixDependenciesVersions( expectedDependencies, packageJsons, pathMappings );
-} else {
-	checkDependenciesMatch( expectedDependencies, packageJsons );
+	process.exit( 1 );
+} );
+
+async function main() {
+	const isCkeditor5Package = await isCKEditor5PackageFactory();
+	const expectedDependencies = getExpectedDepsVersions( packageJsons, isCkeditor5Package );
+
+	if ( shouldFix ) {
+		fixDependenciesVersions( expectedDependencies, packageJsons, pathMappings, isCkeditor5Package );
+	} else {
+		checkDependenciesMatch( expectedDependencies, packageJsons, isCkeditor5Package );
+	}
 }
 
 /**
  * @param {Object.<String, String>} expectedDependencies
  * @param {Array.<Object>} packageJsons
  * @param {Object.<String, String>} pathMappings
+ * @param {Function} isCkeditor5Package
  */
-function fixDependenciesVersions( expectedDependencies, packageJsons, pathMappings ) {
+function fixDependenciesVersions( expectedDependencies, packageJsons, pathMappings, isCkeditor5Package ) {
 	packageJsons
 		.filter( packageJson => packageJson.dependencies )
 		.forEach( packageJson => {
-			Object.entries( packageJson.dependencies )
-				.forEach( ( [ dependency, version ] ) => {
-					if ( version !== expectedDependencies[ dependency ] ) {
-						packageJson.dependencies[ dependency ] = expectedDependencies[ dependency ];
-					}
-				} );
+			for ( const [ dependency, version ] of Object.entries( packageJson.dependencies ) ) {
+				if ( version === expectedDependencies[ dependency ] ) {
+					continue;
+				}
+
+				packageJson.dependencies[ dependency ] = expectedDependencies[ dependency ];
+			}
+
+			for ( const [ dependency, version ] of Object.entries( packageJson.devDependencies ) ) {
+				if ( !isCkeditor5Package( dependency ) || version === expectedDependencies[ dependency ] ) {
+					continue;
+				}
+
+				packageJson.devDependencies[ dependency ] = expectedDependencies[ dependency ];
+			}
 
 			fs.writeJsonSync( pathMappings[ packageJson.name ], packageJson, { spaces: 2 } );
 		} );
@@ -64,19 +84,34 @@ function fixDependenciesVersions( expectedDependencies, packageJsons, pathMappin
 
 /**
  * @param {Object.<String, String>} expectedDependencies
+ * @param {Function} isCkeditor5Package
  * @param {Array.<Object>} packageJsons
  */
-function checkDependenciesMatch( expectedDependencies, packageJsons ) {
+function checkDependenciesMatch( expectedDependencies, packageJsons, isCkeditor5Package ) {
 	const errors = packageJsons
-		.filter( packageJson => packageJson.dependencies )
-		.flatMap( packageJson => Object.entries( packageJson.dependencies )
-			.map( ( [ dependency, version ] ) => {
-				if ( version !== expectedDependencies[ dependency ] ) {
+		.flatMap( packageJson => {
+			const depsErrors = Object.entries( packageJson.dependencies || {} )
+				.map( ( [ dependency, version ] ) => {
+					if ( version === expectedDependencies[ dependency ] ) {
+						return '';
+					}
+
 					return getWrongVersionErrorMsg( dependency, packageJson.name, version, expectedDependencies );
-				}
-			} )
-			.filter( Boolean )
-		);
+				} )
+				.filter( Boolean );
+
+			const devDepsErrors = Object.entries( packageJson.devDependencies || {} )
+				.map( ( [ dependency, version ] ) => {
+					if ( !isCkeditor5Package( dependency ) || version === expectedDependencies[ dependency ] ) {
+						return '';
+					}
+
+					return getWrongVersionErrorMsg( dependency, packageJson.name, version, expectedDependencies );
+				} )
+				.filter( Boolean );
+
+			return [ ...depsErrors, devDepsErrors ].flat();
+		} );
 
 	if ( errors.length ) {
 		console.error( chalk.red( '❌  Errors found. Run this script with an argument: `--fix` to resolve the issues automatically:' ) );
@@ -100,16 +135,23 @@ function getWrongVersionErrorMsg( dependency, name, version, expectedDependencie
 
 /**
  * @param {Array.<Object>} packageJsons
+ * @param {Function} isCkeditor5Package
  * @return {Object.<String, String>} expectedDependencies
  */
-function getExpectedDepsVersions( packageJsons ) {
+function getExpectedDepsVersions( packageJsons, isCkeditor5Package ) {
 	return packageJsons
-		.map( packageJson => packageJson.dependencies )
-		.filter( Boolean )
-		.reduce( ( expectedDependencies, dependencies ) => {
-			Object.entries( dependencies ).forEach( ( [ dependency, version ] ) => {
+		.reduce( ( expectedDependencies, packageJson ) => {
+			for ( const [ dependency, version ] of Object.entries( packageJson.dependencies || {} ) ) {
 				expectedDependencies[ dependency ] = getNewestVersion( dependency, version, expectedDependencies[ dependency ] );
-			} );
+			}
+
+			for ( const [ dependency, version ] of Object.entries( packageJson.devDependencies || {} ) ) {
+				if ( !isCkeditor5Package( dependency ) ) {
+					continue;
+				}
+
+				expectedDependencies[ dependency ] = getNewestVersion( dependency, version, expectedDependencies[ dependency ] );
+			}
 
 			return expectedDependencies;
 		}, {} );

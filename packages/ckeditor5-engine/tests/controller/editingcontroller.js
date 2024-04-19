@@ -1,32 +1,32 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals setTimeout, document */
 
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin.js';
 
-import EditingController from '../../src/controller/editingcontroller';
+import EditingController from '../../src/controller/editingcontroller.js';
 
-import View from '../../src/view/view';
+import View from '../../src/view/view.js';
 
-import Mapper from '../../src/conversion/mapper';
-import DowncastDispatcher from '../../src/conversion/downcastdispatcher';
+import Mapper from '../../src/conversion/mapper.js';
+import DowncastDispatcher from '../../src/conversion/downcastdispatcher.js';
 
-import DowncastHelpers from '../../src/conversion/downcasthelpers';
-import Model from '../../src/model/model';
-import ModelPosition from '../../src/model/position';
-import ModelRange from '../../src/model/range';
-import ModelDocumentFragment from '../../src/model/documentfragment';
+import DowncastHelpers from '../../src/conversion/downcasthelpers.js';
+import Model from '../../src/model/model.js';
+import ModelPosition from '../../src/model/position.js';
+import ModelRange from '../../src/model/range.js';
+import ModelDocumentFragment from '../../src/model/documentfragment.js';
 
-import { getData as getModelData, setData as setModelData, parse } from '../../src/dev-utils/model';
-import { getData as getViewData } from '../../src/dev-utils/view';
-import { StylesProcessor } from '../../src/view/stylesmap';
+import { getData as getModelData, setData as setModelData, parse } from '../../src/dev-utils/model.js';
+import { getData as getViewData } from '../../src/dev-utils/view.js';
+import { StylesProcessor } from '../../src/view/stylesmap.js';
 
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Typing } from '@ckeditor/ckeditor5-typing';
 import { Enter } from '@ckeditor/ckeditor5-enter';
 

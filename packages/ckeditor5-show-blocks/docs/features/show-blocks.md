@@ -6,16 +6,16 @@ category: features
 modified_at: 2023-06-20
 ---
 
-The show blocks feature allows the content creators to visualize all block-level elements (except for widgets) by surrounding them with an outline and displaying their element name at the top-left corner of the box.
+The show blocks feature allows the content creators to visualize all block-level elements (except for widgets). It surrounds them with an outline and displays their element name in the top-left corner of the box.
 
 ## Demo
 
-Toggle the block elements visibility with the show block {@icon @ckeditor/ckeditor5-show-blocks/theme/icons/show-blocks.svg Show blocks} toolbar button to see the feature in action. The content remains editable, so you can see how the blocks adjust to the content structure on the go. These outlines are not visible in the {@link features/export-pdf export to PDF} and {@link features/export-word export to Word} features, so there is no need to disable them before exporting.
+Toggle the block elements visibility with the show block {@icon @ckeditor/ckeditor5-show-blocks/theme/icons/show-blocks.svg Show blocks} toolbar button to see the feature in action. The content remains editable, so you can see how the blocks adjust to the content structure on the go. These outlines are not visible in the {@link features/export-pdf export to PDF} and {@link features/export-word export to Word} features, so there is no need to remove them before exporting.
 
 {@snippet features/show-blocks}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Installation
@@ -68,7 +68,7 @@ Other CKEditor&nbsp;5 features related to HTML editing that you may want to chec
 
 The {@link module:show-blocks/showblocks~ShowBlocks} plugin registers the `'showBlocks'` UI button component and the `'showBlocks'` command implemented by {@link module:show-blocks/showblockscommand~ShowBlocksCommand}.
 
-The command can be executed using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
+You can execute the command using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
 
 ```js
 // Toggle the visibility of block-level elements outline.

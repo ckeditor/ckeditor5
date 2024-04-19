@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,9 @@
  * @module minimap/minimapiframeview
  */
 
-import { IframeView } from 'ckeditor5/src/ui';
-import { toUnit, type Locale } from 'ckeditor5/src/utils';
-import type { MinimapViewOptions } from './minimapview';
+import { IframeView } from 'ckeditor5/src/ui.js';
+import { toUnit, type Locale } from 'ckeditor5/src/utils.js';
+import type { MinimapViewOptions } from './minimapview.js';
 
 const toPx = toUnit( 'px' );
 
@@ -54,6 +54,7 @@ export default class MinimapIframeView extends IframeView {
 
 		this.extendTemplate( {
 			attributes: {
+				tabindex: -1,
 				class: [
 					'ck-minimap__iframe'
 				],

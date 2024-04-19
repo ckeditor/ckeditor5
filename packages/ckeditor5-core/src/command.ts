@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -15,7 +15,7 @@ import {
 	type ObservableSetEvent
 } from '@ckeditor/ckeditor5-utils';
 
-import type Editor from './editor/editor';
+import type Editor from './editor/editor.js';
 
 /**
  * Base class for the CKEditor commands.
@@ -253,7 +253,7 @@ export default class Command extends ObservableMixin() {
 	 *
 	 * @fires execute
 	 */
-	public execute( ...args: Array<unknown> ): unknown { return undefined; }
+	public execute( ...args: Array<unknown> ): unknown { return undefined; } // eslint-disable-line @typescript-eslint/no-unused-vars
 
 	/**
 	 * Destroys the command.

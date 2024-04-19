@@ -1,36 +1,36 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document, window, NodeFilter, MutationObserver, HTMLImageElement, console */
 
-import View from '../../src/view/view';
-import ViewElement from '../../src/view/element';
-import ViewEditableElement from '../../src/view/editableelement';
-import ViewContainerElement from '../../src/view/containerelement';
-import ViewAttributeElement from '../../src/view/attributeelement';
-import ViewRawElement from '../../src/view/rawelement';
-import ViewUIElement from '../../src/view/uielement';
-import ViewText from '../../src/view/text';
-import ViewRange from '../../src/view/range';
-import ViewPosition from '../../src/view/position';
-import DocumentSelection from '../../src/view/documentselection';
-import DomConverter from '../../src/view/domconverter';
-import Renderer from '../../src/view/renderer';
-import DocumentFragment from '../../src/view/documentfragment';
-import ViewDocument from '../../src/view/document';
-import DowncastWriter from '../../src/view/downcastwriter';
+import View from '../../src/view/view.js';
+import ViewElement from '../../src/view/element.js';
+import ViewEditableElement from '../../src/view/editableelement.js';
+import ViewContainerElement from '../../src/view/containerelement.js';
+import ViewAttributeElement from '../../src/view/attributeelement.js';
+import ViewRawElement from '../../src/view/rawelement.js';
+import ViewUIElement from '../../src/view/uielement.js';
+import ViewText from '../../src/view/text.js';
+import ViewRange from '../../src/view/range.js';
+import ViewPosition from '../../src/view/position.js';
+import DocumentSelection from '../../src/view/documentselection.js';
+import DomConverter from '../../src/view/domconverter.js';
+import Renderer from '../../src/view/renderer.js';
+import DocumentFragment from '../../src/view/documentfragment.js';
+import ViewDocument from '../../src/view/document.js';
+import DowncastWriter from '../../src/view/downcastwriter.js';
 
-import { parse, stringify, setData as setViewData, getData as getViewData } from '../../src/dev-utils/view';
-import { BR_FILLER, INLINE_FILLER, INLINE_FILLER_LENGTH } from '../../src/view/filler';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import createViewRoot from './_utils/createroot';
-import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
-import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
-import env from '@ckeditor/ckeditor5-utils/src/env';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-import { StylesProcessor } from '../../src/view/stylesmap';
+import { parse, stringify, setData as setViewData, getData as getViewData } from '../../src/dev-utils/view.js';
+import { BR_FILLER, INLINE_FILLER, INLINE_FILLER_LENGTH } from '../../src/view/filler.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import createViewRoot from './_utils/createroot.js';
+import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
+import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
+import env from '@ckeditor/ckeditor5-utils/src/env.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
+import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'Renderer', () => {
 	let selection, domConverter, renderer, viewDocument;
@@ -326,6 +326,34 @@ describe( 'Renderer', () => {
 
 			expect( domRoot.childNodes.length ).to.equal( 1 );
 			expect( domRoot.childNodes[ 0 ] ).to.equal( domImg );
+		} );
+
+		it( 'should change element if it is the same but requested to not reuse', () => {
+			const viewImg = new ViewElement( viewDocument, 'img' );
+			viewRoot._appendChild( viewImg );
+
+			// This should not be changed during the render.
+			const domImg = document.createElement( 'img' );
+			domRoot.appendChild( domImg );
+
+			domConverter.bindElements( domImg, viewImg );
+
+			viewImg._setCustomProperty( 'editingPipeline:doNotReuseOnce', true );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ] ).to.not.equal( domImg );
+
+			// Verify if only once.
+			const newDomImg = domRoot.childNodes[ 0 ];
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ] ).to.equal( newDomImg );
 		} );
 
 		it( 'should remove any comment from the DOM element', () => {

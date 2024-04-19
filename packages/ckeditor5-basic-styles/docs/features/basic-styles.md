@@ -19,7 +19,7 @@ You may apply basic formatting options with toolbar buttons. You can also make u
 {@snippet features/basic-styles}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Available text styles
@@ -42,7 +42,7 @@ You may apply basic formatting options with toolbar buttons. You can also make u
 
 ### Supported input
 
-By default, each feature can upcast more than one type of content. Here is the full list of elements supported by each feature, either when pasting from the clipboard, loading data on start, or using the {@link module:core/editor/utils/dataapimixin~DataApi#setData data API}.
+By default, each feature can upcast more than one type of content. Here is the full list of elements supported by each feature, either when pasting from the clipboard, loading data on start, or using the {@link module:core/editor/editor~Editor#setData data API}.
 
 | Style feature | Supported input elements |
 |-----|---|
@@ -104,6 +104,7 @@ Check out also these CKEditor&nbsp;5 features to gain better control over your c
 * {@link features/font Font styles} &ndash; Easily and efficiently control the font {@link features/font#configuring-the-font-family-feature family}, {@link features/font#configuring-the-font-size-feature size}, {@link features/font#configuring-the-font-color-and-font-background-color-features text or background color}.
 * {@link features/style Styles} &ndash; Apply pre-configured styles to existing elements in the editor content.
 * {@link features/text-alignment Text alignment} &ndash; Because it does matter whether the content is left, right, centered, or justified.
+* {@link features/case-change Case change} &ndash; Turn a text fragment or block into uppercase, lowercase, or title case.
 * {@link features/code-blocks Code blocks}  &ndash; Insert longer, multiline code listings, expanding the inline code style greatly.
 * {@link features/highlight Highlight} &ndash; Mark important words and passages, aiding a review or drawing attention to specific parts of the content.
 * {@link features/format-painter Format painter} &ndash; Easily copy text formatting and apply it in a different place in the edited document.

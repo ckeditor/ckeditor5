@@ -1,14 +1,14 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global window */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import ImageCaption from '../src/imagecaption';
-import ImageCaptionEditing from '../src/imagecaption/imagecaptionediting';
-import ImageCaptionUI from '../src/imagecaption/imagecaptionui';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import ImageCaption from '../src/imagecaption.js';
+import ImageCaptionEditing from '../src/imagecaption/imagecaptionediting.js';
+import ImageCaptionUI from '../src/imagecaption/imagecaptionui.js';
 
 describe( 'ImageCaption', () => {
 	let editor, editorElement;

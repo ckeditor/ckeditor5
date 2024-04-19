@@ -1,13 +1,13 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { global } from 'ckeditor5/src/utils';
-import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
-import { Point } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils';
-import TableColumnResizeEditing from '../../../src/tablecolumnresize/tablecolumnresizeediting';
-import { getTableColumnsWidths } from '../../../src/tablecolumnresize/utils';
+import { global } from 'ckeditor5/src/utils.js';
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect.js';
+import { Point } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils.js';
+import TableColumnResizeEditing from '../../../src/tablecolumnresize/tablecolumnresizeediting.js';
+import { getTableColumnsWidths } from '../../../src/tablecolumnresize/utils.js';
 
 export const tableColumnResizeMouseSimulator = {
 	down( editor, domTarget, options = {} ) {

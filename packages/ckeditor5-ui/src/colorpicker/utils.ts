@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -13,7 +13,9 @@
 // @ts-ignore
 import { default as parse } from 'color-parse';
 import * as convert from 'color-convert';
-import type { RGB, HSL, HSV, HWB, CMYK, XYZ, LAB, LCH, HEX, KEYWORD, ANSI16, ANSI256, HCG, APPLE, GRAY } from 'color-convert/conversions';
+import type {
+	RGB, HSL, HSV, HWB, CMYK, XYZ, LAB, LCH, HEX, KEYWORD, ANSI16, ANSI256, HCG, APPLE, GRAY
+} from 'color-convert/conversions.js';
 
 /**
  * Color formats handled by color converter.
@@ -102,6 +104,16 @@ export function convertToHex( color: string ): string {
 	}
 
 	return convertColor( color, 'hex' );
+}
+
+/**
+ * Registers the custom element in the
+ * [CustomElementsRegistry](https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry).
+ */
+export function registerCustomElement( elementName: string, constructor: CustomElementConstructor ): void {
+	if ( customElements.get( elementName ) === undefined ) {
+		customElements.define( elementName, constructor );
+	}
 }
 
 /**

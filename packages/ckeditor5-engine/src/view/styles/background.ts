@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,8 +7,8 @@
  * @module engine/view/styles/background
  */
 
-import type { StylesProcessor, PropertyDescriptor, Styles, Normalizer, Reducer } from '../stylesmap';
-import { getShorthandValues, isAttachment, isColor, isPosition, isRepeat, isURL } from './utils';
+import type { StylesProcessor, PropertyDescriptor, Styles, Normalizer, Reducer } from '../stylesmap.js';
+import { getShorthandValues, isAttachment, isColor, isPosition, isRepeat, isURL } from './utils.js';
 
 /**
  * Adds a background CSS styles processing rules.

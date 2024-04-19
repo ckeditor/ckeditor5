@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,12 +7,12 @@
  * @module ui/toolbar/balloon/balloontoolbar
  */
 
-import ContextualBalloon from '../../panel/balloon/contextualballoon';
-import ToolbarView, { type ToolbarViewGroupedItemsUpdateEvent } from '../toolbarview';
-import BalloonPanelView, { generatePositions } from '../../panel/balloon/balloonpanelview';
-import normalizeToolbarConfig from '../normalizetoolbarconfig';
+import ContextualBalloon from '../../panel/balloon/contextualballoon.js';
+import ToolbarView, { type ToolbarViewGroupedItemsUpdateEvent } from '../toolbarview.js';
+import BalloonPanelView, { generatePositions } from '../../panel/balloon/balloonpanelview.js';
+import normalizeToolbarConfig from '../normalizetoolbarconfig.js';
 
-import type { EditorUIReadyEvent, EditorUIUpdateEvent } from '../../editorui/editorui';
+import type { EditorUIReadyEvent, EditorUIUpdateEvent } from '../../editorui/editorui.js';
 
 import {
 	Plugin,
@@ -192,16 +192,12 @@ export default class BalloonToolbar extends Plugin {
 		this.listenTo<ToolbarViewGroupedItemsUpdateEvent>( this.toolbarView, 'groupedItemsUpdate', () => {
 			this._updatePosition();
 		} );
-	}
 
-	/**
-	 * Creates toolbar components based on given configuration.
-	 * This needs to be done when all plugins are ready.
-	 */
-	public afterInit(): void {
-		const factory = this.editor.ui.componentFactory;
-
-		this.toolbarView.fillFromConfig( this._balloonConfig, factory );
+		// Creates toolbar components based on given configuration.
+		// This needs to be done when all plugins are ready.
+		editor.ui.once<EditorUIReadyEvent>( 'ready', () => {
+			this.toolbarView.fillFromConfig( this._balloonConfig, this.editor.ui.componentFactory );
+		} );
 	}
 
 	/**

@@ -1,19 +1,20 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document */
 
-import Essentials from '../src/essentials';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import Essentials from '../src/essentials.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import SelectAll from '@ckeditor/ckeditor5-select-all/src/selectall';
-import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
+import SelectAll from '@ckeditor/ckeditor5-select-all/src/selectall.js';
+import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
+import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
+import { AccessibilityHelp } from '@ckeditor/ckeditor5-ui';
 
 describe( 'Essentials preset', () => {
 	let editor, editorElement;
@@ -39,6 +40,7 @@ describe( 'Essentials preset', () => {
 	} );
 
 	it( 'should load all its dependencies', () => {
+		expect( editor.plugins.get( AccessibilityHelp ) ).to.be.instanceOf( AccessibilityHelp );
 		expect( editor.plugins.get( Clipboard ) ).to.be.instanceOf( Clipboard );
 		expect( editor.plugins.get( Enter ) ).to.be.instanceOf( Enter );
 		expect( editor.plugins.get( SelectAll ) ).to.be.instanceOf( SelectAll );

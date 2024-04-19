@@ -1,16 +1,16 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import FindAndReplaceEditing from '../src/findandreplaceediting';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import FindAndReplaceEditing from '../src/findandreplaceediting.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
 
-import { uid, Collection } from 'ckeditor5/src/utils';
+import { uid, Collection } from 'ckeditor5/src/utils.js';
 
 describe( 'ReplaceAllCommand', () => {
 	let editor, model, command;
@@ -66,7 +66,7 @@ describe( 'ReplaceAllCommand', () => {
 			expect( editor.getData() ).to.equal( '<p>Foo bar baz</p><p>Foo bar baz</p>' );
 		} );
 
-		it( 'should replace all passed results in the document document', () => {
+		it( 'should replace all passed results in the document', () => {
 			setData( model, '<paragraph>Foo bar [b]az</paragraph><paragraph>[Foo] bar baz</paragraph>' );
 
 			const ranges = editor.model.document.selection.getRanges();
@@ -153,6 +153,48 @@ describe( 'ReplaceAllCommand', () => {
 			editor.execute( 'undo' );
 
 			expect( getData( editor.model, { withoutSelection: true } ) ).to.equal( '<paragraph>Aaa Boo Coo Daa</paragraph>' );
+		} );
+
+		it( 'should restore every text occurrences replaced by `replace all` in the document at one undo step', () => {
+			setData( model, '<paragraph>Foo bar baz</paragraph><paragraph>Foo bar baz</paragraph><paragraph>Foo bar baz</paragraph>' );
+
+			editor.execute( 'replaceAll', 'new', 'bar' );
+
+			expect( editor.getData() ).to.equal( '<p>Foo new baz</p><p>Foo new baz</p><p>Foo new baz</p>' );
+
+			editor.execute( 'undo' );
+
+			expect( editor.getData() ).to.equal( '<p>Foo bar baz</p><p>Foo bar baz</p><p>Foo bar baz</p>' );
+		} );
+
+		it( 'should restore every text occurrences replaced by `replace all` in multiple roots at one undo step', async () => {
+			class MultiRootEditor extends ModelTestEditor {
+				constructor( config ) {
+					super( config );
+
+					this.model.document.createRoot( '$root', 'second' );
+				}
+			}
+
+			const multiRootEditor = await MultiRootEditor
+				.create( { plugins: [ FindAndReplaceEditing, Paragraph, UndoEditing ] } );
+
+			setData( multiRootEditor.model, '<paragraph>Foo bar baz</paragraph>', { rootName: 'main' } );
+			setData( multiRootEditor.model, '<paragraph>Ra baz baz</paragraph>', { rootName: 'second' } );
+
+			const { results } = multiRootEditor.execute( 'find', 'z' );
+
+			multiRootEditor.execute( 'replaceAll', 'r', results );
+
+			expect( multiRootEditor.getData( { rootName: 'main' } ) ).to.equal( '<p>Foo bar bar</p>' );
+			expect( multiRootEditor.getData( { rootName: 'second' } ) ).to.equal( '<p>Ra bar bar</p>' );
+
+			multiRootEditor.execute( 'undo' );
+
+			expect( multiRootEditor.getData( { rootName: 'main' } ) ).to.equal( '<p>Foo bar baz</p>' );
+			expect( multiRootEditor.getData( { rootName: 'second' } ) ).to.equal( '<p>Ra baz baz</p>' );
+
+			await multiRootEditor.destroy();
 		} );
 	} );
 } );

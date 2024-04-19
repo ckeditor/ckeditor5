@@ -1,14 +1,14 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* eslint-disable no-undef */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import utils from '../../src/imagestyle/utils';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import utils from '../../src/imagestyle/utils.js';
 
 describe( 'ImageStyleCommand', () => {
 	const {
@@ -367,6 +367,53 @@ describe( 'ImageStyleCommand', () => {
 					expect( getData( model ) ).to.equal( '<paragraph>[<imageInline></imageInline>]</paragraph>' );
 					expect( command.value ).to.equal( defaultInline.name );
 				} );
+
+				it( 'should set width and height when imageStyle is set (and be undoable in single step)', async () => {
+					const initialData = '<paragraph>[<imageInline src="/assets/sample.png"></imageInline>]</paragraph>';
+
+					setData( model, initialData );
+					command.execute( { value: anyImage.name } );
+					await timeout( 100 );
+
+					expect( getData( model ) ).to.equal(
+						`<paragraph>[<imageInline height="96" imageStyle="${ anyImage.name }" ` +
+							'src="/assets/sample.png" width="96"></imageInline>]</paragraph>'
+					);
+
+					editor.execute( 'undo' );
+
+					expect( getData( model ) )
+						.to.equal( initialData );
+				} );
+
+				it( 'should set width and height when imageStyle is removed (and be undoable in single step)', async () => {
+					const initialData =
+						`<paragraph>[<imageInline imageStyle="${ anyImage.name }" src="/assets/sample.png"></imageInline>]</paragraph>`;
+
+					setData( model, initialData );
+					command.execute( { value: defaultInline.name } );
+					await timeout( 100 );
+
+					expect( getData( model ) )
+						.to.equal( '<paragraph>[<imageInline height="96" src="/assets/sample.png" width="96"></imageInline>]</paragraph>' );
+
+					editor.execute( 'undo' );
+
+					expect( getData( model ) )
+						.to.equal( initialData );
+				} );
+
+				it( 'should not set width and height when command `setImageSizes` parameter is false', async () => {
+					const initialData = '<paragraph>[<imageInline src="/assets/sample.png"></imageInline>]</paragraph>';
+
+					setData( model, initialData );
+					command.execute( { value: anyImage.name, setImageSizes: false } );
+					await timeout( 100 );
+
+					expect( getData( model ) ).to.equal(
+						`<paragraph>[<imageInline imageStyle="${ anyImage.name }" src="/assets/sample.png"></imageInline>]</paragraph>`
+					);
+				} );
 			} );
 
 			describe( 'when a block image is selected', () => {
@@ -425,6 +472,52 @@ describe( 'ImageStyleCommand', () => {
 					expect( getData( model ) ).to.equal( '[<imageBlock><caption></caption></imageBlock>]' );
 					expect( command.value ).to.equal( defaultBlock.name );
 				} );
+
+				it( 'should set width and height when imageStyle is set (and be undoable in single step)', async () => {
+					const initialData = '[<imageBlock src="/assets/sample.png"></imageBlock>]';
+
+					setData( model, initialData );
+					command.execute( { value: anyImage.name } );
+					await timeout( 100 );
+
+					expect( getData( model ) ).to.equal(
+						`[<imageBlock height="96" imageStyle="${ anyImage.name }" src="/assets/sample.png" width="96"></imageBlock>]`
+					);
+
+					editor.execute( 'undo' );
+
+					expect( getData( model ) )
+						.to.equal( initialData );
+				} );
+
+				it( 'should set width and height when imageStyle is removed (and be undoable in single step)', async () => {
+					const initialData =
+						`[<imageBlock imageStyle="${ anyImage.name }" src="/assets/sample.png"></imageBlock>]`;
+
+					setData( model, initialData );
+					command.execute( { value: defaultBlock.name } );
+					await timeout( 100 );
+
+					expect( getData( model ) )
+						.to.equal( '[<imageBlock height="96" src="/assets/sample.png" width="96"></imageBlock>]' );
+
+					editor.execute( 'undo' );
+
+					expect( getData( model ) )
+						.to.equal( initialData );
+				} );
+
+				it( 'should not set width and height when command `setImageSizes` parameter is false', async () => {
+					const initialData = '[<imageBlock src="/assets/sample.png"></imageBlock>]';
+
+					setData( model, initialData );
+					command.execute( { value: anyImage.name, setImageSizes: false } );
+					await timeout( 100 );
+
+					expect( getData( model ) ).to.equal(
+						`[<imageBlock imageStyle="${ anyImage.name }" src="/assets/sample.png"></imageBlock>]`
+					);
+				} );
 			} );
 
 			it( 'should set the style if the selection is inside a caption', () => {
@@ -435,6 +528,10 @@ describe( 'ImageStyleCommand', () => {
 					.to.equal( `<imageBlock imageStyle="${ anyImage.name }"><caption>Fo[o]</caption></imageBlock>` );
 			} );
 		} );
+
+		function timeout( ms ) {
+			return new Promise( res => setTimeout( res, ms ) );
+		}
 	} );
 
 	describe( 'shouldConvertImageType()', () => {

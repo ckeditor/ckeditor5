@@ -1,35 +1,36 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import EditorUI from '../../../src/editorui/editorui';
-import BalloonToolbar from '../../../src/toolbar/balloon/balloontoolbar';
-import ContextualBalloon from '../../../src/panel/balloon/contextualballoon';
-import BalloonPanelView from '../../../src/panel/balloon/balloonpanelview';
-import ToolbarView from '../../../src/toolbar/toolbarview';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import EditorUI from '../../../src/editorui/editorui.js';
+import BalloonToolbar from '../../../src/toolbar/balloon/balloontoolbar.js';
+import ContextualBalloon from '../../../src/panel/balloon/contextualballoon.js';
+import BalloonPanelView from '../../../src/panel/balloon/balloonpanelview.js';
+import ToolbarView from '../../../src/toolbar/toolbarview.js';
+import ButtonView from '../../../src/button/buttonview.js';
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker.js';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
+import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
-import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
-import env from '@ckeditor/ckeditor5-utils/src/env';
+import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline.js';
+import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver.js';
+import env from '@ckeditor/ckeditor5-utils/src/env.js';
 
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { stringify as viewStringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { stringify as viewStringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
-import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
-import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect.js';
+import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit.js';
 
 const toPx = toUnit( 'px' );
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 /* global document, window, Event */
 
@@ -790,6 +791,36 @@ describe( 'BalloonToolbar', () => {
 
 			balloonToolbar.show();
 			sinon.assert.notCalled( balloonAddSpy );
+		} );
+	} );
+
+	describe( 'BalloonToolbar plugin load order', () => {
+		it( 'should add a button registered in the afterInit of Foo when BalloonToolbar is loaded before Foo', () => {
+			class Foo extends Plugin {
+				afterInit() {
+					this.editor.ui.componentFactory.add( 'foo', () => {
+						const button = new ButtonView();
+
+						button.set( { label: 'Foo' } );
+
+						return button;
+					} );
+				}
+			}
+
+			return ClassicTestEditor
+				.create( editorElement, {
+					plugins: [ BalloonToolbar, Foo ],
+					balloonToolbar: [ 'foo' ]
+				} )
+				.then( editor => {
+					const items = editor.plugins.get( BalloonToolbar ).toolbarView.items;
+
+					expect( items.length ).to.equal( 1 );
+					expect( items.first.label ).to.equal( 'Foo' );
+
+					return editor.destroy();
+				} );
 		} );
 	} );
 

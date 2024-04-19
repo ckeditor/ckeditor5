@@ -1,7 +1,12 @@
 /*
- * Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
+
+/* Preserve aspect ratio of the resized image after introducing image height attribute. */
+.ck-content img.image_resized {
+	height: auto;
+}
 
 .ck-content .image.image_resized {
 	max-width: 100%;

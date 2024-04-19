@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,9 @@
  * @module editor-classic/classiceditoruiview
  */
 
-import { BoxedEditorUIView, InlineEditableUIView, StickyPanelView, ToolbarView } from 'ckeditor5/src/ui';
-import type { Locale } from 'ckeditor5/src/utils';
-import type { View } from 'ckeditor5/src/engine';
+import { BoxedEditorUIView, InlineEditableUIView, MenuBarView, StickyPanelView, ToolbarView } from 'ckeditor5/src/ui.js';
+import type { Locale } from 'ckeditor5/src/utils.js';
+import type { EditingView } from 'ckeditor5/src/engine.js';
 
 import '../theme/classiceditor.css';
 
@@ -30,6 +30,11 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 	public readonly toolbar: ToolbarView;
 
 	/**
+	 * Menu bar view instance.
+	 */
+	public readonly menuBarView?: MenuBarView;
+
+	/**
 	 * Editable UI view.
 	 */
 	public readonly editable: InlineEditableUIView;
@@ -46,9 +51,10 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 	 */
 	constructor(
 		locale: Locale,
-		editingView: View,
+		editingView: EditingView,
 		options: {
 			shouldToolbarGroupWhenFull?: boolean;
+			useMenuBar?: boolean;
 		} = {}
 	) {
 		super( locale );
@@ -59,6 +65,10 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 			shouldGroupWhenFull: options.shouldToolbarGroupWhenFull
 		} );
 
+		if ( options.useMenuBar ) {
+			this.menuBarView = new MenuBarView( locale );
+		}
+
 		this.editable = new InlineEditableUIView( locale, editingView );
 	}
 
@@ -68,8 +78,12 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 	public override render(): void {
 		super.render();
 
-		// Set toolbar as a child of a stickyPanel and makes toolbar sticky.
-		this.stickyPanel.content.add( this.toolbar );
+		if ( this.menuBarView ) {
+			// Set toolbar as a child of a stickyPanel and makes toolbar sticky.
+			this.stickyPanel.content.addMany( [ this.menuBarView, this.toolbar ] );
+		} else {
+			this.stickyPanel.content.add( this.toolbar );
+		}
 
 		this.top.add( this.stickyPanel );
 		this.main.add( this.editable );

@@ -1,32 +1,33 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document, console */
 
-import MultiRootEditor from '../src/multirooteditor';
-import MultiRootEditorUI from '../src/multirooteditorui';
-import MultiRootEditorUIView from '../src/multirooteditoruiview';
+import MultiRootEditor from '../src/multirooteditor.js';
+import MultiRootEditorUI from '../src/multirooteditorui.js';
+import MultiRootEditorUIView from '../src/multirooteditoruiview.js';
 
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
 
-import Context from '@ckeditor/ckeditor5-core/src/context';
-import EditorWatchdog from '@ckeditor/ckeditor5-watchdog/src/editorwatchdog';
-import ContextWatchdog from '@ckeditor/ckeditor5-watchdog/src/contextwatchdog';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo';
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import Context from '@ckeditor/ckeditor5-core/src/context.js';
+import EditorWatchdog from '@ckeditor/ckeditor5-watchdog/src/editorwatchdog.js';
+import ContextWatchdog from '@ckeditor/ckeditor5-watchdog/src/contextwatchdog.js';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
+import Table from '@ckeditor/ckeditor5-table/src/table.js';
+import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement.js';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 const editorData = { foo: '<p>Foo</p>', bar: '<p>Bar</p>' };
 
@@ -484,12 +485,17 @@ describe( 'MultiRootEditor', () => {
 		} );
 
 		it( 'should add a model root with given attributes', () => {
+			sinon.spy( editor, 'registerRootAttribute' );
+
 			editor.addRoot( 'bar', { attributes: { order: 20, isLocked: true } } );
 
 			const root = editor.model.document.getRoot( 'bar' );
 
 			expect( root.getAttribute( 'order' ) ).to.equal( 20 );
 			expect( root.getAttribute( 'isLocked' ) ).to.be.true;
+
+			expect( editor.registerRootAttribute.calledWithExactly( 'order' ) );
+			expect( editor.registerRootAttribute.calledWithExactly( 'isLocked' ) );
 		} );
 
 		it( 'should add a model root which can be undone by undo feature if `isUndoable` is set to `true`', () => {
@@ -619,11 +625,15 @@ describe( 'MultiRootEditor', () => {
 			} );
 
 			it( 'should set not-loaded root as loaded and set initial data and attributes', () => {
+				sinon.spy( editor, 'registerRootAttribute' );
+
 				editor.loadRoot( 'foo', { data: '<p>Foo</p>', attributes: { order: 100 } } );
 
 				expect( root._isLoaded ).to.be.true;
 				expect( editor.getData( { rootName: 'foo' } ) ).to.equal( '<p>Foo</p>' );
 				expect( editor.getRootAttributes( 'foo' ) ).to.deep.equal( { order: 100 } );
+
+				expect( editor.registerRootAttribute.calledWithExactly( 'order' ) );
 			} );
 
 			it( 'should load an empty root', () => {
@@ -747,7 +757,7 @@ describe( 'MultiRootEditor', () => {
 		beforeEach( async () => {
 			editor = await MultiRootEditor.create(
 				{ main: '<p>Main.</p>', second: '<table><tr><td>Foo.</td></tr></table>' },
-				{ plugins: [ Paragraph, Table, Undo ] }
+				{ plugins: [ Paragraph, Table, Undo, ClipboardPipeline ] }
 			);
 		} );
 
@@ -1055,6 +1065,25 @@ describe( 'MultiRootEditor', () => {
 			await editor.destroy();
 		} );
 
+		it( 'should register all root attributes passed in the config', async () => {
+			editor = await MultiRootEditor.create( { foo: '', bar: '' }, {
+				rootsAttributes: {
+					foo: { order: 10 },
+					bar: { isLocked: false }
+				}
+			} );
+
+			expect( editor.getRootsAttributes() ).to.deep.equal( {
+				foo: { order: 10, isLocked: null },
+				bar: { order: null, isLocked: false }
+			} );
+
+			expect( editor.editing.model.schema.checkAttribute( '$root', 'order' ) ).to.be.true;
+			expect( editor.editing.model.schema.checkAttribute( '$root', 'isLocked' ) ).to.be.true;
+
+			await editor.destroy();
+		} );
+
 		it( 'should throw when trying to set an attribute on non-existing root', done => {
 			MultiRootEditor.create( { foo: '', bar: '' }, {
 				rootsAttributes: {
@@ -1100,7 +1129,34 @@ describe( 'MultiRootEditor', () => {
 			await editor.destroy();
 		} );
 
-		it( 'should not return roots attributes that were not specified in config', async () => {
+		it( 'should return roots attributes that were registered', async () => {
+			editor = await MultiRootEditor.create( { foo: '', bar: '' }, {
+				rootsAttributes: {
+					foo: { order: 10 },
+					bar: {}
+				}
+			} );
+
+			editor.registerRootAttribute( 'isLocked' );
+
+			editor.model.change( writer => {
+				writer.setAttribute( 'isLocked', true, editor.model.document.getRoot( 'bar' ) );
+			} );
+
+			expect( editor.getRootAttributes( 'foo' ) ).to.deep.equal( {
+				isLocked: null,
+				order: 10
+			} );
+
+			expect( editor.getRootAttributes( 'bar' ) ).to.deep.equal( {
+				isLocked: true,
+				order: null
+			} );
+
+			await editor.destroy();
+		} );
+
+		it( 'should not return roots attributes that were not registered', async () => {
 			editor = await MultiRootEditor.create( { foo: '', bar: '' }, {
 				rootsAttributes: {
 					foo: { order: 10, isLocked: true },
@@ -1205,6 +1261,38 @@ describe( 'MultiRootEditor', () => {
 
 			expect( editor.getRootAttributes.calledWith( 'foo' ) ).to.be.true;
 			expect( editor.getRootAttributes.calledWith( 'bar' ) ).to.be.true;
+
+			await editor.destroy();
+		} );
+
+		it( 'should return all and only roots attributes that were registered', async () => {
+			editor = await MultiRootEditor.create( { foo: '', bar: '' }, {
+				rootsAttributes: {
+					foo: { order: 10 },
+					bar: {}
+				}
+			} );
+
+			editor.registerRootAttribute( 'isLocked' );
+
+			editor.model.change( writer => {
+				writer.setAttribute( 'isLocked', true, editor.model.document.getRoot( 'bar' ) );
+
+				// Not registered:
+				writer.setAttribute( 'abc', true, editor.model.document.getRoot( 'foo' ) );
+				writer.setAttribute( 'abc', false, editor.model.document.getRoot( 'bar' ) );
+			} );
+
+			expect( editor.getRootsAttributes( 'foo' ) ).to.deep.equal( {
+				foo: {
+					isLocked: null,
+					order: 10
+				},
+				bar: {
+					isLocked: true,
+					order: null
+				}
+			} );
 
 			await editor.destroy();
 		} );
@@ -1336,7 +1424,7 @@ describe( 'MultiRootEditor', () => {
 					plugins: [ ArticlePluginSet ],
 					toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
 					image: {
-						toolbar: [ 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
+						toolbar: [ 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative' ]
 					}
 				} ) );
 	} );

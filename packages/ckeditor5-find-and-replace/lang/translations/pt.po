@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Portuguese (https://app.transifex.com/ckeditor/teams/11143/pt/)\n"
 "Language: pt\n"
 "Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "The tooltip of a find and replace button in the toolbar. Also, the title of the find and replace form."
 msgid "Find and replace"
@@ -34,7 +35,7 @@ msgstr "Resultado anterior"
 
 msgctxt "The label for the previous result button in the find and replace dropdown."
 msgid "Next result"
-msgstr "Próximo resultado"
+msgstr "Resultado seguinte"
 
 msgctxt "The label for the (single) replace action button in the find and replace dropdown."
 msgid "Replace"
@@ -54,7 +55,7 @@ msgstr "Apenas palavras inteiras"
 
 msgctxt "The label for the text replacement in the find and replace dropdown."
 msgid "Replace with…"
-msgstr "Substituir com..."
+msgstr "Substituir por..."
 
 msgctxt "An error text displayed when user attempted to find an empty text."
 msgid "Text to find must not be empty."
@@ -64,6 +65,10 @@ msgctxt "A message displayed next to the replace field when disabled but user tr
 msgid "Tip: Find some text first in order to replace it."
 msgstr "Dica: Encontre algum texto primeiro para poder substituí-lo."
 
-msgctxt "The label and a tooltip of the options dropdown button in the find and replace form."
-msgid "Show options"
-msgstr "Mostrar opções"
+msgctxt "The label and the tooltip of the options dropdown button in the find and replace form."
+msgid "Advanced options"
+msgstr "Opções avançadas"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for opening the find and replace UI."
+msgid "Find in the document"
+msgstr "Localizar no documento"

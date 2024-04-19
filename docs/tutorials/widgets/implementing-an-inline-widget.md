@@ -8,7 +8,7 @@ meta-title: Implementing an inline widget tutorial | CKEditor 5 Documentation
 
 In this tutorial, you will learn how to implement an inline widget.
 
-You will build a "placeholder" feature that allows the users to insert predefined placeholders, like a date or a surname, into the document. You will use widget utilities and conversion in order to define the behavior of this feature. Later on, you will use dropdown utilities to create a dropdown that will allow for inserting new placeholders. You will also learn how to use the editor configuration to define allowed placeholder names.
+You will build a "placeholder" feature that allows the users to insert predefined placeholders, like a date or a surname, into the document. You will use widget utilities and conversion to define the behavior of this feature. Later on, you will use dropdown utilities to create a dropdown that will allow for inserting new placeholders. You will also learn how to use the editor configuration to define allowed placeholder names.
 
 <info-box>
 	If you want to see the final product of this tutorial before you plunge in, check out the [demo](#demo).
@@ -115,7 +115,7 @@ Add an `index.html` page:
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>CKEditor&nbsp;5 Framework – Implementing a simple widget</title>
+		<title>CKEditor 5 Framework – Implementing a simple widget</title>
 	</head>
 	<body>
 		<div id="editor">
@@ -368,7 +368,7 @@ export default class PlaceholderEditing extends Plugin {
 
 ### Feature styles
 
-As you could notice, the editing part imports the `./theme/placeholder.css` CSS file which describes how the placeholder is displayed in th editing view:
+As you could notice, the editing part imports the `./theme/placeholder.css` CSS file which describes how the placeholder is displayed in the editing view:
 
 ```css
 /* placeholder/theme/placeholder.css */
@@ -475,7 +475,7 @@ This should result in:
 
 ### Fixing position mapping
 
-If you play more with the widget (e.g. try to select it by dragging the mouse from its right to the left edge) you will see the following error logged to the console:
+If you play more with the widget (for example, try to select it by dragging the mouse from its right to the left edge), you will see the following error logged to the console:
 
 ```
 Uncaught CKEditorError: model-nodelist-offset-out-of-bounds: Given offset cannot be found in the node list.
@@ -493,7 +493,7 @@ view:
 foo<span class="placeholder">{name}</span>bar
 ```
 
-You could say that in the view there is "more" text than in the model. This means that some positions in the view cannot automatically map to positions in the model. Namely &mdash; those are positions inside the `<span>` element.
+You could say that in the view there is "more" text than in the model. This means that some positions in the view cannot automatically map to positions in the model. Namely &ndash; those are positions inside the `<span>` element.
 
 Fortunately, CKEditor&nbsp;5 {@link module:engine/conversion/mapper~Mapper#event:viewToModelPosition allows customizing the mapping logic}. Also, since mapping to an empty model element is a pretty common scenario, there is a ready-to-use utility {@link module:widget/utils~viewToModelPositionOutsideModelElement `viewToModelPositionOutsideModelElement()`} that you can use here like that:
 
@@ -558,7 +558,7 @@ In this tutorial, you will create a dropdown with a list of available placeholde
 // placeholder/placeholderui.js
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
-import { Model, addListToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui';
+import { ViewModel, addListToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui';
 import { Collection } from '@ckeditor/ckeditor5-utils';
 
 export default class PlaceholderUI extends Plugin {
@@ -604,7 +604,7 @@ function getDropdownItemsDefinitions( placeholderNames ) {
 	for ( const name of placeholderNames ) {
 		const definition = {
 			type: 'button',
-			model: new Model( {
+			model: new ViewModel( {
 				commandParam: name,
 				label: name,
 				withText: true
@@ -755,7 +755,7 @@ import { List } from '@ckeditor/ckeditor5-list';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Command, Plugin } from '@ckeditor/ckeditor5-core';
 import { Widget, toWidget, viewToModelPositionOutsideModelElement } from '@ckeditor/ckeditor5-widget';
-import { Model, addListToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui';
+import { ViewModel, addListToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui';
 import { Collection } from '@ckeditor/ckeditor5-utils';
 
 class Placeholder extends Plugin {
@@ -834,7 +834,7 @@ function getDropdownItemsDefinitions( placeholderNames ) {
 	for ( const name of placeholderNames ) {
 		const definition = {
 			type: 'button',
-			model: new Model( {
+			model: new ViewModel( {
 				commandParam: name,
 				label: name,
 				withText: true

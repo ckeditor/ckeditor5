@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -13,10 +13,10 @@ import {
 	type ViewDocument,
 	type ViewDocumentFragment,
 	type MatcherPattern
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
-import markdown2html from './markdown2html/markdown2html';
-import html2markdown, { turndownService } from './html2markdown/html2markdown';
+import markdown2html from './markdown2html/markdown2html.js';
+import html2markdown, { turndownService } from './html2markdown/html2markdown.js';
 
 /**
  * This data processor implementation uses GitHub Flavored Markdown as input/output data.
@@ -60,7 +60,7 @@ export default class GFMDataProcessor implements DataProcessor {
 	}
 
 	/**
-	 * Converts the provided {@link module:engine/view/documentfragment~DocumentFragment} to data format &mdash; in this
+	 * Converts the provided {@link module:engine/view/documentfragment~DocumentFragment} to data format &ndash; in this
 	 * case to a Markdown string.
 	 *
 	 * @returns Markdown string.

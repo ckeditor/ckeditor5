@@ -95,7 +95,7 @@ npm install --save @ckeditor/ckeditor5-angular
 ```
 
 <info-box>
-	If you don't have an existing project, you can use the [Angular CLI](https://angular.io/cli) to create a new one.
+	If you do not have an existing project, you can use the [Angular CLI](https://angular.io/cli) to create a new one.
 </info-box>
 
 Install one of the {@link installation/getting-started/predefined-builds CKEditor&nbsp;5 predefined builds} or [create a custom one](#using-a-custom-ckeditor-5-build).
@@ -174,7 +174,7 @@ Finally, use the `<ckeditor>` tag in the template to run the rich text editor:
 <ckeditor [editor]="Editor" data="<p>Hello, world!</p>"></ckeditor>
 ```
 
-Rebuild your application and CKEditor&nbsp;5 should greet you with a "Hello, world!".
+Rebuild your application and CKEditor&nbsp;5 should greet you with a "Hello, world!"
 
 ### Using the Document editor build
 
@@ -298,15 +298,18 @@ export class AppComponent {
 
 ### Using the editor with collaboration plugins
 
-The easiest way to integrate {@link features/collaboration collaboration plugins} in an Angular application is to create a custom build first and then import it from the Angular application &mdash; see [Using a custom CKEditor&nbsp;5 build](#using-a-custom-ckeditor-5-build).
+The easiest way to integrate {@link features/collaboration collaboration plugins} in an Angular application is to create a custom build first and then import it from the Angular application. See [Using a custom CKEditor&nbsp;5 build](#using-a-custom-ckeditor-5-build).
 
-For such a scenario we provide a few ready-to-use integrations featuring collaborative editing in Angular applications:
+<info-box>
+	For such a scenario we provide a few **ready-to-use integrations** featuring collaborative editing in Angular applications:
 
-- [CKEditor&nbsp;5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-angular)
+	* [CKEditor&nbsp;5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-angular)
+	* [CKEditor&nbsp;5 with real-time collaboration and revision history features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-revision-history-for-angular)
+	* [CKEditor&nbsp;5 with the revision history feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/revision-history-for-angular)
+	* [CKEditor&nbsp;5 with the track changes feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/track-changes-for-angular)
 
-- [CKEditor&nbsp;5 with the track changes feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/track-changes-for-angular)
-
-It is not mandatory to build applications on top of the above samples, however, they should help you to get started.
+	It is not mandatory to build applications on top of the above samples, however, they should help you get started.
+</info-box>
 
 ## Integration with `ngModel`
 
@@ -476,9 +479,9 @@ export class MyComponent {
 
 Allows disabling the two-way data binding mechanism. The default value is `false`.
 
-The reason for the introduction of this option are performance issues in large documents. By default, while using the `ngModel` directive, whenever the editor's data is changed, the component must synchronize the data between the editor instance and the connected property. This results in calling the {@link module:core/editor/utils/dataapimixin~DataApi#getData `editor.getData()`} function, which causes a massive slowdown while typing in large documents.
+The reason for the introduction of this option are performance issues in large documents. By default, while using the `ngModel` directive, whenever the editor's data is changed, the component must synchronize the data between the editor instance and the connected property. This results in calling the {@link module:core/editor/editor~Editor#getData `editor.getData()`} function, which causes a massive slowdown while typing in large documents.
 
-This option allows the integrator to disable the default behavior and only call the {@link module:core/editor/utils/dataapimixin~DataApi#getData `editor.getData()`} method on demand, which prevents the slowdowns. You can read more in the [relevant issue](https://github.com/ckeditor/ckeditor5-angular/issues/141).
+This option allows the integrator to disable the default behavior and only call the {@link module:core/editor/editor~Editor#getData `editor.getData()`} method on demand, which prevents the slowdowns. You can read more in the [relevant issue](https://github.com/ckeditor/ckeditor5-angular/issues/141).
 
 ## Supported `@Output` properties
 
@@ -531,13 +534,17 @@ It is fired with an object containing the editor and the CKEditor&nbsp;5 `focus`
 
 ### `error`
 
-Fired when the editor crashes (except of crashes during the editor initialization). Once the editor is crashed, the internal watchdog mechanism restarts the editor and fires the [ready](#ready) event.
+Fired when the editor crashes. Once the editor is crashed, the internal watchdog mechanism restarts the editor and fires the [ready](#ready) event.
+
+<info-box>
+	Prior to ckeditor5-angular `v7.0.1`, this event was not fired for crashes during the editor initialization.
+</info-box>
 
 ## Styling
 
-The CKEditor&nbsp;5 rich text editor component for Angular can be styled using the component stylesheet or using a global stylesheet. See how to set the CKEditor&nbsp;5 component's height using these two approaches.
+The CKEditor&nbsp;5 rich text editor component for Angular can be styled using the component style sheet or using a global style sheet. See how to set the CKEditor&nbsp;5 component's height using these two approaches.
 
-### Setting the height via the component stylesheet
+### Setting the height via the component style sheet
 
 First, create a (S)CSS file in the parent component's directory and style the given editor's part preceded by the `:host` and `::ng-deep` pseudo selectors:
 
@@ -549,7 +556,7 @@ First, create a (S)CSS file in the parent component's directory and style the gi
 }
 ```
 
-Then in the parent component add the relative path to the above stylesheet:
+Then in the parent component add the relative path to the above style sheet:
 
 ```ts
 /* src/app/app.component.ts */
@@ -560,9 +567,9 @@ Then in the parent component add the relative path to the above stylesheet:
 } )
 ```
 
-### Setting the height via a global stylesheet
+### Setting the height via a global style sheet
 
-To style the component using a global stylesheet, first, create it:
+To style the component using a global style sheet, first, create it:
 
 ```css
 /* src/styles.css */

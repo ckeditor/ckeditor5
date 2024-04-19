@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -16,14 +16,14 @@ import type {
 	ViewElement,
 	ModelPostFixer,
 	Model
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 import type { TableUtils } from '@ckeditor/ckeditor5-table';
 
-import { updateViewAttributes, type GHSViewAttributes } from '../utils';
-import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
-import { getDescendantElement } from './integrationutils';
+import { updateViewAttributes, type GHSViewAttributes } from '../utils.js';
+import DataFilter, { type DataFilterRegisterEvent } from '../datafilter.js';
+import { getDescendantElement } from './integrationutils.js';
 
 /**
  * Provides the General HTML Support integration with {@link module:table/table~Table Table} feature.

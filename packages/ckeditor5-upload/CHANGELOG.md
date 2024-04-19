@@ -5,33 +5,33 @@ All changes in the package are documented in the main repository. See: https://g
 
 Changes for the past releases are available below.
 
-## [19.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v18.0.0...v19.0.0) (2020-04-29)
+## [19.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v18.0.0...v19.0.0) (April 29, 2020)
 
 ### Bug fixes
 
 * Restored a condition handling an edge case in upload when promise chains are aborted. Closes [ckeditor/ckeditor5#5892](https://github.com/ckeditor/ckeditor5/issues/5892). ([ed7187b](https://github.com/ckeditor/ckeditor5-upload/commit/ed7187b))
 
 
-## [18.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v17.0.0...v18.0.0) (2020-03-19)
+## [18.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v17.0.0...v18.0.0) (March 19, 2020)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 ### Other changes
 
 * Updated translations. ([5be630b](https://github.com/ckeditor/ckeditor5-upload/commit/5be630b))
 
 
-## [16.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v15.0.0...v16.0.0) (2019-12-04)
+## [16.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v15.0.0...v16.0.0) (December 4, 2019)
 
 ### Other changes
 
 * Updated translations. ([188255c](https://github.com/ckeditor/ckeditor5-upload/commit/188255c))
 
 
-## [15.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v12.0.0...v15.0.0) (2019-10-23)
+## [15.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v12.0.0...v15.0.0) (October 23, 2019)
 
 ### Bug fixes
 
@@ -42,7 +42,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([290db0f](https://github.com/ckeditor/ckeditor5-upload/commit/290db0f)) ([1d7e907](https://github.com/ckeditor/ckeditor5-upload/commit/1d7e907))
 
 
-## [12.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v11.1.1...v12.0.0) (2019-08-26)
+## [12.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v11.1.1...v12.0.0) (August 26, 2019)
 
 ### Features
 
@@ -68,33 +68,33 @@ import Base64UploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/base64u
 ```
 
 
-## [11.1.1](https://github.com/ckeditor/ckeditor5-upload/compare/v11.1.0...v11.1.1) (2019-07-10)
+## [11.1.1](https://github.com/ckeditor/ckeditor5-upload/compare/v11.1.0...v11.1.1) (July 10, 2019)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [11.1.0](https://github.com/ckeditor/ckeditor5-upload/compare/v11.0.2...v11.1.0) (2019-07-04)
+## [11.1.0](https://github.com/ckeditor/ckeditor5-upload/compare/v11.0.2...v11.1.0) (July 4, 2019)
 
 ### Features
 
 * Introduced the Base64 image upload adapter. Closes [ckeditor/ckeditor5#1378](https://github.com/ckeditor/ckeditor5/issues/1378). ([938f0f7](https://github.com/ckeditor/ckeditor5-upload/commit/938f0f7))
 
 
-## [11.0.2](https://github.com/ckeditor/ckeditor5-upload/compare/v11.0.1...v11.0.2) (2019-06-05)
+## [11.0.2](https://github.com/ckeditor/ckeditor5-upload/compare/v11.0.1...v11.0.2) (June 6, 2019)
 
 ### Other changes
 
 * Updated translations. ([73c6761](https://github.com/ckeditor/ckeditor5-upload/commit/73c6761))
 
 
-## [11.0.1](https://github.com/ckeditor/ckeditor5-upload/compare/v11.0.0...v11.0.1) (2019-04-10)
+## [11.0.1](https://github.com/ckeditor/ckeditor5-upload/compare/v11.0.0...v11.0.1) (April 4, 2019)
 
 ### Other changes
 
 * Updated translations. ([eac33b1](https://github.com/ckeditor/ckeditor5-upload/commit/eac33b1))
 
 
-## [11.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v10.0.4...v11.0.0) (2019-02-28)
+## [11.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v10.0.4...v11.0.0) (February 28, 2019)
 
 ### Bug fixes
 
@@ -111,35 +111,35 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `FileLoader.file` property was changed to a getter which returns a native `Promise` instance instead of a `File` instance. The returned promise resolves to a `File` instance.
 
 
-## [10.0.4](https://github.com/ckeditor/ckeditor5-upload/compare/v10.0.3...v10.0.4) (2018-12-05)
+## [10.0.4](https://github.com/ckeditor/ckeditor5-upload/compare/v10.0.3...v10.0.4) (December 5, 2018)
 
 ### Other changes
 
 * Updated translations. ([489b6fa](https://github.com/ckeditor/ckeditor5-upload/commit/489b6fa)) ([f435630](https://github.com/ckeditor/ckeditor5-upload/commit/f435630))
 
 
-## [10.0.3](https://github.com/ckeditor/ckeditor5-upload/compare/v10.0.2...v10.0.3) (2018-10-08)
+## [10.0.3](https://github.com/ckeditor/ckeditor5-upload/compare/v10.0.2...v10.0.3) (October 8, 2018)
 
 ### Other changes
 
 * Updated translations. ([871eb44](https://github.com/ckeditor/ckeditor5-upload/commit/871eb44))
 
 
-## [10.0.2](https://github.com/ckeditor/ckeditor5-upload/compare/v10.0.1...v10.0.2) (2018-07-18)
+## [10.0.2](https://github.com/ckeditor/ckeditor5-upload/compare/v10.0.1...v10.0.2) (July 18, 2018)
 
 ### Other changes
 
 * Updated translations. ([ce32eb2](https://github.com/ckeditor/ckeditor5-upload/commit/ce32eb2), [9adb325](https://github.com/ckeditor/ckeditor5-upload/commit/9adb325))
 
 
-## [10.0.1](https://github.com/ckeditor/ckeditor5-upload/compare/v10.0.0...v10.0.1) (2018-06-21)
+## [10.0.1](https://github.com/ckeditor/ckeditor5-upload/compare/v10.0.0...v10.0.1) (June 21, 2018)
 
 ### Other changes
 
 * Updated translations.
 
 
-## [10.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v1.0.0-beta.4...v10.0.0) (2018-04-25)
+## [10.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v1.0.0-beta.4...v10.0.0) (April 25, 2018)
 
 ### Other changes
 
@@ -150,17 +150,17 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The license under which CKEditor&nbsp;5 is released has been changed from a triple GPL, LGPL and MPL license to a GPL2+ only. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
 
 
-## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-upload/compare/v1.0.0-beta.2...v1.0.0-beta.4) (2018-04-19)
+## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-upload/compare/v1.0.0-beta.2...v1.0.0-beta.4) (April 19, 2018)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-upload/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2018-04-10)
+## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-upload/compare/v1.0.0-beta.1...v1.0.0-beta.2) (April 10, 2018)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-upload/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
+## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-upload/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (March 15, 2018)
 
 ### Bug fixes
 
@@ -183,12 +183,12 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Renamed `filerepository-no-adapter` error to `filerepository-no-upload-adapter`.
 
 
-## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-upload/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
+## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-upload/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (November 14, 2017)
 
 ### Bug fixes
 
 * Destroying `FileDialogButtonView` should not throw an error. Closes [#66](https://github.com/ckeditor/ckeditor5-upload/issues/66). ([2d4ba62](https://github.com/ckeditor/ckeditor5-upload/commit/2d4ba62))
-* Images pasted with additional HTML content will not be handled by the upload plugin which prevents data pasted from MS Word to be treated as an image. Closes [#68](https://github.com/ckeditor/ckeditor5-upload/issues/68). ([8d0644a](https://github.com/ckeditor/ckeditor5-upload/commit/8d0644a))
+* Images pasted with additional HTML content will not be handled by the upload plugin which prevents data pasted from Microsoft Word to be treated as an image. Closes [#68](https://github.com/ckeditor/ckeditor5-upload/issues/68). ([8d0644a](https://github.com/ckeditor/ckeditor5-upload/commit/8d0644a))
 
 ### Other changes
 
@@ -200,24 +200,24 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `FileDialogButtonView` is not a `ButtonView` instance anymore but a wrapper instead. The button of the component is available under the `#buttonView` property.
 
 
-## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-upload/compare/v0.2.0...v1.0.0-alpha.1) (2017-10-03)
+## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-upload/compare/v0.2.0...v1.0.0-alpha.1) (October 3, 2017)
 
 ### Bug fixes
 
-* Image placeholder is now correctly displayed on Firefox and Edge. Closes [#56](https://github.com/ckeditor/ckeditor5-upload/issues/56). ([785e88b](https://github.com/ckeditor/ckeditor5-upload/commit/785e88b))
+* Image placeholder is now correctly displayed in Firefox and Edge. Closes [#56](https://github.com/ckeditor/ckeditor5-upload/issues/56). ([785e88b](https://github.com/ckeditor/ckeditor5-upload/commit/785e88b))
 * Upload command should not crash when upload adapter is not specified (instead, FileRepository logs an error). Closes [#59](https://github.com/ckeditor/ckeditor5-upload/issues/59). ([14b738b](https://github.com/ckeditor/ckeditor5-upload/commit/14b738b))
 
 ### Other changes
 
-* `FileRepository` will automatically warn when it's initialized but no upload adapter was enabled. Closes [#58](https://github.com/ckeditor/ckeditor5-upload/issues/58). ([29aa315](https://github.com/ckeditor/ckeditor5-upload/commit/29aa315))
-* Placeholder image will now look better on wider editors. Closes [#63](https://github.com/ckeditor/ckeditor5-upload/issues/63). ([edb5e81](https://github.com/ckeditor/ckeditor5-upload/commit/edb5e81))
+* `FileRepository` will automatically warn when it is initialized but no upload adapter was enabled. Closes [#58](https://github.com/ckeditor/ckeditor5-upload/issues/58). ([29aa315](https://github.com/ckeditor/ckeditor5-upload/commit/29aa315))
+* Placeholder images will now look better on wider editors. Closes [#63](https://github.com/ckeditor/ckeditor5-upload/issues/63). ([edb5e81](https://github.com/ckeditor/ckeditor5-upload/commit/edb5e81))
 
 
-## [0.2.0](https://github.com/ckeditor/ckeditor5-upload/compare/v0.1.0...v0.2.0) (2017-09-03)
+## [0.2.0](https://github.com/ckeditor/ckeditor5-upload/compare/v0.1.0...v0.2.0) (September 3, 2017)
 
 ### Bug fixes
 
-* [Safari, Edge] The image upload (button) feature will not throw an error anymore when trying to access picked files. The feature should not use `for...of` loop on native `FileList` because Safari and Edge do not support `Symbol.iterator` for it yet. Closes [#35](https://github.com/ckeditor/ckeditor5-upload/issues/35). ([f4efd9b](https://github.com/ckeditor/ckeditor5-upload/commit/f4efd9b))
+* [Safari, Edge] The image upload (button) feature will not throw an error anymore when trying to access picked files. The feature should not use the `for...of` loop on native `FileList` because Safari and Edge do not support `Symbol.iterator` for it yet. Closes [#35](https://github.com/ckeditor/ckeditor5-upload/issues/35). ([f4efd9b](https://github.com/ckeditor/ckeditor5-upload/commit/f4efd9b))
 * An image dropped on another image will not redirect the browser to the file's path. Closes [#32](https://github.com/ckeditor/ckeditor5-upload/issues/32). ([4f533be](https://github.com/ckeditor/ckeditor5-upload/commit/4f533be))
 * Bound `ImageUploadButton#isEnabled` to `ImageUploadCommand#isEnabled`. Closes [#43](https://github.com/ckeditor/ckeditor5-upload/issues/43). ([ba6de66](https://github.com/ckeditor/ckeditor5-upload/commit/ba6de66))
 * Fixed two issues related to dropping images. First, when dropping a file into an empty paragraph, that paragraph should be replaced with that image. Second, drop position should be read correctly when the editor is focused upon drop. Closes [#42](https://github.com/ckeditor/ckeditor5-upload/issues/42). Closes [#29](https://github.com/ckeditor/ckeditor5-upload/issues/29). ([fec452d](https://github.com/ckeditor/ckeditor5-upload/commit/fec452d))
@@ -239,12 +239,12 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### BREAKING CHANGES
 
-* `UploadImageCommand` doesn't optimize the drop position itself anymore. Instead, a separate `findOptimalInsertionPosition()` function was introduced.
-* `UploadImageCommand` doesn't verify the type of file anymore. This needs to be done by the caller.
+* `UploadImageCommand` does not optimize the drop position itself anymore. Instead, a separate `findOptimalInsertionPosition()` function was introduced.
+* `UploadImageCommand` does not verify the type of file anymore. This needs to be done by the caller.
 * The command API has been changed.
 
 
-## 0.1.0 (2017-05-07)
+## 0.1.0 (May 7, 2017)
 
 ### Features
 

@@ -1,21 +1,23 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import GFMDataProcessor from '@ckeditor/ckeditor5-markdown-gfm/src/gfmdataprocessor';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting';
-import DocumentListEditing from '@ckeditor/ckeditor5-list/src/documentlist/documentlistediting';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import GFMDataProcessor from '@ckeditor/ckeditor5-markdown-gfm/src/gfmdataprocessor.js';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
+import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting.js';
+import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting.js';
+import ListPropertiesEditing from '@ckeditor/ckeditor5-list/src/listproperties/listpropertiesediting.js';
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
+import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import CodeBlockUI from '../src/codeblockui';
-import CodeBlockEditing from '../src/codeblockediting';
+import CodeBlockUI from '../src/codeblockui.js';
+import CodeBlockEditing from '../src/codeblockediting.js';
 
 describe( 'CodeBlock - integration', () => {
 	describe( 'with Markdown GFM', () => {
@@ -178,7 +180,14 @@ describe( 'CodeBlock - integration', () => {
 			beforeEach( async () => {
 				editor = await ClassicTestEditor
 					.create( '', {
-						plugins: [ CodeBlockEditing, DocumentListEditing, Enter, Paragraph ]
+						plugins: [
+							CodeBlockEditing, ListEditing, ListPropertiesEditing, Enter, Paragraph, GeneralHtmlSupport
+						],
+						htmlSupport: {
+							allow: [
+								{ name: /./, attributes: true, styles: true, classes: true }
+							]
+						}
 					} );
 
 				model = editor.model;
@@ -188,22 +197,26 @@ describe( 'CodeBlock - integration', () => {
 				await editor.destroy();
 			} );
 
-			it( 'should allow all attributes starting with list* in the schema', () => {
+			it( 'should allow all list attributes in the schema', () => {
 				setData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
 
 				const codeBlock = model.document.getRoot().getChild( 0 );
 
 				expect( model.schema.checkAttribute( codeBlock, 'listItemId' ), 'listItemId' ).to.be.true;
 				expect( model.schema.checkAttribute( codeBlock, 'listType' ), 'listType' ).to.be.true;
-				expect( model.schema.checkAttribute( codeBlock, 'listStart' ), 'listStart' ).to.be.true;
-				expect( model.schema.checkAttribute( codeBlock, 'listFoo' ), 'listFoo' ).to.be.true;
+				expect( model.schema.checkAttribute( codeBlock, 'listStyle' ), 'listStyle' ).to.be.true;
+				expect( model.schema.checkAttribute( codeBlock, 'htmlLiAttributes' ), 'htmlLiAttributes' ).to.be.true;
+				expect( model.schema.checkAttribute( codeBlock, 'htmlUlAttributes' ), 'htmlUlAttributes' ).to.be.true;
+				expect( model.schema.checkAttribute( codeBlock, 'htmlOlAttributes' ), 'htmlOlAttributes' ).to.be.true;
 			} );
 
-			it( 'should disallow attributes that do not start with "list" in the schema but include the sequence', () => {
+			it( 'should disallow attributes that are not registered as list attributes', () => {
 				setData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
 
 				const codeBlock = model.document.getRoot().getChild( 0 );
 
+				expect( model.schema.checkAttribute( codeBlock, 'listReversed' ), 'listReversed' ).to.be.false;
+				expect( model.schema.checkAttribute( codeBlock, 'listStart' ), 'listStart' ).to.be.false;
 				expect( model.schema.checkAttribute( codeBlock, 'list' ), 'list' ).to.be.false;
 				expect( model.schema.checkAttribute( codeBlock, 'fooList' ), 'fooList' ).to.be.false;
 				expect( model.schema.checkAttribute( codeBlock, 'alist' ), 'alist' ).to.be.false;

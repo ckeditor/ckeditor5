@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,44 +9,44 @@
 import 'ckeditor5/build/ckeditor5-dll.js';
 
 // Editor creators.
-import '@ckeditor/ckeditor5-editor-classic/build/editor-classic';
+import '@ckeditor/ckeditor5-editor-classic/build/editor-classic.js';
 
 // Plugins.
-import '@ckeditor/ckeditor5-essentials/build/essentials';
-import '@ckeditor/ckeditor5-autoformat/build/autoformat';
-import '@ckeditor/ckeditor5-block-quote/build/block-quote';
-import '@ckeditor/ckeditor5-basic-styles/build/basic-styles';
-import '@ckeditor/ckeditor5-heading/build/heading';
-import '@ckeditor/ckeditor5-image/build/image';
-import '@ckeditor/ckeditor5-indent/build/indent';
-import '@ckeditor/ckeditor5-link/build/link';
-import '@ckeditor/ckeditor5-list/build/list';
-import '@ckeditor/ckeditor5-media-embed/build/media-embed';
-import '@ckeditor/ckeditor5-table/build/table';
+import '@ckeditor/ckeditor5-essentials/build/essentials.js';
+import '@ckeditor/ckeditor5-autoformat/build/autoformat.js';
+import '@ckeditor/ckeditor5-block-quote/build/block-quote.js';
+import '@ckeditor/ckeditor5-basic-styles/build/basic-styles.js';
+import '@ckeditor/ckeditor5-heading/build/heading.js';
+import '@ckeditor/ckeditor5-image/build/image.js';
+import '@ckeditor/ckeditor5-indent/build/indent.js';
+import '@ckeditor/ckeditor5-link/build/link.js';
+import '@ckeditor/ckeditor5-list/build/list.js';
+import '@ckeditor/ckeditor5-media-embed/build/media-embed.js';
+import '@ckeditor/ckeditor5-table/build/table.js';
 
 // Translations:DE.
-import 'ckeditor5/build/translations/de';
-import '@ckeditor/ckeditor5-block-quote/build/translations/de';
-import '@ckeditor/ckeditor5-basic-styles/build/translations/de';
-import '@ckeditor/ckeditor5-heading/build/translations/de';
-import '@ckeditor/ckeditor5-image/build/translations/de';
-import '@ckeditor/ckeditor5-indent/build/translations/de';
-import '@ckeditor/ckeditor5-link/build/translations/de';
-import '@ckeditor/ckeditor5-list/build/translations/de';
-import '@ckeditor/ckeditor5-media-embed/build/translations/de';
-import '@ckeditor/ckeditor5-table/build/translations/de';
+import 'ckeditor5/build/translations/de.js';
+import '@ckeditor/ckeditor5-block-quote/build/translations/de.js';
+import '@ckeditor/ckeditor5-basic-styles/build/translations/de.js';
+import '@ckeditor/ckeditor5-heading/build/translations/de.js';
+import '@ckeditor/ckeditor5-image/build/translations/de.js';
+import '@ckeditor/ckeditor5-indent/build/translations/de.js';
+import '@ckeditor/ckeditor5-link/build/translations/de.js';
+import '@ckeditor/ckeditor5-list/build/translations/de.js';
+import '@ckeditor/ckeditor5-media-embed/build/translations/de.js';
+import '@ckeditor/ckeditor5-table/build/translations/de.js';
 
 // Translations:PL.
-import 'ckeditor5/build/translations/pl';
-import '@ckeditor/ckeditor5-block-quote/build/translations/pl';
-import '@ckeditor/ckeditor5-basic-styles/build/translations/pl';
-import '@ckeditor/ckeditor5-heading/build/translations/pl';
-import '@ckeditor/ckeditor5-image/build/translations/pl';
-import '@ckeditor/ckeditor5-indent/build/translations/pl';
-import '@ckeditor/ckeditor5-link/build/translations/pl';
-import '@ckeditor/ckeditor5-list/build/translations/pl';
-import '@ckeditor/ckeditor5-media-embed/build/translations/pl';
-import '@ckeditor/ckeditor5-table/build/translations/pl';
+import 'ckeditor5/build/translations/pl.js';
+import '@ckeditor/ckeditor5-block-quote/build/translations/pl.js';
+import '@ckeditor/ckeditor5-basic-styles/build/translations/pl.js';
+import '@ckeditor/ckeditor5-heading/build/translations/pl.js';
+import '@ckeditor/ckeditor5-image/build/translations/pl.js';
+import '@ckeditor/ckeditor5-indent/build/translations/pl.js';
+import '@ckeditor/ckeditor5-link/build/translations/pl.js';
+import '@ckeditor/ckeditor5-list/build/translations/pl.js';
+import '@ckeditor/ckeditor5-media-embed/build/translations/pl.js';
+import '@ckeditor/ckeditor5-table/build/translations/pl.js';
 
 const { ClassicEditor } = window.CKEditor5.editorClassic;
 
@@ -122,7 +122,7 @@ function getEditorConfigForLanguage( language ) {
 			'redo'
 		],
 		image: {
-			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
+			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative' ]
 		},
 		table: {
 			contentToolbar: [

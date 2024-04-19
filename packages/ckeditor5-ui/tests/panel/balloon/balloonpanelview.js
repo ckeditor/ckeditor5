@@ -1,14 +1,14 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global window, document, Event */
 
-import ViewCollection from '../../../src/viewcollection';
-import BalloonPanelView, { generatePositions } from '../../../src/panel/balloon/balloonpanelview';
-import ButtonView from '../../../src/button/buttonview';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import ViewCollection from '../../../src/viewcollection.js';
+import BalloonPanelView, { generatePositions } from '../../../src/panel/balloon/balloonpanelview.js';
+import ButtonView from '../../../src/button/buttonview.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Rect } from '@ckeditor/ckeditor5-utils';
 
 describe( 'BalloonPanelView', () => {
@@ -452,7 +452,7 @@ describe( 'BalloonPanelView', () => {
 			it( 'should put balloon on the `south east` position when `north east` is limited', () => {
 				mockBoundingBox( limiter, {
 					left: 0,
-					top: -400,
+					top: -350,
 					width: 500,
 					height: 500
 				} );
@@ -467,6 +467,286 @@ describe( 'BalloonPanelView', () => {
 				view.attachTo( { target, limiter } );
 
 				expect( view.position ).to.equal( 'arrow_nw' );
+			} );
+		} );
+
+		describe( 'limited by parent with overflow', () => {
+			let parentWithOverflow, limiter, target;
+			const OFF_THE_SCREEN_POSITION = -99999;
+
+			beforeEach( () => {
+				parentWithOverflow = document.createElement( 'div' );
+				parentWithOverflow.style.overflow = 'scroll';
+				parentWithOverflow.style.width = '100px';
+				parentWithOverflow.style.height = '100px';
+
+				limiter = document.createElement( 'div' );
+				target = document.createElement( 'div' );
+
+				// Mock parent dimensions.
+				mockBoundingBox( parentWithOverflow, {
+					left: 0,
+					top: 0,
+					width: 100,
+					height: 100
+				} );
+
+				target.style.width = '50px';
+				target.style.height = '50px';
+
+				parentWithOverflow.appendChild( limiter );
+				parentWithOverflow.appendChild( target );
+				document.body.appendChild( parentWithOverflow );
+			} );
+
+			afterEach( () => {
+				limiter.remove();
+				target.remove();
+				parentWithOverflow.remove();
+			} );
+
+			it( 'should not show the balloon if the target is not visible (vertical top)', () => {
+				mockBoundingBox( target, {
+					top: -51,
+					left: 0,
+					width: 50,
+					height: 50
+				} );
+
+				view.attachTo( { target, limiter } );
+
+				expect( view.top ).to.equal( OFF_THE_SCREEN_POSITION );
+				expect( view.left ).to.equal( OFF_THE_SCREEN_POSITION );
+			} );
+
+			it( 'should not show the balloon if the target is not visible (vertical bottom)', () => {
+				mockBoundingBox( target, {
+					top: 101,
+					left: 0,
+					width: 50,
+					height: 50
+				} );
+
+				view.attachTo( { target, limiter } );
+
+				expect( view.top ).to.equal( OFF_THE_SCREEN_POSITION );
+				expect( view.left ).to.equal( OFF_THE_SCREEN_POSITION );
+			} );
+
+			it( 'should not show the balloon if the target is not visible (horizontal left)', () => {
+				mockBoundingBox( target, {
+					top: 0,
+					left: -100,
+					width: 50,
+					height: 50
+				} );
+
+				view.attachTo( { target, limiter } );
+
+				expect( view.top ).to.equal( OFF_THE_SCREEN_POSITION );
+				expect( view.left ).to.equal( OFF_THE_SCREEN_POSITION );
+			} );
+
+			it( 'should not show the balloon if the target is not visible (horizontal right)', () => {
+				mockBoundingBox( target, {
+					top: 0,
+					left: 101,
+					width: 50,
+					height: 50
+				} );
+
+				view.attachTo( { target, limiter } );
+
+				expect( view.top ).to.equal( OFF_THE_SCREEN_POSITION );
+				expect( view.left ).to.equal( OFF_THE_SCREEN_POSITION );
+			} );
+
+			it( 'should get proper HTML element when callback is passed as a target', () => {
+				const callback = sinon.stub().returns( document.createElement( 'a' ) );
+
+				view.attachTo( { target: callback, limiter } );
+
+				sinon.assert.called( callback );
+			} );
+
+			it( 'should show the balloon when limiter is not defined', () => {
+				mockBoundingBox( target, {
+					top: 50,
+					left: 50,
+					width: 50,
+					height: 50
+				} );
+
+				view.attachTo( { target } );
+
+				expect( view.left ).to.equal( 25 );
+			} );
+		} );
+
+		describe( 'limited by editor with overflow', () => {
+			let limiter, target;
+			const OFF_THE_SCREEN_POSITION = -99999;
+
+			beforeEach( () => {
+				limiter = document.createElement( 'div' );
+				limiter.style.overflow = 'scroll';
+				limiter.style.width = '100px';
+				limiter.style.height = '100px';
+
+				// Mock parent dimensions.
+				mockBoundingBox( limiter, {
+					left: 0,
+					top: 0,
+					width: 100,
+					height: 100
+				} );
+
+				target = document.createElement( 'div' );
+				target.style.width = '200px';
+				target.style.height = '200px';
+
+				limiter.appendChild( target );
+				document.body.appendChild( limiter );
+			} );
+
+			afterEach( () => {
+				limiter.remove();
+				target.remove();
+			} );
+
+			it( 'should not show the balloon if the target is not visible (vertical top)', () => {
+				mockBoundingBox( target, {
+					top: -51,
+					left: 0,
+					width: 50,
+					height: 50
+				} );
+
+				view.attachTo( { target, limiter } );
+
+				expect( view.top ).to.equal( OFF_THE_SCREEN_POSITION );
+				expect( view.left ).to.equal( OFF_THE_SCREEN_POSITION );
+			} );
+
+			it( 'should not show the balloon if the target is not visible (vertical bottom)', () => {
+				mockBoundingBox( target, {
+					top: 159,
+					left: 0,
+					width: 50,
+					height: 50
+				} );
+
+				view.attachTo( { target, limiter } );
+
+				expect( view.top ).to.equal( OFF_THE_SCREEN_POSITION );
+				expect( view.left ).to.equal( OFF_THE_SCREEN_POSITION );
+			} );
+
+			it( 'should not show the balloon if the target is not visible (horizontal left)', () => {
+				mockBoundingBox( target, {
+					top: 0,
+					left: -100,
+					width: 50,
+					height: 50
+				} );
+
+				view.attachTo( { target, limiter } );
+
+				expect( view.top ).to.equal( OFF_THE_SCREEN_POSITION );
+				expect( view.left ).to.equal( OFF_THE_SCREEN_POSITION );
+			} );
+
+			it( 'should not show the balloon if the target is not visible (horizontal right)', () => {
+				mockBoundingBox( target, {
+					top: 0,
+					left: 101,
+					width: 50,
+					height: 50
+				} );
+
+				view.attachTo( { target, limiter } );
+
+				expect( view.top ).to.equal( OFF_THE_SCREEN_POSITION );
+				expect( view.left ).to.equal( OFF_THE_SCREEN_POSITION );
+			} );
+
+			it( 'should show the balloon when limiter is not defined', () => {
+				mockBoundingBox( target, {
+					top: 50,
+					left: 50,
+					width: 50,
+					height: 50
+				} );
+
+				view.attachTo( { target } );
+
+				expect( view.left ).to.equal( 25 );
+			} );
+		} );
+
+		describe( 'limited by editor with overflow and a parent with overflow', () => {
+			let limiter, target, parentWithOverflow, limiterParent;
+			const OFF_THE_SCREEN_POSITION = -99999;
+
+			beforeEach( () => {
+				limiter = document.createElement( 'div' );
+				limiter.style.overflow = 'scroll';
+
+				parentWithOverflow = document.createElement( 'div' );
+				parentWithOverflow.style.overflow = 'scroll';
+
+				limiterParent = document.createElement( 'div' );
+
+				target = document.createElement( 'div' );
+
+				// Mock parent dimensions.
+				mockBoundingBox( parentWithOverflow, {
+					left: 0,
+					top: 0,
+					width: 200,
+					height: 200
+				} );
+
+				// Mock limiter parent dimensions.
+				mockBoundingBox( limiterParent, {
+					left: 0,
+					top: 0,
+					width: 400,
+					height: 400
+				} );
+
+				// Mock limiter dimensions.
+				mockBoundingBox( limiter, {
+					left: 0,
+					top: 0,
+					width: 100,
+					height: 100
+				} );
+
+				limiter.appendChild( target );
+				limiterParent.appendChild( limiter );
+				parentWithOverflow.appendChild( limiterParent );
+				document.body.appendChild( parentWithOverflow );
+			} );
+
+			afterEach( () => {
+				limiter.remove();
+				target.remove();
+				parentWithOverflow.remove();
+			} );
+
+			it( 'should not show the balloon if the target is not visible ( target higher than scrollable ancestor )', () => {
+				mockBoundingBox( target, {
+					top: -250,
+					left: 0,
+					width: 200,
+					height: 200
+				} );
+
+				view.attachTo( { target, limiter } );
+
+				expect( view.top ).to.equal( OFF_THE_SCREEN_POSITION );
+				expect( view.left ).to.equal( OFF_THE_SCREEN_POSITION );
 			} );
 		} );
 	} );

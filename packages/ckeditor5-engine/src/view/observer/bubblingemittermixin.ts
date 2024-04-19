@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -22,12 +22,12 @@ import {
 	type Mixed
 } from '@ckeditor/ckeditor5-utils';
 
-import BubblingEventInfo, { type EventPhase } from './bubblingeventinfo';
-import type Document from '../document';
-import type Node from '../node';
-import type Range from '../range';
-import type Element from '../element';
-import type DocumentSelection from '../documentselection';
+import BubblingEventInfo, { type EventPhase } from './bubblingeventinfo.js';
+import type Document from '../document.js';
+import type Node from '../node.js';
+import type Range from '../range.js';
+import type Element from '../element.js';
+import type DocumentSelection from '../documentselection.js';
 
 const contextsSymbol = Symbol( 'bubbling contexts' );
 

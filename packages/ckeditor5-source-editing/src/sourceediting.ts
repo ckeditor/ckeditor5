@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,10 +9,10 @@
 
 /* global console */
 
-import { type Editor, Plugin, PendingActions } from 'ckeditor5/src/core';
-import { ButtonView } from 'ckeditor5/src/ui';
-import { createElement, ElementReplacer } from 'ckeditor5/src/utils';
-import { formatHtml } from './utils/formathtml';
+import { type Editor, Plugin, PendingActions } from 'ckeditor5/src/core.js';
+import { ButtonView, MenuBarMenuListItemButtonView, type Dialog } from 'ckeditor5/src/ui.js';
+import { CKEditorError, createElement, ElementReplacer } from 'ckeditor5/src/utils.js';
+import { formatHtml } from './utils/formathtml.js';
 
 import '../theme/sourceediting.css';
 import sourceEditingIcon from '../theme/icons/source-editing.svg';
@@ -74,56 +74,37 @@ export default class SourceEditing extends Plugin {
 		this._elementReplacer = new ElementReplacer();
 		this._replacedRoots = new Map();
 		this._dataFromRoots = new Map();
+
+		editor.config.define( 'sourceEditing.allowCollaborationFeatures', false );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public init(): void {
-		const editor = this.editor;
-		const t = editor.t;
+		this._checkCompatibility();
 
-		editor.ui.componentFactory.add( 'sourceEditing', locale => {
-			const buttonView = new ButtonView( locale );
+		const editor = this.editor;
+		const t = editor.locale.t;
+
+		editor.ui.componentFactory.add( 'sourceEditing', () => {
+			const buttonView = this._createButton( ButtonView );
 
 			buttonView.set( {
 				label: t( 'Source' ),
 				icon: sourceEditingIcon,
 				tooltip: true,
-				withText: true,
 				class: 'ck-source-editing-button'
 			} );
 
-			buttonView.bind( 'isOn' ).to( this, 'isSourceEditingMode' );
+			return buttonView;
+		} );
 
-			// The button should be disabled if one of the following conditions is met:
-			buttonView.bind( 'isEnabled' ).to(
-				this, 'isEnabled',
-				editor, 'isReadOnly',
-				editor.plugins.get( PendingActions ), 'hasAny',
-				( isEnabled, isEditorReadOnly, hasAnyPendingActions ) => {
-					// (1) The plugin itself is disabled.
-					if ( !isEnabled ) {
-						return false;
-					}
+		editor.ui.componentFactory.add( 'menuBar:sourceEditing', () => {
+			const buttonView = this._createButton( MenuBarMenuListItemButtonView );
 
-					// (2) The editor is in read-only mode.
-					if ( isEditorReadOnly ) {
-						return false;
-					}
-
-					// (3) Any pending action is scheduled. It may change the model, so modifying the document source should be prevented
-					// until the model is finally set.
-					if ( hasAnyPendingActions ) {
-						return false;
-					}
-
-					return true;
-				}
-			);
-
-			this.listenTo( buttonView, 'execute', () => {
-				this.isSourceEditingMode = !this.isSourceEditingMode;
+			buttonView.set( {
+				label: t( 'Show source' )
 			} );
 
 			return buttonView;
@@ -134,6 +115,7 @@ export default class SourceEditing extends Plugin {
 		if ( this._isAllowedToHandleSourceEditingMode() ) {
 			this.on( 'change:isSourceEditingMode', ( evt, name, isSourceEditingMode ) => {
 				if ( isSourceEditingMode ) {
+					this._hideVisibleDialog();
 					this._showSourceEditing();
 					this._disableCommands();
 				} else {
@@ -156,38 +138,6 @@ export default class SourceEditing extends Plugin {
 	}
 
 	/**
-	 * @inheritDoc
-	 */
-	public afterInit(): void {
-		const editor = this.editor;
-
-		const collaborationPluginNamesToWarn = [
-			'RealTimeCollaborativeEditing',
-			'CommentsEditing',
-			'TrackChangesEditing',
-			'RevisionHistory'
-		];
-
-		// Currently, the basic integration with Collaboration Features is to display a warning in the console.
-		if ( collaborationPluginNamesToWarn.some( pluginName => editor.plugins.has( pluginName ) ) ) {
-			console.warn(
-				'You initialized the editor with the source editing feature and at least one of the collaboration features. ' +
-				'Please be advised that the source editing feature may not work, and be careful when editing document source ' +
-				'that contains markers created by the collaboration features.'
-			);
-		}
-
-		// Restricted Editing integration can also lead to problems. Warn the user accordingly.
-		if ( editor.plugins.has( 'RestrictedEditingModeEditing' ) ) {
-			console.warn(
-				'You initialized the editor with the source editing feature and restricted editing feature. ' +
-				'Please be advised that the source editing feature may not work, and be careful when editing document source ' +
-				'that contains markers created by the restricted editing feature.'
-			);
-		}
-	}
-
-	/**
 	 * Updates the source data in all hidden editing roots.
 	 */
 	public updateEditorData(): void {
@@ -207,7 +157,56 @@ export default class SourceEditing extends Plugin {
 		}
 
 		if ( Object.keys( data ).length ) {
-			editor.data.set( data, { batchType: { isUndoable: true } } );
+			editor.data.set( data, { batchType: { isUndoable: true }, suppressErrorInCollaboration: true } );
+		}
+	}
+
+	private _checkCompatibility() {
+		const editor = this.editor;
+		const allowCollaboration = editor.config.get( 'sourceEditing.allowCollaborationFeatures' );
+
+		if ( !allowCollaboration && editor.plugins.has( 'RealTimeCollaborativeEditing' ) ) {
+			/**
+			 * Source editing feature is not fully compatible with real-time collaboration,
+			 * and using it may lead to data loss. Please read
+			 * {@glink features/source-editing#limitations-and-incompatibilities source editing feature guide} to learn more.
+			 *
+			 * If you understand the possible risk of data loss, you can enable the source editing
+			 * by setting the
+			 * {@link module:source-editing/sourceeditingconfig~SourceEditingConfig#allowCollaborationFeatures}
+			 * configuration flag to `true`.
+			 *
+			 * @error source-editing-incompatible-with-real-time-collaboration
+			 */
+			throw new CKEditorError( 'source-editing-incompatible-with-real-time-collaboration', null );
+		}
+
+		const collaborationPluginNamesToWarn = [
+			'CommentsEditing',
+			'TrackChangesEditing',
+			'RevisionHistory'
+		];
+
+		// Currently, the basic integration with Collaboration Features is to display a warning in the console.
+		//
+		// If `allowCollaboration` flag is set, do not show these warnings. If the flag is set, we assume that the integrator read
+		// appropriate section of the guide so there's no use to spam the console with warnings.
+		//
+		if ( !allowCollaboration && collaborationPluginNamesToWarn.some( pluginName => editor.plugins.has( pluginName ) ) ) {
+			console.warn(
+				'You initialized the editor with the source editing feature and at least one of the collaboration features. ' +
+				'Please be advised that the source editing feature may not work, and be careful when editing document source ' +
+				'that contains markers created by the collaboration features.'
+			);
+		}
+
+		// Restricted Editing integration can also lead to problems. Warn the user accordingly.
+		if ( editor.plugins.has( 'RestrictedEditingModeEditing' ) ) {
+			console.warn(
+				'You initialized the editor with the source editing feature and restricted editing feature. ' +
+				'Please be advised that the source editing feature may not work, and be careful when editing document source ' +
+				'that contains markers created by the restricted editing feature.'
+			);
 		}
 	}
 
@@ -330,6 +329,11 @@ export default class SourceEditing extends Plugin {
 		for ( const command of editor.commands.commands() ) {
 			command.forceDisabled( COMMAND_FORCE_DISABLE_ID );
 		}
+
+		// Comments archive UI plugin will be disabled manually too.
+		if ( editor.plugins.has( 'CommentsArchiveUI' ) ) {
+			( editor.plugins.get( 'CommentsArchiveUI' ) as Plugin ).forceDisabled( COMMAND_FORCE_DISABLE_ID );
+		}
 	}
 
 	/**
@@ -340,6 +344,11 @@ export default class SourceEditing extends Plugin {
 
 		for ( const command of editor.commands.commands() ) {
 			command.clearForceDisabled( COMMAND_FORCE_DISABLE_ID );
+		}
+
+		// Comments archive UI plugin will be enabled manually too.
+		if ( editor.plugins.has( 'CommentsArchiveUI' ) ) {
+			( editor.plugins.get( 'CommentsArchiveUI' ) as Plugin ).clearForceDisabled( COMMAND_FORCE_DISABLE_ID );
 		}
 	}
 
@@ -368,6 +377,62 @@ export default class SourceEditing extends Plugin {
 
 		// Checks, if the editor's editable belongs to the editor's DOM tree.
 		return editable && !editable.hasExternalElement;
+	}
+
+	/**
+	 * If any {@link module:ui/dialog/dialogview~DialogView editor dialog} is currently visible, hide it.
+	 */
+	private _hideVisibleDialog(): void {
+		if ( this.editor.plugins.has( 'Dialog' ) ) {
+			const dialogPlugin: Dialog = this.editor.plugins.get( 'Dialog' );
+
+			if ( dialogPlugin.isOpen ) {
+				dialogPlugin.hide();
+			}
+		}
+	}
+
+	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
+		const editor = this.editor;
+		const buttonView = new ButtonClass( editor.locale ) as InstanceType<T>;
+
+		buttonView.set( {
+			withText: true
+		} );
+
+		buttonView.bind( 'isOn' ).to( this, 'isSourceEditingMode' );
+
+		// The button should be disabled if one of the following conditions is met:
+		buttonView.bind( 'isEnabled' ).to(
+			this, 'isEnabled',
+			editor, 'isReadOnly',
+			editor.plugins.get( PendingActions ), 'hasAny',
+			( isEnabled, isEditorReadOnly, hasAnyPendingActions ) => {
+				// (1) The plugin itself is disabled.
+				if ( !isEnabled ) {
+					return false;
+				}
+
+				// (2) The editor is in read-only mode.
+				if ( isEditorReadOnly ) {
+					return false;
+				}
+
+				// (3) Any pending action is scheduled. It may change the model, so modifying the document source should be prevented
+				// until the model is finally set.
+				if ( hasAnyPendingActions ) {
+					return false;
+				}
+
+				return true;
+			}
+		);
+
+		this.listenTo( buttonView, 'execute', () => {
+			this.isSourceEditingMode = !this.isSourceEditingMode;
+		} );
+
+		return buttonView;
 	}
 }
 

@@ -1,30 +1,30 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Autoformat from '../src/autoformat';
+import Autoformat from '../src/autoformat.js';
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting';
-import TodoListEditing from '@ckeditor/ckeditor5-list/src/todolist/todolistediting';
-import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
-import StrikethroughEditing from '@ckeditor/ckeditor5-basic-styles/src/strikethrough/strikethroughediting';
-import CodeEditing from '@ckeditor/ckeditor5-basic-styles/src/code/codeediting';
-import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting';
-import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
-import CodeBlockEditing from '@ckeditor/ckeditor5-code-block/src/codeblockediting';
-import HorizontalLineEditing from '@ckeditor/ckeditor5-horizontal-line/src/horizontallineediting';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import LegacyListEditing from '@ckeditor/ckeditor5-list/src/legacylist/legacylistediting.js';
+import LegacyTodoListEditing from '@ckeditor/ckeditor5-list/src/legacytodolist/legacytodolistediting.js';
+import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
+import StrikethroughEditing from '@ckeditor/ckeditor5-basic-styles/src/strikethrough/strikethroughediting.js';
+import CodeEditing from '@ckeditor/ckeditor5-basic-styles/src/code/codeediting.js';
+import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting.js';
+import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
+import CodeBlockEditing from '@ckeditor/ckeditor5-code-block/src/codeblockediting.js';
+import HorizontalLineEditing from '@ckeditor/ckeditor5-horizontal-line/src/horizontallineediting.js';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
+import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import HeadingCommand from '@ckeditor/ckeditor5-heading/src/headingcommand';
+import HeadingCommand from '@ckeditor/ckeditor5-heading/src/headingcommand.js';
 
 describe( 'Autoformat', () => {
 	let editor, model, doc;
@@ -38,8 +38,8 @@ describe( 'Autoformat', () => {
 					Enter,
 					Paragraph,
 					Autoformat,
-					ListEditing,
-					TodoListEditing,
+					LegacyListEditing,
+					LegacyTodoListEditing,
 					HeadingEditing,
 					BoldEditing,
 					ItalicEditing,
@@ -60,6 +60,17 @@ describe( 'Autoformat', () => {
 
 	afterEach( () => {
 		return editor.destroy();
+	} );
+
+	it( 'should have pluginName', () => {
+		expect( Autoformat.pluginName ).to.equal( 'Autoformat' );
+	} );
+
+	it( 'should add keystroke accessibility info', () => {
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
+			label: 'Revert autoformatting action',
+			keystroke: 'Backspace'
+		} );
 	} );
 
 	describe( 'Bulleted list', () => {
@@ -1006,7 +1017,7 @@ describe( 'Autoformat', () => {
 		it( 'should use only configured headings', () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ Enter, Paragraph, Autoformat, ListEditing, HeadingEditing ],
+					plugins: [ Enter, Paragraph, Autoformat, LegacyListEditing, HeadingEditing ],
 					heading: {
 						options: [
 							{ model: 'paragraph' },

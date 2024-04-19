@@ -15,12 +15,12 @@ In the demo below, select a text fragment. Next, use the language toolbar dropdo
 {@snippet features/textpartlanguage}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Additional feature information
 
-The text part language feature is especially useful when your content includes text sections written in different text directions, e.g. when the whole content is written in English but includes some citations in Arabic.
+The text part language feature is especially useful when your content includes text sections written in different text directions, for example, when the whole content is in English but includes some citations in Arabic.
 
 The text part language feature implements the [WCAG 3.1.2 Language of Parts](https://www.w3.org/TR/UNDERSTANDING-WCAG20/meaning-other-lang-id.html) specification.
 
@@ -34,7 +34,7 @@ The example below shows the configuration used for the [demo](#demo) above:
 ```js
 ClassicEditor
     .create( document.querySelector( '#editor' ), {
-		// More of editor's config.
+		// More of editor's configuration.
 		// ...
 		language: {
 			textPartLanguage: [
@@ -93,7 +93,7 @@ The {@link module:language/textpartlanguage~TextPartLanguage} plugin registers:
 * The `'textPartLanguage'` UI dropdown component implemented by the {@link module:language/textpartlanguageui~TextPartLanguageUI text part language UI feature}.
 * The `'textPartLanguage'` command implemented by the {@link module:language/textpartlanguageediting~TextPartLanguageEditing text part language editing feature}.
 
-The command can be executed using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
+You can execute the command using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
 
 ```js
 // Applies the language to the selected text part with the given language code.

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,45 +7,46 @@
  * @module image
  */
 
-export { default as AutoImage } from './autoimage';
-export { default as Image } from './image';
-export { default as ImageEditing } from './image/imageediting';
-export { default as ImageCaptionUtils } from './imagecaption/imagecaptionutils';
-export { default as ImageCaption } from './imagecaption';
-export { default as ImageCaptionEditing } from './imagecaption/imagecaptionediting';
-export { default as ImageInsert } from './imageinsert';
-export { default as ImageInsertUI } from './imageinsert/imageinsertui';
-export { default as ImageResize } from './imageresize';
-export { default as ImageResizeButtons } from './imageresize/imageresizebuttons';
-export { default as ImageResizeEditing } from './imageresize/imageresizeediting';
-export { default as ImageResizeHandles } from './imageresize/imageresizehandles';
-export { default as ImageStyle } from './imagestyle';
-export { default as ImageStyleEditing } from './imagestyle/imagestyleediting';
-export { default as ImageStyleUI } from './imagestyle/imagestyleui';
-export { default as ImageTextAlternative } from './imagetextalternative';
-export { default as ImageTextAlternativeEditing } from './imagetextalternative/imagetextalternativeediting';
-export { default as ImageTextAlternativeUI } from './imagetextalternative/imagetextalternativeui';
-export { default as ImageToolbar } from './imagetoolbar';
-export { default as ImageUpload } from './imageupload';
-export { default as ImageUploadEditing, type ImageUploadCompleteEvent } from './imageupload/imageuploadediting';
-export { default as ImageUploadProgress } from './imageupload/imageuploadprogress';
-export { default as ImageUploadUI } from './imageupload/imageuploadui';
-export { default as PictureEditing } from './pictureediting';
-export { default as ImageBlock } from './imageblock';
-export { default as ImageInline } from './imageinline';
-export { default as ImageInsertViaUrl } from './imageinsertviaurl';
-export { default as ImageUtils } from './imageutils';
-export { default as ImageBlockEditing } from './image/imageblockediting';
-export { default as ImageCaptionUI } from './imagecaption/imagecaptionui';
+export { default as AutoImage } from './autoimage.js';
+export { default as Image } from './image.js';
+export { default as ImageEditing } from './image/imageediting.js';
+export { default as ImageCaptionUtils } from './imagecaption/imagecaptionutils.js';
+export { default as ImageCaption } from './imagecaption.js';
+export { default as ImageCaptionEditing } from './imagecaption/imagecaptionediting.js';
+export { default as ImageInsert } from './imageinsert.js';
+export { default as ImageInsertUI } from './imageinsert/imageinsertui.js';
+export { default as ImageResize } from './imageresize.js';
+export { default as ImageResizeButtons } from './imageresize/imageresizebuttons.js';
+export { default as ImageResizeEditing } from './imageresize/imageresizeediting.js';
+export { default as ImageResizeHandles } from './imageresize/imageresizehandles.js';
+export { default as ImageSizeAttributes } from './imagesizeattributes.js';
+export { default as ImageStyle } from './imagestyle.js';
+export { default as ImageStyleEditing } from './imagestyle/imagestyleediting.js';
+export { default as ImageStyleUI } from './imagestyle/imagestyleui.js';
+export { default as ImageTextAlternative } from './imagetextalternative.js';
+export { default as ImageTextAlternativeEditing } from './imagetextalternative/imagetextalternativeediting.js';
+export { default as ImageTextAlternativeUI } from './imagetextalternative/imagetextalternativeui.js';
+export { default as ImageToolbar } from './imagetoolbar.js';
+export { default as ImageUpload } from './imageupload.js';
+export { default as ImageUploadEditing, type ImageUploadCompleteEvent } from './imageupload/imageuploadediting.js';
+export { default as ImageUploadProgress } from './imageupload/imageuploadprogress.js';
+export { default as ImageUploadUI } from './imageupload/imageuploadui.js';
+export { default as PictureEditing } from './pictureediting.js';
+export { default as ImageBlock } from './imageblock.js';
+export { default as ImageInline } from './imageinline.js';
+export { default as ImageInsertViaUrl } from './imageinsertviaurl.js';
+export { default as ImageUtils } from './imageutils.js';
+export { default as ImageBlockEditing } from './image/imageblockediting.js';
+export { default as ImageCaptionUI } from './imagecaption/imagecaptionui.js';
 
-export type { ImageConfig } from './imageconfig';
-export type { default as ImageTypeCommand } from './image/imagetypecommand';
-export type { default as InsertImageCommand } from './image/insertimagecommand';
-export type { default as ReplaceImageSourceCommand } from './image/replaceimagesourcecommand';
-export type { default as ToggleImageCaptionCommand } from './imagecaption/toggleimagecaptioncommand';
-export type { default as ResizeImageCommand } from './imageresize/resizeimagecommand';
-export type { default as ImageStyleCommand } from './imagestyle/imagestylecommand';
-export type { default as ImageTextAlternativeCommand } from './imagetextalternative/imagetextalternativecommand';
-export type { default as UploadImageCommand } from './imageupload/uploadimagecommand';
+export type { ImageConfig } from './imageconfig.js';
+export type { default as ImageTypeCommand } from './image/imagetypecommand.js';
+export type { default as InsertImageCommand } from './image/insertimagecommand.js';
+export type { default as ReplaceImageSourceCommand } from './image/replaceimagesourcecommand.js';
+export type { default as ToggleImageCaptionCommand } from './imagecaption/toggleimagecaptioncommand.js';
+export type { default as ResizeImageCommand } from './imageresize/resizeimagecommand.js';
+export type { default as ImageStyleCommand } from './imagestyle/imagestylecommand.js';
+export type { default as ImageTextAlternativeCommand } from './imagetextalternative/imagetextalternativecommand.js';
+export type { default as UploadImageCommand } from './imageupload/uploadimagecommand.js';
 
-import './augmentation';
+import './augmentation.js';

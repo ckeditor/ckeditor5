@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -15,10 +15,10 @@ import {
 	type LocaleTranslate
 } from '@ckeditor/ckeditor5-utils';
 
-import PluginCollection from './plugincollection';
-import type Editor from './editor/editor';
-import type { LoadedPlugins, PluginConstructor } from './plugin';
-import type { EditorConfig } from './editor/editorconfig';
+import PluginCollection from './plugincollection.js';
+import type Editor from './editor/editor.js';
+import type { LoadedPlugins, PluginConstructor } from './plugin.js';
+import type { EditorConfig } from './editor/editorconfig.js';
 
 /**
  * Provides a common, higher-level environment for solutions that use multiple {@link module:core/editor/editor~Editor editors}
@@ -146,7 +146,11 @@ export default class Context {
 	 * @param config The context configuration.
 	 */
 	constructor( config?: ContextConfig ) {
-		this.config = new Config<ContextConfig>( config, ( this.constructor as typeof Context ).defaultConfig );
+		// We don't pass translations to the config, because its behavior of splitting keys
+		// with dots (e.g. `resize.width` => `resize: { width }`) breaks the translations.
+		const { translations, ...rest } = config || {};
+
+		this.config = new Config<ContextConfig>( rest, ( this.constructor as typeof Context ).defaultConfig );
 
 		const availablePlugins = ( this.constructor as typeof Context ).builtinPlugins;
 
@@ -158,7 +162,8 @@ export default class Context {
 
 		this.locale = new Locale( {
 			uiLanguage: typeof languageConfig === 'string' ? languageConfig : languageConfig.ui,
-			contentLanguage: this.config.get( 'language.content' )
+			contentLanguage: this.config.get( 'language.content' ),
+			translations
 		} );
 
 		this.t = this.locale.t;
@@ -271,7 +276,7 @@ export default class Context {
 	/**
 	 * Returns the context configuration which will be copied to the editors created using this context.
 	 *
-	 * The configuration returned by this method has the plugins configuration removed &mdash; plugins are shared with all editors
+	 * The configuration returned by this method has the plugins configuration removed &ndash; plugins are shared with all editors
 	 * through another mechanism.
 	 *
 	 * This method should only be used by the editor.

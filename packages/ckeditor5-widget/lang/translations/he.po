@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -14,7 +14,8 @@ msgid ""
 msgstr ""
 "Language-Team: Hebrew (https://app.transifex.com/ckeditor/teams/11143/he/)\n"
 "Language: he\n"
-"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n == 2 && n % 1 == 0) ? 1: (n % 10 == 0 && n % 1 == 0 && n > 10) ? 2 : 3;\n"
+"Plural-Forms: nplurals=3; plural=(n == 1 && n % 1 == 0) ? 0 : (n == 2 && n % 1 == 0) ? 1: 2;\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "The label used by assistive technologies describing a toolbar attached to a widget."
 msgid "Widget toolbar"
@@ -28,6 +29,26 @@ msgctxt "The title displayed when a mouse is over a button that inserts a paragr
 msgid "Insert paragraph after block"
 msgstr "הוספת פסקה מתחת"
 
-msgctxt "Information to be read by screen reader about shortcuts to type around a widget"
+msgctxt "Information to be read by screen reader about shortcuts to type around a widget."
 msgid "Press Enter to type after or press Shift + Enter to type before the widget"
 msgstr "לחץ Enter כדי להקליד לפני היישומון או Shift + Enter כדי להקליד אחריו"
+
+msgctxt "Accessibility help dialog section title for widget plugin keystrokes."
+msgid "Keystrokes that can be used when a widget is selected (for example: image, table, etc.)"
+msgstr "מקשים בהם ניתן להשתמש כאשר נבחר ווידג'ט (לדוגמה: תמונה, טבלה וכו')"
+
+msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that inserts a paragraph after a widget."
+msgid "Insert a new paragraph directly after a widget"
+msgstr "הוספת פסקה חדשה ישירות אחרי ווידג'ט"
+
+msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that inserts a paragraph before a widget."
+msgid "Insert a new paragraph directly before a widget"
+msgstr "הוספת פסקה חדשה ישירות לפני ווידג'ט"
+
+msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that moves the caret before a widget."
+msgid "Move the caret to allow typing directly before a widget"
+msgstr "הזזת הסמן כדי לאפשר הקלדה ישירות לפני ווידג'ט"
+
+msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that moves the caret after a widget."
+msgid "Move the caret to allow typing directly after a widget"
+msgstr "הזזת הסמן כדי לאפשר הקלדה ישירות אחרי ווידג'ט"

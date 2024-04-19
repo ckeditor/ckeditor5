@@ -1,26 +1,26 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Mapper from '../../src/conversion/mapper';
+import Mapper from '../../src/conversion/mapper.js';
 
-import ModelElement from '../../src/model/element';
-import ModelRootElement from '../../src/model/rootelement';
-import ModelText from '../../src/model/text';
-import ModelPosition from '../../src/model/position';
-import ModelRange from '../../src/model/range';
+import ModelElement from '../../src/model/element.js';
+import ModelRootElement from '../../src/model/rootelement.js';
+import ModelText from '../../src/model/text.js';
+import ModelPosition from '../../src/model/position.js';
+import ModelRange from '../../src/model/range.js';
 
-import ViewDocument from '../../src/view/document';
-import ViewElement from '../../src/view/element';
-import ViewUIElement from '../../src/view/uielement';
-import ViewText from '../../src/view/text';
-import ViewPosition from '../../src/view/position';
-import ViewRange from '../../src/view/range';
-import ViewDocumentFragment from '../../src/view/documentfragment';
-import { StylesProcessor } from '../../src/view/stylesmap';
+import ViewDocument from '../../src/view/document.js';
+import ViewElement from '../../src/view/element.js';
+import ViewUIElement from '../../src/view/uielement.js';
+import ViewText from '../../src/view/text.js';
+import ViewPosition from '../../src/view/position.js';
+import ViewRange from '../../src/view/range.js';
+import ViewDocumentFragment from '../../src/view/documentfragment.js';
+import { StylesProcessor } from '../../src/view/stylesmap.js';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 
 describe( 'Mapper', () => {
 	let viewDocument;

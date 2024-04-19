@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,29 +7,30 @@
  * @module link/linkui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 import {
 	ClickObserver,
 	type ViewAttributeElement,
 	type ViewDocumentClickEvent,
 	type ViewElement,
 	type ViewPosition
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 import {
 	ButtonView,
 	ContextualBalloon,
 	clickOutsideHandler,
 	CssTransitionDisablerMixin,
+	MenuBarMenuListItemButtonView,
 	type ViewWithCssTransitionDisabler
-} from 'ckeditor5/src/ui';
-import type { PositionOptions } from 'ckeditor5/src/utils';
-import { isWidget } from 'ckeditor5/src/widget';
+} from 'ckeditor5/src/ui.js';
+import type { PositionOptions } from 'ckeditor5/src/utils.js';
+import { isWidget } from 'ckeditor5/src/widget.js';
 
-import LinkFormView from './ui/linkformview';
-import LinkActionsView from './ui/linkactionsview';
-import type LinkCommand from './linkcommand';
-import type UnlinkCommand from './unlinkcommand';
-import { addLinkProtocolIfApplicable, isLinkElement, LINK_KEYSTROKE } from './utils';
+import LinkFormView from './ui/linkformview.js';
+import LinkActionsView from './ui/linkactionsview.js';
+import type LinkCommand from './linkcommand.js';
+import type UnlinkCommand from './unlinkcommand.js';
+import { addLinkProtocolIfApplicable, isLinkElement, LINK_KEYSTROKE } from './utils.js';
 
 import linkIcon from '../theme/icons/link.svg';
 
@@ -76,6 +77,7 @@ export default class LinkUI extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
+		const t = this.editor.t;
 
 		editor.editing.view.addObserver( ClickObserver );
 
@@ -100,6 +102,23 @@ export default class LinkUI extends Plugin {
 				name: 'span',
 				classes: [ 'ck-fake-link-selection', 'ck-fake-link-selection_collapsed' ]
 			}
+		} );
+
+		// Add the information about the keystrokes to the accessibility database.
+		editor.accessibility.addKeystrokeInfos( {
+			keystrokes: [
+				{
+					label: t( 'Create link' ),
+					keystroke: LINK_KEYSTROKE
+				},
+				{
+					label: t( 'Move out of a link' ),
+					keystroke: [
+						[ 'arrowleft', 'arrowleft' ],
+						[ 'arrowright', 'arrowright' ]
+					]
+				}
+			]
 		} );
 	}
 
@@ -135,7 +154,7 @@ export default class LinkUI extends Plugin {
 	 */
 	private _createActionsView(): LinkActionsView {
 		const editor = this.editor;
-		const actionsView = new LinkActionsView( editor.locale );
+		const actionsView = new LinkActionsView( editor.locale, editor.config.get( 'link' ) );
 		const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
 		const unlinkCommand: UnlinkCommand = editor.commands.get( 'unlink' )!;
 
@@ -176,6 +195,7 @@ export default class LinkUI extends Plugin {
 		const editor = this.editor;
 		const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
 		const defaultProtocol = editor.config.get( 'link.defaultProtocol' );
+		const allowCreatingEmptyLinks = editor.config.get( 'link.allowCreatingEmptyLinks' );
 
 		const formView = new ( CssTransitionDisablerMixin( LinkFormView ) )( editor.locale, linkCommand );
 
@@ -183,7 +203,13 @@ export default class LinkUI extends Plugin {
 
 		// Form elements should be read-only when corresponding commands are disabled.
 		formView.urlInputView.bind( 'isEnabled' ).to( linkCommand, 'isEnabled' );
-		formView.saveButtonView.bind( 'isEnabled' ).to( linkCommand );
+
+		// Disable the "save" button if the command is disabled or the input is empty despite being required.
+		formView.saveButtonView.bind( 'isEnabled' ).to(
+			linkCommand, 'isEnabled',
+			formView.urlInputView, 'isEmpty',
+			( isCommandEnabled, isInputEmpty ) => isCommandEnabled && ( allowCreatingEmptyLinks || !isInputEmpty )
+		);
 
 		// Execute link command after clicking the "Save" button.
 		this.listenTo( formView, 'submit', () => {
@@ -214,27 +240,47 @@ export default class LinkUI extends Plugin {
 	private _createToolbarLinkButton(): void {
 		const editor = this.editor;
 		const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
-		const t = editor.t;
 
-		editor.ui.componentFactory.add( 'link', locale => {
-			const button = new ButtonView( locale );
+		editor.ui.componentFactory.add( 'link', () => {
+			const button = this._createButton( ButtonView );
 
-			button.isEnabled = true;
-			button.label = t( 'Link' );
-			button.icon = linkIcon;
-			button.keystroke = LINK_KEYSTROKE;
-			button.tooltip = true;
-			button.isToggleable = true;
+			button.set( {
+				tooltip: true,
+				isToggleable: true
+			} );
 
-			// Bind button to the command.
-			button.bind( 'isEnabled' ).to( linkCommand, 'isEnabled' );
 			button.bind( 'isOn' ).to( linkCommand, 'value', value => !!value );
-
-			// Show the panel on button click.
-			this.listenTo( button, 'execute', () => this._showUI( true ) );
 
 			return button;
 		} );
+
+		editor.ui.componentFactory.add( 'menuBar:link', () => {
+			return this._createButton( MenuBarMenuListItemButtonView );
+		} );
+	}
+
+	/**
+	 * Creates a button for link command to use either in toolbar or in menu bar.
+	 */
+	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
+		const editor = this.editor;
+		const locale = editor.locale;
+		const command = editor.commands.get( 'link' )!;
+		const view = new ButtonClass( editor.locale ) as InstanceType<T>;
+		const t = locale.t;
+
+		view.set( {
+			label: t( 'Link' ),
+			icon: linkIcon,
+			keystroke: LINK_KEYSTROKE
+		} );
+
+		view.bind( 'isEnabled' ).to( command, 'isEnabled' );
+
+		// Show the panel on button click.
+		this.listenTo( view, 'execute', () => this._showUI( true ) );
+
+		return view;
 	}
 
 	/**
@@ -344,20 +390,20 @@ export default class LinkUI extends Plugin {
 			position: this._getBalloonPositionData()
 		} );
 
-		// Select input when form view is currently visible.
-		if ( this._balloon.visibleView === this.formView ) {
-			this.formView!.urlInputView.fieldView.select();
-		}
-
-		this.formView!.enableCssTransitions();
-
 		// Make sure that each time the panel shows up, the URL field remains in sync with the value of
 		// the command. If the user typed in the input, then canceled the balloon (`urlInputView.fieldView#value` stays
 		// unaltered) and re-opened it without changing the value of the link command (e.g. because they
 		// clicked the same link), they would see the old value instead of the actual value of the command.
 		// https://github.com/ckeditor/ckeditor5-link/issues/78
 		// https://github.com/ckeditor/ckeditor5-link/issues/123
-		this.formView!.urlInputView.fieldView.element!.value = linkCommand.value || '';
+		this.formView!.urlInputView.fieldView.value = linkCommand.value || '';
+
+		// Select input when form view is currently visible.
+		if ( this._balloon.visibleView === this.formView ) {
+			this.formView!.urlInputView.fieldView.select();
+		}
+
+		this.formView!.enableCssTransitions();
 	}
 
 	/**
@@ -389,6 +435,9 @@ export default class LinkUI extends Plugin {
 			// Blur the input element before removing it from DOM to prevent issues in some browsers.
 			// See https://github.com/ckeditor/ckeditor5/issues/1501.
 			this.formView!.saveButtonView.focus();
+
+			// Reset the URL field to update the state of the submit button.
+			this.formView!.urlInputView.fieldView.reset();
 
 			this._balloon.remove( this.formView! );
 

@@ -1,24 +1,25 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import TableToolbar from '../src/tabletoolbar';
-import Table from '../src/table';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import View from '@ckeditor/ckeditor5-ui/src/view';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import WidgetToolbarRepository from '@ckeditor/ckeditor5-widget/src/widgettoolbarrepository';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
-import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
+import ClassicTestEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import TableToolbar from '../src/tabletoolbar.js';
+import Table from '../src/table.js';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import View from '@ckeditor/ckeditor5-ui/src/view.js';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import WidgetToolbarRepository from '@ckeditor/ckeditor5-widget/src/widgettoolbarrepository.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar.js';
+import Image from '@ckeditor/ckeditor5-image/src/image.js';
+import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle.js';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
 
 describe( 'TableToolbar', () => {
 	testUtils.createSinonSandbox();
@@ -32,7 +33,7 @@ describe( 'TableToolbar', () => {
 
 			return ClassicTestEditor
 				.create( editorElement, {
-					plugins: [ Paragraph, Image, ImageStyle, ImageToolbar, Table, TableToolbar, FakeButton ],
+					plugins: [ Paragraph, Image, ImageStyle, ImageToolbar, Table, TableToolbar, FakeButton, ClipboardPipeline ],
 					image: {
 						toolbar: [ 'imageStyle:block', 'imageStyle:side' ]
 					},
@@ -65,7 +66,7 @@ describe( 'TableToolbar', () => {
 			global.document.body.appendChild( editorElement );
 
 			return ClassicTestEditor.create( editorElement, {
-				plugins: [ TableToolbar ]
+				plugins: [ TableToolbar, ClipboardPipeline ]
 			} )
 				.then( editor => {
 					const widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
@@ -257,7 +258,7 @@ describe( 'TableToolbar', () => {
 			document.body.appendChild( element );
 
 			return ClassicTestEditor.create( element, {
-				plugins: [ Paragraph, Table, TableToolbar, FakeButton ],
+				plugins: [ Paragraph, Table, TableToolbar, FakeButton, ClipboardPipeline ],
 				table: {
 					tableToolbar: [ 'fake_button' ]
 				}

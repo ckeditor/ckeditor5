@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -15,6 +15,7 @@ msgstr ""
 "Language: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "The tooltip of a find and replace button in the toolbar. Also, the title of the find and replace form."
 msgid "Find and replace"
@@ -64,6 +65,10 @@ msgctxt "A message displayed next to the replace field when disabled but user tr
 msgid "Tip: Find some text first in order to replace it."
 msgstr "Tip: Find some text first in order to replace it."
 
-msgctxt "The label and a tooltip of the options dropdown button in the find and replace form."
-msgid "Show options"
-msgstr "Show options"
+msgctxt "The label and the tooltip of the options dropdown button in the find and replace form."
+msgid "Advanced options"
+msgstr "Advanced options"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for opening the find and replace UI."
+msgid "Find in the document"
+msgstr "Find in the document"

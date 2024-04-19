@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -458,42 +458,41 @@ export interface ImageInsertConfig {
 	 * The image insert panel view configuration contains a list of {@link module:image/imageinsert~ImageInsert} integrations.
 	 *
 	 * The option accepts string tokens.
-	 * * for predefined integrations, we have two special strings: `insertImageViaUrl` and `openCKFinder`.
-	 * The former adds the **Insert image via URL** feature, while the latter adds the built-in **CKFinder** integration.
-	 * * for custom integrations, each string should be a name of the component registered in the
-	 * {@link module:ui/componentfactory~ComponentFactory component factory}.
-	 * If you have a plugin `PluginX` that registers `pluginXButton` component, then the integration token
-	 * in that case should be `pluginXButton`.
+	 * * for predefined integrations, we have 3 special strings: `upload`, `url`, and `assetManager`.
+	 * * for custom integrations, each string should be a name of the integration registered by the
+	 * {@link module:image/imageinsert/imageinsertui~ImageInsertUI#registerIntegration `ImageInsertUI#registerIntegration()`}.
 	 *
 	 * ```ts
-	 * // Add `insertImageViaUrl`, `openCKFinder` and custom `pluginXButton` integrations.
+	 * // Add `upload`, `assetManager` and `url` integrations.
 	 * const imageInsertConfig = {
 	 * 	insert: {
 	 * 		integrations: [
-	 * 			'insertImageViaUrl',
-	 * 			'openCKFinder',
-	 * 			'pluginXButton'
+	 * 			'upload',
+	 * 			'assetManager',
+	 * 			'url'
 	 * 		]
 	 * 	}
 	 * };
 	 * ```
 	 *
-	 * @internal
-	 * @default [ 'insertImageViaUrl' ]
+	 * @default [ 'upload', 'assetManager', 'url' ]
 	 */
-	integrations: Array<string>;
+	integrations?: Array<string>;
 
 	/**
-	 * This options allows to override the image type used by the {@link module:image/image/insertimagecommand~InsertImageCommand}
-	 * when the user inserts new images into the editor content. By default, this option is unset which means the editor will choose
-	 * the optimal image type based on the context of the insertion (e.g. the current selection and availability of plugins)
+	 * This option allows to override the image type used by the {@link module:image/image/insertimagecommand~InsertImageCommand}
+	 * when the user inserts new images into the editor content. By default, all images inserted into the editor will be block
+	 * if {@link module:image/imageblock~ImageBlock} is loaded. To let the editor decide the image type, choose `'auto'`.
 	 *
 	 * Available options are:
 	 *
 	 * * `'block'` – all images inserted into the editor will be block (requires the {@link module:image/imageblock~ImageBlock} plugin),
-	 * * `'inline'` – all images inserted into the editor will be inline (requires the {@link module:image/imageinline~ImageInline} plugin).
+	 * * `'inline'` – all images inserted into the editor will be inline (requires the {@link module:image/imageinline~ImageInline} plugin),
+	 * * `'auto'` – the editor will choose the optimal image type based on the context of the insertion and availability of plugins.
+	 *
+	 * @default 'block'
 	 */
-	type?: 'inline' | 'block';
+	type?: 'inline' | 'block' | 'auto';
 }
 
 /**

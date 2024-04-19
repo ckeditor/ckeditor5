@@ -1,15 +1,15 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document */
 
-import ListPropertiesView from '../../../src/listproperties/ui/listpropertiesview';
-import CollapsibleView from '../../../src/listproperties/ui/collapsibleview';
+import ListPropertiesView from '../../../src/listproperties/ui/listpropertiesview.js';
 
 import {
 	ButtonView,
+	CollapsibleView,
 	FocusCycler,
 	LabeledFieldView,
 	SwitchButtonView,
@@ -698,7 +698,7 @@ describe( 'ListPropertiesView', () => {
 				sinon.assert.notCalled( spy );
 			} );
 
-			it( 'should not fire #listStart upon #input but display an errir if the field is invalid', () => {
+			it( 'should not fire #listStart upon #input but display an error if the field is invalid', () => {
 				const spy = sinon.spy();
 				view.on( 'listStart', spy );
 
@@ -707,6 +707,36 @@ describe( 'ListPropertiesView', () => {
 
 				sinon.assert.notCalled( spy );
 				expect( view.startIndexFieldView.errorText ).to.equal( 'Start index must be greater than 0.' );
+			} );
+
+			it( 'should not fire #listStart upon #input but display an error if the numeric value is NaN', () => {
+				const spy = sinon.spy();
+				view.on( 'listStart', spy );
+
+				view.startIndexFieldView.fieldView.value = '3e';
+				view.startIndexFieldView.fieldView.fire( 'input' );
+
+				sinon.assert.notCalled( spy );
+				expect( view.startIndexFieldView.errorText ).to.equal( 'Invalid start index value.' );
+			} );
+
+			it( 'should hide an error and proceed to fire #listStart when previously invalid value gets corrected', () => {
+				const spy = sinon.spy();
+				view.on( 'listStart', spy );
+
+				// Check for error.
+				view.startIndexFieldView.fieldView.value = '3e';
+				view.startIndexFieldView.fieldView.fire( 'input' );
+
+				sinon.assert.notCalled( spy );
+				expect( view.startIndexFieldView.errorText ).to.equal( 'Invalid start index value.' );
+
+				// And revert to valid state (clear error).
+				view.startIndexFieldView.fieldView.value = '32';
+				view.startIndexFieldView.fieldView.fire( 'input' );
+
+				sinon.assert.calledOnce( spy );
+				expect( view.startIndexFieldView.errorText ).to.be.null;
 			} );
 		} );
 

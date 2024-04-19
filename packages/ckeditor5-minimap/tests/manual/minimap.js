@@ -1,31 +1,31 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals window, document */
 
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
-import DecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
-import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
-import FontSize from '@ckeditor/ckeditor5-font/src/fontsize';
-import FontFamily from '@ckeditor/ckeditor5-font/src/fontfamily';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
-import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
-import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor';
-import FontBackgroundColor from '@ckeditor/ckeditor5-font/src/fontbackgroundcolor';
-import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
-import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
-import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
-import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript';
-import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
-import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
+import DecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor.js';
+import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment.js';
+import FontSize from '@ckeditor/ckeditor5-font/src/fontsize.js';
+import FontFamily from '@ckeditor/ckeditor5-font/src/fontfamily.js';
+import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload.js';
+import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock.js';
+import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor.js';
+import FontBackgroundColor from '@ckeditor/ckeditor5-font/src/fontbackgroundcolor.js';
+import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize.js';
+import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties.js';
+import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties.js';
+import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript.js';
+import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript.js';
+import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock.js';
+import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage.js';
 
-import Minimap from '../../src/minimap';
-import { shortData, mediumData, longData } from '../fixtures';
+import Minimap from '../../src/minimap.js';
+import { shortData, mediumData, longData } from '../fixtures.js';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
@@ -66,7 +66,7 @@ const config = {
 		toolbar: [
 			'imageStyle:inline',
 			'imageStyle:block',
-			'imageStyle:side',
+			'imageStyle:wrapText',
 			'|',
 			'imageTextAlternative',
 			'toggleImageCaption'

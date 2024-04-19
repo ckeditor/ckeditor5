@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Japanese (https://app.transifex.com/ckeditor/teams/11143/ja/)\n"
 "Language: ja\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Toolbar button tooltip for the Numbered List feature."
 msgid "Numbered List"
@@ -116,6 +117,10 @@ msgctxt "The label of the input allowing to change the start index of a numbered
 msgid "Start at"
 msgstr "開始数字"
 
+msgctxt "The error message displayed when the numbered list start index input value is not a valid number."
+msgid "Invalid start index value."
+msgstr "無効な開始インデックス値です。"
+
 msgctxt "The error message displayed when the numbered list start index input value is invalid."
 msgid "Start index must be greater than 0."
 msgstr "開始インデックスは0より大きくなければいけません。"
@@ -123,3 +128,15 @@ msgstr "開始インデックスは0より大きくなければいけません�
 msgctxt "The label of the switch button that reverses the order of the numbered list."
 msgid "Reversed order"
 msgstr "逆順"
+
+msgctxt "Accessibility help dialog header text displayed before the list of keystrokes that can be used in a list."
+msgid "Keystrokes that can be used in a list"
+msgstr "リスト内で使用できるキーストローク"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for increasing list item indentation."
+msgid "Increase list item indent"
+msgstr "リスト項目のインデントを増やす"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for decreasing list item indentation."
+msgid "Decrease list item indent"
+msgstr "リスト項目のインデントを減らす"

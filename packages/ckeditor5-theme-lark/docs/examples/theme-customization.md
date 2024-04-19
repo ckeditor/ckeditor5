@@ -17,7 +17,7 @@ Below, you can see an editor with the dark theme as a result of customizations d
 ## Editor example configuration
 
 <details>
-<summary>View editor configuration script</summary>
+<summary>View the editor configuration script</summary>
 
 ```js
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
@@ -87,7 +87,7 @@ ClassicEditor
 </details>
 
 <details>
-<summary>View editor css style listing</summary>
+<summary>View the editor CSS style listing</summary>
 
 ```css
 :root {
@@ -139,6 +139,11 @@ ClassicEditor
 
 	--ck-color-dropdown-panel-background: var(--ck-custom-background);
 	--ck-color-dropdown-panel-border: var(--ck-custom-foreground);
+
+	/* -- Overrides the default .ck-dialog class colors. ----------------------------------- */
+
+	--ck-color-dialog-background: var(--ck-custom-background);
+	--ck-color-dialog-form-header-border: var(--ck-custom-border);
 
 	/* -- Overrides the default .ck-splitbutton class colors. ----------------------------------- */
 

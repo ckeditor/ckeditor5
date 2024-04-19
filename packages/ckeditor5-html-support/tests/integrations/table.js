@@ -1,20 +1,20 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption';
-import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
+import Table from '@ckeditor/ckeditor5-table/src/table.js';
+import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption.js';
+import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize.js';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
-import { priorities } from 'ckeditor5/src/utils';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { priorities } from 'ckeditor5/src/utils.js';
+import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import GeneralHtmlSupport from '../../src/generalhtmlsupport';
-import { getModelDataWithAttributes } from '../_utils/utils';
+import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
+import { getModelDataWithAttributes } from '../_utils/utils.js';
 
 import { range } from 'lodash-es';
 
@@ -29,7 +29,7 @@ describe( 'TableElementSupport', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Table, TableCaption, Paragraph, GeneralHtmlSupport ]
+				plugins: [ Table, TableCaption, Paragraph, GeneralHtmlSupport, ClipboardPipeline ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -1205,7 +1205,7 @@ describe( 'TableElementSupport', () => {
 	it( 'should not strip allowed attributes from elements that are not directly upcasted (like <thead> or <tbody>) ' +
 		'if another upcast converter exists for all possible view elements', async () => {
 		const editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ Table, TableCaption, Paragraph, GeneralHtmlSupport, function( editor ) {
+			plugins: [ Table, TableCaption, Paragraph, GeneralHtmlSupport, ClipboardPipeline, function( editor ) {
 				editor.conversion.for( 'upcast' ).attributeToAttribute( {
 					view: 'align',
 					model: 'alignment'
@@ -1259,7 +1259,7 @@ describe( 'TableElementSupport', () => {
 	// https://github.com/ckeditor/ckeditor5/issues/11479
 	it( 'should not strip attributes from <colgroup> and <col> elements', async () => {
 		const editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ Table, TableCaption, TableColumnResize, Paragraph, GeneralHtmlSupport ],
+			plugins: [ Table, TableCaption, TableColumnResize, Paragraph, GeneralHtmlSupport, ClipboardPipeline ],
 			htmlSupport: {
 				allow: [
 					{
@@ -1342,7 +1342,7 @@ describe( 'TableElementSupport', () => {
 		expect( getData( editor.model, { withoutSelection: true } ) ).to.equal(
 			'<paragraph>' +
 				'<htmlCustomElement ' +
-					'htmlContent="<custom-element><table dir="ltr"><tbody><tr><td>Foo</td></tr></tbody></table></custom-element>" ' +
+					'htmlContent="<table dir="ltr"><tbody><tr><td>Foo</td></tr></tbody></table>" ' +
 					'htmlElementName="custom-element"' +
 				'>' +
 				'</htmlCustomElement>' +

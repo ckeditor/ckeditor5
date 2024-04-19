@@ -7,21 +7,21 @@ order: 30
 
 # Installing plugins
 
-CKEditor&nbsp;5 plugins, responsible for various features, are distributed through [npm](https://www.npmjs.com) packages. We implemented them modularly. It means a single plugin may contain multiple JavaScript files. Don't hesitate and explore available CKEditor&nbsp;5 features - they are waiting for you to install them!
+CKEditor&nbsp;5 plugins, responsible for various features, are distributed through [npm](https://www.npmjs.com) packages. We implemented them in a modular way. It means a single plugin may contain multiple JavaScript files. Do not hesitate and explore available CKEditor&nbsp;5 features &ndash; they are waiting for you to install them!
 
 <info-box hint>
-	If you are looking for an easy way to create a custom build of CKEditor&nbsp;5 without installing anything, check the [online builder](https://ckeditor.com/ckeditor-5/online-builder/), which allows you to create a build with a custom set of plugins through a simple and intuitive UI.
+	If you are looking for an easy way to create a custom build of CKEditor&nbsp;5 without installing anything, check the [online builder](https://ckeditor.com/ckeditor-5/online-builder/). It allows you to create a build with a custom set of plugins through a simple and intuitive UI.
 </info-box>
 
 ## Requirements
 
 To enrich the CKEditor&nbsp;5 by installing plugins, you will require:
 
-* [Node.js](https://nodejs.org/en/) 16.0.0+
+* [Node.js](https://nodejs.org/en/) 18.0.0+
 * [npm](https://www.npmjs.com/) 5.7.1+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
 
 <info-box warning>
-	When installing CKEditor&nbsp;5 Framework packages, you need to make sure their versions match the version of the base editor package. For example: if you would like to install the `@ckeditor/ckeditor5-alignment` package and your other packages are outdated, e.g. at version `38.0.0`, you should consider updating your editor and all other packages to the latest `{@var ckeditor5-version}` version. You might also install the alignment package at version `38.0.0` (which is not advised, actually). Otherwise, if package versions are different, this will result in an [`ckeditor-duplicated-modules error`](https://ckeditor.com/docs/ckeditor5/latest/support/error-codes.html#error-ckeditor-duplicated-modules).
+	When installing CKEditor&nbsp;5 Framework packages, you need to make sure their versions match the version of the base editor package. For example: if you would like to install the `@ckeditor/ckeditor5-alignment` package and your other packages are outdated, like at version `38.0.0`, you should consider updating your editor and all other packages to the latest `{@var ckeditor5-version}` version. You might also install the alignment package at version `38.0.0` (which is not advised, actually). Otherwise, if package versions are different, this will result in an [`ckeditor-duplicated-modules error`](https://ckeditor.com/docs/ckeditor5/latest/support/error-codes.html#error-ckeditor-duplicated-modules).
 
 	The simplest way to avoid such situations is to always use the latest `{@var ckeditor5-version}` versions of the official packages. If you already stumbled upon this error, you can use [`npm-check-updates`](https://www.npmjs.com/package/npm-check-updates), which is a handy tool for keeping your packages up to date.
 
@@ -40,13 +40,13 @@ npm install <plugin-name>
 
 ### Installing a package
 
-Let's say we want to install the alignment package. It adds text alignment functionality to your editor. We can install it using the following command:
+Let's say you want to install the alignment package. It adds text alignment functionality to your editor. You can install it using the following command:
 
 ```bash
 npm install @ckeditor/ckeditor5-alignment
 ```
 
-The command will install the package and add it to `package.json`. You can also edit `package.json` manually. But remember that all packages (excluding `@ckeditor/ckeditor5-dev-*`) {@link installation/plugins/installing-plugins#requirements must have the same version as the base editor package}.
+The command will install the package and add it to `package.json`. You can also edit `package.json` manually. All packages (excluding `@ckeditor/ckeditor5-dev-*`) {@link installation/plugins/installing-plugins#requirements must have the same version as the base editor package}.
 
 <info-box hint>
 	Due to the non-deterministic way how npm installs packages, it is recommended to run `rm -rf node_modules && npm install` when in doubt. This will prevent some packages from getting installed more than once in `node_modules/` (which might lead to broken builds).
@@ -192,9 +192,9 @@ And use it with:
 npm run build
 ```
 
-If you are integrating an editor from the source into your application, then this step should be handled by build scripts used in your project.
+If you are integrating an editor from the source into your application, this step should be handled by build scripts used in your project.
 
-## Adding a JavaScript plugin
+## Adding an unofficial JavaScript plugin
 
 The CKEditor&nbsp;5 is a TypeScript project, and all plugins provided by CKEditor&nbsp;5 also use TypeScript. However, there are ways to use JavaScript packages with the editor.
 
@@ -206,11 +206,11 @@ Even if the package you want to use is in JavaScript, there is a chance there ar
 npm install --save-dev @types/<package-name>
 ```
 
-If you successfully installed those types, there is nothing more to do. You should no longer see TypeScript compiler errors, and your project should be ready to be built.
+If you successfully installed those types, there is nothing more to do. You should no longer see TypeScript compiler errors, and your project should be ready to build.
 
 ### Custom declarations
 
-If you create a custom plugin, there won't be community types. In that case, you need to add your custom definitions. To do so, follow the steps.
+If you create a custom plugin, community types will not be available. In that case, you need to add your custom definitions.
 
 First, create a declaration file `.d.ts` in your project. For example, you can place it in `types/index.d.ts`. Then inside the file, define the module as shown in the example below.
 
@@ -248,4 +248,4 @@ If there are no community types and creating declarations is not an option, ther
 import { foo } from 'javascript-package';
 ```
 
-This comment suppresses all errors that originate on the following line.
+This comment suppresses all errors that originate from the following line.

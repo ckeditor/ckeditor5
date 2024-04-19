@@ -1,24 +1,24 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Conversion from '../../src/conversion/conversion';
+import Conversion from '../../src/conversion/conversion.js';
 
-import UpcastDispatcher from '../../src/conversion/upcastdispatcher';
+import UpcastDispatcher from '../../src/conversion/upcastdispatcher.js';
 
-import UpcastHelpers, { convertText, convertToModelFragment } from '../../src/conversion/upcasthelpers';
-import DowncastHelpers from '../../src/conversion/downcasthelpers';
+import UpcastHelpers, { convertText, convertToModelFragment } from '../../src/conversion/upcasthelpers.js';
+import DowncastHelpers from '../../src/conversion/downcasthelpers.js';
 
-import EditingController from '../../src/controller/editingcontroller';
+import EditingController from '../../src/controller/editingcontroller.js';
 
-import Model from '../../src/model/model';
+import Model from '../../src/model/model.js';
 
-import { parse as viewParse, stringify as viewStringify } from '../../src/dev-utils/view';
-import { stringify as modelStringify } from '../../src/dev-utils/model';
-import ConversionHelpers from '../../src/conversion/conversionhelpers';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-import { StylesProcessor } from '../../src/view/stylesmap';
+import { parse as viewParse, stringify as viewStringify } from '../../src/dev-utils/view.js';
+import { stringify as modelStringify } from '../../src/dev-utils/model.js';
+import ConversionHelpers from '../../src/conversion/conversionhelpers.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
+import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'Conversion', () => {
 	let conversion, downcastDispA, upcastDispaA, downcastDispB;

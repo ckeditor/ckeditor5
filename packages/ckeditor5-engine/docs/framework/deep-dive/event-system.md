@@ -35,7 +35,7 @@ However, a function object is needed if you want to be able to remove the event 
 emitter.off( 'eventName', handler );
 ```
 
-There is also another way to add an event listener &mdash; by using {@link module:utils/emittermixin~Emitter#listenTo `listenTo()`}. This way one emitter can listen to events on another emitter:
+There is also another way to add an event listener &ndash; by using {@link module:utils/emittermixin~Emitter#listenTo `listenTo()`}. This way one emitter can listen to events on another emitter:
 
 ```js
 foo.listenTo( bar, 'eventName', ( eventInfo, ...args ) => { /* ... */ } );
@@ -113,7 +113,7 @@ emitter.fire( 'eventName' ); // -> 123
 
 ### Listening on namespaced events
 
-The event system supports namespaced events to give you the possibility to build a structure of callbacks. Namespacing is achieved by using `:` in the event name:
+The event system supports namespaced events to give you the possibility to build a structure of callbacks. You can achieve namespacing by using `:` in the event name:
 
 ```js
 this.fire( 'foo:bar:baz', data );
@@ -129,7 +129,7 @@ this.on( 'foo:bar:baz', () => { /* ... */ } );
 
 This way you can have more general events, listening to a broader event (`'foo'` in this case), or more detailed callbacks listening to specified events (`'foo:bar'` or `'foo:bar:baz'`).
 
-This mechanism is used for instance in the conversion, where thanks to events named as `'insert:<elementName>'` you can listen to the insertion of a specific element (e.g. `'insert:p'`) or all elements insertion (`'insert'`).
+This mechanism is used for instance in the conversion, where thanks to events named `'insert:<elementName>'` you can listen to the insertion of a specific element (like `'insert:p'`) or all elements insertion (`'insert'`).
 
 **Note**: Listeners registered on the same priority will be fired in the order of the registration (no matter if listening to a whole namespace or to a specific event).
 
@@ -306,7 +306,7 @@ this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
 
 Bubbling always starts from the virtual `'$capture'` context. All listeners attached to this context are triggered first (and in the order of their priorities).
 
-Then, the real bubbling starts from the selection position (either its anchor or focus &mdash; depending on what is deeper).
+Then, the real bubbling starts from the selection position (either its anchor or focus &ndash; depending on what is deeper).
 
 If text nodes are allowed at the selection position, then the first context is `'$text'`. Then the event bubbles through all elements up to the `'$root'` and finally `'$document'`.
 
@@ -400,7 +400,7 @@ Currently, this information is available for the following events:
 Hence the events from the above example would be extended with the following `eventPhase` data:
 
 1. `'$capture'` - *capturing*
-1. `'$text'` - *atTarget*
+1. `'$text'` - *at target*
 1. `'p'` - *bubbling*
 1. `'td'` - *bubbling*
 1. `'tr'` - *bubbling*
@@ -417,7 +417,7 @@ And for the example with the widget selected:
 <blockquote>
 	<p>
 		Foo
-		[<img />]	 // enhanced with toWidget()
+		[<img />]	 // Enhanced with toWidget().
 		bar
 	</p>
 </blockquote>
@@ -426,8 +426,8 @@ And for the example with the widget selected:
 Events that will be fired:
 
 1. `'$capture'` - *capturing*
-1. `'img'` - *atTarget*
-1. *widget* - *atTarget* (assuming a custom matcher was used)
+1. `'img'` - *at target*
+1. *widget* - *at target* (assuming a custom matcher was used)
 1. `'p'` - *bubbling*
 1. `'blockquote'` - *bubbling*
 1. `'$root'` - *bubbling*

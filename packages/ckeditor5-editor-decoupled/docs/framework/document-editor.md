@@ -19,7 +19,7 @@ The document editor build includes all the necessary features for the task. All 
 	See the {@link installation/getting-started/predefined-builds#document-editor Predefined builds guide} to learn how to install the document editor build.
 </info-box>
 
-Document editor can be created using the existing data container in the DOM. It can also accept a raw data string and create the editable by itself. To get the output data, use the {@link module:core/editor/utils/dataapimixin~DataApi#getData `getData()`} method.
+Document editor can be created using the existing data container in the DOM. It can also accept a raw data string and create the editable by itself. To get the output data, use the {@link module:core/editor/editor~Editor#getData `getData()`} method.
 
 <info-box>
 	See the {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`} method to learn about different approaches to the initialization of the editor.
@@ -80,7 +80,7 @@ The `<div class="document-editor">...</<div>` element is the outermost container
 
 ### Styles
 
-Styles are what the document editor really needs to materialize. Begin with the styles of the main container:
+Styles are what the document editor needs to materialize. Begin with the styles of the main container:
 
 ```css
 .document-editor {
@@ -248,4 +248,4 @@ A finishing touch that makes the block quotes more sophisticated and the styling
 
 The document editor is ready to use. Still, you may want to configure some features like {@link module:highlight/highlightconfig~HighlightConfig highlight}, {@link module:font/fontconfig~FontSizeConfig font size} or {@link module:font/fontconfig~FontFamilyConfig font family} for the best editing experience.
 
-Thanks to the {@link module:editor-decoupled/decouplededitor~DecoupledEditor `DecoupledEditor`} used as a foundation, you can experiment and create custom user interface layouts quickly while preserving the feature set, accessibility support (e.g. {@link features/keyboard-support keyboard navigation} in the toolbar) and more.
+Thanks to the {@link module:editor-decoupled/decouplededitor~DecoupledEditor `DecoupledEditor`} used as a foundation, you can experiment and create custom user interface layouts quickly while preserving the feature set, accessibility support (for example, {@link features/accessibility#keyboard-shortcuts keyboard navigation} in the toolbar), and more.

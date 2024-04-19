@@ -1,22 +1,22 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 
-import TableSelection from '../src/tableselection';
-import TableEditing from '../src/tableediting';
-import TableUtils from '../src/tableutils';
-import TableColumnResize from '../src/tablecolumnresize';
+import TableSelection from '../src/tableselection.js';
+import TableEditing from '../src/tableediting.js';
+import TableUtils from '../src/tableutils.js';
+import TableColumnResize from '../src/tablecolumnresize.js';
 
-import { modelTable } from './_utils/utils';
-import TableWalker from '../src/tablewalker';
+import { modelTable } from './_utils/utils.js';
+import TableWalker from '../src/tablewalker.js';
 
 describe( 'TableUtils', () => {
 	let editor, model, root, tableUtils;
@@ -1169,6 +1169,22 @@ describe( 'TableUtils', () => {
 			] ) );
 
 			expect( tableUtils.getColumns( root.getNodeByPath( [ 0 ] ) ) ).to.equal( 5 );
+		} );
+
+		it( 'should ignore elements other than tableCell (e.g. $marker elements) when counting', () => {
+			setData( model, modelTable( [
+				[ '00', '02', '03' ]
+			] ) );
+
+			model.change( writer => {
+				const markerFakeStartElement = writer.createElement( 'fakeMarkerStart' );
+				const markerFakeEndElement = writer.createElement( 'fakeMarkerEnd' );
+
+				writer.insert( markerFakeStartElement, writer.createPositionAt( root.getNodeByPath( [ 0, 0 ] ), 0 ) );
+				writer.insert( markerFakeEndElement, writer.createPositionAt( root.getNodeByPath( [ 0, 0 ] ), 3 ) );
+			} );
+
+			expect( tableUtils.getColumns( root.getNodeByPath( [ 0 ] ) ) ).to.equal( 3 );
 		} );
 	} );
 

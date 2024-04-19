@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type { DataSchemaBlockElementDefinition, DataSchemaInlineElementDefinition } from './dataschema';
+import type { DataSchemaBlockElementDefinition, DataSchemaInlineElementDefinition } from './dataschema.js';
 
 /**
  * @module html-support/schemadefinitions
@@ -673,10 +673,7 @@ export default {
 			model: 'htmlA',
 			view: 'a',
 			priority: 5,
-			coupledAttribute: 'linkHref',
-			attributeProperties: {
-				copyOnEnter: true
-			}
+			coupledAttribute: 'linkHref'
 		},
 		{
 			model: 'htmlStrong',

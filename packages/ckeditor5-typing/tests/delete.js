@@ -1,17 +1,17 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Delete from '../src/delete';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
-import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
-import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
-import env from '@ckeditor/ckeditor5-utils/src/env';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import Delete from '../src/delete.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
+import Batch from '@ckeditor/ckeditor5-engine/src/model/batch.js';
+import env from '@ckeditor/ckeditor5-utils/src/env.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 /* globals document */
 

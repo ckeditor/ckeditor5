@@ -15,7 +15,7 @@ Use the insert page break toolbar button {@icon @ckeditor/ckeditor5-page-break/t
 {@snippet features/page-break}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Installation
@@ -63,7 +63,7 @@ The {@link module:page-break/pagebreak~PageBreak} plugin registers:
 * the UI button component (`'pageBreak'`),
 * the `'pageBreak'` command implemented by {@link module:page-break/pagebreakcommand~PageBreakCommand}.
 
-The command can be executed using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
+You can execute the command using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
 
 ```js
 // Inserts a page break into the selected content.

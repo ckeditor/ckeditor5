@@ -1,26 +1,27 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document */
 
 // ClassicTestEditor can't be used, as it doesn't handle the focus, which is needed to test resizer visual cues.
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import Image from '../../src/image';
-import ImageResizeEditing from '../../src/imageresize/imageresizeediting';
-import ResizeImageCommand from '../../src/imageresize/resizeimagecommand';
-import ImageStyle from '../../src/imagestyle';
-import ImageBlockEditing from '../../src/image/imageblockediting';
-import ImageInlineEditing from '../../src/image/imageinlineediting';
+import Image from '../../src/image.js';
+import ImageResizeEditing from '../../src/imageresize/imageresizeediting.js';
+import ResizeImageCommand from '../../src/imageresize/resizeimagecommand.js';
+import ImageStyle from '../../src/imagestyle.js';
+import ImageBlockEditing from '../../src/image/imageblockediting.js';
+import ImageInlineEditing from '../../src/image/imageinlineediting.js';
 
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
-import { focusEditor } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils';
-import { IMAGE_SRC_FIXTURE } from './_utils/utils';
+import { focusEditor } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils.js';
+import { IMAGE_SRC_FIXTURE } from './_utils/utils.js';
 
 describe( 'ImageResizeEditing', () => {
 	let editor, editorElement;
@@ -84,55 +85,170 @@ describe( 'ImageResizeEditing', () => {
 			editor = await createEditor();
 		} );
 
-		it( 'upcasts 100px width correctly', () => {
-			editor.setData( `<figure class="image" style="width:100px;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+		describe( 'width', () => {
+			it( 'upcasts 100px width correctly', () => {
+				editor.setData( `<figure class="image" style="width:100px;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
 
-			expect( editor.model.document.getRoot().getChild( 0 ).getAttribute( 'width' ) ).to.equal( '100px' );
-		} );
-
-		it( 'upcasts 50% width correctly', () => {
-			editor.setData( `<figure class="image" style="width:50%;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
-
-			expect( editor.model.document.getRoot().getChild( 0 ).getAttribute( 'width' ) ).to.equal( '50%' );
-		} );
-
-		it( 'downcasts 100px width correctly', () => {
-			setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" width="100px"></imageBlock>` );
-
-			expect( editor.getData() )
-				.to.equal( `<figure class="image image_resized" style="width:100px;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
-		} );
-
-		it( 'downcasts 50% width correctly', () => {
-			setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" width="50%"></imageBlock>` );
-
-			expect( editor.getData() )
-				.to.equal( `<figure class="image image_resized" style="width:50%;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
-		} );
-
-		it( 'removes style and extra class when no longer resized', () => {
-			setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" width="50%"></imageBlock>` );
-
-			const imageModel = editor.model.document.getRoot().getChild( 0 );
-
-			editor.model.change( writer => {
-				writer.removeAttribute( 'width', imageModel );
+				expect( editor.model.document.getRoot().getChild( 0 ).getAttribute( 'resizedWidth' ) ).to.equal( '100px' );
 			} );
 
-			expect( editor.getData() )
-				.to.equal( `<figure class="image"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+			it( 'upcasts 50% width correctly', () => {
+				editor.setData( `<figure class="image" style="width:50%;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+
+				expect( editor.model.document.getRoot().getChild( 0 ).getAttribute( 'resizedWidth' ) ).to.equal( '50%' );
+			} );
+
+			it( 'does not upcast width if height is set too', () => {
+				editor.setData( `<figure class="image" style="height:100px;width:200px;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+
+				expect( editor.model.document.getRoot().getChild( 0 ).getAttribute( 'resizedWidth' ) ).to.be.undefined;
+			} );
+
+			it( 'downcasts 100px width correctly', () => {
+				setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedWidth="100px"></imageBlock>` );
+
+				expect( editor.getData() )
+					.to.equal( `<figure class="image image_resized" style="width:100px;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+			} );
+
+			it( 'downcasts 50% width correctly', () => {
+				setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedWidth="50%"></imageBlock>` );
+
+				expect( editor.getData() )
+					.to.equal( `<figure class="image image_resized" style="width:50%;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+			} );
+
+			it( 'removes style and extra class when no longer resized', () => {
+				setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedWidth="50%"></imageBlock>` );
+
+				const imageModel = editor.model.document.getRoot().getChild( 0 );
+
+				editor.model.change( writer => {
+					writer.removeAttribute( 'resizedWidth', imageModel );
+				} );
+
+				expect( editor.getData() )
+					.to.equal( `<figure class="image"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+			} );
+
+			it( 'doesn\'t downcast consumed tokens', () => {
+				editor.conversion.for( 'downcast' ).add( dispatcher =>
+					dispatcher.on( 'attribute:resizedWidth:imageBlock', ( evt, data, conversionApi ) => {
+						conversionApi.consumable.consume( data.item, 'attribute:resizedWidth:imageBlock' );
+					}, { priority: 'high' } )
+				);
+				setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedWidth="50%"></imageBlock>` );
+
+				expect( editor.getData() )
+					.to.equal( `<figure class="image"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+			} );
 		} );
 
-		it( 'doesn\'t downcast consumed tokens', () => {
-			editor.conversion.for( 'downcast' ).add( dispatcher =>
-				dispatcher.on( 'attribute:width:imageBlock', ( evt, data, conversionApi ) => {
-					conversionApi.consumable.consume( data.item, 'attribute:width:imageBlock' );
-				}, { priority: 'high' } )
-			);
-			setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" width="50%"></imageBlock>` );
+		describe( 'height', () => {
+			describe( 'upcast', () => {
+				it( 'upcasts 100px height correctly', () => {
+					editor.setData( `<figure class="image" style="height:100px;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
 
-			expect( editor.getData() )
-				.to.equal( `<figure class="image"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+					expect( editor.model.document.getRoot().getChild( 0 ).getAttribute( 'resizedHeight' ) ).to.equal( '100px' );
+				} );
+
+				it( 'upcasts 50% height correctly', () => {
+					editor.setData( `<figure class="image" style="height:50%;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+
+					expect( editor.model.document.getRoot().getChild( 0 ).getAttribute( 'resizedHeight' ) ).to.equal( '50%' );
+				} );
+
+				it( 'does not upcast height if width is set too', () => {
+					editor.setData( `<figure class="image" style="height:100px;width:200px;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+
+					expect( editor.model.document.getRoot().getChild( 0 ).getAttribute( 'resizedHeight' ) ).to.be.undefined;
+				} );
+			} );
+
+			describe( 'data downcast', () => {
+				it( 'downcasts 100px height correctly', () => {
+					setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedHeight="100px"></imageBlock>` );
+
+					expect( editor.getData() )
+						.to.equal( `<figure class="image" style="height:100px;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+				} );
+
+				it( 'downcasts 50% height correctly', () => {
+					setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedHeight="50%"></imageBlock>` );
+
+					expect( editor.getData() )
+						.to.equal( `<figure class="image" style="height:50%;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+				} );
+
+				it( 'doesn\'t downcast consumed tokens', () => {
+					editor.conversion.for( 'dataDowncast' ).add( dispatcher =>
+						dispatcher.on( 'attribute:resizedHeight:imageBlock', ( evt, data, conversionApi ) => {
+							conversionApi.consumable.consume( data.item, 'attribute:resizedHeight:imageBlock' );
+						}, { priority: 'high' } )
+					);
+					setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedHeight="50%"></imageBlock>` );
+
+					expect( editor.getData() )
+						.to.equal( `<figure class="image"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+				} );
+			} );
+
+			describe( 'editing downcast', () => {
+				it( 'downcasts 100px height correctly', () => {
+					setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedHeight="100px"></imageBlock>` );
+
+					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+						'<figure class="ck-widget ck-widget_selected image" contenteditable="false" style="height:100px">' +
+							`<img src="${ IMAGE_SRC_FIXTURE }"></img>` +
+							'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+						'</figure>'
+					);
+				} );
+
+				it( 'downcasts 50% height correctly', () => {
+					setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedHeight="50%"></imageBlock>` );
+
+					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+						'<figure class="ck-widget ck-widget_selected image" contenteditable="false" style="height:50%">' +
+							`<img src="${ IMAGE_SRC_FIXTURE }"></img>` +
+							'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+						'</figure>'
+					);
+				} );
+
+				it( 'removes `height` style in view if `resizedHeight` is removed from model', () => {
+					setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedHeight="50%"></imageBlock>` );
+
+					const imageModel = editor.model.document.getRoot().getChild( 0 );
+
+					editor.model.change( writer => {
+						writer.removeAttribute( 'resizedHeight', imageModel );
+					} );
+
+					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+						'<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
+							`<img src="${ IMAGE_SRC_FIXTURE }"></img>` +
+							'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+						'</figure>'
+					);
+				} );
+
+				it( 'doesn\'t downcast consumed tokens', () => {
+					editor.conversion.for( 'editingDowncast' ).add( dispatcher =>
+						dispatcher.on( 'attribute:resizedHeight:imageBlock', ( evt, data, conversionApi ) => {
+							conversionApi.consumable.consume( data.item, 'attribute:resizedHeight:imageBlock' );
+						}, { priority: 'high' } )
+					);
+					setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedHeight="50%"></imageBlock>` );
+
+					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+						'<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
+							`<img src="${ IMAGE_SRC_FIXTURE }"></img>` +
+							'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+						'</figure>'
+					);
+				} );
+			} );
 		} );
 	} );
 
@@ -141,59 +257,209 @@ describe( 'ImageResizeEditing', () => {
 			editor = await createEditor();
 		} );
 
-		it( 'upcasts 100px width correctly', () => {
-			editor.setData(
-				`<p>Lorem <span class="image-inline"><img src="${ IMAGE_SRC_FIXTURE }" style="width:100px;"></span> ipsum</p>`
-			);
-
-			expect( editor.model.document.getRoot().getChild( 0 ).getChild( 1 ).getAttribute( 'width' ) ).to.equal( '100px' );
-		} );
-
-		it( 'upcasts 50% width correctly', () => {
-			editor.setData( `<p>Lorem <span class="image-inline"><img src="${ IMAGE_SRC_FIXTURE }" style="width:50%;"></span> ipsum</p>` );
-
-			expect( editor.model.document.getRoot().getChild( 0 ).getChild( 1 ).getAttribute( 'width' ) ).to.equal( '50%' );
-		} );
-
-		it( 'downcasts 100px width correctly', () => {
-			setData( editor.model, `<paragraph><imageInline src="${ IMAGE_SRC_FIXTURE }" width="100px"></imageInline></paragraph>` );
-
-			expect( editor.getData() )
-				.to.equal(
-					`<p><img class="image_resized" style="width:100px;" src="${ IMAGE_SRC_FIXTURE }"></p>`
+		describe( 'width', () => {
+			it( 'upcasts 100px width correctly', () => {
+				editor.setData(
+					`<p>Lorem <span class="image-inline"><img src="${ IMAGE_SRC_FIXTURE }" style="width:100px;"></span> ipsum</p>`
 				);
-		} );
 
-		it( 'downcasts 50% width correctly', () => {
-			setData( editor.model, `<paragraph><imageInline src="${ IMAGE_SRC_FIXTURE }" width="50%"></imageInline></paragraph>` );
-
-			expect( editor.getData() )
-				.to.equal( `<p><img class="image_resized" style="width:50%;" src="${ IMAGE_SRC_FIXTURE }"></p>` );
-		} );
-
-		it( 'removes style and extra class when no longer resized', () => {
-			setData( editor.model, `<paragraph><imageInline src="${ IMAGE_SRC_FIXTURE }" width="50%"></imageInline></paragraph>` );
-
-			const imageModel = editor.model.document.getRoot().getChild( 0 ).getChild( 0 );
-
-			editor.model.change( writer => {
-				writer.removeAttribute( 'width', imageModel );
+				expect( editor.model.document.getRoot().getChild( 0 ).getChild( 1 ).getAttribute( 'resizedWidth' ) ).to.equal( '100px' );
 			} );
 
-			expect( editor.getData() )
-				.to.equal( `<p><img src="${ IMAGE_SRC_FIXTURE }"></p>` );
+			it( 'upcasts 50% width correctly', () => {
+				editor.setData(
+					`<p>Lorem <span class="image-inline"><img src="${ IMAGE_SRC_FIXTURE }" style="width:50%;"></span> ipsum</p>`
+				);
+
+				expect( editor.model.document.getRoot().getChild( 0 ).getChild( 1 ).getAttribute( 'resizedWidth' ) ).to.equal( '50%' );
+			} );
+
+			it( 'does not upcast width if height is set too', () => {
+				editor.setData(
+					'<p>Lorem <span class="image-inline">' +
+						`<img src="${ IMAGE_SRC_FIXTURE }" style="width:100px;height:200px;">` +
+					'</span> ipsum</p>'
+				);
+
+				expect( editor.model.document.getRoot().getChild( 0 ).getChild( 1 ).getAttribute( 'resizedWidth' ) ).to.be.undefined;
+			} );
+
+			it( 'downcasts 100px resizedWidth correctly', () => {
+				setData( editor.model,
+					`<paragraph><imageInline src="${ IMAGE_SRC_FIXTURE }" resizedWidth="100px"></imageInline></paragraph>`
+				);
+
+				expect( editor.getData() )
+					.to.equal(
+						`<p><img class="image_resized" style="width:100px;" src="${ IMAGE_SRC_FIXTURE }"></p>`
+					);
+			} );
+
+			it( 'downcasts 50% resizedWidth correctly', () => {
+				setData( editor.model,
+					`<paragraph><imageInline src="${ IMAGE_SRC_FIXTURE }" resizedWidth="50%"></imageInline></paragraph>`
+				);
+
+				expect( editor.getData() )
+					.to.equal( `<p><img class="image_resized" style="width:50%;" src="${ IMAGE_SRC_FIXTURE }"></p>` );
+			} );
+
+			it( 'removes style and extra class when no longer resized', () => {
+				setData( editor.model,
+					`<paragraph><imageInline src="${ IMAGE_SRC_FIXTURE }" resizedWidth="50%"></imageInline></paragraph>`
+				);
+
+				const imageModel = editor.model.document.getRoot().getChild( 0 ).getChild( 0 );
+
+				editor.model.change( writer => {
+					writer.removeAttribute( 'resizedWidth', imageModel );
+				} );
+
+				expect( editor.getData() )
+					.to.equal( `<p><img src="${ IMAGE_SRC_FIXTURE }"></p>` );
+			} );
+
+			it( 'doesn\'t downcast consumed tokens', () => {
+				editor.conversion.for( 'downcast' ).add( dispatcher =>
+					dispatcher.on( 'attribute:resizedWidth:imageInline', ( evt, data, conversionApi ) => {
+						conversionApi.consumable.consume( data.item, 'attribute:resizedWidth:imageInline' );
+					}, { priority: 'high' } )
+				);
+				setData( editor.model,
+					`<paragraph><imageInline src="${ IMAGE_SRC_FIXTURE }" resizedWidth="50%"></imageInline></paragraph>`
+				);
+
+				expect( editor.getData() )
+					.to.equal( `<p><img src="${ IMAGE_SRC_FIXTURE }"></p>` );
+			} );
 		} );
 
-		it( 'doesn\'t downcast consumed tokens', () => {
-			editor.conversion.for( 'downcast' ).add( dispatcher =>
-				dispatcher.on( 'attribute:width:imageInline', ( evt, data, conversionApi ) => {
-					conversionApi.consumable.consume( data.item, 'attribute:width:imageInline' );
-				}, { priority: 'high' } )
-			);
-			setData( editor.model, `<paragraph><imageInline src="${ IMAGE_SRC_FIXTURE }" width="50%"></imageInline></paragraph>` );
+		describe( 'height', () => {
+			describe( 'upcast', () => {
+				it( 'upcasts 100px height correctly', () => {
+					editor.setData(
+						`<p>Lorem <span class="image-inline"><img src="${ IMAGE_SRC_FIXTURE }" style="height:100px;"></span> ipsum</p>`
+					);
 
-			expect( editor.getData() )
-				.to.equal( `<p><img src="${ IMAGE_SRC_FIXTURE }"></p>` );
+					expect( editor.model.document.getRoot().getChild( 0 ).getChild( 1 ).getAttribute( 'resizedHeight' ) )
+						.to.equal( '100px' );
+				} );
+
+				it( 'upcasts 50% height correctly', () => {
+					editor.setData(
+						`<p>Lorem <span class="image-inline"><img src="${ IMAGE_SRC_FIXTURE }" style="height:50%;"></span> ipsum</p>`
+					);
+
+					expect( editor.model.document.getRoot().getChild( 0 ).getChild( 1 ).getAttribute( 'resizedHeight' ) ).to.equal( '50%' );
+				} );
+
+				it( 'does not upcast height if width is set too', () => {
+					editor.setData(
+						'<p>Lorem <span class="image-inline">' +
+							`<img src="${ IMAGE_SRC_FIXTURE }" style="height:100px;width:200px;">` +
+						'</span> ipsum</p>'
+					);
+
+					expect( editor.model.document.getRoot().getChild( 0 ).getChild( 1 ).getAttribute( 'resizedHeight' ) ).to.be.undefined;
+				} );
+			} );
+
+			describe( 'data downcast', () => {
+				it( 'downcasts 100px resizedHeight correctly', () => {
+					setData( editor.model,
+						`<paragraph><imageInline src="${ IMAGE_SRC_FIXTURE }" resizedHeight="100px"></imageInline></paragraph>`
+					);
+
+					expect( editor.getData() )
+						.to.equal(
+							`<p><img style="height:100px;" src="${ IMAGE_SRC_FIXTURE }"></p>`
+						);
+				} );
+
+				it( 'downcasts 50% resizedHeight correctly', () => {
+					setData( editor.model,
+						`<paragraph><imageInline src="${ IMAGE_SRC_FIXTURE }" resizedHeight="50%"></imageInline></paragraph>`
+					);
+
+					expect( editor.getData() )
+						.to.equal( `<p><img style="height:50%;" src="${ IMAGE_SRC_FIXTURE }"></p>` );
+				} );
+
+				it( 'doesn\'t downcast consumed tokens', () => {
+					editor.conversion.for( 'dataDowncast' ).add( dispatcher =>
+						dispatcher.on( 'attribute:resizedHeight:imageInline', ( evt, data, conversionApi ) => {
+							conversionApi.consumable.consume( data.item, 'attribute:resizedHeight:imageInline' );
+						}, { priority: 'high' } )
+					);
+					setData(
+						editor.model, `<paragraph><imageInline src="${ IMAGE_SRC_FIXTURE }" resizedHeight="50%"></imageInline></paragraph>`
+					);
+
+					expect( editor.getData() )
+						.to.equal( `<p><img src="${ IMAGE_SRC_FIXTURE }"></p>` );
+				} );
+			} );
+
+			describe( 'editing downcast', () => {
+				it( 'downcasts 100px resizedHeight correctly', () => {
+					setData( editor.model,
+						`<paragraph><imageInline src="${ IMAGE_SRC_FIXTURE }" resizedHeight="100px"></imageInline></paragraph>`
+					);
+
+					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+						'<p><span class="ck-widget image-inline" contenteditable="false">' +
+							`<img src="${ IMAGE_SRC_FIXTURE }" style="height:100px"></img>` +
+						'</span></p>'
+					);
+				} );
+
+				it( 'downcasts 50% resizedHeight correctly', () => {
+					setData( editor.model,
+						`<paragraph><imageInline src="${ IMAGE_SRC_FIXTURE }" resizedHeight="50%"></imageInline></paragraph>`
+					);
+
+					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+						'<p><span class="ck-widget image-inline" contenteditable="false">' +
+							`<img src="${ IMAGE_SRC_FIXTURE }" style="height:50%"></img>` +
+						'</span></p>'
+					);
+				} );
+
+				it( 'removes `height` style in view if `resizedHeight` is removed from model', () => {
+					setData( editor.model,
+						`<paragraph><imageInline src="${ IMAGE_SRC_FIXTURE }" resizedHeight="100px"></imageInline></paragraph>`
+					);
+
+					const imageModel = editor.model.document.getRoot().getChild( 0 ).getChild( 0 );
+
+					editor.model.change( writer => {
+						writer.removeAttribute( 'resizedHeight', imageModel );
+					} );
+
+					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+						'<p><span class="ck-widget image-inline" contenteditable="false">' +
+							`<img src="${ IMAGE_SRC_FIXTURE }"></img>` +
+						'</span></p>'
+					);
+				} );
+
+				it( 'doesn\'t downcast consumed tokens', () => {
+					editor.conversion.for( 'editingDowncast' ).add( dispatcher =>
+						dispatcher.on( 'attribute:resizedHeight:imageInline', ( evt, data, conversionApi ) => {
+							conversionApi.consumable.consume( data.item, 'attribute:resizedHeight:imageInline' );
+						}, { priority: 'high' } )
+					);
+					setData( editor.model,
+						`<paragraph><imageInline src="${ IMAGE_SRC_FIXTURE }" resizedHeight="50%"></imageInline></paragraph>`
+					);
+
+					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+						'<p><span class="ck-widget image-inline" contenteditable="false">' +
+							`<img src="${ IMAGE_SRC_FIXTURE }"></img>` +
+						'</span></p>'
+					);
+				} );
+			} );
 		} );
 	} );
 
@@ -202,15 +468,51 @@ describe( 'ImageResizeEditing', () => {
 			editor = await createEditor();
 		} );
 
-		it( 'allows the width attribute when ImageBlock plugin is enabled', async () => {
+		it( 'allows the resizedWidth attribute when ImageBlock plugin is enabled', async () => {
 			const newEditor = await ClassicEditor.create( editorElement, { plugins: [ ImageBlockEditing, ImageResizeEditing ] } );
-			expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'width' ) ).to.be.true;
+			expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'resizedWidth' ) ).to.be.true;
 			await newEditor.destroy();
 		} );
 
-		it( 'allows the width attribute when ImageInline plugin is enabled', async () => {
+		it( 'allows the resizedHeight attribute when ImageBlock plugin is enabled', async () => {
+			const newEditor = await ClassicEditor.create( editorElement, { plugins: [ ImageBlockEditing, ImageResizeEditing ] } );
+			expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'resizedHeight' ) ).to.be.true;
+			await newEditor.destroy();
+		} );
+
+		it( 'allows the resizedWidth attribute when ImageInline plugin is enabled', async () => {
 			const newEditor = await ClassicEditor.create( editorElement, { plugins: [ ImageInlineEditing, ImageResizeEditing ] } );
-			expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'width' ) ).to.be.true;
+			expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'resizedWidth' ) ).to.be.true;
+			await newEditor.destroy();
+		} );
+
+		it( 'allows the resizedHeight attribute when ImageInline plugin is enabled', async () => {
+			const newEditor = await ClassicEditor.create( editorElement, { plugins: [ ImageInlineEditing, ImageResizeEditing ] } );
+			expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'resizedHeight' ) ).to.be.true;
+			await newEditor.destroy();
+		} );
+
+		it( 'allows the resizedWidth attribute when ImageBlock plugin is enabled (reverse order in plugins array)', async () => {
+			const newEditor = await ClassicEditor.create( editorElement, { plugins: [ ImageResizeEditing, ImageBlockEditing ] } );
+			expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'resizedWidth' ) ).to.be.true;
+			await newEditor.destroy();
+		} );
+
+		it( 'allows the resizedHeight attribute when ImageBlock plugin is enabled (reverse order in plugins array)', async () => {
+			const newEditor = await ClassicEditor.create( editorElement, { plugins: [ ImageResizeEditing, ImageBlockEditing ] } );
+			expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'resizedHeight' ) ).to.be.true;
+			await newEditor.destroy();
+		} );
+
+		it( 'allows the resizedWidth attribute when ImageInline plugin is enabled (reverse order in plugins array)', async () => {
+			const newEditor = await ClassicEditor.create( editorElement, { plugins: [ ImageResizeEditing, ImageInlineEditing ] } );
+			expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'resizedWidth' ) ).to.be.true;
+			await newEditor.destroy();
+		} );
+
+		it( 'allows the resizedHeight attribute when ImageInline plugin is enabled (reverse order in plugins array)', async () => {
+			const newEditor = await ClassicEditor.create( editorElement, { plugins: [ ImageResizeEditing, ImageInlineEditing ] } );
+			expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'resizedHeight' ) ).to.be.true;
 			await newEditor.destroy();
 		} );
 	} );

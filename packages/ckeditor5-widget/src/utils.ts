@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -15,7 +15,6 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import {
-	findOptimalInsertionRange as engineFindOptimalInsertionRange,
 	type AddHighlightCallback,
 	type HighlightDescriptor,
 	type RemoveHighlightCallback,
@@ -33,8 +32,8 @@ import {
 
 import { IconView } from '@ckeditor/ckeditor5-ui';
 
-import HighlightStack, { type HighlightStackChangeEvent } from './highlightstack';
-import { getTypeAroundFakeCaretPosition } from './widgettypearound/utils';
+import HighlightStack, { type HighlightStackChangeEvent } from './highlightstack.js';
+import { getTypeAroundFakeCaretPosition } from './widgettypearound/utils.js';
 
 import dragHandleIcon from '../theme/icons/drag-handle.svg';
 
@@ -288,6 +287,7 @@ export function toWidgetEditable(
 	writer.addClass( [ 'ck-editor__editable', 'ck-editor__nested-editable' ], editable );
 
 	writer.setAttribute( 'role', 'textbox', editable );
+	writer.setAttribute( 'tabindex', '-1', editable );
 
 	if ( options.label ) {
 		writer.setAttribute( 'aria-label', options.label, editable );
@@ -345,7 +345,7 @@ export function findOptimalInsertionRange(
 		}
 	}
 
-	return engineFindOptimalInsertionRange( selection, model );
+	return model.schema.findOptimalInsertionRange( selection );
 }
 
 /**

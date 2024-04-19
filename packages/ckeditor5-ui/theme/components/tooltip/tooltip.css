@@ -1,11 +1,8 @@
 /*
- * Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 .ck.ck-balloon-panel.ck-tooltip {
-	/* Keep tooltips transparent for any interactions. */
-	pointer-events: none;
-
-	z-index: calc( var(--ck-z-modal) + 100 );
+	z-index: calc( var(--ck-z-dialog) + 100 );
 }

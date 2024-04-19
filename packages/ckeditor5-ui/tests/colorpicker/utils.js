@@ -1,12 +1,15 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* globals customElements */
+
 import {
 	convertToHex,
-	convertColor
-} from './../../src/colorpicker/utils';
+	convertColor,
+	registerCustomElement
+} from './../../src/colorpicker/utils.js';
 import parse from 'color-parse';
 
 describe( 'utils', () => {
@@ -108,6 +111,22 @@ describe( 'utils', () => {
 			} );
 		} );
 	} );
+
+	describe( 'registerCustomElement()', () => {
+		it( 'should register custom element', () => {
+			expect( customElements.get( 'test-element' ) ).to.be.undefined;
+
+			registerCustomElement( 'test-element', TestElement );
+
+			expect( customElements.get( 'test-element' ) ).to.be.a( 'function' );
+		} );
+
+		it( 'should not throw when trying to re-register the same custom element', () => {
+			registerCustomElement( 'second-test-element', SecondTestElement );
+
+			expect( () => registerCustomElement( 'second-test-element', SecondTestElement ) ).to.not.throw();
+		} );
+	} );
 } );
 
 // Some conversions are only provided indirectly (e.g. LAB to Hex is actually LAB -> XYZ -> RGB -> Hex).
@@ -126,3 +145,7 @@ function assertSimilarity( expected, actual ) {
 		expect( Math.abs( expectedChannels.values[ i ] - actualChannels.values[ i ] ) ).to.be.below( 3 );
 	}
 }
+
+class TestElement {}
+
+class SecondTestElement {}

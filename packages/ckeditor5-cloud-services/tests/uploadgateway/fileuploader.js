@@ -1,13 +1,13 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* eslint-env commonjs, browser */
 
-import FileUploader from '../../src/uploadgateway/fileuploader';
-import Token from '../../src/token/token';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import FileUploader from '../../src/uploadgateway/fileuploader.js';
+import Token from '../../src/token/token.js';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 
 const API_ADDRESS = 'https://example.dev';
 const BASE_64_FILE = 'data:image/gif;base64,R0lGODlhCQAJAPIAAGFhYZXK/1FRUf///' +

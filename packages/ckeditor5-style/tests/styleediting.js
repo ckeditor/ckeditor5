@@ -1,19 +1,19 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
-import StyleEditing from '../src/styleediting';
-import StyleCommand from '../src/stylecommand';
-import StyleUtils from '../src/styleutils';
-import DocumentListStyleSupport from '../src/integrations/documentlist';
-import TableStyleSupport from '../src/integrations/table';
-import LinkStyleSupport from '../src/integrations/link';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
+import StyleEditing from '../src/styleediting.js';
+import StyleCommand from '../src/stylecommand.js';
+import StyleUtils from '../src/styleutils.js';
+import ListStyleSupport from '../src/integrations/list.js';
+import TableStyleSupport from '../src/integrations/table.js';
+import LinkStyleSupport from '../src/integrations/link.js';
 
 describe( 'StyleEditing', () => {
 	let editor, editorElement;
@@ -73,7 +73,7 @@ describe( 'StyleEditing', () => {
 
 	it( 'should soft-require the GHS plugin, and require utils, and integrations', () => {
 		expect( StyleEditing.requires ).to.deep.equal( [
-			'GeneralHtmlSupport', StyleUtils, DocumentListStyleSupport, TableStyleSupport, LinkStyleSupport
+			'GeneralHtmlSupport', StyleUtils, ListStyleSupport, TableStyleSupport, LinkStyleSupport
 		] );
 	} );
 

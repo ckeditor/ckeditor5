@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,10 +7,10 @@
  * @module image/imageresize
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import ImageResizeButtons from './imageresize/imageresizebuttons';
-import ImageResizeEditing from './imageresize/imageresizeediting';
-import ImageResizeHandles from './imageresize/imageresizehandles';
+import { Plugin } from 'ckeditor5/src/core.js';
+import ImageResizeButtons from './imageresize/imageresizebuttons.js';
+import ImageResizeEditing from './imageresize/imageresizeediting.js';
+import ImageResizeHandles from './imageresize/imageresizehandles.js';
 
 import '../theme/imageresize.css';
 

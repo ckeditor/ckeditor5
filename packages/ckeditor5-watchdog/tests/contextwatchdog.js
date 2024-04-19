@@ -1,14 +1,14 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document, setTimeout, window, console */
 
-import ContextWatchdog from '../src/contextwatchdog';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Context from '@ckeditor/ckeditor5-core/src/context';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import ContextWatchdog from '../src/contextwatchdog.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Context from '@ckeditor/ckeditor5-core/src/context.js';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 
 describe( 'ContextWatchdog', () => {
 	let element1, element2;

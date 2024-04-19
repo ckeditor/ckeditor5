@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -11,9 +11,9 @@ import type {
 	EditingController,
 	Element,
 	Model
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
-import TableWalker from '../tablewalker';
+import TableWalker from '../tablewalker.js';
 
 /**
  * A table headings refresh handler which marks the table cells or rows in the differ to have it re-rendered
@@ -52,8 +52,8 @@ export default function tableHeadingsRefreshHandler( model: Model, editing: Edit
 			continue;
 		}
 
-		const headingRows = table.getAttribute( 'headingRows' ) || 0;
-		const headingColumns = table.getAttribute( 'headingColumns' ) || 0;
+		const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
+		const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
 
 		const tableWalker = new TableWalker( table );
 

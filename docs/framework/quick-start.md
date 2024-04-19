@@ -23,7 +23,7 @@ This guide will show you how to initialize the CKEditor&nbsp;5 rich-text editor 
 
 The CKEditor&nbsp;5 Framework consists of several [npm packages](https://npmjs.com). To install it you need:
 
-* [Node.js](https://nodejs.org/en/) 16.0.0+
+* [Node.js](https://nodejs.org/en/) 18.0.0+
 * npm 5.7.1+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
 
 Besides Node.js and npm you also need [webpack@5](https://webpack.js.org) with a few additional packages to use the framework. They are needed to bundle the source code. Read more about building CKEditor&nbsp;5 in the {@link installation/advanced/integrating-from-source-webpack Integrating from source} guide.
@@ -133,7 +133,7 @@ Based on these packages you can create a simple application.
 </info-box>
 
 <info-box warning>
-	Note that in this guide the editor class is used directly (i.e. we use `@ckeditor/ckeditor5-editor-classic` instead of `@ckeditor/ckeditor5-build-classic`).
+	In this guide the editor class is used directly (that is, we use `@ckeditor/ckeditor5-editor-classic` instead of `@ckeditor/ckeditor5-build-classic`).
 
 	No {@link installation/getting-started/predefined-builds editor builds} are used because adding new plugins to them requires rebuilding them anyway. This can be done by {@link installation/plugins/installing-plugins customizing a build} or by including the CKEditor&nbsp;5 source into your application (like in this guide).
 </info-box>
@@ -217,7 +217,7 @@ Finally, it is time to create an HTML page:
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>CKEditor&nbsp;5 Framework – Quick start</title>
+		<title>CKEditor 5 Framework – Quick start</title>
 	</head>
 	<body>
 		<div id="editor">
@@ -237,7 +237,7 @@ Open this page in your browser and you should see the simple WYSIWYG editor up a
 	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
-## What's next?
+## What's next
 
 If you finished this guide, you should definitely check out the {@link tutorials/crash-course/editor Creating a simple plugin} guide that will teach you some basics of developing features in the CKEditor&nbsp;5 ecosystem.
 

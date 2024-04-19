@@ -15,7 +15,7 @@ Use the editor below to create a document with distinct title and body sections.
 {@snippet features/title}
 
 <info-box info>
-	This demo only presents a very specific, limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Keyboard navigation
@@ -72,7 +72,7 @@ ClassicEditor
 
 ## HTML structure
 
-When you call {@link module:core/editor/utils/dataapimixin~DataApi#function-getData `editor.getData()`}, the document title will be represented as the following HTML:
+When you call {@link module:core/editor/editor~Editor#function-getData `editor.getData()`}, the document title will be represented as the following HTML:
 
 ```html
 <h1>Feasibility Study</h1>

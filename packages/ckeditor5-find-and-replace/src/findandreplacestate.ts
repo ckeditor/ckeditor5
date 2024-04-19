@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,9 @@
  * @module find-and-replace/findandreplacestate
  */
 
-import type { Model } from 'ckeditor5/src/engine';
-import { ObservableMixin, Collection, type CollectionChangeEvent } from 'ckeditor5/src/utils';
-import type { ResultType } from './findandreplace';
+import type { Model, Item } from 'ckeditor5/src/engine.js';
+import { ObservableMixin, Collection, type CollectionChangeEvent, type ObservableChangeEvent } from 'ckeditor5/src/utils.js';
+import type { ResultType } from './findandreplace.js';
 
 /**
  * The object storing find and replace plugin state for a given editor instance.
@@ -31,12 +31,29 @@ export default class FindAndReplaceState extends ObservableMixin() {
 	declare public highlightedResult: ResultType | null;
 
 	/**
+	 * Currently highlighted search result offset in {@link #results matched results}.
+	 *
+	 * @readonly
+	 * @observable
+	 */
+	declare public highlightedOffset: number;
+
+	/**
 	 * Searched text value.
 	 *
 	 * @readonly
 	 * @observable
 	 */
 	declare public searchText: string;
+
+	/**
+	 *  The most recent search callback used by the feature to find matches.
+	 *  It is used to re-run the search when user modifies the editor content.
+	 *
+	 * @readonly
+	 * @observable
+	 */
+	declare public lastSearchCallback: FindCallback | null;
 
 	/**
 	 * Replace text value.
@@ -70,8 +87,10 @@ export default class FindAndReplaceState extends ObservableMixin() {
 
 		this.set( 'results', new Collection() );
 		this.set( 'highlightedResult', null );
+		this.set( 'highlightedOffset', 0 );
 		this.set( 'searchText', '' );
 		this.set( 'replaceText', '' );
+		this.set( 'lastSearchCallback', null );
 		this.set( 'matchCase', false );
 		this.set( 'matchWholeWords', false );
 
@@ -96,6 +115,10 @@ export default class FindAndReplaceState extends ObservableMixin() {
 					this.highlightedResult = this.results.get( nextHighlightedIndex );
 				}
 			}
+		} );
+
+		this.on<ObservableChangeEvent<ResultType | null>>( 'change:highlightedResult', ( ) => {
+			this.refreshHighlightOffset();
 		} );
 	}
 
@@ -122,5 +145,25 @@ export default class FindAndReplaceState extends ObservableMixin() {
 
 		this.results.clear();
 	}
+
+	/**
+	 * Refreshes the highlight result offset based on it's index within the result list.
+	 */
+	public refreshHighlightOffset(): void {
+		const { highlightedResult, results } = this;
+		const sortMapping = { before: -1, same: 0, after: 1, different: 1 };
+
+		if ( highlightedResult ) {
+			this.highlightedOffset = Array.from( results )
+				.sort( ( a, b ) => sortMapping[ a.marker!.getStart().compareWith( b.marker!.getStart() ) ] )
+				.indexOf( highlightedResult ) + 1;
+		} else {
+			this.highlightedOffset = 0;
+		}
+	}
 }
 
+/**
+ * The callback function used to find matches in the document.
+ */
+export type FindCallback = ( ( { item, text }: { item: Item; text: string } ) => Array<ResultType> );

@@ -1,15 +1,15 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document */
 
-import CharacterGridView from '../../src/ui/charactergridview';
-import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import CharacterGridView from '../../src/ui/charactergridview.js';
+import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 
 describe( 'CharacterGridView', () => {
 	let view;

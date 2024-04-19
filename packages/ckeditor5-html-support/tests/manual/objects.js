@@ -1,28 +1,28 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals console:false, window, document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
-import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
-import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript';
-import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
-import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
-import List from '@ckeditor/ckeditor5-list/src/list';
-import Link from '@ckeditor/ckeditor5-link/src/link';
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
+import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough.js';
+import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
+import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript.js';
+import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript.js';
+import Code from '@ckeditor/ckeditor5-basic-styles/src/code.js';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
+import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
+import List from '@ckeditor/ckeditor5-list/src/list.js';
+import Link from '@ckeditor/ckeditor5-link/src/link.js';
+import Table from '@ckeditor/ckeditor5-table/src/table.js';
+import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight.js';
 
-import GeneralHtmlSupport from '../../src/generalhtmlsupport';
+import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
 
 /**
  * Client custom plugin extending HTML support for compatibility.

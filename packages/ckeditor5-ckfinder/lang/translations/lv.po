@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -15,10 +15,15 @@ msgstr ""
 "Language-Team: Latvian (https://app.transifex.com/ckeditor/teams/11143/lv/)\n"
 "Language: lv\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Toolbar button tooltip for inserting an image or file via a CKFinder file browser."
 msgid "Insert image or file"
 msgstr "Ievietot attēlu vai failu"
+
+msgctxt "The label for the button that opens the dialog for inserting an image or file via a CKFinder from the application menu bar."
+msgid "Image or file"
+msgstr "Attēls vai fails"
 
 msgctxt "Error message displayed when inserting a resized version of an image failed."
 msgid "Could not obtain resized image URL."

@@ -1,15 +1,15 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals console:false, window, document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
-import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting';
-import GeneralHtmlSupport from '../../src/generalhtmlsupport';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
+import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting.js';
+import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -23,7 +23,7 @@ ClassicEditor
 		image: {
 			toolbar: [
 				'toggleImageCaption', '|',
-				'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|',
+				'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText', '|',
 				'imageTextAlternative'
 			]
 		},

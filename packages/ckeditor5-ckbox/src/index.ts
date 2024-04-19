@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,10 +7,15 @@
  * @module ckbox
  */
 
-export { default as CKBox } from './ckbox';
-export { default as CKBoxEditing } from './ckboxediting';
-export { default as CKBoxUI } from './ckboxui';
-export type { default as CKBoxCommand } from './ckboxcommand';
-export type { CKBoxConfig } from './ckboxconfig';
+export { default as CKBox } from './ckbox.js';
+export { default as CKBoxEditing } from './ckboxediting.js';
+export { default as CKBoxUI } from './ckboxui.js';
+export { default as CKBoxImageEditEditing } from './ckboximageedit/ckboximageeditediting.js';
+export { default as CKBoxImageEditUI } from './ckboximageedit/ckboximageeditui.js';
+export { default as CKBoxImageEdit } from './ckboximageedit.js';
 
-import './augmentation';
+export type { default as CKBoxCommand } from './ckboxcommand.js';
+export type { default as CKBoxImageEditCommand } from './ckboximageedit/ckboximageeditcommand.js';
+export type { CKBoxConfig } from './ckboxconfig.js';
+
+import './augmentation.js';

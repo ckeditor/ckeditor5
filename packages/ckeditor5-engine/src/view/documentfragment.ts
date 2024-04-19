@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,16 +7,16 @@
  * @module engine/view/documentfragment
  */
 
-import TypeCheckable from './typecheckable';
-import Text from './text';
-import TextProxy from './textproxy';
+import TypeCheckable from './typecheckable.js';
+import Text from './text.js';
+import TextProxy from './textproxy.js';
 
 import { EmitterMixin, isIterable } from '@ckeditor/ckeditor5-utils';
 
-import type { default as Document, ChangeType } from './document';
+import type { default as Document, ChangeType } from './document.js';
 
-import type Item from './item';
-import type Node from './node';
+import type Item from './item.js';
+import type Node from './node.js';
 
 /**
  * Document fragment.
@@ -100,6 +100,13 @@ export default class DocumentFragment extends EmitterMixin( TypeCheckable ) impl
 	 * Artificial element name. Returns `undefined`. Added for compatibility reasons.
 	 */
 	public get name(): undefined {
+		return undefined;
+	}
+
+	/**
+	 * Artificial element getFillerOffset. Returns `undefined`. Added for compatibility reasons.
+	 */
+	public get getFillerOffset(): undefined {
 		return undefined;
 	}
 

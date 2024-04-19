@@ -1,18 +1,18 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import HorizontalLineEditing from '@ckeditor/ckeditor5-horizontal-line/src/horizontallineediting';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import HorizontalLineEditing from '@ckeditor/ckeditor5-horizontal-line/src/horizontallineediting.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import TableEditing from '../../src/tableediting';
-import TableSelection from '../../src/tableselection';
-import { assertSelectedCells, modelTable } from '../_utils/utils';
+import TableEditing from '../../src/tableediting.js';
+import TableSelection from '../../src/tableselection.js';
+import { assertSelectedCells, modelTable } from '../_utils/utils.js';
 
-import InsertRowCommand from '../../src/commands/insertrowcommand';
+import InsertRowCommand from '../../src/commands/insertrowcommand.js';
 
 describe( 'InsertRowCommand', () => {
 	let editor, model, command;

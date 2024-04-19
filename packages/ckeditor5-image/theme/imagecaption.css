@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 :root {
 	--ck-color-image-caption-background: hsl(0, 0%, 97%);
 	--ck-color-image-caption-text: hsl(0, 0%, 20%);
-	--ck-color-image-caption-highligted-background: hsl(52deg 100% 50%);
+	--ck-color-image-caption-highlighted-background: hsl(52deg 100% 50%);
 }
 
 /* Content styles */
@@ -28,7 +28,7 @@
 
 @keyframes ck-image-caption-highlight {
 	0% {
-		background-color: var(--ck-color-image-caption-highligted-background);
+		background-color: var(--ck-color-image-caption-highlighted-background);
 	}
 
 	100% {

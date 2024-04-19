@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,16 +9,16 @@
 
 /* global setInterval, clearInterval */
 
-import Observer from './observer';
-import MutationObserver from './mutationobserver';
+import Observer from './observer.js';
+import MutationObserver from './mutationobserver.js';
 import { env } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunc } from 'lodash-es';
 
-import type View from '../view';
-import type DocumentSelection from '../documentselection';
-import type DomConverter from '../domconverter';
-import type Selection from '../selection';
-import FocusObserver from './focusobserver';
+import type View from '../view.js';
+import type DocumentSelection from '../documentselection.js';
+import type DomConverter from '../domconverter.js';
+import type Selection from '../selection.js';
+import FocusObserver from './focusobserver.js';
 
 type DomSelection = globalThis.Selection;
 

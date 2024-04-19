@@ -1,20 +1,20 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document */
 
-import FontFamilyEditing from '../../src/fontfamily/fontfamilyediting';
-import FontFamilyUI from '../../src/fontfamily/fontfamilyui';
+import FontFamilyEditing from '../../src/fontfamily/fontfamilyediting.js';
+import FontFamilyUI from '../../src/fontfamily/fontfamilyui.js';
 
 import fontFamilyIcon from '../../theme/icons/font-family.svg';
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'FontFamilyUI', () => {
 	let editor, command, element;
@@ -56,7 +56,7 @@ describe( 'FontFamilyUI', () => {
 		return editor.destroy();
 	} );
 
-	describe( 'fontFamily Dropdown', () => {
+	describe( 'toolbar dropdown', () => {
 		let dropdown;
 
 		beforeEach( () => {
@@ -264,6 +264,59 @@ describe( 'FontFamilyUI', () => {
 
 				expect( listView.element.role ).to.equal( 'menu' );
 				expect( listView.element.ariaLabel ).to.equal( 'Font Family' );
+			} );
+		} );
+	} );
+
+	describe( 'menu bar', () => {
+		let subMenu;
+
+		beforeEach( () => {
+			command = editor.commands.get( 'fontFamily' );
+			subMenu = editor.ui.componentFactory.create( 'menuBar:fontFamily' );
+		} );
+
+		it( 'button has the base properties', () => {
+			const button = subMenu.buttonView;
+
+			expect( button ).to.have.property( 'label', 'Font Family' );
+			expect( button ).to.have.property( 'icon', fontFamilyIcon );
+		} );
+
+		it( 'button has binding to isEnabled', () => {
+			command.isEnabled = false;
+
+			expect( subMenu.buttonView.isEnabled ).to.be.false;
+
+			command.isEnabled = true;
+			expect( subMenu.buttonView.isEnabled ).to.be.true;
+		} );
+
+		describe( 'font family sub menu button', () => {
+			let buttonArial;
+
+			beforeEach( () => {
+				buttonArial = subMenu.panelView.children.first.items.get( 1 ).children.first;
+			} );
+
+			it( 'should focus view after command execution', () => {
+				const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+				const executeSpy = sinon.stub( editor, 'execute' );
+
+				buttonArial.fire( 'execute' );
+
+				sinon.assert.calledOnce( focusSpy );
+				sinon.assert.calledOnce( executeSpy );
+				sinon.assert.calledWithExactly( executeSpy.firstCall, 'fontFamily', {
+					value: 'Arial, Helvetica, sans-serif'
+				} );
+			} );
+
+			it( 'sets item\'s #isOn depending on the value of the CodeBlockCommand', () => {
+				expect( buttonArial.isOn ).to.be.false;
+
+				command.value = 'Arial, Helvetica, sans-serif';
+				expect( buttonArial.isOn ).to.be.true;
 			} );
 		} );
 	} );

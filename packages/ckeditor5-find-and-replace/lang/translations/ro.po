@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Romanian (https://app.transifex.com/ckeditor/teams/11143/ro/)\n"
 "Language: ro\n"
 "Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "The tooltip of a find and replace button in the toolbar. Also, the title of the find and replace form."
 msgid "Find and replace"
@@ -64,6 +65,10 @@ msgctxt "A message displayed next to the replace field when disabled but user tr
 msgid "Tip: Find some text first in order to replace it."
 msgstr "Sfat: Mai întâi găsiți textul pentru a-l înlocui."
 
-msgctxt "The label and a tooltip of the options dropdown button in the find and replace form."
-msgid "Show options"
-msgstr "Afișare opțiuni"
+msgctxt "The label and the tooltip of the options dropdown button in the find and replace form."
+msgid "Advanced options"
+msgstr "Opțiuni avansate"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for opening the find and replace UI."
+msgid "Find in the document"
+msgstr "Căutare în document"

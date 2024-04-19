@@ -1,13 +1,13 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document */
 
-import MultiRootEditor from '../src/ckeditor';
-import BaseMultiRootEditor from '@ckeditor/ckeditor5-editor-multi-root/src/multirooteditor';
-import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
+import MultiRootEditor from '../src/ckeditor.js';
+import BaseMultiRootEditor from '@ckeditor/ckeditor5-editor-multi-root/src/multirooteditor.js';
+import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory.js';
 
 describe( 'MultiRootEditor build', () => {
 	let editor, fooElement, barElement;

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,9 +9,9 @@
 
 import { extend } from 'lodash-es';
 
-import type Document from '../document';
-import type Element from '../element';
-import type View from '../view';
+import type Document from '../document.js';
+import type Element from '../element.js';
+import type View from '../view.js';
 
 /**
  * Information about a DOM event in context of the {@link module:engine/view/document~Document}.

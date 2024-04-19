@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,14 +7,14 @@
  * @module engine/view/range
  */
 
-import TypeCheckable from './typecheckable';
-import Position from './position';
+import TypeCheckable from './typecheckable.js';
+import Position from './position.js';
 
-import type DocumentFragment from './documentfragment';
-import type Element from './element';
-import type Item from './item';
-import type Node from './node';
-import { default as TreeWalker, type TreeWalkerValue, type TreeWalkerOptions } from './treewalker';
+import type DocumentFragment from './documentfragment.js';
+import type Element from './element.js';
+import type Item from './item.js';
+import type Node from './node.js';
+import { default as TreeWalker, type TreeWalkerValue, type TreeWalkerOptions } from './treewalker.js';
 
 /**
  * Range in the view tree. A range is represented by its start and end {@link module:engine/view/position~Position positions}.

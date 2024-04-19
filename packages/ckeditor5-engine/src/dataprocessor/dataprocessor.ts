@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,8 +7,8 @@
  * @module engine/dataprocessor/dataprocessor
  */
 
-import type ViewDocumentFragment from '../view/documentfragment';
-import type { MatcherPattern } from '../view/matcher';
+import type ViewDocumentFragment from '../view/documentfragment.js';
+import type { MatcherPattern } from '../view/matcher.js';
 
 /**
  * The data processor interface. It should be implemented by actual data processors.

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,22 +7,22 @@
  * @module list/listproperties/liststylecommand
  */
 
-import { Command, type Editor } from 'ckeditor5/src/core';
-import { getListTypeFromListStyleType, getSelectedListItems } from '../list/utils';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
+import { first } from 'ckeditor5/src/utils.js';
+import {
+	expandListBlocksToCompleteList,
+	isListItemBlock
+} from '../list/utils/model.js';
+import { getListTypeFromListStyleType } from './utils/style.js';
 
 /**
- * The list style command. It changes the `listStyle` attribute of the selected list items.
- *
- * If the list type (numbered or bulleted) can be inferred from the passed style type,
- * the command tries to convert selected items to a list of that type.
+ * The list style command. It changes `listStyle` attribute of the selected list items,
+ * letting the user choose styles for the list item markers.
  * It is used by the {@link module:list/listproperties~ListProperties list properties feature}.
  */
 export default class ListStyleCommand extends Command {
-	declare public isStyleTypeSupported: undefined;
-
 	/**
 	 * @inheritDoc
-	 * @readonly
 	 */
 	declare public value: string | null;
 
@@ -32,16 +32,23 @@ export default class ListStyleCommand extends Command {
 	public readonly defaultType: string;
 
 	/**
+	 * The list of supported style types by this command.
+	 */
+	private _supportedTypes: Array<string> | undefined;
+
+	/**
 	 * Creates an instance of the command.
 	 *
 	 * @param editor The editor instance.
 	 * @param defaultType The list type that will be used by default if the value was not specified during
 	 * the command execution.
+	 * @param supportedTypes The list of supported style types by this command.
 	 */
-	constructor( editor: Editor, defaultType: string ) {
+	constructor( editor: Editor, defaultType: string, supportedTypes?: Array<string> ) {
 		super( editor );
 
 		this.defaultType = defaultType;
+		this._supportedTypes = supportedTypes;
 	}
 
 	/**
@@ -60,20 +67,36 @@ export default class ListStyleCommand extends Command {
 	 * style will be applied.
 	 */
 	public override execute( options: { type?: string | null } = {} ): void {
-		this._tryToConvertItemsToList( options );
-
 		const model = this.editor.model;
-		const listItems = getSelectedListItems( model );
-
-		if ( !listItems.length ) {
-			return;
-		}
+		const document = model.document;
 
 		model.change( writer => {
-			for ( const item of listItems ) {
-				writer.setAttribute( 'listStyle', options.type || this.defaultType, item );
+			this._tryToConvertItemsToList( options );
+
+			let blocks = Array.from( document.selection.getSelectedBlocks() )
+				.filter( block => block.hasAttribute( 'listType' ) );
+
+			if ( !blocks.length ) {
+				return;
+			}
+
+			blocks = expandListBlocksToCompleteList( blocks );
+
+			for ( const block of blocks ) {
+				writer.setAttribute( 'listStyle', options.type || this.defaultType, block );
 			}
 		} );
+	}
+
+	/**
+	 * Checks if the given style type is supported by this plugin.
+	 */
+	public isStyleTypeSupported( value: string ): boolean {
+		if ( !this._supportedTypes ) {
+			return true;
+		}
+
+		return this._supportedTypes.includes( value );
 	}
 
 	/**
@@ -82,9 +105,9 @@ export default class ListStyleCommand extends Command {
 	 * @returns The current value.
 	 */
 	private _getValue() {
-		const listItem = this.editor.model.document.selection.getFirstPosition()!.parent;
+		const listItem = first( this.editor.model.document.selection.getSelectedBlocks() );
 
-		if ( listItem && listItem.is( 'element', 'listItem' ) ) {
+		if ( isListItemBlock( listItem ) ) {
 			return listItem.getAttribute( 'listStyle' ) as string;
 		}
 
@@ -106,9 +129,9 @@ export default class ListStyleCommand extends Command {
 	}
 
 	/**
-	 * Checks if the provided list style is valid. Also changes the selection to a list if it's not set yet.
+	 * Check if the provided list style is valid. Also change the selection to a list if it's not set yet.
 	 *
-	 * @param The type of the list style. If `null` is specified, the function does nothing.
+	 * @param options.type The type of the list style. If `null` is specified, the function does nothing.
 	*/
 	private _tryToConvertItemsToList( options: { type?: string | null } ) {
 		if ( !options.type ) {

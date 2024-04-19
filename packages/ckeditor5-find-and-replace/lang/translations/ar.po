@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Arabic (https://app.transifex.com/ckeditor/teams/11143/ar/)\n"
 "Language: ar\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "The tooltip of a find and replace button in the toolbar. Also, the title of the find and replace form."
 msgid "Find and replace"
@@ -64,6 +65,10 @@ msgctxt "A message displayed next to the replace field when disabled but user tr
 msgid "Tip: Find some text first in order to replace it."
 msgstr "نصيحة: في البداية، ابحث عن جزء من النص؛ لتتمكن من استبداله. "
 
-msgctxt "The label and a tooltip of the options dropdown button in the find and replace form."
-msgid "Show options"
-msgstr "عرض الخيارات"
+msgctxt "The label and the tooltip of the options dropdown button in the find and replace form."
+msgid "Advanced options"
+msgstr "الخيارات المتقدمة"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for opening the find and replace UI."
+msgid "Find in the document"
+msgstr "ابحثْ في الوثيقة"

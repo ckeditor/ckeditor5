@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -12,7 +12,7 @@ import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { List } from '@ckeditor/ckeditor5-list';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { ButtonView } from '@ckeditor/ckeditor5-ui/src';
+import { ButtonView } from '@ckeditor/ckeditor5-ui/src/index.js';
 import { Widget, toWidget } from '@ckeditor/ckeditor5-widget';
 
 import BitcoinLogoIcon from '../../../assets/img/bitcoin-logo.svg';

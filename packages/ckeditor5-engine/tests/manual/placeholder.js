@@ -1,18 +1,18 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global console */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import { enablePlaceholder } from '../../src/view/placeholder';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { enablePlaceholder } from '../../src/view/placeholder.js';
 
 ClassicEditor
 	.create( global.document.querySelector( '#editor' ), {

@@ -76,7 +76,7 @@ The example `package.json` file with the editor version 30.0.0 looks as below:
   }
   ```
 
-To perform the update, you can simply change the version from 30.0.0 to 31.0.0 or use some automated tool (e.g. [`npm-check-updates`](https://www.npmjs.com/package/npm-check-updates)):
+To perform the update, you can change the version from 30.0.0 to 31.0.0 or use some automated tool (like [`npm-check-updates`](https://www.npmjs.com/package/npm-check-updates)):
 
 ```json
   "dependencies": {
@@ -108,7 +108,7 @@ Finally, you reinstall the packages and rebuild the editor. Note that sometimes 
 rm -rf node_modules && yarn install && yarn run build
 ```
 
-That's it! Your editor is updated and now you can focus on adjusting your custom solutions (if needed). If you use real-time collaboration, you should check the next section.
+This is it! Your editor is updated and now you can focus on adjusting your custom solutions (if needed). If you use real-time collaboration, you should check the next section.
 
 ### Real-time collaboration
 

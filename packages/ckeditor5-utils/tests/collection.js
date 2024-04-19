@@ -1,11 +1,11 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import Collection from '../src/collection';
-import { expectToThrowCKEditorError } from '../tests/_utils/utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import Collection from '../src/collection.js';
+import { expectToThrowCKEditorError } from '../tests/_utils/utils.js';
 
 function getItem( id, idProperty ) {
 	idProperty = idProperty || 'id';
@@ -874,6 +874,19 @@ describe( 'Collection', () => {
 
 			sinon.assert.calledWithExactly( spy, callback, ctx );
 			expect( ret ).to.deep.equal( [ 'foo' ], 'ret value was forwarded' );
+
+			function callback() {}
+		} );
+	} );
+
+	describe( 'forEach()', () => {
+		it( 'uses native forEach', () => {
+			const spy = testUtils.sinon.stub( Array.prototype, 'forEach' ).returns( undefined );
+			const ctx = {};
+
+			collection.forEach( callback, ctx );
+
+			sinon.assert.calledWithExactly( spy, callback, ctx );
 
 			function callback() {}
 		} );

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,15 +7,15 @@
  * @module engine/model/markercollection
  */
 
-import TypeCheckable from './typecheckable';
+import TypeCheckable from './typecheckable.js';
 import LiveRange, {
 	type LiveRangeChangeContentEvent,
 	type LiveRangeChangeRangeEvent,
 	type LiveRangeChangeEvent
-} from './liverange';
+} from './liverange.js';
 
-import type Position from './position';
-import type Range from './range';
+import type Position from './position.js';
+import type Range from './range.js';
 
 import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
@@ -235,10 +235,10 @@ export default class MarkerCollection extends EmitterMixin() implements Iterable
 	 * Iterates over all markers that starts with given `prefix`.
 	 *
 	 * ```ts
-	 * const markerFooA = markersCollection.set( 'foo:a', rangeFooA );
-	 * const markerFooB = markersCollection.set( 'foo:b', rangeFooB );
-	 * const markerBarA = markersCollection.set( 'bar:a', rangeBarA );
-	 * const markerFooBarA = markersCollection.set( 'foobar:a', rangeFooBarA );
+	 * const markerFooA = markersCollection._set( 'foo:a', rangeFooA );
+	 * const markerFooB = markersCollection._set( 'foo:b', rangeFooB );
+	 * const markerBarA = markersCollection._set( 'bar:a', rangeBarA );
+	 * const markerFooBarA = markersCollection._set( 'foobar:a', rangeFooBarA );
 	 * Array.from( markersCollection.getMarkersGroup( 'foo' ) ); // [ markerFooA, markerFooB ]
 	 * Array.from( markersCollection.getMarkersGroup( 'a' ) ); // []
 	 * ```

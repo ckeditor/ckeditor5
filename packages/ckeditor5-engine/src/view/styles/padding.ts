@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,11 +7,11 @@
  * @module engine/view/styles/padding
  */
 
-import type { StylesProcessor } from '../stylesmap';
-import { getPositionShorthandNormalizer, getBoxSidesValueReducer } from './utils';
+import type { StylesProcessor } from '../stylesmap.js';
+import { getPositionShorthandNormalizer, getBoxSidesValueReducer } from './utils.js';
 
 /**
- * Adds a margin CSS styles processing rules.
+ * Adds a padding CSS styles processing rules.
  *
  * ```ts
  * editor.data.addStyleProcessorRules( addPaddingRules );

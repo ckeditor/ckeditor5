@@ -1,724 +1,462 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import TodoListEditing from '../../src/todolist/todolistediting';
-import ListEditing from '../../src/list/listediting';
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
-import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import ListCommand from '../../src/list/listcommand';
-import CheckTodoListCommand from '../../src/todolist/checktodolistcommand';
-import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
-import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
-import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
+/* global document, Event */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
+import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
+import AlignmentEditing from '@ckeditor/ckeditor5-alignment/src/alignmentediting.js';
+
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import { env } from '@ckeditor/ckeditor5-utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-/* global Event, document */
+import TodoListEditing from '../../src/todolist/todolistediting.js';
+import ListEditing from '../../src/list/listediting.js';
+import ListCommand from '../../src/list/listcommand.js';
+import CheckTodoListCommand from '../../src/todolist/checktodolistcommand.js';
+import TodoCheckboxChangeObserver from '../../src/todolist/todocheckboxchangeobserver.js';
+import ListPropertiesEditing from '../../src/listproperties/listpropertiesediting.js';
+
+import stubUid from '../list/_utils/uid.js';
 
 describe( 'TodoListEditing', () => {
-	let editor, model, modelDoc, modelRoot, view, viewDoc;
+	let editor, model, view, editorElement;
 
 	testUtils.createSinonSandbox();
 
-	beforeEach( () => {
-		return VirtualTestEditor
-			.create( {
-				plugins: [ Paragraph, TodoListEditing, Typing, BoldEditing, BlockQuoteEditing, LinkEditing, Enter, ShiftEnter ]
-			} )
-			.then( newEditor => {
-				editor = newEditor;
+	beforeEach( async () => {
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
 
-				model = editor.model;
-				modelDoc = model.document;
-				modelRoot = modelDoc.getRoot();
+		editor = await ClassicTestEditor.create( editorElement, {
+			plugins: [ Paragraph, TodoListEditing, BlockQuoteEditing, TableEditing, HeadingEditing, AlignmentEditing ]
+		} );
 
-				view = editor.editing.view;
-				viewDoc = view.document;
+		model = editor.model;
+		view = editor.editing.view;
 
-				model.schema.register( 'foo', {
-					allowWhere: '$block',
-					allowAttributes: [ 'listIndent', 'listType' ],
-					isBlock: true,
-					isObject: true
-				} );
-			} );
+		stubUid();
 	} );
 
-	afterEach( () => {
-		return editor.destroy();
+	afterEach( async () => {
+		editorElement.remove();
+
+		await editor.destroy();
+	} );
+
+	it( 'should have pluginName', () => {
+		expect( TodoListEditing.pluginName ).to.equal( 'TodoListEditing' );
 	} );
 
 	it( 'should load ListEditing', () => {
 		expect( TodoListEditing.requires ).to.have.members( [ ListEditing ] );
 	} );
 
-	it( 'should set proper schema rules', () => {
-		const todoListItem = new ModelElement( 'listItem', { listType: 'todo' } );
-		const bulletedListItem = new ModelElement( 'listItem', { listType: 'bulleted' } );
-		const numberedListItem = new ModelElement( 'listItem', { listType: 'numbered' } );
-		const paragraph = new ModelElement( 'paragraph' );
-
-		expect( model.schema.checkAttribute( [ '$root', todoListItem ], 'todoListChecked' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', bulletedListItem ], 'todoListChecked' ) ).to.be.false;
-		expect( model.schema.checkAttribute( [ '$root', numberedListItem ], 'todoListChecked' ) ).to.be.false;
-		expect( model.schema.checkAttribute( [ '$root', paragraph ], 'todoListChecked' ) ).to.be.false;
-	} );
-
 	describe( 'commands', () => {
-		it( 'should register todoList list command', () => {
+		it( 'should register todoList command', () => {
 			const command = editor.commands.get( 'todoList' );
 
 			expect( command ).to.be.instanceOf( ListCommand );
 			expect( command ).to.have.property( 'type', 'todo' );
 		} );
 
-		it( 'should create to-do list item and change to paragraph in normal usage flow', () => {
-			expect( getViewData( view ) ).to.equalMarkup( '<p>[]</p>' );
-			expect( getModelData( model ) ).to.equalMarkup( '<paragraph>[]</paragraph>' );
-
-			editor.execute( 'todoList' );
-
-			expect( getModelData( model ) ).to.equalMarkup( '<listItem listIndent="0" listType="todo">[]</listItem>' );
-			expect( getViewData( view ) ).to.equalMarkup(
-				'<ul class="todo-list">' +
-					'<li><label class="todo-list__label" contenteditable="false"></label>' +
-						'<span class="todo-list__label__description">[]</span>' +
-					'</li>' +
-				'</ul>'
-			);
-
-			editor.execute( 'insertText', { text: 'a' } );
-
-			expect( getModelData( model ) ).to.equalMarkup( '<listItem listIndent="0" listType="todo">a[]</listItem>' );
-			expect( getViewData( view ) ).to.equalMarkup(
-				'<ul class="todo-list">' +
-					'<li><label class="todo-list__label" contenteditable="false"></label>' +
-						'<span class="todo-list__label__description">a{}</span>' +
-					'</li>' +
-				'</ul>'
-			);
-
-			editor.execute( 'insertText', { text: 'b' } );
-
-			expect( getModelData( model ) ).to.equalMarkup( '<listItem listIndent="0" listType="todo">ab[]</listItem>' );
-			expect( getViewData( view ) ).to.equalMarkup(
-				'<ul class="todo-list">' +
-					'<li><label class="todo-list__label" contenteditable="false"></label>' +
-						'<span class="todo-list__label__description">ab{}</span>' +
-					'</li>' +
-				'</ul>'
-			);
-
-			editor.execute( 'todoList' );
-
-			expect( getModelData( model ) ).to.equalMarkup( '<paragraph>ab[]</paragraph>' );
-			expect( getViewData( view ) ).to.equalMarkup( '<p>ab{}</p>' );
-		} );
-
 		it( 'should register checkTodoList command', () => {
-			expect( editor.commands.get( 'checkTodoList' ) ).to.be.instanceOf( CheckTodoListCommand );
-		} );
+			const command = editor.commands.get( 'checkTodoList' );
 
-		it( 'should register todoListCheck command as an alias for checkTodoList command', () => {
-			expect( editor.commands.get( 'todoListCheck' ) ).to.equal( editor.commands.get( 'checkTodoList' ) );
+			expect( command ).to.be.instanceOf( CheckTodoListCommand );
 		} );
 	} );
 
-	describe( 'editing pipeline', () => {
-		it( 'should convert to-do list item', () => {
-			setModelData( model,
-				'<listItem listType="todo" listIndent="0">1</listItem>' +
-				'<listItem listType="todo" listIndent="0" todoListChecked="true">2</listItem>'
-			);
+	it( 'should register TodoCheckboxChangeObserver', () => {
+		expect( view.getObserver( TodoCheckboxChangeObserver ) ).to.be.instanceOf( TodoCheckboxChangeObserver );
+	} );
 
-			expect( getViewData( view ) ).to.equalMarkup(
-				'<ul class="todo-list">' +
-					'<li><label class="todo-list__label" contenteditable="false"></label>' +
-						'<span class="todo-list__label__description">{}1</span>' +
-					'</li>' +
-					'<li><label class="todo-list__label" contenteditable="false"></label>' +
-						'<span class="todo-list__label__description">2</span>' +
-					'</li>' +
-				'</ul>'
-			);
-		} );
+	it( 'should set proper schema rules', () => {
+		const paragraph = new ModelElement( 'paragraph', { listItemId: 'foo', listType: 'todo' } );
+		const heading = new ModelElement( 'heading1', { listItemId: 'foo', listType: 'todo' } );
+		const blockQuote = new ModelElement( 'blockQuote', { listItemId: 'foo', listType: 'todo' } );
+		const table = new ModelElement( 'table', { listItemId: 'foo', listType: 'todo' }, [ ] );
 
-		it( 'should convert nested to-do list items', () => {
-			setModelData( model,
-				'<listItem listType="todo" listIndent="0">1.0</listItem>' +
-				'<listItem listType="todo" listIndent="1">2.1</listItem>' +
-				'<listItem listType="todo" listIndent="1">3.1</listItem>' +
-				'<listItem listType="todo" listIndent="2">4.2</listItem>' +
-				'<listItem listType="todo" listIndent="2">5.2</listItem>' +
-				'<listItem listType="todo" listIndent="1">6.1</listItem>'
-			);
+		expect( model.schema.checkAttribute( [ '$root', paragraph ], 'todoListChecked' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', heading ], 'todoListChecked' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', blockQuote ], 'todoListChecked' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', table ], 'todoListChecked' ) ).to.be.true;
+	} );
 
-			expect( getViewData( view ) ).to.equalMarkup(
-				'<ul class="todo-list">' +
-					'<li>' +
-						'<label class="todo-list__label" contenteditable="false"></label>' +
-						'<span class="todo-list__label__description">{}1.0</span>' +
-						'<ul class="todo-list">' +
-							'<li>' +
-								'<label class="todo-list__label" contenteditable="false"></label>' +
-								'<span class="todo-list__label__description">2.1</span>' +
-							'</li>' +
-							'<li>' +
-								'<label class="todo-list__label" contenteditable="false"></label>' +
-								'<span class="todo-list__label__description">3.1</span>' +
-								'<ul class="todo-list">' +
-									'<li>' +
-										'<label class="todo-list__label" contenteditable="false"></label>' +
-										'<span class="todo-list__label__description">4.2</span>' +
-									'</li>' +
-									'<li>' +
-										'<label class="todo-list__label" contenteditable="false"></label>' +
-										'<span class="todo-list__label__description">5.2</span>' +
-									'</li>' +
-								'</ul>' +
-							'</li>' +
-							'<li>' +
-								'<label class="todo-list__label" contenteditable="false"></label>' +
-								'<span class="todo-list__label__description">6.1</span>' +
-							'</li>' +
-						'</ul>' +
-					'</li>' +
-				'</ul>'
+	describe( 'upcast', () => {
+		it( 'should convert li with a checkbox before the first text node as a to-do list item', () => {
+			testUpcast(
+				'<ul><li><input type="checkbox">foo</li></ul>',
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>'
 			);
 		} );
 
-		it( 'should convert to-do list items mixed with bulleted list items', () => {
-			setModelData( model,
-				'<listItem listType="todo" listIndent="0">1.0</listItem>' +
-				'<listItem listType="bulleted" listIndent="0">2.0</listItem>' +
-				'<listItem listType="todo" listIndent="1">3.1</listItem>' +
-				'<listItem listType="bulleted" listIndent="2">4.2</listItem>' +
-				'<listItem listType="todo" listIndent="1">5.1</listItem>'
+		it( 'should convert the full markup generated by the editor', () => {
+			testUpcast(
+				'<ul><li><input type="checkbox">foo</li></ul>',
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>'
 			);
 
-			expect( getViewData( view ) ).to.equalMarkup(
-				'<ul class="todo-list">' +
-					'<li>' +
-						'<label class="todo-list__label" contenteditable="false"></label>' +
-						'<span class="todo-list__label__description">{}1.0</span>' +
-					'</li>' +
-				'</ul>' +
+			testUpcast(
+				editor.getData(),
+				'<paragraph listIndent="0" listItemId="a01" listType="todo">foo</paragraph>'
+			);
+		} );
+
+		it( 'should convert li with checked checkbox as checked to-do list item', () => {
+			testUpcast(
 				'<ul>' +
-					'<li>2.0' +
-						'<ul class="todo-list">' +
-							'<li>' +
-								'<label class="todo-list__label" contenteditable="false"></label>' +
-								'<span class="todo-list__label__description">3.1</span>' +
-								'<ul>' +
-									'<li>4.2</li>' +
-								'</ul>' +
-							'</li>' +
-							'<li>' +
-								'<label class="todo-list__label" contenteditable="false"></label>' +
-								'<span class="todo-list__label__description">5.1</span>' +
-							'</li>' +
-						'</ul>' +
-					'</li>' +
-				'</ul>'
+					'<li><input type="checkbox" checked="checked">a</li>' +
+					'<li><input type="checkbox" checked="anything">b</li>' +
+					'<li><input type="checkbox" checked>c</li>' +
+				'</ul>',
+				'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">a</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a01" listType="todo" todoListChecked="true">b</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a02" listType="todo" todoListChecked="true">c</paragraph>'
 			);
 		} );
 
-		it( 'should convert to-do list items mixed with numbered list items', () => {
-			setModelData( model,
-				'<listItem listType="todo" listIndent="0">1.0</listItem>' +
-				'<listItem listType="numbered" listIndent="0">2.0</listItem>' +
-				'<listItem listType="todo" listIndent="1">3.1</listItem>' +
-				'<listItem listType="numbered" listIndent="2">4.2</listItem>' +
-				'<listItem listType="todo" listIndent="1">5.1</listItem>'
+		it( 'should not convert li with checkbox in the middle of the text', () => {
+			testUpcast(
+				'<ul><li>Foo<input type="checkbox">Bar</li></ul>',
+				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">FooBar</paragraph>'
 			);
+		} );
 
-			expect( getViewData( view ) ).to.equalMarkup(
-				'<ul class="todo-list">' +
-					'<li>' +
-						'<label class="todo-list__label" contenteditable="false"></label>' +
-						'<span class="todo-list__label__description">{}1.0</span>' +
-					'</li>' +
-				'</ul>' +
+		it( 'should split items with checkboxes - bulleted list', () => {
+			testUpcast(
+				'<ul>' +
+					'<li>foo</li>' +
+					'<li><input type="checkbox">bar</li>' +
+					'<li>baz</li>' +
+				'</ul>',
+				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">foo</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a01" listType="todo">bar</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a02" listType="bulleted">baz</paragraph>'
+			);
+		} );
+
+		it( 'should split items with checkboxes - numbered list', () => {
+			testUpcast(
 				'<ol>' +
-					'<li>2.0' +
-						'<ul class="todo-list">' +
+					'<li>foo</li>' +
+					'<li><input type="checkbox">bar</li>' +
+					'<li>baz</li>' +
+				'</ol>',
+				'<paragraph listIndent="0" listItemId="a00" listType="numbered">foo</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a01" listType="todo">bar</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a02" listType="numbered">baz</paragraph>'
+			);
+		} );
+
+		it( 'should convert li with a checkbox in a nested list', () => {
+			testUpcast(
+				'<ul>' +
+					'<li>' +
+						'<input type="checkbox">' +
+						'foo' +
+						'<ul><li><input type="checkbox">foo</li></ul>' +
+					'</li>' +
+				'</ul>',
+				'<paragraph listIndent="0" listItemId="a01" listType="todo">foo</paragraph>' +
+				'<paragraph listIndent="1" listItemId="a00" listType="todo">foo</paragraph>'
+			);
+		} );
+
+		it( 'should convert li with checkboxes in a nested lists (bulleted > todo > todo)', () => {
+			testUpcast(
+				'<ul>' +
+					'<li>' +
+						'<ul>' +
 							'<li>' +
-								'<label class="todo-list__label" contenteditable="false"></label>' +
-								'<span class="todo-list__label__description">3.1</span>' +
-								'<ol>' +
-									'<li>4.2</li>' +
-								'</ol>' +
-							'</li>' +
-							'<li>' +
-								'<label class="todo-list__label" contenteditable="false"></label>' +
-								'<span class="todo-list__label__description">5.1</span>' +
+								'<input type="checkbox">foo' +
+								'<ul><li><input type="checkbox">bar</li></ul>' +
 							'</li>' +
 						'</ul>' +
 					'</li>' +
+				'</ul>',
+				'<paragraph listIndent="0" listItemId="a02" listType="bulleted"></paragraph>' +
+				'<paragraph listIndent="1" listItemId="a01" listType="todo">foo</paragraph>' +
+				'<paragraph listIndent="2" listItemId="a00" listType="todo">bar</paragraph>'
+			);
+		} );
+
+		it( 'should convert li with a checkbox and a paragraph', () => {
+			testUpcast(
+				'<ul>' +
+					'<li>' +
+						'<input type="checkbox">' +
+						'<p>foo</p>' +
+					'</li>' +
+				'</ul>',
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>'
+			);
+		} );
+
+		it( 'should convert li with a checkbox and two paragraphs', () => {
+			testUpcast(
+				'<ul>' +
+					'<li>' +
+						'<input type="checkbox">' +
+						'<p>foo</p>' +
+						'<p>bar</p>' +
+					'</li>' +
+				'</ul>',
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">bar</paragraph>'
+			);
+		} );
+
+		it( 'should convert li with a checkbox and a blockquote', () => {
+			testUpcast(
+				'<ul>' +
+					'<li>' +
+						'<input type="checkbox">' +
+						'<blockquote>foo</blockquote>' +
+					'</li>' +
+				'</ul>',
+				'<blockQuote listIndent="0" listItemId="a00" listType="todo">' +
+					'<paragraph>foo</paragraph>' +
+				'</blockQuote>'
+			);
+		} );
+
+		it( 'should convert li with a checkbox and a heading', () => {
+			testUpcast(
+				'<ul>' +
+					'<li>' +
+						'<input type="checkbox">' +
+						'<h2>foo</h2>' +
+					'</li>' +
+				'</ul>',
+				'<heading1 listIndent="0" listItemId="a00" listType="todo">foo</heading1>'
+			);
+		} );
+
+		it( 'should convert li with a checkbox and a table', () => {
+			testUpcast(
+				'<ul>' +
+					'<li>' +
+						'<input type="checkbox">' +
+						'<table><tr><td>foo</td></tr></table>' +
+					'</li>' +
+				'</ul>',
+				'<table listIndent="0" listItemId="a00" listType="todo">' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>foo</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+		} );
+
+		it( 'should not convert checkbox if consumed by other converter', () => {
+			model.schema.register( 'input', { inheritAllFrom: '$inlineObject' } );
+			editor.conversion.elementToElement( { model: 'input', view: 'input', converterPriority: 'high' } );
+
+			testUpcast(
+				'<ul>' +
+					'<li><input type="checkbox">foo</li>' +
+				'</ul>',
+				'<paragraph listIndent="0" listItemId="a00" listType="bulleted"><input></input>foo</paragraph>'
+			);
+		} );
+
+		it( 'should not convert label element if already consumed', () => {
+			model.schema.register( 'label', { inheritAllFrom: '$inlineObject', allowChildren: '$text' } );
+			editor.conversion.elementToElement( { model: 'label', view: 'label', converterPriority: 'high' } );
+
+			testUpcast(
+				'<ul>' +
+					'<li><label class="todo-list__label"><input type="checkbox">foo</label></li>' +
+				'</ul>',
+				'<paragraph listIndent="0" listItemId="a00" listType="bulleted"><label>foo</label></paragraph>'
+			);
+		} );
+	} );
+
+	describe( 'upcast - list properties integration', () => {
+		let editor, model;
+
+		beforeEach( async () => {
+			editor = await VirtualTestEditor.create( {
+				plugins: [ Paragraph, TodoListEditing, ListPropertiesEditing ],
+				list: {
+					properties: {
+						startIndex: true
+					}
+				}
+			} );
+
+			model = editor.model;
+			view = editor.editing.view;
+		} );
+
+		afterEach( () => {
+			return editor.destroy();
+		} );
+
+		it( 'should not convert list style on to-do list', () => {
+			editor.setData(
+				'<ul style="list-style-type:circle;">' +
+					'<li><input type="checkbox">Foo</li>' +
+					'<li><input type="checkbox">Bar</li>' +
+				'</ul>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">Foo</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a01" listType="todo">Bar</paragraph>'
+			);
+		} );
+
+		it( 'should not convert list start on to-do list', () => {
+			editor.setData(
+				'<ol start="2">' +
+					'<li><input type="checkbox">Foo</li>' +
+					'<li><input type="checkbox">Bar</li>' +
 				'</ol>'
 			);
-		} );
 
-		it( 'should properly convert list type change #1', () => {
-			setModelData( model,
-				'<listItem listType="numbered" listIndent="0">1.0</listItem>' +
-				'<listItem listType="numbered" listIndent="0">[]2.0</listItem>' +
-				'<listItem listType="numbered" listIndent="0">3.0</listItem>'
-			);
-
-			editor.execute( 'todoList' );
-
-			expect( getViewData( view ) ).to.equalMarkup(
-				'<ol>' +
-					'<li>1.0</li>' +
-				'</ol>' +
-				'<ul class="todo-list">' +
-					'<li>' +
-						'<label class="todo-list__label" contenteditable="false"></label>' +
-						'<span class="todo-list__label__description">{}2.0</span>' +
-					'</li>' +
-				'</ul>' +
-				'<ol>' +
-					'<li>3.0</li>' +
-				'</ol>'
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">Foo</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a01" listType="todo">Bar</paragraph>'
 			);
 		} );
+	} );
 
-		it( 'should properly convert list type change #2', () => {
-			setModelData( model,
-				'<listItem listType="todo" listIndent="0">1.0</listItem>' +
-				'<listItem listType="todo" listIndent="0">[]2.0</listItem>' +
-				'<listItem listType="todo" listIndent="0">3.0</listItem>'
-			);
+	describe( 'upcast - GHS integration', () => {
+		let element, editor, model;
 
-			editor.execute( 'numberedList' );
+		beforeEach( async () => {
+			element = document.createElement( 'div' );
+			document.body.appendChild( element );
 
-			expect( getViewData( view ) ).to.equalMarkup(
-				'<ul class="todo-list">' +
-					'<li>' +
-						'<label class="todo-list__label" contenteditable="false"></label>' +
-						'<span class="todo-list__label__description">1.0</span>' +
-					'</li>' +
-				'</ul>' +
-				'<ol>' +
-					'<li>{}2.0</li>' +
-				'</ol>' +
-				'<ul class="todo-list">' +
-					'<li>' +
-						'<label class="todo-list__label" contenteditable="false"></label>' +
-						'<span class="todo-list__label__description">3.0</span>' +
-					'</li>' +
-				'</ul>'
-			);
-		} );
-
-		it( 'should properly convert list type change #3', () => {
-			setModelData( model,
-				'<listItem listType="todo" listIndent="0">1.0</listItem>' +
-				'<listItem listType="numbered" listIndent="0">[]2.0</listItem>' +
-				'<listItem listType="todo" listIndent="0">3.0</listItem>'
-			);
-
-			editor.execute( 'bulletedList' );
-
-			expect( getViewData( view ) ).to.equalMarkup(
-				'<ul class="todo-list">' +
-					'<li>' +
-						'<label class="todo-list__label" contenteditable="false"></label>' +
-						'<span class="todo-list__label__description">1.0</span>' +
-					'</li>' +
-				'</ul>' +
-				'<ul>' +
-					'<li>{}2.0</li>' +
-				'</ul>' +
-				'<ul class="todo-list">' +
-					'<li>' +
-						'<label class="todo-list__label" contenteditable="false"></label>' +
-						'<span class="todo-list__label__description">3.0</span>' +
-					'</li>' +
-				'</ul>'
-			);
-		} );
-
-		it( 'should properly convert list type change (when next list item is nested)', () => {
-			setModelData( model,
-				'<listItem listType="todo" listIndent="0">1.0</listItem>' +
-				'<listItem listType="numbered" listIndent="0">[]2.0</listItem>' +
-				'<listItem listType="todo" listIndent="1">3.0</listItem>'
-			);
-
-			expect( getViewData( view ) ).to.equalMarkup(
-				'<ul class="todo-list">' +
-					'<li>' +
-						'<label class="todo-list__label" contenteditable="false"></label>' +
-						'<span class="todo-list__label__description">1.0</span>' +
-					'</li>' +
-				'</ul>' +
-				'<ol>' +
-					'<li>' +
-						'{}2.0' +
-						'<ul class="todo-list">' +
-							'<li>' +
-								'<label class="todo-list__label" contenteditable="false"></label>' +
-								'<span class="todo-list__label__description">3.0</span>' +
-							'</li>' +
-						'</ul>' +
-					'</li>' +
-				'</ol>'
-			);
-
-			editor.execute( 'todoList' );
-
-			expect( getViewData( view ) ).to.equalMarkup(
-				'<ul class="todo-list">' +
-					'<li>' +
-						'<label class="todo-list__label" contenteditable="false"></label>' +
-						'<span class="todo-list__label__description">1.0</span>' +
-					'</li>' +
-					'<li>' +
-						'<label class="todo-list__label" contenteditable="false"></label>' +
-						'<span class="todo-list__label__description">{}2.0</span>' +
-						'<ul class="todo-list">' +
-							'<li>' +
-								'<label class="todo-list__label" contenteditable="false"></label>' +
-								'<span class="todo-list__label__description">3.0</span>' +
-							'</li>' +
-						'</ul>' +
-					'</li>' +
-				'</ul>'
-			);
-		} );
-		it( 'should properly convert list type change - inner text with attribute', () => {
-			setModelData( model,
-				'<listItem listType="todo" listIndent="0">1[.0</listItem>' +
-				'<listItem listType="todo" listIndent="0"><$text bold="true">2.0</$text></listItem>' +
-				'<listItem listType="todo" listIndent="0">3.]0</listItem>'
-			);
-
-			editor.execute( 'bulletedList' );
-
-			expect( getViewData( view ) ).to.equalMarkup(
-				'<ul>' +
-				'<li>1{.0</li>' +
-				'<li><strong>2.0</strong></li>' +
-				'<li>3.}0</li>' +
-				'</ul>'
-			);
-		} );
-
-		it( 'should properly convert list type change - inner text with many attributes', () => {
-			setModelData( model,
-				'<listItem listType="todo" listIndent="0">1[.0</listItem>' +
-				'<listItem listType="todo" listIndent="0"><$text bold="true" linkHref="foo">2.0</$text></listItem>' +
-				'<listItem listType="todo" listIndent="0">3.]0</listItem>'
-			);
-
-			editor.execute( 'bulletedList' );
-
-			expect( getViewData( view ) ).to.equalMarkup(
-				'<ul>' +
-				'<li>1{.0</li>' +
-				'<li><a href="foo"><strong>2.0</strong></a></li>' +
-				'<li>3.}0</li>' +
-				'</ul>'
-			);
-		} );
-
-		it( 'should convert todoListChecked attribute change', () => {
-			setModelData( model, '<listItem listType="todo" listIndent="0">1.0</listItem>' );
-
-			expect( getViewData( view ) ).to.equalMarkup(
-				'<ul class="todo-list">' +
-					'<li>' +
-						'<label class="todo-list__label" contenteditable="false"></label>' +
-						'<span class="todo-list__label__description">{}1.0</span>' +
-					'</li>' +
-				'</ul>'
-			);
-
-			model.change( writer => {
-				writer.setAttribute( 'todoListChecked', true, modelRoot.getChild( 0 ) );
+			editor = await ClassicTestEditor.create( element, {
+				plugins: [ Paragraph, TodoListEditing, GeneralHtmlSupport ],
+				htmlSupport: {
+					allow: [
+						{
+							name: /./,
+							styles: true,
+							attributes: true,
+							classes: true
+						}
+					]
+				}
 			} );
 
-			expect( getViewData( view ) ).to.equalMarkup(
+			model = editor.model;
+			view = editor.editing.view;
+		} );
+
+		afterEach( async () => {
+			element.remove();
+			await editor.destroy();
+		} );
+
+		it( 'should consume all to-do list related elements and attributes so GHS will not handle them (with description)', () => {
+			editor.setData(
 				'<ul class="todo-list">' +
 					'<li>' +
-						'<label class="todo-list__label" contenteditable="false"></label>' +
-						'<span class="todo-list__label__description">{}1.0</span>' +
+						'<label class="todo-list__label">' +
+							'<input type="checkbox" disabled="disabled" checked="checked">' +
+							'<span class="todo-list__label__description">foo</span>' +
+						'</label>' +
 					'</li>' +
 				'</ul>'
 			);
 
-			model.change( writer => {
-				writer.setAttribute( 'todoListChecked', false, modelRoot.getChild( 0 ) );
-			} );
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph' +
+						' htmlLiAttributes="{}" htmlUlAttributes="{}"' +
+						' listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">' +
+					'foo' +
+				'</paragraph>'
+			);
+		} );
 
-			expect( getViewData( view ) ).to.equalMarkup(
+		it( 'should consume all to-do list related elements and attributes so GHS will not handle them (without description)', () => {
+			editor.setData(
 				'<ul class="todo-list">' +
 					'<li>' +
-						'<label class="todo-list__label" contenteditable="false"></label>' +
-						'<span class="todo-list__label__description">{}1.0</span>' +
+						'<label class="todo-list__label todo-list__label_without-description">' +
+							'<input type="checkbox" disabled="disabled">' +
+						'</label>' +
+						'<h2>foo</h2>' +
 					'</li>' +
 				'</ul>'
 			);
-		} );
 
-		it( 'should remove todoListChecked attribute when checked todoListItem is changed to regular list item', () => {
-			setModelData( model,
-				'<listItem listType="todo" listIndent="0">f[oo</listItem>' +
-				'<listItem listType="todo" listIndent="0" todoListChecked="true">fo]o</listItem>'
-			);
-
-			editor.execute( 'bulletedList' );
-
-			expect( getModelData( model ) ).to.equalMarkup(
-				'<listItem listIndent="0" listType="bulleted">f[oo</listItem>' +
-				'<listItem listIndent="0" listType="bulleted">fo]o</listItem>'
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<htmlH2 htmlLiAttributes="{}" htmlUlAttributes="{}" listIndent="0" listItemId="a00" listType="todo">foo</htmlH2>'
 			);
 		} );
 
-		it( 'should be overwritable', () => {
-			editor.editing.downcastDispatcher.on( 'insert:listItem', ( evt, data, api ) => {
-				const { consumable, writer, mapper } = api;
+		it( 'should not consume other label elements', () => {
+			editor.setData( '<p><label>foo</label></p>' );
 
-				consumable.consume( data.item, 'insert' );
-				consumable.consume( data.item, 'attribute:listType' );
-				consumable.consume( data.item, 'attribute:listIndent' );
-
-				const insertPosition = mapper.toViewPosition( model.createPositionBefore( data.item ) );
-				const element = writer.createContainerElement( 'test' );
-
-				mapper.bindElements( data.item, element );
-				writer.insert( insertPosition, element );
-			}, { priority: 'highest' } );
-
-			editor.editing.downcastDispatcher.on( 'insert:$text', ( evt, data, api ) => {
-				const { consumable, writer, mapper } = api;
-
-				consumable.consume( data.item, 'insert' );
-
-				const insertPosition = mapper.toViewPosition( model.createPositionBefore( data.item ) );
-				const element = writer.createText( data.item.data );
-
-				writer.insert( insertPosition, element );
-				mapper.bindElements( data.item, element );
-			}, { priority: 'highest' } );
-
-			editor.editing.downcastDispatcher.on( 'attribute:todoListChecked:listItem', ( evt, data, api ) => {
-				const { consumable, writer, mapper } = api;
-
-				consumable.consume( data.item, 'attribute:todoListChecked' );
-
-				const viewElement = mapper.toViewElement( data.item );
-
-				writer.addClass( 'checked', viewElement );
-			}, { priority: 'highest' } );
-
-			setModelData( model, '<listItem listType="todo" listIndent="0">Foo</listItem>' );
-			expect( getViewData( view ) ).to.equalMarkup( '<test>{}Foo</test>' );
-
-			model.change( writer => writer.setAttribute( 'todoListChecked', true, modelRoot.getChild( 0 ) ) );
-			expect( getViewData( view ) ).to.equalMarkup( '<test class="checked">{}Foo</test>' );
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph><$text htmlLabel="{}">foo</$text></paragraph>'
+			);
 		} );
+	} );
 
-		it( 'should render selection after checkmark element in the first text node', () => {
-			setModelData( model, '<listItem listType="todo" listIndent="0">Foo</listItem>' );
-
-			expect( getViewData( view ) ).to.equalMarkup(
+	describe( 'downcast - editing', () => {
+		it( 'should convert a todo list item', () => {
+			testEditing(
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>',
 				'<ul class="todo-list">' +
 					'<li>' +
-						'<label class="todo-list__label" contenteditable="false"></label>' +
-						'<span class="todo-list__label__description">{}Foo</span>' +
-					'</li>' +
-				'</ul>'
-			);
-		} );
-
-		it( 'should render selection after checkmark element when list item does not contain any text nodes', () => {
-			setModelData( model, '<listItem listType="todo" listIndent="0">[]</listItem>' );
-
-			expect( getViewData( view ) ).to.equalMarkup(
-				'<ul class="todo-list">' +
-					'<li>' +
-						'<label class="todo-list__label" contenteditable="false"></label>' +
-						'<span class="todo-list__label__description">[]</span>' +
-					'</li>' +
-				'</ul>'
-			);
-		} );
-
-		it( 'should render marker UIElements after the checkmark element', () => {
-			setModelData( model,
-				'<listItem listType="todo" listIndent="0">[]foo</listItem>' +
-				'<listItem listType="todo" listIndent="0">bar</listItem>'
-			);
-
-			editor.conversion.for( 'downcast' ).markerToElement( {
-				model: 'element1',
-				view: ( data, { writer } ) => writer.createUIElement( 'element1' )
-			} );
-
-			editor.conversion.for( 'downcast' ).markerToElement( {
-				model: 'element2',
-				view: ( data, { writer } ) => writer.createUIElement( 'element2' )
-			} );
-
-			editor.conversion.for( 'downcast' ).markerToHighlight( {
-				model: 'highlight',
-				view: { classes: 'highlight' }
-			} );
-			model.change( writer => {
-				writer.addMarker( 'element1', {
-					range: writer.createRange( writer.createPositionAt( modelRoot.getChild( 0 ), 0 ) ),
-					usingOperation: false
-				} );
-
-				writer.addMarker( 'element2', {
-					range: writer.createRange( writer.createPositionAt( modelRoot.getChild( 0 ), 0 ) ),
-					usingOperation: false
-				} );
-
-				writer.addMarker( 'highlight', {
-					range: writer.createRangeIn( modelRoot.getChild( 0 ) ),
-					usingOperation: false
-				} );
-			} );
-
-			expect( getViewData( view ) ).to.equalMarkup(
-				'<ul class="todo-list">' +
-					'<li>' +
-						'<label class="todo-list__label" contenteditable="false"></label>' +
-						'<span class="todo-list__label__description">' +
-							'[]<span class="highlight">' +
-								'<element2></element2>' +
-								'<element1></element1>' +
+						'<span class="todo-list__label">' +
+							'<span contenteditable="false">' +
+								'<input tabindex="-1" type="checkbox"></input>' +
+							'</span>' +
+							'<span class="todo-list__label__description">' +
 								'foo' +
 							'</span>' +
 						'</span>' +
 					'</li>' +
-					'<li>' +
-						'<label class="todo-list__label" contenteditable="false"></label>' +
-						'<span class="todo-list__label__description">bar</span>' +
-					'</li>' +
 				'</ul>'
 			);
-
-			// CC.
-			editor.execute( 'checkTodoList' );
 		} );
 
-		it( 'should properly handle typing inside text node with attribute', () => {
-			setModelData( model, '<listItem listType="todo" listIndent="0"><$text bold="true">[]foo</$text></listItem>' );
-
-			editor.execute( 'insertText', { text: 'b' } );
-
-			expect( getModelData( model ) ).to.equalMarkup(
-				'<listItem listIndent="0" listType="todo"><$text bold="true">b[]foo</$text></listItem>'
-			);
-
-			expect( getViewData( view ) ).to.equalMarkup(
+		it( 'should convert a nested todo list item', () => {
+			testEditing(
+				'<paragraph listIndent="0" listItemId="a01" listType="todo">foo</paragraph>' +
+				'<paragraph listIndent="1" listItemId="a00" listType="todo">foo</paragraph>',
 				'<ul class="todo-list">' +
 					'<li>' +
-						'<label class="todo-list__label" contenteditable="false"></label>' +
-						'<span class="todo-list__label__description">' +
-							'<strong>b{}foo</strong>' +
+						'<span class="todo-list__label">' +
+							'<span contenteditable="false">' +
+								'<input tabindex="-1" type="checkbox"></input>' +
+							'</span>' +
+							'<span class="todo-list__label__description">' +
+								'foo' +
+							'</span>' +
 						'</span>' +
-					'</li>' +
-				'</ul>'
-			);
-		} );
-
-		it( 'should properly handle typing inside text node with many attributes', () => {
-			setModelData( model,
-				'<listItem listType="todo" listIndent="0"><$text bold="true" linkHref="foo">[]foo</$text></listItem>'
-			);
-
-			editor.execute( 'insertText', { text: 'b' } );
-
-			expect( getModelData( model ) ).to.equalMarkup(
-				'<listItem listIndent="0" listType="todo"><$text bold="true" linkHref="foo">b[]foo</$text></listItem>'
-			);
-
-			expect( getViewData( view ) ).to.equalMarkup(
-				'<ul class="todo-list">' +
-					'<li>' +
-						'<label class="todo-list__label" contenteditable="false"></label>' +
-						'<span class="todo-list__label__description">' +
-							'<a class="ck-link_selected" href="foo"><strong>b{}foo</strong></a>' +
-						'</span>' +
-					'</li>' +
-				'</ul>'
-			);
-		} );
-
-		it( 'should properly handle enter key in list item containing soft-breaks', () => {
-			setModelData( model, '<listItem listType="todo" listIndent="0">[]Foo<softBreak></softBreak>bar</listItem>' );
-
-			editor.execute( 'enter' );
-
-			expect( getModelData( model ) ).to.equalMarkup(
-				'<listItem listIndent="0" listType="todo"></listItem>' +
-				'<listItem listIndent="0" listType="todo">[]Foo<softBreak></softBreak>bar</listItem>'
-			);
-		} );
-	} );
-
-	describe( 'data pipeline m -> v', () => {
-		it( 'should convert to-do list item', () => {
-			setModelData( model,
-				'<listItem listType="todo" listIndent="0">1</listItem>' +
-				'<listItem listType="todo" listIndent="0" todoListChecked="true">2</listItem>'
-			);
-
-			expect( editor.getData() ).to.equal(
-				'<ul class="todo-list">' +
-					'<li>' +
-						'<label class="todo-list__label">' +
-							'<input type="checkbox" disabled="disabled">' +
-							'<span class="todo-list__label__description">1</span>' +
-						'</label>' +
-					'</li>' +
-					'<li>' +
-						'<label class="todo-list__label">' +
-							'<input type="checkbox" disabled="disabled" checked="checked">' +
-							'<span class="todo-list__label__description">2</span>' +
-						'</label>' +
-					'</li>' +
-				'</ul>'
-			);
-		} );
-
-		it( 'should convert nested to-do list item', () => {
-			setModelData( model,
-				'<listItem listType="todo" listIndent="0">1.0</listItem>' +
-				'<listItem listType="todo" listIndent="1">2.1</listItem>'
-			);
-
-			expect( editor.getData() ).to.equal(
-				'<ul class="todo-list">' +
-					'<li>' +
-						'<label class="todo-list__label">' +
-							'<input type="checkbox" disabled="disabled">' +
-							'<span class="todo-list__label__description">1.0</span>' +
-						'</label>' +
 						'<ul class="todo-list">' +
 							'<li>' +
-								'<label class="todo-list__label">' +
-									'<input type="checkbox" disabled="disabled">' +
-									'<span class="todo-list__label__description">2.1</span>' +
-								'</label>' +
+								'<span class="todo-list__label">' +
+									'<span contenteditable="false">' +
+										'<input tabindex="-1" type="checkbox"></input>' +
+									'</span>' +
+									'<span class="todo-list__label__description">' +
+										'foo' +
+									'</span>' +
+								'</span>' +
 							'</li>' +
 						'</ul>' +
 					'</li>' +
@@ -727,474 +465,496 @@ describe( 'TodoListEditing', () => {
 		} );
 
 		it( 'should convert to-do list item mixed with bulleted list items', () => {
-			setModelData( model,
-				'<listItem listType="todo" listIndent="0">1.0</listItem>' +
-				'<listItem listType="bulleted" listIndent="0">2.0</listItem>' +
-				'<listItem listType="todo" listIndent="1">3.1</listItem>' +
-				'<listItem listType="bulleted" listIndent="2">4.2</listItem>' +
-				'<listItem listType="todo" listIndent="1">5.1</listItem>'
-			);
-
-			expect( editor.getData() ).to.equal(
+			testEditing(
+				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">foo</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a01" listType="todo">bar</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a02" listType="bulleted">baz</paragraph>',
+				'<ul>' +
+					'<li>' +
+						'<span class="ck-list-bogus-paragraph">foo</span>' +
+					'</li>' +
+				'</ul>' +
 				'<ul class="todo-list">' +
 					'<li>' +
-						'<label class="todo-list__label">' +
-							'<input type="checkbox" disabled="disabled">' +
-							'<span class="todo-list__label__description">1.0</span>' +
-						'</label>' +
+						'<span class="todo-list__label">' +
+							'<span contenteditable="false">' +
+								'<input tabindex="-1" type="checkbox"></input>' +
+							'</span>' +
+							'<span class="todo-list__label__description">bar</span>' +
+						'</span>' +
 					'</li>' +
 				'</ul>' +
 				'<ul>' +
-					'<li>2.0' +
-						'<ul class="todo-list">' +
-							'<li>' +
-								'<label class="todo-list__label">' +
-									'<input type="checkbox" disabled="disabled">' +
-									'<span class="todo-list__label__description">3.1</span>' +
-								'</label>' +
-								'<ul>' +
-									'<li>4.2</li>' +
-								'</ul>' +
-							'</li>' +
-							'<li>' +
-								'<label class="todo-list__label">' +
-									'<input type="checkbox" disabled="disabled">' +
-									'<span class="todo-list__label__description">5.1</span>' +
-								'</label>' +
-							'</li>' +
-						'</ul>' +
-					'</li>' +
+					'<li><span class="ck-list-bogus-paragraph">baz</span></li>' +
 				'</ul>'
 			);
 		} );
 
 		it( 'should convert to-do list item mixed with numbered list items', () => {
+			testEditing(
+				'<paragraph listIndent="0" listItemId="a00" listType="numbered">foo</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a01" listType="todo">bar</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a02" listType="numbered">baz</paragraph>',
+				'<ol>' +
+					'<li>' +
+						'<span class="ck-list-bogus-paragraph">foo</span>' +
+					'</li>' +
+				'</ol>' +
+				'<ul class="todo-list">' +
+					'<li>' +
+						'<span class="todo-list__label">' +
+							'<span contenteditable="false">' +
+								'<input tabindex="-1" type="checkbox"></input>' +
+							'</span>' +
+							'<span class="todo-list__label__description">bar</span>' +
+						'</span>' +
+					'</li>' +
+				'</ul>' +
+				'<ol>' +
+					'<li><span class="ck-list-bogus-paragraph">baz</span></li>' +
+				'</ol>'
+			);
+		} );
+
+		it( 'should wrap a checkbox and first paragraph in a span with a special label class', () => {
+			testEditing(
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">bar</paragraph>',
+				'<ul class="todo-list">' +
+					'<li>' +
+						'<span class="todo-list__label">' +
+							'<span contenteditable="false">' +
+								'<input tabindex="-1" type="checkbox"></input>' +
+							'</span>' +
+							'<span class="todo-list__label__description">' +
+								'foo' +
+							'</span>' +
+						'</span>' +
+						'<p>bar</p>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should wrap only a checkbox in a span if first element is a blockquote', () => {
+			testEditing(
+				'<blockQuote listIndent="0" listItemId="a00" listType="todo">' +
+					'<paragraph>foo</paragraph>' +
+				'</blockQuote>',
+				'<ul class="todo-list">' +
+					'<li>' +
+						'<span class="todo-list__label todo-list__label_without-description">' +
+							'<span contenteditable="false">' +
+								'<input tabindex="-1" type="checkbox"></input>' +
+							'</span>' +
+						'</span>' +
+						'<blockquote>' +
+							'<p>foo</p>' +
+						'</blockquote>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should wrap only a checkbox in a span if first element is a heading', () => {
+			testEditing(
+				'<heading1 listIndent="0" listItemId="a00" listType="todo">foo</heading1>',
+				'<ul class="todo-list">' +
+					'<li>' +
+						'<span class="todo-list__label todo-list__label_without-description">' +
+							'<span contenteditable="false">' +
+								'<input tabindex="-1" type="checkbox"></input>' +
+							'</span>' +
+						'</span>' +
+						'<h2>foo</h2>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should wrap only a checkbox in a span if first element is a table', () => {
+			testEditing(
+				'<table listIndent="0" listItemId="a00" listType="todo">' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>foo</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>',
+				'<ul class="todo-list">' +
+					'<li>' +
+						'<span class="todo-list__label todo-list__label_without-description">' +
+							'<span contenteditable="false">' +
+								'<input tabindex="-1" type="checkbox"></input>' +
+							'</span>' +
+						'</span>' +
+						'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+							'<div class="ck ck-widget__selection-handle"></div>' +
+							'<table>' +
+								'<tbody>' +
+									'<tr>' +
+										'<td class="ck-editor__editable ck-editor__nested-editable" ' +
+											'contenteditable="true" role="textbox" tabindex="-1">' +
+											'<span class="ck-table-bogus-paragraph">foo</span>' +
+										'</td>' +
+									'</tr>' +
+								'</tbody>' +
+							'</table>' +
+						'</figure>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should not use description span if there is an alignment set on the paragraph', () => {
 			setModelData( model,
-				'<listItem listType="todo" listIndent="0">1.0</listItem>' +
-				'<listItem listType="numbered" listIndent="0">2.0</listItem>' +
-				'<listItem listType="todo" listIndent="1">3.1</listItem>' +
-				'<listItem listType="numbered" listIndent="2">4.2</listItem>' +
-				'<listItem listType="todo" listIndent="1">5.1</listItem>'
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+				'<ul class="todo-list">' +
+					'<li>' +
+						'<span class="todo-list__label">' +
+							'<span contenteditable="false">' +
+								'<input tabindex="-1" type="checkbox"></input>' +
+							'</span>' +
+							'<span class="todo-list__label__description">foo</span>' +
+						'</span>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			editor.execute( 'alignment', { value: 'right' } );
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+				'<ul class="todo-list">' +
+					'<li>' +
+						'<span class="todo-list__label todo-list__label_without-description">' +
+							'<span contenteditable="false">' +
+								'<input tabindex="-1" type="checkbox"></input>' +
+							'</span>' +
+						'</span>' +
+						'<p style="text-align:right">' +
+							'foo' +
+						'</p>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			editor.execute( 'alignment', { value: 'left' } );
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+				'<ul class="todo-list">' +
+					'<li>' +
+						'<span class="todo-list__label">' +
+							'<span contenteditable="false">' +
+								'<input tabindex="-1" type="checkbox"></input>' +
+							'</span>' +
+							'<span class="todo-list__label__description">foo</span>' +
+						'</span>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should use description span even if there is an selection attribute on block', () => {
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">[]</paragraph>'
+			);
+
+			model.change( writer => writer.setSelectionAttribute( 'bold', true ) );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemId="a00" listType="todo" selection:bold="true"></paragraph>'
+			);
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+				'<ul class="todo-list">' +
+					'<li>' +
+						'<span class="todo-list__label">' +
+							'<span contenteditable="false">' +
+								'<input tabindex="-1" type="checkbox"></input>' +
+							'</span>' +
+							'<span class="todo-list__label__description"></span>' +
+						'</span>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+	} );
+
+	describe( 'downcast - data', () => {
+		it( 'should convert a todo list item', () => {
+			testData(
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>',
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<label class="todo-list__label">' +
 							'<input type="checkbox" disabled="disabled">' +
-							'<span class="todo-list__label__description">1.0</span>' +
+							'<span class="todo-list__label__description">foo</span>' +
+						'</label>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should convert a nested todo list item', () => {
+			testData(
+				'<paragraph listIndent="0" listItemId="a01" listType="todo">foo</paragraph>' +
+				'<paragraph listIndent="1" listItemId="a00" listType="todo">foo</paragraph>',
+				'<ul class="todo-list">' +
+					'<li>' +
+						'<label class="todo-list__label">' +
+							'<input type="checkbox" disabled="disabled">' +
+							'<span class="todo-list__label__description">foo</span>' +
+						'</label>' +
+						'<ul class="todo-list">' +
+							'<li>' +
+								'<label class="todo-list__label">' +
+									'<input type="checkbox" disabled="disabled">' +
+										'<span class="todo-list__label__description">' +
+											'foo' +
+										'</span>' +
+									'</label>' +
+								'</li>' +
+						'</ul>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should convert to-do list item mixed with bulleted list items', () => {
+			testData(
+				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">foo</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a01" listType="todo">bar</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a02" listType="bulleted">baz</paragraph>',
+				'<ul>' +
+					'<li>foo</li>' +
+				'</ul>' +
+				'<ul class="todo-list">' +
+					'<li>' +
+						'<label class="todo-list__label">' +
+							'<input type="checkbox" disabled="disabled">' +
+							'<span class="todo-list__label__description">bar</span>' +
+						'</label>' +
+					'</li>' +
+				'</ul>' +
+				'<ul>' +
+					'<li>baz</li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should convert to-do list item mixed with numbered list items', () => {
+			testData(
+				'<paragraph listIndent="0" listItemId="a00" listType="numbered">foo</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a01" listType="todo">bar</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a02" listType="numbered">baz</paragraph>',
+				'<ol>' +
+					'<li>foo</li>' +
+				'</ol>' +
+				'<ul class="todo-list">' +
+					'<li>' +
+						'<label class="todo-list__label">' +
+							'<input type="checkbox" disabled="disabled">' +
+							'<span class="todo-list__label__description">bar</span>' +
 						'</label>' +
 					'</li>' +
 				'</ul>' +
 				'<ol>' +
-					'<li>2.0' +
-						'<ul class="todo-list">' +
-							'<li>' +
-								'<label class="todo-list__label">' +
-									'<input type="checkbox" disabled="disabled">' +
-									'<span class="todo-list__label__description">3.1</span>' +
-								'</label>' +
-								'<ol>' +
-									'<li>4.2</li>' +
-								'</ol>' +
-							'</li>' +
-							'<li>' +
-								'<label class="todo-list__label">' +
-									'<input type="checkbox" disabled="disabled">' +
-									'<span class="todo-list__label__description">5.1</span>' +
-								'</label>' +
-							'</li>' +
-						'</ul>' +
-					'</li>' +
+					'<li>baz</li>' +
 				'</ol>'
 			);
 		} );
 
-		it( 'should be overwritable', () => {
-			editor.data.downcastDispatcher.on( 'insert:listItem', ( evt, data, api ) => {
-				const { consumable, writer, mapper } = api;
-
-				consumable.consume( data.item, 'insert' );
-				consumable.consume( data.item, 'attribute:listType' );
-				consumable.consume( data.item, 'attribute:listIndent' );
-
-				const element = writer.createContainerElement( 'test' );
-				const insertPosition = mapper.toViewPosition( model.createPositionBefore( data.item ) );
-
-				writer.insert( insertPosition, element );
-				mapper.bindElements( data.item, element );
-			}, { priority: 'highest' } );
-
-			editor.data.downcastDispatcher.on( 'insert:$text', ( evt, data, api ) => {
-				const { consumable, writer, mapper } = api;
-
-				consumable.consume( data.item, 'insert' );
-
-				const insertPosition = mapper.toViewPosition( model.createPositionBefore( data.item ) );
-				const element = writer.createText( data.item.data );
-
-				writer.insert( insertPosition, element );
-				mapper.bindElements( data.item, element );
-			}, { priority: 'highest' } );
-
-			setModelData( model, '<listItem listType="todo" listIndent="0">Foo</listItem>' );
-
-			expect( editor.getData() ).to.equal( '<test>Foo</test>' );
-		} );
-
-		it( 'should handle links inside to-do list item', () => {
-			setModelData( model, '<listItem listType="todo" listIndent="0"><$text linkHref="foo">Foo</$text> Bar</listItem>' );
-
-			expect( editor.getData() ).to.equal(
+		it( 'should wrap a checkbox and first paragraph in a label element', () => {
+			testData(
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">bar</paragraph>',
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<label class="todo-list__label">' +
 							'<input type="checkbox" disabled="disabled">' +
-							'<span class="todo-list__label__description"><a href="foo">Foo</a> Bar</span>' +
+							'<span class="todo-list__label__description">foo</span>' +
 						'</label>' +
+						'<p>bar</p>' +
 					'</li>' +
 				'</ul>'
 			);
 		} );
-	} );
 
-	describe( 'data pipeline v -> m', () => {
-		it( 'should convert li with checkbox before the first text node as to-do list item', () => {
-			editor.setData( '<ul><li><input type="checkbox">foo</li></ul>' );
-
-			expect( getModelData( model ) ).to.equalMarkup( '<listItem listIndent="0" listType="todo">[]foo</listItem>' );
-		} );
-
-		it( 'should convert li with checked checkbox as checked to-do list item', () => {
-			editor.setData(
-				'<ul>' +
-					'<li><input type="checkbox" checked="checked">a</li>' +
-					'<li><input type="checkbox" checked="anything">b</li>' +
-					'<li><input type="checkbox" checked>c</li>' +
-				'</ul>'
-			);
-
-			expect( getModelData( model ) ).to.equalMarkup(
-				'<listItem listIndent="0" listType="todo" todoListChecked="true">[]a</listItem>' +
-				'<listItem listIndent="0" listType="todo" todoListChecked="true">b</listItem>' +
-				'<listItem listIndent="0" listType="todo" todoListChecked="true">c</listItem>'
-			);
-		} );
-
-		it( 'should not convert li with checkbox in the middle of the text', () => {
-			editor.setData( '<ul><li>Foo<input type="checkbox">Bar</li></ul>' );
-
-			expect( getModelData( model ) ).to.equalMarkup( '<listItem listIndent="0" listType="bulleted">[]FooBar</listItem>' );
-		} );
-
-		it( 'should convert li with checkbox wrapped by inline elements when checkbox is before the first text node', () => {
-			editor.setData( '<ul><li><label><input type="checkbox">Foo</label></li></ul>' );
-
-			expect( getModelData( model ) ).to.equalMarkup( '<listItem listIndent="0" listType="todo">[]Foo</listItem>' );
-		} );
-
-		it( 'should split items with checkboxes - bulleted list', () => {
-			editor.setData(
-				'<ul>' +
-					'<li>foo</li>' +
-					'<li><input type="checkbox">bar</li>' +
-					'<li>biz</li>' +
-				'</ul>'
-			);
-
-			expect( getModelData( model ) ).to.equalMarkup(
-				'<listItem listIndent="0" listType="bulleted">[]foo</listItem>' +
-				'<listItem listIndent="0" listType="todo">bar</listItem>' +
-				'<listItem listIndent="0" listType="bulleted">biz</listItem>'
-			);
-		} );
-
-		it( 'should split items with checkboxes - numbered list', () => {
-			editor.setData(
-				'<ol>' +
-					'<li>foo</li>' +
-					'<li><input type="checkbox">bar</li>' +
-					'<li>biz</li>' +
-				'</ol>'
-			);
-
-			expect( getModelData( model ) ).to.equalMarkup(
-				'<listItem listIndent="0" listType="numbered">[]foo</listItem>' +
-				'<listItem listIndent="0" listType="todo">bar</listItem>' +
-				'<listItem listIndent="0" listType="numbered">biz</listItem>'
-			);
-		} );
-
-		it( 'should convert checkbox in nested lists', () => {
-			editor.setData(
-				'<ul>' +
-					'<li>1.1' +
-						'<ul>' +
-							'<li><input type="checkbox">2.2</li>' +
-							'<li>3.2</li>' +
-						'</ul>' +
-					'</li>' +
-					'<li>4.1' +
-						'<ol>' +
-							'<li>5.2</li>' +
-							'<li><input type="checkbox">6.2</li>' +
-						'</ol>' +
-					'</li>' +
-					'<li>7.1</li>' +
-				'</ul>'
-			);
-
-			expect( getModelData( model ) ).to.equalMarkup(
-				'<listItem listIndent="0" listType="bulleted">[]1.1</listItem>' +
-				'<listItem listIndent="1" listType="todo">2.2</listItem>' +
-				'<listItem listIndent="1" listType="todo">3.2</listItem>' +
-				'<listItem listIndent="0" listType="bulleted">4.1</listItem>' +
-				'<listItem listIndent="1" listType="numbered">5.2</listItem>' +
-				'<listItem listIndent="1" listType="numbered">6.2</listItem>' +
-				'<listItem listIndent="0" listType="bulleted">7.1</listItem>'
-			);
-		} );
-
-		it( 'should convert to-do list returned by m -> v data pipeline conversion', () => {
-			editor.setData(
+		it( 'should wrap only a checkbox in a label element if first element is a blockquote', () => {
+			testData(
+				'<blockQuote listIndent="0" listItemId="a00" listType="todo">' +
+					'<paragraph>foo</paragraph>' +
+				'</blockQuote>',
 				'<ul class="todo-list">' +
 					'<li>' +
-						'<label class="todo-list__label">' +
-							'<input type="checkbox" disabled="disabled" checked="checked">' +
-							'<span class="todo-list__label__description">1.1</span>' +
-						'</label>' +
-						'<ul class="todo-list">' +
-							'<li>' +
-								'<label class="todo-list__label">' +
-									'<input type="checkbox" disabled="disabled">' +
-									'<span class="todo-list__label__description">2.2</span>' +
-								'</label>' +
-							'</li>' +
-							'<li>' +
-								'<label class="todo-list__label">' +
-									'<input type="checkbox" disabled="disabled" checked="checked">' +
-									'<span class="todo-list__label__description">3.2</span>' +
-								'</label>' +
-							'</li>' +
-						'</ul>' +
-					'</li>' +
-					'<li>' +
-						'<label class="todo-list__label">' +
+						'<label class="todo-list__label todo-list__label_without-description">' +
 							'<input type="checkbox" disabled="disabled">' +
-							'<span class="todo-list__label__description">4.1</span>' +
 						'</label>' +
+						'<blockquote><p>foo</p></blockquote>' +
 					'</li>' +
 				'</ul>'
 			);
-
-			expect( getModelData( model ) ).to.equalMarkup(
-				'<listItem listIndent="0" listType="todo" todoListChecked="true">[]1.1</listItem>' +
-				'<listItem listIndent="1" listType="todo">2.2</listItem>' +
-				'<listItem listIndent="1" listType="todo" todoListChecked="true">3.2</listItem>' +
-				'<listItem listIndent="0" listType="todo">4.1</listItem>'
-			);
 		} );
 
-		it( 'should be overwritable', () => {
-			editor.data.upcastDispatcher.on( 'element:input', ( evt, data, conversionApi ) => {
-				conversionApi.consumable.consume( data.viewItem, { name: true } );
-				conversionApi.writer.setAttribute( 'listType', 'numbered', data.modelCursor.parent );
-				data.modelRange = conversionApi.writer.createRange( data.modelCursor );
-			}, { priority: 'highest' } );
-
-			editor.setData(
-				'<ul>' +
-					'<li><input type="checkbox">foo</li>' +
+		it( 'should wrap only a checkbox in a label element if first element is a heading', () => {
+			testData(
+				'<heading1 listIndent="0" listItemId="a00" listType="todo">foo</heading1>',
+				'<ul class="todo-list">' +
+					'<li>' +
+						'<label class="todo-list__label todo-list__label_without-description">' +
+							'<input type="checkbox" disabled="disabled">' +
+						'</label>' +
+						'<h2>foo</h2>' +
+					'</li>' +
 				'</ul>'
 			);
+		} );
 
-			expect( getModelData( model ) ).to.equalMarkup( '<listItem listIndent="0" listType="numbered">[]foo</listItem>' );
+		it( 'should wrap only a checkbox in a label element if first element is a table', () => {
+			testData(
+				'<table listIndent="0" listItemId="a00" listType="todo">' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>foo</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>',
+				'<ul class="todo-list">' +
+					'<li>' +
+						'<label class="todo-list__label todo-list__label_without-description">' +
+							'<input type="checkbox" disabled="disabled">' +
+						'</label>' +
+						'<figure class="table">' +
+							'<table>' +
+								'<tbody>' +
+									'<tr>' +
+										'<td>foo</td>' +
+									'</tr>' +
+								'</tbody>' +
+							'</table>' +
+						'</figure>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should convert a todo list item with alignment set', () => {
+			testData(
+				'<paragraph listIndent="0" listItemId="a00" listType="todo" alignment="right">foo</paragraph>',
+
+				'<ul class="todo-list">' +
+					'<li>' +
+						'<label class="todo-list__label todo-list__label_without-description">' +
+							'<input type="checkbox" disabled="disabled">' +
+						'</label>' +
+						'<p style="text-align:right;">foo</p>' +
+					'</li>' +
+				'</ul>'
+			);
 		} );
 	} );
 
-	describe( 'todoListChecked attribute model post-fixer', () => {
-		it( 'should remove todoListChecked attribute when checked todoListItem is renamed', () => {
-			setModelData( model, '<listItem listType="todo" listIndent="0" todoListChecked="true">fo[]o</listItem>' );
+	describe( 'postfixers', () => {
+		describe( '`todoListChecked` attribute should be the same in all blocks of a single list item', () => {
+			it( 'should add missing `todoListChecked` attribute to other blocks', () => {
+				testPostfixer(
+					'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">bar</paragraph>' +
+					'<heading1 listIndent="0" listItemId="a00" listType="todo">baz</heading1>',
 
-			editor.execute( 'todoList' );
-
-			expect( getModelData( model ) ).to.equalMarkup( '<paragraph>fo[]o</paragraph>' );
-		} );
-	} );
-
-	describe( 'arrow key handling', () => {
-		let editor, model, view, viewDoc, domEvtDataStub;
-
-		describe( 'left arrow in a LTR (left–to–right) content', () => {
-			beforeEach( () => {
-				return VirtualTestEditor
-					.create( {
-						language: 'en',
-						plugins: [ Paragraph, TodoListEditing, Typing, BoldEditing, BlockQuoteEditing ]
-					} )
-					.then( newEditor => {
-						editor = newEditor;
-
-						model = editor.model;
-						view = editor.editing.view;
-						viewDoc = view.document;
-
-						model.schema.register( 'foo', {
-							allowWhere: '$block',
-							allowAttributes: [ 'listIndent', 'listType' ],
-							isBlock: true,
-							isObject: true
-						} );
-
-						domEvtDataStub = {
-							keyCode: getCode( 'arrowLeft' ),
-							preventDefault: sinon.spy(),
-							stopPropagation: sinon.spy(),
-							domTarget: {
-								ownerDocument: {
-									defaultView: {
-										getSelection: () => ( { rangeCount: 0 } )
-									}
-								}
-							}
-						};
-					} );
+					'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">bar</paragraph>' +
+					'<heading1 listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">baz</heading1>'
+				);
 			} );
 
-			afterEach( () => {
-				editor.destroy();
+			it( 'should add missing `todoListChecked` attribute to other blocks excluding nested list items', () => {
+				testPostfixer(
+					'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">bar</paragraph>' +
+					'<paragraph listIndent="1" listItemId="a01" listType="todo">nested 1</paragraph>' +
+					'<paragraph listIndent="1" listItemId="a01" listType="todo">nested 2</paragraph>' +
+					'<heading1 listIndent="0" listItemId="a00" listType="todo">baz</heading1>',
+
+					'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">bar</paragraph>' +
+					'<paragraph listIndent="1" listItemId="a01" listType="todo">nested 1</paragraph>' +
+					'<paragraph listIndent="1" listItemId="a01" listType="todo">nested 2</paragraph>' +
+					'<heading1 listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">baz</heading1>'
+				);
 			} );
 
-			testArrowKey();
-		} );
+			it( 'should remove `todoListChecked` from other blocks', () => {
+				testPostfixer(
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">bar</paragraph>' +
+					'<heading1 listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">baz</heading1>',
 
-		describe( 'right arrow in a RTL (left–to–right) content', () => {
-			beforeEach( () => {
-				return VirtualTestEditor
-					.create( {
-						language: 'ar',
-						plugins: [ Paragraph, TodoListEditing, Typing, BoldEditing, BlockQuoteEditing ]
-					} )
-					.then( newEditor => {
-						editor = newEditor;
-
-						model = editor.model;
-						view = editor.editing.view;
-						viewDoc = view.document;
-
-						model.schema.register( 'foo', {
-							allowWhere: '$block',
-							allowAttributes: [ 'listIndent', 'listType' ],
-							isBlock: true,
-							isObject: true
-						} );
-
-						domEvtDataStub = {
-							keyCode: getCode( 'arrowRight' ),
-							preventDefault: sinon.spy(),
-							stopPropagation: sinon.spy(),
-							domTarget: {
-								ownerDocument: {
-									defaultView: {
-										getSelection: () => ( { rangeCount: 0 } )
-									}
-								}
-							}
-						};
-					} );
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">bar</paragraph>' +
+					'<heading1 listIndent="0" listItemId="a00" listType="todo">baz</heading1>'
+				);
 			} );
 
-			afterEach( () => {
-				editor.destroy();
-			} );
+			it( 'should remove `todoListChecked` from other blocks excluding nested list items', () => {
+				testPostfixer(
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">bar</paragraph>' +
+					'<paragraph listIndent="1" listItemId="a01" listType="todo" todoListChecked="true">nested 1</paragraph>' +
+					'<paragraph listIndent="1" listItemId="a01" listType="todo" todoListChecked="true">nested 2</paragraph>' +
+					'<heading1 listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">baz</heading1>',
 
-			testArrowKey();
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">bar</paragraph>' +
+					'<paragraph listIndent="1" listItemId="a01" listType="todo" todoListChecked="true">nested 1</paragraph>' +
+					'<paragraph listIndent="1" listItemId="a01" listType="todo" todoListChecked="true">nested 2</paragraph>' +
+					'<heading1 listIndent="0" listItemId="a00" listType="todo">baz</heading1>'
+				);
+			} );
 		} );
 
-		function testArrowKey() {
-			it( 'should jump at the end of the previous node when selection is after checkmark element', () => {
+		describe( '`todoListChecked` attribute should be applied only to todo list items', () => {
+			it( 'should remove `todoListChecked` from elements other than todo list items', () => {
+				testPostfixer(
+					'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a01" listType="bulleted" todoListChecked="true">foo</paragraph>' +
+					'<heading1 listIndent="0" listItemId="a02" listType="numbered" todoListChecked="true">baz</heading1>',
+
+					'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a01" listType="bulleted">foo</paragraph>' +
+					'<heading1 listIndent="0" listItemId="a02" listType="numbered">baz</heading1>'
+				);
+			} );
+
+			it( 'should remove `todoListChecked` attribute from list items that are converted from todo to bulleted type', () => {
 				setModelData( model,
-					'<blockQuote><paragraph>foo</paragraph></blockQuote>' +
-					'<listItem listIndent="0" listType="todo">[]bar</listItem>'
+					'[<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a01" listType="todo" todoListChecked="true">foo</paragraph>' +
+					'<heading1 listIndent="0" listItemId="a02" listType="todo" todoListChecked="true">baz</heading1>]'
 				);
 
-				viewDoc.fire( 'keydown', domEvtDataStub );
-
-				expect( getModelData( model ) ).to.equalMarkup(
-					'<blockQuote><paragraph>foo[]</paragraph></blockQuote>' +
-					'<listItem listIndent="0" listType="todo">bar</listItem>'
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a01" listType="todo" todoListChecked="true">foo</paragraph>' +
+					'<heading1 listIndent="0" listItemId="a02" listType="todo" todoListChecked="true">baz</heading1>'
 				);
 
-				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
-				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+				editor.execute( 'bulletedList' );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a01" listType="bulleted">foo</paragraph>' +
+					'<heading1 listIndent="0" listItemId="a02" listType="bulleted">baz</heading1>'
+				);
 			} );
-
-			it( 'should prevent default handler when list item is a first block element in the root', () => {
-				setModelData( model, '<listItem listIndent="0" listType="todo">[]bar</listItem>' );
-
-				viewDoc.fire( 'keydown', domEvtDataStub );
-
-				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
-				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
-
-				expect( getModelData( model ) ).to.equalMarkup( '<listItem listIndent="0" listType="todo">[]bar</listItem>' );
-			} );
-
-			it( 'should do nothing when selection is not collapsed', () => {
-				setModelData( model, '<listItem listIndent="0" listType="todo">[bar]</listItem>' );
-
-				viewDoc.fire( 'keydown', domEvtDataStub );
-
-				sinon.assert.notCalled( domEvtDataStub.preventDefault );
-				sinon.assert.notCalled( domEvtDataStub.stopPropagation );
-			} );
-
-			it( 'should do nothing when selection is not at the beginning list item', () => {
-				setModelData( model, '<listItem listIndent="0" listType="todo">b[]ar</listItem>' );
-
-				viewDoc.fire( 'keydown', domEvtDataStub );
-
-				sinon.assert.notCalled( domEvtDataStub.preventDefault );
-				sinon.assert.notCalled( domEvtDataStub.stopPropagation );
-			} );
-
-			it( 'should do nothing when other arrow key was pressed', () => {
-				domEvtDataStub.keyCode = getCode( 'arrowUp' );
-
-				setModelData( model, '<listItem listIndent="0" listType="todo">b[]ar</listItem>' );
-
-				viewDoc.fire( 'keydown', domEvtDataStub );
-
-				sinon.assert.notCalled( domEvtDataStub.preventDefault );
-				sinon.assert.notCalled( domEvtDataStub.stopPropagation );
-			} );
-
-			it( 'should do nothing when other arrow key was pressed', () => {
-				setModelData( model, '<listItem listIndent="0" listType="todo">[]bar</listItem>' );
-
-				domEvtDataStub = {
-					keyCode: getCode( 'arrowDown' ),
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy(),
-					domTarget: {
-						ownerDocument: {
-							defaultView: {
-								getSelection: () => ( { rangeCount: 0 } )
-							}
-						}
-					}
-				};
-
-				viewDoc.fire( 'keydown', domEvtDataStub );
-
-				sinon.assert.notCalled( domEvtDataStub.preventDefault );
-				sinon.assert.notCalled( domEvtDataStub.stopPropagation );
-			} );
-		}
+		} );
 	} );
 
-	describe( 'Ctrl+enter keystroke handling', () => {
-		it( 'should execute CheckTodoListCommand', () => {
+	describe( 'user interaction events', () => {
+		it( 'should toggle check state of selected to-do list item on keystroke', () => {
 			const command = editor.commands.get( 'checkTodoList' );
 
 			sinon.spy( command, 'execute' );
@@ -1211,177 +971,264 @@ describe( 'TodoListEditing', () => {
 				domEvtDataStub.ctrlKey = true;
 			}
 
-			// First call.
-			viewDoc.fire( 'keydown', domEvtDataStub );
+			view.document.fire( 'keydown', domEvtDataStub );
 
 			sinon.assert.calledOnce( command.execute );
 
-			// Second call.
-			viewDoc.fire( 'keydown', domEvtDataStub );
+			view.document.fire( 'keydown', domEvtDataStub );
 
 			sinon.assert.calledTwice( command.execute );
 		} );
-	} );
-} );
 
-describe( 'TodoListEditing - checkbox rendering', () => {
-	let editorElement, editor, model, modelDoc, view, viewDoc, viewRoot;
+		it( 'should toggle check state of a to-do list item on clicking the checkbox', () => {
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>'
+			);
 
-	beforeEach( () => {
-		editorElement = document.createElement( 'div' );
-		document.body.appendChild( editorElement );
+			const command = editor.commands.get( 'checkTodoList' );
 
-		return ClassicTestEditor
-			.create( editorElement, {
-				plugins: [ Paragraph, TodoListEditing ]
-			} )
-			.then( newEditor => {
-				editor = newEditor;
+			sinon.spy( command, 'execute' );
 
-				model = editor.model;
-				modelDoc = model.document;
+			view.getDomRoot().querySelector( 'input' ).dispatchEvent( new Event( 'change', { 'bubbles': true } ) );
 
-				view = editor.editing.view;
-				viewDoc = view.document;
-				viewRoot = viewDoc.getRoot();
+			sinon.assert.calledOnce( command.execute );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">foo</paragraph>'
+			);
+		} );
+
+		it( 'should toggle check state of a to-do list item on todoCheckboxChange event with input target element', () => {
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>'
+			);
+
+			const command = editor.commands.get( 'checkTodoList' );
+
+			sinon.spy( command, 'execute' );
+
+			view.document.fire( 'todoCheckboxChange', {
+				target: view.document.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 ).getChild( 0 ).getChild( 0 )
 			} );
+
+			sinon.assert.calledOnce( command.execute );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">foo</paragraph>'
+			);
+		} );
+
+		it( 'should not toggle check state of a to-do list item on todoCheckboxChange event without target element', () => {
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>'
+			);
+
+			const command = editor.commands.get( 'checkTodoList' );
+
+			sinon.spy( command, 'execute' );
+
+			view.document.fire( 'todoCheckboxChange', {} );
+
+			sinon.assert.notCalled( command.execute );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>'
+			);
+		} );
+
+		it( 'should not toggle check state of a to-do list item on todoCheckboxChange event with target element', () => {
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>'
+			);
+
+			const command = editor.commands.get( 'checkTodoList' );
+
+			sinon.spy( command, 'execute' );
+
+			view.document.fire( 'todoCheckboxChange', {
+				target: view.document.getRoot()
+			} );
+
+			sinon.assert.notCalled( command.execute );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>'
+			);
+		} );
+
+		describe( 'arrow keys', () => {
+			it( 'should move collapsed selection at start of following todo list item on right arrow in todo list item', () => {
+				setModelData( model,
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">foo[]</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a01" listType="todo">bar</paragraph>'
+				);
+
+				const eventData = {
+					keyCode: getCode( 'arrowRight' ),
+					preventDefault: () => {},
+					stopPropagation: () => {}
+				};
+
+				view.document.fire( 'keydown', eventData );
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a01" listType="todo">[]bar</paragraph>'
+				);
+			} );
+
+			it( 'should move collapsed selection at start of following todo list item on right arrow in paragraph', () => {
+				setModelData( model,
+					'<paragraph>foo[]</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a01" listType="todo">bar</paragraph>'
+				);
+
+				const eventData = {
+					keyCode: getCode( 'arrowRight' ),
+					preventDefault: () => {},
+					stopPropagation: () => {}
+				};
+
+				view.document.fire( 'keydown', eventData );
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					'<paragraph>foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a01" listType="todo">[]bar</paragraph>'
+				);
+			} );
+
+			it( 'should do nothing if selection is at end of the last todo list item and right arrow is pressed', () => {
+				setModelData( model,
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">foo[]</paragraph>'
+				);
+
+				const eventData = {
+					keyCode: getCode( 'arrowRight' ),
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy(),
+					domTarget: view.getDomRoot()
+				};
+
+				view.document.fire( 'keydown', eventData );
+
+				sinon.assert.notCalled( eventData.preventDefault );
+				sinon.assert.notCalled( eventData.stopPropagation );
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">foo[]</paragraph>'
+				);
+			} );
+
+			it( 'should not move non-collapsed selection at start of following todo list item on right arrow key in todo list item', () => {
+				setModelData( model,
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">fo[o]</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a01" listType="todo">bar</paragraph>'
+				);
+
+				const eventData = {
+					keyCode: getCode( 'arrowRight' ),
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy(),
+					domTarget: view.getDomRoot()
+				};
+
+				view.document.fire( 'keydown', eventData );
+
+				sinon.assert.notCalled( eventData.preventDefault );
+				sinon.assert.notCalled( eventData.stopPropagation );
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">fo[o]</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a01" listType="todo">bar</paragraph>'
+				);
+			} );
+
+			it( 'should not move non-collapsed selection at start of following todo list item on right arrow key in paragraph', () => {
+				setModelData( model,
+					'<paragraph>fo[o]</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a01" listType="todo">bar</paragraph>'
+				);
+
+				const eventData = {
+					keyCode: getCode( 'arrowRight' ),
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy(),
+					domTarget: view.getDomRoot()
+				};
+
+				view.document.fire( 'keydown', eventData );
+
+				sinon.assert.notCalled( eventData.preventDefault );
+				sinon.assert.notCalled( eventData.stopPropagation );
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					'<paragraph>fo[o]</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a01" listType="todo">bar</paragraph>'
+				);
+			} );
+
+			it( 'should move a collapsed selection to the end of the preceding todo list item on left arrow', () => {
+				setModelData( model,
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a01" listType="todo">[]bar</paragraph>'
+				);
+
+				const eventData = {
+					keyCode: getCode( 'arrowLeft' ),
+					preventDefault: () => {},
+					stopPropagation: () => {},
+					domTarget: view.getDomRoot()
+				};
+
+				view.document.fire( 'keydown', eventData );
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">foo[]</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a01" listType="todo">bar</paragraph>'
+				);
+			} );
+
+			it( 'should do nothing if selection is at start of first element which is a todo list item and left arrow is pressed', () => {
+				setModelData( model,
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">[]foo</paragraph>'
+				);
+
+				const eventData = {
+					keyCode: getCode( 'arrowLeft' ),
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy(),
+					domTarget: view.getDomRoot()
+				};
+
+				view.document.fire( 'keydown', eventData );
+
+				sinon.assert.notCalled( eventData.preventDefault );
+				sinon.assert.notCalled( eventData.stopPropagation );
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">[]foo</paragraph>'
+				);
+			} );
+		} );
 	} );
 
-	afterEach( () => {
-		editorElement.remove();
+	function testUpcast( input, output ) {
+		editor.setData( input );
+		expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( output );
+	}
 
-		return editor.destroy();
-	} );
+	function testEditing( input, output ) {
+		setModelData( model, input );
+		expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( output );
+	}
 
-	it( 'should render checkbox inside a checkmark UIElement', () => {
-		setModelData( model, '<listItem listIndent="0" listType="todo">foo</listItem>' );
+	function testData( input, output ) {
+		setModelData( model, input );
+		expect( editor.getData() ).to.equalMarkup( output );
+	}
 
-		const checkmarkViewElement = viewRoot.getChild( 0 ).getChild( 0 ).getChild( 0 );
-
-		expect( checkmarkViewElement.is( 'uiElement' ) ).to.equal( true );
-
-		const checkmarkDomElement = view.domConverter.mapViewToDom( checkmarkViewElement );
-		const checkboxElement = checkmarkDomElement.children[ 0 ];
-
-		expect( checkboxElement.tagName ).to.equal( 'INPUT' );
-		expect( checkboxElement.checked ).to.equal( false );
-		expect( checkboxElement.getAttribute( 'tabindex' ) ).to.equal( '-1' );
-	} );
-
-	it( 'should render checked checkbox inside a checkmark UIElement', () => {
-		setModelData( model, '<listItem listIndent="0" listType="todo" todoListChecked="true">foo</listItem>' );
-
-		const checkmarkViewElement = viewRoot.getChild( 0 ).getChild( 0 ).getChild( 0 );
-		const checkmarkDomElement = view.domConverter.mapViewToDom( checkmarkViewElement );
-		const checkboxElement = checkmarkDomElement.children[ 0 ];
-
-		expect( checkboxElement.checked ).to.equal( true );
-	} );
-
-	it( 'should toggle `todoListChecked` state using command when click on checkbox element', () => {
-		setModelData( model,
-			'<listItem listIndent="0" listType="todo">foo</listItem>' +
-			'<paragraph>b[a]r</paragraph>'
-		);
-
-		const command = editor.commands.get( 'checkTodoList' );
-
-		sinon.spy( command, 'execute' );
-
-		let checkmarkViewElement = viewRoot.getChild( 0 ).getChild( 0 ).getChild( 0 );
-		let checkmarkDomElement = view.domConverter.mapViewToDom( checkmarkViewElement );
-		let checkboxElement = checkmarkDomElement.children[ 0 ];
-
-		expect( checkboxElement.checked ).to.equal( false );
-
-		checkboxElement.dispatchEvent( new Event( 'change' ) );
-
-		checkmarkViewElement = viewRoot.getChild( 0 ).getChild( 0 ).getChild( 0 );
-		checkmarkDomElement = view.domConverter.mapViewToDom( checkmarkViewElement );
-		checkboxElement = checkmarkDomElement.children[ 0 ];
-
-		sinon.assert.calledOnce( command.execute );
-		expect( checkboxElement.checked ).to.equal( true );
-		expect( getModelData( model ) ).to.equalMarkup(
-			'<listItem listIndent="0" listType="todo" todoListChecked="true">foo</listItem>' +
-			'<paragraph>b[a]r</paragraph>'
-		);
-
-		checkboxElement.dispatchEvent( new Event( 'change' ) );
-
-		checkmarkViewElement = viewRoot.getChild( 0 ).getChild( 0 ).getChild( 0 );
-		checkmarkDomElement = view.domConverter.mapViewToDom( checkmarkViewElement );
-		checkboxElement = checkmarkDomElement.children[ 0 ];
-
-		sinon.assert.calledTwice( command.execute );
-		expect( checkboxElement.checked ).to.equal( false );
-		expect( getModelData( model ) ).to.equalMarkup(
-			'<listItem listIndent="0" listType="todo">foo</listItem>' +
-			'<paragraph>b[a]r</paragraph>'
-		);
-	} );
-
-	it( 'should toggle `todoListChecked` state using command when checkmark was created as a result of changing list type', () => {
-		setModelData( model, '<listItem listIndent="0" listType="numbered">f[]oo</listItem>' );
-		editor.execute( 'todoList' );
-
-		const command = editor.commands.get( 'checkTodoList' );
-
-		sinon.spy( command, 'execute' );
-
-		let checkmarkViewElement = viewRoot.getChild( 0 ).getChild( 0 ).getChild( 0 );
-		let checkmarkDomElement = view.domConverter.mapViewToDom( checkmarkViewElement );
-		let checkboxElement = checkmarkDomElement.children[ 0 ];
-
-		expect( checkboxElement.checked ).to.equal( false );
-
-		checkboxElement.dispatchEvent( new Event( 'change' ) );
-
-		checkmarkViewElement = viewRoot.getChild( 0 ).getChild( 0 ).getChild( 0 );
-		checkmarkDomElement = view.domConverter.mapViewToDom( checkmarkViewElement );
-		checkboxElement = checkmarkDomElement.children[ 0 ];
-
-		sinon.assert.calledOnce( command.execute );
-		expect( checkboxElement.checked ).to.equal( true );
-		expect( getModelData( model ) ).to.equalMarkup(
-			'<listItem listIndent="0" listType="todo" todoListChecked="true">f[]oo</listItem>'
-		);
-	} );
-
-	it( 'should toggle `todoListChecked` state using command in root created in a runtime', () => {
-		const dynamicRootElement = document.createElement( 'div' );
-		const dynamicRootEditable = new InlineEditableUIView( editor.locale, view, dynamicRootElement );
-
-		document.body.appendChild( dynamicRootElement );
-
-		modelDoc.createRoot( '$root', 'dynamicRoot' );
-		dynamicRootEditable.name = 'dynamicRoot';
-		view.attachDomRoot( dynamicRootElement, 'dynamicRoot' );
-
-		const command = editor.commands.get( 'checkTodoList' );
-
-		sinon.spy( command, 'execute' );
-
-		setModelData( model, '<listItem listIndent="0" listType="todo">f[]oo</listItem>', { rootName: 'dynamicRoot' } );
-
-		let checkmarkViewElement = viewDoc.getRoot( 'dynamicRoot' ).getChild( 0 ).getChild( 0 ).getChild( 0 );
-		let checkmarkDomElement = view.domConverter.mapViewToDom( checkmarkViewElement );
-		let checkboxElement = checkmarkDomElement.children[ 0 ];
-
-		expect( checkboxElement.checked ).to.equal( false );
-
-		checkboxElement.dispatchEvent( new Event( 'change' ) );
-
-		checkmarkViewElement = viewDoc.getRoot( 'dynamicRoot' ).getChild( 0 ).getChild( 0 ).getChild( 0 );
-		checkmarkDomElement = view.domConverter.mapViewToDom( checkmarkViewElement );
-		checkboxElement = checkmarkDomElement.children[ 0 ];
-
-		sinon.assert.calledOnce( command.execute );
-		expect( checkboxElement.checked ).to.equal( true );
-		expect( getModelData( model, { rootName: 'dynamicRoot' } ) ).to.equal(
-			'<listItem listIndent="0" listType="todo" todoListChecked="true">f[]oo</listItem>'
-		);
-
-		dynamicRootElement.remove();
-	} );
+	function testPostfixer( input, output ) {
+		setModelData( model, input );
+		expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( output );
+	}
 } );

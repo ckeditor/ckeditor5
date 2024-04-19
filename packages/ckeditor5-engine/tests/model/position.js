@@ -1,31 +1,31 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Model from '../../src/model/model';
-import DocumentFragment from '../../src/model/documentfragment';
-import Element from '../../src/model/element';
-import Text from '../../src/model/text';
-import TextProxy from '../../src/model/textproxy';
+import Model from '../../src/model/model.js';
+import DocumentFragment from '../../src/model/documentfragment.js';
+import Element from '../../src/model/element.js';
+import Text from '../../src/model/text.js';
+import TextProxy from '../../src/model/textproxy.js';
 import {
 	default as Position,
 	getTextNodeAtPosition,
 	getNodeAfterPosition,
 	getNodeBeforePosition
-} from '../../src/model/position';
-import Range from '../../src/model/range';
-import MarkerOperation from '../../src/model/operation/markeroperation';
-import AttributeOperation from '../../src/model/operation/attributeoperation';
-import InsertOperation from '../../src/model/operation/insertoperation';
-import MoveOperation from '../../src/model/operation/moveoperation';
-import RenameOperation from '../../src/model/operation/renameoperation';
-import MergeOperation from '../../src/model/operation/mergeoperation';
-import SplitOperation from '../../src/model/operation/splitoperation';
+} from '../../src/model/position.js';
+import Range from '../../src/model/range.js';
+import MarkerOperation from '../../src/model/operation/markeroperation.js';
+import AttributeOperation from '../../src/model/operation/attributeoperation.js';
+import InsertOperation from '../../src/model/operation/insertoperation.js';
+import MoveOperation from '../../src/model/operation/moveoperation.js';
+import RenameOperation from '../../src/model/operation/renameoperation.js';
+import MergeOperation from '../../src/model/operation/mergeoperation.js';
+import SplitOperation from '../../src/model/operation/splitoperation.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import LivePosition from '../../src/model/liveposition';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import LivePosition from '../../src/model/liveposition.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'Position', () => {
 	let doc, model, root, otherRoot, p, ul, li1, li2, f, o, z, b, a, r, foz, bar;

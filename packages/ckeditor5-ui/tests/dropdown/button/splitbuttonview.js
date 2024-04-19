@@ -1,12 +1,12 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import ButtonView from '../../../src/button/buttonview';
-import SplitButtonView from '../../../src/dropdown/button/splitbuttonview';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import ButtonView from '../../../src/button/buttonview.js';
+import SplitButtonView from '../../../src/dropdown/button/splitbuttonview.js';
 
 describe( 'SplitButtonView', () => {
 	let locale, view;
@@ -281,6 +281,154 @@ describe( 'SplitButtonView', () => {
 			view.tooltipPosition = 'n';
 
 			expect( view.actionView.tooltipPosition ).to.equal( 'n' );
+		} );
+	} );
+
+	describe( 'custom actionView button', () => {
+		let customButton;
+
+		class CustomButtonView extends ButtonView {}
+
+		beforeEach( () => {
+			customButton = new CustomButtonView( locale );
+			view = new SplitButtonView( locale, customButton );
+
+			view.render();
+		} );
+
+		it( 'creates custom view#actionView', () => {
+			expect( view.actionView ).to.be.instanceOf( CustomButtonView );
+			expect( view.actionView ).to.equal( customButton );
+			expect( view.actionView.element.classList.contains( 'ck-splitbutton__action' ) ).to.be.true;
+		} );
+
+		it( 'does not adds isToggleable to view#actionView', () => {
+			expect( view.actionView.isToggleable ).to.be.false;
+
+			view.isToggleable = true;
+
+			expect( view.actionView.isToggleable ).to.be.false;
+		} );
+
+		it( 'creates view#arrowView', () => {
+			expect( view.arrowView ).to.be.instanceOf( ButtonView );
+			expect( view.arrowView.element.classList.contains( 'ck-splitbutton__arrow' ) ).to.be.true;
+			expect( view.arrowView.element.attributes[ 'aria-haspopup' ].value ).to.equal( 'true' );
+			expect( view.arrowView.icon ).to.be.not.undefined;
+			expect( view.arrowView.tooltip ).to.equal( view.tooltip );
+			expect( view.arrowView.label ).to.equal( view.label );
+		} );
+
+		it( 'creates element from template', () => {
+			expect( view.element.tagName ).to.equal( 'DIV' );
+			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
+			expect( view.element.classList.contains( 'ck-splitbutton' ) ).to.be.true;
+		} );
+
+		it( 'binds #isVisible to the template', () => {
+			expect( view.element.classList.contains( 'ck-hidden' ) ).to.be.false;
+
+			view.isVisible = false;
+
+			expect( view.element.classList.contains( 'ck-hidden' ) ).to.be.true;
+
+			// There should be no binding to the action view. Only the entire split button should react.
+			expect( view.actionView.element.classList.contains( 'ck-hidden' ) ).to.be.false;
+		} );
+
+		describe( 'bindings', () => {
+			it( 'delegates actionView#execute to view#execute', () => {
+				const spy = sinon.spy();
+
+				view.on( 'execute', spy );
+
+				view.actionView.fire( 'execute' );
+
+				sinon.assert.calledOnce( spy );
+			} );
+
+			it( 'does not bind actionView#icon to view', () => {
+				expect( view.actionView.icon ).to.be.undefined;
+
+				view.icon = 'foo';
+
+				expect( view.actionView.icon ).to.be.undefined;
+			} );
+
+			it( 'does not bind actionView#isEnabled to view', () => {
+				expect( view.actionView.isEnabled ).to.be.true;
+
+				view.isEnabled = false;
+
+				expect( view.actionView.isEnabled ).to.be.true;
+			} );
+
+			it( 'does not bind actionView#label to view', () => {
+				expect( view.actionView.label ).to.be.undefined;
+
+				view.label = 'foo';
+
+				expect( view.actionView.label ).to.be.undefined;
+			} );
+
+			it( 'delegates arrowView#execute to view#open', () => {
+				const spy = sinon.spy();
+
+				view.on( 'open', spy );
+
+				view.arrowView.fire( 'execute' );
+
+				sinon.assert.calledOnce( spy );
+			} );
+
+			it( 'binds arrowView#isEnabled to view', () => {
+				expect( view.arrowView.isEnabled ).to.be.true;
+
+				view.isEnabled = false;
+
+				expect( view.arrowView.isEnabled ).to.be.false;
+			} );
+
+			it( 'does not bind actionView#tabindex to view', () => {
+				expect( view.actionView.tabindex ).to.equal( -1 );
+
+				view.tabindex = 1;
+
+				expect( view.actionView.tabindex ).to.equal( -1 );
+			} );
+
+			// Makes little sense for split button but the Button interface specifies it, so let's support it.
+			it( 'does not bind actionView#type to view', () => {
+				expect( view.actionView.type ).to.equal( 'button' );
+
+				view.type = 'submit';
+
+				expect( view.actionView.type ).to.equal( 'button' );
+			} );
+
+			it( 'does not bind actionView#withText to view', () => {
+				expect( view.actionView.withText ).to.be.false;
+
+				view.withText = true;
+
+				expect( view.actionView.withText ).to.be.false;
+			} );
+
+			it( 'does not bind actionView#tooltip to view', () => {
+				expect( view.actionView.tooltip ).to.be.false;
+
+				view.tooltip = true;
+
+				expect( view.actionView.tooltip ).to.be.false;
+			} );
+
+			it( 'does not bind actionView#tooltipPosition to view', () => {
+				expect( view.actionView.tooltipPosition ).to.equal( 's' );
+
+				view.tooltipPosition = 'n';
+
+				expect( view.actionView.tooltipPosition ).to.equal( 's' );
+			} );
 		} );
 	} );
 

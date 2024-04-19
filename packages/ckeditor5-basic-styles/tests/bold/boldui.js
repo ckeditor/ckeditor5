@@ -1,17 +1,17 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import BoldEditing from '../../src/bold/boldediting';
-import BoldUI from '../../src/bold/boldui';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import BoldEditing from '../../src/bold/boldediting.js';
+import BoldUI from '../../src/bold/boldui.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
 describe( 'BoldUI', () => {
 	let editor, boldView, editorElement;
@@ -28,8 +28,6 @@ describe( 'BoldUI', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-
-				boldView = editor.ui.componentFactory.create( 'bold' );
 			} );
 	} );
 
@@ -39,38 +37,61 @@ describe( 'BoldUI', () => {
 		return editor.destroy();
 	} );
 
-	it( 'should register bold feature component', () => {
-		expect( boldView ).to.be.instanceOf( ButtonView );
-		expect( boldView.isOn ).to.be.false;
-		expect( boldView.label ).to.equal( 'Bold' );
-		expect( boldView.icon ).to.match( /<svg / );
-		expect( boldView.keystroke ).to.equal( 'CTRL+B' );
-		expect( boldView.isToggleable ).to.be.true;
+	describe( 'toolbar button', () => {
+		beforeEach( () => {
+			boldView = editor.ui.componentFactory.create( 'bold' );
+		} );
+
+		testButton();
+
+		it( 'should bind `isOn` to bold command', () => {
+			const command = editor.commands.get( 'bold' );
+
+			expect( boldView.isOn ).to.be.false;
+
+			command.value = true;
+			expect( boldView.isOn ).to.be.true;
+		} );
 	} );
 
-	it( 'should execute bold command on model execute event', () => {
-		const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+	describe( 'menu bar button', () => {
+		beforeEach( () => {
+			boldView = editor.ui.componentFactory.create( 'menuBar:bold' );
+		} );
 
-		boldView.fire( 'execute' );
-
-		sinon.assert.calledOnce( executeSpy );
-		sinon.assert.calledWithExactly( executeSpy, 'bold' );
+		testButton();
 	} );
 
-	it( 'should bind model to bold command', () => {
-		const command = editor.commands.get( 'bold' );
+	function testButton() {
+		it( 'should register bold feature component', () => {
+			expect( boldView ).to.be.instanceOf( ButtonView );
+			expect( boldView.isOn ).to.be.false;
+			expect( boldView.label ).to.equal( 'Bold' );
+			expect( boldView.icon ).to.match( /<svg / );
+			expect( boldView.keystroke ).to.equal( 'CTRL+B' );
+			expect( boldView.isToggleable ).to.be.true;
+		} );
 
-		expect( boldView.isOn ).to.be.false;
-		expect( boldView.isEnabled ).to.be.true;
+		it( 'should execute bold command on model execute event', () => {
+			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
-		command.value = true;
-		expect( boldView.isOn ).to.be.true;
+			boldView.fire( 'execute' );
 
-		command.isEnabled = false;
-		expect( boldView.isEnabled ).to.be.false;
-	} );
+			sinon.assert.calledOnce( executeSpy );
+			sinon.assert.calledWithExactly( executeSpy, 'bold' );
+		} );
 
-	it( 'should set keystroke in the model', () => {
-		expect( boldView.keystroke ).to.equal( 'CTRL+B' );
-	} );
+		it( 'should bind `isEnabled` to bold command', () => {
+			const command = editor.commands.get( 'bold' );
+
+			expect( boldView.isEnabled ).to.be.true;
+
+			command.isEnabled = false;
+			expect( boldView.isEnabled ).to.be.false;
+		} );
+
+		it( 'should set keystroke in the model', () => {
+			expect( boldView.keystroke ).to.equal( 'CTRL+B' );
+		} );
+	}
 } );

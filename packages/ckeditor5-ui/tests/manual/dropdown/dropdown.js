@@ -1,26 +1,27 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals window, console */
 
-import Model from '../../../src/model';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+import Model from '../../../src/model.js';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection.js';
 
-import testUtils from '../../_utils/utils';
+import testUtils from '../../_utils/utils.js';
 
 import alignLeftIcon from '@ckeditor/ckeditor5-core/theme/icons/object-left.svg';
 import alignRightIcon from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';
 import alignCenterIcon from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
-import ButtonView from '../../../src/button/buttonview';
-import SplitButtonView from '../../../src/dropdown/button/splitbuttonview';
+import ButtonView from '../../../src/button/buttonview.js';
+import SplitButtonView from '../../../src/dropdown/button/splitbuttonview.js';
 
-import { createDropdown, addToolbarToDropdown, addListToDropdown } from '../../../src/dropdown/utils';
+import { createDropdown, addToolbarToDropdown, addListToDropdown } from '../../../src/dropdown/utils.js';
 
 const ui = testUtils.createTestUIView( {
 	dropdown: '#dropdown',
 	listDropdown: '#list-dropdown',
+	listDropdownWithGroups: '#list-dropdown-with-groups',
 	dropdownLabel: '#dropdown-label',
 	toolbarDropdown: '#dropdown-toolbar',
 	splitButton: '#dropdown-splitbutton'
@@ -73,6 +74,80 @@ function testList() {
 	ui.listDropdown.add( dropdownView );
 
 	window.listDropdownCollection = collection;
+	window.Model = Model;
+}
+
+function testListWithGroups() {
+	const collection = new Collection( { idProperty: 'label' } );
+
+	collection.addMany( [
+		{
+			type: 'button',
+			model: new Model( {
+				label: 'Item 1',
+				withText: true
+			} )
+		},
+		{
+			type: 'group',
+			label: 'Group 1',
+			items: new Collection( [
+				{
+					type: 'button',
+					model: new Model( {
+						label: 'Group 1, Item 1',
+						withText: true
+					} )
+				},
+				{
+					type: 'button',
+					model: new Model( {
+						label: 'Group 1, Item 1',
+						withText: true
+					} )
+				}
+			] )
+		},
+		{
+			type: 'group',
+			label: 'Group 2',
+			items: new Collection( [
+				{
+					type: 'button',
+					model: new Model( {
+						label: 'Group 2, Item 1',
+						withText: true
+					} )
+				},
+				{
+					type: 'button',
+					model: new Model( {
+						label: 'Group 2, Item 1',
+						withText: true
+					} )
+				}
+			] )
+		}
+	] );
+
+	const dropdownView = createDropdown( {} );
+
+	dropdownView.buttonView.set( {
+		label: 'ListDropdown (with groups)',
+		isEnabled: true,
+		isOn: false,
+		withText: true
+	} );
+
+	addListToDropdown( dropdownView, collection );
+
+	dropdownView.on( 'execute', evt => {
+		console.log( 'List#execute:', evt.source.label );
+	} );
+
+	ui.listDropdownWithGroups.add( dropdownView );
+
+	window.listDropdownWithGroupsCollection = collection;
 	window.Model = Model;
 }
 
@@ -160,6 +235,7 @@ function testSplitButton() {
 
 testEmpty();
 testList();
+testListWithGroups();
 testLongLabel();
 testToolbar();
 testSplitButton();

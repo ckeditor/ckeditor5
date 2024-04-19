@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,18 +7,25 @@
  * @module ui/colorpicker/colorpickerview
  */
 
-import { convertColor, convertToHex, type ColorPickerViewConfig } from './utils';
+import { convertColor, convertToHex, registerCustomElement, type ColorPickerViewConfig } from './utils.js';
 
 import { type Locale, global, env } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunc } from 'lodash-es';
-import View from '../view';
-import type InputTextView from '../inputtext/inputtextview';
-import type ViewCollection from '../viewcollection';
-import LabeledFieldView from '../labeledfield/labeledfieldview';
-import { createLabeledInputText } from '../labeledfield/utils';
+import View from '../view.js';
+import type InputTextView from '../inputtext/inputtextview.js';
+import type ViewCollection from '../viewcollection.js';
+import LabeledFieldView from '../labeledfield/labeledfieldview.js';
+import { createLabeledInputText } from '../labeledfield/utils.js';
 
-import 'vanilla-colorful/hex-color-picker.js';
+// Custom export due to https://github.com/ckeditor/ckeditor5/issues/15698.
+import { HexBase } from 'vanilla-colorful/lib/entrypoints/hex';
 import '../../theme/components/colorpicker/colorpicker.css';
+
+declare global {
+	interface HTMLElementTagNameMap {
+		'hex-color-picker': HexBase;
+	}
+}
 
 const waitingTime = 150;
 
@@ -29,7 +36,7 @@ export default class ColorPickerView extends View {
 	/**
 	 * Element with saturation and hue sliders.
 	 */
-	declare public picker: HTMLElement;
+	declare public picker: HexBase;
 
 	/**
 	 * Container for a `#` sign prefix and an input for displaying and defining custom colors
@@ -151,6 +158,9 @@ export default class ColorPickerView extends View {
 	public override render(): void {
 		super.render();
 
+		// Extracted to the helper to make it testable.
+		registerCustomElement( 'hex-color-picker', HexBase );
+
 		this.picker = global.document.createElement( 'hex-color-picker' );
 		this.picker.setAttribute( 'class', 'hex-color-picker' );
 		this.picker.setAttribute( 'tabindex', '-1' );
@@ -168,16 +178,15 @@ export default class ColorPickerView extends View {
 			const styleSheetForFocusedColorPicker = document.createElement( 'style' );
 
 			styleSheetForFocusedColorPicker.textContent = '[role="slider"]:focus [part$="pointer"] {' +
-					'border: 1px solid #fff;' +
-					'outline: 1px solid var(--ck-color-focus-border);' +
-					'box-shadow: 0 0 0 2px #fff;' +
+				'border: 1px solid #fff;' +
+				'outline: 1px solid var(--ck-color-focus-border);' +
+				'box-shadow: 0 0 0 2px #fff;' +
 				'}';
 			this.picker.shadowRoot!.appendChild( styleSheetForFocusedColorPicker );
 		}
 
 		this.picker.addEventListener( 'color-changed', event => {
-			const customEvent = event as CustomEvent;
-			const color = customEvent.detail.value;
+			const color = event.detail.value;
 			this._debounceColorPickerEvent( color );
 		} );
 	}
@@ -313,7 +322,7 @@ function convertColorToCommonHexFormat( inputColor: string ): string {
 // View abstraction over pointer in color picker.
 class SliderView extends View {
 	/**
-	 * @param element HTML elemnt of slider in color picker.
+	 * @param element HTML element of slider in color picker.
 	 */
 	constructor( element: HTMLElement ) {
 		super();

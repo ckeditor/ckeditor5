@@ -1,20 +1,21 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Table from '../../../src/table';
-import TableCellProperties from '../../../src/tablecellproperties';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import View from '@ckeditor/ckeditor5-ui/src/view';
-import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import Table from '../../../src/table.js';
+import TableCellProperties from '../../../src/tablecellproperties.js';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import View from '@ckeditor/ckeditor5-ui/src/view.js';
+import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview.js';
 
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { modelTable } from '../../_utils/utils';
-import { getBalloonCellPositionData, repositionContextualBalloon } from '../../../src/utils/ui/contextualballoon';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { modelTable } from '../../_utils/utils.js';
+import { getBalloonCellPositionData, repositionContextualBalloon } from '../../../src/utils/ui/contextualballoon.js';
 
 describe( 'table utils', () => {
 	let editor, editingView, balloon, editorElement;
@@ -27,7 +28,7 @@ describe( 'table utils', () => {
 
 		return ClassicEditor
 			.create( editorElement, {
-				plugins: [ Table, TableCellProperties, Paragraph ]
+				plugins: [ Table, TableCellProperties, Paragraph, ClipboardPipeline ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -96,7 +97,7 @@ describe( 'table utils', () => {
 			} );
 
 			describe( 'with respect to the entire table', () => {
-				it( 'should re-position the ContextualBalloon when the table is selected', () => {
+				it( 'should re-position the ContextualBalloon when the selection is in the table', () => {
 					const spy = sinon.spy( balloon, 'updatePosition' );
 					const defaultPositions = BalloonPanelView.defaultPositions;
 					const view = new View();
@@ -118,6 +119,44 @@ describe( 'table utils', () => {
 					repositionContextualBalloon( editor, 'table' );
 
 					const modelTable = editor.model.document.selection.getFirstPosition().findAncestor( 'table' );
+					const viewTable = editor.editing.mapper.toViewElement( modelTable );
+
+					sinon.assert.calledWithExactly( spy, {
+						target: editingView.domConverter.mapViewToDom( viewTable ),
+						positions: [
+							defaultPositions.northArrowSouth,
+							defaultPositions.northArrowSouthWest,
+							defaultPositions.northArrowSouthEast,
+							defaultPositions.southArrowNorth,
+							defaultPositions.southArrowNorthWest,
+							defaultPositions.southArrowNorthEast,
+							defaultPositions.viewportStickyNorth
+						]
+					} );
+				} );
+
+				it( 'should re-position the ContextualBalloon when the selection is over the table', () => {
+					const spy = sinon.spy( balloon, 'updatePosition' );
+					const defaultPositions = BalloonPanelView.defaultPositions;
+					const view = new View();
+
+					view.element = global.document.createElement( 'div' );
+
+					balloon.add( {
+						view,
+						position: {
+							target: global.document.body
+						}
+					} );
+
+					setData( editor.model,
+						'[<table><tableRow>' +
+						'<tableCell><paragraph>foo</paragraph></tableCell>' +
+						'<tableCell><paragraph>bar</paragraph></tableCell>' +
+						'</tableRow></table>]' );
+					repositionContextualBalloon( editor, 'table' );
+
+					const modelTable = editor.model.document.selection.getSelectedElement();
 					const viewTable = editor.editing.mapper.toViewElement( modelTable );
 
 					sinon.assert.calledWithExactly( spy, {

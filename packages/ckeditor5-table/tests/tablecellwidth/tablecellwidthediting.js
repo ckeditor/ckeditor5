@@ -1,16 +1,16 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import TableCellWidthEditing from '../../src/tablecellwidth/tablecellwidthediting';
-import TableCellWidthCommand from '../../src/tablecellwidth/commands/tablecellwidthcommand';
+import TableCellWidthEditing from '../../src/tablecellwidth/tablecellwidthediting.js';
+import TableCellWidthCommand from '../../src/tablecellwidth/commands/tablecellwidthcommand.js';
 
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { assertTableCellStyle } from '../_utils/utils';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { assertTableCellStyle } from '../_utils/utils.js';
 
 describe( 'TableCellWidthEditing', () => {
 	let editor, model;

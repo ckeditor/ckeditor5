@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,14 +7,13 @@
  * @module engine/model/utils/insertobject
  */
 
-import { findOptimalInsertionRange } from './findoptimalinsertionrange';
-import type DocumentSelection from '../documentselection';
-import type Selection from '../selection';
+import type DocumentSelection from '../documentselection.js';
+import type Selection from '../selection.js';
 
-import type Element from '../element';
-import type Model from '../model';
-import type Range from '../range';
-import type Writer from '../writer';
+import type Element from '../element.js';
+import type Model from '../model.js';
+import type Range from '../range.js';
+import type Writer from '../writer.js';
 
 import { CKEditorError, first } from '@ckeditor/ckeditor5-utils';
 
@@ -77,7 +76,9 @@ export default function insertObject(
 	let insertionSelection = originalSelection;
 
 	if ( options.findOptimalPosition && model.schema.isBlock( object ) ) {
-		insertionSelection = model.createSelection( findOptimalInsertionRange( originalSelection, model, options.findOptimalPosition ) );
+		insertionSelection = model.createSelection(
+			model.schema.findOptimalInsertionRange( originalSelection, options.findOptimalPosition )
+		);
 	}
 
 	// Collect attributes to be copied on the inserted object.

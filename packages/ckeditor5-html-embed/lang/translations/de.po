@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: German (https://app.transifex.com/ckeditor/teams/11143/de/)\n"
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Toolbar button tooltip for the HTML embed feature."
 msgid "Insert HTML"
@@ -26,7 +27,7 @@ msgstr "HTML-Snippet"
 
 msgctxt "A placeholder that will be displayed in the raw HTML textarea field."
 msgid "Paste raw HTML here..."
-msgstr "Rohes HTML hier einfügen…"
+msgstr "Rohes HTML hier einfügen …"
 
 msgctxt "A label of a button that switches the HTML embed to the source editing mode."
 msgid "Edit source"

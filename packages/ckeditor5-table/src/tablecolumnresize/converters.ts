@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -14,15 +14,15 @@ import type {
 	UpcastDispatcher,
 	UpcastElementEvent,
 	ViewElement
-} from 'ckeditor5/src/engine';
-import type TableUtils from '../tableutils';
+} from 'ckeditor5/src/engine.js';
+import type TableUtils from '../tableutils.js';
 import {
 	normalizeColumnWidths,
 	updateColumnElements,
 	getColumnGroupElement,
 	getTableColumnElements,
-	getTableColumnsWidths
-} from './utils';
+	translateColSpanAttribute
+} from './utils.js';
 
 /**
  * Returns a upcast helper that ensures the number of `<tableColumn>` elements corresponds to the actual number of columns in the table,
@@ -38,9 +38,10 @@ export function upcastColgroupElement( tableUtilsPlugin: TableUtils ): ( dispatc
 		}
 
 		const columnElements = getTableColumnElements( tableColumnGroup );
-		let columnWidths = getTableColumnsWidths( tableColumnGroup );
 		const columnsCount = tableUtilsPlugin.getColumns( modelTable );
+		let columnWidths = translateColSpanAttribute( tableColumnGroup, conversionApi.writer );
 
+		// Fill the array with 'auto' values if the number of columns is higher than number of declared values.
 		columnWidths = Array.from( { length: columnsCount }, ( _, index ) => columnWidths[ index ] || 'auto' );
 
 		if ( columnWidths.length != columnElements.length || columnWidths.includes( 'auto' ) ) {

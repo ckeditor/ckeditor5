@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -26,6 +26,7 @@ import type {
 	ImageCaptionUtils,
 	ImageInsertUI,
 	ImageResizeEditing,
+	ImageSizeAttributes,
 	ImageStyleEditing,
 	ImageStyleUI,
 	ImageTextAlternativeEditing,
@@ -42,7 +43,7 @@ import type {
 	ImageStyleCommand,
 	ImageTextAlternativeCommand,
 	UploadImageCommand
-} from '.';
+} from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
   interface EditorConfig {
@@ -76,6 +77,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ ImageCaptionUtils.pluginName ]: ImageCaptionUtils;
 		[ ImageInsertUI.pluginName ]: ImageInsertUI;
 		[ ImageResizeEditing.pluginName ]: ImageResizeEditing;
+		[ ImageSizeAttributes.pluginName ]: ImageSizeAttributes;
 		[ ImageStyleEditing.pluginName ]: ImageStyleEditing;
 		[ ImageStyleUI.pluginName ]: ImageStyleUI;
 		[ ImageTextAlternativeEditing.pluginName ]: ImageTextAlternativeEditing;

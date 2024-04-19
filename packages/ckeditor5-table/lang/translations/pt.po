@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Portuguese (https://app.transifex.com/ckeditor/teams/11143/pt/)\n"
 "Language: pt\n"
 "Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Label for the insert table toolbar button."
 msgid "Insert table"
@@ -46,27 +47,27 @@ msgstr "Coluna"
 
 msgctxt "Label for the set/unset table header row button."
 msgid "Header row"
-msgstr "Filha de cabeçalho"
+msgstr "Linha de cabeçalho"
 
 msgctxt "Label for the insert row below button."
 msgid "Insert row below"
-msgstr "Inserir fila abaixo"
+msgstr "Inserir linha abaixo"
 
 msgctxt "Label for the insert row above button."
 msgid "Insert row above"
-msgstr "Inserir fila acima"
+msgstr "Inserir linha acima"
 
 msgctxt "Label for the delete table row button."
 msgid "Delete row"
-msgstr "Eliminar fila"
+msgstr "Eliminar linha"
 
 msgctxt "Label for the select the entire table row button."
 msgid "Select row"
-msgstr "Selecionar fila"
+msgstr "Selecionar linha"
 
 msgctxt "Label for the table row dropdown button."
 msgid "Row"
-msgstr "Fila"
+msgstr "Linha"
 
 msgctxt "Label for the merge table cell up button."
 msgid "Merge cell up"
@@ -110,7 +111,7 @@ msgstr "Propriedades da célula"
 
 msgctxt "The label describing a group of border–related form fields (border style, color, etc.)."
 msgid "Border"
-msgstr "Limite"
+msgstr "Borda"
 
 msgctxt "The label for the dropdown that allows configuring the border style of a table or a table cell."
 msgid "Style"
@@ -134,7 +135,7 @@ msgstr "Fundo"
 
 msgctxt "The label for the input that allows configuring the padding of a table cell."
 msgid "Padding"
-msgstr "Enchimento"
+msgstr "Espaçamento"
 
 msgctxt "The label describing a group of form fields that allows setting dimensions of a table or a table cell."
 msgid "Dimensions"
@@ -246,16 +247,32 @@ msgstr "O valor é inválido. Tente \"10px\" ou \"2em\" ou simplesmente \"2\"."
 
 msgctxt "The label used by assistive technologies describing a button that opens a color picker, where user can choose a configured color for a certain properties (eg.: background color, color, border-color etc.)."
 msgid "Color picker"
-msgstr "Selecionador de cor"
-
-msgctxt "The button label for the table toolbar hiding caption attached to the table."
-msgid "Toggle caption off"
-msgstr "Desativar legenda"
-
-msgctxt "The button label for the table toolbar showing caption attached to the table."
-msgid "Toggle caption on"
-msgstr "Ativar legenda"
+msgstr "Seletor de cor"
 
 msgctxt "The placeholder text for the table caption displayed when the caption is empty."
 msgid "Enter table caption"
 msgstr "Introduzir legenda da tabela"
+
+msgctxt "Accessibility help dialog header text displayed before the list of keystrokes that can be used in a table cell."
+msgid "Keystrokes that can be used in a table cell"
+msgstr "Batimentos de teclas que podem ser utilizados numa célula de tabela"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for moving the selection to the next cell."
+msgid "Move the selection to the next cell"
+msgstr "Mover a seleção para a célula seguinte"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for moving the selection to the previous cell."
+msgid "Move the selection to the previous cell"
+msgstr "Mover a seleção para a célula anterior"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for inserting a new table row."
+msgid "Insert a new table row (when in the last cell of a table)"
+msgstr "Inserir uma nova linha de tabela (quando o utilizador estiver na última célula de uma tabela)"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the table."
+msgid "Navigate through the table"
+msgstr "Navegar pela tabela"
+
+msgctxt "The accessible label of the menu bar button that displays a user interface to insert a table into editor content."
+msgid "Table"
+msgstr "Tabela"

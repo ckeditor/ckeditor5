@@ -1,21 +1,21 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting';
-import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
-import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting';
-import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting.js';
+import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
+import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting.js';
+import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import LinkImageEditing from '../src/linkimageediting';
-import LinkEditing from '../src/linkediting';
+import LinkImageEditing from '../src/linkimageediting.js';
+import LinkEditing from '../src/linkediting.js';
 
 describe( 'LinkImageEditing', () => {
 	let editor, model, view;
@@ -100,7 +100,7 @@ describe( 'LinkImageEditing', () => {
 				setModelData( model,
 					'<imageBlock src="/assets/sample.png" ' +
 						'linkHref="http://ckeditor.com" ' +
-						'srcset=\'{ "data": "small.png 148w, big.png 1024w" }\'>' +
+						'srcset="small.png 148w, big.png 1024w">' +
 					'</imageBlock>'
 				);
 
@@ -520,7 +520,7 @@ describe( 'LinkImageEditing', () => {
 								'</a>' +
 								'<figcaption aria-label="Caption for image: alt text" ' +
 									'class="ck-editor__editable ck-editor__nested-editable" ' +
-									'contenteditable="true" data-placeholder="Enter image caption" role="textbox">' +
+									'contenteditable="true" data-placeholder="Enter image caption" role="textbox" tabindex="-1">' +
 										'Foo Bar.' +
 								'</figcaption>' +
 							'</figure>'

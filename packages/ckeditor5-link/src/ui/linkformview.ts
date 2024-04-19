@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -16,18 +16,19 @@ import {
 	ViewCollection,
 	createLabeledInputText,
 	submitHandler,
-	type InputTextView
-} from 'ckeditor5/src/ui';
+	type InputTextView,
+	type FocusableView
+} from 'ckeditor5/src/ui.js';
 import {
 	FocusTracker,
 	KeystrokeHandler,
 	type Collection,
 	type Locale
-} from 'ckeditor5/src/utils';
-import { icons } from 'ckeditor5/src/core';
+} from 'ckeditor5/src/utils.js';
+import { icons } from 'ckeditor5/src/core.js';
 
-import type LinkCommand from '../linkcommand';
-import type ManualDecorator from '../utils/manualdecorator';
+import type LinkCommand from '../linkcommand.js';
+import type ManualDecorator from '../utils/manualdecorator.js';
 
 // See: #8833.
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
@@ -70,7 +71,7 @@ export default class LinkFormView extends View {
 	 * which corresponds to {@link module:link/linkcommand~LinkCommand#manualDecorators manual decorators}
 	 * configured in the editor.
 	 */
-	private readonly _manualDecoratorSwitches: ViewCollection;
+	private readonly _manualDecoratorSwitches: ViewCollection<SwitchButtonView>;
 
 	/**
 	 * A collection of child views in the form.
@@ -80,7 +81,7 @@ export default class LinkFormView extends View {
 	/**
 	 * A collection of views that can be focused in the form.
 	 */
-	private readonly _focusables = new ViewCollection();
+	private readonly _focusables = new ViewCollection<FocusableView>();
 
 	/**
 	 * Helps cycling over {@link #_focusables} in the form.
@@ -254,8 +255,8 @@ export default class LinkFormView extends View {
 	 * @param linkCommand A reference to the link command.
 	 * @returns ViewCollection of switch buttons.
 	 */
-	private _createManualDecoratorSwitches( linkCommand: LinkCommand ): ViewCollection {
-		const switches = this.createCollection();
+	private _createManualDecoratorSwitches( linkCommand: LinkCommand ): ViewCollection<SwitchButtonView> {
+		const switches = this.createCollection<SwitchButtonView>();
 
 		for ( const manualDecorator of linkCommand.manualDecorators ) {
 			const switchButton: SwitchButtonView & { name?: string } = new SwitchButtonView( this.locale );

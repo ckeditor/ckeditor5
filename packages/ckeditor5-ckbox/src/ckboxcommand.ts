@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,9 +9,9 @@
  * @module ckbox/ckboxcommand
  */
 
-import type { Writer } from 'ckeditor5/src/engine';
-import { Command, type Editor } from 'ckeditor5/src/core';
-import { createElement, toMap } from 'ckeditor5/src/utils';
+import type { Writer } from 'ckeditor5/src/engine.js';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
+import { createElement, toMap } from 'ckeditor5/src/utils.js';
 
 import type {
 	CKBoxAssetDefinition,
@@ -20,16 +20,9 @@ import type {
 	CKBoxAssetLinkAttributesDefinition,
 	CKBoxAssetLinkDefinition,
 	CKBoxRawAssetDefinition
-} from './ckboxconfig';
+} from './ckboxconfig.js';
 
-import { getImageUrls } from './utils';
-
-declare global {
-	// eslint-disable-next-line no-var
-	var CKBox: {
-		mount( wrapper: Element, options: Record<string, unknown> ): void;
-	};
-}
+import { blurHashToDataUrl, getImageUrls } from './utils.js';
 
 // Defines the waiting time (in milliseconds) for inserting the chosen asset into the model. The chosen asset is temporarily stored in the
 // `CKBoxCommand#_chosenAssets` and it is removed from there automatically after this time. See `CKBoxCommand#_chosenAssets` for more
@@ -133,6 +126,7 @@ export default class CKBoxCommand extends Command {
 	 * - language The language for CKBox dialog.
 	 * - tokenUrl The token endpoint URL.
 	 * - serviceOrigin The base URL of the API service.
+	 * - forceDemoLabel Whether to force "Powered by CKBox" link.
 	 * - dialog.onClose The callback function invoked after closing the CKBox dialog.
 	 * - assets.onChoose The callback function invoked after choosing the assets.
 	 */
@@ -145,6 +139,7 @@ export default class CKBoxCommand extends Command {
 			language: ckboxConfig.language,
 			tokenUrl: ckboxConfig.tokenUrl,
 			serviceOrigin: ckboxConfig.serviceOrigin,
+			forceDemoLabel: ckboxConfig.forceDemoLabel,
 			dialog: {
 				onClose: () => this.fire<CKBoxEvent<'close'>>( 'ckbox:close' )
 			},
@@ -187,6 +182,8 @@ export default class CKBoxCommand extends Command {
 
 			this._wrapper!.remove();
 			this._wrapper = null;
+
+			editor.editing.view.focus();
 		} );
 
 		// Handle choosing the assets.
@@ -204,16 +201,19 @@ export default class CKBoxCommand extends Command {
 				isLinkAllowed: linkCommand.isEnabled
 			} );
 
-			if ( assetsToProcess.length === 0 ) {
+			const assetsCount = assetsToProcess.length;
+
+			if ( assetsCount === 0 ) {
 				return;
 			}
 
 			// All assets are inserted in one undo step.
 			model.change( writer => {
 				for ( const asset of assetsToProcess ) {
-					const isLastAsset = asset === assetsToProcess[ assetsToProcess.length - 1 ];
+					const isLastAsset = asset === assetsToProcess[ assetsCount - 1 ];
+					const isSingleAsset = assetsCount === 1;
 
-					this._insertAsset( asset, isLastAsset, writer );
+					this._insertAsset( asset, isLastAsset, writer, isSingleAsset );
 
 					// If asset ID must be set for the inserted model element, store the asset temporarily and remove it automatically
 					// after the timeout.
@@ -224,6 +224,8 @@ export default class CKBoxCommand extends Command {
 					}
 				}
 			} );
+
+			editor.editing.view.focus();
 		} );
 
 		// Clean up after the editor is destroyed.
@@ -239,11 +241,13 @@ export default class CKBoxCommand extends Command {
 	 * @param asset The asset to be inserted.
 	 * @param isLastAsset Indicates if the current asset is the last one from the chosen set.
 	 * @param writer An instance of the model writer.
+	 * @param isSingleAsset It's true when only one asset is processed.
 	 */
 	private _insertAsset(
 		asset: CKBoxAssetDefinition,
 		isLastAsset: boolean,
-		writer: Writer
+		writer: Writer,
+		isSingleAsset: boolean
 	) {
 		const editor = this.editor;
 		const model = editor.model;
@@ -255,7 +259,7 @@ export default class CKBoxCommand extends Command {
 		if ( asset.type === 'image' ) {
 			this._insertImage( asset );
 		} else {
-			this._insertLink( asset, writer );
+			this._insertLink( asset, writer, isSingleAsset );
 		}
 
 		// Except for the last chosen asset, move the selection to the end of the current range to avoid overwriting other, already
@@ -272,13 +276,23 @@ export default class CKBoxCommand extends Command {
 	 */
 	private _insertImage( asset: CKBoxAssetImageDefinition ) {
 		const editor = this.editor;
-		const { imageFallbackUrl, imageSources, imageTextAlternative } = asset.attributes;
+		const {
+			imageFallbackUrl,
+			imageSources,
+			imageTextAlternative,
+			imageWidth,
+			imageHeight,
+			imagePlaceholder
+		} = asset.attributes;
 
 		editor.execute( 'insertImage', {
 			source: {
 				src: imageFallbackUrl,
 				sources: imageSources,
-				alt: imageTextAlternative
+				alt: imageTextAlternative,
+				width: imageWidth,
+				height: imageHeight,
+				...( imagePlaceholder ? { placeholder: imagePlaceholder } : null )
 			}
 		} );
 	}
@@ -288,8 +302,9 @@ export default class CKBoxCommand extends Command {
 	 *
 	 * @param asset The asset to be inserted.
 	 * @param writer An instance of the model writer.
+	 * @param isSingleAsset It's true when only one asset is processed.
 	 */
-	private _insertLink( asset: CKBoxAssetLinkDefinition, writer: Writer ) {
+	private _insertLink( asset: CKBoxAssetLinkDefinition, writer: Writer, isSingleAsset: boolean ): void {
 		const editor = this.editor;
 		const model = editor.model;
 		const selection = model.document.selection;
@@ -299,6 +314,25 @@ export default class CKBoxCommand extends Command {
 		if ( selection.isCollapsed ) {
 			const selectionAttributes = toMap( selection.getAttributes() );
 			const textNode = writer.createText( linkName, selectionAttributes );
+
+			if ( !isSingleAsset ) {
+				const selectionLastPosition = selection.getLastPosition()!;
+				const parentElement = selectionLastPosition.parent;
+
+				// Insert new `paragraph` when selection is not in an empty `paragraph`.
+				if ( !( parentElement.name === 'paragraph' && parentElement.isEmpty ) ) {
+					editor.execute( 'insertParagraph', {
+						position: selectionLastPosition
+					} );
+				}
+
+				const range = model.insertContent( textNode );
+
+				writer.setSelection( range );
+				editor.execute( 'link', linkHref );
+				return;
+			}
+
 			const range = model.insertContent( textNode );
 
 			writer.setSelection( range );
@@ -337,15 +371,20 @@ function prepareAssets(
 /**
  * Parses the assets attributes into the internal data format.
  *
- * @param origin The base URL for assets inserted into the editor.
+ * @internal
  */
-function prepareImageAssetAttributes( asset: CKBoxRawAssetDefinition ): CKBoxAssetImageAttributesDefinition {
+export function prepareImageAssetAttributes( asset: CKBoxRawAssetDefinition ): CKBoxAssetImageAttributesDefinition {
 	const { imageFallbackUrl, imageSources } = getImageUrls( asset.data.imageUrls! );
+	const { description, width, height, blurHash } = asset.data.metadata!;
+	const imagePlaceholder = blurHashToDataUrl( blurHash );
 
 	return {
 		imageFallbackUrl,
 		imageSources,
-		imageTextAlternative: asset.data.metadata!.description || ''
+		imageTextAlternative: description || '',
+		imageWidth: width,
+		imageHeight: height,
+		...( imagePlaceholder ? { imagePlaceholder } : null )
 	};
 }
 

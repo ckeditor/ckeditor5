@@ -1,24 +1,24 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global console, window, document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import List from '@ckeditor/ckeditor5-list/src/list';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
-import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
+import List from '@ckeditor/ckeditor5-list/src/list.js';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
+import Table from '@ckeditor/ckeditor5-table/src/table.js';
+import Widget from '@ckeditor/ckeditor5-widget/src/widget.js';
+import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils.js';
 
 class FancyWidget extends Plugin {
 	static get requires() {

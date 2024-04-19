@@ -1,13 +1,13 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import { Client, expectClients, clearBuffer } from './utils.js';
 
-import DocumentFragment from '../../../../src/model/documentfragment';
-import Element from '../../../../src/model/element';
-import Text from '../../../../src/model/text';
+import DocumentFragment from '../../../../src/model/documentfragment.js';
+import Element from '../../../../src/model/element.js';
+import Text from '../../../../src/model/text.js';
 
 describe( 'transform', () => {
 	let john;
@@ -316,6 +316,59 @@ describe( 'transform', () => {
 
 		john.redo();
 		expectClients( '<paragraph>Foo1</paragraph><paragraph>2Bar</paragraph>' );
+	} );
+
+	// Following case was throwing before a fix was applied:
+	//
+	// [] is selection and a marker. It is copied and pasted between XY. And then undone:
+	//
+	// <p>A[A</p><p>B]B</p><p>XY</p>
+	// <p>A[A</p><p>B]B</p><p>X[A</p><p>B]Y</p>
+	// <p>A[A</p><p>B]B</p><p>XY</p>
+	//
+	it( 'paste with markers, undo, redo', () => {
+		john.setData( '<paragraph>AA</paragraph><paragraph>BB</paragraph><paragraph>X[]Y</paragraph>' );
+
+		john.editor.model.change( writer => {
+			// Simulate copy. Create a document fragment that includes expected copied fragment + marker.
+			// <paragraph><$marker />A</paragraph><paragraph>B<$marker /></paragraph>
+			const docFrag = writer.createDocumentFragment();
+			const pA = writer.createElement( 'paragraph' );
+			const pB = writer.createElement( 'paragraph' );
+
+			writer.insertText( 'A', pA, 0 );
+			writer.insertText( 'B', pB, 0 );
+			writer.insert( pA, docFrag, 0 );
+			writer.insert( pB, docFrag, 1 );
+
+			const marker = writer.createRange( writer.createPositionAt( pA, 0 ), writer.createPositionAt( pB, 1 ) );
+			docFrag.markers.set( 'm', marker );
+
+			// Insert the document fragment (simulates paste).
+			john.setSelection( [ 2, 1 ], [ 2, 1 ] );
+			john.insertContent( docFrag );
+		} );
+
+		expectClients(
+			'<paragraph>AA</paragraph>' +
+			'<paragraph>BB</paragraph>' +
+			'<paragraph>X<m:start></m:start>A</paragraph>' +
+			'<paragraph>B<m:end></m:end>Y</paragraph>'
+		);
+
+		john.undo();
+		expectClients( '<paragraph>AA</paragraph><paragraph>BB</paragraph><paragraph>XY</paragraph>' );
+
+		john.redo();
+		expectClients(
+			'<paragraph>AA</paragraph>' +
+			'<paragraph>BB</paragraph>' +
+			'<paragraph>X<m:start></m:start>A</paragraph>' +
+			'<paragraph>B<m:end></m:end>Y</paragraph>'
+		);
+
+		john.undo();
+		expectClients( '<paragraph>AA</paragraph><paragraph>BB</paragraph><paragraph>XY</paragraph>' );
 	} );
 
 	it( 'selection attribute setting: split, bold, merge, undo, undo, undo', () => {

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,11 +7,11 @@
  * @module engine/view/selection
  */
 
-import TypeCheckable from './typecheckable';
-import Range from './range';
-import Position, { type PositionOffset } from './position';
-import Node from './node';
-import DocumentSelection from './documentselection';
+import TypeCheckable from './typecheckable.js';
+import Range from './range.js';
+import Position, { type PositionOffset } from './position.js';
+import Node from './node.js';
+import DocumentSelection from './documentselection.js';
 
 import {
 	CKEditorError,
@@ -20,9 +20,9 @@ import {
 	isIterable
 } from '@ckeditor/ckeditor5-utils';
 
-import type Element from './element';
-import type Item from './item';
-import type EditableElement from './editableelement';
+import type Element from './element.js';
+import type Item from './item.js';
+import type EditableElement from './editableelement.js';
 
 /**
  * Class representing an arbirtary selection in the view.

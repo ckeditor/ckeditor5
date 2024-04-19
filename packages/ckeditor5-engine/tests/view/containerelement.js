@@ -1,13 +1,13 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { default as ContainerElement, getFillerOffset } from '../../src/view/containerelement';
-import Element from '../../src/view/element';
-import Document from '../../src/view/document';
-import { parse } from '../../src/dev-utils/view';
-import { StylesProcessor } from '../../src/view/stylesmap';
+import { default as ContainerElement, getFillerOffset } from '../../src/view/containerelement.js';
+import Element from '../../src/view/element.js';
+import Document from '../../src/view/document.js';
+import { parse } from '../../src/dev-utils/view.js';
+import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'ContainerElement', () => {
 	let document;

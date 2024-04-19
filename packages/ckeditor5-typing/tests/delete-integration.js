@@ -1,22 +1,22 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document */
 
-import Typing from '../src/typing';
-import DeleteCommand from '../src/deletecommand';
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import List from '@ckeditor/ckeditor5-list/src/list';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import Typing from '../src/typing.js';
+import DeleteCommand from '../src/deletecommand.js';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
+import LegacyList from '@ckeditor/ckeditor5-list/src/legacylist.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Image from '@ckeditor/ckeditor5-image/src/image.js';
+import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption.js';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'Delete integration', () => {
 	let editor, model;
@@ -174,7 +174,7 @@ describe( 'Delete integration', () => {
 
 			return ClassicEditor
 				.create( element, {
-					plugins: [ Typing, Heading, List, Image, ImageCaption, Paragraph, BlockQuote ]
+					plugins: [ Typing, Heading, LegacyList, Image, ImageCaption, Paragraph, BlockQuote ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;

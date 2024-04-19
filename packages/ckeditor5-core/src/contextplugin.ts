@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -15,11 +15,11 @@ import {
 	type LocaleTranslate
 } from '@ckeditor/ckeditor5-utils';
 
-import type Editor from './editor/editor';
-import type { EditorConfig } from './editor/editorconfig';
-import type Context from './context';
-import type { PluginDependencies, PluginInterface } from './plugin';
-import type PluginCollection from './plugincollection';
+import type Editor from './editor/editor.js';
+import type { EditorConfig } from './editor/editorconfig.js';
+import type Context from './context.js';
+import type { PluginDependencies, PluginInterface } from './plugin.js';
+import type PluginCollection from './plugincollection.js';
 
 /**
  * The base class for {@link module:core/context~Context} plugin classes.

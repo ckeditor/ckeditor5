@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -15,14 +15,15 @@ msgstr ""
 "Language-Team: Portuguese (https://app.transifex.com/ckeditor/teams/11143/pt/)\n"
 "Language: pt\n"
 "Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Label for the media widget."
 msgid "media widget"
-msgstr "widget de média"
+msgstr "Miniaplicação de media"
 
 msgctxt "Label for the URL input in the Media Embed URL editing balloon."
 msgid "Media URL"
-msgstr "URL de média"
+msgstr "URL de media"
 
 msgctxt "The help text displayed under the media URL input helping users to discover the interface."
 msgid "Paste the media URL in the input."
@@ -34,19 +35,19 @@ msgstr "Dica: Cole o URL no conteúdo para incorporar mais rapidamente."
 
 msgctxt "An error message that informs about an empty value in the URL input."
 msgid "The URL must not be empty."
-msgstr "O URL não pode estar vazio."
+msgstr "O URL não pode ficar vazio."
 
 msgctxt "An error message that informs about unsupported media URL."
 msgid "This media URL is not supported."
-msgstr "Este URL de média não é suportado."
+msgstr "Este URL de media não é suportado."
 
 msgctxt "Toolbar button tooltip for the Media Embed feature."
 msgid "Insert media"
-msgstr "Inserir média"
+msgstr "Inserir media"
 
 msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
 msgid "Media toolbar"
-msgstr "Barra de ferramentas de média"
+msgstr "Barra de ferramentas de media"
 
 msgctxt "A tooltip displayed when the user hovers a non-previewable media URL in the editor content."
 msgid "Open media in new tab"

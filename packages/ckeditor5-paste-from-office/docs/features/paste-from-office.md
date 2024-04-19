@@ -16,8 +16,8 @@ Paste from Office features let you paste content from Microsoft Word and Microso
 
 Use these sample documents to test pasting from Microsoft Office Word and Excel:
 
-* [Sample Word document](../../assets/Sample_Word_document.docx)
-* [Sample Excel spreadsheet](../../assets/Sample_Excel_spreadsheet.xlsx)
+* [Sample Word document](../../assets/PasteFromOfficeEnhancedWordSample.docx)
+* [Sample Excel spreadsheet](../../assets/PasteFromOfficeEnhancedExcelSample.xlsx)
 
 To test pasting from Office, download the sample documents and open them in Microsoft Office applications. Then, copy the content and paste it into the editor below.
 
@@ -44,7 +44,7 @@ To test pasting from Office, download the sample documents and open them in Micr
 {@snippet features/paste-from-office}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Paste from Office enhanced
@@ -82,7 +82,7 @@ Feel free to open a [new feature request](https://github.com/ckeditor/ckeditor5/
 
 With CKEditor&nbsp;5 you do not need to worry about pasting messy content from Microsoft Word (or any other possible sources). Thanks to the CKEditor&nbsp;5 {@link framework/index custom data model}, only content that is specifically handled by the loaded rich-text editor features will be preserved.
 
-This means that if you did not enable, for instance, {@link features/font font family and font size} features, this sort of formatting will be automatically stripped off when you paste content from Microsoft Word and other sources (e.g. other websites).
+This means that if you did not enable, for instance, {@link features/font font family and font size} features, this sort of formatting will be automatically stripped off when you paste content from Microsoft Word and other sources (like other websites).
 
 ## Installation
 
@@ -115,7 +115,7 @@ ClassicEditor
 
 ## Known issues
 
-If the pasted document contains both images and styled text (e.g. headings), it may happen that the images are not pasted properly. Unfortunately, for some operating systems, browsers, and Word versions the image data is not available in the clipboard in this case.
+If the pasted document contains both images and styled text (like headings), images are sometimes not pasted properly. Unfortunately, for some operating systems, browsers, and Word versions the image data is not available in the clipboard in this case.
 
 It is advised to try and paste the image separately from the body of the text if this error occurs.
 
@@ -128,6 +128,7 @@ CKEditor&nbsp;5 supports a wider range of paste features, including:
 * {@link features/paste-from-google-docs Paste from Google Docs} &ndash; Paste content from Google Docs, maintaining the original formatting and structure.
 * {@link features/paste-plain-text Paste plain text} &ndash; Paste text without formatting that will inherit the style of the content it was pasted into.
 * {@link features/import-word Import from Word} &ndash; Convert Word files directly into HTML content. You can read more about the differences between the paste from Office and import from Word features in the {@link features/features-comparison dedicated comparison guide}.
+* {@link features/paste-markdown Paste Markdown} &ndash; Paste Markdown-formatted content straight into the editor.
 
 ## Contribute
 

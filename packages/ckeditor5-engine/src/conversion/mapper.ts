@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,20 +7,20 @@
  * @module engine/conversion/mapper
  */
 
-import ModelPosition from '../model/position';
-import ModelRange from '../model/range';
+import ModelPosition from '../model/position.js';
+import ModelRange from '../model/range.js';
 
-import ViewPosition from '../view/position';
-import ViewRange from '../view/range';
-import ViewText from '../view/text';
+import ViewPosition from '../view/position.js';
+import ViewRange from '../view/range.js';
+import ViewText from '../view/text.js';
 
 import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
-import type ViewDocumentFragment from '../view/documentfragment';
-import type ViewElement from '../view/element';
-import type ModelElement from '../model/element';
-import type ModelDocumentFragment from '../model/documentfragment';
-import type ViewNode from '../view/node';
+import type ViewDocumentFragment from '../view/documentfragment.js';
+import type ViewElement from '../view/element.js';
+import type ModelElement from '../model/element.js';
+import type ModelDocumentFragment from '../model/documentfragment.js';
+import type ViewNode from '../view/node.js';
 
 /**
  * Maps elements, positions and markers between the {@link module:engine/view/document~Document view} and
@@ -362,7 +362,7 @@ export default class Mapper extends EmitterMixin() {
 	 * @returns Corresponding model position.
 	 */
 	public toModelPosition( viewPosition: ViewPosition ): ModelPosition {
-		const data: MapperViewToModelPositionEvent[ 'args' ][ 0 ] = {
+		const data: MapperViewToModelPositionEventData = {
 			viewPosition,
 			mapper: this
 		};
@@ -386,7 +386,7 @@ export default class Mapper extends EmitterMixin() {
 		modelPosition: ModelPosition,
 		options: { isPhantom?: boolean } = {}
 	): ViewPosition {
-		const data: MapperModelToViewPositionEvent[ 'args' ][ 0 ] = {
+		const data: MapperModelToViewPositionEventData = {
 			modelPosition,
 			mapper: this,
 			isPhantom: options.isPhantom

@@ -31,7 +31,7 @@ The `ckeditor5-metadata.json` file is a JSON object that holds the `plugins` arr
 * `uiComponents` &ndash; An array of objects that describes UI components exported by the plugin. Each object in this array may contain:
 	* `name` &ndash; The name of the component the plugin exports. It should match the actual UI name registered by the plugin.
 	* `type` &ndash; The component type: `Button`, `SplitButton` or `Dropdown`.
-	* `iconPath` &ndash; The path to the SVG icon for `Button` or `SplitButton`. The path can be either relative to the package or absolute &mdash; linking to a resource from another package.
+	* `iconPath` &ndash; The path to the SVG icon for `Button` or `SplitButton`. The path can be either relative to the package or absolute &ndash; linking to a resource from another package.
 	* `label` &ndash; Text content for `Dropdown` components.
 	* `toolbars` &ndash; An array of toolbar names that a given UI component can be added to. Some UI components may be added to multiple toolbars.
 * `htmlOutput` &ndash; An array of objects that defines all possible HTML elements which can be created by a given plugin. The main property in this object is `elements`. Other properties (like `classes`, `styles`, `attributes`) only apply to items defined in the `elements` property within a given object. The wildcard character `*` is used to mark any value. The full list of all these properties includes:

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,14 +7,22 @@
  * @module editor-classic/classiceditorui
  */
 
-import type { Editor, ElementApi } from 'ckeditor5/src/core';
-import { EditorUI, normalizeToolbarConfig, type EditorUIReadyEvent } from 'ckeditor5/src/ui';
+import type { Editor, ElementApi } from 'ckeditor5/src/core.js';
+import {
+	EditorUI,
+	normalizeToolbarConfig,
+	normalizeMenuBarConfig,
+	DialogView,
+	type DialogViewMoveToEvent,
+	type Dialog,
+	type EditorUIReadyEvent
+} from 'ckeditor5/src/ui.js';
 import {
 	enablePlaceholder,
 	type ViewScrollToTheSelectionEvent
-} from 'ckeditor5/src/engine';
-import { ElementReplacer, Rect, type EventInfo } from 'ckeditor5/src/utils';
-import type ClassicEditorUIView from './classiceditoruiview';
+} from 'ckeditor5/src/engine.js';
+import { ElementReplacer, Rect, type EventInfo } from 'ckeditor5/src/utils.js';
+import type ClassicEditorUIView from './classiceditoruiview.js';
 
 /**
  * The classic editor UI class.
@@ -29,6 +37,11 @@ export default class ClassicEditorUI extends EditorUI {
 	 * A normalized `config.toolbar` object.
 	 */
 	private readonly _toolbarConfig: ReturnType<typeof normalizeToolbarConfig>;
+
+	/**
+	 * A normalized `config.menuBar` object.
+	 */
+	private readonly _menuBarConfig: ReturnType<typeof normalizeMenuBarConfig>;
 
 	/**
 	 * The element replacer instance used to hide the editor's source element.
@@ -46,6 +59,10 @@ export default class ClassicEditorUI extends EditorUI {
 
 		this.view = view;
 		this._toolbarConfig = normalizeToolbarConfig( editor.config.get( 'toolbar' ) );
+
+		// We use config.define in ClassicEditor, there will always be some configuration.
+		this._menuBarConfig = normalizeMenuBarConfig( editor.config.get( 'menuBar' ) || {} );
+
 		this._elementReplacer = new ElementReplacer();
 
 		this.listenTo<ViewScrollToTheSelectionEvent>(
@@ -107,6 +124,8 @@ export default class ClassicEditorUI extends EditorUI {
 
 		this._initPlaceholder();
 		this._initToolbar();
+		this._initMenuBar();
+		this._initDialogPluginIntegration();
 		this.fire<EditorUIReadyEvent>( 'ready' );
 	}
 
@@ -139,6 +158,21 @@ export default class ClassicEditorUI extends EditorUI {
 
 		// Register the toolbar so it becomes available for Alt+F10 and Esc navigation.
 		this.addToolbar( view.toolbar );
+	}
+
+	/**
+	 * Initializes the editor menu bar.
+	 */
+	private _initMenuBar(): void {
+		const view = this.view;
+
+		if ( !view.menuBarView ) {
+			return;
+		}
+
+		this._setupMenuBarBehaviors( view.menuBarView.element! );
+
+		view.menuBarView.fillFromConfig( this._menuBarConfig, this.componentFactory );
 	}
 
 	/**
@@ -207,6 +241,62 @@ export default class ClassicEditorUI extends EditorUI {
 				this.stopListening( stickyPanel, 'change:isSticky', scrollViewportOnPanelGettingSticky );
 			}, 20 );
 		}
+	}
+
+	/**
+	 * Provides an integration between the sticky toolbar and {@link module:ui/dialog/dialog the Dialog plugin}.
+	 *
+	 * It moves the dialog down to ensure that the
+	 * {@link module:editor-classic/classiceditoruiview~ClassicEditorUIView#stickyPanel sticky panel}
+	 * used by the editor UI will not get obscured by the dialog when the dialog uses one of its automatic positions.
+	 */
+	private _initDialogPluginIntegration(): void {
+		if ( !this.editor.plugins.has( 'Dialog' ) ) {
+			return;
+		}
+
+		const stickyPanel = this.view.stickyPanel;
+		const dialogPlugin: Dialog = this.editor.plugins.get( 'Dialog' );
+
+		dialogPlugin.on( 'show', () => {
+			const dialogView = dialogPlugin.view!;
+
+			dialogView.on<DialogViewMoveToEvent>( 'moveTo', ( evt, data ) => {
+				// Engage only when the panel is sticky, and the dialog is using one of default positions.
+				if ( !stickyPanel.isSticky || dialogView.wasMoved ) {
+					return;
+				}
+
+				const stickyPanelContentRect = new Rect( stickyPanel.contentPanelElement );
+
+				if ( data[ 1 ] < stickyPanelContentRect.bottom + DialogView.defaultOffset ) {
+					data[ 1 ] = stickyPanelContentRect.bottom + DialogView.defaultOffset;
+				}
+			}, { priority: 'high' } );
+		}, { priority: 'low' } );
+	}
+
+	/**
+	 * Handles focus and keystrokes for menu bar element.
+	 */
+	private _setupMenuBarBehaviors( menuBarViewElement: HTMLElement ) {
+		const editor = this.editor;
+		this.focusTracker.add( menuBarViewElement );
+		editor.keystrokes.listenTo( menuBarViewElement );
+
+		editor.keystrokes.set( 'Esc', ( data, cancel ) => {
+			if ( menuBarViewElement.contains( this.focusTracker.focusedElement ) ) {
+				editor.editing.view.focus();
+				cancel();
+			}
+		} );
+
+		editor.keystrokes.set( 'Alt+F9', ( data, cancel ) => {
+			if ( !menuBarViewElement.contains( this.focusTracker.focusedElement ) ) {
+				this.view.menuBarView!.focus();
+				cancel();
+			}
+		} );
 	}
 }
 

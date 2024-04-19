@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,21 +7,21 @@
  * @module engine/conversion/upcastdispatcher
  */
 
-import ViewConsumable from './viewconsumable';
-import ModelRange from '../model/range';
-import ModelPosition from '../model/position';
-import type ModelElement from '../model/element';
-import type ModelNode from '../model/node';
-import type ViewElement from '../view/element';
-import type ViewText from '../view/text';
-import type ViewDocumentFragment from '../view/documentfragment';
-import type ModelDocumentFragment from '../model/documentfragment';
-import type { default as Schema, SchemaContextDefinition } from '../model/schema';
-import { SchemaContext } from '../model/schema'; // eslint-disable-line no-duplicate-imports
-import type ModelWriter from '../model/writer';
-import { isParagraphable, wrapInParagraph } from '../model/utils/autoparagraphing';
+import ViewConsumable from './viewconsumable.js';
+import ModelRange from '../model/range.js';
+import ModelPosition from '../model/position.js';
+import type ModelElement from '../model/element.js';
+import type ModelNode from '../model/node.js';
+import type ViewElement from '../view/element.js';
+import type ViewText from '../view/text.js';
+import type ViewDocumentFragment from '../view/documentfragment.js';
+import type ModelDocumentFragment from '../model/documentfragment.js';
+import type { default as Schema, SchemaContextDefinition } from '../model/schema.js';
+import { SchemaContext } from '../model/schema.js'; // eslint-disable-line no-duplicate-imports
+import type ModelWriter from '../model/writer.js';
+import { isParagraphable, wrapInParagraph } from '../model/utils/autoparagraphing.js';
 
-import type ViewItem from '../view/item';
+import type ViewItem from '../view/item.js';
 
 import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
@@ -223,7 +223,7 @@ export default class UpcastDispatcher extends EmitterMixin() {
 
 		// When there is a conversion result.
 		if ( modelRange ) {
-			// Remove all empty elements that were create while splitting.
+			// Remove all empty elements that were created while splitting.
 			this._removeEmptyElements();
 
 			// Move all items that were converted in context tree to the document fragment.
@@ -340,7 +340,7 @@ export default class UpcastDispatcher extends EmitterMixin() {
 		}
 
 		// Insert element on allowed position.
-		this.conversionApi.writer!.insert( modelNode, splitResult.position );
+		this.conversionApi.writer.insert( modelNode, splitResult.position );
 
 		return true;
 	}
@@ -502,7 +502,7 @@ export default class UpcastDispatcher extends EmitterMixin() {
 
 		for ( const element of this._splitParts.keys() ) {
 			if ( element.isEmpty && !this._emptyElementsToKeep.has( element ) ) {
-				this.conversionApi.writer!.remove( element );
+				this.conversionApi.writer.remove( element );
 				this._splitParts.delete( element );
 
 				anyRemoved = true;
@@ -526,7 +526,7 @@ export type UpcastViewCleanupEvent = {
 	args: [ ViewElement | ViewDocumentFragment ];
 };
 
-type UpcastEvent<TName extends string, TItem extends ViewItem | ViewDocumentFragment> = {
+export type UpcastEvent<TName extends string, TItem extends ViewItem | ViewDocumentFragment> = {
 	name: TName | `${ TName }:${ string }`;
 	args: [ data: UpcastConversionData<TItem>, conversionApi: UpcastConversionApi ];
 };

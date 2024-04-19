@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,12 +7,12 @@
  * @module engine/view/emptyelement
  */
 
-import Element, { type ElementAttributes } from './element';
-import Node from './node';
+import Element, { type ElementAttributes } from './element.js';
+import Node from './node.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
-import type Document from './document';
-import type Item from './item';
+import type Document from './document.js';
+import type Item from './item.js';
 
 /**
  * Empty element class. It is used to represent elements that cannot contain any child nodes (for example `<img>` elements).

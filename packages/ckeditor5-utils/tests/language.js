@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { getLanguageDirection } from '../src/language';
+import { getLanguageDirection } from '../src/language.js';
 
 describe( 'language', () => {
 	describe( 'getLanguageDirection()', () => {
@@ -32,7 +32,11 @@ describe( 'language', () => {
 
 			// Uighur, Uyghur
 			{ code: 'ug', textDirection: 'rtl' },
-			{ code: 'uig', textDirection: 'rtl' }
+			{ code: 'uig', textDirection: 'rtl' },
+
+			// Dhivehi, Divehi
+			{ code: 'dv', textDirection: 'rtl' },
+			{ code: 'div', textDirection: 'rtl' }
 		].forEach( ( { code, textDirection } ) => {
 			it( `determines the "${ code }" language direction`, () => {
 				expect( getLanguageDirection( code ) ).to.equal( textDirection );

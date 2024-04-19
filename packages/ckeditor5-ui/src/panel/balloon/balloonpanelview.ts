@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,8 +7,8 @@
  * @module ui/panel/balloon/balloonpanelview
  */
 
-import View from '../../view';
-import type ViewCollection from '../../viewcollection';
+import View from '../../view.js';
+import type ViewCollection from '../../viewcollection.js';
 
 import {
 	getOptimalPosition,
@@ -17,17 +17,34 @@ import {
 	toUnit,
 	type Locale,
 	type ObservableChangeEvent,
+	type DomPoint,
 	type PositionOptions,
 	type PositioningFunction,
 	type Rect
 } from '@ckeditor/ckeditor5-utils';
 
 import { isElement } from 'lodash-es';
-
 import '../../../theme/components/panel/balloonpanel.css';
 
 const toPx = toUnit( 'px' );
 const defaultLimiterElement = global.document.body;
+
+// A static balloon panel positioning function that moves the balloon far off the viewport.
+// It is used as a fallback when there is no way to position the balloon using provided
+// positioning functions (see: `getOptimalPosition()`), for instance, when the target the
+// balloon should be attached to gets obscured by scrollable containers or the viewport.
+//
+// It prevents the balloon from being attached to the void and possible degradation of the UX.
+// At the same time, it keeps the balloon physically visible in the DOM so the focus remains
+// uninterrupted.
+const POSITION_OFF_SCREEN: DomPoint = {
+	top: -99999,
+	left: -99999,
+	name: 'arrowless',
+	config: {
+		withArrow: false
+	}
+};
 
 /**
  * The balloon panel view class.
@@ -251,7 +268,7 @@ export default class BalloonPanelView extends View {
 			fitInViewport: true
 		}, options ) as PositionOptions;
 
-		const optimalPosition = BalloonPanelView._getOptimalPosition( positionOptions );
+		const optimalPosition = BalloonPanelView._getOptimalPosition( positionOptions ) || POSITION_OFF_SCREEN;
 
 		// Usually browsers make some problems with super accurate values like 104.345px
 		// so it is better to use int values.
@@ -824,7 +841,7 @@ export default class BalloonPanelView extends View {
 	 *
 	 * See {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView#attachTo}.
 	 *
-	 * Positioning functions must be compatible with {@link module:utils/dom/position~Position}.
+	 * Positioning functions must be compatible with {@link module:utils/dom/position~DomPoint}.
 	 *
 	 * Default positioning functions with customized offsets can be generated using
 	 * {@link module:ui/panel/balloon/balloonpanelview~generatePositions}.
@@ -1131,13 +1148,21 @@ export function generatePositions( options: {
 
 		// ------- Sticky
 
-		viewportStickyNorth: ( targetRect, balloonRect, viewportRect ) => {
-			if ( !targetRect.getIntersection( viewportRect! ) ) {
+		viewportStickyNorth: ( targetRect, balloonRect, viewportRect, limiterRect ) => {
+			const boundaryRect = limiterRect || viewportRect;
+
+			if ( !targetRect.getIntersection( boundaryRect ) ) {
+				return null;
+			}
+
+			// Engage when the target top and bottom edges are close or off the boundary.
+			// By close, it means there's not enough space for the balloon arrow (offset).
+			if ( boundaryRect.height - targetRect.height > stickyVerticalOffset ) {
 				return null;
 			}
 
 			return {
-				top: viewportRect!.top + stickyVerticalOffset,
+				top: boundaryRect.top + stickyVerticalOffset,
 				left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
 				name: 'arrowless',
 				config: {

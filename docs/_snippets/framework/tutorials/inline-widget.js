@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -15,7 +15,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Command, Plugin } from '@ckeditor/ckeditor5-core';
 import { Widget, toWidget, viewToModelPositionOutsideModelElement } from '@ckeditor/ckeditor5-widget';
 
-import { Model, addListToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui';
+import { ViewModel, addListToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui';
 import { Collection } from '@ckeditor/ckeditor5-utils';
 
 class PlaceholderCommand extends Command {
@@ -97,7 +97,7 @@ function getDropdownItemsDefinitions( placeholderNames ) {
 	for ( const name of placeholderNames ) {
 		const definition = {
 			type: 'button',
-			model: new Model( {
+			model: new ViewModel( {
 				commandParam: name,
 				label: name,
 				withText: true
@@ -211,8 +211,7 @@ ClassicEditor
 				'|', 'placeholder',
 				'|', 'heading',
 				'|', 'bold', 'italic',
-				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
-				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+				'|', 'bulletedList', 'numberedList'
 			]
 		},
 		placeholderConfig: {

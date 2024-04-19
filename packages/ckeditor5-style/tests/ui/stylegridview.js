@@ -1,13 +1,13 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import { ViewCollection } from '@ckeditor/ckeditor5-ui';
 import { Locale, FocusTracker, KeystrokeHandler, keyCodes } from '@ckeditor/ckeditor5-utils';
 
-import StyleGridButtonView from '../../src/ui/stylegridbuttonview';
-import StyleGridView from '../../src/ui/stylegridview';
+import StyleGridButtonView from '../../src/ui/stylegridbuttonview.js';
+import StyleGridView from '../../src/ui/stylegridview.js';
 
 describe( 'StyleGridView', () => {
 	let locale, grid;

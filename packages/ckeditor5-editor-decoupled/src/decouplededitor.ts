@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -11,20 +11,19 @@ import {
 	Editor,
 	Context,
 	ElementApiMixin,
-	DataApiMixin,
 	secureSourceElement,
 	type EditorConfig,
 	type EditorReadyEvent
-} from 'ckeditor5/src/core';
+} from 'ckeditor5/src/core.js';
 import {
 	CKEditorError,
 	getDataFromElement
-} from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/utils.js';
 
-import { ContextWatchdog, EditorWatchdog } from 'ckeditor5/src/watchdog';
+import { ContextWatchdog, EditorWatchdog } from 'ckeditor5/src/watchdog.js';
 
-import DecoupledEditorUI from './decouplededitorui';
-import DecoupledEditorUIView from './decouplededitoruiview';
+import DecoupledEditorUI from './decouplededitorui.js';
+import DecoupledEditorUIView from './decouplededitoruiview.js';
 
 import { isElement as _isElement } from 'lodash-es';
 
@@ -42,7 +41,8 @@ import { isElement as _isElement } from 'lodash-es';
  * In order to create a decoupled editor instance, use the static
  * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`} method.
  *
- * Note that you will need to attach the editor toolbar to your web page manually, in a desired place, after the editor is initialized.
+ * Note that you will need to attach the editor toolbar and menu bar to your web page manually, in a desired place,
+ * after the editor is initialized.
  *
  * # Decoupled editor and document editor build
  *
@@ -60,7 +60,7 @@ import { isElement as _isElement } from 'lodash-es';
  * Read more about initializing the editor from source or as a build in
  * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`}.
  */
-export default class DecoupledEditor extends DataApiMixin( ElementApiMixin( Editor ) ) {
+export default class DecoupledEditor extends ElementApiMixin( Editor ) {
 	/**
 	 * @inheritDoc
 	 */

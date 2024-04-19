@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -17,7 +17,9 @@ module.exports = function parseArguments( cliArguments ) {
 	const config = {
 		boolean: [
 			'nightly',
-			'verbose'
+			'verbose',
+			'compile-only',
+			'ci'
 		],
 
 		number: [
@@ -34,10 +36,12 @@ module.exports = function parseArguments( cliArguments ) {
 		default: {
 			nightly: false,
 			concurrency: require( 'os' ).cpus().length / 2,
+			'compile-only': false,
 			packages: null,
 			branch: 'release',
 			'npm-tag': 'staging',
-			verbose: false
+			verbose: false,
+			ci: false
 		}
 	};
 
@@ -50,8 +54,15 @@ module.exports = function parseArguments( cliArguments ) {
 	options.npmTag = options[ 'npm-tag' ];
 	delete options[ 'npm-tag' ];
 
+	options.compileOnly = options[ 'compile-only' ];
+	delete options[ 'compile-only' ];
+
 	if ( options.nightly ) {
 		options.npmTag = 'nightly';
+	}
+
+	if ( process.env.CI ) {
+		options.ci = true;
 	}
 
 	return options;
@@ -61,6 +72,8 @@ module.exports = function parseArguments( cliArguments ) {
  * @typedef {Object} ReleaseOptions
  *
  * @property {Boolean} nightly
+ *
+ * @property {Boolean} [compileOnly=false]
  *
  * @property {Number} concurrency
  *
@@ -73,4 +86,6 @@ module.exports = function parseArguments( cliArguments ) {
  * @property {Array.<String>|null} packages
  *
  * @property {Boolean} [verbose=false]
+ *
+ * @property {Boolean} [ci=false]
  */

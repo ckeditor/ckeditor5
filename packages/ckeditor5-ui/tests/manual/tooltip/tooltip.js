@@ -1,16 +1,16 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals console, window, document, CKEditorInspector */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import ListProperties from '@ckeditor/ckeditor5-list/src/listproperties';
-import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor';
-import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import ListProperties from '@ckeditor/ckeditor5-list/src/listproperties.js';
+import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor.js';
+import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace.js';
 
 initEditor( '#editor' );
 initEditor( '#editor-scrollable-parent' );
@@ -44,7 +44,7 @@ function initEditor( elementId ) {
 				'redo'
 			],
 			image: {
-				toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
+				toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative' ]
 			},
 			table: {
 				contentToolbar: [

@@ -1,0 +1,13 @@
+extends: existence
+message: "Use an en dash ('–') with spaces instead of an em dash ('—') for sentence interruptions and insertions."
+link: 'https://readabilityguidelines.co.uk/grammar-points/hyphens-and-dashes/#6-if-you-do-use-a-dash-use-an-en-dash-not-a-hyphen-or-an-em-dash'
+nonword: true
+level: error
+action:
+  name: edit
+  params:
+    - replace
+    - '–'
+tokens:
+  - '—'
+  - '&mdash;'

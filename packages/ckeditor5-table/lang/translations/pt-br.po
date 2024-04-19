@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Portuguese (Brazil) (https://app.transifex.com/ckeditor/teams/11143/pt_BR/)\n"
 "Language: pt_BR\n"
 "Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Label for the insert table toolbar button."
 msgid "Insert table"
@@ -248,14 +249,30 @@ msgctxt "The label used by assistive technologies describing a button that opens
 msgid "Color picker"
 msgstr "Seletor de cor"
 
-msgctxt "The button label for the table toolbar hiding caption attached to the table."
-msgid "Toggle caption off"
-msgstr "Desabilitar legenda"
-
-msgctxt "The button label for the table toolbar showing caption attached to the table."
-msgid "Toggle caption on"
-msgstr "Habilitar legenda"
-
 msgctxt "The placeholder text for the table caption displayed when the caption is empty."
 msgid "Enter table caption"
 msgstr "Inserir legenda da tabela"
+
+msgctxt "Accessibility help dialog header text displayed before the list of keystrokes that can be used in a table cell."
+msgid "Keystrokes that can be used in a table cell"
+msgstr "Teclas que podem ser usadas em uma célula de tabela"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for moving the selection to the next cell."
+msgid "Move the selection to the next cell"
+msgstr "Mover a seleção para a próxima célula"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for moving the selection to the previous cell."
+msgid "Move the selection to the previous cell"
+msgstr "Mover a seleção para a célula anterior"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for inserting a new table row."
+msgid "Insert a new table row (when in the last cell of a table)"
+msgstr "Inserir uma nova linha de tabela (quando na última célula de uma tabela)"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the table."
+msgid "Navigate through the table"
+msgstr "Navegar pela tabela"
+
+msgctxt "The accessible label of the menu bar button that displays a user interface to insert a table into editor content."
+msgid "Table"
+msgstr "Tabela"

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -28,7 +28,11 @@
 			max-width: 100%;
 
 			/* Make sure the image is never smaller than the parent container (See: https://github.com/ckeditor/ckeditor5/issues/9300). */
-			min-width: 100%
+			min-width: 100%;
+
+			/* Keep proportions of the block image if the height is set and the image is wider than the editor width.
+			See https://github.com/ckeditor/ckeditor5/issues/14542. */
+			height: auto;
 		}
 	}
 
@@ -83,26 +87,49 @@
 		text-overflow: ellipsis;
 	}
 
-
 	/*
-	 * Make sure the selected inline image always stays on top of its siblings.
-	 * See https://github.com/ckeditor/ckeditor5/issues/9108.
+	 * See https://github.com/ckeditor/ckeditor5/issues/15115.
 	 */
-	& .image.ck-widget_selected {
-		z-index: 1;
-	}
-
-	& .image-inline.ck-widget_selected {
+	& .image {
 		z-index: 1;
 
 		/*
-		 * Make sure the native browser selection style is not displayed.
-		 * Inline image widgets have their own styles for the selected state and
-		 * leaving this up to the browser is asking for a visual collision.
+		 * Make sure the selected image always stays on top of its siblings.
+		 * See https://github.com/ckeditor/ckeditor5/issues/9108.
 		 */
-		& ::selection {
-			display: none;
+		&.ck-widget_selected {
+			z-index: 2;
 		}
+	}
+
+	/*
+	 * See https://github.com/ckeditor/ckeditor5/issues/15115.
+	 */
+	& .image-inline {
+		z-index: 1;
+
+		/*
+		 * Make sure the selected inline image always stays on top of its siblings.
+		 * See https://github.com/ckeditor/ckeditor5/issues/9108.
+		 */
+		&.ck-widget_selected {
+			z-index: 2;
+
+			/*
+			 * Make sure the native browser selection style is not displayed.
+			 * Inline image widgets have their own styles for the selected state and
+			 * leaving this up to the browser is asking for a visual collision.
+			 */
+			& ::selection {
+				display: none;
+			}
+		}
+	}
+
+	/* Keep proportions of the inline image if the height is set and the image is wider than the editor width.
+	See https://github.com/ckeditor/ckeditor5/issues/14542. */
+	& .image-inline img {
+		height: auto;
 	}
 
 	/* The inline image nested in the table should have its original size if not resized.

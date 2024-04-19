@@ -1,16 +1,16 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals MouseEvent, document */
 
-import DomEventObserver from '../../../src/view/observer/domeventobserver';
-import Observer from '../../../src/view/observer/observer';
-import View from '../../../src/view/view';
-import UIElement from '../../../src/view/uielement';
-import createViewRoot from '../_utils/createroot';
-import { StylesProcessor } from '../../../src/view/stylesmap';
+import DomEventObserver from '../../../src/view/observer/domeventobserver.js';
+import Observer from '../../../src/view/observer/observer.js';
+import View from '../../../src/view/view.js';
+import UIElement from '../../../src/view/uielement.js';
+import createViewRoot from '../_utils/createroot.js';
+import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 class ClickObserver extends DomEventObserver {
 	constructor( view ) {

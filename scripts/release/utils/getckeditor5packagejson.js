@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -24,6 +24,7 @@ module.exports = function getCKEditor5PackageJson() {
 		keywords: pkgJson.keywords,
 		description: 'A set of ready-to-use rich text editors created with a powerful framework.' +
 			' Made with real-time collaborative editing in mind.',
+		type: 'module',
 		dependencies: getCKEditor5Dependencies( pkgJson.dependencies ),
 		engines: pkgJson.engines,
 		author: pkgJson.author,

@@ -1,26 +1,26 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global setTimeout */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import Link from '@ckeditor/ckeditor5-link/src/link';
-import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
+import Link from '@ckeditor/ckeditor5-link/src/link.js';
+import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage.js';
+import Table from '@ckeditor/ckeditor5-table/src/table.js';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
+import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import Image from '../src/image';
-import ImageUtils from '../src/imageutils';
-import ImageCaption from '../src/imagecaption';
-import AutoImage from '../src/autoimage';
+import Image from '../src/image.js';
+import ImageUtils from '../src/imageutils.js';
+import ImageCaption from '../src/imagecaption.js';
+import AutoImage from '../src/autoimage.js';
 
 describe( 'AutoImage - integration', () => {
 	let editorElement, editor;
@@ -31,7 +31,8 @@ describe( 'AutoImage - integration', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Typing, Paragraph, Link, Image, LinkImage, ImageCaption, AutoImage ]
+				plugins: [ Typing, Paragraph, Link, Image, LinkImage, ImageCaption, AutoImage ],
+				image: { insert: { type: 'auto' } }
 			} )
 			.then( newEditor => {
 				editor = newEditor;

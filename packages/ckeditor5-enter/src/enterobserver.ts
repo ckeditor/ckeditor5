@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -11,7 +11,7 @@ import {
 	Observer,
 	DomEventData,
 	BubblingEventInfo,
-	type View,
+	type EditingView,
 	type ViewDocumentInputEvent,
 	type BubblingEvent,
 	type ViewDocumentKeyDownEvent
@@ -31,7 +31,7 @@ export default class EnterObserver extends Observer {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( view: View ) {
+	constructor( view: EditingView ) {
 		super( view );
 
 		const doc = this.document;

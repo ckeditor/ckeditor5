@@ -1,16 +1,16 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import { assertTableStyle, modelTable } from '../../_utils/utils';
-import TablePropertiesEditing from '../../../src/tableproperties/tablepropertiesediting';
-import TableHeightCommand from '../../../src/tableproperties/commands/tableheightcommand';
+import { assertTableStyle, modelTable } from '../../_utils/utils.js';
+import TablePropertiesEditing from '../../../src/tableproperties/tablepropertiesediting.js';
+import TableHeightCommand from '../../../src/tableproperties/commands/tableheightcommand.js';
 
 describe( 'table properties', () => {
 	describe( 'commands', () => {
@@ -37,7 +37,7 @@ describe( 'table properties', () => {
 						expect( command.isEnabled ).to.be.false;
 					} );
 
-					it( 'should be true is selection has table', () => {
+					it( 'should be true if selection is in table', () => {
 						setData( model, modelTable( [ [ '[]foo' ] ] ) );
 						expect( command.isEnabled ).to.be.true;
 					} );
@@ -49,8 +49,13 @@ describe( 'table properties', () => {
 						expect( command.isEnabled ).to.be.false;
 					} );
 
-					it( 'should be true is selection has table', () => {
+					it( 'should be true if selection is in table', () => {
 						setData( model, modelTable( [ [ 'f[o]o' ] ] ) );
+						expect( command.isEnabled ).to.be.true;
+					} );
+
+					it( 'should be true if selection is over table', () => {
+						setData( model, '[' + modelTable( [ [ 'foo' ] ] ) + ']' );
 						expect( command.isEnabled ).to.be.true;
 					} );
 				} );
@@ -72,14 +77,20 @@ describe( 'table properties', () => {
 				} );
 
 				describe( 'non-collapsed selection', () => {
-					it( 'should be false if selection does not have table', () => {
+					it( 'should be undefined if selection does not have table', () => {
 						setData( model, '<paragraph>f[oo]</paragraph>' );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be true is selection has table', () => {
+					it( 'should be set is selection is in table', () => {
 						setData( model, modelTable( [ [ 'f[o]o' ] ], { tableHeight: '100px' } ) );
+
+						expect( command.value ).to.equal( '100px' );
+					} );
+
+					it( 'should be set is selection is over table', () => {
+						setData( model, '[' + modelTable( [ [ 'foo' ] ], { tableHeight: '100px' } ) + ']' );
 
 						expect( command.value ).to.equal( '100px' );
 					} );
@@ -178,7 +189,7 @@ describe( 'table properties', () => {
 					} );
 				} );
 
-				describe( 'non-collapsed selection', () => {
+				describe( 'non-collapsed selection (inside table)', () => {
 					it( 'should set selected table height to a passed value', () => {
 						setData( model, modelTable( [ [ '[foo]' ] ] ) );
 
@@ -197,6 +208,32 @@ describe( 'table properties', () => {
 
 					it( 'should remove height from a selected table if no value is passed', () => {
 						setData( model, modelTable( [ [ '[foo]' ] ] ) );
+
+						command.execute();
+
+						assertTableStyle( editor, '' );
+					} );
+				} );
+
+				describe( 'non-collapsed selection (over table)', () => {
+					it( 'should set selected table height to a passed value', () => {
+						setData( model, '[' + modelTable( [ [ 'foo' ] ] ) + ']' );
+
+						command.execute( { value: '25px' } );
+
+						assertTableStyle( editor, null, 'height:25px;' );
+					} );
+
+					it( 'should change selected table height to a passed value', () => {
+						setData( model, '[' + modelTable( [ [ 'foo' ] ] ) + ']' );
+
+						command.execute( { value: '25px' } );
+
+						assertTableStyle( editor, null, 'height:25px;' );
+					} );
+
+					it( 'should remove height from a selected table if no value is passed', () => {
+						setData( model, '[' + modelTable( [ [ 'foo' ] ] ) + ']' );
 
 						command.execute();
 

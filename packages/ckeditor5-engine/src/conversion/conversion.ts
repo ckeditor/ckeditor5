@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -14,16 +14,16 @@ import {
 	type PriorityString
 } from '@ckeditor/ckeditor5-utils';
 
-import UpcastHelpers from './upcasthelpers';
+import UpcastHelpers from './upcasthelpers.js';
 import DowncastHelpers, {
 	type AttributeCreatorFunction,
 	type AttributeDescriptor
-} from './downcasthelpers';
+} from './downcasthelpers.js';
 
-import type DowncastDispatcher from './downcastdispatcher';
-import type UpcastDispatcher from './upcastdispatcher';
-import type ElementDefinition from '../view/elementdefinition';
-import type { MatcherPattern } from '../view/matcher';
+import type DowncastDispatcher from './downcastdispatcher.js';
+import type UpcastDispatcher from './upcastdispatcher.js';
+import type ElementDefinition from '../view/elementdefinition.js';
+import type { MatcherPattern } from '../view/matcher.js';
 
 /**
  * A utility class that helps add converters to upcast and downcast dispatchers.

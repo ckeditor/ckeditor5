@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Portuguese (https://app.transifex.com/ckeditor/teams/11143/pt/)\n"
 "Language: pt\n"
 "Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Name of the special characters plugins, visible in a dropdown and as a button tooltip."
 msgid "Special characters"
@@ -134,11 +135,11 @@ msgstr "\"Top\" com seta para cima em cima"
 
 msgctxt "A label for the \"dollar sign\" symbol."
 msgid "Dollar sign"
-msgstr "Cifrão"
+msgstr "Sinal de Dólar"
 
 msgctxt "A label for the \"euro sign\" symbol."
 msgid "Euro sign"
-msgstr "Sinal de euro"
+msgstr "Sinal de Euro"
 
 msgctxt "A label for the \"yen sign\" symbol."
 msgid "Yen sign"

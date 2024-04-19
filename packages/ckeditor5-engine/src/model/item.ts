@@ -1,10 +1,10 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type Node from './node';
-import type TextProxy from './textproxy';
+import type Node from './node.js';
+import type TextProxy from './textproxy.js';
 
 /**
  * @module engine/model/item

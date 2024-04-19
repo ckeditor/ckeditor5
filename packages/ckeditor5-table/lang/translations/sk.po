@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Slovak (https://app.transifex.com/ckeditor/teams/11143/sk/)\n"
 "Language: sk\n"
 "Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Label for the insert table toolbar button."
 msgid "Insert table"
@@ -248,14 +249,30 @@ msgctxt "The label used by assistive technologies describing a button that opens
 msgid "Color picker"
 msgstr "Vybrať farbu"
 
-msgctxt "The button label for the table toolbar hiding caption attached to the table."
-msgid "Toggle caption off"
-msgstr "Vypnúť titulok"
-
-msgctxt "The button label for the table toolbar showing caption attached to the table."
-msgid "Toggle caption on"
-msgstr "Zapnúť titulok"
-
 msgctxt "The placeholder text for the table caption displayed when the caption is empty."
 msgid "Enter table caption"
 msgstr "Zadajte popis tabuľky"
+
+msgctxt "Accessibility help dialog header text displayed before the list of keystrokes that can be used in a table cell."
+msgid "Keystrokes that can be used in a table cell"
+msgstr "Klávesy, ktoré sa dajú použiť v bunke tabuľky"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for moving the selection to the next cell."
+msgid "Move the selection to the next cell"
+msgstr "Presunúť výber do nasledujúcej bunky"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for moving the selection to the previous cell."
+msgid "Move the selection to the previous cell"
+msgstr "Presunúť výber do predchádzajúcej bunky"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for inserting a new table row."
+msgid "Insert a new table row (when in the last cell of a table)"
+msgstr "Vložiť nový riadok tabuľky (keď je označená posledná bunka tabuľky)"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for navigating through the table."
+msgid "Navigate through the table"
+msgstr "Prechádzať tabuľkou"
+
+msgctxt "The accessible label of the menu bar button that displays a user interface to insert a table into editor content."
+msgid "Table"
+msgstr "Tabuľka"

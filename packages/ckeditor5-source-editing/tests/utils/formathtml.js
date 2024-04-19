@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { formatHtml } from '../../src/utils/formathtml';
+import { formatHtml } from '../../src/utils/formathtml.js';
 
 describe( 'SourceEditing utils', () => {
 	describe( 'formatHtml()', () => {
@@ -179,14 +179,13 @@ describe( 'SourceEditing utils', () => {
 				'<main>\n' +
 				'    <form action="#" method="post">\n' +
 				'        <fieldset>\n' +
-				'            <label for="name"><i>Name:</i></label>\n' +
-				'            <input type="text" placeholder="Enter your full name">\n' +
-				'            <label for="email"><i>Email:</i></label>\n' +
-				'            <input type="email" placeholder="Enter your email address">\n' +
-				'            <label for="message"><i>Message:</i></label>\n' +
-				'            <textarea placeholder="What\'s on your mind?">\n' +
-				'            </textarea>\n' +
-				'            <input type="submit" value="Send message">\n' +
+				'            <label for="name"><i>Name:</i></label>' +
+							'<input type="text" placeholder="Enter your full name">' +
+							'<label for="email"><i>Email:</i></label>' +
+							'<input type="email" placeholder="Enter your email address">' +
+							'<label for="message"><i>Message:</i></label>' +
+							'<textarea placeholder="What\'s on your mind?"></textarea>' +
+							'<input type="submit" value="Send message">\n' +
 				'        </fieldset>\n' +
 				'    </form>\n' +
 				'</main>';
@@ -203,6 +202,50 @@ describe( 'SourceEditing utils', () => {
 			const sourceFormatted = '' +
 				'<blockquote>\n' +
 				'    <pre><code>abc</code></pre>\n' +
+				'</blockquote>';
+
+			expect( formatHtml( source ) ).to.equal( sourceFormatted );
+		} );
+
+		it( 'should not inject extra white spaces at the beginning of preformatted lines in <pre>', () => {
+			const source = '' +
+				'<blockquote>' +
+					'<pre><code>foo\n' +
+					'bar\n' +
+					'abc\n' +
+					'baz</code></pre>' +
+				'</blockquote>';
+
+			const sourceFormatted = '' +
+				'<blockquote>\n' +
+				'    <pre><code>foo\n' +
+				'bar\n' +
+				'abc\n' +
+				'baz</code></pre>\n' +
+				'</blockquote>';
+
+			expect( formatHtml( source ) ).to.equal( sourceFormatted );
+		} );
+
+		it( 'should not inject extra white spaces at the beginning of preformatted lines in <pre> (deep structure)', () => {
+			const source = '' +
+				'<blockquote>' +
+					'<blockquote>' +
+						'<pre><code>foo\n' +
+						'bar\n' +
+						'abc\n' +
+						'baz</code></pre>' +
+					'</blockquote>' +
+				'</blockquote>';
+
+			const sourceFormatted = '' +
+				'<blockquote>\n' +
+				'    <blockquote>\n' +
+				'        <pre><code>foo\n' +
+				'bar\n' +
+				'abc\n' +
+				'baz</code></pre>\n' +
+				'    </blockquote>\n' +
 				'</blockquote>';
 
 			expect( formatHtml( source ) ).to.equal( sourceFormatted );

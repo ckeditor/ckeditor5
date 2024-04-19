@@ -1,12 +1,12 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
  * @module table/tablewalker
  */
-import type { Element, Position } from 'ckeditor5/src/engine';
+import type { Element, Position } from 'ckeditor5/src/engine.js';
 
 // @if CK_DEBUG // const CKEditorError = require( '@ckeditor/ckeditor5-utils/src/ckeditorerror' ).default;
 
@@ -139,6 +139,11 @@ export default class TableWalker implements IterableIterator<TableSlot> {
 	private _nextCellAtColumn: number;
 
 	/**
+	 * Indicates whether the iterator jumped to (or close to) the start row, ignoring rows that don't need to be traversed.
+	 */
+	private _jumpedToStartRow = false;
+
+	/**
 	 * Creates an instance of the table walker.
 	 *
 	 * The table walker iterates internally by traversing the table from row index = 0 and column index = 0.
@@ -243,6 +248,10 @@ export default class TableWalker implements IterableIterator<TableSlot> {
 	 * @returns The next table walker's value.
 	 */
 	public next(): IteratorResult<TableSlot, undefined> {
+		if ( this._canJumpToStartRow() ) {
+			this._jumpToNonSpannedRowClosestToStartRow();
+		}
+
 		const row = this._table.getChild( this._rowIndex );
 
 		// Iterator is done when there's no row (table ended) or the row is after `endRow` limit.
@@ -422,6 +431,64 @@ export default class TableWalker implements IterableIterator<TableSlot> {
 		const rowSpans = this._spannedCells.get( row )!;
 
 		rowSpans.set( column, data );
+	}
+
+	/**
+	 * Checks if part of the table can be skipped.
+	 */
+	private _canJumpToStartRow(): boolean {
+		return !!this._startRow &&
+			this._startRow > 0 &&
+			!this._jumpedToStartRow;
+	}
+
+	/**
+	 * Sets the current row to `this._startRow` or the first row before it that has the number of cells
+	 * equal to the number of columns in the table.
+	 *
+	 * Example:
+	 * 	+----+----+----+
+	 *  | 00 | 01 | 02 |
+	 *  |----+----+----+
+	 *  | 10      | 12 |
+	 *  |         +----+
+	 *  |         | 22 |
+	 *  |         +----+
+	 *  |         | 32 | <--- Start row
+	 *  +----+----+----+
+	 *  | 40 | 41 | 42 |
+	 *  +----+----+----+
+	 *
+	 * If the 4th row is a `this._startRow`, this method will:
+	 * 1.) Count the number of columns this table has based on the first row (3 columns in this case).
+	 * 2.) Check if the 4th row contains 3 cells. It doesn't, so go to the row before it.
+	 * 3.) Check if the 3rd row contains 3 cells. It doesn't, so go to the row before it.
+	 * 4.) Check if the 2nd row contains 3 cells. It does, so set the current row to that row.
+	 *
+	 * Setting the current row this way is necessary to let the `next()`  method loop over the cells
+	 * spanning multiple rows or columns and update the `this._spannedCells` property.
+	 */
+	private _jumpToNonSpannedRowClosestToStartRow(): void {
+		const firstRowLength = this._getRowLength( 0 );
+
+		for ( let i = this._startRow!; !this._jumpedToStartRow; i-- ) {
+			if ( firstRowLength === this._getRowLength( i ) ) {
+				this._row = i;
+				this._rowIndex = i;
+				this._jumpedToStartRow = true;
+			}
+		}
+	}
+
+	/**
+	 * Returns a number of columns in a row taking `colspan` into consideration.
+	 */
+	private _getRowLength( rowIndex: number ): number {
+		const row = this._table.getChild( rowIndex ) as Element;
+
+		return [ ...row.getChildren() ].reduce( ( cols, row ) => {
+			return cols + parseInt( row.getAttribute( 'colspan' ) as string || '1' );
+		}, 0 );
 	}
 }
 

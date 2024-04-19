@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,8 +7,8 @@
  * @module paste-from-office/normalizer
  */
 
-import type { ClipboardInputTransformationData } from 'ckeditor5/src/clipboard';
-import type { ParseHtmlResult } from './filters/parse';
+import type { ClipboardInputTransformationData } from 'ckeditor5/src/clipboard.js';
+import type { ParseHtmlResult } from './filters/parse.js';
 
 /**
  * Interface defining a content transformation pasted from an external editor.

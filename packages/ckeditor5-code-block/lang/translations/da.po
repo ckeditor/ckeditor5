@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Danish (https://app.transifex.com/ckeditor/teams/11143/da/)\n"
 "Language: da\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "A label of the button that allows inserting a new code block into the editor content."
 msgid "Insert code block"
@@ -23,3 +24,7 @@ msgstr "Indsæt kodeblok"
 msgctxt "A language of the code block in the editor content when no specific programming language is associated with it."
 msgid "Plain text"
 msgstr "Plain tekst"
+
+msgctxt "The accessible label of the menu bar button that inserts a code block into editor content."
+msgid "Code block"
+msgstr "Kodeblok"

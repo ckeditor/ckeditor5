@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -13,13 +13,13 @@ import { List } from '@ckeditor/ckeditor5-list';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { findAttributeRange } from '@ckeditor/ckeditor5-typing';
 
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 import { Command, Plugin } from '@ckeditor/ckeditor5-core';
 import { toMap } from '@ckeditor/ckeditor5-utils';
 
 import { ButtonView, ContextualBalloon, clickOutsideHandler } from '@ckeditor/ckeditor5-ui';
-import FormView from './abbreviationView-level-3';
+import FormView from './abbreviationView-level-3.js';
 
 class AbbreviationUI extends Plugin {
 	static get requires() {

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,29 +7,37 @@
  * @module clipboard
  */
 
-export { default as Clipboard } from './clipboard';
+export { default as Clipboard } from './clipboard.js';
 export {
 	default as ClipboardPipeline,
 	type ClipboardContentInsertionEvent,
+	type ClipboardContentInsertionData,
 	type ClipboardInputTransformationEvent,
 	type ClipboardInputTransformationData,
+	type ClipboardOutputTransformationEvent,
+	type ClipboardOutputTransformationData,
 	type ViewDocumentClipboardOutputEvent
-} from './clipboardpipeline';
+} from './clipboardpipeline.js';
+
+export {
+	default as ClipboardMarkersUtils,
+	type ClipboardMarkerRestrictedAction,
+	type ClipboardMarkerConfiguration
+} from './clipboardmarkersutils.js';
 
 export type {
 	ClipboardEventData
-} from './clipboardobserver';
+} from './clipboardobserver.js';
 
-export { default as DragDrop } from './dragdrop';
-export { default as PastePlainText } from './pasteplaintext';
-export { default as DragDropExperimental } from './dragdropexperimental';
-export { default as DragDropTarget } from './dragdroptarget';
-export { default as DragDropBlockToolbar } from './dragdropblocktoolbar';
+export { default as DragDrop } from './dragdrop.js';
+export { default as PastePlainText } from './pasteplaintext.js';
+export { default as DragDropTarget } from './dragdroptarget.js';
+export { default as DragDropBlockToolbar } from './dragdropblocktoolbar.js';
 
 export type {
 	ViewDocumentClipboardInputEvent,
 	ViewDocumentCopyEvent,
 	ViewDocumentCutEvent
-} from './clipboardobserver';
+} from './clipboardobserver.js';
 
-import './augmentation';
+import './augmentation.js';

@@ -1,16 +1,16 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { stringify, parse, getData, setData } from '../../src/dev-utils/model';
-import Model from '../../src/model/model';
-import DocumentFragment from '../../src/model/documentfragment';
-import Element from '../../src/model/element';
-import Text from '../../src/model/text';
-import Range from '../../src/model/range';
-import Position from '../../src/model/position';
-import count from '@ckeditor/ckeditor5-utils/src/count';
+import { stringify, parse, getData, setData } from '../../src/dev-utils/model.js';
+import Model from '../../src/model/model.js';
+import DocumentFragment from '../../src/model/documentfragment.js';
+import Element from '../../src/model/element.js';
+import Text from '../../src/model/text.js';
+import Range from '../../src/model/range.js';
+import Position from '../../src/model/position.js';
+import count from '@ckeditor/ckeditor5-utils/src/count.js';
 
 describe( 'model test utils', () => {
 	let model, document, root, selection;

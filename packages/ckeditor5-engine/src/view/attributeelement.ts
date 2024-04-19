@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,12 +7,12 @@
  * @module engine/view/attributeelement
  */
 
-import Element, { type ElementAttributes } from './element';
+import Element, { type ElementAttributes } from './element.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
-import type DocumentFragment from './documentfragment';
-import type Document from './document';
-import type Node from './node';
+import type DocumentFragment from './documentfragment.js';
+import type Document from './document.js';
+import type Node from './node.js';
 
 // Default attribute priority.
 const DEFAULT_PRIORITY = 10;

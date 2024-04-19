@@ -1,19 +1,19 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document */
 
-import ViewCollection from '../src/viewcollection';
-import View from '../src/view';
-import FocusCycler from '../src/focuscycler';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import ViewCollection from '../src/viewcollection.js';
+import View from '../src/view.js';
+import FocusCycler, { isViewWithFocusCycler } from '../src/focuscycler.js';
+import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'FocusCycler', () => {
-	let focusables, focusTracker, cycler;
+	let focusables, focusTracker, cycler, viewIndex;
 
 	testUtils.createSinonSandbox();
 
@@ -32,6 +32,7 @@ describe( 'FocusCycler', () => {
 			focusables,
 			focusTracker
 		} );
+		viewIndex = 0;
 	} );
 
 	afterEach( () => {
@@ -182,7 +183,7 @@ describe( 'FocusCycler', () => {
 			focusTracker.focusedElement = focusables.get( 1 ).element;
 
 			expect( cycler.first ).to.equal( focusables.get( 1 ) );
-			expect( cycler.next ).to.be.null;
+			expect( cycler.next ).to.equal( focusables.get( 1 ) );
 		} );
 
 		it( 'should ignore items with an element detached from DOM', () => {
@@ -269,7 +270,7 @@ describe( 'FocusCycler', () => {
 			focusTracker.focusedElement = focusables.get( 1 ).element;
 
 			expect( cycler.first ).to.equal( focusables.get( 1 ) );
-			expect( cycler.previous ).to.be.null;
+			expect( cycler.previous ).to.equal( focusables.get( 1 ) );
 		} );
 
 		it( 'should ignore items with an element detached from DOM', () => {
@@ -404,6 +405,48 @@ describe( 'FocusCycler', () => {
 				cycler.focusNext();
 			} ).to.not.throw();
 		} );
+
+		it( 'does not refocus if there is only one focusable item', () => {
+			focusables = new ViewCollection( [ focusable() ] );
+			cycler = new FocusCycler( { focusables, focusTracker } );
+			focusTracker.focusedElement = focusables.get( 0 ).element;
+
+			cycler.focusNext();
+			sinon.assert.notCalled( focusables.get( 0 ).focus );
+		} );
+
+		it( 'fires an event while making full cycle back to the beginning', () => {
+			focusables = new ViewCollection( [ focusable(), focusable(), focusable() ] );
+			cycler = new FocusCycler( { focusables, focusTracker } );
+			focusTracker.focusedElement = focusables.get( 2 ).element;
+
+			const forwardCycleSpy = sinon.spy();
+			const backwardCycleSpy = sinon.spy();
+
+			cycler.on( 'forwardCycle', forwardCycleSpy );
+			cycler.on( 'backwardCycle', backwardCycleSpy );
+
+			cycler.focusNext();
+			focusTracker.focusedElement = focusables.get( 0 ).element;
+			cycler.focusNext();
+
+			sinon.assert.calledOnce( forwardCycleSpy );
+			sinon.assert.notCalled( backwardCycleSpy );
+		} );
+
+		it( 'fires an event that allows custom behavior once stopped on the normal priority', () => {
+			focusables = new ViewCollection( [ focusable(), focusable(), focusable() ] );
+			cycler = new FocusCycler( { focusables, focusTracker } );
+			focusTracker.focusedElement = focusables.get( 2 ).element;
+
+			cycler.on( 'forwardCycle', evt => {
+				evt.stop();
+			} );
+
+			cycler.focusNext();
+
+			sinon.assert.notCalled( focusables.get( 0 ).focus );
+		} );
 	} );
 
 	describe( 'focusPrevious()', () => {
@@ -430,6 +473,48 @@ describe( 'FocusCycler', () => {
 			expect( () => {
 				cycler.focusPrevious();
 			} ).to.not.throw();
+		} );
+
+		it( 'does not refocus if there is only one focusable item', () => {
+			focusables = new ViewCollection( [ focusable() ] );
+			cycler = new FocusCycler( { focusables, focusTracker } );
+			focusTracker.focusedElement = focusables.get( 0 ).element;
+
+			cycler.focusPrevious();
+			sinon.assert.notCalled( focusables.get( 0 ).focus );
+		} );
+
+		it( 'fires an event while making full cycle back to the end', () => {
+			focusables = new ViewCollection( [ focusable(), focusable(), focusable() ] );
+			cycler = new FocusCycler( { focusables, focusTracker } );
+			focusTracker.focusedElement = focusables.get( 0 ).element;
+
+			const forwardCycleSpy = sinon.spy();
+			const backwardCycleSpy = sinon.spy();
+
+			cycler.on( 'forwardCycle', forwardCycleSpy );
+			cycler.on( 'backwardCycle', backwardCycleSpy );
+
+			cycler.focusPrevious();
+			focusTracker.focusedElement = focusables.get( 2 ).element;
+			cycler.focusPrevious();
+
+			sinon.assert.notCalled( forwardCycleSpy );
+			sinon.assert.calledOnce( backwardCycleSpy );
+		} );
+
+		it( 'fires an event that allows custom behavior once stopped on the normal priority', () => {
+			focusables = new ViewCollection( [ focusable(), focusable(), focusable() ] );
+			cycler = new FocusCycler( { focusables, focusTracker } );
+			focusTracker.focusedElement = focusables.get( 0 ).element;
+
+			cycler.on( 'backwardCycle', evt => {
+				evt.stop();
+			} );
+
+			cycler.focusPrevious();
+
+			sinon.assert.notCalled( focusables.get( 2 ).focus );
 		} );
 	} );
 
@@ -496,30 +581,58 @@ describe( 'FocusCycler', () => {
 			sinon.assert.calledOnce( keyEvtData.stopPropagation );
 		} );
 	} );
-} );
 
-function nonFocusable( { display = 'block', isDetached = false, hiddenParent = false } = {} ) {
-	const view = new View();
-	view.element = document.createElement( 'div' );
-	view.element.setAttribute( 'focus-cycler-test-element', true );
-	view.element.style.display = display;
+	describe( 'isViewWithFocusCycler', () => {
+		it( 'should return true if the view has its own focus cycler instance', () => {
+			expect( isViewWithFocusCycler( viewWithFocusCycler() ) ).to.be.true;
+		} );
 
-	if ( hiddenParent ) {
-		const invisibleParent = document.createElement( 'div' );
-		invisibleParent.style.display = 'none';
-		invisibleParent.appendChild( view.element );
-		document.body.appendChild( invisibleParent );
-	} else if ( !isDetached ) {
-		document.body.appendChild( view.element );
+		it( 'should return false if the view does not have a focus cycler instance', () => {
+			expect( isViewWithFocusCycler( new View() ) ).to.be.false;
+		} );
+	} );
+
+	function nonFocusable( { display = 'block', isDetached = false, hiddenParent = false } = {} ) {
+		const view = new View();
+		view.element = document.createElement( 'div' );
+		view.element.setAttribute( 'focus-cycler-test-element', viewIndex++ );
+		view.element.style.display = display;
+
+		if ( hiddenParent ) {
+			const invisibleParent = document.createElement( 'div' );
+			invisibleParent.style.display = 'none';
+			invisibleParent.appendChild( view.element );
+			document.body.appendChild( invisibleParent );
+		} else if ( !isDetached ) {
+			document.body.appendChild( view.element );
+		}
+
+		return view;
 	}
 
-	return view;
-}
+	function focusable( ...args ) {
+		const view = nonFocusable( ...args );
 
-function focusable( ...args ) {
-	const view = nonFocusable( ...args );
+		view.focus = sinon.spy();
 
-	view.focus = sinon.spy();
+		return view;
+	}
 
-	return view;
-}
+	function viewWithFocusCycler() {
+		const view = new View();
+		view.element = document.createElement( 'div' );
+
+		const focusCycler = new FocusCycler( {
+			focusables: new ViewCollection( [ view ] ),
+			focusTracker: {
+				focusedElement: null
+			}
+		} );
+
+		view.focus = sinon.spy();
+		view.focusCycler = focusCycler;
+
+		return view;
+	}
+} );
+

@@ -1,12 +1,12 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Model from '../../../src/model/model';
-import DocumentFragment from '../../../src/model/documentfragment';
-import getSelectedContent from '../../../src/model/utils/getselectedcontent';
-import { setData, stringify } from '../../../src/dev-utils/model';
+import Model from '../../../src/model/model.js';
+import DocumentFragment from '../../../src/model/documentfragment.js';
+import getSelectedContent from '../../../src/model/utils/getselectedcontent.js';
+import { setData, stringify } from '../../../src/dev-utils/model.js';
 
 describe( 'DataController utils', () => {
 	let model, doc;

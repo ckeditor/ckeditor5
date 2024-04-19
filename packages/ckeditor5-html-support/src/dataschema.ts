@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,11 +7,11 @@
  * @module html-support/dataschema
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { toArray } from 'ckeditor5/src/utils';
-import defaultConfig from './schemadefinitions';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { toArray } from 'ckeditor5/src/utils.js';
+import defaultConfig from './schemadefinitions.js';
 import { mergeWith } from 'lodash-es';
-import type { AttributeProperties, SchemaItemDefinition } from 'ckeditor5/src/engine';
+import type { AttributeProperties, SchemaItemDefinition } from 'ckeditor5/src/engine.js';
 
 /**
  * Holds representation of the extended HTML document type definitions to be used by the

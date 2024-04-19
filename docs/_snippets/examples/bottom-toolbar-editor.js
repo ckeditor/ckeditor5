@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -17,18 +17,18 @@ import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
-import { Image, ImageCaption, ImageStyle, ImageToolbar, ImageUpload, ImageResize } from '@ckeditor/ckeditor5-image';
+import { Image, ImageInsert, ImageCaption, ImageStyle, ImageToolbar, ImageUpload, ImageResize } from '@ckeditor/ckeditor5-image';
 import { Link } from '@ckeditor/ckeditor5-link';
 import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
 import { Bold, Italic, Strikethrough, Superscript, Subscript, Underline } from '@ckeditor/ckeditor5-basic-styles';
 import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 import fontColorIcon from '@ckeditor/ckeditor5-font/theme/icons/font-color.svg';
 
-import DecoupledEditor from '../build-decoupled-document';
+import DecoupledEditor from '../build-decoupled-document.js';
 
 class FormattingOptions extends Plugin {
 	/**
@@ -124,6 +124,7 @@ DecoupledEditor
 			Heading,
 			HorizontalLine,
 			Image,
+			ImageInsert,
 			ImageCaption,
 			ImageResize,
 			ImageStyle,
@@ -153,7 +154,7 @@ DecoupledEditor
 			'|',
 			'link',
 			'blockQuote',
-			'uploadImage',
+			'insertImage',
 			'insertTable',
 			'mediaEmbed',
 			'horizontalLine',

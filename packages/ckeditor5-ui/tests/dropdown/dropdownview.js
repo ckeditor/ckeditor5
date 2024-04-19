@@ -1,15 +1,15 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import DropdownView from '../../src/dropdown/dropdownview';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import ButtonView from '../../src/button/buttonview';
-import DropdownPanelView from '../../src/dropdown/dropdownpanelview';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import DropdownView from '../../src/dropdown/dropdownview.js';
+import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import ButtonView from '../../src/button/buttonview.js';
+import DropdownPanelView from '../../src/dropdown/dropdownpanelview.js';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { FocusTracker } from '@ckeditor/ckeditor5-utils';
 
 describe( 'DropdownView', () => {
@@ -110,7 +110,10 @@ describe( 'DropdownView', () => {
 			} );
 
 			describe( 'view.panelView#isVisible to view#isOpen', () => {
-				it( 'is activated', () => {
+				it( 'is activated before the view gets rendered', () => {
+					const panelView = new DropdownPanelView( locale );
+					const buttonView = new ButtonView( locale );
+					const view = new DropdownView( locale, buttonView, panelView );
 					const values = [];
 
 					view.listenTo( view.panelView, 'change:isVisible', () => {
@@ -122,6 +125,10 @@ describe( 'DropdownView', () => {
 					view.isOpen = true;
 
 					expect( values ).to.have.members( [ true, false, true ] );
+
+					view.destroy();
+					buttonView.destroy();
+					panelView.destroy();
 				} );
 			} );
 
@@ -183,6 +190,35 @@ describe( 'DropdownView', () => {
 							],
 							fitInViewport: true
 						} ) );
+					} );
+
+					it( 'fallback when _getOptimalPosition() will return null', () => {
+						const locale = {
+							t() {}
+						};
+
+						const buttonView = new ButtonView( locale );
+						const panelView = new DropdownPanelView( locale );
+
+						const view = new DropdownView( locale, buttonView, panelView );
+						view.render();
+
+						const parentWithOverflow = global.document.createElement( 'div' );
+						parentWithOverflow.style.width = '1px';
+						parentWithOverflow.style.height = '1px';
+						parentWithOverflow.style.marginTop = '-1000px';
+						parentWithOverflow.style.overflow = 'scroll';
+
+						parentWithOverflow.appendChild( view.element );
+
+						global.document.body.appendChild( parentWithOverflow );
+
+						view.isOpen = true;
+
+						expect( view.panelView.position ).is.equal( 'southEast' ); // first position from position list.
+
+						view.element.remove();
+						parentWithOverflow.remove();
 					} );
 				} );
 			} );
