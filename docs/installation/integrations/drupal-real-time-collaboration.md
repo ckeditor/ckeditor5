@@ -72,24 +72,24 @@ Refer to the [Adding CKEditor&ndash;5 Premium Features module to Drupal 10](http
 
 ## CKEditor 5 Plugin Pack
 
-[CKEditor&nbsp;5 Plugin Pack](https://www.drupal.org/project/ckeditor5_plugin_pack) is a free-to-use module that offers multiple CKEditor 5 plugins that are not available in the Drupal core, extending editor's functionalities.
+The [CKEditor&nbsp;5 Plugin Pack](https://www.drupal.org/project/ckeditor5_plugin_pack) is a free-to-use module that offers multiple CKEditor 5 plugins that are not available in the Drupal core, extending editor's functionality.
 
 ### Features available in the CKEditor 5 Plugin Pack module
 
-* Block Indentation
-* Find and replace
-* Fonts
-* Highlight
-* Text transformation
-* To-do list
-* Word count
-* Free version of WProofreader - [exact limitation of the free version are listed in this page](TODO)
+* {@link features/indent Block indentation}
+* {@link features/find-and-replace Find and replace}
+* {@link features/font Fonts family, size and colors}
+* {@link features/highlight Highlight}
+* {@link features/text-transformation Text transformation}
+* {@link features/lists/to-do-lists To-do list}
+* {@link features/word-count Word count}
+* Free version of {@link features/spelling-and-grammar-checking WProofreader} &ndash; [exact limitation of the free version are listed in this page](TODO)
 
-Plugin Pack also makes it possbile to use some of the premium features for free. 
+Plugin Pack also makes it possible to use some of the premium features for free. 
 
 Currently available premium features:
 
-* Templates
+* {@link features/templates Templates}
 * Full-screen mode
 
 Detailed descriptions of each plugin can be found on the [CKEditor&nbsp;5 Plugin Pack module page](https://www.drupal.org/project/ckeditor5_plugin_pack)
