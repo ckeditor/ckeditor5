@@ -51,6 +51,6 @@
   ],
   "main": "./theme/theme.css",
   "scripts": {
-    "build:node": "ckeditor5-dev-build-tools --input=theme/index.css --clean --source-map --banner=../../scripts/banner.mjs"
+    "build:dist": "ckeditor5-dev-build-tools --input=theme/index.css --clean --source-map --banner=../../scripts/banner.mjs"
   }
 }

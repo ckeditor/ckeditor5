@@ -19,7 +19,7 @@ module.exports = async function buildPackageUsingRollupCallback( packagePath ) {
 		return;
 	}
 
-	return tools.shExec( 'yarn run build:node', {
+	return tools.shExec( 'yarn run build:dist', {
 		cwd: packagePath,
 		verbosity: 'error',
 		async: true

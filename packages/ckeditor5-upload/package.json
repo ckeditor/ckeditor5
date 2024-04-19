@@ -40,6 +40,6 @@
   ],
   "scripts": {
     "build": "tsc -p ./tsconfig.json",
-    "build:node": "node ../../scripts/build-package.mjs"
+    "build:dist": "node ../../scripts/build-package.mjs"
   }
 }
