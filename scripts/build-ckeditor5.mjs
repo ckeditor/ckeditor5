@@ -20,7 +20,7 @@ function dist( path ) {
 	/**
 	 * Paths to the `tsconfig` and `banner` files relative to the root of the repository.
 	 */
-	const tsconfig = 'tsconfig.ckeditor5.kowalski.json';
+	const tsconfig = 'tsconfig.dist.ckeditor5.json';
 	const banner = 'scripts/banner.mjs';
 
 	/**
