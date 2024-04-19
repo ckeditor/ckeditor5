@@ -81,7 +81,7 @@ The [CKEditor&nbsp;5 Plugin Pack](https://www.drupal.org/project/ckeditor5_plugi
 * {@link features/font Fonts family, size and colors}
 * {@link features/highlight Highlight}
 * {@link features/text-transformation Text transformation}
-* {@link features/lists/to-do-lists To-do list}
+* {@link features/todo-lists To-do lists}
 * {@link features/word-count Word count}
 * Free version of {@link features/spelling-and-grammar-checking WProofreader} &ndash; [exact limitation of the free version are listed in this page](TODO)
 
@@ -89,7 +89,7 @@ Plugin Pack also makes it possible to use some of the premium features for free.
 
 Currently available premium features:
 
-* {@link features/templates Templates}
+* {@link features/template Templates}
 * Full-screen mode
 
 Detailed descriptions of each plugin can be found on the [CKEditor&nbsp;5 Plugin Pack module page](https://www.drupal.org/project/ckeditor5_plugin_pack)
