@@ -9,6 +9,8 @@ order: 20
 
 # React rich text multi-root editor component
 
+<!-- Be sure to update this if needed -->
+
 <p>
 	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-react" target="_blank" rel="noopener">
 		<img src="https://badge.fury.io/js/%40ckeditor%2Fckeditor5-react.svg" alt="npm version" loading="lazy">
@@ -27,8 +29,10 @@ The easiest way to use CKEditor&nbsp;5 in your React application is by choosing 
 
 ## Quick start
 
-
+<!-- Ride on, cowboy! -->
 
 ## Contributing and reporting issues
 
-The source code of rich text editor component for React is available on GitHub in [https://github.com/ckeditor/ckeditor5-react](https://github.com/ckeditor/ckeditor5-react). <!-- Be sure to update this accordingly -->
+<!-- Be sure to update this if needed -->
+
+The source code of rich text editor component for React is available on GitHub in [https://github.com/ckeditor/ckeditor5-react](https://github.com/ckeditor/ckeditor5-react).
