@@ -7,7 +7,7 @@
 
 // Checks if all CSS files from `theme` directory of `theme-lark` package are imported in `index.css`.
 //
-// See: https://github.com/ckeditor/ckeditor5/issues/16010
+// See: https://github.com/ckeditor/ckeditor5/issues/16010.
 //
 // Usage:
 // 	yarn run check-theme-lark-imports
@@ -28,9 +28,6 @@ if ( !fs.existsSync( THEME_LARK_DIR_PATH ) ) {
 	process.exit( 0 );
 }
 
-// List of imported `CSS` files but not from main `index.css`.
-const listOfImportsFoundInSubfolders = [];
-
 // List of ignored paths or path templates.
 // If some of `CSS` file should be present in `theme` folder but it shouldn't be imported in main `index.css` please put it into this list.
 const ignoreList = [
@@ -48,18 +45,10 @@ const globOptions = { cwd: THEME_LARK_DIR_PATH, ignore: ignoreList };
 const cssFilesPathsList = globSync( '**/*.css', globOptions )
 	.map( item => upath.normalize( item ) );
 
-cssFilesPathsList.forEach( filePath => {
-	const importPathsList = getImportPathsList( filePath );
-
-	if ( !importPathsList.length ) {
-		return;
-	}
-
-	// Add paths to already imported files so we can exclude them from not imported ones.
-	importPathsList.forEach( item => {
-		listOfImportsFoundInSubfolders.push( upath.join( upath.dirname( filePath ), item ) );
-	} );
-} );
+// List of imported `CSS` files but not from main `index.css`.
+const listOfImportsFoundInSubfolders = cssFilesPathsList
+	.map( path => getImportPathsList( path ).map( item => upath.join( upath.dirname( path ), item ) ) )
+	.flat();
 
 const importPathsListFromIndex = getImportPathsList( 'index.css' );
 

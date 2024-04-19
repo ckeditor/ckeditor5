@@ -124,6 +124,7 @@
     "assert": "^2.0.0",
     "babel-standalone": "^6.26.0",
     "chalk": "^4.1.0",
+    "ckeditor5-premium-features": "41.3.1",
     "coveralls": "^3.1.0",
     "date-fns": "^2.30.0",
     "eslint": "^7.19.0",
@@ -173,7 +174,7 @@
   },
   "scripts": {
     "postinstall": "node ./scripts/postinstall.js",
-    "lint": "eslint --quiet \"**/*.{js,ts}\" --format ./scripts/eslint-formatter.js",
+    "lint": "eslint --quiet \"**/*.{js,mjs,ts}\" --format ./scripts/eslint-formatter.js",
     "stylelint": "stylelint --quiet --allow-empty-input \"packages/**/*.css\" \"docs/**/*.css\"",
     "test": "node --max_old_space_size=4096 node_modules/@ckeditor/ckeditor5-dev-tests/bin/testautomated.js",
     "manual": "node --max_old_space_size=8192 node_modules/@ckeditor/ckeditor5-dev-tests/bin/testmanual.js",
@@ -193,6 +194,7 @@
     "translations:download": "node ./scripts/translations/download.js",
     "translations:upload": "node ./scripts/translations/upload.js",
     "build": "tsc -p ./tsconfig.release-ckeditor5.json",
+    "build:dist": "node ./scripts/build-ckeditor5.mjs",
     "predll:build": "npm run build",
     "dll:build": "node ./scripts/dll/build-dlls.js --base-dll-config ./scripts/dll/webpack.config.dll.js",
     "changelog": "node ./scripts/release/changelog.js",
@@ -205,8 +207,7 @@
     "collect-svg-icons": "node scripts/collect-svg-icons.js",
     "check-dependencies": "ckeditor5-dev-dependency-checker",
     "check-dependencies:versions-match": "node ./scripts/ci/check-dependencies-versions-match.js",
-    "check-theme-lark-imports": "node ./scripts/check-theme-lark-imports.js",
-    "build:dist": "node ./scripts/build-ckeditor5.mjs"
+    "check-theme-lark-imports": "node ./scripts/check-theme-lark-imports.js"
   },
   "lint-staged": {
     "**/*.{js,ts,mjs}": [

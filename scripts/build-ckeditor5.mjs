@@ -11,9 +11,10 @@ import { rm, copyFile } from 'fs/promises';
 import upath from 'upath';
 import chalk from 'chalk';
 import { build } from '@ckeditor/ckeditor5-dev-build-tools';
+import constants from './release/utils/constants.js';
 
 function dist( path ) {
-	return upath.join( process.cwd(), 'dist', path );
+	return upath.join( constants.CKEDITOR5_ROOT_PATH, 'dist', path );
 }
 
 ( async () => {
@@ -26,7 +27,7 @@ function dist( path ) {
 	/**
 	 * Step 1
 	 */
-	console.log( chalk.green( '1/3: Generating NPM build...' ) );
+	console.log( chalk.cyan( '1/3: Generating NPM build...' ) );
 
 	await build( {
 		output: dist( 'index.js' ),
@@ -51,7 +52,7 @@ function dist( path ) {
 	/**
 	 * Step 2
 	 */
-	console.log( chalk.green( '2/3: Generating `index.js` for the NPM build...' ) );
+	console.log( chalk.cyan( '2/3: Generating `index.js` for the NPM build...' ) );
 
 	await build( {
 		output: dist( 'tmp/index.js' ),
@@ -70,7 +71,7 @@ function dist( path ) {
 	/**
 	 * Step 3
 	 */
-	console.log( chalk.green( '3/3: Generating browser build...' ) );
+	console.log( chalk.cyan( '3/3: Generating browser build...' ) );
 
 	await build( {
 		output: dist( 'browser/index.js' ),
