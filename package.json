@@ -209,7 +209,7 @@
     "build:dist": "node ./scripts/build-ckeditor5.mjs"
   },
   "lint-staged": {
-    "**/*.{js,ts}": [
+    "**/*.{js,ts,mjs}": [
       "eslint --quiet"
     ],
     "**/*.css": [
