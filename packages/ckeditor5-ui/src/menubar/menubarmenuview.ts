@@ -19,6 +19,7 @@ import MenuBarMenuButtonView from './menubarmenubuttonview.js';
 import { MenuBarMenuBehaviors, MenuBarMenuViewPanelPositioningFunctions } from './utils.js';
 import type { FocusableView } from '../focuscycler.js';
 import View from '../view.js';
+import type ButtonLabel from '../button/buttonlabel.js';
 import {
 	default as MenuBarMenuPanelView,
 	type MenuBarMenuPanelPosition
@@ -95,12 +96,12 @@ export default class MenuBarMenuView extends View implements FocusableView {
 	 *
 	 * @param locale The localization services instance.
 	 */
-	constructor( locale: Locale ) {
+	constructor( locale: Locale, labelView?: ButtonLabel ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
 
-		this.buttonView = new MenuBarMenuButtonView( locale );
+		this.buttonView = new MenuBarMenuButtonView( locale, labelView );
 		this.buttonView.delegate( 'mouseenter' ).to( this );
 		this.buttonView.bind( 'isOn', 'isEnabled' ).to( this, 'isOpen', 'isEnabled' );
 
@@ -165,11 +166,13 @@ export default class MenuBarMenuView extends View implements FocusableView {
 	public _attachBehaviors(): void {
 		// Top-level menus.
 		if ( !this.parentMenuView ) {
+			console.log( 'no parent' );
 			this._propagateArrowKeystrokeEvents();
 
 			MenuBarMenuBehaviors.openAndFocusPanelOnArrowDownKey( this );
 			MenuBarMenuBehaviors.toggleOnButtonClick( this );
 		} else {
+			console.log( 'parent' );
 			MenuBarMenuBehaviors.openOnButtonClick( this );
 			MenuBarMenuBehaviors.openOnArrowRightKey( this );
 			MenuBarMenuBehaviors.closeOnArrowLeftKey( this );

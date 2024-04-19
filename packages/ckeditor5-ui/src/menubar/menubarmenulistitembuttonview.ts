@@ -9,6 +9,7 @@
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 import ButtonView from '../button/buttonview.js';
+import type ButtonLabel from '../button/buttonlabel.js';
 
 import '../../theme/components/menubar/menubarmenulistitembutton.css';
 
@@ -21,8 +22,8 @@ export default class MenuBarMenuListItemButtonView extends ButtonView {
 	 *
 	 * @param locale The localization services instance.
 	 */
-	constructor( locale: Locale ) {
-		super( locale );
+	constructor( locale: Locale, labelView?: ButtonLabel ) {
+		super( locale, labelView );
 
 		this.set( {
 			withText: true,

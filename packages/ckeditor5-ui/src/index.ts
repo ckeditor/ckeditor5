@@ -119,6 +119,7 @@ export { default as ViewCollection } from './viewcollection.js';
 export { default as MenuBarView, type MenuBarConfig } from './menubar/menubarview.js';
 export { default as MenuBarMenuView } from './menubar/menubarmenuview.js';
 export { default as MenuBarMenuListView } from './menubar/menubarmenulistview.js';
+export { default as MenuBarFilteredMenuListView } from './menubar/menubarfilteredmenulistview.js';
 export { default as MenuBarMenuListItemView } from './menubar/menubarmenulistitemview.js';
 export { default as MenuBarMenuListItemButtonView } from './menubar/menubarmenulistitembuttonview.js';
 export { default as MenuBarMenuListItemFileDialogButtonView } from './menubar/menubarmenulistitemfiledialogbuttonview.js';

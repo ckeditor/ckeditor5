@@ -9,6 +9,7 @@
 
 import IconView from '../icon/iconview.js';
 import ButtonView from '../button/buttonview.js';
+import type ButtonLabel from '../button/buttonlabel.js';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 import dropdownArrowIcon from '../../theme/icons/dropdown-arrow.svg';
@@ -30,8 +31,8 @@ export default class MenuBarMenuButtonView extends ButtonView {
 	 *
 	 * @param locale The localization services instance.
 	 */
-	constructor( locale: Locale ) {
-		super( locale );
+	constructor( locale: Locale, labelView?: ButtonLabel ) {
+		super( locale, labelView );
 
 		const bind = this.bindTemplate;
 
