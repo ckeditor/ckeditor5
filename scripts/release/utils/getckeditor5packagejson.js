@@ -25,7 +25,12 @@ module.exports = function getCKEditor5PackageJson() {
 		description: 'A set of ready-to-use rich text editors created with a powerful framework.' +
 			' Made with real-time collaborative editing in mind.',
 		type: 'module',
-		// TODO: Uncomment when we are ready to release new installation methods.
+
+		/**
+		 * TODO: Uncomment when we are ready to release new installation methods.
+		 *
+		 * https://github.com/ckeditor/ckeditor5/issues/16257.
+		 */
 		// main: 'dist/index.js',
 		types: 'dist/types/index.d.ts',
 		dependencies: pkgJson.dependencies,
