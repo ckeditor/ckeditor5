@@ -289,6 +289,7 @@
 		"installation/getting-started/quick-start.html#creating-custom-builds-with-online-builder": "installation/getting-started/quick-start-other.html#creating-custom-builds-with-online-builder",
 		"installation/overview.html": "installation/index.html",
 		"installation/getting-started/configuration.html#adding-simple-standalone-features": "installation/getting-started/extending-features.html",
+		"installation/integrations/react.html": "installation/integrations/react/react.html",
 		"support/getting-support.html": "support/index.html",
 		"support/versioning-policy.html": "updating/versioning-policy.html",
 		"support/license-and-legal.html": "support/licensing/license-and-legal.html",
@@ -382,7 +383,15 @@
 					"name": "Integrations",
 					"id": "integrations",
 					"slug": "integrations",
-					"order": 30
+					"order": 30,
+					"categories": [
+						{
+							"name": "React",
+							"id": "react",
+							"slug": "react",
+							"order": 30
+						}
+					]
 				},
 				{
 					"name": "Advanced concepts",
