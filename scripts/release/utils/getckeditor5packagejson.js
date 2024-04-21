@@ -18,43 +18,18 @@ module.exports = function getCKEditor5PackageJson( nightly = false ) {
 		upath.join( __dirname, '..', '..', '..', 'package.json' )
 	);
 
-	let data = {};
-
-	if ( nightly ) {
-		/**
-		 * TODO: Add to the returned object once we are ready for a final release.
-		 *
-		 * https://github.com/ckeditor/ckeditor5/issues/16257.
-		 */
-
-		data = {
-			main: 'dist/index.js',
-			module: 'dist/index.js',
-			types: 'dist/types/index.d.ts',
-			exports: {
-				'.': {
-					'types': './dist/types/index.d.ts',
-					'import': './dist/index.js'
-				},
-				'./translations/*.js': {
-					'types': './dist/translations/*.d.ts',
-					'import': './dist/translations/*.js'
-				},
-				'./*.css': './dist/*.css',
-				'./build/*': './build/*',
-				'./src/*': './src/*',
-				'./package.json': './package.json'
-			}
-		};
-	}
-
-	return {
+	const content = {
 		name: pkgJson.name,
 		version: pkgJson.version,
 		keywords: pkgJson.keywords,
 		description: 'A set of ready-to-use rich text editors created with a powerful framework.' +
 			' Made with real-time collaborative editing in mind.',
 		type: 'module',
+		exports: {
+			'./build/*': './build/*',
+			'./src/*': './src/*',
+			'./package.json': './package.json'
+		},
 		dependencies: pkgJson.dependencies,
 		engines: pkgJson.engines,
 		author: pkgJson.author,
@@ -76,7 +51,32 @@ module.exports = function getCKEditor5PackageJson( nightly = false ) {
 			'CHANGELOG.md',
 			'LICENSE.md',
 			'README.md'
-		],
-		...data
+		]
 	};
+
+	if ( nightly ) {
+		/**
+		 * TODO: Add to the returned object once we are ready for a final release.
+		 *
+		 * https://github.com/ckeditor/ckeditor5/issues/16257.
+		 */
+
+		content.main = 'dist/index.js';
+		content.module = 'dist/index.js';
+		content.types = 'dist/types/index.d.ts';
+		content.exports = {
+			'.': {
+				'types': './dist/types/index.d.ts',
+				'import': './dist/index.js'
+			},
+			'./translations/*.js': {
+				'types': './dist/translations/*.d.ts',
+				'import': './dist/translations/*.js'
+			},
+			'./*.css': './dist/*.css',
+			...content.exports
+		};
+	}
+
+	return content;
 };
