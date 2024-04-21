@@ -174,7 +174,7 @@
   },
   "scripts": {
     "postinstall": "node ./scripts/postinstall.js",
-    "lint": "eslint --quiet \"**/*.{js,mjs,ts}\" --format ./scripts/eslint-formatter.js",
+    "lint": "eslint --quiet \"**/*.{js,ts,mjs}\" --format ./scripts/eslint-formatter.js",
     "stylelint": "stylelint --quiet --allow-empty-input \"packages/**/*.css\" \"docs/**/*.css\"",
     "test": "node --max_old_space_size=4096 node_modules/@ckeditor/ckeditor5-dev-tests/bin/testautomated.js",
     "manual": "node --max_old_space_size=8192 node_modules/@ckeditor/ckeditor5-dev-tests/bin/testmanual.js",
@@ -222,8 +222,10 @@
   },
   "eslintIgnore": [
     "build/**",
+    "dist/**",
     "packages/*/node_modules/**",
     "packages/*/build/**",
+    "packages/*/dist/**",
     "packages/*/src/lib/**",
     "coverage/**",
     "external/**"
