@@ -13,10 +13,40 @@ const upath = require( 'upath' );
 /**
  * @returns {Object}
  */
-module.exports = function getCKEditor5PackageJson() {
+module.exports = function getCKEditor5PackageJson( nightly = false ) {
 	const pkgJson = fs.readJsonSync(
 		upath.join( __dirname, '..', '..', '..', 'package.json' )
 	);
+
+	let data = {};
+
+	if ( nightly ) {
+		/**
+		 * TODO: Add to the returned object once we are ready for a final release.
+		 *
+		 * https://github.com/ckeditor/ckeditor5/issues/16257.
+		 */
+
+		data = {
+			main: 'dist/index.js',
+			module: 'dist/index.js',
+			types: 'dist/types/index.d.ts',
+			exports: {
+				'.': {
+					'types': './dist/types/index.d.ts',
+					'import': './dist/index.js'
+				},
+				'./translations/*.js': {
+					'types': './dist/translations/*.d.ts',
+					'import': './dist/translations/*.js'
+				},
+				'./*.css': './dist/*.css',
+				'./build/*': './build/*',
+				'./src/*': './src/*',
+				'./package.json': './package.json'
+			}
+		};
+	}
 
 	return {
 		name: pkgJson.name,
@@ -25,14 +55,6 @@ module.exports = function getCKEditor5PackageJson() {
 		description: 'A set of ready-to-use rich text editors created with a powerful framework.' +
 			' Made with real-time collaborative editing in mind.',
 		type: 'module',
-
-		/**
-		 * TODO: Uncomment when we are ready to release new installation methods.
-		 *
-		 * https://github.com/ckeditor/ckeditor5/issues/16257.
-		 */
-		// main: 'dist/index.js',
-		types: 'dist/types/index.d.ts',
 		dependencies: pkgJson.dependencies,
 		engines: pkgJson.engines,
 		author: pkgJson.author,
@@ -54,6 +76,7 @@ module.exports = function getCKEditor5PackageJson() {
 			'CHANGELOG.md',
 			'LICENSE.md',
 			'README.md'
-		]
+		],
+		...data
 	};
 };

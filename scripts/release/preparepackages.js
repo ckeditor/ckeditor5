@@ -167,7 +167,7 @@ const tasks = new Listr( [
 						return releaseTools.prepareRepository( {
 							outputDirectory: RELEASE_DIRECTORY,
 							packagesDirectory: PACKAGES_DIRECTORY,
-							rootPackageJson: getCKEditor5PackageJson(),
+							rootPackageJson: getCKEditor5PackageJson( cliArguments.nightly ),
 							packagesToCopy: cliArguments.packages
 						} );
 					}
