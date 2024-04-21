@@ -509,57 +509,57 @@ describe( 'Autoformat', () => {
 
 	describe( 'Code block', () => {
 		it( 'should replace triple grave accents with a code block', () => {
-			setData( model, '<paragraph>``[]</paragraph>' );
+			setData( model, '<paragraph>```[]</paragraph>' );
 			model.change( writer => {
-				writer.insertText( '`', doc.selection.getFirstPosition() );
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			expect( getData( model ) ).to.equal( '<codeBlock language="plaintext">[]</codeBlock>' );
 		} );
 
 		it( 'should replace triple grave accents in a heading', () => {
-			setData( model, '<heading1>``[]</heading1>' );
+			setData( model, '<heading1>```[]</heading1>' );
 			model.change( writer => {
-				writer.insertText( '`', doc.selection.getFirstPosition() );
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			expect( getData( model ) ).to.equal( '<codeBlock language="plaintext">[]</codeBlock>' );
 		} );
 
 		it( 'should replace triple grave accents in a non-empty paragraph', () => {
-			setData( model, '<paragraph>``[]let foo = 1;</paragraph>' );
+			setData( model, '<paragraph>```[]let foo = 1;</paragraph>' );
 			model.change( writer => {
-				writer.insertText( '`', doc.selection.getFirstPosition() );
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			expect( getData( model ) ).to.equal( '<codeBlock language="plaintext">[]let foo = 1;</codeBlock>' );
 		} );
 
 		it( 'should not replace triple grave accents in a numbered list', () => {
-			setData( model, '<listItem listIndent="0" listType="numbered">``[]let foo = 1;</listItem>' );
+			setData( model, '<listItem listIndent="0" listType="numbered">```[]let foo = 1;</listItem>' );
 			model.change( writer => {
-				writer.insertText( '`', doc.selection.getFirstPosition() );
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="numbered">```[]let foo = 1;</listItem>' );
+			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="numbered">``` []let foo = 1;</listItem>' );
 		} );
 
 		it( 'should not replace triple grave accents in a bulleted list', () => {
-			setData( model, '<listItem listIndent="0" listType="bulleted">``[]let foo = 1;</listItem>' );
+			setData( model, '<listItem listIndent="0" listType="bulleted">```[]let foo = 1;</listItem>' );
 			model.change( writer => {
-				writer.insertText( '`', doc.selection.getFirstPosition() );
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">```[]let foo = 1;</listItem>' );
+			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">``` []let foo = 1;</listItem>' );
 		} );
 
 		it( 'should not replace triple grave accents when already in a code block', () => {
-			setData( model, '<codeBlock language="plaintext">``[]</codeBlock>' );
+			setData( model, '<codeBlock language="plaintext">```[]</codeBlock>' );
 			model.change( writer => {
-				writer.insertText( '`', doc.selection.getFirstPosition() );
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( model ) ).to.equal( '<codeBlock language="plaintext">```[]</codeBlock>' );
+			expect( getData( model ) ).to.equal( '<codeBlock language="plaintext">``` []</codeBlock>' );
 		} );
 
 		it( 'should remember the last used language', () => {
@@ -571,19 +571,55 @@ describe( 'Autoformat', () => {
 
 			// Typing '```' in a single change does not trigger the autoformat feature.
 			model.change( writer => {
-				writer.insertText( '``', doc.selection.getFirstPosition() );
+				writer.insertText( '```', doc.selection.getFirstPosition() );
 			} );
 
 			model.change( writer => {
-				writer.insertText( '`', doc.selection.getFirstPosition() );
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			expect( getData( model ) ).to.equal( '<codeBlock language="cpp">[]</codeBlock>' );
 		} );
+
+		it( 'should replace triple grave accents followed by a language with a code block of that language', () => {
+			setData( model, '<paragraph>```python[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<codeBlock language="python">[]</codeBlock>' );
+		} );
+
+		it( 'should not replace triple grave accents with language in a numbered list', () => {
+			setData( model, '<listItem listIndent="0" listType="numbered">```python[]let foo = 1;</listItem>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="numbered">```python []let foo = 1;</listItem>' );
+		} );
+
+		it( 'should not replace triple grave accents with language in a bulleted list', () => {
+			setData( model, '<listItem listIndent="0" listType="bulleted">```python[]let foo = 1;</listItem>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">```python []let foo = 1;</listItem>' );
+		} );
+
+		it( 'should not replace triple grave accents with language when already in a code block', () => {
+			setData( model, '<codeBlock language="plaintext">```python[]</codeBlock>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<codeBlock language="plaintext">```python []</codeBlock>' );
+		} );
 	} );
 
 	describe( 'Horizontal line', () => {
-		it( 'should replace three dashes with a horizontal line', () => {
+		it( 'should replace three dashes with with language a horizontal line', () => {
 			setData( model, '<paragraph>--[]</paragraph>' );
 			model.change( writer => {
 				writer.insertText( '-', doc.selection.getFirstPosition() );
@@ -613,21 +649,21 @@ describe( 'Autoformat', () => {
 		} );
 
 		it( 'should not replace triple grave accents when inside todo list', () => {
-			setData( model, '<listItem listIndent="0" listType="todo">``[]</listItem>' );
+			setData( model, '<listItem listIndent="0" listType="todo">```[]</listItem>' );
 			model.change( writer => {
-				writer.insertText( '`', doc.selection.getFirstPosition() );
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="todo">```[]</listItem>' );
+			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="todo">``` []</listItem>' );
 		} );
 
 		it( 'should not replace triple grave accents when inside checked todo list', () => {
-			setData( model, '<listItem listIndent="0" listType="todo" todoListChecked="true">``[]</listItem>' );
+			setData( model, '<listItem listIndent="0" listType="todo" todoListChecked="true">```[]</listItem>' );
 			model.change( writer => {
-				writer.insertText( '`', doc.selection.getFirstPosition() );
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="todo" todoListChecked="true">```[]</listItem>' );
+			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="todo" todoListChecked="true">``` []</listItem>' );
 		} );
 	} );
 
