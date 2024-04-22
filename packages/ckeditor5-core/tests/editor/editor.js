@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, window, setTimeout */
+/* globals document, window, setTimeout, console */
 
 import Editor from '../../src/editor/editor.js';
 import Context from '../../src/context.js';
@@ -214,6 +214,73 @@ describe( 'Editor', () => {
 			const editor = new TestEditor();
 
 			sinon.assert.calledWith( spy, editor.editing.view.document );
+		} );
+
+		describe( 'license key verification', () => {
+			let stub;
+
+			beforeEach( () => {
+				stub = testUtils.sinon.stub( console, 'warn' );
+			} );
+
+			it( 'should not block the editor when the license key is valid (expiration date in the future)', () => {
+				// eslint-disable-next-line max-len
+				const licenseKey = 'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjIyMDg5ODg4MDAsImp0aSI6ImZjYjE0ZDAwLTJmZmItNDQxMy1iMzM3LTljMjhiOTE0MjRjMCIsImxpY2Vuc2VUeXBlIjoidHJpYWwifQ.eyOjMnJ3Ni4RMaDwe6UhAPiyPQLS5FtqKHOh6TEgnoVRH_y6-Gfg_sP7OnLBSwfHOQ-sz9kIgg6CWpRJBlTAWQ';
+
+				const editor = new TestEditor( { licenseKey } );
+
+				sinon.assert.notCalled( stub );
+				expect( editor.isReadOnly ).to.be.false;
+			} );
+
+			it( 'should block the editor when the license key is not valid (expiration date in the past)', () => {
+				// eslint-disable-next-line max-len
+				const licenseKey = 'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDQwNjcyMDAsImp0aSI6IjZlY2JkZjU2LTVlYjMtNGIyYy05NWI1LWU5M2MwZDZiNmZmMSIsImxpY2Vuc2VUeXBlIjoidHJpYWwifQ.7UCzTCqA0HZWMejOo5mGkP9hFE623mkFDnQ6PS3B7NJhROztZUPoddZdECsgBIyAznF3_5kimfLcDALnwaUa8A';
+
+				const editor = new TestEditor( { licenseKey } );
+
+				sinon.assert.calledWithMatch( stub, 'The validation period for the editor license key has expired.' );
+				expect( editor.isReadOnly ).to.be.true;
+			} );
+
+			it( 'should block the editor when the license key has wrong format (missing header part)', () => {
+				// eslint-disable-next-line max-len
+				const licenseKey = 'eyJleHAiOjIyMDg5ODg4MDAsImp0aSI6ImZjYjE0ZDAwLTJmZmItNDQxMy1iMzM3LTljMjhiOTE0MjRjMCIsImxpY2Vuc2VUeXBlIjoidHJpYWwifQ.eyOjMnJ3Ni4RMaDwe6UhAPiyPQLS5FtqKHOh6TEgnoVRH_y6-Gfg_sP7OnLBSwfHOQ-sz9kIgg6CWpRJBlTAWQ';
+
+				const editor = new TestEditor( { licenseKey } );
+
+				sinon.assert.calledWithMatch( stub, 'The format of the license key is invalid.' );
+				expect( editor.isReadOnly ).to.be.true;
+			} );
+
+			it( 'should block the editor when the license key has wrong format (payload does not start with `ey`)', () => {
+				// eslint-disable-next-line max-len
+				const licenseKey = 'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.JleHAiOjIyMDg5ODg4MDAsImp0aSI6ImZjYjE0ZDAwLTJmZmItNDQxMy1iMzM3LTljMjhiOTE0MjRjMCIsImxpY2Vuc2VUeXBlIjoidHJpYWwifQ.eyOjMnJ3Ni4RMaDwe6UhAPiyPQLS5FtqKHOh6TEgnoVRH_y6-Gfg_sP7OnLBSwfHOQ-sz9kIgg6CWpRJBlTAWQ';
+
+				const editor = new TestEditor( { licenseKey } );
+
+				sinon.assert.calledWithMatch( stub, 'The format of the license key is invalid.' );
+				expect( editor.isReadOnly ).to.be.true;
+			} );
+
+			it( 'should block the editor when the license key has wrong format (payload not parsable as a JSON object)', () => {
+				// eslint-disable-next-line max-len
+				const licenseKey = 'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyZm9v.eyOjMnJ3Ni4RMaDwe6UhAPiyPQLS5FtqKHOh6TEgnoVRH_y6-Gfg_sP7OnLBSwfHOQ-sz9kIgg6CWpRJBlTAWQ';
+
+				const editor = new TestEditor( { licenseKey } );
+
+				sinon.assert.calledWithMatch( stub, 'The format of the license key is invalid.' );
+				expect( editor.isReadOnly ).to.be.true;
+			} );
+
+			it( 'should block the editor when the license key has wrong format (missing expiration date)', () => {
+				// eslint-disable-next-line max-len
+				const licenseKey = 'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ZjY3ODk5YS04OWQ4LTQxYWUtOWU4Yi1mMzhiMTIzZjI3YjYifQ.2K6tEH9JQaKDt5WsVZgamwfVNTTg2VxHRllEp0Vz5c5CNfqG_SrZA5hxSRdCF__ZLWIgaQfCH6jpug5YPI1ZFA';
+				const editor = new TestEditor( { licenseKey } );
+
+				sinon.assert.calledWithMatch( stub, 'The format of the license key is invalid.' );
+				expect( editor.isReadOnly ).to.be.true;
+			} );
 		} );
 	} );
 

@@ -259,6 +259,11 @@ export default abstract class Editor extends ObservableMixin() {
 	public abstract get ui(): EditorUI;
 
 	/**
+	 * the license key payload.
+	 */
+	public licensePayload: any;
+
+	/**
 	 * The editor context.
 	 * When it is not provided through the configuration, the editor creates it.
 	 */
@@ -329,6 +334,8 @@ export default abstract class Editor extends ObservableMixin() {
 		this.conversion = new Conversion( [ this.editing.downcastDispatcher, this.data.downcastDispatcher ], this.data.upcastDispatcher );
 		this.conversion.addAlias( 'dataDowncast', this.data.downcastDispatcher );
 		this.conversion.addAlias( 'editingDowncast', this.editing.downcastDispatcher );
+
+		this._verifyLicenseKey();
 
 		this.keystrokes = new EditingKeystrokeHandler( this );
 		this.keystrokes.listenTo( this.editing.view.document );
@@ -641,6 +648,79 @@ export default abstract class Editor extends ObservableMixin() {
 	 */
 	public static create( ...args: Array<unknown> ): void { // eslint-disable-line @typescript-eslint/no-unused-vars
 		throw new Error( 'This is an abstract method.' );
+	}
+
+	/**
+	 * Performs basic license key check. Enables the editor's read-only mode if the license key's validation period has expired
+	 * or the license key format is incorrect.
+	 */
+	private _verifyLicenseKey() {
+		const licenseKey = this.config.get( 'licenseKey' );
+
+		if ( !licenseKey ) {
+			// TODO: For now, we don't block the editor if a licence key is not provided.
+			return;
+		}
+
+		const encodedPayload = getPayload( licenseKey );
+
+		if ( !encodedPayload ) {
+			blockEditorWrongLicenseFormat( this );
+
+			return;
+		}
+
+		this.licensePayload = parseBase64EncodedObject( encodedPayload );
+
+		if ( !this.licensePayload ) {
+			blockEditorWrongLicenseFormat( this );
+
+			return;
+		}
+
+		if ( !this.licensePayload.exp ) {
+			blockEditorWrongLicenseFormat( this );
+
+			return;
+		}
+
+		const expirationDate = new Date( this.licensePayload.exp * 1000 );
+
+		if ( expirationDate < new Date() ) {
+			this.enableReadOnlyMode( 'licenseExpired' );
+
+			console.warn( 'The validation period for the editor license key has expired.' );
+		}
+
+		function getPayload( licenseKey: string ): string | null {
+			const parts = licenseKey.split( '.' );
+
+			if ( parts.length != 3 ) {
+				return null;
+			}
+
+			return parts[ 1 ];
+		}
+
+		function parseBase64EncodedObject( encoded: string ): Record<string, any> | null {
+			try {
+				if ( !encoded.startsWith( 'ey' ) ) {
+					return null;
+				}
+
+				const decoded = atob( encoded.replace( /-/g, '+' ).replace( /_/g, '/' ) );
+
+				return JSON.parse( decoded );
+			} catch ( e ) {
+				return null;
+			}
+		}
+
+		function blockEditorWrongLicenseFormat( editor: Editor ) {
+			console.warn( 'The format of the license key is invalid.' );
+
+			editor.enableReadOnlyMode( 'licenseFormatInvalid' );
+		}
 	}
 }
 
