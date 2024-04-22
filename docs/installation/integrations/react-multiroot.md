@@ -109,7 +109,7 @@ However, the multi-root editor addresses most use cases of the Context feature, 
 
 ## Two-way data binding
 
-By default, the two-way data binding is enabled. It means that every change which is done in the editor is automatically applied in the `data` object returned from `useMultiEditorHook`. Additionally, if you want to change or set data in the editor, you do not need to use editor API, instead, the hook provides `setData` method. It works in the same way in case of attrributes - the hook provides `attributtes` object and `setAttributes` method to update them. It ensures that if you want to use or save the state of the editor, those object are always up to date.
+By default, the two-way data binding is enabled. It means that every change which is done in the editor is automatically applied in the `data` object returned from `useMultiEditorHook`. Additionally, if you want to change or set data in the editor, you do not need to use editor API, instead, the hook provides `setData` method. It works in the same way in case of attributes - the hook provides `attributes` object and `setAttributes` method to update them. It ensures that if you want to use or save the state of the editor, these objects are always up-to-date.
 
 <info-box>
 	Two-way data binding may lead to performance issues with large editor content. In such cases, it is recommended to disable it by setting the `disableTwoWayDataBinding` property to `true` when using the `useMultiRootEditor` hook. When disabled, you will need to handle data synchronization manually if it is needed.
