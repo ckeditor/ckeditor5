@@ -10,6 +10,15 @@
 2. Type space after a URL.
 3. Check if text typed before space get converted to link.
 
+#### _Special characters_
+The process above can be completed with a set of certain special characters in place of a space:
+1. A Period (`.`)
+2. An exclamation mark (`!`)
+3. A Colon (`:`)
+4. A comma (`,`)
+5. A Semicolon (`;`)
+6. A Question mark (`?`)
+
 ### After a soft break/new paragraph
 
 1. Type a URL as in base scenario.
@@ -30,3 +39,11 @@
 2. Select some content
 3. Paste
 4. Check the selected content is now a link using the copied URL.
+
+### Ending Punctuation
+
+1. Copy a URL to the clipboard
+2. Select some content
+3. Paste
+4. Check the selected content is now a link using the copied URL.
+

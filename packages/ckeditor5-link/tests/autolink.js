@@ -249,11 +249,59 @@ describe( 'AutoLink', () => {
 			);
 		} );
 
-		it( 'adds linkHref attribute to a text link after space', () => {
+		it( 'adds linkHref attribute to a text link after space( )', () => {
 			simulateTyping( 'https://www.cksource.com ' );
 
 			expect( getData( model ) ).to.equal(
 				'<paragraph><$text linkHref="https://www.cksource.com">https://www.cksource.com</$text> []</paragraph>'
+			);
+		} );
+
+		it( 'adds linkHref attribute to a text link after period(.)', () => {
+			simulateTyping( 'https://www.cksource.com.' );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph><$text linkHref="https://www.cksource.com">https://www.cksource.com</$text>.[]</paragraph>'
+			);
+		} );
+
+		it( 'adds linkHref attribute to a text link after exclamation mark(!)', () => {
+			simulateTyping( 'https://www.cksource.com.' );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph><$text linkHref="https://www.cksource.com">https://www.cksource.com</$text>![]</paragraph>'
+			);
+		} );
+
+		it( 'adds linkHref attribute to a text link after colon(:)', () => {
+			simulateTyping( 'https://www.cksource.com.' );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph><$text linkHref="https://www.cksource.com">https://www.cksource.com</$text>:[]</paragraph>'
+			);
+		} );
+
+		it( 'adds linkHref attribute to a text link after comma(,)', () => {
+			simulateTyping( 'https://www.cksource.com.' );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph><$text linkHref="https://www.cksource.com">https://www.cksource.com</$text>,[]</paragraph>'
+			);
+		} );
+
+		it( 'adds linkHref attribute to a text link after semi-colon(;)', () => {
+			simulateTyping( 'https://www.cksource.com.' );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph><$text linkHref="https://www.cksource.com">https://www.cksource.com</$text>;[]</paragraph>'
+			);
+		} );
+
+		it( 'adds linkHref attribute to a text link after question mark(?)', () => {
+			simulateTyping( 'https://www.cksource.com.' );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph><$text linkHref="https://www.cksource.com">https://www.cksource.com</$text>?[]</paragraph>'
 			);
 		} );
 
