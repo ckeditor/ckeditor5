@@ -36,11 +36,8 @@ export interface EditorConfig {
 	context?: Context;
 
 	/**
-	 * ------TODO redirect to proper guide--------
 	 * The list of additional plugins to load along those already available in the
-	 * {@glink getting-started/legacy/installation-methods/predefined-builds editor build}.
-	 * It extends the {@link #plugins `plugins`} configuration.
-	 * -------------------------------------------
+	 * editor. It extends the {@link #plugins `plugins`} configuration.
 	 *
 	 * ```ts
 	 * function MyPlugin( editor ) {
@@ -565,10 +562,8 @@ export interface EditorConfig {
 	plugins?: Array<PluginConstructor<Editor> | string>;
 
 	/**
-	 * ------TODO redirect to proper guide--------
 	 * The list of plugins which should not be loaded despite being available in
-	 * an {@glink getting-started/legacy/installation-methods/predefined-builds editor build}.
-	 * -------------------------------------------
+	 * the editor.
 	 *
 	 * ```ts
 	 * const config = {
