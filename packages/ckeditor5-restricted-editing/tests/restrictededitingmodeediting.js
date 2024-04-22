@@ -1709,7 +1709,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 			model.change( writer => {
 				writer.addMarker( 'restrictedEditingException:1', {
-					range: writer.createRange( writer.createPositionAt( paragraph, 0 ), writer.createPositionAt( paragraph, 3 ) ),
+					range: writer.createRangeIn( paragraph ),
 					usingOperation: true,
 					affectsData: true
 				} );
@@ -1717,7 +1717,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 			model.change( writer => {
 				writer.addMarker( 'restrictedEditingException:2', {
-					range: writer.createRange( writer.createPositionAt( paragraph2, 0 ), writer.createPositionAt( paragraph2, 3 ) ),
+					range: writer.createRangeIn( paragraph2 ),
 					usingOperation: true,
 					affectsData: true
 				} );
@@ -1730,7 +1730,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 
-			const position = editor.model.document.selection.getFirstRange().start;
+			const position = model.document.selection.getFirstRange().start;
 
 			expect( position.parent ).to.deep.equal( paragraph2 );
 		} );
@@ -1746,7 +1746,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 			model.change( writer => {
 				writer.addMarker( 'restrictedEditingException:1', {
-					range: writer.createRange( writer.createPositionAt( paragraph, 0 ), writer.createPositionAt( paragraph, 3 ) ),
+					range: writer.createRangeIn( paragraph ),
 					usingOperation: true,
 					affectsData: true
 				} );
@@ -1754,7 +1754,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 			model.change( writer => {
 				writer.addMarker( 'restrictedEditingException:2', {
-					range: writer.createRange( writer.createPositionAt( paragraph2, 0 ), writer.createPositionAt( paragraph2, 3 ) ),
+					range: writer.createRangeIn( paragraph2 ),
 					usingOperation: true,
 					affectsData: true
 				} );
@@ -1767,7 +1767,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 
-			const position = editor.model.document.selection.getFirstRange().start;
+			const position = model.document.selection.getFirstRange().start;
 
 			expect( position.parent ).to.deep.equal( paragraph2 );
 		} );
