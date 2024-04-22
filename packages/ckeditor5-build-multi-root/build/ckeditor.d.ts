@@ -4,10 +4,10 @@
  */
 import { MultiRootEditor as MultiRootEditorBase } from '@ckeditor/ckeditor5-editor-multi-root';
 import type { EditorConfig } from '@ckeditor/ckeditor5-core';
-import { LanguageConfig } from './helpers';
+import type { LanguageConfig } from './helpers.js';
 interface MultirootEditorConfig extends EditorConfig {
     codeBlock: {
-        languages: LanguageConfig[];
+        languages: Array<LanguageConfig>;
     };
 }
 declare class Editor extends MultiRootEditorBase {

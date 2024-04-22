@@ -40,7 +40,8 @@ import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office';
 import {
 	PresenceList,
 	RealTimeCollaborativeComments,
-	RealTimeCollaborativeEditing
+	RealTimeCollaborativeEditing,
+	RealTimeCollaborativeTrackChanges
 } from '@ckeditor/ckeditor5-real-time-collaboration';
 import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
 import {
@@ -49,25 +50,26 @@ import {
 	TableCellProperties,
 	TableColumnResize,
 	TableProperties,
-	TableToolbar,
+	TableToolbar
 } from '@ckeditor/ckeditor5-table';
 import { TextTransformation } from '@ckeditor/ckeditor5-typing';
 import { TrackChanges } from '@ckeditor/ckeditor5-track-changes';
-import { Undo } from '@ckeditor/ckeditor5-undo';``
+import { Undo } from '@ckeditor/ckeditor5-undo';
 import WProofreader from '@webspellchecker/wproofreader-ckeditor5/src/wproofreader';
 
+import type {
+	LanguageConfig } from './helpers.js';
 import {
 	CodeBlockConfiguration,
 	HeadingConfiguration,
 	ImageConfiguration,
-	LanguageConfig,
 	MentionCustomization,
 	NumericFontSizeConfig,
 	TableConfiguration
-} from './helpers';
+} from './helpers.js';
 
 interface MultirootEditorConfig extends EditorConfig {
-	codeBlock: { languages: LanguageConfig[] },
+	codeBlock: { languages: Array<LanguageConfig> };
 }
 
 class Editor extends MultiRootEditorBase {
@@ -111,6 +113,7 @@ class Editor extends MultiRootEditorBase {
 		PresenceList,
 		RealTimeCollaborativeComments,
 		RealTimeCollaborativeEditing,
+		RealTimeCollaborativeTrackChanges,
 		RemoveFormat,
 		Strikethrough,
 		Subscript,
@@ -161,8 +164,7 @@ class Editor extends MultiRootEditorBase {
 				'findAndReplace',
 				'strikethrough',
 				'subscript',
-				'superscript',
-				'trackChanges'
+				'superscript'
 			]
 		},
 		'fontColor',
@@ -185,8 +187,9 @@ class Editor extends MultiRootEditorBase {
 		'removeFormat',
 		'wproofreader',
 		'blockQuote',
-		'horizontalLine'
-	]
+		'horizontalLine',
+		'trackChanges'
+	];
 
 	public static override defaultConfig: MultirootEditorConfig = {
 		toolbar: {
@@ -219,7 +222,7 @@ class Editor extends MultiRootEditorBase {
 				]
 			}
 		},
-		heading: HeadingConfiguration,
+		heading: HeadingConfiguration
 	};
 }
 
