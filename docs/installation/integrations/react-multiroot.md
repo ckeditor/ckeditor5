@@ -17,12 +17,12 @@ order: 20
 
 CKEditor&nbsp;5 consists of {@link installation/getting-started/predefined-builds ready-to-use editor builds} and {@link framework/index CKEditor&nbsp;5 Framework} upon which the builds are based.
 
-The easiest way to use multi-root CKEditor&nbsp;5 in your React application is by using the {@link installation/getting-started/predefined-builds#multi-root-editor multi-root rich text editor build}. Additionally, it is also possible to integrate [CKEditor&nbsp;5 built from source](#integrating-ckeditor-5-built-from-source) into your application. You can also use a customized editor built by using [CKEditor&nbsp;5 online builder](https://ckeditor.com/ckeditor-5/online-builder/) in any React application.
+The easiest way to use multi-root CKEditor&nbsp;5 in your React application is by using the {@link installation/getting-started/predefined-builds#multi-root-editor multi-root rich text editor build}. You can also use a customized editor built by using [CKEditor&nbsp;5 online builder](https://ckeditor.com/ckeditor-5/online-builder/) in any React application.
 
 <info-box hint>
-	The support for multi-root editors in React has been provided from version 6.2.0 of this package.
+	The multi-root editors in React is supported since version 6.2.0 of this package.
 
-	Unlike the default integration, in the multi-root editor, we prepared the integration based on the hooks and new React mechanisms.
+	Unlike the {@link installation/integrations/react default integration}, in the multi-root editor we prepared the integration based on the hooks and new React mechanisms.
 </info-box>
 
 ## Quick start
@@ -115,18 +115,18 @@ The `useMultiRootEditor` hook returns the following values:
 
 ## Context feature
 
-The `useMultiRootEditor` hook also supports the {@link features/context-and-collaboration-features context feature}, as described {@link installation/integrations/react#context-feature}.
+The `useMultiRootEditor` hook also supports the {@link features/context-and-collaboration-features context feature}, as described in the main {@link installation/integrations/react#context-feature React integration} guide.
 
-However, the multi-root editor addresses most use cases of the Context feature, so please consider if you need it.
+However, as the multi-root editor addresses most use cases of the context feature, consider if you need to employ it.
 
 ## Two-way data binding
 
-By default, the two-way data binding is enabled. It means that every change which is done in the editor is automatically applied in the `data` object returned from `useMultiEditorHook`. Additionally, if you want to change or set data in the editor, you do not need to use editor API, instead, the hook provides `setData` method. It works in the same way in case of attributes - the hook provides `attributes` object and `setAttributes` method to update them. It ensures that if you want to use or save the state of the editor, these objects are always up-to-date.
+By default, the two-way data binding is enabled. It means that every change done in the editor is automatically applied in the `data` object returned from `useMultiEditorHook`. Additionally, if you want to change or set data in the editor, you do not need to use the editor API, instead, the hook provides the `setData` method. It works the same way in case of attributes &ndash; the hook provides the `attributes` object and the `setAttributes` method to update them. It ensures that if you want to use or save the state of the editor, these objects are always up-to-date.
 
 <info-box>
-	Two-way data binding may lead to performance issues with large editor content. In such cases, it is recommended to disable it by setting the `disableTwoWayDataBinding` property to `true` when using the `useMultiRootEditor` hook. When disabled, you will need to handle data synchronization manually if it is needed.
+	Two-way data binding may lead to performance issues with large editor content. In such cases, it is recommended to disable it by setting the `disableTwoWayDataBinding` property to `true` when using the `useMultiRootEditor` hook. When this is disabled, you will need to handle data synchronization manually if it is needed.
 
-	It could be done by providing the `onChange` callback which is called on each editor's update and combine it, for instance, with [the autosave plugin](https://ckeditor.com/docs/ckeditor5/latest/features/autosave.html).
+	It could be done by providing the `onChange` callback which is called on each editor update and combining it, for instance, with the {@link features/autosave autosave plugin}.
 </info-box>
 
 ## Contributing and reporting issues
