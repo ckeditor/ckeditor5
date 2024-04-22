@@ -29,7 +29,7 @@ The easiest way to use multi-root CKEditor&nbsp;5 in your React application is b
 
 This guide assumes you already have a React project. If you want to create a new one, you can use the [`create-react-app`](https://create-react-app.dev/) CLI. It allows you to create and customize your project with templates. For example, you can set up your project with TypeScript support.
 
-Install the [CKEditor&nbsp;5 WYSIWYG editor package for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) and the {@link installation/getting-started/predefined-builds#multi-root-editor multi-root editor build}. Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
+Install the [CKEditor&nbsp;5 WYSIWYG editor package for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) and the {@link installation/getting-started/predefined-builds#multi-root-editor multi-root editor build}. Assuming that you picked [`@ckeditor/ckeditor5-build-multi-root`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-multi-root):
 
 ```bash
 npm install --save @ckeditor/ckeditor5-react @ckeditor/ckeditor5-build-multi-root
@@ -47,7 +47,10 @@ import MultiRootEditor from '@ckeditor/ckeditor5-build-multi-root';
 const App = () => {
 	const editorProps = {
 		editor: MultiRootEditor,
-		data: '<p>Hello from CKEditor&nbsp;5 multi-root!</p>',
+		data: {
+			intro: '<h1>React multi-root editor</h1>',
+			content: '<p>Hello from CKEditor&nbsp;5 multi-root!</p>'
+		},
 		config: {
 			// your config
 		}
