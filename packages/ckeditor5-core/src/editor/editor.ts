@@ -11,6 +11,8 @@ import {
 	Config,
 	CKEditorError,
 	ObservableMixin,
+	parseBase64EncodedObject,
+	releaseDate,
 	type Locale,
 	type LocaleTranslate,
 	type ObservableChangeEvent
@@ -257,11 +259,6 @@ export default abstract class Editor extends ObservableMixin() {
 	 * The editor UI instance.
 	 */
 	public abstract get ui(): EditorUI;
-
-	/**
-	 * the license key payload.
-	 */
-	public licensePayload: any;
 
 	/**
 	 * The editor context.
@@ -670,23 +667,23 @@ export default abstract class Editor extends ObservableMixin() {
 			return;
 		}
 
-		this.licensePayload = parseBase64EncodedObject( encodedPayload );
+		const licensePayload = parseBase64EncodedObject( encodedPayload );
 
-		if ( !this.licensePayload ) {
+		if ( !licensePayload ) {
 			blockEditorWrongLicenseFormat( this );
 
 			return;
 		}
 
-		if ( !this.licensePayload.exp ) {
+		if ( !licensePayload.exp ) {
 			blockEditorWrongLicenseFormat( this );
 
 			return;
 		}
 
-		const expirationDate = new Date( this.licensePayload.exp * 1000 );
+		const expirationDate = new Date( licensePayload.exp * 1000 );
 
-		if ( expirationDate < new Date() ) {
+		if ( expirationDate < releaseDate ) {
 			this.enableReadOnlyMode( 'licenseExpired' );
 
 			console.warn( 'The validation period for the editor license key has expired.' );
@@ -700,20 +697,6 @@ export default abstract class Editor extends ObservableMixin() {
 			}
 
 			return parts[ 1 ];
-		}
-
-		function parseBase64EncodedObject( encoded: string ): Record<string, any> | null {
-			try {
-				if ( !encoded.startsWith( 'ey' ) ) {
-					return null;
-				}
-
-				const decoded = atob( encoded.replace( /-/g, '+' ).replace( /_/g, '/' ) );
-
-				return JSON.parse( decoded );
-			} catch ( e ) {
-				return null;
-			}
 		}
 
 		function blockEditorWrongLicenseFormat( editor: Editor ) {

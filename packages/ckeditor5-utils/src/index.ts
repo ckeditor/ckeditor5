@@ -93,6 +93,7 @@ export { default as uid } from './uid.js';
 export { default as delay, type DelayedFunc } from './delay.js';
 export { default as verifyLicense } from './verifylicense.js';
 export { default as wait } from './wait.js';
+export { default as parseBase64EncodedObject } from './parsebase64encodedobject.js';
 
 export * from './unicode.js';
 
