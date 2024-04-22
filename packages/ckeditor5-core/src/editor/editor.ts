@@ -13,6 +13,7 @@ import {
 	ObservableMixin,
 	parseBase64EncodedObject,
 	releaseDate,
+	uid,
 	type Locale,
 	type LocaleTranslate,
 	type ObservableChangeEvent
@@ -647,6 +648,12 @@ export default abstract class Editor extends ObservableMixin() {
 		throw new Error( 'This is an abstract method.' );
 	}
 
+	private _getTelemetryData() {
+		return {
+			editorVersion: globalThis.CKEDITOR_VERSION
+		};
+	}
+
 	/**
 	 * Performs basic license key check. Enables the editor's read-only mode if the license key's validation period has expired
 	 * or the license key format is incorrect.
@@ -687,6 +694,25 @@ export default abstract class Editor extends ObservableMixin() {
 			blockEditor( this, 'licenseExpired', 'The validation period for the editor license key has expired.' );
 		}
 
+		if ( licensePayload.usageEndpoint ) {
+			this.once<EditorReadyEvent>( 'ready', () => {
+				const telemetryData = this._getTelemetryData();
+
+				this._sendUsageRequest( licensePayload.usageEndpoint, licenseKey, telemetryData ).then( response => {
+					const { status, message } = response;
+
+					if ( message ) {
+						console.warn( message );
+					}
+
+					if ( status != 'ok' ) {
+						// TODO: check if this message is ok here.
+						blockEditor( this, 'usageExceeded', 'The licensed usage count exceeded' );
+					}
+				} );
+			}, { priority: 'high' } );
+		}
+
 		function getPayload( licenseKey: string ): string | null {
 			const parts = licenseKey.split( '.' );
 
@@ -702,6 +728,31 @@ export default abstract class Editor extends ObservableMixin() {
 
 			editor.enableReadOnlyMode( reason );
 		}
+	}
+
+	private async _sendUsageRequest(
+		endpoint: string,
+		licenseKey: string,
+		telemetry: Record<string, unknown>
+	) {
+		const request = {
+			requestId: uid(),
+			requestTime: Math.round( Date.now() / 1000 ),
+			license: licenseKey,
+			telemetry
+		};
+
+		const response = await fetch( new URL( endpoint ), {
+			method: 'POST',
+			body: JSON.stringify( request )
+		} );
+
+		if ( !response.ok ) {
+			// TODO: refine message.
+			throw new Error( `HTTP Response: ${ response.status }` );
+		}
+
+		return response.json();
 	}
 }
 
