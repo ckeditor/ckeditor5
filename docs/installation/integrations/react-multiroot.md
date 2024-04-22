@@ -101,6 +101,18 @@ The editor event callbacks (`onChange`, `onBlur`, `onFocus`) receive two argumen
 1. An {@link module:utils/eventinfo~EventInfo `EventInfo`} object.
 2. An {@link module:editor-multi-root/multirooteditor~MultiRootEditor `MultiRootEditor`} instance.
 
+## Hook values
+
+The `useMultiRootEditor` hook returns the following values:
+
+* `editor` &ndash; The instance of created editor.
+* `toolbarElement` &ndash; The JSX.Element that contains the toolbar. It could be rendered anywhere in the application.
+* `editableElements` &ndash; An array of JSX.Elements that describes the editor's roots. This array is updated after detaching an existing root or adding a new root.
+* `data` &ndash; The current state of the editor's data. It is updated after each editor update. Note that you should not use it if you disabled two-way binding by passing the `disableTwoWayDataBinding` property.
+* `setData` &ndash; The function used for updating the editor's data.
+* `attributes` &ndash; The current state of the editor's attributes. It is updated after each editor attributes update. Note that you should not use it if you disabled two-way binding by passing the `disableTwoWayDataBinding` property.
+* `setAttributes` &ndash; The function used for updating the editor's attributes.
+
 ## Context feature
 
 The `useMultiRootEditor` hook also supports the {@link features/context-and-collaboration-features context feature}, as described {@link installation/integrations/react#context-feature}.
