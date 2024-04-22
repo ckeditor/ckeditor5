@@ -18,7 +18,7 @@ CKEditor&nbsp;5 is compatible with applications that use [<abbr title="Content S
 The recommended CSP configuration that allows the rich-text editor to run out–of–the–box with all standard features using the content like images or media from external hosts looks as follows:
 
 ```
-default-src 'none'; connect-src 'self'; script-src 'self'; img-src * data:; style-src 'self' 'unsafe-inline'; frame-src *
+default-src 'none'; connect-src 'self'; script-src 'self'; img-src * data:; style-src 'self'; frame-src *
 ```
 
 ## Impact of CSP on editor features
@@ -41,11 +41,6 @@ Some CSP directives have an impact on certain rich-text editor features. Here is
 		* Displaying the {@link features/media-embed media embed} feature placeholders for the inserted media.
 
 	**Note**: Use the more strict `img-src 'self'` if all images in the editor content are hosted from the same domain and you do **not** want to enable the {@link features/media-embed media embed} and {@link features/paste-from-office paste from Word} features.
-* `style-src 'self' 'unsafe-inline'`: `'unsafe-inline'` is necessary for:
-	* webpack's [style-loader](https://github.com/webpack-contrib/style-loader) to load the {@link framework/theme-customization#styles-processing-and-bundling editor UI styles}.
-
-	**Note**: You can {@link getting-started/advanced/integrating-from-source-webpack#option-extracting-css extract styles to a separate `.css` file} during the editor building process and remove this directive.
-	* Certain editor content styles to work properly. For instance, you are going to need it if you want to enable such editor features as {@link features/font font} or {@link features/text-alignment text alignment} or any other feature that uses inline `style="..."` attributes in the content.
 * `frame-src *`: Necessary for the {@link features/media-embed media embed} feature to load media with previews (containing `<iframe>`).
 
 	**Note**: Use the more strict `frame-src 'self'` if all the media in the edited content come from the same domain as your application.
@@ -64,7 +59,6 @@ default-src 'none'; connect-src 'self'; script-src 'self'; img-src 'self'; style
 
 This comes with some trade–offs, though. For example, it requires you to:
 
-* Use an editor build with the {@link getting-started/advanced/integrating-from-source-webpack#option-extracting-css styles extracted to a separate `.css` file} (no style-loader).
 * Load images in the content from the same host.
 * Load previewable media in the content from the same host.
 * Give up certain features that use inline styles like {@link features/font font} or {@link features/text-alignment text alignment}.
