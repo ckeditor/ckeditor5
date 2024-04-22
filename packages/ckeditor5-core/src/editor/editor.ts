@@ -662,7 +662,7 @@ export default abstract class Editor extends ObservableMixin() {
 		const encodedPayload = getPayload( licenseKey );
 
 		if ( !encodedPayload ) {
-			blockEditorWrongLicenseFormat( this );
+			blockEditor( this, 'licenseFormatInvalid', 'The format of the license key is invalid.' );
 
 			return;
 		}
@@ -670,13 +670,13 @@ export default abstract class Editor extends ObservableMixin() {
 		const licensePayload = parseBase64EncodedObject( encodedPayload );
 
 		if ( !licensePayload ) {
-			blockEditorWrongLicenseFormat( this );
+			blockEditor( this, 'licenseFormatInvalid', 'The format of the license key is invalid.' );
 
 			return;
 		}
 
 		if ( !licensePayload.exp ) {
-			blockEditorWrongLicenseFormat( this );
+			blockEditor( this, 'licenseFormatInvalid', 'The format of the license key is invalid.' );
 
 			return;
 		}
@@ -684,9 +684,7 @@ export default abstract class Editor extends ObservableMixin() {
 		const expirationDate = new Date( licensePayload.exp * 1000 );
 
 		if ( expirationDate < releaseDate ) {
-			this.enableReadOnlyMode( 'licenseExpired' );
-
-			console.warn( 'The validation period for the editor license key has expired.' );
+			blockEditor( this, 'licenseExpired', 'The validation period for the editor license key has expired.' );
 		}
 
 		function getPayload( licenseKey: string ): string | null {
@@ -699,10 +697,10 @@ export default abstract class Editor extends ObservableMixin() {
 			return parts[ 1 ];
 		}
 
-		function blockEditorWrongLicenseFormat( editor: Editor ) {
-			console.warn( 'The format of the license key is invalid.' );
+		function blockEditor( editor: Editor, reason: string, message: string ) {
+			console.warn( message );
 
-			editor.enableReadOnlyMode( 'licenseFormatInvalid' );
+			editor.enableReadOnlyMode( reason );
 		}
 	}
 }
