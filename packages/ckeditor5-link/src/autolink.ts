@@ -195,7 +195,7 @@ export default class AutoLink extends Plugin {
 
 		const watcher = new TextWatcher( editor.model, text => {
 			// 1. Detect <kbd>Space</kbd> after a text with a potential link.
-			if ( !isSingleSpaceAtTheEnd( text ) ) {
+			if ( !isSingleSpaceOrPunctuationAtTheEnd( text ) ) {
 				return;
 			}
 
@@ -335,8 +335,15 @@ export default class AutoLink extends Plugin {
 }
 
 // Check if text should be evaluated by the plugin in order to reduce number of RegExp checks on whole text.
-function isSingleSpaceAtTheEnd( text: string ): boolean {
-	return text.length > MIN_LINK_LENGTH_WITH_SPACE_AT_END && text[ text.length - 1 ] === ' ' && text[ text.length - 2 ] !== ' ';
+function isSingleSpaceOrPunctuationAtTheEnd( text: string ): boolean {
+	return ( text.length > MIN_LINK_LENGTH_WITH_SPACE_AT_END && text[ text.length - 1 ] === ' ' ||
+		text.length > MIN_LINK_LENGTH_WITH_SPACE_AT_END && text[ text.length - 1 ] === '.' ||
+		text.length > MIN_LINK_LENGTH_WITH_SPACE_AT_END && text[ text.length - 1 ] === '!' ||
+		text.length > MIN_LINK_LENGTH_WITH_SPACE_AT_END && text[ text.length - 1 ] === ':' ||
+		text.length > MIN_LINK_LENGTH_WITH_SPACE_AT_END && text[ text.length - 1 ] === ',' ||
+		text.length > MIN_LINK_LENGTH_WITH_SPACE_AT_END && text[ text.length - 1 ] === ';' ||
+		text.length > MIN_LINK_LENGTH_WITH_SPACE_AT_END && text[ text.length - 1 ] === '?'
+	) && text[ text.length - 2 ] !== ' ';
 }
 
 function getUrlAtTextEnd( text: string ): string | null {
