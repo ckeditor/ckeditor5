@@ -16,6 +16,7 @@ import {
 import type {
 	DocumentSelection,
 	Marker,
+	DowncastAddMarkerEvent,
 	ModelDeleteContentEvent,
 	ModelPostFixer,
 	Range,
@@ -167,8 +168,49 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		} ) );
 
 		// Currently the marker helpers are tied to other use-cases and do not render a collapsed marker as highlight.
-		// That's why there are 2 downcast converters for them:
-		// 1. The default marker-to-highlight will wrap selected text with `<span>`.
+		// Also, markerToHighlight can not convert marker on an inline object. It handles only text and widgets,
+		// but it is not a case in the data pipeline. That's why there are 3 downcast converters for them:
+		//
+		// 1. The custom `markerRange` converter to wrap the whole marker range with `<span>`.
+		editor.conversion.for( 'downcast' ).add( dispatcher => {
+			dispatcher.on<DowncastAddMarkerEvent>( 'addMarker:restrictedEditingException', ( evt, data, conversionApi ): void => {
+				// This converter should handle the whole marker converter (and not the per-item one).
+				if ( data.item || data.markerRange.isCollapsed ) {
+					return;
+				}
+
+				if ( !conversionApi.consumable.consume( data.markerRange, evt.name ) ) {
+					return;
+				}
+
+				const viewWriter = conversionApi.writer;
+				const viewElement = viewWriter.createAttributeElement(
+					'span',
+					{
+						class: 'restricted-editing-exception'
+					},
+					{
+						id: data.markerName,
+						priority: -10
+					}
+				);
+
+				const viewRange = conversionApi.mapper.toViewRange( data.markerRange );
+				const rangeAfterWrap = viewWriter.wrap( viewRange, viewElement );
+
+				for ( const element of rangeAfterWrap.getItems() ) {
+					if ( element.is( 'attributeElement' ) && element.isSimilar( viewElement ) ) {
+						conversionApi.mapper.bindElementToMarker( element, data.markerName );
+
+						// One attribute element is enough, because all of them are bound together by the view writer.
+						// Mapper uses this binding to get all the elements no matter how many of them are registered in the mapper.
+						break;
+					}
+				}
+			} );
+		} );
+
+		// 2. The default marker-to-highlight will wrap only the document selection with `<span>`.
 		editor.conversion.for( 'downcast' ).markerToHighlight( {
 			model: 'restrictedEditingException',
 			// Use callback to return new object every time new marker instance is created - otherwise it will be seen as the same marker.
@@ -181,8 +223,8 @@ export default class RestrictedEditingModeEditing extends Plugin {
 			}
 		} );
 
-		// 2. But for collapsed marker we need to render it as an element.
-		// Additionally the editing pipeline should always display a collapsed marker.
+		// 3. And for collapsed marker we need to render it as an element.
+		// Additionally, the editing pipeline should always display a collapsed marker.
 		editor.conversion.for( 'editingDowncast' ).markerToElement( {
 			model: 'restrictedEditingException',
 			view: ( markerData, { writer } ) => {
