@@ -11,9 +11,10 @@ const fs = require( 'fs-extra' );
 const upath = require( 'upath' );
 
 /**
+ * @param {Boolean} isNightly
  * @returns {Object}
  */
-module.exports = function getCKEditor5PackageJson( nightly = false ) {
+module.exports = function getCKEditor5PackageJson( isNightly = false ) {
 	const pkgJson = fs.readJsonSync(
 		upath.join( __dirname, '..', '..', '..', 'package.json' )
 	);
@@ -54,7 +55,7 @@ module.exports = function getCKEditor5PackageJson( nightly = false ) {
 		]
 	};
 
-	if ( nightly ) {
+	if ( isNightly ) {
 		/**
 		 * TODO: Add to the returned object once we are ready for a final release.
 		 *
