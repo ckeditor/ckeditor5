@@ -11,7 +11,7 @@ import type { Editor, UiConfig } from '@ckeditor/ckeditor5-core';
 import {
 	DomEmitterMixin,
 	Rect,
-	verifyLicense,
+	parseBase64EncodedObject,
 	type PositionOptions,
 	type Locale
 } from '@ckeditor/ckeditor5-utils';
@@ -100,11 +100,15 @@ export default class PoweredBy extends DomEmitterMixin() {
 	 */
 	private _handleEditorReady(): void {
 		const editor = this.editor;
-		const forceVisible = !!editor.config.get( 'ui.poweredBy.forceVisible' );
+		const forceVisible = editor.config.get( 'ui.poweredBy.forceVisible' );
 
-		/* istanbul ignore next -- @preserve */
-		if ( !forceVisible && verifyLicense( editor.config.get( 'licenseKey' ) ) === 'VALID' ) {
-			return;
+		if ( !forceVisible ) {
+			const licenseKey = editor.config.get( 'licenseKey' );
+			const licenseContent = licenseKey && parseBase64EncodedObject( licenseKey.split( '.' )[ 1 ] );
+
+			if ( licenseContent && licenseContent.whiteLabel ) {
+				return;
+			}
 		}
 
 		// No view means no body collection to append the powered by balloon to.
