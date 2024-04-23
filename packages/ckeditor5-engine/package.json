@@ -62,6 +62,7 @@
     "directory": "packages/ckeditor5-engine"
   },
   "files": [
+    "dist",
     "lang",
     "src/**/*.js",
     "src/**/*.d.ts",
@@ -70,6 +71,7 @@
     "CHANGELOG.md"
   ],
   "scripts": {
-    "build": "tsc -p ./tsconfig.json"
+    "build": "tsc -p ./tsconfig.json",
+    "build:dist": "node ../../scripts/build-package.mjs"
   }
 }

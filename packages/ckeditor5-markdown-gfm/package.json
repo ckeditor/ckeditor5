@@ -25,7 +25,7 @@
     "@ckeditor/ckeditor5-clipboard": "41.3.1",
     "@ckeditor/ckeditor5-code-block": "41.3.1",
     "@ckeditor/ckeditor5-core": "41.3.1",
-    "@ckeditor/ckeditor5-dev-utils": "^39.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^39.7.0",
     "@ckeditor/ckeditor5-editor-classic": "41.3.1",
     "@ckeditor/ckeditor5-engine": "41.3.1",
     "@ckeditor/ckeditor5-essentials": "41.3.1",
@@ -57,6 +57,7 @@
     "directory": "packages/ckeditor5-markdown-gfm"
   },
   "files": [
+    "dist",
     "lang",
     "src/**/*.js",
     "src/**/*.d.ts",
@@ -72,7 +73,8 @@
     "block-elements"
   ],
   "scripts": {
+    "dll:build": "webpack",
     "build": "tsc -p ./tsconfig.json",
-    "dll:build": "webpack"
+    "build:dist": "node ../../scripts/build-package.mjs"
   }
 }

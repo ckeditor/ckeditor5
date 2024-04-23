@@ -17,7 +17,7 @@
     "@ckeditor/ckeditor5-ui": "41.3.1"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-utils": "^39.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^39.7.0",
     "@ckeditor/ckeditor5-editor-classic": "41.3.1",
     "@ckeditor/ckeditor5-editor-balloon": "41.3.1",
     "@ckeditor/ckeditor5-editor-decoupled": "41.3.1",
@@ -69,6 +69,7 @@
     "directory": "packages/ckeditor5-show-blocks"
   },
   "files": [
+    "dist",
     "lang",
     "src/**/*.js",
     "src/**/*.d.ts",
@@ -78,7 +79,8 @@
     "CHANGELOG.md"
   ],
   "scripts": {
+    "dll:build": "webpack",
     "build": "tsc -p ./tsconfig.json",
-    "dll:build": "webpack"
+    "build:dist": "node ../../scripts/build-package.mjs"
   }
 }

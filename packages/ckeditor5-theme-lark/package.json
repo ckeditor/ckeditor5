@@ -42,11 +42,15 @@
     "directory": "packages/ckeditor5-theme-lark"
   },
   "files": [
+    "dist",
     "lang",
     "src",
     "theme",
     "ckeditor5-metadata.json",
     "CHANGELOG.md"
   ],
-  "main": "./theme/theme.css"
+  "main": "./theme/theme.css",
+  "scripts": {
+    "build:dist": "ckeditor5-dev-build-tools --input=theme/index.css --clean --source-map --banner=../../scripts/banner.mjs"
+  }
 }
