@@ -146,25 +146,9 @@ class Editor extends MultiRootEditorBase {
 			icon: 'bold',
 			items: [
 				'bold',
-				'italic',
-				'underline',
-				'fontColor',
-				'highlight',
-				'|',
-				'alignment',
-				'bulletedList',
-				'numberedList',
-				'indent',
-				'outdent',
-				'|',
-				'link',
-				'comment',
-				'insertTable',
-				'|',
-				'findAndReplace',
 				'strikethrough',
 				'subscript',
-				'superscript'
+				'superscript',
 			]
 		},
 		'fontColor',
@@ -183,12 +167,15 @@ class Editor extends MultiRootEditorBase {
 		'imageUpload',
 		'insertTable',
 		'|',
+		'comment',
+		'commentsArchive',
+		'trackChanges',
+		'|',
 		'findAndReplace',
 		'removeFormat',
 		'wproofreader',
 		'blockQuote',
 		'horizontalLine',
-		'trackChanges'
 	];
 
 	public static override defaultConfig: MultirootEditorConfig = {
