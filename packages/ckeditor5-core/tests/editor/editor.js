@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, window, setTimeout, console */
+/* globals document, window, setTimeout, console, Response, globalThis */
 
 import Editor from '../../src/editor/editor.js';
 import Context from '../../src/context.js';
@@ -280,6 +280,101 @@ describe( 'Editor', () => {
 
 				sinon.assert.calledWithMatch( stub, 'The format of the license key is invalid.' );
 				expect( editor.isReadOnly ).to.be.true;
+			} );
+		} );
+
+		describe( 'usage endpoint', () => {
+			it( 'should send request with telemetry data if license key contains a usage endpoint', () => {
+				const fetchStub = sinon.stub( window, 'fetch' );
+
+				// eslint-disable-next-line max-len
+				const licenseKey = 'foo.eyJleHAiOjM3ODY5MTIwMDAsImp0aSI6IjE0ZWUyZDliLTFlZDktNGEwNi05NmQwLTRmYzc5YjQxMzJiOSIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL2NrZWRpdG9yLmNvbSJ9.bar';
+				const editor = new TestEditor( { licenseKey } );
+
+				editor.fire( 'ready' );
+
+				sinon.assert.calledOnce( fetchStub );
+
+				const sentData = JSON.parse( fetchStub.firstCall.lastArg.body );
+
+				expect( sentData.license ).to.equal( licenseKey );
+				expect( sentData.telemetry ).to.deep.equal( { editorVersion: globalThis.CKEDITOR_VERSION } );
+			} );
+
+			it( 'should not send any request if license key does not contain a usage endpoint', () => {
+				const fetchStub = sinon.stub( window, 'fetch' );
+
+				// eslint-disable-next-line max-len
+				const licenseKey = 'foo.eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjM3ODY5MTIwMDAsImp0aSI6IjljY2IzNDQzLWMzN2EtNGE4Yy1iNDg3LTBjYzNkMjlmNTVjYyJ9.DxpsxsxRSqMv75JmGxK1xLnaThmMOaDeAeqEiq08FEC7x_sSGWkvf3v-cbDD9aRWnz9vYRm1WOoXzlD2e-j27g.bar';
+				const editor = new TestEditor( { licenseKey } );
+
+				editor.fire( 'ready' );
+
+				sinon.assert.notCalled( fetchStub );
+			} );
+
+			it( 'should not throw an error if response status is not ok (HTTP 500)', () => {
+				const fetchStub = sinon.stub( window, 'fetch' ).resolves( new Response( null, { status: 500 } ) );
+
+				// eslint-disable-next-line max-len
+				const licenseKey = 'foo.eyJleHAiOjM3ODY5MTIwMDAsImp0aSI6IjE0ZWUyZDliLTFlZDktNGEwNi05NmQwLTRmYzc5YjQxMzJiOSIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL2NrZWRpdG9yLmNvbSJ9.bar';
+				const editor = new TestEditor( { licenseKey } );
+
+				expect( () => {
+					editor.fire( 'ready' );
+				} ).to.not.throw();
+
+				sinon.assert.calledOnce( fetchStub );
+			} );
+
+			it( 'should display warning and block the editor when usage status is not ok', done => {
+				const fetchStub = sinon.stub( window, 'fetch' ).resolves( {
+					ok: true,
+					json: () => Promise.resolve( {
+						status: 'foo'
+					} )
+				} );
+				const warnStub = testUtils.sinon.stub( console, 'warn' );
+
+				// eslint-disable-next-line max-len
+				const licenseKey = 'foo.eyJleHAiOjM3ODY5MTIwMDAsImp0aSI6IjE0ZWUyZDliLTFlZDktNGEwNi05NmQwLTRmYzc5YjQxMzJiOSIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL2NrZWRpdG9yLmNvbSJ9.bar';
+				const editor = new TestEditor( { licenseKey } );
+
+				editor.fire( 'ready' );
+
+				setTimeout( () => {
+					sinon.assert.calledOnce( fetchStub );
+					sinon.assert.calledOnce( warnStub );
+					sinon.assert.calledWithMatch( warnStub, 'The licensed usage count exceeded' );
+					expect( editor.isReadOnly ).to.be.true;
+					done();
+				}, 1 );
+			} );
+
+			it( 'should display additional warning when usage status is not ok and message is provided', done => {
+				const fetchStub = sinon.stub( window, 'fetch' ).resolves( {
+					ok: true,
+					json: () => Promise.resolve( {
+						status: 'foo',
+						message: 'bar'
+					} )
+				} );
+				const warnStub = testUtils.sinon.stub( console, 'warn' );
+
+				// eslint-disable-next-line max-len
+				const licenseKey = 'foo.eyJleHAiOjM3ODY5MTIwMDAsImp0aSI6IjE0ZWUyZDliLTFlZDktNGEwNi05NmQwLTRmYzc5YjQxMzJiOSIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL2NrZWRpdG9yLmNvbSJ9.bar';
+				const editor = new TestEditor( { licenseKey } );
+
+				editor.fire( 'ready' );
+
+				setTimeout( () => {
+					sinon.assert.calledOnce( fetchStub );
+					sinon.assert.calledTwice( warnStub );
+					sinon.assert.calledWithMatch( warnStub.getCall( 0 ), 'bar' );
+					sinon.assert.calledWithMatch( warnStub.getCall( 1 ), 'The licensed usage count exceeded' );
+					expect( editor.isReadOnly ).to.be.true;
+					done();
+				}, 1 );
 			} );
 		} );
 	} );
