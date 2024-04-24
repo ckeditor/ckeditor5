@@ -83,7 +83,7 @@ The [CKEditor&nbsp;5 Plugin Pack](https://www.drupal.org/project/ckeditor5_plugi
 * {@link features/text-transformation Text transformation}
 * {@link features/todo-lists To-do lists}
 * {@link features/word-count Word count}
-* Free version of {@link features/spelling-and-grammar-checking WProofreader} &ndash; [exact limitation of the free version are listed in this page](TODO)
+* Free version of {@link features/spelling-and-grammar-checking WProofreader} &ndash; limitation of the free version are listed [on this page](https://www.drupal.org/docs/extending-drupal/contributed-modules/contributed-module-documentation/ckeditor-5-plugin-pack/wproofreader-free-vs-premium-feature-comparison)
 
 Plugin Pack also makes it possible to use some of the premium features for free. 
 
@@ -103,4 +103,4 @@ Detailed descriptions of each plugin can be found on the [CKEditor&nbsp;5 Plugin
 
 ### Installation and configuration
 
-Refer to the [Adding CKEditor 5 Plugin Pack module to Drupal 10](TODO) guide in the Drupal documentation for details on how to install and set up the module.
+Refer to the [Adding CKEditor 5 Plugin Pack module to Drupal 10](https://www.drupal.org/docs/extending-drupal/contributed-modules/contributed-module-documentation/ckeditor-5-plugin-pack/how-to-install-and-set-up-the-module) guide in the Drupal documentation for details on how to install and set up the module.
