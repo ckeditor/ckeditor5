@@ -31,17 +31,13 @@ import type { MenuBarConfig } from '@ckeditor/ckeditor5-ui';
  * 	.then( ... )
  * 	.catch( ... );
  * ```
- *
- * Check the {@glink getting-started/legacy/installation-methods/predefined-builds Configuration} guide for more information
- * about setting configuration options.
  */
 export interface EditorConfig {
 	context?: Context;
 
 	/**
 	 * The list of additional plugins to load along those already available in the
-	 * {@glink getting-started/legacy/installation-methods/predefined-builds editor build}.
-	 * It extends the {@link #plugins `plugins`} configuration.
+	 * editor. It extends the {@link #plugins `plugins`} configuration.
 	 *
 	 * ```ts
 	 * function MyPlugin( editor ) {
@@ -119,10 +115,6 @@ export interface EditorConfig {
 	/**
 	 * The language of the editor UI and its content.
 	 *
-	 * Note: You do not have to specify this option if your build is optimized for one UI language or if it is
-	 * the default language (English is the default language for CDN builds), unless you want to change
-	 * the language of your content.
-	 *
 	 * Simple usage (change the language of the UI and the content):
 	 *
 	 * ```ts
@@ -168,13 +160,53 @@ export interface EditorConfig {
 	 * The language codes are defined in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) standard.
 	 *
 	 * You need to add the corresponding translation file for the new UI language to work.
-	 * Translation files are available on CDN for predefined builds:
+	 * Translation files are available on CDN:
 	 *
 	 * ```html
-	 * `<script src="https://cdn.ckeditor.com/ckeditor5/[version.number]/[distribution]/lang/[lang].js"></script>`
+	 * <script type="importmap">
+	 * {
+	 *   "imports": {
+	 *     "ckeditor5": "<CDN_LINK>/ckeditor5/dist/index.min.js",
+	 *     "ckeditor5/": "<CDN_LINK>/ckeditor5/",
+	 *   }
+	 * }
+	 * </script>
+	 * <script type="module">
+	 * import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
+	 * import translations from 'ckeditor5/dist/translations/pl.js';
+	 *
+	 * await ClassicEditor.create( document.querySelector( '#editor' ), {
+	 *   plugins: [
+	 *     Essentials,
+	 *     Paragraph,
+	 *   ],
+	 *   toolbar: {
+	 *     items: [ 'undo', 'redo' ]
+	 *   },
+	 *   translations
+	 * } );
+	 * </script>
 	 * ```
 	 *
-	 * But you can add them manually by coping from the `node_modules/@ckeditor/ckeditor5-build-[name]/build/lang/[lang].js'`.
+	 * You can add translation using NPM as well.
+	 *
+	 * ```html
+	 * import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
+	 * import translations from 'ckeditor5/dist/translations/pl.js';
+	 *
+	 * import 'ckeditor5/dist/styles.css';
+	 *
+	 * await ClassicEditor.create( document.querySelector( '#editor' ), {
+	 *   plugins: [
+	 *     Essentials,
+	 *     Paragraph,
+	 *   ],
+	 *   toolbar: {
+	 *     items: [ 'undo', 'redo' ]
+	 *   },
+	 *   translations
+	 * } );
+	 * ```
 	 *
 	 * Check the {@glink getting-started/setup/ui-language UI language} guide for more information about
 	 * the localization options and translation process.
@@ -511,30 +543,13 @@ export interface EditorConfig {
 	/**
 	 * The list of plugins to load.
 	 *
-	 * If you use an {@glink getting-started/legacy/installation-methods/predefined-builds editor build}
-	 * you can define the list of plugins to load using the names of plugins that are available:
-	 *
 	 * ```ts
-	 * const config = {
-	 * 	plugins: [ 'Bold', 'Italic', 'Typing', 'Enter', ... ]
-	 * };
-	 * ```
-	 *
-	 * You can check the list of plugins available in a build using this snippet:
-	 *
-	 * ```ts
-	 * ClassicEditor.builtinPlugins.map( plugin => plugin.pluginName );
-	 * ```
-	 *
-	 * If you use an editor creator directly (imported from a package like `@ckeditor/ckeditor5-editor-classic`) or you
-	 * want to load additional plugins which were not included in a build you use, then you need to specify
-	 * the plugins using their constructors:
-	 *
-	 * ```ts
+	 * import {
 	 * // A preset of plugins is a plugin as well.
-	 * import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+	 * 	Essentials,
 	 * // The bold plugin.
-	 * import Bold from '@ckeditor/ckeditor5-editor-basic-styles/src/bold';
+	 * 	Bold
+	 * } from 'ckeditor5';
 	 *
 	 * const config = {
 	 * 	plugins: [ Essentials, Bold ]
@@ -548,7 +563,7 @@ export interface EditorConfig {
 
 	/**
 	 * The list of plugins which should not be loaded despite being available in
-	 * an {@glink getting-started/legacy/installation-methods/predefined-builds editor build}.
+	 * the editor.
 	 *
 	 * ```ts
 	 * const config = {
@@ -556,7 +571,7 @@ export interface EditorConfig {
 	 * };
 	 * ```
 	 *
-	 * **Note:** Be careful when removing plugins using `config.removePlugins` from CKEditor builds.
+	 * **Note:** Be careful when removing plugins using `config.removePlugins`.
 	 * If removed plugins were providing toolbar buttons, the default toolbar configuration included in a build
 	 * will become invalid. In such case you need to provide the updated
 	 * {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar configuration}.
