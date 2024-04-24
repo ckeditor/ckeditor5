@@ -305,7 +305,7 @@ describe( 'Editor', () => {
 				const fetchStub = sinon.stub( window, 'fetch' );
 
 				// eslint-disable-next-line max-len
-				const licenseKey = 'foo.eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjM3ODY5MTIwMDAsImp0aSI6IjljY2IzNDQzLWMzN2EtNGE4Yy1iNDg3LTBjYzNkMjlmNTVjYyJ9.DxpsxsxRSqMv75JmGxK1xLnaThmMOaDeAeqEiq08FEC7x_sSGWkvf3v-cbDD9aRWnz9vYRm1WOoXzlD2e-j27g.bar';
+				const licenseKey = 'foo.eyJleHAiOjM3ODY5MTIwMDAsImp0aSI6IjM0YzVkZjUwLTA4NmQtNGYyOC1iMGRlLWE2ZmQxNmNjOGU0MSJ9.bar';
 				const editor = new TestEditor( { licenseKey } );
 
 				editor.fire( 'ready' );
@@ -313,21 +313,30 @@ describe( 'Editor', () => {
 				sinon.assert.notCalled( fetchStub );
 			} );
 
-			it( 'should not throw an error if response status is not ok (HTTP 500)', () => {
+			it( 'should display error on the console and not block the editor if response status is not ok (HTTP 500)', async () => {
 				const fetchStub = sinon.stub( window, 'fetch' ).resolves( new Response( null, { status: 500 } ) );
+				const originalRejectionHandler = window.onunhandledrejection;
+				let capturedError = null;
+
+				window.onunhandledrejection = evt => {
+					capturedError = evt.reason.message;
+					return true;
+				};
 
 				// eslint-disable-next-line max-len
 				const licenseKey = 'foo.eyJleHAiOjM3ODY5MTIwMDAsImp0aSI6IjE0ZWUyZDliLTFlZDktNGEwNi05NmQwLTRmYzc5YjQxMzJiOSIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL2NrZWRpdG9yLmNvbSJ9.bar';
 				const editor = new TestEditor( { licenseKey } );
 
-				expect( () => {
-					editor.fire( 'ready' );
-				} ).to.not.throw();
+				editor.fire( 'ready' );
+				await wait( 1 );
+				window.onunhandledrejection = originalRejectionHandler;
 
 				sinon.assert.calledOnce( fetchStub );
+				expect( capturedError ).to.equal( 'HTTP Response: 500' );
+				expect( editor.isReadOnly ).to.be.false;
 			} );
 
-			it( 'should display warning and block the editor when usage status is not ok', done => {
+			it( 'should display warning and block the editor when usage status is not ok', async () => {
 				const fetchStub = sinon.stub( window, 'fetch' ).resolves( {
 					ok: true,
 					json: () => Promise.resolve( {
@@ -341,17 +350,15 @@ describe( 'Editor', () => {
 				const editor = new TestEditor( { licenseKey } );
 
 				editor.fire( 'ready' );
+				await wait( 1 );
 
-				setTimeout( () => {
-					sinon.assert.calledOnce( fetchStub );
-					sinon.assert.calledOnce( warnStub );
-					sinon.assert.calledWithMatch( warnStub, 'The licensed usage count exceeded' );
-					expect( editor.isReadOnly ).to.be.true;
-					done();
-				}, 1 );
+				sinon.assert.calledOnce( fetchStub );
+				sinon.assert.calledOnce( warnStub );
+				sinon.assert.calledWithMatch( warnStub, 'The licensed usage count exceeded' );
+				expect( editor.isReadOnly ).to.be.true;
 			} );
 
-			it( 'should display additional warning when usage status is not ok and message is provided', done => {
+			it( 'should display additional warning when usage status is not ok and message is provided', async () => {
 				const fetchStub = sinon.stub( window, 'fetch' ).resolves( {
 					ok: true,
 					json: () => Promise.resolve( {
@@ -366,15 +373,13 @@ describe( 'Editor', () => {
 				const editor = new TestEditor( { licenseKey } );
 
 				editor.fire( 'ready' );
+				await wait( 1 );
 
-				setTimeout( () => {
-					sinon.assert.calledOnce( fetchStub );
-					sinon.assert.calledTwice( warnStub );
-					sinon.assert.calledWithMatch( warnStub.getCall( 0 ), 'bar' );
-					sinon.assert.calledWithMatch( warnStub.getCall( 1 ), 'The licensed usage count exceeded' );
-					expect( editor.isReadOnly ).to.be.true;
-					done();
-				}, 1 );
+				sinon.assert.calledOnce( fetchStub );
+				sinon.assert.calledTwice( warnStub );
+				sinon.assert.calledWithMatch( warnStub.getCall( 0 ), 'bar' );
+				sinon.assert.calledWithMatch( warnStub.getCall( 1 ), 'The licensed usage count exceeded' );
+				expect( editor.isReadOnly ).to.be.true;
 			} );
 		} );
 	} );
@@ -1514,4 +1519,10 @@ describe( 'Editor', () => {
 function getPlugins( editor ) {
 	return Array.from( editor.plugins )
 		.map( entry => entry[ 1 ] ); // Get instances.
+}
+
+function wait( time ) {
+	return new Promise( res => {
+		window.setTimeout( res, time );
+	} );
 }
