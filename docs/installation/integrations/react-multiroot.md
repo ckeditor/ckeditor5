@@ -17,7 +17,7 @@ order: 20
 
 CKEditor&nbsp;5 consists of {@link installation/getting-started/predefined-builds ready-to-use editor builds} and {@link framework/index CKEditor&nbsp;5 Framework} upon which the builds are based.
 
-The easiest way to use multi-root CKEditor&nbsp;5 in your React application is by using the {@link installation/getting-started/predefined-builds#multi-root-editor multi-root rich text editor build}. You can also use a customized editor built by using [CKEditor&nbsp;5 online builder](https://ckeditor.com/ckeditor-5/online-builder/) in any React application.
+The easiest way to use multi-root CKEditor&nbsp;5 in your React application is by using the {@link installation/getting-started/predefined-builds#multi-root-editor multi-root rich text editor build}.
 
 <info-box hint>
 	The multi-root editors in React is supported since version 6.2.0 of this package.
@@ -52,7 +52,7 @@ const App = () => {
 			content: '<p>Hello from CKEditor&nbsp;5 multi-root!</p>'
 		},
 		config: {
-			// your config
+			// your editor config
 		}
 	};
 
@@ -61,7 +61,6 @@ const App = () => {
 		data, setData,
 		attributes, setAttributes
 	} = useMultiRootEditor( editorProps );
-
 
 	return (
 		<div className="App">
