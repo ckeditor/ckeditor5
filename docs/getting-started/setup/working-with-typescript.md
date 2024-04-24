@@ -15,9 +15,9 @@ order: 70
 CKEditor&nbsp;5 is built using TypeScript and has native type definitions. All the official packages distributed using NPM and CDN contain type definitions.
 
 <info-box hint>
-	Using TypeScript is just an option. If you do not need its features, you can continue using CKEditor&nbsp;5 in JavaScript.
+	Starting with the v37.0.0 release, CKEditor 5 has built-in type definitions. We build all the packages using TypeScript 5.0, however, the editor should also work with an older version, such as 4.9.
 
-	For best results, we suggest using TypeScript version 5.0 or newer.
+	Using TypeScript is just an option. If you do not need its features, you can continue using CKEditor&nbsp;5 in JavaScript.
 </info-box>
 
 ## Why use CKEditor&nbsp;5 with TypeScript
@@ -28,16 +28,16 @@ Using TypeScript comes with some advantages:
 * It introduces code autocompletion and type suggestions for CKEditor&nbsp;5 APIs
 * If you are developing custom plugins and using CKEditor&nbsp;5 Framework intensively, the TypeScript compiler will help you catch common type errors and increase the code quality
 
-## CKEditor&nbsp;5 TypeScript setup (update as needed)
+## CKEditor&nbsp;5 TypeScript setup
 
 Running CKEditor&nbsp;5 does not differ much when using TypeScript compared to the JavaScript environment. You may consider using type assertion or type casting to satisfy the TypeScript compiler.
 
 ### Running the editor
 
-Here is an example of the classic editor build initialization:
+Here is an example of the classic editor type initialization:
 
 ```ts
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
+import { ClassicEditor } from 'ckeditor5'
 
 const editorPlaceholder = document.querySelector( '#editor' ) as HTMLElement;
 
@@ -55,17 +55,10 @@ When using TypeScript you need to import all modules provided by CKEditor&nbsp;5
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 
 // Do:
-import { Bold } from '@ckeditor/ckeditor5-basic-styles';
+import { Bold } from 'ckeditor5';
 ```
 
-This approach ensures that TypeScript correctly loads all module augmentation code necessary to make certain types work. The previous method (importing via `@ckeditor/ckeditor5-*/src/*`) still works in most cases, but [it may randomly break](https://github.com/ckeditor/ckeditor5/issues/13433).
-
-### Integrating CKEditor&nbsp;5 from source in your TypeScript project
-
-If you want to integrate CKEditor&nbsp;5 directly in your TypeScript project, follow the instructions for integrating from source using webpack and Vite:
-
-* {@link getting-started/advanced/integrating-from-source-webpack Integration from source using webpack}
-* {@link getting-started/advanced/integrating-from-source-vite Integration from source using Vite}
+This approach ensures that TypeScript correctly loads all module augmentation code necessary to make certain types work.
 
 ### Types for Angular, React, and Vue 3 components
 
@@ -79,4 +72,4 @@ The latest versions of our official components for Angular, React, and Vue 3 wer
 
 CKEditor&nbsp;5's API is extensive and complex, but using TypeScript can make it easier to work with.
 
-You can use {@link framework/development-tools/package-generator/typescript-package package generator} to scaffold TypeScript-based plugins.
+You can use the {@link framework/development-tools/package-generator/typescript-package package generator} to scaffold TypeScript-based plugins.
