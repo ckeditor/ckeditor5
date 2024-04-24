@@ -85,6 +85,20 @@
 					animation: ck-widget-type-around-arrow-tip-dash 2s linear;
 				}
 			}
+
+			@media (prefers-reduced-motion: reduce) {
+				animation: none;
+
+				& svg {
+					& polyline {
+						animation: none;
+					}
+
+					& line {
+						animation: none;
+					}
+				}
+			}
 		}
 	}
 
