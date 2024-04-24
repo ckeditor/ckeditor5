@@ -90,7 +90,7 @@ The `<CKEditor>` component supports the following properties:
 * `onError` &ndash; A function called when the editor has crashed during the initialization or during the runtime. It receives two arguments: the error instance and the error details.
 	Error details is an object that contains two properties:
 	* `{String} phase`: `'initialization'|'runtime'` &ndash; Informs when the error has occurred (during the editor or context initialization, or after the initialization).
-	 * `{Boolean} willEditorRestart` &ndash; When `true`, it means that the editor component will restart itself.
+	* `{Boolean} willEditorRestart` &ndash; When `true`, it means that the editor component will restart itself.
 
 The editor event callbacks (`onChange`, `onBlur`, `onFocus`) receive two arguments:
 
