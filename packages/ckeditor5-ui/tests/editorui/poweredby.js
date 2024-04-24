@@ -118,9 +118,6 @@ describe( 'PoweredBy', () => {
 
 			it( 'should create the balloon when a non-white-label license key is configured', async () => {
 				const editor = await createEditor( element, {
-					// eslint-disable-next-line max-len
-					// https://github.com/ckeditor/ckeditor5/blob/226bf243d1eb8bae2d447f631d6f5d9961bc6541/packages/ckeditor5-utils/tests/verifylicense.js#L14
-					// eslint-disable-next-line max-len
 					licenseKey: 'foo.eyJhYmMiOjF9.bar'
 				} );
 
