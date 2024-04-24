@@ -179,7 +179,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 	describe( 'conversion', () => {
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( {
-				plugins: [ Paragraph, TableEditing, RestrictedEditingModeEditing, ClipboardPipeline ]
+				plugins: [ Paragraph, TableEditing, RestrictedEditingModeEditing, ImageInlineEditing, ClipboardPipeline ]
 			} );
 			model = editor.model;
 		} );
@@ -328,6 +328,108 @@ describe( 'RestrictedEditingModeEditing', () => {
 					'</td></tr></tbody></table>' +
 					'</figure>'
 				);
+			} );
+
+			it( 'inline image should not split span between text nodes', () => {
+				setModelData( model, '<paragraph>foo <imageInline src="foo/bar.jpg"></imageInline> baz</paragraph>' );
+
+				const paragraph = model.document.getRoot().getChild( 0 );
+
+				model.change( writer => {
+					writer.addMarker( 'restrictedEditingException:1', {
+						range: writer.createRange( writer.createPositionAt( paragraph, 0 ), writer.createPositionAt( paragraph, 'end' ) ),
+						usingOperation: true,
+						affectsData: true
+					} );
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p><span class="restricted-editing-exception">foo <img src="foo/bar.jpg">baz</span></p>'
+				);
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<p>' +
+						'<span class="restricted-editing-exception restricted-editing-exception_selected">' +
+							'foo' +
+								' <span class="ck-widget image-inline" contenteditable="false"><img src="foo/bar.jpg"></img></span>' +
+							'baz' +
+						'</span>' +
+					'</p>'
+				);
+			} );
+
+			describe( 'custom convertor', () => {
+				function Plugin( editor ) {
+					editor.conversion.for( 'downcast' ).add( dispatcher => {
+						dispatcher.on( 'addMarker:restrictedEditingException', ( evt, data, conversionApi ) => {
+							if ( data.item || data.markerRange.isCollapsed ) {
+								return;
+							}
+
+							if ( !conversionApi.consumable.consume( data.markerRange, evt.name ) ) {
+								return;
+							}
+
+							const viewWriter = conversionApi.writer;
+							const viewElement = viewWriter.createAttributeElement(
+								'span',
+								{
+									class: 'restricted-editing-exception-1'
+								},
+								{
+									id: data.markerName,
+									priority: -10
+								}
+							);
+
+							const viewRange = conversionApi.mapper.toViewRange( data.markerRange );
+							const rangeAfterWrap = viewWriter.wrap( viewRange, viewElement );
+
+							for ( const element of rangeAfterWrap.getItems() ) {
+								if ( element.is( 'attributeElement' ) && element.isSimilar( viewElement ) ) {
+									conversionApi.mapper.bindElementToMarker( element, data.markerName );
+
+									break;
+								}
+							}
+						} );
+					} );
+				}
+
+				beforeEach( async () => {
+					editor = await VirtualTestEditor.create( {
+						plugins: [ Paragraph, TableEditing, Plugin, RestrictedEditingModeEditing, ClipboardPipeline ]
+					} );
+					model = editor.model;
+				} );
+
+				afterEach( async () => {
+					await editor.destroy();
+				} );
+
+				it( 'should not convert if already consumed by another convertor', () => {
+					setModelData( model, '<paragraph><$text>foo bar baz</$text></paragraph>' );
+
+					const paragraph = model.document.getRoot().getChild( 0 );
+
+					model.change( writer => {
+						writer.addMarker( 'restrictedEditingException:1', {
+							range: writer.createRange(
+								writer.createPositionAt( paragraph, 0 ), writer.createPositionAt( paragraph, 'end' )
+							),
+							usingOperation: true,
+							affectsData: true
+						} );
+					} );
+
+					expect( editor.getData() ).to.equal(
+						'<p><span class="restricted-editing-exception-1">foo bar baz</span></p>'
+					);
+					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+						'<p>' +
+							'<span class="restricted-editing-exception-1 restricted-editing-exception_selected">foo bar baz</span>' +
+						'</p>'
+					);
+				} );
 			} );
 		} );
 
