@@ -7,8 +7,6 @@ order: 90
 modified_at: 2023-10-06
 ---
 
-{@snippet installation/integrations/framework-integration}
-
 # Real-time editing in Drupal
 
 Drupal is a free and open-source web content management system (CMS) written in PHP. CKEditor&nbsp;5 WYSIWYG rich text editor is the default editor module for Drupal. The [CKEditor&nbsp;5 Premium Features module](https://www.drupal.org/project/ckeditor5_premium_features) provides instant integration of the real-time collaboration features with the editing platform.
