@@ -198,7 +198,7 @@ export * from './view/styles/margin.js';
 export * from './view/styles/padding.js';
 export * from './view/styles/utils.js';
 
-// Development / testing utils
+// Development / testing utils.
 export {
 	getData as _getModelData,
 	setData as _setModelData
