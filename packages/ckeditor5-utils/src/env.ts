@@ -69,6 +69,11 @@ export interface EnvType {
 	 * Environment features information.
 	 */
 	readonly features: EnvFeaturesType;
+
+	/**
+	 * TODO
+	 */
+	readonly isMediaForcedColors: boolean;
 }
 
 export interface EnvFeaturesType {
@@ -101,7 +106,9 @@ const env: EnvType = {
 
 	features: {
 		isRegExpUnicodePropertySupported: isRegExpUnicodePropertySupported()
-	}
+	},
+
+	isMediaForcedColors: isMediaForcedColors()
 };
 
 export default env;
@@ -198,4 +205,12 @@ export function isRegExpUnicodePropertySupported(): boolean {
 	}
 
 	return isSupported;
+}
+
+/**
+ * TODO
+ */
+export function isMediaForcedColors(): boolean {
+	// forced-colors: active works for high contrast themes on Windows.
+	return window.matchMedia( '(forced-colors: active)' ).matches;
 }
