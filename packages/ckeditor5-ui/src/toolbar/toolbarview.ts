@@ -316,7 +316,7 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 		factory: ComponentFactory,
 		removeItems?: Array<string>
 	): void {
-		this.items.addMany( this._buildItemsFromConfig( itemsOrConfig, factory, removeItems ) );
+		this.items.addMany( this.createItemsFromConfig( itemsOrConfig, factory, removeItems ) );
 	}
 
 	/**
@@ -327,14 +327,15 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 	 * @param removeItems An array of items names to be removed from the configuration. When present, applies
 	 * to this toolbar and all nested ones as well.
 	 */
-	private _buildItemsFromConfig(
+	public createItemsFromConfig(
 		itemsOrConfig: ToolbarConfig | undefined,
 		factory: ComponentFactory,
 		removeItems?: Array<string>
 	): Array<View> {
 		const config = normalizeToolbarConfig( itemsOrConfig );
 		const normalizedRemoveItems = removeItems || config.removeItems;
-		const itemsToAdd = this._cleanItemsConfiguration( config.items, factory, normalizedRemoveItems )
+
+		return this._cleanItemsConfiguration( config.items, factory, normalizedRemoveItems )
 			.map( item => {
 				if ( isObject( item ) ) {
 					return this._createNestedToolbarDropdown( item, factory, normalizedRemoveItems );
@@ -347,8 +348,6 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 				return factory.create( item );
 			} )
 			.filter( ( item ): item is View => !!item );
-
-		return itemsToAdd;
 	}
 
 	/**
@@ -548,7 +547,7 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 		}
 
 		addToolbarToDropdown( dropdownView, () => (
-			dropdownView.toolbarView!._buildItemsFromConfig( items, componentFactory, removeItems )
+			dropdownView.toolbarView!.createItemsFromConfig( items, componentFactory, removeItems )
 		) );
 
 		return dropdownView;
@@ -918,6 +917,10 @@ class DynamicGrouping implements ToolbarBehavior {
 			}
 		}
 
+		if ( !this.groupedItems.length ) {
+			this._removeGroupedItemsDropdown();
+		}
+
 		if ( this.groupedItems.length !== initialGroupedItemsCount ) {
 			this.view.fire<ToolbarViewGroupedItemsUpdateEvent>( 'groupedItemsUpdate' );
 		}
@@ -1018,10 +1021,22 @@ class DynamicGrouping implements ToolbarBehavior {
 		this.ungroupedItems.add( this.groupedItems.remove( this.groupedItems.first! ) );
 
 		if ( !this.groupedItems.length ) {
-			this.viewChildren.remove( this.groupedItemsDropdown );
-			this.viewChildren.remove( this.viewChildren.last! );
-			this.viewFocusTracker.remove( this.groupedItemsDropdown.element! );
+			this._removeGroupedItemsDropdown();
 		}
+	}
+
+	/**
+	 * Removes the {@link #groupedItemsDropdown dropdown} that hosts {@link #groupedItems} from the
+	 * {@link #viewChildren} collection.
+	 */
+	private _removeGroupedItemsDropdown(): void {
+		if ( !this.viewChildren.has( this.groupedItemsDropdown ) ) {
+			return;
+		}
+
+		this.viewChildren.remove( this.groupedItemsDropdown );
+		this.viewChildren.remove( this.viewChildren.last! );
+		this.viewFocusTracker.remove( this.groupedItemsDropdown.element! );
 	}
 
 	/**
