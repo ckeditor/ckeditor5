@@ -85,7 +85,7 @@ describe( 'PoweredBy', () => {
 
 			it( 'should not create the balloon when a white-label license key is configured', async () => {
 				const editor = await createEditor( element, {
-					licenseKey: 'foo.eyJ3aGl0ZUxhYmVsIjp0cnVlfQ.bar'
+					licenseKey: 'foo.eyJ3aGl0ZUxhYmVsIjp0cnVlLCJleHAiOjIyMDg5ODg4MDB9.bar'
 				} );
 
 				expect( editor.ui.poweredBy._balloonView ).to.be.null;
@@ -99,7 +99,7 @@ describe( 'PoweredBy', () => {
 
 			it( 'should create the balloon when a white-label license key is configured and `forceVisible` is set to true', async () => {
 				const editor = await createEditor( element, {
-					licenseKey: 'foo.eyJ3aGl0ZUxhYmVsIjp0cnVlfQ.bar',
+					licenseKey: 'foo.eyJ3aGl0ZUxhYmVsIjp0cnVlLCJleHAiOjIyMDg5ODg4MDB9.bar',
 					ui: {
 						poweredBy: {
 							forceVisible: true
@@ -118,7 +118,7 @@ describe( 'PoweredBy', () => {
 
 			it( 'should create the balloon when a non-white-label license key is configured', async () => {
 				const editor = await createEditor( element, {
-					licenseKey: 'foo.eyJhYmMiOjF9.bar'
+					licenseKey: 'foo.eyJhYmMiOjEsImV4cCI6MjIwODk4ODgwMH0.bar'
 				} );
 
 				expect( editor.ui.poweredBy._balloonView ).to.be.null;
