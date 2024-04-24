@@ -9,25 +9,38 @@
 	--ck-show-blocks-border-color: hsl(0, 0%, 46%);
 }
 
+@define-mixin block-name-background-ltr $text {
+	background-image: url("data:image/svg+xml;utf8,<svg width='120' height='12' xmlns='http://www.w3.org/2000/svg' ><text style='paint-order:stroke fill; clip-path: inset(-3px)' stroke='%23EAEAEA' stroke-width='13' dominant-baseline='middle' fill='black' x='3' y='7' font-size='9px' font-family='Consolas, %22Lucida Console%22, %22Lucida Sans Typewriter%22, %22DejaVu Sans Mono%22, %22Bitstream Vera Sans Mono%22, %22Liberation Mono%22, Monaco, %22Courier New%22, Courier, monospace'>$(text)</text></svg>");
+	background-position: 1px 1px;
+}
+
+@define-mixin block-name-background-rtl $text {
+	background-image: url("data:image/svg+xml;utf8,<svg width='120' height='12' xmlns='http://www.w3.org/2000/svg' ><text style='paint-order:stroke fill; clip-path: inset(-3px); transform:translate(-2px, 0)' stroke='%23EAEAEA' stroke-width='13' dominant-baseline='middle' fill='black' x='100%' text-anchor='end' y='7' font-size='9px' font-family='Consolas, %22Lucida Console%22, %22Lucida Sans Typewriter%22, %22DejaVu Sans Mono%22, %22Bitstream Vera Sans Mono%22, %22Liberation Mono%22, Monaco, %22Courier New%22, Courier, monospace'>$(text)</text></svg>");
+	background-position: calc(100% - 1px) 1px;
+}
+
 @define-mixin block-name-background $text {
+	background-repeat: no-repeat;
+	padding-top: 15px;
+
+	/* Fix for Multi-root editor
+	https://github.com/ckeditor/ckeditor5/issues/15969 */
+	[dir=ltr] & {
+		@mixin block-name-background-ltr $text;
+	}
+	[dir=rtl] & {
+		@mixin block-name-background-rtl $text;
+	}
+
 	&:not(.ck-widget_selected):not(.ck-widget:hover) {
 		outline: 1px dashed var(--ck-show-blocks-border-color);
 	}
 
-	/* Some props are duplicated for both 'ltr' and 'rtl' directions for their higher specificity.
-	See https://github.com/ckeditor/ckeditor5/issues/14435 for details. */
 	@mixin ck-dir ltr {
-		background-image: url("data:image/svg+xml;utf8,<svg width='120' height='12' xmlns='http://www.w3.org/2000/svg' ><text style='paint-order:stroke fill; clip-path: inset(-3px);' stroke='%23EAEAEA' stroke-width='13' dominant-baseline='middle' fill='black' x='3' y='7' font-size='9px' font-family='Consolas, %22Lucida Console%22, %22Lucida Sans Typewriter%22, %22DejaVu Sans Mono%22, %22Bitstream Vera Sans Mono%22, %22Liberation Mono%22, Monaco, %22Courier New%22, Courier, monospace'>$(text)</text></svg>");
-		background-position: 1px 1px;
-		background-repeat: no-repeat;
-		padding-top: 15px;
+		@mixin block-name-background-ltr $text;
 	}
-
 	@mixin ck-dir rtl {
-		background-image: url("data:image/svg+xml;utf8,<svg width='120' height='12' xmlns='http://www.w3.org/2000/svg' ><text style='paint-order:stroke fill; clip-path: inset(-3px); transform:translate(-2px, 0);' stroke='%23EAEAEA' stroke-width='13' dominant-baseline='middle' fill='black' x='100%' text-anchor='end' y='7' font-size='9px' font-family='Consolas, %22Lucida Console%22, %22Lucida Sans Typewriter%22, %22DejaVu Sans Mono%22, %22Bitstream Vera Sans Mono%22, %22Liberation Mono%22, Monaco, %22Courier New%22, Courier, monospace'>$(text)</text></svg>");
-		background-position: calc(100% - 1px) 1px;
-		background-repeat: no-repeat;
-		padding-top: 15px;
+		@mixin block-name-background-rtl $text;
 	}
 }
 

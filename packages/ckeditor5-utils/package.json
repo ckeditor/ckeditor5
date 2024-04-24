@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-utils",
-  "version": "41.2.1",
+  "version": "41.3.1",
   "description": "Miscellaneous utilities used by CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -15,10 +15,10 @@
     "lodash-es": "4.17.21"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-build-classic": "41.2.1",
-    "@ckeditor/ckeditor5-editor-classic": "41.2.1",
-    "@ckeditor/ckeditor5-core": "41.2.1",
-    "@ckeditor/ckeditor5-engine": "41.2.1",
+    "@ckeditor/ckeditor5-build-classic": "41.3.1",
+    "@ckeditor/ckeditor5-editor-classic": "41.3.1",
+    "@ckeditor/ckeditor5-core": "41.3.1",
+    "@ckeditor/ckeditor5-engine": "41.3.1",
     "@types/lodash-es": "^4.17.6",
     "typescript": "5.0.4"
   },
@@ -35,6 +35,7 @@
     "directory": "packages/ckeditor5-utils"
   },
   "files": [
+    "dist",
     "lang",
     "src/**/*.js",
     "src/**/*.d.ts",
@@ -43,6 +44,7 @@
     "CHANGELOG.md"
   ],
   "scripts": {
-    "build": "tsc -p ./tsconfig.json"
+    "build": "tsc -p ./tsconfig.json",
+    "build:dist": "node ../../scripts/build-package.mjs"
   }
 }

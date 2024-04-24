@@ -158,18 +158,17 @@ describe( 'ContextualBalloon', () => {
 			const spy = sinon.spy( balloon, '_createPanelView' );
 
 			expect( balloon._view ).to.be.null;
-			expect( editor.ui.view.body.length ).to.equal( 0 );
 			sinon.assert.notCalled( spy );
 
 			expect( balloon.view ).to.instanceof( BalloonPanelView );
 			sinon.assert.calledOnce( spy );
+			expect( editor.ui.view.body.has( balloon._view ) ).to.be.true;
 		} );
 
 		it( 'should create BalloonPanelView on first view added', () => {
 			const spy = sinon.spy( balloon, '_createPanelView' );
 
 			expect( balloon._view ).to.be.null;
-			expect( editor.ui.view.body.length ).to.equal( 0 );
 			sinon.assert.notCalled( spy );
 
 			balloon.add( {
@@ -181,6 +180,7 @@ describe( 'ContextualBalloon', () => {
 
 			expect( balloon._view ).to.instanceof( BalloonPanelView );
 			sinon.assert.calledOnce( spy );
+			expect( editor.ui.view.body.has( balloon._view ) ).to.be.true;
 		} );
 	} );
 
