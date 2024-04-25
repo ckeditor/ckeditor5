@@ -357,6 +357,60 @@ describe( 'RestrictedEditingModeEditing', () => {
 				);
 			} );
 
+			it( 'inline image should not split span between text nodes (inline image at start)', () => {
+				setModelData( model, '<paragraph><imageInline src="foo/bar.jpg"></imageInline>foo baz</paragraph>' );
+
+				const paragraph = model.document.getRoot().getChild( 0 );
+
+				model.change( writer => {
+					writer.addMarker( 'restrictedEditingException:1', {
+						range: writer.createRange( writer.createPositionAt( paragraph, 0 ), writer.createPositionAt( paragraph, 'end' ) ),
+						usingOperation: true,
+						affectsData: true
+					} );
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p><span class="restricted-editing-exception"><img src="foo/bar.jpg">foo baz</span></p>'
+				);
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<p>' +
+						'<span class="restricted-editing-exception restricted-editing-exception_selected">' +
+							'<span class="ck-widget image-inline" contenteditable="false"><img src="foo/bar.jpg"></img></span>' +
+							'foo ' +
+							'baz' +
+						'</span>' +
+					'</p>'
+				);
+			} );
+
+			it( 'inline image should not split span between text nodes (inline image at the end)', () => {
+				setModelData( model, '<paragraph>foo baz<imageInline src="foo/bar.jpg"></imageInline></paragraph>' );
+
+				const paragraph = model.document.getRoot().getChild( 0 );
+
+				model.change( writer => {
+					writer.addMarker( 'restrictedEditingException:1', {
+						range: writer.createRange( writer.createPositionAt( paragraph, 0 ), writer.createPositionAt( paragraph, 'end' ) ),
+						usingOperation: true,
+						affectsData: true
+					} );
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p><span class="restricted-editing-exception">foo baz<img src="foo/bar.jpg"></span></p>'
+				);
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<p>' +
+						'<span class="restricted-editing-exception restricted-editing-exception_selected">' +
+							'foo ' +
+							'baz' +
+							'<span class="ck-widget image-inline" contenteditable="false"><img src="foo/bar.jpg"></img></span>' +
+						'</span>' +
+					'</p>'
+				);
+			} );
+
 			describe( 'custom convertor', () => {
 				function Plugin( editor ) {
 					editor.conversion.for( 'downcast' ).add( dispatcher => {
