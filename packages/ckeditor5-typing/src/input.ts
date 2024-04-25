@@ -13,7 +13,11 @@ import { env } from '@ckeditor/ckeditor5-utils';
 import InsertTextCommand from './inserttextcommand.js';
 import InsertTextObserver, { type ViewDocumentInsertTextEvent } from './inserttextobserver.js';
 
-import type { Model } from '@ckeditor/ckeditor5-engine';
+import {
+	type Model,
+	type ViewDocumentCompositionStartEvent,
+	type ViewDocumentKeyDownEvent
+} from '@ckeditor/ckeditor5-engine';
 
 /**
  * Handles text input coming from the keyboard or other input methods.
@@ -53,10 +57,17 @@ export default class Input extends Plugin {
 
 			const { text, selection: viewSelection, resultRange: viewResultRange } = data;
 
+			let modelRanges;
+
 			// If view selection was specified, translate it to model selection.
-			const modelRanges = Array.from( viewSelection.getRanges() ).map( viewRange => {
-				return editor.editing.mapper.toModelRange( viewRange );
-			} );
+			if ( viewSelection ) {
+				modelRanges = Array.from( viewSelection.getRanges() ).map( viewRange => {
+					return editor.editing.mapper.toModelRange( viewRange );
+				} );
+			}
+			else {
+				modelRanges = Array.from( modelSelection.getRanges() );
+			}
 
 			let insertText = text;
 
@@ -109,7 +120,7 @@ export default class Input extends Plugin {
 			// On Android with English keyboard, the composition starts just by putting caret
 			// at the word end or by selecting a table column. This is not a real composition started.
 			// Trigger delete content on first composition key pressed.
-			this.listenTo( view.document, 'keydown', ( evt, data ) => {
+			this.listenTo<ViewDocumentKeyDownEvent>( view.document, 'keydown', ( evt, data ) => {
 				if ( modelSelection.isCollapsed || data.keyCode != 229 || !view.document.isComposing ) {
 					return;
 				}
@@ -129,7 +140,7 @@ export default class Input extends Plugin {
 		} else {
 			// Note: The priority must precede the CompositionObserver handler to call it before
 			// the renderer is blocked, because we want to render this change.
-			this.listenTo( view.document, 'compositionstart', () => {
+			this.listenTo<ViewDocumentCompositionStartEvent>( view.document, 'compositionstart', () => {
 				if ( modelSelection.isCollapsed ) {
 					return;
 				}

@@ -3,11 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
+/* global document, window */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 
 import Input from '../src/input.js';
 import InsertTextCommand from '../src/inserttextcommand.js';
@@ -127,6 +128,28 @@ describe( 'Input', () => {
 				expect( firstCallArgs.resultRange ).to.be.undefined;
 			} );
 
+			it( 'should use model document selection if the selection property is not passed', async () => {
+				const expectedSelection = editor.model.createSelection(
+					editor.model.createPositionAt( editor.model.document.getRoot().getChild( 0 ), 1 )
+				);
+
+				editor.model.change( writer => {
+					writer.setSelection( expectedSelection );
+				} );
+
+				viewDocument.fire( 'insertText', {
+					text: 'bar',
+					preventDefault: sinon.spy()
+				} );
+
+				const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
+
+				sinon.assert.calledOnce( insertTextCommandSpy );
+				expect( firstCallArgs.text ).to.equal( 'bar' );
+				expect( firstCallArgs.selection.isEqual( expectedSelection ) ).to.be.true;
+				expect( firstCallArgs.resultRange ).to.be.undefined;
+			} );
+
 			it( 'should have result range passed correctly to the insert text command', async () => {
 				const expectedSelection = editor.model.createSelection(
 					editor.model.createPositionAt( editor.model.document.getRoot().getChild( 0 ), 1 )
@@ -167,6 +190,40 @@ describe( 'Input', () => {
 
 				sinon.assert.calledOnce( spy );
 				sinon.assert.calledWithExactly( spy, editor.model.document.selection );
+			} );
+
+			it( 'should update model selection to the DOM selection on composition start and use it on compositionend', () => {
+				const root = editor.model.document.getRoot();
+				const modelSelection = editor.model.document.selection;
+
+				const modelParagraph = root.getChild( 0 );
+				const viewParagraph = viewDocument.getRoot().getChild( 0 );
+				const domParagraph = view.domConverter.mapViewToDom( viewParagraph );
+
+				const expectedRange = editor.model.createRange(
+					editor.model.createPositionAt( modelParagraph, 1 ),
+					editor.model.createPositionAt( modelParagraph, 3 )
+				);
+
+				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 0 ) );
+
+				window.getSelection().setBaseAndExtent( domParagraph.childNodes[ 0 ], 1, domParagraph.childNodes[ 0 ], 3 );
+
+				viewDocument.fire( 'compositionstart' );
+
+				expect( modelSelection.getFirstRange().isEqual( expectedRange ) ).to.be.true;
+
+				viewDocument.fire( 'compositionend', new DomEventData( view, {
+					preventDefault() {}
+				}, {
+					data: 'bar'
+				} ) );
+
+				const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
+
+				sinon.assert.calledOnce( insertTextCommandSpy );
+				expect( firstCallArgs.text ).to.equal( 'bar' );
+				expect( firstCallArgs.selection.getFirstRange().isEqual( expectedRange ) ).to.be.true;
 			} );
 
 			it( 'should not call model.deleteContent() on composition start for collapsed model selection', () => {
