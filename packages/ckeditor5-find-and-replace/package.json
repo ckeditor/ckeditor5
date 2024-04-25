@@ -18,7 +18,7 @@
     "lodash-es": "4.17.21"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-utils": "^39.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^39.7.0",
     "@ckeditor/ckeditor5-basic-styles": "41.3.1",
     "@ckeditor/ckeditor5-core": "41.3.1",
     "@ckeditor/ckeditor5-editor-classic": "41.3.1",
@@ -50,6 +50,7 @@
     "directory": "packages/ckeditor5-find-and-replace"
   },
   "files": [
+    "dist",
     "lang",
     "src/**/*.js",
     "src/**/*.d.ts",
@@ -60,6 +61,7 @@
   ],
   "scripts": {
     "dll:build": "webpack",
-    "build": "tsc -p ./tsconfig.json"
+    "build": "tsc -p ./tsconfig.json",
+    "build:dist": "node ../../scripts/build-package.mjs"
   }
 }

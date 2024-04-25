@@ -1,0 +1,92 @@
+/*
+ * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+/* Reset */
+@import "./ckeditor5-ui/globals/globals.css";
+
+/* Components */
+@import "./ckeditor5-ui/components/autocomplete/autocomplete.css";
+@import "./ckeditor5-ui/components/button/button.css";
+@import "./ckeditor5-ui/components/button/switchbutton.css";
+@import "./ckeditor5-ui/components/collapsible/collapsible.css";
+@import "./ckeditor5-ui/components/colorgrid/colorgrid.css";
+@import "./ckeditor5-ui/components/colorselector/colorselector.css";
+@import "./ckeditor5-ui/components/dialog/dialog.css";
+@import "./ckeditor5-ui/components/dialog/dialogactions.css";
+@import "./ckeditor5-ui/components/dropdown/dropdown.css";
+@import "./ckeditor5-ui/components/dropdown/listdropdown.css";
+@import "./ckeditor5-ui/components/dropdown/splitbutton.css";
+@import "./ckeditor5-ui/components/dropdown/toolbardropdown.css";
+@import "./ckeditor5-ui/components/editorui/accessibilityhelp.css";
+@import "./ckeditor5-ui/components/editorui/editorui.css";
+@import "./ckeditor5-ui/components/formheader/formheader.css";
+@import "./ckeditor5-ui/components/icon/icon.css";
+@import "./ckeditor5-ui/components/input/input.css";
+@import "./ckeditor5-ui/components/label/label.css";
+@import "./ckeditor5-ui/components/labeledfield/labeledfieldview.css";
+@import "./ckeditor5-ui/components/labeledinput/labeledinput.css";
+@import "./ckeditor5-ui/components/list/list.css";
+@import "./ckeditor5-ui/components/menubar/menubar.css";
+@import "./ckeditor5-ui/components/menubar/menubarmenu.css";
+@import "./ckeditor5-ui/components/menubar/menubarmenubutton.css";
+@import "./ckeditor5-ui/components/menubar/menubarmenulistitem.css";
+@import "./ckeditor5-ui/components/menubar/menubarmenulistitembutton.css";
+@import "./ckeditor5-ui/components/menubar/menubarmenupanel.css";
+@import "./ckeditor5-ui/components/panel/balloonpanel.css";
+@import "./ckeditor5-ui/components/panel/balloonrotator.css";
+@import "./ckeditor5-ui/components/panel/fakepanel.css";
+@import "./ckeditor5-ui/components/panel/stickypanel.css";
+@import "./ckeditor5-ui/components/responsive-form/responsiveform.css";
+@import "./ckeditor5-ui/components/search/search.css";
+@import "./ckeditor5-ui/components/spinner/spinner.css";
+@import "./ckeditor5-ui/components/textarea/textarea.css";
+@import "./ckeditor5-ui/components/toolbar/blocktoolbar.css";
+@import "./ckeditor5-ui/components/toolbar/toolbar.css";
+@import "./ckeditor5-ui/components/tooltip/tooltip.css";
+
+/* Editor */
+@import "./ckeditor5-editor-classic/classiceditor.css";
+
+/* Plugins */
+@import "./ckeditor5-clipboard/clipboard.css";
+@import "./ckeditor5-code-block/codeblock.css";
+@import "./ckeditor5-engine/placeholder.css";
+@import "./ckeditor5-find-and-replace/findandreplaceform.css";
+@import "./ckeditor5-heading/heading.css";
+@import "./ckeditor5-horizontal-line/horizontalline.css";
+@import "./ckeditor5-html-embed/htmlembed.css";
+@import "./ckeditor5-image/imageinsert.css";
+@import "./ckeditor5-image/imageupload.css";
+@import "./ckeditor5-image/imageuploadicon.css";
+@import "./ckeditor5-image/imageuploadloader.css";
+@import "./ckeditor5-image/imageuploadprogress.css";
+@import "./ckeditor5-link/link.css";
+@import "./ckeditor5-link/linkactions.css";
+@import "./ckeditor5-link/linkform.css";
+@import "./ckeditor5-link/linkimage.css";
+@import "./ckeditor5-list/listproperties.css";
+@import "./ckeditor5-list/liststyles.css";
+@import "./ckeditor5-media-embed/mediaembedediting.css";
+@import "./ckeditor5-mention/mention.css";
+@import "./ckeditor5-restricted-editing/restrictedediting.css";
+@import "./ckeditor5-special-characters/charactergrid.css";
+@import "./ckeditor5-special-characters/characterinfo.css";
+@import "./ckeditor5-special-characters/specialcharacters.css";
+@import "./ckeditor5-style/style.css";
+@import "./ckeditor5-style/stylegrid.css";
+@import "./ckeditor5-style/stylegroup.css";
+@import "./ckeditor5-style/stylepanel.css";
+@import "./ckeditor5-table/colorinput.css";
+@import "./ckeditor5-table/form.css";
+@import "./ckeditor5-table/formrow.css";
+@import "./ckeditor5-table/inserttable.css";
+@import "./ckeditor5-table/tablecellproperties.css";
+@import "./ckeditor5-table/tableediting.css";
+@import "./ckeditor5-table/tableform.css";
+@import "./ckeditor5-table/tableproperties.css";
+@import "./ckeditor5-table/tableselection.css";
+@import "./ckeditor5-widget/widget.css";
+@import "./ckeditor5-widget/widgetresize.css";
+@import "./ckeditor5-widget/widgettypearound.css";
