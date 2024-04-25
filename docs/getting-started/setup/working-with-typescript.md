@@ -60,6 +60,18 @@ import { Bold } from 'ckeditor5';
 
 This approach ensures that TypeScript correctly loads all module augmentation code necessary to make certain types work.
 
+Here is an example of importing a plugin into the editor:
+
+```ts
+import { ClassicEditor, BlockQuote } from 'ckeditor5';
+
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ BlockQuote, /* ... */ ],
+	toolbar: [ 'blockQuote', /* ... */ ]
+} )
+.then( /* ... */ );
+```
+
 ### Types for Angular, React, and Vue 3 components
 
 The latest versions of our official components for Angular, React, and Vue 3 were migrated to TypeScript and use native CKEditor&nbsp;5's type definitions. You do not need to provide custom definitions anymore. You can use the following guides:
@@ -73,3 +85,69 @@ The latest versions of our official components for Angular, React, and Vue 3 wer
 CKEditor&nbsp;5's API is extensive and complex, but using TypeScript can make it easier to work with.
 
 You can use the {@link framework/development-tools/package-generator/typescript-package package generator} to scaffold TypeScript-based plugins.
+
+You can easily include a custom plugin in your editor like this:
+
+```ts
+/**
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+import { 
+  ClassicEditor,
+  Bold,
+  Essentials,
+  Heading,
+  Italic,
+  Paragraph,
+  List,
+  Plugin,
+  ButtonView
+} from 'ckeditor5';
+import 'ckeditor5/dist/index.css';
+
+class Timestamp extends Plugin {
+	init() {
+		const editor = this.editor;
+
+		editor.ui.componentFactory.add( 'timestamp', () => {
+			// The button will be an instance of ButtonView.
+			const button = new ButtonView();
+
+			button.set( {
+				label: 'Timestamp',
+				withText: true
+			} );
+
+			//Execute a callback function when the button is clicked
+			button.on( 'execute', () => {
+				const now = new Date();
+
+				//Change the model using the model writer
+				editor.model.change( writer => {
+
+					//Insert the text at the user's current position
+					editor.model.insertContent( writer.createText( now.toString() ) );
+				} );
+			} );
+
+			return button;
+		} );
+	}
+}
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, Timestamp ],
+		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', 'timestamp' ]
+	} )
+	.then( editor => {
+		console.log( 'Editor was initialized', editor );
+	} )
+	.catch( error => {
+		console.error( error.stack );
+	} );
+```
+
+See the {@link tutorials/creating-simple-plugin-timestamp Creating a basic plugin} tutorial to learn how it was created.
