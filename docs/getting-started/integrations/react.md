@@ -25,56 +25,63 @@ React lets you build user interfaces out of individual pieces called components.
 
 ### Using the Builder
 
-The easiest way to use CKEditor&nbsp;5 in your Vue.js application is preparing an editor build with Builder<!-- add Builder link --> and using it in your application.
+The easiest way to use CKEditor&nbsp;5 in your React application is by configuring it with Builder<!-- add Builder link --> and integrating it with your application.
 
 ### Installing from npm
 
-This guide assumes you already have a React project. If you want to create a new one, you can use the [`create-react-app`](https://create-react-app.dev/) CLI. It allows you to create and customize your project with templates. For example, you can set up your project with TypeScript support.
+This guide assumes you already have a React project. First, install the CKEditor&nbsp;5 packages:
 
-Install the [CKEditor&nbsp;5 WYSIWYG editor component for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) and the editor build of your choice. Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
+* `ckeditor5` &ndash; package with open-source plugins and features.
+* `ckeditor5-premium-features` &ndash; package with premium plugins and features.
+
+Depending on your configuration and chosen plugins, you may need to install the first or both packages.
 
 ```bash
-npm install --save @ckeditor/ckeditor5-react @ckeditor/ckeditor5-build-classic
+npm install ckeditor5 ckeditor5-premium-features
 ```
 
-Use the `<CKEditor>` component inside your project:
+Then, install the [CKEditor 5 WYSIWYG editor component for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react):
 
-```tsx
-// App.jsx / App.tsx
+```bash
+npm install @ckeditor/ckeditor5-react
+```
 
-import React, { Component } from 'react';
+Use the `<CKEditor>` component inside your project. The below example shows how to use the component with open-source and premium plugins.
+
+```jsx
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
+import { SlashCommand } from 'ckeditor5-premium-features';
 
-class App extends Component {
-	render() {
-		return (
-			<div className="App">
-				<h2>Using CKEditor&nbsp;5 build in React</h2>
-				<CKEditor
-					editor={ ClassicEditor }
-					data="<p>Hello from CKEditor&nbsp;5!</p>"
-					onReady={ editor => {
-						// You can store the "editor" and use when it is needed.
-						console.log( 'Editor is ready to use!', editor );
-					} }
-					onChange={ ( event ) => {
-						console.log( event );
-					} }
-					onBlur={ ( event, editor ) => {
-						console.log( 'Blur.', editor );
-					} }
-					onFocus={ ( event, editor ) => {
-						console.log( 'Focus.', editor );
-					} }
-				/>
-			</div>
-		);
-	}
+import 'ckeditor5/index.css';
+import 'ckeditor5-premium-features/index.css';
+import './App.css';
+
+function App() {
+	return (
+		<CKEditor
+			editor={ ClassicEditor }
+			config={ {
+				toolbar: {
+					items: [ "undo", "redo", "|", "bold", "italic" ],
+				},
+				plugins: [
+					Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
+				],
+				licenseKey: "<YOUR_LICENSE_KEY>",
+				mention: { 
+					// Mention configuration
+				},
+				initialData: "<p>Hello from CKEditor 5 in React!</p>",
+			} }
+		/>
+	);
 }
 
 export default App;
 ```
+
+Remember to import the necessary stylesheets. The `ckeditor5` package contains the styles for open-source features, while the `ckeditor5-premium-features` package contains the premium features styles.
 
 ## Component properties
 
@@ -91,8 +98,7 @@ The `<CKEditor>` component supports the following properties:
 * `onChange` &ndash; A function called when the editor data has changed. See the {@link module:engine/model/document~Document#event:change:data `editor.model.document#change:data`} event.
 * `onBlur` &ndash; A function called when the editor was blurred. See the {@link module:engine/view/document~Document#event:blur `editor.editing.view.document#blur`} event.
 * `onFocus` &ndash; A function called when the editor was focused. See the {@link module:engine/view/document~Document#event:focus `editor.editing.view.document#focus`} event.
-* `onError` &ndash; A function called when the editor has crashed during the initialization or during the runtime. It receives two arguments: the error instance and the error details.
-	Error details is an object that contains two properties:
+* `onError` &ndash; A function called when the editor has crashed during the initialization or during the runtime. It receives two arguments: the error instance and the error details. Error details is an object that contains two properties:
 	* `{String} phase`: `'initialization'|'runtime'` &ndash; Informs when the error has occurred (during the editor or context initialization, or after the initialization).
 	* `{Boolean} willEditorRestart` &ndash; When `true`, it means that the editor component will restart itself.
 
@@ -106,61 +112,45 @@ The editor event callbacks (`onChange`, `onBlur`, `onFocus`) receive two argumen
 The [`@ckeditor/ckeditor5-react`](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) package provides a ready-to-use component for the {@link features/context-and-collaboration-features context feature} that is useful when used together with some {@link features/collaboration CKEditor&nbsp;5 collaboration features}.
 
 ```jsx
-// This sample assumes that the application is using a CKEditor&nbsp;5 editor built from source.
+import { ClassicEditor, Context, Bold, Essentials, Italic, Paragraph } from "ckeditor5";
+import { CKEditor, CKEditorContext } from "@ckeditor/ckeditor5-react";
 
-import React, { Component } from 'react';
-import {
-	CKEditor,
-	CKEditorContext,
-	ClassicEditor,
-	Context,
-	Bold,
-	Italic,
-	Essentials,
-	Paragraph
-	} from 'ckeditor5';
+import "ckeditor5/index.css";
 
-class App extends Component {
-	render() {
-		return (
-			<div className="App">
-				<CKEditorContext context={ Context }>
-					<h2>Using the CKEditor&nbsp;5 context feature in React</h2>
-					<CKEditor
-						editor={ ClassicEditor }
-						config={ {
-							plugins: [ Paragraph, Bold, Italic, Essentials ],
-							toolbar: [ 'bold', 'italic' ]
-						} }
-						data="<p>Hello from the first editor working with the context!</p>"
-						onReady={ editor => {
-							// You can store the "editor" and use when it is needed.
-							console.log( 'Editor1 is ready to use!', editor );
-						} }
-					/>
+function App() {
+  return (
+    <CKEditorContext context={ Context }>
+      <CKEditor
+        editor={ ClassicEditor }
+        config={ {
+          plugins: [ Essentials, Bold, Italic, Paragraph ],
+          toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+        } }
+        data="<p>Hello from the first editor working with the context!</p>"
+        onReady={ ( editor ) => {
+          // You can store the "editor" and use when it is needed.
+          console.log( "Editor 1 is ready to use!", editor );
+        } }
+      />
 
-					<CKEditor
-						editor={ ClassicEditor }
-						config={ {
-							plugins: [ Paragraph, Bold, Italic, Essentials ],
-							toolbar: [ 'bold', 'italic' ]
-						} }
-						data="<p>Hello from the second editor working with the context!</p>"
-						onReady={ editor => {
-							// You can store the "editor" and use when it is needed.
-							console.log( 'Editor2 is ready to use!', editor );
-						} }
-					/>
-				</CKEditorContext>
-			</div>
-		);
-	}
+      <CKEditor
+        editor={ ClassicEditor }
+        config={ {
+          plugins: [ Essentials, Bold, Italic, Paragraph ],
+          toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+        } }
+        data="<p>Hello from the second editor working with the context!</p>"
+        onReady={ ( editor ) => {
+          // You can store the "editor" and use when it is needed.
+          console.log( "Editor 2 is ready to use!", editor );
+        } }
+      />
+    </CKEditorContext>
+  );
 }
 
 export default App;
 ```
-
-### Context feature properties
 
 The `CKEditorContext` component supports the following properties:
 
@@ -169,8 +159,7 @@ The `CKEditorContext` component supports the following properties:
 * `isLayoutReady` &ndash; A property that delays the context creation when set to `false`. It creates the context and the editor children once it is `true` or unset. Useful when the CKEditor&nbsp;5 annotations or a presence list are used.
 * `id` &ndash; The context ID. When this property changes, the component restarts the context with its editor and reinitializes it based on the current configuration.
 * `onReady` &ndash; A function called when the context is ready and all editors inside were initialized with the `context` instance. This callback is also called after the reinitialization of the component if an error has occurred.
-* `onError` &ndash; A function called when the context has crashed during the initialization or during the runtime. It receives two arguments: the error instance and the error details.
-	Error details is an object that contains two properties:
+* `onError` &ndash; A function called when the context has crashed during the initialization or during the runtime. It receives two arguments: the error instance and the error details. Error details is an object that contains two properties:
 	* `{String} phase`: `'initialization'|'runtime'` &ndash; Informs when the error has occurred (during the editor or context initialization, or after the initialization).
 	* `{Boolean} willContextRestart` &ndash; When `true`, it means that the context component will restart itself.
 
@@ -180,48 +169,46 @@ The `CKEditorContext` component supports the following properties:
 
 ## How to?
 
-### Using the document editor build
+### Using the document editor type
 
 If you use the {@link framework/document-editor document (decoupled) editor}, you need to {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create add the toolbar to the DOM manually}:
 
 ```jsx
-import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
+import { useCallback, useState } from "react";
+import { DecoupledEditor, Bold, Essentials, Italic, Paragraph } from "ckeditor5";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
 
-class App extends Component {
-	editor = null;
+import "ckeditor5/dist/index.css";
 
-	render() {
-		return (
-			<div className="App">
-				<h2>CKEditor&nbsp;5 using a custom build - decoupled editor</h2>
-				<CKEditor
-					onReady={ editor => {
-						console.log( 'Editor is ready to use!', editor );
+function App() {
+	const [ editorToolbarRef, setEditorToolbarRef ] = useState( null );
+	const [ editorRef, setEditorRef ] = useState( null );
 
-						// Insert the toolbar before the editable area.
-						editor.ui.getEditableElement().parentElement.insertBefore(
-							editor.ui.view.toolbar.element,
-							editor.ui.getEditableElement()
-						);
+	const isLayoutReady = useCallback( () => {
+		return [ editorRef, editorToolbarRef ].every( Boolean );
+	}, [ editorRef, editorToolbarRef ] );
 
-						this.editor = editor;
-					} }
-					onError={ ( error, { willEditorRestart } ) => {
-						// If the editor is restarted, the toolbar element will be created once again.
-						// The `onReady` callback will be called again and the new toolbar will be added.
-						// This is why you need to remove the older toolbar.
-						if ( willEditorRestart ) {
-							this.editor.ui.view.toolbar.element.remove();
-						}
-					} }
-					onChange={ ( event ) => console.log( event ) }
-					editor={ DecoupledEditor }
-					data="<p>Hello from CKEditor&nbsp;5's decoupled editor!</p>"
-					config={ /* the editor configuration */ }
-				/>
+	return (
+		<div>
+			<div ref={ setEditorToolbarRef }></div>
+			<div ref={ setEditorRef }>
+				{ isLayoutReady() && (
+					<CKEditor
+						onReady={ ( editor ) => {
+							[ ...editorToolbarRef.children ].forEach( child => child.remove() );
+							editorToolbarRef.appendChild( editor.ui.view.toolbar.element );
+						}}
+						editor={ DecoupledEditor }
+						data="<p>Hello from CKEditor 5's decoupled editor!</p>"
+						config={ {
+							plugins: [ Bold, Italic, Paragraph, Essentials ],
+							toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
+						} }
+					/>
+				) }
 			</div>
-		);
-	}
+		</div>
+	);
 }
 
 export default App;
@@ -231,101 +218,45 @@ export default App;
 
 The easiest way to integrate {@link features/collaboration collaboration plugins} in a React application is to build the editor from source including the collaboration plugins together with the React application.
 
-<info-box>
-	For such a scenario we provide a few **ready-to-use integrations** featuring collaborative editing in React applications:
+For such a scenario we provide a few **ready-to-use integrations** featuring collaborative editing in React applications:
 
-	* [CKEditor&nbsp;5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-react)
-	* [CKEditor&nbsp;5 with real-time collaboration and revision history features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-revision-history-for-react)
-	* [CKEditor&nbsp;5 with the revision history feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/revision-history-for-react)
-	* [CKEditor&nbsp;5 with the track changes feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/track-changes-for-react)
+* [CKEditor&nbsp;5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-react)
+* [CKEditor&nbsp;5 with real-time collaboration and revision history features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-revision-history-for-react)
+* [CKEditor&nbsp;5 with the revision history feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/revision-history-for-react)
+* [CKEditor&nbsp;5 with the track changes feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/track-changes-for-react)
 
-	It is not mandatory to build applications on top of the above samples, however, they should help you get started.
-</info-box>
-
-Note: These integrations are meant to be as simple as possible, so they do not use the Create React App CLI. However, you should have no problem starting from `CRA` after reading the sections below.
+It is not mandatory to build applications on top of the above samples, however, they should help you get started.
 
 ### Localization
 
 CKEditor&nbsp;5 supports {@link getting-started/setup/ui-language multiple UI languages}, and so does the official React component. Follow the instructions below to translate CKEditor&nbsp;5 in your React application.
 
-#### Predefined builds
-
-When using one of the {@link getting-started/legacy-getting-started/predefined-builds predefined builds} or the editor built by the [online builder](https://ckeditor.com/ckeditor-5/online-builder/), you need to import the translations first:
-
-**Official editor builds:**
-
-```js
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-
-// Import translations for the German language.
-import '@ckeditor/ckeditor5-build-classic/build/translations/de';
-
-// ...
-```
-
-**The editor build from the online builder:**
-
-```js
-import Editor from 'ckeditor5-custom-build/build/ckeditor';
-
-// Import translations for the German language.
-import 'ckeditor5-custom-build/build/translations/de';
-```
-
-Then, {@link getting-started/setup/configuration configure} the language of the editor in the component:
+Similarly to CSS stylesheets, both packages have separate translations. Import them as shown in the example below. Then, pass them to the `translations` array inside the `config` prop in the CKEditor 5 component.
 
 ```jsx
-<CKEditor
-	config={ {
-		// Use the German language for this editor.
-		language: 'de',
+import { ClassicEditor } from 'ckeditor5';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+// More imports...
 
-		// ...
-	} }
-	editor={ ClassicEditor }
-	data="<p>Hello from CKEditor&nbsp;5!</p>"
-/>
+import coreTranslations from 'ckeditor5/translations/es.js';
+import commercialTranslations from 'ckeditor5-premium-features/translations/es.js';
+
+// Stylesheets imports...
+
+function App() {
+	return (
+		<CKEditor
+			editor={ ClassicEditor }
+			config={ {
+				translations: [ coreTranslations, commercialTranslations ],
+				initialData: "<p>Hola desde CKEditor 5 en React!</p>",
+			} }
+		/>
+	);
+}
+
+export default App;
 ```
-
-For more information, please refer to the {@link getting-started/setup/ui-language Setting the UI language} guide.
-
-#### CKEditor&nbsp;5 built from source
-
-Using the editor built from source requires you to modify the webpack configuration. First, install the [official translations webpack plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations) that allows localizing editor builds:
-
-```bash
-yarn add @ckeditor/ckeditor5-dev-translations --dev
-```
-
-Then, add the installed plugin to the webpack configuration:
-
-```js
-// webpack.config.js
-'use strict';
-
-// ...
-const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-translations' );
-
-module.exports = {
-	// ...
-
-	plugins: [
-		// ....
-
-		new CKEditorTranslationsPlugin( {
-			// The UI language. Language codes follow the https://en.wikipedia.org/wiki/ISO_639-1 format.
-			language: 'de',
-			addMainLanguageTranslationsToAllAssets: true
-		} ),
-
-		// ....
-	],
-
-	// ...
-};
-```
-
-After building the application, CKEditor&nbsp;5 will run with the UI translated into the specified language.
 
 For more information, please refer to the {@link getting-started/setup/ui-language Setting the UI language} guide.
 
