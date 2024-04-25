@@ -1,8 +1,8 @@
 ---
-menu-title: React
+menu-title: Default integration
 meta-title: React rich text editor component | CKEditor 5 documentation
-category: integrations
-order: 30
+category: react
+order: 10
 ---
 
 {@snippet installation/integrations/framework-integration}
