@@ -201,5 +201,14 @@ export * from './view/styles/utils.js';
 // Development / testing utils.
 export {
 	getData as _getModelData,
-	setData as _setModelData
+	setData as _setModelData,
+	parse as _parseModel,
+	stringify as _stringifyModel
 } from './dev-utils/model.js';
+
+export {
+	getData as _getViewData,
+	setData as _setViewData,
+	parse as _parseView,
+	stringify as _stringifyView
+} from './dev-utils/view.js';
