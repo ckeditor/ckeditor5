@@ -30,7 +30,7 @@ Now you can import all the modules from the `ckeditor5` package. Additionally, y
 ```js
 import { ClassicEditor, Essentials, Bold, Italic, Paragraph } from 'ckeditor5';
 
-import 'ckeditor5/dist/styles.css';
+import 'ckeditor5/index.css';
 
 await ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -65,7 +65,8 @@ Importing and registering these plugins is also analogous to the open-source one
 import { ClassicEditor, Essentials } from 'ckeditor5';
 import { FormatPainter, SlashCommand } from 'ckeditor5-premium-features';
 
-import 'ckeditor5/dist/styles.css';
+import 'ckeditor5/index.css';
+import 'ckeditor5-premium-features/index.css';
 
 await ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -87,10 +88,11 @@ To activate CKEditor&nbsp;5 premium features, you will need a commercial license
 
 ### CDN setup
 
-Start by attaching a link to the style sheet. It contains all styles for the editor's UI and content. You can also include your styles if you like. Refer to the content styles guide for more information.
+Start by attaching a link to style sheets. They contain all styles for the editor's UI and content. Styles are in two style sheets - for open-source and premium plugins. You can also include your styles if you like. Refer to the content styles guide for more information.
 
 ```html
-<link rel="stylesheet" href="<CDN_LINK>/ckeditor5/dist/styles.css" />
+<link rel="stylesheet" href="<CDN_LINK>/ckeditor5/dist/browser/index.css" />
+<link rel="stylesheet" href="<CDN_LINK>/ckeditor5-premium-features/dist/browser/index.css" /> 
 ```
 
 Then, you need to attach the script with the JavaScript code. To simplify imports, you can use the feature available in browsers &ndash; the [import map](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap). It allows us to map an easy-to-remember specifier (like `ckeditor5`) to the full URL of the file from the CDN. We use this browser feature to share an editor engine code between plugins.
@@ -99,8 +101,10 @@ Then, you need to attach the script with the JavaScript code. To simplify import
 <script type="importmap">
 	{
 		"imports": {
-			"ckeditor5": "<CDN_LINK>/ckeditor5/dist/index.min.js",
-			"ckeditor5/": "<CDN_LINK>/ckeditor5/"
+			"ckeditor5": "<CDN_LINK>/ckeditor5/dist/browser/index.js",
+    		"ckeditor5/": "<CDN_LINK>/ckeditor5/dist/",
+			"ckeditor5-premium-features": "<CDN_LINK>/ckeditor5-premium-features/dist/browser/index.js",
+    		"ckeditor5-premium-features/": "<CDN_LINK>/ckeditor5-premium-features/dist/"
 		}
 	}
 </script>
@@ -139,7 +143,7 @@ Your final page should look similar to the one below.
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>CKEditor 5 - Quick start CDN</title>
-		<link rel="stylesheet" href="<CDN_LINK>/ckeditor5/dist/styles.css" />
+		<link rel="stylesheet" href="<CDN_LINK>/ckeditor5/dist/browser/index.css" />
 	</head>
 	<body>
 		<div id="editor">
@@ -149,8 +153,8 @@ Your final page should look similar to the one below.
 		<script type="importmap">
 			{
 				"imports": {
-					"ckeditor5": "<CDN_LINK>/ckeditor5/dist/index.min.js",
-					"ckeditor5/": "<CDN_LINK>/ckeditor5/"
+					"ckeditor5": "<CDN_LINK>/ckeditor5/dist/browser/index.js",
+    				"ckeditor5/": "<CDN_LINK>/ckeditor5/dist/"
 				}
 			}
 		</script>
