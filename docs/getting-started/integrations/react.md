@@ -81,7 +81,7 @@ function App() {
 export default App;
 ```
 
-Remember to import the necessary stylesheets. The `ckeditor5` package contains the styles for open-source features, while the `ckeditor5-premium-features` package contains the premium features styles.
+Remember to import the necessary style sheets. The `ckeditor5` package contains the styles for open-source features, while the `ckeditor5-premium-features` package contains the premium features styles.
 
 ## Component properties
 
@@ -231,7 +231,7 @@ It is not mandatory to build applications on top of the above samples, however, 
 
 CKEditor&nbsp;5 supports {@link getting-started/setup/ui-language multiple UI languages}, and so does the official React component. Follow the instructions below to translate CKEditor&nbsp;5 in your React application.
 
-Similarly to CSS stylesheets, both packages have separate translations. Import them as shown in the example below. Then, pass them to the `translations` array inside the `config` prop in the CKEditor 5 component.
+Similarly to CSS style sheets, both packages have separate translations. Import them as shown in the example below. Then, pass them to the `translations` array inside the `config` prop in the CKEditor 5 component.
 
 ```jsx
 import { ClassicEditor } from 'ckeditor5';
@@ -241,7 +241,7 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import coreTranslations from 'ckeditor5/translations/es.js';
 import commercialTranslations from 'ckeditor5-premium-features/translations/es.js';
 
-// Stylesheets imports...
+// style sheets imports...
 
 function App() {
 	return (
