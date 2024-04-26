@@ -63,6 +63,36 @@ describe( 'Env', () => {
 		} );
 	} );
 
+	describe( 'isMotionReduced', () => {
+		let matchMediaStub;
+
+		beforeEach( () => {
+			matchMediaStub = sinon.stub( global.window, 'matchMedia' );
+		} );
+
+		it( 'is a boolean', () => {
+			mockMotionReduced();
+
+			expect( env.isMotionReduced ).to.be.true;
+		} );
+
+		it( 'should watch changes in reduced motion setting', () => {
+			mockMotionReduced();
+
+			expect( env.isMotionReduced ).to.be.true;
+
+			mockMotionReduced( false );
+
+			expect( env.isMotionReduced ).to.be.false;
+		} );
+
+		function mockMotionReduced( enabled = true ) {
+			return matchMediaStub
+				.withArgs( '(prefers-reduced-motion)' )
+				.returns( { matches: enabled } );
+		}
+	} );
+
 	describe( 'features', () => {
 		it( 'is an object', () => {
 			expect( env.features ).to.be.an( 'object' );
