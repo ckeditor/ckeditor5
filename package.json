@@ -121,6 +121,7 @@
     "@ocular-d/vale-bin": "^2.29.1",
     "@webspellchecker/wproofreader-ckeditor5": "^2.0.1",
     "@wiris/mathtype-ckeditor5": "^7.24.0",
+    "acorn": "^8.11.3",
     "assert": "^2.0.0",
     "babel-standalone": "^6.26.0",
     "chalk": "^4.1.0",
@@ -129,6 +130,7 @@
     "date-fns": "^2.30.0",
     "eslint": "^7.19.0",
     "eslint-config-ckeditor5": "^5.3.0",
+    "estree-walker": "^3.0.3",
     "fs-extra": "^11.1.1",
     "glob": "^10.2.5",
     "http-server": "^14.1.1",
@@ -207,7 +209,8 @@
     "collect-svg-icons": "node scripts/collect-svg-icons.js",
     "check-dependencies": "ckeditor5-dev-dependency-checker",
     "check-dependencies:versions-match": "node ./scripts/ci/check-dependencies-versions-match.js",
-    "check-theme-lark-imports": "node ./scripts/check-theme-lark-imports.js"
+    "check-theme-lark-imports": "node ./scripts/check-theme-lark-imports.js",
+    "check-exports": "node ./scripts/check-exports.mjs --input=ckeditor5"
   },
   "lint-staged": {
     "**/*.{js,ts,mjs}": [
