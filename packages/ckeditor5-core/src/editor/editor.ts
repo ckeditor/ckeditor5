@@ -14,9 +14,11 @@ import {
 	parseBase64EncodedObject,
 	releaseDate,
 	uid,
+	crc32,
 	type Locale,
 	type LocaleTranslate,
-	type ObservableChangeEvent
+	type ObservableChangeEvent,
+	type CRCData
 } from '@ckeditor/ckeditor5-utils';
 
 import {
@@ -682,7 +684,7 @@ export default abstract class Editor extends ObservableMixin() {
 			return;
 		}
 
-		if ( !licensePayload.exp ) {
+		if ( !hasAllRequiredFields( licensePayload ) ) {
 			blockEditor( this, 'licenseFormatInvalid', 'The format of the license key is invalid.' );
 
 			return;
@@ -692,6 +694,14 @@ export default abstract class Editor extends ObservableMixin() {
 
 		if ( expirationDate < releaseDate ) {
 			blockEditor( this, 'licenseExpired', 'The validation period for the editor license key has expired.' );
+
+			return;
+		}
+
+		if ( crc32( getCrcInputData( licensePayload ) ) != licensePayload.verificationCode ) {
+			blockEditor( this, 'licenseFormatInvalid', 'The format of the license key is invalid.' );
+
+			return;
 		}
 
 		if ( licensePayload.usageEndpoint ) {
@@ -727,6 +737,33 @@ export default abstract class Editor extends ObservableMixin() {
 			console.warn( message );
 
 			editor.enableReadOnlyMode( reason );
+		}
+
+		function hasAllRequiredFields( licensePayload: Record<string, unknown> ) {
+			const requiredFields = [ 'exp', 'jti', 'verificationCode' ];
+
+			return requiredFields.every( field => field in licensePayload );
+		}
+
+		/**
+		 * Returns an array of values that are used to calculate the CRC32 checksum.
+		 */
+		function getCrcInputData( licensePayload: Record<string, unknown> ): CRCData {
+			const keysToCheck = [
+				'exp',
+				'licensedHosts',
+				'usageEndpoint',
+				'distributionChannel',
+				'whiteLabel',
+				'licenseType',
+				'features'
+			];
+
+			const filteredValues = keysToCheck
+				.filter( key => licensePayload[ key ] !== undefined && licensePayload[ key ] !== null )
+				.map( key => licensePayload[ key ] );
+
+			return [ ...filteredValues ] as CRCData;
 		}
 	}
 
