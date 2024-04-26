@@ -17,18 +17,12 @@ import constants from './release/utils/constants.js';
 
 const require = createRequire( import.meta.url );
 
-const {
-	CKEDITOR5_ROOT_PATH,
-	CKEDITOR5_COMMERCIAL_PATH,
-	PACKAGES_DIRECTORY
-} = constants;
-
 /**
  * List of paths to the allowed `input` packages.
  */
 const paths = {
-	'ckeditor5': upath.join( CKEDITOR5_ROOT_PATH, 'src', 'index.ts' ),
-	'ckeditor5-premium-features': upath.join( CKEDITOR5_COMMERCIAL_PATH, 'packages', 'ckeditor5-premium-features', 'src', 'index.ts' )
+	'ckeditor5': constants.CKEDITOR5_INDEX,
+	'ckeditor5-premium-features': constants.CKEDITOR5_PREMIUM_FEATURES_INDEX
 };
 
 /**
@@ -83,7 +77,7 @@ if ( !inputPath ) {
 /**
  * Get names of all packages in the `packages` directory.
  */
-const globPath = upath.join( process.cwd(), PACKAGES_DIRECTORY, '*', 'package.json' );
+const globPath = upath.join( process.cwd(), constants.PACKAGES_DIRECTORY, '*', 'package.json' );
 
 const packages = globSync( globPath )
 	.map( path => require( path ) )
@@ -139,12 +133,18 @@ if ( !missingExports.length && !missingPackages.length ) {
 }
 
 if ( missingExports.length ) {
-	console.log( chalk.red.bold( `The following packages are not exported from the "${ values.input }" package:` ) );
+	console.log(
+		chalk.red.bold( `The following packages are not exported from the "${ values.input }" package:` )
+	);
+
 	missingExports.forEach( pkg => console.log( chalk.red( ` - ${ pkg }` ) ) );
 }
 
 if ( missingPackages.length ) {
-	console.log( chalk.red.bold( 'The following packages are not present in the "packages" directory:' ) );
+	console.log(
+		chalk.red.bold( `The following exports in the "${ values.input }" package are not present in the "packages" directory:` )
+	);
+
 	missingPackages.forEach( pkg => console.log( chalk.red( ` - ${ pkg }` ) ) );
 }
 
