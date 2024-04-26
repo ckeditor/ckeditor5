@@ -698,7 +698,7 @@ export default abstract class Editor extends ObservableMixin() {
 			return;
 		}
 
-		if ( crc32( getCrcInputData( licensePayload ), true ) != licensePayload.verificationCode ) {
+		if ( crc32( getCrcInputData( licensePayload ) ) != licensePayload.verificationCode ) {
 			blockEditor( this, 'licenseFormatInvalid', 'The format of the license key is invalid.' );
 
 			return;
