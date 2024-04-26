@@ -18,7 +18,9 @@ Note: autoformat should not work in a code blocks.
 
 1. Type `~~foobar~~` to strikethrough `foobar`. `~~` should be removed.
 
-1. Type `` ``` `` in a new line to create an empty code block. `` ``` `` should be removed.
+1. Type `` ``` `` followed by a language to create an empty code block with that language. `` ```[language] `` should be removed.
+
+1. Type `` ``` `` (``` followed by any whitespace) in a new line to create an empty code block. `` ``` `` should be removed.
 
 1. Type `---` in a new line to create a horizontal line. `---` should be removed.
 
