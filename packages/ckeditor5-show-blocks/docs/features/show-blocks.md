@@ -53,7 +53,7 @@ ClassicEditor
 
 ## Known issues
 
-* The show blocks feature does not support widgets yet. It means it will currently not show block outlines, for example, for images or tables.
+* The show blocks feature does not support widgets, yet. It means it will currently not show block outlines e.g. for images or tables. Feel free to upvote 👍&nbsp; [this issue on GitHub](https://github.com/ckeditor/ckeditor5/issues/14869) if it is important for you.
 * At present, the show blocks feature is not yet fully compatible with the {@link features/pagination pagination} feature. Using these two together may result in errors.
 
 ## Related features
