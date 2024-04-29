@@ -91,6 +91,7 @@ export default class InsertTextObserver extends Observer {
 			}
 		} );
 
+		// TODO why lower? It seems reasonable to update model before enabling rendering and mutation observer.
 		// Note: The priority must be lower than the CompositionObserver handler to call it after the renderer is unblocked.
 		viewDocument.on<ViewDocumentCompositionEndEvent>( 'compositionend', ( evt, { data, domEvent } ) => {
 			// On Android composition events are immediately applied to the model.
@@ -119,7 +120,7 @@ export default class InsertTextObserver extends Observer {
 			viewDocument.fire( 'insertText', new DomEventData( view, domEvent, {
 				text: data
 			} ) );
-		}, { priority: 'lowest' } );
+		}, { priority: 'high' } );
 	}
 
 	/**

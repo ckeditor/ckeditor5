@@ -13,16 +13,30 @@ import { env } from '@ckeditor/ckeditor5-utils';
 import InsertTextCommand from './inserttextcommand.js';
 import InsertTextObserver, { type ViewDocumentInsertTextEvent } from './inserttextobserver.js';
 
-import {
-	type Model,
-	type ViewDocumentCompositionStartEvent,
-	type ViewDocumentKeyDownEvent
+import type {
+	Model,
+	ViewDocumentCompositionEndEvent,
+	ViewDocumentCompositionStartEvent,
+	ViewDocumentKeyDownEvent,
+	ViewDocumentMutationsEvent
 } from '@ckeditor/ckeditor5-engine';
+
+import { debounce } from 'lodash-es';
 
 /**
  * Handles text input coming from the keyboard or other input methods.
  */
 export default class Input extends Plugin {
+	/**
+	 * TODO
+	 */
+	private _queue: Array<Parameters<InsertTextCommand[ 'execute' ]>[ 0 ]> = [];
+
+	/**
+	 * TODO
+	 */
+	private _flushQueueDebounced = debounce( () => this._flushQueue(), 50 );
+
 	/**
 	 * @inheritDoc
 	 */
@@ -69,51 +83,66 @@ export default class Input extends Plugin {
 				modelRanges = Array.from( modelSelection.getRanges() );
 			}
 
-			let insertText = text;
+			const insertText = text;
 
+			// TODO this needs a better implementation
 			// Typing in English on Android is firing composition events for the whole typed word.
 			// We need to check the target range text to only apply the difference.
-			if ( env.isAndroid ) {
-				const selectedText = Array.from( modelRanges[ 0 ].getItems() ).reduce( ( rangeText, node ) => {
-					return rangeText + ( node.is( '$textProxy' ) ? node.data : '' );
-				}, '' );
+			// if ( env.isAndroid ) {
+			// 	const selectedText = Array.from( modelRanges[ 0 ].getItems() ).reduce( ( rangeText, node ) => {
+			// 		return rangeText + ( node.is( '$textProxy' ) ? node.data : '' );
+			// 	}, '' );
+			//
+			// 	if ( selectedText ) {
+			// 		if ( selectedText.length <= insertText.length ) {
+			// 			if ( insertText.startsWith( selectedText ) ) {
+			// 				insertText = insertText.substring( selectedText.length );
+			// 				( modelRanges[ 0 ] as any ).start = modelRanges[ 0 ].start.getShiftedBy( selectedText.length );
+			// 			}
+			// 		} else {
+			// 			if ( selectedText.startsWith( insertText ) ) {
+			// 				// TODO this should be mapped as delete?
+			// 				( modelRanges[ 0 ] as any ).start = modelRanges[ 0 ].start.getShiftedBy( insertText.length );
+			// 				insertText = '';
+			// 			}
+			// 		}
+			// 	}
+			// }
 
-				if ( selectedText ) {
-					if ( selectedText.length <= insertText.length ) {
-						if ( insertText.startsWith( selectedText ) ) {
-							insertText = insertText.substring( selectedText.length );
-							( modelRanges[ 0 ] as any ).start = modelRanges[ 0 ].start.getShiftedBy( selectedText.length );
-						}
-					} else {
-						if ( selectedText.startsWith( insertText ) ) {
-							// TODO this should be mapped as delete?
-							( modelRanges[ 0 ] as any ).start = modelRanges[ 0 ].start.getShiftedBy( insertText.length );
-							insertText = '';
-						}
-					}
-				}
-			}
-
-			const insertTextCommandData: Parameters<InsertTextCommand[ 'execute' ]>[ 0 ] = {
+			const commandData: Parameters<InsertTextCommand[ 'execute' ]>[ 0 ] = {
 				text: insertText,
 				selection: model.createSelection( modelRanges )
 			};
 
-			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-			// @if CK_DEBUG_TYPING // 	console.log( '%c[Input]%c Execute insertText:',
-			// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', '',
-			// @if CK_DEBUG_TYPING // 		insertText,
-			// @if CK_DEBUG_TYPING // 		`[${ modelRanges[ 0 ].start.path }]-[${ modelRanges[ 0 ].end.path }]`
-			// @if CK_DEBUG_TYPING // 	);
-			// @if CK_DEBUG_TYPING // }
-
 			if ( viewResultRange ) {
-				insertTextCommandData.resultRange = editor.editing.mapper.toModelRange( viewResultRange );
+				commandData.resultRange = editor.editing.mapper.toModelRange( viewResultRange );
 			}
 
-			editor.execute( 'insertText', insertTextCommandData );
+			if ( env.isAndroid && view.document.isComposing ) {
+				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+				// @if CK_DEBUG_TYPING // 	console.log( '%c[Input]%c Queue insertText:',
+				// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', '',
+				// @if CK_DEBUG_TYPING // 		`"${ commandData.text }"`,
+				// @if CK_DEBUG_TYPING // 		`[${ commandData.selection.getFirstPosition().path }]-` +
+				// @if CK_DEBUG_TYPING // 		`[${ commandData.selection.getLastPosition().path }]`
+				// @if CK_DEBUG_TYPING // 	);
+				// @if CK_DEBUG_TYPING // }
 
-			view.scrollToTheSelection();
+				this._queue.push( commandData );
+				this._flushQueueDebounced();
+			} else {
+				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+				// @if CK_DEBUG_TYPING // 	console.log( '%c[Input]%c Execute insertText:',
+				// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', '',
+				// @if CK_DEBUG_TYPING // 		`"${ commandData.text }"`,
+				// @if CK_DEBUG_TYPING // 		`[${ commandData.selection.getFirstPosition().path }]-` +
+				// @if CK_DEBUG_TYPING // 		`[${ commandData.selection.getLastPosition().path }]`
+				// @if CK_DEBUG_TYPING // 	);
+				// @if CK_DEBUG_TYPING // }
+
+				editor.execute( 'insertText', commandData );
+				view.scrollToTheSelection();
+			}
 		} );
 
 		if ( env.isAndroid ) {
@@ -158,6 +187,57 @@ export default class Input extends Plugin {
 				deleteSelectionContent( model, insertTextCommand );
 			} );
 		}
+
+		// TODO
+		this.listenTo<ViewDocumentMutationsEvent>( view.document, 'mutations', () => {
+			this._flushQueue();
+		} );
+
+		// TODO
+		this.listenTo<ViewDocumentCompositionEndEvent>( view.document, 'compositionend', () => {
+			this._flushQueue();
+		} );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public override destroy(): void {
+		super.destroy();
+
+		this._flushQueueDebounced.cancel();
+	}
+
+	/**
+	 * TODO
+	 * @internal
+	 */
+	public _flushQueue(): void {
+		const editor = this.editor;
+		const view = editor.editing.view;
+
+		this._flushQueueDebounced.cancel();
+
+		if ( !this._queue.length ) {
+			return;
+		}
+
+		while ( this._queue.length ) {
+			const commandData = this._queue.shift();
+
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.log( '%c[Input]%c Execute queued insertText:',
+			// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', '',
+			// @if CK_DEBUG_TYPING // 		`"${ commandData.text }"`,
+			// @if CK_DEBUG_TYPING // 		`[${ commandData.selection.getFirstPosition().path }]-` +
+			// @if CK_DEBUG_TYPING // 		`[${ commandData.selection.getLastPosition().path }]`
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // }
+
+			editor.execute( 'insertText', commandData );
+		}
+
+		view.scrollToTheSelection();
 	}
 }
 

@@ -670,6 +670,12 @@ export default class Renderer extends ObservableMixin() {
 		// The composition and different "language" browser extensions are fragile to text node being completely replaced.
 		const actions = this._findUpdateActions( diff, actualDomChildren, expectedDomChildren, areTextNodes );
 
+		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping && actions.every( a => a == 'equal' ) ) {
+		// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Nothing to update',
+		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', ''
+		// @if CK_DEBUG_TYPING // 	);
+		// @if CK_DEBUG_TYPING // }
+
 		let i = 0;
 		const nodesToUnbind: Set<DomNode> = new Set();
 
@@ -706,7 +712,7 @@ export default class Renderer extends ObservableMixin() {
 				insertAt( domElement as DomElement, i, expectedDomChildren[ i ] );
 				i++;
 			}
-			// Update the existing text node data. Note that replace action is generated only for Android for now.
+			// Update the existing text node data.
 			else if ( action === 'update' ) {
 				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 				// @if CK_DEBUG_TYPING // 	console.group( '%c[Renderer]%c Update text node',
@@ -1223,7 +1229,7 @@ function updateTextNode( domText: DomText, expectedText: string ) {
 		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 		// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Text node does not need update:',
 		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', '',
-		// @if CK_DEBUG_TYPING // 		`"${ domText.data }" (${ domText.data.length })`
+		// @if CK_DEBUG_TYPING // 		`"${ actualText.replace( /\u00A0/g, '&nbsp;' ) }" (${ actualText.length })`
 		// @if CK_DEBUG_TYPING // 	);
 		// @if CK_DEBUG_TYPING // }
 
@@ -1233,7 +1239,8 @@ function updateTextNode( domText: DomText, expectedText: string ) {
 	// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 	// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Update text node:',
 	// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', '',
-	// @if CK_DEBUG_TYPING // 		`"${ domText.data }" (${ domText.data.length }) -> "${ expectedText }" (${ expectedText.length })`
+	// @if CK_DEBUG_TYPING // 		`"${ actualText.replace( /\u00A0/g, '&nbsp;' ) }" (${ actualText.length }) ->` +
+	// @if CK_DEBUG_TYPING // 		` "${ expectedText.replace( /\u00A0/g, '&nbsp;' ) }" (${ expectedText.length })`
 	// @if CK_DEBUG_TYPING // 	);
 	// @if CK_DEBUG_TYPING // }
 

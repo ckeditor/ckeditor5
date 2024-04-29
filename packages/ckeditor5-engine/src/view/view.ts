@@ -28,7 +28,7 @@ import type Item from './item.js';
 
 import KeyObserver from './observer/keyobserver.js';
 import FakeSelectionObserver from './observer/fakeselectionobserver.js';
-import MutationObserver from './observer/mutationobserver.js';
+import MutationObserver, { type ViewDocumentMutationsEvent } from './observer/mutationobserver.js';
 import SelectionObserver from './observer/selectionobserver.js';
 import FocusObserver, { type ViewDocumentBlurEvent } from './observer/focusobserver.js';
 import CompositionObserver from './observer/compositionobserver.js';
@@ -119,10 +119,8 @@ export default class View extends ObservableMixin() {
 
 	/**
 	 * Instance of the {@link module:engine/view/renderer~Renderer renderer}.
-	 *
-	 * @internal
 	 */
-	public readonly _renderer: Renderer;
+	private readonly _renderer: Renderer;
 
 	/**
 	 * A DOM root attributes cache. It saves the initial values of DOM root attributes before the DOM element
@@ -230,6 +228,11 @@ export default class View extends ObservableMixin() {
 				}
 			} );
 		}
+
+		// TODO
+		this.listenTo<ViewDocumentMutationsEvent>( this.document, 'mutations', ( evt, { mutations } ) => {
+			mutations.forEach( mutation => this._renderer.markToSync( mutation.type, mutation.node ) );
+		}, { priority: 'low' } );
 	}
 
 	/**
