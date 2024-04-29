@@ -171,15 +171,20 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		// Also, markerToHighlight can not convert marker on an inline object. It handles only text and widgets,
 		// but it is not a case in the data pipeline. That's why there are 3 downcast converters for them:
 		//
-		// 1. The custom `markerRange` converter to wrap the whole marker range with `<span>`.
+		// 1. The custom inline item (text or inline object) converter (but not the selection).
 		editor.conversion.for( 'downcast' ).add( dispatcher => {
 			dispatcher.on<DowncastAddMarkerEvent>( 'addMarker:restrictedEditingException', ( evt, data, conversionApi ): void => {
-				// This converter should handle the whole marker converter (and not the per-item one).
-				if ( data.item || data.markerRange.isCollapsed ) {
+				// Only convert per-item conversion.
+				if ( !data.item ) {
 					return;
 				}
 
-				if ( !conversionApi.consumable.consume( data.markerRange, evt.name ) ) {
+				// Do not convert the selection or non-inline items.
+				if ( data.item.is( 'selection' ) || !conversionApi.schema.isInline( data.item ) ) {
+					return;
+				}
+
+				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 					return;
 				}
 
@@ -195,7 +200,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 					}
 				);
 
-				const viewRange = conversionApi.mapper.toViewRange( data.markerRange );
+				const viewRange = conversionApi.mapper.toViewRange( data.range! );
 				const rangeAfterWrap = viewWriter.wrap( viewRange, viewElement );
 
 				for ( const element of rangeAfterWrap.getItems() ) {
@@ -210,7 +215,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 			} );
 		} );
 
-		// 2. The default marker-to-highlight will wrap only the document selection with `<span>`.
+		// 2. The marker-to-highlight converter for the document selection.
 		editor.conversion.for( 'downcast' ).markerToHighlight( {
 			model: 'restrictedEditingException',
 			// Use callback to return new object every time new marker instance is created - otherwise it will be seen as the same marker.

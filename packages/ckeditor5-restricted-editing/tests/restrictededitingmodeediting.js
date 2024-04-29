@@ -337,7 +337,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 				model.change( writer => {
 					writer.addMarker( 'restrictedEditingException:1', {
-						range: writer.createRange( writer.createPositionAt( paragraph, 0 ), writer.createPositionAt( paragraph, 'end' ) ),
+						range: writer.createRangeIn( paragraph ),
 						usingOperation: true,
 						affectsData: true
 					} );
@@ -364,7 +364,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 				model.change( writer => {
 					writer.addMarker( 'restrictedEditingException:1', {
-						range: writer.createRange( writer.createPositionAt( paragraph, 0 ), writer.createPositionAt( paragraph, 'end' ) ),
+						range: writer.createRangeIn( paragraph ),
 						usingOperation: true,
 						affectsData: true
 					} );
@@ -391,7 +391,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 				model.change( writer => {
 					writer.addMarker( 'restrictedEditingException:1', {
-						range: writer.createRange( writer.createPositionAt( paragraph, 0 ), writer.createPositionAt( paragraph, 'end' ) ),
+						range: writer.createRangeIn( paragraph ),
 						usingOperation: true,
 						affectsData: true
 					} );
@@ -411,79 +411,62 @@ describe( 'RestrictedEditingModeEditing', () => {
 				);
 			} );
 
-			describe( 'custom convertor', () => {
-				function Plugin( editor ) {
-					editor.conversion.for( 'downcast' ).add( dispatcher => {
-						dispatcher.on( 'addMarker:restrictedEditingException', ( evt, data, conversionApi ) => {
-							if ( data.item || data.markerRange.isCollapsed ) {
-								return;
+			it( 'should be possible to override marker conversion', () => {
+				editor.conversion.for( 'downcast' ).add( dispatcher => {
+					dispatcher.on( 'addMarker:restrictedEditingException', ( evt, data, conversionApi ) => {
+						if ( !data.item || data.item.is( 'selection' ) || !conversionApi.schema.isInline( data.item ) ) {
+							return;
+						}
+
+						if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
+							return;
+						}
+
+						const viewWriter = conversionApi.writer;
+						const viewElement = viewWriter.createAttributeElement(
+							'span',
+							{
+								class: 'restricted-editing-custom-exception'
+							},
+							{
+								id: data.markerName,
+								priority: -10
 							}
+						);
 
-							if ( !conversionApi.consumable.consume( data.markerRange, evt.name ) ) {
-								return;
+						const viewRange = conversionApi.mapper.toViewRange( data.range );
+						const rangeAfterWrap = viewWriter.wrap( viewRange, viewElement );
+
+						for ( const element of rangeAfterWrap.getItems() ) {
+							if ( element.is( 'attributeElement' ) && element.isSimilar( viewElement ) ) {
+								conversionApi.mapper.bindElementToMarker( element, data.markerName );
+
+								// One attribute element is enough, because all of them are bound together by the view writer.
+								// Mapper uses this binding to get all the elements no matter how many of them are registered in the mapper.
+								break;
 							}
-
-							const viewWriter = conversionApi.writer;
-							const viewElement = viewWriter.createAttributeElement(
-								'span',
-								{
-									class: 'restricted-editing-exception-1'
-								},
-								{
-									id: data.markerName,
-									priority: -10
-								}
-							);
-
-							const viewRange = conversionApi.mapper.toViewRange( data.markerRange );
-							const rangeAfterWrap = viewWriter.wrap( viewRange, viewElement );
-
-							for ( const element of rangeAfterWrap.getItems() ) {
-								if ( element.is( 'attributeElement' ) && element.isSimilar( viewElement ) ) {
-									conversionApi.mapper.bindElementToMarker( element, data.markerName );
-
-									break;
-								}
-							}
-						} );
-					} );
-				}
-
-				beforeEach( async () => {
-					editor = await VirtualTestEditor.create( {
-						plugins: [ Paragraph, TableEditing, Plugin, RestrictedEditingModeEditing, ClipboardPipeline ]
-					} );
-					model = editor.model;
+						}
+					}, { priority: 'high' } );
 				} );
 
-				afterEach( async () => {
-					await editor.destroy();
-				} );
+				setModelData( model, '<paragraph>foo bar baz</paragraph>' );
 
-				it( 'should not convert if already consumed by another convertor', () => {
-					setModelData( model, '<paragraph><$text>foo bar baz</$text></paragraph>' );
+				const paragraph = model.document.getRoot().getChild( 0 );
 
-					const paragraph = model.document.getRoot().getChild( 0 );
-
-					model.change( writer => {
-						writer.addMarker( 'restrictedEditingException:1', {
-							range: writer.createRange(
-								writer.createPositionAt( paragraph, 0 ), writer.createPositionAt( paragraph, 'end' )
-							),
-							usingOperation: true,
-							affectsData: true
-						} );
+				model.change( writer => {
+					writer.addMarker( 'restrictedEditingException:1', {
+						range: writer.createRangeIn( paragraph ),
+						usingOperation: true,
+						affectsData: true
 					} );
-
-					expect( editor.getData() ).to.equal(
-						'<p><span class="restricted-editing-exception-1">foo bar baz</span></p>'
-					);
-					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
-						'<p>' +
-							'<span class="restricted-editing-exception-1 restricted-editing-exception_selected">foo bar baz</span>' +
-						'</p>'
-					);
 				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p><span class="restricted-editing-custom-exception">foo bar baz</span></p>'
+				);
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<p><span class="restricted-editing-custom-exception restricted-editing-exception_selected">foo bar baz</span></p>'
+				);
 			} );
 		} );
 
