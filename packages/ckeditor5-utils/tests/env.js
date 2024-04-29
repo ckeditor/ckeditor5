@@ -4,7 +4,7 @@
  */
 
 import env, {
-	isMac, isWindows, isGecko, isSafari, isiOS, isAndroid, isRegExpUnicodePropertySupported, isBlink, getUserAgent
+	isMac, isWindows, isGecko, isSafari, isiOS, isAndroid, isRegExpUnicodePropertySupported, isBlink, getUserAgent, isMediaForcedColors
 } from '../src/env.js';
 
 import global from '../src/dom/global.js';
@@ -60,6 +60,12 @@ describe( 'Env', () => {
 	describe( 'isBlink', () => {
 		it( 'is a boolean', () => {
 			expect( env.isBlink ).to.be.a( 'boolean' );
+		} );
+	} );
+
+	describe( 'isMediaForcedColors', () => {
+		it( 'is a boolean', () => {
+			expect( env.isMediaForcedColors ).to.be.a( 'boolean' );
 		} );
 	} );
 
@@ -272,6 +278,24 @@ describe( 'Env', () => {
 			) ) ).to.be.false;
 		} );
 		/* eslint-enable max-len */
+	} );
+
+	describe( 'isMediaForcedColors()', () => {
+		it( 'returns true if the document media query matches forced-colors', () => {
+			testUtils.sinon.stub( global.window, 'matchMedia' )
+				.withArgs( '(forced-colors: active)' )
+				.returns( { matches: true } );
+
+			expect( isMediaForcedColors() ).to.be.true;
+		} );
+
+		it( 'returns false if the document media query does not match forced-colors', () => {
+			testUtils.sinon.stub( global.window, 'matchMedia' )
+				.withArgs( '(forced-colors: active)' )
+				.returns( { matches: false } );
+
+			expect( isMediaForcedColors() ).to.be.false;
+		} );
 	} );
 
 	describe( 'isRegExpUnicodePropertySupported()', () => {

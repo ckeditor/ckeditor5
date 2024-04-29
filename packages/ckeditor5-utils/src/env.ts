@@ -66,14 +66,14 @@ export interface EnvType {
 	readonly isBlink: boolean;
 
 	/**
+	 * Indicates that the the user agent has enabled a forced colors mode (e.g. Windows High Contrast mode).
+	 */
+	readonly isMediaForcedColors: boolean;
+
+	/**
 	 * Environment features information.
 	 */
 	readonly features: EnvFeaturesType;
-
-	/**
-	 * TODO
-	 */
-	readonly isMediaForcedColors: boolean;
 }
 
 export interface EnvFeaturesType {
@@ -104,11 +104,11 @@ const env: EnvType = {
 
 	isBlink: isBlink( userAgent ),
 
+	isMediaForcedColors: isMediaForcedColors(),
+
 	features: {
 		isRegExpUnicodePropertySupported: isRegExpUnicodePropertySupported()
-	},
-
-	isMediaForcedColors: isMediaForcedColors()
+	}
 };
 
 export default env;
@@ -208,9 +208,8 @@ export function isRegExpUnicodePropertySupported(): boolean {
 }
 
 /**
- * TODO
+ * Checks if the user agent has enabled a forced colors mode (e.g. Windows High Contrast mode).
  */
 export function isMediaForcedColors(): boolean {
-	// forced-colors: active works for high contrast themes on Windows.
 	return window.matchMedia( '(forced-colors: active)' ).matches;
 }
