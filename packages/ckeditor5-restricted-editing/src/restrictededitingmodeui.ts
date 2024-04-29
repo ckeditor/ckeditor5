@@ -52,6 +52,7 @@ export default class RestrictedEditingModeUI extends Plugin {
 			addListToDropdown( dropdownView, listItems );
 
 			dropdownView.buttonView.set( {
+				role: 'menu',
 				label: t( 'Navigate editable regions' ),
 				icon: lockIcon,
 				tooltip: true,
