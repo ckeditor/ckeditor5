@@ -41,6 +41,7 @@ export default class ColorTileView extends ButtonView {
 		this.extendTemplate( {
 			attributes: {
 				style: {
+					// https://github.com/ckeditor/ckeditor5/issues/14907
 					backgroundColor: bind.to( 'color', color => env.isMediaForcedColors ? null : color )
 				},
 				class: [
