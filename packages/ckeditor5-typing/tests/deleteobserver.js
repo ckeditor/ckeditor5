@@ -399,7 +399,7 @@ describe( 'Delete', () => {
 
 		describe( 'using event target ranges (deleteContentBackward)', () => {
 			it( 'should not use target ranges if it should remove a single character', () => {
-				viewSetData( view, '<p>fo{o}</p>' );
+				viewSetData( view, '<container:p>fo{o}</container:p>' );
 
 				const viewRange = view.document.selection.getFirstRange();
 				const domRange = view.domConverter.viewRangeToDom( viewRange );
@@ -419,7 +419,7 @@ describe( 'Delete', () => {
 			} );
 
 			it( 'should not use target ranges if it should remove a single code point from a combined symbol', () => {
-				viewSetData( view, '<p>foo{a&#771;}</p>' );
+				viewSetData( view, '<container:p>foo{a&#771;}</container:p>' );
 				const viewRange = view.document.selection.getFirstRange();
 				const domRange = view.domConverter.viewRangeToDom( viewRange );
 
@@ -438,7 +438,7 @@ describe( 'Delete', () => {
 			} );
 
 			it( 'should set selectionToRemove if target ranges include more than a single character', () => {
-				viewSetData( view, '<p>f{oo}</p>' );
+				viewSetData( view, '<container:p>f{oo}</container:p>' );
 				const viewRange = view.document.selection.getFirstRange();
 				const domRange = view.domConverter.viewRangeToDom( viewRange );
 
@@ -465,7 +465,7 @@ describe( 'Delete', () => {
 			} );
 
 			it( 'should not use target ranges if it should remove a single emoji sequence', () => {
-				viewSetData( view, '<p>foo{👨‍👩‍👧‍👧}</p>' );
+				viewSetData( view, '<container:p>foo{👨‍👩‍👧‍👧}</container:p>' );
 				const viewRange = view.document.selection.getFirstRange();
 				const domRange = view.domConverter.viewRangeToDom( viewRange );
 
@@ -484,7 +484,7 @@ describe( 'Delete', () => {
 			} );
 
 			it( 'should use target ranges if it should remove more than a emoji sequence', () => {
-				viewSetData( view, '<p>foo{👨‍👩‍👧‍👧👨‍👩‍👧‍👧}</p>' );
+				viewSetData( view, '<container:p>foo{👨‍👩‍👧‍👧👨‍👩‍👧‍👧}</container:p>' );
 				const viewRange = view.document.selection.getFirstRange();
 				const domRange = view.domConverter.viewRangeToDom( viewRange );
 
@@ -511,7 +511,7 @@ describe( 'Delete', () => {
 			} );
 
 			it( 'should not use target ranges if it is collapsed', () => {
-				viewSetData( view, '<p>foo{}</p>' );
+				viewSetData( view, '<container:p>foo{}</container:p>' );
 				const viewRange = view.document.selection.getFirstRange();
 				const domRange = view.domConverter.viewRangeToDom( viewRange );
 
@@ -530,7 +530,7 @@ describe( 'Delete', () => {
 			} );
 
 			it( 'should not use target ranges if there is more than one range', () => {
-				viewSetData( view, '<p>foo{}</p>' );
+				viewSetData( view, '<container:p>foo{}</container:p>' );
 				const viewRange = view.document.selection.getFirstRange();
 				const domRange = view.domConverter.viewRangeToDom( viewRange );
 
@@ -549,7 +549,10 @@ describe( 'Delete', () => {
 			} );
 
 			it( 'should set selectionToRemove if target ranges spans different parent nodes', () => {
-				viewSetData( view, '<p>fo{o</p><p>]bar</p>' );
+				viewSetData( view,
+					'<container:p>fo{o</container:p>' +
+					'<container:p>]bar</container:p>'
+				);
 				const viewRange = view.document.selection.getFirstRange();
 				const domRange = view.domConverter.viewRangeToDom( viewRange );
 
@@ -575,7 +578,7 @@ describe( 'Delete', () => {
 			} );
 
 			it( 'should set selectionToRemove if target ranges spans a single character and an element', () => {
-				viewSetData( view, '<p>fo{o<br/>]</p>' );
+				viewSetData( view, '<container:p>fo{o<empty:br/>]</container:p>' );
 				const viewRange = view.document.selection.getFirstRange();
 				const domRange = view.domConverter.viewRangeToDom( viewRange );
 
@@ -598,6 +601,82 @@ describe( 'Delete', () => {
 				expect( range.start.parent ).to.equal( viewRoot.getChild( 0 ).getChild( 0 ) );
 				expect( range.end.offset ).to.equal( 2 );
 				expect( range.end.parent ).to.equal( viewRoot.getChild( 0 ) );
+			} );
+
+			it( 'should not set selectionToRemove if target ranges spans between <p> and <li>', () => {
+				viewSetData( view,
+					'<container:p>[</container:p>' +
+					'<attribute:ul>' +
+						'<attribute:li>]</attribute:li>' +
+					'</attribute:ul>'
+				);
+				const viewRange = view.document.selection.getFirstRange();
+				const domRange = view.domConverter.viewRangeToDom( viewRange );
+
+				fireBeforeInputDomEvent( domRoot, {
+					inputType: 'deleteContentBackward',
+					ranges: [ domRange ]
+				} );
+
+				sinon.assert.calledOnce( deleteSpy );
+				sinon.assert.calledWithMatch( deleteSpy, {}, {
+					unit: 'codePoint',
+					direction: 'backward',
+					sequence: 0,
+					selectionToRemove: undefined
+				} );
+			} );
+
+			it( 'should not set selectionToRemove if target ranges spans between <p> and bogus paragraph in <li>', () => {
+				viewSetData( view,
+					'<container:p>[</container:p>' +
+					'<attribute:ul>' +
+						'<attribute:li>' +
+							'<container:span>]</container:span>' +
+						'</attribute:li>' +
+					'</attribute:ul>'
+				);
+				const viewRange = view.document.selection.getFirstRange();
+				const domRange = view.domConverter.viewRangeToDom( viewRange );
+
+				fireBeforeInputDomEvent( domRoot, {
+					inputType: 'deleteContentBackward',
+					ranges: [ domRange ]
+				} );
+
+				sinon.assert.calledOnce( deleteSpy );
+				sinon.assert.calledWithMatch( deleteSpy, {}, {
+					unit: 'codePoint',
+					direction: 'backward',
+					sequence: 0,
+					selectionToRemove: undefined
+				} );
+			} );
+
+			it( 'should not set selectionToRemove if target ranges spans between <p> and paragraph in <li>', () => {
+				viewSetData( view,
+					'<container:p>[</container:p>' +
+					'<attribute:ul>' +
+						'<attribute:li>' +
+							'<container:p>]</container:p>' +
+						'</attribute:li>' +
+					'</attribute:ul>'
+				);
+				const viewRange = view.document.selection.getFirstRange();
+				const domRange = view.domConverter.viewRangeToDom( viewRange );
+
+				fireBeforeInputDomEvent( domRoot, {
+					inputType: 'deleteContentBackward',
+					ranges: [ domRange ]
+				} );
+
+				sinon.assert.calledOnce( deleteSpy );
+				sinon.assert.calledWithMatch( deleteSpy, {}, {
+					unit: 'codePoint',
+					direction: 'backward',
+					sequence: 0,
+					selectionToRemove: undefined
+				} );
 			} );
 		} );
 
