@@ -3,9 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* global document */
+
 import Autoformat from '../src/autoformat.js';
 
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import ListEditing from '@ckeditor/ckeditor5-list/src/list.js';
 import LegacyListEditing from '@ckeditor/ckeditor5-list/src/legacylist/legacylistediting.js';
 import LegacyTodoListEditing from '@ckeditor/ckeditor5-list/src/legacytodolist/legacytodolistediting.js';
 import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
@@ -18,11 +22,13 @@ import CodeBlockEditing from '@ckeditor/ckeditor5-code-block/src/codeblockeditin
 import HorizontalLineEditing from '@ckeditor/ckeditor5-horizontal-line/src/horizontallineediting.js';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import stubUid from '@ckeditor/ckeditor5-list/tests/list/_utils/uid.js';
 
 import HeadingCommand from '@ckeditor/ckeditor5-heading/src/headingcommand.js';
 
@@ -201,6 +207,91 @@ describe( 'Autoformat', () => {
 
 			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="numbered">[]</listItem>' );
 		} );
+	} );
+
+	describe( 'todo', () => {
+		let editor, model, element;
+
+		testUtils.createSinonSandbox();
+
+		beforeEach( () => {
+			element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
+			return ClassicTestEditor
+				.create( element, {
+					plugins: [
+						Paragraph,
+						Autoformat,
+						ListEditing,
+						UndoEditing
+					]
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					stubUid();
+				} );
+		} );
+
+		afterEach( () => {
+			element.remove();
+
+			return editor.destroy();
+		} );
+
+		it( 'todo', () => {
+			const view = editor.editing.view;
+			const viewDocument = view.document;
+			const viewRoot = viewDocument.getRoot();
+
+			setData( model, '<paragraph></paragraph><paragraph>*[]</paragraph>' );
+			insertSpace();
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph></paragraph>' +
+				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">[]</paragraph>'
+			);
+
+			const targetRanges = [ view.createRange(
+				view.createPositionAt( viewRoot.getChild( 0 ), 0 ),
+				view.createPositionAt( viewRoot.getChild( 1 ).getChild( 0 ).getChild( 0 ), 0 )
+			) ];
+
+			const eventData = {
+				inputType: 'deleteContentBackward',
+				targetRanges
+			};
+
+			viewDocument.fire( 'keydown', {
+				domEvent: {
+					preventDefault() {}
+				}
+			} );
+			fireBeforeInputEvent( eventData );
+
+			expect( getData( model ) ).to.equal( '<paragraph></paragraph><paragraph>* []</paragraph>' );
+		} );
+
+		function insertSpace() {
+			const model = editor.model;
+
+			model.change( writer => {
+				writer.insertText( ' ', model.document.selection.getFirstPosition() );
+			} );
+		}
+
+		function fireBeforeInputEvent( eventData ) {
+			const view = editor.editing.view;
+			const viewDocument = view.document;
+
+			viewDocument.fire( 'beforeinput', {
+				domEvent: {
+					preventDefault() {}
+				},
+				...eventData
+			} );
+		}
 	} );
 
 	describe( 'To-do list', () => {
