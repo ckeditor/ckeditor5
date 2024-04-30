@@ -7,6 +7,9 @@
  * @module ui
  */
 
+// This import must be at the top to ensure that `globals.css` is imported first
+export { default as View, type UIViewRenderEvent } from './view.js';
+
 export { default as clickOutsideHandler } from './bindings/clickoutsidehandler.js';
 export { default as injectCssTransitionDisabler } from './bindings/injectcsstransitiondisabler.js';
 export { default as CssTransitionDisablerMixin, type ViewWithCssTransitionDisabler } from './bindings/csstransitiondisablermixin.js';
@@ -17,7 +20,7 @@ export { default as AccessibilityHelp } from './editorui/accessibilityhelp/acces
 
 export { default as BodyCollection } from './editorui/bodycollection.js';
 
-export { default as Button, type ButtonExecuteEvent } from './button/button.js';
+export type { default as Button, ButtonExecuteEvent } from './button/button.js';
 export type { default as ButtonLabel } from './button/buttonlabel.js';
 export { default as ButtonView } from './button/buttonview.js';
 export { default as ButtonLabelView } from './button/buttonlabelview.js';
@@ -95,7 +98,7 @@ export { default as StickyPanelView } from './panel/sticky/stickypanelview.js';
 export { default as AutocompleteView, type AutocompleteViewConfig, type AutocompleteResultsView } from './autocomplete/autocompleteview.js';
 export { default as SearchTextView, type SearchTextViewSearchEvent, type SearchTextViewConfig } from './search/text/searchtextview.js';
 export { default as SearchInfoView } from './search/searchinfoview.js';
-export { default as FilteredView, type FilteredViewExecuteEvent } from './search/filteredview.js';
+export type { default as FilteredView, FilteredViewExecuteEvent } from './search/filteredview.js';
 export { default as HighlightedTextView } from './highlightedtext/highlightedtextview.js';
 
 export { default as TooltipManager } from './tooltipmanager.js';
@@ -110,7 +113,6 @@ export { default as normalizeToolbarConfig } from './toolbar/normalizetoolbarcon
 export { default as BalloonToolbar, type BalloonToolbarShowEvent } from './toolbar/balloon/balloontoolbar.js';
 export { default as BlockToolbar } from './toolbar/block/blocktoolbar.js';
 
-export { default as View, type UIViewRenderEvent } from './view.js';
 export { default as ViewCollection } from './viewcollection.js';
 
 export { default as MenuBarView, type MenuBarConfig } from './menubar/menubarview.js';
