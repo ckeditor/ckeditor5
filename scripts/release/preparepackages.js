@@ -15,6 +15,7 @@ const releaseTools = require( '@ckeditor/ckeditor5-dev-release-tools' );
 const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
 const { Listr } = require( 'listr2' );
 const updateVersionReferences = require( './utils/updateversionreferences' );
+const buildPackageUsingRollupCallback = require( './utils/buildpackageusingrollupcallback' );
 const buildTsAndDllForCkeditor5Root = require( './utils/buildtsanddllforckeditor5root' );
 const getCKEditor5PackageJson = require( './utils/getckeditor5packagejson' );
 const parseArguments = require( './utils/parsearguments' );
@@ -150,12 +151,23 @@ const tasks = new Listr( [
 					}
 				},
 				{
+					title: 'Building the `dist/` directory for `ckeditor5-*` packages.',
+					task: ( ctx, task ) => {
+						return releaseTools.executeInParallel( {
+							packagesDirectory: PACKAGES_DIRECTORY,
+							listrTask: task,
+							taskToExecute: buildPackageUsingRollupCallback,
+							concurrency: cliArguments.concurrency
+						} );
+					}
+				},
+				{
 					title: 'Copying CKEditor 5 packages to the release directory.',
 					task: () => {
 						return releaseTools.prepareRepository( {
 							outputDirectory: RELEASE_DIRECTORY,
 							packagesDirectory: PACKAGES_DIRECTORY,
-							rootPackageJson: getCKEditor5PackageJson(),
+							rootPackageJson: getCKEditor5PackageJson( cliArguments.nightly ),
 							packagesToCopy: cliArguments.packages
 						} );
 					}

@@ -52,6 +52,7 @@ const persistToWorkspace = fileName => ( {
 
 ( async () => {
 	const frameworkPackages = ( await fs.readdir( upath.join( CKEDITOR5_ROOT_DIRECTORY, 'src' ) ) )
+		.filter( filename => !filename.startsWith( 'index' ) )
 		.map( filename => 'ckeditor5-' + filename.replace( /\.(js|ts)$/, '' ) );
 
 	const featurePackages = ( await glob( '*/', { cwd: upath.join( CKEDITOR5_ROOT_DIRECTORY, 'packages' ) } ) )

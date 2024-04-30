@@ -11,21 +11,27 @@ const fs = require( 'fs-extra' );
 const upath = require( 'upath' );
 
 /**
+ * @param {Boolean} isNightly
  * @returns {Object}
  */
-module.exports = function getCKEditor5PackageJson() {
+module.exports = function getCKEditor5PackageJson( isNightly = false ) {
 	const pkgJson = fs.readJsonSync(
 		upath.join( __dirname, '..', '..', '..', 'package.json' )
 	);
 
-	return {
+	const content = {
 		name: pkgJson.name,
 		version: pkgJson.version,
 		keywords: pkgJson.keywords,
 		description: 'A set of ready-to-use rich text editors created with a powerful framework.' +
 			' Made with real-time collaborative editing in mind.',
 		type: 'module',
-		dependencies: getCKEditor5Dependencies( pkgJson.dependencies ),
+		exports: {
+			'./build/*': './build/*',
+			'./src/*': './src/*',
+			'./package.json': './package.json'
+		},
+		dependencies: pkgJson.dependencies,
 		engines: pkgJson.engines,
 		author: pkgJson.author,
 		license: pkgJson.license,
@@ -36,6 +42,7 @@ module.exports = function getCKEditor5PackageJson() {
 			// Do not add the entire `build/` directory as it contains files produced by internal scripts:
 			// automated/manual tests, translations, documentation, content styles.
 			// If you need to release anything from the directory, insert a relative path to the file/directory.
+			'dist',
 			'src/*.js',
 			'src/*.d.ts',
 			'build/ckeditor5-dll.js',
@@ -47,33 +54,30 @@ module.exports = function getCKEditor5PackageJson() {
 			'README.md'
 		]
 	};
-};
 
-/**
- * Returns an array that contains name of packages that the `ckeditor5` package should define as its dependencies.
- *
- * @param {Object} dependencies Dependencies to filter out.
- * @returns {Array.<String>}
- */
-function getCKEditor5Dependencies( dependencies ) {
-	// Short name of packages specified as DLL.
-	const dllPackages = fs.readdirSync( upath.join( __dirname, '..', '..', '..', 'src' ) )
-		.map( directory => directory.replace( /\.[tj]s$/, '' ) );
+	if ( isNightly ) {
+		/**
+		 * TODO: Add to the returned object once we are ready for a final release.
+		 *
+		 * https://github.com/ckeditor/ckeditor5/issues/16257.
+		 */
 
-	// Name of packages that are listed in `src/` as DLL packages.
-	const ckeditor5Dependencies = Object.keys( dependencies )
-		.filter( packageName => {
-			const shortPackageName = packageName.replace( /@ckeditor\/ckeditor5?-/, '' );
-
-			return dllPackages.includes( shortPackageName );
-		} );
-
-	// The proper object for inserting into the `package.json` file.
-	const dependencyObject = {};
-
-	for ( const item of ckeditor5Dependencies ) {
-		dependencyObject[ item ] = dependencies[ item ];
+		content.main = 'dist/index.js';
+		content.module = 'dist/index.js';
+		content.types = 'dist/types/index.d.ts';
+		content.exports = {
+			'.': {
+				'types': './dist/types/index.d.ts',
+				'import': './dist/index.js'
+			},
+			'./translations/*.js': {
+				'types': './dist/translations/*.d.ts',
+				'import': './dist/translations/*.js'
+			},
+			'./*.css': './dist/*.css',
+			...content.exports
+		};
 	}
 
-	return dependencyObject;
-}
+	return content;
+};

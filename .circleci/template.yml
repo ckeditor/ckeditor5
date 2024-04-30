@@ -128,6 +128,14 @@ jobs:
           when: always
           name: Execute Stylelint
           command: yarn run stylelint
+      - run:
+          when: always
+          name: Check if all CSS files from the "ckeditor5-theme-lark" are imported in "index.css" file
+          command: yarn run check-theme-lark-imports
+      - run:
+          when: always
+          name: Check if all packages are exported in the "ckeditor5" package
+          command: yarn run check-exports
 
   cke5_coverage:
     machine: true
