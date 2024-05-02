@@ -455,7 +455,7 @@ function addSelectionHandle( widgetElement: ViewContainerElement, writer: Downca
  *
  *	* It searches up to 5 levels of ancestors only.
  *	* It will skip search if passed element (or it's parent) has `contenteditable` attribute or is root document editable.
- *	  It's crucial for features such like pagination because editable root element might have different width that whole editor itself.
+ *	  It's crucial for features such like pagination because editable root element might have different width than whole editor itself.
  *
  * @param domResizeHost Resize host DOM element that receives dimensions as a result of resizing.
  * @returns Width of ancestor element in pixels or 0 if no ancestor with a computed width has been found.
