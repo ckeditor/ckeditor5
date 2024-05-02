@@ -80,10 +80,13 @@ describe( 'getSelectedImageWidthInUnits', () => {
 		} );
 
 		editor.editing.view.change( writer => {
-			writer.setStyle( {
-				width: '500px',
-				padding: '0px'
-			}, editor.editing.view.document.getRoot() );
+			writer.setStyle(
+				{
+					width: '500px',
+					padding: '0px'
+				},
+				editor.editing.view.document.getRoot()
+			);
 		} );
 
 		model = editor.model;
