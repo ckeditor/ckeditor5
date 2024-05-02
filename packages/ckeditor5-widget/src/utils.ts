@@ -464,7 +464,7 @@ export function calculateResizeHostAncestorWidth( domResizeHost: HTMLElement ): 
 	const getElementComputedWidth = ( element: HTMLElement ) => {
 		const { width, paddingLeft, paddingRight } = element.ownerDocument.defaultView!.getComputedStyle( element! );
 
-		return parseFloat( width ) - parseFloat( paddingLeft ) - parseFloat( paddingRight );
+		return parseFloat( width ) - ( parseFloat( paddingLeft ) || 0 ) - ( parseFloat( paddingRight ) || 0 );
 	};
 
 	if ( isMaximumResizeHostAncestorElement( domResizeHost ) ) {
