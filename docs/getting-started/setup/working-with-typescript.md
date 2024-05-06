@@ -6,7 +6,7 @@
 category: setup
 menu-title: TypeScript support
 meta-title: TypeScript support | CKEditor 5 documentation
-modified_at: 2024-02-22
+modified_at: 2024-05-06
 order: 70
 ---
 
@@ -60,18 +60,17 @@ CKEditor&nbsp;5's API is extensive and complex, but using TypeScript can make it
 
 You can use the {@link framework/development-tools/package-generator/typescript-package package generator} to scaffold TypeScript-based plugins.
 
-Writing a simple plugin will be very similar to writing in vanilla JavaScript, but you need to add [TypeScript augmentation](https://www.typescriptlang.org/docs/handbook/declaration-merging.html#module-augmentation) to give the compiler additional information about your plugin.
+Writing a simple plugin will be similar to writing it in vanilla JavaScript, but you need to add [TypeScript augmentation](https://www.typescriptlang.org/docs/handbook/declaration-merging.html#module-augmentation) to give the compiler additional information about your plugin.
 
-Depending on your plugin, augument the following interfaces:
+Depending on your plugin, augment the following interfaces:
 
-* {@link module:core/editor/editorconfig~EditorConfig}, which informs a new plugin extends the configuration.
-* {@link module:core/plugincollection~PluginsMap}, which informs an additional plugin is available, useful when using `editor.plugins.get( '...' )`.
-* {@link module:core/commandcollection~CommandsMap}, which informs an additional command is available, useful when using `editor.commands.get( '...' )`.
+* {@link module:core/editor/editorconfig~EditorConfig}, which informs that a new plugin extends the configuration.
+* {@link module:core/plugincollection~PluginsMap}, which informs that an additional plugin is available; useful when using `editor.plugins.get( '...' )`.
+* {@link module:core/commandcollection~CommandsMap}, which informs that an additional command is available; useful when using `editor.commands.get( '...' )`.
 
-The augumentation can be placed in a file with your editor setup, or you can create a separate file, like `augmentation.ts`, and import it.
+The augmentation can be placed in a file with your editor setup. You can also create a separate file, for example `augmentation.ts`, and import it.
 
-Here's an example from our {@link tutorials/creating-simple-plugin-timestamp Creating a basic plugin} tutorial to which we added a UTC configuration option.
-
+The following is an example from our {@link tutorials/creating-simple-plugin-timestamp Creating a basic plugin} tutorial to which we added a UTC configuration option.
 
 ```ts
 import {
@@ -131,16 +130,16 @@ class Timestamp extends Plugin {
 }
 
 ClassicEditor
-    .create( document.querySelector( '#editor' ) as HTMLElement, {
-        plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, Timestamp ],
-        toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', 'timestamp' ],
+	.create( document.querySelector( '#editor' ) as HTMLElement, {
+		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, Timestamp ],
+		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', 'timestamp' ],
 		timestamp: { utc: true } // This will be autocompleted and type checked thanks to our augmentation.
-    } )
-    .then( editor => {
-        console.log( 'Editor was initialized', editor );
-        console.log(editor.plugins.get( 'Timestamp' ); // This will have type Timestamp thanks to our augmentation.
-    } )
-    .catch( error => {
-        console.error( error.stack );
-    } );
+	} )
+	.then( editor => {
+		console.log( 'Editor was initialized', editor );
+		console.log(editor.plugins.get( 'Timestamp' ); // This will have type Timestamp thanks to our augmentation.
+	} )
+	.catch( error => {
+		console.error( error.stack );
+	} );
 ```
