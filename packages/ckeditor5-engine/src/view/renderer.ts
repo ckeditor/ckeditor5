@@ -569,7 +569,7 @@ export default class Renderer extends ObservableMixin() {
 		// @if CK_DEBUG_TYPING // 	);
 		// @if CK_DEBUG_TYPING // }
 
-		updateTextNode( domText, expectedText );
+		this._updateTextNode( domText, expectedText );
 
 		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 		// @if CK_DEBUG_TYPING // 	console.groupEnd();
@@ -720,7 +720,7 @@ export default class Renderer extends ObservableMixin() {
 				// @if CK_DEBUG_TYPING // 	);
 				// @if CK_DEBUG_TYPING // }
 
-				updateTextNode( actualDomChildren[ i ] as DomText, ( expectedDomChildren[ i ] as DomText ).data );
+				this._updateTextNode( actualDomChildren[ i ] as DomText, ( expectedDomChildren[ i ] as DomText ).data );
 				i++;
 
 				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
@@ -820,6 +820,46 @@ export default class Renderer extends ObservableMixin() {
 			diff( actualSlice, expectedSlice, comparator )
 				.map( action => action === 'equal' ? 'update' : action )
 		);
+	}
+
+	/**
+	 * Checks if text needs to be updated and possibly updates it by removing and inserting only parts
+	 * of the data from the existing text node to reduce impact on the IME composition.
+	 *
+	 * @param domText DOM text node to update.
+	 * @param expectedText The expected data of a text node.
+	 */
+	private _updateTextNode( domText: DomText, expectedText: string ): void {
+		const actualText = domText.data;
+
+		if ( actualText == expectedText ) {
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Text node does not need update:',
+			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', '',
+			// @if CK_DEBUG_TYPING // 		`"${ actualText.replace( /\u00A0/g, '&nbsp;' ) }" (${ actualText.length })`
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // }
+
+			return;
+		}
+
+		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.info( `%c[Renderer]%c Update text node${ this.isComposing ? ' while composing' : '' }:`,
+		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', this.isComposing ? 'color: red; font-weight: bold' : '',
+		// @if CK_DEBUG_TYPING // 		`"${ actualText.replace( /\u00A0/g, '&nbsp;' ) }" (${ actualText.length }) ->` +
+		// @if CK_DEBUG_TYPING // 		` "${ expectedText.replace( /\u00A0/g, '&nbsp;' ) }" (${ expectedText.length })`
+		// @if CK_DEBUG_TYPING // 	);
+		// @if CK_DEBUG_TYPING // }
+
+		const actions = fastDiff( actualText, expectedText );
+
+		for ( const action of actions ) {
+			if ( action.type === 'insert' ) {
+				domText.insertData( action.index, action.values.join( '' ) );
+			} else { // 'delete'
+				domText.deleteData( action.index, action.howMany );
+			}
+		}
 	}
 
 	/**
@@ -1213,44 +1253,4 @@ function createFakeSelectionContainer( domDocument: DomDocument ): DomElement {
 	container.textContent = '\u00A0';
 
 	return container;
-}
-
-/**
- * Checks if text needs to be updated and possibly updates it by removing and inserting only parts
- * of the data from the existing text node to reduce impact on the IME composition.
- *
- * @param domText DOM text node to update.
- * @param expectedText The expected data of a text node.
- */
-function updateTextNode( domText: DomText, expectedText: string ) {
-	const actualText = domText.data;
-
-	if ( actualText == expectedText ) {
-		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-		// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Text node does not need update:',
-		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', '',
-		// @if CK_DEBUG_TYPING // 		`"${ actualText.replace( /\u00A0/g, '&nbsp;' ) }" (${ actualText.length })`
-		// @if CK_DEBUG_TYPING // 	);
-		// @if CK_DEBUG_TYPING // }
-
-		return;
-	}
-
-	// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-	// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Update text node:',
-	// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', '',
-	// @if CK_DEBUG_TYPING // 		`"${ actualText.replace( /\u00A0/g, '&nbsp;' ) }" (${ actualText.length }) ->` +
-	// @if CK_DEBUG_TYPING // 		` "${ expectedText.replace( /\u00A0/g, '&nbsp;' ) }" (${ expectedText.length })`
-	// @if CK_DEBUG_TYPING // 	);
-	// @if CK_DEBUG_TYPING // }
-
-	const actions = fastDiff( actualText, expectedText );
-
-	for ( const action of actions ) {
-		if ( action.type === 'insert' ) {
-			domText.insertData( action.index, action.values.join( '' ) );
-		} else { // 'delete'
-			domText.deleteData( action.index, action.howMany );
-		}
-	}
 }

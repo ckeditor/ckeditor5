@@ -15,7 +15,6 @@ import InsertTextObserver, { type ViewDocumentInsertTextEvent } from './insertte
 
 import type {
 	Model,
-	ViewDocumentCompositionEndEvent,
 	ViewDocumentCompositionStartEvent,
 	ViewDocumentKeyDownEvent,
 	ViewDocumentMutationsEvent
@@ -35,7 +34,7 @@ export default class Input extends Plugin {
 	/**
 	 * TODO
 	 */
-	private _flushQueueDebounced = debounce( () => this._flushQueue(), 50 );
+	private _flushQueueDebounced = debounce( () => this._flushQueue( 'timeout' ), 500 );
 
 	/**
 	 * @inheritDoc
@@ -124,7 +123,8 @@ export default class Input extends Plugin {
 				// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', '',
 				// @if CK_DEBUG_TYPING // 		`"${ commandData.text }"`,
 				// @if CK_DEBUG_TYPING // 		`[${ commandData.selection.getFirstPosition().path }]-` +
-				// @if CK_DEBUG_TYPING // 		`[${ commandData.selection.getLastPosition().path }]`
+				// @if CK_DEBUG_TYPING // 		`[${ commandData.selection.getLastPosition().path }]` +
+				// @if CK_DEBUG_TYPING // 		` queue size: ${ this._queue.length + 1 }`
 				// @if CK_DEBUG_TYPING // 	);
 				// @if CK_DEBUG_TYPING // }
 
@@ -189,14 +189,9 @@ export default class Input extends Plugin {
 		}
 
 		// TODO
-		this.listenTo<ViewDocumentMutationsEvent>( view.document, 'mutations', () => {
-			this._flushQueue();
-		} );
-
-		// TODO
-		this.listenTo<ViewDocumentCompositionEndEvent>( view.document, 'compositionend', () => {
-			this._flushQueue();
-		} );
+		if ( env.isAndroid ) {
+			this.listenTo<ViewDocumentMutationsEvent>( view.document, 'mutations', () => this._flushQueue( 'mutations' ) );
+		}
 	}
 
 	/**
@@ -210,10 +205,11 @@ export default class Input extends Plugin {
 
 	/**
 	 * TODO
-	 * @internal
+	 * @param reason Used only for debugging.
 	 */
-	public _flushQueue(): void {
+	private _flushQueue( reason: string ): void {
 		const editor = this.editor;
+		const model = editor.model;
 		const view = editor.editing.view;
 
 		this._flushQueueDebounced.cancel();
@@ -222,22 +218,41 @@ export default class Input extends Plugin {
 			return;
 		}
 
-		while ( this._queue.length ) {
-			const commandData = this._queue.shift();
+		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.group( `%c[Input]%c Flush insertText queue on ${ reason }`,
+		// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', ''
+		// @if CK_DEBUG_TYPING // 	);
+		// @if CK_DEBUG_TYPING // }
 
-			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-			// @if CK_DEBUG_TYPING // 	console.log( '%c[Input]%c Execute queued insertText:',
-			// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', '',
-			// @if CK_DEBUG_TYPING // 		`"${ commandData.text }"`,
-			// @if CK_DEBUG_TYPING // 		`[${ commandData.selection.getFirstPosition().path }]-` +
-			// @if CK_DEBUG_TYPING // 		`[${ commandData.selection.getLastPosition().path }]`
-			// @if CK_DEBUG_TYPING // 	);
-			// @if CK_DEBUG_TYPING // }
+		const insertTextCommand = editor.commands.get( 'insertText' )!;
+		const buffer = insertTextCommand.buffer;
 
-			editor.execute( 'insertText', commandData );
-		}
+		model.enqueueChange( buffer.batch, () => {
+			buffer.lock();
+
+			while ( this._queue.length ) {
+				const commandData = this._queue.shift();
+
+				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+				// @if CK_DEBUG_TYPING // 	console.log( '%c[Input]%c Execute queued insertText:',
+				// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', '',
+				// @if CK_DEBUG_TYPING // 		`"${ commandData.text }"`,
+				// @if CK_DEBUG_TYPING // 		`[${ commandData.selection.getFirstPosition().path }]-` +
+				// @if CK_DEBUG_TYPING // 		`[${ commandData.selection.getLastPosition().path }]`
+				// @if CK_DEBUG_TYPING // 	);
+				// @if CK_DEBUG_TYPING // }
+
+				editor.execute( 'insertText', commandData );
+			}
+
+			buffer.unlock();
+		} );
 
 		view.scrollToTheSelection();
+
+		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.groupEnd();
+		// @if CK_DEBUG_TYPING // }
 	}
 }
 
