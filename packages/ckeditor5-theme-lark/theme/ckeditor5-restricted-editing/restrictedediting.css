@@ -25,6 +25,10 @@
 		var(--ck-color-restricted-editing-exception-brackets) 100%
 	) 1;
 
+	@media (prefers-reduced-motion: reduce) {
+		transition: none;
+	}
+
 	&.restricted-editing-exception_selected {
 		background-color: var(--ck-color-restricted-editing-selected-exception-background);
 		border-image: linear-gradient(
