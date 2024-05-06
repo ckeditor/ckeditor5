@@ -44,9 +44,7 @@ function makeCrcTable(): Array<number> {
  * * `crc32(['foo', 123, true])` produces the same result as `crc32('foo123true')`
  * * Nested arrays of strings are flattened, so `crc32([['foo', 'bar'], 'baz'])` is equivalent to `crc32(['foobar', 'baz'])`
  *
- * @param returnHex Optional. Specifies the format of the return value. If set to true, the checksum is returned as a hexadecimal string.
- * If false, the checksum is returned as a numeric value. Default is true.
- * @returns The CRC-32 checksum, returned as a hexadecimal string by default, or as a number if returnHex is set to false.
+ * @returns The CRC-32 checksum, returned as a hexadecimal string.
  */
 export default function crc32( inputData: CRCData ): string {
 	const dataArray = Array.isArray( inputData ) ? inputData : [ inputData ];
