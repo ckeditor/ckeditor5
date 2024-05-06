@@ -4,7 +4,7 @@ order: 10
 menu-title: Quick Start
 meta-title: Quick Start | CKEditor 5 documentation
 meta-description: Learn the fastest way to install and use CKEditor 5 - the powerful, rich text WYSIWYG editor in your web application using npm or CDN.
-modified_at: 2024-02-22
+modified_at: 2024-05-06
 ---
 
 # Quick Start

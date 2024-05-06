@@ -9,7 +9,7 @@ menu-title: Configuration
 meta-title: Configuration | CKEditor 5 documentation
 meta-description: Learn how to configure CKEditor 5. 
 order: 10
-modified_at: 2024-03-21
+modified_at: 2024-05-06
 ---
 
 # Configuring CKEditor&nbsp;5
