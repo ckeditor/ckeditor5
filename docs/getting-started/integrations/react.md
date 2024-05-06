@@ -63,16 +63,16 @@ function App() {
 			editor={ ClassicEditor }
 			config={ {
 				toolbar: {
-					items: [ "undo", "redo", "|", "bold", "italic" ],
+					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 				},
 				plugins: [
 					Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
 				],
-				licenseKey: "<YOUR_LICENSE_KEY>",
+				licenseKey: '<YOUR_LICENSE_KEY>',
 				mention: { 
 					// Mention configuration
 				},
-				initialData: "<p>Hello from CKEditor 5 in React!</p>",
+				initialData: '<p>Hello from CKEditor 5 in React!</p>',
 			} }
 		/>
 	);
@@ -112,10 +112,10 @@ The editor event callbacks (`onChange`, `onBlur`, `onFocus`) receive two argumen
 The [`@ckeditor/ckeditor5-react`](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) package provides a ready-to-use component for the {@link features/context-and-collaboration-features context feature} that is useful when used together with some {@link features/collaboration CKEditor&nbsp;5 collaboration features}.
 
 ```jsx
-import { ClassicEditor, Context, Bold, Essentials, Italic, Paragraph } from "ckeditor5";
-import { CKEditor, CKEditorContext } from "@ckeditor/ckeditor5-react";
+import { ClassicEditor, Context, Bold, Essentials, Italic, Paragraph } from 'ckeditor5';
+import { CKEditor, CKEditorContext } from '@ckeditor/ckeditor5-react';
 
-import "ckeditor5/index.css";
+import 'ckeditor5/index.css';
 
 function App() {
   return (
@@ -126,10 +126,10 @@ function App() {
           plugins: [ Essentials, Bold, Italic, Paragraph ],
           toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
         } }
-        data="<p>Hello from the first editor working with the context!</p>"
+        data='<p>Hello from the first editor working with the context!</p>'
         onReady={ ( editor ) => {
           // You can store the "editor" and use when it is needed.
-          console.log( "Editor 1 is ready to use!", editor );
+          console.log( 'Editor 1 is ready to use!', editor );
         } }
       />
 
@@ -139,10 +139,10 @@ function App() {
           plugins: [ Essentials, Bold, Italic, Paragraph ],
           toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
         } }
-        data="<p>Hello from the second editor working with the context!</p>"
+        data='<p>Hello from the second editor working with the context!</p>'
         onReady={ ( editor ) => {
           // You can store the "editor" and use when it is needed.
-          console.log( "Editor 2 is ready to use!", editor );
+          console.log( 'Editor 2 is ready to use!', editor );
         } }
       />
     </CKEditorContext>
@@ -174,11 +174,11 @@ The `CKEditorContext` component supports the following properties:
 If you use the {@link framework/document-editor document (decoupled) editor}, you need to {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create add the toolbar to the DOM manually}:
 
 ```jsx
-import { useCallback, useState } from "react";
-import { DecoupledEditor, Bold, Essentials, Italic, Paragraph } from "ckeditor5";
-import { CKEditor } from "@ckeditor/ckeditor5-react";
+import { useCallback, useState } from 'react';
+import { DecoupledEditor, Bold, Essentials, Italic, Paragraph } from 'ckeditor5';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
 
-import "ckeditor5/dist/index.css";
+import 'ckeditor5/dist/index.css';
 
 function App() {
 	const [ editorToolbarRef, setEditorToolbarRef ] = useState( null );
@@ -199,7 +199,7 @@ function App() {
 							editorToolbarRef.appendChild( editor.ui.view.toolbar.element );
 						}}
 						editor={ DecoupledEditor }
-						data="<p>Hello from CKEditor 5's decoupled editor!</p>"
+						data='<p>Hello from CKEditor 5's decoupled editor!</p>'
 						config={ {
 							plugins: [ Bold, Italic, Paragraph, Essentials ],
 							toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
@@ -249,7 +249,7 @@ function App() {
 			editor={ ClassicEditor }
 			config={ {
 				translations: [ coreTranslations, commercialTranslations ],
-				initialData: "<p>Hola desde CKEditor 5 en React!</p>",
+				initialData: '<p>Hola desde CKEditor 5 en React!</p>',
 			} }
 		/>
 	);
