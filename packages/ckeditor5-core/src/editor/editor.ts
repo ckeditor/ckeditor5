@@ -664,7 +664,7 @@ export default abstract class Editor extends ObservableMixin() {
 		const licenseKey = this.config.get( 'licenseKey' );
 
 		if ( !licenseKey ) {
-			// TODO: For now, we don't block the editor if a licence key is not provided.
+			// TODO: For now, we don't block the editor if a licence key is not provided. GPL is assumed.
 			return;
 		}
 
@@ -698,7 +698,7 @@ export default abstract class Editor extends ObservableMixin() {
 			return;
 		}
 
-		if ( crc32( getCrcInputData( licensePayload ) ) != licensePayload.verificationCode ) {
+		if ( crc32( getCrcInputData( licensePayload ) ) != licensePayload.vc ) {
 			blockEditor( this, 'licenseFormatInvalid', 'The format of the license key is invalid.' );
 
 			return;
@@ -740,7 +740,7 @@ export default abstract class Editor extends ObservableMixin() {
 		}
 
 		function hasAllRequiredFields( licensePayload: Record<string, unknown> ) {
-			const requiredFields = [ 'exp', 'jti', 'verificationCode' ];
+			const requiredFields = [ 'exp', 'jti', 'vc' ];
 
 			return requiredFields.every( field => field in licensePayload );
 		}
@@ -749,18 +749,10 @@ export default abstract class Editor extends ObservableMixin() {
 		 * Returns an array of values that are used to calculate the CRC32 checksum.
 		 */
 		function getCrcInputData( licensePayload: Record<string, unknown> ): CRCData {
-			const keysToCheck = [
-				'exp',
-				'licensedHosts',
-				'usageEndpoint',
-				'distributionChannel',
-				'whiteLabel',
-				'licenseType',
-				'features'
-			];
+			const keysToCheck = Object.getOwnPropertyNames( licensePayload ).sort();
 
 			const filteredValues = keysToCheck
-				.filter( key => licensePayload[ key ] !== undefined && licensePayload[ key ] !== null )
+				.filter( key => key != 'vc' && licensePayload[ key ] != null )
 				.map( key => licensePayload[ key ] );
 
 			return [ ...filteredValues ] as CRCData;

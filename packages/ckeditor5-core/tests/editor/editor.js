@@ -225,7 +225,7 @@ describe( 'Editor', () => {
 
 			describe( 'rquired fields in the license key', () => {
 				it( 'should not block the editor when required fields are provided and are valid', () => {
-					const licenseKey = 'foo.eyJleHAiOjIyMDg5ODg4MDAsImp0aSI6ImZvbyIsInZlcmlmaWNhdGlvbkNvZGUiOiJjNTU2YWQ3NCJ9.bar';
+					const licenseKey = 'foo.eyJleHAiOjIyMDg5ODg4MDAsImp0aSI6ImZvbyIsInZjIjoiNDYyYTkzMGQifQ.bar';
 
 					const editor = new TestEditor( { licenseKey } );
 
@@ -234,7 +234,7 @@ describe( 'Editor', () => {
 				} );
 
 				it( 'should block the editor when the `exp` field is missing', () => {
-					const licenseKey = 'foo.eyJqdGkiOiJmb28iLCJ2ZXJpZmljYXRpb25Db2RlIjoiMCJ9.bar';
+					const licenseKey = 'foo.eyJqdGkiOiJmb28iLCJ2YyI6IjhjNzM2NTIxIn0.bar';
 					const editor = new TestEditor( { licenseKey } );
 
 					sinon.assert.calledWithMatch( stub, 'The format of the license key is invalid.' );
@@ -242,7 +242,7 @@ describe( 'Editor', () => {
 				} );
 
 				it( 'should block the editor when the `jti` field is missing', () => {
-					const licenseKey = 'foo.eyJleHAiOjIyMDg5ODg4MDAsInZlcmlmaWNhdGlvbkNvZGUiOiJjNTU2YWQ3NCJ9.bar';
+					const licenseKey = 'foo.eyJleHAiOjIyMDg5ODg4MDAsInZjIjoiYzU1NmFkNzQifQ.bar';
 
 					const editor = new TestEditor( { licenseKey } );
 
@@ -250,8 +250,8 @@ describe( 'Editor', () => {
 					expect( editor.isReadOnly ).to.be.true;
 				} );
 
-				it( 'should block the editor when the `verificationCode` field is missing', () => {
-					const licenseKey = 'foo.eyJleHAiOjIyMDg5ODg4MDAsImp0aSI6ImZvbyJ9.bar';
+				it( 'should block the editor when the `vc` field is missing', () => {
+					const licenseKey = 'foo.eyJleHAiOjIyMDg5ODg4MDAsImp0aSI6ImZvbyJ9Cg.bar';
 
 					const editor = new TestEditor( { licenseKey } );
 
@@ -262,7 +262,7 @@ describe( 'Editor', () => {
 
 			it( 'should block the editor when the license key is not valid (expiration date in the past)', () => {
 				// eslint-disable-next-line max-len
-				const licenseKey = 'foo.eyJleHAiOjE3MDQwNjcyMDAsImp0aSI6ImZvbyIsInZlcmlmaWNhdGlvbkNvZGUiOiI2ZTlkNDM2NSJ9.bar';
+				const licenseKey = 'foo.eyJleHAiOjE3MDQwNjcyMDAsImp0aSI6ImZvbyIsInZjIjoiOTc4NTlGQkIifQo.bar';
 
 				const editor = new TestEditor( { licenseKey } );
 
@@ -271,7 +271,7 @@ describe( 'Editor', () => {
 			} );
 
 			it( 'should block the editor when the license key has wrong format (wrong verificationCode)', () => {
-				const licenseKey = 'foo.eyJleHAiOjIyMDg5ODg4MDAsImp0aSI6ImZvbyIsInZlcmlmaWNhdGlvbkNvZGUiOiIxMTExMTExMSJ9.bar';
+				const licenseKey = 'foo.eyJleHAiOjIyMDg5ODg4MDAsImp0aSI6ImZvbyIsInZjIjoiMTIzNDU2NzgifQo.bar';
 
 				const editor = new TestEditor( { licenseKey } );
 
@@ -280,7 +280,7 @@ describe( 'Editor', () => {
 			} );
 
 			it( 'should block the editor when the license key has wrong format (missing header part)', () => {
-				const licenseKey = 'eyJleHAiOjIyMDg5ODg4MDAsImp0aSI6ImZvbyIsInZlcmlmaWNhdGlvbkNvZGUiOiJjNTU2YWQ3NCJ9.bar';
+				const licenseKey = 'eyJleHAiOjIyMDg5ODg4MDAsImp0aSI6ImZvbyIsInZjIjoiNDYyYTkzMGQifQ.bar';
 
 				const editor = new TestEditor( { licenseKey } );
 
@@ -312,7 +312,7 @@ describe( 'Editor', () => {
 				const fetchStub = sinon.stub( window, 'fetch' );
 
 				// eslint-disable-next-line max-len
-				const licenseKey = 'foo.eyJleHAiOjM3ODY5MTIwMDAsImp0aSI6ImZvbyIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL2NrZWRpdG9yLmNvbSIsInZlcmlmaWNhdGlvbkNvZGUiOiJjZWE0ZjQ2MSJ9.bar';
+				const licenseKey = 'foo.eyJleHAiOjM3ODY5MTIwMDAsImp0aSI6ImZvbyIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL2NrZWRpdG9yLmNvbSIsInZjIjoiYWI5NGFhZjYifQ.bar';
 				const editor = new TestEditor( { licenseKey } );
 
 				editor.fire( 'ready' );
@@ -329,7 +329,7 @@ describe( 'Editor', () => {
 				const fetchStub = sinon.stub( window, 'fetch' );
 
 				// eslint-disable-next-line max-len
-				const licenseKey = 'foo.eyJleHAiOjM3ODY5MTIwMDAsImp0aSI6ImZvbyIsInZlcmlmaWNhdGlvbkNvZGUiOiI4ZjY3MzA0MCJ9.bar';
+				const licenseKey = 'foo.eyJleHAiOjM3ODY5MTIwMDAsImp0aSI6ImZvbyIsInZjIjoiZjA3OTJhNjYifQ.bar';
 				const editor = new TestEditor( { licenseKey } );
 
 				editor.fire( 'ready' );
@@ -348,7 +348,7 @@ describe( 'Editor', () => {
 				};
 
 				// eslint-disable-next-line max-len
-				const licenseKey = 'foo.eyJleHAiOjM3ODY5MTIwMDAsImp0aSI6ImZvbyIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL2NrZWRpdG9yLmNvbSIsInZlcmlmaWNhdGlvbkNvZGUiOiJjZWE0ZjQ2MSJ9.bar';
+				const licenseKey = 'foo.eyJleHAiOjM3ODY5MTIwMDAsImp0aSI6ImZvbyIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL2NrZWRpdG9yLmNvbSIsInZjIjoiYWI5NGFhZjYifQ.bar';
 				const editor = new TestEditor( { licenseKey } );
 
 				editor.fire( 'ready' );
@@ -370,7 +370,7 @@ describe( 'Editor', () => {
 				const warnStub = testUtils.sinon.stub( console, 'warn' );
 
 				// eslint-disable-next-line max-len
-				const licenseKey = 'foo.eyJleHAiOjM3ODY5MTIwMDAsImp0aSI6ImZvbyIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL2NrZWRpdG9yLmNvbSIsInZlcmlmaWNhdGlvbkNvZGUiOiJjZWE0ZjQ2MSJ9.bar';
+				const licenseKey = 'foo.eyJleHAiOjM3ODY5MTIwMDAsImp0aSI6ImZvbyIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL2NrZWRpdG9yLmNvbSIsInZjIjoiYWI5NGFhZjYifQ.bar';
 				const editor = new TestEditor( { licenseKey } );
 
 				editor.fire( 'ready' );
@@ -393,7 +393,7 @@ describe( 'Editor', () => {
 				const warnStub = testUtils.sinon.stub( console, 'warn' );
 
 				// eslint-disable-next-line max-len
-				const licenseKey = 'foo.eyJleHAiOjM3ODY5MTIwMDAsImp0aSI6ImZvbyIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL2NrZWRpdG9yLmNvbSIsInZlcmlmaWNhdGlvbkNvZGUiOiJjZWE0ZjQ2MSJ9.bar';
+				const licenseKey = 'foo.eyJleHAiOjM3ODY5MTIwMDAsImp0aSI6ImZvbyIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL2NrZWRpdG9yLmNvbSIsInZjIjoiYWI5NGFhZjYifQ.bar';
 				const editor = new TestEditor( { licenseKey } );
 
 				editor.fire( 'ready' );
