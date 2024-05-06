@@ -281,7 +281,7 @@ function sameNodes( child1: ViewNode, child2: ViewNode ) {
 }
 
 /**
- * TODO
+ * Event fired on DOM mutations detected.
  *
  * This event is introduced by {@link module:engine/view/observer/mutationobserver~MutationObserver} and available
  * by default in all editor instances (attached by {@link module:engine/view/view~View}).
@@ -291,18 +291,18 @@ function sameNodes( child1: ViewNode, child2: ViewNode ) {
  */
 export type ViewDocumentMutationsEvent = {
 	name: 'mutations';
-	args: [ data: MutationsEventData ];
+	args: [ MutationsEventData ];
 };
 
 /**
- * TODO
+ * The value of {@link ~ViewDocumentMutationsEvent}.
  */
 export type MutationsEventData = {
-	mutations: Array<MutationData>; // TODO
+	mutations: Array<MutationData>;
 };
 
 /**
- * TODO
+ * A single entry in {@link ~MutationsEventData} mutations array.
  */
 export type MutationData = {
 	type: ChangeType;

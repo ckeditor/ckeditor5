@@ -27,12 +27,12 @@ import { debounce } from 'lodash-es';
  */
 export default class Input extends Plugin {
 	/**
-	 * TODO
+	 * The queue of `insertText` command executions that are waiting for the DOM to get updated after beforeinput event.
 	 */
 	private _queue: Array<Parameters<InsertTextCommand[ 'execute' ]>[ 0 ]> = [];
 
 	/**
-	 * TODO
+	 * Debounced queue flush as a safety mechanism for cases of mutation observer not triggering.
 	 */
 	private _flushQueueDebounced = debounce( () => this._flushQueue( 'timeout' ), 500 );
 
@@ -82,31 +82,31 @@ export default class Input extends Plugin {
 				modelRanges = Array.from( modelSelection.getRanges() );
 			}
 
-			const insertText = text;
+			let insertText = text;
 
 			// TODO this needs a better implementation
 			// Typing in English on Android is firing composition events for the whole typed word.
 			// We need to check the target range text to only apply the difference.
-			// if ( env.isAndroid ) {
-			// 	const selectedText = Array.from( modelRanges[ 0 ].getItems() ).reduce( ( rangeText, node ) => {
-			// 		return rangeText + ( node.is( '$textProxy' ) ? node.data : '' );
-			// 	}, '' );
-			//
-			// 	if ( selectedText ) {
-			// 		if ( selectedText.length <= insertText.length ) {
-			// 			if ( insertText.startsWith( selectedText ) ) {
-			// 				insertText = insertText.substring( selectedText.length );
-			// 				( modelRanges[ 0 ] as any ).start = modelRanges[ 0 ].start.getShiftedBy( selectedText.length );
-			// 			}
-			// 		} else {
-			// 			if ( selectedText.startsWith( insertText ) ) {
-			// 				// TODO this should be mapped as delete?
-			// 				( modelRanges[ 0 ] as any ).start = modelRanges[ 0 ].start.getShiftedBy( insertText.length );
-			// 				insertText = '';
-			// 			}
-			// 		}
-			// 	}
-			// }
+			if ( env.isAndroid ) {
+				const selectedText = Array.from( modelRanges[ 0 ].getItems() ).reduce( ( rangeText, node ) => {
+					return rangeText + ( node.is( '$textProxy' ) ? node.data : '' );
+				}, '' );
+
+				if ( selectedText ) {
+					if ( selectedText.length <= insertText.length ) {
+						if ( insertText.startsWith( selectedText ) ) {
+							insertText = insertText.substring( selectedText.length );
+							( modelRanges[ 0 ] as any ).start = modelRanges[ 0 ].start.getShiftedBy( selectedText.length );
+						}
+					} else {
+						if ( selectedText.startsWith( insertText ) ) {
+							// TODO this should be mapped as delete?
+							( modelRanges[ 0 ] as any ).start = modelRanges[ 0 ].start.getShiftedBy( insertText.length );
+							insertText = '';
+						}
+					}
+				}
+			}
 
 			const commandData: Parameters<InsertTextCommand[ 'execute' ]>[ 0 ] = {
 				text: insertText,
@@ -117,6 +117,10 @@ export default class Input extends Plugin {
 				commandData.resultRange = editor.editing.mapper.toModelRange( viewResultRange );
 			}
 
+			// This is a composition event and those are not cancellable, so we need to wait until browser updates the DOM
+			// and we could apply changes to the model and verify if the DOM is valid.
+			// The browser applies changes to the DOM not immediately on beforeinput event.
+			// We just wait for mutation observer to notice changes or as a fallback a timeout.
 			if ( env.isAndroid && view.document.isComposing ) {
 				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 				// @if CK_DEBUG_TYPING // 	console.log( '%c[Input]%c Queue insertText:',
@@ -188,7 +192,8 @@ export default class Input extends Plugin {
 			} );
 		}
 
-		// TODO
+		// Apply changes to the model as they are applied to the DOM by the browser.
+		// On beforeinput event, the DOM is not yet modified. We wait for detected mutations to apply model changes.
 		if ( env.isAndroid ) {
 			this.listenTo<ViewDocumentMutationsEvent>( view.document, 'mutations', () => this._flushQueue( 'mutations' ) );
 		}
@@ -204,7 +209,8 @@ export default class Input extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Applies all queued insertText command executions.
+	 *
 	 * @param reason Used only for debugging.
 	 */
 	private _flushQueue( reason: string ): void {

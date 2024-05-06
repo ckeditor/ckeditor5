@@ -229,7 +229,7 @@ export default class View extends ObservableMixin() {
 			} );
 		}
 
-		// TODO
+		// Listen to external content mutations (directly in the DOM) and mark them to get verified by the renderer.
 		this.listenTo<ViewDocumentMutationsEvent>( this.document, 'mutations', ( evt, { mutations } ) => {
 			mutations.forEach( mutation => this._renderer.markToSync( mutation.type, mutation.node ) );
 		}, { priority: 'low' } );
