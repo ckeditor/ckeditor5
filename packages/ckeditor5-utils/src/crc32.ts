@@ -48,7 +48,7 @@ function makeCrcTable(): Array<number> {
  * If false, the checksum is returned as a numeric value. Default is true.
  * @returns The CRC-32 checksum, returned as a hexadecimal string by default, or as a number if returnHex is set to false.
  */
-export default function crc32( inputData: CRCData, returnHex: boolean = true ): number | string {
+export default function crc32( inputData: CRCData ): string {
 	const dataArray = Array.isArray( inputData ) ? inputData : [ inputData ];
 	const crcTable: Array<number> = makeCrcTable();
 	let crc: number = 0 ^ ( -1 );
@@ -70,7 +70,7 @@ export default function crc32( inputData: CRCData, returnHex: boolean = true ): 
 
 	crc = ( crc ^ ( -1 ) ) >>> 0; // Force unsigned integer
 
-	return returnHex ? crc.toString( 16 ) : crc;
+	return crc.toString( 16 ).padStart( 8, '0' );
 }
 
 /**

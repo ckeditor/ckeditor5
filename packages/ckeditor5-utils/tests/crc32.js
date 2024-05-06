@@ -27,7 +27,7 @@ describe( 'crc32', () => {
 
 		it( 'should correctly calculate the CRC32 checksum for an empty string', () => {
 			const input = '';
-			const expectedHex = '0';
+			const expectedHex = '00000000';
 			expect( crc32( input ) ).to.equal( expectedHex );
 		} );
 	} );
@@ -65,24 +65,18 @@ describe( 'crc32', () => {
 
 		it( 'should correctly handle an empty array', () => {
 			const input = [];
-			const expectedHex = '0';
+			const expectedHex = '00000000';
 			expect( crc32( input ) ).to.equal( expectedHex );
 		} );
 
 		it( 'should correctly handle arrays containing empty strings', () => {
 			const input = [ '', '', '' ];
-			const expectedHex = '0';
+			const expectedHex = '00000000';
 			expect( crc32( input ) ).to.equal( expectedHex );
 		} );
 	} );
 
 	describe( 'return values', () => {
-		it( 'should return a number when returnHex is set to false', () => {
-			const input = [ 'foo' ];
-			const result = 2356372769;
-			expect( crc32( input, false ) ).to.equal( result );
-		} );
-
 		it( 'should return a hexadecimal string when returnHex is true', () => {
 			const input = [ 'foo' ];
 			const result = '8c736521';
@@ -97,8 +91,8 @@ describe( 'crc32', () => {
 
 		it( 'should return consistent results for the same input', () => {
 			const input = [ 'foo', 'bar' ];
-			const firstRun = crc32( input, true );
-			const secondRun = crc32( input, true );
+			const firstRun = crc32( input );
+			const secondRun = crc32( input );
 			expect( firstRun ).to.equal( secondRun );
 		} );
 	} );
