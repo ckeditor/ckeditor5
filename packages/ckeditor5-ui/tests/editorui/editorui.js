@@ -18,7 +18,6 @@ import { Editor } from '@ckeditor/ckeditor5-core';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { EditorUIView, InlineEditableUIView, MenuBarView } from '../../src/index.js';
-import secureSourceElement from '@ckeditor/ckeditor5-core/src/editor/utils/securesourceelement.js';
 
 /* global document, console */
 
@@ -969,32 +968,21 @@ describe( 'EditorUI', () => {
 	} );
 
 	describe( 'Focus handling and navigation between editing root and menu bar', () => {
-		let editorElement, locale, menuBarEditorUIView, menuBarView, menuBarEditor, menuBarEditorUI, domRoot;
+		let editorElement, menuBarView, menuBarEditor, menuBarEditorUI, domRoot;
 
 		// testUtils.createSinonSandbox();
 
 		beforeEach( async () => {
 			editorElement = document.body.appendChild( document.createElement( 'div' ) );
-			menuBarEditor = new Editor();
-			menuBarEditor.sourceElement = editorElement;
-			secureSourceElement( menuBarEditor, editorElement );
-			menuBarEditor.model.document.createRoot();
 
-			locale = {
-				t: val => val,
-				uiLanguageDirection: 'ltr',
-				contentLanguage: 'en',
-				contentLanguageDirection: 'ltr'
-			};
-			menuBarEditorUIView = new MenuBarEditorUIView( locale, menuBarEditor.editing.view, editorElement );
-			menuBarEditor.ui = menuBarEditorUI = new MenuBarEditorUI( menuBarEditor, menuBarEditorUIView );
-			await menuBarEditor.initPlugins()
-				.then( () => menuBarEditor.ui.init() );
+			await MenuBarTestEditor.create( editorElement ).then( editor => {
+				menuBarEditor = editor;
+				menuBarEditorUI = menuBarEditor.ui;
+				menuBarView = menuBarEditorUI.view.menuBarView;
 
-			menuBarView = menuBarEditor.ui.view.menuBarView;
-			document.body.appendChild( menuBarView.element );
+				document.body.appendChild( menuBarView.element );
+			} );
 
-			domRoot = editorElement;
 			domRoot = menuBarEditor.editing.view.domRoots.get( 'main' );
 		} );
 
@@ -1138,6 +1126,15 @@ class MenuBarEditorUI extends EditorUI {
 
 	destroy() {
 		super.destroy();
+	}
+}
+
+class MenuBarTestEditor extends ClassicTestEditor {
+	constructor( sourceElementOrData, config ) {
+		super( sourceElementOrData, config );
+
+		const menuBarEditorUIView = new MenuBarEditorUIView( this.locale, this.editing.view, sourceElementOrData );
+		this.ui = new MenuBarEditorUI( this, menuBarEditorUIView );
 	}
 }
 
