@@ -879,7 +879,7 @@ describe( 'Differ', () => {
 			model.change( () => {
 				rename( root.getChild( 1 ), 'listItem' );
 
-				const before = { name: 'paragraph', attributes: new Map() }
+				const before = { name: 'paragraph', attributes: new Map() };
 
 				expectChanges( [
 					{ type: 'remove', action: 'rename', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ) },
@@ -1034,7 +1034,7 @@ describe( 'Differ', () => {
 					{
 						type: 'remove',
 						action: 'remove', // Becomes `remove` as the end result is a remove, not a rename (remove overwrites rename).
-						name: 'paragraph', // Data before any change happened (the element was a paragraph before being renamed and removed).
+						name: 'paragraph', // Data before any change happened (the element was a paragraph before renamed and removed).
 						length: 1,
 						position: new Position( root, [ 1 ] ),
 						attributes: new Map( [] )
