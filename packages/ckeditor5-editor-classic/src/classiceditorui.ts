@@ -258,28 +258,5 @@ export default class ClassicEditorUI extends EditorUI {
 			}, { priority: 'high' } );
 		}, { priority: 'low' } );
 	}
-
-	/**
-	 * Handles focus and keystrokes for menu bar element.
-	 */
-	private _setupMenuBarBehaviors( menuBarViewElement: HTMLElement ) {
-		const editor = this.editor;
-		this.focusTracker.add( menuBarViewElement );
-		editor.keystrokes.listenTo( menuBarViewElement );
-
-		editor.keystrokes.set( 'Esc', ( data, cancel ) => {
-			if ( menuBarViewElement.contains( this.focusTracker.focusedElement ) ) {
-				editor.editing.view.focus();
-				cancel();
-			}
-		} );
-
-		editor.keystrokes.set( 'Alt+F9', ( data, cancel ) => {
-			if ( !menuBarViewElement.contains( this.focusTracker.focusedElement ) ) {
-				this.view.menuBarView!.focus();
-				cancel();
-			}
-		} );
-	}
 }
 
