@@ -16,10 +16,10 @@ CKEditor&nbsp;5 is distributed with two types of styles:
 If you went through our {@link getting-started/quick-start Quick start}, you probably noticed that attaching the styles in JavaScript is pretty standard, and we provide a CSS style sheet that has both the editor and content style sheets combined:
 
 ```js
-import 'ckeditor5/dist/index.css';
+import 'ckeditor5/index.css';
 
 // If you are using premium features:
-import 'ckeditor5-premium-features/dist/index.css'; 
+import 'ckeditor5-premium-features/index.css'; 
 ```
 
 It is as easy in HTML:
