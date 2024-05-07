@@ -30,9 +30,13 @@
 }
 
 /* Editing styles */
-@mixin ck-media-default-colors {
-	.ck.ck-editor__editable .image > figcaption.image__caption_highlighted {
+.ck.ck-editor__editable .image > figcaption.image__caption_highlighted {
+	@mixin ck-media-default-colors {
 		animation: ck-image-caption-highlight .6s ease-out;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		animation: none;
 	}
 }
 

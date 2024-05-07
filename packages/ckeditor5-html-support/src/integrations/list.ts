@@ -216,7 +216,7 @@ function viewToModelListAttributeConverter( attributeName: string, dataFilter: D
 
 			// Set list attributes only on same level items, those nested deeper are already handled
 			// by the recursive conversion.
-			if ( item.hasAttribute( attributeName ) ) {
+			if ( item.hasAttribute( 'htmlUlAttributes' ) || item.hasAttribute( 'htmlOlAttributes' ) ) {
 				continue;
 			}
 

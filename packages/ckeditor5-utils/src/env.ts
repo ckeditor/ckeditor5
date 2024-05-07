@@ -71,6 +71,11 @@ export interface EnvType {
 	readonly isMediaForcedColors: boolean;
 
 	/**
+	 * Indicates that "prefer reduced motion" browser setting is active.
+	 */
+	readonly isMotionReduced: boolean;
+
+	/**
 	 * Environment features information.
 	 */
 	readonly features: EnvFeaturesType;
@@ -105,6 +110,10 @@ const env: EnvType = {
 	isBlink: isBlink( userAgent ),
 
 	isMediaForcedColors: isMediaForcedColors(),
+
+	get isMotionReduced() {
+		return isMotionReduced();
+	},
 
 	features: {
 		isRegExpUnicodePropertySupported: isRegExpUnicodePropertySupported()
@@ -212,4 +221,11 @@ export function isRegExpUnicodePropertySupported(): boolean {
  */
 export function isMediaForcedColors(): boolean {
 	return window.matchMedia( '(forced-colors: active)' ).matches;
+}
+
+/**
+ * Checks if user enabled "prefers reduced motion" setting in browser.
+ */
+export function isMotionReduced(): boolean {
+	return window.matchMedia( '(prefers-reduced-motion)' ).matches;
 }

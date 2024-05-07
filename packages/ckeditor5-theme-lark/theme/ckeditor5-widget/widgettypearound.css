@@ -36,12 +36,20 @@
 
 		@mixin ck-widget-type-around-button-hidden;
 
+		@media (prefers-reduced-motion: reduce) {
+			transition: none;
+		}
+
 		& svg {
 			width: 10px;
 			height: 8px;
 			transform: translate(-50%,-50%);
 			transition: transform .5s ease;
 			margin-top: 1px;
+
+			@media (prefers-reduced-motion: reduce) {
+				transition: none;
+			}
 
 			& * {
 				stroke-dasharray: 10;
@@ -75,6 +83,20 @@
 
 				& line {
 					animation: ck-widget-type-around-arrow-tip-dash 2s linear;
+				}
+			}
+
+			@media (prefers-reduced-motion: reduce) {
+				animation: none;
+
+				& svg {
+					& polyline {
+						animation: none;
+					}
+
+					& line {
+						animation: none;
+					}
 				}
 			}
 		}

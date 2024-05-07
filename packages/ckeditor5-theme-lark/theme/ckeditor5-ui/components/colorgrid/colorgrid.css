@@ -68,6 +68,10 @@
 		}
 	}
 
+	@media (prefers-reduced-motion: reduce) {
+		transition: none;
+	}
+
 	&.ck-disabled {
 		cursor: unset;
 		transition: unset;
