@@ -16,7 +16,7 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import { Editor } from '@ckeditor/ckeditor5-core';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import ClassicTestEditor, { ClassicTestEditorUI } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { EditorUIView, InlineEditableUIView, MenuBarView } from '../../src/index.js';
 
 /* global document, console */
@@ -1079,52 +1079,11 @@ describe( 'EditorUI', () => {
 	}
 } );
 
-class MenuBarEditorUI extends EditorUI {
-	constructor( editor, view ) {
-		super( editor );
-
-		this.view = view;
-	}
-
+class MenuBarEditorUI extends ClassicTestEditorUI {
 	init() {
-		const editor = this.editor;
-		const view = this.view;
-		const editingView = editor.editing.view;
-		const editable = view.editable;
-		const editingRoot = editingView.document.getRoot();
-
-		// The editable UI and editing root should share the same name. Then name is used
-		// to recognize the particular editable, for instance in ARIA attributes.
-		editable.name = editingRoot.rootName;
-
-		view.render();
-
-		// The editable UI element in DOM is available for sure only after the editor UI view has been rendered.
-		// But it can be available earlier if a DOM element has been passed to DecoupledEditor.create().
-		const editableElement = editable.element;
-
-		// Register the editable UI view in the editor. A single editor instance can aggregate multiple
-		// editable areas (roots) but the decoupled editor has only one.
-		this.setEditableElement( editable.name, editableElement );
-
-		// Let the editable UI element respond to the changes in the global editor focus
-		// tracker. It has been added to the same tracker a few lines above but, in reality, there are
-		// many focusable areas in the editor, like balloons, toolbars or dropdowns and as long
-		// as they have focus, the editable should act like it is focused too (although technically
-		// it isn't), e.g. by setting the proper CSS class, visually announcing focus to the user.
-		// Doing otherwise will result in editable focus styles disappearing, once e.g. the
-		// toolbar gets focused.
-		view.editable.bind( 'isFocused' ).to( this.focusTracker );
-
-		// Bind the editable UI element to the editing view, making it an end– and entry–point
-		// of the editor's engine. This is where the engine meets the UI.
-		editingView.attachDomRoot( editableElement );
+		super.init();
 
 		initMenuBar( this );
-	}
-
-	destroy() {
-		super.destroy();
 	}
 }
 
@@ -1144,9 +1103,9 @@ class MenuBarEditorUIView extends EditorUIView {
 		editableElement
 	) {
 		super( locale );
-		this.menuBarView = new MenuBarView( locale );
-		// this.editable = undefined;
 
+		this.menuBarView = new MenuBarView( locale );
+		this.main = this.createCollection();
 		this.editable = new InlineEditableUIView( locale, editingView, editableElement, {
 			label: () => 'xyz'
 		} );
