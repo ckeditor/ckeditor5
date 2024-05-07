@@ -1475,7 +1475,7 @@ function isMenuDefinition( definition: any ): definition is MenuBarMenuDefinitio
 }
 
 /**
- * Initializes menu bar in EditorUI.
+ * Initializes menu bar for given `editorUI`.
  *
  * @internal
  */
