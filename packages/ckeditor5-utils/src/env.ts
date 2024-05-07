@@ -66,6 +66,11 @@ export interface EnvType {
 	readonly isBlink: boolean;
 
 	/**
+	 * Indicates that "prefer reduced motion" browser setting is active.
+	 */
+	readonly isMotionReduced: boolean;
+
+	/**
 	 * Environment features information.
 	 */
 	readonly features: EnvFeaturesType;
@@ -98,6 +103,10 @@ const env: EnvType = {
 	isAndroid: isAndroid( userAgent ),
 
 	isBlink: isBlink( userAgent ),
+
+	get isMotionReduced() {
+		return isMotionReduced();
+	},
 
 	features: {
 		isRegExpUnicodePropertySupported: isRegExpUnicodePropertySupported()
@@ -198,4 +207,11 @@ export function isRegExpUnicodePropertySupported(): boolean {
 	}
 
 	return isSupported;
+}
+
+/**
+ * Checks if user enabled "prefers reduced motion" setting in browser.
+ */
+export function isMotionReduced(): boolean {
+	return window.matchMedia( '(prefers-reduced-motion)' ).matches;
 }

@@ -40,6 +40,10 @@
 		transition: .2s ease box-shadow;
 		border: 0;
 
+		@media (prefers-reduced-motion: reduce) {
+			transition: none;
+		}
+
 		&:focus:not( .ck-disabled ),
 		&:hover:not( .ck-disabled ) {
 			/* Disable the default .ck-button's border ring. */

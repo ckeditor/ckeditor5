@@ -28,6 +28,10 @@
 	transition: .2s ease box-shadow;
 	border: 0;
 
+	@media (prefers-reduced-motion: reduce) {
+		transition: none;
+	}
+
 	&.ck-disabled {
 		cursor: unset;
 		transition: unset;
