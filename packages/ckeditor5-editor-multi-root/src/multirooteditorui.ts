@@ -13,7 +13,7 @@ import {
 
 import {
 	EditorUI,
-	initMenuBar,
+	_initMenuBar,
 	type EditorUIReadyEvent,
 	type InlineEditableUIView
 } from 'ckeditor5/src/ui.js';
@@ -85,7 +85,7 @@ export default class MultiRootEditorUI extends EditorUI {
 		}
 
 		this._initToolbar();
-		this._initMenuBar();
+		_initMenuBar( this );
 		this.fire<EditorUIReadyEvent>( 'ready' );
 	}
 
@@ -188,13 +188,6 @@ export default class MultiRootEditorUI extends EditorUI {
 
 		// Register the toolbar, so it becomes available for Alt+F10 and Esc navigation.
 		this.addToolbar( view.toolbar );
-	}
-
-	/**
-	 * Initializes the editor menu bar.
-	 */
-	private _initMenuBar(): void {
-		initMenuBar( this );
 	}
 
 	/**

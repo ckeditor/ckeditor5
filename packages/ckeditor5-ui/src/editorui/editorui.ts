@@ -27,8 +27,6 @@ import {
 
 import type { Editor } from '@ckeditor/ckeditor5-core';
 import type { ViewDocumentLayoutChangedEvent, ViewScrollToTheSelectionEvent } from '@ckeditor/ckeditor5-engine';
-import type MenuBarView from '../menubar/menubarview.js';
-import { normalizeMenuBarConfig } from '../menubar/utils.js';
 
 /**
  * A class providing the minimal interface that is required to successfully bootstrap any editor UI.
@@ -650,31 +648,4 @@ function getToolbarDefinitionWeight( toolbarDef: FocusableToolbarDefinition ): n
 	}
 
 	return weight;
-}
-
-export function initMenuBar( editorUI: EditorUI & { view: EditorUIView & { menuBarView: MenuBarView } } ): void {
-	const editor = editorUI.editor;
-	const menuBarViewElement = editorUI.view.menuBarView.element!;
-	const view = editorUI.view;
-
-	editorUI.focusTracker.add( menuBarViewElement );
-	editor.keystrokes.listenTo( menuBarViewElement );
-
-	const normalizedMenuBarConfig = normalizeMenuBarConfig( editor.config.get( 'menuBar' ) || {} );
-
-	view.menuBarView.fillFromConfig( normalizedMenuBarConfig, editorUI.componentFactory );
-
-	editor.keystrokes.set( 'Esc', ( data, cancel ) => {
-		if ( menuBarViewElement.contains( editorUI.focusTracker.focusedElement ) ) {
-			editor.editing.view.focus();
-			cancel();
-		}
-	} );
-
-	editor.keystrokes.set( 'Alt+F9', ( data, cancel ) => {
-		if ( !menuBarViewElement.contains( editorUI.focusTracker.focusedElement ) ) {
-			editorUI.view.menuBarView.focus();
-			cancel();
-		}
-	} );
 }

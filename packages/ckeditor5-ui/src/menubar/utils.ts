@@ -34,6 +34,8 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 import type { ButtonExecuteEvent } from '../button/button.js';
 import type ComponentFactory from '../componentfactory.js';
+import type EditorUI from '../editorui/editorui.js';
+import type EditorUIView from '../editorui/editoruiview.js';
 
 const NESTED_PANEL_HORIZONTAL_OFFSET = 5;
 
@@ -1471,3 +1473,36 @@ function getIdFromGroupItem( item: string | MenuBarMenuDefinition ): string {
 function isMenuDefinition( definition: any ): definition is MenuBarMenuDefinition {
 	return typeof definition === 'object' && 'menuId' in definition;
 }
+
+/**
+ * Initializes menu bar in EditorUI.
+ *
+ * @internal
+ */
+export function _initMenuBar( editorUI: EditorUI & { view: EditorUIView & { menuBarView: MenuBarView } } ): void {
+	const editor = editorUI.editor;
+	const menuBarViewElement = editorUI.view.menuBarView.element!;
+	const view = editorUI.view;
+
+	editorUI.focusTracker.add( menuBarViewElement );
+	editor.keystrokes.listenTo( menuBarViewElement );
+
+	const normalizedMenuBarConfig = normalizeMenuBarConfig( editor.config.get( 'menuBar' ) || {} );
+
+	view.menuBarView.fillFromConfig( normalizedMenuBarConfig, editorUI.componentFactory );
+
+	editor.keystrokes.set( 'Esc', ( data, cancel ) => {
+		if ( menuBarViewElement.contains( editorUI.focusTracker.focusedElement ) ) {
+			editor.editing.view.focus();
+			cancel();
+		}
+	} );
+
+	editor.keystrokes.set( 'Alt+F9', ( data, cancel ) => {
+		if ( !menuBarViewElement.contains( editorUI.focusTracker.focusedElement ) ) {
+			editorUI.view.menuBarView.focus();
+			cancel();
+		}
+	} );
+}
+

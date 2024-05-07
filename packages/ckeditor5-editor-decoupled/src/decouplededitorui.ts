@@ -14,7 +14,7 @@ import {
 import {
 	EditorUI,
 	type EditorUIReadyEvent,
-	initMenuBar
+	_initMenuBar
 } from 'ckeditor5/src/ui.js';
 
 import { enablePlaceholder } from 'ckeditor5/src/engine.js';
@@ -81,7 +81,7 @@ export default class DecoupledEditorUI extends EditorUI {
 
 		this._initPlaceholder();
 		this._initToolbar();
-		this._initMenuBar();
+		_initMenuBar( this );
 		this.fire<EditorUIReadyEvent>( 'ready' );
 	}
 
@@ -110,13 +110,6 @@ export default class DecoupledEditorUI extends EditorUI {
 
 		// Register the toolbar so it becomes available for Alt+F10 and Esc navigation.
 		this.addToolbar( view.toolbar );
-	}
-
-	/**
-	 * Initializes the editor menu bar.
-	 */
-	private _initMenuBar(): void {
-		initMenuBar( this );
 	}
 
 	/**
