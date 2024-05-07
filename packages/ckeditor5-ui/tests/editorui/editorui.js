@@ -1079,20 +1079,20 @@ describe( 'EditorUI', () => {
 	}
 } );
 
-class MenuBarEditorUI extends ClassicTestEditorUI {
-	init() {
-		super.init();
-
-		initMenuBar( this );
-	}
-}
-
 class MenuBarTestEditor extends ClassicTestEditor {
 	constructor( sourceElementOrData, config ) {
 		super( sourceElementOrData, config );
 
 		const menuBarEditorUIView = new MenuBarEditorUIView( this.locale, this.editing.view, sourceElementOrData );
 		this.ui = new MenuBarEditorUI( this, menuBarEditorUIView );
+	}
+}
+
+class MenuBarEditorUI extends ClassicTestEditorUI {
+	init() {
+		super.init();
+
+		initMenuBar( this );
 	}
 }
 
