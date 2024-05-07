@@ -704,6 +704,24 @@ export default abstract class Editor extends ObservableMixin() {
 			return;
 		}
 
+		const licensedHosts: Array<string> = licensePayload.licensedHosts;
+
+		if ( licensedHosts ) {
+			const hostname = this._getHostname();
+			const willcards = licensedHosts
+				.filter( val => val.slice( 0, 2 ) === '*.' )
+				.map( val => val.slice( 1 ) );
+
+			const isHostnameMatched = licensedHosts.some( licensedHost => licensedHost === hostname );
+			const isWillcardMatched = willcards.some( willcard => willcard === hostname.slice( -willcard.length ) );
+
+			if ( !isWillcardMatched && !isHostnameMatched ) {
+				blockEditor( this, 'licenseFormatInvalid', `Domain "${ hostname }" does not have access to the provided license.` );
+
+				return;
+			}
+		}
+
 		if ( licensePayload.usageEndpoint ) {
 			this.once<EditorReadyEvent>( 'ready', () => {
 				const telemetryData = this._getTelemetryData();
@@ -757,6 +775,14 @@ export default abstract class Editor extends ObservableMixin() {
 
 			return [ ...filteredValues ] as CRCData;
 		}
+	}
+
+	/**
+	 * Returns hostname of current page. Created for testing purpose, because
+	 * window.location.hostname cannot be stubbed by sinon.
+	 */
+	private _getHostname() {
+		return window.location.hostname;
 	}
 
 	private async _sendUsageRequest(
