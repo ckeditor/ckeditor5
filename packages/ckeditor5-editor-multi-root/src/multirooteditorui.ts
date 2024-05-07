@@ -13,7 +13,7 @@ import {
 
 import {
 	EditorUI,
-	normalizeMenuBarConfig,
+	initMenuBar,
 	type EditorUIReadyEvent,
 	type InlineEditableUIView
 } from 'ckeditor5/src/ui.js';
@@ -194,30 +194,7 @@ export default class MultiRootEditorUI extends EditorUI {
 	 * Initializes the editor menu bar.
 	 */
 	private _initMenuBar(): void {
-		const editor = this.editor;
-		const menuBarViewElement = this.view.menuBarView.element!;
-		const view = this.view;
-
-		this.focusTracker.add( menuBarViewElement );
-		editor.keystrokes.listenTo( menuBarViewElement );
-
-		const normalizedMenuBarConfig = normalizeMenuBarConfig( editor.config.get( 'menuBar' ) || {} );
-
-		view.menuBarView.fillFromConfig( normalizedMenuBarConfig, this.componentFactory );
-
-		editor.keystrokes.set( 'Esc', ( data, cancel ) => {
-			if ( menuBarViewElement.contains( this.focusTracker.focusedElement ) ) {
-				editor.editing.view.focus();
-				cancel();
-			}
-		} );
-
-		editor.keystrokes.set( 'Alt+F9', ( data, cancel ) => {
-			if ( !menuBarViewElement.contains( this.focusTracker.focusedElement ) ) {
-				this.view.menuBarView.focus();
-				cancel();
-			}
-		} );
+		initMenuBar( this );
 	}
 
 	/**

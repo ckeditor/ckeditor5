@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import EditorUI from '../../src/editorui/editorui.js';
+import EditorUI, { initMenuBar } from '../../src/editorui/editorui.js';
 
 import ComponentFactory from '../../src/componentfactory.js';
 import ToolbarView from '../../src/toolbar/toolbarview.js';
@@ -17,6 +17,7 @@ import { Editor } from '@ckeditor/ckeditor5-core';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { EditorUIView, MenuBarView } from '../../src/index.js';
 
 /* global document, console */
 
@@ -964,22 +965,160 @@ describe( 'EditorUI', () => {
 				sinon.assert.notCalled( invisibleEditingAreaSpy );
 			} );
 		} );
-
-		function pressAltF10( specificEditor ) {
-			( specificEditor || editor ).keystrokes.press( {
-				keyCode: keyCodes.f10,
-				altKey: true,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			} );
-		}
-
-		function pressEsc() {
-			editor.keystrokes.press( {
-				keyCode: keyCodes.esc,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			} );
-		}
 	} );
+
+	describe( 'Focus handling and navigation between editing root and menu bar', () => {
+		let locale, menuBarEditorUIView, menuBarView, menuBarEditor, menuBarEditorUI, domRoot;
+
+		// testUtils.createSinonSandbox();
+
+		beforeEach( () => {
+			menuBarEditor = new Editor();
+			locale = { t: val => val };
+			menuBarEditorUIView = new MenuBarEditorUIView( locale );
+			menuBarEditor.ui = menuBarEditorUI = new MenuBarEditorUI( menuBarEditor, menuBarEditorUIView );
+			// menuBarEditorUI.init();
+			menuBarEditor.initPlugins()
+				.then( editor => editor.ui.init() );
+			// view = new MenuBarEditorUIView( locale );
+			// ui = new MenuBarEditorUI( editor, view );
+			menuBarView = menuBarEditorUI.view.menuBarView;
+
+			document.body.appendChild( menuBarView.element );
+			// domRoot = editor.editing.view.domRoots.get( 'foo' );
+		} );
+
+		afterEach( () => {
+			menuBarEditorUI.destoy();
+			menuBarView.element.remove();
+		} );
+
+		describe( 'Focusing menu bar on Alt+F9 key press', () => {
+			beforeEach( () => {
+				ui.focusTracker.isFocused = true;
+				ui.focusTracker.focusedElement = domRoot;
+			} );
+
+			it( 'should focus the menu bar when the focus is in the editing root', () => {
+				const spy = testUtils.sinon.spy( menuBarView, 'focus' );
+
+				ui.focusTracker.isFocused = true;
+				ui.focusTracker.focusedElement = domRoot;
+
+				pressAltF9( editor );
+
+				sinon.assert.calledOnce( spy );
+			} );
+
+			it( 'should do nothing if the menu bar is already focused', () => {
+				const domRootFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
+				const menuBarFocusSpy = testUtils.sinon.spy( menuBarView, 'focus' );
+
+				// Focus the toolbar.
+				pressAltF9( editor );
+				ui.focusTracker.focusedElement = menuBarView.element;
+
+				// Try Alt+F9 again.
+				pressAltF9( editor );
+
+				sinon.assert.calledOnce( menuBarFocusSpy );
+				sinon.assert.notCalled( domRootFocusSpy );
+			} );
+		} );
+
+		describe( 'Restoring focus on Esc key press', () => {
+			beforeEach( () => {
+				ui.focusTracker.isFocused = true;
+				ui.focusTracker.focusedElement = domRoot;
+			} );
+
+			it( 'should move the focus back from the main toolbar to the editing root', () => {
+				const domRootFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
+				const menuBarFocusSpy = testUtils.sinon.spy( menuBarView, 'focus' );
+
+				// Focus the menu bar.
+				pressAltF9( editor );
+				ui.focusTracker.focusedElement = menuBarView.element;
+
+				pressEsc( editor );
+
+				sinon.assert.callOrder( menuBarFocusSpy, domRootFocusSpy );
+			} );
+
+			it( 'should do nothing if it was pressed when menu bar was not focused', () => {
+				const domRootFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
+				const menuBarFocusSpy = testUtils.sinon.spy( menuBarView, 'focus' );
+
+				pressEsc( editor );
+
+				sinon.assert.notCalled( domRootFocusSpy );
+				sinon.assert.notCalled( menuBarFocusSpy );
+			} );
+		} );
+	} );
+
+	function pressAltF10( specificEditor ) {
+		( specificEditor || editor ).keystrokes.press( {
+			keyCode: keyCodes.f10,
+			altKey: true,
+			preventDefault: sinon.spy(),
+			stopPropagation: sinon.spy()
+		} );
+	}
+
+	function pressAltF9( specificEditor ) {
+		( specificEditor || editor ).keystrokes.press( {
+			keyCode: keyCodes.f9,
+			altKey: true,
+			preventDefault: sinon.spy(),
+			stopPropagation: sinon.spy()
+		} );
+	}
+
+	function pressEsc( specificEditor ) {
+		( specificEditor || editor ).keystrokes.press( {
+			keyCode: keyCodes.esc,
+			preventDefault: sinon.spy(),
+			stopPropagation: sinon.spy()
+		} );
+	}
 } );
+
+class MenuBarEditorUI extends EditorUI {
+	constructor( editor, view ) {
+		super( editor );
+
+		this.view = view;
+	}
+
+	init() {
+		super.init();
+
+		this.view.render();
+
+		initMenuBar( this );
+	}
+}
+
+class MenuBarEditorUIView extends EditorUIView {
+	constructor( locale ) {
+		super( locale );
+		this.menuBarView = new MenuBarView( locale );
+
+		this.menuBarView.extendTemplate( {
+			attributes: {
+				class: [
+					'ck-reset_all',
+					'ck-rounded-corners'
+				],
+				dir: 'ltr'
+			}
+		} );
+	}
+
+	render() {
+		super.render();
+
+		this.registerChild( this.menuBarView );
+	}
+}

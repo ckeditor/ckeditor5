@@ -9,7 +9,6 @@ import MultiRootEditor from '../src/multirooteditor.js';
 import EditorUI from '@ckeditor/ckeditor5-ui/src/editorui/editorui.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 
 import View from '@ckeditor/ckeditor5-ui/src/view.js';
 
@@ -424,101 +423,5 @@ describe( 'MultiRootEditorUI', () => {
 
 			sinon.assert.callOrder( parentDestroySpy, viewDestroySpy );
 		} );
-	} );
-
-	describe( 'Focus handling and navigation between editing root and menu bar', () => {
-		let menuBarView, domRoot;
-
-		testUtils.createSinonSandbox();
-
-		beforeEach( () => {
-			menuBarView = ui.view.menuBarView;
-			document.body.appendChild( menuBarView.element );
-			domRoot = editor.editing.view.domRoots.get( 'foo' );
-		} );
-
-		afterEach( () => {
-			menuBarView.element.remove();
-		} );
-
-		describe( 'Focusing menu bar on Alt+F9 key press', () => {
-			beforeEach( () => {
-				ui.focusTracker.isFocused = true;
-				ui.focusTracker.focusedElement = domRoot;
-			} );
-
-			it( 'should focus the menu bar when the focus is in the editing root', () => {
-				const spy = testUtils.sinon.spy( menuBarView, 'focus' );
-
-				ui.focusTracker.isFocused = true;
-				ui.focusTracker.focusedElement = domRoot;
-
-				pressAltF9( editor );
-
-				sinon.assert.calledOnce( spy );
-			} );
-
-			it( 'should do nothing if the menu bar is already focused', () => {
-				const domRootFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
-				const menuBarFocusSpy = testUtils.sinon.spy( menuBarView, 'focus' );
-
-				// Focus the toolbar.
-				pressAltF9( editor );
-				ui.focusTracker.focusedElement = menuBarView.element;
-
-				// Try Alt+F9 again.
-				pressAltF9( editor );
-
-				sinon.assert.calledOnce( menuBarFocusSpy );
-				sinon.assert.notCalled( domRootFocusSpy );
-			} );
-		} );
-
-		describe( 'Restoring focus on Esc key press', () => {
-			beforeEach( () => {
-				ui.focusTracker.isFocused = true;
-				ui.focusTracker.focusedElement = domRoot;
-			} );
-
-			it( 'should move the focus back from the main toolbar to the editing root', () => {
-				const domRootFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
-				const menuBarFocusSpy = testUtils.sinon.spy( menuBarView, 'focus' );
-
-				// Focus the menu bar.
-				pressAltF9( editor );
-				ui.focusTracker.focusedElement = menuBarView.element;
-
-				pressEsc( editor );
-
-				sinon.assert.callOrder( menuBarFocusSpy, domRootFocusSpy );
-			} );
-
-			it( 'should do nothing if it was pressed when menu bar was not focused', () => {
-				const domRootFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
-				const menuBarFocusSpy = testUtils.sinon.spy( menuBarView, 'focus' );
-
-				pressEsc( editor );
-
-				sinon.assert.notCalled( domRootFocusSpy );
-				sinon.assert.notCalled( menuBarFocusSpy );
-			} );
-		} );
-
-		function pressAltF9( editor ) {
-			editor.keystrokes.press( {
-				keyCode: keyCodes.f9,
-				altKey: true,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			} );
-		}
-
-		function pressEsc( editor ) {
-			editor.keystrokes.press( {
-				keyCode: keyCodes.esc,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			} );
-		}
 	} );
 } );
