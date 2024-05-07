@@ -63,6 +63,12 @@ describe( 'RestrictedEditingModeUI', () => {
 			expect( button ).to.have.property( 'isOn', false );
 		} );
 
+		it( 'has role="menu" attribute set in items list', () => {
+			dropdown.isOpen = true;
+
+			expect( dropdown.panelView.children.first.role ).to.be.equal( 'menu' );
+		} );
+
 		describe( 'exceptions navigation buttons', () => {
 			beforeEach( () => {
 				dropdown.render();
