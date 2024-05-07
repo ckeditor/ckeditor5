@@ -63,7 +63,7 @@ export default class Differ {
 	 *
 	 * See also {@link ~DifferSnapshot}.
 	 */
-	private readonly _elementsSnapshots: Map<Node | DocumentFragment, DifferSnapshot> = new Map();
+	private readonly _elementsSnapshots: Map<Node, DifferSnapshot> = new Map();
 
 	/**
 	 * For each element or document fragment inside which there was a change, it stores a snapshot of the child nodes list (an array
@@ -1381,9 +1381,7 @@ export default class Differ {
 
 		for ( const item of range.getItems( { shallow: true } ) ) {
 			if ( item.is( 'element' ) ) {
-				// this._elementChildrenSnapshots.delete( item );
 				this._changesInElement.delete( item );
-
 				this._removeAllNestedChanges( item, 0, item.maxOffset );
 			}
 		}
@@ -1596,6 +1594,10 @@ export interface DiffItemInsert {
 
 	/**
 	 * Further specifies what kind of action led to generating this change.
+	 *
+	 * The action is set in relation to the document state before any change. It means that, for example, if an element was added and
+	 * then renamed (during the same {@link module:engine/model/batch~Batch batch}), the action will be set to `'insert'`, because when
+	 * compared to the document state before changes, a new element was inserted, and the renaming does not matter from this point of view.
 	 */
 	action: DifferItemAction;
 
@@ -1625,8 +1627,8 @@ export interface DiffItemInsert {
 	 * For example, when `<paragraph textAlign="right">` was changed to `<codeBlock language="plaintext">`,
 	 * `before.name` will be equal to `'paragraph'` and `before.attributes` map will have one entry: `'textAlign' -> 'right'`.
 	 *
-	 * The property is available only if the insertion change was due to element rename. As such, the property is never
-	 * available for text node changes.
+	 * The property is available only if the insertion change was due to element rename (when `action` property is `'rename'`).
+	 * As such, `before` property is never available for text node changes.
 	 */
 	before?: {
 
@@ -1654,6 +1656,10 @@ export interface DiffItemRemove {
 
 	/**
 	 * Further specifies what kind of action led to generating this change.
+	 *
+	 * The action is set in relation to the document state before any change. It means that, for example, if an element was renamed and
+	 * then removed (during the same {@link module:engine/model/batch~Batch batch}), the action will be set to `'remove'`, because when
+	 * compared to the document state before changes, the element was removed, and it does not matter that it was also renamed at one point.
 	 */
 	action: DifferItemAction;
 
