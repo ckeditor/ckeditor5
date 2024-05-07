@@ -6,14 +6,28 @@
 import ColorTileView from '../../src/colorgrid/colortileview.js';
 import ButtonView from '../../src/button/buttonview.js';
 import checkIcon from '../../theme/icons/color-tile-check.svg';
+import { env } from '@ckeditor/ckeditor5-utils';
+
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'ColorTileView', () => {
+	let colorTile;
+
+	testUtils.createSinonSandbox();
+
+	beforeEach( () => {
+		colorTile = new ColorTileView();
+	} );
+
+	afterEach( () => {
+		colorTile.destroy();
+	} );
+
 	it( 'inherits from ButtonView', () => {
-		expect( new ColorTileView() ).to.be.instanceOf( ButtonView );
+		expect( colorTile ).to.be.instanceOf( ButtonView );
 	} );
 
 	it( 'has proper attributes and classes', () => {
-		const colorTile = new ColorTileView();
 		colorTile.render();
 
 		expect( colorTile.color ).to.be.undefined;
@@ -29,8 +43,16 @@ describe( 'ColorTileView', () => {
 		expect( colorTile.element.classList.contains( 'ck-color-selector__color-tile_bordered' ) ).to.be.true;
 	} );
 
+	// https://github.com/ckeditor/ckeditor5/issues/14907
+	it( 'should not set the background-color in the forced-colors mode for a better UX (displaying a label instead)', () => {
+		testUtils.sinon.stub( env, 'isMediaForcedColors' ).value( true );
+
+		colorTile.render();
+
+		expect( colorTile.element.style.backgroundColor ).to.equal( '' );
+	} );
+
 	it( 'has a check icon', () => {
-		const colorTile = new ColorTileView();
 		colorTile.render();
 
 		expect( colorTile.icon ).to.equal( checkIcon );

@@ -66,6 +66,11 @@ export interface EnvType {
 	readonly isBlink: boolean;
 
 	/**
+	 * Indicates that the the user agent has enabled a forced colors mode (e.g. Windows High Contrast mode).
+	 */
+	readonly isMediaForcedColors: boolean;
+
+	/**
 	 * Indicates that "prefer reduced motion" browser setting is active.
 	 */
 	readonly isMotionReduced: boolean;
@@ -103,6 +108,8 @@ const env: EnvType = {
 	isAndroid: isAndroid( userAgent ),
 
 	isBlink: isBlink( userAgent ),
+
+	isMediaForcedColors: isMediaForcedColors(),
 
 	get isMotionReduced() {
 		return isMotionReduced();
@@ -207,6 +214,13 @@ export function isRegExpUnicodePropertySupported(): boolean {
 	}
 
 	return isSupported;
+}
+
+/**
+ * Checks if the user agent has enabled a forced colors mode (e.g. Windows High Contrast mode).
+ */
+export function isMediaForcedColors(): boolean {
+	return window.matchMedia( '(forced-colors: active)' ).matches;
 }
 
 /**

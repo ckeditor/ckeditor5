@@ -5,6 +5,7 @@
 
 @import "../mixins/_focus.css";
 @import "../mixins/_shadow.css";
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_mediacolors.css";
 
 :root {
 	--ck-widget-outline-thickness: 3px;
@@ -47,8 +48,9 @@
 	&:focus {
 		@mixin ck-focus-ring;
 		@mixin ck-box-shadow var(--ck-inner-shadow);
-
-		background-color: var(--ck-color-widget-editable-focus-background);
+		@mixin ck-media-default-colors {
+			background-color: var(--ck-color-widget-editable-focus-background);
+		}
 	}
 }
 
