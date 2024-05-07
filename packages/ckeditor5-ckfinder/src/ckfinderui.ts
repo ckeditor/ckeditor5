@@ -72,6 +72,18 @@ export default class CKFinderUI extends Plugin {
 					return button;
 				},
 
+				menuBarButtonViewCreator: () => {
+					const button = this.editor.ui.componentFactory.create( 'menuBar:ckfinder' ) as MenuBarMenuListItemButtonView;
+
+					button.icon = icons.imageAssetManager;
+					button.bind( 'label' ).to( imageInsertUI, 'isImageSelected', isImageSelected => isImageSelected ?
+						t( 'Replace image with file manager' ) :
+						t( 'Insert image with file manager' )
+					);
+
+					return button;
+				},
+
 				formViewCreator: () => {
 					const button = this.editor.ui.componentFactory.create( 'ckfinder' ) as ButtonView;
 

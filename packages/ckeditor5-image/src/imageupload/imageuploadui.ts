@@ -79,6 +79,10 @@ export default class ImageUploadUI extends Plugin {
 					return uploadImageButton;
 				},
 
+				menuBarButtonViewCreator: () => {
+					return editor.ui.componentFactory.create( 'menuBar:uploadImage' ) as MenuBarMenuListItemFileDialogButtonView;
+				},
+
 				formViewCreator: () => {
 					const uploadImageButton = editor.ui.componentFactory.create( 'uploadImage' ) as FileDialogButtonView;
 
