@@ -10,12 +10,12 @@
 import type { Editor, ElementApi } from 'ckeditor5/src/core.js';
 import {
 	EditorUI,
-	normalizeToolbarConfig,
 	DialogView,
+	normalizeToolbarConfig,
+	_initMenuBar,
 	type DialogViewMoveToEvent,
 	type Dialog,
 	type EditorUIReadyEvent,
-	_initMenuBar,
 	type EditorUIView,
 	type MenuBarView
 } from 'ckeditor5/src/ui.js';
