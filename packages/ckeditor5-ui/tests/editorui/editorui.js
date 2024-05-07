@@ -968,13 +968,16 @@ describe( 'EditorUI', () => {
 	} );
 
 	describe( 'Focus handling and navigation between editing root and menu bar', () => {
-		let locale, menuBarEditorUIView, menuBarView, menuBarEditor, menuBarEditorUI, domRoot;
+		let editorElement, locale, menuBarEditorUIView, menuBarView, menuBarEditor, menuBarEditorUI, domRoot;
 
 		// testUtils.createSinonSandbox();
 
 		beforeEach( async () => {
+			editorElement = document.body.appendChild( document.createElement( 'div' ) );
 			menuBarEditor = new Editor();
-			locale = { t: val => val };
+			menuBarEditor.sourceElement = editorElement;
+			menuBarEditor.model.document.createRoot();
+			locale = { t: val => val, uiLanguageDirection: 'ltr' };
 			menuBarEditorUIView = new MenuBarEditorUIView( locale );
 			menuBarEditor.ui = menuBarEditorUI = new MenuBarEditorUI( menuBarEditor, menuBarEditorUIView );
 			await menuBarEditor.initPlugins()
@@ -983,27 +986,27 @@ describe( 'EditorUI', () => {
 			menuBarView = menuBarEditor.ui.view.menuBarView;
 			document.body.appendChild( menuBarView.element );
 
-			// domRoot = editor.editing.view.domRoots.get( 'foo' );
+			domRoot = editorElement;
+			// domRoot = menuBarEditor.editing.view.domRoots.get( 'main' );
+			// domRoot = menuBarEditor.model.document.getRoot();
+			// console.log( 'domRoot', domRoot );
 		} );
 
 		afterEach( () => {
-			menuBarEditorUI.destoy();
+			menuBarEditorUI.destroy();
 			menuBarView.element.remove();
 		} );
 
 		describe( 'Focusing menu bar on Alt+F9 key press', () => {
 			beforeEach( () => {
-				ui.focusTracker.isFocused = true;
-				ui.focusTracker.focusedElement = domRoot;
+				menuBarEditorUI.focusTracker.isFocused = true;
+				menuBarEditorUI.focusTracker.focusedElement = domRoot;
 			} );
 
 			it( 'should focus the menu bar when the focus is in the editing root', () => {
 				const spy = testUtils.sinon.spy( menuBarView, 'focus' );
 
-				ui.focusTracker.isFocused = true;
-				ui.focusTracker.focusedElement = domRoot;
-
-				pressAltF9( editor );
+				pressAltF9( menuBarEditor );
 
 				sinon.assert.calledOnce( spy );
 			} );
@@ -1013,11 +1016,11 @@ describe( 'EditorUI', () => {
 				const menuBarFocusSpy = testUtils.sinon.spy( menuBarView, 'focus' );
 
 				// Focus the toolbar.
-				pressAltF9( editor );
-				ui.focusTracker.focusedElement = menuBarView.element;
+				pressAltF9( menuBarEditor );
+				menuBarEditorUI.focusTracker.focusedElement = menuBarView.element;
 
 				// Try Alt+F9 again.
-				pressAltF9( editor );
+				pressAltF9( menuBarEditor );
 
 				sinon.assert.calledOnce( menuBarFocusSpy );
 				sinon.assert.notCalled( domRootFocusSpy );
@@ -1026,8 +1029,8 @@ describe( 'EditorUI', () => {
 
 		describe( 'Restoring focus on Esc key press', () => {
 			beforeEach( () => {
-				ui.focusTracker.isFocused = true;
-				ui.focusTracker.focusedElement = domRoot;
+				menuBarEditorUI.focusTracker.isFocused = true;
+				menuBarEditorUI.focusTracker.focusedElement = domRoot;
 			} );
 
 			it( 'should move the focus back from the main toolbar to the editing root', () => {
@@ -1035,10 +1038,10 @@ describe( 'EditorUI', () => {
 				const menuBarFocusSpy = testUtils.sinon.spy( menuBarView, 'focus' );
 
 				// Focus the menu bar.
-				pressAltF9( editor );
-				ui.focusTracker.focusedElement = menuBarView.element;
+				pressAltF9( menuBarEditor );
+				menuBarEditorUI.focusTracker.focusedElement = menuBarView.element;
 
-				pressEsc( editor );
+				pressEsc( menuBarEditor );
 
 				sinon.assert.callOrder( menuBarFocusSpy, domRootFocusSpy );
 			} );
@@ -1047,7 +1050,7 @@ describe( 'EditorUI', () => {
 				const domRootFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
 				const menuBarFocusSpy = testUtils.sinon.spy( menuBarView, 'focus' );
 
-				pressEsc( editor );
+				pressEsc( menuBarEditor );
 
 				sinon.assert.notCalled( domRootFocusSpy );
 				sinon.assert.notCalled( menuBarFocusSpy );
@@ -1113,7 +1116,7 @@ class MenuBarEditorUIView extends EditorUIView {
 					'ck-reset_all',
 					'ck-rounded-corners'
 				],
-				dir: 'ltr'
+				dir: locale.uiLanguageDirection
 			}
 		} );
 	}
