@@ -970,8 +970,6 @@ describe( 'EditorUI', () => {
 	describe( 'Focus handling and navigation between editing root and menu bar', () => {
 		let editorElement, menuBarView, menuBarEditor, menuBarEditorUI, domRoot;
 
-		// testUtils.createSinonSandbox();
-
 		beforeEach( async () => {
 			editorElement = document.body.appendChild( document.createElement( 'div' ) );
 
@@ -987,6 +985,7 @@ describe( 'EditorUI', () => {
 		} );
 
 		afterEach( () => {
+			editorElement.remove();
 			menuBarEditorUI.destroy();
 			menuBarView.element.remove();
 		} );
