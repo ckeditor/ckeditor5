@@ -17,7 +17,8 @@ import { Editor } from '@ckeditor/ckeditor5-core';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { EditorUIView, MenuBarView } from '../../src/index.js';
+import { EditorUIView, InlineEditableUIView, MenuBarView } from '../../src/index.js';
+import secureSourceElement from '@ckeditor/ckeditor5-core/src/editor/utils/securesourceelement.js';
 
 /* global document, console */
 
@@ -976,9 +977,16 @@ describe( 'EditorUI', () => {
 			editorElement = document.body.appendChild( document.createElement( 'div' ) );
 			menuBarEditor = new Editor();
 			menuBarEditor.sourceElement = editorElement;
+			secureSourceElement( menuBarEditor, editorElement );
 			menuBarEditor.model.document.createRoot();
-			locale = { t: val => val, uiLanguageDirection: 'ltr' };
-			menuBarEditorUIView = new MenuBarEditorUIView( locale );
+
+			locale = {
+				t: val => val,
+				uiLanguageDirection: 'ltr',
+				contentLanguage: 'en',
+				contentLanguageDirection: 'ltr'
+			};
+			menuBarEditorUIView = new MenuBarEditorUIView( locale, menuBarEditor.editing.view, editorElement );
 			menuBarEditor.ui = menuBarEditorUI = new MenuBarEditorUI( menuBarEditor, menuBarEditorUIView );
 			await menuBarEditor.initPlugins()
 				.then( () => menuBarEditor.ui.init() );
@@ -987,9 +995,7 @@ describe( 'EditorUI', () => {
 			document.body.appendChild( menuBarView.element );
 
 			domRoot = editorElement;
-			// domRoot = menuBarEditor.editing.view.domRoots.get( 'main' );
-			// domRoot = menuBarEditor.model.document.getRoot();
-			// console.log( 'domRoot', domRoot );
+			domRoot = menuBarEditor.editing.view.domRoots.get( 'main' );
 		} );
 
 		afterEach( () => {
@@ -1043,6 +1049,7 @@ describe( 'EditorUI', () => {
 
 				pressEsc( menuBarEditor );
 
+				// sinon.assert.calledOnce( domRootFocusSpy );
 				sinon.assert.callOrder( menuBarFocusSpy, domRootFocusSpy );
 			} );
 
@@ -1093,9 +1100,38 @@ class MenuBarEditorUI extends EditorUI {
 	}
 
 	init() {
-		console.log( 'MenuBarEditorUI#init() got called' );
+		const editor = this.editor;
+		const view = this.view;
+		const editingView = editor.editing.view;
+		const editable = view.editable;
+		const editingRoot = editingView.document.getRoot();
 
-		this.view.render();
+		// The editable UI and editing root should share the same name. Then name is used
+		// to recognize the particular editable, for instance in ARIA attributes.
+		editable.name = editingRoot.rootName;
+
+		view.render();
+
+		// The editable UI element in DOM is available for sure only after the editor UI view has been rendered.
+		// But it can be available earlier if a DOM element has been passed to DecoupledEditor.create().
+		const editableElement = editable.element;
+
+		// Register the editable UI view in the editor. A single editor instance can aggregate multiple
+		// editable areas (roots) but the decoupled editor has only one.
+		this.setEditableElement( editable.name, editableElement );
+
+		// Let the editable UI element respond to the changes in the global editor focus
+		// tracker. It has been added to the same tracker a few lines above but, in reality, there are
+		// many focusable areas in the editor, like balloons, toolbars or dropdowns and as long
+		// as they have focus, the editable should act like it is focused too (although technically
+		// it isn't), e.g. by setting the proper CSS class, visually announcing focus to the user.
+		// Doing otherwise will result in editable focus styles disappearing, once e.g. the
+		// toolbar gets focused.
+		view.editable.bind( 'isFocused' ).to( this.focusTracker );
+
+		// Bind the editable UI element to the editing view, making it an end– and entry–point
+		// of the editor's engine. This is where the engine meets the UI.
+		editingView.attachDomRoot( editableElement );
 
 		initMenuBar( this );
 	}
@@ -1106,9 +1142,18 @@ class MenuBarEditorUI extends EditorUI {
 }
 
 class MenuBarEditorUIView extends EditorUIView {
-	constructor( locale ) {
+	constructor(
+		locale,
+		editingView,
+		editableElement
+	) {
 		super( locale );
 		this.menuBarView = new MenuBarView( locale );
+		// this.editable = undefined;
+
+		this.editable = new InlineEditableUIView( locale, editingView, editableElement, {
+			label: () => 'xyz'
+		} );
 
 		this.menuBarView.extendTemplate( {
 			attributes: {
@@ -1125,5 +1170,6 @@ class MenuBarEditorUIView extends EditorUIView {
 		super.render();
 
 		this.registerChild( this.menuBarView );
+		this.registerChild( this.editable );
 	}
 }
