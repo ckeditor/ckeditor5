@@ -1106,9 +1106,7 @@ class MenuBarEditorUIView extends EditorUIView {
 
 		this.menuBarView = new MenuBarView( locale );
 		this.main = this.createCollection();
-		this.editable = new InlineEditableUIView( locale, editingView, editableElement, {
-			label: () => 'xyz'
-		} );
+		this.editable = new InlineEditableUIView( locale, editingView, editableElement );
 
 		this.menuBarView.extendTemplate( {
 			attributes: {
