@@ -972,19 +972,17 @@ describe( 'EditorUI', () => {
 
 		// testUtils.createSinonSandbox();
 
-		beforeEach( () => {
+		beforeEach( async () => {
 			menuBarEditor = new Editor();
 			locale = { t: val => val };
 			menuBarEditorUIView = new MenuBarEditorUIView( locale );
 			menuBarEditor.ui = menuBarEditorUI = new MenuBarEditorUI( menuBarEditor, menuBarEditorUIView );
-			// menuBarEditorUI.init();
-			menuBarEditor.initPlugins()
-				.then( editor => editor.ui.init() );
-			// view = new MenuBarEditorUIView( locale );
-			// ui = new MenuBarEditorUI( editor, view );
-			menuBarView = menuBarEditorUI.view.menuBarView;
+			await menuBarEditor.initPlugins()
+				.then( () => menuBarEditor.ui.init() );
 
+			menuBarView = menuBarEditor.ui.view.menuBarView;
 			document.body.appendChild( menuBarView.element );
+
 			// domRoot = editor.editing.view.domRoots.get( 'foo' );
 		} );
 
@@ -1092,11 +1090,15 @@ class MenuBarEditorUI extends EditorUI {
 	}
 
 	init() {
-		super.init();
+		console.log( 'MenuBarEditorUI#init() got called' );
 
 		this.view.render();
 
 		initMenuBar( this );
+	}
+
+	destroy() {
+		super.destroy();
 	}
 }
 
