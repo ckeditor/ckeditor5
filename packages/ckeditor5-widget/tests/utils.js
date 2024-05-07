@@ -741,49 +741,6 @@ describe( 'widget utils', () => {
 
 	describe( 'Calculate resize host ancestor width utils', () => {
 		describe( 'calculateResizeHostAncestorWidth()', () => {
-			it( 'should return passed element width with excluded padding if it\'s resize root element', () => {
-				const editable = editorEditableTag();
-				document.body.appendChild( editable );
-
-				const width = calculateResizeHostAncestorWidth( editable );
-				expect( width ).to.be.equal( 560 );
-
-				editable.remove();
-			} );
-
-			it( 'should pick editable grandparent width if current element is not editable', () => {
-				const editable = editorEditableTag( {}, [
-					tag( 'div' )
-				] );
-
-				document.body.appendChild( editable );
-
-				const width = calculateResizeHostAncestorWidth( editable.firstChild );
-				expect( width ).to.be.equal( 560 );
-
-				editable.remove();
-			} );
-
-			it( 'should break lookup on nearest editable element (excluding grandparent)', () => {
-				const child = document.createElement( 'div' );
-				const editable = editorEditableTag( { width: '100px' }, [
-					editorEditableTag( { width: '800px' }, [
-						tag( 'span', {}, [
-							tag( 'span', {}, [
-								child
-							] )
-						] )
-					] )
-				] );
-
-				document.body.appendChild( editable );
-
-				const width = calculateResizeHostAncestorWidth( child );
-				expect( width ).to.be.equal( 760 );
-
-				editable.remove();
-			} );
-
 			it( 'should get size from parent of passed element', () => {
 				const domResizeHost = tag( 'div' );
 				const tree = tag( 'div', sizeAttributes( 200 ), [
@@ -904,19 +861,6 @@ describe( 'widget utils', () => {
 				unknownTree.remove();
 			} );
 		} );
-
-		function editorEditableTag( style = {}, children = [] ) {
-			const element = tag( 'div', { contenteditable: 'true' }, children );
-
-			element.classList.add( 'ck-editor__editable' );
-			Object.assign( element.style, {
-				padding: '0 20px',
-				width: '600px',
-				...style
-			} );
-
-			return element;
-		}
 
 		function tag( name, attributes = {}, children = [] ) {
 			const element = document.createElement( name );

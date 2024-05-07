@@ -467,10 +467,6 @@ export function calculateResizeHostAncestorWidth( domResizeHost: HTMLElement ): 
 		return parseFloat( width ) - ( parseFloat( paddingLeft ) || 0 ) - ( parseFloat( paddingRight ) || 0 );
 	};
 
-	if ( isMaximumResizeHostAncestorElement( domResizeHost ) ) {
-		return getElementComputedWidth( domResizeHost );
-	}
-
 	const domResizeHostParent = domResizeHost.parentElement;
 
 	if ( !domResizeHostParent ) {
@@ -479,10 +475,6 @@ export function calculateResizeHostAncestorWidth( domResizeHost: HTMLElement ): 
 
 	// Need to use computed style as it properly excludes parent's paddings from the returned value.
 	let parentWidth = getElementComputedWidth( domResizeHostParent! );
-
-	if ( isMaximumResizeHostAncestorElement( domResizeHostParent ) ) {
-		return parentWidth;
-	}
 
 	// Sometimes parent width cannot be accessed. If that happens we should go up in the elements tree
 	// and try to get width from next ancestor.
@@ -500,20 +492,9 @@ export function calculateResizeHostAncestorWidth( domResizeHost: HTMLElement ): 
 		}
 
 		parentWidth = getElementComputedWidth( checkedElement );
-
-		if ( isMaximumResizeHostAncestorElement( checkedElement ) ) {
-			break;
-		}
 	}
 
 	return parentWidth;
-}
-
-/**
- * Checks if passed HTML has `contenteditable` attribute.
- */
-function isMaximumResizeHostAncestorElement( element: HTMLElement ) {
-	return element.getAttribute( 'contenteditable' ) === 'true' || element.classList.contains( 'ck-editor__editable' );
 }
 
 /**
