@@ -296,13 +296,10 @@ describe( 'Editor', () => {
 					 * }
 					 */
 
-					const hostnameStub = sinon.stub( TestEditor.prototype, '_getHostname' ).returns( 'localhost' );
 					const editor = new TestEditor( { licenseKey } );
 
 					sinon.assert.notCalled( stub );
 					expect( editor.isReadOnly ).to.be.false;
-
-					hostnameStub.restore();
 				} );
 
 				it( 'should not pass when localhost is not in the licensedHosts list', () => {
