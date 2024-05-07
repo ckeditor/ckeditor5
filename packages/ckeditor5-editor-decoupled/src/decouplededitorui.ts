@@ -81,7 +81,7 @@ export default class DecoupledEditorUI extends EditorUI {
 
 		this._initPlaceholder();
 		this._initToolbar();
-		_initMenuBar( this );
+		_initMenuBar( editor, this.view.menuBarView );
 		this.fire<EditorUIReadyEvent>( 'ready' );
 	}
 

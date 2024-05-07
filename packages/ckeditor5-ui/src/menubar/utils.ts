@@ -7,7 +7,6 @@
  * @module ui/menubar/utils
  */
 
-import clickOutsideHandler from '../bindings/clickoutsidehandler.js';
 import MenuBarMenuListItemView from './menubarmenulistitemview.js';
 import type MenuBarMenuView from './menubarmenuview.js';
 import type {
@@ -24,18 +23,18 @@ import type {
 	MenuBarConfigAddedPosition,
 	NormalizedMenuBarConfigObject
 } from './menubarview.js';
-import { cloneDeep } from 'lodash-es';
+import clickOutsideHandler from '../bindings/clickoutsidehandler.js';
+import type { ButtonExecuteEvent } from '../button/button.js';
+import type ComponentFactory from '../componentfactory.js';
 import type { FocusableView } from '../focuscycler.js';
+import type { Editor } from '@ckeditor/ckeditor5-core';
 import {
 	logWarning,
 	type Locale,
 	type ObservableChangeEvent,
 	type PositioningFunction
 } from '@ckeditor/ckeditor5-utils';
-import type { ButtonExecuteEvent } from '../button/button.js';
-import type ComponentFactory from '../componentfactory.js';
-import type EditorUI from '../editorui/editorui.js';
-import type EditorUIView from '../editorui/editoruiview.js';
+import { cloneDeep } from 'lodash-es';
 
 const NESTED_PANEL_HORIZONTAL_OFFSET = 5;
 
@@ -1475,32 +1474,30 @@ function isMenuDefinition( definition: any ): definition is MenuBarMenuDefinitio
 }
 
 /**
- * Initializes menu bar for given `editorUI`.
+ * Initializes menu bar for given editor.
  *
  * @internal
  */
-export function _initMenuBar( editorUI: EditorUI & { view: EditorUIView & { menuBarView: MenuBarView } } ): void {
-	const editor = editorUI.editor;
-	const menuBarViewElement = editorUI.view.menuBarView.element!;
-	const view = editorUI.view;
+export function _initMenuBar( editor: Editor, menuBarView: MenuBarView ): void {
+	const menuBarViewElement = menuBarView.element!;
 
-	editorUI.focusTracker.add( menuBarViewElement );
+	editor.ui.focusTracker.add( menuBarViewElement );
 	editor.keystrokes.listenTo( menuBarViewElement );
 
 	const normalizedMenuBarConfig = normalizeMenuBarConfig( editor.config.get( 'menuBar' ) || {} );
 
-	view.menuBarView.fillFromConfig( normalizedMenuBarConfig, editorUI.componentFactory );
+	menuBarView.fillFromConfig( normalizedMenuBarConfig, editor.ui.componentFactory );
 
 	editor.keystrokes.set( 'Esc', ( data, cancel ) => {
-		if ( menuBarViewElement.contains( editorUI.focusTracker.focusedElement ) ) {
+		if ( menuBarViewElement.contains( editor.ui.focusTracker.focusedElement ) ) {
 			editor.editing.view.focus();
 			cancel();
 		}
 	} );
 
 	editor.keystrokes.set( 'Alt+F9', ( data, cancel ) => {
-		if ( !menuBarViewElement.contains( editorUI.focusTracker.focusedElement ) ) {
-			editorUI.view.menuBarView.focus();
+		if ( !menuBarViewElement.contains( editor.ui.focusTracker.focusedElement ) ) {
+			menuBarView!.focus();
 			cancel();
 		}
 	} );

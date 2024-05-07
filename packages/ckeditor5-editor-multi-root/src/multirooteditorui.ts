@@ -85,7 +85,7 @@ export default class MultiRootEditorUI extends EditorUI {
 		}
 
 		this._initToolbar();
-		_initMenuBar( this );
+		_initMenuBar( this.editor, this.view.menuBarView );
 		this.fire<EditorUIReadyEvent>( 'ready' );
 	}
 

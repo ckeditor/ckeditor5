@@ -1675,7 +1675,7 @@ describe( 'MenuBarView utils', () => {
 			init() {
 				super.init();
 
-				_initMenuBar( this );
+				_initMenuBar( this.editor, this.view.menuBarView );
 			}
 		}
 
