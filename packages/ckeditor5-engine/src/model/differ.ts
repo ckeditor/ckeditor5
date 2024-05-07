@@ -36,6 +36,14 @@ import type RootAttributeOperation from './operation/rootattributeoperation.js';
  */
 export default class Differ {
 	/**
+	 * Priority of the {@link ~Differ#_elementState element states}. States on higher indexes of the array can overwrite states on the lower
+	 * indexes.
+	 *
+	 * @private
+	 */
+	private static readonly _statesPriority = [ undefined, 'refresh', 'rename', 'move' ];
+
+	/**
 	 * Reference to the model's marker collection.
 	 */
 	private readonly _markerCollection: MarkerCollection;
@@ -49,21 +57,26 @@ export default class Differ {
 	private readonly _changesInElement: Map<Element | DocumentFragment, Array<ChangeItem>> = new Map();
 
 	/**
-	 * Stores snapshots for the models nodes that might have changed.
+	 * Stores a snapshot for these model nodes that might have changed.
+	 *
+	 * This complements {@link ~Differ#_elementChildrenSnapshots `_elementChildrenSnapshots`}.
 	 *
 	 * See also {@link ~DifferSnapshot}.
 	 */
-	private readonly _elementSnapshots: Map<Node | DocumentFragment, DifferSnapshot> = new Map();
+	private readonly _elementsSnapshots: Map<Node | DocumentFragment, DifferSnapshot> = new Map();
 
 	/**
-	 * Stores snapshots of child nodes list for the elements or document fragments inside which there was a change.
+	 * For each element or document fragment inside which there was a change, it stores a snapshot of the child nodes list (an array
+	 * of children snapshots that represent the state in the element / fragment before any change has happened).
+	 *
+	 * This complements {@link ~Differ#_elementsSnapshots `_elementsSnapshots`}.
 	 *
 	 * See also {@link ~DifferSnapshot}.
 	 */
 	private readonly _elementChildrenSnapshots: Map<Element | DocumentFragment, Array<DifferSnapshot>> = new Map();
 
 	/**
-	 * Keeps the state for a given element, describing how the element was changed so far. It is used to evaluate a `action` property
+	 * Keeps the state for a given element, describing how the element was changed so far. It is used to evaluate the `action` property
 	 * of diff items returned by {@link ~Differ#getChanges()}.
 	 *
 	 * Possible values, in the order from the lowest priority to the highest priority:
@@ -467,59 +480,6 @@ export default class Differ {
 	}
 
 	/**
-	 * Tries to set given state for given item.
-	 *
-	 * This method does simple validation (it sets the state only for model elements, not for text proxy nodes). It also follows state
-	 * setting rules, that is, `'refresh'` cannot overwrite `'rename'`, and `'rename'` cannot overwrite `'move'`.
-	 */
-	private _setElementState( node: Item, state: 'refresh' | 'rename' | 'move' ) {
-		if ( !node.is( 'element' ) ) {
-			return;
-		}
-
-		// Priority of states. States on the right will overwrite states on the left.
-		const statesPriority = [ undefined, 'refresh', 'rename', 'move' ];
-		const currentStatePriority = statesPriority.indexOf( this._elementState.get( node ) );
-		const newStatePriority = statesPriority.indexOf( state );
-
-		if ( newStatePriority > currentStatePriority ) {
-			this._elementState.set( node, state );
-		}
-	}
-
-	/**
-	 * Returns correct value for {@link ~DifferItemAction `action`} property for diff items returned by {@link ~Differ#getChanges()}.
-	 * This method aims to return `'rename'` or `'refresh'` when it should, and `diffItemType` ("default action") in all other cases.
-	 *
-	 * It bases on a few factors:
-	 *
-	 * * for text nodes, the method always returns `diffItemType`,
-	 * * for newly inserted element, the method returns `diffItemType`,
-	 * * if {@link ~Differ#_elementState element state} was not recorded, the method returns `diffItemType`,
-	 * * if state was recorded, and it was `'move'` (default action), the method returns `diffItemType`,
-	 * * finally, if state was `'refresh'` or `'rename'`, the method returns the state value.
-	 */
-	private _getDiffActionForNode( node: Node, diffItemType: 'insert' | 'remove' ): DifferItemAction {
-		if ( !node.is( 'element' ) ) {
-			// Text node.
-			return diffItemType;
-		}
-
-		if ( !this._elementSnapshots.has( node ) ) {
-			// Newly inserted element.
-			return diffItemType;
-		}
-
-		const state = this._elementState.get( node );
-
-		if ( !state || state == 'move' ) {
-			return diffItemType;
-		}
-
-		return state;
-	}
-
-	/**
 	 * Calculates the diff between the old model tree state (the state before the first buffered operations since the last {@link #reset}
 	 * call) and the new model tree state (actual one). It should be called after all buffered operations are executed.
 	 *
@@ -583,7 +543,7 @@ export default class Differ {
 			for ( const instruction of diffInstructions ) {
 				if ( instruction === 'i' ) {
 					const action = this._getDiffActionForNode( childrenAfter[ i ].node, 'insert' );
-					const childSnapshotBefore = this._elementSnapshots.get( childrenAfter[ i ].node );
+					const childSnapshotBefore = this._elementsSnapshots.get( childrenAfter[ i ].node );
 					const diffItem = this._getInsertDiff( element, i, action, childrenAfter[ i ], childSnapshotBefore );
 
 					diffSet.push( diffItem );
@@ -746,78 +706,12 @@ export default class Differ {
 	public reset(): void {
 		this._changesInElement.clear();
 		this._elementChildrenSnapshots.clear();
-		this._elementSnapshots.clear();
+		this._elementsSnapshots.clear();
 		this._elementState.clear();
 		this._changedMarkers.clear();
 		this._changedRoots.clear();
 		this._refreshedItems.clear();
 		this._cachedChanges = null;
-	}
-
-	/**
-	 * Buffers the root state change after the root was attached or detached
-	 */
-	private _bufferRootStateChange( rootName: string, isAttached: boolean ): void {
-		if ( !this._changedRoots.has( rootName ) ) {
-			this._changedRoots.set( rootName, { name: rootName, state: isAttached ? 'attached' : 'detached' } );
-
-			return;
-		}
-
-		const diffItem = this._changedRoots.get( rootName )!;
-
-		if ( diffItem.state !== undefined ) {
-			// Root `state` can only toggle between one of the values and no value. It cannot be any other way,
-			// because if the root was originally attached it can only become detached. Then, if it is re-attached in the same batch of
-			// changes, it gets back to "no change" (which means no value). Same if the root was originally detached.
-			delete diffItem.state;
-
-			if ( diffItem.attributes === undefined ) {
-				// If there is no `state` change and no `attributes` change, remove the entry.
-				this._changedRoots.delete( rootName );
-			}
-		} else {
-			diffItem.state = isAttached ? 'attached' : 'detached';
-		}
-	}
-
-	/**
-	 * Buffers a root attribute change.
-	 */
-	private _bufferRootAttributeChange( rootName: string, key: string, oldValue: unknown, newValue: unknown ): void {
-		const diffItem: DiffItemRoot = this._changedRoots.get( rootName ) || { name: rootName };
-		const attrs: Record<string, { oldValue: unknown; newValue: unknown }> = diffItem.attributes || {};
-
-		if ( attrs[ key ] ) {
-			// If this attribute or metadata was already changed earlier and is changed again, check to what value it is changed.
-			const attrEntry = attrs[ key ];
-
-			if ( newValue === attrEntry.oldValue ) {
-				// If it was changed back to the old value, remove the entry.
-				delete attrs[ key ];
-			} else {
-				// If it was changed to a different value, update the entry.
-				attrEntry.newValue = newValue;
-			}
-		} else {
-			// If this attribute or metadata was not set earlier, add an entry.
-			attrs[ key ] = { oldValue, newValue };
-		}
-
-		if ( Object.entries( attrs ).length === 0 ) {
-			// If attributes or metadata changes set became empty, remove it from the diff item.
-			delete diffItem.attributes;
-
-			if ( diffItem.state === undefined ) {
-				// If there is no `state` change and no `attributes` change, remove the entry.
-				this._changedRoots.delete( rootName );
-			}
-		} else {
-			// Make sure that, if a new object in the structure was created, it gets set.
-			diffItem.attributes = attrs;
-
-			this._changedRoots.set( rootName, diffItem );
-		}
 	}
 
 	/**
@@ -884,6 +778,72 @@ export default class Differ {
 
 				this.bufferMarkerChange( marker.name, { ...markerData, range: null }, markerData );
 			}
+		}
+	}
+
+	/**
+	 * Buffers the root state change after the root was attached or detached
+	 */
+	private _bufferRootStateChange( rootName: string, isAttached: boolean ): void {
+		if ( !this._changedRoots.has( rootName ) ) {
+			this._changedRoots.set( rootName, { name: rootName, state: isAttached ? 'attached' : 'detached' } );
+
+			return;
+		}
+
+		const diffItem = this._changedRoots.get( rootName )!;
+
+		if ( diffItem.state !== undefined ) {
+			// Root `state` can only toggle between one of the values and no value. It cannot be any other way,
+			// because if the root was originally attached it can only become detached. Then, if it is re-attached in the same batch of
+			// changes, it gets back to "no change" (which means no value). Same if the root was originally detached.
+			delete diffItem.state;
+
+			if ( diffItem.attributes === undefined ) {
+				// If there is no `state` change and no `attributes` change, remove the entry.
+				this._changedRoots.delete( rootName );
+			}
+		} else {
+			diffItem.state = isAttached ? 'attached' : 'detached';
+		}
+	}
+
+	/**
+	 * Buffers a root attribute change.
+	 */
+	private _bufferRootAttributeChange( rootName: string, key: string, oldValue: unknown, newValue: unknown ): void {
+		const diffItem: DiffItemRoot = this._changedRoots.get( rootName ) || { name: rootName };
+		const attrs: Record<string, { oldValue: unknown; newValue: unknown }> = diffItem.attributes || {};
+
+		if ( attrs[ key ] ) {
+			// If this attribute or metadata was already changed earlier and is changed again, check to what value it is changed.
+			const attrEntry = attrs[ key ];
+
+			if ( newValue === attrEntry.oldValue ) {
+				// If it was changed back to the old value, remove the entry.
+				delete attrs[ key ];
+			} else {
+				// If it was changed to a different value, update the entry.
+				attrEntry.newValue = newValue;
+			}
+		} else {
+			// If this attribute or metadata was not set earlier, add an entry.
+			attrs[ key ] = { oldValue, newValue };
+		}
+
+		if ( Object.entries( attrs ).length === 0 ) {
+			// If attributes or metadata changes set became empty, remove it from the diff item.
+			delete diffItem.attributes;
+
+			if ( diffItem.state === undefined ) {
+				// If there is no `state` change and no `attributes` change, remove the entry.
+				this._changedRoots.delete( rootName );
+			}
+		} else {
+			// Make sure that, if a new object in the structure was created, it gets set.
+			diffItem.attributes = attrs;
+
+			this._changedRoots.set( rootName, diffItem );
 		}
 	}
 
@@ -956,6 +916,57 @@ export default class Differ {
 	}
 
 	/**
+	 * Tries to set given state for given item.
+	 *
+	 * This method does simple validation (it sets the state only for model elements, not for text proxy nodes). It also follows state
+	 * setting rules, that is, `'refresh'` cannot overwrite `'rename'`, and `'rename'` cannot overwrite `'move'`.
+	 */
+	private _setElementState( node: Item, state: 'refresh' | 'rename' | 'move' ) {
+		if ( !node.is( 'element' ) ) {
+			return;
+		}
+
+		const currentStatePriority = Differ._statesPriority.indexOf( this._elementState.get( node ) );
+		const newStatePriority = Differ._statesPriority.indexOf( state );
+
+		if ( newStatePriority > currentStatePriority ) {
+			this._elementState.set( node, state );
+		}
+	}
+
+	/**
+	 * Returns a value for {@link ~DifferItemAction `action`} property for diff items returned by {@link ~Differ#getChanges()}.
+	 * This method aims to return `'rename'` or `'refresh'` when it should, and `diffItemType` ("default action") in all other cases.
+	 *
+	 * It bases on a few factors:
+	 *
+	 * * for text nodes, the method always returns `diffItemType`,
+	 * * for newly inserted element, the method returns `diffItemType`,
+	 * * if {@link ~Differ#_elementState element state} was not recorded, the method returns `diffItemType`,
+	 * * if state was recorded, and it was `'move'` (default action), the method returns `diffItemType`,
+	 * * finally, if state was `'refresh'` or `'rename'`, the method returns the state value.
+	 */
+	private _getDiffActionForNode( node: Node, diffItemType: 'insert' | 'remove' ): DifferItemAction {
+		if ( !node.is( 'element' ) ) {
+			// Text node.
+			return diffItemType;
+		}
+
+		if ( !this._elementsSnapshots.has( node ) ) {
+			// Newly inserted element.
+			return diffItemType;
+		}
+
+		const state = this._elementState.get( node );
+
+		if ( !state || state == 'move' ) {
+			return diffItemType;
+		}
+
+		return state;
+	}
+
+	/**
 	 * Gets an array of changes that have already been saved for a given element.
 	 */
 	private _getChangesForElement( element: Element | DocumentFragment ): Array<ChangeItem> {
@@ -985,7 +996,7 @@ export default class Differ {
 		this._elementChildrenSnapshots.set( element, childrenSnapshots );
 
 		for ( const snapshot of childrenSnapshots ) {
-			this._elementSnapshots.set( snapshot.node, snapshot );
+			this._elementsSnapshots.set( snapshot.node, snapshot );
 		}
 	}
 
