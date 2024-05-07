@@ -3036,12 +3036,13 @@ describe( 'Differ', () => {
 	describe( '#_refreshItem()', () => {
 		it( 'should mark given element to be removed and added again', () => {
 			const p = root.getChild( 0 );
+			const before = { name: 'paragraph', attributes: new Map() };
 
 			differ._refreshItem( p );
 
 			expectChanges( [
 				{ type: 'remove', action: 'refresh', name: 'paragraph', length: 1, position: model.createPositionBefore( p ) },
-				{ type: 'insert', action: 'refresh', name: 'paragraph', length: 1, position: model.createPositionBefore( p ) }
+				{ type: 'insert', action: 'refresh', name: 'paragraph', length: 1, position: model.createPositionBefore( p ), before }
 			], true );
 
 			const refreshedItems = Array.from( differ.getRefreshedItems() );
@@ -3100,12 +3101,13 @@ describe( 'Differ', () => {
 
 			const markersToRefresh = [ 'markerA', 'markerB', 'markerC' ];
 			const element = root.getChild( 1 );
+			const before = { name: 'paragraph', attributes: new Map() };
 
 			differ._refreshItem( element );
 
 			expectChanges( [
 				{ type: 'remove', action: 'refresh', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ) },
-				{ type: 'insert', action: 'refresh', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ) }
+				{ type: 'insert', action: 'refresh', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ), before }
 			] );
 
 			const markersToRemove = differ.getMarkersToRemove().map( entry => entry.name );
@@ -3131,7 +3133,8 @@ describe( 'Differ', () => {
 						name: 'paragraph',
 						length: 1,
 						position: new Position( root, [ 0 ] ),
-						attributes: new Map( [] )
+						attributes: new Map( [] ),
+						before: undefined
 					}
 				] );
 			} );

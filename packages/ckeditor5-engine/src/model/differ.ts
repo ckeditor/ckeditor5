@@ -1251,7 +1251,7 @@ export default class Differ {
 			action
 		};
 
-		if ( action == 'rename' && elementSnapshotBefore ) {
+		if ( action != 'insert' && elementSnapshotBefore ) {
 			diffItem.before = {
 				name: elementSnapshotBefore.name,
 				attributes: new Map( elementSnapshotBefore.attributes )
@@ -1628,8 +1628,8 @@ export interface DiffItemInsert {
 	 * For example, when `<paragraph textAlign="right">` was changed to `<codeBlock language="plaintext">`,
 	 * `before.name` will be equal to `'paragraph'` and `before.attributes` map will have one entry: `'textAlign' -> 'right'`.
 	 *
-	 * The property is available only if the insertion change was due to element rename (when `action` property is `'rename'`).
-	 * As such, `before` property is never available for text node changes.
+	 * The property is available only if the insertion change was due to element rename or refresh (when `action` property is `'rename'`
+	 * or `'refresh'`). As such, `before` property is never available for text node changes.
 	 */
 	before?: {
 
