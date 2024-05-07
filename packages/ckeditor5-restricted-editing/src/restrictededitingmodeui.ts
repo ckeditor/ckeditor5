@@ -143,6 +143,7 @@ export default class RestrictedEditingModeUI extends Plugin {
 				withText: true,
 				keystroke,
 				withKeystroke: true,
+				role: 'menuitem',
 				_commandName: commandName
 			} )
 		};
