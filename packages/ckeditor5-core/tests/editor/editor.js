@@ -416,7 +416,7 @@ describe( 'Editor', () => {
 						hostnameStub.restore();
 					} );
 
-					it( 'should not pass if domain have no subdomen', () => {
+					it( 'should not pass if domain have no subdomain', () => {
 						const licenseKey = 'foo.eyJleHAiOjE3MTc1NDU2MDAsImp0aSI6IjBjZjc2MGE1LTMyYzQtNDIzMC04ZjQ3LTJmN2Q1NzBkMjk5NSIsIm' +
 					'xpY2Vuc2VkSG9zdHMiOlsiKi5ub3Rpb24uc28iXSwidmMiOiIxMGE1ODcwMiJ9.bar';
 
