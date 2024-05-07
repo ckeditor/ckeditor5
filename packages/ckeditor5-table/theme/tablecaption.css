@@ -24,7 +24,7 @@
 	outline-offset: -1px;
 
 	/* Improve placeholder rendering in high-constrast mode (https://github.com/ckeditor/ckeditor5/issues/14907). */
-	@media (forced-colors: active) {
+	@mixin ck-media-forced-colors {
 		background-color: unset;
 		color: unset;
 	}
