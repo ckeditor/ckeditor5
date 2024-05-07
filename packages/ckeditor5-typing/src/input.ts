@@ -10,14 +10,16 @@
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { env } from '@ckeditor/ckeditor5-utils';
 
-import InsertTextCommand from './inserttextcommand.js';
+import InsertTextCommand, { type InsertTextCommandOptions } from './inserttextcommand.js';
 import InsertTextObserver, { type ViewDocumentInsertTextEvent } from './inserttextobserver.js';
 
-import type {
-	Model,
-	ViewDocumentCompositionStartEvent,
-	ViewDocumentKeyDownEvent,
-	ViewDocumentMutationsEvent
+import {
+	LiveRange,
+	type Model,
+	type Range,
+	type ViewDocumentCompositionStartEvent,
+	type ViewDocumentKeyDownEvent,
+	type ViewDocumentMutationsEvent
 } from '@ckeditor/ckeditor5-engine';
 
 import { debounce } from 'lodash-es';
@@ -29,7 +31,7 @@ export default class Input extends Plugin {
 	/**
 	 * The queue of `insertText` command executions that are waiting for the DOM to get updated after beforeinput event.
 	 */
-	private _queue: Array<Parameters<InsertTextCommand[ 'execute' ]>[ 0 ]> = [];
+	private _queue: Array<InsertTextCommandLiveOptions> = [];
 
 	/**
 	 * Debounced queue flush as a safety mechanism for cases of mutation observer not triggering.
@@ -108,7 +110,7 @@ export default class Input extends Plugin {
 				}
 			}
 
-			const commandData: Parameters<InsertTextCommand[ 'execute' ]>[ 0 ] = {
+			const commandData: InsertTextCommandOptions = {
 				text: insertText,
 				selection: model.createSelection( modelRanges )
 			};
@@ -132,7 +134,7 @@ export default class Input extends Plugin {
 				// @if CK_DEBUG_TYPING // 	);
 				// @if CK_DEBUG_TYPING // }
 
-				this._queue.push( commandData );
+				this._pushQueue( commandData );
 				this._flushQueueDebounced();
 			} else {
 				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
@@ -206,6 +208,55 @@ export default class Input extends Plugin {
 		super.destroy();
 
 		this._flushQueueDebounced.cancel();
+
+		while ( this._queue.length ) {
+			this._shiftQueue();
+		}
+	}
+
+	/**
+	 * TODO
+	 */
+	private _pushQueue( commandData: InsertTextCommandOptions ): void {
+		const commandLiveData: InsertTextCommandLiveOptions = {
+			text: commandData.text
+		};
+
+		if ( commandData.selection ) {
+			commandLiveData.selectionRanges = Array.from( commandData.selection.getRanges() ).map( range => LiveRange.fromRange( range ) );
+		}
+
+		if ( commandData.resultRange ) {
+			commandLiveData.resultRange = LiveRange.fromRange( commandData.resultRange );
+		}
+
+		this._queue.push( commandLiveData );
+	}
+
+	/**
+	 * TODO
+	 */
+	private _shiftQueue(): InsertTextCommandOptions {
+		const commandLiveData = this._queue.shift()!;
+		const commandData: InsertTextCommandOptions = {
+			text: commandLiveData.text
+		};
+
+		if ( commandLiveData.selectionRanges ) {
+			const ranges = commandLiveData.selectionRanges
+				.map( liveRange => detachLiveRange( liveRange ) )
+				.filter( ( range ): range is Range => !!range );
+
+			commandData.selection = this.editor.model.createSelection( ranges );
+		}
+
+		const resultRange = detachLiveRange( commandLiveData.resultRange );
+
+		if ( resultRange ) {
+			commandData.resultRange = resultRange;
+		}
+
+		return commandData;
 	}
 
 	/**
@@ -213,7 +264,7 @@ export default class Input extends Plugin {
 	 *
 	 * @param reason Used only for debugging.
 	 */
-	private _flushQueue( reason: string ): void {
+	private _flushQueue( reason: string ): void { // eslint-disable-line @typescript-eslint/no-unused-vars
 		const editor = this.editor;
 		const model = editor.model;
 		const view = editor.editing.view;
@@ -237,7 +288,7 @@ export default class Input extends Plugin {
 			buffer.lock();
 
 			while ( this._queue.length ) {
-				const commandData = this._queue.shift();
+				const commandData = this._shiftQueue();
 
 				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 				// @if CK_DEBUG_TYPING // 	console.log( '%c[Input]%c Execute queued insertText:',
@@ -282,3 +333,33 @@ function deleteSelectionContent( model: Model, insertTextCommand: InsertTextComm
 
 	buffer.unlock();
 }
+
+/**
+ * TODO
+ */
+function detachLiveRange( liveRange?: LiveRange ): Range | null {
+	if ( !liveRange ) {
+		return null;
+	}
+
+	const range = liveRange.toRange();
+
+	liveRange.detach();
+
+	if ( range.root.rootName == '$graveyard' ) {
+		return null;
+	}
+
+	return range;
+}
+
+/**
+ * TODO
+ */
+type InsertTextCommandLiveOptions = {
+	text?: string;
+
+	selectionRanges?: Array<LiveRange>;
+
+	resultRange?: LiveRange;
+};
