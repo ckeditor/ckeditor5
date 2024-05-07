@@ -26,6 +26,10 @@ import {
 import { isElement } from 'lodash-es';
 import '../../../theme/components/panel/balloonpanel.css';
 
+const ARROW_SIDE_OFFSET = 25;
+const ARROW_HEIGHT_OFFSET = 10;
+const STICKY_VERTICAL_OFFSET = 20;
+
 const toPx = toUnit( 'px' );
 const defaultLimiterElement = global.document.body;
 
@@ -416,7 +420,7 @@ export default class BalloonPanelView extends View {
 	 *
 	 * @default 25
 	 */
-	public static arrowSideOffset = 25;
+	public static arrowSideOffset = ARROW_SIDE_OFFSET;
 
 	/**
 	 * A height offset of the arrow from the edge of the balloon. Controlled by CSS.
@@ -448,7 +452,7 @@ export default class BalloonPanelView extends View {
 	 *
 	 * @default 10
 	*/
-	public static arrowHeightOffset = 10;
+	public static arrowHeightOffset = ARROW_HEIGHT_OFFSET;
 
 	/**
 	 * A vertical offset of the balloon panel from the edge of the viewport if sticky.
@@ -473,7 +477,7 @@ export default class BalloonPanelView extends View {
 	 *
 	 * @default 20
 	 */
-	public static stickyVerticalOffset = 20;
+	public static stickyVerticalOffset = STICKY_VERTICAL_OFFSET;
 
 	/**
 	 * Function used to calculate the optimal position for the balloon.
@@ -899,9 +903,9 @@ export function generatePositions( options: {
 	config?: object;
 } = {} ): Record<string, PositioningFunction> {
 	const {
-		sideOffset = BalloonPanelView.arrowSideOffset,
-		heightOffset = BalloonPanelView.arrowHeightOffset,
-		stickyVerticalOffset = BalloonPanelView.stickyVerticalOffset,
+		sideOffset = ARROW_SIDE_OFFSET,
+		heightOffset = ARROW_HEIGHT_OFFSET,
+		stickyVerticalOffset = STICKY_VERTICAL_OFFSET,
 		config
 	} = options;
 
