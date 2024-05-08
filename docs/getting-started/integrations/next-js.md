@@ -13,13 +13,13 @@ modified_at: 2023-11-14
 
 Next.js 13 introduced a new App Router as an alternative to the previous Pages Router. App Router supports server components and is more server-centric than Pages Router, which is client-side oriented.
 
-CKEditor&nbsp;5 does not support server-side rendering yet, but you can integrate it with the Next.js framework. In this guide, you will add the editor to a Next.js project using both routing paradigms. For this purpose, you will need [Next.js CLI](https://nextjs.org/docs/app/api-reference/create-next-app), and the official {@link getting-started/integrations/react CKEditor&nbsp;5 React component}. Optionally, for convenience, you can also use our Builder<!-- add Builder link -->.
+CKEditor&nbsp;5 does not support server-side rendering yet, but you can integrate it with the Next.js framework. In this guide, you will add the editor to a Next.js project using both routing paradigms. For this purpose, you will need [Next.js CLI](https://nextjs.org/docs/app/api-reference/create-next-app), and the official {@link getting-started/integrations/react CKEditor&nbsp;5 React component}. Optionally, for convenience, you can also use our [Builder](https://ckeditor.com/builder?redirect=docs).
 
 ## Quick start
 
 ### Using the Builder
 
-The easiest way to use CKEditor&nbsp;5 in your Next.js application is configuring it with Builder<!-- add Builder link --> and integrating it with your project. Prepare an editor with the desired set of features and download it.
+The easiest way to use CKEditor&nbsp;5 in your Next.js application is configuring it with [Builder](https://ckeditor.com/builder?redirect=docs) and integrating it with your project.
 
 ### Installing from npm
 

@@ -92,7 +92,7 @@ npm install --save @ckeditor/ckeditor5-angular
 	If you do not have an existing project, you can use the [Angular CLI](https://angular.io/cli) to create a new one.
 </info-box>
 
-Install one of the {@link getting-started/legacy-getting-started/predefined-builds CKEditor&nbsp;5 predefined builds}<!-- well this definitely needs some love --> or get one from Builder<!-- add Builder link -->.
+Install one of the {@link getting-started/legacy-getting-started/predefined-builds CKEditor&nbsp;5 predefined builds}<!-- well this definitely needs some love --> or get one from [Builder](https://ckeditor.com/builder?redirect=docs).
 
 This tutorial assumes that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
 
@@ -418,7 +418,7 @@ And then, in the template:
 
 ### Using the editor with collaboration plugins
 
-The easiest way to integrate {@link features/collaboration collaboration plugins} in an Angular application is to create a custom build with Builder<!-- add Builder link --> first and then import it from the Angular application.
+The easiest way to integrate {@link features/collaboration collaboration plugins} in an Angular application is to create a custom build with [Builder](https://ckeditor.com/builder?redirect=docs) first and then import it from the Angular application.
 
 <info-box>
 	For such a scenario we provide a few **ready-to-use integrations** featuring collaborative editing in Angular applications:
