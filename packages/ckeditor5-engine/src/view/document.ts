@@ -22,7 +22,7 @@ import type DowncastWriter from './downcastwriter.js';
  * Document class creates an abstract layer over the content editable area, contains a tree of view elements and
  * {@link module:engine/view/documentselection~DocumentSelection view selection} associated with this document.
  */
-export default class Document extends BubblingEmitterMixin( ObservableMixin() ) {
+export default class Document extends /* #__PURE__ */ BubblingEmitterMixin( /* #__PURE__ */ ObservableMixin() ) {
 	/**
 	 * Selection done on this document.
 	 */

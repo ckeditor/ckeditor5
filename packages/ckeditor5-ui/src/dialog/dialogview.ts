@@ -68,7 +68,7 @@ const toPx = toUnit( 'px' );
 /**
  * A dialog view class.
  */
-export default class DialogView extends DraggableViewMixin( View ) implements DraggableView {
+export default class DialogView extends /* #__PURE__ */ DraggableViewMixin( View ) implements DraggableView {
 	/**
 	 * A collection of the child views inside of the dialog.
 	 * A dialog can have 3 optional parts: header, content, and actions.

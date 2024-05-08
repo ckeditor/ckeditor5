@@ -121,7 +121,7 @@ import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
  * @fires text
  * @fires documentFragment
  */
-export default class UpcastDispatcher extends EmitterMixin() {
+export default class UpcastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	/**
 	 * An interface passed by the dispatcher to the event callbacks.
 	 */

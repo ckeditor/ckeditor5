@@ -6,7 +6,7 @@
 import { View } from '../../../src/index.js';
 import DraggableViewMixin, { type DraggableView } from '../../../src/bindings/draggableviewmixin.js';
 
-class DraggableTestView extends DraggableViewMixin( View ) implements DraggableView {
+class DraggableTestView extends /* #__PURE__ */ DraggableViewMixin( View ) implements DraggableView {
 	declare public top: number;
 	declare public left: number;
 

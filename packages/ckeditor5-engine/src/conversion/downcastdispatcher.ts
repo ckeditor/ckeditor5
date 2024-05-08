@@ -117,7 +117,7 @@ import type ViewElement from '../view/element.js';
  * } );
  * ```
  */
-export default class DowncastDispatcher extends EmitterMixin() {
+export default class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	/**
 	 * A template for an interface passed by the dispatcher to the event callbacks.
 	 *

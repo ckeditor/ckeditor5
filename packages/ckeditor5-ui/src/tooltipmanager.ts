@@ -83,7 +83,7 @@ const BALLOON_CLASS = 'ck-tooltip';
  * **Note**: This class is a singleton. All editor instances re-use the same instance loaded by
  * {@link module:ui/editorui/editorui~EditorUI} of the first editor.
  */
-export default class TooltipManager extends DomEmitterMixin() {
+export default class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 	/**
 	 * The view rendering text of the tooltip.
 	 */
