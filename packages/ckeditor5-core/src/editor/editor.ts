@@ -716,7 +716,7 @@ export default abstract class Editor extends ObservableMixin() {
 			const isWillcardMatched = willcards.some( willcard => willcard === hostname.slice( -willcard.length ) );
 
 			if ( !isWillcardMatched && !isHostnameMatched ) {
-				blockEditor( this, 'licenseFormatInvalid', `Domain "${ hostname }" does not have access to the provided license.` );
+				blockEditor( this, 'licenseHostInvalid', `Domain "${ hostname }" does not have access to the provided license.` );
 
 				return;
 			}
