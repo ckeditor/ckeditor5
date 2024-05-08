@@ -247,7 +247,7 @@ export default class Widget extends Plugin {
 			label: t( 'Keystrokes that can be used when a widget is selected (for example: image, table, etc.)' ),
 			keystrokes: [
 				{
-					label: t( 'Move focus from nested editable back to the widget' ),
+					label: t( 'Move focus from an editable area back to the parent widget' ),
 					keystroke: 'Esc'
 				},
 				{

@@ -147,7 +147,7 @@ describe( 'Widget', () => {
 		);
 
 		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'widget' ).keystrokes ).to.deep.include( {
-			label: 'Move focus from nested editable back to the widget',
+			label: 'Move focus from an editable area back to the parent widget',
 			keystroke: 'Esc'
 		} );
 
