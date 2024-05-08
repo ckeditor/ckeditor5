@@ -5,6 +5,7 @@
 
 @import "../mixins/_focus.css";
 @import "../mixins/_shadow.css";
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_mediacolors.css";
 
 :root {
 	--ck-widget-outline-thickness: 3px;
@@ -23,6 +24,10 @@
 	outline-style: solid;
 	outline-color: transparent;
 	transition: outline-color var(--ck-widget-handler-animation-duration) var(--ck-widget-handler-animation-curve);
+
+	@media (prefers-reduced-motion: reduce) {
+		transition: none;
+	}
 
 	&.ck-widget_selected,
 	&.ck-widget_selected:hover {
@@ -43,8 +48,9 @@
 	&:focus {
 		@mixin ck-focus-ring;
 		@mixin ck-box-shadow var(--ck-inner-shadow);
-
-		background-color: var(--ck-color-widget-editable-focus-background);
+		@mixin ck-media-default-colors {
+			background-color: var(--ck-color-widget-editable-focus-background);
+		}
 	}
 }
 
@@ -74,6 +80,10 @@
 		left: calc(0px - var(--ck-widget-outline-thickness));
 		top: 0;
 
+		@media (prefers-reduced-motion: reduce) {
+			transition: none;
+		}
+
 		& .ck-icon {
 			/* Make sure the dimensions of the icon are independent of the fon-size of the content. */
 			width: var(--ck-widget-handler-icon-size);
@@ -86,6 +96,10 @@
 
 				/* Note: The animation is longer on purpose. Simply feels better. */
 				transition: opacity 300ms var(--ck-widget-handler-animation-curve);
+
+				@media (prefers-reduced-motion: reduce) {
+					transition: none;
+				}
 			}
 		}
 

@@ -42,6 +42,10 @@
 		border: 1px solid hsl(0, 0%, 20%);
 		border-radius: 2px;
 		transition: 250ms ease-in-out box-shadow;
+
+		@media (prefers-reduced-motion: reduce) {
+			transition: none;
+		}
 	}
 
 	&::after {

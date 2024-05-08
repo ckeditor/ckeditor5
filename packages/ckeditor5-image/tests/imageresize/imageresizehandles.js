@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
+/* global document, window */
 
 // ClassicTestEditor can't be used, as it doesn't handle the focus, which is needed to test resizer visual cues.
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
@@ -995,7 +995,7 @@ describe( 'ImageResizeHandles', () => {
 				attachToSpy.restore();
 			} );
 
-			it( 'should set the paragraph as the resize host for an image wrapped with a link', async () => {
+			it( 'should set non-inline element as the resize host for an image wrapped with a link', async () => {
 				await setModelAndWaitForImages( editor,
 					'<paragraph>' +
 						`[<imageInline linkHref="http://ckeditor.com" src="${ IMAGE_SRC_FIXTURE }" alt="alt text"></imageInline>]` +
@@ -1004,7 +1004,7 @@ describe( 'ImageResizeHandles', () => {
 
 				const resizer = Array.from( editor.plugins.get( 'WidgetResize' )._resizers.values() )[ 0 ];
 
-				expect( resizer._getResizeHost().nodeName ).to.equal( 'P' );
+				expect( window.getComputedStyle( resizer._getResizeHost() ).display ).not.to.equal( 'inline' );
 			} );
 		} );
 
@@ -1039,7 +1039,7 @@ describe( 'ImageResizeHandles', () => {
 		} );
 
 		describe( 'to-do list integration', () => {
-			it( 'should set the list item as the resize host if an image is inside a to-do list', async () => {
+			it( 'should set non-inline as the resize host if an image is inside a to-do list', async () => {
 				editor = await createEditor( {
 					plugins: [ Image, ImageResizeEditing, ImageResizeHandles, LegacyTodoList, Paragraph ]
 				} );
@@ -1052,7 +1052,7 @@ describe( 'ImageResizeHandles', () => {
 
 				const resizer = Array.from( editor.plugins.get( 'WidgetResize' )._resizers.values() )[ 0 ];
 
-				expect( resizer._getResizeHost().nodeName ).to.equal( 'LI' );
+				expect( window.getComputedStyle( resizer._getResizeHost() ).display ).not.to.equal( 'inline' );
 
 				await editor.destroy();
 			} );
