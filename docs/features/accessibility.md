@@ -132,6 +132,16 @@ These keyboard shortcuts allow for quick access to content editing features.
 			<td><kbd>⌘F</kbd></td>
 		</tr>
 		<tr>
+			<td>Copy text formatting</td>
+			<td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>C</kbd></td>
+			<td><kbd>⌘⇧C</kbd></td>
+		</tr>
+		<tr>
+			<td>Paste text formatting</td>
+			<td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>V</kbd></td>
+			<td><kbd>⌘⇧V</kbd></td>
+		</tr>
+		<tr>
 			<td>Italic text</td>
 			<td><kbd>Ctrl</kbd>+<kbd>I</kbd></td>
 			<td><kbd>⌘I</kbd></td>
