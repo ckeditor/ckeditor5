@@ -13,159 +13,93 @@ modified_at: 2023-11-14
 
 Next.js 13 introduced a new App Router as an alternative to the previous Pages Router. App Router supports server components and is more server-centric than Pages Router, which is client-side oriented.
 
-CKEditor&nbsp;5 does not support server-side rendering yet, but you can integrate it with the Next.js framework. In this guide, you will add the editor to a Next.js project using both routing paradigms. For this purpose, you will need [Next.js CLI](https://nextjs.org/docs/pages/api-reference/create-next-app), CKEditor&nbsp;5 Builder<!-- add Builder link -->, and the official {@link getting-started/integrations/react CKEditor&nbsp;5 React component}.
+CKEditor&nbsp;5 does not support server-side rendering yet, but you can integrate it with the Next.js framework. In this guide, you will add the editor to a Next.js project using both routing paradigms. For this purpose, you will need [Next.js CLI](https://nextjs.org/docs/app/api-reference/create-next-app), and the official {@link getting-started/integrations/react CKEditor&nbsp;5 React component}. Optionally, for convenience, you can also use our Builder<!-- add Builder link -->.
 
 ## Quick start
 
-The easiest way to use CKEditor&nbsp;5 in your Next.js application is preparing an editor build with Builder<!-- add Builder link --> and integrating it with your project. Prepare an editor with the desired set of features and download it.
+### Using the Builder
 
-## Setting up the project
+The easiest way to use CKEditor&nbsp;5 in your Next.js application is configuring it with Builder<!-- add Builder link --> and integrating it with your project. Prepare an editor with the desired set of features and download it.
 
-This guide assumes you will use the official CLI tool for Next.js &ndash; `create-next-app`. Refer to the [Next.js documentation](https://nextjs.org/docs/pages/api-reference/create-next-app) to learn how to set up your project.
+### Installing from npm
 
-The CLI will ask you some questions. Depending on your choices, the folder structure in your project may differ.
+This guide assumes you already have a Next project. To create such a project, you can use CLI like create-next-app. Refer to the [Next.js documentation](https://nextjs.org/docs/app/api-reference/create-next-app) to learn more.
 
-## Integrating the build in your Next.js project
+First, install the CKEditor 5 packages:
 
-With the Next.js setup done, move to the actual integration. First, put your unzipped custom build at the project root in the `ckeditor5` folder.
+* `ckeditor5` &ndash; package with open-source plugins and features.
+* `ckeditor5-premium-features` &ndash; package with premium plugins and features.
 
-### Page Router
-
-If you chose the Page Router, your final folder structure should look like the one below.
-
-```plain
-├── ckeditor5
-├── components
-│      └── custom-editor.js
-├── pages
-│   ├── api
-│      └── hello.js
-│   ├── _app.js
-│   ├── _document.js
-│   └── index.js
-├── public
-│   ├── favicon.ico
-│   ├── next.svg
-│   └── vercel.svg
-├── styles
-│   ├── globals.css
-│   └── Home.module.css
-├── jsconfig.json
-├── next.config.js
-├── package.json
-└── ...
-```
-
-### App Router
-
-If you chose the App Router, your final folder structure should look like the one below.
-
-```plain
-├── ckeditor5
-├── components
-│      └── custom-editor.js
-├── app
-│   ├── favicon.ico
-│   ├── globals.css
-│   ├── layout.js
-│   ├── page.js
-│   └── page.module.css
-├── public
-│   ├── next.svg
-│   └── vercel.svg
-├── jsconfig.json
-├── next.config.js
-├── package.json
-└── ...
-```
-
-Then, add the folder as a local dependency using the Yarn command:
+Depending on your configuration and chosen plugins, you may need to install the first or both packages.
 
 ```bash
-yarn add file:./ckeditor5 # or npm install file:./ckeditor5
+npm install ckeditor5 ckeditor5-premium-features
 ```
 
-The dependency should be visible in the `package.json` file as `ckeditor5-custom-build`. Additionally, you need an external dependency &ndash; the CKEditor&nbsp;5 React component. Next.js extends React, and hence, the component is valid here. You can install it using the following command:
+Next.js is based on React, so install the [CKEditor 5 WYSIWYG editor component for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react), too:
 
 ```bash
-yarn add @ckeditor/ckeditor5-react # or npm install @ckeditor/ckeditor5-react
+npm install @ckeditor/ckeditor5-react
 ```
 
-Next, you will use the installed dependencies in a React component. Create a new component in the components directory, for example, `components/custom-editor.js`. Inside the component file, import all necessary dependencies. Then, create a functional component that returns the CKEditor&nbsp;5 React component. The custom build ships with a default configuration, but you can customize it to your needs, as shown in the snippet below.
+Next, you will use the installed dependencies in a React component. Create a new component in the components directory, for example, `components/custom-editor.js`. Inside the component file, import all necessary dependencies. Then, create a functional component that returns the CKEditor&nbsp;5 React component. The below example shows how to use the component with open-source and premium plugins.
+
+App Router, by default, uses server components. It means you need to mark a component as client-side explicitly. You can achieve that by using the `'use client'` directive at the top of a file, above your imports. You do not need the directive if you use the Pages Router.
 
 ```jsx
 // components/custom-editor.js
+'use client' // only in App Router
 
-import React from 'react';
-import { CKEditor } from "@ckeditor/ckeditor5-react";
-import Editor from "ckeditor5-custom-build";
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
+import { SlashCommand } from 'ckeditor5-premium-features';
 
-const editorConfiguration = {
-    toolbar: [
-        'heading',
-        '|',
-        'bold',
-        'italic',
-        'link',
-        'bulletedList',
-        'numberedList',
-        '|',
-        'outdent',
-        'indent',
-        '|',
-        'imageUpload',
-        'blockQuote',
-        'insertTable',
-        'mediaEmbed',
-        'undo',
-        'redo'
-    ]
-};
+import 'ckeditor5/index.css';
+import 'ckeditor5-premium-features/index.css';
 
-function CustomEditor( props ) {
-		return (
-			<CKEditor
-				editor={ Editor }
-				config={ editorConfiguration }
-				data={ props.initialData }
-				onChange={ (event, editor ) => {
-					const data = editor.getData();
-					console.log( { event, editor, data } );
-				} }
-			/>
-		)
+function CustomEditor() {
+    return (
+        <CKEditor
+            editor={ ClassicEditor }
+            config={ {
+                toolbar: {
+                    items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+                },
+                plugins: [
+                    Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
+                ],
+                licenseKey: '<YOUR_LICENSE_KEY>',
+                mention: { 
+                    // Mention configuration
+                },
+                initialData: '<p>Hello from CKEditor 5 in React!</p>'
+            } }
+        />
+    );
 }
 
 export default CustomEditor;
 ```
 
-The `CustomEditor` component is ready to be used inside a page. The usage will differ depending on the chosen routing strategy.
+The `CustomEditor` component is ready to be used inside a page. The page's directory will differ depending on the chosen routing strategy.
 
-You can either create a second page inside the `pages` directory or replace the content of the existing `index.js` page. You will go with the second option. CKEditor&nbsp;5 is a client-side text editor and relies on the browser APIs, so you need to disable server-side rendering for the custom component. You can lazily load the component using the `dynamic()` function built into Next.js.
-
-App Router, by default, uses server components. It means you need to mark a component as client-side explicitly. You can achieve that by using the `'use client'` directive at the top of a file, above your imports. Also, pay attention to the folder structure, which is different now. The `page.js` file should go into the `app` directory.
+CKEditor&nbsp;5 is a client-side text editor and relies on the browser APIs, so you need to disable server-side rendering for our custom component. You can lazily load the component using the `dynamic()` function built into Next.js.
 
 ```jsx
 // app/page.js (App Router)
 // pages/index.js (Pages Router)
-'use client' // only in App Router
 
-import React from 'react';
 import dynamic from 'next/dynamic';
 
-const CustomEditor = dynamic( () => {
-  return import( '../components/custom-editor' );
-}, { ssr: false } );
+const CustomEditor = dynamic( () => import( '@/components/custom-editor' ), { ssr: false } );
 
 function Home() {
   return (
-    <CustomEditor
-      initialData='<h1>Hello from CKEditor in Next.js!</h1>'
-    />
+    <CustomEditor />
   );
 }
 
 export default Home;
 ```
 
-You can run your project now. Regardless of your router choice, type `npm run dev` or `yarn run dev` to see your application in the browser. If you have trouble seeing the editor, remember that the Next.js project ships with CSS files that can interfere with the editor. You can remove them or add your styling.
+You can run your project now. If you chose `create-next-app`, type `npm run dev` to see your application in the browser. If you have trouble seeing the editor, remember that the Next.js project ships with CSS files that can interfere with the editor. You can remove them or add your styling. Also, pay attention to the import path - this guide uses the [default import alias](https://nextjs.org/docs/app/building-your-application/configuring/absolute-imports-and-module-aliases) (@). If you didn't configure it, change the path appropriately.
