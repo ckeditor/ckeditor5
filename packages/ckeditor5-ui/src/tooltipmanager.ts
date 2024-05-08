@@ -307,7 +307,12 @@ export default class TooltipManager extends DomEmitterMixin() {
 		}
 
 		this._unpinTooltip();
-		this._pinTooltipDebounced( elementWithTooltipAttribute, getTooltipData( elementWithTooltipAttribute ) );
+
+		if ( evt.name === 'focus' ) {
+			this._pinTooltip( elementWithTooltipAttribute, getTooltipData( elementWithTooltipAttribute ) );
+		} else {
+			this._pinTooltipDebounced( elementWithTooltipAttribute, getTooltipData( elementWithTooltipAttribute ) );
+		}
 	}
 
 	/**
