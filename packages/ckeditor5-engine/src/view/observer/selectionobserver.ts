@@ -160,9 +160,9 @@ export default class SelectionObserver extends Observer {
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	_debouncedLine();
 			// @if CK_DEBUG_TYPING // 	const domSelection = domDocument.defaultView!.getSelection();
-			// @if CK_DEBUG_TYPING // 	console.group( '%c[SelectionObserver]%c selectionchange', 'color:green', ''
+			// @if CK_DEBUG_TYPING // 	console.group( '%c[SelectionObserver]%c selectionchange', 'color: green', ''
 			// @if CK_DEBUG_TYPING // 	);
-			// @if CK_DEBUG_TYPING // 	console.info( '%c[SelectionObserver]%c DOM Selection:', 'font-weight:bold;color:green', '',
+			// @if CK_DEBUG_TYPING // 	console.info( '%c[SelectionObserver]%c DOM Selection:', 'font-weight: bold; color: green', '',
 			// @if CK_DEBUG_TYPING // 		{ node: domSelection!.anchorNode, offset: domSelection!.anchorOffset },
 			// @if CK_DEBUG_TYPING // 		{ node: domSelection!.focusNode, offset: domSelection!.focusOffset }
 			// @if CK_DEBUG_TYPING // 	);
@@ -173,7 +173,7 @@ export default class SelectionObserver extends Observer {
 			if ( this.document.isComposing && !env.isAndroid ) {
 				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 				// @if CK_DEBUG_TYPING // 	console.info( '%c[SelectionObserver]%c Selection change ignored (isComposing)',
-				// @if CK_DEBUG_TYPING // 		'font-weight:bold;color:green', ''
+				// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green', ''
 				// @if CK_DEBUG_TYPING // 	);
 				// @if CK_DEBUG_TYPING // 	console.groupEnd();
 				// @if CK_DEBUG_TYPING // }
@@ -198,9 +198,9 @@ export default class SelectionObserver extends Observer {
 		this.listenTo<ViewDocumentCompositionStartEvent>( this.view.document, 'compositionstart', () => {
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	const domSelection = domDocument.defaultView!.getSelection();
-			// @if CK_DEBUG_TYPING // 	console.group( '%c[SelectionObserver]%c update selection on compositionstart', 'color:green', ''
+			// @if CK_DEBUG_TYPING // 	console.group( '%c[SelectionObserver]%c update selection on compositionstart', 'color: green', ''
 			// @if CK_DEBUG_TYPING // 	);
-			// @if CK_DEBUG_TYPING // 	console.info( '%c[SelectionObserver]%c DOM Selection:', 'font-weight:bold;color:green', '',
+			// @if CK_DEBUG_TYPING // 	console.info( '%c[SelectionObserver]%c DOM Selection:', 'font-weight: bold; color: green', '',
 			// @if CK_DEBUG_TYPING // 		{ node: domSelection!.anchorNode, offset: domSelection!.anchorOffset },
 			// @if CK_DEBUG_TYPING // 		{ node: domSelection!.focusNode, offset: domSelection!.focusOffset }
 			// @if CK_DEBUG_TYPING // 	);
@@ -310,7 +310,7 @@ export default class SelectionObserver extends Observer {
 
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.info( '%c[SelectionObserver]%c Fire selection change:',
-			// @if CK_DEBUG_TYPING // 		'font-weight:bold;color:green', '',
+			// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green', '',
 			// @if CK_DEBUG_TYPING // 		newViewSelection.getFirstRange()
 			// @if CK_DEBUG_TYPING // 	);
 			// @if CK_DEBUG_TYPING // }

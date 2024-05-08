@@ -224,7 +224,7 @@ export default class MutationObserver extends Observer {
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	_debouncedLine();
 			// @if CK_DEBUG_TYPING // 	console.group( '%c[MutationObserver]%c Mutations detected',
-			// @if CK_DEBUG_TYPING // 		'font-weight:bold;color:green', ''
+			// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green', 'font-weight: bold'
 			// @if CK_DEBUG_TYPING // 	);
 			// @if CK_DEBUG_TYPING // }
 

@@ -55,7 +55,7 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.info( `%c[InputObserver]%c event data: %c${ JSON.stringify( data ) }`,
-			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-weight:bold', 'color: blue;'
+			// @if CK_DEBUG_TYPING // 		'color: green; font-weight: bold', 'font-weight: bold', 'color: blue;'
 			// @if CK_DEBUG_TYPING // 	);
 			// @if CK_DEBUG_TYPING // }
 		} else if ( dataTransfer ) {
@@ -63,7 +63,7 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.info( `%c[InputObserver]%c event data transfer: %c${ JSON.stringify( data ) }`,
-			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-weight:bold', 'color: blue;'
+			// @if CK_DEBUG_TYPING // 		'color: green; font-weight: bold', 'font-weight: bold', 'color: blue;'
 			// @if CK_DEBUG_TYPING // 	);
 			// @if CK_DEBUG_TYPING // }
 		}
@@ -76,7 +76,7 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.info( '%c[InputObserver]%c using fake selection:',
-			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-weight:bold', targetRanges,
+			// @if CK_DEBUG_TYPING // 		'color: green; font-weight: bold', 'font-weight: bold', targetRanges,
 			// @if CK_DEBUG_TYPING // 		viewDocument.selection.isFake ? 'fake view selection' : 'fake DOM parent'
 			// @if CK_DEBUG_TYPING // 	);
 			// @if CK_DEBUG_TYPING // }
@@ -98,7 +98,7 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.info( '%c[InputObserver]%c using target ranges:',
-			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-weight:bold', targetRanges
+			// @if CK_DEBUG_TYPING // 		'color: green; font-weight: bold', 'font-weight: bold', targetRanges
 			// @if CK_DEBUG_TYPING // 	);
 			// @if CK_DEBUG_TYPING // }
 		}
@@ -111,7 +111,7 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.info( '%c[InputObserver]%c using selection ranges:',
-			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-weight:bold', targetRanges
+			// @if CK_DEBUG_TYPING // 		'color: green; font-weight: bold', 'font-weight: bold', targetRanges
 			// @if CK_DEBUG_TYPING // 	);
 			// @if CK_DEBUG_TYPING // }
 		}
