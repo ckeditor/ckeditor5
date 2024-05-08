@@ -3,6 +3,7 @@ menu-title: Multi-root integration
 meta-title: React rich text editor component | CKEditor 5 documentation
 category: react
 order: 20
+modified_at: 2024-04-25
 ---
 
 {@snippet installation/integrations/framework-integration}
@@ -123,7 +124,7 @@ However, as the multi-root editor addresses most use cases of the context featur
 
 ## Two-way data binding
 
-By default, the two-way data binding is enabled. It means that every change done in the editor is automatically applied in the `data` object returned from `useMultiEditorHook`. Additionally, if you want to change or set data in the editor, you can simply use `setData` method provided by the hook. It works the same way in case of attributes &ndash; the hook provides the `attributes` object and the `setAttributes` method to update them. It ensures that if you want to use or save the state of the editor, these objects are always up-to-date.
+By default, the two-way data binding is enabled. It means that every change done in the editor is automatically applied in the `data` object returned from the `useMultiRootEditor` hook. Additionally, if you want to change or set data in the editor, you can simply use `setData` method provided by the hook. It works the same way in case of attributes &ndash; the hook provides the `attributes` object and the `setAttributes` method to update them. It ensures that if you want to use or save the state of the editor, these objects are always up-to-date.
 
 <info-box>
 	Two-way data binding may lead to performance issues with large editor content. In such cases, it is recommended to disable it by setting the `disableTwoWayDataBinding` property to `true` when using the `useMultiRootEditor` hook. When this is disabled, you will need to handle data synchronization manually if it is needed.

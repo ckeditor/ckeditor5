@@ -66,6 +66,10 @@
 			}
 
 			animation: ck-table-form-labeled-view-status-appear .15s ease both;
+
+			@media (prefers-reduced-motion: reduce) {
+				animation: none;
+			}
 		}
 
 		/* Hide the error balloon when the field is blurred. Makes the experience much more clear. */

@@ -6,38 +6,38 @@
 category: setup
 menu-title: TypeScript support
 meta-title: TypeScript support | CKEditor 5 documentation
-modified_at: 2024-02-22
+modified_at: 2024-05-06
 order: 70
 ---
 
 # TypeScript support in CKEditor&nbsp;5
 
-CKEditor&nbsp;5 is built using TypeScript and has native type definitions. All the official packages distributed using NPM and CDN contain type definitions.
+CKEditor&nbsp;5 is built using TypeScript and has native type definitions. All the official packages distributed using NPM contain type definitions.
 
 <info-box hint>
-	Using TypeScript is just an option. If you do not need its features, you can continue using CKEditor&nbsp;5 in JavaScript.
+	We build all the packages using TypeScript 5.0, however, the editor should also work with an older version, such as 4.9. TypeScript is not following semantic versioning, so test your code accordingly.
 
-	For best results, we suggest using TypeScript version 5.0 or newer.
+	Using TypeScript is just an option. If you do not need its features, you can continue using CKEditor&nbsp;5 in JavaScript.
 </info-box>
 
 ## Why use CKEditor&nbsp;5 with TypeScript
 
 Using TypeScript comes with some advantages:
 
-* It helps produce clean and maintainable code
-* It introduces code autocompletion and type suggestions for CKEditor&nbsp;5 APIs
-* If you are developing custom plugins and using CKEditor&nbsp;5 Framework intensively, the TypeScript compiler will help you catch common type errors and increase the code quality
+* It helps produce clean and maintainable code.
+* It introduces code autocompletion and type suggestions for CKEditor&nbsp;5 APIs.
+* If you are developing custom plugins and using CKEditor&nbsp;5 Framework intensively, the TypeScript compiler will help you catch common type errors and increase the code quality.
 
-## CKEditor&nbsp;5 TypeScript setup (update as needed)
+## CKEditor&nbsp;5 TypeScript setup
 
 Running CKEditor&nbsp;5 does not differ much when using TypeScript compared to the JavaScript environment. You may consider using type assertion or type casting to satisfy the TypeScript compiler.
 
 ### Running the editor
 
-Here is an example of the classic editor build initialization:
+Here is an example of the classic editor type initialization:
 
 ```ts
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
+import { ClassicEditor } from 'ckeditor5'
 
 const editorPlaceholder = document.querySelector( '#editor' ) as HTMLElement;
 
@@ -45,27 +45,6 @@ ClassicEditor.create( editorPlaceholder ).catch( error => {
 	console.error( error );
 } );
 ```
-
-### Installing plugins
-
-When using TypeScript you need to import all modules provided by CKEditor&nbsp;5 using a package entry point instead of a path to a module.
-
-```ts
-// Instead of:
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-
-// Do:
-import { Bold } from '@ckeditor/ckeditor5-basic-styles';
-```
-
-This approach ensures that TypeScript correctly loads all module augmentation code necessary to make certain types work. The previous method (importing via `@ckeditor/ckeditor5-*/src/*`) still works in most cases, but [it may randomly break](https://github.com/ckeditor/ckeditor5/issues/13433).
-
-### Integrating CKEditor&nbsp;5 from source in your TypeScript project
-
-If you want to integrate CKEditor&nbsp;5 directly in your TypeScript project, follow the instructions for integrating from source using webpack and Vite:
-
-* {@link getting-started/advanced/integrating-from-source-webpack Integration from source using webpack}
-* {@link getting-started/advanced/integrating-from-source-vite Integration from source using Vite}
 
 ### Types for Angular, React, and Vue 3 components
 
@@ -75,8 +54,92 @@ The latest versions of our official components for Angular, React, and Vue 3 wer
 * {@link getting-started/integrations/react React component}
 * {@link getting-started/integrations/vuejs-v3 Vue.js 3+ component}
 
-## Developing plugins using TypeScript
+## Developing plugins with TypeScript
 
 CKEditor&nbsp;5's API is extensive and complex, but using TypeScript can make it easier to work with.
 
-You can use {@link framework/development-tools/package-generator/typescript-package package generator} to scaffold TypeScript-based plugins.
+You can use the {@link framework/development-tools/package-generator/typescript-package package generator} to scaffold TypeScript-based plugins.
+
+Writing a simple plugin will be similar to writing it in vanilla JavaScript, but you need to add [TypeScript augmentation](https://www.typescriptlang.org/docs/handbook/declaration-merging.html#module-augmentation) to give the compiler additional information about your plugin.
+
+Depending on your plugin, augment the following interfaces:
+
+* {@link module:core/editor/editorconfig~EditorConfig}, which informs that a new plugin extends the configuration.
+* {@link module:core/plugincollection~PluginsMap}, which informs that an additional plugin is available; useful when using `editor.plugins.get( '...' )`.
+* {@link module:core/commandcollection~CommandsMap}, which informs that an additional command is available; useful when using `editor.commands.get( '...' )`.
+
+The augmentation can be placed in a file with your editor setup. You can also create a separate file, for example `augmentation.ts`, and import it.
+
+The following is an example from our {@link tutorials/creating-simple-plugin-timestamp Creating a basic plugin} tutorial to which we added a UTC configuration option.
+
+```ts
+import {
+  ClassicEditor,
+  Bold,
+  Essentials,
+  Heading,
+  Italic,
+  Paragraph,
+  List,
+  Plugin,
+  ButtonView
+} from 'ckeditor5';
+import 'ckeditor5/dist/index.css';
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface EditorConfig {
+		timestamp?: { utc: boolean };
+	}
+
+	interface PluginsMap {
+		[ Timestamp.pluginName ]: Timestamp;
+	}
+}
+
+class Timestamp extends Plugin {
+	public static get pluginName() {
+		return 'Timestamp' as const;
+	}
+
+	public init(): void {
+		const editor = this.editor;
+
+		const utc = editor.config.get( 'timestamp.utc' );
+
+		editor.ui.componentFactory.add( 'timestamp', () => {
+			const button = new ButtonView();
+
+			button.set( {
+				label: 'Timestamp',
+				withText: true
+			} );
+
+			button.on( 'execute', () => {
+				const now = new Date();
+
+				const date = utc ? now.toUTCString() : now.toString(); // If the configuration option is present, we show a UTC timestamp.
+
+				editor.model.change( writer => {
+					editor.model.insertContent( writer.createText( date ) );
+				} );
+			} );
+
+			return button;
+		} );
+	}
+}
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ) as HTMLElement, {
+		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, Timestamp ],
+		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', 'timestamp' ],
+		timestamp: { utc: true } // This will be autocompleted and type checked thanks to our augmentation.
+	} )
+	.then( editor => {
+		console.log( 'Editor was initialized', editor );
+		console.log(editor.plugins.get( 'Timestamp' ); // This will have type Timestamp thanks to our augmentation.
+	} )
+	.catch( error => {
+		console.error( error.stack );
+	} );
+```
