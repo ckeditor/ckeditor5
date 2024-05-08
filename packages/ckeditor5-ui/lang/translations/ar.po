@@ -208,3 +208,7 @@ msgstr "خط"
 msgctxt "The accessible label of the editor menu bar used by assistive technologies."
 msgid "Editor menu bar"
 msgstr "شريط قائمة المحرِّر"
+
+msgctxt "An error text displayed when user attempted to enter an color that is not in HEX format."
+msgid "Please enter a valid color (e.g. \"ff0000\")."
+msgstr ""
