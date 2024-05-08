@@ -208,7 +208,7 @@ export default function DomEmitterMixin( base?: Constructor<Emitter> ): unknown 
  *                    +-----------------------------------------+
  *                                fire( click, DOM Event )
  */
-class ProxyEmitter extends EmitterMixin() {
+class ProxyEmitter extends /* #__PURE__ */ EmitterMixin() {
 	private readonly _domNode: Node | Window;
 	private readonly _options: { capture: boolean; passive: boolean };
 

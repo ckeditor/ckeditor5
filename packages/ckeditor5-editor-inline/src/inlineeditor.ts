@@ -48,7 +48,7 @@ import { isElement as _isElement } from 'lodash-es';
  * Read more about initializing the editor from source or as a build in
  * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`}.
  */
-export default class InlineEditor extends ElementApiMixin( Editor ) {
+export default class InlineEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	/**
 	 * @inheritDoc
 	 */
