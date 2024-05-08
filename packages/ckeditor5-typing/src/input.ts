@@ -16,8 +16,11 @@ import InsertTextObserver, { type ViewDocumentInsertTextEvent } from './insertte
 import {
 	LiveRange,
 	type Model,
+	type Element,
 	type Range,
+	type MutationData,
 	type ViewDocumentCompositionStartEvent,
+	type ViewDocumentCompositionEndEvent,
 	type ViewDocumentKeyDownEvent,
 	type ViewDocumentMutationsEvent
 } from '@ckeditor/ckeditor5-engine';
@@ -37,6 +40,11 @@ export default class Input extends Plugin {
 	 * Debounced queue flush as a safety mechanism for cases of mutation observer not triggering.
 	 */
 	private _flushQueueDebounced = debounce( () => this._flushQueue( 'timeout' ), 500 );
+
+	/**
+	 * TODO
+	 */
+	private _compositionElements = new Set<Element>();
 
 	/**
 	 * @inheritDoc
@@ -108,6 +116,18 @@ export default class Input extends Plugin {
 						}
 					}
 				}
+
+				if ( insertText.length == 0 && modelRanges[ 0 ].isCollapsed ) {
+					// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+					// @if CK_DEBUG_TYPING // 	console.log( '%c[Input]%c Ignore insertion of an empty data to the collapsed range',
+					// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', ''
+					// @if CK_DEBUG_TYPING // 	);
+					// @if CK_DEBUG_TYPING // }
+
+					return;
+				}
+
+				this._compositionElements.add( modelRanges[ 0 ].start.parent as Element );
 			}
 
 			const commandData: InsertTextCommandOptions = {
@@ -134,6 +154,7 @@ export default class Input extends Plugin {
 				// @if CK_DEBUG_TYPING // 	);
 				// @if CK_DEBUG_TYPING // }
 
+				// TODO make sure that model mapped position is valid or it's a fallback to the last position (out of bounds)
 				this._pushQueue( commandData );
 				this._flushQueueDebounced();
 			} else {
@@ -172,6 +193,41 @@ export default class Input extends Plugin {
 
 				deleteSelectionContent( model, insertTextCommand );
 			} );
+
+			// TODO
+			this.listenTo<ViewDocumentCompositionEndEvent>( view.document, 'compositionend', () => {
+				const mutations: Array<MutationData> = [];
+
+				for ( const element of this._compositionElements ) {
+					if ( element.root.rootName == '$graveyard' ) {
+						continue;
+					}
+
+					const viewElement = editor.editing.mapper.toViewElement( element );
+
+					if ( !viewElement ) {
+						continue;
+					}
+
+					mutations.push( { type: 'children', node: viewElement } );
+				}
+
+				this._compositionElements.clear();
+
+				if ( mutations.length ) {
+					// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+					// @if CK_DEBUG_TYPING // 	console.group( '%c[Input]%c Fire post-composition mutation fixes',
+					// @if CK_DEBUG_TYPING // 		'font-weight:bold;color:green', '', mutations
+					// @if CK_DEBUG_TYPING // 	);
+					// @if CK_DEBUG_TYPING // }
+
+					view.document.fire<ViewDocumentMutationsEvent>( 'mutations', { mutations } );
+
+					// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+					// @if CK_DEBUG_TYPING // 	console.groupEnd();
+					// @if CK_DEBUG_TYPING // }
+				}
+			}, { priority: 'lowest' } );
 		} else {
 			// Note: The priority must precede the CompositionObserver handler to call it before
 			// the renderer is blocked, because we want to render this change.
@@ -207,6 +263,7 @@ export default class Input extends Plugin {
 	public override destroy(): void {
 		super.destroy();
 
+		this._compositionElements.clear();
 		this._flushQueueDebounced.cancel();
 
 		while ( this._queue.length ) {

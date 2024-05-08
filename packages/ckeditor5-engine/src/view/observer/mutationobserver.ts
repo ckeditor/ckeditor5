@@ -230,10 +230,6 @@ export default class MutationObserver extends Observer {
 
 			this.document.fire<ViewDocumentMutationsEvent>( 'mutations', { mutations } );
 
-			// At this point we have "dirty DOM" (changed) and de-synched view (which has not been changed).
-			// In order to "reset DOM" we render the view again.
-			this.view.forceRender();
-
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.groupEnd();
 			// @if CK_DEBUG_TYPING // }

@@ -843,6 +843,18 @@ export default class Renderer extends ObservableMixin() {
 			return;
 		}
 
+		if ( env.isAndroid && this.isComposing && actualText.replace( /\u00A0/g, ' ' ) == expectedText.replace( /\u00A0/g, ' ' ) ) {
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Text node ignore NBSP changes while composing:',
+			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', '',
+			// @if CK_DEBUG_TYPING // 		`"${ actualText.replace( /\u00A0/g, '&nbsp;' ) }" (${ actualText.length }) ->` +
+			// @if CK_DEBUG_TYPING // 		` "${ expectedText.replace( /\u00A0/g, '&nbsp;' ) }" (${ expectedText.length })`
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // }
+
+			return;
+		}
+
 		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 		// @if CK_DEBUG_TYPING // 	console.info( `%c[Renderer]%c Update text node${ this.isComposing ? ' while composing' : '' }:`,
 		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', this.isComposing ? 'color: red; font-weight: bold' : '',
