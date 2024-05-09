@@ -100,7 +100,7 @@
     "@ckeditor/ckeditor5-dev-tests": "^39.7.0",
     "@ckeditor/ckeditor5-dev-transifex": "^39.7.0",
     "@ckeditor/ckeditor5-dev-translations": "^39.7.0",
-    "@ckeditor/ckeditor5-dev-utils": "https://gitpkg.vercel.app/ckeditor/ckeditor5-dev/packages/ckeditor5-dev-utils?update-esbuild-loader",
+    "@ckeditor/ckeditor5-dev-utils": "^39.7.0",
     "@ckeditor/ckeditor5-dev-web-crawler": "^39.7.0",
     "@ckeditor/ckeditor5-document-outline": "41.3.1",
     "@ckeditor/ckeditor5-export-pdf": "41.3.1",
