@@ -295,7 +295,7 @@ describe( 'Editor', () => {
 
 					const editor = new TestEditor( { licenseKey } );
 
-					sinon.assert.calledWithMatch( showErrorStub, 'invalid' );
+					sinon.assert.calledWithMatch( showErrorStub, 'domainLimit' );
 					expect( editor.isReadOnly ).to.be.true;
 				} );
 
@@ -314,7 +314,7 @@ describe( 'Editor', () => {
 
 					const editor = new TestEditor( { licenseKey } );
 
-					sinon.assert.calledWithMatch( showErrorStub, 'invalid' );
+					sinon.assert.calledWithMatch( showErrorStub, 'domainLimit' );
 					expect( editor.isReadOnly ).to.be.true;
 				} );
 			} );

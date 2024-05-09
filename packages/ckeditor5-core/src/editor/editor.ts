@@ -704,7 +704,7 @@ export default abstract class Editor extends ObservableMixin() {
 			return;
 		}
 
-		const licensedHosts: Array<string> = licensePayload.licensedHosts;
+		const licensedHosts: Array<string> | undefined = licensePayload.licensedHosts;
 
 		if ( licensedHosts ) {
 			const hostname = window.location.hostname;
@@ -716,7 +716,7 @@ export default abstract class Editor extends ObservableMixin() {
 			const isWillcardMatched = willcards.some( willcard => willcard === hostname.slice( -willcard.length ) );
 
 			if ( !isWillcardMatched && !isHostnameMatched ) {
-				blockEditor( this, 'invalid' );
+				blockEditor( this, 'domainLimit' );
 
 				return;
 			}
