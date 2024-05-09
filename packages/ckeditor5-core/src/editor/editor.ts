@@ -671,7 +671,7 @@ export default abstract class Editor extends ObservableMixin() {
 		const encodedPayload = getPayload( licenseKey );
 
 		if ( !encodedPayload ) {
-			blockEditor( this, 'licenseFormatInvalid', 'The format of the license key is invalid.' );
+			blockEditor( this, 'invalid' );
 
 			return;
 		}
@@ -679,13 +679,19 @@ export default abstract class Editor extends ObservableMixin() {
 		const licensePayload = parseBase64EncodedObject( encodedPayload );
 
 		if ( !licensePayload ) {
-			blockEditor( this, 'licenseFormatInvalid', 'The format of the license key is invalid.' );
+			blockEditor( this, 'invalid' );
 
 			return;
 		}
 
 		if ( !hasAllRequiredFields( licensePayload ) ) {
-			blockEditor( this, 'licenseFormatInvalid', 'The format of the license key is invalid.' );
+			blockEditor( this, 'invalid' );
+
+			return;
+		}
+
+		if ( crc32( getCrcInputData( licensePayload ) ) != licensePayload.vc.toLowerCase() ) {
+			blockEditor( this, 'invalid' );
 
 			return;
 		}
@@ -693,13 +699,7 @@ export default abstract class Editor extends ObservableMixin() {
 		const expirationDate = new Date( licensePayload.exp * 1000 );
 
 		if ( expirationDate < releaseDate ) {
-			blockEditor( this, 'licenseExpired', 'The validation period for the editor license key has expired.' );
-
-			return;
-		}
-
-		if ( crc32( getCrcInputData( licensePayload ) ) != licensePayload.vc ) {
-			blockEditor( this, 'licenseFormatInvalid', 'The format of the license key is invalid.' );
+			blockEditor( this, 'expired' );
 
 			return;
 		}
@@ -707,7 +707,7 @@ export default abstract class Editor extends ObservableMixin() {
 		const licensedHosts: Array<string> = licensePayload.licensedHosts;
 
 		if ( licensedHosts ) {
-			const hostname = this._getHostname();
+			const hostname = window.location.hostname;
 			const willcards = licensedHosts
 				.filter( val => val.slice( 0, 2 ) === '*.' )
 				.map( val => val.slice( 1 ) );
@@ -716,7 +716,7 @@ export default abstract class Editor extends ObservableMixin() {
 			const isWillcardMatched = willcards.some( willcard => willcard === hostname.slice( -willcard.length ) );
 
 			if ( !isWillcardMatched && !isHostnameMatched ) {
-				blockEditor( this, 'licenseHostInvalid', `Domain "${ hostname }" does not have access to the provided license.` );
+				blockEditor( this, 'invalid' );
 
 				return;
 			}
@@ -734,8 +734,7 @@ export default abstract class Editor extends ObservableMixin() {
 					}
 
 					if ( status != 'ok' ) {
-						// TODO: check if this message is ok here.
-						blockEditor( this, 'usageExceeded', 'The licensed usage count exceeded' );
+						blockEditor( this, 'usageLimit' );
 					}
 				} );
 			}, { priority: 'high' } );
@@ -751,10 +750,10 @@ export default abstract class Editor extends ObservableMixin() {
 			return parts[ 1 ];
 		}
 
-		function blockEditor( editor: Editor, reason: string, message: string ) {
-			console.warn( message );
+		function blockEditor( editor: Editor, reason: LicenseErrorReason ) {
+			editor._showLicenseError( reason );
 
-			editor.enableReadOnlyMode( reason );
+			editor.enableReadOnlyMode( Symbol( 'invalidLicense' ) );
 		}
 
 		function hasAllRequiredFields( licensePayload: Record<string, unknown> ) {
@@ -777,12 +776,18 @@ export default abstract class Editor extends ObservableMixin() {
 		}
 	}
 
-	/**
-	 * Returns hostname of current page. Created for testing purpose, because
-	 * window.location.hostname cannot be stubbed by sinon.
-	 */
-	private _getHostname() {
-		return window.location.hostname;
+	/* istanbul ignore next -- @preserve */
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	private _showLicenseError( reason: LicenseErrorReason, featureName?: string ) {
+		// Make sure the error thrown is unhandled.
+		setTimeout( () => {
+			/**
+			 * TODO: consider error kinds for each reason.
+			 *
+			 * @error todo-specify-this-error-code
+			 */
+			throw new CKEditorError( 'todo-specify-this-error-code', null );
+		}, 0 );
 	}
 
 	private async _sendUsageRequest(
@@ -810,6 +815,8 @@ export default abstract class Editor extends ObservableMixin() {
 		return response.json();
 	}
 }
+
+type LicenseErrorReason = 'invalid' | 'expired' | 'domainLimit' | 'featureNotAllowed' | 'trialLimit' | 'developmentLimit' | 'usageLimit';
 
 /**
  * Fired when the {@link module:engine/controller/datacontroller~DataController#event:ready data} and all additional
