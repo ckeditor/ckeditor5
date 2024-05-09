@@ -217,10 +217,10 @@ describe( 'Editor', () => {
 		} );
 
 		describe( 'license key verification', () => {
-			let stub;
+			let showErrorStub;
 
 			beforeEach( () => {
-				stub = testUtils.sinon.stub( console, 'warn' );
+				showErrorStub = testUtils.sinon.stub( TestEditor.prototype, '_showLicenseError' );
 			} );
 
 			describe( 'rquired fields in the license key', () => {
@@ -229,7 +229,7 @@ describe( 'Editor', () => {
 
 					const editor = new TestEditor( { licenseKey } );
 
-					sinon.assert.notCalled( stub );
+					sinon.assert.notCalled( showErrorStub );
 					expect( editor.isReadOnly ).to.be.false;
 				} );
 
@@ -237,7 +237,7 @@ describe( 'Editor', () => {
 					const licenseKey = 'foo.eyJqdGkiOiJmb28iLCJ2YyI6IjhjNzM2NTIxIn0.bar';
 					const editor = new TestEditor( { licenseKey } );
 
-					sinon.assert.calledWithMatch( stub, 'The format of the license key is invalid.' );
+					sinon.assert.calledWithMatch( showErrorStub, 'invalid' );
 					expect( editor.isReadOnly ).to.be.true;
 				} );
 
@@ -246,7 +246,7 @@ describe( 'Editor', () => {
 
 					const editor = new TestEditor( { licenseKey } );
 
-					sinon.assert.calledWithMatch( stub, 'The format of the license key is invalid.' );
+					sinon.assert.calledWithMatch( showErrorStub, 'invalid' );
 					expect( editor.isReadOnly ).to.be.true;
 				} );
 
@@ -255,18 +255,17 @@ describe( 'Editor', () => {
 
 					const editor = new TestEditor( { licenseKey } );
 
-					sinon.assert.calledWithMatch( stub, 'The format of the license key is invalid.' );
+					sinon.assert.calledWithMatch( showErrorStub, 'invalid' );
 					expect( editor.isReadOnly ).to.be.true;
 				} );
 			} );
 
 			it( 'should block the editor when the license key is not valid (expiration date in the past)', () => {
-				// eslint-disable-next-line max-len
 				const licenseKey = 'foo.eyJleHAiOjE3MDQwNjcyMDAsImp0aSI6ImZvbyIsInZjIjoiOTc4NTlGQkIifQo.bar';
 
 				const editor = new TestEditor( { licenseKey } );
 
-				sinon.assert.calledWithMatch( stub, 'The validation period for the editor license key has expired.' );
+				sinon.assert.calledWithMatch( showErrorStub, 'expired' );
 				expect( editor.isReadOnly ).to.be.true;
 			} );
 
@@ -275,7 +274,7 @@ describe( 'Editor', () => {
 
 				const editor = new TestEditor( { licenseKey } );
 
-				sinon.assert.calledWithMatch( stub, 'The format of the license key is invalid.' );
+				sinon.assert.calledWithMatch( showErrorStub, 'invalid' );
 				expect( editor.isReadOnly ).to.be.true;
 			} );
 
@@ -284,7 +283,7 @@ describe( 'Editor', () => {
 
 				const editor = new TestEditor( { licenseKey } );
 
-				sinon.assert.calledWithMatch( stub, 'The format of the license key is invalid.' );
+				sinon.assert.calledWithMatch( showErrorStub, 'invalid' );
 				expect( editor.isReadOnly ).to.be.true;
 			} );
 
@@ -293,7 +292,7 @@ describe( 'Editor', () => {
 
 				const editor = new TestEditor( { licenseKey } );
 
-				sinon.assert.calledWithMatch( stub, 'The format of the license key is invalid.' );
+				sinon.assert.calledWithMatch( showErrorStub, 'invalid' );
 				expect( editor.isReadOnly ).to.be.true;
 			} );
 
@@ -302,7 +301,7 @@ describe( 'Editor', () => {
 
 				const editor = new TestEditor( { licenseKey } );
 
-				sinon.assert.calledWithMatch( stub, 'The format of the license key is invalid.' );
+				sinon.assert.calledWithMatch( showErrorStub, 'invalid' );
 				expect( editor.isReadOnly ).to.be.true;
 			} );
 		} );
@@ -367,7 +366,7 @@ describe( 'Editor', () => {
 						status: 'foo'
 					} )
 				} );
-				const warnStub = testUtils.sinon.stub( console, 'warn' );
+				const showErrorStub = testUtils.sinon.stub( TestEditor.prototype, '_showLicenseError' );
 
 				// eslint-disable-next-line max-len
 				const licenseKey = 'foo.eyJleHAiOjM3ODY5MTIwMDAsImp0aSI6ImZvbyIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL2NrZWRpdG9yLmNvbSIsInZjIjoiYWI5NGFhZjYifQ.bar';
@@ -377,8 +376,8 @@ describe( 'Editor', () => {
 				await wait( 1 );
 
 				sinon.assert.calledOnce( fetchStub );
-				sinon.assert.calledOnce( warnStub );
-				sinon.assert.calledWithMatch( warnStub, 'The licensed usage count exceeded' );
+				sinon.assert.calledOnce( showErrorStub );
+				sinon.assert.calledWithMatch( showErrorStub, 'usageLimit' );
 				expect( editor.isReadOnly ).to.be.true;
 			} );
 
@@ -391,6 +390,7 @@ describe( 'Editor', () => {
 					} )
 				} );
 				const warnStub = testUtils.sinon.stub( console, 'warn' );
+				const showErrorStub = testUtils.sinon.stub( TestEditor.prototype, '_showLicenseError' );
 
 				// eslint-disable-next-line max-len
 				const licenseKey = 'foo.eyJleHAiOjM3ODY5MTIwMDAsImp0aSI6ImZvbyIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL2NrZWRpdG9yLmNvbSIsInZjIjoiYWI5NGFhZjYifQ.bar';
@@ -400,9 +400,10 @@ describe( 'Editor', () => {
 				await wait( 1 );
 
 				sinon.assert.calledOnce( fetchStub );
-				sinon.assert.calledTwice( warnStub );
-				sinon.assert.calledWithMatch( warnStub.getCall( 0 ), 'bar' );
-				sinon.assert.calledWithMatch( warnStub.getCall( 1 ), 'The licensed usage count exceeded' );
+				sinon.assert.calledOnce( warnStub );
+				sinon.assert.calledOnce( showErrorStub );
+				sinon.assert.calledWithMatch( warnStub, 'bar' );
+				sinon.assert.calledWithMatch( showErrorStub, 'usageLimit' );
 				expect( editor.isReadOnly ).to.be.true;
 			} );
 		} );
