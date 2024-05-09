@@ -96,6 +96,6 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-To use premium features, you need to add the relevant plugins to your {@link getting-started/legacy-getting-started/quick-start-other custom CKEditor&nbsp;5 build}. You can use the [online builder](https://ckeditor.com/ckeditor-5/online-builder/) to generate a CKEditor&nbsp;5 build with the plugin enabled.
+To use premium features, you need to add the relevant plugins to your CKEditor&nbsp;5. You can use the [CKEditor&nbsp;5 Builder](https://ckeditor.com/builder?redirect=docs) to generate a CKEditor&nbsp;5 build with the plugins enabled.
 
 Alternatively, refer to the installation sections in the plugin documentation to do it on your own. You can read more about {@link getting-started/setup/installing-plugins installing plugins} and {@link getting-started/setup/toolbar toolbar configuration} in dedicated guides.

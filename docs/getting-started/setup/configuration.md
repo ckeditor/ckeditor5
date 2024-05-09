@@ -37,7 +37,7 @@ Note that some features may require more than one plugin to run. You will find t
 
 When integrating an editor into your application, you can customize its features by passing a JavaScript object with configuration options to the `create()` method. These settings, defined in the `EditorConfig`, allow for extensive customization of the editor's functionality. Remember that customization depends on the editor setup and plugins loaded.
 
-The available options may require loading plugins first &ndash; this is done during the setup and <!-- add link when ready -->Builder is the easiest way to choose all needed features. The sample snippet below shows configuration of the toolbar, the headers feature and font family and color picker settings:
+The available options may require loading plugins first &ndash; this is done during the setup and [Builder](https://ckeditor.com/builder?redirect=docs) is the easiest way to choose all needed features. The sample snippet below shows configuration of the toolbar, the headers feature and font family and color picker settings:
 
 ```js
 import { Heading, BlockQuote, Bold, Italic, Font, Link, List } from 'ckeditor5';
