@@ -460,7 +460,11 @@ export default class DomConverter {
 
 			if ( options.withChildren !== false ) {
 				for ( const child of this.viewChildrenToDom( viewElementOrFragment, options ) ) {
-					domElement.appendChild( child );
+					if ( domElement instanceof HTMLTemplateElement ) {
+						domElement.content.appendChild( child );
+					} else {
+						domElement.appendChild( child );
+					}
 				}
 			}
 
@@ -734,8 +738,17 @@ export default class DomConverter {
 		options: Parameters<DomConverter[ 'domToView' ]>[ 1 ] = {},
 		inlineNodes: Array<ViewNode> = []
 	): IterableIterator<ViewNode> {
-		for ( let i = 0; i < domElement.childNodes.length; i++ ) {
-			const domChild = domElement.childNodes[ i ];
+		// Get child nodes from content document fragment if element is template
+		let childNodes: Array<ChildNode> = [];
+
+		if ( domElement instanceof HTMLTemplateElement ) {
+			childNodes = [ ...domElement.content.childNodes ];
+		} else {
+			childNodes = [ ...domElement.childNodes ];
+		}
+
+		for ( let i = 0; i < childNodes.length; i++ ) {
+			const domChild = childNodes[ i ];
 			const generator = this._domToView( domChild, options, inlineNodes );
 
 			// Get the first yielded value or a returned value.

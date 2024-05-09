@@ -65,7 +65,7 @@ const xhtmlNs = 'http://www.w3.org/1999/xhtml';
  * See {@link module:ui/template~TemplateDefinition} to know more about templates and complex
  * template definitions.
  */
-export default class Template extends EmitterMixin() {
+export default class Template extends /* #__PURE__ */ EmitterMixin() {
 	public ns?: string;
 
 	/**

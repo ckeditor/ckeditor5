@@ -49,7 +49,9 @@ export default class RestrictedEditingModeUI extends Plugin {
 				listItems.add( this._getButtonDefinition( commandName, label, keystroke ) );
 			} );
 
-			addListToDropdown( dropdownView, listItems );
+			addListToDropdown( dropdownView, listItems, {
+				role: 'menu'
+			} );
 
 			dropdownView.buttonView.set( {
 				label: t( 'Navigate editable regions' ),
@@ -141,6 +143,7 @@ export default class RestrictedEditingModeUI extends Plugin {
 				withText: true,
 				keystroke,
 				withKeystroke: true,
+				role: 'menuitem',
 				_commandName: commandName
 			} )
 		};

@@ -25,7 +25,7 @@ import type { ViewElement } from '@ckeditor/ckeditor5-engine';
 /**
  * Represents a resizer for a single resizable object.
  */
-export default class Resizer extends ObservableMixin() {
+export default class Resizer extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Flag that indicates whether resizer can be used.
 	 *

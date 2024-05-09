@@ -30,6 +30,7 @@ function initEditor() {
 			console.log( 'Editor was initialized', newEditor );
 
 			document.querySelector( '.toolbar-container' ).appendChild( newEditor.ui.view.toolbar.element );
+			document.querySelector( '.menubar-container' ).appendChild( newEditor.ui.view.menuBarView.element );
 
 			window.editor = editor = newEditor;
 			window.editables = newEditor.ui.view.editables;

@@ -7,8 +7,6 @@ order: 90
 modified_at: 2023-10-06
 ---
 
-{@snippet installation/integrations/framework-integration}
-
 # Real-time editing in Drupal
 
 Drupal is a free and open-source web content management system (CMS) written in PHP. CKEditor&nbsp;5 WYSIWYG rich text editor is the default editor module for Drupal. The [CKEditor&nbsp;5 Premium Features module](https://www.drupal.org/project/ckeditor5_premium_features) provides instant integration of the real-time collaboration features with the editing platform.
@@ -69,3 +67,38 @@ Easily defined document and content {@link features/template templates} make con
 ## Installation and configuration
 
 Refer to the [Adding CKEditor&ndash;5 Premium Features module to Drupal 10](https://www.drupal.org/docs/contributed-modules/ckeditor-5-premium-features/how-to-install-and-set-up-the-module) guide in the Drupal documentation for details on how to install and set up the module.
+
+## CKEditor 5 Plugin Pack
+
+The [CKEditor&nbsp;5 Plugin Pack](https://www.drupal.org/project/ckeditor5_plugin_pack) is a free-to-use module that offers multiple CKEditor 5 plugins that are not available in the Drupal core, extending editor's functionality.
+
+### Features available in the CKEditor 5 Plugin Pack module
+
+* {@link features/indent Block indentation}
+* {@link features/find-and-replace Find and replace}
+* {@link features/font Fonts family, size and colors}
+* {@link features/highlight Highlight}
+* {@link features/text-transformation Text transformation}
+* {@link features/todo-lists To-do lists}
+* {@link features/word-count Word count}
+* Free version of {@link features/spelling-and-grammar-checking WProofreader} &ndash; limitation of the free version are listed [on this page](https://www.drupal.org/docs/extending-drupal/contributed-modules/contributed-module-documentation/ckeditor-5-plugin-pack/wproofreader-free-vs-premium-feature-comparison)
+
+Plugin Pack also makes it possible to use some of the premium features for free. 
+
+Currently available premium features:
+
+* {@link features/template Templates}
+* Full-screen mode
+
+Detailed descriptions of each plugin can be found on the [CKEditor&nbsp;5 Plugin Pack module page](https://www.drupal.org/project/ckeditor5_plugin_pack)
+
+### Requirements
+
+* PHP 8.0+
+* Drupal 9/10 with CKEditor 5 enabled
+* To-do list module requires Drupal 10.2+
+* Templates module requires Drupal 10.3+
+
+### Installation and configuration
+
+Refer to the [Adding CKEditor 5 Plugin Pack module to Drupal 10](https://www.drupal.org/docs/extending-drupal/contributed-modules/contributed-module-documentation/ckeditor-5-plugin-pack/how-to-install-and-set-up-the-module) guide in the Drupal documentation for details on how to install and set up the module.

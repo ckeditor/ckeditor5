@@ -44,6 +44,10 @@ module.exports = function getChangelogOptions( cliArguments ) {
 		]
 	};
 
+	if ( !cliArguments.external ) {
+		changelogOptions.externalRepositories = [];
+	}
+
 	if ( cliArguments.from ) {
 		changelogOptions.from = cliArguments.from;
 	}

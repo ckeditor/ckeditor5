@@ -9,6 +9,11 @@
 		/* Showing animation. */
 		&.ck-appear {
 			animation: fadeIn 700ms;
+
+			@media (prefers-reduced-motion: reduce) {
+				opacity: 1;
+				animation: none;
+			}
 		}
 	}
 

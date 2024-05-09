@@ -76,6 +76,10 @@ of the component, floating–point numbers have been used which, for the default
 
 			/* Gently animate the inner part of the toggle switch */
 			transition: all 300ms ease;
+
+			@media (prefers-reduced-motion: reduce) {
+				transition: none;
+			}
 		}
 
 		&:hover {
