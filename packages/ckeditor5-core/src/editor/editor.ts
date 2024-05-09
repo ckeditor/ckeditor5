@@ -704,6 +704,24 @@ export default abstract class Editor extends ObservableMixin() {
 			return;
 		}
 
+		const licensedHosts: Array<string> = licensePayload.licensedHosts;
+
+		if ( licensedHosts ) {
+			const hostname = window.location.hostname;
+			const willcards = licensedHosts
+				.filter( val => val.slice( 0, 1 ) === '*' )
+				.map( val => val.slice( 1 ) );
+
+			const isHostnameMatched = licensedHosts.some( licensedHost => licensedHost === hostname );
+			const isWillcardMatched = willcards.some( willcard => willcard === hostname.slice( -willcard.length ) );
+
+			if ( !isWillcardMatched && !isHostnameMatched ) {
+				blockEditor( this, 'invalid' );
+
+				return;
+			}
+		}
+
 		if ( licensePayload.usageEndpoint ) {
 			this.once<EditorReadyEvent>( 'ready', () => {
 				const telemetryData = this._getTelemetryData();

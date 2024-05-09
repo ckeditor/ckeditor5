@@ -223,7 +223,7 @@ describe( 'Editor', () => {
 				showErrorStub = testUtils.sinon.stub( TestEditor.prototype, '_showLicenseError' );
 			} );
 
-			describe( 'rquired fields in the license key', () => {
+			describe( 'required fields in the license key', () => {
 				it( 'should not block the editor when required fields are provided and are valid', () => {
 					const licenseKey = 'foo.eyJleHAiOjIyMDg5ODg4MDAsImp0aSI6ImZvbyIsInZjIjoiNDYyYTkzMGQifQ.bar';
 
@@ -252,6 +252,65 @@ describe( 'Editor', () => {
 
 				it( 'should block the editor when the `vc` field is missing', () => {
 					const licenseKey = 'foo.eyJleHAiOjIyMDg5ODg4MDAsImp0aSI6ImZvbyJ9Cg.bar';
+
+					const editor = new TestEditor( { licenseKey } );
+
+					sinon.assert.calledWithMatch( showErrorStub, 'invalid' );
+					expect( editor.isReadOnly ).to.be.true;
+				} );
+			} );
+
+			describe( 'domain check', () => {
+				it( 'should pass when localhost is in the licensedHosts list', () => {
+					const licenseKey = 'foo.eyJleHAiOjE3MTc1NDU2MDAsImp0aSI6Ijg0YWY4MjU4LTkxOTUtN' +
+					'DllMy1iYzRhLTkwMWIzOTJmNGQ4ZiIsImxpY2Vuc2VkSG9zdHMiOlsibG9jYWxob3N0Il0sInZjIjoiYjY0ZjAwYmQifQ.bar';
+
+					/**
+					 * after decoding licenseKey:
+					 *
+					 * licensePaylod: {
+					 * 	...,
+					 * 	licensedHosts: [ 'localhost' ]
+					 * }
+					 */
+
+					const editor = new TestEditor( { licenseKey } );
+
+					sinon.assert.notCalled( showErrorStub );
+					expect( editor.isReadOnly ).to.be.false;
+				} );
+
+				it( 'should not pass when domain is not in the licensedHosts list', () => {
+					const licenseKey = 'foo.eyJleHAiOjE3MTc1NDU2MDAsImp0aSI6Ijc2MWI4ZWQ2LWRmZTAtNGY0OS1hMTRkLWU2YzkxZjA4Y2ZjZSIsIm' +
+					'xpY2Vuc2VkSG9zdHMiOlsiZmFjZWJvb2suY29tIl0sInZjIjoiNmEzNDdmYzYifQ.bar';
+
+					/**
+					 * after decoding licenseKey:
+					 *
+					 * licensePaylod: {
+					 * 	...,
+					 * 	licensedHosts: [ 'facebook.com' ]
+					 * }
+					 */
+
+					const editor = new TestEditor( { licenseKey } );
+
+					sinon.assert.calledWithMatch( showErrorStub, 'invalid' );
+					expect( editor.isReadOnly ).to.be.true;
+				} );
+
+				it( 'should not pass if domain have no subdomain', () => {
+					const licenseKey = 'foo.eyJleHAiOjE3MTUzODU2MDAsImp0aSI6IjZmZGIxN2RhLTBiODAtNDI2Yi05ODA0LTc0NTEyNTZjMWE5N' +
+				'yIsImxpY2Vuc2VkSG9zdHMiOlsiKi5sb2NhbGhvc3QiXSwidmMiOiJjNDMzYTk4OSJ9.bar';
+
+					/**
+					 * after decoding licenseKey:
+					 *
+					 * licensePaylod: {
+					 * 	...,
+					 * 	licensedHosts: [ '*.localhost' ]
+					 * }
+					 */
 
 					const editor = new TestEditor( { licenseKey } );
 
