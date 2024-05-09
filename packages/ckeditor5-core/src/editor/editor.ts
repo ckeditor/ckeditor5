@@ -722,6 +722,16 @@ export default abstract class Editor extends ObservableMixin() {
 			}
 		}
 
+		if ( licensePayload.licenseType === 'trial' && licensePayload.exp * 1000 < Date.now() ) {
+			blockEditor( this, 'trialLimit' );
+
+			return;
+		}
+
+		if ( licensePayload.licenseType === 'trial' ) {
+			setTimeout( () => blockEditor( this, 'trialLimit' ), 600000 );
+		}
+
 		if ( licensePayload.usageEndpoint ) {
 			this.once<EditorReadyEvent>( 'ready', () => {
 				const telemetryData = this._getTelemetryData();
