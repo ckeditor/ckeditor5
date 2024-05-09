@@ -159,7 +159,7 @@ export default class View<TElement extends HTMLElement = HTMLElement> extends Do
 	 */
 	public template?: Template;
 
-	public viewUid?: string;
+	public declare viewUid?: string;
 
 	/**
 	 * Collections registered with {@link #createCollection}.
