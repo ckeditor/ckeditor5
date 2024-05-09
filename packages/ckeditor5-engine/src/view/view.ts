@@ -83,7 +83,7 @@ type DomRange = globalThis.Range;
  * If you do not need full a DOM - view management, and only want to transform a tree of view elements to a tree of DOM
  * elements you do not need this controller. You can use the {@link module:engine/view/domconverter~DomConverter DomConverter} instead.
  */
-export default class View extends ObservableMixin() {
+export default class View extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Instance of the {@link module:engine/view/document~Document} associated with this view controller.
 	 */

@@ -45,7 +45,7 @@ import {
  * Editor's data model. Read about the model in the
  * {@glink framework/architecture/editing-engine engine architecture} guide.
  */
-export default class Model extends ObservableMixin() {
+export default class Model extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Model's marker collection.
 	 */

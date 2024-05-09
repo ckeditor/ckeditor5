@@ -28,7 +28,7 @@ import { EmitterMixin } from '@ckeditor/ckeditor5-utils';
  * **Note:** Be very careful when dealing with `LiveRange`. Each `LiveRange` instance bind events that might
  * have to be unbound. Use {@link module:engine/model/liverange~LiveRange#detach detach} whenever you don't need `LiveRange` anymore.
  */
-export default class LiveRange extends EmitterMixin( Range ) {
+export default class LiveRange extends /* #__PURE__ */ EmitterMixin( Range ) {
 	/**
 	 * Creates a live range.
 	 *

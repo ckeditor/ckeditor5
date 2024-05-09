@@ -113,9 +113,21 @@ msgctxt "The accessibility label of the standalone image resize reset option but
 msgid "Resize image to the original size"
 msgstr "Změnit velikost na původní velikost"
 
+msgctxt "The label for image resize balloon input."
+msgid "Resize image (in %0)"
+msgstr ""
+
 msgctxt "The default label for the resize option that resets the size of the image."
 msgid "Original"
 msgstr "Originální"
+
+msgctxt "The accessibility label of the standalone image resize custom option button in the image toolbar for screen readers."
+msgid "Custom image size"
+msgstr ""
+
+msgctxt "The label for the resize option that allows user to enter custom size of the image."
+msgid "Custom"
+msgstr ""
 
 msgctxt "The accessibility label of the image resize dropdown for screen readers."
 msgid "Image resize list"
@@ -144,3 +156,23 @@ msgstr "Popisek k obrázku"
 msgctxt "Text used by screen readers do describe an image when there is a text alternative available, e.g. 'Caption for image: this is a description of the image.'"
 msgid "Caption for image: %0"
 msgstr "Popisek k obrázku: %0"
+
+msgctxt "Text used as error label when user submitted custom image resize form with blank value."
+msgid "The value must not be empty."
+msgstr ""
+
+msgctxt "Text used as error label when user submitted custom image resize form with incorrect value."
+msgid "The value should be a plain number."
+msgstr ""
+
+msgctxt "Aria status message indicating that the image is being uploaded. Example: 'Uploading image'."
+msgid "Uploading image"
+msgstr ""
+
+msgctxt "Aria status message indicating that the image has been uploaded successfully. Example: 'Image upload complete'."
+msgid "Image upload complete"
+msgstr ""
+
+msgctxt "Aria status message indicating that an error has occurred during image upload. Example: 'Error during image upload'."
+msgid "Error during image upload"
+msgstr ""

@@ -257,7 +257,7 @@ export default class FileRepository extends Plugin {
  *
  * It is used to control the process of reading the file and uploading it using the specified upload adapter.
  */
-class FileLoader extends ObservableMixin() {
+class FileLoader extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Unique id of FileLoader instance.
 	 *

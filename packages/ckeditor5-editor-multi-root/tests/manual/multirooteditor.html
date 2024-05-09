@@ -3,6 +3,9 @@
 	<button id="initEditor">Init editor</button>
 </p>
 
+<h2>The menubar</h2>
+<div class="menubar-container"></div>
+
 <h2>The toolbar</h2>
 <div class="toolbar-container"></div>
 
@@ -15,13 +18,15 @@
 
 <style>
 	.editable-container,
-	.toolbar-container {
+	.toolbar-container,
+	.menubar-container {
 		position: relative;
 		border: 1px solid red;
 	}
 
 	.editable-container::after,
-	.toolbar-container::after {
+	.toolbar-container::after,
+	.menubar-container::after {
 		content: attr(class);
 		position: absolute;
 		background: red;
@@ -32,7 +37,8 @@
 		padding: .1em .3em;
 	}
 
-	.toolbar-container{
+	.toolbar-container,
+	.menubar-container{
 		padding: 1em;
 	}
 

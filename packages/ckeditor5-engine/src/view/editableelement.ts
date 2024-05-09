@@ -23,7 +23,7 @@ import type Node from './node.js';
  * The constructor of this class shouldn't be used directly. To create new `EditableElement` use the
  * {@link module:engine/view/downcastwriter~DowncastWriter#createEditableElement `downcastWriter#createEditableElement()`} method.
  */
-export default class EditableElement extends ObservableMixin( ContainerElement ) {
+export default class EditableElement extends /* #__PURE__ */ ObservableMixin( ContainerElement ) {
 	/**
 	 * Whether the editable is in read-write or read-only mode.
 	 *

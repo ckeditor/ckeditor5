@@ -974,8 +974,8 @@ describe( 'EditorUI', () => {
 			} );
 		}
 
-		function pressEsc() {
-			editor.keystrokes.press( {
+		function pressEsc( specificEditor ) {
+			( specificEditor || editor ).keystrokes.press( {
 				keyCode: keyCodes.esc,
 				preventDefault: sinon.spy(),
 				stopPropagation: sinon.spy()

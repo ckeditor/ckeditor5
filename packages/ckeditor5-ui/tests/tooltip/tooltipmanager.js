@@ -398,12 +398,8 @@ describe( 'TooltipManager', () => {
 					sinon.assert.callOrder( unpinSpy, pinSpy );
 				} );
 
-				it( 'should pin a tooltip with a delay', () => {
+				it( 'should pin a tooltip without a delay', () => {
 					utils.dispatchFocus( elements.a );
-
-					sinon.assert.notCalled( pinSpy );
-
-					utils.waitForTheTooltipToShow( clock );
 
 					sinon.assert.calledOnce( pinSpy );
 					sinon.assert.calledWith( pinSpy, {
@@ -434,20 +430,11 @@ describe( 'TooltipManager', () => {
 
 					utils.waitForTheTooltipToShow( clock );
 
-					sinon.assert.calledOnce( pinSpy );
+					sinon.assert.calledTwice( pinSpy );
 					sinon.assert.calledWith( pinSpy, {
 						target: elements.b,
 						positions: sinon.match.array
 					} );
-				} );
-
-				it( 'should not show up anchor after focus unrelated element without tooltip', () => {
-					utils.dispatchFocus( elements.a );
-					utils.dispatchFocus( elements.unrelated );
-
-					utils.waitForTheTooltipToShow( clock );
-
-					sinon.assert.notCalled( pinSpy );
 				} );
 			} );
 		} );

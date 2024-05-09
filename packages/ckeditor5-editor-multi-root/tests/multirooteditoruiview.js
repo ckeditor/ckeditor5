@@ -8,6 +8,7 @@
 import MultiRootEditorUIView from '../src/multirooteditoruiview.js';
 import EditingView from '@ckeditor/ckeditor5-engine/src/view/view.js';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview.js';
+import MenuBarView from '@ckeditor/ckeditor5-ui/src/menubar/menubarview.js';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview.js';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale.js';
 import createRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
@@ -69,6 +70,20 @@ describe( 'MultiRootEditorUIView', () => {
 
 					return view.destroy();
 				} );
+			} );
+		} );
+
+		describe( '#menuBarView', () => {
+			it( 'is created', () => {
+				expect( view.menuBarView ).to.be.instanceof( MenuBarView );
+			} );
+
+			it( 'is given a locale object', () => {
+				expect( view.menuBarView.locale ).to.equal( locale );
+			} );
+
+			it( 'is not rendered', () => {
+				expect( view.menuBarView.isRendered ).to.be.false;
 			} );
 		} );
 
@@ -206,6 +221,22 @@ describe( 'MultiRootEditorUIView', () => {
 			} );
 		} );
 
+		describe( '#menuBarView', () => {
+			it( 'is rendered but gets no parent', () => {
+				expect( view.menuBarView.isRendered ).to.be.true;
+				expect( view.menuBarView.element.parentElement ).to.be.null;
+			} );
+
+			it( 'gets the CSS classes', () => {
+				expect( view.menuBarView.element.classList.contains( 'ck-reset_all' ) ).to.be.true;
+				expect( view.menuBarView.element.classList.contains( 'ck-rounded-corners' ) ).to.be.true;
+			} );
+
+			it( 'gets the "dir" attribute corresponding to Locale#uiLanguageDirection', () => {
+				expect( view.menuBarView.element.getAttribute( 'dir' ) ).to.equal( 'ltr' );
+			} );
+		} );
+
 		describe( '#editables', () => {
 			it( 'are rendered but gets no parent', () => {
 				expect( view.editables.foo.isRendered ).to.be.true;
@@ -221,30 +252,35 @@ describe( 'MultiRootEditorUIView', () => {
 			view.render();
 		} );
 
-		it( 'destroys #toolbar and #editables', () => {
+		it( 'destroys #toolbar, #menuBarView and #editables', () => {
 			const toolbarSpy = sinon.spy( view.toolbar, 'destroy' );
+			const menuBarViewSpy = sinon.spy( view.menuBarView, 'destroy' );
 			const editableFooSpy = sinon.spy( view.editables.foo, 'destroy' );
 			const editableBarSpy = sinon.spy( view.editables.bar, 'destroy' );
 
 			view.destroy();
 
 			sinon.assert.calledOnce( toolbarSpy );
+			sinon.assert.calledOnce( menuBarViewSpy );
 			sinon.assert.calledOnce( editableFooSpy );
 			sinon.assert.calledOnce( editableBarSpy );
 		} );
 
-		it( 'does not affect toolbar#element and editables #element', () => {
+		it( 'does not affect toolbar#element, menuBarView#element and editables #element', () => {
 			document.body.appendChild( view.toolbar.element );
+			document.body.appendChild( view.menuBarView.element );
 			document.body.appendChild( view.editables.foo.element );
 			document.body.appendChild( view.editables.bar.element );
 
 			view.destroy();
 
 			expect( view.toolbar.element.parentElement ).to.equal( document.body );
+			expect( view.menuBarView.element.parentElement ).to.equal( document.body );
 			expect( view.editables.foo.element.parentElement ).to.equal( document.body );
 			expect( view.editables.bar.element.parentElement ).to.equal( document.body );
 
 			view.toolbar.element.remove();
+			view.menuBarView.element.remove();
 			view.editables.foo.element.remove();
 			view.editables.bar.element.remove();
 		} );
