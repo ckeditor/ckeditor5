@@ -44,6 +44,7 @@ function destroyEditor() {
 	editor.destroy()
 		.then( () => {
 			editor.ui.view.toolbar.element.remove();
+			editor.ui.view.menuBarView.element.remove();
 
 			window.editor = editor = null;
 			window.editables = null;
