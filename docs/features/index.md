@@ -105,7 +105,7 @@ Keep full control of your work. Be safe and never lose anything thanks to the {@
 
 ### Customizable user experience
 
-Work as you like it &ndash; choose a user interface approach from several predefined layouts, add features to your build or remove them with the [Builder](https://ckeditor.com/ckeditor-5/online-builder/), or use the {@link getting-started/advanced/dll-builds DLL builds}. Then tailor the user interface to your needs with a customizable {@link getting-started/setup/toolbar editor toolbar}, arranging feature buttons, dropdowns, and other items in whatever way you need.
+Work as you like it &ndash; choose a user interface approach from several predefined layouts, add features to your build or remove them with the [Builder](https://ckeditor.com/builder?redirect=docs), or use the {@link getting-started/advanced/dll-builds DLL builds}. Then tailor the user interface to your needs with a customizable {@link getting-started/setup/toolbar editor toolbar}, arranging feature buttons, dropdowns, and other items in whatever way you need.
 
 {@img assets/img/full-toolbar.png 938 CKEditor&nbsp;5 customizable UI.}
 
