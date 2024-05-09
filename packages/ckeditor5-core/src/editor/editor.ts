@@ -709,7 +709,7 @@ export default abstract class Editor extends ObservableMixin() {
 		if ( licensedHosts ) {
 			const hostname = window.location.hostname;
 			const willcards = licensedHosts
-				.filter( val => val.slice( 0, 2 ) === '*.' )
+				.filter( val => val.slice( 0, 1 ) === '*' )
 				.map( val => val.slice( 1 ) );
 
 			const isHostnameMatched = licensedHosts.some( licensedHost => licensedHost === hostname );

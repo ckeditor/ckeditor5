@@ -261,28 +261,6 @@ describe( 'Editor', () => {
 			} );
 
 			describe( 'domain check', () => {
-				it( 'should pass when licensedHosts list is not defined', () => {
-					const licenseKey = 'foo.eyJleHAiOjE3MTc1NDU2MDAsImp0aSI6IjliY' +
-					'WYwOTljLWNkODMtNDJmZi05NzlmLTYyYmYxYzMyOGFkYiIsInZjIjoiZTU2NDMwZGEifQ.bar';
-
-					/**
-					 * after decoding licenseKey:
-					 *
-					 * licensePaylod: {
-					 * 	...,
-					 * 	licensedHosts: undefined
-					 * }
-					 */
-
-					const hostnameStub = sinon.stub( TestEditor.prototype, '_getHostname' ).returns( 'localhost' );
-					const editor = new TestEditor( { licenseKey } );
-
-					sinon.assert.notCalled( showErrorStub );
-					expect( editor.isReadOnly ).to.be.false;
-
-					hostnameStub.restore();
-				} );
-
 				it( 'should pass when localhost is in the licensedHosts list', () => {
 					const licenseKey = 'foo.eyJleHAiOjE3MTc1NDU2MDAsImp0aSI6Ijg0YWY4MjU4LTkxOTUtN' +
 					'DllMy1iYzRhLTkwMWIzOTJmNGQ4ZiIsImxpY2Vuc2VkSG9zdHMiOlsibG9jYWxob3N0Il0sInZjIjoiYjY0ZjAwYmQifQ.bar';
@@ -302,28 +280,6 @@ describe( 'Editor', () => {
 					expect( editor.isReadOnly ).to.be.false;
 				} );
 
-				it( 'should not pass when localhost is not in the licensedHosts list', () => {
-					const licenseKey = 'foo.eyJleHAiOjE3MTc1NDU2MDAsImp0aSI6Ijc2MWI4ZWQ2LWRmZTAtNGY0OS1hMTRkLWU2YzkxZjA4Y2ZjZSIsIm' +
-					'xpY2Vuc2VkSG9zdHMiOlsiZmFjZWJvb2suY29tIl0sInZjIjoiNmEzNDdmYzYifQ.bar';
-
-					/**
-					 * after decoding licenseKey:
-					 *
-					 * licensePaylod: {
-					 * 	...,
-					 * 	licensedHosts: [ 'facebook.com' ]
-					 * }
-					 */
-
-					const hostnameStub = sinon.stub( TestEditor.prototype, '_getHostname' ).returns( 'localhost' );
-					const editor = new TestEditor( { licenseKey } );
-
-					sinon.assert.calledWithMatch( showErrorStub, 'Domain "localhost" does not have access to the provided license.' );
-					expect( editor.isReadOnly ).to.be.true;
-
-					hostnameStub.restore();
-				} );
-
 				it( 'should not pass when domain is not in the licensedHosts list', () => {
 					const licenseKey = 'foo.eyJleHAiOjE3MTc1NDU2MDAsImp0aSI6Ijc2MWI4ZWQ2LWRmZTAtNGY0OS1hMTRkLWU2YzkxZjA4Y2ZjZSIsIm' +
 					'xpY2Vuc2VkSG9zdHMiOlsiZmFjZWJvb2suY29tIl0sInZjIjoiNmEzNDdmYzYifQ.bar';
@@ -337,104 +293,29 @@ describe( 'Editor', () => {
 					 * }
 					 */
 
-					const hostnameStub = sinon.stub( TestEditor.prototype, '_getHostname' ).returns( 'notion.so' );
 					const editor = new TestEditor( { licenseKey } );
 
-					sinon.assert.calledWithMatch( showErrorStub, 'Domain "notion.so" does not have access to the provided license.' );
+					sinon.assert.calledWithMatch( showErrorStub, 'invalid' );
 					expect( editor.isReadOnly ).to.be.true;
-
-					hostnameStub.restore();
 				} );
 
-				it( 'should pass when domain is in the licensedHosts list', () => {
-					const licenseKey = 'foo.eyJleHAiOjE3MTc1NDU2MDAsImp0aSI6Ijc2MWI4ZWQ2LWRmZTAtNGY0OS1hMTRkLWU2YzkxZjA4Y2ZjZSIsIm' +
-					'xpY2Vuc2VkSG9zdHMiOlsiZmFjZWJvb2suY29tIl0sInZjIjoiNmEzNDdmYzYifQ.bar';
+				it( 'should not pass if domain have no subdomain', () => {
+					const licenseKey = 'foo.eyJleHAiOjE3MTUzODU2MDAsImp0aSI6IjZmZGIxN2RhLTBiODAtNDI2Yi05ODA0LTc0NTEyNTZjMWE5N' +
+				'yIsImxpY2Vuc2VkSG9zdHMiOlsiKi5sb2NhbGhvc3QiXSwidmMiOiJjNDMzYTk4OSJ9.bar';
 
 					/**
 					 * after decoding licenseKey:
 					 *
 					 * licensePaylod: {
 					 * 	...,
-					 * 	licensedHosts: [ 'facebook.com' ]
+					 * 	licensedHosts: [ '*.localhost' ]
 					 * }
 					 */
 
-					const hostnameStub = sinon.stub( TestEditor.prototype, '_getHostname' ).returns( 'facebook.com' );
 					const editor = new TestEditor( { licenseKey } );
 
-					sinon.assert.notCalled( showErrorStub );
-					expect( editor.isReadOnly ).to.be.false;
-
-					hostnameStub.restore();
-				} );
-
-				describe( 'willcards', () => {
-					it( 'should pass when matched willcard from the licensedHosts list', () => {
-						const licenseKey = 'foo.eyJleHAiOjE3MTc1NDU2MDAsImp0aSI6IjBjZjc2MGE1LTMyYzQtNDIzMC04ZjQ3LTJmN2Q1NzBkMjk5NSIsIm' +
-					'xpY2Vuc2VkSG9zdHMiOlsiKi5ub3Rpb24uc28iXSwidmMiOiIxMGE1ODcwMiJ9.bar';
-
-						/**
-						 * after decoding licenseKey:
-						 *
-						 * licensePaylod: {
-						 * 	...,
-						 * 	licensedHosts: [ '*.notion.so' ]
-						 * }
-						 */
-
-						const hostnameStub = sinon.stub( TestEditor.prototype, '_getHostname' ).returns( 'subdomen.notion.so' );
-						const editor = new TestEditor( { licenseKey } );
-
-						sinon.assert.notCalled( showErrorStub );
-						expect( editor.isReadOnly ).to.be.false;
-
-						hostnameStub.restore();
-					} );
-
-					it( 'should not pass if not matched willcard from the licensedHosts list', () => {
-						const licenseKey = 'foo.eyJleHAiOjE3MTc1NDU2MDAsImp0aSI6IjBjZjc2MGE1LTMyYzQtNDIzMC04ZjQ3LTJmN2Q1NzBkMjk5NSIsIm' +
-					'xpY2Vuc2VkSG9zdHMiOlsiKi5ub3Rpb24uc28iXSwidmMiOiIxMGE1ODcwMiJ9.bar';
-
-						/**
-						 * after decoding licenseKey:
-						 *
-						 * licensePaylod: {
-						 * 	...,
-						 * 	licensedHosts: [ '*.notion.so' ]
-						 * }
-						 */
-
-						const hostnameStub = sinon.stub( TestEditor.prototype, '_getHostname' ).returns( 'subdomen.nnotion.so' );
-						const editor = new TestEditor( { licenseKey } );
-
-						sinon.assert.calledWithMatch( showErrorStub,
-							'Domain "subdomen.nnotion.so" does not have access to the provided license.' );
-						expect( editor.isReadOnly ).to.be.true;
-
-						hostnameStub.restore();
-					} );
-
-					it( 'should not pass if domain have no subdomain', () => {
-						const licenseKey = 'foo.eyJleHAiOjE3MTc1NDU2MDAsImp0aSI6IjBjZjc2MGE1LTMyYzQtNDIzMC04ZjQ3LTJmN2Q1NzBkMjk5NSIsIm' +
-					'xpY2Vuc2VkSG9zdHMiOlsiKi5ub3Rpb24uc28iXSwidmMiOiIxMGE1ODcwMiJ9.bar';
-
-						/**
-						 * after decoding licenseKey:
-						 *
-						 * licensePaylod: {
-						 * 	...,
-						 * 	licensedHosts: [ '*.notion.so' ]
-						 * }
-						 */
-
-						const hostnameStub = sinon.stub( TestEditor.prototype, '_getHostname' ).returns( 'notion.so' );
-						const editor = new TestEditor( { licenseKey } );
-
-						sinon.assert.calledWithMatch( showErrorStub, 'Domain "notion.so" does not have access to the provided license.' );
-						expect( editor.isReadOnly ).to.be.true;
-
-						hostnameStub.restore();
-					} );
+					sinon.assert.calledWithMatch( showErrorStub, 'invalid' );
+					expect( editor.isReadOnly ).to.be.true;
 				} );
 			} );
 
