@@ -143,8 +143,8 @@ msgstr "Decrementează indentarea elementelor din listă"
 
 msgctxt "Assistive technologies label for entering the to-do list."
 msgid "Entering a to-do list"
-msgstr ""
+msgstr "Introducerea unei liste de activități"
 
 msgctxt "Assistive technologies label for leaving the to-do list."
 msgid "Leaving a to-do list"
-msgstr ""
+msgstr "Ieșirea dintr-o listă de activități"

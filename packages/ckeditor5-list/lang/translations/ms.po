@@ -143,8 +143,8 @@ msgstr "Kurangkan inden item senarai"
 
 msgctxt "Assistive technologies label for entering the to-do list."
 msgid "Entering a to-do list"
-msgstr ""
+msgstr "Memasukkan senarai tugas untuk dilakukan"
 
 msgctxt "Assistive technologies label for leaving the to-do list."
 msgid "Leaving a to-do list"
-msgstr ""
+msgstr "Meninggalkan senarai tugas untuk dilakukan"

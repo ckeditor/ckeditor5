@@ -143,8 +143,8 @@ msgstr "Liste ögesi girintisini azalt"
 
 msgctxt "Assistive technologies label for entering the to-do list."
 msgid "Entering a to-do list"
-msgstr ""
+msgstr "Yapılacaklar listesi girmek"
 
 msgctxt "Assistive technologies label for leaving the to-do list."
 msgid "Leaving a to-do list"
-msgstr ""
+msgstr "Yapılacaklar listesinden ayrılma"
