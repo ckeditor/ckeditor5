@@ -722,6 +722,20 @@ export default abstract class Editor extends ObservableMixin() {
 			}
 		}
 
+		if ( licensePayload.licenseType === 'development' && licensePayload.exp * 1000 < Date.now() ) {
+			blockDevelopmentEditor( this );
+
+			return;
+		}
+
+		if ( licensePayload.licenseType === 'development' ) {
+			const timerId = setTimeout( () => blockDevelopmentEditor( this ), 600000 );
+
+			this.on( 'destroy', () => {
+				clearTimeout( timerId );
+			} );
+		}
+
 		if ( licensePayload.usageEndpoint ) {
 			this.once<EditorReadyEvent>( 'ready', () => {
 				const telemetryData = this._getTelemetryData();
@@ -738,6 +752,15 @@ export default abstract class Editor extends ObservableMixin() {
 					}
 				} );
 			}, { priority: 'high' } );
+		}
+
+		function blockDevelopmentEditor( editor: Editor ) {
+			blockEditor( editor, 'developmentLimit' );
+
+			console.info(
+				'You are using the development version of CKEditor 5 plugin with limited usage. ' +
+				'Make sure you will not use it in the production environment.'
+			);
 		}
 
 		function getPayload( licenseKey: string ): string | null {
