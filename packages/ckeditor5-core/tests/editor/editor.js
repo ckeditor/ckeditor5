@@ -331,7 +331,7 @@ describe( 'Editor', () => {
 					sinon.restore();
 				} );
 
-				it( 'should block if trial is expired', () => {
+				it( 'should not block if trial is not expired', () => {
 					const licenseKey = 'foo.eyJleHAiOjE3MTUyMTI4MDAsImp0aSI6ImJkM2ZjNTc0LTJkNGYtNGNkZ' +
 					'S1iNWViLTIzYzk1Y2JlMjQzYSIsImxpY2Vuc2VUeXBlIjoidHJpYWwiLCJ2YyI6ImZlOTdmNzY5In0.bar';
 
@@ -356,7 +356,7 @@ describe( 'Editor', () => {
 					dateNow.restore();
 				} );
 
-				it( 'should not block if trial is not expired', () => {
+				it( 'should block if trial is expired', () => {
 					const licenseKey = 'foo.eyJleHAiOjE3MTUyMTI4MDAsImp0aSI6ImJkM2ZjNTc0LTJkNGYtNGNkZ' +
 					'S1iNWViLTIzYzk1Y2JlMjQzYSIsImxpY2Vuc2VUeXBlIjoidHJpYWwiLCJ2YyI6ImZlOTdmNzY5In0.bar';
 
