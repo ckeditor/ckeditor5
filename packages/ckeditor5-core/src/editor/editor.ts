@@ -573,9 +573,7 @@ export default abstract class Editor extends ObservableMixin() {
 		let readyPromise: Promise<unknown> = Promise.resolve();
 
 		if ( this.state == 'initializing' ) {
-			readyPromise = new Promise( resolve => this.once<EditorReadyEvent>( 'ready', val => {
-				resolve( val );
-			} ) );
+			readyPromise = new Promise( resolve => this.once<EditorReadyEvent>( 'ready', resolve ) );
 		}
 
 		return readyPromise
