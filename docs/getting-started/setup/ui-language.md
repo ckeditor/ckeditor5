@@ -58,7 +58,7 @@ For example, to use Polish, import `'ckeditor5/translations/pl.js'` and pass the
 import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
 import translations from 'ckeditor5/translations/pl.js';
 
-import 'ckeditor5/dist/styles.css';
+
 
 await ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [

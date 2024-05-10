@@ -30,7 +30,7 @@ Now you can import all the modules from the `ckeditor5` package. Additionally, y
 ```js
 import { ClassicEditor, Essentials, Bold, Italic, Paragraph } from 'ckeditor5';
 
-import 'ckeditor5/dist/styles.css';
+
 
 await ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -65,7 +65,7 @@ Importing and registering these plugins is also analogous to the open-source one
 import { ClassicEditor, Essentials } from 'ckeditor5';
 import { FormatPainter, SlashCommand } from 'ckeditor5-premium-features';
 
-import 'ckeditor5/dist/styles.css';
+
 
 await ClassicEditor
 	.create( document.querySelector( '#editor' ), {

@@ -32,7 +32,7 @@ Open the `src/main.js` file and add the following code:
 // Import the editor.
 import { ClassicEditor } from 'ckeditor5';
 // Import the styles.
-import 'ckeditor5/dist/index.css';
+import 'ckeditor5/index.css';
 
 // Get the HTML element with the ID of 'app'.
 const element = document.querySelector( '#app' );
