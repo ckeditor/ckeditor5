@@ -21,7 +21,7 @@ All the features of CKEditor&nbsp;5 are implemented by plugins. You can read mor
 Listed below is an example configuration adding the {@link features/indent block indentation} feature.
 
 ```js
-import { Indent, IndentBlock, BlockQuote } from 'ckeditor5';
+import { ClassicEditor, Indent, IndentBlock, BlockQuote } from 'ckeditor5';
 /* ... */
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
@@ -40,7 +40,7 @@ When integrating an editor into your application, you can customize its features
 The available options may require loading plugins first &ndash; this is done during the setup and [Builder](https://ckeditor.com/builder?redirect=docs) is the easiest way to choose all needed features. The sample snippet below shows configuration of the toolbar, the headers feature and font family and color picker settings:
 
 ```js
-import { Heading, BlockQuote, Bold, Italic, Font, Link, List } from 'ckeditor5';
+import { ClassicEditor, Heading, BlockQuote, Bold, Italic, Font, Link, List } from 'ckeditor5';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	toolbar: [
@@ -104,7 +104,7 @@ In some cases, you may want to have different editor setups in your application,
 In the example below, the `Heading` plugin is removed:
 
 ```js
-import { Heading, BlockQuote, Bold, Italic, Link, List } from 'ckeditor5';
+import { ClassicEditor, Heading, BlockQuote, Bold, Italic, Link, List } from 'ckeditor5';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	removePlugins: [ 'Heading' ], // Remove a plugin from the setup.
@@ -118,7 +118,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 You might want to delete the `Link` plugin also, as shown below:
 
 ```js
-import { Heading, BlockQuote, Bold, Italic, Link, List } from 'ckeditor5';
+import { ClassicEditor, Heading, BlockQuote, Bold, Italic, Link, List } from 'ckeditor5';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	removePlugins: [ 'Heading', 'Link' ], // Remove a few plugins from the setup.
@@ -139,7 +139,7 @@ Read more: https://ckeditor.com/docs/ckeditor5/latest/support/error-codes.html#e
 This is a good time to remind you that some plugins in CKEditor&nbsp;5 depend on each other. In this case, the `Autolink` plugin requires the `Link` plugin to work. To make the above snippet work, the `Autolink` plugin must also be removed:
 
 ```js
-import { Heading, BlockQuote, Bold, Italic, Autolink, Link, List } from 'ckeditor5';
+import { ClassicEditor, Heading, BlockQuote, Bold, Italic, Autolink, Link, List } from 'ckeditor5';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	removePlugins: [ 'Heading', 'Link', 'Autolink' ], // Remove a few plugins from the setup.
