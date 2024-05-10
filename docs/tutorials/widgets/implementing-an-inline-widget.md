@@ -634,7 +634,7 @@ import {
 	Heading,
 	List,
 	Paragraph
-} from '@ckeditor/ckeditor5-paragraph';
+} from 'ckeditor5';
 
 import Placeholder from './placeholder/placeholder';
 
