@@ -22,7 +22,7 @@ Check out the {@link getting-started/legacy-getting-started/predefined-builds#in
 <summary>View editor configuration script</summary>
 
 ```js
-import MultiRootEditor from '@ckeditor/ckeditor5-build-multi-root';
+import MultiRootEditor from 'ckeditor5';
 
 MultiRootEditor
 	.create(

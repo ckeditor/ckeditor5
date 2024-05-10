@@ -78,7 +78,7 @@ You must include the `CKBoxImageEdit` plugin if you want to use CKBox image edit
 Finally, add {@link module:ckbox/ckbox~CKBox} to your plugin list and toolbar, and [configure](#configuration) the feature as needed. An example configuration may look like this:
 
 ```js
-import { ClassicEditor, Image, ImageUpload, PictureEditing, CKBox, CKBoxImageEdit,CloudServices } from 'ckeditor5';
+import { ClassicEditor, Image, ImageUpload, PictureEditing, CKBox, CKBoxImageEdit, CloudServices } from 'ckeditor5';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ Image, PictureEditing, ImageUpload, CloudServices, CKBox, CKBoxImageEdit, /* ... */ ],
