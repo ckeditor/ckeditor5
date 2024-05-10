@@ -345,7 +345,8 @@ ClassicEditor
 			Essentials, Paragraph, Heading, List, Bold, Italic, Abbreviation
 		],
 		toolbar: [
-			'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|',
+			'heading', 'bold', 'italic', 'numberedList', 'bulletedList',
+			'|',
 			'abbreviation'												 // ADDED
 		]
 	} )

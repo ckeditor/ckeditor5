@@ -44,12 +44,14 @@ import { Heading, BlockQuote, Bold, Italic, Font, Link, List } from 'ckeditor5';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	toolbar: [
-		'heading','|',
+		'heading',
+		'|',
 		'bold',
 		'italic',
 		'fontSize',
 		'fontFamily',
-		'fontColor', '|',
+		'fontColor',
+		'|',
 		'link',
 		'bulletedList',
 		'numberedList',
@@ -130,8 +132,8 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 However, this will result in an error thrown in the console of the browser:
 
 ```
-CKEditorError: plugincollection-required {"plugin":"Link","requiredBy":"Autolink"}`
-Read more: [https://ckeditor.com/docs/ckeditor5/latest/support/error-codes.html#error-plugincollection-required](https://ckeditor.com/docs/ckeditor5/latest/support/error-codes.html#error-plugincollection-required)
+CKEditorError: plugincollection-required {"plugin":"Link","requiredBy":"Autolink"}
+Read more: https://ckeditor.com/docs/ckeditor5/latest/support/error-codes.html#error-plugincollection-required
 ```
 
 This is a good time to remind you that some plugins in CKEditor&nbsp;5 depend on each other. In this case, the `Autolink` plugin requires the `Link` plugin to work. To make the above snippet work, the `Autolink` plugin must also be removed:

@@ -36,6 +36,8 @@ After {@link getting-started/quick-start installing the editor}, add the feature
 Assuming that you have implemented some form of the `saveData()` function that sends the data to your server and returns a promise which is resolved once the data is successfully saved, configuring the {@link module:autosave/autosave~Autosave} feature is simple:
 
 ```js
+import { ClassicEditor, Autosave } from 'ckeditor5';
+
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [
 		Autosave,

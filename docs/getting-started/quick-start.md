@@ -99,7 +99,7 @@ Then, you need to attach the script with the JavaScript code. To simplify import
 <script type="importmap">
 	{
 		"imports": {
-			"ckeditor5": "<CDN_LINK>/ckeditor5/dist/index.min.js",
+			"ckeditor5": "<CDN_LINK>/ckeditor5/index.min.js",
 			"ckeditor5/": "<CDN_LINK>/ckeditor5/"
 		}
 	}

@@ -50,13 +50,13 @@ We are doing our best to deliver the best RTL support to our users and we consta
 
 ### npm
 
-After installing the build from npm, translations can be imported from `ckeditor5/dist/translations/[lang].js` and must be passed to the editor configuration.
+After installing the build from npm, translations can be imported from `ckeditor5/translations/[lang].js` and must be passed to the editor configuration.
 
-For example, to use Polish, import `'ckeditor5/dist/translations/pl.js'` and pass the translation object to the editor configuration:
+For example, to use Polish, import `'ckeditor5/translations/pl.js'` and pass the translation object to the editor configuration:
 
 ```js
 import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
-import translations from 'ckeditor5/dist/translations/pl.js';
+import translations from 'ckeditor5/translations/pl.js';
 
 import 'ckeditor5/dist/styles.css';
 
@@ -91,7 +91,7 @@ To use different language than the default one (English), you need to load the e
 </script>
 <script type="module">
 import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
-import translations from 'ckeditor5/dist/translations/pl.js';
+import translations from 'ckeditor5/translations/pl.js';
 
 await ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [
@@ -308,7 +308,3 @@ There are community translations available for Australian and British variations
 Other features that will help you control the content language:
 
 * {@link features/language Text part Language}  &ndash; Set the language of the selected content part to support multilingual texts.
-
-## Contribute
-
-The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5-dev/tree/master/packages/ckeditor5-dev-translations](https://github.com/ckeditor/ckeditor5-dev/tree/master/packages/ckeditor5-dev-translations).

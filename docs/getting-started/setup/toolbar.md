@@ -75,11 +75,16 @@ You can use the extended {@link module:core/editor/editorconfig~EditorConfig#too
 toolbar: {
 	items: [
 		'undo', 'redo',
-		'|', 'heading',
-		'|', 'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor',
-		'|', 'bold', 'italic', 'strikethrough', 'subscript', 'superscript', 'code',
-		'|', 'link', 'uploadImage', 'blockQuote', 'codeBlock',
-		'|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
+		'|',
+		'heading',
+		'|',
+		'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor',
+		'|',
+		'bold', 'italic', 'strikethrough', 'subscript', 'superscript', 'code',
+		'|',
+		'link', 'uploadImage', 'blockQuote', 'codeBlock',
+		'|',
+		'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
 	],
 	shouldNotGroupWhenFull: false
 }
@@ -117,12 +122,18 @@ When you set `shouldNotGroupWhenFull` to `true`, by default the toolbar items ar
 toolbar: {
 	items: [
 		'undo', 'redo',
-		'|', 'heading',
-		'|', 'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor',
-		'|', 'bold', 'italic', 'strikethrough', 'subscript', 'superscript', 'code',
-		'|', 'link', 'uploadImage', 'blockQuote', 'codeBlock',
-		'|', 'alignment',
-		'|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
+		'|',
+		'heading',
+		'|',
+		'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor',
+		'|',
+		'bold', 'italic', 'strikethrough', 'subscript', 'superscript', 'code',
+		'|',
+		'link', 'uploadImage', 'blockQuote', 'codeBlock',
+		'|',
+		'alignment',
+		'|',
+		'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
 	],
 	shouldNotGroupWhenFull: true
 }

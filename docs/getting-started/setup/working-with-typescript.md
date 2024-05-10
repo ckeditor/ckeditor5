@@ -65,8 +65,8 @@ Writing a simple plugin will be similar to writing it in vanilla JavaScript, but
 Depending on your plugin, augment the following interfaces:
 
 * {@link module:core/editor/editorconfig~EditorConfig}, which informs that a new plugin extends the configuration.
-* {@link module:core/plugincollection~PluginsMap}, which informs that an additional plugin is available; useful when using `editor.plugins.get( '...' )`.
-* {@link module:core/commandcollection~CommandsMap}, which informs that an additional command is available; useful when using `editor.commands.get( '...' )`.
+* {@link module:core/plugincollection~PluginsMap}, which informs that an additional plugin is available; useful when using `editor.plugins.get(&nbsp;'...'&nbsp;)`.
+* {@link module:core/commandcollection~CommandsMap}, which informs that an additional command is available; useful when using `editor.commands.get(&nbsp;'...'&nbsp;)`.
 
 The augmentation can be placed in a file with your editor setup. You can also create a separate file, for example `augmentation.ts`, and import it.
 
@@ -137,7 +137,7 @@ ClassicEditor
 	} )
 	.then( editor => {
 		console.log( 'Editor was initialized', editor );
-		console.log(editor.plugins.get( 'Timestamp' ); // This will have type Timestamp thanks to our augmentation.
+		console.log( editor.plugins.get( 'Timestamp' ) ); // This will have type Timestamp thanks to our augmentation.
 	} )
 	.catch( error => {
 		console.error( error.stack );
