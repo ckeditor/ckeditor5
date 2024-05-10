@@ -25,7 +25,7 @@ npm install ckeditor5
 
 Now you can import all the modules from the `ckeditor5` package. Additionally, you have to import CSS styles separately.
 
-**Importing and registering UI translations is optional for American English.** To use the editor in any other language, use imported translations, as shown in the {@link getting-started/setup/configuration setup section}.
+**Importing and registering UI translations is optional for American English.** To use the editor in any other language, use imported translations, as shown in the {@link getting-started/setup/ui-language setup section}.
 
 ```js
 import { ClassicEditor, Essentials, Bold, Italic, Paragraph } from 'ckeditor5';
