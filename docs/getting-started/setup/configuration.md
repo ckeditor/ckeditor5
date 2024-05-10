@@ -35,7 +35,7 @@ Note that some features may require more than one plugin to run. You will find t
 
 ## Configuring editor settings
 
-When integrating an editor into your application, you can customize its features by passing a JavaScript object with configuration options to the `create()` method. These settings, defined in the `EditorConfig`, allow for extensive customization of the editor's functionality. Remember that customization depends on the editor setup and plugins loaded.
+When integrating an editor into your application, you can customize its features by passing a JavaScript object with configuration options to the {@link module:core/editor/editor~Editor.create `create()`} method. These settings, defined in the {@link @ckeditor/ckeditor5-core/src/editor/editorconfig `EditorConfig`}, allow for extensive customization of the editor's functionality. Remember that customization depends on the editor setup and plugins loaded.
 
 The available options may require loading plugins first &ndash; this is done during the setup and [Builder](https://ckeditor.com/builder?redirect=docs) is the easiest way to choose all needed features. The sample snippet below shows configuration of the toolbar, the headers feature and font family and color picker settings:
 
@@ -149,5 +149,5 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 ```
 
 <info-box>
-	Be careful when removing plugins from CKEditor builds using {@link module:core/editor/editorconfig~EditorConfig#removePlugins `config.removePlugins`}. If removed plugins were providing toolbar buttons, the toolbar configuration included in a build will become invalid. In such a case, you need to provide the updated toolbar configuration as in the example above or by providing only toolbar items that need to be removed using the {@link getting-started/setup/toolbar#extended-toolbar-configuration-format `config.toolbar.removeItems`} configuration option instead.
+	Be careful when removing plugins from CKEditor&nbsp;5 installation using {@link module:core/editor/editorconfig~EditorConfig#removePlugins `config.removePlugins`}. If removed plugins were providing toolbar buttons, the toolbar configuration will become invalid. In such a case, you need to provide the updated toolbar configuration as in the example above or by providing only toolbar items that need to be removed using the {@link getting-started/setup/toolbar#extended-toolbar-configuration-format `config.toolbar.removeItems`} configuration option instead.
 </info-box>
