@@ -177,9 +177,7 @@ The example below shows how all these mechanisms can be used together to enable 
 ```js
 // Note: We need to build the editor from source.
 // We cannot use existing builds in this case.
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-
-import { PendingActions } from '@ckeditor/ckeditor5-core';
+import { ClassicEditor, PendingActions } from 'ckeditor5';
 
 let isDirty = false;
 

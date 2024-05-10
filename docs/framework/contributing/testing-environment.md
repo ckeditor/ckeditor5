@@ -164,9 +164,7 @@ An example JavaScript file:
 ```js
 /* globals console, window, document */
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
