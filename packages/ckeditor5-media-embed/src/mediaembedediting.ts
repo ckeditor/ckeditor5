@@ -256,11 +256,25 @@ export default class MediaEmbedEditing extends Plugin {
 						/(?:.+)app\.gong\.io\/embedded-call\?call-id=(.+)/
 					],
 					html: match => {
+						const params = new URL( decodeURI( match[ 0 ] ) ).searchParams;
+						const from = params.get( 'from' );
+						const to = params.get( 'to' );
+						const id = params.get( 'id' );
+						const highlights = params.get( 'highlights' );
 						const idAndParams = match[ 1 ];
+
+						let url = `https://app.gong.io/embedded-call?call-id=${ idAndParams }`;
+
+						if ( ( !from || !to ) && highlights ) {
+							const { from, to } = JSON.parse( highlights )?.[ 0 ];
+							if ( from && to ) {
+								url = `https://app.gong.io/embedded-call?call-id=${ id }&from=${ from }&to=${ to }`;
+							}
+						}
 
 						return (
 							'<div style="position: relative; height: 431px;">' +
-								`<iframe src="https://app.gong.io/embedded-call?call-id=${ idAndParams }" ` +
+								`<iframe src="${ url }" ` +
 									'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
 									'frameborder="0">' +
 								'</iframe>' +
