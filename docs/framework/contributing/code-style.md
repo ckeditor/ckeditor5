@@ -827,7 +827,7 @@ Even if the import statement works locally, it will throw an error when develope
 ```js
 // Assume we edit a file located in the path: `packages/ckeditor5-engine/src/model/model.js`
 
-import { CKEditorError } from '@ckeditor/ckeditor5-utils';
+import { CKEditorError } from 'ckeditor5';
 ```
 
 [History of the change.](https://github.com/ckeditor/ckeditor5/issues/7128)
@@ -928,7 +928,7 @@ import { Plugin } from 'ckeditor5/src/core';
 ```js
 // Assume we edit a file located in the path: `packages/ckeditor5-widget/src/widget.js`
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from 'ckeditor5';
 ```
 
 History of changes:
@@ -955,7 +955,7 @@ Currently, it applies to the `@ckeditor/ckeditor5-watchdog` package.
 // Assume we edit a file located in the `packages/ckeditor5-watchdog/` directory.
 
 import { toArray } from 'ckeditor5/src/utils';
-import { toArray } from '@ckeditor/ckeditor5-utils';
+import { toArray } from 'ckeditor5';
 ```
 
 [History of the change.](https://github.com/ckeditor/ckeditor5/issues/9318)
@@ -1096,7 +1096,7 @@ import Table from '@ckeditor/ckeditor5-table/src/table';
 
 ```ts
 // ✔️ Importing from the main entry point is allowed.
-import { Table } from '@ckeditor/ckeditor5-table';
+import { Table } from 'ckeditor5';
 ```
 
 ### Require `as const`: `ckeditor5-rules/require-as-const-returns-in-methods`
@@ -1189,5 +1189,5 @@ import CheckIcon from './../theme/icons/check.svg';
 ```
 
 ```js
-import { icons } from '@ckeditor/ckeditor5-core';
+import { icons } from 'ckeditor5';
 ```

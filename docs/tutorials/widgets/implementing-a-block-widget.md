@@ -114,12 +114,15 @@ Create your project's entry point:
 ```js
 // app.js
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { Heading } from '@ckeditor/ckeditor5-heading';
-import { List } from '@ckeditor/ckeditor5-list';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import {
+	ClassicEditor,
+	Bold,
+	Italic,
+	Essentials,
+	Heading,
+	List,
+	Paragraph
+} from '@ckeditor/ckeditor5-paragraph';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -211,7 +214,7 @@ First, the master (glue) plugin. Its role is to simply load the "editing" and "U
 
 import SimpleBoxEditing from './simpleboxediting';
 import SimpleBoxUI from './simpleboxui';
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from 'ckeditor5-core';
 
 export default class SimpleBox extends Plugin {
 	static get requires() {
@@ -225,7 +228,7 @@ Now, the remaining two plugins:
 ```js
 // simplebox/simpleboxui.js
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from 'ckeditor5';
 
 export default class SimpleBoxUI extends Plugin {
 	init() {
@@ -237,7 +240,7 @@ export default class SimpleBoxUI extends Plugin {
 ```js
 // simplebox/simpleboxediting.js
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from 'ckeditor5';
 
 export default class SimpleBoxEditing extends Plugin {
 	init() {
@@ -251,12 +254,15 @@ Finally, you need to load the `SimpleBox` plugin in your `app.js` file:
 ```js
 // app.js
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { Heading } from '@ckeditor/ckeditor5-heading';
-import { List } from '@ckeditor/ckeditor5-list';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import {
+	ClassicEditor,
+	Bold,
+	Italic,
+	Essentials,
+	Heading,
+	List,
+	Paragraph
+} from 'ckeditor5';
 
 import SimpleBox from './simplebox/simplebox';                                 // ADDED
 
@@ -313,7 +319,7 @@ Update the `SimpleBoxEditing` plugin with this definition.
 ```js
 // simplebox/simpleboxediting.js
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from 'ckeditor5';
 
 export default class SimpleBoxEditing extends Plugin {
 	init() {
@@ -390,7 +396,7 @@ You need to define converters for 3 model elements. Update the `SimpleBoxEditing
 ```js
 // simplebox/simpleboxediting.js
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from 'ckeditor5';
 
 export default class SimpleBoxEditing extends Plugin {
 	init() {
@@ -505,12 +511,15 @@ To learn that, use the official {@link framework/development-tools/inspector CKE
 ```js
 // app.js
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { Heading } from '@ckeditor/ckeditor5-heading';
-import { List } from '@ckeditor/ckeditor5-list';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import {
+	ClassicEditor,
+	Bold,
+	Italic,
+	Essentials,
+	Heading,
+	List,
+	Paragraph
+	} from 'ckeditor5';
 
 import SimpleBox from './simplebox/simplebox';
 
@@ -607,10 +616,10 @@ Additionally, you need to ensure that the {@link module:widget/widget~Widget `Wi
 ```js
 // simplebox/simpleboxediting.js
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from 'ckeditor5';
 
 // ADDED 2 imports.
-import { Widget, toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget';
+import { Widget, toWidget, toWidgetEditable } from 'ckeditor5';
 
 export default class SimpleBoxEditing extends Plugin {
 	static get requires() {                                                    // ADDED
@@ -745,7 +754,7 @@ Create a new file `insertsimpleboxcommand.js` in the `simplebox/` directory. You
 ```js
 // simplebox/insertsimpleboxcommand.js
 
-import { Command } from '@ckeditor/ckeditor5-core';
+import { Command } from 'ckeditor5';
 
 export default class InsertSimpleBoxCommand extends Command {
 	execute() {
@@ -786,8 +795,7 @@ Import the command and register it in the `SimpleBoxEditing` plugin:
 ```js
 // simplebox/simpleboxediting.js
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
-import { Widget, toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget';
+import { Plugin, Widget, toWidget, toWidgetEditable } from 'ckeditor5';
 
 import InsertSimpleBoxCommand from './insertsimpleboxcommand';                 // ADDED
 
@@ -915,8 +923,8 @@ See what it looks like in practice and extend the `SimpleBoxUI` plugin [created 
 ```js
 // simplebox/simpleboxui.js
 
-import { ButtonView } from '@ckeditor/ckeditor5-ui';
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { ButtonView } from 'ckeditor5';
+import { Plugin } from 'ckeditor5';
 
 export default class SimpleBoxUI extends Plugin {
 	init() {
@@ -989,16 +997,21 @@ You can see the block widget implementation in action in the editor below. You c
 The following code contains a complete implementation of the `SimpleBox` plugin (and all its dependencies) and the code to run the editor. You can paste it into the [`app.js`](#plugin-structure) file and it will run out–of–the–box:
 
 ```js
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { Heading } from '@ckeditor/ckeditor5-heading';
-import { List } from '@ckeditor/ckeditor5-list';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-
-import { Command, Plugin } from '@ckeditor/ckeditor5-core';
-import { ButtonView } from '@ckeditor/ckeditor5-ui';
-import { Widget, toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget';
+import {
+	ClassicEditor,
+	Bold,
+	Italic,
+	Essentials,
+	Heading,
+	List,
+	Paragraph,
+	Command,
+	Plugin,
+	ButtonView,
+	Widget,
+	toWidget,
+	toWidgetEditable
+} from 'ckeditor5';
 
 class SimpleBox extends Plugin {
 	static get requires() {
