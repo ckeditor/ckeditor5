@@ -45,12 +45,12 @@
 		margin-left: var(--ck-image-style-spacing);
 	}
 
-	& .image-style-block-align-right {
+	& .image.image-style-block-align-right {
 		margin-right: 0;
 		margin-left: auto;
 	}
 
-	& .image-style-block-align-left {
+	& .image.image-style-block-align-left {
 		margin-left: 0;
 		margin-right: auto;
 	}
