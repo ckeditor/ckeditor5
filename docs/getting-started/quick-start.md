@@ -87,7 +87,7 @@ To activate CKEditor&nbsp;5 premium features, you will need a commercial license
 
 ### CDN setup
 
-Start by attaching a link to the style sheet. It contains all styles for the editor's UI and content. You can also include your styles if you like. Refer to the content styles guide for more information.
+Start by attaching a link to the style sheet. It contains all styles for the editor's UI and content. You can also include your styles if you like. Refer to the {@link getting-started/setup/css content styles} guide for more information.
 
 ```html
 <link rel="stylesheet" href="<CDN_LINK>/ckeditor5/dist/styles.css" />
