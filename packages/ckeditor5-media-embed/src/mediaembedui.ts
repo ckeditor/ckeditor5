@@ -8,12 +8,11 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import { createDropdown, CssTransitionDisablerMixin, type DropdownView } from 'ckeditor5/src/ui.js';
+import { ButtonView, CssTransitionDisablerMixin, MenuBarMenuListItemButtonView, DialogViewPosition } from 'ckeditor5/src/ui.js';
 
 import MediaFormView from './ui/mediaformview.js';
 import MediaEmbedEditing from './mediaembedediting.js';
 import mediaIcon from '../theme/icons/media.svg';
-import type MediaEmbedCommand from './mediaembedcommand.js';
 import type { LocaleTranslate } from 'ckeditor5/src/utils.js';
 import type MediaRegistry from './mediaregistry.js';
 
@@ -40,74 +39,95 @@ export default class MediaEmbedUI extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
-		const command: MediaEmbedCommand = editor.commands.get( 'mediaEmbed' )!;
 
-		editor.ui.componentFactory.add( 'mediaEmbed', locale => {
-			const dropdown = createDropdown( locale );
+		editor.ui.componentFactory.add( 'mediaEmbed', () => {
+			const button = this._createDialogButton( ButtonView );
 
-			this._setUpDropdown( dropdown, command );
+			button.set( {
+				tooltip: true
+			} );
 
-			return dropdown;
+			return button;
+		} );
+
+		editor.ui.componentFactory.add( 'menuBar:mediaEmbed', () => {
+			return this._createDialogButton( MenuBarMenuListItemButtonView );
 		} );
 	}
 
-	private _setUpDropdown( dropdown: DropdownView, command: MediaEmbedCommand ): void {
+	/**
+	 * Creates a button for for menu bar that will show find and replace dialog.
+	 */
+	private _createDialogButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
 		const editor = this.editor;
-		const t = editor.t;
-		const button = dropdown.buttonView;
-		const registry = editor.plugins.get( MediaEmbedEditing ).registry;
+		const locale = editor.locale;
+		const buttonView = new ButtonClass( editor.locale ) as InstanceType<T>;
+		const command = editor.commands.get( 'mediaEmbed' )!;
+		const t = locale.t;
+		const dialogPlugin = this.editor.plugins.get( 'Dialog' );
 
-		dropdown.once( 'change:isOpen', () => {
-			const form = new ( CssTransitionDisablerMixin( MediaFormView ) )( getFormValidators( editor.t, registry ), editor.locale );
-
-			dropdown.panelView.children.add( form );
-
-			// Note: Use the low priority to make sure the following listener starts working after the
-			// default action of the drop-down is executed (i.e. the panel showed up). Otherwise, the
-			// invisible form/input cannot be focused/selected.
-			button.on( 'open', () => {
-				form.disableCssTransitions();
-
-				// Make sure that each time the panel shows up, the URL field remains in sync with the value of
-				// the command. If the user typed in the input, then canceled (`urlInputView#fieldView#value` stays
-				// unaltered) and re-opened it without changing the value of the media command (e.g. because they
-				// didn't change the selection), they would see the old value instead of the actual value of the
-				// command.
-				form.url = command.value || '';
-				form.urlInputView.fieldView.select();
-				form.enableCssTransitions();
-			}, { priority: 'low' } );
-
-			dropdown.on( 'submit', () => {
-				if ( form.isValid() ) {
-					editor.execute( 'mediaEmbed', form.url );
-					editor.editing.view.focus();
-				}
-			} );
-
-			dropdown.on( 'change:isOpen', () => form.resetFormStatus() );
-			dropdown.on( 'cancel', () => {
-				editor.editing.view.focus();
-			} );
-
-			form.delegate( 'submit', 'cancel' ).to( dropdown );
-			form.urlInputView.fieldView.bind( 'value' ).to( command, 'value' );
-
-			// Update balloon position when form error changes.
-			form.urlInputView.on( 'change:errorText', () => {
-				editor.ui.update();
-			} );
-
-			// Form elements should be read-only when corresponding commands are disabled.
-			form.urlInputView.bind( 'isEnabled' ).to( command, 'isEnabled' );
-		} );
-
-		dropdown.bind( 'isEnabled' ).to( command );
-
-		button.set( {
+		buttonView.set( {
 			label: t( 'Insert media' ),
 			icon: mediaIcon,
-			tooltip: true
+			isToggleable: true
+		} );
+
+		buttonView.bind( 'isEnabled' ).to( command, 'isEnabled' );
+
+		buttonView.on( 'execute', () => {
+			if ( dialogPlugin.id === 'mediaEmbed' ) {
+				dialogPlugin.hide();
+
+				return;
+			}
+
+			this._showDialog();
+		} );
+
+		return buttonView;
+	}
+
+	private _showDialog() {
+		const editor = this.editor;
+		const dialog = editor.plugins.get( 'Dialog' );
+		const command = editor.commands.get( 'mediaEmbed' )!;
+		const t = editor.locale.t;
+
+		// if ( !this.formView ) {
+		// 	this.formView = this._createFormView();
+		// }
+
+		const registry = editor.plugins.get( MediaEmbedEditing ).registry;
+		const form = new ( CssTransitionDisablerMixin( MediaFormView ) )( getFormValidators( editor.t, registry ), editor.locale );
+
+		dialog.show( {
+			id: 'mediaEmbed',
+			title: t( 'Insert media' ),
+			content: form,
+			position: DialogViewPosition.EDITOR_TOP_SIDE,
+			onShow: () => {
+				form.url = command.value || '';
+				form.urlInputView.fieldView.select();
+			},
+			actionButtons: [
+				{
+					label: t( 'Cancel' ),
+					withText: true,
+					onExecute: () => dialog.hide()
+				},
+				{
+					label: t( 'Accept' ),
+					class: 'ck-button-action',
+					withText: true,
+					onExecute: () => {
+						if ( form.isValid() ) {
+							editor.execute( 'mediaEmbed', form.url );
+							dialog.hide();
+							editor.editing.view.focus();
+						}
+					}
+				}
+			]
 		} );
 	}
 }
