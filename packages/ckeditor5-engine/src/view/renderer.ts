@@ -825,7 +825,7 @@ export default class Renderer extends ObservableMixin() {
 		if ( actualText == expectedText ) {
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Text node does not need update:%c ' +
-			// @if CK_DEBUG_TYPING // 		`"${ actualText.replace( /\u00A0/g, '&nbsp;' ) }"%c (${ actualText.length })`,
+			// @if CK_DEBUG_TYPING // 		`${ _escapeTextNodeData( actualText ) }%c (${ actualText.length })`,
 			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-style: italic', 'color: blue', ''
 			// @if CK_DEBUG_TYPING // 	);
 			// @if CK_DEBUG_TYPING // }
@@ -836,8 +836,8 @@ export default class Renderer extends ObservableMixin() {
 		if ( env.isAndroid && this.isComposing && actualText.replace( /\u00A0/g, ' ' ) == expectedText.replace( /\u00A0/g, ' ' ) ) {
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Text node ignore NBSP changes while composing: ' +
-			// @if CK_DEBUG_TYPING // 		`%c"${ actualText.replace( /\u00A0/g, '&nbsp;' ) }"%c (${ actualText.length }) ->` +
-			// @if CK_DEBUG_TYPING // 		` %c"${ expectedText.replace( /\u00A0/g, '&nbsp;' ) }"%c (${ expectedText.length })`,
+			// @if CK_DEBUG_TYPING // 		`%c${ _escapeTextNodeData( actualText ) }%c (${ actualText.length }) ->` +
+			// @if CK_DEBUG_TYPING // 		` %c${ _escapeTextNodeData( expectedText ) }%c (${ expectedText.length })`,
 			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-style: italic', 'color: blue', '', 'color: blue', ''
 			// @if CK_DEBUG_TYPING // 	);
 			// @if CK_DEBUG_TYPING // }
@@ -847,8 +847,8 @@ export default class Renderer extends ObservableMixin() {
 
 		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 		// @if CK_DEBUG_TYPING // 	console.info( `%c[Renderer]%c Update text node${ this.isComposing ? ' while composing' : '' }: ` +
-		// @if CK_DEBUG_TYPING // 		`%c"${ actualText.replace( /\u00A0/g, '&nbsp;' ) }"%c (${ actualText.length }) ->` +
-		// @if CK_DEBUG_TYPING // 		` %c"${ expectedText.replace( /\u00A0/g, '&nbsp;' ) }"%c (${ expectedText.length })`,
+		// @if CK_DEBUG_TYPING // 		`%c${ _escapeTextNodeData( actualText ) }%c (${ actualText.length }) ->` +
+		// @if CK_DEBUG_TYPING // 		` %c${ _escapeTextNodeData( expectedText ) }%c (${ expectedText.length })`,
 		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', this.isComposing ? 'color: red; font-weight: bold' : '',
 		// @if CK_DEBUG_TYPING // 		'color: blue', '', 'color: blue', ''
 		// @if CK_DEBUG_TYPING // 	);
@@ -1257,3 +1257,12 @@ function createFakeSelectionContainer( domDocument: DomDocument ): DomElement {
 
 	return container;
 }
+
+// @if CK_DEBUG_TYPING // function _escapeTextNodeData( text ) {
+// @if CK_DEBUG_TYPING // 	const escapedText = text
+// @if CK_DEBUG_TYPING // 		.replace( /&/g, '&amp;' )
+// @if CK_DEBUG_TYPING // 		.replace( /\u00A0/g, '&nbsp;' )
+// @if CK_DEBUG_TYPING // 		.replace( /\u2060/g, '&NoBreak;' );
+// @if CK_DEBUG_TYPING //
+// @if CK_DEBUG_TYPING // 	return `"${ escapedText }"`;
+// @if CK_DEBUG_TYPING // }
