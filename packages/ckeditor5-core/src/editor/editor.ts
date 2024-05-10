@@ -573,7 +573,9 @@ export default abstract class Editor extends ObservableMixin() {
 		let readyPromise: Promise<unknown> = Promise.resolve();
 
 		if ( this.state == 'initializing' ) {
-			readyPromise = new Promise( resolve => this.once<EditorReadyEvent>( 'ready', resolve ) );
+			readyPromise = new Promise( resolve => this.once<EditorReadyEvent>( 'ready', val => {
+				resolve( val );
+			} ) );
 		}
 
 		return readyPromise
@@ -723,13 +725,17 @@ export default abstract class Editor extends ObservableMixin() {
 		}
 
 		if ( licensePayload.licenseType === 'trial' && licensePayload.exp * 1000 < Date.now() ) {
-			blockEditor( this, 'trialLimit' );
+			blockTrialEditor( this );
 
 			return;
 		}
 
 		if ( licensePayload.licenseType === 'trial' ) {
-			setTimeout( () => blockEditor( this, 'trialLimit' ), 600000 );
+			const timerId = setTimeout( () => blockTrialEditor( this ), 600000 );
+
+			this.on( 'destroy', () => {
+				clearTimeout( timerId );
+			} );
 		}
 
 		if ( licensePayload.usageEndpoint ) {
@@ -748,6 +754,15 @@ export default abstract class Editor extends ObservableMixin() {
 					}
 				} );
 			}, { priority: 'high' } );
+		}
+
+		function blockTrialEditor( editor: Editor ) {
+			blockEditor( editor, 'trialLimit' );
+
+			console.info(
+				'You are using the trial version of CKEditor 5 plugin with limited usage. ' +
+				'Make sure you will not use it in the production environment.'
+			);
 		}
 
 		function getPayload( licenseKey: string ): string | null {

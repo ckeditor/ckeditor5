@@ -320,8 +320,11 @@ describe( 'Editor', () => {
 			} );
 
 			describe( 'trial check', () => {
+				let consoleInfoSpy;
+
 				beforeEach( () => {
 					sinon.useFakeTimers( { now: Date.now() } );
+					consoleInfoSpy = sinon.spy( console, 'info' );
 				} );
 
 				afterEach( () => {
@@ -374,6 +377,9 @@ describe( 'Editor', () => {
 
 					sinon.assert.calledWithMatch( showErrorStub, 'trialLimit' );
 					expect( editor.isReadOnly ).to.be.true;
+					sinon.assert.calledOnce( consoleInfoSpy );
+					sinon.assert.calledWith( consoleInfoSpy, 'You are using the trial version of CKEditor 5 plugin with ' +
+				'limited usage. Make sure you will not use it in the production environment.' );
 
 					dateNow.restore();
 				} );
@@ -404,7 +410,39 @@ describe( 'Editor', () => {
 
 					sinon.assert.calledWithMatch( showErrorStub, 'trialLimit' );
 					expect( editor.isReadOnly ).to.be.true;
+					sinon.assert.calledOnce( consoleInfoSpy );
+					sinon.assert.calledWith( consoleInfoSpy, 'You are using the trial version of CKEditor 5 plugin with ' +
+				'limited usage. Make sure you will not use it in the production environment.' );
 
+					dateNow.restore();
+				} );
+
+				it( 'should clear timer on editor destroy', done => {
+					const licenseKey = 'foo.eyJleHAiOjE3MTUyMTI4MDAsImp0aSI6ImJkM2ZjNTc0LTJkNGYtNGNkZ' +
+					'S1iNWViLTIzYzk1Y2JlMjQzYSIsImxpY2Vuc2VUeXBlIjoidHJpYWwiLCJ2YyI6ImZlOTdmNzY5In0.bar';
+
+					/**
+					 * after decoding licenseKey:
+					 *
+					 * licensePaylod: {
+					 * 	...,
+					 * 	exp: timestamp( 09.05.2024 )
+					 * 	licenseType: 'trial'
+					 * }
+					 */
+
+					const today = 1715166436000; // 08.05.2024
+					const dateNow = sinon.stub( Date, 'now' ).returns( today );
+					const editor = new TestEditor( { licenseKey } );
+					const clearTimeoutSpy = sinon.spy( globalThis, 'clearTimeout' );
+
+					editor.fire( 'ready' );
+					editor.on( 'destroy', () => {
+						sinon.assert.calledOnce( clearTimeoutSpy );
+						done();
+					} );
+
+					editor.destroy();
 					dateNow.restore();
 				} );
 			} );
