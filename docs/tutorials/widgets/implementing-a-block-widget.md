@@ -214,7 +214,7 @@ First, the master (glue) plugin. Its role is to simply load the "editing" and "U
 
 import SimpleBoxEditing from './simpleboxediting';
 import SimpleBoxUI from './simpleboxui';
-import { Plugin } from 'ckeditor5-core';
+import { Plugin } from 'ckeditor5';
 
 export default class SimpleBox extends Plugin {
 	static get requires() {
