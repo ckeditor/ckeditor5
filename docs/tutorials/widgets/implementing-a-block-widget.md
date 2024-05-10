@@ -122,7 +122,7 @@ import {
 	Heading,
 	List,
 	Paragraph
-} from '@ckeditor/ckeditor5-paragraph';
+} from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
