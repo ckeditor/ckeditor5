@@ -1,0 +1,54 @@
+{
+  "name": "@ckeditor/ckeditor5-uploadcare",
+  "version": "0.0.1",
+  "description": "Uploadcare feature for CKEditor 5.",
+  "keywords": [
+    "ckeditor",
+    "ckeditor5",
+    "ckeditor 5",
+    "ckeditor5-feature",
+    "ckeditor5-plugin",
+    "ckeditor5-dll"
+  ],
+  "type": "module",
+  "main": "src/index.ts",
+  "dependencies": {
+    "ckeditor5": "41.3.1",
+    "@uploadcare/blocks": "0.39.0"
+  },
+  "devDependencies": {
+    "@ckeditor/ckeditor5-cloud-services": "41.3.1",
+    "@ckeditor/ckeditor5-core": "41.3.1",
+    "@ckeditor/ckeditor5-dev-utils": "^40.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "41.3.1",
+    "@ckeditor/ckeditor5-image": "41.3.1",
+    "@ckeditor/ckeditor5-theme-lark": "41.3.1",
+    "typescript": "5.0.4",
+    "webpack": "^5.58.1",
+    "webpack-cli": "^4.9.0"
+  },
+  "author": "CKSource (http://cksource.com/)",
+  "license": "GPL-2.0-or-later",
+  "homepage": "https://ckeditor.com/ckeditor-5",
+  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckeditor/ckeditor5.git",
+    "directory": "packages/ckeditor5-easy-image"
+  },
+  "files": [
+    "dist",
+    "lang",
+    "src/**/*.js",
+    "src/**/*.d.ts",
+    "theme",
+    "build",
+    "ckeditor5-metadata.json",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "dll:build": "webpack",
+    "build": "tsc -p ./tsconfig.json",
+    "build:dist": "node ../../scripts/build-package.mjs"
+  }
+}

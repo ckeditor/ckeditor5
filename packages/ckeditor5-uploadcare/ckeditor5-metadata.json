@@ -1,0 +1,13 @@
+// TODO: fill `docs` and `requires`
+{
+	"plugins": [
+		{
+			"name": "Uploadcare",
+			"className": "Uploadcare",
+			"description": "Enables fully using the Uploadcare features.",
+			"docs": "",
+			"path": "src/uploadcare.js",
+			"requires": []
+		}
+	]
+}
