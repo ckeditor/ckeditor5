@@ -659,6 +659,8 @@ export default abstract class Editor extends ObservableMixin() {
 	/**
 	 * Performs basic license key check. Enables the editor's read-only mode if the license key's validation period has expired
 	 * or the license key format is incorrect.
+	 *
+	 * @internal
 	 */
 	private _verifyLicenseKey() {
 		const licenseKey = this.config.get( 'licenseKey' );
@@ -790,6 +792,9 @@ export default abstract class Editor extends ObservableMixin() {
 		}, 0 );
 	}
 
+	/**
+	 * @internal
+	 */
 	private async _sendUsageRequest(
 		endpoint: string,
 		licenseKey: string,
