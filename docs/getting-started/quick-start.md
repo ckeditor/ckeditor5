@@ -23,12 +23,13 @@ First, install the necessary package. The command below will install the main CK
 npm install ckeditor5
 ```
 
-Now you can import all the modules from the `ckeditor5` package. Additionally, you have to import CSS styles separately.
+Now you can import all the modules from the `ckeditor5` package. Additionally, you have to import CSS styles separately. Please note the {@link module:essentials/essentials~Essentials `Essentials`} plugin including all essential editing features.
 
 **Importing and registering UI translations is optional for American English.** To use the editor in any other language, use imported translations, as shown in the {@link getting-started/setup/ui-language setup section}.
 
 ```js
 import { ClassicEditor, Essentials, Bold, Italic, Paragraph } from 'ckeditor5';
+import 'ckeditor5/index.css';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ Essentials, Bold, Italic, Paragraph ],
@@ -62,6 +63,9 @@ Importing and registering these plugins is also analogous to the open-source one
 ```js
 import { ClassicEditor, Essentials } from 'ckeditor5';
 import { FormatPainter, SlashCommand } from 'ckeditor5-premium-features';
+
+import 'ckeditor5/index.css';
+import 'ckeditor5-premium-features/index.css';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ Essentials, FormatPainter, SlashCommand ],
