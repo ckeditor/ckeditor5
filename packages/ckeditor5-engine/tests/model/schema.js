@@ -3196,7 +3196,7 @@ describe( 'Schema', () => {
 
 			it( 'own allowIn rule has bigger priority than inherited (re-allow)', () => {
 				schema.register( 'baseParent' );
-				schema.register( 'baseChild', { allowIn: 'baseParent' }  );
+				schema.register( 'baseChild', { allowIn: 'baseParent' } );
 				schema.register( 'extendedChild', { inheritAllFrom: 'baseChild', disallowIn: 'baseParent' } );
 				schema.register( 'extendedChild2', { inheritAllFrom: 'extendedChild', allowIn: 'baseParent' } );
 				schema.register( 'extendedChild3', { inheritAllFrom: 'extendedChild2' } ); // Re-allow is inherited.
@@ -3209,7 +3209,7 @@ describe( 'Schema', () => {
 
 			it( 'own allowChildren rule has bigger priority than inherited (re-allow)', () => {
 				schema.register( 'baseParent' );
-				schema.register( 'baseChild', { allowIn: 'baseParent' }  );
+				schema.register( 'baseChild', { allowIn: 'baseParent' } );
 				schema.register( 'extendedParent', { inheritAllFrom: 'baseParent', disallowChildren: [ 'baseChild' ] } );
 				schema.register( 'extendedParent2', { inheritAllFrom: 'extendedParent', allowChildren: [ 'baseChild' ] } );
 				schema.register( 'extendedParent3', { inheritAllFrom: 'extendedParent2' } ); // Re-allow is inherited.

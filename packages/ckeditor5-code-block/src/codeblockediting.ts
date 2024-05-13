@@ -140,7 +140,7 @@ export default class CodeBlockEditing extends Plugin {
 		} );
 
 		// Disallow all attributes on `$text` inside `codeBlock`.
-		schema.addAttributeCheck( ( context ) => {
+		schema.addAttributeCheck( context => {
 			if ( context.endsWith( 'codeBlock $text' ) ) {
 				return false;
 			}
