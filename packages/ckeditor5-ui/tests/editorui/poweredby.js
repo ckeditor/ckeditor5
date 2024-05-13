@@ -129,6 +129,28 @@ describe( 'PoweredBy', () => {
 
 				await editor.destroy();
 			} );
+
+			it( 'should create the balloon when a development license key is configured', async () => {
+				const editor = await createEditor( element, {
+					licenseKey: 'foo.eyJleHAiOjE3MTUyMTI4MDAsImp0aSI6IjczNDk5YTQyLWJjNzktNDdlNy1hNmR' +
+						'lLWIyMGJhMmEzYmI4OSIsImxpY2Vuc2VUeXBlIjoiZGV2ZWxvcG1lbnQiLCJ2YyI6Ijg5NzRiYTJlIn0.bar'
+				} );
+
+				expect( editor.ui.poweredBy._balloonView ).to.be.null;
+
+				focusEditor( editor );
+
+				expect( editor.ui.poweredBy._balloonView ).to.be.instanceOf( BalloonPanelView );
+
+				const view = editor.ui.poweredBy._balloonView.content.first;
+
+				expect( view.element.firstChild.firstChild.tagName ).to.equal( 'SPAN' );
+				expect( view.element.firstChild.firstChild.classList.contains( 'ck' ) ).to.be.true;
+				expect( view.element.firstChild.firstChild.classList.contains( 'ck-powered-by__label' ) ).to.be.true;
+				expect( view.element.firstChild.firstChild.textContent ).to.equal( 'Development' );
+
+				await editor.destroy();
+			} );
 		} );
 
 		describe( 'balloon management on editor focus change', () => {
