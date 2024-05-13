@@ -79,12 +79,6 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 
 CDN is an alternative method of running CKEditor 5. You can start using it in just a few steps and with a few tags.
 
-### Obtain a license key
-
-To activate CKEditor&nbsp;5 premium features, you will need a commercial license. If you wish to purchase a commercial CKEditor&nbsp;5 license or a license to one of the premium features, [contact us](https://ckeditor.com/contact/?sales=true#contact-form) to receive an offer tailored to your needs. To obtain an activation key, please follow the {@link getting-started/setup/license-key-and-activation License key and activation} guide.
-
-<!-- Not sure we should duplicate this in QS: TODO: Describe the steps to obtain a license key, attaching some screenshots. -->
-
 ### CDN setup
 
 Start by attaching a link to the style sheet. It contains all styles for the editor's UI and content. You can also include your styles if you like. Refer to the {@link getting-started/setup/css content styles} guide for more information.
@@ -169,6 +163,12 @@ Your final page should look similar to the one below.
 	</body>
 </html>
 ```
+
+## Obtain a license key
+
+To activate CKEditor&nbsp;5 premium features, you will need a commercial license. If you wish to purchase a commercial CKEditor&nbsp;5 license or a license to one of the premium features, [contact us](https://ckeditor.com/contact/?sales=true#contact-form) to receive an offer tailored to your needs. To obtain an activation key, please follow the {@link getting-started/setup/license-key-and-activation License key and activation} guide.
+
+<!-- Not sure we should duplicate this in QS: TODO: Describe the steps to obtain a license key, attaching some screenshots. -->
 
 ## Next steps
 
