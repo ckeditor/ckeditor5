@@ -134,7 +134,10 @@ export default class MediaEmbedEditing extends Plugin {
 
 				{
 					name: 'instagram',
-					url: /^instagram\.com\/p\/(\w+)/
+					url: [
+						/^instagram\.com\/p\/(\w+)/,
+						/^instagram\.com\/reel\/(\w+)/
+					]
 				},
 				{
 					name: 'twitter',
