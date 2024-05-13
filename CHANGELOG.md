@@ -3,6 +3,8 @@ Changelog
 
 ## [41.4.0](https://github.com/ckeditor/ckeditor5/compare/v41.3.1...v41.4.0) (May 15, 2024)
 
+We are happy to announce the release of CKEditor 5 v41.4.0.
+
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
 * **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The region name argument of the `AriaLiveAnnouncer#announce()`  method has been dropped. Please check out the latest API documentation for more information.
