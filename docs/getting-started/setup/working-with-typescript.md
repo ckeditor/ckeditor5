@@ -12,7 +12,7 @@ order: 70
 
 # TypeScript support in CKEditor&nbsp;5
 
-CKEditor&nbsp;5 is built using TypeScript and has native type definitions. All the official packages distributed using NPM contain type definitions.
+CKEditor&nbsp;5 is built using TypeScript and has native type definitions. All the official packages distributed using npm contain type definitions.
 
 <info-box hint>
 	We build all the packages using TypeScript 5.0, however, the editor should also work with an older version, such as 4.9. TypeScript is not following semantic versioning, so test your code accordingly.
