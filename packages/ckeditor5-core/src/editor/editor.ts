@@ -533,6 +533,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	public getData( options?: {
 		rootName?: string;
 		trim?: 'empty' | 'none';
+		mergeTagsData?: Record<string, string | ( () => string )>;
 		[ key: string ]: unknown;
 	} ): string {
 		return this.data.get( options );

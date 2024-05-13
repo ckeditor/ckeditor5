@@ -1336,7 +1336,7 @@ describe( 'Editor', () => {
 
 			it( 'should pass options object to data.get() method internally', () => {
 				const spy = testUtils.sinon.spy( editor.data, 'get' );
-				const options = { rootName: 'main', trim: 'none' };
+				const options = { rootName: 'main', trim: 'none', mergeTagsData: { foo: 'bar' } };
 
 				setData( editor.model, 'foo' );
 

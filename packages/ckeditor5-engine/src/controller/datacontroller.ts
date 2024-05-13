@@ -190,6 +190,7 @@ export default class DataController extends /* #__PURE__ */ EmitterMixin() {
 		options: {
 			rootName?: string;
 			trim?: 'empty' | 'none';
+			mergeTagsData?: Record<string, string | ( () => string ) >;
 			[ key: string ]: unknown;
 		} = {}
 	): string {
