@@ -35,7 +35,8 @@ To add a plugin to your editor, you need to follow three steps:
 3. Configure the toolbar if the installed plugin requires UI.
 
 ```ts
-// <path-to-your-build>/src/ckeditor.ts or file containing editor configuration if you are integrating an editor from source.
+// <path-to-your-build>/src/ckeditor.ts or file containing
+// editor configuration if you are integrating an editor from source.
 
 // Open-source plugins.
 import {
