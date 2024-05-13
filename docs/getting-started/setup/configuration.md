@@ -25,8 +25,8 @@ import { ClassicEditor, Indent, IndentBlock, BlockQuote } from 'ckeditor5';
 /* ... */
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Indent, IndentBlock, BlockQuote, /* ... */ ], // plugins import
-	toolbar: [ 'outdent', 'indent', 'blockquote', /* ... */ ] // toolbar configuration
+	plugins: [ Indent, IndentBlock, BlockQuote, /* ... */ ], // Plugins import.
+	toolbar: [ 'outdent', 'indent', 'blockquote', /* ... */ ] // Toolbar configuration.
 } )
 .then( /* ... */ );
 ```

@@ -31,13 +31,13 @@ Now you can import all the modules from the `ckeditor5` package. Additionally, y
 import { ClassicEditor, Essentials, Bold, Italic, Paragraph } from 'ckeditor5';
 import 'ckeditor5/index.css';
 
-await ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Essentials, Bold, Italic, Paragraph ],
-		toolbar: {
-			items: [ 'undo', 'redo', '|', 'bold', 'italic' ]
-		}
-	} )
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Essentials, Bold, Italic, Paragraph ],
+	toolbar: {
+		items: [ 'undo', 'redo', '|', 'bold', 'italic' ]
+	}
+} )
+.then( /* ... */ );
 ```
 
 Pass the imported plugins inside the configuration to the {@link module:editor-classic/classiceditor~ClassicEditor#create `create()`} method. The first argument in this function is a DOM element for the editor placement, so you need to add it to your HTML page.
@@ -67,12 +67,12 @@ import { FormatPainter, SlashCommand } from 'ckeditor5-premium-features';
 import 'ckeditor5/index.css';
 import 'ckeditor5-premium-features/index.css';
 
-await ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Essentials, FormatPainter, SlashCommand ],
-		toolbar: [ 'formatPainter' ],
-		licenseKey: 'your-license-key'
-	} )
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Essentials, FormatPainter, SlashCommand ],
+	toolbar: [ 'formatPainter' ],
+	licenseKey: 'your-license-key'
+} )
+.then( /* ... */ );
 ```
 
 ## Using CKEditor&nbsp;5 from CDN
@@ -115,13 +115,13 @@ Once you have added the import map, you can access the editor and its plugins us
 <script type="module">
 	import { ClassicEditor, Essentials, Bold, Italic, Paragraph } from 'ckeditor5';
 
-	await ClassicEditor
-		.create( document.querySelector( '#editor' ), {
-			plugins: [ Essentials, Bold, Italic, Paragraph ],
-			toolbar: {
-				items: [ 'undo', 'redo', '|', 'bold', 'italic' ]
-			}
-		} )
+	ClassicEditor.create( document.querySelector( '#editor' ), {
+		plugins: [ Essentials, Bold, Italic, Paragraph ],
+		toolbar: {
+			items: [ 'undo', 'redo', '|', 'bold', 'italic' ]
+		}
+	} )
+	.then( /* ... */ );
 </script>
 ```
 
@@ -161,13 +161,13 @@ Your final page should look similar to the one below.
 		<script type="module">
 			import { ClassicEditor, Essentials, Bold, Italic, Paragraph } from 'ckeditor5';
 		
-			await ClassicEditor
-				.create( document.querySelector( '#editor' ), {
-					plugins: [ Essentials, Bold, Italic, Paragraph ],
-					toolbar: {
-						items: [ 'undo', 'redo', '|', 'bold', 'italic' ]
-					}
-				} )
+			ClassicEditor.create( document.querySelector( '#editor' ), {
+				plugins: [ Essentials, Bold, Italic, Paragraph ],
+				toolbar: {
+					items: [ 'undo', 'redo', '|', 'bold', 'italic' ]
+				}
+			} )
+			.then( /* ... */ );
 		</script>
 	</body>
 </html>
