@@ -8,7 +8,7 @@ meta-description: Learn how to maintain and keep your CKEditor 5 up-to-date at a
 # Updating CKEditor&nbsp;5
 
 <info-box>
-  This guide covers the topic of keeping your CKEditor&nbsp;5 copy up-to-date. If you would like to upgrade from CKEditor 4 to CKEditor&nbsp;5, please see the {@link updating/migration-from-ckeditor-4 Migrating from CKEditor 4} guide instead.
+	This guide covers the topic of keeping your CKEditor&nbsp;5 copy up-to-date. If you would like to upgrade from CKEditor 4 to CKEditor&nbsp;5, please see the {@link updating/migration-from-ckeditor-4 Migrating from CKEditor 4} guide instead.
 </info-box>
 
 
@@ -21,7 +21,7 @@ Before proceeding with an update, it is highly recommended to [read the changelo
 To help you with a smooth update, we have prepared migration guides that describe adjustments that need to be done before moving to the production environment. You can find them in the sidebar located on the left side of the page.
 
 <info-box>
-  Always remember to test your editor before deploying the changes into the production environment. This will help ensure that the update will not have a negative impact on your application and user experience.
+	Always remember to test your editor before deploying the changes into the production environment. This will help ensure that the update will not have a negative impact on your application and user experience.
 </info-box>
 
 If you use a {@link getting-started/legacy-getting-started/predefined-builds legacy predefined build}, you can simply visit our [CKEditor&nbsp;5 download page](https://ckeditor.com/ckeditor-5/download/) and get the latest editor version from there. However, if you created your own customized editor, the process can be described in a few steps:
@@ -36,13 +36,9 @@ Below you will find an example that will guide you through the updating process 
 
 ### Example
 
-Imagine that you use the editor version 30.0.0 and you want to update it to version 31.0.0.
+Imagine that you use the editor in and older version and you want to update it to the current {@var ckeditor5-version} version.
 
-The first step is to identify changes introduced with the 31.0.0 version, so you navigate to the [changelog section for version 31.0.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#3100-2021-10-25). The release introduced one major breaking change:
-
-{@img assets/img/updating-changelog.png 778 Breaking change in the changelog.}
-
-The change affects the {@link features/html-embed HTML embed feature}, so if you used this feature's API in your project, it should be reviewed. Fortunately, the {@link updating/update-to-31#update-to-ckeditor-5-v3100 migration guide for version 31.0.0} explains what should be updated in your code!
+The first step is to identify changes introduced since the old version, so you navigate update guides (found on the left) to identify any possible breaking changes between the old version and the current. These guides will navigate you through any necessary code changes.
 
 <info-box>
 	It is recommended to update regularly. Sometimes, however, it could happen that you skip a few releases and need to update to a non-adjacent version. In such a case, remember to verify the changelog and migration guides for **all** missing versions, not only the one you are updating to.
@@ -50,57 +46,31 @@ The change affects the {@link features/html-embed HTML embed feature}, so if you
 
 When you already know what has changed and which parts of your custom code need to be adjusted, it is time to make the update. If you use a predefined build hosted on CDN or a downloaded ZIP package, you can simply visit the [CKEditor&nbsp;5 download section](https://ckeditor.com/ckeditor-5/download/) and get the latest version. However, the most common way for installing CKEditor&nbsp;5 is using npm packages.
 
-The example `package.json` file with the editor version 30.0.0 looks as below:
+This can be done by updating the `package.json` file with the latest editor version (currently {@var ckeditor5-version}) or using some automated tool (like [`npm-check-updates`](https://www.npmjs.com/package/npm-check-updates)):
 
 ```json
-"dependencies": {
-    "@ckeditor/ckeditor5-adapter-ckfinder": "^30.0.0",
-    "@ckeditor/ckeditor5-autoformat": "^30.0.0",
-    "@ckeditor/ckeditor5-basic-styles": "^30.0.0",
-    "@ckeditor/ckeditor5-block-quote": "^30.0.0",
-    "@ckeditor/ckeditor5-ckfinder": "^30.0.0",
-    "@ckeditor/ckeditor5-cloud-services": "^30.0.0",
-    "@ckeditor/ckeditor5-easy-image": "^30.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "^30.0.0",
-    "@ckeditor/ckeditor5-essentials": "^30.0.0",
-    "@ckeditor/ckeditor5-heading": "^30.0.0",
-    "@ckeditor/ckeditor5-image": "^30.0.0",
-    "@ckeditor/ckeditor5-indent": "^30.0.0",
-    "@ckeditor/ckeditor5-link": "^30.0.0",
-    "@ckeditor/ckeditor5-list": "^30.0.0",
-    "@ckeditor/ckeditor5-media-embed": "^30.0.0",
-    "@ckeditor/ckeditor5-paragraph": "^30.0.0",
-    "@ckeditor/ckeditor5-paste-from-office": "^30.0.0",
-    "@ckeditor/ckeditor5-table": "^30.0.0",
-    "@ckeditor/ckeditor5-typing": "^30.0.0"
-  }
-  ```
-
-To perform the update, you can change the version from 30.0.0 to 31.0.0 or use some automated tool (like [`npm-check-updates`](https://www.npmjs.com/package/npm-check-updates)):
-
-```json
-  "dependencies": {
-    "@ckeditor/ckeditor5-adapter-ckfinder": "^31.0.0",
-    "@ckeditor/ckeditor5-autoformat": "^31.0.0",
-    "@ckeditor/ckeditor5-basic-styles": "^31.0.0",
-    "@ckeditor/ckeditor5-block-quote": "^31.0.0",
-    "@ckeditor/ckeditor5-ckfinder": "^31.0.0",
-    "@ckeditor/ckeditor5-cloud-services": "^31.0.0",
-    "@ckeditor/ckeditor5-easy-image": "^31.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "^31.0.0",
-    "@ckeditor/ckeditor5-essentials": "^31.0.0",
-    "@ckeditor/ckeditor5-heading": "^31.0.0",
-    "@ckeditor/ckeditor5-image": "^31.0.0",
-    "@ckeditor/ckeditor5-indent": "^31.0.0",
-    "@ckeditor/ckeditor5-link": "^31.0.0",
-    "@ckeditor/ckeditor5-list": "^31.0.0",
-    "@ckeditor/ckeditor5-media-embed": "^31.0.0",
-    "@ckeditor/ckeditor5-paragraph": "^31.0.0",
-    "@ckeditor/ckeditor5-paste-from-office": "^31.0.0",
-    "@ckeditor/ckeditor5-table": "^31.0.0",
-    "@ckeditor/ckeditor5-typing": "^31.0.0"
-  }
-  ```
+	"dependencies": {
+		"@ckeditor/ckeditor5-adapter-ckfinder": "^{@var ckeditor5-version}",
+		"@ckeditor/ckeditor5-autoformat": "^{@var ckeditor5-version}",
+		"@ckeditor/ckeditor5-basic-styles": "^{@var ckeditor5-version}",
+		"@ckeditor/ckeditor5-block-quote": "^{@var ckeditor5-version}",
+		"@ckeditor/ckeditor5-ckfinder": "^{@var ckeditor5-version}",
+		"@ckeditor/ckeditor5-cloud-services": "^{@var ckeditor5-version}",
+		"@ckeditor/ckeditor5-easy-image": "^{@var ckeditor5-version}",
+		"@ckeditor/ckeditor5-editor-classic": "^{@var ckeditor5-version}",
+		"@ckeditor/ckeditor5-essentials": "^{@var ckeditor5-version}",
+		"@ckeditor/ckeditor5-heading": "^{@var ckeditor5-version}",
+		"@ckeditor/ckeditor5-image": "^{@var ckeditor5-version}",
+		"@ckeditor/ckeditor5-indent": "^{@var ckeditor5-version}",
+		"@ckeditor/ckeditor5-link": "^{@var ckeditor5-version}",
+		"@ckeditor/ckeditor5-list": "^{@var ckeditor5-version}",
+		"@ckeditor/ckeditor5-media-embed": "^{@var ckeditor5-version}",
+		"@ckeditor/ckeditor5-paragraph": "^{@var ckeditor5-version}",
+		"@ckeditor/ckeditor5-paste-from-office": "^{@var ckeditor5-version}",
+		"@ckeditor/ckeditor5-table": "^{@var ckeditor5-version}",
+		"@ckeditor/ckeditor5-typing": "^{@var ckeditor5-version}"
+	}
+	```
 
 Finally, you reinstall the packages and rebuild the editor. Note that sometimes it might be required to remove the `package-lock.json` or `yarn.lock` files.
 
