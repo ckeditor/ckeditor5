@@ -116,11 +116,6 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 			// @if CK_DEBUG_TYPING // }
 		}
 
-		// Replace NBSPs with plain spaces.
-		if ( data ) {
-			data = data.replace( /\u00A0/, ' ' );
-		}
-
 		// Android sometimes fires insertCompositionText with a new-line character at the end of the data
 		// instead of firing insertParagraph beforeInput event.
 		// Fire the correct type of beforeInput event and ignore the replaced fragment of text because

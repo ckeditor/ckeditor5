@@ -6137,6 +6137,34 @@ describe( 'Renderer', () => {
 			expect( domRoot.childNodes[ 0 ].childNodes.length ).to.equal( 1 );
 			expect( domRoot.childNodes[ 0 ].childNodes[ 0 ].data ).to.equal( 'bar' );
 		} );
+
+		it( 'should not update text on Android if only NBSPs are changed while composing', () => {
+			testUtils.sinon.stub( env, 'isAndroid' ).value( true );
+
+			const viewText = new ViewText( viewDocument, 'foo  bar' );
+			viewRoot._appendChild( viewText );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].data ).to.equal( 'foo \u00A0bar' );
+
+			// Browser modified NBSP while composing.
+			renderer.isComposing = true;
+			domRoot.childNodes[ 0 ].data = 'foo\u00A0 bar';
+			renderer._updateText( viewText, {} );
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].data ).to.equal( 'foo\u00A0 bar' );
+
+			// Rendering after composition.
+			renderer.isComposing = false;
+			renderer._updateText( viewText, {} );
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].data ).to.equal( 'foo \u00A0bar' );
+		} );
 	} );
 
 	function getMutationStats( mutationList ) {
