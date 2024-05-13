@@ -33,7 +33,7 @@ Let's see how the model compares to HTML.
 
 ### Schema
 
-You cannot put everything in the model. At least not until you update the schema. The schema defines what is allowed and where, what attributes are allowed for certain nodes, and so on.
+You cannot put anything you want inside the document model. At least not until you update the schema. The schema defines what is allowed and where, what attributes are allowed for certain nodes, what is not allowed, and so on.
 
 Schema determines things like whether the given element can be enclosed in a block quote, or whether the bold button is enabled on selected content.
 

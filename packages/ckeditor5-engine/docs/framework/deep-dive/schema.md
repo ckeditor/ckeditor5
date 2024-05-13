@@ -71,6 +71,70 @@ Both the `{@link module:engine/model/schema~SchemaItemDefinition#allowIn}` and `
 	You can read more about the format of the item definition in the {@link module:engine/model/schema~SchemaItemDefinition} API guide.
 </info-box>
 
+## Disallowing structures
+
+The schema, in addition to allowing certain structures, can be also used to ensure some structures are explicitly disallowed. This can be achieved with the use of disallow rules.
+
+Typically, you will use {@link module:engine/model/schema~SchemaItemDefinition#disallowChildren} property for that. It can be used to define which nodes are disallowed inside given element:
+
+```js
+schema.register( 'myElement', {
+	inheritAllFrom: '$block',
+	disallowChildren: 'imageInline'
+} );
+```
+
+In the example above, a new custom element should behave like any block element (paragraph, heading, etc.) but it should not be possible to insert inline images inside it.
+
+### Precedence over allow rules
+
+In general, all `disallow` rules have higher priority than their `allow` counterparts. When we also take inheritance into the picture, the hierarchy of rules looks like this (from the highest priority):
+
+1. `disallowChildren` / `disallowIn` from the element's own definition.
+2. `allowChildren` / `allowIn` from the element's own definition.
+3. `disallowChildren` / `disallowIn` from the inherited element's definition.
+4. `allowChildren` / `allowIn` from the inherited element's definition.
+
+### Disallow rules examples
+
+While disallowing is easy to understand for simple cases, things might start to get unclear when more complex rules are involved. Below are some examples explaining how disallowing works when rules inheriting is involved.
+
+```js
+schema.register( 'baseChild' );
+schema.register( 'baseParent', { allowChildren: [ 'baseChild' ] } );
+
+schema.register( 'extendedChild', { inheritAllFrom: 'baseChild' } );
+schema.register( 'extendedParent', { inheritAllFrom: 'baseParent', disallowChildren: [ 'baseChild' ] } );
+```
+
+In this case, `extendedChild` will be allowed in `baseParent` (thanks to inheriting from `baseChild`) and in `extendedParent` (as it inherits `baseParent`).
+
+But `baseChild` will be allowed only in `baseParent`. Although `extendedParent` inherits all rules from `baseParent` it specifically disallows `baseChild` as the part of its definition.
+
+Below is a different example, where instead `baseChild` is extended with `disallowIn` rule:
+
+```js
+schema.register( 'baseParent' );
+schema.register( 'baseChild', { allowIn: 'baseParent' } );
+
+schema.register( 'extendedParent', { inheritAllFrom: 'baseParent' } );
+schema.register( 'extendedChild', { inheritAllFrom: 'baseChild' } );
+schema.extend( 'baseChild', { disallowIn: 'extendedParent' } );
+```
+
+This changes how schema rules are resolved. `baseChild` will still be disallowed in `extendedParent` as before. But now, `extendedChild` will be disallowed in `extendedParent` as well. That's because it will inherit this rule from `baseChild`, and there is no other rule that would allow `extendedChild` in `extendedParent`. 
+
+Of course, you can mix `allowIn` with `disallowChildren` as well as `allowChildren` with `disallowIn`.
+
+Finally, a situation may come up, when you want to inherit from an item which is already disallowed, but the new element should be re-allowed again. In this case the definitions should look like this:
+
+```js
+schema.register( 'baseParent', { inheritAllFrom: 'paragraph', disallowChildren: [ 'imageInline' ] } );
+schema.register( 'extendedParent', { inheritAllFrom: 'baseParent', allowChildren: [ 'imageInline' ] } );
+```
+
+Here, `imageInline` is allowed in paragraph, but will not be allowed in `baseParent`. However, `extendedParent` will again re-allow it, as own definitions are more important than inherited definitions.
+
 ## Defining additional semantics
 
 In addition to setting allowed structures, the schema can also define additional traits of model elements. By using the `is*` properties, a feature author may declare how a certain element should be treated by other features and by the engine.
