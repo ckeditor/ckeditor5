@@ -758,7 +758,7 @@ export default abstract class Editor extends ObservableMixin() {
 			blockEditor( editor, 'developmentLimit' );
 
 			console.info(
-				'You are using the development version of CKEditor 5 plugin with limited usage. ' +
+				'You are using the development version of CKEditor 5 with limited usage. ' +
 				'Make sure you will not use it in the production environment.'
 			);
 		}

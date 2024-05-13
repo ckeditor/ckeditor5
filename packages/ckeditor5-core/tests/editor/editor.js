@@ -378,7 +378,7 @@ describe( 'Editor', () => {
 					sinon.assert.calledWithMatch( showErrorStub, 'developmentLimit' );
 					expect( editor.isReadOnly ).to.be.true;
 					sinon.assert.calledOnce( consoleInfoSpy );
-					sinon.assert.calledWith( consoleInfoSpy, 'You are using the development version of CKEditor 5 plugin with ' +
+					sinon.assert.calledWith( consoleInfoSpy, 'You are using the development version of CKEditor 5 with ' +
 				'limited usage. Make sure you will not use it in the production environment.' );
 
 					dateNow.restore();
@@ -411,7 +411,7 @@ describe( 'Editor', () => {
 					sinon.assert.calledWithMatch( showErrorStub, 'developmentLimit' );
 					expect( editor.isReadOnly ).to.be.true;
 					sinon.assert.calledOnce( consoleInfoSpy );
-					sinon.assert.calledWith( consoleInfoSpy, 'You are using the development version of CKEditor 5 plugin with ' +
+					sinon.assert.calledWith( consoleInfoSpy, 'You are using the development version of CKEditor 5 with ' +
 				'limited usage. Make sure you will not use it in the production environment.' );
 
 					dateNow.restore();

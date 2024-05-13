@@ -106,7 +106,7 @@ export default class PoweredBy extends DomEmitterMixin() {
 			const licenseKey = editor.config.get( 'licenseKey' );
 			const licenseContent = licenseKey && parseBase64EncodedObject( licenseKey.split( '.' )[ 1 ] );
 
-			if ( licenseContent && licenseContent.whiteLabel ) {
+			if ( licenseContent && ( licenseContent.whiteLabel || licenseContent.licenseType !== 'development' ) ) {
 				return;
 			}
 		}
@@ -357,10 +357,17 @@ function getLowerCornerPosition(
 function getNormalizedConfig( editor: Editor ): PoweredByConfig {
 	const userConfig = editor.config.get( 'ui.poweredBy' );
 	const position = userConfig && userConfig.position || 'border';
+	const licenseKey = editor.config.get( 'licenseKey' );
+	const licenseContent = licenseKey && parseBase64EncodedObject( licenseKey.split( '.' )[ 1 ] );
+	let label = DEFAULT_LABEL;
+
+	if ( licenseContent && licenseContent.licenseType === 'development' ) {
+		label = 'Development';
+	}
 
 	return {
 		position,
-		label: DEFAULT_LABEL,
+		label,
 		verticalOffset: position === 'inside' ? 5 : 0,
 		horizontalOffset: 5,
 
