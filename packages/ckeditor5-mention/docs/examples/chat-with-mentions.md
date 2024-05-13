@@ -39,10 +39,15 @@ ClassicEditor
 		extraPlugins: [ Essentials, Paragraph, Mention, MentionLinks, Bold, Italic, Underline, Strikethrough, Link ],
 		toolbar: {
 			items: [
-				'undo', 'redo', '|', 'heading',
-				'|', 'bold', 'italic', 'underline', 'strikethrough',
-				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
-				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+				'undo', 'redo',
+				'|',
+				'heading',
+				'|',
+				'bold', 'italic', 'underline', 'strikethrough',
+				'|',
+				'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|',
+				'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
 		mention: {

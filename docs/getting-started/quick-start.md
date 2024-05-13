@@ -13,7 +13,7 @@ CKEditor&nbsp;5 is a powerful, rich text editor you can embed in your web applic
 
 ## Try CKEditor&nbsp;5 Builder
 
-Check out our interactive builder to quickly get a taste of CKEditor&nbsp;5. It offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs.
+Check out our [interactive Builder](https://ckeditor.com/builder?redirect=docs) to quickly get a taste of CKEditor&nbsp;5. It offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs.
 
 ## Installing CKEditor&nbsp;5 using npm
 
@@ -25,11 +25,10 @@ npm install ckeditor5
 
 Now you can import all the modules from the `ckeditor5` package. Additionally, you have to import CSS styles separately.
 
-**Importing and registering UI translations is optional for American English.** To use the editor in any other language, use imported translations, as shown in the {@link getting-started/setup/configuration setup section}.
+**Importing and registering UI translations is optional for American English.** To use the editor in any other language, use imported translations, as shown in the {@link getting-started/setup/ui-language setup section}.
 
 ```js
 import { ClassicEditor, Essentials, Bold, Italic, Paragraph } from 'ckeditor5';
-
 import 'ckeditor5/index.css';
 
 await ClassicEditor

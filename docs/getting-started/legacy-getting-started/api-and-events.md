@@ -47,7 +47,7 @@ editor.model.document.on( 'change:data', () => {
 } );
 ```
 
-Events could be used to alter the behavior of the editor. Imagine a user wants to swap the <kbd>Enter</kbd> with the <kbd>Shift</kbd> + <kbd>Enter</kbd>, so <kbd>Shift</kbd> + <kbd>Enter</kbd> will insert a new block, while <kbd>Enter</kbd> will insert a `<br>`.
+Events could be used to alter the behavior of the editor. Imagine a user wants to swap the <kbd>Enter</kbd> keystroke with the <kbd>Shift</kbd> + <kbd>Enter</kbd> combination, so <kbd>Shift</kbd> + <kbd>Enter</kbd> will insert a new block, while <kbd>Enter</kbd> will insert a `<br>`.
 
 ```js
 editor.editing.view.document.on( 'enter', ( evt, data ) => {

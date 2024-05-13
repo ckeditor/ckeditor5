@@ -114,7 +114,7 @@ import {
 	Bold,
 	Italic
 } from 'ckeditor5';
-import 'ckeditor5/dist/index.css';
+import 'ckeditor5/index.css';
 
 import Abbreviation from './abbreviation/abbreviation';					// ADDED
 
@@ -335,7 +335,7 @@ import {
 	Bold,
 	Italic
 } from 'ckeditor5';
-import 'ckeditor5/dist/index.css';
+import 'ckeditor5/index.css';
 
 import Abbreviation from './abbreviation/abbreviation';
 
@@ -345,7 +345,8 @@ ClassicEditor
 			Essentials, Paragraph, Heading, List, Bold, Italic, Abbreviation
 		],
 		toolbar: [
-			'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|',
+			'heading', 'bold', 'italic', 'numberedList', 'bulletedList',
+			'|',
 			'abbreviation'												 // ADDED
 		]
 	} )

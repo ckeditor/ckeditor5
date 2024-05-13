@@ -25,26 +25,16 @@ You can check and clear a list item by using the <kbd>Ctrl</kbd> + <kbd>Enter</k
 
 ## Installation
 
-The `TodoList` plugin provides the {@link features/todo-lists to-do list feature} for CKEditor&nbsp;5.
-
-To add this feature to your editor, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:
-
-```bash
-npm install --save @ckeditor/ckeditor5-list
-```
-
-Then add the `TodoList` plugin to your plugin list and the toolbar configuration:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { TodoList } from '@ckeditor/ckeditor5-list';
+import { TodoList } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ TodoList, /* ... */ ],
-		toolbar: [ 'todoList', /* ... */ ],
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ TodoList, /* ... */ ],
+	toolbar: [ 'todoList', /* ... */ ],
+} )
+.then( /* ... */ );
 ```
 
 <info-box info>

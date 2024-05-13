@@ -24,7 +24,7 @@ If you are here looking for a way to install plugins, there is a chance you have
 
 ### Installing a package
 
-All open-source packages are included in the `ckeditor5` package. There is no need to install additional files. All premium plugins are installed with the `ckeditor5premium-features` package.
+All open-source packages are included in the `ckeditor5` package. There is no need to install additional files. All premium plugins are installed with the `ckeditor5-premium-features` package.
 
 ### Updating the editor's configuration
 
@@ -64,8 +64,6 @@ import {
 	} from 'ckeditor5';
 // Premium plugin.
 import { ExportPdf } from 'ckeditor5-premium-features';
-
-
 
 class Editor extends ClassicEditor {
 	public static override builtinPlugins = [

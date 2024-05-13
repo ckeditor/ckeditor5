@@ -75,21 +75,26 @@ You can use the extended {@link module:core/editor/editorconfig~EditorConfig#too
 toolbar: {
 	items: [
 		'undo', 'redo',
-		'|', 'heading',
-		'|', 'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor',
-		'|', 'bold', 'italic', 'strikethrough', 'subscript', 'superscript', 'code',
-		'|', 'link', 'uploadImage', 'blockQuote', 'codeBlock',
-		'|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
+		'|',
+		'heading',
+		'|',
+		'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor',
+		'|',
+		'bold', 'italic', 'strikethrough', 'subscript', 'superscript', 'code',
+		'|',
+		'link', 'uploadImage', 'blockQuote', 'codeBlock',
+		'|',
+		'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
 	],
 	shouldNotGroupWhenFull: false
 }
 ```
 
-* **`items`** &ndash; An array of toolbar item names. Most of the components (buttons, dropdowns, etc.) that you can use as toolbar items are described in the {@link features/index Features} section. A full list is defined in {@link module:ui/componentfactory~ComponentFactory `editor.ui.componentFactory`} and can be listed using the following snippet: `Array.from( editor.ui.componentFactory.names() )`. Besides button names, you can also use the dedicated separators for toolbar groups (`'|'`) and toolbar lines (`'-'`).
+* **{@link module:core/editor/editorconfig~ToolbarConfig#items `items`}** &ndash; An array of toolbar item names. Most of the components (buttons, dropdowns, etc.) that you can use as toolbar items are described in the {@link features/index Features} section. A full list is defined in {@link module:ui/componentfactory~ComponentFactory `editor.ui.componentFactory`} and can be listed using the following snippet: `Array.from( editor.ui.componentFactory.names() )`. Besides button names, you can also use the dedicated separators for toolbar groups (`'|'`) and toolbar lines (`'-'`).
 
-* **`removeItems`** &ndash; An array of toolbar item names. With this setting, you can change the default toolbar configuration without the need to define the entire list. You can specify a couple of buttons that you want to remove instead of specifying all the buttons you want to keep. If, after removing an item, the toolbar will have two or more consecutive separators (`'|'`), the duplicates will be removed automatically.
+* **{@link module:core/editor/editorconfig~ToolbarConfig#removeItems `removeItems`}** &ndash; An array of toolbar item names. With this setting, you can change the default toolbar configuration without the need to define the entire list. You can specify a couple of buttons that you want to remove instead of specifying all the buttons you want to keep. If, after removing an item, the toolbar will have two or more consecutive separators (`'|'`), the duplicates will be removed automatically.
 
-* **`shouldNotGroupWhenFull`** &ndash; When set to `true`, the toolbar will stop grouping items and let them wrap to the next line when there is not enough space to display them in a single row. This setting is `false` by default, which enables item grouping.
+* **{@link module:core/editor/editorconfig~ToolbarConfig#shouldNotGroupWhenFull `shouldNotGroupWhenFull`}** &ndash; When set to `true`, the toolbar will stop grouping items and let them wrap to the next line when there is not enough space to display them in a single row. This setting is `false` by default, which enables item grouping.
 
 The demo below presents the "regular" toolbar look with `shouldNotGroupWhenFull` set to `false`. If there are more toolbar items than can fit in the toolbar in the current display width, some items get hidden. You can access them by clicking the show more items button {@icon @ckeditor/ckeditor5-core/theme/icons/three-vertical-dots.svg Show more items}.
 
@@ -117,12 +122,18 @@ When you set `shouldNotGroupWhenFull` to `true`, by default the toolbar items ar
 toolbar: {
 	items: [
 		'undo', 'redo',
-		'|', 'heading',
-		'|', 'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor',
-		'|', 'bold', 'italic', 'strikethrough', 'subscript', 'superscript', 'code',
-		'|', 'link', 'uploadImage', 'blockQuote', 'codeBlock',
-		'|', 'alignment',
-		'|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
+		'|',
+		'heading',
+		'|',
+		'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor',
+		'|',
+		'bold', 'italic', 'strikethrough', 'subscript', 'superscript', 'code',
+		'|',
+		'link', 'uploadImage', 'blockQuote', 'codeBlock',
+		'|',
+		'alignment',
+		'|',
+		'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
 	],
 	shouldNotGroupWhenFull: true
 }
@@ -310,7 +321,7 @@ To access the block toolbar, you need to click the button with braille pattern d
 
 The icon {@icon @ckeditor/ckeditor5-core/theme/icons/drag-indicator.svg drag indicator} is also a handle to drag blocks of content around the editor. Click a heading in the demo above and drag it all the way down between the following paragraphs to see this functionality in action.
 
-The block toolbar complements the <!-- update to builder preset when ready-->balloon editor type where it falls short, for example when you must insert some content (like an image), but the selection is collapsed, so you cannot access the toolbar. It can, however, be added to any type of editor and configure accordingly (see below).
+The block toolbar complements the <!-- update to builder preset when ready-->[balloon editor type](https://ckeditor.com/builder?redirect=docs) where it falls short, for example when you must insert some content (like an image), but the selection is collapsed, so you cannot access the toolbar. It can, however, be added to any type of editor and configure accordingly (see below).
 
 See the <!-- update to builder preset when ready-->{@link examples/builds/balloon-block-editor balloon block editor example} page, too.
 

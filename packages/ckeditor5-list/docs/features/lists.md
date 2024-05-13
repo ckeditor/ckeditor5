@@ -78,55 +78,39 @@ The `List` plugin provides the {@link features/lists ordered (numbered) and unor
 
 ### List feature
 
-To add this feature to your editor, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:
-
-```
-npm install --save @ckeditor/ckeditor5-list
-```
-
-Then add the `List` plugin to your plugin list and the toolbar configuration:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { List } from '@ckeditor/ckeditor5-list';
+import { List } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ List, /* ... */ ],
-		toolbar: [ 'bulletedList', 'numberedList', /* ... */ ]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ List, /* ... */ ],
+	toolbar: [ 'bulletedList', 'numberedList', /* ... */ ]
+} )
+.then( /* ... */ );
 ```
 
 ### List properties
 
-To enable the list properties feature for ordered and unordered lists, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:
-
-```
-npm install --save @ckeditor/ckeditor5-list
-```
-
-Then add the `ListProperties` plugin to your plugin list and configure the toolbar.
+After {@link getting-started/quick-start installing the editor}, add `ListProperties` to your plugin list and toolbar configuration:
 
 To enable selected sub-features of the list properties, add their configuration to your editor. Set `true` for each feature you want to enable:
 
 ```js
-import { ListProperties } from '@ckeditor/ckeditor5-list';
+import { ListProperties } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ ListProperties, /* ... */ ],
-		toolbar: [ 'bulletedList', 'numberedList', /* ... */ ],
-		list: {
-			properties: {
-				styles: true,
-				startIndex: true,
-				reversed: true
-			}
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ ListProperties, /* ... */ ],
+	toolbar: [ 'bulletedList', 'numberedList', /* ... */ ],
+	list: {
+		properties: {
+			styles: true,
+			startIndex: true,
+			reversed: true
 		}
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+	}
+} )
+.then( /* ... */ );
 ```
 
 <info-box warning>
