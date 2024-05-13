@@ -103,8 +103,6 @@ export default class CodeBlockEditing extends Plugin {
 		const schema = editor.model.schema;
 		const model = editor.model;
 		const view = editor.editing.view;
-		const listEditing: ListEditing | null = editor.plugins.has( 'ListEditing' ) ?
-			editor.plugins.get( 'ListEditing' ) : null;
 
 		const normalizedLanguagesDefs = getNormalizedAndLocalizedLanguageDefinitions( editor );
 
@@ -133,28 +131,17 @@ export default class CodeBlockEditing extends Plugin {
 		schema.register( 'codeBlock', {
 			allowWhere: '$block',
 			allowChildren: '$text',
-			isBlock: true,
-			allowAttributes: [ 'language' ]
+			// `$inlineObject` inherits from `$text`, so it would be allowed by `codeBlock` element. This would allow elements like inline
+			// image inside a code block. This is an incorrect situation, as we want only text inside `codeBlock`.
+			disallowChildren: '$inlineObject',
+			allowAttributes: [ 'language' ],
+			allowAttributesOf: '$listItem',
+			isBlock: true
 		} );
 
-		// Allow all list* attributes on `codeBlock` (integration with DocumentList).
-		// Disallow all attributes on $text inside `codeBlock`.
-		schema.addAttributeCheck( ( context, attributeName ) => {
-			if (
-				context.endsWith( 'codeBlock' ) &&
-				listEditing && listEditing.getListAttributeNames().includes( attributeName )
-			) {
-				return true;
-			}
-
+		// Disallow all attributes on `$text` inside `codeBlock`.
+		schema.addAttributeCheck( ( context ) => {
 			if ( context.endsWith( 'codeBlock $text' ) ) {
-				return false;
-			}
-		} );
-
-		// Disallow object elements inside `codeBlock`. See #9567.
-		editor.model.schema.addChildCheck( ( context, childDefinition ) => {
-			if ( context.endsWith( 'codeBlock' ) && childDefinition.isObject ) {
 				return false;
 			}
 		} );

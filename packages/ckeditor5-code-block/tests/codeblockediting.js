@@ -129,17 +129,15 @@ describe( 'CodeBlockEditing', () => {
 		expect( model.schema.checkChild( [ '$root', 'codeBlock' ], 'codeBlock' ) ).to.be.false;
 	} );
 
-	it( 'disallows object elements in codeBlock', () => {
-		// Fake "inline-widget".
-		model.schema.register( 'inline-widget', {
-			inheritAllFrom: '$block',
-			// Allow to be a child of the `codeBlock` element.
-			allowIn: 'codeBlock',
-			// And mark as an object.
-			isObject: true
+	it( 'disallows $inlineObject', () => {
+		// `$inlineObject` inherits from `$text`, so it would be allowed by `codeBlock` element. This would allow elements like inline
+		// image inside a code block. This is an incorrect situation, as we want only text inside `codeBlock`.
+		model.schema.register( 'inlineWidget', {
+			inheritAllFrom: '$inlineObject'
 		} );
 
-		expect( model.schema.checkChild( [ '$root', 'codeBlock' ], 'inline-widget' ) ).to.be.false;
+		expect( model.schema.checkChild( [ '$root', 'codeBlock' ], '$inlineObject' ) ).to.be.false;
+		expect( model.schema.checkChild( [ '$root', 'codeBlock' ], 'inlineWidget' ) ).to.be.false;
 	} );
 
 	it( 'allows only for $text in codeBlock', () => {
