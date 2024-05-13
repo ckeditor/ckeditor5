@@ -1,7 +1,7 @@
 ---
-category: installation
+category: setup
 meta-title: Getting and setting data | CKEditor 5 documentation
-order: 15
+order: 10
 ---
 
 {@snippet installation/getting-and-setting-data/build-autosave-source}

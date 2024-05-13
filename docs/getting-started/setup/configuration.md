@@ -1,14 +1,9 @@
 ---
-# Scope:
-# * Introduction to setting configurations.
-# * Introduction to the top and must-know configurations.
-# * Point where to find the list of configuration options.
-
 category: setup
-menu-title: Configuration
+menu-title: Configuring features
 meta-title: Configuration | CKEditor 5 documentation
 meta-description: Learn how to configure CKEditor 5. 
-order: 10
+order: 20
 modified_at: 2024-05-06
 ---
 
@@ -85,18 +80,14 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 
 See {@link module:core/editor/editorconfig~EditorConfig} to learn about all available configuration options. Also, check out individual {@link features/index feature guides}, listing various configuration options available per feature.
 
-## Editor toolbars
-
-{@img assets/img/full-toolbar.png 938 Sample CKEditor&nbsp;5 toolbar.} 
-
-CKEditor&nbsp;5 comes with a flexible, fully configurable toolbar which lets the integrators set the UI buttons and dropdowns for various features. A simple, basic setup is shown in the snippet above. However, the toolbar configuration can get really advanced, and for the best UX, there are two of these: the {@link getting-started/setup/toolbar editor toolbar} and the {@link getting-started/setup/toolbar#block-toolbar block toolbar}.
-
-Some features also sport their own dedicated toolbars, like the {@link features/images-overview#image-contextual-toolbar image toolbar} or the {@link features/tables#toolbars table toolbars}. You will find all information about these in the {@link features/index respective feature guides}.
-
-## Setting the editor UI language 
-
-CKEditor&nbsp;5 currently supports more than 40 languages, while many more community translations are also available. This also includes RTL and CJK languages. The translation packs are available both as npm packages and from CDN. Refer to the {@link getting-started/setup/ui-language UI language} guide for details.
-
+<!-- If this section to be removed - it is linked in the following places:
+features/remove-format.html
+41.3.1/framework/architecture/plugins.html
+getting-started/installation/react/react.html
+getting-started/legacy/installation-methods/quick-start.html
+getting-started/legacy/legacy-integrations/react.html
+getting-started/setup/toolbar.html:
+-->
 ## Removing features
 
 In some cases, you may want to have different editor setups in your application, all based on the same build. For that purpose, you need to control the plugins available in the editor at runtime.

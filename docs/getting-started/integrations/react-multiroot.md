@@ -82,7 +82,7 @@ export default App;
 The `useMultiRootEditor` hook supports the following properties:
 
 * `editor: MultiRootEditor` (required) &ndash; The {@link module:editor-multi-root/multirooteditor~MultiRootEditor `MultiRootEditor`} constructor to use.
-* `data: Object` &ndash; The initial data for the created editor. See the {@link getting-started/getting-and-setting-data Getting and setting data} guide.
+* `data: Object` &ndash; The initial data for the created editor. See the {@link getting-started/setup/getting-and-setting-data Getting and setting data} guide.
 * `rootsAttributes: Object` &ndash; The initial roots attributes for the created editor.
 * `config: Object` &ndash; The editor configuration. See the {@link getting-started/setup/configuration Configuration} guide.
 * `disabled: Boolean` &ndash; The {@link module:editor-multi-root/multirooteditor~MultiRootEditor `MultiRootEditor`} is being switched to read-only mode if the property is set to `true`.

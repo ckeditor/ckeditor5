@@ -1,6 +1,6 @@
 ---
 category: setup
-order: 40
+order: 50
 meta-title: Managing the "Powered by CKEditor" logo | CKEditor 5 Documentation
 meta-description: Managing the "Powered by CKEditor" logo
 ---

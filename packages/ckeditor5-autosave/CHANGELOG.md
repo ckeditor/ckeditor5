@@ -104,4 +104,4 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Other changes
 
-* The first implementation of the autosave plugin. Check out the [demo](https://ckeditor.com/docs/ckeditor5/latest/getting-started/installation/getting-and-setting-data.html#autosave-feature).
+* The first implementation of the autosave plugin. Check out the [demo](https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/getting-and-setting-data.html#autosave-feature).
