@@ -659,6 +659,8 @@ export default abstract class Editor extends ObservableMixin() {
 	/**
 	 * Performs basic license key check. Enables the editor's read-only mode if the license key's validation period has expired
 	 * or the license key format is incorrect.
+	 *
+	 * @internal
 	 */
 	private _verifyLicenseKey() {
 		const licenseKey = this.config.get( 'licenseKey' );
@@ -736,6 +738,20 @@ export default abstract class Editor extends ObservableMixin() {
 			} );
 		}
 
+		if ( licensePayload.licenseType === 'trial' && licensePayload.exp * 1000 < Date.now() ) {
+			blockTrialEditor( this );
+
+			return;
+		}
+
+		if ( licensePayload.licenseType === 'trial' ) {
+			const timerId = setTimeout( () => blockTrialEditor( this ), 600000 );
+
+			this.on( 'destroy', () => {
+				clearTimeout( timerId );
+			} );
+		}
+
 		if ( licensePayload.usageEndpoint ) {
 			this.once<EditorReadyEvent>( 'ready', () => {
 				const telemetryData = this._getTelemetryData();
@@ -759,6 +775,15 @@ export default abstract class Editor extends ObservableMixin() {
 
 			console.info(
 				'You are using the development version of CKEditor 5 with limited usage. ' +
+				'Make sure you will not use it in the production environment.'
+			);
+		}
+
+		function blockTrialEditor( editor: Editor ) {
+			blockEditor( editor, 'trialLimit' );
+
+			console.info(
+				'You are using the trial version of CKEditor 5 plugin with limited usage. ' +
 				'Make sure you will not use it in the production environment.'
 			);
 		}
@@ -813,6 +838,9 @@ export default abstract class Editor extends ObservableMixin() {
 		}, 0 );
 	}
 
+	/**
+	 * @internal
+	 */
 	private async _sendUsageRequest(
 		endpoint: string,
 		licenseKey: string,
