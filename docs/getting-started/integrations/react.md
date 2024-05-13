@@ -178,7 +178,7 @@ import { useCallback, useState } from 'react';
 import { DecoupledEditor, Bold, Essentials, Italic, Paragraph } from 'ckeditor5';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 
-import 'ckeditor5/dist/index.css';
+import 'ckeditor5/index.css';
 
 function App() {
 	const [ editorToolbarRef, setEditorToolbarRef ] = useState( null );
@@ -199,7 +199,7 @@ function App() {
 							editorToolbarRef.appendChild( editor.ui.view.toolbar.element );
 						}}
 						editor={ DecoupledEditor }
-						data='<p>Hello from CKEditor 5's decoupled editor!</p>'
+						data='<p>Hello from CKEditor 5 decoupled editor!</p>'
 						config={ {
 							plugins: [ Bold, Italic, Paragraph, Essentials ],
 							toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
