@@ -78,6 +78,12 @@ export default class Input extends Plugin {
 				data.preventDefault();
 			}
 
+			// Flush queue on the next beforeinput event because it could happen
+			// that the mutation observer does not notice the DOM change in time.
+			if ( env.isAndroid && view.document.isComposing ) {
+				this._flushQueue( 'next beforeinput' );
+			}
+
 			const { text, selection: viewSelection, resultRange: viewResultRange } = data;
 
 			let modelRanges;
@@ -152,7 +158,6 @@ export default class Input extends Plugin {
 				// @if CK_DEBUG_TYPING // 	);
 				// @if CK_DEBUG_TYPING // }
 
-				// TODO make sure that model mapped position is valid or it's a fallback to the last position (out of bounds)
 				this._pushQueue( commandData );
 				this._flushQueueDebounced();
 			} else {
@@ -169,6 +174,7 @@ export default class Input extends Plugin {
 			}
 		} );
 
+		// Delete selected content on composition start.
 		if ( env.isAndroid ) {
 			// On Android with English keyboard, the composition starts just by putting caret
 			// at the word end or by selecting a table column. This is not a real composition started.
@@ -190,6 +196,36 @@ export default class Input extends Plugin {
 
 				deleteSelectionContent( model, insertTextCommand );
 			} );
+		} else {
+			// Note: The priority must precede the CompositionObserver handler to call it before
+			// the renderer is blocked, because we want to render this change.
+			this.listenTo<ViewDocumentCompositionStartEvent>( view.document, 'compositionstart', () => {
+				if ( modelSelection.isCollapsed ) {
+					return;
+				}
+
+				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+				// @if CK_DEBUG_TYPING // 	const firstPositionPath = modelSelection.getFirstPosition()!.path;
+				// @if CK_DEBUG_TYPING // 	const lastPositionPath = modelSelection.getLastPosition()!.path;
+
+				// @if CK_DEBUG_TYPING // 	console.log( '%c[Input]%c Composition start%c -> model.deleteContent() ' +
+				// @if CK_DEBUG_TYPING // 		`[${ firstPositionPath }]-[${ lastPositionPath }]`,
+				// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', 'font-weight: bold', '',
+				// @if CK_DEBUG_TYPING // 	);
+				// @if CK_DEBUG_TYPING // }
+
+				deleteSelectionContent( model, insertTextCommand );
+			} );
+		}
+
+		// Apply composed changes to the model.
+		if ( env.isAndroid ) {
+			// Apply changes to the model as they are applied to the DOM by the browser.
+			// On beforeinput event, the DOM is not yet modified. We wait for detected mutations to apply model changes.
+			this.listenTo<ViewDocumentMutationsEvent>( view.document, 'mutations', () => this._flushQueue( 'mutations' ) );
+
+			// Make sure that all changes are applied to the model before the end of composition.
+			this.listenTo<ViewDocumentCompositionEndEvent>( view.document, 'compositionend', () => this._flushQueue( 'composition end' ) );
 
 			// Trigger mutations check after the composition completes to fix all DOM changes that got ignored during composition.
 			this.listenTo<ViewDocumentCompositionEndEvent>( view.document, 'compositionend', () => {
@@ -225,32 +261,6 @@ export default class Input extends Plugin {
 					// @if CK_DEBUG_TYPING // }
 				}
 			}, { priority: 'lowest' } );
-		} else {
-			// Note: The priority must precede the CompositionObserver handler to call it before
-			// the renderer is blocked, because we want to render this change.
-			this.listenTo<ViewDocumentCompositionStartEvent>( view.document, 'compositionstart', () => {
-				if ( modelSelection.isCollapsed ) {
-					return;
-				}
-
-				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-				// @if CK_DEBUG_TYPING // 	const firstPositionPath = modelSelection.getFirstPosition()!.path;
-				// @if CK_DEBUG_TYPING // 	const lastPositionPath = modelSelection.getLastPosition()!.path;
-
-				// @if CK_DEBUG_TYPING // 	console.log( '%c[Input]%c Composition start%c -> model.deleteContent() ' +
-				// @if CK_DEBUG_TYPING // 		`[${ firstPositionPath }]-[${ lastPositionPath }]`,
-				// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', 'font-weight: bold', '',
-				// @if CK_DEBUG_TYPING // 	);
-				// @if CK_DEBUG_TYPING // }
-
-				deleteSelectionContent( model, insertTextCommand );
-			} );
-		}
-
-		// Apply changes to the model as they are applied to the DOM by the browser.
-		// On beforeinput event, the DOM is not yet modified. We wait for detected mutations to apply model changes.
-		if ( env.isAndroid ) {
-			this.listenTo<ViewDocumentMutationsEvent>( view.document, 'mutations', () => this._flushQueue( 'mutations' ) );
 		}
 	}
 

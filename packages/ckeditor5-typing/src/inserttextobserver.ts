@@ -91,37 +91,39 @@ export default class InsertTextObserver extends Observer {
 			}
 		} );
 
-		// Note: The priority must be lower than the CompositionObserver handler to call it after the renderer is unblocked.
-		// This is important for view to DOM position mapping.
-		// This causes the effect of first remove composed DOM and then reapply it after model modification.
-		viewDocument.on<ViewDocumentCompositionEndEvent>( 'compositionend', ( evt, { data, domEvent } ) => {
-			// On Android composition events are immediately applied to the model.
-			// On non-Android the model is updated only on composition end.
-			// On Android we can't rely on composition start/end to update model.
-			if ( !this.isEnabled || env.isAndroid ) {
-				return;
-			}
+		// On Android composition events are immediately applied to the model.
+		// On non-Android the model is updated only on composition end.
+		// On Android we can't rely on composition start/end to update model.
+		if ( !env.isAndroid ) {
+			// Note: The priority must be lower than the CompositionObserver handler to call it after the renderer is unblocked.
+			// This is important for view to DOM position mapping.
+			// This causes the effect of first remove composed DOM and then reapply it after model modification.
+			viewDocument.on<ViewDocumentCompositionEndEvent>( 'compositionend', ( evt, { data, domEvent } ) => {
+				if ( !this.isEnabled ) {
+					return;
+				}
 
-			// In case of aborted composition.
-			if ( !data ) {
-				return;
-			}
+				// In case of aborted composition.
+				if ( !data ) {
+					return;
+				}
 
-			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-			// @if CK_DEBUG_TYPING // 	console.log( `%c[InsertTextObserver]%c Fire insertText event, %c${ JSON.stringify( data ) }`,
-			// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', 'font-weight: bold', 'color: blue'
-			// @if CK_DEBUG_TYPING // 	);
-			// @if CK_DEBUG_TYPING // }
+				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+				// @if CK_DEBUG_TYPING // 	console.log( `%c[InsertTextObserver]%c Fire insertText event, %c${ JSON.stringify( data ) }`,
+				// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', 'font-weight: bold', 'color: blue'
+				// @if CK_DEBUG_TYPING // 	);
+				// @if CK_DEBUG_TYPING // }
 
-			// How do we know where to insert the composed text?
-			// 1. The SelectionObserver is blocked and the view is not updated with the composition changes.
-			// 2. The last moment before it's locked is the `compositionstart` event.
-			// 3. The `SelectionObserver` is listening for `compositionstart` event and immediately converts
-			//    the selection. Handles this at the lowest priority so after the rendering is blocked.
-			viewDocument.fire( 'insertText', new DomEventData( view, domEvent, {
-				text: data
-			} ) );
-		}, { priority: 'lowest' } );
+				// How do we know where to insert the composed text?
+				// 1. The SelectionObserver is blocked and the view is not updated with the composition changes.
+				// 2. The last moment before it's locked is the `compositionstart` event.
+				// 3. The `SelectionObserver` is listening for `compositionstart` event and immediately converts
+				//    the selection. Handles this at the lowest priority so after the rendering is blocked.
+				viewDocument.fire( 'insertText', new DomEventData( view, domEvent, {
+					text: data
+				} ) );
+			}, { priority: 'lowest' } );
+		}
 	}
 
 	/**
