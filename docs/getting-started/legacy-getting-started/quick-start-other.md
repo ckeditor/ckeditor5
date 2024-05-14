@@ -157,10 +157,6 @@ Then, you can add missing dependencies (that is, packages you want to add to you
 npm install @ckeditor/ckeditor5-alignment
 ```
 
-<info-box hint>
-	Check out our dedicated guide if you want to use JavaScript packages or learn more about {@link getting-started/setup/installing-plugins installing plugins}.
-</info-box>
-
 ### Updating build configuration
 
 If you installed or uninstalled dependencies, you need to modify the `src/ckeditor.ts` file too. At this stage, you should have a complete list of plugins for the bundle. You can also change the editor creator and specify the default editor configuration. For instance, your webpack entry file (`src/ckeditor.ts`) may look like this:
@@ -374,7 +370,7 @@ module.exports = {
 
 ### Creating an editor
 
-You can now install some of the CKEditor&nbsp;5 Framework packages which will allow you to initialize a simple rich-text editor. Keep in mind, however, that all packages (excluding `@ckeditor/ckeditor5-dev-*`) {@link getting-started/setup/installing-plugins#requirements must have the same version as the base editor package}.
+You can now install some of the CKEditor&nbsp;5 Framework packages which will allow you to initialize a simple rich-text editor. Keep in mind, however, that all packages (excluding `@ckeditor/ckeditor5-dev-*`) must have the same version as the base editor package.
 
 You can start with the {@link examples/builds/classic-editor classic editor} with a small set of features.
 
@@ -397,7 +393,7 @@ Based on these packages you can create a simple application.
 <info-box warning>
 	In this guide, the editor class is used directly, so you use `@ckeditor/ckeditor5-editor-classic` instead of `@ckeditor/ckeditor5-build-classic`.
 
-	No {@link getting-started/legacy-getting-started/predefined-builds predefined editor builds} are used, because adding new plugins to these requires rebuilding them anyway. This can be done by {@link getting-started/setup/installing-plugins customizing a build} or by including the CKEditor&nbsp;5 source into your application (like in this guide).
+	No {@link getting-started/legacy-getting-started/predefined-builds predefined editor builds} are used, because adding new plugins to these requires rebuilding them anyway.
 </info-box>
 
 ```js
