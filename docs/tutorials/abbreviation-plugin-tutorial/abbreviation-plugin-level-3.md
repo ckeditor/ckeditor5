@@ -19,7 +19,7 @@ If you want to see the final product of this tutorial before you plunge in, chec
 First, we make our plugin accessible for users who rely on keyboards for navigation. We want to ensure that pressing <kbd>Tab</kbd> and <kbd>Shift</kbd> + <kbd>Tab</kbd> will move focus around in the form view, and pressing `esc` will close it.
 
 <info-box>
-	To improve the accessibility of the plugin, it is important to understand how keystroke and focus management works in the CKEditor&nbsp;5 framework. We recommend you {@link framework/architecture/ui-library#keystrokes-and-focus-management read up on the basics}, or do a {@link framework/deep-dive/focus-tracking deep dive into focus tracking}.
+	To improve the accessibility of the plugin, it is important to understand how keystroke and focus management work in the CKEditor&nbsp;5 framework. We recommend you {@link framework/architecture/ui-library#keystrokes-and-focus-management read up on the basics}, or do a {@link framework/deep-dive/focus-tracking deep dive into focus tracking}.
 </info-box>
 
 We have some ready-to-use options to help us out &ndash; the {@link framework/deep-dive/focus-tracking#using-the-keystrokehandler-class KeystrokeHandler}, {@link framework/deep-dive/focus-tracking#using-the-focustracker-class FocusTracker}, and {@link framework/deep-dive/focus-tracking#using-the-focuscycler-class FocusCycler} helper classes.
