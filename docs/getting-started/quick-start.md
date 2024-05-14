@@ -98,6 +98,8 @@ Then, you need to attach the script with the JavaScript code. To simplify import
 		"imports": {
 			"ckeditor5": "<CDN_LINK>/ckeditor5/index.min.js",
 			"ckeditor5/": "<CDN_LINK>/ckeditor5/"
+			"ckeditor5-premium-features": "<CDN_LINK>/ckeditor5-premium-features/index.min.js",
+			"ckeditor5-premium-features/": "<CDN_LINK>/ckeditor5-premium-features/"
 		}
 	}
 </script>
