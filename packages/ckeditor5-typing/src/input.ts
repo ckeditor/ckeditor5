@@ -42,7 +42,7 @@ export default class Input extends Plugin {
 	private _flushQueueDebounced = debounce( () => this._flushQueue( 'timeout' ), 50 );
 
 	/**
-	 * TODO
+	 * A set of model elements. The composition was in those elements. It's used for mutations check after composition end.
 	 */
 	private _compositionElements = new Set<Element>();
 
@@ -94,7 +94,6 @@ export default class Input extends Plugin {
 
 			let insertText = text;
 
-			// TODO this needs a better implementation
 			// Typing in English on Android is firing composition events for the whole typed word.
 			// We need to check the target range text to only apply the difference.
 			if ( env.isAndroid ) {
@@ -192,7 +191,7 @@ export default class Input extends Plugin {
 				deleteSelectionContent( model, insertTextCommand );
 			} );
 
-			// TODO
+			// Trigger mutations check after the composition completes to fix all DOM changes that got ignored during composition.
 			this.listenTo<ViewDocumentCompositionEndEvent>( view.document, 'compositionend', () => {
 				const mutations: Array<MutationData> = [];
 
@@ -270,7 +269,7 @@ export default class Input extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Push next insertText command data to the queue.
 	 */
 	private _pushQueue( commandData: InsertTextCommandOptions ): void {
 		const commandLiveData: InsertTextCommandLiveOptions = {
@@ -289,7 +288,7 @@ export default class Input extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Shift the first item from the insertText command data queue.
 	 */
 	private _shiftQueue(): InsertTextCommandOptions {
 		const commandLiveData = this._queue.shift()!;
@@ -368,6 +367,9 @@ export default class Input extends Plugin {
 	}
 }
 
+/**
+ * Deletes the content selected by the document selection at the start of composition.
+ */
 function deleteSelectionContent( model: Model, insertTextCommand: InsertTextCommand ): void {
 	// By relying on the state of the input command we allow disabling the entire input easily
 	// by just disabling the input command. We could’ve used here the delete command but that
@@ -390,7 +392,7 @@ function deleteSelectionContent( model: Model, insertTextCommand: InsertTextComm
 }
 
 /**
- * TODO
+ * Detaches a LiveRange and returns the static range from it.
  */
 function detachLiveRange( liveRange?: LiveRange ): Range | null {
 	if ( !liveRange ) {
@@ -409,12 +411,10 @@ function detachLiveRange( liveRange?: LiveRange ): Range | null {
 }
 
 /**
- * TODO
+ * The insertText command data stored as LiveRange-s.
  */
 type InsertTextCommandLiveOptions = {
 	text?: string;
-
 	selectionRanges?: Array<LiveRange>;
-
 	resultRange?: LiveRange;
 };
