@@ -250,7 +250,7 @@ ClassicEditor
 	} );
 ```
 
-Rebuild your project, refresh the browser and you should see that the the `AbbreviationEditing` and `AbbreviationUI` plugins were loaded.
+Rebuild your project, refresh the browser and you should see that the `AbbreviationEditing` and `AbbreviationUI` plugins were loaded.
 SCREENSHOT
 
 ## The model and the view layers
