@@ -346,7 +346,7 @@ Corresponds to the {@link module:core/editor/editor~Editor#event:destroy `destro
 
 ## How to?
 
-### Using the Document editor build
+### Using the Document editor type
 
 If you use the {@link framework/document-editor Document editor} in your application, you need to {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create manually add the editor toolbar to the DOM}.
 

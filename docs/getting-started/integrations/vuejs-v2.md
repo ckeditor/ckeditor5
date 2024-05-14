@@ -15,7 +15,7 @@ order: 40
 	</a>
 </p>
 
-<info-box type="warning">
+<info-box warning>
 	**Important**: This guide is about the CKEditor&nbsp;5 integration with Vue.js 2.x. To learn more about the integration with Vue.js 3+, check out the {@link getting-started/integrations/vuejs-v3 "Rich text editor component for Vue.js 3+"} guide.
 </info-box>
 
@@ -344,7 +344,7 @@ Corresponds to the {@link module:core/editor/editor~Editor#event:destroy `destro
 
 ## How to?
 
-### Using the Document editor build
+### Using the Document editor type
 
 If you use the {@link framework/document-editor Document editor} in your application, you need to {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create manually add the editor toolbar to the DOM}.
 
