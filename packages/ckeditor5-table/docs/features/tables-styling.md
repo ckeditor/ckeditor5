@@ -54,10 +54,6 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 .then( /* ... */ );
 ```
 
-<info-box info>
-	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
-</info-box>
-
 ## Configuring styling tools
 
 Table and cell styling tools let you create tables with colorful backgrounds and borders. These colors can be picked using color palettes in the table properties {@icon @ckeditor/ckeditor5-table/theme/icons/table-properties.svg Table properties} and cell properties {@icon @ckeditor/ckeditor5-table/theme/icons/table-cell-properties.svg Cell properties} pop-ups. To help users choose the right colors for the content, you can pre-configure such color palettes, like in the editor below:

@@ -343,7 +343,7 @@ Note: In CKEditor&nbsp;5, the number of options was reduced on purpose. Configur
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-extraPlugins"><code>extraPlugins</code></a></td>
-			<td>Learn how to {@link getting-started/setup/installing-plugins install plugins in CKEditor&nbsp;5}.</td>
+			<td>Learn how to {@link getting-started/setup/configuration install plugins in CKEditor&nbsp;5}.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-fileTools_defaultFileName"><code>fileTools_defaultFileName</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-fileTools_requestHeaders"><code>fileTools_requestHeaders</code></a></td>

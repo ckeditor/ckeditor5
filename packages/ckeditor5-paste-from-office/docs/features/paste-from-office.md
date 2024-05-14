@@ -77,10 +77,6 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 .then( /* ... */ );
 ```
 
-<info-box info>
-	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
-</info-box>
-
 ## Known issues
 
 If the pasted document contains both images and styled text (like headings), images are sometimes not pasted properly. Unfortunately, for some operating systems, browsers, and Word versions the image data is not available in the clipboard in this case.

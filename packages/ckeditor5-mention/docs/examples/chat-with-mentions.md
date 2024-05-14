@@ -16,7 +16,7 @@ Learn how to {@link features/mentions#configuration configure mention feeds} in 
 
 ## Editor example configuration
 
-The following code will let you run the editor inside a chat application like in the example above. See the {@link getting-started/setup/installing-plugins installing plugins guide} to learn more.
+The following code will let you run the editor inside a chat application like in the example above.
 
 <details>
 <summary>View editor configuration script</summary>

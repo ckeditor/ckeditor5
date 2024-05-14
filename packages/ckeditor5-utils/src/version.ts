@@ -54,8 +54,6 @@ if ( globalThis.CKEDITOR_VERSION ) {
 	 * Adding plugins to a build is done by taking the source version of this build (so, before it was built with webpack)
 	 * and adding plugins there. In this situation, webpack will know that it only needs to load each plugin once.
 	 *
-	 * Read more in the {@glink getting-started/setup/installing-plugins Installing plugins} guide.
-	 *
 	 * # Confused an editor build with an editor implementation
 	 *
 	 * This scenario is very similar to the previous one, but has a different origin.

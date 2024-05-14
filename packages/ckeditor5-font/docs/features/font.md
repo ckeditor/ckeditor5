@@ -58,10 +58,6 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 .then( /* ... */ );
 ```
 
-<info-box info>
-	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
-</info-box>
-
 ## Configuring the font family feature
 
 You can configure which font family options are supported by the WYSIWYG editor. Use the {@link module:font/fontconfig~FontFamilyConfig#options `config.fontFamily.options`} configuration option to do so.

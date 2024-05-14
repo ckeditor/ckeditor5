@@ -44,10 +44,6 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 .then( /* ... */ );
 ```
 
-<info-box info>
-	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
-</info-box>
-
 ## Custom link attributes (decorators)
 
 By default, all links created in the editor have the `href="..."` attribute in the {@link getting-started/setup/getting-and-setting-data#getting-the-editor-data-with-getdata editor data}. If you want your links to have additional link attributes, {@link module:link/linkconfig~LinkConfig#decorators link decorators} provide an easy way to configure and manage them.

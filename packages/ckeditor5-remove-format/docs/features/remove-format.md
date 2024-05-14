@@ -33,10 +33,6 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 .then( /* ... */ );
 ```
 
-<info-box info>
-	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
-</info-box>
-
 ## Configuring the remove format feature
 
 This feature has no integration–level configuration. Once enabled, it works out–of–the–box with all {@link features/index core editor features}.

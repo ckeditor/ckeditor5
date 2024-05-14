@@ -66,10 +66,6 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 .then( /* ... */ );
 ```
 
-<info-box info>
-	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
-</info-box>
-
 ## Configuration
 
 By default, enabling the {@link module:html-support/generalhtmlsupport~GeneralHtmlSupport} plugin does not enable support for any given element. You need to configure the elements the user wants to use via the {@link module:core/editor/editorconfig~EditorConfig#htmlSupport `config.htmlSupport`} option:

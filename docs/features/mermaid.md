@@ -42,7 +42,3 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 } )
 .then( /* ... */ );
 ```
-
-<info-box info>
-	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
-</info-box>

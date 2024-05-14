@@ -350,10 +350,6 @@ BalloonEditor.create( document.querySelector( '#editor' ), {
 .then( /* ... */ );
 ```
 
-<info-box info>
-	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
-</info-box>
-
 ### Block toolbar configuration
 
 The content of the block toolbar can be defined using the {@link module:core/editor/editorconfig~EditorConfig#blockToolbar} configuration. It is similar to the regular toolbar UI items list.

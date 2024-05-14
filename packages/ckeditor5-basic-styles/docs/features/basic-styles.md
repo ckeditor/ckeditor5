@@ -82,10 +82,6 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 .then( /* ... */ );
 ```
 
-<info-box info>
-	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
-</info-box>
-
 ## Related features
 
 Check out also these CKEditor&nbsp;5 features to gain better control over your content style and format:
