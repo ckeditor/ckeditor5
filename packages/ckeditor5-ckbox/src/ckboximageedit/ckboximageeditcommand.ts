@@ -234,6 +234,13 @@ export default class CKBoxImageEditCommand extends Command {
 
 		this.editor.editing.view.focus();
 
+		/**
+		 * See https://github.com/ckeditor/ckeditor5/issues/16153#top
+		 */
+		setTimeout( () => {
+			this.editor.ui.update();
+		} );
+
 		this.refresh();
 	}
 
