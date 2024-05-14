@@ -1,22 +1,17 @@
 ---
-# Scope:
-# * Introduction to setting configurations.
-# * Introduction to the top and must-know configurations.
-# * Point where to find the list of configuration options.
-
 category: setup
-menu-title: Configuration
-meta-title: Configuration | CKEditor 5 documentation
+menu-title: Configuring features
+meta-title: Configuring editor features | CKEditor 5 documentation
 meta-description: Learn how to configure CKEditor 5. 
-order: 10
+order: 20
 modified_at: 2024-05-06
 ---
 
-# Configuring CKEditor&nbsp;5
+# Configuring CKEditor&nbsp;5 features
 
 ## Adding features
 
-All the features of CKEditor&nbsp;5 are implemented by plugins. You can read more about them in the {@link framework/architecture/plugins plugins} guide. To add more features and customise your builds, you {@link getting-started/setup/installing-plugins install plugins} by importing them.
+All the {@link features/index features of CKEditor&nbsp;5} are implemented by plugins. You add plugins by importing them from the main CKEditor&nbsp;5 package, named `ckeditor5`.
 
 Listed below is an example configuration adding the {@link features/indent block indentation} feature.
 
@@ -31,13 +26,43 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 .then( /* ... */ );
 ```
 
-Note that some features may require more than one plugin to run. You will find the plugin-per-feature listing in the {@link framework/architecture/plugins#plugins-and-html-output Plugins and HTML output} guide.
+Note that some features may require more than one plugin to run, as shown above. This granular approach lets the integrators adjust available features to their specific needs. It is done during the setup and [Builder](https://ckeditor.com/builder?redirect=docs) is the easiest way to choose all needed features.
+
+### Adding premium features
+
+CKEditor&nbsp;5 premium features are imported in the same way. However, the have their own package, named `ckeditor5-premium-features`, to import from. These also {@link getting-started/setup/license-key-and-activation require a license}. Please see an example below, adding the PDF export feature and configuring it.
+
+```js
+import { ClassicEditor } from 'ckeditor5';
+import { ExportPdf } from 'ckeditor5-premium-features';
+
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ ExportPdf, /* ... */ ],
+	toolbar: [ 'exportPdf', '|', /* ... */ ],
+	exportPdf: {
+		tokenUrl: 'https://example.com/cs-token-endpoint',
+		stylesheets: [
+			'./path/to/fonts.css',
+			'EDITOR_STYLES',
+			'./path/to/style.css'
+		],
+		fileName: 'my-file.pdf',
+		converterOptions: {
+			format: 'A4',
+			margin_top: '20mm',
+			margin_bottom: '20mm',
+			margin_right: '12mm',
+			margin_left: '12mm',
+			page_orientation: 'portrait'
+		}
+	}
+} )
+.then( /* ... */ );
+```
 
 ## Configuring editor settings
 
-When integrating an editor into your application, you can customize its features by passing a JavaScript object with configuration options to the {@link module:core/editor/editor~Editor.create `create()`} method. These settings, defined in the {@link module:core/editor/editor~Editor.create `EditorConfig`}, allow for extensive customization of the editor's functionality. Remember that customization depends on the editor setup and plugins loaded.
-
-The available options may require loading plugins first &ndash; this is done during the setup and [Builder](https://ckeditor.com/builder?redirect=docs) is the easiest way to choose all needed features. The sample snippet below shows configuration of the toolbar, the headers feature and font family and color picker settings:
+When integrating an editor into your application, you can customize its features by passing a JavaScript object with configuration options to the {@link module:core/editor/editor~Editor.create `create()`} method. These settings, defined in the {@link module:core/editor/editor~Editor.create `EditorConfig`}, allow for extensive customization of the editor's functionality. Remember that customization depends on the editor setup and plugins loaded. The sample snippet below shows configuration of the toolbar, the headers feature and font family and color picker settings:
 
 ```js
 import { ClassicEditor, Heading, BlockQuote, Bold, Italic, Font, Link, List } from 'ckeditor5';
@@ -84,18 +109,6 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 ```
 
 See {@link module:core/editor/editorconfig~EditorConfig} to learn about all available configuration options. Also, check out individual {@link features/index feature guides}, listing various configuration options available per feature.
-
-## Editor toolbars
-
-{@img assets/img/full-toolbar.png 938 Sample CKEditor&nbsp;5 toolbar.} 
-
-CKEditor&nbsp;5 comes with a flexible, fully configurable toolbar which lets the integrators set the UI buttons and dropdowns for various features. A simple, basic setup is shown in the snippet above. However, the toolbar configuration can get really advanced, and for the best UX, there are two of these: the {@link getting-started/setup/toolbar editor toolbar} and the {@link getting-started/setup/toolbar#block-toolbar block toolbar}.
-
-Some features also sport their own dedicated toolbars, like the {@link features/images-overview#image-contextual-toolbar image toolbar} or the {@link features/tables#toolbars table toolbars}. You will find all information about these in the {@link features/index respective feature guides}.
-
-## Setting the editor UI language 
-
-CKEditor&nbsp;5 currently supports more than 40 languages, while many more community translations are also available. This also includes RTL and CJK languages. The translation packs are available both as npm packages and from CDN. Refer to the {@link getting-started/setup/ui-language UI language} guide for details.
 
 ## Removing features
 

@@ -331,13 +331,7 @@ See the <!-- update to builder preset when ready-->{@link examples/builds/balloo
 	Remember to add relevant features to the editor configuration first. The block toolbar provides a space for the buttons, but it does not bring the actual features. For example, the `heading1` button will not work if there is no {@link features/headings Headings} feature in the editor.
 </info-box>
 
-To add this feature to your editor install the [`@ckeditor/ckeditor5-ui`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui) package:
-
-```bash
-npm install --save @ckeditor/ckeditor5-ui
-```
-
-Add the `BlockToolbar` to your plugin list and configure the feature using the `blockToolbar` property:
+To add this feature to your editor, add the `BlockToolbar` to your plugin list and configure the feature using the `blockToolbar` property:
 
 ```js
 import { BlockToolbar, HeadingButtonsUI, ParagraphButtonUI } from 'ckeditor5';
