@@ -98,7 +98,7 @@ export default class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 	 * A set of default {@link module:utils/dom/position~PositioningFunction positioning functions} used by the `TooltipManager`
 	 * to pin tooltips in different positions.
 	 */
-	public static defaultBalloonPositions = BalloonPanelView.generatePositions( {
+	public static defaultBalloonPositions = /* #__PURE__ */ BalloonPanelView.generatePositions( {
 		heightOffset: 5,
 		sideOffset: 13
 	} );

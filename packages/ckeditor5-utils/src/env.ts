@@ -22,7 +22,7 @@ export function getUserAgent( ): string {
 	}
 }
 
-const userAgent = getUserAgent();
+const userAgent = /* #__PURE__ */ getUserAgent();
 
 // This interface exists to make our API pages more readable.
 /**
@@ -95,28 +95,28 @@ export interface EnvFeaturesType {
  * A namespace containing environment and browser information.
  */
 const env: EnvType = {
-	isMac: isMac( userAgent ),
+	isMac: /* #__PURE__ */ isMac( userAgent ),
 
-	isWindows: isWindows( userAgent ),
+	isWindows: /* #__PURE__ */ isWindows( userAgent ),
 
-	isGecko: isGecko( userAgent ),
+	isGecko: /* #__PURE__ */ isGecko( userAgent ),
 
-	isSafari: isSafari( userAgent ),
+	isSafari: /* #__PURE__ */ isSafari( userAgent ),
 
-	isiOS: isiOS( userAgent ),
+	isiOS: /* #__PURE__ */ isiOS( userAgent ),
 
-	isAndroid: isAndroid( userAgent ),
+	isAndroid: /* #__PURE__ */ isAndroid( userAgent ),
 
-	isBlink: isBlink( userAgent ),
+	isBlink: /* #__PURE__ */ isBlink( userAgent ),
 
-	isMediaForcedColors: isMediaForcedColors(),
+	isMediaForcedColors: /* #__PURE__ */ isMediaForcedColors(),
 
 	get isMotionReduced() {
 		return isMotionReduced();
 	},
 
 	features: {
-		isRegExpUnicodePropertySupported: isRegExpUnicodePropertySupported()
+		isRegExpUnicodePropertySupported: /* #__PURE__ */ isRegExpUnicodePropertySupported()
 	}
 };
 
