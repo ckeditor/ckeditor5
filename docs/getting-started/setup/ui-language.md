@@ -89,8 +89,10 @@ To use different language than the default one (English), you need to load the e
 <script type="importmap">
 {
 	"imports": {
-		"ckeditor5": "<CDN_LINK>/ckeditor5/dist/index.min.js",
-		"ckeditor5/": "<CDN_LINK>/ckeditor5/dist",
+		"ckeditor5": "<CDN_LINK>/browser/index.js",
+		"ckeditor5/": "<CDN_LINK>/dist/",
+		"ckeditor5-premium-features": "<CDN_LINK>/dist/browser/index.js",
+		"ckeditor5-premium-features/": "<CDN_LINK>/dist/"
 	}
 }
 </script>
