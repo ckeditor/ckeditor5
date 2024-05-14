@@ -57,8 +57,8 @@ For example, to use Polish, import `'ckeditor5/translations/pl.js'` and pass the
 ```js
 import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
 import { TableOfContents } from 'ckeditor5-premium-features';
-import translations from 'ckeditor5/translations/pl.js';
-import translations from 'ckeditor5-premium-features/translations/pl.js';
+import coreTranslations from 'ckeditor5/translations/pl.js';
+import commercialTranslations from 'ckeditor5-premium-features/translations/pl.js';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [
@@ -69,7 +69,10 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	toolbar: {
 		items: [ 'undo', 'redo', 'tableOfContents' ]
 	},
-	translations: [ translations, trnaslations-premium-features ]
+	translations: [
+		coreTranslations,
+		commercialTranslations
+		]
 } )
 .then( /* ... */ );
 ```
@@ -94,8 +97,8 @@ To use different language than the default one (English), you need to load the e
 <script type="module">
 import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
 import { TableOfContents } from 'ckeditor5-premium-features';
-import translations from 'ckeditor5/translations/pl.js';
-import translations from 'ckeditor5-premium-features/translations/pl.js';
+import coreTranslations from 'ckeditor5/translations/pl.js';
+import commercialTranslations from 'ckeditor5-premium-features/translations/pl.js';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [
@@ -106,7 +109,10 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	toolbar: {
 		items: [ 'undo', 'redo' 'tableOfContents' ]
 	},
-	translations: [ translations, trnaslations-premium-features ]
+	translations: [
+		coreTranslations,
+		commercialTranslations
+		]
 } )
 .then( /* ... */ );
 </script>
