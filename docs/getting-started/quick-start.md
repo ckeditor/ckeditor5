@@ -121,7 +121,10 @@ Once you have added the import map, you can access the editor and its plugins us
 	import { PasteFromOfficeEnhanced } from 'ckeditor5-premium-features';
 
 	ClassicEditor.create( document.querySelector( '#editor' ), {
-		plugins: [ Essentials, GeneralHtmlSupport, Bold, Italic, PasteFromOffice, PasteFromOfficeEnhanced, Paragraph ],
+		plugins: [
+			Essentials, GeneralHtmlSupport, Bold, Italic,
+			PasteFromOffice, PasteFromOfficeEnhanced, Paragraph
+			],
 		toolbar: {
 			items: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 		}
@@ -178,7 +181,10 @@ Your final page should look similar to the one below.
 			import { PasteFromOfficeEnhanced } from 'ckeditor5-premium-features';
 
 			ClassicEditor.create( document.querySelector( '#editor' ), {
-				plugins: [ Essentials, GeneralHtmlSupport, Bold, Italic, PasteFromOffice, PasteFromOfficeEnhanced, Paragraph ],
+				plugins: [
+					Essentials, GeneralHtmlSupport, Bold, Italic,
+					PasteFromOffice, PasteFromOfficeEnhanced, Paragraph
+					],
 				toolbar: {
 					items: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 				}
