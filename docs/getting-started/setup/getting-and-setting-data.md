@@ -1,7 +1,7 @@
 ---
-category: installation
+category: setup
 meta-title: Getting and setting data | CKEditor 5 documentation
-order: 15
+order: 10
 ---
 
 {@snippet installation/getting-and-setting-data/build-autosave-source}
@@ -169,10 +169,11 @@ To handle the former situation you can listen to the native [`window#beforeunloa
 ### Demo
 
 The example below shows how all these mechanisms can be used together to enable or disable a "Save" button and block the user from leaving the page without saving the data.
-
+<!-- Not sure how to handle that info
 <info-box>
-	The {@link module:core/pendingactions~PendingActions} plugin is unavailable in any of the builds by default so you need to {@link getting-started/setup/installing-plugins install it}.
+	The {@link module:core/pendingactions~PendingActions} plugin is unavailable in any of the builds by default so you need to install it.
 </info-box>
+-->
 
 ```js
 // Note: We need to build the editor from source.

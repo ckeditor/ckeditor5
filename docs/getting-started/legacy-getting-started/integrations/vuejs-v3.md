@@ -34,7 +34,7 @@ Additionally, you can [integrate CKEditor&nbsp;5 from source](#using-ckeditor-5-
 </info-box>
 
 <info-box hint>
-	Starting from version 5.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link getting-started/setup/working-with-typescript TypeScript support}.
+	Starting from version 5.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link getting-started/setup/typescript-support TypeScript support}.
 </info-box>
 
 ## Quick start
@@ -440,7 +440,7 @@ module.exports = {
 
 ### Installing plugins
 
-Having your project configured, you can choose the building blocks of your editor. Install the packages necessary for your integration, but please remember that all packages (excluding `@ckeditor/ckeditor5-dev-*`, `@ckeditor/ckeditor5-vue`, and `@ckeditor/vite-plugin-ckeditor5`) {@link getting-started/setup/installing-plugins#requirements must have the same version as the base editor package}.
+Having your project configured, you can choose the building blocks of your editor. Install the packages necessary for your integration, but please remember that all packages (excluding `@ckeditor/ckeditor5-dev-*`, `@ckeditor/ckeditor5-vue`, and `@ckeditor/vite-plugin-ckeditor5`) must have the same version as the base editor package.
 
 ```bash
 npm install --save \

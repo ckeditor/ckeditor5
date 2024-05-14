@@ -32,10 +32,6 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 .then( /* ... */ );
 ```
 
-<info-box info>
-	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
-</info-box>
-
 ## Related features
 
 CKEditor&nbsp;5 has more features that can help you better organize your document content:

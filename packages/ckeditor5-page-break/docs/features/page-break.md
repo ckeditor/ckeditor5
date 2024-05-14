@@ -32,10 +32,6 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 .then( /* ... */ );
 ```
 
-<info-box info>
-	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
-</info-box>
-
 ## Related features
 
 Here are some useful CKEditor&nbsp;5 features that you can use together with the page break plugin for an all-around paged editing experience:

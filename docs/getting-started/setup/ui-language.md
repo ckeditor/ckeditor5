@@ -2,7 +2,7 @@
 category: setup
 menu-title: UI language
 meta-title: Setting the UI language | CKEditor 5 Documentation
-order: 30
+order: 40
 ---
 
 {@snippet features/build-ui-language-source}
@@ -58,9 +58,7 @@ For example, to use Polish, import `'ckeditor5/translations/pl.js'` and pass the
 import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
 import translations from 'ckeditor5/translations/pl.js';
 
-
-
-await ClassicEditor.create( document.querySelector( '#editor' ), {
+ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [
 		Essentials,
 		Paragraph,
@@ -69,7 +67,8 @@ await ClassicEditor.create( document.querySelector( '#editor' ), {
 		items: [ 'undo', 'redo' ]
 	},
 	translations
-} );
+} )
+.then( /* ... */ );
 ```
 
 See the {@link getting-started/quick-start#installing-ckeditor-5-using-npm npm installation guide} for more information.
@@ -93,7 +92,7 @@ To use different language than the default one (English), you need to load the e
 import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
 import translations from 'ckeditor5/translations/pl.js';
 
-await ClassicEditor.create( document.querySelector( '#editor' ), {
+ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [
 		Essentials,
 		Paragraph,
@@ -102,7 +101,8 @@ await ClassicEditor.create( document.querySelector( '#editor' ), {
 		items: [ 'undo', 'redo' ]
 	},
 	translations
-} );
+} )
+.then( /* ... */ );
 </script>
 ```
 
@@ -115,22 +115,21 @@ In CKEditor&nbsp;5 you can separately configure the language of the UI and the l
 Configure {@link module:core/editor/editorconfig~EditorConfig#language `config.language`} to change the language of the content. In this example, the UI of the editor will be in English but the content will be in Arabic:
 
 ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		language: {
-			// The UI will be English.
-			ui: 'en',
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	language: {
+		// The UI will be English.
+		ui: 'en',
 
-			// But the content will be edited in Arabic.
-			content: 'ar'
-		}
-	} )
-	.then( editor => {
-		window.editor = editor;
-	} )
-	.catch( err => {
-		console.error( err.stack );
-	} );
+		// But the content will be edited in Arabic.
+		content: 'ar'
+	}
+} )
+.then( editor => {
+	window.editor = editor;
+} )
+.catch( err => {
+	console.error( err.stack );
+} );
 ```
 
 ### Demo

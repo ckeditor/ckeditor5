@@ -7,7 +7,7 @@ order: 50
 
 # Base64 image upload adapter
 
-The Base64 image upload adapter converts inserted images into [Base64-encoded strings](https://en.wikipedia.org/wiki/Base64) in the {@link getting-started/getting-and-setting-data editor output}. The images are stored with other content in the database without any server-side processing.
+The Base64 image upload adapter converts inserted images into [Base64-encoded strings](https://en.wikipedia.org/wiki/Base64) in the {@link getting-started/setup/getting-and-setting-data editor output}. The images are stored with other content in the database without any server-side processing.
 
 <info-box warning>
     Remember that while `Base64` upload is an easy solution, it is also highly inefficient. The image file is kept as data in the database, generating a much heavier data load and higher transfer. `Base64` images are never cached by the browser so loading and saving such data will always be slower.
@@ -42,10 +42,6 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 ```
 
 Once enabled in the plugin list, the Base64 image upload adapter works out–of–the–box without any additional configuration.
-
-<info-box info>
-	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
-</info-box>
 
 ## Configuration
 

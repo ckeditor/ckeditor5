@@ -23,7 +23,7 @@ First, install the necessary package. The command below will install the main CK
 npm install ckeditor5
 ```
 
-Now you can import all the modules from the `ckeditor5` package. Additionally, you have to import CSS styles separately.
+Now you can import all the modules from the `ckeditor5` package. Additionally, you have to import CSS styles separately. Please note the {@link module:essentials/essentials~Essentials `Essentials`} plugin including all essential editing features.
 
 **Importing and registering UI translations is optional for American English.** To use the editor in any other language, use imported translations, as shown in the {@link getting-started/setup/ui-language setup section}.
 
@@ -78,12 +78,6 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 ## Using CKEditor&nbsp;5 from CDN
 
 CDN is an alternative method of running CKEditor 5. You can start using it in just a few steps and with a few tags.
-
-### Obtain a license key
-
-To activate CKEditor&nbsp;5 premium features, you will need a commercial license. If you wish to purchase a commercial CKEditor&nbsp;5 license or a license to one of the premium features, [contact us](https://ckeditor.com/contact/?sales=true#contact-form) to receive an offer tailored to your needs. To obtain an activation key, please follow the {@link getting-started/setup/license-key-and-activation License key and activation} guide.
-
-<!-- Not sure we should duplicate this in QS: TODO: Describe the steps to obtain a license key, attaching some screenshots. -->
 
 ### CDN setup
 
@@ -173,8 +167,14 @@ Your final page should look similar to the one below.
 </html>
 ```
 
+## Obtain a license key
+
+To activate CKEditor&nbsp;5 premium features, you will need a commercial license. If you wish to purchase a commercial CKEditor&nbsp;5 license or a license to one of the premium features, [contact us](https://ckeditor.com/contact/?sales=true#contact-form) to receive an offer tailored to your needs. To obtain an activation key, please follow the {@link getting-started/setup/license-key-and-activation License key and activation} guide.
+
+<!-- Not sure we should duplicate this in QS: TODO: Describe the steps to obtain a license key, attaching some screenshots. -->
+
 ## Next steps
 
-* See how to manipulate the editor's data in the {@link getting-started/getting-and-setting-data Getting and setting data} guide.
-* Refer to the {@link getting-started/setup/configuration setup section} to see how to customize your editor further.
+* See how to manipulate the editor's data in the {@link getting-started/setup/getting-and-setting-data Getting and setting data} guide.
+* Refer to further guides in the {@link getting-started/setup/configuration setup section} to see how to customize your editor further.
 * Check the {@link features/index features category} to learn more about individual features.

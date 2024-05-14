@@ -61,7 +61,7 @@ import {
  * This plugin is used by features like {@link module:upload/filerepository~FileRepository} to register their ongoing actions
  * and by features like {@link module:autosave/autosave~Autosave} to detect whether there are any ongoing actions.
  * Read more about saving the data in the
- * {@glink getting-started/installation/getting-and-setting-data Saving and getting data} guide.
+ * {@glink getting-started/setup/getting-and-setting-data Saving and getting data} guide.
  */
 export default class PendingActions extends ContextPlugin implements Iterable<PendingAction> {
 	/**

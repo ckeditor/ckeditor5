@@ -47,10 +47,6 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	Depending on how you will configure this feature, you may need to use services like [Iframely](https://iframely.com/) or [Embedly](https://embed.ly/) to display content of embedded media on your target website. Read more about [displaying embedded media](#displaying-embedded-media-on-your-website).
 </info-box>
 
-<info-box info>
-	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
-</info-box>
-
 ## Previewable and non-previewable media
 
 When the media embed feature is asked to embed a specific media element via its URL it needs to make a decision how the media will be displayed in the editor.
