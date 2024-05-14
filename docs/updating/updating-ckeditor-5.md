@@ -70,7 +70,7 @@ This can be done by updating the `package.json` file with the latest editor vers
 		"@ckeditor/ckeditor5-table": "^{@var ckeditor5-version}",
 		"@ckeditor/ckeditor5-typing": "^{@var ckeditor5-version}"
 	}
-	```
+```
 
 Finally, you reinstall the packages and rebuild the editor. Note that sometimes it might be required to remove the `package-lock.json` or `yarn.lock` files.
 

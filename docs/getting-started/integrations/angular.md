@@ -24,7 +24,7 @@ Currently, the CKEditor&nbsp;5 component for Angular supports integrating CKEdit
 </info-box>
 
 <info-box hint>
-	Starting from version 6.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link getting-started/setup/working-with-typescript TypeScript support}.
+	Starting from version 6.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link getting-started/setup/typescript-support TypeScript support}.
 </info-box>
 
 ## Supported Angular versions

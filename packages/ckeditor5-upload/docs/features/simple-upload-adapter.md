@@ -114,7 +114,7 @@ If the upload is successful, the server should return:
 The URL(s) in the server response are used:
 
 * To display the image during the editing (as seen by the user in the editor).
-* In the editor content {@link getting-started/getting-and-setting-data saved to the database}.
+* In the editor content {@link getting-started/setup/getting-and-setting-data saved to the database}.
 
 ### Error handling
 

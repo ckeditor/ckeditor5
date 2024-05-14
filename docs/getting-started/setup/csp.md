@@ -6,7 +6,7 @@
 
 category: setup
 meta-title: Content Security Policy | CKEditor 5 documentation
-order: 80
+order: 90
 ---
 
 # Content Security Policy

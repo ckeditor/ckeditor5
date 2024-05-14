@@ -7,7 +7,7 @@ category: setup
 menu-title: TypeScript support
 meta-title: TypeScript support | CKEditor 5 documentation
 modified_at: 2024-05-06
-order: 70
+order: 80
 ---
 
 # TypeScript support in CKEditor&nbsp;5
