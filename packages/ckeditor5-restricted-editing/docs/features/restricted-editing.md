@@ -72,10 +72,6 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 .then( /* ... */ );
 ```
 
-<info-box info>
-	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
-</info-box>
-
 ## Configuration
 
 You can configure which features should be available in the restricted mode. For instance, the following configuration allows the users to type, delete but also to bold text.

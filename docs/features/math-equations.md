@@ -77,10 +77,6 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 .then( /* ... */ );
 ```
 
-<info-box info>
-	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
-</info-box>
-
 ## Customizing MathType service
 
 It is possible to use different services for MathType support. There are several ways to deploy it in the CKEditor&nbsp;5 environment. The following instructions will allow you to customize MathType Web Integration services for CKEditor&nbsp;5.

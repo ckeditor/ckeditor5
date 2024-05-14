@@ -61,10 +61,6 @@ To configure the toolbar buttons for styling text as headings and paragraphs, yo
 import { ClassicEditor, HeadingButtonsUI, ParagraphButtonUI } from 'ckeditor5';
 ```
 
-<info-box info>
-	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
-</info-box>
-
 ## Configuration
 
 ### Configuring heading levels

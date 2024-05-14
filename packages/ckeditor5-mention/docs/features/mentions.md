@@ -42,10 +42,6 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 .then( /* ... */ );
 ```
 
-<info-box info>
-	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
-</info-box>
-
 ## Configuration
 
 The minimal configuration of the mention feature requires defining a {@link module:mention/mentionconfig~MentionFeed `feed`} and a {@link module:mention/mentionconfig~MentionFeed `marker`}. You can also define the `minimumCharacters` parameter, setting the number of letters after which the autocomplete panel will show up. Moreover, feed items' IDs may include whitespaces.

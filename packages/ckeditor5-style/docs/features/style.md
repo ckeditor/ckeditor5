@@ -249,10 +249,6 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 .then( /* ... */ );
 ```
 
-<info-box info>
-	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
-</info-box>
-
 ## Configuration
 
 Configuring the styles feature takes two steps. First, you need to define the styles in the configuration file, for example:

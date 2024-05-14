@@ -62,10 +62,6 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	Remember to add proper features to the editor configuration. Autoformatting will be enabled only for the commands that are included in the actual configuration. For example, `bold` autoformatting will not work if there is no `bold` command registered in the editor.
 </info-box>
 
-<info-box info>
-	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
-</info-box>
-
 ## Creating custom autoformatters
 
 The {@link module:autoformat/autoformat~Autoformat} feature bases on {@link module:autoformat/blockautoformatediting~blockAutoformatEditing} and {@link module:autoformat/inlineautoformatediting~inlineAutoformatEditing} tools to create the autoformatters mentioned above.

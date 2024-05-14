@@ -76,10 +76,6 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 .then( /* ... */ );
 ```
 
-<info-box info>
-	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
-</info-box>
-
 ## Configuring transformations
 
 This feature comes pre-configured with a set of transformations. You can find the list of them in the {@link module:typing/typingconfig~TextTransformationConfig} documentation.

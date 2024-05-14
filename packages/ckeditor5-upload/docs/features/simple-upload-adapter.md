@@ -26,10 +26,6 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 .then( /* ... */ );
 ```
 
-<info-box info>
-	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
-</info-box>
-
 ## Configuration
 
 The client side of this feature is configurable using the {@link module:upload/uploadconfig~SimpleUploadConfig `config.simpleUpload`} object.

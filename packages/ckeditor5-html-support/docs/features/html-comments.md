@@ -44,10 +44,6 @@ ClassicEditor
 	.catch( ... );
 ```
 
-<info-box info>
-	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
-</info-box>
-
 HTML comment feature does not require any configuration.
 
 ## Known issues

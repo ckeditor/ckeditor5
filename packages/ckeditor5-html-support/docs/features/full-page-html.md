@@ -30,10 +30,6 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 .then( /* ... */ );
 ```
 
-<info-box info>
-	Read more about {@link getting-started/setup/installing-plugins installing plugins}.
-</info-box>
-
 ## Additional feature information
 
 Here are some examples of the HTML elements you can enable with this plugin:
