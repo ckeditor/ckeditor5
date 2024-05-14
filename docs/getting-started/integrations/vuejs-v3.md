@@ -369,7 +369,7 @@ Since accessing the editor toolbar is not possible until after the editor instan
 	import { DecoupledEditor, Bold, Essentials, Italic, Paragraph, Undo } from 'ckeditor5';
 	import CKEditor from '@ckeditor/ckeditor5-vue'
 
-	import 'ckeditor5/dist/index.css'
+	import 'ckeditor5/index.css'
 
 	export default {
 		name: 'app',
