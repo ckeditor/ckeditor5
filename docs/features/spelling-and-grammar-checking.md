@@ -80,6 +80,10 @@ The spell and grammar check is compliant with Web Content Accessibility Guidelin
 	This is a premium feature that requires a commercial license. If you do not have one yet, please [contact us](https://ckeditor.com/contact/).
 </info-box>
 
+<info-box warning>
+	We are working with our partners to update this package to work with our new installation methods. Meanwhile if you use or plan to use this packages, please continue to use our legacy installation methods which are still supported.
+</info-box>
+
 WProofreader is delivered as a CKEditor&nbsp;5 plugin, so you can combine it into an editor build just like other features. To add this feature to your rich-text editor, install the [`@webspellchecker/wproofreader-ckeditor5`](https://www.npmjs.com/package/@webspellchecker/wproofreader-ckeditor5) package:
 
 ```
