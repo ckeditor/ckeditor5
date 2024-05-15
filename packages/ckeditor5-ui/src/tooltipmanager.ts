@@ -472,7 +472,13 @@ export default class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 	 * Hides the tooltip when the element is no longer visible in DOM or the tooltip text was removed.
 	 */
 	private _updateTooltipPosition() {
-		const tooltipData = getTooltipData( this._currentElementWithTooltip! );
+		// The tooltip might get removed by focus listener triggered by the same UI `update` event.
+		// See https://github.com/ckeditor/ckeditor5/pull/16363.
+		if ( !this._currentElementWithTooltip ) {
+			return;
+		}
+
+		const tooltipData = getTooltipData( this._currentElementWithTooltip );
 
 		// This could happen if the tooltip was attached somewhere in a contextual content toolbar and the toolbar
 		// disappeared (e.g. removed an image), or the tooltip text was removed.
@@ -483,7 +489,7 @@ export default class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 		}
 
 		this.balloonPanelView.pin( {
-			target: this._currentElementWithTooltip!,
+			target: this._currentElementWithTooltip,
 			positions: TooltipManager.getPositioningFunctions( tooltipData.position )
 		} );
 	}
