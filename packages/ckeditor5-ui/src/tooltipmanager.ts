@@ -8,7 +8,7 @@
  */
 
 import View from './view.js';
-import BalloonPanelView, { generatePositions } from './panel/balloon/balloonpanelview.js';
+import BalloonPanelView from './panel/balloon/balloonpanelview.js';
 import type { EditorUIUpdateEvent } from './editorui/editorui.js';
 
 import {
@@ -98,7 +98,7 @@ export default class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 	 * A set of default {@link module:utils/dom/position~PositioningFunction positioning functions} used by the `TooltipManager`
 	 * to pin tooltips in different positions.
 	 */
-	public static defaultBalloonPositions = generatePositions( {
+	public static defaultBalloonPositions = BalloonPanelView.generatePositions( {
 		heightOffset: 5,
 		sideOffset: 13
 	} );
