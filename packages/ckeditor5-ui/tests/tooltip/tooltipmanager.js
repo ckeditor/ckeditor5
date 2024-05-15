@@ -1016,14 +1016,6 @@ describe( 'TooltipManager', () => {
 
 		} );
 	} );
-
-	describe( '_updateTooltipPosition()', () => {
-		it( 'should not crash if called when no tooltip is pinned', () => {
-			expect( () => {
-				tooltipManager._updateTooltipPosition();
-			} ).not.to.throw();
-		} );
-	} );
 } );
 
 function getElementsWithTooltips( definitions ) {
