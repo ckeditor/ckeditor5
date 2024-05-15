@@ -239,7 +239,7 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import coreTranslations from 'ckeditor5/translations/es.js';
 import commercialTranslations from 'ckeditor5-premium-features/translations/es.js';
 
-// style sheets imports...
+// Style sheets imports...
 
 function App() {
 	return (
