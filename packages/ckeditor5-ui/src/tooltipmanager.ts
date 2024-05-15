@@ -467,6 +467,10 @@ export default class TooltipManager extends DomEmitterMixin() {
 	 * Hides the tooltip when the element is no longer visible in DOM or the tooltip text was removed.
 	 */
 	private _updateTooltipPosition() {
+		if ( !this._currentElementWithTooltip ) {
+			return;
+		}
+
 		const tooltipData = getTooltipData( this._currentElementWithTooltip! );
 
 		// This could happen if the tooltip was attached somewhere in a contextual content toolbar and the toolbar
