@@ -467,21 +467,7 @@ export default class TooltipManager extends DomEmitterMixin() {
 	 * Hides the tooltip when the element is no longer visible in DOM or the tooltip text was removed.
 	 */
 	private _updateTooltipPosition() {
-		// Actually, the #_currentElementWithTooltip member can occasionally be null. This can happen in the following scenario:
-		//
-		// 1. The user opens the balloon editor in a content editable.
-		// 2. The user clicks the "Remove link" button, which is attached to the balloon and the link in the editor.
-		// 3. The editor removes the link (and the attached balloon) from the editable.
-		// 4. The unmounted balloon fires an `update` event (for example, from form `blur` event).
-		// 5. We receive the `update` event, and #_currentElementWithTooltip is null.
-		// 6. Ballon fully unmounts and unbinds all `blur` listeners.
-		//
-		// Tooltip must be attached to balloon content in this scenario.
-		if ( !this._currentElementWithTooltip ) {
-			return;
-		}
-
-		const tooltipData = getTooltipData( this._currentElementWithTooltip );
+		const tooltipData = getTooltipData( this._currentElementWithTooltip! );
 
 		// This could happen if the tooltip was attached somewhere in a contextual content toolbar and the toolbar
 		// disappeared (e.g. removed an image), or the tooltip text was removed.
