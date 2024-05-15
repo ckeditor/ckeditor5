@@ -394,9 +394,7 @@ Since accessing the editor toolbar is not possible until after the editor instan
 
 ### Using the editor with collaboration plugins
 
-The easiest way to integrate {@link features/collaboration collaboration plugins} in a Vue application is to build the editor from source including the collaboration plugins together with the Vue application.
-
-For such a scenario we provide a **ready-to-use integration** featuring collaborative editing in a Vue application:
+We provide a **ready-to-use integration** featuring collaborative editing in a Vue application:
 
 * [CKEditor&nbsp;5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-vue)
 

@@ -216,9 +216,7 @@ export default App;
 
 ### Using the editor with collaboration plugins
 
-The easiest way to integrate {@link features/collaboration collaboration plugins} in a React application is to build the editor from source including the collaboration plugins together with the React application.
-
-For such a scenario we provide a few **ready-to-use integrations** featuring collaborative editing in React applications:
+We provide a few **ready-to-use integrations** featuring collaborative editing in React applications:
 
 * [CKEditor&nbsp;5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-react)
 * [CKEditor&nbsp;5 with real-time collaboration and revision history features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-revision-history-for-react)

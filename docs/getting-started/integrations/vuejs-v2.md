@@ -29,7 +29,7 @@ Vue.js is a versatile framework for building web user interfaces. CKEditor&nbsp;
 
 ### Using the Builder
 
-The easiest way to use CKEditor 5 in your Vue application is by configuring it with Builder and integrating it with your application.
+The easiest way to use CKEditor 5 in your Vue application is by configuring it with [Builder](https://ckeditor.com/builder?redirect=docs) and integrating it with your application.
 
 ### Installing from npm
 
@@ -392,9 +392,7 @@ Since accessing the editor toolbar is not possible until after the editor instan
 
 ### Using the editor with collaboration plugins
 
-The easiest way to integrate {@link features/collaboration collaboration plugins} in a Vue application is to build the editor from source including the collaboration plugins together with the Vue application.
-
-For such a scenario we provide a **ready-to-use integration** featuring collaborative editing in a Vue application:
+We provide a **ready-to-use integration** featuring collaborative editing in a Vue application:
 
 * [CKEditor&nbsp;5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-vue)
 
