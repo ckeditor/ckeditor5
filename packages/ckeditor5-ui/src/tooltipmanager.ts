@@ -468,7 +468,7 @@ export default class TooltipManager extends DomEmitterMixin() {
 	 */
 	private _updateTooltipPosition() {
 		// The tooltip might get removed by focus listener triggered by the same UI `update` event.
-		// See https://github.com/cksource/ckeditor5-commercial/issues/6219.
+		// See https://github.com/ckeditor/ckeditor5/pull/16363.
 		if ( !this._currentElementWithTooltip ) {
 			return;
 		}

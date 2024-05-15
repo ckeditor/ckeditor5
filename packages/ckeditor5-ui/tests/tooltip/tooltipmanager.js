@@ -1022,7 +1022,7 @@ describe( 'TooltipManager', () => {
 			expect( editor.editing.view.document.isFocused ).to.be.false;
 
 			// Minimal case of unlinking with the button in the link balloon toolbar.
-			// See https://github.com/cksource/ckeditor5-commercial/issues/6219.
+			// See https://github.com/ckeditor/ckeditor5/pull/16363.
 			editor.ui.once( 'update', () => {
 				editor.editing.view.focus();
 			} );
