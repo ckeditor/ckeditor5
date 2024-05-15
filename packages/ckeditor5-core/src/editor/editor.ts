@@ -731,6 +731,8 @@ export default abstract class Editor extends ObservableMixin() {
 				'You are using the trial version of CKEditor 5 with limited usage. ' +
 				'Make sure you will not use it in the production environment.'
 			);
+
+			return;
 		}
 
 		if ( licensePayload.licenseType === 'trial' || licensePayload.licenseType === 'development' ) {
