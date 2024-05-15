@@ -724,10 +724,30 @@ export default abstract class Editor extends ObservableMixin() {
 			}
 		}
 
-		const licensedTypes: Array<Exclude<LicenseType, 'production'>> = [ 'development', 'trial' ];
+		if ( licensePayload.licenseType === 'trial' && licensePayload.exp * 1000 < Date.now() ) {
+			blockEditor( this, 'trialLimit' );
 
-		if ( isLicenseTypeExpired( this, licensedTypes ) ) {
-			return;
+			console.info(
+				'You are using the trial version of CKEditor 5 with limited usage. ' +
+				'Make sure you will not use it in the production environment.'
+			);
+		}
+
+		if ( licensePayload.licenseType === 'trial' || licensePayload.licenseType === 'development' ) {
+			const licenseType: 'trial' | 'development' = licensePayload.licenseType;
+
+			const timerId = setTimeout( () => {
+				blockEditor( this, `${ licenseType }Limit` );
+
+				console.info(
+					`You are using the ${ licenseType } version of CKEditor 5 with limited usage. ` +
+					'Make sure you will not use it in the production environment.'
+				);
+			}, 600000 /* 10 minutes */ );
+
+			this.on( 'destroy', () => {
+				clearTimeout( timerId );
+			} );
 		}
 
 		if ( licensePayload.usageEndpoint ) {
@@ -746,37 +766,6 @@ export default abstract class Editor extends ObservableMixin() {
 					}
 				} );
 			}, { priority: 'high' } );
-		}
-
-		function isLicenseTypeExpired( editor: Editor, licenseTypes: Array<Exclude<LicenseType, 'production'>> ): boolean {
-			let isExpired = false;
-
-			licenseTypes.forEach( licenseType => {
-				if ( licensePayload && licensePayload.licenseType === licenseType && licensePayload.exp * 1000 < Date.now() ) {
-					blockEditorWithInfo( editor, licenseType );
-
-					isExpired = true;
-				}
-
-				if ( licensePayload && licensePayload.licenseType === licenseType ) {
-					const timerId = setTimeout( () => blockEditorWithInfo( editor, licenseType ), 600000 /* 10 minutes */ );
-
-					editor.on( 'destroy', () => {
-						clearTimeout( timerId );
-					} );
-				}
-			} );
-
-			return isExpired;
-		}
-
-		function blockEditorWithInfo( editor: Editor, licenseType: Exclude<LicenseType, 'production'> ) {
-			blockEditor( editor, `${ licenseType }Limit` );
-
-			console.info(
-				`You are using the ${ licenseType } version of CKEditor 5 with limited usage. ` +
-				'Make sure you will not use it in the production environment.'
-			);
 		}
 
 		function getPayload( licenseKey: string ): string | null {
@@ -859,8 +848,6 @@ export default abstract class Editor extends ObservableMixin() {
 }
 
 type LicenseErrorReason = 'invalid' | 'expired' | 'domainLimit' | 'featureNotAllowed' | 'trialLimit' | 'developmentLimit' | 'usageLimit';
-
-type LicenseType = 'trial' | 'development' | 'production';
 
 /**
  * Fired when the {@link module:engine/controller/datacontroller~DataController#event:ready data} and all additional

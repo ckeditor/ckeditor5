@@ -459,59 +459,6 @@ describe( 'Editor', () => {
 					sinon.restore();
 				} );
 
-				it( 'should not block if development is not expired', () => {
-					const licenseKey = 'foo.eyJleHAiOjE3MTUyMTI4MDAsImp0aSI6IjczNDk5YTQyLWJjNzktNDdlNy1hNmR' +
-                    'lLWIyMGJhMmEzYmI4OSIsImxpY2Vuc2VUeXBlIjoiZGV2ZWxvcG1lbnQiLCJ2YyI6Ijg5NzRiYTJlIn0.bar';
-
-					/**
-                     * after decoding licenseKey:
-                     *
-                     * licensePaylod: {
-                     *  ...,
-                     *  exp: timestamp( 09.05.2024 )
-                     *  licenseType: 'development'
-                     * }
-                     */
-
-					const today = 1715166436000; // 08.05.2024
-					const dateNow = sinon.stub( Date, 'now' ).returns( today );
-
-					const editor = new TestEditor( { licenseKey } );
-
-					sinon.assert.notCalled( showErrorStub );
-					expect( editor.isReadOnly ).to.be.false;
-
-					dateNow.restore();
-				} );
-
-				it( 'should block if development is expired', () => {
-					const licenseKey = 'foo.eyJleHAiOjE3MTUyMTI4MDAsImp0aSI6IjczNDk5YTQyLWJjNzktNDdlNy1hNmR' +
-                    'lLWIyMGJhMmEzYmI4OSIsImxpY2Vuc2VUeXBlIjoiZGV2ZWxvcG1lbnQiLCJ2YyI6Ijg5NzRiYTJlIn0.bar';
-
-					/**
-                     * after decoding licenseKey:
-                     *
-                     * licensePaylod: {
-                     *  ...,
-                     *  exp: timestamp( 09.05.2024 )
-                     *  licenseType: 'development'
-                     * }
-                     */
-
-					const today = 1715339236000; // 10.05.2024
-					const dateNow = sinon.stub( Date, 'now' ).returns( today );
-
-					const editor = new TestEditor( { licenseKey } );
-
-					sinon.assert.calledWithMatch( showErrorStub, 'developmentLimit' );
-					expect( editor.isReadOnly ).to.be.true;
-					sinon.assert.calledOnce( consoleInfoSpy );
-					sinon.assert.calledWith( consoleInfoSpy, 'You are using the development version of CKEditor 5 with ' +
-                'limited usage. Make sure you will not use it in the production environment.' );
-
-					dateNow.restore();
-				} );
-
 				it( 'should block editor after 10 minutes if development license.', () => {
 					const licenseKey = 'foo.eyJleHAiOjE3MTUyMTI4MDAsImp0aSI6IjczNDk5YTQyLWJjNzktNDdlNy1hNmR' +
                     'lLWIyMGJhMmEzYmI4OSIsImxpY2Vuc2VUeXBlIjoiZGV2ZWxvcG1lbnQiLCJ2YyI6Ijg5NzRiYTJlIn0.bar';
