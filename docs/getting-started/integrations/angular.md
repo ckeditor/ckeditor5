@@ -442,66 +442,6 @@ Fired when the editor crashes. Once the editor is crashed, the internal watchdog
 	Prior to ckeditor5-angular `v7.0.1`, this event was not fired for crashes during the editor initialization.
 </info-box>
 
-## How to?
-
-### Using the Document editor type
-
-If you want to use the {@link framework/document-editor document (decoupled) editor}, you need to {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create add the toolbar to the DOM manually}:
-
-```ts
-// app.component.ts
-
-import { Component } from '@angular/core';
-import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
-import { DecoupledEditor, Essentials, Italic, Paragraph, Bold, Undo } from 'ckeditor5';
-
-import 'ckeditor5/index.css';
-
-@Component( {
-	selector: 'app-root',
-	templateUrl: './app.component.html',
-	imports: [ CKEditorModule ],
-	standalone: true
-} )
-export class AppComponent {
-	title = 'angular';
-
-	public Editor = DecoupledEditor;
-	public config = {
-		plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
-		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
-	}
-	public onReady( editor: DecoupledEditor ): void {
-		const element = editor.ui.getEditableElement()!;
-		const parent = element.parentElement!;
-  
-		parent.insertBefore(
-			editor.ui.view.toolbar.element!,
-			element
-		);
-	}
-}
-```
-
-And then, link the method in the template:
-
-```html
-<!-- app.component.html -->
-
-<ckeditor [editor]="Editor" data="<p>Hello, world!</p>" (ready)="onReady($event)"></ckeditor>
-```
-
-### Using the editor with collaboration plugins
-
-We provide a few **ready-to-use integrations** featuring collaborative editing in Angular applications:
-
-* [CKEditor&nbsp;5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-angular)
-* [CKEditor&nbsp;5 with real-time collaboration and revision history features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-revision-history-for-angular)
-* [CKEditor&nbsp;5 with the revision history feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/revision-history-for-angular)
-* [CKEditor&nbsp;5 with the track changes feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/track-changes-for-angular)
-
-It is not mandatory to build applications on top of the above samples, however, they should help you get started.
-
 ## Integration with `ngModel`
 
 The component implements the [`ControlValueAccessor`](https://angular.io/api/forms/ControlValueAccessor) interface and works with the `ngModel`. Here is how to use it:
@@ -622,6 +562,66 @@ export class MyComponent {
 <info-box>
 	The editor creation is asynchronous so the `editorInstance` will not be available until the editor is created. If you want to make changes to an editor that has just been created, a better option would be getting the CKEditor&nbsp;5 instance on the [`ready`](#ready) event.
 </info-box>
+
+## How to?
+
+### Using the Document editor type
+
+If you want to use the {@link framework/document-editor document (decoupled) editor}, you need to {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create add the toolbar to the DOM manually}:
+
+```ts
+// app.component.ts
+
+import { Component } from '@angular/core';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { DecoupledEditor, Essentials, Italic, Paragraph, Bold, Undo } from 'ckeditor5';
+
+import 'ckeditor5/index.css';
+
+@Component( {
+	selector: 'app-root',
+	templateUrl: './app.component.html',
+	imports: [ CKEditorModule ],
+	standalone: true
+} )
+export class AppComponent {
+	title = 'angular';
+
+	public Editor = DecoupledEditor;
+	public config = {
+		plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
+		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
+	}
+	public onReady( editor: DecoupledEditor ): void {
+		const element = editor.ui.getEditableElement()!;
+		const parent = element.parentElement!;
+  
+		parent.insertBefore(
+			editor.ui.view.toolbar.element!,
+			element
+		);
+	}
+}
+```
+
+And then, link the method in the template:
+
+```html
+<!-- app.component.html -->
+
+<ckeditor [editor]="Editor" data="<p>Hello, world!</p>" (ready)="onReady($event)"></ckeditor>
+```
+
+### Using the editor with collaboration plugins
+
+We provide a few **ready-to-use integrations** featuring collaborative editing in Angular applications:
+
+* [CKEditor&nbsp;5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-angular)
+* [CKEditor&nbsp;5 with real-time collaboration and revision history features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-revision-history-for-angular)
+* [CKEditor&nbsp;5 with the revision history feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/revision-history-for-angular)
+* [CKEditor&nbsp;5 with the track changes feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/track-changes-for-angular)
+
+It is not mandatory to build applications on top of the above samples, however, they should help you get started.
 
 ### Localization
 
