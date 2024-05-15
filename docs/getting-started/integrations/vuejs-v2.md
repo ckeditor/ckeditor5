@@ -400,7 +400,44 @@ It is not mandatory to build applications on top of the above sample, however, i
 
 ### Localization
 
-CKEditor&nbsp;5 supports {@link getting-started/setup/ui-language multiple UI languages}, and so does the official Vue.js component. Follow the instructions below to translate CKEditor&nbsp;5 in your Vue.js application.
+CKEditor&nbsp;5 supports {@link getting-started/setup/ui-language multiple UI languages}, and so does the official Vue 2 component. Follow the instructions below to translate CKEditor&nbsp;5 in your Vue application.
+
+Similarly to CSS style sheets, both packages have separate translations. Import them as shown in the example below. Then, pass them to the `translations` array inside the `editorConfig` prop in the component.
+
+```html
+<template>
+	<div id="app">
+		<ckeditor :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor>
+	</div>
+</template>
+
+<script>
+import { ClassicEditor, Bold, Essentials, Italic, Paragraph } from 'ckeditor5';
+// More imports...
+
+import coreTranslations from 'ckeditor5/translations/es.js';
+import commercialTranslations from 'ckeditor5-premium-features/translations/es.js';
+
+// Style sheets imports...
+
+export default {
+	name: 'app',
+	data() {
+		return {
+			editor: ClassicEditor,
+			editorData: '<p>Hola desde CKEditor 5 en React!</p>',
+			editorConfig: {
+				toolbar: {
+                    items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+                },
+                plugins: [ Bold, Essentials, Italic, Paragraph ],
+				translations: [ coreTranslations, commercialTranslations ]
+			}
+		};
+	}
+}
+</script>
+```
 
 For more information, refer to the {@link getting-started/setup/ui-language "Setting UI language"} guide.
 
