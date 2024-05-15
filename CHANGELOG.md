@@ -12,6 +12,7 @@ We have also added [menu bar](https://ckeditor.com/docs/ckeditor5/latest/feature
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
 * **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The region name argument of the `AriaLiveAnnouncer#announce()`  method has been dropped. Please check out the latest API documentation for more information.
+* The `ckeditor5` package now lists all other official `@ckeditor/ckeditor5-*` packages as dependencies. This is a preparatory step for the upcoming [new installation methods](https://github.com/ckeditor/ckeditor5/issues/15502). These changes will transform the `ckeditor5` package into an aggregate for all official packages, simplifying module imports.
 
 ### Features
 
