@@ -26,7 +26,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 .then( /* ... */ );
 ```
 
-Note that some features may require more than one plugin to run, as shown above. This granular approach lets the integrators adjust available features to their specific needs. It is done during the setup and [Builder](https://ckeditor.com/builder?redirect=docs) is the easiest way to choose all needed features.
+Note that some features may require more than one plugin to run, as shown above. This granular approach lets the integrators adjust available features to their specific needs. It is done during the setup and [Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs) is the easiest way to choose all needed features.
 
 ### Adding premium features
 
