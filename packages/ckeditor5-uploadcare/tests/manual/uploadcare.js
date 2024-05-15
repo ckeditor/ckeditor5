@@ -6,8 +6,6 @@
 /* globals console, window, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload.js';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 
 import Uploadcare from '../../src/uploadcare.js';
@@ -17,7 +15,7 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		cloudServices: CS_CONFIG,
-		plugins: [ ArticlePluginSet, CloudServices, ImageUpload, Uploadcare ],
+		plugins: [ ArticlePluginSet, Uploadcare ],
 		toolbar: [
 			'uploadcare',
 			'|',
@@ -29,7 +27,6 @@ ClassicEditor
 			'bulletedList',
 			'numberedList',
 			'blockQuote',
-			'uploadImage',
 			'insertTable',
 			'mediaEmbed',
 			'undo',

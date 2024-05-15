@@ -21,7 +21,6 @@
     "@ckeditor/ckeditor5-core": "41.3.1",
     "@ckeditor/ckeditor5-dev-utils": "^40.0.0",
     "@ckeditor/ckeditor5-editor-classic": "41.3.1",
-    "@ckeditor/ckeditor5-image": "41.3.1",
     "@ckeditor/ckeditor5-theme-lark": "41.3.1",
     "typescript": "5.0.4",
     "webpack": "^5.58.1",

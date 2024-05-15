@@ -14,7 +14,6 @@ import {
 	createDropdown,
 	ViewModel,
 	Dialog,
-	DialogViewPosition,
 	type ListDropdownItemDefinition,
 	type ButtonExecuteEvent
 } from 'ckeditor5/src/ui.js';
@@ -23,10 +22,14 @@ import imageUploadIcon from '../theme/icons/image-upload.svg';
 import { Collection } from 'ckeditor5/src/utils.js';
 import UploadcareFormView from './ui/uploadcareformview.js';
 
+import '../theme/uploadcare-form.css';
+import '@uploadcare/blocks/web/lr-file-uploader-inline.min.css';
+
 // TODO: move it to the config.
 const PREDEFINED_BUTTONS = [
-	{ icon: imageUploadIcon, type: 'computer', text: 'Upload from computer' },
-	{ icon: imageUploadIcon, type: 'url', text: 'Insert using URL' }
+	{ icon: imageUploadIcon, type: 'url', text: 'Insert using URL' },
+	{ icon: imageUploadIcon, type: 'camera', text: 'Insert using camera' },
+	{ icon: imageUploadIcon, type: 'gdrive', text: 'Insert using Google Drive' }
 ];
 
 /**
@@ -75,19 +78,18 @@ export default class UploadcareUI extends Plugin {
 
 			this.listenTo<ButtonExecuteEvent>( dropdown, 'execute', evt => {
 				const { _type } = evt.source;
+				const form = new UploadcareFormView( locale, _type );
 
 				this._dialog.show( {
 					id: 'uploadCare',
 					icon: imageUploadIcon,
 					title: t( 'Uploadcare' ),
-					content: new UploadcareFormView( locale ),
-					position: DialogViewPosition.EDITOR_TOP_SIDE,
+					content: form,
 					onShow: () => {
-						// this._formView!.focus();
+						form.init();
 					},
 					onHide: () => {
-						// this._aiAssistantController!.reset();
-						// aiAssistantEditing.hideFakeVisualSelection();
+						form.done();
 					}
 				} );
 			} );

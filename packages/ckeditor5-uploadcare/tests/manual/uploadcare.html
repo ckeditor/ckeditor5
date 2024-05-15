@@ -1,3 +1,14 @@
+<head>
+	<meta http-equiv="Content-Security-Policy" content="
+		default-src 'none';
+		connect-src 'self' *;
+		script-src 'self' 'unsafe-eval' https://cksource.com https://*.cke-cs-dev.com https://*.cke-cs-staging.com;
+		img-src * data:;
+		style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+		font-src 'self' https://fonts.gstatic.com data:;
+		frame-src *">
+</head>
+
 <div id="editor">
 	<h2>Easy Image sample</h2>
 	<p>Use the toolbar icon or paste an image file to the content.</p>
