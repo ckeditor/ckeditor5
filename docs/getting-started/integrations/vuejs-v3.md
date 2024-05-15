@@ -376,7 +376,6 @@ Since accessing the editor toolbar is not possible until after the editor instan
 		data() {
 			return {
 				editor: DecoupledEditor,
-
 				// ...
 			};
 		},
