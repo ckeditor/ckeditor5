@@ -472,9 +472,9 @@ export default class TooltipManager extends DomEmitterMixin() {
 		// 1. The user opens the balloon editor in a content editable.
 		// 2. The user clicks the "Remove link" button, which is attached to the balloon and the link in the editor.
 		// 3. The editor removes the link (and the attached balloon) from the editable.
-		// 4. The unmounted balloon fires an `update` event (for example, from form validation) because its `destroy` method is not called
-		//    and various listeners in ballon are still active.
+		// 4. The unmounted balloon fires an `update` event (for example, from form `blur` event).
 		// 5. We receive the `update` event, and #_currentElementWithTooltip is null.
+		// 6. Ballon fully unmounts and unbinds all `blur` listeners.
 		//
 		// Tooltip must be attached to balloon content in this scenario.
 		if ( !this._currentElementWithTooltip ) {
