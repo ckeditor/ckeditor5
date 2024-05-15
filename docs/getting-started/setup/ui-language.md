@@ -52,21 +52,27 @@ We are doing our best to deliver the best RTL support to our users and we consta
 
 After installing the build from npm, translations can be imported from `ckeditor5/translations/[lang].js` and must be passed to the editor configuration.
 
-For example, to use Polish, import `'ckeditor5/translations/pl.js'` and pass the translation object to the editor configuration:
+For example, to use Polish, import `'ckeditor5/translations/pl.js'` and pass the translation object to the editor configuration. Please note that if you use premium features, you need to separately import their translations from the proper package.
 
 ```js
 import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
-import translations from 'ckeditor5/translations/pl.js';
+import { TableOfContents } from 'ckeditor5-premium-features';
+import coreTranslations from 'ckeditor5/translations/pl.js';
+import commercialTranslations from 'ckeditor5-premium-features/translations/pl.js';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [
 		Essentials,
 		Paragraph,
+		TableOfContents
 	],
 	toolbar: {
-		items: [ 'undo', 'redo' ]
+		items: [ 'undo', 'redo', 'tableOfContents' ]
 	},
-	translations
+	translations: [
+		coreTranslations,
+		commercialTranslations
+	]
 } )
 .then( /* ... */ );
 ```
@@ -84,23 +90,31 @@ To use different language than the default one (English), you need to load the e
 {
 	"imports": {
 		"ckeditor5": "<CDN_LINK>/ckeditor5/dist/index.min.js",
-		"ckeditor5/": "<CDN_LINK>/ckeditor5/",
+		"ckeditor5/": "<CDN_LINK>/ckeditor5/dist",
+		"ckeditor5-premium-features": "<CDN_LINK>/ckeditor5-premium-features/dist/browser/index.js",
+		"ckeditor5-premium-features/": "<CDN_LINK>/ckeditor5-premium-features/dist/"
 	}
 }
 </script>
 <script type="module">
 import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
-import translations from 'ckeditor5/translations/pl.js';
+import { TableOfContents } from 'ckeditor5-premium-features';
+import coreTranslations from 'ckeditor5/translations/pl.js';
+import commercialTranslations from 'ckeditor5-premium-features/translations/pl.js';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [
 		Essentials,
 		Paragraph,
+		TableOfContents
 	],
 	toolbar: {
-		items: [ 'undo', 'redo' ]
+		items: [ 'undo', 'redo' 'tableOfContents' ]
 	},
-	translations
+	translations: [
+		coreTranslations,
+		commercialTranslations
+		]
 } )
 .then( /* ... */ );
 </script>
