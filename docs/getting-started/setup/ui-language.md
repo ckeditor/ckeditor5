@@ -72,7 +72,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	translations: [
 		coreTranslations,
 		commercialTranslations
-		]
+	]
 } )
 .then( /* ... */ );
 ```
