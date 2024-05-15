@@ -21,7 +21,7 @@ See the {@link features/media-embed media embed feature guide} and the {@link mo
 This package is part of our open-source aggregate package
 
 ```bash
-npm install --save @ckeditor/ckeditor5
+npm install ckeditor5
 ```
 
 ## Contribute

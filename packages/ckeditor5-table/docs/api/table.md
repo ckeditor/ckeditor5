@@ -31,7 +31,7 @@ See the {@link features/tables table feature guide} and the documentation for th
 This package is part of our open-source aggregate package
 
 ```bash
-npm install --save @ckeditor/ckeditor5
+npm install ckeditor5
 ```
 
 ## Contribute

@@ -21,7 +21,7 @@ See the {@link features/block-quote block quote feature guide} and the {@link mo
 This package is part of our open-source aggregate package
 
 ```bash
-npm install --save @ckeditor/ckeditor5
+npm install ckeditor5
 ```
 
 ## Contribute

@@ -21,7 +21,7 @@ See the {@link features/word-count word count and character count feature guide}
 This package is part of our open-source aggregate package
 
 ```bash
-npm install --save @ckeditor/ckeditor5
+npm install ckeditor5
 ```
 
 ## Contribute

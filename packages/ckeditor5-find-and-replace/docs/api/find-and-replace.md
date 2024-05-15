@@ -21,7 +21,7 @@ See the {@link features/find-and-replace find and replace feature guide} and the
 This package is part of our open-source aggregate package
 
 ```bash
-npm install --save @ckeditor/ckeditor5
+npm install ckeditor5
 ```
 
 ## Contribute

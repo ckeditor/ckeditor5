@@ -23,7 +23,7 @@ Check out the {@link features/image-upload Image upload guide} to learn about ot
 This package is part of our open-source aggregate package
 
 ```bash
-npm install --save @ckeditor/ckeditor5
+npm install ckeditor5
 ```
 
 ## Contribute

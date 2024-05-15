@@ -30,7 +30,7 @@ To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-
 This package is part of our open-source aggregate package
 
 ```bash
-npm install --save @ckeditor/ckeditor5
+npm install ckeditor5
 ```
 
 Then add it to the editor configuration:

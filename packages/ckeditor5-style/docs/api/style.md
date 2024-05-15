@@ -17,7 +17,7 @@ See the {@link module:style/style~Style} plugin documentation and the style feat
 This package is part of our open-source aggregate package
 
 ```bash
-npm install --save @ckeditor/ckeditor5
+npm install ckeditor5
 ```
 
 ## Contribute

@@ -25,7 +25,7 @@ See the {@link features/font font feature guide} and plugin documentation:
 This package is part of our open-source aggregate package
 
 ```bash
-npm install --save @ckeditor/ckeditor5
+npm install ckeditor5
 ```
 
 ## Contribute

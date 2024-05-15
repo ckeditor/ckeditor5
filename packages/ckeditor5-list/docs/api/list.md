@@ -21,7 +21,7 @@ See the {@link features/lists lists} and {@link features/todo-lists to-do list f
 This package is part of our open-source aggregate package
 
 ```bash
-npm install --save @ckeditor/ckeditor5
+npm install ckeditor5
 ```
 
 ## Contribute

@@ -19,7 +19,7 @@ This plugin is usually enabled by the {@link module:essentials/essentials~Essent
 This package is part of our open-source aggregate package
 
 ```bash
-npm install --save @ckeditor/ckeditor5
+npm install ckeditor5
 ```
 
 ## Contribute
