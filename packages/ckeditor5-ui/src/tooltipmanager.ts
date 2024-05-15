@@ -467,11 +467,18 @@ export default class TooltipManager extends DomEmitterMixin() {
 	 * Hides the tooltip when the element is no longer visible in DOM or the tooltip text was removed.
 	 */
 	private _updateTooltipPosition() {
+		// Actually the #_currentElementWithTooltip member can be from time to time null. It can happen in this scenario:
+		//
+		// 1. User opens ballon editor in content editable.
+		// 2. User clicks "Remove link" button which is attached to such ballon and link in editor.
+		// 3. Editor removed link ( and attached ballon ) from editable.
+		// 4. Unmounted ballon fires `update` (for example from form validation) event  because it's `destroy` method is not called.
+		// 5. We received `update` event and #_currentElementWithTooltip is null.
 		if ( !this._currentElementWithTooltip ) {
 			return;
 		}
 
-		const tooltipData = getTooltipData( this._currentElementWithTooltip! );
+		const tooltipData = getTooltipData( this._currentElementWithTooltip );
 
 		// This could happen if the tooltip was attached somewhere in a contextual content toolbar and the toolbar
 		// disappeared (e.g. removed an image), or the tooltip text was removed.

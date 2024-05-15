@@ -169,8 +169,8 @@ export default class LinkUI extends Plugin {
 
 		// Execute unlink command after clicking on the "Unlink" button.
 		this.listenTo( actionsView, 'unlink', () => {
-			editor.execute( 'unlink' );
 			this._hideUI();
+			editor.execute( 'unlink' );
 		} );
 
 		// Close the panel on esc key press when the **actions have focus**.
