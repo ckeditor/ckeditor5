@@ -31,7 +31,7 @@ import { isElement as _isElement } from 'lodash-es';
  * In order to create a classic editor instance, use the static
  * {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`} method.
  */
-export default class ClassicEditor extends ElementApiMixin( Editor ) {
+export default class ClassicEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	/**
 	 * @inheritDoc
 	 */

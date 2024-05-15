@@ -21,7 +21,7 @@ const _listeningTo = Symbol( 'listeningTo' );
 const _emitterId = Symbol( 'emitterId' );
 const _delegations = Symbol( 'delegations' );
 
-const defaultEmitterClass = EmitterMixin( Object );
+const defaultEmitterClass = /* #__PURE__ */ EmitterMixin( Object );
 
 /**
  * Mixin that injects the {@link ~Emitter events API} into its host.
@@ -355,18 +355,18 @@ export default function EmitterMixin( base?: Constructor ): unknown {
 			}
 		}
 
-		public _events?: { [ eventName: string ]: EventNode };
+		public declare _events?: { [ eventName: string ]: EventNode };
 
-		public [ _emitterId ]?: string;
+		public declare [ _emitterId ]?: string;
 
-		public [ _listeningTo ]?: {
+		public declare [ _listeningTo ]?: {
 			[ emitterId: string ]: {
 				emitter: Emitter;
 				callbacks: { [ event: string]: Array<Function> };
 			};
 		};
 
-		public [ _delegations ]?: Map<string, Map<Emitter, string | ( ( name: string ) => string ) | undefined>>;
+		public declare [ _delegations ]?: Map<string, Map<Emitter, string | ( ( name: string ) => string ) | undefined>>;
 	}
 
 	return Mixin;

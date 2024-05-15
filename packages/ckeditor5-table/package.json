@@ -22,7 +22,7 @@
     "@ckeditor/ckeditor5-basic-styles": "41.3.1",
     "@ckeditor/ckeditor5-block-quote": "41.3.1",
     "@ckeditor/ckeditor5-core": "41.3.1",
-    "@ckeditor/ckeditor5-dev-utils": "^39.7.0",
+    "@ckeditor/ckeditor5-dev-utils": "^40.0.0",
     "@ckeditor/ckeditor5-editor-classic": "41.3.1",
     "@ckeditor/ckeditor5-editor-multi-root": "41.3.1",
     "@ckeditor/ckeditor5-engine": "41.3.1",

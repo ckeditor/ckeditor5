@@ -43,7 +43,7 @@ import { isElement as _isElement } from 'lodash-es';
  * Note that you will need to attach the editor toolbar and menu bar to your web page manually, in a desired place,
  * after the editor is initialized.
  */
-export default class DecoupledEditor extends ElementApiMixin( Editor ) {
+export default class DecoupledEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	/**
 	 * @inheritDoc
 	 */

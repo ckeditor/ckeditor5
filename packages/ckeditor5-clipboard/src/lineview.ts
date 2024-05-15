@@ -12,7 +12,7 @@
 import { View } from '@ckeditor/ckeditor5-ui';
 import { toUnit } from '@ckeditor/ckeditor5-utils';
 
-const toPx = toUnit( 'px' );
+const toPx = /* #__PURE__ */ toUnit( 'px' );
 
 /**
  * The horizontal drop target line view.

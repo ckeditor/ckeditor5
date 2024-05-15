@@ -58,7 +58,7 @@ import type View from './view.js';
  * of a {@link module:ui/template~Template template}.
  */
 export default class ViewCollection<TView extends View = View> extends Collection<TView> {
-	public id?: string;
+	public declare id?: string;
 
 	/**
 	 * A parent element within which child views are rendered and managed in DOM.
