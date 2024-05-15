@@ -740,9 +740,16 @@ export default abstract class Editor extends ObservableMixin() {
 
 		if ( licensePayload.usageEndpoint ) {
 			this.once<EditorReadyEvent>( 'ready', () => {
-				const telemetryData = this._getTelemetryData();
+				const telemetry = this._getTelemetryData();
 
-				this._sendUsageRequest( licensePayload.usageEndpoint, licenseKey, telemetryData ).then( response => {
+				const request = {
+					requestId: uid(),
+					requestTime: Math.round( Date.now() / 1000 ),
+					license: licenseKey,
+					telemetry
+				};
+
+				this._sendUsageRequest( licensePayload.usageEndpoint, request ).then( response => {
 					const { status, message } = response;
 
 					if ( message ) {
@@ -801,6 +808,9 @@ export default abstract class Editor extends ObservableMixin() {
 		}
 	}
 
+	/**
+	 * @internal
+	 */
 	/* istanbul ignore next -- @preserve */
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	private _showLicenseError( reason: LicenseErrorReason, featureName?: string ) {
@@ -813,23 +823,14 @@ export default abstract class Editor extends ObservableMixin() {
 			 */
 			throw new CKEditorError( 'todo-specify-this-error-code', null );
 		}, 0 );
+
+		this._showLicenseError = () => {};
 	}
 
 	/**
 	 * @internal
 	 */
-	private async _sendUsageRequest(
-		endpoint: string,
-		licenseKey: string,
-		telemetry: Record<string, unknown>
-	) {
-		const request = {
-			requestId: uid(),
-			requestTime: Math.round( Date.now() / 1000 ),
-			license: licenseKey,
-			telemetry
-		};
-
+	private async _sendUsageRequest( endpoint: string, request: unknown ) {
 		const response = await fetch( new URL( endpoint ), {
 			method: 'POST',
 			body: JSON.stringify( request )
