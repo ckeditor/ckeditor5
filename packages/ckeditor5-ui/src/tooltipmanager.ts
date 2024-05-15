@@ -473,7 +473,7 @@ export default class TooltipManager extends DomEmitterMixin() {
 			return;
 		}
 
-		const tooltipData = getTooltipData( this._currentElementWithTooltip! );
+		const tooltipData = getTooltipData( this._currentElementWithTooltip );
 
 		// This could happen if the tooltip was attached somewhere in a contextual content toolbar and the toolbar
 		// disappeared (e.g. removed an image), or the tooltip text was removed.
@@ -484,7 +484,7 @@ export default class TooltipManager extends DomEmitterMixin() {
 		}
 
 		this.balloonPanelView.pin( {
-			target: this._currentElementWithTooltip!,
+			target: this._currentElementWithTooltip,
 			positions: TooltipManager.getPositioningFunctions( tooltipData.position )
 		} );
 	}
