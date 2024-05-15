@@ -27,7 +27,7 @@ import {
 import '../../../theme/components/panel/balloonrotator.css';
 import '../../../theme/components/panel/fakepanel.css';
 
-const toPx = toUnit( 'px' );
+const toPx = /* #__PURE__ */ toUnit( 'px' );
 
 /**
  * Provides the common contextual balloon for the editor.
