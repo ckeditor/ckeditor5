@@ -16,8 +16,10 @@ This package contains the source version of the inline editor. This editor imple
 
 ## Installation
 
+This package is part of our open-source aggregate package
+
 ```bash
-npm install --save @ckeditor/ckeditor5-editor-inline
+npm install --save @ckeditor/ckeditor5
 ```
 
 ## Contribute

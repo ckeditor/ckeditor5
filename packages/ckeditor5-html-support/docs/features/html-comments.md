@@ -27,8 +27,10 @@ The editor below is configured to keep HTML comments in the document content. Yo
 
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-html-support`](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support) package:
 
-```plaintext
-npm install --save @ckeditor/ckeditor5-html-support
+This package is part of our open-source aggregate package
+
+```bash
+npm install --save @ckeditor/ckeditor5
 ```
 
 Then add it to the editor configuration:

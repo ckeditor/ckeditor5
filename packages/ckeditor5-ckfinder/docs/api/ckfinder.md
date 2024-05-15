@@ -20,8 +20,10 @@ Check out the {@link features/image-upload comprehensive "Image upload" guide} t
 
 ## Installation
 
+This package is part of our open-source aggregate package
+
 ```bash
-npm install --save @ckeditor/ckeditor5-ckfinder
+npm install --save @ckeditor/ckeditor5
 ```
 
 ## Contribute

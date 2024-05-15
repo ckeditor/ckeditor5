@@ -16,8 +16,10 @@ This package contains the source version of the classic editor. This editor impl
 
 ## Installation
 
+This package is part of our open-source aggregate package
+
 ```bash
-npm install --save @ckeditor/ckeditor5-editor-classic
+npm install --save @ckeditor/ckeditor5
 ```
 
 ## Contribute

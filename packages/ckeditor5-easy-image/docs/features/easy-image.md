@@ -120,10 +120,10 @@ The variety of the image sizes in the `srcset` attribute allows the web browser 
 
 ## Installation
 
-To add this feature to your editor, install the [`@ckeditor/ckeditor5-easy-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-easy-image) package:
+This package is part of our open-source aggregate package
 
 ```bash
-npm install --save @ckeditor/ckeditor5-easy-image
+npm install --save @ckeditor/ckeditor5
 ```
 
 Then add {@link module:easy-image/easyimage~EasyImage} to your plugin list and [configure](#configuration) the feature. For instance:

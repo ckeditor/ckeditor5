@@ -18,8 +18,10 @@ See the {@link features/mentions mention feature guide} and the {@link module:me
 
 ## Installation
 
+This package is part of our open-source aggregate package
+
 ```bash
-npm install --save @ckeditor/ckeditor5-mention
+npm install --save @ckeditor/ckeditor5
 ```
 
 ## Contribute

@@ -21,8 +21,10 @@ This repository contains the following upload adapters:
 
 ## Installation
 
+This package is part of our open-source aggregate package
+
 ```bash
-npm install --save @ckeditor/ckeditor5-upload
+npm install --save @ckeditor/ckeditor5
 ```
 
 ## Contribute
