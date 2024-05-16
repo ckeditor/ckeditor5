@@ -7,7 +7,7 @@
  * @module typing/input
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
 import { env } from '@ckeditor/ckeditor5-utils';
 
 import InsertTextCommand, { type InsertTextCommandOptions } from './inserttextcommand.js';
@@ -18,6 +18,7 @@ import {
 	type Model,
 	type Element,
 	type Range,
+	type ViewElement,
 	type MutationData,
 	type ViewDocumentCompositionStartEvent,
 	type ViewDocumentCompositionEndEvent,
@@ -34,12 +35,7 @@ export default class Input extends Plugin {
 	/**
 	 * The queue of `insertText` command executions that are waiting for the DOM to get updated after beforeinput event.
 	 */
-	private _queue: Array<InsertTextCommandLiveOptions> = [];
-
-	/**
-	 * Debounced queue flush as a safety mechanism for cases of mutation observer not triggering.
-	 */
-	private _flushQueueDebounced = debounce( () => this._flushQueue( 'timeout' ), 50 );
+	private _queue!: InsertTextQueue;
 
 	/**
 	 * A set of model elements. The composition was in those elements. It's used for mutations check after composition end.
@@ -62,6 +58,8 @@ export default class Input extends Plugin {
 		const view = editor.editing.view;
 		const modelSelection = model.document.selection;
 
+		this._queue = new InsertTextQueue( editor );
+
 		view.addObserver( InsertTextObserver );
 
 		// TODO The above default configuration value should be defined using editor.config.define() once it's fixed.
@@ -81,7 +79,7 @@ export default class Input extends Plugin {
 			// Flush queue on the next beforeinput event because it could happen
 			// that the mutation observer does not notice the DOM change in time.
 			if ( env.isAndroid && view.document.isComposing ) {
-				this._flushQueue( 'next beforeinput' );
+				this._queue.flush( 'next beforeinput' );
 			}
 
 			const { text, selection: viewSelection, resultRange: viewResultRange } = data;
@@ -158,8 +156,7 @@ export default class Input extends Plugin {
 				// @if CK_DEBUG_TYPING // 	);
 				// @if CK_DEBUG_TYPING // }
 
-				this._pushQueue( commandData );
-				this._flushQueueDebounced();
+				this._queue.push( commandData );
 			} else {
 				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 				// @if CK_DEBUG_TYPING // 	console.log( `%c[Input]%c Execute insertText:%c "${ commandData.text }"%c ` +
@@ -222,10 +219,23 @@ export default class Input extends Plugin {
 		if ( env.isAndroid ) {
 			// Apply changes to the model as they are applied to the DOM by the browser.
 			// On beforeinput event, the DOM is not yet modified. We wait for detected mutations to apply model changes.
-			this.listenTo<ViewDocumentMutationsEvent>( view.document, 'mutations', () => this._flushQueue( 'mutations' ) );
+			this.listenTo<ViewDocumentMutationsEvent>( view.document, 'mutations', ( evt, { mutations } ) => {
+				// Check if mutations are relevant for queued changes.
+				// TODO make sure this works properly, for example what about AttributeElement.
+				for ( const { type, node } of mutations ) {
+					const viewElement = ( type == 'text' ? node.parent : node ) as ViewElement;
+					const modelElement = editor.editing.mapper.toModelElement( viewElement )!;
+
+					if ( this._compositionElements.has( modelElement ) ) {
+						this._queue.flush( 'mutations' );
+
+						break;
+					}
+				}
+			} );
 
 			// Make sure that all changes are applied to the model before the end of composition.
-			this.listenTo<ViewDocumentCompositionEndEvent>( view.document, 'compositionend', () => this._flushQueue( 'composition end' ) );
+			this.listenTo<ViewDocumentCompositionEndEvent>( view.document, 'compositionend', () => this._queue.flush( 'composition end' ) );
 
 			// Trigger mutations check after the composition completes to fix all DOM changes that got ignored during composition.
 			this.listenTo<ViewDocumentCompositionEndEvent>( view.document, 'compositionend', () => {
@@ -271,17 +281,58 @@ export default class Input extends Plugin {
 		super.destroy();
 
 		this._compositionElements.clear();
-		this._flushQueueDebounced.cancel();
+		this._queue.destroy();
+	}
+}
+
+/**
+ * TODO
+ */
+class InsertTextQueue {
+	/**
+	 * TODO
+	 */
+	public editor: Editor;
+
+	/**
+	 * Debounced queue flush as a safety mechanism for cases of mutation observer not triggering.
+	 */
+	public flushDebounced = debounce( () => this.flush( 'timeout' ), 50 );
+
+	/**
+	 * The queue of `insertText` command executions that are waiting for the DOM to get updated after beforeinput event.
+	 */
+	private _queue: Array<InsertTextCommandLiveOptions> = [];
+
+	/**
+	 * TODO
+	 */
+	constructor( editor: Editor ) {
+		this.editor = editor;
+	}
+
+	/**
+	 * TODO
+	 */
+	public destroy(): void {
+		this.flushDebounced.cancel();
 
 		while ( this._queue.length ) {
-			this._shiftQueue();
+			this.shift();
 		}
+	}
+
+	/**
+	 * TODO
+	 */
+	public get length(): number {
+		return this._queue.length;
 	}
 
 	/**
 	 * Push next insertText command data to the queue.
 	 */
-	private _pushQueue( commandData: InsertTextCommandOptions ): void {
+	public push( commandData: InsertTextCommandOptions ): void {
 		const commandLiveData: InsertTextCommandLiveOptions = {
 			text: commandData.text
 		};
@@ -295,12 +346,13 @@ export default class Input extends Plugin {
 		}
 
 		this._queue.push( commandLiveData );
+		this.flushDebounced();
 	}
 
 	/**
 	 * Shift the first item from the insertText command data queue.
 	 */
-	private _shiftQueue(): InsertTextCommandOptions {
+	public shift(): InsertTextCommandOptions {
 		const commandLiveData = this._queue.shift()!;
 		const commandData: InsertTextCommandOptions = {
 			text: commandLiveData.text
@@ -328,12 +380,12 @@ export default class Input extends Plugin {
 	 *
 	 * @param reason Used only for debugging.
 	 */
-	private _flushQueue( reason: string ): void { // eslint-disable-line @typescript-eslint/no-unused-vars
+	public flush( reason: string ): void { // eslint-disable-line @typescript-eslint/no-unused-vars
 		const editor = this.editor;
 		const model = editor.model;
 		const view = editor.editing.view;
 
-		this._flushQueueDebounced.cancel();
+		this.flushDebounced.cancel();
 
 		if ( !this._queue.length ) {
 			return;
@@ -352,7 +404,7 @@ export default class Input extends Plugin {
 			buffer.lock();
 
 			while ( this._queue.length ) {
-				const commandData = this._shiftQueue();
+				const commandData = this.shift();
 
 				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 				// @if CK_DEBUG_TYPING // 	console.log( '%c[Input]%c Execute queued insertText:%c ' +

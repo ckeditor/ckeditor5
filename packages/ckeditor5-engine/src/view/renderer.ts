@@ -688,10 +688,24 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 		for ( const action of actions ) {
 			if ( action === 'delete' ) {
 				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-				// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Remove node',
-				// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-weight: normal', actualDomChildren[ i ]
-				// @if CK_DEBUG_TYPING // 	);
+				// @if CK_DEBUG_TYPING //	const node = actualDomChildren[ i ];
+				// @if CK_DEBUG_TYPING // 	if ( isText( node ) ) {
+				// @if CK_DEBUG_TYPING // 		console.info( '%c[Renderer]%c Remove text node' +
+				// @if CK_DEBUG_TYPING // 			`${ this.isComposing ? ' while composing (may break composition)' : '' }: ` +
+				// @if CK_DEBUG_TYPING // 			`%c${ _escapeTextNodeData( node.data ) }%c (${ node.data.length })`,
+				// @if CK_DEBUG_TYPING // 			'color: green;font-weight: bold',
+				// @if CK_DEBUG_TYPING // 			this.isComposing ? 'color: red; font-weight: bold' : '', 'color: blue', ''
+				// @if CK_DEBUG_TYPING // 		);
+				// @if CK_DEBUG_TYPING // 	} else {
+				// @if CK_DEBUG_TYPING // 		console.info( '%c[Renderer]%c Remove element' +
+				// @if CK_DEBUG_TYPING // 			`${ this.isComposing ? ' while composing (may break composition)' : '' }: `,
+				// @if CK_DEBUG_TYPING // 			'color: green;font-weight: bold',
+				// @if CK_DEBUG_TYPING // 			this.isComposing ? 'color: red; font-weight: bold' : '',
+				// @if CK_DEBUG_TYPING // 			node
+				// @if CK_DEBUG_TYPING // 		);
+				// @if CK_DEBUG_TYPING // 	}
 				// @if CK_DEBUG_TYPING // }
+
 				nodesToUnbind.add( actualDomChildren[ i ] as DomElement );
 				remove( actualDomChildren[ i ] );
 			} else if ( action === 'equal' || action === 'update' ) {
@@ -704,9 +718,21 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 		for ( const action of actions ) {
 			if ( action === 'insert' ) {
 				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-				// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Insert node',
-				// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-weight: normal', expectedDomChildren[ i ]
-				// @if CK_DEBUG_TYPING // 	);
+				// @if CK_DEBUG_TYPING //	const node = expectedDomChildren[ i ];
+				// @if CK_DEBUG_TYPING //	if ( isText( node ) ) {
+				// @if CK_DEBUG_TYPING //		console.info( '%c[Renderer]%c Insert text node:',
+				// @if CK_DEBUG_TYPING //			`${ this.isComposing ? ' while composing (may break composition)' : '' }: ` +
+				// @if CK_DEBUG_TYPING //			`%c${ _escapeTextNodeData( node.data ) }%c (${ node.data.length })`,
+				// @if CK_DEBUG_TYPING //			'color: green;font-weight: bold',
+				// @if CK_DEBUG_TYPING //			this.isComposing ? 'color: red; font-weight: bold' : '',
+				// @if CK_DEBUG_TYPING //			'color: blue', ''
+				// @if CK_DEBUG_TYPING //		);
+				// @if CK_DEBUG_TYPING //	} else {
+				// @if CK_DEBUG_TYPING //		console.info( '%c[Renderer]%c Insert element:',
+				// @if CK_DEBUG_TYPING //			'color: green;font-weight: bold', 'font-weight: normal',
+				// @if CK_DEBUG_TYPING //			node
+				// @if CK_DEBUG_TYPING //		);
+				// @if CK_DEBUG_TYPING //	}
 				// @if CK_DEBUG_TYPING // }
 
 				insertAt( domElement as DomElement, i, expectedDomChildren[ i ] );
@@ -846,7 +872,8 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 		}
 
 		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-		// @if CK_DEBUG_TYPING // 	console.info( `%c[Renderer]%c Update text node${ this.isComposing ? ' while composing' : '' }: ` +
+		// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Update text node' +
+		// @if CK_DEBUG_TYPING // 		`${ this.isComposing ? ' while composing (may break composition)' : '' }: ` +
 		// @if CK_DEBUG_TYPING // 		`%c${ _escapeTextNodeData( actualText ) }%c (${ actualText.length }) ->` +
 		// @if CK_DEBUG_TYPING // 		` %c${ _escapeTextNodeData( expectedText ) }%c (${ expectedText.length })`,
 		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', this.isComposing ? 'color: red; font-weight: bold' : '',
