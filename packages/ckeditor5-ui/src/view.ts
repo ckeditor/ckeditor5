@@ -161,7 +161,7 @@ export default class View<TElement extends HTMLElement = HTMLElement>
 	 */
 	public template?: Template;
 
-	public viewUid?: string;
+	public declare viewUid?: string;
 
 	/**
 	 * Collections registered with {@link #createCollection}.

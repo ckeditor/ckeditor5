@@ -52,7 +52,7 @@ export default class FileRepository extends Plugin {
 	 *
 	 * For more information and example see {@link module:upload/filerepository~UploadAdapter}.
 	 */
-	public createUploadAdapter?: ( loader: FileLoader ) => UploadAdapter;
+	public declare createUploadAdapter?: ( loader: FileLoader ) => UploadAdapter;
 
 	/**
 	 * Loaders mappings used to retrieve loaders references.

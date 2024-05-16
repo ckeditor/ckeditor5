@@ -63,7 +63,7 @@ export const DialogViewPosition = {
 	EDITOR_BELOW_CENTER: 'editor-below-center'
 } as const;
 
-const toPx = toUnit( 'px' );
+const toPx = /* #__PURE__ */ toUnit( 'px' );
 
 /**
  * A dialog view class.

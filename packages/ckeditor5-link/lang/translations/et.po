@@ -31,7 +31,7 @@ msgstr "Lingi URL"
 
 msgctxt "An error text displayed when user attempted to enter an empty URL."
 msgid "Link URL must not be empty."
-msgstr ""
+msgstr "Lingi URL peab olema sisestatud."
 
 msgctxt "Label for the image link button."
 msgid "Link image"
