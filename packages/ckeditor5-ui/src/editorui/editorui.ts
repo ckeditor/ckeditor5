@@ -31,7 +31,7 @@ import type { ViewDocumentLayoutChangedEvent, ViewScrollToTheSelectionEvent } fr
 /**
  * A class providing the minimal interface that is required to successfully bootstrap any editor UI.
  */
-export default abstract class EditorUI extends ObservableMixin() {
+export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * The editor that the UI belongs to.
 	 */

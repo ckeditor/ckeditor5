@@ -15,6 +15,7 @@ This article explains how to activate a commercial license of CKEditor&nbsp;5 an
 	* {@link features/revision-history Revision history}
 * {@link features/pagination Pagination}
 * {@link features/ai-assistant-overview AI Assistant}
+* {@link features/multi-level-lists Multi-level list}
 * The Productivity Pack that includes:
 	* {@link features/case-change Case change}
 	* {@link features/document-outline Document outline}

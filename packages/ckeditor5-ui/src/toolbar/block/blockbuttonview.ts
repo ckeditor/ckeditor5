@@ -13,7 +13,7 @@ import { toUnit, type Locale } from '@ckeditor/ckeditor5-utils';
 
 import '../../../theme/components/toolbar/blocktoolbar.css';
 
-const toPx = toUnit( 'px' );
+const toPx = /* #__PURE__ */ toUnit( 'px' );
 
 /**
  * The block button view class.

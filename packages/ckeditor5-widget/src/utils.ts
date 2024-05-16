@@ -453,12 +453,18 @@ function addSelectionHandle( widgetElement: ViewContainerElement, writer: Downca
  * Starting from a DOM resize host element (an element that receives dimensions as a result of resizing),
  * this helper returns the width of the found ancestor element.
  *
- * **Note**: This helper searches up to 5 levels of ancestors only.
+ *	* It searches up to 5 levels of ancestors only.
  *
  * @param domResizeHost Resize host DOM element that receives dimensions as a result of resizing.
  * @returns Width of ancestor element in pixels or 0 if no ancestor with a computed width has been found.
  */
 export function calculateResizeHostAncestorWidth( domResizeHost: HTMLElement ): number {
+	const getElementComputedWidth = ( element: HTMLElement ) => {
+		const { width, paddingLeft, paddingRight } = element.ownerDocument.defaultView!.getComputedStyle( element! );
+
+		return parseFloat( width ) - ( parseFloat( paddingLeft ) || 0 ) - ( parseFloat( paddingRight ) || 0 );
+	};
+
 	const domResizeHostParent = domResizeHost.parentElement;
 
 	if ( !domResizeHostParent ) {
@@ -466,7 +472,7 @@ export function calculateResizeHostAncestorWidth( domResizeHost: HTMLElement ): 
 	}
 
 	// Need to use computed style as it properly excludes parent's paddings from the returned value.
-	let parentWidth = parseFloat( domResizeHostParent!.ownerDocument.defaultView!.getComputedStyle( domResizeHostParent! ).width );
+	let parentWidth = getElementComputedWidth( domResizeHostParent! );
 
 	// Sometimes parent width cannot be accessed. If that happens we should go up in the elements tree
 	// and try to get width from next ancestor.
@@ -483,9 +489,7 @@ export function calculateResizeHostAncestorWidth( domResizeHost: HTMLElement ): 
 			return 0;
 		}
 
-		parentWidth = parseFloat(
-				domResizeHostParent!.ownerDocument.defaultView!.getComputedStyle( checkedElement ).width
-		);
+		parentWidth = getElementComputedWidth( checkedElement );
 	}
 
 	return parentWidth;

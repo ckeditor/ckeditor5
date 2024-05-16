@@ -54,7 +54,7 @@ type DomSelection = globalThis.Selection;
  * Renderer uses {@link module:engine/view/domconverter~DomConverter} to transform view nodes and positions
  * to and from the DOM.
  */
-export default class Renderer extends ObservableMixin() {
+export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Set of DOM Documents instances.
 	 */

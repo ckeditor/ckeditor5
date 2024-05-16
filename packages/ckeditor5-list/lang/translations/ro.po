@@ -140,3 +140,11 @@ msgstr "Incrementează indentarea elementelor din listă"
 msgctxt "Keystroke description for assistive technologies: keystroke for decreasing list item indentation."
 msgid "Decrease list item indent"
 msgstr "Decrementează indentarea elementelor din listă"
+
+msgctxt "Assistive technologies label for entering the to-do list."
+msgid "Entering a to-do list"
+msgstr "Introducerea unei liste de activități"
+
+msgctxt "Assistive technologies label for leaving the to-do list."
+msgid "Leaving a to-do list"
+msgstr "Ieșirea dintr-o listă de activități"

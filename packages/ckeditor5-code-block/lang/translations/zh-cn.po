@@ -25,6 +25,22 @@ msgctxt "A language of the code block in the editor content when no specific pro
 msgid "Plain text"
 msgstr "纯文本"
 
+msgctxt "Assistive technologies label for leaving the code block with a specified programming language. Example: 'Leaving JavaScript code snippet'"
+msgid "Leaving %0 code snippet"
+msgstr "正在退出 %0 代码片段"
+
+msgctxt "Assistive technologies label for entering the code block with a specified programming language. Example: 'Entering JavaScript code snippet'"
+msgid "Entering %0 code snippet"
+msgstr "正在输入 %0 代码片段"
+
+msgctxt "Assistive technologies label for entering the code block with unspecified programming language."
+msgid "Entering code snippet"
+msgstr "正在输入代码片段"
+
+msgctxt "Assistive technologies label for leaving the code block with unspecified programming language."
+msgid "Leaving code snippet"
+msgstr "正在退出代码片段"
+
 msgctxt "The accessible label of the menu bar button that inserts a code block into editor content."
 msgid "Code block"
 msgstr "代码块"

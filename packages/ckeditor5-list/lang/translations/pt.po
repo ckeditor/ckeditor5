@@ -140,3 +140,11 @@ msgstr "Aumentar o avanço de um item de lista"
 msgctxt "Keystroke description for assistive technologies: keystroke for decreasing list item indentation."
 msgid "Decrease list item indent"
 msgstr "Diminuir o avanço de um item de lista"
+
+msgctxt "Assistive technologies label for entering the to-do list."
+msgid "Entering a to-do list"
+msgstr "Introdução de uma lista de afazeres"
+
+msgctxt "Assistive technologies label for leaving the to-do list."
+msgid "Leaving a to-do list"
+msgstr "A sair de uma lista de afazeres"
