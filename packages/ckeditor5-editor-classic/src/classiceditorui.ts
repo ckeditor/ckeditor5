@@ -10,12 +10,14 @@
 import type { Editor, ElementApi } from 'ckeditor5/src/core.js';
 import {
 	EditorUI,
-	normalizeToolbarConfig,
-	normalizeMenuBarConfig,
 	DialogView,
+	normalizeToolbarConfig,
+	_initMenuBar,
 	type DialogViewMoveToEvent,
 	type Dialog,
-	type EditorUIReadyEvent
+	type EditorUIReadyEvent,
+	type EditorUIView,
+	type MenuBarView
 } from 'ckeditor5/src/ui.js';
 import {
 	enablePlaceholder,
@@ -39,11 +41,6 @@ export default class ClassicEditorUI extends EditorUI {
 	private readonly _toolbarConfig: ReturnType<typeof normalizeToolbarConfig>;
 
 	/**
-	 * A normalized `config.menuBar` object.
-	 */
-	private readonly _menuBarConfig: ReturnType<typeof normalizeMenuBarConfig>;
-
-	/**
 	 * The element replacer instance used to hide the editor's source element.
 	 */
 	private readonly _elementReplacer: ElementReplacer;
@@ -59,9 +56,6 @@ export default class ClassicEditorUI extends EditorUI {
 
 		this.view = view;
 		this._toolbarConfig = normalizeToolbarConfig( editor.config.get( 'toolbar' ) );
-
-		// We use config.define in ClassicEditor, there will always be some configuration.
-		this._menuBarConfig = normalizeMenuBarConfig( editor.config.get( 'menuBar' ) || {} );
 
 		this._elementReplacer = new ElementReplacer();
 
@@ -124,7 +118,11 @@ export default class ClassicEditorUI extends EditorUI {
 
 		this._initPlaceholder();
 		this._initToolbar();
-		this._initMenuBar();
+
+		if ( view.menuBarView ) {
+			_initMenuBar( editor, view.menuBarView );
+		}
+
 		this._initDialogPluginIntegration();
 		this.fire<EditorUIReadyEvent>( 'ready' );
 	}
@@ -158,21 +156,6 @@ export default class ClassicEditorUI extends EditorUI {
 
 		// Register the toolbar so it becomes available for Alt+F10 and Esc navigation.
 		this.addToolbar( view.toolbar );
-	}
-
-	/**
-	 * Initializes the editor menu bar.
-	 */
-	private _initMenuBar(): void {
-		const view = this.view;
-
-		if ( !view.menuBarView ) {
-			return;
-		}
-
-		this._setupMenuBarBehaviors( view.menuBarView.element! );
-
-		view.menuBarView.fillFromConfig( this._menuBarConfig, this.componentFactory );
 	}
 
 	/**
@@ -274,29 +257,6 @@ export default class ClassicEditorUI extends EditorUI {
 				}
 			}, { priority: 'high' } );
 		}, { priority: 'low' } );
-	}
-
-	/**
-	 * Handles focus and keystrokes for menu bar element.
-	 */
-	private _setupMenuBarBehaviors( menuBarViewElement: HTMLElement ) {
-		const editor = this.editor;
-		this.focusTracker.add( menuBarViewElement );
-		editor.keystrokes.listenTo( menuBarViewElement );
-
-		editor.keystrokes.set( 'Esc', ( data, cancel ) => {
-			if ( menuBarViewElement.contains( this.focusTracker.focusedElement ) ) {
-				editor.editing.view.focus();
-				cancel();
-			}
-		} );
-
-		editor.keystrokes.set( 'Alt+F9', ( data, cancel ) => {
-			if ( !menuBarViewElement.contains( this.focusTracker.focusedElement ) ) {
-				this.view.menuBarView!.focus();
-				cancel();
-			}
-		} );
 	}
 }
 

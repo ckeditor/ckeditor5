@@ -1,0 +1,20 @@
+/*
+ * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+@define-mixin ck-media-forced-colors {
+	@media (forced-colors: active) {
+		& {
+			@mixin-content;
+		}
+	}
+}
+
+@define-mixin ck-media-default-colors {
+	@media (forced-colors: none) {
+		& {
+			@mixin-content;
+		}
+	}
+}

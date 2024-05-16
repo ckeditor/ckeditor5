@@ -140,3 +140,11 @@ msgstr "Kasvata listanimikkeen sisennystä"
 msgctxt "Keystroke description for assistive technologies: keystroke for decreasing list item indentation."
 msgid "Decrease list item indent"
 msgstr "Vähennä listanimikkeen sisennystä"
+
+msgctxt "Assistive technologies label for entering the to-do list."
+msgid "Entering a to-do list"
+msgstr "Syötetään tehtävälista."
+
+msgctxt "Assistive technologies label for leaving the to-do list."
+msgid "Leaving a to-do list"
+msgstr "Jätetään tehtävälista"

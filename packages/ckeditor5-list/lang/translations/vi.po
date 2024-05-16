@@ -140,3 +140,11 @@ msgstr "Tăng thụt lề mục danh sách"
 msgctxt "Keystroke description for assistive technologies: keystroke for decreasing list item indentation."
 msgid "Decrease list item indent"
 msgstr "Giảm thụt lề mục danh sách"
+
+msgctxt "Assistive technologies label for entering the to-do list."
+msgid "Entering a to-do list"
+msgstr "Đang nhập danh sách việc cần làm"
+
+msgctxt "Assistive technologies label for leaving the to-do list."
+msgid "Leaving a to-do list"
+msgstr "Đang rời khỏi danh sách việc cần làm"

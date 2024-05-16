@@ -140,3 +140,11 @@ msgstr "增加列表項目縮排"
 msgctxt "Keystroke description for assistive technologies: keystroke for decreasing list item indentation."
 msgid "Decrease list item indent"
 msgstr "減少列表項目縮排"
+
+msgctxt "Assistive technologies label for entering the to-do list."
+msgid "Entering a to-do list"
+msgstr "進入待辦事項清單"
+
+msgctxt "Assistive technologies label for leaving the to-do list."
+msgid "Leaving a to-do list"
+msgstr "離開待辦事項清單"

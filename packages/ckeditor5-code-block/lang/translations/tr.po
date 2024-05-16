@@ -25,6 +25,22 @@ msgctxt "A language of the code block in the editor content when no specific pro
 msgid "Plain text"
 msgstr "Düz metin"
 
+msgctxt "Assistive technologies label for leaving the code block with a specified programming language. Example: 'Leaving JavaScript code snippet'"
+msgid "Leaving %0 code snippet"
+msgstr "%0 kod parçacığından ayrılınıyor"
+
+msgctxt "Assistive technologies label for entering the code block with a specified programming language. Example: 'Entering JavaScript code snippet'"
+msgid "Entering %0 code snippet"
+msgstr "%0 kod parçacığına girmek"
+
+msgctxt "Assistive technologies label for entering the code block with unspecified programming language."
+msgid "Entering code snippet"
+msgstr "Kod parçacığına girmek"
+
+msgctxt "Assistive technologies label for leaving the code block with unspecified programming language."
+msgid "Leaving code snippet"
+msgstr "Kod parçacığından ayrılma"
+
 msgctxt "The accessible label of the menu bar button that inserts a code block into editor content."
 msgid "Code block"
 msgstr "Kod bloku"

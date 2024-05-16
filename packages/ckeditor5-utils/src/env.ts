@@ -22,7 +22,7 @@ export function getUserAgent( ): string {
 	}
 }
 
-const userAgent = getUserAgent();
+const userAgent = /* #__PURE__ */ getUserAgent();
 
 // This interface exists to make our API pages more readable.
 /**
@@ -66,6 +66,16 @@ export interface EnvType {
 	readonly isBlink: boolean;
 
 	/**
+	 * Indicates that the the user agent has enabled a forced colors mode (e.g. Windows High Contrast mode).
+	 */
+	readonly isMediaForcedColors: boolean;
+
+	/**
+	 * Indicates that "prefer reduced motion" browser setting is active.
+	 */
+	readonly isMotionReduced: boolean;
+
+	/**
 	 * Environment features information.
 	 */
 	readonly features: EnvFeaturesType;
@@ -85,22 +95,28 @@ export interface EnvFeaturesType {
  * A namespace containing environment and browser information.
  */
 const env: EnvType = {
-	isMac: isMac( userAgent ),
+	isMac: /* #__PURE__ */ isMac( userAgent ),
 
-	isWindows: isWindows( userAgent ),
+	isWindows: /* #__PURE__ */ isWindows( userAgent ),
 
-	isGecko: isGecko( userAgent ),
+	isGecko: /* #__PURE__ */ isGecko( userAgent ),
 
-	isSafari: isSafari( userAgent ),
+	isSafari: /* #__PURE__ */ isSafari( userAgent ),
 
-	isiOS: isiOS( userAgent ),
+	isiOS: /* #__PURE__ */ isiOS( userAgent ),
 
-	isAndroid: isAndroid( userAgent ),
+	isAndroid: /* #__PURE__ */ isAndroid( userAgent ),
 
-	isBlink: isBlink( userAgent ),
+	isBlink: /* #__PURE__ */ isBlink( userAgent ),
+
+	isMediaForcedColors: /* #__PURE__ */ isMediaForcedColors(),
+
+	get isMotionReduced() {
+		return isMotionReduced();
+	},
 
 	features: {
-		isRegExpUnicodePropertySupported: isRegExpUnicodePropertySupported()
+		isRegExpUnicodePropertySupported: /* #__PURE__ */ isRegExpUnicodePropertySupported()
 	}
 };
 
@@ -198,4 +214,18 @@ export function isRegExpUnicodePropertySupported(): boolean {
 	}
 
 	return isSupported;
+}
+
+/**
+ * Checks if the user agent has enabled a forced colors mode (e.g. Windows High Contrast mode).
+ */
+export function isMediaForcedColors(): boolean {
+	return window.matchMedia( '(forced-colors: active)' ).matches;
+}
+
+/**
+ * Checks if user enabled "prefers reduced motion" setting in browser.
+ */
+export function isMotionReduced(): boolean {
+	return window.matchMedia( '(prefers-reduced-motion)' ).matches;
 }
