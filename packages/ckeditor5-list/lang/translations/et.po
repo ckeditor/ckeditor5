@@ -143,8 +143,8 @@ msgstr "Vähenda loendi taanet"
 
 msgctxt "Assistive technologies label for entering the to-do list."
 msgid "Entering a to-do list"
-msgstr ""
+msgstr "Tulevaste tegevuste nimekirja avamine"
 
 msgctxt "Assistive technologies label for leaving the to-do list."
 msgid "Leaving a to-do list"
-msgstr ""
+msgstr "Tulevaste tegevuste nimekirja sulgemine"

@@ -996,6 +996,33 @@ describe( 'TooltipManager', () => {
 			sinon.assert.calledOnce( pinSpy );
 			sinon.assert.calledOnce( unpinSpy );
 		} );
+
+		it( 'should not crash when the tooltip gets removed on the same UI `update` event', () => {
+			utils.dispatchMouseEnter( elements.a );
+			utils.waitForTheTooltipToShow( clock );
+
+			sinon.assert.calledOnce( pinSpy );
+
+			editor.ui.update();
+			sinon.assert.calledTwice( pinSpy );
+
+			expect( editor.editing.view.document.isFocused ).to.be.false;
+
+			// Minimal case of unlinking with the button in the link balloon toolbar.
+			// See https://github.com/ckeditor/ckeditor5/pull/16363.
+			editor.ui.once( 'update', () => {
+				editor.editing.view.focus();
+			} );
+
+			// After removing a link from content, model changed so view and DOM got updated.
+			editor.ui.update();
+
+			utils.waitForTheTooltipToHide( clock );
+
+			editor.ui.update();
+
+			sinon.assert.calledTwice( pinSpy );
+		} );
 	} );
 
 	describe( '#defaultPositions', () => {
