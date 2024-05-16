@@ -5,6 +5,10 @@ Changelog
 
 We are happy to announce the release of CKEditor 5 v41.4.1.
 
+### Release highlights
+
+This is a patch release that resolves a critical issue introduced in v41.4.0.
+
 We have enhanced CKEditor 5 to improve accessibility and user experience further. Screen reader announcements have been expanded to include code blocks, images, and lists, enhancing navigability for visually impaired users. Additionally, the editor now better adheres to accessibility standards by respecting user preferences for reduced motion, and we have improved handling of color settings in high contrast modes.
 
 We have also added [menu bar](https://ckeditor.com/docs/ckeditor5/latest/features/toolbar/menubar.html) support for the multi-root editor.
