@@ -38,8 +38,6 @@ export default class Differ {
 	/**
 	 * Priority of the {@link ~Differ#_elementState element states}. States on higher indexes of the array can overwrite states on the lower
 	 * indexes.
-	 *
-	 * @private
 	 */
 	private static readonly _statesPriority = [ undefined, 'refresh', 'rename', 'move' ];
 
@@ -536,8 +534,8 @@ export default class Differ {
 			// Generate diff instructions based on changes done in the element/root.
 			const diffInstructions = _generateDiffInstructionsFromChanges( childrenBefore.length, changes );
 
-			let i = 0; // Iterator in `elementChildren` array -- iterates through current children of element.
-			let j = 0; // Iterator in `snapshotChildren` array -- iterates through old children of element.
+			let i = 0; // Iterator in `childrenAfter` array -- iterates through current children of element.
+			let j = 0; // Iterator in `childrenBefore` array -- iterates through old children of element.
 
 			// Process every action.
 			for ( const instruction of diffInstructions ) {
@@ -572,6 +570,7 @@ export default class Differ {
 					// Generate diff items for this change (there might be multiple attributes changed and
 					// there is a single diff for each of them) and insert them into the diff set.
 					const diffItems = this._getAttributesDiff( range, beforeAttributes, afterAttributes );
+
 					diffSet.push( ...diffItems );
 
 					i++;
