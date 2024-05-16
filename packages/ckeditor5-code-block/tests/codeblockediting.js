@@ -130,8 +130,8 @@ describe( 'CodeBlockEditing', () => {
 	} );
 
 	it( 'disallows $inlineObject', () => {
-		// `$inlineObject` inherits from `$text`, so it would be allowed by `codeBlock` element. This would allow elements like inline
-		// image inside a code block. This is an incorrect situation, as we want only text inside `codeBlock`.
+		// Disallow `$inlineObject` and its derivatives like `inlineWidget` inside `codeBlock` to ensure that only text,
+		// not other inline elements like inline images, are allowed. This maintains the semantic integrity of code blocks.
 		model.schema.register( 'inlineWidget', {
 			inheritAllFrom: '$inlineObject'
 		} );

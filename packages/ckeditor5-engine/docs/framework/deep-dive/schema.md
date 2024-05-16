@@ -73,7 +73,7 @@ Both the `{@link module:engine/model/schema~SchemaItemDefinition#allowIn}` and `
 
 ## Disallowing structures
 
-The schema, in addition to allowing certain structures, can be also used to ensure some structures are explicitly disallowed. This can be achieved with the use of disallow rules.
+The schema, in addition to allowing certain structures, can also be used to ensure some structures are explicitly disallowed. This can be achieved with the use of disallow rules.
 
 Typically, you will use {@link module:engine/model/schema~SchemaItemDefinition#disallowChildren} property for that. It can be used to define which nodes are disallowed inside given element:
 
@@ -126,7 +126,7 @@ This changes how schema rules are resolved. `baseChild` will still be disallowed
 
 Of course, you can mix `allowIn` with `disallowChildren` as well as `allowChildren` with `disallowIn`.
 
-Finally, a situation may come up, when you want to inherit from an item which is already disallowed, but the new element should be re-allowed again. In this case the definitions should look like this:
+Finally, a situation may come up, when you want to inherit from an item which is already disallowed, but the new element should be re-allowed again. In this case, the definitions should look like this:
 
 ```js
 schema.register( 'baseParent', { inheritAllFrom: 'paragraph', disallowChildren: [ 'imageInline' ] } );
