@@ -58,6 +58,16 @@
 		margin-right: auto;
 	}
 
+	& .image-style-align-left {
+		float: left;
+		margin-right: var(--ck-image-style-spacing);
+	}
+
+	& .image-style-align-right {
+		float: right;
+		margin-left: var(--ck-image-style-spacing);
+	}
+
 	/* Simulates margin collapsing with the preceding paragraph, which does not work for the floating elements. */
 	& p + .image.image-style-align-left,
 	& p + .image.image-style-align-right,
