@@ -9,7 +9,7 @@
  * @module utils/env
  */
 
-import globalVar from './dom/global.js';
+import global from './dom/global.js';
 
 /**
  * Safely returns `userAgent` from browser's navigator API in a lower case.
@@ -226,7 +226,7 @@ export function isRegExpUnicodePropertySupported(): boolean {
  * Returns `false` in environments where `window` global object is not available.
  */
 export function isMediaForcedColors(): boolean {
-	return globalVar.window.matchMedia ? globalVar.window.matchMedia( '(forced-colors: active)' ).matches : false;
+	return global.window.matchMedia ? global.window.matchMedia( '(forced-colors: active)' ).matches : false;
 }
 
 /**
@@ -235,5 +235,5 @@ export function isMediaForcedColors(): boolean {
  * Returns `false` in environments where `window` global object is not available.
  */
 export function isMotionReduced(): boolean {
-	return globalVar.window.matchMedia ? globalVar.window.matchMedia( '(prefers-reduced-motion)' ).matches : false;
+	return global.window.matchMedia ? global.window.matchMedia( '(prefers-reduced-motion)' ).matches : false;
 }
