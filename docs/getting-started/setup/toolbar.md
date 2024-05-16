@@ -299,7 +299,7 @@ Array.from( editor.ui.componentFactory.names() );
 
 Refer to the {@link tutorials/crash-course/editor step-by-step tutorial} to learn how to build a custom plugin, register its button, and add it to the toolbar configuration.
 
-### Decouple editor
+### Decoupled editor
 
 When using the Decoupled editor, you will need to insert the menu bar in a desired place yourself. The menu bar HTML element is available under the `editor.ui.view.toolbar.element` property.
 
