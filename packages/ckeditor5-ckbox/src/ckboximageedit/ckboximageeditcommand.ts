@@ -235,10 +235,17 @@ export default class CKBoxImageEditCommand extends Command {
 		this.editor.editing.view.focus();
 
 		/**
+		 * Callaback onClose in the CKBox is called before logic which could
+		 * affect layout on the page, so we updating ui at the end.
+		 *
 		 * See https://github.com/ckeditor/ckeditor5/issues/16153#top
 		 */
-		setTimeout( () => {
+		const timeId = setTimeout( () => {
 			this.editor.ui.update();
+		} );
+
+		this.editor.on( 'destroy', () => {
+			clearTimeout( timeId );
 		} );
 
 		this.refresh();

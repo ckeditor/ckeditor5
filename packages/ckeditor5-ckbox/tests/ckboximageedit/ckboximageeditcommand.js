@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global window, console, btoa, setTimeout, AbortController */
+/* global window, console, btoa, setTimeout, AbortController, globalThis */
 
 import { global } from '@ckeditor/ckeditor5-utils';
 import { Command } from 'ckeditor5/src/core.js';
@@ -410,7 +410,7 @@ describe( 'CKBoxImageEditCommand', () => {
 					controller: new AbortController()
 				} );
 
-				const refreshSpy = testUtils.sinon.spy( editor.ui, 'update' );
+				const updateUISpy = testUtils.sinon.spy( editor.ui, 'update' );
 
 				expect( command.value ).to.be.false;
 
@@ -422,7 +422,43 @@ describe( 'CKBoxImageEditCommand', () => {
 				await clock.tickAsync( 10 );
 
 				expect( command.value ).to.be.false;
-				sinon.assert.calledOnce( refreshSpy );
+				sinon.assert.calledOnce( updateUISpy );
+				clock.restore();
+			} );
+
+			it( 'should clear timer on editor destroy', async () => {
+				const ckboxImageId = 'example-id';
+				const clock = sinon.useFakeTimers();
+
+				setModelData( model,
+					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/assets/sample.png"></imageBlock>]`
+				);
+
+				const imageElement = editor.model.document.selection.getSelectedElement();
+
+				const options = await command._prepareOptions( {
+					element: imageElement,
+					ckboxImageId,
+					controller: new AbortController()
+				} );
+
+				const clearTimeoutSpy = sinon.spy( globalThis, 'clearTimeout' );
+
+				editor.fire( 'ready' );
+
+				editor.on( 'destroy', () => {
+					sinon.assert.calledOnce( clearTimeoutSpy );
+				} );
+
+				expect( command.value ).to.be.false;
+
+				command.execute();
+
+				options.onClose();
+
+				await editor.destroy();
+
+				expect( command.value ).to.be.false;
 				clock.restore();
 			} );
 		} );
