@@ -4,7 +4,8 @@
  */
 
 import env, {
-	isMac, isWindows, isGecko, isSafari, isiOS, isAndroid, isRegExpUnicodePropertySupported, isBlink, getUserAgent, isMediaForcedColors
+	isMac, isWindows, isGecko, isSafari, isiOS, isAndroid, isRegExpUnicodePropertySupported, isBlink, getUserAgent,
+	isMediaForcedColors, isMotionReduced
 } from '../src/env.js';
 
 import global from '../src/dom/global.js';
@@ -64,9 +65,33 @@ describe( 'Env', () => {
 	} );
 
 	describe( 'isMediaForcedColors', () => {
-		it( 'is a boolean', () => {
-			expect( env.isMediaForcedColors ).to.be.a( 'boolean' );
+		let matchMediaStub;
+
+		beforeEach( () => {
+			matchMediaStub = sinon.stub( global.window, 'matchMedia' );
 		} );
+
+		it( 'is a boolean', () => {
+			mockMediaForcedColors();
+
+			expect( env.isMediaForcedColors ).to.be.true;
+		} );
+
+		it( 'should watch changes in forced colors setting', () => {
+			mockMediaForcedColors();
+
+			expect( env.isMediaForcedColors ).to.be.true;
+
+			mockMediaForcedColors( false );
+
+			expect( env.isMediaForcedColors ).to.be.false;
+		} );
+
+		function mockMediaForcedColors( enabled = true ) {
+			return matchMediaStub
+				.withArgs( '(forced-colors: active)' )
+				.returns( { matches: enabled } );
+		}
 	} );
 
 	describe( 'isMotionReduced', () => {
@@ -325,6 +350,44 @@ describe( 'Env', () => {
 				.returns( { matches: false } );
 
 			expect( isMediaForcedColors() ).to.be.false;
+		} );
+
+		it( 'returns false if window object is not available', () => {
+			// `global.window` is an empty object if `window` was not available in global space.
+			const _window = global.window;
+			global.window = {};
+
+			expect( isMediaForcedColors() ).to.be.false;
+
+			global.window = _window;
+		} );
+	} );
+
+	describe( 'isMotionReduced()', () => {
+		it( 'returns true if the document media query matches prefers-reduced-motion', () => {
+			testUtils.sinon.stub( global.window, 'matchMedia' )
+				.withArgs( '(prefers-reduced-motion)' )
+				.returns( { matches: true } );
+
+			expect( isMotionReduced() ).to.be.true;
+		} );
+
+		it( 'returns false if the document media query does not match prefers-reduced-motion', () => {
+			testUtils.sinon.stub( global.window, 'matchMedia' )
+				.withArgs( '(prefers-reduced-motion)' )
+				.returns( { matches: false } );
+
+			expect( isMotionReduced() ).to.be.false;
+		} );
+
+		it( 'returns false if window object is not available', () => {
+			// `global.window` is an empty object if `window` was not available in global space.
+			const _window = global.window;
+			global.window = {};
+
+			expect( isMotionReduced() ).to.be.false;
+
+			global.window = _window;
 		} );
 	} );
 

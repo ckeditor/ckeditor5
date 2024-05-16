@@ -9,11 +9,13 @@
  * @module utils/env
  */
 
+import globalVar from './dom/global';
+
 /**
  * Safely returns `userAgent` from browser's navigator API in a lower case.
  * If navigator API is not available it will return an empty string.
  */
-export function getUserAgent( ): string {
+export function getUserAgent(): string {
 	// In some environments navigator API might not be available.
 	try {
 		return navigator.userAgent.toLowerCase();
@@ -109,7 +111,9 @@ const env: EnvType = {
 
 	isBlink: isBlink( userAgent ),
 
-	isMediaForcedColors: isMediaForcedColors(),
+	get isMediaForcedColors() {
+		return isMediaForcedColors();
+	},
 
 	get isMotionReduced() {
 		return isMotionReduced();
@@ -218,14 +222,18 @@ export function isRegExpUnicodePropertySupported(): boolean {
 
 /**
  * Checks if the user agent has enabled a forced colors mode (e.g. Windows High Contrast mode).
+ *
+ * Returns `false` in environments where `window` global object is not available.
  */
 export function isMediaForcedColors(): boolean {
-	return window.matchMedia( '(forced-colors: active)' ).matches;
+	return globalVar.window.matchMedia ? globalVar.window.matchMedia( '(forced-colors: active)' ).matches : false;
 }
 
 /**
  * Checks if user enabled "prefers reduced motion" setting in browser.
+ *
+ * Returns `false` in environments where `window` global object is not available.
  */
 export function isMotionReduced(): boolean {
-	return window.matchMedia( '(prefers-reduced-motion)' ).matches;
+	return globalVar.window.matchMedia ? globalVar.window.matchMedia( '(prefers-reduced-motion)' ).matches : false;
 }
