@@ -299,6 +299,25 @@ Array.from( editor.ui.componentFactory.names() );
 
 Refer to the {@link tutorials/crash-course/editor step-by-step tutorial} to learn how to build a custom plugin, register its button, and add it to the toolbar configuration.
 
+### Decoupled editor
+
+When using the Decoupled editor, you will need to insert the menu bar in a desired place yourself. The menu bar HTML element is available under the `editor.ui.view.toolbar.element` property.
+
+```html
+	<div id="toolbarContainer"></div>
+	<div id="editor"><p>Document content.</p></div>
+```
+
+```js
+DecoupledEditor
+	.create( document.querySelector( '#editor' ), {
+		toolbar: [ 'undo', 'redo', 'bold', 'italic', 'numberedList', 'bulletedList' ],
+	} )
+	.then( editor => {
+		document.querySelector( '#toolbarContainer' ).appendChild( editor.ui.view.toolbar.element );
+	} );
+```
+
 ## Block toolbar
 
 The block toolbar provides an additional configurable toolbar on the left-hand side of the content area, useful when the main toolbar is not accessible (for example in certain layouts, like  balloon block editor).
