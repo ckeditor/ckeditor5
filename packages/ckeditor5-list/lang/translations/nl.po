@@ -143,8 +143,8 @@ msgstr "Item in de lijst minder ver inspringen"
 
 msgctxt "Assistive technologies label for entering the to-do list."
 msgid "Entering a to-do list"
-msgstr ""
+msgstr "Een to-do-lijst invoeren"
 
 msgctxt "Assistive technologies label for leaving the to-do list."
 msgid "Leaving a to-do list"
-msgstr ""
+msgstr "Een to-do-lijst achterlaten"

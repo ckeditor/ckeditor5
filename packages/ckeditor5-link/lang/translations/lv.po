@@ -31,7 +31,7 @@ msgstr "Saites URL"
 
 msgctxt "An error text displayed when user attempted to enter an empty URL."
 msgid "Link URL must not be empty."
-msgstr ""
+msgstr "Saites URL lauks nedrīkst būt tukšs."
 
 msgctxt "Label for the image link button."
 msgid "Link image"

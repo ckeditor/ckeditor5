@@ -143,8 +143,8 @@ msgstr "Sumažinti sąrašo elemento įtrauką"
 
 msgctxt "Assistive technologies label for entering the to-do list."
 msgid "Entering a to-do list"
-msgstr ""
+msgstr "Įvesti darbų sąrašą"
 
 msgctxt "Assistive technologies label for leaving the to-do list."
 msgid "Leaving a to-do list"
-msgstr ""
+msgstr "Palikti darbų sąrašą"

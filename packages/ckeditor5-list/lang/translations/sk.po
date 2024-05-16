@@ -143,8 +143,8 @@ msgstr "Zmenšiť odsadenie položiek v zozname"
 
 msgctxt "Assistive technologies label for entering the to-do list."
 msgid "Entering a to-do list"
-msgstr ""
+msgstr "Príchod do zoznamu úloh"
 
 msgctxt "Assistive technologies label for leaving the to-do list."
 msgid "Leaving a to-do list"
-msgstr ""
+msgstr "Odchod zo zoznamu úloh"

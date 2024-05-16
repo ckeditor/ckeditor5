@@ -211,4 +211,4 @@ msgstr "Traka menija uređivača"
 
 msgctxt "An error text displayed when user attempted to enter an color that is not in HEX format."
 msgid "Please enter a valid color (e.g. \"ff0000\")."
-msgstr ""
+msgstr "Unesite važeću boju (npr. „ff0000“)."

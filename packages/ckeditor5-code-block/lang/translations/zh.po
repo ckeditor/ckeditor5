@@ -27,19 +27,19 @@ msgstr "純文字"
 
 msgctxt "Assistive technologies label for leaving the code block with a specified programming language. Example: 'Leaving JavaScript code snippet'"
 msgid "Leaving %0 code snippet"
-msgstr ""
+msgstr "離開 %0 程式碼片段"
 
 msgctxt "Assistive technologies label for entering the code block with a specified programming language. Example: 'Entering JavaScript code snippet'"
 msgid "Entering %0 code snippet"
-msgstr ""
+msgstr "進入 %0 程式碼片段"
 
 msgctxt "Assistive technologies label for entering the code block with unspecified programming language."
 msgid "Entering code snippet"
-msgstr ""
+msgstr "進入程式碼片段"
 
 msgctxt "Assistive technologies label for leaving the code block with unspecified programming language."
 msgid "Leaving code snippet"
-msgstr ""
+msgstr "離開程式碼片段"
 
 msgctxt "The accessible label of the menu bar button that inserts a code block into editor content."
 msgid "Code block"

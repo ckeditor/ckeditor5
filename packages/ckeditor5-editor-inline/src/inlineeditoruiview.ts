@@ -22,7 +22,7 @@ import {
 } from 'ckeditor5/src/utils.js';
 import type { EditingView } from 'ckeditor5/src/engine.js';
 
-const toPx = toUnit( 'px' );
+const toPx = /* #__PURE__ */ toUnit( 'px' );
 
 /**
  * Inline editor UI view. Uses an nline editable and a floating toolbar.

@@ -26,8 +26,7 @@ import {
 import { isElement } from 'lodash-es';
 import '../../../theme/components/panel/balloonpanel.css';
 
-const toPx = toUnit( 'px' );
-const defaultLimiterElement = global.document.body;
+const toPx = /* #__PURE__ */ toUnit( 'px' );
 
 // A static balloon panel positioning function that moves the balloon far off the viewport.
 // It is used as a fallback when there is no way to position the balloon using provided
@@ -264,7 +263,7 @@ export default class BalloonPanelView extends View {
 				defaultPositions.northArrowSouthEast,
 				defaultPositions.viewportStickyNorth
 			],
-			limiter: defaultLimiterElement,
+			limiter: global.document.body,
 			fitInViewport: true
 		}, options ) as PositionOptions;
 
@@ -365,7 +364,7 @@ export default class BalloonPanelView extends View {
 		this.attachTo( options );
 
 		const targetElement = getDomElement( options.target );
-		const limiterElement = options.limiter ? getDomElement( options.limiter ) : defaultLimiterElement;
+		const limiterElement = options.limiter ? getDomElement( options.limiter ) : global.document.body;
 
 		// Then we need to listen on scroll event of eny element in the document.
 		this.listenTo( global.document, 'scroll', ( evt, domEvt ) => {
@@ -1170,7 +1169,7 @@ export default class BalloonPanelView extends View {
 	 * The name that the position function returns will be reflected in the balloon panel's class that
 	 * controls the placement of the "arrow". See {@link #position} to learn more.
 	 */
-	public static defaultPositions = BalloonPanelView.generatePositions();
+	public static defaultPositions = /* #__PURE__ */ BalloonPanelView.generatePositions();
 }
 
 /**
