@@ -9,7 +9,7 @@
  * @module utils/env
  */
 
-import globalVar from './dom/global';
+import globalVar from './dom/global.js';
 
 /**
  * Safely returns `userAgent` from browser's navigator API in a lower case.
