@@ -115,7 +115,7 @@ msgstr "Промените величину слике до оригиналне
 
 msgctxt "The label for image resize balloon input."
 msgid "Resize image (in %0)"
-msgstr ""
+msgstr "Promenite veličinu slike (u %0)"
 
 msgctxt "The default label for the resize option that resets the size of the image."
 msgid "Original"
@@ -123,11 +123,11 @@ msgstr "Оригинал"
 
 msgctxt "The accessibility label of the standalone image resize custom option button in the image toolbar for screen readers."
 msgid "Custom image size"
-msgstr ""
+msgstr "Prilagođena veličina slike"
 
 msgctxt "The label for the resize option that allows user to enter custom size of the image."
 msgid "Custom"
-msgstr ""
+msgstr "Prilagođeno"
 
 msgctxt "The accessibility label of the image resize dropdown for screen readers."
 msgid "Image resize list"
@@ -159,20 +159,20 @@ msgstr "Натпис за слику: %0"
 
 msgctxt "Text used as error label when user submitted custom image resize form with blank value."
 msgid "The value must not be empty."
-msgstr ""
+msgstr "Vrednost ne sme biti prazna."
 
 msgctxt "Text used as error label when user submitted custom image resize form with incorrect value."
 msgid "The value should be a plain number."
-msgstr ""
+msgstr "Vrednost treba da bude običan broj."
 
 msgctxt "Aria status message indicating that the image is being uploaded. Example: 'Uploading image'."
 msgid "Uploading image"
-msgstr ""
+msgstr "Otpremanje slike"
 
 msgctxt "Aria status message indicating that the image has been uploaded successfully. Example: 'Image upload complete'."
 msgid "Image upload complete"
-msgstr ""
+msgstr "Otpremanje slike je završeno"
 
 msgctxt "Aria status message indicating that an error has occurred during image upload. Example: 'Error during image upload'."
 msgid "Error during image upload"
-msgstr ""
+msgstr "Greška tokom otpremanja slike"

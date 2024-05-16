@@ -143,8 +143,8 @@ msgstr "Зменшити відступ елемента списку"
 
 msgctxt "Assistive technologies label for entering the to-do list."
 msgid "Entering a to-do list"
-msgstr ""
+msgstr "Входимо у список справ"
 
 msgctxt "Assistive technologies label for leaving the to-do list."
 msgid "Leaving a to-do list"
-msgstr ""
+msgstr "Виходимо зі списку справ"

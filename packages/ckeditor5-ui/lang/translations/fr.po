@@ -211,4 +211,4 @@ msgstr "Barre de menu de l'éditeur"
 
 msgctxt "An error text displayed when user attempted to enter an color that is not in HEX format."
 msgid "Please enter a valid color (e.g. \"ff0000\")."
-msgstr ""
+msgstr "Veuillez saisir une couleur valide (par exemple « ff0000 »)."

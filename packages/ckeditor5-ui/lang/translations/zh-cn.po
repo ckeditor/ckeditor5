@@ -211,4 +211,4 @@ msgstr "编辑器菜单栏"
 
 msgctxt "An error text displayed when user attempted to enter an color that is not in HEX format."
 msgid "Please enter a valid color (e.g. \"ff0000\")."
-msgstr ""
+msgstr "请输入有效的颜色（例如“ff0000”）。"
