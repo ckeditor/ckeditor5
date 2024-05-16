@@ -8,7 +8,6 @@
  */
 
 import { Command } from 'ckeditor5/src/core.js';
-
 import type ImageUtils from '../imageutils.js';
 
 /**

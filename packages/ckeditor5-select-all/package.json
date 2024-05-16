@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-select-all",
-  "version": "41.3.1",
+  "version": "41.4.1",
   "description": "Select all feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -13,19 +13,19 @@
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "41.3.1",
-    "@ckeditor/ckeditor5-utils": "41.3.1",
-    "@ckeditor/ckeditor5-ui": "41.3.1"
+    "@ckeditor/ckeditor5-core": "41.4.1",
+    "@ckeditor/ckeditor5-utils": "41.4.1",
+    "@ckeditor/ckeditor5-ui": "41.4.1"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "41.3.1",
-    "@ckeditor/ckeditor5-engine": "41.3.1",
-    "@ckeditor/ckeditor5-essentials": "41.3.1",
-    "@ckeditor/ckeditor5-heading": "41.3.1",
-    "@ckeditor/ckeditor5-image": "41.3.1",
-    "@ckeditor/ckeditor5-paragraph": "41.3.1",
-    "@ckeditor/ckeditor5-table": "41.3.1",
-    "@ckeditor/ckeditor5-editor-classic": "41.3.1",
+    "@ckeditor/ckeditor5-basic-styles": "41.4.1",
+    "@ckeditor/ckeditor5-engine": "41.4.1",
+    "@ckeditor/ckeditor5-essentials": "41.4.1",
+    "@ckeditor/ckeditor5-heading": "41.4.1",
+    "@ckeditor/ckeditor5-image": "41.4.1",
+    "@ckeditor/ckeditor5-paragraph": "41.4.1",
+    "@ckeditor/ckeditor5-table": "41.4.1",
+    "@ckeditor/ckeditor5-editor-classic": "41.4.1",
     "typescript": "5.0.4",
     "webpack": "^5.58.1",
     "webpack-cli": "^4.9.0"
@@ -40,6 +40,7 @@
     "directory": "packages/ckeditor5-select-all"
   },
   "files": [
+    "dist",
     "lang",
     "src/**/*.js",
     "src/**/*.d.ts",
@@ -48,6 +49,7 @@
     "CHANGELOG.md"
   ],
   "scripts": {
-    "build": "tsc -p ./tsconfig.json"
+    "build": "tsc -p ./tsconfig.json",
+    "build:dist": "node ../../scripts/build-package.mjs"
   }
 }

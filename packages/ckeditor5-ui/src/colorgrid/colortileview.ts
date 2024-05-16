@@ -9,7 +9,7 @@
 
 import ButtonView from '../button/buttonview.js';
 
-import type { Locale } from '@ckeditor/ckeditor5-utils';
+import { env, type Locale } from '@ckeditor/ckeditor5-utils';
 
 import checkIcon from '../../theme/icons/color-tile-check.svg';
 
@@ -41,7 +41,8 @@ export default class ColorTileView extends ButtonView {
 		this.extendTemplate( {
 			attributes: {
 				style: {
-					backgroundColor: bind.to( 'color' )
+					// https://github.com/ckeditor/ckeditor5/issues/14907
+					backgroundColor: bind.to( 'color', color => env.isMediaForcedColors ? null : color )
 				},
 				class: [
 					'ck',

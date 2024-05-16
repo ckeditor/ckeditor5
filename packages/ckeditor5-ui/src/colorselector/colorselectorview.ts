@@ -287,6 +287,7 @@ export default class ColorSelectorView extends View {
 
 		this._isColorPickerFragmentVisible = true;
 		this.colorPickerFragmentView.focus();
+		this.colorPickerFragmentView.resetValidationStatus();
 		this._isColorGridsFragmentVisible = false;
 	}
 

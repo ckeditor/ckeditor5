@@ -140,3 +140,11 @@ msgstr "Padidinti sąrašo elemento įtrauką"
 msgctxt "Keystroke description for assistive technologies: keystroke for decreasing list item indentation."
 msgid "Decrease list item indent"
 msgstr "Sumažinti sąrašo elemento įtrauką"
+
+msgctxt "Assistive technologies label for entering the to-do list."
+msgid "Entering a to-do list"
+msgstr "Įvesti darbų sąrašą"
+
+msgctxt "Assistive technologies label for leaving the to-do list."
+msgid "Leaving a to-do list"
+msgstr "Palikti darbų sąrašą"

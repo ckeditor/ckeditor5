@@ -63,6 +63,11 @@ describe( 'ImageResizeEditing', () => {
 				icon: 'original'
 			},
 			{
+				name: 'resizeImage:custom',
+				value: 'custom',
+				icon: 'custom'
+			},
+			{
 				name: 'resizeImage:25',
 				value: '25',
 				icon: 'small'

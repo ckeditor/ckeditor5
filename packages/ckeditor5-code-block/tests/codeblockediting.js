@@ -30,7 +30,7 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import { _clear as clearTranslations, add as addTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
 
 describe( 'CodeBlockEditing', () => {
-	let editor, element, model, view, viewDoc;
+	let editor, element, model, view, viewDoc, root;
 
 	before( () => {
 		addTranslations( 'en', {
@@ -60,6 +60,7 @@ describe( 'CodeBlockEditing', () => {
 				model = editor.model;
 				view = editor.editing.view;
 				viewDoc = view.document;
+				root = model.document.getRoot();
 			} );
 	} );
 
@@ -1788,4 +1789,171 @@ describe( 'CodeBlockEditing', () => {
 			} );
 		} );
 	} );
+
+	describe( 'accessibility', () => {
+		let announcerSpy;
+
+		beforeEach( () => {
+			announcerSpy = sinon.spy( editor.ui.ariaLiveAnnouncer, 'announce' );
+		} );
+
+		it( 'should announce enter and leave code block with specified language label', () => {
+			setModelData( model, join( codeblock( 'css' ), tag( 'paragraph' ) ) );
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 0, 0 ], root, [ 0, 1 ] ) );
+			} );
+
+			expectAnnounce( 'Entering CSS code snippet' );
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 1, 0 ], root, [ 1, 1 ] ) );
+			} );
+
+			expectAnnounce( 'Leaving CSS code snippet' );
+		} );
+
+		it( 'should announce enter and leave code block without language label', () => {
+			setModelData( model, join( codeblock( 'FooBar' ), tag( 'paragraph' ) ) );
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 0, 0 ], root, [ 0, 1 ] ) );
+			} );
+
+			expectAnnounce( 'Entering code snippet' );
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 1, 0 ], root, [ 1, 1 ] ) );
+			} );
+
+			expectAnnounce( 'Leaving code snippet' );
+		} );
+
+		it( 'should announce sequential entry and exit of a code block with paragraph between', () => {
+			setModelData( model, join( codeblock( 'php' ), tag( 'paragraph' ), codeblock( 'css' ) ) );
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 0, 0 ], root, [ 0, 1 ] ) );
+			} );
+
+			expectAnnounce( 'Entering PHP code snippet' );
+			announcerSpy.resetHistory();
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 1, 0 ], root, [ 1, 1 ] ) );
+			} );
+
+			expectAnnounce( 'Leaving PHP code snippet' );
+			announcerSpy.resetHistory();
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 2, 0 ], root, [ 2, 1 ] ) );
+			} );
+
+			expectAnnounce( 'Entering CSS code snippet' );
+		} );
+
+		it( 'should announce sequential entry and exit of a code block that starts immediately after another code block', () => {
+			setModelData(
+				model,
+				join(
+					codeblock( 'css' ),
+					codeblock( 'php' ),
+					tag( 'paragraph' )
+				)
+			);
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 0, 0 ], root, [ 0, 1 ] ) );
+			} );
+
+			expectAnnounce( 'Entering CSS code snippet' );
+			announcerSpy.resetHistory();
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 1, 0 ], root, [ 1, 1 ] ) );
+			} );
+
+			expectAnnounce( 'Leaving CSS code snippet' );
+			expectAnnounce( 'Entering PHP code snippet' );
+			announcerSpy.resetHistory();
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 2, 0 ], root, [ 2, 1 ] ) );
+			} );
+
+			expectAnnounce( 'Leaving PHP code snippet' );
+		} );
+
+		it( 'should announce random enter and exit of a code block that starts immediately after another code block', () => {
+			setModelData(
+				model,
+				join(
+					codeblock( 'css' ),
+					codeblock( 'php' ),
+					codeblock( 'ruby' ),
+					codeblock( 'xml' ),
+					codeblock( 'FooBar' )
+				)
+			);
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 2, 0 ], root, [ 2, 1 ] ) );
+			} );
+
+			expectAnnounce( 'Entering Ruby code snippet' );
+			announcerSpy.resetHistory();
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 0, 0 ], root, [ 0, 1 ] ) );
+			} );
+
+			expectAnnounce( 'Leaving Ruby code snippet' );
+			expectAnnounce( 'Entering CSS code snippet' );
+			announcerSpy.resetHistory();
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 3, 0 ], root, [ 3, 1 ] ) );
+			} );
+
+			expectAnnounce( 'Leaving CSS code snippet' );
+			expectAnnounce( 'Entering XML code snippet' );
+			announcerSpy.resetHistory();
+
+			model.change( writer => {
+				writer.setSelection( createRange( root, [ 4, 0 ], root, [ 4, 1 ] ) );
+			} );
+
+			expectAnnounce( 'Leaving XML code snippet' );
+			expectAnnounce( 'Entering code snippet' );
+		} );
+
+		function expectAnnounce( message ) {
+			expect( announcerSpy ).to.be.calledWithExactly( message );
+		}
+	} );
+
+	function join( ...lines ) {
+		return lines.filter( Boolean ).join( '' );
+	}
+
+	function tag( name, attributes = {}, content = 'Example' ) {
+		const formattedAttributes = Object
+			.entries( attributes || {} )
+			.map( ( [ key, value ] ) => `${ key }="${ value }"` )
+			.join( ' ' );
+
+		return `<${ name }${ formattedAttributes ? ` ${ formattedAttributes }` : '' }>${ content }</${ name }>`;
+	}
+
+	function codeblock( language, content = 'Example code' ) {
+		return tag( 'codeBlock', { language }, content );
+	}
+
+	function createRange( startElement, startPath, endElement, endPath ) {
+		return model.createRange(
+			model.createPositionFromPath( startElement, startPath ),
+			model.createPositionFromPath( endElement, endPath )
+		);
+	}
 } );

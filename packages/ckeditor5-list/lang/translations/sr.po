@@ -140,3 +140,11 @@ msgstr "Povećaj uvlačenje liste stavki"
 msgctxt "Keystroke description for assistive technologies: keystroke for decreasing list item indentation."
 msgid "Decrease list item indent"
 msgstr "Smanji uvlačenje liste stavki"
+
+msgctxt "Assistive technologies label for entering the to-do list."
+msgid "Entering a to-do list"
+msgstr "Unošenje liste obaveza"
+
+msgctxt "Assistive technologies label for leaving the to-do list."
+msgid "Leaving a to-do list"
+msgstr "Ostavljanje liste obaveza"
