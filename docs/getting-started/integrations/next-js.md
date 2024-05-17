@@ -102,4 +102,4 @@ function Home() {
 export default Home;
 ```
 
-You can run your project now. If you chose `create-next-app`, type `npm run dev` to see your application in the browser. If you have trouble seeing the editor, remember that the Next.js project ships with CSS files that can interfere with the editor. You can remove them or add your styling. Also, pay attention to the import path - this guide uses the [default import alias](https://nextjs.org/docs/app/building-your-application/configuring/absolute-imports-and-module-aliases) (@). If you didn't configure it, change the path appropriately.
+You can run your project now. If you chose `create-next-app`, type `npm run dev` to see your application in the browser. If you have trouble seeing the editor, remember that the Next.js project ships with CSS files that can interfere with the editor. You can remove them or add your styling. Also, pay attention to the import path - this guide uses the [default import alias](https://nextjs.org/docs/app/building-your-application/configuring/absolute-imports-and-module-aliases) (@). If you did not configure it, change the path appropriately.
