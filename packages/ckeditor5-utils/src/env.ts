@@ -53,7 +53,7 @@ export interface EnvType {
 	readonly isSafari: boolean;
 
 	/**
-	 * Indicates the the application is running in iOS.
+	 * Indicates that the application is running in iOS.
 	 */
 	readonly isiOS: boolean;
 
@@ -71,7 +71,7 @@ export interface EnvType {
 	 * Indicates that the user agent has enabled a forced colors mode (e.g. Windows High Contrast mode).
 	 *
 	 * Note that the value of this property is evaluated each time it is accessed, and it may change over time, if the environment
-	 * settings has changed.
+	 * settings have changed.
 	 */
 	readonly isMediaForcedColors: boolean;
 
@@ -79,7 +79,7 @@ export interface EnvType {
 	 * Indicates that "prefer reduced motion" browser setting is active.
 	 *
 	 * Note that the value of this property is evaluated each time it is accessed, and it may change over time, if the environment
-	 * settings has changed.
+	 * settings have changed.
 	 */
 	readonly isMotionReduced: boolean;
 
