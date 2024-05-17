@@ -68,12 +68,18 @@ export interface EnvType {
 	readonly isBlink: boolean;
 
 	/**
-	 * Indicates that the the user agent has enabled a forced colors mode (e.g. Windows High Contrast mode).
+	 * Indicates that the user agent has enabled a forced colors mode (e.g. Windows High Contrast mode).
+	 *
+	 * Note that the value of this property is evaluated each time it is accessed, and it may change over time, if the environment
+	 * settings has changed.
 	 */
 	readonly isMediaForcedColors: boolean;
 
 	/**
 	 * Indicates that "prefer reduced motion" browser setting is active.
+	 *
+	 * Note that the value of this property is evaluated each time it is accessed, and it may change over time, if the environment
+	 * settings has changed.
 	 */
 	readonly isMotionReduced: boolean;
 
@@ -230,7 +236,7 @@ export function isMediaForcedColors(): boolean {
 }
 
 /**
- * Checks if user enabled "prefers reduced motion" setting in browser.
+ * Checks if the user enabled "prefers reduced motion" setting in browser.
  *
  * Returns `false` in environments where `window` global object is not available.
  */
