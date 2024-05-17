@@ -494,4 +494,4 @@ BootstrapEditor.create( $( '#editor' ).get( 0 ), {
 } );
 ```
 
-Once everything works as expected, you may want to create a custom build of your editor to ship it across the applications. To learn more check out the {@link getting-started/legacy-getting-started/quick-start-other#building-the-editor-from-source Creating custom builds guide}.
+Once everything works as expected, you may want to create a custom preset of your editor to ship it across the applications. To learn more check out the {@link getting-started/legacy-getting-started/quick-start-other#building-the-editor-from-source Creating custom builds guide}.

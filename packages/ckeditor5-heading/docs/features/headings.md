@@ -27,7 +27,7 @@ By default, this feature is configured to support `<h2>`, `<h3>`, and `<h4>` ele
 	Support for adding a document title is provided through the {@link module:heading/title~Title} plugin. When it is enabled, a `<h1>` element pasted into the editor will be rendered as the {@link features/title document title}.
 </info-box>
 
-By default, when your editor build does not include the title plugin, an `<h1>` element pasted into the rich-text editor is converted to `<h2>` ("Heading 1").
+By default, when your editor preset does not include the title plugin, an `<h1>` element pasted into the rich-text editor is converted to `<h2>` ("Heading 1").
 
 <info-box hint>
 	You can read more about why the editor should not create `<h1>` elements for content headings in the [Headings section of Editor Recommendations](http://ckeditor.github.io/editor-recommendations/features/headings.html).

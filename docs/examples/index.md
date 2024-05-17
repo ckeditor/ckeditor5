@@ -8,7 +8,7 @@ meta-description: Navigate through CKEditor 5 examples to see what you can creat
 
 # Examples
 
-Check out these examples of different editor integrations. See the predefined builds in action, witness the unharnessed power of a full-featured editor, and find out amazing, custom-tailored implementations using the CKEditor&nbsp;5 Framework.
+Check out these examples of different editor integrations. See the various editor types in action, witness the unharnessed power of a feature-rich preset, and find out amazing, custom-tailored implementations using the CKEditor&nbsp;5 Framework.
 
 <span class="navigation-hint_mobile">
 <info-box>
