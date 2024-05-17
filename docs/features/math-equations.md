@@ -63,7 +63,7 @@ If you visit a page using MathType with your mobile device, the handwriting inte
 	We are working with our partners to update this package to work with our new installation methods. Meanwhile, if you use or plan to use this package, please continue to use our legacy installation methods which are still supported.
 </info-box>
 
-MathType is delivered as a CKEditor&nbsp;5 plugin, so it can be combined into an editor build just like other features. To add this feature to your editor, install the [`@wiris/mathtype-ckeditor5`](https://www.npmjs.com/package/@wiris/mathtype-ckeditor5) package:
+MathType is delivered as a CKEditor&nbsp;5 plugin, so it can be combined into an editor preset just like other features. To add this feature to your editor, install the [`@wiris/mathtype-ckeditor5`](https://www.npmjs.com/package/@wiris/mathtype-ckeditor5) package:
 
 ```bash
 npm install --save @wiris/mathtype-ckeditor5

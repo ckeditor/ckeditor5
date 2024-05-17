@@ -737,7 +737,7 @@ This directive specifies the editor to be used by the component. It must directl
 ```
 
 <info-box>
-	To use more than one rich text editor build in your application, you will need to configure it [from source](#using-ckeditor-5-from-source) or use a {@link getting-started/advanced/using-two-editors "super build"}.
+	To use more than one rich text editor preset in your application, you will need to configure it [from source](#using-ckeditor-5-from-source) or use a {@link getting-started/advanced/using-two-editors "super build"}.
 </info-box>
 
 ### `tag-name`

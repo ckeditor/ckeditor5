@@ -63,10 +63,10 @@ When you insert a new image, the editor will, by default, choose the optimal ima
 
 You can apply a style by using one of the toolbar buttons created by the `ImageStyle` plugin. Each of the defined styles (both [default](#ready-to-use-styles) and [custom](#configuring-the-styles)) will be registered under the name `imageStyle:image-style-name` in the {@link module:ui/componentfactory~ComponentFactory}. You can then add it to the image or main toolbar by referencing this name.
 
-The default image toolbar has its standard configuration already set in the predefined builds.
+The default image toolbar has its standard configuration already set.
 
 * The default UI of the classic, inline, balloon, and balloon block builds consists of a set of buttons to apply the [semantical styles](#semantical-styles) to support creating structured content. [**See a live example**](#semantical-example).
-* The document editor build UI uses several buttons for applying [presentational styles](#presentational-styles) and also uses the [semantical styles](#semantical-styles) to reset the image appearance to default. [**See a live example**](#presentational-example).
+* The document editor type UI uses several buttons for applying [presentational styles](#presentational-styles) and also uses the [semantical styles](#semantical-styles) to reset the image appearance to default. [**See a live example**](#presentational-example).
 
 You can also create a completely custom image styles UI, setting your icons and tooltips, and grouping the image style buttons into {@link module:image/imageconfig~ImageStyleDropdownDefinition custom dropdowns}. Read more about it in the [**configuring the styles**](#configuring-the-styles) section of this guide.
 
@@ -95,7 +95,7 @@ A semantical style lets the user choose from predefined appearances of the image
 	If you want to enable image resizing, use [presentational image styles](#presentational-styles) instead. You can also define custom semantical styles to make sure that there are no conflicts with the image resizing feature.
 </info-box>
 
-Most of the predefined editor builds support editing structured content. This requires passing the control over the possible image appearances to the developer. The predefined builds thus introduce a UI containing a set of buttons applying the semantical styles (taken from the [default styles](#styles-table) listed below).
+Most of the editor types support editing structured content. This requires passing the control over the possible image appearances to the developer. We thus introduce a UI containing a set of buttons applying the semantical styles (taken from the [default styles](#styles-table) listed below).
 
 The example below shows an editor with such a basic configuration. There are three types of images:
 

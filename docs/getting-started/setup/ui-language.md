@@ -50,7 +50,7 @@ We are doing our best to deliver the best RTL support to our users and we consta
 
 ### npm
 
-After installing the build from npm, translations can be imported from `ckeditor5/translations/[lang].js` and must be passed to the editor configuration.
+After installing the editor from npm, translations can be imported from `ckeditor5/translations/[lang].js` and must be passed to the editor configuration.
 
 For example, to use Polish, import `'ckeditor5/translations/pl.js'` and pass the translation object to the editor configuration. Please note that if you use premium features, you need to separately import their translations from the proper package.
 

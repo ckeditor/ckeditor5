@@ -44,7 +44,7 @@ The content in the frontend of your application should now look the same as when
 </info-box>
 
 <info-box>
-	If you are not afraid to get your hands dirty, you can always create a custom CKEditor&nbsp;5 build from the source code with **all** the CSS (both UI and the content) extracted to a separate file. See how to do that in a {@link getting-started/advanced/integrating-from-source-webpack#option-extracting-css dedicated guide}.
+	If you are not afraid to get your hands dirty, you can always create a custom CKEditor&nbsp;5 preset from the source code with **all** the CSS (both UI and the content) extracted to a separate file. See how to do that in a {@link getting-started/advanced/integrating-from-source-webpack#option-extracting-css dedicated guide}.
 </info-box>
 
 ## The full list of content styles

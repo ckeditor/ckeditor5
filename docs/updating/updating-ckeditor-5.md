@@ -24,7 +24,7 @@ To help you with a smooth update, we have prepared migration guides that describ
 	Always remember to test your editor before deploying the changes into the production environment. This will help ensure that the update will not have a negative impact on your application and user experience.
 </info-box>
 
-If you use a {@link getting-started/legacy-getting-started/predefined-builds legacy predefined build}, you can simply visit our [CKEditor&nbsp;5 download page](https://ckeditor.com/ckeditor-5/download/) and get the latest editor version from there. However, if you created your own customized editor, the process can be described in a few steps:
+You can simply visit our [CKEditor&nbsp;5 download page](https://ckeditor.com/ckeditor-5/download/) or [Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs) and get the latest editor version from there. However, if you created your own customized editor, the process can be described in a few steps:
 
 1. Read the changelog.
 2. Update your packages.
@@ -44,7 +44,7 @@ The first step is to identify changes introduced since the old version, so you n
 	It is recommended to update regularly. Sometimes, however, it could happen that you skip a few releases and need to update to a non-adjacent version. In such a case, remember to verify the changelog and migration guides for **all** missing versions, not only the one you are updating to.
 </info-box>
 
-When you already know what has changed and which parts of your custom code need to be adjusted, it is time to make the update. If you use a predefined build hosted on CDN or a downloaded ZIP package, you can simply visit the [CKEditor&nbsp;5 download section](https://ckeditor.com/ckeditor-5/download/) and get the latest version. However, the most common way for installing CKEditor&nbsp;5 is using npm packages.
+When you already know what has changed and which parts of your custom code need to be adjusted, it is time to make the update.
 
 This can be done by updating the `package.json` file with the latest editor version (currently {@var ckeditor5-version}) or using some automated tool (like [`npm-check-updates`](https://www.npmjs.com/package/npm-check-updates)):
 
