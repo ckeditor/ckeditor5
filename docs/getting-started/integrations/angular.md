@@ -86,6 +86,10 @@ All available Angular versions are [listed on npm](https://www.npmjs.com/package
 
 The easiest way to use CKEditor 5 in your Angular application is by configuring it with [Builder](https://ckeditor.com/builder?redirect=docs) and integrating it with your application.
 
+### Setting up the project
+
+This guide assumes you already have a Angular project. To create such a project, you can use Angular CLI. Refer to the [Angular documentation](https://angular.io/cli) to learn more.
+
 ### Installing from npm
 
 This guide assumes you already have an Angular project. If you do not have an existing project, you can use the [Angular CLI](https://angular.io/cli) to create a new one.

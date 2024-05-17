@@ -27,9 +27,13 @@ React lets you build user interfaces out of individual pieces called components.
 
 The easiest way to use CKEditor&nbsp;5 in your React application is by configuring it with [Builder](https://ckeditor.com/builder?redirect=docs) and integrating it with your application.
 
+### Setting up the project
+
+This guide assumes you have a React project. You can create a basic React project using [Vite](https://vitejs.dev/). Refer to the [React documentation](https://react.dev/learn/start-a-new-react-project) to learn how to set up a project in the framework.
+
 ### Installing from npm
 
-This guide assumes you already have a React project. First, install the CKEditor&nbsp;5 packages:
+First, install the CKEditor&nbsp;5 packages:
 
 * `ckeditor5` &ndash; package with open-source plugins and features.
 * `ckeditor5-premium-features` &ndash; package with premium plugins and features.

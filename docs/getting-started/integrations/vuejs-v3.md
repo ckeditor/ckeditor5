@@ -27,6 +27,10 @@ Vue.js is a versatile framework for building web user interfaces. CKEditor&nbsp;
 
 The easiest way to use CKEditor&nbsp;5 in your Vue application is by configuring it with [Builder](https://ckeditor.com/builder?redirect=docs) and integrating it with your application.
 
+### Setting up the project
+
+This guide assumes you already have a Vue project. To create such a project, you can use CLI like `create-vue`. Refer to the [Vue documentation](https://vuejs.org/guide/quick-start) to learn more.
+
 ### Installing from npm
 
 This guide assumes you already have a Vue project. First, install the CKEditor 5 packages:
