@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import { ButtonView, CssTransitionDisablerMixin, MenuBarMenuListItemButtonView, DialogViewPosition } from 'ckeditor5/src/ui.js';
+import { ButtonView, CssTransitionDisablerMixin, MenuBarMenuListItemButtonView, DialogViewPosition, Dialog } from 'ckeditor5/src/ui.js';
 
 import MediaFormView from './ui/mediaformview.js';
 import MediaEmbedEditing from './mediaembedediting.js';
@@ -24,7 +24,7 @@ export default class MediaEmbedUI extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ MediaEmbedEditing ] as const;
+		return [ MediaEmbedEditing, Dialog ] as const;
 	}
 
 	/**
@@ -33,6 +33,8 @@ export default class MediaEmbedUI extends Plugin {
 	public static get pluginName() {
 		return 'MediaEmbedUI' as const;
 	}
+
+	private _formView: MediaFormView | undefined;
 
 	/**
 	 * @inheritDoc
@@ -43,9 +45,7 @@ export default class MediaEmbedUI extends Plugin {
 		editor.ui.componentFactory.add( 'mediaEmbed', () => {
 			const button = this._createDialogButton( ButtonView );
 
-			button.set( {
-				tooltip: true
-			} );
+			button.tooltip = true;
 
 			return button;
 		} );
@@ -93,21 +93,20 @@ export default class MediaEmbedUI extends Plugin {
 		const command = editor.commands.get( 'mediaEmbed' )!;
 		const t = editor.locale.t;
 
-		// if ( !this.formView ) {
-		// 	this.formView = this._createFormView();
-		// }
-
-		const registry = editor.plugins.get( MediaEmbedEditing ).registry;
-		const form = new ( CssTransitionDisablerMixin( MediaFormView ) )( getFormValidators( editor.t, registry ), editor.locale );
+		if ( !this._formView ) {
+			const registry = editor.plugins.get( MediaEmbedEditing ).registry;
+			this._formView = new ( CssTransitionDisablerMixin( MediaFormView ) )( getFormValidators( editor.t, registry ), editor.locale );
+		}
 
 		dialog.show( {
 			id: 'mediaEmbed',
 			title: t( 'Insert media' ),
-			content: form,
+			content: this._formView,
 			position: DialogViewPosition.EDITOR_TOP_SIDE,
 			onShow: () => {
-				form.url = command.value || '';
-				form.urlInputView.fieldView.select();
+				this._formView!.url = command.value || '';
+				this._formView!.resetFormStatus();
+				this._formView!.urlInputView.fieldView.select();
 			},
 			actionButtons: [
 				{
@@ -120,8 +119,8 @@ export default class MediaEmbedUI extends Plugin {
 					class: 'ck-button-action',
 					withText: true,
 					onExecute: () => {
-						if ( form.isValid() ) {
-							editor.execute( 'mediaEmbed', form.url );
+						if ( this._formView!.isValid() ) {
+							editor.execute( 'mediaEmbed', this._formView!.url );
 							dialog.hide();
 							editor.editing.view.focus();
 						}

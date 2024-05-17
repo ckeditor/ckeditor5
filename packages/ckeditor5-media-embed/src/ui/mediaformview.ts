@@ -124,7 +124,7 @@ export default class MediaFormView extends View {
 	}
 
 	/**
-	 * Focuses the fist {@link #_focusables} in the form.
+	 * Focuses the {@link #urlInputView}.
 	 */
 	public focus(): void {
 		this.urlInputView.focus();
