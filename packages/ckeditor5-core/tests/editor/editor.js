@@ -319,7 +319,7 @@ describe( 'Editor', () => {
 				} );
 			} );
 
-			describe( 'trial check', () => {
+			describe( 'trial license', () => {
 				let consoleInfoSpy;
 
 				beforeEach( () => {
@@ -331,7 +331,21 @@ describe( 'Editor', () => {
 					sinon.restore();
 				} );
 
-				it( 'should not block if trial is not expired', () => {
+				it( 'should log information to the console about using the trial license', () => {
+					const licenseKey = 'foo.eyJleHAiOjE3MTUyMTI4MDAsImp0aSI6ImJkM2ZjNTc0LTJkNGYtNGNkZ' +
+					'S1iNWViLTIzYzk1Y2JlMjQzYSIsImxpY2Vuc2VUeXBlIjoidHJpYWwiLCJ2YyI6ImZlOTdmNzY5In0.bar';
+
+					const today = 1715166436000; // 08.05.2024
+					sinon.stub( Date, 'now' ).returns( today );
+					const editor = new TestEditor( { licenseKey } );
+
+					expect( editor.isReadOnly ).to.be.false;
+					sinon.assert.calledOnce( consoleInfoSpy );
+					sinon.assert.calledWith( consoleInfoSpy, 'You are using the trial version of CKEditor 5 with ' +
+				'limited usage. Make sure you will not use it in the production environment.' );
+				} );
+
+				it( 'should not block the editor if the trial has not expired', () => {
 					const licenseKey = 'foo.eyJleHAiOjE3MTUyMTI4MDAsImp0aSI6ImJkM2ZjNTc0LTJkNGYtNGNkZ' +
 					'S1iNWViLTIzYzk1Y2JlMjQzYSIsImxpY2Vuc2VUeXBlIjoidHJpYWwiLCJ2YyI6ImZlOTdmNzY5In0.bar';
 
@@ -356,7 +370,7 @@ describe( 'Editor', () => {
 					dateNow.restore();
 				} );
 
-				it( 'should block if trial is expired', () => {
+				it( 'should block the editor if the trial has expired', () => {
 					const licenseKey = 'foo.eyJleHAiOjE3MTUyMTI4MDAsImp0aSI6ImJkM2ZjNTc0LTJkNGYtNGNkZ' +
 					'S1iNWViLTIzYzk1Y2JlMjQzYSIsImxpY2Vuc2VUeXBlIjoidHJpYWwiLCJ2YyI6ImZlOTdmNzY5In0.bar';
 
@@ -377,14 +391,11 @@ describe( 'Editor', () => {
 
 					sinon.assert.calledWithMatch( showErrorStub, 'trialLimit' );
 					expect( editor.isReadOnly ).to.be.true;
-					sinon.assert.calledOnce( consoleInfoSpy );
-					sinon.assert.calledWith( consoleInfoSpy, 'You are using the trial version of CKEditor 5 with ' +
-				'limited usage. Make sure you will not use it in the production environment.' );
 
 					dateNow.restore();
 				} );
 
-				it( 'should block editor after 10 minutes if trial license.', () => {
+				it( 'should block editor after 10 minutes (trial license)', () => {
 					const licenseKey = 'foo.eyJleHAiOjE3MTUyMTI4MDAsImp0aSI6ImJkM2ZjNTc0LTJkNGYtNGNkZ' +
 					'S1iNWViLTIzYzk1Y2JlMjQzYSIsImxpY2Vuc2VUeXBlIjoidHJpYWwiLCJ2YyI6ImZlOTdmNzY5In0.bar';
 
@@ -410,9 +421,6 @@ describe( 'Editor', () => {
 
 					sinon.assert.calledWithMatch( showErrorStub, 'trialLimit' );
 					expect( editor.isReadOnly ).to.be.true;
-					sinon.assert.calledOnce( consoleInfoSpy );
-					sinon.assert.calledWith( consoleInfoSpy, 'You are using the trial version of CKEditor 5 with ' +
-				'limited usage. Make sure you will not use it in the production environment.' );
 
 					dateNow.restore();
 				} );
@@ -447,7 +455,7 @@ describe( 'Editor', () => {
 				} );
 			} );
 
-			describe( 'development check', () => {
+			describe( 'development license', () => {
 				let consoleInfoSpy;
 
 				beforeEach( () => {
@@ -459,7 +467,39 @@ describe( 'Editor', () => {
 					sinon.restore();
 				} );
 
-				it( 'should block editor after 10 minutes if development license.', () => {
+				it( 'should log information to the console about using the development license', () => {
+					const licenseKey = 'foo.eyJleHAiOjE3MTUyMTI4MDAsImp0aSI6IjczNDk5YTQyLWJjNzktNDdlNy1hNmR' +
+                    'lLWIyMGJhMmEzYmI4OSIsImxpY2Vuc2VUeXBlIjoiZGV2ZWxvcG1lbnQiLCJ2YyI6Ijg5NzRiYTJlIn0.bar';
+
+					const editor = new TestEditor( { licenseKey } );
+
+					expect( editor.isReadOnly ).to.be.false;
+					sinon.assert.calledOnce( consoleInfoSpy );
+					sinon.assert.calledWith( consoleInfoSpy, 'You are using the development version of CKEditor 5 with ' +
+				'limited usage. Make sure you will not use it in the production environment.' );
+				} );
+
+				it( 'should not block the editor if 10 minutes have not passed (development license)', () => {
+					const licenseKey = 'foo.eyJleHAiOjE3MTUyMTI4MDAsImp0aSI6IjczNDk5YTQyLWJjNzktNDdlNy1hNmR' +
+                    'lLWIyMGJhMmEzYmI4OSIsImxpY2Vuc2VUeXBlIjoiZGV2ZWxvcG1lbnQiLCJ2YyI6Ijg5NzRiYTJlIn0.bar';
+
+					const today = 1715166436000; // 08.05.2024
+					const dateNow = sinon.stub( Date, 'now' ).returns( today );
+
+					const editor = new TestEditor( { licenseKey } );
+
+					sinon.assert.notCalled( showErrorStub );
+					expect( editor.isReadOnly ).to.be.false;
+
+					sinon.clock.tick( 1 );
+
+					sinon.assert.notCalled( showErrorStub );
+					expect( editor.isReadOnly ).to.be.false;
+
+					dateNow.restore();
+				} );
+
+				it( 'should block editor after 10 minutes (development license)', () => {
 					const licenseKey = 'foo.eyJleHAiOjE3MTUyMTI4MDAsImp0aSI6IjczNDk5YTQyLWJjNzktNDdlNy1hNmR' +
                     'lLWIyMGJhMmEzYmI4OSIsImxpY2Vuc2VUeXBlIjoiZGV2ZWxvcG1lbnQiLCJ2YyI6Ijg5NzRiYTJlIn0.bar';
 
@@ -485,9 +525,6 @@ describe( 'Editor', () => {
 
 					sinon.assert.calledWithMatch( showErrorStub, 'developmentLimit' );
 					expect( editor.isReadOnly ).to.be.true;
-					sinon.assert.calledOnce( consoleInfoSpy );
-					sinon.assert.calledWith( consoleInfoSpy, 'You are using the development version of CKEditor 5 with ' +
-                'limited usage. Make sure you will not use it in the production environment.' );
 
 					dateNow.restore();
 				} );

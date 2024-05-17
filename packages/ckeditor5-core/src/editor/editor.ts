@@ -724,13 +724,17 @@ export default abstract class Editor extends ObservableMixin() {
 			}
 		}
 
-		if ( licensePayload.licenseType === 'trial' && licensePayload.exp * 1000 < Date.now() ) {
-			blockEditor( this, 'trialLimit' );
+		if ( licensePayload.licenseType === 'trial' || licensePayload.licenseType === 'development' ) {
+			const licenseType: 'trial' | 'development' = licensePayload.licenseType;
 
 			console.info(
-				'You are using the trial version of CKEditor 5 with limited usage. ' +
+				`You are using the ${ licenseType } version of CKEditor 5 with limited usage. ` +
 				'Make sure you will not use it in the production environment.'
 			);
+		}
+
+		if ( licensePayload.licenseType === 'trial' && licensePayload.exp * 1000 < Date.now() ) {
+			blockEditor( this, 'trialLimit' );
 
 			return;
 		}
@@ -740,11 +744,6 @@ export default abstract class Editor extends ObservableMixin() {
 
 			const timerId = setTimeout( () => {
 				blockEditor( this, `${ licenseType }Limit` );
-
-				console.info(
-					`You are using the ${ licenseType } version of CKEditor 5 with limited usage. ` +
-					'Make sure you will not use it in the production environment.'
-				);
 			}, 600000 /* 10 minutes */ );
 
 			this.on( 'destroy', () => {
