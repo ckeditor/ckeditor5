@@ -3,9 +3,11 @@ Changelog
 
 ## [41.4.2](https://github.com/ckeditor/ckeditor5/compare/v41.4.1...v41.4.2) (May 17, 2024)
 
+We are excited to announce the release of CKEditor 5 v41.4.2. This patch release addresses an important issue and ensures compatibility with the Jest environment.
+
 ### Bug fixes
 
-* **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: Prevented error thrown when editor files are imported in an environment without `window` global object. Closes [#16368](https://github.com/ckeditor/ckeditor5/issues/16368). ([commit](https://github.com/ckeditor/ckeditor5/commit/0b70608f91c63a21a551de57e6ef002d6a96c8c7))
+* **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: Prevented error thrown when editor files are imported in an environment without the `window` global object. Closes [#16368](https://github.com/ckeditor/ckeditor5/issues/16368). ([commit](https://github.com/ckeditor/ckeditor5/commit/0b70608f91c63a21a551de57e6ef002d6a96c8c7))
 
 ### Released packages
 
@@ -104,11 +106,12 @@ Other releases:
 
 ## [41.4.1](https://github.com/ckeditor/ckeditor5/compare/v41.4.0...v41.4.1) (May 16, 2024)
 
+> [!NOTE]
+> This release (v41.4.1) addresses a critical issue found in v41.4.0. Below is the changelog, which includes the changes originally introduced in v41.4.0
+
 We are happy to announce the release of CKEditor 5 v41.4.1.
 
 ### Release highlights
-
-This is a patch release that resolves a critical issue introduced in v41.4.0.
 
 We have enhanced CKEditor 5 to improve accessibility and user experience further. Screen reader announcements have been expanded to include code blocks, images, and lists, enhancing navigability for visually impaired users. Additionally, the editor now better adheres to accessibility standards by respecting user preferences for reduced motion, and we have improved handling of color settings in high contrast modes.
 
