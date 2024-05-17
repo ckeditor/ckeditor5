@@ -15,8 +15,8 @@ import {
 	type MatcherPattern
 } from 'ckeditor5/src/engine.js';
 
-import markdown2html from './markdown2html/markdown2html.js';
-import html2markdown, { turndownService } from './html2markdown/html2markdown.js';
+import { MarkdownToHtml } from './markdown2html/markdown2html.js';
+import { HtmlToMarkdown } from './html2markdown/html2markdown.js';
 
 /**
  * This data processor implementation uses GitHub Flavored Markdown as input/output data.
@@ -29,11 +29,17 @@ export default class GFMDataProcessor implements DataProcessor {
 	 */
 	private _htmlDP: HtmlDataProcessor;
 
+	private _markdown2html: MarkdownToHtml;
+
+	private _html2markdown: HtmlToMarkdown;
+
 	/**
 	 * Creates a new instance of the Markdown data processor class.
 	 */
 	constructor( document: ViewDocument ) {
 		this._htmlDP = new HtmlDataProcessor( document );
+		this._markdown2html = new MarkdownToHtml();
+		this._html2markdown = new HtmlToMarkdown();
 	}
 
 	/**
@@ -45,7 +51,7 @@ export default class GFMDataProcessor implements DataProcessor {
 	 * @param element The element name to be kept.
 	 */
 	public keepHtml( element: keyof HTMLElementTagNameMap ): void {
-		turndownService.keep( [ element ] );
+		this._html2markdown.keep( [ element ] );
 	}
 
 	/**
@@ -55,7 +61,7 @@ export default class GFMDataProcessor implements DataProcessor {
 	 * @returns The converted view element.
 	 */
 	public toView( data: string ): ViewDocumentFragment {
-		const html = markdown2html( data );
+		const html = this._markdown2html.parse( data );
 		return this._htmlDP.toView( html );
 	}
 
@@ -67,7 +73,7 @@ export default class GFMDataProcessor implements DataProcessor {
 	 */
 	public toData( viewFragment: ViewDocumentFragment ): string {
 		const html = this._htmlDP.toData( viewFragment );
-		return html2markdown( html );
+		return this._html2markdown.parse( html );
 	}
 
 	/**
