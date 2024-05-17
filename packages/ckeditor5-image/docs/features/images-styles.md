@@ -95,7 +95,7 @@ A semantical style lets the user choose from predefined appearances of the image
 	If you want to enable image resizing, use [presentational image styles](#presentational-styles) instead. You can also define custom semantical styles to make sure that there are no conflicts with the image resizing feature.
 </info-box>
 
-Most of the predefined editor builds support editing structured content. This requires passing the control over the possible image appearances to the developer. The predefined builds thus introduce a UI containing a set of buttons applying the semantical styles (taken from the [default styles](#styles-table) listed below).
+Most of the editor types support editing structured content. This requires passing the control over the possible image appearances to the developer. We thus introduce a UI containing a set of buttons applying the semantical styles (taken from the [default styles](#styles-table) listed below).
 
 The example below shows an editor with such a basic configuration. There are three types of images:
 
