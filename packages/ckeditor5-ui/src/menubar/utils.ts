@@ -490,9 +490,9 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
  * 				]
  * 			},
  * 			{
- * 				groupId: 'mergeTagsPreview',
+ * 				groupId: 'previewMergeTags',
  * 				items: [
- * 					'menuBar:mergeTagsPreview'
+ * 					'menuBar:previewMergeTags'
  * 				]
  * 			},
  * 			{
@@ -745,9 +745,9 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 				]
 			},
 			{
-				groupId: 'mergeTagsPreview',
+				groupId: 'previewMergeTags',
 				items: [
-					'menuBar:mergeTagsPreview'
+					'menuBar:previewMergeTags'
 				]
 			},
 			{
