@@ -19,7 +19,7 @@ For the purpose of this guide, we will use a basic ASP.NET Core project created 
 
 ## Integrating from CDN
 
-Once you have your custom editor build ready and the .NET project has been set up, extract the `.zip` folder obtained from the online builder and place it in the `assets/vendor` directory created in the previous step. Your folder structure should now look like this:
+Once the project has been prepared, create an `assets/vendor/ckeditor5.js` file in the existing `wwwroot` directory in your app. Your folder structure should resemble this one:
 
 ````plain
 ├── bin
@@ -29,7 +29,7 @@ Once you have your custom editor build ready and the .NET project has been set u
 ├── wwwroot
 │   ├── assets
 |      ├── vendor
-|          └── ckeditor5
+|          └── ckeditor.js
 │   ├── css
 │   ├── js
 │   ├── lib
@@ -39,7 +39,48 @@ Once you have your custom editor build ready and the .NET project has been set u
 └── ...
 ````
 
-Then, modify the `Index.cshtml` file contained in the `Pages` directory to include the CKEditor&nbsp;5 script. You can use this HTML boilerplate as a starting point:
+Inside the file, paste the JavaScript code from the Builder. The code will differ depending on your chosen preset and features. But it should look similar to this:
+
+```js
+import {
+    ClassicEditor,
+    AccessibilityHelp,
+    Autosave,
+    Bold,
+    Essentials,
+    Italic,
+    Mention,
+    Paragraph,
+    SelectAll,
+    Undo
+} from 'ckeditor5';
+import { SlashCommand } from 'ckeditor5-premium-features';
+
+const editorConfig = {
+    toolbar: {
+        items: ['undo', 'redo', '|', 'selectAll', '|', 'bold', 'italic', '|', 'accessibilityHelp'],
+        shouldNotGroupWhenFull: false
+    },
+    placeholder: 'Type or paste your content here!',
+    plugins: [AccessibilityHelp, Autosave, Bold, Essentials, Italic, Mention, Paragraph, SelectAll, SlashCommand, Undo],
+    licenseKey: '<YOUR_LICENSE_KEY>',
+    mention: {
+        feeds: [
+            {
+                marker: '@',
+                feed: [
+                    /* See: https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html */
+                ]
+            }
+        ]
+    },
+    initialData: "<h2>Congratulations on setting up CKEditor 5! 🎉</h2>"
+};
+
+ClassicEditor.create(document.querySelector('#editor'), editorConfig);
+```
+
+Then, modify the `Index.cshtml` file in the `Pages` directory to include the CKEditor 5 scripts. All necessary scripts and links are in the HTML snippet from the Builder. You can copy and paste them into your template. It should look similar to the one below:
 
 ```html
 @page
@@ -49,16 +90,20 @@ Then, modify the `Index.cshtml` file contained in the `Pages` directory to inclu
 }
 
 <div class="text-center">
-    <h1>Welcome to CKEditor&nbsp;5 in .NET</h1>
     <div id="editor"></div>
-    <script src="assets/vendor/ckeditor5/build/ckeditor.js"></script>
-    <script>
-        ClassicEditor
-            .create( document.querySelector( '#editor' ) )
-            .catch( error => {
-                console.error( error );
-            } );
+    <link rel="stylesheet" href="<CDN_LINK>/ckeditor5/dist/styles.css" />
+	<link rel="stylesheet" href="<CDN_LINK>/ckeditor5-premium-features/dist/index.css" />
+    <script type="importmap">
+		{
+			"imports": {
+                "ckeditor5": "<CDN_LINK>/ckeditor5/index.min.js",
+                "ckeditor5/": "<CDN_LINK>/ckeditor5/",
+                "ckeditor5-premium-features": "<CDN_LINK>/ckeditor5-premium-features/index.min.js",
+                "ckeditor5-premium-features/": "<CDN_LINK>/ckeditor5-premium-features/"
+			}
+		}
     </script>
+    <script type="module" src="assets/vendor/ckeditor.js"></script>
 </div>
 ```
 
