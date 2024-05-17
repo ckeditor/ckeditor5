@@ -143,8 +143,8 @@ msgstr "A listaelem behúzás csökkentése"
 
 msgctxt "Assistive technologies label for entering the to-do list."
 msgid "Entering a to-do list"
-msgstr ""
+msgstr "Belépés a tennivalók listájába"
 
 msgctxt "Assistive technologies label for leaving the to-do list."
 msgid "Leaving a to-do list"
-msgstr ""
+msgstr "Tennivalók listájának elhagyás"

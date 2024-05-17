@@ -143,8 +143,8 @@ msgstr "Listeneinzug verkleinern"
 
 msgctxt "Assistive technologies label for entering the to-do list."
 msgid "Entering a to-do list"
-msgstr ""
+msgstr "Eingabe einer Aufgabenliste"
 
 msgctxt "Assistive technologies label for leaving the to-do list."
 msgid "Leaving a to-do list"
-msgstr ""
+msgstr "Verlassen einer Aufgabenliste"

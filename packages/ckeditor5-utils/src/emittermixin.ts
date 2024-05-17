@@ -21,7 +21,7 @@ const _listeningTo = Symbol( 'listeningTo' );
 const _emitterId = Symbol( 'emitterId' );
 const _delegations = Symbol( 'delegations' );
 
-const defaultEmitterClass = EmitterMixin( Object );
+const defaultEmitterClass = /* #__PURE__ */ EmitterMixin( Object );
 
 /**
  * Mixin that injects the {@link ~Emitter events API} into its host.
