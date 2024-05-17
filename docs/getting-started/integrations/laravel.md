@@ -29,7 +29,7 @@ Once the project has been prepared, create an `assets/vendor/ckeditor5.js` file 
 ├── public
 │   ├── assets
 |      ├── vendor
-|          └── ckeditor5.js
+|          └── ckeditor.js
 │   ├── .htaccess
 │   ├── favicon.ico
 │   ├── index.php
@@ -96,8 +96,10 @@ Then, modify the `welcome.blade.php` file in the `resources/views` directory to 
 	<script type="importmap">
 		{
 			"imports": {
-				"ckeditor5": "<CDN_LINK>/dist/browser/index.js",
-				"ckeditor5/": "<CDN_LINK>/dist/"
+				"ckeditor5": "<CDN_LINK>/ckeditor5/index.min.js",
+				"ckeditor5/": "<CDN_LINK>/ckeditor5/",
+				"ckeditor5-premium-features": "<CDN_LINK>/ckeditor5-premium-features/index.min.js",
+				"ckeditor5-premium-features/": "<CDN_LINK>/ckeditor5-premium-features/"
 			}
 		}
 	</script>
