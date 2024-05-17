@@ -34,9 +34,7 @@ ClassicEditor
 		],
 		fontColor: {
 			columns: 3
-		},
-		licenseKey: 'foo.eyJleHAiOjE3MTY0MjI0MDAsImp0aSI6ImY5ZTViYjc5LTYzZTgtNGE0NS05YWQxLTg5YjBiNm' +
-		'ZlNjE3MyIsImxpY2Vuc2VUeXBlIjoiZGV2ZWxvcG1lbnQiLCJ2YyI6ImU4NzdmNGE3In0.bar'
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;
