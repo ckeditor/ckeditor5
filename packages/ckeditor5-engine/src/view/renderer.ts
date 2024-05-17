@@ -220,7 +220,7 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 		// and we should not do it because the difference between view and DOM could lead to position mapping problems.
 		if ( this.isComposing && !env.isAndroid ) {
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-			// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Rendering aborted while isComposing',
+			// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Rendering aborted while isComposing.',
 			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-style: italic'
 			// @if CK_DEBUG_TYPING // 	);
 			// @if CK_DEBUG_TYPING // }
@@ -671,7 +671,7 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 		const actions = this._findUpdateActions( diff, actualDomChildren, expectedDomChildren, areTextNodes );
 
 		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping && actions.every( a => a == 'equal' ) ) {
-		// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Nothing to update',
+		// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Nothing to update.',
 		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-style: italic'
 		// @if CK_DEBUG_TYPING // 	);
 		// @if CK_DEBUG_TYPING // }

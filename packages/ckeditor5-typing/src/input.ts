@@ -16,8 +16,10 @@ import InsertTextObserver, { type ViewDocumentInsertTextEvent } from './insertte
 import {
 	LiveRange,
 	type Model,
+	type Mapper,
 	type Element,
 	type Range,
+	type ViewNode,
 	type ViewElement,
 	type MutationData,
 	type ViewDocumentCompositionStartEvent,
@@ -38,11 +40,6 @@ export default class Input extends Plugin {
 	private _queue!: InsertTextQueue;
 
 	/**
-	 * A set of model elements. The composition was in those elements. It's used for mutations check after composition end.
-	 */
-	private _compositionElements = new Set<Element>();
-
-	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
@@ -56,6 +53,7 @@ export default class Input extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 		const view = editor.editing.view;
+		const mapper = editor.editing.mapper;
 		const modelSelection = model.document.selection;
 
 		this._queue = new InsertTextQueue( editor );
@@ -88,9 +86,7 @@ export default class Input extends Plugin {
 
 			// If view selection was specified, translate it to model selection.
 			if ( viewSelection ) {
-				modelRanges = Array.from( viewSelection.getRanges() ).map( viewRange => {
-					return editor.editing.mapper.toModelRange( viewRange );
-				} );
+				modelRanges = Array.from( viewSelection.getRanges() ).map( viewRange => mapper.toModelRange( viewRange ) );
 			}
 			else {
 				modelRanges = Array.from( modelSelection.getRanges() );
@@ -122,15 +118,13 @@ export default class Input extends Plugin {
 
 				if ( insertText.length == 0 && modelRanges[ 0 ].isCollapsed ) {
 					// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-					// @if CK_DEBUG_TYPING // 	console.log( '%c[Input]%c Ignore insertion of an empty data to the collapsed range',
+					// @if CK_DEBUG_TYPING // 	console.log( '%c[Input]%c Ignore insertion of an empty data to the collapsed range.',
 					// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', 'font-style: italic'
 					// @if CK_DEBUG_TYPING // 	);
 					// @if CK_DEBUG_TYPING // }
 
 					return;
 				}
-
-				this._compositionElements.add( modelRanges[ 0 ].start.parent as Element );
 			}
 
 			const commandData: InsertTextCommandOptions = {
@@ -139,7 +133,7 @@ export default class Input extends Plugin {
 			};
 
 			if ( viewResultRange ) {
-				commandData.resultRange = editor.editing.mapper.toModelRange( viewResultRange );
+				commandData.resultRange = mapper.toModelRange( viewResultRange );
 			}
 
 			// This is a composition event and those are not cancellable, so we need to wait until browser updates the DOM
@@ -220,18 +214,27 @@ export default class Input extends Plugin {
 			// Apply changes to the model as they are applied to the DOM by the browser.
 			// On beforeinput event, the DOM is not yet modified. We wait for detected mutations to apply model changes.
 			this.listenTo<ViewDocumentMutationsEvent>( view.document, 'mutations', ( evt, { mutations } ) => {
-				// Check if mutations are relevant for queued changes.
-				// TODO make sure this works properly, for example what about AttributeElement.
-				for ( const { type, node } of mutations ) {
-					const viewElement = ( type == 'text' ? node.parent : node ) as ViewElement;
-					const modelElement = editor.editing.mapper.toModelElement( viewElement )!;
+				if ( !view.document.isComposing ) {
+					return;
+				}
 
-					if ( this._compositionElements.has( modelElement ) ) {
+				// Check if mutations are relevant for queued changes.
+				for ( const { node } of mutations ) {
+					const viewElement = findMappedViewAncestor( node, mapper );
+					const modelElement = mapper.toModelElement( viewElement )!;
+
+					if ( this._queue.isComposedElement( modelElement ) ) {
 						this._queue.flush( 'mutations' );
 
-						break;
+						return;
 					}
 				}
+
+				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+				// @if CK_DEBUG_TYPING // 	console.log( '%c[Input]%c Mutations not related to the composition.',
+				// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', 'font-style: italic'
+				// @if CK_DEBUG_TYPING // 	);
+				// @if CK_DEBUG_TYPING // }
 			} );
 
 			// Make sure that all changes are applied to the model before the end of composition.
@@ -241,12 +244,12 @@ export default class Input extends Plugin {
 			this.listenTo<ViewDocumentCompositionEndEvent>( view.document, 'compositionend', () => {
 				const mutations: Array<MutationData> = [];
 
-				for ( const element of this._compositionElements ) {
+				for ( const element of this._queue.flushComposedElements() ) {
 					if ( element.root.rootName == '$graveyard' ) {
 						continue;
 					}
 
-					const viewElement = editor.editing.mapper.toViewElement( element );
+					const viewElement = mapper.toViewElement( element );
 
 					if ( !viewElement ) {
 						continue;
@@ -255,11 +258,9 @@ export default class Input extends Plugin {
 					mutations.push( { type: 'children', node: viewElement } );
 				}
 
-				this._compositionElements.clear();
-
 				if ( mutations.length ) {
 					// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-					// @if CK_DEBUG_TYPING // 	console.group( '%c[Input]%c Fire post-composition mutation fixes',
+					// @if CK_DEBUG_TYPING // 	console.group( '%c[Input]%c Fire post-composition mutation fixes.',
 					// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green', 'font-weight: bold', ''
 					// @if CK_DEBUG_TYPING // 	);
 					// @if CK_DEBUG_TYPING // }
@@ -280,7 +281,6 @@ export default class Input extends Plugin {
 	public override destroy(): void {
 		super.destroy();
 
-		this._compositionElements.clear();
 		this._queue.destroy();
 	}
 }
@@ -305,6 +305,11 @@ class InsertTextQueue {
 	private _queue: Array<InsertTextCommandLiveOptions> = [];
 
 	/**
+	 * A set of model elements. The composition happened in those elements. It's used for mutations check.
+	 */
+	private _compositionElements = new Set<Element>();
+
+	/**
 	 * TODO
 	 */
 	constructor( editor: Editor ) {
@@ -316,6 +321,7 @@ class InsertTextQueue {
 	 */
 	public destroy(): void {
 		this.flushDebounced.cancel();
+		this._compositionElements.clear();
 
 		while ( this._queue.length ) {
 			this.shift();
@@ -338,7 +344,14 @@ class InsertTextQueue {
 		};
 
 		if ( commandData.selection ) {
-			commandLiveData.selectionRanges = Array.from( commandData.selection.getRanges() ).map( range => LiveRange.fromRange( range ) );
+			commandLiveData.selectionRanges = [];
+
+			for ( const range of commandData.selection.getRanges() ) {
+				commandLiveData.selectionRanges.push( LiveRange.fromRange( range ) );
+
+				// Keep reference to the model element for later mutation checks.
+				this._compositionElements.add( range.start.parent as Element );
+			}
 		}
 
 		if ( commandData.resultRange ) {
@@ -392,7 +405,7 @@ class InsertTextQueue {
 		}
 
 		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-		// @if CK_DEBUG_TYPING // 	console.group( `%c[Input]%c Flush insertText queue on ${ reason }`,
+		// @if CK_DEBUG_TYPING // 	console.group( `%c[Input]%c Flush insertText queue on ${ reason }.`,
 		// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', 'font-weight: bold'
 		// @if CK_DEBUG_TYPING // 	);
 		// @if CK_DEBUG_TYPING // }
@@ -426,6 +439,24 @@ class InsertTextQueue {
 		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 		// @if CK_DEBUG_TYPING // 	console.groupEnd();
 		// @if CK_DEBUG_TYPING // }
+	}
+
+	/**
+	 * TODO
+	 */
+	public isComposedElement( element: Element ): boolean {
+		return this._compositionElements.has( element );
+	}
+
+	/**
+	 * TODO
+	 */
+	public flushComposedElements(): Array<Element> {
+		const result = Array.from( this._compositionElements );
+
+		this._compositionElements.clear();
+
+		return result;
 	}
 }
 
@@ -470,6 +501,19 @@ function detachLiveRange( liveRange?: LiveRange ): Range | null {
 	}
 
 	return range;
+}
+
+/**
+ * For the given `viewNode`, finds and returns the closest ancestor of this node that has a mapping to the model.
+ */
+function findMappedViewAncestor( viewNode: ViewNode, mapper: Mapper ): ViewElement {
+	let node = ( viewNode.is( '$text' ) ? viewNode.parent : viewNode ) as ViewElement;
+
+	while ( !mapper.toModelElement( node ) ) {
+		node = node.parent as ViewElement;
+	}
+
+	return node;
 }
 
 /**
