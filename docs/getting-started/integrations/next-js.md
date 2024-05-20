@@ -23,7 +23,7 @@ The easiest way to use CKEditor&nbsp;5 in your Next.js application is configurin
 
 This guide assumes you already have a Next project. To create such a project, you can use CLI like `create-next-app`. Refer to the [Next.js documentation](https://nextjs.org/docs/app/api-reference/create-next-app) to learn more.
 
-### Installing from npm
+## Installing from npm
 
 First, install the CKEditor 5 packages:
 
