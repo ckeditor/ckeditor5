@@ -92,8 +92,6 @@ This guide assumes you already have a Angular project. To create such a project,
 
 ### Installing from npm
 
-This guide assumes you already have an Angular project. If you do not have an existing project, you can use the [Angular CLI](https://angular.io/cli) to create a new one.
-
 First, install the CKEditor 5 packages:
 
 * `ckeditor5` &ndash; package with open-source plugins and features.
@@ -319,6 +317,8 @@ export class MyComponent {
 	{{ isDisabled ? 'Enable editor' : 'Disable editor' }}
 </button>
 ```
+
+<!-- TODO: Change the watchdog section if needed -->
 
 ### `watchdog`
 
