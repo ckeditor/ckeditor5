@@ -16,7 +16,7 @@ order: 40
 </p>
 
 <info-box warning>
-	**Important**: This guide is about the CKEditor&nbsp;5 integration with Vue.js 2.x. However, Vue 2 has reached EOL and is no longer actively maintained. To learn more about the integration with Vue.js 3+, check out the {@link getting-started/integrations/vuejs-v3 "Rich text editor component for Vue.js 3+"} guide.
+	This guide is about the CKEditor&nbsp;5 integration with Vue.js 2.x. However, Vue 2 has reached EOL and is no longer actively maintained. To learn more about the integration with Vue.js 3+, check out the {@link getting-started/integrations/vuejs-v3 "Rich text editor component for Vue.js 3+"} guide.
 </info-box>
 
 Vue.js is a versatile framework for building web user interfaces. CKEditor&nbsp;5 provides the official Vue component you can use in your application.
@@ -425,7 +425,7 @@ export default {
 	data() {
 		return {
 			editor: ClassicEditor,
-			editorData: '<p>Hola desde CKEditor 5 en React!</p>',
+			editorData: '<p>Hola desde CKEditor 5 en Vue 2!</p>',
 			editorConfig: {
 				toolbar: {
                     items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
