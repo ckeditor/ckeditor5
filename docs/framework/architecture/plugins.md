@@ -15,6 +15,8 @@ order: 10
 
 Features in CKEditor are introduced by plugins. In fact, without plugins, CKEditor&nbsp;5 is an empty API with no use. Plugins provided by the CKEditor core team are available in [npm](https://www.npmjs.com/search?q=ckeditor5) (and [GitHub](https://github.com/ckeditor?utf8=%E2%9C%93&q=ckeditor5&type=&language=), too) in the form of npm packages. A package may contain one or more plugins (for example, the [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) package contains {@link features/images-overview several granular plugins}).
 
+As of v42.0.0, we collect all plugins in two aggregate packages: `ckeditor5` and `ckeditor5-premium-features`. Using those two is the recommended way of setup, you get all plugins, without the need to look which plugin is in which package.
+
 ## Common use cases
 
 Plugins can be pretty much anything. They are pieces of code initialized by the editor if they are configured to be loaded. They can use the richness of the {@link api/index CKEditor&nbsp;5 Framework API} to enhance the editor or to better integrate it with your application.
@@ -31,7 +33,7 @@ Common use cases for plugins are:
 
 ## Creating plugins
 
-Creating your own plugins is a straightforward task but it requires good knowledge about some aspects of the CKEditor&nbsp;5 development environment. The following resources are recommended as a starting point:
+Creating your own plugins is a straightforward task, but it requires good knowledge about some aspects of the CKEditor&nbsp;5 development environment. The following resources are recommended as a starting point:
 
 * The {@link tutorials/crash-course/editor Plugin development guide}.
 * The {@link framework/development-tools/package-generator/using-package-generator Using package generator}, that provides a plugin development environment.
