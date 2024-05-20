@@ -18,8 +18,10 @@ See the {@link features/minimap content minimap feature guide} and the {@link mo
 
 ## Installation
 
-```
-npm install --save @ckeditor/ckeditor5-minimap
+This package is part of our open-source aggregate package.
+
+```bash
+npm install ckeditor5
 ```
 
 ## Contribute

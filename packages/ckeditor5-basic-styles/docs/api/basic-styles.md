@@ -28,8 +28,10 @@ You can also check out the following plugins:
 
 ## Installation
 
+This package is part of our open-source aggregate package.
+
 ```bash
-npm install --save @ckeditor/ckeditor5-basic-styles
+npm install ckeditor5
 ```
 
 ## Contribute

@@ -18,8 +18,10 @@ See the {@link features/source-editing source editing feature guide} and the {@l
 
 ## Installation
 
-```
-npm install --save @ckeditor/ckeditor5-source-editing
+This package is part of our open-source aggregate package.
+
+```bash
+npm install ckeditor5
 ```
 
 ## Contribute

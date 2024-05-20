@@ -34,7 +34,7 @@ There are two available types of watchdogs:
 Install the [`@ckeditor/ckeditor5-watchdog`](https://www.npmjs.com/package/@ckeditor/ckeditor5-watchdog) package:
 
 ```
-npm install --save @ckeditor/ckeditor5-watchdog
+npm install --save @ckeditor/ckeditor5
 ```
 
 Then, change your `ClassicEditor.create()` call to `watchdog.create()` as follows:
