@@ -23,8 +23,6 @@ import type { FocusableView } from '../focuscycler.js';
 import type { ColorSelectorExecuteEvent, ColorSelectorColorPickerShowEvent } from './colorselectorview.js';
 import { icons } from '@ckeditor/ckeditor5-core';
 
-const { eraser: removeButtonIcon, colorPalette: colorPaletteIcon } = icons;
-
 /**
  * One of the fragments of {@link module:ui/colorselector/colorselectorview~ColorSelectorView}.
  *
@@ -334,7 +332,7 @@ export default class ColorGridsFragmentView extends View {
 		this.colorPickerButtonView.set( {
 			label: this._colorPickerLabel,
 			withText: true,
-			icon: colorPaletteIcon,
+			icon: icons.colorPalette,
 			class: 'ck-color-selector__color-picker'
 		} );
 
@@ -351,7 +349,7 @@ export default class ColorGridsFragmentView extends View {
 
 		buttonView.set( {
 			withText: true,
-			icon: removeButtonIcon,
+			icon: icons.eraser,
 			label: this._removeButtonLabel
 		} );
 
