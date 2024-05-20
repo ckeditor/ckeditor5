@@ -117,7 +117,7 @@ Once you have added the import map, you can access the editor and its plugins us
 		Italic,
 		PasteFromOffice,
 		Paragraph
-		} from 'ckeditor5';
+	} from 'ckeditor5';
 	import { PasteFromOfficeEnhanced } from 'ckeditor5-premium-features';
 
 	ClassicEditor.create( document.querySelector( '#editor' ), {
