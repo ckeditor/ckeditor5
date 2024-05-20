@@ -53,21 +53,6 @@ The module includes the {@link features/paste-from-office-enhanced paste from Of
 
 Easily defined document and content {@link features/template templates} make content creation faster and easier thanks to sets of predefined templates. These may define entire documents, like CVs, reports, or formal letters conforming to the company's style guide. You can also use templates to create content blocks, such as pre-formatted tables, lists, and other block elements.
 
-## Supported Drupal versions
-
-* Drupal 9 (requires [enabling CKEditor&ndash;5](https://www.drupal.org/docs/core-modules-and-themes/core-modules/experimental-ckeditor-5/installation-and-configuration-of-ckeditor-5-module-on-drupal-9))
-* Drupal 10
-
-## Requirements
-
-* PHP 8.0+
-* Drupal 9.4 with CKEditor&ndash;5 enabled
-* Drupal 10
-
-## Installation and configuration
-
-Refer to the [Adding CKEditor&ndash;5 Premium Features module to Drupal 10](https://www.drupal.org/docs/contributed-modules/ckeditor-5-premium-features/how-to-install-and-set-up-the-module) guide in the Drupal documentation for details on how to install and set up the module.
-
 ## CKEditor 5 Plugin Pack
 
 The [CKEditor&nbsp;5 Plugin Pack](https://www.drupal.org/project/ckeditor5_plugin_pack) is a free-to-use module that offers multiple CKEditor 5 plugins that are not available in the Drupal core, extending editor's functionality.
@@ -92,13 +77,21 @@ Currently available premium features:
 
 Detailed descriptions of each plugin can be found on the [CKEditor&nbsp;5 Plugin Pack module page](https://www.drupal.org/project/ckeditor5_plugin_pack)
 
-### Requirements
+## Supported Drupal versions
+
+* Drupal 9 (requires [enabling CKEditor&ndash;5](https://www.drupal.org/docs/core-modules-and-themes/core-modules/experimental-ckeditor-5/installation-and-configuration-of-ckeditor-5-module-on-drupal-9))
+* Drupal 10
+
+## Requirements
 
 * PHP 8.0+
-* Drupal 9/10 with CKEditor 5 enabled
+* Drupal 9.4 with CKEditor&ndash;5 enabled
+* Drupal 10
 * To-do list module requires Drupal 10.2+
 * Templates module requires Drupal 10.3+
 
-### Installation and configuration
+## Installation and configuration
 
-Refer to the [Adding CKEditor 5 Plugin Pack module to Drupal 10](https://www.drupal.org/docs/extending-drupal/contributed-modules/contributed-module-documentation/ckeditor-5-plugin-pack/how-to-install-and-set-up-the-module) guide in the Drupal documentation for details on how to install and set up the module.
+Refer to the [Adding CKEditor&ndash;5 Premium Features module to Drupal 10](https://www.drupal.org/docs/contributed-modules/ckeditor-5-premium-features/how-to-install-and-set-up-the-module) guide in the Drupal documentation for details on how to install and set up the Premium Features module.
+
+Refer to the [Adding CKEditor 5 Plugin Pack module to Drupal 10](https://www.drupal.org/docs/extending-drupal/contributed-modules/contributed-module-documentation/ckeditor-5-plugin-pack/how-to-install-and-set-up-the-module) guide in the Drupal documentation for details on how to install and set up the Plugin Pack module.
