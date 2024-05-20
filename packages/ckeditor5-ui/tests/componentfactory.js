@@ -121,6 +121,15 @@ describe( 'ComponentFactory', () => {
 
 			expect( instance.element.outerHTML ).to.contains( 'data-cke-component-name="foo"' );
 		} );
+
+		// See: https://github.com/ckeditor/ckeditor5/pull/16388#issuecomment-2121026178.
+		it( 'returns null if a factory callback does not return an instance of View', () => {
+			factory.add( 'foo', () => null );
+
+			const instance = factory.create( 'foo' );
+
+			expect( instance ).to.equal( null );
+		} );
 	} );
 
 	describe( 'has()', () => {

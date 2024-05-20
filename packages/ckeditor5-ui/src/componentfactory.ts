@@ -108,6 +108,11 @@ export default class ComponentFactory {
 		const factory = this._components.get( getNormalized( name ) )!;
 		const instance = factory.callback( this.editor.locale );
 
+		// See: https://github.com/ckeditor/ckeditor5/pull/16388#issuecomment-2121026178.
+		if ( !instance ) {
+			return null as any;
+		}
+
 		if ( instance.template ) {
 			instance.extendTemplate( {
 				attributes: {
