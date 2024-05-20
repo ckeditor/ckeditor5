@@ -428,7 +428,6 @@ describe( 'CKBoxImageEditCommand', () => {
 
 			it( 'should clear timer on editor destroy', async () => {
 				const ckboxImageId = 'example-id';
-				const clock = sinon.useFakeTimers();
 
 				setModelData( model,
 					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/assets/sample.png"></imageBlock>]`
@@ -446,7 +445,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				editor.fire( 'ready' );
 
-				editor.on( 'destroy', () => {
+				command.on( 'destroy', () => {
 					sinon.assert.calledOnce( clearTimeoutSpy );
 				} );
 
@@ -459,7 +458,6 @@ describe( 'CKBoxImageEditCommand', () => {
 				await editor.destroy();
 
 				expect( command.value ).to.be.false;
-				clock.restore();
 			} );
 		} );
 
