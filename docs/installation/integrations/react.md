@@ -162,7 +162,7 @@ The `CKEditorContext` component supports the following properties:
 * `isLayoutReady` &ndash; A property that delays the context creation when set to `false`. It creates the context and the editor children once it is `true` or unset. Useful when the CKEditor&nbsp;5 annotations or a presence list are used.
 * `id` &ndash; The context ID. When this property changes, the component restarts the context with its editor and reinitializes it based on the current configuration.
 * `onReady` &ndash; A function called when the context is ready and all the editors inside were initialized with the `context` instance. This callback is also called after the reinitialization of the editor if an error has occurred.
-* `onAfterDestroy` &ndash; A function invoked after the successful destruction of an editor instance that was rendered by the component. This callback is also triggered after the editor has been reinitialized after an error. It is not guaranteed that the component will still be mounted when this function is called.
+* `onAfterDestroy` &ndash; A function called after the successful destruction of an editor instance rendered by the component. This callback is also triggered after the editor has been reinitialized after an error. The component is not guaranteed to be mounted when this function is called.
 * `onError` &ndash; A function called when the context has crashed during the initialization or during the runtime. It receives two arguments: the error instance and the error details.
 	Error details is an object that contains two properties:
 	* `{String} phase`: `'initialization'|'runtime'` &ndash; Informs when the error has occurred (during the editor or context initialization, or after the initialization).
@@ -231,6 +231,9 @@ class App extends Component {
 						if ( willEditorRestart ) {
 							this.editor.ui.view.toolbar.element.remove();
 						}
+					} }
+					onAfterDestroy={ editor => {
+						editor.ui.view.toolbar.element.remove();
 					} }
 					onChange={ ( event ) => console.log( event ) }
 					editor={ DecoupledEditor }
