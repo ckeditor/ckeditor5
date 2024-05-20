@@ -33,7 +33,7 @@ This guide assumes you already have a Vue project. To create such a project, you
 
 ### Installing from npm
 
-This guide assumes you already have a Vue project. First, install the CKEditor 5 packages:
+First, install the CKEditor 5 packages:
 
 * `ckeditor5` – package with open-source plugins and features.
 * `ckeditor5-premium-features` – package with premium plugins and features.
@@ -431,7 +431,7 @@ export default {
 	data() {
 		return {
 			editor: ClassicEditor,
-			editorData: '<p>Hola desde CKEditor 5 en React!</p>',
+			editorData: '<p>Hola desde CKEditor 5 en Vue!</p>',
 			editorConfig: {
 				toolbar: {
                     items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
