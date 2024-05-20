@@ -14,7 +14,7 @@ You can browse the API documentation of this package by using the module tree on
 
 ## Installation
 
-This package is part of our open-source aggregate package
+This package is part of our open-source aggregate package.
 
 ```bash
 npm install ckeditor5

@@ -16,7 +16,7 @@ See the {@link module:essentials/essentials~Essentials} plugin documentation.
 
 ## Installation
 
-This package is part of our open-source aggregate package
+This package is part of our open-source aggregate package.
 
 ```bash
 npm install ckeditor5

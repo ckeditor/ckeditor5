@@ -18,7 +18,7 @@ See the {@link features/special-characters special characters feature guide} and
 
 ## Installation
 
-This package is part of our open-source aggregate package
+This package is part of our open-source aggregate package.
 
 ```bash
 npm install ckeditor5

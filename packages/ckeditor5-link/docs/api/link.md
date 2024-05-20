@@ -18,7 +18,7 @@ See the {@link features/link link feature guide} and the {@link module:link/link
 
 ## Installation
 
-This package is part of our open-source aggregate package
+This package is part of our open-source aggregate package.
 
 ```bash
 npm install ckeditor5

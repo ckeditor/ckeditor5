@@ -20,7 +20,7 @@ This plugin is usually enabled by the {@link module:essentials/essentials~Essent
 
 ## Installation
 
-This package is part of our open-source aggregate package
+This package is part of our open-source aggregate package.
 
 ```bash
 npm install ckeditor5

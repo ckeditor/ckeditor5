@@ -28,7 +28,7 @@ See the {@link features/tables table feature guide} and the documentation for th
 
 ## Installation
 
-This package is part of our open-source aggregate package
+This package is part of our open-source aggregate package.
 
 ```bash
 npm install ckeditor5

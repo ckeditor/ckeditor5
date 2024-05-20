@@ -30,7 +30,7 @@ Besides these mentioned core functionalities, this package implements the follow
 
 ## Installation
 
-This package is part of our open-source aggregate package
+This package is part of our open-source aggregate package.
 
 ```bash
 npm install ckeditor5

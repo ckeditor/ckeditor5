@@ -10,7 +10,7 @@ CKEditor&nbsp;5's [Cloud Services](https://ckeditor.com/ckeditor-cloud-services/
 
 ## Installation
 
-This package is part of our open-source aggregate package
+This package is part of our open-source aggregate package.
 
 ```bash
 npm install ckeditor5

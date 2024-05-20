@@ -18,7 +18,7 @@ See the {@link features/show-blocks show blocks} feature guide and the {@link mo
 
 ## Installation
 
-This package is part of our open-source aggregate package
+This package is part of our open-source aggregate package.
 
 ```bash
 npm install ckeditor5

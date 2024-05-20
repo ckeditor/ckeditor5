@@ -20,7 +20,7 @@ Check out the {@link features/image-upload comprehensive "Image upload" guide} t
 
 ## Installation
 
-This package is part of our open-source aggregate package
+This package is part of our open-source aggregate package.
 
 ```bash
 npm install ckeditor5

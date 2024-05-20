@@ -14,7 +14,7 @@ See the {@link module:paragraph/paragraph~Paragraph} and {@link module:paragraph
 
 ## Installation
 
-This package is part of our open-source aggregate package
+This package is part of our open-source aggregate package.
 
 ```bash
 npm install ckeditor5

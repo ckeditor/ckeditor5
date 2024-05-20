@@ -18,7 +18,7 @@ See the {@link features/general-html-support General HTML Support feature guide}
 
 ## Installation
 
-This package is part of our open-source aggregate package
+This package is part of our open-source aggregate package.
 
 ```bash
 npm install ckeditor5

@@ -18,7 +18,7 @@ See the {@link features/text-alignment text alignment feature guide} and the {@l
 
 ## Installation
 
-This package is part of our open-source aggregate package
+This package is part of our open-source aggregate package.
 
 ```bash
 npm install ckeditor5

@@ -18,7 +18,7 @@ See the {@link features/word-count word count and character count feature guide}
 
 ## Installation
 
-This package is part of our open-source aggregate package
+This package is part of our open-source aggregate package.
 
 ```bash
 npm install ckeditor5

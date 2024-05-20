@@ -18,7 +18,7 @@ See the {@link features/markdown Markdown output guide} and the {@link module:ma
 
 ## Installation
 
-This package is part of our open-source aggregate package
+This package is part of our open-source aggregate package.
 
 ```bash
 npm install ckeditor5

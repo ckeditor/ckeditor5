@@ -18,7 +18,7 @@ See the {@link features/find-and-replace find and replace feature guide} and the
 
 ## Installation
 
-This package is part of our open-source aggregate package
+This package is part of our open-source aggregate package.
 
 ```bash
 npm install ckeditor5

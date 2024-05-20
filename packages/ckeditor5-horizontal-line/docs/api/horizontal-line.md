@@ -18,7 +18,7 @@ See the {@link features/horizontal-line horizontal line feature guide} and the {
 
 ## Installation
 
-This package is part of our open-source aggregate package
+This package is part of our open-source aggregate package.
 
 ```bash
 npm install ckeditor5

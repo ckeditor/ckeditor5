@@ -18,7 +18,7 @@ See the {@link features/remove-format remove format feature guide} and the {@lin
 
 ## Installation
 
-This package is part of our open-source aggregate package
+This package is part of our open-source aggregate package.
 
 ```bash
 npm install ckeditor5

@@ -18,7 +18,7 @@ See the {@link features/html-embed HTML embed feature guide} and the {@link modu
 
 ## Installation
 
-This package is part of our open-source aggregate package
+This package is part of our open-source aggregate package.
 
 ```bash
 npm install ckeditor5

@@ -22,7 +22,7 @@ See the {@link features/font font feature guide} and plugin documentation:
 
 ## Installation
 
-This package is part of our open-source aggregate package
+This package is part of our open-source aggregate package.
 
 ```bash
 npm install ckeditor5

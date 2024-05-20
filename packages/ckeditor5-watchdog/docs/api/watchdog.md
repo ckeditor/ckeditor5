@@ -14,7 +14,7 @@ See the {@link features/watchdog watchdog feature guide} and the {@link module:w
 
 ## Installation
 
-This package is part of our open-source aggregate package
+This package is part of our open-source aggregate package.
 
 ```bash
 npm install ckeditor5

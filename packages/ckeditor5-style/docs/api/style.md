@@ -14,7 +14,7 @@ See the {@link module:style/style~Style} plugin documentation and the style feat
 
 ## Installation
 
-This package is part of our open-source aggregate package
+This package is part of our open-source aggregate package.
 
 ```bash
 npm install ckeditor5

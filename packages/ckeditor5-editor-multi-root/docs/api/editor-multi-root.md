@@ -16,7 +16,7 @@ This package contains the source version of the multi-root editor. Read more abo
 
 ## Installation
 
-This package is part of our open-source aggregate package
+This package is part of our open-source aggregate package.
 
 ```bash
 npm install ckeditor5
