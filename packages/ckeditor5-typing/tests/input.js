@@ -12,7 +12,9 @@ import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventd
 
 import Input from '../src/input.js';
 import InsertTextCommand from '../src/inserttextcommand.js';
+import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import env from '@ckeditor/ckeditor5-utils/src/env.js';
+import MutationObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mutationobserver.js';
 
 describe( 'Input', () => {
 	testUtils.createSinonSandbox();
@@ -224,6 +226,82 @@ describe( 'Input', () => {
 				sinon.assert.calledOnce( insertTextCommandSpy );
 				expect( firstCallArgs.text ).to.equal( 'bar' );
 				expect( firstCallArgs.selection.getFirstRange().isEqual( expectedRange ) ).to.be.true;
+			} );
+
+			it( 'should render the DOM on composition end only when needed', () => {
+				const root = editor.model.document.getRoot();
+				const viewParagraph = viewDocument.getRoot().getChild( 0 );
+				const domParagraph = view.domConverter.mapViewToDom( viewParagraph );
+
+				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
+
+				// Start composition.
+				viewDocument.fire( 'compositionstart' );
+
+				// Change sinon stub to spy for this test.
+				editor.commands.get( 'insertText' ).execute.restore();
+				const insertTextCommandSpy = testUtils.sinon.spy( editor.commands.get( 'insertText' ), 'execute' );
+				const rendererUpdateTextNodeSpy = sinon.spy( view._renderer, '_updateTextNode' );
+
+				// Simulate DOM changes triggered by IME. Flush MutationObserver as it is async.
+				domParagraph.firstChild.appendData( 'abc' );
+				view.getObserver( MutationObserver ).flush();
+
+				// Make sure that model is not modified by DOM changes.
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+
+				// Commit composition.
+				viewDocument.fire( 'compositionend', new DomEventData( view, {
+					preventDefault() {}
+				}, {
+					data: 'abc'
+				} ) );
+
+				sinon.assert.calledOnce( insertTextCommandSpy );
+
+				// DOM text node is already the proper one so no changes are required.
+				sinon.assert.notCalled( rendererUpdateTextNodeSpy );
+
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+			} );
+
+			it( 'should render the DOM on composition end only once when needed', () => {
+				const root = editor.model.document.getRoot();
+				const viewParagraph = viewDocument.getRoot().getChild( 0 );
+				const domParagraph = view.domConverter.mapViewToDom( viewParagraph );
+
+				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
+
+				// Start composition.
+				viewDocument.fire( 'compositionstart' );
+
+				// Change sinon stub to spy for this test.
+				editor.commands.get( 'insertText' ).execute.restore();
+				const insertTextCommandSpy = testUtils.sinon.spy( editor.commands.get( 'insertText' ), 'execute' );
+				const rendererUpdateTextNodeSpy = sinon.spy( view._renderer, '_updateTextNode' );
+
+				// Simulate DOM changes triggered by IME. Flush MutationObserver as it is async.
+				// Note that NBSP is in different order than expected by the DomConverter and Renderer.
+				domParagraph.firstChild.appendData( '\u00A0 abc' );
+				view.getObserver( MutationObserver ).flush();
+
+				// Make sure that model is not modified by DOM changes.
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+
+				// Commit composition.
+				viewDocument.fire( 'compositionend', new DomEventData( view, {
+					preventDefault() {}
+				}, {
+					data: '  abc'
+				} ) );
+
+				sinon.assert.calledOnce( insertTextCommandSpy );
+
+				// DOM text node requires NBSP vs space fixing.
+				sinon.assert.calledOnce( rendererUpdateTextNodeSpy );
+
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo  abc[]</paragraph>' );
+				expect( editor.getData() ).to.equal( '<p>foo &nbsp;abc</p>' );
 			} );
 
 			it( 'should not call model.deleteContent() on composition start for collapsed model selection', () => {
