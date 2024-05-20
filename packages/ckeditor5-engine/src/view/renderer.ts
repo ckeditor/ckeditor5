@@ -138,6 +138,7 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 
 		this.set( 'isFocused', false );
 		this.set( 'isSelecting', false );
+		this.set( 'isComposing', false );
 
 		// Rendering the selection and inline filler manipulation should be postponed in (non-Android) Blink until the user finishes
 		// creating the selection in DOM to avoid accidental selection collapsing
@@ -150,14 +151,6 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 				}
 			} );
 		}
-
-		this.set( 'isComposing', false );
-
-		this.on<ObservableChangeEvent>( 'change:isComposing', () => {
-			if ( !this.isComposing ) {
-				this.render();
-			}
-		} );
 	}
 
 	/**

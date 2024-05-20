@@ -272,6 +272,22 @@ export default class Input extends Plugin {
 					// @if CK_DEBUG_TYPING // }
 				}
 			}, { priority: 'lowest' } );
+		} else {
+			// After composition end we need to verify if there are no left-overs.
+			// Listening at the lowest priority so after the InsertTextObserver added above.
+			this.listenTo<ViewDocumentCompositionEndEvent>( view.document, 'compositionend', () => {
+				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+				// @if CK_DEBUG_TYPING // 	console.group( '%c[Input]%c Force render after composition end.',
+				// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green', 'font-weight: bold', ''
+				// @if CK_DEBUG_TYPING // 	);
+				// @if CK_DEBUG_TYPING // }
+
+				view.forceRender();
+
+				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+				// @if CK_DEBUG_TYPING // 	console.groupEnd();
+				// @if CK_DEBUG_TYPING // }
+			}, { priority: 'lowest' } );
 		}
 	}
 
