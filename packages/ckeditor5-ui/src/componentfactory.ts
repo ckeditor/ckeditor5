@@ -105,7 +105,18 @@ export default class ComponentFactory {
 			);
 		}
 
-		return this._components.get( getNormalized( name ) )!.callback( this.editor.locale );
+		const factory = this._components.get( getNormalized( name ) )!;
+		const instance = factory.callback( this.editor.locale );
+
+		if ( instance.template ) {
+			instance.extendTemplate( {
+				attributes: {
+					'data-cke-component-name': name
+				}
+			} );
+		}
+
+		return instance;
 	}
 
 	/**

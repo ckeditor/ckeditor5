@@ -7,6 +7,18 @@ import Editor from '@ckeditor/ckeditor5-core/src/editor/editor.js';
 import ComponentFactory from '../src/componentfactory.js';
 
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
+import { View } from '../src/index.js';
+
+class SpanView extends View {
+	constructor( locale, text ) {
+		super( locale );
+
+		this.setTemplate( {
+			tag: 'span',
+			children: [ text ]
+		} );
+	}
+}
 
 describe( 'ComponentFactory', () => {
 	let editor, factory;
@@ -99,6 +111,15 @@ describe( 'ComponentFactory', () => {
 
 			expect( instance ).to.be.instanceof( View );
 			expect( instance.locale ).to.equal( locale );
+		} );
+
+		it( 'attaches the UI component name as a data attribute ([data-cke-component-name])', () => {
+			factory.add( 'foo', locale => new SpanView( locale, 'foo' ) );
+
+			const instance = factory.create( 'foo' );
+			instance.render();
+
+			expect( instance.element.outerHTML ).to.contains( 'data-cke-component-name="foo"' );
 		} );
 	} );
 
