@@ -16,7 +16,7 @@ import type Editor from './editor/editor.js';
 /**
  * The base class for CKEditor plugin classes.
  */
-export default class Plugin extends ObservableMixin() implements PluginInterface {
+export default class Plugin extends /* #__PURE__ */ ObservableMixin() implements PluginInterface {
 	/**
 	 * The editor instance.
 	 *

@@ -57,7 +57,7 @@ DecoupledEditor
 		toolbar: [ 'undo', 'redo', 'bold', 'italic', 'numberedList', 'bulletedList' ],
 	} )
 	.then( editor => {
-		document.getElementById( '#menuBarContainer' ).appendChild( editor.ui.view.menuBarView.element );
+		document.querySelector( '#menuBarContainer' ).appendChild( editor.ui.view.menuBarView.element );
 	} );
 ```
 

@@ -60,7 +60,7 @@ const storePrefix = 'selection:';
  * If you need to represent a selection in document fragment,
  * use {@link module:engine/model/selection~Selection Selection class} instead.
  */
-export default class DocumentSelection extends EmitterMixin( TypeCheckable ) {
+export default class DocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	/**
 	 * Selection used internally by that class (`DocumentSelection` is a proxy to that selection).
 	 */

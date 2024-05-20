@@ -136,8 +136,7 @@ Note: In CKEditor&nbsp;5, the number of options was reduced on purpose. Configur
 			</td>
 			<td>
 				<p>Refer to the {@link features/code-blocks Code block} feature guide to learn more about support for blocks of pre-formatted code in CKEditor&nbsp;5.</p>
-				<p>A plugin adding support for the inline <code>&lt;code&gt;</code> element is included in the {@link features/basic-styles Basic styles} package.<br>
-				Note: The {@link module:basic-styles/code~Code Code feature} is not available by default in any predefined build, but can be enabled in a {@link getting-started/legacy-getting-started/quick-start-other#building-the-editor-from-source custom build} (see the {@link features/basic-styles Basic styles} feature guide).</p>
+				<p>A plugin adding support for the inline <code>&lt;code&gt;</code> element is included in the {@link features/basic-styles Basic styles} package.</p>
 			</td>
 		</tr>
 		<tr>
@@ -190,8 +189,7 @@ Note: In CKEditor&nbsp;5, the number of options was reduced on purpose. Configur
 			<p><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-coreStyles_subscript"><code>coreStyles_subscript</code></a></p>
 			</td>
 			<td>
-				<p>CKEditor&nbsp;5 uses the <code>&lt;sub&gt;</code> element.
-				<p>Note: The {@link module:basic-styles/subscript~Subscript Subscript feature} is not available by default in any predefined build, but can be enabled in a {@link getting-started/legacy-getting-started/quick-start-other#building-the-editor-from-source custom build} (see the {@link features/basic-styles Basic styles} feature guide).</p>
+				<p>CKEditor&nbsp;5 uses the <code>&lt;sub&gt;</code> element.</p>
 			</td>
 		</tr>
 		<tr>
@@ -199,8 +197,7 @@ Note: In CKEditor&nbsp;5, the number of options was reduced on purpose. Configur
 			<p><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-coreStyles_superscript"><code>coreStyles_superscript</code></a></p>
 			</td>
 			<td>
-				<p>CKEditor&nbsp;5 uses the <code>&lt;sup&gt;</code> element.
-				<p>Note: The {@link module:basic-styles/superscript~Superscript Superscript feature} is not available by default in any predefined build, but can be enabled in a {@link getting-started/legacy-getting-started/quick-start-other#building-the-editor-from-source custom build} (see the {@link features/basic-styles Basic styles} feature guide).</p>
+				<p>CKEditor&nbsp;5 uses the <code>&lt;sup&gt;</code> element.</p>
 			</td>
 		</tr>
 		<tr>
@@ -209,7 +206,6 @@ Note: In CKEditor&nbsp;5, the number of options was reduced on purpose. Configur
 			</td>
 			<td>
 				<p>In CKEditor&nbsp;5 it is possible to apply subscript and superscript to the same element.</p>
-				<p>Note: The {@link module:basic-styles/subscript~Subscript Subscript} and {@link module:basic-styles/superscript~Superscript Superscript} features are not available by default in any predefined build, but can be enabled in a {@link getting-started/legacy-getting-started/quick-start-other#building-the-editor-from-source custom build} (see the {@link features/basic-styles Basic styles} feature guide).</p>
 			</td>
 		</tr>
 		<tr>
@@ -218,7 +214,6 @@ Note: In CKEditor&nbsp;5, the number of options was reduced on purpose. Configur
 			</td>
 			<td>
 				<p>CKEditor&nbsp;5 uses the <code>&lt;u&gt;</code> element, see <a href="https://github.com/ckeditor/editor-recommendations/issues/4" target="_blank" rel="noopener">Editor Recommendations - Underline</a>.</p>
-				<p>Note: The {@link module:basic-styles/underline~Underline Underline feature} is not available by default in any predefined build, but can be enabled in a {@link getting-started/legacy-getting-started/quick-start-other#building-the-editor-from-source custom build} (see the {@link features/basic-styles Basic styles} feature guide).</p>
 			</td>
 		</tr>
 		<tr>

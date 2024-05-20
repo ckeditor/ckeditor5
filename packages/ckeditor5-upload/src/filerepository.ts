@@ -52,7 +52,7 @@ export default class FileRepository extends Plugin {
 	 *
 	 * For more information and example see {@link module:upload/filerepository~UploadAdapter}.
 	 */
-	public createUploadAdapter?: ( loader: FileLoader ) => UploadAdapter;
+	public declare createUploadAdapter?: ( loader: FileLoader ) => UploadAdapter;
 
 	/**
 	 * Loaders mappings used to retrieve loaders references.
@@ -257,7 +257,7 @@ export default class FileRepository extends Plugin {
  *
  * It is used to control the process of reading the file and uploading it using the specified upload adapter.
  */
-class FileLoader extends ObservableMixin() {
+class FileLoader extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Unique id of FileLoader instance.
 	 *

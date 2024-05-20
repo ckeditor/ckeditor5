@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-watchdog",
-  "version": "41.3.1",
+  "version": "41.4.2",
   "description": "A watchdog feature for CKEditor 5 editors. It keeps a CKEditor 5 editor instance running.",
   "keywords": [
     "ckeditor",
@@ -15,15 +15,15 @@
     "lodash-es": "4.17.21"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-core": "41.3.1",
-    "@ckeditor/ckeditor5-comments": "41.3.1",
-    "@ckeditor/ckeditor5-editor-classic": "41.3.1",
-    "@ckeditor/ckeditor5-editor-multi-root": "41.3.1",
-    "@ckeditor/ckeditor5-paragraph": "41.3.1",
-    "@ckeditor/ckeditor5-utils": "41.3.1",
-    "@ckeditor/ckeditor5-track-changes": "41.3.1",
-    "@ckeditor/ckeditor5-clipboard": "41.3.1",
-    "ckeditor5": "41.3.1",
+    "@ckeditor/ckeditor5-core": "41.4.2",
+    "@ckeditor/ckeditor5-comments": "41.4.2",
+    "@ckeditor/ckeditor5-editor-classic": "41.4.2",
+    "@ckeditor/ckeditor5-editor-multi-root": "41.4.2",
+    "@ckeditor/ckeditor5-paragraph": "41.4.2",
+    "@ckeditor/ckeditor5-utils": "41.4.2",
+    "@ckeditor/ckeditor5-track-changes": "41.4.2",
+    "@ckeditor/ckeditor5-clipboard": "41.4.2",
+    "ckeditor5": "41.4.2",
     "typescript": "5.0.4"
   },
   "author": "CKSource (http://cksource.com/)",

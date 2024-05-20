@@ -53,7 +53,7 @@ import type { EditorConfig } from './editorconfig.js';
  * the specific editor implements also the {@link ~Editor#ui} property
  * (as most editor implementations do).
  */
-export default abstract class Editor extends ObservableMixin() {
+export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * A namespace for the accessibility features of the editor.
 	 */

@@ -31,7 +31,7 @@ msgstr "লিঙ্ক URL"
 
 msgctxt "An error text displayed when user attempted to enter an empty URL."
 msgid "Link URL must not be empty."
-msgstr ""
+msgstr "লিঙ্ক URL খালি রাখা যাবে না।"
 
 msgctxt "Label for the image link button."
 msgid "Link image"

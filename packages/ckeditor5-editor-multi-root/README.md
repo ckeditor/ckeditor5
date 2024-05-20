@@ -15,6 +15,12 @@ This package contains the source version of the multi-root editor. Read more abo
 
 See the [`@ckeditor/ckeditor5-editor-multi-root` package](https://ckeditor.com/docs/ckeditor5/latest/api/editor-multi-root.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
 
+## Installation
+
+```bash
+npm install ckeditor5
+```
+
 ## License
 
 Licensed under the terms of [GNU General Public License Version 2 or later](http://www.gnu.org/licenses/gpl.html). For full details about the license, please check the `LICENSE.md` file or [https://ckeditor.com/legal/ckeditor-oss-license](https://ckeditor.com/legal/ckeditor-oss-license).

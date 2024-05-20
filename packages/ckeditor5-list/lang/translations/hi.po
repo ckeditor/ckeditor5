@@ -143,8 +143,8 @@ msgstr "लिस्ट आइटम इंडेंट को घटाएँ"
 
 msgctxt "Assistive technologies label for entering the to-do list."
 msgid "Entering a to-do list"
-msgstr ""
+msgstr "एक कार्य सूची में प्रवेश कर रहे हैं"
 
 msgctxt "Assistive technologies label for leaving the to-do list."
 msgid "Leaving a to-do list"
-msgstr ""
+msgstr "एक कार्य सूची छोड़ी जा रही है"

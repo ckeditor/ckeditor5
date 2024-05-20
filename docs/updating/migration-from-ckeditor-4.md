@@ -213,9 +213,9 @@ You can approach moving from CKEditor 4 to CKEditor&nbsp;5 as follows:
 
 1. **Back up all your data.**
 2. Learn about CKEditor&nbsp;5. Check the [demos](https://ckeditor.com/ckeditor-5/demo/), read about its {@link framework/architecture/intro architecture}, and review the {@link features/index available features} and {@link getting-started/index integration methods}.
-3. Create a custom build containing all the plugins you need the [Builder](https://ckeditor.com/builder?redirect=docs).
+3. Create a custom preset containing all the plugins you need the [Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs).
 4. Test loading pre-existing content created in CKEditor 4 into CKEditor&nbsp;5. Adjust the editor configuration and plugin set. If needed, enable the missing elements, classes, or attributes via the {@link features/general-html-support General HTML Support} feature.
-5. When you are sure no data loss will occur, you can focus on customizing your CKEditor&nbsp;5 build even more by changing the integration method, creating custom plugins, adjusting the theme, and enabling new features.
+5. When you are sure no data loss will occur, you can focus on customizing your CKEditor&nbsp;5 preset even more by changing the integration method, creating custom plugins, adjusting the theme, and enabling new features.
 
 CKEditor&nbsp;5 is a great, modern editing framework so migrating is a fantastic opportunity to level your content editing experience up. {@link features/collaboration Collaboration} with real-time collaborative editing, comments and track changes, {@link features/revision-history revision history}, {@link features/autoformat autoformatting}, {@link features/import-word import from Word}, export to {@link features/export-pdf PDF} and {@link features/export-word Word}, {@link features/word-count word and character count}, and {@link features/ckbox CKBox} file manager are just a few examples of new features that were not available in CKEditor 4. Try them out!
 

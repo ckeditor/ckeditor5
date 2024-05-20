@@ -32,7 +32,7 @@ import { isElement as _isElement } from 'lodash-es';
  * In order to create a inline editor instance, use the static
  * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`} method.
  */
-export default class InlineEditor extends ElementApiMixin( Editor ) {
+export default class InlineEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	/**
 	 * @inheritDoc
 	 */

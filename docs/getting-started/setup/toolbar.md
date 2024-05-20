@@ -299,6 +299,25 @@ Array.from( editor.ui.componentFactory.names() );
 
 Refer to the {@link tutorials/crash-course/editor step-by-step tutorial} to learn how to build a custom plugin, register its button, and add it to the toolbar configuration.
 
+### Decoupled editor
+
+When using the Decoupled editor, you will need to insert the menu bar in a desired place yourself. The menu bar HTML element is available under the `editor.ui.view.toolbar.element` property.
+
+```html
+	<div id="toolbarContainer"></div>
+	<div id="editor"><p>Document content.</p></div>
+```
+
+```js
+DecoupledEditor
+	.create( document.querySelector( '#editor' ), {
+		toolbar: [ 'undo', 'redo', 'bold', 'italic', 'numberedList', 'bulletedList' ],
+	} )
+	.then( editor => {
+		document.querySelector( '#toolbarContainer' ).appendChild( editor.ui.view.toolbar.element );
+	} );
+```
+
 ## Block toolbar
 
 The block toolbar provides an additional configurable toolbar on the left-hand side of the content area, useful when the main toolbar is not accessible (for example in certain layouts, like  balloon block editor).
@@ -321,7 +340,7 @@ To access the block toolbar, you need to click the button with braille pattern d
 
 The icon {@icon @ckeditor/ckeditor5-core/theme/icons/drag-indicator.svg drag indicator} is also a handle to drag blocks of content around the editor. Click a heading in the demo above and drag it all the way down between the following paragraphs to see this functionality in action.
 
-The block toolbar complements the <!-- update to builder preset when ready-->[balloon editor type](https://ckeditor.com/builder?redirect=docs) where it falls short, for example when you must insert some content (like an image), but the selection is collapsed, so you cannot access the toolbar. It can, however, be added to any type of editor and configure accordingly (see below).
+The block toolbar complements the <!-- update to builder preset when ready-->[balloon editor type](https://ckeditor.com/ckeditor-5/builder?redirect=docs) where it falls short, for example when you must insert some content (like an image), but the selection is collapsed, so you cannot access the toolbar. It can, however, be added to any type of editor and configure accordingly (see below).
 
 See the <!-- update to builder preset when ready-->{@link examples/builds/balloon-block-editor balloon block editor example} page, too.
 

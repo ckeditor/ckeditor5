@@ -35,7 +35,7 @@ import { isElement as _isElement } from 'lodash-es';
  * In order to create a balloon editor instance, use the static
  * {@link module:editor-balloon/ballooneditor~BalloonEditor.create `BalloonEditor.create()`} method.
  */
-export default class BalloonEditor extends ElementApiMixin( Editor ) {
+export default class BalloonEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	/**
 	 * @inheritDoc
 	 */

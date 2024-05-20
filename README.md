@@ -35,19 +35,19 @@ CKEditor&nbsp;5 is an ultra-modern JavaScript rich-text editor with MVC architec
 
 ### CKEditor&nbsp;5 builder
 
-The easiest way to start using CKEditor&nbsp;5 with all the features you need is to prepare a customized build with the [online builder](https://ckeditor.com/ckeditor-5/online-builder/). All you need to do is choose the preferred predefined build as a base, add all the required plugins, and download the ready-to-use package. Refer to the [Online builder Quick start](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/quick-start.html#creating-custom-builds-with-online-builder) guide to follow this installation path.
+The easiest way to start using CKEditor&nbsp;5 with all the features you need is to prepare a customized build with the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs). All you need to do is choose the preferred editor type as a base, add all the required plugins, and download the ready-to-use package.
 
-<!-- Update npm and CDN versions QS -->
+Refer to the [Quick Start](https://ckeditor.com/docs/ckeditor5/latest/getting-started/installation/quick-start.html) guide to learn more about CKEditor&nbsp;5 installation.
 
 ### TypeScript support
 
-CKEditor&nbsp;5 is a TypeScript project. Starting from v37.0.0, it offers native type definitions. Check out our dedicated guide to read more about [TypeScript support](https://ckeditor.com/docs/ckeditor5/latest/installation/working-with-typescript.html).
+CKEditor&nbsp;5 is a TypeScript project. Starting from v37.0.0, it offers native type definitions. Check out our dedicated guide to read more about [TypeScript support](https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/typescript-support.html).
 
 ### CKEditor&nbsp;5 advanced installation
 
 For more advanced users or those who need to integrate CKEditor&nbsp;5 with their applications, we prepared integrations with popular JavaScript frameworks:
-  * [Angular](https://ckeditor.com/docs/ckeditor5/latest/getting-started/installation//angular.html)
-  * [React](https://ckeditor.com/docs/ckeditor5/latest/getting-started/installation/react.html)
+  * [Angular](https://ckeditor.com/docs/ckeditor5/latest/getting-started/installation/angular.html)
+  * [React](https://ckeditor.com/docs/ckeditor5/latest/getting-started/installation/react/react.html)
   * [Vue](https://ckeditor.com/docs/ckeditor5/latest/getting-started/installation/vuejs-v3.html)
 
 #### CKEditor&nbsp;5 Framework
@@ -60,7 +60,7 @@ To find out how to start building your editor from scratch go to the [CKEditor&n
 
 Extensive documentation dedicated to all things CKEditor&nbsp;5-related is available. You will find basic guides that will help you kick off your project, advanced deep-dive tutorials to tailor the editor to your specific needs, and help sections with solutions and answers to any of your possible questions. To find out more refer to the following [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/index.html) sections:
 
-* [Installing CKEditor&nbsp;5](https://ckeditor.com/docs/ckeditor5/latest/getting-started/index.html)
+* [Installing CKEditor&nbsp;5](https://ckeditor.com/docs/ckeditor5/latest/getting-started/installation/quick-start.html)
 * [CKEditor&nbsp;5 features](https://ckeditor.com/docs/ckeditor5/latest/features/index.html)
 * [CKEditor&nbsp;5 examples](https://ckeditor.com/docs/ckeditor5/latest/examples/index.html)
 * [Updating CKEditor&nbsp;5](https://ckeditor.com/docs/ckeditor5/latest/updating/index.html)
