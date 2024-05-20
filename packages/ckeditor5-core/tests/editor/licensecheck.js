@@ -217,8 +217,7 @@ describe( 'License check', () => {
 
 		it( 'should block the editor when the license key has wrong format (wrong verificationCode)', () => {
 			const { licenseKey } = generateKey( {
-				isExpired: true,
-				vcForce: 'wrong vc'
+				customVc: 'wrong vc'
 			} );
 
 			const editor = new TestEditor( { licenseKey } );
@@ -274,8 +273,9 @@ describe( 'License check', () => {
 		it( 'should send request with telemetry data if license key contains a usage endpoint', () => {
 			const fetchStub = sinon.stub( window, 'fetch' );
 
-			// eslint-disable-next-line max-len
-			const licenseKey = 'foo.eyJleHAiOjM3ODY5MTIwMDAsImp0aSI6ImZvbyIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL2NrZWRpdG9yLmNvbSIsInZjIjoiYWI5NGFhZjYifQ.bar';
+			const { licenseKey } = generateKey( {
+				usageEndpoint: 'https://ckeditor.com'
+			} );
 			const editor = new TestEditor( { licenseKey } );
 
 			editor.fire( 'ready' );
@@ -291,8 +291,7 @@ describe( 'License check', () => {
 		it( 'should not send any request if license key does not contain a usage endpoint', () => {
 			const fetchStub = sinon.stub( window, 'fetch' );
 
-			// eslint-disable-next-line max-len
-			const licenseKey = 'foo.eyJleHAiOjM3ODY5MTIwMDAsImp0aSI6ImZvbyIsInZjIjoiZjA3OTJhNjYifQ.bar';
+			const { licenseKey } = generateKey();
 			const editor = new TestEditor( { licenseKey } );
 
 			editor.fire( 'ready' );
@@ -310,8 +309,9 @@ describe( 'License check', () => {
 				return true;
 			};
 
-			// eslint-disable-next-line max-len
-			const licenseKey = 'foo.eyJleHAiOjM3ODY5MTIwMDAsImp0aSI6ImZvbyIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL2NrZWRpdG9yLmNvbSIsInZjIjoiYWI5NGFhZjYifQ.bar';
+			const { licenseKey } = generateKey( {
+				usageEndpoint: 'https://ckeditor.com'
+			} );
 			const editor = new TestEditor( { licenseKey } );
 
 			editor.fire( 'ready' );
@@ -332,8 +332,9 @@ describe( 'License check', () => {
 			} );
 			const showErrorStub = testUtils.sinon.stub( TestEditor.prototype, '_showLicenseError' );
 
-			// eslint-disable-next-line max-len
-			const licenseKey = 'foo.eyJleHAiOjM3ODY5MTIwMDAsImp0aSI6ImZvbyIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL2NrZWRpdG9yLmNvbSIsInZjIjoiYWI5NGFhZjYifQ.bar';
+			const { licenseKey } = generateKey( {
+				usageEndpoint: 'https://ckeditor.com'
+			} );
 			const editor = new TestEditor( { licenseKey } );
 
 			editor.fire( 'ready' );
@@ -356,8 +357,9 @@ describe( 'License check', () => {
 			const warnStub = testUtils.sinon.stub( console, 'warn' );
 			const showErrorStub = testUtils.sinon.stub( TestEditor.prototype, '_showLicenseError' );
 
-			// eslint-disable-next-line max-len
-			const licenseKey = 'foo.eyJleHAiOjM3ODY5MTIwMDAsImp0aSI6ImZvbyIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL2NrZWRpdG9yLmNvbSIsInZjIjoiYWI5NGFhZjYifQ.bar';
+			const { licenseKey } = generateKey( {
+				usageEndpoint: 'https://ckeditor.com'
+			} );
 			const editor = new TestEditor( { licenseKey } );
 
 			editor.fire( 'ready' );
@@ -384,13 +386,14 @@ function generateKey( {
 	jtiExist = true,
 	expExist = true,
 	vcExist = true,
-	vcForce = undefined,
+	customVc = undefined,
 	skipHeader,
 	skipTail,
 	daysAfterExpiration = 0,
 	licensedHosts,
-	licenseType
-} ) {
+	licenseType,
+	usageEndpoint
+} = {} ) {
 	const jti = 'foo';
 	const releaseTimestamp = Date.parse( releaseDate );
 	const day = 86400000; // one day in milliseconds.
@@ -405,15 +408,17 @@ function generateKey( {
 		jti,
 		exp: expirationTimestamp / 1000,
 		licensedHosts,
-		licenseType
+		licenseType,
+		usageEndpoint
 	} ) );
 
 	const payload = encodePayload( {
 		jti: jtiExist && jti,
-		vc: vcForce && vcForce || vcExist && vc,
+		vc: ( customVc && customVc ) || ( vcExist ? vc : undefined ),
 		exp: expExist && expirationTimestamp / 1000,
 		licensedHosts,
-		licenseType
+		licenseType,
+		usageEndpoint
 	} );
 
 	return {
