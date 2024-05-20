@@ -724,14 +724,27 @@ export default abstract class Editor extends ObservableMixin() {
 			}
 		}
 
+		if ( licensePayload.licenseType === 'trial' || licensePayload.licenseType === 'development' ) {
+			const licenseType: 'trial' | 'development' = licensePayload.licenseType;
+
+			console.info(
+				`You are using the ${ licenseType } version of CKEditor 5 with limited usage. ` +
+				'Make sure you will not use it in the production environment.'
+			);
+		}
+
 		if ( licensePayload.licenseType === 'trial' && licensePayload.exp * 1000 < Date.now() ) {
-			blockTrialEditor( this );
+			blockEditor( this, 'trialLimit' );
 
 			return;
 		}
 
-		if ( licensePayload.licenseType === 'trial' ) {
-			const timerId = setTimeout( () => blockTrialEditor( this ), 600000 );
+		if ( licensePayload.licenseType === 'trial' || licensePayload.licenseType === 'development' ) {
+			const licenseType: 'trial' | 'development' = licensePayload.licenseType;
+
+			const timerId = setTimeout( () => {
+				blockEditor( this, `${ licenseType }Limit` );
+			}, 600000 /* 10 minutes */ );
 
 			this.on( 'destroy', () => {
 				clearTimeout( timerId );
@@ -761,15 +774,6 @@ export default abstract class Editor extends ObservableMixin() {
 					}
 				} );
 			}, { priority: 'high' } );
-		}
-
-		function blockTrialEditor( editor: Editor ) {
-			blockEditor( editor, 'trialLimit' );
-
-			console.info(
-				'You are using the trial version of CKEditor 5 plugin with limited usage. ' +
-				'Make sure you will not use it in the production environment.'
-			);
 		}
 
 		function getPayload( licenseKey: string ): string | null {
