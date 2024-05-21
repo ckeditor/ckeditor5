@@ -72,6 +72,11 @@ export function dumpDropdownMenuTree( tree: Readonly<DropdownMenuViewsRootTree> 
 
 				lastEnteredNode = node;
 				lines.push( `${ nesting }<${ node.kind }${ attributes }>` );
+
+				// Skip walking into not initialized menus.
+				if ( node.kind === 'Menu' && node.menu.pendingLazyInitialization ) {
+					return false;
+				}
 			},
 			leave: ( { node, parents } ) => {
 				if ( lastEnteredNode === node ) {

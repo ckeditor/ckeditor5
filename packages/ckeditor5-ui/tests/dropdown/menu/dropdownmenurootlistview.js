@@ -4,6 +4,7 @@
  */
 
 import DropdownMenuRootListView from '../../../src/dropdown/menu/dropdownmenurootlistview.js';
+import { getTotalDropdownMenuTreeFlatItemsCount } from '../../../src/dropdown/menu/search/gettotaldropdownmenutreeflatitemscount.js';
 import { DropdownRootMenuBehaviors } from '../../../src/dropdown/menu/utils/dropdownmenubehaviors.js';
 import {
 	DropdownMenuListItemButtonView,
@@ -336,6 +337,27 @@ describe( 'DropdownMenuRootListView', () => {
 
 			expect( insertedChild.search.raw ).to.be.equal( 'Nested Menu Menu' );
 		} );
+
+		it( 'should be not possible to append children to lazy initialized menu', () => {
+			const rootListView = createRootListWithDefinition(
+				{
+					menu: 'Hello World',
+					children: []
+				},
+				true
+			);
+
+			const parentMenuView = findMenuTreeMenuViewByLabel( 'Hello World', rootListView.tree );
+
+			expect( () => {
+				rootListView.appendMenuChildren(
+					[
+						new DropdownMenuListItemButtonView( locale, 'Baz' )
+					],
+					parentMenuView
+				);
+			} ).to.throw( 'dropdown-menu-append-to-lazy-initialized-menu' );
+		} );
 	} );
 
 	describe( 'appendTopLevelChild()', () => {
@@ -486,10 +508,61 @@ describe( 'DropdownMenuRootListView', () => {
 		} );
 	} );
 
-	function createRootListWithDefinition( definition = createMockMenuDefinition() ) {
+	describe( 'preloadAllMenus()', () => {
+		it( 'should initialize all lazy collapsed menus', () => {
+			const rootListView = createRootListWithDefinition(
+				[
+					createMockMenuDefinition( 'Hello World' ),
+					createMockMenuDefinition( 'Hello World 2' )
+				],
+				true
+			);
+
+			const prevFlatItems = getTotalDropdownMenuTreeFlatItemsCount( rootListView.tree );
+
+			rootListView.walk( {
+				Menu: ( { node } ) => {
+					expect( node.menu.pendingLazyInitialization ).to.be.true;
+				}
+			} );
+
+			rootListView.preloadAllMenus();
+			rootListView.walk( {
+				Menu: ( { node } ) => {
+					expect( node.menu.pendingLazyInitialization ).to.be.false;
+				}
+			} );
+
+			const flatItems = getTotalDropdownMenuTreeFlatItemsCount( rootListView.tree );
+
+			expect( prevFlatItems ).not.to.be.equal( flatItems );
+		} );
+	} );
+
+	describe( 'lazy initialization', () => {
+		it( 'should lazy initialize and render menu on close', () => {
+			const rootListView = createRootListWithDefinition(
+				createMockMenuDefinition( 'Hello World' ),
+				true
+			);
+
+			const parentMenuView = findMenuTreeMenuViewByLabel( 'Hello World', rootListView.tree );
+
+			expect( parentMenuView.pendingLazyInitialization ).to.be.true;
+			expect( parentMenuView.nestedMenuListItems.length ).not.to.be.equal( 3 );
+
+			parentMenuView.isOpen = true;
+
+			expect( parentMenuView.pendingLazyInitialization ).to.be.false;
+			expect( parentMenuView.nestedMenuListItems.length ).to.be.equal( 3 );
+		} );
+	} );
+
+	function createRootListWithDefinition( definition = createMockMenuDefinition(), lazyInitialized = false ) {
 		return new DropdownMenuRootListView(
 			createMockLocale(),
-			Array.isArray( definition ) ? definition : [ definition ]
+			Array.isArray( definition ) ? definition : [ definition ],
+			lazyInitialized
 		);
 	}
 } );

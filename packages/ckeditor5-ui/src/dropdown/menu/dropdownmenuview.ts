@@ -109,6 +109,14 @@ export default class DropdownMenuView extends View implements FocusableView {
 	declare public parentMenuView: DropdownMenuView | null;
 
 	/**
+	 * Indicates whether the lazy initialization of the dropdown menu is pending.
+	 *
+	 * @observable
+	 * @default false
+	 */
+	declare public pendingLazyInitialization: boolean;
+
+	/**
 	 * Creates an instance of the menu view.
 	 *
 	 * @param locale The localization services instance.
@@ -142,6 +150,7 @@ export default class DropdownMenuView extends View implements FocusableView {
 		this.set( 'panelPosition', 'w' );
 		this.set( 'class', undefined );
 		this.set( 'parentMenuView', null );
+		this.set( 'pendingLazyInitialization', false );
 
 		this.panelView.children.add( this.listView );
 

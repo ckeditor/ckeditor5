@@ -7,7 +7,15 @@
  * @module ui/dropdown/menu/dropdownmenurootlistview
  */
 
-import type { CollectionAddEvent, Locale } from '@ckeditor/ckeditor5-utils';
+import { once } from 'lodash-es';
+
+import {
+	CKEditorError,
+	type ObservableChangeEvent,
+	type CollectionAddEvent,
+	type Locale
+} from '@ckeditor/ckeditor5-utils';
+
 import type {
 	DropdownMenuDefinitions,
 	DropdownMenuChildDefinition,
@@ -18,7 +26,6 @@ import type {
 import DropdownMenuListView from './dropdownmenulistview.js';
 
 import type { NonEmptyArray } from '@ckeditor/ckeditor5-core';
-
 import type {
 	DropdownMenuFocusableView,
 	DropdownNestedMenuListItemView
@@ -28,7 +35,8 @@ import type { DropdownMenuViewsRootTree } from './search/tree/dropdownsearchtree
 import type {
 	DropdownMenuCloseAllEvent,
 	DropdownMenuChangeIsOpenEvent,
-	DropdownMenuSubmenuChangeEvent
+	DropdownMenuSubmenuChangeEvent,
+	DropdownMenuPreloadAllEvent
 } from './events.js';
 
 import DropdownMenuListItemView from './dropdownmenulistitemview.js';
@@ -93,20 +101,32 @@ export default class DropdownMenuRootListView extends DropdownMenuListView {
 
 	/**
 	 * The cached array of all menus in the dropdown menu.
+	 *
+	 * @internal
 	 */
 	private _cachedMenus: Array<DropdownMenuView> | null = null;
+
+	/**
+	 * Indicates whether the dropdown menu should be lazily initialized.
+	 * If set to `true`, the dropdown menu will not be rendered until clicked.
+	 *
+	 * @internal
+	 */
+	private _lazyInitializeSubMenus: boolean;
 
 	/**
 	 * Creates an instance of the DropdownMenuRootListView class.
 	 *
 	 * @param locale - The locale object.
 	 * @param definition The definition object for the dropdown menu root factory.
+	 * @param lazyInitializeSubMenus Indicates whether the dropdown menu should be lazily initialized when clicked.
 	 */
-	constructor( locale: Locale, definitions?: DropdownMenuDefinitions ) {
+	constructor( locale: Locale, definitions?: DropdownMenuDefinitions, lazyInitializeSubMenus = false ) {
 		super( locale );
 
 		this.set( 'isOpen', false );
 
+		this._lazyInitializeSubMenus = lazyInitializeSubMenus;
 		this._setupIsOpenUpdater();
 		this._watchRootMenuEvents();
 
@@ -163,6 +183,8 @@ export default class DropdownMenuRootListView extends DropdownMenuListView {
 
 	/**
 	 * Dumps the dropdown menu tree to a string.
+	 *
+	 * 	* It does not display not initialized menus.
 	 */
 	public dump(): string {
 		return dumpDropdownMenuTree( this.tree );
@@ -178,6 +200,15 @@ export default class DropdownMenuRootListView extends DropdownMenuListView {
 	}
 
 	/**
+	 * Ensures that all menus are preloaded.
+	 *
+	 * 	* It's helpful used together with some search functions where menu must be preloaded before searching.
+	 */
+	public preloadAllMenus(): void {
+		this.fire<DropdownMenuPreloadAllEvent>( 'menu:preload:all' );
+	}
+
+	/**
 	 * Walks over the dropdown menu views using the specified walkers.
 	 *
 	 * @param walkers - The walkers to use.
@@ -189,10 +220,14 @@ export default class DropdownMenuRootListView extends DropdownMenuListView {
 	/**
 	 * Appends multiple menus to the dropdown menu definition parser.
 	 *
+	 * 	* It will initialize all menus that are not lazy-loaded.
+	 *
 	 * @param items An array of `DropdownMenuDefinition` objects representing the menus to be appended.
 	 * @returns Inserted menu list item views.
 	 */
 	public appendTopLevelChildren( items: DropdownMenuChildrenDefinition ): Array<DropdownNestedMenuListItemView> {
+		this.preloadAllMenus();
+
 		return this.appendMenuChildren( items );
 	}
 
@@ -211,11 +246,13 @@ export default class DropdownMenuRootListView extends DropdownMenuListView {
 	 *
 	 * @param children The children to be appended to the menu.
 	 * @param targetParentMenuView The target parent menu view.
+	 * @param index The index at which the children should be inserted.
 	 * @returns Array of inserted items.
 	 */
 	public appendMenuChildren(
 		children: DropdownMenuChildrenDefinition,
-		targetParentMenuView: DropdownMenuView | null = null
+		targetParentMenuView: DropdownMenuView | null = null,
+		index?: number
 	): Array<DropdownNestedMenuListItemView> {
 		const menuListItems = children.flatMap( ( itemDefinition ): NonEmptyArray<DropdownNestedMenuListItemView> => {
 			// Register non-focusable items such like separators firstly.
@@ -237,9 +274,18 @@ export default class DropdownMenuRootListView extends DropdownMenuListView {
 		} );
 
 		if ( targetParentMenuView ) {
-			targetParentMenuView.listView.items.addMany( menuListItems );
+			if ( targetParentMenuView.pendingLazyInitialization ) {
+				/**
+				 * Attended to append menu entry to the lazy-initialized menu.
+				 *
+				 * @error dropdown-menu-append-to-lazy-initialized-menu
+				 */
+				throw new CKEditorError( 'dropdown-menu-append-to-lazy-initialized-menu' );
+			}
+
+			targetParentMenuView.listView.items.addMany( menuListItems, index );
 		} else {
-			this.items.addMany( menuListItems );
+			this.items.addMany( menuListItems, index );
 		}
 
 		return menuListItems;
@@ -275,9 +321,40 @@ export default class DropdownMenuRootListView extends DropdownMenuListView {
 		menuDefinition: DropdownMenuDefinition,
 		parentMenuView: DropdownMenuView | null
 	) {
-		const menuView = new DropdownMenuView( this.locale!, menuDefinition.menu, parentMenuView );
+		const { children, menu } = menuDefinition;
+		const menuView = new DropdownMenuView( this.locale!, menu, parentMenuView );
 
-		this.appendMenuChildren( menuDefinition.children, menuView );
+		if ( this._lazyInitializeSubMenus ) {
+			// Prepend the first item to the menu and append the rest after opening menu.
+			//
+			// Appending such item is crucial because `.filter()` method in some of the `FilterView` implementations
+			// may require at least one item to be present in the menu. If there are no items, these views often
+			// display "No found items" placeholders which is not true because there are views in menus that are still
+			// not rendered.
+			const totalPrependedItems = 1;
+			const [ lazyAdded, rest ] = [
+				children.slice( 0, totalPrependedItems ),
+				children.slice( totalPrependedItems )
+			];
+
+			const initializeRestOfItems = once( () => {
+				menuView.pendingLazyInitialization = false;
+				this.appendMenuChildren( rest, menuView );
+			} );
+
+			menuView.once<ObservableChangeEvent<boolean>>( 'change:isOpen', ( _, isOpen ) => {
+				if ( isOpen ) {
+					initializeRestOfItems();
+				}
+			} );
+
+			this.once<DropdownMenuPreloadAllEvent>( 'menu:preload:all', initializeRestOfItems );
+			this.appendMenuChildren( lazyAdded, menuView );
+
+			menuView.pendingLazyInitialization = true;
+		} else {
+			this.appendMenuChildren( children, menuView );
+		}
 
 		return menuView;
 	}

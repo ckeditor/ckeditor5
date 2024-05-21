@@ -15,11 +15,12 @@ export const createMockLocale = () => ( { t() {} } );
  * Creates a blank root list view for the dropdown menu.
  *
  * @param definitions The definitions to be added to the root list view.
+ * @param lazyInitializedSubmenus Whether the submenus should be lazy initialized.
  * @returns An object containing the locale and the menuRootList.
  */
-export function createBlankRootListView( definitions = [] ) {
+export function createBlankRootListView( definitions = [], lazyInitializedSubmenus = false ) {
 	const locale = createMockLocale();
-	const menuRootList = new DropdownMenuRootListView( locale, definitions );
+	const menuRootList = new DropdownMenuRootListView( locale, definitions, lazyInitializedSubmenus );
 
 	return {
 		locale,

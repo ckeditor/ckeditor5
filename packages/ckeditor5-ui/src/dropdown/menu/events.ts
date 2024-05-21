@@ -68,3 +68,14 @@ export interface DropdownMenuSubmenuChangeEvent extends DropdownMenuEvent {
 	 */
 	name: 'menu:submenu:change';
 }
+
+/**
+ * Represents an event that is triggered when all menu items in a dropdown menu are preloaded.
+ */
+export interface DropdownMenuPreloadAllEvent extends DropdownMenuEvent {
+
+	/**
+	 * The name of the event.
+	 */
+	name: 'menu:preload:all';
+}

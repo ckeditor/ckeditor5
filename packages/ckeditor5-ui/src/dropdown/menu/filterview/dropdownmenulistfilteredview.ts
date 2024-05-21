@@ -79,6 +79,11 @@ export default class DropdownMenuListFilteredView extends View implements Filter
 	 */
 	public filter( regExp: RegExp | null ): DropdownMenuSearchResult {
 		const { element } = this;
+
+		if ( regExp ) {
+			this._menuView.preloadAllMenus();
+		}
+
 		const { filteredTree, resultsCount, totalItemsCount } = filterDropdownMenuTreeByRegExp(
 			regExp,
 			this._menuView.tree

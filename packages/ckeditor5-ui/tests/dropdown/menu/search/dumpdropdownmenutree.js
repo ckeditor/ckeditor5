@@ -5,7 +5,11 @@
 
 import { dumpDropdownMenuTree } from '../../../../src/dropdown/menu/search/dumpdropdownmenutree.js';
 import { Dump } from '../_utils/dropdowntreemenudump.js';
-import { createMockDropdownMenuDefinition } from '../_utils/dropdowntreemock.js';
+import {
+	createBlankRootListView,
+	createMockDropdownMenuDefinition,
+	createMockMenuDefinition
+} from '../_utils/dropdowntreemock.js';
 
 describe( 'dumpDropdownMenuTree', () => {
 	it( 'should return a string representation of the tree', () => {
@@ -25,6 +29,28 @@ describe( 'dumpDropdownMenuTree', () => {
 					Dump.item( 'A' ),
 					Dump.item( 'B' )
 				] )
+			] )
+		);
+	} );
+
+	it( 'should not expand lazy initialized menu entries', () => {
+		const { menuRootList } = createBlankRootListView(
+			[
+				createMockMenuDefinition( 'Menu 1' ),
+				createMockMenuDefinition( 'Menu 2' ),
+				createMockMenuDefinition( 'Menu 3' )
+			],
+			true
+		);
+
+		const { tree } = menuRootList;
+		const dump = dumpDropdownMenuTree( tree );
+
+		expect( dump ).to.be.equal(
+			Dump.root( [
+				Dump.menu( 'Menu 1' ),
+				Dump.menu( 'Menu 2' ),
+				Dump.menu( 'Menu 3' )
 			] )
 		);
 	} );
