@@ -15,7 +15,7 @@ order: 10
 
 Features in CKEditor are introduced by plugins. In fact, without plugins, CKEditor&nbsp;5 is an empty API with no use. Plugins provided by the CKEditor core team are available in [npm](https://www.npmjs.com/search?q=ckeditor5) (and [GitHub](https://github.com/ckeditor?utf8=%E2%9C%93&q=ckeditor5&type=&language=), too) in the form of npm packages. A package may contain one or more plugins (for example, the [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) package contains {@link features/images-overview several granular plugins}).
 
-As of v42.0.0, we collect all plugins in two aggregate packages: `ckeditor5` and `ckeditor5-premium-features`. Using those two is the recommended way of setup, you get all plugins, without the need to look which plugin is in which package.
+Starting with CKEditor&nbsp;5 v42.0.0, we collect all plugins in two aggregate packages: `ckeditor5` and `ckeditor5-premium-features`. Using those two is the recommended way of setup. This way you get easy access to all the plugins, without the need to look which plugin is in which package.
 
 ## Common use cases
 

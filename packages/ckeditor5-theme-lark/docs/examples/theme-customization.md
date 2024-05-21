@@ -16,4 +16,4 @@ Below, you can see an editor with the dark theme as a result of customizations d
 
 ## Detailed guide
 
-If you would like to create such a widget on your own, take a look at the {@link framework/deep-dive/ui/theme-customization dedicated tutorial} which shows how to achieve this step by step with the source code provided.
+If you would like to create such a widget on your own, read the {@link framework/theme-customization dedicated tutorial} that shows how to achieve this step by step with the source code provided.
