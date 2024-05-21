@@ -49,6 +49,6 @@ export class MarkdownToHtml {
 	}
 
 	public parse( markdown: string ): string {
-		return this._parser.parse( markdown, this.options );
+		return this._parser.parse( markdown, this._options );
 	}
 }

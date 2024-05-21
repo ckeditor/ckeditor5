@@ -45,7 +45,7 @@ class UpdatedTurndown extends Turndown {
 		let escaped = '';
 		let lastLinkEnd = 0;
 
-		for ( const match of this.matchAutolink( string ) ) {
+		for ( const match of this._matchAutolink( string ) ) {
 			const index = match.index!;
 
 			// Append the substring between the last match and the current one (if anything).
@@ -75,7 +75,7 @@ class UpdatedTurndown extends Turndown {
 	private* _matchAutolink( string: string ) {
 		for ( const match of string.matchAll( autolinkRegex ) ) {
 			const matched = match[ 0 ];
-			const length = this.autolinkFindEnd( matched );
+			const length = this._autolinkFindEnd( matched );
 
 			yield Object.assign(
 				[ matched.substring( 0, length ) ],
@@ -127,7 +127,7 @@ export class HtmlToMarkdown {
 	private _parser: UpdatedTurndown;
 
 	constructor() {
-		this._parser = this.createParser();
+		this._parser = this._createParser();
 	}
 
 	public parse( html: string ): string {
@@ -147,7 +147,7 @@ export class HtmlToMarkdown {
 
 		parser.use( [
 			gfm,
-			this.todoList
+			this._todoList
 		] );
 
 		return parser;
