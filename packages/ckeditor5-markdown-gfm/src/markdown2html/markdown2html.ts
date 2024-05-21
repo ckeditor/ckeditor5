@@ -9,6 +9,9 @@
 
 import { marked } from 'marked';
 
+/**
+ * This is a helper class used by the {@link module:markdown-gfm/markdown Markdown feature} to convert Markdown to HTML.
+ */
 export class MarkdownToHtml {
 	private _parser: typeof marked;
 

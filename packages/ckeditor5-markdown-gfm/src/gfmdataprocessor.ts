@@ -26,11 +26,23 @@ import { HtmlToMarkdown } from './html2markdown/html2markdown.js';
 export default class GFMDataProcessor implements DataProcessor {
 	/**
 	 * HTML data processor used to process HTML produced by the Markdown-to-HTML converter and the other way.
+	 *
+	 * @internal
 	 */
 	private _htmlDP: HtmlDataProcessor;
 
+	/**
+	 * Helper for converting Markdown to HTML.
+	 *
+	 * @internal
+	 */
 	private _markdown2html: MarkdownToHtml;
 
+	/**
+	 * Helper for converting HTML to Markdown.
+	 *
+	 * @internal
+	 */
 	private _html2markdown: HtmlToMarkdown;
 
 	/**
