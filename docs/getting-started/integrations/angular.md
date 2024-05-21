@@ -109,19 +109,6 @@ Then, install the [CKEditor&nbsp;5 WYSIWYG editor component for Angular](https:/
 npm install @ckeditor/ckeditor5-angular
 ```
 
-The [`@ckeditor/ckeditor5-angular`](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular) package requires the following peer dependencies, with a version of at least 37.0.0:
-
-* [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckeditor5-core),
-* [`@ckeditor/ckeditor5-engine`](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine),
-* [`@ckeditor/ckeditor5-utils`](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils),
-* [`@ckeditor/ckeditor5-watchdog`](https://www.npmjs.com/package/@ckeditor/ckeditor5-watchdog).
-
-Keep in mind that they must have the same version as the editor. Install all the required peer dependencies:
-
-```bash
-npm install @ckeditor/ckeditor5-core @ckeditor/ckeditor5-engine @ckeditor/ckeditor5-utils @ckeditor/ckeditor5-watchdog
-```
-
 The following setup differs depending on the type of component you use.
 
 #### NGModule components
