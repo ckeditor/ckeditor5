@@ -19,7 +19,7 @@ If you went through our {@link getting-started/quick-start Quick start}, you pro
 import 'ckeditor5/index.css';
 
 // If you are using premium features:
-import 'ckeditor5-premium-features/index.css'; 
+import 'ckeditor5-premium-features/index.css';
 ```
 
 It is as easy in HTML:
@@ -60,6 +60,43 @@ Load the `index-content.css` file on the publishing side by adding the following
 	**Important!**
 
 	If you take a closer look at the content styles, you may notice they are prefixed with the `.ck-content` class selector. This narrows their scope when used in CKEditor&nbsp;5 so they do not affect the rest of the application. To use them in the front–end, **you will have to** add the `ck-content` CSS class to the container of your content. Otherwise, the styles will not be applied.
+</info-box>
+
+## Customizing the editor's look
+
+The [`@ckeditor/ckeditor5-theme-lark`](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark) package contains the default theme of CKEditor&nbsp;5. Lark is modular, [BEM–friendly](https://en.bem.info/methodology/css/) and built using [PostCSS](http://postcss.org/).
+
+Although it was designed with versatility and the most common editor use cases in mind, some integrations may require adjustments to make it match the style guidelines of their ecosystems. This kind of customization can be done by importing an extra `.css` file and overriding the [native CSS variables](https://www.w3.org/TR/css-variables/).
+
+For example, the override below will tweak the border radius of several elements in the editor, such as toolbar or contextual balloons.
+
+```css
+:root {
+	/* Overrides the border radius setting in the theme. */
+	--ck-border-radius: 4px;
+}
+```
+
+<info-box hint>
+	Check out the [color sheet](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-theme-lark/theme/ckeditor5-ui/globals/_colors.css) for a full list of customizable colors. You can also browse [other files](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-theme-lark/theme/ckeditor5-ui/globals) to learn about other useful tools.
+</info-box>
+
+## Customizing the look of the features
+
+Similarly to the customizable editor look, some features also provide an interface to change their styles via [native CSS variables](https://www.w3.org/TR/css-variables/).
+
+For example, if you want to change the color of the mentions' background and text, you can do the following override:
+
+
+```css
+:root {
+	--ck-color-mention-background: black;
+	--ck-color-mention-text: white;
+}
+```
+
+<info-box hint>
+	Find the available CSS variables in our [ckeditor5](https://www.npmjs.com/package/ckeditor5?activeTab=code) and [ckeditor5-premium-features](https://www.npmjs.com/package/ckeditor5-premium-features?activeTab=code) packages.
 </info-box>
 
 ## Optimizing the size of style sheets
