@@ -82,7 +82,7 @@ All available Angular versions are [listed on npm](https://www.npmjs.com/package
 
 ## Quick start
 
-### Using the CKEditor&nbsp;5 Builder
+### Using CKEditor&nbsp;5 Builder
 
 The easiest way to use CKEditor 5 in your Angular application is by configuring it with [CKEditor&nbsp;5 Builder](https://ckeditor.com/builder?redirect=docs) and integrating it with your application.
 

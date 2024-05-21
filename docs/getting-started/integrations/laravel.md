@@ -9,7 +9,7 @@ menu-title: Laravel
 
 As a pure JavaScript/TypeScript application, CKEditor&nbsp;5 will work inside any environment that supports such components. While we do not offer official integrations for any non-JavaScript frameworks, you can include a custom build of CKEditor&nbsp;5 in a non-JS framework of your choice, for example, the PHP-based [Laravel](https://laravel.com/).
 
-## Using the CKEditor&nbsp;5 Builder
+## Using CKEditor&nbsp;5 Builder
 
 The easiest way to use CKEditor&nbsp;5 in your Laravel project is preparing an editor preset with [CKEditor&nbsp;5 Builder](https://ckeditor.com/builder?redirect=preset) and including it into your project.
 
@@ -42,7 +42,7 @@ Once the project has been prepared, create an `assets/vendor/ckeditor5.js` file 
 └── ...
 ````
 
-Inside the file, paste the JavaScript code from the CKEditor&nbsp;5 Builder. The code will differ depending on your chosen preset and features. But it should look similar to this:
+Inside the file, paste the JavaScript code from CKEditor&nbsp;5 Builder. The code will differ depending on your chosen preset and features. But it should look similar to this:
 
 ```js
 import {
@@ -83,7 +83,7 @@ const editorConfig = {
 ClassicEditor.create(document.querySelector('#editor'), editorConfig);
 ```
 
-Then, modify the `welcome.blade.php` file in the `resources/views` directory to include the CKEditor&nbsp;5 scripts. All necessary scripts and links are in the HTML snippet from the CKEditor&nbsp;5 Builder. You can copy and paste them into your template. It should look similar to the one below:
+Then, modify the `welcome.blade.php` file in the `resources/views` directory to include the CKEditor&nbsp;5 scripts. All necessary scripts and links are in the HTML snippet from CKEditor&nbsp;5 Builder. You can copy and paste them into your template. It should look similar to the one below:
 
 ```html
 <!DOCTYPE html>

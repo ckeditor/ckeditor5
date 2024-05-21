@@ -23,7 +23,7 @@ React lets you build user interfaces out of individual pieces called components.
 
 ## Quick start
 
-### Using the CKEditor&nbsp;5 Builder
+### Using CKEditor&nbsp;5 Builder
 
 The easiest way to use CKEditor&nbsp;5 in your React application is by configuring it with [CKEditor&nbsp;5 Builder](https://ckeditor.com/builder?redirect=docs) and integrating it with your application.
 
