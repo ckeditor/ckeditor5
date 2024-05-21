@@ -204,6 +204,110 @@ describe( 'License check', () => {
 			} );
 		} );
 
+		describe( 'development license', () => {
+			let consoleInfoSpy;
+
+			beforeEach( () => {
+				sinon.useFakeTimers( { now: Date.now() } );
+				consoleInfoSpy = sinon.spy( console, 'info' );
+			} );
+
+			afterEach( () => {
+				sinon.restore();
+			} );
+
+			it( 'should log information to the console about using the development license', () => {
+				const licenseKey = 'foo.eyJleHAiOjE3MTUyMTI4MDAsImp0aSI6IjczNDk5YTQyLWJjNzktNDdlNy1hNmR' +
+                    'lLWIyMGJhMmEzYmI4OSIsImxpY2Vuc2VUeXBlIjoiZGV2ZWxvcG1lbnQiLCJ2YyI6Ijg5NzRiYTJlIn0.bar';
+
+				const editor = new TestEditor( { licenseKey } );
+
+				expect( editor.isReadOnly ).to.be.false;
+				sinon.assert.calledOnce( consoleInfoSpy );
+				sinon.assert.calledWith( consoleInfoSpy, 'You are using the development version of CKEditor 5 with ' +
+				'limited usage. Make sure you will not use it in the production environment.' );
+			} );
+
+			it( 'should not block the editor if 10 minutes have not passed (development license)', () => {
+				const licenseKey = 'foo.eyJleHAiOjE3MTUyMTI4MDAsImp0aSI6IjczNDk5YTQyLWJjNzktNDdlNy1hNmR' +
+                    'lLWIyMGJhMmEzYmI4OSIsImxpY2Vuc2VUeXBlIjoiZGV2ZWxvcG1lbnQiLCJ2YyI6Ijg5NzRiYTJlIn0.bar';
+
+				const today = 1715166436000; // 08.05.2024
+				const dateNow = sinon.stub( Date, 'now' ).returns( today );
+
+				const editor = new TestEditor( { licenseKey } );
+
+				sinon.assert.notCalled( showErrorStub );
+				expect( editor.isReadOnly ).to.be.false;
+
+				sinon.clock.tick( 1 );
+
+				sinon.assert.notCalled( showErrorStub );
+				expect( editor.isReadOnly ).to.be.false;
+
+				dateNow.restore();
+			} );
+
+			it( 'should block editor after 10 minutes (development license)', () => {
+				const licenseKey = 'foo.eyJleHAiOjE3MTUyMTI4MDAsImp0aSI6IjczNDk5YTQyLWJjNzktNDdlNy1hNmR' +
+                    'lLWIyMGJhMmEzYmI4OSIsImxpY2Vuc2VUeXBlIjoiZGV2ZWxvcG1lbnQiLCJ2YyI6Ijg5NzRiYTJlIn0.bar';
+
+				/**
+                     * after decoding licenseKey:
+                     *
+                     * licensePaylod: {
+                     *  ...,
+                     *  exp: timestamp( 09.05.2024 )
+                     *  licenseType: 'development'
+                     * }
+                     */
+
+				const today = 1715166436000; // 08.05.2024
+				const dateNow = sinon.stub( Date, 'now' ).returns( today );
+
+				const editor = new TestEditor( { licenseKey } );
+
+				sinon.assert.notCalled( showErrorStub );
+				expect( editor.isReadOnly ).to.be.false;
+
+				sinon.clock.tick( 600100 );
+
+				sinon.assert.calledWithMatch( showErrorStub, 'developmentLimit' );
+				expect( editor.isReadOnly ).to.be.true;
+
+				dateNow.restore();
+			} );
+
+			it( 'should clear timer on editor destroy', done => {
+				const licenseKey = 'foo.eyJleHAiOjE3MTUyMTI4MDAsImp0aSI6IjczNDk5YTQyLWJjNzktNDdlNy1hNmR' +
+                    'lLWIyMGJhMmEzYmI4OSIsImxpY2Vuc2VUeXBlIjoiZGV2ZWxvcG1lbnQiLCJ2YyI6Ijg5NzRiYTJlIn0.bar';
+
+				/**
+                     * after decoding licenseKey:
+                     *
+                     * licensePaylod: {
+                     *  ...,
+                     *  exp: timestamp( 09.05.2024 )
+                     *  licenseType: 'development'
+                     * }
+                     */
+
+				const today = 1715166436000; // 08.05.2024
+				const dateNow = sinon.stub( Date, 'now' ).returns( today );
+				const editor = new TestEditor( { licenseKey } );
+				const clearTimeoutSpy = sinon.spy( globalThis, 'clearTimeout' );
+
+				editor.fire( 'ready' );
+				editor.on( 'destroy', () => {
+					sinon.assert.calledOnce( clearTimeoutSpy );
+					done();
+				} );
+
+				editor.destroy();
+				dateNow.restore();
+			} );
+		} );
+
 		it( 'should block the editor when the license key is not valid (expiration date in the past)', () => {
 			const { licenseKey } = generateKey( {
 				isExpired: true
