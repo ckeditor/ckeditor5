@@ -32,7 +32,10 @@ describe( 'DropdownMenuListFoundItemsView', () => {
 		} );
 
 		function createBlankMenuListFoundItemsView() {
-			return new DropdownMenuListFoundItemsView( locale, null, createRootTree() );
+			return new DropdownMenuListFoundItemsView( locale, createRootTree(), {
+				highlightRegex: null,
+				limitFoundItemsCount: 50
+			} );
 		}
 	} );
 
@@ -47,7 +50,11 @@ describe( 'DropdownMenuListFoundItemsView', () => {
 			] );
 
 			const { filteredTree } = filterDropdownMenuTreeByRegExp( searchRegexp, menuRootList.tree );
-			const foundItemsView = new DropdownMenuListFoundItemsView( locale, searchRegexp, filteredTree );
+			const foundItemsView = new DropdownMenuListFoundItemsView( locale, filteredTree, {
+				highlightRegex: searchRegexp,
+				limitFoundItemsCount: 50
+			} );
+
 			const renderedItems = dumpFoundFilteredDropdownMenuEntries( foundItemsView );
 
 			expect( renderedItems ).to.be.deep.equal( [
@@ -68,8 +75,11 @@ describe( 'DropdownMenuListFoundItemsView', () => {
 			] );
 
 			const { filteredTree } = filterDropdownMenuTreeByRegExp( searchRegexp, tree );
+			const foundItemsView = new DropdownMenuListFoundItemsView( locale, filteredTree, {
+				highlightRegex: searchRegexp,
+				limitFoundItemsCount: 50
+			} );
 
-			const foundItemsView = new DropdownMenuListFoundItemsView( locale, searchRegexp, filteredTree );
 			const renderedItems = dumpFoundFilteredDropdownMenuEntries( foundItemsView );
 
 			expect( renderedItems ).to.be.deep.equal( [
@@ -96,6 +106,71 @@ describe( 'DropdownMenuListFoundItemsView', () => {
 			foundItemsView.destroy();
 		} );
 
+		describe( 'limits', () => {
+			it( 'should limit total amount of found items rendered in group', () => {
+				const searchRegexp = /buz|foo|bread/g;
+
+				const { menuRootList: { tree } } = createMockDropdownMenuDefinition( [
+					new DropdownMenuListItemButtonView( locale, 'Bread' )
+				] );
+
+				const { filteredTree } = filterDropdownMenuTreeByRegExp( searchRegexp, tree );
+				const foundItemsView = new DropdownMenuListFoundItemsView( locale, filteredTree, {
+					limitFoundItemsCount: 1,
+					highlightRegex: searchRegexp
+				} );
+
+				const renderedItems = dumpFoundFilteredDropdownMenuEntries( foundItemsView );
+
+				expect( renderedItems ).to.be.deep.equal( [
+					{
+						kind: 'Group',
+						label: 'Menu 1',
+						children: [
+							{
+								kind: 'Item',
+								label: 'Foo'
+							}
+						]
+					}
+				] );
+
+				foundItemsView.destroy();
+			} );
+
+			it( 'should limit total amount of found items in flat list', () => {
+				const searchRegexp = /buz|foo|bread/g;
+
+				const { menuRootList: { tree } } = createBlankRootListView( [
+					new DropdownMenuListItemButtonView( locale, 'Bread 1' ),
+					new DropdownMenuListItemButtonView( locale, 'Bread 2' ),
+					new DropdownMenuListItemButtonView( locale, 'Bread 3' ),
+					new DropdownMenuListItemButtonView( locale, 'Bread 4' )
+				] );
+
+				const { filteredTree } = filterDropdownMenuTreeByRegExp( searchRegexp, tree );
+				const foundItemsView = new DropdownMenuListFoundItemsView( locale, filteredTree, {
+					limitFoundItemsCount: 2,
+					highlightRegex: searchRegexp
+				} );
+
+				const renderedItems = dumpFoundFilteredDropdownMenuEntries( foundItemsView );
+
+				expect( renderedItems ).to.be.deep.equal( [
+					{
+						kind: 'Item',
+						label: 'Bread 1'
+					},
+					{
+						kind: 'Item',
+						label: 'Bread 2'
+					}
+				] );
+
+				foundItemsView.destroy();
+			} );
+		} );
+
 		describe( 'highlight', () => {
 			it( 'should highlight found flat items in root element', () => {
 				const searchRegexp = /Garlic/gi;
@@ -108,7 +183,11 @@ describe( 'DropdownMenuListFoundItemsView', () => {
 				] );
 
 				const { filteredTree } = filterDropdownMenuTreeByRegExp( searchRegexp, menuRootList.tree );
-				const foundItemsView = new DropdownMenuListFoundItemsView( locale, searchRegexp, filteredTree );
+				const foundItemsView = new DropdownMenuListFoundItemsView( locale, filteredTree, {
+					highlightRegex: searchRegexp,
+					limitFoundItemsCount: 50
+				} );
+
 				const renderedItems = dumpFoundFilteredDropdownMenuEntries( foundItemsView, { htmlLabel: true } );
 
 				expect( renderedItems ).to.be.deep.equal( [
@@ -146,7 +225,11 @@ describe( 'DropdownMenuListFoundItemsView', () => {
 				] );
 
 				const { filteredTree } = filterDropdownMenuTreeByRegExp( searchRegexp, menuRootList.tree );
-				const foundItemsView = new DropdownMenuListFoundItemsView( locale, searchRegexp, filteredTree );
+				const foundItemsView = new DropdownMenuListFoundItemsView( locale, filteredTree, {
+					highlightRegex: searchRegexp,
+					limitFoundItemsCount: 50
+				} );
+
 				const renderedItems = dumpFoundFilteredDropdownMenuEntries( foundItemsView, { htmlLabel: true } );
 
 				expect( renderedItems ).to.be.deep.equal( [
@@ -191,7 +274,11 @@ describe( 'DropdownMenuListFoundItemsView', () => {
 				] );
 
 				const { filteredTree } = filterDropdownMenuTreeByRegExp( searchRegexp, menuRootList.tree );
-				const foundItemsView = new DropdownMenuListFoundItemsView( locale, searchRegexp, filteredTree );
+				const foundItemsView = new DropdownMenuListFoundItemsView( locale, filteredTree, {
+					highlightRegex: searchRegexp,
+					limitFoundItemsCount: 50
+				} );
+
 				const renderedItems = dumpFoundFilteredDropdownMenuEntries( foundItemsView, { htmlLabel: true } );
 
 				expect( renderedItems ).to.be.deep.equal( [
@@ -223,7 +310,11 @@ describe( 'DropdownMenuListFoundItemsView', () => {
 				] );
 
 				const { filteredTree } = filterDropdownMenuTreeByRegExp( searchRegexp, menuRootList.tree );
-				const foundItemsView = new DropdownMenuListFoundItemsView( locale, searchRegexp, filteredTree );
+				const foundItemsView = new DropdownMenuListFoundItemsView( locale, filteredTree, {
+					highlightRegex: searchRegexp,
+					limitFoundItemsCount: 50
+				} );
+
 				const renderedItems = dumpFoundFilteredDropdownMenuEntries( foundItemsView, { htmlLabel: true } );
 
 				expect( renderedItems ).to.be.deep.equal( [

@@ -27,18 +27,28 @@ import { groupDropdownTreeByFirstFoundParent } from '../search/groupdropdowntree
  */
 export default class DropdownMenuListFoundItemsView extends ListView {
 	/**
+	 * The maximum number of found items to display. It prevents slow rendering when there are too many items.
+	 */
+	private readonly config: FoundItemsViewRenderConfig;
+
+	/**
 	 * Creates a new instance of the DropdownMenuListFoundItemsView class.
 	 *
 	 * @param locale The locale object.
-	 * @param highlightRegex The regular expression used for highlighting.
 	 * @param tree The filtered tree node.
+	 * @param config The configuration object.
 	 */
-	constructor( locale: Locale, highlightRegex: RegExp | null, tree: DropdownMenusViewsFilteredTreeNode ) {
+	constructor(
+		locale: Locale,
+		tree: DropdownMenusViewsFilteredTreeNode,
+		config: FoundItemsViewRenderConfig
+	) {
 		super( locale );
 
-		const items = this._createFilteredTreeListBox( highlightRegex, tree );
-
+		this.config = config;
 		this.role = 'listbox';
+
+		const items = this._createFilteredTreeListBox( tree );
 
 		if ( items.length ) {
 			this.items.addMany( items );
@@ -53,10 +63,11 @@ export default class DropdownMenuListFoundItemsView extends ListView {
 	 * @returns An array of ListItemGroupView or ListItemView objects representing the filtered tree list box.
 	 */
 	private _createFilteredTreeListBox(
-		highlightRegex: RegExp | null,
 		tree: DropdownMenusViewsFilteredTreeNode
 	): Array<ListItemGroupView | ListItemView> {
-		const { locale } = this;
+		const { locale, config } = this;
+		const { highlightRegex, limitFoundItemsCount } = config;
+
 		const groupedFlatEntries = groupDropdownTreeByFirstFoundParent( tree );
 
 		// Map each flat child node to a ListItemView
@@ -80,9 +91,20 @@ export default class DropdownMenuListFoundItemsView extends ListView {
 			return listItemView;
 		};
 
+		// The total number of items rendered in the dropdown menu list.
+		let totalRenderedItems = 0;
+
 		// Create the filtered tree list box
 		return groupedFlatEntries.flatMap<ListItemGroupView | ListItemView>( ( { parent, children } ) => {
-			const listItems = children.map( mapFlatChildNodeToView );
+			const listItems = children
+				.slice( 0, limitFoundItemsCount - totalRenderedItems )
+				.map( mapFlatChildNodeToView );
+
+			if ( !listItems.length ) {
+				return [];
+			}
+
+			totalRenderedItems += listItems.length;
 
 			if ( parent.kind === 'Root' ) {
 				return listItems;
@@ -100,3 +122,19 @@ export default class DropdownMenuListFoundItemsView extends ListView {
 		} );
 	}
 }
+
+/**
+ * Configuration options for rendering the FoundItemsView in the DropdownMenuList.
+ */
+type FoundItemsViewRenderConfig = {
+
+	/**
+	 * A regular expression used to highlight matching items in the view. If set to `null`, highlighting will be disabled.
+	 */
+	highlightRegex: RegExp | null;
+
+	/**
+	 * The maximum number of found items to display in the view.
+	 */
+	limitFoundItemsCount: number;
+};

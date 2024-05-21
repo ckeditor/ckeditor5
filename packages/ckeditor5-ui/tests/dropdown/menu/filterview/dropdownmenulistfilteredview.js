@@ -38,6 +38,10 @@ describe( 'DropdownMenuListFilteredView', () => {
 		it( 'should not create found list view instance', () => {
 			expect( listView._foundListView ).to.be.null;
 		} );
+
+		it( 'should initialize menu view with lazy initialization flag', () => {
+			expect( listView._menuView._lazyInitializeSubMenus ).to.be.true;
+		} );
 	} );
 
 	describe( 'focus()', () => {
@@ -89,11 +93,7 @@ describe( 'DropdownMenuListFilteredView', () => {
 
 			expect( listView.menuView.dump() ).to.be.equal(
 				Dump.root( [
-					Dump.menu( 'Menu 1', [
-						Dump.item( 'Foo' ),
-						Dump.item( 'Bar' ),
-						Dump.item( 'Buz' )
-					] ),
+					Dump.menu( 'Menu 1' ),
 					Dump.item( 'Garlic' ),
 					Dump.item( 'Bread' )
 				] )

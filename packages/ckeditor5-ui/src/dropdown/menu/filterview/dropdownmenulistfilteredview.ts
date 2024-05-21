@@ -39,7 +39,7 @@ export default class DropdownMenuListFilteredView extends View implements Filter
 	constructor( locale: Locale, definitions: DropdownMenuDefinitions ) {
 		super( locale );
 
-		this._menuView = new DropdownMenuRootListView( locale, definitions );
+		this._menuView = new DropdownMenuRootListView( locale, definitions, true );
 		this.setTemplate( {
 			tag: 'div',
 
@@ -81,6 +81,7 @@ export default class DropdownMenuListFilteredView extends View implements Filter
 		const { element } = this;
 
 		if ( regExp ) {
+			// Preload all menus to ensure that all items are available for filtering.
 			this._menuView.preloadAllMenus();
 		}
 
@@ -97,7 +98,11 @@ export default class DropdownMenuListFilteredView extends View implements Filter
 		}
 
 		if ( resultsCount !== totalItemsCount ) {
-			this._foundListView = new DropdownMenuListFoundItemsView( this.locale!, regExp, filteredTree );
+			this._foundListView = new DropdownMenuListFoundItemsView( this.locale!, filteredTree, {
+				highlightRegex: regExp,
+				limitFoundItemsCount: 25
+			} );
+
 			this._foundListView.render();
 
 			element!.appendChild( this._foundListView.element! );
