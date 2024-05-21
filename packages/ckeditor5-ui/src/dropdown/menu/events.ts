@@ -46,3 +46,25 @@ export interface DropdownMenuChangeIsOpenEvent extends DropdownMenuEvent {
 	 */
 	args: [ name: string, value: boolean, oldValue: boolean ];
 }
+
+/**
+ * Represents an event that is triggered when all dropdown menus should be closed.
+ */
+export interface DropdownMenuCloseAllEvent extends DropdownMenuEvent {
+
+	/**
+	 * The name of the event.
+	 */
+	name: 'menu:close:all';
+}
+
+/**
+ * Represents an event that is triggered when the submenu is added or removed.
+ */
+export interface DropdownMenuSubmenuChangeEvent extends DropdownMenuEvent {
+
+	/**
+	 * The name of the event.
+	 */
+	name: 'menu:submenu:change';
+}

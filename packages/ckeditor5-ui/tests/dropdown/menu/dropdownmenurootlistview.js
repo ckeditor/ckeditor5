@@ -450,6 +450,40 @@ describe( 'DropdownMenuRootListView', () => {
 				]
 			);
 		} );
+
+		describe( 'cache', () => {
+			it( 'should use cache', () => {
+				const rootListView = createRootListWithDefinition( [] );
+
+				expect( rootListView.menus ).to.be.equal( rootListView.menus );
+			} );
+
+			it( 'should be invalidated on add new top level item', () => {
+				const rootListView = createRootListWithDefinition();
+				const oldMenus = rootListView.menus;
+
+				rootListView.appendTopLevelChildren( [
+					createMockMenuDefinition( 'Menu 2' ),
+					createMockMenuDefinition( 'Menu 3' )
+				] );
+
+				expect( oldMenus ).not.to.be.equal( rootListView.menus );
+			} );
+
+			it( 'should be invalidated on add new menu item', () => {
+				const rootListView = createRootListWithDefinition();
+				const oldMenus = rootListView.menus;
+
+				rootListView.appendMenuChildren(
+					[
+						new DropdownMenuListItemButtonView( locale, 'Baz' )
+					],
+					findMenuTreeMenuViewByLabel( 'Menu 1', rootListView.tree )
+				);
+
+				expect( oldMenus ).not.to.be.equal( rootListView.menus );
+			} );
+		} );
 	} );
 
 	function createRootListWithDefinition( definition = createMockMenuDefinition() ) {

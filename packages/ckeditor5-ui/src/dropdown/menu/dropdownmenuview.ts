@@ -39,7 +39,8 @@ export default class DropdownMenuView extends View implements FocusableView {
 	 * These events are delegated to the dropdown menu element.
 	 */
 	public static readonly DELEGATED_EVENTS = [
-		'mouseenter', 'arrowleft', 'arrowright', 'change:isOpen', 'closeall'
+		'mouseenter', 'arrowleft', 'arrowright',
+		'change:isOpen', 'close:all', 'submenu:change'
 	] as const;
 
 	/**
@@ -198,11 +199,14 @@ export default class DropdownMenuView extends View implements FocusableView {
 	 * Attaches the parent menu behaviors to the menu.
 	 */
 	private _attachParentMenuBehaviors(): void {
+		this.delegate( 'execute' ).to( this, 'close:all' );
+		this.listView.items.on( 'change', () => {
+			this.fire( 'submenu:change' );
+		} );
+
 		this.on<ObservableChangeEvent<DropdownMenuView | null>>( 'change:parentMenuView', ( evt, name, parentMenuView ) => {
 			if ( parentMenuView ) {
-				this.delegate( 'execute' ).to( parentMenuView, 'closeall' );
 				this.delegate( ...DropdownMenuView.DELEGATED_EVENTS ).to( parentMenuView );
-
 				DropdownMenuBehaviors.closeOnParentClose( this, parentMenuView );
 			}
 		} );

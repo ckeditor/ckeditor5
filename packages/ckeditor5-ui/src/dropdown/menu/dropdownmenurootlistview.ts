@@ -24,8 +24,12 @@ import type {
 	DropdownNestedMenuListItemView
 } from './typings.js';
 
-import type { DropdownMenuChangeIsOpenEvent } from './events.js';
 import type { DropdownMenuViewsRootTree } from './search/tree/dropdownsearchtreetypings.js';
+import type {
+	DropdownMenuCloseAllEvent,
+	DropdownMenuChangeIsOpenEvent,
+	DropdownMenuSubmenuChangeEvent
+} from './events.js';
 
 import DropdownMenuListItemView from './dropdownmenulistitemview.js';
 import { isDropdownMenuObjectDefinition } from './definition/dropdownmenudefinitionguards.js';
@@ -88,6 +92,11 @@ export default class DropdownMenuRootListView extends DropdownMenuListView {
 	declare public isOpen: boolean;
 
 	/**
+	 * The cached array of all menus in the dropdown menu.
+	 */
+	private _cachedMenus: Array<DropdownMenuView> | null = null;
+
+	/**
 	 * Creates an instance of the DropdownMenuRootListView class.
 	 *
 	 * @param locale - The locale object.
@@ -124,13 +133,21 @@ export default class DropdownMenuRootListView extends DropdownMenuListView {
 	 * @returns The array of all menus.
 	 */
 	public get menus(): Array<DropdownMenuView> {
-		return flattenDropdownMenuTree( this.tree ).flatMap( ( { node } ) => {
-			if ( isDropdownTreeMenuItem( node ) ) {
-				return [ node.menu ];
-			}
+		const { tree, _cachedMenus } = this;
 
-			return [];
-		} );
+		if ( !_cachedMenus ) {
+			const result = flattenDropdownMenuTree( tree ).flatMap( ( { node } ) => {
+				if ( isDropdownTreeMenuItem( node ) ) {
+					return [ node.menu ];
+				}
+
+				return [];
+			} );
+
+			this._cachedMenus = result;
+		}
+
+		return this._cachedMenus!;
 	}
 
 	/**
@@ -299,7 +316,15 @@ export default class DropdownMenuRootListView extends DropdownMenuListView {
 	 * @internal
 	 */
 	private _watchRootMenuEvents(): void {
-		this.on( 'closeall', this.close.bind( this ) );
+		this.on<DropdownMenuCloseAllEvent>( 'menu:close:all', this.close.bind( this ) );
+		this.on<DropdownMenuSubmenuChangeEvent>( 'menu:submenu:change', () => {
+			this._cachedMenus = null;
+		} );
+
+		this.items.on( 'change', () => {
+			this.fire<DropdownMenuSubmenuChangeEvent>( 'menu:submenu:change' );
+		} );
+
 		this.items.on<CollectionAddEvent<DropdownMenuListItemView>>( 'add', ( evt, item ) => {
 			item.flatItemOrNestedMenuView.delegate( ...DropdownMenuView.DELEGATED_EVENTS ).to( this, name => `menu:${ name }` );
 		} );

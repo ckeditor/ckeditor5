@@ -41,11 +41,12 @@ export const DropdownRootMenuBehaviors = {
 	toggleMenusAndFocusItemsOnHover( definition: DropdownMenuRootListView ): void {
 		definition.on<DropdownMenuMouseEnterEvent>( 'menu:mouseenter', evt => {
 			const [ pathLeaf ] = evt.path;
+			const { menus } = definition;
 
 			const hasMenuViewFocus = ( menuView: DropdownMenuView ) =>
 				menuView.listView.element!.contains( document.activeElement ) || menuView.element!.contains( document.activeElement );
 
-			const isAnyOtherAlreadyOpen = definition.menus.some(
+			const isAnyOtherAlreadyOpen = !!document.activeElement && menus.some(
 				menuView => (
 					menuView !== evt.source &&
 					menuView.isOpen &&
@@ -62,7 +63,7 @@ export const DropdownRootMenuBehaviors = {
 				( evt.source as FocusableView ).focus();
 			}
 
-			for ( const menuView of definition.menus ) {
+			for ( const menuView of menus ) {
 				const isListItemContainingMenu = pathLeaf instanceof DropdownMenuListItemView &&
 					pathLeaf.flatItemOrNestedMenuView === menuView;
 
