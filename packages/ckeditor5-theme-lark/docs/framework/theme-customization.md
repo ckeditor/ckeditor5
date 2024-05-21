@@ -130,18 +130,14 @@ The file containing custom variables can be named `custom.css` and it will look 
 }
 ```
 
-Depending
+Depending on your setup method, you can either import a style sheet into your `js` file:
 
-```html
-<link rel="stylesheet" href="custom.css" type="text/css">
-```
-
-Alternatively, the style sheet can also be imported into a JavaScript file that is processed by webpack and the [loaders](#styles-processing-and-bundling), becoming a part of the build, like an entry point of the application.
 
 ```js
 import { ClassicEditor } from 'ckeditor5';
 
-// To override the default styles, this file must be imported after ClassicEditor.
+import 'ckeditor5/index.css';
+// Override the default styles.
 import 'custom.css';
 
 ClassicEditor.create( /* ... */ )
@@ -152,4 +148,10 @@ ClassicEditor.create( /* ... */ )
 	console.error( err.stack );
 } );
 
+```
+
+Or import it via the `link` in `html` in the CDN setup:
+
+```html
+<link rel="stylesheet" href="path/to/custom.css" type="text/css">
 ```
