@@ -14,13 +14,12 @@ import Input from '../src/input.js';
 import InsertTextCommand from '../src/inserttextcommand.js';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import env from '@ckeditor/ckeditor5-utils/src/env.js';
-import MutationObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mutationobserver.js';
 
 describe( 'Input', () => {
 	testUtils.createSinonSandbox();
 
-	describe( 'Input plugin', () => {
-		let domElement, editor, view, viewDocument, insertTextCommandSpy;
+	describe( 'common', () => {
+		let domElement, editor, view, viewDocument, insertTextCommandSpy, scrollToTheSelectionSpy, rendererUpdateTextNodeSpy;
 
 		beforeEach( async () => {
 			domElement = document.createElement( 'div' );
@@ -33,7 +32,8 @@ describe( 'Input', () => {
 
 			view = editor.editing.view;
 			viewDocument = view.document;
-			insertTextCommandSpy = testUtils.sinon.stub( editor.commands.get( 'insertText' ), 'execute' );
+			scrollToTheSelectionSpy = testUtils.sinon.stub( view, 'scrollToTheSelection' );
+			rendererUpdateTextNodeSpy = sinon.spy( view._renderer, '_updateTextNodeInternal' );
 		} );
 
 		afterEach( async () => {
@@ -46,7 +46,11 @@ describe( 'Input', () => {
 			expect( Input.pluginName ).to.equal( 'Input' );
 		} );
 
-		describe( 'init()', () => {
+		describe( 'basic typing', () => {
+			beforeEach( () => {
+				insertTextCommandSpy = testUtils.sinon.stub( editor.commands.get( 'insertText' ), 'execute' );
+			} );
+
 			it( 'should register the insert text command', async () => {
 				const editor = await ClassicTestEditor.create( domElement, {
 					plugins: [ Input ]
@@ -152,36 +156,6 @@ describe( 'Input', () => {
 				expect( firstCallArgs.resultRange ).to.be.undefined;
 			} );
 
-			it( 'should have result range passed correctly to the insert text command', async () => {
-				const expectedSelection = editor.model.createSelection(
-					editor.model.createPositionAt( editor.model.document.getRoot().getChild( 0 ), 1 )
-				);
-
-				const expectedRange = editor.model.createRange(
-					editor.model.createPositionAt( editor.model.document.getRoot().getChild( 0 ), 2 ),
-					editor.model.createPositionAt( editor.model.document.getRoot().getChild( 0 ), 3 )
-				);
-
-				viewDocument.fire( 'insertText', {
-					text: 'bar',
-					selection: view.createSelection(
-						view.createPositionAt( viewDocument.getRoot().getChild( 0 ).getChild( 0 ), 1 )
-					),
-					resultRange: view.createRange(
-						view.createPositionAt( viewDocument.getRoot().getChild( 0 ).getChild( 0 ), 2 ),
-						view.createPositionAt( viewDocument.getRoot().getChild( 0 ).getChild( 0 ), 3 )
-					),
-					preventDefault: sinon.spy()
-				} );
-
-				const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
-
-				sinon.assert.calledOnce( insertTextCommandSpy );
-				expect( firstCallArgs.text ).to.equal( 'bar' );
-				expect( firstCallArgs.selection.isEqual( expectedSelection ) ).to.be.true;
-				expect( firstCallArgs.resultRange.isEqual( expectedRange ) ).to.be.true;
-			} );
-
 			it( 'should delete selected content on composition start', () => {
 				const spy = sinon.spy( editor.model, 'deleteContent' );
 				const root = editor.model.document.getRoot();
@@ -228,82 +202,6 @@ describe( 'Input', () => {
 				expect( firstCallArgs.selection.getFirstRange().isEqual( expectedRange ) ).to.be.true;
 			} );
 
-			it( 'should render the DOM on composition end only when needed', () => {
-				const root = editor.model.document.getRoot();
-				const viewParagraph = viewDocument.getRoot().getChild( 0 );
-				const domParagraph = view.domConverter.mapViewToDom( viewParagraph );
-
-				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
-
-				// Start composition.
-				viewDocument.fire( 'compositionstart' );
-
-				// Change sinon stub to spy for this test.
-				editor.commands.get( 'insertText' ).execute.restore();
-				const insertTextCommandSpy = testUtils.sinon.spy( editor.commands.get( 'insertText' ), 'execute' );
-				const rendererUpdateTextNodeSpy = sinon.spy( view._renderer, '_updateTextNode' );
-
-				// Simulate DOM changes triggered by IME. Flush MutationObserver as it is async.
-				domParagraph.firstChild.appendData( 'abc' );
-				view.getObserver( MutationObserver ).flush();
-
-				// Make sure that model is not modified by DOM changes.
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
-
-				// Commit composition.
-				viewDocument.fire( 'compositionend', new DomEventData( view, {
-					preventDefault() {}
-				}, {
-					data: 'abc'
-				} ) );
-
-				sinon.assert.calledOnce( insertTextCommandSpy );
-
-				// DOM text node is already the proper one so no changes are required.
-				sinon.assert.notCalled( rendererUpdateTextNodeSpy );
-
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
-			} );
-
-			it( 'should render the DOM on composition end only once when needed', () => {
-				const root = editor.model.document.getRoot();
-				const viewParagraph = viewDocument.getRoot().getChild( 0 );
-				const domParagraph = view.domConverter.mapViewToDom( viewParagraph );
-
-				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
-
-				// Start composition.
-				viewDocument.fire( 'compositionstart' );
-
-				// Change sinon stub to spy for this test.
-				editor.commands.get( 'insertText' ).execute.restore();
-				const insertTextCommandSpy = testUtils.sinon.spy( editor.commands.get( 'insertText' ), 'execute' );
-				const rendererUpdateTextNodeSpy = sinon.spy( view._renderer, '_updateTextNode' );
-
-				// Simulate DOM changes triggered by IME. Flush MutationObserver as it is async.
-				// Note that NBSP is in different order than expected by the DomConverter and Renderer.
-				domParagraph.firstChild.appendData( '\u00A0 abc' );
-				view.getObserver( MutationObserver ).flush();
-
-				// Make sure that model is not modified by DOM changes.
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
-
-				// Commit composition.
-				viewDocument.fire( 'compositionend', new DomEventData( view, {
-					preventDefault() {}
-				}, {
-					data: '  abc'
-				} ) );
-
-				sinon.assert.calledOnce( insertTextCommandSpy );
-
-				// DOM text node requires NBSP vs space fixing.
-				sinon.assert.calledOnce( rendererUpdateTextNodeSpy );
-
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo  abc[]</paragraph>' );
-				expect( editor.getData() ).to.equal( '<p>foo &nbsp;abc</p>' );
-			} );
-
 			it( 'should not call model.deleteContent() on composition start for collapsed model selection', () => {
 				const spy = sinon.spy( editor.model, 'deleteContent' );
 				const root = editor.model.document.getRoot();
@@ -329,8 +227,6 @@ describe( 'Input', () => {
 			} );
 
 			it( 'should scroll to the selection after inserting text', async () => {
-				const scrollToSelectionSpy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
-
 				viewDocument.fire( 'insertText', {
 					text: 'bar',
 					selection: viewDocument.selection,
@@ -338,13 +234,87 @@ describe( 'Input', () => {
 				} );
 
 				sinon.assert.calledOnce( insertTextCommandSpy );
-				sinon.assert.calledOnce( scrollToSelectionSpy );
+				sinon.assert.calledOnce( scrollToTheSelectionSpy );
+			} );
+		} );
+
+		describe( 'composition', () => {
+			beforeEach( () => {
+				insertTextCommandSpy = testUtils.sinon.spy( editor.commands.get( 'insertText' ), 'execute' );
+			} );
+
+			it( 'should render the DOM on composition end only when needed', () => {
+				const root = editor.model.document.getRoot();
+				const viewParagraph = viewDocument.getRoot().getChild( 0 );
+
+				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
+
+				// Verify initial model state.
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+
+				const composition = compositionHelper( editor );
+
+				// Start composition.
+				composition.start();
+
+				// Simulate DOM changes triggered by IME. Flush MutationObserver as it is async.
+				composition.update( 'abc', view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) ) );
+
+				// Make sure that model is not modified by DOM changes.
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+
+				sinon.assert.notCalled( insertTextCommandSpy );
+
+				// Commit composition.
+				composition.end( 'abc' );
+
+				sinon.assert.calledOnce( insertTextCommandSpy );
+
+				// DOM text node is already the proper one so no changes are required.
+				sinon.assert.notCalled( rendererUpdateTextNodeSpy );
+
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+			} );
+
+			it( 'should render the DOM on composition end only once when needed', () => {
+				const root = editor.model.document.getRoot();
+				const viewParagraph = viewDocument.getRoot().getChild( 0 );
+
+				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
+
+				// Verify initial model state.
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+
+				const composition = compositionHelper( editor );
+
+				// Start composition.
+				composition.start();
+
+				// Simulate DOM changes triggered by IME. Flush MutationObserver as it is async.
+				// Note that NBSP is in different order than expected by the DomConverter and Renderer.
+				composition.update( '\u00A0 abc', view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) ) );
+
+				// Make sure that model is not modified by DOM changes.
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+
+				sinon.assert.notCalled( insertTextCommandSpy );
+
+				// Commit composition.
+				composition.end( '  abc' );
+
+				sinon.assert.calledOnce( insertTextCommandSpy );
+
+				// DOM text node requires NBSP vs space fixing.
+				sinon.assert.calledOnce( rendererUpdateTextNodeSpy );
+
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo  abc[]</paragraph>' );
+				expect( editor.getData() ).to.equal( '<p>foo &nbsp;abc</p>' );
 			} );
 		} );
 	} );
 
-	describe( 'in Android environment', () => {
-		let domElement, editor, view, viewDocument, insertTextCommandSpy;
+	describe( 'Android env', () => {
+		let domElement, editor, view, viewDocument, insertTextCommandSpy, scrollToTheSelectionSpy, rendererUpdateTextNodeSpy;
 
 		beforeEach( async () => {
 			testUtils.sinon.stub( env, 'isAndroid' ).value( true );
@@ -359,7 +329,8 @@ describe( 'Input', () => {
 
 			view = editor.editing.view;
 			viewDocument = view.document;
-			insertTextCommandSpy = testUtils.sinon.stub( editor.commands.get( 'insertText' ), 'execute' );
+			scrollToTheSelectionSpy = testUtils.sinon.stub( view, 'scrollToTheSelection' );
+			rendererUpdateTextNodeSpy = sinon.spy( view._renderer, '_updateTextNodeInternal' );
 		} );
 
 		afterEach( async () => {
@@ -368,205 +339,373 @@ describe( 'Input', () => {
 			await editor.destroy();
 		} );
 
-		it( 'should adjust text and range to minimize model change (adding text)', () => {
-			const viewParagraph = viewDocument.getRoot().getChild( 0 );
-			const modelParagraph = editor.model.document.getRoot().getChild( 0 );
-
-			viewDocument.fire( 'insertText', {
-				text: 'foobar',
-				selection: view.createSelection( view.createRange(
-					view.createPositionAt( viewParagraph.getChild( 0 ), 0 ),
-					view.createPositionAt( viewParagraph.getChild( 0 ), 'end' )
-				) ),
-				preventDefault: sinon.spy()
+		describe( 'basic typing', () => {
+			beforeEach( () => {
+				insertTextCommandSpy = testUtils.sinon.stub( editor.commands.get( 'insertText' ), 'execute' );
 			} );
 
-			const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
+			it( 'should adjust text and range to minimize model change (adding text)', () => {
+				const viewParagraph = viewDocument.getRoot().getChild( 0 );
+				const modelParagraph = editor.model.document.getRoot().getChild( 0 );
 
-			sinon.assert.calledOnce( insertTextCommandSpy );
-			expect( firstCallArgs.text ).to.equal( 'bar' );
-			expect( firstCallArgs.selection.isEqual( editor.model.createSelection( modelParagraph, 'end' ) ) ).to.be.true;
-			expect( firstCallArgs.resultRange ).to.be.undefined;
+				viewDocument.fire( 'insertText', {
+					text: 'foobar',
+					selection: view.createSelection( view.createRange(
+						view.createPositionAt( viewParagraph.getChild( 0 ), 0 ),
+						view.createPositionAt( viewParagraph.getChild( 0 ), 'end' )
+					) ),
+					preventDefault: sinon.spy()
+				} );
+
+				const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
+
+				sinon.assert.calledOnce( insertTextCommandSpy );
+				expect( firstCallArgs.text ).to.equal( 'bar' );
+				expect( firstCallArgs.selection.isEqual( editor.model.createSelection( modelParagraph, 'end' ) ) ).to.be.true;
+				expect( firstCallArgs.resultRange ).to.be.undefined;
+			} );
+
+			it( 'should adjust text and range to minimize model change (adding text, text and inline object selected)', () => {
+				const viewParagraph = viewDocument.getRoot().getChild( 0 );
+				const modelParagraph = editor.model.document.getRoot().getChild( 0 );
+
+				editor.model.schema.register( 'inline', { inheritAllFrom: '$inlineObject' } );
+				editor.conversion.elementToElement( { model: 'inline', view: 'span' } );
+
+				editor.model.change( writer => {
+					writer.insertElement( 'inline', modelParagraph, 2 );
+				} );
+
+				viewDocument.fire( 'insertText', {
+					text: 'foobar',
+					selection: view.createSelection( view.createRange(
+						view.createPositionAt( viewParagraph.getChild( 0 ), 0 ),
+						view.createPositionAt( viewParagraph.getChild( 2 ), 'end' )
+					) ),
+					preventDefault: sinon.spy()
+				} );
+
+				const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
+
+				sinon.assert.calledOnce( insertTextCommandSpy );
+				expect( firstCallArgs.text ).to.equal( 'bar' );
+				expect( firstCallArgs.selection.isEqual( editor.model.createSelection( editor.model.createRange(
+					editor.model.createPositionAt( modelParagraph, 3 ),
+					editor.model.createPositionAt( modelParagraph, 4 )
+				) ) ) ).to.be.true;
+				expect( firstCallArgs.resultRange ).to.be.undefined;
+			} );
+
+			it( 'should adjust text and range to minimize model change (removing text)', () => {
+				const viewParagraph = viewDocument.getRoot().getChild( 0 );
+				const modelParagraph = editor.model.document.getRoot().getChild( 0 );
+
+				viewDocument.fire( 'insertText', {
+					text: 'fo',
+					selection: view.createSelection( view.createRange(
+						view.createPositionAt( viewParagraph.getChild( 0 ), 0 ),
+						view.createPositionAt( viewParagraph.getChild( 0 ), 'end' )
+					) ),
+					preventDefault: sinon.spy()
+				} );
+
+				const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
+
+				sinon.assert.calledOnce( insertTextCommandSpy );
+				expect( firstCallArgs.text ).to.equal( '' );
+				expect( firstCallArgs.selection.isEqual( editor.model.createSelection( editor.model.createRange(
+					editor.model.createPositionAt( modelParagraph, 2 ),
+					editor.model.createPositionAt( modelParagraph, 3 )
+				) ) ) ).to.be.true;
+				expect( firstCallArgs.resultRange ).to.be.undefined;
+			} );
+
+			it( 'should not adjust text and range if the whole selected text is replaced', () => {
+				const viewParagraph = viewDocument.getRoot().getChild( 0 );
+				const modelParagraph = editor.model.document.getRoot().getChild( 0 );
+
+				viewDocument.fire( 'insertText', {
+					text: 'barfoo',
+					selection: view.createSelection( view.createRange(
+						view.createPositionAt( viewParagraph.getChild( 0 ), 0 ),
+						view.createPositionAt( viewParagraph.getChild( 0 ), 'end' )
+					) ),
+					preventDefault: sinon.spy()
+				} );
+
+				const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
+
+				sinon.assert.calledOnce( insertTextCommandSpy );
+				expect( firstCallArgs.text ).to.equal( 'barfoo' );
+				expect( firstCallArgs.selection.isEqual( editor.model.createSelection( modelParagraph, 'in' ) ) ).to.be.true;
+				expect( firstCallArgs.resultRange ).to.be.undefined;
+			} );
+
+			it( 'should not adjust text and range if the whole selected text is replaced with shorter text', () => {
+				const viewParagraph = viewDocument.getRoot().getChild( 0 );
+				const modelParagraph = editor.model.document.getRoot().getChild( 0 );
+
+				viewDocument.fire( 'insertText', {
+					text: 'ba',
+					selection: view.createSelection( view.createRange(
+						view.createPositionAt( viewParagraph.getChild( 0 ), 0 ),
+						view.createPositionAt( viewParagraph.getChild( 0 ), 'end' )
+					) ),
+					preventDefault: sinon.spy()
+				} );
+
+				const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
+
+				sinon.assert.calledOnce( insertTextCommandSpy );
+				expect( firstCallArgs.text ).to.equal( 'ba' );
+				expect( firstCallArgs.selection.isEqual( editor.model.createSelection( modelParagraph, 'in' ) ) ).to.be.true;
+				expect( firstCallArgs.resultRange ).to.be.undefined;
+			} );
+
+			it( 'should not adjust text and range if the selection is collapsed', () => {
+				const viewParagraph = viewDocument.getRoot().getChild( 0 );
+				const modelParagraph = editor.model.document.getRoot().getChild( 0 );
+
+				viewDocument.fire( 'insertText', {
+					text: 'bar',
+					selection: view.createSelection( viewParagraph.getChild( 0 ), 'end' ),
+					preventDefault: sinon.spy()
+				} );
+
+				const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
+
+				sinon.assert.calledOnce( insertTextCommandSpy );
+				expect( firstCallArgs.text ).to.equal( 'bar' );
+				expect( firstCallArgs.selection.isEqual( editor.model.createSelection( modelParagraph, 'end' ) ) ).to.be.true;
+				expect( firstCallArgs.resultRange ).to.be.undefined;
+			} );
+
+			it( 'should ignore insertText event if requires no model changes', () => {
+				const viewParagraph = viewDocument.getRoot().getChild( 0 );
+
+				viewDocument.fire( 'insertText', {
+					text: 'foo',
+					selection: view.createSelection( viewParagraph.getChild( 0 ), 'on' ),
+					preventDefault: sinon.spy()
+				} );
+
+				sinon.assert.notCalled( insertTextCommandSpy );
+			} );
+
+			it( 'should delete selected content on 229 keydown while composing', () => {
+				const spy = sinon.spy( editor.model, 'deleteContent' );
+				const root = editor.model.document.getRoot();
+
+				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'in' ) );
+
+				viewDocument.isComposing = true;
+				viewDocument.fire( 'keydown', {
+					keyCode: 229,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				} );
+
+				sinon.assert.calledOnce( spy );
+				sinon.assert.calledWithExactly( spy, editor.model.document.selection );
+			} );
+
+			it( 'should not call model.deleteContent() on 229 keydown for collapsed model selection', () => {
+				const spy = sinon.spy( editor.model, 'deleteContent' );
+				const root = editor.model.document.getRoot();
+
+				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
+
+				viewDocument.fire( 'keydown', {
+					keyCode: 229,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				} );
+
+				sinon.assert.notCalled( spy );
+			} );
+
+			it( 'should not call model.deleteContent() on 229 keydown if not composing', () => {
+				const spy = sinon.spy( editor.model, 'deleteContent' );
+				const root = editor.model.document.getRoot();
+
+				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'in' ) );
+
+				viewDocument.fire( 'keydown', {
+					keyCode: 229,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				} );
+
+				sinon.assert.notCalled( spy );
+			} );
+
+			it( 'should not call model.deleteContent() on 229 keydown if insertText command is disabled', () => {
+				const spy = sinon.spy( editor.model, 'deleteContent' );
+				const root = editor.model.document.getRoot();
+
+				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'in' ) );
+
+				editor.commands.get( 'insertText' ).forceDisabled( 'commentsOnly' );
+
+				viewDocument.isComposing = true;
+				viewDocument.fire( 'keydown', {
+					keyCode: 229,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				} );
+
+				sinon.assert.notCalled( spy );
+			} );
+
+			it( 'should scroll to the selection after inserting text', async () => {
+				viewDocument.fire( 'insertText', {
+					text: 'bar',
+					selection: viewDocument.selection,
+					preventDefault: () => {}
+				} );
+
+				sinon.assert.calledOnce( insertTextCommandSpy );
+				sinon.assert.calledOnce( scrollToTheSelectionSpy );
+			} );
 		} );
 
-		it( 'should adjust text and range to minimize model change (adding text, text and inline object selected)', () => {
-			const viewParagraph = viewDocument.getRoot().getChild( 0 );
-			const modelParagraph = editor.model.document.getRoot().getChild( 0 );
-
-			editor.model.schema.register( 'inline', { inheritAllFrom: '$inlineObject' } );
-			editor.conversion.elementToElement( { model: 'inline', view: 'span' } );
-
-			editor.model.change( writer => {
-				writer.insertElement( 'inline', modelParagraph, 2 );
+		describe( 'composition', () => {
+			beforeEach( () => {
+				insertTextCommandSpy = testUtils.sinon.spy( editor.commands.get( 'insertText' ), 'execute' );
 			} );
 
-			viewDocument.fire( 'insertText', {
-				text: 'foobar',
-				selection: view.createSelection( view.createRange(
-					view.createPositionAt( viewParagraph.getChild( 0 ), 0 ),
-					view.createPositionAt( viewParagraph.getChild( 2 ), 'end' )
-				) ),
-				preventDefault: sinon.spy()
+			it( 'should render the DOM on composition end only when needed', () => {
+				const root = editor.model.document.getRoot();
+				const viewParagraph = viewDocument.getRoot().getChild( 0 );
+
+				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
+
+				// Verify initial model state.
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+
+				const composition = compositionHelper( editor );
+
+				// Start composition.
+				composition.start();
+
+				// Simulate DOM changes triggered by IME. Flush MutationObserver as it is async.
+				composition.update( 'abc', view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) ) );
+
+				// Changes are immediately applied to the model.
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+
+				sinon.assert.calledOnce( insertTextCommandSpy );
+				insertTextCommandSpy.resetHistory();
+
+				// Commit composition.
+				composition.end( 'abc' );
+
+				sinon.assert.notCalled( insertTextCommandSpy );
+
+				// DOM text node is already the proper one so no changes are required.
+				sinon.assert.notCalled( rendererUpdateTextNodeSpy );
+				rendererUpdateTextNodeSpy.resetHistory();
+
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
 			} );
 
-			const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
+			it( 'should render the DOM on composition end only once when needed', () => {
+				const root = editor.model.document.getRoot();
+				const viewParagraph = viewDocument.getRoot().getChild( 0 );
 
-			sinon.assert.calledOnce( insertTextCommandSpy );
-			expect( firstCallArgs.text ).to.equal( 'bar' );
-			expect( firstCallArgs.selection.isEqual( editor.model.createSelection( editor.model.createRange(
-				editor.model.createPositionAt( modelParagraph, 3 ),
-				editor.model.createPositionAt( modelParagraph, 4 )
-			) ) ) ).to.be.true;
-			expect( firstCallArgs.resultRange ).to.be.undefined;
-		} );
+				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
 
-		it( 'should adjust text and range to minimize model change (removing text)', () => {
-			const viewParagraph = viewDocument.getRoot().getChild( 0 );
-			const modelParagraph = editor.model.document.getRoot().getChild( 0 );
+				// Verify initial model state.
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
 
-			viewDocument.fire( 'insertText', {
-				text: 'fo',
-				selection: view.createSelection( view.createRange(
-					view.createPositionAt( viewParagraph.getChild( 0 ), 0 ),
-					view.createPositionAt( viewParagraph.getChild( 0 ), 'end' )
-				) ),
-				preventDefault: sinon.spy()
+				const composition = compositionHelper( editor );
+
+				// Start composition.
+				composition.start();
+
+				// Simulate DOM changes triggered by IME. Flush MutationObserver as it is async.
+				// Note that NBSP is in different order than expected by the DomConverter and Renderer.
+				composition.update( '\u00A0 abc', view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) ) );
+
+				// Make sure that model is not modified by DOM changes.
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo  abc[]</paragraph>' );
+
+				sinon.assert.notCalled( rendererUpdateTextNodeSpy );
+				rendererUpdateTextNodeSpy.resetHistory();
+
+				sinon.assert.calledOnce( insertTextCommandSpy );
+				insertTextCommandSpy.resetHistory();
+
+				// Commit composition.
+				composition.end( '  abc' );
+
+				sinon.assert.notCalled( insertTextCommandSpy );
+
+				// DOM text node requires NBSP vs space fixing.
+				sinon.assert.calledOnce( rendererUpdateTextNodeSpy );
+				rendererUpdateTextNodeSpy.resetHistory();
+
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo  abc[]</paragraph>' );
+				expect( editor.getData() ).to.equal( '<p>foo &nbsp;abc</p>' );
 			} );
-
-			const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
-
-			sinon.assert.calledOnce( insertTextCommandSpy );
-			expect( firstCallArgs.text ).to.equal( '' );
-			expect( firstCallArgs.selection.isEqual( editor.model.createSelection( editor.model.createRange(
-				editor.model.createPositionAt( modelParagraph, 2 ),
-				editor.model.createPositionAt( modelParagraph, 3 )
-			) ) ) ).to.be.true;
-			expect( firstCallArgs.resultRange ).to.be.undefined;
-		} );
-
-		it( 'should not adjust text and range if the whole selected text is replaced', () => {
-			const viewParagraph = viewDocument.getRoot().getChild( 0 );
-			const modelParagraph = editor.model.document.getRoot().getChild( 0 );
-
-			viewDocument.fire( 'insertText', {
-				text: 'barfoo',
-				selection: view.createSelection( view.createRange(
-					view.createPositionAt( viewParagraph.getChild( 0 ), 0 ),
-					view.createPositionAt( viewParagraph.getChild( 0 ), 'end' )
-				) ),
-				preventDefault: sinon.spy()
-			} );
-
-			const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
-
-			sinon.assert.calledOnce( insertTextCommandSpy );
-			expect( firstCallArgs.text ).to.equal( 'barfoo' );
-			expect( firstCallArgs.selection.isEqual( editor.model.createSelection( modelParagraph, 'in' ) ) ).to.be.true;
-			expect( firstCallArgs.resultRange ).to.be.undefined;
-		} );
-
-		it( 'should not adjust text and range if the whole selected text is replaced with shorter text', () => {
-			const viewParagraph = viewDocument.getRoot().getChild( 0 );
-			const modelParagraph = editor.model.document.getRoot().getChild( 0 );
-
-			viewDocument.fire( 'insertText', {
-				text: 'ba',
-				selection: view.createSelection( view.createRange(
-					view.createPositionAt( viewParagraph.getChild( 0 ), 0 ),
-					view.createPositionAt( viewParagraph.getChild( 0 ), 'end' )
-				) ),
-				preventDefault: sinon.spy()
-			} );
-
-			const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
-
-			sinon.assert.calledOnce( insertTextCommandSpy );
-			expect( firstCallArgs.text ).to.equal( 'ba' );
-			expect( firstCallArgs.selection.isEqual( editor.model.createSelection( modelParagraph, 'in' ) ) ).to.be.true;
-			expect( firstCallArgs.resultRange ).to.be.undefined;
-		} );
-
-		it( 'should not adjust text and range if the selection is collapsed', () => {
-			const viewParagraph = viewDocument.getRoot().getChild( 0 );
-			const modelParagraph = editor.model.document.getRoot().getChild( 0 );
-
-			viewDocument.fire( 'insertText', {
-				text: 'bar',
-				selection: view.createSelection( viewParagraph.getChild( 0 ), 'end' ),
-				preventDefault: sinon.spy()
-			} );
-
-			const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
-
-			sinon.assert.calledOnce( insertTextCommandSpy );
-			expect( firstCallArgs.text ).to.equal( 'bar' );
-			expect( firstCallArgs.selection.isEqual( editor.model.createSelection( modelParagraph, 'end' ) ) ).to.be.true;
-			expect( firstCallArgs.resultRange ).to.be.undefined;
-		} );
-
-		it( 'should delete selected content on 229 keydown while composing', () => {
-			const spy = sinon.spy( editor.model, 'deleteContent' );
-			const root = editor.model.document.getRoot();
-
-			editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'in' ) );
-
-			viewDocument.isComposing = true;
-			viewDocument.fire( 'keydown', {
-				keyCode: 229,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			} );
-
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, editor.model.document.selection );
-		} );
-
-		it( 'should not call model.deleteContent() on 229 keydown for collapsed model selection', () => {
-			const spy = sinon.spy( editor.model, 'deleteContent' );
-			const root = editor.model.document.getRoot();
-
-			editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
-
-			viewDocument.fire( 'keydown', {
-				keyCode: 229,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			} );
-
-			sinon.assert.notCalled( spy );
-		} );
-
-		it( 'should not call model.deleteContent() on 229 keydown if not composing', () => {
-			const spy = sinon.spy( editor.model, 'deleteContent' );
-			const root = editor.model.document.getRoot();
-
-			editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'in' ) );
-
-			viewDocument.fire( 'keydown', {
-				keyCode: 229,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			} );
-
-			sinon.assert.notCalled( spy );
-		} );
-
-		it( 'should not call model.deleteContent() on 229 keydown if insertText command is disabled', () => {
-			const spy = sinon.spy( editor.model, 'deleteContent' );
-			const root = editor.model.document.getRoot();
-
-			editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'in' ) );
-
-			editor.commands.get( 'insertText' ).forceDisabled( 'commentsOnly' );
-
-			viewDocument.isComposing = true;
-			viewDocument.fire( 'keydown', {
-				keyCode: 229,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			} );
-
-			sinon.assert.notCalled( spy );
 		} );
 	} );
+
+	function compositionHelper( editor ) {
+		const view = editor.editing.view;
+		const viewDocument = view.document;
+
+		return {
+			start() {
+				viewDocument.fire( 'compositionstart' );
+				expect( viewDocument.isComposing ).to.be.true;
+			},
+
+			update( data, range ) {
+				expect( viewDocument.isComposing ).to.be.true;
+
+				viewDocument.fire( 'beforeinput', new DomEventData( view, {
+					target: view.getDomRoot()
+				}, {
+					data: data.replace( /\u00A0/g, ' ' ),
+					inputType: 'insertCompositionText',
+					targetRanges: [ range ],
+					preventDefault: sinon.spy()
+				} ) );
+
+				const domRange = view.domConverter.viewRangeToDom( range );
+
+				if ( !domRange.collapsed ) {
+					domRange.deleteContents();
+				}
+
+				if ( domRange.startContainer.nodeType === 3 ) {
+					domRange.startContainer.insertData( domRange.startOffset, data );
+				} else {
+					throw new Error( 'not supported' ); // TODO
+				}
+
+				window.getSelection().setBaseAndExtent(
+					domRange.startContainer, domRange.startOffset + data.length,
+					domRange.startContainer, domRange.startOffset + data.length
+				);
+				window.document.dispatchEvent( new window.Event( 'selectionchange' ) );
+			},
+
+			end( data ) {
+				expect( viewDocument.isComposing ).to.be.true;
+
+				viewDocument.fire(
+					'compositionend',
+					new DomEventData( view, {
+						preventDefault: sinon.spy()
+					}, {
+						data
+					} )
+				);
+
+				expect( viewDocument.isComposing ).to.be.false;
+			}
+		};
+	}
 } );

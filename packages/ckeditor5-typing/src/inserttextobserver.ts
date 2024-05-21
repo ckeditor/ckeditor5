@@ -17,7 +17,6 @@ import {
 	type ViewDocumentCompositionEndEvent,
 	type ViewDocumentInputEvent,
 	type ViewDocumentSelection,
-	type ViewRange,
 	type ViewSelection
 } from '@ckeditor/ckeditor5-engine';
 
@@ -33,6 +32,11 @@ const TYPING_INPUT_TYPES = [
 	// This one is used by Safari when typing accented letter (Mac).
 	// This one is used by Safari when accepting spell check suggestions from the autocorrection pop-up (Mac).
 	'insertReplacementText'
+];
+
+const TYPING_INPUT_TYPES_ANDROID = [
+	...TYPING_INPUT_TYPES,
+	'insertCompositionText'
 ];
 
 /**
@@ -56,9 +60,7 @@ export default class InsertTextObserver extends Observer {
 		// On Android composition events should immediately be applied to the model. Rendering is not disabled.
 		// On non-Android the model is updated only on composition end.
 		// On Android we can't rely on composition start/end to update model.
-		if ( env.isAndroid ) {
-			TYPING_INPUT_TYPES.push( 'insertCompositionText' );
-		}
+		const typingInputTypes = env.isAndroid ? TYPING_INPUT_TYPES_ANDROID : TYPING_INPUT_TYPES;
 
 		const viewDocument = view.document;
 
@@ -69,7 +71,7 @@ export default class InsertTextObserver extends Observer {
 
 			const { data: text, targetRanges, inputType, domEvent } = data;
 
-			if ( !TYPING_INPUT_TYPES.includes( inputType ) ) {
+			if ( !typingInputTypes.includes( inputType ) ) {
 				return;
 			}
 
@@ -167,9 +169,4 @@ export interface InsertTextEventData extends DomEventData {
 	 * If not specified, the insertion should occur at the current view selection.
 	 */
 	selection?: ViewSelection | ViewDocumentSelection;
-
-	/**
-	 * The range that view selection should be set to after insertion.
-	 */
-	resultRange?: ViewRange;
 }

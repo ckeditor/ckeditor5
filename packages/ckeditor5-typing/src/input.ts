@@ -37,7 +37,7 @@ export default class Input extends Plugin {
 	/**
 	 * The queue of `insertText` command executions that are waiting for the DOM to get updated after beforeinput event.
 	 */
-	private _queue!: InsertTextQueue;
+	private _compositionQueue!: CompositionQueue;
 
 	/**
 	 * @inheritDoc
@@ -56,7 +56,7 @@ export default class Input extends Plugin {
 		const mapper = editor.editing.mapper;
 		const modelSelection = model.document.selection;
 
-		this._queue = new InsertTextQueue( editor );
+		this._compositionQueue = new CompositionQueue( editor );
 
 		view.addObserver( InsertTextObserver );
 
@@ -77,10 +77,10 @@ export default class Input extends Plugin {
 			// Flush queue on the next beforeinput event because it could happen
 			// that the mutation observer does not notice the DOM change in time.
 			if ( env.isAndroid && view.document.isComposing ) {
-				this._queue.flush( 'next beforeinput' );
+				this._compositionQueue.flush( 'next beforeinput' );
 			}
 
-			const { text, selection: viewSelection, resultRange: viewResultRange } = data;
+			const { text, selection: viewSelection } = data;
 
 			let modelRanges;
 
@@ -132,10 +132,6 @@ export default class Input extends Plugin {
 				selection: model.createSelection( modelRanges )
 			};
 
-			if ( viewResultRange ) {
-				commandData.resultRange = mapper.toModelRange( viewResultRange );
-			}
-
 			// This is a composition event and those are not cancellable, so we need to wait until browser updates the DOM
 			// and we could apply changes to the model and verify if the DOM is valid.
 			// The browser applies changes to the DOM not immediately on beforeinput event.
@@ -145,12 +141,12 @@ export default class Input extends Plugin {
 				// @if CK_DEBUG_TYPING // 	console.log( `%c[Input]%c Queue insertText:%c "${ commandData.text }"%c ` +
 				// @if CK_DEBUG_TYPING // 		`[${ commandData.selection.getFirstPosition().path }]-` +
 				// @if CK_DEBUG_TYPING // 		`[${ commandData.selection.getLastPosition().path }]` +
-				// @if CK_DEBUG_TYPING // 		` queue size: ${ this._queue.length + 1 }`,
+				// @if CK_DEBUG_TYPING // 		` queue size: ${ this._compositionQueue.length + 1 }`,
 				// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', 'font-weight: bold', 'color: blue', ''
 				// @if CK_DEBUG_TYPING // 	);
 				// @if CK_DEBUG_TYPING // }
 
-				this._queue.push( commandData );
+				this._compositionQueue.push( commandData );
 			} else {
 				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 				// @if CK_DEBUG_TYPING // 	console.log( `%c[Input]%c Execute insertText:%c "${ commandData.text }"%c ` +
@@ -223,8 +219,8 @@ export default class Input extends Plugin {
 					const viewElement = findMappedViewAncestor( node, mapper );
 					const modelElement = mapper.toModelElement( viewElement )!;
 
-					if ( this._queue.isComposedElement( modelElement ) ) {
-						this._queue.flush( 'mutations' );
+					if ( this._compositionQueue.isComposedElement( modelElement ) ) {
+						this._compositionQueue.flush( 'mutations' );
 
 						return;
 					}
@@ -238,13 +234,15 @@ export default class Input extends Plugin {
 			} );
 
 			// Make sure that all changes are applied to the model before the end of composition.
-			this.listenTo<ViewDocumentCompositionEndEvent>( view.document, 'compositionend', () => this._queue.flush( 'composition end' ) );
+			this.listenTo<ViewDocumentCompositionEndEvent>( view.document, 'compositionend', () => {
+				this._compositionQueue.flush( 'composition end' );
+			} );
 
 			// Trigger mutations check after the composition completes to fix all DOM changes that got ignored during composition.
 			this.listenTo<ViewDocumentCompositionEndEvent>( view.document, 'compositionend', () => {
 				const mutations: Array<MutationData> = [];
 
-				for ( const element of this._queue.flushComposedElements() ) {
+				for ( const element of this._compositionQueue.flushComposedElements() ) {
 					if ( element.root.rootName == '$graveyard' ) {
 						continue;
 					}
@@ -282,7 +280,7 @@ export default class Input extends Plugin {
 				// @if CK_DEBUG_TYPING // 	);
 				// @if CK_DEBUG_TYPING // }
 
-				view.forceRender();
+				view.document.fire<ViewDocumentMutationsEvent>( 'mutations', { mutations: [] } );
 
 				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 				// @if CK_DEBUG_TYPING // 	console.groupEnd();
@@ -297,16 +295,16 @@ export default class Input extends Plugin {
 	public override destroy(): void {
 		super.destroy();
 
-		this._queue.destroy();
+		this._compositionQueue.destroy();
 	}
 }
 
 /**
- * TODO
+ * The queue of `insertText` command executions that are waiting for the DOM to get updated after beforeinput event.
  */
-class InsertTextQueue {
+class CompositionQueue {
 	/**
-	 * TODO
+	 * The editor instance.
 	 */
 	public editor: Editor;
 
@@ -326,14 +324,14 @@ class InsertTextQueue {
 	private _compositionElements = new Set<Element>();
 
 	/**
-	 * TODO
+	 * @inheritDoc
 	 */
 	constructor( editor: Editor ) {
 		this.editor = editor;
 	}
 
 	/**
-	 * TODO
+	 * Destroys the helper object.
 	 */
 	public destroy(): void {
 		this.flushDebounced.cancel();
@@ -345,7 +343,7 @@ class InsertTextQueue {
 	}
 
 	/**
-	 * TODO
+	 * Returns the size of the queue.
 	 */
 	public get length(): number {
 		return this._queue.length;
@@ -370,10 +368,6 @@ class InsertTextQueue {
 			}
 		}
 
-		if ( commandData.resultRange ) {
-			commandLiveData.resultRange = LiveRange.fromRange( commandData.resultRange );
-		}
-
 		this._queue.push( commandLiveData );
 		this.flushDebounced();
 	}
@@ -393,12 +387,6 @@ class InsertTextQueue {
 				.filter( ( range ): range is Range => !!range );
 
 			commandData.selection = this.editor.model.createSelection( ranges );
-		}
-
-		const resultRange = detachLiveRange( commandLiveData.resultRange );
-
-		if ( resultRange ) {
-			commandData.resultRange = resultRange;
 		}
 
 		return commandData;
@@ -458,14 +446,14 @@ class InsertTextQueue {
 	}
 
 	/**
-	 * TODO
+	 * Returns `true` if the given model element is related to recent composition.
 	 */
 	public isComposedElement( element: Element ): boolean {
 		return this._compositionElements.has( element );
 	}
 
 	/**
-	 * TODO
+	 * Returns an array of composition-related elements and clears the internal list.
 	 */
 	public flushComposedElements(): Array<Element> {
 		const result = Array.from( this._compositionElements );
@@ -538,5 +526,4 @@ function findMappedViewAncestor( viewNode: ViewNode, mapper: Mapper ): ViewEleme
 type InsertTextCommandLiveOptions = {
 	text?: string;
 	selectionRanges?: Array<LiveRange>;
-	resultRange?: LiveRange;
 };

@@ -874,7 +874,14 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 		// @if CK_DEBUG_TYPING // 	);
 		// @if CK_DEBUG_TYPING // }
 
-		const actions = fastDiff( actualText, expectedText );
+		this._updateTextNodeInternal( domText, expectedText );
+	}
+
+	/**
+	 * Part of the `_updateTextNode` method extracted for easier testing.
+	 */
+	private _updateTextNodeInternal( domText: DomText, expectedText: string ): void {
+		const actions = fastDiff( domText.data, expectedText );
 
 		for ( const action of actions ) {
 			if ( action.type === 'insert' ) {
