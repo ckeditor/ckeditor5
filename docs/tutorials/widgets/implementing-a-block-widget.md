@@ -26,157 +26,6 @@ This tutorial will reference various parts of the {@link framework/architecture/
 
 ## Let's start
 
-This guide assumes that you are familiar with npm and your project uses npm already. If not, see the [npm documentation](https://docs.npmjs.com/getting-started/what-is-npm) or call `npm init` in an empty directory.
-
-First, install packages needed to build and set up a basic CKEditor&nbsp;5 instance.
-
-```bash
-npm install --save \
-	css-loader@5 \
-	postcss-loader@4 \
-	raw-loader@4 \
-	style-loader@2 \
-	webpack@5 \
-	webpack-cli@4 \
-	@ckeditor/ckeditor5-dev-utils \
-	@ckeditor/ckeditor5-editor-classic \
-	@ckeditor/ckeditor5-essentials \
-	@ckeditor/ckeditor5-paragraph \
-	@ckeditor/ckeditor5-heading \
-	@ckeditor/ckeditor5-list \
-	@ckeditor/ckeditor5-basic-styles \
-	@ckeditor/ckeditor5-theme-lark
-```
-
-Create a minimal webpack configuration:
-
-```js
-// webpack.config.js
-
-'use strict';
-
-const path = require( 'path' );
-const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
-
-module.exports = {
-	entry: './app.js',
-
-	output: {
-		path: path.resolve( __dirname, 'dist' ),
-		filename: 'bundle.js'
-	},
-
-	module: {
-		rules: [
-			{
-				test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
-				use: [ 'raw-loader' ]
-			},
-			{
-				test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
-				use: [
-					{
-						loader: 'style-loader',
-						options: {
-							injectType: 'singletonStyleTag',
-							attributes: {
-								'data-cke': true
-							}
-						}
-					},
-					'css-loader',
-					{
-						loader: 'postcss-loader',
-						options: {
-							postcssOptions: styles.getPostCssConfig( {
-								themeImporter: {
-									themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-								},
-								minify: true
-							} )
-						}
-					}
-				]
-			}
-		]
-	},
-
-	// Useful for debugging.
-	devtool: 'source-map',
-
-	// By default webpack logs warnings if the bundle is bigger than 200kb.
-	performance: { hints: false }
-};
-```
-
-Create your project's entry point:
-
-```js
-// app.js
-
-import {
-	ClassicEditor,
-	Bold,
-	Italic,
-	Essentials,
-	Heading,
-	List,
-	Paragraph
-} from 'ckeditor5';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic ],
-		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList' ]
-	} )
-	.then( editor => {
-		console.log( 'Editor was initialized', editor );
-
-		// Expose for playing in the console.
-		window.editor = editor;
-	} )
-	.catch( error => {
-		console.error( error.stack );
-	} );
-```
-
-And an `index.html` page:
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>CKEditor 5 Framework – Implementing a simple widget</title>
-	</head>
-	<body>
-		<div id="editor">
-			<p>Editor content goes here.</p>
-		</div>
-
-		<script src="dist/bundle.js"></script>
-	</body>
-</html>
-```
-
-Finally, build your project:
-
-```bash
-p@m /workspace/creating-a-plugin> ./node_modules/.bin/webpack --mode development
-Hash: a4a7cf092b8d69199848
-Version: webpack 4.28.4
-Time: 5467ms
-Built at: 2019-01-15 10:49:01
-        Asset      Size  Chunks                    Chunk Names
-    bundle.js  3.52 MiB    main  [emitted]  [big]  main
-bundle.js.map   3.2 MiB    main  [emitted]         main
-Entrypoint main [big] = bundle.js bundle.js.map
-[./app.js] 824 bytes {main} [built]
-[./node_modules/webpack/buildin/global.js] (webpack)/buildin/global.js 472 bytes {main} [built]
-[./node_modules/webpack/buildin/harmony-module.js] (webpack)/buildin/harmony-module.js 573 bytes {main} [built]
-    + 904 hidden modules
-```
-
 And now see if everything worked well by opening the index page in your browser. You should see a CKEditor&nbsp;5 instance like this:
 
 {@img assets/img/tutorial-implementing-a-widget-1.png Screenshot of a classic editor initialized from source.}
@@ -185,13 +34,10 @@ And now see if everything worked well by opening the index page in your browser.
 
 Once the editor is up and running you can start implementing the plugin. You can keep the entire plugin code in a single file, however, it is recommended to split its "editing" and "UI" layers and create a master plugin which loads both. This way, you ensure better separation of concerns and allow for recomposing the features (for example, picking the editing part of an existing feature but writing your own UI for it). All official CKEditor&nbsp;5 plugins follow this pattern.
 
-Additionally, you will split the code of commands, buttons and other "self-contained" components to separate files, too. In order not to mix up these files with your project's `app.js` and `webpack.config.js` files, create this directory structure:
+Additionally, you will split the code of commands, buttons and other "self-contained" components to separate files, too. In order not to mix up these files with your project's `main.js` file, create this directory structure:
 
-```
-├── app.js
-├── dist
-│   ├── bundle.js
-│   └── bundle.js.map
+```plain
+├── main.js
 ├── index.html
 ├── node_modules
 ├── package.json
@@ -199,10 +45,7 @@ Additionally, you will split the code of commands, buttons and other "self-conta
 │   ├── simplebox.js
 │   ├── simpleboxediting.js
 │   └── simpleboxui.js
-│
-│   ... the rest of plugin files goes here as well
-│
-└── webpack.config.js
+└─ ...
 ```
 
 Now define the 3 plugins.
@@ -519,7 +362,7 @@ import {
 	Heading,
 	List,
 	Paragraph
-	} from 'ckeditor5';
+} from 'ckeditor5';
 
 import SimpleBox from './simplebox/simplebox';
 
@@ -603,12 +446,6 @@ You want to change this behavior a bit so the structure created in the editing v
 
 If you find the concept of downcasting and upcasting confusing, read the {@link framework/architecture/editing-engine#conversion introduction to conversion}.
 
-Before you start coding, you need to install the {@link api/widget `@ckeditor/ckeditor5-widget`} package:
-
-```bash
-npm install --save @ckeditor/ckeditor5-widget
-```
-
 Now it is time to revisit the `_defineConverters()` method that you defined earlier. You will use the {@link module:engine/conversion/upcasthelpers~UpcastHelpers#elementToElement `elementToElement()` upcast helper} and the {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()` downcast helper} instead of the two-way `elementToElement()` converter helper.
 
 Additionally, you need to ensure that the {@link module:widget/widget~Widget `Widget`} plugin is loaded. If you omit it, the elements in the view will have all the classes (like `ck-widget`) but there will be no "behaviors" loaded (for example, clicking a widget will not select it).
@@ -616,10 +453,8 @@ Additionally, you need to ensure that the {@link module:widget/widget~Widget `Wi
 ```js
 // simplebox/simpleboxediting.js
 
-import { Plugin } from 'ckeditor5';
-
 // ADDED 2 imports.
-import { Widget, toWidget, toWidgetEditable } from 'ckeditor5';
+import { Plugin, Widget, toWidget, toWidgetEditable } from 'ckeditor5';
 
 export default class SimpleBoxEditing extends Plugin {
 	static get requires() {                                                    // ADDED
@@ -923,8 +758,7 @@ See what it looks like in practice and extend the `SimpleBoxUI` plugin [created 
 ```js
 // simplebox/simpleboxui.js
 
-import { ButtonView } from 'ckeditor5';
-import { Plugin } from 'ckeditor5';
+import { ButtonView, Plugin } from 'ckeditor5';
 
 export default class SimpleBoxUI extends Plugin {
 	init() {
@@ -985,7 +819,6 @@ Refresh the web page and try it yourself:
 
 {@img assets/img/tutorial-implementing-a-widget-7.png Screenshot of the simple box widget being inserted using the toolbar button.}
 
-
 ## Demo
 
 You can see the block widget implementation in action in the editor below. You can also check out the full [source code](#final-solution) of this tutorial if you want to develop your own block widgets.
@@ -994,7 +827,7 @@ You can see the block widget implementation in action in the editor below. You c
 
 ## Final solution
 
-The following code contains a complete implementation of the `SimpleBox` plugin (and all its dependencies) and the code to run the editor. You can paste it into the [`app.js`](#plugin-structure) file and it will run out–of–the–box:
+The following code contains a complete implementation of the `SimpleBox` plugin (and all its dependencies) and the code to run the editor. You can paste it into the [`main.js`](#plugin-structure) file and it will run out–of–the–box:
 
 ```js
 import {
