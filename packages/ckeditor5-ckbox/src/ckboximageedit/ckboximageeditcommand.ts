@@ -69,7 +69,7 @@ export default class CKBoxImageEditCommand extends Command {
 	*
 	* See: https://github.com/ckeditor/ckeditor5/issues/16153.
 	*/
-	private _updateUiDelayed: DelayedFunc<() => void> = delay( () => this.editor.ui.update(), 0 );
+	private _updateUiDelayed = delay( () => this.editor.ui.update(), 0 );
 
 	/**
 	 * @inheritDoc
