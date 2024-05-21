@@ -140,7 +140,6 @@ describe( 'License check', () => {
 			it( 'should block if trial is expired', () => {
 				const { licenseKey, todayTimestamp } = generateKey( {
 					licenseType: 'trial',
-					isExpired: false,
 					daysAfterExpiration: 1
 				} );
 
@@ -151,7 +150,7 @@ describe( 'License check', () => {
 				sinon.assert.calledWithMatch( showErrorStub, 'trialLimit' );
 				expect( editor.isReadOnly ).to.be.true;
 				sinon.assert.calledOnce( consoleInfoSpy );
-				sinon.assert.calledWith( consoleInfoSpy, 'You are using the trial version of CKEditor 5 plugin with ' +
+				sinon.assert.calledWith( consoleInfoSpy, 'You are using the trial version of CKEditor 5 with ' +
 				'limited usage. Make sure you will not use it in the production environment.' );
 
 				dateNow.restore();
@@ -176,7 +175,7 @@ describe( 'License check', () => {
 				sinon.assert.calledWithMatch( showErrorStub, 'trialLimit' );
 				expect( editor.isReadOnly ).to.be.true;
 				sinon.assert.calledOnce( consoleInfoSpy );
-				sinon.assert.calledWith( consoleInfoSpy, 'You are using the trial version of CKEditor 5 plugin with ' +
+				sinon.assert.calledWith( consoleInfoSpy, 'You are using the trial version of CKEditor 5 with ' +
 				'limited usage. Make sure you will not use it in the production environment.' );
 
 				dateNow.restore();
@@ -217,8 +216,9 @@ describe( 'License check', () => {
 			} );
 
 			it( 'should log information to the console about using the development license', () => {
-				const licenseKey = 'foo.eyJleHAiOjE3MTUyMTI4MDAsImp0aSI6IjczNDk5YTQyLWJjNzktNDdlNy1hNmR' +
-                    'lLWIyMGJhMmEzYmI4OSIsImxpY2Vuc2VUeXBlIjoiZGV2ZWxvcG1lbnQiLCJ2YyI6Ijg5NzRiYTJlIn0.bar';
+				const { licenseKey } = generateKey( {
+					licenseType: 'development'
+				} );
 
 				const editor = new TestEditor( { licenseKey } );
 
@@ -229,8 +229,9 @@ describe( 'License check', () => {
 			} );
 
 			it( 'should not block the editor if 10 minutes have not passed (development license)', () => {
-				const licenseKey = 'foo.eyJleHAiOjE3MTUyMTI4MDAsImp0aSI6IjczNDk5YTQyLWJjNzktNDdlNy1hNmR' +
-                    'lLWIyMGJhMmEzYmI4OSIsImxpY2Vuc2VUeXBlIjoiZGV2ZWxvcG1lbnQiLCJ2YyI6Ijg5NzRiYTJlIn0.bar';
+				const { licenseKey } = generateKey( {
+					licenseType: 'development'
+				} );
 
 				const today = 1715166436000; // 08.05.2024
 				const dateNow = sinon.stub( Date, 'now' ).returns( today );
@@ -249,21 +250,11 @@ describe( 'License check', () => {
 			} );
 
 			it( 'should block editor after 10 minutes (development license)', () => {
-				const licenseKey = 'foo.eyJleHAiOjE3MTUyMTI4MDAsImp0aSI6IjczNDk5YTQyLWJjNzktNDdlNy1hNmR' +
-                    'lLWIyMGJhMmEzYmI4OSIsImxpY2Vuc2VUeXBlIjoiZGV2ZWxvcG1lbnQiLCJ2YyI6Ijg5NzRiYTJlIn0.bar';
+				const { licenseKey, todayTimestamp } = generateKey( {
+					licenseType: 'development'
+				} );
 
-				/**
-                     * after decoding licenseKey:
-                     *
-                     * licensePaylod: {
-                     *  ...,
-                     *  exp: timestamp( 09.05.2024 )
-                     *  licenseType: 'development'
-                     * }
-                     */
-
-				const today = 1715166436000; // 08.05.2024
-				const dateNow = sinon.stub( Date, 'now' ).returns( today );
+				const dateNow = sinon.stub( Date, 'now' ).returns( todayTimestamp );
 
 				const editor = new TestEditor( { licenseKey } );
 
@@ -279,21 +270,11 @@ describe( 'License check', () => {
 			} );
 
 			it( 'should clear timer on editor destroy', done => {
-				const licenseKey = 'foo.eyJleHAiOjE3MTUyMTI4MDAsImp0aSI6IjczNDk5YTQyLWJjNzktNDdlNy1hNmR' +
-                    'lLWIyMGJhMmEzYmI4OSIsImxpY2Vuc2VUeXBlIjoiZGV2ZWxvcG1lbnQiLCJ2YyI6Ijg5NzRiYTJlIn0.bar';
+				const { licenseKey, todayTimestamp } = generateKey( {
+					licenseType: 'development'
+				} );
 
-				/**
-                     * after decoding licenseKey:
-                     *
-                     * licensePaylod: {
-                     *  ...,
-                     *  exp: timestamp( 09.05.2024 )
-                     *  licenseType: 'development'
-                     * }
-                     */
-
-				const today = 1715166436000; // 08.05.2024
-				const dateNow = sinon.stub( Date, 'now' ).returns( today );
+				const dateNow = sinon.stub( Date, 'now' ).returns( todayTimestamp );
 				const editor = new TestEditor( { licenseKey } );
 				const clearTimeoutSpy = sinon.spy( globalThis, 'clearTimeout' );
 
