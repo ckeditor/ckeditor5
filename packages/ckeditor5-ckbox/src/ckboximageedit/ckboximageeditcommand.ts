@@ -12,7 +12,8 @@
 import { Command, PendingActions, type Editor } from 'ckeditor5/src/core.js';
 import {
 	CKEditorError,
-	abortableDebounce, createElement,
+	abortableDebounce,
+	createElement,
 	retry,
 	delay,
 	type AbortableFunc,
@@ -66,7 +67,7 @@ export default class CKBoxImageEditCommand extends Command {
 	* page layout changes after it finishes. To address this, we use a setTimeout hack
 	* to ensure that floating elements on the page maintain their correct position.
 	*
-	* See: https://github.com/ckeditor/ckeditor5/issues/16153
+	* See: https://github.com/ckeditor/ckeditor5/issues/16153.
 	*/
 	private _updateUiDelayed: DelayedFunc<() => void> = delay( () => this.editor.ui.update(), 0 );
 

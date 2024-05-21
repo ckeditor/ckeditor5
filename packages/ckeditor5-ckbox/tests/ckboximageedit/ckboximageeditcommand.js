@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global window, console, btoa, setTimeout, AbortController, globalThis */
+/* global window, console, btoa, setTimeout, AbortController */
 
 import { global } from '@ckeditor/ckeditor5-utils';
 import { Command } from 'ckeditor5/src/core.js';
@@ -441,13 +441,9 @@ describe( 'CKBoxImageEditCommand', () => {
 					controller: new AbortController()
 				} );
 
-				const clearTimeoutSpy = sinon.spy( globalThis, 'clearTimeout' );
+				const clearTimeoutSpy = sinon.spy( command._updateUiDelayed, 'cancel' );
 
 				editor.fire( 'ready' );
-
-				command.on( 'destroy', () => {
-					sinon.assert.calledOnce( clearTimeoutSpy );
-				} );
 
 				expect( command.value ).to.be.false;
 
@@ -455,7 +451,8 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				options.onClose();
 
-				await editor.destroy();
+				command.destroy();
+				sinon.assert.calledTwice( clearTimeoutSpy );
 
 				expect( command.value ).to.be.false;
 			} );
