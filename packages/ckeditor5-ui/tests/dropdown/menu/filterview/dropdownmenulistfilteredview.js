@@ -39,8 +39,8 @@ describe( 'DropdownMenuListFilteredView', () => {
 			expect( listView._foundListView ).to.be.null;
 		} );
 
-		it( 'should initialize menu view with lazy initialization flag', () => {
-			expect( listView._menuView._lazyInitializeSubMenus ).to.be.true;
+		it( 'should not initialize menu view with lazy initialization flag', () => {
+			expect( listView._menuView._lazyInitializeSubMenus ).to.be.false;
 		} );
 	} );
 
@@ -93,7 +93,11 @@ describe( 'DropdownMenuListFilteredView', () => {
 
 			expect( listView.menuView.dump() ).to.be.equal(
 				Dump.root( [
-					Dump.menu( 'Menu 1' ),
+					Dump.menu( 'Menu 1', [
+						Dump.item( 'Foo' ),
+						Dump.item( 'Bar' ),
+						Dump.item( 'Buz' )
+					] ),
 					Dump.item( 'Garlic' ),
 					Dump.item( 'Bread' )
 				] )
@@ -163,7 +167,7 @@ describe( 'DropdownMenuListFilteredView', () => {
 	} );
 
 	function createBlankMenuListFoundItemsView() {
-		return new DropdownMenuListFilteredView( locale, null, createRootTree() );
+		return new DropdownMenuListFilteredView( locale, createRootTree() );
 	}
 
 	function appendMockedMenu() {

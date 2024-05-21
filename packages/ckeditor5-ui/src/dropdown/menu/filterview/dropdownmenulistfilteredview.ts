@@ -36,10 +36,14 @@ export default class DropdownMenuListFilteredView extends View implements Filter
 	/**
 	 * Represents a filtered view for the dropdown menu list.
 	 */
-	constructor( locale: Locale, definitions: DropdownMenuDefinitions ) {
+	constructor(
+		locale: Locale,
+		definitions: DropdownMenuDefinitions,
+		lazyInitializeSubMenus?: boolean
+	) {
 		super( locale );
 
-		this._menuView = new DropdownMenuRootListView( locale, definitions, true );
+		this._menuView = new DropdownMenuRootListView( locale, definitions, lazyInitializeSubMenus );
 		this.setTemplate( {
 			tag: 'div',
 
