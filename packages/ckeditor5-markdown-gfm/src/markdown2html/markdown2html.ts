@@ -12,7 +12,7 @@ import { marked } from 'marked';
 export class MarkdownToHtml {
 	private _parser: typeof marked;
 
-	private options = {
+	private _options = {
 		gfm: true,
 		breaks: true,
 		tables: true,

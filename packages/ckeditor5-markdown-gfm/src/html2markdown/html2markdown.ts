@@ -72,7 +72,7 @@ class UpdatedTurndown extends Turndown {
 	 * Trimming end of link.
 	 * https://github.github.com/gfm/#autolinks-extension-
 	 */
-	private* matchAutolink( string: string ) {
+	private* _matchAutolink( string: string ) {
 		for ( const match of string.matchAll( autolinkRegex ) ) {
 			const matched = match[ 0 ];
 			const length = this.autolinkFindEnd( matched );
@@ -89,7 +89,7 @@ class UpdatedTurndown extends Turndown {
 	/**
 	 * Returns the new length of the link (after it would trim trailing characters).
 	 */
-	private autolinkFindEnd( string: string ) {
+	private _autolinkFindEnd( string: string ) {
 		let length = string.length;
 
 		while ( length > 0 ) {
@@ -138,7 +138,7 @@ export class HtmlToMarkdown {
 		this._parser.keep( elements );
 	}
 
-	private createParser(): UpdatedTurndown {
+	private _createParser(): UpdatedTurndown {
 		const parser = new UpdatedTurndown( {
 			codeBlockStyle: 'fenced',
 			hr: '---',
@@ -154,7 +154,7 @@ export class HtmlToMarkdown {
 	}
 
 	// This is a copy of the original taskListItems rule from turndown-plugin-gfm, with minor changes.
-	private todoList( turndown: UpdatedTurndown ): void {
+	private _todoList( turndown: UpdatedTurndown ): void {
 		turndown.addRule( 'taskListItems', {
 			filter( node: any ) {
 				return node.type === 'checkbox' &&
