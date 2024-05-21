@@ -29,7 +29,7 @@ In our ongoing commitment to accessibility, we provide a report based on the [IT
 We continuously update the <acronym title="Voluntary Product Accessibility Template">VPAT</acronym>**®** report to reflect any changes or improvements. You can download the latest version of the <acronym title="Voluntary Product Accessibility Template">VPAT</acronym>**®** document below.
 
 <info-box info>
-	⬇️ <a href="../assets/pdf/VPAT_CKEditor_5_v41.3.2.pdf" target="_blank"><b>Download <acronym title="Voluntary Product Accessibility Template">VPAT</acronym>**®** report for CKEditor&nbsp;5 v41.3.2 (May 15, 2024)</b></a>
+	⬇️ <a href="../assets/pdf/VPAT_CKEditor_5_v41.4.2.pdf" target="_blank"><b>Download <acronym title="Voluntary Product Accessibility Template">VPAT</acronym>**®** report for CKEditor&nbsp;5 v41.4.2 (May 17, 2024)</b></a>
 
 	<details>
 		<summary>Previous versions</summary>
