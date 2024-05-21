@@ -11,6 +11,7 @@ import {
 	Config,
 	CKEditorError,
 	ObservableMixin,
+	logError,
 	parseBase64EncodedObject,
 	releaseDate,
 	uid,
@@ -724,15 +725,6 @@ export default abstract class Editor extends ObservableMixin() {
 			}
 		}
 
-		if ( licensePayload.licenseType === 'trial' || licensePayload.licenseType === 'development' ) {
-			const licenseType: 'trial' | 'development' = licensePayload.licenseType;
-
-			console.info(
-				`You are using the ${ licenseType } version of CKEditor 5 with limited usage. ` +
-				'Make sure you will not use it in the production environment.'
-			);
-		}
-
 		if ( licensePayload.licenseType === 'trial' && licensePayload.exp * 1000 < Date.now() ) {
 			blockEditor( this, 'trialLimit' );
 
@@ -741,6 +733,11 @@ export default abstract class Editor extends ObservableMixin() {
 
 		if ( licensePayload.licenseType === 'trial' || licensePayload.licenseType === 'development' ) {
 			const licenseType: 'trial' | 'development' = licensePayload.licenseType;
+
+			console.info(
+				`You are using the ${ licenseType } version of CKEditor 5 with limited usage. ` +
+				'Make sure you will not use it in the production environment.'
+			);
 
 			const timerId = setTimeout( () => {
 				blockEditor( this, `${ licenseType }Limit` );
@@ -772,6 +769,15 @@ export default abstract class Editor extends ObservableMixin() {
 					if ( status != 'ok' ) {
 						blockEditor( this, 'usageLimit' );
 					}
+				}, () => {
+					/**
+			 		 * Your license key cannot be validated because of a network issue.
+					 * Please make sure that your setup does not block the request.
+					 *
+					 * @error license-key-validaton-endpoint-not-reachable
+					 * @param {String} url The URL that was attempted to reach.
+					 */
+					logError( 'license-key-validaton-endpoint-not-reachable', { url: licensePayload.usageEndpoint } );
 				} );
 			}, { priority: 'high' } );
 		}

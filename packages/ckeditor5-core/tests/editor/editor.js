@@ -469,7 +469,7 @@ describe( 'Editor', () => {
 
 				it( 'should log information to the console about using the development license', () => {
 					const licenseKey = 'foo.eyJleHAiOjE3MTUyMTI4MDAsImp0aSI6IjczNDk5YTQyLWJjNzktNDdlNy1hNmR' +
-                    'lLWIyMGJhMmEzYmI4OSIsImxpY2Vuc2VUeXBlIjoiZGV2ZWxvcG1lbnQiLCJ2YyI6Ijg5NzRiYTJlIn0.bar';
+					'lLWIyMGJhMmEzYmI4OSIsImxpY2Vuc2VUeXBlIjoiZGV2ZWxvcG1lbnQiLCJ2YyI6Ijg5NzRiYTJlIn0.bar';
 
 					const editor = new TestEditor( { licenseKey } );
 
@@ -481,7 +481,7 @@ describe( 'Editor', () => {
 
 				it( 'should not block the editor if 10 minutes have not passed (development license)', () => {
 					const licenseKey = 'foo.eyJleHAiOjE3MTUyMTI4MDAsImp0aSI6IjczNDk5YTQyLWJjNzktNDdlNy1hNmR' +
-                    'lLWIyMGJhMmEzYmI4OSIsImxpY2Vuc2VUeXBlIjoiZGV2ZWxvcG1lbnQiLCJ2YyI6Ijg5NzRiYTJlIn0.bar';
+					'lLWIyMGJhMmEzYmI4OSIsImxpY2Vuc2VUeXBlIjoiZGV2ZWxvcG1lbnQiLCJ2YyI6Ijg5NzRiYTJlIn0.bar';
 
 					const today = 1715166436000; // 08.05.2024
 					const dateNow = sinon.stub( Date, 'now' ).returns( today );
@@ -501,17 +501,17 @@ describe( 'Editor', () => {
 
 				it( 'should block editor after 10 minutes (development license)', () => {
 					const licenseKey = 'foo.eyJleHAiOjE3MTUyMTI4MDAsImp0aSI6IjczNDk5YTQyLWJjNzktNDdlNy1hNmR' +
-                    'lLWIyMGJhMmEzYmI4OSIsImxpY2Vuc2VUeXBlIjoiZGV2ZWxvcG1lbnQiLCJ2YyI6Ijg5NzRiYTJlIn0.bar';
+					'lLWIyMGJhMmEzYmI4OSIsImxpY2Vuc2VUeXBlIjoiZGV2ZWxvcG1lbnQiLCJ2YyI6Ijg5NzRiYTJlIn0.bar';
 
 					/**
-                     * after decoding licenseKey:
-                     *
-                     * licensePaylod: {
-                     *  ...,
-                     *  exp: timestamp( 09.05.2024 )
-                     *  licenseType: 'development'
-                     * }
-                     */
+					 * after decoding licenseKey:
+					 *
+					 * licensePaylod: {
+					 *  ...,
+					 *  exp: timestamp( 09.05.2024 )
+					 *  licenseType: 'development'
+					 * }
+					 */
 
 					const today = 1715166436000; // 08.05.2024
 					const dateNow = sinon.stub( Date, 'now' ).returns( today );
@@ -531,17 +531,17 @@ describe( 'Editor', () => {
 
 				it( 'should clear timer on editor destroy', done => {
 					const licenseKey = 'foo.eyJleHAiOjE3MTUyMTI4MDAsImp0aSI6IjczNDk5YTQyLWJjNzktNDdlNy1hNmR' +
-                    'lLWIyMGJhMmEzYmI4OSIsImxpY2Vuc2VUeXBlIjoiZGV2ZWxvcG1lbnQiLCJ2YyI6Ijg5NzRiYTJlIn0.bar';
+					'lLWIyMGJhMmEzYmI4OSIsImxpY2Vuc2VUeXBlIjoiZGV2ZWxvcG1lbnQiLCJ2YyI6Ijg5NzRiYTJlIn0.bar';
 
 					/**
-                     * after decoding licenseKey:
-                     *
-                     * licensePaylod: {
-                     *  ...,
-                     *  exp: timestamp( 09.05.2024 )
-                     *  licenseType: 'development'
-                     * }
-                     */
+					 * after decoding licenseKey:
+					 *
+					 * licensePaylod: {
+					 *  ...,
+					 *  exp: timestamp( 09.05.2024 )
+					 *  licenseType: 'development'
+					 * }
+					 */
 
 					const today = 1715166436000; // 08.05.2024
 					const dateNow = sinon.stub( Date, 'now' ).returns( today );
@@ -637,13 +637,7 @@ describe( 'Editor', () => {
 
 			it( 'should display error on the console and not block the editor if response status is not ok (HTTP 500)', async () => {
 				const fetchStub = sinon.stub( window, 'fetch' ).resolves( new Response( null, { status: 500 } ) );
-				const originalRejectionHandler = window.onunhandledrejection;
-				let capturedError = null;
-
-				window.onunhandledrejection = evt => {
-					capturedError = evt.reason.message;
-					return true;
-				};
+				const errorStub = sinon.stub( console, 'error' );
 
 				// eslint-disable-next-line max-len
 				const licenseKey = 'foo.eyJleHAiOjM3ODY5MTIwMDAsImp0aSI6ImZvbyIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL2NrZWRpdG9yLmNvbSIsInZjIjoiYWI5NGFhZjYifQ.bar';
@@ -651,10 +645,10 @@ describe( 'Editor', () => {
 
 				editor.fire( 'ready' );
 				await wait( 1 );
-				window.onunhandledrejection = originalRejectionHandler;
 
 				sinon.assert.calledOnce( fetchStub );
-				expect( capturedError ).to.equal( 'HTTP Response: 500' );
+				sinon.assert.calledWithMatch(
+					errorStub, 'license-key-validaton-endpoint-not-reachable', { 'url': 'https://ckeditor.com' } );
 				expect( editor.isReadOnly ).to.be.false;
 			} );
 
