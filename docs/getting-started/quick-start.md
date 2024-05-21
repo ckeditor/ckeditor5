@@ -81,7 +81,7 @@ CDN is an alternative method of running CKEditor 5. You can start using it in ju
 
 ### CDN setup
 
-Start by attaching a link to the style sheet. It contains all styles for the editor's UI and content. You can also include your styles if you like. Refer to the {@link getting-started/setup/css content styles} guide for more information.
+Start by attaching a link to style sheets. They contain all styles for the editor's UI and content. The styles are in two style sheets &ndash; for open-source and premium plugins. You can also include your styles if you like. Refer to the content styles guide for more information.
 
 ```html
 <link rel="stylesheet" href="<CDN_LINK>/ckeditor5/dist/styles.css" />
@@ -117,7 +117,7 @@ Once you have added the import map, you can access the editor and its plugins us
 		Italic,
 		PasteFromOffice,
 		Paragraph
-		} from 'ckeditor5';
+	} from 'ckeditor5';
 	import { PasteFromOfficeEnhanced } from 'ckeditor5-premium-features';
 
 	ClassicEditor.create( document.querySelector( '#editor' ), {
@@ -162,8 +162,8 @@ Your final page should look similar to the one below.
 		<script type="importmap">
 			{
 				"imports": {
-					"ckeditor5": "<CDN_LINK>/ckeditor5/dist/index.min.js",
-					"ckeditor5/": "<CDN_LINK>/ckeditor5/"
+					"ckeditor5": "<CDN_LINK>/ckeditor5/dist/browser/index.js",
+    				"ckeditor5/": "<CDN_LINK>/ckeditor5/dist/"
 				}
 			}
 		</script>

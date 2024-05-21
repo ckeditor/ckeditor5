@@ -21,7 +21,7 @@ Later on, you will use the "Product preview" feature to build a simple React app
 
 There are a couple of things you should know before you start:
 
-* Since you are here, you probably have at least some basic understanding of what React is and how it works. But what you might not know is that CKEditor&nbsp;5 has an official {@link getting-started/integrations/react **rich text editor component for React**} and it will be one of the key features used in this tutorial. Learning how to {@link getting-started/integrations/react#integrating-ckeditor-5-built-from-source use it in your project} is a good place to start.
+* Since you are here, you probably have at least some basic understanding of what React is and how it works. But what you might not know is that CKEditor&nbsp;5 has an official {@link getting-started/integrations/react **rich text editor component for React**} and it will be one of the key features used in this tutorial. Learning how to use it in your project is a good place to start.
 * In this tutorial, you are going to implement a block editor widget and that itself could give you a headache. It is recommended to at least skim through the {@link tutorials/widgets/implementing-a-block-widget Implementing a block widget} tutorial to get a grip on editor widgets, their API, and possible use cases.
 * Various parts of the {@link framework/architecture/intro CKEditor&nbsp;5 architecture} section will be referenced as you go. While reading them is not necessary to finish this tutorial, it is recommended to read those guides at some point to get a better understanding of the mechanisms used in this tutorial.
 
@@ -66,7 +66,7 @@ yarn add --dev \
 	webpack-cli@4
 ```
 
-Create a minimal [webpack](https://webpack.js.org) configuration and save it as `webpack.config.js` in the root of the application. To learn more about using webpack with CKEditor&nbsp;5 and React, check out the {@link getting-started/integrations/react#integrating-ckeditor-5-built-from-source Integrating CKEditor&nbsp;5 built from source} section of the CKEditor&nbsp;5 React component guide.
+Create a minimal [webpack](https://webpack.js.org) configuration and save it as `webpack.config.js` in the root of the application.
 
 ```js
 // webpack.config.js
