@@ -16,8 +16,7 @@ import {
 	createElement,
 	retry,
 	delay,
-	type AbortableFunc,
-	type DelayedFunc
+	type AbortableFunc
 } from 'ckeditor5/src/utils.js';
 import type { Element as ModelElement } from 'ckeditor5/src/engine.js';
 import { Notification } from 'ckeditor5/src/ui.js';
