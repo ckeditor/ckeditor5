@@ -839,7 +839,7 @@ You can see the block widget implementation in action in the editor below. You c
 
 ## Final solution
 
-The following code contains a complete implementation of the `SimpleBox` plugin (and all its dependencies) and the code to run the editor. You can paste it into the [`main.js`](#plugin-structure) file and it will run out–of–the–box. There is also a repository with the [final project](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/block-widget/final-project) that you can download and play with.
+The following code contains a complete implementation of the `SimpleBox` plugin (and all its dependencies) and the code to run the editor. You can paste it into the [`main.js`](#plugin-structure) file, and it will run out of the box. There is also a repository with the [final project](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/block-widget/final-project) that you can download and play with.
 
 ```js
 import {
