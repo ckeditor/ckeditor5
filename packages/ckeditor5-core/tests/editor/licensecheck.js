@@ -385,26 +385,20 @@ describe( 'License check', () => {
 		} );
 
 		it( 'should display error on the console and not block the editor if response status is not ok (HTTP 500)', async () => {
-			const fetchStub = sinon.stub( window, 'fetch' ).resolves( new Response( null, { status: 500 } ) );
-			const originalRejectionHandler = window.onunhandledrejection;
-			let capturedError = null;
-
-			window.onunhandledrejection = evt => {
-				capturedError = evt.reason.message;
-				return true;
-			};
-
 			const { licenseKey } = generateKey( {
 				usageEndpoint: 'https://ckeditor.com'
 			} );
+			const fetchStub = sinon.stub( window, 'fetch' ).resolves( new Response( null, { status: 500 } ) );
+			const errorStub = sinon.stub( console, 'error' );
+
 			const editor = new TestEditor( { licenseKey } );
 
 			editor.fire( 'ready' );
 			await wait( 1 );
-			window.onunhandledrejection = originalRejectionHandler;
 
 			sinon.assert.calledOnce( fetchStub );
-			expect( capturedError ).to.equal( 'HTTP Response: 500' );
+			sinon.assert.calledWithMatch(
+				errorStub, 'license-key-validaton-endpoint-not-reachable', { 'url': 'https://ckeditor.com' } );
 			expect( editor.isReadOnly ).to.be.false;
 		} );
 
@@ -484,9 +478,9 @@ function generateKey( {
 	const day = 86400000; // one day in milliseconds.
 
 	/**
-     * Depending on isExpired parameter we are creating timestamp ten days
-     * before or after release day.
-    */
+ 	 * Depending on isExpired parameter we are creating timestamp ten days
+	 * before or after release day.
+	 */
 	const expirationTimestamp = isExpired ? releaseTimestamp - 10 * day : releaseTimestamp + 10 * day;
 	const todayTimestamp = ( expirationTimestamp + daysAfterExpiration * day );
 	const vc = crc32( getCrcInputData( {
@@ -499,7 +493,7 @@ function generateKey( {
 
 	const payload = encodePayload( {
 		jti: jtiExist && jti,
-		vc: ( customVc && customVc ) || ( vcExist ? vc : undefined ),
+		vc: customVc || ( vcExist ? vc : undefined ),
 		exp: expExist && expirationTimestamp / 1000,
 		licensedHosts,
 		licenseType,
