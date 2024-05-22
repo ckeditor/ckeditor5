@@ -56,7 +56,7 @@ ClassicEditor
 	} );
 ```
 
-Now take look at `index.html`. We added the `<abbr>` element. It will not work just yet, but we will fix that in a couple of steps.
+Now take a look at `index.html`. We added the `<abbr>` element. It will not work just yet, but we will fix that in a couple of steps.
 
 ```html
 <!DOCTYPE html>
@@ -84,7 +84,7 @@ Our abbreviation plugin is divided into three components &ndash; `Abbreviation`,
 * `AbbreviationUI` will be responsible for the UI &ndash; the toolbar button.
 * `Abbreviation` will be the glue that holds the UI and the editing together.
 
-We put them in the `/abbreviation` directory. We will be adding more files the in the next parts of the tutorial. This is our directory structure:
+We put them in the `/abbreviation` directory. We will be adding more files in the next parts of the tutorial. This is our directory structure:
 
 ```
 ├── app.js
@@ -190,10 +190,10 @@ CKEditor&nbsp;5 implements its own custom data model, which does not map 1:1 to 
 </info-box>
 
 In the view layer, we will have the `<abbr>` HTML element, with a title attribute. See how it will look like in the inspector.
-{@img assets/img/abbreviation-part1-1.png Screenshot of a the inspector showing the view layer.}
+{@img assets/img/abbreviation-part1-1.png Screenshot of the inspector showing the view layer.}
 
 In the model, inline elements such as `<abbr>`, are represented as attributes not as separate elements. In order for our plugin to work, we will need to make sure that we can add abbreviation attribute to the text node.
-{@img assets/img/abbreviation-part1-2.png Screenshot of a the inspector showing the model layer.}
+{@img assets/img/abbreviation-part1-2.png Screenshot of the inspector showing the model layer.}
 
 ### Defining the schema
 
