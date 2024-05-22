@@ -29,6 +29,10 @@ msgctxt "Label for the URL input in the Link URL editing balloon."
 msgid "Link URL"
 msgstr "Enllaçar URL"
 
+msgctxt "An error text displayed when user attempted to enter an empty URL."
+msgid "Link URL must not be empty."
+msgstr "L'URL de l'enllaç no pot estar buit."
+
 msgctxt "Label for the image link button."
 msgid "Link image"
 msgstr "Enllaçar imatge"

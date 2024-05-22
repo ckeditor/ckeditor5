@@ -140,3 +140,11 @@ msgstr "Zväčšiť odsadenie položiek v zozname"
 msgctxt "Keystroke description for assistive technologies: keystroke for decreasing list item indentation."
 msgid "Decrease list item indent"
 msgstr "Zmenšiť odsadenie položiek v zozname"
+
+msgctxt "Assistive technologies label for entering the to-do list."
+msgid "Entering a to-do list"
+msgstr "Príchod do zoznamu úloh"
+
+msgctxt "Assistive technologies label for leaving the to-do list."
+msgid "Leaving a to-do list"
+msgstr "Odchod zo zoznamu úloh"

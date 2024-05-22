@@ -26,49 +26,33 @@ Put the caret anywhere inside the table to open the table toolbar. Click the tab
 
 ## Installation
 
-<info-box>
-	By default, table styling tools are not included in the {@link installation/getting-started/predefined-builds predefined builds} and must be installed separately.
-</info-box>
-
-To enable the rich table and cell styling tools in your editor, you need to have the [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package installed (it is already present in the predefined builds):
-
-```
-npm install --save @ckeditor/ckeditor5-table
-```
-
-Then add the `Table`, `TableToolbar`, **`TableProperties`**, and **`TableCellProperties`** plugins to your plugin list and configure the table toolbar:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { Table, TableCellProperties, TableProperties, TableToolbar } from '@ckeditor/ckeditor5-table';
+import { ClassicEditor, Table, TableCellProperties, TableProperties, TableToolbar } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Table, TableToolbar, TableProperties, TableCellProperties, Bold, /* ... */ ],
-		toolbar: [ 'insertTable', /* ... */ ],
-		table: {
-			contentToolbar: [
-				'tableColumn', 'tableRow', 'mergeTableCells',
-				'tableProperties', 'tableCellProperties'
-			],
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Table, TableToolbar, TableProperties, TableCellProperties, /* ... */ ],
+	toolbar: [ 'insertTable', /* ... */ ],
+	table: {
+		contentToolbar: [
+			'tableColumn', 'tableRow', 'mergeTableCells',
+			'tableProperties', 'tableCellProperties'
+		],
 
-			tableProperties: {
-				// The configuration of the TableProperties plugin.
-				// ...
-			},
+		tableProperties: {
+			// The configuration of the TableProperties plugin.
+			// ...
+		},
 
-			tableCellProperties: {
-				// The configuration of the TableCellProperties plugin.
-				// ...
-			}
+		tableCellProperties: {
+			// The configuration of the TableCellProperties plugin.
+			// ...
 		}
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+	}
+} )
+.then( /* ... */ );
 ```
-
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
-</info-box>
 
 ## Configuring styling tools
 
@@ -88,7 +72,7 @@ You can use these specific configuration options to define customized color pale
 * {@link module:table/tableconfig~TableConfig#tableCellProperties `tableCellProperties.backgroundColors`} &ndash; Defines the color palette for cell background.
 
 <info-box>
-	These configuration options **do not** impact the {@link installation/getting-started/getting-and-setting-data#setting-the-editor-data-with-setdata data loaded into the editor}. This means that they do not limit or filter the colors in the data. They are used only in the user interface allowing users to pick colors more conveniently.
+	These configuration options **do not** impact the {@link getting-started/setup/getting-and-setting-data#setting-the-editor-data-with-setdata data loaded into the editor}. This means that they do not limit or filter the colors in the data. They are used only in the user interface allowing users to pick colors in a more convenient way.
 </info-box>
 
 For instance, to define the same color palette for all border and background configurations, use the following code snippet:
@@ -124,36 +108,34 @@ const customColorPalette = [
 	// ...
 ];
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Table, TableToolbar, TableProperties, TableCellProperties, Bold, /* ... */ ],
-		toolbar: [ 'insertTable', /* ... */ ],
-		table: {
-			contentToolbar: [
-				'tableColumn', 'tableRow', 'mergeTableCells',
-				'tableProperties', 'tableCellProperties'
-			],
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Table, TableToolbar, TableProperties, TableCellProperties, Bold, /* ... */ ],
+	toolbar: [ 'insertTable', /* ... */ ],
+	table: {
+		contentToolbar: [
+			'tableColumn', 'tableRow', 'mergeTableCells',
+			'tableProperties', 'tableCellProperties'
+		],
 
-			// Set the palettes for tables.
-			tableProperties: {
-				borderColors: customColorPalette,
-				backgroundColors: customColorPalette
-			},
+		// Set the palettes for tables.
+		tableProperties: {
+			borderColors: customColorPalette,
+			backgroundColors: customColorPalette
+		},
 
-			// Set the palettes for table cells.
-			tableCellProperties: {
-				borderColors: customColorPalette,
-				backgroundColors: customColorPalette
-			}
+		// Set the palettes for table cells.
+		tableCellProperties: {
+			borderColors: customColorPalette,
+			backgroundColors: customColorPalette
 		}
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+	}
+} )
+.then( /* ... */ );
 ```
 
 ### Default table and table cell styles
 
-The table styles feature allows for configuring the default look of the tables in the editor. You should synchronize the configuration object with the {@link installation/advanced/content-styles editor content styles}.
+The table styles feature allows for configuring the default look of the tables in the editor. The configuration object should be synchronized with the {@link getting-started/advanced/content-styles editor content styles}.
 
 The **“Table properties”** and **“Table cell properties”** buttons in the toolbar will show the table and table cell properties applied to the table or table cells.
 
@@ -223,7 +205,7 @@ The same will be applied to new tables and cells if they are inserted into the e
 Read more about all supported properties for the {@link module:table/tableconfig~TablePropertiesOptions table} and {@link module:table/tableconfig~TableCellPropertiesOptions table cell} features in their API documentation.
 
 <info-box>
-	The default table and table cell styles **do** impact the {@link installation/getting-started/getting-and-setting-data#setting-the-editor-data-with-setdata data loaded into the editor}. Default properties will not be kept in the editor model.
+	The default table and table cell styles **do** impact the {@link getting-started/setup/getting-and-setting-data#setting-the-editor-data-with-setdata data loaded into the editor}. Default properties will not be kept in the editor model.
 </info-box>
 
 ## Common API
@@ -234,7 +216,7 @@ The {@link module:table/tableproperties~TableProperties} and {@link module:table
 
 <table>
 	<thead>
-		<th>{@link features/toolbar Component} name</th>
+		<th>{@link getting-started/setup/toolbar Component} name</th>
 		<th>Registered by</th>
 	</thead>
 	<tbody>

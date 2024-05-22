@@ -1,5 +1,5 @@
 /*
- * The configuration is used when releasing all CKEditor 5 packages (from the `packages/` directory).
+ * The configuration used when releasing all CKEditor 5 packages (from the `packages/` directory).
  */
 {
   "extends": "./tsconfig.json",

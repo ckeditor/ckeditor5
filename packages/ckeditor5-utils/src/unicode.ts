@@ -63,7 +63,7 @@ export function isInsideCombinedSymbol( string: string, offset: number ): boolea
 	return isCombiningMark( string.charAt( offset ) );
 }
 
-const EMOJI_PATTERN = buildEmojiRegexp();
+const EMOJI_PATTERN = /* #__PURE__ */ buildEmojiRegexp();
 
 /**
  * Checks whether given offset in a string is inside multi-character emoji sequence.

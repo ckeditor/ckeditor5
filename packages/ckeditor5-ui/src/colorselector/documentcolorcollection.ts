@@ -19,7 +19,7 @@ import {
 /**
  * A collection to store document colors. It enforces colors to be unique.
  */
-export default class DocumentColorCollection extends ObservableMixin( Collection<ColorDefinition> ) {
+export default class DocumentColorCollection extends /* #__PURE__ */ ObservableMixin( Collection<ColorDefinition> ) {
 	/**
 	 * Indicates whether the document color collection is empty.
 	 *

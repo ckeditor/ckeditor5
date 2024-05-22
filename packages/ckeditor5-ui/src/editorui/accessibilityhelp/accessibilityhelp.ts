@@ -8,9 +8,12 @@
  */
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
-import { ButtonView, MenuBarMenuListItemButtonView, Dialog, type EditorUIReadyEvent } from '../../index.js';
+import ButtonView from '../../button/buttonview.js';
+import Dialog from '../../dialog/dialog.js';
+import MenuBarMenuListItemButtonView from '../../menubar/menubarmenulistitembuttonview.js';
 import AccessibilityHelpContentView from './accessibilityhelpcontentview.js';
 import { getEnvKeystrokeText } from '@ckeditor/ckeditor5-utils';
+import type { EditorUIReadyEvent } from '../../editorui/editorui.js';
 import type { AddRootEvent } from '@ckeditor/ckeditor5-editor-multi-root';
 import type { DowncastWriter, ViewRootEditableElement } from '@ckeditor/ckeditor5-engine';
 

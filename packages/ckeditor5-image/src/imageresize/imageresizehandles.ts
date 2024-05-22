@@ -101,8 +101,7 @@ export default class ImageResizeHandles extends Plugin {
 						return domWidgetElement.querySelector( 'img' )!;
 					},
 					getResizeHost() {
-						// Return the model image element parent to avoid setting an inline element (<a>/<span>) as a resize host.
-						return domConverter.mapViewToDom( mapper.toViewElement( imageModel.parent as Element )! ) as HTMLElement;
+						return domConverter.mapViewToDom( mapper.toViewElement( imageModel as Element )! ) as HTMLElement;
 					},
 
 					isCentered() {

@@ -19,6 +19,12 @@ The [`Essentials`](https://ckeditor.com/docs/ckeditor5/latest/api/module_essenti
 
 See the [`@ckeditor/ckeditor5-essentials` package](https://ckeditor.com/docs/ckeditor5/latest/api/essentials.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
 
+## Installation
+
+```bash
+npm install ckeditor5
+```
+
 ## License
 
 Licensed under the terms of [GNU General Public License Version 2 or later](http://www.gnu.org/licenses/gpl.html). For full details about the license, please check the `LICENSE.md` file or [https://ckeditor.com/legal/ckeditor-oss-license](https://ckeditor.com/legal/ckeditor-oss-license).

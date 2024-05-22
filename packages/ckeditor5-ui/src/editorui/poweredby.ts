@@ -38,7 +38,7 @@ type PoweredByConfig = Required<UiConfig>[ 'poweredBy' ];
  *
  * @private
  */
-export default class PoweredBy extends DomEmitterMixin() {
+export default class PoweredBy extends /* #__PURE__ */ DomEmitterMixin() {
 	/**
 	 * Editor instance the helper was created for.
 	 */

@@ -27,7 +27,7 @@ import {
 
 import '../../../theme/components/panel/stickypanel.css';
 
-const toPx = toUnit( 'px' );
+const toPx = /* #__PURE__ */ toUnit( 'px' );
 
 /**
  * The sticky panel view class.

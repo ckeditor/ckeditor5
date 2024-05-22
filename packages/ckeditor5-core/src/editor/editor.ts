@@ -59,7 +59,7 @@ import type { EditorConfig } from './editorconfig.js';
  * the specific editor implements also the {@link ~Editor#ui} property
  * (as most editor implementations do).
  */
-export default abstract class Editor extends ObservableMixin() {
+export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * A namespace for the accessibility features of the editor.
 	 */
@@ -893,7 +893,7 @@ export type EditorDestroyEvent = {
  * This error is thrown when trying to pass a `<textarea>` element to a `create()` function of an editor class.
  *
  * The only editor type which can be initialized on `<textarea>` elements is
- * the {@glink installation/getting-started/predefined-builds#classic-editor classic editor}.
+ * the {@glink getting-started/legacy/installation-methods/predefined-builds#classic-editor classic editor}.
  * This editor hides the passed element and inserts its own UI next to it. Other types of editors reuse the passed element as their root
  * editable element and therefore `<textarea>` is not appropriate for them. Use a `<div>` or another text container instead:
  *

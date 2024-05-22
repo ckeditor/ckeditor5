@@ -6,7 +6,7 @@
 /* global window, document, Event */
 
 import ViewCollection from '../../../src/viewcollection.js';
-import BalloonPanelView, { generatePositions } from '../../../src/panel/balloon/balloonpanelview.js';
+import BalloonPanelView from '../../../src/panel/balloon/balloonpanelview.js';
 import ButtonView from '../../../src/button/buttonview.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Rect } from '@ckeditor/ckeditor5-utils';
@@ -1425,7 +1425,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should generate the same set of positions as BalloonPanelView#defaultPositions when no options specified', () => {
-			const generatedPositions = generatePositions();
+			const generatedPositions = BalloonPanelView.generatePositions();
 
 			for ( const name in generatedPositions ) {
 				const generatedResult = generatedPositions[ name ]( targetRect, balloonRect, viewportRect );
@@ -1436,7 +1436,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should respect the "sideOffset" option', () => {
-			const generatedPositions = generatePositions( {
+			const generatedPositions = BalloonPanelView.generatePositions( {
 				sideOffset: BalloonPanelView.arrowSideOffset + 100
 			} );
 
@@ -1456,7 +1456,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should respect the "heightOffset" option', () => {
-			const generatedPositions = generatePositions( {
+			const generatedPositions = BalloonPanelView.generatePositions( {
 				heightOffset: BalloonPanelView.arrowHeightOffset + 100
 			} );
 
@@ -1486,7 +1486,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should respect the "stickyVerticalOffset" option', () => {
-			const generatedPositions = generatePositions( {
+			const generatedPositions = BalloonPanelView.generatePositions( {
 				stickyVerticalOffset: BalloonPanelView.stickyVerticalOffset + 100
 			} );
 
@@ -1504,7 +1504,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should respect the "config" option', () => {
-			const generatedPositions = generatePositions( {
+			const generatedPositions = BalloonPanelView.generatePositions( {
 				config: {
 					foo: 'bar',
 					withArrow: true

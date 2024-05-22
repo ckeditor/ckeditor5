@@ -208,3 +208,7 @@ msgstr "फ़ॉन्ट"
 msgctxt "The accessible label of the editor menu bar used by assistive technologies."
 msgid "Editor menu bar"
 msgstr "एडिटर मेनू बार"
+
+msgctxt "An error text displayed when user attempted to enter an color that is not in HEX format."
+msgid "Please enter a valid color (e.g. \"ff0000\")."
+msgstr "कृपया एक वैध रंग दर्ज करें (उदाहरण के लिए \"ff0000\")."

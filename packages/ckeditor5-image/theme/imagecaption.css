@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_mediacolors.css";
+
 :root {
 	--ck-color-image-caption-background: hsl(0, 0%, 97%);
 	--ck-color-image-caption-text: hsl(0, 0%, 20%);
@@ -19,11 +21,23 @@
 	padding: .6em;
 	font-size: .75em;
 	outline-offset: -1px;
+
+	/* Improve placeholder rendering in high-constrast mode (https://github.com/ckeditor/ckeditor5/issues/14907). */
+	@media (forced-colors: active) {
+		background-color: unset;
+		color: unset;
+	}
 }
 
 /* Editing styles */
 .ck.ck-editor__editable .image > figcaption.image__caption_highlighted {
-	animation: ck-image-caption-highlight .6s ease-out;
+	@mixin ck-media-default-colors {
+		animation: ck-image-caption-highlight .6s ease-out;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		animation: none;
+	}
 }
 
 @keyframes ck-image-caption-highlight {

@@ -15,7 +15,7 @@ export { default as LinkImageEditing } from './linkimageediting.js';
 export { default as LinkImageUI } from './linkimageui.js';
 export { default as AutoLink } from './autolink.js';
 
-export { LinkConfig, type LinkDecoratorDefinition } from './linkconfig.js';
+export type { LinkConfig, LinkDecoratorDefinition } from './linkconfig.js';
 export { default as LinkCommand } from './linkcommand.js';
 export { default as UnlinkCommand } from './unlinkcommand.js';
 

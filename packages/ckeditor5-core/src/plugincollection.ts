@@ -13,7 +13,9 @@ import type { LoadedPlugins, PluginClassConstructor, PluginConstructor, PluginIn
 /**
  * Manages a list of CKEditor plugins, including loading, resolving dependencies and initialization.
  */
-export default class PluginCollection<TContext extends object> extends EmitterMixin() implements Iterable<PluginEntry<TContext>> {
+export default class PluginCollection<TContext extends object>
+	extends /* #__PURE__ */ EmitterMixin()
+	implements Iterable<PluginEntry<TContext>> {
 	private _context: TContext;
 
 	private _plugins = new Map<PluginConstructor<TContext> | string, PluginInterface>();
@@ -360,17 +362,17 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 			 * This is usually done in CKEditor 5 builds by setting the {@link module:core/editor/editor~Editor.builtinPlugins}
 			 * property.
 			 *
-			 * **If you see this warning when using one of the {@glink installation/getting-started/predefined-builds
+			 * **If you see this warning when using one of the {@glink getting-started/legacy/installation-methods/predefined-builds
 			 * CKEditor 5 Builds}**,
 			 * it means that you try to enable a plugin which was not included in that build. This may be due to a typo
 			 * in the plugin name or simply because that plugin is not a part of this build. In the latter scenario,
-			 * read more about {@glink installation/getting-started/quick-start custom builds}.
+			 * read more about {@glink getting-started/legacy/installation-methods/quick-start custom builds}.
 			 *
 			 * **If you see this warning when using one of the editor creators directly** (not a build), then it means
 			 * that you tried loading plugins by name. However, unlike CKEditor 4, CKEditor 5 does not implement a "plugin loader".
 			 * This means that CKEditor 5 does not know where to load the plugin modules from. Therefore, you need to
 			 * provide each plugin through a reference (as a constructor function). Check out the examples in
-			 * {@glink installation/advanced/alternative-setups/integrating-from-source-webpack "Building from source"}.
+			 * {@glink getting-started/legacy/advanced/alternative-setups/integrating-from-source-webpack "Building from source"}.
 			 *
 			 * @error plugincollection-plugin-not-found
 			 * @param plugin The name of the plugin which could not be loaded.
@@ -600,8 +602,6 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 			 * the dependencies of this plugin are being duplicated.
 			 * They are already built into that editor build and now get added for the second time as dependencies
 			 * of the plugin you are installing.
-			 *
-			 * Read more about {@glink installation/plugins/installing-plugins Installing plugins}.
 			 *
 			 * @error plugincollection-plugin-name-conflict
 			 * @param pluginName The duplicated plugin name.
