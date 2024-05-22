@@ -1,6 +1,6 @@
 ---
 category: updating
-order: 15
+order: 30
 meta-title: Maintaining your editor | CKEditor 5 Documentation
 meta-description: Learn how to maintain and keep your CKEditor 5 up-to-date at all times.
 ---
