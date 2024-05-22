@@ -141,7 +141,7 @@ export default class MediaFormView extends View {
 	}
 
 	public set url( url: string ) {
-		this.urlInputView.fieldView.element!.value = url.trim();
+		this.urlInputView.fieldView.value = url.trim();
 	}
 
 	/**
@@ -193,6 +193,7 @@ export default class MediaFormView extends View {
 		labeledInput.label = t( 'Media URL' );
 		labeledInput.infoText = this._urlInputViewInfoDefault;
 
+		inputField.inputMode = 'url';
 		inputField.on( 'input', () => {
 			// Display the tip text only when there is some value. Otherwise fall back to the default info text.
 			labeledInput.infoText = inputField.element!.value ? this._urlInputViewInfoTip! : this._urlInputViewInfoDefault!;
