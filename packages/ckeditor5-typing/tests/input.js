@@ -8,6 +8,7 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 
 import Input from '../src/input.js';
@@ -26,7 +27,7 @@ describe( 'Input', () => {
 			document.body.appendChild( domElement );
 
 			editor = await ClassicTestEditor.create( domElement, {
-				plugins: [ Input, Paragraph ],
+				plugins: [ Input, Paragraph, Bold ],
 				initialData: '<p>foo</p>'
 			} );
 
@@ -323,7 +324,7 @@ describe( 'Input', () => {
 			document.body.appendChild( domElement );
 
 			editor = await ClassicTestEditor.create( domElement, {
-				plugins: [ Input, Paragraph ],
+				plugins: [ Input, Paragraph, Bold ],
 				initialData: '<p>foo</p>'
 			} );
 
@@ -574,6 +575,62 @@ describe( 'Input', () => {
 				insertTextCommandSpy = testUtils.sinon.spy( editor.commands.get( 'insertText' ), 'execute' );
 			} );
 
+			it( 'should not modify DOM when not needed', () => {
+				const root = editor.model.document.getRoot();
+				const viewParagraph = viewDocument.getRoot().getChild( 0 );
+
+				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
+
+				// Verify initial model state.
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+
+				const composition = compositionHelper( editor );
+
+				// Start composition.
+				composition.start();
+
+				// Type 'a'.
+				// Simulate DOM changes triggered by IME. Flush MutationObserver as it is async.
+				composition.update( 'a', view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) ) );
+
+				// Changes are immediately applied to the model.
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>fooa[]</paragraph>' );
+
+				sinon.assert.calledOnce( insertTextCommandSpy );
+				insertTextCommandSpy.resetHistory();
+
+				// Type 'b'.
+				// Simulate DOM changes triggered by IME. Flush MutationObserver as it is async.
+				composition.update( 'b', view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) ) );
+
+				// Changes are immediately applied to the model.
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>fooab[]</paragraph>' );
+
+				sinon.assert.calledOnce( insertTextCommandSpy );
+				insertTextCommandSpy.resetHistory();
+
+				// Type 'c'.
+				// Simulate DOM changes triggered by IME. Flush MutationObserver as it is async.
+				composition.update( 'c', view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) ) );
+
+				// Changes are immediately applied to the model.
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+
+				sinon.assert.calledOnce( insertTextCommandSpy );
+				insertTextCommandSpy.resetHistory();
+
+				// Commit composition.
+				composition.end( 'abc' );
+
+				sinon.assert.notCalled( insertTextCommandSpy );
+
+				// DOM text node is already the proper one so no changes are required.
+				sinon.assert.notCalled( rendererUpdateTextNodeSpy );
+				rendererUpdateTextNodeSpy.resetHistory();
+
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+			} );
+
 			it( 'should render the DOM on composition end only when needed', () => {
 				const root = editor.model.document.getRoot();
 				const viewParagraph = viewDocument.getRoot().getChild( 0 );
@@ -648,12 +705,421 @@ describe( 'Input', () => {
 				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo  abc[]</paragraph>' );
 				expect( editor.getData() ).to.equal( '<p>foo &nbsp;abc</p>' );
 			} );
+
+			it( 'should verify if composed elements are correct after composition', () => {
+				const root = editor.model.document.getRoot();
+				const viewParagraph = viewDocument.getRoot().getChild( 0 );
+
+				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
+
+				// Verify initial model state.
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+
+				const composition = compositionHelper( editor );
+
+				// Start composition.
+				composition.start();
+
+				// Simulate DOM changes triggered by IME. Flush MutationObserver as it is async.
+				composition.update( 'abc', view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) ) );
+
+				// Changes are immediately applied to the model.
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+
+				sinon.assert.calledOnce( insertTextCommandSpy );
+				insertTextCommandSpy.resetHistory();
+
+				const reportedMutations = [];
+
+				viewDocument.on( 'mutations', ( evt, { mutations } ) => {
+					reportedMutations.push( ...mutations );
+				} );
+
+				// Commit composition.
+				composition.end( 'abc' );
+
+				expect( reportedMutations.length ).to.equal( 1 );
+				expect( reportedMutations[ 0 ].type ).to.equal( 'children' );
+				expect( reportedMutations[ 0 ].node ).to.equal( viewParagraph );
+
+				sinon.assert.notCalled( insertTextCommandSpy );
+
+				// DOM text node is already the proper one so no changes are required.
+				sinon.assert.notCalled( rendererUpdateTextNodeSpy );
+				rendererUpdateTextNodeSpy.resetHistory();
+
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+			} );
+
+			it( 'should not fire mutations for removed elements (after composition end)', () => {
+				const root = editor.model.document.getRoot();
+				const viewParagraph = viewDocument.getRoot().getChild( 0 );
+
+				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
+
+				// Verify initial model state.
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+
+				const composition = compositionHelper( editor );
+
+				// Start composition.
+				composition.start();
+
+				// Simulate DOM changes triggered by IME. Flush MutationObserver as it is async.
+				composition.update( 'abc', view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) ) );
+
+				// Changes are immediately applied to the model.
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+
+				sinon.assert.calledOnce( insertTextCommandSpy );
+				insertTextCommandSpy.resetHistory();
+
+				editor.model.change( writer => {
+					writer.remove( root.getChild( 0 ) );
+					writer.insertElement( 'paragraph', root, 0 );
+				} );
+
+				const reportedMutations = [];
+
+				viewDocument.on( 'mutations', ( evt, { mutations } ) => {
+					reportedMutations.push( ...mutations );
+				} );
+
+				// Commit composition.
+				composition.end( 'abc' );
+
+				expect( reportedMutations.length ).to.equal( 0 );
+
+				sinon.assert.notCalled( insertTextCommandSpy );
+
+				// DOM text node is already the proper one so no changes are required.
+				sinon.assert.notCalled( rendererUpdateTextNodeSpy );
+				rendererUpdateTextNodeSpy.resetHistory();
+
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
+			} );
+
+			it( 'should apply changes to model after composed DOM node mutated', () => {
+				const root = editor.model.document.getRoot();
+				const viewParagraph = viewDocument.getRoot().getChild( 0 );
+
+				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
+
+				// Verify initial model state.
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+
+				const composition = compositionHelper( editor );
+
+				// Start composition.
+				composition.start();
+
+				const viewRange = view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) );
+
+				// Simulate only beforeInput event.
+				composition.fireBeforeInputEvent( 'abc', viewRange );
+
+				// Changes are not applied to the model before the DOM got modified by IME.
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+
+				sinon.assert.notCalled( insertTextCommandSpy );
+
+				// Simulate DOM changes triggered by IME.
+				composition.modifyDom( 'abc', viewRange );
+
+				// Changes are immediately applied to the model.
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+
+				sinon.assert.calledOnce( insertTextCommandSpy );
+				insertTextCommandSpy.resetHistory();
+
+				// Commit composition.
+				composition.end( 'abc' );
+
+				sinon.assert.notCalled( insertTextCommandSpy );
+
+				// DOM text node is already the proper one so no changes are required.
+				sinon.assert.notCalled( rendererUpdateTextNodeSpy );
+				rendererUpdateTextNodeSpy.resetHistory();
+
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+			} );
+
+			it( 'should apply changes to model after composed DOM node mutated inside an attribute element', () => {
+				const root = editor.model.document.getRoot();
+				const viewParagraph = viewDocument.getRoot().getChild( 0 );
+
+				editor.model.change( writer => {
+					writer.setAttribute( 'bold', true, writer.createRangeIn( root.getChild( 0 ) ) );
+					writer.setSelection( root.getChild( 0 ), 'end' );
+				} );
+
+				// Verify initial model state.
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">foo[]</$text></paragraph>' );
+
+				const composition = compositionHelper( editor );
+
+				// Start composition.
+				composition.start();
+
+				const viewRange = view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ).getChild( 0 ), 'end' ) );
+
+				// Simulate only beforeInput event.
+				composition.fireBeforeInputEvent( 'abc', viewRange );
+
+				// Changes are not applied to the model before the DOM got modified by IME.
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">foo[]</$text></paragraph>' );
+
+				sinon.assert.notCalled( insertTextCommandSpy );
+
+				// Simulate DOM changes triggered by IME.
+				composition.modifyDom( 'abc', viewRange );
+
+				// Changes are immediately applied to the model.
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">fooabc[]</$text></paragraph>' );
+
+				sinon.assert.calledOnce( insertTextCommandSpy );
+				insertTextCommandSpy.resetHistory();
+
+				// Commit composition.
+				composition.end( 'abc' );
+
+				sinon.assert.notCalled( insertTextCommandSpy );
+
+				// DOM text node is already the proper one so no changes are required.
+				sinon.assert.notCalled( rendererUpdateTextNodeSpy );
+				rendererUpdateTextNodeSpy.resetHistory();
+
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">fooabc[]</$text></paragraph>' );
+			} );
+
+			it( 'should apply changes to model after composed DOM node mutated inside an attribute element (mutations on bold)', () => {
+				const root = editor.model.document.getRoot();
+				const viewParagraph = viewDocument.getRoot().getChild( 0 );
+
+				editor.model.change( writer => {
+					writer.setAttribute( 'bold', true, writer.createRangeIn( root.getChild( 0 ) ) );
+					writer.setSelection( root.getChild( 0 ), 'end' );
+				} );
+
+				// Verify initial model state.
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">foo[]</$text></paragraph>' );
+
+				const composition = compositionHelper( editor );
+
+				// Start composition.
+				composition.start();
+
+				const viewRange = view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ).getChild( 0 ), 'end' ) );
+
+				// Simulate only beforeInput event.
+				composition.fireBeforeInputEvent( 'abc', viewRange );
+
+				// Changes are not applied to the model before the DOM got modified by IME.
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">foo[]</$text></paragraph>' );
+
+				sinon.assert.notCalled( insertTextCommandSpy );
+
+				// Modify DOM element.
+				const domText = view.domConverter.viewPositionToDom( viewRange.start ).parent;
+
+				// Inject some element to trigger "children" mutations.
+				domText.parentNode.appendChild( domElement.ownerDocument.createElement( 'span' ) );
+
+				// Simulate DOM changes triggered by IME.
+				composition.modifyDom( 'abc', viewRange );
+
+				// Changes are immediately applied to the model.
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">fooabc[]</$text></paragraph>' );
+
+				sinon.assert.calledOnce( insertTextCommandSpy );
+				insertTextCommandSpy.resetHistory();
+
+				// Commit composition.
+				composition.end( 'abc' );
+
+				sinon.assert.notCalled( insertTextCommandSpy );
+
+				// DOM text node is already the proper one so no changes are required.
+				sinon.assert.notCalled( rendererUpdateTextNodeSpy );
+				rendererUpdateTextNodeSpy.resetHistory();
+
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">fooabc[]</$text></paragraph>' );
+			} );
+
+			it( 'should apply changes to model after a timeout before DOM mutations', async () => {
+				const clock = sinon.useFakeTimers();
+				const root = editor.model.document.getRoot();
+				const viewParagraph = viewDocument.getRoot().getChild( 0 );
+
+				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
+
+				// Verify initial model state.
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+
+				const composition = compositionHelper( editor );
+
+				// Start composition.
+				composition.start();
+
+				const viewRange = view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) );
+
+				// Simulate only beforeInput event.
+				composition.fireBeforeInputEvent( 'abc', viewRange );
+
+				// Changes are not applied to the model before the DOM got modified by IME.
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+
+				sinon.assert.notCalled( insertTextCommandSpy );
+
+				await clock.tickAsync( 100 );
+
+				// Changes are immediately applied to the model.
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+
+				sinon.assert.calledOnce( insertTextCommandSpy );
+				insertTextCommandSpy.resetHistory();
+
+				sinon.assert.calledOnce( rendererUpdateTextNodeSpy );
+				rendererUpdateTextNodeSpy.resetHistory();
+
+				// Commit composition.
+				composition.end( 'abc' );
+
+				sinon.assert.notCalled( insertTextCommandSpy );
+
+				// DOM text node is already the proper one so no changes are required.
+				sinon.assert.notCalled( rendererUpdateTextNodeSpy );
+				rendererUpdateTextNodeSpy.resetHistory();
+
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+			} );
+
+			it( 'should apply changes to the model in the position adjusted by other model changes', () => {
+				const root = editor.model.document.getRoot();
+				const viewParagraph = viewDocument.getRoot().getChild( 0 );
+
+				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
+
+				// Verify initial model state.
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+
+				const composition = compositionHelper( editor );
+
+				// Start composition.
+				composition.start();
+
+				const viewRange = view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) );
+
+				// Simulate only beforeInput event.
+				composition.fireBeforeInputEvent( 'abc', viewRange );
+
+				// Changes are not applied to the model before the DOM got modified by IME.
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+
+				sinon.assert.notCalled( insertTextCommandSpy );
+
+				editor.model.change( writer => {
+					writer.insertElement( 'paragraph', root, 0 );
+				} );
+
+				// Simulate DOM changes triggered by IME.
+				composition.modifyDom( 'abc', viewRange );
+
+				// Changes are immediately applied to the model.
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph></paragraph><paragraph>fooabc[]</paragraph>' );
+
+				sinon.assert.calledOnce( insertTextCommandSpy );
+				insertTextCommandSpy.resetHistory();
+
+				// Commit composition.
+				composition.end( 'abc' );
+
+				sinon.assert.notCalled( insertTextCommandSpy );
+
+				// DOM text node is already the proper one so no changes are required.
+				sinon.assert.notCalled( rendererUpdateTextNodeSpy );
+				rendererUpdateTextNodeSpy.resetHistory();
+
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph></paragraph><paragraph>fooabc[]</paragraph>' );
+			} );
+
+			it( 'should commit composition into replaced element', () => {
+				const root = editor.model.document.getRoot();
+				const viewParagraph = viewDocument.getRoot().getChild( 0 );
+
+				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
+
+				// Verify initial model state.
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+
+				const composition = compositionHelper( editor );
+
+				// Start composition.
+				composition.start();
+
+				const viewRange = view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) );
+
+				// Simulate only beforeInput event.
+				composition.fireBeforeInputEvent( 'abc', viewRange );
+
+				// Changes are not applied to the model before the DOM got modified by IME.
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+
+				sinon.assert.notCalled( insertTextCommandSpy );
+
+				editor.model.change( writer => {
+					writer.remove( root.getChild( 0 ) );
+					writer.insertElement( 'paragraph', root, 0 );
+				} );
+
+				// Commit composition.
+				composition.end( 'abc' );
+
+				sinon.assert.calledOnce( insertTextCommandSpy );
+				insertTextCommandSpy.resetHistory();
+
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>abc[]</paragraph>' );
+			} );
+
+			it( 'should destroy composition queue on editor destroy', async () => {
+				const root = editor.model.document.getRoot();
+				const viewParagraph = viewDocument.getRoot().getChild( 0 );
+
+				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
+
+				// Verify initial model state.
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+
+				const composition = compositionHelper( editor );
+
+				// Start composition.
+				composition.start();
+
+				const viewRange = view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) );
+
+				// Simulate only beforeInput event.
+				composition.fireBeforeInputEvent( 'abc', viewRange );
+
+				// Changes are not applied to the model before the DOM got modified by IME.
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+
+				sinon.assert.notCalled( insertTextCommandSpy );
+
+				const queue = editor.plugins.get( 'Input' )._compositionQueue;
+
+				expect( queue.length ).to.equal( 1 );
+
+				await editor.destroy();
+
+				expect( queue.length ).to.equal( 0 );
+			} );
 		} );
 	} );
 
 	function compositionHelper( editor ) {
 		const view = editor.editing.view;
 		const viewDocument = view.document;
+		const inputPlugin = editor.plugins.get( 'Input' );
 
 		return {
 			start() {
@@ -664,6 +1130,11 @@ describe( 'Input', () => {
 			update( data, range ) {
 				expect( viewDocument.isComposing ).to.be.true;
 
+				this.fireBeforeInputEvent( data, range );
+				this.modifyDom( data, range );
+			},
+
+			fireBeforeInputEvent( data, range ) {
 				viewDocument.fire( 'beforeinput', new DomEventData( view, {
 					target: view.getDomRoot()
 				}, {
@@ -672,7 +1143,9 @@ describe( 'Input', () => {
 					targetRanges: [ range ],
 					preventDefault: sinon.spy()
 				} ) );
+			},
 
+			modifyDom( data, range ) {
 				const domRange = view.domConverter.viewRangeToDom( range );
 
 				if ( !domRange.collapsed ) {
@@ -684,6 +1157,9 @@ describe( 'Input', () => {
 				} else {
 					throw new Error( 'not supported' ); // TODO
 				}
+
+				// Make sure it is always no bigger than 1 entry to avoid problems with position mapping.
+				expect( inputPlugin._compositionQueue.length ).to.equal( env.isAndroid ? 1 : 0 );
 
 				window.getSelection().setBaseAndExtent(
 					domRange.startContainer, domRange.startOffset + data.length,

@@ -243,10 +243,6 @@ export default class Input extends Plugin {
 				const mutations: Array<MutationData> = [];
 
 				for ( const element of this._compositionQueue.flushComposedElements() ) {
-					if ( element.root.rootName == '$graveyard' ) {
-						continue;
-					}
-
 					const viewElement = mapper.toViewElement( element );
 
 					if ( !viewElement ) {
@@ -386,7 +382,9 @@ class CompositionQueue {
 				.map( liveRange => detachLiveRange( liveRange ) )
 				.filter( ( range ): range is Range => !!range );
 
-			commandData.selection = this.editor.model.createSelection( ranges );
+			if ( ranges.length ) {
+				commandData.selection = this.editor.model.createSelection( ranges );
+			}
 		}
 
 		return commandData;
@@ -491,11 +489,7 @@ function deleteSelectionContent( model: Model, insertTextCommand: InsertTextComm
 /**
  * Detaches a LiveRange and returns the static range from it.
  */
-function detachLiveRange( liveRange?: LiveRange ): Range | null {
-	if ( !liveRange ) {
-		return null;
-	}
-
+function detachLiveRange( liveRange: LiveRange ): Range | null {
 	const range = liveRange.toRange();
 
 	liveRange.detach();
