@@ -26,7 +26,19 @@ This tutorial will reference various parts of the {@link framework/architecture/
 
 ## Let's start
 
-And now see if everything worked well by opening the index page in your browser. You should see a CKEditor&nbsp;5 instance like this:
+The easiest way to set up your project is to grab the starter files from the [GitHub repository for this tutorial](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/block-widget). We gathered all the necessary dependencies there, including some CKEditor&nbsp;5 packages and other files needed to start the editor.
+
+The editor has already been created in the `main.js` file with some basic plugins. All you need to do is clone the repository, navigate to the [starter-files directory](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/block-widget/starter-files), run the `npm install` command, and you can start coding right away.
+
+```bash
+git clone https://github.com/ckeditor/ckeditor5-tutorials-examples
+cd ckeditor5-tutorials-examples/block-widget/starter-files
+
+npm install
+npm run dev
+```
+
+And now, you should see a CKEditor&nbsp;5 instance in your browser like this:
 
 {@img assets/img/tutorial-implementing-a-widget-1.png Screenshot of a classic editor initialized from source.}
 
@@ -92,10 +104,10 @@ export default class SimpleBoxEditing extends Plugin {
 }
 ```
 
-Finally, you need to load the `SimpleBox` plugin in your `app.js` file:
+Finally, you need to load the `SimpleBox` plugin in your `main.js` file:
 
 ```js
-// app.js
+// main.js
 
 import {
 	ClassicEditor,
@@ -128,7 +140,7 @@ ClassicEditor
 	} );
 ```
 
-Rebuild your project, refresh the browser and you should see that the `SimpleBoxEditing` and `SmpleBoxUI` plugins were loaded:
+Your page will refresh and you should see that the `SimpleBoxEditing` and `SmpleBoxUI` plugins were loaded:
 
 {@img assets/img/tutorial-implementing-a-widget-2.png Screenshot of a classic editor initialized from source with the "SimpleBoxEditing#init() got called" and "SimpleBoxUI#init() got called" messages on the console.}
 
@@ -337,7 +349,7 @@ Once you have converters, you can try to see the simple box in action. You have 
 </html>
 ```
 
-Rebuild your project and voilà &ndash; this is your first simple box instance:
+Voilà &ndash; this is your first simple box instance:
 
 {@img assets/img/tutorial-implementing-a-widget-3.png Screenshot of a classic editor with an instance of a simple box inside.}
 
@@ -349,10 +361,10 @@ The HTML that you added to the `index.html` file is your editor's data. This is 
 
 However, what's in the model?
 
-To learn that, use the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector}. Once {@link framework/development-tools/inspector#importing-the-inspector installed}, you need to load it in the `app.js` file:
+To learn that, use the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector}. Once {@link framework/development-tools/inspector#importing-the-inspector installed}, you need to load it in the `main.js` file:
 
 ```js
-// app.js
+// main.js
 
 import {
 	ClassicEditor,
@@ -379,7 +391,7 @@ ClassicEditor
 	.then( editor => {
 		console.log( 'Editor was initialized', editor );
 
-		CKEditorInspector.attach( 'editor', editor );
+		CKEditorInspector.attach( { 'editor': editor } );
 
 		window.editor = editor;
 	} )
@@ -388,7 +400,7 @@ ClassicEditor
 	} );
 ```
 
-After rebuilding your project and refreshing the page you will see the inspector:
+After refreshing the page, you will see the inspector:
 
 {@img assets/img/tutorial-implementing-a-widget-4b.png Screenshot of a the simple box widget structure displayed by CKEditor&nbsp;5 inspector.}
 
@@ -559,7 +571,7 @@ export default class SimpleBoxEditing extends Plugin {
 
 ### Behavior after turning simple box into a widget
 
-You can rebuild your project now and see how your simple box plugin has changed.
+Now, you should see how your simple box plugin has changed.
 
 {@img assets/img/tutorial-implementing-a-widget-5.png Screenshot of the widget focus outline.}
 
@@ -827,7 +839,7 @@ You can see the block widget implementation in action in the editor below. You c
 
 ## Final solution
 
-The following code contains a complete implementation of the `SimpleBox` plugin (and all its dependencies) and the code to run the editor. You can paste it into the [`main.js`](#plugin-structure) file and it will run out–of–the–box:
+The following code contains a complete implementation of the `SimpleBox` plugin (and all its dependencies) and the code to run the editor. You can paste it into the [`main.js`](#plugin-structure) file and it will run out–of–the–box. There is also a repository with the [final project](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/block-widget/final-project) that you can download and play with.
 
 ```js
 import {
@@ -845,6 +857,8 @@ import {
 	toWidget,
 	toWidgetEditable
 } from 'ckeditor5';
+import 'ckeditor5/index.css';
+import CKEditorInspector from '@ckeditor/ckeditor5-inspector';  
 
 class SimpleBox extends Plugin {
 	static get requires() {
@@ -1056,6 +1070,8 @@ ClassicEditor
 	} )
 	.then( editor => {
 		console.log( 'Editor was initialized', editor );
+
+		CKEditorInspector.attach( { 'editor': editor } );
 
 		window.editor = editor;
 	} )
