@@ -393,6 +393,69 @@ describe( 'CKBoxImageEditCommand', () => {
 				expect( command.value ).to.be.false;
 				sinon.assert.calledOnce( refreshSpy );
 			} );
+
+			it( 'should update ui after closing the CKBox Image Editor dialog', async () => {
+				const ckboxImageId = 'example-id';
+				const clock = sinon.useFakeTimers();
+
+				setModelData( model,
+					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/assets/sample.png"></imageBlock>]`
+				);
+
+				const imageElement = editor.model.document.selection.getSelectedElement();
+
+				const options = await command._prepareOptions( {
+					element: imageElement,
+					ckboxImageId,
+					controller: new AbortController()
+				} );
+
+				const updateUISpy = testUtils.sinon.spy( editor.ui, 'update' );
+
+				expect( command.value ).to.be.false;
+
+				command.execute();
+				expect( command.value ).to.be.true;
+
+				options.onClose();
+
+				await clock.tickAsync( 10 );
+
+				expect( command.value ).to.be.false;
+				sinon.assert.calledOnce( updateUISpy );
+				clock.restore();
+			} );
+
+			it( 'should clear timer on editor destroy', async () => {
+				const ckboxImageId = 'example-id';
+
+				setModelData( model,
+					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/assets/sample.png"></imageBlock>]`
+				);
+
+				const imageElement = editor.model.document.selection.getSelectedElement();
+
+				const options = await command._prepareOptions( {
+					element: imageElement,
+					ckboxImageId,
+					controller: new AbortController()
+				} );
+
+				const clearTimeoutSpy = sinon.spy( command._updateUiDelayed, 'cancel' );
+
+				editor.fire( 'ready' );
+
+				expect( command.value ).to.be.false;
+
+				command.execute();
+
+				options.onClose();
+
+				command.destroy();
+				sinon.assert.calledTwice( clearTimeoutSpy );
+
+				expect( command.value ).to.be.false;
+			} );
 		} );
 
 		describe( 'saving edited asset', () => {
