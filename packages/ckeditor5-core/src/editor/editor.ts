@@ -725,20 +725,15 @@ export default abstract class Editor extends ObservableMixin() {
 			}
 		}
 
-		const licenseType: 'trial' | 'development' = licensePayload.licenseType;
-
 		if ( licensePayload.licenseType === 'trial' && licensePayload.exp * 1000 < Date.now() ) {
 			blockEditor( this, 'trialLimit' );
-
-			console.info(
-				`You are using the ${ licenseType } version of CKEditor 5 with limited usage. ` +
-				'Make sure you will not use it in the production environment.'
-			);
 
 			return;
 		}
 
 		if ( licensePayload.licenseType === 'trial' || licensePayload.licenseType === 'development' ) {
+			const licenseType: 'trial' | 'development' = licensePayload.licenseType;
+
 			console.info(
 				`You are using the ${ licenseType } version of CKEditor 5 with limited usage. ` +
 				'Make sure you will not use it in the production environment.'

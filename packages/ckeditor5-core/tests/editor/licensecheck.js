@@ -149,9 +149,6 @@ describe( 'License check', () => {
 
 				sinon.assert.calledWithMatch( showErrorStub, 'trialLimit' );
 				expect( editor.isReadOnly ).to.be.true;
-				sinon.assert.calledOnce( consoleInfoSpy );
-				sinon.assert.calledWith( consoleInfoSpy, 'You are using the trial version of CKEditor 5 with ' +
-				'limited usage. Make sure you will not use it in the production environment.' );
 
 				dateNow.restore();
 			} );
