@@ -477,10 +477,8 @@ function generateKey( {
 	const releaseTimestamp = Date.parse( releaseDate );
 	const day = 86400000; // one day in milliseconds.
 
-	/**
- 	 * Depending on isExpired parameter we are creating timestamp ten days
-	 * before or after release day.
-	 */
+	// Depending on isExpired parameter we are creating timestamp ten days
+	// before or after release day.
 	const expirationTimestamp = isExpired ? releaseTimestamp - 10 * day : releaseTimestamp + 10 * day;
 	const todayTimestamp = ( expirationTimestamp + daysAfterExpiration * day );
 	const vc = crc32( getCrcInputData( {
