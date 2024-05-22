@@ -186,7 +186,7 @@ Import it into `AbbreviationUI`:
 ```js
 // abbreviation/abbreviationui.js
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from 'ckeditor5';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
 import './styles.css';													// ADDED
 
@@ -272,7 +272,7 @@ This is where we ended up with our UI in the first part of the tutorial.
 ```js
 // abbreviation/abbreviationui.js
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from 'ckeditor5';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
 
 class AbbreviationUI extends Plugin {
@@ -316,7 +316,7 @@ Finally, let's add our balloon and form view to the `init()` method.
 ```js
 // abbreviation/abbreviationui.js
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from 'ckeditor5';
 import { ButtonView, ContextualBalloon } from '@ckeditor/ckeditor5-ui'; // ADDED
 import FormView from './abbreviationview';                          	// ADDED
 

@@ -32,17 +32,28 @@ The example above was created by using the following HTML page structure:
 You can use the code below to set up the WYSIWYG editor with the word and character count features as in the example above.
 
 ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		// Configuration details.
-	} )
-	.then( editor => {
-		const wordCountPlugin = editor.plugins.get( 'WordCount' );
-		const wordCountWrapper = document.getElementById( 'word-count' );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	// Configuration details.
+} )
+.then( editor => {
+	const wordCountPlugin = editor.plugins.get( 'WordCount' );
+	const wordCountWrapper = document.getElementById( 'word-count' );
 
-		wordCountWrapper.appendChild( wordCountPlugin.wordCountContainer );
-	} )
-	.catch( /* ... */ );
+	wordCountWrapper.appendChild( wordCountPlugin.wordCountContainer );
+} );
+```
+
+## Installation
+
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+
+```js
+import { ClassicEditor, WordCount } from 'ckeditor5';
+
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ WordCount, /* ... */ ],
+} )
+.then( /* ... */ );
 ```
 
 ## Configuration
@@ -79,18 +90,16 @@ There are two configuration options available that change the output of the word
 You can execute your custom callback every time content statistics change by defining {@link module:word-count/wordcountconfig~WordCountConfig#onUpdate `config.wordCount.onUpdate`} in the editor configuration:
 
 ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ WordCount, /* ... */ ],
-		wordCount: {
-			onUpdate: stats => {
-				// Prints the current content statistics.
-				console.log( `Characters: ${ stats.characters }\nWords: ${ stats.words }` );
-			}
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ WordCount, /* ... */ ],
+	wordCount: {
+		onUpdate: stats => {
+			// Prints the current content statistics.
+			console.log( `Characters: ${ stats.characters }\nWords: ${ stats.words }` );
 		}
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+	}
+} )
+.then( /* ... */ );
 ```
 
 **Note**: For performance reasons, your callback will be throttled and may not be up–to–date. Use the {@link module:word-count/wordcount~WordCount#characters} and {@link module:word-count/wordcount~WordCount#words} plugin properties to retrieve the precise numbers on demand.
@@ -141,8 +150,7 @@ BalloonEditor
 				sendButton.toggleAttribute( 'disabled', isLimitExceeded );
 			}
 		}
-	} )
-	.catch( /* ... */ );
+	} );
 ```
 
 Here is the HTML structure used to create the customized word and character count implementation above:
@@ -229,36 +237,6 @@ Here is the HTML structure used to create the customized word and character coun
 	</div>
 </div>
 ```
-
-## Installation
-
-<info-box info>
-	The Word count feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
-</info-box>
-
-To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-word-count`](https://www.npmjs.com/package/@ckeditor/ckeditor5-word-count) package:
-
-```bash
-npm install --save @ckeditor/ckeditor5-word-count
-```
-
-And add it to your plugin list configuration:
-
-```js
-import { WordCount } from '@ckeditor/ckeditor5-word-count';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ WordCount, /* ... */ ],
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
-```
-
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
-</info-box>
-
 
 ## Related features
 

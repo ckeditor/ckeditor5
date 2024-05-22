@@ -54,15 +54,11 @@ if ( globalThis.CKEDITOR_VERSION ) {
 	 * Adding plugins to a build is done by taking the source version of this build (so, before it was built with webpack)
 	 * and adding plugins there. In this situation, webpack will know that it only needs to load each plugin once.
 	 *
-	 * Read more in the {@glink installation/plugins/installing-plugins Installing plugins} guide.
-	 *
 	 * # Confused an editor build with an editor implementation
 	 *
 	 * This scenario is very similar to the previous one, but has a different origin.
 	 *
-	 * Let's assume that you wanted to use CKEditor 5 from source, as explained in the
-	 * {@glink installation/advanced/alternative-setups/integrating-from-source-webpack "Building from source"} section
-	 * or in the {@glink framework/quick-start "Quick start"} guide of CKEditor 5 Framework.
+	 * Let's assume that you wanted to use CKEditor 5 from source.
 	 *
 	 * The correct way to do so is to import an editor and plugins and run them together like this:
 	 *
@@ -107,7 +103,7 @@ if ( globalThis.CKEDITOR_VERSION ) {
 	 * Check your web page for duplicated `<script>` elements or make sure your page builder/bundler includes CKEditor only once.
 	 *
 	 * If you want to use two different types of editors at once, see the
-	 * {@glink installation/advanced/using-two-editors "Using two different editors"}
+	 * {@glink getting-started/legacy/advanced/using-two-editors "Using two different editors"}
 	 * section.
 	 *
 	 * # Using outdated packages

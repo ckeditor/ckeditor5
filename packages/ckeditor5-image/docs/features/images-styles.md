@@ -24,7 +24,7 @@ This package allows for adjusting the image appearance by:
 
 	You can find the source of the default styles applied by the editor here: [`ckeditor5-image/theme/imagestyle.css`](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-image/theme/imagestyle.css).
 
-	Read more about {@link installation/advanced/content-styles styling the content of the editor}.
+	Read more about {@link getting-started/advanced/content-styles styling the content of the editor}.
 </info-box>
 
 ### Image classes
@@ -32,7 +32,7 @@ This package allows for adjusting the image appearance by:
 The styles applied to the image can either add the style-related class or remove it. This behavior depends on the particular configuration of the {@link module:image/imageconfig~ImageStyleOptionDefinition}. Only the definition with the {@link module:image/imageconfig~ImageStyleOptionDefinition#isDefault} flag set to true will remove any applied image style-related class.
 
 <info-box warning>
-	The `ImageStyle` plugin does not provide any mechanism to apply a default CSS class to newly inserted images. The integrator should handle the initial image appearance by defining the proper custom {@link installation/advanced/content-styles content styles}. If desired, the default image appearance customization can be done by overriding the following CSS rules:
+	The `ImageStyle` plugin does not provide any mechanism to apply a default CSS class to newly inserted images. The integrator should handle the initial image appearance by defining the proper custom {@link getting-started/advanced/content-styles content styles}. If desired, the default image appearance customization can be done by overriding the following CSS rules:
 	  * `.ck-content .image-inline` for the inline images,
 	  * `.ck-content .image` for the block images.
 </info-box>
@@ -59,14 +59,14 @@ When you insert a new image, the editor will, by default, choose the optimal ima
 	<!-- TODO: describe this case in the inline and block images installation guide. -->
 </info-box>
 
-## UI
+## UI <!-- needs a rewrite -->
 
 You can apply a style by using one of the toolbar buttons created by the `ImageStyle` plugin. Each of the defined styles (both [default](#ready-to-use-styles) and [custom](#configuring-the-styles)) will be registered under the name `imageStyle:image-style-name` in the {@link module:ui/componentfactory~ComponentFactory}. You can then add it to the image or main toolbar by referencing this name.
 
-The default image toolbar has its standard configuration already set in the predefined builds.
+The default image toolbar has its standard configuration already set.
 
 * The default UI of the classic, inline, balloon, and balloon block builds consists of a set of buttons to apply the [semantical styles](#semantical-styles) to support creating structured content. [**See a live example**](#semantical-example).
-* The document editor build UI uses several buttons for applying [presentational styles](#presentational-styles) and also uses the [semantical styles](#semantical-styles) to reset the image appearance to default. [**See a live example**](#presentational-example).
+* The document editor type UI uses several buttons for applying [presentational styles](#presentational-styles) and also uses the [semantical styles](#semantical-styles) to reset the image appearance to default. [**See a live example**](#presentational-example).
 
 You can also create a completely custom image styles UI, setting your icons and tooltips, and grouping the image style buttons into {@link module:image/imageconfig~ImageStyleDropdownDefinition custom dropdowns}. Read more about it in the [**configuring the styles**](#configuring-the-styles) section of this guide.
 
@@ -95,7 +95,7 @@ A semantical style lets the user choose from predefined appearances of the image
 	If you want to enable image resizing, use [presentational image styles](#presentational-styles) instead. You can also define custom semantical styles to make sure that there are no conflicts with the image resizing feature.
 </info-box>
 
-Most of the predefined editor builds support editing structured content. This requires passing the control over the possible image appearances to the developer. The predefined builds thus introduce a UI containing a set of buttons applying the semantical styles (taken from the [default styles](#styles-table) listed below).
+Most of the editor types support editing structured content. This requires passing the control over the possible image appearances to the developer. We thus introduce a UI containing a set of buttons applying the semantical styles (taken from the [default styles](#styles-table) listed below).
 
 The example below shows an editor with such a basic configuration. There are three types of images:
 
@@ -118,12 +118,9 @@ You can change the style of an individual image using the contextual toolbar tha
 The editor above does not require any configuration, using one of the following builds: classic, inline, balloon, or balloon-block, for example:
 
 ```js
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
+import ClassicEditor from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ) )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ) ).then( /* ... */ );
 ```
 
 ### Presentational styles
@@ -161,15 +158,12 @@ See the result below:
 
 </div>
 
-This set of buttons and styles is available by default in the predefined {@link installation/getting-started/predefined-builds#document-editor document editor build} and does not require any additional customization:
+This set of buttons and styles is available by default in the document editor and does not require any additional customization:
 
 ```js
-import { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
+import { DecoupledEditor } from 'ckeditor5';
 
-DecoupledEditor.
-	.create( document.querySelector( '#editor' ) )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+DecoupledEditor..create( document.querySelector( '#editor' ) ).then( /* ... */ );
 ```
 
 <info-box warning>
@@ -197,70 +191,68 @@ The editor example below shows what you can achieve by customizing the visual re
 This editor uses custom image styles, custom image toolbar configuration with {@link module:image/imageconfig~ImageStyleDropdownDefinition declarative dropdowns}, and some modified [default styles](#ready-to-use-styles). You can find some more examples of using and modifying these styles in the {@link module:image/imageconfig~ImageConfig#styles `config.image.styles`} API documentation.
 
 ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		// More of editor's configuration.
-		// ...
-		image: {
-			styles: {
-				// Defining custom styling options for the images.
-				options: [ {
-					name: 'side',
-					icon: sideIcon,
-					title: 'Side image',
-					className: 'image-side',
-					modelElements: [ 'imageBlock' ]
-				}, {
-					name: 'margin-left',
-					icon: leftIcon,
-					title: 'Image on left margin',
-					className: 'image-margin-left',
-					modelElements: [ 'imageInline' ]
-				}, {
-					name: 'margin-right',
-					icon: rightIcon,
-					title: 'Image on right margin',
-					className: 'image-margin-right',
-					modelElements: [ 'imageInline' ]
-				},
-				// Modifying icons and titles of the default inline and
-				// block image styles to reflect its real appearance.
-				{
-					name: 'inline',
-					icon: inlineIcon
-				}, {
-					name: 'block',
-					title: 'Centered image',
-					icon: centerIcon
-				} ]
-			},
-			toolbar: [ {
-				// Grouping the buttons for the icon-like image styling
-				// into one dropdown.
-				name: 'imageStyle:icons',
-				title: 'Alignment',
-				items: [
-					'imageStyle:margin-left',
-					'imageStyle:margin-right',
-					'imageStyle:inline'
-				],
-				defaultItem: 'imageStyle:margin-left'
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	// More of editor's configuration.
+	// ...
+	image: {
+		styles: {
+			// Defining custom styling options for the images.
+			options: [ {
+				name: 'side',
+				icon: sideIcon,
+				title: 'Side image',
+				className: 'image-side',
+				modelElements: [ 'imageBlock' ]
 			}, {
-				// Grouping the buttons for the regular
-				// picture-like image styling into one dropdown.
-				name: 'imageStyle:pictures',
-				title: 'Style',
-				items: [ 'imageStyle:block', 'imageStyle:side' ],
-				defaultItem: 'imageStyle:block'
-			}, '|', 'toggleImageCaption', 'linkImage'
-			]
-		}
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+				name: 'margin-left',
+				icon: leftIcon,
+				title: 'Image on left margin',
+				className: 'image-margin-left',
+				modelElements: [ 'imageInline' ]
+			}, {
+				name: 'margin-right',
+				icon: rightIcon,
+				title: 'Image on right margin',
+				className: 'image-margin-right',
+				modelElements: [ 'imageInline' ]
+			},
+			// Modifying icons and titles of the default inline and
+			// block image styles to reflect its real appearance.
+			{
+				name: 'inline',
+				icon: inlineIcon
+			}, {
+				name: 'block',
+				title: 'Centered image',
+				icon: centerIcon
+			} ]
+		},
+		toolbar: [ {
+			// Grouping the buttons for the icon-like image styling
+			// into one dropdown.
+			name: 'imageStyle:icons',
+			title: 'Alignment',
+			items: [
+				'imageStyle:margin-left',
+				'imageStyle:margin-right',
+				'imageStyle:inline'
+			],
+			defaultItem: 'imageStyle:margin-left'
+		}, {
+			// Grouping the buttons for the regular
+			// picture-like image styling into one dropdown.
+			name: 'imageStyle:pictures',
+			title: 'Style',
+			items: [ 'imageStyle:block', 'imageStyle:side' ],
+			defaultItem: 'imageStyle:block'
+		}, '|', 'toggleImageCaption', 'linkImage'
+		]
+	}
+} )
+.then( /* ... */ );
 ```
 
-It also applies multiple CSS rules to not only display custom image styles (the `'image-margin-right'`, `'image-margin-left'`, and `'image-side'` classes) properly, but also to provide the default {@link installation/advanced/content-styles content styles}. This makes the appearance of headers, paragraphs, links, captions, and newly inserted images consistent.
+It also applies multiple CSS rules to not only display custom image styles (the `'image-margin-right'`, `'image-margin-left'` and `'image-side'` classes) properly, but also to provide the default {@link getting-started/advanced/content-styles content styles}, so the appearance of headers, paragraphs, links, captions and newly inserted images is consistent.
 
 The most important rules regarding the image styling are presented below. You can see the complete content style sheet [here](https://github.com/ckeditor/ckeditor5/blob/a95554244e9fc71af5aa9e53c6841f114c6d2483/packages/ckeditor5-image/docs/_snippets/features/image-semantical-style-custom.html).
 
@@ -444,7 +436,7 @@ The `ImageStyle` plugin provides a set of default styles depending on the loaded
 
 ## Installation
 
-This feature is available in all {@link installation/getting-started/predefined-builds ready-to-use editor builds}. If your integration uses a custom editor build, check out the {@link features/images-installation image feature installation guide} to learn how to enable this feature.
+This feature is enabled by default. If your integrations uses a custom editor build, check out the {@link features/images-installation image feature installation guide} to learn how to enable this feature.
 
 ## Common API
 
