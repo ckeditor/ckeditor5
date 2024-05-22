@@ -308,7 +308,10 @@ export default class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 
 		this._unpinTooltip();
 
-		if ( evt.name === 'focus' ) {
+		// The tooltip should be pinned immediately when the element gets focused using keyboard.
+		// If it is focused using the mouse, the tooltip should be pinned after a delay to prevent flashing.
+		// See https://github.com/ckeditor/ckeditor5/issues/16383
+		if ( evt.name === 'focus' && !elementWithTooltipAttribute.matches( ':hover' ) ) {
 			this._pinTooltip( elementWithTooltipAttribute, getTooltipData( elementWithTooltipAttribute ) );
 		} else {
 			this._pinTooltipDebounced( elementWithTooltipAttribute, getTooltipData( elementWithTooltipAttribute ) );

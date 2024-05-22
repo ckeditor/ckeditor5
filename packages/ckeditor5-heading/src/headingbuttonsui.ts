@@ -14,14 +14,14 @@ import { getLocalizedOptions } from './utils.js';
 import type { HeadingOption } from './headingconfig.js';
 import type HeadingCommand from './headingcommand.js';
 
-const defaultIcons: Record<string, string> = {
+const defaultIcons: Record<string, string> = /* #__PURE__ */ ( () => ( {
 	heading1: icons.heading1,
 	heading2: icons.heading2,
 	heading3: icons.heading3,
 	heading4: icons.heading4,
 	heading5: icons.heading5,
 	heading6: icons.heading6
-};
+} ) )();
 
 /**
  * The `HeadingButtonsUI` plugin defines a set of UI buttons that can be used instead of the

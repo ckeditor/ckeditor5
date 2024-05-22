@@ -88,9 +88,9 @@ The `<CKEditor>` component supports the following properties:
 * `onBlur` &ndash; A function called when the editor was blurred. See the {@link module:engine/view/document~Document#event:blur `editor.editing.view.document#blur`} event.
 * `onFocus` &ndash; A function called when the editor was focused. See the {@link module:engine/view/document~Document#event:focus `editor.editing.view.document#focus`} event.
 * `onError` &ndash; A function called when the editor has crashed during the initialization or during the runtime. It receives two arguments: the error instance and the error details.
-    Error details is an object that contains two properties:
-    * `{String} phase`: `'initialization'|'runtime'` &ndash; Informs when the error has occurred (during the editor or context initialization, or after the initialization).
-     * `{Boolean} willEditorRestart` &ndash; When `true`, it means that the editor component will restart itself.
+	Error details is an object that contains two properties:
+	* `{String} phase`: `'initialization'|'runtime'` &ndash; Informs when the error has occurred (during the editor or context initialization, or after the initialization).
+	* `{Boolean} willEditorRestart` &ndash; When `true`, it means that the editor component will restart itself.
 
 The editor event callbacks (`onChange`, `onBlur`, `onFocus`) receive two arguments:
 
@@ -161,11 +161,12 @@ The `CKEditorContext` component supports the following properties:
 * `config` &ndash; The CKEditor&nbsp;5 context configuration.
 * `isLayoutReady` &ndash; A property that delays the context creation when set to `false`. It creates the context and the editor children once it is `true` or unset. Useful when the CKEditor&nbsp;5 annotations or a presence list are used.
 * `id` &ndash; The context ID. When this property changes, the component restarts the context with its editor and reinitializes it based on the current configuration.
-* `onReady` &ndash; A function called when the context is ready and all editors inside were initialized with the `context` instance. This callback is also called after the reinitialization of the component if an error has occurred.
+* `onReady` &ndash; A function called when the context is ready and all the editors inside were initialized with the `context` instance. This callback is also called after the reinitialization of the editor if an error has occurred.
+* `onAfterDestroy` &ndash; A function called after the successful destruction of an editor instance rendered by the component. This callback is also triggered after the editor has been reinitialized after an error. The component is not guaranteed to be mounted when this function is called.
 * `onError` &ndash; A function called when the context has crashed during the initialization or during the runtime. It receives two arguments: the error instance and the error details.
-    Error details is an object that contains two properties:
-    * `{String} phase`: `'initialization'|'runtime'` &ndash; Informs when the error has occurred (during the editor or context initialization, or after the initialization).
-     * `{Boolean} willContextRestart` &ndash; When `true`, it means that the context component will restart itself.
+	Error details is an object that contains two properties:
+	* `{String} phase`: `'initialization'|'runtime'` &ndash; Informs when the error has occurred (during the editor or context initialization, or after the initialization).
+	* `{Boolean} willContextRestart` &ndash; When `true`, it means that the context component will restart itself.
 
 <info-box>
 	An example build that exposes both context and classic editor can be found in the [CKEditor&nbsp;5 collaboration sample](https://github.com/ckeditor/ckeditor5-collaboration-samples/blob/master/real-time-collaboration-comments-outside-of-editor-for-react).
@@ -205,40 +206,43 @@ If you use the {@link framework/document-editor document (decoupled) editor}, yo
 import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 
 class App extends Component {
-    editor = null;
+	editor = null;
 
-    render() {
-        return (
-            <div className="App">
-                <h2>CKEditor&nbsp;5 using a custom build - decoupled editor</h2>
-                <CKEditor
-                    onReady={ editor => {
-                        console.log( 'Editor is ready to use!', editor );
+	render() {
+		return (
+			<div className="App">
+				<h2>CKEditor&nbsp;5 using a custom build - decoupled editor</h2>
+				<CKEditor
+					onReady={ editor => {
+						console.log( 'Editor is ready to use!', editor );
 
-                        // Insert the toolbar before the editable area.
-                        editor.ui.getEditableElement().parentElement.insertBefore(
-                            editor.ui.view.toolbar.element,
-                            editor.ui.getEditableElement()
-                        );
+						// Insert the toolbar before the editable area.
+						editor.ui.getEditableElement().parentElement.insertBefore(
+							editor.ui.view.toolbar.element,
+							editor.ui.getEditableElement()
+						);
 
-                        this.editor = editor;
-                    } }
-                    onError={ ( error, { willEditorRestart } ) => {
-                        // If the editor is restarted, the toolbar element will be created once again.
-                        // The `onReady` callback will be called again and the new toolbar will be added.
-                        // This is why you need to remove the older toolbar.
-                        if ( willEditorRestart ) {
-                            this.editor.ui.view.toolbar.element.remove();
-                        }
-                    } }
-                    onChange={ ( event ) => console.log( event ) }
-                    editor={ DecoupledEditor }
-                    data="<p>Hello from CKEditor&nbsp;5's decoupled editor!</p>"
-                    config={ /* the editor configuration */ }
-                />
-            </div>
-        );
-    }
+						this.editor = editor;
+					} }
+					onError={ ( error, { willEditorRestart } ) => {
+						// If the editor is restarted, the toolbar element will be created once again.
+						// The `onReady` callback will be called again and the new toolbar will be added.
+						// This is why you need to remove the older toolbar.
+						if ( willEditorRestart ) {
+							this.editor.ui.view.toolbar.element.remove();
+						}
+					} }
+					onAfterDestroy={ editor => {
+						editor.ui.view.toolbar.element.remove();
+					} }
+					onChange={ ( event ) => console.log( event ) }
+					editor={ DecoupledEditor }
+					data="<p>Hello from CKEditor&nbsp;5's decoupled editor!</p>"
+					config={ /* the editor configuration */ }
+				/>
+			</div>
+		);
+	}
 }
 
 export default App;
@@ -345,12 +349,12 @@ Vite requires linked packages to be ESM, and unfortunately, the CKEditor build i
 
 export default defineConfig({
   optimizeDeps: {
-    include: ['@workspace/ckeditor5-custom-build'],
+	include: ['@workspace/ckeditor5-custom-build'],
   },
   build: {
-    commonjsOptions: {
-      include: [/@workspace\/ckeditor5-custom-build/, /node_modules/],
-    }
+	commonjsOptions: {
+	  include: [/@workspace\/ckeditor5-custom-build/, /node_modules/],
+	}
   }
 })
 ```
@@ -601,8 +605,8 @@ import ckeditor5 from '@ckeditor/vite-plugin-ckeditor5';
 
 export default defineConfig( {
   plugins: [
-    react(),
-    ckeditor5( { theme: require.resolve( '@ckeditor/ckeditor5-theme-lark' ) } )
+	react(),
+	ckeditor5( { theme: require.resolve( '@ckeditor/ckeditor5-theme-lark' ) } )
   ],
 } )
 ```
@@ -641,36 +645,36 @@ import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 const editorConfiguration = {
-    plugins: [ Essentials, Bold, Italic, Paragraph ],
-    toolbar: [ 'bold', 'italic' ]
+	plugins: [ Essentials, Bold, Italic, Paragraph ],
+	toolbar: [ 'bold', 'italic' ]
 };
 
 class App extends Component {
-    render() {
-        return (
-            <div className="App">
-                <h2>Using CKEditor&nbsp;5 from source in React</h2>
-                <CKEditor
-                    editor={ ClassicEditor }
-                    config={ editorConfiguration }
-                    data="<p>Hello from CKEditor&nbsp;5!</p>"
-                    onReady={ editor => {
-                        // You can store the "editor" and use when it is needed.
-                        console.log( 'Editor is ready to use!', editor );
-                    } }
-                    onChange={ ( event ) => {
-                        console.log( event );
-                    } }
-                    onBlur={ ( event, editor ) => {
-                        console.log( 'Blur.', editor );
-                    } }
-                    onFocus={ ( event, editor ) => {
-                        console.log( 'Focus.', editor );
-                    } }
-                />
-            </div>
-        );
-    }
+	render() {
+		return (
+			<div className="App">
+				<h2>Using CKEditor&nbsp;5 from source in React</h2>
+				<CKEditor
+					editor={ ClassicEditor }
+					config={ editorConfiguration }
+					data="<p>Hello from CKEditor&nbsp;5!</p>"
+					onReady={ editor => {
+						// You can store the "editor" and use when it is needed.
+						console.log( 'Editor is ready to use!', editor );
+					} }
+					onChange={ ( event ) => {
+						console.log( event );
+					} }
+					onBlur={ ( event, editor ) => {
+						console.log( 'Blur.', editor );
+					} }
+					onFocus={ ( event, editor ) => {
+						console.log( 'Focus.', editor );
+					} }
+				/>
+			</div>
+		);
+	}
 }
 
 export default App;
