@@ -22,13 +22,22 @@ This guide assumes that you are familiar with the widgets concept introduced in 
 
 The overall project structure will be similar to one described in {@link tutorials/widgets/implementing-a-block-widget#lets-start Let's start} and {@link tutorials/widgets/implementing-a-block-widget#plugin-structure Plugin structure} sections of the "Implementing a block widget" tutorial.
 
-Before building the project you still need to define the `Placeholder` plugin. The project will have a structure as below:
+The easiest way to set up your project is to grab the starter files from the [GitHub repository for this tutorial](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/inline-widget/starter-files). We gathered all the necessary dependencies there, including some CKEditor 5 packages and other files needed to start the editor.
+
+The editor has already been created in the `main.js` file with some basic plugins. All you need to do is clone the repository, navigate to the starter-files directory, run the `npm install` command, and you can start coding right away.
+
+```bash
+git clone https://github.com/ckeditor/ckeditor5-tutorials-examples
+cd ckeditor5-tutorials-examples/abbreviation-plugin/starter-files
+
+npm install
+npm run dev
+```
+
+First, let's define the `Placeholder` plugin. The project will have a structure as below:
 
 ```plain
-├── app.js
-├── dist
-│   ├── bundle.js
-│   └── bundle.js.map
+├── main.js
 ├── index.html
 ├── node_modules
 ├── package.json
@@ -39,10 +48,7 @@ Before building the project you still need to define the `Placeholder` plugin. T
 │   ├── placeholderui.js
 │   └── theme
 │       └── placeholder.css
-│
-│   ... the rest of the plugin files go here as well.
-│
-└── webpack.config.js
+└─ ...
 ```
 
 You can see that the placeholder feature has an established plugin structure: the master (glue) plugin (`placeholder/placeholder.js`), the "editing" (`placeholder/placeholderediting.js`) and the "UI" (`placeholder/placeholderui.js`) parts.
@@ -92,7 +98,7 @@ export default class PlaceholderEditing extends Plugin {
 }
 ```
 
-At this stage you can build the project and open it in the browser to verify if it is building correctly.
+At this point, you can run development server and see in the browser console that the plugins are being initialized.
 
 ## The model and the view layers
 
@@ -320,7 +326,7 @@ export default class PlaceholderEditing extends Plugin {
 
 ### Let's see it!
 
-You can rebuild the project now. You should be able to execute the `placeholder` command to insert a new placeholder:
+You should be able to execute the `placeholder` command to insert a new placeholder:
 
 ```js
 editor.execute( 'placeholder', { value: 'time' } );
@@ -359,7 +365,7 @@ Fortunately, CKEditor&nbsp;5 {@link module:engine/conversion/mapper~Mapper#event
 
 import {
 	Plugin,
-// MODIFIED
+	// MODIFIED
 	Widget,
 	toWidget,
 	viewToModelPositionOutsideModelElement
@@ -482,7 +488,7 @@ function getDropdownItemsDefinitions( placeholderNames ) {
 Add the dropdown to the toolbar:
 
 ```js
-// app.js
+// main.js
 
 import {
 	ClassicEdito,
@@ -607,7 +613,7 @@ You can see the placeholder widget implementation in action in the editor below.
 
 ## Final solution
 
-The following code snippet contains a complete implementation of the `Placeholder` plugin (and all its dependencies) and the code to run the editor. You can paste it into the `app.js` file and it will run out–of–the–box:
+The following code snippet contains a complete implementation of the `Placeholder` plugin (and all its dependencies) and the code to run the editor. You can paste it into the `main.js` file and it will run out of the box. There is also a repository with the [final project](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/inline-widget/final-project) that you can download and play with.
 
 ```js
 import {
@@ -628,6 +634,8 @@ import {
 	createDropdown,
 	Collection
 } from 'ckeditor5';
+import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
+import 'ckeditor5/index.css';
 
 class Placeholder extends Plugin {
 	static get requires() {
@@ -813,6 +821,8 @@ ClassicEditor
 	} )
 	.then( editor => {
 		console.log( 'Editor was initialized', editor );
+		
+		CKEditorInspector.attach( { 'editor': editor } );
 
 		// Expose for playing in the console.
 		window.editor = editor;
