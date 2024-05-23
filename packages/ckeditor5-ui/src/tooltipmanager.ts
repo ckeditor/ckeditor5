@@ -421,6 +421,7 @@ export default class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 
 		// Ensure that all changes to the tooltip are set before pinning it.
 		// Setting class or text after pinning can cause the tooltip to be pinned in the wrong position.
+		// It happens especially often when tooltip has class modified (like adding `ck-tooltip_multi-line`).
 		// See https://github.com/ckeditor/ckeditor5/issues/16365
 		this.balloonPanelView.pin( {
 			target: targetDomElement,
