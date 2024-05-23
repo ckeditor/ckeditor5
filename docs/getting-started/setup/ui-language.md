@@ -120,7 +120,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 </script>
 ```
 
-See the {@link getting-started/quick-start#using-ckeditor-5-from-cdn CDN installation guide} for more information.
+See the {@link getting-started/quick-start#installing-ckeditor-5-from-cdn CDN installation guide} for more information.
 
 ## Setting the language of the content
 
