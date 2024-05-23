@@ -14,7 +14,8 @@ import {
 	isDropdownMenuView
 } from '../guards.js';
 
-import type DropdownMenuView from '../dropdownmenuview.js';
+import type ViewCollection from '../../../viewcollection.js';
+import type { DropdownNestedMenuListItemView } from '../typings.js';
 import type {
 	DropdownMenuViewsRootTree,
 	DropdownMenuViewsTreeChildItem
@@ -56,10 +57,10 @@ import type {
  * @param menu The DropdownMenuView to create the tree from.
  * @returns The root tree structure representing the DropdownMenuView.
  */
-export function createTreeFromDropdownMenuView( menu: Pick<DropdownMenuView, 'nestedMenuListItems'> ): DropdownMenuViewsRootTree {
+export function createTreeFromDropdownMenuView( menu: DropdownMenuViewLike ): DropdownMenuViewsRootTree {
 	return {
 		kind: 'Root',
-		children: menu.nestedMenuListItems.flatMap( ( item ): Array<DropdownMenuViewsTreeChildItem> => {
+		children: Array.from( menu.menuItems ).flatMap( ( item ): Array<DropdownMenuViewsTreeChildItem> => {
 			if ( !( item instanceof DropdownMenuListItemView ) ) {
 				return [];
 			}
@@ -91,3 +92,10 @@ export function createTreeFromDropdownMenuView( menu: Pick<DropdownMenuView, 'ne
 		} )
 	};
 }
+
+/**
+ * Represents a view-like object for a dropdown menu.
+ */
+type DropdownMenuViewLike = {
+	menuItems: Array<DropdownNestedMenuListItemView> | ViewCollection<DropdownNestedMenuListItemView>;
+};

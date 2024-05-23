@@ -177,7 +177,7 @@ export default class DropdownMenuRootListView extends DropdownMenuListView {
 	 */
 	public get tree(): DropdownMenuViewsRootTree {
 		return createTreeFromDropdownMenuView( {
-			nestedMenuListItems: [ ...this.items ]
+			menuItems: [ ...this.items ]
 		} );
 	}
 
@@ -374,7 +374,7 @@ export default class DropdownMenuRootListView extends DropdownMenuListView {
 		// Register menu entries.
 		if ( isDropdownMenuView( menuOrFlatItemView ) ) {
 			menuOrFlatItemView.parentMenuView = parentMenuView;
-			menuOrFlatItemView.nestedMenuListItems.forEach( menuListItem => {
+			menuOrFlatItemView.menuItems.forEach( menuListItem => {
 				if ( isDropdownMenuListItemView( menuListItem ) && isDropdownMenuView( menuListItem.flatItemOrNestedMenuView ) ) {
 					this._recursiveAssignMenuChildrenParents(
 						menuListItem.flatItemOrNestedMenuView,

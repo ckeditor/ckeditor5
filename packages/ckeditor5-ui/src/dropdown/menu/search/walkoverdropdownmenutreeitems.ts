@@ -102,7 +102,7 @@ export function walkOverDropdownMenuTreeItems<Extend>(
 		if ( result !== false ) {
 			switch ( node.kind ) {
 				case 'Item':
-					/* NOP */
+					// Do not do anything. Items have no children.
 					break;
 
 				case 'Menu':

@@ -18,14 +18,14 @@ import {
 
 import type { FocusableView } from '../../focuscycler.js';
 import type { DropdownNestedMenuListItemView } from './typings.js';
+import type ViewCollection from '../../viewcollection.js';
 
 import DropdownMenuButtonView from './dropdownmenubuttonview.js';
+import DropdownMenuListView from './dropdownmenulistview.js';
 import { DropdownMenuViewPanelPositioningFunctions } from './utils/dropdownmenupositioningfunctions.js';
 import { DropdownMenuBehaviors } from './utils/dropdownmenubehaviors.js';
 
 import View from '../../view.js';
-
-import DropdownMenuListView from './dropdownmenulistview.js';
 import DropdownMenuPanelView, { type DropdownMenuPanelPosition } from './dropdownmenupanelview.js';
 
 import '../../../theme/components/dropdown/menu/dropdownmenu.css';
@@ -183,8 +183,8 @@ export default class DropdownMenuView extends View implements FocusableView {
 	/**
 	 * Gets the nested menu items of the dropdown menu view.
 	 */
-	public get nestedMenuListItems(): Readonly<Array<DropdownNestedMenuListItemView>> {
-		return [ ...this.listView.items ] as Array<DropdownNestedMenuListItemView>;
+	public get menuItems(): ViewCollection<DropdownNestedMenuListItemView> {
+		return this.listView.items as ViewCollection<DropdownNestedMenuListItemView>;
 	}
 
 	/**

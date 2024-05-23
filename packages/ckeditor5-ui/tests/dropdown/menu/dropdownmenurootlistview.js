@@ -183,7 +183,7 @@ describe( 'DropdownMenuRootListView', () => {
 				const menuInstance = new DropdownMenuView( locale, 'Hello World' );
 				const nestedMenuInstance = new DropdownMenuView( locale, 'Nested Menu Menu' );
 
-				menuInstance.listView.items.add(
+				menuInstance.menuItems.add(
 					new DropdownMenuListItemView( locale, menuInstance, nestedMenuInstance )
 				);
 
@@ -307,7 +307,7 @@ describe( 'DropdownMenuRootListView', () => {
 
 			const parentMenuView = findMenuTreeMenuViewByLabel( 'Hello World', rootListView.tree );
 
-			expect( parentMenuView.nestedMenuListItems[ 0 ] ).to.be.instanceOf( ListSeparatorView );
+			expect( parentMenuView.menuItems.get( 0 ) ).to.be.instanceOf( ListSeparatorView );
 		} );
 
 		it( 'should reuse menu view instance on insert', () => {
@@ -320,7 +320,7 @@ describe( 'DropdownMenuRootListView', () => {
 
 			const menuInstance = new DropdownMenuView( locale, 'Baz' );
 
-			menuInstance.listView.items.add(
+			menuInstance.menuItems.add(
 				new DropdownMenuListItemView(
 					locale,
 					menuInstance,
@@ -549,12 +549,12 @@ describe( 'DropdownMenuRootListView', () => {
 			const parentMenuView = findMenuTreeMenuViewByLabel( 'Hello World', rootListView.tree );
 
 			expect( parentMenuView.pendingLazyInitialization ).to.be.true;
-			expect( parentMenuView.nestedMenuListItems.length ).not.to.be.equal( 3 );
+			expect( parentMenuView.menuItems.length ).not.to.be.equal( 3 );
 
 			parentMenuView.isOpen = true;
 
 			expect( parentMenuView.pendingLazyInitialization ).to.be.false;
-			expect( parentMenuView.nestedMenuListItems.length ).to.be.equal( 3 );
+			expect( parentMenuView.menuItems.length ).to.be.equal( 3 );
 		} );
 	} );
 

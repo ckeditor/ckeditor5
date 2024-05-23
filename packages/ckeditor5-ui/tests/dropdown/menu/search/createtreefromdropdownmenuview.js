@@ -27,7 +27,7 @@ describe( 'createTreeFromDropdownMenuView', () => {
 	it( 'should create flatten list of menus', () => {
 		const { menusDefinitions, menuRootList } = createMockDropdownMenuDefinition();
 		const tree = createTreeFromDropdownMenuView( {
-			nestedMenuListItems: [ ...menuRootList.items ]
+			menuItems: [ ...menuRootList.items ]
 		} );
 
 		expect( tree ).to.deep.equal(
@@ -59,7 +59,7 @@ describe( 'createTreeFromDropdownMenuView', () => {
 		);
 
 		const tree = createTreeFromDropdownMenuView( {
-			nestedMenuListItems: [ ...menuRootList.items ]
+			menuItems: [ ...menuRootList.items ]
 		} );
 
 		expect( tree ).to.deep.equal(
@@ -90,7 +90,7 @@ describe( 'createTreeFromDropdownMenuView', () => {
 		menuRootList.appendMenuChildren( nestedEntries, menuInstance );
 
 		const tree = createTreeFromDropdownMenuView( {
-			nestedMenuListItems: [ ...menuRootList.items ]
+			menuItems: [ ...menuRootList.items ]
 		} );
 
 		expect( tree ).to.deep.equal(
@@ -105,7 +105,7 @@ describe( 'createTreeFromDropdownMenuView', () => {
 	it( 'should return empty array of children if it is filled with incorrect records', () => {
 		const item = new DropdownMenuListItemView( locale, null, new ButtonLabelView( locale ) );
 		const tree = createTreeFromDropdownMenuView( {
-			nestedMenuListItems: [
+			menuItems: [
 				item
 			]
 		} );

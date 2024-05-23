@@ -44,7 +44,8 @@ export const DropdownRootMenuBehaviors = {
 			const { menus } = definition;
 
 			const hasMenuViewFocus = ( menuView: DropdownMenuView ) =>
-				menuView.listView.element!.contains( document.activeElement ) || menuView.element!.contains( document.activeElement );
+				menuView.listView.element!.contains( document.activeElement ) ||
+					menuView.element!.contains( document.activeElement );
 
 			const isAnyOtherAlreadyOpen = !!document.activeElement && menus.some(
 				menuView => (

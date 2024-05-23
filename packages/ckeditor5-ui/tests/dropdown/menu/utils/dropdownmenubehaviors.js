@@ -109,7 +109,7 @@ describe( 'Menu Behaviors', () => {
 					new DropdownMenuView( locale, 'Nested Menu Menu' )
 				);
 
-				menuInstance.listView.items.add( nestedMenuListItem );
+				menuInstance.menuItems.add( nestedMenuListItem );
 				rootListView.appendMenuChildren(
 					[ menuInstance ],
 					treeNodeByLabel( 'Menu 2' ).menu
