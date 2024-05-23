@@ -14,7 +14,7 @@ You will build a "placeholder" feature that allows the users to insert predefine
 	If you want to see the final product of this tutorial before you plunge in, check out the [demo](#demo).
 </info-box>
 
-## Before you start ⚠️
+## Before you start
 
 This guide assumes that you are familiar with the widgets concept introduced in the {@link tutorials/widgets/implementing-a-block-widget Implementing a block widget} tutorial. The tutorial will also reference various concepts from the {@link framework/architecture/intro CKEditor&nbsp;5 architecture}.
 
@@ -22,151 +22,9 @@ This guide assumes that you are familiar with the widgets concept introduced in 
 
 The overall project structure will be similar to one described in {@link tutorials/widgets/implementing-a-block-widget#lets-start Let's start} and {@link tutorials/widgets/implementing-a-block-widget#plugin-structure Plugin structure} sections of the "Implementing a block widget" tutorial.
 
-First, install required dependencies:
-
-```bash
-npm install --save \
-	css-loader@5 \
-	postcss-loader@4 \
-	raw-loader@4 \
-	style-loader@2 \
-	webpack@5 \
-	webpack-cli@4 \
-	@ckeditor/ckeditor5-basic-styles \
-	@ckeditor/ckeditor5-core \
-	@ckeditor/ckeditor5-dev-utils \
-	@ckeditor/ckeditor5-editor-classic \
-	@ckeditor/ckeditor5-essentials \
-	@ckeditor/ckeditor5-heading \
-	@ckeditor/ckeditor5-list \
-	@ckeditor/ckeditor5-paragraph \
-	@ckeditor/ckeditor5-theme-lark \
-	@ckeditor/ckeditor5-ui \
-	@ckeditor/ckeditor5-utils \
-	@ckeditor/ckeditor5-widget \
-	@ckeditor/ckeditor5-inspector
-```
-
-Create a minimal webpack configuration:
-
-```js
-// webpack.config.js
-
-'use strict';
-
-const path = require( 'path' );
-const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
-
-module.exports = {
-	entry: './app.js',
-
-	output: {
-		path: path.resolve( __dirname, 'dist' ),
-		filename: 'bundle.js'
-	},
-
-	module: {
-		rules: [
-			{
-				test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
-				use: [ 'raw-loader' ]
-			},
-			{
-				test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
-				use: [
-					{
-						loader: 'style-loader',
-						options: {
-							injectType: 'singletonStyleTag',
-							attributes: {
-								'data-cke': true
-							}
-						}
-					},
-					'css-loader',
-					{
-						loader: 'postcss-loader',
-						options: {
-							postcssOptions: styles.getPostCssConfig( {
-								themeImporter: {
-									themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-								},
-								minify: true
-							} )
-						}
-					}
-				]
-			}
-		]
-	},
-
-	// Useful for debugging.
-	devtool: 'source-map',
-
-	// By default webpack logs warnings if the bundle is bigger than 200kb.
-	performance: { hints: false }
-};
-```
-
-Add an `index.html` page:
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>CKEditor 5 Framework – Implementing a simple widget</title>
-	</head>
-	<body>
-		<div id="editor">
-			<p>Editor content goes here.</p>
-		</div>
-
-		<script src="dist/bundle.js"></script>
-	</body>
-</html>
-```
-
-The application entry point (`app.js`):
-
-```js
-// app.js
-
-import {
-	ClassicEditor,
-	Bold,
-	Italic,
-	Essentials,
-	Heading,
-	List,
-	Paragraph
-	} from 'ckeditor5';
-
-import Placeholder from './placeholder/placeholder';
-
-import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, Placeholder ],
-		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList' ]
-	} )
-	.then( editor => {
-		console.log( 'Editor was initialized', editor );
-
-		CKEditorInspector.attach( 'editor', editor );
-
-		// Expose for playing in the console.
-		window.editor = editor;
-	} )
-	.catch( error => {
-		console.error( error.stack );
-	} );
-```
-
 Before building the project you still need to define the `Placeholder` plugin. The project will have a structure as below:
 
-```
+```plain
 ├── app.js
 ├── dist
 │   ├── bundle.js
@@ -476,7 +334,7 @@ This should result in:
 
 If you play more with the widget (for example, try to select it by dragging the mouse from its right to the left edge), you will see the following error logged to the console:
 
-```
+```plain
 Uncaught CKEditorError: model-nodelist-offset-out-of-bounds: Given offset cannot be found in the node list.
 ```
 
