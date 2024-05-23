@@ -24,7 +24,7 @@ import {
 	ImageResizeHandles
 } from '@ckeditor/ckeditor5-image';
 import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
-import { Link } from '@ckeditor/ckeditor5-link';
+import { Link, LinkImage } from '@ckeditor/ckeditor5-link';
 import { List } from '@ckeditor/ckeditor5-list';
 import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -84,6 +84,7 @@ export default class ClassicEditor extends ClassicEditorBase {
 		ImageUpload,
 		ImageResizeEditing,
 		ImageResizeHandles,
+		LinkImage,
 		Indent,
 		IndentBlock,
 		Link,
@@ -161,6 +162,7 @@ export default class ClassicEditor extends ClassicEditorBase {
 		},
 		image: {
 			toolbar: [
+				'linkImage',
 				'imageStyle:inline',
 				'imageStyle:block',
 				'imageStyle:side',
