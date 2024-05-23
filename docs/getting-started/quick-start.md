@@ -117,7 +117,8 @@ Once you have added the import map, you can access the editor and its plugins us
 			],
 		toolbar: {
 			items: [ 'undo', 'redo', '|', 'bold', 'italic' ]
-		}
+		},
+		licenseKey: 'your-license-key'
 	} )
 	.then( /* ... */ );
 </script>
@@ -177,7 +178,8 @@ Your final page should look similar to the one below.
 					],
 				toolbar: {
 					items: [ 'undo', 'redo', '|', 'bold', 'italic' ]
-				}
+				},
+				licenseKey: 'your-license-key'
 			} )
 			.then( /* ... */ );
 		</script>
