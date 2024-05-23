@@ -3,7 +3,7 @@ menu-title: Versioning policy
 meta-title: Versioning policy | CKEditor 5 Documentation
 meta-description: The versioning approach to the CKEditor 5 project.
 category: updating
-order: 25
+order: 50
 ---
 
 # Versioning policy

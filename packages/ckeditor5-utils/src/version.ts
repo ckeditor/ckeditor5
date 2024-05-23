@@ -24,6 +24,12 @@ declare global {
 /* istanbul ignore next -- @preserve */
 if ( globalThis.CKEDITOR_VERSION ) {
 	/**
+	 * The best solution to avoid this error is migrating your CKEditor&nbsp;5 instance to
+	 * {@glink updating/new-installation-methods new installation methods}.
+	 *
+	 * Mentioned below are predefined builds, which are a deprecated installation method. The solutions
+	 * provided are kept here for legacy support only.
+	 *
 	 * This error is thrown when due to a mistake in how CKEditor 5 was installed or initialized, some
 	 * of its modules were duplicated (evaluated and executed twice). Module duplication leads to inevitable runtime
 	 * errors.
