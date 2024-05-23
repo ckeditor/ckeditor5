@@ -14,6 +14,7 @@ import {
 	logError,
 	parseBase64EncodedObject,
 	releaseDate,
+	toArray,
 	uid,
 	crc32,
 	type Locale,
@@ -665,9 +666,15 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	 */
 	private _verifyLicenseKey() {
 		const licenseKey = this.config.get( 'licenseKey' );
+		const distributionChannel = ( window as any )[ ' CKE_DISTRIBUTION' ] || 'sh';
 
 		if ( !licenseKey ) {
 			// TODO: For now, we don't block the editor if a licence key is not provided. GPL is assumed.
+
+			if ( distributionChannel == 'cloud' ) {
+				blockEditor( this, 'distributionChannel' );
+			}
+
 			return;
 		}
 
@@ -689,6 +696,12 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 		if ( !hasAllRequiredFields( licensePayload ) ) {
 			blockEditor( this, 'invalid' );
+
+			return;
+		}
+
+		if ( licensePayload.distributionChannel && !toArray( licensePayload.distributionChannel ).includes( distributionChannel ) ) {
+			blockEditor( this, 'distributionChannel' );
 
 			return;
 		}
@@ -855,7 +868,15 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	}
 }
 
-type LicenseErrorReason = 'invalid' | 'expired' | 'domainLimit' | 'featureNotAllowed' | 'trialLimit' | 'developmentLimit' | 'usageLimit';
+type LicenseErrorReason =
+	'invalid' |
+	'expired' |
+	'domainLimit' |
+	'featureNotAllowed' |
+	'trialLimit' |
+	'developmentLimit' |
+	'usageLimit' |
+	'distributionChannel';
 
 /**
  * Fired when the {@link module:engine/controller/datacontroller~DataController#event:ready data} and all additional

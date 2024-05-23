@@ -25,7 +25,7 @@ class TestEditor extends Editor {
 	}
 }
 
-describe( 'License check', () => {
+describe( 'Editor - license check', () => {
 	afterEach( () => {
 		delete TestEditor.builtinPlugins;
 		delete TestEditor.defaultConfig;
@@ -79,7 +79,7 @@ describe( 'License check', () => {
 		} );
 
 		describe( 'domain check', () => {
-			it( 'should pass when localhost is in the licensedHosts list', () => {
+			it( 'should not block if localhost is in the licensedHosts list', () => {
 				const { licenseKey } = generateKey( { licensedHosts: [ 'localhost' ] } );
 
 				const editor = new TestEditor( { licenseKey } );
@@ -88,7 +88,7 @@ describe( 'License check', () => {
 				expect( editor.isReadOnly ).to.be.false;
 			} );
 
-			it( 'should not pass when domain is not in the licensedHosts list', () => {
+			it( 'should block if domain is not in the licensedHosts list', () => {
 				const { licenseKey } = generateKey( { licensedHosts: [ 'facebook.com' ] } );
 
 				const editor = new TestEditor( { licenseKey } );
@@ -97,7 +97,7 @@ describe( 'License check', () => {
 				expect( editor.isReadOnly ).to.be.true;
 			} );
 
-			it( 'should not pass if domain have no subdomain', () => {
+			it( 'should block if domain have no subdomain', () => {
 				const { licenseKey } = generateKey( { licensedHosts: [ '*.localhost' ] } );
 
 				const editor = new TestEditor( { licenseKey } );
@@ -105,6 +105,109 @@ describe( 'License check', () => {
 				sinon.assert.calledWithMatch( showErrorStub, 'domainLimit' );
 				expect( editor.isReadOnly ).to.be.true;
 			} );
+		} );
+
+		describe( 'distribution channel check', () => {
+			afterEach( () => {
+				delete window[ ' CKE_DISTRIBUTION' ];
+			} );
+
+			it( 'should not block if distribution channel match', () => {
+				setChannel( 'xyz' );
+
+				const { licenseKey } = generateKey( { distributionChannel: 'xyz' } );
+
+				const editor = new TestEditor( { licenseKey } );
+
+				sinon.assert.notCalled( showErrorStub );
+				expect( editor.isReadOnly ).to.be.false;
+			} );
+
+			it( 'should not block if one of distribution channel match', () => {
+				setChannel( 'xyz' );
+
+				const { licenseKey } = generateKey( { distributionChannel: [ 'abc', 'xyz' ] } );
+
+				const editor = new TestEditor( { licenseKey } );
+
+				sinon.assert.notCalled( showErrorStub );
+				expect( editor.isReadOnly ).to.be.false;
+			} );
+
+			it( 'should not block if implicit distribution channel match', () => {
+				const { licenseKey } = generateKey( { distributionChannel: 'sh' } );
+
+				const editor = new TestEditor( { licenseKey } );
+
+				sinon.assert.notCalled( showErrorStub );
+				expect( editor.isReadOnly ).to.be.false;
+			} );
+
+			it( 'should not block if distribution channel is not restricted', () => {
+				setChannel( 'xyz' );
+
+				const { licenseKey } = generateKey();
+
+				const editor = new TestEditor( { licenseKey } );
+
+				sinon.assert.notCalled( showErrorStub );
+				expect( editor.isReadOnly ).to.be.false;
+			} );
+
+			it( 'should block if distribution channel doesn\'t match', () => {
+				setChannel( 'abc' );
+
+				const { licenseKey } = generateKey( { distributionChannel: 'xyz' } );
+
+				const editor = new TestEditor( { licenseKey } );
+
+				sinon.assert.calledWithMatch( showErrorStub, 'distributionChannel' );
+				expect( editor.isReadOnly ).to.be.true;
+			} );
+
+			it( 'should block if none of distribution channel doesn\'t match', () => {
+				setChannel( 'abc' );
+
+				const { licenseKey } = generateKey( { distributionChannel: [ 'xyz', 'def' ] } );
+
+				const editor = new TestEditor( { licenseKey } );
+
+				sinon.assert.calledWithMatch( showErrorStub, 'distributionChannel' );
+				expect( editor.isReadOnly ).to.be.true;
+			} );
+
+			it( 'should block if implicit distribution channel doesn\'t match', () => {
+				const { licenseKey } = generateKey( { distributionChannel: 'xyz' } );
+
+				const editor = new TestEditor( { licenseKey } );
+
+				sinon.assert.calledWithMatch( showErrorStub, 'distributionChannel' );
+				expect( editor.isReadOnly ).to.be.true;
+			} );
+
+			describe( 'GPL license', () => {
+				it( 'should block if disctribution channel is cloud', () => {
+					setChannel( 'cloud' );
+
+					const editor = new TestEditor( {} );
+
+					sinon.assert.calledWithMatch( showErrorStub, 'distributionChannel' );
+					expect( editor.isReadOnly ).to.be.true;
+				} );
+
+				it( 'should not block if disctribution channel is not cloud', () => {
+					setChannel( 'xyz' );
+
+					const editor = new TestEditor( {} );
+
+					sinon.assert.notCalled( showErrorStub );
+					expect( editor.isReadOnly ).to.be.false;
+				} );
+			} );
+
+			function setChannel( channel ) {
+				window[ ' CKE_DISTRIBUTION' ] = channel;
+			}
 		} );
 
 		describe( 'trial check', () => {
@@ -457,19 +560,18 @@ function wait( time ) {
 	} );
 }
 
-function generateKey( {
-	isExpired = false,
-	jtiExist = true,
-	expExist = true,
-	vcExist = true,
-	customVc = undefined,
-	skipHeader,
-	skipTail,
-	daysAfterExpiration = 0,
-	licensedHosts,
-	licenseType,
-	usageEndpoint
-} = {} ) {
+function generateKey( options = {} ) {
+	const {
+		isExpired = false,
+		jtiExist = true,
+		expExist = true,
+		vcExist = true,
+		customVc = undefined,
+		skipHeader = false,
+		skipTail = false,
+		daysAfterExpiration = 0
+	} = options;
+
 	const jti = 'foo';
 	const releaseTimestamp = Date.parse( releaseDate );
 	const day = 86400000; // one day in milliseconds.
@@ -478,25 +580,33 @@ function generateKey( {
 	// before or after release day.
 	const expirationTimestamp = isExpired ? releaseTimestamp - 10 * day : releaseTimestamp + 10 * day;
 	const todayTimestamp = ( expirationTimestamp + daysAfterExpiration * day );
-	const vc = crc32( getCrcInputData( {
-		jti,
-		exp: expirationTimestamp / 1000,
-		licensedHosts,
-		licenseType,
-		usageEndpoint
-	} ) );
 
-	const payload = encodePayload( {
-		jti: jtiExist && jti,
-		vc: customVc || ( vcExist ? vc : undefined ),
-		exp: expExist && expirationTimestamp / 1000,
-		licensedHosts,
-		licenseType,
-		usageEndpoint
+	const payload = {};
+
+	[ 'licensedHosts', 'licenseType', 'usageEndpoint', 'distributionChannel' ].forEach( prop => {
+		if ( prop in options ) {
+			payload[ prop ] = options[ prop ];
+		}
 	} );
 
+	if ( jtiExist ) {
+		payload.jti = jti;
+	}
+
+	if ( expExist ) {
+		payload.exp = Math.ceil( expirationTimestamp / 1000 );
+	}
+
+	if ( customVc ) {
+		payload.vc = customVc;
+	} else if ( vcExist ) {
+		const vc = crc32( getCrcInputData( payload ) );
+
+		payload.vc = vc;
+	}
+
 	return {
-		licenseKey: `${ skipHeader ? '' : 'foo.' }${ payload }${ skipTail ? '' : '.bar' }`,
+		licenseKey: `${ skipHeader ? '' : 'foo.' }${ encodePayload( payload ) }${ skipTail ? '' : '.bar' }`,
 		todayTimestamp
 	};
 }
