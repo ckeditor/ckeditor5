@@ -55,7 +55,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 .then( /* ... */ );
 ```
 
-Pass the imported plugins inside the configuration to the {@link module:editor-classic/classiceditor~ClassicEditor#create `create()`} method. Please note, that to use premium features, you need to activate them with a proper license key, mention in the final section of this guide.
+Pass the imported plugins inside the configuration to the {@link module:editor-classic/classiceditor~ClassicEditor#create `create()`} method and add toolbar items where applicable. Please note, that to use premium features, you need to activate them with a proper license key, mentioned in the final section of this guide.
 
 The first argument in the `create()` function is a DOM element for the editor placement, so you need to add it to your HTML page.
 
@@ -95,7 +95,9 @@ Then, you need to attach the script with the JavaScript code. To simplify import
 </script>
 ```
 
-Once you have added the import map, you can access the editor and its plugins using the `ckeditor5` specifier. If you want to use premium features, import them from the `ckeditor5-premium-features` package. In the following script tag, import the desired plugins and add them to the `plugins` array. Note that both script tags (this and previous) have the appropriate `type` values.
+Once you have added the import map, you can access the editor and its plugins using the `ckeditor5` specifier. If you want to use premium features, import them from the `ckeditor5-premium-features` package. Please note, that to use premium features, you need to activate them with a proper license key, mentioned in the final section of this guide.
+
+In the following script tag, import the desired plugins and add them to the `plugins` array and add toolbar items where applicable. Note that both script tags (this and previous) have the appropriate `type` values.
 
 ```html
 <script type="module">
