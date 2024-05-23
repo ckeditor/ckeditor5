@@ -14,6 +14,7 @@ CKEditor&nbsp;5 is a powerful, rich text editor you can embed in your web applic
 ## Using CKEditor&nbsp;5 Builder
 
 Check out our [interactive Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs) to quickly get a taste of CKEditor&nbsp;5. It offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs. You can easily select:
+* editor type,
 * the features you need,
 * the preferred framework (React, Angular, Vue or Vanilla JS),
 * the preferred distribution method.
