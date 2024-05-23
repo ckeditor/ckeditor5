@@ -15,6 +15,12 @@ Check out the [demo in the table feature guide](https://ckeditor.com/docs/ckedit
 
 See the [`@ckeditor/ckeditor5-table` package](https://ckeditor.com/docs/ckeditor5/latest/api/table.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
 
+## Installation
+
+```bash
+npm install ckeditor5
+```
+
 ## License
 
 Licensed under the GPL, LGPL and MPL licenses, at your choice. For full details about the license, please check the `LICENSE.md` file or [https://ckeditor.com/legal/ckeditor-oss-license](https://ckeditor.com/legal/ckeditor-oss-license).

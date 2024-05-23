@@ -225,78 +225,60 @@ The style sheet:
 
 ## Installation
 
-<info-box info>
-	The style feature is not available in any of the {@link installation/getting-started/predefined-builds predefined builds}.
-</info-box>
-
-To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-style`](https://www.npmjs.com/package/@ckeditor/ckeditor5-style) package:
-
-```plaintext
-npm install --save @ckeditor/ckeditor5-style
-```
-
-Then add it to the editor configuration:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { Style } from '@ckeditor/ckeditor5-style';
+import { ClassicEditor, Style } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Style, /* ... */ ],
-		toolbar: {
-			items: [
-				'style',
-				// More toolbar items.
-				// ...
-			],
-		},
-		style: {
-			definitions: [
-				// Styles definitions.
-				// ...
-			]
-		}
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Style, /* ... */ ],
+	toolbar: {
+		items: [
+			'style',
+			// More toolbar items.
+			// ...
+		],
+	},
+	style: {
+		definitions: [
+			// Styles definitions.
+			// ...
+		]
+	}
+} )
+.then( /* ... */ );
 ```
-
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
-</info-box>
 
 ## Configuration
 
 Configuring the styles feature takes two steps. First, you need to define the styles in the configuration file, for example:
 
 ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Style, /* ... */ ],
-		toolbar: {
-			items: [
-				'style',
-				// More toolbar items.
-				// ...
-			],
-		},
-		style: {
-			definitions: [
-				{
-					name: 'Article category',
-					element: 'h3',
-					classes: [ 'category' ]
-				},
-				{
-					name: 'Info box',
-					element: 'p',
-					classes: [ 'info-box' ]
-				},
-			]
-		}
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Style, /* ... */ ],
+	toolbar: {
+		items: [
+			'style',
+			// More toolbar items.
+			// ...
+		],
+	},
+	style: {
+		definitions: [
+			{
+				name: 'Article category',
+				element: 'h3',
+				classes: [ 'category' ]
+			},
+			{
+				name: 'Info box',
+				element: 'p',
+				classes: [ 'info-box' ]
+			},
+		]
+	}
+} )
+.then( /* ... */ );
 
 ```
 

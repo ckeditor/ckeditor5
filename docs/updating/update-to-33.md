@@ -24,7 +24,7 @@ Listed below are the most important changes that require your attention when upg
 
 ### New import paths in the `ckeditor5-list` package
 
-Starting with v33.0.0, some import paths have changed in the [`ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package. If your application {@link installation/plugins/installing-plugins imports individual plugins} to integrate or build CKEditor&nbsp;5, you should update the paths accordingly:
+Starting with v33.0.0, some import paths have changed in the [`ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package. If your application imports individual plugins to integrate or build CKEditor&nbsp;5, you should update the paths accordingly:
 
 ```js
 // ❌ Old import paths:
@@ -46,7 +46,7 @@ import ListPropertiesEditing from '@ckeditor/ckeditor5-list/src/listproperties/l
 
 ### Additional dependencies in CKEditor&nbsp;5 collaboration features
 
-We introduced the {@link installation/advanced/dll-builds DLL builds} support for collaboration features. As a result, some imports, plugin requirements, and cross-package dependencies have changed to allow for the new building process.
+The {@link getting-started/advanced/dll-builds DLL builds} support was introduced for collaboration features. As a result, some imports, plugin requirements and cross-package dependencies have changed to allow for the new building process.
 
 From now on, extra plugins will be required when you add the following CKEditor&nbsp;5 collaboration features to the editor:
 

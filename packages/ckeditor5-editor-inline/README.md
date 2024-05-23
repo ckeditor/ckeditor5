@@ -9,11 +9,17 @@ The inline editor implementation for CKEditor&nbsp;5.
 
 This package exposes the [`InlineEditor`](https://ckeditor.com/docs/ckeditor5/latest/api/module_editor-inline_inlineeditor-InlineEditor.html) class. Follow there to learn more about this type of editor and how to initialize it.
 
-This package contains the source version of the inline editor. This kind of editor implementation is also available as a ready-to-use [inline build](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-inline). Read more about [CKEditor&nbsp;5 predefined builds](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/predefined-builds.html) in the CKEditor&nbsp;5 documentation.
+This package contains the source version of the inline editor. This kind of editor implementation is also available as a ready-to-use [inline build](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-inline). Read more about [CKEditor&nbsp;5 predefined builds](https://ckeditor.com/docs/ckeditor5/latest/getting-started/legacy/advanced/alternative-setups/predefined-builds.html) in the CKEditor&nbsp;5 documentation.
 
 ## Documentation
 
 See the [`@ckeditor/ckeditor5-editor-inline` package](https://ckeditor.com/docs/ckeditor5/latest/api/editor-inline.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
+
+## Installation
+
+```bash
+npm install ckeditor5
+```
 
 ## License
 
