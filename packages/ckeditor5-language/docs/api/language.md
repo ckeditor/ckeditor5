@@ -22,8 +22,10 @@ You can also check out the following plugins:
 
 ## Installation
 
-```
-npm install --save @ckeditor/ckeditor5-language
+This package is part of our open-source aggregate package.
+
+```bash
+npm install ckeditor5
 ```
 
 ## Contribute

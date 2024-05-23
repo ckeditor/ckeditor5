@@ -1,6 +1,6 @@
 ---
 category: updating
-order: 20
+order: 40
 meta-title: Release process | CKEditor 5 Documentation
 meta-description: What CKEditor 5 versions are published and how is it done? What is the difference between stable, nighly, alpha and RC versions?
 ---
@@ -15,7 +15,7 @@ The following guide describes the various ways CKEditor&nbsp;5 code is released.
 
 Regular code releases (there are usually 10 of these a year) bring different changes and new features. They are often divided into major and minor changes, along the lines of our {@link updating/versioning-policy versioning policy}.
 
-Each code release is noted in the [changelog](https://github.com/ckeditor/ckeditor5/blob/stable/CHANGELOG.md) and enumerates all changes, additions, and bug fixes that took place, also highlighting if there are any breaking changes (changes that make the latest release incompatible with the previous ones code-wise). The code packages are released on the [CKEditor&nbsp;5 npm site](https://www.npmjs.com/package/ckeditor5), as well as updated in the {@link installation/getting-started/predefined-builds#download-options predefined builds} and {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder online builder} and are ready to download.
+Each code release is noted in the [changelog](https://github.com/ckeditor/ckeditor5/blob/stable/CHANGELOG.md) and enumerates all changes, additions, and bug fixes that took place, also highlighting if there are any breaking changes (changes that make the latest release incompatible with the previous ones code-wise). The code packages are released on the [CKEditor&nbsp;5 npm site](https://www.npmjs.com/package/ckeditor5), as well as updated in the Builder and are ready to download.
 
 It is good to follow npm release messages about new packages being published as well as periodically check the changelog.
 

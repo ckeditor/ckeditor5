@@ -20,33 +20,17 @@ To insert a horizontal line in the demo below, use the toolbar button {@icon @ck
 
 ## Installation
 
-<info-box info>
-	The horizontal line feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
-</info-box>
-
-To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-horizontal-line`](https://www.npmjs.com/package/@ckeditor/ckeditor5-horizontal-line) package:
-
-```plaintext
-npm install --save @ckeditor/ckeditor5-horizontal-line
-```
-
-And add it to your plugin list configuration:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
+import { ClassicEditor, HorizontalLine } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ HorizontalLine, /* ... */ ],
-		toolbar: [ 'horizontalLine', /* ... */ ],
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ HorizontalLine, /* ... */ ],
+	toolbar: [ 'horizontalLine', /* ... */ ],
+} )
+.then( /* ... */ );
 ```
-
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
-</info-box>
 
 ## Related features
 

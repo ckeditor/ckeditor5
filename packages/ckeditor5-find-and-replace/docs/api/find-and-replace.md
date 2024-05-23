@@ -18,8 +18,10 @@ See the {@link features/find-and-replace find and replace feature guide} and the
 
 ## Installation
 
-```
-npm install --save @ckeditor/ckeditor5-find-and-replace
+This package is part of our open-source aggregate package.
+
+```bash
+npm install ckeditor5
 ```
 
 ## Contribute
