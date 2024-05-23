@@ -38,7 +38,7 @@ npm install
 npm run dev
 ```
 
-And now, you should see a CKEditor&nbsp;5 instance in your browser like this:
+You should see a CKEditor&nbsp;5 instance in your browser like this:
 
 {@img assets/img/tutorial-implementing-a-widget-1.png Screenshot of a classic editor initialized from source.}
 
@@ -296,7 +296,7 @@ export default class SimpleBoxEditing extends Plugin {
 }
 ```
 
-Once you have converters, you can try to see the simple box in action. You have not defined a way to insert a new simple box into the document yet, so load it via the editor data. To do that, you need to modify the `index.html` file:
+Once you have the converters, you can try to see the simple box in action. You have not defined a way to insert a new simple box into the document yet, so load it via the editor data. To do that, you need to modify the `index.html` file:
 
 ```html
 <!DOCTYPE html>
@@ -353,7 +353,7 @@ Voilà &ndash; this is your first simple box instance:
 
 {@img assets/img/tutorial-implementing-a-widget-3.png Screenshot of a classic editor with an instance of a simple box inside.}
 
-### What's in the model?
+### What is in the model?
 
 The HTML that you added to the `index.html` file is your editor's data. This is what `editor.getData()` would return. Also, for now, this also the DOM structure which is rendered by the CKEditor&nbsp;5 engine in the editable region:
 
@@ -443,11 +443,7 @@ See what else you can improve.
 ### Making simple box a widget
 
 <info-box>
-	If you are familiar with the {@link @ckeditor4 guide/dev/deep_dive/widgets/README widget system of CKEditor 4}, you will notice significant differences in how widgets are implemented in CKEditor&nbsp;5.
-
-	CKEditor 4 implementation exposes a declarative API that controls the entire behavior of a widget (from its schema and internal model to the styles, clicking behavior, context menu and the dialog).
-
-	In CKEditor&nbsp;5 the widget system was redesigned. Most of its responsibilities were taken over by the engine, some were extracted to a separate package ({@link api/widget `@ckeditor/ckeditor5-widget`}) and some have to be handled by other utilities provided by CKEditor&nbsp;5 Framework.
+	In CKEditor&nbsp;5 the widget system is mostly handled by the engine. Some of it is contained withing the ({@link api/widget `@ckeditor/ckeditor5-widget`}) package and some have to be handled by other utilities provided by CKEditor&nbsp;5 Framework.
 
 	CKEditor&nbsp;5 implementation is, therefore, open for extensions and recomposition. You can choose the behaviors that you want (just like you did so far in this tutorial by defining a schema) and skip others or implement them by yourself.
 </info-box>
@@ -673,17 +669,17 @@ export default class SimpleBoxEditing extends Plugin {
 }
 ```
 
-You can now execute this command to insert a new simple box. Calling:
+You can now execute this command to insert a new simple box. Call:
 
 ```js
 editor.execute( 'insertSimpleBox' );
 ```
 
-Should result in:
+It should result in:
 
 {@img assets/img/tutorial-implementing-a-widget-6.png Screenshot of a simple box instance inserted at the beginning of the editor content.}
 
-You can also try inspecting the `isEnabled` property value (or just checking it in CKEditor&nbsp;5 inspector):
+You can also try inspecting the `isEnabled` property value (or just checking it in the CKEditor&nbsp;5 inspector):
 
 ```js
 console.log( editor.commands.get( 'insertSimpleBox' ).isEnabled );
