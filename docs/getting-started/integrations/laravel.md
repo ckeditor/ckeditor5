@@ -11,7 +11,12 @@ As a pure JavaScript/TypeScript application, CKEditor&nbsp;5 will work inside an
 
 ## Using CKEditor&nbsp;5 Builder
 
-The easiest way to use CKEditor&nbsp;5 in your Laravel project is preparing an editor preset with [CKEditor&nbsp;5 Builder](https://ckeditor.com/builder?redirect=preset) and including it into your project.
+The easiest way to use CKEditor&nbsp;5 in your Laravel project is preparing an editor preset with [CKEditor&nbsp;5 Builder](https://ckeditor.com/builder?redirect=preset) and including it into your project. It offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs. You can easily select:
+* the features you need,
+* the preferred framework (React, Angular, Vue or Vanilla JS),
+* the preferred distribution method.
+
+You get ready-to-use code tailored to your needs!
 
 ## Setting up the project
 
