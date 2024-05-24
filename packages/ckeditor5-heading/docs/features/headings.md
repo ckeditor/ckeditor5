@@ -46,11 +46,13 @@ After {@link getting-started/quick-start installing the editor}, add the feature
 ```js
 import { ClassicEditor, Heading } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Heading, /* ... */ ],
-	toolbar: [ 'heading', /* ... */ ]
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Heading, /* ... */ ],
+		toolbar: [ 'heading', /* ... */ ]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ### Installation with toolbar heading buttons
@@ -78,16 +80,18 @@ For example, the following editor will support only two levels of headings &ndas
 ```
 
 ```js
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	heading: {
-		options: [
-			{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
-			{ model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
-			{ model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' }
-		]
-	}
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		heading: {
+			options: [
+				{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+				{ model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+				{ model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' }
+			]
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 {@snippet features/custom-heading-levels}
@@ -116,28 +120,30 @@ For example, the following editor will support the following two heading options
 ```
 
 ```js
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	heading: {
-		options: [
-			{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
-			{ model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
-			{ model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
-			{
-				model: 'headingFancy',
-				view: {
-					name: 'h2',
-					classes: 'fancy'
-				},
-				title: 'Heading 2 (fancy)',
-				class: 'ck-heading_heading2_fancy',
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		heading: {
+			options: [
+				{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+				{ model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+				{ model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+				{
+					model: 'headingFancy',
+					view: {
+						name: 'h2',
+						classes: 'fancy'
+					},
+					title: 'Heading 2 (fancy)',
+					class: 'ck-heading_heading2_fancy',
 
-				// It needs to be converted before the standard 'heading2'.
-				converterPriority: 'high'
-			}
-		]
-	}
-} )
-.then( /* ... */ );
+					// It needs to be converted before the standard 'heading2'.
+					converterPriority: 'high'
+				}
+			]
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 {@snippet features/custom-heading-elements}
@@ -147,21 +153,23 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 To use individual toolbar buttons instead of the heading dropdown, you need to properly configure the feature. You also need to import proper UI elements; see the [installation section](#installation-with-toolbar-heading-buttons) for instructions on how to do it.
 
 ```js
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	toolbar: [ 'paragraph', 'heading1', 'heading2', 'heading3', 'heading4', 'heading5', 'heading6', '|', 'undo', 'redo' ],
-	heading: {
-		options: [
-			{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
-			{ model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
-			{ model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
-			{ model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
-			{ model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' },
-			{ model: 'heading5', view: 'h5', title: 'Heading 5', class: 'ck-heading_heading5' },
-			{ model: 'heading6', view: 'h6', title: 'Heading 6', class: 'ck-heading_heading6' }
-		]
-	}
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		toolbar: [ 'paragraph', 'heading1', 'heading2', 'heading3', 'heading4', 'heading5', 'heading6', '|', 'undo', 'redo' ],
+		heading: {
+			options: [
+				{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+				{ model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+				{ model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+				{ model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
+				{ model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' },
+				{ model: 'heading5', view: 'h5', title: 'Heading 5', class: 'ck-heading_heading5' },
+				{ model: 'heading6', view: 'h6', title: 'Heading 6', class: 'ck-heading_heading6' }
+			]
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 {@snippet features/custom-heading-buttons}
 
