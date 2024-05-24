@@ -71,7 +71,7 @@ export default class Input extends Plugin {
 			const domSelection = window.getSelection()!;
 			const newViewSelection = view.domConverter.domSelectionToView( domSelection );
 
-			if ( !newViewSelection ) {
+			if ( !newViewSelection || !newViewSelection.getFirstPosition() ) {
 				this._compositionQueue.flush( 'selection change outside editor' );
 				return;
 			}
