@@ -13,8 +13,6 @@ import {
 	submitHandler,
 	FocusCycler,
 	CollapsibleView,
-	type FocusCyclerForwardCycleEvent,
-	type FocusCyclerBackwardCycleEvent,
 	type FocusableView
 } from 'ckeditor5/src/ui.js';
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
@@ -147,8 +145,4 @@ export default class ImageInsertFormView extends View {
 	public focus(): void {
 		this._focusCycler.focusFirst();
 	}
-}
-
-function isViewWithFocusCycler( view: View ): view is View & { focusCycler: FocusCycler } {
-	return 'focusCycler' in view;
 }
