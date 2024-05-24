@@ -17,6 +17,12 @@ Check out the demos for the [paste from office](https://ckeditor.com/docs/ckedit
 
 See the [`@ckeditor/ckeditor5-paste-from-office` package](https://docs.ckeditor.com/ckeditor5/latest/api/paste-from-office.html) page in [CKEditor&nbsp;5 documentation](https://docs.ckeditor.com/ckeditor5/latest/).
 
+## Installation
+
+```bash
+npm install ckeditor5
+```
+
 ## License
 
 Licensed under the terms of [GNU General Public License Version 2 or later](http://www.gnu.org/licenses/gpl.html). For full details about the license, please check the `LICENSE.md` file or [https://ckeditor.com/legal/ckeditor-oss-license](https://ckeditor.com/legal/ckeditor-oss-license).

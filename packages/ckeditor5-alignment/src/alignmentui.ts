@@ -24,12 +24,12 @@ import { isSupported, normalizeAlignmentOptions } from './utils.js';
 import type { AlignmentFormat, SupportedOption } from './alignmentconfig.js';
 import type AlignmentCommand from './alignmentcommand.js';
 
-const iconsMap = new Map( [
+const iconsMap = /* #__PURE__ */ ( () => new Map( [
 	[ 'left', icons.alignLeft ],
 	[ 'right', icons.alignRight ],
 	[ 'center', icons.alignCenter ],
 	[ 'justify', icons.alignJustify ]
-] );
+] ) )();
 
 /**
  * The default alignment UI plugin.

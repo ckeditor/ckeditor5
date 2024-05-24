@@ -45,12 +45,6 @@ import '../../../theme/tableproperties.css';
 import type ColorInputView from '../../ui/colorinputview.js';
 import type { TablePropertiesOptions } from '../../tableconfig.js';
 
-const ALIGNMENT_ICONS = {
-	left: icons.objectLeft,
-	center: icons.objectCenter,
-	right: icons.objectRight
-};
-
 /**
  * Additional configuration of the view.
  */
@@ -661,7 +655,11 @@ export default class TablePropertiesView extends View {
 
 		fillToolbar( {
 			view: this,
-			icons: ALIGNMENT_ICONS,
+			icons: {
+				left: icons.objectLeft,
+				center: icons.objectCenter,
+				right: icons.objectRight
+			},
 			toolbar: alignmentToolbar,
 			labels: this._alignmentLabels,
 			propertyName: 'alignment',

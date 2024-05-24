@@ -84,6 +84,10 @@ describe( 'LinkFormView', () => {
 			expect( spy.calledOnce ).to.true;
 		} );
 
+		it( 'should create url input with inputmode=url', () => {
+			expect( view.urlInputView.fieldView.inputMode ).to.be.equal( 'url' );
+		} );
+
 		describe( 'template', () => {
 			it( 'has url input view', () => {
 				expect( view.template.children[ 0 ].get( 0 ) ).to.equal( view.urlInputView );

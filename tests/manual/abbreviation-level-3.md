@@ -184,7 +184,7 @@ Let's define the 3 plugins.
 
 import AbbreviationEditing from './abbreviationediting';
 import AbbreviationUI from './abbreviationui';
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from 'ckeditor5';
 
 export default class Abbreviation extends Plugin {
 	static get requires() {
@@ -196,7 +196,7 @@ export default class Abbreviation extends Plugin {
 ```js
 // abbreviation/abbreviationui.js
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from 'ckeditor5';
 
 export default class AbbreviationUI extends Plugin {
 	init() {
@@ -208,7 +208,7 @@ export default class AbbreviationUI extends Plugin {
 ```js
 // abbreviation/abbreviationediting.js
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from 'ckeditor5';
 
 export default class AbbreviationEditing extends Plugin {
 	init() {
@@ -270,7 +270,7 @@ Update the `AbbreviationEditing` plugin with this definition.
 ```js
 // abbreviation/abbreviationediting.js
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from 'ckeditor5';
 
 export default class AbbreviationEditing extends Plugin {
 	init() {
@@ -304,7 +304,7 @@ Getting the title is a little bit tricky. In upcast conversion, we will need a s
 ```js
 // abbreviation/abbreviationediting.js
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from 'ckeditor5';
 
 export default class AbbreviationEditing extends Plugin {
 	init() {
@@ -338,7 +338,7 @@ export default class AbbreviationEditing extends Plugin {
 ```js
 // abbreviation/abbreviationediting.js
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from 'ckeditor5';
 
 export default class AbbreviationEditing extends Plugin {
 	init() {
@@ -417,7 +417,7 @@ Import the command and register it in the `AbbreviationEditing` plugin:
 ```js
 // abbreviation/abbreviationediting.js
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from 'ckeditor5';
 
 import AbbreviationCommand from './abbreviationcommand';                 // ADDED
 
