@@ -28,6 +28,7 @@ export default class DropdownMenuPortalView extends View {
 				class: [
 					'ck',
 					'ck-dropdown-menu__menu__portal',
+					'ck-preserve-dropdown-if-focus-inside',
 					'ck-ai-assistant-ui_theme' // fixme
 				],
 				tabindex: '-1'

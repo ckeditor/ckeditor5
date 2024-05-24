@@ -427,7 +427,9 @@ function closeDropdownOnClickOutside( dropdownView: DropdownView ) {
 	dropdownView.on<UIViewRenderEvent>( 'render', () => {
 		clickOutsideHandler( {
 			emitter: dropdownView,
-			activator: () => dropdownView.isOpen,
+			activator: ( domEvt: MouseEvent ) => (
+				!hasParentWithPreservedDropdownFocus( domEvt.target as Element | null ) && dropdownView.isOpen
+			),
 			callback: () => {
 				dropdownView.isOpen = false;
 			},
@@ -459,10 +461,21 @@ function closeDropdownOnExecute( dropdownView: DropdownView ) {
  */
 function closeDropdownOnBlur( dropdownView: DropdownView ) {
 	dropdownView.focusTracker.on<ObservableChangeEvent<boolean>>( 'change:isFocused', ( evt, name, isFocused ) => {
-		if ( dropdownView.isOpen && !isFocused ) {
+		if ( !hasParentWithPreservedDropdownFocus( document.activeElement ) && dropdownView.isOpen && !isFocused ) {
 			dropdownView.isOpen = false;
 		}
 	} );
+}
+
+/**
+ * Checks if the given menu element or any of its ancestors has the class 'ck-preserve-dropdown-if-focus-inside',
+ * indicating that the dropdown should not be closed when it's focus is lost.
+ *
+ * @param menu The menu element to check.
+ * @returns `true` if the menu or any of its ancestors has the class 'ck-preserve-dropdown-if-focus-inside', `false` otherwise.
+ */
+function hasParentWithPreservedDropdownFocus( menu: Element | null ): boolean {
+	return !!( menu && menu.closest( '.ck-preserve-dropdown-if-focus-inside' ) );
 }
 
 /**
