@@ -25,11 +25,13 @@ After {@link getting-started/quick-start installing the editor}, add the feature
 ```js
 import { ClassicEditor, Alignment } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Alignment, /* ... */ ],
-	toolbar: [ 'alignment', /* ... */ ]
-} )
-.then( /* ... */ );
+ClassicEditor.
+	create( document.querySelector( '#editor' ), {
+		plugins: [ Alignment, /* ... */ ],
+		toolbar: [ 'alignment', /* ... */ ]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Configuring alignment options

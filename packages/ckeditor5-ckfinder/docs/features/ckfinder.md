@@ -69,15 +69,17 @@ After {@link getting-started/quick-start installing the editor}, add the feature
 ```js
 import { ClassicEditor, CKFinder } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ CKFinder, /* ... */ ],
-	toolbar: [ 'ckfinder', 'uploadImage', /* ... */ ], // Depending on your preference.
-	ckfinder: {
-		// Feature configuration.
-		// ...
-	}
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ CKFinder, /* ... */ ],
+		toolbar: [ 'ckfinder', 'uploadImage', /* ... */ ], // Depending on your preference.
+		ckfinder: {
+			// Feature configuration.
+			// ...
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Configuration

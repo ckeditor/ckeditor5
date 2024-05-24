@@ -51,11 +51,13 @@ After {@link getting-started/quick-start installing the editor}, add the feature
 ```js
 import { ClassicEditor, Autoformat } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Autoformat, /* ... */ ],
-	toolbar: [ /* ... */ ]
-} )
-.then( /* ... */ );
+ClassicEditor.
+	create( document.querySelector( '#editor' ), {
+		plugins: [ Autoformat, /* ... */ ],
+		toolbar: [ /* ... */ ]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box hint>

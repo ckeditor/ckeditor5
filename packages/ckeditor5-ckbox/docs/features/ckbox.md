@@ -80,15 +80,17 @@ Finally, add {@link module:ckbox/ckbox~CKBox} to your plugin list and toolbar, a
 ```js
 import { ClassicEditor, Image, ImageUpload, PictureEditing, CKBox, CKBoxImageEdit, CloudServices } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Image, PictureEditing, ImageUpload, CloudServices, CKBox, CKBoxImageEdit, /* ... */ ],
-	toolbar: [ 'ckbox', 'ckboxImageEdit', /* ... */ ], // Depending on your preference.
-	ckbox: {
-		// Feature configuration including license key.
-		// ...
-	}
-} )
-.then( /* ... */ );
+ClassicEdito
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Image, PictureEditing, ImageUpload, CloudServices, CKBox, CKBoxImageEdit, /* ... */ ],
+		toolbar: [ 'ckbox', 'ckboxImageEdit', /* ... */ ], // Depending on your preference.
+		ckbox: {
+			// Feature configuration including license key.
+			// ...
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 Further in the document, the dependency plugins will be omitted in code listings for clarity.
