@@ -31,11 +31,9 @@ const TYPING_INPUT_TYPES = [
 
 	// This one is used by Safari when typing accented letter (Mac).
 	// This one is used by Safari when accepting spell check suggestions from the autocorrection pop-up (Mac).
-	'insertReplacementText'
-];
+	'insertReplacementText',
 
-const TYPING_INPUT_TYPES_ANDROID = [
-	...TYPING_INPUT_TYPES,
+	// TODO
 	'insertCompositionText'
 ];
 
@@ -57,11 +55,6 @@ export default class InsertTextObserver extends Observer {
 
 		this.focusObserver = view.getObserver( FocusObserver );
 
-		// On Android composition events should immediately be applied to the model. Rendering is not disabled.
-		// On non-Android the model is updated only on composition end.
-		// On Android we can't rely on composition start/end to update model.
-		const typingInputTypes = env.isAndroid ? TYPING_INPUT_TYPES_ANDROID : TYPING_INPUT_TYPES;
-
 		const viewDocument = view.document;
 
 		viewDocument.on<ViewDocumentInputEvent>( 'beforeinput', ( evt, data ) => {
@@ -71,7 +64,7 @@ export default class InsertTextObserver extends Observer {
 
 			const { data: text, targetRanges, inputType, domEvent } = data;
 
-			if ( !typingInputTypes.includes( inputType ) ) {
+			if ( !TYPING_INPUT_TYPES.includes( inputType ) ) {
 				return;
 			}
 
@@ -83,6 +76,7 @@ export default class InsertTextObserver extends Observer {
 
 			viewDocument.fire( eventInfo, new DomEventData( view, domEvent, {
 				text,
+				inputType,
 				selection: view.createSelection( targetRanges )
 			} ) );
 
@@ -169,4 +163,9 @@ export interface InsertTextEventData extends DomEventData {
 	 * If not specified, the insertion should occur at the current view selection.
 	 */
 	selection?: ViewSelection | ViewDocumentSelection;
+
+	/**
+	 * TODO
+	 */
+	inputType?: string;
 }

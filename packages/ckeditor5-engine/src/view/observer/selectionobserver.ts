@@ -178,6 +178,8 @@ export default class SelectionObserver extends Observer {
 				// @if CK_DEBUG_TYPING // 	console.groupEnd();
 				// @if CK_DEBUG_TYPING // }
 
+				this.document.fire( 'selectionChangeTestPoC' );
+
 				return;
 			}
 

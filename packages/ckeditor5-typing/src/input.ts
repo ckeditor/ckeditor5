@@ -67,6 +67,17 @@ export default class Input extends Plugin {
 		editor.commands.add( 'insertText', insertTextCommand );
 		editor.commands.add( 'input', insertTextCommand );
 
+		this.listenTo( view.document, 'selectionChangeTestPoC', () => {
+			const domSelection = window.getSelection()!;
+			const newViewSelection = view.domConverter.domSelectionToView( domSelection );
+			const viewParent = mapper.findMappedViewAncestor( newViewSelection.getFirstPosition()! );
+			const modelParent = mapper.toModelElement( viewParent );
+
+			if ( !modelParent || !this._compositionQueue.isComposedElement( modelParent ) ) {
+				this._compositionQueue.flush( 'selection change outside' );
+			}
+		} );
+
 		this.listenTo<ViewDocumentInsertTextEvent>( view.document, 'insertText', ( evt, data ) => {
 			// Rendering is disabled while composing so prevent events that will be rendered by the engine
 			// and should not be applied by the browser.
@@ -136,7 +147,7 @@ export default class Input extends Plugin {
 			// and we could apply changes to the model and verify if the DOM is valid.
 			// The browser applies changes to the DOM not immediately on beforeinput event.
 			// We just wait for mutation observer to notice changes or as a fallback a timeout.
-			if ( env.isAndroid && view.document.isComposing ) {
+			if ( env.isAndroid && view.document.isComposing || data.inputType == 'insertCompositionText' ) {
 				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 				// @if CK_DEBUG_TYPING // 	console.log( `%c[Input]%c Queue insertText:%c "${ commandData.text }"%c ` +
 				// @if CK_DEBUG_TYPING // 		`[${ commandData.selection.getFirstPosition().path }]-` +
@@ -307,7 +318,7 @@ class CompositionQueue {
 	/**
 	 * Debounced queue flush as a safety mechanism for cases of mutation observer not triggering.
 	 */
-	public flushDebounced = debounce( () => this.flush( 'timeout' ), 50 );
+	public flushDebounced = debounce( () => this.flush( 'timeout' ), env.isAndroid ? 50 : 5000 );
 
 	/**
 	 * The queue of `insertText` command executions that are waiting for the DOM to get updated after beforeinput event.
@@ -459,6 +470,23 @@ class CompositionQueue {
 		this._compositionElements.clear();
 
 		return result;
+	}
+
+	/**
+	 * TODO TEST
+	 */
+	public getRange(): Range | null {
+		if ( !this._queue.length ) {
+			return null;
+		}
+
+		const lastItem = this._queue[ this._queue.length - 1 ];
+
+		if ( !lastItem.selectionRanges || !lastItem.selectionRanges.length ) {
+			return null;
+		}
+
+		return lastItem.selectionRanges[ 0 ].toRange();
 	}
 }
 
