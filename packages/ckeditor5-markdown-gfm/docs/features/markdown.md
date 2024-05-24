@@ -36,19 +36,21 @@ import { ClassicEditor, Bold, Italic, Essentials, Markdown } from 'ckeditor5';
 // More imports.
 // ...
 
-ClassicEditor.create( document.querySelector( '#snippet-markdown' ), {
-	plugins: [
-		Markdown,
-		Essentials,
-		Bold,
-		Italic,
-		// More plugins.
+ClassicEditor
+	.create( document.querySelector( '#snippet-markdown' ), {
+		plugins: [
+			Markdown,
+			Essentials,
+			Bold,
+			Italic,
+			// More plugins.
+			// ...
+		],
+		// More of editor's configuration.
 		// ...
-	],
-	// More of editor's configuration.
-	// ...
-} )
-.then( /* ... */ );
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 
 ```
 

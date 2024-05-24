@@ -32,14 +32,16 @@ After {@link getting-started/quick-start installing the editor}, add the feature
 ```js
 import { DecoupledEditor, Minimap } from 'ckeditor5';
 
-DecoupledEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Minimap, /* ... */ ],
-	minimap: {
-		// Reference to the container element as shown in the configuration section of the guide
-		// ...
-	}
-} )
-.then( /* ... */ );
+DecoupledEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Minimap, /* ... */ ],
+		minimap: {
+			// Reference to the container element as shown in the configuration section of the guide
+			// ...
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Configuration
@@ -55,13 +57,15 @@ The container element is essential for the minimap to render. You should pass th
 ```js
 import { DecoupledEditor, Minimap } from 'ckeditor5';
 
-DecoupledEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Minimap, /* ... */ ],
-	minimap: {
-		container: document.querySelector( '.minimap-container' )
-	}
-} )
-.then( /* ... */ );
+DecoupledEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Minimap, /* ... */ ],
+		minimap: {
+			container: document.querySelector( '.minimap-container' )
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ### Content styles and classes
@@ -159,17 +163,18 @@ Finally, the JavaScript to run the editor (learn how to [install](#installation)
 ```js
 import { DecoupledEditor, Minimap } from 'ckeditor5';
 
-DecoupledEditor.create( document.querySelector( '#editor-content' ), {
-	plugins: [ Minimap, /* ... */ ],
-	minimap: {
-		container: document.querySelector( '.minimap-container' ),
-	}
-} )
-.then( editor => {
-	const toolbarContainer = document.querySelector( '#toolbar-container' );
+DecoupledEditor
+	.create( document.querySelector( '#editor-content' ), {
+		plugins: [ Minimap, /* ... */ ],
+		minimap: {
+			container: document.querySelector( '.minimap-container' ),
+		}
+	} )
+	.then( editor => {
+		const toolbarContainer = document.querySelector( '#toolbar-container' );
 
-	toolbarContainer.appendChild( editor.ui.view.toolbar.element );
-} );
+		toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+	} );
 ```
 
 ## Related features

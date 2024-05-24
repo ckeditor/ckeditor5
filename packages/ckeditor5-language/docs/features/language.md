@@ -31,11 +31,13 @@ After {@link getting-started/quick-start installing the editor}, add the feature
 ```js
 import { ClassicEditor, TextPartLanguage } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ TextPartLanguage, /* ... */ ],
-	toolbar: [ 'textPartLanguage', /* ... */ ]
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ TextPartLanguage, /* ... */ ],
+		toolbar: [ 'textPartLanguage', /* ... */ ]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Configuring available languages
@@ -45,19 +47,21 @@ To modify the list of available languages displayed in the language dropdown use
 The example below shows the configuration used for the [demo](#demo) above:
 
 ```js
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	// More of editor's configuration.
-	// ...
-	language: {
-		textPartLanguage: [
-			{ title: 'Arabic', languageCode: 'ar' },
-			{ title: 'French', languageCode: 'fr' },
-			{ title: 'Hebrew', languageCode: 'he' },
-			{ title: 'Spanish', languageCode: 'es' }
-		]
-	}
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		// More of editor's configuration.
+		// ...
+		language: {
+			textPartLanguage: [
+				{ title: 'Arabic', languageCode: 'ar' },
+				{ title: 'French', languageCode: 'fr' },
+				{ title: 'Hebrew', languageCode: 'he' },
+				{ title: 'Spanish', languageCode: 'es' }
+			]
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Related features
