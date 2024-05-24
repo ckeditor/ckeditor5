@@ -140,14 +140,14 @@ import 'ckeditor5/index.css';
 // Override the default styles.
 import 'custom.css';
 
-ClassicEditor.create( /* ... */ )
-.then( editor => {
-	console.log( editor );
-} )
-.catch( err => {
-	console.error( err.stack );
-} );
-
+ClassicEditor
+	.create( /* ... */ )
+	.then( editor => {
+		console.log( editor );
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
 ```
 
 Or import it via the `link` in `html` in the CDN setup:
