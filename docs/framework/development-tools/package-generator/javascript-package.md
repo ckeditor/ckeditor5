@@ -22,7 +22,7 @@ An overview of the project's directory structure:
 │  ├─ index.html           # The sample file.
 │  └─ ckeditor.js          # The editor initialization script.
 ├─ scripts
-│  └─ build-dist.mjs       # Script responsible for building the plugin.
+│  └─ build-dist.mjs       # Script creates `NPM` and browser builds for your plugin.
 ├─ src
 │  ├─ pluginname.js        # The plugin with example functionality.
 │  ├─ index.js             # The modules exported by the package.
@@ -49,7 +49,7 @@ An overview of the project's directory structure:
 ```
 
 <info-box warning>
-	(*) This file is available only if plugin is generated with `--use-legacy-methods` flag.
+	(*) This file is available only when plugin was generated with `--use-legacy-methods` flag.
 </info-box>
 
 Guides for developing some of the files:
@@ -128,6 +128,17 @@ Examples:
 ```bash
 # Execute stylelint.
 npm run stylelint
+```
+
+### `build:dist`
+
+Creates a `NPM` and browser builds which can be loaded into an editor using TODO: LINK/NEW GUIDE??.
+
+Examples:
+
+```bash
+# Builds the `NPM` and browser files thats are ready to publish.
+npm run build:dist
 ```
 
 ### `dll:build` (*)
