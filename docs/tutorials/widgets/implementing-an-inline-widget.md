@@ -16,11 +16,9 @@ You will build a "placeholder" feature that allows the users to insert predefine
 
 ## Before you start
 
-This guide assumes that you are familiar with the widgets concept introduced in the {@link tutorials/widgets/implementing-a-block-widget Implementing a block widget} tutorial. The tutorial will also reference various concepts from the {@link framework/architecture/intro CKEditor&nbsp;5 architecture}.
+This guide assumes that you are familiar with the widgets concept introduced in the {@link tutorials/widgets/implementing-a-block-widget Implementing a block widget} tutorial, especially the {@link tutorials/widgets/implementing-a-block-widget#lets-start Let's start} and {@link tutorials/widgets/implementing-a-block-widget#plugin-structure Plugin structure} sections. The tutorial will also reference various concepts from the {@link framework/architecture/intro CKEditor&nbsp;5 architecture}.
 
 ## Bootstrapping the project
-
-The overall project structure will be similar to one described in {@link tutorials/widgets/implementing-a-block-widget#lets-start Let's start} and {@link tutorials/widgets/implementing-a-block-widget#plugin-structure Plugin structure} sections of the "Implementing a block widget" tutorial.
 
 The easiest way to set up your project is to grab the starter files from the [GitHub repository for this tutorial](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/inline-widget/starter-files). We gathered all the necessary dependencies there, including some CKEditor 5 packages and other files needed to start the editor.
 
@@ -34,7 +32,7 @@ npm install
 npm run dev
 ```
 
-First, let's define the `Placeholder` plugin. The project will have a structure as below:
+First, let's define the `Placeholder` plugin. The project should have a structure shown below:
 
 ```plain
 ├── main.js
@@ -98,11 +96,11 @@ export default class PlaceholderEditing extends Plugin {
 }
 ```
 
-At this point, you can run development server and see in the browser console that the plugins are being initialized.
+At this point, you can run the development server and see in the browser console that the plugins are being initialized.
 
 ## The model and the view layers
 
-The placeholder feature will be {@link module:engine/model/schema~SchemaItemDefinition defined as an inline} (text-like) element so it will be inserted into other editor blocks, like `<paragraph>`, that allow text. The placeholder will have a `name` attribute. This means that the model containing some text and a placeholder will look like this:
+The placeholder feature will be {@link module:engine/model/schema~SchemaItemDefinition defined} as an inline (text-like) element so it will be inserted into other editor blocks, like `<paragraph>`, that allow text. The placeholder will have a `name` attribute. This means that the model containing some text and a placeholder will look like this:
 
 ```html
 <paragraph>
@@ -150,7 +148,7 @@ The schema is defined so now you can define the model-view converters.
 
 ### Defining converters
 
-The HTML structure (data output) of the converter will be a `<span>` with a `placeholder` class. The text inside the `<span>` will be the placeholder's name.
+The HTML structure (data output) of the converter will be a `<span>` with the `placeholder` class. The text inside the `<span>` will be the placeholder's name.
 
 ```html
 <span class="placeholder">{name}</span>
@@ -232,7 +230,7 @@ export default class PlaceholderEditing extends Plugin {
 
 ### Feature styles
 
-As you could notice, the editing part imports the `./theme/placeholder.css` CSS file which describes how the placeholder is displayed in the editing view:
+The editing part imports the `./theme/placeholder.css` CSS file which describes how the placeholder is displayed in the editing view:
 
 ```css
 /* placeholder/theme/placeholder.css */
