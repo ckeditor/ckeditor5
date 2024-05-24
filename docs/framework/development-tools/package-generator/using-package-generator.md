@@ -15,7 +15,7 @@ The [`ckeditor5-package-generator`](https://www.npmjs.com/package/ckeditor5-pack
 To create a new package without installing the tool, simply execute the following command:
 
 ```bash
-npx ckeditor5-package-generator@latest <packageName> [--use-npm] [--use-yarn] [--plugin-name <...>] [--verbose] [--lang <js|ts>]
+npx ckeditor5-package-generator@latest <packageName> [--use-npm] [--use-yarn] [--plugin-name <...>] [--verbose] [--lang <js|ts>] [--use-legacy-methods]
 ```
 
 The `<packageName>` argument is required and must obey these rules:
@@ -33,6 +33,7 @@ Available modifiers for the command are:
 * `--plugin-name` &ndash; define the plugin name to be different from the package name.
 * `--lang` &ndash; (values: `js` | `ts`) choose whether the created package should use JavaScript or TypeScript. If omitted, the script will ask the user to choose manually.
 * `--verbose` &ndash; (alias: `-v`) print additional logs about the current executed task.
+* `--use-legacy-methods` &ndash; use legacy installations methods in a newly created package.
 
 ## Using the package
 
@@ -55,3 +56,9 @@ You can check out what is available inside your package depending on the languag
 
 * {@link framework/development-tools/package-generator/javascript-package JavaScript}
 * {@link framework/development-tools/package-generator/typescript-package TypeScript}
+
+## Choosing the method
+
+Currently there are two ways of how package generator works:
+* (default) that are based on imports only from `ckeditor5` package,
+* behind `--use-legacy-methods` flag, that are based on legacy installation methods ( {@link getting-started/legacy-getting-started/quick-start Quick start guide} ) but can be build to support both.

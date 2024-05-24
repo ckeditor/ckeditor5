@@ -18,12 +18,14 @@ An overview of the project's directory structure:
 ├─ lang
 │  └─ contexts.json        # Entries used for creating translations.
 ├─ sample
-│  ├─ dll.html             # The editor initialized using the DLL builds.
+│  ├─ (*) dll.html         # The editor initialized using the DLL builds.
 │  ├─ index.html           # The sample file.
 │  └─ ckeditor.js          # The editor initialization script.
+├─ scripts
+│  └─ build-dist.mjs       # Script responsible for building the plugin.
 ├─ src
 │  ├─ pluginname.js        # The plugin with example functionality.
-│  ├─ index.js             # The modules exported by the package when using the DLL builds.
+│  ├─ index.js             # The modules exported by the package.
 │  └─ **/*.js              # All JavaScript source files should be saved here.
 ├─ tests
 │  ├─ pluginname.js
@@ -36,7 +38,7 @@ An overview of the project's directory structure:
 │  └─ **/*.css             # All CSS files should be saved here.
 │
 ├─ .editorconfig           # See link below for details.
-├─ .eslintrc.js            # ESLint configuration file.
+├─ .eslintrc.cjs           # ESLint configuration file.
 ├─ .gitattributes          # See link below for details.
 ├─ .gitignore              # See link below for details.
 ├─ .stylelintrc            # Stylelint configuration file.
@@ -45,6 +47,10 @@ An overview of the project's directory structure:
 ├─ package.json            # See link below for details.
 └─ README.md               # Description of your project and usage instructions.
 ```
+
+<info-box warning>
+	(*) This file is available only if plugin is generated with `--use-legacy-methods` flag.
+</info-box>
 
 Guides for developing some of the files:
 
@@ -124,7 +130,11 @@ Examples:
 npm run stylelint
 ```
 
-### `dll:build`
+### `dll:build` (*)
+
+<info-box warning>
+	This script is available only if plugin is generated with `--use-legacy-methods` flag.
+</info-box>
 
 Creates a DLL-compatible package build which can be loaded into an editor using {@link getting-started/advanced/dll-builds DLL builds}.
 
@@ -138,7 +148,11 @@ npm run dll:build
 npm run dll:build -- --watch
 ```
 
-### `dll:serve`
+### `dll:serve` (*)
+
+<info-box warning>
+	This script is available only if plugin is generated with `--use-legacy-methods` flag.
+</info-box>
 
 Creates a simple HTTP server (without the live-reload mechanism) that allows verifying whether the DLL build of the package is compatible with the CKEditor&nbsp;5 {@link getting-started/advanced/dll-builds DLL builds}.
 
@@ -207,7 +221,11 @@ Npm supports some special [life cycle scripts](https://docs.npmjs.com/cli/v7/usi
 
 * `prepare` &ndash; Triggers during package creation and before publishing.
 
-This script creates a DLL-compatible package build after creation and before publishing the package.
+This script creates `NPM` and browser builds for your plugin.
+
+<info-box info>
+If during creation the package `--use-legacy-methods` flag was used, script creates also builds that work with CKEditor's legacy installation methods.
+</info-box>
 
 ## How to change ESLint configuration
 
