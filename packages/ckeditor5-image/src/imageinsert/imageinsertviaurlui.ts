@@ -129,7 +129,7 @@ export default class ImageInsertViaUrlUI extends Plugin {
 	}
 
 	/**
-	 *
+	 * Shows the insert image via URL modal.
 	 */
 	private _showModal() {
 		const editor = this.editor;
@@ -162,6 +162,9 @@ export default class ImageInsertViaUrlUI extends Plugin {
 		} );
 	}
 
+	/**
+	 * Executes appropriate command depending on selection and form value.
+	 */
 	private _handleSave( form: ImageInsertUrlView ) {
 		const replaceImageSourceCommand: ReplaceImageSourceCommand = this.editor.commands.get( 'replaceImageSource' )!;
 
