@@ -29,6 +29,7 @@ import View from '../../view.js';
 import DropdownMenuPanelView, { type DropdownMenuPanelPosition } from './dropdownmenupanelview.js';
 
 import '../../../theme/components/dropdown/menu/dropdownmenu.css';
+import { Editor } from '@ckeditor/ckeditor5-core';
 
 /**
  * Represents a dropdown menu view.
@@ -117,18 +118,18 @@ export default class DropdownMenuView extends View implements FocusableView {
 	declare public pendingLazyInitialization: boolean;
 
 	/**
-	 * Creates an instance of the menu view.
+	 * Creates a new instance of the DropdownMenuView class.
 	 *
-	 * @param locale The localization services instance.
-	 * @param label Label of button
-	 * @param parentMenuView The parent menu view of the menu.
+	 * @param editor The editor instance.
+	 * @param label The label for the dropdown menu button.
+	 * @param parentMenuView The parent dropdown menu view, if any.
 	 */
-	constructor( locale: Locale, label?: string, parentMenuView?: DropdownMenuView | null ) {
-		super( locale );
+	constructor( editor: Editor, label?: string, parentMenuView?: DropdownMenuView | null ) {
+		super( editor.locale );
 
 		const bind = this.bindTemplate;
 
-		this.buttonView = new DropdownMenuButtonView( locale );
+		this.buttonView = new DropdownMenuButtonView( editor.locale );
 		this.buttonView.delegate( 'mouseenter' ).to( this );
 		this.buttonView.bind( 'isOn', 'isEnabled' ).to( this, 'isOpen', 'isEnabled' );
 
@@ -136,10 +137,10 @@ export default class DropdownMenuView extends View implements FocusableView {
 			this.buttonView.label = label;
 		}
 
-		this.panelView = new DropdownMenuPanelView( locale );
+		this.panelView = new DropdownMenuPanelView( editor.locale );
 		this.panelView.bind( 'isVisible' ).to( this, 'isOpen' );
 
-		this.listView = new DropdownMenuListView( locale );
+		this.listView = new DropdownMenuListView( editor.locale );
 		this.listView.bind( 'ariaLabel' ).to( this.buttonView, 'label' );
 
 		this.keystrokes = new KeystrokeHandler();
@@ -167,13 +168,21 @@ export default class DropdownMenuView extends View implements FocusableView {
 			},
 
 			children: [
-				this.buttonView,
-				this.panelView
+				this.buttonView
 			]
 		} );
 
 		this._attachBehaviors();
 		this._attachParentMenuBehaviors();
+
+		this.panelView.render();
+
+		const el = document.createElement( 'div' );
+		el.setAttribute( 'dir', 'ltr' );
+		el.classList.add( 'ck-reset_all' );
+		el.classList.add( 'ck-ai-assistant-ui_theme' );
+		el.appendChild( this.panelView.element! );
+		document.body.appendChild( el );
 
 		if ( parentMenuView ) {
 			this.parentMenuView = parentMenuView;
@@ -249,6 +258,18 @@ export default class DropdownMenuView extends View implements FocusableView {
 				fitInViewport: true,
 				positions: this._panelPositions
 			} );
+
+			const { element } = this.panelView;
+
+			Object.assign(
+				element!.style,
+				{
+					position: 'absolute',
+					left: `${ optimalPanelPosition!.left }px`,
+					top: `${ optimalPanelPosition!.top }px`,
+					zIndex: 1001
+				}
+			);
 
 			this.panelView.position = (
 				optimalPanelPosition ? optimalPanelPosition.name : this._panelPositions[ 0 ].name

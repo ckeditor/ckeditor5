@@ -7,6 +7,6 @@
 	--ck-dropdown-menu-menu-item-min-width: 18em;
 }
 
-.ck.ck-dropdown-menu__menu .ck.ck-dropdown-menu__menu__item {
+.ck.ck-dropdown-menu__menu__item {
 	min-width: var(--ck-dropdown-menu-menu-item-min-width);
 }

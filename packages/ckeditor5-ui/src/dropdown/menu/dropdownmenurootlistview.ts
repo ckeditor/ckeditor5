@@ -12,8 +12,7 @@ import { once } from 'lodash-es';
 import {
 	CKEditorError,
 	type ObservableChangeEvent,
-	type CollectionAddEvent,
-	type Locale
+	type CollectionAddEvent
 } from '@ckeditor/ckeditor5-utils';
 
 import type {
@@ -25,7 +24,7 @@ import type {
 
 import DropdownMenuListView from './dropdownmenulistview.js';
 
-import type { NonEmptyArray } from '@ckeditor/ckeditor5-core';
+import type { Editor, NonEmptyArray } from '@ckeditor/ckeditor5-core';
 import type {
 	DropdownMenuFocusableView,
 	DropdownNestedMenuListItemView
@@ -63,7 +62,7 @@ import {
  * Represents the root list view of a dropdown menu.
  *
  * ```ts
- * const view = new DropdownMenuRootListView( locale, [
+ * const view = new DropdownMenuRootListView( editor, [
  * 	{
  * 		menu: 'Menu 1',
  * 		children: [
@@ -112,7 +111,14 @@ export default class DropdownMenuRootListView extends DropdownMenuListView {
 	 *
 	 * @internal
 	 */
-	private _lazyInitializeSubMenus: boolean;
+	private readonly _lazyInitializeSubMenus: boolean;
+
+	/**
+	 * The editor instance associated with the dropdown menu root list view.
+	 *
+	 * @internal
+	 */
+	public readonly editor: Editor;
 
 	/**
 	 * Creates an instance of the DropdownMenuRootListView class.
@@ -121,12 +127,14 @@ export default class DropdownMenuRootListView extends DropdownMenuListView {
 	 * @param definition The definition object for the dropdown menu root factory.
 	 * @param lazyInitializeSubMenus Indicates whether the dropdown menu should be lazily initialized when clicked.
 	 */
-	constructor( locale: Locale, definitions?: DropdownMenuDefinitions, lazyInitializeSubMenus = false ) {
-		super( locale );
+	constructor( editor: Editor, definitions?: DropdownMenuDefinitions, lazyInitializeSubMenus = false ) {
+		super( editor.locale );
 
 		this.set( 'isOpen', false );
 
+		this.editor = editor;
 		this._lazyInitializeSubMenus = lazyInitializeSubMenus;
+
 		this._setupIsOpenUpdater();
 		this._watchRootMenuEvents();
 
@@ -322,7 +330,7 @@ export default class DropdownMenuRootListView extends DropdownMenuListView {
 		parentMenuView: DropdownMenuView | null
 	) {
 		const { children, menu } = menuDefinition;
-		const menuView = new DropdownMenuView( this.locale!, menu, parentMenuView );
+		const menuView = new DropdownMenuView( this.editor, menu, parentMenuView );
 
 		if ( this._lazyInitializeSubMenus ) {
 			// Prepend the first item to the menu and append the rest after opening menu.

@@ -6,8 +6,4 @@
 .ck.ck-dropdown-menu__menu {
 	/* Enable font size inheritance, which allows fluid UI scaling. */
 	font-size: inherit;
-
-	&.ck-dropdown-menu__menu_top-level {
-		max-width: 100%;
-	}
 }

@@ -10,7 +10,7 @@
 	--ck-dropdown-menu-menu-panel-max-width: 75vw;
 }
 
-.ck.ck-dropdown-menu__menu > .ck.ck-dropdown-menu__menu__panel {
+.ck.ck-dropdown-menu__menu__panel {
 	@mixin ck-rounded-corners;
 	@mixin ck-drop-shadow;
 

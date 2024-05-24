@@ -7,79 +7,77 @@
 @import "../../../mixins/_button.css";
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 
-.ck.ck-dropdown-menu__menu {
-	/*
-	 * All menu buttons.
-	 */
-	& > .ck-dropdown-menu__menu__button {
-		width: 100%;
-		padding: var(--ck-list-button-padding);
-		border-radius: 0;
+/*
+* All menu buttons.
+*/
+.ck.ck-dropdown-menu__menu__button {
+	width: 100%;
+	padding: var(--ck-list-button-padding);
+	border-radius: 0;
 
-		&:focus {
-			border-color: transparent;
-			box-shadow: none;
+	&:focus {
+		border-color: transparent;
+		box-shadow: none;
 
-			&:not(.ck-on) {
-				background: var(--ck-color-button-default-hover-background);
-			}
+		&:not(.ck-on) {
+			background: var(--ck-color-button-default-hover-background);
 		}
+	}
 
-		& > .ck-button__label {
-			flex-grow: 1;
-			overflow: hidden;
-			text-overflow: ellipsis;
-		}
+	& > .ck-button__label {
+		flex-grow: 1;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
 
-		&.ck-disabled > .ck-button__label {
-			@mixin ck-disabled;
-		}
+	&.ck-disabled > .ck-button__label {
+		@mixin ck-disabled;
+	}
 
-		/* Spacing in buttons that miss the icon. */
-		&.ck-allocate-space-for-icon-if-missing:not(:has(.ck-button__icon)) > .ck-button__label {
-			margin-left: calc(var(--ck-icon-size) - var(--ck-spacing-small));
-		}
+	/* Spacing in buttons that miss the icon. */
+	&.ck-allocate-space-for-icon-if-missing:not(:has(.ck-button__icon)) > .ck-button__label {
+		margin-left: calc(var(--ck-icon-size) - var(--ck-spacing-small));
+	}
 
-		& > .ck-dropdown-menu__menu__button__arrow {
-			width: var(--ck-dropdown-arrow-size);
-
-			@mixin ck-dir ltr {
-				transform: rotate(-90deg);
-			}
-
-			@mixin ck-dir rtl {
-				transform: rotate(90deg);
-			}
-		}
-
-		&.ck-disabled > .ck-dropdown-menu__menu__button__arrow {
-			@mixin ck-disabled;
-		}
+	& > .ck-dropdown-menu__menu__button__arrow {
+		width: var(--ck-dropdown-arrow-size);
 
 		@mixin ck-dir ltr {
-			&:not(.ck-button_with-text) {
-				padding-left: var(--ck-spacing-small);
-			}
-
-			& > .ck-dropdown-menu__menu__button__arrow {
-				right: var(--ck-spacing-standard);
-
-				/* A space to accommodate the triangle. */
-				margin-left: var(--ck-spacing-standard);
-			}
+			transform: rotate(-90deg);
 		}
 
 		@mixin ck-dir rtl {
-			&:not(.ck-button_with-text) {
-				padding-right: var(--ck-spacing-small);
-			}
+			transform: rotate(90deg);
+		}
+	}
 
-			& > .ck-dropdown-menu__menu__button__arrow {
-				left: var(--ck-spacing-standard);
+	&.ck-disabled > .ck-dropdown-menu__menu__button__arrow {
+		@mixin ck-disabled;
+	}
 
-				/* A space to accommodate the triangle. */
-				margin-right: var(--ck-spacing-small);
-			}
+	@mixin ck-dir ltr {
+		&:not(.ck-button_with-text) {
+			padding-left: var(--ck-spacing-small);
+		}
+
+		& > .ck-dropdown-menu__menu__button__arrow {
+			right: var(--ck-spacing-standard);
+
+			/* A space to accommodate the triangle. */
+			margin-left: var(--ck-spacing-standard);
+		}
+	}
+
+	@mixin ck-dir rtl {
+		&:not(.ck-button_with-text) {
+			padding-right: var(--ck-spacing-small);
+		}
+
+		& > .ck-dropdown-menu__menu__button__arrow {
+			left: var(--ck-spacing-standard);
+
+			/* A space to accommodate the triangle. */
+			margin-right: var(--ck-spacing-small);
 		}
 	}
 }

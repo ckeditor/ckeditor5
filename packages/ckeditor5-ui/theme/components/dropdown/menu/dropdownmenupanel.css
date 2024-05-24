@@ -3,34 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-:root {
-	--ck-dropdown-menu-nested-menu-horizontal-offset: 5px;
-}
-
-.ck.ck-dropdown-menu__menu > .ck.ck-dropdown-menu__menu__panel {
-	z-index: var(--ck-z-panel);
-	position: absolute;
-
-	&.ck-dropdown-menu__menu__panel_position_ne,
-	&.ck-dropdown-menu__menu__panel_position_nw {
-		bottom: 100%;
-	}
-
-	&.ck-dropdown-menu__menu__panel_position_se,
-	&.ck-dropdown-menu__menu__panel_position_sw {
-		top: 100%;
-		bottom: auto;
-	}
-
-	&.ck-dropdown-menu__menu__panel_position_ne,
-	&.ck-dropdown-menu__menu__panel_position_se {
-		left: 0px;
-	}
-
-	&.ck-dropdown-menu__menu__panel_position_nw,
-	&.ck-dropdown-menu__menu__panel_position_sw {
-		right: 0px;
-	}
+.ck.ck-dropdown-menu__menu__panel {
+	max-height: 60vh;
+	overflow-y: auto;
 
 	&.ck-dropdown-menu__menu__panel_position_es,
 	&.ck-dropdown-menu__menu__panel_position_en {

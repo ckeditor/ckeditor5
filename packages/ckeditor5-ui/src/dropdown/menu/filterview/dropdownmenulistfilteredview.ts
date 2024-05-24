@@ -7,7 +7,7 @@
  * @module ui/dropdown/menu/filterview/dropdownmenulistfilteredview
  */
 
-import type { Locale } from '@ckeditor/ckeditor5-utils';
+import type { Editor } from '@ckeditor/ckeditor5-core';
 import type { DropdownMenuDefinitions } from '../definition/dropdownmenudefinitiontypings.js';
 import type FilteredView from '../../../search/filteredview.js';
 import type { DropdownMenuSearchResult } from '../search/filterdropdownmenutree.js';
@@ -37,13 +37,13 @@ export default class DropdownMenuListFilteredView extends View implements Filter
 	 * Represents a filtered view for the dropdown menu list.
 	 */
 	constructor(
-		locale: Locale,
+		editor: Editor,
 		definitions: DropdownMenuDefinitions,
 		lazyInitializeSubMenus?: boolean
 	) {
-		super( locale );
+		super( editor.locale );
 
-		this._menuView = new DropdownMenuRootListView( locale, definitions, lazyInitializeSubMenus );
+		this._menuView = new DropdownMenuRootListView( editor, definitions, lazyInitializeSubMenus );
 		this.setTemplate( {
 			tag: 'div',
 

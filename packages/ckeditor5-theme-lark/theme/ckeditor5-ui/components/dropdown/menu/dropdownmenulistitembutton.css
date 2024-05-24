@@ -35,16 +35,6 @@
 			}
 		}
 	}
-
-	/*
-	 * First-level sub-menu item buttons.
-	 */
-	&.ck-dropdown-menu__menu_top-level > .ck-dropdown-menu__menu__panel > ul > .ck-dropdown-menu__menu__item > .ck-dropdown-menu__menu__item__button {
-		/* Spacing in buttons that miss the icon. */
-		&:not(:has(.ck-button__icon)) > .ck-button__label {
-			margin-left: calc(var(--ck-icon-size) - var(--ck-spacing-small));
-		}
-	}
 }
 
 
