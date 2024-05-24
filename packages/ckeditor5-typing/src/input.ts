@@ -70,6 +70,12 @@ export default class Input extends Plugin {
 		this.listenTo( view.document, 'selectionChangeTestPoC', () => {
 			const domSelection = window.getSelection()!;
 			const newViewSelection = view.domConverter.domSelectionToView( domSelection );
+
+			if ( !newViewSelection ) {
+				this._compositionQueue.flush( 'selection change outside editor' );
+				return;
+			}
+
 			const viewParent = mapper.findMappedViewAncestor( newViewSelection.getFirstPosition()! );
 			const modelParent = mapper.toModelElement( viewParent );
 
