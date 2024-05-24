@@ -1604,8 +1604,7 @@ export default class DomConverter {
 	private _processDataFromViewText( node: ViewText | ViewTextProxy ): string {
 		let data = node.data;
 
-		// If any of node ancestors has a name which is in `preElements` array, then currently processed
-		// view text node is (will be) in preformatted element. We should not change whitespaces then.
+		// If the currently processed view text node is preformatted, we should not change whitespaces.
 		if ( this._isPreFormatted( node ) ) {
 			return data;
 		}
@@ -1661,7 +1660,7 @@ export default class DomConverter {
 
 	/**
 	 * Checks whether given text contains preformatted white space. This is the case if
-	 * * the text is contained within a `<pre>` element, or
+	 * * any of node ancestors has a name which is in `preElements` array, or
 	 * * the closest ancestor that has the `white-space` CSS property sets it to a value that preserves spaces
 	 *
 	 * @param node Node to check
