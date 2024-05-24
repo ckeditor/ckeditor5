@@ -37,7 +37,6 @@ describe( 'MediaEmbedUI', () => {
 	} );
 
 	afterEach( () => {
-		// button.element.remove();
 		editorElement.remove();
 
 		return editor.destroy();
@@ -68,9 +67,7 @@ describe( 'MediaEmbedUI', () => {
 		beforeEach( () => {
 			button = editor.ui.componentFactory.create( 'menuBar:mediaEmbed' );
 		} );
-		afterEach( () => {
-			// menuBarButton.element.remove();
-		} );
+
 		testButton( MenuBarMenuListItemButtonView );
 	} );
 

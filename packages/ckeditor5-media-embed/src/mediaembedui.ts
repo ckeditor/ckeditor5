@@ -56,7 +56,7 @@ export default class MediaEmbedUI extends Plugin {
 	}
 
 	/**
-	 * Creates a button for for menu bar that will show find and replace dialog.
+	 * Creates a button for menu bar that will show media embed dialog.
 	 */
 	private _createDialogButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
 		const editor = this.editor;
@@ -77,11 +77,9 @@ export default class MediaEmbedUI extends Plugin {
 		buttonView.on( 'execute', () => {
 			if ( dialogPlugin.id === 'mediaEmbed' ) {
 				dialogPlugin.hide();
-
-				return;
+			} else {
+				this._showDialog();
 			}
-
-			this._showDialog();
 		} );
 
 		return buttonView;
@@ -95,6 +93,7 @@ export default class MediaEmbedUI extends Plugin {
 
 		if ( !this._formView ) {
 			const registry = editor.plugins.get( MediaEmbedEditing ).registry;
+
 			this._formView = new ( CssTransitionDisablerMixin( MediaFormView ) )( getFormValidators( editor.t, registry ), editor.locale );
 		}
 
@@ -102,7 +101,8 @@ export default class MediaEmbedUI extends Plugin {
 			id: 'mediaEmbed',
 			title: t( 'Insert media' ),
 			content: this._formView,
-			position: DialogViewPosition.EDITOR_TOP_SIDE,
+			position: DialogViewPosition.EDITOR_CENTER,
+			isModal: true,
 			onShow: () => {
 				this._formView!.url = command.value || '';
 				this._formView!.resetFormStatus();
