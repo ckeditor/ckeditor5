@@ -67,22 +67,22 @@ export default class Input extends Plugin {
 		editor.commands.add( 'insertText', insertTextCommand );
 		editor.commands.add( 'input', insertTextCommand );
 
-		this.listenTo( view.document, 'selectionChangeTestPoC', () => {
-			const domSelection = window.getSelection()!;
-			const newViewSelection = view.domConverter.domSelectionToView( domSelection );
-
-			if ( !newViewSelection || !newViewSelection.getFirstPosition() ) {
-				this._compositionQueue.flush( 'selection change outside editor' );
-				return;
-			}
-
-			const viewParent = mapper.findMappedViewAncestor( newViewSelection.getFirstPosition()! );
-			const modelParent = mapper.toModelElement( viewParent );
-
-			if ( !modelParent || !this._compositionQueue.isComposedElement( modelParent ) ) {
-				this._compositionQueue.flush( 'selection change outside' );
-			}
-		} );
+		// this.listenTo( view.document, 'selectionChangeTestPoC', () => {
+		// 	const domSelection = window.getSelection()!;
+		// 	const newViewSelection = view.domConverter.domSelectionToView( domSelection );
+		//
+		// 	if ( !newViewSelection || !newViewSelection.getFirstPosition() ) {
+		// 		this._compositionQueue.flush( 'selection change outside editor' );
+		// 		return;
+		// 	}
+		//
+		// 	const viewParent = mapper.findMappedViewAncestor( newViewSelection.getFirstPosition()! );
+		// 	const modelParent = mapper.toModelElement( viewParent );
+		//
+		// 	if ( !modelParent || !this._compositionQueue.isComposedElement( modelParent ) ) {
+		// 		this._compositionQueue.flush( 'selection change outside' );
+		// 	}
+		// } );
 
 		this.listenTo<ViewDocumentInsertTextEvent>( view.document, 'insertText', ( evt, data ) => {
 			// Rendering is disabled while composing so prevent events that will be rendered by the engine
