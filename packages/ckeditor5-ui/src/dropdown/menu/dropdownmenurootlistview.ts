@@ -32,7 +32,7 @@ import type {
 
 import type { DropdownMenuViewsRootTree } from './search/tree/dropdownsearchtreetypings.js';
 import type {
-	DropdownMenuCloseAllEvent,
+	DropdownMenuExecuteItemEvent,
 	DropdownMenuChangeIsOpenEvent,
 	DropdownMenuSubmenuChangeEvent,
 	DropdownMenuPreloadAllEvent
@@ -401,7 +401,7 @@ export default class DropdownMenuRootListView extends DropdownMenuListView {
 	 * @internal
 	 */
 	private _watchRootMenuEvents(): void {
-		this.on<DropdownMenuCloseAllEvent>( 'menu:close:all', this.close.bind( this ) );
+		this.on<DropdownMenuExecuteItemEvent>( 'menu:item:execute', this.close.bind( this ) );
 		this.on<DropdownMenuSubmenuChangeEvent>( 'menu:submenu:change', () => {
 			this._cachedMenus = null;
 		} );

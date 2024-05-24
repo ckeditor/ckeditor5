@@ -48,14 +48,14 @@ export interface DropdownMenuChangeIsOpenEvent extends DropdownMenuEvent {
 }
 
 /**
- * Represents an event that is triggered when all dropdown menus should be closed.
+ * Represents an event that is triggered when a dropdown menu item is executed.
  */
-export interface DropdownMenuCloseAllEvent extends DropdownMenuEvent {
+export interface DropdownMenuExecuteItemEvent extends DropdownMenuEvent {
 
 	/**
 	 * The name of the event.
 	 */
-	name: 'menu:close:all';
+	name: 'menu:item:execute';
 }
 
 /**

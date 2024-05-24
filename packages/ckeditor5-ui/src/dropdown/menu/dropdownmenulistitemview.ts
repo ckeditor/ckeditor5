@@ -12,6 +12,7 @@ import type { DropdownMenuFocusableFlatItemView } from './typings.js';
 import type DropdownMenuView from './dropdownmenuview.js';
 
 import ListItemView from '../../list/listitemview.js';
+import { isDropdownMenuFocusableFlatItemView } from './guards.js';
 
 import '../../../theme/components/dropdown/menu/dropdownmenulistitem.css';
 
@@ -49,6 +50,10 @@ export default class DropdownMenuListItemView extends ListItemView {
 
 		if ( parentMenuView ) {
 			this.delegate( 'mouseenter' ).to( parentMenuView );
+
+			if ( isDropdownMenuFocusableFlatItemView( flatItemOrNestedMenuView ) ) {
+				flatItemOrNestedMenuView.delegate( 'execute' ).to( parentMenuView, 'item:execute' );
+			}
 		}
 	}
 }
