@@ -101,7 +101,6 @@ export default class MediaEmbedUI extends Plugin {
 			id: 'mediaEmbed',
 			title: t( 'Insert media' ),
 			content: this._formView,
-			position: DialogViewPosition.EDITOR_CENTER,
 			isModal: true,
 			onShow: () => {
 				this._formView!.url = command.value || '';

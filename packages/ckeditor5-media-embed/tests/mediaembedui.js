@@ -8,7 +8,7 @@ import MediaEmbed from '../src/mediaembed.js';
 import MediaEmbedUI from '../src/mediaembedui.js';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 import mediaIcon from '../theme/icons/media.svg';
-import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
+import { ButtonView, DialogViewPosition, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'MediaEmbedUI', () => {
 	let editorElement, editor, button;
@@ -91,6 +91,14 @@ describe( 'MediaEmbedUI', () => {
 
 			beforeEach( () => {
 				acceptButton = dialog.view.actionsView.children.get( 1 );
+			} );
+
+			it( 'should be open as modal', () => {
+				expect( dialog.view.isModal ).to.be.true;
+			} );
+
+			it( 'should be open at screen center', () => {
+				expect( dialog.view.position ).to.be.equal( DialogViewPosition.SCREEN_CENTER );
 			} );
 
 			it( 'checks if the form is valid', () => {
