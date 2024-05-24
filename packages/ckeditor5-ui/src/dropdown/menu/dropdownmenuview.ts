@@ -11,11 +11,12 @@ import {
 	FocusTracker,
 	KeystrokeHandler,
 	getOptimalPosition,
-	type Locale,
+	global,
 	type PositioningFunction,
 	type ObservableChangeEvent
 } from '@ckeditor/ckeditor5-utils';
 
+import type { Editor } from '@ckeditor/ckeditor5-core';
 import type { FocusableView } from '../../focuscycler.js';
 import type { DropdownNestedMenuListItemView } from './typings.js';
 import type ViewCollection from '../../viewcollection.js';
@@ -29,7 +30,7 @@ import View from '../../view.js';
 import DropdownMenuPanelView, { type DropdownMenuPanelPosition } from './dropdownmenupanelview.js';
 
 import '../../../theme/components/dropdown/menu/dropdownmenu.css';
-import { Editor } from '@ckeditor/ckeditor5-core';
+import DropdownMenuPortalView from './dropdownmenuportalview.js';
 
 /**
  * Represents a dropdown menu view.
@@ -45,6 +46,11 @@ export default class DropdownMenuView extends View implements FocusableView {
 	] as const;
 
 	/**
+	 * The editor instance associated with the dropdown menu view.
+	 */
+	public readonly editor: Editor;
+
+	/**
 	 * Button of the menu view.
 	 */
 	public readonly buttonView: DropdownMenuButtonView;
@@ -58,6 +64,11 @@ export default class DropdownMenuView extends View implements FocusableView {
 	 * List of nested menu entries.
 	 */
 	public readonly listView: DropdownMenuListView;
+
+	/**
+	 * Menu body element view.
+	 */
+	public readonly portalView: DropdownMenuPortalView;
 
 	/**
 	 * Tracks information about the DOM focus in the menu.
@@ -129,6 +140,7 @@ export default class DropdownMenuView extends View implements FocusableView {
 
 		const bind = this.bindTemplate;
 
+		this.editor = editor;
 		this.buttonView = new DropdownMenuButtonView( editor.locale );
 		this.buttonView.delegate( 'mouseenter' ).to( this );
 		this.buttonView.bind( 'isOn', 'isEnabled' ).to( this, 'isOpen', 'isEnabled' );
@@ -175,14 +187,8 @@ export default class DropdownMenuView extends View implements FocusableView {
 		this._attachBehaviors();
 		this._attachParentMenuBehaviors();
 
-		this.panelView.render();
-
-		const el = document.createElement( 'div' );
-		el.setAttribute( 'dir', 'ltr' );
-		el.classList.add( 'ck-reset_all' );
-		el.classList.add( 'ck-ai-assistant-ui_theme' );
-		el.appendChild( this.panelView.element! );
-		document.body.appendChild( el );
+		this.portalView = new DropdownMenuPortalView( editor.locale );
+		this.portalView.children.add( this.panelView );
 
 		if ( parentMenuView ) {
 			this.parentMenuView = parentMenuView;
@@ -211,6 +217,20 @@ export default class DropdownMenuView extends View implements FocusableView {
 		DropdownMenuBehaviors.closeOnEscKey( this );
 
 		this._repositionPanelOnOpen();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public override destroy(): void {
+		const { body } = this.editor.ui.view;
+
+		if ( body.has( this.portalView ) ) {
+			body.remove( this.portalView );
+		}
+
+		this.portalView.destroy();
+		super.destroy();
 	}
 
 	/**
@@ -246,34 +266,46 @@ export default class DropdownMenuView extends View implements FocusableView {
 	 * so that it optimally uses the available space in the viewport.
 	 */
 	private _repositionPanelOnOpen(): void {
+		const { portalView, panelView, buttonView } = this;
+		const { body } = this.editor.ui.view;
+
 		// Let the menu control the position of the panel. The position must be updated every time the menu is open.
 		this.on<ObservableChangeEvent<boolean>>( 'change:isOpen', ( evt, name, isOpen ) => {
+			if ( isOpen && !body.has( portalView ) ) {
+				body.add( portalView );
+			}
+
 			if ( !isOpen ) {
 				return;
 			}
 
+			const buttonRect = buttonView.element!.getBoundingClientRect();
 			const optimalPanelPosition = DropdownMenuView._getOptimalPosition( {
-				element: this.panelView.element!,
-				target: this.buttonView.element!,
+				element: panelView.element!,
+				target: buttonView.element!,
 				fitInViewport: true,
-				positions: this._panelPositions
+				positions: this._panelPositions,
+				limiter: global.document.body
 			} );
 
-			const { element } = this.panelView;
-
-			Object.assign(
-				element!.style,
-				{
-					position: 'absolute',
-					left: `${ optimalPanelPosition!.left }px`,
-					top: `${ optimalPanelPosition!.top }px`,
-					zIndex: 1001
-				}
-			);
-
-			this.panelView.position = (
+			const position = (
 				optimalPanelPosition ? optimalPanelPosition.name : this._panelPositions[ 0 ].name
 			) as DropdownMenuPanelPosition;
+
+			if ( optimalPanelPosition ) {
+				let topMargin = 0;
+
+				// Add the button height to the top margin if the panel is positioned below the button.
+				if ( position === 'en' || position === 'wn' ) {
+					topMargin += buttonRect.height;
+				}
+
+				panelView.set( {
+					top: optimalPanelPosition.top + topMargin,
+					left: optimalPanelPosition.left,
+					position
+				} );
+			}
 		} );
 	}
 

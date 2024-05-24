@@ -7,13 +7,16 @@
  * @module ui/dropdown/menu/dropdownmenupanelview
  */
 
-import type { Locale } from '@ckeditor/ckeditor5-utils';
+import { toUnit, type Locale } from '@ckeditor/ckeditor5-utils';
+
 import type { FocusableView } from '../../focuscycler.js';
 import type ViewCollection from '../../viewcollection.js';
 
 import View from '../../view.js';
 
 import '../../../theme/components/dropdown/menu/dropdownmenupanel.css';
+
+const toPx = /* #__PURE__ */ toUnit( 'px' );
 
 /**
  * Represents the view for the dropdown menu panel.
@@ -43,6 +46,22 @@ export default class DropdownMenuPanelView extends View implements FocusableView
 	declare public position: DropdownMenuPanelPosition;
 
 	/**
+	 * The absolute top position of the menu panel in pixels.
+	 *
+	 * @observable
+	 * @default 0
+	 */
+	declare public top: number;
+
+	/**
+	 * The absolute left position of the menu panel in pixels.
+	 *
+	 * @observable
+	 * @default 0
+	 */
+	declare public left: number;
+
+	/**
 	 * Creates an instance of the menu panel view.
 	 *
 	 * @param locale The localization services instance.
@@ -52,8 +71,12 @@ export default class DropdownMenuPanelView extends View implements FocusableView
 
 		const bind = this.bindTemplate;
 
-		this.set( 'isVisible', false );
-		this.set( 'position', 'se' );
+		this.set( {
+			isVisible: false,
+			position: 'se',
+			top: 0,
+			left: 0
+		} );
 
 		this.children = this.createCollection();
 
@@ -68,7 +91,11 @@ export default class DropdownMenuPanelView extends View implements FocusableView
 					bind.to( 'position', value => `ck-dropdown-menu__menu__panel_position_${ value }` ),
 					bind.if( 'isVisible', 'ck-hidden', value => !value )
 				],
-				tabindex: '-1'
+				tabindex: '-1',
+				style: {
+					top: bind.to( 'top', toPx ),
+					left: bind.to( 'left', toPx )
+				}
 			},
 
 			children: this.children,
@@ -108,4 +135,4 @@ export default class DropdownMenuPanelView extends View implements FocusableView
  *
  * They are reflected as CSS class suffixes on the panel view element.
  */
-export type DropdownMenuPanelPosition = 'se' | 'sw' | 'ne' | 'nw' | 'w' | 'e';
+export type DropdownMenuPanelPosition = 'es' | 'ws' | 'en' | 'wn' | 'w' | 'e';

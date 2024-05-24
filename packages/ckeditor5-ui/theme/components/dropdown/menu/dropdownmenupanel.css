@@ -4,32 +4,8 @@
  */
 
 .ck.ck-dropdown-menu__menu__panel {
+	position: absolute;
 	max-height: 60vh;
 	overflow-y: auto;
-
-	&.ck-dropdown-menu__menu__panel_position_es,
-	&.ck-dropdown-menu__menu__panel_position_en {
-		left: calc( 100% - var(--ck-dropdown-menu-nested-menu-horizontal-offset) );
-	}
-
-	&.ck-dropdown-menu__menu__panel_position_es {
-		top: 0px;
-	}
-
-	&.ck-dropdown-menu__menu__panel_position_en {
-		bottom: 0px;
-	}
-
-	&.ck-dropdown-menu__menu__panel_position_ws,
-	&.ck-dropdown-menu__menu__panel_position_wn {
-		right: calc( 100% - var(--ck-dropdown-menu-nested-menu-horizontal-offset) );
-	}
-
-	&.ck-dropdown-menu__menu__panel_position_ws {
-		top: 0px;
-	}
-
-	&.ck-dropdown-menu__menu__panel_position_wn {
-		bottom: 0px;
-	}
+	z-index: calc(var(--ck-z-panel) + 1);
 }
