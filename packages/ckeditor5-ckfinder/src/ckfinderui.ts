@@ -48,7 +48,7 @@ export default class CKFinderUI extends Plugin {
 			const button = this._createButton( MenuBarMenuListItemButtonView );
 			const t = locale.t;
 
-			button.label = t( 'Image or file' );
+			button.label = t( 'File' );
 
 			return button;
 		} );
@@ -75,11 +75,10 @@ export default class CKFinderUI extends Plugin {
 				menuBarButtonViewCreator: () => {
 					const button = this.editor.ui.componentFactory.create( 'menuBar:ckfinder' ) as MenuBarMenuListItemButtonView;
 
-					button.icon = icons.imageAssetManager;
-					button.bind( 'label' ).to( imageInsertUI, 'isImageSelected', isImageSelected => isImageSelected ?
-						t( 'Replace image with file manager' ) :
-						t( 'Insert image with file manager' )
-					);
+					button.set( {
+						icon: icons.imageAssetManager,
+						label: t( 'Insert with file manager' )
+					} );
 
 					return button;
 				},

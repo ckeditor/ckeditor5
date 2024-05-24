@@ -70,11 +70,10 @@ export default class CKBoxUI extends Plugin {
 				menuBarButtonViewCreator: () => {
 					const button = this.editor.ui.componentFactory.create( 'menuBar:ckbox' ) as MenuBarMenuListItemButtonView;
 
-					button.icon = icons.imageAssetManager;
-					button.bind( 'label' ).to( imageInsertUI, 'isImageSelected', isImageSelected => isImageSelected ?
-						t( 'Replace image with file manager' ) :
-						t( 'Insert image with file manager' )
-					);
+					button.set( {
+						icon: icons.imageAssetManager,
+						label: t( 'Insert with file manager' )
+					} );
 
 					return button;
 				},

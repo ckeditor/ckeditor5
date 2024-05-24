@@ -23,7 +23,7 @@ import { icons } from 'ckeditor5/src/core.js';
 import { createNativeFileMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { MenuBarMenuListItemFileDialogButtonView } from '@ckeditor/ckeditor5-ui';
+import { MenuBarMenuListItemButtonView, MenuBarMenuListItemFileDialogButtonView, MenuBarMenuView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'ImageUploadUI', () => {
 	let editor, model, editorElement, fileRepository, button;
@@ -95,7 +95,7 @@ describe( 'ImageUploadUI', () => {
 		testButton( 'uploadImage', 'Image from computer', MenuBarMenuListItemFileDialogButtonView );
 	} );
 
-	describe( 'InsertImageUI integration', () => {
+	describe( 'InsertImageUI toolbar integration', () => {
 		it( 'should create FileDialogButtonView in split button dropdown button', () => {
 			mockAssetManagerIntegration();
 
@@ -173,6 +173,28 @@ describe( 'ImageUploadUI', () => {
 		} );
 	} );
 
+	describe( 'InsertImageUI menu bar integration', () => {
+		it( 'should create FileDialogButtonView in insert image submenu', () => {
+			mockAssetManagerIntegration();
+
+			const spy = sinon.spy( editor.ui.componentFactory, 'create' );
+			const submenu = editor.ui.componentFactory.create( 'menuBar:insertImage' );
+
+			expect( submenu ).to.be.instanceof( MenuBarMenuView );
+
+			const button = submenu.panelView.children.first.items.first.children.first;
+
+			expect( button ).to.be.instanceOf( MenuBarMenuListItemFileDialogButtonView );
+			expect( button.withText ).to.be.true;
+			expect( button.icon ).to.equal( icons.imageUpload );
+			expect( button.label ).to.equal( 'Image from computer' );
+
+			expect( spy.calledTwice ).to.be.true;
+			expect( spy.firstCall.args[ 0 ] ).to.equal( 'menuBar:insertImage' );
+			expect( spy.secondCall.args[ 0 ] ).to.equal( 'menuBar:uploadImage' );
+		} );
+	} );
+
 	function mockAssetManagerIntegration() {
 		const insertImageUI = editor.plugins.get( 'ImageInsertUI' );
 		const observable = new Model( { isEnabled: true } );
@@ -191,6 +213,13 @@ describe( 'ImageUploadUI', () => {
 				const button = new ButtonView( editor.locale );
 
 				button.label = 'bar';
+
+				return button;
+			},
+			menuBarButtonViewCreator() {
+				const button = new MenuBarMenuListItemButtonView( editor.locale );
+
+				button.label = 'menu foo';
 
 				return button;
 			}

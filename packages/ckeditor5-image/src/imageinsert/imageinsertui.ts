@@ -9,7 +9,8 @@
 
 import {
 	Plugin,
-	type Editor
+	type Editor,
+	icons
 } from 'ckeditor5/src/core.js';
 import {
 	logWarning,
@@ -18,15 +19,16 @@ import {
 } from 'ckeditor5/src/utils.js';
 import {
 	createDropdown,
-	SplitButtonView,
 	type ButtonView,
 	type DropdownButtonView,
 	type DropdownView,
 	type FocusableView,
 	type MenuBarMenuListItemButtonView,
-	MenuBarMenuView,
+	MenuBarMenuListItemView,
 	MenuBarMenuListView,
-	MenuBarMenuListItemView
+	MenuBarMenuView,
+	SplitButtonView,
+	type View
 } from 'ckeditor5/src/ui.js';
 
 import ImageInsertFormView from './ui/imageinsertformview.js';
@@ -118,15 +120,15 @@ export default class ImageInsertUI extends Plugin {
 		observable,
 		buttonViewCreator,
 		formViewCreator,
-		requiresForm,
-		menuBarButtonViewCreator
+		menuBarButtonViewCreator,
+		requiresForm
 	}: {
 		name: string;
 		observable: Observable & { isEnabled: boolean } | ( () => Observable & { isEnabled: boolean } );
 		buttonViewCreator: ( isOnlyOne: boolean ) => ButtonView;
 		formViewCreator: ( isOnlyOne: boolean ) => FocusableView;
-		requiresForm?: boolean;
 		menuBarButtonViewCreator: ( isOnlyOne: boolean ) => MenuBarMenuListItemButtonView;
+		requiresForm?: boolean;
 	} ): void {
 		if ( this._integrations.has( name ) ) {
 			/**
@@ -203,8 +205,7 @@ export default class ImageInsertUI extends Plugin {
 	/**
 	 * Creates the menu bar component.
 	 */
-	private _createMenuBarComponent( locale: Locale ): any {
-		const editor = this.editor;
+	private _createMenuBarComponent( locale: Locale ): View {
 		const t = locale.t;
 
 		const integrations = this._prepareIntegrations();
@@ -223,10 +224,10 @@ export default class ImageInsertUI extends Plugin {
 			const listView = new MenuBarMenuListView( locale );
 			resultView.panelView.children.add( listView );
 
-			resultView.buttonView.bind( 'label' ).to( this, 'isImageSelected', isImageSelected => isImageSelected ?
-				t( 'Replace image' ) :
-				t( 'Image' )
-			);
+			resultView.buttonView.set( {
+				icon: icons.imageUpload,
+				label: t( 'Image' )
+			} );
 
 			for ( const integration of integrations ) {
 				const listItemView = new MenuBarMenuListItemView( locale, resultView );

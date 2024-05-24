@@ -126,6 +126,7 @@ export default class ImageInsertUrlView extends View {
 
 		urlInputView.bind( 'isEnabled' ).to( this );
 
+		urlInputView.fieldView.inputMode = 'url';
 		urlInputView.fieldView.placeholder = 'https://example.com/image.png';
 
 		urlInputView.fieldView.bind( 'value' ).to( this, 'imageURLInputValue', ( value: string ) => value || '' );

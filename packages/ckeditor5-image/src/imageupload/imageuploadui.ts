@@ -120,7 +120,7 @@ export default class ImageUploadUI extends Plugin {
 		view.set( {
 			acceptedType: imageTypes.map( type => `image/${ type }` ).join( ',' ),
 			allowMultipleFiles: true,
-			label: t( 'Upload image from computer' ),
+			label: t( 'Upload from computer' ),
 			icon: icons.imageUpload
 		} );
 

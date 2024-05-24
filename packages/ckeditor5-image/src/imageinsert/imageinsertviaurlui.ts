@@ -8,7 +8,7 @@
  */
 
 import { icons, Plugin } from 'ckeditor5/src/core.js';
-import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
+import { ButtonView, Dialog, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 
 import ImageInsertUI from './imageinsertui.js';
 import type InsertImageCommand from '../image/insertimagecommand.js';
@@ -37,13 +37,28 @@ export default class ImageInsertViaUrlUI extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ ImageInsertUI ] as const;
+		return [ ImageInsertUI, Dialog ] as const;
 	}
 
 	public init(): void {
+		this.editor.ui.componentFactory.add( 'uploadUrl', locale => {
+			const t = locale.t;
+			const button = this._createInsertUrlButton( ButtonView );
+
+			button.tooltip = true;
+			button.bind( 'label' ).to( this._imageInsertUI, 'isImageSelected', isImageSelected => isImageSelected ?
+				t( 'Update image URL' ) :
+				t( 'Insert image via URL' )
+			);
+
+			return button;
+		} );
+
 		this.editor.ui.componentFactory.add( 'menuBar:uploadUrl', locale => {
 			const t = locale.t;
 			const button = this._createInsertUrlButton( MenuBarMenuListItemButtonView );
+
+			button.label = t( 'Insert via URL' );
 
 			return button;
 		} );
@@ -55,13 +70,21 @@ export default class ImageInsertViaUrlUI extends Plugin {
 	public afterInit(): void {
 		this._imageInsertUI = this.editor.plugins.get( 'ImageInsertUI' );
 
+		const buttonViewCreator = () => {
+			const button = this.editor.ui.componentFactory.create( 'uploadUrl' ) as ButtonView;
+
+			button.withText = true;
+
+			return button;
+		};
+
 		this._imageInsertUI.registerIntegration( {
 			name: 'url',
 			observable: () => this.editor.commands.get( 'insertImage' )!,
-			requiresForm: true,
-			buttonViewCreator: () => this._createInsertUrlButton( ButtonView ),
-			formViewCreator: () => this._createInsertUrlView(),
-			menuBarButtonViewCreator: () => this._createInsertUrlButton( MenuBarMenuListItemButtonView )
+			requiresForm: false,
+			buttonViewCreator,
+			formViewCreator: buttonViewCreator,
+			menuBarButtonViewCreator: () => this.editor.ui.componentFactory.create( 'menuBar:uploadUrl' ) as MenuBarMenuListItemButtonView
 		} );
 	}
 
@@ -94,30 +117,13 @@ export default class ImageInsertViaUrlUI extends Plugin {
 	private _createInsertUrlButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>(
 		ButtonClass: T
 	): InstanceType<T> {
-		// const ButtonClass = isOnlyOne ? DropdownButtonView : ButtonView;
-
 		const editor = this.editor;
 		const button = new ButtonClass( editor.locale ) as InstanceType<T>;
-		const t = editor.locale.t;
 
-		button.set( {
-			label: t( 'Set image url' ),
-			icon: icons.imageUpload
-		} );
-
+		button.icon = icons.imageUrl;
 		button.on( 'execute', () => {
 			this._showModal();
 		} );
-
-		button.set( {
-			icon: icons.imageUrl,
-			tooltip: true
-		} );
-
-		button.bind( 'label' ).to( this._imageInsertUI, 'isImageSelected', isImageSelected => isImageSelected ?
-			t( 'Update image URL' ) :
-			t( 'Insert image via URL' )
-		);
 
 		return button;
 	}
@@ -132,18 +138,6 @@ export default class ImageInsertViaUrlUI extends Plugin {
 		const dialog = editor.plugins.get( 'Dialog' );
 
 		const form = this._createInsertUrlView();
-
-		function handleSave( form: ImageInsertUrlView ) {
-			const replaceImageSourceCommand: ReplaceImageSourceCommand = editor.commands.get( 'replaceImageSource' )!;
-
-			if ( replaceImageSourceCommand.isEnabled ) {
-				editor.execute( 'replaceImageSource', { source: form.imageURLInputValue } );
-			} else {
-				editor.execute( 'insertImage', { source: form.imageURLInputValue } );
-			}
-
-			dialog.hide();
-		}
 
 		dialog.show( {
 			id: 'insertUrl',
@@ -162,9 +156,23 @@ export default class ImageInsertViaUrlUI extends Plugin {
 					label: t( 'Accept' ),
 					class: 'ck-button-action',
 					withText: true,
-					onExecute: () => handleSave( form as ImageInsertUrlView )
+					onExecute: () => this._handleSave( form as ImageInsertUrlView )
 				}
 			]
 		} );
+	}
+
+	private _handleSave( form: ImageInsertUrlView ) {
+		const replaceImageSourceCommand: ReplaceImageSourceCommand = this.editor.commands.get( 'replaceImageSource' )!;
+
+		// If an image element is currently selected, we want to replace its source attribute (instead of inserting a new image).
+		// We detect if an image is selected by checking `replaceImageSource` command state.
+		if ( replaceImageSourceCommand.isEnabled ) {
+			this.editor.execute( 'replaceImageSource', { source: form.imageURLInputValue } );
+		} else {
+			this.editor.execute( 'insertImage', { source: form.imageURLInputValue } );
+		}
+
+		this.editor.plugins.get( 'Dialog' ).hide();
 	}
 }
