@@ -82,7 +82,9 @@ ClassicEditor
 		},
 
 		// ... other configuration options.
-	} );
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ### Demo code

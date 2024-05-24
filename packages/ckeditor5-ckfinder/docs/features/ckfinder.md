@@ -95,18 +95,20 @@ Assuming that you [installed the CKFinder PHP server-side connector](https://cke
 ```js
 import { CKFinder } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ CKFinder, /* ... */ ],
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ CKFinder, /* ... */ ],
 
-	// Enable the insert image button in the toolbar.
-	toolbar: [ 'uploadImage', /* ... */ ],
+		// Enable the insert image button in the toolbar.
+		toolbar: [ 'uploadImage', /* ... */ ],
 
-	ckfinder: {
-		// Upload the images to the server using the CKFinder QuickUpload command.
-		uploadUrl: 'https://example.com/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images&responseType=json'
-		}
-	} )
-.then( /* ... */ );
+		ckfinder: {
+			// Upload the images to the server using the CKFinder QuickUpload command.
+			uploadUrl: 'https://example.com/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images&responseType=json'
+			}
+		} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 See the **[demo of the image upload only](#image-upload-only)**.
@@ -133,23 +135,25 @@ Then:
 ```js
 import { CKFinder } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ CKFinder, /* ... */ ],
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ CKFinder, /* ... */ ],
 
-	// Enable the CKFinder button in the toolbar.
-	toolbar: [ 'ckfinder', /* ... */ ]
+		// Enable the CKFinder button in the toolbar.
+		toolbar: [ 'ckfinder', /* ... */ ]
 
-	ckfinder: {
-		// Upload the images to the server using the CKFinder QuickUpload command.
-		uploadUrl: 'https://example.com/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images&responseType=json',
+		ckfinder: {
+			// Upload the images to the server using the CKFinder QuickUpload command.
+			uploadUrl: 'https://example.com/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images&responseType=json',
 
-		// Define the CKFinder configuration (if necessary).
-		options: {
-			resourceType: 'Images'
+			// Define the CKFinder configuration (if necessary).
+			options: {
+				resourceType: 'Images'
+			}
 		}
-	}
-} )
-.then( /* ... */ );
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 See the **[demo of the full integration](#full-integration)**.
@@ -163,15 +167,17 @@ By default, the file manager opens as a modal. To open it in a new pop-up window
 ```js
 import { CKFinder } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ CKFinder, /* ... */ ],
-	toolbar: [ 'ckfinder', /* ... */ ]
-	ckfinder: {
-		// Open the file manager in the pop-up window.
-		openerMethod: 'popup'
-	}
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ CKFinder, /* ... */ ],
+		toolbar: [ 'ckfinder', /* ... */ ]
+		ckfinder: {
+			// Open the file manager in the pop-up window.
+			openerMethod: 'popup'
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ### Configuring allowed file types

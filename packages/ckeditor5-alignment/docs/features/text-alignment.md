@@ -47,15 +47,17 @@ It is possible to configure which alignment options are available in the editor 
 For example, the following editor will support two alignment options: to the left and to the right:
 
 ```js
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	alignment: {
-		options: [ 'left', 'right' ]
-	},
-	toolbar: [
-		'heading', '|', 'bulletedList', 'numberedList', 'alignment', 'undo', 'redo'
-	]
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		alignment: {
+			options: [ 'left', 'right' ]
+		},
+		toolbar: [
+			'heading', '|', 'bulletedList', 'numberedList', 'alignment', 'undo', 'redo'
+		]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 {@snippet features/custom-text-alignment-options}
@@ -71,18 +73,20 @@ By default, alignment is set inline using the `text-align` CSS property. If you 
 The following configuration will set `.my-align-left` and `.my-align-right` to left and right alignment, respectively.
 
 ```js
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	alignment: {
-		options: [
-			{ name: 'left', className: 'my-align-left' },
-			{ name: 'right', className: 'my-align-right' }
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		alignment: {
+			options: [
+				{ name: 'left', className: 'my-align-left' },
+				{ name: 'right', className: 'my-align-right' }
+			]
+		},
+		toolbar: [
+			'heading', '|', 'bulletedList', 'numberedList', 'alignment', 'undo', 'redo'
 		]
-	},
-	toolbar: [
-		'heading', '|', 'bulletedList', 'numberedList', 'alignment', 'undo', 'redo'
-	]
-} )
-.then( /* ... */ );
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Configuring the toolbar
@@ -90,12 +94,14 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 You can choose to use the alignment dropdown (`'alignment'`) or configure the toolbar to use separate buttons for each of the options:
 
 ```js
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	toolbar: [
-		'heading', '|', 'alignment:left', 'alignment:right', 'alignment:center', 'alignment:justify'
-	]
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		toolbar: [
+			'heading', '|', 'alignment:left', 'alignment:right', 'alignment:center', 'alignment:justify'
+		]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 {@snippet features/custom-text-alignment-toolbar}
