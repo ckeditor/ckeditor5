@@ -178,19 +178,6 @@ export const DropdownMenuBehaviors = {
 	},
 
 	/**
-	 * Closes the menu on the esc key press. This allows for navigating to sub-menus using the keyboard.
-	 */
-	closeOnEscKey( menuView: DropdownMenuView ): void {
-		menuView.keystrokes.set( 'esc', ( data, cancel ) => {
-			if ( menuView.isOpen ) {
-				menuView.isOpen = false;
-				menuView.focus();
-				cancel();
-			}
-		} );
-	},
-
-	/**
 	 * Closes the menu when its parent menu also closed. This prevents from orphaned open menus when the parent menu re-opens.
 	 */
 	closeOnParentClose( menuView: DropdownMenuView, parentMenuView: DropdownMenuView ): void {

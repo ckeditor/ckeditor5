@@ -214,8 +214,7 @@ export default class DropdownMenuView extends View implements FocusableView {
 		// Listen for keystrokes coming from within #element.
 		this.keystrokes.listenTo( this.element! );
 
-		DropdownMenuBehaviors.closeOnEscKey( this );
-
+		this._mountInBodyOnOpen();
 		this._repositionPanelOnOpen();
 	}
 
@@ -263,16 +262,18 @@ export default class DropdownMenuView extends View implements FocusableView {
 	}
 
 	/**
-	 * Sets the position of the panel when the menu opens. The panel is positioned
-	 * so that it optimally uses the available space in the viewport.
+	 * Mounts the portal view in the body when the menu is open and removes it when the menu is closed.
+	 * Binds keystrokes to the portal view when the menu is open.
 	 */
-	private _repositionPanelOnOpen(): void {
-		const { portalView, panelView, buttonView, keystrokes } = this;
+	private _mountInBodyOnOpen(): void {
+		const { portalView, keystrokes } = this;
 		const { body } = this.editor.ui.view;
 
 		// Let the menu control the position of the panel. The position must be updated every time the menu is open.
 		this.on<ObservableChangeEvent<boolean>>( 'change:isOpen', ( evt, name, isOpen ) => {
-			if ( !isOpen ) {
+			// Removes the portal view from the body when the menu is closed.
+			if ( !isOpen && body.has( portalView ) ) {
+				body.remove( portalView );
 				return;
 			}
 
@@ -280,6 +281,21 @@ export default class DropdownMenuView extends View implements FocusableView {
 			if ( isOpen && !body.has( portalView ) ) {
 				body.add( portalView );
 				keystrokes.listenTo( portalView.element! );
+			}
+		} );
+	}
+
+	/**
+	 * Sets the position of the panel when the menu opens. The panel is positioned
+	 * so that it optimally uses the available space in the viewport.
+	 */
+	private _repositionPanelOnOpen(): void {
+		const { panelView, buttonView } = this;
+
+		// Let the menu control the position of the panel. The position must be updated every time the menu is open.
+		this.on<ObservableChangeEvent<boolean>>( 'change:isOpen', ( evt, name, isOpen ) => {
+			if ( !isOpen ) {
+				return;
 			}
 
 			const buttonRect = buttonView.element!.getBoundingClientRect();
