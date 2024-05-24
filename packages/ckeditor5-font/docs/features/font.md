@@ -159,19 +159,21 @@ Here is an example of the font size CSS classes:
 An example of an editor that supports two font sizes:
 
 ```js
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	fontSize: {
-		options: [
-			'tiny',
-			'default',
-			'big'
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		fontSize: {
+			options: [
+				'tiny',
+				'default',
+				'big'
+			]
+		},
+		toolbar: [
+			'heading', 'bulletedList', 'numberedList', 'fontSize', 'undo', 'redo'
 		]
-	},
-	toolbar: [
-		'heading', 'bulletedList', 'numberedList', 'fontSize', 'undo', 'redo'
-	]
-} )
-.then( /* ... */ );
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 {@snippet features/custom-font-size-named-options}

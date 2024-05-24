@@ -426,15 +426,16 @@ function MyCustomUploadAdapterPlugin( editor ) {
 Enable the `MyCustomUploadAdapterPlugin` in the editor by using the {@link module:core/editor/editorconfig~EditorConfig#extraPlugins `config.extraPlugins`} option:
 
 ```js
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	extraPlugins: [ MyCustomUploadAdapterPlugin ],
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		extraPlugins: [ MyCustomUploadAdapterPlugin ],
 
-	// More configuration options.
-	// ...
-} )
-.catch( error => {
-	console.log( error );
-} );
+		// More configuration options.
+		// ...
+	} )
+	.catch( error => {
+		console.log( error );
+	} );
 ```
 
 Run the editor and see if your implementation works. Drop an image into the WYSIWYG editor content and it should be uploaded to the server thanks to the `MyUploadAdapter`.
@@ -546,15 +547,16 @@ function MyCustomUploadAdapterPlugin( editor ) {
 	};
 }
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	extraPlugins: [ MyCustomUploadAdapterPlugin ],
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		extraPlugins: [ MyCustomUploadAdapterPlugin ],
 
-	// More configuration options.
-	// ...
-} )
-.catch( error => {
-	console.log( error );
-} );
+		// More configuration options.
+		// ...
+	} )
+	.catch( error => {
+		console.log( error );
+	} );
 ```
 
 ## What's next
