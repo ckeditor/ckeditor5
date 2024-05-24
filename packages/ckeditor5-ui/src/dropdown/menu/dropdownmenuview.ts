@@ -187,8 +187,8 @@ export default class DropdownMenuView extends View implements FocusableView {
 		this.portalView = new DropdownMenuPortalView( editor.locale );
 		this.portalView.children.add( this.panelView );
 
-		this._attachBehaviors();
 		this._attachParentMenuBehaviors();
+		this._attachBehaviors();
 
 		if ( parentMenuView ) {
 			this.parentMenuView = parentMenuView;
@@ -270,6 +270,11 @@ export default class DropdownMenuView extends View implements FocusableView {
 
 		// Let the menu control the position of the panel. The position must be updated every time the menu is open.
 		this.on<ObservableChangeEvent<boolean>>( 'change:isOpen', ( evt, name, isOpen ) => {
+			// Ensure that the event was triggered by this instance.
+			if ( evt.source !== this ) {
+				return;
+			}
+
 			// Removes the portal view from the body when the menu is closed.
 			if ( !isOpen && body.has( portalView ) ) {
 				body.remove( portalView );
@@ -293,7 +298,8 @@ export default class DropdownMenuView extends View implements FocusableView {
 
 		// Let the menu control the position of the panel. The position must be updated every time the menu is open.
 		this.on<ObservableChangeEvent<boolean>>( 'change:isOpen', ( evt, name, isOpen ) => {
-			if ( !isOpen ) {
+			// Ensure that the event was triggered by this instance.
+			if ( !isOpen || evt.source !== this ) {
 				return;
 			}
 
