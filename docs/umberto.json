@@ -707,6 +707,12 @@
 			"slug": "updating",
 			"categories": [
 				{
+					"name": "New installation methods",
+					"id": "nim-migration",
+					"slug": "nim-migration",
+					"order": 8
+				},
+				{
 					"name": "CKEditor 4 migration",
 					"id": "ckeditor4-migration",
 					"slug": "ckeditor4",
