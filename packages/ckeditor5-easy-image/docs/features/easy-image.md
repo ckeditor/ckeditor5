@@ -14,13 +14,11 @@ The [Easy Image](https://ckeditor.com/ckeditor-cloud-services/easy-image/) is an
 	This is a premium feature and you need a license for it on top of your CKEditor&nbsp;5 commercial license. [Contact us](https://ckeditor.com/contact/?sales=true#contact-form) to receive an offer tailored to your needs.
 
 	You can also sign up for the [CKEditor Premium Features 30-day free trial](https://orders.ckeditor.com/trial/premium-features) to test the feature.
-
-	This feature is enabled by default in all [predefined builds](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/predefined-builds.html) for convenience, but the editor will still work properly without activating it.
 </info-box>
 
 ## Demo
 
-The demo below uses the {@link installation/getting-started/predefined-builds#classic-editor Classic editor}. It is configured to use the Easy Image service provided by CKEditor Cloud Services.
+The demo below uses the classic editor type. It is configured to use the Easy Image service provided by CKEditor Cloud Services.
 
 {@snippet build-classic-source}
 
@@ -122,21 +120,16 @@ The variety of the image sizes in the `srcset` attribute allows the web browser 
 
 ## Installation
 
-<info-box info>
-	This feature is enabled by default in all predefined builds. The installation instructions are for developers interested in building their own, custom WYSIWYG editor.
-</info-box>
-
-To add this feature to your editor, install the [`@ckeditor/ckeditor5-easy-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-easy-image) package:
+This package is part of our open-source aggregate package.
 
 ```bash
-npm install --save @ckeditor/ckeditor5-easy-image
+npm install ckeditor5
 ```
 
 Then add {@link module:easy-image/easyimage~EasyImage} to your plugin list and [configure](#configuration) the feature. For instance:
 
 ```js
-import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
-import { Image } from '@ckeditor/ckeditor5-image';
+import { EasyImage, Image } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

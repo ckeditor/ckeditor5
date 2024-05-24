@@ -28,8 +28,7 @@ import DecoupledEditorUIView from './decouplededitoruiview.js';
 import { isElement as _isElement } from 'lodash-es';
 
 /**
- * The {@glink installation/getting-started/predefined-builds#document-editor decoupled editor} implementation.
- * It provides an inline editable and a toolbar. However, unlike other editors,
+ * The decoupled editor implementation. It provides an inline editable and a toolbar. However, unlike other editors,
  * it does not render these components anywhere in the DOM unless configured.
  *
  * This type of an editor is dedicated to integrations which require a customized UI with an open
@@ -43,22 +42,6 @@ import { isElement as _isElement } from 'lodash-es';
  *
  * Note that you will need to attach the editor toolbar and menu bar to your web page manually, in a desired place,
  * after the editor is initialized.
- *
- * # Decoupled editor and document editor build
- *
- * The decoupled editor can be used directly from source (if you installed the
- * [`@ckeditor/ckeditor5-editor-decoupled`](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-decoupled) package)
- * but it is also available in the
- * {@glink installation/getting-started/predefined-builds#document-editor document editor build}.
- *
- * {@glink installation/getting-started/predefined-builds Builds}
- * are ready-to-use editors with plugins bundled in. When using the editor from
- * source you need to take care of loading all plugins by yourself
- * (through the {@link module:core/editor/editorconfig~EditorConfig#plugins `config.plugins`} option).
- * Using the editor from source gives much better flexibility and allows for easier customization.
- *
- * Read more about initializing the editor from source or as a build in
- * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`}.
  */
 export default class DecoupledEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	/**
@@ -227,18 +210,6 @@ export default class DecoupledEditor extends /* #__PURE__ */ ElementApiMixin( Ed
 	 *
 	 * See the {@link module:core/editor/editorconfig~EditorConfig editor configuration documentation} to learn more about
 	 * customizing plugins, toolbar and more.
-	 *
-	 * # Using the editor from source
-	 *
-	 * The code samples listed in the previous sections of this documentation assume that you are using an
-	 * {@glink installation/getting-started/predefined-builds editor build}
-	 * (for example – `@ckeditor/ckeditor5-build-decoupled`).
-	 *
-	 * If you want to use the decoupled editor from source (`@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor`),
-	 * you need to define the list of
-	 * {@link module:core/editor/editorconfig~EditorConfig#plugins plugins to be initialized} and
-	 * {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar items}. Read more about using the editor from
-	 * source in the {@glink installation/advanced/alternative-setups/integrating-from-source-webpack dedicated guide}.
 	 *
 	 * @param sourceElementOrData The DOM element that will be the source for the created editor
 	 * or the editor's initial data.

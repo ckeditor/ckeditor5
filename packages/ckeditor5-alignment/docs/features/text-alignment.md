@@ -18,6 +18,20 @@ Click inside a paragraph or a header and use the toolbar dropdown {@icon @ckedit
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
+## Installation
+
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+
+```js
+import { ClassicEditor, Alignment } from 'ckeditor5';
+
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Alignment, /* ... */ ],
+	toolbar: [ 'alignment', /* ... */ ]
+} )
+.then( /* ... */ );
+```
+
 ## Configuring alignment options
 
 ### Defining available options
@@ -25,23 +39,21 @@ Click inside a paragraph or a header and use the toolbar dropdown {@icon @ckedit
 It is possible to configure which alignment options are available in the editor by setting the {@link module:alignment/alignmentconfig~AlignmentConfig#options `alignment.options`} configuration option. You can choose from `'left'`, `'right'`, `'center'`, and `'justify'`.
 
 <info-box>
-	You should always include the `'left'` option for the <abbr title="left–to–right">LTR</abbr> content. Similarly, you should always include the `'right'` option for the <abbr title="right-to-left">RTL</abbr> content. Learn more about {@link features/ui-language#setting-the-language-of-the-content configuring language of the editor content}.
+	You should always include the `'left'` option for the <abbr title="left–to–right">LTR</abbr> content. Similarly, you should always include the `'right'` option for the <abbr title="right-to-left">RTL</abbr> content. Learn more about {@link getting-started/setup/ui-language#setting-the-language-of-the-content configuring language of the editor content}.
 </info-box>
 
 For example, the following editor will support two alignment options: to the left and to the right:
 
 ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		alignment: {
-			options: [ 'left', 'right' ]
-		},
-		toolbar: [
-			'heading', '|', 'bulletedList', 'numberedList', 'alignment', 'undo', 'redo'
-		]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	alignment: {
+		options: [ 'left', 'right' ]
+	},
+	toolbar: [
+		'heading', '|', 'bulletedList', 'numberedList', 'alignment', 'undo', 'redo'
+	]
+} )
+.then( /* ... */ );
 ```
 
 {@snippet features/custom-text-alignment-options}
@@ -57,20 +69,18 @@ By default, alignment is set inline using the `text-align` CSS property. If you 
 The following configuration will set `.my-align-left` and `.my-align-right` to left and right alignment, respectively.
 
 ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		alignment: {
-			options: [
-				{ name: 'left', className: 'my-align-left' },
-				{ name: 'right', className: 'my-align-right' }
-			]
-		},
-		toolbar: [
-			'heading', '|', 'bulletedList', 'numberedList', 'alignment', 'undo', 'redo'
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	alignment: {
+		options: [
+			{ name: 'left', className: 'my-align-left' },
+			{ name: 'right', className: 'my-align-right' }
 		]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+	},
+	toolbar: [
+		'heading', '|', 'bulletedList', 'numberedList', 'alignment', 'undo', 'redo'
+	]
+} )
+.then( /* ... */ );
 ```
 
 ## Configuring the toolbar
@@ -78,47 +88,15 @@ ClassicEditor
 You can choose to use the alignment dropdown (`'alignment'`) or configure the toolbar to use separate buttons for each of the options:
 
 ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		toolbar: [
-			'heading', '|', 'alignment:left', 'alignment:right', 'alignment:center', 'alignment:justify'
-		]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	toolbar: [
+		'heading', '|', 'alignment:left', 'alignment:right', 'alignment:center', 'alignment:justify'
+	]
+} )
+.then( /* ... */ );
 ```
 
 {@snippet features/custom-text-alignment-toolbar}
-
-## Installation
-
-<info-box info>
-	The alignment feature is enabled by default in the {@link installation/getting-started/predefined-builds#document-editor document editor build} and {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
-</info-box>
-
-To add this feature to your editor, install the [`@ckeditor/ckeditor5-alignment`](https://www.npmjs.com/package/@ckeditor/ckeditor5-alignment) package:
-
-```bash
-npm install --save @ckeditor/ckeditor5-alignment
-```
-
-And add it to your plugin list and toolbar configuration:
-
-```js
-import { Alignment } from '@ckeditor/ckeditor5-alignment';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Alignment, /* ... */ ],
-		toolbar: [ 'alignment', /* ... */ ]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
-```
-
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
-</info-box>
 
 ## Related features
 

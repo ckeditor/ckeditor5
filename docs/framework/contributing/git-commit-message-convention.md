@@ -1,7 +1,7 @@
 ---
 category: framework-contributing
 meta-title: Git commit message convention | CKEditor 5 Framework Documentation
-order: 50
+order: 60
 modified_at: 2021-09-07
 ---
 
