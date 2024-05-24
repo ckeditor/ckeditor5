@@ -184,15 +184,15 @@ export default class DropdownMenuView extends View implements FocusableView {
 			]
 		} );
 
-		this._attachBehaviors();
-		this._attachParentMenuBehaviors();
-
 		this.portalView = new DropdownMenuPortalView( editor.locale );
 		this.portalView.children.add( this.panelView );
 
 		if ( parentMenuView ) {
 			this.parentMenuView = parentMenuView;
 		}
+
+		this._attachBehaviors();
+		this._attachParentMenuBehaviors();
 	}
 
 	/**
@@ -242,6 +242,7 @@ export default class DropdownMenuView extends View implements FocusableView {
 			this.fire( 'submenu:change' );
 		} );
 
+		this.portalView.delegate( ...DropdownMenuView.DELEGATED_EVENTS ).to( this );
 		this.on<ObservableChangeEvent<DropdownMenuView | null>>( 'change:parentMenuView', ( evt, name, parentMenuView ) => {
 			if ( parentMenuView ) {
 				this.delegate( ...DropdownMenuView.DELEGATED_EVENTS ).to( parentMenuView );
@@ -266,17 +267,19 @@ export default class DropdownMenuView extends View implements FocusableView {
 	 * so that it optimally uses the available space in the viewport.
 	 */
 	private _repositionPanelOnOpen(): void {
-		const { portalView, panelView, buttonView } = this;
+		const { portalView, panelView, buttonView, keystrokes } = this;
 		const { body } = this.editor.ui.view;
 
 		// Let the menu control the position of the panel. The position must be updated every time the menu is open.
 		this.on<ObservableChangeEvent<boolean>>( 'change:isOpen', ( evt, name, isOpen ) => {
-			if ( isOpen && !body.has( portalView ) ) {
-				body.add( portalView );
-			}
-
 			if ( !isOpen ) {
 				return;
+			}
+
+			// Adds portal view to the body when the menu is open. Binds keystrokes to the portal view.
+			if ( isOpen && !body.has( portalView ) ) {
+				body.add( portalView );
+				keystrokes.listenTo( portalView.element! );
 			}
 
 			const buttonRect = buttonView.element!.getBoundingClientRect();

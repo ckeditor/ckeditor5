@@ -21,15 +21,25 @@ import type DropdownMenuRootListView from '../dropdownmenurootlistview.js';
 import DropdownMenuListItemView from '../dropdownmenulistitemview.js';
 import clickOutsideHandler from '../../../bindings/clickoutsidehandler.js';
 
+const hasMenuViewFocus = ( menuView: DropdownMenuView ) =>
+	( menuView.portalView.element && menuView.portalView.element.contains( document.activeElement ) ) ||
+		menuView.element!.contains( document.activeElement );
+
 export const DropdownRootMenuBehaviors = {
 	/**
 	 * Closes the menu when an element outside the menu is focused.
 	 */
 	closeWhenOutsideElementFocused( definition: DropdownMenuRootListView ): void {
 		definition.listenTo( document, 'focus', () => {
-			if ( definition.element && !definition.element.contains( document.activeElement ) ) {
-				definition.close();
+			if ( !definition.element || definition.element.contains( document.activeElement ) ) {
+				return;
 			}
+
+			if ( definition.menus.some( hasMenuViewFocus ) ) {
+				return;
+			}
+
+			definition.close();
 		}, { useCapture: true } );
 	},
 
@@ -42,10 +52,6 @@ export const DropdownRootMenuBehaviors = {
 		definition.on<DropdownMenuMouseEnterEvent>( 'menu:mouseenter', evt => {
 			const [ pathLeaf ] = evt.path;
 			const { menus } = definition;
-
-			const hasMenuViewFocus = ( menuView: DropdownMenuView ) =>
-				menuView.listView.element!.contains( document.activeElement ) ||
-					menuView.element!.contains( document.activeElement );
 
 			const isAnyOtherAlreadyOpen = !!document.activeElement && menus.some(
 				menuView => (
@@ -105,13 +111,20 @@ export const DropdownRootMenuBehaviors = {
 	 */
 	closeOnClickOutside( definition: DropdownMenuRootListView ): void {
 		clickOutsideHandler( {
+			options: {
+				priority: 'high'
+			},
 			emitter: definition,
 			activator: () => definition.isOpen,
 			callback: () => definition.close(),
-			contextElements: () => definition.menus.map( child => child.element! ),
-			options: {
-				priority: 'high'
-			}
+			contextElements: () => definition.menus
+				.flatMap(
+					child => [
+						child.element!,
+						child.portalView.element!
+					]
+				)
+				.filter( Boolean )
 		} );
 	}
 };

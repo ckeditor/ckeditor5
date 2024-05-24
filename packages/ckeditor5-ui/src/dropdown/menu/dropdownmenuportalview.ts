@@ -22,7 +22,6 @@ export default class DropdownMenuPortalView extends View {
 		super( locale );
 
 		this.children = this.createCollection();
-
 		this.setTemplate( {
 			tag: 'div',
 			attributes: {
