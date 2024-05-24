@@ -88,22 +88,6 @@ export default class ImageInsertFormView extends View {
 			}
 		}
 
-		if ( this._focusables.length > 1 ) {
-			for ( const view of this._focusables ) {
-				if ( isViewWithFocusCycler( view ) ) {
-					view.focusCycler.on<FocusCyclerForwardCycleEvent>( 'forwardCycle', evt => {
-						this._focusCycler.focusNext();
-						evt.stop();
-					} );
-
-					view.focusCycler.on<FocusCyclerBackwardCycleEvent>( 'backwardCycle', evt => {
-						this._focusCycler.focusPrevious();
-						evt.stop();
-					} );
-				}
-			}
-		}
-
 		this.setTemplate( {
 			tag: 'form',
 
