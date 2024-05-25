@@ -713,7 +713,7 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 				// @if CK_DEBUG_TYPING //	const node = expectedDomChildren[ i ];
 				// @if CK_DEBUG_TYPING //	if ( isText( node ) ) {
-				// @if CK_DEBUG_TYPING //		console.info( '%c[Renderer]%c Insert text node:',
+				// @if CK_DEBUG_TYPING //		console.info( '%c[Renderer]%c Insert text node' +
 				// @if CK_DEBUG_TYPING //			`${ this.isComposing ? ' while composing (may break composition)' : '' }: ` +
 				// @if CK_DEBUG_TYPING //			`%c${ _escapeTextNodeData( node.data ) }%c (${ node.data.length })`,
 				// @if CK_DEBUG_TYPING //			'color: green;font-weight: bold',
