@@ -104,7 +104,8 @@ export default class PoweredBy extends /* #__PURE__ */ DomEmitterMixin() {
 
 		if ( !forceVisible ) {
 			const licenseKey = editor.config.get( 'licenseKey' );
-			const licenseContent = licenseKey && parseBase64EncodedObject( licenseKey.split( '.' )[ 1 ] );
+			const isGpl = licenseKey && licenseKey == 'GPL';
+			const licenseContent = licenseKey && !isGpl && parseBase64EncodedObject( licenseKey.split( '.' )[ 1 ] );
 
 			if ( licenseContent && licenseContent.whiteLabel ) {
 				return;
