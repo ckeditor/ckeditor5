@@ -186,19 +186,21 @@ describe( 'Editor - license check', () => {
 			} );
 
 			describe( 'GPL license', () => {
-				it( 'should block if disctribution channel is cloud', () => {
+				it( 'should block if distribution channel is cloud', () => {
 					setChannel( 'cloud' );
 
-					const editor = new TestEditor( {} );
+					const licenseKey = 'GPL';
+					const editor = new TestEditor( { licenseKey } );
 
 					sinon.assert.calledWithMatch( showErrorStub, 'distributionChannel' );
 					expect( editor.isReadOnly ).to.be.true;
 				} );
 
-				it( 'should not block if disctribution channel is not cloud', () => {
+				it( 'should not block if distribution channel is not cloud', () => {
 					setChannel( 'xyz' );
 
-					const editor = new TestEditor( {} );
+					const licenseKey = 'GPL';
+					const editor = new TestEditor( { licenseKey } );
 
 					sinon.assert.notCalled( showErrorStub );
 					expect( editor.isReadOnly ).to.be.false;
@@ -208,6 +210,24 @@ describe( 'Editor - license check', () => {
 			function setChannel( channel ) {
 				window[ ' CKE_DISTRIBUTION' ] = channel;
 			}
+		} );
+
+		describe( 'GPL check', () => {
+			it( 'should not block if license key is GPL', () => {
+				const licenseKey = 'GPL';
+
+				const editor = new TestEditor( { licenseKey } );
+
+				sinon.assert.notCalled( showErrorStub );
+				expect( editor.isReadOnly ).to.be.false;
+			} );
+
+			it( 'should block if license key is missing', () => {
+				const editor = new TestEditor( {} );
+
+				sinon.assert.calledWithMatch( showErrorStub, 'noLicense' );
+				expect( editor.isReadOnly ).to.be.true;
+			} );
 		} );
 
 		describe( 'trial check', () => {

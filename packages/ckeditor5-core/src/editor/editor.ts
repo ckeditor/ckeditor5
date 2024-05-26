@@ -669,8 +669,12 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 		const distributionChannel = ( window as any )[ ' CKE_DISTRIBUTION' ] || 'sh';
 
 		if ( !licenseKey ) {
-			// TODO: For now, we don't block the editor if a licence key is not provided. GPL is assumed.
+			blockEditor( this, 'noLicense' );
 
+			return;
+		}
+
+		if ( licenseKey == 'GPL' ) {
 			if ( distributionChannel == 'cloud' ) {
 				blockEditor( this, 'distributionChannel' );
 			}
@@ -869,6 +873,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 }
 
 type LicenseErrorReason =
+	'noLicense' |
 	'invalid' |
 	'expired' |
 	'domainLimit' |
