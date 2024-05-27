@@ -3,7 +3,7 @@ menu-title: Using package generator
 meta-title: Using the package generator | CKEditor 5 Framework Documentation
 category: package-generator
 order: 41
-modified_at: 2022-08-16
+modified_at: 2024-06-27
 ---
 
 # Using the package generator
@@ -35,6 +35,12 @@ Available modifiers for the command are:
 * `--verbose` &ndash; (alias: `-v`) print additional logs about the current executed task.
 * `--use-legacy-methods` &ndash; use legacy installations methods in a newly created package.
 
+## Choosing the method
+
+Currently there are two ways of how package generator works:
+* (default) that are based on imports only from `ckeditor5` package,
+* behind `--use-legacy-methods` flag, that are based on ( {@link getting-started/legacy-getting-started/quick-start legacy installation methods} ) but can be build to support both.
+
 ## Using the package
 
 After successfully creating a directory with the new package, enter it by executing the following command:
@@ -57,8 +63,7 @@ You can check out what is available inside your package depending on the languag
 * {@link framework/development-tools/package-generator/javascript-package JavaScript}
 * {@link framework/development-tools/package-generator/typescript-package TypeScript}
 
-## Choosing the method
+## Migration
 
-Currently there are two ways of how package generator works:
-* (default) that are based on imports only from `ckeditor5` package,
-* behind `--use-legacy-methods` flag, that are based on legacy installation methods ( {@link getting-started/legacy-getting-started/quick-start Quick start guide} ) but can be build to support both.
+If you have used the [`ckeditor5-package-generator`](https://www.npmjs.com/package/ckeditor5-package-generator) (using version `1.1.0` or lower) to generate and develop your own plugin for CKEditor 5 and now you want to migrate to the newest installations methods that's are used by CKEditor 5 please go to the {link TODO migration guide}, there is an instruction that will guide you step by step thru all things that need to be changed.
+
