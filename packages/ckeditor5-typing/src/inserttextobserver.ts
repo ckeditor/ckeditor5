@@ -96,7 +96,7 @@ export default class InsertTextObserver extends Observer {
 		// On Android composition events are immediately applied to the model.
 		// On non-Android the model is updated only on composition end.
 		// On Android we can't rely on composition start/end to update model.
-		if ( !env.isAndroid ) {
+		if ( !env.isAndroid && !env.features.isEditContextSupported ) {
 			// Note: The priority must be lower than the CompositionObserver handler to call it after the renderer is unblocked.
 			// This is important for view to DOM position mapping.
 			// This causes the effect of first remove composed DOM and then reapply it after model modification.

@@ -387,89 +387,91 @@ export default class DomConverter {
 			const textData = this._processDataFromViewText( viewNode );
 
 			return this._domDocument.createTextNode( textData );
-		} else {
-			const viewElementOrFragment = viewNode as ViewElement | ViewDocumentFragment;
+		}
 
-			if ( this.mapViewToDom( viewElementOrFragment ) ) {
-				// Do not reuse element that is marked to not reuse (for example an IMG element
-				// so it can immediately display a placeholder background instead of waiting for the new src to load).
-				if ( viewElementOrFragment.getCustomProperty( 'editingPipeline:doNotReuseOnce' ) ) {
-					this._elementsWithTemporaryCustomProperties.add( viewElementOrFragment );
-				} else {
-					return this.mapViewToDom( viewElementOrFragment )!;
-				}
-			}
+		const viewElementOrFragment = viewNode as ViewElement | ViewDocumentFragment;
 
-			let domElement: DomElement | DomDocumentFragment | DomComment;
-
-			if ( viewElementOrFragment.is( 'documentFragment' ) ) {
-				// Create DOM document fragment.
-				domElement = this._domDocument.createDocumentFragment();
-
-				if ( options.bind ) {
-					this.bindDocumentFragments( domElement, viewElementOrFragment );
-				}
-			} else if ( viewElementOrFragment.is( 'uiElement' ) ) {
-				if ( viewElementOrFragment.name === '$comment' ) {
-					domElement = this._domDocument.createComment( viewElementOrFragment.getCustomProperty( '$rawContent' ) as string );
-				} else {
-					// UIElement has its own render() method (see #799).
-					domElement = viewElementOrFragment.render( this._domDocument, this );
-				}
-
-				if ( options.bind ) {
-					this.bindElements( domElement as DomElement, viewElementOrFragment );
-				}
-
-				return domElement;
+		if ( this.mapViewToDom( viewElementOrFragment ) ) {
+			// Do not reuse element that is marked to not reuse (for example an IMG element
+			// so it can immediately display a placeholder background instead of waiting for the new src to load).
+			if ( viewElementOrFragment.getCustomProperty( 'editingPipeline:doNotReuseOnce' ) ) {
+				this._elementsWithTemporaryCustomProperties.add( viewElementOrFragment );
 			} else {
-				// Create DOM element.
-				if ( this._shouldRenameElement( viewElementOrFragment.name ) ) {
-					_logUnsafeElement( viewElementOrFragment.name );
+				return this.mapViewToDom( viewElementOrFragment )!;
+			}
+		}
 
-					domElement = this._createReplacementDomElement( viewElementOrFragment.name );
-				} else if ( viewElementOrFragment.hasAttribute( 'xmlns' ) ) {
-					domElement = this._domDocument.createElementNS(
-						viewElementOrFragment.getAttribute( 'xmlns' )!,
-						viewElementOrFragment.name
-					) as HTMLElement;
-				} else {
-					domElement = this._domDocument.createElement( viewElementOrFragment.name );
-				}
+		let domElement: DomElement | DomDocumentFragment | DomComment;
 
-				// RawElement take care of their children in RawElement#render() method which can be customized
-				// (see https://github.com/ckeditor/ckeditor5/issues/4469).
-				if ( viewElementOrFragment.is( 'rawElement' ) ) {
-					viewElementOrFragment.render( domElement, this );
-				}
+		if ( viewElementOrFragment.is( 'documentFragment' ) ) {
+			// Create DOM document fragment.
+			domElement = this._domDocument.createDocumentFragment();
 
-				if ( options.bind ) {
-					this.bindElements( domElement, viewElementOrFragment );
-				}
-
-				// Copy element's attributes.
-				for ( const key of viewElementOrFragment.getAttributeKeys() ) {
-					this.setDomElementAttribute(
-						domElement,
-						key,
-						viewElementOrFragment.getAttribute( key )!,
-						viewElementOrFragment
-					);
-				}
+			if ( options.bind ) {
+				this.bindDocumentFragments( domElement, viewElementOrFragment );
+			}
+		}
+		else if ( viewElementOrFragment.is( 'uiElement' ) ) {
+			if ( viewElementOrFragment.name === '$comment' ) {
+				domElement = this._domDocument.createComment( viewElementOrFragment.getCustomProperty( '$rawContent' ) as string );
+			} else {
+				// UIElement has its own render() method (see #799).
+				domElement = viewElementOrFragment.render( this._domDocument, this );
 			}
 
-			if ( options.withChildren !== false ) {
-				for ( const child of this.viewChildrenToDom( viewElementOrFragment, options ) ) {
-					if ( domElement instanceof HTMLTemplateElement ) {
-						domElement.content.appendChild( child );
-					} else {
-						domElement.appendChild( child );
-					}
-				}
+			if ( options.bind ) {
+				this.bindElements( domElement as DomElement, viewElementOrFragment );
 			}
 
 			return domElement;
 		}
+		else {
+			// Create DOM element.
+			if ( this._shouldRenameElement( viewElementOrFragment.name ) ) {
+				_logUnsafeElement( viewElementOrFragment.name );
+
+				domElement = this._createReplacementDomElement( viewElementOrFragment.name );
+			} else if ( viewElementOrFragment.hasAttribute( 'xmlns' ) ) {
+				domElement = this._domDocument.createElementNS(
+					viewElementOrFragment.getAttribute( 'xmlns' )!,
+					viewElementOrFragment.name
+				) as HTMLElement;
+			} else {
+				domElement = this._domDocument.createElement( viewElementOrFragment.name );
+			}
+
+			// RawElement take care of their children in RawElement#render() method which can be customized
+			// (see https://github.com/ckeditor/ckeditor5/issues/4469).
+			if ( viewElementOrFragment.is( 'rawElement' ) ) {
+				viewElementOrFragment.render( domElement, this );
+			}
+
+			if ( options.bind ) {
+				this.bindElements( domElement, viewElementOrFragment );
+			}
+
+			// Copy element's attributes.
+			for ( const key of viewElementOrFragment.getAttributeKeys() ) {
+				this.setDomElementAttribute(
+					domElement,
+					key,
+					viewElementOrFragment.getAttribute( key )!,
+					viewElementOrFragment
+				);
+			}
+		}
+
+		if ( options.withChildren !== false ) {
+			for ( const child of this.viewChildrenToDom( viewElementOrFragment, options ) ) {
+				if ( domElement instanceof HTMLTemplateElement ) {
+					domElement.content.appendChild( child );
+				} else {
+					domElement.appendChild( child );
+				}
+			}
+		}
+
+		return domElement;
 	}
 
 	/**
@@ -1394,80 +1396,80 @@ export default class DomConverter {
 
 				return textNode;
 			}
-		} else {
-			let viewElement = this.mapDomToView( domNode as ( DomElement | DomDocumentFragment ) );
+		}
 
-			if ( viewElement ) {
-				if ( this._isInlineObjectElement( viewElement ) ) {
+		let viewElement = this.mapDomToView( domNode as ( DomElement | DomDocumentFragment ) );
+
+		if ( viewElement ) {
+			if ( this._isInlineObjectElement( viewElement ) ) {
+				inlineNodes.push( viewElement );
+			}
+
+			return viewElement;
+		}
+
+		if ( this.isDocumentFragment( domNode ) ) {
+			// Create view document fragment.
+			viewElement = new ViewDocumentFragment( this.document );
+
+			if ( options.bind ) {
+				this.bindDocumentFragments( domNode, viewElement );
+			}
+		} else {
+			// Create view element.
+			viewElement = this._createViewElement( domNode, options );
+
+			if ( options.bind ) {
+				this.bindElements( domNode as DomElement, viewElement );
+			}
+
+			// Copy element's attributes.
+			const attrs = ( domNode as DomElement ).attributes;
+
+			if ( attrs ) {
+				for ( let l = attrs.length, i = 0; i < l; i++ ) {
+					viewElement._setAttribute( attrs[ i ].name, attrs[ i ].value );
+				}
+			}
+
+			// Treat this element's content as a raw data if it was registered as such.
+			if ( this._isViewElementWithRawContent( viewElement, options ) ) {
+				viewElement._setCustomProperty( '$rawContent', ( domNode as DomElement ).innerHTML );
+
+				if ( !this._isBlockViewElement( viewElement ) ) {
 					inlineNodes.push( viewElement );
 				}
 
 				return viewElement;
 			}
 
-			if ( this.isDocumentFragment( domNode ) ) {
-				// Create view document fragment.
-				viewElement = new ViewDocumentFragment( this.document );
+			// Comment node is also treated as an element with raw data.
+			if ( isComment( domNode ) ) {
+				viewElement._setCustomProperty( '$rawContent', domNode.data );
 
-				if ( options.bind ) {
-					this.bindDocumentFragments( domNode, viewElement );
-				}
-			} else {
-				// Create view element.
-				viewElement = this._createViewElement( domNode, options );
-
-				if ( options.bind ) {
-					this.bindElements( domNode as DomElement, viewElement );
-				}
-
-				// Copy element's attributes.
-				const attrs = ( domNode as DomElement ).attributes;
-
-				if ( attrs ) {
-					for ( let l = attrs.length, i = 0; i < l; i++ ) {
-						viewElement._setAttribute( attrs[ i ].name, attrs[ i ].value );
-					}
-				}
-
-				// Treat this element's content as a raw data if it was registered as such.
-				if ( this._isViewElementWithRawContent( viewElement, options ) ) {
-					viewElement._setCustomProperty( '$rawContent', ( domNode as DomElement ).innerHTML );
-
-					if ( !this._isBlockViewElement( viewElement ) ) {
-						inlineNodes.push( viewElement );
-					}
-
-					return viewElement;
-				}
-
-				// Comment node is also treated as an element with raw data.
-				if ( isComment( domNode ) ) {
-					viewElement._setCustomProperty( '$rawContent', domNode.data );
-
-					return viewElement;
-				}
+				return viewElement;
 			}
+		}
 
-			// Yield the element first so the flow of nested inline nodes is not reversed inside elements.
-			yield viewElement;
+		// Yield the element first so the flow of nested inline nodes is not reversed inside elements.
+		yield viewElement;
 
-			const nestedInlineNodes: Array<ViewNode> = [];
+		const nestedInlineNodes: Array<ViewNode> = [];
 
-			if ( options.withChildren !== false ) {
-				for ( const child of this.domChildrenToView( domNode as DomElement, options, nestedInlineNodes ) ) {
-					viewElement._appendChild( child );
-				}
+		if ( options.withChildren !== false ) {
+			for ( const child of this.domChildrenToView( domNode as DomElement, options, nestedInlineNodes ) ) {
+				viewElement._appendChild( child );
 			}
+		}
 
-			// Check if this is an inline object after processing child nodes so matcher
-			// for inline objects can verify if the element is empty.
-			if ( this._isInlineObjectElement( viewElement ) ) {
-				inlineNodes.push( viewElement );
-			} else {
-				// It's an inline element that is not an object (like <b>, <i>) or a block element.
-				for ( const inlineNode of nestedInlineNodes ) {
-					inlineNodes.push( inlineNode );
-				}
+		// Check if this is an inline object after processing child nodes so matcher
+		// for inline objects can verify if the element is empty.
+		if ( this._isInlineObjectElement( viewElement ) ) {
+			inlineNodes.push( viewElement );
+		} else {
+			// It's an inline element that is not an object (like <b>, <i>) or a block element.
+			for ( const inlineNode of nestedInlineNodes ) {
+				inlineNodes.push( inlineNode );
 			}
 		}
 	}

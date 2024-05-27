@@ -67,7 +67,7 @@ export default abstract class DomEventObserver<
 	/**
 	 * @inheritDoc
 	 */
-	public override observe( domElement: HTMLElement ): void {
+	public override observe( domElement: HTMLElement | EventTarget ): void {
 		const types = typeof this.domEventType == 'string' ? [ this.domEventType ] : this.domEventType;
 
 		types.forEach( type => {
@@ -82,7 +82,7 @@ export default abstract class DomEventObserver<
 	/**
 	 * @inheritDoc
 	 */
-	public override stopObserving( domElement: HTMLElement ): void {
+	public override stopObserving( domElement: HTMLElement | EventTarget ): void {
 		this.stopListening( domElement );
 	}
 

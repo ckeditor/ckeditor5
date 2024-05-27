@@ -9,7 +9,8 @@
 
 import DomEventObserver from './domeventobserver.js';
 import type View from '../view.js';
-import type DomEventData from './domeventdata.js';
+import DomEventData from './domeventdata.js';
+import { isEventTarget } from '@ckeditor/ckeditor5-utils';
 
 // @if CK_DEBUG_TYPING // const { _debouncedLine } = require( '../../dev-utils/utils.js' );
 
@@ -72,6 +73,47 @@ export default class CompositionObserver extends DomEventObserver<'compositionst
 		// @if CK_DEBUG_TYPING // 	console.groupEnd();
 		// @if CK_DEBUG_TYPING // }
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public override observe( domElement: HTMLElement | EventTarget ): void {
+		super.observe( domElement );
+
+		if ( 'editContext' in domElement && isEventTarget( domElement.editContext ) ) {
+			super.observe( domElement.editContext );
+
+			// TODO This is a PoC.
+			this.listenTo( domElement.editContext, 'textupdate', ( eventInfo, domEvent ) => {
+				console.log(
+					`The user entered the text: ${ _escapeTextNodeData( domEvent.text ) } ` +
+					`at [${ domEvent.updateRangeStart } - ${ domEvent.updateRangeEnd }] offset.` +
+					`Selection: [${ domEvent.selectionStart } - ${ domEvent.selectionEnd }] offset`
+				);
+
+				const parent = this.document.selection.getFirstPosition()!.parent;
+				const parentElement = parent.is( 'element' ) ? parent : parent.parent;
+
+				this.document.fire( 'insertText', new DomEventData( this.view, {}, {
+					text: domEvent.text,
+					selection: this.view.createSelection(
+						this.view.createRangeIn( parentElement )
+					)
+				} ) );
+			} );
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public override stopObserving( domElement: HTMLElement | EventTarget ): void {
+		super.stopObserving( domElement );
+
+		if ( 'editContext' in domElement && isEventTarget( domElement.editContext ) ) {
+			super.stopObserving( domElement.editContext );
+		}
+	}
 }
 
 export interface CompositionEventData extends DomEventData<CompositionEvent> {
@@ -128,3 +170,12 @@ export type ViewDocumentCompositionEndEvent = {
 	name: 'compositionend';
 	args: [ data: CompositionEventData ];
 };
+
+function _escapeTextNodeData( text ) {
+	const escapedText = text
+		.replace( /&/g, '&amp;' )
+		.replace( /\u00A0/g, '&nbsp;' )
+		.replace( /\u2060/g, '&NoBreak;' );
+
+	return `"${ escapedText }"`;
+}

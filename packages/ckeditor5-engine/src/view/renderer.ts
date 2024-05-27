@@ -211,7 +211,7 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 		// All marked elements, attributes, etc. will wait until next render after the composition ends.
 		// On Android composition events are immediately applied to the model, so we don't need to skip rendering,
 		// and we should not do it because the difference between view and DOM could lead to position mapping problems.
-		if ( this.isComposing && !env.isAndroid ) {
+		if ( this.isComposing && !env.isAndroid && !env.features.isEditContextSupported ) {
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Rendering aborted while isComposing.',
 			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-style: italic'

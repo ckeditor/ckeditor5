@@ -76,7 +76,7 @@ export default class Input extends Plugin {
 
 			// Flush queue on the next beforeinput event because it could happen
 			// that the mutation observer does not notice the DOM change in time.
-			if ( env.isAndroid && view.document.isComposing ) {
+			if ( ( env.isAndroid || env.features.isEditContextSupported ) && view.document.isComposing ) {
 				this._compositionQueue.flush( 'next beforeinput' );
 			}
 
@@ -96,7 +96,7 @@ export default class Input extends Plugin {
 
 			// Typing in English on Android is firing composition events for the whole typed word.
 			// We need to check the target range text to only apply the difference.
-			if ( env.isAndroid ) {
+			if ( env.isAndroid || env.features.isEditContextSupported ) {
 				const selectedText = Array.from( modelRanges[ 0 ].getItems() ).reduce( ( rangeText, node ) => {
 					return rangeText + ( node.is( '$textProxy' ) ? node.data : '' );
 				}, '' );
@@ -136,7 +136,7 @@ export default class Input extends Plugin {
 			// and we could apply changes to the model and verify if the DOM is valid.
 			// The browser applies changes to the DOM not immediately on beforeinput event.
 			// We just wait for mutation observer to notice changes or as a fallback a timeout.
-			if ( env.isAndroid && view.document.isComposing ) {
+			if ( ( env.isAndroid || env.features.isEditContextSupported ) && view.document.isComposing ) {
 				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 				// @if CK_DEBUG_TYPING // 	console.log( `%c[Input]%c Queue insertText:%c "${ commandData.text }"%c ` +
 				// @if CK_DEBUG_TYPING // 		`[${ commandData.selection.getFirstPosition().path }]-` +
@@ -206,7 +206,7 @@ export default class Input extends Plugin {
 		}
 
 		// Apply composed changes to the model.
-		if ( env.isAndroid ) {
+		if ( env.isAndroid || env.features.isEditContextSupported ) {
 			// Apply changes to the model as they are applied to the DOM by the browser.
 			// On beforeinput event, the DOM is not yet modified. We wait for detected mutations to apply model changes.
 			this.listenTo<ViewDocumentMutationsEvent>( view.document, 'mutations', ( evt, { mutations } ) => {

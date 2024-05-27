@@ -170,7 +170,7 @@ export default class SelectionObserver extends Observer {
 
 			// The Renderer is disabled while composing on non-android browsers, so we can't update the view selection
 			// because the DOM and view tree drifted apart. Position mapping could fail because of it.
-			if ( this.document.isComposing && !env.isAndroid ) {
+			if ( this.document.isComposing && !env.isAndroid && !env.features.isEditContextSupported ) {
 				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 				// @if CK_DEBUG_TYPING // 	console.info( '%c[SelectionObserver]%c Selection change ignored (isComposing)',
 				// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green', ''

@@ -63,6 +63,7 @@ export { default as indexOf } from './dom/indexof.js';
 export { default as insertAt } from './dom/insertat.js';
 export { default as isComment } from './dom/iscomment.js';
 export { default as isNode } from './dom/isnode.js';
+export { default as isEventTarget } from './dom/iseventtarget.js';
 export { default as isRange } from './dom/isrange.js';
 export { default as isValidAttributeName } from './dom/isvalidattributename.js';
 export { default as isVisible } from './dom/isvisible.js';
