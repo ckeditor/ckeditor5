@@ -32,8 +32,12 @@ Set the `placeholder` attribute on a `<textarea>` element passed to the `Editor.
 ```
 
 ```js
+import { ClassicEditor, Essentials } from 'ckeditor5';
+
 ClassicEditor
-	.create( document.querySelector( '#editor' ) )
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Essentials, /* ... */ ],
+	} )
 	.then( editor => {
 		console.log( editor );
 	} )
@@ -51,15 +55,17 @@ You can use the {@link module:core/editor/editorconfig~EditorConfig#placeholder 
 * to override the `placeholder` text of a `<textarea>`, if one was passed into `Editor.create()` but the placeholder text should be different.
 
 ```js
+import { ClassicEditor, Essentials } from 'ckeditor5';
+
 ClassicEditor
-	.create(
-		document.querySelector( '#editor' ),
-		{
-			placeholder: 'Type the content here!'
-		}
-	).then( editor => {
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Essentials, /* ... */ ],
+		placeholder: 'Type the content here!'
+	} )
+	.then( editor => {
 		console.log( editor );
-	} ).catch( error => {
+	} )
+	.catch( error => {
 		console.error( error );
 	} );
 ```

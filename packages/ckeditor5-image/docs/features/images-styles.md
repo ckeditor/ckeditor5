@@ -115,14 +115,6 @@ You can change the style of an individual image using the contextual toolbar tha
 	For clarity, all demos in this guide present a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
-The editor above does not require any configuration, using one of the following builds: classic, inline, balloon, or balloon-block, for example:
-
-```js
-import ClassicEditor from 'ckeditor5';
-
-ClassicEditor.create( document.querySelector( '#editor' ) ).then( /* ... */ );
-```
-
 ### Presentational styles
 
 Presentational styles do not relate to any special meaning of the content. They directly control the visual aspect of an image. The default available presentational styles determine the image alignment behavior. Check the list of the available semantical styles in the [table](#ready-to-use-styles) below.
