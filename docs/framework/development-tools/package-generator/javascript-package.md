@@ -22,7 +22,7 @@ An overview of the project's directory structure:
 │  ├─ index.html           # The sample file.
 │  └─ ckeditor.js          # The editor initialization script.
 ├─ scripts
-│  └─ build-dist.mjs       # Script creates `NPM` and browser builds for your plugin.
+│  └─ build-dist.mjs       # Script creates `npm` and browser builds for your plugin.
 ├─ src
 │  ├─ pluginname.js        # The plugin with example functionality.
 │  ├─ index.js             # The modules exported by the package.
@@ -137,7 +137,7 @@ Creates npm and browser builds of your plugin. These builds can be added to the 
 Examples:
 
 ```bash
-# Builds the `NPM` and browser files thats are ready to publish.
+# Builds the `npm` and browser files thats are ready to publish.
 npm run build:dist
 ```
 

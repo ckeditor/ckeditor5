@@ -22,7 +22,7 @@ An overview of the project's directory structure:
 │  ├─ index.html           # The sample file.
 │  └─ ckeditor.ts          # The editor initialization script.
 ├─ scripts
-│  └─ build-dist.mjs       # Script creates `NPM` and browser builds for your plugin.
+│  └─ build-dist.mjs       # Script creates `npm` and browser builds for your plugin.
 ├─ src
 │  ├─ pluginname.ts        # The plugin with example functionality.
 │  ├─ augmentation.ts      # Type augmentations for the `@ckeditor/ckeditor5-core` module.
@@ -49,7 +49,7 @@ An overview of the project's directory structure:
 ├─ LICENSE.md              # All created packages fall under the MIT license.
 ├─ package.json            # See link below for details.
 ├─ tsconfig.json           # General TypeScript configuration.
-├─ tsconfig.dist.json      # Override for options from `tsconfig.json` file during `NPM` and browser builds.
+├─ tsconfig.dist.json      # Override for options from `tsconfig.json` file during `npm` and browser builds.
 ├─ tsconfig.test.json      # Override for options from `tsconfig.json` file while executing tests.
 ├─ tsconfig.release.json   # Override for options from `tsconfig.json` file during release process.
 └─ README.md               # Description of your project and usage instructions.
@@ -146,7 +146,7 @@ Creates npm and browser builds of your plugin. These builds can be added to the 
 Examples:
 
 ```bash
-# Builds the `NPM` and browser files thats are ready to publish.
+# Builds the `npm` and browser files thats are ready to publish.
 npm run build:dist
 ```
 
@@ -255,9 +255,9 @@ Npm supports some special [life cycle scripts](https://docs.npmjs.com/cli/v7/usi
 * `prepublishOnly` &ndash; Triggers only before publishing.
 * `postpublish` &ndash; Triggers after publishing.
 
-Scripts in this package ensure that a `NPM` and browser builds are available after the creation of the package and  if during creation the package `--use-legacy-methods` flag was used, also a DLL-compatible package build, and that correct files are published:
+Scripts in this package ensure that `npm` and browser builds are available after the creation of the package and  if during creation the package `--use-legacy-methods` flag was used, also a DLL-compatible package build, and that correct files are published:
 
-* `NPM` and browser package builds.
+* `npm` and browser package builds.
 * DLL-compatible package build.
 * TypeScript files compiled to JavaScript, along with their type definitions exported.
 * The `main` field in `package.json` points to a `.js` file.
