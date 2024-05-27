@@ -25,6 +25,7 @@ import {
 } from '@ckeditor/ckeditor5-engine';
 
 import type { EditorUI } from '@ckeditor/ckeditor5-ui';
+import { ContextWatchdog, EditorWatchdog } from '@ckeditor/ckeditor5-watchdog';
 
 import Context from '../context.js';
 import PluginCollection from '../plugincollection.js';
@@ -642,6 +643,27 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	public static create( ...args: Array<unknown> ): void { // eslint-disable-line @typescript-eslint/no-unused-vars
 		throw new Error( 'This is an abstract method.' );
 	}
+
+	/**
+	 * The {@link module:core/context~Context} class.
+	 *
+	 * Exposed as static editor field for easier access in editor builds.
+	 */
+	public static Context = Context;
+
+	/**
+	 * The {@link module:watchdog/editorwatchdog~EditorWatchdog} class.
+	 *
+	 * Exposed as static editor field for easier access in editor builds.
+	 */
+	public static EditorWatchdog = EditorWatchdog;
+
+	/**
+	 * The {@link module:watchdog/contextwatchdog~ContextWatchdog} class.
+	 *
+	 * Exposed as static editor field for easier access in editor builds.
+	 */
+	public static ContextWatchdog = ContextWatchdog;
 }
 
 /**
