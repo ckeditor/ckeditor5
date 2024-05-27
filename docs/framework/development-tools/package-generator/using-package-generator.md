@@ -33,13 +33,13 @@ Available modifiers for the command are:
 * `--plugin-name` &ndash; define the plugin name to be different from the package name.
 * `--lang` &ndash; (values: `js` | `ts`) choose whether the created package should use JavaScript or TypeScript. If omitted, the script will ask the user to choose manually.
 * `--verbose` &ndash; (alias: `-v`) print additional logs about the current executed task.
-* `--use-legacy-methods` &ndash; use legacy installations methods in a newly created package.
+* `--without-legacy-methods` &ndash; do not use legacy installations methods in a newly created package.
 
 ## Choosing the method
 
 Currently there are two ways of how package generator works:
-* (default) that are based on imports only from `ckeditor5` package,
-* behind `--use-legacy-methods` flag, that are based on ( {@link getting-started/legacy-getting-started/quick-start legacy installation methods} ) but can be build to support both.
+* (default) that are based on ( {@link getting-started/legacy-getting-started/quick-start legacy installation methods} ) but can be build to support both,
+* behind `--without-legacy-methods` flag are based on imports only from `ckeditor5` package without support for legacy installation methods.
 
 ## Using the package
 
@@ -65,4 +65,4 @@ You can check out what is available inside your package depending on the languag
 
 ## Migration
 
-If you have used the [`ckeditor5-package-generator`](https://www.npmjs.com/package/ckeditor5-package-generator) (version `1.1.0` or lower) to generate and develop your own plugins for CKEditor 5 and now you want to migrate to the newest installations methods used by CKEditor&nbsp;5 please visit the {@link updating/new-installation-methods Migrating CKEditor 5 to new installation methods} guide. You will find an instruction there that will guide you step by step through all things that need to be changed.
+If you have used the [`ckeditor5-package-generator`](https://www.npmjs.com/package/ckeditor5-package-generator) (version `1.1.0` or lower) to generate and develop your own plugins for CKEditor&nbsp;5 and now you want to migrate to the newest installations methods used by CKEditor&nbsp;5 please visit the {@link updating/new-installation-methods Migrating CKEditor&nbsp;5 to new installation methods} guide. You will find an instruction there that will guide you step by step through all things that need to be changed.

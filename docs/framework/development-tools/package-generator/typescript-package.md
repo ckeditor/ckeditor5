@@ -141,7 +141,7 @@ npm run stylelint
 
 ### `build:dist`
 
-Creates the `NPM` and browser builds which can be loaded into an editor using TODO: LINK/NEW GUIDE??.
+Creates npm and browser builds of your plugin. These builds can be added to the editor by following the TODO: LINK/NEW GUIDE??.
 
 Examples:
 
@@ -153,7 +153,7 @@ npm run build:dist
 ### `dll:build` (*)
 
 <info-box warning>
-	This script is available only if the plugin was generated with the `--use-legacy-methods` flag.
+	This script is not available if the plugin was generated with the `--without-legacy-methods` flag.
 </info-box>
 
 Creates a DLL-compatible package build which can be loaded into an editor using {@link getting-started/advanced/dll-builds DLL builds}.
@@ -171,7 +171,7 @@ npm run dll:build -- --watch
 ### `dll:serve` (*)
 
 <info-box warning>
-	This script is available only if the plugin was generated with the `--use-legacy-methods` flag.
+	This script is not available if the plugin was generated with the `--without-legacy-methods` flag.
 </info-box>
 
 Creates a simple HTTP server (without the live-reload mechanism) that allows verifying whether the DLL build of the package is compatible with the CKEditor&nbsp;5 {@link getting-started/advanced/dll-builds DLL builds}.
@@ -211,6 +211,12 @@ Downloads translations from the Transifex server. Depending on users' activity i
 	The task requires passing an organization and project names. Usually, it matches the following format: `https://www.transifex.com/[ORGANIZATION]/[PROJECT]`.
 
 	To avoid passing these options every time the command calls for it, you can store it in `package.json`, next to the `ckeditor5-package-tools translations:download` command.
+
+```json
+"scripts": {
+  "translations:download": "ckeditor5-package-tools translations:upload --organization=[ORGANIZATION] --project=[PROJECT]"
+},
+```
 </info-box>
 
 Examples:
@@ -227,6 +233,12 @@ Uploads translation messages onto the Transifex server. It allows for the creati
 The task requires passing an organization and project names. Usually, it matches the following format: `https://www.transifex.com/[ORGANIZATION]/[PROJECT]`.
 
 To avoid passing these options every time the command calls for it, you can store it in `package.json`, next to the `ckeditor5-package-tools translations:upload` command.
+
+```json
+"scripts": {
+  "translations:upload": "ckeditor5-package-tools translations:upload --organization=[ORGANIZATION] --project=[PROJECT]"
+},
+```
 </info-box>
 
 Examples:
