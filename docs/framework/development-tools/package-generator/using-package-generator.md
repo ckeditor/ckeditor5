@@ -37,9 +37,9 @@ Available modifiers for the command are:
 
 ## Choosing the method
 
-Currently there are two ways of how package generator works:
-* (default) that are based on ( {@link getting-started/legacy-getting-started/quick-start legacy installation methods} ) but can be build to support both,
-* behind `--without-legacy-methods` flag are based on imports only from `ckeditor5` package without support for legacy installation methods.
+Currently there are two modes of operation for package generator:
+* the default way is based on the {@link getting-started/legacy-getting-started/quick-start legacy installation methods} and can build packages that support both current installation approach, the legacy one with DLLs and both at once.
+* using the `--without-legacy-methods` flag will base the package on imports from the `ckeditor5` package only. It provides no support for legacy installation methods.
 
 ## Using the package
 
@@ -59,7 +59,6 @@ npm run start
 Now the plugin can be seen within the example editor.
 
 You can check out what is available inside your package depending on the language you used:
-
 * {@link framework/development-tools/package-generator/javascript-package JavaScript}
 * {@link framework/development-tools/package-generator/typescript-package TypeScript}
 
