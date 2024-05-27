@@ -215,18 +215,27 @@ describe( 'Editor - license check', () => {
 		describe( 'GPL check', () => {
 			it( 'should not block if license key is GPL', () => {
 				const licenseKey = 'GPL';
-
 				const editor = new TestEditor( { licenseKey } );
 
 				sinon.assert.notCalled( showErrorStub );
 				expect( editor.isReadOnly ).to.be.false;
 			} );
 
-			it( 'should block if license key is missing', () => {
+			it( 'should not block if license key is missing (CKEditor testing environment)', () => {
+				const editor = new TestEditor( {} );
+
+				sinon.assert.notCalled( showErrorStub );
+				expect( editor.isReadOnly ).to.be.false;
+			} );
+
+			it( 'should block if license key is missing (outside of CKEditor testing environment)', () => {
+				window.CKEDITOR_IS_TEST_ENV = undefined;
 				const editor = new TestEditor( {} );
 
 				sinon.assert.calledWithMatch( showErrorStub, 'noLicense' );
 				expect( editor.isReadOnly ).to.be.true;
+
+				window.CKEDITOR_IS_TEST_ENV = true;
 			} );
 		} );
 

@@ -42,6 +42,11 @@ import Accessibility from '../accessibility.js';
 import type { LoadedPlugins, PluginConstructor } from '../plugin.js';
 import type { EditorConfig } from './editorconfig.js';
 
+declare global {
+	// eslint-disable-next-line no-var
+	var CKEDITOR_IS_TEST_ENV: string;
+}
+
 /**
  * The class representing a basic, generic editor.
  *
@@ -665,8 +670,12 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	 * @internal
 	 */
 	private _verifyLicenseKey() {
-		const licenseKey = this.config.get( 'licenseKey' );
+		let licenseKey = this.config.get( 'licenseKey' );
 		const distributionChannel = ( window as any )[ ' CKE_DISTRIBUTION' ] || 'sh';
+
+		if ( !licenseKey && window.CKEDITOR_IS_TEST_ENV ) {
+			this.config.set( 'licenseKey', licenseKey = 'GPL' );
+		}
 
 		if ( !licenseKey ) {
 			blockEditor( this, 'noLicense' );
