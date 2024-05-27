@@ -57,7 +57,7 @@ An overview of the project's directory structure:
 ```
 
 <info-box warning>
-	(*) This file is available only when plugin was generated with `--use-legacy-methods` flag.
+	(*) This file is available only if the plugin was generated with the `--use-legacy-methods` flag.
 </info-box>
 
 Guides for developing some of the files:
@@ -141,7 +141,7 @@ npm run stylelint
 
 ### `build:dist`
 
-Creates a `NPM` and browser builds which can be loaded into an editor using TODO: LINK/NEW GUIDE??.
+Creates the `NPM` and browser builds which can be loaded into an editor using TODO: LINK/NEW GUIDE??.
 
 Examples:
 
@@ -153,7 +153,7 @@ npm run build:dist
 ### `dll:build` (*)
 
 <info-box warning>
-	This script is available only if plugin is generated with `--use-legacy-methods` flag.
+	This script is available only if the plugin was generated with the `--use-legacy-methods` flag.
 </info-box>
 
 Creates a DLL-compatible package build which can be loaded into an editor using {@link getting-started/advanced/dll-builds DLL builds}.
@@ -171,7 +171,7 @@ npm run dll:build -- --watch
 ### `dll:serve` (*)
 
 <info-box warning>
-	This script is available only if plugin is generated with `--use-legacy-methods` flag.
+	This script is available only if the plugin was generated with the `--use-legacy-methods` flag.
 </info-box>
 
 Creates a simple HTTP server (without the live-reload mechanism) that allows verifying whether the DLL build of the package is compatible with the CKEditor&nbsp;5 {@link getting-started/advanced/dll-builds DLL builds}.
@@ -184,7 +184,7 @@ npm run dll:serve
 ```
 
 <info-box hint>
-    You can run `npm run dll:build -- --watch` and `npm run dll:serve` in two separate command terminals. That way, after you save your changes and reload the page, the content will update.
+	You can run `npm run dll:build -- --watch` and `npm run dll:serve` in two separate command terminals. That way, after you save your changes and reload the page, the content will update.
 </info-box>
 
 ### `translations:collect`
@@ -208,9 +208,9 @@ npm run translations:collect
 Downloads translations from the Transifex server. Depending on users' activity in the project, it creates translation files used for building the editor.
 
 <info-box info>
-The task requires passing an organization and project names. Usually, it matches the following format: `https://www.transifex.com/[ORGANIZATION]/[PROJECT]`.
+	The task requires passing an organization and project names. Usually, it matches the following format: `https://www.transifex.com/[ORGANIZATION]/[PROJECT]`.
 
-To avoid passing these options every time the command calls for it, you can store it in `package.json`, next to the `ckeditor5-package-tools translations:download` command.
+	To avoid passing these options every time the command calls for it, you can store it in `package.json`, next to the `ckeditor5-package-tools translations:download` command.
 </info-box>
 
 Examples:

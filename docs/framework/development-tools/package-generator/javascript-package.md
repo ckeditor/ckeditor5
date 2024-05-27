@@ -49,7 +49,7 @@ An overview of the project's directory structure:
 ```
 
 <info-box warning>
-	(*) This file is available only when plugin was generated with `--use-legacy-methods` flag.
+	(*) This file is available only if the plugin was generated with the `--use-legacy-methods` flag.
 </info-box>
 
 Guides for developing some of the files:
@@ -132,7 +132,7 @@ npm run stylelint
 
 ### `build:dist`
 
-Creates a `NPM` and browser builds which can be loaded into an editor using TODO: LINK/NEW GUIDE??.
+Creates the `NPM` and browser builds which can be loaded into an editor using TODO: LINK/NEW GUIDE??.
 
 Examples:
 
@@ -144,7 +144,7 @@ npm run build:dist
 ### `dll:build` (*)
 
 <info-box warning>
-	This script is available only if plugin is generated with `--use-legacy-methods` flag.
+	This script is available only if the plugin was generated with the `--use-legacy-methods` flag.
 </info-box>
 
 Creates a DLL-compatible package build which can be loaded into an editor using {@link getting-started/advanced/dll-builds DLL builds}.
@@ -162,7 +162,7 @@ npm run dll:build -- --watch
 ### `dll:serve` (*)
 
 <info-box warning>
-	This script is available only if plugin is generated with `--use-legacy-methods` flag.
+	This script is available only if the plugin was generated with the `--use-legacy-methods` flag.
 </info-box>
 
 Creates a simple HTTP server (without the live-reload mechanism) that allows verifying whether the DLL build of the package is compatible with the CKEditor&nbsp;5 {@link getting-started/advanced/dll-builds DLL builds}.
@@ -215,9 +215,9 @@ npm run translations:download -- --organization [ORGANIZATION] --project [PROJEC
 Uploads translation messages onto the Transifex server. It allows for the creation of translations into other languages by users using the Transifex platform.
 
 <info-box info>
-The task requires passing an organization and project names. Usually, it matches the following format: `https://www.transifex.com/[ORGANIZATION]/[PROJECT]`.
+	The task requires passing an organization and project names. Usually, it matches the following format: `https://www.transifex.com/[ORGANIZATION]/[PROJECT]`.
 
-To avoid passing these options every time the command calls for it, you can store it in `package.json`, next to the `ckeditor5-package-tools translations:upload` command.
+	To avoid passing these options every time the command calls for it, you can store it in `package.json`, next to the `ckeditor5-package-tools translations:upload` command.
 </info-box>
 
 Examples:
@@ -235,7 +235,7 @@ Npm supports some special [life cycle scripts](https://docs.npmjs.com/cli/v7/usi
 This script creates `NPM` and browser builds for your plugin.
 
 <info-box info>
-If during creation the package `--use-legacy-methods` flag was used, script creates also builds that work with CKEditor's legacy installation methods.
+	If during the package creation  the `--use-legacy-methods` flag was used, script also creates builds that work with CKEditor&nbsp;5's legacy installation methods.
 </info-box>
 
 ## How to change ESLint configuration

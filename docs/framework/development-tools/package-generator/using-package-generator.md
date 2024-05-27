@@ -65,5 +65,4 @@ You can check out what is available inside your package depending on the languag
 
 ## Migration
 
-If you have used the [`ckeditor5-package-generator`](https://www.npmjs.com/package/ckeditor5-package-generator) (using version `1.1.0` or lower) to generate and develop your own plugin for CKEditor 5 and now you want to migrate to the newest installations methods that's are used by CKEditor 5 please go to the {link TODO migration guide}, there is an instruction that will guide you step by step thru all things that need to be changed.
-
+If you have used the [`ckeditor5-package-generator`](https://www.npmjs.com/package/ckeditor5-package-generator) (version `1.1.0` or lower) to generate and develop your own plugins for CKEditor 5 and now you want to migrate to the newest installations methods used by CKEditor&nbsp;5 please visit the {@link updating/new-installation-methods Migrating CKEditor 5 to new installation methods} guide. You will find an instruction there that will guide you step by step through all things that need to be changed.
