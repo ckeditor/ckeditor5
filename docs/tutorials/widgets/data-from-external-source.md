@@ -15,7 +15,7 @@ You will build an "external data fetch" feature that allows users to insert a pr
 	If you want to see the final product of this tutorial before you plunge in, check out the [demo](#demo).
 </info-box>
 
-## Before you start ⚠️
+## Before you start
 
 This guide assumes that you are familiar with the widgets concept introduced in the {@link tutorials/widgets/implementing-a-block-widget Implementing a block widget} and {@link tutorials/widgets/implementing-an-inline-widget Implementing an inline widget} tutorials. The tutorial also references various concepts concerning the {@link framework/architecture/intro CKEditor&nbsp;5 architecture}.
 
@@ -23,148 +23,10 @@ This guide assumes that you are familiar with the widgets concept introduced in 
 
 The overall project structure will be similar to one described in the {@link tutorials/widgets/implementing-an-inline-widget#bootstrapping-the-project Bootstrapping the project} section of the "Implementing an inline widget" tutorial.
 
-First, install the required dependencies:
-
-```bash
-npm install --save \
-	css-loader@5 \
-	postcss-loader@4 \
-	raw-loader@4 \
-	style-loader@2 \
-	webpack@5 \
-	webpack-cli@4 \
-	@ckeditor/ckeditor5-basic-styles \
-	@ckeditor/ckeditor5-core \
-	@ckeditor/ckeditor5-dev-utils \
-	@ckeditor/ckeditor5-editor-classic \
-	@ckeditor/ckeditor5-essentials \
-	@ckeditor/ckeditor5-heading \
-	@ckeditor/ckeditor5-list \
-	@ckeditor/ckeditor5-paragraph \
-	@ckeditor/ckeditor5-theme-lark \
-	@ckeditor/ckeditor5-ui \
-	@ckeditor/ckeditor5-utils \
-	@ckeditor/ckeditor5-widget
-```
-
-Create a minimal webpack configuration:
-
-```js
-// webpack.config.js
-
-'use strict';
-
-const path = require( 'path' );
-const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
-
-module.exports = {
-	entry: './app.js',
-
-	output: {
-		path: path.resolve( __dirname, 'dist' ),
-		filename: 'bundle.js'
-	},
-
-	module: {
-		rules: [
-			{
-				test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
-				use: [ 'raw-loader' ]
-			},
-			{
-				test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
-				use: [
-					{
-						loader: 'style-loader',
-						options: {
-							injectType: 'singletonStyleTag',
-							attributes: {
-								'data-cke': true
-							}
-						}
-					},
-					'css-loader',
-					{
-						loader: 'postcss-loader',
-						options: {
-							postcssOptions: styles.getPostCssConfig( {
-								themeImporter: {
-									themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-								},
-								minify: true
-							} )
-						}
-					}
-				]
-			}
-		]
-	},
-
-	// Useful for debugging.
-	devtool: 'source-map',
-
-	// By default webpack logs warnings if the bundle is bigger than 200kb.
-	performance: { hints: false }
-};
-```
-
-Add an `index.html` page:
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>CKEditor 5 Framework – Implementing a simple widget</title>
-	</head>
-	<body>
-		<div id="editor">
-			<p>Editor content goes here.</p>
-		</div>
-
-		<script src="dist/bundle.js"></script>
-	</body>
-</html>
-```
-
-The application entry point (`app.js`):
-
-
-```js
-// app.js
-
-import { ClassicEditor, Bold, Italic, Essentials, Heading, List, Paragraph } from 'ckeditor5';
-
-import ExternalDataWidget from './external-data-widget/externaldatawidget';
-
-import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, ExternalDataWidget ],
-		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'undo', 'redo' ]
-	} )
-	.then( editor => {
-		console.log( 'Editor was initialized', editor );
-
-		CKEditorInspector.attach( 'editor', editor );
-
-		// Expose for playing in the console.
-		window.editor = editor;
-	} )
-	.catch( error => {
-		console.error( error.stack );
-	} );
-```
-
-
 Before building the project you still need to define the `ExternalDataWidget` plugin. The project structure should be as follows:
 
-```
-├── app.js
-├── dist
-│   ├── bundle.js
-│   └── bundle.js.map
+```plain
+├── main.js
 ├── index.html
 ├── node_modules
 ├── package.json
@@ -175,12 +37,8 @@ Before building the project you still need to define the `ExternalDataWidget` pl
 │   ├── externaldatawidgetui.js
 │   └── theme
 │       └── externaldatawidget.css
-│
-│   ... the rest of the plugin files goes here as well.
-│
-└── webpack.config.js
+└── ...
 ```
-
 
 You can see that the external data widget feature follows an established plugin structure: the master (glue) plugin (`external-data-widget/externaldatawidget.js`), the "editing" (`external-data-widget/externaldatawidgetediting.js`), and the "UI" (`external-data-widget/externaldatawidgetui.js`) parts.
 
@@ -229,17 +87,13 @@ export default class ExternalDataWidgetEditing extends Plugin {
 }
 ```
 
-At this stage you can build the project and open it in the browser to verify if it is building correctly.
-
-Use the `./node_modules/.bin/webpack --mode development` command in the root folder of the widget to build the project.
-
-After the build is completed, open `index.html` in your browser to check if all is correct at this stage.
+At this stage you can build the project and open it in the browser to verify if it is building correctly. After the build is completed, open `index.html` in your browser to check if all is correct at this stage.
 
 ## The model and the view layers
 
 The external data widget feature will be {@link module:engine/model/schema~SchemaItemDefinition defined as an inline} (text-like) element so it will be inserted into other editor blocks that allow text, like `<paragraph>`. The external data widget will also have a `data-resource-url` attribute. This means that the model representation of the external data widget will look like this:
 
-```
+```html
 <paragraph>
 	External value: <externalElement data-resource-url="RESOURCE_URL"></externalElement>.
 </paragraph>
@@ -300,10 +154,8 @@ The HTML structure (data output) of the converter will be a `<span>` with a `dat
 ```js
 // external-data-widget/externaldatawidgetediting.js
 
-import { Plugin } from 'ckeditor5';
-
 // ADDED 2 imports
-import { Widget, toWidget } from 'ckeditor5';
+import { Plugin, Widget, toWidget } from 'ckeditor5';
 
 import './theme/externaldatawidget.css';
 
@@ -402,7 +254,7 @@ The {@link framework/architecture/core-editor-architecture#commands command} for
 ```js
 // external-data-widget/externaldatawidgetcommand.js
 
-import { Command } from ckeditor5';
+import { Command } from 'ckeditor5';
 
 // example external data source url
 const RESOURCE_URL = 'https://api2.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT';
@@ -673,7 +525,6 @@ class ExternalDataWidgetEditing extends Plugin {
 
 The editor content traversal can be a challenging process. The presented method is sufficient when there is relatively little content. Otherwise, a `WeakMap` will be a better option.
 
-
 ## Demo
 
 You can see the external data widget implementation in action in the editor below.
@@ -685,7 +536,6 @@ You can see the external data widget implementation in action in the editor belo
 The following code snippet contains the complete implementation of the `ExternalDataWidget` plugin (and all of its dependencies) and the code needed to run the editor. You can paste it into the `app.js` file and it will run out–of–the–box (excluded the Bitcoin logo):
 
 ```js
-
 import {
 	ClassicEditor,
 	Bold,
