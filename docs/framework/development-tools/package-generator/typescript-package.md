@@ -141,7 +141,7 @@ npm run stylelint
 
 ### `build:dist`
 
-Creates npm and browser builds of your plugin. These builds can be added to the editor by following the TODO: LINK/NEW GUIDE??.
+Creates npm and browser builds of your plugin. These builds can be added to the editor by following the {@link updating/new-installation-methods Migrating CKEditor 5 to new installation methods} guide.
 
 Examples:
 
