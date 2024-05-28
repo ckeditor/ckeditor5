@@ -316,7 +316,8 @@
 		"installation/working-with-typescript.html": "getting-started/setup/typescript-support.html",
 		"installation/getting-started/configuration.html": "installation/getting-started/configuration.html",
 		"features/ui-language.html": "getting-started/setup/ui-language.html",
-		"features/toolbar/toolbar.html": "getting-started/setup/toolbar/toolbar.html"
+		"features/toolbar/toolbar.html": "getting-started/setup/toolbar/toolbar.html",
+		"installation/getting-started/quick-start.html": "getting-started/installation/quick-start.html"
 
 	},
 	"scripts": {
