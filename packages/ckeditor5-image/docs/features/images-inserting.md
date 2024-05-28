@@ -30,11 +30,13 @@ Using the URL of an image, the user may paste it into the editor. To enable this
 ```js
 import { ClassicEditor, Image, ImageInsert } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Image, ImageInsert, /* ... */  ],
-	toolbar: [ 'insertImage', /* ... */  ]
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Image, ImageInsert, /* ... */  ],
+		toolbar: [ 'insertImage', /* ... */  ]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 This will add a new **Insert image** dropdown {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Insert image} in the toolbar.
@@ -56,9 +58,12 @@ The {@link module:image/autoimage~AutoImage} plugin recognizes image links in th
 ```js
 import { ClassicEditor, Image, AutoImage } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ /* ... */ , Image, AutoImage ]
-} )
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ /* ... */ , Image, AutoImage ]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box>

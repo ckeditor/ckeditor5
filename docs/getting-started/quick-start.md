@@ -45,14 +45,16 @@ import { FormatPainter, SlashCommand } from 'ckeditor5-premium-features';
 import 'ckeditor5/index.css';
 import 'ckeditor5-premium-features/index.css';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Essentials, Bold, Italic, Paragraph, FormatPainter, SlashCommand ],
-	toolbar: {
-		items: [ 'undo', 'redo', '|', 'bold', 'italic', 'formatPainter' ]
-	},
-	licenseKey: 'your-license-key'
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Essentials, Bold, Italic, Paragraph, FormatPainter, SlashCommand ],
+		toolbar: {
+			items: [ 'undo', 'redo', '|', 'bold', 'italic', 'formatPainter' ]
+		},
+		licenseKey: 'your-license-key'
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 Pass the imported plugins inside the configuration to the {@link module:editor-classic/classiceditor~ClassicEditor#create `create()`} method and add toolbar items where applicable. Please note, that to use premium features, you need to activate them with a proper license key, mentioned in the final section of this guide.
@@ -112,17 +114,19 @@ In the following script tag, import the desired plugins and add them to the `plu
 	} from 'ckeditor5';
 	import { PasteFromOfficeEnhanced } from 'ckeditor5-premium-features';
 
-	ClassicEditor.create( document.querySelector( '#editor' ), {
-		plugins: [
-			Essentials, GeneralHtmlSupport, Bold, Italic,
-			PasteFromOffice, PasteFromOfficeEnhanced, Paragraph
-			],
-		toolbar: {
-			items: [ 'undo', 'redo', '|', 'bold', 'italic' ]
-		},
-		licenseKey: 'your-license-key'
-	} )
-	.then( /* ... */ );
+	ClassicEditor
+		.create( document.querySelector( '#editor' ), {
+			plugins: [
+				Essentials, GeneralHtmlSupport, Bold, Italic,
+				PasteFromOffice, PasteFromOfficeEnhanced, Paragraph
+				],
+			toolbar: {
+				items: [ 'undo', 'redo', '|', 'bold', 'italic' ]
+			},
+			licenseKey: 'your-license-key'
+		} )
+		.then( /* ... */ )
+		.catch( /* ... */ );
 </script>
 ```
 
@@ -173,17 +177,19 @@ Your final page should look similar to the one below.
 				} from 'ckeditor5';
 			import { PasteFromOfficeEnhanced } from 'ckeditor5-premium-features';
 
-			ClassicEditor.create( document.querySelector( '#editor' ), {
-				plugins: [
-					Essentials, GeneralHtmlSupport, Bold, Italic,
-					PasteFromOffice, PasteFromOfficeEnhanced, Paragraph
-					],
-				toolbar: {
-					items: [ 'undo', 'redo', '|', 'bold', 'italic' ]
-				},
-				licenseKey: 'your-license-key'
-			} )
-			.then( /* ... */ );
+			ClassicEditor
+				.create( document.querySelector( '#editor' ), {
+					plugins: [
+						Essentials, GeneralHtmlSupport, Bold, Italic,
+						PasteFromOffice, PasteFromOfficeEnhanced, Paragraph
+						],
+					toolbar: {
+						items: [ 'undo', 'redo', '|', 'bold', 'italic' ]
+					},
+					licenseKey: 'your-license-key'
+				} )
+				.then( /* ... */ )
+				.catch( /* ... */ );
 		</script>
 	</body>
 </html>

@@ -34,19 +34,21 @@ import { ClassicEditor, Bold, Italic, Essentials, PasteFromMarkdownExperimental 
 // More imports.
 // ...
 
-ClassicEditor.create( document.querySelector( '#snippet-markdown' ), {
-	plugins: [
-		PasteFromMarkdownExperimental,
-		Essentials,
-		Bold,
-		Italic,
-		// More plugins.
+ClassicEditor
+	.create( document.querySelector( '#snippet-markdown' ), {
+		plugins: [
+			PasteFromMarkdownExperimental,
+			Essentials,
+			Bold,
+			Italic,
+			// More plugins.
+			// ...
+		],
+		// More of editor's configuration.
 		// ...
-	],
-	// More of editor's configuration.
-	// ...
-} )
-.then( /* ... */ );
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 
 ```
 

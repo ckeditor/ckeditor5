@@ -71,13 +71,15 @@ After {@link getting-started/quick-start installing the editor}, add the plugins
 ```js
 import { ClassicEditor, Bold, Code, Italic, Strikethrough, Subscript, Superscript, Underline } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Bold, Code, Italic, Strikethrough, Subscript, Superscript, Underline ],
-	toolbar: {
-		items: [ 'bold', 'italic', 'underline', 'strikethrough', 'code', 'subscript', 'superscript'  ]
-	}
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Bold, Code, Italic, Strikethrough, Subscript, Superscript, Underline ],
+		toolbar: {
+			items: [ 'bold', 'italic', 'underline', 'strikethrough', 'code', 'subscript', 'superscript'  ]
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Related features

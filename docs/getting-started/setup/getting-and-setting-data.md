@@ -102,7 +102,7 @@ In your HTTP server, you can now read the editor data from the `content` variabl
 
 ```php
 <?php
-    $editor_data = $_POST[ 'content' ];
+	$editor_data = $_POST[ 'content' ];
 ?>
 ```
 
@@ -141,10 +141,11 @@ While simple content like that mentioned above does not itself require to be enc
 If the source element is not `<textarea>`, CKEditor 5 clears its content after the editor is destroyed. However, if you would like to enable updating the source element with the output coming from the data pipeline, you can use the {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy `updateSourceElementOnDestroy`} configuration option.
 
 ```js
-ClassicEditor.create( document.querySelector( '#editor' ), {
-    // ...
-    updateSourceElementOnDestroy: true
-} );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		// ...
+		updateSourceElementOnDestroy: true
+	} );
 ```
 
 <info-box warning>

@@ -82,7 +82,14 @@ const editorConfig = {
     initialData: "<h2>Congratulations on setting up CKEditor 5! 🎉</h2>"
 };
 
-ClassicEditor.create(document.querySelector('#editor'), editorConfig);
+ClassicEditor
+	.create( document.querySelector( '#editor' ), editorConfig )
+	.then( editor => {
+		console.log( editor );
+	} )
+	.catch( error => {
+		console.error( error );
+	} );
 ```
 
 Then, modify the `Index.cshtml` file in the `Pages` directory to include the CKEditor 5 scripts. All necessary scripts and links are in the HTML snippet from CKEditor&nbsp;5 Builder. You can copy and paste them into your template. It should look similar to the one below:

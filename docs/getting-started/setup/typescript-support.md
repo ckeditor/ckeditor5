@@ -41,9 +41,10 @@ import { ClassicEditor } from 'ckeditor5'
 
 const editorPlaceholder = document.querySelector( '#editor' ) as HTMLElement;
 
-ClassicEditor.create( editorPlaceholder ).catch( error => {
-	console.error( error );
-} );
+ClassicEditor
+	.create( editorPlaceholder ).catch( error => {
+		console.error( error );
+	} );
 ```
 
 ### Types for Angular, React, and Vue 3 components
