@@ -33,161 +33,6 @@ There are a couple of things you should know before you start:
 
 This guide assumes that you are familiar with [Yarn](https://yarnpkg.com) and your project uses Yarn already. If not, see the [Yarn documentation](https://yarnpkg.com/en/docs/getting-started). If you are using [npm](https://www.npmjs.com/get-npm), you do not have to worry &ndash; you can perform the same installation tasks using [corresponding npm commands](https://docs.npmjs.com/packages-and-modules/getting-packages-from-the-registry).
 
-First, install the packages needed to build and set up a basic React application with a CKEditor&nbsp;5 instance.
-
-```bash
-yarn add --dev \
-	@babel/cli \
-	@babel/core \
-	@babel/preset-react \
-	@ckeditor/ckeditor5-basic-styles \
-	@ckeditor/ckeditor5-build-classic \
-	@ckeditor/ckeditor5-core \
-	@ckeditor/ckeditor5-dev-utils \
-	@ckeditor/ckeditor5-editor-classic \
-	@ckeditor/ckeditor5-essentials \
-	@ckeditor/ckeditor5-heading \
-	@ckeditor/ckeditor5-inspector \
-	@ckeditor/ckeditor5-link \
-	@ckeditor/ckeditor5-paragraph \
-	@ckeditor/ckeditor5-react \
-	@ckeditor/ckeditor5-table \
-	@ckeditor/ckeditor5-theme-lark \
-	@ckeditor/ckeditor5-ui \
-	@ckeditor/ckeditor5-widget \
-	babel-loader \
-	css-loader@5 \
-	postcss-loader@4 \
-	raw-loader@4 \
-	react \
-	react-dom \
-	style-loader@2 \
-	webpack@5 \
-	webpack-cli@4
-```
-
-Create a minimal [webpack](https://webpack.js.org) configuration and save it as `webpack.config.js` in the root of the application.
-
-```js
-// webpack.config.js
-
-const webpack = require( 'webpack' );
-const path = require( 'path' );
-const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
-
-module.exports = {
-	entry: path.resolve( __dirname, 'app.js' ),
-
-	output: {
-		path: path.resolve( __dirname, 'dist' ),
-		filename: 'bundle.js'
-	},
-
-	module: {
-		rules: [
-			{
-				test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
-				use: [ 'raw-loader' ]
-			},
-			{
-				test: /\.js$/,
-				exclude: /node_modules/,
-				loader: 'babel-loader',
-				options: {
-					presets: [ '@babel/react' ]
-				}
-			},
-			{
-				test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
-				use: [
-					{
-						loader: 'style-loader',
-						options: {
-							injectType: 'singletonStyleTag',
-							attributes: {
-								'data-cke': true
-							}
-						}
-					},
-					'css-loader',
-					{
-						loader: 'postcss-loader',
-						options: {
-							postcssOptions: styles.getPostCssConfig( {
-								themeImporter: {
-									themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-								},
-								minify: true
-							} )
-						}
-					}
-				]
-			}
-		]
-	},
-
-	// Useful for debugging.
-	devtool: 'source-map',
-
-	// By default webpack logs warnings if the bundle is bigger than 200kb.
-	performance: { hints: false }
-};
-```
-
-Create your project's entry point and save it as `app.js`, also in the root of the application:
-
-```js
-// app.js
-
-// Imports necessary to run a React application.
-import React from 'react';
-import { createRoot } from 'react-dom/client';
-
-// The React application class.
-class App extends React.Component {
-	render() {
-		return 'Hello world!';
-	}
-}
-
-// Render the <App> in the <div class="app"></div> element found in the DOM.
-const root = createRoot( document.querySelector( '.app' ) );
-root.render( <App /> );
-```
-
-Add an `index.html` page next to the `app.js` file:
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>Using React components in CKEditor&nbsp;5 widgets</title>
-	</head>
-	<body>
-		<div class="app"></div>
-		<script src="dist/bundle.js"></script>
-	</body>
-</html>
-```
-
-Finally, build your project and see if everything worked well by opening the index page in your browser:
-
-```bash
-oleq@MBP15 ckeditor5-react-in-widgets> node_modules/.bin/webpack --mode development
-Hash: f46cba995690347de4cf
-Version: webpack 4.29.6
-Time: 896ms
-Built at: 04/11/2019 12:43:26 PM
-        Asset      Size  Chunks                    Chunk Names
-    bundle.js   881 KiB    main  [emitted]  [big]  main
-bundle.js.map  1020 KiB    main  [emitted]         main
-Entrypoint main [big] = bundle.js bundle.js.map
-[./app.js] 391 bytes {main} [built]
-[./node_modules/webpack/buildin/global.js] (webpack)/buildin/global.js 472 bytes {main} [built]
-    + 11 hidden modules
-```
-
 You should see a "Hello world" application in your web browser, which might not be much but it is a good start:
 
 {@img assets/img/using-react-in-a-widget-1.png Screenshot of the "Hello world" application in web browser.}
@@ -199,7 +44,7 @@ Nothing warms the heart of a developer like a good "Hello world!" But you probab
 To keep some order in the project, you will put [CKEditor classes](#ckeditor-classes) in the `/ckeditor` directory and [React components](#react-components) in the `/react` directory. [Images and CSS styles](#styles-and-assets) will land in the `/assets` directory. By the time you are finished with this tutorial, the structure of the project should look as follows:
 
 ```bash
-├── app.js
+├── main.js
 ├── assets
 │   ├── product1.jpg
 │   ├── product2.jpg
@@ -209,16 +54,12 @@ To keep some order in the project, you will put [CKEditor classes](#ckeditor-cla
 ├── ckeditor
 │   ├── insertproductpreviewcommand.js
 │   └── productpreviewediting.js
-├── dist
-│   ├── bundle.js
-│   └── bundle.js.map
 ├── index.html
 ├── package.json
 ├── react
-│   ├── productlist.js
-│   └── productpreview.js
-├── node_modules
-└── webpack.config.js
+│   ├── productlist.jsx
+│   └── productpreview.jsx
+└── node_modules
 ```
 
 ## CKEditor classes
@@ -1270,10 +1111,10 @@ export default class InsertProductPreviewCommand extends Command {
 }
 ```
 
-### `productlist.js`
+### `productlist.jsx`
 
 ```jsx
-// react/productlist.js
+// react/productlist.jsx
 
 import React from 'react';
 import ProductPreview from './productpreview';
@@ -1299,10 +1140,10 @@ export default class ProductList extends React.Component {
 }
 ```
 
-### `productpreview.js`
+### `productpreview.jsx`
 
 ```jsx
-// react/productpreview.js
+// react/productpreview.jsx
 
 import React from 'react';
 
