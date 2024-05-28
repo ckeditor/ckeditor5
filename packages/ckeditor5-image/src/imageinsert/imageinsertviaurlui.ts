@@ -18,10 +18,13 @@ import ImageInsertUrlView from './ui/imageinserturlview.js';
 /**
  * The image insert via URL plugin (UI part).
  *
- * For a detailed overview, check the {@glink features/images/images-inserting
- * Insert images via source URL} documentation.
+ * The plugin introduces two UI components to the {@link module:ui/componentfactory~ComponentFactory UI component factory}:
  *
- * This plugin registers the {@link module:image/imageinsert/imageinsertui~ImageInsertUI} integration for `url`.
+ * * `'insertImageViaUrl'` toolbar button,
+ * * `'menuBar:insertImageViaUrl'` menu bar component.
+ *
+ * It also integrates with `insertImage` toolbar component and `menuBar:insertImage` menu component, which are default components through
+ * which inserting image via URL is available.
  */
 export default class ImageInsertViaUrlUI extends Plugin {
 	private _imageInsertUI!: ImageInsertUI;

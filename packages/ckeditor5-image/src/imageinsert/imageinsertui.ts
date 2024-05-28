@@ -43,7 +43,8 @@ import ImageUtils from '../imageutils.js';
  * Adds the `'insertImage'` dropdown to the {@link module:ui/componentfactory~ComponentFactory UI component factory}
  * and also the `imageInsert` dropdown as an alias for backward compatibility.
  *
- * Adds the `'menuBar:insertImage'` sub-menu to the {@link module:ui/componentfactory~ComponentFactory UI component factory}.
+ * Adds the `'menuBar:insertImage'` sub-menu to the {@link module:ui/componentfactory~ComponentFactory UI component factory}, which is
+ * by default added to the `'Insert'` menu.
  */
 export default class ImageInsertUI extends Plugin {
 	/**

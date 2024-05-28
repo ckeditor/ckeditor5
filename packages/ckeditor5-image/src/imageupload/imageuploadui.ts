@@ -24,6 +24,9 @@ import type ImageInsertUI from '../imageinsert/imageinsertui.js';
  * and also the `imageUpload` button as an alias for backward compatibility.
  *
  * Adds the `'menuBar:uploadImage'` menu button to the {@link module:ui/componentfactory~ComponentFactory UI component factory}.
+ *
+ * It also integrates with `insertImage` toolbar component and `menuBar:insertImage` menu component, which are defaults component through
+ * which image upload is available.
  */
 export default class ImageUploadUI extends Plugin {
 	/**
