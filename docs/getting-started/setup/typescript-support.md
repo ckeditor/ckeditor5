@@ -1,13 +1,9 @@
 ---
-# Scope:
-# * Introduction to TypeScript in CKEditor&nbsp;5
-# * List and clarify the things that need attention when using TypeScript.
-
 category: setup
 menu-title: TypeScript support
 meta-title: TypeScript support | CKEditor 5 documentation
 modified_at: 2024-05-06
-order: 80
+order: 90
 ---
 
 # TypeScript support in CKEditor&nbsp;5
