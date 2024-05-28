@@ -2,7 +2,7 @@
 category: setup
 menu-title: Editor and content styles
 meta-title: Editor and content styles | CKEditor 5 documentation
-order: 80
+order: 90
 modified_at: 2024-05-06
 ---
 

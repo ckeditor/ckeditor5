@@ -1,24 +1,25 @@
 ---
-category: installation-methods
-meta-title: Editor's lifecycle | CKEditor 5 documentation
+category: setup
+meta-title: Editor lifecycle | CKEditor 5 documentation
 order: 20
+modified_at: 2024-05-06
 ---
 
-# Editor's lifecycle
+# Editor lifecycle
 
-Each CKEditor 5 **type** provides a different **editor class** that handles the creation of editor instances. Most of the examples in the documentation use the {@link module:editor-classic/classiceditor~ClassicEditor `ClassicEditor`} class, but things should work similarly with other types.
+Each CKEditor&nbsp;5 **type** provides a different **editor class** that handles the creation of editor instances. Most of the examples in the documentation use the {@link module:editor-classic/classiceditor~ClassicEditor `ClassicEditor`} class, but things should work similarly with other types.
 
 ## Creating an editor with `create()`
 
 Regardless of the chosen type, creating an editor is done using the static `create()` method. Usually, you start with an HTML element that will be a place where an editor will render itself on a page.
 
-<info-box tip>
-Every editor class may accept different parameters in the `create()` method and may handle the initialization differently. For instance, the classic editor will **replace** the given element with an editor, while the inline editor will use the given element to initialize an editor on it. The decoupled document needs to initialize the toolbar separately from the editable area. See each editor's documentation to learn the details.
+<info-box hint>
+	Every editor class may accept different parameters in the `create()` method and may handle the initialization differently. For instance, the classic editor will **replace** the given element with an editor, while the inline editor will use the given element to initialize an editor on it. The decoupled document editor needs to initialize the toolbar separately from the editable area. See each editor's documentation to learn the details.
 </info-box>
 
-### Example – classic editor
+### Example &nbsp; classic editor
 
-Add an element that CKEditor should replace to your HTML page:
+Add an element that CKEditor&nbsp;5 should replace on your HTML page:
 
 ```html
 <div id="editor">
@@ -45,13 +46,13 @@ ClassicEditor
 
 After creation, the editor will appear on the page in the selected area.
 
-<info-box tip>
-Inline, balloon, and balloon block editors are initialized in the same way.
+<info-box hint>
+	Inline, balloon, and balloon block editors are initialized in the same way.
 </info-box>
 
-### Example – decoupled editor
+### Example &nbsp; decoupled editor
 
-Add the elements where CKEditor should initialize the toolbar and the editable to your page:
+Add the elements where CKEditor&nbsp5 should initialize the toolbar and the editable to your page:
 
 ```html
 <!-- The toolbar will be rendered in this container. -->
@@ -99,7 +100,7 @@ const editor = await ClassicEditor( /* ... */  );
 
 ## Destroying the editor with `destroy()`
 
-In modern applications, it is common to create and remove elements from the page interactively through JavaScript. In such cases, CKEditor 5 instances should be destroyed by using the `destroy()` method:
+In modern applications, it is common to create and remove elements from the page interactively through JavaScript. In such cases, CKEditor&nbsp;5 instances should be destroyed by using the `destroy()` method:
 
 ```js
 editor

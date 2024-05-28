@@ -143,7 +143,7 @@ ClassicEditor
 ```
 
 <info-box warning>
-Enabling the `updateSourceElementOnDestroy` option in your configuration might have some security implications, depending on the plugins you use. While the editing view is secured, there might be some unsafe content in the data output, so enable this option only if you know what you are doing. Be especially careful when using the Markdown, General HTML Support, and HTML embed features.
+	Enabling the `updateSourceElementOnDestroy` option in your configuration might have some security implications, depending on the plugins you use. While the editing view is secured, there might be some unsafe content in the data output, so enable this option only if you know what you are doing. Be especially careful when using the Markdown, General HTML Support, and HTML embed features.
 </info-box>
 
 ## Autosave feature
