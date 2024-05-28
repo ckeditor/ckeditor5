@@ -57,7 +57,7 @@ An overview of the project's directory structure:
 ```
 
 <info-box warning>
-	(*) This file is available only if the plugin was generated with the `--use-legacy-methods` flag.
+	(*) This file is not available if the plugin was generated with the `--use-only-new-installation-methods` flag.
 </info-box>
 
 Guides for developing some of the files:
@@ -153,7 +153,7 @@ npm run build:dist
 ### `dll:build` (*)
 
 <info-box warning>
-	This script is not available if the plugin was generated with the `--without-legacy-methods` flag.
+	This script is not available if the plugin was generated with the `--use-only-new-installation-methods` flag.
 </info-box>
 
 Creates a DLL-compatible package build which can be loaded into an editor using {@link getting-started/advanced/dll-builds DLL builds}.
@@ -171,7 +171,7 @@ npm run dll:build -- --watch
 ### `dll:serve` (*)
 
 <info-box warning>
-	This script is not available if the plugin was generated with the `--without-legacy-methods` flag.
+	This script is not available if the plugin was generated with the `--use-only-new-installation-methods` flag.
 </info-box>
 
 Creates a simple HTTP server (without the live-reload mechanism) that allows verifying whether the DLL build of the package is compatible with the CKEditor&nbsp;5 {@link getting-started/advanced/dll-builds DLL builds}.
@@ -255,7 +255,7 @@ Npm supports some special [life cycle scripts](https://docs.npmjs.com/cli/v7/usi
 * `prepublishOnly` &ndash; Triggers only before publishing.
 * `postpublish` &ndash; Triggers after publishing.
 
-Scripts in this package ensure that `npm` and browser builds are available after the creation of the package and  if during creation the package `--use-legacy-methods` flag was used, also a DLL-compatible package build, and that correct files are published:
+Scripts in this package ensure that an `npm`, browser builds and a DLL-compatible package build are available after the creation of the package and that correct files are published. However, if during creation of the package the `--use-only-new-installation-methods` flag was used, support for legacy installation methods is not available:
 
 * `npm` and browser package builds.
 * DLL-compatible package build.

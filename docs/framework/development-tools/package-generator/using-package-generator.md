@@ -15,7 +15,7 @@ The [`ckeditor5-package-generator`](https://www.npmjs.com/package/ckeditor5-pack
 To create a new package without installing the tool, simply execute the following command:
 
 ```bash
-npx ckeditor5-package-generator@latest <packageName> [--use-npm] [--use-yarn] [--plugin-name <...>] [--verbose] [--lang <js|ts>] [--use-legacy-methods]
+npx ckeditor5-package-generator@latest <packageName> [--use-npm] [--use-yarn] [--plugin-name <...>] [--verbose] [--lang <js|ts>] [--use-only-new-installation-methods]
 ```
 
 The `<packageName>` argument is required and must obey these rules:
@@ -33,13 +33,13 @@ Available modifiers for the command are:
 * `--plugin-name` &ndash; define the plugin name to be different from the package name.
 * `--lang` &ndash; (values: `js` | `ts`) choose whether the created package should use JavaScript or TypeScript. If omitted, the script will ask the user to choose manually.
 * `--verbose` &ndash; (alias: `-v`) print additional logs about the current executed task.
-* `--without-legacy-methods` &ndash; do not use legacy installations methods in a newly created package.
+* `--use-only-new-installation-methods` &ndash; use only new installation methods in a newly created package.
 
 ## Choosing the method
 
 Currently there are two modes of operation for package generator:
 * the default way is based on the {@link getting-started/legacy-getting-started/quick-start legacy installation methods} and can build packages that support both current installation approach, the legacy one with DLLs and both at once.
-* using the `--without-legacy-methods` flag will base the package on imports from the `ckeditor5` package only. It provides no support for legacy installation methods.
+* using the `--use-only-new-installation-methods` flag will base the package on imports from the `ckeditor5` package only. It provides no support for legacy installation methods.
 
 ## Using the package
 
