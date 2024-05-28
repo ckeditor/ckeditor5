@@ -26,7 +26,7 @@ The editor has already been created in the `main.js` file with some basic plugin
 
 ```bash
 git clone https://github.com/ckeditor/ckeditor5-tutorials-examples
-cd ckeditor5-tutorials-examples/abbreviation-plugin/starter-files
+cd ckeditor5-tutorials-examples/inline-widget/starter-files
 
 npm install
 npm run dev
@@ -94,6 +94,34 @@ export default class PlaceholderEditing extends Plugin {
 		console.log( 'PlaceholderEditing#init() got called' );
 	}
 }
+```
+
+Finally, you need to load the `Placeholder` plugin in your `main.js` file:
+
+```js
+// main.js
+
+import { ClassicEditor, Bold, Italic, Essentials, Heading, List, Paragraph } from 'ckeditor5';
+import Placeholder from './placeholder/placeholder';
+import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
+import 'ckeditor5/index.css';
+
+ClassicEditor
+    .create( document.querySelector( '#editor' ), {
+        plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, Placeholder ],
+        toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'undo', 'redo' ]
+    } )
+    .then( editor => {
+        console.log( 'Editor was initialized', editor );
+
+        CKEditorInspector.attach( { editor: 'editor' } );
+
+        // Expose for playing in the console.
+        window.editor = editor;
+    } )
+    .catch( error => {
+        console.error( error.stack );
+    } );
 ```
 
 At this point, you can run the development server and see in the browser console that the plugins are being initialized.
