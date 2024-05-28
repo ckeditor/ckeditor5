@@ -124,7 +124,7 @@ export default class ImageInsertUI extends Plugin {
 		buttonViewCreator,
 		formViewCreator,
 		menuBarButtonViewCreator,
-		requiresForm
+		requiresForm = false
 	}: {
 		name: string;
 		observable: Observable & { isEnabled: boolean } | ( () => Observable & { isEnabled: boolean } );
@@ -149,7 +149,7 @@ export default class ImageInsertUI extends Plugin {
 			buttonViewCreator,
 			menuBarButtonViewCreator,
 			formViewCreator,
-			requiresForm: !!requiresForm
+			requiresForm
 		} );
 	}
 

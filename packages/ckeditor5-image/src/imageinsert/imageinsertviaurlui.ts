@@ -44,27 +44,8 @@ export default class ImageInsertViaUrlUI extends Plugin {
 	}
 
 	public init(): void {
-		this.editor.ui.componentFactory.add( 'insertImageViaUrl', locale => {
-			const t = locale.t;
-			const button = this._createInsertUrlButton( ButtonView );
-
-			button.tooltip = true;
-			button.bind( 'label' ).to( this._imageInsertUI, 'isImageSelected', isImageSelected => isImageSelected ?
-				t( 'Update image URL' ) :
-				t( 'Insert image via URL' )
-			);
-
-			return button;
-		} );
-
-		this.editor.ui.componentFactory.add( 'menuBar:insertImageViaUrl', locale => {
-			const t = locale.t;
-			const button = this._createInsertUrlButton( MenuBarMenuListItemButtonView );
-
-			button.label = t( 'Insert via URL' );
-
-			return button;
-		} );
+		this.editor.ui.componentFactory.add( 'insertImageViaUrl', () => this._createToolbarButton() );
+		this.editor.ui.componentFactory.add( 'menuBar:insertImageViaUrl', () => this._createMenuBarButton( 'standalone' ) );
 	}
 
 	/**
@@ -73,26 +54,91 @@ export default class ImageInsertViaUrlUI extends Plugin {
 	public afterInit(): void {
 		this._imageInsertUI = this.editor.plugins.get( 'ImageInsertUI' );
 
-		const buttonViewCreator = () => {
-			const button = this.editor.ui.componentFactory.create( 'insertImageViaUrl' ) as ButtonView;
-
-			button.withText = true;
-
-			return button;
-		};
-
 		this._imageInsertUI.registerIntegration( {
 			name: 'url',
 			observable: () => this.editor.commands.get( 'insertImage' )!,
-			requiresForm: false,
-			buttonViewCreator,
-			formViewCreator: buttonViewCreator,
-			menuBarButtonViewCreator: () => this.editor.ui.componentFactory.create( 'menuBar:insertImageViaUrl' ) as MenuBarMenuListItemButtonView
+			buttonViewCreator: () => this._createToolbarButton(),
+			formViewCreator: () => this._createDropdownButton(),
+			menuBarButtonViewCreator: isOnly => this._createMenuBarButton( isOnly ? 'insertOnly' : 'insertNested' )
 		} );
 	}
 
 	/**
-	 * Creates the view displayed in the dropdown.
+	 * Creates the base for various kinds of the button component provided by this feature.
+	 */
+	private _createInsertUrlButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>(
+		ButtonClass: T
+	): InstanceType<T> {
+		const button = new ButtonClass( this.editor.locale ) as InstanceType<T>;
+
+		button.icon = icons.imageUrl;
+		button.on( 'execute', () => {
+			this._showModal();
+		} );
+
+		return button;
+	}
+
+	/**
+	 * Creates a simple toolbar button, with an icon and a tooltip.
+	 */
+	private _createToolbarButton(): ButtonView {
+		const t = this.editor.locale.t;
+		const button = this._createInsertUrlButton( ButtonView );
+
+		button.tooltip = true;
+		button.bind( 'label' ).to(
+			this._imageInsertUI,
+			'isImageSelected',
+			isImageSelected => isImageSelected ? t( 'Update image URL' ) : t( 'Insert image via URL' )
+		);
+
+		return button;
+	}
+
+	/**
+	 * Creates a button for the dropdown view, with an icon, text and no tooltip.
+	 */
+	private _createDropdownButton(): ButtonView {
+		const t = this.editor.locale.t;
+		const button = this._createInsertUrlButton( ButtonView );
+
+		button.withText = true;
+		button.bind( 'label' ).to(
+			this._imageInsertUI,
+			'isImageSelected',
+			isImageSelected => isImageSelected ? t( 'Update image URL' ) : t( 'Insert via URL' )
+		);
+
+		return button;
+	}
+
+	/**
+	 * Creates a button for the menu bar.
+	 */
+	private _createMenuBarButton( type: 'standalone' | 'insertOnly' | 'insertNested' ): MenuBarMenuListItemButtonView {
+		const t = this.editor.locale.t;
+		const button = this._createInsertUrlButton( MenuBarMenuListItemButtonView );
+
+		button.withText = true;
+
+		switch ( type ) {
+			case 'standalone':
+				button.label = t( 'Image via URL' );
+				break;
+			case 'insertOnly':
+				button.label = t( 'Image' );
+				break;
+			case 'insertNested':
+				button.label = t( 'Insert via URL' );
+				break;
+		}
+
+		return button;
+	}
+
+	/**
+	 * Creates the form view used to submit the image URL.
 	 */
 	private _createInsertUrlView(): ImageInsertUrlView {
 		const editor = this.editor;
@@ -115,24 +161,7 @@ export default class ImageInsertViaUrlUI extends Plugin {
 	}
 
 	/**
-	 * Creates the toolbar button.
-	 */
-	private _createInsertUrlButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>(
-		ButtonClass: T
-	): InstanceType<T> {
-		const editor = this.editor;
-		const button = new ButtonClass( editor.locale ) as InstanceType<T>;
-
-		button.icon = icons.imageUrl;
-		button.on( 'execute', () => {
-			this._showModal();
-		} );
-
-		return button;
-	}
-
-	/**
-	 * Shows the insert image via URL modal.
+	 * Shows the insert image via URL form view in a modal.
 	 */
 	private _showModal() {
 		const editor = this.editor;
@@ -143,7 +172,7 @@ export default class ImageInsertViaUrlUI extends Plugin {
 		const form = this._createInsertUrlView();
 
 		dialog.show( {
-			id: 'insertUrl',
+			id: 'insertImageViaUrl',
 			title: this._imageInsertUI.isImageSelected ?
 				t( 'Update image URL' ) :
 				t( 'Insert image via URL' ),
