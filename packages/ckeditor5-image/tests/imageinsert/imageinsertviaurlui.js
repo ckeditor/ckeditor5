@@ -123,7 +123,7 @@ describe( 'ImageInsertViaUrlUI', () => {
 			}
 
 			beforeEach( () => {
-				button = editor.ui.componentFactory.create( 'uploadUrl' );
+				button = editor.ui.componentFactory.create( 'insertImageViaUrl' );
 				dialog = editor.plugins.get( 'Dialog' );
 				const replaceImageSourceCommand = editor.commands.get( 'replaceImageSource' );
 				replaceImageSourceCommand.value = 'foobar';

@@ -44,7 +44,7 @@ export default class ImageInsertViaUrlUI extends Plugin {
 	}
 
 	public init(): void {
-		this.editor.ui.componentFactory.add( 'uploadUrl', locale => {
+		this.editor.ui.componentFactory.add( 'insertImageViaUrl', locale => {
 			const t = locale.t;
 			const button = this._createInsertUrlButton( ButtonView );
 
@@ -57,7 +57,7 @@ export default class ImageInsertViaUrlUI extends Plugin {
 			return button;
 		} );
 
-		this.editor.ui.componentFactory.add( 'menuBar:uploadUrl', locale => {
+		this.editor.ui.componentFactory.add( 'menuBar:insertImageViaUrl', locale => {
 			const t = locale.t;
 			const button = this._createInsertUrlButton( MenuBarMenuListItemButtonView );
 
@@ -74,7 +74,7 @@ export default class ImageInsertViaUrlUI extends Plugin {
 		this._imageInsertUI = this.editor.plugins.get( 'ImageInsertUI' );
 
 		const buttonViewCreator = () => {
-			const button = this.editor.ui.componentFactory.create( 'uploadUrl' ) as ButtonView;
+			const button = this.editor.ui.componentFactory.create( 'insertImageViaUrl' ) as ButtonView;
 
 			button.withText = true;
 
@@ -87,7 +87,7 @@ export default class ImageInsertViaUrlUI extends Plugin {
 			requiresForm: false,
 			buttonViewCreator,
 			formViewCreator: buttonViewCreator,
-			menuBarButtonViewCreator: () => this.editor.ui.componentFactory.create( 'menuBar:uploadUrl' ) as MenuBarMenuListItemButtonView
+			menuBarButtonViewCreator: () => this.editor.ui.componentFactory.create( 'menuBar:insertImageViaUrl' ) as MenuBarMenuListItemButtonView
 		} );
 	}
 
