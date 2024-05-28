@@ -38,7 +38,7 @@ Available modifiers for the command are:
 ## Choosing the method
 
 Currently there are two modes of operation for package generator:
-* the default way is based on the {@link getting-started/legacy-getting-started/quick-start legacy installation methods} and can build packages that support both current installation approach, the legacy one with DLLs and both at once.
+* By default, package generator creates bundles for both the current installation methods and {@link getting-started/legacy-getting-started/quick-start legacy installation methods}.
 * When the project is generated with the `--use-only-new-installation-methods` flag, the package will only support the current installation methods. This approach makes it easier to create CKEditor 5 plugin at the cost of not supporting the old installation methods.
 
 ## Using the package
