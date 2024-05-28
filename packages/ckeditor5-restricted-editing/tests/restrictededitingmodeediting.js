@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* global document */
+
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
@@ -18,6 +20,8 @@ import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlinee
 import InsertImageCommand from '@ckeditor/ckeditor5-image/src/image/insertimagecommand.js';
 
 import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import Table from '@ckeditor/ckeditor5-table/src/table.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 import RestrictedEditingModeEditing from './../src/restrictededitingmodeediting.js';
 import RestrictedEditingModeNavigationCommand from '../src/restrictededitingmodenavigationcommand.js';
@@ -179,7 +183,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 	describe( 'conversion', () => {
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( {
-				plugins: [ Paragraph, TableEditing, RestrictedEditingModeEditing, ClipboardPipeline ]
+				plugins: [ Paragraph, TableEditing, RestrictedEditingModeEditing, ImageInlineEditing, ClipboardPipeline ]
 			} );
 			model = editor.model;
 		} );
@@ -327,6 +331,145 @@ describe( 'RestrictedEditingModeEditing', () => {
 					'<span class="ck-table-bogus-paragraph"><span class="restricted-editing-exception"><b>foo bar baz</b></span></span>' +
 					'</td></tr></tbody></table>' +
 					'</figure>'
+				);
+			} );
+
+			it( 'inline image should not split span between text nodes', () => {
+				setModelData( model, '<paragraph>foo <imageInline src="foo/bar.jpg"></imageInline> baz</paragraph>' );
+
+				const paragraph = model.document.getRoot().getChild( 0 );
+
+				model.change( writer => {
+					writer.addMarker( 'restrictedEditingException:1', {
+						range: writer.createRangeIn( paragraph ),
+						usingOperation: true,
+						affectsData: true
+					} );
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p><span class="restricted-editing-exception">foo <img src="foo/bar.jpg">baz</span></p>'
+				);
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<p>' +
+						'<span class="restricted-editing-exception restricted-editing-exception_selected">' +
+							'foo' +
+								' <span class="ck-widget image-inline" contenteditable="false"><img src="foo/bar.jpg"></img></span>' +
+							'baz' +
+						'</span>' +
+					'</p>'
+				);
+			} );
+
+			it( 'inline image should not split span between text nodes (inline image at start)', () => {
+				setModelData( model, '<paragraph><imageInline src="foo/bar.jpg"></imageInline>foo baz</paragraph>' );
+
+				const paragraph = model.document.getRoot().getChild( 0 );
+
+				model.change( writer => {
+					writer.addMarker( 'restrictedEditingException:1', {
+						range: writer.createRangeIn( paragraph ),
+						usingOperation: true,
+						affectsData: true
+					} );
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p><span class="restricted-editing-exception"><img src="foo/bar.jpg">foo baz</span></p>'
+				);
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<p>' +
+						'<span class="restricted-editing-exception restricted-editing-exception_selected">' +
+							'<span class="ck-widget image-inline" contenteditable="false"><img src="foo/bar.jpg"></img></span>' +
+							'foo ' +
+							'baz' +
+						'</span>' +
+					'</p>'
+				);
+			} );
+
+			it( 'inline image should not split span between text nodes (inline image at the end)', () => {
+				setModelData( model, '<paragraph>foo baz<imageInline src="foo/bar.jpg"></imageInline></paragraph>' );
+
+				const paragraph = model.document.getRoot().getChild( 0 );
+
+				model.change( writer => {
+					writer.addMarker( 'restrictedEditingException:1', {
+						range: writer.createRangeIn( paragraph ),
+						usingOperation: true,
+						affectsData: true
+					} );
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p><span class="restricted-editing-exception">foo baz<img src="foo/bar.jpg"></span></p>'
+				);
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<p>' +
+						'<span class="restricted-editing-exception restricted-editing-exception_selected">' +
+							'foo ' +
+							'baz' +
+							'<span class="ck-widget image-inline" contenteditable="false"><img src="foo/bar.jpg"></img></span>' +
+						'</span>' +
+					'</p>'
+				);
+			} );
+
+			it( 'should be possible to override marker conversion', () => {
+				editor.conversion.for( 'downcast' ).add( dispatcher => {
+					dispatcher.on( 'addMarker:restrictedEditingException', ( evt, data, conversionApi ) => {
+						if ( !data.item || data.item.is( 'selection' ) || !conversionApi.schema.isInline( data.item ) ) {
+							return;
+						}
+
+						if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
+							return;
+						}
+
+						const viewWriter = conversionApi.writer;
+						const viewElement = viewWriter.createAttributeElement(
+							'span',
+							{
+								class: 'restricted-editing-custom-exception'
+							},
+							{
+								id: data.markerName,
+								priority: -10
+							}
+						);
+
+						const viewRange = conversionApi.mapper.toViewRange( data.range );
+						const rangeAfterWrap = viewWriter.wrap( viewRange, viewElement );
+
+						for ( const element of rangeAfterWrap.getItems() ) {
+							if ( element.is( 'attributeElement' ) && element.isSimilar( viewElement ) ) {
+								conversionApi.mapper.bindElementToMarker( element, data.markerName );
+
+								// One attribute element is enough, because all of them are bound together by the view writer.
+								// Mapper uses this binding to get all the elements no matter how many of them are registered in the mapper.
+								break;
+							}
+						}
+					}, { priority: 'high' } );
+				} );
+
+				setModelData( model, '<paragraph>foo bar baz</paragraph>' );
+
+				const paragraph = model.document.getRoot().getChild( 0 );
+
+				model.change( writer => {
+					writer.addMarker( 'restrictedEditingException:1', {
+						range: writer.createRangeIn( paragraph ),
+						usingOperation: true,
+						affectsData: true
+					} );
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p><span class="restricted-editing-custom-exception">foo bar baz</span></p>'
+				);
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<p><span class="restricted-editing-custom-exception restricted-editing-exception_selected">foo bar baz</span></p>'
 				);
 			} );
 		} );
@@ -1582,11 +1725,14 @@ describe( 'RestrictedEditingModeEditing', () => {
 	} );
 
 	describe( 'exception cycling with the keyboard', () => {
-		let view, domEvtDataStub;
+		let view, domEvtDataStub, element;
 
 		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( {
-				plugins: [ Paragraph, RestrictedEditingModeEditing, BoldEditing, ClipboardPipeline ]
+			element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
+			editor = await ClassicTestEditor.create( element, {
+				plugins: [ Paragraph, RestrictedEditingModeEditing, BoldEditing, ClipboardPipeline, Table ]
 			} );
 
 			model = editor.model;
@@ -1602,6 +1748,8 @@ describe( 'RestrictedEditingModeEditing', () => {
 		} );
 
 		afterEach( () => {
+			element.remove();
+
 			return editor.destroy();
 		} );
 
@@ -1680,13 +1828,87 @@ describe( 'RestrictedEditingModeEditing', () => {
 				} );
 			} );
 
-			domEvtDataStub.keyCode += getCode( 'Shift' );
+			domEvtDataStub.shiftKey = true;
 			view.document.fire( 'keydown', domEvtDataStub );
 
 			sinon.assert.calledOnce( editor.execute );
 			sinon.assert.calledWithExactly( editor.execute, 'goToPreviousRestrictedEditingException' );
 			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+		} );
+
+		it( 'should get into the table', () => {
+			setModelData( model, `
+				<paragraph>foo[]</paragraph>
+				<table><tableRow><tableCell><paragraph>bar</paragraph></tableCell></tableRow></table>
+			` );
+
+			const paragraph = model.document.getRoot().getChild( 0 );
+			const paragraph2 = model.document.getRoot().getChild( 1 ).getChild( 0 ).getChild( 0 ).getChild( 0 );
+
+			model.change( writer => {
+				writer.addMarker( 'restrictedEditingException:1', {
+					range: writer.createRangeIn( paragraph ),
+					usingOperation: true,
+					affectsData: true
+				} );
+			} );
+
+			model.change( writer => {
+				writer.addMarker( 'restrictedEditingException:2', {
+					range: writer.createRangeIn( paragraph2 ),
+					usingOperation: true,
+					affectsData: true
+				} );
+			} );
+
+			view.document.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.calledOnce( editor.execute );
+			sinon.assert.calledWithExactly( editor.execute, 'goToNextRestrictedEditingException' );
+			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+
+			const position = model.document.selection.getFirstRange().start;
+
+			expect( position.parent ).to.deep.equal( paragraph2 );
+		} );
+
+		it( 'should escape from the table', () => {
+			setModelData( model, `
+				<table><tableRow><tableCell><paragraph>bar[]</paragraph></tableCell></tableRow></table>
+				<paragraph>foo</paragraph>
+			` );
+
+			const paragraph = model.document.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 ).getChild( 0 );
+			const paragraph2 = model.document.getRoot().getChild( 1 );
+
+			model.change( writer => {
+				writer.addMarker( 'restrictedEditingException:1', {
+					range: writer.createRangeIn( paragraph ),
+					usingOperation: true,
+					affectsData: true
+				} );
+			} );
+
+			model.change( writer => {
+				writer.addMarker( 'restrictedEditingException:2', {
+					range: writer.createRangeIn( paragraph2 ),
+					usingOperation: true,
+					affectsData: true
+				} );
+			} );
+
+			view.document.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.calledOnce( editor.execute );
+			sinon.assert.calledWithExactly( editor.execute, 'goToNextRestrictedEditingException' );
+			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+
+			const position = model.document.selection.getFirstRange().start;
+
+			expect( position.parent ).to.deep.equal( paragraph2 );
 		} );
 
 		it( 'should let the focus go outside the editor on shift+tab when in the first exception', () => {

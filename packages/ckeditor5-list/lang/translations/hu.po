@@ -140,3 +140,11 @@ msgstr "A listaelem behúzás növelése"
 msgctxt "Keystroke description for assistive technologies: keystroke for decreasing list item indentation."
 msgid "Decrease list item indent"
 msgstr "A listaelem behúzás csökkentése"
+
+msgctxt "Assistive technologies label for entering the to-do list."
+msgid "Entering a to-do list"
+msgstr "Belépés a tennivalók listájába"
+
+msgctxt "Assistive technologies label for leaving the to-do list."
+msgid "Leaving a to-do list"
+msgstr "Tennivalók listájának elhagyás"

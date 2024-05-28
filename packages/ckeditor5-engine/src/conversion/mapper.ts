@@ -41,7 +41,7 @@ import type ViewNode from '../view/node.js';
  * with `'lowest'` priority. To override default `Mapper` mapping, add custom callback with higher priority and
  * stop the event.
  */
-export default class Mapper extends EmitterMixin() {
+export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 	/**
 	 * Model element to view element mapping.
 	 */

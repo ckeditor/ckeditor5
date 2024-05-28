@@ -60,7 +60,7 @@ import { isElement as _isElement } from 'lodash-es';
  * Read more about initializing the editor from source or as a build in
  * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`}.
  */
-export default class DecoupledEditor extends ElementApiMixin( Editor ) {
+export default class DecoupledEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	/**
 	 * @inheritDoc
 	 */

@@ -50,7 +50,7 @@ const graveyardName = '$graveyard';
  * However, the document may contain multiple roots – e.g. when the editor has multiple editable areas
  * (e.g. a title and a body of a message).
  */
-export default class Document extends EmitterMixin() {
+export default class Document extends /* #__PURE__ */ EmitterMixin() {
 	/**
 	 * The {@link module:engine/model/model~Model model} that the document is a part of.
 	 */

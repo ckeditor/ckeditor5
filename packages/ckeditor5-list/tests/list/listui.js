@@ -8,6 +8,8 @@
 // TODO change to new ListEditing
 import LegacyListEditing from '../../src/legacylist/legacylistediting.js';
 import ListUI from '../../src/list/listui.js';
+import List from '../../src/list.js';
+import ListProperties from '../../src/listproperties.js';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
@@ -150,6 +152,36 @@ describe( 'ListUI', () => {
 
 			command.isEnabled = false;
 			expect( numberedListButton.isEnabled ).to.be.false;
+		} );
+	} );
+
+	describe( 'list properties', () => {
+		let editorElement, editor;
+
+		beforeEach( () => {
+			editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			return ClassicTestEditor.create( editorElement, {
+				plugins: [ Paragraph, BlockQuote, ListProperties, List ]
+			} )
+				.then( newEditor => {
+					editor = newEditor;
+				} );
+		} );
+
+		afterEach( () => {
+			editorElement.remove();
+
+			return editor.destroy();
+		} );
+
+		it( 'should not override list properties ui components', () => {
+			const bulletedListButton = editor.ui.componentFactory.create( 'bulletedList' );
+			const numberedListButton = editor.ui.componentFactory.create( 'numberedList' );
+
+			expect( bulletedListButton.class ).to.be.equal( 'ck-list-styles-dropdown' );
+			expect( numberedListButton.class ).to.be.equal( 'ck-list-styles-dropdown' );
 		} );
 	} );
 } );

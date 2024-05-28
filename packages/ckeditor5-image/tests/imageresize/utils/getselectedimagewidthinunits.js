@@ -59,17 +59,16 @@ describe( 'getSelectedImageWidthInUnits', () => {
 		const { unit, value } = getSelectedImageWidthInUnits( editor, 'px' );
 
 		expect( unit ).to.be.equal( 'px' );
-		expect( value ).to.be.greaterThan( 400 );
+		expect( value ).to.be.equal( 310 );
 	} );
 
 	it( 'should return casted pixels value to percentage', () => {
-		setData( model, `[<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedWidth="380px"></imageBlock>]` );
+		setData( model, `[<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedWidth="250px"></imageBlock>]` );
 
 		const { unit, value } = getSelectedImageWidthInUnits( editor, '%' );
 
 		expect( unit ).to.be.equal( '%' );
-		expect( value ).to.be.greaterThan( 30 );
-		expect( value ).to.be.lessThan( 40 );
+		expect( value ).to.be.equal( 50 );
 	} );
 
 	async function createEditor( config ) {
@@ -78,6 +77,16 @@ describe( 'getSelectedImageWidthInUnits', () => {
 			image: {
 				resizeUnit: 'px'
 			}
+		} );
+
+		editor.editing.view.change( writer => {
+			writer.setStyle(
+				{
+					width: '500px',
+					padding: '0px'
+				},
+				editor.editing.view.document.getRoot()
+			);
 		} );
 
 		model = editor.model;

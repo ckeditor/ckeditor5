@@ -29,6 +29,10 @@ msgctxt "Label for the URL input in the Link URL editing balloon."
 msgid "Link URL"
 msgstr "Adres URL"
 
+msgctxt "An error text displayed when user attempted to enter an empty URL."
+msgid "Link URL must not be empty."
+msgstr "Adres URL linku nie może być pusty"
+
 msgctxt "Label for the image link button."
 msgid "Link image"
 msgstr "Wstaw odnośnik do obrazka"

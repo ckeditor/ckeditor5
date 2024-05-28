@@ -22,7 +22,7 @@ const boundPropertiesSymbol = Symbol( 'boundProperties' );
 const decoratedMethods = Symbol( 'decoratedMethods' );
 const decoratedOriginal = Symbol( 'decoratedOriginal' );
 
-const defaultObservableClass = ObservableMixin( EmitterMixin() );
+const defaultObservableClass = /* #__PURE__ */ ObservableMixin( /* #__PURE__ */ EmitterMixin() );
 
 /**
  * A mixin that injects the "observable properties" and data binding functionality described in the

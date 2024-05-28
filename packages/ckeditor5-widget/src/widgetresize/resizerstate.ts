@@ -15,7 +15,7 @@ import { calculateResizeHostPercentageWidth } from '../utils.js';
 /**
  * Stores the internal state of a single resizable object.
  */
-export default class ResizeState extends ObservableMixin() {
+export default class ResizeState extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * The position of the handle that initiated the resizing. E.g. `"top-left"`, `"bottom-right"` etc. or `null`
 	 * if unknown.
