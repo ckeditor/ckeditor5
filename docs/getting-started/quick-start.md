@@ -1,13 +1,13 @@
 ---
 category: installation
 order: 10
-menu-title: Quick Start
-meta-title: Quick Start | CKEditor 5 documentation
+menu-title: Quick start
+meta-title: Quick start | CKEditor 5 documentation
 meta-description: Learn the fastest way to install and use CKEditor 5 - the powerful, rich text WYSIWYG editor in your web application using npm or CDN.
 modified_at: 2024-05-06
 ---
 
-# Quick Start
+# Quick start
 
 CKEditor&nbsp;5 is a powerful, rich text editor you can embed in your web application. This guide will show you the fastest way to start using it.
 
@@ -164,7 +164,7 @@ Your final page should look similar to the one below.
 				}
 			}
 		</script>
-		
+
 		<script type="module">
 			import {
 				ClassicEditor,

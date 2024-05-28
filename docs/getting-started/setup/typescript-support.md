@@ -1,13 +1,9 @@
 ---
-# Scope:
-# * Introduction to TypeScript in CKEditor&nbsp;5
-# * List and clarify the things that need attention when using TypeScript.
-
 category: setup
 menu-title: TypeScript support
 meta-title: TypeScript support | CKEditor 5 documentation
 modified_at: 2024-05-06
-order: 80
+order: 100
 ---
 
 # TypeScript support in CKEditor&nbsp;5
@@ -66,8 +62,8 @@ Writing a simple plugin will be similar to writing it in vanilla JavaScript, but
 Depending on your plugin, augment the following interfaces:
 
 * {@link module:core/editor/editorconfig~EditorConfig}, which informs that a new plugin extends the configuration.
-* {@link module:core/plugincollection~PluginsMap}, which informs that an additional plugin is available; useful when using `editor.plugins.get(&nbsp;'...'&nbsp;)`.
-* {@link module:core/commandcollection~CommandsMap}, which informs that an additional command is available; useful when using `editor.commands.get(&nbsp;'...'&nbsp;)`.
+* {@link module:core/plugincollection~PluginsMap}, which informs that an additional plugin is available; useful when using `editor.plugins.get( '...' )`.
+* {@link module:core/commandcollection~CommandsMap}, which informs that an additional command is available; useful when using `editor.commands.get( '...' )`.
 
 The augmentation can be placed in a file with your editor setup. You can also create a separate file, for example `augmentation.ts`, and import it.
 

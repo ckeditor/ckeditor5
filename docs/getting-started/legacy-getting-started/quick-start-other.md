@@ -110,7 +110,7 @@ Some of the reasons for creating custom builds are:
 
 * Adding features not included in the existing builds, either from a third party or custom-developed.
 * Removing unnecessary features present in a build.
-* Changing the {@link getting-started/legacy-getting-started/editor-lifecycle#creating-an-editor-with-create editor creator}.
+* Changing the {@link getting-started/setup/editor-lifecycle#creating-an-editor-with-create editor creator}.
 * Changing the {@link framework/theme-customization editor theme}.
 * Changing the {@link getting-started/setup/ui-language localization language} of the editor.
 * Enabling bug fixes that are still not a part of any public release.
