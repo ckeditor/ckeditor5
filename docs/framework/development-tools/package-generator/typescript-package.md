@@ -255,7 +255,7 @@ Npm supports some special [life cycle scripts](https://docs.npmjs.com/cli/v7/usi
 * `prepublishOnly` &ndash; Triggers only before publishing.
 * `postpublish` &ndash; Triggers after publishing.
 
-Scripts in this package ensure that an `npm`, browser builds and a DLL-compatible package build are available after the creation of the package and that correct files are published. However, if during creation of the package the `--use-only-new-installation-methods` flag was used, support for legacy installation methods is not available:
+Scripts in this package ensure that npm, browser and DLL-compatible builds are available after the creation of the package and that correct files are published. However, if during creation of the package the `--use-only-new-installation-methods` flag was used, support for legacy installation methods is not available:
 
 * `npm` and browser package builds.
 * DLL-compatible package build.
