@@ -73,28 +73,30 @@ ClassicEditor
 If your editor implementation uses multiple roots, you should pass an object with keys corresponding to the editor roots names and values equal to the placeholder that should be set in each root:
 
 ```js
-MultiRootEditor.create(
+MultiRootEditor
+	.create(
 	// Roots for the editor:
-	{
-		header: document.querySelector( '#header' ),
-		content: document.querySelector( '#content' ),
-		leftSide: document.querySelector( '#left-side' ),
-		rightSide: document.querySelector( '#right-side' )
-	},
-	// Config:
-	{
-		placeholder: {
-			header: 'Type header...',
-			content: 'Type content...',
-			leftSide: 'Type left-side...',
-			rightSide: 'Type right-side...'
-		}
-	}
-).then( editor => {
-	console.log( editor );
-} ).catch( error => {
-	console.error( error );
-} );
+		{
+			header: document.querySelector( '#header' ),
+			content: document.querySelector( '#content' ),
+			leftSide: document.querySelector( '#left-side' ),
+			rightSide: document.querySelector( '#right-side' )
+		},
+		// Config:
+		{
+			placeholder: {
+				header: 'Type header...',
+				content: 'Type content...',
+				leftSide: 'Type left-side...',
+				rightSide: 'Type right-side...'
+			}
+		} )
+	.then( editor => {
+		console.log( editor );
+	} )
+	.catch( error => {
+		console.error( error );
+	} );
 ```
 
 ## Styling the placeholder

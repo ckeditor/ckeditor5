@@ -147,7 +147,7 @@ ClassicEditor.defaultConfig = {
 };
 ```
 
-This module will export an editor creator class which has all the plugins and configurations that you need already built-in. To use such an editor, simply import that class and call the static `.create()` method like in all {@link getting-started/legacy-getting-started/editor-lifecycle#creating-an-editor-with-create examples}. Then, replace the content of `main.js` with the following code:
+This module will export an editor creator class which has all the plugins and configurations that you need already built-in. To use such an editor, simply import that class and call the static `.create()` method like in all {@link getting-started/setup/editor-lifecycle#creating-an-editor-with-create examples}. Then, replace the content of `main.js` with the following code:
 
 ```js
 // main.js
