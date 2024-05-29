@@ -18,7 +18,7 @@ CKEditor&nbsp;5 is an ultra-modern JavaScript rich-text editor with MVC architec
 - [CKEditor 5 ](#ckeditor5-)
 	- [Table of contents](#table-of-contents)
 	- [Quick start](#quick-start)
-		- [CKEditor 5 builder](#ckeditor5-online-builder)
+		- [CKEditor 5 builder](#ckeditor5-builder)
 		- [TypeScript support](#typescript-support)
 		- [CKEditor 5 advanced installation](#ckeditor5-advanced-installation)
 			- [CKEditor 5 Framework](#ckeditor5-framework)
