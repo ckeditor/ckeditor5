@@ -26,11 +26,13 @@ After {@link getting-started/quick-start installing the editor}, add the feature
 ```js
 import { ClassicEditor, RemoveFormat } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ RemoveFormat, /* ... */ ],
-	toolbar: [ 'removeFormat', /* ... */ ]
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ RemoveFormat, /* ... */ ],
+		toolbar: [ 'removeFormat', /* ... */ ]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Configuring the remove format feature
@@ -64,19 +66,22 @@ function RemoveFormatLinks( editor ) {
 Enable the `RemoveFormatLinks` plugin in the {@link getting-started/setup/configuration#adding-features configuration} and run the editor:
 
 ```js
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [
-		RemoveFormat,
-		RemoveFormatLinks,
-		// More plugins.
-		// ...
-	],
-	toolbar: [
-		'removeFormat',
-		// More toolbar items.
-		// ...
-	]
-} )
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [
+			RemoveFormat,
+			RemoveFormatLinks,
+			// More plugins.
+			// ...
+		],
+		toolbar: [
+			'removeFormat',
+			// More toolbar items.
+			// ...
+		]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 From now on, the remove format button should also remove links in the content. {@link module:engine/model/schema~Schema#setAttributeProperties Learn more about attribute properties.}

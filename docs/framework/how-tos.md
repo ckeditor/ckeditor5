@@ -88,14 +88,17 @@ function MyPlugin(editor) {
 	// ...
 }
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	// If you're using builds, this is going to be extraPlugins property.
-	plugins: [
-		MyPlugin,
-		// Other plugins.
-		// ...
-	]
-} );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		// If you're using builds, this is going to be extraPlugins property.
+		plugins: [
+			MyPlugin,
+			// Other plugins.
+			// ...
+		]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ### How to get the editor instance object from the DOM element?

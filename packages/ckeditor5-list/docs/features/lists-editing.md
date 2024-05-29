@@ -31,14 +31,16 @@ When working with simple content or in small editing areas, you might not need t
 ```js
 import { ClassicEditor, List } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ List, /* ... */ ],
-	toolbar: [ 'bulletedList', 'numberedList', /* ... */ ],
-	list: {
-		multiBlock: false // Turn off the multi-block support (enabled by default).
-	}
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ List, /* ... */ ],
+		toolbar: [ 'bulletedList', 'numberedList', /* ... */ ],
+		list: {
+			multiBlock: false // Turn off the multi-block support (enabled by default).
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Merging adjacent lists
@@ -52,10 +54,12 @@ To prevent this behavior, enable the {@link module:list/list/adjacentlistssuppor
 ```js
 import { ClassicEditor, List, AdjacentListsSupport } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ List, AdjacentListsSupport, /* ... */ ]
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ List, AdjacentListsSupport, /* ... */ ]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 This feature only works for pasted contents or on data load, it {@link updating/update-to-41#changes-to-list-merging does not support entering adjacent lists via the editor UI}. If you are interested in this functionality, refer to [this issue on GitHub](https://github.com/ckeditor/ckeditor5/issues/14478).
