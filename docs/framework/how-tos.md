@@ -23,7 +23,12 @@ The height of the editing area can be easily controlled with CSS.
 
 ### How to customize the CKEditor 5 icons?
 
+<info-box warning>
+This method only works with the webpack setup that was the default one before new installation methods introduced in `v42`. We are working on the ability to replace icons in the current default method. Stay tuned!
+</info-box>
+
 The easiest way is to use webpack's [`NormalModuleReplacementPlugin`](https://webpack.js.org/plugins/normal-module-replacement-plugin/) plugin. For example, to replace the bold icon, use the following code in your `webpack.config.js`:
+
 
 ```js
 // ...
