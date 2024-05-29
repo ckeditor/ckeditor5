@@ -4,6 +4,16 @@ order: 15
 meta-title: Implementing an inline widget tutorial | CKEditor 5 Documentation
 ---
 
+<info-box warning>
+    This tutorial describes how to implement Placeholder feature (also referred to as Merge Fields or Merge Tags).
+
+    **Please be advised that we are currently working on the official implementation of this feature!**
+
+    The official feature will be much more robust than the solution presented here, and will offer many configuration options. If you plan to implement custom Placeholder feature based on this tutorial, we strongly advise to wait for the official solution.
+
+    If you have any questions regarding the timeline or expected functionallity of the upcoming official Merge Fields feature, feel free to [contact us](https://ckeditor.com/contact/).
+</info-box>
+
 # Implementing an inline widget
 
 In this tutorial, you will learn how to implement an inline widget.
