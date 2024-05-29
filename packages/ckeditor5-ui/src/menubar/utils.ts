@@ -856,6 +856,7 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 				items: [
 					'menuBar:bulletedList',
 					'menuBar:numberedList',
+					'menuBar:multiLevelList',
 					'menuBar:todoList'
 				]
 			},
