@@ -148,9 +148,9 @@ Your final page should look similar to the one below.
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>CKEditor 5 - Quick start CDN</title>
-		<link rel="stylesheet" href="<CDN_LINK>/ckeditor5/dist/styles.css" />
+		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
 		<!-- If you are using premium features: -->
-		<link rel="stylesheet" href="<CDN_LINK>/ckeditor5-premium-features/dist/index.css" />
+		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
 	</head>
 	<body>
 		<div id="editor">
@@ -160,8 +160,8 @@ Your final page should look similar to the one below.
 		<script type="importmap">
 			{
 				"imports": {
-					"ckeditor5": "<CDN_LINK>/ckeditor5/dist/browser/index.js",
-    				"ckeditor5/": "<CDN_LINK>/ckeditor5/dist/"
+					"ckeditor5": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.js",
+					"ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/"
 				}
 			}
 		</script>

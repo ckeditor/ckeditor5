@@ -103,15 +103,15 @@ Then, modify the `welcome.blade.php` file in the `resources/views` directory to 
 <head>
 	<meta charset="UTF-8">
 	<title>CKE5 in Laravel</title>
-	<link rel="stylesheet" href="<CDN_LINK>/ckeditor5/dist/styles.css" />
-	<link rel="stylesheet" href="<CDN_LINK>/ckeditor5-premium-features/dist/index.css" />
+	<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
+	<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
 	<script type="importmap">
 		{
 			"imports": {
-				"ckeditor5": "<CDN_LINK>/ckeditor5/index.min.js",
-				"ckeditor5/": "<CDN_LINK>/ckeditor5/",
-				"ckeditor5-premium-features": "<CDN_LINK>/ckeditor5-premium-features/index.min.js",
-				"ckeditor5-premium-features/": "<CDN_LINK>/ckeditor5-premium-features/"
+				"ckeditor5": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.js",
+				"ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/",
+				"ckeditor5-premium-features": "https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.js",
+				"ckeditor5-premium-features/": "https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/"
 			}
 		}
 	</script>

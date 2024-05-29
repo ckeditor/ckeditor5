@@ -25,10 +25,10 @@ import 'ckeditor5-premium-features/index.css';
 It is as easy in HTML:
 
 ```html
-<link rel="stylesheet" href="<CDN_LINK>/ckeditor5/dist/index.css" />
+<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
 
 <!-- If you are using premium features: -->
-<link rel="stylesheet" href="<CDN_LINK>/ckeditor5-premium-features/dist/index.css" />
+<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
 ```
 
 ## Why do I need content styles?
@@ -45,10 +45,8 @@ It is important to use the content styles on the publishing side of your applica
 
 There are two ways to obtain the content styles:
 
-// TODO: Links
-
 * From the `npm` packages, in the `dist/index-content.css` location.
-* From CDN, `<CDN_LINK>`
+* From CDN, `https://cdn.ckeditor.com/ckeditor5/`
 
 Load the `index-content.css` file on the publishing side by adding the following code to the template:
 
@@ -107,5 +105,4 @@ Our main packages, `ckeditor5` and `ckeditor5-premium-features`, distribute thre
 * `index-content.css`: only content styles.
 * `index-editor.css`: only editor styles.
 
-// TODO: Link
-Content styles include styles for **all** plugins of the editor. If you want to optimize the size of the style sheet, as you may be using minimal set of plugins, read our optimization guide.
+Content styles include styles for **all** plugins of the editor. If you want to optimize the size of the style sheet, as you may be using minimal set of plugins, read our optimization guide. <!-- TODO link to guide -->
