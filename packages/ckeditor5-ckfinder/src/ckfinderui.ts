@@ -162,7 +162,7 @@ export default class CKFinderUI extends Plugin {
 				button.label = t( 'Image' );
 				break;
 			case 'insertNested':
-				button.label = t( 'Insert with file manager' );
+				button.label = t( 'With file manager' );
 				break;
 		}
 

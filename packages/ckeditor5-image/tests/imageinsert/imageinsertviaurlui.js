@@ -372,7 +372,7 @@ describe( 'ImageInsertViaUrlUI', () => {
 					button = submenu.panelView.children.first.items.first.children.first;
 				} );
 
-				testButton( MenuBarMenuListItemButtonView, 'Insert via URL' );
+				testButton( MenuBarMenuListItemButtonView, 'Via URL' );
 			} );
 		} );
 	} );

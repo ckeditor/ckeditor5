@@ -228,7 +228,7 @@ export default class ImageInsertUI extends Plugin {
 			resultView.panelView.children.add( listView );
 
 			resultView.buttonView.set( {
-				icon: icons.imageUpload,
+				icon: icons.image,
 				label: t( 'Image' )
 			} );
 

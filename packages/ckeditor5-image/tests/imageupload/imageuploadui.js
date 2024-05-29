@@ -181,7 +181,7 @@ describe( 'ImageUploadUI', () => {
 			expect( button ).to.be.instanceOf( MenuBarMenuListItemFileDialogButtonView );
 			expect( button.withText ).to.be.true;
 			expect( button.icon ).to.equal( icons.imageUpload );
-			expect( button.label ).to.equal( 'Upload from computer' );
+			expect( button.label ).to.equal( 'From computer' );
 		} );
 
 		it( 'should create FileDialogButtonView in insert image submenu - only integration', () => {

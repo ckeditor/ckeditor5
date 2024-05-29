@@ -130,7 +130,7 @@ export default class ImageInsertViaUrlUI extends Plugin {
 				button.label = t( 'Image' );
 				break;
 			case 'insertNested':
-				button.label = t( 'Insert via URL' );
+				button.label = t( 'Via URL' );
 				break;
 		}
 

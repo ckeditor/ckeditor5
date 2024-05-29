@@ -110,7 +110,7 @@ describe( 'CKFinderUI', () => {
 			expect( buttonView ).to.be.instanceOf( MenuBarMenuListItemButtonView );
 			expect( buttonView.withText ).to.be.true;
 			expect( buttonView.icon ).to.equal( icons.imageAssetManager );
-			expect( buttonView.label ).to.equal( 'Insert with file manager' );
+			expect( buttonView.label ).to.equal( 'With file manager' );
 		} );
 
 		it( 'should create CKFinder button in menu bar - only integration', () => {

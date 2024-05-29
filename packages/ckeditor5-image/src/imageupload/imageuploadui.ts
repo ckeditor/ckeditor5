@@ -156,7 +156,7 @@ export default class ImageUploadUI extends Plugin {
 				button.label = t( 'Image' );
 				break;
 			case 'insertNested':
-				button.label = t( 'Upload from computer' );
+				button.label = t( 'From computer' );
 				break;
 		}
 
