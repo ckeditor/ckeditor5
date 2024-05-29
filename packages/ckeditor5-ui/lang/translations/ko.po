@@ -211,4 +211,4 @@ msgstr "편집기 메뉴 표시줄"
 
 msgctxt "An error text displayed when user attempted to enter an color that is not in HEX format."
 msgid "Please enter a valid color (e.g. \"ff0000\")."
-msgstr ""
+msgstr "유효한 색상을 입력해 주세요(예를 들어, \"ff0000\")."

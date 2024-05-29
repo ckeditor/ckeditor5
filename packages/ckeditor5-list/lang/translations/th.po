@@ -143,8 +143,8 @@ msgstr "ลดการเยื้องวัตถุในรายการ
 
 msgctxt "Assistive technologies label for entering the to-do list."
 msgid "Entering a to-do list"
-msgstr ""
+msgstr "เข้าสู่รายการสิ่งที่ต้องทำ"
 
 msgctxt "Assistive technologies label for leaving the to-do list."
 msgid "Leaving a to-do list"
-msgstr ""
+msgstr "ออกจากรายการสิ่งที่ต้องทำ"

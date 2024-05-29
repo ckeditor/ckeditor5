@@ -143,8 +143,8 @@ msgstr "تقليل المسافة البادئة لعنصر القائمة"
 
 msgctxt "Assistive technologies label for entering the to-do list."
 msgid "Entering a to-do list"
-msgstr ""
+msgstr "إدخال قائمة مهام"
 
 msgctxt "Assistive technologies label for leaving the to-do list."
 msgid "Leaving a to-do list"
-msgstr ""
+msgstr "ترك قائمة المهام"

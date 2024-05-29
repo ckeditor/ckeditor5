@@ -115,7 +115,7 @@ msgstr "Appliquer les dimensions d'origine"
 
 msgctxt "The label for image resize balloon input."
 msgid "Resize image (in %0)"
-msgstr ""
+msgstr "Redimensionner l'image (en %0)"
 
 msgctxt "The default label for the resize option that resets the size of the image."
 msgid "Original"
@@ -123,11 +123,11 @@ msgstr "Taille originale"
 
 msgctxt "The accessibility label of the standalone image resize custom option button in the image toolbar for screen readers."
 msgid "Custom image size"
-msgstr ""
+msgstr "Taille d'image personnalisée"
 
 msgctxt "The label for the resize option that allows user to enter custom size of the image."
 msgid "Custom"
-msgstr ""
+msgstr "Personnalisé"
 
 msgctxt "The accessibility label of the image resize dropdown for screen readers."
 msgid "Image resize list"
@@ -159,20 +159,20 @@ msgstr "Légende de l'image : %0"
 
 msgctxt "Text used as error label when user submitted custom image resize form with blank value."
 msgid "The value must not be empty."
-msgstr ""
+msgstr "La valeur ne doit pas être vide."
 
 msgctxt "Text used as error label when user submitted custom image resize form with incorrect value."
 msgid "The value should be a plain number."
-msgstr ""
+msgstr "La valeur doit être un nombre simple."
 
 msgctxt "Aria status message indicating that the image is being uploaded. Example: 'Uploading image'."
 msgid "Uploading image"
-msgstr ""
+msgstr "Téléchargement de l'image"
 
 msgctxt "Aria status message indicating that the image has been uploaded successfully. Example: 'Image upload complete'."
 msgid "Image upload complete"
-msgstr ""
+msgstr "Téléchargement de l'image terminé"
 
 msgctxt "Aria status message indicating that an error has occurred during image upload. Example: 'Error during image upload'."
 msgid "Error during image upload"
-msgstr ""
+msgstr "Une erreur s'est produite lors du téléchargement de l'image."

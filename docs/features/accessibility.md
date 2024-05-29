@@ -29,7 +29,16 @@ In our ongoing commitment to accessibility, we provide a report based on the [IT
 We continuously update the <acronym title="Voluntary Product Accessibility Template">VPAT</acronym>**®** report to reflect any changes or improvements. You can download the latest version of the <acronym title="Voluntary Product Accessibility Template">VPAT</acronym>**®** document below.
 
 <info-box info>
-	⬇️ <a href="../assets/pdf/VPAT_CKEditor_5_v41.3.0.pdf" target="_blank"><b>Download <acronym title="Voluntary Product Accessibility Template">VPAT</acronym>**®** report for CKEditor&nbsp;5 v41.3.0 (Apr 10, 2024)</b></a>
+	⬇️ <a href="../assets/pdf/VPAT_CKEditor_5_v41.4.2.pdf" target="_blank"><b>Download <acronym title="Voluntary Product Accessibility Template">VPAT</acronym>**®** report for CKEditor&nbsp;5 v41.4.2 (May 17, 2024)</b></a>
+
+	<details>
+		<summary>Previous versions</summary>
+		<ul>
+			<li>
+				<a href="../assets/pdf/VPAT_CKEditor_5_v41.3.0.pdf" target="_blank"><acronym title="Voluntary Product Accessibility Template">VPAT</acronym><sup>®</sup> report for CKEditor&nbsp;5 v41.3.0 (Apr 10, 2024)</a>
+			</li>
+		</ul>
+	</details>
 </info-box>
 
 ## Keyboard shortcuts
@@ -121,6 +130,16 @@ These keyboard shortcuts allow for quick access to content editing features.
 			<td>Find in the document</td>
 			<td><kbd>Ctrl</kbd>+<kbd>F</kbd></td>
 			<td><kbd>⌘F</kbd></td>
+		</tr>
+		<tr>
+			<td>Copy text formatting</td>
+			<td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>C</kbd></td>
+			<td><kbd>⌘⇧C</kbd></td>
+		</tr>
+		<tr>
+			<td>Paste text formatting</td>
+			<td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>V</kbd></td>
+			<td><kbd>⌘⇧V</kbd></td>
 		</tr>
 		<tr>
 			<td>Italic text</td>

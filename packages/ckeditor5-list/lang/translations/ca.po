@@ -143,8 +143,8 @@ msgstr "Redueix el sagnat de l'element de la llista"
 
 msgctxt "Assistive technologies label for entering the to-do list."
 msgid "Entering a to-do list"
-msgstr ""
+msgstr "Introduint una llista de tasques pendents"
 
 msgctxt "Assistive technologies label for leaving the to-do list."
 msgid "Leaving a to-do list"
-msgstr ""
+msgstr "Sortint d'una llista de tasques pendents"

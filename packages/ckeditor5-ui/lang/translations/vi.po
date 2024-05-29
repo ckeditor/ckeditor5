@@ -211,4 +211,4 @@ msgstr "Thanh menu Trình soạn thảo"
 
 msgctxt "An error text displayed when user attempted to enter an color that is not in HEX format."
 msgid "Please enter a valid color (e.g. \"ff0000\")."
-msgstr ""
+msgstr "Vui lòng nhập một màu sắc hợp lệ (ví dụ: \"ff0000\")."

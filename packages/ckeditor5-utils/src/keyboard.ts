@@ -49,10 +49,10 @@ const keyCodesToGlyphs: { [key: number]: string } = {
  * * `backspace`, `delete`, `enter`, `esc`, `tab`,
  * * `ctrl`, `cmd`, `shift`, `alt`.
  */
-export const keyCodes = generateKnownKeyCodes();
+export const keyCodes = /* #__PURE__ */ generateKnownKeyCodes();
 
-const keyCodeNames: { readonly [ keyCode: number ]: string } = Object.fromEntries(
-	Object.entries( keyCodes ).map( ( [ name, code ] ) => {
+const keyCodeNames: { readonly [ keyCode: number ]: string } = /* #__PURE__ */ Object.fromEntries(
+	/* #__PURE__ */ Object.entries( keyCodes ).map( ( [ name, code ] ) => {
 		let prettyKeyName;
 
 		if ( code in keyCodesToGlyphs ) {

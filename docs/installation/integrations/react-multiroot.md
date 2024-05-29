@@ -16,12 +16,12 @@ modified_at: 2024-04-25
 	</a>
 </p>
 
-This page focuses on describing the usage of the multi-root editor in React applications. If you would like to use a different type of editor, you can find more information {@link installation/integrations/react here}.
+This page focuses on describing the usage of the multi-root editor in a React applications. If you would like to use a different type of editor, you can find more information {@link installation/integrations/react here}.
 
 The easiest way to use multi-root CKEditor&nbsp;5 in your React application is by using the {@link installation/getting-started/predefined-builds#multi-root-editor multi-root rich text editor build}.
 
 <info-box hint>
-	The multi-root editors in React is supported since version 6.2.0 of this package.
+	The multi-root editor in React is supported since version 6.2.0 of this package.
 
 	Unlike the {@link installation/integrations/react default integration}, in the multi-root editor we prepared the integration based on the hooks and new React mechanisms.
 </info-box>
@@ -120,7 +120,7 @@ The `useMultiRootEditor` hook returns the following values:
 
 The `useMultiRootEditor` hook also supports the {@link features/context-and-collaboration-features context feature}, as described in the main {@link installation/integrations/react#context-feature React integration} guide.
 
-However, as the multi-root editor addresses most use cases of the context feature, consider if you need to employ it.
+However, as the multi-root editor addresses most use cases of the context feature, consider whether you need to employ it.
 
 ## Two-way data binding
 
