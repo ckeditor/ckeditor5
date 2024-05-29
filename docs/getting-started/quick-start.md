@@ -76,10 +76,10 @@ CDN is an alternative method of running CKEditor 5. You can start using it in ju
 Start by attaching a link to style sheets. They contain all styles for the editor's UI and content. The styles are in two style sheets &ndash; for open-source and premium plugins. You can also include your styles if you like. Refer to the content styles guide for more information.
 
 ```html
-<link rel="stylesheet" href="<CDN_LINK>/ckeditor5/dist/styles.css" />
+<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
 
 <!-- If you are using premium features: -->
-<link rel="stylesheet" href="<CDN_LINK>/ckeditor5-premium-features/dist/index.css" />
+<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
 ```
 
 Then, you need to attach the script with the JavaScript code. To simplify imports, you can use the feature available in browsers &ndash; the [import map](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap). It allows us to map an easy-to-remember specifier (like `ckeditor5`) to the full URL of the file from the CDN. We use this browser feature to share an editor engine code between plugins.
@@ -88,10 +88,11 @@ Then, you need to attach the script with the JavaScript code. To simplify import
 <script type="importmap">
 	{
 		"imports": {
-			"ckeditor5": "<CDN_LINK>/ckeditor5/index.min.js",
-			"ckeditor5/": "<CDN_LINK>/ckeditor5/",
-			"ckeditor5-premium-features": "<CDN_LINK>/ckeditor5-premium-features/index.min.js",
-			"ckeditor5-premium-features/": "<CDN_LINK>/ckeditor5-premium-features/"
+			"ckeditor5": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.js",
+			"ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/",
+			"ckeditor5-premium-features": "https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.js",
+			"ckeditor5-premium-features/": "https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/"
+
 		}
 	}
 </script>
