@@ -56,7 +56,7 @@ describe( 'MediaEmbedUI', () => {
 	} );
 
 	describe( 'toolbar button', () => {
-		testButton( ButtonView );
+		testButton( 'Insert media', ButtonView );
 
 		it( 'should enable tooltips for the #buttonView', () => {
 			expect( button.tooltip ).to.be.true;
@@ -68,7 +68,7 @@ describe( 'MediaEmbedUI', () => {
 			button = editor.ui.componentFactory.create( 'menuBar:mediaEmbed' );
 		} );
 
-		testButton( MenuBarMenuListItemButtonView );
+		testButton( 'Media', MenuBarMenuListItemButtonView );
 	} );
 
 	describe( 'dialog', () => {
@@ -187,7 +187,7 @@ describe( 'MediaEmbedUI', () => {
 		} );
 	} );
 
-	function testButton( expectedType ) {
+	function testButton( label, expectedType ) {
 		it( 'should add the "mediaEmbed" component to the factory', () => {
 			expect( button ).to.be.instanceOf( expectedType );
 		} );
@@ -202,7 +202,7 @@ describe( 'MediaEmbedUI', () => {
 		} );
 
 		it( 'should set a #label of the #buttonView', () => {
-			expect( button.label ).to.equal( 'Insert media' );
+			expect( button.label ).to.equal( label );
 		} );
 
 		it( 'should set an #icon of the #buttonView', () => {

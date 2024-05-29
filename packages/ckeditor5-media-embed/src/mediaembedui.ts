@@ -43,15 +43,22 @@ export default class MediaEmbedUI extends Plugin {
 		const editor = this.editor;
 
 		editor.ui.componentFactory.add( 'mediaEmbed', () => {
+			const t = this.editor.locale.t;
 			const button = this._createDialogButton( ButtonView );
 
 			button.tooltip = true;
+			button.label = t( 'Insert media' );
 
 			return button;
 		} );
 
 		editor.ui.componentFactory.add( 'menuBar:mediaEmbed', () => {
-			return this._createDialogButton( MenuBarMenuListItemButtonView );
+			const t = this.editor.locale.t;
+			const button = this._createDialogButton( MenuBarMenuListItemButtonView );
+
+			button.label = t( 'Media' );
+
+			return button;
 		} );
 	}
 
@@ -60,17 +67,11 @@ export default class MediaEmbedUI extends Plugin {
 	 */
 	private _createDialogButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
 		const editor = this.editor;
-		const locale = editor.locale;
 		const buttonView = new ButtonClass( editor.locale ) as InstanceType<T>;
 		const command = editor.commands.get( 'mediaEmbed' )!;
-		const t = locale.t;
 		const dialogPlugin = this.editor.plugins.get( 'Dialog' );
 
-		buttonView.set( {
-			label: t( 'Insert media' ),
-			icon: mediaIcon,
-			isToggleable: true
-		} );
+		buttonView.icon = mediaIcon;
 
 		buttonView.bind( 'isEnabled' ).to( command, 'isEnabled' );
 
