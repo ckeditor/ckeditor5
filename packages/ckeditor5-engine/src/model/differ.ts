@@ -75,7 +75,7 @@ export default class Differ {
 
 	/**
 	 * Keeps the state for a given element, describing how the element was changed so far. It is used to evaluate the `action` property
-	 * of diff items returned by {@link ~Differ#getChanges()}.
+	 * of diff items returned by {@link ~Differ#getChanges}.
 	 *
 	 * Possible values, in the order from the lowest priority to the highest priority:
 	 *
@@ -934,7 +934,7 @@ export default class Differ {
 	}
 
 	/**
-	 * Returns a value for {@link ~DifferItemAction `action`} property for diff items returned by {@link ~Differ#getChanges()}.
+	 * Returns a value for {@link ~DifferItemAction `action`} property for diff items returned by {@link ~Differ#getChanges}.
 	 * This method aims to return `'rename'` or `'refresh'` when it should, and `diffItemType` ("default action") in all other cases.
 	 *
 	 * It bases on a few factors:
