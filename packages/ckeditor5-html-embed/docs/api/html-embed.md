@@ -18,8 +18,10 @@ See the {@link features/html-embed HTML embed feature guide} and the {@link modu
 
 ## Installation
 
-```plaintext
-npm install --save @ckeditor/ckeditor5-html-embed
+This package is part of our open-source aggregate package.
+
+```bash
+npm install ckeditor5
 ```
 
 ## Contribute

@@ -91,7 +91,9 @@ import '../theme/globals/globals.css';
  * } );
  * ```
  */
-export default class View<TElement extends HTMLElement = HTMLElement> extends DomEmitterMixin( ObservableMixin() ) {
+export default class View<TElement extends HTMLElement = HTMLElement>
+	extends /* #__PURE__ */ DomEmitterMixin( /* #__PURE__ */ ObservableMixin() )
+{
 	/**
 	 * An HTML element of the view. `null` until {@link #render rendered}
 	 * from the {@link #template}.
@@ -159,7 +161,7 @@ export default class View<TElement extends HTMLElement = HTMLElement> extends Do
 	 */
 	public template?: Template;
 
-	public viewUid?: string;
+	public declare viewUid?: string;
 
 	/**
 	 * Collections registered with {@link #createCollection}.

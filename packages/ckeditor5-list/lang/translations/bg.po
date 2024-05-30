@@ -140,3 +140,11 @@ msgstr "Увеличаване на шрифта на елемент от спи
 msgctxt "Keystroke description for assistive technologies: keystroke for decreasing list item indentation."
 msgid "Decrease list item indent"
 msgstr "Намаляване на шрифта на елемент от списъка"
+
+msgctxt "Assistive technologies label for entering the to-do list."
+msgid "Entering a to-do list"
+msgstr "Въвеждане на списък със задачи"
+
+msgctxt "Assistive technologies label for leaving the to-do list."
+msgid "Leaving a to-do list"
+msgstr "Напускане на списъка със задачи"

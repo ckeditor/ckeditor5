@@ -645,6 +645,44 @@ describe( 'ListElementSupport', () => {
 				}
 			} );
 		} );
+
+		it( 'should not apply the attributes from ancestor list', () => {
+			dataFilter.allowElement( /^(ul|ol)$/ );
+			dataFilter.allowAttributes( { name: /^(ul|ol)$/, attributes: { 'data-foo': true } } );
+			dataFilter.allowAttributes( { name: /^(ul|ol)$/, attributes: { 'data-bar': true } } );
+
+			editor.setData( '<ul data-foo="myUl"><li>Foo<ol data-bar="myOl"><li>Bar</li></ol></li></ul>' );
+
+			// The attributes from the `ul` list should not be applied to the `ol` list.
+			// In that case, the postfixer should not create an additional operation to clean those attributes.
+			for ( const operation of editor.model.document.history.getOperations() ) {
+				expect( operation.type ).to.be.not.equal( 'removeAttribute' );
+			}
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data:
+					'<paragraph htmlLiAttributes="(1)" htmlUlAttributes="(2)" listIndent="0" listItemId="a01" listType="bulleted">' +
+					'Foo' +
+					'</paragraph>' +
+					'<paragraph htmlLiAttributes="(3)" htmlOlAttributes="(4)" listIndent="1" listItemId="a00" listType="numbered">' +
+					'Bar' +
+					'</paragraph>',
+				attributes: {
+					1: {},
+					2: {
+						attributes: {
+							'data-foo': 'myUl'
+						}
+					},
+					3: {},
+					4: {
+						attributes: {
+							'data-bar': 'myOl'
+						}
+					}
+				}
+			} );
+		} );
 	} );
 
 	describe( 'post-fixer', () => {

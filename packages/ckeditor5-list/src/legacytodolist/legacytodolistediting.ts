@@ -46,7 +46,7 @@ import {
 	modelViewInsertion
 } from './legacytodolistconverters.js';
 
-const ITEM_TOGGLE_KEYSTROKE = parseKeystroke( 'Ctrl+Enter' );
+const ITEM_TOGGLE_KEYSTROKE = /* #__PURE__ */ parseKeystroke( 'Ctrl+Enter' );
 
 /**
  * The engine of the to-do list feature. It handles creating, editing and removing to-do lists and their items.

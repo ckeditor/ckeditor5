@@ -16,11 +16,13 @@ import {
 import type {
 	DocumentSelection,
 	Marker,
+	DowncastAddMarkerEvent,
 	ModelDeleteContentEvent,
 	ModelPostFixer,
 	Range,
 	SchemaAttributeCheckCallback,
-	SchemaChildCheckCallback
+	SchemaChildCheckCallback,
+	ViewDocumentTabEvent
 } from 'ckeditor5/src/engine.js';
 import type { BaseEvent, GetCallback } from 'ckeditor5/src/utils.js';
 import type { InsertTextCommand, InsertTextCommandExecuteEvent } from 'ckeditor5/src/typing.js';
@@ -110,8 +112,22 @@ export default class RestrictedEditingModeEditing extends Plugin {
 			new RestrictedEditingModeNavigationCommand( editor, 'forward' )
 		);
 
-		editor.keystrokes.set( 'Tab', getCommandExecuter( editor, 'goToNextRestrictedEditingException' ) );
-		editor.keystrokes.set( 'Shift+Tab', getCommandExecuter( editor, 'goToPreviousRestrictedEditingException' ) );
+		this.listenTo<ViewDocumentTabEvent>( editingView.document, 'tab', ( evt, data ) => {
+			const commandName = !data.shiftKey ? 'goToNextRestrictedEditingException' : 'goToPreviousRestrictedEditingException';
+			const command: Command = editor.commands.get( commandName )!;
+
+			if ( command.isEnabled ) {
+				editor.execute( commandName );
+
+				// Stop the event in the DOM: no listener in the web page will be triggered by this event.
+				data.preventDefault();
+				data.stopPropagation();
+			}
+
+			// Stop the event bubbling in the editor: no more callbacks will be executed for this keystroke.
+			evt.stop();
+		}, { context: '$capture' } );
+
 		editor.keystrokes.set( 'Ctrl+A', getSelectAllHandler( editor ) );
 
 		editingView.change( writer => {
@@ -167,8 +183,54 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		} ) );
 
 		// Currently the marker helpers are tied to other use-cases and do not render a collapsed marker as highlight.
-		// That's why there are 2 downcast converters for them:
-		// 1. The default marker-to-highlight will wrap selected text with `<span>`.
+		// Also, markerToHighlight can not convert marker on an inline object. It handles only text and widgets,
+		// but it is not a case in the data pipeline. That's why there are 3 downcast converters for them:
+		//
+		// 1. The custom inline item (text or inline object) converter (but not the selection).
+		editor.conversion.for( 'downcast' ).add( dispatcher => {
+			dispatcher.on<DowncastAddMarkerEvent>( 'addMarker:restrictedEditingException', ( evt, data, conversionApi ): void => {
+				// Only convert per-item conversion.
+				if ( !data.item ) {
+					return;
+				}
+
+				// Do not convert the selection or non-inline items.
+				if ( data.item.is( 'selection' ) || !conversionApi.schema.isInline( data.item ) ) {
+					return;
+				}
+
+				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
+					return;
+				}
+
+				const viewWriter = conversionApi.writer;
+				const viewElement = viewWriter.createAttributeElement(
+					'span',
+					{
+						class: 'restricted-editing-exception'
+					},
+					{
+						id: data.markerName,
+						priority: -10
+					}
+				);
+
+				const viewRange = conversionApi.mapper.toViewRange( data.range! );
+				const rangeAfterWrap = viewWriter.wrap( viewRange, viewElement );
+
+				for ( const element of rangeAfterWrap.getItems() ) {
+					if ( element.is( 'attributeElement' ) && element.isSimilar( viewElement ) ) {
+						conversionApi.mapper.bindElementToMarker( element, data.markerName );
+
+						// One attribute element is enough, because all of them are bound together by the view writer.
+						// Mapper uses this binding to get all the elements no matter how many of them are registered in the mapper.
+						break;
+					}
+				}
+			} );
+		} );
+
+		// 2. The marker-to-highlight converter for the document selection.
 		editor.conversion.for( 'downcast' ).markerToHighlight( {
 			model: 'restrictedEditingException',
 			// Use callback to return new object every time new marker instance is created - otherwise it will be seen as the same marker.
@@ -181,8 +243,8 @@ export default class RestrictedEditingModeEditing extends Plugin {
 			}
 		} );
 
-		// 2. But for collapsed marker we need to render it as an element.
-		// Additionally the editing pipeline should always display a collapsed marker.
+		// 3. And for collapsed marker we need to render it as an element.
+		// Additionally, the editing pipeline should always display a collapsed marker.
 		editor.conversion.for( 'editingDowncast' ).markerToElement( {
 			model: 'restrictedEditingException',
 			view: ( markerData, { writer } ) => {
@@ -332,20 +394,6 @@ export default class RestrictedEditingModeEditing extends Plugin {
 			command.forceDisabled( COMMAND_FORCE_DISABLE_ID );
 		}
 	}
-}
-
-/**
- * Helper method for executing enabled commands only.
- */
-function getCommandExecuter( editor: Editor, commandName: string ): EditingKeystrokeCallback {
-	return ( _, cancel ) => {
-		const command: Command = editor.commands.get( commandName )!;
-
-		if ( command.isEnabled ) {
-			editor.execute( commandName );
-			cancel();
-		}
-	};
 }
 
 /**

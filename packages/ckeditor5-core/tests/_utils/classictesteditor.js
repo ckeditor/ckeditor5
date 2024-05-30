@@ -105,7 +105,7 @@ export default class ClassicTestEditor extends ElementApiMixin( Editor ) {
  * @memberOf tests.core._utils
  * @extends core.editor.EditorUI
  */
-class ClassicTestEditorUI extends EditorUI {
+export class ClassicTestEditorUI extends EditorUI {
 	/**
 	 * @inheritDoc
 	 */

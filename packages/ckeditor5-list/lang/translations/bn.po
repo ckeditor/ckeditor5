@@ -140,3 +140,11 @@ msgstr "তালিকার আইটেমের ইন্ডেন্ট ব
 msgctxt "Keystroke description for assistive technologies: keystroke for decreasing list item indentation."
 msgid "Decrease list item indent"
 msgstr "তালিকার আইটেমের ইন্ডেন্ট কমান"
+
+msgctxt "Assistive technologies label for entering the to-do list."
+msgid "Entering a to-do list"
+msgstr "একটি টু-ডু তালিকা প্রবেশ করা হচ্ছে"
+
+msgctxt "Assistive technologies label for leaving the to-do list."
+msgid "Leaving a to-do list"
+msgstr "একটি টু-ডু তালিকা ছেড়ে যাচ্ছে"

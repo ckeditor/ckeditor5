@@ -140,3 +140,11 @@ msgstr "Öka indrag på listobjekt"
 msgctxt "Keystroke description for assistive technologies: keystroke for decreasing list item indentation."
 msgid "Decrease list item indent"
 msgstr "Minska indrag på listobjekt"
+
+msgctxt "Assistive technologies label for entering the to-do list."
+msgid "Entering a to-do list"
+msgstr "Fyller i en att-göra-lista"
+
+msgctxt "Assistive technologies label for leaving the to-do list."
+msgid "Leaving a to-do list"
+msgstr "Lämnar en att-göra-lista"

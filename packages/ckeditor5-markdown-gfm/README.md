@@ -15,6 +15,12 @@ Check out the [demo in the Markdown output feature guide](https://ckeditor.com/d
 
 See the [`@ckeditor/ckeditor5-markdown-gfm` package](https://ckeditor.com/docs/ckeditor5/latest/api/markdown-gfm.html) page as well as the [Markdown output](https://ckeditor.com/docs/ckeditor5/latest/features/markdown.html) and [Paste Markdown](https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-markdown.html) in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
 
+## Installation
+
+```bash
+npm install ckeditor5
+```
+
 
 ## License
 

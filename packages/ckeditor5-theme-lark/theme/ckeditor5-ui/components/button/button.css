@@ -41,6 +41,10 @@ a.ck.ck-button {
 	/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/189 */
 	-webkit-appearance: none;
 
+	@media (prefers-reduced-motion: reduce) {
+		transition: none;
+	}
+
 	&:active,
 	&:focus {
 		@mixin ck-focus-ring;

@@ -19,7 +19,7 @@ const DEFAULT_TOKEN_REFRESH_TIMEOUT_TIME = 3600000;
  * Class representing the token used for communication with CKEditor Cloud Services.
  * Value of the token is retrieving from the specified URL and is refreshed every 1 hour by default.
  */
-export default class Token extends ObservableMixin() {
+export default class Token extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Value of the token.
 	 * The value of the token is undefined if `initValue` is not provided or `init` method was not called.

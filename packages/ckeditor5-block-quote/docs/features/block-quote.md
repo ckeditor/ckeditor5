@@ -33,33 +33,17 @@ Support for nested block quotes is provided as backward compatibility for loadin
 
 ## Installation
 
-<info-box info>
-	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}. The installation instructions are for developers interested in building their own, custom editor.
-</info-box>
-
-To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-block-quote`](https://www.npmjs.com/package/@ckeditor/ckeditor5-block-quote) package:
-
-```plaintext
-npm install --save @ckeditor/ckeditor5-block-quote
-```
-
-And add it to your plugin list configuration:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { ClassicEditor, BlockQuote } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ BlockQuote, /* ... */ ],
-		toolbar: [ 'blockQuote', /* ... */ ]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ BlockQuote, /* ... */ ],
+	toolbar: [ 'blockQuote', /* ... */ ]
+} )
+.then( /* ... */ );
 ```
-
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
-</info-box>
 
 ## Configuration
 

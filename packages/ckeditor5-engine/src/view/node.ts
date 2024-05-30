@@ -17,9 +17,6 @@ import {
 
 import { clone } from 'lodash-es';
 
-// To check if component is loaded more than once.
-import '@ckeditor/ckeditor5-utils/src/version.js';
-
 import type { default as Document, ChangeType } from './document.js';
 import type DocumentFragment from './documentfragment.js';
 import type Element from './element.js';
@@ -31,7 +28,7 @@ import type Element from './element.js';
  * Use the {@link module:engine/view/downcastwriter~DowncastWriter} or {@link module:engine/view/upcastwriter~UpcastWriter}
  * to create new instances of view nodes.
  */
-export default abstract class Node extends EmitterMixin( TypeCheckable ) {
+export default abstract class Node extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	/**
 	 * The document instance to which this node belongs.
 	 */
