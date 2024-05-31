@@ -20,11 +20,11 @@ import ImageInsertUrlView from './ui/imageinserturlview.js';
  *
  * The plugin introduces two UI components to the {@link module:ui/componentfactory~ComponentFactory UI component factory}:
  *
- * * `'insertImageViaUrl'` toolbar button,
- * * `'menuBar:insertImageViaUrl'` menu bar component.
+ * * the `'insertImageViaUrl'` toolbar button,
+ * * the `'menuBar:insertImageViaUrl'` menu bar component.
  *
- * It also integrates with `insertImage` toolbar component and `menuBar:insertImage` menu component, which are default components through
- * which inserting image via URL is available.
+ * It also integrates with the `insertImage` toolbar component and `menuBar:insertImage` menu component, which are default components
+ * through which inserting image via URL is available.
  */
 export default class ImageInsertViaUrlUI extends Plugin {
 	private _imageInsertUI!: ImageInsertUI;

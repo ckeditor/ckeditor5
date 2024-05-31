@@ -13,14 +13,14 @@ import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 import type { ImageInsertUI } from '@ckeditor/ckeditor5-image';
 
 /**
- * Introduces UI components for `CKBox` plugin.
+ * Introduces UI components for the `CKBox` plugin.
  *
  * The plugin introduces two UI components to the {@link module:ui/componentfactory~ComponentFactory UI component factory}:
  *
- * * `'ckbox'` toolbar button,
- * * `'menuBar:ckbox'` menu bar component, which is by default added to the `'Insert'` menu.
+ * * the `'ckbox'` toolbar button,
+ * * the `'menuBar:ckbox'` menu bar component, which is by default added to the `'Insert'` menu.
  *
- * It also integrates with `insertImage` toolbar component and `menuBar:insertImage` menu component.
+ * It also integrates with the `insertImage` toolbar component and `menuBar:insertImage` menu component.
  */
 export default class CKBoxUI extends Plugin {
 	/**

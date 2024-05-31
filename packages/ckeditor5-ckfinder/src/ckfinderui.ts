@@ -23,10 +23,10 @@ import type CKFinderCommand from './ckfindercommand.js';
  *
  * The plugin introduces two UI components to the {@link module:ui/componentfactory~ComponentFactory UI component factory}:
  *
- * * `'ckfinder'` toolbar button,
- * * `'menuBar:ckfinder'` menu bar component, which is by default added to the `'Insert'` menu.
+ * * the `'ckfinder'` toolbar button,
+ * * the `'menuBar:ckfinder'` menu bar component, which is by default added to the `'Insert'` menu.
  *
- * It also integrates with `insertImage` toolbar component and `menuBar:insertImage` menu component.
+ * It also integrates with the `insertImage` toolbar component and `menuBar:insertImage` menu component.
  */
 export default class CKFinderUI extends Plugin {
 	/**
