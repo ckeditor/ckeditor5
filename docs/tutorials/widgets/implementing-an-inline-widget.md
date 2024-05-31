@@ -5,13 +5,13 @@ meta-title: Implementing an inline widget tutorial | CKEditor 5 Documentation
 ---
 
 <info-box warning>
-    This tutorial describes how to implement Placeholder feature (also referred to as Merge Fields or Merge Tags).
+	This tutorial describes how to implement the placeholder feature (also referred to as merge fields or merge tags).
 
-    **Please be advised that we are currently working on the official implementation of this feature!**
+	**Please be advised that we are currently working on the official implementation of this feature!**
 
-    The official feature will be much more robust than the solution presented here, and will offer many configuration options. If you plan to implement custom Placeholder feature based on this tutorial, we strongly advise to wait for the official solution.
+	The official feature will be much more robust than the solution presented here, and will offer many configuration options. If you plan to implement a custom placeholder feature based on this tutorial, we strongly advise waiting for the official solution.
 
-    If you have any questions regarding the timeline or expected functionallity of the upcoming official Merge Fields feature, feel free to [contact us](https://ckeditor.com/contact/).
+	If you have any questions regarding the timeline or expected functionallity of the upcoming official merge fields feature, feel free to [contact us](https://ckeditor.com/contact/).
 </info-box>
 
 # Implementing an inline widget
@@ -117,21 +117,21 @@ import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
 import 'ckeditor5/index.css';
 
 ClassicEditor
-    .create( document.querySelector( '#editor' ), {
-        plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, Placeholder ],
-        toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'undo', 'redo' ]
-    } )
-    .then( editor => {
-        console.log( 'Editor was initialized', editor );
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, Placeholder ],
+		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'undo', 'redo' ]
+	} )
+	.then( editor => {
+		console.log( 'Editor was initialized', editor );
 
-        CKEditorInspector.attach( { editor: 'editor' } );
+		CKEditorInspector.attach( { editor: 'editor' } );
 
-        // Expose for playing in the console.
-        window.editor = editor;
-    } )
-    .catch( error => {
-        console.error( error.stack );
-    } );
+		// Expose for playing in the console.
+		window.editor = editor;
+	} )
+	.catch( error => {
+		console.error( error.stack );
+	} );
 ```
 
 At this point, you can run the development server and see in the browser console that the plugins are being initialized.
@@ -304,7 +304,7 @@ export default class PlaceholderCommand extends Command {
 			// Create a <placeholder> element with the "name" attribute (and all the selection attributes)...
 			const placeholder = writer.createElement( 'placeholder', {
 				...Object.fromEntries( selection.getAttributes() ),
-                name: value
+				name: value
 			} );
 
 			// ... and insert it into the document. Put the selection on the inserted element.
