@@ -768,6 +768,7 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 			{
 				groupId: 'insertMinorWidgets',
 				items: [
+					'menuBar:mediaEmbed',
 					'menuBar:insertTemplate',
 					'menuBar:blockQuote',
 					'menuBar:codeBlock',
