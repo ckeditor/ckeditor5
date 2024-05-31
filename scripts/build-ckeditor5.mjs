@@ -74,7 +74,7 @@ function dist( path ) {
 	console.log( chalk.cyan( '3/3: Generating browser build...' ) );
 
 	await build( {
-		output: dist( 'browser/ckeditor5.js' ),
+		output: dist( 'browser/index.js' ),
 		tsconfig,
 		banner,
 		sourceMap: true,
