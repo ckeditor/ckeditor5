@@ -6,9 +6,15 @@ meta-title: Implementing an inline widget tutorial | CKEditor 5 Documentation
 
 # Implementing an inline widget
 
-In this tutorial, you will learn how to implement an inline widget.
+In this tutorial, you will learn how to implement an inline widget. You will build a "placeholder" feature that allows the users to insert predefined placeholders, like a date or a surname, into the document.
 
-You will build a "placeholder" feature that allows the users to insert predefined placeholders, like a date or a surname, into the document. You will use widget utilities and conversion to define the behavior of this feature. Later on, you will use dropdown utilities to create a dropdown that will allow for inserting new placeholders. You will also learn how to use the editor configuration to define allowed placeholder names.
+<info-box warning>
+	**Please be advised that we are currently working on the official implementation of this feature!**
+
+	The official feature will be much more robust than the solution presented here, and will offer many configuration options. If you plan to implement a custom placeholder feature based on this tutorial, we strongly advise waiting for the official solution. In case of any questions, feel free to [contact us](https://ckeditor.com/contact/).
+</info-box>
+
+First, you will use widget utilities and conversion to define the behavior of this feature. Later on, you will use dropdown utilities to create a dropdown that will allow for inserting new placeholders. You will also learn how to use the editor configuration to define allowed placeholder names.
 
 <info-box>
 	If you want to see the final product of this tutorial before you plunge in, check out the [demo](#demo).
@@ -107,21 +113,21 @@ import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
 import 'ckeditor5/index.css';
 
 ClassicEditor
-    .create( document.querySelector( '#editor' ), {
-        plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, Placeholder ],
-        toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'undo', 'redo' ]
-    } )
-    .then( editor => {
-        console.log( 'Editor was initialized', editor );
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, Placeholder ],
+		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'undo', 'redo' ]
+	} )
+	.then( editor => {
+		console.log( 'Editor was initialized', editor );
 
-        CKEditorInspector.attach( { editor: 'editor' } );
+		CKEditorInspector.attach( { editor: 'editor' } );
 
-        // Expose for playing in the console.
-        window.editor = editor;
-    } )
-    .catch( error => {
-        console.error( error.stack );
-    } );
+		// Expose for playing in the console.
+		window.editor = editor;
+	} )
+	.catch( error => {
+		console.error( error.stack );
+	} );
 ```
 
 At this point, you can run the development server and see in the browser console that the plugins are being initialized.
@@ -294,7 +300,7 @@ export default class PlaceholderCommand extends Command {
 			// Create a <placeholder> element with the "name" attribute (and all the selection attributes)...
 			const placeholder = writer.createElement( 'placeholder', {
 				...Object.fromEntries( selection.getAttributes() ),
-                name: value
+				name: value
 			} );
 
 			// ... and insert it into the document. Put the selection on the inserted element.
