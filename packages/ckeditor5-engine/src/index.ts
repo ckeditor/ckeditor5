@@ -58,6 +58,7 @@ export type { Consumables, default as ViewConsumable } from './conversion/viewco
 // DataProcessor.
 export type { default as DataProcessor } from './dataprocessor/dataprocessor.js';
 export { default as HtmlDataProcessor } from './dataprocessor/htmldataprocessor.js';
+export { default as XmlDataProcessor } from './dataprocessor/xmldataprocessor.js';
 
 // Model / Operation.
 export type { default as Operation } from './model/operation/operation.js';
