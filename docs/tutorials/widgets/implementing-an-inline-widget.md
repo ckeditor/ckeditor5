@@ -639,7 +639,7 @@ You can see the placeholder widget implementation in action in the editor below.
 
 ## Final solution
 
-If you got lost at any point in the tutorial or want to go straight to the solution, there is a repository with the [final project](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/inline-widget/final-project).
+If you got lost at any point in the tutorial or want to go straight to the solution, there is a repository with the [final project](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/inline-widget/final-project) available.
 
 ```bash
 git clone https://github.com/ckeditor/ckeditor5-tutorials-examples

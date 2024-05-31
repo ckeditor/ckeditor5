@@ -723,7 +723,7 @@ You can see the entire application working below. Click the products in the side
 
 ## Final solution
 
-If you got lost at any point in the tutorial or want to go straight to the solution, there is a repository with the [final project](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/react-widget/final-project).
+If you got lost at any point in the tutorial or want to go straight to the solution, there is a repository with the [final project](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/react-widget/final-project) available.
 
 ```bash
 git clone https://github.com/ckeditor/ckeditor5-tutorials-examples

@@ -835,7 +835,7 @@ You can see the block widget implementation in action in the editor below. You c
 
 ## Final solution
 
-If you got lost at any point in the tutorial or want to go straight to the solution, there is a repository with the [final project](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/block-widget/final-project).
+If you got lost at any point in the tutorial or want to go straight to the solution, there is a repository with the [final project](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/block-widget/final-project) available.
 
 ```bash
 git clone https://github.com/ckeditor/ckeditor5-tutorials-examples
