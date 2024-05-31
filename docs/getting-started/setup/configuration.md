@@ -2,8 +2,8 @@
 category: setup
 menu-title: Configuring features
 meta-title: Configuring editor features | CKEditor 5 documentation
-meta-description: Learn how to configure CKEditor 5. 
-order: 20
+meta-description: Learn how to configure CKEditor 5.
+order: 30
 modified_at: 2024-05-06
 ---
 
