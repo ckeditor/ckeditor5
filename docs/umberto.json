@@ -281,7 +281,6 @@
 		"installation/getting-started/quick-start.html#creating-custom-builds-with-online-builder": "installation/legacy-getting-started/quick-start-other.html#creating-custom-builds-with-online-builder",
 		"installation/overview.html": "getting-started/index.html",
 		"installation/getting-started/configuration.html#adding-simple-standalone-features": "installation/legacy-getting-started/extending-features.html",
-		"installation/integrations/react.html": "getting-started/installation/react/react.html",
 		"support/getting-support.html": "support/index.html",
 		"support/versioning-policy.html": "updating/versioning-policy.html",
 		"builds/guides/license-and-legal.html": "support/license-and-legal.html",
@@ -310,7 +309,6 @@
 		"updating/migration-to-34.html": "updating/guides/update-to-34.html",
 		"updating/migration-to-35.html": "updating/guides/update-to-35.html",
 		"updating/updating.html": "updating/updating-ckeditor-5.html",
-		"installation/integrations/other.html": "getting-started/integrations/overview.html",
 		"installation/plugins/installing-plugins.html": "getting-started/setup//installing-plugins.html",
 		"installation/getting-started/editor-lifecycle.html": "getting-started/setup/editor-lifecycle.html",
 		"installation/working-with-typescript.html": "getting-started/setup/typescript-support.html",
@@ -323,7 +321,19 @@
 		"installation/getting-started/quick-start-other.html": "getting-started/legacy/installation-methods/quick-start-other.html",
 		"installation/getting-started/getting-and-setting-data.html": "getting-started/setup/getting-and-setting-data.html",
 		"installation/getting-started/api-and-events.html": "getting-started/legacy/installation-methods/api-and-events.html",
-		"installation/getting-started/extending-features.html": "getting-started/legacy/installation-methods/extending-features.html"
+		"installation/getting-started/extending-features.html": "getting-started/legacy/installation-methods/extending-features.html",
+		"installation/integrations/overview.html": "getting-started/index.html#ckeditor-5-framework-integrations",
+		"installation/integrations/angular.html": "getting-started/installation/angular.html",
+		"installation/integrations/react.html": "getting-started/installation/react/react.html",
+		"installation/integrations/react/react.html": "getting-started/installation/react/react.html",
+		"installation/integrations/react/react-multiroot.html": "getting-started/installation/react/react-multiroot.html",
+		"installation/integrations/vuejs-v2.html": "getting-started/installation/vuejs-v2.html",
+		"installation/integrations/vuejs-v3.html": "getting-started/installation/vuejs-v3.html",
+		"installation/integrations/laravel.html": "getting-started/installation/laravel.html",
+		"installation/integrations/dotnet.html": "getting-started/installation/dotnet.html",
+		"installation/integrations/css.html": "getting-started/installation/css.html",
+		"installation/integrations/next-js.html": "getting-started/installation/next-js.html",
+		"installation/integrations/other.html": "getting-started/index.html#ckeditor-5-framework-integrations"
 		
 	},
 	"scripts": {
