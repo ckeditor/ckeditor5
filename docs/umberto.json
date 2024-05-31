@@ -127,7 +127,6 @@
 		"examples/framework/multi-root-editor.html": "examples/builds/multi-root-editor.html",
 		"features/ai-assistant/ai-assistant-integration.html#aws-bedrock-integration": "features/ai-assistant/ai-assistant-integration.html#amazon-bedrock-integration",
 		"features/blocktoolbar.html": "getting-started/setup/toolbar.html#block-toolbar",
-		"features/toolbar/blocktoolbar.html": "getting-started/setup/toolbar.html#block-toolbar",
 		"features/ckbox.html": "features/file-management/ckbox.html",
 		"features/ckfinder.html": "features/file-management/ckfinder.html",
 		"features/collaboration/annotation-customization/annotations-custom-configuration.html": "features/collaboration/annotations/annotations-custom-configuration.html",
@@ -309,7 +308,6 @@
 		"installation/working-with-typescript.html": "getting-started/setup/typescript-support.html",
 		"installation/getting-started/configuration.html": "getting-started/setup/configuration.html",
 		"features/ui-language.html": "getting-started/setup/ui-language.html",
-		"features/toolbar/toolbar.html": "getting-started/setup/toolbar/toolbar.html",
 		"installation/index.html": "getting-started/index.html",
 		"installation/getting-started/quick-start.html": "getting-started/installation/quick-start.html",
 		"installation/getting-started/predefined-builds.html": "getting-started/legacy/installation-methods/predefined-builds.html",
@@ -360,7 +358,13 @@
 		"support/licensing/license-and-legal.html": "support/license-and-legal.html",
 		"support/licensing/license-key-and-activation.html": "getting-started/setup/license-key-and-activation.html",
 		"support/licensing/managing-ckeditor-logo.html": "getting-started/setup/managing-ckeditor-logo.html",
-		"support/reporting-issues.html": "support/index.html#reporting-issues"
+		"support/reporting-issues.html": "support/index.html#reporting-issues",
+		"examples/experiments/mermaid.html": "features/mermaid.html",
+		"features/toolbar/toolbar.html": "getting-started/setup/toolbar/toolbar.html",
+		"features/toolbar/blocktoolbar.html": "getting-started/setup/toolbar.html#block-toolbar",
+		"features/toolbar/menubar.html": "getting-started/setup/menubar.html",
+		"examples/builds-custom/bottom-toolbar-editor.html": "examples/framework/bottom-toolbar-editor.html",
+		"examples/how-tos.html": "framework/how-tos.html"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter",
