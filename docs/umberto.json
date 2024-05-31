@@ -120,7 +120,6 @@
 		"builds/guides/support/getting-support.html": "support/getting-support.html",
 		"builds/guides/reporting-issues.html": "support/index.html#reporting-issues",
 		"builds/guides/support/reporting-issues.html": "support/index.html#reporting-issues",
-		"support/reporting-issues.html": "support/index.html#reporting-issues",
 		"builds/guides/whats-new.html": "features/overview.html",
 		"builds/index.html": "getting-started/index.html",
 		"examples/builds/custom-build.html": "examples/builds-custom/full-featured-editor.html",
@@ -285,10 +284,7 @@
 		"support/versioning-policy.html": "updating/versioning-policy.html",
 		"builds/guides/license-and-legal.html": "support/license-and-legal.html",
 		"builds/guides/support/license-and-legal.html": "support/license-and-legal.html",
-		"support/licensing/license-and-legal.html": "support/license-and-legal.html",
 		"support/managing-ckeditor-logo.html": "getting-started/setup/managing-ckeditor-logo.html",
-		"support/licensing/managing-ckeditor-logo.html": "getting-started/setup/managing-ckeditor-logo.html",
-		"support/licensing/license-key-and-activation.html": "getting-started/setup/license-key-and-activation.html",
 		"support/faq.html": "examples/how-tos.html",
 		"updating/changelog.html": "updating/guides/changelog.html",
 		"updating/migration-from-ckeditor-4.html": "updating/ckeditor4/migration-from-ckeditor-4.html",
@@ -360,7 +356,11 @@
 		"tutorials/widgets/implementing-a-block-widget.html": "framework/tutorials/widgets/implementing-a-block-widget.html",
 		"tutorials/widgets/implementing-an-inline-widget.html": "framework/tutorials/widgets/implementing-an-inline-widget.html",
 		"tutorials/widgets/using-react-in-a-widget.html": "framework/tutorials/widgets/using-react-in-a-widget.html",
-		"tutorials/widgets/data-from-external-source.html": "framework/tutorials/widgets/data-from-external-source.html"
+		"tutorials/widgets/data-from-external-source.html": "framework/tutorials/widgets/data-from-external-source.html",
+		"support/licensing/license-and-legal.html": "support/license-and-legal.html",
+		"support/licensing/license-key-and-activation.html": "getting-started/setup/license-key-and-activation.html",
+		"support/licensing/managing-ckeditor-logo.html": "getting-started/setup/managing-ckeditor-logo.html",
+		"support/reporting-issues.html": "support/index.html#reporting-issues"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter",
