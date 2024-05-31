@@ -309,7 +309,6 @@
 		"updating/migration-to-34.html": "updating/guides/update-to-34.html",
 		"updating/migration-to-35.html": "updating/guides/update-to-35.html",
 		"updating/updating.html": "updating/updating-ckeditor-5.html",
-		"installation/plugins/installing-plugins.html": "getting-started/setup//installing-plugins.html",
 		"installation/getting-started/editor-lifecycle.html": "getting-started/setup/editor-lifecycle.html",
 		"installation/working-with-typescript.html": "getting-started/setup/typescript-support.html",
 		"installation/getting-started/configuration.html": "getting-started/setup/configuration.html",
@@ -333,8 +332,17 @@
 		"installation/integrations/dotnet.html": "getting-started/installation/dotnet.html",
 		"installation/integrations/css.html": "getting-started/installation/css.html",
 		"installation/integrations/next-js.html": "getting-started/installation/next-js.html",
-		"installation/integrations/other.html": "getting-started/index.html#ckeditor-5-framework-integrations"
-		
+		"installation/integrations/other.html": "getting-started/index.html#ckeditor-5-framework-integrations",
+		"installation/plugins/plugins.html": "framework/architecture/plugins.html",
+		"installation/plugins/features-html-output-overview.html": "framework/architecture/plugins.html#plugins-and-html-output",
+		"installation/plugins/installing-plugins.html": "getting-started/setup/typescript-support.html#adding-an-unofficial-javascript-plugin",
+		"installation/advanced/using-two-editors.html": "getting-started/legacy/advanced/using-two-editors.html",
+		"installation/advanced/content-styles.html": "getting-started/setup/css.html",
+		"installation/advanced/csp.html": "getting-started/setup/csp.html",
+		"installation/advanced/alternative-setups/integrating-from-source-webpack.html": "getting-started/legacy/advanced/alternative-setups/integrating-from-source-webpack.html",
+		"installation/advanced/alternative-setups/integrating-from-source-vite.html": "getting-started/legacy/advanced/alternative-setups/integrating-from-source-vite.html",
+		"installation/advanced/alternative-setups/dll-builds.html": "getting-started/legacy/advanced/alternative-setups/dll-builds.html",
+		"installation/advanced/alternative-setups/dll-builds-collaboration-features.html": "getting-started/legacy/advanced/alternative-setups/dll-builds-collaboration-features.html"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter",
