@@ -26,7 +26,7 @@ You can easily remove some presets or add more items, including menu items for c
 
 ## Enabling the menu bar
 
-The menu bar is currently only available in the {@link module:editor-classic/classiceditor~ClassicEditor Classic editor} and {@link module:editor-decoupled/decouplededitor~DecoupledEditor Decoupled editor}.
+The menu bar is currently available in the {@link module:editor-classic/classiceditor~ClassicEditor Classic editor}, {@link module:editor-decoupled/decouplededitor~DecoupledEditor Decoupled editor}, and {@link module:editor-multi-root/multirooteditor~MultiRootEditor Multi-root editor}.
 
 ### Classic editor
 
