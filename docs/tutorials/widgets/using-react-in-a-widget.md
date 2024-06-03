@@ -51,24 +51,26 @@ You should see a "Hello world" application in your web browser, which might not 
 
 Nothing warms the heart of a developer like a good "Hello world!" But you probably agree that what you created is not the most useful application and it is time to change that. In the next sections, you will create some React components and CKEditor&nbsp;5 classes to bring some real logic to the application.
 
-To keep some order in the project, you will put [CKEditor classes](#ckeditor-classes) in the `/ckeditor` directory and [React components](#react-components) in the `/react` directory. [Images and CSS styles](#styles-and-assets) will land in the `/assets` directory. By the time you are finished with this tutorial, the structure of the project should look as follows:
+To keep some order in the project, you will put [CKEditor classes](#ckeditor-classes) in the `/ckeditor` directory and [React components](#react-components) in the `/react` directory. [Images](#styles-and-assets) will land in the `/public` directory. By the time you are finished with this tutorial, the structure of the project should look as follows:
 
-```bash
-├── main.js
-├── assets
-│   ├── fields.jpg
-│   ├── malta.jpg
-│   ├── tajmahal.jpg
-│   ├── umbrellas.jpg
-│   └── styles.css
-├── ckeditor
-│   ├── insertproductpreviewcommand.js
-│   └── productpreviewediting.js
+```plain
+├── public
+│	├── fields.jpg
+│	├── malta.jpg
+│	├── tajmahal.jpg
+│	└── umbrellas.jpg
+├── src
+│	├── ckeditor
+│	│   ├── insertproductpreviewcommand.js
+│	│   └── productpreviewediting.js
+│	├── react
+│	│   ├── productlist.jsx
+│	│   └── productpreview.jsx
+│	├── app.jsx
+│	├── main.jsx
+│	└── styles.css
 ├── index.html
 ├── package.json
-├── react
-│   ├── productlist.jsx
-│   └── productpreview.jsx
 └── node_modules
 ```
 
@@ -322,7 +324,7 @@ export default function ProductPreview( props ) {
 		<div
 			className='product-preview'
 			style={ {
-				'--product-image': `url(assets/${ props.image })`
+				'--product-image': `url(${ props.image })`
 			} }
 		>
 			<button
@@ -341,14 +343,14 @@ export default function ProductPreview( props ) {
 
 ### Main application component
 
-At the moment, you have CKEditor classes that bring the product preview into the content, a list of products, and a product component ready. It is time to glue things together in the `App` class.
+At the moment, you have CKEditor classes that bring the product preview into the content, a list of products, and a product component ready. It is time to glue things together in the `App` component.
 
 You are going to extend the [main application file](#lets-start) skeleton that you created earlier in this tutorial so it renders the {@link getting-started/integrations/react official `<CKEditor>` React component} on the left side, and the list of available products on the right.
 
-Have a look at the full source code of the `App` class:
+Have a look at the full source code of the `App` function:
 
 ```jsx
-// app.js
+// app.jsx
 
 // Imports necessary to run a React application.
 import { useState } from 'react';
@@ -376,7 +378,7 @@ import ProductPreviewEditing from './ckeditor/productpreviewediting';
 import ProductList from './react/productlist';
 import ProductPreview from './react/productpreview';
 import 'ckeditor5/index.css';
-import './assets/styles.css';
+import './styles.css';
 
 // The React application function component. It renders the editor and the product list.
 export default function App( props ) {
@@ -507,7 +509,7 @@ The JavaScript code is ready, but to run the application you need to specify a c
 import ReactDOM from 'react-dom/client';
 import App from './app';
 
-// Render the <App> in the <div class="app"></div> element found in the DOM.
+// Render the <App> in the <div class="root"></div> element found in the DOM.
 ReactDOM.createRoot( document.getElementById( 'root' ) ).render(
 	<App 
 		// Feeding the application with predefined products.
@@ -544,14 +546,14 @@ ReactDOM.createRoot( document.getElementById( 'root' ) ).render(
 )
 ```
 
-Each product comes with its own image (like `malta.jpg`), which should be stored in the `assets/` directory to load correctly with the CSS `background-image`. Learn more about styles in the [next section](#styles-and-assets).
+Each product comes with its own image (like `malta.jpg`), which should be stored in the `public/` directory to load correctly with the CSS `background-image`. Learn more about styles in the [next section](#styles-and-assets).
 
 ## Styles and assets
 
-The application needs some styling to look good. You are going to put them in the `assets/styles.css` file imported in your main HTML file (`index.html`):
+The application needs some styling to look good. You are going to put them in the `src/styles.css` file imported in your `app.jsx` file:
 
 ```css
-/* assets/styles.css */
+/* src/styles.css */
 
 /* --- General application styles --------------------------------------------------- */
 
@@ -713,7 +715,7 @@ The application needs some styling to look good. You are going to put them in th
 }
 ```
 
-The product preview (`.product-preview` class) uses `background-image: var(--product-image)` to set its background. It means that all images must be stored in the `assets/` directory next to the `styles.css` file to load properly.
+The product preview (`.product-preview` class) uses `background-image: var(--product-image)` to set its background. It means that all images must be stored in the `public/` directory to load properly.
 
 ## Demo
 
