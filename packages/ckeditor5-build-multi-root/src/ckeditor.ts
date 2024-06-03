@@ -14,6 +14,7 @@ import { CKFinderUploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import type { EditorConfig } from '@ckeditor/ckeditor5-core';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
 import { FindAndReplace } from '@ckeditor/ckeditor5-find-and-replace';
 import { FontBackgroundColor, FontColor, FontFamily, FontSize } from '@ckeditor/ckeditor5-font';
 import { Heading } from '@ckeditor/ckeditor5-heading';
@@ -53,7 +54,7 @@ import {
 	TableToolbar
 } from '@ckeditor/ckeditor5-table';
 import { TextTransformation } from '@ckeditor/ckeditor5-typing';
-import { TrackChanges } from '@ckeditor/ckeditor5-track-changes';
+import { TrackChanges, TrackChangesData } from '@ckeditor/ckeditor5-track-changes';
 import { Undo } from '@ckeditor/ckeditor5-undo';
 import WProofreader from '@webspellchecker/wproofreader-ckeditor5/src/wproofreader';
 
@@ -82,6 +83,7 @@ class Editor extends MultiRootEditorBase {
 		CloudServices,
 		Comments,
 		Essentials,
+		EasyImage,
 		FindAndReplace,
 		FontBackgroundColor,
 		FontColor,
@@ -127,6 +129,7 @@ class Editor extends MultiRootEditorBase {
 		TextTransformation,
 		TodoList,
 		TrackChanges,
+		TrackChangesData,
 		Underline,
 		CKFinderUploadAdapter,
 		Undo,
@@ -148,7 +151,7 @@ class Editor extends MultiRootEditorBase {
 				'bold',
 				'strikethrough',
 				'subscript',
-				'superscript',
+				'superscript'
 			]
 		},
 		'fontColor',
@@ -175,7 +178,7 @@ class Editor extends MultiRootEditorBase {
 		'removeFormat',
 		'wproofreader',
 		'blockQuote',
-		'horizontalLine',
+		'horizontalLine'
 	];
 
 	public static override defaultConfig: MultirootEditorConfig = {
