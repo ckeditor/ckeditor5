@@ -2034,12 +2034,12 @@ describe( 'Schema', () => {
 				expect( getData( model, { withoutSelection: true } ) )
 					.to.equal(
 						'<div>' +
-						'<paragraph a="1">' +
-						'<$text b="1">foo</$text>' +
-						'<imageBlock b="1"></imageBlock>' +
-						'</paragraph>' +
-						'<$text a="1">bar</$text>' +
-						'<imageBlock a="1"></imageBlock>' +
+							'<paragraph a="1">' +
+								'<$text b="1">foo</$text>' +
+								'<imageBlock b="1"></imageBlock>' +
+							'</paragraph>' +
+							'<$text a="1">bar</$text>' +
+							'<imageBlock a="1"></imageBlock>' +
 						'</div>'
 					);
 			} );
