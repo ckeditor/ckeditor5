@@ -11,8 +11,6 @@ import { icons, Plugin } from 'ckeditor5/src/core.js';
 import { ButtonView, Dialog, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 
 import ImageInsertUI from './imageinsertui.js';
-import type InsertImageCommand from '../image/insertimagecommand.js';
-import type ReplaceImageSourceCommand from '../image/replaceimagesourcecommand.js';
 import ImageInsertUrlView from './ui/imageinserturlview.js';
 
 /**
@@ -28,6 +26,7 @@ import ImageInsertUrlView from './ui/imageinserturlview.js';
  */
 export default class ImageInsertViaUrlUI extends Plugin {
 	private _imageInsertUI!: ImageInsertUI;
+	private _formView?: ImageInsertUrlView;
 
 	/**
 	 * @inheritDoc
@@ -144,8 +143,8 @@ export default class ImageInsertViaUrlUI extends Plugin {
 		const editor = this.editor;
 		const locale = editor.locale;
 
-		const replaceImageSourceCommand: ReplaceImageSourceCommand = editor.commands.get( 'replaceImageSource' )!;
-		const insertImageCommand: InsertImageCommand = editor.commands.get( 'insertImage' )!;
+		const replaceImageSourceCommand = editor.commands.get( 'replaceImageSource' )!;
+		const insertImageCommand = editor.commands.get( 'insertImage' )!;
 
 		const imageInsertUrlView = new ImageInsertUrlView( locale );
 
@@ -153,9 +152,6 @@ export default class ImageInsertViaUrlUI extends Plugin {
 		imageInsertUrlView.bind( 'isEnabled' ).toMany( [ insertImageCommand, replaceImageSourceCommand ], 'isEnabled', ( ...isEnabled ) => (
 			isEnabled.some( isCommandEnabled => isCommandEnabled )
 		) );
-
-		// Set initial value because integrations are created on first dropdown open.
-		imageInsertUrlView.imageURLInputValue = replaceImageSourceCommand.value || '';
 
 		return imageInsertUrlView;
 	}
@@ -169,7 +165,13 @@ export default class ImageInsertViaUrlUI extends Plugin {
 		const t = locale.t;
 		const dialog = editor.plugins.get( 'Dialog' );
 
-		const form = this._createInsertUrlView();
+		if ( !this._formView ) {
+			this._formView = this._createInsertUrlView();
+			this._formView.on( 'submit', () => this._handleSave() );
+		}
+
+		const replaceImageSourceCommand = editor.commands.get( 'replaceImageSource' )!;
+		this._formView.imageURLInputValue = replaceImageSourceCommand.value || '';
 
 		dialog.show( {
 			id: 'insertImageViaUrl',
@@ -177,7 +179,7 @@ export default class ImageInsertViaUrlUI extends Plugin {
 				t( 'Update image URL' ) :
 				t( 'Insert image via URL' ),
 			isModal: true,
-			content: form,
+			content: this._formView,
 			actionButtons: [
 				{
 					label: t( 'Cancel' ),
@@ -188,7 +190,7 @@ export default class ImageInsertViaUrlUI extends Plugin {
 					label: t( 'Accept' ),
 					class: 'ck-button-action',
 					withText: true,
-					onExecute: () => this._handleSave( form as ImageInsertUrlView )
+					onExecute: () => this._handleSave()
 				}
 			]
 		} );
@@ -197,15 +199,15 @@ export default class ImageInsertViaUrlUI extends Plugin {
 	/**
 	 * Executes appropriate command depending on selection and form value.
 	 */
-	private _handleSave( form: ImageInsertUrlView ) {
-		const replaceImageSourceCommand: ReplaceImageSourceCommand = this.editor.commands.get( 'replaceImageSource' )!;
+	private _handleSave() {
+		const replaceImageSourceCommand = this.editor.commands.get( 'replaceImageSource' )!;
 
 		// If an image element is currently selected, we want to replace its source attribute (instead of inserting a new image).
 		// We detect if an image is selected by checking `replaceImageSource` command state.
 		if ( replaceImageSourceCommand.isEnabled ) {
-			this.editor.execute( 'replaceImageSource', { source: form.imageURLInputValue } );
+			this.editor.execute( 'replaceImageSource', { source: this._formView!.imageURLInputValue } );
 		} else {
-			this.editor.execute( 'insertImage', { source: form.imageURLInputValue } );
+			this.editor.execute( 'insertImage', { source: this._formView!.imageURLInputValue } );
 		}
 
 		this.editor.plugins.get( 'Dialog' ).hide();
