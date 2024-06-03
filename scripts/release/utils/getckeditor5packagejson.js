@@ -26,13 +26,13 @@ module.exports = function getCKEditor5PackageJson() {
 		description: 'A set of ready-to-use rich text editors created with a powerful framework.' +
 			' Made with real-time collaborative editing in mind.',
 		type: 'module',
-		main: 'dist/index.js',
-		module: 'dist/index.js',
+		main: 'dist/ckeditor5.js',
+		module: 'dist/ckeditor5.js',
 		types: 'dist/types/index.d.ts',
 		exports: {
 			'.': {
 				'types': './dist/types/index.d.ts',
-				'import': './dist/index.js'
+				'import': './dist/ckeditor5.js'
 			},
 			'./translations/*.js': {
 				'types': './dist/translations/*.d.ts',
