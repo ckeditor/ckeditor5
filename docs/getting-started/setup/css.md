@@ -16,10 +16,10 @@ CKEditor&nbsp;5 is distributed with two types of styles:
 If you went through our {@link getting-started/quick-start Quick start}, you probably noticed that attaching the styles in JavaScript is pretty standard, and we provide a CSS style sheet that has both the editor and content style sheets combined:
 
 ```js
-import 'ckeditor5/index.css';
+import 'ckeditor5/ckeditor5.css';
 
 // If you are using premium features:
-import 'ckeditor5-premium-features/index.css';
+import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 ```
 
 It is as easy in HTML:
@@ -45,13 +45,13 @@ It is important to use the content styles on the publishing side of your applica
 
 There are two ways to obtain the content styles:
 
-* From the `npm` packages, in the `dist/index-content.css` location.
+* From the `npm` packages, in the `dist/ckeditor5-content.css` location.
 * From CDN, `https://cdn.ckeditor.com/ckeditor5/`
 
-Load the `index-content.css` file on the publishing side by adding the following code to the template:
+Load the `ckeditor5-content.css` file on the publishing side by adding the following code to the template:
 
 ```html
-<link rel="stylesheet" href="path/to/assets/index-content.css">
+<link rel="stylesheet" href="path/to/assets/ckeditor5-content.css">
 ```
 
 <info-box warning>
@@ -102,7 +102,7 @@ For example, if you want to change the color of the mentions' background and tex
 Our main packages, `ckeditor5` and `ckeditor5-premium-features`, distribute three style sheets:
 
 * `index.css`: combined editor and content styles.
-* `index-content.css`: only content styles.
+* `ckeditor5-content.css`: only content styles.
 * `index-editor.css`: only editor styles.
 
 Content styles include styles for **all** plugins of the editor. If you want to optimize the size of the style sheet, as you may be using minimal set of plugins, read our optimization guide. <!-- TODO link to guide -->
