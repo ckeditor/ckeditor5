@@ -261,6 +261,8 @@ const tasks = new Listr( [
 			versionChangelog = releaseTools.getChangesForVersion( latestVersion );
 		}
 
+		console.log( 'Version', latestVersion );
+
 		await tasks.run();
 	} catch ( err ) {
 		process.exitCode = 1;
