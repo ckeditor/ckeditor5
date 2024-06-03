@@ -16,7 +16,8 @@
 	"Upload from computer": "The label for the upload image from computer toolbar button with visible label in insert image dropdown.",
 	"Replace from computer": "The label for the replace image by upload from computer toolbar button with visible label in insert image dropdown.",
 	"Upload image from computer": "The label for the upload image from computer toolbar button.",
-	"Image from computer": "The label for the upload image from computer menu bar button.",
+	"Image from computer": "The label for the upload image from computer menu bar button (standalone button).",
+	"From computer": "The label for the upload image from computer menu bar button (inside 'Image' menu).",
   	"Replace image from computer": "The label for the replace image by upload from computer toolbar button.",
 	"Upload failed": "The title of the notification displayed when upload fails.",
 	"Image toolbar": "The label used by assistive technologies describing an image toolbar attached to an image widget.",
@@ -28,9 +29,10 @@
 	"Custom image size": "The accessibility label of the standalone image resize custom option button in the image toolbar for screen readers.",
 	"Custom": "The label for the resize option that allows user to enter custom size of the image.",
 	"Image resize list": "The accessibility label of the image resize dropdown for screen readers.",
-	"Insert": "The label of the form submit button if the image source URL input has no value.",
-	"Update": "The label of the form submit button if the image source URL input has a value.",
 	"Insert image via URL": "The input label for the Insert image via URL form.",
+	"Insert via URL": "The label for the insert image via url dropdown button.",
+	"Image via URL": "The label for the insert image via url menu bar button (standalone button).",
+	"Via URL": "The label for the insert image via url menu bar button (inside 'Image' menu).",
 	"Update image URL": "The input label for the Insert image via URL form for a pre-existing image.",
 	"Caption for the image": "Text used by screen readers do describe an image when the image has no text alternative.",
 	"Caption for image: %0": "Text used by screen readers do describe an image when there is a text alternative available, e.g. 'Caption for image: this is a description of the image.'",
@@ -38,5 +40,6 @@
 	"The value should be a plain number.": "Text used as error label when user submitted custom image resize form with incorrect value.",
 	"Uploading image": "Aria status message indicating that the image is being uploaded. Example: 'Uploading image'.",
 	"Image upload complete": "Aria status message indicating that the image has been uploaded successfully. Example: 'Image upload complete'.",
-	"Error during image upload": "Aria status message indicating that an error has occurred during image upload. Example: 'Error during image upload'."
+	"Error during image upload": "Aria status message indicating that an error has occurred during image upload. Example: 'Error during image upload'.",
+	"Image": "Label for the widget inserted by the image feature (as in 'insert image')"
 }

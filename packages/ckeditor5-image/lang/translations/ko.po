@@ -113,9 +113,21 @@ msgctxt "The accessibility label of the standalone image resize reset option but
 msgid "Resize image to the original size"
 msgstr "사진을 원래 크기로 돌려놓기"
 
+msgctxt "The label for image resize balloon input."
+msgid "Resize image (in %0)"
+msgstr "이미지 크기 조정하기(%0 이내)"
+
 msgctxt "The default label for the resize option that resets the size of the image."
 msgid "Original"
 msgstr "원본"
+
+msgctxt "The accessibility label of the standalone image resize custom option button in the image toolbar for screen readers."
+msgid "Custom image size"
+msgstr "사용자 지정 이미지 크기"
+
+msgctxt "The label for the resize option that allows user to enter custom size of the image."
+msgid "Custom"
+msgstr "사용자 지정"
 
 msgctxt "The accessibility label of the image resize dropdown for screen readers."
 msgid "Image resize list"
@@ -144,3 +156,23 @@ msgstr "이미지용 캡션"
 msgctxt "Text used by screen readers do describe an image when there is a text alternative available, e.g. 'Caption for image: this is a description of the image.'"
 msgid "Caption for image: %0"
 msgstr "이미지용 캡션: %0"
+
+msgctxt "Text used as error label when user submitted custom image resize form with blank value."
+msgid "The value must not be empty."
+msgstr "값은 비워둘 수 없습니다."
+
+msgctxt "Text used as error label when user submitted custom image resize form with incorrect value."
+msgid "The value should be a plain number."
+msgstr "일반 숫자로 된 값을 입력해야 합니다."
+
+msgctxt "Aria status message indicating that the image is being uploaded. Example: 'Uploading image'."
+msgid "Uploading image"
+msgstr "이미지 업로드 중"
+
+msgctxt "Aria status message indicating that the image has been uploaded successfully. Example: 'Image upload complete'."
+msgid "Image upload complete"
+msgstr "이미지 업로드 완료"
+
+msgctxt "Aria status message indicating that an error has occurred during image upload. Example: 'Error during image upload'."
+msgid "Error during image upload"
+msgstr "이미지 업로드 중에 오류 발생"

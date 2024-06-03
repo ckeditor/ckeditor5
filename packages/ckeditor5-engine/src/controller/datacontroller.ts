@@ -63,7 +63,7 @@ import type DataProcessor from '../dataprocessor/dataprocessor.js';
  * editor.data.get( { rootName: 'customRoot' } ); // -> '<p>Hello!</p>'
  * ```
  */
-export default class DataController extends EmitterMixin() {
+export default class DataController extends /* #__PURE__ */ EmitterMixin() {
 	/**
 	 * Data model.
 	 */

@@ -275,10 +275,11 @@ The last version of CKEditor&nbsp;5 changes the default behavior of the source e
 However, this behavior is configurable. You can enable it with the {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy `updateSourceElementOnDestroy`} configuration option:
 
 ```js
-ClassicEditor.create( sourceElement, {
-	// ...
-	updateSourceElementOnDestroy: true
-} );
+ClassicEditor
+	.create( sourceElement, {
+		// ...
+		updateSourceElementOnDestroy: true
+	} );
 ```
 
 <info-box warning>

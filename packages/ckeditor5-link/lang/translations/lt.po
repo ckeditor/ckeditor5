@@ -29,6 +29,10 @@ msgctxt "Label for the URL input in the Link URL editing balloon."
 msgid "Link URL"
 msgstr "Nuorodos URL"
 
+msgctxt "An error text displayed when user attempted to enter an empty URL."
+msgid "Link URL must not be empty."
+msgstr "Nuorodos URL negali būti tuščias."
+
 msgctxt "Label for the image link button."
 msgid "Link image"
 msgstr "Susieti paveikslėlį"

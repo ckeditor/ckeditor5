@@ -77,12 +77,14 @@ The spell and grammar check is compliant with Web Content Accessibility Guidelin
 ## Installation
 
 <info-box info>
-	The spell and grammar check feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
-
 	This is a premium feature that requires a commercial license. If you do not have one yet, please [contact us](https://ckeditor.com/contact/).
 </info-box>
 
-WProofreader is delivered as a CKEditor&nbsp;5 plugin, so you can combine it into an editor build just like other features. To add this feature to your rich-text editor, install the [`@webspellchecker/wproofreader-ckeditor5`](https://www.npmjs.com/package/@webspellchecker/wproofreader-ckeditor5) package:
+<info-box warning>
+	We are working with our partners to update this package to work with our new installation methods. Meanwhile, if you use or plan to use this package, please continue to use our legacy installation methods which are still supported.
+</info-box>
+
+WProofreader is delivered as a CKEditor&nbsp;5 plugin, so you can combine it into an editor preset just like other features. To add this feature to your rich-text editor, install the [`@webspellchecker/wproofreader-ckeditor5`](https://www.npmjs.com/package/@webspellchecker/wproofreader-ckeditor5) package:
 
 ```
 npm install --save @webspellchecker/wproofreader-ckeditor5
@@ -102,7 +104,7 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-When you try to build CKEditor&nbsp;5 from source with WProofreader included, you need to adjust the example `webpack.config.js` provided in the {@link installation/getting-started/quick-start-other#building-the-editor-from-source building from source guide}. It needs to also allow including icons and styling from the WProofreader package. There are two ways to do this.
+When you try to build CKEditor&nbsp;5 from source with WProofreader included, you need to adjust the example `webpack.config.js` provided in the {@link getting-started/legacy-getting-started/quick-start-other#building-the-editor-from-source building from source guide}. It needs to also allow including icons and styling from the WProofreader package. There are two ways to do this.
 
 The first configuration option is simpler:
 
@@ -158,10 +160,6 @@ Therefore, the best option is to use another configuration solution. This one wi
 ```
 
 With this modification to the `webpack.config.js`, it is possible to build CKEditor&nbsp;5 from source with WProofreader included.
-
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
-</info-box>
 
 At this step, you need to provide a proper configuration. You can use WProofreader either as a [cloud solution](#wproofreader-cloud) or [hosted on your server](#wproofreader-on-premises) (on-premises or in a private cloud).
 

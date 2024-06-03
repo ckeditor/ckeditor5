@@ -26,26 +26,16 @@ There are two available types of watchdogs:
 ## Usage
 
 <info-box>
-	Note: A watchdog can be used only with an {@link installation/advanced/integrating-from-source-webpack editor built from source}.
+	Note: A watchdog can be used only with an {@link getting-started/advanced/integrating-from-source-webpack editor built from source}.
 </info-box>
 
 ### Editor watchdog
 
-Install the [`@ckeditor/ckeditor5-watchdog`](https://www.npmjs.com/package/@ckeditor/ckeditor5-watchdog) package:
-
-```
-npm install --save @ckeditor/ckeditor5-watchdog
-```
-
-Then, change your `ClassicEditor.create()` call to `watchdog.create()` as follows:
+After {@link getting-started/quick-start installing the editor}, change your `ClassicEditor.create()` call to `watchdog.create()` as follows:
 
 ```js
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import { EditorWatchdog } from '@ckeditor/ckeditor5-watchdog';
 
-import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { ClassicEditor, Bold, EditorWatchdog, Essentials, Italic, Paragraph } from 'ckeditor5';
 
 // Create a watchdog for the given editor type.
 const watchdog = new EditorWatchdog( ClassicEditor );
@@ -149,22 +139,10 @@ watchdog.crashes.forEach( crashInfo => console.log( crashInfo ) );
 
 ### Context watchdog
 
-Install the [`@ckeditor/ckeditor5-watchdog`](https://www.npmjs.com/package/@ckeditor/ckeditor5-watchdog) package:
-
-```
-npm install --save @ckeditor/ckeditor5-watchdog
-```
-
-And then change your editor and context initialization code:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import { ContextWatchdog } from '@ckeditor/ckeditor5-watchdog';
-
-import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
-import { Context } from '@ckeditor/ckeditor5-core';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { ClassicEditor, ContextWatchdog, Bold, Italic, Context, Essentials, Paragraph } from 'ckeditor5';
 
 // Create a context watchdog and pass the context class with optional watchdog configuration:
 const watchdog = new ContextWatchdog( Context, {
@@ -174,7 +152,7 @@ const watchdog = new ContextWatchdog( Context, {
 // Initialize the watchdog with the context configuration:
 await watchdog.create( {
 	plugins: [
-	    // A list of plugins for the context.
+		// A list of plugins for the context.
 		// ...
 	],
 	// More configuration options for the plugin.
@@ -216,14 +194,14 @@ await watchdog.add( {
 } );
 
 await watchdog.add( {
-    id: 'editor2',
-    type: 'editor',
-    sourceElementOrData: document.querySelector( '#editor' ),
-    config: {
-        plugins: [ Essentials, Paragraph, Bold, Italic ],
-        toolbar: [ 'bold', 'italic', 'alignment' ]
-    },
-    creator: ( element, config ) => ClassicEditor.create( element, config )
+	id: 'editor2',
+	type: 'editor',
+	sourceElementOrData: document.querySelector( '#editor' ),
+	config: {
+		plugins: [ Essentials, Paragraph, Bold, Italic ],
+		toolbar: [ 'bold', 'italic', 'alignment' ]
+	},
+	creator: ( element, config ) => ClassicEditor.create( element, config )
 } );
 ```
 
@@ -278,15 +256,15 @@ await watchdog.add( {
 } );
 
 await watchdog.add( [
-    {
-    	id: 'editor1',
-    	type: 'editor',
-    	sourceElementOrData: domElementOrEditorData
-    	config: editorConfig,
-    	creator: createEditor,
-    	destructor: destroyEditor,
-    },
-    // More configuration items.
+	{
+		id: 'editor1',
+		type: 'editor',
+		sourceElementOrData: domElementOrEditorData
+		config: editorConfig,
+		creator: createEditor,
+		destructor: destroyEditor,
+	},
+	// More configuration items.
 	// ...
 ] );
 

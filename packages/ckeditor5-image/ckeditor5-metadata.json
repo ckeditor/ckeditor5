@@ -112,7 +112,7 @@
 		{
 			"name": "Image resize",
 			"className": "ImageResize",
-			"description": "Allows for resizing images using handles and offers the UI fine tune the sizes.",
+			"description": "Allows for resizing images using handles and offers the UI to fine tune the sizes.",
 			"docs": "features/images/images-resizing.html",
 			"path": "src/imageresize.js",
 			"requires": [
@@ -230,7 +230,7 @@
 			"uiComponents": [
 				{
 					"type": "Button",
-					"name": "imageUpload",
+					"name": "uploadImage",
 					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/image.svg"
 				}
 			]
@@ -247,8 +247,13 @@
 			"uiComponents": [
 				{
 					"type": "SplitButton",
-					"name": "imageInsert",
+					"name": "insertImage",
 					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/image.svg"
+				},
+				{
+					"type": "Button",
+					"name": "insertImageViaUrl",
+					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/image-url.svg"
 				}
 			]
 		}

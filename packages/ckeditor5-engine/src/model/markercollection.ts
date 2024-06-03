@@ -33,7 +33,7 @@ import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
  *
  * @see module:engine/model/markercollection~Marker
  */
-export default class MarkerCollection extends EmitterMixin() implements Iterable<Marker> {
+export default class MarkerCollection extends /* #__PURE__ */ EmitterMixin() implements Iterable<Marker> {
 	/**
 	 * Stores {@link ~Marker markers} added to the collection.
 	 */
@@ -347,7 +347,7 @@ export interface MarkerData {
  *
  * `Marker` instances are created and destroyed only by {@link ~MarkerCollection MarkerCollection}.
  */
-class Marker extends EmitterMixin( TypeCheckable ) {
+class Marker extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	/**
 	 * Marker's name.
 	 */

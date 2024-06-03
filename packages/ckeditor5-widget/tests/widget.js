@@ -147,6 +147,11 @@ describe( 'Widget', () => {
 		);
 
 		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'widget' ).keystrokes ).to.deep.include( {
+			label: 'Move focus from an editable area back to the parent widget',
+			keystroke: 'Esc'
+		} );
+
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'widget' ).keystrokes ).to.deep.include( {
 			label: 'Insert a new paragraph directly after a widget',
 			keystroke: 'Enter'
 		} );

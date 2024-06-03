@@ -35,7 +35,7 @@ import { CKEditorError, first, ObservableMixin } from '@ckeditor/ckeditor5-utils
  * {@glink framework/architecture/editing-engine Introduction to the Editing engine architecture} guide.
  * * The {@glink framework/deep-dive/schema Schema deep-dive} guide.
  */
-export default class Schema extends ObservableMixin() {
+export default class Schema extends /* #__PURE__ */ ObservableMixin() {
 	private readonly _sourceDefinitions: Record<string, Array<SchemaItemDefinition>> = {};
 
 	/**

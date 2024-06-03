@@ -37,7 +37,7 @@ Starting from v31.1.0, the editor engine will detect attributes that may interru
 ```
 
 <info-box>
-	This new mechanism does not affect the {@link installation/getting-started/getting-and-setting-data data saved by the editor} (for example, the output of `editor.getData()`). The filtering only applies during the editing when the user interacts with the editor.
+	This new mechanism does not affect the {@link getting-started/setup/getting-and-setting-data data saved by the editor} (for example, the output of `editor.getData()`). The filtering only applies during the editing when the user interacts with the editor.
 </info-box>
 
 If you are the author of a plugin that generates this kind of content in the {@link framework/architecture/editing-engine#editing-pipeline editing pipeline} and you want it to be preserved, you can configure this when creating the element using {@link module:engine/view/downcastwriter~DowncastWriter} during the {@link framework/architecture/editing-engine#conversion model–view conversion}. Methods such as {@link module:engine/view/downcastwriter~DowncastWriter#createContainerElement}, {@link module:engine/view/downcastwriter~DowncastWriter#createAttributeElement}, or {@link module:engine/view/downcastwriter~DowncastWriter#createEmptyElement} accept an option that will turn off filtering of specific attributes:

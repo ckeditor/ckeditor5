@@ -29,6 +29,10 @@ msgctxt "Label for the URL input in the Link URL editing balloon."
 msgid "Link URL"
 msgstr "Đường dẫn liên kết"
 
+msgctxt "An error text displayed when user attempted to enter an empty URL."
+msgid "Link URL must not be empty."
+msgstr "Không được để trống URL đường liên kết."
+
 msgctxt "Label for the image link button."
 msgid "Link image"
 msgstr "Liên kết của ảnh"
