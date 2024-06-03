@@ -249,7 +249,14 @@
 					"type": "SplitButton",
 					"name": "insertImage",
 					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/image.svg"
-				},
+				}
+			]
+		},
+		{
+			"name": "Image insert via URL",
+			"className": "ImageInsertViaUrl",
+			"description": "The image insert via URL plugin. This plugin does not do anything directly, but it loads a set of specific plugins to enable image inserting via URL.",
+			"uiComponents": [
 				{
 					"type": "Button",
 					"name": "insertImageViaUrl",
