@@ -166,8 +166,8 @@ export interface EditorConfig {
 	 * <script type="importmap">
 	 * {
 	 *   "imports": {
-	 *     "ckeditor5": "<CDN_LINK>/ckeditor5/dist/index.min.js",
-	 *     "ckeditor5/": "<CDN_LINK>/ckeditor5/",
+	 *     "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/<VERSION>/ckeditor5.js",
+	 *     "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/<VERSION>/"
 	 *   }
 	 * }
 	 * </script>
