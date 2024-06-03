@@ -45,13 +45,16 @@ It is important to use the content styles on the publishing side of your applica
 
 There are two ways to obtain the content styles:
 
-* From the `npm` packages, in the `dist/ckeditor5-content.css` location.
+* From the `npm` packages, in the `dist/ckeditor5-content.css` and `ckeditor5-premium-features-content.css` location.
 * From CDN, `https://cdn.ckeditor.com/ckeditor5/`
 
-Load the `ckeditor5-content.css` file on the publishing side by adding the following code to the template:
+Load the `ckeditor5-content.css` (and `ckeditor5-premium-features-content.css` if needed) file on the publishing side by adding the following code to the template:
 
 ```html
 <link rel="stylesheet" href="path/to/assets/ckeditor5-content.css">
+
+<!-- If you are using premium features: -->
+<link rel="stylesheet" href="path/to/assets/ckeditor5-premium-features-content.css">
 ```
 
 <info-box warning>
@@ -102,7 +105,7 @@ For example, if you want to change the color of the mentions' background and tex
 Our main packages, `ckeditor5` and `ckeditor5-premium-features`, distribute three style sheets:
 
 * `index.css`: combined editor and content styles.
-* `ckeditor5-content.css`: only content styles.
+* `ckeditor5-content.css` and `ckeditor5-premium-features-content.css`: only content styles.
 * `index-editor.css`: only editor styles.
 
 Content styles include styles for **all** plugins of the editor. If you want to optimize the size of the style sheet, as you may be using minimal set of plugins, read our optimization guide. <!-- TODO link to guide -->
