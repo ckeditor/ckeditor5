@@ -1,0 +1,5 @@
+User-agent: *
+Crawl-delay: 10
+Disallow: /4*
+Disallow: /ckeditor5/*
+Disallow: /assets/

@@ -23,11 +23,21 @@ const CKEDITOR5_PREMIUM_FEATURES_INDEX = upath.join(
 	CKEDITOR5_COMMERCIAL_PATH, PACKAGES_DIRECTORY, 'ckeditor5-premium-features', 'src', 'index.ts'
 );
 
+const S3_COPY_DIR_ARGS = '--recursive --metadata-directive REPLACE --cache-control max-age=31536000';
+const S3_COPY_FILE_ARGS = '--metadata-directive REPLACE --cache-control max-age=31536000';
+
+const CDN_S3_BUCKET = 'ckeditor-cdn-prod-files';
+const CDN_CLOUDFRONT_ID = 'E15BDG1F16R4YA';
+
 module.exports = {
 	PACKAGES_DIRECTORY,
 	RELEASE_DIRECTORY,
 	CKEDITOR5_ROOT_PATH,
 	CKEDITOR5_COMMERCIAL_PATH,
 	CKEDITOR5_INDEX,
-	CKEDITOR5_PREMIUM_FEATURES_INDEX
+	CKEDITOR5_PREMIUM_FEATURES_INDEX,
+	S3_COPY_DIR_ARGS,
+	S3_COPY_FILE_ARGS,
+	CDN_S3_BUCKET,
+	CDN_CLOUDFRONT_ID
 };

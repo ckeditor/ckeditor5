@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <link href="assets/prism.css" rel="stylesheet">
+    <style type="text/css">
+        body {
+            font-size: 1rem;
+            color: #444444;
+            font-family: Arial, Helvetica, sans-serif;
+            line-height: 1.5;
+            padding: 20px;
+        }
+
+        h1, h2, h3 {
+            font-weight: 400;
+        }
+        h1 {
+            font-size: 2.6rem;
+            color: #000;
+        }
+        h2 {
+            font-size: 2.2rem;
+            border-bottom: 1px solid #ddd;
+            color: #000;
+            padding-top: 50px;
+        }
+        h2:first-of-type {
+            padding-top: 30px;
+        }
+        h3 {
+            font-size: 1.6rem;
+            color: #000;
+        }
+
+        pre {
+            padding: 10px;
+            background-color: #EEEEEE;
+            font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+            margin-bottom: 10px;
+            width: auto;
+        }
+        .main {
+            max-width: 1060px;
+            margin: 0 auto;
+        }
+        .note {
+            border: 2px solid #ddd;
+            padding:20px;
+        }
+        .footer {
+            border-top: 1px solid #ddd;
+            padding-top: 1em;
+        }
+        /* Override prism styles */
+        code[class*="language-"] {
+            font-family: menlo, Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+            font-size:0.9em;
+        }
+    </style>
+    <title>CKEditor CDN</title>
+</head>
+<body class="language-html">
+<div class="main">
+    <!-- <img src="assets/aws-poweredby.png" alt="Powered by AWS Cloud Computing" style="float:right;" width="150"> -->
+    <h1>CKEditor CDN</h1>
+    <p><strong>Speed up your website</strong> by loading CKEditor from CDN:</p>
+    <ul>
+        <li>CKEditor is hosted on servers spread across the globe - scripts are loaded faster because they are served from the nearest
+            locations
+            to the end user.</li>
+        <li>If the same version of CKEditor has already been downloaded (even on a different website), it is loaded from cache.</li>
+        <li>CDN reduces the number of HTTP requests handled by your server so it speeds it up as well!</li>
+    </ul>
+
+    <!-- CKEditor 5 -->
+    <h2 id="ckeditor5">CKEditor 5</h2>
+    <p>To start using CKEditor 5 Builds on your website, add a single &lt;script&gt; tag to your HTML page:</p>
+    <pre><code>&lt;script src=&quot;https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js&quot;&gt;&lt;/script&gt;</code></pre>
+    <p>Quick example:</p>
+    <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+        &lt;head&gt;
+                &lt;meta charset=&quot;utf-8&quot;&gt;
+                &lt;title&gt;CKEditor&lt;/title&gt;
+                &lt;script src=&quot;https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js&quot;&gt;&lt;/script&gt;
+        &lt;/head&gt;
+        &lt;body&gt;
+                &lt;div id=&quot;editor&quot;&gt;This is some sample content.&lt;/div&gt;
+                &lt;script&gt;
+                        ClassicEditor
+                                .create( document.querySelector( '#editor' ) )
+                                .then( editor => {
+                                        console.log( editor );
+                                } )
+                                .catch( error => {
+                                        console.error( error );
+                                } );
+                &lt;/script&gt;
+        &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+    <h3 id="url-structure">URL Structure</h3>
+    <p>The URL structure for CKEditor 5 is as follows:</p>
+    <pre><code>&lt;script src=&quot;https://cdn.ckeditor.com/ckeditor5/[version.number]/[distribution]/ckeditor.js&quot;&gt;&lt;/script&gt;</code></pre>
+    <p>The following distributions (see <a href="https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/predefined-builds.html">CKEditor 5 Builds overview</a>)
+        are available:</p>
+    <ul>
+        <li><strong>classic</strong> - the Classic editor</li>
+        <li><strong>inline</strong> - the Inline editor</li>
+        <li><strong>balloon</strong> - the Balloon editor</li>
+        <li><strong>balloon-block</strong> - the Balloon block editor</li>
+        <li><strong>decoupled-document</strong> - the Document editor</li>
+        <li><strong>multi-root</strong> - the Multi-root editor</li>
+        <li><strong>super-build</strong> - the Superbuild</li>
+    </ul>
+    <p>When choosing a different build than Classic editor, make sure in the example above to change not only the URL to a build but
+        also the initialization code as each build comes with a different editor class (<a href="https://ckeditor.com/docs/ckeditor5/latest/api/module_editor-classic_classiceditor-ClassicEditor.html"><code>ClassicEditor</code></a>,
+        <a href="https://ckeditor.com/docs/ckeditor5/latest/api/module_editor-inline_inlineeditor-InlineEditor.html"><code>InlineEditor</code></a>, <a href="https://ckeditor.com/docs/ckeditor5/latest/api/module_editor-balloon_ballooneditor-BalloonEditor.html"><code>BalloonEditor</code></a> (used by Baloon editor and Balloon block editor), <a href="https://ckeditor.com/docs/ckeditor5/latest/api/module_editor-decoupled_decouplededitor-DecoupledEditor.html"><code>DecoupledEditor</code></a>, <a href="https://ckeditor.com/docs/ckeditor5/latest/api/module_editor-multi-root_multirooteditor-MultiRootEditor.html"><code>MultiRootEditor</code></a>).</p>
+
+    <!-- CKEditor 4 -->
+    <h2 id="ckeditor4">CKEditor 4</h2>
+    <h3>Long Term Support</h3>
+    <p>A special edition, <a href="https://ckeditor.com/ckeditor-4-support/" target="_blank" title="CKEditor 4 Long Term Support">CKEditor 4 LTS</a> (“Long Term Support”), is available under commercial terms ("<a href="https://ckeditor.com/ckeditor-4-support/" target="_blank" title="CKEditor 4 Extended Support Model">Extended Support Model</a>") for anyone looking to extend the coverage of security updates and critical bug fixes.</p>
+    <p>To start using CKEditor 4 LTS on your website, add a single &lt;script&gt; tag to your HTML page:</p>
+    <pre><code>&lt;script src=&quot;https://cdn.ckeditor.com/4.24.0-lts/standard/ckeditor.js&quot;&gt;&lt;/script&gt;</code></pre>
+    <p>Quick example:</p>
+    <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+        &lt;head&gt;
+                &lt;meta charset=&quot;utf-8&quot;&gt;
+                &lt;title&gt;CKEditor&lt;/title&gt;
+                &lt;script src=&quot;https://cdn.ckeditor.com/4.24.0-lts/standard/ckeditor.js&quot;&gt;&lt;/script&gt;
+        &lt;/head&gt;
+        &lt;body&gt;
+                &lt;textarea name=&quot;editor1&quot;&gt;&lt;/textarea&gt;
+                &lt;script&gt;
+                        CKEDITOR.replace( 'editor1' );
+                &lt;/script&gt;
+        &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+    <h3>Open Source</h3>
+    <p>To start using CKEditor 4 OS on your website, add a single &lt;script&gt; tag to your HTML page:</p>
+    <pre><code>&lt;script src=&quot;https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js&quot;&gt;&lt;/script&gt;</code></pre>
+    <div class="note"><strong>Note:</strong> You may continue using CKEditor 4.22.1 and below under the open source license terms. Please note, however, that the open source version no longer comes with any security updates, so your application will be at risk.</div>
+
+    <h3 id="url-structure">URL Structure</h3>
+    <p>The URL structure for CKEditor 4 is as follows:</p>
+    <pre><code>&lt;script src=&quot;https://cdn.ckeditor.com/[version.number]/[distribution]/ckeditor.js&quot;&gt;&lt;/script&gt;</code></pre>
+    <p>The following distributions (see <a href="http://ckeditor.com/presets-all">comparison table</a>) are available:</p>
+    <ul>
+        <li><strong>basic</strong> - the Basic preset</li>
+        <li><strong>standard</strong> - the Standard preset</li>
+        <li><strong>standard-all</strong> - the Standard preset together with all other plugins created by CKSource<strong>*</strong></li>
+        <li><strong>full</strong> - the Full preset</li>
+        <li><strong>full-all</strong> - the Full preset together with all other plugins created by CKSource<strong>*</strong></li>
+    </ul>
+    <p>* Plugins not included in a preset need to be enabled with <a
+            href="https://ckeditor.com/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-extraPlugins"><code>config.extraPlugins</code></a>.</p>
+    <div class="note"><strong>Note:</strong> Due to a human error to use CKEditor 4.4.5, you should specify
+        <strong>4.4.5.1</strong>.
+        The path that points to 4.4.5 actually points to an older version of CKEditor (4.3.5). To avoid issues on existing installations, we
+        decided to keep the (invalid) old version under that path.</div>
+    <h3 id="plugins">Enabling Local Plugins</h3>
+    <p>To enable an extra plugin from a <strong>local folder</strong> while using CKEditor CDN, <a
+            href="https://ckeditor.com/docs/ckeditor4/latest/api/CKEDITOR_plugins.html#method-addExternal"><code>CKEDITOR.plugins.addExternal()</code></a> must
+        be
+        called first so that CKEditor knew from where to load the plugin.</p>
+    <p>The <code>CKEDITOR.plugins.addExternal()</code> method accepts three parameters:</p>
+    <ul>
+        <li>The name of the plugin.</li>
+        <li>The location of the plugin. Make sure that the path starts with a slash character ("/").</li>
+        <li>File name (usually "plugin.js").</li>
+    </ul>
+    <pre><code class="language-javascript">// Enable local "abbr" plugin from /myplugins/abbr/ folder.
+CKEDITOR.plugins.addExternal( 'abbr', '/myplugins/abbr/', 'plugin.js' );
+
+// extraPlugins needs to be set too.
+CKEDITOR.replace( 'editor1', {
+        extraPlugins: 'abbr'
+} );
+</code></pre>
+    <h3 id="skins">Enabling Local Skins</h3>
+    <p>Enabling skins from a <strong>local folder</strong> is even easier than enabling plugins. To use a custom CKEditor skin while using
+        CKEditor CDN, use <a href="https://ckeditor.com/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-skin"><code>config.skin</code></a> and provide both,
+        the
+        skin name and the full URL after a comma:</p>
+    <pre><code class="language-javascript">// Enable "moonocolor" skin from the /myskins/moonocolor/ folder.
+CKEDITOR.replace( 'editor1', {
+        skin: 'moonocolor,/myskins/moonocolor/'
+} );
+</code></pre>
+    <h3 id="configuration">Local Configuration Files</h3>
+    <p>Some features in CKEditor are configured through JavaScript files by default. Since all files are loaded from remote CDN, there is no
+        way
+        to modify them directly. You can however instruct CKEditor to load local files instead, if you need to:</p>
+    <ul>
+        <li><a href="https://ckeditor.com/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-customConfig"><code>config.customConfig</code></a> - The path to
+            CKEditor configuration file. For more details, see <a href="https://ckeditor.com/docs/ckeditor4/latest/guide/dev_configuration.html">Setting
+                CKEditor
+                Configuration</a>.</li>
+        <li><a href="https://ckeditor.com/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-contentsCss"><code>config.contentsCss</code></a> - The CSS file(s)
+            to
+            be used to apply style to the content.</li>
+        <li><a href="https://ckeditor.com/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-stylesSet"><code>config.stylesSet</code></a> - The "styles
+            definition
+            set" to use in the styles dropdown list. For more details, see <a href="https://ckeditor.com/docs/ckeditor4/latest/guide/dev_styles.html">Setting
+                Styles</a>.</li>
+        <li><a href="https://ckeditor.com/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-templates_files"><code>config.templates_files</code></a> - The list
+            of
+            template files to use in the templates dialog window.</li>
+    </ul>
+    <p>In case of setting any of the options above, it is highly recommended to <a href="http://ckeditor.com/download">download</a> locally
+        the
+        same CKEditor package that is loaded from CDN in order to copy included configuration files and use them as base files for adding
+        additional changes.</p>
+    <pre><code class="language-javascript">// Always provide paths that start with a slash character ("/").
+CKEDITOR.replace( 'editor1', {
+        customConfig: '/ckeditor_settings/config.js'
+} );
+</code></pre>
+
+    <!-- Footer -->
+    <p class="footer">&copy; 2003-2023, CKSource Holding sp. z o.o. All rights reserved.</p>
+    <script src="assets/prism.js" data-manual></script>
+    <script>
+        let preCode = document.body.querySelectorAll( 'pre code' );
+        for ( let i = 0; i < preCode.length; i++ ) {
+            Prism.highlightElement( preCode[ i ] );
+        }
+    </script>
+</div>
+<!-- Google Tag Manager -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P8CCJCN" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-P8CCJCN');</script>
+<!-- End Google Tag Manager -->
+</body>
+</html>

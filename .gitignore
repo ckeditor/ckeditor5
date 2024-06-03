@@ -26,8 +26,10 @@ mrgit.json
 .idea
 .vscode
 
-# Prepared files to publish to npm.
+# Prepared files to publish to npm and cdn.
 /release/
+/release_dll/
+ckeditor5.zip
 
 # Ignore yalc
 .yalc
