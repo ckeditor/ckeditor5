@@ -31,6 +31,7 @@ async function createEditor( elementId, imageType ) {
 			'undo',
 			'redo'
 		],
+		menuBar: { isVisible: true },
 		image: {
 			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText', '|', 'toggleImageCaption', 'imageTextAlternative' ],
 			insert: {
