@@ -1246,9 +1246,15 @@ export type SchemaCheckAttributeEvent = {
  * * {@link ~SchemaItemDefinition#allowIn `allowIn`} &ndash; Defines in which other items this item will be allowed.
  * * {@link ~SchemaItemDefinition#allowChildren `allowChildren`} &ndash; Defines which other items are allowed inside this item.
  * * {@link ~SchemaItemDefinition#allowAttributes `allowAttributes`} &ndash; Defines allowed attributes of the given item.
- * * {@link ~SchemaItemDefinition#allowContentOf `allowContentOf`} &ndash; Inherits "allowed children" from other items.
- * * {@link ~SchemaItemDefinition#allowWhere `allowWhere`} &ndash; Inherits "allowed in" from other items.
- * * {@link ~SchemaItemDefinition#allowAttributesOf `allowAttributesOf`} &ndash; Inherits attributes from other items.
+ * * {@link ~SchemaItemDefinition#disallowIn `disallowIn`} &ndash; Defines in which other items this item will be disallowed.
+ * * {@link ~SchemaItemDefinition#disallowChildren `disallowChildren`} &ndash; Defines which other items are disallowed inside this item.
+ * * {@link ~SchemaItemDefinition#disallowAttributes `disallowAttributes`} &ndash; Defines disallowed attributes of the given item.
+ * * {@link ~SchemaItemDefinition#allowContentOf `allowContentOf`} &ndash; Makes this item allow children that are also allowed in the
+ * specified items. This acknowledges disallow rules.
+ * * {@link ~SchemaItemDefinition#allowWhere `allowWhere`} &ndash; Makes this item allowed where the specified items are allowed. This
+ * acknowledges disallow rules.
+ * * {@link ~SchemaItemDefinition#allowAttributesOf `allowAttributesOf`} &ndash; Inherits attributes from other items. This acknowledges
+ * disallow rules.
  * * {@link ~SchemaItemDefinition#inheritTypesFrom `inheritTypesFrom`} &ndash; Inherits `is*` properties of other items.
  * * {@link ~SchemaItemDefinition#inheritAllFrom `inheritAllFrom`} &ndash;
  * A shorthand for `allowContentOf`, `allowWhere`, `allowAttributesOf`, `inheritTypesFrom`.
@@ -1373,6 +1379,15 @@ export type SchemaCheckAttributeEvent = {
  * 	allowIn: 'imageBlock',
  * 	allowContentOf: '$block',
  * 	isLimit: true
+ * } );
+ * ```
+ *
+ * Register `inlineImage` as a kind of an inline object but disallow it inside captions:
+ *
+ * ```ts
+ * schema.register( 'imageInline', {
+ * 	inheritAllFrom: '$inlineObject',
+ * 	disallowIn: [ 'caption' ]
  * } );
  * ```
  *
