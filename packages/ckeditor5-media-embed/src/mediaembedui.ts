@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import { ButtonView, CssTransitionDisablerMixin, MenuBarMenuListItemButtonView, DialogViewPosition, Dialog } from 'ckeditor5/src/ui.js';
+import { ButtonView, CssTransitionDisablerMixin, MenuBarMenuListItemButtonView, Dialog } from 'ckeditor5/src/ui.js';
 
 import MediaFormView from './ui/mediaformview.js';
 import MediaEmbedEditing from './mediaembedediting.js';
@@ -96,6 +96,7 @@ export default class MediaEmbedUI extends Plugin {
 			const registry = editor.plugins.get( MediaEmbedEditing ).registry;
 
 			this._formView = new ( CssTransitionDisablerMixin( MediaFormView ) )( getFormValidators( editor.t, registry ), editor.locale );
+			this._formView.on( 'submit', () => this._handleSubmitForm() );
 		}
 
 		dialog.show( {
@@ -118,16 +119,21 @@ export default class MediaEmbedUI extends Plugin {
 					label: t( 'Accept' ),
 					class: 'ck-button-action',
 					withText: true,
-					onExecute: () => {
-						if ( this._formView!.isValid() ) {
-							editor.execute( 'mediaEmbed', this._formView!.url );
-							dialog.hide();
-							editor.editing.view.focus();
-						}
-					}
+					onExecute: () => this._handleSubmitForm()
 				}
 			]
 		} );
+	}
+
+	private _handleSubmitForm() {
+		const editor = this.editor;
+		const dialog = editor.plugins.get( 'Dialog' );
+
+		if ( this._formView!.isValid() ) {
+			editor.execute( 'mediaEmbed', this._formView!.url );
+			dialog.hide();
+			editor.editing.view.focus();
+		}
 	}
 }
 
