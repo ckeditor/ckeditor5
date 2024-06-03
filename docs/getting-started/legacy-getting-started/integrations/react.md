@@ -116,12 +116,13 @@ import { Context } from '@ckeditor/ckeditor5-core';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { ContextWatchdog } from '@ckeditor/ckeditor5-watchdog';
 
 class App extends Component {
 	render() {
 		return (
 			<div className="App">
-				<CKEditorContext context={ Context }>
+				<CKEditorContext context={ Context } contextWatchdog={ ContextWatchdog }>
 					<h2>Using the CKEditor&nbsp;5 context feature in React</h2>
 					<CKEditor
 						editor={ ClassicEditor }
@@ -162,6 +163,7 @@ export default App;
 The `CKEditorContext` component supports the following properties:
 
 * `context` (required) &ndash; {@link module:core/context~Context The CKEditor&nbsp;5 context class}.
+* `contextWatchdog` (required) &ndash; {@link module:watchdog/contextwatchdog~ContextWatchdog The Watchdog context class}.
 * `config` &ndash; The CKEditor&nbsp;5 context configuration.
 * `isLayoutReady` &ndash; A property that delays the context creation when set to `false`. It creates the context and the editor children once it is `true` or unset. Useful when the CKEditor&nbsp;5 annotations or a presence list are used.
 * `id` &ndash; The context ID. When this property changes, the component restarts the context with its editor and reinitializes it based on the current configuration.
