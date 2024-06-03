@@ -14,7 +14,6 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 
 import Image from '../../src/image.js';
-import ImageInsertFormView from '../../src/imageinsert/ui/imageinsertformview.js';
 import ImageInsertViaUrlUI from '../../src/imageinsert/imageinsertviaurlui.js';
 import { ImageInsertViaUrl } from '../../src/index.js';
 
@@ -177,39 +176,51 @@ describe( 'ImageInsertViaUrlUI', () => {
 			expect( urlView.imageURLInputValue ).to.equal( '' );
 		} );
 
-		it( 'should execute replaceImageSource command and close dialog', () => {
-			const replaceImageSourceCommand = editor.commands.get( 'replaceImageSource' );
-			const stubExecute = sinon.stub( editor, 'execute' );
-			const stubFocus = sinon.stub( editor.editing.view, 'focus' );
+		testSubmit( 'accept button', () => acceptButton.fire( 'execute' ) );
 
-			replaceImageSourceCommand.isEnabled = true;
-			urlView.imageURLInputValue = 'foo';
+		testSubmit( 'form submit (enter key)', () => {
+			const form = dialog.view.contentView.children.get( 0 );
 
-			acceptButton.fire( 'execute' );
-
-			expect( stubExecute.calledOnce ).to.be.true;
-			expect( stubExecute.firstCall.args[ 0 ] ).to.equal( 'replaceImageSource' );
-			expect( stubExecute.firstCall.args[ 1 ] ).to.deep.equal( { source: 'foo' } );
-			expect( stubFocus.calledOnce ).to.be.true;
-			expect( dialog.id ).to.be.null;
+			form.fire( 'submit' );
 		} );
 
-		it( 'should execute insertImage command', () => {
-			const replaceImageSourceCommand = editor.commands.get( 'insertImage' );
-			const stubExecute = sinon.stub( editor, 'execute' );
-			const stubFocus = sinon.stub( editor.editing.view, 'focus' );
+		function testSubmit( suiteName, action ) {
+			describe( suiteName, () => {
+				it( 'should execute replaceImageSource command and close dialog', () => {
+					const replaceImageSourceCommand = editor.commands.get( 'replaceImageSource' );
+					const stubExecute = sinon.stub( editor, 'execute' );
+					const stubFocus = sinon.stub( editor.editing.view, 'focus' );
 
-			replaceImageSourceCommand.isEnabled = true;
-			urlView.imageURLInputValue = 'foo';
+					replaceImageSourceCommand.isEnabled = true;
+					urlView.imageURLInputValue = 'foo';
 
-			acceptButton.fire( 'execute' );
+					action();
 
-			expect( stubExecute.calledOnce ).to.be.true;
-			expect( stubExecute.firstCall.args[ 0 ] ).to.equal( 'insertImage' );
-			expect( stubExecute.firstCall.args[ 1 ] ).to.deep.equal( { source: 'foo' } );
-			expect( stubFocus.calledOnce ).to.be.true;
-			expect( dialog.id ).to.be.null;
-		} );
+					expect( stubExecute.calledOnce ).to.be.true;
+					expect( stubExecute.firstCall.args[ 0 ] ).to.equal( 'replaceImageSource' );
+					expect( stubExecute.firstCall.args[ 1 ] ).to.deep.equal( { source: 'foo' } );
+					expect( stubFocus.calledOnce ).to.be.true;
+					expect( dialog.id ).to.be.null;
+				} );
+
+				it( 'should execute insertImage command', () => {
+					const replaceImageSourceCommand = editor.commands.get( 'insertImage' );
+					const stubExecute = sinon.stub( editor, 'execute' );
+					const stubFocus = sinon.stub( editor.editing.view, 'focus' );
+
+					replaceImageSourceCommand.isEnabled = true;
+					urlView.imageURLInputValue = 'foo';
+
+					action();
+
+					expect( stubExecute.calledOnce ).to.be.true;
+					expect( stubExecute.firstCall.args[ 0 ] ).to.equal( 'insertImage' );
+					expect( stubExecute.firstCall.args[ 1 ] ).to.deep.equal( { source: 'foo' } );
+					expect( stubFocus.calledOnce ).to.be.true;
+					expect( dialog.id ).to.be.null;
+				} );
+			} );
+		}
 
 		it( 'should close dropdown', () => {
 			const stubExecute = sinon.stub( editor, 'execute' );
@@ -325,22 +336,6 @@ describe( 'ImageInsertViaUrlUI', () => {
 					expect( dropdown.buttonView.label ).to.equal( 'Insert image' );
 					expect( dropdown.buttonView.actionView.label ).to.equal( 'Insert image via URL' );
 				} );
-
-				it( 'should create form view on first open of dropdown', () => {
-					const dropdown = editor.ui.componentFactory.create( 'insertImage' );
-
-					expect( dropdown.panelView.children.length ).to.equal( 0 );
-
-					dropdown.isOpen = true;
-					expect( dropdown.panelView.children.length ).to.equal( 1 );
-
-					const formView = dropdown.panelView.children.get( 0 );
-					expect( formView ).to.be.instanceOf( ImageInsertFormView );
-					expect( formView.children.length ).to.equal( 2 );
-
-					const buttonView = formView.children.get( 0 );
-					expect( buttonView ).to.be.instanceOf( ButtonView );
-				} );
 			} );
 
 			describe( 'dropdown button', () => {
@@ -406,6 +401,22 @@ describe( 'ImageInsertViaUrlUI', () => {
 			button.fire( 'execute' );
 
 			expect( dialogPlugin.id ).to.equal( 'insertImageViaUrl' );
+		} );
+
+		it( 'should create the dialog form view only once', () => {
+			const dialogPlugin = editor.plugins.get( 'Dialog' );
+			sinon.spy( dialogPlugin, 'show' );
+
+			button.fire( 'execute' );
+			dialogPlugin.hide();
+			button.fire( 'execute' );
+
+			expect( dialogPlugin.show.calledTwice );
+
+			const view1 = dialogPlugin.show.getCall( 0 ).args[ 0 ].content;
+			const view2 = dialogPlugin.show.getCall( 1 ).args[ 0 ].content;
+
+			expect( view1 ).to.equal( view2 );
 		} );
 	}
 } );
