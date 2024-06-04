@@ -19,6 +19,7 @@ import type {
 	CKBoxAssetImageDefinition,
 	CKBoxAssetLinkAttributesDefinition,
 	CKBoxAssetLinkDefinition,
+	CKBoxDialog,
 	CKBoxRawAssetDefinition
 } from './ckboxconfig.js';
 
@@ -134,17 +135,52 @@ export default class CKBoxCommand extends Command {
 		const editor = this.editor;
 		const ckboxConfig = editor.config.get( 'ckbox' )!;
 
+		const dialog = ckboxConfig.dialog!;
+		const { width, height } = dialog;
+
+		const icons = ckboxConfig.categories!.icons;
+
+		const view = ckboxConfig.view!;
+		const {
+			openLastView,
+			startupFolderId,
+			startupCategoryId,
+			hideMaximizeButton
+		} = view;
+
+		const upload = ckboxConfig.upload!;
+		const {
+			componentsHideTimeout,
+			dialogMinimizeTimeout
+		} = upload;
+
 		return {
 			theme: ckboxConfig.theme,
 			language: ckboxConfig.language,
 			tokenUrl: ckboxConfig.tokenUrl,
 			serviceOrigin: ckboxConfig.serviceOrigin,
 			forceDemoLabel: ckboxConfig.forceDemoLabel,
-			dialog: {
-				onClose: () => this.fire<CKBoxEvent<'close'>>( 'ckbox:close' )
-			},
+			choosableFileExtensions: ckboxConfig.choosableFileExtensions,
 			assets: {
 				onChoose: ( assets: Array<CKBoxRawAssetDefinition> ) => this.fire<CKBoxEvent<'choose'>>( 'ckbox:choose', assets )
+			},
+			dialog: {
+				onClose: () => this.fire<CKBoxEvent<'close'>>( 'ckbox:close' ),
+				width,
+				height
+			},
+			categories: {
+				icons
+			},
+			view: {
+				openLastView,
+				startupFolderId,
+				startupCategoryId,
+				hideMaximizeButton
+			},
+			upload: {
+				componentsHideTimeout,
+				dialogMinimizeTimeout
 			}
 		};
 	}

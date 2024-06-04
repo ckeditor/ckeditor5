@@ -137,7 +137,44 @@ export interface CKBoxConfig {
 	 * Defaults to {@link module:utils/locale~Locale#uiLanguage `Locale#uiLanguage`}
 	 */
 	language?: string;
+
+	/**
+	 * This option allows opening CKBox in dialog mode. It takes a boolean value or
+	 * a configuration object with the following attributes:
+	 */
+	dialog?: CKBoxDialog;
+
+	categories?: CKBoxCategories;
+
+	view?: CKBoxView;
+
+	upload?: CKBoxUpload;
+
+	choosableFileExtensions?: Array<string>;
 }
+
+export type CKBoxDialog = {
+	width: number;
+	height: number;
+};
+
+export type CKBoxCategories = {
+	icons: {
+		[ key: string ]: string;
+	};
+};
+
+export type CKBoxView = {
+	openLastView: boolean;
+	startupFolderId: string;
+	startupCategoryId: string;
+	hideMaximizeButton: boolean;
+};
+
+export type CKBoxUpload = {
+	componentsHideTimeout: number;
+	dialogMinimizeTimeout: number;
+};
 
 /**
  * Asset definition.
