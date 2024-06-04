@@ -143,8 +143,8 @@ msgstr "Diminuir o recuo do item da lista"
 
 msgctxt "Assistive technologies label for entering the to-do list."
 msgid "Entering a to-do list"
-msgstr ""
+msgstr "Inserção de uma lista de tarefas"
 
 msgctxt "Assistive technologies label for leaving the to-do list."
 msgid "Leaving a to-do list"
-msgstr ""
+msgstr "Deixar uma lista de tarefas"

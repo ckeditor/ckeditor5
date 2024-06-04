@@ -14,8 +14,10 @@ See the {@link framework/theme-customization theme customization guide} and the 
 
 ## Installation
 
+This package is part of our open-source aggregate package.
+
 ```bash
-npm install --save @ckeditor/ckeditor5-theme-lark
+npm install ckeditor5
 ```
 
 ## Contribute

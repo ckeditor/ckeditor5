@@ -32,7 +32,7 @@ import normalizeToolbarConfig from '../normalizetoolbarconfig.js';
 import type { ButtonExecuteEvent } from '../../button/button.js';
 import type { EditorUIReadyEvent, EditorUIUpdateEvent } from '../../editorui/editorui.js';
 
-const toPx = toUnit( 'px' );
+const toPx = /* #__PURE__ */ toUnit( 'px' );
 
 /**
  * The block toolbar plugin.

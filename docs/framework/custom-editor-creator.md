@@ -16,8 +16,7 @@ This guide goes through the process of implementing a custom, multi-root editor.
 The `*Editor` class is the main class of each editor type. It initializes the whole editor and its UI parts. The custom creator class should extend the {@link module:core/editor/editor~Editor base `Editor` class}. For a multi-root editor, it may look like below:
 
 ```js
-import { Editor } from '@ckeditor/ckeditor5-core';
-import { getDataFromElement, setDataInElement } from '@ckeditor/ckeditor5-utils';
+import { Editor, getDataFromElement, setDataInElement } from 'ckeditor5';
 
 /**
  * The multi-root editor implementation. It provides inline editables and a single toolbar.
@@ -32,15 +31,15 @@ import { getDataFromElement, setDataInElement } from '@ckeditor/ckeditor5-utils'
  */
 class MultirootEditor extends Editor {
 	/**
-	 * Creates an instance of the multi-root editor.
-	 *
-	 * **Note:** Do not use the constructor to create editor instances. Use the static `MultirootEditor.create()` method instead.
-	 *
-	 * @protected
-	 * @param {Object.<String,HTMLElement>} sourceElements The list of DOM elements that will be the source
-	 * for the created editor (on which the editor will be initialized).
-	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
-	 */
+	* Creates an instance of the multi-root editor.
+	*
+	* **Note:** Do not use the constructor to create editor instances. Use the static `MultirootEditor.create()` method instead.
+	*
+	* @protected
+	* @param {Object.<String,HTMLElement>} sourceElements The list of DOM elements that will be the source
+	* for the created editor (on which the editor will be initialized).
+	* @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
+	*/
 	constructor( sourceElements, config ) {
 		super( config );
 
@@ -64,8 +63,8 @@ class MultirootEditor extends Editor {
 	}
 
 	/**
-	 * @inheritDoc
-	 */
+	* @inheritDoc
+	*/
 	destroy() {
 		// Cache the data and editable DOM elements, then destroy.
 		// It's safe to assume that the model->view conversion will not work after super.destroy(),
@@ -90,13 +89,13 @@ class MultirootEditor extends Editor {
 	}
 
 	/**
-	 * Creates a multi-root editor instance.
-	 *
-	 * @param {Object.<String,HTMLElement>} sourceElements The list of DOM elements that will be the source
-	 * for the created editor (on which the editor will be initialized).
-	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
-	 * @returns {Promise} A promise resolved once the editor is ready. The promise returns the created multi-root editor instance.
-	 */
+	* Creates a multi-root editor instance.
+	*
+	* @param {Object.<String,HTMLElement>} sourceElements The list of DOM elements that will be the source
+	* for the created editor (on which the editor will be initialized).
+	* @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
+	* @returns {Promise} A promise resolved once the editor is ready. The promise returns the created multi-root editor instance.
+	*/
 	static create( sourceElements, config ) {
 		return new Promise( resolve => {
 			const editor = new this( sourceElements, config );
@@ -118,8 +117,7 @@ class MultirootEditor extends Editor {
 The `*EditorUI` class is the main UI class that initializes UI components (the main view and the toolbar) and sets up mechanisms like {@link framework/deep-dive/focus-tracking#using-the-focustracker-class focus tracker} or placeholder management. The custom `*EditorUI` class should extend the {@link module:ui/editorui/editorui~EditorUI base `EditorUI` class} like below:
 
 ```js
-import { EditorUI } from '@ckeditor/ckeditor5-ui';
-import { enablePlaceholder } from '@ckeditor/ckeditor5-engine';
+import { EditorUI, enablePlaceholder } from 'ckeditor5';
 
 /**
  * The multi-root editor UI class.
@@ -128,26 +126,26 @@ import { enablePlaceholder } from '@ckeditor/ckeditor5-engine';
  */
 class MultirootEditorUI extends EditorUI {
 	/**
-	 * Creates an instance of the multi-root editor UI class.
-	 *
-	 * @param {module:core/editor/editor~Editor} editor The editor instance.
-	 * @param {module:ui/editorui/editoruiview~EditorUIView} view The view of the UI.
-	 */
+	* Creates an instance of the multi-root editor UI class.
+	*
+	* @param {module:core/editor/editor~Editor} editor The editor instance.
+	* @param {module:ui/editorui/editoruiview~EditorUIView} view The view of the UI.
+	*/
 	constructor( editor, view ) {
 		super( editor );
 
 		/**
-		 * The main (top–most) view of the editor UI.
-		 *
-		 * @readonly
-		 * @member {module:ui/editorui/editoruiview~EditorUIView} #view
-		 */
+		* The main (top–most) view of the editor UI.
+		*
+		* @readonly
+		* @member {module:ui/editorui/editoruiview~EditorUIView} #view
+		*/
 		this.view = view;
 	}
 
 	/**
-	 * Initializes the UI.
-	 */
+	* Initializes the UI.
+	*/
 	init() {
 		const view = this.view;
 		const editor = this.editor;
@@ -230,8 +228,8 @@ class MultirootEditorUI extends EditorUI {
 	}
 
 	/**
-	 * @inheritDoc
-	 */
+	* @inheritDoc
+	*/
 	destroy() {
 		super.destroy();
 
@@ -246,10 +244,10 @@ class MultirootEditorUI extends EditorUI {
 	}
 
 	/**
-	 * Initializes the editor main toolbar and its panel.
-	 *
-	 * @private
-	 */
+	* Initializes the editor main toolbar and its panel.
+	*
+	* @private
+	*/
 	_initToolbar() {
 		const editor = this.editor;
 		const view = this.view;
@@ -262,10 +260,10 @@ class MultirootEditorUI extends EditorUI {
 	}
 
 	/**
-	 * Enable the placeholder text on the editing root, if any was configured.
-	 *
-	 * @private
-	 */
+	* Enable the placeholder text on the editing root, if any was configured.
+	*
+	* @private
+	*/
 	_initPlaceholder() {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
@@ -297,7 +295,7 @@ class MultirootEditorUI extends EditorUI {
 Finally, the `*EditorUIView` class is responsible for registering and handling all editable elements and for creating the editor toolbar. The custom `*EditorUIView` class should extend the {@link module:ui/editorui/editoruiview~EditorUIView base `EditorUIView` class}:
 
 ```js
-import { EditorUIView, InlineEditableUIView, Template, ToolbarView } from '@ckeditor/ckeditor5-ui';
+import { EditorUIView, InlineEditableUIView, Template, ToolbarView } from 'ckeditor5';
 
 /**
  * The multi-root editor UI view. It is a virtual view providing an inline editable, but without
@@ -307,30 +305,30 @@ import { EditorUIView, InlineEditableUIView, Template, ToolbarView } from '@cked
  */
 class MultirootEditorUIView extends EditorUIView {
 	/**
-	 * Creates an instance of the multi-root editor UI view.
-	 *
-	 * @param {module:utils/locale~Locale} locale The {@link module:core/editor/editor~Editor#locale} instance.
-	 * @param {module:engine/view/view~View} editingView The editing view instance this view is related to.
-	 * @param {Object.<String,HTMLElement>} editableElements The list of editable elements, containing name and html element
-	 * for each editable.
-	 */
+	* Creates an instance of the multi-root editor UI view.
+	*
+	* @param {module:utils/locale~Locale} locale The {@link module:core/editor/editor~Editor#locale} instance.
+	* @param {module:engine/view/view~View} editingView The editing view instance this view is related to.
+	* @param {Object.<String,HTMLElement>} editableElements The list of editable elements, containing name and html element
+	* for each editable.
+	*/
 	constructor( locale, editingView, editableElements ) {
 		super( locale );
 
 		/**
-		 * The main toolbar of the multi-root editor UI.
-		 *
-		 * @readonly
-		 * @member {module:ui/toolbar/toolbarview~ToolbarView}
-		 */
+		* The main toolbar of the multi-root editor UI.
+		*
+		* @readonly
+		* @member {module:ui/toolbar/toolbarview~ToolbarView}
+		*/
 		this.toolbar = new ToolbarView( locale );
 
 		/**
-		 * The editables of the multi-root editor UI.
-		 *
-		 * @readonly
-		 * @member {Array.<module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView>}
-		 */
+		* The editables of the multi-root editor UI.
+		*
+		* @readonly
+		* @member {Array.<module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView>}
+		*/
 		this.editables = [];
 
 		// Create InlineEditableUIView instance for each editable.
@@ -357,8 +355,8 @@ class MultirootEditorUIView extends EditorUIView {
 	}
 
 	/**
-	 * @inheritDoc
-	 */
+	* @inheritDoc
+	*/
 	render() {
 		super.render();
 

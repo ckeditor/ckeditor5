@@ -225,20 +225,10 @@ The style sheet:
 
 ## Installation
 
-<info-box info>
-	The style feature is not available in any of the {@link installation/getting-started/predefined-builds predefined builds}.
-</info-box>
-
-To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-style`](https://www.npmjs.com/package/@ckeditor/ckeditor5-style) package:
-
-```plaintext
-npm install --save @ckeditor/ckeditor5-style
-```
-
-Then add it to the editor configuration:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { Style } from '@ckeditor/ckeditor5-style';
+import { ClassicEditor, Style } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -260,10 +250,6 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
-
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
-</info-box>
 
 ## Configuration
 
@@ -297,7 +283,6 @@ ClassicEditor
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
-
 ```
 
 Then, define the corresponding CSS styles for the document:

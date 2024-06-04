@@ -27,20 +27,10 @@ You can use the insert media button in the toolbar {@icon @ckeditor/ckeditor5-me
 
 ## Installation
 
-<info-box info>
-	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}. The installation instructions are for developers interested in building their own, custom editor.
-</info-box>
-
-To add this feature to your editor, install the [`@ckeditor/ckeditor5-media-embed`](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed) package:
-
-```bash
-npm install --save @ckeditor/ckeditor5-media-embed
-```
-
-Then add `MediaEmbed` to your plugin list and {@link module:media-embed/mediaembedconfig~MediaEmbedConfig configure} the feature (if needed):
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
+import { ClassicEditor, MediaEmbed } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -57,10 +47,6 @@ ClassicEditor
 
 <info-box>
 	Depending on how you will configure this feature, you may need to use services like [Iframely](https://iframely.com/) or [Embedly](https://embed.ly/) to display content of embedded media on your target website. Read more about [displaying embedded media](#displaying-embedded-media-on-your-website).
-</info-box>
-
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
 </info-box>
 
 ## Previewable and non-previewable media

@@ -18,8 +18,10 @@ See the {@link features/special-characters special characters feature guide} and
 
 ## Installation
 
-```plaintext
-npm install --save @ckeditor/ckeditor5-special-characters
+This package is part of our open-source aggregate package.
+
+```bash
+npm install ckeditor5
 ```
 
 ## Contribute

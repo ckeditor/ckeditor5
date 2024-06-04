@@ -18,8 +18,10 @@ See the {@link features/restricted-editing restricted editing feature guide} as 
 
 ## Installation
 
-```plaintext
-npm install --save @ckeditor/ckeditor5-restricted-editing
+This package is part of our open-source aggregate package.
+
+```bash
+npm install ckeditor5
 ```
 
 ## Contribute

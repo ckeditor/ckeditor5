@@ -143,8 +143,8 @@ msgstr "減少列表項目縮排"
 
 msgctxt "Assistive technologies label for entering the to-do list."
 msgid "Entering a to-do list"
-msgstr ""
+msgstr "進入待辦事項清單"
 
 msgctxt "Assistive technologies label for leaving the to-do list."
 msgid "Leaving a to-do list"
-msgstr ""
+msgstr "離開待辦事項清單"

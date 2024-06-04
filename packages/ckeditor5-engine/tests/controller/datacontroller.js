@@ -362,7 +362,7 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should parse given data before set in a context of correct root', () => {
-			schema.extend( '$text', { allowIn: '$title', disallowIn: '$root' } );
+			schema.extend( '$text', { allowIn: '$title' } );
 			data.set( 'foo', 'main' );
 			data.set( { title: 'Bar' } );
 
