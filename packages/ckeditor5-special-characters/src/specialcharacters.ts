@@ -8,7 +8,7 @@
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import { Typing, type InsertTextCommand } from 'ckeditor5/src/typing.js';
+import { Typing } from 'ckeditor5/src/typing.js';
 import { ButtonView, MenuBarMenuListItemButtonView, DialogViewPosition } from 'ckeditor5/src/ui.js';
 import { CKEditorError, type Locale } from 'ckeditor5/src/utils.js';
 import CharacterGridView, {

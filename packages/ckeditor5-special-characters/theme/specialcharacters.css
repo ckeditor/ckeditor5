@@ -29,6 +29,7 @@
 
 			& > .ck-labeled-field-view {
 				padding-top: var(--ck-spacing-standard);
+				width: 100%;
 
 				& .ck.ck-labeled-field-view__status {
 					background: var(--ck-color-base-error);
@@ -64,6 +65,17 @@
 
 			.ck-dropdown {
 				display: block;
+				width: 100%;
+
+				& > button {
+					&:not(:focus) {
+						border: 1px solid var(--ck-color-base-border);
+					}
+
+					& > span {
+						width: 100%;
+					}
+				}
 			}
 		}
 
