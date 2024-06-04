@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,8 +7,9 @@
  * @module ui/formheader/formheaderview
  */
 
-import View from '../view';
-import type ViewCollection from '../viewcollection';
+import View from '../view.js';
+import type ViewCollection from '../viewcollection.js';
+import IconView from '../icon/iconview.js';
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 
@@ -48,6 +49,11 @@ export default class FormHeaderView extends View {
 	public declare class: string | null;
 
 	/**
+	 * The icon view instance. Defined only if icon was passed in the constructor's options.
+	 */
+	public readonly iconView?: IconView;
+
+	/**
 	 * Creates an instance of the form header class.
 	 *
 	 * @param locale The locale instance.
@@ -56,7 +62,11 @@ export default class FormHeaderView extends View {
 	 */
 	constructor(
 		locale: Locale | undefined,
-		options: { label?: string | null; class?: string | null } = {}
+		options: {
+			label?: string | null;
+			class?: string | null;
+			icon?: string | null;
+		} = {}
 	) {
 		super( locale );
 
@@ -79,6 +89,13 @@ export default class FormHeaderView extends View {
 			children: this.children
 		} );
 
+		if ( options.icon ) {
+			this.iconView = new IconView();
+			this.iconView.content = options.icon;
+
+			this.children.add( this.iconView );
+		}
+
 		const label = new View( locale );
 
 		label.setTemplate( {
@@ -87,7 +104,8 @@ export default class FormHeaderView extends View {
 				class: [
 					'ck',
 					'ck-form__header__label'
-				]
+				],
+				role: 'presentation'
 			},
 			children: [
 				{ text: bind.to( 'label' ) }

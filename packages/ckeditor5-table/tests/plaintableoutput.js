@@ -1,19 +1,20 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import Table from '../src/table';
-import PlainTableOutput from '../src/plaintableoutput';
-import { modelTable } from './_utils/utils';
-import TableCaption from '../src/tablecaption';
-import TableProperties from '../src/tableproperties';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import Table from '../src/table.js';
+import PlainTableOutput from '../src/plaintableoutput.js';
+import { modelTable } from './_utils/utils.js';
+import TableCaption from '../src/tablecaption.js';
+import TableProperties from '../src/tableproperties.js';
 
 describe( 'PlainTableOutput', () => {
 	let editor, editorElement, model;
@@ -23,7 +24,7 @@ describe( 'PlainTableOutput', () => {
 		document.body.appendChild( editorElement );
 
 		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ Paragraph, Table, TableCaption, TableProperties, PlainTableOutput ]
+			plugins: [ Paragraph, Table, TableCaption, TableProperties, PlainTableOutput, ClipboardPipeline ]
 		} );
 
 		model = editor.model;
@@ -155,7 +156,7 @@ describe( 'PlainTableOutput', () => {
 
 			it( 'should not create caption element without TableCaption plugin', async () => {
 				const testEditor = await ClassicTestEditor.create( editorElement, {
-					plugins: [ Paragraph, Table, PlainTableOutput ]
+					plugins: [ Paragraph, Table, PlainTableOutput, ClipboardPipeline ]
 				} );
 
 				testEditor.setData(
@@ -347,7 +348,7 @@ describe( 'PlainTableOutput', () => {
 
 				beforeEach( async () => {
 					testEditor = await ClassicTestEditor.create( editorElement, {
-						plugins: [ Paragraph, Table, PlainTableOutput ]
+						plugins: [ Paragraph, Table, PlainTableOutput, ClipboardPipeline ]
 					} );
 
 					model = testEditor.model;
@@ -431,7 +432,7 @@ describe( 'PlainTableOutput', () => {
 
 			it( 'should not convert image captions', async () => {
 				const testEditor = await ClassicTestEditor.create( editorElement, {
-					plugins: [ ArticlePluginSet, Table, TableCaption, PlainTableOutput ],
+					plugins: [ ArticlePluginSet, Table, TableCaption, PlainTableOutput, ClipboardPipeline ],
 					image: { toolbar: [ '|' ] }
 				} );
 
@@ -455,7 +456,7 @@ describe( 'PlainTableOutput', () => {
 			// See: https://github.com/ckeditor/ckeditor5/issues/11394
 			it( 'should allow overriding image caption converters', async () => {
 				const testEditor = await ClassicTestEditor.create( editorElement, {
-					plugins: [ ArticlePluginSet, Table, TableCaption, PlainTableOutput ],
+					plugins: [ ArticlePluginSet, Table, TableCaption, PlainTableOutput, ClipboardPipeline ],
 					image: { toolbar: [ '|' ] }
 				} );
 

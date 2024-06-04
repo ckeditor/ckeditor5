@@ -1,18 +1,18 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Model from '../../../src/model/model';
-import insertContent from '../../../src/model/utils/insertcontent';
-import DocumentFragment from '../../../src/model/documentfragment';
-import Text from '../../../src/model/text';
-import Element from '../../../src/model/element';
-import Position from '../../../src/model/position';
+import Model from '../../../src/model/model.js';
+import insertContent from '../../../src/model/utils/insertcontent.js';
+import DocumentFragment from '../../../src/model/documentfragment.js';
+import Text from '../../../src/model/text.js';
+import Element from '../../../src/model/element.js';
+import Position from '../../../src/model/position.js';
 
-import { setData, getData, parse, stringify } from '../../../src/dev-utils/model';
-import Range from '../../../src/model/range';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { setData, getData, parse, stringify } from '../../../src/dev-utils/model.js';
+import Range from '../../../src/model/range.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 /* global console */
 

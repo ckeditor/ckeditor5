@@ -1,11 +1,15 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { _translate, add, _clear } from '../src/translation-service';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { _translate, add, _clear, _unifyTranslations } from '../src/translation-service.js';
+import { expectToThrowCKEditorError } from '../tests/_utils/utils.js';
 
 describe( 'translation-service', () => {
+	testUtils.createSinonSandbox();
+
 	afterEach( () => {
 		_clear();
 	} );
@@ -149,6 +153,81 @@ describe( 'translation-service', () => {
 			expect( _translate( 'pl', { string: 'Add space' }, 0 ) ).to.equal( 'Dodaj %0 spacje' );
 			expect( _translate( 'pl', { string: 'Add space' }, 3 ) ).to.equal( 'Dodaj %0 spacje' );
 			expect( _translate( 'pl', { string: 'Add space' }, 13 ) ).to.equal( 'Dodaj %0 spacje' );
+		} );
+
+		it( 'should return a translated message based on message id when translations were passed from config', () => {
+			const translations = {
+				pl: {
+					dictionary: {
+						bold: 'Pogrubienie'
+					}
+				}
+			};
+
+			expect( _translate( 'pl', { string: 'bold' }, 1, translations ) ).to.equal( 'Pogrubienie' );
+		} );
+
+		it( 'should throw error if quantity is not a number', () => {
+			expectToThrowCKEditorError( () => {
+				_translate( 'pl', { string: 'Add space' }, null );
+			}, /^translation-service-quantity-not-a-number/ );
+		} );
+	} );
+
+	describe( '_unifyTranslations()', () => {
+		it( 'should merge two objects if array', () => {
+			const translations = [ {
+				pl: {
+					dictionary: {
+						bold: 'Pogrubienie'
+					}
+				}
+			},
+			{
+				de: {
+					dictionary: {
+						bold: 'Fett'
+					}
+				}
+			}
+			];
+
+			expect( _unifyTranslations( translations ) ).to.eql( {
+				pl: {
+					dictionary: {
+						bold: 'Pogrubienie'
+					}
+				},
+				de: {
+					dictionary: {
+						bold: 'Fett'
+					}
+				}
+			} );
+		} );
+
+		it( 'should return actual object', () => {
+			const translations = {
+				pl: {
+					dictionary: {
+						bold: 'Pogrubienie'
+					}
+				}
+			};
+
+			expect( _unifyTranslations( translations ) ).to.eql(
+				{
+					pl: {
+						dictionary: {
+							bold: 'Pogrubienie'
+						}
+					}
+				}
+			);
+		} );
+
+		it( 'should return undifined if undifined', () => {
+			expect( _unifyTranslations( undefined ) ).to.equal( undefined );
 		} );
 	} );
 } );

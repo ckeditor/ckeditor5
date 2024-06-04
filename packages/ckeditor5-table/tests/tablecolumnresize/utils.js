@@ -1,16 +1,17 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Element from '@ckeditor/ckeditor5-engine/src/model/element';
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Table from '../../src/table';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { modelTable } from '../_utils/utils';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Element from '@ckeditor/ckeditor5-engine/src/model/element.js';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import Table from '../../src/table.js';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { modelTable } from '../_utils/utils.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import TableColumnResize from '../../src/tablecolumnresize';
+import TableColumnResize from '../../src/tablecolumnresize.js';
 import {
 	getColumnEdgesIndexes,
 	getChangedResizedTables,
@@ -25,8 +26,9 @@ import {
 	getDomCellOuterWidth,
 	getColumnGroupElement,
 	getTableColumnElements,
-	getTableColumnsWidths
-} from '../../src/tablecolumnresize/utils';
+	getTableColumnsWidths,
+	translateColSpanAttribute
+} from '../../src/tablecolumnresize/utils.js';
 
 /* globals window, document */
 
@@ -38,7 +40,7 @@ describe( 'TableColumnResize utils', () => {
 		document.body.appendChild( editorElement );
 
 		editor = await ClassicEditor.create( editorElement, {
-			plugins: [ Table, TableColumnResize, Paragraph ]
+			plugins: [ Table, TableColumnResize, Paragraph, ClipboardPipeline ]
 		} );
 
 		model = editor.model;
@@ -664,19 +666,67 @@ describe( 'TableColumnResize utils', () => {
 		} );
 	} );
 
-	describe( 'getTableColumns()', () => {
+	describe( 'getTableColumnElements()', () => {
 		it( 'should return tableColumn array when there are columns', () => {
 			setModelData( model, modelTable( [ [ '01', '02' ] ], { columnWidths: '50%,50%' } ) );
 
 			expect( getTableColumnElements( model.document.getRoot().getChild( 0 ) ) ).to.have.length( 2 );
 		} );
+
+		it( 'should return an empty array when there is no tableColumnGroup element', () => {
+			setModelData( model, modelTable( [ [ '01', '02' ] ] ) );
+
+			expect( getTableColumnElements( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [] );
+		} );
 	} );
 
-	describe( 'getColumnWidths()', () => {
+	describe( 'getTableColumnsWidths()', () => {
 		it( 'should return tableColumnGroup count when there are columns', () => {
 			setModelData( model, modelTable( [ [ '01', '02' ] ], { columnWidths: '50%,50%' } ) );
 
 			expect( getTableColumnsWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '50%', '50%' ] );
+		} );
+	} );
+
+	describe( 'translateColSpanAttribute()', () => {
+		it( 'should return the unchanged column widths if there is no colSpan attribute on any element', () => {
+			setModelData( model, modelTable( [ [ '01', '02' ] ], { columnWidths: '50%,50%' } ) );
+
+			model.change( writer => {
+				expect( translateColSpanAttribute( model.document.getRoot().getChild( 0 ), writer ) ).to.deep.equal( [ '50%', '50%' ] );
+			} );
+		} );
+
+		it( 'should return the modified column widths if there are colSpan attributes set', () => {
+			setModelData( model,
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>01</paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>02</paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>03</paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>04</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<tableColumnGroup>' +
+						'<tableColumn colSpan="3" columnWidth="40%"></tableColumn>' +
+						'<tableColumn columnWidth="60%"></tableColumn>' +
+					'</tableColumnGroup>' +
+				'</table>'
+			);
+
+			// These values may seem incorrect, but remember they are not normalised yet.
+			// This function only copies the width from the colSpanned column to the other columns.
+			model.change( writer => {
+				expect( translateColSpanAttribute( model.document.getRoot().getChild( 0 ), writer ) )
+					.to.deep.equal( [ '40%', '40%', '40%', '60%' ] );
+			} );
 		} );
 	} );
 } );

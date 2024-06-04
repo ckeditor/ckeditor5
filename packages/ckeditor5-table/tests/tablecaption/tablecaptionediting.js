@@ -1,16 +1,16 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
 
-import TableCaptionEditing from '../../src/tablecaption/tablecaptionediting';
-import TableEditing from '../../src/tableediting';
+import TableCaptionEditing from '../../src/tablecaption/tablecaptionediting.js';
+import TableEditing from '../../src/tableediting.js';
 
 describe( 'TableCaptionEditing', () => {
 	let editor, model, view;
@@ -301,14 +301,15 @@ describe( 'TableCaptionEditing', () => {
 						'<table>' +
 							'<tbody>' +
 								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox">' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox"' +
+										' tabindex="-1">' +
 										'<span class="ck-table-bogus-paragraph">xyz</span>' +
 									'</td>' +
 								'</tr>' +
 							'</tbody>' +
 						'</table>' +
 						'<figcaption class="ck-editor__editable ck-editor__nested-editable" ' +
-								'contenteditable="true" data-placeholder="Enter table caption" role="textbox">' +
+								'contenteditable="true" data-placeholder="Enter table caption" role="textbox" tabindex="-1">' +
 							'Foo caption' +
 						'</figcaption>' +
 					'</figure>'

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,8 +7,8 @@
  * @module special-characters/specialcharacterslatin
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import type SpecialCharacters from './specialcharacters';
+import { Plugin } from 'ckeditor5/src/core.js';
+import type SpecialCharacters from './specialcharacters.js';
 
 /**
  * A plugin that provides special characters for the "Latin" category.
@@ -26,8 +26,8 @@ export default class SpecialCharactersLatin extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'SpecialCharactersLatin' {
-		return 'SpecialCharactersLatin';
+	public static get pluginName() {
+		return 'SpecialCharactersLatin' as const;
 	}
 
 	/**

@@ -1,19 +1,19 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import StrikethroughEditing from '../../src/strikethrough/strikethroughediting';
-import StrikethroughUI from '../../src/strikethrough/strikethroughui';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import env from '@ckeditor/ckeditor5-utils/src/env';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import StrikethroughEditing from '../../src/strikethrough/strikethroughediting.js';
+import StrikethroughUI from '../../src/strikethrough/strikethroughui.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import env from '@ckeditor/ckeditor5-utils/src/env.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
 describe( 'StrikethroughUI', () => {
 	let editor, strikeView, editorElement;
@@ -30,8 +30,6 @@ describe( 'StrikethroughUI', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-
-				strikeView = editor.ui.componentFactory.create( 'strikethrough' );
 			} );
 	} );
 
@@ -41,56 +39,79 @@ describe( 'StrikethroughUI', () => {
 		return editor.destroy();
 	} );
 
-	it( 'should register strikethrough feature component', () => {
-		expect( strikeView ).to.be.instanceOf( ButtonView );
-		expect( strikeView.isOn ).to.be.false;
-		expect( strikeView.label ).to.equal( 'Strikethrough' );
-		expect( strikeView.icon ).to.match( /<svg / );
-		expect( strikeView.keystroke ).to.equal( 'CTRL+SHIFT+X' );
-		expect( strikeView.isToggleable ).to.be.true;
+	describe( 'toolbar button', () => {
+		beforeEach( () => {
+			strikeView = editor.ui.componentFactory.create( 'strikethrough' );
+		} );
+
+		testButton();
+
+		it( 'should bind `isOn` to strikethrough command', () => {
+			const command = editor.commands.get( 'strikethrough' );
+
+			expect( strikeView.isOn ).to.be.false;
+
+			command.value = true;
+			expect( strikeView.isOn ).to.be.true;
+		} );
 	} );
 
-	it( 'should execute strikethrough command on model execute event', () => {
-		const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+	describe( 'menu bar button', () => {
+		beforeEach( () => {
+			strikeView = editor.ui.componentFactory.create( 'menuBar:strikethrough' );
+		} );
 
-		strikeView.fire( 'execute' );
-
-		sinon.assert.calledOnce( executeSpy );
-		sinon.assert.calledWithExactly( executeSpy, 'strikethrough' );
+		testButton();
 	} );
 
-	it( 'should bind model to strikethrough command', () => {
-		const command = editor.commands.get( 'strikethrough' );
+	function testButton() {
+		it( 'should register strikethrough feature component', () => {
+			expect( strikeView ).to.be.instanceOf( ButtonView );
+			expect( strikeView.isOn ).to.be.false;
+			expect( strikeView.label ).to.equal( 'Strikethrough' );
+			expect( strikeView.icon ).to.match( /<svg / );
+			expect( strikeView.keystroke ).to.equal( 'CTRL+SHIFT+X' );
+			expect( strikeView.isToggleable ).to.be.true;
+		} );
 
-		expect( strikeView.isOn ).to.be.false;
-		expect( strikeView.isEnabled ).to.be.true;
+		it( 'should execute strikethrough command on model execute event', () => {
+			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
-		command.value = true;
-		expect( strikeView.isOn ).to.be.true;
+			strikeView.fire( 'execute' );
 
-		command.isEnabled = false;
-		expect( strikeView.isEnabled ).to.be.false;
-	} );
+			sinon.assert.calledOnce( executeSpy );
+			sinon.assert.calledWithExactly( executeSpy, 'strikethrough' );
+		} );
 
-	it( 'should set keystroke in the model', () => {
-		expect( strikeView.keystroke ).to.equal( 'CTRL+SHIFT+X' );
-	} );
+		it( 'should bind model to strikethrough command', () => {
+			const command = editor.commands.get( 'strikethrough' );
 
-	it( 'should set editor keystroke', () => {
-		const spy = sinon.spy( editor, 'execute' );
-		const keyEventData = {
-			keyCode: keyCodes.x,
-			shiftKey: true,
-			ctrlKey: !env.isMac,
-			metaKey: env.isMac,
-			preventDefault: sinon.spy(),
-			stopPropagation: sinon.spy()
-		};
+			expect( strikeView.isEnabled ).to.be.true;
 
-		const wasHandled = editor.keystrokes.press( keyEventData );
+			command.isEnabled = false;
+			expect( strikeView.isEnabled ).to.be.false;
+		} );
 
-		expect( wasHandled ).to.be.true;
-		expect( spy.calledOnce ).to.be.true;
-		expect( keyEventData.preventDefault.calledOnce ).to.be.true;
-	} );
+		it( 'should set keystroke in the model', () => {
+			expect( strikeView.keystroke ).to.equal( 'CTRL+SHIFT+X' );
+		} );
+
+		it( 'should set editor keystroke', () => {
+			const spy = sinon.spy( editor, 'execute' );
+			const keyEventData = {
+				keyCode: keyCodes.x,
+				shiftKey: true,
+				ctrlKey: !env.isMac,
+				metaKey: env.isMac,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+
+			const wasHandled = editor.keystrokes.press( keyEventData );
+
+			expect( wasHandled ).to.be.true;
+			expect( spy.calledOnce ).to.be.true;
+			expect( keyEventData.preventDefault.calledOnce ).to.be.true;
+		} );
+	}
 } );

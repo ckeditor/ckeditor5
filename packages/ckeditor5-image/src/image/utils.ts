@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -15,11 +15,11 @@ import type {
 	ViewContainerElement,
 	DowncastWriter,
 	ViewElement
-} from 'ckeditor5/src/engine';
-import type { Editor } from 'ckeditor5/src/core';
-import { first } from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/engine.js';
+import type { Editor } from 'ckeditor5/src/core.js';
+import { first } from 'ckeditor5/src/utils.js';
 
-import type ImageUtils from '../imageutils';
+import type ImageUtils from '../imageutils.js';
 
 /**
  * Creates a view element representing the inline image.
@@ -134,4 +134,29 @@ export function determineImageTypeForInsertionAtSelection(
 
 	// Otherwise insert an inline image.
 	return 'imageInline';
+}
+
+/**
+ * Returns parsed value of the size, but only if it contains unit: px.
+ */
+export function getSizeValueIfInPx( size: string | undefined ): number | null {
+	if ( size && size.endsWith( 'px' ) ) {
+		return parseInt( size );
+	}
+
+	return null;
+}
+
+/**
+ * Returns true if both styles (width and height) are set.
+ *
+ * If both image styles: width & height are set, they will override the image width & height attributes in the
+ * browser. In this case, the image looks the same as if these styles were applied to attributes instead of styles.
+ * That's why we can upcast these styles to width & height attributes instead of resizedWidth and resizedHeight.
+ */
+export function widthAndHeightStylesAreBothSet( viewElement: ViewElement ): boolean {
+	const widthStyle = getSizeValueIfInPx( viewElement.getStyle( 'width' ) );
+	const heightStyle = getSizeValueIfInPx( viewElement.getStyle( 'height' ) );
+
+	return !!( widthStyle && heightStyle );
 }

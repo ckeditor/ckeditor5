@@ -2,20 +2,22 @@
 category: api-reference
 ---
 
-# CKEditor 5 autosave feature
+# CKEditor&nbsp;5 autosave feature
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-autosave.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-autosave)
 
-This package implements the autosaving feature for CKEditor 5.
+This package implements the autosaving feature for CKEditor&nbsp;5.
 
 ## Documentation
 
-See the {@link installation/getting-started/getting-and-setting-data#autosave-feature autosave feature guide} and the {@link module:autosave/autosave~Autosave} plugin documentation.
+See the {@link features/autosave Autosave feature guide} and the {@link module:autosave/autosave~Autosave} plugin documentation.
 
 ## Installation
 
+This package is part of our open-source aggregate package.
+
 ```bash
-npm install --save @ckeditor/ckeditor5-autosave
+npm install ckeditor5
 ```
 
 ## Contribute

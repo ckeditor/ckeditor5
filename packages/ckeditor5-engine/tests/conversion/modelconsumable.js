@@ -1,14 +1,14 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ModelConsumable from '../../src/conversion/modelconsumable';
-import ModelElement from '../../src/model/element';
-import ModelTextProxy from '../../src/model/textproxy';
-import ModelText from '../../src/model/text';
+import ModelConsumable from '../../src/conversion/modelconsumable.js';
+import ModelElement from '../../src/model/element.js';
+import ModelTextProxy from '../../src/model/textproxy.js';
+import ModelText from '../../src/model/text.js';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 
 describe( 'ModelConsumable', () => {
 	let modelConsumable, modelElement;

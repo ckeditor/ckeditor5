@@ -1,12 +1,12 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import findAttributeRange, { findAttributeRangeBound } from '../../src/utils/findattributerange';
-import Model from '@ckeditor/ckeditor5-engine/src/model/model';
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import findAttributeRange, { findAttributeRangeBound } from '../../src/utils/findattributerange.js';
+import Model from '@ckeditor/ckeditor5-engine/src/model/model.js';
+import Range from '@ckeditor/ckeditor5-engine/src/model/range.js';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { Position } from '@ckeditor/ckeditor5-engine';
 
 describe( 'findAttributeRange', () => {

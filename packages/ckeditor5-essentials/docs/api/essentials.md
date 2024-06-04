@@ -2,11 +2,11 @@
 category: api-reference
 ---
 
-# CKEditor 5 essentials plugin
+# CKEditor&nbsp;5 essentials plugin
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-essentials.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-essentials)
 
-Essential editing features for CKEditor 5 wrapped in one plugin.
+Essential editing features for CKEditor&nbsp;5 wrapped in one plugin.
 
 The {@link module:essentials/essentials~Essentials} plugin exposed by this package enables {@link module:clipboard/clipboard~Clipboard clipboard}, {@link module:enter/enter~Enter Enter}, {@link module:select-all/selectall~SelectAll select all}, {@link module:enter/shiftenter~ShiftEnter ShiftEnter}, {@link module:typing/typing~Typing typing} and {@link module:undo/undo~Undo undo} support.
 
@@ -16,8 +16,10 @@ See the {@link module:essentials/essentials~Essentials} plugin documentation.
 
 ## Installation
 
+This package is part of our open-source aggregate package.
+
 ```bash
-npm install --save @ckeditor/ckeditor5-essentials
+npm install ckeditor5
 ```
 
 ## Contribute

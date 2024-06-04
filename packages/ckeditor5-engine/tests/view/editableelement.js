@@ -1,14 +1,14 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import createDocumentMock from '../../tests/view/_utils/createdocumentmock';
+import createDocumentMock from '../../tests/view/_utils/createdocumentmock.js';
 
-import EditableElement from '../../src/view/editableelement';
-import Range from '../../src/view/range';
-import Document from '../../src/view/document';
-import { StylesProcessor } from '../../src/view/stylesmap';
+import EditableElement from '../../src/view/editableelement.js';
+import Range from '../../src/view/range.js';
+import Document from '../../src/view/document.js';
+import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'EditableElement', () => {
 	describe( 'is', () => {

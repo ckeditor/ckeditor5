@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,16 +7,16 @@
  * @module media-embed/automediaembed
  */
 
-import { type Editor, Plugin } from 'ckeditor5/src/core';
-import { LiveRange, LivePosition } from 'ckeditor5/src/engine';
-import { Clipboard, type ClipboardPipeline } from 'ckeditor5/src/clipboard';
-import { Delete } from 'ckeditor5/src/typing';
-import { Undo, type UndoCommand } from 'ckeditor5/src/undo';
-import { global } from 'ckeditor5/src/utils';
+import { type Editor, Plugin } from 'ckeditor5/src/core.js';
+import { LiveRange, LivePosition } from 'ckeditor5/src/engine.js';
+import { Clipboard, type ClipboardPipeline } from 'ckeditor5/src/clipboard.js';
+import { Delete } from 'ckeditor5/src/typing.js';
+import { Undo, type UndoCommand } from 'ckeditor5/src/undo.js';
+import { global } from 'ckeditor5/src/utils.js';
 
-import MediaEmbedEditing from './mediaembedediting';
-import { insertMedia } from './utils';
-import type MediaEmbedCommand from './mediaembedcommand';
+import MediaEmbedEditing from './mediaembedediting.js';
+import { insertMedia } from './utils.js';
+import type MediaEmbedCommand from './mediaembedcommand.js';
 
 const URL_REGEXP = /^(?:http(s)?:\/\/)?[\w-]+\.[\w-.~:/?#[\]@!$&'()*+,;=%]+$/;
 
@@ -35,8 +35,8 @@ export default class AutoMediaEmbed extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'AutoMediaEmbed' {
-		return 'AutoMediaEmbed';
+	public static get pluginName() {
+		return 'AutoMediaEmbed' as const;
 	}
 
 	/**

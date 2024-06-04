@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,11 +7,11 @@
  * @module horizontal-line/horizontallineediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { toWidget } from 'ckeditor5/src/widget';
-import type { DowncastWriter, ViewElement } from 'ckeditor5/src/engine';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { toWidget } from 'ckeditor5/src/widget.js';
+import type { DowncastWriter, ViewElement } from 'ckeditor5/src/engine.js';
 
-import HorizontalLineCommand from './horizontallinecommand';
+import HorizontalLineCommand from './horizontallinecommand.js';
 
 import '../theme/horizontalline.css';
 
@@ -22,8 +22,8 @@ export default class HorizontalLineEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'HorizontalLineEditing' {
-		return 'HorizontalLineEditing';
+	public static get pluginName() {
+		return 'HorizontalLineEditing' as const;
 	}
 
 	/**

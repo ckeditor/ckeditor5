@@ -1,15 +1,15 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import DowncastWriter from '../../../src/view/downcastwriter';
-import ContainerElement from '../../../src/view/containerelement';
-import Text from '../../../src/view/text';
-import Position from '../../../src/view/position';
-import { stringify, parse } from '../../../src/dev-utils/view';
-import Document from '../../../src/view/document';
-import { StylesProcessor } from '../../../src/view/stylesmap';
+import DowncastWriter from '../../../src/view/downcastwriter.js';
+import ContainerElement from '../../../src/view/containerelement.js';
+import Text from '../../../src/view/text.js';
+import Position from '../../../src/view/position.js';
+import { stringify, parse } from '../../../src/dev-utils/view.js';
+import Document from '../../../src/view/document.js';
+import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 describe( 'DowncastWriter', () => {
 	describe( 'mergeAttributes', () => {

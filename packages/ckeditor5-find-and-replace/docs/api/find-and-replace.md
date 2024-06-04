@@ -2,11 +2,11 @@
 category: api-reference
 ---
 
-# CKEditor 5 find and replace feature
+# CKEditor&nbsp;5 find and replace feature
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-find-and-replace.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-find-and-replace)
 
-This package implements the find and replace feature for CKEditor 5.
+This package implements the find and replace feature for CKEditor&nbsp;5.
 
 ## Demo
 
@@ -18,8 +18,10 @@ See the {@link features/find-and-replace find and replace feature guide} and the
 
 ## Installation
 
-```
-npm install --save @ckeditor/ckeditor5-find-and-replace
+This package is part of our open-source aggregate package.
+
+```bash
+npm install ckeditor5
 ```
 
 ## Contribute

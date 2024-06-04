@@ -1,34 +1,35 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document, Event, console */
 
-import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { global, keyCodes } from '@ckeditor/ckeditor5-utils';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import Model from '../../src/model';
+import Model from '../../src/model.js';
 
-import ButtonView from '../../src/button/buttonview';
-import SwitchButtonView from '../../src/button/switchbuttonview';
-import DropdownView from '../../src/dropdown/dropdownview';
-import DropdownPanelView from '../../src/dropdown/dropdownpanelview';
-import SplitButtonView from '../../src/dropdown/button/splitbuttonview';
-import View from '../../src/view';
-import ToolbarView from '../../src/toolbar/toolbarview';
+import ButtonView from '../../src/button/buttonview.js';
+import SwitchButtonView from '../../src/button/switchbuttonview.js';
+import DropdownView from '../../src/dropdown/dropdownview.js';
+import DropdownPanelView from '../../src/dropdown/dropdownpanelview.js';
+import SplitButtonView from '../../src/dropdown/button/splitbuttonview.js';
+import View from '../../src/view.js';
+import ToolbarView from '../../src/toolbar/toolbarview.js';
 import {
 	createDropdown,
 	addToolbarToDropdown,
 	addListToDropdown,
 	focusChildOnDropdownOpen
-} from '../../src/dropdown/utils';
-import ListItemView from '../../src/list/listitemview';
-import ListSeparatorView from '../../src/list/listseparatorview';
-import ListView from '../../src/list/listview';
-import ViewCollection from '../../src/viewcollection';
+} from '../../src/dropdown/utils.js';
+import ListItemView from '../../src/list/listitemview.js';
+import ListSeparatorView from '../../src/list/listseparatorview.js';
+import ListView from '../../src/list/listview.js';
+import ViewCollection from '../../src/viewcollection.js';
+import { ListItemGroupView } from '../../src/index.js';
 
 describe( 'utils', () => {
 	let locale, dropdownView;
@@ -65,6 +66,15 @@ describe( 'utils', () => {
 			dropdownView = createDropdown( locale, SplitButtonView );
 
 			expect( dropdownView.buttonView ).to.be.instanceOf( SplitButtonView );
+		} );
+
+		it( 'creates dropdown#buttonView out of passed ButtonView instance', () => {
+			const buttonView = new SplitButtonView( locale );
+
+			dropdownView = createDropdown( locale, buttonView );
+
+			expect( dropdownView.buttonView ).to.be.instanceOf( SplitButtonView );
+			expect( dropdownView.buttonView ).to.equal( buttonView );
 		} );
 
 		it( 'binds #isEnabled to the buttonView', () => {
@@ -150,6 +160,35 @@ describe( 'utils', () => {
 
 					// Dropdown is still open.
 					expect( dropdownView.isOpen ).to.be.true;
+				} );
+
+				it( 'listens to view#isOpen and reacts to DOM events (focus tracker elements)', () => {
+					// Open the dropdown.
+					dropdownView.isOpen = true;
+
+					// Event from view.element should be discarded.
+					dropdownView.element.dispatchEvent( new Event( 'mousedown', {
+						bubbles: true
+					} ) );
+
+					// Dropdown is still open.
+					expect( dropdownView.isOpen ).to.be.true;
+
+					const documentElement = document.createElement( 'div' );
+					document.body.appendChild( documentElement );
+
+					// Add the new document element to dropdown focus tracker.
+					dropdownView.focusTracker.add( documentElement );
+
+					// Fire event from outside of the dropdown.
+					documentElement.dispatchEvent( new Event( 'mousedown', {
+						bubbles: true
+					} ) );
+
+					// Dropdown is still open.
+					expect( dropdownView.isOpen ).to.be.true;
+
+					documentElement.remove();
 				} );
 			} );
 
@@ -880,6 +919,12 @@ describe( 'utils', () => {
 					expect( button.foo ).to.equal( 'bar' );
 					expect( button.baz ).to.equal( 'qux' );
 
+					button.isOn = true;
+					expect( button.element.attributes[ 'aria-checked' ].value ).to.equal( 'true' );
+
+					button.isOn = false;
+					expect( button.element.hasAttribute( 'aria-checked' ) ).to.be.false;
+
 					def.model.baz = 'foo?';
 					expect( button.baz ).to.equal( 'foo?' );
 				} );
@@ -962,6 +1007,71 @@ describe( 'utils', () => {
 					definitions.add( { type: 'separator' } );
 
 					expect( listItems.first ).to.be.instanceOf( ListSeparatorView );
+				} );
+			} );
+
+			describe( 'with ListGroupView', () => {
+				let definitionsWithGroups;
+
+				beforeEach( () => {
+					definitionsWithGroups = [
+						{
+							type: 'button',
+							model: new Model( { label: 'a', labelStyle: 'x' } )
+						},
+						{
+							type: 'group',
+							label: 'b',
+							items: new Collection( [
+								{
+									type: 'button',
+									model: new Model( { label: 'b.a', labelStyle: 'y' } )
+								},
+								{
+									type: 'button',
+									model: new Model( { label: 'b.b', labelStyle: 'z' } )
+								}
+							] )
+						}
+					];
+				} );
+
+				it( 'is populated using item definitions', () => {
+					definitions.addMany( definitionsWithGroups );
+
+					expect( listItems ).to.have.length( 2 );
+					expect( listItems.first ).to.be.instanceOf( ListItemView );
+					expect( listItems.first.children.first ).to.be.instanceOf( ButtonView );
+					expect( listItems.first.children.first.labelView.text ).to.equal( 'a' );
+
+					expect( listItems.last ).to.be.instanceOf( ListItemGroupView );
+
+					expect( listItems.last.items.first ).to.be.instanceOf( ListItemView );
+					expect( listItems.last.items.first.children.first ).to.be.instanceOf( ButtonView );
+					expect( listItems.last.items.first.children.first.labelView.text ).to.equal( 'b.a' );
+					expect( listItems.last.items.first.children.first.labelView.style ).to.equal( 'y' );
+
+					expect( listItems.last.items.last ).to.be.instanceOf( ListItemView );
+					expect( listItems.last.items.last.children.first ).to.be.instanceOf( ButtonView );
+					expect( listItems.last.items.last.children.first.labelView.text ).to.equal( 'b.b' );
+					expect( listItems.last.items.last.children.first.labelView.style ).to.equal( 'z' );
+				} );
+
+				it( 'delegates #execute event from the ListGroupView children to the DropdownView', done => {
+					definitions.addMany( definitionsWithGroups );
+
+					dropdownView.on( 'execute', evt => {
+						expect( evt.source ).to.equal( listItems.last.items.first.children.first );
+						expect( evt.path ).to.deep.equal( [
+							listItems.last.items.first.children.first,
+							listItems.last.items.first,
+							dropdownView
+						] );
+
+						done();
+					} );
+
+					listItems.last.items.first.children.first.fire( 'execute' );
 				} );
 			} );
 		} );

@@ -1,13 +1,17 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import plainTextToHtml from '../../src/utils/plaintexttohtml';
+import plainTextToHtml from '../../src/utils/plaintexttohtml.js';
 
 describe( 'plainTextToHtml()', () => {
 	it( 'encodes < and >', () => {
 		expect( plainTextToHtml( 'x y <z>' ) ).to.equal( 'x y &lt;z&gt;' );
+	} );
+
+	it( 'encodes &', () => {
+		expect( plainTextToHtml( 'x=1&y=2&z=3' ) ).to.equal( 'x=1&amp;y=2&amp;z=3' );
 	} );
 
 	it( 'turns double line breaks into paragraphs (Linux/Mac EOL style)', () => {

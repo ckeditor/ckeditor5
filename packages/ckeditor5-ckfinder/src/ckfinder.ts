@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,10 +7,10 @@
  * @module ckfinder/ckfinder
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 
-import CKFinderUI from './ckfinderui';
-import CKFinderEditing from './ckfinderediting';
+import CKFinderUI from './ckfinderui.js';
+import CKFinderEditing from './ckfinderediting.js';
 
 /**
  * The CKFinder feature, a bridge between the CKEditor 5 WYSIWYG editor and the
@@ -32,8 +32,8 @@ export default class CKFinder extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'CKFinder' {
-		return 'CKFinder';
+	public static get pluginName() {
+		return 'CKFinder' as const;
 	}
 
 	/**

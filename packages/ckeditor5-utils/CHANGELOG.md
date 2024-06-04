@@ -5,7 +5,7 @@ All changes in the package are documented in the main repository. See: https://g
 
 Changes for the past releases are available below.
 
-## [19.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v18.0.0...v19.0.0) (2020-04-29)
+## [19.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v18.0.0...v19.0.0) (April 29, 2020)
 
 ### MINOR BREAKING CHANGES
 
@@ -26,7 +26,7 @@ Changes for the past releases are available below.
 
 * Do not execute `ResizeObserver` callbacks when the resized element is invisible (but still in DOM) (see [ckeditor/ckeditor5#6570](https://github.com/ckeditor/ckeditor5/issues/6570)). ([fb13d9d](https://github.com/ckeditor/ckeditor5-utils/commit/fb13d9d))
 * Editor will now load correctly in environment with `Symbol` polyfill. Closes [ckeditor/ckeditor5#6489](https://github.com/ckeditor/ckeditor5/issues/6489). ([7cd1f48](https://github.com/ckeditor/ckeditor5-utils/commit/7cd1f48))
-* Fixed various cases with typing multi-byte unicode sequences (e.g. emojis). Closes [ckeditor/ckeditor5#3147](https://github.com/ckeditor/ckeditor5/issues/3147). Closes [ckeditor/ckeditor5#6495](https://github.com/ckeditor/ckeditor5/issues/6495). ([6dc1ba6](https://github.com/ckeditor/ckeditor5-utils/commit/6dc1ba6))
+* Fixed various cases with typing multi-byte Unicode sequences (like emojis). Closes [ckeditor/ckeditor5#3147](https://github.com/ckeditor/ckeditor5/issues/3147). Closes [ckeditor/ckeditor5#6495](https://github.com/ckeditor/ckeditor5/issues/6495). ([6dc1ba6](https://github.com/ckeditor/ckeditor5-utils/commit/6dc1ba6))
 * The `getOptimalPosition()` helper should prefer positions that fit inside the viewport even though there are some others that fit better into the limiter. Closes [ckeditor/ckeditor5#6181](https://github.com/ckeditor/ckeditor5/issues/6181). ([7cd1238](https://github.com/ckeditor/ckeditor5-utils/commit/7cd1238))
 
 ### Other changes
@@ -35,12 +35,12 @@ Changes for the past releases are available below.
 * The `getPositionedAncestor()` helper should use `offsetParent` instead of `getComputedStyle()` for performance reasons. Closes [ckeditor/ckeditor5#6573](https://github.com/ckeditor/ckeditor5/issues/6573). ([7939756](https://github.com/ckeditor/ckeditor5-utils/commit/7939756))
 
 
-## [18.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v17.0.0...v18.0.0) (2020-03-19)
+## [18.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v17.0.0...v18.0.0) (March 19, 2020)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 ### MINOR BREAKING CHANGES
 
@@ -57,19 +57,19 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `uid()` helper should be a lot faster. Closes [ckeditor/ckeditor5#6188](https://github.com/ckeditor/ckeditor5/issues/6188). ([b57fc3f](https://github.com/ckeditor/ckeditor5-utils/commit/b57fc3f))
 
 
-## [16.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v15.0.0...v16.0.0) (2019-12-04)
+## [16.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v15.0.0...v16.0.0) (December 4, 2019)
 
 ### Bug fixes
 
-* Improved error rethrowing by replacing the error stack. Closes [ckeditor/ckeditor5#5595](https://github.com/ckeditor/ckeditor5/issues/5595). ([7685c0d](https://github.com/ckeditor/ckeditor5-utils/commit/7685c0d))
+* Improved error re-throwing by replacing the error stack. Closes [ckeditor/ckeditor5#5595](https://github.com/ckeditor/ckeditor5/issues/5595). ([7685c0d](https://github.com/ckeditor/ckeditor5-utils/commit/7685c0d))
 
 
-## [15.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v14.0.0...v15.0.0) (2019-10-23)
+## [15.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v14.0.0...v15.0.0) (October 23, 2019)
 
 ### Features
 
 * Implemented the `getResizeObserver()` helper that offers an entry to the native `ResizeObserver` API (see [ckeditor/ckeditor5#416](https://github.com/ckeditor/ckeditor5/issues/416)). ([875d5a4](https://github.com/ckeditor/ckeditor5-utils/commit/875d5a4))
-* Introduced `assertEqualMarkup()` test util method. Closes [ckeditor/ckeditor5-paste-from-office#14](https://github.com/ckeditor/ckeditor5-paste-from-office/issues/14). ([ee1655f](https://github.com/ckeditor/ckeditor5-utils/commit/ee1655f))
+* Introduced `assertEqualMarkup()` test utility method. Closes [ckeditor/ckeditor5-paste-from-office#14](https://github.com/ckeditor/ckeditor5-paste-from-office/issues/14). ([ee1655f](https://github.com/ckeditor/ckeditor5-utils/commit/ee1655f))
 * Introduced support for creating elements in other XML namespaces. See [ckeditor/ckeditor5#1842](https://github.com/ckeditor/ckeditor5/issues/1842). ([37fbcb9](https://github.com/ckeditor/ckeditor5-utils/commit/37fbcb9))
 
   Thanks [@Sebobo](https://github.com/Sebobo)!
@@ -83,7 +83,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Introduced the `CKEditorError.rethrowUnexpectedError()` helper. Added custom error handling for the `Emitter#fire()` function. Part of [ckeditor/ckeditor5#1304](https://github.com/ckeditor/ckeditor5/issues/1304). ([1d84705](https://github.com/ckeditor/ckeditor5-utils/commit/1d84705))
 
 
-## [14.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v13.0.1...v14.0.0) (2019-08-26)
+## [14.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v13.0.1...v14.0.0) (August 26, 2019)
 
 ### Features
 
@@ -93,21 +93,21 @@ Internal changes only (updated dependencies, documentation, etc.).
 ### Other changes
 
 * The issue tracker for this package was moved to https://github.com/ckeditor/ckeditor5/issues. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([71469ac](https://github.com/ckeditor/ckeditor5-utils/commit/71469ac))
-* Removed the CKEditor 5 logger and its usage. Part of [ckeditor/ckeditor5#383](https://github.com/ckeditor/ckeditor5/issues/383). ([584ef1d](https://github.com/ckeditor/ckeditor5-utils/commit/584ef1d))
+* Removed the CKEditor&nbsp;5 logger and its usage. Part of [ckeditor/ckeditor5#383](https://github.com/ckeditor/ckeditor5/issues/383). ([584ef1d](https://github.com/ckeditor/ckeditor5-utils/commit/584ef1d))
 
 ### BREAKING CHANGES
 
 * The`Locale()` constructor arguments syntax has changed. Please refer to the API documentation to learn more.
 * The `Locale#language` property has been deprecated by `Locale#uiLanguage`. Please refer to the API documentation to learn more.
-* Removed the CKEditor 5 logger utility.
+* Removed the CKEditor&nbsp;5 logger utility.
 
 
-## [13.0.1](https://github.com/ckeditor/ckeditor5-utils/compare/v13.0.0...v13.0.1) (2019-07-10)
+## [13.0.1](https://github.com/ckeditor/ckeditor5-utils/compare/v13.0.0...v13.0.1) (July 10, 2019)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [13.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v12.1.1...v13.0.0) (2019-07-04)
+## [13.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v12.1.1...v13.0.0) (July 4, 2019)
 
 ### Features
 
@@ -122,12 +122,12 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The list of `CKEditorError()`'s parameters was changed – now it requires the message, context and then data. The `isCKEditorError()` method was renamed to `is()`.
 
 
-## [12.1.1](https://github.com/ckeditor/ckeditor5-utils/compare/v12.1.0...v12.1.1) (2019-06-05)
+## [12.1.1](https://github.com/ckeditor/ckeditor5-utils/compare/v12.1.0...v12.1.1) (June 6, 2019)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [12.1.0](https://github.com/ckeditor/ckeditor5-utils/compare/v12.0.0...v12.1.0) (2019-04-10)
+## [12.1.0](https://github.com/ckeditor/ckeditor5-utils/compare/v12.0.0...v12.1.0) (April 4, 2019)
 
 ### Features
 
@@ -135,7 +135,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Made `FocusTracker#focusedElement` observable to bring support for multi-root editors (see [ckeditor/ckeditor5#1599](https://github.com/ckeditor/ckeditor5/issues/1599)). ([952d440](https://github.com/ckeditor/ckeditor5-utils/commit/952d440))
 
 
-## [12.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v11.1.0...v12.0.0) (2019-02-28)
+## [12.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v11.1.0...v12.0.0) (February 28, 2019)
 
 ### Features
 
@@ -149,7 +149,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 ### Other changes
 
 * Configuration options should be cloned to prevent features from altering the original values. Closes [#257](https://github.com/ckeditor/ckeditor5-utils/issues/257). ([7981d4e](https://github.com/ckeditor/ckeditor5-utils/commit/7981d4e))
-* DOM Elements will not be cloned when returned from config.get. Closes [#264](https://github.com/ckeditor/ckeditor5-utils/issues/264). ([4ad23b1](https://github.com/ckeditor/ckeditor5-utils/commit/4ad23b1))
+* DOM Elements will not be cloned when returned from `editor.config.get()`. Closes [#264](https://github.com/ckeditor/ckeditor5-utils/issues/264). ([4ad23b1](https://github.com/ckeditor/ckeditor5-utils/commit/4ad23b1))
 * Optimized `diff()` function to use `fastDiff()` function internally for large data sets. Closes [#269](https://github.com/ckeditor/ckeditor5-utils/issues/269). ([ee9bed0](https://github.com/ckeditor/ckeditor5-utils/commit/ee9bed0))
 * Replaced `for..of` statement in `EventEmitter` with `Array.prototype.forEach`. This changes allows building a React application using `create-react-app@2`. Closes [ckeditor/ckeditor5-react#40](https://github.com/ckeditor/ckeditor5-react/issues/40). ([900b54b](https://github.com/ckeditor/ckeditor5-utils/commit/900b54b))
 
@@ -158,7 +158,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Upgraded minimal versions of Node to `8.0.0` and npm to `5.7.1`. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([612ea3c](https://github.com/ckeditor/ckeditor5-cloud-services/commit/612ea3c))
 
 
-## [11.1.0](https://github.com/ckeditor/ckeditor5-utils/compare/v11.0.0...v11.1.0) (2018-12-05)
+## [11.1.0](https://github.com/ckeditor/ckeditor5-utils/compare/v11.0.0...v11.1.0) (December 5, 2018)
 
 ### Features
 
@@ -166,10 +166,10 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Other changes
 
-* Various fixes in the API docs. Thanks to [@denisname](https://github.com/denisname)!
+* Various fixes in the API documentation. Thanks to [@denisname](https://github.com/denisname)!
 
 
-## [11.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v10.2.1...v11.0.0) (2018-10-08)
+## [11.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v10.2.1...v11.0.0) (October 8, 2018)
 
 ### Other changes
 
@@ -180,12 +180,12 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Removed the `lodash` library from this package (a modular `lodash` build has been kept under `src/lib/lodash/`). We now recommend using `lodash-es` directly.
 
 
-## [10.2.1](https://github.com/ckeditor/ckeditor5-utils/compare/v10.2.0...v10.2.1) (2018-07-18)
+## [10.2.1](https://github.com/ckeditor/ckeditor5-utils/compare/v10.2.0...v10.2.1) (July 18, 2018)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [10.2.0](https://github.com/ckeditor/ckeditor5-utils/compare/v10.1.0...v10.2.0) (2018-07-18)
+## [10.2.0](https://github.com/ckeditor/ckeditor5-utils/compare/v10.1.0...v10.2.0) (July 18, 2018)
 
 ### Features
 
@@ -197,7 +197,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `isWindow()` helper should work in the Electron environment. Closes [ckeditor/ckeditor5#879](https://github.com/ckeditor/ckeditor5/issues/879). ([d561151](https://github.com/ckeditor/ckeditor5-utils/commit/d561151))
 
 
-## [10.1.0](https://github.com/ckeditor/ckeditor5-utils/compare/v10.0.0...v10.1.0) (2018-06-21)
+## [10.1.0](https://github.com/ckeditor/ckeditor5-utils/compare/v10.0.0...v10.1.0) (June 21, 2018)
 
 ### Features
 
@@ -209,7 +209,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Error should not be thrown when scrolling the viewport from within an iframe in a different domain. Closes [ckeditor/ckeditor5#930](https://github.com/ckeditor/ckeditor5/issues/930). ([ad4656e](https://github.com/ckeditor/ckeditor5-utils/commit/ad4656e))
 
 
-## [10.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v1.0.0-beta.4...v10.0.0) (2018-04-25)
+## [10.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v1.0.0-beta.4...v10.0.0) (April 25, 2018)
 
 ### Other changes
 
@@ -217,20 +217,20 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### BREAKING CHANGES
 
-* The license under which CKEditor 5 is released has been changed from a triple GPL, LGPL and MPL license to a GPL2+ only. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
+* The license under which CKEditor&nbsp;5 is released has been changed from a triple GPL, LGPL and MPL license to a GPL2+ only. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
 
 
-## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-utils/compare/v1.0.0-beta.2...v1.0.0-beta.4) (2018-04-19)
-
-Internal changes only (updated dependencies, documentation, etc.).
-
-
-## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-utils/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2018-04-10)
+## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-utils/compare/v1.0.0-beta.2...v1.0.0-beta.4) (April 19, 2018)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-utils/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
+## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-utils/compare/v1.0.0-beta.1...v1.0.0-beta.2) (April 10, 2018)
+
+Internal changes only (updated dependencies, documentation, etc.).
+
+
+## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-utils/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (March 15, 2018)
 
 ### Features
 
@@ -260,14 +260,14 @@ Internal changes only (updated dependencies, documentation, etc.).
 * `isDomNode()` was renamed to `isNode()`.
 
 
-## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-utils/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
+## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-utils/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (November 14, 2017)
 
 ### Bug fixes
 
 * Removed a period at the end of an error message because some browsers included the period in links to errors. Closes [#193](https://github.com/ckeditor/ckeditor5-utils/issues/193). ([fdebc2f](https://github.com/ckeditor/ckeditor5-utils/commit/fdebc2f))
 
 
-## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-utils/compare/v0.10.0...v1.0.0-alpha.1) (2017-10-03)
+## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-utils/compare/v0.10.0...v1.0.0-alpha.1) (October 3, 2017)
 
 ### Features
 
@@ -278,7 +278,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * `CKEditorError#message`, `log.error()` and `log.warn()` will contain a link to the error documentation. Closes [#185](https://github.com/ckeditor/ckeditor5-utils/issues/185). ([b7a00c9](https://github.com/ckeditor/ckeditor5-utils/commit/b7a00c9))
 
 
-## [0.10.0](https://github.com/ckeditor/ckeditor5-utils/compare/v0.9.1...v0.10.0) (2017-09-03)
+## [0.10.0](https://github.com/ckeditor/ckeditor5-utils/compare/v0.9.1...v0.10.0) (September 3, 2017)
 
 ### Bug fixes
 
@@ -296,7 +296,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `getOptimalPosition()` utility should accept the target option defined as a function. Closes [#157](https://github.com/ckeditor/ckeditor5-utils/issues/157). ([d63abae](https://github.com/ckeditor/ckeditor5-utils/commit/d63abae))
 
 
-## [0.9.1](https://github.com/ckeditor/ckeditor5-utils/compare/v0.9.0...v0.9.1) (2017-05-07)
+## [0.9.1](https://github.com/ckeditor/ckeditor5-utils/compare/v0.9.0...v0.9.1) (May 7, 2017)
 
 ### Bug fixes
 
@@ -304,7 +304,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `getOptimalPosition()` utility should consider limiter ancestors with CSS overflow. Closes [#148](https://github.com/ckeditor/ckeditor5-utils/issues/148). ([6bf1741](https://github.com/ckeditor/ckeditor5-utils/commit/6bf1741))
 
 
-## [0.9.0](https://github.com/ckeditor/ckeditor5-utils/compare/v0.8.0...v0.9.0) (2017-04-05)
+## [0.9.0](https://github.com/ckeditor/ckeditor5-utils/compare/v0.8.0...v0.9.0) (April 5, 2017)
 
 ### Bug fixes
 
@@ -317,7 +317,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Two–way data binding between `Collection` instances. Closes [#132](https://github.com/ckeditor/ckeditor5-utils/issues/132). ([6b79624](https://github.com/ckeditor/ckeditor5-utils/commit/6b79624))
 
 
-## [0.8.0](https://github.com/ckeditor/ckeditor5-utils/compare/v0.7.0...v0.8.0) (2017-03-06)
+## [0.8.0](https://github.com/ckeditor/ckeditor5-utils/compare/v0.7.0...v0.8.0) (March 6, 2017)
 
 ### Features
 

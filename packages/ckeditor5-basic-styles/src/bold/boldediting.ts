@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,8 +7,8 @@
  * @module basic-styles/bold/boldediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import AttributeCommand from '../attributecommand';
+import { Plugin } from 'ckeditor5/src/core.js';
+import AttributeCommand from '../attributecommand.js';
 
 const BOLD = 'bold';
 
@@ -22,8 +22,8 @@ export default class BoldEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'BoldEditing' {
-		return 'BoldEditing';
+	public static get pluginName() {
+		return 'BoldEditing' as const;
 	}
 
 	/**
@@ -31,6 +31,8 @@ export default class BoldEditing extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
+		const t = this.editor.t;
+
 		// Allow bold attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: BOLD } );
 		editor.model.schema.setAttributeProperties( BOLD, {
@@ -69,5 +71,15 @@ export default class BoldEditing extends Plugin {
 
 		// Set the Ctrl+B keystroke.
 		editor.keystrokes.set( 'CTRL+B', BOLD );
+
+		// Add the information about the keystroke to the accessibility database.
+		editor.accessibility.addKeystrokeInfos( {
+			keystrokes: [
+				{
+					label: t( 'Bold text' ),
+					keystroke: 'CTRL+B'
+				}
+			]
+		} );
 	}
 }

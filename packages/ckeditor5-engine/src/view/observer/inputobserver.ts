@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,10 +7,10 @@
  * @module engine/view/observer/inputobserver
  */
 
-import DomEventObserver from './domeventobserver';
-import type DomEventData from './domeventdata';
-import type ViewRange from '../range';
-import DataTransfer from '../datatransfer';
+import DomEventObserver from './domeventobserver.js';
+import type DomEventData from './domeventdata.js';
+import type ViewRange from '../range.js';
+import DataTransfer from '../datatransfer.js';
 import { env } from '@ckeditor/ckeditor5-utils';
 
 /**
@@ -79,8 +79,19 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 			// @if CK_DEBUG_TYPING // }
 		} else if ( domTargetRanges.length ) {
 			targetRanges = domTargetRanges.map( domRange => {
-				return view.domConverter.domRangeToView( domRange )!;
-			} );
+				// Sometimes browser provides range that starts before editable node.
+				// We try to fall back to collapsed range at the valid end position.
+				// See https://github.com/ckeditor/ckeditor5/issues/14411.
+				// See https://github.com/ckeditor/ckeditor5/issues/14050.
+				const viewStart = view.domConverter.domPositionToView( domRange.startContainer, domRange.startOffset );
+				const viewEnd = view.domConverter.domPositionToView( domRange.endContainer, domRange.endOffset );
+
+				if ( viewStart ) {
+					return view.createRange( viewStart, viewEnd );
+				} else if ( viewEnd ) {
+					return view.createRange( viewEnd );
+				}
+			} ).filter( ( range ): range is ViewRange => !!range );
 
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.info( '%c[InputObserver]%c using target ranges:',

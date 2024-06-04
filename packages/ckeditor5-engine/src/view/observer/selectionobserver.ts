@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,16 +9,16 @@
 
 /* global setInterval, clearInterval */
 
-import Observer from './observer';
-import MutationObserver from './mutationobserver';
+import Observer from './observer.js';
+import MutationObserver from './mutationobserver.js';
 import { env } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunc } from 'lodash-es';
 
-import type View from '../view';
-import type DocumentSelection from '../documentselection';
-import type DomConverter from '../domconverter';
-import type Selection from '../selection';
-import FocusObserver from './focusobserver';
+import type View from '../view.js';
+import type DocumentSelection from '../documentselection.js';
+import type DomConverter from '../domconverter.js';
+import type Selection from '../selection.js';
+import FocusObserver from './focusobserver.js';
 
 type DomSelection = globalThis.Selection;
 
@@ -90,8 +90,8 @@ export default class SelectionObserver extends Observer {
 	constructor( view: View ) {
 		super( view );
 
-		this.mutationObserver = view.getObserver( MutationObserver )!;
-		this.focusObserver = view.getObserver( FocusObserver )!;
+		this.mutationObserver = view.getObserver( MutationObserver );
+		this.focusObserver = view.getObserver( FocusObserver );
 		this.selection = this.document.selection;
 		this.domConverter = view.domConverter;
 
@@ -253,6 +253,9 @@ export default class SelectionObserver extends Observer {
 
 		this.view.hasDomSelection = true;
 
+		// Mark the latest focus change as complete (we got new selection after the focus so the selection is in the focused element).
+		this.focusObserver.flush();
+
 		if ( this.selection.isEqual( newViewSelection ) && this.domConverter.isDomSelectionCorrect( domSelection ) ) {
 			return;
 		}
@@ -269,9 +272,6 @@ export default class SelectionObserver extends Observer {
 
 			return;
 		}
-
-		// Mark the latest focus change as complete (we got new selection after the focus so the selection is in the focused element).
-		this.focusObserver.flush();
 
 		if ( this.selection.isSimilar( newViewSelection ) ) {
 			// If selection was equal and we are at this point of algorithm, it means that it was incorrect.

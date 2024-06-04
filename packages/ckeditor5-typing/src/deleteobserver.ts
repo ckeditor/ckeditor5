@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -25,7 +25,7 @@ import {
 	type ViewDocumentSelection,
 	type ViewSelection,
 	type ViewRange,
-	type View
+	type EditingView
 } from '@ckeditor/ckeditor5-engine';
 
 const DELETE_CHARACTER = 'character';
@@ -131,7 +131,7 @@ export default class DeleteObserver extends Observer {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( view: View ) {
+	constructor( view: EditingView ) {
 		super( view );
 
 		const document = view.document;
@@ -342,11 +342,8 @@ function shouldUseTargetRanges( targetRanges: Array<ViewRange> ): boolean {
 
 	let count = 0;
 
-	for ( const { nextPosition } of walker ) {
-		// There is some element in the range so count it as a single character.
-		if ( !nextPosition.parent.is( '$text' ) ) {
-			count++;
-		} else {
+	for ( const { nextPosition, item } of walker ) {
+		if ( nextPosition.parent.is( '$text' ) ) {
 			const data = nextPosition.parent.data;
 			const offset = nextPosition.offset;
 
@@ -359,6 +356,8 @@ function shouldUseTargetRanges( targetRanges: Array<ViewRange> ): boolean {
 				continue;
 			}
 
+			count++;
+		} else if ( item.is( 'containerElement' ) || item.is( 'emptyElement' ) ) {
 			count++;
 		}
 

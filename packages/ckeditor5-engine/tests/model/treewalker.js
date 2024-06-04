@@ -1,17 +1,17 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Model from '../../src/model/model';
-import DocumentFragment from '../../src/model/documentfragment';
-import Element from '../../src/model/element';
-import Text from '../../src/model/text';
-import TreeWalker from '../../src/model/treewalker';
-import Position from '../../src/model/position';
-import Range from '../../src/model/range';
+import Model from '../../src/model/model.js';
+import DocumentFragment from '../../src/model/documentfragment.js';
+import Element from '../../src/model/element.js';
+import Text from '../../src/model/text.js';
+import TreeWalker from '../../src/model/treewalker.js';
+import Position from '../../src/model/position.js';
+import Range from '../../src/model/range.js';
 
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'TreeWalker', () => {
 	let model, doc, root, img1, paragraph, ba, r, img2, x,
@@ -45,6 +45,10 @@ describe( 'TreeWalker', () => {
 
 		rootBeginning = new Position( root, [ 0 ] );
 		rootEnding = new Position( root, [ 2 ] );
+	} );
+
+	afterEach( () => {
+		model.destroy();
 	} );
 
 	describe( 'constructor()', () => {
@@ -412,6 +416,83 @@ describe( 'TreeWalker', () => {
 
 				expect( i ).to.equal( 0 );
 			} );
+		} );
+	} );
+
+	describe( '`shallow` iterates only through elements in the range', () => {
+		it( '`shallow` only iterates elements in the range (forward)', () => {
+			const walker = new TreeWalker( {
+				boundaries: new Range(
+					new Position( root, [ 0 ] ),
+					new Position( root, [ 0, 0 ] )
+				),
+				shallow: true
+			} );
+
+			const items = Array.from( walker );
+
+			expect( items.length ).to.equal( 1 );
+			expect( items[ 0 ].type ).to.equal( 'elementStart' );
+			expect( items[ 0 ].item ).to.equal( img1 );
+		} );
+
+		it( '`shallow` only iterates elements in the range that ends inside some element (forward)', () => {
+			const p2 = new Element( 'p' );
+			const p3 = new Element( 'p' );
+
+			root._insertChild( 2, [ p2, p3 ] );
+
+			const walker = new TreeWalker( {
+				boundaries: new Range(
+					new Position( root, [ 1 ] ),
+					new Position( root, [ 1, 3 ] )
+				),
+				shallow: true
+			} );
+
+			const items = Array.from( walker );
+
+			expect( items.length ).to.equal( 1 );
+			expect( items[ 0 ].type ).to.equal( 'elementStart' );
+			expect( items[ 0 ].item ).to.equal( paragraph );
+		} );
+
+		it( '`shallow` only iterates elements in the range ends deep inside some element (forward)', () => {
+			const p2 = new Element( 'p' );
+			const p3 = new Element( 'p' );
+
+			root._insertChild( 2, [ p2, p3 ] );
+
+			const walker = new TreeWalker( {
+				boundaries: new Range(
+					new Position( root, [ 1 ] ),
+					new Position( root, [ 1, 3, 0 ] )
+				),
+				shallow: true
+			} );
+
+			const items = Array.from( walker );
+
+			expect( items.length ).to.equal( 1 );
+			expect( items[ 0 ].type ).to.equal( 'elementStart' );
+			expect( items[ 0 ].item ).to.equal( paragraph );
+		} );
+
+		it( '`shallow` only iterates elements in the range (backwards)', () => {
+			const walker = new TreeWalker( {
+				boundaries: new Range(
+					new Position( root, [ 0 ] ),
+					new Position( root, [ 0, 0 ] )
+				),
+				shallow: true,
+				direction: 'backward'
+			} );
+
+			const items = Array.from( walker );
+
+			expect( items.length ).to.equal( 1 );
+			expect( items[ 0 ].type ).to.equal( 'elementStart' );
+			expect( items[ 0 ].item ).to.equal( img1 );
 		} );
 	} );
 

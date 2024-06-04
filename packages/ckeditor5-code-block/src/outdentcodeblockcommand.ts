@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,14 +7,14 @@
  * @module code-block/outdentcodeblockcommand
  */
 
-import type { Model, Position, Range, Text } from 'ckeditor5/src/engine';
-import { Command, type Editor } from 'ckeditor5/src/core';
+import type { Model, Position, Range, Text } from 'ckeditor5/src/engine.js';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
 
 import {
 	getLeadingWhiteSpaces,
 	getIndentOutdentPositions,
 	isModelSelectionInCodeBlock
-} from './utils';
+} from './utils.js';
 
 /**
  * The code block indentation decrease command plugin.

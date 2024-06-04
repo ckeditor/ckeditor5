@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,22 +7,29 @@
  * @module table/tablecellproperties/tablecellpropertiesediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { addBorderRules, addPaddingRules, addBackgroundRules, type Schema, type Conversion, type ViewElement } from 'ckeditor5/src/engine';
+import { Plugin } from 'ckeditor5/src/core.js';
+import {
+	addBorderRules,
+	addPaddingRules,
+	addBackgroundRules,
+	type Schema,
+	type Conversion,
+	type ViewElement
+} from 'ckeditor5/src/engine.js';
 
-import { downcastAttributeToStyle, upcastBorderStyles } from './../converters/tableproperties';
-import TableEditing from './../tableediting';
-import TableCellWidthEditing from '../tablecellwidth/tablecellwidthediting';
-import TableCellPaddingCommand from './commands/tablecellpaddingcommand';
-import TableCellHeightCommand from './commands/tablecellheightcommand';
-import TableCellBackgroundColorCommand from './commands/tablecellbackgroundcolorcommand';
-import TableCellVerticalAlignmentCommand from './commands/tablecellverticalalignmentcommand';
-import TableCellHorizontalAlignmentCommand from './commands/tablecellhorizontalalignmentcommand';
-import TableCellBorderStyleCommand from './commands/tablecellborderstylecommand';
-import TableCellBorderColorCommand from './commands/tablecellbordercolorcommand';
-import TableCellBorderWidthCommand from './commands/tablecellborderwidthcommand';
-import { getNormalizedDefaultProperties } from '../utils/table-properties';
-import { enableProperty } from '../utils/common';
+import { downcastAttributeToStyle, upcastBorderStyles } from './../converters/tableproperties.js';
+import TableEditing from './../tableediting.js';
+import TableCellWidthEditing from '../tablecellwidth/tablecellwidthediting.js';
+import TableCellPaddingCommand from './commands/tablecellpaddingcommand.js';
+import TableCellHeightCommand from './commands/tablecellheightcommand.js';
+import TableCellBackgroundColorCommand from './commands/tablecellbackgroundcolorcommand.js';
+import TableCellVerticalAlignmentCommand from './commands/tablecellverticalalignmentcommand.js';
+import TableCellHorizontalAlignmentCommand from './commands/tablecellhorizontalalignmentcommand.js';
+import TableCellBorderStyleCommand from './commands/tablecellborderstylecommand.js';
+import TableCellBorderColorCommand from './commands/tablecellbordercolorcommand.js';
+import TableCellBorderWidthCommand from './commands/tablecellborderwidthcommand.js';
+import { getNormalizedDefaultProperties } from '../utils/table-properties.js';
+import { enableProperty } from '../utils/common.js';
 
 const VALIGN_VALUES_REG_EXP = /^(top|middle|bottom)$/;
 const ALIGN_VALUES_REG_EXP = /^(left|center|right|justify)$/;
@@ -50,8 +57,8 @@ export default class TableCellPropertiesEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TableCellPropertiesEditing' {
-		return 'TableCellPropertiesEditing';
+	public static get pluginName() {
+		return 'TableCellPropertiesEditing' as const;
 	}
 
 	/**

@@ -2,11 +2,11 @@
 category: api-reference
 ---
 
-# Mention feature for CKEditor 5
+# Mention feature for CKEditor&nbsp;5
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-mention.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-mention)
 
-This package implements the mention feature for CKEditor 5. It provides smart completion functionality for custom text matches based on user input.
+This package implements the mention feature for CKEditor&nbsp;5. It provides smart completion functionality for custom text matches based on user input.
 
 ## Demo
 
@@ -18,8 +18,10 @@ See the {@link features/mentions mention feature guide} and the {@link module:me
 
 ## Installation
 
+This package is part of our open-source aggregate package.
+
 ```bash
-npm install --save @ckeditor/ckeditor5-mention
+npm install ckeditor5
 ```
 
 ## Contribute

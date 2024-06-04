@@ -1,0 +1,45 @@
+<head>
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' https://ckeditor.com 'unsafe-inline' 'unsafe-eval'">
+	<style>
+		td {
+			padding: .4em;
+		}
+		a[name][id] {
+			color: blue;
+			text-decoration: underline;
+		}
+		mark[data-mark] {
+			font-weight: 600;
+			text-decoration: underline;
+		}
+		.text-italic {
+			font-style: italic;
+		}
+		i.inline-icon {
+			display: inline-block;
+			width: 1em;
+			height: 1em;
+			background: red;
+		}
+	</style>
+</head>
+<div style="display: flex">
+	<div style="width: 40%; margin-right: 20px">
+		<div id="editor">
+			<p><i class="inline-icon"></i> empty inline at start.</p>
+			<p>Text with <i class="inline-icon"></i> empty inline inside.</p>
+			<p>Text with empty inline at the end <i class="inline-icon"></i></p>
+			<p>An empty [ <i></i> ] inline without any attributes (should be dropped).</p>
+			<p>An empty [ <i data-foo="bar"></i> ] with attributes but no <code>display-block</code>.</p>
+			<p>Styled as <code>display-block</code> is [ <i style="display: inline-block"></i> ] here.</p>
+		</div>
+	</div>
+
+	<div style="width: 40%">
+		<h1 style="margin:12px 0 0 0; padding:0 0 5px 0; font-size: 18px; border-bottom: solid 1px grey">Source content:</h1>
+		<div id="preview"></div>
+	</div>
+</div>
+<script>
+	document.getElementById( 'preview' ).innerHTML = document.getElementById( 'editor' ).innerHTML;
+</script>

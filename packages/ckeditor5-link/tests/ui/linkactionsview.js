@@ -1,18 +1,18 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document */
 
-import LinkActionsView from '../../src/ui/linkactionsview';
-import View from '@ckeditor/ckeditor5-ui/src/view';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
-import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import LinkActionsView from '../../src/ui/linkactionsview.js';
+import View from '@ckeditor/ckeditor5-ui/src/view.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker.js';
+import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler.js';
+import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'LinkActionsView', () => {
 	let view;
@@ -62,6 +62,21 @@ describe( 'LinkActionsView', () => {
 
 		it( 'should create #_focusables view collection', () => {
 			expect( view._focusables ).to.be.instanceOf( ViewCollection );
+		} );
+
+		it( 'should create #_linkConfig as empty object by default', () => {
+			expect( view._linkConfig ).to.be.empty;
+		} );
+
+		it( 'should create #_linkConfig containing config object passed as argument', () => {
+			const customConfig = { allowedProtocols: [ 'https', 'ftps', 'tel', 'sms' ] };
+
+			const view = new LinkActionsView( { t: () => { } }, customConfig );
+			view.render();
+
+			expect( view._linkConfig ).to.equal( customConfig );
+
+			view.destroy();
 		} );
 
 		it( 'should fire `edit` event on editButtonView#execute', () => {

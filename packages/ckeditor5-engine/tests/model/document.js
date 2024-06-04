@@ -1,16 +1,16 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Model from '../../src/model/model';
-import Document from '../../src/model/document';
-import RootElement from '../../src/model/rootelement';
-import Text from '../../src/model/text';
-import Batch from '../../src/model/batch';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import count from '@ckeditor/ckeditor5-utils/src/count';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import Model from '../../src/model/model.js';
+import Document from '../../src/model/document.js';
+import RootElement from '../../src/model/rootelement.js';
+import Text from '../../src/model/text.js';
+import Batch from '../../src/model/batch.js';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection.js';
+import count from '@ckeditor/ckeditor5-utils/src/count.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'Document', () => {
 	let model, doc;
@@ -121,15 +121,15 @@ describe( 'Document', () => {
 	} );
 
 	describe( 'getRootNames()', () => {
-		it( 'should return empty iterator if no roots exist', () => {
+		it( 'should return empty array if no roots exist', () => {
 			expect( count( doc.getRootNames() ) ).to.equal( 0 );
 		} );
 
-		it( 'should return an iterator of all roots without the graveyard', () => {
+		it( 'should return array with all roots without the graveyard', () => {
 			doc.createRoot( '$root', 'a' );
 			doc.createRoot( '$root', 'b' );
 
-			expect( Array.from( doc.getRootNames() ) ).to.deep.equal( [ 'a', 'b' ] );
+			expect( doc.getRootNames() ).to.deep.equal( [ 'a', 'b' ] );
 		} );
 
 		it( 'should return only attached roots', () => {
@@ -138,7 +138,7 @@ describe( 'Document', () => {
 
 			rootB._isAttached = false;
 
-			expect( Array.from( doc.getRootNames() ) ).to.deep.equal( [ 'a' ] );
+			expect( doc.getRootNames() ).to.deep.equal( [ 'a' ] );
 		} );
 
 		it( 'should return detached roots when `includeDetached` flag is set to `true`', () => {
@@ -147,7 +147,58 @@ describe( 'Document', () => {
 
 			rootB._isAttached = false;
 
-			expect( Array.from( doc.getRootNames( true ) ) ).to.deep.equal( [ 'a', 'b' ] );
+			expect( doc.getRootNames( true ) ).to.deep.equal( [ 'a', 'b' ] );
+		} );
+
+		it( 'should not return non-loaded roots', () => {
+			doc.createRoot( '$root', 'a' );
+			const rootB = doc.createRoot( '$root', 'b' );
+
+			rootB._isLoaded = false;
+
+			expect( doc.getRootNames() ).to.deep.equal( [ 'a' ] );
+			expect( doc.getRootNames( true ) ).to.deep.equal( [ 'a' ] );
+		} );
+	} );
+
+	describe( 'getRoots()', () => {
+		it( 'should return empty iterator if no roots exist', () => {
+			expect( count( doc.getRoots() ) ).to.equal( 0 );
+		} );
+
+		it( 'should return an iterator of all roots without the graveyard', () => {
+			const rootA = doc.createRoot( '$root', 'a' );
+			const rootB = doc.createRoot( '$root', 'b' );
+
+			expect( doc.getRoots() ).to.deep.equal( [ rootA, rootB ] );
+		} );
+
+		it( 'should return only attached roots', () => {
+			const rootA = doc.createRoot( '$root', 'a' );
+			const rootB = doc.createRoot( '$root', 'b' );
+
+			rootB._isAttached = false;
+
+			expect( doc.getRoots() ).to.deep.equal( [ rootA ] );
+		} );
+
+		it( 'should return detached roots when `includeDetached` flag is set to `true`', () => {
+			const rootA = doc.createRoot( '$root', 'a' );
+			const rootB = doc.createRoot( '$root', 'b' );
+
+			rootB._isAttached = false;
+
+			expect( doc.getRoots( true ) ).to.deep.equal( [ rootA, rootB ] );
+		} );
+
+		it( 'should not return non-loaded roots', () => {
+			const rootA = doc.createRoot( '$root', 'a' );
+			const rootB = doc.createRoot( '$root', 'b' );
+
+			rootA._isLoaded = false;
+
+			expect( doc.getRoots() ).to.deep.equal( [ rootB ] );
+			expect( doc.getRoots( true ) ).to.deep.equal( [ rootB ] );
 		} );
 	} );
 

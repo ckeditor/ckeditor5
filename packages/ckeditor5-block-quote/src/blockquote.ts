@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,10 +7,10 @@
  * @module block-quote/blockquote
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 
-import BlockQuoteEditing from './blockquoteediting';
-import BlockQuoteUI from './blockquoteui';
+import BlockQuoteEditing from './blockquoteediting.js';
+import BlockQuoteUI from './blockquoteui.js';
 
 /**
  * The block quote plugin.
@@ -33,7 +33,7 @@ export default class BlockQuote extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'BlockQuote' {
-		return 'BlockQuote';
+	public static get pluginName() {
+		return 'BlockQuote' as const;
 	}
 }

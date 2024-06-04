@@ -1,13 +1,13 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals CSSStyleSheet */
 
-import DocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment';
+import DocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment.js';
 
-import { parseHtml } from '../../src/filters/parse';
+import { parseHtml } from '../../src/filters/parse.js';
 
 describe( 'PasteFromOffice - filters', () => {
 	describe( 'parse', () => {
@@ -171,6 +171,79 @@ describe( 'PasteFromOffice - filters', () => {
 				expect( body.childCount ).to.equal( 1 );
 
 				expect( body.getChild( 0 ).name ).to.equal( 'p' );
+			} );
+
+			// See https://github.com/ckeditor/ckeditor5/issues/15333.
+			describe( 'should remove MS Windows specific tags to prevent incorrect parsing of HTML', () => {
+				it( 'should remove <o:SmartTagType> empty tag (with or without `/` at the end)', () => {
+					const html =
+						'<html>' +
+							'<head>' +
+								'<o:SmartTagType/>' +
+								'<o:SmartTagType>' +
+							'</head>' +
+							'<body>' +
+								'<p>foo</p>' +
+							'</body>' +
+						'</html>';
+					const { body, bodyString } = parseHtml( html );
+
+					expect( body ).to.instanceof( DocumentFragment );
+					expect( body.childCount ).to.equal( 1 );
+					expect( bodyString ).to.equal( '<p>foo</p>' );
+				} );
+
+				it( 'should remove <o:SmartTagType> empty tag with white space before the ending', () => {
+					const html =
+						'<html>' +
+							'<head>' +
+								'<o:SmartTagType />' +
+								'<o:SmartTagType >' +
+							'</head>' +
+							'<body>' +
+								'<p>foo</p>' +
+							'</body>' +
+						'</html>';
+					const { body, bodyString } = parseHtml( html );
+
+					expect( body ).to.instanceof( DocumentFragment );
+					expect( body.childCount ).to.equal( 1 );
+					expect( bodyString ).to.equal( '<p>foo</p>' );
+				} );
+
+				it( 'should remove <o:SmartTagType> tag with attributes (with and without values)', () => {
+					const html =
+						'<html>' +
+							'<head>' +
+								'<o:SmartTagType namespaceuri="foo:bar:smarttags" baz />' +
+							'</head>' +
+							'<body>' +
+								'<p>foo</p>' +
+							'</body>' +
+						'</html>';
+					const { body, bodyString } = parseHtml( html );
+
+					expect( body ).to.instanceof( DocumentFragment );
+					expect( body.childCount ).to.equal( 1 );
+					expect( bodyString ).to.equal( '<p>foo</p>' );
+				} );
+
+				it( 'should remove <o:SmartTagType> tag with attributes containing `>`', () => {
+					const html =
+						'<html>' +
+							'<head>' +
+								'<o:SmartTagType namespaceuri="foo>bar>smarttags" />' +
+							'</head>' +
+							'<body>' +
+								'<p>foo</p>' +
+							'</body>' +
+						'</html>';
+					const { body, bodyString } = parseHtml( html );
+
+					expect( body ).to.instanceof( DocumentFragment );
+					expect( body.childCount ).to.equal( 1 );
+					expect( bodyString ).to.equal( '<p>foo</p>' );
+				} );
 			} );
 		} );
 	} );

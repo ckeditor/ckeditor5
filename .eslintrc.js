@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -19,15 +19,27 @@ module.exports = {
 		'ckeditor5-rules/license-header': [ 'error', {
 			headerLines: [
 				'/**',
-				' * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.',
+				' * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.',
 				' * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license',
 				' */'
 			]
-		} ]
+		} ],
+		'ckeditor5-rules/require-file-extensions-in-imports': [
+			'error',
+			{
+				extensions: [ '.ts', '.js', '.json' ]
+			}
+		]
 	},
 	overrides: [
 		{
-			files: [ '**/tests/**/*.js' ],
+			files: [ './packages/*/src/**/*.ts' ],
+			rules: {
+				'ckeditor5-rules/no-cross-package-svg-imports': 'error'
+			}
+		},
+		{
+			files: [ '**/tests/**/*.@(js|ts)' ],
 			rules: {
 				'no-unused-expressions': 'off',
 				'ckeditor5-rules/ckeditor-imports': 'off',

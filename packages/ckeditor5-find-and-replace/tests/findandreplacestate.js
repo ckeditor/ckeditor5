@@ -1,17 +1,17 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import DecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+import DecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection.js';
 
-import FindAndReplace from '../src/findandreplace';
-import FindAndReplaceState from '../src/findandreplacestate';
+import FindAndReplace from '../src/findandreplace.js';
+import FindAndReplaceState from '../src/findandreplacestate.js';
 
 describe( 'FindAndReplaceState', () => {
 	const FOO_BAR_PARAGRAPH = '<p>Foo bar baz</p>';

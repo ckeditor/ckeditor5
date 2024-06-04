@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,9 @@
  * @module ui/tooltipmanager
  */
 
-import View from './view';
-import BalloonPanelView, { generatePositions } from './panel/balloon/balloonpanelview';
-import type { EditorUIUpdateEvent } from './editorui/editorui';
+import View from './view.js';
+import BalloonPanelView from './panel/balloon/balloonpanelview.js';
+import type { EditorUIUpdateEvent } from './editorui/editorui.js';
 
 import {
 	DomEmitterMixin,
@@ -83,7 +83,7 @@ const BALLOON_CLASS = 'ck-tooltip';
  * **Note**: This class is a singleton. All editor instances re-use the same instance loaded by
  * {@link module:ui/editorui/editorui~EditorUI} of the first editor.
  */
-export default class TooltipManager extends DomEmitterMixin() {
+export default class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 	/**
 	 * The view rendering text of the tooltip.
 	 */
@@ -98,7 +98,7 @@ export default class TooltipManager extends DomEmitterMixin() {
 	 * A set of default {@link module:utils/dom/position~PositioningFunction positioning functions} used by the `TooltipManager`
 	 * to pin tooltips in different positions.
 	 */
-	public static defaultBalloonPositions = generatePositions( {
+	public static defaultBalloonPositions = /* #__PURE__ */ BalloonPanelView.generatePositions( {
 		heightOffset: 5,
 		sideOffset: 13
 	} );
@@ -123,10 +123,20 @@ export default class TooltipManager extends DomEmitterMixin() {
 	private _resizeObserver: ResizeObserver | null = null;
 
 	/**
+	 * An instance of the mutation observer that keeps track on target element attributes changes.
+	 */
+	private _mutationObserver: MutationObserverWrapper | null = null;
+
+	/**
 	 * A debounced version of {@link #_pinTooltip}. Tooltips show with a delay to avoid flashing and
 	 * to improve the UX.
 	 */
 	private _pinTooltipDebounced!: DebouncedFunc<( targetDomElement: HTMLElement, data: TooltipData ) => void>;
+
+	/**
+	 * A debounced version of {@link #_unpinTooltip}. Tooltips hide with a delay to allow hovering of their titles.
+	 */
+	private _unpinTooltipDebounced!: DebouncedFunc<VoidFunction>;
 
 	private readonly _watchdogExcluded!: true;
 
@@ -179,8 +189,14 @@ export default class TooltipManager extends DomEmitterMixin() {
 		this.balloonPanelView.class = BALLOON_CLASS;
 		this.balloonPanelView.content.add( this.tooltipTextView );
 
-		this._pinTooltipDebounced = debounce( this._pinTooltip, 600 );
+		this._mutationObserver = createMutationObserver( () => {
+			this._updateTooltipPosition();
+		} );
 
+		this._pinTooltipDebounced = debounce( this._pinTooltip, 600 );
+		this._unpinTooltipDebounced = debounce( this._unpinTooltip, 400 );
+
+		this.listenTo( global.document, 'keydown', this._onKeyDown.bind( this ), { useCapture: true } );
 		this.listenTo( global.document, 'mouseenter', this._onEnterOrFocus.bind( this ), { useCapture: true } );
 		this.listenTo( global.document, 'mouseleave', this._onLeaveOrBlur.bind( this ), { useCapture: true } );
 
@@ -251,16 +267,35 @@ export default class TooltipManager extends DomEmitterMixin() {
 	}
 
 	/**
+	 * Handles hiding tooltips on `keydown` in DOM.
+	 *
+	 * @param evt An object containing information about the fired event.
+	 * @param domEvent The DOM event.
+	 */
+	private _onKeyDown( evt: EventInfo, domEvent: KeyboardEvent ) {
+		if ( domEvent.key === 'Escape' && this._currentElementWithTooltip ) {
+			this._unpinTooltip();
+			domEvent.stopPropagation();
+		}
+	}
+
+	/**
 	 * Handles displaying tooltips on `mouseenter` and `focus` in DOM.
 	 *
 	 * @param evt An object containing information about the fired event.
 	 * @param domEvent The DOM event.
 	 */
-	private _onEnterOrFocus( evt: unknown, { target }: any ) {
+	private _onEnterOrFocus( evt: EventInfo, { target }: any ) {
 		const elementWithTooltipAttribute = getDescendantWithTooltip( target );
 
 		// Abort when there's no descendant needing tooltip.
 		if ( !elementWithTooltipAttribute ) {
+			// Unpin if element is focused, regardless of whether it contains a label or not.
+			// It also prevents tooltips from overlapping the menu bar
+			if ( evt.name === 'focus' ) {
+				this._unpinTooltip();
+			}
+
 			return;
 		}
 
@@ -273,7 +308,14 @@ export default class TooltipManager extends DomEmitterMixin() {
 
 		this._unpinTooltip();
 
-		this._pinTooltipDebounced( elementWithTooltipAttribute, getTooltipData( elementWithTooltipAttribute ) );
+		// The tooltip should be pinned immediately when the element gets focused using keyboard.
+		// If it is focused using the mouse, the tooltip should be pinned after a delay to prevent flashing.
+		// See https://github.com/ckeditor/ckeditor5/issues/16383
+		if ( evt.name === 'focus' && !elementWithTooltipAttribute.matches( ':hover' ) ) {
+			this._pinTooltip( elementWithTooltipAttribute, getTooltipData( elementWithTooltipAttribute ) );
+		} else {
+			this._pinTooltipDebounced( elementWithTooltipAttribute, getTooltipData( elementWithTooltipAttribute ) );
+		}
 	}
 
 	/**
@@ -289,10 +331,21 @@ export default class TooltipManager extends DomEmitterMixin() {
 				return;
 			}
 
+			const balloonElement = this.balloonPanelView.element;
+			const isEnteringBalloon = balloonElement && ( balloonElement === relatedTarget || balloonElement.contains( relatedTarget ) );
+			const isLeavingBalloon = !isEnteringBalloon && target === balloonElement;
+
+			// Do not hide the tooltip when the user moves the cursor over it.
+			if ( isEnteringBalloon ) {
+				this._unpinTooltipDebounced.cancel();
+				return;
+			}
+
 			// If a tooltip is currently visible, don't act for a targets other than the one it is attached to.
+			// The only exception is leaving balloon, in this scenario tooltip should be closed.
 			// For instance, a random mouseleave far away in the page should not unpin the tooltip that was pinned because
 			// of a previous focus. Only leaving the same element should hide the tooltip.
-			if ( this._currentElementWithTooltip && target !== this._currentElementWithTooltip ) {
+			if ( !isLeavingBalloon && this._currentElementWithTooltip && target !== this._currentElementWithTooltip ) {
 				return;
 			}
 
@@ -300,13 +353,12 @@ export default class TooltipManager extends DomEmitterMixin() {
 			const relatedDescendantWithTooltip = getDescendantWithTooltip( relatedTarget );
 
 			// Unpin when the mouse was leaving element with a tooltip to a place which does not have or has a different tooltip.
-			// Note that this should happen whether the tooltip is already visible or not, for instance, it could be invisible but queued
-			// (debounced): it should get canceled.
-			if ( descendantWithTooltip && descendantWithTooltip !== relatedDescendantWithTooltip ) {
-				this._unpinTooltip();
+			// Note that this should happen whether the tooltip is already visible or not, for instance,
+			// it could be invisible but queued (debounced): it should get canceled.
+			if ( isLeavingBalloon || ( descendantWithTooltip && descendantWithTooltip !== relatedDescendantWithTooltip ) ) {
+				this._unpinTooltipDebounced();
 			}
-		}
-		else {
+		} else {
 			// If a tooltip is currently visible, don't act for a targets other than the one it is attached to.
 			// For instance, a random blur in the web page should not unpin the tooltip that was pinned because of a previous mouseenter.
 			if ( this._currentElementWithTooltip && target !== this._currentElementWithTooltip ) {
@@ -315,7 +367,7 @@ export default class TooltipManager extends DomEmitterMixin() {
 
 			// Note that unpinning should happen whether the tooltip is already visible or not, for instance, it could be invisible but
 			// queued (debounced): it should get canceled (e.g. quick focus then quick blur using the keyboard).
-			this._unpinTooltip();
+			this._unpinTooltipDebounced();
 		}
 	}
 
@@ -352,6 +404,8 @@ export default class TooltipManager extends DomEmitterMixin() {
 		targetDomElement: HTMLElement,
 		{ text, position, cssClass }: TooltipData
 	): void {
+		this._unpinTooltip();
+
 		// Use the body collection of the first editor.
 		const bodyViewCollection = first( TooltipManager._editors.values() )!.ui.view.body;
 
@@ -361,6 +415,14 @@ export default class TooltipManager extends DomEmitterMixin() {
 
 		this.tooltipTextView.text = text;
 
+		this.balloonPanelView.class = [ BALLOON_CLASS, cssClass ]
+			.filter( className => className )
+			.join( ' ' );
+
+		// Ensure that all changes to the tooltip are set before pinning it.
+		// Setting class or text after pinning can cause the tooltip to be pinned in the wrong position.
+		// It happens especially often when tooltip has class modified (like adding `ck-tooltip_multi-line`).
+		// See https://github.com/ckeditor/ckeditor5/issues/16365
 		this.balloonPanelView.pin( {
 			target: targetDomElement,
 			positions: TooltipManager.getPositioningFunctions( position )
@@ -374,9 +436,7 @@ export default class TooltipManager extends DomEmitterMixin() {
 			}
 		} );
 
-		this.balloonPanelView.class = [ BALLOON_CLASS, cssClass ]
-			.filter( className => className )
-			.join( ' ' );
+		this._mutationObserver!.attach( targetDomElement );
 
 		// Start responding to changes in editor UI or content layout. For instance, when collaborators change content
 		// and a contextual toolbar attached to a content starts to move (and so should move the tooltip).
@@ -393,6 +453,7 @@ export default class TooltipManager extends DomEmitterMixin() {
 	 * Unpins the tooltip and cancels all queued pinning.
 	 */
 	private _unpinTooltip() {
+		this._unpinTooltipDebounced.cancel();
 		this._pinTooltipDebounced.cancel();
 
 		this.balloonPanelView.unpin();
@@ -403,29 +464,40 @@ export default class TooltipManager extends DomEmitterMixin() {
 
 		this._currentElementWithTooltip = null;
 		this._currentTooltipPosition = null;
+		this.tooltipTextView.text = '';
 
 		if ( this._resizeObserver ) {
 			this._resizeObserver.destroy();
 		}
+
+		this._mutationObserver!.detach();
 	}
 
 	/**
 	 * Updates the position of the tooltip so it stays in sync with the element it is pinned to.
 	 *
-	 * Hides the tooltip when the element is no longer visible in DOM.
+	 * Hides the tooltip when the element is no longer visible in DOM or the tooltip text was removed.
 	 */
 	private _updateTooltipPosition() {
+		// The tooltip might get removed by focus listener triggered by the same UI `update` event.
+		// See https://github.com/ckeditor/ckeditor5/pull/16363.
+		if ( !this._currentElementWithTooltip ) {
+			return;
+		}
+
+		const tooltipData = getTooltipData( this._currentElementWithTooltip );
+
 		// This could happen if the tooltip was attached somewhere in a contextual content toolbar and the toolbar
-		// disappeared (e.g. removed an image).
-		if ( !isVisible( this._currentElementWithTooltip ) ) {
+		// disappeared (e.g. removed an image), or the tooltip text was removed.
+		if ( !isVisible( this._currentElementWithTooltip ) || !tooltipData.text ) {
 			this._unpinTooltip();
 
 			return;
 		}
 
 		this.balloonPanelView.pin( {
-			target: this._currentElementWithTooltip!,
-			positions: TooltipManager.getPositioningFunctions( this._currentTooltipPosition! )
+			target: this._currentElementWithTooltip,
+			positions: TooltipManager.getPositioningFunctions( tooltipData.position )
 		} );
 	}
 }
@@ -452,4 +524,30 @@ function getTooltipData( element: HTMLElement ): TooltipData {
 		position: ( element.dataset.ckeTooltipPosition || 's' ) as TooltipPosition,
 		cssClass: element.dataset.ckeTooltipClass || ''
 	};
+}
+
+// Creates a simple `MutationObserver` instance wrapper that observes changes in the tooltip-related attributes of the given element.
+// Used instead of the `MutationObserver` from the engine for simplicity.
+function createMutationObserver( callback: ( ...args: Array<any> ) => unknown ): MutationObserverWrapper {
+	const mutationObserver = new MutationObserver( () => {
+		callback();
+	} );
+
+	return {
+		attach( element ) {
+			mutationObserver.observe( element, {
+				attributes: true,
+				attributeFilter: [ 'data-cke-tooltip-text', 'data-cke-tooltip-position' ]
+			} );
+		},
+
+		detach() {
+			mutationObserver.disconnect();
+		}
+	};
+}
+
+interface MutationObserverWrapper {
+	attach: ( element: Node ) => void;
+	detach: () => void;
 }

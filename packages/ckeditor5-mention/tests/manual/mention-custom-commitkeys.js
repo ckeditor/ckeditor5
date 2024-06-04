@@ -1,22 +1,22 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global console, window */
 
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Mention from '../../src/mention';
-import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import Mention from '../../src/mention.js';
+import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
 
-import { toWidget, viewToModelPositionOutsideModelElement } from '@ckeditor/ckeditor5-widget/src/utils';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import { toWidget, viewToModelPositionOutsideModelElement } from '@ckeditor/ckeditor5-widget/src/utils.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
 
-import { keyCodes } from 'ckeditor5/src/utils';
+import { keyCodes } from 'ckeditor5/src/utils.js';
 
 class InlineWidget extends Plugin {
 	constructor( editor ) {
@@ -118,7 +118,7 @@ ClassicEditor
 			'|', 'undo', 'redo'
 		],
 		image: {
-			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+			toolbar: [ 'imageStyle:full', 'imageStyle:wrapText', '|', 'imageTextAlternative' ]
 		},
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ],

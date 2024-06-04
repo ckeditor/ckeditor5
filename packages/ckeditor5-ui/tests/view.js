@@ -1,18 +1,18 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document, HTMLElement */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import View from '../src/view';
-import Template from '../src/template';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import View from '../src/view.js';
+import Template from '../src/template.js';
 
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import ViewCollection from '../src/viewcollection';
-import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
-import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection.js';
+import ViewCollection from '../src/viewcollection.js';
+import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
+import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 let TestView, view, childA, childB;
 

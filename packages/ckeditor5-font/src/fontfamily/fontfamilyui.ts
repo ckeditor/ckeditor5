@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,15 +7,24 @@
  * @module font/fontfamily/fontfamilyui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { Collection } from 'ckeditor5/src/utils';
-import { Model, createDropdown, addListToDropdown, type ListDropdownItemDefinition } from 'ckeditor5/src/ui';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { Collection } from 'ckeditor5/src/utils.js';
+import {
+	ViewModel,
+	createDropdown,
+	addListToDropdown,
+	MenuBarMenuView,
+	MenuBarMenuListView,
+	MenuBarMenuListItemView,
+	MenuBarMenuListItemButtonView,
+	type ListDropdownButtonDefinition
+} from 'ckeditor5/src/ui.js';
 
-import { normalizeOptions } from './utils';
-import { FONT_FAMILY } from '../utils';
+import { normalizeOptions } from './utils.js';
+import { FONT_FAMILY } from '../utils.js';
 
-import type { FontFamilyOption } from '../fontconfig';
-import type FontFamilyCommand from './fontfamilycommand';
+import type { FontFamilyOption } from '../fontconfig.js';
+import type FontFamilyCommand from './fontfamilycommand.js';
 
 import fontFamilyIcon from '../../theme/icons/font-family.svg';
 
@@ -26,8 +35,8 @@ export default class FontFamilyUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'FontFamilyUI' {
-		return 'FontFamilyUI';
+	public static get pluginName() {
+		return 'FontFamilyUI' as const;
 	}
 
 	/**
@@ -41,12 +50,13 @@ export default class FontFamilyUI extends Plugin {
 
 		const command: FontFamilyCommand = editor.commands.get( FONT_FAMILY )!;
 		const accessibleLabel = t( 'Font Family' );
+		const listOptions = _prepareListOptions( options, command );
 
 		// Register UI component.
 		editor.ui.componentFactory.add( FONT_FAMILY, locale => {
 			const dropdownView = createDropdown( locale );
 
-			addListToDropdown( dropdownView, () => _prepareListOptions( options, command ), {
+			addListToDropdown( dropdownView, listOptions, {
 				role: 'menu',
 				ariaLabel: accessibleLabel
 			} );
@@ -72,6 +82,43 @@ export default class FontFamilyUI extends Plugin {
 			} );
 
 			return dropdownView;
+		} );
+
+		editor.ui.componentFactory.add( `menuBar:${ FONT_FAMILY }`, locale => {
+			const menuView = new MenuBarMenuView( locale );
+
+			menuView.buttonView.set( {
+				label: accessibleLabel,
+				icon: fontFamilyIcon
+			} );
+
+			menuView.bind( 'isEnabled' ).to( command );
+
+			const listView = new MenuBarMenuListView( locale );
+
+			for ( const definition of listOptions ) {
+				const listItemView = new MenuBarMenuListItemView( locale, menuView );
+				const buttonView = new MenuBarMenuListItemButtonView( locale );
+
+				buttonView.bind( ...Object.keys( definition.model ) as Array<keyof MenuBarMenuListItemButtonView> ).to( definition.model );
+				buttonView.bind( 'ariaChecked' ).to( buttonView, 'isOn' );
+				buttonView.delegate( 'execute' ).to( menuView );
+
+				buttonView.on( 'execute', () => {
+					editor.execute( ( definition.model as any ).commandName, {
+						value: ( definition.model as any ).commandParam
+					} );
+
+					editor.editing.view.focus();
+				} );
+
+				listItemView.children.add( buttonView );
+				listView.items.add( listItemView );
+			}
+
+			menuView.panelView.children.add( listView );
+
+			return menuView;
 		} );
 	}
 
@@ -103,14 +150,14 @@ export default class FontFamilyUI extends Plugin {
 /**
  * Prepares FontFamily dropdown items.
  */
-function _prepareListOptions( options: Array<FontFamilyOption>, command: FontFamilyCommand ): Collection<ListDropdownItemDefinition> {
-	const itemDefinitions = new Collection<ListDropdownItemDefinition>();
+function _prepareListOptions( options: Array<FontFamilyOption>, command: FontFamilyCommand ): Collection<ListDropdownButtonDefinition> {
+	const itemDefinitions = new Collection<ListDropdownButtonDefinition>();
 
 	// Create dropdown items.
 	for ( const option of options ) {
 		const def = {
 			type: 'button' as const,
-			model: new Model( {
+			model: new ViewModel( {
 				commandName: FONT_FAMILY,
 				commandParam: option.model,
 				label: option.title,

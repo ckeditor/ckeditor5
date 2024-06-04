@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -14,11 +14,14 @@ import type {
 	UpcastDispatcher,
 	UpcastElementEvent,
 	ViewElement
-} from 'ckeditor5/src/engine';
-import { Plugin } from 'ckeditor5/src/core';
+} from 'ckeditor5/src/engine.js';
+import { Plugin } from 'ckeditor5/src/core.js';
 
-import { updateViewAttributes, type GHSViewAttributes } from '../utils';
-import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
+import {
+	updateViewAttributes,
+	type GHSViewAttributes
+} from '../utils.js';
+import DataFilter, { type DataFilterRegisterEvent } from '../datafilter.js';
 
 /**
  * Provides the General HTML Support integration with {@link module:code-block/codeblock~CodeBlock Code Block} feature.
@@ -34,8 +37,8 @@ export default class CodeBlockElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'CodeBlockElementSupport' {
-		return 'CodeBlockElementSupport';
+	public static get pluginName() {
+		return 'CodeBlockElementSupport' as const;
 	}
 
 	/**
@@ -59,7 +62,7 @@ export default class CodeBlockElementSupport extends Plugin {
 
 			// Extend codeBlock to allow attributes required by attribute filtration.
 			schema.extend( 'codeBlock', {
-				allowAttributes: [ 'htmlAttributes', 'htmlContentAttributes' ]
+				allowAttributes: [ 'htmlPreAttributes', 'htmlContentAttributes' ]
 			} );
 
 			conversion.for( 'upcast' ).add( viewToModelCodeBlockAttributeConverter( dataFilter ) );
@@ -74,7 +77,7 @@ export default class CodeBlockElementSupport extends Plugin {
  * View-to-model conversion helper preserving allowed attributes on {@link module:code-block/codeblock~CodeBlock Code Block}
  * feature model element.
  *
- * Attributes are preserved as a value of `htmlAttributes` model attribute.
+ * Attributes are preserved as a value of `html*Attributes` model attribute.
  * @param dataFilter
  * @returns Returns a conversion callback.
  */
@@ -88,7 +91,7 @@ function viewToModelCodeBlockAttributeConverter( dataFilter: DataFilter ) {
 				return;
 			}
 
-			preserveElementAttributes( viewPreElement, 'htmlAttributes' );
+			preserveElementAttributes( viewPreElement, 'htmlPreAttributes' );
 			preserveElementAttributes( viewCodeElement, 'htmlContentAttributes' );
 
 			function preserveElementAttributes( viewElement: ViewElement, attributeName: string ) {
@@ -109,7 +112,7 @@ function viewToModelCodeBlockAttributeConverter( dataFilter: DataFilter ) {
  */
 function modelToViewCodeBlockAttributeConverter() {
 	return ( dispatcher: DowncastDispatcher ) => {
-		dispatcher.on<DowncastAttributeEvent>( 'attribute:htmlAttributes:codeBlock', ( evt, data, conversionApi ) => {
+		dispatcher.on<DowncastAttributeEvent>( 'attribute:htmlPreAttributes:codeBlock', ( evt, data, conversionApi ) => {
 			if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 				return;
 			}

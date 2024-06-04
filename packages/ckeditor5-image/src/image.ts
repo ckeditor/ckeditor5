@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,9 @@
  * @module image/image
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import ImageBlock from './imageblock';
-import ImageInline from './imageinline';
+import { Plugin } from 'ckeditor5/src/core.js';
+import ImageBlock from './imageblock.js';
+import ImageInline from './imageinline.js';
 
 import '../theme/image.css';
 
@@ -37,7 +37,7 @@ export default class Image extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Image' {
-		return 'Image';
+	public static get pluginName() {
+		return 'Image' as const;
 	}
 }

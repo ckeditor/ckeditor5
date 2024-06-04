@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -8,43 +8,43 @@
 import 'ckeditor5/build/ckeditor5-dll.js';
 
 // Editor creators.
-import '@ckeditor/ckeditor5-editor-classic/build/editor-classic';
-import '@ckeditor/ckeditor5-editor-decoupled/build/editor-decoupled';
-import '@ckeditor/ckeditor5-editor-inline/build/editor-inline';
-import '@ckeditor/ckeditor5-editor-balloon/build/editor-balloon';
+import '@ckeditor/ckeditor5-editor-classic/build/editor-classic.js';
+import '@ckeditor/ckeditor5-editor-decoupled/build/editor-decoupled.js';
+import '@ckeditor/ckeditor5-editor-inline/build/editor-inline.js';
+import '@ckeditor/ckeditor5-editor-balloon/build/editor-balloon.js';
 
 // Plugins.
-import '@ckeditor/ckeditor5-image/build/image';
-import '@ckeditor/ckeditor5-link/build/link';
-import '@ckeditor/ckeditor5-basic-styles/build/basic-styles';
-import '@ckeditor/ckeditor5-find-and-replace/build/find-and-replace';
-import '@ckeditor/ckeditor5-font/build/font';
-import '@ckeditor/ckeditor5-indent/build/indent';
-import '@ckeditor/ckeditor5-list/build/list';
-import '@ckeditor/ckeditor5-special-characters/build/special-characters';
-import '@ckeditor/ckeditor5-table/build/table';
-import '@ckeditor/ckeditor5-alignment/build/alignment';
-import '@ckeditor/ckeditor5-autoformat/build/autoformat';
-import '@ckeditor/ckeditor5-block-quote/build/block-quote';
-import '@ckeditor/ckeditor5-cloud-services/build/cloud-services';
-import '@ckeditor/ckeditor5-code-block/build/code-block';
-import '@ckeditor/ckeditor5-easy-image/build/easy-image';
-import '@ckeditor/ckeditor5-essentials/build/essentials';
-import '@ckeditor/ckeditor5-heading/build/heading';
-import '@ckeditor/ckeditor5-highlight/build/highlight';
-import '@ckeditor/ckeditor5-horizontal-line/build/horizontal-line';
-import '@ckeditor/ckeditor5-html-embed/build/html-embed';
-import '@ckeditor/ckeditor5-html-support/build/html-support';
-import '@ckeditor/ckeditor5-language/build/language';
-import '@ckeditor/ckeditor5-media-embed/build/media-embed';
-import '@ckeditor/ckeditor5-mention/build/mention';
-import '@ckeditor/ckeditor5-page-break/build/page-break';
-import '@ckeditor/ckeditor5-paste-from-office/build/paste-from-office';
-import '@ckeditor/ckeditor5-remove-format/build/remove-format';
-import '@ckeditor/ckeditor5-word-count/build/word-count';
-import '@ckeditor/ckeditor5-source-editing/build/source-editing';
+import '@ckeditor/ckeditor5-image/build/image.js';
+import '@ckeditor/ckeditor5-link/build/link.js';
+import '@ckeditor/ckeditor5-basic-styles/build/basic-styles.js';
+import '@ckeditor/ckeditor5-find-and-replace/build/find-and-replace.js';
+import '@ckeditor/ckeditor5-font/build/font.js';
+import '@ckeditor/ckeditor5-indent/build/indent.js';
+import '@ckeditor/ckeditor5-list/build/list.js';
+import '@ckeditor/ckeditor5-special-characters/build/special-characters.js';
+import '@ckeditor/ckeditor5-table/build/table.js';
+import '@ckeditor/ckeditor5-alignment/build/alignment.js';
+import '@ckeditor/ckeditor5-autoformat/build/autoformat.js';
+import '@ckeditor/ckeditor5-block-quote/build/block-quote.js';
+import '@ckeditor/ckeditor5-cloud-services/build/cloud-services.js';
+import '@ckeditor/ckeditor5-code-block/build/code-block.js';
+import '@ckeditor/ckeditor5-easy-image/build/easy-image.js';
+import '@ckeditor/ckeditor5-essentials/build/essentials.js';
+import '@ckeditor/ckeditor5-heading/build/heading.js';
+import '@ckeditor/ckeditor5-highlight/build/highlight.js';
+import '@ckeditor/ckeditor5-horizontal-line/build/horizontal-line.js';
+import '@ckeditor/ckeditor5-html-embed/build/html-embed.js';
+import '@ckeditor/ckeditor5-html-support/build/html-support.js';
+import '@ckeditor/ckeditor5-language/build/language.js';
+import '@ckeditor/ckeditor5-media-embed/build/media-embed.js';
+import '@ckeditor/ckeditor5-mention/build/mention.js';
+import '@ckeditor/ckeditor5-page-break/build/page-break.js';
+import '@ckeditor/ckeditor5-paste-from-office/build/paste-from-office.js';
+import '@ckeditor/ckeditor5-remove-format/build/remove-format.js';
+import '@ckeditor/ckeditor5-word-count/build/word-count.js';
+import '@ckeditor/ckeditor5-source-editing/build/source-editing.js';
 
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 const { ClassicEditor } = window.CKEditor5.editorClassic;
 const { DecoupledEditor } = window.CKEditor5.editorDecoupled;
@@ -194,14 +194,9 @@ const config = {
 		],
 		toolbar: [
 			'imageTextAlternative', 'toggleImageCaption', '|',
-			'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', 'imageStyle:side', '|',
+			'imageStyle:inline', 'imageStyle:breakText', 'imageStyle:wrapText', '|',
 			'resizeImage'
-		],
-		insert: {
-			integrations: [
-				'insertImageViaUrl'
-			]
-		}
+		]
 	},
 	placeholder: 'Type the content here!',
 	mention: {

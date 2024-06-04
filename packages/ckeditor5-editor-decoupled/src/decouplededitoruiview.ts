@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,14 +7,15 @@
  * @module editor-decoupled/decouplededitoruiview
  */
 
-import { EditorUIView, InlineEditableUIView, ToolbarView } from 'ckeditor5/src/ui';
-import type { Locale } from 'ckeditor5/src/utils';
-import type { View } from 'ckeditor5/src/engine';
+import { EditorUIView, InlineEditableUIView, MenuBarView, ToolbarView } from 'ckeditor5/src/ui.js';
+import type { Locale } from 'ckeditor5/src/utils.js';
+import type { EditingView } from 'ckeditor5/src/engine.js';
 
 /**
  * The decoupled editor UI view. It is a virtual view providing an inline
- * {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#editable} and a
- * {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#toolbar}, but without any
+ * {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#editable},
+ * {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#toolbar}, and a
+ * {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#menuBarView} but without any
  * specific arrangement of the components in the DOM.
  *
  * See {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`}
@@ -25,6 +26,11 @@ export default class DecoupledEditorUIView extends EditorUIView {
 	 * The main toolbar of the decoupled editor UI.
 	 */
 	public readonly toolbar: ToolbarView;
+
+	/**
+	 * Menu bar view instance.
+	 */
+	public readonly menuBarView: MenuBarView;
 
 	/**
 	 * The editable of the decoupled editor UI.
@@ -45,7 +51,7 @@ export default class DecoupledEditorUIView extends EditorUIView {
 	 */
 	constructor(
 		locale: Locale,
-		editingView: View,
+		editingView: EditingView,
 		options: {
 			editableElement?: HTMLElement;
 			shouldToolbarGroupWhenFull?: boolean;
@@ -58,6 +64,8 @@ export default class DecoupledEditorUIView extends EditorUIView {
 		this.toolbar = new ToolbarView( locale, {
 			shouldGroupWhenFull: options.shouldToolbarGroupWhenFull
 		} );
+
+		this.menuBarView = new MenuBarView( locale );
 
 		this.editable = new InlineEditableUIView( locale, editingView, options.editableElement, {
 			label: editableView => {
@@ -78,6 +86,16 @@ export default class DecoupledEditorUIView extends EditorUIView {
 				dir: locale.uiLanguageDirection
 			}
 		} );
+
+		this.menuBarView.extendTemplate( {
+			attributes: {
+				class: [
+					'ck-reset_all',
+					'ck-rounded-corners'
+				],
+				dir: locale.uiLanguageDirection
+			}
+		} );
 	}
 
 	/**
@@ -86,6 +104,6 @@ export default class DecoupledEditorUIView extends EditorUIView {
 	public override render(): void {
 		super.render();
 
-		this.registerChild( [ this.toolbar, this.editable ] );
+		this.registerChild( [ this.menuBarView, this.toolbar, this.editable ] );
 	}
 }

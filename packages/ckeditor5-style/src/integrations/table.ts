@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,8 +7,8 @@
  * @module style/integrations/table
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import type { Element } from 'ckeditor5/src/engine';
+import { Plugin } from 'ckeditor5/src/core.js';
+import type { Element } from 'ckeditor5/src/engine.js';
 import type { TableUtils } from '@ckeditor/ckeditor5-table';
 
 import type { DataFilter } from '@ckeditor/ckeditor5-html-support';
@@ -18,7 +18,7 @@ import StyleUtils, {
 	type StyleUtilsGetAffectedBlocksEvent,
 	type StyleUtilsIsEnabledForBlockEvent,
 	type StyleUtilsConfigureGHSDataFilterEvent
-} from '../styleutils';
+} from '../styleutils.js';
 
 export default class TableStyleSupport extends Plugin {
 	private _tableUtils!: TableUtils;
@@ -27,8 +27,8 @@ export default class TableStyleSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TableStyleSupport' {
-		return 'TableStyleSupport';
+	public static get pluginName() {
+		return 'TableStyleSupport' as const;
 	}
 
 	/**
@@ -82,39 +82,65 @@ export default class TableStyleSupport extends Plugin {
 
 	/**
 	 * Checks if this plugin's custom logic should be applied for defintion-block pair.
+	 *
 	 * @param definition Style definition that is being considered.
 	 * @param block Block element to check if should be styled.
 	 * @returns True if the defintion-block pair meet the plugin criteria, false otherwise.
 	 */
 	private _isApplicable( definition: BlockStyleDefinition, block: Element ): boolean {
-		return [ 'td', 'th' ].includes( definition.element ) && block.name == 'tableCell';
+		if ( [ 'td', 'th' ].includes( definition.element ) ) {
+			return block.name == 'tableCell';
+		}
+
+		if ( [ 'thead', 'tbody' ].includes( definition.element ) ) {
+			return block.name == 'table';
+		}
+
+		return false;
 	}
 
 	/**
 	 * Checks if the style definition should be applied to selected block.
+	 *
 	 * @param definition Style definition that is being considered.
 	 * @param block Block element to check if should be styled.
 	 * @returns True if the block should be style with the style description, false otherwise.
 	 */
 	private _isStyleEnabledForBlock( definition: BlockStyleDefinition, block: Element ): boolean {
-		const location = this._tableUtils.getCellLocation( block )!;
+		if ( [ 'td', 'th' ].includes( definition.element ) ) {
+			const location = this._tableUtils.getCellLocation( block )!;
 
-		const tableRow = block.parent!;
-		const table = tableRow.parent as Element;
+			const tableRow = block.parent!;
+			const table = tableRow.parent as Element;
 
-		const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
-		const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
-		const isHeadingCell = location.row < headingRows || location.column < headingColumns;
+			const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
+			const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
+			const isHeadingCell = location.row < headingRows || location.column < headingColumns;
 
-		if ( definition.element == 'th' ) {
-			return isHeadingCell;
-		} else {
-			return !isHeadingCell;
+			if ( definition.element == 'th' ) {
+				return isHeadingCell;
+			} else {
+				return !isHeadingCell;
+			}
 		}
+
+		if ( [ 'thead', 'tbody' ].includes( definition.element ) ) {
+			const headingRows = block.getAttribute( 'headingRows' ) as number || 0;
+
+			if ( definition.element == 'thead' ) {
+				return headingRows > 0;
+			} else {
+				return headingRows < this._tableUtils.getRows( block );
+			}
+		}
+
+		/* istanbul ignore next -- @preserve */
+		return false;
 	}
 
 	/**
 	 * Gets all blocks that the style should be applied to.
+	 *
 	 * @param definition Style definition that is being considered.
 	 * @param block A block element from selection.
 	 * @returns An array with the block that was passed as an argument if meets the criteria, null otherwise.

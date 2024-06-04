@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,10 +7,10 @@
  * @module ui/list/listitemview
  */
 
-import View from '../view';
+import View from '../view.js';
 
-import type { FocusableView } from '../focuscycler';
-import type ViewCollection from '../viewcollection';
+import type { FocusableView } from '../focuscycler.js';
+import type ViewCollection from '../viewcollection.js';
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 
@@ -21,7 +21,7 @@ export default class ListItemView extends View {
 	/**
 	 * Collection of the child views inside of the list item {@link #element}.
 	 */
-	public readonly children: ViewCollection;
+	public readonly children: ViewCollection<FocusableView>;
 
 	/**
 	 * Controls whether the item view is visible. Visible by default, list items are hidden
@@ -64,6 +64,8 @@ export default class ListItemView extends View {
 	 * Focuses the list item.
 	 */
 	public focus(): void {
-		( this.children.first as FocusableView ).focus();
+		if ( this.children.first ) {
+			this.children.first.focus();
+		}
 	}
 }

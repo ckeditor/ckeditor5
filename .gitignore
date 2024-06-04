@@ -2,10 +2,15 @@
 .*/**
 !.github/**
 !.husky/**
+!.circleci/**
+
+# Generated automatically via CircleCI.
+.circleci/config-tests.yml
 
 # Files associated with CKEditor 5 repository.
 **/node_modules
 build/
+dist/
 !packages/ckeditor5-build-*/build
 docs/api/output.json
 yarn.lock
@@ -20,6 +25,9 @@ mrgit.json
 .DS_Store
 .idea
 .vscode
+
+# Prepared files to publish to npm.
+/release/
 
 # Ignore yalc
 .yalc

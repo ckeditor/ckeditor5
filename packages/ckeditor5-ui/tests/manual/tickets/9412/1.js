@@ -1,16 +1,16 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals window, document, console:false */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
 import boldIcon from '@ckeditor/ckeditor5-core/theme/icons/bold.svg';
-import ButtonView from '../../../../src/button/buttonview';
+import ButtonView from '../../../../src/button/buttonview.js';
 
 function customButtonView( editor ) {
 	editor.ui.componentFactory.add( 'customButtonView', locale => {

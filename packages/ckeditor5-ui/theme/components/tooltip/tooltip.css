@@ -1,11 +1,12 @@
 /*
- * Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-.ck.ck-balloon-panel.ck-tooltip {
-	/* Keep tooltips transparent for any interactions. */
-	pointer-events: none;
+@import "../../mixins/_unselectable.css";
 
-	z-index: calc( var(--ck-z-modal) + 100 );
+.ck.ck-balloon-panel.ck-tooltip {
+	@mixin ck-unselectable;
+
+	z-index: calc( var(--ck-z-dialog) + 100 );
 }

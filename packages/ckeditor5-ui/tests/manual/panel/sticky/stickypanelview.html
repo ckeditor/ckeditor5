@@ -4,15 +4,15 @@
 
 		<div class="ck-reset ck-editor ck-sticky_to-the-top">
 			<div class="ck-reset_all ck-editor__top"></div>
-			<p class="ck-reset">
-				An editable content mock–up.
-				An editable content mock–up.
-				An editable content mock–up.
-				An editable content mock–up.
-				An editable content mock–up.
-				An editable content mock–up.
-				An editable content mock–up.
-				An editable content mock–up.
+			<p class="ck-reset limiter">
+				Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+				Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+				Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+				Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+				Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+				Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+				Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+				Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
 			</p>
 			<div class="ck-reset_all offset-visualizer"></div>
 		</div>
@@ -22,20 +22,41 @@
 
 		<div class="ck-reset ck-editor ck-sticky_to-the-box">
 			<div class="ck-reset_all ck-editor__top "></div>
-			<p class="ck-reset">
-				An editable content mock–up.
-				An editable content mock–up.
-				An editable content mock–up.
-				An editable content mock–up.
-				An editable content mock–up.
-				An editable content mock–up.
-				An editable content mock–up.
-				An editable content mock–up.
+			<p class="ck-reset limiter">
+				Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+				Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+				Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+				Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+				Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+				Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+				Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+				Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
 			</p>
 			<div class="ck-reset_all offset-visualizer"></div>
 		</div>
 
-		<div id="fixed">The panel should stick to me instead of the viewport.</div>
+		<div class="fixed">The panel should stick to me instead of the viewport.</div>
+	</div>
+
+	<div class="column">
+		<h2>In scrollable ancestors</h2>
+
+		<div class="scrollable">
+			<div class="scrollable">
+				<div class="ck-reset ck-editor ck-sticky_with-scrollable-ancestors">
+					<div class="ck-reset_all ck-editor__top"></div>
+					<p class="ck-reset limiter">
+						Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+						Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+						Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+						Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+					</p>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="fixed">The panel should stick to me instead of the viewport.</div>
 	</div>
 </div>
 
@@ -46,13 +67,22 @@
 		padding-top: 150px;
 	}
 
+	.ck-reset {
+		font-size: 10px;
+	}
+
+	h2 {
+		font-size: 18px;
+	}
+
 	#columns {
 		overflow: hidden;
+		margin-top: 50px;
 	}
 
 	.column {
 		float: left;
-		width: 350px;
+		width: 300px;
 		padding: 1em;
 	}
 
@@ -68,7 +98,10 @@
 	}
 
 	.ck-sticky-panel__content:after {
-		content: "A sticky panel mock–up.";
+		content: "Sticky panel.";
+		text-align: center;
+		width: 100%;
+		display: block;
 	}
 
 	.offset-visualizer {
@@ -78,15 +111,16 @@
 		bottom: 0;
 		background: red;
 		color: #fff;
+		opacity: .8;
 	}
 
 	.offset-visualizer:after {
 		content: "An offset mock–up. Toolbar should *never* cover the red area.";
 	}
 
-	#fixed {
+	.fixed {
 		height: 100px;
-		width: 350px;
+		width: 300px;
 		position: fixed;
 		top: 0;
 		z-index: 9999;
@@ -95,5 +129,26 @@
 		color: #fff;
 		box-sizing: border-box;
 		padding: 30px;
+	}
+
+	.scrollable {
+		border: 1px solid #aaa;
+		padding: 30px;
+		padding-bottom: 200px;
+		box-sizing: border-box;
+		height: 150px;
+		overflow: auto;
+	}
+
+	.scrollable > .scrollable {
+		margin-bottom: 200px;
+	}
+
+	.scrollable > .ck-reset {
+		margin-bottom: 100px;
+	}
+
+	.limiter {
+		overflow: hidden;
 	}
 </style>

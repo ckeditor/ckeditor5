@@ -1,24 +1,24 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals console */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import utils from '../../src/imagestyle/utils';
-import ImageToolbar from '../../src/imagetoolbar';
-import ImageStyleEditing from '../../src/imagestyle/imagestyleediting';
-import ImageStyleUI from '../../src/imagestyle/imagestyleui';
-import ImageBlockEditing from '../../src/image/imageblockediting';
-import ImageInlineEditing from '../../src/image/imageinlineediting';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
-import { SplitButtonView } from '../../../../src/ui';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
+import utils from '../../src/imagestyle/utils.js';
+import ImageToolbar from '../../src/imagetoolbar.js';
+import ImageStyleEditing from '../../src/imagestyle/imagestyleediting.js';
+import ImageStyleUI from '../../src/imagestyle/imagestyleui.js';
+import ImageBlockEditing from '../../src/image/imageblockediting.js';
+import ImageInlineEditing from '../../src/image/imageinlineediting.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
+import { SplitButtonView } from '../../../../src/ui.js';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'ImageStyleUI', () => {
 	let editor, editorElement, factory, defaultDropdowns;

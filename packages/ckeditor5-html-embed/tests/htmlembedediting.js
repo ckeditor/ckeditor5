@@ -1,17 +1,17 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global console, document, Event */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import HtmlEmbedEditing from '../src/htmlembedediting';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import HtmlEmbedCommand from '../src/htmlembedcommand';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { isWidget } from '@ckeditor/ckeditor5-widget/src/utils';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import HtmlEmbedEditing from '../src/htmlembedediting.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import HtmlEmbedCommand from '../src/htmlembedcommand.js';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { isWidget } from '@ckeditor/ckeditor5-widget/src/utils.js';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'HtmlEmbedEditing', () => {

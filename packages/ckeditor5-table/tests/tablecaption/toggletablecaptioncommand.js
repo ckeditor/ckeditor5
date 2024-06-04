@@ -1,18 +1,18 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import TableSelection from '../../src/tableselection';
-import TableEditing from '../../src/tableediting';
-import { modelTable } from '../_utils/utils';
+import TableSelection from '../../src/tableselection.js';
+import TableEditing from '../../src/tableediting.js';
+import { modelTable } from '../_utils/utils.js';
 
-import ToggleTableCaptionCommand from '../../src/tablecaption/toggletablecaptioncommand';
-import TableCaptionEditing from '../../src/tablecaption/tablecaptionediting';
+import ToggleTableCaptionCommand from '../../src/tablecaption/toggletablecaptioncommand.js';
+import TableCaptionEditing from '../../src/tablecaption/tablecaptionediting.js';
 import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles';
 
 describe( 'ToggleTableCaptionCommand', () => {

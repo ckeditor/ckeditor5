@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -74,6 +74,80 @@ describe( 'transform', () => {
 
 				john.detachRoot( 'new' );
 				kate.detachRoot( 'new' );
+
+				syncClients();
+
+				expect( john.document.getRoot( 'new' ).isAttached() ).to.be.false;
+				expect( kate.document.getRoot( 'new' ).isAttached() ).to.be.false;
+			} );
+
+			it( 'with the same name, then undo one', () => {
+				john.addRoot( 'new' );
+				kate.addRoot( 'new' );
+
+				syncClients();
+
+				john.detachRoot( 'new' );
+
+				kate.detachRoot( 'new' );
+				kate.undo();
+
+				syncClients();
+
+				expect( john.document.getRoot( 'new' ).isAttached() ).to.be.true;
+				expect( kate.document.getRoot( 'new' ).isAttached() ).to.be.true;
+			} );
+
+			it( 'with the same name, then undo both', () => {
+				john.addRoot( 'new' );
+				kate.addRoot( 'new' );
+
+				syncClients();
+
+				john.detachRoot( 'new' );
+				john.undo();
+
+				kate.detachRoot( 'new' );
+				kate.undo();
+
+				syncClients();
+
+				expect( john.document.getRoot( 'new' ).isAttached() ).to.be.true;
+				expect( kate.document.getRoot( 'new' ).isAttached() ).to.be.true;
+			} );
+
+			it( 'with the same name, then undo both, then redo one', () => {
+				john.addRoot( 'new' );
+				kate.addRoot( 'new' );
+
+				syncClients();
+
+				john.detachRoot( 'new' );
+				john.undo();
+				john.redo();
+
+				kate.detachRoot( 'new' );
+				kate.undo();
+
+				syncClients();
+
+				expect( john.document.getRoot( 'new' ).isAttached() ).to.be.false;
+				expect( kate.document.getRoot( 'new' ).isAttached() ).to.be.false;
+			} );
+
+			it( 'with the same name, then undo both, then redo both', () => {
+				john.addRoot( 'new' );
+				kate.addRoot( 'new' );
+
+				syncClients();
+
+				john.detachRoot( 'new' );
+				john.undo();
+				john.redo();
+
+				kate.detachRoot( 'new' );
+				kate.undo();
+				john.redo();
 
 				syncClients();
 

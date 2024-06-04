@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import global from '../../src/dom/global';
+import global from '../../src/dom/global.js';
 
 /**
  * A helper class that makes it possible to visualize {@link module:utils/dom/rect~Rect rect objects}.
@@ -88,15 +88,43 @@ export default class RectDrawer {
 				font-family: monospace;
 				background: #000;
 				color: #fff;
-				font-size: 9px;
+				font-size: 8px;
 				padding: 1px 3px;
 				pointer-events: none;
+				white-space: pre;
 			}
 		`;
 
 		global.document.head.appendChild( RectDrawer._stylesElement );
 	}
 }
+
+// eslint-disable-next-line max-len
+const sharedDiagonalBackgroundSvg = 'url("data:image/svg+xml;utf8,<svg width=\x27100\x27 height=\x27100\x27 fill=\x27none\x27 xmlns=\x27http://www.w3.org/2000/svg\x27><path d=\x27M0 0L100 100\x27 stroke=\x27black\x27 stroke-width=\x271\x27 vector-effect=\x27non-scaling-stroke\x27/><path d=\x27M100 0L-4.37114e-06 100\x27 stroke=\x27black\x27 stroke-width=\x271\x27 vector-effect=\x27non-scaling-stroke\x27/></svg>")';
+const sharedDiagonalStyles = {
+	backgroundRepeat: 'no-repeat',
+	backgroundSize: '100% 100%',
+	outlineStyle: 'solid',
+	outlineWidth: '1px'
+};
+
+export const diagonalStylesBlack = {
+	backgroundImage: sharedDiagonalBackgroundSvg,
+	outlineColor: 'black',
+	...sharedDiagonalStyles
+};
+
+export const diagonalStylesGreen = {
+	backgroundImage: sharedDiagonalBackgroundSvg.replaceAll( 'black', 'green' ),
+	outlineColor: 'green',
+	...sharedDiagonalStyles
+};
+
+export const diagonalStylesRed = {
+	backgroundImage: sharedDiagonalBackgroundSvg.replaceAll( 'black', 'red' ),
+	outlineColor: 'red',
+	...sharedDiagonalStyles
+};
 
 /**
  * @private

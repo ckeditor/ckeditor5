@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -50,7 +50,7 @@ function createClipboardInputNotification() {
 	<p>We detected that you tried to paste content from <strong>Microsoft Word</strong> or <strong>Google Docs</strong>.</p>
 	<p>Please bear in mind that the editor demo to which you try to paste does not have all the features enabled.
 		Due to that, unsupported formatting is being stripped.</p>
-	<p>Check out the <a href="/docs/ckeditor5/latest/features/pasting/paste-from-word.html">Paste from Word</a> or
+	<p>Check out the <a href="/docs/ckeditor5/latest/features/pasting/paste-from-office.html">Paste from Office</a> or
 	<a href="/docs/ckeditor5/latest/features/pasting/paste-from-google-docs.html">Paste from Google Docs</a>
 	demos for the best experience.</p>`;
 
@@ -122,3 +122,33 @@ window.getViewportTopOffsetConfig = function() {
 
 	return parseInt( window.getComputedStyle( documentElement ).getPropertyValue( '--ck-snippet-viewport-top-offset' ) );
 };
+
+/**
+ * Activates tabs in the given container.
+ *
+ * **Note**: The tabs container requires a proper markup to work correctly.
+ *
+ * @param {HTMLElement} tabsContainer
+ */
+window.createTabs = function( tabsContainer ) {
+	const tabTextElements = Array.from( tabsContainer.querySelectorAll( '.tabs__list__tab-text' ) );
+	const tabPanels = Array.from( tabsContainer.querySelectorAll( '.tabs__panel' ) );
+
+	tabTextElements.forEach( tabTextElement => {
+		tabTextElement.addEventListener( 'click', evt => {
+			const clickedIndex = tabTextElements.indexOf( tabTextElement );
+
+			tabTextElements.forEach( element => {
+				element.parentElement.classList.toggle( 'tabs__list__tab_selected', tabTextElement === element );
+				element.setAttribute( 'aria-selected', tabTextElement === element );
+			} );
+
+			tabPanels.forEach( panel => {
+				panel.classList.toggle( 'tabs__panel_selected', tabPanels.indexOf( panel ) === clickedIndex );
+			} );
+
+			evt.preventDefault();
+		} );
+	} );
+};
+

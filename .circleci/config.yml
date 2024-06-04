@@ -1,0 +1,61 @@
+# This is the based configuration required by CircleCI to run a build.
+#
+# The CKEditor 5 repository uses the dynamic configuration to generate
+# tasks for executing tests and checking the code coverage.
+#
+# This configuration aims to prepare a complete design and continue checking
+# the repository in a new workflow.
+#
+# To modify the commands to execute on CI, review the following files:
+# - scripts/ci/generate-circleci-configuration.js - the script that creates the `config-tests.yml` file used on the new workflow.
+# - .circleci/template.yml - the template filled with data to execute.
+#
+# Useful resources:
+# - https://circleci.com/docs/using-dynamic-configuration/
+version: 2.1
+
+setup: true
+
+parameters:
+  isNightly:
+    type: boolean
+    default: false
+  isStaleBot:
+    type: boolean
+    default: false
+
+orbs:
+  continuation: circleci/continuation@0.1.2
+
+commands:
+  install_ssh_keys_command:
+    description: "Install SSH keys"
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "a0:41:a2:56:c8:7d:3f:29:41:d1:87:92:fd:50:2b:6b"
+
+jobs:
+  generate_configuration:
+    machine: true
+    parameters:
+      isNightly:
+        type: boolean
+    steps:
+      - checkout
+      - install_ssh_keys_command
+      - run:
+          name: Install dependencies
+          command: yarn install
+      - run:
+          name: Generate a new configuration to check all packages in the repository
+          command: node scripts/ci/generate-circleci-configuration.js
+      - continuation/continue:
+          configuration_path: .circleci/config-tests.yml
+
+workflows:
+  version: 2
+  config:
+    jobs:
+      - generate_configuration:
+          isNightly: false

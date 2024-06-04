@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,20 +7,20 @@
  * @module engine/model/utils/insertcontent
  */
 
-import DocumentSelection from '../documentselection';
-import Element from '../element';
-import LivePosition from '../liveposition';
-import LiveRange from '../liverange';
-import Position from '../position';
-import Range from '../range';
+import DocumentSelection from '../documentselection.js';
+import Element from '../element.js';
+import LivePosition from '../liveposition.js';
+import LiveRange from '../liverange.js';
+import Position from '../position.js';
+import Range from '../range.js';
 
-import type DocumentFragment from '../documentfragment';
-import type Item from '../item';
-import type Model from '../model';
-import type Schema from '../schema';
-import type Writer from '../writer';
-import type Node from '../node';
-import type Selection from '../selection';
+import type DocumentFragment from '../documentfragment.js';
+import type Item from '../item.js';
+import type Model from '../model.js';
+import type Schema from '../schema.js';
+import type Writer from '../writer.js';
+import type Node from '../node.js';
+import type Selection from '../selection.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
@@ -188,7 +188,7 @@ export default function insertContent(
 			for ( const [ name, [ start, end ] ] of Object.entries( markersData ) ) {
 				// For now, we ignore markers if they are included in the filtered-out content.
 				// In the future implementation we will improve that case to create markers that are not filtered out completely.
-				if ( start && end && start.root === end.root ) {
+				if ( start && end && start.root === end.root && start.root.document && !writer.model.markers.has( name ) ) {
 					writer.addMarker( name, {
 						usingOperation: true,
 						affectsData: true,

@@ -1,5 +1,5 @@
 /*
- * The configuration is used when executing automated and manual tests.
+ * The configuration used when executing automated and manual tests.
  */
 {
   "extends": "./tsconfig.json",
@@ -15,9 +15,9 @@
     "noEmitOnError": false
   },
   "include": [
+    "**/*.ts",
     "./typings/",
     "./packages/*/src/augmentation.ts",
-    "./external/ckeditor5-internal/packages/*/src/augmentation.ts",
-    "./external/collaboration-features/packages/*/src/augmentation.ts"
+    "./external/ckeditor5-commercial/packages/*/src/augmentation.ts"
   ]
 }

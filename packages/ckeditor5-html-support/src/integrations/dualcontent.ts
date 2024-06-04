@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,16 +7,17 @@
  * @module html-support/integrations/dualcontent
  */
 
-import type { ViewElement } from 'ckeditor5/src/engine';
-import { Plugin } from 'ckeditor5/src/core';
-import { priorities } from 'ckeditor5/src/utils';
+import type { ViewElement } from 'ckeditor5/src/engine.js';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { priorities } from 'ckeditor5/src/utils.js';
 
 import {
 	modelToViewBlockAttributeConverter,
 	viewToModelBlockAttributeConverter
-} from '../converters';
-import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
-import type { DataSchemaBlockElementDefinition } from '../dataschema';
+} from '../converters.js';
+import DataFilter, { type DataFilterRegisterEvent } from '../datafilter.js';
+import type { DataSchemaBlockElementDefinition } from '../dataschema.js';
+import { getHtmlAttributeName } from '../utils.js';
 
 /**
  * Provides the General HTML Support integration for elements which can behave like sectioning element (e.g. article) or
@@ -46,8 +47,8 @@ export default class DualContentModelElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'DualContentModelElementSupport' {
-		return 'DualContentModelElementSupport';
+	public static get pluginName() {
+		return 'DualContentModelElementSupport' as const;
 	}
 
 	/**
@@ -92,7 +93,7 @@ export default class DualContentModelElementSupport extends Plugin {
 				},
 				// With a `low` priority, `paragraph` plugin auto-paragraphing mechanism is executed. Make sure
 				// this listener is called before it. If not, some elements will be transformed into a paragraph.
-				converterPriority: priorities.get( 'low' ) + 0.5
+				converterPriority: priorities.low + 0.5
 			} );
 
 			conversion.for( 'downcast' ).elementToElement( {
@@ -139,7 +140,7 @@ export default class DualContentModelElementSupport extends Plugin {
 		const dataFilter = editor.plugins.get( DataFilter );
 
 		editor.model.schema.extend( definition.model, {
-			allowAttributes: 'htmlAttributes'
+			allowAttributes: getHtmlAttributeName( definition.view! )
 		} );
 
 		conversion.for( 'upcast' ).add( viewToModelBlockAttributeConverter( definition, dataFilter ) );

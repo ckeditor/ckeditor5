@@ -1,25 +1,25 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document, Event */
 
-import View from '@ckeditor/ckeditor5-ui/src/view';
+import View from '@ckeditor/ckeditor5-ui/src/view.js';
 
-import DecoupledEditor from '../src/decouplededitor';
-import DecoupledEditorUI from '../src/decouplededitorui';
-import DecoupledEditorUIView from '../src/decouplededitoruiview';
-import EditorUI from '@ckeditor/ckeditor5-ui/src/editorui/editorui';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import DecoupledEditor from '../src/decouplededitor.js';
+import DecoupledEditorUI from '../src/decouplededitorui.js';
+import DecoupledEditorUIView from '../src/decouplededitoruiview.js';
+import EditorUI from '@ckeditor/ckeditor5-ui/src/editorui/editorui.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { Image, ImageCaption, ImageToolbar } from '@ckeditor/ckeditor5-image';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { isElement } from 'lodash-es';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'DecoupledEditorUI', () => {
 	let editor, view, ui, viewElement;
@@ -311,7 +311,7 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 			ui.focusTracker.isFocused = true;
 			ui.focusTracker.focusedElement = domRoot;
 
-			pressAltF10();
+			pressAltF10( editor );
 
 			sinon.assert.calledOnce( spy );
 		} );
@@ -323,11 +323,11 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
 
 			// Focus the toolbar.
-			pressAltF10();
+			pressAltF10( editor );
 			ui.focusTracker.focusedElement = toolbarView.element;
 
 			// Try Alt+F10 again.
-			pressAltF10();
+			pressAltF10( editor );
 
 			sinon.assert.calledOnce( toolbarFocusSpy );
 			sinon.assert.notCalled( domRootFocusSpy );
@@ -347,7 +347,7 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 			);
 
 			// Focus the image balloon toolbar.
-			pressAltF10();
+			pressAltF10( editor );
 			ui.focusTracker.focusedElement = imageToolbar.element;
 
 			sinon.assert.calledOnce( imageToolbarSpy );
@@ -368,10 +368,10 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
 
 			// Focus the toolbar.
-			pressAltF10();
+			pressAltF10( editor );
 			ui.focusTracker.focusedElement = toolbarView.element;
 
-			pressEsc();
+			pressEsc( editor );
 
 			sinon.assert.callOrder( toolbarFocusSpy, domRootFocusSpy );
 		} );
@@ -382,29 +382,12 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 
 			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
 
-			pressEsc();
+			pressEsc( editor );
 
 			sinon.assert.notCalled( domRootFocusSpy );
 			sinon.assert.notCalled( toolbarFocusSpy );
 		} );
 	} );
-
-	function pressAltF10() {
-		editor.keystrokes.press( {
-			keyCode: keyCodes.f10,
-			altKey: true,
-			preventDefault: sinon.spy(),
-			stopPropagation: sinon.spy()
-		} );
-	}
-
-	function pressEsc() {
-		editor.keystrokes.press( {
-			keyCode: keyCodes.esc,
-			preventDefault: sinon.spy(),
-			stopPropagation: sinon.spy()
-		} );
-	}
 } );
 
 function viewCreator( name ) {
@@ -416,6 +399,23 @@ function viewCreator( name ) {
 
 		return view;
 	};
+}
+
+function pressAltF10( editor ) {
+	editor.keystrokes.press( {
+		keyCode: keyCodes.f10,
+		altKey: true,
+		preventDefault: sinon.spy(),
+		stopPropagation: sinon.spy()
+	} );
+}
+
+function pressEsc( editor ) {
+	editor.keystrokes.press( {
+		keyCode: keyCodes.esc,
+		preventDefault: sinon.spy(),
+		stopPropagation: sinon.spy()
+	} );
 }
 
 class VirtualDecoupledTestEditor extends VirtualTestEditor {

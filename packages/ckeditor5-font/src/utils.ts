@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,18 +7,16 @@
  * @module font/utils
  */
 
-import ColorTableView from './ui/colortableview';
-
-import type { FontFamilyOption, FontSizeOption } from './fontconfig';
-import type { ColorDefinition, DropdownView } from 'ckeditor5/src/ui';
-import type { ArrayOrItem } from 'ckeditor5/src/utils';
+import type { FontFamilyOption, FontSizeOption } from './fontconfig.js';
+import { ColorSelectorView, type ColorDefinition, type ColorPickerViewConfig, type DropdownView } from 'ckeditor5/src/ui.js';
+import type { ArrayOrItem } from 'ckeditor5/src/utils.js';
 import type {
 	ViewAttributeElement,
 	ViewElement,
 	MatcherPattern,
 	ViewElementDefinition,
 	DowncastConversionApi
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
 /**
  * The name of the font size plugin.
@@ -100,34 +98,47 @@ export function renderDowncastElement( styleAttr: string ) {
 }
 
 /**
- * A helper that adds {@link module:font/ui/colortableview~ColorTableView} to the color dropdown with proper initial values.
+ * A helper that adds {@link module:ui/colorselector/colorselectorview~ColorSelectorView} to the color dropdown with proper initial values.
  *
- * @param config.dropdownView The dropdown view to which a {@link module:font/ui/colortableview~ColorTableView} will be added.
- * @param config.colors An array with definitions representing colors to be displayed in the color table.
+ * @param config.dropdownView The dropdown view to which a {@link module:ui/colorselector/colorselectorview~ColorSelectorView}
+ * will be added.
+ * @param config.colors An array with definitions representing colors to be displayed in the color selector.
  * @param config.removeButtonLabel The label for the button responsible for removing the color.
  * @param config.documentColorsLabel The label for the section with document colors.
  * @param config.documentColorsCount The number of document colors inside the dropdown.
- * @returns The new color table view.
+ * @param config.colorPickerViewConfig Configuration of the color picker view.
+ * @returns The new color selector view.
  */
-export function addColorTableToDropdown(
-	{ dropdownView, colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount }: {
-		dropdownView: ColorTableDropdownView;
+export function addColorSelectorToDropdown(
+	{
+		dropdownView, colors, columns, removeButtonLabel, colorPickerLabel,
+		documentColorsLabel, documentColorsCount, colorPickerViewConfig
+	}: {
+		dropdownView: ColorSelectorDropdownView;
 		colors: Array<ColorDefinition>;
 		columns: number;
 		removeButtonLabel: string;
+		colorPickerLabel: string;
 		documentColorsLabel?: string;
 		documentColorsCount?: number;
+		colorPickerViewConfig: ColorPickerViewConfig | false;
 	}
-): ColorTableView {
+): ColorSelectorView {
 	const locale = dropdownView.locale!;
-	const colorTableView = new ColorTableView( locale, { colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount } );
+	const colorSelectorView = new ColorSelectorView( locale, {
+		colors,
+		columns,
+		removeButtonLabel,
+		colorPickerLabel,
+		documentColorsLabel,
+		documentColorsCount,
+		colorPickerViewConfig
+	} );
 
-	dropdownView.colorTableView = colorTableView;
-	dropdownView.panelView.children.add( colorTableView );
+	dropdownView.colorSelectorView = colorSelectorView;
+	dropdownView.panelView.children.add( colorSelectorView );
 
-	colorTableView.delegate( 'execute' ).to( dropdownView, 'execute' );
-
-	return colorTableView;
+	return colorSelectorView;
 }
 
 /**
@@ -137,6 +148,6 @@ function normalizeColorCode( value: string ): string {
 	return value.replace( /\s/g, '' );
 }
 
-export type ColorTableDropdownView = DropdownView & {
-	colorTableView?: ColorTableView;
+export type ColorSelectorDropdownView = DropdownView & {
+	colorSelectorView?: ColorSelectorView;
 };

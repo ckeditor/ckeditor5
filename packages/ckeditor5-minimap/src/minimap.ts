@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,16 +7,16 @@
  * @module minimap/minimap
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { findClosestScrollableAncestor, global } from 'ckeditor5/src/utils';
-import MinimapView, { type MinimapDragEvent, type MinimapClickEvent } from './minimapview';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { findClosestScrollableAncestor, global } from 'ckeditor5/src/utils.js';
+import MinimapView, { type MinimapDragEvent, type MinimapClickEvent } from './minimapview.js';
 import {
 	cloneEditingViewDomRoot,
 	getClientHeight,
 	getDomElementRect,
 	getPageStyles,
 	getScrollable
-} from './utils';
+} from './utils.js';
 
 // @if CK_DEBUG_MINIMAP // const RectDrawer = require( '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer' ).default;
 
@@ -29,8 +29,8 @@ export default class Minimap extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Minimap' {
-		return 'Minimap';
+	public static get pluginName() {
+		return 'Minimap' as const;
 	}
 
 	/**
@@ -65,6 +65,8 @@ export default class Minimap extends Plugin {
 	 * @inheritDoc
 	 */
 	public override destroy(): void {
+		super.destroy();
+
 		this._minimapView!.destroy();
 		this._minimapView!.element!.remove();
 	}
@@ -91,6 +93,10 @@ export default class Minimap extends Plugin {
 		this._initializeMinimapView();
 
 		this.listenTo( editor.editing.view, 'render', () => {
+			if ( editor.state !== 'ready' ) {
+				return;
+			}
+
 			this._syncMinimapToEditingRootScrollPosition();
 		} );
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,9 @@
  * @module ui/colorgrid/colortileview
  */
 
-import ButtonView from '../button/buttonview';
+import ButtonView from '../button/buttonview.js';
 
-import type { Locale } from '@ckeditor/ckeditor5-utils';
+import { env, type Locale } from '@ckeditor/ckeditor5-utils';
 
 import checkIcon from '../../theme/icons/color-tile-check.svg';
 
@@ -41,12 +41,13 @@ export default class ColorTileView extends ButtonView {
 		this.extendTemplate( {
 			attributes: {
 				style: {
-					backgroundColor: bind.to( 'color' )
+					// https://github.com/ckeditor/ckeditor5/issues/14907
+					backgroundColor: bind.to( 'color', color => env.isMediaForcedColors ? null : color )
 				},
 				class: [
 					'ck',
 					'ck-color-grid__tile',
-					bind.if( 'hasBorder', 'ck-color-table__color-tile_bordered' )
+					bind.if( 'hasBorder', 'ck-color-selector__color-tile_bordered' )
 				]
 			}
 		} );

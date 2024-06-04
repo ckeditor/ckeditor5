@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,16 +9,12 @@
 
 import {
 	type InputTextView,
-	ButtonView,
-	FocusCycler,
 	LabeledFieldView,
 	View,
-	ViewCollection,
 	createLabeledInputText,
 	submitHandler
-} from 'ckeditor5/src/ui';
-import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
-import { icons } from 'ckeditor5/src/core';
+} from 'ckeditor5/src/ui.js';
+import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
 
 // See: #8833.
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
@@ -52,26 +48,6 @@ export default class MediaFormView extends View {
 	public urlInputView: LabeledFieldView<InputTextView>;
 
 	/**
-	 * The Save button view.
-	 */
-	public saveButtonView: ButtonView;
-
-	/**
-	 * The Cancel button view.
-	 */
-	public cancelButtonView: ButtonView;
-
-	/**
-	 * A collection of views that can be focused in the form.
-	 */
-	private readonly _focusables: ViewCollection;
-
-	/**
-	 * Helps cycling over {@link #_focusables} in the form.
-	 */
-	private readonly _focusCycler: FocusCycler;
-
-	/**
 	 * An array of form validators used by {@link #isValid}.
 	 */
 	private readonly _validators: Array<( v: MediaFormView ) => string | undefined>;
@@ -94,33 +70,10 @@ export default class MediaFormView extends View {
 	constructor( validators: Array<( v: MediaFormView ) => string | undefined>, locale: Locale ) {
 		super( locale );
 
-		const t = locale.t;
-
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
 		this.set( 'mediaURLInputValue', '' );
 		this.urlInputView = this._createUrlInput();
-
-		this.saveButtonView = this._createButton( t( 'Save' ), icons.check, 'ck-button-save' );
-		this.saveButtonView.type = 'submit';
-		this.saveButtonView.bind( 'isEnabled' ).to( this, 'mediaURLInputValue', value => !!value );
-
-		this.cancelButtonView = this._createButton( t( 'Cancel' ), icons.cancel, 'ck-button-cancel', 'cancel' );
-
-		this._focusables = new ViewCollection();
-
-		this._focusCycler = new FocusCycler( {
-			focusables: this._focusables,
-			focusTracker: this.focusTracker,
-			keystrokeHandler: this.keystrokes,
-			actions: {
-				// Navigate form fields backwards using the <kbd>Shift</kbd> + <kbd>Tab</kbd> keystroke.
-				focusPrevious: 'shift + tab',
-
-				// Navigate form fields forwards using the <kbd>Tab</kbd> key.
-				focusNext: 'tab'
-			}
-		} );
 
 		this._validators = validators;
 
@@ -138,9 +91,7 @@ export default class MediaFormView extends View {
 			},
 
 			children: [
-				this.urlInputView,
-				this.saveButtonView,
-				this.cancelButtonView
+				this.urlInputView
 			]
 		} );
 	}
@@ -155,39 +106,11 @@ export default class MediaFormView extends View {
 			view: this
 		} );
 
-		const childViews = [
-			this.urlInputView,
-			this.saveButtonView,
-			this.cancelButtonView
-		];
-
-		childViews.forEach( v => {
-			// Register the view as focusable.
-			this._focusables.add( v );
-
-			// Register the view in the focus tracker.
-			this.focusTracker.add( v.element! );
-		} );
+		// Register the view in the focus tracker.
+		this.focusTracker.add( this.urlInputView.element! );
 
 		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element! );
-
-		const stopPropagation = ( data: KeyboardEvent ) => data.stopPropagation();
-
-		// Since the form is in the dropdown panel which is a child of the toolbar, the toolbar's
-		// keystroke handler would take over the key management in the URL input. We need to prevent
-		// this ASAP. Otherwise, the basic caret movement using the arrow keys will be impossible.
-		this.keystrokes.set( 'arrowright', stopPropagation );
-		this.keystrokes.set( 'arrowleft', stopPropagation );
-		this.keystrokes.set( 'arrowup', stopPropagation );
-		this.keystrokes.set( 'arrowdown', stopPropagation );
-
-		// Intercept the `selectstart` event, which is blocked by default because of the default behavior
-		// of the DropdownView#panelView.
-		// TODO: blocking `selectstart` in the #panelView should be configurable per–drop–down instance.
-		this.listenTo( this.urlInputView.element!, 'selectstart', ( evt, domEvt ) => {
-			domEvt.stopPropagation();
-		}, { priority: 'high' } );
 	}
 
 	/**
@@ -201,10 +124,10 @@ export default class MediaFormView extends View {
 	}
 
 	/**
-	 * Focuses the fist {@link #_focusables} in the form.
+	 * Focuses the {@link #urlInputView}.
 	 */
 	public focus(): void {
-		this._focusCycler.focusFirst();
+		this.urlInputView.focus();
 	}
 
 	/**
@@ -218,7 +141,7 @@ export default class MediaFormView extends View {
 	}
 
 	public set url( url: string ) {
-		this.urlInputView.fieldView.element!.value = url.trim();
+		this.urlInputView.fieldView.value = url.trim();
 	}
 
 	/**
@@ -270,6 +193,7 @@ export default class MediaFormView extends View {
 		labeledInput.label = t( 'Media URL' );
 		labeledInput.infoText = this._urlInputViewInfoDefault;
 
+		inputField.inputMode = 'url';
 		inputField.on( 'input', () => {
 			// Display the tip text only when there is some value. Otherwise fall back to the default info text.
 			labeledInput.infoText = inputField.element!.value ? this._urlInputViewInfoTip! : this._urlInputViewInfoDefault!;
@@ -277,36 +201,5 @@ export default class MediaFormView extends View {
 		} );
 
 		return labeledInput;
-	}
-
-	/**
-	 * Creates a button view.
-	 *
-	 * @param label The button label.
-	 * @param icon The button icon.
-	 * @param className The additional button CSS class name.
-	 * @param eventName An event name that the `ButtonView#execute` event will be delegated to.
-	 * @returns The button view instance.
-	 */
-	private _createButton( label: string, icon: string, className: string, eventName?: string ): ButtonView {
-		const button = new ButtonView( this.locale );
-
-		button.set( {
-			label,
-			icon,
-			tooltip: true
-		} );
-
-		button.extendTemplate( {
-			attributes: {
-				class: className
-			}
-		} );
-
-		if ( eventName ) {
-			button.delegate( 'execute' ).to( this, eventName );
-		}
-
-		return button;
 	}
 }

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,9 @@
  * @module style/integrations/link
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import type { Selectable, DocumentSelection, Range, Position, Model } from 'ckeditor5/src/engine';
-import { findAttributeRange, findAttributeRangeBound } from 'ckeditor5/src/typing';
+import { Plugin } from 'ckeditor5/src/core.js';
+import type { Selectable, DocumentSelection, Range, Position, Model } from 'ckeditor5/src/engine.js';
+import { findAttributeRange, findAttributeRangeBound } from 'ckeditor5/src/typing.js';
 
 import type { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 
@@ -18,7 +18,7 @@ import StyleUtils, {
 	type StyleUtilsGetAffectedInlineSelectableEvent,
 	type StyleUtilsIsStyleEnabledForInlineSelectionEvent,
 	type StyleUtilsIsStyleActiveForInlineSelectionEvent
-} from '../styleutils';
+} from '../styleutils.js';
 
 export default class LinkStyleSupport extends Plugin {
 	private _styleUtils!: StyleUtils;
@@ -27,8 +27,8 @@ export default class LinkStyleSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'LinkStyleSupport' {
-		return 'LinkStyleSupport';
+	public static get pluginName() {
+		return 'LinkStyleSupport' as const;
 	}
 
 	/**

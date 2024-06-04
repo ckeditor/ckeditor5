@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,7 +10,7 @@
 import {
 	Plugin,
 	type Editor
-} from 'ckeditor5/src/core';
+} from 'ckeditor5/src/core.js';
 import {
 	Matcher,
 	type UpcastElementEvent,
@@ -20,12 +20,12 @@ import {
 	type ViewElement,
 	type DowncastDispatcher,
 	type UpcastDispatcher
-} from 'ckeditor5/src/engine';
-import { toMap } from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/engine.js';
+import { toMap } from 'ckeditor5/src/utils.js';
 
-import LinkEditing from './linkediting';
-import type ManualDecorator from './utils/manualdecorator';
-import type LinkCommand from './linkcommand';
+import LinkEditing from './linkediting.js';
+import type ManualDecorator from './utils/manualdecorator.js';
+import type LinkCommand from './linkcommand.js';
 
 import type { ImageUtils } from '@ckeditor/ckeditor5-image';
 
@@ -46,14 +46,14 @@ export default class LinkImageEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'LinkImageEditing' {
-		return 'LinkImageEditing';
+	public static get pluginName() {
+		return 'LinkImageEditing' as const;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public init(): void {
+	public afterInit(): void {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 

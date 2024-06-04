@@ -5,12 +5,12 @@ All changes in the package are documented in the main repository. See: https://g
 
 Changes for the past releases are available below.
 
-## [19.0.0](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v18.0.0...v19.0.0) (2020-04-29)
+## [19.0.0](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v18.0.0...v19.0.0) (April 29, 2020)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [18.0.0](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v17.0.0...v18.0.0) (2020-03-19)
+## [18.0.0](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v17.0.0...v18.0.0) (March 19, 2020)
 
 ### MAJOR BREAKING CHANGES
 
@@ -21,22 +21,22 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The inline editor toolbar should group items when its width exceeds the editable’s width (see [ckeditor/ckeditor5#5597](https://github.com/ckeditor/ckeditor5/issues/5597)). ([1c5746c](https://github.com/ckeditor/ckeditor5-editor-inline/commit/1c5746c))
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [16.0.0](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v15.0.0...v16.0.0) (2019-12-04)
+## [16.0.0](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v15.0.0...v16.0.0) (December 4, 2019)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [15.0.0](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v12.3.0...v15.0.0) (2019-10-23)
+## [15.0.0](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v12.3.0...v15.0.0) (October 23, 2019)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [12.3.0](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v12.2.1...v12.3.0) (2019-08-26)
+## [12.3.0](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v12.2.1...v12.3.0) (August 26, 2019)
 
 ### Features
 
@@ -48,31 +48,31 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Introduced a check that prevents sharing source elements between editor instances. See [ckeditor/ckeditor5#746](https://github.com/ckeditor/ckeditor5/issues/746). ([5e42fcf](https://github.com/ckeditor/ckeditor5-editor-inline/commit/5e42fcf))
 
 
-## [12.2.1](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v12.2.0...v12.2.1) (2019-07-10)
+## [12.2.1](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v12.2.0...v12.2.1) (July 10, 2019)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [12.2.0](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v12.1.1...v12.2.0) (2019-07-04)
+## [12.2.0](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v12.1.1...v12.2.0) (July 4, 2019)
 
 ### Features
 
 * `InlineEditor.create()` will throw an error, when a `<textarea>` element is used. ([56c9f40](https://github.com/ckeditor/ckeditor5-editor-inline/commit/56c9f40))
 
 
-## [12.1.1](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v12.1.0...v12.1.1) (2019-06-05)
+## [12.1.1](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v12.1.0...v12.1.1) (June 6, 2019)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [12.1.0](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v12.0.0...v12.1.0) (2019-04-10)
+## [12.1.0](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v12.0.0...v12.1.0) (April 4, 2019)
 
 ### Features
 
 * Introduced `EditorConfig#initialData`. ([59e97b5](https://github.com/ckeditor/ckeditor5-editor-inline/commit/59e97b5))
 
 
-## [12.0.0](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v11.0.2...v12.0.0) (2019-02-28)
+## [12.0.0](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v11.0.2...v12.0.0) (February 28, 2019)
 
 ### Features
 
@@ -97,12 +97,12 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Removed `InlineEditorUIView#editableElement`. Instead `InlineEditorUI#getEditableElement()` method should be used.
 
 
-## [11.0.2](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v11.0.1...v11.0.2) (2018-12-05)
+## [11.0.2](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v11.0.1...v11.0.2) (December 5, 2018)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [11.0.1](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v11.0.0...v11.0.1) (2018-10-08)
+## [11.0.1](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v11.0.0...v11.0.1) (October 8, 2018)
 
 ### Bug fixes
 
@@ -111,7 +111,7 @@ Internal changes only (updated dependencies, documentation, etc.).
   Huge thanks to [Alex Eckermann](https://github.com/alexeckermann) for this contribution!
 
 
-## [11.0.0](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v10.0.1...v11.0.0) (2018-07-18)
+## [11.0.0](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v10.0.1...v11.0.0) (July 18, 2018)
 
 ### Features
 
@@ -126,12 +126,12 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `InlineEditor#element` property was renamed to `InlineEditor#sourceElement` and `InlineEditor#updateElement()` method to `InlineEditor#updateSourceElement()`. See [ckeditor/ckeditor5-core#64](https://github.com/ckeditor/ckeditor5-core/issues/64).
 
 
-## [10.0.1](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v10.0.0...v10.0.1) (2018-06-21)
+## [10.0.1](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v10.0.0...v10.0.1) (June 21, 2018)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [10.0.0](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v1.0.0-beta.4...v10.0.0) (2018-04-25)
+## [10.0.0](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v1.0.0-beta.4...v10.0.0) (April 25, 2018)
 
 ### Other changes
 
@@ -139,20 +139,20 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### BREAKING CHANGES
 
-* The license under which CKEditor 5 is released has been changed from a triple GPL, LGPL and MPL license to a GPL2+ only. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
+* The license under which CKEditor&nbsp;5 is released has been changed from a triple GPL, LGPL and MPL license to a GPL2+ only. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
 
 
-## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v1.0.0-beta.2...v1.0.0-beta.4) (2018-04-19)
-
-Internal changes only (updated dependencies, documentation, etc.).
-
-
-## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2018-04-10)
+## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v1.0.0-beta.2...v1.0.0-beta.4) (April 19, 2018)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
+## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v1.0.0-beta.1...v1.0.0-beta.2) (April 10, 2018)
+
+Internal changes only (updated dependencies, documentation, etc.).
+
+
+## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (March 15, 2018)
 
 ### Other changes
 
@@ -160,19 +160,19 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Removed the `.ck-editor-toolbar` class from the toolbar (see [ckeditor/ckeditor5-theme-lark#135](https://github.com/ckeditor/ckeditor5-theme-lark/issues/135)). ([213ddfd](https://github.com/ckeditor/ckeditor5-editor-inline/commit/213ddfd))
 
 
-## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
+## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (November 14, 2017)
 
 ### Other changes
 
 * Aligned UI library usage to the [changes in the UI framework](https://github.com/ckeditor/ckeditor5-ui/pull/332).
 
 
-## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v0.2.0...v1.0.0-alpha.1) (2017-10-03)
+## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v0.2.0...v1.0.0-alpha.1) (October 3, 2017)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [0.2.0](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v0.1.1...v0.2.0) (2017-09-03)
+## [0.2.0](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v0.1.1...v0.2.0) (September 3, 2017)
 
 ### Bug fixes
 
@@ -193,14 +193,14 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `inline.js` file containing `InlineEditor` class has been renamed to `inlineeditor.js`.
 
 
-## [0.1.1](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v0.1.0...v0.1.1) (2017-05-07)
+## [0.1.1](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v0.1.0...v0.1.1) (May 7, 2017)
 
 ### Bug fixes
 
 * The position of the floating toolbar should be updated after the editable has grown. Closes [#4](https://github.com/ckeditor/ckeditor5-editor-inline/issues/4). ([ae578b3](https://github.com/ckeditor/ckeditor5-editor-inline/commit/ae578b3))
 
 
-## 0.1.0 (2017-04-05)
+## 0.1.0 (April 5, 2017)
 
 ### Features
 

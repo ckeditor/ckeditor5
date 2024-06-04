@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -24,6 +24,10 @@
 		var(--ck-color-restricted-editing-exception-brackets) calc(100% - 5px),
 		var(--ck-color-restricted-editing-exception-brackets) 100%
 	) 1;
+
+	@media (prefers-reduced-motion: reduce) {
+		transition: none;
+	}
 
 	&.restricted-editing-exception_selected {
 		background-color: var(--ck-color-restricted-editing-selected-exception-background);

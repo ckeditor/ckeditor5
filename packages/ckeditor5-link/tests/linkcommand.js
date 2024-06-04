@@ -1,13 +1,13 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import LinkCommand from '../src/linkcommand';
-import ManualDecorator from '../src/utils/manualdecorator';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import AutomaticDecorators from '../src/utils/automaticdecorators';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import LinkCommand from '../src/linkcommand.js';
+import ManualDecorator from '../src/utils/manualdecorator.js';
+import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import AutomaticDecorators from '../src/utils/automaticdecorators.js';
 
 describe( 'LinkCommand', () => {
 	let editor, model, command;
@@ -262,15 +262,12 @@ describe( 'LinkCommand', () => {
 				expect( command.value ).to.be.equal( 'foo' );
 			} );
 
-			// NOTE: The command value should most likely be "foo" but this requires a lot changes in refresh()
-			// because it relies on getSelectedElement()/getSelectedBlocks() and neither will return the inline widget
-			// in this case.
-			it( 'should not read the value from a selected linkable when a linked text follows it', () => {
+			it( 'should read the value from a selected linkable when a linked text follows it', () => {
 				setData( model,
 					'<paragraph>[<linkableInline linkHref="foo"></linkableInline><$text linkHref="bar">bar</$text>]</paragraph>'
 				);
 
-				expect( command.value ).to.be.undefined;
+				expect( command.value ).to.be.equal( 'foo' );
 			} );
 
 			it( 'should read the value from a selected text node and ignore a linkable', () => {

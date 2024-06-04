@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -61,6 +61,11 @@
 	--ck-color-dropdown-panel-background: 						var(--ck-color-base-background);
 	--ck-color-dropdown-panel-border: 							var(--ck-color-base-border);
 
+	/* -- Dialog -------------------------------------------------------------------------------- */
+
+	--ck-color-dialog-background: 								var(--ck-custom-background);
+	--ck-color-dialog-form-header-border: 						var(--ck-custom-border);
+
 	/* -- Input --------------------------------------------------------------------------------- */
 
 	--ck-color-input-background: 								var(--ck-color-base-background);
@@ -110,5 +115,9 @@
 
 	/* -- Search result highlight ---------------------------------------------------------------- */
 
-	--ck-color-highlight-background:							hsl(60, 100%, 50%)
+	--ck-color-highlight-background:							hsl(60, 100%, 50%);
+
+	/* -- Generic colors ------------------------------------------------------------------------- */
+
+	--ck-color-light-red:										hsl(0, 100%, 90%);
 }

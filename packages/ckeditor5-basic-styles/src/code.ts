@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,9 @@
  * @module basic-styles/code
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import CodeEditing from './code/codeediting';
-import CodeUI from './code/codeui';
+import { Plugin } from 'ckeditor5/src/core.js';
+import CodeEditing from './code/codeediting.js';
+import CodeUI from './code/codeui.js';
 
 import '../theme/code.css';
 
@@ -33,7 +33,7 @@ export default class Code extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Code' {
-		return 'Code';
+	public static get pluginName() {
+		return 'Code' as const;
 	}
 }

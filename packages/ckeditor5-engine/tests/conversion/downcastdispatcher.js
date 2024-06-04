@@ -1,25 +1,27 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 
-import DowncastDispatcher from '../../src/conversion/downcastdispatcher';
-import Mapper from '../../src/conversion/mapper';
+import DowncastDispatcher from '../../src/conversion/downcastdispatcher.js';
+import Mapper from '../../src/conversion/mapper.js';
 
-import Model from '../../src/model/model';
-import ModelText from '../../src/model/text';
-import ModelElement from '../../src/model/element';
-import ModelDocumentFragment from '../../src/model/documentfragment';
-import ModelRange from '../../src/model/range';
-import ModelConsumable from '../../src/conversion/modelconsumable';
+import Model from '../../src/model/model.js';
+import ModelText from '../../src/model/text.js';
+import ModelElement from '../../src/model/element.js';
+import ModelRootElement from '../../src/model/rootelement.js';
+import ModelDocumentFragment from '../../src/model/documentfragment.js';
+import ModelRange from '../../src/model/range.js';
+import ModelConsumable from '../../src/conversion/modelconsumable.js';
 
-import View from '../../src/view/view';
-import ViewContainerElement from '../../src/view/containerelement';
-import DowncastWriter from '../../src/view/downcastwriter';
-import { StylesProcessor } from '../../src/view/stylesmap';
-import { insertAttributesAndChildren } from '../../src/conversion/downcasthelpers';
+import View from '../../src/view/view.js';
+import ViewRootEditableElement from '../../src/view/rooteditableelement.js';
+import ViewContainerElement from '../../src/view/containerelement.js';
+import DowncastWriter from '../../src/view/downcastwriter.js';
+import { StylesProcessor } from '../../src/view/stylesmap.js';
+import { insertAttributesAndChildren } from '../../src/conversion/downcasthelpers.js';
 
 describe( 'DowncastDispatcher', () => {
 	let dispatcher, doc, root, differStub, model, view, mapper, apiObj;
@@ -32,6 +34,11 @@ describe( 'DowncastDispatcher', () => {
 		apiObj = {};
 		dispatcher = new DowncastDispatcher( { mapper, apiObj } );
 		root = doc.createRoot();
+
+		// Bind view root and model root. This is normally done by the `EditingController`, but it is not used here.
+		const viewRoot = new ViewRootEditableElement( view.document, root.name );
+		viewRoot.rootName = root.rootName;
+		mapper.bindElements( root, viewRoot );
 
 		dispatcher.on( 'insert', insertAttributesAndChildren(), { priority: 'lowest' } );
 
@@ -304,6 +311,43 @@ describe( 'DowncastDispatcher', () => {
 			expect( mapper.flushDeferredBindings.calledOnce ).to.be.true;
 			expect( dispatcher._conversionApi.writer ).to.be.undefined;
 			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/15411.
+		it( 'should properly handle markers in reconverted elements', () => {
+			// This test is very silly, but it is very difficult to test it when you have to operate on mocks and stubs :/.
+			// There are simply too many things to set up and mock.
+			//
+			// So, we will stub the key things that caused the bug, but this is basically a direct test of the source code of `change()`,
+			// instead of testing the results we check whether two methods are called in a correct order.
+			//
+			// Still, maybe this is better than no test, at the very least it will start to fail if someone refactors code incorrectly.
+			//
+			const range = model.createRange(
+				model.createPositionFromPath( root, [ 0, 2 ] ),
+				model.createPositionFromPath( root, [ 0, 4 ] )
+			);
+
+			model.markers._set( 'markerName', range, false, false );
+
+			sinon.stub( mapper, 'flushDeferredBindings' ).callsFake( () => {
+				// Using private property here.
+				// Add `'markerName'` to markers to refresh.
+				mapper._unboundMarkerNames.add( 'markerName' );
+			} );
+
+			sinon.stub( dispatcher, '_convertMarkerRemove' );
+			sinon.stub( dispatcher, '_convertMarkerAdd' );
+
+			view.change( writer => {
+				dispatcher.convertChanges( differStub, model.markers, writer );
+			} );
+
+			const unboundMarkers = mapper.flushUnboundMarkerNames();
+
+			expect( unboundMarkers.length ).to.equal( 0 );
+			expect( dispatcher._convertMarkerRemove.calledWith( 'markerName', range ) );
+			expect( dispatcher._convertMarkerAdd.calledWith( 'markerName', range ) );
 		} );
 	} );
 
@@ -940,6 +984,24 @@ describe( 'DowncastDispatcher', () => {
 			} );
 		} );
 
+		it( 'should fire cleanSelection event before selection events', () => {
+			sinon.spy( dispatcher, 'fire' );
+			const spy = sinon.spy();
+
+			dispatcher.on( 'cleanSelection', spy );
+			dispatcher.on( 'selection', () => {
+				// Check if the `cleanSelection` event was already called.
+				expect( spy.called ).to.be.true;
+			} );
+
+			dispatcher.convertSelection( doc.selection, model.markers, [] );
+
+			expect( dispatcher.fire.calledWith(
+				'cleanSelection',
+				{ selection: sinon.match.instanceOf( doc.selection.constructor ) }
+			) ).to.be.true;
+		} );
+
 		it( 'should fire selection event', () => {
 			sinon.spy( dispatcher, 'fire' );
 
@@ -952,6 +1014,25 @@ describe( 'DowncastDispatcher', () => {
 
 			expect( dispatcher._conversionApi.writer ).to.be.undefined;
 			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
+		} );
+
+		it( 'should not fire selection event if model document selection is in a root that does not have a mapped view root', () => {
+			const spyClean = sinon.spy();
+			const spySelection = sinon.spy();
+
+			dispatcher.on( 'cleanSelection', spyClean );
+			dispatcher.on( 'selection', spySelection );
+
+			model.change( writer => {
+				const newRoot = new ModelRootElement( model.document, '$root', 'foo' );
+
+				writer.setSelection( writer.createRangeIn( newRoot ) );
+			} );
+
+			dispatcher.convertSelection( doc.selection, model.markers, [] );
+
+			expect( spyClean.calledOnce ).to.be.true;
+			expect( spySelection.called ).to.be.false;
 		} );
 
 		it( 'should prepare correct list of consumable values', () => {
@@ -1125,16 +1206,8 @@ describe( 'DowncastDispatcher', () => {
 			viewFigure._setCustomProperty( 'addHighlight', () => {} );
 			viewFigure._setCustomProperty( 'removeHighlight', () => {} );
 
-			// Create mapper mock.
-			dispatcher._conversionApi.mapper = {
-				toViewElement( modelElement ) {
-					if ( modelElement == image ) {
-						return viewFigure;
-					} else if ( modelElement == caption ) {
-						return viewCaption;
-					}
-				}
-			};
+			mapper.bindElements( image, viewFigure );
+			mapper.bindElements( caption, viewCaption );
 
 			model.change( writer => {
 				const range = writer.createRange( writer.createPositionAt( root, 0 ), writer.createPositionAt( root, 1 ) );

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,12 +7,12 @@
  * @module font/fontfamily/fontfamilyediting
  */
 
-import { type Editor, Plugin } from 'ckeditor5/src/core';
-import type { ViewElement } from 'ckeditor5/src/engine';
+import { type Editor, Plugin } from 'ckeditor5/src/core.js';
+import type { ViewElement } from 'ckeditor5/src/engine.js';
 
-import FontFamilyCommand from './fontfamilycommand';
-import { normalizeOptions } from './utils';
-import { buildDefinition, FONT_FAMILY } from '../utils';
+import FontFamilyCommand from './fontfamilycommand.js';
+import { normalizeOptions } from './utils.js';
+import { buildDefinition, FONT_FAMILY } from '../utils.js';
 
 /**
  * The font family editing feature.
@@ -26,8 +26,8 @@ export default class FontFamilyEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'FontFamilyEditing' {
-		return 'FontFamilyEditing';
+	public static get pluginName() {
+		return 'FontFamilyEditing' as const;
 	}
 
 	/**

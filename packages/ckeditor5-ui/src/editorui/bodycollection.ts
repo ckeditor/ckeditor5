@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,9 +9,9 @@
 
 /* globals document */
 
-import Template from '../template';
-import ViewCollection from '../viewcollection';
-import type View from '../view';
+import Template from '../template.js';
+import ViewCollection from '../viewcollection.js';
+import type View from '../view.js';
 
 import { createElement, type Locale } from '@ckeditor/ckeditor5-utils';
 
@@ -53,6 +53,13 @@ export default class BodyCollection extends ViewCollection {
 		super( initialItems );
 
 		this.locale = locale;
+	}
+
+	/**
+	 * The element holding elements of the body region.
+	 */
+	public get bodyCollectionContainer(): HTMLElement | undefined {
+		return this._bodyCollectionContainer;
 	}
 
 	/**

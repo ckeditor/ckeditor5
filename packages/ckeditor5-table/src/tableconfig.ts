@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,8 +7,8 @@
  * @module table/tableconfig
  */
 
-import type { ToolbarConfigItem } from 'ckeditor5/src/core';
-import type { ColorOption } from 'ckeditor5/src/ui';
+import type { ToolbarConfigItem } from 'ckeditor5/src/core.js';
+import type { ColorOption, ColorPickerConfig } from 'ckeditor5/src/ui.js';
 
 /**
  * The configuration of the table feature. Used by the table feature in the `@ckeditor/ckeditor5-table` package.
@@ -217,6 +217,13 @@ export interface TablePropertiesConfig {
 	borderColors?: TableColorConfig;
 	backgroundColors?: TableColorConfig;
 	defaultProperties?: TablePropertiesOptions;
+
+	/**
+	 * Configuration of the color picker in the table properties balloon.
+	 *
+	 * If set to `false` the picker will not appear.
+	 */
+	colorPicker?: false | ColorPickerConfig;
 }
 
 /**
@@ -271,6 +278,13 @@ export interface TableCellPropertiesConfig {
 	borderColors?: TableColorConfig;
 	backgroundColors?: TableColorConfig;
 	defaultProperties?: TableCellPropertiesOptions;
+
+	/**
+	 * Configuration of the color picker in the table cell properties balloon.
+	 *
+	 * If set to `false` the picker will not appear.
+	 */
+	colorPicker?: false | ColorPickerConfig;
 }
 
 /**

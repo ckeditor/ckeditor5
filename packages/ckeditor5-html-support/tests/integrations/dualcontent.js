@@ -1,17 +1,17 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
-import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
-import GeneralHtmlSupport from '../../src/generalhtmlsupport';
-import { getModelDataWithAttributes } from '../_utils/utils';
-import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
+import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
+import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
+import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
+import { getModelDataWithAttributes } from '../_utils/utils.js';
+import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 /* global document */
 
@@ -158,8 +158,8 @@ describe( 'DualContentModelElementSupport', () => {
 		editor.setData( '<div data-foo><p>foobar</p></div><div data-foo>foobar</div>' );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-			data: '<htmlDiv htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlDiv>' +
-			'<htmlDivParagraph htmlAttributes="(2)">foobar</htmlDivParagraph>',
+			data: '<htmlDiv htmlDivAttributes="(1)"><paragraph>foobar</paragraph></htmlDiv>' +
+			'<htmlDivParagraph htmlDivAttributes="(2)">foobar</htmlDivParagraph>',
 			attributes: {
 				1: {
 					attributes: { 'data-foo': '' }

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,16 +7,25 @@
  * @module code-block/codeblockui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { Collection } from 'ckeditor5/src/utils';
-import { Model, SplitButtonView, createDropdown, addListToDropdown, type ListDropdownItemDefinition } from 'ckeditor5/src/ui';
+import { icons, Plugin } from 'ckeditor5/src/core.js';
+import { Collection } from 'ckeditor5/src/utils.js';
+import {
+	ViewModel,
+	SplitButtonView,
+	createDropdown,
+	addListToDropdown,
+	MenuBarMenuListItemButtonView,
+	MenuBarMenuListView,
+	MenuBarMenuView,
+	MenuBarMenuListItemView,
+	type ListDropdownButtonDefinition
+} from 'ckeditor5/src/ui.js';
 
-import { getNormalizedAndLocalizedLanguageDefinitions } from './utils';
+import { getNormalizedAndLocalizedLanguageDefinitions } from './utils.js';
 
-import type { CodeBlockLanguageDefinition } from './codeblockconfig';
-import type CodeBlockCommand from './codeblockcommand';
+import type { CodeBlockLanguageDefinition } from './codeblockconfig.js';
+import type CodeBlockCommand from './codeblockcommand.js';
 
-import codeBlockIcon from '../theme/icons/codeblock.svg';
 import '../theme/codeblock.css';
 
 /**
@@ -28,8 +37,8 @@ export default class CodeBlockUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'CodeBlockUI' {
-		return 'CodeBlockUI';
+	public static get pluginName() {
+		return 'CodeBlockUI' as const;
 	}
 
 	/**
@@ -40,9 +49,10 @@ export default class CodeBlockUI extends Plugin {
 		const t = editor.t;
 		const componentFactory = editor.ui.componentFactory;
 		const normalizedLanguageDefs = getNormalizedAndLocalizedLanguageDefinitions( editor );
+		const itemDefinitions = this._getLanguageListItemDefinitions( normalizedLanguageDefs );
+		const command: CodeBlockCommand = editor.commands.get( 'codeBlock' )!;
 
 		componentFactory.add( 'codeBlock', locale => {
-			const command: CodeBlockCommand = editor.commands.get( 'codeBlock' )!;
 			const dropdownView = createDropdown( locale, SplitButtonView );
 			const splitButtonView = dropdownView.buttonView;
 			const accessibleLabel = t( 'Insert code block' );
@@ -50,7 +60,7 @@ export default class CodeBlockUI extends Plugin {
 			splitButtonView.set( {
 				label: accessibleLabel,
 				tooltip: true,
-				icon: codeBlockIcon,
+				icon: icons.codeBlock,
 				isToggleable: true
 			} );
 
@@ -76,12 +86,54 @@ export default class CodeBlockUI extends Plugin {
 			dropdownView.class = 'ck-code-block-dropdown';
 			dropdownView.bind( 'isEnabled' ).to( command );
 
-			addListToDropdown( dropdownView, () => this._getLanguageListItemDefinitions( normalizedLanguageDefs ), {
+			addListToDropdown( dropdownView, itemDefinitions, {
 				role: 'menu',
 				ariaLabel: accessibleLabel
 			} );
 
 			return dropdownView;
+		} );
+
+		componentFactory.add( 'menuBar:codeBlock', locale => {
+			const menuView = new MenuBarMenuView( locale );
+
+			menuView.buttonView.set( {
+				label: t( 'Code block' ),
+				icon: icons.codeBlock
+			} );
+
+			menuView.bind( 'isEnabled' ).to( command );
+
+			const listView = new MenuBarMenuListView( locale );
+
+			listView.set( {
+				ariaLabel: t( 'Insert code block' )
+			} );
+
+			for ( const definition of itemDefinitions ) {
+				const listItemView = new MenuBarMenuListItemView( locale, menuView );
+				const buttonView = new MenuBarMenuListItemButtonView( locale );
+
+				buttonView.bind( ...Object.keys( definition.model ) as Array<keyof MenuBarMenuListItemButtonView> ).to( definition.model );
+				buttonView.bind( 'ariaChecked' ).to( buttonView, 'isOn' );
+				buttonView.delegate( 'execute' ).to( menuView );
+
+				buttonView.on( 'execute', () => {
+					editor.execute( 'codeBlock', {
+						language: definition.model._codeBlockLanguage as string,
+						forceValue: command.value == definition.model._codeBlockLanguage ? false : true
+					} );
+
+					editor.editing.view.focus();
+				} );
+
+				listItemView.children.add( buttonView );
+				listView.items.add( listItemView );
+			}
+
+			menuView.panelView.children.add( listView );
+
+			return menuView;
 		} );
 	}
 
@@ -91,15 +143,15 @@ export default class CodeBlockUI extends Plugin {
 	 */
 	private _getLanguageListItemDefinitions(
 		normalizedLanguageDefs: Array<CodeBlockLanguageDefinition>
-	): Collection<ListDropdownItemDefinition> {
+	): Collection<ListDropdownButtonDefinition> {
 		const editor = this.editor;
 		const command: CodeBlockCommand = editor.commands.get( 'codeBlock' )!;
-		const itemDefinitions = new Collection<ListDropdownItemDefinition>();
+		const itemDefinitions = new Collection<ListDropdownButtonDefinition>();
 
 		for ( const languageDef of normalizedLanguageDefs ) {
-			const definition: ListDropdownItemDefinition = {
+			const definition: ListDropdownButtonDefinition = {
 				type: 'button',
-				model: new Model( {
+				model: new ViewModel( {
 					_codeBlockLanguage: languageDef.language,
 					label: languageDef.label,
 					role: 'menuitemradio',

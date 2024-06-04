@@ -1,10 +1,10 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import IconView from '../../src/icon/iconview';
-import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
+import IconView from '../../src/icon/iconview.js';
+import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
 
 describe( 'IconView', () => {
 	let view;
@@ -29,6 +29,10 @@ describe( 'IconView', () => {
 
 		it( 'sets #isColorInherited', () => {
 			expect( view.isColorInherited ).to.be.true;
+		} );
+
+		it( 'sets #isVisible', () => {
+			expect( view.isVisible ).to.be.true;
 		} );
 
 		it( 'creates element from template', () => {
@@ -59,6 +63,18 @@ describe( 'IconView', () => {
 
 				view.isColorInherited = true;
 				expect( view.element.classList.contains( 'ck-icon_inherit-color' ) ).to.be.true;
+			} );
+		} );
+
+		describe( '#isVisible', () => {
+			it( 'should react to changes in view#isVisible', () => {
+				view.isVisible = true;
+
+				expect( view.element.classList.contains( 'ck-hidden' ) ).to.be.false;
+
+				view.isVisible = false;
+
+				expect( view.element.classList.contains( 'ck-hidden' ) ).to.be.true;
 			} );
 		} );
 

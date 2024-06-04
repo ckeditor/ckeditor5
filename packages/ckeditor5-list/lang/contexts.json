@@ -24,6 +24,12 @@
 	"Upper-latin": "The tooltip text of the button that toggles the \"upper–latin\" list style.",
 	"List properties": "The label of the button that toggles the visibility of additional numbered list property UI fields.",
 	"Start at": "The label of the input allowing to change the start index of a numbered list.",
+	"Invalid start index value.": "The error message displayed when the numbered list start index input value is not a valid number.",
 	"Start index must be greater than 0.": "The error message displayed when the numbered list start index input value is invalid.",
-	"Reversed order": "The label of the switch button that reverses the order of the numbered list."
+	"Reversed order": "The label of the switch button that reverses the order of the numbered list.",
+	"Keystrokes that can be used in a list": "Accessibility help dialog header text displayed before the list of keystrokes that can be used in a list.",
+	"Increase list item indent": "Keystroke description for assistive technologies: keystroke for increasing list item indentation.",
+	"Decrease list item indent": "Keystroke description for assistive technologies: keystroke for decreasing list item indentation.",
+	"Entering a to-do list": "Assistive technologies label for entering the to-do list.",
+	"Leaving a to-do list": "Assistive technologies label for leaving the to-do list."
 }

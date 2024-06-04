@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,9 @@
  * @module basic-styles/subscript/subscriptui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { ButtonView } from 'ckeditor5/src/ui';
-import type AttributeCommand from '../attributecommand';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
+import { getButtonCreator } from '../utils.js';
 
 import subscriptIcon from '../../theme/icons/subscript.svg';
 
@@ -22,8 +22,8 @@ export default class SubscriptUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'SubscriptUI' {
-		return 'SubscriptUI';
+	public static get pluginName() {
+		return 'SubscriptUI' as const;
 	}
 
 	/**
@@ -31,29 +31,32 @@ export default class SubscriptUI extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
-		const t = editor.t;
+		const t = editor.locale.t;
+		const createButton = getButtonCreator( {
+			editor,
+			commandName: SUBSCRIPT,
+			plugin: this,
+			icon: subscriptIcon,
+			label: t( 'Subscript' )
+		} );
 
 		// Add subscript button to feature components.
-		editor.ui.componentFactory.add( SUBSCRIPT, locale => {
-			const command: AttributeCommand = editor.commands.get( SUBSCRIPT )!;
-			const view = new ButtonView( locale );
+		editor.ui.componentFactory.add( SUBSCRIPT, () => {
+			const buttonView = createButton( ButtonView );
+			const command = editor.commands.get( SUBSCRIPT )!;
 
-			view.set( {
-				label: t( 'Subscript' ),
-				icon: subscriptIcon,
-				tooltip: true,
-				isToggleable: true
+			buttonView.set( {
+				tooltip: true
 			} );
 
-			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
+			// Bind button model to command.
+			buttonView.bind( 'isOn' ).to( command, 'value' );
 
-			// Execute command.
-			this.listenTo( view, 'execute', () => {
-				editor.execute( SUBSCRIPT );
-				editor.editing.view.focus();
-			} );
+			return buttonView;
+		} );
 
-			return view;
+		editor.ui.componentFactory.add( 'menuBar:' + SUBSCRIPT, () => {
+			return createButton( MenuBarMenuListItemButtonView );
 		} );
 	}
 }

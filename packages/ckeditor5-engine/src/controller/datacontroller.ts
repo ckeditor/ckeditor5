@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,42 +10,41 @@
 import {
 	CKEditorError,
 	EmitterMixin,
-	ObservableMixin
+	ObservableMixin,
+	logWarning
 } from '@ckeditor/ckeditor5-utils';
 
-import Mapper from '../conversion/mapper';
+import Mapper from '../conversion/mapper.js';
 
-import DowncastDispatcher, { type DowncastInsertEvent } from '../conversion/downcastdispatcher';
-import { insertAttributesAndChildren, insertText } from '../conversion/downcasthelpers';
+import DowncastDispatcher, { type DowncastInsertEvent } from '../conversion/downcastdispatcher.js';
+import { insertAttributesAndChildren, insertText } from '../conversion/downcasthelpers.js';
 
 import UpcastDispatcher, {
 	type UpcastDocumentFragmentEvent,
 	type UpcastElementEvent,
 	type UpcastTextEvent
-} from '../conversion/upcastdispatcher';
-import { convertText, convertToModelFragment } from '../conversion/upcasthelpers';
+} from '../conversion/upcastdispatcher.js';
+import { convertText, convertToModelFragment } from '../conversion/upcasthelpers.js';
 
-import ViewDocumentFragment from '../view/documentfragment';
-import ViewDocument from '../view/document';
-import ViewDowncastWriter from '../view/downcastwriter';
-import type ViewElement from '../view/element';
-import type { StylesProcessor } from '../view/stylesmap';
-import type { MatcherPattern } from '../view/matcher';
+import ViewDocumentFragment from '../view/documentfragment.js';
+import ViewDocument from '../view/document.js';
+import ViewDowncastWriter from '../view/downcastwriter.js';
+import type ViewElement from '../view/element.js';
+import type { StylesProcessor } from '../view/stylesmap.js';
+import type { MatcherPattern } from '../view/matcher.js';
 
-import ModelRange from '../model/range';
-import type Model from '../model/model';
-import type ModelText from '../model/text';
-import type ModelElement from '../model/element';
-import type ModelTextProxy from '../model/textproxy';
-import type ModelDocumentFragment from '../model/documentfragment';
-import type { SchemaContextDefinition } from '../model/schema';
-import type { BatchType } from '../model/batch';
-import { autoParagraphEmptyRoots } from '../model/utils/autoparagraphing';
+import ModelRange from '../model/range.js';
+import type Model from '../model/model.js';
+import type ModelText from '../model/text.js';
+import type ModelElement from '../model/element.js';
+import type ModelTextProxy from '../model/textproxy.js';
+import type ModelDocumentFragment from '../model/documentfragment.js';
+import type { SchemaContextDefinition } from '../model/schema.js';
+import type { BatchType } from '../model/batch.js';
+import { autoParagraphEmptyRoots } from '../model/utils/autoparagraphing.js';
 
-import HtmlDataProcessor from '../dataprocessor/htmldataprocessor';
-import type DataProcessor from '../dataprocessor/dataprocessor';
-
-import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import HtmlDataProcessor from '../dataprocessor/htmldataprocessor.js';
+import type DataProcessor from '../dataprocessor/dataprocessor.js';
 
 /**
  * Controller for the data pipeline. The data pipeline controls how data is retrieved from the document
@@ -64,7 +63,7 @@ import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * editor.data.get( { rootName: 'customRoot' } ); // -> '<p>Hello!</p>'
  * ```
  */
-export default class DataController extends EmitterMixin() {
+export default class DataController extends /* #__PURE__ */ EmitterMixin() {
 	/**
 	 * Data model.
 	 */
@@ -72,7 +71,7 @@ export default class DataController extends EmitterMixin() {
 
 	/**
 	 * Mapper used for the conversion. It has no permanent bindings, because these are created while getting data and
-	 * ae cleared directly after the data are converted. However, the mapper is defined as a class property, because
+	 * are cleared directly after the data are converted. However, the mapper is defined as a class property, because
 	 * it needs to be passed to the `DowncastDispatcher` as a conversion API.
 	 */
 	public readonly mapper: Mapper;
@@ -407,7 +406,13 @@ export default class DataController extends EmitterMixin() {
 	 * cleared after the new data is applied (all undo steps will be removed). If the batch type `isUndoable` flag is be set to `true`,
 	 * the undo stack will be preserved instead and not cleared when new data is applied.
 	 */
-	public set( data: string | Record<string, string>, options: { batchType?: BatchType } = {} ): void {
+	public set(
+		data: string | Record<string, string>,
+		options: {
+			batchType?: BatchType;
+			[ key: string ]: unknown;
+		} = {}
+	): void {
 		let newData: Record<string, string> = {};
 
 		if ( typeof data === 'string' ) {

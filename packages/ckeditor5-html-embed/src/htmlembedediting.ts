@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,13 +7,13 @@
  * @module html-embed/htmlembedediting
  */
 
-import { Plugin, icons, type Editor } from 'ckeditor5/src/core';
-import { ButtonView } from 'ckeditor5/src/ui';
-import { toWidget } from 'ckeditor5/src/widget';
-import { logWarning, createElement } from 'ckeditor5/src/utils';
+import { Plugin, icons, type Editor } from 'ckeditor5/src/core.js';
+import { ButtonView } from 'ckeditor5/src/ui.js';
+import { toWidget } from 'ckeditor5/src/widget.js';
+import { logWarning, createElement } from 'ckeditor5/src/utils.js';
 
-import type { HtmlEmbedConfig } from './htmlembedconfig';
-import HtmlEmbedCommand from './htmlembedcommand';
+import type { HtmlEmbedConfig } from './htmlembedconfig.js';
+import HtmlEmbedCommand from './htmlembedcommand.js';
 
 import '../theme/htmlembed.css';
 
@@ -30,8 +30,8 @@ export default class HtmlEmbedEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'HtmlEmbedEditing' {
-		return 'HtmlEmbedEditing';
+	public static get pluginName() {
+		return 'HtmlEmbedEditing' as const;
 	}
 
 	/**

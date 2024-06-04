@@ -1,13 +1,13 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
-import GeneralHtmlSupport from '../../src/generalhtmlsupport';
-import { getModelDataWithAttributes } from '../_utils/utils';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock.js';
+import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
+import { getModelDataWithAttributes } from '../_utils/utils.js';
 
 /* global document */
 
@@ -47,7 +47,7 @@ describe( 'CodeBlockElementSupport', () => {
 		editor.setData( '<pre data-foo="foo"><code data-foo="foo">foobar</code></pre>' );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-			data: '<codeBlock htmlAttributes="(1)" htmlContentAttributes="(2)" language="plaintext">foobar</codeBlock>',
+			data: '<codeBlock htmlContentAttributes="(1)" htmlPreAttributes="(2)" language="plaintext">foobar</codeBlock>',
 			attributes: {
 				1: {
 					attributes: {
@@ -74,7 +74,7 @@ describe( 'CodeBlockElementSupport', () => {
 		editor.setData( '<pre class="foo"><code class="foo">foobar</code></pre>' );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-			data: '<codeBlock htmlAttributes="(1)" htmlContentAttributes="(2)" language="plaintext">foobar</codeBlock>',
+			data: '<codeBlock htmlContentAttributes="(1)" htmlPreAttributes="(2)" language="plaintext">foobar</codeBlock>',
 			attributes: {
 				1: {
 					classes: [ 'foo' ]
@@ -98,16 +98,16 @@ describe( 'CodeBlockElementSupport', () => {
 		editor.setData( '<pre style="background:blue;"><code style="color:red;">foobar</code></pre>' );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-			data: '<codeBlock htmlAttributes="(1)" htmlContentAttributes="(2)" language="plaintext">foobar</codeBlock>',
+			data: '<codeBlock htmlContentAttributes="(1)" htmlPreAttributes="(2)" language="plaintext">foobar</codeBlock>',
 			attributes: {
 				1: {
 					styles: {
-						background: 'blue'
+						color: 'red'
 					}
 				},
 				2: {
 					styles: {
-						color: 'red'
+						background: 'blue'
 					}
 				}
 			}
@@ -188,7 +188,7 @@ describe( 'CodeBlockElementSupport', () => {
 	} );
 
 	it( 'should not consume attributes already consumed (downcast)', () => {
-		[ 'htmlAttributes', 'htmlContentAttributes' ].forEach( attributeName => {
+		[ 'htmlPreAttributes', 'htmlContentAttributes' ].forEach( attributeName => {
 			editor.conversion.for( 'downcast' ).add( dispatcher => {
 				dispatcher.on( `attribute:${ attributeName }:codeBlock`, ( evt, data, conversionApi ) => {
 					conversionApi.consumable.consume( data.item, evt.name );
@@ -202,7 +202,7 @@ describe( 'CodeBlockElementSupport', () => {
 		editor.setData( '<pre data-foo><code data-foo>foobar</code></section>' );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-			data: '<codeBlock htmlAttributes="(1)" htmlContentAttributes="(2)" language="plaintext">foobar</codeBlock>',
+			data: '<codeBlock htmlContentAttributes="(1)" htmlPreAttributes="(2)" language="plaintext">foobar</codeBlock>',
 			// At this point, attribute should still be in the model, as we are testing downcast conversion.
 			attributes: {
 				1: {

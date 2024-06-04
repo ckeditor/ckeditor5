@@ -2,11 +2,11 @@
 category: api-reference
 ---
 
-# CKEditor 5 Content Minimap feature
+# CKEditor&nbsp;5 Content Minimap feature
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-minimap.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-minimap)
 
-This package implements the minimap feature for CKEditor 5.
+This package implements the minimap feature for CKEditor&nbsp;5.
 
 ## Demo
 
@@ -18,8 +18,10 @@ See the {@link features/minimap content minimap feature guide} and the {@link mo
 
 ## Installation
 
-```
-npm install --save @ckeditor/ckeditor5-minimap
+This package is part of our open-source aggregate package.
+
+```bash
+npm install ckeditor5
 ```
 
 ## Contribute

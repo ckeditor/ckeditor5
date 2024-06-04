@@ -1,18 +1,18 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Model from '../../../src/model/model';
-import DocumentFragment from '../../../src/model/documentfragment';
-import Element from '../../../src/model/element';
-import Text from '../../../src/model/text';
-import TextProxy from '../../../src/model/textproxy';
-import Position from '../../../src/model/position';
-import Range from '../../../src/model/range';
-import * as utils from '../../../src/model/operation/utils';
-import { getData } from '../../../src/dev-utils/model';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import Model from '../../../src/model/model.js';
+import DocumentFragment from '../../../src/model/documentfragment.js';
+import Element from '../../../src/model/element.js';
+import Text from '../../../src/model/text.js';
+import TextProxy from '../../../src/model/textproxy.js';
+import Position from '../../../src/model/position.js';
+import Range from '../../../src/model/range.js';
+import * as utils from '../../../src/model/operation/utils.js';
+import { getData } from '../../../src/dev-utils/model.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 let model, doc, root;
 

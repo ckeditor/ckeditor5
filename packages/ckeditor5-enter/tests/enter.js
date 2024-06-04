@@ -1,15 +1,15 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Enter from '../src/enter';
-import EnterCommand from '../src/entercommand';
-import EnterObserver from '../src/enterobserver';
-import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Enter from '../src/enter.js';
+import EnterCommand from '../src/entercommand.js';
+import EnterObserver from '../src/enterobserver.js';
+import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 
 describe( 'Enter feature', () => {
 	let element, editor, viewDocument;
@@ -33,6 +33,17 @@ describe( 'Enter feature', () => {
 		sinon.restore();
 
 		return editor.destroy();
+	} );
+
+	it( 'should have pluginName', () => {
+		expect( Enter.pluginName ).to.equal( 'Enter' );
+	} );
+
+	it( 'should add keystroke accessibility info', () => {
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
+			label: 'Insert a hard break (a new paragraph)',
+			keystroke: 'Enter'
+		} );
 	} );
 
 	it( 'creates the commands', () => {

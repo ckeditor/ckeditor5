@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,16 +7,16 @@
  * @module engine/model/operation/utils
  */
 
-import Node from '../node';
-import Range from '../range';
-import Text from '../text';
-import TextProxy from '../textproxy';
+import Node from '../node.js';
+import Range from '../range.js';
+import Text from '../text.js';
+import TextProxy from '../textproxy.js';
 
-import type DocumentFragment from '../documentfragment';
-import type Element from '../element';
-import type Item from '../item';
-import type NodeList from '../nodelist';
-import type Position from '../position';
+import type DocumentFragment from '../documentfragment.js';
+import type Element from '../element.js';
+import type Item from '../item.js';
+import type NodeList from '../nodelist.js';
+import type Position from '../position.js';
 
 import { CKEditorError, isIterable } from '@ckeditor/ckeditor5-utils';
 
@@ -171,8 +171,11 @@ export function _normalizeNodes( nodes: NodeSet ): Array<Node> {
 			for ( const node of nodes ) {
 				convert( node );
 			}
+		} else {
+			// Skip unrecognized type.
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			const unreachable: never = nodes;
 		}
-		// Skip unrecognized type.
 	}
 
 	convert( nodes );

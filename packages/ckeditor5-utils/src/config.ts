@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -272,15 +272,16 @@ export default class Config<Cfg> {
  * Clones configuration object or value.
  */
 function cloneConfig<T>( source: T ): T {
-	return cloneDeepWith( source, leaveDOMReferences );
+	return cloneDeepWith( source, leaveItemReferences );
 }
 
 /**
  * A customized function for cloneDeepWith.
- * It will leave references to DOM Elements instead of cloning them.
+ * In case if it's a DOM Element it will leave references to DOM Elements instead of cloning them.
+ * If it's a function it will leave reference to actuall function.
  */
-function leaveDOMReferences( value: unknown ): unknown {
-	return isElement( value ) ? value : undefined;
+function leaveItemReferences( value: unknown ): unknown {
+	return isElement( value ) || typeof value === 'function' ? value : undefined;
 }
 
 /**

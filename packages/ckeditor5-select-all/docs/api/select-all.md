@@ -2,11 +2,11 @@
 category: api-reference
 ---
 
-# CKEditor 5 select all feature
+# CKEditor&nbsp;5 select all feature
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-select-all.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-select-all)
 
-This package implements the select all feature for CKEditor 5.
+This package implements the select all feature for CKEditor&nbsp;5.
 
 ## Demo
 
@@ -20,8 +20,10 @@ This plugin is usually enabled by the {@link module:essentials/essentials~Essent
 
 ## Installation
 
-```
-npm install --save @ckeditor/ckeditor5-select-all
+This package is part of our open-source aggregate package.
+
+```bash
+npm install ckeditor5
 ```
 
 ## Contribute

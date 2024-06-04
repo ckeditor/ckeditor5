@@ -1,14 +1,14 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { FileRepository } from 'ckeditor5/src/upload';
-import { Command } from 'ckeditor5/src/core';
-import { toArray, type ArrayOrItem } from 'ckeditor5/src/utils';
-import type { Position } from 'ckeditor5/src/engine';
+import { FileRepository } from 'ckeditor5/src/upload.js';
+import { Command } from 'ckeditor5/src/core.js';
+import { toArray, type ArrayOrItem } from 'ckeditor5/src/utils.js';
+import type { Position } from 'ckeditor5/src/engine.js';
 
-import type ImageUtils from '../imageutils';
+import type ImageUtils from '../imageutils.js';
 
 /**
  * @module image/imageupload/uploadimagecommand

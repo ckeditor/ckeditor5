@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import normalizeClipboardData from '../../src/utils/normalizeclipboarddata';
+import normalizeClipboardData from '../../src/utils/normalizeclipboarddata.js';
 
 describe( 'normalizeClipboardData()', () => {
 	it( 'should strip all span.Apple-converted-space', () => {

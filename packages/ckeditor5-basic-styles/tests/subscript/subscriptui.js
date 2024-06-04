@@ -1,17 +1,17 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import SubscriptEditing from '../../src/subscript/subscriptediting';
-import SubscriptUI from '../../src/subscript/subscriptui';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import SubscriptEditing from '../../src/subscript/subscriptediting.js';
+import SubscriptUI from '../../src/subscript/subscriptui.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
 describe( 'SubscriptUI', () => {
 	let editor, subView, editorElement;
@@ -28,8 +28,6 @@ describe( 'SubscriptUI', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-
-				subView = editor.ui.componentFactory.create( 'subscript' );
 			} );
 	} );
 
@@ -39,33 +37,56 @@ describe( 'SubscriptUI', () => {
 		return editor.destroy();
 	} );
 
-	it( 'should register subscript feature component', () => {
-		expect( subView ).to.be.instanceOf( ButtonView );
-		expect( subView.isOn ).to.be.false;
-		expect( subView.label ).to.equal( 'Subscript' );
-		expect( subView.icon ).to.match( /<svg / );
-		expect( subView.isToggleable ).to.be.true;
+	describe( 'toolbar button', () => {
+		beforeEach( () => {
+			subView = editor.ui.componentFactory.create( 'subscript' );
+		} );
+
+		testButton();
+
+		it( 'should bind `isOn` to subscript command', () => {
+			const command = editor.commands.get( 'subscript' );
+
+			expect( subView.isOn ).to.be.false;
+
+			command.value = true;
+			expect( subView.isOn ).to.be.true;
+		} );
 	} );
 
-	it( 'should execute subscript command on model execute event', () => {
-		const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+	describe( 'menu bar button', () => {
+		beforeEach( () => {
+			subView = editor.ui.componentFactory.create( 'menuBar:subscript' );
+		} );
 
-		subView.fire( 'execute' );
-
-		sinon.assert.calledOnce( executeSpy );
-		sinon.assert.calledWithExactly( executeSpy, 'subscript' );
+		testButton();
 	} );
 
-	it( 'should bind model to subscript command', () => {
-		const command = editor.commands.get( 'subscript' );
+	function testButton() {
+		it( 'should register subscript feature component', () => {
+			expect( subView ).to.be.instanceOf( ButtonView );
+			expect( subView.isOn ).to.be.false;
+			expect( subView.label ).to.equal( 'Subscript' );
+			expect( subView.icon ).to.match( /<svg / );
+			expect( subView.isToggleable ).to.be.true;
+		} );
 
-		expect( subView.isOn ).to.be.false;
-		expect( subView.isEnabled ).to.be.true;
+		it( 'should execute subscript command on model execute event', () => {
+			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
-		command.value = true;
-		expect( subView.isOn ).to.be.true;
+			subView.fire( 'execute' );
 
-		command.isEnabled = false;
-		expect( subView.isEnabled ).to.be.false;
-	} );
+			sinon.assert.calledOnce( executeSpy );
+			sinon.assert.calledWithExactly( executeSpy, 'subscript' );
+		} );
+
+		it( 'should bind model to subscript command', () => {
+			const command = editor.commands.get( 'subscript' );
+
+			expect( subView.isEnabled ).to.be.true;
+
+			command.isEnabled = false;
+			expect( subView.isEnabled ).to.be.false;
+		} );
+	}
 } );

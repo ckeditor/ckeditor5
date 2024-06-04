@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,8 +7,8 @@
  * @module heading/title
  */
 
-import { Plugin, type Editor, type ElementApi } from 'ckeditor5/src/core';
-import { first, type GetCallback } from 'ckeditor5/src/utils';
+import { Plugin, type Editor, type ElementApi } from 'ckeditor5/src/core.js';
+import { first, type GetCallback } from 'ckeditor5/src/utils.js';
 import {
 	DowncastWriter,
 	enablePlaceholder,
@@ -23,10 +23,11 @@ import {
 	type UpcastConversionApi,
 	type UpcastConversionData,
 	type UpcastElementEvent,
-	type View,
+	type EditingView,
 	type ViewElement,
-	type Writer
-} from 'ckeditor5/src/engine';
+	type Writer,
+	type PlaceholderableElement
+} from 'ckeditor5/src/engine.js';
 
 // A list of element names that should be treated by the Title plugin as title-like.
 // This means that an element of a type from this list will be changed to a title element
@@ -43,13 +44,13 @@ export default class Title extends Plugin {
 	 * A reference to an empty paragraph in the body
 	 * created when there is no element in the body for the placeholder purposes.
 	 */
-	private _bodyPlaceholder?: null | Element;
+	private _bodyPlaceholder = new Map<string, Element>();
 
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Title' {
-		return 'Title';
+	public static get pluginName() {
+		return 'Title' as const;
 	}
 
 	/**
@@ -65,8 +66,6 @@ export default class Title extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 		const model = editor.model;
-
-		this._bodyPlaceholder = null;
 
 		// To use the schema for disabling some features when the selection is inside the title element
 		// it is needed to create the following structure:
@@ -139,7 +138,8 @@ export default class Title extends Plugin {
 	 * @returns The title of the document.
 	 */
 	public getTitle( options: Record<string, unknown> = {} ): string {
-		const titleElement = this._getTitleElement();
+		const rootName = options.rootName ? options.rootName as string : undefined;
+		const titleElement = this._getTitleElement( rootName );
 		const titleContentElement = titleElement!.getChild( 0 ) as Element;
 
 		return this.editor.data.stringify( titleContentElement, options );
@@ -160,7 +160,8 @@ export default class Title extends Plugin {
 		const editor = this.editor;
 		const data = editor.data;
 		const model = editor.model;
-		const root = editor.model.document.getRoot()!;
+		const rootName = options.rootName ? options.rootName as string : undefined;
+		const root = editor.model.document.getRoot( rootName )!;
 		const view = editor.editing.view;
 		const viewWriter = new DowncastWriter( view.document );
 
@@ -196,8 +197,8 @@ export default class Title extends Plugin {
 	/**
 	 * Returns the `title` element when it is in the document. Returns `undefined` otherwise.
 	 */
-	private _getTitleElement(): Element | undefined {
-		const root = this.editor.model.document.getRoot()!;
+	private _getTitleElement( rootName?: string ): Element | undefined {
+		const root = this.editor.model.document.getRoot( rootName )!;
 
 		for ( const child of root.getChildren() as IterableIterator<Element> ) {
 			if ( isTitle( child ) ) {
@@ -211,24 +212,31 @@ export default class Title extends Plugin {
 	 * All additional children should be moved after the `title` element and renamed to a paragraph.
 	 */
 	private _fixTitleContent( writer: Writer ) {
-		const title = this._getTitleElement();
+		let changed = false;
 
-		// There's no title in the content - it will be created by _fixTitleElement post-fixer.
-		if ( !title || title.maxOffset === 1 ) {
-			return false;
+		for ( const rootName of this.editor.model.document.getRootNames() ) {
+			const title = this._getTitleElement( rootName );
+
+			// If there is no title in the content it will be created by `_fixTitleElement` post-fixer.
+			// If the title has just one element, then it is correct. No fixing.
+			if ( !title || title.maxOffset === 1 ) {
+				continue;
+			}
+
+			const titleChildren = Array.from( title.getChildren() ) as Array<Element>;
+
+			// Skip first child because it is an allowed element.
+			titleChildren.shift();
+
+			for ( const titleChild of titleChildren ) {
+				writer.move( writer.createRangeOn( titleChild ), title, 'after' );
+				writer.rename( titleChild, 'paragraph' );
+			}
+
+			changed = true;
 		}
 
-		const titleChildren = Array.from( title.getChildren() as IterableIterator<Element> );
-
-		// Skip first child because it is an allowed element.
-		titleChildren.shift();
-
-		for ( const titleChild of titleChildren ) {
-			writer.move( writer.createRangeOn( titleChild ), title, 'after' );
-			writer.rename( titleChild, 'paragraph' );
-		}
-
-		return true;
+		return changed;
 	}
 
 	/**
@@ -236,43 +244,52 @@ export default class Title extends Plugin {
 	 * takes care of the correct position of it and removes additional title elements.
 	 */
 	private _fixTitleElement( writer: Writer ) {
+		let changed = false;
 		const model = this.editor.model;
-		const modelRoot = model.document.getRoot()!;
 
-		const titleElements = Array.from( modelRoot.getChildren() as IterableIterator<Element> ).filter( isTitle );
-		const firstTitleElement = titleElements[ 0 ];
-		const firstRootChild = modelRoot.getChild( 0 ) as Element;
+		for ( const modelRoot of this.editor.model.document.getRoots() ) {
+			const titleElements = Array.from( modelRoot.getChildren() as IterableIterator<Element> ).filter( isTitle );
+			const firstTitleElement = titleElements[ 0 ];
+			const firstRootChild = modelRoot.getChild( 0 ) as Element;
 
-		// When title element is at the beginning of the document then try to fix additional
-		// title elements (if there are any) and stop post-fixer as soon as possible.
-		if ( firstRootChild.is( 'element', 'title' ) ) {
-			return fixAdditionalTitleElements( titleElements, writer, model );
+			// When title element is at the beginning of the document then try to fix additional title elements (if there are any).
+			if ( firstRootChild.is( 'element', 'title' ) ) {
+				if ( titleElements.length > 1 ) {
+					fixAdditionalTitleElements( titleElements, writer, model );
+
+					changed = true;
+				}
+
+				continue;
+			}
+
+			// When there is no title in the document and first element in the document cannot be changed
+			// to the title then create an empty title element at the beginning of the document.
+			if ( !firstTitleElement && !titleLikeElements.has( firstRootChild.name ) ) {
+				const title = writer.createElement( 'title' );
+
+				writer.insert( title, modelRoot );
+				writer.insertElement( 'title-content', title );
+
+				changed = true;
+
+				continue;
+			}
+
+			if ( titleLikeElements.has( firstRootChild.name ) ) {
+				// Change the first element in the document to the title if it can be changed (is title-like).
+				changeElementToTitle( firstRootChild, writer, model );
+			} else {
+				// Otherwise, move the first occurrence of the title element to the beginning of the document.
+				writer.move( writer.createRangeOn( firstTitleElement ), modelRoot, 0 );
+			}
+
+			fixAdditionalTitleElements( titleElements, writer, model );
+
+			changed = true;
 		}
 
-		// When there is no title in the document and first element in the document cannot be changed
-		// to the title then create an empty title element at the beginning of the document.
-		if ( !firstTitleElement && !titleLikeElements.has( firstRootChild.name ) ) {
-			const title = writer.createElement( 'title' );
-
-			writer.insert( title, modelRoot );
-			writer.insertElement( 'title-content', title );
-
-			return true;
-		}
-
-		// At this stage, we are sure the title is somewhere in the content. It has to be fixed.
-
-		// Change the first element in the document to the title if it can be changed (is title-like).
-		if ( titleLikeElements.has( firstRootChild.name ) ) {
-			changeElementToTitle( firstRootChild, writer, model );
-		// Otherwise, move the first occurrence of the title element to the beginning of the document.
-		} else {
-			writer.move( writer.createRangeOn( firstTitleElement ), modelRoot, 0 );
-		}
-
-		fixAdditionalTitleElements( titleElements, writer, model );
-
-		return true;
+		return changed;
 	}
 
 	/**
@@ -280,16 +297,22 @@ export default class Title extends Plugin {
 	 * when it is needed for the placeholder purposes.
 	 */
 	private _fixBodyElement( writer: Writer ) {
-		const modelRoot = this.editor.model.document.getRoot()!;
+		let changed = false;
 
-		if ( modelRoot.childCount < 2 ) {
-			this._bodyPlaceholder = writer.createElement( 'paragraph' );
-			writer.insert( this._bodyPlaceholder, modelRoot, 1 );
+		for ( const rootName of this.editor.model.document.getRootNames() ) {
+			const modelRoot = this.editor.model.document.getRoot( rootName )!;
 
-			return true;
+			if ( modelRoot.childCount < 2 ) {
+				const placeholder = writer.createElement( 'paragraph' );
+
+				writer.insert( placeholder, modelRoot, 1 );
+				this._bodyPlaceholder.set( rootName, placeholder );
+
+				changed = true;
+			}
 		}
 
-		return false;
+		return changed;
 	}
 
 	/**
@@ -297,17 +320,21 @@ export default class Title extends Plugin {
 	 * if it was created for the placeholder purposes and is not needed anymore.
 	 */
 	private _fixExtraParagraph( writer: Writer ) {
-		const root = this.editor.model.document.getRoot()!;
-		const placeholder = this._bodyPlaceholder!;
+		let changed = false;
 
-		if ( shouldRemoveLastParagraph( placeholder, root ) ) {
-			this._bodyPlaceholder = null;
-			writer.remove( placeholder );
+		for ( const rootName of this.editor.model.document.getRootNames() ) {
+			const root = this.editor.model.document.getRoot( rootName )!;
+			const placeholder = this._bodyPlaceholder.get( rootName )!;
 
-			return true;
+			if ( shouldRemoveLastParagraph( placeholder, root ) ) {
+				this._bodyPlaceholder.delete( rootName );
+				writer.remove( placeholder );
+
+				changed = true;
+			}
 		}
 
-		return false;
+		return changed;
 	}
 
 	/**
@@ -317,7 +344,6 @@ export default class Title extends Plugin {
 		const editor: Editor & Partial<ElementApi> = this.editor;
 		const t = editor.t;
 		const view = editor.editing.view;
-		const viewRoot = view.document.getRoot();
 		const sourceElement = editor.sourceElement;
 
 		const titlePlaceholder = editor.config.get( 'title.placeholder' ) || t( 'Type your title' );
@@ -327,44 +353,56 @@ export default class Title extends Plugin {
 
 		// Attach placeholder to the view title element.
 		editor.editing.downcastDispatcher.on<DowncastInsertEvent<Element>>( 'insert:title-content', ( evt, data, conversionApi ) => {
+			const element: PlaceholderableElement = conversionApi.mapper.toViewElement( data.item )!;
+
+			element.placeholder = titlePlaceholder;
+
 			enablePlaceholder( {
 				view,
-				element: conversionApi.mapper.toViewElement( data.item )!,
-				text: titlePlaceholder,
+				element,
 				keepOnFocus: true
 			} );
 		} );
 
 		// Attach placeholder to first element after a title element and remove it if it's not needed anymore.
-		// First element after title can change so we need to observe all changes keep placeholder in sync.
-		let oldBody: ViewElement;
+		// First element after title can change, so we need to observe all changes keep placeholder in sync.
+		const bodyViewElements = new Map<string, ViewElement>();
 
-		// This post-fixer runs after the model post-fixer so we can assume that
-		// the second child in view root will always exist.
+		// This post-fixer runs after the model post-fixer, so we can assume that the second child in view root will always exist.
 		view.document.registerPostFixer( writer => {
-			const body = viewRoot!.getChild( 1 ) as ViewElement;
 			let hasChanged = false;
 
-			// If body element has changed we need to disable placeholder on the previous element
-			// and enable on the new one.
-			if ( body !== oldBody ) {
-				if ( oldBody ) {
-					hidePlaceholder( writer, oldBody );
-					writer.removeAttribute( 'data-placeholder', oldBody );
+			for ( const viewRoot of view.document.roots ) {
+				// `viewRoot` can be empty despite the model post-fixers if the model root was detached.
+				if ( viewRoot.isEmpty ) {
+					continue;
 				}
 
-				writer.setAttribute( 'data-placeholder', bodyPlaceholder, body );
-				oldBody = body;
-				hasChanged = true;
-			}
+				// If `viewRoot` is not empty, then we can expect at least two elements in it.
+				const body = viewRoot!.getChild( 1 ) as ViewElement;
+				const oldBody = bodyViewElements.get( viewRoot.rootName );
 
-			// Then we need to display placeholder if it is needed.
-			// See: https://github.com/ckeditor/ckeditor5/issues/8689.
-			if ( needsPlaceholder( body, true ) && viewRoot!.childCount === 2 && body!.name === 'p' ) {
-				hasChanged = showPlaceholder( writer, body ) ? true : hasChanged;
-			// Or hide if it is not needed.
-			} else {
-				hasChanged = hidePlaceholder( writer, body ) ? true : hasChanged;
+				// If body element has changed we need to disable placeholder on the previous element and enable on the new one.
+				if ( body !== oldBody ) {
+					if ( oldBody ) {
+						hidePlaceholder( writer, oldBody );
+						writer.removeAttribute( 'data-placeholder', oldBody );
+					}
+
+					writer.setAttribute( 'data-placeholder', bodyPlaceholder, body );
+					bodyViewElements.set( viewRoot.rootName, body );
+
+					hasChanged = true;
+				}
+
+				// Then we need to display placeholder if it is needed.
+				// See: https://github.com/ckeditor/ckeditor5/issues/8689.
+				if ( needsPlaceholder( body, true ) && viewRoot!.childCount === 2 && body!.name === 'p' ) {
+					hasChanged = showPlaceholder( writer, body ) ? true : hasChanged;
+				} else {
+					// Or hide if it is not needed.
+					hasChanged = hidePlaceholder( writer, body ) ? true : hasChanged;
+				}
 			}
 
 			return hasChanged;
@@ -385,8 +423,11 @@ export default class Title extends Plugin {
 				const selectedElements = Array.from( selection.getSelectedBlocks() );
 
 				if ( selectedElements.length === 1 && selectedElements[ 0 ].is( 'element', 'title-content' ) ) {
-					const firstBodyElement = model.document.getRoot()!.getChild( 1 );
+					const root = selection.getFirstPosition()!.root;
+					const firstBodyElement = root.getChild( 1 );
+
 					writer.setSelection( firstBodyElement!, 0 );
+
 					cancel();
 				}
 			} );
@@ -401,15 +442,16 @@ export default class Title extends Plugin {
 					return;
 				}
 
-				const root = editor.model.document.getRoot()!;
 				const selectedElement = first( selection.getSelectedBlocks() );
 				const selectionPosition = selection.getFirstPosition()!;
+				const root = editor.model.document.getRoot( selectionPosition.root.rootName! )!;
 
 				const title = root.getChild( 0 ) as Element;
 				const body = root.getChild( 1 );
 
 				if ( selectedElement === body && selectionPosition.isAtStart ) {
 					writer.setSelection( title.getChild( 0 )!, 0 );
+
 					cancel();
 				}
 			} );
@@ -457,7 +499,7 @@ function dataViewModelH1Insertion( evt: unknown, data: UpcastConversionData<View
  * <title>^<title-content>Foo</title-content></title> -> <h1>^Foo</h1>
  * ```
  */
-function mapModelPositionToView( editingView: View ): GetCallback<MapperModelToViewPositionEvent> {
+function mapModelPositionToView( editingView: EditingView ): GetCallback<MapperModelToViewPositionEvent> {
 	return ( evt, data ) => {
 		const positionParent = data.modelPosition.parent;
 
@@ -503,6 +545,7 @@ function fixAdditionalTitleElements( titleElements: Array<Element>, writer: Writ
 	for ( const title of titleElements ) {
 		if ( title.index !== 0 ) {
 			fixTitleElement( title, writer, model );
+
 			hasChanged = true;
 		}
 	}
@@ -573,4 +616,3 @@ export interface TitleConfig {
 	 */
 	placeholder?: string;
 }
-

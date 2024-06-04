@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,11 +7,11 @@
  * @module find-and-replace/findandreplace
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import FindAndReplaceUI, { type SearchResetedEvent } from './findandreplaceui';
-import FindAndReplaceEditing from './findandreplaceediting';
-import type { Marker } from 'ckeditor5/src/engine';
-import type { FindNextEvent, FindPreviousEvent, ReplaceAllEvent, ReplaceEvent } from './ui/findandreplaceformview';
+import { Plugin } from 'ckeditor5/src/core.js';
+import FindAndReplaceUI, { type SearchResetedEvent } from './findandreplaceui.js';
+import FindAndReplaceEditing from './findandreplaceediting.js';
+import type { Marker } from 'ckeditor5/src/engine.js';
+import type { FindNextEvent, FindPreviousEvent, ReplaceAllEvent, ReplaceEvent } from './ui/findandreplaceformview.js';
 
 export type ResultType = {
 	id?: string;
@@ -42,8 +42,8 @@ export default class FindAndReplace extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'FindAndReplace' {
-		return 'FindAndReplace';
+	public static get pluginName() {
+		return 'FindAndReplace' as const;
 	}
 
 	/**
@@ -58,7 +58,7 @@ export default class FindAndReplace extends Plugin {
 			// Data is contained only for the "find" button.
 			if ( data ) {
 				state.searchText = data.searchText;
-				this.editor.execute( 'find', data.searchText, data );
+				findAndReplaceEditing.find( data.searchText, data );
 			} else {
 				// Find next arrow button press.
 				this.editor.execute( 'findNext' );
@@ -67,7 +67,7 @@ export default class FindAndReplace extends Plugin {
 
 		ui.on<FindPreviousEvent>( 'findPrevious', ( event, data ) => {
 			if ( data && state.searchText !== data.searchText ) {
-				this.editor.execute( 'find', data.searchText );
+				findAndReplaceEditing.find( data.searchText );
 			} else {
 				// Subsequent calls.
 				this.editor.execute( 'findPrevious' );
@@ -76,7 +76,7 @@ export default class FindAndReplace extends Plugin {
 
 		ui.on<ReplaceEvent>( 'replace', ( event, data ) => {
 			if ( state.searchText !== data.searchText ) {
-				this.editor.execute( 'find', data.searchText );
+				findAndReplaceEditing.find( data.searchText );
 			}
 
 			const highlightedResult = state.highlightedResult;
@@ -89,7 +89,7 @@ export default class FindAndReplace extends Plugin {
 		ui.on<ReplaceAllEvent>( 'replaceAll', ( event, data ) => {
 			// The state hadn't been yet built for this search text.
 			if ( state.searchText !== data.searchText ) {
-				this.editor.execute( 'find', data.searchText );
+				findAndReplaceEditing.find( data.searchText );
 			}
 
 			this.editor.execute( 'replaceAll', data.replaceText, state.results );

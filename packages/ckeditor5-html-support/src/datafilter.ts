@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,24 +7,26 @@
  * @module html-support/datafilter
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 
 import {
 	Matcher,
+	StylesMap,
 	type MatcherPattern,
 	type UpcastConversionApi,
 	type ViewElement,
-	type MatchResult,
-	type ViewConsumable
-} from 'ckeditor5/src/engine';
+	type ViewConsumable,
+	type MatcherObjectPattern,
+	type DocumentSelectionChangeAttributeEvent
+} from 'ckeditor5/src/engine.js';
 
 import {
 	CKEditorError,
 	priorities,
 	isValidAttributeName
-} from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/utils.js';
 
-import { Widget } from 'ckeditor5/src/widget';
+import { Widget } from 'ckeditor5/src/widget.js';
 
 import {
 	viewToModelObjectConverter,
@@ -33,25 +35,27 @@ import {
 
 	viewToAttributeInlineConverter,
 	attributeToViewInlineConverter,
+	emptyInlineModelElementToViewConverter,
 
 	viewToModelBlockAttributeConverter,
 	modelToViewBlockAttributeConverter
-} from './converters';
+} from './converters.js';
 
 import {
 	default as DataSchema,
 	type DataSchemaBlockElementDefinition,
 	type DataSchemaDefinition,
 	type DataSchemaInlineElementDefinition
-} from './dataschema';
+} from './dataschema.js';
 
-import type { GHSViewAttributes } from './utils';
+import {
+	getHtmlAttributeName,
+	type GHSViewAttributes
+} from './utils.js';
 
-import { isPlainObject, pull as removeItemFromArray } from 'lodash-es';
+import { isPlainObject } from 'lodash-es';
 
 import '../theme/datafilter.css';
-
-type MatcherPatternWithName = MatcherPattern & { name?: string };
 
 /**
  * Allows to validate elements and element attributes registered by {@link module:html-support/dataschema~DataSchema}.
@@ -129,29 +133,24 @@ export default class DataFilter extends Plugin {
 		super( editor );
 
 		this._dataSchema = editor.plugins.get( 'DataSchema' );
-
 		this._allowedAttributes = new Matcher();
-
 		this._disallowedAttributes = new Matcher();
-
 		this._allowedElements = new Set();
-
 		this._disallowedElements = new Set();
-
 		this._dataInitialized = false;
-
 		this._coupledAttributes = null;
 
 		this._registerElementsAfterInit();
 		this._registerElementHandlers();
-		this._registerModelPostFixer();
+		this._registerCoupledAttributesPostFixer();
+		this._registerAssociatedHtmlAttributesPostFixer();
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'DataFilter' {
-		return 'DataFilter';
+	public static get pluginName() {
+		return 'DataFilter' as const;
 	}
 
 	/**
@@ -168,8 +167,8 @@ export default class DataFilter extends Plugin {
 	 *
 	 * @param config Configuration of elements that should have their attributes accepted in the editor.
 	 */
-	public loadAllowedConfig( config: Array<MatcherPattern> ): void {
-		for ( const pattern of config as Array<MatcherPatternWithName> ) {
+	public loadAllowedConfig( config: Array<MatcherObjectPattern> ): void {
+		for ( const pattern of config ) {
 			// MatcherPattern allows omitting `name` to widen the search of elements.
 			// Let's keep it consistent and match every element if a `name` has not been provided.
 			const elementName = pattern.name || /[\s\S]+/;
@@ -188,8 +187,8 @@ export default class DataFilter extends Plugin {
 	 *
 	 * @param config Configuration of elements that should have their attributes rejected from the editor.
 	 */
-	public loadDisallowedConfig( config: Array<MatcherPattern> ): void {
-		for ( const pattern of config as Array<MatcherPatternWithName> ) {
+	public loadDisallowedConfig( config: Array<MatcherObjectPattern> ): void {
+		for ( const pattern of config ) {
 			// MatcherPattern allows omitting `name` to widen the search of elements.
 			// Let's keep it consistent and match every element if a `name` has not been provided.
 			const elementName = pattern.name || /[\s\S]+/;
@@ -201,6 +200,19 @@ export default class DataFilter extends Plugin {
 			} else {
 				rules.forEach( pattern => this.disallowAttributes( pattern ) );
 			}
+		}
+	}
+
+	/**
+	 * Load a configuration of one or many elements, where when empty should be allowed.
+	 *
+	 * **Note**: It modifies DataSchema so must be loaded before registering filtering rules.
+	 *
+	 * @param config Configuration of elements that should be preserved even if empty.
+	 */
+	public loadAllowedEmptyElementsConfig( config: Array<string> ): void {
+		for ( const elementName of config ) {
+			this.allowEmptyElement( elementName );
 		}
 	}
 
@@ -234,6 +246,24 @@ export default class DataFilter extends Plugin {
 	public disallowElement( viewName: string | RegExp ): void {
 		for ( const definition of this._dataSchema.getDefinitionsForView( viewName, false ) ) {
 			this._disallowedElements.add( definition.view! );
+		}
+	}
+
+	/**
+	 * Allow the given empty element in the editor context.
+	 *
+	 * This method will only allow elements described by the {@link module:html-support/dataschema~DataSchema} used
+	 * to create data filter.
+	 *
+	 * **Note**: It modifies DataSchema so must be called before registering filtering rules.
+	 *
+	 * @param viewName String or regular expression matching view name.
+	 */
+	public allowEmptyElement( viewName: string ): void {
+		for ( const definition of this._dataSchema.getDefinitionsForView( viewName, true ) ) {
+			if ( definition.isInline ) {
+				this._dataSchema.extendInlineElement( { ...definition, allowEmpty: true } );
+			}
 		}
 	}
 
@@ -281,11 +311,13 @@ export default class DataFilter extends Plugin {
 	 * - classes Set with matched class names.
 	 */
 	public processViewAttributes( viewElement: ViewElement, conversionApi: UpcastConversionApi ): GHSViewAttributes | null {
+		const { consumable } = conversionApi;
+
 		// Make sure that the disabled attributes are handled before the allowed attributes are called.
 		// For example, for block images the <figure> converter triggers conversion for <img> first and then for other elements, i.e. <a>.
-		consumeAttributes( viewElement, conversionApi, this._disallowedAttributes );
+		matchAndConsumeAttributes( viewElement, this._disallowedAttributes, consumable );
 
-		return consumeAttributes( viewElement, conversionApi, this._allowedAttributes );
+		return prepareGHSAttribute( viewElement, matchAndConsumeAttributes( viewElement, this._allowedAttributes, consumable ) );
 	}
 
 	/**
@@ -319,7 +351,7 @@ export default class DataFilter extends Plugin {
 			}, {
 				// With the highest priority listener we are able to register elements right before
 				// running data conversion.
-				priority: priorities.get( 'highest' ) + 1
+				priority: priorities.highest + 1
 			} );
 		}
 	}
@@ -343,7 +375,7 @@ export default class DataFilter extends Plugin {
 			// * Make sure no other features hook into this event before GHS because otherwise the
 			// downcast conversion (for these features) could run before GHS registered its converters
 			// (https://github.com/ckeditor/ckeditor5/issues/11356).
-			priority: priorities.get( 'highest' ) + 1
+			priority: priorities.highest + 1
 		} );
 	}
 
@@ -407,8 +439,9 @@ export default class DataFilter extends Plugin {
 	 * The `htmlA` attribute would stay in the model and would cause GHS to generate an `<a>` element.
 	 * This is incorrect from UX point of view, as the user wanted to remove the whole link (not only `href`).
 	 */
-	private _registerModelPostFixer() {
+	private _registerCoupledAttributesPostFixer() {
 		const model = this.editor.model;
+		const selection = model.document.selection;
 
 		model.document.registerPostFixer( writer => {
 			const changes = model.document.differ.getChanges();
@@ -430,12 +463,104 @@ export default class DataFilter extends Plugin {
 				}
 
 				// Remove the coupled GHS attributes on the same range as the feature attribute was removed.
-				for ( const { item } of change.range.getWalker( { shallow: true } ) ) {
+				for ( const { item } of change.range.getWalker() ) {
 					for ( const attributeKey of attributeKeys ) {
 						if ( item.hasAttribute( attributeKey ) ) {
 							writer.removeAttribute( attributeKey, item );
 							changed = true;
 						}
+					}
+				}
+			}
+
+			return changed;
+		} );
+
+		this.listenTo<DocumentSelectionChangeAttributeEvent>( selection, 'change:attribute', ( evt, { attributeKeys } ) => {
+			const removeAttributes = new Set<string>();
+			const coupledAttributes = this._getCoupledAttributesMap();
+
+			for ( const attributeKey of attributeKeys ) {
+				// Handle only attribute removals.
+				if ( selection.hasAttribute( attributeKey ) ) {
+					continue;
+				}
+
+				// Find a list of coupled GHS attributes.
+				const coupledAttributeKeys = coupledAttributes.get( attributeKey );
+
+				if ( !coupledAttributeKeys ) {
+					continue;
+				}
+
+				for ( const coupledAttributeKey of coupledAttributeKeys ) {
+					if ( selection.hasAttribute( coupledAttributeKey ) ) {
+						removeAttributes.add( coupledAttributeKey );
+					}
+				}
+			}
+
+			if ( removeAttributes.size == 0 ) {
+				return;
+			}
+
+			model.change( writer => {
+				for ( const attributeKey of removeAttributes ) {
+					writer.removeSelectionAttribute( attributeKey );
+				}
+			} );
+		} );
+	}
+
+	/**
+	 * Removes `html*Attributes` attributes from incompatible elements.
+	 *
+	 * For example, consider the following HTML:
+	 *
+	 * ```html
+	 * <heading2 htmlH2Attributes="...">foobar[]</heading2>
+	 * ```
+	 *
+	 * Pressing `enter` creates a new `paragraph` element that inherits
+	 * the `htmlH2Attributes` attribute from `heading2`.
+	 *
+	 * ```html
+	 * <heading2 htmlH2Attributes="...">foobar</heading2>
+	 * <paragraph htmlH2Attributes="...">[]</paragraph>
+	 * ```
+	 *
+	 * This postfixer ensures that this doesn't happen, and that elements can
+	 * only have `html*Attributes` associated with them,
+	 * e.g.: `htmlPAttributes` for `<p>`, `htmlDivAttributes` for `<div>`, etc.
+	 *
+	 * With it enabled, pressing `enter` at the end of `<heading2>` will create
+	 * a new paragraph without the `htmlH2Attributes` attribute.
+	 *
+	 * ```html
+	 * <heading2 htmlH2Attributes="...">foobar</heading2>
+	 * <paragraph>[]</paragraph>
+	 * ```
+	 */
+	private _registerAssociatedHtmlAttributesPostFixer() {
+		const model = this.editor.model;
+
+		model.document.registerPostFixer( writer => {
+			const changes = model.document.differ.getChanges();
+			let changed = false;
+
+			for ( const change of changes ) {
+				if ( change.type !== 'insert' || change.name === '$text' ) {
+					continue;
+				}
+
+				for ( const attr of change.attributes.keys() ) {
+					if ( !attr.startsWith( 'html' ) || !attr.endsWith( 'Attributes' ) ) {
+						continue;
+					}
+
+					if ( !model.schema.checkAttribute( change.name, attr ) ) {
+						writer.removeAttribute( attr, change.position.nodeAfter! );
+						changed = true;
 					}
 				}
 			}
@@ -498,7 +623,7 @@ export default class DataFilter extends Plugin {
 		}
 
 		schema.extend( definition.model, {
-			allowAttributes: [ 'htmlAttributes', 'htmlContent' ]
+			allowAttributes: [ getHtmlAttributeName( viewName ), 'htmlContent' ]
 		} );
 
 		// Store element content in special `$rawContent` custom property to
@@ -512,16 +637,15 @@ export default class DataFilter extends Plugin {
 			model: viewToModelObjectConverter( definition ),
 			// With a `low` priority, `paragraph` plugin auto-paragraphing mechanism is executed. Make sure
 			// this listener is called before it. If not, some elements will be transformed into a paragraph.
-			converterPriority: priorities.get( 'low' ) + 1
+			// `+ 2` is used to take priority over `_addDefaultH1Conversion` in the Heading plugin.
+			converterPriority: priorities.low + 2
 		} );
 		conversion.for( 'upcast' ).add( viewToModelBlockAttributeConverter( definition as DataSchemaBlockElementDefinition, this ) );
 
 		conversion.for( 'editingDowncast' ).elementToStructure( {
 			model: {
 				name: modelName,
-				attributes: [
-					'htmlAttributes'
-				]
+				attributes: [ getHtmlAttributeName( viewName ) ]
 			},
 			view: toObjectWidgetConverter( editor, definition as DataSchemaInlineElementDefinition )
 		} );
@@ -556,7 +680,8 @@ export default class DataFilter extends Plugin {
 				view: viewName,
 				// With a `low` priority, `paragraph` plugin auto-paragraphing mechanism is executed. Make sure
 				// this listener is called before it. If not, some elements will be transformed into a paragraph.
-				converterPriority: priorities.get( 'low' ) + 1
+				// `+ 2` is used to take priority over `_addDefaultH1Conversion` in the Heading plugin.
+				converterPriority: priorities.low + 2
 			} );
 
 			conversion.for( 'downcast' ).elementToElement( {
@@ -570,7 +695,7 @@ export default class DataFilter extends Plugin {
 		}
 
 		schema.extend( definition.model, {
-			allowAttributes: 'htmlAttributes'
+			allowAttributes: getHtmlAttributeName( viewName )
 		} );
 
 		conversion.for( 'upcast' ).add( viewToModelBlockAttributeConverter( definition, this ) );
@@ -607,6 +732,45 @@ export default class DataFilter extends Plugin {
 			model: attributeKey,
 			view: attributeToViewInlineConverter( definition )
 		} );
+
+		if ( !definition.allowEmpty ) {
+			return;
+		}
+
+		schema.setAttributeProperties( attributeKey, { copyFromObject: false } );
+
+		if ( !schema.isRegistered( 'htmlEmptyElement' ) ) {
+			schema.register( 'htmlEmptyElement', {
+				inheritAllFrom: '$inlineObject'
+			} );
+		}
+
+		editor.data.htmlProcessor.domConverter.registerInlineObjectMatcher( element => {
+			// Element must be empty and have any attribute.
+			if (
+				element.name == definition.view &&
+				element.isEmpty &&
+				Array.from( element.getAttributeKeys() ).length
+			) {
+				return {
+					name: true
+				};
+			}
+
+			return null;
+		} );
+
+		conversion.for( 'editingDowncast' )
+			.elementToElement( {
+				model: 'htmlEmptyElement',
+				view: emptyInlineModelElementToViewConverter( definition, true )
+			} );
+
+		conversion.for( 'dataDowncast' )
+			.elementToElement( {
+				model: 'htmlEmptyElement',
+				view: emptyInlineModelElementToViewConverter( definition )
+			} );
 	}
 }
 
@@ -643,129 +807,133 @@ export interface DataFilterRegisterEvent {
 }
 
 /**
- * Matches and consumes the given view attributes.
+ * Matches and consumes matched attributes.
+ *
+ * @returns Object with following properties:
+ * - attributes Array with matched attribute names.
+ * - classes Array with matched class names.
+ * - styles Array with matched style names.
  */
-function consumeAttributes( viewElement: ViewElement, conversionApi: UpcastConversionApi, matcher: Matcher ) {
-	const matches = consumeAttributeMatches( viewElement, conversionApi, matcher );
-	const { attributes, styles, classes } = mergeMatchResults( matches );
-	const viewAttributes: GHSViewAttributes = {};
+function matchAndConsumeAttributes(
+	viewElement: ViewElement,
+	matcher: Matcher,
+	consumable: ViewConsumable
+): {
+	attributes: Array<string>;
+	classes: Array<string>;
+	styles: Array<string>;
+} {
+	const matches = matcher.matchAll( viewElement ) || [];
+	const stylesProcessor = viewElement.document.stylesProcessor;
 
-	// Remove invalid DOM element attributes.
-	if ( attributes.size ) {
-		for ( const key of attributes ) {
-			if ( !isValidAttributeName( key as string ) ) {
-				attributes.delete( key );
+	return matches.reduce( ( result, { match } ) => {
+		// Verify and consume styles.
+		for ( const style of match.styles || [] ) {
+			// Check longer forms of the same style as those could be matched
+			// but not present in the element directly.
+			// Consider only longhand (or longer than current notation) so that
+			// we do not include all sides of the box if only one side is allowed.
+			const sortedRelatedStyles = stylesProcessor.getRelatedStyles( style )
+				.filter( relatedStyle => relatedStyle.split( '-' ).length > style.split( '-' ).length )
+				.sort( ( a, b ) => b.split( '-' ).length - a.split( '-' ).length );
+
+			for ( const relatedStyle of sortedRelatedStyles ) {
+				if ( consumable.consume( viewElement, { styles: [ relatedStyle ] } ) ) {
+					result.styles.push( relatedStyle );
+				}
+			}
+
+			// Verify and consume style as specified in the matcher.
+			if ( consumable.consume( viewElement, { styles: [ style ] } ) ) {
+				result.styles.push( style );
 			}
 		}
-	}
 
-	if ( attributes.size ) {
-		viewAttributes.attributes = iterableToObject( attributes, key => viewElement.getAttribute( key ) );
-	}
+		// Verify and consume class names.
+		for ( const className of match.classes || [] ) {
+			if ( consumable.consume( viewElement, { classes: [ className ] } ) ) {
+				result.classes.push( className );
+			}
+		}
 
-	if ( styles.size ) {
-		viewAttributes.styles = iterableToObject( styles, key => viewElement.getStyle( key ) );
-	}
+		// Verify and consume other attributes.
+		for ( const attributeName of match.attributes || [] ) {
+			if ( consumable.consume( viewElement, { attributes: [ attributeName ] } ) ) {
+				result.attributes.push( attributeName );
+			}
+		}
 
-	if ( classes.size ) {
-		viewAttributes.classes = Array.from( classes );
-	}
+		return result;
+	}, {
+		attributes: [] as Array<string>,
+		classes: [] as Array<string>,
+		styles: [] as Array<string>
+	} );
+}
 
-	if ( !Object.keys( viewAttributes ).length ) {
+/**
+ * Prepares the GHS attribute value as an object with element attributes' values.
+ */
+function prepareGHSAttribute(
+	viewElement: ViewElement,
+	{ attributes, classes, styles }: {
+		attributes: Array<string>;
+		classes: Array<string>;
+		styles: Array<string>;
+	}
+): GHSViewAttributes | null {
+	if ( !attributes.length && !classes.length && !styles.length ) {
 		return null;
 	}
 
-	return viewAttributes;
-}
+	return {
+		...( attributes.length && {
+			attributes: getAttributes( viewElement, attributes )
+		} ),
 
-/**
- * Consumes matched attributes.
- *
- * @returns Array with match information about found attributes.
- */
-function consumeAttributeMatches( viewElement: ViewElement, { consumable }: UpcastConversionApi, matcher: Matcher ): Array<MatchResult> {
-	const matches = matcher.matchAll( viewElement ) || [];
-	const consumedMatches = [];
+		...( styles.length && {
+			styles: getReducedStyles( viewElement, styles )
+		} ),
 
-	for ( const match of matches ) {
-		removeConsumedAttributes( consumable, viewElement, match );
-
-		// We only want to consume attributes, so element can be still processed by other converters.
-		delete match.match.name;
-
-		consumable.consume( viewElement, match.match );
-		consumedMatches.push( match );
-	}
-
-	return consumedMatches;
-}
-
-/**
- * Removes attributes from the given match that were already consumed by other converters.
- */
-function removeConsumedAttributes( consumable: ViewConsumable, viewElement: ViewElement, match: MatchResult ) {
-	for ( const key of [ 'attributes', 'classes', 'styles' ] as const ) {
-		const attributes = match.match[ key ];
-
-		if ( !attributes ) {
-			continue;
-		}
-
-		// Iterating over a copy of an array so removing items doesn't influence iteration.
-		for ( const value of Array.from( attributes ) ) {
-			if ( !consumable.test( viewElement, ( { [ key ]: [ value ] } ) ) ) {
-				removeItemFromArray( attributes, value );
-			}
-		}
-	}
-}
-
-/**
- * Merges the result of {@link module:engine/view/matcher~Matcher#matchAll} method.
- *
- * @param matches
- * @returns Object with following properties:
- * - attributes Set with matched attribute names.
- * - styles Set with matched style names.
- * - classes Set with matched class names.
- */
-function mergeMatchResults( matches: Array<MatchResult> ):
-{
-	attributes: Set<string>;
-	styles: Set<string>;
-	classes: Set<string>;
-} {
-	const matchResult = {
-		attributes: new Set<string>(),
-		classes: new Set<string>(),
-		styles: new Set<string>()
+		...( classes.length && {
+			classes
+		} )
 	};
-
-	for ( const match of matches ) {
-		for ( const key in matchResult ) {
-			const values: Array<string> = match.match[ key as keyof typeof matchResult ] || [];
-
-			values.forEach( value => ( matchResult[ key as keyof typeof matchResult ] ).add( value ) );
-		}
-	}
-
-	return matchResult;
 }
 
 /**
- * Converts the given iterable object into an object.
+ * Returns attributes as an object with names and values.
  */
-function iterableToObject( iterable: Set<string>, getValue: ( s: string ) => any ) {
-	const attributesObject: Record<string, any> = {};
+function getAttributes( viewElement: ViewElement, attributes: Iterable<string> ): Record<string, string> {
+	const attributesObject: Record<string, string> = {};
 
-	for ( const prop of iterable ) {
-		const value = getValue( prop );
-		if ( value !== undefined ) {
-			attributesObject[ prop ] = getValue( prop );
+	for ( const key of attributes ) {
+		const value = viewElement.getAttribute( key );
+
+		if ( value !== undefined && isValidAttributeName( key ) ) {
+			attributesObject[ key ] = value;
 		}
 	}
 
 	return attributesObject;
+}
+
+/**
+ * Returns styles as an object reduced to shorthand notation without redundant entries.
+ */
+function getReducedStyles( viewElement: ViewElement, styles: Iterable<string> ): Record<string, string> {
+	// Use StyleMap to reduce style value to the minimal form (without shorthand and long-hand notation and duplication).
+	const stylesMap = new StylesMap( viewElement.document.stylesProcessor );
+
+	for ( const key of styles ) {
+		const styleValue = viewElement.getStyle( key );
+
+		if ( styleValue !== undefined ) {
+			stylesMap.set( key, styleValue );
+		}
+	}
+
+	return Object.fromEntries( stylesMap.getStylesEntries() );
 }
 
 /**
@@ -775,12 +943,13 @@ function iterableToObject( iterable: Set<string>, getValue: ( s: string ) => any
  * @param pattern Pattern to split.
  * @param attributeName Name of the attribute to split (e.g. 'attributes', 'classes', 'styles').
  */
-function splitPattern( pattern: MatcherPatternWithName, attributeName: 'attributes' | 'classes' | 'styles' ): Array<MatcherPattern> {
+function splitPattern( pattern: MatcherObjectPattern, attributeName: 'attributes' | 'classes' | 'styles' ): Array<MatcherObjectPattern> {
 	const { name } = pattern;
-	const attributeValue = ( pattern as any )[ attributeName ];
+	const attributeValue = pattern[ attributeName ];
+
 	if ( isPlainObject( attributeValue ) ) {
-		return Object.entries( attributeValue ).map(
-			( [ key, value ] ) => ( {
+		return Object.entries( attributeValue as Record<string, unknown> )
+			.map( ( [ key, value ] ) => ( {
 				name,
 				[ attributeName ]: {
 					[ key ]: value
@@ -789,12 +958,11 @@ function splitPattern( pattern: MatcherPatternWithName, attributeName: 'attribut
 	}
 
 	if ( Array.isArray( attributeValue ) ) {
-		return attributeValue.map(
-			value => ( {
+		return attributeValue
+			.map( value => ( {
 				name,
 				[ attributeName ]: [ value ]
-			} )
-		);
+			} ) );
 	}
 
 	return [ pattern ];
@@ -804,19 +972,21 @@ function splitPattern( pattern: MatcherPatternWithName, attributeName: 'attribut
  * Rules are matched in conjunction (AND operation), but we want to have a match if *any* of the rules is matched (OR operation).
  * By splitting the rules we force the latter effect.
  */
-function splitRules( rules: MatcherPatternWithName ): Array<MatcherPattern> {
-	const { name, attributes, classes, styles } = rules as any;
-	const splittedRules = [];
+function splitRules( rules: MatcherObjectPattern ): Array<MatcherObjectPattern> {
+	const { name, attributes, classes, styles } = rules;
+	const splitRules = [];
 
 	if ( attributes ) {
-		splittedRules.push( ...splitPattern( { name, attributes }, 'attributes' ) );
-	}
-	if ( classes ) {
-		splittedRules.push( ...splitPattern( { name, classes }, 'classes' ) );
-	}
-	if ( styles ) {
-		splittedRules.push( ...splitPattern( { name, styles }, 'styles' ) );
+		splitRules.push( ...splitPattern( { name, attributes }, 'attributes' ) );
 	}
 
-	return splittedRules;
+	if ( classes ) {
+		splitRules.push( ...splitPattern( { name, classes }, 'classes' ) );
+	}
+
+	if ( styles ) {
+		splitRules.push( ...splitPattern( { name, styles }, 'styles' ) );
+	}
+
+	return splitRules;
 }

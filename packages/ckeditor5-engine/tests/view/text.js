@@ -1,12 +1,12 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Node from '../../src/view/node';
-import Text from '../../src/view/text';
-import Document from '../../src/view/document';
-import { StylesProcessor } from '../../src/view/stylesmap';
+import Node from '../../src/view/node.js';
+import Text from '../../src/view/text.js';
+import Document from '../../src/view/document.js';
+import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'Text', () => {
 	let document;

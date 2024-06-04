@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,11 +7,11 @@
  * @module cloud-services/cloudservices
  */
 
-import { ContextPlugin } from 'ckeditor5/src/core';
-import { CKEditorError } from 'ckeditor5/src/utils';
-import CloudServicesCore from './cloudservicescore';
-import type { CloudServicesConfig, TokenUrl } from './cloudservicesconfig';
-import type { InitializedToken } from './token/token';
+import { ContextPlugin } from 'ckeditor5/src/core.js';
+import { CKEditorError } from 'ckeditor5/src/utils.js';
+import CloudServicesCore from './cloudservicescore.js';
+import type { CloudServicesConfig, TokenUrl } from './cloudservicesconfig.js';
+import type { InitializedToken } from './token/token.js';
 
 /**
  * Plugin introducing the integration between CKEditor 5 and CKEditor Cloud Services .
@@ -65,8 +65,8 @@ export default class CloudServices extends ContextPlugin implements CloudService
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'CloudServices' {
-		return 'CloudServices';
+	public static get pluginName() {
+		return 'CloudServices' as const;
 	}
 
 	/**

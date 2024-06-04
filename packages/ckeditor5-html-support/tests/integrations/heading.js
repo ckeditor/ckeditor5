@@ -1,13 +1,13 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
-import GeneralHtmlSupport from '../../src/generalhtmlsupport';
-import { getModelDataWithAttributes } from '../_utils/utils';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
+import { getModelDataWithAttributes } from '../_utils/utils.js';
 
 /* global document */
 
@@ -112,11 +112,11 @@ describe( 'HeadingElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-					'<heading1 htmlAttributes="(1)">one</heading1>' +
-					'<heading2 htmlAttributes="(2)">two</heading2>' +
-					'<htmlH3 htmlAttributes="(3)">three</htmlH3>' +
-					'<htmlH4 htmlAttributes="(4)">four</htmlH4>' +
-					'<otherHeading htmlAttributes="(5)">five</otherHeading>',
+					'<heading1 htmlH1Attributes="(1)">one</heading1>' +
+					'<heading2 htmlH2Attributes="(2)">two</heading2>' +
+					'<htmlH3 htmlH3Attributes="(3)">three</htmlH3>' +
+					'<htmlH4 htmlH4Attributes="(4)">four</htmlH4>' +
+					'<otherHeading htmlH5Attributes="(5)">five</otherHeading>',
 				attributes: {
 					1: {
 						attributes: {
@@ -159,7 +159,7 @@ describe( 'HeadingElementSupport', () => {
 			editor.execute( 'enter' );
 
 			expect( getModelDataWithAttributes( model ) ).to.deep.equal( {
-				data: '<heading2 htmlAttributes="(1)">foobar</heading2><paragraph>[]</paragraph>',
+				data: '<heading2 htmlH2Attributes="(1)">foobar</heading2><paragraph>[]</paragraph>',
 				attributes: {
 					1: {
 						classes: [
@@ -180,7 +180,7 @@ describe( 'HeadingElementSupport', () => {
 			editor.execute( 'enter' );
 
 			expect( getModelDataWithAttributes( model ) ).to.deep.equal( {
-				data: '<heading2 htmlAttributes="(1)">foo</heading2><heading2 htmlAttributes="(2)">[]bar</heading2>',
+				data: '<heading2 htmlH2Attributes="(1)">foo</heading2><heading2 htmlH2Attributes="(2)">[]bar</heading2>',
 				attributes: {
 					1: {
 						classes: [
@@ -212,7 +212,7 @@ describe( 'HeadingElementSupport', () => {
 				}, root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-					data: '<heading1 htmlAttributes="(1)">foobar</heading1>',
+					data: '<heading1 htmlH1Attributes="(1)">foobar</heading1>',
 					attributes: {
 						1: {
 							styles: {
@@ -238,7 +238,7 @@ describe( 'HeadingElementSupport', () => {
 				htmlSupport.addModelHtmlClass( 'h2', 'foo', root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-					data: '<heading2 htmlAttributes="(1)">foobar</heading2>',
+					data: '<heading2 htmlH2Attributes="(1)">foobar</heading2>',
 					attributes: {
 						1: {
 							classes: [ 'foo' ]
@@ -263,7 +263,7 @@ describe( 'HeadingElementSupport', () => {
 				}, root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-					data: '<otherHeading htmlAttributes="(1)">foobar</otherHeading>',
+					data: '<otherHeading htmlH5Attributes="(1)">foobar</otherHeading>',
 					attributes: {
 						1: {
 							attributes: {
@@ -288,7 +288,7 @@ describe( 'HeadingElementSupport', () => {
 				htmlSupport.removeModelHtmlStyles( 'h1', 'color', root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-					data: '<heading1 htmlAttributes="(1)">foobar</heading1>',
+					data: '<heading1 htmlH1Attributes="(1)">foobar</heading1>',
 					attributes: {
 						1: {
 							styles: {
@@ -313,7 +313,7 @@ describe( 'HeadingElementSupport', () => {
 				htmlSupport.removeModelHtmlClass( 'h2', 'bar', root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-					data: '<heading2 htmlAttributes="(1)">foobar</heading2>',
+					data: '<heading2 htmlH2Attributes="(1)">foobar</heading2>',
 					attributes: {
 						1: {
 							classes: [ 'foo' ]
@@ -336,7 +336,7 @@ describe( 'HeadingElementSupport', () => {
 				htmlSupport.removeModelHtmlAttributes( 'h5', 'data-bar', root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-					data: '<otherHeading htmlAttributes="(1)">foobar</otherHeading>',
+					data: '<otherHeading htmlH5Attributes="(1)">foobar</otherHeading>',
 					attributes: {
 						1: {
 							attributes: {
@@ -367,7 +367,7 @@ describe( 'HeadingElementSupport', () => {
 				htmlSupport.removeModelHtmlAttributes( 'h1', 'data-bar', root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-					data: '<heading1 htmlAttributes="(1)">foobar</heading1>',
+					data: '<heading1 htmlH1Attributes="(1)">foobar</heading1>',
 					attributes: {
 						1: {
 							attributes: {
@@ -514,11 +514,11 @@ describe( 'HeadingElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-					'<htmlH1 htmlAttributes="(1)">one</htmlH1>' +
-					'<htmlH2 htmlAttributes="(2)">two</htmlH2>' +
-					'<htmlH3 htmlAttributes="(3)">three</htmlH3>' +
-					'<htmlH4 htmlAttributes="(4)">four</htmlH4>' +
-					'<htmlH5 htmlAttributes="(5)">five</htmlH5>',
+					'<htmlH1 htmlH1Attributes="(1)">one</htmlH1>' +
+					'<htmlH2 htmlH2Attributes="(2)">two</htmlH2>' +
+					'<htmlH3 htmlH3Attributes="(3)">three</htmlH3>' +
+					'<htmlH4 htmlH4Attributes="(4)">four</htmlH4>' +
+					'<htmlH5 htmlH5Attributes="(5)">five</htmlH5>',
 				attributes: {
 					1: {
 						attributes: {
@@ -561,7 +561,7 @@ describe( 'HeadingElementSupport', () => {
 			editor.execute( 'enter' );
 
 			expect( getModelDataWithAttributes( model ) ).to.deep.equal( {
-				data: '<htmlH2 htmlAttributes="(1)">foo</htmlH2><htmlH2 htmlAttributes="(2)">[]bar</htmlH2>',
+				data: '<htmlH2 htmlH2Attributes="(1)">foo</htmlH2><htmlH2 htmlH2Attributes="(2)">[]bar</htmlH2>',
 				attributes: {
 					1: {
 						classes: [
@@ -587,7 +587,7 @@ describe( 'HeadingElementSupport', () => {
 			editor.execute( 'enter' );
 
 			expect( getModelDataWithAttributes( model ) ).to.deep.equal( {
-				data: '<htmlH2 htmlAttributes="(1)">foo</htmlH2><htmlH2 htmlAttributes="(2)">[]bar</htmlH2>',
+				data: '<htmlH2 htmlH2Attributes="(1)">foo</htmlH2><htmlH2 htmlH2Attributes="(2)">[]bar</htmlH2>',
 				attributes: {
 					1: {
 						classes: [
@@ -613,13 +613,13 @@ describe( 'HeadingElementSupport', () => {
 			it( 'adding new styles', () => {
 				editor.setData( '<h1>foobar</h1>' );
 
-				htmlSupport.setModelHtmlStyles( 'h2', {
+				htmlSupport.setModelHtmlStyles( 'h1', {
 					'background-color': 'blue',
 					color: 'red'
 				}, root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-					data: '<htmlH1 htmlAttributes="(1)">foobar</htmlH1>',
+					data: '<htmlH1 htmlH1Attributes="(1)">foobar</htmlH1>',
 					attributes: {
 						1: {
 							styles: {
@@ -645,7 +645,7 @@ describe( 'HeadingElementSupport', () => {
 				htmlSupport.addModelHtmlClass( 'h2', 'foo', root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-					data: '<htmlH2 htmlAttributes="(1)">foobar</htmlH2>',
+					data: '<htmlH2 htmlH2Attributes="(1)">foobar</htmlH2>',
 					attributes: {
 						1: {
 							classes: [ 'foo' ]
@@ -670,7 +670,7 @@ describe( 'HeadingElementSupport', () => {
 				}, root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-					data: '<htmlH3 htmlAttributes="(1)">foobar</htmlH3>',
+					data: '<htmlH3 htmlH3Attributes="(1)">foobar</htmlH3>',
 					attributes: {
 						1: {
 							attributes: {
@@ -692,10 +692,10 @@ describe( 'HeadingElementSupport', () => {
 			it( 'removing some styles', () => {
 				editor.setData( '<h1 style="background-color:blue;color:red;">foobar</h1>' );
 
-				htmlSupport.removeModelHtmlStyles( 'h3', 'color', root.getChild( 0 ) );
+				htmlSupport.removeModelHtmlStyles( 'h1', 'color', root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-					data: '<htmlH1 htmlAttributes="(1)">foobar</htmlH1>',
+					data: '<htmlH1 htmlH1Attributes="(1)">foobar</htmlH1>',
 					attributes: {
 						1: {
 							styles: {
@@ -720,7 +720,7 @@ describe( 'HeadingElementSupport', () => {
 				htmlSupport.removeModelHtmlClass( 'h2', 'bar', root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-					data: '<htmlH2 htmlAttributes="(1)">foobar</htmlH2>',
+					data: '<htmlH2 htmlH2Attributes="(1)">foobar</htmlH2>',
 					attributes: {
 						1: {
 							classes: [ 'foo' ]
@@ -743,7 +743,7 @@ describe( 'HeadingElementSupport', () => {
 				htmlSupport.removeModelHtmlAttributes( 'h3', 'data-bar', root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-					data: '<htmlH3 htmlAttributes="(1)">foobar</htmlH3>',
+					data: '<htmlH3 htmlH3Attributes="(1)">foobar</htmlH3>',
 					attributes: {
 						1: {
 							attributes: {
@@ -774,7 +774,7 @@ describe( 'HeadingElementSupport', () => {
 				htmlSupport.removeModelHtmlAttributes( 'h1', 'data-bar', root.getChild( 0 ) );
 
 				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-					data: '<htmlH1 htmlAttributes="(1)">foobar</htmlH1>',
+					data: '<htmlH1 htmlH1Attributes="(1)">foobar</htmlH1>',
 					attributes: {
 						1: {
 							attributes: {
@@ -832,6 +832,78 @@ describe( 'HeadingElementSupport', () => {
 					'<h1>foobar</h1>'
 				);
 			} );
+		} );
+	} );
+
+	describe( 'HeadingEditing plugin with default configuration', () => {
+		beforeEach( async () => {
+			editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			const newEditor = await ClassicTestEditor
+				.create( editorElement, {
+					plugins: [ HeadingEditing, GeneralHtmlSupport ]
+				} );
+
+			editor = newEditor;
+			model = editor.model;
+			doc = model.document;
+			dataSchema = editor.plugins.get( 'DataSchema' );
+			dataFilter = editor.plugins.get( 'DataFilter' );
+			htmlSupport = editor.plugins.get( 'GeneralHtmlSupport' );
+
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(h1|h2|h3|h4|h5)$/,
+				attributes: true,
+				classes: true,
+				styles: true
+			} ] );
+		} );
+
+		it( 'should preserve attributes on headings', () => {
+			editor.setData(
+				'<h1 data-foo="bar-1">one</h1>' +
+				'<h2 data-foo="bar-2">two</h2>' +
+				'<h3 data-foo="bar-3">three</h3>' +
+				'<h4 data-foo="bar-4">four</h4>'
+			);
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data:
+					'<htmlH1 htmlH1Attributes="(1)">one</htmlH1>' +
+					'<heading1 htmlH2Attributes="(2)">two</heading1>' +
+					'<heading2 htmlH3Attributes="(3)">three</heading2>' +
+					'<heading3 htmlH4Attributes="(4)">four</heading3>',
+				attributes: {
+					1: {
+						attributes: {
+							'data-foo': 'bar-1'
+						}
+					},
+					2: {
+						attributes: {
+							'data-foo': 'bar-2'
+						}
+					},
+					3: {
+						attributes: {
+							'data-foo': 'bar-3'
+						}
+					},
+					4: {
+						attributes: {
+							'data-foo': 'bar-4'
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<h1 data-foo="bar-1">one</h1>' +
+				'<h2 data-foo="bar-2">two</h2>' +
+				'<h3 data-foo="bar-3">three</h3>' +
+				'<h4 data-foo="bar-4">four</h4>'
+			);
 		} );
 	} );
 } );

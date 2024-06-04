@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,14 +7,14 @@
  * @module engine/conversion/modelconsumable
  */
 
-import TextProxy from '../model/textproxy';
+import TextProxy from '../model/textproxy.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
-import type Item from '../model/item';
-import type Selection from '../model/selection';
-import type DocumentSelection from '../model/documentselection';
-import type Range from '../model/range';
+import type Item from '../model/item.js';
+import type Selection from '../model/selection.js';
+import type DocumentSelection from '../model/documentselection.js';
+import type Range from '../model/range.js';
 
 /**
  * Manages a list of consumable values for the {@link module:engine/model/item~Item model items}.

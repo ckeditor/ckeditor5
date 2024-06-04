@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,20 +7,25 @@
  * @module highlight/highlightui
  */
 
-import { Plugin, icons } from 'ckeditor5/src/core';
+import { Plugin, icons } from 'ckeditor5/src/core.js';
 import {
+	addToolbarToDropdown,
+	createDropdown,
 	ButtonView,
+	ListSeparatorView,
+	MenuBarMenuView,
+	MenuBarMenuListView,
+	MenuBarMenuListItemView,
+	MenuBarMenuListItemButtonView,
 	SplitButtonView,
 	ToolbarSeparatorView,
-	createDropdown,
-	addToolbarToDropdown,
 	type DropdownView
-} from 'ckeditor5/src/ui';
+} from 'ckeditor5/src/ui.js';
 
 import markerIcon from './../theme/icons/marker.svg';
 import penIcon from './../theme/icons/pen.svg';
-import type { HighlightOption } from './highlightconfig';
-import type HighlightCommand from './highlightcommand';
+import type { HighlightOption } from './highlightconfig.js';
+import type HighlightCommand from './highlightcommand.js';
 
 import './../theme/highlight.css';
 
@@ -72,8 +77,8 @@ export default class HighlightUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'HighlightUI' {
-		return 'HighlightUI';
+	public static get pluginName() {
+		return 'HighlightUI' as const;
 	}
 
 	/**
@@ -89,6 +94,8 @@ export default class HighlightUI extends Plugin {
 		this._addRemoveHighlightButton();
 
 		this._addDropdown( options );
+
+		this._addMenuBarButton( options );
 	}
 
 	/**
@@ -250,6 +257,77 @@ export default class HighlightUI extends Plugin {
 			}
 
 			return dropdownView;
+		} );
+	}
+
+	/**
+	 * Creates the menu bar button for highlight including submenu with available options.
+	 */
+	private _addMenuBarButton( options: Array<HighlightOption> ) {
+		const editor = this.editor;
+		const t = editor.t;
+
+		editor.ui.componentFactory.add( 'menuBar:highlight', locale => {
+			const command: HighlightCommand = editor.commands.get( 'highlight' )!;
+			const menuView = new MenuBarMenuView( locale );
+
+			menuView.buttonView.set( {
+				label: t( 'Highlight' ),
+				icon: getIconForType( 'marker' )
+			} );
+			menuView.bind( 'isEnabled' ).to( command );
+			menuView.buttonView.iconView.fillColor = 'transparent';
+
+			const listView = new MenuBarMenuListView( locale );
+
+			for ( const option of options ) {
+				const listItemView = new MenuBarMenuListItemView( locale, menuView );
+				const buttonView = new MenuBarMenuListItemButtonView( locale );
+
+				buttonView.set( {
+					label: option.title,
+					icon: getIconForType( option.type )
+				} );
+
+				buttonView.delegate( 'execute' ).to( menuView );
+				buttonView.bind( 'isOn' ).to( command, 'value', value => value === option.model );
+				buttonView.bind( 'ariaChecked' ).to( buttonView, 'isOn' );
+				buttonView.iconView.bind( 'fillColor' ).to( buttonView, 'isOn', value => value ? 'transparent' : option.color );
+
+				buttonView.on( 'execute', () => {
+					editor.execute( 'highlight', { value: option.model } );
+
+					editor.editing.view.focus();
+				} );
+
+				listItemView.children.add( buttonView );
+				listView.items.add( listItemView );
+			}
+
+			// Add remove highlight button
+			listView.items.add( new ListSeparatorView( locale ) );
+			const listItemView = new MenuBarMenuListItemView( locale, menuView );
+			const buttonView = new MenuBarMenuListItemButtonView( locale );
+
+			buttonView.set( {
+				label: t( 'Remove highlight' ),
+				icon: icons.eraser
+			} );
+
+			buttonView.delegate( 'execute' ).to( menuView );
+
+			buttonView.on( 'execute', () => {
+				editor.execute( 'highlight', { value: null } );
+
+				editor.editing.view.focus();
+			} );
+
+			listItemView.children.add( buttonView );
+			listView.items.add( listItemView );
+
+			menuView.panelView.children.add( listView );
+
+			return menuView;
 		} );
 	}
 }

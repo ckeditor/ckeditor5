@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,7 @@
  * @module table/tableproperties/tablepropertiesui
  */
 
-import { type Editor, Plugin } from 'ckeditor5/src/core';
+import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 import {
 	ButtonView,
 	ContextualBalloon,
@@ -15,11 +15,11 @@ import {
 	getLocalizedColorOptions,
 	normalizeColorOptions,
 	type LabeledFieldView
-} from 'ckeditor5/src/ui';
+} from 'ckeditor5/src/ui.js';
 
 import { debounce } from 'lodash-es';
 
-import TablePropertiesView from './ui/tablepropertiesview';
+import TablePropertiesView from './ui/tablepropertiesview.js';
 import tableProperties from './../../theme/icons/table-properties.svg';
 import {
 	colorFieldValidator,
@@ -28,14 +28,14 @@ import {
 	lengthFieldValidator,
 	lineWidthFieldValidator,
 	defaultColors
-} from '../utils/ui/table-properties';
-import { getTableWidgetAncestor } from '../utils/ui/widget';
-import { getBalloonTablePositionData, repositionContextualBalloon } from '../utils/ui/contextualballoon';
-import { getNormalizedDefaultProperties, type NormalizedDefaultProperties } from '../utils/table-properties';
-import type { Batch } from 'ckeditor5/src/engine';
-import type { EventInfo, ObservableChangeEvent } from 'ckeditor5/src/utils';
+} from '../utils/ui/table-properties.js';
+import { getSelectionAffectedTableWidget } from '../utils/ui/widget.js';
+import { getBalloonTablePositionData, repositionContextualBalloon } from '../utils/ui/contextualballoon.js';
+import { getNormalizedDefaultProperties, type NormalizedDefaultProperties } from '../utils/table-properties.js';
+import type { Batch } from 'ckeditor5/src/engine.js';
+import type { EventInfo, ObservableChangeEvent } from 'ckeditor5/src/utils.js';
 
-import type TableBorderStyleCommand from './commands/tableborderstylecommand';
+import type TableBorderStyleCommand from './commands/tableborderstylecommand.js';
 
 const ERROR_TEXT_TIMEOUT = 500;
 
@@ -94,8 +94,8 @@ export default class TablePropertiesUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TablePropertiesUI' {
-		return 'TablePropertiesUI';
+	public static get pluginName() {
+		return 'TablePropertiesUI' as const;
 	}
 
 	/**
@@ -169,11 +169,13 @@ export default class TablePropertiesUI extends Plugin {
 		const localizedBorderColors = getLocalizedColorOptions( editor.locale, borderColorsConfig );
 		const backgroundColorsConfig = normalizeColorOptions( config.backgroundColors! );
 		const localizedBackgroundColors = getLocalizedColorOptions( editor.locale, backgroundColorsConfig );
+		const hasColorPicker = config.colorPicker !== false;
 
 		const view = new TablePropertiesView( editor.locale, {
 			borderColors: localizedBorderColors,
 			backgroundColors: localizedBackgroundColors,
-			defaultTableProperties: this._defaultTableProperties
+			defaultTableProperties: this._defaultTableProperties,
+			colorPickerConfig: hasColorPicker ? ( config.colorPicker || {} ) : false
 		} );
 		const t = editor.t;
 
@@ -355,7 +357,7 @@ export default class TablePropertiesUI extends Plugin {
 		const editor = this.editor;
 		const viewDocument = editor.editing.view.document;
 
-		if ( !getTableWidgetAncestor( viewDocument.selection ) ) {
+		if ( !getSelectionAffectedTableWidget( viewDocument.selection ) ) {
 			this._hideView();
 		} else if ( this._isViewVisible ) {
 			repositionContextualBalloon( editor, 'table' );

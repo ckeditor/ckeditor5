@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,11 +7,11 @@
  * @module ui/labeledfield/labeledfieldview
  */
 
-import View from '../view';
-import LabelView from '../label/labelview';
+import View from '../view.js';
+import LabelView from '../label/labelview.js';
 
-import type { FocusableView } from '../focuscycler';
-import type ViewCollection from '../viewcollection';
+import type { FocusableView } from '../focuscycler.js';
+import type ViewCollection from '../viewcollection.js';
 
 import { uid, type Locale } from '@ckeditor/ckeditor5-utils';
 
@@ -181,7 +181,7 @@ export default class LabeledFieldView<TFieldView extends FocusableView = Focusab
 	 */
 	constructor(
 		locale: Locale | undefined,
-		viewCreator: ( labeledFieldView: LabeledFieldView, viewUid: string, statusUid: string ) => TFieldView
+		viewCreator: LabeledFieldViewCreator<TFieldView>
 	) {
 		super( locale );
 
@@ -291,7 +291,14 @@ export default class LabeledFieldView<TFieldView extends FocusableView = Focusab
 	/**
 	 * Focuses the {@link #fieldView}.
 	 */
-	public focus(): void {
-		this.fieldView.focus();
+	public focus( direction?: 1 | -1 ): void {
+		this.fieldView.focus( direction );
 	}
 }
+
+/**
+ * A creator function that returns a focusable view to be labeled by a {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView}
+ * instance.
+ */
+export type LabeledFieldViewCreator<TFieldView extends FocusableView> =
+	( labeledFieldView: LabeledFieldView, viewUid: string, statusUid: string ) => TFieldView;

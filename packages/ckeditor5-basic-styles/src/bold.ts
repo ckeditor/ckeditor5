@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,9 @@
  * @module basic-styles/bold
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import BoldEditing from './bold/boldediting';
-import BoldUI from './bold/boldui';
+import { Plugin } from 'ckeditor5/src/core.js';
+import BoldEditing from './bold/boldediting.js';
+import BoldUI from './bold/boldui.js';
 
 /**
  * The bold feature.
@@ -31,7 +31,7 @@ export default class Bold extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Bold' {
-		return 'Bold';
+	public static get pluginName() {
+		return 'Bold' as const;
 	}
 }

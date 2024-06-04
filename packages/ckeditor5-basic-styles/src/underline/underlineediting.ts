@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,8 +7,8 @@
  * @module basic-styles/underline/underlineediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import AttributeCommand from '../attributecommand';
+import { Plugin } from 'ckeditor5/src/core.js';
+import AttributeCommand from '../attributecommand.js';
 
 const UNDERLINE = 'underline';
 
@@ -22,8 +22,8 @@ export default class UnderlineEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'UnderlineEditing' {
-		return 'UnderlineEditing';
+	public static get pluginName() {
+		return 'UnderlineEditing' as const;
 	}
 
 	/**
@@ -31,6 +31,7 @@ export default class UnderlineEditing extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
+		const t = this.editor.t;
 
 		// Allow strikethrough attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: UNDERLINE } );
@@ -54,5 +55,15 @@ export default class UnderlineEditing extends Plugin {
 
 		// Set the Ctrl+U keystroke.
 		editor.keystrokes.set( 'CTRL+U', 'underline' );
+
+		// Add the information about the keystroke to the accessibility database.
+		editor.accessibility.addKeystrokeInfos( {
+			keystrokes: [
+				{
+					label: t( 'Underline text' ),
+					keystroke: 'CTRL+U'
+				}
+			]
+		} );
 	}
 }

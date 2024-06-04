@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,18 +7,51 @@
  * @module utils/dom/position
  */
 
-import global from './global';
-import Rect, { type RectSource } from './rect';
-import getPositionedAncestor from './getpositionedancestor';
-import getBorderWidths from './getborderwidths';
+import global from './global.js';
+import Rect, { type RectSource } from './rect.js';
+import getPositionedAncestor from './getpositionedancestor.js';
 import { isFunction } from 'lodash-es';
 
-// @if CK_DEBUG_POSITION // const RectDrawer = require( '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer' ).default
+// @if CK_DEBUG_POSITION // const {
+// @if CK_DEBUG_POSITION // 	default: RectDrawer,
+// @if CK_DEBUG_POSITION // 	diagonalStylesBlack,
+// @if CK_DEBUG_POSITION // 	diagonalStylesGreen,
+// @if CK_DEBUG_POSITION // 	diagonalStylesRed
+// @if CK_DEBUG_POSITION // } = require( '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer' );
+// @if CK_DEBUG_POSITION // const TARGET_RECT_STYLE = {
+// @if CK_DEBUG_POSITION // 	outlineWidth: '2px', outlineStyle: 'dashed', outlineColor: 'blue', outlineOffset: '2px'
+// @if CK_DEBUG_POSITION // };
+// @if CK_DEBUG_POSITION // const VISIBLE_TARGET_RECT_STYLE = {
+// @if CK_DEBUG_POSITION //		...diagonalStylesBlack,
+// @if CK_DEBUG_POSITION //		opacity: '1',
+// @if CK_DEBUG_POSITION //		backgroundColor: '#00000033',
+// @if CK_DEBUG_POSITION //		outlineWidth: '2px'
+// @if CK_DEBUG_POSITION // };
+// @if CK_DEBUG_POSITION // const VIEWPORT_RECT_STYLE = {
+// @if CK_DEBUG_POSITION // 	outlineWidth: '2px',
+// @if CK_DEBUG_POSITION // 	outlineOffset: '-2px',
+// @if CK_DEBUG_POSITION // 	outlineStyle: 'solid',
+// @if CK_DEBUG_POSITION // 	outlineColor: 'red'
+// @if CK_DEBUG_POSITION // };
+// @if CK_DEBUG_POSITION // const VISIBLE_LIMITER_RECT_STYLE = {
+// @if CK_DEBUG_POSITION // 	...diagonalStylesGreen,
+// @if CK_DEBUG_POSITION // 	outlineWidth: '2px',
+// @if CK_DEBUG_POSITION // 	outlineOffset: '-2px'
+// @if CK_DEBUG_POSITION // };
+// @if CK_DEBUG_POSITION // const ELEMENT_RECT_STYLE = {
+// @if CK_DEBUG_POSITION // 	outlineWidth: '2px', outlineColor: 'orange', outlineOffset: '-2px'
+// @if CK_DEBUG_POSITION // };
+// @if CK_DEBUG_POSITION // const CHOSEN_POSITION_RECT_STYLE = {
+// @if CK_DEBUG_POSITION // 	opacity: .5, outlineColor: 'magenta', backgroundColor: 'magenta'
+// @if CK_DEBUG_POSITION // };
 
 /**
  * Calculates the `position: absolute` coordinates of a given element so it can be positioned with respect to the
  * target in the visually most efficient way, taking various restrictions like viewport or limiter geometry
  * into consideration.
+ *
+ * **Note**: If there are no position coordinates found that meet the requirements (arguments of this helper),
+ * `null` is returned.
  *
  * ```ts
  * // The element which is to be positioned.
@@ -80,7 +113,9 @@ import { isFunction } from 'lodash-es';
  *
  * @param options The input data and configuration of the helper.
  */
-export function getOptimalPosition( { element, target, positions, limiter, fitInViewport, viewportOffsetConfig }: Options ): Position {
+export function getOptimalPosition( {
+	element, target, positions, limiter, fitInViewport, viewportOffsetConfig
+}: Options ): DomPoint | null {
 	// If the {@link module:utils/dom/position~Options#target} is a function, use what it returns.
 	// https://github.com/ckeditor/ckeditor5-utils/issues/157
 	if ( isFunction( target ) ) {
@@ -94,39 +129,66 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 	}
 
 	const positionedElementAncestor = getPositionedAncestor( element );
+	const constrainedViewportRect = getConstrainedViewportRect( viewportOffsetConfig );
 	const elementRect = new Rect( element );
-	const targetRect = new Rect( target );
+	const visibleTargetRect = getVisibleViewportIntersectionRect( target, constrainedViewportRect );
 
-	let bestPosition: Position;
+	let bestPosition: DomPoint | null;
 
+	// @if CK_DEBUG_POSITION // const targetRect = new Rect( target );
 	// @if CK_DEBUG_POSITION // RectDrawer.clear();
-	// @if CK_DEBUG_POSITION // RectDrawer.draw( targetRect, { outlineWidth: '5px' }, 'Target' );
+	// @if CK_DEBUG_POSITION // RectDrawer.draw( targetRect, TARGET_RECT_STYLE, 'Target' );
+	// @if CK_DEBUG_POSITION // if ( constrainedViewportRect ) {
+	// @if CK_DEBUG_POSITION //		RectDrawer.draw( constrainedViewportRect, VIEWPORT_RECT_STYLE, 'Viewport' );
+	// @if CK_DEBUG_POSITION // }
 
-	const viewportRect = fitInViewport && getConstrainedViewportRect( viewportOffsetConfig ) || null;
-	const positionOptions = { targetRect, elementRect, positionedElementAncestor, viewportRect };
+	// If the target got cropped by ancestors or went off the screen, positioning does not make any sense.
+	if ( !visibleTargetRect || !constrainedViewportRect.getIntersection( visibleTargetRect ) ) {
+		return null;
+	}
+
+	// @if CK_DEBUG_POSITION //	RectDrawer.draw( visibleTargetRect, VISIBLE_TARGET_RECT_STYLE, 'VisTgt' );
+
+	const positionOptions: PositionObjectOptions = {
+		targetRect: visibleTargetRect,
+		elementRect,
+		positionedElementAncestor,
+		viewportRect: constrainedViewportRect
+	};
 
 	// If there are no limits, just grab the very first position and be done with that drama.
 	if ( !limiter && !fitInViewport ) {
 		bestPosition = new PositionObject( positions[ 0 ], positionOptions );
 	} else {
-		const limiterRect = limiter && new Rect( limiter ).getVisible();
+		if ( limiter ) {
+			const visibleLimiterRect = getVisibleViewportIntersectionRect( limiter, constrainedViewportRect );
 
-		// @if CK_DEBUG_POSITION // if ( viewportRect ) {
-		// @if CK_DEBUG_POSITION //		RectDrawer.draw( viewportRect, { outlineWidth: '5px' }, 'Viewport' );
-		// @if CK_DEBUG_POSITION // }
-
-		// @if CK_DEBUG_POSITION // if ( limiter ) {
-		// @if CK_DEBUG_POSITION // 	RectDrawer.draw( limiterRect, { outlineWidth: '5px', outlineColor: 'green' }, 'Visible limiter' );
-		// @if CK_DEBUG_POSITION // }
-
-		Object.assign( positionOptions, { limiterRect, viewportRect } );
+			if ( visibleLimiterRect ) {
+				positionOptions.limiterRect = visibleLimiterRect;
+				// @if CK_DEBUG_POSITION // RectDrawer.draw( visibleLimiterRect, VISIBLE_LIMITER_RECT_STYLE, 'VisLim' );
+			}
+		}
 
 		// If there's no best position found, i.e. when all intersections have no area because
-		// rects have no width or height, then just use the first available position.
-		bestPosition = getBestPosition( positions, positionOptions ) || new PositionObject( positions[ 0 ], positionOptions );
+		// rects have no width or height, then just return `null`
+		bestPosition = getBestPosition( positions, positionOptions );
 	}
 
 	return bestPosition;
+}
+
+/**
+ * Returns intersection of visible source `Rect` with Viewport `Rect`. In case when source `Rect` is not visible
+ * or there is no intersection between source `Rect` and Viewport `Rect`, `null` will be returned.
+ */
+function getVisibleViewportIntersectionRect( source: RectSource, viewportRect: Rect ): Rect | null {
+	const visibleSourceRect = new Rect( source ).getVisible();
+
+	if ( !visibleSourceRect ) {
+		return null;
+	}
+
+	return visibleSourceRect.getIntersection( viewportRect );
 }
 
 /**
@@ -152,7 +214,7 @@ function getConstrainedViewportRect( viewportOffsetConfig: Options[ 'viewportOff
 function getBestPosition(
 	positions: ReadonlyArray<PositioningFunction>,
 	options: ConstructorParameters<typeof PositionObject>[ 1 ]
-): Position | null {
+): DomPoint | null {
 	const { elementRect } = options;
 
 	// This is when element is fully visible.
@@ -172,6 +234,11 @@ function getBestPosition(
 		// If a such position is found that element is fully contained by the limiter then, obviously,
 		// there will be no better one, so finishing.
 		if ( limiterIntersectionArea === elementRectArea ) {
+			// @if CK_DEBUG_POSITION //	RectDrawer.draw( position._rect, CHOSEN_POSITION_RECT_STYLE, [
+			// @if CK_DEBUG_POSITION //		position.name,
+			// @if CK_DEBUG_POSITION //		'100% fit',
+			// @if CK_DEBUG_POSITION //	].join( '\n' ) );
+
 			return position;
 		}
 
@@ -179,74 +246,33 @@ function getBestPosition(
 		// and _limiterIntersectionArea plane (without sqrt because we are looking for max value).
 		const fitFactor = viewportIntersectionArea ** 2 + limiterIntersectionArea ** 2;
 
+		// @if CK_DEBUG_POSITION //	RectDrawer.draw( position._rect, { opacity: .4 }, [
+		// @if CK_DEBUG_POSITION //		position.name,
+		// @if CK_DEBUG_POSITION //		'Vi=' +  Math.round( viewportIntersectionArea ),
+		// @if CK_DEBUG_POSITION //		'Li=' + Math.round( limiterIntersectionArea )
+		// @if CK_DEBUG_POSITION //	].join( '\n' ) );
+
 		if ( fitFactor > maxFitFactor ) {
 			maxFitFactor = fitFactor;
 			bestPosition = position;
 		}
 	}
 
+	// @if CK_DEBUG_POSITION // if ( bestPosition ) {
+	// @if CK_DEBUG_POSITION // 	RectDrawer.draw( bestPosition._rect, CHOSEN_POSITION_RECT_STYLE );
+	// @if CK_DEBUG_POSITION // }
+
 	return bestPosition;
-}
-
-/**
- * For a given absolute Rect coordinates object and a positioned element ancestor, it updates its
- * coordinates that make up for the position and the scroll of the ancestor.
- *
- * This is necessary because while Rects (and DOMRects) are relative to the browser's viewport, their coordinates
- * are used in real–life to position elements with `position: absolute`, which are scoped by any positioned
- * (and scrollable) ancestors.
- */
-function shiftRectToCompensatePositionedAncestor( rect: Rect, positionedElementAncestor: HTMLElement ): void {
-	const ancestorPosition = getRectForAbsolutePositioning( new Rect( positionedElementAncestor ) );
-	const ancestorBorderWidths = getBorderWidths( positionedElementAncestor );
-
-	let moveX = 0;
-	let moveY = 0;
-
-	// (https://github.com/ckeditor/ckeditor5-ui-default/issues/126)
-	// If there's some positioned ancestor of the panel, then its `Rect` must be taken into
-	// consideration. `Rect` is always relative to the viewport while `position: absolute` works
-	// with respect to that positioned ancestor.
-	moveX -= ancestorPosition.left;
-	moveY -= ancestorPosition.top;
-
-	// (https://github.com/ckeditor/ckeditor5-utils/issues/139)
-	// If there's some positioned ancestor of the panel, not only its position must be taken into
-	// consideration (see above) but also its internal scrolls. Scroll have an impact here because `Rect`
-	// is relative to the viewport (it doesn't care about scrolling), while `position: absolute`
-	// must compensate that scrolling.
-	moveX += positionedElementAncestor.scrollLeft;
-	moveY += positionedElementAncestor.scrollTop;
-
-	// (https://github.com/ckeditor/ckeditor5-utils/issues/139)
-	// If there's some positioned ancestor of the panel, then its `Rect` includes its CSS `borderWidth`
-	// while `position: absolute` positioning does not consider it.
-	// E.g. `{ position: absolute, top: 0, left: 0 }` means upper left corner of the element,
-	// not upper-left corner of its border.
-	moveX -= ancestorBorderWidths.left;
-	moveY -= ancestorBorderWidths.top;
-
-	rect.moveBy( moveX, moveY );
-}
-
-/**
- * DOMRect (also Rect) works in a scroll–independent geometry but `position: absolute` doesn't.
- * This function converts Rect to `position: absolute` coordinates.
- */
-function getRectForAbsolutePositioning( rect: Rect ): Rect {
-	const { scrollX, scrollY } = global.window;
-
-	return rect.clone().moveBy( scrollX, scrollY );
 }
 
 /**
  * A position object which instances are created and used by the {@link module:utils/dom/position~getOptimalPosition} helper.
  *
- * {@link module:utils/dom/position~Position#top} and {@link module:utils/dom/position~Position#left} properties of the position instance
+ * {@link module:utils/dom/position~DomPoint#top} and {@link module:utils/dom/position~DomPoint#left} properties of the position instance
  * translate directly to the `top` and `left` properties in CSS "`position: absolute` coordinate system". If set on the positioned element
  * in DOM, they will make it display it in the right place in the viewport.
  */
-export interface Position {
+export interface DomPoint {
 
 	/**
 	 * Position name.
@@ -275,17 +301,29 @@ export interface Position {
 }
 
 /**
+ * A position options object which options are passed in the {@link module:utils/dom/position~PositionObject Class constructor},
+ * to be used by {@link module:utils/dom/position~PositioningFunction positioning function}.
+ */
+type PositionObjectOptions = {
+	elementRect: Rect;
+	targetRect: Rect;
+	viewportRect: Rect;
+	positionedElementAncestor?: HTMLElement | null;
+	limiterRect?: Rect;
+};
+
+/**
  * A position class which instances are created and used by the {@link module:utils/dom/position~getOptimalPosition} helper.
  *
  * {@link module:utils/dom/position~Position#top} and {@link module:utils/dom/position~Position#left} properties of the position instance
  * translate directly to the `top` and `left` properties in CSS "`position: absolute` coordinate system". If set on the positioned element
  * in DOM, they will make it display it in the right place in the viewport.
  */
-class PositionObject implements Position {
+class PositionObject implements DomPoint {
 	public name?: string;
 	public config?: object;
 
-	private _positioningFunctionCorrdinates!: { left: number; top: number };
+	private _positioningFunctionCoordinates!: { left: number; top: number };
 	private _options!: ConstructorParameters<typeof PositionObject>[ 1 ];
 	private _cachedRect?: Rect;
 	private _cachedAbsoluteRect?: Rect;
@@ -304,15 +342,14 @@ class PositionObject implements Position {
 	 */
 	constructor(
 		positioningFunction: PositioningFunction,
-		options: {
-			readonly elementRect: Rect;
-			readonly targetRect: Rect;
-			readonly viewportRect: Rect | null;
-			readonly positionedElementAncestor?: HTMLElement | null;
-			readonly limiterRect?: Rect;
-		}
+		options: Readonly<PositionObjectOptions>
 	) {
-		const positioningFunctionOutput = positioningFunction( options.targetRect, options.elementRect, options.viewportRect );
+		const positioningFunctionOutput = positioningFunction(
+			options.targetRect,
+			options.elementRect,
+			options.viewportRect,
+			options.limiterRect
+		);
 
 		// Nameless position for a function that didn't participate.
 		if ( !positioningFunctionOutput ) {
@@ -324,7 +361,7 @@ class PositionObject implements Position {
 		this.name = name;
 		this.config = config;
 
-		this._positioningFunctionCorrdinates = { left, top };
+		this._positioningFunctionCoordinates = { left, top };
 		this._options = options;
 	}
 
@@ -351,20 +388,7 @@ class PositionObject implements Position {
 		const limiterRect = this._options.limiterRect;
 
 		if ( limiterRect ) {
-			const viewportRect = this._options.viewportRect;
-
-			if ( viewportRect ) {
-				// Consider only the part of the limiter which is visible in the viewport. So the limiter is getting limited.
-				const limiterViewportIntersectRect = limiterRect.getIntersection( viewportRect );
-
-				if ( limiterViewportIntersectRect ) {
-					// If the limiter is within the viewport, then check the intersection between that part of the
-					// limiter and actual position.
-					return limiterViewportIntersectRect.getIntersectionArea( this._rect );
-				}
-			} else {
-				return limiterRect.getIntersectionArea( this._rect );
-			}
+			return limiterRect.getIntersectionArea( this._rect );
 		}
 
 		return 0;
@@ -374,13 +398,9 @@ class PositionObject implements Position {
 	 * An intersection area between positioned element and viewport.
 	 */
 	public get viewportIntersectionArea(): number {
-		const viewportRect = this._options.viewportRect;
+		const viewportRect = this._options.viewportRect!;
 
-		if ( viewportRect ) {
-			return viewportRect.getIntersectionArea( this._rect );
-		}
-
-		return 0;
+		return viewportRect.getIntersectionArea( this._rect );
 	}
 
 	/**
@@ -393,8 +413,8 @@ class PositionObject implements Position {
 		}
 
 		this._cachedRect = this._options.elementRect.clone().moveTo(
-			this._positioningFunctionCorrdinates.left,
-			this._positioningFunctionCorrdinates.top
+			this._positioningFunctionCoordinates.left,
+			this._positioningFunctionCoordinates.top
 		);
 
 		return this._cachedRect;
@@ -408,13 +428,9 @@ class PositionObject implements Position {
 			return this._cachedAbsoluteRect;
 		}
 
-		this._cachedAbsoluteRect = getRectForAbsolutePositioning( this._rect );
+		this._cachedAbsoluteRect = this._rect.toAbsoluteRect();
 
-		if ( this._options.positionedElementAncestor ) {
-			shiftRectToCompensatePositionedAncestor( this._cachedAbsoluteRect, this._options.positionedElementAncestor );
-		}
-
-		return this._cachedAbsoluteRect!;
+		return this._cachedAbsoluteRect;
 	}
 }
 
@@ -505,7 +521,12 @@ export interface Options {
  * @param viewportRect The rect of the visual browser viewport.
  * @returns When the function returns `null`, it will not be considered by {@link module:utils/dom/position~getOptimalPosition}.
  */
-export type PositioningFunction = ( elementRect: Rect, targetRect: Rect, viewportRect: Rect | null ) => PositioningFunctionResult | null;
+export type PositioningFunction = (
+	elementRect: Rect,
+	targetRect: Rect,
+	viewportRect: Rect,
+	limiterRect?: Rect
+) => PositioningFunctionResult | null;
 
 /**
  * The result of {@link module:utils/dom/position~PositioningFunction}.
@@ -524,14 +545,14 @@ export interface PositioningFunctionResult {
 
 	/**
 	 * The name of the position. It helps the user of the {@link module:utils/dom/position~getOptimalPosition}
-	 * helper to recognize different positioning function results. It will pass through to the {@link module:utils/dom/position~Position}
+	 * helper to recognize different positioning function results. It will pass through to the {@link module:utils/dom/position~DomPoint}
 	 * returned by the helper.
 	 */
 	name?: string;
 
 	/**
 	 * An optional configuration that will pass-through the {@link module:utils/dom/position~getOptimalPosition} helper
-	 * to the {@link module:utils/dom/position~Position} returned by this helper.
+	 * to the {@link module:utils/dom/position~DomPoint} returned by this helper.
 	 * This configuration may, for instance, let the user of {@link module:utils/dom/position~getOptimalPosition} know that this particular
 	 * position comes with a certain presentation.
 	 */

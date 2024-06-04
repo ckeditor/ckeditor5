@@ -5,7 +5,7 @@ All changes in the package are documented in the main repository. See: https://g
 
 Changes for the past releases are available below.
 
-## [19.0.0](https://github.com/ckeditor/ckeditor5-widget/compare/v18.0.0...v19.0.0) (2020-04-29)
+## [19.0.0](https://github.com/ckeditor/ckeditor5-widget/compare/v18.0.0...v19.0.0) (April 29, 2020)
 
 ### MINOR BREAKING CHANGES
 
@@ -21,12 +21,12 @@ Changes for the past releases are available below.
 * Updated translations. ([79d1a21](https://github.com/ckeditor/ckeditor5-widget/commit/79d1a21))
 
 
-## [18.0.0](https://github.com/ckeditor/ckeditor5-widget/compare/v17.0.0...v18.0.0) (2020-03-19)
+## [18.0.0](https://github.com/ckeditor/ckeditor5-widget/compare/v17.0.0...v18.0.0) (March 19, 2020)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-widget/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-widget/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 ### MINOR BREAKING CHANGES
 
@@ -46,14 +46,14 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([75b8c83](https://github.com/ckeditor/ckeditor5-widget/commit/75b8c83))
 
 
-## [16.0.0](https://github.com/ckeditor/ckeditor5-widget/compare/v15.0.0...v16.0.0) (2019-12-04)
+## [16.0.0](https://github.com/ckeditor/ckeditor5-widget/compare/v15.0.0...v16.0.0) (December 4, 2019)
 
 ### Other changes
 
 * Updated translations. ([b3bf5f0](https://github.com/ckeditor/ckeditor5-widget/commit/b3bf5f0))
 
 
-## [15.0.0](https://github.com/ckeditor/ckeditor5-widget/compare/v11.1.0...v15.0.0) (2019-10-23)
+## [15.0.0](https://github.com/ckeditor/ckeditor5-widget/compare/v11.1.0...v15.0.0) (October 23, 2019)
 
 ### MAJOR BREAKING CHANGES
 
@@ -73,7 +73,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([b9cb673](https://github.com/ckeditor/ckeditor5-widget/commit/b9cb673)) ([daea4f5](https://github.com/ckeditor/ckeditor5-widget/commit/daea4f5))
 
 
-## [11.1.0](https://github.com/ckeditor/ckeditor5-widget/compare/v11.0.4...v11.1.0) (2019-08-26)
+## [11.1.0](https://github.com/ckeditor/ckeditor5-widget/compare/v11.0.4...v11.1.0) (August 26, 2019)
 
 ### Features
 
@@ -90,31 +90,31 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The widget toolbar should have a proper `aria-label` attribute (see [ckeditor/ckeditor5#1404](https://github.com/ckeditor/ckeditor5/issues/1404)). ([aec5888](https://github.com/ckeditor/ckeditor5-widget/commit/aec5888))
 
 
-## [11.0.4](https://github.com/ckeditor/ckeditor5-widget/compare/v11.0.3...v11.0.4) (2019-07-10)
+## [11.0.4](https://github.com/ckeditor/ckeditor5-widget/compare/v11.0.3...v11.0.4) (July 10, 2019)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [11.0.3](https://github.com/ckeditor/ckeditor5-widget/compare/v11.0.2...v11.0.3) (2019-07-04)
+## [11.0.3](https://github.com/ckeditor/ckeditor5-widget/compare/v11.0.2...v11.0.3) (July 4, 2019)
 
 ### Bug fixes
 
 * A proper `DomConverter` method should be used to map a view to DOM when getting balloon position data. Closes [#87](https://github.com/ckeditor/ckeditor5-widget/issues/87). ([160333a](https://github.com/ckeditor/ckeditor5-widget/commit/160333a))
 
 
-## [11.0.2](https://github.com/ckeditor/ckeditor5-widget/compare/v11.0.1...v11.0.2) (2019-06-05)
+## [11.0.2](https://github.com/ckeditor/ckeditor5-widget/compare/v11.0.1...v11.0.2) (June 6, 2019)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [11.0.1](https://github.com/ckeditor/ckeditor5-widget/compare/v11.0.0...v11.0.1) (2019-04-10)
+## [11.0.1](https://github.com/ckeditor/ckeditor5-widget/compare/v11.0.0...v11.0.1) (April 4, 2019)
 
 ### Bug fixes
 
 * Triple clicking inside a nested editable should not select the entire widget in Safari. Closes [ckeditor/ckeditor5#1463](https://github.com/ckeditor/ckeditor5/issues/1463). ([b7c4765](https://github.com/ckeditor/ckeditor5-widget/commit/b7c4765))
 
 
-## [11.0.0](https://github.com/ckeditor/ckeditor5-widget/compare/v10.3.1...v11.0.0) (2019-02-28)
+## [11.0.0](https://github.com/ckeditor/ckeditor5-widget/compare/v10.3.1...v11.0.0) (February 28, 2019)
 
 ### Bug fixes
 
@@ -126,7 +126,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Other changes
 
-* Introduce support and utils for creating inline widgets. Closes [[ckeditor/ckeditor5#1096](https://github.com/ckeditor/ckeditor5/issues/1096)](https://github.com/ckeditor/ckeditor5/issues/1096). ([38fa159](https://github.com/ckeditor/ckeditor5-widget/commit/38fa159))
+* Introduce support and utilities for creating inline widgets. Closes [[ckeditor/ckeditor5#1096](https://github.com/ckeditor/ckeditor5/issues/1096)](https://github.com/ckeditor/ckeditor5/issues/1096). ([38fa159](https://github.com/ckeditor/ckeditor5-widget/commit/38fa159))
 * Renamed the `.ck-widget_selectable` class to `.ck-widget_with-selection-handler` for better semantics. Closes [#66](https://github.com/ckeditor/ckeditor5-widget/issues/66). ([178ad5f](https://github.com/ckeditor/ckeditor5-widget/commit/178ad5f))
 
 ### BREAKING CHANGES
@@ -136,7 +136,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `visibleWhen()` function, a property of an object passed into `WidgetToolbarRepository.register()`, has been renamed to `getRelatedElement()` and must return an editing `View` element the toolbar should be attached to (instead of `Boolean`).
 
 
-## [10.3.1](https://github.com/ckeditor/ckeditor5-widget/compare/v10.3.0...v10.3.1) (2018-12-05)
+## [10.3.1](https://github.com/ckeditor/ckeditor5-widget/compare/v10.3.0...v10.3.1) (December 5, 2018)
 
 ### Bug fixes
 
@@ -147,7 +147,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Improved SVG icons size. See [ckeditor/ckeditor5-theme-lark#206](https://github.com/ckeditor/ckeditor5-theme-lark/issues/206). ([5b7a457](https://github.com/ckeditor/ckeditor5-widget/commit/5b7a457))
 
 
-## [10.3.0](https://github.com/ckeditor/ckeditor5-widget/compare/v10.2.0...v10.3.0) (2018-10-08)
+## [10.3.0](https://github.com/ckeditor/ckeditor5-widget/compare/v10.2.0...v10.3.0) (October 8, 2018)
 
 ### Features
 
@@ -155,7 +155,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Introduced the widget toolbar repository. Closes [ckeditor/ckeditor5-ui#442](https://github.com/ckeditor/ckeditor5-ui/issues/442). ([bc45176](https://github.com/ckeditor/ckeditor5-widget/commit/bc45176))
 
 
-## [10.2.0](https://github.com/ckeditor/ckeditor5-widget/compare/v10.1.0...v10.2.0) (2018-07-18)
+## [10.2.0](https://github.com/ckeditor/ckeditor5-widget/compare/v10.1.0...v10.2.0) (July 18, 2018)
 
 ### Features
 
@@ -163,17 +163,17 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Other changes
 
-* Do not set the `contenteditable` property for widgets and their nested editables on Edge due to an awful instability which it causes in this browser. Closes [ckeditor/ckeditor5#1079](https://github.com/ckeditor/ckeditor5/issues/1079). Closes [ckeditor/ckeditor5#1067](https://github.com/ckeditor/ckeditor5/issues/1067). ([ee530b1](https://github.com/ckeditor/ckeditor5-widget/commit/ee530b1))
+* Do not set the `contenteditable` property for widgets and their nested editable elements in Edge due to an awful instability which it causes in this browser. Closes [ckeditor/ckeditor5#1079](https://github.com/ckeditor/ckeditor5/issues/1079). Closes [ckeditor/ckeditor5#1067](https://github.com/ckeditor/ckeditor5/issues/1067). ([ee530b1](https://github.com/ckeditor/ckeditor5-widget/commit/ee530b1))
 
 
-## [10.1.0](https://github.com/ckeditor/ckeditor5-widget/compare/v10.0.0...v10.1.0) (2018-06-21)
+## [10.1.0](https://github.com/ckeditor/ckeditor5-widget/compare/v10.0.0...v10.1.0) (June 21, 2018)
 
 ### Features
 
 * Creating a paragraph next to the selected widget is possible using the (<kbd>Shift</kbd>+)<kbd>Enter</kbd> key (see [ckeditor/ckeditor5#407](https://github.com/ckeditor/ckeditor5/issues/407)). ([d68b7d0](https://github.com/ckeditor/ckeditor5-widget/commit/d68b7d0))
 
 
-## [10.0.0](https://github.com/ckeditor/ckeditor5-widget/compare/v1.0.0-beta.4...v10.0.0) (2018-04-25)
+## [10.0.0](https://github.com/ckeditor/ckeditor5-widget/compare/v1.0.0-beta.4...v10.0.0) (April 25, 2018)
 
 ### Other changes
 
@@ -181,19 +181,19 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### BREAKING CHANGES
 
-* The license under which CKEditor 5 is released has been changed from a triple GPL, LGPL and MPL license to a GPL2+ only. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
+* The license under which CKEditor&nbsp;5 is released has been changed from a triple GPL, LGPL and MPL license to a GPL2+ only. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
 
 
-## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-widget/compare/v1.0.0-beta.2...v1.0.0-beta.4) (2018-04-19)
+## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-widget/compare/v1.0.0-beta.2...v1.0.0-beta.4) (April 19, 2018)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-widget/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2018-04-10)
+## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-widget/compare/v1.0.0-beta.1...v1.0.0-beta.2) (April 10, 2018)
 
 ### Bug fixes
 
-* Replaced nested editable's `.ck-editable` class with `.ck-editor__editable` + `.ck-editor__nested-editable` to stop Grammarly throwing errors. Closes [ckeditor/ckeditor5#578](https://github.com/ckeditor/ckeditor5/issues/578). ([051b326](https://github.com/ckeditor/ckeditor5-widget/commit/051b326))
+* Replaced nested editable element's `.ck-editable` class with `.ck-editor__editable` + `.ck-editor__nested-editable` to stop Grammarly throwing errors. Closes [ckeditor/ckeditor5#578](https://github.com/ckeditor/ckeditor5/issues/578). ([051b326](https://github.com/ckeditor/ckeditor5-widget/commit/051b326))
 
 ### Other changes
 
@@ -204,7 +204,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `.ck-editable` class is no longer available. Use the `.ck-editor__nested-editable` class instead.
 
 
-## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-widget/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
+## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-widget/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (March 15, 2018)
 
 ### Other changes
 
@@ -213,7 +213,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Switched to handling deletion around widgets by using the `delete` event instead of listening directly on key events. Closes [#29](https://github.com/ckeditor/ckeditor5-widget/issues/29). ([ee6cc95](https://github.com/ckeditor/ckeditor5-widget/commit/ee6cc95))
 
 
-## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-widget/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
+## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-widget/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (November 14, 2017)
 
 ### Bug fixes
 
@@ -225,7 +225,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Widgets highlight remove handler will now use only descriptor id, instead of the full descriptor. ([1dfdc83](https://github.com/ckeditor/ckeditor5-widget/commit/1dfdc83))
 
 
-## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-widget/compare/v0.2.0...v1.0.0-alpha.1) (2017-10-03)
+## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-widget/compare/v0.2.0...v1.0.0-alpha.1) (October 3, 2017)
 
 ### Bug fixes
 
@@ -233,15 +233,15 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Nested element structures next to widgets will be correctly removed when pressing <kbd>Backspace</kbd> or <kbd>Delete</kbd>. Closes [#19](https://github.com/ckeditor/ckeditor5-widget/issues/19). ([27ee848](https://github.com/ckeditor/ckeditor5-widget/commit/27ee848))
 
 
-## [0.2.0](https://github.com/ckeditor/ckeditor5-widget/compare/v0.1.1...v0.2.0) (2017-09-03)
+## [0.2.0](https://github.com/ckeditor/ckeditor5-widget/compare/v0.1.1...v0.2.0) (September 3, 2017)
 
 ### Bug fixes
 
-* Added initial contenteditable state for editable widget. Closes [#9](https://github.com/ckeditor/ckeditor5-widget/issues/9). ([c6321ff](https://github.com/ckeditor/ckeditor5-widget/commit/c6321ff))
+* Added initial `contenteditable` state for editable widget. Closes [#9](https://github.com/ckeditor/ckeditor5-widget/issues/9). ([c6321ff](https://github.com/ckeditor/ckeditor5-widget/commit/c6321ff))
 
 ### Features
 
-* <kbd>Ctrl</kbd>+<kbd>A</kbd> in a nested editable should select nested editable's content. Closes [#13](https://github.com/ckeditor/ckeditor5-widget/issues/13). ([35a8aff](https://github.com/ckeditor/ckeditor5-widget/commit/35a8aff))
+* <kbd>Ctrl</kbd>+<kbd>A</kbd> in a nested editable should select the nested editable element's content. Closes [#13](https://github.com/ckeditor/ckeditor5-widget/issues/13). ([35a8aff](https://github.com/ckeditor/ckeditor5-widget/commit/35a8aff))
 
 ### Other changes
 
@@ -249,11 +249,11 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Introduced highlights support for widgets. Closes [#11](https://github.com/ckeditor/ckeditor5-widget/issues/11). ([0bd3d66](https://github.com/ckeditor/ckeditor5-widget/commit/0bd3d66))
 
 
-## [0.1.1](https://github.com/ckeditor/ckeditor5-widget/compare/v0.1.0...v0.1.1) (2017-05-07)
+## [0.1.1](https://github.com/ckeditor/ckeditor5-widget/compare/v0.1.0...v0.1.1) (May 7, 2017)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
-## 0.1.0 (2017-04-05)
+## 0.1.0 (April 5, 2017)
 
 ### Features
 

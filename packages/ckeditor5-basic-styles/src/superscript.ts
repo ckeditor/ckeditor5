@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,9 @@
  * @module basic-styles/superscript
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import SuperscriptEditing from './superscript/superscriptediting';
-import SuperscriptUI from './superscript/superscriptui';
+import { Plugin } from 'ckeditor5/src/core.js';
+import SuperscriptEditing from './superscript/superscriptediting.js';
+import SuperscriptUI from './superscript/superscriptui.js';
 
 /**
  * The superscript feature.
@@ -28,7 +28,7 @@ export default class Superscript extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Superscript' {
-		return 'Superscript';
+	public static get pluginName() {
+		return 'Superscript' as const;
 	}
 }

@@ -1,19 +1,33 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ColorTileView from '../../src/colorgrid/colortileview';
-import ButtonView from '../../src/button/buttonview';
+import ColorTileView from '../../src/colorgrid/colortileview.js';
+import ButtonView from '../../src/button/buttonview.js';
 import checkIcon from '../../theme/icons/color-tile-check.svg';
+import { env } from '@ckeditor/ckeditor5-utils';
+
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'ColorTileView', () => {
+	let colorTile;
+
+	testUtils.createSinonSandbox();
+
+	beforeEach( () => {
+		colorTile = new ColorTileView();
+	} );
+
+	afterEach( () => {
+		colorTile.destroy();
+	} );
+
 	it( 'inherits from ButtonView', () => {
-		expect( new ColorTileView() ).to.be.instanceOf( ButtonView );
+		expect( colorTile ).to.be.instanceOf( ButtonView );
 	} );
 
 	it( 'has proper attributes and classes', () => {
-		const colorTile = new ColorTileView();
 		colorTile.render();
 
 		expect( colorTile.color ).to.be.undefined;
@@ -23,14 +37,22 @@ describe( 'ColorTileView', () => {
 		expect( colorTile.color ).to.equal( 'green' );
 		expect( colorTile.element.style.backgroundColor ).to.equal( 'green' );
 		expect( colorTile.element.classList.contains( 'ck-color-grid__tile' ) ).to.be.true;
-		expect( colorTile.element.classList.contains( 'ck-color-table__color-tile_bordered' ) ).to.be.false;
+		expect( colorTile.element.classList.contains( 'ck-color-selector__color-tile_bordered' ) ).to.be.false;
 
 		colorTile.set( 'hasBorder', true );
-		expect( colorTile.element.classList.contains( 'ck-color-table__color-tile_bordered' ) ).to.be.true;
+		expect( colorTile.element.classList.contains( 'ck-color-selector__color-tile_bordered' ) ).to.be.true;
+	} );
+
+	// https://github.com/ckeditor/ckeditor5/issues/14907
+	it( 'should not set the background-color in the forced-colors mode for a better UX (displaying a label instead)', () => {
+		testUtils.sinon.stub( env, 'isMediaForcedColors' ).value( true );
+
+		colorTile.render();
+
+		expect( colorTile.element.style.backgroundColor ).to.equal( '' );
 	} );
 
 	it( 'has a check icon', () => {
-		const colorTile = new ColorTileView();
 		colorTile.render();
 
 		expect( colorTile.icon ).to.equal( checkIcon );

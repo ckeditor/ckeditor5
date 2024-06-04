@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,7 @@
  * @module undo/undocommand
  */
 
-import BaseCommand from './basecommand';
+import BaseCommand from './basecommand.js';
 import type { Batch } from '@ckeditor/ckeditor5-engine';
 
 /**
@@ -41,9 +41,12 @@ export default class UndoCommand extends BaseCommand {
 
 			const operations = this.editor.model.document.history.getOperations( item.batch.baseVersion! );
 			this._restoreSelection( item.selection.ranges, item.selection.isBackward, operations );
-
-			this.fire<UndoCommandRevertEvent>( 'revert', item.batch, undoingBatch );
 		} );
+
+		// Firing `revert` event after the change block to make sure that it includes all changes from post-fixers
+		// and make sure that the selection is "stabilized" (the selection range is saved after undo is executed and then
+		// restored on redo, so it is important that the selection range is saved after post-fixers are done).
+		this.fire<UndoCommandRevertEvent>( 'revert', item.batch, undoingBatch );
 
 		this.refresh();
 	}

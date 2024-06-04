@@ -5,7 +5,7 @@ All changes in the package are documented in the main repository. See: https://g
 
 Changes for the past releases are available below.
 
-## [19.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v18.0.0...v19.0.0) (2020-04-29)
+## [19.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v18.0.0...v19.0.0) (April 29, 2020)
 
 ### Other changes
 
@@ -13,7 +13,7 @@ Changes for the past releases are available below.
 * Updated translations. ([88300ff](https://github.com/ckeditor/ckeditor5-image/commit/88300ff))
 
 
-## [18.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v17.0.0...v18.0.0) (2020-03-19)
+## [18.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v17.0.0...v18.0.0) (March 19, 2020)
 
 ### Bug fixes
 
@@ -24,7 +24,7 @@ Changes for the past releases are available below.
 * Updated translations. ([79db6f5](https://github.com/ckeditor/ckeditor5-image/commit/79db6f5))
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 ### MINOR BREAKING CHANGES
 
@@ -41,7 +41,7 @@ Changes for the past releases are available below.
 * Updated translations. ([b81e08c](https://github.com/ckeditor/ckeditor5-image/commit/b81e08c))
 
 
-## [16.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v15.0.0...v16.0.0) (2019-12-04)
+## [16.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v15.0.0...v16.0.0) (December 4, 2019)
 
 ### Bug fixes
 
@@ -52,7 +52,7 @@ Changes for the past releases are available below.
 * Updated translations. ([01cdb59](https://github.com/ckeditor/ckeditor5-image/commit/01cdb59))
 
 
-## [15.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v14.0.0...v15.0.0) (2019-10-23)
+## [15.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v14.0.0...v15.0.0) (October 23, 2019)
 
 ### MAJOR BREAKING CHANGES
 
@@ -74,7 +74,7 @@ Changes for the past releases are available below.
 * Updated translations. ([27effa2](https://github.com/ckeditor/ckeditor5-image/commit/27effa2)) ([93aa0bb](https://github.com/ckeditor/ckeditor5-image/commit/93aa0bb))
 
 
-## [14.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v13.1.2...v14.0.0) (2019-08-26)
+## [14.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v13.1.2...v14.0.0) (August 26, 2019)
 
 ### Features
 
@@ -100,17 +100,17 @@ Changes for the past releases are available below.
 * From now on, all images in the editor use CSS `display: table` by default (`.ck-content .image { display: table }`). It can affect integrations and we recommend checking if images render correctly in your project after this update. There is a possibility you might need to adjust the CSS to adapt to this change.
 
 
-## [13.1.2](https://github.com/ckeditor/ckeditor5-image/compare/v13.1.1...v13.1.2) (2019-07-10)
+## [13.1.2](https://github.com/ckeditor/ckeditor5-image/compare/v13.1.1...v13.1.2) (July 10, 2019)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [13.1.1](https://github.com/ckeditor/ckeditor5-image/compare/v13.1.0...v13.1.1) (2019-07-04)
+## [13.1.1](https://github.com/ckeditor/ckeditor5-image/compare/v13.1.0...v13.1.1) (July 4, 2019)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [13.1.0](https://github.com/ckeditor/ckeditor5-image/compare/v13.0.1...v13.1.0) (2019-06-05)
+## [13.1.0](https://github.com/ckeditor/ckeditor5-image/compare/v13.0.1...v13.1.0) (June 6, 2019)
 
 ### Bug fixes
 
@@ -122,14 +122,14 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([01125b7](https://github.com/ckeditor/ckeditor5-image/commit/01125b7))
 
 
-## [13.0.1](https://github.com/ckeditor/ckeditor5-image/compare/v13.0.0...v13.0.1) (2019-04-10)
+## [13.0.1](https://github.com/ckeditor/ckeditor5-image/compare/v13.0.0...v13.0.1) (April 4, 2019)
 
 ### Other changes
 
 * Updated translations. ([e674e9c](https://github.com/ckeditor/ckeditor5-image/commit/e674e9c))
 
 
-## [13.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v12.0.0...v13.0.0) (2019-02-28)
+## [13.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v12.0.0...v13.0.0) (February 28, 2019)
 
 ### Features
 
@@ -154,7 +154,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `isImageWidgetSelected()` utility has been replaced by `getSelectedImageWidget()` and returns an editing `View` element instead of `Boolean`.
 
 
-## [12.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v11.0.0...v12.0.0) (2018-12-05)
+## [12.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v11.0.0...v12.0.0) (December 5, 2018)
 
 ### Features
 
@@ -179,7 +179,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `ImageUploadCommand#execute()`'s `files` parameter was renamed to `file`. It can still accept an array of files.
 
 
-## [11.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v10.2.0...v11.0.0) (2018-10-08)
+## [11.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v10.2.0...v11.0.0) (October 8, 2018)
 
 ### Other changes
 
@@ -195,7 +195,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Removed `findOptimalInsertionPosition()` from utils. This method can now be found in the `@ckeditor/ckeditor5-widget/src/utils` module.
 
 
-## [10.2.0](https://github.com/ckeditor/ckeditor5-image/compare/v10.1.0...v10.2.0) (2018-07-18)
+## [10.2.0](https://github.com/ckeditor/ckeditor5-image/compare/v10.1.0...v10.2.0) (July 18, 2018)
 
 ### Features
 
@@ -214,7 +214,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([e6f77fe](https://github.com/ckeditor/ckeditor5-image/commit/e6f77fe))
 
 
-## [10.1.0](https://github.com/ckeditor/ckeditor5-image/compare/v10.0.0...v10.1.0) (2018-06-21)
+## [10.1.0](https://github.com/ckeditor/ckeditor5-image/compare/v10.0.0...v10.1.0) (June 21, 2018)
 
 ### Features
 
@@ -229,7 +229,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([bfc9456](https://github.com/ckeditor/ckeditor5-image/commit/bfc9456))
 
 
-## [10.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v1.0.0-beta.4...v10.0.0) (2018-04-25)
+## [10.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v1.0.0-beta.4...v10.0.0) (April 25, 2018)
 
 ### Other changes
 
@@ -237,17 +237,17 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### BREAKING CHANGES
 
-* The license under which CKEditor 5 is released has been changed from a triple GPL, LGPL and MPL license to a GPL2+ only. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
+* The license under which CKEditor&nbsp;5 is released has been changed from a triple GPL, LGPL and MPL license to a GPL2+ only. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
 
 
-## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-image/compare/v1.0.0-beta.2...v1.0.0-beta.4) (2018-04-19)
+## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-image/compare/v1.0.0-beta.2...v1.0.0-beta.4) (April 19, 2018)
 
 ### Other changes
 
 * Updated translations. ([de6b58e](https://github.com/ckeditor/ckeditor5-image/commit/de6b58e))
 
 
-## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-image/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2018-04-10)
+## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-image/compare/v1.0.0-beta.1...v1.0.0-beta.2) (April 10, 2018)
 
 ### Bug fixes
 
@@ -260,7 +260,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Made the image text alternative form buttons thicker with a fill color and no background. Closes [#187](https://github.com/ckeditor/ckeditor5-image/issues/187). ([25c17ad](https://github.com/ckeditor/ckeditor5-image/commit/25c17ad))
 
 
-## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-image/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
+## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-image/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (March 15, 2018)
 
 ### Features
 
@@ -292,7 +292,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-image/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
+## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-image/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (November 14, 2017)
 
 ### Bug fixes
 
@@ -304,7 +304,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Aligned UI library usage to the [changes in the UI framework](https://github.com/ckeditor/ckeditor5-ui/pull/332).
 
 
-## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-image/compare/v0.7.0...v1.0.0-alpha.1) (2017-10-03)
+## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-image/compare/v0.7.0...v1.0.0-alpha.1) (October 3, 2017)
 
 ### Bug fixes
 
@@ -323,7 +323,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * From now on, the `imageStyleFull` uses `object-full-width.svg` icon.
 
 
-## [0.7.0](https://github.com/ckeditor/ckeditor5-image/compare/v0.6.0...v0.7.0) (2017-09-03)
+## [0.7.0](https://github.com/ckeditor/ckeditor5-image/compare/v0.6.0...v0.7.0) (September 3, 2017)
 
 ### Bug fixes
 
@@ -345,7 +345,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The command API has been changed.
 
 
-## [0.6.0](https://github.com/ckeditor/ckeditor5-image/compare/v0.5.0...v0.6.0) (2017-05-07)
+## [0.6.0](https://github.com/ckeditor/ckeditor5-image/compare/v0.5.0...v0.6.0) (May 7, 2017)
 
 ### Bug fixes
 
@@ -367,7 +367,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `config.image.defaultToolbar` is no longer available. All editor instances must have `config.image.toolbar` configured instead.
 
 
-## [0.5.0](https://github.com/ckeditor/ckeditor5-image/compare/v0.4.0...v0.5.0) (2017-04-05)
+## [0.5.0](https://github.com/ckeditor/ckeditor5-image/compare/v0.4.0...v0.5.0) (April 5, 2017)
 
 ### Bug fixes
 
@@ -398,7 +398,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The widget API is now available in the `ckeditor5-widget` package. See [#35](https://github.com/ckeditor/ckeditor5-image/issues/35).
 
 
-## [0.4.0](https://github.com/ckeditor/ckeditor5-image/compare/v0.3.0...v0.4.0) (2017-03-06)
+## [0.4.0](https://github.com/ckeditor/ckeditor5-image/compare/v0.3.0...v0.4.0) (March 6, 2017)
 
 ### Bug fixes
 

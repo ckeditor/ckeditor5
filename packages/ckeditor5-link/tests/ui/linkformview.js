@@ -1,25 +1,25 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals Event, document */
 
-import LinkFormView from '../../src/ui/linkformview';
-import View from '@ckeditor/ckeditor5-ui/src/view';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
-import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import ManualDecorator from '../../src/utils/manualdecorator';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Link from '../../src/link';
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import LinkFormView from '../../src/ui/linkformview.js';
+import View from '@ckeditor/ckeditor5-ui/src/view.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker.js';
+import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler.js';
+import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import ManualDecorator from '../../src/utils/manualdecorator.js';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection.js';
+import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Link from '../../src/link.js';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin.js';
+import mix from '@ckeditor/ckeditor5-utils/src/mix.js';
 
 describe( 'LinkFormView', () => {
 	let view;
@@ -82,6 +82,10 @@ describe( 'LinkFormView', () => {
 			view.cancelButtonView.fire( 'execute' );
 
 			expect( spy.calledOnce ).to.true;
+		} );
+
+		it( 'should create url input with inputmode=url', () => {
+			expect( view.urlInputView.fieldView.inputMode ).to.be.equal( 'url' );
 		} );
 
 		describe( 'template', () => {
@@ -173,6 +177,45 @@ describe( 'LinkFormView', () => {
 		} );
 	} );
 
+	describe( 'isValid()', () => {
+		it( 'should reset error after successful validation', () => {
+			const view = new LinkFormView( { t: () => {} }, { manualDecorators: [] }, [
+				() => undefined
+			] );
+
+			expect( view.isValid() ).to.be.true;
+			expect( view.urlInputView.errorText ).to.be.null;
+		} );
+
+		it( 'should display first error returned from validators list', () => {
+			const view = new LinkFormView( { t: () => {} }, { manualDecorators: [] }, [
+				() => undefined,
+				() => 'Foo bar',
+				() => 'Another error'
+			] );
+
+			expect( view.isValid() ).to.be.false;
+			expect( view.urlInputView.errorText ).to.be.equal( 'Foo bar' );
+		} );
+
+		it( 'should pass view reference as argument to validator', () => {
+			const validatorSpy = sinon.spy();
+			const view = new LinkFormView( { t: () => {} }, { manualDecorators: [] }, [ validatorSpy ] );
+
+			view.isValid();
+
+			expect( validatorSpy ).to.be.calledOnceWithExactly( view );
+		} );
+	} );
+
+	describe( 'resetFormStatus()', () => {
+		it( 'should clear form input errors', () => {
+			view.urlInputView.errorText = 'Error';
+			view.resetFormStatus();
+			expect( view.urlInputView.errorText ).to.be.null;
+		} );
+	} );
+
 	describe( 'destroy()', () => {
 		it( 'should destroy the FocusTracker instance', () => {
 			const destroySpy = sinon.spy( view.focusTracker, 'destroy' );
@@ -211,6 +254,20 @@ describe( 'LinkFormView', () => {
 			view.focus();
 
 			sinon.assert.calledOnce( spy );
+		} );
+	} );
+
+	describe( 'URL getter', () => {
+		it( 'null value should be returned in URL getter if element is null', () => {
+			view.urlInputView.fieldView.element = null;
+
+			expect( view.url ).to.be.equal( null );
+		} );
+
+		it( 'trimmed DOM input value should be returned in URL getter', () => {
+			view.urlInputView.fieldView.element.value = '  https://cksource.com/  ';
+
+			expect( view.url ).to.be.equal( 'https://cksource.com/' );
 		} );
 	} );
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -8,6 +8,7 @@
  */
 
 import {
+	Rect,
 	CKEditorError,
 	toArray,
 	type ObservableChangeEvent,
@@ -15,7 +16,6 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import {
-	findOptimalInsertionRange as engineFindOptimalInsertionRange,
 	type AddHighlightCallback,
 	type HighlightDescriptor,
 	type RemoveHighlightCallback,
@@ -33,8 +33,8 @@ import {
 
 import { IconView } from '@ckeditor/ckeditor5-ui';
 
-import HighlightStack, { type HighlightStackChangeEvent } from './highlightstack';
-import { getTypeAroundFakeCaretPosition } from './widgettypearound/utils';
+import HighlightStack, { type HighlightStackChangeEvent } from './highlightstack.js';
+import { getTypeAroundFakeCaretPosition } from './widgettypearound/utils.js';
 
 import dragHandleIcon from '../theme/icons/drag-handle.svg';
 
@@ -288,6 +288,7 @@ export function toWidgetEditable(
 	writer.addClass( [ 'ck-editor__editable', 'ck-editor__nested-editable' ], editable );
 
 	writer.setAttribute( 'role', 'textbox', editable );
+	writer.setAttribute( 'tabindex', '-1', editable );
 
 	if ( options.label ) {
 		writer.setAttribute( 'aria-label', options.label, editable );
@@ -345,7 +346,7 @@ export function findOptimalInsertionRange(
 		}
 	}
 
-	return engineFindOptimalInsertionRange( selection, model );
+	return model.schema.findOptimalInsertionRange( selection );
 }
 
 /**
@@ -446,4 +447,69 @@ function addSelectionHandle( widgetElement: ViewContainerElement, writer: Downca
 	// Append the selection handle into the widget wrapper.
 	writer.insert( writer.createPositionAt( widgetElement, 0 ), selectionHandle );
 	writer.addClass( [ 'ck-widget_with-selection-handle' ], widgetElement );
+}
+
+/**
+ * Starting from a DOM resize host element (an element that receives dimensions as a result of resizing),
+ * this helper returns the width of the found ancestor element.
+ *
+ *	* It searches up to 5 levels of ancestors only.
+ *
+ * @param domResizeHost Resize host DOM element that receives dimensions as a result of resizing.
+ * @returns Width of ancestor element in pixels or 0 if no ancestor with a computed width has been found.
+ */
+export function calculateResizeHostAncestorWidth( domResizeHost: HTMLElement ): number {
+	const getElementComputedWidth = ( element: HTMLElement ) => {
+		const { width, paddingLeft, paddingRight } = element.ownerDocument.defaultView!.getComputedStyle( element! );
+
+		return parseFloat( width ) - ( parseFloat( paddingLeft ) || 0 ) - ( parseFloat( paddingRight ) || 0 );
+	};
+
+	const domResizeHostParent = domResizeHost.parentElement;
+
+	if ( !domResizeHostParent ) {
+		return 0;
+	}
+
+	// Need to use computed style as it properly excludes parent's paddings from the returned value.
+	let parentWidth = getElementComputedWidth( domResizeHostParent! );
+
+	// Sometimes parent width cannot be accessed. If that happens we should go up in the elements tree
+	// and try to get width from next ancestor.
+	// https://github.com/ckeditor/ckeditor5/issues/10776
+	const ancestorLevelLimit = 5;
+	let currentLevel = 0;
+
+	let checkedElement = domResizeHostParent!;
+
+	while ( isNaN( parentWidth ) ) {
+		checkedElement = checkedElement.parentElement!;
+
+		if ( ++currentLevel > ancestorLevelLimit ) {
+			return 0;
+		}
+
+		parentWidth = getElementComputedWidth( checkedElement );
+	}
+
+	return parentWidth;
+}
+
+/**
+ * Calculates a relative width of a `domResizeHost` compared to its ancestor in percents.
+ *
+ * @param domResizeHost Resize host DOM element.
+ * @returns Percentage value between 0 and 100.
+ */
+export function calculateResizeHostPercentageWidth(
+	domResizeHost: HTMLElement,
+	resizeHostRect: Rect = new Rect( domResizeHost )
+): number {
+	const parentWidth = calculateResizeHostAncestorWidth( domResizeHost );
+
+	if ( !parentWidth ) {
+		return 0;
+	}
+
+	return resizeHostRect.width / parentWidth * 100;
 }

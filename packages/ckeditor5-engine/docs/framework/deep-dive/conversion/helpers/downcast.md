@@ -1,18 +1,19 @@
 ---
 category: framework-deep-dive-conversion-helpers
 menu-title: Downcast helpers
+meta-title: Downcast helpers | CKEditor 5 Framework Documentation
 order: 20
 since: 33.0.0
 modified_at: 2022-03-02
 ---
 
-# Downcast helpers &mdash; model to view conversion
+# Downcast helpers &ndash; model to view conversion
 
 This article lists all editor helpers available in the {@link framework/deep-dive/conversion/downcast downcast conversion}.
 
 ## Element to element conversion helper
 
-Converting a model element to a view element is the most common case of conversion. It is used to create view elements like `<p>` or `<h1>`, that we call "container elements".
+Converting a model element to a view element is the most common case of conversion. It is used to create view elements like `<p>` or `<h1>`, that we call "container elements."
 
 When using the `elementToElement()` helper, a **single model element** will be converted to a **single view element**. The children of this model element need to have their own converters defined and the engine will recursively convert them and insert into the created view element.
 
@@ -31,7 +32,7 @@ editor.conversion
 
 ### Using view element definition
 
-Sometimes you may need to output a view element that has certain attributes, e.g. a class name. To achieve this, you can provide an [element definition](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_view_elementdefinition-ElementDefinition.html) in the `view` property:
+Sometimes you may need to output a view element that has certain attributes, like a class name. To achieve this, you can provide an [element definition](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_view_elementdefinition-ElementDefinition.html) in the `view` property:
 
 ```js
 editor.conversion
@@ -94,7 +95,7 @@ editor.conversion
 
 ### Changing converter priority
 
-In case there are other converters with the overlapping `model` patterns already present, you can prioritize your converter in order to override these. To do that, use the `converterPriority` property:
+In case there are other converters with overlapping `model` patterns already present, you can prioritize your converter to override these. To do that, use the `converterPriority` property:
 
 ```js
 editor.conversion
@@ -115,7 +116,7 @@ editor.conversion
 
 In the example above, the first converter has no explicitly set priority hence it assumes default priority, which is `normal`. The second one overrides it by setting the priority to `high`. Using both of these converters at once will result in the `<userComment>` element being converted to an `<article>` element.
 
-This solution may also be handy of you want your converter to act as a fallback when other converters for a given element are not present (e.g. a plugin has not been loaded). It can be easily achieved by setting the `converterProperty` to `low`.
+This solution may also be handy if you want your converter to act as a fallback when other converters for a given element are not present (for example, a plugin has not been loaded). It can be easily achieved by setting the `converterProperty` to `low`.
 
 ## Element to structure conversion helper
 
@@ -123,7 +124,7 @@ Convert a single model element to multiple view elements (a structure of view el
 
 ### Handling empty model elements
 
-To convert a single model element `horizontalLine` to a following structure:
+To convert a single model element `horizontalLine` to the following structure:
 
 ```html
 <div class="horizontal-line">
@@ -149,7 +150,7 @@ editor.conversion
 Note that in this example we create two elements, which is not possible by using the previously mentioned `elementToElement()` helper.
 
 <info-box>
-	For editor users, the best way to interact with complex structures is to act as independent entities and stay intact, for instance, when copied, pasted, and edited. CKEditor 5 allows that through the {@link module:widget/utils~toWidget widget API}. If you want to learn how to use it on top of `elementToStructure()`, be sure to check out the {@link framework/tutorials/implementing-a-block-widget Implementing a block widget} tutorial.
+	For editor users, the best way to interact with complex structures is to act as independent entities and stay intact, for instance, when copied, pasted, and edited. CKEditor&nbsp;5 allows that through the {@link module:widget/utils~toWidget widget API}. If you want to learn how to use it on top of `elementToStructure()`, be sure to check out the {@link tutorials/widgets/implementing-a-block-widget Implementing a block widget} tutorial.
 </info-box>
 
 ### Handling model element’s children
@@ -175,7 +176,7 @@ editor.conversion
 ```
 
 <info-box>
-	For editor users, the best way to interact with complex structures is to act as independent entities and stay intact, for instance, when copied, pasted, and edited. CKEditor 5 allows that through the {@link module:widget/utils~toWidget widget API}. If you want to learn how to use it on top of `elementToStructure()`, be sure to check out the {@link framework/tutorials/implementing-a-block-widget Implementing a block widget} tutorial.
+	For editor users, the best way to interact with complex structures is to act as independent entities and stay intact, for instance, when copied, pasted, and edited. CKEditor&nbsp;5 allows that through the {@link module:widget/utils~toWidget widget API}. If you want to learn how to use it on top of `elementToStructure()`, be sure to check out the {@link tutorials/widgets/implementing-a-block-widget Implementing a block widget} tutorial.
 </info-box>
 
 ## Attribute to element conversion helper
@@ -197,11 +198,11 @@ editor.conversion
 	} );
 ```
 
-A model text node `"CKEditor 5"` with a `bold` attribute will become a `<strong>"CKEditor 5"</strong>` in the view.
+A model text node `"CKEditor&nbsp;5"` with a `bold` attribute will become a `<strong>"CKEditor&nbsp;5"</strong>` in the view.
 
 ### Using view element definition
 
-You might want to output a view element that has more attributes, e.g. a class name. To achieve that, you can provide an [element definition](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_view_elementdefinition-ElementDefinition.html) in the `view` property:
+You might want to output a view element that has more attributes, like a class name. To achieve that, you can provide an [element definition](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_view_elementdefinition-ElementDefinition.html) in the `view` property:
 
 ```js
 editor.conversion
@@ -240,7 +241,7 @@ The second parameter of the view callback is the [DowncastConversionApi](https:/
 
 ### Changing converter priority
 
-In case there are other converters already present, you can prioritize your converter in order to override the existing ones. To do that, use the `converterPriority` property:
+In case there are other converters already present, you can prioritize your converter to override the existing ones. To do that, use the `converterPriority` property:
 
 ```js
 editor.conversion
@@ -265,9 +266,9 @@ In the example above, the first converter has no explicitly set priority hence i
 
 The `attributeToAttribute()` helper allows registering a converter that handles a specific attribute and converts it to an attribute of a view element.
 
-Usually, when registering converters for elements (e.g. by using `elementToElement()` or `elementToStructure()`), you will want to handle their attributes while handling the element itself.
+Usually, when registering converters for elements (for example, by using `elementToElement()` or `elementToStructure()`), you will want to handle their attributes while handling the element itself.
 
-The `attributeToAttribute()` helper comes handy when for some reason you cannot cover a specific attribute inside the `elementToElement()` helper. For instance, when you are extending someone else’s plugin.
+The `attributeToAttribute()` helper comes in handy when for some reason you cannot cover a specific attribute inside the `elementToElement()` helper. For instance, when you are extending someone else’s plugin.
 
 <info-box>
 	This type of converter helper only works if there is already an element converter provided. Trying to convert to an attribute while there is no receiving view element will cause an error.

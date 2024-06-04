@@ -2,11 +2,11 @@
 category: api-reference
 ---
 
-# CKEditor 5 CKBox integration
+# CKEditor&nbsp;5 CKBox integration
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-ckbox.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox)
 
-This package implements the {@link features/ckbox CKBox file manager and uploader} integration for CKEditor 5. This feature allows you to easily insert images as well as links to files into the editor content. It is a bridge between the CKEditor 5 WYSIWYG editor and the CKBox file manager and uploader.
+This package implements the {@link features/ckbox CKBox file manager and uploader} integration for CKEditor&nbsp;5. This feature allows you to easily insert images as well as links to files into the editor content. It is a bridge between the CKEditor&nbsp;5 WYSIWYG editor and the CKBox file manager and uploader.
 
 ## Demo
 
@@ -16,12 +16,14 @@ Check out the {@link features/ckbox#demo demos} in the integration guide.
 
 See the {@link features/ckbox CKBox integration} guide and the {@link module:ckbox/ckbox~CKBox plugin documentation} to learn more about the integration.
 
-Check out the {@link features/image-upload Image upload guide} to learn about other ways to upload images into CKEditor 5.
+Check out the {@link features/image-upload Image upload guide} to learn about other ways to upload images into CKEditor&nbsp;5.
 
 ## Installation
 
+This package is part of our open-source aggregate package.
+
 ```bash
-npm install --save @ckeditor/ckeditor5-ckbox
+npm install ckeditor5
 ```
 
 ## Contribute

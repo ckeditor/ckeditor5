@@ -1,25 +1,25 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import TableEditing from '../../src/tableediting';
-import TableCellPropertiesEditing from '../../src/tablecellproperties/tablecellpropertiesediting';
+import TableEditing from '../../src/tableediting.js';
+import TableCellPropertiesEditing from '../../src/tablecellproperties/tablecellpropertiesediting.js';
 
-import TableCellBorderColorCommand from '../../src/tablecellproperties/commands/tablecellbordercolorcommand';
-import TableCellBorderStyleCommand from '../../src/tablecellproperties/commands/tablecellborderstylecommand';
-import TableCellBorderWidthCommand from '../../src/tablecellproperties/commands/tablecellborderwidthcommand';
-import TableCellHorizontalAlignmentCommand from '../../src/tablecellproperties/commands/tablecellhorizontalalignmentcommand';
-import TableCellHeightCommand from '../../src/tablecellproperties/commands/tablecellheightcommand';
-import TableCellVerticalAlignmentCommand from '../../src/tablecellproperties/commands/tablecellverticalalignmentcommand';
-import TableCellPaddingCommand from '../../src/tablecellproperties/commands/tablecellpaddingcommand';
-import TableCellBackgroundColorCommand from '../../src/tablecellproperties/commands/tablecellbackgroundcolorcommand';
+import TableCellBorderColorCommand from '../../src/tablecellproperties/commands/tablecellbordercolorcommand.js';
+import TableCellBorderStyleCommand from '../../src/tablecellproperties/commands/tablecellborderstylecommand.js';
+import TableCellBorderWidthCommand from '../../src/tablecellproperties/commands/tablecellborderwidthcommand.js';
+import TableCellHorizontalAlignmentCommand from '../../src/tablecellproperties/commands/tablecellhorizontalalignmentcommand.js';
+import TableCellHeightCommand from '../../src/tablecellproperties/commands/tablecellheightcommand.js';
+import TableCellVerticalAlignmentCommand from '../../src/tablecellproperties/commands/tablecellverticalalignmentcommand.js';
+import TableCellPaddingCommand from '../../src/tablecellproperties/commands/tablecellpaddingcommand.js';
+import TableCellBackgroundColorCommand from '../../src/tablecellproperties/commands/tablecellbackgroundcolorcommand.js';
 
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { assertTableCellStyle, assertTRBLAttribute } from '../_utils/utils';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { assertTableCellStyle, assertTRBLAttribute } from '../_utils/utils.js';
 
 describe( 'table cell properties', () => {
 	describe( 'TableCellPropertiesEditing', () => {
@@ -170,7 +170,7 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					assertTRBLAttribute( tableCell, 'tableCellBorderColor', '#f00', null, 'rgba(255, 0, 0, 1)', null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderColor', '#f00', null, 'rgba(255,0,0,1)', null );
 					assertTRBLAttribute( tableCell, 'tableCellBorderStyle', 'solid', null, 'ridge', null );
 					assertTRBLAttribute( tableCell, 'tableCellBorderWidth', '1px', null, '2em', null );
 				} );

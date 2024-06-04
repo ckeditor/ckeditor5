@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,24 +7,24 @@
  * @module table/tableproperties/tablepropertiesediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { addBackgroundRules, addBorderRules, type ViewElement, type Conversion, type Schema } from 'ckeditor5/src/engine';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { addBackgroundRules, addBorderRules, type ViewElement, type Conversion, type Schema } from 'ckeditor5/src/engine.js';
 
-import TableEditing from '../tableediting';
+import TableEditing from '../tableediting.js';
 import {
 	downcastAttributeToStyle,
 	downcastTableAttribute,
 	upcastBorderStyles,
 	upcastStyleToAttribute
-} from '../converters/tableproperties';
-import TableBackgroundColorCommand from './commands/tablebackgroundcolorcommand';
-import TableBorderColorCommand from './commands/tablebordercolorcommand';
-import TableBorderStyleCommand from './commands/tableborderstylecommand';
-import TableBorderWidthCommand from './commands/tableborderwidthcommand';
-import TableWidthCommand from './commands/tablewidthcommand';
-import TableHeightCommand from './commands/tableheightcommand';
-import TableAlignmentCommand from './commands/tablealignmentcommand';
-import { getNormalizedDefaultProperties } from '../utils/table-properties';
+} from '../converters/tableproperties.js';
+import TableBackgroundColorCommand from './commands/tablebackgroundcolorcommand.js';
+import TableBorderColorCommand from './commands/tablebordercolorcommand.js';
+import TableBorderStyleCommand from './commands/tableborderstylecommand.js';
+import TableBorderWidthCommand from './commands/tableborderwidthcommand.js';
+import TableWidthCommand from './commands/tablewidthcommand.js';
+import TableHeightCommand from './commands/tableheightcommand.js';
+import TableAlignmentCommand from './commands/tablealignmentcommand.js';
+import { getNormalizedDefaultProperties } from '../utils/table-properties.js';
 
 const ALIGN_VALUES_REG_EXP = /^(left|center|right)$/;
 const FLOAT_VALUES_REG_EXP = /^(left|none|right)$/;
@@ -50,8 +50,8 @@ export default class TablePropertiesEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TablePropertiesEditing' {
-		return 'TablePropertiesEditing';
+	public static get pluginName() {
+		return 'TablePropertiesEditing' as const;
 	}
 
 	/**

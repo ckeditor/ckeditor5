@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -13,11 +13,17 @@ import type {
 	Element,
 	UpcastDispatcher,
 	UpcastElementEvent,
-	ViewElement } from 'ckeditor5/src/engine';
-import { Plugin } from 'ckeditor5/src/core';
-import { updateViewAttributes, type GHSViewAttributes } from '../utils';
-import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
-import { getDescendantElement } from './integrationutils';
+	ViewElement,
+	ModelPostFixer,
+	Model
+} from 'ckeditor5/src/engine.js';
+
+import { Plugin } from 'ckeditor5/src/core.js';
+import type { TableUtils } from '@ckeditor/ckeditor5-table';
+
+import { updateViewAttributes, type GHSViewAttributes } from '../utils.js';
+import DataFilter, { type DataFilterRegisterEvent } from '../datafilter.js';
+import { getDescendantElement } from './integrationutils.js';
 
 /**
  * Provides the General HTML Support integration with {@link module:table/table~Table Table} feature.
@@ -33,8 +39,8 @@ export default class TableElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TableElementSupport' {
-		return 'TableElementSupport';
+	public static get pluginName() {
+		return 'TableElementSupport' as const;
 	}
 
 	/**
@@ -50,6 +56,7 @@ export default class TableElementSupport extends Plugin {
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
 		const dataFilter = editor.plugins.get( DataFilter );
+		const tableUtils: TableUtils = editor.plugins.get( 'TableUtils' );
 
 		dataFilter.on<DataFilterRegisterEvent>( 'register:figure', ( ) => {
 			conversion.for( 'upcast' ).add( viewToModelFigureAttributeConverter( dataFilter ) );
@@ -62,7 +69,7 @@ export default class TableElementSupport extends Plugin {
 
 			schema.extend( 'table', {
 				allowAttributes: [
-					'htmlAttributes',
+					'htmlTableAttributes',
 					// Figure, thead and tbody elements don't have model counterparts.
 					// We will be preserving attributes on table element using these attribute keys.
 					'htmlFigureAttributes', 'htmlTheadAttributes', 'htmlTbodyAttributes'
@@ -72,9 +79,42 @@ export default class TableElementSupport extends Plugin {
 			conversion.for( 'upcast' ).add( viewToModelTableAttributeConverter( dataFilter ) );
 			conversion.for( 'downcast' ).add( modelToViewTableAttributeConverter() );
 
+			editor.model.document.registerPostFixer( createHeadingRowsPostFixer( editor.model, tableUtils ) );
+
 			evt.stop();
 		} );
 	}
+}
+
+/**
+ * Creates a model post-fixer for thead and tbody GHS related attributes.
+ */
+function createHeadingRowsPostFixer( model: Model, tableUtils: TableUtils ): ModelPostFixer {
+	return writer => {
+		const changes = model.document.differ.getChanges();
+		let wasFixed = false;
+
+		for ( const change of changes ) {
+			if ( change.type != 'attribute' || change.attributeKey != 'headingRows' ) {
+				continue;
+			}
+
+			const table = change.range.start.nodeAfter as Element;
+			const hasTHeadAttributes = table.getAttribute( 'htmlTheadAttributes' );
+			const hasTBodyAttributes = table.getAttribute( 'htmlTbodyAttributes' );
+
+			if ( hasTHeadAttributes && !change.attributeNewValue ) {
+				writer.removeAttribute( 'htmlTheadAttributes', table );
+				wasFixed = true;
+			}
+			else if ( hasTBodyAttributes && change.attributeNewValue == tableUtils.getRows( table ) ) {
+				writer.removeAttribute( 'htmlTbodyAttributes', table );
+				wasFixed = true;
+			}
+		}
+
+		return wasFixed;
+	};
 }
 
 /**
@@ -92,7 +132,7 @@ function viewToModelTableAttributeConverter( dataFilter: DataFilter ) {
 
 			const viewTableElement = data.viewItem;
 
-			preserveElementAttributes( viewTableElement, 'htmlAttributes' );
+			preserveElementAttributes( viewTableElement, 'htmlTableAttributes' );
 
 			for ( const childNode of viewTableElement.getChildren() ) {
 				if ( childNode.is( 'element', 'thead' ) ) {
@@ -147,19 +187,25 @@ function viewToModelFigureAttributeConverter( dataFilter: DataFilter ) {
  */
 function modelToViewTableAttributeConverter() {
 	return ( dispatcher: DowncastDispatcher ) => {
-		addAttributeConversionDispatcherHandler( 'table', 'htmlAttributes' );
+		addAttributeConversionDispatcherHandler( 'table', 'htmlTableAttributes' );
 		addAttributeConversionDispatcherHandler( 'figure', 'htmlFigureAttributes' );
 		addAttributeConversionDispatcherHandler( 'thead', 'htmlTheadAttributes' );
 		addAttributeConversionDispatcherHandler( 'tbody', 'htmlTbodyAttributes' );
 
 		function addAttributeConversionDispatcherHandler( elementName: string, attributeName: string ) {
 			dispatcher.on<DowncastAttributeEvent>( `attribute:${ attributeName }:table`, ( evt, data, conversionApi ) => {
-				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
+				if ( !conversionApi.consumable.test( data.item, evt.name ) ) {
 					return;
 				}
 
 				const containerElement = conversionApi.mapper.toViewElement( data.item as Element );
 				const viewElement = getDescendantElement( conversionApi.writer, containerElement!, elementName );
+
+				if ( !viewElement ) {
+					return;
+				}
+
+				conversionApi.consumable.consume( data.item, evt.name );
 
 				updateViewAttributes(
 					conversionApi.writer,

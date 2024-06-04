@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -13,6 +13,7 @@ const path = require( 'path' );
 const fs = require( 'fs' );
 const rimraf = require( 'rimraf' );
 const minimist = require( 'minimist' );
+const isTypeScriptPackage = require( './utils/istypescriptpackage' );
 
 const options = parseArguments( process.argv.slice( 2 ) );
 
@@ -39,14 +40,14 @@ async function cleanReleaseArtifacts( options ) {
 	const typeScriptPatterns = typeScriptPackages.map( pkg => {
 		return [
 			// Ignore the `lib/` directory in each package.
-			`packages/${ pkg }/src/!(lib)/**/*.@(js|js.map|d.ts)`,
+			`${ pkg }/src/!(lib)/**/*.@(js|js.map|d.ts)`,
 			// Remove files from in the `src/` directory.
-			`packages/${ pkg }/src/*.@(js|js.map|d.ts)`
+			`${ pkg }/src/*.@(js|js.map|d.ts)`
 		];
 	} );
 
 	// The root directory.
-	typeScriptPatterns.push( 'src/*.@(js|js.map|d.ts)' );
+	typeScriptPatterns.push( `${ options.cwd }/src/*.@(js|js.map|d.ts)` );
 
 	const removePatterns = typeScriptPatterns.flatMap( item => item );
 
@@ -86,22 +87,8 @@ function findAllPackages( repositoryRoot ) {
 			if ( err ) {
 				reject( err );
 			} else {
-				resolve( files );
+				resolve( files.map( pkg => path.join( repositoryRoot, 'packages', pkg ) ) );
 			}
-		} );
-	} );
-}
-
-/**
- * Checks if the package is in TypeScript.
- *
- * @param {String} pkg Package name.
- * @returns {Promise} Whether the package is TypeScript one.
- */
-function isTypeScriptPackage( pkg ) {
-	return new Promise( resolve => {
-		fs.access( `packages/${ pkg }/tsconfig.json`, fs.constants.F_OK, err => {
-			resolve( !err );
 		} );
 	} );
 }

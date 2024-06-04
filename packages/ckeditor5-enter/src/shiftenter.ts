@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,8 +7,8 @@
  * @module enter/shiftenter
  */
 
-import ShiftEnterCommand from './shiftentercommand';
-import EnterObserver, { type ViewDocumentEnterEvent } from './enterobserver';
+import ShiftEnterCommand from './shiftentercommand.js';
+import EnterObserver, { type ViewDocumentEnterEvent } from './enterobserver.js';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
 /**
@@ -22,8 +22,8 @@ export default class ShiftEnter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ShiftEnter' {
-		return 'ShiftEnter';
+	public static get pluginName() {
+		return 'ShiftEnter' as const;
 	}
 
 	public init(): void {
@@ -32,6 +32,7 @@ export default class ShiftEnter extends Plugin {
 		const conversion = editor.conversion;
 		const view = editor.editing.view;
 		const viewDocument = view.document;
+		const t = this.editor.t;
 
 		// Configure the schema.
 		schema.register( 'softBreak', {
@@ -71,5 +72,15 @@ export default class ShiftEnter extends Plugin {
 			editor.execute( 'shiftEnter' );
 			view.scrollToTheSelection();
 		}, { priority: 'low' } );
+
+		// Add the information about the keystroke to the accessibility database.
+		editor.accessibility.addKeystrokeInfos( {
+			keystrokes: [
+				{
+					label: t( 'Insert a soft break (a <code>&lt;br&gt;</code> element)' ),
+					keystroke: 'Shift+Enter'
+				}
+			]
+		} );
 	}
 }

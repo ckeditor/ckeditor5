@@ -5,7 +5,7 @@ All changes in the package are documented in the main repository. See: https://g
 
 Changes for the past releases are available below.
 
-## [19.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v18.0.0...v19.0.0) (2020-04-29)
+## [19.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v18.0.0...v19.0.0) (April 29, 2020)
 
 ### Features
 
@@ -42,7 +42,7 @@ Changes for the past releases are available below.
 * Updated translations. ([1e691d9](https://github.com/ckeditor/ckeditor5-table/commit/1e691d9)) ([5e98a03](https://github.com/ckeditor/ckeditor5-table/commit/5e98a03))
 
 
-## [18.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v17.0.0...v18.0.0) (2020-03-19)
+## [18.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v17.0.0...v18.0.0) (March 19, 2020)
 
 ### Features
 
@@ -60,7 +60,7 @@ Changes for the past releases are available below.
 * Updated translations. ([70b8af5](https://github.com/ckeditor/ckeditor5-table/commit/70b8af5))
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 ### Features
 
@@ -68,14 +68,14 @@ Changes for the past releases are available below.
 
 ### Bug fixes
 
-* Fixed a bug with spellchecking or pasting via the context menu into a table cell crashing the editor. Closes [ckeditor/ckeditor5#6062](https://github.com/ckeditor/ckeditor5/issues/6062). ([be0d759](https://github.com/ckeditor/ckeditor5-table/commit/be0d759))
+* Fixed a bug with spell checking or pasting via the context menu into a table cell crashing the editor. Closes [ckeditor/ckeditor5#6062](https://github.com/ckeditor/ckeditor5/issues/6062). ([be0d759](https://github.com/ckeditor/ckeditor5-table/commit/be0d759))
 
 ### Other changes
 
 * Implemented lazy loading for the table dropdown. This will reduce editor initialization time. Closes [ckeditor/ckeditor5#6193](https://github.com/ckeditor/ckeditor5/issues/6193). ([5daa487](https://github.com/ckeditor/ckeditor5-table/commit/5daa487))
 
 
-## [16.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v15.0.0...v16.0.0) (2019-12-04)
+## [16.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v15.0.0...v16.0.0) (December 4, 2019)
 
 ### Bug fixes
 
@@ -86,7 +86,7 @@ Changes for the past releases are available below.
 * Updated translations. ([7b2df5c](https://github.com/ckeditor/ckeditor5-table/commit/7b2df5c))
 
 
-## [15.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v14.0.0...v15.0.0) (2019-10-23)
+## [15.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v14.0.0...v15.0.0) (October 23, 2019)
 
 ### Bug fixes
 
@@ -98,7 +98,7 @@ Changes for the past releases are available below.
 * Updated translations. ([ba00c09](https://github.com/ckeditor/ckeditor5-table/commit/ba00c09)) ([b1ff792](https://github.com/ckeditor/ckeditor5-table/commit/b1ff792))
 
 
-## [14.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v13.0.2...v14.0.0) (2019-08-26)
+## [14.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v13.0.2...v14.0.0) (August 26, 2019)
 
 ### Features
 
@@ -120,17 +120,17 @@ Changes for the past releases are available below.
 * `TableWalker` will not return `undefined` as `cell` value for spanned cells anymore. Use `isSpanned` instead.
 
 
-## [13.0.2](https://github.com/ckeditor/ckeditor5-table/compare/v13.0.1...v13.0.2) (2019-07-10)
+## [13.0.2](https://github.com/ckeditor/ckeditor5-table/compare/v13.0.1...v13.0.2) (July 10, 2019)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [13.0.1](https://github.com/ckeditor/ckeditor5-table/compare/v13.0.0...v13.0.1) (2019-07-04)
+## [13.0.1](https://github.com/ckeditor/ckeditor5-table/compare/v13.0.0...v13.0.1) (July 4, 2019)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [13.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v12.0.1...v13.0.0) (2019-06-05)
+## [13.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v12.0.1...v13.0.0) (June 6, 2019)
 
 ### Bug fixes
 
@@ -148,7 +148,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * `config.table.toolbar` is now removed from code. Use `config.table.contentToolbar` instead.
 
 
-## [12.0.1](https://github.com/ckeditor/ckeditor5-table/compare/v12.0.0...v12.0.1) (2019-04-10)
+## [12.0.1](https://github.com/ckeditor/ckeditor5-table/compare/v12.0.0...v12.0.1) (April 4, 2019)
 
 ### Bug fixes
 
@@ -160,7 +160,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([cd204c3](https://github.com/ckeditor/ckeditor5-table/commit/cd204c3))
 
 
-## [12.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v11.0.1...v12.0.0) (2019-02-28)
+## [12.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v11.0.1...v12.0.0) (February 28, 2019)
 
 ### Features
 
@@ -185,7 +185,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `isTableContentSelected()` utility has been replaced by `getTableWidgetAncestor()` and returns an editing `View` element instead of a `Boolean`.
 
 
-## [11.0.1](https://github.com/ckeditor/ckeditor5-table/compare/v11.0.0...v11.0.1) (2018-12-05)
+## [11.0.1](https://github.com/ckeditor/ckeditor5-table/compare/v11.0.0...v11.0.1) (December 5, 2018)
 
 ### Bug fixes
 
@@ -198,21 +198,21 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([47475b2](https://github.com/ckeditor/ckeditor5-table/commit/47475b2)) ([5d39d35](https://github.com/ckeditor/ckeditor5-table/commit/5d39d35)) ([7ce6d5b](https://github.com/ckeditor/ckeditor5-table/commit/7ce6d5b)) ([268f607](https://github.com/ckeditor/ckeditor5-table/commit/268f607))
 
 
-## [11.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v10.1.0...v11.0.0) (2018-10-08)
+## [11.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v10.1.0...v11.0.0) (October 8, 2018)
 
 ### Features
 
-* Implemented the table post–fixer which bulletproofs the feature in various complex use–cases (e.g. pasting and real-time collaborative editing). Closes [#13](https://github.com/ckeditor/ckeditor5-table/issues/13). ([01f9a3b](https://github.com/ckeditor/ckeditor5-table/commit/01f9a3b))
+* Implemented the table post–fixer which bulletproofs the feature in various complex use–cases (for example, pasting and real-time collaborative editing). Closes [#13](https://github.com/ckeditor/ckeditor5-table/issues/13). ([01f9a3b](https://github.com/ckeditor/ckeditor5-table/commit/01f9a3b))
 * Introduced the toolbar for the table widget (previously it was available only for single cells). Changed the toolbar configuration option from `table.toolbar` to `table.contentToolbar`. Closes [#113](https://github.com/ckeditor/ckeditor5-table/issues/113). Closes [#106](https://github.com/ckeditor/ckeditor5-table/issues/106). ([9f9486d](https://github.com/ckeditor/ckeditor5-table/commit/9f9486d))
 
-  Other: `config.table.toolbar` is marked as depracted. Use `config.table.contentToolbar` instead.
+  Other: `config.table.toolbar` is marked as deprecated. Use `config.table.contentToolbar` instead.
 * Introduced a support for block content inside tables. Closes [#56](https://github.com/ckeditor/ckeditor5-table/issues/56). ([cdf718e](https://github.com/ckeditor/ckeditor5-table/commit/cdf718e))
 
 ### Bug fixes
 
 * A table cell should always have a `<paragraph>` in the model. Closes [#125](https://github.com/ckeditor/ckeditor5-table/issues/125). ([1eb5d6d](https://github.com/ckeditor/ckeditor5-table/commit/1eb5d6d))
 * Downcast converter for table attributes should work with not converted child elements. Closes [#92](https://github.com/ckeditor/ckeditor5-table/issues/92). ([a3ea18d](https://github.com/ckeditor/ckeditor5-table/commit/a3ea18d))
-* Merging down rowspanned cell from the head with a cell in the body is now disabled. Closes [#86](https://github.com/ckeditor/ckeditor5-table/issues/86). ([cb77e38](https://github.com/ckeditor/ckeditor5-table/commit/cb77e38))
+* Merging down a row-spanned cell from the head with a cell in the body is now disabled. Closes [#86](https://github.com/ckeditor/ckeditor5-table/issues/86). ([cb77e38](https://github.com/ckeditor/ckeditor5-table/commit/cb77e38))
 * The upcast conversion will now properly parse inline content in table cell into single paragraph. Closes [ckeditor/ckeditor5#1246](https://github.com/ckeditor/ckeditor5/issues/1246). ([ea1e16d](https://github.com/ckeditor/ckeditor5-table/commit/ea1e16d))
 * Toggling headers should always include the column or row the selection is anchored to. Closes [#34](https://github.com/ckeditor/ckeditor5-table/issues/34). ([bce6766](https://github.com/ckeditor/ckeditor5-table/commit/bce6766))
 
@@ -233,7 +233,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Removed `table/commands/utils~getParentTable()` method. Use `table/commands/utils~findAncestor()` instead.
 
 
-## [10.1.0](https://github.com/ckeditor/ckeditor5-table/compare/v10.0.0...v10.1.0) (2018-07-18)
+## [10.1.0](https://github.com/ckeditor/ckeditor5-table/compare/v10.0.0...v10.1.0) (July 18, 2018)
 
 ### Features
 
@@ -254,7 +254,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([1730b88](https://github.com/ckeditor/ckeditor5-table/commit/1730b88))
 
 
-## 10.0.0 (2018-06-21)
+## 10.0.0 (June 21, 2018)
 
 ### Features
 

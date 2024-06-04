@@ -1,23 +1,23 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document */
 
-import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
-import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
-import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
-import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import CloudServicesCoreMock from './_utils/cloudservicescoremock';
+import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
+import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting.js';
+import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload.js';
+import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
+import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting.js';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import CloudServicesCoreMock from './_utils/cloudservicescoremock.js';
 
-import CKBox from '../src/ckbox';
-import CKBoxUI from '../src/ckboxui';
-import CKBoxEditing from '../src/ckboxediting';
+import CKBox from '../src/ckbox.js';
+import CKBoxUI from '../src/ckboxui.js';
+import CKBoxEditing from '../src/ckboxediting.js';
 
 describe( 'CKBox', () => {
 	let editorElement, editor;

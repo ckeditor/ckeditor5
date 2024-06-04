@@ -1,18 +1,18 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import TextProxy from '../../src/view/textproxy';
-import Text from '../../src/view/text';
-import ContainerElement from '../../src/view/containerelement';
-import DocumentFragment from '../../src/view/documentfragment';
-import RootEditableElement from '../../src/view/rooteditableelement';
+import TextProxy from '../../src/view/textproxy.js';
+import Text from '../../src/view/text.js';
+import ContainerElement from '../../src/view/containerelement.js';
+import DocumentFragment from '../../src/view/documentfragment.js';
+import RootEditableElement from '../../src/view/rooteditableelement.js';
 
-import createDocumentMock from '../../tests/view/_utils/createdocumentmock';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-import Document from '../../src/view/document';
-import { StylesProcessor } from '../../src/view/stylesmap';
+import createDocumentMock from '../../tests/view/_utils/createdocumentmock.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
+import Document from '../../src/view/document.js';
+import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'TextProxy', () => {
 	let text, parent, wrapper, textProxy, document;

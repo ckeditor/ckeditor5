@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,11 +7,11 @@
  * @module html-embed/htmlembed
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { Widget } from 'ckeditor5/src/widget';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { Widget } from 'ckeditor5/src/widget.js';
 
-import HtmlEmbedEditing from './htmlembedediting';
-import HtmlEmbedUI from './htmlembedui';
+import HtmlEmbedEditing from './htmlembedediting.js';
+import HtmlEmbedUI from './htmlembedui.js';
 
 /**
  * The HTML embed feature.
@@ -31,7 +31,7 @@ export default class HtmlEmbed extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'HtmlEmbed' {
-		return 'HtmlEmbed';
+	public static get pluginName() {
+		return 'HtmlEmbed' as const;
 	}
 }

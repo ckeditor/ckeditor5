@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,9 @@
  * @module table/tabletoolbar
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { WidgetToolbarRepository } from 'ckeditor5/src/widget';
-import { getSelectedTableWidget, getTableWidgetAncestor } from './utils/ui/widget';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { WidgetToolbarRepository } from 'ckeditor5/src/widget.js';
+import { getSelectedTableWidget, getTableWidgetAncestor } from './utils/ui/widget.js';
 
 /**
  * The table toolbar class. It creates toolbars for the table feature and its content (for now only for the table cell content).
@@ -31,8 +31,8 @@ export default class TableToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TableToolbar' {
-		return 'TableToolbar';
+	public static get pluginName() {
+		return 'TableToolbar' as const;
 	}
 
 	/**

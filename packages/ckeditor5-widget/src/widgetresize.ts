@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -11,9 +11,9 @@ import Resizer, {
 	type ResizerBeginEvent,
 	type ResizerCancelEvent,
 	type ResizerCommitEvent
-} from './widgetresize/resizer';
+} from './widgetresize/resizer.js';
 
-import type WidgetToolbarRepository from './widgettoolbarrepository';
+import type WidgetToolbarRepository from './widgettoolbarrepository.js';
 
 import {
 	Plugin,
@@ -78,8 +78,8 @@ export default class WidgetResize extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'WidgetResize' {
-		return 'WidgetResize';
+	public static get pluginName() {
+		return 'WidgetResize' as const;
 	}
 
 	/**

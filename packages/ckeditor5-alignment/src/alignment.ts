@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,10 +7,10 @@
  * @module alignment/alignment
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 
-import AlignmentEditing from './alignmentediting';
-import AlignmentUI from './alignmentui';
+import AlignmentEditing from './alignmentediting.js';
+import AlignmentUI from './alignmentui.js';
 
 /**
  * The text alignment plugin.
@@ -32,7 +32,7 @@ export default class Alignment extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Alignment' {
-		return 'Alignment';
+	public static get pluginName() {
+		return 'Alignment' as const;
 	}
 }

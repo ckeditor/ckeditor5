@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,13 +7,13 @@
  * @module image/imagestyle/imagestyleui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { ButtonView, createDropdown, addToolbarToDropdown, SplitButtonView } from 'ckeditor5/src/ui';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { ButtonView, createDropdown, addToolbarToDropdown, SplitButtonView } from 'ckeditor5/src/ui.js';
 import { isObject, identity } from 'lodash-es';
-import ImageStyleEditing from './imagestyleediting';
-import utils from './utils';
-import type { ImageStyleDropdownDefinition, ImageStyleOptionDefinition } from '../imageconfig';
-import type ImageStyleCommand from './imagestylecommand';
+import ImageStyleEditing from './imagestyleediting.js';
+import utils from './utils.js';
+import type { ImageStyleDropdownDefinition, ImageStyleOptionDefinition } from '../imageconfig.js';
+import type ImageStyleCommand from './imagestylecommand.js';
 
 import '../../theme/imagestyle.css';
 
@@ -35,8 +35,8 @@ export default class ImageStyleUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ImageStyleUI' {
-		return 'ImageStyleUI';
+	public static get pluginName() {
+		return 'ImageStyleUI' as const;
 	}
 
 	/**

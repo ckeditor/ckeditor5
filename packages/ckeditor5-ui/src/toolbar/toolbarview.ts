@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,18 +7,18 @@
  * @module ui/toolbar/toolbarview
  */
 
-import View from '../view';
-import FocusCycler from '../focuscycler';
-import ToolbarSeparatorView from './toolbarseparatorview';
-import ToolbarLineBreakView from './toolbarlinebreakview';
-import preventDefault from '../bindings/preventdefault';
-import { createDropdown, addToolbarToDropdown } from '../dropdown/utils';
-import normalizeToolbarConfig from './normalizetoolbarconfig';
+import View from '../view.js';
+import FocusCycler, { isFocusable, type FocusableView } from '../focuscycler.js';
+import ToolbarSeparatorView from './toolbarseparatorview.js';
+import ToolbarLineBreakView from './toolbarlinebreakview.js';
+import preventDefault from '../bindings/preventdefault.js';
+import { createDropdown, addToolbarToDropdown } from '../dropdown/utils.js';
+import normalizeToolbarConfig from './normalizetoolbarconfig.js';
 
-import type ComponentFactory from '../componentfactory';
-import type ViewCollection from '../viewcollection';
-import type DropdownView from '../dropdown/dropdownview';
-import type DropdownPanelFocusable from '../dropdown/dropdownpanelfocusable';
+import type ComponentFactory from '../componentfactory.js';
+import type ViewCollection from '../viewcollection.js';
+import type DropdownView from '../dropdown/dropdownview.js';
+import type DropdownPanelFocusable from '../dropdown/dropdownpanelfocusable.js';
 
 import {
 	FocusTracker,
@@ -45,17 +45,17 @@ import { isObject } from 'lodash-es';
 
 import '../../theme/components/toolbar/toolbar.css';
 
-const { threeVerticalDots } = icons;
-
-const NESTED_TOOLBAR_ICONS: Record<string, string | undefined> = {
+export const NESTED_TOOLBAR_ICONS: Record<string, string | undefined> = /* #__PURE__ */ ( () => ( {
 	alignLeft: icons.alignLeft,
 	bold: icons.bold,
 	importExport: icons.importExport,
 	paragraph: icons.paragraph,
 	plus: icons.plus,
 	text: icons.text,
-	threeVerticalDots: icons.threeVerticalDots
-};
+	threeVerticalDots: icons.threeVerticalDots,
+	pilcrow: icons.pilcrow,
+	dragIndicator: icons.dragIndicator
+} ) )();
 
 /**
  * The toolbar view class.
@@ -109,7 +109,7 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 	 * some optional UI elements that also belong to the toolbar and should be focusable
 	 * by the user.
 	 */
-	public readonly focusables: ViewCollection;
+	public readonly focusables: ViewCollection<FocusableView>;
 
 	declare public locale: Locale;
 
@@ -235,7 +235,8 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 				'aria-label': bind.to( 'ariaLabel' ),
 				style: {
 					maxWidth: bind.to( 'maxWidth' )
-				}
+				},
+				tabindex: -1
 			},
 
 			children: this.children,
@@ -254,6 +255,8 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 	 */
 	public override render(): void {
 		super.render();
+
+		this.focusTracker.add( this.element! );
 
 		// Children added before rendering should be known to the #focusTracker.
 		for ( const item of this.items ) {
@@ -410,7 +413,8 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 					 * name does not exist so it was omitted when rendering the toolbar.
 					 *
 					 * This warning usually shows up when the {@link module:core/plugin~Plugin} which is supposed
-					 * to provide a toolbar item has not been loaded or there is a typo in the configuration.
+					 * to provide a toolbar item has not been loaded or there is a typo in the
+					 * {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar configuration}.
 					 *
 					 * Make sure the plugin responsible for this toolbar item is loaded and the toolbar configuration
 					 * is correct, e.g. {@link module:basic-styles/bold~Bold} is loaded for the `'bold'` toolbar item.
@@ -536,7 +540,7 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 		// Allow disabling icon by passing false.
 		if ( icon !== false ) {
 			// A pre-defined icon picked by name, SVG string, a fallback (default) icon.
-			dropdownView.buttonView.icon = NESTED_TOOLBAR_ICONS[ icon! ] || icon || threeVerticalDots;
+			dropdownView.buttonView.icon = NESTED_TOOLBAR_ICONS[ icon! ] || icon || icons.threeVerticalDots;
 		}
 		// If the icon is disabled, display the label automatically.
 		else {
@@ -621,7 +625,7 @@ class StaticLayout implements ToolbarBehavior {
 		view.itemsView.children.bindTo( view.items ).using( item => item );
 
 		// 1:1 pass–through binding, all ToolbarView#items are focusable.
-		view.focusables.bindTo( view.items ).using( item => item );
+		view.focusables.bindTo( view.items ).using( item => isFocusable( item ) ? item : null );
 
 		view.extendTemplate( {
 			attributes: {
@@ -676,7 +680,7 @@ class DynamicGrouping implements ToolbarBehavior {
 	/**
 	 * A collection of focusable toolbar elements.
 	 */
-	public readonly viewFocusables: ViewCollection;
+	public readonly viewFocusables: ViewCollection<FocusableView>;
 
 	/**
 	 * A view containing toolbar items.
@@ -779,11 +783,11 @@ class DynamicGrouping implements ToolbarBehavior {
 		// Only those items that were not grouped are visible to the user.
 		view.itemsView.children.bindTo( this.ungroupedItems ).using( item => item );
 
-		// Make sure all #items visible in the main space of the toolbar are "focuscycleable".
-		this.ungroupedItems.on<CollectionChangeEvent>( 'change', this._updateFocusCycleableItems.bind( this ) );
+		// Make sure all #items visible in the main space of the toolbar are "focuscyclable".
+		this.ungroupedItems.on<CollectionChangeEvent>( 'change', this._updateFocusCyclableItems.bind( this ) );
 
 		// Make sure the #groupedItemsDropdown is also included in cycling when it appears.
-		view.children.on<CollectionChangeEvent>( 'change', this._updateFocusCycleableItems.bind( this ) );
+		view.children.on<CollectionChangeEvent>( 'change', this._updateFocusCyclableItems.bind( this ) );
 
 		// ToolbarView#items is dynamic. When an item is added or removed, it should be automatically
 		// represented in either grouped or ungrouped items at the right index.
@@ -1041,14 +1045,14 @@ class DynamicGrouping implements ToolbarBehavior {
 			label: t( 'Show more items' ),
 			tooltip: true,
 			tooltipPosition: locale.uiLanguageDirection === 'rtl' ? 'se' : 'sw',
-			icon: threeVerticalDots
+			icon: icons.threeVerticalDots
 		} );
 
 		return dropdown;
 	}
 
 	/**
-	 * Updates the {@link module:ui/toolbar/toolbarview~ToolbarView#focusables focus–cycleable items}
+	 * Updates the {@link module:ui/toolbar/toolbarview~ToolbarView#focusables focus–cyclable items}
 	 * collection so it represents the up–to–date state of the UI from the perspective of the user.
 	 *
 	 * For instance, the {@link #groupedItemsDropdown} can show up and hide but when it is visible,
@@ -1057,11 +1061,13 @@ class DynamicGrouping implements ToolbarBehavior {
 	 * See the {@link module:ui/toolbar/toolbarview~ToolbarView#focusables collection} documentation
 	 * to learn more about the purpose of this method.
 	 */
-	private _updateFocusCycleableItems() {
+	private _updateFocusCyclableItems() {
 		this.viewFocusables.clear();
 
 		this.ungroupedItems.map( item => {
-			this.viewFocusables.add( item );
+			if ( isFocusable( item ) ) {
+				this.viewFocusables.add( item );
+			}
 		} );
 
 		if ( this.groupedItems.length ) {

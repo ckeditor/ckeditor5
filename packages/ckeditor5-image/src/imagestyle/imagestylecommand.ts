@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,10 +7,10 @@
  * @module image/imagestyle/imagestylecommand
  */
 
-import type { Element } from 'ckeditor5/src/engine';
-import { Command, type Editor } from 'ckeditor5/src/core';
-import type { ImageStyleOptionDefinition } from '../imageconfig';
-import type ImageUtils from '../imageutils';
+import type { Element } from 'ckeditor5/src/engine.js';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
+import type { ImageStyleOptionDefinition } from '../imageconfig.js';
+import type ImageUtils from '../imageutils.js';
 
 /**
  * The image style command. It is used to apply {@link module:image/imageconfig~ImageStyleConfig#options image style option}
@@ -89,21 +89,24 @@ export default class ImageStyleCommand extends Command {
 	 * configuration for the style option.
 	 *
 	 * @param options.value The name of the style (as configured in {@link module:image/imageconfig~ImageStyleConfig#options}).
+	 * @param options.setImageSizes Specifies whether the image `width` and `height` attributes should be set automatically.
+	 * The default is `true`.
 	 * @fires execute
 	 */
-	public override execute( options: { value?: string } = {} ): void {
+	public override execute( options: { value?: string; setImageSizes?: boolean } = {} ): void {
 		const editor = this.editor;
 		const model = editor.model;
 		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 
 		model.change( writer => {
 			const requestedStyle = options.value;
+			const { setImageSizes = true } = options;
 
 			let imageElement = imageUtils.getClosestSelectedImageElement( model.document.selection )!;
 
 			// Change the image type if a style requires it.
 			if ( requestedStyle && this.shouldConvertImageType( requestedStyle, imageElement ) ) {
-				this.editor.execute( imageUtils.isBlockImage( imageElement ) ? 'imageTypeInline' : 'imageTypeBlock' );
+				this.editor.execute( imageUtils.isBlockImage( imageElement ) ? 'imageTypeInline' : 'imageTypeBlock', { setImageSizes } );
 
 				// Update the imageElement to the newly created image.
 				imageElement = imageUtils.getClosestSelectedImageElement( model.document.selection )!;
@@ -115,6 +118,10 @@ export default class ImageStyleCommand extends Command {
 				writer.removeAttribute( 'imageStyle', imageElement );
 			} else {
 				writer.setAttribute( 'imageStyle', requestedStyle, imageElement );
+			}
+
+			if ( setImageSizes ) {
+				imageUtils.setImageNaturalSizeAttributes( imageElement );
 			}
 		} );
 	}

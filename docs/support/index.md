@@ -2,7 +2,7 @@
 category: support
 order: 10
 toc: false
-meta-title: CKEditor 5 support documentation
+meta-title: Support | CKEditor 5 Documentation
 meta-description: Learn how to get help and support and how to provide feedback.
 ---
 
@@ -10,9 +10,9 @@ meta-description: Learn how to get help and support and how to provide feedback.
 
 ## Commercial support
 
-If you are a licensed customer, CKEditor 5 comes with benefits, such as direct support from the core CKEditor development team. Commercial licenses are designed with professionals and enterprises in mind. [Contact us](https://ckeditor.com/contact/) with any support requests you may have.
+If you are a licensed customer, CKEditor&nbsp;5 comes with benefits, such as direct support from the core CKEditor development team. Commercial licenses are designed with professionals and enterprises in mind. [Contact us](https://ckeditor.com/contact/) with any support requests you may have.
 
-For more information, check the [CKEditor 5 Pricing page](https://ckeditor.com/ckeditor-5-builds/pricing/).
+For more information, check the [CKEditor&nbsp;5 Pricing page](https://ckeditor.com/ckeditor-5-builds/pricing/).
 
 ## Stack Overflow
 
@@ -20,3 +20,32 @@ For more information, check the [CKEditor 5 Pricing page](https://ckeditor.com/c
 
 Make sure to tag your questions with ["ckeditor"](https://stackoverflow.com/questions/tagged/ckeditor) and ["ckeditor5"](https://stackoverflow.com/questions/tagged/ckeditor5) to reach the widest audience.
 
+## Reporting issues
+
+If you feel you found an issue in CKEditor&nbsp;5, we will be grateful for letting us know. Before you create a bug report, please read the guidelines on how to do it properly and most efficiently.
+
+### Reproduce on official examples
+
+To eliminate the chance that the issue might be caused by some third-party software or your customizations, try to reproduce the issue on the {@link examples/index official examples} first.
+
+The examples are always running the latest editor version. Please note that if the problem was fixed in one of the releases that succeeded the version you are using, you will need to upgrade your CKEditor&nbsp;5 installation as we do not backport fixes.
+
+Most of the issues are reproducible on the demo. If you have a different case though, no problem. Go ahead with the next steps.
+
+### Reporting issues
+
+All issues should be reported in the [CKEditor&nbsp;5 repository](https://github.com/ckeditor/ckeditor5/issues) on GitHub, except ones that are related to one of the following projects (that have their own issue pages):
+
+* [Angular integration](https://github.com/ckeditor/ckeditor5-angular),
+* [React integration](https://github.com/ckeditor/ckeditor5-react),
+* [Vue integration](https://github.com/ckeditor/ckeditor5-vue),
+* [CKEditor&nbsp;5 inspector](https://github.com/ckeditor/ckeditor5-inspector).
+
+Things to keep in mind:
+
+* Search for existing issues before starting a new one. This helps our team to have the backlog in order.
+* Be concise and informative, making it easy for our team to understand the problem.
+* Do not use the issues pages for asking for help. The project has other {@link support/index communication channels} for that purpose.
+* Feel free to jump into discussions around issues, exposing your opinion!
+
+Issues with third-party plugins should be reported directly to their developers.

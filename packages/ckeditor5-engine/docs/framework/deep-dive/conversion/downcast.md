@@ -1,12 +1,13 @@
 ---
 category: framework-deep-dive-conversion
 menu-title: Model to view (downcast)
+meta-title: Downcast conversion - model to view | CKEditor 5 Framework Documentation
 order: 20
 since: 33.0.0
 modified_at: 2022-03-02
 ---
 
-# Downcast conversion &mdash; model to view
+# Downcast conversion &ndash; model to view
 
 ## Introduction
 
@@ -22,7 +23,7 @@ The editor engine runs the conversion process and uses converters registered by 
 
 ## Registering a converter
 
-In order to tell the engine how to convert a specific model element into a view element, you need to register a **downcast converter** by using the `editor.conversion.for( 'downcast' )` method, listing the elements that should be converted in the process:
+To tell the engine how to convert a specific model element into a view element, you need to register a **downcast converter** by using the `editor.conversion.for( 'downcast' )` method, listing the elements that should be converted in the process:
 
 ```js
 editor.conversion
@@ -47,7 +48,7 @@ The above converter will handle the conversion of every `<paragraph>` model elem
 
 ## Downcast pipelines
 
-The CKEditor 5 engine uses two different views: the **data view** and the **editing view**.
+The CKEditor&nbsp;5 engine uses two different views: the **data view** and the **editing view**.
 
 The **data view** is used when generating the editor output. This process is controlled by the data pipeline.
 
@@ -88,7 +89,7 @@ As you should already know from the {@link framework/architecture/editing-engine
 
 Such text node attributes may be converted into view elements.
 
-In order to do so, you can register a converter by using the {@link framework/deep-dive/conversion/helpers/downcast#attribute-to-element-conversion-helper `attributeToElement()` conversion helper}:
+To do so, you can register a converter by using the {@link framework/deep-dive/conversion/helpers/downcast#attribute-to-element-conversion-helper `attributeToElement()` conversion helper}:
 
 ```js
 editor.conversion
@@ -135,13 +136,13 @@ editor.conversion
 	} );
 ```
 
-You have previously learnt that the `view` property can be a simple string or an object. The example above shows it is also possible to define a custom callback function to return the created element instead. The effect for this kind of conversion can be observed in the snippet below:
+You have previously learned that the `view` property can be a simple string or an object. The example above shows it is also possible to define a custom callback function to return the created element instead. The effect for this kind of conversion can be observed in the snippet below:
 
 {@snippet framework/mini-inspector-heading}
 
 The `<heading>` element makes the most sense if you can set the heading level in the view.
 
-In the previous chapter you have learnt that you can apply attributes to text nodes. It is also possible to add attributes to elements, like in this example:
+In the previous chapter you have learned that you can apply attributes to text nodes. It is also possible to add attributes to elements, like in this example:
 
 ```js
 editor.conversion
@@ -198,7 +199,7 @@ The above converter will convert all `<myElement>` model elements to `<div class
 </info-box>
 
 <info-box>
-	For editor users, the best way to interact with complex structures is to act as independent entities and stay intact, for instance, when copied, pasted, and edited. CKEditor 5 allows that through the {@link module:widget/utils~toWidget widget API}. If you want to learn how to use it on top of `elementToStructure()`, be sure to check out the {@link framework/tutorials/implementing-a-block-widget Implementing a block widget} tutorial.
+	For editor users, the best way to interact with complex structures is to act as independent entities and stay intact, for instance, when copied, pasted, and edited. CKEditor&nbsp;5 allows that through the {@link module:widget/utils~toWidget widget API}. If you want to learn how to use it on top of `elementToStructure()`, be sure to check out the {@link tutorials/widgets/implementing-a-block-widget Implementing a block widget} tutorial.
 </info-box>
 
 ## Further reading

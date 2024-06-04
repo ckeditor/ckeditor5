@@ -1,12 +1,12 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type Node from '../node';
-import type Position from '../position';
-import type Schema from '../schema';
-import type Writer from '../writer';
+import type Node from '../node.js';
+import type Position from '../position.js';
+import type Schema from '../schema.js';
+import type Writer from '../writer.js';
 
 /**
  * @module engine/model/utils/autoparagraphing
@@ -22,9 +22,7 @@ import type Writer from '../writer';
 export function autoParagraphEmptyRoots( writer: Writer ): boolean {
 	const { schema, document } = writer.model;
 
-	for ( const rootName of document.getRootNames() ) {
-		const root = document.getRoot( rootName )!;
-
+	for ( const root of document.getRoots() ) {
 		if ( root.isEmpty && !schema.checkChild( root, '$text' ) ) {
 			// If paragraph element is allowed in the root, create paragraph element.
 			if ( schema.checkChild( root, 'paragraph' ) ) {

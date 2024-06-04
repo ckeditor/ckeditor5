@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,11 +7,11 @@
  * @module link/ui/linkactionsview
  */
 
-import { ButtonView, View, ViewCollection, FocusCycler } from 'ckeditor5/src/ui';
-import { FocusTracker, KeystrokeHandler, type LocaleTranslate, type Locale } from 'ckeditor5/src/utils';
-import { icons } from 'ckeditor5/src/core';
+import { ButtonView, View, ViewCollection, FocusCycler, type FocusableView } from 'ckeditor5/src/ui.js';
+import { FocusTracker, KeystrokeHandler, type LocaleTranslate, type Locale } from 'ckeditor5/src/utils.js';
+import { icons } from 'ckeditor5/src/core.js';
 
-import { ensureSafeUrl } from '../utils';
+import { ensureSafeUrl } from '../utils.js';
 
 // See: #8833.
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
@@ -19,6 +19,7 @@ import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.c
 import '../../theme/linkactions.css';
 
 import unlinkIcon from '../../theme/icons/unlink.svg';
+import type { LinkConfig } from '../linkconfig.js';
 
 /**
  * The link actions view class. This view displays the link preview, allows
@@ -38,7 +39,7 @@ export default class LinkActionsView extends View {
 	/**
 	 * The href preview view.
 	 */
-	public previewButtonView: View;
+	public previewButtonView: ButtonView;
 
 	/**
 	 * The unlink button view.
@@ -60,19 +61,21 @@ export default class LinkActionsView extends View {
 	/**
 	 * A collection of views that can be focused in the view.
 	 */
-	private readonly _focusables = new ViewCollection();
+	private readonly _focusables = new ViewCollection<FocusableView>();
 
 	/**
 	 * Helps cycling over {@link #_focusables} in the view.
 	 */
 	private readonly _focusCycler: FocusCycler;
 
+	private readonly _linkConfig: LinkConfig;
+
 	declare public t: LocaleTranslate;
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale ) {
+	constructor( locale: Locale, linkConfig: LinkConfig = {} ) {
 		super( locale );
 
 		const t = locale.t;
@@ -82,6 +85,8 @@ export default class LinkActionsView extends View {
 		this.editButtonView = this._createButton( t( 'Edit link' ), icons.pencil, 'edit' );
 
 		this.set( 'href', undefined );
+
+		this._linkConfig = linkConfig;
 
 		this._focusCycler = new FocusCycler( {
 			focusables: this._focusables,
@@ -202,7 +207,7 @@ export default class LinkActionsView extends View {
 					'ck',
 					'ck-link-actions__preview'
 				],
-				href: bind.to( 'href', href => href && ensureSafeUrl( href ) ),
+				href: bind.to( 'href', href => href && ensureSafeUrl( href, this._linkConfig.allowedProtocols ) ),
 				target: '_blank',
 				rel: 'noopener noreferrer'
 			}

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,30 +7,30 @@
  * @module engine/model/model
  */
 
-import Batch, { type BatchType } from './batch';
-import Document from './document';
-import MarkerCollection from './markercollection';
-import ModelPosition, { type PositionOffset, type PositionStickiness } from './position';
-import ModelRange from './range';
-import ModelSelection, { type PlaceOrOffset, type Selectable } from './selection';
-import OperationFactory from './operation/operationfactory';
-import DocumentSelection from './documentselection';
-import Schema from './schema';
-import Writer from './writer';
-import Node from './node';
+import Batch, { type BatchType } from './batch.js';
+import Document from './document.js';
+import MarkerCollection from './markercollection.js';
+import ModelPosition, { type PositionOffset, type PositionStickiness } from './position.js';
+import ModelRange from './range.js';
+import ModelSelection, { type PlaceOrOffset, type Selectable } from './selection.js';
+import OperationFactory from './operation/operationfactory.js';
+import DocumentSelection from './documentselection.js';
+import Schema from './schema.js';
+import Writer from './writer.js';
+import Node from './node.js';
 
-import { autoParagraphEmptyRoots } from './utils/autoparagraphing';
-import { injectSelectionPostFixer } from './utils/selection-post-fixer';
-import deleteContent from './utils/deletecontent';
-import getSelectedContent from './utils/getselectedcontent';
-import insertContent from './utils/insertcontent';
-import insertObject from './utils/insertobject';
-import modifySelection from './utils/modifyselection';
+import { autoParagraphEmptyRoots } from './utils/autoparagraphing.js';
+import { injectSelectionPostFixer } from './utils/selection-post-fixer.js';
+import deleteContent from './utils/deletecontent.js';
+import getSelectedContent from './utils/getselectedcontent.js';
+import insertContent from './utils/insertcontent.js';
+import insertObject from './utils/insertobject.js';
+import modifySelection from './utils/modifyselection.js';
 
-import type ModelDocumentFragment from './documentfragment';
-import type Item from './item';
-import type ModelElement from './element';
-import type Operation from './operation/operation';
+import type ModelDocumentFragment from './documentfragment.js';
+import type Item from './item.js';
+import type ModelElement from './element.js';
+import type Operation from './operation/operation.js';
 
 import {
 	CKEditorError,
@@ -45,7 +45,7 @@ import {
  * Editor's data model. Read about the model in the
  * {@glink framework/architecture/editing-engine engine architecture} guide.
  */
-export default class Model extends ObservableMixin() {
+export default class Model extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Model's marker collection.
 	 */
@@ -165,6 +165,18 @@ export default class Model extends ObservableMixin() {
 		// The base implementation for "decorated" method with remapped arguments.
 		this.on<ModelInsertObjectEvent>( 'insertObject', ( evt, [ element, selection, options ] ) => {
 			evt.return = insertObject( this, element, selection, options );
+		} );
+
+		// The base implementation for "decorated" method with remapped arguments.
+		this.on<ModelCanEditAtEvent>( 'canEditAt', evt => {
+			const canEditAt = !this.document.isReadOnly;
+
+			evt.return = canEditAt;
+
+			if ( !canEditAt ) {
+				// Prevent further processing if the selection is at non-editable place.
+				evt.stop();
+			}
 		} );
 
 		// @if CK_DEBUG_ENGINE // initDocumentDumping( this.document );
@@ -389,7 +401,7 @@ export default class Model extends ObservableMixin() {
 	 * This is a high-level method. It takes the {@link #schema schema} into consideration when inserting
 	 * the content, clears the given selection's content before inserting nodes and moves the selection
 	 * to its target position at the end of the process.
-	 * It can split elements, merge them, wrap bare text nodes with paragraphs, etc. &mdash; just like the
+	 * It can split elements, merge them, wrap bare text nodes with paragraphs, etc. &ndash; just like the
 	 * pasting feature should do.
 	 *
 	 * For lower-level methods see {@link module:engine/model/writer~Writer `Writer`}.
@@ -825,6 +837,25 @@ export default class Model extends ObservableMixin() {
 	}
 
 	/**
+	 * Check whether given selectable is at a place in the model where it can be edited (returns `true`) or not (returns `false`).
+	 *
+	 * Should be used instead of {@link module:core/editor/editor~Editor#isReadOnly} to check whether a user action can happen at
+	 * given selectable. It may be decorated and used differently in different environment (e.g. multi-root editor can disable
+	 * a particular root).
+	 *
+	 * This method is decorated. Although this method accepts any parameter of `Selectable` type, the
+	 * {@link ~Model#event:canEditAt `canEditAt` event} is fired with `selectable` normalized to an instance of
+	 * {@link module:engine/model/selection~Selection} or {@link module:engine/model/documentselection~DocumentSelection}
+	 *
+	 * @fires canEditAt
+	 */
+	public canEditAt( selectable: Selectable ): boolean {
+		const selection = normalizeSelectable( selectable );
+
+		return this.fire<ModelCanEditAtEvent>( 'canEditAt', [ selection ] )!;
+	}
+
+	/**
 	 * Creates a position from the given root and path in that root.
 	 *
 	 * Note: This method is also available as
@@ -1066,7 +1097,6 @@ export default class Model extends ObservableMixin() {
 	/**
 	 * Common part of {@link module:engine/model/model~Model#change} and {@link module:engine/model/model~Model#enqueueChange}
 	 * which calls callbacks and returns array of values returned by these callbacks.
-	 *
 	 */
 	private _runPendingChanges() {
 		const ret = [];
@@ -1115,7 +1145,13 @@ function normalizeSelectable(
 	}
 
 	if ( selectable instanceof Node ) {
-		return new ModelSelection( selectable, placeOrOffset! );
+		if ( placeOrOffset || placeOrOffset === 0 ) {
+			return new ModelSelection( selectable, placeOrOffset );
+		} else if ( selectable.is( 'rootElement' ) ) {
+			return new ModelSelection( selectable, 'in' );
+		} else {
+			return new ModelSelection( selectable, 'on' );
+		}
 	}
 
 	return new ModelSelection( selectable );
@@ -1219,7 +1255,7 @@ export type ModelInsertObjectEvent = {
  * Event fired when {@link ~Model#deleteContent} method is called.
  *
  * The {@link ~Model#deleteContent default action of that method} is implemented as a
- * listener to this event so it can be fully customized by the features.
+ * listener to this event, so it can be fully customized by the features.
  *
  * @eventName ~Model#deleteContent
  * @param args The arguments passed to the original method.
@@ -1230,7 +1266,7 @@ export type ModelDeleteContentEvent = DecoratedMethodEvent<Model, 'deleteContent
  * Event fired when {@link ~Model#modifySelection} method is called.
  *
  * The {@link ~Model#modifySelection default action of that method} is implemented as a
- * listener to this event so it can be fully customized by the features.
+ * listener to this event, so it can be fully customized by the features.
  *
  * @eventName ~Model#modifySelection
  * @param args The arguments passed to the original method.
@@ -1241,9 +1277,29 @@ export type ModelModifySelectionEvent = DecoratedMethodEvent<Model, 'modifySelec
  * Event fired when {@link ~Model#getSelectedContent} method is called.
  *
  * The {@link ~Model#getSelectedContent default action of that method} is implemented as a
- * listener to this event so it can be fully customized by the features.
+ * listener to this event, so it can be fully customized by the features.
  *
  * @eventName ~Model#getSelectedContent
  * @param args The arguments passed to the original method.
  */
 export type ModelGetSelectedContentEvent = DecoratedMethodEvent<Model, 'getSelectedContent'>;
+
+/**
+ * Event fired when {@link ~Model#canEditAt} method is called.
+ *
+ * The {@link ~Model#canEditAt default action of that method} is implemented as a
+ * listener to this event, so it can be fully customized by the features.
+ *
+ * Although the original method accepts any parameter of `Selectable` type, this event is fired with `selectable` normalized
+ * to an instance of {@link module:engine/model/selection~Selection} or {@link module:engine/model/documentselection~DocumentSelection}.
+ *
+ * @eventName ~Model#canEditAt
+ * @param args The arguments passed to the original method.
+ */
+export type ModelCanEditAtEvent = {
+	name: 'canEditAt';
+	args: [ [
+		selectable?: ModelSelection | DocumentSelection
+	] ];
+	return: boolean;
+};

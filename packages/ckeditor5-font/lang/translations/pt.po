@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -12,13 +12,14 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Portuguese (https://www.transifex.com/ckeditor/teams/11143/pt/)\n"
+"Language-Team: Portuguese (https://app.transifex.com/ckeditor/teams/11143/pt/)\n"
 "Language: pt\n"
 "Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Tooltip for the font size dropdown."
 msgid "Font Size"
-msgstr "Tamanho da Fonte"
+msgstr "Tamanho da fonte"
 
 msgctxt "Dropdown option label for the 'tiny' font size preset."
 msgid "Tiny"

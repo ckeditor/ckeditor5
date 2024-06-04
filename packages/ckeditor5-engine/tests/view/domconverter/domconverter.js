@@ -1,20 +1,23 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document, console */
 
-import DomConverter from '../../../src/view/domconverter';
-import ViewEditable from '../../../src/view/editableelement';
-import ViewDocument from '../../../src/view/document';
-import ViewUIElement from '../../../src/view/uielement';
-import ViewContainerElement from '../../../src/view/containerelement';
-import DowncastWriter from '../../../src/view/downcastwriter';
-import { BR_FILLER, INLINE_FILLER, INLINE_FILLER_LENGTH, NBSP_FILLER, MARKED_NBSP_FILLER } from '../../../src/view/filler';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import { StylesProcessor } from '../../../src/view/stylesmap';
+import DomConverter from '../../../src/view/domconverter.js';
+import ViewEditable from '../../../src/view/editableelement.js';
+import ViewDocument from '../../../src/view/document.js';
+import ViewUIElement from '../../../src/view/uielement.js';
+import ViewContainerElement from '../../../src/view/containerelement.js';
+import DowncastWriter from '../../../src/view/downcastwriter.js';
+import { BR_FILLER, INLINE_FILLER, INLINE_FILLER_LENGTH, NBSP_FILLER, MARKED_NBSP_FILLER } from '../../../src/view/filler.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { StylesProcessor } from '../../../src/view/stylesmap.js';
+import ViewPosition from '../../../src/view/position.js';
+import ViewRange from '../../../src/view/range.js';
+import { ViewText } from '@ckeditor/ckeditor5-engine';
 
 describe( 'DomConverter', () => {
 	let converter, viewDocument;
@@ -1038,6 +1041,92 @@ describe( 'DomConverter', () => {
 			expect( domElement.outerHTML ).to.equal(
 				'<p>foo<span data-ck-unsafe-element="style" style="foo-style" data-foo="bar">bar</span></p>'
 			);
+		} );
+	} );
+
+	describe( '_clearDomSelection()', () => {
+		let viewEditable, domEditable, domEditableParent, domP, domTextNode, viewP, viewText;
+
+		beforeEach( () => {
+			// View structure.
+			viewEditable = new ViewEditable( viewDocument, 'div' );
+			viewP = new ViewContainerElement( viewDocument, 'p' );
+			viewText = new ViewText( viewDocument, 'foobar' );
+
+			viewEditable._insertChild( 0, viewP );
+			viewP._insertChild( 0, viewText );
+
+			// DOM structure.
+			domEditableParent = document.createElement( 'div' );
+			domEditable = document.createElement( 'div' );
+			domP = document.createElement( 'p' );
+			domTextNode = document.createTextNode( 'foobar' );
+
+			domEditable.setAttribute( 'contenteditable', 'true' );
+
+			domP.appendChild( domTextNode );
+			domEditable.appendChild( domP );
+			domEditableParent.appendChild( domEditable );
+			document.body.appendChild( domEditableParent );
+
+			// Binding.
+			converter.bindElements( domEditable, viewEditable );
+			converter.bindElements( domP, viewP );
+		} );
+
+		afterEach( () => {
+			converter.unbindDomElement( domEditable );
+			document.body.removeChild( domEditableParent );
+		} );
+
+		it( 'should remove all selection ranges if selection is in editor editable element', () => {
+			const domSelection = document.getSelection();
+			const viewSelection = viewDocument.selection;
+
+			domSelection.setBaseAndExtent( domTextNode, 3, domTextNode, 5 );
+			viewSelection._setTo( new ViewRange(
+				new ViewPosition( viewP.getChild( 0 ), 3 ),
+				new ViewPosition( viewP.getChild( 0 ), 5 )
+			) );
+
+			converter._clearDomSelection();
+
+			expect( domSelection.rangeCount ).to.equal( 0 );
+		} );
+
+		it( 'should do nothing if DOM selection is not in editor editable element', () => {
+			const domSelection = document.getSelection();
+			const viewSelection = viewDocument.selection;
+
+			domSelection.setBaseAndExtent( domEditableParent, 0, domEditableParent, 0 );
+			viewSelection._setTo( new ViewRange(
+				new ViewPosition( viewP.getChild( 0 ), 3 ),
+				new ViewPosition( viewP.getChild( 0 ), 5 )
+			) );
+
+			converter._clearDomSelection();
+
+			expect( domSelection.rangeCount ).to.equal( 1 );
+			expect( domSelection.anchorNode ).to.equal( domEditableParent );
+			expect( domSelection.anchorOffset ).to.equal( 0 );
+			expect( domSelection.focusNode ).to.equal( domEditableParent );
+			expect( domSelection.focusOffset ).to.equal( 0 );
+		} );
+
+		it( 'should do nothing if view selection is not in editor editable element', () => {
+			const domSelection = document.getSelection();
+			const viewSelection = viewDocument.selection;
+
+			domSelection.setBaseAndExtent( domTextNode, 3, domTextNode, 5 );
+			viewSelection._setTo( null );
+
+			converter._clearDomSelection();
+
+			expect( domSelection.rangeCount ).to.equal( 1 );
+			expect( domSelection.anchorNode ).to.equal( domTextNode );
+			expect( domSelection.anchorOffset ).to.equal( 3 );
+			expect( domSelection.focusNode ).to.equal( domTextNode );
+			expect( domSelection.focusOffset ).to.equal( 5 );
 		} );
 	} );
 } );

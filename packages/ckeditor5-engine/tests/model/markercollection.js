@@ -1,15 +1,15 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import MarkerCollection from '../../src/model/markercollection';
-import Position from '../../src/model/position';
-import Range from '../../src/model/range';
-import LiveRange from '../../src/model/liverange';
-import Text from '../../src/model/text';
-import Model from '../../src/model/model';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import MarkerCollection from '../../src/model/markercollection.js';
+import Position from '../../src/model/position.js';
+import Range from '../../src/model/range.js';
+import LiveRange from '../../src/model/liverange.js';
+import Text from '../../src/model/text.js';
+import Model from '../../src/model/model.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'MarkerCollection', () => {
 	let markers, range, range2, doc, root;

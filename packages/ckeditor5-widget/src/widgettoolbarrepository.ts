@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -31,7 +31,7 @@ import {
 	type RectSource
 } from '@ckeditor/ckeditor5-utils';
 
-import { isWidget } from './utils';
+import { isWidget } from './utils.js';
 
 /**
  * Widget toolbar repository plugin. A central point for registering widget toolbars. This plugin handles the whole
@@ -77,8 +77,8 @@ export default class WidgetToolbarRepository extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'WidgetToolbarRepository' {
-		return 'WidgetToolbarRepository';
+	public static get pluginName() {
+		return 'WidgetToolbarRepository' as const;
 	}
 
 	/**

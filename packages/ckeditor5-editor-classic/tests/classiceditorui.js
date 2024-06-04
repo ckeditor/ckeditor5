@@ -1,25 +1,26 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, Event, console */
+/* globals window, document, Event, console */
 
-import View from '@ckeditor/ckeditor5-ui/src/view';
+import View from '@ckeditor/ckeditor5-ui/src/view.js';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import ClassicEditor from '../src/classiceditor';
-import ClassicEditorUI from '../src/classiceditorui';
-import EditorUI from '@ckeditor/ckeditor5-ui/src/editorui/editorui';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ClassicEditorUIView from '../src/classiceditoruiview';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import ClassicEditor from '../src/classiceditor.js';
+import ClassicEditorUI from '../src/classiceditorui.js';
+import EditorUI from '@ckeditor/ckeditor5-ui/src/editorui/editorui.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import ClassicEditorUIView from '../src/classiceditoruiview.js';
 import { Image, ImageCaption, ImageToolbar } from '@ckeditor/ckeditor5-image';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { isElement } from 'lodash-es';
+import { Dialog, DialogViewPosition } from '@ckeditor/ckeditor5-ui';
 
 describe( 'ClassicEditorUI', () => {
 	let editor, view, ui, viewElement;
@@ -271,6 +272,144 @@ describe( 'ClassicEditorUI', () => {
 				} );
 			} );
 		} );
+
+		describe( 'integration with the Dialog plugin and sticky panel (toolbar)', () => {
+			let editorWithUi, editorElement, dialogPlugin, dialogContentView;
+
+			beforeEach( async () => {
+				editorElement = document.createElement( 'div' );
+
+				document.body.appendChild( editorElement );
+
+				editorWithUi = await ClassicEditor.create( editorElement, {
+					plugins: [
+						Dialog
+					]
+				} );
+
+				dialogPlugin = editorWithUi.plugins.get( Dialog );
+
+				dialogContentView = new View();
+
+				dialogContentView.setTemplate( {
+					tag: 'div',
+					attributes: {
+						style: {
+							width: '100px',
+							height: '50px'
+						}
+					}
+				} );
+
+				sinon.stub( editorWithUi.ui.view.stickyPanel.contentPanelElement, 'getBoundingClientRect' ).returns( {
+					height: 50,
+					bottom: 50
+				} );
+
+				sinon.stub( editorWithUi.ui.view.editable.element, 'getBoundingClientRect' ).returns( {
+					top: 0,
+					right: 300,
+					bottom: 100,
+					left: 0,
+					width: 300,
+					height: 100
+				} );
+			} );
+
+			afterEach( async () => {
+				await editorWithUi.destroy();
+				editorElement.remove();
+			} );
+
+			it( 'should move the dialog away from the sticky toolbar if there is a risk they will overlap', async () => {
+				editorWithUi.ui.view.stickyPanel.isSticky = true;
+
+				dialogPlugin.show( {
+					title: 'Foo',
+					content: dialogContentView,
+					position: DialogViewPosition.EDITOR_TOP_SIDE
+				} );
+
+				sinon.stub( dialogPlugin.view.element.firstChild, 'getBoundingClientRect' ).returns( {
+					top: 0,
+					right: 100,
+					bottom: 50,
+					left: 0,
+					width: 100,
+					height: 50
+				} );
+
+				// Automatic positioning of the dialog on first show takes a while.
+				await wait( 20 );
+
+				expect( dialogPlugin.view.element.firstChild.style.left ).to.equal( '185px' );
+				expect( dialogPlugin.view.element.firstChild.style.top ).to.equal( '65px' );
+			} );
+
+			it( 'should not move the dialog if the panel is not currently sticky', async () => {
+				editorWithUi.ui.view.stickyPanel.isSticky = false;
+
+				dialogPlugin.show( {
+					title: 'Foo',
+					content: dialogContentView,
+					position: DialogViewPosition.EDITOR_TOP_SIDE
+				} );
+
+				sinon.stub( dialogPlugin.view.element.firstChild, 'getBoundingClientRect' ).returns( {
+					top: 0,
+					right: 100,
+					bottom: 50,
+					left: 0,
+					width: 100,
+					height: 50
+				} );
+
+				// Automatic positioning of the dialog on first show takes a while.
+				await wait( 20 );
+
+				expect( dialogPlugin.view.element.firstChild.style.left ).to.equal( '185px' );
+				expect( dialogPlugin.view.element.firstChild.style.top ).to.equal( '15px' );
+			} );
+
+			it( 'should not move the dialog away from the sticky toolbar if the user has already moved the dialog', async () => {
+				editorWithUi.ui.view.stickyPanel.isSticky = true;
+
+				dialogPlugin.show( {
+					title: 'Foo',
+					content: dialogContentView,
+					position: DialogViewPosition.EDITOR_TOP_SIDE
+				} );
+
+				sinon.stub( dialogPlugin.view.element.firstChild, 'getBoundingClientRect' ).returns( {
+					top: 0,
+					right: 100,
+					bottom: 50,
+					left: 0,
+					width: 100,
+					height: 50
+				} );
+
+				// Automatic positioning of the dialog on first show takes a while.
+				await wait( 20 );
+
+				expect( dialogPlugin.view.element.firstChild.style.left ).to.equal( '185px' );
+				expect( dialogPlugin.view.element.firstChild.style.top ).to.equal( '65px' );
+
+				// Sticky panel could've unstuck in the meantime (document scroll). Let's make sure it stays sticky.
+				editorWithUi.ui.view.stickyPanel.isSticky = true;
+
+				// Simulate a user moving the dialog.
+				dialogPlugin.view.fire( 'drag', { deltaX: 0, deltaY: -10 } );
+				dialogPlugin.view.fire( 'drag', { deltaX: 0, deltaY: -10 } );
+				dialogPlugin.view.fire( 'drag', { deltaX: 0, deltaY: -10 } );
+				dialogPlugin.view.fire( 'drag', { deltaX: 0, deltaY: -10 } );
+				dialogPlugin.view.fire( 'drag', { deltaX: 0, deltaY: -10 } );
+				dialogPlugin.view.fire( 'drag', { deltaX: 0, deltaY: -10 } );
+
+				expect( dialogPlugin.view.element.firstChild.style.left ).to.equal( '185px' );
+				expect( dialogPlugin.view.element.firstChild.style.top ).to.equal( '5px' );
+			} );
+		} );
 	} );
 
 	describe( 'destroy()', () => {
@@ -351,6 +490,157 @@ describe( 'ClassicEditorUI', () => {
 			expect( ui.getEditableElement( 'absent' ) ).to.be.undefined;
 		} );
 	} );
+
+	describe( 'View#scrollToTheSelection integration', () => {
+		it( 'should listen to View#scrollToTheSelection and inject the height of the panel into `viewportOffset` when sticky', async () => {
+			const editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			const editor = await ClassicEditor.create( editorElement, {
+				ui: {
+					viewportOffset: {
+						top: 10,
+						bottom: 20,
+						left: 30,
+						right: 40
+					}
+				}
+			} );
+
+			editor.ui.view.stickyPanel.isSticky = true;
+			sinon.stub( editor.ui.view.stickyPanel.element, 'getBoundingClientRect' ).returns( {
+				height: 50
+			} );
+
+			editor.editing.view.once( 'scrollToTheSelection', ( evt, data ) => {
+				const range = editor.editing.view.document.selection.getFirstRange();
+
+				expect( data ).to.deep.equal( {
+					target: editor.editing.view.domConverter.viewRangeToDom( range ),
+					viewportOffset: {
+						top: 160,
+						bottom: 120,
+						left: 130,
+						right: 140
+					},
+					ancestorOffset: 20,
+					alignToTop: undefined,
+					forceScroll: undefined
+				} );
+			} );
+
+			editor.editing.view.scrollToTheSelection( { viewportOffset: 100 } );
+
+			editorElement.remove();
+			await editor.destroy();
+		} );
+
+		it( 'should listen to View#scrollToTheSelection and re-scroll if the panel was not sticky at the moment of execution' +
+			'but becomes sticky after a short while', async () => {
+			const editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			const editor = await ClassicEditor.create( editorElement, {
+				ui: {
+					viewportOffset: {
+						top: 10,
+						bottom: 20,
+						left: 30,
+						right: 40
+					}
+				}
+			} );
+
+			editor.ui.view.stickyPanel.isSticky = false;
+			sinon.stub( editor.ui.view.stickyPanel.element, 'getBoundingClientRect' ).returns( {
+				height: 50
+			} );
+
+			const spy = sinon.spy();
+
+			editor.editing.view.on( 'scrollToTheSelection', spy );
+			editor.editing.view.scrollToTheSelection( { viewportOffset: 100 } );
+
+			const range = editor.editing.view.document.selection.getFirstRange();
+
+			// The first call will trigger another one shortly once the panel becomes sticky.
+			sinon.assert.calledWith( spy.firstCall, sinon.match.object, {
+				target: editor.editing.view.domConverter.viewRangeToDom( range ),
+				alignToTop: undefined,
+				forceScroll: undefined,
+				viewportOffset: { top: 110, bottom: 120, left: 130, right: 140 },
+				ancestorOffset: 20
+			} );
+
+			await wait( 10 );
+			editor.ui.view.stickyPanel.isSticky = true;
+
+			// This is the second and final scroll that considers the geometry of a now-sticky panel.
+			sinon.assert.calledWith( spy.secondCall, sinon.match.object, {
+				target: editor.editing.view.domConverter.viewRangeToDom( range ),
+				alignToTop: undefined,
+				forceScroll: undefined,
+				viewportOffset: { top: 160, bottom: 120, left: 130, right: 140 },
+				ancestorOffset: 20
+			} );
+
+			editorElement.remove();
+			await editor.destroy();
+		} );
+
+		it( 'should listen to View#scrollToTheSelection and refuse re-scrolling if the panel was not sticky at the moment of execution' +
+			'and its state it didn\'t change', async () => {
+			const editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			const editor = await ClassicEditor.create( editorElement, {
+				ui: {
+					viewportOffset: {
+						top: 10,
+						bottom: 20,
+						left: 30,
+						right: 40
+					}
+				}
+			} );
+
+			editor.ui.view.stickyPanel.isSticky = false;
+			sinon.stub( editor.ui.view.stickyPanel.element, 'getBoundingClientRect' ).returns( {
+				height: 50
+			} );
+
+			const spy = sinon.spy();
+
+			editor.editing.view.on( 'scrollToTheSelection', spy );
+			editor.editing.view.scrollToTheSelection( { viewportOffset: 100 } );
+
+			const range = editor.editing.view.document.selection.getFirstRange();
+
+			// The first call can trigger another one shortly once the panel becomes sticky.
+			sinon.assert.calledWith( spy.firstCall, sinon.match.object, {
+				target: editor.editing.view.domConverter.viewRangeToDom( range ),
+				alignToTop: undefined,
+				forceScroll: undefined,
+				viewportOffset: { top: 110, bottom: 120, left: 130, right: 140 },
+				ancestorOffset: 20
+			} );
+
+			// This timeout exceeds the time slot for scrollToTheSelection() affecting the stickiness of the panel.
+			// If the panel hasn't become sticky yet as a result of window getting scrolled chances are this will never happen.
+			await wait( 30 );
+
+			sinon.assert.calledOnce( spy );
+
+			editor.ui.view.stickyPanel.isSticky = true;
+
+			// There was no second scroll even though the panel became sticky. Too much time has passed and the change of its state
+			// cannot be attributed to doings of scrollToTheSelection() anymore.
+			sinon.assert.calledOnce( spy );
+
+			editorElement.remove();
+			await editor.destroy();
+		} );
+	} );
 } );
 
 describe( 'Focus handling and navigation between editing root and editor toolbar', () => {
@@ -364,6 +654,7 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 		editor = await ClassicEditor.create( editorElement, {
 			plugins: [ Paragraph, Image, ImageToolbar, ImageCaption ],
 			toolbar: [ 'imageTextAlternative' ],
+			menuBar: { isVisible: true },
 			image: {
 				toolbar: [ 'toggleImageCaption' ]
 			}
@@ -395,7 +686,7 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 			ui.focusTracker.isFocused = true;
 			ui.focusTracker.focusedElement = domRoot;
 
-			pressAltF10();
+			pressAltF10( editor );
 
 			sinon.assert.calledOnce( spy );
 		} );
@@ -407,11 +698,11 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
 
 			// Focus the toolbar.
-			pressAltF10();
+			pressAltF10( editor );
 			ui.focusTracker.focusedElement = toolbarView.element;
 
 			// Try Alt+F10 again.
-			pressAltF10();
+			pressAltF10( editor );
 
 			sinon.assert.calledOnce( toolbarFocusSpy );
 			sinon.assert.notCalled( domRootFocusSpy );
@@ -431,7 +722,7 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 			);
 
 			// Focus the image balloon toolbar.
-			pressAltF10();
+			pressAltF10( editor );
 			ui.focusTracker.focusedElement = imageToolbar.element;
 
 			sinon.assert.calledOnce( imageToolbarSpy );
@@ -452,10 +743,10 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
 
 			// Focus the toolbar.
-			pressAltF10();
+			pressAltF10( editor );
 			ui.focusTracker.focusedElement = toolbarView.element;
 
-			pressEsc();
+			pressEsc( editor );
 
 			sinon.assert.callOrder( toolbarFocusSpy, domRootFocusSpy );
 		} );
@@ -466,30 +757,30 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 
 			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
 
-			pressEsc();
+			pressEsc( editor );
 
 			sinon.assert.notCalled( domRootFocusSpy );
 			sinon.assert.notCalled( toolbarFocusSpy );
 		} );
 	} );
-
-	function pressAltF10() {
-		editor.keystrokes.press( {
-			keyCode: keyCodes.f10,
-			altKey: true,
-			preventDefault: sinon.spy(),
-			stopPropagation: sinon.spy()
-		} );
-	}
-
-	function pressEsc() {
-		editor.keystrokes.press( {
-			keyCode: keyCodes.esc,
-			preventDefault: sinon.spy(),
-			stopPropagation: sinon.spy()
-		} );
-	}
 } );
+
+function pressAltF10( editor ) {
+	editor.keystrokes.press( {
+		keyCode: keyCodes.f10,
+		altKey: true,
+		preventDefault: sinon.spy(),
+		stopPropagation: sinon.spy()
+	} );
+}
+
+function pressEsc( editor ) {
+	editor.keystrokes.press( {
+		keyCode: keyCodes.esc,
+		preventDefault: sinon.spy(),
+		stopPropagation: sinon.spy()
+	} );
+}
 
 function viewCreator( name ) {
 	return locale => {
@@ -543,4 +834,10 @@ class VirtualClassicTestEditor extends VirtualTestEditor {
 			);
 		} );
 	}
+}
+
+function wait( time ) {
+	return new Promise( res => {
+		window.setTimeout( res, time );
+	} );
 }

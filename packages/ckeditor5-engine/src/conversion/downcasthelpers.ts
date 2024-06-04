@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,14 +9,14 @@
  * @module engine/conversion/downcasthelpers
  */
 
-import ModelRange from '../model/range';
-import ModelSelection from '../model/selection';
-import ModelDocumentSelection from '../model/documentselection';
-import ModelElement from '../model/element';
-import ModelPosition from '../model/position';
+import ModelRange from '../model/range.js';
+import ModelSelection from '../model/selection.js';
+import ModelDocumentSelection from '../model/documentselection.js';
+import ModelElement from '../model/element.js';
+import ModelPosition from '../model/position.js';
 
-import ViewAttributeElement from '../view/attributeelement';
-import ConversionHelpers from './conversionhelpers';
+import ViewAttributeElement from '../view/attributeelement.js';
+import ConversionHelpers from './conversionhelpers.js';
 
 import type {
 	default as DowncastDispatcher,
@@ -27,30 +27,32 @@ import type {
 	DowncastAttributeEvent,
 	DowncastReduceChangesEvent,
 	DowncastRemoveMarkerEvent
-} from './downcastdispatcher';
-import type ModelConsumable from './modelconsumable';
-import type { DiffItem } from '../model/differ';
-import type ModelNode from '../model/node';
-import type ModelItem from '../model/item';
-import type ModelTextProxy from '../model/textproxy';
-import type ModelText from '../model/text';
+} from './downcastdispatcher.js';
+import type ModelConsumable from './modelconsumable.js';
+import type { DiffItem } from '../model/differ.js';
+import type ModelNode from '../model/node.js';
+import type ModelItem from '../model/item.js';
+import type ModelTextProxy from '../model/textproxy.js';
+import type ModelText from '../model/text.js';
 
-import type DowncastWriter from '../view/downcastwriter';
-import type ElementDefinition from '../view/elementdefinition';
-import type ViewDocumentFragment from '../view/documentfragment';
-import type UIElement from '../view/uielement';
-import type ViewElement from '../view/element';
-import type ViewNode from '../view/node';
-import type ViewPosition from '../view/position';
-import type ViewRange from '../view/range';
+import type DowncastWriter from '../view/downcastwriter.js';
+import type ElementDefinition from '../view/elementdefinition.js';
+import type ViewDocumentFragment from '../view/documentfragment.js';
+import type UIElement from '../view/uielement.js';
+import type ViewElement from '../view/element.js';
+import type ViewNode from '../view/node.js';
+import type ViewPosition from '../view/position.js';
+import type ViewRange from '../view/range.js';
+import StylesMap from '../view/stylesmap.js';
 import type {
 	default as Mapper,
 	MapperModelToViewPositionEvent
-} from './mapper';
+} from './mapper.js';
 
 import {
 	CKEditorError,
 	toArray,
+	type ArrayOrItem,
 	type EventInfo,
 	type PriorityString
 } from '@ckeditor/ckeditor5-utils';
@@ -237,42 +239,6 @@ export default class DowncastHelpers extends ConversionHelpers<DowncastDispatche
 	 *
 	 * The children of the model's `<table>` element will be inserted into the `<tbody>` element.
 	 * If the `elementToElement()` helper was used, the children would be inserted into the `<figure>`.
-	 *
-	 * An example converter that converts the following model structure:
-	 *
-	 * ```xml
-	 * <wrappedParagraph>Some text.</wrappedParagraph>
-	 * ```
-	 *
-	 * into this structure in the view:
-	 *
-	 * ```html
-	 * <div class="wrapper">
-	 * 	<p>Some text.</p>
-	 * </div>
-	 * ```
-	 *
-	 * would look like this:
-	 *
-	 * ```ts
-	 * editor.conversion.for( 'downcast' ).elementToStructure( {
-	 * 	model: 'wrappedParagraph',
-	 * 	view: ( modelElement, conversionApi ) => {
-	 * 		const { writer } = conversionApi;
-	 *
-	 * 		const wrapperViewElement = writer.createContainerElement( 'div', { class: 'wrapper' } );
-	 * 		const paragraphViewElement = writer.createContainerElement( 'p' );
-	 *
-	 * 		writer.insert( writer.createPositionAt( wrapperViewElement, 0 ), paragraphViewElement );
-	 * 		writer.insert( writer.createPositionAt( paragraphViewElement, 0 ), writer.createSlot() );
-	 *
-	 * 		return wrapperViewElement;
-	 * 	}
-	 * } );
-	 * ```
-	 *
-	 * The `slorFor()` function can also take a callback that allows filtering which children of the model element
-	 * should be converted into this slot.
 	 *
 	 * Imagine a table feature where for this model structure:
 	 *
@@ -819,7 +785,7 @@ export default class DowncastHelpers extends ConversionHelpers<DowncastDispatche
 	 * ```ts
 	 * // Using a custom function which is the same as the default conversion:
 	 * editor.conversion.for( 'dataDowncast' ).markerToData( {
-	 * 	model: 'comment'
+	 * 	model: 'comment',
 	 * 	view: markerName => ( {
 	 * 		group: 'comment',
 	 * 		name: markerName.substr( 8 ) // Removes 'comment:' part.
@@ -828,7 +794,7 @@ export default class DowncastHelpers extends ConversionHelpers<DowncastDispatche
 	 *
 	 * // Using the converter priority:
 	 * editor.conversion.for( 'dataDowncast' ).markerToData( {
-	 * 	model: 'comment'
+	 * 	model: 'comment',
 	 * 	view: markerName => ( {
 	 * 		group: 'comment',
 	 * 		name: markerName.substr( 8 ) // Removes 'comment:' part.
@@ -1022,7 +988,7 @@ export function convertRangeSelection() {
  * converted, broken attributes might be merged again, or the position where the selection is may be wrapped
  * with different, appropriate attribute elements.
  *
- * See also {@link module:engine/conversion/downcasthelpers~clearAttributes} which does a clean-up
+ * See also {@link module:engine/conversion/downcasthelpers~cleanSelection} which does a clean-up
  * by merging attributes.
  *
  * @returns Selection converter.
@@ -1053,7 +1019,7 @@ export function convertCollapsedSelection() {
 }
 
 /**
- * Function factory that creates a converter which clears artifacts after the previous
+ * Function factory that creates a converter which cleans artifacts after the previous
  * {@link module:engine/model/selection~Selection model selection} conversion. It removes all empty
  * {@link module:engine/view/attributeelement~AttributeElement view attribute elements} and merges sibling attributes at all start and end
  * positions of all ranges.
@@ -1072,7 +1038,7 @@ export function convertCollapsedSelection() {
  * This listener should be assigned before any converter for the new selection:
  *
  * ```ts
- * modelDispatcher.on( 'selection', clearAttributes() );
+ * modelDispatcher.on( 'cleanSelection', cleanSelection() );
  * ```
  *
  * See {@link module:engine/conversion/downcasthelpers~convertCollapsedSelection}
@@ -1080,7 +1046,7 @@ export function convertCollapsedSelection() {
  *
  * @returns Selection converter.
  */
-export function clearAttributes() {
+export function cleanSelection() {
 	return (
 		evt: EventInfo,
 		data: unknown,
@@ -1098,6 +1064,7 @@ export function clearAttributes() {
 				}
 			}
 		}
+
 		viewWriter.setSelection( null );
 	};
 }
@@ -1698,16 +1665,26 @@ function changeAttribute( attributeCreator: AttributeCreatorFunction ) {
 		// First remove the old attribute if there was one.
 		if ( data.attributeOldValue !== null && oldAttribute ) {
 			if ( oldAttribute.key == 'class' ) {
-				const classes = toArray( oldAttribute.value );
+				const classes = typeof oldAttribute.value == 'string' ? oldAttribute.value.split( /\s+/ ) : oldAttribute.value;
 
 				for ( const className of classes ) {
 					viewWriter.removeClass( className, viewElement );
 				}
 			} else if ( oldAttribute.key == 'style' ) {
-				const keys = Object.keys( oldAttribute.value );
+				if ( typeof oldAttribute.value == 'string' ) {
+					const styles = new StylesMap( viewWriter.document.stylesProcessor );
 
-				for ( const key of keys ) {
-					viewWriter.removeStyle( key, viewElement );
+					styles.setTo( oldAttribute.value );
+
+					for ( const [ key ] of styles.getStylesEntries() ) {
+						viewWriter.removeStyle( key, viewElement );
+					}
+				} else {
+					const keys = Object.keys( oldAttribute.value );
+
+					for ( const key of keys ) {
+						viewWriter.removeStyle( key, viewElement );
+					}
 				}
 			} else {
 				viewWriter.removeAttribute( oldAttribute.key, viewElement );
@@ -1717,16 +1694,26 @@ function changeAttribute( attributeCreator: AttributeCreatorFunction ) {
 		// Then set the new attribute.
 		if ( data.attributeNewValue !== null && newAttribute ) {
 			if ( newAttribute.key == 'class' ) {
-				const classes = toArray( newAttribute.value );
+				const classes = typeof newAttribute.value == 'string' ? newAttribute.value.split( /\s+/ ) : newAttribute.value;
 
 				for ( const className of classes ) {
 					viewWriter.addClass( className, viewElement );
 				}
 			} else if ( newAttribute.key == 'style' ) {
-				const keys = Object.keys( newAttribute.value );
+				if ( typeof newAttribute.value == 'string' ) {
+					const styles = new StylesMap( viewWriter.document.stylesProcessor );
 
-				for ( const key of keys ) {
-					viewWriter.setStyle( key, ( newAttribute.value as Record<string, string> )[ key ], viewElement );
+					styles.setTo( newAttribute.value );
+
+					for ( const [ key, value ] of styles.getStylesEntries() ) {
+						viewWriter.setStyle( key, value, viewElement );
+					}
+				} else {
+					const keys = Object.keys( newAttribute.value );
+
+					for ( const key of keys ) {
+						viewWriter.setStyle( key, ( newAttribute.value as Record<string, string> )[ key ], viewElement );
+					}
 				}
 			} else {
 				viewWriter.setAttribute( newAttribute.key, newAttribute.value as string, viewElement );
@@ -2291,29 +2278,31 @@ function downcastMarkerToHighlight( config: {
  */
 function normalizeModelElementConfig( model: string | {
 	name: string;
-	attributes?: string | Array<string>;
+	attributes?: ArrayOrItem<string>;
 	children?: boolean;
 } ): NormalizedModelElementConfig {
 	if ( typeof model == 'string' ) {
 		model = { name: model };
 	}
 
-	// List of attributes that should trigger reconversion.
-	if ( !model.attributes ) {
-		model.attributes = [];
-	} else if ( !Array.isArray( model.attributes ) ) {
-		model.attributes = [ model.attributes ];
-	}
-
-	// Whether a children insertion/deletion should trigger reconversion.
-	model.children = !!model.children;
-
-	return model as any;
+	return {
+		name: model.name,
+		attributes: model.attributes ? toArray( model.attributes ) : [],
+		children: !!model.children
+	};
 }
 
 interface NormalizedModelElementConfig {
 	name: string;
+
+	/**
+	 * List of attributes that should trigger reconversion.
+	 */
 	attributes: Array<string>;
+
+	/**
+	 * Whether children insertion/deletion should trigger reconversion.
+	 */
 	children: boolean;
 }
 
@@ -2602,7 +2591,7 @@ function createConsumer( model: NormalizedModelElementConfig ): ConsumerFunction
  * @returns Function exposed by writer as createSlot().
  */
 function createSlotFactory( element: ModelElement, slotsMap: Map<ViewElement, Array<ModelNode>>, conversionApi: DowncastConversionApi ) {
-	return ( writer: DowncastWriter, modeOrFilter: string | SlotFilter ) => {
+	return ( writer: DowncastWriter, modeOrFilter: 'children' | SlotFilter ) => {
 		const slot = writer.createContainerElement( '$slot' );
 
 		let children: Array<ModelNode> | null = null;

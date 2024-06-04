@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,39 +9,43 @@
 
 import '../../theme/placeholder.css';
 
-import type Document from './document';
-import type DowncastWriter from './downcastwriter';
-import type Element from './element';
-import type View from './view';
+import type Document from './document.js';
+import type DowncastWriter from './downcastwriter.js';
+import type EditableElement from './editableelement.js';
+import type Element from './element.js';
+import type View from './view.js';
 
-import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
+import { logWarning, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 
 // Each document stores information about its placeholder elements and check functions.
 const documentPlaceholders = new WeakMap<Document, Map<Element, PlaceholderConfig>>();
+
+let hasDisplayedPlaceholderDeprecationWarning = false;
 
 /**
  * A helper that enables a placeholder on the provided view element (also updates its visibility).
  * The placeholder is a CSS pseudo–element (with a text content) attached to the element.
  *
- * To change the placeholder text, simply call this method again with new options.
+ * To change the placeholder text, change value of the `placeholder` property in the provided `element`.
  *
  * To disable the placeholder, use {@link module:engine/view/placeholder~disablePlaceholder `disablePlaceholder()`} helper.
  *
  * @param options Configuration options of the placeholder.
  * @param options.view Editing view instance.
  * @param options.element Element that will gain a placeholder. See `options.isDirectHost` to learn more.
- * @param options.text Placeholder text.
  * @param options.isDirectHost If set `false`, the placeholder will not be enabled directly
  * in the passed `element` but in one of its children (selected automatically, i.e. a first empty child element).
  * Useful when attaching placeholders to elements that can host other elements (not just text), for instance,
  * editable root elements.
+ * @param options.text Placeholder text. It's **deprecated** and will be removed soon. Use
+ * {@link module:engine/view/placeholder~PlaceholderableElement#placeholder `options.element.placeholder`} instead.
  * @param options.keepOnFocus If set `true`, the placeholder stay visible when the host element is focused.
  */
 export function enablePlaceholder( { view, element, text, isDirectHost = true, keepOnFocus = false }: {
 	view: View;
-	element: Element;
-	text: string;
+	element: PlaceholderableElement | EditableElement;
 	isDirectHost?: boolean;
+	text?: string;
 	keepOnFocus?: boolean;
 } ): void {
 	const doc = view.document;
@@ -60,16 +64,34 @@ export function enablePlaceholder( { view, element, text, isDirectHost = true, k
 		}, { priority: 'high' } );
 	}
 
-	// Store information about the element placeholder under its document.
-	documentPlaceholders.get( doc )!.set( element, {
-		text,
-		isDirectHost,
-		keepOnFocus,
-		hostElement: isDirectHost ? element : null
-	} );
+	if ( element.is( 'editableElement' ) ) {
+		element.on( 'change:placeholder', ( evtInfo, evt, text ) => {
+			setPlaceholder( text );
+		} );
+	}
 
-	// Update the placeholders right away.
-	view.change( writer => updateDocumentPlaceholders( doc, writer ) );
+	if ( element.placeholder ) {
+		setPlaceholder( element.placeholder );
+	} else if ( text ) {
+		setPlaceholder( text );
+	}
+
+	if ( text ) {
+		showPlaceholderTextDeprecationWarning();
+	}
+
+	function setPlaceholder( text: string ) {
+		// Store information about the element placeholder under its document.
+		documentPlaceholders.get( doc )!.set( element, {
+			text,
+			isDirectHost,
+			keepOnFocus,
+			hostElement: isDirectHost ? element : null
+		} );
+
+		// Update the placeholders right away.
+		view.change( writer => updateDocumentPlaceholders( doc, writer ) );
+	}
 }
 
 /**
@@ -289,6 +311,26 @@ function getChildPlaceholderHostSubstitute( parent: Element ): Element | null {
 }
 
 /**
+ * Displays a deprecation warning message in the console, but only once per page load.
+ */
+function showPlaceholderTextDeprecationWarning() {
+	if ( !hasDisplayedPlaceholderDeprecationWarning ) {
+		/**
+		 * The "text" option in the {@link module:engine/view/placeholder~enablePlaceholder `enablePlaceholder()`}
+		 * function is deprecated and will be removed soon.
+		 *
+		 * See the {@glink updating/guides/update-to-39#view-element-placeholder Migration to v39} guide for
+		 * more information on how to apply this change.
+		 *
+		 * @error enableplaceholder-deprecated-text-option
+		 */
+		logWarning( 'enableplaceholder-deprecated-text-option' );
+	}
+
+	hasDisplayedPlaceholderDeprecationWarning = true;
+}
+
+/**
  * Configuration of the placeholder.
  */
 interface PlaceholderConfig {
@@ -296,4 +338,15 @@ interface PlaceholderConfig {
 	isDirectHost: boolean;
 	keepOnFocus: boolean;
 	hostElement: Element | null;
+}
+
+/**
+ * Element that could have a placeholder.
+ */
+export interface PlaceholderableElement extends Element {
+
+	/**
+	 * The text of element's placeholder.
+	 */
+	placeholder?: string;
 }

@@ -1,13 +1,13 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
-import GeneralHtmlSupport from '../../src/generalhtmlsupport';
-import { getModelDataWithAttributes } from '../_utils/utils';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed.js';
+import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
+import { getModelDataWithAttributes } from '../_utils/utils.js';
 import { range } from 'lodash-es';
 
 /* global document */
@@ -57,16 +57,17 @@ describe( 'MediaEmbedElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-					'<media htmlAttributes="(1)" htmlFigureAttributes="(2)" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
+					'<media htmlFigureAttributes="(1)" htmlOembedAttributes="(2)" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk">' +
+					'</media>',
 				attributes: {
 					1: {
 						attributes: {
-							'data-oembed': 'data-oembed-value'
+							'data-figure': 'data-figure-value'
 						}
 					},
 					2: {
 						attributes: {
-							'data-figure': 'data-figure-value'
+							'data-oembed': 'data-oembed-value'
 						}
 					}
 				}
@@ -90,7 +91,7 @@ describe( 'MediaEmbedElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-				'<media htmlAttributes="(1)" htmlFigureAttributes="(2)" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
+				'<media htmlFigureAttributes="(1)" htmlOembedAttributes="(2)" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
 				attributes: range( 1, 3 ).reduce( ( attributes, index ) => {
 					attributes[ index ] = {
 						classes: [ 'foobar' ]
@@ -117,7 +118,7 @@ describe( 'MediaEmbedElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-				'<media htmlAttributes="(1)" htmlFigureAttributes="(2)" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
+				'<media htmlFigureAttributes="(1)" htmlOembedAttributes="(2)" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
 				attributes: range( 1, 3 ).reduce( ( attributes, index ) => {
 					attributes[ index ] = {
 						styles: {
@@ -233,7 +234,7 @@ describe( 'MediaEmbedElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-				'<media htmlAttributes="(1)" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
+				'<media htmlOembedAttributes="(1)" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
 				attributes: {
 					1: {
 						attributes: {
@@ -270,8 +271,8 @@ describe( 'MediaEmbedElementSupport', () => {
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
 				'<media htmlFigureAttributes="(1)" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>' +
-				'<htmlFigure htmlAttributes="(2)">' +
-					'<htmlFigcaption htmlAttributes="(3)">foobar</htmlFigcaption>' +
+				'<htmlFigure htmlFigureAttributes="(2)">' +
+					'<htmlFigcaption htmlFigcaptionAttributes="(3)">foobar</htmlFigcaption>' +
 				'</htmlFigure>',
 				attributes: {
 					1: {
@@ -338,7 +339,7 @@ describe( 'MediaEmbedElementSupport', () => {
 
 		it( 'should not consume attributes already consumed (downcast)', () => {
 			[
-				'htmlAttributes',
+				'htmlOembedAttributes',
 				'htmlFigureAttributes'
 			].forEach( attributeName => {
 				editor.conversion.for( 'downcast' )
@@ -471,7 +472,12 @@ describe( 'MediaEmbedElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-					'<media htmlAttributes="(1)" htmlFigureAttributes="(2)" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
+					'<media' +
+						' htmlCustomOembedAttributes="(1)"' +
+						' htmlFigureAttributes="(2)"' +
+						' url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"' +
+						'>' +
+					'</media>',
 				attributes: {
 					1: {
 						attributes: {
@@ -504,7 +510,12 @@ describe( 'MediaEmbedElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-				'<media htmlAttributes="(1)" htmlFigureAttributes="(2)" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
+					'<media' +
+						' htmlCustomOembedAttributes="(1)"' +
+						' htmlFigureAttributes="(2)"' +
+						' url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"' +
+					'>' +
+					'</media>',
 				attributes: range( 1, 3 ).reduce( ( attributes, index ) => {
 					attributes[ index ] = {
 						classes: [ 'foobar' ]
@@ -531,7 +542,12 @@ describe( 'MediaEmbedElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-				'<media htmlAttributes="(1)" htmlFigureAttributes="(2)" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
+					'<media' +
+						' htmlCustomOembedAttributes="(1)"' +
+						' htmlFigureAttributes="(2)"' +
+						' url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"' +
+						'>' +
+					'</media>',
 				attributes: range( 1, 3 ).reduce( ( attributes, index ) => {
 					attributes[ index ] = {
 						styles: {
@@ -647,7 +663,11 @@ describe( 'MediaEmbedElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-				'<media htmlAttributes="(1)" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
+					'<media' +
+						' htmlCustomOembedAttributes="(1)"' +
+						' url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"' +
+						'>' +
+					'</media>',
 				attributes: {
 					1: {
 						attributes: {
@@ -684,8 +704,8 @@ describe( 'MediaEmbedElementSupport', () => {
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
 				'<media htmlFigureAttributes="(1)" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>' +
-				'<htmlFigure htmlAttributes="(2)">' +
-					'<htmlFigcaption htmlAttributes="(3)">foobar</htmlFigcaption>' +
+				'<htmlFigure htmlFigureAttributes="(2)">' +
+					'<htmlFigcaption htmlFigcaptionAttributes="(3)">foobar</htmlFigcaption>' +
 				'</htmlFigure>',
 				attributes: {
 					1: {
@@ -734,7 +754,7 @@ describe( 'MediaEmbedElementSupport', () => {
 
 		it( 'should not consume attributes already consumed (downcast)', () => {
 			[
-				'htmlAttributes',
+				'htmlCustomOembedAttributes',
 				'htmlFigureAttributes'
 			].forEach( attributeName => {
 				editor.conversion.for( 'downcast' )
@@ -998,9 +1018,9 @@ describe( 'MediaEmbedElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-				'<htmlFigure htmlAttributes="(1)">' +
+				'<htmlFigure htmlFigureAttributes="(1)">' +
 					'<paragraph>' +
-						'<htmlOembed htmlAttributes="(2)" htmlContent=""></htmlOembed>' +
+						'<htmlOembed htmlContent="" htmlOembedAttributes="(2)"></htmlOembed>' +
 					'</paragraph>' +
 				'</htmlFigure>',
 				attributes: {
@@ -1009,12 +1029,12 @@ describe( 'MediaEmbedElementSupport', () => {
 							'data-figure': 'data-figure-value'
 						}
 					},
-					2: {
+					2: '',
+					3: {
 						attributes: {
 							'data-oembed': 'data-oembed-value'
 						}
-					},
-					3: ''
+					}
 				}
 			} );
 
@@ -1041,19 +1061,19 @@ describe( 'MediaEmbedElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-				'<htmlFigure htmlAttributes="(1)">' +
+				'<htmlFigure htmlFigureAttributes="(1)">' +
 					'<paragraph>' +
-						'<htmlOembed htmlAttributes="(2)" htmlContent=""></htmlOembed>' +
+						'<htmlOembed htmlContent="" htmlOembedAttributes="(2)"></htmlOembed>' +
 					'</paragraph>' +
 				'</htmlFigure>',
 				attributes: {
 					1: {
 						classes: [ 'media', 'foobar' ]
 					},
-					2: {
+					2: '',
+					3: {
 						classes: [ 'foobar' ]
-					},
-					3: ''
+					}
 				}
 			} );
 
@@ -1077,19 +1097,19 @@ describe( 'MediaEmbedElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-				'<htmlFigure htmlAttributes="(1)">' +
+				'<htmlFigure htmlFigureAttributes="(1)">' +
 					'<paragraph>' +
-						'<htmlOembed htmlAttributes="(2)" htmlContent=""></htmlOembed>' +
+						'<htmlOembed htmlContent="" htmlOembedAttributes="(2)"></htmlOembed>' +
 					'</paragraph>' +
 				'</htmlFigure>',
 				attributes: {
 					1: {
 						styles: { color: 'red' }
 					},
-					2: {
+					2: '',
+					3: {
 						styles: { color: 'red' }
-					},
-					3: ''
+					}
 				}
 			} );
 
@@ -1200,15 +1220,15 @@ describe( 'MediaEmbedElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-				'<paragraph><htmlOembed htmlAttributes="(1)" htmlContent=""></htmlOembed></paragraph>',
+				'<paragraph><htmlOembed htmlContent="" htmlOembedAttributes="(1)"></htmlOembed></paragraph>',
 				attributes: {
-					1: {
+					1: '',
+					2: {
 						attributes: {
 							'data-foo': 'foo',
 							'url': 'https://www.youtube.com/watch?v=ZVv7UMQPEWk'
 						}
-					},
-					2: ''
+					}
 				}
 			} );
 
@@ -1235,13 +1255,13 @@ describe( 'MediaEmbedElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-				'<htmlFigure htmlAttributes="(1)">' +
+				'<htmlFigure htmlFigureAttributes="(1)">' +
 					'<paragraph>' +
 						'<htmlOembed htmlContent=""></htmlOembed>' +
 					'</paragraph>' +
 				'</htmlFigure>' +
-				'<htmlFigure htmlAttributes="(2)">' +
-					'<htmlFigcaption htmlAttributes="(3)">foobar</htmlFigcaption>' +
+				'<htmlFigure htmlFigureAttributes="(2)">' +
+					'<htmlFigcaption htmlFigcaptionAttributes="(3)">foobar</htmlFigcaption>' +
 				'</htmlFigure>',
 				attributes: {
 					1: {
@@ -1277,20 +1297,20 @@ describe( 'MediaEmbedElementSupport', () => {
 
 		it( 'should not consume attributes already consumed (downcast)', () => {
 			[
-				'htmlAttributes',
+				'htmlOembedAttributes',
 				'htmlFigureAttributes'
 			].forEach( attributeName => {
-				editor.conversion.for( 'downcast' )
-					.add( dispatcher => {
-						dispatcher.on( `attribute:${ attributeName }:htmlOembed`, ( evt, data, conversionApi ) => {
-							conversionApi.consumable.consume( data.item, evt.name );
-						}, { priority: 'high' } );
-					} )
-					.add( dispatcher => {
-						dispatcher.on( `attribute:${ attributeName }:htmlFigure`, ( evt, data, conversionApi ) => {
-							conversionApi.consumable.consume( data.item, evt.name );
-						}, { priority: 'high' } );
-					} );
+				editor.conversion.for( 'downcast' ).add( dispatcher => {
+					dispatcher.on( `attribute:${ attributeName }:htmlOembed`, ( evt, data, conversionApi ) => {
+						conversionApi.consumable.consume( data.item, evt.name );
+					}, { priority: 'high' } );
+				} );
+			} );
+
+			editor.conversion.for( 'downcast' ).add( dispatcher => {
+				dispatcher.on( 'attribute:htmlFigureAttributes:htmlFigure', ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.item, evt.name );
+				}, { priority: 'high' } );
 			} );
 
 			dataFilter.allowElement( /^(figure|oembed)$/ );

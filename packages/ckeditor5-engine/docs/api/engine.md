@@ -2,11 +2,11 @@
 category: api-reference
 ---
 
-# CKEditor 5 editing engine
+# CKEditor&nbsp;5 editing engine
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-engine.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)
 
-The CKEditor 5 editing engine implements a flexible MVC-based architecture for creating rich text editing features.
+The CKEditor&nbsp;5 editing engine implements a flexible MVC-based architecture for creating rich text editing features.
 
 Together with the {@link api/core core editor architecture} and the {@link api/ui standard UI library} they create a platform for implementing rich text editors.
 
@@ -18,8 +18,10 @@ You can also browse the API documentation of this package by using the module tr
 
 ## Installation
 
+This package is part of our open-source aggregate package.
+
 ```bash
-npm install --save @ckeditor/ckeditor5-engine
+npm install ckeditor5
 ```
 
 ## Contribute

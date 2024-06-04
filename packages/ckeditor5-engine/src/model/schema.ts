@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,20 +7,20 @@
  * @module engine/model/schema
  */
 
-import Element from './element';
-import Position from './position';
-import Range from './range';
-import Text from './text';
-import TreeWalker from './treewalker';
+import Element from './element.js';
+import Position from './position.js';
+import Range from './range.js';
+import Text from './text.js';
+import TreeWalker from './treewalker.js';
 
-import type DocumentFragment from './documentfragment';
-import type DocumentSelection from './documentselection';
-import type Item from './item';
-import type Node from './node';
-import type Selection from './selection';
-import type Writer from './writer';
+import type DocumentFragment from './documentfragment.js';
+import type DocumentSelection from './documentselection.js';
+import type Item from './item.js';
+import type Node from './node.js';
+import type Selection from './selection.js';
+import type Writer from './writer.js';
 
-import { CKEditorError, ObservableMixin } from '@ckeditor/ckeditor5-utils';
+import { CKEditorError, first, ObservableMixin } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The model's schema. It defines the allowed and disallowed structures of nodes as well as nodes' attributes.
@@ -35,7 +35,7 @@ import { CKEditorError, ObservableMixin } from '@ckeditor/ckeditor5-utils';
  * {@glink framework/architecture/editing-engine Introduction to the Editing engine architecture} guide.
  * * The {@glink framework/deep-dive/schema Schema deep-dive} guide.
  */
-export default class Schema extends ObservableMixin() {
+export default class Schema extends /* #__PURE__ */ ObservableMixin() {
 	private readonly _sourceDefinitions: Record<string, Array<SchemaItemDefinition>> = {};
 
 	/**
@@ -375,7 +375,7 @@ export default class Schema extends ObservableMixin() {
 	 * ```
 	 *
 	 * Note: When verifying whether the given node can be a child of the given context, the
-	 * schema also verifies the entire context &mdash; from its root to its last element. Therefore, it is possible
+	 * schema also verifies the entire context &ndash; from its root to its last element. Therefore, it is possible
 	 * for `checkChild()` to return `false` even though the context's last element can contain the checked child.
 	 * It happens if one of the context's elements does not allow its child.
 	 *
@@ -421,7 +421,7 @@ export default class Schema extends ObservableMixin() {
 	/**
 	 * Checks whether the given element (`elementToMerge`) can be merged with the specified base element (`positionOrBaseElement`).
 	 *
-	 * In other words &mdash; whether `elementToMerge`'s children {@link #checkChild are allowed} in the `positionOrBaseElement`.
+	 * In other words &ndash; whether `elementToMerge`'s children {@link #checkChild are allowed} in the `positionOrBaseElement`.
 	 *
 	 * This check ensures that elements merged with {@link module:engine/model/writer~Writer#merge `Writer#merge()`}
 	 * will be valid.
@@ -760,6 +760,12 @@ export default class Schema extends ObservableMixin() {
 	 * @returns Nearest selection range or `null` if one cannot be found.
 	 */
 	public getNearestSelectionRange( position: Position, direction: 'both' | 'forward' | 'backward' = 'both' ): Range | null {
+		if ( position.root.rootName == '$graveyard' ) {
+			// No valid selection range in the graveyard.
+			// This is important when getting the document selection default range.
+			return null;
+		}
+
 		// Return collapsed range if provided position is valid.
 		if ( this.checkChild( position, '$text' ) ) {
 			return new Range( position );
@@ -920,38 +926,64 @@ export default class Schema extends ObservableMixin() {
 	}
 
 	private _compile(): void {
-		const compiledDefinitions: Record<string, SchemaCompiledItemDefinitionInternal> = {};
+		const definitions: Record<string, SchemaCompiledItemDefinitionInternal> = {};
 		const sourceRules = this._sourceDefinitions;
 		const itemNames = Object.keys( sourceRules );
 
 		for ( const itemName of itemNames ) {
-			compiledDefinitions[ itemName ] = compileBaseItemRule( sourceRules[ itemName ], itemName );
+			definitions[ itemName ] = compileBaseItemRule( sourceRules[ itemName ], itemName );
 		}
 
-		for ( const itemName of itemNames ) {
-			compileAllowChildren( compiledDefinitions, itemName );
+		const items = Object.values( definitions );
+
+		// Sometimes features add rules (allows, disallows) for items that has not been registered yet. We allow that, to make it easier
+		// to put the schema together. However, sometimes these items are never registered. To prevent operating
+		// removeUnregisteredEntries( definitions, items );
+
+		// 1. Propagate `childItem.allowIn` to `parentItem.allowChildren` and vice versa, so that these properties are completely mirrored
+		// for all children and parents. Do the same for `disallowIn` and `disallowChildren`.
+		for ( const item of items ) {
+			propagateAllowIn( definitions, item );
+			propagateAllowChildren( definitions, item );
+			propagateDisallowIn( definitions, item );
+			propagateDisallowChildren( definitions, item );
 		}
 
-		for ( const itemName of itemNames ) {
-			compileAllowContentOf( compiledDefinitions, itemName );
+		// 2. Remove from `allowIn` and `allowChildren` these items which where disallowed by `disallowIn` and `disallowChildren`.
+		// Do the same for attributes. Now we have a clear situation where which item/attribute is allowed. Inheritance is in next steps.
+		for ( const item of items ) {
+			resolveDisallows( definitions, item );
 		}
 
-		for ( const itemName of itemNames ) {
-			compileAllowWhere( compiledDefinitions, itemName );
+		// 3. Compile `item.allowContentOf` property. For each entry in `allowContentOf`, we want to take `allowChildren` and rewrite
+		// them into `item.allowChildren`. `item.disallowChildren` is used to filter out some entries. This way "own rules" have higher
+		// priority than "inherited rules". Mirroring from step 1. is maintained.
+		for ( const item of items ) {
+			compileAllowContentOf( definitions, item );
 		}
 
-		for ( const itemName of itemNames ) {
-			compileAllowAttributesOf( compiledDefinitions, itemName );
-			compileInheritPropertiesFrom( compiledDefinitions, itemName );
+		// 4. Compile `item.allowWhere` property. For each entry in `allowWhere`, we want to take `allowIn` and rewrite them into
+		// `item.allowIn`. `item.disallowIn` is used to filter out some entries. This way "own rules" have higher priority than
+		// "inherited rules". Mirroring from step 1. is maintained.
+		for ( const item of items ) {
+			compileAllowWhere( definitions, item );
 		}
 
-		for ( const itemName of itemNames ) {
-			cleanUpAllowIn( compiledDefinitions, itemName );
-			setupAllowChildren( compiledDefinitions, itemName );
-			cleanUpAllowAttributes( compiledDefinitions, itemName );
+		// 5. Compile `item.allowAttributesOf`. For each entry in `allowAttributesOf`, we want to take `allowAttributes` and rewrite them
+		// into `item.allowAttributes`. `item.disallowAttributes` is used to filter out some entries. This way "own rules" have higher
+		// priority than "inherited rules".
+		for ( const item of items ) {
+			compileAllowAttributesOf( definitions, item );
 		}
 
-		this._compiledDefinitions = compiledDefinitions as any;
+		// 6. Compile `item.inheritTypesFrom` property. For each entry in `inheritTypesFrom`, we want to take `is*` properties and
+		// set them on `item` (if they are not set yet).
+		for ( const item of items ) {
+			compileInheritPropertiesFrom( definitions, item );
+		}
+
+		// Compile final definitions. Unnecessary properties are removed and some additional cleaning is applied.
+		this._compiledDefinitions = compileDefinitions( definitions );
 	}
 
 	private _checkContextMatch(
@@ -1007,6 +1039,63 @@ export default class Schema extends ObservableMixin() {
 		if ( !start.isEqual( end ) ) {
 			yield new Range( start, end );
 		}
+	}
+
+	/**
+	 * Returns a model range which is optimal (in terms of UX) for inserting a widget block.
+	 *
+	 * For instance, if a selection is in the middle of a paragraph, the collapsed range before this paragraph
+	 * will be returned so that it is not split. If the selection is at the end of a paragraph,
+	 * the collapsed range after this paragraph will be returned.
+	 *
+	 * Note: If the selection is placed in an empty block, the range in that block will be returned. If that range
+	 * is then passed to {@link module:engine/model/model~Model#insertContent}, the block will be fully replaced
+	 * by the inserted widget block.
+	 *
+	 * @internal
+	 * @param selection The selection based on which the insertion position should be calculated.
+	 * @param place The place where to look for optimal insertion range.
+	 * The `auto` value will determine itself the best position for insertion.
+	 * The `before` value will try to find a position before selection.
+	 * The `after` value will try to find a position after selection.
+	 * @returns The optimal range.
+	 */
+	public findOptimalInsertionRange(
+		selection: Selection | DocumentSelection,
+		place?: 'auto' | 'before' | 'after'
+	): Range {
+		const selectedElement = selection.getSelectedElement();
+
+		if ( selectedElement && this.isObject( selectedElement ) && !this.isInline( selectedElement ) ) {
+			if ( place == 'before' || place == 'after' ) {
+				return new Range( Position._createAt( selectedElement, place ) );
+			}
+
+			return Range._createOn( selectedElement );
+		}
+
+		const firstBlock = first( selection.getSelectedBlocks() );
+
+		// There are no block elements within ancestors (in the current limit element).
+		if ( !firstBlock ) {
+			return new Range( selection.focus! );
+		}
+
+		// If inserting into an empty block – return position in that block. It will get
+		// replaced with the image by insertContent(). #42.
+		if ( firstBlock.isEmpty ) {
+			return new Range( Position._createAt( firstBlock, 0 ) );
+		}
+
+		const positionAfter = Position._createAfter( firstBlock );
+
+		// If selection is at the end of the block - return position after the block.
+		if ( selection.focus!.isTouching( positionAfter ) ) {
+			return new Range( positionAfter );
+		}
+
+		// Otherwise, return position before the block.
+		return new Range( Position._createBefore( firstBlock ) );
 	}
 }
 
@@ -1157,9 +1246,15 @@ export type SchemaCheckAttributeEvent = {
  * * {@link ~SchemaItemDefinition#allowIn `allowIn`} &ndash; Defines in which other items this item will be allowed.
  * * {@link ~SchemaItemDefinition#allowChildren `allowChildren`} &ndash; Defines which other items are allowed inside this item.
  * * {@link ~SchemaItemDefinition#allowAttributes `allowAttributes`} &ndash; Defines allowed attributes of the given item.
- * * {@link ~SchemaItemDefinition#allowContentOf `allowContentOf`} &ndash; Inherits "allowed children" from other items.
- * * {@link ~SchemaItemDefinition#allowWhere `allowWhere`} &ndash; Inherits "allowed in" from other items.
- * * {@link ~SchemaItemDefinition#allowAttributesOf `allowAttributesOf`} &ndash; Inherits attributes from other items.
+ * * {@link ~SchemaItemDefinition#disallowIn `disallowIn`} &ndash; Defines in which other items this item will be disallowed.
+ * * {@link ~SchemaItemDefinition#disallowChildren `disallowChildren`} &ndash; Defines which other items are disallowed inside this item.
+ * * {@link ~SchemaItemDefinition#disallowAttributes `disallowAttributes`} &ndash; Defines disallowed attributes of the given item.
+ * * {@link ~SchemaItemDefinition#allowContentOf `allowContentOf`} &ndash; Makes this item allow children that are also allowed in the
+ * specified items. This acknowledges disallow rules.
+ * * {@link ~SchemaItemDefinition#allowWhere `allowWhere`} &ndash; Makes this item allowed where the specified items are allowed. This
+ * acknowledges disallow rules.
+ * * {@link ~SchemaItemDefinition#allowAttributesOf `allowAttributesOf`} &ndash; Inherits attributes from other items. This acknowledges
+ * disallow rules.
  * * {@link ~SchemaItemDefinition#inheritTypesFrom `inheritTypesFrom`} &ndash; Inherits `is*` properties of other items.
  * * {@link ~SchemaItemDefinition#inheritAllFrom `inheritAllFrom`} &ndash;
  * A shorthand for `allowContentOf`, `allowWhere`, `allowAttributesOf`, `inheritTypesFrom`.
@@ -1167,7 +1262,6 @@ export type SchemaCheckAttributeEvent = {
  * # The `is*` properties
  *
  * There are a couple commonly used `is*` properties. Their role is to assign additional semantics to schema items.
- * You can define more properties but you will also need to implement support for them in the existing editor features.
  *
  * * {@link ~SchemaItemDefinition#isBlock `isBlock`} &ndash; Whether this item is paragraph-like.
  * Generally speaking, content is usually made out of blocks like paragraphs, list items, images, headings, etc.
@@ -1288,6 +1382,15 @@ export type SchemaCheckAttributeEvent = {
  * } );
  * ```
  *
+ * Register `inlineImage` as a kind of an inline object but disallow it inside captions:
+ *
+ * ```ts
+ * schema.register( 'imageInline', {
+ * 	inheritAllFrom: '$inlineObject',
+ * 	disallowIn: [ 'caption' ]
+ * } );
+ * ```
+ *
  * Make `listItem` inherit all from `$block` but also allow additional attributes:
  *
  * ```ts
@@ -1336,6 +1439,21 @@ export interface SchemaItemDefinition {
 	allowAttributes?: string | Array<string>;
 
 	/**
+	 * Defines in which other items this item will be disallowed. Takes precedence over allow rules.
+	 */
+	disallowIn?: string | Array<string>;
+
+	/**
+	 * Defines which other items are disallowed inside this item. Takes precedence over allow rules.
+	 */
+	disallowChildren?: string | Array<string>;
+
+	/**
+	 * Defines disallowed attributes for this item. Takes precedence over allow rules.
+	 */
+	disallowAttributes?: string | Array<string>;
+
+	/**
 	 * Inherits "allowed children" from other items.
 	 */
 	allowContentOf?: string | Array<string>;
@@ -1346,7 +1464,7 @@ export interface SchemaItemDefinition {
 	allowWhere?: string | Array<string>;
 
 	/**
-	 * Inherits attributes from other items.
+	 * Inherits "allowed attributes" from other items.
 	 */
 	allowAttributesOf?: string | Array<string>;
 
@@ -1450,12 +1568,14 @@ export interface SchemaItemDefinition {
  */
 export interface SchemaCompiledItemDefinition {
 	name: string;
+
 	isBlock: boolean;
 	isContent: boolean;
 	isInline: boolean;
 	isLimit: boolean;
 	isObject: boolean;
 	isSelectable: boolean;
+
 	allowIn: Array<string>;
 	allowChildren: Array<string>;
 	allowAttributes: Array<string>;
@@ -1464,6 +1584,7 @@ export interface SchemaCompiledItemDefinition {
 interface SchemaCompiledItemDefinitionInternal {
 	name: string;
 
+	// We need to distinguish `false` from `undefined` to allow inheritance.
 	isBlock?: boolean;
 	isContent?: boolean;
 	isInline?: boolean;
@@ -1471,20 +1592,25 @@ interface SchemaCompiledItemDefinitionInternal {
 	isObject?: boolean;
 	isSelectable?: boolean;
 
-	allowIn: Array<string>;
-	allowChildren: Array<string>;
-	allowAttributes: Array<string>;
+	allowIn: Set<string>;
+	allowChildren: Set<string>;
+	allowAttributes: Set<string>;
 
-	allowAttributesOf?: Array<string>;
-	allowContentOf?: Array<string>;
-	allowWhere?: Array<string>;
-	inheritTypesFrom?: Array<string>;
+	disallowIn: Set<string>;
+	disallowChildren: Set<string>;
+	disallowAttributes: Set<string>;
+
+	allowAttributesOf: Set<string>;
+	allowContentOf: Set<string>;
+	allowWhere: Set<string>;
+
+	inheritTypesFrom: Set<string>;
 }
 
 type TypeNames = Array<'isBlock' | 'isContent' | 'isInline' | 'isLimit' | 'isObject' | 'isSelectable'>;
 
 /**
- * A schema context &mdash; a list of ancestors of a given position in the document.
+ * A schema context &ndash; a list of ancestors of a given position in the document.
  *
  * Considering such position:
  *
@@ -1764,130 +1890,276 @@ export interface AttributeProperties {
 	 */
 	copyOnEnter?: boolean;
 
+	/**
+	 * Indicates that given attribute should be preserved while replacing the element.
+	 */
+	copyOnReplace?: boolean;
+
+	/**
+	 * Indicates that given text attribute should be copied from an inline object to the next inserted inline content.
+	 *
+	 * @default true
+	 */
+	copyFromObject?: boolean;
+
 	[ name: string ]: unknown;
 }
 
-export type SchemaAttributeCheckCallback = ( context: SchemaContext, attributeName: string ) => unknown;
+export type SchemaAttributeCheckCallback = ( context: SchemaContext, attributeName: string ) => boolean | undefined;
 
-export type SchemaChildCheckCallback = ( ctx: SchemaContext, def: SchemaCompiledItemDefinition ) => unknown;
+export type SchemaChildCheckCallback = ( context: SchemaContext, definition: SchemaCompiledItemDefinition ) => boolean | undefined;
 
 function compileBaseItemRule( sourceItemRules: Array<SchemaItemDefinition>, itemName: string ): SchemaCompiledItemDefinitionInternal {
-	const itemRule = {
+	const itemRule: SchemaCompiledItemDefinitionInternal = {
 		name: itemName,
 
-		allowIn: [],
-		allowContentOf: [],
-		allowWhere: [],
+		allowIn: new Set<string>(),
+		allowChildren: new Set<string>(),
+		disallowIn: new Set<string>(),
+		disallowChildren: new Set<string>(),
 
-		allowAttributes: [],
-		allowAttributesOf: [],
+		allowContentOf: new Set<string>(),
+		allowWhere: new Set<string>(),
 
-		allowChildren: [],
+		allowAttributes: new Set<string>(),
+		disallowAttributes: new Set<string>(),
 
-		inheritTypesFrom: []
+		allowAttributesOf: new Set<string>(),
+
+		inheritTypesFrom: new Set<string>()
 	};
 
 	copyTypes( sourceItemRules, itemRule );
 
 	copyProperty( sourceItemRules, itemRule, 'allowIn' );
+	copyProperty( sourceItemRules, itemRule, 'allowChildren' );
+	copyProperty( sourceItemRules, itemRule, 'disallowIn' );
+	copyProperty( sourceItemRules, itemRule, 'disallowChildren' );
+
 	copyProperty( sourceItemRules, itemRule, 'allowContentOf' );
 	copyProperty( sourceItemRules, itemRule, 'allowWhere' );
 
 	copyProperty( sourceItemRules, itemRule, 'allowAttributes' );
-	copyProperty( sourceItemRules, itemRule, 'allowAttributesOf' );
+	copyProperty( sourceItemRules, itemRule, 'disallowAttributes' );
 
-	copyProperty( sourceItemRules, itemRule, 'allowChildren' );
+	copyProperty( sourceItemRules, itemRule, 'allowAttributesOf' );
 
 	copyProperty( sourceItemRules, itemRule, 'inheritTypesFrom' );
 
-	makeInheritAllWork( sourceItemRules, itemRule );
+	resolveInheritAll( sourceItemRules, itemRule );
 
 	return itemRule;
 }
 
-function compileAllowChildren(
-	compiledDefinitions: Record<string, SchemaCompiledItemDefinitionInternal>,
-	itemName: string
+function propagateAllowIn(
+	definitions: Record<string, SchemaCompiledItemDefinitionInternal>,
+	item: SchemaCompiledItemDefinitionInternal
 ) {
-	const item = compiledDefinitions[ itemName ];
+	for ( const parentName of item.allowIn ) {
+		const parentItem = definitions[ parentName ];
 
-	for ( const allowChildrenItem of item.allowChildren ) {
-		const allowedChildren = compiledDefinitions[ allowChildrenItem ];
-
-		// The allowChildren property may point to an unregistered element.
-		if ( !allowedChildren ) {
-			continue;
+		if ( parentItem ) {
+			parentItem.allowChildren.add( item.name );
+		} else {
+			item.allowIn.delete( parentName );
 		}
+	}
+}
 
-		allowedChildren.allowIn.push( itemName );
+function propagateAllowChildren(
+	definitions: Record<string, SchemaCompiledItemDefinitionInternal>,
+	item: SchemaCompiledItemDefinitionInternal
+) {
+	for ( const childName of item.allowChildren ) {
+		const childItem = definitions[ childName ];
+
+		if ( childItem ) {
+			childItem.allowIn.add( item.name );
+		} else {
+			item.allowChildren.delete( childName );
+		}
+	}
+}
+
+function propagateDisallowIn(
+	definitions: Record<string, SchemaCompiledItemDefinitionInternal>,
+	item: SchemaCompiledItemDefinitionInternal
+) {
+	for ( const parentName of item.disallowIn ) {
+		const parentItem = definitions[ parentName ];
+
+		if ( parentItem ) {
+			parentItem.disallowChildren.add( item.name );
+		} else {
+			item.disallowIn.delete( parentName );
+		}
+	}
+}
+
+function propagateDisallowChildren(
+	definitions: Record<string, SchemaCompiledItemDefinitionInternal>,
+	item: SchemaCompiledItemDefinitionInternal
+) {
+	for ( const childName of item.disallowChildren ) {
+		const childItem = definitions[ childName ];
+
+		if ( childItem ) {
+			childItem.disallowIn.add( item.name );
+		} else {
+			item.disallowChildren.delete( childName );
+		}
+	}
+}
+
+function resolveDisallows(
+	definitions: Record<string, SchemaCompiledItemDefinitionInternal>,
+	item: SchemaCompiledItemDefinitionInternal
+) {
+	for ( const childName of item.disallowChildren ) {
+		item.allowChildren.delete( childName );
 	}
 
-	// The allowIn property already includes correct items, reset the allowChildren property
-	// to avoid duplicates later when setting up compilation results.
-	item.allowChildren.length = 0;
+	for ( const parentName of item.disallowIn ) {
+		item.allowIn.delete( parentName );
+	}
+
+	for ( const attributeName of item.disallowAttributes ) {
+		item.allowAttributes.delete( attributeName );
+	}
 }
 
 function compileAllowContentOf(
-	compiledDefinitions: Record<string, SchemaCompiledItemDefinitionInternal>,
-	itemName: string
+	definitions: Record<string, SchemaCompiledItemDefinitionInternal>,
+	item: SchemaCompiledItemDefinitionInternal
 ) {
-	for ( const allowContentOfItemName of compiledDefinitions[ itemName ].allowContentOf! ) {
-		// The allowContentOf property may point to an unregistered element.
-		if ( compiledDefinitions[ allowContentOfItemName ] ) {
-			const allowedChildren = getAllowedChildren( compiledDefinitions, allowContentOfItemName );
+	for ( const allowContentOfItemName of item.allowContentOf ) {
+		const baseItem = definitions[ allowContentOfItemName ];
 
-			allowedChildren.forEach( allowedItem => {
-				allowedItem.allowIn.push( itemName );
-			} );
+		if ( !baseItem ) {
+			continue;
 		}
-	}
 
-	delete compiledDefinitions[ itemName ].allowContentOf;
+		// Copy `disallowChildren` to propagate this "knowledge" down the inheritance chain. The inheritance may involve multiple items and
+		// if this is not propagated, then items down the chain may start to allow for items that were disallowed by previous base items.
+		//
+		// The scenarios were it is important involves multiple inherits both on parent items side and on the child items side.
+		baseItem.disallowChildren.forEach( childName => {
+			// Own item's rules takes precedence before inherited.
+			// If the item directly allows for given child, ignore that base item disallowed that child.
+			if ( item.allowChildren.has( childName ) ) {
+				return;
+			}
+
+			item.disallowChildren.add( childName );
+			definitions[ childName ].disallowIn.add( item.name );
+		} );
+
+		// Copy `allowChildren` from the base item to allow for the same items.
+		baseItem.allowChildren.forEach( childName => {
+			// Own item's rules takes precedence before inherited.
+			// Also, `item.disallowChildren` might get some new items during inheritance process.
+			if ( item.disallowChildren.has( childName ) ) {
+				return;
+			}
+
+			item.allowChildren.add( childName );
+			definitions[ childName ].allowIn.add( item.name );
+		} );
+	}
 }
 
 function compileAllowWhere(
-	compiledDefinitions: Record<string, SchemaCompiledItemDefinitionInternal>,
-	itemName: string
+	definitions: Record<string, SchemaCompiledItemDefinitionInternal>,
+	item: SchemaCompiledItemDefinitionInternal
 ) {
-	for ( const allowWhereItemName of compiledDefinitions[ itemName ].allowWhere! ) {
-		const inheritFrom = compiledDefinitions[ allowWhereItemName ];
+	for ( const allowWhereItemName of item.allowWhere ) {
+		const baseItem = definitions[ allowWhereItemName ];
 
-		// The allowWhere property may point to an unregistered element.
-		if ( inheritFrom ) {
-			const allowedIn = inheritFrom.allowIn;
-
-			compiledDefinitions[ itemName ].allowIn.push( ...allowedIn );
+		if ( !baseItem ) {
+			continue;
 		}
+
+		// Copy `disallowIn` to propagate this "knowledge" down the inheritance chain. The inheritance may involve multiple items and
+		// if this is not propagated, then items down the chain may start to be allowed in items in which they were disallowed previously.
+		//
+		// The scenarios were it is important involves multiple inherits both on parent items side and on the child items side.
+		baseItem.disallowIn.forEach( parentName => {
+			// Own item's rules takes precedence before inherited.
+			// If the item is directly allowed in given parent, ignore that base item was disallowed in it.
+			if ( item.allowIn.has( parentName ) ) {
+				return;
+			}
+
+			item.disallowIn.add( parentName );
+			definitions[ parentName ].disallowChildren.add( item.name );
+		} );
+
+		// Copy `allowIn` from the base item to allow item in same parents.
+		baseItem.allowIn.forEach( parentName => {
+			// Own item's rules takes precedence before inherited.
+			// Also, `item.disallowIn` might get some new items during inheritance process.
+			if ( item.disallowIn.has( parentName ) ) {
+				return;
+			}
+
+			item.allowIn.add( parentName );
+			definitions[ parentName ].allowChildren.add( item.name );
+		} );
+	}
+}
+
+function compileDefinitions( definitions: Record<string, SchemaCompiledItemDefinitionInternal> ) {
+	const finalDefinitions: Record<string, SchemaCompiledItemDefinition> = {};
+
+	for ( const item of Object.values( definitions ) ) {
+		finalDefinitions[ item.name ] = {
+			name: item.name,
+
+			// `is*` properties may not be set - convert `undefined` to `false`.
+			isBlock: !!item.isBlock,
+			isContent: !!item.isContent,
+			isInline: !!item.isInline,
+			isLimit: !!item.isLimit,
+			isObject: !!item.isObject,
+			isSelectable: !!item.isSelectable,
+
+			// Filter out non-existing items.
+			allowIn: Array.from( item.allowIn ).filter( name => !!definitions[ name ] ),
+			allowChildren: Array.from( item.allowChildren ).filter( name => !!definitions[ name ] ),
+			allowAttributes: Array.from( item.allowAttributes )
+		};
 	}
 
-	delete compiledDefinitions[ itemName ].allowWhere;
+	return finalDefinitions;
 }
 
 function compileAllowAttributesOf(
-	compiledDefinitions: Record<string, SchemaCompiledItemDefinitionInternal>,
-	itemName: string
+	definitions: Record<string, SchemaCompiledItemDefinitionInternal>,
+	item: SchemaCompiledItemDefinitionInternal
 ) {
-	for ( const allowAttributeOfItem of compiledDefinitions[ itemName ].allowAttributesOf! ) {
-		const inheritFrom = compiledDefinitions[ allowAttributeOfItem ];
+	for ( const allowAttributeOfItemName of item.allowAttributesOf ) {
+		const baseItem = definitions[ allowAttributeOfItemName ];
 
-		if ( inheritFrom ) {
-			const inheritAttributes = inheritFrom.allowAttributes;
-
-			compiledDefinitions[ itemName ].allowAttributes.push( ...inheritAttributes );
+		if ( !baseItem ) {
+			return;
 		}
-	}
 
-	delete compiledDefinitions[ itemName ].allowAttributesOf;
+		baseItem.allowAttributes.forEach( attributeName => {
+			if ( item.disallowAttributes.has( attributeName ) ) {
+				return;
+			}
+
+			item.allowAttributes.add( attributeName );
+		} );
+	}
 }
 
 function compileInheritPropertiesFrom(
-	compiledDefinitions: Record<string, SchemaCompiledItemDefinitionInternal>,
-	itemName: string
+	definitions: Record<string, SchemaCompiledItemDefinitionInternal>,
+	item: SchemaCompiledItemDefinitionInternal
 ) {
-	const item = compiledDefinitions[ itemName ];
-
-	for ( const inheritPropertiesOfItem of item.inheritTypesFrom! ) {
-		const inheritFrom = compiledDefinitions[ inheritPropertiesOfItem ];
+	for ( const inheritPropertiesOfItemName of item.inheritTypesFrom! ) {
+		const inheritFrom = definitions[ inheritPropertiesOfItemName ];
 
 		if ( inheritFrom ) {
 			const typeNames = Object.keys( inheritFrom ).filter( name => name.startsWith( 'is' ) ) as TypeNames;
@@ -1899,43 +2171,6 @@ function compileInheritPropertiesFrom(
 			}
 		}
 	}
-
-	delete item.inheritTypesFrom;
-}
-
-// Remove items which weren't registered (because it may break some checks or we'd need to complicate them).
-// Make sure allowIn doesn't contain repeated values.
-function cleanUpAllowIn(
-	compiledDefinitions: Record<string, SchemaCompiledItemDefinitionInternal>,
-	itemName: string
-) {
-	const itemRule = compiledDefinitions[ itemName ];
-	const existingItems = itemRule.allowIn.filter( itemToCheck => compiledDefinitions[ itemToCheck ] );
-
-	itemRule.allowIn = Array.from( new Set( existingItems ) );
-}
-
-// Setup allowChildren items based on allowIn.
-function setupAllowChildren(
-	compiledDefinitions: Record<string, SchemaCompiledItemDefinitionInternal>,
-	itemName: string
-) {
-	const itemRule = compiledDefinitions[ itemName ];
-
-	for ( const allowedParentItemName of itemRule.allowIn ) {
-		const allowedParentItem = compiledDefinitions[ allowedParentItemName ];
-
-		allowedParentItem.allowChildren.push( itemName );
-	}
-}
-
-function cleanUpAllowAttributes(
-	compiledDefinitions: Record<string, SchemaCompiledItemDefinitionInternal>,
-	itemName: string
-) {
-	const itemRule = compiledDefinitions[ itemName ];
-
-	itemRule.allowAttributes = Array.from( new Set( itemRule.allowAttributes ) );
 }
 
 function copyTypes( sourceItemRules: Array<SchemaItemDefinition>, itemRule: SchemaCompiledItemDefinitionInternal ) {
@@ -1951,46 +2186,44 @@ function copyTypes( sourceItemRules: Array<SchemaItemDefinition>, itemRule: Sche
 function copyProperty(
 	sourceItemRules: Array<SchemaItemDefinition>,
 	itemRule: SchemaCompiledItemDefinitionInternal,
-	propertyName: 'allowIn' |
-		'allowContentOf' |
-		'allowWhere' |
-		'allowAttributes' |
-		'allowAttributesOf' |
+	propertyName:
+		'allowIn' |
 		'allowChildren' |
+		'disallowIn' |
+		'disallowChildren' |
+		'allowWhere' |
+		'allowContentOf' |
+		'allowAttributes' |
+		'disallowAttributes' |
+		'allowAttributesOf' |
 		'inheritTypesFrom'
 ) {
 	for ( const sourceItemRule of sourceItemRules ) {
-		const value = sourceItemRule[ propertyName ];
+		let value = sourceItemRule[ propertyName ];
 
+		// `value` can be a string, an array or undefined.
+		// Convert a string to an array with one item, then handle an array. Skip undefined this way.
 		if ( typeof value == 'string' ) {
-			itemRule[ propertyName ]!.push( value );
-		} else if ( Array.isArray( value ) ) {
-			itemRule[ propertyName ]!.push( ...value );
+			value = [ value ];
+		}
+
+		if ( Array.isArray( value ) ) {
+			value.forEach( singleValue => itemRule[ propertyName ].add( singleValue ) );
 		}
 	}
 }
 
-function makeInheritAllWork( sourceItemRules: Array<SchemaItemDefinition>, itemRule: SchemaCompiledItemDefinitionInternal ) {
+function resolveInheritAll( sourceItemRules: Array<SchemaItemDefinition>, itemRule: SchemaCompiledItemDefinitionInternal ) {
 	for ( const sourceItemRule of sourceItemRules ) {
 		const inheritFrom = sourceItemRule.inheritAllFrom;
 
 		if ( inheritFrom ) {
-			itemRule.allowContentOf!.push( inheritFrom );
-			itemRule.allowWhere!.push( inheritFrom );
-			itemRule.allowAttributesOf!.push( inheritFrom );
-			itemRule.inheritTypesFrom!.push( inheritFrom );
+			itemRule.allowContentOf.add( inheritFrom );
+			itemRule.allowWhere.add( inheritFrom );
+			itemRule.allowAttributesOf.add( inheritFrom );
+			itemRule.inheritTypesFrom.add( inheritFrom );
 		}
 	}
-}
-
-function getAllowedChildren( compiledDefinitions: Record<string, SchemaCompiledItemDefinitionInternal>, itemName: string ) {
-	const itemRule = compiledDefinitions[ itemName ];
-
-	return getValues( compiledDefinitions ).filter( def => def.allowIn.includes( itemRule.name ) );
-}
-
-function getValues( obj: Record<string, SchemaCompiledItemDefinitionInternal> ) {
-	return Object.keys( obj ).map( key => obj[ key ] );
 }
 
 function mapContextItem( ctxItem: string | Item | DocumentFragment ): SchemaContextItem {

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,18 +7,18 @@
  * @module special-characters/specialcharacters
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
-import { Typing, type InsertTextCommand } from 'ckeditor5/src/typing';
-import { createDropdown, type DropdownView } from 'ckeditor5/src/ui';
-import { CKEditorError, type Locale } from 'ckeditor5/src/utils';
-import SpecialCharactersNavigationView from './ui/specialcharactersnavigationview';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { Typing, type InsertTextCommand } from 'ckeditor5/src/typing.js';
+import { createDropdown, type DropdownView } from 'ckeditor5/src/ui.js';
+import { CKEditorError, type Locale } from 'ckeditor5/src/utils.js';
+import SpecialCharactersNavigationView from './ui/specialcharactersnavigationview.js';
 import CharacterGridView, {
 	type CharacterGridViewExecuteEvent,
 	type CharacterGridViewTileFocusEvent,
 	type CharacterGridViewTileHoverEvent
-} from './ui/charactergridview';
-import CharacterInfoView from './ui/characterinfoview';
-import SpecialCharactersView from './ui/specialcharactersview';
+} from './ui/charactergridview.js';
+import CharacterInfoView from './ui/characterinfoview.js';
+import SpecialCharactersView from './ui/specialcharactersview.js';
 
 import specialCharactersIcon from '../theme/icons/specialcharacters.svg';
 
@@ -57,8 +57,8 @@ export default class SpecialCharacters extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'SpecialCharacters' {
-		return 'SpecialCharacters';
+	public static get pluginName() {
+		return 'SpecialCharacters' as const;
 	}
 
 	/**
@@ -243,7 +243,7 @@ export default class SpecialCharacters extends Plugin {
 	 * @returns An object with `navigationView`, `gridView` and `infoView` properties, containing UI parts.
 	 */
 	private _createDropdownPanelContent( locale: Locale, dropdownView: DropdownView ): DropdownPanelContent {
-		const groupEntries: Array<[string, string]> = Array
+		const groupEntries: Array<[ string, string ]> = Array
 			.from( this.getGroups() )
 			.map( name => ( [ name, this._groups.get( name )!.label ] ) );
 

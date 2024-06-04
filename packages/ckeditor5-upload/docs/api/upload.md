@@ -2,11 +2,11 @@
 category: api-reference
 ---
 
-# CKEditor 5 file upload utilities
+# CKEditor&nbsp;5 file upload utilities
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-upload.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload)
 
-This package implements various file upload utilities for CKEditor 5.
+This package implements various file upload utilities for CKEditor&nbsp;5.
 
 ## Documentation
 
@@ -16,13 +16,15 @@ See the {@link module:upload/filerepository~FileRepository} plugin documentation
 
 This repository contains the following upload adapters:
 
-* {@link module:upload/adapters/base64uploadadapter~Base64UploadAdapter `Base64UploadAdapter`} - A plugin that converts images inserted into the editor into [Base64 strings](https://en.wikipedia.org/wiki/Base64) in the {@link installation/getting-started/getting-and-setting-data editor output}.
+* {@link module:upload/adapters/base64uploadadapter~Base64UploadAdapter `Base64UploadAdapter`} - A plugin that converts images inserted into the editor into [Base64 strings](https://en.wikipedia.org/wiki/Base64) in the {@link getting-started/setup/getting-and-setting-data editor output}.
 * {@link module:upload/adapters/simpleuploadadapter~SimpleUploadAdapter `SimpleUploadAdapter`} - A plugin that uploads images inserted into the editor to your server using the [`XMLHttpRequest`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) API.
 
 ## Installation
 
+This package is part of our open-source aggregate package.
+
 ```bash
-npm install --save @ckeditor/ckeditor5-upload
+npm install ckeditor5
 ```
 
 ## Contribute

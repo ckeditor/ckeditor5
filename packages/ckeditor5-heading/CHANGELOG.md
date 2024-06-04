@@ -5,19 +5,19 @@ All changes in the package are documented in the main repository. See: https://g
 
 Changes for the past releases are available below.
 
-## [19.0.0](https://github.com/ckeditor/ckeditor5-heading/compare/v18.0.0...v19.0.0) (2020-04-29)
+## [19.0.0](https://github.com/ckeditor/ckeditor5-heading/compare/v18.0.0...v19.0.0) (April 29, 2020)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [18.0.0](https://github.com/ckeditor/ckeditor5-heading/compare/v17.0.0...v18.0.0) (2020-03-19)
+## [18.0.0](https://github.com/ckeditor/ckeditor5-heading/compare/v17.0.0...v18.0.0) (March 19, 2020)
 
 ### Other changes
 
 * Updated translations. ([99855b5](https://github.com/ckeditor/ckeditor5-heading/commit/99855b5))
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-heading/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-heading/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 ### Bug fixes
 
@@ -28,14 +28,14 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([f947574](https://github.com/ckeditor/ckeditor5-heading/commit/f947574))
 
 
-## [16.0.0](https://github.com/ckeditor/ckeditor5-heading/compare/v15.0.0...v16.0.0) (2019-12-04)
+## [16.0.0](https://github.com/ckeditor/ckeditor5-heading/compare/v15.0.0...v16.0.0) (December 4, 2019)
 
 ### Other changes
 
 * Updated translations. ([bf98b57](https://github.com/ckeditor/ckeditor5-heading/commit/bf98b57))
 
 
-## [15.0.0](https://github.com/ckeditor/ckeditor5-heading/compare/v11.0.5...v15.0.0) (2019-10-23)
+## [15.0.0](https://github.com/ckeditor/ckeditor5-heading/compare/v11.0.5...v15.0.0) (October 23, 2019)
 
 ### Features
 
@@ -47,7 +47,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([bcb9dbf](https://github.com/ckeditor/ckeditor5-heading/commit/bcb9dbf)) ([d3d7107](https://github.com/ckeditor/ckeditor5-heading/commit/d3d7107))
 
 
-## [11.0.5](https://github.com/ckeditor/ckeditor5-heading/compare/v11.0.4...v11.0.5) (2019-08-26)
+## [11.0.5](https://github.com/ckeditor/ckeditor5-heading/compare/v11.0.4...v11.0.5) (August 26, 2019)
 
 ### Bug fixes
 
@@ -59,33 +59,33 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([201cf3c](https://github.com/ckeditor/ckeditor5-heading/commit/201cf3c))
 
 
-## [11.0.4](https://github.com/ckeditor/ckeditor5-heading/compare/v11.0.3...v11.0.4) (2019-07-10)
+## [11.0.4](https://github.com/ckeditor/ckeditor5-heading/compare/v11.0.3...v11.0.4) (July 10, 2019)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [11.0.3](https://github.com/ckeditor/ckeditor5-heading/compare/v11.0.2...v11.0.3) (2019-07-04)
+## [11.0.3](https://github.com/ckeditor/ckeditor5-heading/compare/v11.0.2...v11.0.3) (July 4, 2019)
 
 ### Other changes
 
 * Updated translations. ([7e9eb81](https://github.com/ckeditor/ckeditor5-heading/commit/7e9eb81)) ([8143e12](https://github.com/ckeditor/ckeditor5-heading/commit/8143e12))
 
 
-## [11.0.2](https://github.com/ckeditor/ckeditor5-heading/compare/v11.0.1...v11.0.2) (2019-06-05)
+## [11.0.2](https://github.com/ckeditor/ckeditor5-heading/compare/v11.0.1...v11.0.2) (June 6, 2019)
 
 ### Other changes
 
 * Updated translations. ([ab95f35](https://github.com/ckeditor/ckeditor5-heading/commit/ab95f35))
 
 
-## [11.0.1](https://github.com/ckeditor/ckeditor5-heading/compare/v11.0.0...v11.0.1) (2019-04-10)
+## [11.0.1](https://github.com/ckeditor/ckeditor5-heading/compare/v11.0.0...v11.0.1) (April 4, 2019)
 
 ### Other changes
 
 * Updated translations. ([e7273cc](https://github.com/ckeditor/ckeditor5-heading/commit/e7273cc))
 
 
-## [11.0.0](https://github.com/ckeditor/ckeditor5-heading/compare/v10.1.1...v11.0.0) (2019-02-28)
+## [11.0.0](https://github.com/ckeditor/ckeditor5-heading/compare/v10.1.1...v11.0.0) (February 28, 2019)
 
 ### Features
 
@@ -100,7 +100,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Upgraded minimal versions of Node to `8.0.0` and npm to `5.7.1`. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([612ea3c](https://github.com/ckeditor/ckeditor5-cloud-services/commit/612ea3c))
 
 
-## [10.1.1](https://github.com/ckeditor/ckeditor5-heading/compare/v10.1.0...v10.1.1) (2018-12-05)
+## [10.1.1](https://github.com/ckeditor/ckeditor5-heading/compare/v10.1.0...v10.1.1) (December 5, 2018)
 
 ### Other changes
 
@@ -109,7 +109,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([91778ab](https://github.com/ckeditor/ckeditor5-heading/commit/91778ab)) ([6435579](https://github.com/ckeditor/ckeditor5-heading/commit/6435579))
 
 
-## [10.1.0](https://github.com/ckeditor/ckeditor5-heading/compare/v10.0.2...v10.1.0) (2018-10-08)
+## [10.1.0](https://github.com/ckeditor/ckeditor5-heading/compare/v10.0.2...v10.1.0) (October 8, 2018)
 
 ### Features
 
@@ -120,7 +120,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([e3798e5](https://github.com/ckeditor/ckeditor5-heading/commit/e3798e5))
 
 
-## [10.0.2](https://github.com/ckeditor/ckeditor5-heading/compare/v10.0.1...v10.0.2) (2018-07-18)
+## [10.0.2](https://github.com/ckeditor/ckeditor5-heading/compare/v10.0.1...v10.0.2) (July 18, 2018)
 
 ### Other changes
 
@@ -128,14 +128,14 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([0867c51](https://github.com/ckeditor/ckeditor5-heading/commit/0867c51))
 
 
-## [10.0.1](https://github.com/ckeditor/ckeditor5-heading/compare/v10.0.0...v10.0.1) (2018-06-21)
+## [10.0.1](https://github.com/ckeditor/ckeditor5-heading/compare/v10.0.0...v10.0.1) (June 21, 2018)
 
 ### Other changes
 
 * Updated translations.
 
 
-## [10.0.0](https://github.com/ckeditor/ckeditor5-heading/compare/v1.0.0-beta.4...v10.0.0) (2018-04-25)
+## [10.0.0](https://github.com/ckeditor/ckeditor5-heading/compare/v1.0.0-beta.4...v10.0.0) (April 25, 2018)
 
 ### Other changes
 
@@ -144,17 +144,17 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### BREAKING CHANGES
 
-* The license under which CKEditor 5 is released has been changed from a triple GPL, LGPL and MPL license to a GPL2+ only. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
+* The license under which CKEditor&nbsp;5 is released has been changed from a triple GPL, LGPL and MPL license to a GPL2+ only. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
 
 
-## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-heading/compare/v1.0.0-beta.2...v1.0.0-beta.4) (2018-04-19)
+## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-heading/compare/v1.0.0-beta.2...v1.0.0-beta.4) (April 19, 2018)
 
 ### Features
 
 * Introduced `HeadingButtonsUI` plugin. Closes [#104](https://github.com/ckeditor/ckeditor5-heading/issues/104). ([a39bac2](https://github.com/ckeditor/ckeditor5-heading/commit/a39bac2))
 
 
-## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-heading/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2018-04-10)
+## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-heading/compare/v1.0.0-beta.1...v1.0.0-beta.2) (April 10, 2018)
 
 ### Other changes
 
@@ -166,7 +166,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * In the custom format of the heading feature configuration the `view.style`, `view.class` and `view.attribute` properties are now called `view.styles`, `view.classes` and `view.attributes`.
 
 
-## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-heading/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
+## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-heading/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (March 15, 2018)
 
 ### Other changes
 
@@ -177,25 +177,25 @@ Internal changes only (updated dependencies, documentation, etc.).
 ### BREAKING CHANGES
 
 * Renamed the `'headings'` dropdown UI component to `'heading'`.
-* The `'heading1'`, `'heading2'` and `'heading3'` commands are no longer available. They were replaced by the `'heading'` command that accepts heading model element name as a value.
-* The `HeadingCommand#value` is no longer a boolean only. Now it stores a name of the heading model element when selection is inside a heading.
+* The `'heading1'`, `'heading2'` and `'heading3'` commands are no longer available. They were replaced by the `'heading'` command that accepts the heading model element name as a value.
+* The `HeadingCommand#value` is no longer a Boolean only. Now it stores the name of the heading model element when the selection is inside a heading.
 * The `HeadingCommand` constructor's second parameter is now an array of supported model elements.
 
 
-## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-heading/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
+## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-heading/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (November 14, 2017)
 
 ### Other changes
 
 * Updated translations. ([c3ad925](https://github.com/ckeditor/ckeditor5-heading/commit/c3ad925))
-* Aligned UI library usage to the [changes in the UI framework](https://github.com/ckeditor/ckeditor5-ui/pull/332).
+* Aligned the UI library usage to the [changes in the UI framework](https://github.com/ckeditor/ckeditor5-ui/pull/332).
 
 
-## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-heading/compare/v0.10.0...v1.0.0-alpha.1) (2017-10-03)
+## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-heading/compare/v0.10.0...v1.0.0-alpha.1) (October 3, 2017)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [0.10.0](https://github.com/ckeditor/ckeditor5-heading/compare/v0.9.1...v0.10.0) (2017-09-03)
+## [0.10.0](https://github.com/ckeditor/ckeditor5-heading/compare/v0.9.1...v0.10.0) (September 3, 2017)
 
 ### Bug fixes
 
@@ -212,31 +212,31 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The command API has been changed.
 * The `HeadingCommand` constructor's second parameter was changed from the `options` object to the `modelElement` alone.
 
-### NOTE
+### Note
 
 * The `HeadingOption` interface was moved to the `heading/heading` module.
 
 
-## [0.9.1](https://github.com/ckeditor/ckeditor5-heading/compare/v0.9.0...v0.9.1) (2017-05-07)
+## [0.9.1](https://github.com/ckeditor/ckeditor5-heading/compare/v0.9.0...v0.9.1) (May 7, 2017)
 
 ### Other changes
 
 * Updated translations. ([eaff2b3](https://github.com/ckeditor/ckeditor5-heading/commit/eaff2b3))
 
 
-## [0.9.0](https://github.com/ckeditor/ckeditor5-heading/compare/v0.8.0...v0.9.0) (2017-04-05)
+## [0.9.0](https://github.com/ckeditor/ckeditor5-heading/compare/v0.8.0...v0.9.0) (April 5, 2017)
 
 ### Bug fixes
 
 * Changed the default heading dropdown title to a more meaningful one. Closes [#68](https://github.com/ckeditor/ckeditor5-heading/issues/68). Closes [#62](https://github.com/ckeditor/ckeditor5-heading/issues/62). ([1c16e96](https://github.com/ckeditor/ckeditor5-heading/commit/1c16e96)) and ([e58dadc](https://github.com/ckeditor/ckeditor5-heading/commit/e58dadc))
-* Dropdown should be inactive when none of the commands can be applied to the current selection. Closes [#66](https://github.com/ckeditor/ckeditor5-heading/issues/66). ([0ebd5cd](https://github.com/ckeditor/ckeditor5-heading/commit/0ebd5cd))
+* The dropdown should be inactive when none of the commands can be applied to the current selection. Closes [#66](https://github.com/ckeditor/ckeditor5-heading/issues/66). ([0ebd5cd](https://github.com/ckeditor/ckeditor5-heading/commit/0ebd5cd))
 
 ### Features
 
 * Active heading is marked in the dropdown list. Closes [#26](https://github.com/ckeditor/ckeditor5-heading/issues/26). ([39ba14b](https://github.com/ckeditor/ckeditor5-heading/commit/39ba14b))
-* Enabled the tooltip for the 'headings' component in editor.ui#componentFactory. Closes [#55](https://github.com/ckeditor/ckeditor5-heading/issues/55). ([794e6df](https://github.com/ckeditor/ckeditor5-heading/commit/794e6df))
+* Enabled the tooltip for the `'headings'` component in `editor.ui#componentFactory`. Closes [#55](https://github.com/ckeditor/ckeditor5-heading/issues/55). ([794e6df](https://github.com/ckeditor/ckeditor5-heading/commit/794e6df))
 * Named existing plugin(s). ([7d512cd](https://github.com/ckeditor/ckeditor5-heading/commit/7d512cd))
-* Split "heading" command into independent commands. Closes [#53](https://github.com/ckeditor/ckeditor5-heading/issues/53). Closes [#56](https://github.com/ckeditor/ckeditor5-heading/issues/56). Closes [#52](https://github.com/ckeditor/ckeditor5-heading/issues/52). ([7a8f6f0](https://github.com/ckeditor/ckeditor5-heading/commit/7a8f6f0))
+* Split the `heading` command into independent commands. Closes [#53](https://github.com/ckeditor/ckeditor5-heading/issues/53). Closes [#56](https://github.com/ckeditor/ckeditor5-heading/issues/56). Closes [#52](https://github.com/ckeditor/ckeditor5-heading/issues/52). ([7a8f6f0](https://github.com/ckeditor/ckeditor5-heading/commit/7a8f6f0))
 * Styled items in the headings toolbar dropdown. Closes [#38](https://github.com/ckeditor/ckeditor5-heading/issues/38). ([0365333](https://github.com/ckeditor/ckeditor5-heading/commit/0365333))
 
 ### Other changes
@@ -246,12 +246,12 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### BREAKING CHANGES
 
-* The "heading" command is no longer available. Replaced by "heading1", "heading2", "heading3" and "paragraph".
+* The `heading` command is no longer available. Replaced by `heading1`, `heading2`, `heading3`, and `paragraph`.
 * `Heading` plugin requires `Paragraph` to work properly (`ParagraphCommand` registered as "paragraph" in `editor.commands`).
 * `config.heading.options` format has changed. The valid `HeadingOption` syntax is now `{ modelElement: 'heading1', viewElement: 'h1', title: 'Heading 1' }`.
 
 
-## [0.8.0](https://github.com/ckeditor/ckeditor5-heading/compare/v0.7.0...v0.8.0) (2017-03-06)
+## [0.8.0](https://github.com/ckeditor/ckeditor5-heading/compare/v0.7.0...v0.8.0) (March 6, 2017)
 
 ### Features
 
@@ -264,4 +264,4 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### BREAKING CHANGES
 
-* The `heading` command now accepts `id` option, not `formatId`.
+* The `heading` command now accepts the `id` option, not `formatId`.

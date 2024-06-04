@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -16,19 +16,20 @@ import type {
 	ViewAttributeElement,
 	ViewNode,
 	ViewDocumentFragment
-} from 'ckeditor5/src/engine';
-import type { LocaleTranslate } from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/engine.js';
+import type { LocaleTranslate } from 'ckeditor5/src/utils.js';
 
 import type {
 	LinkDecoratorAutomaticDefinition,
 	LinkDecoratorDefinition,
 	LinkDecoratorManualDefinition
-} from './linkconfig';
+} from './linkconfig.js';
 
 import { upperFirst } from 'lodash-es';
 
 const ATTRIBUTE_WHITESPACES = /[\u0000-\u0020\u00A0\u1680\u180E\u2000-\u2029\u205f\u3000]/g; // eslint-disable-line no-control-regex
-const SAFE_URL = /^(?:(?:https?|ftps?|mailto):|[^a-z]|[a-z+.-]+(?:[^a-z+.:-]|$))/i;
+
+const SAFE_URL_TEMPLATE = '^(?:(?:<protocols>):|[^a-z]|[a-z+.-]+(?:[^a-z+.:-]|$))';
 
 // Simplified email test - should be run over previously found URL.
 const EMAIL_REG_EXP = /^[\S]+@((?![-_])(?:[-\w\u00a1-\uffff]{0,63}[^-_]\.))+(?:[a-z\u00a1-\uffff]{2,})$/i;
@@ -36,6 +37,12 @@ const EMAIL_REG_EXP = /^[\S]+@((?![-_])(?:[-\w\u00a1-\uffff]{0,63}[^-_]\.))+(?:[
 // The regex checks for the protocol syntax ('xxxx://' or 'xxxx:')
 // or non-word characters at the beginning of the link ('/', '#' etc.).
 const PROTOCOL_REG_EXP = /^((\w+:(\/{2,})?)|(\W))/i;
+
+const DEFAULT_LINK_PROTOCOLS = [
+	'https?',
+	'ftps?',
+	'mailto'
+];
 
 /**
  * A keystroke used by the {@link module:link/linkui~LinkUI link UI feature}.
@@ -70,19 +77,22 @@ export function createLinkElement( href: string, { writer }: DowncastConversionA
  *
  * @internal
  */
-export function ensureSafeUrl( url: unknown ): string {
+export function ensureSafeUrl( url: unknown, allowedProtocols: Array<string> = DEFAULT_LINK_PROTOCOLS ): string {
 	const urlString = String( url );
 
-	return isSafeUrl( urlString ) ? urlString : '#';
+	const protocolsList = allowedProtocols.join( '|' );
+	const customSafeRegex = new RegExp( `${ SAFE_URL_TEMPLATE.replace( '<protocols>', protocolsList ) }`, 'i' );
+
+	return isSafeUrl( urlString, customSafeRegex ) ? urlString : '#';
 }
 
 /**
  * Checks whether the given URL is safe for the user (does not contain any malicious code).
  */
-function isSafeUrl( url: string ): boolean {
+function isSafeUrl( url: string, customRegexp: RegExp ): boolean {
 	const normalizedUrl = url.replace( ATTRIBUTE_WHITESPACES, '' );
 
-	return !!normalizedUrl.match( SAFE_URL );
+	return !!normalizedUrl.match( customRegexp );
 }
 
 /**

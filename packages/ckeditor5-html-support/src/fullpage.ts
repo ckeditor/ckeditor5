@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,9 @@
  * @module html-support/fullpage
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { UpcastWriter, type DataControllerToModelEvent, type DataControllerToViewEvent } from 'ckeditor5/src/engine';
-import HtmlPageDataProcessor from './htmlpagedataprocessor';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { UpcastWriter, type DataControllerToModelEvent, type DataControllerToViewEvent } from 'ckeditor5/src/engine.js';
+import HtmlPageDataProcessor from './htmlpagedataprocessor.js';
 
 /**
  * The full page editing feature. It preserves the whole HTML page in the editor data.
@@ -18,8 +18,8 @@ export default class FullPage extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'FullPage' {
-		return 'FullPage';
+	public static get pluginName() {
+		return 'FullPage' as const;
 	}
 
 	/**

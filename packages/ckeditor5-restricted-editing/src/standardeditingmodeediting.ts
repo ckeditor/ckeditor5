@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,9 @@
  * @module restricted-editing/standardeditingmodeediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 
-import RestrictedEditingExceptionCommand from './restrictededitingexceptioncommand';
+import RestrictedEditingExceptionCommand from './restrictededitingexceptioncommand.js';
 
 /**
  * The standard editing mode editing feature.
@@ -22,8 +22,8 @@ export default class StandardEditingModeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'StandardEditingModeEditing' {
-		return 'StandardEditingModeEditing';
+	public static get pluginName() {
+		return 'StandardEditingModeEditing' as const;
 	}
 
 	/**

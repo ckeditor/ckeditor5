@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,7 @@
  * @module table/tablecellproperties/tablecellpropertiesui
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import {
 	ButtonView,
 	clickOutsideHandler,
@@ -15,10 +15,10 @@ import {
 	getLocalizedColorOptions,
 	normalizeColorOptions,
 	type View
-} from 'ckeditor5/src/ui';
-import type { Batch } from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/ui.js';
+import type { Batch } from 'ckeditor5/src/engine.js';
 
-import TableCellPropertiesView from './ui/tablecellpropertiesview';
+import TableCellPropertiesView from './ui/tablecellpropertiesview.js';
 import {
 	colorFieldValidator,
 	getLocalizedColorErrorText,
@@ -26,16 +26,16 @@ import {
 	defaultColors,
 	lengthFieldValidator,
 	lineWidthFieldValidator
-} from '../utils/ui/table-properties';
+} from '../utils/ui/table-properties.js';
 import { debounce } from 'lodash-es';
-import { getTableWidgetAncestor } from '../utils/ui/widget';
-import { getBalloonCellPositionData, repositionContextualBalloon } from '../utils/ui/contextualballoon';
+import { getTableWidgetAncestor } from '../utils/ui/widget.js';
+import { getBalloonCellPositionData, repositionContextualBalloon } from '../utils/ui/contextualballoon.js';
 
 import tableCellProperties from './../../theme/icons/table-cell-properties.svg';
-import { getNormalizedDefaultProperties, type NormalizedDefaultProperties } from '../utils/table-properties';
-import type { GetCallback, ObservableChangeEvent } from 'ckeditor5/src/utils';
+import { getNormalizedDefaultProperties, type NormalizedDefaultProperties } from '../utils/table-properties.js';
+import type { GetCallback, ObservableChangeEvent } from 'ckeditor5/src/utils.js';
 
-import type TableCellBorderStyleCommand from './commands/tablecellborderstylecommand';
+import type TableCellBorderStyleCommand from './commands/tablecellborderstylecommand.js';
 
 const ERROR_TEXT_TIMEOUT = 500;
 
@@ -96,8 +96,8 @@ export default class TableCellPropertiesUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TableCellPropertiesUI' {
-		return 'TableCellPropertiesUI';
+	public static get pluginName() {
+		return 'TableCellPropertiesUI' as const;
 	}
 
 	/**
@@ -180,11 +180,13 @@ export default class TableCellPropertiesUI extends Plugin {
 		const localizedBorderColors = getLocalizedColorOptions( editor.locale, borderColorsConfig );
 		const backgroundColorsConfig = normalizeColorOptions( config.backgroundColors! );
 		const localizedBackgroundColors = getLocalizedColorOptions( editor.locale, backgroundColorsConfig );
+		const hasColorPicker = config.colorPicker !== false;
 
 		const view = new TableCellPropertiesView( editor.locale, {
 			borderColors: localizedBorderColors,
 			backgroundColors: localizedBackgroundColors,
-			defaultTableCellProperties: this._defaultTableCellProperties
+			defaultTableCellProperties: this._defaultTableCellProperties,
+			colorPickerConfig: hasColorPicker ? ( config.colorPicker || {} ) : false
 		} );
 		const t = editor.t;
 

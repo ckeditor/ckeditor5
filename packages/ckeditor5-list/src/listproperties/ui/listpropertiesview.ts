@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -15,20 +15,20 @@ import {
 	LabeledFieldView,
 	createLabeledInputNumber,
 	addKeyboardHandlingForGrid,
+	CollapsibleView,
 	type ButtonView,
-	type InputNumberView
-} from 'ckeditor5/src/ui';
+	type InputNumberView,
+	type FocusableView
+} from 'ckeditor5/src/ui.js';
 
 import {
 	FocusTracker,
 	KeystrokeHandler,
 	global,
 	type Locale
-} from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/utils.js';
 
-import CollapsibleView from './collapsibleview';
-
-import type { ListPropertiesConfig } from '../../listconfig';
+import type { ListPropertiesConfig } from '../../listconfig.js';
 
 import '../../../theme/listproperties.css';
 
@@ -99,7 +99,7 @@ export default class ListPropertiesView extends View {
 	/**
 	 * A collection of views that can be focused in the properties view.
 	 */
-	public readonly focusables: ViewCollection = new ViewCollection();
+	public readonly focusables = new ViewCollection<FocusableView>();
 
 	/**
 	 * Helps cycling over {@link #focusables} in the view.
@@ -211,13 +211,6 @@ export default class ListPropertiesView extends View {
 		if ( this.startIndexFieldView ) {
 			this.focusables.add( this.startIndexFieldView );
 			this.focusTracker.add( this.startIndexFieldView.element! );
-
-			// Intercept the `selectstart` event, which is blocked by default because of the default behavior
-			// of the DropdownView#panelView.
-			// TODO: blocking `selectstart` in the #panelView should be configurable per–drop–down instance.
-			this.listenTo( this.startIndexFieldView.element!, 'selectstart', ( evt, domEvt ) => {
-				domEvt.stopPropagation();
-			}, { priority: 'high' } );
 
 			const stopPropagation = ( data: Event ) => data.stopPropagation();
 
@@ -373,6 +366,10 @@ export default class ListPropertiesView extends View {
 			const startIndex = inputElement.valueAsNumber;
 
 			if ( Number.isNaN( startIndex ) ) {
+				// Number inputs allow for the entry of characters that may result in NaN,
+				// such as 'e', '+', '123e', '2-'.
+				startIndexFieldView.errorText = t( 'Invalid start index value.' );
+
 				return;
 			}
 

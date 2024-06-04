@@ -5,19 +5,19 @@ All changes in the package are documented in the main repository. See: https://g
 
 Changes for the past releases are available below.
 
-## [19.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v18.0.0...v19.0.0) (2020-04-29)
+## [19.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v18.0.0...v19.0.0) (April 29, 2020)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [18.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v17.0.0...v18.0.0) (2020-03-19)
+## [18.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v17.0.0...v18.0.0) (March 19, 2020)
 
 ### Other changes
 
 * Updated translations. ([c898ffc](https://github.com/ckeditor/ckeditor5-core/commit/c898ffc))
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 ### Features
 
@@ -30,14 +30,14 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([6a2b584](https://github.com/ckeditor/ckeditor5-core/commit/6a2b584))
 
 
-## [16.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v15.0.0...v16.0.0) (2019-12-04)
+## [16.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v15.0.0...v16.0.0) (December 4, 2019)
 
 ### Other changes
 
 * Updated translations. ([6d8950e](https://github.com/ckeditor/ckeditor5-core/commit/6d8950e))
 
 
-## [15.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v12.3.0...v15.0.0) (2019-10-23)
+## [15.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v12.3.0...v15.0.0) (October 23, 2019)
 
 ### Other changes
 
@@ -45,7 +45,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([a7d36a8](https://github.com/ckeditor/ckeditor5-core/commit/a7d36a8))
 
 
-## [12.3.0](https://github.com/ckeditor/ckeditor5-core/compare/v12.2.1...v12.3.0) (2019-08-26)
+## [12.3.0](https://github.com/ckeditor/ckeditor5-core/compare/v12.2.1...v12.3.0) (August 26, 2019)
 
 ### Features
 
@@ -58,12 +58,12 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([e29d56e](https://github.com/ckeditor/ckeditor5-core/commit/e29d56e))
 
 
-## [12.2.1](https://github.com/ckeditor/ckeditor5-core/compare/v12.2.0...v12.2.1) (2019-07-10)
+## [12.2.1](https://github.com/ckeditor/ckeditor5-core/compare/v12.2.0...v12.2.1) (July 10, 2019)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [12.2.0](https://github.com/ckeditor/ckeditor5-core/compare/v12.1.1...v12.2.0) (2019-07-04)
+## [12.2.0](https://github.com/ckeditor/ckeditor5-core/compare/v12.1.1...v12.2.0) (July 4, 2019)
 
 ### Features
 
@@ -71,7 +71,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
   Implemented the `EditorUI#setEditableElement()` method.
   Deprecated the `EditorUI#_editableElements` property.
-* Introduced `MultiCommand` which acts as a composite command – it can group multiple commands under the hood. ([ebcbd01](https://github.com/ckeditor/ckeditor5-core/commit/ebcbd01))
+* Introduced `MultiCommand` which acts as a composite command – it can group many commands under the hood. ([ebcbd01](https://github.com/ckeditor/ckeditor5-core/commit/ebcbd01))
 
 ### Other changes
 
@@ -79,14 +79,14 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([43f5b6e](https://github.com/ckeditor/ckeditor5-core/commit/43f5b6e))
 
 
-## [12.1.1](https://github.com/ckeditor/ckeditor5-core/compare/v12.1.0...v12.1.1) (2019-06-05)
+## [12.1.1](https://github.com/ckeditor/ckeditor5-core/compare/v12.1.0...v12.1.1) (June 6, 2019)
 
 ### Other changes
 
 * Updated translations. ([ed6bd3c](https://github.com/ckeditor/ckeditor5-core/commit/ed6bd3c))
 
 
-## [12.1.0](https://github.com/ckeditor/ckeditor5-core/compare/v12.0.0...v12.1.0) (2019-04-10)
+## [12.1.0](https://github.com/ckeditor/ckeditor5-core/compare/v12.0.0...v12.1.0) (April 4, 2019)
 
 ### Features
 
@@ -98,7 +98,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([2dedc43](https://github.com/ckeditor/ckeditor5-core/commit/2dedc43))
 
 
-## [12.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v11.1.0...v12.0.0) (2019-02-28)
+## [12.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v11.1.0...v12.0.0) (February 28, 2019)
 
 ### Bug fixes
 
@@ -117,14 +117,14 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Upgraded minimal versions of Node to `8.0.0` and npm to `5.7.1`. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([612ea3c](https://github.com/ckeditor/ckeditor5-cloud-services/commit/612ea3c))
 * The `Editor#getData()` method now returns an empty string by default when editor content is empty (instead of returning `'<p>&nbsp;</p>'` as before).
 * The `editor#pluginsReady` event was removed. Use plugin `afterInit()` method instead.
-* Removed `EditorWithUI#element` property.  The `EditorUI#element` property should be used instead.
-* Removed `EditorWithUI#uiReady` event.  The `EditorUI#ready` event should be used instead.
+* Removed `EditorWithUI#element` property. The `EditorUI#element` property should be used instead.
+* Removed `EditorWithUI#uiReady` event. The `EditorUI#ready` event should be used instead.
 * Removed `view` parameter in `EditorUI` constructor. Only subclasses should use it without passing it further to `EditorUI`.
 * Removed `EditorUI#view` property. The `view` property from subclasses (like `ClassicEditorUI#view`) should be used directly instead.
 * The `editor.plugins.get()` will now throw an error if the plugin is not loaded. Use `editor.plugins.has()` to check if plugin is available.
 
 
-## [11.1.0](https://github.com/ckeditor/ckeditor5-core/compare/v11.0.1...v11.1.0) (2018-12-05)
+## [11.1.0](https://github.com/ckeditor/ckeditor5-core/compare/v11.0.1...v11.1.0) (December 5, 2018)
 
 ### Features
 
@@ -135,20 +135,20 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Improved SVG icons size. See [ckeditor/ckeditor5-theme-lark#206](https://github.com/ckeditor/ckeditor5-theme-lark/issues/206). ([c4795fb](https://github.com/ckeditor/ckeditor5-core/commit/c4795fb))
 
 
-## [11.0.1](https://github.com/ckeditor/ckeditor5-core/compare/v11.0.0...v11.0.1) (2018-10-08)
+## [11.0.1](https://github.com/ckeditor/ckeditor5-core/compare/v11.0.0...v11.0.1) (October 8, 2018)
 
 ### Other changes
 
 * Updated translations. ([873d193](https://github.com/ckeditor/ckeditor5-core/commit/873d193))
 
 
-## [11.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v10.1.0...v11.0.0) (2018-07-18)
+## [11.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v10.1.0...v11.0.0) (July 18, 2018)
 
 ### Features
 
 * Added the observable `Editor#state` property. Closes [#124](https://github.com/ckeditor/ckeditor5-core/issues/124). ([ec89d8d](https://github.com/ckeditor/ckeditor5-core/commit/ec89d8d))
 * Imported the module providing the `CKEDITOR_VERSION` global constant in the `Editor` class (see [ckeditor/ckeditor5#1005](https://github.com/ckeditor/ckeditor5/issues/1005)). ([a1a9144](https://github.com/ckeditor/ckeditor5-core/commit/a1a9144))
-* Introduced the `#element` property to the `EditorWithUI` interface. The `#element` property from the `ElementApi` interface has been renamed to `#sourceElement`. Most editors implement both interfaces, which ultimately means that the old `editor.element` property is now called `editor.sourceElement` and there's a new `editor.element` property with a new meaning. Closes [#64](https://github.com/ckeditor/ckeditor5-core/issues/64). ([eb43b63](https://github.com/ckeditor/ckeditor5-core/commit/eb43b63))
+* Introduced the `#element` property to the `EditorWithUI` interface. The `#element` property from the `ElementApi` interface has been renamed to `#sourceElement`. Most editors implement both interfaces, which means that the old `editor.element` property is now called `editor.sourceElement` and there is a new `editor.element` property with a new meaning. Closes [#64](https://github.com/ckeditor/ckeditor5-core/issues/64). ([eb43b63](https://github.com/ckeditor/ckeditor5-core/commit/eb43b63))
 * Introduced the `EditorUI#update` event. Closes [#130](https://github.com/ckeditor/ckeditor5-core/issues/130). ([734166a](https://github.com/ckeditor/ckeditor5-core/commit/734166a))
 
 ### Bug fixes
@@ -170,7 +170,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `EditorUI` is now a class (no longer an interface).
 
 
-## [10.1.0](https://github.com/ckeditor/ckeditor5-core/compare/v10.0.0...v10.1.0) (2018-06-21)
+## [10.1.0](https://github.com/ckeditor/ckeditor5-core/compare/v10.0.0...v10.1.0) (June 21, 2018)
 
 ### Features
 
@@ -181,7 +181,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations.
 
 
-## [10.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v1.0.0-beta.4...v10.0.0) (2018-04-25)
+## [10.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v1.0.0-beta.4...v10.0.0) (April 25, 2018)
 
 ### Other changes
 
@@ -189,22 +189,22 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### BREAKING CHANGES
 
-* The license under which CKEditor 5 is released has been changed from a triple GPL, LGPL and MPL license to a GPL2+ only. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
+* The license under which CKEditor&nbsp;5 is released was changed from a triple GPL, LGPL, and MPL license to a GPL2+. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
 
 
-## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-core/compare/v1.0.0-beta.2...v1.0.0-beta.4) (2018-04-19)
+## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-core/compare/v1.0.0-beta.2...v1.0.0-beta.4) (April 19, 2018)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-core/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2018-04-10)
+## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-core/compare/v1.0.0-beta.1...v1.0.0-beta.2) (April 10, 2018)
 
 ### Other changes
 
 * Made the check and cancel icons thicker and fill-friendly (see [ckeditor/ckeditor5#810](https://github.com/ckeditor/ckeditor5/issues/810)). ([6584541](https://github.com/ckeditor/ckeditor5-core/commit/6584541))
 
 
-## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-core/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
+## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-core/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (March 15, 2018)
 
 ### Other changes
 
@@ -219,26 +219,26 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `StandardEditor` class was removed. Use `Editor` class with `DataInterface` and `ElementInterface` mixins.
 
 
-## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-core/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
+## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-core/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (November 14, 2017)
 
 ### Other changes
 
 * Updated translations. ([1003fa4](https://github.com/ckeditor/ckeditor5-core/commit/1003fa4))
 
 
-## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-core/compare/v0.9.0...v1.0.0-alpha.1) (2017-10-03)
+## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-core/compare/v0.9.0...v1.0.0-alpha.1) (October 3, 2017)
 
 ### Features
 
 * The `StandardEditor` should automatically update the contents of its source textarea upon submission of the form. Closes https://github.com/ckeditor/ckeditor5/issues/544. ([ce46fde](https://github.com/ckeditor/ckeditor5-core/commit/ce46fde))
 
 
-## [0.9.0](https://github.com/ckeditor/ckeditor5-core/compare/v0.8.1...v0.9.0) (2017-09-03)
+## [0.9.0](https://github.com/ckeditor/ckeditor5-core/compare/v0.8.1...v0.9.0) (September 3, 2017)
 
 ### Bug fixes
 
 * `EditingKeystrokeHandler` should prevent default action only for commands. Closes [#90](https://github.com/ckeditor/ckeditor5-core/issues/90). ([82ff39a](https://github.com/ckeditor/ckeditor5-core/commit/82ff39a))
-* `ToggleAttributeCommand` should listen to reliable events in order to determine its state. Closes [#50](https://github.com/ckeditor/ckeditor5-core/issues/50). ([6816505](https://github.com/ckeditor/ckeditor5-core/commit/6816505))
+* `ToggleAttributeCommand` should listen to reliable events to determine its state. Closes [#50](https://github.com/ckeditor/ckeditor5-core/issues/50). ([6816505](https://github.com/ckeditor/ckeditor5-core/commit/6816505))
 * SVG icons should not define own fill if controlled by the styles. Closes [#79](https://github.com/ckeditor/ckeditor5-core/issues/79). ([fadf5ec](https://github.com/ckeditor/ckeditor5-core/commit/fadf5ec))
 
 ### Features
@@ -254,7 +254,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 * Bound `EditingController#isReadOnly` to the editor. Closes [#98](https://github.com/ckeditor/ckeditor5-core/issues/98). ([ec02906](https://github.com/ckeditor/ckeditor5-core/commit/ec02906))
 * Cleaned up SVG icons. ([ffac7e7](https://github.com/ckeditor/ckeditor5-core/commit/ffac7e7))
-* Introduced `PluginInterface`. A plugin doesn't need to inherit directly from the `Plugin` class, as long as it implements some minimal interface. See [#78](https://github.com/ckeditor/ckeditor5-core/issues/78). ([f476f34](https://github.com/ckeditor/ckeditor5-core/commit/f476f34))
+* Introduced `PluginInterface`. A plugin does not need to inherit directly from the `Plugin` class, as long as it implements some minimal interface. See [#78](https://github.com/ckeditor/ckeditor5-core/issues/78). ([f476f34](https://github.com/ckeditor/ckeditor5-core/commit/f476f34))
 * Removed `ToggleAttributeCommand` class as well as other helpers from the `core/command` namespace. Closes [#14](https://github.com/ckeditor/ckeditor5-core/issues/14). ([7c68581](https://github.com/ckeditor/ckeditor5-core/commit/7c68581))
 * The command API has been redesigned. The `Command` methods are now public and consistent. Commands can be used in a standalone mode (without the editor). The `CommandCollection` was introduced and replaced the `Map` of commands used in `editor.commands`. Closes [#88](https://github.com/ckeditor/ckeditor5-core/issues/88). ([b76983b](https://github.com/ckeditor/ckeditor5-core/commit/b76983b))
 
@@ -267,39 +267,39 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 * The `ToggleAttributeCommand` was moved to the `ckeditor5-basic-styles` package as `AttributeCommand` and the other command helpers to `ckeditor5-engine` as `Schema` methods.
 * The `Command`'s protected `_doExecute()` and `_checkEnabled()` methods have been replaced by public `execute()` and `refresh()` methods.
-* The `Command`'s `refreshState` event was removed and one should use `change:isEnabled` in order to control and override its state.
+* The `Command`'s `refreshState` event was removed and one should use `change:isEnabled` to control and override its state.
 * The `core/command/command` module has been moved to the root directory (so the `Command` class is `core/command~Command` now).
 * The `Command#refresh()` method is now automatically called on `editor.document#changesDone`.
 * The `editor.commands` map was replaced by a `CommandCollection` instance so `editor.commands.set()` calls need to be replaced with `editor.commands.add()`.
 
-### NOTE
+### Note
 
 * Plugin naming convention has changed.
 
 
-## [0.8.1](https://github.com/ckeditor/ckeditor5-core/compare/v0.8.0...v0.8.1) (2017-05-07)
+## [0.8.1](https://github.com/ckeditor/ckeditor5-core/compare/v0.8.0...v0.8.1) (May 7, 2017)
 
 ### Other changes
 
 * Updated translations. ([993596a](https://github.com/ckeditor/ckeditor5-core/commit/993596a))
 
 
-## [0.8.0](https://github.com/ckeditor/ckeditor5-core/compare/v0.7.0...v0.8.0) (2017-04-05)
+## [0.8.0](https://github.com/ckeditor/ckeditor5-core/compare/v0.7.0...v0.8.0) (April 5, 2017)
 
 ### Bug fixes
 
-* This time, we introduced support for `config.removePlugins` for real (we said that we did this in the previous release, but we didn't). Closes [#49](https://github.com/ckeditor/ckeditor5-core/issues/49). ([5834fed](https://github.com/ckeditor/ckeditor5-core/commit/5834fed))
+* This time, we introduced support for `config.removePlugins` for real (we said that we did this in the previous release, but we did not). Closes [#49](https://github.com/ckeditor/ckeditor5-core/issues/49). ([5834fed](https://github.com/ckeditor/ckeditor5-core/commit/5834fed))
 
 ### Features
 
-* Added support for building plugins and default configs into `Editor` classes. Closes [#67](https://github.com/ckeditor/ckeditor5-core/issues/67). ([a1fa64f](https://github.com/ckeditor/ckeditor5-core/commit/a1fa64f))
+* Added support for building plugins and default configurations into `Editor` classes. Closes [#67](https://github.com/ckeditor/ckeditor5-core/issues/67). ([a1fa64f](https://github.com/ckeditor/ckeditor5-core/commit/a1fa64f))
 
 ### Other changes
 
 * Updated translations. ([1296b03](https://github.com/ckeditor/ckeditor5-core/commit/1296b03))
 
 
-## [0.7.0](https://github.com/ckeditor/ckeditor5-core/compare/v0.6.0...v0.7.0) (2017-03-06)
+## [0.7.0](https://github.com/ckeditor/ckeditor5-core/compare/v0.6.0...v0.7.0) (March 6, 2017)
 
 ### Features
 

@@ -1,16 +1,17 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import BalloonToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/balloon/balloontoolbar';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import Table from '../src/table';
-import TableToolbar from '../src/tabletoolbar';
-import View from '@ckeditor/ckeditor5-ui/src/view';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import BalloonToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/balloon/balloontoolbar.js';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import Table from '../src/table.js';
+import TableToolbar from '../src/tabletoolbar.js';
+import View from '@ckeditor/ckeditor5-ui/src/view.js';
 
 describe( 'TableContentToolbar integration', () => {
 	describe( 'with the BalloonToolbar', () => {
@@ -22,7 +23,7 @@ describe( 'TableContentToolbar integration', () => {
 
 			return ClassicTestEditor
 				.create( editorElement, {
-					plugins: [ Table, TableToolbar, BalloonToolbar, Paragraph ]
+					plugins: [ Table, TableToolbar, BalloonToolbar, Paragraph, ClipboardPipeline ]
 				} )
 				.then( editor => {
 					newEditor = editor;

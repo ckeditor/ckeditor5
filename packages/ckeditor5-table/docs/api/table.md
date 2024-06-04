@@ -2,11 +2,11 @@
 category: api-reference
 ---
 
-# CKEditor 5 table feature
+# CKEditor&nbsp;5 table feature
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-table.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)
 
-This package implements the table feature for CKEditor 5.
+This package implements the table feature for CKEditor&nbsp;5.
 
 ## Demo
 
@@ -28,8 +28,10 @@ See the {@link features/tables table feature guide} and the documentation for th
 
 ## Installation
 
+This package is part of our open-source aggregate package.
+
 ```bash
-npm install --save @ckeditor/ckeditor5-table
+npm install ckeditor5
 ```
 
 ## Contribute

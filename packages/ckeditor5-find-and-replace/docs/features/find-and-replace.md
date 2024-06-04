@@ -1,7 +1,8 @@
 ---
 title: Find and replace
+meta-title: Find and replace | CKEditor 5 Documentation
 category: features
-modified_at: 2021-06-29
+modified_at: 2024-01-03
 ---
 
 {@snippet features/build-find-and-replace-source}
@@ -10,30 +11,20 @@ The find and replace feature lets you find and replace any text in your document
 
 ## Demo
 
-Use the find and replace toolbar button {@icon @ckeditor/ckeditor5-find-and-replace/theme/icons/find-replace.svg Find and replace} to open the search panel. Use the panel to find and replace words or phrases. You can also use the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>F</kbd> keyboard shortcut. Try replacing "steam" with "diesel" to make the content more up-to-date. Be careful to match the case!
+Use the find and replace toolbar button {@icon @ckeditor/ckeditor5-find-and-replace/theme/icons/find-replace.svg Find and replace} to open the search dialog. Use it to find and replace words or phrases. You can also use the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>F</kbd> keyboard shortcut. Try replacing "AI" with "artificial intelligence" to make the content appeal to less tech-savvy users. Be careful to match the case!
 
 {@snippet features/find-and-replace}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Installation
 
-<info-box info>
-	The find and replace feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
-</info-box>
-
-To add this feature to your editor, install the [`@ckeditor/ckeditor5-find-and-replace`](https://www.npmjs.com/package/@ckeditor/ckeditor5-find-and-replace) package:
-
-```
-npm install --save @ckeditor/ckeditor5-find-and-replace
-```
-
-Then add the `FindAndReplace` plugin to your plugin list:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace';
+import { ClassicEditor, FindAndReplace } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -44,9 +35,24 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
-</info-box>
+## Configuration
+
+### Configuring the UI type
+
+By default, the find and replace form displays inside a dialog. That allows for keeping it open while editing the document at the same time. Alternatively, you can display the feature in a dropdown. To do this, use the {@link module:find-and-replace/findandreplaceconfig~FindAndReplaceConfig `config.findAndReplace.uiType`} configuration option:
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		findAndReplace: {
+			uiType: 'dropdown'
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+{@snippet features/find-and-replace-dropdown}
 
 ## Related features
 
@@ -57,7 +63,7 @@ ClassicEditor
 
 The {@link module:find-and-replace/findandreplace~FindAndReplace} plugin registers the `'findAndReplace'` UI button component and the {@link module:find-and-replace/findcommand~FindCommand `'find'`}, {@link module:find-and-replace/findnextcommand~FindNextCommand `'findNext'`}, {@link module:find-and-replace/findpreviouscommand~FindPreviousCommand `'findPrevious'`}, {@link module:find-and-replace/replacecommand~ReplaceCommand `'replace'`} and {@link module:find-and-replace/replaceallcommand~ReplaceAllCommand `'replaceAll'`} commands.
 
-The commands can be executed using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
+You can execute the commands using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
 
 ```js
 // Find all occurrences of a given text.
@@ -78,7 +84,7 @@ editor.execute( 'replaceAll', 'diesel', 'steam' );
 ```
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Contribute

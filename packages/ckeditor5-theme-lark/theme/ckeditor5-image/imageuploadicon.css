@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -56,6 +56,17 @@
 
 		/* #1095. While reset is not providing proper box-sizing for pseudoelements, we need to handle it. */
 		box-sizing: border-box;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		animation-duration: 0ms;
+
+		&::after {
+			animation: none;
+			opacity: 1;
+			width: 0.3em;
+			height: 0.45em;
+		}
 	}
 }
 

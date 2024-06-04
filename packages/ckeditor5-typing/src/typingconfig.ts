@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -173,7 +173,7 @@ export interface TextTransformationConfig {
  * * If an array is passed, it has to have the same number of elements as there are capturing groups in the input value regular expression.
  * Each capture group will be replaced with a corresponding string from the passed array. If a given capturing group should not be replaced,
  * use `null` instead of passing a string.
- * * If a function is used, it should return an array as described above. The function is passed one parameter &mdash; an array with matches
+ * * If a function is used, it should return an array as described above. The function is passed one parameter &ndash; an array with matches
  * by the regular expression. See the examples below.
  *
  * A simple string-to-string replacement:

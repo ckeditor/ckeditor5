@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,9 @@
  * @module basic-styles/italic
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import ItalicEditing from './italic/italicediting';
-import ItalicUI from './italic/italicui';
+import { Plugin } from 'ckeditor5/src/core.js';
+import ItalicEditing from './italic/italicediting.js';
+import ItalicUI from './italic/italicui.js';
 
 /**
  * The italic feature.
@@ -31,7 +31,7 @@ export default class Italic extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Italic' {
-		return 'Italic';
+	public static get pluginName() {
+		return 'Italic' as const;
 	}
 }

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -11,8 +11,8 @@ import { isFunction } from 'lodash-es';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
-import type { default as Editor, EditorDestroyEvent } from '../editor';
-import type { ElementApi } from './elementapimixin';
+import type { default as Editor, EditorDestroyEvent } from '../editor.js';
+import type { ElementApi } from './elementapimixin.js';
 
 /**
  * Checks if the editor is initialized on a `<textarea>` element that belongs to a form. If yes, it updates the editor's element

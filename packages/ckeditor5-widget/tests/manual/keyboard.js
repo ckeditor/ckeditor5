@@ -1,15 +1,15 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals console, window, document */
 
-import Widget from '../../src/widget';
-import { toWidget, toWidgetEditable, viewToModelPositionOutsideModelElement } from '../../src/utils';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import Widget from '../../src/widget.js';
+import { toWidget, toWidgetEditable, viewToModelPositionOutsideModelElement } from '../../src/utils.js';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 
 function BlockWidget( editor ) {
 	editor.model.schema.register( 'div', {
@@ -158,7 +158,7 @@ const config = {
 		'redo'
 	],
 	image: {
-		toolbar: [ 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
+		toolbar: [ 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative' ]
 	},
 	table: {
 		contentToolbar: [

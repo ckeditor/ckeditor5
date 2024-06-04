@@ -1,28 +1,33 @@
 ---
 category: update-guides
+meta-title: Update to version 25.x | CKEditor 5 Documentation
 menu-title: Update to v25.x
 order: 99
 ---
 
+# Update to CKEditor&nbsp;5 v25.x
+
 <info-box>
-	When updating your CKEditor 5 installation, make sure **all the packages are the same version** to avoid errors.
+	When updating your CKEditor&nbsp;5 installation, make sure **all the packages are the same version** to avoid errors.
 
 	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
 
-# Update to CKEditor 5 v25.0.0
+## Update to CKEditor&nbsp;5 v25.0.0
 
-For the entire list of changes introduced in version 25.0.0, see the [release notes for CKEditor 5 v25.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v25.0.0).
+_Released on January 27, 2021._
 
-This migration guide enumerates the most important changes that require your attention when upgrading to CKEditor 5 v25.0.0 due to changes introduced in the {@link features/collaboration collaboration features} and the redesign of the annotations API.
+For the entire list of changes introduced in version 25.0.0, see the [release notes for CKEditor&nbsp;5 v25.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v25.0.0).
 
-## The redesign of the Annotations API
+This migration guide enumerates the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v25.0.0 due to changes introduced in the {@link features/collaboration collaboration features} and the redesign of the annotations API.
 
-The entire annotations API was redesigned in order to support multiple annotation UIs at the same time. A good example of this is an idea of displaying {@link features/comments comments} in the {@link features/annotations-display-mode#wide-sidebar sidebar} while showing suggestions from {@link features/track-changes track changes} in {@link features/annotations-display-mode#inline-balloons inline balloons} when their corresponding suggestions are active. Due to that, some architectural changes were made and quite a lot of breaking changes were introduced with this release. See the migration guide below to check how to adapt to the changes.
+### The redesign of the Annotations API
 
-## Conceptual and architectural changes
+The entire annotations API was redesigned to support many annotation UIs at the same time. A good example of this is an idea of displaying {@link features/comments comments} in the {@link features/annotations-display-mode#wide-sidebar sidebar} while showing suggestions from {@link features/track-changes track changes} in {@link features/annotations-display-mode#inline-balloons inline balloons} when their corresponding suggestions are active. Due to that, some architectural changes were made and quite a lot of breaking changes were introduced with this release. See the migration guide below to check how to adapt to the changes.
 
-The new annotations API allows for activating (attaching) multiple annotation UIs at the same time. To allow multiple UIs at the same time, the annotation filtering function must be registered during the annotation UI activation. Though, still, one annotation can be handled only by one annotation UI at the same time.
+### Conceptual and architectural changes
+
+The new annotations API allows for activating (attaching) many annotation UIs at the same time. To allow multiple UIs at the same time, the annotation filtering function must be registered during the annotation UI activation. Though, still, one annotation can be handled only by one annotation UI at the same time.
 
 The new annotations API allows for setting multiple active annotations at the same time (max one per each annotation UI), so at some point more than one annotation can be active for various annotation UIs.
 
@@ -46,9 +51,9 @@ The [`Sidebar`](https://ckeditor.com/docs/ckeditor5/latest/api/module_comments_a
 
 The [`EditorAnnotations`](https://ckeditor.com/docs/ckeditor5/latest/api/module_comments_annotations_editorannotations-EditorAnnotations.html) started firing events instead of manipulating the global collection of annotations. From now on, every annotation UI needs to create its own integration with this class. This may change in the future as it complicates the implementation of the custom UI.
 
-## Code migration examples
+### Code migration examples
 
-### Registering and activating annotation UIs
+#### Registering and activating annotation UIs
 
 Before:
 

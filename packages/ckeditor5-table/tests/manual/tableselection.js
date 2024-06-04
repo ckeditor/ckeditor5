@@ -1,19 +1,19 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document, global, CKEditorInspector */
+/* globals console, window, document, CKEditorInspector */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import Table from '../../src/table';
-import TableToolbar from '../../src/tabletoolbar';
-import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import TableSelection from '../../src/tableselection';
-import TableClipboard from '../../src/tableclipboard';
-import TableProperties from '../../src/tableproperties';
-import TableCellProperties from '../../src/tablecellproperties';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import Table from '../../src/table.js';
+import TableToolbar from '../../src/tabletoolbar.js';
+import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import TableSelection from '../../src/tableselection.js';
+import TableClipboard from '../../src/tableclipboard.js';
+import TableProperties from '../../src/tableproperties.js';
+import TableCellProperties from '../../src/tablecellproperties.js';
 
 window.editors = {};
 
@@ -32,7 +32,7 @@ function createEditor( target, inspectorName ) {
 				'undo', 'redo'
 			],
 			image: {
-				toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
+				toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative' ]
 			},
 			table: {
 				contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties' ]
@@ -51,7 +51,7 @@ function createEditor( target, inspectorName ) {
 		} );
 }
 
-const modelDiv = global.document.querySelector( '#model' );
+const modelDiv = document.querySelector( '#model' );
 
 function printModelContents( editor ) {
 	modelDiv.innerHTML = formatTable( getData( editor.model ) )

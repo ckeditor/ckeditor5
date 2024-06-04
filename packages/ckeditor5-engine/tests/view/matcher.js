@@ -1,18 +1,18 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global console */
 
-import Matcher from '../../src/view/matcher';
-import Element from '../../src/view/element';
-import Document from '../../src/view/document';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { StylesProcessor } from '../../src/view/stylesmap';
-import { addMarginRules } from '../../src/view/styles/margin';
-import { addBorderRules } from '../../src/view/styles/border';
-import { addBackgroundRules } from '../../src/view/styles/background';
+import Matcher from '../../src/view/matcher.js';
+import Element from '../../src/view/element.js';
+import Document from '../../src/view/document.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { StylesProcessor } from '../../src/view/stylesmap.js';
+import { addMarginRules } from '../../src/view/styles/margin.js';
+import { addBorderRules } from '../../src/view/styles/border.js';
+import { addBackgroundRules } from '../../src/view/styles/background.js';
 
 describe( 'Matcher', () => {
 	let document;

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,13 +10,13 @@
 /* globals window */
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
-import FileRepository, { type UploadResponse, type FileLoader, type UploadAdapter } from '../filerepository';
+import FileRepository, { type UploadResponse, type FileLoader, type UploadAdapter } from '../filerepository.js';
 
 type DomFileReader = globalThis.FileReader;
 
 /**
  * A plugin that converts images inserted into the editor into [Base64 strings](https://en.wikipedia.org/wiki/Base64)
- * in the {@glink installation/getting-started/getting-and-setting-data editor output}.
+ * in the {@glink getting-started/setup/getting-and-setting-data editor output}.
  *
  * This kind of image upload does not require server processing – images are stored with the rest of the text and
  * displayed by the web browser without additional requests.
@@ -35,8 +35,8 @@ export default class Base64UploadAdapter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Base64UploadAdapter' {
-		return 'Base64UploadAdapter';
+	public static get pluginName() {
+		return 'Base64UploadAdapter' as const;
 	}
 
 	/**

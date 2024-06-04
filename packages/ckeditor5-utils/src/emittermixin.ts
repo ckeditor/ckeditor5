@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,21 +7,21 @@
  * @module utils/emittermixin
  */
 
-import EventInfo from './eventinfo';
-import uid from './uid';
-import priorities, { type PriorityString } from './priorities';
-import insertToPriorityArray from './inserttopriorityarray';
-import type { Constructor, Mixed } from './mix';
+import EventInfo from './eventinfo.js';
+import uid from './uid.js';
+import priorities, { type PriorityString } from './priorities.js';
+import insertToPriorityArray from './inserttopriorityarray.js';
+import type { Constructor, Mixed } from './mix.js';
 
 // To check if component is loaded more than once.
-import './version';
-import CKEditorError from './ckeditorerror';
+import './version.js';
+import CKEditorError from './ckeditorerror.js';
 
 const _listeningTo = Symbol( 'listeningTo' );
 const _emitterId = Symbol( 'emitterId' );
 const _delegations = Symbol( 'delegations' );
 
-const defaultEmitterClass = EmitterMixin( Object );
+const defaultEmitterClass = /* #__PURE__ */ EmitterMixin( Object );
 
 /**
  * Mixin that injects the {@link ~Emitter events API} into its host.
@@ -355,18 +355,18 @@ export default function EmitterMixin( base?: Constructor ): unknown {
 			}
 		}
 
-		public _events?: { [ eventName: string ]: EventNode };
+		public declare _events?: { [ eventName: string ]: EventNode };
 
-		public [ _emitterId ]?: string;
+		public declare [ _emitterId ]?: string;
 
-		public [ _listeningTo ]?: {
+		public declare [ _listeningTo ]?: {
 			[ emitterId: string ]: {
 				emitter: Emitter;
 				callbacks: { [ event: string]: Array<Function> };
 			};
 		};
 
-		public [ _delegations ]?: Map<string, Map<Emitter, string | ( ( name: string ) => string ) | undefined>>;
+		public declare [ _delegations ]?: Map<string, Map<Emitter, string | ( ( name: string ) => string ) | undefined>>;
 	}
 
 	return Mixin;

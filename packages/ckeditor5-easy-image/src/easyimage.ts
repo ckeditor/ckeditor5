@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,10 +7,10 @@
  * @module easy-image/easyimage
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { logWarning } from 'ckeditor5/src/utils';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { logWarning } from 'ckeditor5/src/utils.js';
 
-import CloudServicesUploadAdapter from './cloudservicesuploadadapter';
+import CloudServicesUploadAdapter from './cloudservicesuploadadapter.js';
 
 /**
  * The Easy Image feature, which makes the image upload in CKEditor 5 possible with virtually zero
@@ -40,8 +40,8 @@ export default class EasyImage extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'EasyImage' {
-		return 'EasyImage';
+	public static get pluginName() {
+		return 'EasyImage' as const;
 	}
 
 	/**

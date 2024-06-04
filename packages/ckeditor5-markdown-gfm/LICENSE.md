@@ -1,8 +1,8 @@
 Software License Agreement
 ==========================
 
-**CKEditor 5 GitHub Flavored Markdown support** – https://github.com/ckeditor/ckeditor5-markdown-gfm <br>
-Copyright (c) 2003-2023, [CKSource Holding sp. z o.o.](https://cksource.com) All rights reserved.
+**CKEditor&nbsp;5 GitHub Flavored Markdown support** – https://github.com/ckeditor/ckeditor5-markdown-gfm <br>
+Copyright (c) 2003–2024, [CKSource Holding sp. z o.o.](https://cksource.com) All rights reserved.
 
 Licensed under the terms of [GNU General Public License Version 2 or later](http://www.gnu.org/licenses/gpl.html).
 
@@ -13,9 +13,9 @@ Where not otherwise indicated, all CKEditor content is authored by CKSource engi
 
 The following libraries are included in CKEditor under the [MIT license](https://opensource.org/licenses/MIT):
 
-* Marked - Copyright (c) Christopher Jeffrey (https://github.com/chjj/).
-* Turndown - Copyright (c) Dom Christie.
-* Turndown-plugin-gfm - Copyright (c) Dom Christie.
+* Marked - Copyright (c) 2018+, MarkedJS (https://github.com/markedjs/), Copyright (c) 2011–2018, Christopher Jeffrey (https://github.com/chjj/).
+* Turndown - Copyright (c) 2017 Dom Christie.
+* turndown-plugin-gfm - Copyright (c) 2017 Dom Christie.
 
 Trademarks
 ----------

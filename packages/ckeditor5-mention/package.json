@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-mention",
-  "version": "37.1.0",
+  "version": "41.4.2",
   "description": "Mention feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -10,38 +10,35 @@
     "ckeditor5-plugin",
     "ckeditor5-dll"
   ],
+  "type": "module",
   "main": "src/index.ts",
   "dependencies": {
-    "ckeditor5": "^37.1.0",
-    "lodash-es": "^4.17.15"
+    "ckeditor5": "41.4.2",
+    "lodash-es": "4.17.21"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^37.1.0",
-    "@ckeditor/ckeditor5-block-quote": "^37.1.0",
-    "@ckeditor/ckeditor5-clipboard": "^37.1.0",
-    "@ckeditor/ckeditor5-cloud-services": "^37.1.0",
-    "@ckeditor/ckeditor5-core": "^37.1.0",
-    "@ckeditor/ckeditor5-dev-utils": "^37.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "^37.1.0",
-    "@ckeditor/ckeditor5-engine": "^37.1.0",
-    "@ckeditor/ckeditor5-font": "^37.1.0",
-    "@ckeditor/ckeditor5-link": "^37.1.0",
-    "@ckeditor/ckeditor5-paragraph": "^37.1.0",
-    "@ckeditor/ckeditor5-table": "^37.1.0",
-    "@ckeditor/ckeditor5-theme-lark": "^37.1.0",
-    "@ckeditor/ckeditor5-typing": "^37.1.0",
-    "@ckeditor/ckeditor5-ui": "^37.1.0",
-    "@ckeditor/ckeditor5-undo": "^37.1.0",
-    "@ckeditor/ckeditor5-utils": "^37.1.0",
-    "@ckeditor/ckeditor5-widget": "^37.1.0",
+    "@ckeditor/ckeditor5-basic-styles": "41.4.2",
+    "@ckeditor/ckeditor5-block-quote": "41.4.2",
+    "@ckeditor/ckeditor5-clipboard": "41.4.2",
+    "@ckeditor/ckeditor5-cloud-services": "41.4.2",
+    "@ckeditor/ckeditor5-core": "41.4.2",
+    "@ckeditor/ckeditor5-dev-utils": "^40.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "41.4.2",
+    "@ckeditor/ckeditor5-engine": "41.4.2",
+    "@ckeditor/ckeditor5-font": "41.4.2",
+    "@ckeditor/ckeditor5-link": "41.4.2",
+    "@ckeditor/ckeditor5-paragraph": "41.4.2",
+    "@ckeditor/ckeditor5-table": "41.4.2",
+    "@ckeditor/ckeditor5-theme-lark": "41.4.2",
+    "@ckeditor/ckeditor5-typing": "41.4.2",
+    "@ckeditor/ckeditor5-ui": "41.4.2",
+    "@ckeditor/ckeditor5-undo": "41.4.2",
+    "@ckeditor/ckeditor5-utils": "41.4.2",
+    "@ckeditor/ckeditor5-widget": "41.4.2",
     "lodash": "^4.17.15",
-    "typescript": "^4.8.4",
+    "typescript": "5.0.4",
     "webpack": "^5.58.1",
     "webpack-cli": "^4.9.0"
-  },
-  "engines": {
-    "node": ">=16.0.0",
-    "npm": ">=5.7.1"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "GPL-2.0-or-later",
@@ -53,6 +50,7 @@
     "directory": "packages/ckeditor5-mention"
   },
   "files": [
+    "dist",
     "lang",
     "src/**/*.js",
     "src/**/*.d.ts",
@@ -64,6 +62,6 @@
   "scripts": {
     "dll:build": "webpack",
     "build": "tsc -p ./tsconfig.json",
-    "postversion": "npm run build"
+    "build:dist": "node ../../scripts/build-package.mjs"
   }
 }

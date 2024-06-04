@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -97,6 +97,13 @@ export default class DataTransfer {
 
 	public get dropEffect(): DropEffect {
 		return this._native.dropEffect;
+	}
+
+	/**
+	 * Set a preview image of the dragged content.
+	 */
+	public setDragImage( image: Element, x: number, y: number ): void {
+		this._native.setDragImage( image, x, y );
 	}
 
 	/**

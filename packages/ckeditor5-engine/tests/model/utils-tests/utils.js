@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -8,13 +8,13 @@ import {
 	itemAt,
 	getText,
 	createRangeOnElementOnly
-} from '../../../tests/model/_utils/utils';
-import Model from '../../../src/model/model';
-import Range from '../../../src/model/range';
-import Element from '../../../src/model/element';
-import Text from '../../../src/model/text';
-import Node from '../../../src/model/node';
-import TextProxy from '../../../src/model/textproxy';
+} from '../../../tests/model/_utils/utils.js';
+import Model from '../../../src/model/model.js';
+import Range from '../../../src/model/range.js';
+import Element from '../../../src/model/element.js';
+import Text from '../../../src/model/text.js';
+import Node from '../../../src/model/node.js';
+import TextProxy from '../../../src/model/textproxy.js';
 
 describe( 'getNodesAndText', () => {
 	let doc, root, div, p;

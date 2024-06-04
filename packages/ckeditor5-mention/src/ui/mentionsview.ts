@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,10 +7,10 @@
  * @module mention/ui/mentionsview
  */
 
-import { ListView } from 'ckeditor5/src/ui';
-import { Rect, type Locale } from 'ckeditor5/src/utils';
+import { ListView } from 'ckeditor5/src/ui.js';
+import { Rect, type Locale } from 'ckeditor5/src/utils.js';
 
-import type MentionListItemView from './mentionlistitemview';
+import type MentionListItemView from './mentionlistitemview.js';
 
 import '../../theme/mentionui.css';
 

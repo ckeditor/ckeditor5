@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,25 +7,25 @@
  * @module html-support/generalhtmlsupport
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { toArray, type ArrayOrItem } from 'ckeditor5/src/utils';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { toArray, type ArrayOrItem } from 'ckeditor5/src/utils.js';
 
-import DataFilter from './datafilter';
-import CodeBlockElementSupport from './integrations/codeblock';
-import DualContentModelElementSupport from './integrations/dualcontent';
-import HeadingElementSupport from './integrations/heading';
-import ImageElementSupport from './integrations/image';
-import MediaEmbedElementSupport from './integrations/mediaembed';
-import ScriptElementSupport from './integrations/script';
-import TableElementSupport from './integrations/table';
-import StyleElementSupport from './integrations/style';
-import DocumentListElementSupport from './integrations/documentlist';
-import CustomElementSupport from './integrations/customelement';
-import type { DataSchemaInlineElementDefinition } from './dataschema';
-import type { DocumentSelection, Item, Model, Range, Selectable, Writer } from 'ckeditor5/src/engine';
-import { modifyGhsAttribute } from './utils';
+import DataFilter from './datafilter.js';
+import CodeBlockElementSupport from './integrations/codeblock.js';
+import DualContentModelElementSupport from './integrations/dualcontent.js';
+import HeadingElementSupport from './integrations/heading.js';
+import ImageElementSupport from './integrations/image.js';
+import MediaEmbedElementSupport from './integrations/mediaembed.js';
+import ScriptElementSupport from './integrations/script.js';
+import TableElementSupport from './integrations/table.js';
+import StyleElementSupport from './integrations/style.js';
+import ListElementSupport from './integrations/list.js';
+import CustomElementSupport from './integrations/customelement.js';
+import type { DataSchemaInlineElementDefinition } from './dataschema.js';
+import type { DocumentSelection, Item, Model, Range, Selectable } from 'ckeditor5/src/engine.js';
+import { getHtmlAttributeName, modifyGhsAttribute } from './utils.js';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { GeneralHtmlSupportConfig } from './generalhtmlsupportconfig';
+import type { GeneralHtmlSupportConfig } from './generalhtmlsupportconfig.js';
 
 /**
  * The General HTML Support feature.
@@ -37,8 +37,8 @@ export default class GeneralHtmlSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'GeneralHtmlSupport' {
-		return 'GeneralHtmlSupport';
+	public static get pluginName() {
+		return 'GeneralHtmlSupport' as const;
 	}
 
 	/**
@@ -55,7 +55,7 @@ export default class GeneralHtmlSupport extends Plugin {
 			ScriptElementSupport,
 			TableElementSupport,
 			StyleElementSupport,
-			DocumentListElementSupport,
+			ListElementSupport,
 			CustomElementSupport
 		] as const;
 	}
@@ -66,6 +66,10 @@ export default class GeneralHtmlSupport extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 		const dataFilter = editor.plugins.get( DataFilter );
+
+		// Load the allowed empty inline elements' configuration.
+		// Note that this modifies DataSchema so must be loaded before registering filtering rules.
+		dataFilter.loadAllowedEmptyElementsConfig( editor.config.get( 'htmlSupport.allowEmpty' ) || [] );
 
 		// Load the filtering configuration.
 		dataFilter.loadAllowedConfig( editor.config.get( 'htmlSupport.allow' ) || [] );
@@ -90,7 +94,7 @@ export default class GeneralHtmlSupport extends Plugin {
 			return inlineDefinition.model;
 		}
 
-		return 'htmlAttributes';
+		return getHtmlAttributeName( viewElementName );
 	}
 
 	/**

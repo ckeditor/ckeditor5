@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -83,7 +83,7 @@
 		&.ck-off:active,
 		&.ck-on:active {
 			box-shadow: none;
-			
+
 			&:focus {
 				@mixin ck-box-shadow var(--ck-focus-outer-shadow);
 			}
@@ -118,5 +118,9 @@
 
 	&.ck-dropdown__panel_nw {
 		border-bottom-right-radius: 0;
+	}
+
+	&:focus {
+		outline: none;
 	}
 }

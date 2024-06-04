@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,9 @@
  * @module engine/model/rootelement
  */
 
-import Element from './element';
+import Element from './element.js';
 
-import type Document from './document';
+import type Document from './document.js';
 
 /**
  * Type of {@link module:engine/model/element~Element} that is a root of a model tree.
@@ -29,6 +29,13 @@ export default class RootElement extends Element {
 	 * @internal
 	 */
 	public _isAttached = true;
+
+	/**
+	 * Informs if the root element is loaded (default).
+	 *
+	 * @internal
+	 */
+	public _isLoaded = true;
 
 	/**
 	 * Creates root element.

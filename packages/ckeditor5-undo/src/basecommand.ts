@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -14,7 +14,8 @@ import {
 	type Batch,
 	type Operation,
 	type DataControllerSetEvent,
-	type Range
+	type Range,
+	NoOperation
 } from '@ckeditor/ckeditor5-engine';
 
 /**
@@ -44,6 +45,9 @@ export default abstract class BaseCommand extends Command {
 
 		// Refresh state, so the command is inactive right after initialization.
 		this.refresh();
+
+		// This command should not depend on selection change.
+		this._isEnabledBasedOnSelection = false;
 
 		// Set the transparent batch for the `editor.data.set()` call if the
 		// batch type is not set already.
@@ -202,7 +206,14 @@ export default abstract class BaseCommand extends Command {
 			const reversedOperations = transformedSets.operationsA;
 
 			// After reversed operation has been transformed by all history operations, apply it.
-			for ( const operation of reversedOperations ) {
+			for ( let operation of reversedOperations ) {
+				// Do not apply any operation on non-editable space.
+				const affectedSelectable = operation.affectedSelectable;
+
+				if ( affectedSelectable && !model.canEditAt( affectedSelectable ) ) {
+					operation = new NoOperation( operation.baseVersion );
+				}
+
 				// Before applying, add the operation to the `undoingBatch`.
 				undoingBatch.addOperation( operation );
 				model.applyOperation( operation );

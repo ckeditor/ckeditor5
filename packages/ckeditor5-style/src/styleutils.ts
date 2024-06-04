@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,14 +7,14 @@
  * @module style/styleutils
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
-import type { Element, MatcherPattern, DocumentSelection, Selectable } from 'ckeditor5/src/engine';
-import type { DecoratedMethodEvent } from 'ckeditor5/src/utils';
-import type { TemplateDefinition } from 'ckeditor5/src/ui';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import type { Element, MatcherObjectPattern, DocumentSelection, Selectable } from 'ckeditor5/src/engine.js';
+import type { DecoratedMethodEvent } from 'ckeditor5/src/utils.js';
+import type { TemplateDefinition } from 'ckeditor5/src/ui.js';
 
-import type { DataFilter, DataSchema, GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
+import type { DataFilter, DataSchema, GeneralHtmlSupport, DataSchemaBlockElementDefinition } from '@ckeditor/ckeditor5-html-support';
 
-import type { StyleDefinition } from './styleconfig';
+import type { StyleDefinition } from './styleconfig.js';
 import { isObject } from 'lodash-es';
 
 // These are intermediate element names that can't be rendered as style preview because they don't make sense standalone.
@@ -24,11 +24,13 @@ const NON_PREVIEWABLE_ELEMENT_NAMES = [
 ];
 
 export default class StyleUtils extends Plugin {
+	private _htmlSupport!: GeneralHtmlSupport;
+
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'StyleUtils' {
-		return 'StyleUtils';
+	public static get pluginName() {
+		return 'StyleUtils' as const;
 	}
 
 	/**
@@ -47,6 +49,13 @@ export default class StyleUtils extends Plugin {
 
 		this.decorate( 'getStylePreview' );
 		this.decorate( 'configureGHSDataFilter' );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public init(): void {
+		this._htmlSupport = this.editor.plugins.get( 'GeneralHtmlSupport' );
 	}
 
 	/**
@@ -90,7 +99,13 @@ export default class StyleUtils extends Plugin {
 					if ( typeof appliesToBlock == 'string' ) {
 						modelElements.push( appliesToBlock );
 					} else if ( ghsDefinition.isBlock ) {
+						const ghsBlockDefinition: DataSchemaBlockElementDefinition = ghsDefinition;
+
 						modelElements.push( ghsDefinition.model );
+
+						if ( ghsBlockDefinition.paragraphLikeModel ) {
+							modelElements.push( ghsBlockDefinition.paragraphLikeModel );
+						}
 					}
 				} else {
 					ghsAttributes.push( ghsDefinition.model );
@@ -127,8 +142,7 @@ export default class StyleUtils extends Plugin {
 	 */
 	public isStyleEnabledForBlock( definition: BlockStyleDefinition, block: Element ): boolean {
 		const model = this.editor.model;
-		const htmlSupport: GeneralHtmlSupport = this.editor.plugins.get( 'GeneralHtmlSupport' );
-		const attributeName = htmlSupport.getGhsAttributeNameForElement( definition.element );
+		const attributeName = this._htmlSupport.getGhsAttributeNameForElement( definition.element );
 
 		if ( !model.schema.checkAttribute( block, attributeName ) ) {
 			return false;
@@ -143,8 +157,7 @@ export default class StyleUtils extends Plugin {
 	 * @internal
 	 */
 	public isStyleActiveForBlock( definition: BlockStyleDefinition, block: Element ): boolean {
-		const htmlSupport: GeneralHtmlSupport = this.editor.plugins.get( 'GeneralHtmlSupport' );
-		const attributeName = htmlSupport.getGhsAttributeNameForElement( definition.element );
+		const attributeName = this._htmlSupport.getGhsAttributeNameForElement( definition.element );
 		const ghsAttributeValue = block.getAttribute( attributeName );
 
 		return this.hasAllClasses( ghsAttributeValue, definition.classes );
@@ -237,7 +250,7 @@ export default class StyleUtils extends Plugin {
 	/**
 	 * This is where the styles feature configures the GHS feature. This method translates normalized
 	 * {@link module:style/styleconfig~StyleDefinition style definitions} to
-	 * {@link module:engine/view/matcher~MatcherPattern matcher patterns} and feeds them to the GHS
+	 * {@link module:engine/view/matcher~MatcherObjectPattern matcher patterns} and feeds them to the GHS
 	 * {@link module:html-support/datafilter~DataFilter} plugin.
 	 *
 	 * @internal
@@ -300,7 +313,7 @@ function isPreviewable( elementName: string ): boolean {
 /**
  * Translates a normalized style definition to a view matcher pattern.
  */
-function normalizedStyleDefinitionToMatcherPattern( { element, classes }: StyleDefinition ): MatcherPattern {
+function normalizedStyleDefinitionToMatcherPattern( { element, classes }: StyleDefinition ): MatcherObjectPattern {
 	return {
 		name: element,
 		classes

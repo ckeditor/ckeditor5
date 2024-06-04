@@ -1,27 +1,27 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document */
 
-import { parse, stringify, getData, setData } from '../../src/dev-utils/view';
-import ViewDocument from '../../src/view/document';
-import DocumentFragment from '../../src/view/documentfragment';
-import Position from '../../src/view/position';
-import Element from '../../src/view/element';
-import AttributeElement from '../../src/view/attributeelement';
-import ContainerElement from '../../src/view/containerelement';
-import EmptyElement from '../../src/view/emptyelement';
-import UIElement from '../../src/view/uielement';
-import RawElement from '../../src/view/rawelement';
-import Text from '../../src/view/text';
-import DocumentSelection from '../../src/view/documentselection';
-import Range from '../../src/view/range';
-import View from '../../src/view/view';
-import XmlDataProcessor from '../../src/dataprocessor/xmldataprocessor';
-import createViewRoot from '../view/_utils/createroot';
-import { StylesProcessor } from '../../src/view/stylesmap';
+import { parse, stringify, getData, setData } from '../../src/dev-utils/view.js';
+import ViewDocument from '../../src/view/document.js';
+import DocumentFragment from '../../src/view/documentfragment.js';
+import Position from '../../src/view/position.js';
+import Element from '../../src/view/element.js';
+import AttributeElement from '../../src/view/attributeelement.js';
+import ContainerElement from '../../src/view/containerelement.js';
+import EmptyElement from '../../src/view/emptyelement.js';
+import UIElement from '../../src/view/uielement.js';
+import RawElement from '../../src/view/rawelement.js';
+import Text from '../../src/view/text.js';
+import DocumentSelection from '../../src/view/documentselection.js';
+import Range from '../../src/view/range.js';
+import View from '../../src/view/view.js';
+import XmlDataProcessor from '../../src/dataprocessor/xmldataprocessor.js';
+import createViewRoot from '../view/_utils/createroot.js';
+import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'view test utils', () => {
 	describe( 'getData, setData', () => {
@@ -167,6 +167,15 @@ describe( 'view test utils', () => {
 			}, b );
 
 			expect( stringify( p ) ).to.equal( '<p bar="taz" baz="qux" class="short wide"><b foo="bar">foobar</b></p>' );
+		} );
+
+		it( 'should write elements with attributes which values include double quotes', () => {
+			const text = new Text( viewDocument, 'foobar' );
+			const p = new Element( viewDocument, 'p', {
+				style: 'font-family: Calibri, "Times New Roman", sans-serif'
+			}, text );
+
+			expect( stringify( p ) ).to.equal( '<p style="font-family:Calibri, &quot;Times New Roman&quot;, sans-serif">foobar</p>' );
 		} );
 
 		it( 'should write selection ranges inside elements', () => {

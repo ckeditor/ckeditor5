@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -8,8 +8,8 @@
  */
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
-import DeleteCommand from './deletecommand';
-import DeleteObserver, { type ViewDocumentDeleteEvent } from './deleteobserver';
+import DeleteCommand from './deletecommand.js';
+import DeleteObserver, { type ViewDocumentDeleteEvent } from './deleteobserver.js';
 
 /**
  * The delete and backspace feature. Handles keys such as <kbd>Delete</kbd> and <kbd>Backspace</kbd>, other
@@ -24,8 +24,8 @@ export default class Delete extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Delete' {
-		return 'Delete';
+	public static get pluginName() {
+		return 'Delete' as const;
 	}
 
 	/**

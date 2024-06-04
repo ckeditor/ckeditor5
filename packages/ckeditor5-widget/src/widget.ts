@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -11,6 +11,7 @@ import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import {
 	MouseObserver,
+	TreeWalker,
 	type DomEventData,
 	type DowncastSelectionEvent,
 	type DowncastWriter,
@@ -19,21 +20,26 @@ import {
 	type ViewDocumentArrowKeyEvent,
 	type ViewDocumentFragment,
 	type ViewDocumentMouseDownEvent,
-	type ViewElement
+	type ViewElement,
+	type Schema,
+	type Position,
+	type ViewDocumentTabEvent,
+	type ViewDocumentKeyDownEvent
 } from '@ckeditor/ckeditor5-engine';
 
 import { Delete, type ViewDocumentDeleteEvent } from '@ckeditor/ckeditor5-typing';
 
 import {
 	env,
+	keyCodes,
 	getLocalizedArrowKeyCodeDirection,
 	type EventInfo,
 	type KeystrokeInfo
 } from '@ckeditor/ckeditor5-utils';
 
-import WidgetTypeAround from './widgettypearound/widgettypearound';
-import verticalNavigationHandler from './verticalnavigation';
-import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils';
+import WidgetTypeAround from './widgettypearound/widgettypearound.js';
+import verticalNavigationHandler from './verticalnavigation.js';
+import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils.js';
 
 import '../theme/widget.css';
 
@@ -59,8 +65,8 @@ export default class Widget extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Widget' {
-		return 'Widget';
+	public static get pluginName() {
+		return 'Widget' as const;
 	}
 
 	/**
@@ -77,6 +83,7 @@ export default class Widget extends Plugin {
 		const editor = this.editor;
 		const view = editor.editing.view;
 		const viewDocument = view.document;
+		const t = editor.t;
 
 		// Model to view selection converter.
 		// Converts selection placed over widget element to fake selection.
@@ -191,6 +198,76 @@ export default class Widget extends Plugin {
 				evt.stop();
 			}
 		}, { context: '$root' } );
+
+		// Handle Tab key while a widget is selected.
+		this.listenTo<ViewDocumentTabEvent>( viewDocument, 'tab', ( evt, data ) => {
+			// This event could be triggered from inside the widget, but we are interested
+			// only when the widget is selected itself.
+			if ( evt.eventPhase != 'atTarget' ) {
+				return;
+			}
+
+			if ( data.shiftKey ) {
+				return;
+			}
+
+			if ( this._selectFirstNestedEditable() ) {
+				data.preventDefault();
+				evt.stop();
+			}
+		}, { context: isWidget, priority: 'low' } );
+
+		// Handle Shift+Tab key while caret inside a widget editable.
+		this.listenTo<ViewDocumentTabEvent>( viewDocument, 'tab', ( evt, data ) => {
+			if ( !data.shiftKey ) {
+				return;
+			}
+
+			if ( this._selectAncestorWidget() ) {
+				data.preventDefault();
+				evt.stop();
+			}
+		}, { priority: 'low' } );
+
+		// Handle Esc key while inside a nested editable.
+		this.listenTo<ViewDocumentKeyDownEvent>( viewDocument, 'keydown', ( evt, data ) => {
+			if ( data.keystroke != keyCodes.esc ) {
+				return;
+			}
+
+			if ( this._selectAncestorWidget() ) {
+				data.preventDefault();
+				evt.stop();
+			}
+		}, { priority: 'low' } );
+
+		// Add the information about the keystrokes to the accessibility database.
+		editor.accessibility.addKeystrokeInfoGroup( {
+			id: 'widget',
+			label: t( 'Keystrokes that can be used when a widget is selected (for example: image, table, etc.)' ),
+			keystrokes: [
+				{
+					label: t( 'Move focus from an editable area back to the parent widget' ),
+					keystroke: 'Esc'
+				},
+				{
+					label: t( 'Insert a new paragraph directly after a widget' ),
+					keystroke: 'Enter'
+				},
+				{
+					label: t( 'Insert a new paragraph directly before a widget' ),
+					keystroke: 'Shift+Enter'
+				},
+				{
+					label: t( 'Move the caret to allow typing directly before a widget' ),
+					keystroke: [ [ 'arrowup' ], [ 'arrowleft' ] ]
+				},
+				{
+					label: t( 'Move the caret to allow typing directly after a widget' ),
+					keystroke: [ [ 'arrowdown' ], [ 'arrowright' ] ]
+				}
+			]
+		} );
 	}
 
 	/**
@@ -202,24 +279,17 @@ export default class Widget extends Plugin {
 		const viewDocument = view.document;
 		let element: ViewElement | null = domEventData.target;
 
-		// Do nothing for single or double click inside nested editable.
-		if ( isInsideNestedEditable( element ) ) {
-			// But at least triple click inside nested editable causes broken selection in Safari.
-			// For such event, we select the entire nested editable element.
-			// See: https://github.com/ckeditor/ckeditor5/issues/1463.
-			if ( ( env.isSafari || env.isGecko ) && domEventData.domEvent.detail >= 3 ) {
-				const mapper = editor.editing.mapper;
-				const viewElement = element.is( 'attributeElement' ) ?
-					element.findAncestor( element => !element.is( 'attributeElement' ) )! : element;
-				const modelElement = mapper.toModelElement( viewElement )!;
-
+		// If triple click should select entire paragraph.
+		if ( domEventData.domEvent.detail >= 3 ) {
+			if ( this._selectBlockContent( element ) ) {
 				domEventData.preventDefault();
-
-				this.editor.model.change( writer => {
-					writer.setSelection( modelElement, 'in' );
-				} );
 			}
 
+			return;
+		}
+
+		// Do nothing for single or double click inside nested editable.
+		if ( isInsideNestedEditable( element ) ) {
 			return;
 		}
 
@@ -247,6 +317,38 @@ export default class Widget extends Plugin {
 		const modelElement = editor.editing.mapper.toModelElement( element );
 
 		this._setSelectionOverElement( modelElement! );
+	}
+
+	/**
+	 * Selects entire block content, e.g. on triple click it selects entire paragraph.
+	 */
+	private _selectBlockContent( element: ViewElement ): boolean {
+		const editor = this.editor;
+		const model = editor.model;
+		const mapper = editor.editing.mapper;
+		const schema = model.schema;
+
+		const viewElement = mapper.findMappedViewAncestor( this.editor.editing.view.createPositionAt( element, 0 ) );
+		const modelElement = findTextBlockAncestor( mapper.toModelElement( viewElement )!, model.schema );
+
+		if ( !modelElement ) {
+			return false;
+		}
+
+		model.change( writer => {
+			const nextTextBlock = !schema.isLimit( modelElement ) ?
+				findNextTextBlock( writer.createPositionAfter( modelElement ), schema ) :
+				null;
+
+			const start = writer.createPositionAt( modelElement, 0 );
+			const end = nextTextBlock ?
+				writer.createPositionAt( nextTextBlock, 0 ) :
+				writer.createPositionAt( modelElement, 'end' );
+
+			writer.setSelection( writer.createRange( start, end ) );
+		} );
+
+		return true;
 	}
 
 	/**
@@ -355,13 +457,13 @@ export default class Widget extends Plugin {
 	 * @returns Returns `true` if keys were handled correctly.
 	 */
 	private _handleDelete( isForward: boolean ) {
-		// Do nothing when the read only mode is enabled.
-		if ( this.editor.isReadOnly ) {
-			return;
-		}
-
 		const modelDocument = this.editor.model.document;
 		const modelSelection = modelDocument.selection;
+
+		// Do nothing when the read only mode is enabled.
+		if ( !this.editor.model.canEditAt( modelSelection ) ) {
+			return;
+		}
 
 		// Do nothing on non-collapsed selection.
 		if ( !modelSelection.isCollapsed ) {
@@ -442,6 +544,71 @@ export default class Widget extends Plugin {
 
 		this._previouslySelected.clear();
 	}
+
+	/**
+	 * Moves the document selection into the first nested editable.
+	 */
+	private _selectFirstNestedEditable(): boolean {
+		const editor = this.editor;
+		const view = this.editor.editing.view;
+		const viewDocument = view.document;
+
+		for ( const item of viewDocument.selection.getFirstRange()!.getItems() ) {
+			if ( item.is( 'editableElement' ) ) {
+				const modelElement = editor.editing.mapper.toModelElement( item );
+
+				/* istanbul ignore next -- @preserve */
+				if ( !modelElement ) {
+					continue;
+				}
+
+				const position = editor.model.createPositionAt( modelElement, 0 );
+				const newRange = editor.model.schema.getNearestSelectionRange( position, 'forward' );
+
+				editor.model.change( writer => {
+					writer.setSelection( newRange );
+				} );
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Updates the document selection so that it selects first ancestor widget.
+	 */
+	private _selectAncestorWidget(): boolean {
+		const editor = this.editor;
+		const mapper = editor.editing.mapper;
+		const selection = editor.editing.view.document.selection;
+
+		const positionParent = selection.getFirstPosition()!.parent;
+
+		const positionParentElement = positionParent.is( '$text' ) ?
+			positionParent.parent as ViewElement :
+			positionParent as ViewElement;
+
+		const viewElement = positionParentElement.findAncestor( isWidget );
+
+		if ( !viewElement ) {
+			return false;
+		}
+
+		const modelElement = mapper.toModelElement( viewElement );
+
+		/* istanbul ignore next -- @preserve */
+		if ( !modelElement ) {
+			return false;
+		}
+
+		editor.model.change( writer => {
+			writer.setSelection( modelElement, 'on' );
+		} );
+
+		return true;
+	}
 }
 
 /**
@@ -478,4 +645,41 @@ function isChild( element: ViewElement, parent: ViewElement | null ) {
 	}
 
 	return Array.from( element.getAncestors() ).includes( parent );
+}
+
+/**
+ * Returns nearest text block ancestor.
+ */
+function findTextBlockAncestor( modelElement: Element, schema: Schema ): Element | null {
+	for ( const element of modelElement.getAncestors( { includeSelf: true, parentFirst: true } ) ) {
+		if ( schema.checkChild( element as Element, '$text' ) ) {
+			return element as Element;
+		}
+
+		// Do not go beyond nested editable.
+		if ( schema.isLimit( element ) && !schema.isObject( element ) ) {
+			break;
+		}
+	}
+
+	return null;
+}
+
+/**
+ * Returns next text block where could put selection.
+ */
+function findNextTextBlock( position: Position, schema: Schema ): Element | null {
+	const treeWalker = new TreeWalker( { startPosition: position } );
+
+	for ( const { item } of treeWalker ) {
+		if ( schema.isLimit( item ) || !item.is( 'element' ) ) {
+			return null;
+		}
+
+		if ( schema.checkChild( item, '$text' ) ) {
+			return item;
+		}
+	}
+
+	return null;
 }

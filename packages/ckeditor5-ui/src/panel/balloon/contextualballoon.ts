@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,13 +7,13 @@
  * @module ui/panel/balloon/contextualballoon
  */
 
-import BalloonPanelView from './balloonpanelview';
-import View from '../../view';
-import ButtonView from '../../button/buttonview';
-import type { ButtonExecuteEvent } from '../../button/button';
-import type ViewCollection from '../../viewcollection';
+import BalloonPanelView from './balloonpanelview.js';
+import View from '../../view.js';
+import ButtonView from '../../button/buttonview.js';
+import type { ButtonExecuteEvent } from '../../button/button.js';
+import type ViewCollection from '../../viewcollection.js';
 
-import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+import { Plugin, icons, type Editor } from '@ckeditor/ckeditor5-core';
 import {
 	CKEditorError,
 	FocusTracker,
@@ -24,13 +24,10 @@ import {
 	type PositionOptions
 } from '@ckeditor/ckeditor5-utils';
 
-import prevIcon from '../../../theme/icons/previous-arrow.svg';
-import nextIcon from '../../../theme/icons/next-arrow.svg';
-
 import '../../../theme/components/panel/balloonrotator.css';
 import '../../../theme/components/panel/fakepanel.css';
 
-const toPx = toUnit( 'px' );
+const toPx = /* #__PURE__ */ toUnit( 'px' );
 
 /**
  * Provides the common contextual balloon for the editor.
@@ -135,8 +132,8 @@ export default class ContextualBalloon extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ContextualBalloon' {
-		return 'ContextualBalloon';
+	public static get pluginName() {
+		return 'ContextualBalloon' as const;
 	}
 
 	/**
@@ -626,8 +623,8 @@ export class RotatorView extends View {
 		this.set( 'isNavigationVisible', true );
 
 		this.focusTracker = new FocusTracker();
-		this.buttonPrevView = this._createButtonView( t( 'Previous' ), prevIcon );
-		this.buttonNextView = this._createButtonView( t( 'Next' ), nextIcon );
+		this.buttonPrevView = this._createButtonView( t( 'Previous' ), icons.previousArrow );
+		this.buttonNextView = this._createButtonView( t( 'Next' ), icons.nextArrow );
 		this.content = this.createCollection();
 
 		this.setTemplate( {

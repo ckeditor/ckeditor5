@@ -2,11 +2,11 @@
 category: api-reference
 ---
 
-# CKEditor 5 font feature
+# CKEditor&nbsp;5 font feature
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-font.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-font)
 
-This package implements the font family, font size as well as font and background color features for CKEditor 5.
+This package implements the font family, font size as well as font and background color features for CKEditor&nbsp;5.
 
 ## Demo
 
@@ -22,8 +22,10 @@ See the {@link features/font font feature guide} and plugin documentation:
 
 ## Installation
 
+This package is part of our open-source aggregate package.
+
 ```bash
-npm install --save @ckeditor/ckeditor5-font
+npm install ckeditor5
 ```
 
 ## Contribute

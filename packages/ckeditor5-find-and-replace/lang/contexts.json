@@ -11,5 +11,6 @@
 	"Replace with…": "The label for the text replacement in the find and replace dropdown.",
 	"Text to find must not be empty.": "An error text displayed when user attempted to find an empty text.",
 	"Tip: Find some text first in order to replace it.": "A message displayed next to the replace field when disabled but user tries to use it.",
-	"Show options": "The label and a tooltip of the options dropdown button in the find and replace form."
+	"Advanced options": "The label and the tooltip of the options dropdown button in the find and replace form.",
+	"Find in the document": "Keystroke description for assistive technologies: keystroke for opening the find and replace UI."
 }

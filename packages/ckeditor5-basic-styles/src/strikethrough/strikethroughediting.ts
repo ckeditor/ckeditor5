@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,8 +7,8 @@
  * @module basic-styles/strikethrough/strikethroughediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import AttributeCommand from '../attributecommand';
+import { Plugin } from 'ckeditor5/src/core.js';
+import AttributeCommand from '../attributecommand.js';
 
 const STRIKETHROUGH = 'strikethrough';
 
@@ -23,8 +23,8 @@ export default class StrikethroughEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'StrikethroughEditing' {
-		return 'StrikethroughEditing';
+	public static get pluginName() {
+		return 'StrikethroughEditing' as const;
 	}
 
 	/**
@@ -32,6 +32,7 @@ export default class StrikethroughEditing extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
+		const t = this.editor.t;
 
 		// Allow strikethrough attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: STRIKETHROUGH } );
@@ -59,5 +60,15 @@ export default class StrikethroughEditing extends Plugin {
 
 		// Set the Ctrl+Shift+X keystroke.
 		editor.keystrokes.set( 'CTRL+SHIFT+X', 'strikethrough' );
+
+		// Add the information about the keystroke to the accessibility database.
+		editor.accessibility.addKeystrokeInfos( {
+			keystrokes: [
+				{
+					label: t( 'Strikethrough text' ),
+					keystroke: 'CTRL+SHIFT+X'
+				}
+			]
+		} );
 	}
 }

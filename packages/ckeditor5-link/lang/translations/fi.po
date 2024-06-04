@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -12,9 +12,10 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Finnish (https://www.transifex.com/ckeditor/teams/11143/fi/)\n"
+"Language-Team: Finnish (https://app.transifex.com/ckeditor/teams/11143/fi/)\n"
 "Language: fi\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Toolbar button tooltip for the Unlink feature."
 msgid "Unlink"
@@ -27,6 +28,10 @@ msgstr "Linkki"
 msgctxt "Label for the URL input in the Link URL editing balloon."
 msgid "Link URL"
 msgstr "Linkin osoite"
+
+msgctxt "An error text displayed when user attempted to enter an empty URL."
+msgid "Link URL must not be empty."
+msgstr "Linkin URL ei voi olla tyhjä."
 
 msgctxt "Label for the image link button."
 msgid "Link image"
@@ -51,3 +56,11 @@ msgstr "Avaa uudelle välilehdelle"
 msgctxt "The label of the switch button that controls whether the edited link refers to downloadable resource."
 msgid "Downloadable"
 msgstr "Ladattava"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for creating a link."
+msgid "Create link"
+msgstr "Luo linkki"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for moving out of a link."
+msgid "Move out of a link"
+msgstr "Siirrä linkin ulkopuolelle"

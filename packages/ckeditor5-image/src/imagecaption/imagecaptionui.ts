@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,10 +7,10 @@
  * @module image/imagecaption/imagecaptionui
  */
 
-import { Plugin, icons } from 'ckeditor5/src/core';
-import { ButtonView } from 'ckeditor5/src/ui';
-import ImageCaptionUtils from './imagecaptionutils';
-import type ToggleImageCaptionCommand from './toggleimagecaptioncommand';
+import { Plugin, icons } from 'ckeditor5/src/core.js';
+import { ButtonView } from 'ckeditor5/src/ui.js';
+import ImageCaptionUtils from './imagecaptionutils.js';
+import type ToggleImageCaptionCommand from './toggleimagecaptioncommand.js';
 
 /**
  * The image caption UI plugin. It introduces the `'toggleImageCaption'` UI button.
@@ -26,8 +26,8 @@ export default class ImageCaptionUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ImageCaptionUI' {
-		return 'ImageCaptionUI';
+	public static get pluginName() {
+		return 'ImageCaptionUI' as const;
 	}
 
 	/**

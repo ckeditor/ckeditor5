@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -41,6 +41,7 @@ export default function normalizeToolbarConfig(
 	items: Array<ToolbarConfigItem>;
 	removeItems: Array<string>;
 	shouldNotGroupWhenFull?: boolean;
+	icon?: string;
 } {
 	if ( Array.isArray( config ) ) {
 		return {
@@ -49,15 +50,17 @@ export default function normalizeToolbarConfig(
 		};
 	}
 
-	if ( !config ) {
-		return {
-			items: [],
-			removeItems: []
-		};
-	}
-
-	return Object.assign( {
+	const predefinedConfigOptions = {
 		items: [],
 		removeItems: []
-	}, config );
+	};
+
+	if ( !config ) {
+		return predefinedConfigOptions;
+	}
+
+	return {
+		...predefinedConfigOptions,
+		...config
+	};
 }

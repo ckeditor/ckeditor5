@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,9 +9,10 @@
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
-import ClipboardPipeline from './clipboardpipeline';
-import DragDrop from './dragdrop';
-import PastePlainText from './pasteplaintext';
+import ClipboardPipeline from './clipboardpipeline.js';
+import DragDrop from './dragdrop.js';
+import PastePlainText from './pasteplaintext.js';
+import ClipboardMarkersUtils from './clipboardmarkersutils.js';
 
 /**
  * The clipboard feature.
@@ -27,14 +28,40 @@ export default class Clipboard extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Clipboard' {
-		return 'Clipboard';
+	public static get pluginName() {
+		return 'Clipboard' as const;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ ClipboardPipeline, DragDrop, PastePlainText ] as const;
+		return [ ClipboardMarkersUtils, ClipboardPipeline, DragDrop, PastePlainText ] as const;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public init(): void {
+		const editor = this.editor;
+		const t = this.editor.t;
+
+		// Add the information about the keystrokes to the accessibility database.
+		editor.accessibility.addKeystrokeInfos( {
+			keystrokes: [
+				{
+					label: t( 'Copy selected content' ),
+					keystroke: 'CTRL+C'
+				},
+				{
+					label: t( 'Paste content' ),
+					keystroke: 'CTRL+V'
+				},
+				{
+					label: t( 'Paste content as plain text' ),
+					keystroke: 'CTRL+SHIFT+V'
+				}
+			]
+		} );
 	}
 }

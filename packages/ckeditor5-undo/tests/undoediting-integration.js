@@ -1,23 +1,23 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 
-import UndoEditing from '../src/undoediting';
+import UndoEditing from '../src/undoediting.js';
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
-import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
+import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
+import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
 
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'UndoEditing integration', () => {
 	let editor, model, doc, root, div;

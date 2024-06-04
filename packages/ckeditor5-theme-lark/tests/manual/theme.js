@@ -1,35 +1,36 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document */
 
-import testUtils from '@ckeditor/ckeditor5-ui/tests/_utils/utils';
+import testUtils from '@ckeditor/ckeditor5-ui/tests/_utils/utils.js';
 
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import Model from '@ckeditor/ckeditor5-ui/src/model';
-import View from '@ckeditor/ckeditor5-ui/src/view';
-import Locale from '@ckeditor/ckeditor5-utils/src/locale';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection.js';
+import Model from '@ckeditor/ckeditor5-ui/src/model.js';
+import View from '@ckeditor/ckeditor5-ui/src/view.js';
+import Locale from '@ckeditor/ckeditor5-utils/src/locale.js';
 
-import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import SwitchButtonView from '@ckeditor/ckeditor5-ui/src/button/switchbuttonview';
+import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import SwitchButtonView from '@ckeditor/ckeditor5-ui/src/button/switchbuttonview.js';
 
-import { createDropdown, addListToDropdown, addToolbarToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+import { createDropdown, addListToDropdown, addToolbarToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils.js';
 
-import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
-import ToolbarSeparatorView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarseparatorview';
+import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview.js';
+import ToolbarSeparatorView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarseparatorview.js';
 
-import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview';
-import { createLabeledInputText } from '@ckeditor/ckeditor5-ui/src/labeledfield/utils';
+import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview.js';
+import { createLabeledInputText } from '@ckeditor/ckeditor5-ui/src/labeledfield/utils.js';
 
 import boldIcon from '@ckeditor/ckeditor5-core/theme/icons/bold.svg';
 import italicIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg';
 import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 
-import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
+import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview.js';
+import { SpinnerView } from '@ckeditor/ckeditor5-ui';
 
 const locale = new Locale();
 
@@ -71,6 +72,7 @@ const ui = testUtils.createTestUIView( {
 	'buttonResponsive2': '#button-responsive-2',
 	'buttonResponsive3': '#button-responsive-3',
 	'buttonTooltip': '#button-tooltip',
+	'buttonSpinner': '#button-spinner',
 
 	listDropdown: '#list-dropdown',
 	buttonDropdown: '#button-dropdown',
@@ -272,6 +274,22 @@ function renderButton() {
 			tooltip: true,
 			tooltipPosition: 'sw'
 		} )
+	] ) );
+
+	// --- With spinner ------------------------------------------------------------
+
+	const buttonWithSpinner = button( {
+		label: 'Button with spinner',
+		withText: false
+	} );
+
+	const spinnerView = new SpinnerView();
+	spinnerView.isVisible = true;
+
+	buttonWithSpinner.children.add( spinnerView );
+
+	ui.buttonSpinner.add( toolbar( [
+		buttonWithSpinner
 	] ) );
 }
 

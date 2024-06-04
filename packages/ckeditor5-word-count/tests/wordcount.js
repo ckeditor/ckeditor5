@@ -1,25 +1,26 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global HTMLElement, setTimeout, document */
 
-import WordCount from '../src/wordcount';
+import WordCount from '../src/wordcount.js';
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
-import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
-import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
-import env from '@ckeditor/ckeditor5-utils/src/env';
-import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting';
-import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
-import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting';
-import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
+import Position from '@ckeditor/ckeditor5-engine/src/model/position.js';
+import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
+import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
+import env from '@ckeditor/ckeditor5-utils/src/env.js';
+import LegacyListEditing from '@ckeditor/ckeditor5-list/src/legacylist/legacylistediting.js';
+import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
+import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting.js';
+import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
 
 // Delay related to word-count throttling.
 const DELAY = 255;
@@ -33,7 +34,7 @@ describe( 'WordCount', () => {
 		return VirtualTestEditor
 			.create( {
 				plugins: [
-					WordCount, Paragraph, ShiftEnter, TableEditing, ListEditing, LinkEditing, ImageBlockEditing, ImageCaptionEditing
+					WordCount, Paragraph, ShiftEnter, TableEditing, LegacyListEditing, LinkEditing, ImageBlockEditing, ImageCaptionEditing
 				]
 			} )
 			.then( _editor => {
@@ -578,5 +579,41 @@ describe( 'WordCount', () => {
 				} );
 		} );
 	} );
-} );
 
+	describe( 'multi-root editor integration', () => {
+		beforeEach( () => {
+			return MultiRootEditor
+				.create( {
+					foo: document.createElement( 'div' ),
+					bar: document.createElement( 'div' )
+				}, {
+					plugins: [
+						WordCount, Paragraph
+					]
+				} )
+				.then( _editor => {
+					editor = _editor;
+					model = editor.model;
+					wordCountPlugin = editor.plugins.get( 'WordCount' );
+				} );
+		} );
+
+		afterEach( () => {
+			editor.destroy();
+		} );
+
+		it( 'should sum characters of each root', () => {
+			setModelData( model, '<paragraph>foo bar</paragraph>', { rootName: 'foo' } );
+			setModelData( model, '<paragraph>lorem ipsum</paragraph>', { rootName: 'bar' } );
+
+			expect( wordCountPlugin.characters ).to.be.equal( 18 );
+		} );
+
+		it( 'should sum words of each root', () => {
+			setModelData( model, '<paragraph>foo bar</paragraph>', { rootName: 'foo' } );
+			setModelData( model, '<paragraph>lorem ipsum</paragraph>', { rootName: 'bar' } );
+
+			expect( wordCountPlugin.words ).to.be.equal( 4 );
+		} );
+	} );
+} );

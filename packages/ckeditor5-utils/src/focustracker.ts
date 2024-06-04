@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,9 +9,9 @@
  * @module utils/focustracker
  */
 
-import DomEmitterMixin from './dom/emittermixin';
-import ObservableMixin from './observablemixin';
-import CKEditorError from './ckeditorerror';
+import DomEmitterMixin from './dom/emittermixin.js';
+import ObservableMixin from './observablemixin.js';
+import CKEditorError from './ckeditorerror.js';
 
 /**
  * Allows observing a group of `Element`s whether at least one of them is focused.
@@ -25,7 +25,7 @@ import CKEditorError from './ckeditorerror';
  *
  * Check out the {@glink framework/deep-dive/ui/focus-tracking "Deep dive into focus tracking"} guide to learn more.
  */
-export default class FocusTracker extends DomEmitterMixin( ObservableMixin() ) {
+export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #__PURE__ */ ObservableMixin() ) {
 	/**
 	 * True when one of the registered elements is focused.
 	 *
@@ -48,8 +48,10 @@ export default class FocusTracker extends DomEmitterMixin( ObservableMixin() ) {
 
 	/**
 	 * List of registered elements.
+	 *
+	 * @internal
 	 */
-	private _elements: Set<Element> = new Set();
+	public _elements: Set<Element> = new Set();
 
 	/**
 	 * Event loop timeout.

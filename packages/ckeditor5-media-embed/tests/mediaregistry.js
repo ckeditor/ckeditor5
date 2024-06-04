@@ -1,11 +1,11 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals console */
 
-import MediaRegistry from '../src/mediaregistry';
+import MediaRegistry from '../src/mediaregistry.js';
 
 describe( 'MediaRegistry', () => {
 	describe( 'constructor()', () => {

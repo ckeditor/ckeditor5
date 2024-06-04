@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,19 +10,19 @@
 import {
 	Plugin,
 	type Editor
-} from 'ckeditor5/src/core';
+} from 'ckeditor5/src/core.js';
 
 import type {
 	ViewDocumentKeyDownEvent,
 	Marker,
 	Position
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
 import {
 	ButtonView,
 	ContextualBalloon,
 	clickOutsideHandler
-} from 'ckeditor5/src/ui';
+} from 'ckeditor5/src/ui.js';
 
 import {
 	CKEditorError,
@@ -32,15 +32,15 @@ import {
 	keyCodes,
 	logWarning,
 	type PositionOptions
-} from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/utils.js';
 
-import { TextWatcher, type TextWatcherMatchedEvent } from 'ckeditor5/src/typing';
+import { TextWatcher, type TextWatcherMatchedEvent } from 'ckeditor5/src/typing.js';
 
 import { debounce } from 'lodash-es';
 
-import MentionsView from './ui/mentionsview';
-import DomWrapperView from './ui/domwrapperview';
-import MentionListItemView from './ui/mentionlistitemview';
+import MentionsView from './ui/mentionsview.js';
+import DomWrapperView from './ui/domwrapperview.js';
+import MentionListItemView from './ui/mentionlistitemview.js';
 
 import type {
 	FeedCallback,
@@ -48,7 +48,7 @@ import type {
 	MentionFeedItem,
 	ItemRenderer,
 	MentionFeedObjectItem
-} from './mentionconfig';
+} from './mentionconfig.js';
 
 const VERTICAL_SPACING = 3;
 
@@ -96,8 +96,8 @@ export default class MentionUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'MentionUI' {
-		return 'MentionUI';
+	public static get pluginName() {
+		return 'MentionUI' as const;
 	}
 
 	/**

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -14,7 +14,7 @@ const { bundler, loaders, tools } = require( '@ckeditor/ckeditor5-dev-utils' );
 const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-translations' );
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 const TerserPlugin = require( 'terser-webpack-plugin' );
-const glob = require( 'glob' );
+const { globSync } = require( 'glob' );
 const { addTypeScriptLoader } = require( './utils' );
 
 const DEFAULT_LANGUAGE = 'en';
@@ -432,6 +432,8 @@ function getWebpackConfig( snippets, config ) {
 			filename: '[name]/snippet.js'
 		},
 
+		devtool: 'source-map',
+
 		optimization: {
 			minimizer: [
 				new TerserPlugin( {
@@ -465,7 +467,10 @@ function getWebpackConfig( snippets, config ) {
 				...getModuleResolvePaths()
 			],
 			alias: RESOLVE_ALIAS_MAP,
-			extensions: [ '.ts', '.js', '.json' ]
+			extensions: [ '.ts', '.js', '.json' ],
+			extensionAlias: {
+				'.js': [ '.js', '.ts' ]
+			}
 		},
 
 		resolveLoader: {
@@ -545,8 +550,7 @@ function getPackageDependenciesPaths() {
 		absolute: true
 	};
 
-	return glob.sync( 'packages/*/node_modules', globOptions )
-		.concat( glob.sync( 'external/*/packages/*/node_modules', globOptions ) )
+	return globSync( [ 'packages/*/node_modules', 'external/*/packages/*/node_modules' ], globOptions )
 		.map( p => path.normalize( p ) );
 }
 
@@ -676,7 +680,10 @@ function getWebpackConfigForAssets( config ) {
 				...getPackageDependenciesPaths(),
 				...getModuleResolvePaths()
 			],
-			extensions: [ '.ts', '.js', '.json' ]
+			extensions: [ '.ts', '.js', '.json' ],
+			extensionAlias: {
+				'.js': [ '.js', '.ts' ]
+			}
 		},
 
 		resolveLoader: {

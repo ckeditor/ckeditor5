@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -15,7 +15,7 @@ import {
 	type EmitterMixinDelegateChain
 } from '@ckeditor/ckeditor5-utils';
 
-import type View from './view';
+import type View from './view.js';
 
 /**
  * Collects {@link module:ui/view~View} instances.
@@ -58,7 +58,7 @@ import type View from './view';
  * of a {@link module:ui/template~Template template}.
  */
 export default class ViewCollection<TView extends View = View> extends Collection<TView> {
-	public id?: string;
+	public declare id?: string;
 
 	/**
 	 * A parent element within which child views are rendered and managed in DOM.

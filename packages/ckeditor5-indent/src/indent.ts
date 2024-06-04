@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,10 +7,10 @@
  * @module indent/indent
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 
-import IndentEditing from './indentediting';
-import IndentUI from './indentui';
+import IndentEditing from './indentediting.js';
+import IndentUI from './indentui.js';
 
 /**
  * The indent feature.
@@ -36,8 +36,8 @@ export default class Indent extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Indent' {
-		return 'Indent';
+	public static get pluginName() {
+		return 'Indent' as const;
 	}
 
 	/**

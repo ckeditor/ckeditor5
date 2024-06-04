@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -11,7 +11,7 @@
 
 const glob = require( 'glob' );
 const path = require( 'path' );
-const { red } = require( './ansi-colors' );
+const { red } = require( 'chalk' );
 const ROOT_DIRECTORY = path.join( __dirname, '..', '..' );
 
 // This script ensures that the "manual/" test directories are only located in the root

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,10 +7,10 @@
  * @module highlight/highlight
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 
-import HighlightEditing from './highlightediting';
-import HighlightUI from './highlightui';
+import HighlightEditing from './highlightediting.js';
+import HighlightUI from './highlightui.js';
 
 /**
  * The highlight plugin.
@@ -31,7 +31,7 @@ export default class Highlight extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Highlight' {
-		return 'Highlight';
+	public static get pluginName() {
+		return 'Highlight' as const;
 	}
 }

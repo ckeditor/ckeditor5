@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,9 @@
  * @module font/fontcolor
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import FontColorEditing from './fontcolor/fontcolorediting';
-import FontColorUI from './fontcolor/fontcolorui';
+import { Plugin } from 'ckeditor5/src/core.js';
+import FontColorEditing from './fontcolor/fontcolorediting.js';
+import FontColorUI from './fontcolor/fontcolorui.js';
 
 /**
  * The font color plugin.
@@ -31,7 +31,7 @@ export default class FontColor extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'FontColor' {
-		return 'FontColor';
+	public static get pluginName() {
+		return 'FontColor' as const;
 	}
 }

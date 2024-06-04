@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -12,9 +12,10 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Italian (https://www.transifex.com/ckeditor/teams/11143/it/)\n"
+"Language-Team: Italian (https://app.transifex.com/ckeditor/teams/11143/it/)\n"
 "Language: it\n"
 "Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "The label for the image widget."
 msgid "image widget"
@@ -68,6 +69,30 @@ msgctxt "The label for the insert image toolbar button."
 msgid "Insert image"
 msgstr "Inserisci immagine"
 
+msgctxt "The label for the replace image toolbar button."
+msgid "Replace image"
+msgstr "Sostituisci l'immagine"
+
+msgctxt "The label for the upload image from computer toolbar button with visible label in insert image dropdown."
+msgid "Upload from computer"
+msgstr "Carica dal computer"
+
+msgctxt "The label for the replace image by upload from computer toolbar button with visible label in insert image dropdown."
+msgid "Replace from computer"
+msgstr "Sostituisci dal computer"
+
+msgctxt "The label for the upload image from computer toolbar button."
+msgid "Upload image from computer"
+msgstr "Carica l'immagine dal computer"
+
+msgctxt "The label for the upload image from computer menu bar button."
+msgid "Image from computer"
+msgstr "Immagine dal computer"
+
+msgctxt "The label for the replace image by upload from computer toolbar button."
+msgid "Replace image from computer"
+msgstr "Sostituisci l'immagine dal computer"
+
 msgctxt "The title of the notification displayed when upload fails."
 msgid "Upload failed"
 msgstr "Caricamento fallito"
@@ -88,9 +113,21 @@ msgctxt "The accessibility label of the standalone image resize reset option but
 msgid "Resize image to the original size"
 msgstr "Ridimensiona immagine alle dimensioni originali"
 
+msgctxt "The label for image resize balloon input."
+msgid "Resize image (in %0)"
+msgstr "Ridimensiona immagine (in %0 )"
+
 msgctxt "The default label for the resize option that resets the size of the image."
 msgid "Original"
 msgstr "Originale"
+
+msgctxt "The accessibility label of the standalone image resize custom option button in the image toolbar for screen readers."
+msgid "Custom image size"
+msgstr "Dimensioni immagine personalizzate"
+
+msgctxt "The label for the resize option that allows user to enter custom size of the image."
+msgid "Custom"
+msgstr "Personalizzato"
 
 msgctxt "The accessibility label of the image resize dropdown for screen readers."
 msgid "Image resize list"
@@ -119,3 +156,23 @@ msgstr "Didascalia dell'immagine"
 msgctxt "Text used by screen readers do describe an image when there is a text alternative available, e.g. 'Caption for image: this is a description of the image.'"
 msgid "Caption for image: %0"
 msgstr "Didascalia dell'immagine: %0"
+
+msgctxt "Text used as error label when user submitted custom image resize form with blank value."
+msgid "The value must not be empty."
+msgstr "Il valore non può essere essere lasciato in bianco."
+
+msgctxt "Text used as error label when user submitted custom image resize form with incorrect value."
+msgid "The value should be a plain number."
+msgstr "Il valore deve essere un numero intero."
+
+msgctxt "Aria status message indicating that the image is being uploaded. Example: 'Uploading image'."
+msgid "Uploading image"
+msgstr "Caricamento immagine in corso"
+
+msgctxt "Aria status message indicating that the image has been uploaded successfully. Example: 'Image upload complete'."
+msgid "Image upload complete"
+msgstr "Caricamento immagine completato"
+
+msgctxt "Aria status message indicating that an error has occurred during image upload. Example: 'Error during image upload'."
+msgid "Error during image upload"
+msgstr "Errore durante il caricamento dell'immagine"

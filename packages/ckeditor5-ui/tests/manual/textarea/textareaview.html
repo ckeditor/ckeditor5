@@ -1,0 +1,42 @@
+<div dir="ltr" class="ck ck-reset_all ck-rounded-corners playground"></div>
+
+<style>
+	.ck.playground {
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr;
+		grid-template-rows: auto;
+		grid-gap: 20px;
+	}
+
+	.ck.playground > div {
+		border: 1px solid #eee;
+		box-shadow: 2px 2px 3px #0000000d;
+		padding: 10px;
+
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		grid-template-rows: auto 1fr;
+		grid-gap: 10px;
+	}
+
+	.ck.playground > div > h2 {
+		font-size: 16px;
+		font-weight: bold;
+		grid-area: 1 / 1 / 2 / 3;
+	}
+
+	.ck.playground textarea {
+		width: 100%;
+		clear: both;
+		grid-area: 2 / 1 / 3 / 3;
+	}
+
+	.ck.playground button:first-child {
+		grid-area: 3 / 1 / 4 / 2;
+	}
+
+	.ck.playground button:last-child {
+		grid-area: 3 / 2 / 4 / 3;
+	}
+
+</style>

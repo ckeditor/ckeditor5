@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,16 +9,16 @@
 
 /* globals XMLHttpRequest, FormData, Blob, atob */
 
-import type { UploadResponse } from 'ckeditor5/src/upload';
-import { EmitterMixin, CKEditorError } from 'ckeditor5/src/utils';
-import type { InitializedToken } from '../token/token';
+import type { UploadResponse } from 'ckeditor5/src/upload.js';
+import { EmitterMixin, CKEditorError } from 'ckeditor5/src/utils.js';
+import type { InitializedToken } from '../token/token.js';
 
 const BASE64_HEADER_REG_EXP = /^data:(\S*?);base64,/;
 
 /**
  * FileUploader class used to upload single file.
  */
-export default class FileUploader extends EmitterMixin() {
+export default class FileUploader extends /* #__PURE__ */ EmitterMixin() {
 	/**
 	 * A file that is being uploaded.
 	 */

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,10 +7,10 @@
  * @module find-and-replace/replaceallcommand
  */
 
-import { Collection } from 'ckeditor5/src/utils';
-import type { ResultType } from './findandreplace';
-import type FindAndReplaceUtils from './findandreplaceutils';
-import { ReplaceCommandBase } from './replacecommandbase';
+import { Collection } from 'ckeditor5/src/utils.js';
+import type { ResultType } from './findandreplace.js';
+import type FindAndReplaceUtils from './findandreplaceutils.js';
+import { ReplaceCommandBase } from './replacecommandbase.js';
 
 /**
  * The replace all command. It is used by the {@link module:find-and-replace/findandreplace~FindAndReplace find and replace feature}.
@@ -50,9 +50,12 @@ export default class ReplaceAllCommand extends ReplaceCommandBase {
 				) ), null as Collection<ResultType> | null )!;
 
 		if ( results.length ) {
-			[ ...results ].forEach( searchResult => {
-				// Just reuse logic from the replace command to replace a single match.
-				this._replace( newText, searchResult );
+			// Wrapped in single change will batch it into one transaction.
+			model.change( () => {
+				[ ...results ].forEach( searchResult => {
+					// Just reuse logic from the replace command to replace a single match.
+					this._replace( newText, searchResult );
+				} );
 			} );
 		}
 	}

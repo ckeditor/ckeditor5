@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,8 +9,8 @@
  * @module ui/view
  */
 
-import ViewCollection from './viewcollection';
-import Template, { type BindChain, type TemplateDefinition } from './template';
+import ViewCollection from './viewcollection.js';
+import Template, { type BindChain, type TemplateDefinition } from './template.js';
 
 import {
 	CKEditorError,
@@ -91,7 +91,9 @@ import '../theme/globals/globals.css';
  * } );
  * ```
  */
-export default class View<TElement extends HTMLElement = HTMLElement> extends DomEmitterMixin( ObservableMixin() ) {
+export default class View<TElement extends HTMLElement = HTMLElement>
+	extends /* #__PURE__ */ DomEmitterMixin( /* #__PURE__ */ ObservableMixin() )
+{
 	/**
 	 * An HTML element of the view. `null` until {@link #render rendered}
 	 * from the {@link #template}.
@@ -159,7 +161,7 @@ export default class View<TElement extends HTMLElement = HTMLElement> extends Do
 	 */
 	public template?: Template;
 
-	public viewUid?: string;
+	public declare viewUid?: string;
 
 	/**
 	 * Collections registered with {@link #createCollection}.

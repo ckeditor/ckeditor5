@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,24 +7,26 @@
  * @module image/image/imageblockediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { ClipboardPipeline, type ClipboardInputTransformationEvent } from 'ckeditor5/src/clipboard';
-import { UpcastWriter, type ViewElement } from 'ckeditor5/src/engine';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { ClipboardPipeline, type ClipboardInputTransformationEvent, type ClipboardContentInsertionEvent } from 'ckeditor5/src/clipboard.js';
+import { UpcastWriter, type ViewElement } from 'ckeditor5/src/engine.js';
 
 import {
 	downcastImageAttribute,
 	downcastSrcsetAttribute,
 	upcastImageFigure
-} from './converters';
+} from './converters.js';
 
-import ImageEditing from './imageediting';
-import ImageTypeCommand from './imagetypecommand';
-import ImageUtils from '../imageutils';
+import ImageEditing from './imageediting.js';
+import ImageSizeAttributes from '../imagesizeattributes.js';
+import ImageTypeCommand from './imagetypecommand.js';
+import ImageUtils from '../imageutils.js';
 import {
 	getImgViewElementMatcher,
 	createBlockImageViewElement,
 	determineImageTypeForInsertionAtSelection
-} from '../image/utils';
+} from './utils.js';
+import ImagePlaceholder from './imageplaceholder.js';
 
 /**
  * The image block plugin.
@@ -41,14 +43,14 @@ export default class ImageBlockEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ ImageEditing, ImageUtils, ClipboardPipeline ] as const;
+		return [ ImageEditing, ImageSizeAttributes, ImageUtils, ImagePlaceholder, ClipboardPipeline ] as const;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ImageBlockEditing' {
-		return 'ImageBlockEditing';
+	public static get pluginName() {
+		return 'ImageBlockEditing' as const;
 	}
 
 	/**
@@ -127,6 +129,8 @@ export default class ImageBlockEditing extends Plugin {
 	 * if they decided to put their image there.
 	 *
 	 * See the `ImageInlineEditing` for the similar integration that works in the opposite direction.
+	 *
+	 * The feature also sets image `width` and `height` attributes on paste.
 	 */
 	private _setupClipboardIntegration(): void {
 		const editor = this.editor;
@@ -173,6 +177,25 @@ export default class ImageBlockEditing extends Plugin {
 
 					data.content = writer.createDocumentFragment( blockViewImages );
 				}
+			} );
+
+		this.listenTo<ClipboardContentInsertionEvent>(
+			clipboardPipeline,
+			'contentInsertion',
+			( evt, data ) => {
+				if ( data.method !== 'paste' ) {
+					return;
+				}
+
+				model.change( writer => {
+					const range = writer.createRangeIn( data.content );
+
+					for ( const item of range.getItems() ) {
+						if ( item.is( 'element', 'imageBlock' ) ) {
+							imageUtils.setImageNaturalSizeAttributes( item );
+						}
+					}
+				} );
 			} );
 	}
 }

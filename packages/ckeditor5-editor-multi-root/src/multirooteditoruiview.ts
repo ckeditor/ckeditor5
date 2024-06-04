@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,9 @@
  * @module editor-multi-root/multirooteditoruiview
  */
 
-import { EditorUIView, InlineEditableUIView, ToolbarView } from 'ckeditor5/src/ui';
-import type { Locale } from 'ckeditor5/src/utils';
-import type { View } from 'ckeditor5/src/engine';
+import { EditorUIView, InlineEditableUIView, MenuBarView, ToolbarView } from 'ckeditor5/src/ui.js';
+import type { Locale } from 'ckeditor5/src/utils.js';
+import type { EditingView } from 'ckeditor5/src/engine.js';
 
 /**
  * The multi-root editor UI view. It is a virtual view providing an inline
@@ -27,6 +27,11 @@ export default class MultiRootEditorUIView extends EditorUIView {
 	public readonly toolbar: ToolbarView;
 
 	/**
+	 * Menu bar view instance.
+	 */
+	public readonly menuBarView: MenuBarView;
+
+	/**
 	 * Editable elements used by the multi-root editor UI.
 	 */
 	public readonly editables: Record<string, InlineEditableUIView>;
@@ -36,7 +41,7 @@ export default class MultiRootEditorUIView extends EditorUIView {
 	/**
 	 * The editing view instance this view is related to.
 	 */
-	private readonly _editingView: View;
+	private readonly _editingView: EditingView;
 
 	/**
 	 * Creates an instance of the multi-root editor UI view.
@@ -55,7 +60,7 @@ export default class MultiRootEditorUIView extends EditorUIView {
 	 */
 	constructor(
 		locale: Locale,
-		editingView: View,
+		editingView: EditingView,
 		editableNames: Array<string>,
 		options: {
 			editableElements?: Record<string, HTMLElement>;
@@ -69,6 +74,8 @@ export default class MultiRootEditorUIView extends EditorUIView {
 		this.toolbar = new ToolbarView( locale, {
 			shouldGroupWhenFull: options.shouldToolbarGroupWhenFull
 		} );
+
+		this.menuBarView = new MenuBarView( locale );
 
 		this.editables = {};
 
@@ -86,6 +93,16 @@ export default class MultiRootEditorUIView extends EditorUIView {
 		// Also, make sure the toolbar has the proper dir attribute because its ancestor may not have one
 		// and some toolbar item styles depend on this attribute.
 		this.toolbar.extendTemplate( {
+			attributes: {
+				class: [
+					'ck-reset_all',
+					'ck-rounded-corners'
+				],
+				dir: locale.uiLanguageDirection
+			}
+		} );
+
+		this.menuBarView.extendTemplate( {
 			attributes: {
 				class: [
 					'ck-reset_all',
@@ -150,5 +167,6 @@ export default class MultiRootEditorUIView extends EditorUIView {
 
 		this.registerChild( Object.values( this.editables ) );
 		this.registerChild( this.toolbar );
+		this.registerChild( this.menuBarView );
 	}
 }

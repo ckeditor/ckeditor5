@@ -1,26 +1,26 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import DowncastWriter from '../../../src/view/downcastwriter';
-import View from '../../../src/view/view';
-import DocumentFragment from '../../../src/view/documentfragment';
-import Element from '../../../src/view/element';
-import ContainerElement from '../../../src/view/containerelement';
-import AttributeElement from '../../../src/view/attributeelement';
-import EmptyElement from '../../../src/view/emptyelement';
-import RawElement from '../../../src/view/rawelement';
-import UIElement from '../../../src/view/uielement';
-import Position from '../../../src/view/position';
-import Range from '../../../src/view/range';
-import Text from '../../../src/view/text';
+import DowncastWriter from '../../../src/view/downcastwriter.js';
+import View from '../../../src/view/view.js';
+import DocumentFragment from '../../../src/view/documentfragment.js';
+import Element from '../../../src/view/element.js';
+import ContainerElement from '../../../src/view/containerelement.js';
+import AttributeElement from '../../../src/view/attributeelement.js';
+import EmptyElement from '../../../src/view/emptyelement.js';
+import RawElement from '../../../src/view/rawelement.js';
+import UIElement from '../../../src/view/uielement.js';
+import Position from '../../../src/view/position.js';
+import Range from '../../../src/view/range.js';
+import Text from '../../../src/view/text.js';
 
-import { stringify, parse } from '../../../src/dev-utils/view';
-import createViewRoot from '../_utils/createroot';
-import Document from '../../../src/view/document';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-import { StylesProcessor } from '../../../src/view/stylesmap';
+import { stringify, parse } from '../../../src/dev-utils/view.js';
+import createViewRoot from '../_utils/createroot.js';
+import Document from '../../../src/view/document.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
+import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 describe( 'DowncastWriter', () => {
 	describe( 'wrap()', () => {

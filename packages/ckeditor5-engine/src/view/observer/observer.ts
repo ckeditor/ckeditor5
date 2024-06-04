@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,8 +9,8 @@
 
 import { DomEmitterMixin } from '@ckeditor/ckeditor5-utils';
 
-import type Document from '../document';
-import type View from '../view';
+import type Document from '../document.js';
+import type View from '../view.js';
 
 /**
  * Abstract base observer class. Observers are classes which listen to DOM events, do the preliminary
@@ -18,7 +18,7 @@ import type View from '../view';
  * Observers can also add features to the view, for instance by updating its status or marking elements
  * which need a refresh on DOM events.
  */
-export default abstract class Observer extends DomEmitterMixin() {
+export default abstract class Observer extends /* #__PURE__ */ DomEmitterMixin() {
 	/**
 	 * An instance of the view controller.
 	 */

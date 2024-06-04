@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,7 +9,7 @@
  * @module ui/icon/iconview
  */
 
-import View from '../view';
+import View from '../view.js';
 
 import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 
@@ -21,6 +21,9 @@ import '../../theme/components/icon/icon.css';
 export default class IconView extends View {
 	/**
 	 * The SVG source of the icon.
+	 *
+	 * The user must provide the entire XML string, not just the path. See the
+	 * {@glink framework/architecture/ui-library#setting-label-icon-and-tooltip UI library} guide for details.
 	 *
 	 * @observable
 	 */
@@ -65,6 +68,14 @@ export default class IconView extends View {
 	declare public isColorInherited: boolean;
 
 	/**
+	 * Controls whether the icon is visible.
+	 *
+	 * @observable
+	 * @default true
+	 */
+	declare public isVisible: boolean;
+
+	/**
 	 * A list of presentational attributes that can be set on the `<svg>` element and should be preserved
 	 * when the icon {@link module:ui/icon/iconview~IconView#content content} is loaded.
 	 *
@@ -93,6 +104,7 @@ export default class IconView extends View {
 		this.set( 'viewBox', '0 0 20 20' );
 		this.set( 'fillColor', '' );
 		this.set( 'isColorInherited', true );
+		this.set( 'isVisible', true );
 
 		this.setTemplate( {
 			tag: 'svg',
@@ -101,6 +113,7 @@ export default class IconView extends View {
 				class: [
 					'ck',
 					'ck-icon',
+					bind.if( 'isVisible', 'ck-hidden', value => !value ),
 
 					// Exclude icon internals from the CSS reset to allow rich (non-monochromatic) icons
 					// (https://github.com/ckeditor/ckeditor5/issues/12599).

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,7 +10,7 @@ import {
 	isColor,
 	isLength,
 	isLineStyle, isPercentage
-} from '../../../src/view/styles/utils';
+} from '../../../src/view/styles/utils.js';
 
 describe( 'Styles utils', () => {
 	describe( 'isColor()', () => {
@@ -270,9 +270,31 @@ describe( 'Styles utils', () => {
 				left: 'bar'
 			} );
 		} );
+
+		it( 'should work with values containing white spaces', () => {
+			expect( getBoxSidesValues(
+				'   rgb(10 , 10,   10 )  rgba(100,    100,   100, .3   )' +
+				'   rgb(  20%   20%  20% )    rgba(  255   255  255   /  .5 ) '
+			) )
+				.to.deep.equal( {
+					top: 'rgb(10 , 10,   10 )',
+					right: 'rgba(100,    100,   100, .3   )',
+					bottom: 'rgb(  20%   20%  20% )',
+					left: 'rgba(  255   255  255   /  .5 )'
+				} );
+		} );
+
+		it( 'should work with values containing nested declarations', () => {
+			expect( getBoxSidesValues( '  calc( 10px  -  3px )  calc(  var( --foo-var ) + 20px  )' ) ).to.deep.equal( {
+				top: 'calc( 10px  -  3px )',
+				right: 'calc(  var( --foo-var ) + 20px  )',
+				bottom: 'calc( 10px  -  3px )',
+				left: 'calc(  var( --foo-var ) + 20px  )'
+			} );
+		} );
 	} );
 
-	describe( 'getParts()', () => {
+	describe( 'getShorthandValues()', () => {
 		it( 'should split string to separate values', () => {
 			expect( getShorthandValues( 'foo bar' ) ).to.deep.equal( [ 'foo', 'bar' ] );
 		} );
@@ -280,6 +302,122 @@ describe( 'Styles utils', () => {
 		it( 'should split string to separate values when value contain grouping parens', () => {
 			expect( getShorthandValues( 'foo bar(1, 3, 5) url("example.com:foo/bar?q=b")' ) )
 				.to.deep.equal( [ 'foo', 'bar(1, 3, 5)', 'url("example.com:foo/bar?q=b")' ] );
+		} );
+
+		describe( 'for colors', () => {
+			it( 'should split color declarations: named colors', () => {
+				expect( getShorthandValues( 'red green black' ) ).to.deep.equal( [
+					'red', 'green', 'black'
+				] );
+			} );
+
+			it( 'should split color declarations: hex colors', () => {
+				expect( getShorthandValues( '#000 #000000EE' ) ).to.deep.equal( [
+					'#000', '#000000EE'
+				] );
+			} );
+
+			it( 'should split color declarations: rgb colors', () => {
+				expect( getShorthandValues( 'rgb(10, 10, 10) rgba(100, 100, 100, .3) rgb(20% 20% 20%) rgba(255 255 255 / .5)' ) )
+					.to.deep.equal( [
+						'rgb(10, 10, 10)', 'rgba(100, 100, 100, .3)', 'rgb(20% 20% 20%)', 'rgba(255 255 255 / .5)'
+					] );
+			} );
+
+			it( 'should split color declarations: hsl colors', () => {
+				expect( getShorthandValues( 'hsl(50 80% 40%) hsl(212.4, 89.3%, 89%) hsla(209, 90%, 72%,.3) hsla(0.3turn 60% 45% / .7)' ) )
+					.to.deep.equal( [
+						'hsl(50 80% 40%)', 'hsl(212.4, 89.3%, 89%)', 'hsla(209, 90%, 72%,.3)', 'hsla(0.3turn 60% 45% / .7)'
+					] );
+			} );
+
+			it( 'should split color declarations: other color formats', () => {
+				expect( getShorthandValues( 'hwb(50deg 30% 40%) cmyk(0 81% 81% 30%) color(xyz 22% 26% 53%) lab(30 59.4 -96)' ) )
+					.to.deep.equal( [
+						'hwb(50deg 30% 40%)', 'cmyk(0 81% 81% 30%)', 'color(xyz 22% 26% 53%)', 'lab(30 59.4 -96)'
+					] );
+			} );
+
+			describe( 'with additional white spaces in declarations', () => {
+				it( 'should split color declarations: named colors', () => {
+					expect( getShorthandValues( ' red   green  black ' ) ).to.deep.equal( [
+						'red', 'green', 'black'
+					] );
+				} );
+
+				it( 'should split color declarations: hex colors', () => {
+					expect( getShorthandValues( ' #000    #000000EE ' ) ).to.deep.equal( [
+						'#000', '#000000EE'
+					] );
+				} );
+
+				it( 'should split color declarations: rgb colors', () => {
+					expect( getShorthandValues(
+						'   rgb(10 , 10,   10 )  rgba(100,    100,   100, .3   )' +
+						'   rgb(  20%   20%  20% )    rgba(  255   255  255   /  .5 ) '
+					) )
+						.to.deep.equal( [
+							'rgb(10 , 10,   10 )',
+							'rgba(100,    100,   100, .3   )',
+							'rgb(  20%   20%  20% )',
+							'rgba(  255   255  255   /  .5 )'
+						] );
+				} );
+
+				it( 'should split color declarations: hsl colors', () => {
+					expect( getShorthandValues(
+						' hsl( 50  80%  40%)   hsl(  212.4,   89.3%,   89% )' +
+						' hsla(  209,  90%,   72%, .3  ) hsla( 0.3turn  60%   45%  /  .7  )'
+					) )
+						.to.deep.equal( [
+							'hsl( 50  80%  40%)',
+							'hsl(  212.4,   89.3%,   89% )',
+							'hsla(  209,  90%,   72%, .3  )',
+							'hsla( 0.3turn  60%   45%  /  .7  )'
+						] );
+				} );
+
+				it( 'should split color declarations: other color formats', () => {
+					expect( getShorthandValues(
+						'  hwb(  50deg  30%   40%  )  cmyk( 0   81%  81%    30% )' +
+						'  color( xyz   22%  26%  53%)  lab(  30 59.4  -96 ) '
+					) )
+						.to.deep.equal( [
+							'hwb(  50deg  30%   40%  )',
+							'cmyk( 0   81%  81%    30% )',
+							'color( xyz   22%  26%  53%)',
+							'lab(  30 59.4  -96 )'
+						] );
+				} );
+			} );
+		} );
+
+		describe( 'for non-color declarations', () => {
+			it( 'should split size declarations: simple units', () => {
+				expect( getShorthandValues( '3px 2em 10vw 20%' ) ).to.deep.equal( [
+					'3px', '2em', '10vw', '20%'
+				] );
+			} );
+
+			it( 'should split size declarations: values with calc() expressions', () => {
+				expect( getShorthandValues( 'calc(10px - 3px) calc(var(--foo-var) + 20px)' ) ).to.deep.equal( [
+					'calc(10px - 3px)', 'calc(var(--foo-var) + 20px)'
+				] );
+			} );
+
+			describe( 'with additional white spaces', () => {
+				it( 'should split size declarations: simple units', () => {
+					expect( getShorthandValues( ' 3px   2em  10vw   20%  ' ) ).to.deep.equal( [
+						'3px', '2em', '10vw', '20%'
+					] );
+				} );
+
+				it( 'should split size declarations: values with calc() expressions', () => {
+					expect( getShorthandValues( '  calc( 10px  -  3px )  calc(  var( --foo-var ) + 20px  )' ) ).to.deep.equal( [
+						'calc( 10px  -  3px )', 'calc(  var( --foo-var ) + 20px  )'
+					] );
+				} );
+			} );
 		} );
 	} );
 

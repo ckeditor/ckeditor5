@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,8 +7,10 @@
  * @module code-block/codeblockediting
  */
 
-import { Plugin, type Editor, type MultiCommand } from 'ckeditor5/src/core';
-import { ShiftEnter, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter';
+import { lowerFirst, upperFirst } from 'lodash-es';
+
+import { Plugin, type Editor, type MultiCommand } from 'ckeditor5/src/core.js';
+import { ShiftEnter, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter.js';
 
 import {
 	UpcastWriter,
@@ -19,24 +21,28 @@ import {
 	type DowncastInsertEvent,
 	type UpcastElementEvent,
 	type UpcastTextEvent,
-	type Element
-} from 'ckeditor5/src/engine';
+	type Element,
+	type SelectionChangeRangeEvent
+} from 'ckeditor5/src/engine.js';
 
-import CodeBlockCommand from './codeblockcommand';
-import IndentCodeBlockCommand from './indentcodeblockcommand';
-import OutdentCodeBlockCommand from './outdentcodeblockcommand';
+import type { ListEditing } from '@ckeditor/ckeditor5-list';
+
+import CodeBlockCommand from './codeblockcommand.js';
+import IndentCodeBlockCommand from './indentcodeblockcommand.js';
+import OutdentCodeBlockCommand from './outdentcodeblockcommand.js';
 import {
 	getNormalizedAndLocalizedLanguageDefinitions,
 	getLeadingWhiteSpaces,
-	rawSnippetTextToViewDocumentFragment
-} from './utils';
+	rawSnippetTextToViewDocumentFragment,
+	getCodeBlockAriaAnnouncement
+} from './utils.js';
 import {
 	modelToViewCodeBlockInsertion,
 	modelToDataViewSoftBreakInsertion,
 	dataViewToModelCodeBlockInsertion,
 	dataViewToModelTextNewlinesInsertion,
 	dataViewToModelOrphanNodeConsumer
-} from './converters';
+} from './converters.js';
 
 const DEFAULT_ELEMENT = 'paragraph';
 
@@ -49,8 +55,8 @@ export default class CodeBlockEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'CodeBlockEditing' {
-		return 'CodeBlockEditing';
+	public static get pluginName() {
+		return 'CodeBlockEditing' as const;
 	}
 
 	/**
@@ -97,7 +103,6 @@ export default class CodeBlockEditing extends Plugin {
 		const schema = editor.model.schema;
 		const model = editor.model;
 		const view = editor.editing.view;
-		const isDocumentListEditingLoaded = editor.plugins.has( 'DocumentListEditing' );
 
 		const normalizedLanguagesDefs = getNormalizedAndLocalizedLanguageDefinitions( editor );
 
@@ -126,29 +131,17 @@ export default class CodeBlockEditing extends Plugin {
 		schema.register( 'codeBlock', {
 			allowWhere: '$block',
 			allowChildren: '$text',
-			isBlock: true,
-			allowAttributes: [ 'language' ]
+			// Disallow `$inlineObject` and its derivatives like `inlineWidget` inside `codeBlock` to ensure that only text,
+			// not other inline elements like inline images, are allowed. This maintains the semantic integrity of code blocks.
+			disallowChildren: '$inlineObject',
+			allowAttributes: [ 'language' ],
+			allowAttributesOf: '$listItem',
+			isBlock: true
 		} );
 
-		// Allow all list* attributes on `codeBlock` (integration with DocumentList).
-		// Disallow all attributes on $text inside `codeBlock`.
-		schema.addAttributeCheck( ( context, attributeName ) => {
-			const isDocumentListAttributeOnCodeBlock = context.endsWith( 'codeBlock' ) &&
-				attributeName.startsWith( 'list' ) &&
-				attributeName !== 'list';
-
-			if ( isDocumentListEditingLoaded && isDocumentListAttributeOnCodeBlock ) {
-				return true;
-			}
-
+		// Disallow all attributes on `$text` inside `codeBlock`.
+		schema.addAttributeCheck( context => {
 			if ( context.endsWith( 'codeBlock $text' ) ) {
-				return false;
-			}
-		} );
-
-		// Disallow object elements inside `codeBlock`. See #9567.
-		editor.model.schema.addChildCheck( ( context, childDefinition ) => {
-			if ( context.endsWith( 'codeBlock' ) && childDefinition.isObject ) {
 				return false;
 			}
 		} );
@@ -275,6 +268,39 @@ export default class CodeBlockEditing extends Plugin {
 			data.preventDefault();
 			evt.stop();
 		}, { context: 'pre' } );
+
+		this._initAriaAnnouncements( );
+	}
+
+	/**
+	 * Observe when user enters or leaves code block and set proper aria value in global live announcer.
+	 * This allows screen readers to indicate when the user has entered and left the specified code block.
+	 *
+	 * @internal
+	 */
+	private _initAriaAnnouncements( ) {
+		const { model, ui, t } = this.editor;
+		const languageDefs = getNormalizedAndLocalizedLanguageDefinitions( this.editor );
+
+		let lastFocusedCodeBlock: Element | null = null;
+
+		model.document.selection.on<SelectionChangeRangeEvent>( 'change:range', () => {
+			const focusParent = model.document.selection.focus!.parent;
+
+			if ( !ui || lastFocusedCodeBlock === focusParent || !focusParent.is( 'element' ) ) {
+				return;
+			}
+
+			if ( lastFocusedCodeBlock && lastFocusedCodeBlock.is( 'element', 'codeBlock' ) ) {
+				ui.ariaLiveAnnouncer.announce( getCodeBlockAriaAnnouncement( t, languageDefs, lastFocusedCodeBlock, 'leave' ) );
+			}
+
+			if ( focusParent.is( 'element', 'codeBlock' ) ) {
+				ui.ariaLiveAnnouncer.announce( getCodeBlockAriaAnnouncement( t, languageDefs, focusParent, 'enter' ) );
+			}
+
+			lastFocusedCodeBlock = focusParent;
+		} );
 	}
 }
 

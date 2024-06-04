@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,11 +7,11 @@
  * @module font/fontsize
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import FontSizeEditing from './fontsize/fontsizeediting';
-import FontSizeUI from './fontsize/fontsizeui';
-import { normalizeOptions } from './fontsize/utils';
-import type { FontSizeOption } from './fontconfig';
+import { Plugin } from 'ckeditor5/src/core.js';
+import FontSizeEditing from './fontsize/fontsizeediting.js';
+import FontSizeUI from './fontsize/fontsizeui.js';
+import { normalizeOptions } from './fontsize/utils.js';
+import type { FontSizeOption } from './fontconfig.js';
 
 /**
  * The font size plugin.
@@ -33,8 +33,8 @@ export default class FontSize extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'FontSize' {
-		return 'FontSize';
+	public static get pluginName() {
+		return 'FontSize' as const;
 	}
 
 	/**

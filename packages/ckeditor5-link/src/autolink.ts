@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,12 +7,14 @@
  * @module link/autolink
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import type { DocumentSelectionChangeEvent, Element, Model, Range } from 'ckeditor5/src/engine';
-import { Delete, TextWatcher, getLastTextLine, type TextWatcherMatchedDataEvent } from 'ckeditor5/src/typing';
-import type { EnterCommand, ShiftEnterCommand } from 'ckeditor5/src/enter';
+import { Plugin } from 'ckeditor5/src/core.js';
+import type { ClipboardInputTransformationData } from 'ckeditor5/src/clipboard.js';
+import type { DocumentSelectionChangeEvent, Element, Model, Position, Range, Writer } from 'ckeditor5/src/engine.js';
+import { Delete, TextWatcher, getLastTextLine, findAttributeRange, type TextWatcherMatchedDataEvent } from 'ckeditor5/src/typing.js';
+import type { EnterCommand, ShiftEnterCommand } from 'ckeditor5/src/enter.js';
 
-import { addLinkProtocolIfApplicable, linkHasProtocol } from './utils';
+import { addLinkProtocolIfApplicable, linkHasProtocol } from './utils.js';
+import LinkEditing from './linkediting.js';
 
 const MIN_LINK_LENGTH_WITH_SPACE_AT_END = 4; // Ie: "t.co " (length 5).
 
@@ -73,14 +75,14 @@ export default class AutoLink extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ Delete ] as const;
+		return [ Delete, LinkEditing ] as const;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'AutoLink' {
-		return 'AutoLink';
+	public static get pluginName() {
+		return 'AutoLink' as const;
 	}
 
 	/**
@@ -104,6 +106,85 @@ export default class AutoLink extends Plugin {
 	public afterInit(): void {
 		this._enableEnterHandling();
 		this._enableShiftEnterHandling();
+		this._enablePasteLinking();
+	}
+
+	/**
+	 * For given position, returns a range that includes the whole link that contains the position.
+	 *
+	 * If position is not inside a link, returns `null`.
+	 */
+	private _expandLinkRange( model: Model, position: Position ): Range | null {
+		if ( position.textNode && position.textNode.hasAttribute( 'linkHref' ) ) {
+			return findAttributeRange( position, 'linkHref', position.textNode.getAttribute( 'linkHref' ), model );
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Extends the document selection to includes all links that intersects with given `selectedRange`.
+	 */
+	private _selectEntireLinks( writer: Writer, selectedRange: Range ): void {
+		const editor = this.editor;
+		const model = editor.model;
+		const selection = model.document.selection;
+		const selStart = selection.getFirstPosition()!;
+		const selEnd = selection.getLastPosition()!;
+
+		let updatedSelection = selectedRange.getJoined( this._expandLinkRange( model, selStart ) || selectedRange );
+		if ( updatedSelection ) {
+			updatedSelection = updatedSelection.getJoined( this._expandLinkRange( model, selEnd ) || selectedRange );
+		}
+
+		if ( updatedSelection && ( updatedSelection.start.isBefore( selStart ) || updatedSelection.end.isAfter( selEnd ) ) ) {
+			// Only update the selection if it changed.
+			writer.setSelection( updatedSelection );
+		}
+	}
+
+	/**
+	 * Enables autolinking on pasting a URL when some content is selected.
+	 */
+	private _enablePasteLinking(): void {
+		const editor = this.editor;
+		const model = editor.model;
+		const selection = model.document.selection;
+		const clipboardPipeline = editor.plugins.get( 'ClipboardPipeline' );
+		const linkCommand = editor.commands.get( 'link' )!;
+
+		clipboardPipeline.on( 'inputTransformation', ( evt, data: ClipboardInputTransformationData ) => {
+			if ( !this.isEnabled || !linkCommand.isEnabled || selection.isCollapsed || data.method !== 'paste' ) {
+				// Abort if we are disabled or the selection is collapsed.
+				return;
+			}
+
+			if ( selection.rangeCount > 1 ) {
+				// Abort if there are multiple selection ranges.
+				return;
+			}
+
+			const selectedRange = selection.getFirstRange()!;
+
+			const newLink = data.dataTransfer.getData( 'text/plain' );
+
+			if ( !newLink ) {
+				// Abort if there is no plain text on the clipboard.
+				return;
+			}
+
+			const matches = newLink.match( URL_REG_EXP );
+
+			// If the text in the clipboard has a URL, and that URL is the whole clipboard.
+			if ( matches && matches[ 2 ] === newLink ) {
+				model.change( writer => {
+					this._selectEntireLinks( writer, selectedRange );
+					linkCommand.execute( newLink );
+				} );
+
+				evt.stop();
+			}
+		}, { priority: 'high' } );
 	}
 
 	/**

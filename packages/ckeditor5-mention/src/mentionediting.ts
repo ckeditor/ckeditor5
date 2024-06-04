@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,7 @@
  * @module mention/mentionediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 import type {
 	Element,
 	Text,
@@ -20,11 +20,11 @@ import type {
 	Schema,
 	DowncastAttributeEvent,
 	Item
-} from 'ckeditor5/src/engine';
-import { uid } from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/engine.js';
+import { uid } from 'ckeditor5/src/utils.js';
 
-import MentionCommand from './mentioncommand';
-import type { MentionAttribute } from './mention';
+import MentionCommand from './mentioncommand.js';
+import type { MentionAttribute } from './mention.js';
 
 /**
  * The mention editing feature.
@@ -37,8 +37,8 @@ export default class MentionEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'MentionEditing' {
-		return 'MentionEditing';
+	public static get pluginName() {
+		return 'MentionEditing' as const;
 	}
 
 	/**
@@ -84,8 +84,8 @@ export default class MentionEditing extends Plugin {
  * @internal
  */
 export function _addMentionAttributes(
-	baseMentionData: MentionAttribute,
-	data?: MentionAttribute
+	baseMentionData: { id: string; _text: string },
+	data?: Record<string, unknown>
 ): MentionAttribute {
 	return Object.assign( { uid: uid() }, baseMentionData, data || {} );
 }
@@ -100,7 +100,7 @@ export function _addMentionAttributes(
  */
 export function _toMentionAttribute(
 	viewElementOrMention: Element,
-	data?: MentionAttribute
+	data?: Record<string, unknown>
 ): MentionAttribute | undefined {
 	const dataMention = viewElementOrMention.getAttribute( 'data-mention' ) as string;
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,13 +7,17 @@
  * @module engine/view/styles/utils
  */
 
-import type { BoxSides, PropertyDescriptor, StyleValue } from '../stylesmap';
+import type { BoxSides, PropertyDescriptor, StyleValue } from '../stylesmap.js';
 
 const HEX_COLOR_REGEXP = /^#([0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i;
 const RGB_COLOR_REGEXP = /^rgb\([ ]?([0-9]{1,3}[ %]?,[ ]?){2,3}[0-9]{1,3}[ %]?\)$/i;
 const RGBA_COLOR_REGEXP = /^rgba\([ ]?([0-9]{1,3}[ %]?,[ ]?){3}(1|[0-9]+%|[0]?\.?[0-9]+)\)$/i;
 const HSL_COLOR_REGEXP = /^hsl\([ ]?([0-9]{1,3}[ %]?[,]?[ ]*){3}(1|[0-9]+%|[0]?\.?[0-9]+)?\)$/i;
 const HSLA_COLOR_REGEXP = /^hsla\([ ]?([0-9]{1,3}[ %]?,[ ]?){2,3}(1|[0-9]+%|[0]?\.?[0-9]+)\)$/i;
+
+// Note: This regexp hardcodes a single level of nested () for values such as `calc( var( ...) + ...)`.
+// If this gets more complex, a proper parser should be used instead.
+const CSS_SHORTHAND_VALUE_REGEXP = /\w+\((?:[^()]|\([^()]*\))*\)|\S+/gi;
 
 const COLOR_NAMES = new Set( [
 	// CSS Level 1
@@ -249,8 +253,7 @@ export function getPositionShorthandNormalizer( shorthand: string ) {
  * ```
  */
 export function getShorthandValues( string: string ): Array<string> {
-	return string
-		.replace( /, /g, ',' ) // Exclude comma from spaces evaluation as values are separated by spaces.
-		.split( ' ' )
-		.map( string => string.replace( /,/g, ', ' ) ); // Restore original notation.
+	const matches = string.matchAll( CSS_SHORTHAND_VALUE_REGEXP );
+
+	return Array.from( matches ).map( i => i[ 0 ] );
 }

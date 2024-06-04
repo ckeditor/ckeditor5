@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,15 +7,15 @@
  * @module table/tablecolumnresize/utils
  */
 
-import type { Editor } from 'ckeditor5/src/core';
-import type { Element, Model, ViewElement, ViewNode, Writer } from 'ckeditor5/src/engine';
-import { global } from 'ckeditor5/src/utils';
-import type TableUtils from '../tableutils';
+import type { Editor } from 'ckeditor5/src/core.js';
+import type { Element, Model, ViewElement, ViewNode, Writer } from 'ckeditor5/src/engine.js';
+import { global } from 'ckeditor5/src/utils.js';
+import type TableUtils from '../tableutils.js';
 import {
 	COLUMN_WIDTH_PRECISION,
 	COLUMN_MIN_WIDTH_AS_PERCENTAGE,
 	COLUMN_MIN_WIDTH_IN_PIXELS
-} from './constants';
+} from './constants.js';
 
 /**
  * Returns all the inserted or changed table model elements in a given change set. Only the tables
@@ -230,14 +230,11 @@ export function sumArray( array: Array<number | string> ): number {
  * changed proportionally so that they all sum back to 100%. If there are columns without specified width, the amount remaining
  * after assigning the known widths will be distributed equally between them.
  *
- * Currently, only widths provided as percentage values are supported.
- *
  * @param columnWidths An array of column widths.
  * @returns An array of column widths guaranteed to sum up to 100%.
  */
 export function normalizeColumnWidths( columnWidths: Array<string> ): Array<string> {
 	const widths: Array<number | 'auto'> = columnWidths.map( width => {
-		// Possible values are 'auto' or string ending with '%'
 		if ( width === 'auto' ) {
 			return width;
 		}
@@ -376,14 +373,20 @@ export function getColumnGroupElement( element: Element ): Element {
 }
 
 /**
- * Returns an array of 'tableColumn' elements.
+ * Returns an array of 'tableColumn' elements. It may be empty if there's no `tableColumnGroup` element.
  *
  * @internal
  * @param element A 'table' or 'tableColumnGroup' element.
  * @returns An array of 'tableColumn' elements.
  */
 export function getTableColumnElements( element: Element ): Array<Element> {
-	return Array.from( getColumnGroupElement( element ).getChildren() as IterableIterator<Element> );
+	const columnGroupElement = getColumnGroupElement( element );
+
+	if ( !columnGroupElement ) {
+		return [];
+	}
+
+	return Array.from( columnGroupElement.getChildren() as IterableIterator<Element> );
 }
 
 /**
@@ -395,4 +398,37 @@ export function getTableColumnElements( element: Element ): Array<Element> {
  */
 export function getTableColumnsWidths( element: Element ): Array<string> {
 	return getTableColumnElements( element ).map( column => column.getAttribute( 'columnWidth' ) as string );
+}
+
+/**
+ * Translates the `colSpan` model attribute into additional column widths and returns the resulting array.
+ *
+ * @internal
+ * @param element A 'table' or 'tableColumnGroup' element.
+ * @param writer A writer instance.
+ * @returns An array of table column widths.
+ */
+export function translateColSpanAttribute( element: Element, writer: Writer ): Array<string> {
+	const tableColumnElements = getTableColumnElements( element );
+
+	return tableColumnElements.reduce( ( acc: Array<string>, element ) => {
+		const columnWidth = element.getAttribute( 'columnWidth' ) as string;
+		const colSpan = element.getAttribute( 'colSpan' ) as number | undefined;
+
+		if ( !colSpan ) {
+			acc.push( columnWidth );
+			return acc;
+		}
+
+		// Translate the `colSpan` model attribute on to the proper number of column widths
+		// and remove it from the element.
+		// See https://github.com/ckeditor/ckeditor5/issues/14521#issuecomment-1662102889 for more details.
+		for ( let i = 0; i < colSpan; i++ ) {
+			acc.push( columnWidth );
+		}
+
+		writer.removeAttribute( 'colSpan', element );
+
+		return acc;
+	}, [] );
 }

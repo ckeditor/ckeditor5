@@ -1,15 +1,15 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
+/* global document, CustomEvent */
 
-import Font from '../src/font';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import { getData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import Table from '@ckeditor/ckeditor5-table/src/table';
+import Font from '../src/font.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { getData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import Table from '@ckeditor/ckeditor5-table/src/table.js';
 
 describe( 'Integration test Font', () => {
 	let element, editor, model;
@@ -209,6 +209,104 @@ describe( 'Integration test Font', () => {
 				.then( () => {
 					element.remove();
 				} );
+		} );
+	} );
+
+	describe( 'color picker feature', () => {
+		it( 'should set colors in model in hsl format by default', () => {
+			setModelData( model,
+				'<paragraph>' +
+					'<$text>[foo]</$text>' +
+				'</paragraph>'
+			);
+
+			const dropdown = editor.ui.componentFactory.create( 'fontColor' );
+
+			dropdown.isOpen = true;
+
+			const event = new CustomEvent( 'color-changed', {
+				detail: {
+					value: '#113322'
+				}
+			} );
+
+			dropdown.colorSelectorView.colorPickerFragmentView.colorPickerView.picker.dispatchEvent( event );
+
+			expect( getData( model ) ).to.equal( '<paragraph>[<$text fontColor="hsl( 150, 50%, 13% )">foo</$text>]</paragraph>' );
+		} );
+
+		it( 'should set colors in model in configured format', async () => {
+			const editor = await ClassicTestEditor.create( element, {
+				plugins: [ Font, ArticlePluginSet ],
+				fontColor: {
+					colorPicker: {
+						format: 'lab'
+					}
+				},
+				image: {
+					toolbar: [ 'imageStyle:block', 'imageStyle:side' ]
+				}
+			} );
+
+			setModelData( editor.model,
+				'<paragraph>' +
+					'<$text>[foo]</$text>' +
+				'</paragraph>'
+			);
+
+			const dropdown = editor.ui.componentFactory.create( 'fontColor' );
+
+			dropdown.isOpen = true;
+
+			const event = new CustomEvent( 'color-changed', {
+				detail: {
+					value: '#113322'
+				}
+			} );
+
+			dropdown.colorSelectorView.colorPickerFragmentView.colorPickerView.picker.dispatchEvent( event );
+
+			expect( getData( editor.model ) ).to.equal( '<paragraph>[<$text fontColor="lab( 18% -17 7 )">foo</$text>]</paragraph>' );
+
+			await editor.destroy();
+		} );
+
+		it( 'should properly discard changes', () => {
+			setModelData( model,
+				'<paragraph>' +
+					'[<$text fontColor="hsl( 50, 10%, 23% )">foo</$text><$text fontColor="hsl( 150, 50%, 13% )">foo</$text>]' +
+				'</paragraph>'
+			);
+
+			const dropdown = editor.ui.componentFactory.create( 'fontColor' );
+
+			dropdown.isOpen = true;
+			dropdown.colorSelectorView.fire( 'colorPicker:show' );
+			dropdown.colorSelectorView.colorPickerFragmentView.colorPickerView.color = 'hsl( 100, 30%, 43% )';
+
+			dropdown.colorSelectorView.colorPickerFragmentView.cancelButtonView.fire( 'execute' );
+
+			expect( getData( model ) ).to.equal( '<paragraph>' +
+			'[<$text fontColor="hsl( 50, 10%, 23% )">foo</$text><$text fontColor="hsl( 150, 50%, 13% )">foo</$text>]' +
+			'</paragraph>' );
+		} );
+
+		it( 'should undo all changes done in a batch with a single step', () => {
+			setModelData( model, '<paragraph>[foo]</paragraph>' );
+
+			const dropdown = editor.ui.componentFactory.create( 'fontColor' );
+
+			dropdown.isOpen = true;
+			dropdown.colorSelectorView.fire( 'colorPicker:show' );
+
+			// Execute multiple color changes.
+			dropdown.colorSelectorView.colorPickerFragmentView.colorPickerView.fire( 'colorSelected', { color: '#113322' } );
+			dropdown.colorSelectorView.colorPickerFragmentView.colorPickerView.fire( 'colorSelected', { color: '#654321' } );
+			dropdown.colorSelectorView.colorPickerFragmentView.colorPickerView.fire( 'colorSelected', { color: '#123456' } );
+
+			editor.commands.get( 'undo' ).execute();
+
+			expect( getData( model ) ).to.equal( '<paragraph>[foo]</paragraph>' );
 		} );
 	} );
 } );

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -11,6 +11,6 @@
 
 	& .ck-editor__top .ck-sticky-panel .ck-toolbar {
 		/* https://github.com/ckeditor/ckeditor5-editor-classic/issues/62 */
-		z-index: var(--ck-z-modal);
+		z-index: var(--ck-z-panel);
 	}
 }

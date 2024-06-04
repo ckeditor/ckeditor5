@@ -1,18 +1,18 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals setTimeout, window, Node, DOMParser */
 
-import HtmlDataProcessor from '../../src/dataprocessor/htmldataprocessor';
-import BasicHtmlWriter from '../../src/dataprocessor/basichtmlwriter';
-import DomConverter from '../../src/view/domconverter';
-import xssTemplates from '../../tests/dataprocessor/_utils/xsstemplates';
-import ViewDocumentFragment from '../../src/view/documentfragment';
-import { stringify, parse } from '../../src/dev-utils/view';
-import { StylesProcessor } from '../../src/view/stylesmap';
-import ViewDocument from '../../src/view/document';
+import HtmlDataProcessor from '../../src/dataprocessor/htmldataprocessor.js';
+import BasicHtmlWriter from '../../src/dataprocessor/basichtmlwriter.js';
+import DomConverter from '../../src/view/domconverter.js';
+import xssTemplates from '../../tests/dataprocessor/_utils/xsstemplates.js';
+import ViewDocumentFragment from '../../src/view/documentfragment.js';
+import { stringify, parse } from '../../src/dev-utils/view.js';
+import { StylesProcessor } from '../../src/view/stylesmap.js';
+import ViewDocument from '../../src/view/document.js';
 
 describe( 'HtmlDataProcessor', () => {
 	let dataProcessor, viewDocument;

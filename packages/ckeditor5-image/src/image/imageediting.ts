@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,12 +7,11 @@
  * @module image/image/imageediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import type { ViewElement } from 'ckeditor5/src/engine';
-import ImageLoadObserver from './imageloadobserver';
-import InsertImageCommand from './insertimagecommand';
-import ReplaceImageSourceCommand from './replaceimagesourcecommand';
-import ImageUtils from '../imageutils';
+import { Plugin } from 'ckeditor5/src/core.js';
+import ImageLoadObserver from './imageloadobserver.js';
+import InsertImageCommand from './insertimagecommand.js';
+import ReplaceImageSourceCommand from './replaceimagesourcecommand.js';
+import ImageUtils from '../imageutils.js';
 
 /**
  * The image engine plugin. This module loads common code shared between
@@ -32,8 +31,8 @@ export default class ImageEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ImageEditing' {
-		return 'ImageEditing';
+	public static get pluginName() {
+		return 'ImageEditing' as const;
 	}
 
 	/**
@@ -59,20 +58,7 @@ export default class ImageEditing extends Plugin {
 					name: 'img',
 					key: 'srcset'
 				},
-				model: {
-					key: 'srcset',
-					value: ( viewImage: ViewElement ) => {
-						const value: Record<string, string> = {
-							data: viewImage.getAttribute( 'srcset' )!
-						};
-
-						if ( viewImage.hasAttribute( 'width' ) ) {
-							value.width = viewImage.getAttribute( 'width' )!;
-						}
-
-						return value;
-					}
-				}
+				model: 'srcset'
 			} );
 
 		const insertImageCommand = new InsertImageCommand( editor );

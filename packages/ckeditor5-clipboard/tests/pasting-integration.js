@@ -1,19 +1,19 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Clipboard from '../src/clipboard';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import Link from '@ckeditor/ckeditor5-link/src/link';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Clipboard from '../src/clipboard.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
+import Link from '@ckeditor/ckeditor5-link/src/link.js';
 
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'Pasting – integration', () => {
 	let element;
@@ -191,11 +191,38 @@ describe( 'Pasting – integration', () => {
 				} );
 		} );
 	} );
+
+	describe( 'links', () => {
+		// See https://github.com/ckeditor/ckeditor5/issues/15036.
+		it( 'should not convert parts of the link address which look like HTML entities', () => {
+			return ClassicTestEditor
+				.create( element, { plugins: [ Clipboard, Paragraph, Bold, Italic, Link ] } )
+				.then( editor => {
+					setData( editor.model, '<paragraph>[]</paragraph>' );
+
+					pasteText( editor, 'https://example.com?x=1&quot=2&timestamp=t' );
+
+					expect( getData( editor.model ) ).to.equal(
+						'<paragraph>https://example.com?x=1&quot=2&timestamp=t[]</paragraph>' // keeps "&quot" and "&times" unchanged
+					);
+
+					return editor.destroy();
+				} );
+		} );
+	} );
 } );
 
 function pasteHtml( editor, html ) {
 	editor.editing.view.document.fire( 'paste', {
 		dataTransfer: createDataTransfer( { 'text/html': html } ),
+		stopPropagation() {},
+		preventDefault() {}
+	} );
+}
+
+function pasteText( editor, text ) {
+	editor.editing.view.document.fire( 'paste', {
+		dataTransfer: createDataTransfer( { 'text/plain': text } ),
 		stopPropagation() {},
 		preventDefault() {}
 	} );

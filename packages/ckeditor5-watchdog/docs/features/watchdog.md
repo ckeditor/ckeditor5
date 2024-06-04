@@ -1,5 +1,6 @@
 ---
 title: Watchdog
+meta-title: Watchdog | CKEditor 5 Documentation
 category: features
 ---
 
@@ -9,13 +10,13 @@ The watchdog utility protects you from data loss in case the editor crashes. It 
 
 ## Additional feature information
 
-Every non-trivial piece of software has bugs. Despite our high-quality standards like 100% code coverage, regression testing, and manual tests before every release, CKEditor 5 is not free of bugs. Neither is the browser used by the user, your application in which CKEditor 5 is integrated, or any third-party add-ons that you used.
+Every non-trivial piece of software has bugs. Despite our high-quality standards like 100% code coverage, regression testing, and manual tests before every release, CKEditor&nbsp;5 is not free of bugs. Neither is the browser used by the user, your application in which CKEditor&nbsp;5 is integrated, or any third-party add-ons that you used.
 
 To limit the effect of an editor crash on the user experience, you can automatically restart the WYSIWYG editor with the content saved just before the crash.
 
 The watchdog utility allows you to do exactly that. It ensures that an editor instance is running, despite a potential crash. It works by detecting that an editor crashed, destroying it, and automatically creating a new instance of that editor with the content of the previous editor.
 
-Note that the most "dangerous" places in the CKEditor 5 API, like `editor.model.change()`, `editor.editing.view.change()` or emitters, are covered with checks and `try-catch` blocks that can detect unknown errors and restart the editor when they occur.
+Note that the most "dangerous" places in the CKEditor&nbsp;5 API, like `editor.model.change()`, `editor.editing.view.change()` or emitters, are covered with checks and `try-catch` blocks that can detect unknown errors and restart the editor when they occur.
 
 There are two available types of watchdogs:
 
@@ -25,27 +26,16 @@ There are two available types of watchdogs:
 ## Usage
 
 <info-box>
-	Note: A watchdog can be used only with an {@link installation/advanced/integrating-from-source-webpack editor built from source}.
+	Note: A watchdog can be used only with an {@link getting-started/advanced/integrating-from-source-webpack editor built from source}.
 </info-box>
 
 ### Editor watchdog
 
-Install the [`@ckeditor/ckeditor5-watchdog`](https://www.npmjs.com/package/@ckeditor/ckeditor5-watchdog) package:
-
-```
-npm install --save @ckeditor/ckeditor5-watchdog
-```
-
-Then, change your `ClassicEditor.create()` call to `watchdog.create()` as follows:
+After {@link getting-started/quick-start installing the editor}, change your `ClassicEditor.create()` call to `watchdog.create()` as follows:
 
 ```js
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import EditorWatchdog from '@ckeditor/ckeditor5-watchdog/src/editorwatchdog';
 
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import { ClassicEditor, Bold, EditorWatchdog, Essentials, Italic, Paragraph } from 'ckeditor5';
 
 // Create a watchdog for the given editor type.
 const watchdog = new EditorWatchdog( ClassicEditor );
@@ -149,23 +139,10 @@ watchdog.crashes.forEach( crashInfo => console.log( crashInfo ) );
 
 ### Context watchdog
 
-Install the [`@ckeditor/ckeditor5-watchdog`](https://www.npmjs.com/package/@ckeditor/ckeditor5-watchdog) package:
-
-```
-npm install --save @ckeditor/ckeditor5-watchdog
-```
-
-And then change your editor and context initialization code:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ContextWatchdog from '@ckeditor/ckeditor5-watchdog/src/contextwatchdog';
-
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import Context from '@ckeditor/ckeditor5-core/src/context';
+import { ClassicEditor, ContextWatchdog, Bold, Italic, Context, Essentials, Paragraph } from 'ckeditor5';
 
 // Create a context watchdog and pass the context class with optional watchdog configuration:
 const watchdog = new ContextWatchdog( Context, {
@@ -175,7 +152,7 @@ const watchdog = new ContextWatchdog( Context, {
 // Initialize the watchdog with the context configuration:
 await watchdog.create( {
 	plugins: [
-	    // A list of plugins for the context.
+		// A list of plugins for the context.
 		// ...
 	],
 	// More configuration options for the plugin.
@@ -217,14 +194,14 @@ await watchdog.add( {
 } );
 
 await watchdog.add( {
-    id: 'editor2',
-    type: 'editor',
-    sourceElementOrData: document.querySelector( '#editor' ),
-    config: {
-        plugins: [ Essentials, Paragraph, Bold, Italic ],
-        toolbar: [ 'bold', 'italic', 'alignment' ]
-    },
-    creator: ( element, config ) => ClassicEditor.create( element, config )
+	id: 'editor2',
+	type: 'editor',
+	sourceElementOrData: document.querySelector( '#editor' ),
+	config: {
+		plugins: [ Essentials, Paragraph, Bold, Italic ],
+		toolbar: [ 'bold', 'italic', 'alignment' ]
+	},
+	creator: ( element, config ) => ClassicEditor.create( element, config )
 } );
 ```
 
@@ -279,15 +256,15 @@ await watchdog.add( {
 } );
 
 await watchdog.add( [
-    {
-    	id: 'editor1',
-    	type: 'editor',
-    	sourceElementOrData: domElementOrEditorData
-    	config: editorConfig,
-    	creator: createEditor,
-    	destructor: destroyEditor,
-    },
-    // More configuration items.
+	{
+		id: 'editor1',
+		type: 'editor',
+		sourceElementOrData: domElementOrEditorData
+		config: editorConfig,
+		creator: createEditor,
+		destructor: destroyEditor,
+	},
+	// More configuration items.
 	// ...
 ] );
 
@@ -349,4 +326,4 @@ const editorWatchdog = new EditorWatchdog( ClassicEditor, {
 
 ## Limitations
 
-The watchdogs do not handle errors thrown during the editor or context initialization (e.g. in `Editor.create()`) and editor destruction (e.g. in `Editor#destroy()`). Errors thrown at these stages mean that there is a problem in the code integrating the editor with your application and such a problem cannot be fixed by restarting the editor.
+The watchdog does not handle errors thrown during the editor or context initialization (for example, in `Editor.create()`) and editor destruction (for example, in `Editor#destroy()`). Errors thrown at these stages mean that there is a problem in the code integrating the editor with your application and such a problem cannot be fixed by restarting the editor.

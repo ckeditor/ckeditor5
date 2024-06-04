@@ -1,48 +1,59 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import type {
-	DocumentList,
-	DocumentListEditing,
-	DocumentListProperties,
-	DocumentListPropertiesEditing,
-	DocumentListPropertiesUtils,
-	DocumentListUtils,
-	ListConfig,
 	List,
 	ListEditing,
+	ListUtils,
+	ListUI,
+	ListCommand,
+	ListIndentCommand,
+	ListMergeCommand,
+	ListSplitCommand,
+
 	ListProperties,
+	ListPropertiesUtils,
 	ListPropertiesEditing,
 	ListPropertiesUI,
-	ListStyle,
-	ListUI,
-	ListUtils,
+	ListStyleCommand,
+	ListStartCommand,
+	ListReversedCommand,
+
 	TodoList,
 	TodoListEditing,
 	TodoListUI,
+	CheckTodoListCommand,
 
-	ListCommand,
-	DocumentListCommand,
-	IndentCommand,
-	DocumentListIndentCommand,
-	DocumentListMergeCommand,
-	DocumentListSplitCommand,
-	ListStyleCommand,
-	DocumentListStyleCommand,
-	ListStartCommand,
-	DocumentListStartCommand,
-	ListReversedCommand,
-	DocumentListReversedCommand,
-	CheckTodoListCommand
-} from '.';
+	LegacyList,
+	LegacyListEditing,
+	LegacyListUtils,
+	LegacyListCommand,
+	LegacyIndentCommand,
+
+	LegacyListProperties,
+	LegacyListPropertiesEditing,
+	LegacyListStyleCommand,
+	LegacyListStartCommand,
+	LegacyListReversedCommand,
+
+	LegacyTodoList,
+	LegacyTodoListEditing,
+	LegacyCheckTodoListCommand,
+
+	ListConfig,
+
+	DocumentList,
+	DocumentListProperties,
+	TodoDocumentList
+} from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
   interface EditorConfig {
 
 		/**
-		 * The configuration of the {@link module:list/list~List} feature and the {@link module:list/documentlist~DocumentList} feature.
+		 * The configuration of the {@link module:list/list~List} feature and the {@link module:list/legacylist~LegacyList} feature.
 		 *
 		 * Read more in {@link module:list/listconfig~ListConfig}.
 		 */
@@ -50,38 +61,44 @@ declare module '@ckeditor/ckeditor5-core' {
 	}
 
 	interface PluginsMap {
-		[ DocumentList.pluginName ]: DocumentList;
-		[ DocumentListEditing.pluginName ]: DocumentListEditing;
-		[ DocumentListProperties.pluginName ]: DocumentListProperties;
-		[ DocumentListPropertiesEditing.pluginName ]: DocumentListPropertiesEditing;
-		[ DocumentListPropertiesUtils.pluginName ]: DocumentListPropertiesUtils;
-		[ DocumentListUtils.pluginName ]: DocumentListUtils;
 		[ List.pluginName ]: List;
 		[ ListEditing.pluginName ]: ListEditing;
+		[ ListUtils.pluginName ]: ListUtils;
+		[ ListUI.pluginName ]: ListUI;
 		[ ListProperties.pluginName ]: ListProperties;
 		[ ListPropertiesEditing.pluginName ]: ListPropertiesEditing;
+		[ ListPropertiesUtils.pluginName ]: ListPropertiesUtils;
 		[ ListPropertiesUI.pluginName ]: ListPropertiesUI;
-		[ ListStyle.pluginName ]: ListStyle;
-		[ ListUI.pluginName ]: ListUI;
-		[ ListUtils.pluginName ]: ListUtils;
-		[ TodoList.pluginName ]: TodoList;
+		[ TodoList.pluginName ]: TodoDocumentList;
 		[ TodoListEditing.pluginName ]: TodoListEditing;
 		[ TodoListUI.pluginName ]: TodoListUI;
+
+		[ LegacyList.pluginName ]: LegacyList;
+		[ LegacyListEditing.pluginName ]: LegacyListEditing;
+		[ LegacyListUtils.pluginName ]: LegacyListUtils;
+		[ LegacyListProperties.pluginName ]: LegacyListProperties;
+		[ LegacyListPropertiesEditing.pluginName ]: LegacyListPropertiesEditing;
+		[ LegacyTodoList.pluginName ]: LegacyTodoList;
+		[ LegacyTodoListEditing.pluginName ]: LegacyTodoListEditing;
+
+		[ DocumentList.pluginName ]: DocumentList;
+		[ DocumentListProperties.pluginName ]: DocumentListProperties;
+		[ TodoDocumentList.pluginName ]: TodoDocumentList;
 	}
 
   interface CommandsMap {
-		numberedList: ListCommand | DocumentListCommand;
-		bulletedList: ListCommand | DocumentListCommand;
-		indentList: IndentCommand | DocumentListIndentCommand;
-		outdentList: IndentCommand | DocumentListIndentCommand;
-		mergeListItemBackward: DocumentListMergeCommand;
-		mergeListItemForward: DocumentListMergeCommand;
-		splitListItemBefore: DocumentListSplitCommand;
-		splitListItemAfter: DocumentListSplitCommand;
-		listStyle: ListStyleCommand | DocumentListStyleCommand;
-		listStart: ListStartCommand | DocumentListStartCommand;
-		listReversed: ListReversedCommand | DocumentListReversedCommand;
-		todoList: ListCommand;
-		checkTodoList: CheckTodoListCommand;
+		numberedList: LegacyListCommand | ListCommand;
+		bulletedList: LegacyListCommand | ListCommand;
+		indentList: LegacyIndentCommand | ListIndentCommand;
+		outdentList: LegacyIndentCommand | ListIndentCommand;
+		mergeListItemBackward: ListMergeCommand;
+		mergeListItemForward: ListMergeCommand;
+		splitListItemBefore: ListSplitCommand;
+		splitListItemAfter: ListSplitCommand;
+		listStyle: LegacyListStyleCommand | ListStyleCommand;
+		listStart: LegacyListStartCommand | ListStartCommand;
+		listReversed: LegacyListReversedCommand | ListReversedCommand;
+		todoList: LegacyListCommand | ListCommand;
+		checkTodoList: LegacyCheckTodoListCommand | CheckTodoListCommand;
 	}
 }

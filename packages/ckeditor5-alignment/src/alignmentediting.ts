@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,12 +7,12 @@
  * @module alignment/alignmentediting
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
-import type { AttributeDescriptor } from 'ckeditor5/src/engine';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import type { AttributeDescriptor } from 'ckeditor5/src/engine.js';
 
-import AlignmentCommand from './alignmentcommand';
-import { isDefault, isSupported, normalizeAlignmentOptions, supportedOptions } from './utils';
-import type { AlignmentFormat, SupportedOption } from './alignmentconfig';
+import AlignmentCommand from './alignmentcommand.js';
+import { isDefault, isSupported, normalizeAlignmentOptions, supportedOptions } from './utils.js';
+import type { AlignmentFormat, SupportedOption } from './alignmentconfig.js';
 
 /**
  * The alignment editing feature. It introduces the {@link module:alignment/alignmentcommand~AlignmentCommand command} and adds
@@ -22,8 +22,8 @@ export default class AlignmentEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'AlignmentEditing' {
-		return 'AlignmentEditing';
+	public static get pluginName() {
+		return 'AlignmentEditing' as const;
 	}
 
 	/**

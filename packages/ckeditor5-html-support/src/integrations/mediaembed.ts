@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,20 +7,20 @@
  * @module html-support/integrations/mediaembed
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 
-import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
-import DataSchema from '../dataschema';
-import { updateViewAttributes, type GHSViewAttributes } from '../utils';
+import DataFilter, { type DataFilterRegisterEvent } from '../datafilter.js';
+import DataSchema from '../dataschema.js';
+import { updateViewAttributes, type GHSViewAttributes, getHtmlAttributeName } from '../utils.js';
 import type {
 	DowncastAttributeEvent,
 	DowncastDispatcher,
 	Element,
 	UpcastDispatcher,
 	UpcastElementEvent,
-	ViewElement } from 'ckeditor5/src/engine';
-import type { GetCallback } from 'ckeditor5/src/utils';
-import { getDescendantElement } from './integrationutils';
+	ViewElement } from 'ckeditor5/src/engine.js';
+import type { GetCallback } from 'ckeditor5/src/utils.js';
+import { getDescendantElement } from './integrationutils.js';
 
 /**
  * Provides the General HTML Support integration with {@link module:media-embed/mediaembed~MediaEmbed Media Embed} feature.
@@ -36,8 +36,8 @@ export default class MediaEmbedElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'MediaEmbedElementSupport' {
-		return 'MediaEmbedElementSupport';
+	public static get pluginName() {
+		return 'MediaEmbedElementSupport' as const;
 	}
 
 	/**
@@ -75,7 +75,7 @@ export default class MediaEmbedElementSupport extends Plugin {
 
 			schema.extend( 'media', {
 				allowAttributes: [
-					'htmlAttributes',
+					getHtmlAttributeName( mediaElementName ),
 					'htmlFigureAttributes'
 				]
 			} );
@@ -92,7 +92,7 @@ function viewToModelMediaAttributesConverter( dataFilter: DataFilter, mediaEleme
 	const upcastMedia: GetCallback<UpcastElementEvent> = ( evt, data, conversionApi ) => {
 		const viewMediaElement = data.viewItem;
 
-		preserveElementAttributes( viewMediaElement, 'htmlAttributes' );
+		preserveElementAttributes( viewMediaElement, getHtmlAttributeName( mediaElementName ) );
 
 		function preserveElementAttributes( viewElement: ViewElement, attributeName: string ) {
 			const viewAttributes = dataFilter.processViewAttributes( viewElement, conversionApi );
@@ -133,7 +133,7 @@ function viewToModelFigureAttributesConverter( dataFilter: DataFilter ) {
 
 function modelToViewMediaAttributeConverter( mediaElementName: string ) {
 	return ( dispatcher: DowncastDispatcher ) => {
-		addAttributeConversionDispatcherHandler( mediaElementName, 'htmlAttributes' );
+		addAttributeConversionDispatcherHandler( mediaElementName, getHtmlAttributeName( mediaElementName ) );
 		addAttributeConversionDispatcherHandler( 'figure', 'htmlFigureAttributes' );
 
 		function addAttributeConversionDispatcherHandler( elementName: string, attributeName: string ) {

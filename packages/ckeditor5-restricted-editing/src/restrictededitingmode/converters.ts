@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,7 @@
  * @module restricted-editing/restrictededitingmode/converters
  */
 
-import type { Editor } from 'ckeditor5/src/core';
+import type { Editor } from 'ckeditor5/src/core.js';
 import {
 	Matcher,
 	type DowncastWriter,
@@ -17,9 +17,9 @@ import {
 	type UpcastDispatcher,
 	type Writer,
 	type ViewElement
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
-import { getMarkerAtPosition } from './utils';
+import { getMarkerAtPosition } from './utils.js';
 
 const HIGHLIGHT_CLASS = 'restricted-editing-exception_selected';
 
@@ -64,7 +64,7 @@ export function setupExceptionHighlighting( editor: Editor ): void {
 		dispatcher.on( 'insert', removeHighlight, { priority: 'highest' } );
 		dispatcher.on( 'remove', removeHighlight, { priority: 'highest' } );
 		dispatcher.on( 'attribute', removeHighlight, { priority: 'highest' } );
-		dispatcher.on( 'selection', removeHighlight, { priority: 'highest' } );
+		dispatcher.on( 'cleanSelection', removeHighlight );
 
 		function removeHighlight() {
 			view.change( writer => {
@@ -106,9 +106,10 @@ export function extendMarkerOnTypingPostFixer( editor: Editor ): ModelPostFixer 
 	// This post-fixer shouldn't be necessary after https://github.com/ckeditor/ckeditor5/issues/5778.
 	return writer => {
 		let changeApplied = false;
+		const schema = editor.model.schema;
 
 		for ( const change of editor.model.document.differ.getChanges() ) {
-			if ( change.type == 'insert' && change.name == '$text' ) {
+			if ( change.type == 'insert' && schema.checkChild( '$block', change.name ) ) {
 				changeApplied = _tryExtendMarkerStart( editor, change.position, change.length, writer ) || changeApplied;
 				changeApplied = _tryExtendMarkedEnd( editor, change.position, change.length, writer ) || changeApplied;
 			}

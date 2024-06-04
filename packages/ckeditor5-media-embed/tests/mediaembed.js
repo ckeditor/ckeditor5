@@ -1,15 +1,15 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import MediaEmbed from '../src/mediaembed';
-import MediaEmbedEditing from '../src/mediaembedediting';
-import MediaEmbedUI from '../src/mediaembedui';
-import AutoMediaEmbed from '../src/automediaembed';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import MediaEmbed from '../src/mediaembed.js';
+import MediaEmbedEditing from '../src/mediaembedediting.js';
+import MediaEmbedUI from '../src/mediaembedui.js';
+import AutoMediaEmbed from '../src/automediaembed.js';
+import Widget from '@ckeditor/ckeditor5-widget/src/widget.js';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 
 describe( 'MediaEmbed', () => {
 	let editorElement, editor;

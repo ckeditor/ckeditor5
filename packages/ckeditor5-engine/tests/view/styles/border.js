@@ -1,10 +1,10 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import StylesMap, { StylesProcessor } from '../../../src/view/stylesmap';
-import { addBorderRules } from '../../../src/view/styles/border';
+import StylesMap, { StylesProcessor } from '../../../src/view/stylesmap.js';
+import { addBorderRules } from '../../../src/view/styles/border.js';
 
 describe( 'Border styles normalization', () => {
 	let styles;
@@ -415,6 +415,22 @@ describe( 'Border styles normalization', () => {
 			} );
 		} );
 
+		it( 'should set all border colors (value with white spaces)', () => {
+			styles.setTo(
+				'border-color:   rgb(10 , 10,   10 )  rgba(100,    100,   100, .3   )' +
+				'   rgb(  20%   20%  20% )    rgba(  255   255  255   /  .5 ) '
+			);
+
+			expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
+				color: {
+					top: 'rgb(10 , 10,   10 )',
+					right: 'rgba(100,    100,   100, .3   )',
+					bottom: 'rgb(  20%   20%  20% )',
+					left: 'rgba(  255   255  255   /  .5 )'
+				}
+			} );
+		} );
+
 		it( 'should merge with border shorthand', () => {
 			styles.setTo( 'border:1px solid blue;border-color:cyan black;' );
 
@@ -451,10 +467,10 @@ describe( 'Border styles normalization', () => {
 			styles.setTo( 'border:rgb(0, 30%,35);' );
 
 			expect( styles.getNormalized( 'border-color' ) ).to.deep.equal( {
-				top: 'rgb(0, 30%, 35)',
-				right: 'rgb(0, 30%, 35)',
-				bottom: 'rgb(0, 30%, 35)',
-				left: 'rgb(0, 30%, 35)'
+				top: 'rgb(0, 30%,35)',
+				right: 'rgb(0, 30%,35)',
+				bottom: 'rgb(0, 30%,35)',
+				left: 'rgb(0, 30%,35)'
 			} );
 		} );
 
@@ -518,6 +534,19 @@ describe( 'Border styles normalization', () => {
 					top: 'solid',
 					right: 'dotted',
 					bottom: 'dashed',
+					left: 'ridge'
+				}
+			} );
+		} );
+
+		it( 'should set all border styles (value with white spaces)', () => {
+			styles.setTo( 'border-style:  solid   dotted   var( --dashed )   ridge ;' );
+
+			expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
+				style: {
+					top: 'solid',
+					right: 'dotted',
+					bottom: 'var( --dashed )',
 					left: 'ridge'
 				}
 			} );
@@ -606,6 +635,19 @@ describe( 'Border styles normalization', () => {
 					right: '.34cm',
 					bottom: '90.1rem',
 					left: 'thick'
+				}
+			} );
+		} );
+
+		it( 'should set all border widths (value with white spaces)', () => {
+			styles.setTo( 'border-width:   1px    .34cm    90.1rem   var(--foo)  ;' );
+
+			expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
+				width: {
+					top: '1px',
+					right: '.34cm',
+					bottom: '90.1rem',
+					left: 'var(--foo)'
 				}
 			} );
 		} );

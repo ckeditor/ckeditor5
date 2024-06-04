@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,13 +7,13 @@
  * @module style/styleui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { createDropdown } from 'ckeditor5/src/ui';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { createDropdown } from 'ckeditor5/src/ui.js';
 import type { DataSchema } from '@ckeditor/ckeditor5-html-support';
 
-import StylePanelView from './ui/stylepanelview';
-import StyleUtils from './styleutils';
-import type StyleCommand from './stylecommand';
+import StylePanelView from './ui/stylepanelview.js';
+import StyleUtils from './styleutils.js';
+import type StyleCommand from './stylecommand.js';
 
 import '../theme/style.css';
 
@@ -27,8 +27,8 @@ export default class StyleUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'StyleUI' {
-		return 'StyleUI';
+	public static get pluginName() {
+		return 'StyleUI' as const;
 	}
 
 	/**

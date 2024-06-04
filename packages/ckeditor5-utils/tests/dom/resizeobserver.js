@@ -1,14 +1,14 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import global from '../../src/dom/global';
-import ResizeObserver from '../../src/dom/resizeobserver';
+import global from '../../src/dom/global.js';
+import ResizeObserver from '../../src/dom/resizeobserver.js';
 
 describe( 'ResizeObserver()', () => {
 	let elementA, elementB;
@@ -170,6 +170,14 @@ describe( 'ResizeObserver()', () => {
 			sinon.assert.calledWithExactly( callbackB, { target: elementA } );
 
 			observerA.destroy();
+		} );
+	} );
+
+	describe( 'element', () => {
+		it( 'should return observed element', () => {
+			const observer = new ResizeObserver( elementA, () => {} );
+
+			expect( observer.element ).to.equal( elementA );
 		} );
 	} );
 

@@ -1,17 +1,17 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Model from '../../src/model/model';
-import Element from '../../src/model/element';
-import Text from '../../src/model/text';
-import Position from '../../src/model/position';
-import LiveRange from '../../src/model/liverange';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { setData } from '../../src/dev-utils/model';
+import Model from '../../src/model/model.js';
+import Element from '../../src/model/element.js';
+import Text from '../../src/model/text.js';
+import Position from '../../src/model/position.js';
+import LiveRange from '../../src/model/liverange.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { setData } from '../../src/dev-utils/model.js';
 
-import { stringifyBlocks } from '../model/_utils/utils';
+import { stringifyBlocks } from '../model/_utils/utils.js';
 
 describe( '#11585', () => {
 	let model, doc, root, liveRange;

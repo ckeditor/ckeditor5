@@ -1,18 +1,18 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import BubblingEventInfo from '../../../src/view/observer/bubblingeventinfo';
-import { setData as setModelData } from '../../../src/dev-utils/model';
+import BubblingEventInfo from '../../../src/view/observer/bubblingeventinfo.js';
+import { setData as setModelData } from '../../../src/dev-utils/model.js';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
-import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
+import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'BubblingEmitterMixin', () => {
 	let editor, model, view, viewDocument;

@@ -1,15 +1,15 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals HTMLElement */
 
-import ViewUIElement from '../../../src/view/uielement';
-import ViewContainer from '../../../src/view/containerelement';
-import DomConverter from '../../../src/view/domconverter';
-import ViewDocument from '../../../src/view/document';
-import { StylesProcessor } from '../../../src/view/stylesmap';
+import ViewUIElement from '../../../src/view/uielement.js';
+import ViewContainer from '../../../src/view/containerelement.js';
+import DomConverter from '../../../src/view/domconverter.js';
+import ViewDocument from '../../../src/view/document.js';
+import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 describe( 'DOMConverter UIElement integration', () => {
 	let converter, viewDocument;

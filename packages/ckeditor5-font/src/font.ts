@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,12 +7,12 @@
  * @module font/font
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 
-import FontFamily from './fontfamily';
-import FontSize from './fontsize';
-import FontColor from './fontcolor';
-import FontBackgroundColor from './fontbackgroundcolor';
+import FontFamily from './fontfamily.js';
+import FontSize from './fontsize.js';
+import FontColor from './fontcolor.js';
+import FontBackgroundColor from './fontbackgroundcolor.js';
 
 /**
  * A plugin that enables a set of text styling features:
@@ -36,7 +36,7 @@ export default class Font extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Font' {
-		return 'Font';
+	public static get pluginName() {
+		return 'Font' as const;
 	}
 }

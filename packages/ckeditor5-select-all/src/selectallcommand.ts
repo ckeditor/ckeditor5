@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -20,7 +20,7 @@ import type { Element, Schema } from '@ckeditor/ckeditor5-engine';
  * selection so it contains the entire content of the editable root of the editor the selection is
  * {@link module:engine/model/selection~Selection#anchor anchored} in.
  *
- * If the selection was anchored in a {@glink framework/tutorials/implementing-a-block-widget nested editable}
+ * If the selection was anchored in a {@glink framework/tutorials/widgets/implementing-a-block-widget nested editable}
  * (e.g. a caption of an image), the new selection will contain its entire content. Successive executions of this command
  * will expand the selection to encompass more and more content up to the entire editable root of the editor.
  */

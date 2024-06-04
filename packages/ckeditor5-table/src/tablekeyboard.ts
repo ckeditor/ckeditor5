@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,17 +7,17 @@
  * @module table/tablekeyboard
  */
 
-import TableSelection from './tableselection';
-import TableWalker from './tablewalker';
-import TableUtils from './tableutils';
+import TableSelection from './tableselection.js';
+import TableWalker from './tablewalker.js';
+import TableUtils from './tableutils.js';
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 import {
 	getLocalizedArrowKeyCodeDirection,
 	type EventInfo,
 	type ArrowKeyCodeDirection,
 	type KeystrokeInfo
-} from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/utils.js';
 
 import type {
 	BubblingEventInfo,
@@ -27,7 +27,7 @@ import type {
 	Selection,
 	ViewDocumentArrowKeyEvent,
 	ViewDocumentTabEvent
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
 /**
  * This plugin enables keyboard navigation for tables.
@@ -37,8 +37,8 @@ export default class TableKeyboard extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TableKeyboard' {
-		return 'TableKeyboard';
+	public static get pluginName() {
+		return 'TableKeyboard' as const;
 	}
 
 	/**
@@ -52,8 +52,10 @@ export default class TableKeyboard extends Plugin {
 	 * @inheritDoc
 	 */
 	public init(): void {
-		const view = this.editor.editing.view;
+		const editor = this.editor;
+		const view = editor.editing.view;
 		const viewDocument = view.document;
+		const t = editor.t;
 
 		this.listenTo<ViewDocumentArrowKeyEvent>(
 			viewDocument,
@@ -75,6 +77,30 @@ export default class TableKeyboard extends Plugin {
 			( ...args ) => this._handleTab( ...args ),
 			{ context: [ 'th', 'td' ] }
 		);
+
+		// Add the information about the keystrokes to the accessibility database.
+		editor.accessibility.addKeystrokeInfoGroup( {
+			id: 'table',
+			label: t( 'Keystrokes that can be used in a table cell' ),
+			keystrokes: [
+				{
+					label: t( 'Move the selection to the next cell' ),
+					keystroke: 'Tab'
+				},
+				{
+					label: t( 'Move the selection to the previous cell' ),
+					keystroke: 'Shift+Tab'
+				},
+				{
+					label: t( 'Insert a new table row (when in the last cell of a table)' ),
+					keystroke: 'Tab'
+				},
+				{
+					label: t( 'Navigate through the table' ),
+					keystroke: [ [ 'arrowup' ], [ 'arrowright' ], [ 'arrowdown' ], [ 'arrowleft' ] ]
+				}
+			]
+		} );
 	}
 
 	/**

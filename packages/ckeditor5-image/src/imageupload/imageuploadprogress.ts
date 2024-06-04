@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,23 +9,23 @@
 
 /* globals setTimeout */
 
-import { type Editor, Plugin } from 'ckeditor5/src/core';
-import { FileRepository, type FileLoader } from 'ckeditor5/src/upload';
+import { type Editor, Plugin } from 'ckeditor5/src/core.js';
+import { FileRepository, type FileLoader } from 'ckeditor5/src/upload.js';
 
 import '../../theme/imageuploadprogress.css';
 import '../../theme/imageuploadicon.css';
 import '../../theme/imageuploadloader.css';
-import type { GetCallback } from 'ckeditor5/src/utils';
+import type { GetCallback } from 'ckeditor5/src/utils.js';
 import type {
 	DowncastWriter,
-	View,
+	EditingView,
 	ViewElement,
 	ViewContainerElement,
 	ViewUIElement,
 	DowncastAttributeEvent,
 	Element
-} from 'ckeditor5/src/engine';
-import type ImageUtils from '../imageutils';
+} from 'ckeditor5/src/engine.js';
+import type ImageUtils from '../imageutils.js';
 
 /**
  * The image upload progress plugin.
@@ -35,8 +35,8 @@ export default class ImageUploadProgress extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ImageUploadProgress' {
-		return 'ImageUploadProgress';
+	public static get pluginName() {
+		return 'ImageUploadProgress' as const;
 	}
 
 	/**
@@ -191,7 +191,7 @@ function _hidePlaceholder( viewFigure: ViewContainerElement, writer: DowncastWri
  * Shows progress bar displaying upload progress.
  * Attaches it to the file loader to update when upload percentace is changed.
  */
-function _showProgressBar( viewFigure: ViewContainerElement, writer: DowncastWriter, loader: FileLoader, view: View ) {
+function _showProgressBar( viewFigure: ViewContainerElement, writer: DowncastWriter, loader: FileLoader, view: EditingView ) {
 	const progressBar = _createProgressBar( writer );
 	writer.insert( writer.createPositionAt( viewFigure, 'end' ), progressBar );
 
@@ -213,7 +213,7 @@ function _hideProgressBar( viewFigure: ViewContainerElement, writer: DowncastWri
 /**
  * Shows complete icon and hides after a certain amount of time.
  */
-function _showCompleteIcon( viewFigure: ViewContainerElement, writer: DowncastWriter, view: View ) {
+function _showCompleteIcon( viewFigure: ViewContainerElement, writer: DowncastWriter, view: EditingView ) {
 	const completeIcon = writer.createUIElement( 'div', { class: 'ck-image-upload-complete-icon' } );
 
 	writer.insert( writer.createPositionAt( viewFigure, 'end' ), completeIcon );

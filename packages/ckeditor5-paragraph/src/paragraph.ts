@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,8 +7,8 @@
  * @module paragraph/paragraph
  */
 
-import ParagraphCommand from './paragraphcommand';
-import InsertParagraphCommand from './insertparagraphcommand';
+import ParagraphCommand from './paragraphcommand.js';
+import InsertParagraphCommand from './insertparagraphcommand.js';
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
@@ -28,8 +28,8 @@ export default class Paragraph extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Paragraph' {
-		return 'Paragraph';
+	public static get pluginName() {
+		return 'Paragraph' as const;
 	}
 
 	/**

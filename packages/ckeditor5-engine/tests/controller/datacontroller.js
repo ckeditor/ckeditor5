@@ -1,27 +1,27 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Model from '../../src/model/model';
-import ModelRange from '../../src/model/range';
-import ViewRange from '../../src/view/range';
-import DataController from '../../src/controller/datacontroller';
-import HtmlDataProcessor from '../../src/dataprocessor/htmldataprocessor';
+import Model from '../../src/model/model.js';
+import ModelRange from '../../src/model/range.js';
+import ViewRange from '../../src/view/range.js';
+import DataController from '../../src/controller/datacontroller.js';
+import HtmlDataProcessor from '../../src/dataprocessor/htmldataprocessor.js';
 
-import ModelDocumentFragment from '../../src/model/documentfragment';
-import ViewDocumentFragment from '../../src/view/documentfragment';
-import ViewDocument from '../../src/view/document';
+import ModelDocumentFragment from '../../src/model/documentfragment.js';
+import ViewDocumentFragment from '../../src/view/documentfragment.js';
+import ViewDocument from '../../src/view/document.js';
 
-import { getData, setData, stringify, parse as parseModel } from '../../src/dev-utils/model';
-import { parse as parseView, stringify as stringifyView } from '../../src/dev-utils/view';
+import { getData, setData, stringify, parse as parseModel } from '../../src/dev-utils/model.js';
+import { parse as parseView, stringify as stringifyView } from '../../src/dev-utils/view.js';
 
-import count from '@ckeditor/ckeditor5-utils/src/count';
+import count from '@ckeditor/ckeditor5-utils/src/count.js';
 
-import UpcastHelpers from '../../src/conversion/upcasthelpers';
-import DowncastHelpers from '../../src/conversion/downcasthelpers';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-import { StylesProcessor } from '../../src/view/stylesmap';
+import UpcastHelpers from '../../src/conversion/upcasthelpers.js';
+import DowncastHelpers from '../../src/conversion/downcasthelpers.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
+import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 /* global console */
 
@@ -133,6 +133,20 @@ describe( 'DataController', () => {
 			const output = data.parse( 'foo', [ '$block' ] );
 
 			expect( stringify( output ) ).to.equal( 'foo' );
+		} );
+
+		it( 'should parse template with children', () => {
+			schema.register( 'container', { inheritAllFrom: '$block' } );
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+			schema.extend( 'paragraph', { allowIn: [ 'container' ] } );
+
+			upcastHelpers.elementToElement( { view: 'template', model: 'container' } );
+			upcastHelpers.elementToElement( { view: 'p', model: 'paragraph' } );
+
+			const output = data.parse( '<template><p>foo</p></template>' );
+
+			expect( output ).to.instanceof( ModelDocumentFragment );
+			expect( stringify( output ) ).to.equal( '<container><paragraph>foo</paragraph></container>' );
 		} );
 	} );
 
@@ -348,7 +362,7 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should parse given data before set in a context of correct root', () => {
-			schema.extend( '$text', { allowIn: '$title', disallowIn: '$root' } );
+			schema.extend( '$text', { allowIn: '$title' } );
 			data.set( 'foo', 'main' );
 			data.set( { title: 'Bar' } );
 
@@ -589,6 +603,19 @@ describe( 'DataController', () => {
 			sinon.assert.calledWithMatch( stub, 'datacontroller-get-detached-root' );
 
 			console.warn.restore();
+		} );
+
+		it( 'should get template with children', () => {
+			schema.register( 'container', { inheritAllFrom: '$block' } );
+			schema.extend( 'paragraph', { allowIn: [ 'container' ] } );
+			setData( model, '<container><paragraph>foo</paragraph></container>' );
+
+			downcastHelpers.elementToElement( {
+				model: 'container',
+				view: 'template'
+			} );
+
+			expect( data.get() ).to.equal( '<template><p>foo</p></template>' );
 		} );
 	} );
 

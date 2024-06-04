@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -8,7 +8,7 @@
 const path = require( 'path' );
 const webpack = require( 'webpack' );
 const TerserPlugin = require( 'terser-webpack-plugin' );
-const WrapperPlugin = require( 'wrapper-webpack-plugin' );
+const FooterPlugin = require( './webpack-footer-plugin' );
 const { bundler, loaders } = require( '@ckeditor/ckeditor5-dev-utils' );
 const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-translations' );
 const { addTypeScriptLoader } = require( '../docs/utils' );
@@ -105,12 +105,15 @@ const webpackConfig = {
 			format: true,
 			entryOnly: true
 		} ),
-		new WrapperPlugin( {
-			footer: `( ( fn, root ) => fn( root ) )( ${ loadCKEditor5modules.toString() }, window );`
-		} )
+		new FooterPlugin(
+			`( ( fn, root ) => fn( root ) )( ${ loadCKEditor5modules.toString() }, window );`
+		)
 	],
 	resolve: {
-		extensions: [ '.ts', '.js', '.json' ]
+		extensions: [ '.ts', '.js', '.json' ],
+		extensionAlias: {
+			'.js': [ '.js', '.ts' ]
+		}
 	},
 	module: {
 		rules: [

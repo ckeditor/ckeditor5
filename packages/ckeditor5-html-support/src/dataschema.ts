@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,11 +7,11 @@
  * @module html-support/dataschema
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
-import { toArray } from 'ckeditor5/src/utils';
-import defaultConfig from './schemadefinitions';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { toArray } from 'ckeditor5/src/utils.js';
+import defaultConfig from './schemadefinitions.js';
 import { mergeWith } from 'lodash-es';
-import type { AttributeProperties, SchemaItemDefinition } from 'ckeditor5/src/engine';
+import type { AttributeProperties, SchemaItemDefinition } from 'ckeditor5/src/engine.js';
 
 /**
  * Holds representation of the extended HTML document type definitions to be used by the
@@ -54,8 +54,8 @@ export default class DataSchema extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'DataSchema' {
-		return 'DataSchema';
+	public static get pluginName() {
+		return 'DataSchema' as const;
 	}
 
 	/**
@@ -291,7 +291,7 @@ export interface DataSchemaInlineElementDefinition extends DataSchemaDefinition 
 	/**
 	 * The name of the model attribute that generates the same view element. GHS inline attribute
 	 * will be removed from the model tree as soon as the coupled attribute is removed. See
-	 * {@link module:html-support/datafilter~DataFilter#_registerModelPostFixer GHS post-fixer} for more details.
+	 * {@link module:html-support/datafilter~DataFilter#_registerCoupledAttributesPostFixer GHS post-fixer} for more details.
 	 */
 	coupledAttribute?: string;
 
@@ -302,4 +302,9 @@ export interface DataSchemaInlineElementDefinition extends DataSchemaDefinition 
 	 * in the `htmlTbodyAttributes` model attribute of the `table` model element.
 	 */
 	appliesToBlock?: boolean | string;
+
+	/**
+	 * Indicates that an element should be preserved even if it has no content.
+	 */
+	allowEmpty?: boolean;
 }

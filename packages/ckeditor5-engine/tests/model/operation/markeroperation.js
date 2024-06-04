@@ -1,11 +1,11 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Model from '../../../src/model/model';
-import Text from '../../../src/model/text';
-import MarkerOperation from '../../../src/model/operation/markeroperation';
+import Model from '../../../src/model/model.js';
+import Text from '../../../src/model/text.js';
+import MarkerOperation from '../../../src/model/operation/markeroperation.js';
 
 function matchRange( range ) {
 	return sinon.match( rangeToMatch => rangeToMatch.isEqual( range ) );

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -37,7 +37,7 @@ export interface CloudServicesConfig {
 	 * As a string, it should be a URL to the security token endpoint in your application.
 	 * The role of this endpoint is to securely authorize
 	 * the end users of your application to use [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services) only
-	 * if they should have access e.g. to upload files with {@glink @cs guides/easy-image/quick-start Easy Image} or to use the
+	 * if they should have access e.g. to upload files with {@glink features/file-management/ckbox CKBox} or to use the
 	 * {@glink @cs guides/collaboration/quick-start Collaboration} service.
 	 *
 	 * ```ts

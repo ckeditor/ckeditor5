@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,9 +9,9 @@
  * @module utils/observablemixin
  */
 
-import EmitterMixin, { type Emitter } from './emittermixin';
-import CKEditorError from './ckeditorerror';
-import type { Constructor, Mixed } from './mix';
+import EmitterMixin, { type Emitter } from './emittermixin.js';
+import CKEditorError from './ckeditorerror.js';
+import type { Constructor, Mixed } from './mix.js';
 
 import { isObject } from 'lodash-es';
 
@@ -22,7 +22,7 @@ const boundPropertiesSymbol = Symbol( 'boundProperties' );
 const decoratedMethods = Symbol( 'decoratedMethods' );
 const decoratedOriginal = Symbol( 'decoratedOriginal' );
 
-const defaultObservableClass = ObservableMixin( EmitterMixin() );
+const defaultObservableClass = /* #__PURE__ */ ObservableMixin( /* #__PURE__ */ EmitterMixin() );
 
 /**
  * A mixin that injects the "observable properties" and data binding functionality described in the
@@ -1267,14 +1267,14 @@ interface SingleBindChain<TKey extends string, TVal> {
 		callback: ( ...values: Array<O[ K ]> ) => TVal
 	): void;
 
-	to<O extends Observable & { [ P in TKey ]: TVal }>(
+	to<O extends ObservableWithProperty<TKey, TVal>>(
 		observable: O
 	): void;
-	to<O extends Observable & { [ P in TKey ]: any }>(
+	to<O extends ObservableWithProperty<TKey>>(
 		observable: O,
 		callback: ( value: O[ TKey ] ) => TVal
 	): void;
-	to<O extends Observable & { [ P in K ]: TVal }, K extends keyof O>(
+	to<O extends ObservableWithProperty<K, TVal>, K extends keyof O>(
 		observable: O,
 		key: K
 	): void;
@@ -1284,8 +1284,8 @@ interface SingleBindChain<TKey extends string, TVal> {
 		callback: ( value: O[ K ] ) => TVal,
 	): void;
 	to<
-		O1 extends Observable & { [ P in TKey ]: any },
-		O2 extends Observable & { [ P in TKey ]: any }
+		O1 extends ObservableWithProperty<TKey>,
+		O2 extends ObservableWithProperty<TKey>
 	>(
 		observable1: O1,
 		observable2: O2,
@@ -1304,9 +1304,9 @@ interface SingleBindChain<TKey extends string, TVal> {
 		callback: ( value1: O1[ K1 ], value2: O2[ K2 ] ) => TVal
 	): void;
 	to<
-		O1 extends Observable & { [ P in TKey ]: any },
-		O2 extends Observable & { [ P in TKey ]: any },
-		O3 extends Observable & { [ P in TKey ]: any }
+		O1 extends ObservableWithProperty<TKey>,
+		O2 extends ObservableWithProperty<TKey>,
+		O3 extends ObservableWithProperty<TKey>
 	>(
 		observable1: O1,
 		observable2: O2,
@@ -1330,10 +1330,10 @@ interface SingleBindChain<TKey extends string, TVal> {
 		callback: ( value1: O1[ K1 ], value2: O2[ K2 ], value3: O3[ K3 ] ) => TVal
 	): void;
 	to<
-		O1 extends Observable & { [ P in TKey ]: any },
-		O2 extends Observable & { [ P in TKey ]: any },
-		O3 extends Observable & { [ P in TKey ]: any },
-		O4 extends Observable & { [ P in TKey ]: any }
+		O1 extends ObservableWithProperty<TKey>,
+		O2 extends ObservableWithProperty<TKey>,
+		O3 extends ObservableWithProperty<TKey>,
+		O4 extends ObservableWithProperty<TKey>
 	>(
 		observable1: O1,
 		observable2: O2,
@@ -1361,11 +1361,64 @@ interface SingleBindChain<TKey extends string, TVal> {
 		key4: K4,
 		callback: ( value1: O1[ K1 ], value2: O2[ K2 ], value3: O3[ K3 ], value4: O4[ K4 ] ) => TVal
 	): void;
+	to<
+		O1 extends ObservableWithProperty<TKey>,
+		O2 extends ObservableWithProperty<TKey>,
+		O3 extends ObservableWithProperty<TKey>,
+		O4 extends ObservableWithProperty<TKey>,
+		O5 extends ObservableWithProperty<TKey>
+	>(
+		observable1: O1,
+		observable2: O2,
+		observable3: O3,
+		observable4: O4,
+		observable5: O5,
+		callback: ( value1: O1[ TKey ], value2: O2[ TKey ], value3: O3[ TKey ], value4: O4[ TKey ], value5: O5[ TKey ] ) => TVal
+	): void;
+	to<
+		O1 extends Observable,
+		K1 extends keyof O1,
+		O2 extends Observable,
+		K2 extends keyof O2,
+		O3 extends Observable,
+		K3 extends keyof O3,
+		O4 extends Observable,
+		K4 extends keyof O4,
+		O5 extends Observable,
+		K5 extends keyof O5
+	>(
+		observable1: O1,
+		key1: K1,
+		observable2: O2,
+		key2: K2,
+		observable3: O3,
+		key3: K3,
+		observable4: O4,
+		key4: K4,
+		observable5: O5,
+		key5: K5,
+		callback: ( value1: O1[ K1 ], value2: O2[ K2 ], value3: O3[ K3 ], value4: O4[ K4 ], value5: O5[ K5 ] ) => TVal
+	): void;
 }
+
+/**
+ * A helper type that can be used as a constraint, ensuring the type is both observable and have the given property.
+ *
+ * ```ts
+ * // Ensures that `obj` is `Observable` and have property named 'abc'.
+ * function f<O extends ObservableWithProperty<'abc'>>( obj: O ) {}
+ *
+ * // Ensures that `obj` is `Observable` and have property named 'abc' with value `number`.
+ * function f<O extends ObservableWithProperty<'abc', number>>( obj: O ) {}
+ * ```
+ */
+export type ObservableWithProperty<TKey extends PropertyKey, TVal = any> = undefined extends TVal ?
+	Observable & { [ P in TKey ]?: TVal } :
+	Observable & { [ P in TKey ]: TVal };
 
 interface DualBindChain<TKey1 extends string, TVal1, TKey2 extends string, TVal2> {
 	to<
-		O extends Observable & { [ P in K1 ]: TVal1 } & { [ P in K2 ]: TVal2 },
+		O extends ObservableWithProperty<K1, TVal1> & ObservableWithProperty<K2, TVal2>,
 		K1 extends keyof O,
 		K2 extends keyof O
 	>(
@@ -1375,7 +1428,7 @@ interface DualBindChain<TKey1 extends string, TVal1, TKey2 extends string, TVal2
 	): void;
 
 	to<
-		O extends Observable & { [ P in TKey1 ]: TVal1 } & { [ P in TKey2 ]: TVal2 }
+		O extends ObservableWithProperty<TKey1, TVal1> & ObservableWithProperty<TKey2, TVal2>
 	>(
 		observable: O
 	): void;

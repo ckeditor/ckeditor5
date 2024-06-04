@@ -1,0 +1,1 @@
+## GHS Link handling

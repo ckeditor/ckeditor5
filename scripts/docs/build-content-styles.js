@@ -1,10 +1,11 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* eslint-env node */
 
+const fs = require( 'fs/promises' );
 const path = require( 'path' );
 const mkdirp = require( 'mkdirp' );
 const webpack = require( 'webpack' );
@@ -12,14 +13,14 @@ const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 const { getLastFromChangelog } = require( '@ckeditor/ckeditor5-dev-release-tools' );
 const { loaders } = require( '@ckeditor/ckeditor5-dev-utils' );
 
-const { writeFile, getCkeditor5Plugins, normalizePath, addTypeScriptLoader } = require( './utils' );
+const { getCkeditor5Plugins, normalizePath, addTypeScriptLoader } = require( './utils' );
 const postCssContentStylesPlugin = require( './list-content-styles-plugin' );
 
 const ROOT_DIRECTORY = path.join( __dirname, '..', '..' );
 const DESTINATION_DIRECTORY = path.join( __dirname, '..', '..', 'build', 'content-styles' );
 const OUTPUT_FILE_PATH = path.join( DESTINATION_DIRECTORY, 'content-styles.css' );
 
-const DOCUMENTATION_URL = 'https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/content-styles.html';
+const DOCUMENTATION_URL = 'https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/advanced/content-styles.html';
 
 const VARIABLE_DEFINITION_REGEXP = /(--[\w-]+):\s+(.*);/g;
 const VARIABLE_USAGE_REGEXP = /var\((--[\w-]+)\)/g;
@@ -137,7 +138,7 @@ module.exports = () => {
 				data += '\n';
 				data += atRulesDefinitions.join( '\n' );
 
-				return writeFile( OUTPUT_FILE_PATH, data )
+				return fs.writeFile( OUTPUT_FILE_PATH, data )
 					.then( resolve );
 			} )
 			.then( () => {
@@ -186,7 +187,10 @@ function getWebpackConfig() {
 		},
 		resolve: {
 			modules: getModuleResolvePaths(),
-			extensions: [ '.ts', '.js', '.json' ]
+			extensions: [ '.ts', '.js', '.json' ],
+			extensionAlias: {
+				'.js': [ '.js', '.ts' ]
+			}
 		},
 		resolveLoader: {
 			modules: getModuleResolvePaths()
@@ -330,7 +334,7 @@ function generateCKEditor5Source( ckeditor5Modules, cwd ) {
 
 	sourceFileContent.push( '];' );
 
-	return writeFile( path.join( DESTINATION_DIRECTORY, 'source.js' ), sourceFileContent.join( '\n' ) )
+	return fs.writeFile( path.join( DESTINATION_DIRECTORY, 'source.js' ), sourceFileContent.join( '\n' ) )
 		.then( () => ckeditor5Modules );
 
 	function capitalize( value ) {

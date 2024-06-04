@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -15,7 +15,7 @@ import {
 	type ObservableSetEvent
 } from '@ckeditor/ckeditor5-utils';
 
-import type Editor from './editor/editor';
+import type Editor from './editor/editor.js';
 
 /**
  * Base class for the CKEditor commands.
@@ -30,7 +30,7 @@ import type Editor from './editor/editor';
  * By default, commands are disabled when the editor is in the {@link module:core/editor/editor~Editor#isReadOnly read-only} mode
  * but commands with the {@link module:core/command~Command#affectsData `affectsData`} flag set to `false` will not be disabled.
  */
-export default class Command extends ObservableMixin() {
+export default class Command extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * The editor on which this command will be used.
 	 */
@@ -65,6 +65,18 @@ export default class Command extends ObservableMixin() {
 	declare public isEnabled: boolean;
 
 	/**
+	 * A flag indicating whether a command's `isEnabled` state should be changed depending on where the document
+	 * selection is placed.
+	 *
+	 * By default, it is set to `true`. If the document selection is placed in a
+	 * {@link module:engine/model/model~Model#canEditAt non-editable} place (such as non-editable root), the command becomes disabled.
+	 *
+	 * The flag should be changed to `false` in a concrete command's constructor if the command should not change its `isEnabled`
+	 * accordingly to the document selection.
+	 */
+	protected _isEnabledBasedOnSelection: boolean;
+
+	/**
 	 * A flag indicating whether a command execution changes the editor data or not.
 	 *
 	 * @see #affectsData
@@ -89,29 +101,45 @@ export default class Command extends ObservableMixin() {
 		this.set( 'isEnabled', false );
 
 		this._affectsData = true;
+		this._isEnabledBasedOnSelection = true;
 		this._disableStack = new Set();
 
 		this.decorate( 'execute' );
 
-		// By default every command is refreshed when changes are applied to the model.
+		// By default, every command is refreshed when changes are applied to the model.
 		this.listenTo( this.editor.model.document, 'change', () => {
 			this.refresh();
 		} );
+
+		this.listenTo<ObservableChangeEvent<boolean>>( editor, 'change:isReadOnly', () => {
+			this.refresh();
+		} );
+
+		// By default, commands are disabled if the selection is in non-editable place or editor is in read-only mode.
+		this.on<ObservableSetEvent<boolean>>( 'set:isEnabled', evt => {
+			if ( !this.affectsData ) {
+				return;
+			}
+
+			const selection = editor.model.document.selection;
+			const selectionInGraveyard = selection.getFirstPosition()!.root.rootName == '$graveyard';
+			const canEditAtSelection = !selectionInGraveyard && editor.model.canEditAt( selection );
+
+			// Disable if editor is read only, or when selection is in a place which cannot be edited.
+			//
+			// Checking `editor.isReadOnly` is needed for all commands that have `_isEnabledBasedOnSelection == false`.
+			// E.g. undo does not base on selection, but affects data and should be disabled when the editor is in read-only mode.
+			if ( editor.isReadOnly || this._isEnabledBasedOnSelection && !canEditAtSelection ) {
+				evt.return = false;
+				evt.stop();
+			}
+		}, { priority: 'highest' } );
 
 		this.on<CommandExecuteEvent>( 'execute', evt => {
 			if ( !this.isEnabled ) {
 				evt.stop();
 			}
 		}, { priority: 'high' } );
-
-		// By default commands are disabled when the editor is in read-only mode.
-		this.listenTo<ObservableChangeEvent<boolean>>( editor, 'change:isReadOnly', ( evt, name, value ) => {
-			if ( value && this.affectsData ) {
-				this.forceDisabled( 'readOnlyMode' );
-			} else {
-				this.clearForceDisabled( 'readOnlyMode' );
-			}
-		} );
 	}
 
 	/**
@@ -225,7 +253,7 @@ export default class Command extends ObservableMixin() {
 	 *
 	 * @fires execute
 	 */
-	public execute( ...args: Array<unknown> ): unknown { return undefined; }
+	public execute( ...args: Array<unknown> ): unknown { return undefined; } // eslint-disable-line @typescript-eslint/no-unused-vars
 
 	/**
 	 * Destroys the command.

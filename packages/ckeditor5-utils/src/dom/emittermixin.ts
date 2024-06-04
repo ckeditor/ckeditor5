@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -14,14 +14,14 @@ import EmitterMixin, {
 	type CallbackOptions,
 	type BaseEvent,
 	type GetCallback
-} from '../emittermixin';
-import uid from '../uid';
-import isNode from './isnode';
-import isWindow from './iswindow';
-import type EventInfo from '../eventinfo';
-import type { Constructor, Mixed } from '../mix';
+} from '../emittermixin.js';
+import uid from '../uid.js';
+import isNode from './isnode.js';
+import isWindow from './iswindow.js';
+import type EventInfo from '../eventinfo.js';
+import type { Constructor, Mixed } from '../mix.js';
 
-const defaultEmitterClass = DomEmitterMixin( EmitterMixin() );
+const defaultEmitterClass = /* #__PURE__ */ DomEmitterMixin( /* #__PURE__ */ EmitterMixin() );
 
 /**
  * Mixin that injects the DOM events API into its host. It provides the API
@@ -208,7 +208,7 @@ export default function DomEmitterMixin( base?: Constructor<Emitter> ): unknown 
  *                    +-----------------------------------------+
  *                                fire( click, DOM Event )
  */
-class ProxyEmitter extends EmitterMixin() {
+class ProxyEmitter extends /* #__PURE__ */ EmitterMixin() {
 	private readonly _domNode: Node | Window;
 	private readonly _options: { capture: boolean; passive: boolean };
 

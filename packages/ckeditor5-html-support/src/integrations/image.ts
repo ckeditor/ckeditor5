@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,17 +7,19 @@
  * @module html-support/integrations/image
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 import type {
 	DowncastAttributeEvent,
 	DowncastDispatcher,
 	Element,
-	UpcastDispatcher,
-	ViewElement } from 'ckeditor5/src/engine';
+	Node,
+	UpcastDispatcher
+} from 'ckeditor5/src/engine.js';
+import type { ImageUtils } from '@ckeditor/ckeditor5-image';
 
-import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
-import { type GHSViewAttributes, setViewAttributes, updateViewAttributes } from '../utils';
-import { getDescendantElement } from './integrationutils';
+import DataFilter, { type DataFilterRegisterEvent } from '../datafilter.js';
+import { type GHSViewAttributes, setViewAttributes, updateViewAttributes } from '../utils.js';
+import { getDescendantElement } from './integrationutils.js';
 
 /**
  * Provides the General HTML Support integration with the {@link module:image/image~Image Image} feature.
@@ -33,8 +35,8 @@ export default class ImageElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ImageElementSupport' {
-		return 'ImageElementSupport';
+	public static get pluginName() {
+		return 'ImageElementSupport' as const;
 	}
 
 	/**
@@ -64,7 +66,7 @@ export default class ImageElementSupport extends Plugin {
 			if ( schema.isRegistered( 'imageBlock' ) ) {
 				schema.extend( 'imageBlock', {
 					allowAttributes: [
-						'htmlAttributes',
+						'htmlImgAttributes',
 						// Figure and Link don't have model counterpart.
 						// We will preserve attributes on image model element using these attribute keys.
 						'htmlFigureAttributes',
@@ -78,13 +80,17 @@ export default class ImageElementSupport extends Plugin {
 					allowAttributes: [
 						// `htmlA` is needed for standard GHS link integration.
 						'htmlA',
-						'htmlAttributes'
+						'htmlImgAttributes'
 					]
 				} );
 			}
 
 			conversion.for( 'upcast' ).add( viewToModelImageAttributeConverter( dataFilter ) );
 			conversion.for( 'downcast' ).add( modelToViewImageAttributeConverter() );
+
+			if ( editor.plugins.has( 'LinkImage' ) ) {
+				conversion.for( 'upcast' ).add( viewToModelLinkImageAttributeConverter( dataFilter, editor ) );
+			}
 
 			evt.stop();
 		} );
@@ -105,26 +111,44 @@ function viewToModelImageAttributeConverter( dataFilter: DataFilter ) {
 			}
 
 			const viewImageElement = data.viewItem;
-			const viewContainerElement = viewImageElement.parent;
 
-			preserveElementAttributes( viewImageElement, 'htmlAttributes' );
+			const viewAttributes = dataFilter.processViewAttributes( viewImageElement, conversionApi );
 
-			if ( viewContainerElement.is( 'element', 'a' ) ) {
-				preserveLinkAttributes( viewContainerElement );
+			if ( viewAttributes ) {
+				conversionApi.writer.setAttribute( 'htmlImgAttributes', viewAttributes, data.modelRange );
+			}
+		}, { priority: 'low' } );
+	};
+}
+
+/**
+ * View-to-model conversion helper preserving allowed attributes on {@link module:image/image~Image Image}
+ * feature model element from link view element.
+ *
+ * @returns Returns a conversion callback.
+ */
+function viewToModelLinkImageAttributeConverter( dataFilter: DataFilter, editor: Editor ) {
+	const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
+
+	return ( dispatcher: UpcastDispatcher ) => {
+		dispatcher.on( 'element:a', ( evt, data, conversionApi ) => {
+			const viewLink = data.viewItem;
+			const viewImage = imageUtils.findViewImgElement( viewLink );
+
+			if ( !viewImage ) {
+				return;
 			}
 
-			function preserveElementAttributes( viewElement: ViewElement, attributeName: string ) {
-				const viewAttributes = dataFilter.processViewAttributes( viewElement, conversionApi );
+			const modelImage: Node | null = data.modelCursor.parent as Node;
 
-				if ( viewAttributes ) {
-					conversionApi.writer.setAttribute( attributeName, viewAttributes, data.modelRange );
-				}
+			if ( !modelImage.is( 'element', 'imageBlock' ) ) {
+				return;
 			}
 
-			function preserveLinkAttributes( viewContainerElement: ViewElement ) {
-				if ( data.modelRange && data.modelRange.getContainedElement().is( 'element', 'imageBlock' ) ) {
-					preserveElementAttributes( viewContainerElement, 'htmlLinkAttributes' );
-				}
+			const viewAttributes = dataFilter.processViewAttributes( viewLink, conversionApi );
+
+			if ( viewAttributes ) {
+				conversionApi.writer.setAttribute( 'htmlLinkAttributes', viewAttributes, modelImage );
 			}
 		}, { priority: 'low' } );
 	};
@@ -161,9 +185,9 @@ function viewToModelFigureAttributeConverter( dataFilter: DataFilter ) {
  */
 function modelToViewImageAttributeConverter() {
 	return ( dispatcher: DowncastDispatcher ) => {
-		addInlineAttributeConversion( 'htmlAttributes' );
+		addInlineAttributeConversion( 'htmlImgAttributes' );
 
-		addBlockAttributeConversion( 'img', 'htmlAttributes' );
+		addBlockAttributeConversion( 'img', 'htmlImgAttributes' );
 		addBlockAttributeConversion( 'figure', 'htmlFigureAttributes' );
 		addBlockAttributeConversion( 'a', 'htmlLinkAttributes' );
 

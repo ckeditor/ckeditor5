@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -15,11 +15,9 @@ import type {
 	ViewElement,
 	ViewElementAttributes,
 	DowncastAttributeEvent
-} from 'ckeditor5/src/engine';
-import { first, type GetCallback } from 'ckeditor5/src/utils';
-import type ImageUtils from '../imageutils';
-
-type SrcsetAttributeType = null | { data: unknown; width: unknown };
+} from 'ckeditor5/src/engine.js';
+import { first, type GetCallback } from 'ckeditor5/src/utils.js';
+import type ImageUtils from '../imageutils.js';
 
 /**
  * Returns a function that converts the image view representation:
@@ -178,7 +176,7 @@ export function upcastPicture( imageUtils: ImageUtils ): ( dispatcher: UpcastDis
 }
 
 /**
- * Converter used to convert the `srcset` model image attribute to the `srcset`, `sizes` and `width` attributes in the view.
+ * Converter used to convert the `srcset` model image attribute to the `srcset` and `sizes` attributes in the view.
  *
  * @internal
  * @param imageType The type of the image.
@@ -197,27 +195,13 @@ export function downcastSrcsetAttribute(
 		const img = imageUtils.findViewImgElement( element )!;
 
 		if ( data.attributeNewValue === null ) {
-			const srcset = data.attributeOldValue as SrcsetAttributeType;
-
-			if ( srcset && srcset.data ) {
-				writer.removeAttribute( 'srcset', img );
-				writer.removeAttribute( 'sizes', img );
-
-				if ( srcset.width ) {
-					writer.removeAttribute( 'width', img );
-				}
-			}
+			writer.removeAttribute( 'srcset', img );
+			writer.removeAttribute( 'sizes', img );
 		} else {
-			const srcset = data.attributeNewValue as SrcsetAttributeType;
-
-			if ( srcset && srcset.data ) {
-				writer.setAttribute( 'srcset', srcset.data, img );
+			if ( data.attributeNewValue ) {
+				writer.setAttribute( 'srcset', data.attributeNewValue, img );
 				// Always outputting `100vw`. See https://github.com/ckeditor/ckeditor5-image/issues/2.
 				writer.setAttribute( 'sizes', '100vw', img );
-
-				if ( srcset.width ) {
-					writer.setAttribute( 'width', srcset.width, img );
-				}
 			}
 		}
 	};

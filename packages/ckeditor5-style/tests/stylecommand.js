@@ -1,24 +1,24 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document, console */
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import ImageBlock from '@ckeditor/ckeditor5-image/src/imageblock';
-import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
-import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import ImageBlock from '@ckeditor/ckeditor5-image/src/imageblock.js';
+import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption.js';
+import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock.js';
+import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
+import Table from '@ckeditor/ckeditor5-table/src/table.js';
+import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import Style from '../src/style';
+import Style from '../src/style.js';
 
 describe( 'StyleCommand', () => {
 	let editor, editorElement, command, model, doc, root;
@@ -113,6 +113,14 @@ describe( 'StyleCommand', () => {
 		}
 	];
 
+	const blockDivStyles = [
+		{
+			name: 'Div style',
+			element: 'div',
+			classes: [ 'callout' ]
+		}
+	];
+
 	beforeEach( async () => {
 		await createEditor( [
 			...inlineStyles,
@@ -120,7 +128,8 @@ describe( 'StyleCommand', () => {
 			...blockHeadingStyles,
 			...blockCodeBlockStyles,
 			...blockQuoteBlockStyles,
-			...blockWidgetStyles
+			...blockWidgetStyles,
+			...blockDivStyles
 		] );
 	} );
 
@@ -174,6 +183,39 @@ describe( 'StyleCommand', () => {
 				] );
 			} );
 
+			it( 'should enable styles for div (as container)', () => {
+				setData( model,
+					'<paragraph>foo</paragraph>' +
+					'<htmlDiv>' +
+						'<paragraph>bar[]</paragraph>' +
+					'</htmlDiv>' +
+					'<paragraph>baz</paragraph>'
+				);
+
+				command.refresh();
+
+				expect( command.enabledStyles ).to.have.members( [
+					...inlineStyles.map( ( { name } ) => name ),
+					...blockParagraphStyles.map( ( { name } ) => name ),
+					...blockDivStyles.map( ( { name } ) => name )
+				] );
+			} );
+
+			it( 'should enable styles for div (as block)', () => {
+				setData( model,
+					'<paragraph>foo</paragraph>' +
+					'<htmlDivParagraph>bar[]</htmlDivParagraph>' +
+					'<paragraph>baz</paragraph>'
+				);
+
+				command.refresh();
+
+				expect( command.enabledStyles ).to.have.members( [
+					...inlineStyles.map( ( { name } ) => name ),
+					...blockDivStyles.map( ( { name } ) => name )
+				] );
+			} );
+
 			it( 'should enable styles for paragraphs when nested inside html section', () => {
 				const dataFilter = editor.plugins.get( 'DataFilter' );
 				dataFilter.allowElement( 'htmlSection' );
@@ -187,9 +229,9 @@ describe( 'StyleCommand', () => {
 				command.execute( { styleName: 'Red paragraph' } );
 
 				expect( getData( model ) ).to.equal(
-					'<htmlSection><paragraph htmlAttributes="{"classes":["red"]}">[Foo</paragraph></htmlSection>' +
-					'<htmlSection><paragraph htmlAttributes="{"classes":["red"]}">Bar</paragraph></htmlSection>' +
-					'<htmlSection><paragraph htmlAttributes="{"classes":["red"]}">Baz]</paragraph></htmlSection>'
+					'<htmlSection><paragraph htmlPAttributes="{"classes":["red"]}">[Foo</paragraph></htmlSection>' +
+					'<htmlSection><paragraph htmlPAttributes="{"classes":["red"]}">Bar</paragraph></htmlSection>' +
+					'<htmlSection><paragraph htmlPAttributes="{"classes":["red"]}">Baz]</paragraph></htmlSection>'
 				);
 			} );
 
@@ -260,7 +302,7 @@ describe( 'StyleCommand', () => {
 
 			it( 'should not enable styles for blocks that disable GHS', () => {
 				model.schema.addAttributeCheck( ( context, attributeName ) => {
-					if ( context.endsWith( 'paragraph' ) && attributeName == 'htmlAttributes' ) {
+					if ( context.endsWith( 'paragraph' ) && attributeName == 'htmlPAttributes' ) {
 						return false;
 					}
 				} );
@@ -355,7 +397,7 @@ describe( 'StyleCommand', () => {
 				setData( model, '<paragraph>fo[]o</paragraph>' );
 
 				model.change( writer => {
-					writer.setAttribute( 'htmlAttributes', { classes: [ 'red' ] }, root.getChild( 0 ) );
+					writer.setAttribute( 'htmlPAttributes', { classes: [ 'red' ] }, root.getChild( 0 ) );
 				} );
 
 				expect( command.value ).to.have.members( [ 'Red paragraph' ] );
@@ -368,7 +410,7 @@ describe( 'StyleCommand', () => {
 				);
 
 				model.change( writer => {
-					writer.setAttribute( 'htmlAttributes', { classes: [ 'big-heading' ] }, root.getChild( 1 ) );
+					writer.setAttribute( 'htmlH2Attributes', { classes: [ 'big-heading' ] }, root.getChild( 1 ) );
 				} );
 
 				expect( command.value ).to.have.members( [ 'Big heading' ] );
@@ -381,8 +423,8 @@ describe( 'StyleCommand', () => {
 				);
 
 				model.change( writer => {
-					writer.setAttribute( 'htmlAttributes', { classes: [ 'red' ] }, root.getChild( 0 ) );
-					writer.setAttribute( 'htmlAttributes', { classes: [ 'red' ] }, root.getChild( 1 ) );
+					writer.setAttribute( 'htmlPAttributes', { classes: [ 'red' ] }, root.getChild( 0 ) );
+					writer.setAttribute( 'htmlH2Attributes', { classes: [ 'red' ] }, root.getChild( 1 ) );
 				} );
 
 				expect( command.value ).to.have.members( [ 'Red paragraph' ] );
@@ -404,7 +446,7 @@ describe( 'StyleCommand', () => {
 				);
 
 				model.change( writer => {
-					writer.setAttribute( 'htmlAttributes', { classes: [ 'side-quote' ] }, root.getChild( 1 ) );
+					writer.setAttribute( 'htmlBlockquoteAttributes', { classes: [ 'side-quote' ] }, root.getChild( 1 ) );
 				} );
 
 				expect( command.value ).to.have.members( [ 'Side quote' ] );
@@ -414,10 +456,36 @@ describe( 'StyleCommand', () => {
 				setData( model, '<codeBlock language="plaintext">foo[bar]baz</codeBlock>' );
 
 				model.change( writer => {
-					writer.setAttribute( 'htmlAttributes', { classes: [ 'vibrant-code' ] }, root.getChild( 0 ) );
+					writer.setAttribute( 'htmlPreAttributes', { classes: [ 'vibrant-code' ] }, root.getChild( 0 ) );
 				} );
 
 				expect( command.value ).to.have.members( [ 'Vibrant code block' ] );
+			} );
+
+			it( 'should detect styles for the div (as container)', () => {
+				setData( model,
+					'<htmlDiv>' +
+						'<paragraph>foo[bar]baz</paragraph>' +
+					'</htmlDiv>'
+				);
+
+				model.change( writer => {
+					writer.setAttribute( 'htmlDivAttributes', { classes: [ 'callout' ] }, root.getChild( 0 ) );
+				} );
+
+				expect( command.value ).to.have.members( [ 'Div style' ] );
+			} );
+
+			it( 'should detect styles for the div (as block)', () => {
+				setData( model,
+					'<htmlDivParagraph>foo[bar]baz</htmlDivParagraph>'
+				);
+
+				model.change( writer => {
+					writer.setAttribute( 'htmlDivAttributes', { classes: [ 'callout' ] }, root.getChild( 0 ) );
+				} );
+
+				expect( command.value ).to.have.members( [ 'Div style' ] );
 			} );
 
 			it( 'should not detect styles for elements outside a widget element', () => {
@@ -434,9 +502,9 @@ describe( 'StyleCommand', () => {
 				);
 
 				model.change( writer => {
-					writer.setAttribute( 'htmlAttributes', { classes: [ 'side-quote' ] }, root.getChild( 0 ) );
-					writer.setAttribute( 'htmlAttributes', { classes: [ 'example' ] }, root.getNodeByPath( [ 0, 0 ] ) );
-					writer.setAttribute( 'htmlAttributes', { classes: [ 'red' ] }, root.getNodeByPath( [ 0, 0, 0, 0, 0 ] ) );
+					writer.setAttribute( 'htmlBlockquoteAttributes', { classes: [ 'side-quote' ] }, root.getChild( 0 ) );
+					writer.setAttribute( 'htmlTableAttributes', { classes: [ 'example' ] }, root.getNodeByPath( [ 0, 0 ] ) );
+					writer.setAttribute( 'htmlPAttributes', { classes: [ 'red' ] }, root.getNodeByPath( [ 0, 0, 0, 0, 0 ] ) );
 				} );
 
 				expect( command.value ).to.have.members( [ 'Red paragraph', 'Table style' ] );
@@ -456,9 +524,9 @@ describe( 'StyleCommand', () => {
 				);
 
 				model.change( writer => {
-					writer.setAttribute( 'htmlAttributes', { classes: [ 'side-quote' ] }, root.getChild( 0 ) );
-					writer.setAttribute( 'htmlAttributes', { classes: [ 'example' ] }, root.getNodeByPath( [ 0, 0 ] ) );
-					writer.setAttribute( 'htmlAttributes', { classes: [ 'red' ] }, root.getNodeByPath( [ 0, 0, 0, 0, 0 ] ) );
+					writer.setAttribute( 'htmlBlockquoteAttributes', { classes: [ 'side-quote' ] }, root.getChild( 0 ) );
+					writer.setAttribute( 'htmlTableAttributes', { classes: [ 'example' ] }, root.getNodeByPath( [ 0, 0 ] ) );
+					writer.setAttribute( 'htmlPAttributes', { classes: [ 'red' ] }, root.getNodeByPath( [ 0, 0, 0, 0, 0 ] ) );
 				} );
 
 				expect( command.value ).to.have.members( [ 'Table style' ] );
@@ -477,7 +545,7 @@ describe( 'StyleCommand', () => {
 
 				model.change( writer => {
 					writer.setAttribute( 'htmlFigureAttributes', { classes: [ 'fancy-figure' ] }, root.getChild( 0 ) );
-					writer.setAttribute( 'htmlAttributes', { classes: [ 'example' ] }, root.getChild( 0 ) );
+					writer.setAttribute( 'htmlTableAttributes', { classes: [ 'example' ] }, root.getChild( 0 ) );
 				} );
 
 				expect( command.value ).to.have.members( [
@@ -594,7 +662,7 @@ describe( 'StyleCommand', () => {
 
 			expect( getData( model, { withoutSelection: true } ) ).to.equal(
 				'<codeBlock ' +
-					'htmlAttributes="{"classes":["fancy-code","fancy-code-dark"]}" ' +
+					'htmlPreAttributes="{"classes":["fancy-code","fancy-code-dark"]}" ' +
 					'language="typescript"' +
 				'>' +
 				'</codeBlock>'
@@ -778,7 +846,7 @@ describe( 'StyleCommand', () => {
 				command.execute( { styleName: 'Big heading' } );
 
 				expect( getData( model ) ).to.equal(
-					'<heading1 htmlAttributes="{"classes":["big-heading"]}">foo[]bar</heading1>'
+					'<heading1 htmlH2Attributes="{"classes":["big-heading"]}">foo[]bar</heading1>'
 				);
 			} );
 
@@ -789,7 +857,7 @@ describe( 'StyleCommand', () => {
 				command.execute( { styleName: 'Red heading' } );
 
 				expect( getData( model ) ).to.equal(
-					'<heading1 htmlAttributes="{"classes":["big-heading","red"]}">foo[]bar</heading1>'
+					'<heading1 htmlH2Attributes="{"classes":["big-heading","red"]}">foo[]bar</heading1>'
 				);
 			} );
 
@@ -803,9 +871,51 @@ describe( 'StyleCommand', () => {
 				command.execute( { styleName: 'Red heading' } );
 
 				expect( getData( model ) ).to.equal(
-					'<heading1 htmlAttributes="{"classes":["red"]}">fo[o</heading1>' +
+					'<heading1 htmlH2Attributes="{"classes":["red"]}">fo[o</heading1>' +
 					'<paragraph>bar</paragraph>' +
-					'<heading1 htmlAttributes="{"classes":["red"]}">ba]z</heading1>'
+					'<heading1 htmlH2Attributes="{"classes":["red"]}">ba]z</heading1>'
+				);
+			} );
+
+			it( 'should add (and remove) htmlDivAttribute for div as a container', () => {
+				setData( model,
+					'<htmlDiv>' +
+						'<paragraph>foo[]</paragraph>' +
+					'</htmlDiv>'
+				);
+
+				command.execute( { styleName: 'Div style' } );
+
+				expect( getData( model ) ).to.equal(
+					'<htmlDiv htmlDivAttributes="{"classes":["callout"]}">' +
+						'<paragraph>foo[]</paragraph>' +
+					'</htmlDiv>'
+				);
+
+				command.execute( { styleName: 'Div style' } );
+
+				expect( getData( model ) ).to.equal(
+					'<htmlDiv>' +
+						'<paragraph>foo[]</paragraph>' +
+					'</htmlDiv>'
+				);
+			} );
+
+			it( 'should add (and remove) htmlDivAttribute for div as a block', () => {
+				setData( model,
+					'<htmlDivParagraph>foo[]</htmlDivParagraph>'
+				);
+
+				command.execute( { styleName: 'Div style' } );
+
+				expect( getData( model ) ).to.equal(
+					'<htmlDivParagraph htmlDivAttributes="{"classes":["callout"]}">foo[]</htmlDivParagraph>'
+				);
+
+				command.execute( { styleName: 'Div style' } );
+
+				expect( getData( model ) ).to.equal(
+					'<htmlDivParagraph>foo[]</htmlDivParagraph>'
 				);
 			} );
 
@@ -831,7 +941,7 @@ describe( 'StyleCommand', () => {
 						'<table>' +
 							'<tableRow>' +
 								'<tableCell>' +
-									'<blockQuote htmlAttributes="{"classes":["side-quote"]}">' +
+									'<blockQuote htmlBlockquoteAttributes="{"classes":["side-quote"]}">' +
 										'<paragraph>fo[]o</paragraph>' +
 									'</blockQuote>' +
 								'</tableCell>' +
@@ -864,7 +974,7 @@ describe( 'StyleCommand', () => {
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell>' +
-								'<table htmlAttributes="{"classes":["example"]}">' +
+								'<table htmlTableAttributes="{"classes":["example"]}">' +
 									'<tableRow>' +
 										'<tableCell>' +
 											'<paragraph>fo[]o</paragraph>' +
@@ -949,15 +1059,15 @@ describe( 'StyleCommand', () => {
 			it( 'should force adding style if the command was called with `forceValue=true`', () => {
 				setData( model,
 					'<heading1>foo</heading1>' +
-					'<heading1 htmlAttributes=\'{"classes":["red"]}\'>b[ar</heading1>' +
+					'<heading1 htmlH2Attributes=\'{"classes":["red"]}\'>b[ar</heading1>' +
 					'<heading1>ba]z</heading1>' );
 
 				command.execute( { styleName: 'Red heading', forceValue: true } );
 
 				expect( getData( model ) ).to.equal(
 					'<heading1>foo</heading1>' +
-					'<heading1 htmlAttributes="{"classes":["red"]}">b[ar</heading1>' +
-					'<heading1 htmlAttributes="{"classes":["red"]}">ba]z</heading1>'
+					'<heading1 htmlH2Attributes="{"classes":["red"]}">b[ar</heading1>' +
+					'<heading1 htmlH2Attributes="{"classes":["red"]}">ba]z</heading1>'
 				);
 			} );
 
@@ -979,7 +1089,7 @@ describe( 'StyleCommand', () => {
 			it( 'should force removing style if the command was called with `forceValue=false`', () => {
 				setData( model,
 					'<heading1>f[oo</heading1>' +
-					'<heading1 htmlAttributes=\'{"classes":["red"]}\'>ba]r</heading1>' +
+					'<heading1 htmlH2Attributes=\'{"classes":["red"]}\'>ba]r</heading1>' +
 					'<heading1>baz</heading1>' );
 
 				command.execute( { styleName: 'Red heading', forceValue: false } );

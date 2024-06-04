@@ -1,27 +1,27 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document */
 
-import Editor from '../../src/editor/editor';
-import ClassicTestEditor from '../../tests/_utils/classictesteditor';
+import Editor from '../../src/editor/editor.js';
+import ClassicTestEditor from '../../tests/_utils/classictesteditor.js';
 
-import Plugin from '../../src/plugin';
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Plugin from '../../src/plugin.js';
+import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import EditorUI from '@ckeditor/ckeditor5-ui/src/editorui/editorui';
-import BoxedEditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/boxed/boxededitoruiview';
-import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
+import EditorUI from '@ckeditor/ckeditor5-ui/src/editorui/editorui.js';
+import BoxedEditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/boxed/boxededitoruiview.js';
+import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview.js';
 
-import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
+import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement.js';
 
-import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import testUtils from '../../tests/_utils/utils';
-import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-import { removeEditorBodyOrphans } from '../_utils/cleanup';
+import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import testUtils from '../../tests/_utils/utils.js';
+import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
+import { removeEditorBodyOrphans } from '../_utils/cleanup.js';
 
 describe( 'ClassicTestEditor', () => {
 	let editorElement;
@@ -69,11 +69,6 @@ describe( 'ClassicTestEditor', () => {
 			const editor = new ClassicTestEditor( editorElement );
 
 			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( RootElement );
-		} );
-
-		it( 'mixes DataApiMixin', () => {
-			expect( ClassicTestEditor.prototype ).have.property( 'setData' ).to.be.a( 'function' );
-			expect( ClassicTestEditor.prototype ).have.property( 'getData' ).to.be.a( 'function' );
 		} );
 
 		it( 'mixes ElementApiMixin', () => {

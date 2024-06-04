@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,15 +7,15 @@
  * @module media-embed/mediaembedediting
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
-import type { UpcastElementEvent } from 'ckeditor5/src/engine';
-import { first, type GetCallback } from 'ckeditor5/src/utils';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import type { UpcastElementEvent } from 'ckeditor5/src/engine.js';
+import { first, type GetCallback } from 'ckeditor5/src/utils.js';
 
-import { modelToViewUrlAttributeConverter } from './converters';
-import type { MediaEmbedConfig } from './mediaembedconfig';
-import MediaEmbedCommand from './mediaembedcommand';
-import MediaRegistry from './mediaregistry';
-import { toMediaWidget, createMediaFigureElement } from './utils';
+import { modelToViewUrlAttributeConverter } from './converters.js';
+import type { MediaEmbedConfig } from './mediaembedconfig.js';
+import MediaEmbedCommand from './mediaembedcommand.js';
+import MediaRegistry from './mediaregistry.js';
+import { toMediaWidget, createMediaFigureElement } from './utils.js';
 
 import '../theme/mediaembedediting.css';
 
@@ -26,8 +26,8 @@ export default class MediaEmbedEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'MediaEmbedEditing' {
-		return 'MediaEmbedEditing';
+	public static get pluginName() {
+		return 'MediaEmbedEditing' as const;
 	}
 
 	/**
@@ -45,7 +45,10 @@ export default class MediaEmbedEditing extends Plugin {
 			providers: [
 				{
 					name: 'dailymotion',
-					url: /^dailymotion\.com\/video\/(\w+)/,
+					url: [
+						/^dailymotion\.com\/video\/(\w+)/,
+						/^dai.ly\/(\w+)/
+					],
 					html: match => {
 						const id = match[ 1 ];
 

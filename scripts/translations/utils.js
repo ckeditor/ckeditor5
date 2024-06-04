@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -36,14 +36,16 @@ function parseArguments( args ) {
 		],
 
 		boolean: [
-			'include-external-directory'
+			'include-external-directory',
+			'ignore-unused-core-package-contexts'
 		],
 
 		default: {
 			cwd: process.cwd(),
 			packages: [],
 			ignore: [],
-			'include-external-directory': false
+			'include-external-directory': false,
+			'ignore-unused-core-package-contexts': false
 		}
 	};
 
@@ -52,6 +54,8 @@ function parseArguments( args ) {
 	// Convert to camelCase.
 	options.includeExternalDirectory = options[ 'include-external-directory' ];
 	delete options[ 'include-external-directory' ];
+	options.ignoreUnusedCorePackageContexts = options[ 'ignore-unused-core-package-contexts' ];
+	delete options[ 'ignore-unused-core-package-contexts' ];
 
 	// Normalize the current work directory path.
 	options.cwd = normalizePath( path.resolve( options.cwd ) );
@@ -182,6 +186,8 @@ function normalizePath( ...values ) {
  * @property {Array.<String>} [ignore] Name of packages that should be skipped while processing then.
  *
  * @property {Boolean} includeExternalDirectory Whether to look for packages located in the `external/` directory.
+ *
+ * @property {Boolean} ignoreUnusedCorePackageContexts Whether to allow having unused contexts by the `ckeditor5-core` package.
  */
 
 /**

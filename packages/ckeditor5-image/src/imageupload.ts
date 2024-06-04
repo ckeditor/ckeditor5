@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,10 +7,10 @@
  * @module image/imageupload
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import ImageUploadUI from './imageupload/imageuploadui';
-import ImageUploadProgress from './imageupload/imageuploadprogress';
-import ImageUploadEditing from './imageupload/imageuploadediting';
+import { Plugin } from 'ckeditor5/src/core.js';
+import ImageUploadUI from './imageupload/imageuploadui.js';
+import ImageUploadProgress from './imageupload/imageuploadprogress.js';
+import ImageUploadEditing from './imageupload/imageuploadediting.js';
 
 /**
  * The image upload plugin.
@@ -27,8 +27,8 @@ export default class ImageUpload extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ImageUpload' {
-		return 'ImageUpload';
+	public static get pluginName() {
+		return 'ImageUpload' as const;
 	}
 
 	/**

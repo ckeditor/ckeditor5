@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,17 +7,17 @@
  * @module engine/model/utils/deletecontent
  */
 
-import DocumentSelection from '../documentselection';
-import LivePosition from '../liveposition';
-import Range from '../range';
+import DocumentSelection from '../documentselection.js';
+import LivePosition from '../liveposition.js';
+import Range from '../range.js';
 
-import type DocumentFragment from '../documentfragment';
-import type Element from '../element';
-import type Model from '../model';
-import type Position from '../position';
-import type Schema from '../schema';
-import type Selection from '../selection';
-import type Writer from '../writer';
+import type DocumentFragment from '../documentfragment.js';
+import type Element from '../element.js';
+import type Model from '../model.js';
+import type Position from '../position.js';
+import type Schema from '../schema.js';
+import type Selection from '../selection.js';
+import type Writer from '../writer.js';
 
 /**
  * Deletes content of the selection and merge siblings. The resulting selection is always collapsed.

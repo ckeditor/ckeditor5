@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,12 +7,12 @@
  * @module engine/view/editableelement
  */
 
-import ContainerElement from './containerelement';
+import ContainerElement from './containerelement.js';
 import { ObservableMixin } from '@ckeditor/ckeditor5-utils';
-import type { ViewSelectionChangeEvent } from './selection';
-import type { ElementAttributes } from './element';
-import type Document from './document';
-import type Node from './node';
+import type { ViewSelectionChangeEvent } from './selection.js';
+import type { ElementAttributes } from './element.js';
+import type Document from './document.js';
+import type Node from './node.js';
 
 /**
  * Editable element which can be a {@link module:engine/view/rooteditableelement~RootEditableElement root}
@@ -23,7 +23,7 @@ import type Node from './node';
  * The constructor of this class shouldn't be used directly. To create new `EditableElement` use the
  * {@link module:engine/view/downcastwriter~DowncastWriter#createEditableElement `downcastWriter#createEditableElement()`} method.
  */
-export default class EditableElement extends ObservableMixin( ContainerElement ) {
+export default class EditableElement extends /* #__PURE__ */ ObservableMixin( ContainerElement ) {
 	/**
 	 * Whether the editable is in read-write or read-only mode.
 	 *
@@ -41,6 +41,17 @@ export default class EditableElement extends ObservableMixin( ContainerElement )
 	 * @observable
 	 */
 	declare public isFocused: boolean;
+
+	/**
+	 * Placeholder of editable element.
+	 *
+	 * ```ts
+	 * editor.editing.view.document.getRoot( 'main' ).placeholder = 'New placeholder';
+	 * ```
+	 *
+	 * @observable
+	 */
+	declare public placeholder?: string;
 
 	/**
 	 * Creates an editable element.
@@ -62,6 +73,7 @@ export default class EditableElement extends ObservableMixin( ContainerElement )
 
 		this.set( 'isReadOnly', false );
 		this.set( 'isFocused', false );
+		this.set( 'placeholder', undefined );
 
 		this.bind( 'isReadOnly' ).to( document );
 

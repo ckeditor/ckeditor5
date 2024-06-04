@@ -1,12 +1,12 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import InsertParagraphCommand from '../src/insertparagraphcommand';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import InsertParagraphCommand from '../src/insertparagraphcommand.js';
 
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'InsertParagraphCommand', () => {
 	let editor, model, document, command, root, schema;
@@ -44,6 +44,15 @@ describe( 'InsertParagraphCommand', () => {
 			expect( getData( model ) ).to.equal( '<paragraph>[]</paragraph><heading1>foo</heading1>' );
 		} );
 
+		it( 'should not execute when selection is in non-editable place', () => {
+			setData( model, '<heading1>foo[]</heading1>' );
+
+			model.document.isReadOnly = true;
+			command.execute( { position: model.createPositionBefore( root.getChild( 0 ) ) } );
+
+			expect( getData( model ) ).to.equal( '<heading1>foo[]</heading1>' );
+		} );
+
 		it( 'should split ancestors down to a limit where a paragraph is allowed', () => {
 			setData( model, '<allowP><disallowP>foo</disallowP></allowP>' );
 
@@ -58,6 +67,135 @@ describe( 'InsertParagraphCommand', () => {
 					'<paragraph>[]</paragraph>' +
 					'<disallowP>o</disallowP>' +
 				'</allowP>'
+			);
+		} );
+
+		it( 'should insert paragraph when position is at the end of line', () => {
+			setData( model, '<paragraph>foo[]</paragraph>' );
+
+			command.execute( {
+				position: model.document.selection.getFirstPosition()
+			} );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>foo</paragraph>' +
+				'<paragraph>[]</paragraph>'
+			);
+		} );
+
+		it( 'should insert paragraph when position is at the end of line with an inline widget', () => {
+			schema.register( 'inlineWidget', { inheritAllFrom: '$inlineObject' } );
+			setData( model, '<paragraph><inlineWidget></inlineWidget>[]</paragraph>' );
+
+			command.execute( {
+				position: model.document.selection.getFirstPosition()
+			} );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph><inlineWidget></inlineWidget></paragraph>' +
+				'<paragraph>[]</paragraph>'
+			);
+		} );
+
+		it( 'should insert paragraph when position is at the start of line', () => {
+			setData( model, '<paragraph>[]foo</paragraph>' );
+
+			command.execute( {
+				position: model.document.selection.getLastPosition()
+			} );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>[]</paragraph>' +
+				'<paragraph>foo</paragraph>'
+			);
+		} );
+
+		it( 'should insert paragraph when position is at the start of line with an inline widget', () => {
+			schema.register( 'inlineWidget', { inheritAllFrom: '$inlineObject' } );
+			setData( model, '<paragraph>[]<inlineWidget></inlineWidget></paragraph>' );
+
+			command.execute( {
+				position: model.document.selection.getLastPosition()
+			} );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>[]</paragraph>' +
+				'<paragraph><inlineWidget></inlineWidget></paragraph>'
+			);
+		} );
+
+		it( 'should insert paragraph bellow when paragraph is empty', () => {
+			setData( model, '<paragraph>[]</paragraph>' );
+
+			command.execute( {
+				position: model.document.selection.getLastPosition()
+			} );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph></paragraph>' +
+				'<paragraph>[]</paragraph>'
+			);
+		} );
+
+		// See https://github.com/ckeditor/ckeditor5/issues/14714.
+		it( 'should insert paragraph bellow the block widget (inside container)', () => {
+			schema.register( 'blockContainer', { inheritAllFrom: '$container' } );
+			schema.register( 'blockWidget', { inheritAllFrom: '$blockObject', allowIn: 'allowP' } );
+
+			setData( model,
+				'<blockContainer>' +
+					'[<blockWidget></blockWidget>]' +
+				'</blockContainer>'
+			);
+
+			command.execute( {
+				position: model.document.selection.getLastPosition()
+			} );
+
+			expect( getData( model ) ).to.equal(
+				'<blockContainer>' +
+					'<blockWidget></blockWidget>' +
+					'<paragraph>[]</paragraph>' +
+				'</blockContainer>'
+			);
+		} );
+
+		// See https://github.com/ckeditor/ckeditor5/issues/14714.
+		it( 'should insert paragraph bellow the block widget (inside table cell)', () => {
+			schema.register( 'table', { inheritAllFrom: '$blockObject' } );
+			schema.register( 'tableRow', { allowIn: 'table', isLimit: true } );
+			schema.register( 'tableCell', {
+				allowContentOf: '$container',
+				allowIn: 'tableRow',
+				isLimit: true,
+				isSelectable: true
+			} );
+
+			schema.register( 'blockWidget', { inheritAllFrom: '$blockObject' } );
+
+			setData( model,
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'[<blockWidget></blockWidget>]' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+
+			command.execute( {
+				position: model.document.selection.getLastPosition()
+			} );
+
+			expect( getData( model ) ).to.equal(
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<blockWidget></blockWidget>' +
+							'<paragraph>[]</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>'
 			);
 		} );
 

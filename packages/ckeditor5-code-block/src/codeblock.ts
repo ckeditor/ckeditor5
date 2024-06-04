@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,10 +7,10 @@
  * @module code-block/codeblock
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 
-import CodeBlockEditing from './codeblockediting';
-import CodeBlockUI from './codeblockui';
+import CodeBlockEditing from './codeblockediting.js';
+import CodeBlockUI from './codeblockui.js';
 
 /**
  * The code block plugin.
@@ -32,7 +32,7 @@ export default class CodeBlock extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'CodeBlock' {
-		return 'CodeBlock';
+	public static get pluginName() {
+		return 'CodeBlock' as const;
 	}
 }

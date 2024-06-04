@@ -1,8 +1,9 @@
 ---
 category: features
+meta-title: Editor placeholder | CKEditor 5 Documentation
 ---
 
-{@snippet build-classic-source}
+{@snippet features/placeholder-build}
 
 # Editor placeholder
 
@@ -15,14 +16,10 @@ See the demo of the placeholder feature:
 {@snippet features/placeholder}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Installation
-
-<info-box info>
-	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
-</info-box>
 
 The editor placeholder feature does not require a separate plugin installation. It does, however, require configuring the editor before use. There are two different ways of configuring the editor placeholder text:
 
@@ -35,8 +32,12 @@ Set the `placeholder` attribute on a `<textarea>` element passed to the `Editor.
 ```
 
 ```js
+import { ClassicEditor, Essentials } from 'ckeditor5';
+
 ClassicEditor
-	.create( document.querySelector( '#editor' ) )
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Essentials, /* ... */ ],
+	} )
 	.then( editor => {
 		console.log( editor );
 	} )
@@ -54,43 +55,48 @@ You can use the {@link module:core/editor/editorconfig~EditorConfig#placeholder 
 * to override the `placeholder` text of a `<textarea>`, if one was passed into `Editor.create()` but the placeholder text should be different.
 
 ```js
-ClassicEditor.create(
-	document.querySelector( '#editor' ),
-    {
+import { ClassicEditor, Essentials } from 'ckeditor5';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Essentials, /* ... */ ],
 		placeholder: 'Type the content here!'
-	}
-).then( editor => {
-    console.log( editor );
-} ).catch( error => {
-    console.error( error );
-} );
+	} )
+	.then( editor => {
+		console.log( editor );
+	} )
+	.catch( error => {
+		console.error( error );
+	} );
 ```
 
 If your editor implementation uses multiple roots, you should pass an object with keys corresponding to the editor roots names and values equal to the placeholder that should be set in each root:
 
 ```js
-MultiRootEditor.create(
+MultiRootEditor
+	.create(
 	// Roots for the editor:
-	{
-		header: document.querySelector( '#header' ),
-		content: document.querySelector( '#content' ),
-		leftSide: document.querySelector( '#left-side' ),
-		rightSide: document.querySelector( '#right-side' )
-	},
-	// Config:
-	{
-		placeholder: {
-			header: 'Type header...',
-			content: 'Type content...',
-			leftSide: 'Type left-side...',
-			rightSide: 'Type right-side...'
-		}
-	}
-).then( editor => {
-    console.log( editor );
-} ).catch( error => {
-    console.error( error );
-} );
+		{
+			header: document.querySelector( '#header' ),
+			content: document.querySelector( '#content' ),
+			leftSide: document.querySelector( '#left-side' ),
+			rightSide: document.querySelector( '#right-side' )
+		},
+		// Config:
+		{
+			placeholder: {
+				header: 'Type header...',
+				content: 'Type content...',
+				leftSide: 'Type left-side...',
+				rightSide: 'Type right-side...'
+			}
+		} )
+	.then( editor => {
+		console.log( editor );
+	} )
+	.catch( error => {
+		console.error( error );
+	} );
 ```
 
 ## Styling the placeholder
@@ -107,6 +113,16 @@ The editor placeholder text is displayed using a CSS pseudo–element (`::before
 {@snippet features/placeholder-custom}
 
 **Note**: The `.ck-placeholder` class is also used to display placeholders in other places, for instance, {@link features/images-captions image captions}. Make sure your custom styles apply to the right subset of placeholders.
+
+## Changing the placeholder
+
+The editor placeholder could be updated at runtime by changing the `placeholder` property in the editing root.
+
+```js
+editor.editing.view.document.getRoot( 'main' ).placeholder = 'new placeholder';
+```
+
+{@snippet features/update-placeholder}
 
 ## Contribute
 

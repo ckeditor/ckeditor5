@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,10 +7,10 @@
  * @module link/link
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import LinkEditing from './linkediting';
-import LinkUI from './linkui';
-import AutoLink from './autolink';
+import { Plugin } from 'ckeditor5/src/core.js';
+import LinkEditing from './linkediting.js';
+import LinkUI from './linkui.js';
+import AutoLink from './autolink.js';
 
 /**
  * The link plugin.
@@ -29,7 +29,7 @@ export default class Link extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Link' {
-		return 'Link';
+	public static get pluginName() {
+		return 'Link' as const;
 	}
 }

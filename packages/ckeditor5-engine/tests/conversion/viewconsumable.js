@@ -1,17 +1,17 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ViewDocument from '../../src/view/document';
-import ViewElement from '../../src/view/element';
-import ViewText from '../../src/view/text';
-import ViewDocumentFragment from '../../src/view/documentfragment';
-import ViewConsumable from '../../src/conversion/viewconsumable';
-import { addBorderRules } from '../../src/view/styles/border';
-import { addMarginRules } from '../../src/view/styles/margin';
-import { addPaddingRules } from '../../src/view/styles/padding';
-import { StylesProcessor } from '../../src/view/stylesmap';
+import ViewDocument from '../../src/view/document.js';
+import ViewElement from '../../src/view/element.js';
+import ViewText from '../../src/view/text.js';
+import ViewDocumentFragment from '../../src/view/documentfragment.js';
+import ViewConsumable from '../../src/conversion/viewconsumable.js';
+import { addBorderRules } from '../../src/view/styles/border.js';
+import { addMarginRules } from '../../src/view/styles/margin.js';
+import { addPaddingRules } from '../../src/view/styles/padding.js';
+import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'ViewConsumable', () => {
 	let viewConsumable, el, viewDocument;

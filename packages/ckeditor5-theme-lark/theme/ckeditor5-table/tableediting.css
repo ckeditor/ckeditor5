@@ -1,10 +1,10 @@
 /*
- * Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 :root {
-	--ck-color-table-focused-cell-background: hsla(212, 90%, 80%, .3);
+	--ck-color-selector-focused-cell-background: hsla(212, 90%, 80%, .3);
 }
 
 .ck-widget.table {
@@ -13,7 +13,7 @@
 		&.ck-editor__nested-editable.ck-editor__nested-editable_focused,
 		&.ck-editor__nested-editable:focus {
 			/* A very slight background to highlight the focused cell */
-			background: var(--ck-color-table-focused-cell-background);
+			background: var(--ck-color-selector-focused-cell-background);
 
 			/* Fixes the problem where surrounding cells cover the focused cell's border.
 			It does not fix the problem in all places but the UX is improved.

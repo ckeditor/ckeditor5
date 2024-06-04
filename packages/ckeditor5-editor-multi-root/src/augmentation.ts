@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { type RootAttributes } from './multirooteditor';
+import { type RootAttributes } from './multirooteditor.js';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface EditorConfig {
@@ -79,5 +79,16 @@ declare module '@ckeditor/ckeditor5-core' {
 		 * ```
 		 */
 		rootsAttributes?: Record<string, RootAttributes>;
+
+		/**
+		 * A list of names of all the roots that exist in the document but are not initially loaded by the editor.
+		 *
+		 * These roots can be loaded at any time after the editor has been initialized, using
+		 * {@link module:editor-multi-root/multirooteditor~MultiRootEditor#loadRoot `MultiRootEditor#lazyRoot()`}.
+		 *
+		 * This is useful for handling big documents that contain hundreds of roots, or contain very large roots, which may have
+		 * impact editor performance if loaded all at once.
+		 */
+		lazyRoots?: Array<string>;
 	}
 }

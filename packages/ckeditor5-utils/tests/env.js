@@ -1,14 +1,15 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import env, {
-	isMac, isWindows, isGecko, isSafari, isiOS, isAndroid, isRegExpUnicodePropertySupported, isBlink, getUserAgent
-} from '../src/env';
+	isMac, isWindows, isGecko, isSafari, isiOS, isAndroid, isRegExpUnicodePropertySupported, isBlink, getUserAgent,
+	isMediaForcedColors, isMotionReduced
+} from '../src/env.js';
 
-import global from '../src/dom/global';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import global from '../src/dom/global.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 function toLowerCase( str ) {
 	return str.toLowerCase();
@@ -61,6 +62,66 @@ describe( 'Env', () => {
 		it( 'is a boolean', () => {
 			expect( env.isBlink ).to.be.a( 'boolean' );
 		} );
+	} );
+
+	describe( 'isMediaForcedColors', () => {
+		let matchMediaStub;
+
+		beforeEach( () => {
+			matchMediaStub = sinon.stub( global.window, 'matchMedia' );
+		} );
+
+		it( 'is a boolean', () => {
+			mockMediaForcedColors();
+
+			expect( env.isMediaForcedColors ).to.be.true;
+		} );
+
+		it( 'should watch changes in forced colors setting', () => {
+			mockMediaForcedColors();
+
+			expect( env.isMediaForcedColors ).to.be.true;
+
+			mockMediaForcedColors( false );
+
+			expect( env.isMediaForcedColors ).to.be.false;
+		} );
+
+		function mockMediaForcedColors( enabled = true ) {
+			return matchMediaStub
+				.withArgs( '(forced-colors: active)' )
+				.returns( { matches: enabled } );
+		}
+	} );
+
+	describe( 'isMotionReduced', () => {
+		let matchMediaStub;
+
+		beforeEach( () => {
+			matchMediaStub = sinon.stub( global.window, 'matchMedia' );
+		} );
+
+		it( 'is a boolean', () => {
+			mockMotionReduced();
+
+			expect( env.isMotionReduced ).to.be.true;
+		} );
+
+		it( 'should watch changes in reduced motion setting', () => {
+			mockMotionReduced();
+
+			expect( env.isMotionReduced ).to.be.true;
+
+			mockMotionReduced( false );
+
+			expect( env.isMotionReduced ).to.be.false;
+		} );
+
+		function mockMotionReduced( enabled = true ) {
+			return matchMediaStub
+				.withArgs( '(prefers-reduced-motion)' )
+				.returns( { matches: enabled } );
+		}
 	} );
 
 	describe( 'features', () => {
@@ -272,6 +333,62 @@ describe( 'Env', () => {
 			) ) ).to.be.false;
 		} );
 		/* eslint-enable max-len */
+	} );
+
+	describe( 'isMediaForcedColors()', () => {
+		it( 'returns true if the document media query matches forced-colors', () => {
+			testUtils.sinon.stub( global.window, 'matchMedia' )
+				.withArgs( '(forced-colors: active)' )
+				.returns( { matches: true } );
+
+			expect( isMediaForcedColors() ).to.be.true;
+		} );
+
+		it( 'returns false if the document media query does not match forced-colors', () => {
+			testUtils.sinon.stub( global.window, 'matchMedia' )
+				.withArgs( '(forced-colors: active)' )
+				.returns( { matches: false } );
+
+			expect( isMediaForcedColors() ).to.be.false;
+		} );
+
+		it( 'returns false if window object is not available', () => {
+			// `global.window` is an empty object if `window` was not available in global space.
+			const _window = global.window;
+			global.window = {};
+
+			expect( isMediaForcedColors() ).to.be.false;
+
+			global.window = _window;
+		} );
+	} );
+
+	describe( 'isMotionReduced()', () => {
+		it( 'returns true if the document media query matches prefers-reduced-motion', () => {
+			testUtils.sinon.stub( global.window, 'matchMedia' )
+				.withArgs( '(prefers-reduced-motion)' )
+				.returns( { matches: true } );
+
+			expect( isMotionReduced() ).to.be.true;
+		} );
+
+		it( 'returns false if the document media query does not match prefers-reduced-motion', () => {
+			testUtils.sinon.stub( global.window, 'matchMedia' )
+				.withArgs( '(prefers-reduced-motion)' )
+				.returns( { matches: false } );
+
+			expect( isMotionReduced() ).to.be.false;
+		} );
+
+		it( 'returns false if window object is not available', () => {
+			// `global.window` is an empty object if `window` was not available in global space.
+			const _window = global.window;
+			global.window = {};
+
+			expect( isMotionReduced() ).to.be.false;
+
+			global.window = _window;
+		} );
 	} );
 
 	describe( 'isRegExpUnicodePropertySupported()', () => {

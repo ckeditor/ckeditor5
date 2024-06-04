@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,11 +7,11 @@
  * @module mention/mention
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import type { Element } from 'ckeditor5/src/engine';
+import { Plugin } from 'ckeditor5/src/core.js';
+import type { Element } from 'ckeditor5/src/engine.js';
 
-import MentionEditing, { _toMentionAttribute } from './mentionediting';
-import MentionUI from './mentionui';
+import MentionEditing, { _toMentionAttribute } from './mentionediting.js';
+import MentionUI from './mentionui.js';
 
 import '../theme/mention.css';
 
@@ -22,7 +22,7 @@ import '../theme/mention.css';
  */
 export default class Mention extends Plugin {
 	/**
-	 * Creates a mention attribute value from the provided view element and optional data.
+	 * Creates a mention attribute value from the provided view element and additional data.
 	 *
 	 * ```ts
 	 * editor.plugins.get( 'Mention' ).toMentionAttribute( viewElement, { userId: '1234' } );
@@ -32,18 +32,35 @@ export default class Mention extends Plugin {
 	 * // { id: '@joe', userId: '1234', uid: '7a7bc7...', _text: '@John Doe' }
 	 * ```
 	 *
-	 * @param viewElement
 	 * @param data Additional data to be stored in the mention attribute.
 	 */
-	public toMentionAttribute( viewElement: Element, data?: MentionAttribute ): MentionAttribute | undefined {
+	public toMentionAttribute<MentionData extends Record<string, unknown>>(
+		viewElement: Element,
+		data: MentionData
+	): ( MentionAttribute & MentionData ) | undefined;
+
+	/**
+	 * Creates a mention attribute value from the provided view element.
+	 *
+	 * ```ts
+	 * editor.plugins.get( 'Mention' ).toMentionAttribute( viewElement );
+	 *
+	 * // For a view element: <span data-mention="@joe">@John Doe</span>
+	 * // it will return:
+	 * // { id: '@joe', uid: '7a7bc7...', _text: '@John Doe' }
+	 * ```
+	 */
+	public toMentionAttribute( viewElement: Element ): MentionAttribute | undefined;
+
+	public toMentionAttribute( viewElement: Element, data?: Record<string, unknown> ): MentionAttribute | undefined {
 		return _toMentionAttribute( viewElement, data );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Mention' {
-		return 'Mention';
+	public static get pluginName() {
+		return 'Mention' as const;
 	}
 
 	/**
@@ -71,7 +88,7 @@ export type MentionAttribute = {
 	 * A unique ID of this mention instance. Should be passed as an `option.id` when using
 	 * {@link module:engine/view/downcastwriter~DowncastWriter#createAttributeElement writer.createAttributeElement()}.
 	 */
-	uid?: string;
+	uid: string;
 
 	/**
 	 * Helper property that stores the text of the inserted mention. Used for detecting a broken mention
@@ -79,5 +96,5 @@ export type MentionAttribute = {
 	 *
 	 * @internal
 	 */
-	_text?: string;
+	_text: string;
 };

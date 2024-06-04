@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -15,9 +15,9 @@ import {
 	type EventInfo,
 	type DomEmitter,
 	type ObservableChangeEvent
-} from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/utils.js';
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 
 import type {
 	Differ,
@@ -27,16 +27,16 @@ import type {
 	Element,
 	ViewElement,
 	ViewNode
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
-import MouseEventsObserver from '../../src/tablemouse/mouseeventsobserver';
-import TableEditing from '../tableediting';
-import TableUtils from '../tableutils';
-import TableWalker from '../tablewalker';
+import MouseEventsObserver from '../../src/tablemouse/mouseeventsobserver.js';
+import TableEditing from '../tableediting.js';
+import TableUtils from '../tableutils.js';
+import TableWalker from '../tablewalker.js';
 
-import TableWidthsCommand from './tablewidthscommand';
+import TableWidthsCommand from './tablewidthscommand.js';
 
-import { downcastTableResizedClass, upcastColgroupElement } from './converters';
+import { downcastTableResizedClass, upcastColgroupElement } from './converters.js';
 
 import {
 	clamp,
@@ -54,10 +54,10 @@ import {
 	getColumnGroupElement,
 	getTableColumnElements,
 	getTableColumnsWidths
-} from './utils';
+} from './utils.js';
 
-import { COLUMN_MIN_WIDTH_IN_PIXELS } from './constants';
-import type TableColumnResize from '../tablecolumnresize';
+import { COLUMN_MIN_WIDTH_IN_PIXELS } from './constants.js';
+import type TableColumnResize from '../tablecolumnresize.js';
 
 type ResizingData = {
 	columnPosition: number;
@@ -127,8 +127,8 @@ export default class TableColumnResizeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TableColumnResizeEditing' {
-		return 'TableColumnResizeEditing';
+	public static get pluginName() {
+		return 'TableColumnResizeEditing' as const;
 	}
 
 	/**
@@ -145,8 +145,12 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		this.on<ObservableChangeEvent<boolean>>( 'change:_isResizingAllowed', ( evt, name, value ) => {
 			// Toggling the `ck-column-resize_disabled` class shows and hides the resizers through CSS.
+			const classAction = value ? 'removeClass' : 'addClass';
+
 			editor.editing.view.change( writer => {
-				writer[ value ? 'removeClass' : 'addClass' ]( 'ck-column-resize_disabled', editor.editing.view.document.getRoot()! );
+				for ( const root of editor.editing.view.document.roots ) {
+					writer[ classAction ]( 'ck-column-resize_disabled', editor.editing.view.document.getRoot( root.rootName )! );
+				}
 			} );
 		} );
 	}
@@ -242,7 +246,7 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		this.editor.model.schema.register( 'tableColumn', {
 			allowIn: 'tableColumnGroup',
-			allowAttributes: [ 'columnWidth' ],
+			allowAttributes: [ 'columnWidth', 'colSpan' ],
 			isLimit: true
 		} );
 	}
@@ -414,7 +418,9 @@ export default class TableColumnResizeEditing extends Plugin {
 				value: ( viewElement: ViewElement ) => {
 					const viewColWidth = viewElement.getStyle( 'width' );
 
-					if ( !viewColWidth || !viewColWidth.endsWith( '%' ) ) {
+					// 'pt' is the default unit for table column width pasted from MS Office.
+					// See https://github.com/ckeditor/ckeditor5/issues/14521#issuecomment-1662102889 for more details.
+					if ( !viewColWidth || ( !viewColWidth.endsWith( '%' ) && !viewColWidth.endsWith( 'pt' ) ) ) {
 						return 'auto';
 					}
 
@@ -422,6 +428,18 @@ export default class TableColumnResizeEditing extends Plugin {
 				}
 			}
 		} );
+
+		// The `col[span]` attribute is present in tables pasted from MS Excel. We use it to set the temporary `colSpan` model attribute,
+		// which is consumed during the `colgroup` element upcast.
+		// See https://github.com/ckeditor/ckeditor5/issues/14521#issuecomment-1662102889 for more details.
+		conversion.for( 'upcast' ).attributeToAttribute( {
+			view: {
+				name: 'col',
+				key: 'span'
+			},
+			model: 'colSpan'
+		} );
+
 		conversion.for( 'downcast' ).attributeToAttribute( {
 			model: {
 				name: 'tableColumn',
@@ -465,11 +483,16 @@ export default class TableColumnResizeEditing extends Plugin {
 			return;
 		}
 
-		domEventData.preventDefault();
-		eventInfo.stop();
-
 		const editor = this.editor;
 		const modelTable = editor.editing.mapper.toModelElement( target.findAncestor( 'figure' )! )!;
+
+		// Do not resize if table model is in non-editable place.
+		if ( !editor.model.canEditAt( modelTable ) ) {
+			return;
+		}
+
+		domEventData.preventDefault();
+		eventInfo.stop();
 
 		// The column widths are calculated upon mousedown to allow lazy applying the `columnWidths` attribute on the table.
 		const columnWidthsInPx = _calculateDomColumnWidths( modelTable, this._tableUtilsPlugin, editor );

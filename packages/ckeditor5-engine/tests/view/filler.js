@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -12,7 +12,7 @@ import {
 	isInlineFiller,
 	getDataWithoutFiller,
 	MARKED_NBSP_FILLER
-} from '../../src/view/filler';
+} from '../../src/view/filler.js';
 
 describe( 'filler', () => {
 	describe( 'INLINE_FILLER', () => {
@@ -32,6 +32,18 @@ describe( 'filler', () => {
 			const node = document.createTextNode( INLINE_FILLER + 'foo' );
 
 			expect( startsWithFiller( node ) ).to.be.true;
+		} );
+
+		it( 'should be true for text which contains only filler', () => {
+			const str = `${ INLINE_FILLER }`;
+
+			expect( startsWithFiller( str ) ).to.be.true;
+		} );
+
+		it( 'should be true for text which starts with filler', () => {
+			const str = `${ INLINE_FILLER }foo`;
+
+			expect( startsWithFiller( str ) ).to.be.true;
 		} );
 
 		it( 'should be false for element', () => {
@@ -75,8 +87,26 @@ describe( 'filler', () => {
 			expect( dataWithoutFiller ).to.equals( 'foo' );
 		} );
 
+		it( 'should return text without filler', () => {
+			const str = `${ INLINE_FILLER }foo`;
+
+			const dataWithoutFiller = getDataWithoutFiller( str );
+
+			expect( dataWithoutFiller.length ).to.equals( 3 );
+			expect( dataWithoutFiller ).to.equals( 'foo' );
+		} );
+
 		it( 'should return the same data for data without filler', () => {
 			const node = document.createTextNode( 'foo' );
+
+			const dataWithoutFiller = getDataWithoutFiller( node );
+
+			expect( dataWithoutFiller.length ).to.equals( 3 );
+			expect( dataWithoutFiller ).to.equals( 'foo' );
+		} );
+
+		it( 'should return the same data for text without filler', () => {
+			const node = 'foo';
 
 			const dataWithoutFiller = getDataWithoutFiller( node );
 

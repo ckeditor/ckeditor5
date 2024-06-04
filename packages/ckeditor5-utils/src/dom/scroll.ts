@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,9 @@
  * @module utils/dom/scroll
  */
 
-import isRange from './isrange';
-import Rect from './rect';
-import isText from './istext';
+import isRange from './isrange.js';
+import Rect from './rect.js';
+import isText from './istext.js';
 
 type IfTrue<T> = T extends true ? true : never;
 
@@ -67,7 +67,7 @@ export function scrollViewportToShowTarget<T extends boolean, U extends IfTrue<T
 	}:
 	{
 		readonly target: HTMLElement | Range;
-		readonly viewportOffset?: number;
+		readonly viewportOffset?: number | { top: number; bottom: number; left: number; right: number };
 		readonly ancestorOffset?: number;
 		readonly alignToTop?: T;
 		readonly forceScroll?: U;
@@ -76,6 +76,8 @@ export function scrollViewportToShowTarget<T extends boolean, U extends IfTrue<T
 	const targetWindow = getWindow( target );
 	let currentWindow: Window | null = targetWindow;
 	let currentFrame: HTMLElement | null = null;
+
+	viewportOffset = normalizeViewportOffset( viewportOffset );
 
 	// Iterate over all windows, starting from target's parent window up to window#top.
 	while ( currentWindow ) {
@@ -149,14 +151,17 @@ export function scrollViewportToShowTarget<T extends boolean, U extends IfTrue<T
  * @param target A target, which supposed to become visible to the user.
  * @param ancestorOffset An offset between the target and the boundary of scrollable ancestors
  * to be maintained while scrolling.
+ * @param limiterElement The outermost ancestor that should be scrolled. If specified, it can prevent
+ * scrolling the whole page.
  */
-export function scrollAncestorsToShowTarget( target: HTMLElement | Range, ancestorOffset?: number ): void {
+export function scrollAncestorsToShowTarget( target: HTMLElement | Range, ancestorOffset?: number, limiterElement?: HTMLElement ): void {
 	const targetParent = getParentElement( target );
 
 	scrollAncestorsToShowRect( {
 		parent: targetParent,
 		getRect: () => new Rect( target ),
-		ancestorOffset
+		ancestorOffset,
+		limiterElement
 	} );
 }
 
@@ -228,13 +233,13 @@ function scrollWindowToShowRect<T extends boolean, U extends IfTrue<T>>(
 	}: {
 		readonly window: Window;
 		readonly rect: Rect;
-		readonly viewportOffset: number;
+		readonly viewportOffset: { top: number; bottom: number; left: number; right: number };
 		readonly alignToTop?: T;
 		readonly forceScroll?: U;
 	}
 ): void {
-	const targetShiftedDownRect = rect.clone().moveBy( 0, viewportOffset );
-	const targetShiftedUpRect = rect.clone().moveBy( 0, -viewportOffset );
+	const targetShiftedDownRect = rect.clone().moveBy( 0, viewportOffset.bottom );
+	const targetShiftedUpRect = rect.clone().moveBy( 0, -viewportOffset.top );
 	const viewportRect = new Rect( window ).excludeScrollbarsAndBorders();
 
 	const rects = [ targetShiftedUpRect, targetShiftedDownRect ];
@@ -246,15 +251,15 @@ function scrollWindowToShowRect<T extends boolean, U extends IfTrue<T>>(
 	const initialScrollY = scrollY;
 
 	if ( forceScrollToTop ) {
-		scrollY -= ( viewportRect.top - rect.top ) + viewportOffset;
+		scrollY -= ( viewportRect.top - rect.top ) + viewportOffset.top;
 	} else if ( !allRectsFitInViewport ) {
 		if ( isAbove( targetShiftedUpRect, viewportRect ) ) {
-			scrollY -= viewportRect.top - rect.top + viewportOffset;
+			scrollY -= viewportRect.top - rect.top + viewportOffset.top;
 		} else if ( isBelow( targetShiftedDownRect, viewportRect ) ) {
 			if ( alignToTop ) {
-				scrollY += rect.top - viewportRect.top - viewportOffset;
+				scrollY += rect.top - viewportRect.top - viewportOffset.top;
 			} else {
-				scrollY += rect.bottom - viewportRect.bottom + viewportOffset;
+				scrollY += rect.bottom - viewportRect.bottom + viewportOffset.bottom;
 			}
 		}
 	}
@@ -263,9 +268,9 @@ function scrollWindowToShowRect<T extends boolean, U extends IfTrue<T>>(
 		// TODO: Web browsers scroll natively to place the target in the middle
 		// of the viewport. It's not a very popular case, though.
 		if ( isLeftOf( rect, viewportRect ) ) {
-			scrollX -= viewportRect.left - rect.left + viewportOffset;
+			scrollX -= viewportRect.left - rect.left + viewportOffset.left;
 		} else if ( isRightOf( rect, viewportRect ) ) {
-			scrollX += rect.right - viewportRect.right + viewportOffset;
+			scrollX += rect.right - viewportRect.right + viewportOffset.right;
 		}
 	}
 
@@ -289,6 +294,7 @@ function scrollWindowToShowRect<T extends boolean, U extends IfTrue<T>>(
  * anyway.
  * @param options.forceScroll When set `true`, the `rect` will be aligned to the top of scrollable ancestors
  * whether it is already visible or not. This option will only work when `alignToTop` is `true`
+ * @param options.limiterElement The outermost ancestor that should be scrolled. Defaults to the `<body>` element.
  */
 function scrollAncestorsToShowRect<T extends boolean, U extends IfTrue<T>>(
 	{
@@ -296,20 +302,24 @@ function scrollAncestorsToShowRect<T extends boolean, U extends IfTrue<T>>(
 		getRect,
 		alignToTop,
 		forceScroll,
-		ancestorOffset = 0
+		ancestorOffset = 0,
+		limiterElement
 	}: {
 		readonly parent: HTMLElement;
 		readonly getRect: () => Rect;
 		readonly alignToTop?: T;
 		readonly forceScroll?: U;
 		readonly ancestorOffset?: number;
+		readonly limiterElement?: HTMLElement;
 	}
 ): void {
 	const parentWindow = getWindow( parent );
 	const forceScrollToTop = alignToTop && forceScroll;
 	let parentRect: Rect, targetRect: Rect, targetFitsInTarget: boolean;
 
-	while ( parent != parentWindow.document.body ) {
+	const limiter = limiterElement || parentWindow.document.body;
+
+	while ( parent != limiter ) {
 		targetRect = getRect();
 		parentRect = new Rect( parent ).excludeScrollbarsAndBorders();
 		targetFitsInTarget = parentRect.contains( targetRect );
@@ -424,4 +434,25 @@ function getRectRelativeToWindow( target: HTMLElement | Range, relativeWindow: W
 	}
 
 	return rect;
+}
+
+/**
+ * A helper that explodes the `viewportOffset` configuration if defined as a plain number into an object
+ * with `top`, `bottom`, `left`, and `right` properties.
+ *
+ * If an object value is passed, this helper will pass it through.
+ *
+ * @param viewportOffset Viewport offset to be normalized.
+ */
+function normalizeViewportOffset( viewportOffset: number | { top: number; bottom: number; left: number; right: number } ) {
+	if ( typeof viewportOffset === 'number' ) {
+		return {
+			top: viewportOffset,
+			bottom: viewportOffset,
+			left: viewportOffset,
+			right: viewportOffset
+		};
+	}
+
+	return viewportOffset;
 }

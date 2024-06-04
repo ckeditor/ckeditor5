@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,31 +7,31 @@
  * @module engine/model/writer
  */
 
-import AttributeOperation from './operation/attributeoperation';
-import DetachOperation from './operation/detachoperation';
-import InsertOperation from './operation/insertoperation';
-import MarkerOperation from './operation/markeroperation';
-import MergeOperation from './operation/mergeoperation';
-import MoveOperation from './operation/moveoperation';
-import RenameOperation from './operation/renameoperation';
-import RootAttributeOperation from './operation/rootattributeoperation';
-import RootOperation from './operation/rootoperation';
-import SplitOperation from './operation/splitoperation';
+import AttributeOperation from './operation/attributeoperation.js';
+import DetachOperation from './operation/detachoperation.js';
+import InsertOperation from './operation/insertoperation.js';
+import MarkerOperation from './operation/markeroperation.js';
+import MergeOperation from './operation/mergeoperation.js';
+import MoveOperation from './operation/moveoperation.js';
+import RenameOperation from './operation/renameoperation.js';
+import RootAttributeOperation from './operation/rootattributeoperation.js';
+import RootOperation from './operation/rootoperation.js';
+import SplitOperation from './operation/splitoperation.js';
 
-import DocumentFragment from './documentfragment';
-import DocumentSelection from './documentselection';
-import Element from './element';
-import Position, { type PositionOffset, type PositionStickiness } from './position';
-import Range from './range';
-import RootElement from './rootelement';
-import Text from './text';
+import DocumentFragment from './documentfragment.js';
+import DocumentSelection from './documentselection.js';
+import Element from './element.js';
+import Position, { type PositionOffset, type PositionStickiness } from './position.js';
+import Range from './range.js';
+import RootElement from './rootelement.js';
+import Text from './text.js';
 
-import type { Marker } from './markercollection';
-import type { default as Selection, PlaceOrOffset, Selectable } from './selection';
-import type Batch from './batch';
-import type Item from './item';
-import type Model from './model';
-import type { default as Node, NodeAttributes } from './node';
+import type { Marker } from './markercollection.js';
+import type { default as Selection, PlaceOrOffset, Selectable } from './selection.js';
+import type Batch from './batch.js';
+import type Item from './item.js';
+import type Model from './model.js';
+import type { default as Node, NodeAttributes } from './node.js';
 
 import { CKEditorError, logWarning, toMap } from '@ckeditor/ckeditor5-utils';
 
@@ -1067,7 +1067,7 @@ export default class Writer {
 	 *
 	 * The `options.affectsData` parameter, which defaults to `false`, allows you to define if a marker affects the data. It should be
 	 * `true` when the marker change changes the data returned by the
-	 * {@link module:core/editor/utils/dataapimixin~DataApi#getData `editor.getData()`} method.
+	 * {@link module:core/editor/editor~Editor#getData `editor.getData()`} method.
 	 * When set to `true` it fires the {@link module:engine/model/document~Document#event:change:data `change:data`} event.
 	 * When set to `false` it fires the {@link module:engine/model/document~Document#event:change `change`} event.
 	 *
@@ -1166,7 +1166,7 @@ export default class Writer {
 	 *
 	 * The `options.affectsData` parameter, which defaults to `false`, allows you to define if a marker affects the data. It should be
 	 * `true` when the marker change changes the data returned by
-	 * the {@link module:core/editor/utils/dataapimixin~DataApi#getData `editor.getData()`} method.
+	 * the {@link module:core/editor/editor~Editor#getData `editor.getData()`} method.
 	 * When set to `true` it fires the {@link module:engine/model/document~Document#event:change:data `change:data`} event.
 	 * When set to `false` it fires the {@link module:engine/model/document~Document#event:change `change`} event.
 	 *

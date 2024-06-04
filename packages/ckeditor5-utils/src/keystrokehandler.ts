@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,10 +7,10 @@
  * @module utils/keystrokehandler
  */
 
-import DomEmitterMixin, { type DomEmitter } from './dom/emittermixin';
-import type { Emitter } from './emittermixin';
-import { getCode, parseKeystroke, type KeystrokeInfo } from './keyboard';
-import type { PriorityString } from './priorities';
+import DomEmitterMixin, { type DomEmitter } from './dom/emittermixin.js';
+import type { Emitter } from './emittermixin.js';
+import { getCode, parseKeystroke, type KeystrokeInfo } from './keyboard.js';
+import type { PriorityString } from './priorities.js';
 
 /**
  * Keystroke handler allows registering callbacks for given keystrokes.

@@ -1,25 +1,25 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 
-import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting';
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
-import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
-import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
+import LegacyListEditing from '@ckeditor/ckeditor5-list/src/legacylist/legacylistediting.js';
+import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
+import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
 import { TableEditing } from '@ckeditor/ckeditor5-table';
-import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
+import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
 
-import { getData, parse } from '../../../../src/dev-utils/model';
-import { transformSets } from '../../../../src/model/operation/transform';
-import Position from '../../../../src/model/position';
-import Range from '../../../../src/model/range';
-import OperationFactory from '../../../../src/model/operation/operationfactory';
+import { getData, parse } from '../../../../src/dev-utils/model.js';
+import { transformSets } from '../../../../src/model/operation/transform.js';
+import Position from '../../../../src/model/position.js';
+import Range from '../../../../src/model/range.js';
+import OperationFactory from '../../../../src/model/operation/operationfactory.js';
 
 const clients = new Set();
 const bufferedOperations = new Set();
@@ -40,7 +40,8 @@ export class Client {
 			// Block plugins are needed for proper data serializing.
 			// BoldEditing is needed for bold command.
 			plugins: [
-				Typing, Paragraph, ListEditing, UndoEditing, BlockQuoteEditing, HeadingEditing, BoldEditing, TableEditing, ImageBlockEditing
+				Typing, Paragraph, LegacyListEditing, UndoEditing, BlockQuoteEditing, HeadingEditing, BoldEditing, TableEditing,
+				ImageBlockEditing
 			]
 		} ).then( editor => {
 			this.editor = editor;
@@ -213,6 +214,20 @@ export class Client {
 		this._processExecute( 'redo' );
 	}
 
+	getModelString() {
+		return getData( this.editor.model, { withoutSelection: true, convertMarkers: true } );
+	}
+
+	destroy() {
+		clients.delete( this );
+
+		return this.editor.destroy();
+	}
+
+	insertContent( modelFragment ) {
+		this.editor.model.insertContent( modelFragment );
+	}
+
 	_processExecute( commandName, commandArgs ) {
 		const oldVersion = this.document.version;
 
@@ -243,16 +258,6 @@ export class Client {
 			case 'beforeParent':
 				return Position._createBefore( selRange.start.parent );
 		}
-	}
-
-	getModelString() {
-		return getData( this.editor.model, { withoutSelection: true, convertMarkers: true } );
-	}
-
-	destroy() {
-		clients.delete( this );
-
-		return this.editor.destroy();
 	}
 
 	_processAction( name, ...args ) {

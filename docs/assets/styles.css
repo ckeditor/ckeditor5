@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -66,3 +66,58 @@ https://github.com/ckeditor/ckeditor5-build-decoupled-document/issues/12 */
 .main .main__content-inner .features-html-output th {
 	background-color: hsl(0, 0%, 96%);
 }
+
+/* Tabs navigation component */
+
+.tabs {
+	margin: 1.5em 0;
+
+	--tabs-active-background: hsl(0, 0%, 96%);
+	--tabs-active-border: hsl(0, 0%, 80%);
+}
+
+.tabs ul.tabs__list {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+}
+
+.tabs ul.tabs__list li {
+	margin: 0;
+	display: inline-block;
+	flex-grow: 1;
+	text-align: center;
+	border-top: 3px solid transparent;
+}
+
+.tabs ul.tabs__list li a.tabs__list__tab-text {
+	text-decoration: none;
+	color: initial;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 8px;
+}
+
+.tabs ul.tabs__list li.tabs__list__tab_selected {
+	background: var(--tabs-active-background);
+	border-top: 3px solid var(--tabs-active-border);
+}
+
+.tabs ul.tabs__list li.tabs__list__tab_selected a.tabs__list__tab-text {
+	font-weight: bold;
+}
+
+.tabs .tabs__panel {
+	padding: 1.333em;
+	display: none;
+	background: var(--tabs-active-background);
+}
+
+.tabs .tabs__panel.tabs__panel_selected {
+	display: block;
+}
+

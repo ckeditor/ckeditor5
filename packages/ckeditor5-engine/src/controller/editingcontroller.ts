@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -14,37 +14,38 @@ import {
 	type GetCallback
 } from '@ckeditor/ckeditor5-utils';
 
-import RootEditableElement from '../view/rooteditableelement';
-import View from '../view/view';
-import Mapper from '../conversion/mapper';
+import RootEditableElement from '../view/rooteditableelement.js';
+import View from '../view/view.js';
+import Mapper from '../conversion/mapper.js';
 import DowncastDispatcher, {
 	type DowncastInsertEvent,
 	type DowncastRemoveEvent,
-	type DowncastSelectionEvent
-} from '../conversion/downcastdispatcher';
+	type DowncastSelectionEvent,
+	type DowncastCleanSelectionEvent
+} from '../conversion/downcastdispatcher.js';
 import {
-	clearAttributes,
+	cleanSelection,
 	convertCollapsedSelection,
 	convertRangeSelection,
 	insertAttributesAndChildren,
 	insertText,
 	remove
-} from '../conversion/downcasthelpers';
+} from '../conversion/downcasthelpers.js';
 
-import { convertSelectionChange } from '../conversion/upcasthelpers';
+import { convertSelectionChange } from '../conversion/upcasthelpers.js';
 
-import { tryFixingRange } from '../model/utils/selection-post-fixer';
+import { tryFixingRange } from '../model/utils/selection-post-fixer.js';
 
-import type { default as Model, AfterChangesEvent, BeforeChangesEvent } from '../model/model';
-import type ModelItem from '../model/item';
-import type ModelText from '../model/text';
-import type ModelTextProxy from '../model/textproxy';
-import type Schema from '../model/schema';
-import type { DocumentChangeEvent } from '../model/document';
-import type { Marker } from '../model/markercollection';
-import type { StylesProcessor } from '../view/stylesmap';
-import type { ViewDocumentSelectionChangeEvent } from '../view/observer/selectionobserver';
-import type { ViewDocumentInputEvent } from '../view/observer/inputobserver';
+import type { default as Model, AfterChangesEvent, BeforeChangesEvent } from '../model/model.js';
+import type ModelItem from '../model/item.js';
+import type ModelText from '../model/text.js';
+import type ModelTextProxy from '../model/textproxy.js';
+import type Schema from '../model/schema.js';
+import type { DocumentChangeEvent } from '../model/document.js';
+import type { Marker } from '../model/markercollection.js';
+import type { StylesProcessor } from '../view/stylesmap.js';
+import type { ViewDocumentSelectionChangeEvent } from '../view/observer/selectionobserver.js';
+import type { ViewDocumentInputEvent } from '../view/observer/inputobserver.js';
 
 // @if CK_DEBUG_ENGINE // const { dumpTrees, initDocumentDumping } = require( '../dev-utils/utils' );
 
@@ -53,7 +54,7 @@ import type { ViewDocumentInputEvent } from '../view/observer/inputobserver';
  * including selection handling. It also creates the {@link ~EditingController#view view} which builds a
  * browser-independent virtualization over the DOM elements. The editing controller also attaches default converters.
  */
-export default class EditingController extends ObservableMixin() {
+export default class EditingController extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Editor model.
 	 */
@@ -136,7 +137,7 @@ export default class EditingController extends ObservableMixin() {
 		this.downcastDispatcher.on<DowncastRemoveEvent>( 'remove', remove(), { priority: 'low' } );
 
 		// Attach default model selection converters.
-		this.downcastDispatcher.on<DowncastSelectionEvent>( 'selection', clearAttributes(), { priority: 'high' } );
+		this.downcastDispatcher.on<DowncastCleanSelectionEvent>( 'cleanSelection', cleanSelection() );
 		this.downcastDispatcher.on<DowncastSelectionEvent>( 'selection', convertRangeSelection(), { priority: 'low' } );
 		this.downcastDispatcher.on<DowncastSelectionEvent>( 'selection', convertCollapsedSelection(), { priority: 'low' } );
 

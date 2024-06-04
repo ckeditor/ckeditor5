@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -8,6 +8,7 @@
  */
 
 import type { TokenUrl } from '@ckeditor/ckeditor5-cloud-services';
+import type { ArrayOrItem } from 'ckeditor5/src/utils.js';
 
 /**
  * The configuration of the {@link module:ckbox/ckbox~CKBox CKBox feature}.
@@ -39,7 +40,6 @@ import type { TokenUrl } from '@ckeditor/ckeditor5-cloud-services';
  * 			},
  * 			ignoreDataId: true,
  * 			serviceOrigin: 'https://example.com/',
- * 			assetsOrigin: 'https://example.cloud/',
  * 			tokenUrl: 'https://example.com/cs-token-endpoint'
  * 		}
  * 	} )
@@ -88,6 +88,36 @@ export interface CKBoxConfig {
 	defaultUploadCategories?: Record<string, Array<string>> | null;
 
 	/**
+	 * Defines the workspace id to use during upload when the user has access to more than one workspace.
+	 *
+	 * If defined, it is an error, when the user has no access to the specified workspace.
+	 */
+	defaultUploadWorkspaceId?: string;
+
+	/**
+	 * Enforces displaying the "Powered by CKBox" link regardless of the CKBox plan used.
+	 */
+	forceDemoLabel?: boolean;
+
+	/**
+	 * Allows editing images that are not hosted in CKBox service.
+	 *
+	 * This configuration option should whitelist URL(s) of images that should be editable.
+	 * Make sure that allowed image resources have CORS enabled.
+	 *
+	 * The image is editable if this option is:
+	 * * a regular expression and it matches the image URL, or
+	 * * a custom function that returns `true` for the image URL, or
+	 * * `'origin'` literal and the image URL is from the same origin, or
+	 * * an array of the above and the image URL matches one of the array elements.
+	 *
+	 * Images hosted in CKBox are always editable.
+	 *
+	 * @default []
+	 */
+	allowExternalImagesEditing?: ArrayOrItem<RegExp | 'origin' | ( ( src: string ) => boolean )>;
+
+	/**
 	 * Inserts the unique asset ID as the `data-ckbox-resource-id` attribute. To disable this behavior, set it to `true`.
 	 *
 	 * @default false
@@ -100,13 +130,6 @@ export interface CKBoxConfig {
 	 * @default 'https://api.ckbox.io'
 	 */
 	serviceOrigin?: string;
-
-	/**
-	 * Configures the base URL for assets inserted into the editor. Required only in on-premises installations.
-	 *
-	 * @default 'https://ckbox.cloud'
-	 */
-	assetsOrigin?: string;
 
 	/**
 	 * Configures the language for the CKBox dialog.
@@ -219,6 +242,21 @@ export interface CKBoxAssetImageAttributesDefinition {
 	 * An alternative text for an image.
 	 */
 	imageTextAlternative: string;
+
+	/**
+	 * Image width.
+	 */
+	imageWidth?: number;
+
+	/**
+	 * Image height.
+	 */
+	imageHeight?: number;
+
+	/**
+	 * Image placeholder image.
+	 */
+	imagePlaceholder?: string;
 }
 
 /**
@@ -247,6 +285,20 @@ export interface CKBoxAssetLinkAttributesDefinition {
 }
 
 /**
+ * The source set of the responsive image provided by the CKBox backend.
+ *
+ * Each numeric key corresponds to display width of the image.
+ */
+export interface CKBoxImageUrls {
+	[ width: number ]: string;
+
+	/**
+	 * A fallback URL for browsers that do not support the "webp" format.
+	 */
+	default: string;
+}
+
+/**
  * Raw asset definition that is received from the CKBox feature.
  */
 export interface CKBoxRawAssetDefinition {
@@ -255,11 +307,6 @@ export interface CKBoxRawAssetDefinition {
 	 * A raw asset data definition.
 	 */
 	data: CKBoxRawAssetDataDefinition;
-
-	/**
-	 * An asset origin URL.
-	 */
-	origin: string;
 }
 
 /**
@@ -273,11 +320,6 @@ export interface CKBoxRawAssetDataDefinition {
 	id: string;
 
 	/**
-	 *  An asset extension.
-	 */
-	extension: string;
-
-	/**
 	 * An asset name.
 	 */
 	name: string;
@@ -286,6 +328,16 @@ export interface CKBoxRawAssetDataDefinition {
 	 *  A raw asset metadata definition.
 	 */
 	metadata?: CKBoxRawAssetMetadataDefinition;
+
+	/**
+	 * The source set of the responsive image.
+	 */
+	imageUrls?: CKBoxImageUrls;
+
+	/**
+	 * The asset location.
+	 */
+	url: string;
 }
 
 /**
@@ -307,4 +359,14 @@ export interface CKBoxRawAssetMetadataDefinition {
 	 * Image height.
 	 */
 	height?: number;
+
+	/**
+	 * The blurhash placeholder value.
+	 */
+	blurHash?: string;
+
+	/**
+	 * The processing status of the asset.
+	 */
+	metadataProcessingStatus?: string;
 }

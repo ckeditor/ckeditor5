@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -12,9 +12,10 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Portuguese (Brazil) (https://www.transifex.com/ckeditor/teams/11143/pt_BR/)\n"
+"Language-Team: Portuguese (Brazil) (https://app.transifex.com/ckeditor/teams/11143/pt_BR/)\n"
 "Language: pt_BR\n"
 "Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "The label for the image widget."
 msgid "image widget"
@@ -68,9 +69,33 @@ msgctxt "The label for the insert image toolbar button."
 msgid "Insert image"
 msgstr "Inserir imagem"
 
+msgctxt "The label for the replace image toolbar button."
+msgid "Replace image"
+msgstr "Substituir imagem"
+
+msgctxt "The label for the upload image from computer toolbar button with visible label in insert image dropdown."
+msgid "Upload from computer"
+msgstr "Carregar do computador"
+
+msgctxt "The label for the replace image by upload from computer toolbar button with visible label in insert image dropdown."
+msgid "Replace from computer"
+msgstr "Substituir do computador"
+
+msgctxt "The label for the upload image from computer toolbar button."
+msgid "Upload image from computer"
+msgstr "Carregar imagem do computador"
+
+msgctxt "The label for the upload image from computer menu bar button."
+msgid "Image from computer"
+msgstr "Imagem do computador"
+
+msgctxt "The label for the replace image by upload from computer toolbar button."
+msgid "Replace image from computer"
+msgstr "Substituir a imagem do computador"
+
 msgctxt "The title of the notification displayed when upload fails."
 msgid "Upload failed"
-msgstr "Falha ao subir arquivo"
+msgstr "Falha ao enviar arquivo"
 
 msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
 msgid "Image toolbar"
@@ -88,9 +113,21 @@ msgctxt "The accessibility label of the standalone image resize reset option but
 msgid "Resize image to the original size"
 msgstr "Redimensionar a imagem para o tamanho original"
 
+msgctxt "The label for image resize balloon input."
+msgid "Resize image (in %0)"
+msgstr "Redimensionar imagem (em %0)"
+
 msgctxt "The default label for the resize option that resets the size of the image."
 msgid "Original"
 msgstr "Original"
+
+msgctxt "The accessibility label of the standalone image resize custom option button in the image toolbar for screen readers."
+msgid "Custom image size"
+msgstr "Tamanho de imagem personalizado"
+
+msgctxt "The label for the resize option that allows user to enter custom size of the image."
+msgid "Custom"
+msgstr "Personalizar"
 
 msgctxt "The accessibility label of the image resize dropdown for screen readers."
 msgid "Image resize list"
@@ -119,3 +156,23 @@ msgstr "Legenda para a imagem"
 msgctxt "Text used by screen readers do describe an image when there is a text alternative available, e.g. 'Caption for image: this is a description of the image.'"
 msgid "Caption for image: %0"
 msgstr "Legenda da imagem: %0"
+
+msgctxt "Text used as error label when user submitted custom image resize form with blank value."
+msgid "The value must not be empty."
+msgstr "O valor não deve estar vazio."
+
+msgctxt "Text used as error label when user submitted custom image resize form with incorrect value."
+msgid "The value should be a plain number."
+msgstr "O valor deve ser um número simples."
+
+msgctxt "Aria status message indicating that the image is being uploaded. Example: 'Uploading image'."
+msgid "Uploading image"
+msgstr "Carregamento de imagem"
+
+msgctxt "Aria status message indicating that the image has been uploaded successfully. Example: 'Image upload complete'."
+msgid "Image upload complete"
+msgstr "Carregamento de imagem concluído"
+
+msgctxt "Aria status message indicating that an error has occurred during image upload. Example: 'Error during image upload'."
+msgid "Error during image upload"
+msgstr "Erro durante o carregamento da imagem"

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,24 +7,23 @@
  * @module table/utils/ui/contextualballoon
  */
 
-import { Rect, type PositionOptions } from 'ckeditor5/src/utils';
-import { BalloonPanelView, type ContextualBalloon } from 'ckeditor5/src/ui';
+import { Rect, type PositionOptions } from 'ckeditor5/src/utils.js';
+import { BalloonPanelView, type ContextualBalloon } from 'ckeditor5/src/ui.js';
+import type { Editor } from 'ckeditor5/src/core.js';
+import type { Element, Position, Range } from 'ckeditor5/src/engine.js';
 
-import { getTableWidgetAncestor } from './widget';
-import type { Editor } from 'ckeditor5/src/core';
-import type { Element, Position, Range } from 'ckeditor5/src/engine';
+import { getSelectionAffectedTableWidget, getTableWidgetAncestor } from './widget.js';
+import { getSelectionAffectedTable } from '../common.js';
 
-const DEFAULT_BALLOON_POSITIONS = BalloonPanelView.defaultPositions;
-
-const BALLOON_POSITIONS = [
-	DEFAULT_BALLOON_POSITIONS.northArrowSouth,
-	DEFAULT_BALLOON_POSITIONS.northArrowSouthWest,
-	DEFAULT_BALLOON_POSITIONS.northArrowSouthEast,
-	DEFAULT_BALLOON_POSITIONS.southArrowNorth,
-	DEFAULT_BALLOON_POSITIONS.southArrowNorthWest,
-	DEFAULT_BALLOON_POSITIONS.southArrowNorthEast,
-	DEFAULT_BALLOON_POSITIONS.viewportStickyNorth
-];
+const BALLOON_POSITIONS = /* #__PURE__ */ ( () => [
+	BalloonPanelView.defaultPositions.northArrowSouth,
+	BalloonPanelView.defaultPositions.northArrowSouthWest,
+	BalloonPanelView.defaultPositions.northArrowSouthEast,
+	BalloonPanelView.defaultPositions.southArrowNorth,
+	BalloonPanelView.defaultPositions.southArrowNorthWest,
+	BalloonPanelView.defaultPositions.southArrowNorthEast,
+	BalloonPanelView.defaultPositions.viewportStickyNorth
+] )();
 
 /**
  * A helper utility that positions the
@@ -36,16 +35,19 @@ const BALLOON_POSITIONS = [
  */
 export function repositionContextualBalloon( editor: Editor, target: string ): void {
 	const balloon: ContextualBalloon = editor.plugins.get( 'ContextualBalloon' );
+	const selection = editor.editing.view.document.selection;
+	let position;
 
-	if ( getTableWidgetAncestor( editor.editing.view.document.selection ) ) {
-		let position;
-
-		if ( target === 'cell' ) {
+	if ( target === 'cell' ) {
+		if ( getTableWidgetAncestor( selection ) ) {
 			position = getBalloonCellPositionData( editor );
-		} else {
-			position = getBalloonTablePositionData( editor );
 		}
+	}
+	else if ( getSelectionAffectedTableWidget( selection ) ) {
+		position = getBalloonTablePositionData( editor );
+	}
 
+	if ( position ) {
 		balloon.updatePosition( position );
 	}
 }
@@ -58,8 +60,8 @@ export function repositionContextualBalloon( editor: Editor, target: string ): v
  * @param editor The editor instance.
  */
 export function getBalloonTablePositionData( editor: Editor ): Partial<PositionOptions> {
-	const firstPosition = editor.model.document.selection.getFirstPosition()!;
-	const modelTable = firstPosition.findAncestor( 'table' )!;
+	const selection = editor.model.document.selection;
+	const modelTable = getSelectionAffectedTable( selection );
 	const viewTable = editor.editing.mapper.toViewElement( modelTable )!;
 
 	return {

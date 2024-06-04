@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,16 +7,16 @@
  * @module engine/model/liverange
  */
 
-import Range from './range';
+import Range from './range.js';
 
-import type { ModelApplyOperationEvent } from './model';
-import type DocumentFragment from './documentfragment';
-import type Element from './element';
-import type Item from './item';
-import type MergeOperation from './operation/mergeoperation';
-import type MoveOperation from './operation/moveoperation';
-import type Operation from './operation/operation';
-import type Position from './position';
+import type { ModelApplyOperationEvent } from './model.js';
+import type DocumentFragment from './documentfragment.js';
+import type Element from './element.js';
+import type Item from './item.js';
+import type MergeOperation from './operation/mergeoperation.js';
+import type MoveOperation from './operation/moveoperation.js';
+import type Operation from './operation/operation.js';
+import type Position from './position.js';
 
 import { EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
@@ -28,7 +28,7 @@ import { EmitterMixin } from '@ckeditor/ckeditor5-utils';
  * **Note:** Be very careful when dealing with `LiveRange`. Each `LiveRange` instance bind events that might
  * have to be unbound. Use {@link module:engine/model/liverange~LiveRange#detach detach} whenever you don't need `LiveRange` anymore.
  */
-export default class LiveRange extends EmitterMixin( Range ) {
+export default class LiveRange extends /* #__PURE__ */ EmitterMixin( Range ) {
 	/**
 	 * Creates a live range.
 	 *

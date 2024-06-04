@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,15 +10,16 @@ import { fixtures as link, browserFixtures as linkBrowser } from '../_data/link/
 import { fixtures as list, browserFixtures as listBrowser } from '../_data/list/index.js';
 import { fixtures as spacing, browserFixtures as spacingBrowser } from '../_data/spacing/index.js';
 import { fixtures as googleDocsBoldWrapper, browserFixtures as googleDocsBoldWrapperBrowser }
-	from '../_data/paste-from-google-docs/bold-wrapper/index';
+	from '../_data/paste-from-google-docs/bold-wrapper/index.js';
 import { fixtures as googleDocsList, browserFixtures as googleDocsListBrowser } from '../_data/paste-from-google-docs/lists/index.js';
 import { fixtures as table } from '../_data/table/index.js';
 import { fixtures as pageBreak } from '../_data/page-break/index.js';
-import { fixtures as fontWithoutTableProperties } from '../_data/font-without-table-properties/index';
-import { fixtures as googleDocsBrParagraphs } from '../_data/paste-from-google-docs/br-paragraph/index';
+import { fixtures as fontWithoutTableProperties } from '../_data/font-without-table-properties/index.js';
+import { fixtures as googleDocsBrParagraphs } from '../_data/paste-from-google-docs/br-paragraph/index.js';
+import { fixtures as smartTags } from '../_data/other/index.js';
 
 // Generic fixtures.
-export const fixtures = {
+export const generic = {
 	'basic-styles': basicStyles,
 	image,
 	link,
@@ -29,11 +30,12 @@ export const fixtures = {
 	'google-docs-br-paragraphs': googleDocsBrParagraphs,
 	table,
 	'page-break': pageBreak,
-	'font-without-table-properties': fontWithoutTableProperties
+	'font-without-table-properties': fontWithoutTableProperties,
+	'smart-tags': smartTags
 };
 
 // Browser specific fixtures.
-export const browserFixtures = {
+export const browser = {
 	'basic-styles': basicStylesBrowser,
 	image: imageBrowser,
 	link: linkBrowser,

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,8 +10,8 @@
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { env } from '@ckeditor/ckeditor5-utils';
 
-import InsertTextCommand from './inserttextcommand';
-import InsertTextObserver, { type ViewDocumentInsertTextEvent } from './inserttextobserver';
+import InsertTextCommand from './inserttextcommand.js';
+import InsertTextObserver, { type ViewDocumentInsertTextEvent } from './inserttextobserver.js';
 
 import type { Model } from '@ckeditor/ckeditor5-engine';
 
@@ -22,8 +22,8 @@ export default class Input extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Input' {
-		return 'Input';
+	public static get pluginName() {
+		return 'Input' as const;
 	}
 
 	/**
@@ -101,6 +101,8 @@ export default class Input extends Plugin {
 			}
 
 			editor.execute( 'insertText', insertTextCommandData );
+
+			view.scrollToTheSelection();
 		} );
 
 		if ( env.isAndroid ) {

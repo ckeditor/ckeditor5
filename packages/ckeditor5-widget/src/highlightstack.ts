@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -22,7 +22,7 @@ import type { DowncastWriter, HighlightDescriptor } from '@ckeditor/ckeditor5-en
  *
  * This way, highlight will be applied with the same rules it is applied on texts.
  */
-export default class HighlightStack extends EmitterMixin() {
+export default class HighlightStack extends /* #__PURE__ */ EmitterMixin() {
 	private readonly _stack: Array<HighlightDescriptor> = [];
 
 	/**

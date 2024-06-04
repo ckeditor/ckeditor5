@@ -1,11 +1,11 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import BoxedEditorUIView from '../../../src/editorui/boxed/boxededitoruiview';
-import Locale from '@ckeditor/ckeditor5-utils/src/locale';
-import ViewCollection from '../../../src/viewcollection';
+import BoxedEditorUIView from '../../../src/editorui/boxed/boxededitoruiview.js';
+import Locale from '@ckeditor/ckeditor5-utils/src/locale.js';
+import ViewCollection from '../../../src/viewcollection.js';
 
 describe( 'BoxedEditorUIView', () => {
 	let view, element;

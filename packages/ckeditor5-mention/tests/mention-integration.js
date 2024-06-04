@@ -1,27 +1,28 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document, setTimeout */
 
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
-import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
-import Link from '@ckeditor/ckeditor5-link/src/link';
-import Delete from '@ckeditor/ckeditor5-typing/src/delete';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Table from '@ckeditor/ckeditor5-table/src/table.js';
+import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import Link from '@ckeditor/ckeditor5-link/src/link.js';
+import Delete from '@ckeditor/ckeditor5-typing/src/delete.js';
+import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { parse as parseView, getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { parse as parseView, getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import MentionEditing from '../src/mentionediting';
-import Mention from '../src/mention';
-import MentionUI from '../src/mentionui';
+import MentionEditing from '../src/mentionediting.js';
+import Mention from '../src/mention.js';
+import MentionUI from '../src/mentionui.js';
 
 describe( 'Mention feature - integration', () => {
 	let div, editor, model, doc;
@@ -220,7 +221,7 @@ describe( 'Mention feature - integration', () => {
 		beforeEach( () => {
 			return ClassicTestEditor
 				.create( div, {
-					plugins: [ Paragraph, Table, TableToolbar, Mention ],
+					plugins: [ Paragraph, Table, TableToolbar, Mention, ClipboardPipeline ],
 					table: {
 						contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 					},
@@ -331,6 +332,63 @@ describe( 'Mention feature - integration', () => {
 
 					expect( panelView.isVisible ).to.be.false;
 				} );
+		} );
+	} );
+
+	describe( 'with table', () => {
+		beforeEach( () => {
+			return ClassicTestEditor
+				.create( div, {
+					plugins: [ Paragraph, Table, Mention, ClipboardPipeline ],
+					mention: {
+						feeds: [
+							{
+								marker: '@',
+								feed: [ '@Barney' ]
+							}
+						]
+					}
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+				} );
+		} );
+
+		it( 'should not throw on backspace: selection after table containing 2 mentions in the last cell', () => {
+			const viewDocument = editor.editing.view.document;
+
+			// Insert table with 2 mentions in the last cell
+			expect( () => {
+				editor.setData(
+					'<figure class="table"><table><tbody><tr><td>' +
+						'<span class="mention" data-mention="@Barney">@Barney</span> ' +
+						'<span class="mention" data-mention="@Barney">@Barney</span>' +
+					'</td></tr></tbody></table></figure><p>&nbsp;</p>' );
+			} ).not.to.throw();
+
+			// Set selection after the table
+			editor.model.change( writer => {
+				const paragraph = editor.model.document.getRoot().getChild( 1 );
+
+				writer.setSelection( paragraph, 0 );
+			} );
+
+			const deleteEvent = new DomEventData(
+				viewDocument,
+				{ preventDefault: sinon.spy() },
+				{ direction: 'backward', unit: 'codePoint', sequence: 1 }
+			);
+
+			expect( () => {
+				viewDocument.fire( 'delete', deleteEvent );
+			} ).not.to.throw();
+
+			expect( editor.getData() ).to.equal(
+				'<figure class="table"><table><tbody><tr><td>' +
+					'<span class="mention" data-mention="@Barney">@Barney</span> ' +
+					'<span class="mention" data-mention="@Barney">@Barney</span>' +
+				'</td></tr></tbody></table></figure>'
+			);
 		} );
 	} );
 } );

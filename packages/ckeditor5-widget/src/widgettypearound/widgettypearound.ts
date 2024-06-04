@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -62,10 +62,10 @@ import {
 	getClosestWidgetViewElement,
 	getTypeAroundFakeCaretPosition,
 	TYPE_AROUND_SELECTION_ATTRIBUTE
-} from './utils';
+} from './utils.js';
 
-import { isWidget } from '../utils';
-import type Widget from '../widget';
+import { isWidget } from '../utils.js';
+import type Widget from '../widget.js';
 
 import returnIcon from '../../theme/icons/return-arrow.svg';
 
@@ -99,8 +99,8 @@ export default class WidgetTypeAround extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'WidgetTypeAround' {
-		return 'WidgetTypeAround';
+	public static get pluginName() {
+		return 'WidgetTypeAround' as const;
 	}
 
 	/**

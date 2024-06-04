@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -25,12 +25,12 @@ export function formatHtml( input: string ): string {
 	// a full list of HTML block-level elements.
 	// A void element is an element that cannot have any child - https://html.spec.whatwg.org/multipage/syntax.html#void-elements.
 	// Note that <pre> element is not listed on this list to avoid breaking whitespace formatting.
+	// Note that <br> element is not listed and handled separately so no additional white spaces are injected.
 	const elementsToFormat: Array<ElementToFormat> = [
 		{ name: 'address', isVoid: false },
 		{ name: 'article', isVoid: false },
 		{ name: 'aside', isVoid: false },
 		{ name: 'blockquote', isVoid: false },
-		{ name: 'br', isVoid: true },
 		{ name: 'details', isVoid: false },
 		{ name: 'dialog', isVoid: false },
 		{ name: 'dd', isVoid: false },
@@ -51,7 +51,6 @@ export function formatHtml( input: string ): string {
 		{ name: 'header', isVoid: false },
 		{ name: 'hgroup', isVoid: false },
 		{ name: 'hr', isVoid: true },
-		{ name: 'input', isVoid: true },
 		{ name: 'li', isVoid: false },
 		{ name: 'main', isVoid: false },
 		{ name: 'nav', isVoid: false },
@@ -61,7 +60,6 @@ export function formatHtml( input: string ): string {
 		{ name: 'table', isVoid: false },
 		{ name: 'tbody', isVoid: false },
 		{ name: 'td', isVoid: false },
-		{ name: 'textarea', isVoid: false },
 		{ name: 'th', isVoid: false },
 		{ name: 'thead', isVoid: false },
 		{ name: 'tr', isVoid: false },
@@ -75,20 +73,29 @@ export function formatHtml( input: string ): string {
 		// Add new line before and after `<tag>` and `</tag>`.
 		// It may separate individual elements with two new lines, but this will be fixed below.
 		.replace( new RegExp( `</?(${ elementNamesToFormat })( .*?)?>`, 'g' ), '\n$&\n' )
+		// Keep `<br>`s at the end of line to avoid adding additional whitespaces before `<br>`.
+		.replace( /<br[^>]*>/g, '$&\n' )
 		// Divide input string into lines, which start with either an opening tag, a closing tag, or just a text.
 		.split( '\n' );
 
 	let indentCount = 0;
+	let isPreformattedLine: ReturnType<typeof isPreformattedBlockLine> = false;
 
 	return lines
 		.filter( line => line.length )
 		.map( line => {
+			isPreformattedLine = isPreformattedBlockLine( line, isPreformattedLine );
+
 			if ( isNonVoidOpeningTag( line, elementsToFormat ) ) {
 				return indentLine( line, indentCount++ );
 			}
 
 			if ( isClosingTag( line, elementsToFormat ) ) {
 				return indentLine( line, --indentCount );
+			}
+
+			if ( isPreformattedLine === 'middle' || isPreformattedLine === 'last' ) {
+				return line;
 			}
 
 			return indentLine( line, indentCount );
@@ -138,6 +145,24 @@ function isClosingTag( line: string, elementsToFormat: Array<ElementToFormat> ):
 function indentLine( line: string, indentCount: number, indentChar: string = '    ' ): string {
 	// More about Math.max() here in https://github.com/ckeditor/ckeditor5/issues/10698.
 	return `${ indentChar.repeat( Math.max( 0, indentCount ) ) }${ line }`;
+}
+
+/**
+ * Checks whether a line belongs to a preformatted (`<pre>`) block.
+ *
+ * @param line Line to check.
+ * @param isPreviousLinePreFormatted Information on whether the previous line was preformatted (and how).
+ */
+function isPreformattedBlockLine( line: string, isPreviousLinePreFormatted: 'first' | 'last' | 'middle' | false ) {
+	if ( new RegExp( '<pre( .*?)?>' ).test( line ) ) {
+		return 'first';
+	} else if ( new RegExp( '</pre>' ).test( line ) ) {
+		return 'last';
+	} else if ( isPreviousLinePreFormatted === 'first' || isPreviousLinePreFormatted === 'middle' ) {
+		return 'middle';
+	} else {
+		return false;
+	}
 }
 
 /**

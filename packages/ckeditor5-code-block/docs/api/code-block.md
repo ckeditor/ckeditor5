@@ -2,11 +2,11 @@
 category: api-reference
 ---
 
-# CKEditor 5 code block feature
+# CKEditor&nbsp;5 code block feature
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-code-block.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-highlight)
 
-This package implements the code block feature for CKEditor 5.
+This package implements the code block feature for CKEditor&nbsp;5.
 
 ## Demo
 
@@ -18,8 +18,10 @@ See the {@link features/code-blocks code block feature guide} and the {@link mod
 
 ## Installation
 
-```
-npm install --save @ckeditor/ckeditor5-code-block
+This package is part of our open-source aggregate package.
+
+```bash
+npm install ckeditor5
 ```
 
 ## Contribute

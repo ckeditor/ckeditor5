@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,16 +7,15 @@
  * @module list/todolist/checktodolistcommand
  */
 
-import { Command, type Editor } from 'ckeditor5/src/core';
-import type { Element } from 'ckeditor5/src/engine';
-
-const attributeKey = 'todoListChecked';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
+import type { Element } from 'ckeditor5/src/engine.js';
+import { getAllListItemBlocks } from '../list/utils/model.js';
 
 /**
  * The check to-do command.
  *
  * The command is registered by the {@link module:list/todolist/todolistediting~TodoListEditing} as
- * the `checkTodoList` editor command and it is also available via aliased `todoListCheck` name.
+ * the `checkTodoList` editor command.
  */
 export default class CheckTodoListCommand extends Command {
 	/**
@@ -28,19 +27,10 @@ export default class CheckTodoListCommand extends Command {
 	declare public value: boolean;
 
 	/**
-	 * A list of to-do list items selected by the {@link module:engine/model/selection~Selection}.
-	 *
-	 * @internal
-	 */
-	public _selectedElements: Array<Element>;
-
-	/**
 	 * @inheritDoc
 	 */
 	constructor( editor: Editor ) {
 		super( editor );
-
-		this._selectedElements = [];
 
 		// Refresh command before executing to be sure all values are up to date.
 		// It is needed when selection has changed before command execution, in the same change block.
@@ -53,9 +43,39 @@ export default class CheckTodoListCommand extends Command {
 	 * Updates the command's {@link #value} and {@link #isEnabled} properties based on the current selection.
 	 */
 	public override refresh(): void {
-		this._selectedElements = this._getSelectedItems();
-		this.value = this._selectedElements.every( element => !!element.getAttribute( attributeKey ) );
-		this.isEnabled = !!this._selectedElements.length;
+		const selectedElements = this._getSelectedItems();
+
+		this.value = this._getValue( selectedElements );
+		this.isEnabled = !!selectedElements.length;
+	}
+
+	/**
+	 * Executes the command.
+	 *
+	 * @param options.forceValue If set, it will force the command behavior. If `true`, the command will apply
+	 * the attribute. Otherwise, the command will remove the attribute. If not set, the command will look for its current
+	 * value to decide what it should do.
+	 */
+	public override execute( options: { forceValue?: boolean } = {} ): void {
+		this.editor.model.change( writer => {
+			const selectedElements = this._getSelectedItems();
+			const value = ( options.forceValue === undefined ) ? !this._getValue( selectedElements ) : options.forceValue;
+
+			for ( const element of selectedElements ) {
+				if ( value ) {
+					writer.setAttribute( 'todoListChecked', true, element );
+				} else {
+					writer.removeAttribute( 'todoListChecked', element );
+				}
+			}
+		} );
+	}
+
+	/**
+	 * Returns a value for the command.
+	 */
+	private _getValue( selectedElements: Array<Element> ): boolean {
+		return selectedElements.every( element => element.getAttribute( 'todoListChecked' ) );
 	}
 
 	/**
@@ -69,37 +89,16 @@ export default class CheckTodoListCommand extends Command {
 		const startElement = selectionRange.start.parent as Element;
 		const elements: Array<Element> = [];
 
-		if ( schema.checkAttribute( startElement, attributeKey ) ) {
-			elements.push( startElement );
+		if ( schema.checkAttribute( startElement, 'todoListChecked' ) ) {
+			elements.push( ...getAllListItemBlocks( startElement ) );
 		}
 
-		for ( const item of selectionRange.getItems() as Iterable<Element> ) {
-			if ( schema.checkAttribute( item, attributeKey ) && !elements.includes( item ) ) {
-				elements.push( item );
+		for ( const item of selectionRange.getItems( { shallow: true } ) as Iterable<Element> ) {
+			if ( schema.checkAttribute( item, 'todoListChecked' ) && !elements.includes( item ) ) {
+				elements.push( ...getAllListItemBlocks( item ) );
 			}
 		}
 
 		return elements;
-	}
-
-	/**
-	 * Executes the command.
-	 *
-	 * @param options.forceValue If set, it will force the command behavior. If `true`, the command will apply
-	 * the attribute. Otherwise, the command will remove the attribute. If not set, the command will look for its current
-	 * value to decide what it should do.
-	 */
-	public override execute( options: { forceValue?: boolean } = {} ): void {
-		this.editor.model.change( writer => {
-			for ( const element of this._selectedElements ) {
-				const value = ( options.forceValue === undefined ) ? !this.value : options.forceValue;
-
-				if ( value ) {
-					writer.setAttribute( attributeKey, true, element );
-				} else {
-					writer.removeAttribute( attributeKey, element );
-				}
-			}
-		} );
 	}
 }

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,11 +7,11 @@
  * @module page-break/pagebreak
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { Widget } from 'ckeditor5/src/widget';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { Widget } from 'ckeditor5/src/widget.js';
 
-import PageBreakEditing from './pagebreakediting';
-import PageBreakUI from './pagebreakui';
+import PageBreakEditing from './pagebreakediting.js';
+import PageBreakUI from './pagebreakui.js';
 
 /**
  * The page break feature.
@@ -31,7 +31,7 @@ export default class PageBreak extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'PageBreak' {
-		return 'PageBreak';
+	public static get pluginName() {
+		return 'PageBreak' as const;
 	}
 }

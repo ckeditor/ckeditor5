@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,9 @@
  * @module basic-styles/strikethrough/strikethroughui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { ButtonView } from 'ckeditor5/src/ui';
-import type AttributeCommand from '../attributecommand';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
+import { getButtonCreator } from '../utils.js';
 
 import strikethroughIcon from '../../theme/icons/strikethrough.svg';
 
@@ -22,8 +22,8 @@ export default class StrikethroughUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'StrikethroughUI' {
-		return 'StrikethroughUI';
+	public static get pluginName() {
+		return 'StrikethroughUI' as const;
 	}
 
 	/**
@@ -31,30 +31,33 @@ export default class StrikethroughUI extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
-		const t = editor.t;
+		const t = editor.locale.t;
+		const createButton = getButtonCreator( {
+			editor,
+			commandName: STRIKETHROUGH,
+			plugin: this,
+			icon: strikethroughIcon,
+			keystroke: 'CTRL+SHIFT+X',
+			label: t( 'Strikethrough' )
+		} );
 
 		// Add strikethrough button to feature components.
-		editor.ui.componentFactory.add( STRIKETHROUGH, locale => {
-			const command: AttributeCommand = editor.commands.get( STRIKETHROUGH )!;
-			const view = new ButtonView( locale );
+		editor.ui.componentFactory.add( STRIKETHROUGH, () => {
+			const buttonView = createButton( ButtonView );
+			const command = editor.commands.get( STRIKETHROUGH )!;
 
-			view.set( {
-				label: t( 'Strikethrough' ),
-				icon: strikethroughIcon,
-				keystroke: 'CTRL+SHIFT+X',
-				tooltip: true,
-				isToggleable: true
+			buttonView.set( {
+				tooltip: true
 			} );
 
-			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
+			// Bind button model to command.
+			buttonView.bind( 'isOn' ).to( command, 'value' );
 
-			// Execute command.
-			this.listenTo( view, 'execute', () => {
-				editor.execute( STRIKETHROUGH );
-				editor.editing.view.focus();
-			} );
+			return buttonView;
+		} );
 
-			return view;
+		editor.ui.componentFactory.add( 'menuBar:' + STRIKETHROUGH, () => {
+			return createButton( MenuBarMenuListItemButtonView );
 		} );
 	}
 }

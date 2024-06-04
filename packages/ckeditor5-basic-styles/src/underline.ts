@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,9 @@
  * @module basic-styles/underline
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import UnderlineEditing from './underline/underlineediting';
-import UnderlineUI from './underline/underlineui';
+import { Plugin } from 'ckeditor5/src/core.js';
+import UnderlineEditing from './underline/underlineediting.js';
+import UnderlineUI from './underline/underlineui.js';
 
 /**
  * The underline feature.
@@ -31,7 +31,7 @@ export default class Underline extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Underline' {
-		return 'Underline';
+	public static get pluginName() {
+		return 'Underline' as const;
 	}
 }

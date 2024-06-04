@@ -1,17 +1,21 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import SelectAllEditing from '../src/selectallediting';
-import SelectAllUI from '../src/selectallui';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import SelectAllEditing from '../src/selectallediting.js';
+import SelectAllUI from '../src/selectallui.js';
+import { MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'SelectAllUI', () => {
 	let editor, editorElement, button;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
@@ -77,4 +81,58 @@ describe( 'SelectAllUI', () => {
 			sinon.assert.calledOnce( editor.editing.view.focus );
 		} );
 	} );
+
+	describe( 'the "selectAll" toolbar button', () => {
+		beforeEach( () => {
+			button = editor.ui.componentFactory.create( 'selectAll' );
+		} );
+
+		testButton( 'selectAll', 'Select all', ButtonView );
+
+		it( 'should have tooltip', () => {
+			expect( button.tooltip ).to.be.true;
+		} );
+	} );
+
+	describe( 'the "menuBar:selectAll" menu bar button', () => {
+		beforeEach( () => {
+			button = editor.ui.componentFactory.create( 'menuBar:selectAll' );
+		} );
+
+		testButton( 'selectAll', 'Select all', MenuBarMenuListItemButtonView );
+	} );
+
+	function testButton( featureName, label, Component ) {
+		it( 'should register feature component', () => {
+			expect( button ).to.be.instanceOf( Component );
+		} );
+
+		it( 'should create UI component with correct attribute values', () => {
+			expect( button.isOn ).to.be.false;
+			expect( button.label ).to.equal( label );
+		} );
+
+		it( `should execute ${ featureName } command on model execute event and focus the view`, () => {
+			const executeSpy = testUtils.sinon.stub( editor, 'execute' );
+			const focusSpy = testUtils.sinon.stub( editor.editing.view, 'focus' );
+
+			button.fire( 'execute' );
+
+			sinon.assert.calledOnceWithExactly( executeSpy, featureName );
+			sinon.assert.calledOnce( focusSpy );
+			sinon.assert.callOrder( executeSpy, focusSpy );
+		} );
+
+		it( `should bind #isEnabled to ${ featureName } command`, () => {
+			const command = editor.commands.get( featureName );
+
+			expect( button.isOn ).to.be.false;
+
+			const initState = command.isEnabled;
+			expect( button.isEnabled ).to.equal( initState );
+
+			command.isEnabled = !initState;
+			expect( button.isEnabled ).to.equal( !initState );
+		} );
+	}
 } );

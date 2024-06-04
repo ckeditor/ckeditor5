@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,8 +7,9 @@
  * @module table/tableproperties/commands/tablepropertycommand
  */
 
-import type { Batch, Element } from 'ckeditor5/src/engine';
-import { Command, type Editor } from 'ckeditor5/src/core';
+import type { Batch, Element } from 'ckeditor5/src/engine.js';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
+import { getSelectionAffectedTable } from '../../utils/common.js';
 
 export interface TablePropertyCommandExecuteOptions {
 	batch?: Batch;
@@ -55,7 +56,7 @@ export default class TablePropertyCommand extends Command {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 
-		const table = selection.getFirstPosition()!.findAncestor( 'table' )!;
+		const table = getSelectionAffectedTable( selection );
 
 		this.isEnabled = !!table;
 		this.value = this._getValue( table );
@@ -76,7 +77,7 @@ export default class TablePropertyCommand extends Command {
 
 		const { value, batch } = options;
 
-		const table = selection.getFirstPosition()!.findAncestor( 'table' )!;
+		const table = getSelectionAffectedTable( selection );
 		const valueToSet = this._getValueToSet( value );
 
 		model.enqueueChange( batch, writer => {

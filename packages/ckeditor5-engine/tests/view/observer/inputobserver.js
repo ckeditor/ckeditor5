@@ -1,19 +1,19 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 
-import InputObserver from '../../../src/view/observer/inputobserver';
-import DataTransfer from '../../../src/view/datatransfer';
-import Range from '../../../src/view/range';
-import View from '../../../src/view/view';
-import { StylesProcessor } from '../../../src/view/stylesmap';
+import InputObserver from '../../../src/view/observer/inputobserver.js';
+import DataTransfer from '../../../src/view/datatransfer.js';
+import Range from '../../../src/view/range.js';
+import View from '../../../src/view/view.js';
+import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
-import createViewRoot from '../_utils/createroot';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import env from '@ckeditor/ckeditor5-utils/src/env';
+import createViewRoot from '../_utils/createroot.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import env from '@ckeditor/ckeditor5-utils/src/env.js';
 
 describe( 'InputObserver', () => {
 	let domEditable, view, viewRoot, viewDocument, observer, evtData, beforeInputSpy;
@@ -131,6 +131,30 @@ describe( 'InputObserver', () => {
 				expect( viewRange2.start.offset ).to.equal( 0 );
 				expect( viewRange2.end.parent ).to.equal( viewRoot.getChild( 0 ).getChild( 0 ) );
 				expect( viewRange2.end.offset ).to.equal( 2 );
+			} );
+
+			it( 'should provide fixed editing view ranges corresponding to DOM ranges passed along with the DOM event', () => {
+				const domRange = global.document.createRange();
+
+				// [<div contenteditable="true">
+				// <p>fo]o</p>
+				domRange.setStartBefore( domEditable );
+				domRange.setEnd( domEditable.firstChild.firstChild, 2 );
+
+				fireMockNativeBeforeInput( {
+					getTargetRanges: () => [ domRange ]
+				} );
+
+				expect( evtData.targetRanges ).to.have.length( 1 );
+
+				const viewRange = evtData.targetRanges[ 0 ];
+
+				expect( viewRange ).to.be.instanceOf( Range );
+
+				expect( viewRange.start.parent ).to.equal( viewRoot.getChild( 0 ).getChild( 0 ) );
+				expect( viewRange.start.offset ).to.equal( 2 );
+				expect( viewRange.end.parent ).to.equal( viewRoot.getChild( 0 ).getChild( 0 ) );
+				expect( viewRange.end.offset ).to.equal( 2 );
 			} );
 
 			it( 'should provide a range encompassing the selected object when selection is fake', () => {

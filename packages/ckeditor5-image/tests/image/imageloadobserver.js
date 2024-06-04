@@ -1,16 +1,16 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document, Event */
 
-import ImageLoadObserver from '../../src/image/imageloadobserver';
-import Observer from '@ckeditor/ckeditor5-engine/src/view/observer/observer';
-import View from '@ckeditor/ckeditor5-engine/src/view/view';
-import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
+import ImageLoadObserver from '../../src/image/imageloadobserver.js';
+import Observer from '@ckeditor/ckeditor5-engine/src/view/observer/observer.js';
+import View from '@ckeditor/ckeditor5-engine/src/view/view.js';
+import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
 
 describe( 'ImageLoadObserver', () => {
 	let view, viewDocument, observer, domRoot, viewRoot;

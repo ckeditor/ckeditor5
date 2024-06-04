@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,7 @@
  * @module core/pendingactions
  */
 
-import ContextPlugin from './contextplugin';
+import ContextPlugin from './contextplugin.js';
 
 import {
 	CKEditorError,
@@ -60,7 +60,8 @@ import {
  *
  * This plugin is used by features like {@link module:upload/filerepository~FileRepository} to register their ongoing actions
  * and by features like {@link module:autosave/autosave~Autosave} to detect whether there are any ongoing actions.
- * Read more about saving the data in the {@glink installation/getting-started/getting-and-setting-data Saving and getting data} guide.
+ * Read more about saving the data in the
+ * {@glink getting-started/setup/getting-and-setting-data Saving and getting data} guide.
  */
 export default class PendingActions extends ContextPlugin implements Iterable<PendingAction> {
 	/**
@@ -79,8 +80,8 @@ export default class PendingActions extends ContextPlugin implements Iterable<Pe
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'PendingActions' {
-		return 'PendingActions';
+	public static get pluginName() {
+		return 'PendingActions' as const;
 	}
 
 	/**

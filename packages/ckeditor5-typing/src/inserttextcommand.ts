@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,7 +9,7 @@
 
 import { Command, type Editor } from '@ckeditor/ckeditor5-core';
 
-import ChangeBuffer from './utils/changebuffer';
+import ChangeBuffer from './utils/changebuffer.js';
 
 import type { DocumentSelection, Range, Selection } from '@ckeditor/ckeditor5-engine';
 
@@ -32,6 +32,9 @@ export default class InsertTextCommand extends Command {
 		super( editor );
 
 		this._buffer = new ChangeBuffer( editor.model, undoStepSize );
+
+		// Since this command may execute on different selectable than selection, it should be checked directly in execute block.
+		this._isEnabledBasedOnSelection = false;
 	}
 
 	/**
@@ -72,15 +75,24 @@ export default class InsertTextCommand extends Command {
 			selection = model.createSelection( options.range );
 		}
 
+		// Stop executing if selectable is in non-editable place.
+		if ( !model.canEditAt( selection ) ) {
+			return;
+		}
+
 		const resultRange = options.resultRange;
 
 		model.enqueueChange( this._buffer.batch, writer => {
 			this._buffer.lock();
 
+			// Store selection attributes before deleting old content to preserve formatting and link.
+			// This unifies the behavior between DocumentSelection and Selection provided as input option.
+			const selectionAttributes = Array.from( doc.selection.getAttributes() );
+
 			model.deleteContent( selection );
 
 			if ( text ) {
-				model.insertContent( writer.createText( text, doc.selection.getAttributes() ), selection );
+				model.insertContent( writer.createText( text, selectionAttributes ), selection );
 			}
 
 			if ( resultRange ) {

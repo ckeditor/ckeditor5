@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -19,21 +19,30 @@ import type {
 	ViewDocumentFragment,
 	DowncastWriter,
 	Model,
-	Position
-} from 'ckeditor5/src/engine';
-import { Plugin, type Editor } from 'ckeditor5/src/core';
-import { findOptimalInsertionRange, isWidget, toWidget } from 'ckeditor5/src/widget';
-import { determineImageTypeForInsertionAtSelection } from './image/utils';
+	Position,
+	ViewContainerElement
+} from 'ckeditor5/src/engine.js';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { findOptimalInsertionRange, isWidget, toWidget } from 'ckeditor5/src/widget.js';
+import { determineImageTypeForInsertionAtSelection } from './image/utils.js';
+import { DomEmitterMixin, type DomEmitter, global } from 'ckeditor5/src/utils.js';
+
+const IMAGE_WIDGETS_CLASSES_MATCH_REGEXP = /^(image|image-inline)$/;
 
 /**
  * A set of helpers related to images.
  */
 export default class ImageUtils extends Plugin {
 	/**
+	 * DOM Emitter.
+	 */
+	private _domEmitter: DomEmitter = new ( DomEmitterMixin() )();
+
+	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ImageUtils' {
-		return 'ImageUtils';
+	public static get pluginName() {
+		return 'ImageUtils' as const;
 	}
 
 	/**
@@ -82,18 +91,21 @@ export default class ImageUtils extends Plugin {
 	 *
 	 * @param imageType Image type of inserted image. If not specified,
 	 * it will be determined automatically depending of editor config or place of the insertion.
+	 * @param options.setImageSizes Specifies whether the image `width` and `height` attributes should be set automatically.
+	 * The default is `true`.
 	 * @return The inserted model image element.
 	 */
 	public insertImage(
 		attributes: Record<string, unknown> = {},
 		selectable: Selection | Position | null = null,
-		imageType: ( 'imageBlock' | 'imageInline' | null ) = null
+		imageType: ( 'imageBlock' | 'imageInline' | null ) = null,
+		options: { setImageSizes?: boolean } = {}
 	): Element | null {
 		const editor = this.editor;
 		const model = editor.model;
 		const selection = model.document.selection;
 
-		imageType = determineImageTypeForInsertion( editor, selectable || selection, imageType );
+		const determinedImageType = determineImageTypeForInsertion( editor, selectable || selection, imageType );
 
 		// Mix declarative attributes with selection attributes because the new image should "inherit"
 		// the latter for best UX. For instance, inline images inserted into existing links
@@ -104,27 +116,69 @@ export default class ImageUtils extends Plugin {
 		};
 
 		for ( const attributeName in attributes ) {
-			if ( !model.schema.checkAttribute( imageType, attributeName ) ) {
+			if ( !model.schema.checkAttribute( determinedImageType, attributeName ) ) {
 				delete attributes[ attributeName ];
 			}
 		}
 
 		return model.change( writer => {
-			const imageElement = writer.createElement( imageType!, attributes );
+			const { setImageSizes = true } = options;
+			const imageElement = writer.createElement( determinedImageType, attributes );
 
 			model.insertObject( imageElement, selectable, null, {
 				setSelection: 'on',
 				// If we want to insert a block image (for whatever reason) then we don't want to split text blocks.
 				// This applies only when we don't have the selectable specified (i.e., we insert multiple block images at once).
-				findOptimalPosition: !selectable && imageType != 'imageInline' ? 'auto' : undefined
+				findOptimalPosition: !selectable && determinedImageType != 'imageInline' ? 'auto' : undefined
 			} );
 
 			// Inserting an image might've failed due to schema regulations.
 			if ( imageElement.parent ) {
+				if ( setImageSizes ) {
+					this.setImageNaturalSizeAttributes( imageElement );
+				}
+
 				return imageElement;
 			}
 
 			return null;
+		} );
+	}
+
+	/**
+	 * Reads original image sizes and sets them as `width` and `height`.
+	 *
+	 * The `src` attribute may not be available if the user is using an upload adapter. In such a case,
+	 * this method is called again after the upload process is complete and the `src` attribute is available.
+	 */
+	public setImageNaturalSizeAttributes( imageElement: Element ): void {
+		const src = imageElement.getAttribute( 'src' ) as string;
+
+		if ( !src ) {
+			return;
+		}
+
+		if ( imageElement.getAttribute( 'width' ) || imageElement.getAttribute( 'height' ) ) {
+			return;
+		}
+
+		this.editor.model.change( writer => {
+			const img = new global.window.Image();
+
+			this._domEmitter.listenTo( img, 'load', () => {
+				if ( !imageElement.getAttribute( 'width' ) && !imageElement.getAttribute( 'height' ) ) {
+					// We use writer.batch to be able to undo (in a single step) width and height setting
+					// along with any change that triggered this action (e.g. image resize or image style change).
+					this.editor.model.enqueueChange( writer.batch, writer => {
+						writer.setAttribute( 'width', img.naturalWidth, imageElement );
+						writer.setAttribute( 'height', img.naturalHeight, imageElement );
+					} );
+				}
+
+				this._domEmitter.stopListening( img, 'load' );
+			} );
+
+			img.src = src;
 		} );
 	}
 
@@ -164,6 +218,13 @@ export default class ImageUtils extends Plugin {
 		const selectedElement = selection.getSelectedElement();
 
 		return this.isImage( selectedElement ) ? selectedElement : selection.getFirstPosition()!.findAncestor( 'imageBlock' );
+	}
+
+	/**
+	 * Returns an image widget editing view based on the passed image view.
+	 */
+	public getImageWidgetFromImageView( imageView: ViewElement ): ViewContainerElement | null {
+		return imageView.findAncestor( { classes: IMAGE_WIDGETS_CLASSES_MATCH_REGEXP } ) as ( ViewContainerElement | null );
 	}
 
 	/**
@@ -239,6 +300,15 @@ export default class ImageUtils extends Plugin {
 			}
 		}
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public override destroy(): void {
+		this._domEmitter.stopListening();
+
+		return super.destroy();
+	}
 }
 
 /**
@@ -311,7 +381,7 @@ function determineImageTypeForInsertion(
 		return 'imageInline';
 	}
 
-	if ( configImageInsertType === 'block' ) {
+	if ( configImageInsertType !== 'auto' ) {
 		return 'imageBlock';
 	}
 

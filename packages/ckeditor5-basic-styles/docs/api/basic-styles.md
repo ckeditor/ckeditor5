@@ -2,11 +2,11 @@
 category: api-reference
 ---
 
-# CKEditor 5 basic styles feature
+# CKEditor&nbsp;5 basic styles feature
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-basic-styles.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles)
 
-This package contains features allowing to apply basic text formatting such as bold, italic, underline, strikethrough, subscript, superscript, and code in CKEditor 5.
+This package contains features allowing to apply basic text formatting such as bold, italic, underline, strikethrough, subscript, superscript, and code in CKEditor&nbsp;5.
 
 ## Demo
 
@@ -28,8 +28,10 @@ You can also check out the following plugins:
 
 ## Installation
 
+This package is part of our open-source aggregate package.
+
 ```bash
-npm install --save @ckeditor/ckeditor5-basic-styles
+npm install ckeditor5
 ```
 
 ## Contribute

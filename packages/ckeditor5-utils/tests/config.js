@@ -1,12 +1,12 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document */
 
-import Config from '../src/config';
-import areConnectedThroughProperties from '../src/areconnectedthroughproperties';
+import Config from '../src/config.js';
+import areConnectedThroughProperties from '../src/areconnectedthroughproperties.js';
 
 describe( 'Config', () => {
 	let config;
@@ -28,8 +28,10 @@ describe( 'Config', () => {
 					{ bar: 'b' },
 					{ bar: 'a' },
 					{ bar: 'z' }
-				]
-			}
+				],
+				callback: () => null
+			},
+			callback: () => null
 		} );
 	} );
 
@@ -363,6 +365,16 @@ describe( 'Config', () => {
 			expect( config.get( 'resize.icon.path' ) ).to.equal( 'xyz' );
 		} );
 
+		it( 'should return a function', () => {
+			expect( typeof config.get( 'callback' ) ).to.equal( 'function' );
+			expect( config.get( 'callback' )() ).to.equal( null );
+		} );
+
+		it( 'should return a function nested in option', () => {
+			expect( typeof config.get( 'options.callback' ) ).to.equal( 'function' );
+			expect( config.get( 'options.callback' )() ).to.equal( null );
+		} );
+
 		it( 'should retrieve an object of the configuration', () => {
 			const resize = config.get( 'resize' );
 
@@ -482,7 +494,9 @@ describe( 'Config', () => {
 
 	describe( 'names()', () => {
 		it( 'should return an iterator of top level names of the configuration', () => {
-			expect( Array.from( config.names() ) ).to.be.deep.equal( [ 'creator', 'language', 'resize', 'toolbar', 'options' ] );
+			expect( Array.from( config.names() ) ).to.be.deep.equal(
+				[ 'creator', 'language', 'resize', 'toolbar', 'options', 'callback' ]
+			);
 		} );
 	} );
 } );

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,9 @@
  * @module basic-styles/subscript
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import SubscriptEditing from './subscript/subscriptediting';
-import SubscriptUI from './subscript/subscriptui';
+import { Plugin } from 'ckeditor5/src/core.js';
+import SubscriptEditing from './subscript/subscriptediting.js';
+import SubscriptUI from './subscript/subscriptui.js';
 
 /**
  * The subscript feature.
@@ -28,7 +28,7 @@ export default class Subscript extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Subscript' {
-		return 'Subscript';
+	public static get pluginName() {
+		return 'Subscript' as const;
 	}
 }

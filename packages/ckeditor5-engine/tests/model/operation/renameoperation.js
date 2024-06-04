@@ -1,14 +1,14 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Model from '../../../src/model/model';
-import Element from '../../../src/model/element';
-import RenameOperation from '../../../src/model/operation/renameoperation';
-import Position from '../../../src/model/position';
+import Model from '../../../src/model/model.js';
+import Element from '../../../src/model/element.js';
+import RenameOperation from '../../../src/model/operation/renameoperation.js';
+import Position from '../../../src/model/position.js';
 
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'RenameOperation', () => {
 	const oldName = 'oldName';

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,15 +7,15 @@
  * @module table/commands/removecolumncommand
  */
 
-import { Command } from 'ckeditor5/src/core';
+import { Command } from 'ckeditor5/src/core.js';
 import type {
 	DocumentSelection,
 	Element,
 	Selection
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
-import TableWalker, { type TableSlot } from '../tablewalker';
-import type TableUtils from '../tableutils';
+import TableWalker, { type TableSlot } from '../tablewalker.js';
+import type TableUtils from '../tableutils.js';
 
 /**
  * The remove column command.

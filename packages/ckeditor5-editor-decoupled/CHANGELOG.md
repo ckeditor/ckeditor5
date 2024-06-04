@@ -5,36 +5,36 @@ All changes in the package are documented in the main repository. See: https://g
 
 Changes for the past releases are available below.
 
-## [19.0.0](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v18.0.0...v19.0.0) (2020-04-29)
+## [19.0.0](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v18.0.0...v19.0.0) (April 29, 2020)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [18.0.0](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v17.0.0...v18.0.0) (2020-03-19)
+## [18.0.0](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v17.0.0...v18.0.0) (March 19, 2020)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [16.0.0](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v15.0.0...v16.0.0) (2019-12-04)
+## [16.0.0](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v15.0.0...v16.0.0) (December 4, 2019)
 
 ### Features
 
 * The main editor toolbar should respect the `config.toolbar.shouldNotGroupWhenFull` configuration (see [ckeditor/ckeditor5#5692](https://github.com/ckeditor/ckeditor5/issues/5692)). ([35b3cbf](https://github.com/ckeditor/ckeditor5-editor-decoupled/commit/35b3cbf))
 
 
-## [15.0.0](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v12.2.2...v15.0.0) (2019-10-23)
+## [15.0.0](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v12.2.2...v15.0.0) (October 23, 2019)
 
 ### Features
 
 * Enabled automatic items grouping in the main editor toolbar when there is not enough space to display them in a single row (see [ckeditor/ckeditor5#416](https://github.com/ckeditor/ckeditor5/issues/416)). ([eb52505](https://github.com/ckeditor/ckeditor5-editor-decoupled/commit/eb52505))
 
 
-## [12.2.2](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v12.2.1...v12.2.2) (2019-08-26)
+## [12.2.2](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v12.2.1...v12.2.2) (August 26, 2019)
 
 ### Other changes
 
@@ -42,31 +42,31 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Introduced a check that prevents sharing source elements between editor instances. See [ckeditor/ckeditor5#746](https://github.com/ckeditor/ckeditor5/issues/746). ([c73b045](https://github.com/ckeditor/ckeditor5-editor-decoupled/commit/c73b045))
 
 
-## [12.2.1](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v12.2.0...v12.2.1) (2019-07-10)
+## [12.2.1](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v12.2.0...v12.2.1) (July 10, 2019)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [12.2.0](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v12.1.1...v12.2.0) (2019-07-04)
+## [12.2.0](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v12.1.1...v12.2.0) (July 4, 2019)
 
 ### Features
 
 * `DecoupledEditor.create()` will throw an error, when a `<textarea>` element is used. ([af4daea](https://github.com/ckeditor/ckeditor5-editor-decoupled/commit/af4daea))
 
 
-## [12.1.1](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v12.1.0...v12.1.1) (2019-06-05)
+## [12.1.1](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v12.1.0...v12.1.1) (June 6, 2019)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [12.1.0](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v12.0.0...v12.1.0) (2019-04-10)
+## [12.1.0](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v12.0.0...v12.1.0) (April 4, 2019)
 
 ### Features
 
 * Introduced `EditorConfig#initialData`. ([7e01ca7](https://github.com/ckeditor/ckeditor5-editor-decoupled/commit/7e01ca7))
 
 
-## [12.0.0](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v11.0.2...v12.0.0) (2019-02-28)
+## [12.0.0](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v11.0.2...v12.0.0) (February 28, 2019)
 
 ### Features
 
@@ -91,17 +91,17 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Removed `DecoupledEditorUIView#editableElement`. Instead `DecoupledEditorUI#getEditableElement()` method should be used.
 
 
-## [11.0.2](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v11.0.1...v11.0.2) (2018-12-05)
+## [11.0.2](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v11.0.1...v11.0.2) (December 5, 2018)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [11.0.1](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v11.0.0...v11.0.1) (2018-10-08)
+## [11.0.1](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v11.0.0...v11.0.1) (October 8, 2018)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [11.0.0](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v10.0.2...v11.0.0) (2018-07-18)
+## [11.0.0](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v10.0.2...v11.0.0) (July 18, 2018)
 
 ### Other changes
 
@@ -113,19 +113,19 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `DecoupledEditor#element` property was renamed to `DecoupledEditor#sourceElement`. See [ckeditor/ckeditor5-core#64](https://github.com/ckeditor/ckeditor5-core/issues/64).
 
 
-## [10.0.2](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v10.0.1...v10.0.2) (2018-06-21)
+## [10.0.2](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v10.0.1...v10.0.2) (June 21, 2018)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [10.0.1](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v10.0.0...v10.0.1) (2018-05-22)
+## [10.0.1](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v10.0.0...v10.0.1) (May 22, 2018)
 
 ### Bug fixes
 
 * Added missing `return` to the data initialization step (fixes asynchronous data initialization, important for real-time collaboration features). Closes [#13](https://github.com/ckeditor/ckeditor5-editor-decoupled/issues/13). ([f4e496d](https://github.com/ckeditor/ckeditor5-editor-decoupled/commit/f4e496d))
 
 
-## [10.0.0](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v1.0.0-beta.4...v10.0.0) (2018-04-25)
+## [10.0.0](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v1.0.0-beta.4...v10.0.0) (April 25, 2018)
 
 ### Other changes
 
@@ -133,15 +133,15 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### BREAKING CHANGES
 
-* The license under which CKEditor 5 is released has been changed from a triple GPL, LGPL and MPL license to a GPL2+ only. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
+* The license under which CKEditor&nbsp;5 is released was changed from a triple GPL, LGPL, and MPL license to a GPL2+. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
 
 
-## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v1.0.0-beta.2...v1.0.0-beta.4) (2018-04-19)
+## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v1.0.0-beta.2...v1.0.0-beta.4) (April 19, 2018)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2018-04-10)
+## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v1.0.0-beta.1...v1.0.0-beta.2) (April 10, 2018)
 
 ### Other changes
 
@@ -149,10 +149,10 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### BREAKING CHANGES
 
-* The config options `config.toolbarContainer` and `config.editableContainer` have been removed. Please refer to the `DecoupledEditor` class API documentation to learn about possible methods of bootstrapping the UI.
+* The `config.toolbarContainer` and `config.editableContainer` configuration options were removed. Refer to the `DecoupledEditor` class API documentation to learn about possible methods of bootstrapping the UI.
 
 
-## 1.0.0-beta.1 (2018-03-15)
+## 1.0.0-beta.1 (March 15, 2018)
 
 ### Features
 

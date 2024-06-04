@@ -1,18 +1,14 @@
 ---
-# Scope:
-# * Explain browser compatibility of CKEditor 5.
-# * Document known compatibility issues and missing features.
-# * Discuss support for mobile environments.
-
 category: support
-order: 20
+meta-title: Browser compatibility | CKEditor 5 Documentation
+order: 30
 ---
 
 # Browser compatibility
 
 ## Desktop environment
 
-CKEditor 5 is currently supported in the following desktop browsers:
+CKEditor&nbsp;5 is currently supported in the following desktop browsers:
 
 * Full support:
 	* Chrome (latest stable release).
@@ -24,7 +20,7 @@ CKEditor 5 is currently supported in the following desktop browsers:
 
 ## Mobile environment
 
-CKEditor 5 is currently supported in the following mobile environments:
+CKEditor&nbsp;5 is currently supported in the following mobile environments:
 
 * Android (all vendor-supported versions)
 * iOS (all vendor-supported versions)

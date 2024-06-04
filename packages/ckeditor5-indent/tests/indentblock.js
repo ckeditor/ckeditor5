@@ -1,17 +1,18 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting.js';
 
-import IndentEditing from '../src/indentediting';
-import IndentBlock from '../src/indentblock';
-import IndentBlockCommand from '../src/indentblockcommand';
+import IndentEditing from '../src/indentediting.js';
+import IndentBlock from '../src/indentblock.js';
+import IndentBlockCommand from '../src/indentblockcommand.js';
 
 describe( 'IndentBlock', () => {
 	let editor, model, doc;
@@ -157,6 +158,30 @@ describe( 'IndentBlock', () => {
 					expect( editor.getData() ).to.equal( '<p style="margin-left:42em;">foo</p>' );
 					expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
 						.to.equal( '<p style="margin-left:42em">foo</p>' );
+				} );
+
+				describe( 'integration with List', () => {
+					beforeEach( () => {
+						return VirtualTestEditor
+							.create( {
+								plugins: [ Paragraph, ListEditing, IndentEditing, IndentBlock ]
+							} )
+							.then( newEditor => {
+								editor = newEditor;
+								model = editor.model;
+								doc = model.document;
+							} );
+					} );
+
+					// Block elements in Document Lists should not be indented. See https://github.com/ckeditor/ckeditor5/issues/12466.
+					it( 'should not convert margin-left to indent attribute for a list item', () => {
+						editor.setData( '<ul><li style="margin-left:72.0pt">foo</li></ul>' );
+
+						const paragraph = doc.getRoot().getChild( 0 );
+
+						expect( paragraph.hasAttribute( 'blockIndent' ) ).to.be.false;
+						expect( editor.getData() ).to.equal( '<ul><li>foo</li></ul>' );
+					} );
 				} );
 			} );
 

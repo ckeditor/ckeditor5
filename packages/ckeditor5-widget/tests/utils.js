@@ -1,16 +1,16 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document */
 
-import DowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
-import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
-import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
-import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
-import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';
-import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
+import DowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter.js';
+import ViewText from '@ckeditor/ckeditor5-engine/src/view/text.js';
+import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element.js';
+import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position.js';
+import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement.js';
+import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document.js';
 import {
 	toWidget,
 	isWidget,
@@ -19,16 +19,18 @@ import {
 	toWidgetEditable,
 	setHighlightHandling,
 	findOptimalInsertionRange,
+	calculateResizeHostPercentageWidth,
+	calculateResizeHostAncestorWidth,
 	viewToModelPositionOutsideModelElement,
 	WIDGET_CLASS_NAME
-} from '../src/utils';
-import UIElement from '@ckeditor/ckeditor5-engine/src/view/uielement';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import Model from '@ckeditor/ckeditor5-engine/src/model/model';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import Mapper from '@ckeditor/ckeditor5-engine/src/conversion/mapper';
-import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
-import ModelText from '@ckeditor/ckeditor5-engine/src/model/text';
+} from '../src/utils.js';
+import UIElement from '@ckeditor/ckeditor5-engine/src/view/uielement.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import Model from '@ckeditor/ckeditor5-engine/src/model/model.js';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import Mapper from '@ckeditor/ckeditor5-engine/src/conversion/mapper.js';
+import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element.js';
+import ModelText from '@ckeditor/ckeditor5-engine/src/model/text.js';
 
 describe( 'widget utils', () => {
 	let element, writer, viewDocument;
@@ -232,6 +234,10 @@ describe( 'widget utils', () => {
 
 		it( 'should add proper role', () => {
 			expect( element.getAttribute( 'role' ) ).to.equal( 'textbox' );
+		} );
+
+		it( 'should add proper tabindex', () => {
+			expect( element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
 		} );
 
 		it( 'should add label if it was passed through options', () => {
@@ -731,5 +737,152 @@ describe( 'widget utils', () => {
 
 			expect( modelPosition.path ).to.deep.equal( [ 3, 1 ] );
 		} );
+	} );
+
+	describe( 'Calculate resize host ancestor width utils', () => {
+		describe( 'calculateResizeHostAncestorWidth()', () => {
+			it( 'should get size from parent of passed element', () => {
+				const domResizeHost = tag( 'div' );
+				const tree = tag( 'div', sizeAttributes( 200 ), [
+					domResizeHost
+				] );
+
+				document.body.appendChild( tree );
+				expect( calculateResizeHostAncestorWidth( domResizeHost ) ).to.be.equal( 200 );
+				tree.remove();
+			} );
+
+			it( 'if passed element\'s parent has unknown size then grandparent is used', () => {
+				const domResizeHost = tag( 'div' );
+				const tree = tag( 'div', sizeAttributes( 400 ), [
+					tag( 'div', {}, [
+						domResizeHost
+					] )
+				] );
+
+				document.body.appendChild( tree );
+				expect( calculateResizeHostAncestorWidth( domResizeHost ) ).to.be.equal( 400 );
+				tree.remove();
+			} );
+
+			it( 'should return 0 if element is not mounted to DOM', () => {
+				const domResizeHost = tag( 'div' );
+
+				expect( calculateResizeHostAncestorWidth( domResizeHost ) ).to.be.equal( 0 );
+			} );
+
+			it( 'function takes size up to 6 level grandparent', () => {
+				const domResizeHost = tag( 'with-size' );
+				const tree = tag( 'parent-6', sizeAttributes( 600 ), [
+					tag( 'parent-5', {}, [
+						tag( 'parent-4', {}, [
+							tag( 'parent-3', {}, [
+								tag( 'parent-2', {}, [
+									tag( 'parent-1', {}, [
+										domResizeHost
+									] )
+								] )
+							] )
+						] )
+					] )
+				] );
+
+				const unknownDomResizeHost = tag( 'without-size' );
+				const unknownTree = tag( 'parent-7', sizeAttributes( 600 ), [
+					tag( 'parent-6', {}, [
+						tag( 'parent-5', {}, [
+							tag( 'parent-4', {}, [
+								tag( 'parent-3', {}, [
+									tag( 'parent-2', {}, [
+										tag( 'parent-1', {}, [
+											unknownDomResizeHost
+										] )
+									] )
+								] )
+							] )
+						] )
+					] )
+				] );
+
+				document.body.appendChild( tree );
+				document.body.appendChild( unknownTree );
+
+				expect( calculateResizeHostAncestorWidth( domResizeHost ) ).to.be.equal( 600 );
+				expect( calculateResizeHostAncestorWidth( unknownDomResizeHost ) ).to.be.equal( 0 );
+
+				tree.remove();
+				unknownTree.remove();
+			} );
+		} );
+
+		describe( 'calculateResizeHostPercentageWidth()', () => {
+			it( 'if no `resizeHostRect` argument passed then it should calc percentage based on passed `domResizeHost`', () => {
+				const domResizeHost = tag( 'div', sizeAttributes( 100 ) );
+				const tree = tag( 'div', sizeAttributes( 200 ), [
+					domResizeHost
+				] );
+
+				document.body.appendChild( tree );
+				expect( calculateResizeHostPercentageWidth( domResizeHost ) ).to.be.equal( 50 );
+				tree.remove();
+			} );
+
+			it( 'if `resizeHostRect` argument passed then it should calc percentage based on that argument', () => {
+				const domResizeHost = tag( 'div', sizeAttributes( 50 ) );
+				const tree = tag( 'div', sizeAttributes( 100 ), [
+					domResizeHost
+				] );
+
+				document.body.appendChild( tree );
+				expect( calculateResizeHostPercentageWidth( domResizeHost, { width: 60 } ) ).to.be.equal( 60 );
+				tree.remove();
+			} );
+
+			it( 'should return 0 if 6 level grandparent width is unknown', () => {
+				const unknownDomResizeHost = tag( 'div', sizeAttributes( 50 ) );
+				const unknownTree = tag( 'parent-7', {}, [
+					tag( 'parent-6', {}, [
+						tag( 'parent-5', {}, [
+							tag( 'parent-4', {}, [
+								tag( 'parent-3', {}, [
+									tag( 'parent-2', {}, [
+										tag( 'parent-1', {}, [
+											unknownDomResizeHost
+										] )
+									] )
+								] )
+							] )
+						] )
+					] )
+				] );
+
+				document.body.appendChild( unknownTree );
+				expect( calculateResizeHostPercentageWidth( unknownDomResizeHost ) ).to.be.equal( 0 );
+				unknownTree.remove();
+			} );
+		} );
+
+		function tag( name, attributes = {}, children = [] ) {
+			const element = document.createElement( name );
+
+			for ( const [ key, value ] of Object.entries( attributes ) ) {
+				element.setAttribute( key, value );
+			}
+
+			for ( const child of children ) {
+				element.appendChild( child );
+			}
+
+			return element;
+		}
+
+		function sizeAttributes( width, height = 1, unit = 'px' ) {
+			return {
+				style: [
+					`width: ${ width }${ unit };`,
+					`height: ${ height }${ unit }`
+				].join( '' )
+			};
+		}
 	} );
 } );

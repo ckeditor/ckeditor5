@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,16 +7,16 @@
  * @module engine/view/uielement
  */
 
-import Element, { type ElementAttributes } from './element';
-import Node from './node';
+import Element, { type ElementAttributes } from './element.js';
+import Node from './node.js';
 import { CKEditorError, keyCodes } from '@ckeditor/ckeditor5-utils';
 
-import type View from './view';
-import type Document from './document';
-import type DomConverter from './domconverter';
-import type Item from './item';
-import type { ViewDocumentArrowKeyEvent } from './observer/arrowkeysobserver';
-import type { KeyEventData } from './observer/keyobserver';
+import type View from './view.js';
+import type Document from './document.js';
+import type DomConverter from './domconverter.js';
+import type Item from './item.js';
+import type { ViewDocumentArrowKeyEvent } from './observer/arrowkeysobserver.js';
+import type { KeyEventData } from './observer/keyobserver.js';
 
 type DomDocument = globalThis.Document;
 type DomElement = globalThis.HTMLElement;
@@ -106,7 +106,10 @@ export default class UIElement extends Element {
 	 *
 	 * @param domConverter Instance of the DomConverter used to optimize the output.
 	 */
-	public render( domDocument: DomDocument, domConverter: DomConverter ): DomElement {
+	public render(
+		domDocument: DomDocument,
+		domConverter: DomConverter // eslint-disable-line @typescript-eslint/no-unused-vars
+	): DomElement {
 		// Provide basic, default output.
 		return this.toDomElement( domDocument );
 	}

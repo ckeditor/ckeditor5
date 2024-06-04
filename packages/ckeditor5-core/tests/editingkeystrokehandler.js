@@ -1,12 +1,12 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import VirtualTestEditor from '../tests/_utils/virtualtesteditor';
-import EditingKeystrokeHandler from '../src/editingkeystrokehandler';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import env from '@ckeditor/ckeditor5-utils/src/env';
+import VirtualTestEditor from '../tests/_utils/virtualtesteditor.js';
+import EditingKeystrokeHandler from '../src/editingkeystrokehandler.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import env from '@ckeditor/ckeditor5-utils/src/env.js';
 
 describe( 'EditingKeystrokeHandler', () => {
 	let editor, keystrokes, executeSpy;

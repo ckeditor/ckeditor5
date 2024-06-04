@@ -5,22 +5,22 @@ All changes in the package are documented in the main repository. See: https://g
 
 Changes for the past releases are available below.
 
-## [19.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v18.0.0...v19.0.0) (2020-04-29)
+## [19.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v18.0.0...v19.0.0) (April 29, 2020)
 
 ### Bug fixes
 
-* The selected widget's outline should be visible when the editor is read-only. Closes [ckeditor/ckeditor5#6415](https://github.com/ckeditor/ckeditor5/issues/6415). ([bb03e9a](https://github.com/ckeditor/ckeditor5-theme-lark/commit/bb03e9a))
+* The outline of the selected widget should be visible when the editor is read-only. Closes [ckeditor/ckeditor5#6415](https://github.com/ckeditor/ckeditor5/issues/6415). ([bb03e9a](https://github.com/ckeditor/ckeditor5-theme-lark/commit/bb03e9a))
 
 ### Other changes
 
-* Added a missing file for the `FormHeaderView` styles and removed duplicated styles for `SpecialCharactersNavigation` inherited from the the `FormHeaderView` component. Closes [ckeditor/ckeditor5#6586](https://github.com/ckeditor/ckeditor5/issues/6586). ([06f6ca5](https://github.com/ckeditor/ckeditor5-theme-lark/commit/06f6ca5))
+* Added a missing file for the `FormHeaderView` styles and removed duplicated styles for `SpecialCharactersNavigation` inherited from the `FormHeaderView` component. Closes [ckeditor/ckeditor5#6586](https://github.com/ckeditor/ckeditor5/issues/6586). ([06f6ca5](https://github.com/ckeditor/ckeditor5-theme-lark/commit/06f6ca5))
 * Align code to the changes in ckeditor5-ui API. See [ckeditor/ckeditor5#6110](https://github.com/ckeditor/ckeditor5/issues/6110). ([7df8dec](https://github.com/ckeditor/ckeditor5-theme-lark/commit/7df8dec))
 * Changed styles of SpecialCharacters and Dropdown to match FormHeaderView component styles. See [ckeditor/ckeditor5#6109](https://github.com/ckeditor/ckeditor5/issues/6109). ([ceeb767](https://github.com/ckeditor/ckeditor5-theme-lark/commit/ceeb767))
 * Introduced the table cell overlay to improve the rendering of multiple–cell selections and bring compatibility with styled table cells. Closes [ckeditor/ckeditor5#6446](https://github.com/ckeditor/ckeditor5/issues/6446). ([6a1c7b9](https://github.com/ckeditor/ckeditor5-theme-lark/commit/6a1c7b9))
-* The selection inside the `InlineEditableUIView` should be grey when the editor is blurred. Closes [ckeditor/ckeditor5#6517](https://github.com/ckeditor/ckeditor5/issues/6517). ([8ad92eb](https://github.com/ckeditor/ckeditor5-theme-lark/commit/8ad92eb))
+* The selection inside the `InlineEditableUIView` should be gray when the editor is blurred. Closes [ckeditor/ckeditor5#6517](https://github.com/ckeditor/ckeditor5/issues/6517). ([8ad92eb](https://github.com/ckeditor/ckeditor5-theme-lark/commit/8ad92eb))
 
 
-## [18.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v17.0.0...v18.0.0) (2020-03-19)
+## [18.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v17.0.0...v18.0.0) (March 19, 2020)
 
 ### Features
 
@@ -33,7 +33,7 @@ Changes for the past releases are available below.
 * Pointer inside a restricted editing exception should be set to text for all the children. Closes [ckeditor/ckeditor5#6272](https://github.com/ckeditor/ckeditor5/issues/6272). ([a20d13b](https://github.com/ckeditor/ckeditor5-theme-lark/commit/a20d13b))
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 ### MAJOR BREAKING CHANGES
 
@@ -50,7 +50,7 @@ Changes for the past releases are available below.
 
 ### Bug fixes
 
-* Removed `ck-` prefix from the restricted editing's CSS classes used in the editor content. Closes [ckeditor/ckeditor5#5899](https://github.com/ckeditor/ckeditor5/issues/5899). ([599f16e](https://github.com/ckeditor/ckeditor5-theme-lark/commit/599f16e))
+* Removed the `ck-` prefix from the restricted editing CSS classes used in the editor content. Closes [ckeditor/ckeditor5#5899](https://github.com/ckeditor/ckeditor5/issues/5899). ([599f16e](https://github.com/ckeditor/ckeditor5-theme-lark/commit/599f16e))
 
 ### Other changes
 
@@ -58,7 +58,7 @@ Changes for the past releases are available below.
 * Set default cursor in restricted editing mode while restricted editing exceptions still have text cursor when you hover over them. Closes [ckeditor/ckeditor5#5992](https://github.com/ckeditor/ckeditor5/issues/5992). ([2602ab4](https://github.com/ckeditor/ckeditor5-theme-lark/commit/2602ab4))
 
 
-## [16.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v15.0.0...v16.0.0) (2019-12-04)
+## [16.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v15.0.0...v16.0.0) (December 4, 2019)
 
 ### MAJOR BREAKING CHANGES
 
@@ -71,7 +71,7 @@ Changes for the past releases are available below.
 
 ### Bug fixes
 
-* Enabled additional box-shadow on `.ck-button` to meet WCAG AA recommendations. Adjusted the color of the `--ck-color-focus-border` for the same reason (editables, widget selection, etc.). Closes [ckeditor/ckeditor5#5580](https://github.com/ckeditor/ckeditor5/issues/5580). ([0fe1500](https://github.com/ckeditor/ckeditor5-theme-lark/commit/0fe1500))
+* Enabled additional box shadow on `.ck-button` to meet WCAG AA recommendations. Adjusted the color of the `--ck-color-focus-border` for the same reason (editable elements, widget selection, etc.). Closes [ckeditor/ckeditor5#5580](https://github.com/ckeditor/ckeditor5/issues/5580). ([0fe1500](https://github.com/ckeditor/ckeditor5-theme-lark/commit/0fe1500))
 
   Also:
   * Optimized the color of a grid component for WCAG AA.
@@ -79,11 +79,11 @@ Changes for the past releases are available below.
      * Improved the table UI contrast and accessibility.
 
 
-## [15.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v14.2.0...v15.0.0) (2019-10-23)
+## [15.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v14.2.0...v15.0.0) (October 23, 2019)
 
 ### Bug fixes
 
-* To-do list styles should meet WCAG contrast standards and work with other editor features (e.g. font size). Closes [ckeditor/ckeditor5-list#146](https://github.com/ckeditor/ckeditor5-list/issues/146). Closes [ckeditor/ckeditor5-list#136](https://github.com/ckeditor/ckeditor5-list/issues/136). ([0d4a5e2](https://github.com/ckeditor/ckeditor5-theme-lark/commit/0d4a5e2))
+* To-do list styles should meet WCAG contrast standards and work with other editor features (like font size). Closes [ckeditor/ckeditor5-list#146](https://github.com/ckeditor/ckeditor5-list/issues/146). Closes [ckeditor/ckeditor5-list#136](https://github.com/ckeditor/ckeditor5-list/issues/136). ([0d4a5e2](https://github.com/ckeditor/ckeditor5-theme-lark/commit/0d4a5e2))
 
   Also moved some to-do list styles from `@ckeditor/ckeditor5-list` (code refactoring).
 
@@ -92,7 +92,7 @@ Changes for the past releases are available below.
 * Adjusted toolbar styles to allow automatic items grouping (see [ckeditor/ckeditor5#416](https://github.com/ckeditor/ckeditor5/issues/416)). ([e73b50d](https://github.com/ckeditor/ckeditor5-theme-lark/commit/e73b50d))
 
 
-## [14.2.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v14.1.1...v14.2.0) (2019-08-26)
+## [14.2.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v14.1.1...v14.2.0) (August 26, 2019)
 
 ### Features
 
@@ -104,12 +104,12 @@ Changes for the past releases are available below.
 * The `.ck-progress-bar` styles should not be under with `.ck-content`. Additionally removed two unused custom properties: `--ck-color-upload-infinite-background` and `--ck-image-upload-progress-line-width`. Closes https://github.com/ckeditor/ckeditor5-theme-lark/issues/239. Closes https://github.com/ckeditor/ckeditor5/issues/1915. ([cb92793](https://github.com/ckeditor/ckeditor5-theme-lark/commit/cb92793))
 
 
-## [14.1.1](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v14.1.0...v14.1.1) (2019-07-10)
+## [14.1.1](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v14.1.0...v14.1.1) (July 10, 2019)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [14.1.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v14.0.0...v14.1.0) (2019-07-04)
+## [14.1.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v14.0.0...v14.1.0) (July 4, 2019)
 
 ### Features
 
@@ -117,11 +117,11 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Bug fixes
 
-* Background of splitbutton will not be highlighted on hover in read-only mode. Closes [ckeditor/ckeditor5#943](https://github.com/ckeditor/ckeditor5/issues/943). ([0579997](https://github.com/ckeditor/ckeditor5-theme-lark/commit/0579997))
+* Background of split button will not be highlighted on hover in read-only mode. Closes [ckeditor/ckeditor5#943](https://github.com/ckeditor/ckeditor5/issues/943). ([0579997](https://github.com/ckeditor/ckeditor5-theme-lark/commit/0579997))
 * Tooltips should not render blurry in LoDPI environments. Closes [ckeditor/ckeditor5#1802](https://github.com/ckeditor/ckeditor5/issues/1802). ([53d7ca3](https://github.com/ckeditor/ckeditor5-theme-lark/commit/53d7ca3))
 
 
-## [14.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v13.0.1...v14.0.0) (2019-06-05)
+## [14.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v13.0.1...v14.0.0) (June 6, 2019)
 
 ### Features
 
@@ -141,12 +141,12 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `_rwd.css` mixin was moved to `@ckeditor/ckeditor5-ui`.
 
 
-## [13.0.1](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v13.0.0...v13.0.1) (2019-04-10)
+## [13.0.1](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v13.0.0...v13.0.1) (April 4, 2019)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [13.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v12.0.0...v13.0.0) (2019-02-28)
+## [13.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v12.0.0...v13.0.0) (February 28, 2019)
 
 ### Features
 
@@ -163,7 +163,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Upgraded minimal versions of Node to `8.0.0` and npm to `5.7.1`. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([612ea3c](https://github.com/ckeditor/ckeditor5-cloud-services/commit/612ea3c))
 
 
-## [12.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v11.1.0...v12.0.0) (2018-12-05)
+## [12.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v11.1.0...v12.0.0) (December 5, 2018)
 
 ### Features
 
@@ -187,7 +187,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `.ck-labeled-input__error` class has been replaced with `.ck-labeled-input__status_error`.
 
 
-## [11.1.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v11.0.0...v11.1.0) (2018-10-08)
+## [11.1.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v11.0.0...v11.1.0) (October 8, 2018)
 
 ### Features
 
@@ -203,7 +203,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Added a subtle shake animation to the .ck-input-text when it gets an error. Closes [#198](https://github.com/ckeditor/ckeditor5-theme-lark/issues/198). ([f84102b](https://github.com/ckeditor/ckeditor5-theme-lark/commit/f84102b))
 
 
-## [11.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v10.1.0...v11.0.0) (2018-07-18)
+## [11.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v10.1.0...v11.0.0) (July 18, 2018)
 
 ### Features
 
@@ -238,7 +238,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Several `--ck-color-widget-*` custom properties have been renamed to match the project's naming standards.
 
 
-## [10.1.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v10.0.0...v10.1.0) (2018-06-21)
+## [10.1.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v10.0.0...v10.1.0) (June 21, 2018)
 
 ### Features
 
@@ -256,7 +256,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Introduced disabled styles of a list item (see [ckeditor/ckeditor5-ui#389](https://github.com/ckeditor/ckeditor5-ui/issues/389)). ([b4a069c](https://github.com/ckeditor/ckeditor5-theme-lark/commit/b4a069c))
 
 
-## [10.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v1.0.0-beta.4...v10.0.0) (2018-04-25)
+## [10.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v1.0.0-beta.4...v10.0.0) (April 25, 2018)
 
 ### Other changes
 
@@ -264,15 +264,15 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### BREAKING CHANGES
 
-* The license under which CKEditor 5 is released has been changed from a triple GPL, LGPL and MPL license to a GPL2+ only. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
+* The license under which CKEditor&nbsp;5 is released has been changed from a triple GPL, LGPL and MPL license to a GPL2+ only. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
 
 
-## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v1.0.0-beta.2...v1.0.0-beta.4) (2018-04-19)
+## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v1.0.0-beta.2...v1.0.0-beta.4) (April 19, 2018)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2018-04-10)
+## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v1.0.0-beta.1...v1.0.0-beta.2) (April 10, 2018)
 
 ### Features
 
@@ -290,7 +290,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated the classic editor and the editorui styles to the latest nested editable CSS class naming convention (see [ckeditor/ckeditor5#578](https://github.com/ckeditor/ckeditor5/issues/578)). ([508db7c](https://github.com/ckeditor/ckeditor5-theme-lark/commit/508db7c))
 
 
-## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
+## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (March 15, 2018)
 
 ### Features
 
@@ -315,13 +315,13 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Other changes
 
-* Adjusted the `border-radius` of the various UI components (drop-down, dropdown panel, list drop-down, and split button) for a better look when placed next to one another. Closes [ckeditor/ckeditor5#816](https://github.com/ckeditor/ckeditor5/issues/816). ([d81568d](https://github.com/ckeditor/ckeditor5-theme-lark/commit/d81568d))
-* All colors in the styles should be in the HSLa format. Closes [#124](https://github.com/ckeditor/ckeditor5-theme-lark/issues/124). ([33c7e0d](https://github.com/ckeditor/ckeditor5-theme-lark/commit/33c7e0d))
+* Adjusted the `border-radius` of the various UI components (dropdown, dropdown panel, list dropdown, and split button) for a better look when placed next to one another. Closes [ckeditor/ckeditor5#816](https://github.com/ckeditor/ckeditor5/issues/816). ([d81568d](https://github.com/ckeditor/ckeditor5-theme-lark/commit/d81568d))
+* All colors in the styles should be in the HSLA format. Closes [#124](https://github.com/ckeditor/ckeditor5-theme-lark/issues/124). ([33c7e0d](https://github.com/ckeditor/ckeditor5-theme-lark/commit/33c7e0d))
 * Enlarged background in `.ck-link_selected`. Closes [#155](https://github.com/ckeditor/ckeditor5-theme-lark/issues/155). ([a7f1925](https://github.com/ckeditor/ckeditor5-theme-lark/commit/a7f1925))
 * Fixed the coloring issue with the multi-color icons. Additionally, moved the visual `.ck-icon` styles from `ckeditor5-ui`. Closes [#148](https://github.com/ckeditor/ckeditor5-theme-lark/issues/148). ([fbe7e7d](https://github.com/ckeditor/ckeditor5-theme-lark/commit/fbe7e7d))
 * Improved the visual styles of the split button when hovered or open. Closes [[#134](https://github.com/ckeditor/ckeditor5-theme-lark/issues/134)](https://github.com/ckeditor/ckeditor5-theme-lark/issues/134). ([6db332e](https://github.com/ckeditor/ckeditor5-theme-lark/commit/6db332e))
 * Increased the spacing in the toolbar by making the buttons bigger. Unified rendering of several components. Closes [ckeditor/ckeditor5#820](https://github.com/ckeditor/ckeditor5/issues/820). ([f223d6a](https://github.com/ckeditor/ckeditor5-theme-lark/commit/f223d6a))
-* Manual tests should be aligned to the newest dropdown API ([ckeditor/ckeditor5-ui#356](https://github.com/ckeditor/ckeditor5-ui/issues/356)). Minor refactoring in the drop-down ecosystem. Closes [#129](https://github.com/ckeditor/ckeditor5-theme-lark/issues/129). ([553288a](https://github.com/ckeditor/ckeditor5-theme-lark/commit/553288a))
+* Manual tests should be aligned to the newest dropdown API ([ckeditor/ckeditor5-ui#356](https://github.com/ckeditor/ckeditor5-ui/issues/356)). Minor refactoring in the dropdown ecosystem. Closes [#129](https://github.com/ckeditor/ckeditor5-theme-lark/issues/129). ([553288a](https://github.com/ckeditor/ckeditor5-theme-lark/commit/553288a))
 * Migrated the theme from SASS to PostCSS (see [ckeditor/ckeditor5-ui#144](https://github.com/ckeditor/ckeditor5-ui/issues/144)). ([efc6004](https://github.com/ckeditor/ckeditor5-theme-lark/commit/efc6004))
 * Moved ck-button-icon mixin to ckeditor5-ui. ([f086062](https://github.com/ckeditor/ckeditor5-theme-lark/commit/f086062))
 * Reduced the contrast of the shadow under various floating elements. Closes [ckeditor/ckeditor5#818](https://github.com/ckeditor/ckeditor5/issues/818). ([cf658d5](https://github.com/ckeditor/ckeditor5-theme-lark/commit/cf658d5))
@@ -332,18 +332,18 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 * The `.ck-editor-toolbar` CSS class has been removed.
 * Various CSS variables (mostly colors) have been removed. Please make sure your code uses the latest theme API.
-* From now on there's only one subset of the theme, aligned to the default look of CKEditor 5.
+* From now on there is only one subset of the theme, aligned to the default look of CKEditor&nbsp;5.
 * Various UI components' styles have been rewritten. The CSS selectors that used to style them may have a different specificity and appear in a different order.
 * The styles are no longer developed in SASS which means various `.scss` files (including variables, mixins, etc.) became unavailable. Please refer to the [Theme Customization](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/ui/theme-customization.html) guide to learn more about migration to PostCSS.
 
 
-## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
+## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (November 14, 2017)
 
 ### Other changes
 
 * Updated `.ck-sticky-panel` styles to the new component's structure. ([c8afd35](https://github.com/ckeditor/ckeditor5-theme-lark/commit/c8afd35))
 
-## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v0.9.0...v1.0.0-alpha.1) (2017-10-03)
+## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v0.9.0...v1.0.0-alpha.1) (October 3, 2017)
 
 ### Bug fixes
 
@@ -363,7 +363,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The theme has been, basically, rewritten. Consider it a new implementation.
 
 
-## [0.9.0](https://github.com/ckeditor/ckeditor5-theme/compare/v0.8.0...v0.9.0) (2017-09-03)
+## [0.9.0](https://github.com/ckeditor/ckeditor5-theme/compare/v0.8.0...v0.9.0) (September 3, 2017)
 
 ### Bug fixes
 
@@ -388,7 +388,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * `.ck-disabled` is no longer available as a standalone class due to differences in the implementation of the disabled state among the UI components. Use a mixin instead `.your-class.ck-disabled { [@include](https://github.com/include) ck-disabled; }` to keep the previous functionality (reduced `opacity`) or provide a custom implementation of the state.
 
 
-## [0.8.0](https://github.com/ckeditor/ckeditor5-theme/compare/v0.7.0...v0.8.0) (2017-05-07)
+## [0.8.0](https://github.com/ckeditor/ckeditor5-theme/compare/v0.7.0...v0.8.0) (May 7, 2017)
 
 ### Other changes
 
@@ -404,7 +404,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `ck-toolbar__container` class has been renamed, use `.ck-toolbar-container` instead.
 
 
-## [0.7.0](https://github.com/ckeditor/ckeditor5-theme/compare/v0.6.1...v0.7.0) (2017-04-05)
+## [0.7.0](https://github.com/ckeditor/ckeditor5-theme/compare/v0.6.1...v0.7.0) (April 5, 2017)
 
 ### Features
 
@@ -417,7 +417,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Removed tick symbol from active list item, used inverted background and text colors instead. Closes [#82](https://github.com/ckeditor/ckeditor5-theme/issues/82). ([a2eb843](https://github.com/ckeditor/ckeditor5-theme/commit/a2eb843))
 
 
-## [0.6.1](https://github.com/ckeditor/ckeditor5-theme/compare/v0.6.0...v0.6.1) (2017-03-06)
+## [0.6.1](https://github.com/ckeditor/ckeditor5-theme/compare/v0.6.0...v0.6.1) (March 6, 2017)
 
 ### Bug fixes
 

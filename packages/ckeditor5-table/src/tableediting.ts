@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,31 +7,31 @@
  * @module table/tableediting
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
-import type { PositionOffset, ViewElement, SlotFilter } from 'ckeditor5/src/engine';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import type { PositionOffset, ViewElement, SlotFilter } from 'ckeditor5/src/engine.js';
 
-import upcastTable, { ensureParagraphInTableCell, skipEmptyTableRow, upcastTableFigure } from './converters/upcasttable';
-import { convertParagraphInTableCell, downcastCell, downcastRow, downcastTable } from './converters/downcast';
+import upcastTable, { ensureParagraphInTableCell, skipEmptyTableRow, upcastTableFigure } from './converters/upcasttable.js';
+import { convertParagraphInTableCell, downcastCell, downcastRow, downcastTable } from './converters/downcast.js';
 
-import InsertTableCommand from './commands/inserttablecommand';
-import InsertRowCommand from './commands/insertrowcommand';
-import InsertColumnCommand from './commands/insertcolumncommand';
-import SplitCellCommand from './commands/splitcellcommand';
-import MergeCellCommand from './commands/mergecellcommand';
-import RemoveRowCommand from './commands/removerowcommand';
-import RemoveColumnCommand from './commands/removecolumncommand';
-import SetHeaderRowCommand from './commands/setheaderrowcommand';
-import SetHeaderColumnCommand from './commands/setheadercolumncommand';
-import MergeCellsCommand from './commands/mergecellscommand';
-import SelectRowCommand from './commands/selectrowcommand';
-import SelectColumnCommand from './commands/selectcolumncommand';
-import TableUtils from '../src/tableutils';
+import InsertTableCommand from './commands/inserttablecommand.js';
+import InsertRowCommand from './commands/insertrowcommand.js';
+import InsertColumnCommand from './commands/insertcolumncommand.js';
+import SplitCellCommand from './commands/splitcellcommand.js';
+import MergeCellCommand from './commands/mergecellcommand.js';
+import RemoveRowCommand from './commands/removerowcommand.js';
+import RemoveColumnCommand from './commands/removecolumncommand.js';
+import SetHeaderRowCommand from './commands/setheaderrowcommand.js';
+import SetHeaderColumnCommand from './commands/setheadercolumncommand.js';
+import MergeCellsCommand from './commands/mergecellscommand.js';
+import SelectRowCommand from './commands/selectrowcommand.js';
+import SelectColumnCommand from './commands/selectcolumncommand.js';
+import TableUtils from '../src/tableutils.js';
 
-import injectTableLayoutPostFixer from './converters/table-layout-post-fixer';
-import injectTableCellParagraphPostFixer from './converters/table-cell-paragraph-post-fixer';
+import injectTableLayoutPostFixer from './converters/table-layout-post-fixer.js';
+import injectTableCellParagraphPostFixer from './converters/table-cell-paragraph-post-fixer.js';
 
-import tableHeadingsRefreshHandler from './converters/table-headings-refresh-handler';
-import tableCellRefreshHandler from './converters/table-cell-refresh-handler';
+import tableHeadingsRefreshHandler from './converters/table-headings-refresh-handler.js';
+import tableCellRefreshHandler from './converters/table-cell-refresh-handler.js';
 
 import '../theme/tableediting.css';
 
@@ -47,8 +47,8 @@ export default class TableEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TableEditing' {
-		return 'TableEditing';
+	public static get pluginName() {
+		return 'TableEditing' as const;
 	}
 
 	/**

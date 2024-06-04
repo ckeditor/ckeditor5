@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,33 +7,17 @@
  * @module core/editor/utils/dataapimixin
  */
 
-import type Editor from '../editor';
+import type Editor from '../editor.js';
 
-import type { Constructor, Mixed } from '@ckeditor/ckeditor5-utils';
+import type { Constructor } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Implementation of the {@link module:core/editor/utils/dataapimixin~DataApi}.
+ *
+ * @deprecated This functionality is already implemented by the `Editor` class.
  */
-export default function DataApiMixin<Base extends Constructor<Editor>>( base: Base ): Mixed<Base, DataApi> {
-	abstract class Mixin extends base implements DataApi {
-		public setData( data: string | Record<string, string> ): void {
-			this.data.set( data );
-		}
-
-		public getData( options?: Record<string, unknown> ): string {
-			return this.data.get( options );
-		}
-	}
-
-	return Mixin as any;
-}
-
-// Backward compatibility with `mix`.
-{
-	const mixin = ( DataApiMixin as any )( Object );
-
-	( DataApiMixin as any ).setData = mixin.prototype.setData;
-	( DataApiMixin as any ).getData = mixin.prototype.getData;
+export default function DataApiMixin<Base extends Constructor<Editor>>( base: Base ): Base {
+	return base;
 }
 
 /**
@@ -43,6 +27,8 @@ export default function DataApiMixin<Base extends Constructor<Editor>>( base: Ba
  * This interface is not a part of the {@link module:core/editor/editor~Editor} class because one may want to implement
  * an editor with multiple root elements, in which case the methods for setting and getting data will need to be implemented
  * differently.
+ *
+ * @deprecated This interface is implemented by all `Editor` instances by default.
  */
 export interface DataApi {
 
