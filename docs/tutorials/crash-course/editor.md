@@ -13,7 +13,7 @@ modified_at: 2023-08-16
 
 For the purposes of this tutorial, we have created a repository with the minimal setup required to use the editor. To follow along:
 
-1. Clone [this repository](https://github.com/ckeditor/tutorial-setup).
+1. Clone [this repository](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/crash-course).
 2. Run the `npm install` command to install the dependencies.
 3. Run the `npm run dev` command to start the project.
 4. Open the URL displayed in your terminal.
