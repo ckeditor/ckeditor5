@@ -12,9 +12,9 @@ meta-description: Learn how to upgrade your CKEditor 5 project to the new instal
 This guide will help you migrate your CKEditor 5 project to the new installation methods introduced in CKEditor 5 version 42.0.0. If you created your CKEditor 5 project after the release of CKEditor 5 v42.0.0, you are likely already using the new installation methods and you can skip this guide.
 </info-box>
 
-With the introduction of the new installation methods of CKEditor 5 we greatly simplified the process of adding CKEditor 5 to your project by reducing the number of possible installation methods and eliminating most of the limitations that were present in the old methods.
+With the introduction of new installation methods of CKEditor 5 we greatly simplified the process of adding CKEditor 5 to your project by reducing the number of possible installation paths and eliminating most of the limitations that were present in the old methods.
 
-This guide will show how to migrate your project from every old installation method to the new ones, but first, let's take a look how the editor installation process looks after the changes, to better understand what changed.
+This guide will show how to migrate your project from any old installation method to the new ones. First, let's take a look on how the new editor installation looks like, to better understand what changed.
 
 ## New installation methods
 
@@ -33,13 +33,13 @@ import { FormatPainter, SlashCommand } from 'ckeditor5-premium-features';
 import coreTranslations from 'ckeditor5/translations/pl.js';
 import commercialTranslations from 'ckeditor5-premium-features/translations/pl.js';
 
-import 'ckeditor5/index.css';
-import 'ckeditor5-premium-features/index.css';
+import 'ckeditor5/ckeditor5.css';
+import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
   plugins: [ Essentials, Bold, Italic, Paragraph, FormatPainter, SlashCommand ],
   toolbar: { /* ... */ },
-  licenseKey: 'your-license-key',
+  licenseKey: '<LICENSE_KEY>',
   translations: [
     coreTranslations,
     commercialTranslations
@@ -54,17 +54,17 @@ The browser builds are a great way to use CKEditor 5 if you are not using a modu
 Here's the same setup as above, but using the browser builds:
 
 ```html
-<link rel="stylesheet" href="<CDN_LINK>/ckeditor5/dist/styles.css">
-<link rel="stylesheet" href="<CDN_LINK>/ckeditor5-premium-features/dist/styles.css">
+<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
+<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
 
 <script type="importmap">
 {
-  "imports": {
-    "ckeditor5": "<CDN_LINK>/ckeditor5/dist/index.min.js",
-		"ckeditor5/": "<CDN_LINK>/ckeditor5/dist/",
-		"ckeditor5-premium-features": "<CDN_LINK>/ckeditor5-premium-features/dist/browser/index.js",
-		"ckeditor5-premium-features/": "<CDN_LINK>/ckeditor5-premium-features/dist/"
-  }
+	"imports": {
+		"ckeditor5": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.js",
+		"ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/",
+		"ckeditor5-premium-features": "https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.js",
+		"ckeditor5-premium-features/": "https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/"
+	}
 }
 </script>
 
@@ -78,7 +78,7 @@ import commercialTranslations from 'ckeditor5-premium-features/translations/pl.j
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ Essentials, Bold, Italic, Paragraph, FormatPainter, SlashCommand ],
 	toolbar: { /* ... */ },
-	licenseKey: 'your-license-key',
+	licenseKey: '<LICENSE_KEY>',
 	translations: [
 		coreTranslations,
 		commercialTranslations
