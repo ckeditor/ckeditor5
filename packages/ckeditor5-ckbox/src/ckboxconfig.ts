@@ -144,35 +144,103 @@ export interface CKBoxConfig {
 	 */
 	dialog?: CKBoxDialog;
 
+	/**
+	 * Allows setting custom icons for categories.
+	 */
 	categories?: CKBoxCategories;
 
+	/**
+	 * Configures the view of CKBox.
+	 */
 	view?: CKBoxView;
 
+	/**
+	 * Configures when dialog should be minimized and hidden.
+	 */
 	upload?: CKBoxUpload;
 
+	/**
+	 * Specifies the file extensions considered valid for user interaction. Whith this
+	 * option developers can restrict user interaction to only those assets whose file
+	 * extensions match those listed in the array. Assets whose file
+	 * extensions are not listed in the choosableFileExtensions array are
+	 * automatically disabled within the CKBox interface.
+	 */
 	choosableFileExtensions?: Array<string>;
 }
 
 export type CKBoxDialog = {
+
+	/**
+	 * The dialog width in pixels.
+	 */
 	width: number;
+
+	/**
+	 * The dialog height in pixels.
+	 */
 	height: number;
 };
 
 export type CKBoxCategories = {
+
+	/**
+	 * This option takes an object with categories and icons that should be used instead
+	 * of the default ones. Categories can be defined using either their name or id.
+	 * Icons should be defined as strings containing the SVG images, or as React components.
+	 */
 	icons: {
 		[ key: string ]: string;
 	};
 };
 
 export type CKBoxView = {
+
+	/**
+	 * If it is set to false the last view visited by the user will not be reopened on
+	 * the next startup.
+	 */
 	openLastView: boolean;
+
+	/**
+	 * Sets the ID of the folder that will be opened on startup. This option can be paired
+	 * with setting view.openLastView to false to enforce CKBox to always open in a given
+	 * folder at startup.
+	 */
 	startupFolderId: string;
+
+	/**
+	 * Sets the ID of the category that will be opened on startup. This option can be paired
+	 * with setting view.openLastView to `false` to enforce CKBox to always open in a given
+	 * category at startup. If `view.startupCategoryId` is passed along with the
+	 * `view.startupFolderId` option, CKBox will prioritize opening category view on the startup.
+	 */
 	startupCategoryId: string;
+
+	/**
+	 * Sets whether to hide the ‘Maximize’ button. By default, the button is shown and enabling
+	 * this option will hide it.
+	 */
 	hideMaximizeButton: boolean;
 };
 
 export type CKBoxUpload = {
+
+	/**
+	 * Sets timeout (in milliseconds) after which upload components (dialog and indicator) are
+	 * hidden. By default, these components hide automatically after 10 seconds.
+	 *
+	 * Read more: https://ckeditor.com/docs/ckbox/latest/guides/configuration/configuration-options.html#uploadcomponentshidetimeout
+	 */
 	componentsHideTimeout: number;
+
+	/**
+	 * Sets timeout (in milliseconds) after which upload dialog is minimized once upload is
+	 * finished and all uploads were successful. By default, upload dialog is never minimized
+	 * automatically.
+	 *
+	 * Read more: https://ckeditor.com/docs/ckbox/latest/guides/configuration/configuration-options.html#uploaddialogminimizetimeout
+	 */
 	dialogMinimizeTimeout: number;
 };
 
