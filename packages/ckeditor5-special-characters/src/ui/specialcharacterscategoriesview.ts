@@ -112,9 +112,10 @@ export default class SpecialCharactersCategoriesView extends View {
 		}
 
 		const t = this.locale!.t;
-		const accessibleLabel = t( 'Categories' );
+		const accessibleLabel = t( 'Category' );
 
 		this.dropdownView.label = accessibleLabel;
+		this.dropdownView.bind( 'isEmpty' ).to( this, 'currentGroupName', value => !value );
 
 		this.dropdownView.fieldView.buttonView.set( {
 			withText: true,
@@ -122,8 +123,6 @@ export default class SpecialCharactersCategoriesView extends View {
 			ariaLabel: accessibleLabel,
 			isOn: false
 		} );
-
-		this.dropdownView.bind( 'isEmpty' ).to( this, 'currentGroupName', value => !value );
 		this.dropdownView.fieldView.buttonView.bind( 'label' ).to( this, 'currentGroupName' );
 		this.dropdownView.fieldView.on( 'execute', ( { source } ) => {
 			this.currentGroupName = ( source as ButtonView ).label!;
