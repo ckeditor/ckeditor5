@@ -59,8 +59,8 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
 import { SlashCommand } from 'ckeditor5-premium-features';
 
-import 'ckeditor5/index.css';
-import 'ckeditor5-premium-features/index.css';
+import 'ckeditor5/ckeditor5.css';
+import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 
 function CustomEditor() {
     return (

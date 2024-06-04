@@ -42,7 +42,7 @@ import {
 	Italic,
 	Plugin
 } from 'ckeditor5';
-import 'ckeditor5/index.css';
+import 'ckeditor5/ckeditor5.css';
 
 class Timestamp extends Plugin {
 	init() {
@@ -90,7 +90,7 @@ import {
 	Plugin,
 	ButtonView
 } from 'ckeditor5';
-import 'ckeditor5/index.css';
+import 'ckeditor5/ckeditor5.css';
 
 class Timestamp extends Plugin {
 	init() {

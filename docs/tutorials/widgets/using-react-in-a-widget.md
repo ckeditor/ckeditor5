@@ -377,7 +377,7 @@ import ProductPreviewEditing from './ckeditor/productpreviewediting';
 // React components to render the list of products and the product preview.
 import ProductList from './react/productlist';
 import ProductPreview from './react/productpreview';
-import 'ckeditor5/index.css';
+import 'ckeditor5/ckeditor5.css';
 import './styles.css';
 
 // The React application function component. It renders the editor and the product list.

@@ -152,8 +152,8 @@ import { Component } from '@angular/core';
 import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
 import { SlashCommand } from 'ckeditor5-premium-features';
 
-import 'ckeditor5/index.css';
-import 'ckeditor5-premium-features/index.css';
+import 'ckeditor5/ckeditor5.css';
+import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 
 @Component( {
 	selector: 'app-root',
@@ -197,8 +197,8 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
 import { SlashCommand } from 'ckeditor5-premium-features';
 
-import 'ckeditor5/index.css';
-import 'ckeditor5-premium-features/index.css';
+import 'ckeditor5/ckeditor5.css';
+import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 
 @Component( {
 	selector: 'app-root',
@@ -572,7 +572,7 @@ import { Component } from '@angular/core';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { DecoupledEditor, Essentials, Italic, Paragraph, Bold, Undo } from 'ckeditor5';
 
-import 'ckeditor5/index.css';
+import 'ckeditor5/ckeditor5.css';
 
 @Component( {
 	selector: 'app-root',

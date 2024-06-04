@@ -110,7 +110,7 @@ Finally, you need to load the `Placeholder` plugin in your `main.js` file:
 import { ClassicEditor, Bold, Italic, Essentials, Heading, List, Paragraph } from 'ckeditor5';
 import Placeholder from './placeholder/placeholder';
 import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
-import 'ckeditor5/index.css';
+import 'ckeditor5/ckeditor5.css';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
