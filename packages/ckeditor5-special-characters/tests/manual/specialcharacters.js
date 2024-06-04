@@ -38,6 +38,7 @@ ClassicEditor
 			'|',
 			'specialCharacters'
 		],
+		menuBar: { isVisible: true },
 		image: {
 			toolbar: [
 				'imageStyle:inline',
