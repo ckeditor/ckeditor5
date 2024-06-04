@@ -12,7 +12,7 @@ Observables are common building blocks of the {@link framework/index CKEditor&nb
 Any class can become observable; all you need to do is mix the {@link module:utils/observablemixin~Observable} into it:
 
 ```js
-import { ObservableMixin, mix } from '@ckeditor/ckeditor5-utils';
+import { ObservableMixin, mix } from 'ckeditor5';
 
 class AnyClass {
 	// Any class definition.
@@ -331,12 +331,12 @@ class Button extends View {
 	}
 
 	/**
-	 * Focuses the button.
-	 *
-	 * @param {Boolean} force When `true`, the button will be focused again, even if already
-	 * focused in DOM.
-	 * @returns {Boolean} `true` when the DOM element was focused in DOM, `false` otherwise.
-	 */
+	* Focuses the button.
+	*
+	* @param {Boolean} force When `true`, the button will be focused again, even if already
+	* focused in DOM.
+	* @returns {Boolean} `true` when the DOM element was focused in DOM, `false` otherwise.
+	*/
 	focus( force ) {
 		console.log( `Focusing button, force argument="${ force }"` );
 

@@ -27,27 +27,12 @@ Paste some Markdown-formatted content into the demo editor below and see it turn
 
 ## Installation
 
-<info-box info>
-	This feature is not available in any of the {@link installation/getting-started/predefined-builds predefined builds}.
-</info-box>
-
-To enable this data processor in your editor, install the [`@ckeditor/ckeditor5-markdown-gfm`](https://www.npmjs.com/package/@ckeditor/ckeditor5-markdown-gfm) package:
-
-```
-npm install --save @ckeditor/ckeditor5-markdown-gfm
-```
-
-Then add the {@link module:markdown-gfm/pastefrommarkdownexperimental~PasteFromMarkdownExperimental} plugin to the editor configuration:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-
-import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { ClassicEditor, Bold, Italic, Essentials, PasteFromMarkdownExperimental } from 'ckeditor5';
 // More imports.
 // ...
-
-import { PasteFromMarkdownExperimental } from '@ckeditor/ckeditor5-markdown-gfm';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-markdown' ), {
@@ -66,10 +51,6 @@ ClassicEditor
 	.catch( /* ... */ );
 
 ```
-
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
-</info-box>
 
 ## Known issues
 

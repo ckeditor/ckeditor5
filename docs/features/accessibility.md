@@ -29,7 +29,7 @@ In our ongoing commitment to accessibility, we provide a report based on the [IT
 We continuously update the <acronym title="Voluntary Product Accessibility Template">VPAT</acronym>**®** report to reflect any changes or improvements. You can download the latest version of the <acronym title="Voluntary Product Accessibility Template">VPAT</acronym>**®** document below.
 
 <info-box info>
-	⬇️ <a href="../assets/pdf/VPAT_CKEditor_5_v41.3.2.pdf" target="_blank"><b>Download <acronym title="Voluntary Product Accessibility Template">VPAT</acronym>**®** report for CKEditor&nbsp;5 v41.3.2 (May 15, 2024)</b></a>
+	⬇️ <a href="../assets/pdf/VPAT_CKEditor_5_v41.4.2.pdf" target="_blank"><b>Download <acronym title="Voluntary Product Accessibility Template">VPAT</acronym>**®** report for CKEditor&nbsp;5 v41.4.2 (May 17, 2024)</b></a>
 
 	<details>
 		<summary>Previous versions</summary>
@@ -46,7 +46,7 @@ We continuously update the <acronym title="Voluntary Product Accessibility Templ
 CKEditor&nbsp;5 supports various keyboard shortcuts that boost productivity and provide necessary accessibility to screen reader users.
 
 <info-box info>
-	Keyboard support is enabled by default for all {@link installation/getting-started/predefined-builds editor types} and core {@link features/index editor features}.
+	Keyboard support is enabled by default for all editor types and core {@link features/index editor features}.
 </info-box>
 
 Below is a list of the most important keystrokes supported by CKEditor&nbsp;5 and its features.
@@ -357,4 +357,4 @@ Learn how integrators can {@link tutorials/crash-course/keystrokes#adding-keyboa
 
 ## Accessibility feedback and bugs
 
-We welcome your feedback on the accessibility of CKEditor&nbsp;5. You can find the [current list of accessibility issues](https://github.com/ckeditor/ckeditor5/issues?q=is%3Aopen+is%3Aissue+label%3Adomain%3Aaccessibility) on GitHub. Learn how to {@link support/reporting-issues report issues}.
+We welcome your feedback on the accessibility of CKEditor&nbsp;5. You can find the [current list of accessibility issues](https://github.com/ckeditor/ckeditor5/issues?q=is%3Aopen+is%3Aissue+label%3Adomain%3Aaccessibility) on GitHub. Learn how to {@link support/index#reporting-issues report issues}.

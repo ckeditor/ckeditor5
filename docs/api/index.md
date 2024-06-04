@@ -19,9 +19,9 @@ meta-title: CKEditor 5 API | CKEditor 5 documentation
 ## Documentation
 
 * {@link framework/index CKEditor&nbsp;5 Framework} &ndash; Learn how to develop with CKEditor&nbsp;5 Framework, customize it and create plugins.
-* {@link installation/index Installing CKEditor&nbsp;5} &ndash; Learn how to install, integrate and configure CKEditor&nbsp;5 builds. More complex aspects, like creating custom builds, are explained here, too.
-* {@link features/index Features} &ndash; Learn about some of the features included in CKEditor&nbsp;5 builds.
+* {@link getting-started/index Installing CKEditor&nbsp;5} &ndash; Learn how to install, integrate and configure CKEditor&nbsp;5.
+* {@link features/index Features} &ndash; Learn about the features available in CKEditor&nbsp;5.
 
 ## Contribute
 
-CKEditor is an Open Source project and your contribution is most welcome. Feel free to {@link support/reporting-issues report bugs} or improve the code on [GitHub](https://github.com/ckeditor/ckeditor5). Since CKEditor is localized, you can also help [to translate it](https://www.transifex.com/ckeditor/ckeditor5/). You do not need to be a programmer to contribute to the project!
+CKEditor is an Open Source project and your contribution is most welcome. Feel free to {@link support/index#reporting-issues report bugs} or improve the code on [GitHub](https://github.com/ckeditor/ckeditor5). Since CKEditor is localized, you can also help [to translate it](https://www.transifex.com/ckeditor/ckeditor5/). You do not need to be a programmer to contribute to the project!

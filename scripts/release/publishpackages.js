@@ -90,7 +90,7 @@ const tasks = new Listr( [
 			} );
 		},
 		// Nightly releases are not stored in the repository.
-		skip: cliArguments.nightly
+		skip: cliArguments.nightly || cliArguments.nightlyAlpha
 	},
 	{
 		title: 'Creating the release page.',
@@ -107,7 +107,7 @@ const tasks = new Listr( [
 			persistentOutput: true
 		},
 		// Nightly releases are not described in the changelog.
-		skip: cliArguments.nightly
+		skip: cliArguments.nightly || cliArguments.nightlyAlpha
 	}
 ], getListrOptions( cliArguments ) );
 
@@ -115,7 +115,7 @@ const tasks = new Listr( [
 	try {
 		if ( process.env.CKE5_RELEASE_TOKEN ) {
 			githubToken = process.env.CKE5_RELEASE_TOKEN;
-		} else if ( !cliArguments.nightly ) {
+		} else if ( !( cliArguments.nightly || cliArguments.nightlyAlpha ) ) {
 			githubToken = await provideToken();
 		}
 

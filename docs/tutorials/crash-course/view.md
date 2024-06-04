@@ -28,7 +28,7 @@ In this section, we will focus on updating the toolbar.
 Let's import the `ButtonView` constructor in the `src/plugin.js` file:
 
 ```js
-import { ButtonView } from 'ckeditor5/src/ui';
+import { ButtonView } from 'ckeditor5';
 ```
 
 Then add the following code at the bottom of the `Highlight` method:

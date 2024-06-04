@@ -20,8 +20,10 @@ This plugin is usually enabled by the {@link module:essentials/essentials~Essent
 
 ## Installation
 
-```
-npm install --save @ckeditor/ckeditor5-select-all
+This package is part of our open-source aggregate package.
+
+```bash
+npm install ckeditor5
 ```
 
 ## Contribute

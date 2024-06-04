@@ -1,7 +1,7 @@
 ---
 category: framework-contributing
 meta-title: Code style | CKEditor 5 Framework Documentation
-order: 30
+order: 40
 modified_at: 2022-11-03
 ---
 
@@ -153,13 +153,13 @@ class Foo extends Plugin {
 		super( editor );
 
 		/**
-		 * Some documentation...
-		 */
+		* Some documentation...
+		*/
 		this.foo = new Foo();
 
 		/**
-		 * Some documentation...
-		 */
+		* Some documentation...
+		*/
 		this.isBar = false;
 	}
 
@@ -370,31 +370,31 @@ Example:
 ```js
 class Foo {
 	/**
-	 * The constructor (public, as its visibility isn't defined).
-	 */
+	* The constructor (public, as its visibility isn't defined).
+	*/
 	constructor() {
 		/**
-		 * Public property.
-		 */
+		* Public property.
+		*/
 		this.foo = 1;
 
 		/**
-		 * Protected property.
-		 *
-		 * @protected
-		 */
+		* Protected property.
+		*
+		* @protected
+		*/
 		this._bar = 1;
 
 		/**
-		 * @private
-		 * @property {Number} _bom
-		 */
+		* @private
+		* @property {Number} _bom
+		*/
 		this[ Symbol( 'bom' ) ] = 1;
 	}
 
 	/**
-	 * @private
-	 */
+	* @private
+	*/
 	_somePrivateMethod() {}
 }
 
@@ -638,7 +638,7 @@ All buttons should follow the **verb + noun** or the **noun** convention. Exampl
 
 #### Commands
 
-As for commands, it is trickier. There are more possible combinations of their names than there are for buttons. Examples:
+As for commands, it is trickier. There are more combinations of their names possible than there are for buttons. Examples:
 
 * The **feature-related** convention:
 	* **noun-based** case:
@@ -827,7 +827,7 @@ Even if the import statement works locally, it will throw an error when develope
 ```js
 // Assume we edit a file located in the path: `packages/ckeditor5-engine/src/model/model.js`
 
-import { CKEditorError } from '@ckeditor/ckeditor5-utils';
+import { CKEditorError } from 'ckeditor5';
 ```
 
 [History of the change.](https://github.com/ckeditor/ckeditor5/issues/7128)
@@ -875,7 +875,7 @@ throw new CKEditorError( 'editor-wrong-element', this );
 
 To make CKEditor&nbsp;5 plugins compatible with each other, we needed to introduce limitations when importing files from packages.
 
-Packages marked as "Base DLL build" can import between themselves without any restrictions. Names of these packages are specified in the {@link installation/advanced/dll-builds#anatomy-of-a-dll-build DLL builds} guide.
+Packages marked as "Base DLL build" can import between themselves without any restrictions. Names of these packages are specified in the {@link getting-started/advanced/dll-builds#anatomy-of-a-dll-build DLL builds} guide.
 
 The other CKEditor&nbsp;5 features (non-DLL) can import "Base DLL" packages using the `ckeditor5` package.
 
@@ -928,7 +928,7 @@ import { Plugin } from 'ckeditor5/src/core';
 ```js
 // Assume we edit a file located in the path: `packages/ckeditor5-widget/src/widget.js`
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from 'ckeditor5';
 ```
 
 History of changes:
@@ -955,7 +955,7 @@ Currently, it applies to the `@ckeditor/ckeditor5-watchdog` package.
 // Assume we edit a file located in the `packages/ckeditor5-watchdog/` directory.
 
 import { toArray } from 'ckeditor5/src/utils';
-import { toArray } from '@ckeditor/ckeditor5-utils';
+import { toArray } from 'ckeditor5';
 ```
 
 [History of the change.](https://github.com/ckeditor/ckeditor5/issues/9318)
@@ -1027,8 +1027,8 @@ class ClassWithSecrets {
 ```ts
 class ClassWithSecrets {
 	/**
-	 * @internal
-	 */
+	* @internal
+	*/
 	private _shouldNotBeEmitted: string;
 }
 ```
@@ -1096,7 +1096,7 @@ import Table from '@ckeditor/ckeditor5-table/src/table';
 
 ```ts
 // ✔️ Importing from the main entry point is allowed.
-import { Table } from '@ckeditor/ckeditor5-table';
+import { Table } from 'ckeditor5';
 ```
 
 ### Require `as const`: `ckeditor5-rules/require-as-const-returns-in-methods`
@@ -1189,5 +1189,5 @@ import CheckIcon from './../theme/icons/check.svg';
 ```
 
 ```js
-import { icons } from '@ckeditor/ckeditor5-core';
+import { icons } from 'ckeditor5';
 ```

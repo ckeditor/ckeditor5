@@ -19,6 +19,22 @@ Use the find and replace toolbar button {@icon @ckeditor/ckeditor5-find-and-repl
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
+## Installation
+
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+
+```js
+import { ClassicEditor, FindAndReplace } from 'ckeditor5';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ FindAndReplace, /* ... */ ],
+		toolbar: [ 'findAndReplace', /* ... */ ],
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
 ## Configuration
 
 ### Configuring the UI type
@@ -37,36 +53,6 @@ ClassicEditor
 ```
 
 {@snippet features/find-and-replace-dropdown}
-
-## Installation
-
-<info-box info>
-	The find and replace feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
-</info-box>
-
-To add this feature to your editor, install the [`@ckeditor/ckeditor5-find-and-replace`](https://www.npmjs.com/package/@ckeditor/ckeditor5-find-and-replace) package:
-
-```
-npm install --save @ckeditor/ckeditor5-find-and-replace
-```
-
-Then add the `FindAndReplace` plugin to your plugin list:
-
-```js
-import { FindAndReplace } from '@ckeditor/ckeditor5-find-and-replace';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ FindAndReplace, /* ... */ ],
-		toolbar: [ 'findAndReplace', /* ... */ ],
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
-```
-
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
-</info-box>
 
 ## Related features
 

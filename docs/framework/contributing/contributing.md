@@ -26,7 +26,7 @@ To learn how to set up the project and run tests see the {@link framework/contri
 
 Read more in the {@link framework/contributing/code-style code style} guide, where you can also check the {@link framework/contributing/code-style#naming naming} and {@link framework/contributing/code-style#file-names file name} guidelines.
 
-Every package repository installs Git hooks that automatically lint and check the code for code style on commit. However, not every code style issue can be discovered this way, so please do not rely on tools too much :).
+Every package repository installs Git hooks that automatically lint and check the code for code style on commit. However, not every code style issue can be discovered this way, so please do not rely on tools too much.
 
 ### Tests
 
@@ -101,7 +101,7 @@ Here as well, having a CLA in place is a requirement to become an official trans
 
 ## Reporting issues and requesting features
 
-Read the {@link support/reporting-issues reporting issues} guide to learn more.
+Read the {@link support/index#reporting-issues reporting issues} guide to learn more.
 
 ## Contributor License Agreement (CLA)
 

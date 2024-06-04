@@ -15,6 +15,12 @@ Check out the [demo in the show blocks feature](https://ckeditor.com/docs/ckedit
 
 See the [`@ckeditor/ckeditor5-show-blocks` package](https://ckeditor.com/docs/ckeditor5/latest/api/show-blocks.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/) as well as the [Show blocks](https://ckeditor.com/docs/ckeditor5/latest/features/show-blocks.html) feature guide.
 
+## Installation
+
+```bash
+npm install ckeditor5
+```
+
 ## License
 
 Licensed under the terms of [GNU General Public License Version 2 or later](http://www.gnu.org/licenses/gpl.html). For full details about the license, please check the `LICENSE.md` file or [https://ckeditor.com/legal/ckeditor-oss-license](https://ckeditor.com/legal/ckeditor-oss-license).

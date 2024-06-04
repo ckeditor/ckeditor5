@@ -41,7 +41,21 @@ ClassicEditor
 		const wordCountWrapper = document.getElementById( 'word-count' );
 
 		wordCountWrapper.appendChild( wordCountPlugin.wordCountContainer );
+	} );
+```
+
+## Installation
+
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+
+```js
+import { ClassicEditor, WordCount } from 'ckeditor5';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ WordCount, /* ... */ ],
 	} )
+	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
 
@@ -141,8 +155,7 @@ BalloonEditor
 				sendButton.toggleAttribute( 'disabled', isLimitExceeded );
 			}
 		}
-	} )
-	.catch( /* ... */ );
+	} );
 ```
 
 Here is the HTML structure used to create the customized word and character count implementation above:
@@ -229,36 +242,6 @@ Here is the HTML structure used to create the customized word and character coun
 	</div>
 </div>
 ```
-
-## Installation
-
-<info-box info>
-	The Word count feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
-</info-box>
-
-To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-word-count`](https://www.npmjs.com/package/@ckeditor/ckeditor5-word-count) package:
-
-```bash
-npm install --save @ckeditor/ckeditor5-word-count
-```
-
-And add it to your plugin list configuration:
-
-```js
-import { WordCount } from '@ckeditor/ckeditor5-word-count';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ WordCount, /* ... */ ],
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
-```
-
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
-</info-box>
-
 
 ## Related features
 
