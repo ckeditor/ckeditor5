@@ -33,16 +33,18 @@ Before, the OpenAI adapter was automatically required by the `AIAssistant` plugi
 // Before:
 import { AIAssistant } from '@ckeditor/ckeditor5-ai';
 
-ClassicEditor.create( element, {
-	plugins: [ AIAssistant, /* ... */ ]
-} );
+ClassicEditor
+	.create( element, {
+		plugins: [ AIAssistant, /* ... */ ]
+	} );
 
 // After:
 import { AIAssistant, OpenAITextAdapter } from '@ckeditor/ckeditor5-ai';
 
-ClassicEditor.create( element, {
-	plugins: [ AIAssistant, OpenAITextAdapter, /* ... */ ]
-} );
+ClassicEditor
+	.create( element, {
+		plugins: [ AIAssistant, OpenAITextAdapter, /* ... */ ]
+	} );
 ```
 
 Another change is related to the {@link module:ai/aiassistant~AIAssistantConfig configuration structure}:
@@ -54,28 +56,30 @@ Another change is related to the {@link module:ai/aiassistant~AIAssistantConfig 
 
 ```js
 // Before:
-ClassicEditor.create( element, {
-	aiAssitant: {
-		authKey: 'OPENAI_API_KEY',
-		removeCommands: [ 'improveWriting', 'casual' ],
-		useTheme: false
-	}
-} );
+ClassicEditor
+	.create( element, {
+		aiAssitant: {
+			authKey: 'OPENAI_API_KEY',
+			removeCommands: [ 'improveWriting', 'casual' ],
+			useTheme: false
+		}
+	} );
 
 // After:
-ClassicEditor.create( element, {
-	ai: {
-		openAI: {
-			requestHeaders: {
-				Authorization: 'Bearer OPENAI_API_KEY'
-			}
-		},
-		aiAssistant: {
-			removeCommands: [ 'improveWriting', 'casual' ]
-		},
-		useTheme: false
-	}
-} );
+ClassicEditor
+	.create( element, {
+		ai: {
+			openAI: {
+				requestHeaders: {
+					Authorization: 'Bearer OPENAI_API_KEY'
+				}
+			},
+			aiAssistant: {
+				removeCommands: [ 'improveWriting', 'casual' ]
+			},
+			useTheme: false
+		}
+	} );
 ```
 
 ### CKBox image editing
@@ -218,13 +222,14 @@ We renamed the `undefined` option to `auto` (see further details below). Now, if
 If you wish to change this behavior, you can adjust the `type` setting in the editor configuration to meet your needs:
 
 ```js
-ClassicEditor.create( element, {
-	image: {
-		insert: {
-			type: 'auto'
+ClassicEditor
+	.create( element, {
+		image: {
+			insert: {
+				type: 'auto'
+			}
 		}
-	}
-} );
+	} );
 ```
 
 The `type` setting accepts the following values:

@@ -8,12 +8,6 @@ order: 10
 
 # Getting and setting data
 
-<info-box hint>
-**Quick recap**
-
-In the {@link getting-started/legacy-getting-started/editor-lifecycle previous guide} you have learned about lifecycle methods. Having the editor created, you can now set or get its data.
-</info-box>
-
 CKEditor 5 allows you to retrieve the data from and save it to your server (or to your system in general) in various ways. In this guide, you can learn about the available options along with their pros and cons.
 
 ## Manually retrieving the data
@@ -102,7 +96,7 @@ In your HTTP server, you can now read the editor data from the `content` variabl
 
 ```php
 <?php
-    $editor_data = $_POST[ 'content' ];
+	$editor_data = $_POST[ 'content' ];
 ?>
 ```
 
@@ -141,14 +135,15 @@ While simple content like that mentioned above does not itself require to be enc
 If the source element is not `<textarea>`, CKEditor 5 clears its content after the editor is destroyed. However, if you would like to enable updating the source element with the output coming from the data pipeline, you can use the {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy `updateSourceElementOnDestroy`} configuration option.
 
 ```js
-ClassicEditor.create( document.querySelector( '#editor' ), {
-    // ...
-    updateSourceElementOnDestroy: true
-} );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		// ...
+		updateSourceElementOnDestroy: true
+	} );
 ```
 
 <info-box warning>
-Enabling the `updateSourceElementOnDestroy` option in your configuration might have some security implications, depending on the plugins you use. While the editing view is secured, there might be some unsafe content in the data output, so enable this option only if you know what you are doing. Be especially careful when using the Markdown, General HTML Support, and HTML embed features.
+	Enabling the `updateSourceElementOnDestroy` option in your configuration might have some security implications, depending on the plugins you use. While the editing view is secured, there might be some unsafe content in the data output, so enable this option only if you know what you are doing. Be especially careful when using the Markdown, General HTML Support, and HTML embed features.
 </info-box>
 
 ## Autosave feature
@@ -281,10 +276,3 @@ How to understand this demo:
 * You will be asked whether you want to leave the page if an image is being uploaded or the data has not been saved successfully yet. You can test that by dropping a big image into the editor or changing the "HTTP server lag" to a high value (e.g. 9000ms) and clicking the "Save" button. These actions will make the editor "busy" for a longer time &ndash; try leaving the page then.
 
 {@snippet installation/getting-and-setting-data/manualsave}
-
-<info-box hint>
-**What's next**
-
-Having read this guide, you know how to communicate with the editor, but remember that CKEditor 5 offers a rich API to interact with it. Check out the {@link getting-started/legacy-getting-started/api-and-events API and events guide} for more.
-
-</info-box>

@@ -21,9 +21,14 @@ The height of the editing area can be easily controlled with CSS.
 }
 ```
 
-### How to customize the CKEditor 5 icons?
+### How to customize the CKEditor&nbsp;5 icons?
+
+<info-box warning>
+	This method only works with the webpack setup that was the default one before new installation methods introduced in CKEditor&nbsp;5 v42.0.0. We are working on the ability to replace icons in the current default method. Stay tuned!
+</info-box>
 
 The easiest way is to use webpack's [`NormalModuleReplacementPlugin`](https://webpack.js.org/plugins/normal-module-replacement-plugin/) plugin. For example, to replace the bold icon, use the following code in your `webpack.config.js`:
+
 
 ```js
 // ...
@@ -68,7 +73,7 @@ editorInstance.editing.view.change( writer => {
 } );
 ```
 
-### How to check the CKEditor version?
+### How to check the CKEditor&nbsp;5 version?
 
 To check your editor version, open the JavaScript console available in the browser's developer tools. This is usually done through the browser's menu or by right-clicking anywhere on the page and choosing the `Inspect` option from the dropdown.
 
@@ -88,14 +93,17 @@ function MyPlugin(editor) {
 	// ...
 }
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	// If you're using builds, this is going to be extraPlugins property.
-	plugins: [
-		MyPlugin,
-		// Other plugins.
-		// ...
-	]
-} );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		// If you're using builds, this is going to be extraPlugins property.
+		plugins: [
+			MyPlugin,
+			// Other plugins.
+			// ...
+		]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ### How to get the editor instance object from the DOM element?

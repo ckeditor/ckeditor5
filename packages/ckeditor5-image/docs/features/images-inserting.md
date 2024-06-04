@@ -30,11 +30,13 @@ Using the URL of an image, the user may paste it into the editor. To enable this
 ```js
 import { ClassicEditor, Image, ImageInsert } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Image, ImageInsert, /* ... */  ],
-	toolbar: [ 'insertImage', /* ... */  ]
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Image, ImageInsert, /* ... */  ],
+		toolbar: [ 'insertImage', /* ... */  ]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 This will add a new **Insert image** dropdown {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Insert image} in the toolbar.
@@ -56,9 +58,12 @@ The {@link module:image/autoimage~AutoImage} plugin recognizes image links in th
 ```js
 import { ClassicEditor, Image, AutoImage } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ /* ... */ , Image, AutoImage ]
-} )
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ /* ... */ , Image, AutoImage ]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box>
@@ -71,11 +76,13 @@ If the automatic embedding was unexpected, for instance when the link was meant 
 
 The {@link module:image/image~Image} plugin registers:
 
+* The `'insertImage'` toolbar dropdown component that aggregates all image insert methods available in the current editor setup.
+* The `'insertImageViaUrl'` toolbar button that opens a modal dialog to let you insert an image by specifying the image URL.
 * The {@link module:image/image/insertimagecommand~InsertImageCommand `'insertImage'` command} that accepts a source (for example a URL) of an image to insert.
 
 The {@link module:image/imageupload~ImageUpload} plugin registers:
 
-* The `'uploadImage'` button that opens the native file browser to let you upload a file directly from your disk (to use in the {@link features/images-overview#image-contextual-toolbar image toolbar}).
+* The `'uploadImage'` toolbar button that opens the native file browser to let you upload a file directly from your disk (to use in the {@link features/images-overview#image-contextual-toolbar image toolbar}).
 * The {@link module:image/imageupload/uploadimagecommand~UploadImageCommand `'uploadImage'` command} that accepts the file to upload.
 
 <info-box>

@@ -32,14 +32,16 @@ After {@link getting-started/quick-start installing the editor}, add the feature
 ```js
 import { ClassicEditor, Mention } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Mention, /* ... */ ],
-	mention: {
-		// Configuration.
-		// ...
-	}
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Mention, /* ... */ ],
+		mention: {
+			// Configuration.
+			// ...
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Configuration
@@ -49,22 +51,24 @@ The minimal configuration of the mention feature requires defining a {@link modu
 The code snippet below was used to configure the demo above. It defines the list of names that the editor will autocomplete after the user types the "@" character.
 
 ```js
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	// This feature is available in the superbuild only.
-	// See the "Installation" section.
-	plugins: [ Mention, /* ... */ ],
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		// This feature is available in the superbuild only.
+		// See the "Installation" section.
+		plugins: [ Mention, /* ... */ ],
 
-	mention: {
-		feeds: [
-			{
-				marker: '@',
-				feed: [ '@Barney', '@Lily', '@Marry Ann', '@Marshall', '@Robin', '@Ted' ],
-				minimumCharacters: 1
-			}
-		]
-	}
-} )
-.then( /* ... */ );
+		mention: {
+			feeds: [
+				{
+					marker: '@',
+					feed: [ '@Barney', '@Lily', '@Marry Ann', '@Marshall', '@Robin', '@Ted' ],
+					minimumCharacters: 1
+				}
+			]
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 Additionally, you can configure:
@@ -91,21 +95,23 @@ When using a callback you can return a `Promise` that resolves with the list of 
 The callback receives the query text which should be used to filter item suggestions. It should return a `Promise` and resolve it with an array of items that match the feed text.
 
 ```js
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	// This feature is available in the superbuild only.
-	// See the "Installation" section.
-	plugins: [ Mention, /* ... */ ],
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		// This feature is available in the superbuild only.
+		// See the "Installation" section.
+		plugins: [ Mention, /* ... */ ],
 
-	mention: {
-		feeds: [
-			{
-				marker: '@',
-				feed: getFeedItems
+		mention: {
+			feeds: [
+				{
+					marker: '@',
+					feed: getFeedItems
+				}
 			}
-		}
-	]
-} )
-.then( /* ... */ );
+		]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 
 const items = [
 	{ id: '@swarley', userId: '1', name: 'Barney Stinson', link: 'https://www.imdb.com/title/tt0460649/characters/nm0000439' },
@@ -157,19 +163,21 @@ The items displayed in the autocomplete list can be customized by defining the {
 This callback takes a feed item (it contains at least the `name` property) and must return a new DOM element.
 
 ```js
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Mention, /* ... */ ],
-	mention: {
-		feeds: [
-			{
-				feed: [ /* ... */ ],
-				// Define the custom item renderer.
-				itemRenderer: customItemRenderer
-			}
-		]
-	}
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Mention, /* ... */ ],
+		mention: {
+			feeds: [
+				{
+					feed: [ /* ... */ ],
+					// Define the custom item renderer.
+					itemRenderer: customItemRenderer
+				}
+			]
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 
 function customItemRenderer( item ) {
 	const itemElement = document.createElement( 'span' );
@@ -196,19 +204,21 @@ A full, working demo with all possible customizations and its source code is ava
 The number of items displayed in the autocomplete list can be customized by defining the {@link module:mention/mentionconfig~MentionConfig#dropdownLimit `dropdownLimit`} option.
 
 ```js
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Mention, /* ... */ ],
-	mention: {
-		// Define the custom number of visible mentions.
-		dropdownLimit: 4
-		feeds: [
-			{ /* ... */ }
-			// More feeds.
-			// ...
-		]
-	}
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Mention, /* ... */ ],
+		mention: {
+			// Define the custom number of visible mentions.
+			dropdownLimit: 4
+			feeds: [
+				{ /* ... */ }
+				// More feeds.
+				// ...
+			]
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 A full, working demo with all possible customizations and its source code is available {@link features/mentions#fully-customized-mention-feed at the end of this section}.
@@ -218,27 +228,29 @@ A full, working demo with all possible customizations and its source code is ava
 You can control the text inserted into the editor when creating a mention via the {@link module:mention/mentionconfig~MentionFeedObjectItem `text`} property in the mention configuration.
 
 ```js
-ClassicEditor.create( editorElement, {
-	plugins: [ Mention, ... ],
-	mention: {
-		feeds: [
-			// Feed items as objects.
-			{
-				marker: '@',
-				feed: [
-					{
-						id: '@Barney',
-						fullName: 'Barney Stinson',
-						// Custom text to be inserted into the editor
-						text: 'Swarley'
-					},
-					// ...
-				]
-			},
-		]
-	}
-} )
-	.then( ... );
+ClassicEditor
+	.create( editorElement, {
+		plugins: [ Mention, ... ],
+		mention: {
+			feeds: [
+				// Feed items as objects.
+				{
+					marker: '@',
+					feed: [
+						{
+							id: '@Barney',
+							fullName: 'Barney Stinson',
+							// Custom text to be inserted into the editor
+							text: 'Swarley'
+						},
+						// ...
+					]
+				},
+			]
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 The string that you specify in this property will be displayed in the editor when a mention is created.
@@ -268,14 +280,16 @@ By default, attribute elements that are next to each other and have the same val
 **Note:** The feature prevents copying fragments of existing mentions. If only a part of a mention is selected, it will be copied as plain text. The internal converter with the {@link module:utils/priorities~PrioritiesType#highest `'highest'` priority} controls this behavior. We do not recommend adding mention converters with the `'highest'` priority to avoid collisions and quirky results.
 
 ```js
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Mention, MentionCustomization, /* ... */ ], // Add the custom mention plugin function.
-	mention: {
-		// Configuration.
-		// ...
-	}
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Mention, MentionCustomization, /* ... */ ], // Add the custom mention plugin function.
+		mention: {
+			// Configuration.
+			// ...
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 
 function MentionCustomization( editor ) {
 	// The upcast converter will convert view <a class="mention" href="" data-user-id="">
@@ -350,22 +364,23 @@ Below is an example of a customized mention feature that:
 #### Source code
 
 ```js
-ClassicEditor.create( document.querySelector( '#snippet-mention-customization' ), {
-	plugins: [ Mention, MentionCustomization, /* ... */ ],
-	mention: {
-		dropdownLimit: 4,
-		feeds: [
-			{
-				marker: '@',
-				feed: getFeedItems,
-				itemRenderer: customItemRenderer
-			}
-		]
-	}
-} )
-.then( editor => {
-	window.editor = editor;
-} )
+ClassicEditor
+	.create( document.querySelector( '#snippet-mention-customization' ), {
+		plugins: [ Mention, MentionCustomization, /* ... */ ],
+		mention: {
+			dropdownLimit: 4,
+			feeds: [
+				{
+					marker: '@',
+					feed: getFeedItems,
+					itemRenderer: customItemRenderer
+				}
+			]
+		}
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
 	.catch( err => {
 		console.error( err.stack );
 	} );

@@ -16,14 +16,16 @@ After {@link getting-started/quick-start installing the editor}, add the feature
 ```js
 import { ClassicEditor, SimpleUploadAdapter } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ SimpleUploadAdapter, /* ... */ ],
-	toolbar: [ /* ... */ ],
-	simpleUpload: {
-		// Feature configuration.
-	}
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ SimpleUploadAdapter, /* ... */ ],
+		toolbar: [ /* ... */ ],
+		simpleUpload: {
+			// Feature configuration.
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Configuration
@@ -33,24 +35,26 @@ The client side of this feature is configurable using the {@link module:upload/u
 ```js
 import { ClassicEditor, SimpleUploadAdapter } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ SimpleUploadAdapter, /* ... */ ],
-	toolbar: [ /* ... */ ],
-	simpleUpload: {
-		// The URL that the images are uploaded to.
-		uploadUrl: 'http://example.com',
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ SimpleUploadAdapter, /* ... */ ],
+		toolbar: [ /* ... */ ],
+		simpleUpload: {
+			// The URL that the images are uploaded to.
+			uploadUrl: 'http://example.com',
 
-		// Enable the XMLHttpRequest.withCredentials property.
-		withCredentials: true,
+			// Enable the XMLHttpRequest.withCredentials property.
+			withCredentials: true,
 
-		// Headers sent along with the XMLHttpRequest to the upload server.
-		headers: {
-			'X-CSRF-TOKEN': 'CSRF-Token',
-			Authorization: 'Bearer <JSON Web Token>'
+			// Headers sent along with the XMLHttpRequest to the upload server.
+			headers: {
+				'X-CSRF-TOKEN': 'CSRF-Token',
+				Authorization: 'Bearer <JSON Web Token>'
+			}
 		}
-	}
-} )
-.then( /* ... */ );
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ### Configuring allowed file types

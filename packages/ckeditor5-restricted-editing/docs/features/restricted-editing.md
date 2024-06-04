@@ -51,11 +51,13 @@ To initialize the editor in the standard editing mode, add the {@link module:res
 ```js
 import { ClassicEditor, StandardEditingMode } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ StandardEditingMode, /* ... */ ],
-	toolbar: [ 'restrictedEditingException', /* ... */ ]
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ StandardEditingMode, /* ... */ ],
+		toolbar: [ 'restrictedEditingException', /* ... */ ]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ### Running the restricted editing mode
@@ -65,11 +67,13 @@ To initialize the editor in the restricted editing mode, add the {@link module:r
 ```js
 import { ClassicEditor, RestrictedEditingMode } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ RestrictedEditingMode, /* ... */ ],
-	toolbar: [ 'restrictedEditing', /* ... */ ]
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ RestrictedEditingMode, /* ... */ ],
+		toolbar: [ 'restrictedEditing', /* ... */ ]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Configuration
@@ -79,14 +83,16 @@ You can configure which features should be available in the restricted mode. For
 ```js
 import { ClassicEditor, RestrictedEditingMode, Bold } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Bold, RestrictedEditingMode, /* ... */ ],
-	toolbar: [ 'bold', '|', 'restrictedEditing', /* ... */ ],
-	restrictedEditing: {
-		allowedCommands: [ 'bold' ]
-	}
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Bold, RestrictedEditingMode, /* ... */ ],
+		toolbar: [ 'bold', '|', 'restrictedEditing', /* ... */ ],
+		restrictedEditing: {
+			allowedCommands: [ 'bold' ]
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 **Note**: Typing and deleting text is always possible in restricted editing regions. For more information, check out the {@link module:restricted-editing/restrictededitingconfig~RestrictedEditingConfig `config.restrictedEditing`} documentation.

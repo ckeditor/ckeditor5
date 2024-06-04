@@ -170,7 +170,7 @@ export class AppComponent {
 			Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
 		],
 		licenseKey: '<YOUR_LICENSE_KEY>',
-		mention: { 
+		mention: {
 			// Mention configuration
 		}
 	}
@@ -216,7 +216,7 @@ export class AppComponent {
 			Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
 		],
 		licenseKey: '<YOUR_LICENSE_KEY>',
-		mention: { 
+		mention: {
 			// Mention configuration
 		}
 	}
@@ -237,7 +237,7 @@ The following `@Input` properties are supported by the CKEditor&nbsp;5 rich text
 
 ### `editor` (required)
 
-The {@link getting-started/legacy-getting-started/editor-lifecycle `Editor`} which provides the static {@link module:core/editor/editor~Editor.create `create()`} method to create an instance of the editor:
+The {@link getting-started/setup/editor-lifecycle `Editor`} which provides the static {@link module:core/editor/editor~Editor.create `create()`} method to create an instance of the editor:
 
 ```html
 <ckeditor [editor]="Editor"></ckeditor>
@@ -591,7 +591,7 @@ export class AppComponent {
 	public onReady( editor: DecoupledEditor ): void {
 		const element = editor.ui.getEditableElement()!;
 		const parent = element.parentElement!;
-  
+
 		parent.insertBefore(
 			editor.ui.view.toolbar.element!,
 			element

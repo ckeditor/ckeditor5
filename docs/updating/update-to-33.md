@@ -232,15 +232,18 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import List from '@ckeditor/ckeditor5-list/src/list';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	// ...
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		// ...
 
-	comments: {
-		editorConfig: {
-			extraPlugins: [ Autoformat, Bold, Italic, List ]
+		comments: {
+			editorConfig: {
+				extraPlugins: [ Autoformat, Bold, Italic, List ]
+			}
 		}
-	}
-} );
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box>
@@ -254,13 +257,14 @@ If this configuration is not provided, a warning will be logged in the console a
 To hide the warning (and use the basic configuration), provide an empty configuration for the comments editor:
 
 ```js
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	// ...
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		// ...
 
-	comments: {
-		editorConfig: {}
-	}
-} );
+		comments: {
+			editorConfig: {}
+		}
+	} );
 ```
 
 ## New API

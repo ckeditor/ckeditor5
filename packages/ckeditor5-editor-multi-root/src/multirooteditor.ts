@@ -9,7 +9,6 @@
 
 import {
 	Editor,
-	Context,
 	secureSourceElement,
 	type EditorConfig,
 	type EditorReadyEvent
@@ -23,8 +22,6 @@ import {
 	type CollectionAddEvent,
 	type DecoratedMethodEvent
 } from 'ckeditor5/src/utils.js';
-
-import { ContextWatchdog, EditorWatchdog } from 'ckeditor5/src/watchdog.js';
 
 import MultiRootEditorUI from './multirooteditorui.js';
 import MultiRootEditorUIView from './multirooteditoruiview.js';
@@ -885,27 +882,6 @@ export default class MultiRootEditor extends Editor {
 			);
 		} );
 	}
-
-	/**
-	 * The {@link module:core/context~Context} class.
-	 *
-	 * Exposed as static editor field for easier access in editor builds.
-	 */
-	public static Context = Context;
-
-	/**
-	 * The {@link module:watchdog/editorwatchdog~EditorWatchdog} class.
-	 *
-	 * Exposed as static editor field for easier access in editor builds.
-	 */
-	public static EditorWatchdog = EditorWatchdog;
-
-	/**
-	 * The {@link module:watchdog/contextwatchdog~ContextWatchdog} class.
-	 *
-	 * Exposed as static editor field for easier access in editor builds.
-	 */
-	public static ContextWatchdog = ContextWatchdog;
 
 	/**
 	 * @internal

@@ -638,7 +638,7 @@ All buttons should follow the **verb + noun** or the **noun** convention. Exampl
 
 #### Commands
 
-As for commands, it is trickier. There are more possible combinations of their names than there are for buttons. Examples:
+As for commands, it is trickier. There are more combinations of their names possible than there are for buttons. Examples:
 
 * The **feature-related** convention:
 	* **noun-based** case:

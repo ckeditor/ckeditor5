@@ -45,17 +45,17 @@ To make enabling image upload in CKEditor&nbsp;5 a breeze, by default all builds
 1. Follow the [Easy Image &ndash; Quick start guide](https://ckeditor.com/docs/cs/latest/guides/easy-image/quick-start.html) to set up an account.
 2. Configure CKEditor&nbsp;5 (see {@link module:cloud-services/cloudservicesconfig~CloudServicesConfig `CloudServicesConfig`}):
 
-	```js
-	ClassicEditor
-		.create( document.querySelector( '#editor' ), {
-			cloudServices: {
-				tokenUrl: 'https://example.com/cs-token-endpoint',
-				uploadUrl: 'https://your-organization-id.cke-cs.com/easyimage/upload/'
-			}
-		} )
-		.then( /* ... */ )
-		.catch( /* ... */ );
-	```
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		cloudServices: {
+			tokenUrl: 'https://example.com/cs-token-endpoint',
+			uploadUrl: 'https://your-organization-id.cke-cs.com/easyimage/upload/'
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
 
 This is all. At this point, image upload will be automatically enabled in your application.
 

@@ -1,7 +1,7 @@
 ---
 category: update-guides
-meta-title: Update to version 41.x | CKEditor 5 Documentation
-menu-title: Update to v41.x
+meta-title: Update to version 42.x | CKEditor 5 Documentation
+menu-title: Update to v42.x
 order: 82
 modified_at: 2024-06-10
 ---
@@ -18,8 +18,8 @@ modified_at: 2024-06-10
 
 _Released on June xx, 2024._
 
-For the entire list of changes introduced in version 41.3.0, see the [release notes for CKEditor&nbsp;5 v41.3.0](https://github.com/ckeditor/ckeditor5/releases/tag/v41.3.0).
+For the entire list of changes introduced in version 41.3.0, see the [release notes for CKEditor&nbsp;5 v42.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v42.0.0).
 
-Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v41.3.0.
+Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v42.0.0.
 
 ### First title

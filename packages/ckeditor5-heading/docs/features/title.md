@@ -29,10 +29,12 @@ After {@link getting-started/quick-start installing the editor}, add the feature
 ```js
 import { ClassicEditor, Title } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Title, /* ... */ ]
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Title, /* ... */ ]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Placeholder integration
@@ -42,14 +44,16 @@ The title plugin is integrated with the {@link features/editor-placeholder place
 To change the title placeholder, use the {@link module:heading/title~TitleConfig#placeholder `title.placeholder`} configuration option. For instance:
 
 ```js
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Title, /* ... */ ],
-	title: {
-		placeholder: 'My custom placeholder for the title'
-	},
-	placeholder: 'My custom placeholder for the body'
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Title, /* ... */ ],
+		title: {
+			placeholder: 'My custom placeholder for the title'
+		},
+		placeholder: 'My custom placeholder for the body'
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## HTML structure

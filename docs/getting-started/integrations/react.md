@@ -122,14 +122,14 @@ The editor event callbacks (`onChange`, `onBlur`, `onFocus`) receive two argumen
 The [`@ckeditor/ckeditor5-react`](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) package provides a ready-to-use component for the {@link features/context-and-collaboration-features context feature} that is useful when used together with some {@link features/collaboration CKEditor&nbsp;5 collaboration features}.
 
 ```jsx
-import { ClassicEditor, Context, Bold, Essentials, Italic, Paragraph } from 'ckeditor5';
+import { ClassicEditor, Context, Bold, Essentials, Italic, Paragraph, ContextWatchdog } from 'ckeditor5';
 import { CKEditor, CKEditorContext } from '@ckeditor/ckeditor5-react';
 
 import 'ckeditor5/index.css';
 
 function App() {
   return (
-    <CKEditorContext context={ Context }>
+    <CKEditorContext context={ Context } contextWatchdog={ ContextWatchdog }>
       <CKEditor
         editor={ ClassicEditor }
         config={ {
@@ -165,6 +165,7 @@ export default App;
 The `CKEditorContext` component supports the following properties:
 
 * `context` (required) &ndash; {@link module:core/context~Context The CKEditor&nbsp;5 context class}.
+* `contextWatchdog` (required) &ndash; {@link module:watchdog/contextwatchdog~ContextWatchdog The Watchdog context class}.
 * `config` &ndash; The CKEditor&nbsp;5 context configuration.
 * `isLayoutReady` &ndash; A property that delays the context creation when set to `false`. It creates the context and the editor children once it is `true` or unset. Useful when the CKEditor&nbsp;5 annotations or a presence list are used.
 * `id` &ndash; The context ID. When this property changes, the component restarts the context with its editor and reinitializes it based on the current configuration.

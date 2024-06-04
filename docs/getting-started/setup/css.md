@@ -2,7 +2,7 @@
 category: setup
 menu-title: Editor and content styles
 meta-title: Editor and content styles | CKEditor 5 documentation
-order: 70
+order: 90
 modified_at: 2024-05-06
 ---
 
@@ -16,19 +16,19 @@ CKEditor&nbsp;5 is distributed with two types of styles:
 If you went through our {@link getting-started/quick-start Quick start}, you probably noticed that attaching the styles in JavaScript is pretty standard, and we provide a CSS style sheet that has both the editor and content style sheets combined:
 
 ```js
-import 'ckeditor5/index.css';
+import 'ckeditor5/ckeditor5.css';
 
 // If you are using premium features:
-import 'ckeditor5-premium-features/index.css';
+import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 ```
 
 It is as easy in HTML:
 
 ```html
-<link rel="stylesheet" href="<CDN_LINK>/ckeditor5/dist/index.css" />
+<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
 
 <!-- If you are using premium features: -->
-<link rel="stylesheet" href="<CDN_LINK>/ckeditor5-premium-features/dist/index.css" />
+<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
 ```
 
 ## Why do I need content styles?
@@ -45,15 +45,16 @@ It is important to use the content styles on the publishing side of your applica
 
 There are two ways to obtain the content styles:
 
-// TODO: Links
+* From the `npm` packages, in the `dist/ckeditor5-content.css` and `ckeditor5-premium-features-content.css` location.
+* From CDN, `https://cdn.ckeditor.com/ckeditor5/`
 
-* From the `npm` packages, in the `dist/index-content.css` location.
-* From CDN, `<CDN_LINK>`
-
-Load the `index-content.css` file on the publishing side by adding the following code to the template:
+Load the `ckeditor5-content.css` (and `ckeditor5-premium-features-content.css` if needed) file on the publishing side by adding the following code to the template:
 
 ```html
-<link rel="stylesheet" href="path/to/assets/index-content.css">
+<link rel="stylesheet" href="path/to/assets/ckeditor5-content.css">
+
+<!-- If you are using premium features: -->
+<link rel="stylesheet" href="path/to/assets/ckeditor5-premium-features-content.css">
 ```
 
 <info-box warning>
@@ -104,8 +105,7 @@ For example, if you want to change the color of the mentions' background and tex
 Our main packages, `ckeditor5` and `ckeditor5-premium-features`, distribute three style sheets:
 
 * `index.css`: combined editor and content styles.
-* `index-content.css`: only content styles.
+* `ckeditor5-content.css` and `ckeditor5-premium-features-content.css`: only content styles.
 * `index-editor.css`: only editor styles.
 
-// TODO: Link
-Content styles include styles for **all** plugins of the editor. If you want to optimize the size of the style sheet, as you may be using minimal set of plugins, read our optimization guide.
+Content styles include styles for **all** plugins of the editor. If you want to optimize the size of the style sheet, as you may be using minimal set of plugins, read our optimization guide. <!-- TODO link to guide -->

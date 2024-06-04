@@ -408,7 +408,7 @@ Having implemented the adapter, you must figure out how to enable it in the WYSI
 You are going to extend the basic implementation presented in ["The anatomy of the adapter"](#the-anatomy-of-the-adapter) section of this guide so your custom adapter becomes an editor plugin. To do that, create a simple standalone plugin (`MyCustomUploadAdapterPlugin`) that will {@link module:upload/filerepository~FileRepository#createLoader create an instance of the file loader} and glue it with your custom `MyUploadAdapter`.
 
 ```js
-import { ClassicEditor } from 'ckeditor5';
+import { ClassicEditor, Essentials, Paragraph, Image, ImageUpload } from 'ckeditor5';
 
 class MyUploadAdapter {
 	// MyUploadAdapter class definition.
@@ -426,15 +426,15 @@ function MyCustomUploadAdapterPlugin( editor ) {
 Enable the `MyCustomUploadAdapterPlugin` in the editor by using the {@link module:core/editor/editorconfig~EditorConfig#extraPlugins `config.extraPlugins`} option:
 
 ```js
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	extraPlugins: [ MyCustomUploadAdapterPlugin ],
-
-	// More configuration options.
-	// ...
-} )
-.catch( error => {
-	console.log( error );
-} );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ MyCustomUploadAdapterPlugin, Essentials, Paragraph, Image, ImageUpload, /* ... */ ],
+		// More configuration options.
+		// ...
+	} )
+	.catch( error => {
+		console.log( error );
+	} );
 ```
 
 Run the editor and see if your implementation works. Drop an image into the WYSIWYG editor content and it should be uploaded to the server thanks to the `MyUploadAdapter`.
@@ -444,6 +444,8 @@ Run the editor and see if your implementation works. Drop an image into the WYSI
 Here is what the complete implementation of an `XMLHttpRequest`–based upload adapter looks like. You can use this code as a foundation to build custom upload adapters for your applications.
 
 ```js
+import { ClassicEditor, Essentials, Paragraph, Image, ImageUpload } from 'ckeditor5';
+
 class MyUploadAdapter {
 	constructor( loader ) {
 		// The file loader instance to use during the upload.
@@ -546,15 +548,16 @@ function MyCustomUploadAdapterPlugin( editor ) {
 	};
 }
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	extraPlugins: [ MyCustomUploadAdapterPlugin ],
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ MyCustomUploadAdapterPlugin, Essentials, Paragraph, Image, ImageUpload, /* ... */ ],
 
-	// More configuration options.
-	// ...
-} )
-.catch( error => {
-	console.log( error );
-} );
+		// More configuration options.
+		// ...
+	} )
+	.catch( error => {
+		console.log( error );
+	} );
 ```
 
 ## What's next
