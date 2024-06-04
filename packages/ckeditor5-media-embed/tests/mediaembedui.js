@@ -86,53 +86,59 @@ describe( 'MediaEmbedUI', () => {
 			expect( dialog.view.actionsView.children.get( 1 ).label ).to.equal( 'Accept' );
 		} );
 
-		describe( 'Accept button', () => {
-			let acceptButton;
-
-			beforeEach( () => {
-				acceptButton = dialog.view.actionsView.children.get( 1 );
-			} );
-
-			it( 'should be open as modal', () => {
-				expect( dialog.view.isModal ).to.be.true;
-			} );
-
-			it( 'should be open at screen center', () => {
-				expect( dialog.view.position ).to.be.equal( DialogViewPosition.SCREEN_CENTER );
-			} );
-
-			it( 'checks if the form is valid', () => {
-				const spy = sinon.spy( form, 'isValid' );
-
-				acceptButton.fire( 'execute' );
-
-				sinon.assert.calledOnce( spy );
-			} );
-
-			it( 'executes the command and closes the UI (if the form is valid)', async () => {
-				const commandSpy = sinon.spy( editor.commands.get( 'mediaEmbed' ), 'execute' );
-
-				// The form is invalid.
-				form.url = 'https://invalid/url';
-
-				acceptButton.fire( 'execute' );
-
-				sinon.assert.notCalled( commandSpy );
-
-				expect( dialog.id ).to.be.equal( 'mediaEmbed' );
-
-				// The form is valid.
-				form.url = 'https://valid/url';
-				acceptButton.fire( 'execute' );
-
-				sinon.assert.calledOnce( commandSpy );
-				sinon.assert.calledWithExactly( commandSpy, 'https://valid/url' );
-
-				await wait( 10 );
-
-				expect( dialog.id ).to.be.null;
-			} );
+		it( 'should be open as modal', () => {
+			expect( dialog.view.isModal ).to.be.true;
 		} );
+
+		it( 'should be open at screen center', () => {
+			expect( dialog.view.position ).to.be.equal( DialogViewPosition.SCREEN_CENTER );
+		} );
+
+		testSubmit( 'Accept button', () => {
+			const acceptButton = dialog.view.actionsView.children.get( 1 );
+
+			acceptButton.fire( 'execute' );
+		} );
+
+		testSubmit( 'Form submit (enter key)', () => {
+			form.fire( 'submit' );
+		} );
+
+		function testSubmit( suiteName, action ) {
+			describe( suiteName, () => {
+				it( 'checks if the form is valid', () => {
+					const spy = sinon.spy( form, 'isValid' );
+
+					action();
+
+					sinon.assert.calledOnce( spy );
+				} );
+
+				it( 'executes the command and closes the UI (if the form is valid)', async () => {
+					const commandSpy = sinon.spy( editor.commands.get( 'mediaEmbed' ), 'execute' );
+
+					// The form is invalid.
+					form.url = 'https://invalid/url';
+
+					action();
+
+					sinon.assert.notCalled( commandSpy );
+
+					expect( dialog.id ).to.be.equal( 'mediaEmbed' );
+
+					// The form is valid.
+					form.url = 'https://valid/url';
+					action();
+
+					sinon.assert.calledOnce( commandSpy );
+					sinon.assert.calledWithExactly( commandSpy, 'https://valid/url' );
+
+					await wait( 10 );
+
+					expect( dialog.id ).to.be.null;
+				} );
+			} );
+		}
 
 		describe( 'Cancel button', () => {
 			let cancelButton;

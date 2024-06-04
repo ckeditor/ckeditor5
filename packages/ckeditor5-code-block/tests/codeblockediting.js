@@ -129,17 +129,15 @@ describe( 'CodeBlockEditing', () => {
 		expect( model.schema.checkChild( [ '$root', 'codeBlock' ], 'codeBlock' ) ).to.be.false;
 	} );
 
-	it( 'disallows object elements in codeBlock', () => {
-		// Fake "inline-widget".
-		model.schema.register( 'inline-widget', {
-			inheritAllFrom: '$block',
-			// Allow to be a child of the `codeBlock` element.
-			allowIn: 'codeBlock',
-			// And mark as an object.
-			isObject: true
+	it( 'disallows $inlineObject', () => {
+		// Disallow `$inlineObject` and its derivatives like `inlineWidget` inside `codeBlock` to ensure that only text,
+		// not other inline elements like inline images, are allowed. This maintains the semantic integrity of code blocks.
+		model.schema.register( 'inlineWidget', {
+			inheritAllFrom: '$inlineObject'
 		} );
 
-		expect( model.schema.checkChild( [ '$root', 'codeBlock' ], 'inline-widget' ) ).to.be.false;
+		expect( model.schema.checkChild( [ '$root', 'codeBlock' ], '$inlineObject' ) ).to.be.false;
+		expect( model.schema.checkChild( [ '$root', 'codeBlock' ], 'inlineWidget' ) ).to.be.false;
 	} );
 
 	it( 'allows only for $text in codeBlock', () => {
