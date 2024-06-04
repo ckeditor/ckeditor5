@@ -38,21 +38,24 @@ Assuming that you have implemented some form of the `saveData()` function that s
 ```js
 import { ClassicEditor, Autosave } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [
-		Autosave,
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [
+			Autosave,
 
-		// ... other plugins.
-	],
+			// ... other plugins.
+		],
 
-	autosave: {
-		save( editor ) {
-			return saveData( editor.getData() );
-		}
-	},
+		autosave: {
+			save( editor ) {
+				return saveData( editor.getData() );
+			}
+		},
 
-	// ... other configuration options.
-} );
+		// ... other configuration options.
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 The autosave feature listens to the {@link module:engine/model/document~Document#event:change:data `editor.model.document#change:data`} event, throttles it, and executes the {@link module:autosave/autosave~AutosaveConfig#save `config.autosave.save()`} function.
@@ -79,7 +82,9 @@ ClassicEditor
 		},
 
 		// ... other configuration options.
-	} );
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ### Demo code

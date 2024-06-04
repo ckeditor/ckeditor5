@@ -230,23 +230,25 @@ After {@link getting-started/quick-start installing the editor}, add the feature
 ```js
 import { ClassicEditor, Style } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Style, /* ... */ ],
-	toolbar: {
-		items: [
-			'style',
-			// More toolbar items.
-			// ...
-		],
-	},
-	style: {
-		definitions: [
-			// Styles definitions.
-			// ...
-		]
-	}
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Style, /* ... */ ],
+		toolbar: {
+			items: [
+				'style',
+				// More toolbar items.
+				// ...
+			],
+		},
+		style: {
+			definitions: [
+				// Styles definitions.
+				// ...
+			]
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Configuration
@@ -254,32 +256,33 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 Configuring the styles feature takes two steps. First, you need to define the styles in the configuration file, for example:
 
 ```js
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Style, /* ... */ ],
-	toolbar: {
-		items: [
-			'style',
-			// More toolbar items.
-			// ...
-		],
-	},
-	style: {
-		definitions: [
-			{
-				name: 'Article category',
-				element: 'h3',
-				classes: [ 'category' ]
-			},
-			{
-				name: 'Info box',
-				element: 'p',
-				classes: [ 'info-box' ]
-			},
-		]
-	}
-} )
-.then( /* ... */ );
-
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Style, /* ... */ ],
+		toolbar: {
+			items: [
+				'style',
+				// More toolbar items.
+				// ...
+			],
+		},
+		style: {
+			definitions: [
+				{
+					name: 'Article category',
+					element: 'h3',
+					classes: [ 'category' ]
+				},
+				{
+					name: 'Info box',
+					element: 'p',
+					classes: [ 'info-box' ]
+				},
+			]
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 Then, define the corresponding CSS styles for the document:

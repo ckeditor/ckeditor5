@@ -26,6 +26,7 @@
   "dependencies": {
     "@ckeditor/ckeditor5-engine": "41.4.2",
     "@ckeditor/ckeditor5-utils": "41.4.2",
+    "@ckeditor/ckeditor5-watchdog": "41.4.2",
     "lodash-es": "4.17.21"
   },
   "devDependencies": {

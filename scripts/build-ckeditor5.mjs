@@ -30,7 +30,7 @@ function dist( path ) {
 	console.log( chalk.cyan( '1/3: Generating NPM build...' ) );
 
 	await build( {
-		output: dist( 'index.js' ),
+		output: dist( 'ckeditor5.js' ),
 		tsconfig,
 		banner,
 		sourceMap: true,
@@ -46,16 +46,16 @@ function dist( path ) {
 		translations: 'packages/**/*.po'
 	} );
 
-	await rm( dist( 'index.js' ) );
-	await rm( dist( 'index.js.map' ) );
+	await rm( dist( 'ckeditor5.js' ) );
+	await rm( dist( 'ckeditor5.js.map' ) );
 
 	/**
 	 * Step 2
 	 */
-	console.log( chalk.cyan( '2/3: Generating `index.js` for the NPM build...' ) );
+	console.log( chalk.cyan( '2/3: Generating `ckeditor5.js` for the NPM build...' ) );
 
 	await build( {
-		output: dist( 'tmp/index.js' ),
+		output: dist( 'tmp/ckeditor5.js' ),
 		tsconfig,
 		banner,
 		sourceMap: true,
@@ -64,8 +64,8 @@ function dist( path ) {
 		]
 	} );
 
-	await copyFile( dist( 'tmp/index.js' ), dist( 'index.js' ) );
-	await copyFile( dist( 'tmp/index.js.map' ), dist( 'index.js.map' ) );
+	await copyFile( dist( 'tmp/ckeditor5.js' ), dist( 'ckeditor5.js' ) );
+	await copyFile( dist( 'tmp/ckeditor5.js.map' ), dist( 'ckeditor5.js.map' ) );
 	await rm( dist( 'tmp' ), { recursive: true } );
 
 	/**
@@ -74,7 +74,7 @@ function dist( path ) {
 	console.log( chalk.cyan( '3/3: Generating browser build...' ) );
 
 	await build( {
-		output: dist( 'browser/index.js' ),
+		output: dist( 'browser/ckeditor5.js' ),
 		tsconfig,
 		banner,
 		sourceMap: true,

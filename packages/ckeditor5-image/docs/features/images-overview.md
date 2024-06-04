@@ -49,11 +49,14 @@ The {@link module:image/imagetoolbar~ImageToolbar} plugin available in all edito
 The image toolbar is configurable using the {@link module:image/imageconfig~ImageConfig#styles `config.image.toolbar`} property. For instance, to display the caption toggle, text alternative and editing buttons, use the following configuration:
 
 ```js
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	image: {
-		toolbar: [ 'toggleImageCaption', 'imageTextAlternative', 'ckboxImageEdit' ]
-	}
-} )
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		image: {
+			toolbar: [ 'toggleImageCaption', 'imageTextAlternative', 'ckboxImageEdit' ]
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 Refer to the {@link features/images-installation image installation} guide for more details on configuring the features available in the toolbar and to the {@link updating/update-to-29#image-toolbar toolbar section} of the Migration to v29.x guide, as important changes were introduced in that version. You can also check the {@link getting-started/setup/toolbar editor toolbar} guide.

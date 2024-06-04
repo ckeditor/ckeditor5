@@ -12,15 +12,12 @@ import ClassicEditorUIView from './classiceditoruiview.js';
 
 import {
 	Editor,
-	Context,
 	ElementApiMixin,
 	attachToForm,
 	type EditorConfig,
 	type EditorReadyEvent
 } from 'ckeditor5/src/core.js';
 import { getDataFromElement, CKEditorError } from 'ckeditor5/src/utils.js';
-
-import { ContextWatchdog, EditorWatchdog } from 'ckeditor5/src/watchdog.js';
 
 import { isElement as _isElement } from 'lodash-es';
 
@@ -203,27 +200,6 @@ export default class ClassicEditor extends /* #__PURE__ */ ElementApiMixin( Edit
 			);
 		} );
 	}
-
-	/**
-	 * The {@link module:core/context~Context} class.
-	 *
-	 * Exposed as static editor field for easier access in editor builds.
-	 */
-	public static Context = Context;
-
-	/**
-	 * The {@link module:watchdog/editorwatchdog~EditorWatchdog} class.
-	 *
-	 * Exposed as static editor field for easier access in editor builds.
-	 */
-	public static EditorWatchdog = EditorWatchdog;
-
-	/**
-	 * The {@link module:watchdog/contextwatchdog~ContextWatchdog} class.
-	 *
-	 * Exposed as static editor field for easier access in editor builds.
-	 */
-	public static ContextWatchdog = ContextWatchdog;
 }
 
 function getInitialData( sourceElementOrData: HTMLElement | string ): string {

@@ -2,7 +2,8 @@
 category: setup
 menu-title: UI language
 meta-title: Setting the UI language | CKEditor 5 Documentation
-order: 40
+order: 60
+modified_at: 2024-05-06
 ---
 
 {@snippet features/build-ui-language-source}
@@ -60,21 +61,23 @@ import { TableOfContents } from 'ckeditor5-premium-features';
 import coreTranslations from 'ckeditor5/translations/pl.js';
 import commercialTranslations from 'ckeditor5-premium-features/translations/pl.js';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [
-		Essentials,
-		Paragraph,
-		TableOfContents
-	],
-	toolbar: {
-		items: [ 'undo', 'redo', 'tableOfContents' ]
-	},
-	translations: [
-		coreTranslations,
-		commercialTranslations
-	]
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [
+			Essentials,
+			Paragraph,
+			TableOfContents
+		],
+		toolbar: {
+			items: [ 'undo', 'redo', 'tableOfContents' ]
+		},
+		translations: [
+			coreTranslations,
+			commercialTranslations
+		]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 See the {@link getting-started/quick-start#installing-ckeditor-5-using-npm npm installation guide} for more information.
@@ -84,15 +87,15 @@ See the {@link getting-started/quick-start#installing-ckeditor-5-using-npm npm i
 To use different language than the default one (English), you need to load the editor together with the preferred language. For example:
 
 ```html
-<link rel="stylesheet" href="<CDN_LINK>/ckeditor5/dist/styles.css">
+<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css">
 
 <script type="importmap">
 {
 	"imports": {
-		"ckeditor5": "<CDN_LINK>/ckeditor5/dist/index.min.js",
-		"ckeditor5/": "<CDN_LINK>/ckeditor5/dist",
-		"ckeditor5-premium-features": "<CDN_LINK>/ckeditor5-premium-features/dist/browser/index.js",
-		"ckeditor5-premium-features/": "<CDN_LINK>/ckeditor5-premium-features/dist/"
+		"ckeditor5": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.js",
+		"ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/",
+		"ckeditor5-premium-features": "https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.js",
+		"ckeditor5-premium-features/": "https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/"
 	}
 }
 </script>
@@ -102,21 +105,23 @@ import { TableOfContents } from 'ckeditor5-premium-features';
 import coreTranslations from 'ckeditor5/translations/pl.js';
 import commercialTranslations from 'ckeditor5-premium-features/translations/pl.js';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [
-		Essentials,
-		Paragraph,
-		TableOfContents
-	],
-	toolbar: {
-		items: [ 'undo', 'redo' 'tableOfContents' ]
-	},
-	translations: [
-		coreTranslations,
-		commercialTranslations
-		]
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [
+			Essentials,
+			Paragraph,
+			TableOfContents
+		],
+		toolbar: {
+			items: [ 'undo', 'redo' 'tableOfContents' ]
+		},
+		translations: [
+			coreTranslations,
+			commercialTranslations
+			]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 </script>
 ```
 
@@ -129,21 +134,22 @@ In CKEditor&nbsp;5 you can separately configure the language of the UI and the l
 Configure {@link module:core/editor/editorconfig~EditorConfig#language `config.language`} to change the language of the content. In this example, the UI of the editor will be in English but the content will be in Arabic:
 
 ```js
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	language: {
-		// The UI will be English.
-		ui: 'en',
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		language: {
+			// The UI will be English.
+			ui: 'en',
 
-		// But the content will be edited in Arabic.
-		content: 'ar'
-	}
-} )
-.then( editor => {
-	window.editor = editor;
-} )
-.catch( err => {
-	console.error( err.stack );
-} );
+			// But the content will be edited in Arabic.
+			content: 'ar'
+		}
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
 ```
 
 ### Demo

@@ -25,14 +25,16 @@ After {@link getting-started/quick-start installing the editor}, add the feature
 ```js
 import { ClassicEditor, ShowBlocks } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	// Load the plugin.
-	plugins: [ ShowBlocks, /* ... */ ],
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		// Load the plugin.
+		plugins: [ ShowBlocks, /* ... */ ],
 
-	// Display the "Show blocks" button in the toolbar.
-	toolbar: [ 'showBlocks', /* ... */ ],
-} )
-.then( /* ... */ );
+		// Display the "Show blocks" button in the toolbar.
+		toolbar: [ 'showBlocks', /* ... */ ],
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>
@@ -41,7 +43,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 
 ## Known issues
 
-* The show blocks feature does not support widgets, yet. It means it will currently not show block outlines e.g. for images or tables. Feel free to upvote 👍&nbsp; [this issue on GitHub](https://github.com/ckeditor/ckeditor5/issues/14869) if it is important for you.
+* The show blocks feature does not support widgets, yet. It means it will currently not show block outlines for example for images or tables. Feel free to upvote 👍&nbsp; [this issue on GitHub](https://github.com/ckeditor/ckeditor5/issues/14869) if it is important for you.
 * At present, the show blocks feature is not yet fully compatible with the {@link features/pagination pagination} feature. Using these two together may result in errors.
 
 ## Related features
