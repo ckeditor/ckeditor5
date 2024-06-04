@@ -62,8 +62,8 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
 import { SlashCommand } from 'ckeditor5-premium-features';
 
-import 'ckeditor5/index.css';
-import 'ckeditor5-premium-features/index.css';
+import 'ckeditor5/ckeditor5.css';
+import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 import './App.css';
 
 function App() {
@@ -125,7 +125,7 @@ The [`@ckeditor/ckeditor5-react`](https://www.npmjs.com/package/@ckeditor/ckedit
 import { ClassicEditor, Context, Bold, Essentials, Italic, Paragraph, ContextWatchdog } from 'ckeditor5';
 import { CKEditor, CKEditorContext } from '@ckeditor/ckeditor5-react';
 
-import 'ckeditor5/index.css';
+import 'ckeditor5/ckeditor5.css';
 
 function App() {
   return (
@@ -189,7 +189,7 @@ import { useCallback, useState } from 'react';
 import { DecoupledEditor, Bold, Essentials, Italic, Paragraph } from 'ckeditor5';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 
-import 'ckeditor5/index.css';
+import 'ckeditor5/ckeditor5.css';
 
 function App() {
 	const [ editorToolbarRef, setEditorToolbarRef ] = useState( null );
