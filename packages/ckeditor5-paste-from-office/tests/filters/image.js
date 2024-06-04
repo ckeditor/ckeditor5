@@ -10,7 +10,7 @@ import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-u
 
 import { parseHtml } from '../../src/filters/parse.js';
 import { replaceImagesSourceWithBase64, _convertHexToBase64 } from '../../src/filters/image.js';
-import { browserFixtures } from '../_data/image/index.js';
+import { browserFixtures, pasteFromWpsFixtures } from '../_data/image/index.js';
 
 describe( 'PasteFromOffice - filters', () => {
 	describe( 'image', () => {
