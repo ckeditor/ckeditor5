@@ -57,7 +57,7 @@ export default abstract class DomEventObserver<
 	public useCapture: boolean = false;
 
 	/**
-	 * If set to `true`, indicates that the function specified by listener will never call preventDefault()
+	 * If set to `true`, indicates that the function specified by listener will never call `preventDefault()`.
 	 * Default value is `false`.
 	 */
 	public usePassive: boolean = false;
