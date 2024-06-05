@@ -10,6 +10,7 @@
 'use strict';
 
 const upath = require( 'upath' );
+const fs = require( 'fs-extra' );
 const { EventEmitter } = require( 'events' );
 const releaseTools = require( '@ckeditor/ckeditor5-dev-release-tools' );
 const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
@@ -192,6 +193,24 @@ const tasks = new Listr( [
 							taskToExecute: prepareDllBuildsCallback,
 							concurrency: cliArguments.concurrency
 						} );
+					}
+				},
+				{
+					title: 'Preparing CDN files.',
+					task: async () => {
+						await fs.copy( './dist/browser', './release_cdn/' );
+						await fs.copy( './dist/translations', './release_cdn/translations/' );
+						await fs.copy( './dist/browser', './release_zip/ckeditor5/' );
+						await fs.copy( './dist/translations', './release_zip/ckeditor5/translations/' );
+						// TODO: copy sample.html and README to /release_zip
+
+						await fs.ensureDir( './release_cdn/zip' );
+						await tools.shExec(
+							`cd release_zip && zip -r ../release_cdn/zip/ckeditor5-${ latestVersion }.zip ./*`,
+							{ verbosity: 'error' }
+						);
+
+						await fs.copy( './build', './release_cdn/dll/ckeditor5-dll/' );
 					}
 				}
 			], taskOptions );

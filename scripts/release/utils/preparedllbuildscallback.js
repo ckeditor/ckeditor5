@@ -30,7 +30,7 @@ module.exports = async function prepareDllBuildsCallback( packagePath ) {
 	} );
 
 	const dllPackageName = packageJson.name.replace( '@ckeditor/ckeditor5-', '' );
-	const dllReleasePath = './release_dll/' + dllPackageName;
+	const dllReleasePath = './release_cdn/dll/' + dllPackageName;
 
 	await fs.ensureDir( dllReleasePath );
 
