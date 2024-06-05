@@ -375,10 +375,6 @@ function extractImageDataFromRtf(
 function extractImageDataFromRtfForWps(
 	rtfData: string
 ): Array<{ hex: string; type: string }> {
-	if ( !rtfData ) {
-		return [];
-	}
-
 	const regexPictureHeader =
 		/{\\pict[\s\S]+?(\\bliptag-?\d+)?(\\blipupi-?\d+)?({\\\*\\blipuid\s?[\da-fA-F]+)[\s}]*?/;
 	const regexPicture = new RegExp(
