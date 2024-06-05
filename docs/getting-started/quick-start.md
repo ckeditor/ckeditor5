@@ -119,7 +119,7 @@ In the following script tag, import the desired plugins and add them to the `plu
 			plugins: [
 				Essentials, GeneralHtmlSupport, Bold, Italic,
 				PasteFromOffice, PasteFromOfficeEnhanced, Paragraph
-				],
+			],
 			toolbar: {
 				items: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 			},
@@ -176,7 +176,7 @@ Your final page should look similar to the one below.
 				Italic,
 				PasteFromOffice,
 				Paragraph
-				} from 'ckeditor5';
+			} from 'ckeditor5';
 			import { PasteFromOfficeEnhanced } from 'ckeditor5-premium-features';
 
 			ClassicEditor
@@ -184,7 +184,7 @@ Your final page should look similar to the one below.
 					plugins: [
 						Essentials, GeneralHtmlSupport, Bold, Italic,
 						PasteFromOffice, PasteFromOfficeEnhanced, Paragraph
-						],
+					],
 					toolbar: {
 						items: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 					},
