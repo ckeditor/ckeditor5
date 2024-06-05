@@ -62,7 +62,10 @@ describe( 'PasteFromOffice - filters', () => {
 
 				it( 'should handle correctly RTF data from WPS', () => {
 					const input = `<p >
-						Foo <img width="140" height="140" src="file://C:\\Users\\DJC\\AppData\\Local\\Temp\\ksohtml33220\\wps22.png">
+						Foo <img width="16"  height="16"  src="file://C:\\Users\\DJC\\AppData\\Local\\Temp\\ksohtml25524\\wps43.jpg" >
+					</p>
+	 				<p >
+						Foo <img width="158"  height="158"  src="file:///C:\\Users\\DJC\\AppData\\Local\\Temp\\ksohtml25524\\wps44.png" >
 					</p>`;
 					const rtfString = pasteFromWpsFixtures.pasteFromWpsRtf;
 					const { body } = parseHtml( input );
