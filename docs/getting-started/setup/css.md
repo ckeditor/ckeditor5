@@ -88,7 +88,6 @@ Similarly to the customizable editor look, some features also provide an interfa
 
 For example, if you want to change the color of the mentions' background and text, you can do the following override:
 
-
 ```css
 :root {
 	--ck-color-mention-background: black;
@@ -102,10 +101,16 @@ For example, if you want to change the color of the mentions' background and tex
 
 ## Optimizing the size of style sheets
 
-Our main packages, `ckeditor5` and `ckeditor5-premium-features`, distribute three style sheets:
+The `ckeditor5` distributes three style sheets:
 
-* `index.css`: combined editor and content styles.
-* `ckeditor5-content.css` and `ckeditor5-premium-features-content.css`: only content styles.
-* `index-editor.css`: only editor styles.
+* `ckeditor5.css` &ndash; combined editor and content styles,
+* `ckeditor5-content.css` &ndash; only content styles,
+* `ckeditor5-editor.css` &ndash; only editor styles.
+
+The same is true for `ckeditor5-premium-features`, but the filenames are different:
+
+* `ckeditor5-premium-features.css` &ndash; combined editor and content styles,
+* `ckeditor5-premium-features-content.css` &ndash; only content styles,
+* `ckeditor5-premium-features-editor.css` &ndash; only editor styles.
 
 Content styles include styles for **all** plugins of the editor. If you want to optimize the size of the style sheet, as you may be using minimal set of plugins, read our optimization guide. <!-- TODO link to guide -->

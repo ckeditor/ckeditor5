@@ -60,7 +60,7 @@ const tasks = new Listr( [
 		},
 		skip: () => {
 			// Nightly releases are not described in the changelog.
-			if ( cliArguments.nightly ) {
+			if ( cliArguments.nightly || cliArguments.nightlyAlpha ) {
 				return true;
 			}
 
@@ -253,7 +253,7 @@ const tasks = new Listr( [
 		},
 		skip: () => {
 			// Nightly releases are not stored in the repository.
-			if ( cliArguments.nightly ) {
+			if ( cliArguments.nightly || cliArguments.nightlyAlpha ) {
 				return true;
 			}
 
@@ -269,11 +269,18 @@ const tasks = new Listr( [
 
 ( async () => {
 	try {
-		latestVersion = cliArguments.nightly ?
-			await releaseTools.getNextNightly() :
-			releaseTools.getLastFromChangelog();
+		if ( cliArguments.nightlyAlpha ) {
+			const CKE5_NEXT_RELEASE_VERSION = process.env.CKE5_NEXT_RELEASE_VERSION.trim();
 
-		versionChangelog = releaseTools.getChangesForVersion( latestVersion );
+			latestVersion = await releaseTools.getNextPreRelease( `${ CKE5_NEXT_RELEASE_VERSION }-alpha` );
+		} else if ( cliArguments.nightly ) {
+			latestVersion = await releaseTools.getNextNightly();
+		} else {
+			latestVersion = releaseTools.getLastFromChangelog();
+			versionChangelog = releaseTools.getChangesForVersion( latestVersion );
+		}
+
+		console.log( 'Version', latestVersion );
 
 		await tasks.run();
 	} catch ( err ) {

@@ -52,3 +52,7 @@ msgstr "移动插入符，以允许在小组件之前直接输入文字"
 msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that moves the caret after a widget."
 msgid "Move the caret to allow typing directly after a widget"
 msgstr "移动插入符，以允许在小组件之后直接输入文字"
+
+msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that moves selection from a nested editable area back to the parent widget."
+msgid "Move focus from an editable area back to the parent widget"
+msgstr ""

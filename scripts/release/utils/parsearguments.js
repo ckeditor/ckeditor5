@@ -17,6 +17,7 @@ module.exports = function parseArguments( cliArguments ) {
 	const config = {
 		boolean: [
 			'nightly',
+			'nightly-alpha',
 			'verbose',
 			'compile-only',
 			'ci',
@@ -36,6 +37,7 @@ module.exports = function parseArguments( cliArguments ) {
 
 		default: {
 			nightly: false,
+			'nightly-alpha': false,
 			concurrency: require( 'os' ).cpus().length / 2,
 			'compile-only': false,
 			packages: null,
@@ -53,14 +55,19 @@ module.exports = function parseArguments( cliArguments ) {
 		options.packages = options.packages.split( ',' );
 	}
 
-	options.npmTag = options[ 'npm-tag' ];
-	delete options[ 'npm-tag' ];
-
-	options.compileOnly = options[ 'compile-only' ];
-	delete options[ 'compile-only' ];
+	replaceKebabCaseWithCamelCase( options, [
+		'npm-tag',
+		'compile-only',
+		'nightly-alpha'
+	] );
 
 	if ( options.nightly ) {
 		options.npmTag = 'nightly';
+	}
+
+	if ( options.nightlyAlpha ) {
+		options.branch = 'release';
+		options.npmTag = 'alpha';
 	}
 
 	if ( process.env.CI ) {
@@ -71,9 +78,27 @@ module.exports = function parseArguments( cliArguments ) {
 };
 
 /**
+ * Replaces all kebab-case keys in the `options` object with camelCase entries.
+ * Kebab-case keys will be removed.
+ *
+ * @param {Object} options
+ * @param {Array.<String>} keys Kebab-case keys in `options` object.
+ */
+function replaceKebabCaseWithCamelCase( options, keys ) {
+	for ( const key of keys ) {
+		const camelCaseKey = key.replace( /-./g, match => match[ 1 ].toUpperCase() );
+
+		options[ camelCaseKey ] = options[ key ];
+		delete options[ key ];
+	}
+}
+
+/**
  * @typedef {Object} ReleaseOptions
  *
  * @property {Boolean} nightly
+ *
+ * @property {Boolean} nightlyAlpha
  *
  * @property {Boolean} external
  *
