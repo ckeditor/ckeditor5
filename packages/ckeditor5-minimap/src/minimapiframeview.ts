@@ -11,7 +11,7 @@ import { IframeView } from 'ckeditor5/src/ui.js';
 import { toUnit, type Locale } from 'ckeditor5/src/utils.js';
 import type { MinimapViewOptions } from './minimapview.js';
 
-const toPx = toUnit( 'px' );
+const toPx = /* #__PURE__ */ toUnit( 'px' );
 
 /**
  * The internal `<iframe>` view that hosts the minimap content.

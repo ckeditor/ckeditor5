@@ -143,8 +143,8 @@ msgstr "Reduce la sangría de los elementos de la lista"
 
 msgctxt "Assistive technologies label for entering the to-do list."
 msgid "Entering a to-do list"
-msgstr ""
+msgstr "Ingresando lista de tareas pendientes"
 
 msgctxt "Assistive technologies label for leaving the to-do list."
 msgid "Leaving a to-do list"
-msgstr ""
+msgstr "Abandonando lista de tareas pendientes"

@@ -28,8 +28,10 @@ See the {@link features/tables table feature guide} and the documentation for th
 
 ## Installation
 
+This package is part of our open-source aggregate package.
+
 ```bash
-npm install --save @ckeditor/ckeditor5-table
+npm install ckeditor5
 ```
 
 ## Contribute

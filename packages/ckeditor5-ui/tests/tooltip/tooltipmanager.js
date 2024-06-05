@@ -366,6 +366,16 @@ describe( 'TooltipManager', () => {
 		} );
 
 		describe( 'on focus', () => {
+			it( 'should not focus immediately if hovered', () => {
+				sinon.stub( elements.a, 'matches' ).withArgs( ':hover' ).returns( true );
+
+				utils.dispatchFocus( elements.a );
+				sinon.assert.notCalled( pinSpy );
+
+				utils.waitForTheTooltipToShow( clock );
+				sinon.assert.calledOnce( pinSpy );
+			} );
+
 			it( 'should not work for elements that have no descendant with the data-attribute', () => {
 				utils.dispatchFocus( elements.unrelated );
 				utils.waitForTheTooltipToShow( clock );
@@ -551,6 +561,28 @@ describe( 'TooltipManager', () => {
 			await wait( 100 );
 
 			sinon.assert.calledTwice( pinSpy );
+		} );
+
+		// Ensure that all changes to the tooltip are set before pinning it due to positioning issues.
+		// See https://github.com/ckeditor/ckeditor5/issues/16365
+		it( 'should set proper class to ballonPanelView before the tooltip is shown', () => {
+			const { balloonPanelView } = tooltipManager;
+
+			elements.a.dataset.ckeTooltipClass = 'ck-tooltip_multi-line';
+			elements.a.dataset.ckeTooltipText = 'Hello World';
+
+			pinSpy.restore();
+
+			// Ensure all changes has been applied to DOM before pinning.
+			const pinStub = sinon.stub( balloonPanelView, 'pin' ).callsFake( () => {
+				expect( tooltipManager.tooltipTextView.element.innerText ).to.equal( 'Hello World' );
+				expect( balloonPanelView.element.classList.contains( 'ck-tooltip_multi-line' ) ).to.be.true;
+			} );
+
+			utils.dispatchMouseEnter( elements.a );
+			utils.waitForTheTooltipToShow( clock );
+
+			expect( pinStub ).to.be.calledOnce;
 		} );
 	} );
 
@@ -995,6 +1027,33 @@ describe( 'TooltipManager', () => {
 			editor.ui.update();
 			sinon.assert.calledOnce( pinSpy );
 			sinon.assert.calledOnce( unpinSpy );
+		} );
+
+		it( 'should not crash when the tooltip gets removed on the same UI `update` event', () => {
+			utils.dispatchMouseEnter( elements.a );
+			utils.waitForTheTooltipToShow( clock );
+
+			sinon.assert.calledOnce( pinSpy );
+
+			editor.ui.update();
+			sinon.assert.calledTwice( pinSpy );
+
+			expect( editor.editing.view.document.isFocused ).to.be.false;
+
+			// Minimal case of unlinking with the button in the link balloon toolbar.
+			// See https://github.com/ckeditor/ckeditor5/pull/16363.
+			editor.ui.once( 'update', () => {
+				editor.editing.view.focus();
+			} );
+
+			// After removing a link from content, model changed so view and DOM got updated.
+			editor.ui.update();
+
+			utils.waitForTheTooltipToHide( clock );
+
+			editor.ui.update();
+
+			sinon.assert.calledTwice( pinSpy );
 		} );
 	} );
 

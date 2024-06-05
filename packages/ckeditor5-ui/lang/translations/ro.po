@@ -211,4 +211,4 @@ msgstr "Bara de meniuri a editorului"
 
 msgctxt "An error text displayed when user attempted to enter an color that is not in HEX format."
 msgid "Please enter a valid color (e.g. \"ff0000\")."
-msgstr ""
+msgstr "Vă rugăm să introduceți un cod de culoare valid (de ex., „ff0000”)."

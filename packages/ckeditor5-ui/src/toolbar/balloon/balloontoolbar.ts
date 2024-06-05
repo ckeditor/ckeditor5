@@ -38,7 +38,7 @@ import type {
 
 import { debounce, type DebouncedFunc } from 'lodash-es';
 
-const toPx = toUnit( 'px' );
+const toPx = /* #__PURE__ */ toUnit( 'px' );
 
 /**
  * The contextual toolbar.

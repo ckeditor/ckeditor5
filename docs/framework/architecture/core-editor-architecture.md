@@ -204,7 +204,7 @@ class MyPlugin extends Plugin {
 The second listener to `'execute'` shows one of the common practices in CKEditor&nbsp;5 code. Basically, the default action of `'execute'` (which is calling the `execute()` method) is registered as a listener to that event with a default priority. Thanks to that, by listening to the event using `'low'` or `'high'` priorities you can execute some code before or after `execute()` is really called. If you stop the event, then the `execute()` method will not be called at all. In this particular case, the {@link module:core/command~Command#execute `Command#execute()`} method was decorated with the event using the {@link module:utils/observablemixin~Observable#decorate `ObservableMixin#decorate()`} function:
 
 ```js
-import { ObservableMixin, mix } from '@ckeditor/ckeditor5-utils';
+import { ObservableMixin, mix } from 'ckeditor5';
 
 class Command {
 	constructor() {

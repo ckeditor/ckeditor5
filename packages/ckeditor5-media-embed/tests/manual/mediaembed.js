@@ -17,6 +17,7 @@ ClassicEditor
 		toolbar: [
 			'heading', '|', 'mediaEmbed', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'link', 'undo', 'redo'
 		],
+		menuBar: { isVisible: true },
 		mediaEmbed: {
 			previewsInData: true,
 			toolbar: [ 'blockQuote' ]

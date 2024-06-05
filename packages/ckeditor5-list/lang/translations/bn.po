@@ -143,8 +143,8 @@ msgstr "তালিকার আইটেমের ইন্ডেন্ট ক
 
 msgctxt "Assistive technologies label for entering the to-do list."
 msgid "Entering a to-do list"
-msgstr ""
+msgstr "একটি টু-ডু তালিকা প্রবেশ করা হচ্ছে"
 
 msgctxt "Assistive technologies label for leaving the to-do list."
 msgid "Leaving a to-do list"
-msgstr ""
+msgstr "একটি টু-ডু তালিকা ছেড়ে যাচ্ছে"

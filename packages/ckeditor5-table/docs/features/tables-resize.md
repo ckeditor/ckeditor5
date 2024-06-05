@@ -25,20 +25,10 @@ The column resize feature is compatible with the {@link features/export-word Exp
 
 ## Installation
 
-<info-box>
-	By default, the table column resize feature is not included in the {@link installation/getting-started/predefined-builds predefined builds} and must be installed separately.
-</info-box>
-
-To enable the table column resize feature in your editor, you need to have the [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package installed (it is already present in the predefined builds):
-
-```
-npm install --save @ckeditor/ckeditor5-table
-```
-
-Then add the `Table` and **`TableColumnResize`** plugins to your plugin list and configure the table toolbar:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { Table, TableColumnResize } from '@ckeditor/ckeditor5-table';
+import { ClassicEditor, Table, TableColumnResize } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

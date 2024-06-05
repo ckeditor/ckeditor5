@@ -14,8 +14,10 @@ You can browse the API documentation of this package by using the module tree on
 
 ## Installation
 
+This package is part of our open-source aggregate package.
+
 ```bash
-npm install --save @ckeditor/ckeditor5-utils
+npm install ckeditor5
 ```
 
 ## Contribute
