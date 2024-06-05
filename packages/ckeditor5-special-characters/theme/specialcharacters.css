@@ -25,7 +25,7 @@
 
 		& > .ck-character-categories {
 			grid-area: 1 / 1 / 2 / 2;
-			padding: var(--ck-spacing-small) var(--ck-spacing-large);
+			padding: var(--ck-spacing-medium) var(--ck-spacing-large);
 
 			& > .ck-labeled-field-view {
 				padding-top: var(--ck-spacing-standard);

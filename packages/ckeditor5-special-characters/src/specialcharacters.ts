@@ -9,7 +9,7 @@
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { Typing } from 'ckeditor5/src/typing.js';
-import { ButtonView, MenuBarMenuListItemButtonView, DialogViewPosition } from 'ckeditor5/src/ui.js';
+import { ButtonView, MenuBarMenuListItemButtonView, DialogViewPosition, Dialog } from 'ckeditor5/src/ui.js';
 import { CKEditorError, type Locale } from 'ckeditor5/src/utils.js';
 import CharacterGridView, {
 	type CharacterGridViewExecuteEvent,
@@ -51,7 +51,7 @@ export default class SpecialCharacters extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ Typing ] as const;
+		return [ Typing, Dialog ] as const;
 	}
 
 	/**
@@ -79,48 +79,6 @@ export default class SpecialCharacters extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
-
-		// Add the `specialCharacters` dropdown button to feature components.
-		// editor.ui.componentFactory.add( 'specialCharacters', locale => {
-		// 	const dropdownView = createDropdown( locale );
-		// 	let dropdownPanelContent: DropdownPanelContent;
-
-		// 	dropdownView.buttonView.set( {
-		// 		label: t( 'Special characters' ),
-		// 		icon: specialCharactersIcon,
-		// 		tooltip: true
-		// 	} );
-
-		// 	dropdownView.bind( 'isEnabled' ).to( inputCommand );
-
-		// 	// Insert a special character when a tile was clicked.
-		// 	dropdownView.on<CharacterGridViewExecuteEvent>( 'execute', ( evt, data ) => {
-		// 		editor.execute( 'insertText', { text: data.character } );
-		// 		editor.editing.view.focus();
-		// 	} );
-
-		// 	dropdownView.on( 'change:isOpen', () => {
-		// 		if ( !dropdownPanelContent ) {
-		// 			dropdownPanelContent = this._createDropdownPanelContent( locale, dropdownView );
-
-		// 			const specialCharactersView = new SpecialCharactersView(
-		// 				locale,
-		// 				dropdownPanelContent.navigationView,
-		// 				dropdownPanelContent.gridView,
-		// 				dropdownPanelContent.infoView
-		// 			);
-
-		// 			dropdownView.panelView.children.add( specialCharactersView );
-		// 		}
-
-		// 		dropdownPanelContent.infoView.set( {
-		// 			character: null,
-		// 			name: null
-		// 		} );
-		// 	} );
-
-		// 	return dropdownView;
-		// } );
 
 		editor.ui.componentFactory.add( 'specialCharacters', () => {
 			const button = this._createDialogButton( ButtonView );
@@ -251,7 +209,7 @@ export default class SpecialCharacters extends Plugin {
 	/**
 	 * Initializes the dropdown, used for lazy loading.
 	 *
-	 * @returns An object with `navigationView`, `gridView` and `infoView` properties, containing UI parts.
+	 * @returns An object with `categoriesView`, `gridView` and `infoView` properties, containing UI parts.
 	 */
 	private _createDropdownPanelContent( locale: Locale ): DropdownPanelContent {
 		const groupEntries: Array<[ string, string ]> = Array
@@ -289,13 +247,13 @@ export default class SpecialCharacters extends Plugin {
 	}
 
 	/**
-	 * Creates a button for for menu bar that will show find and replace dialog.
+	 * Creates a button for for menu bar that will show special characetrs dialog.
 	 */
 	private _createDialogButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
 		const editor = this.editor;
 		const locale = editor.locale;
 		const buttonView = new ButtonClass( editor.locale ) as InstanceType<T>;
-		const command = editor.commands.get( 'mediaEmbed' )!;
+		const command = editor.commands.get( 'insertText' )!;
 		const t = locale.t;
 		const dialogPlugin = this.editor.plugins.get( 'Dialog' );
 
@@ -304,10 +262,11 @@ export default class SpecialCharacters extends Plugin {
 			icon: specialCharactersIcon
 		} );
 
+		buttonView.bind( 'isOn' ).to( dialogPlugin, 'id', id => id === 'specialCharacters' );
 		buttonView.bind( 'isEnabled' ).to( command, 'isEnabled' );
 
 		buttonView.on( 'execute', () => {
-			if ( dialogPlugin.id === 'mediaEmbed' ) {
+			if ( dialogPlugin.id === 'specialCharacters' ) {
 				dialogPlugin.hide();
 
 				return;

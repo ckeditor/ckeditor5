@@ -9,58 +9,42 @@
 
 import { type Locale, Collection } from 'ckeditor5/src/utils.js';
 import {
-	type DropdownView, type ListDropdownItemDefinition,
-	type ButtonView,
-	View,
 	addListToDropdown,
-	ViewModel,
+	createLabeledDropdown,
 	LabeledFieldView,
-	createLabeledDropdown
+	View,
+	ViewModel,
+	type DropdownView,
+	type ListDropdownItemDefinition
 } from 'ckeditor5/src/ui.js';
 
 /**
  * A class representing the navigation part of the special characters UI. It is responsible
  * for describing the feature and allowing the user to select a particular character group.
- *
- * @extends module:ui/formheader/formheaderview~FormHeaderView
  */
 export default class SpecialCharactersCategoriesView extends View {
 	/**
-	 * TODO
+	 * Currently selected special characters group's name.
 	 */
 	declare public currentGroupName: string;
 
-	/**
-	 * TODO
-	 */
 	private _groupNames: Map<string, string>;
 
-	/**
-	 * TODO
-	 */
-	public dropdownView: LabeledFieldView<DropdownView>;
+	private _dropdownView: LabeledFieldView<DropdownView>;
 
 	/**
-	 * Creates an instance of the {@link module:special-characters/ui/specialcharacterscategoriesview~SpecialCharactersNavigationView}
+	 * Creates an instance of the {@link module:special-characters/ui/specialcharacterscategoriesview~SpecialCharactersCategoriesView}
 	 * class.
 	 *
-	 * @param {module:utils/locale~Locale} locale The localization services instance.
-	 * @param {Iterable.<String>} groupNames The names of the character groups.
+	 * @param locale The localization services instance.
+	 * @param groupNames The names of the character groups.
 	 */
 	constructor( locale: Locale, groupNames: Map<string, string> ) {
 		super( locale );
 
 		this.set( 'currentGroupName', Array.from( groupNames.entries() )[ 0 ][ 0 ] );
-
-		/**
-		 * TODO
-		 */
 		this._groupNames = groupNames;
-
-		/**
-		 * TODO
-		 */
-		this.dropdownView = new LabeledFieldView( locale, createLabeledDropdown );
+		this._dropdownView = new LabeledFieldView( locale, createLabeledDropdown );
 
 		this.setTemplate( {
 			tag: 'div',
@@ -68,7 +52,7 @@ export default class SpecialCharactersCategoriesView extends View {
 				class: [ 'ck', 'ck-character-categories' ]
 			},
 			children: [
-				this.dropdownView
+				this._dropdownView
 			]
 		} );
 	}
@@ -86,7 +70,7 @@ export default class SpecialCharactersCategoriesView extends View {
 	 * TODO
 	 */
 	public focus(): void {
-		this.dropdownView.focus();
+		this._dropdownView.focus();
 	}
 
 	/**
@@ -99,6 +83,7 @@ export default class SpecialCharactersCategoriesView extends View {
 			const item: ListDropdownItemDefinition = {
 				type: 'button',
 				model: new ViewModel( {
+					name,
 					label,
 					withText: true
 				} )
@@ -114,20 +99,29 @@ export default class SpecialCharactersCategoriesView extends View {
 		const t = this.locale!.t;
 		const accessibleLabel = t( 'Category' );
 
-		this.dropdownView.label = accessibleLabel;
-		this.dropdownView.bind( 'isEmpty' ).to( this, 'currentGroupName', value => !value );
+		this._dropdownView.set( {
+			label: accessibleLabel,
+			isEmpty: false
+		} );
 
-		this.dropdownView.fieldView.buttonView.set( {
+		this._dropdownView.fieldView.panelPosition = this.locale!.uiLanguageDirection === 'rtl' ? 'se' : 'sw';
+
+		this._dropdownView.fieldView.buttonView.set( {
 			withText: true,
-			tooltip: true,
+			tooltip: accessibleLabel,
 			ariaLabel: accessibleLabel,
+			ariaLabelledBy: undefined,
 			isOn: false
 		} );
-		this.dropdownView.fieldView.buttonView.bind( 'label' ).to( this, 'currentGroupName' );
-		this.dropdownView.fieldView.on( 'execute', ( { source } ) => {
-			this.currentGroupName = ( source as ButtonView ).label!;
+		this._dropdownView.fieldView.buttonView.bind( 'label' )
+			.to( this, 'currentGroupName', value => this._groupNames.get( value )! );
+		this._dropdownView.fieldView.on( 'execute', ( { source } ) => {
+			this.currentGroupName = ( source as ViewModel ).name as string;
 		} );
 
-		addListToDropdown( this.dropdownView.fieldView, items );
+		addListToDropdown( this._dropdownView.fieldView, items, {
+			ariaLabel: accessibleLabel,
+			role: 'menu'
+		} );
 	}
 }
