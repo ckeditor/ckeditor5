@@ -34,7 +34,7 @@ Refer to the {@link features/paste-from-office-enhanced#content-formatting-suppo
 ## Additional feature information
 
 <info-box info>
-	The Paste from Office plugin only preserves content formatting and structures that are included in your CKEditor&nbsp;5 build. This means that you may need to add missing features such as font color or text alignment to your build. Read more in the [Automatic content filtering](#automatic-content-filtering) section below.
+	The Paste from Office plugin only preserves content formatting and structures that are included in your CKEditor&nbsp;5 setup. This means that you may need to add missing features such as font color or text alignment. Read more in the [Automatic content filtering](#automatic-content-filtering) section below.
 </info-box>
 
 Thanks to the paste from Office feature, you can copy and paste Microsoft Word documents into CKEditor&nbsp;5 and maintain basic text styling, heading levels, links, lists, tables, and images.
