@@ -48,7 +48,7 @@ When using the {@link features/ckbox CKBox file manager}, you can utilize its {@
 
 ## Installation
 
-If your integration uses a custom editor build, check out the {@link features/images-installation image features installation guide} to learn how to enable this feature.
+Check out the {@link features/images-installation image features installation guide} to learn how to enable this feature.
 
 ## Common API
 

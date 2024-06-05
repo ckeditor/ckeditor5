@@ -12,7 +12,7 @@ order: 20
 The paste from Google Docs feature lets you paste content from Google Docs and preserve its original structure and formatting.
 
 <info-box info>
-	The Paste from Office plugin only preserves content formatting and structures that are included in your CKEditor&nbsp;5 build. This means that you may need to add missing features such as font color or text alignment to your build. Read more in the [Automatic content filtering](#automatic-content-filtering) section below.
+	The Paste from Office plugin only preserves content formatting and structures that are included in your CKEditor&nbsp;5 setup. This means that you may need to add missing features such as font color or text alignment. Read more in the [Automatic content filtering](#automatic-content-filtering) section below.
 </info-box>
 
 ## Demo
