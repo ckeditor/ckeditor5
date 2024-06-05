@@ -79,7 +79,6 @@ Use the `<ckeditor>` component inside the template tag. The below example shows 
 <script>
 import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
 import { SlashCommand } from 'ckeditor5-premium-features';
-
 import 'ckeditor5/ckeditor5.css';
 import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 
@@ -121,7 +120,6 @@ If you do not want the CKEditor component to be enabled globally, you can skip t
 <script>
 import CKEditor from '@ckeditor/ckeditor5-vue2';
 import { Bold, ClassicEditor, Essentials, Italic, Paragraph } from 'ckeditor5';
-
 import 'ckeditor5/ckeditor5.css';
 
 export default {
@@ -371,7 +369,6 @@ Since accessing the editor toolbar is not possible until after the editor instan
 
 <script>
 	import { DecoupledEditor, Bold, Essentials, Italic, Paragraph, Undo } from 'ckeditor5';
-
 	import 'ckeditor5/ckeditor5.css'
 
 	export default {

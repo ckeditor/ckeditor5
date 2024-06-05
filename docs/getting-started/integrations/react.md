@@ -61,7 +61,6 @@ Use the `<CKEditor>` component inside your project. The below example shows how 
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
 import { SlashCommand } from 'ckeditor5-premium-features';
-
 import 'ckeditor5/ckeditor5.css';
 import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 import './App.css';
@@ -124,38 +123,37 @@ The [`@ckeditor/ckeditor5-react`](https://www.npmjs.com/package/@ckeditor/ckedit
 ```jsx
 import { ClassicEditor, Context, Bold, Essentials, Italic, Paragraph, ContextWatchdog } from 'ckeditor5';
 import { CKEditor, CKEditorContext } from '@ckeditor/ckeditor5-react';
-
 import 'ckeditor5/ckeditor5.css';
 
 function App() {
   return (
-    <CKEditorContext context={ Context } contextWatchdog={ ContextWatchdog }>
-      <CKEditor
-        editor={ ClassicEditor }
-        config={ {
-          plugins: [ Essentials, Bold, Italic, Paragraph ],
-          toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-        } }
-        data='<p>Hello from the first editor working with the context!</p>'
-        onReady={ ( editor ) => {
-          // You can store the "editor" and use when it is needed.
-          console.log( 'Editor 1 is ready to use!', editor );
-        } }
-      />
+	<CKEditorContext context={ Context } contextWatchdog={ ContextWatchdog }>
+	  <CKEditor
+		editor={ ClassicEditor }
+		config={ {
+		  plugins: [ Essentials, Bold, Italic, Paragraph ],
+		  toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+		} }
+		data='<p>Hello from the first editor working with the context!</p>'
+		onReady={ ( editor ) => {
+		  // You can store the "editor" and use when it is needed.
+		  console.log( 'Editor 1 is ready to use!', editor );
+		} }
+	  />
 
-      <CKEditor
-        editor={ ClassicEditor }
-        config={ {
-          plugins: [ Essentials, Bold, Italic, Paragraph ],
-          toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-        } }
-        data='<p>Hello from the second editor working with the context!</p>'
-        onReady={ ( editor ) => {
-          // You can store the "editor" and use when it is needed.
-          console.log( 'Editor 2 is ready to use!', editor );
-        } }
-      />
-    </CKEditorContext>
+	  <CKEditor
+		editor={ ClassicEditor }
+		config={ {
+		  plugins: [ Essentials, Bold, Italic, Paragraph ],
+		  toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+		} }
+		data='<p>Hello from the second editor working with the context!</p>'
+		onReady={ ( editor ) => {
+		  // You can store the "editor" and use when it is needed.
+		  console.log( 'Editor 2 is ready to use!', editor );
+		} }
+	  />
+	</CKEditorContext>
   );
 }
 
@@ -188,7 +186,6 @@ If you use the {@link framework/document-editor document (decoupled) editor}, yo
 import { useCallback, useState } from 'react';
 import { DecoupledEditor, Bold, Essentials, Italic, Paragraph } from 'ckeditor5';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-
 import 'ckeditor5/ckeditor5.css';
 
 function App() {
