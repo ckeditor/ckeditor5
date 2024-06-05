@@ -40,14 +40,14 @@ Now you can import all the modules from the `ckeditor5` and `ckeditor5-premium-f
 **Importing and registering UI translations is optional for American English.** To use the editor in any other language, use imported translations, as shown in the {@link getting-started/setup/ui-language setup section}.
 
 ```js
-import { ClassicEditor, Essentials, Bold, Italic, Paragraph } from 'ckeditor5';
+import { ClassicEditor, Essentials, Bold, Italic, Paragraph, Mention } from 'ckeditor5';
 import { FormatPainter, SlashCommand } from 'ckeditor5-premium-features';
 import 'ckeditor5/ckeditor5.css';
 import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Essentials, Bold, Italic, Paragraph, FormatPainter, SlashCommand ],
+		plugins: [ Essentials, Bold, Italic, Paragraph, Mention, FormatPainter, SlashCommand ],
 		toolbar: {
 			items: [ 'undo', 'redo', '|', 'bold', 'italic', 'formatPainter' ]
 		},
@@ -160,7 +160,9 @@ Your final page should look similar to the one below.
 			{
 				"imports": {
 					"ckeditor5": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.js",
-					"ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/"
+					"ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/",
+					"ckeditor5-premium-features": "https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.js",
+					"ckeditor5-premium-features/": "https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/"
 				}
 			}
 		</script>
