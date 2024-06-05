@@ -58,7 +58,7 @@ export default class SpecialCharactersCategoriesView extends View {
 	}
 
 	/**
-	 * TODO
+	 * @inheritDoc
 	 */
 	public override render(): void {
 		super.render();
@@ -67,14 +67,14 @@ export default class SpecialCharactersCategoriesView extends View {
 	}
 
 	/**
-	 * TODO
+	 * @inheritDoc
 	 */
 	public focus(): void {
 		this._dropdownView.focus();
 	}
 
 	/**
-	 * TODO
+	 * Creates dropdown item list, sets up bindings and fills properties.
 	 */
 	private _setupDropdown(): void {
 		const items = new Collection<ListDropdownItemDefinition>();
