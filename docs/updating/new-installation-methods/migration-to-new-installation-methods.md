@@ -2,7 +2,7 @@
 category: nim-migration
 order: 10
 menu-title: Migrating to new installation methods
-meta-title: Migration guide to the new installation methods
+meta-title: Migrating to new installation methods
 meta-description: Learn how to upgrade your CKEditor 5 project to the new installation methods.
 ---
 
