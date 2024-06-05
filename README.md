@@ -35,7 +35,7 @@ CKEditor&nbsp;5 is an ultra-modern JavaScript rich-text editor with MVC architec
 
 ### CKEditor&nbsp;5 builder
 
-The easiest way to start using CKEditor&nbsp;5 with all the features you need is to prepare a customized build with the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs). All you need to do is choose the preferred editor type as a base, add all the required plugins, and download the ready-to-use package.
+The easiest way to start using CKEditor&nbsp;5 with all the features you need is to prepare a customized setup with the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs). All you need to do is choose the preferred editor type as a base, add all the required plugins, and download the ready-to-use package.
 
 Refer to the [Quick Start](https://ckeditor.com/docs/ckeditor5/latest/getting-started/installation/quick-start.html) guide to learn more about CKEditor&nbsp;5 installation.
 
@@ -52,7 +52,7 @@ For more advanced users or those who need to integrate CKEditor&nbsp;5 with thei
 
 #### CKEditor&nbsp;5 Framework
 
-CKEditor&nbsp;5 builds allow you to quickly and easily initialize one of the many types of editors in your application. At the same time, CKEditor&nbsp;5 is also a framework for creating custom-made rich text editing solutions.
+CKEditor&nbsp;5 is also a framework for creating custom-made rich text editing solutions.
 
 To find out how to start building your editor from scratch go to the [CKEditor&nbsp;5 Framework overview](https://ckeditor.com/docs/ckeditor5/latest/framework/index.html) section of the CKEditor&nbsp;5 documentation.
 
