@@ -73,6 +73,20 @@ describe( 'PasteFromOffice - filters', () => {
 					const stringifyBody = stringifyView( body );
 					expect( /src="data:image\/jpeg;base64,/g.test( stringifyBody ) && /Foo/g.test( stringifyBody ) ).to.equal( true );
 				} );
+
+				it( 'should handle empty RTF data from WPS', () => {
+					const input = `<p >
+						Foo <img width="16"  height="16"  src="file://C:\\Users\\DJC\\AppData\\Local\\Temp\\ksohtml25524\\wps43.jpg" >
+					</p>
+	 				<p >
+						Foo <img width="158"  height="158"  src="file://C:\\Users\\DJC\\AppData\\Local\\Temp\\ksohtml25524\\wps44.png" >
+					</p>`;
+					const rtfString = ''
+					const { body } = parseHtml( input );
+					replaceImagesSourceWithBase64( body, rtfString, editor.editing.model );
+					const stringifyBody = stringifyView( body );
+					expect( /src="file:/g.test( stringifyBody ) && /Foo/g.test( stringifyBody ) ).to.equal( true );
+				} );
 			} );
 		} );
 
