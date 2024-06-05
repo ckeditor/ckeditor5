@@ -18,7 +18,7 @@ import type View from '../view.js';
  * Observers can also add features to the view, for instance by updating its status or marking elements
  * which need a refresh on DOM events.
  */
-export default abstract class Observer extends DomEmitterMixin() {
+export default abstract class Observer extends /* #__PURE__ */ DomEmitterMixin() {
 	/**
 	 * An instance of the view controller.
 	 */

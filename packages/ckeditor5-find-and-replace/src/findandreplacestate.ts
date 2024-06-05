@@ -14,7 +14,7 @@ import type { ResultType } from './findandreplace.js';
 /**
  * The object storing find and replace plugin state for a given editor instance.
  */
-export default class FindAndReplaceState extends ObservableMixin() {
+export default class FindAndReplaceState extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * A collection of find matches.
 	 *

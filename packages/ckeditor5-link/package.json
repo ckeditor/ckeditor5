@@ -24,7 +24,7 @@
     "@ckeditor/ckeditor5-cloud-services": "41.4.2",
     "@ckeditor/ckeditor5-code-block": "41.4.2",
     "@ckeditor/ckeditor5-core": "41.4.2",
-    "@ckeditor/ckeditor5-dev-utils": "^39.7.0",
+    "@ckeditor/ckeditor5-dev-utils": "^40.0.0",
     "@ckeditor/ckeditor5-easy-image": "41.4.2",
     "@ckeditor/ckeditor5-editor-classic": "41.4.2",
     "@ckeditor/ckeditor5-engine": "41.4.2",

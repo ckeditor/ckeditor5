@@ -45,7 +45,7 @@ import { isObject } from 'lodash-es';
 
 import '../../theme/components/toolbar/toolbar.css';
 
-export const NESTED_TOOLBAR_ICONS: Record<string, string | undefined> = {
+export const NESTED_TOOLBAR_ICONS: Record<string, string | undefined> = /* #__PURE__ */ ( () => ( {
 	alignLeft: icons.alignLeft,
 	bold: icons.bold,
 	importExport: icons.importExport,
@@ -55,7 +55,7 @@ export const NESTED_TOOLBAR_ICONS: Record<string, string | undefined> = {
 	threeVerticalDots: icons.threeVerticalDots,
 	pilcrow: icons.pilcrow,
 	dragIndicator: icons.dragIndicator
-};
+} ) )();
 
 /**
  * The toolbar view class.

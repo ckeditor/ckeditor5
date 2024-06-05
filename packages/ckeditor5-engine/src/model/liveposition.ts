@@ -30,7 +30,7 @@ import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
  * have to be unbound.
  * Use {@link module:engine/model/liveposition~LivePosition#detach} whenever you don't need `LivePosition` anymore.
  */
-export default class LivePosition extends EmitterMixin( Position ) {
+export default class LivePosition extends /* #__PURE__ */ EmitterMixin( Position ) {
 	/**
 	 * Root of the position path.
 	 */

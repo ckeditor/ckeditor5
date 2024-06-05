@@ -34,7 +34,7 @@ import type Range from './range.js';
  * the {@link module:engine/view/view~View#change `View#change()`} block
  * (so via {@link module:engine/view/downcastwriter~DowncastWriter#setSelection `DowncastWriter#setSelection()`}).
  */
-export default class DocumentSelection extends EmitterMixin( TypeCheckable ) {
+export default class DocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	/**
 	 * Selection is used internally (`DocumentSelection` is a proxy to that selection).
 	 */

@@ -16,7 +16,7 @@ import type { NormalizedLinkDecoratorManualDefinition } from '../utils.js';
  * to support integration with the UI state. An instance of this class is a model with the state of individual manual decorators.
  * These decorators are kept as collections in {@link module:link/linkcommand~LinkCommand#manualDecorators}.
  */
-export default class ManualDecorator extends ObservableMixin() {
+export default class ManualDecorator extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * An ID of a manual decorator which is the name of the attribute in the model, for example: 'linkManualDecorator0'.
 	 */

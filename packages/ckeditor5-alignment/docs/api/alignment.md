@@ -18,8 +18,10 @@ See the {@link features/text-alignment text alignment feature guide} and the {@l
 
 ## Installation
 
+This package is part of our open-source aggregate package.
+
 ```bash
-npm install --save @ckeditor/ckeditor5-alignment
+npm install ckeditor5
 ```
 
 ## Contribute

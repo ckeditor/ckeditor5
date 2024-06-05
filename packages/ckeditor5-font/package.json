@@ -18,7 +18,7 @@
   "devDependencies": {
     "@ckeditor/ckeditor5-undo": "41.4.2",
     "@ckeditor/ckeditor5-core": "41.4.2",
-    "@ckeditor/ckeditor5-dev-utils": "^39.7.0",
+    "@ckeditor/ckeditor5-dev-utils": "^40.0.0",
     "@ckeditor/ckeditor5-editor-classic": "41.4.2",
     "@ckeditor/ckeditor5-engine": "41.4.2",
     "@ckeditor/ckeditor5-highlight": "41.4.2",

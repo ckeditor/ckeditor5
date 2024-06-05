@@ -15,6 +15,12 @@ Check out the [demo in the source editing feature guide](https://ckeditor.com/do
 
 See the [`@ckeditor/ckeditor5-source-editing` package](https://ckeditor.com/docs/ckeditor5/latest/api/source-editing.html) page as well as the [source editing feature](https://ckeditor.com/docs/ckeditor5/latest/features/source-editing.html) guide in the [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
 
+## Installation
+
+```bash
+npm install ckeditor5
+```
+
 ## License
 
 Licensed under the terms of [GNU General Public License Version 2 or later](http://www.gnu.org/licenses/gpl.html). For full details about the license, please check the `LICENSE.md` file or [https://ckeditor.com/legal/ckeditor-oss-license](https://ckeditor.com/legal/ckeditor-oss-license).

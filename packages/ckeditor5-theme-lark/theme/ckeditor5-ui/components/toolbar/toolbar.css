@@ -14,7 +14,7 @@
 	border: 1px solid var(--ck-color-toolbar-border);
 
 	& .ck.ck-toolbar__separator {
-		align-self: stretch;
+		height: var(--ck-icon-size);
 		width: 1px;
 		min-width: 1px;
 		background: var(--ck-color-toolbar-border);

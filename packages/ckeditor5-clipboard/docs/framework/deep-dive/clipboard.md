@@ -29,6 +29,7 @@ When the user pastes or drops content into the editor, the browser fires an even
 The clipboard feature listens to the `view.Document#clipboardInput`, `ClipboardPipeline#inputTransformation`, and `ClipboardPipeline#contentInsertion` events using {@link framework/deep-dive/event-system#listener-priorities low priority listeners}. This means that adding a normal listener and calling `evt.stop()` allows overriding the behavior implemented by the clipboard feature. It is a similar mechanism to the DOM's `evt.preventDefault()` that lets you override the default browser behavior.
 
 ### Input pipeline events overview
+
 ```plaintext
  ┌──────────────────────┐          ┌──────────────────────┐
  │     view.Document    │          │     view.Document    │
@@ -123,104 +124,8 @@ editor.plugins.get( 'ClipboardPipeline' ).on( 'contentInsertion', ( evt, data ) 
 
 ### Paste as plain text plugin example
 
-You can use the knowledge from the earlier sections to create a complete plugin. It will allow users to paste the content as plain text while the feature is toggled on.
+You can use the knowledge from the earlier sections to create a complete plugin. A perfect example to follow is our `[PastePlainText](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-clipboard/src/pasteplaintext.ts)` which pastes plain text when <kbd>Shift</kbd> is pressed. If you are not familiar with creating plugins in CKEditor&nbsp;5, start by reading the {@link tutorials/crash-course/editor Creating a simple plugin} guide.
 
-If you are not familiar with creating plugins in CKEditor&nbsp;5, start by reading the {@link tutorials/crash-course/editor Creating a simple plugin} guide. You will get a better understanding of what happens in the code below.
-
-```js
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-
-import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-
-import { Command, Plugin } from '@ckeditor/ckeditor5-core';
-import { ButtonView } from '@ckeditor/ckeditor5-ui';
-
-import { plainTextToHtml } from '@ckeditor/ckeditor5-clipboard';
-
-class PastePlainText extends Plugin {
-	static get pluginName() {
-		return 'PastePlainText'
-	}
-
-	static get requires() {
-		return [ PastePlainTextUI, PastePlainTextCommand ]
-	}
-
-	init() {
-		const editor = this.editor;
-
-		editor.commands.add( 'pastePlainText', new PastePlainTextCommand( editor ) );
-
-		// The logic responsible for converting HTML to plain text.
-		const clipboardPlugin = editor.plugins.get( 'ClipboardPipeline' );
-		const command = editor.commands.get( 'pastePlainText' );
-		const editingView = editor.editing.view;
-
-		editingView.document.on( 'clipboardInput', ( evt, data ) => {
-			if ( editor.isReadOnly || !command.value ) {
-				return;
-			}
-
-			const dataTransfer = data.dataTransfer;
-			let content = plainTextToHtml( dataTransfer.getData( 'text/plain' ) );
-
-			data.content = this.editor.data.htmlProcessor.toView( content );
-		} );
-	}
-};
-
-class PastePlainTextUI extends Plugin {
-	init() {
-		const editor = this.editor;
-
-		editor.ui.componentFactory.add( 'pastePlainText', locale => {
-			const view = new ButtonView( locale );
-			const command = editor.commands.get( 'pastePlainText' );
-
-			view.set( {
-				label: 'Paste as plain text',
-				withText: true,
-				tooltip: true,
-				isToggleable: true
-			} );
-
-			// A callback executed once the button is clicked.
-			view.on( 'execute', () => {
-				editor.execute( 'pastePlainText' );
-			} );
-
-			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
-
-			return view;
-		} );
-	}
-};
-
-class PastePlainTextCommand extends Command {
-	refresh() {
-		// Disable the command if the editor is in the read-only mode.
-		this.isEnabled = !this.editor.isReadOnly;
-	}
-
-	execute() {
-		// Activate pasting plain text.
-		this.value = !this.value;
-	}
-}
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Essentials, Paragraph, Bold, Italic, PastePlainText ],
-		toolbar: [ 'bold', 'italic', 'pastePlainText' ],
-		// More of the editor's configuration.
-		// ...
-	} )
-	.catch( error => {
-    	console.log( error );
-	} );
-```
 
 ## Output pipeline
 

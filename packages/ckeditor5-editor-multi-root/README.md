@@ -5,15 +5,21 @@ CKEditor&nbsp;5 multi-root editor implementation
 [![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5?branch=master)
 [![Build Status](https://travis-ci.com/ckeditor/ckeditor5.svg?branch=master)](https://app.travis-ci.com/github/ckeditor/ckeditor5)
 
-The multi-root editor implementation for CKEditor&nbsp;5. Read more about the [multi-root editor build](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/predefined-builds.html#multi-root-editor) and see the [demo](https://ckeditor.com/docs/ckeditor5/latest/examples/builds/multi-root-editor.html).
+The multi-root editor implementation for CKEditor&nbsp;5. Read more about the [multi-root editor build](https://ckeditor.com/docs/ckeditor5/latest/getting-started/legacy/installation-methods/predefined-builds.html#multi-root-editor) and see the [demo](https://ckeditor.com/docs/ckeditor5/latest/examples/builds/multi-root-editor.html).
 
 This package contains the [`MultiRootEditor`](https://ckeditor.com/docs/ckeditor5/latest/api/module_editor-multi-root_multirooteditor-MultiRootEditor.html) class. Follow there to learn more about this type of editor and how to initialize it.
 
-This package contains the source version of the multi-root editor. Read more about [CKEditor&nbsp;5 predefined builds](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/predefined-builds.html) in the CKEditor&nbsp;5 documentation.
+This package contains the source version of the multi-root editor. Read more about [CKEditor&nbsp;5 predefined builds](https://ckeditor.com/docs/ckeditor5/latest/getting-started/legacy/advanced/alternative-setups/predefined-builds.html) in the CKEditor&nbsp;5 documentation.
 
 ## Documentation
 
 See the [`@ckeditor/ckeditor5-editor-multi-root` package](https://ckeditor.com/docs/ckeditor5/latest/api/editor-multi-root.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
+
+## Installation
+
+```bash
+npm install ckeditor5
+```
 
 ## License
 

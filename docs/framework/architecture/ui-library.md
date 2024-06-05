@@ -201,6 +201,7 @@ Views are organized into {@link module:ui/viewcollection~ViewCollection collecti
 Each editor UI has a "root view" (like {@link module:editor-classic/classiceditorui~ClassicEditorUI#view `ClassicEditor#view`}), which can be found under `editor.ui.view`. Such a view usually defines the container element of the editor and the undermost view collections that other features can populate.
 
 For instance, the `BoxedEditorUiView` class defines two collections:
+
 * {@link module:ui/editorui/boxed/boxededitoruiview~BoxedEditorUIView#top} &ndash; A collection that hosts the toolbar.
 * {@link module:ui/editorui/boxed/boxededitoruiview~BoxedEditorUIView#main} &ndash; A collection that contains the editable area of the editor.
 
@@ -221,7 +222,7 @@ class MyPlugin extends Plugin {
 
 `MyPluginView` can {@link module:ui/view~View#createCollection create its view collections} and populate them during the life cycle of the editor. There is no limit to the depth of the UI tree, which usually looks like this:
 
-```
+```plain
 EditorUIView
 	├── "top" collection
 	│	└── ToolbarView
@@ -235,13 +236,13 @@ EditorUIView
 	├── "main" collection
 	│	└── InlineEditableUIView
 	└── "body" collection
-		 ├── BalloonPanelView
-		 │	└── "content" collection
-		 │		└── ToolbarView
-		 ├── BalloonPanelView
-		 │	└── "content" collection
-		 │		└── ...
-		 └── ...
+		├── BalloonPanelView
+		│	└── "content" collection
+		│		└── ToolbarView
+		├── BalloonPanelView
+		│	└── "content" collection
+		│		└── ...
+		└── ...
 ```
 
 ## Using the existing components
@@ -251,7 +252,7 @@ The framework provides some common {@link api/ui components} like {@link module:
 For example, to create a toolbar with some buttons inside, you need to import the `ToolbarView` and `ButtonView` classes first:
 
 ```js
-import { ButtonView, ToolbarView } from '@ckeditor/ckeditor5-ui';
+import { ButtonView, ToolbarView } from 'ckeditor5';
 ```
 
 Create the toolbar and a couple of buttons with labels first. Then append the buttons to the toolbar:
@@ -303,10 +304,12 @@ toolbar.on( 'execute', evt => {
 The framework implements the {@link module:ui/dropdown/dropdownview~DropdownView dropdown} component which can host any sort of UI in its panel. It is composed of a {@link module:ui/dropdown/dropdownview~DropdownView#buttonView button} (to open the dropdown) and a {@link module:ui/dropdown/dropdownview~DropdownView#panelView panel} (the container).
 
 The button can be either:
+
 * A standard {@link module:ui/button/buttonview~ButtonView}.
 * A {@link module:ui/dropdown/button/splitbuttonview~SplitButtonView}, for more complex use cases.
 
 The dropdown panel exposes its {@link module:ui/dropdown/dropdownpanelview~DropdownPanelView#children children} collection which aggregates the child {@link module:ui/view~View views}. The most common views displayed in the dropdown panel are:
+
 * {@link module:ui/list/listview~ListView}
 * {@link module:ui/toolbar/toolbarview~ToolbarView}
 
@@ -315,12 +318,13 @@ The framework provides a set of helpers to make the dropdown creation process ea
 The {@link module:ui/dropdown/utils~createDropdown} helper creates a {@link module:ui/dropdown/dropdownview~DropdownView} with either a {@link module:ui/button/buttonview~ButtonView} or a {@link module:ui/dropdown/button/splitbuttonview~SplitButtonView}.
 
 ```js
-import { createDropdown, SplitButtonView } from '@ckeditor/ckeditor5-ui';
+import { createDropdown, SplitButtonView } from 'ckeditor5';
 
 const dropdownView = createDropdown( locale, SplitButtonView );
 ```
 
 This kind of (default) dropdown comes with a set of behaviors:
+
 * It closes the panel when it loses the focus, for example, when the user moved the focus elsewhere.
 * It closes the panel upon the {@link module:ui/dropdown/dropdownview~DropdownView#event:execute `execute`} event.
 * It focuses the view hosted in the panel, for example, when navigating the toolbar using the keyboard.
@@ -359,7 +363,7 @@ dropdownView.buttonView.set( {
 
 You can use one of the {@link framework/architecture/ui-components#icons icons available in the editor}. You can also add a custom icon to the dropdown by providing the entire XML string of the icon, like in this example:
 
-```
+```html
 <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.187 17H5.773c-.637 0-1.092-.138-1.364-.415-.273-.277-.409-.718-.409-1.323V4.738c0-.617.14-1.062.419-1.332.279-.27.73-.406 1.354-.406h4.68c.69 0 1.288.041 1.793.124.506.083.96.242 1.36.478.341.197.644.447.906.75a3.262 3.262 0 0 1 .808 2.162c0 1.401-.722 2.426-2.167 3.075C15.05 10.175 16 11.315 16 13.01a3.756 3.756 0 0 1-2.296 3.504 6.1 6.1 0 0 1-1.517.377c-.571.073-1.238.11-2 .11zm-.217-6.217H7v4.087h3.069c1.977 0 2.965-.69 2.965-2.072 0-.707-.256-1.22-.768-1.537-.512-.319-1.277-.478-2.296-.478zM7 5.13v3.619h2.606c.729 0 1.292-.067 1.69-.2a1.6 1.6 0 0 0 .91-.765c.165-.267.247-.566.247-.897 0-.707-.26-1.176-.778-1.409-.519-.232-1.31-.348-2.375-.348H7z"/></svg>
 ```
 
@@ -389,8 +393,7 @@ dropdownView.buttonView.set( {
 The {@link module:ui/list/listview~ListView} can be added to a dropdown using the {@link module:ui/dropdown/utils~addListToDropdown} helper.
 
 ```js
-import { ViewModel, addListToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui';
-import { Collection } from '@ckeditor/ckeditor5-utils';
+import { ViewModel, addListToDropdown, createDropdown, Collection } from 'ckeditor5';
 
 // The default dropdown.
 const dropdownView = createDropdown( locale );
@@ -423,7 +426,7 @@ addListToDropdown( dropdownView, items );
 A {@link module:ui/toolbar/toolbarview~ToolbarView} can be added to a dropdown using the {@link module:ui/dropdown/utils~addToolbarToDropdown} helper.
 
 ```js
-import { ButtonView, SplitButtonView, addToolbarToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui';
+import { ButtonView, SplitButtonView, addToolbarToDropdown, createDropdown } from 'ckeditor5';
 
 
 const buttons = [];
@@ -455,9 +458,10 @@ The framework provides the UI dialog component. The dialog system in CKEditor&nb
 
 Dialog is a pop-up window that does not close when the user clicks outside of it. It allows for interacting with the editor and its content while being open (unless it is a modal, which blocks the interaction with the rest of the page until closed). A dialog is also {@link module:ui/bindings/draggableviewmixin~DraggableViewMixin draggable} with a mouse or touch if you configure it to display a [header](#header). Only one dialog can be open at a time &ndash; opening another one closes the previously visible one.
 
-Check out these {@link installation/plugins/plugins example plugins} that display:
-* A {@link framework/architecture/ui-components#dialog dialog window}.
-* A {@link framework/architecture/ui-components#modal modal window}.
+Check out these {@link framework/architecture/plugins example plugins} that display:
+
+* a {@link framework/architecture/ui-components#dialog dialog window},
+* a {@link framework/architecture/ui-components#modal modal window}.
 
 Learn more about the [structure and behavior](#structure-and-behavior) of dialog windows.
 
@@ -476,6 +480,7 @@ editor.plugins.get( 'Dialog' ).show( {
 ```
 
 There are different ways to close a modal:
+
 * Clicking the "Close" button in the corner (if the [header](#header) is visible).
 * Using the <kbd>Esc</kbd> keystroke or one of the [action buttons](#action-buttons).
 
@@ -486,6 +491,7 @@ There are different ways to close a modal:
 #### Structure and behavior
 
 A dialog can consist of three parts, each of which is optional:
+
 * The [header](#header) (also used as a drag handler).
 * The [content](#content) (the body of the dialog).
 * The [action buttons](#action-buttons) area (a collection of buttons).
@@ -503,7 +509,7 @@ A header may consist of any combination of three elements:
 By default, the "Close" button ("X") is added to the header as long as you provide an icon or a title. To hide it, set the `hasCloseButton` flag to `false`:
 
 ```js
-import { icons } from 'ckeditor5/src/core.js';
+import { icons } from 'ckeditor5';
 
 // ...
 
@@ -670,6 +676,7 @@ editor.plugins.get( 'Dialog' ).show( {
 #### Accessibility
 
 Dialogs provide full keyboard accessibility.
+
 * While a dialog is open, strike the <kbd>Ctrl</kbd>+<kbd>F6</kbd> combination to move the focus between the editor and the dialog.
 * You can also close a dialog at any time by pressing the <kbd>Esc</kbd> key (even if the "Close" button is hidden).
 * To navigate through the dialog, use the <kbd>Tab</kbd> and <kbd>Shift</kbd>+<kbd>Tab</kbd> keystrokes.
@@ -691,7 +698,7 @@ When the [`Dialog#show()`](#the-dialogshow-method) function gets called, a names
 For example, you can change the default position of the "Find and replace" dialog from the editor corner to the bottom with the following code:
 
 ```js
-import { DialogViewPosition } from 'ckeditor5/src/ui.js';
+import { DialogViewPosition } from 'ckeditor5';
 
 // ...
 
@@ -760,7 +767,7 @@ The `onShow` callback allows you to manipulate the dialog values or set addition
 
 ```js
 // Import necessary classes.
-import { View, InputTextView } from '@ckeditor/ckeditor5-ui';
+import { View, InputTextView } from 'ckeditor5';
 
 // Create an input.
 const input = new InputTextView();
@@ -805,7 +812,7 @@ If not specified otherwise, the dialog will display in the center of the editor'
 * When you develop your dialog, specify the {@link module:ui/dialog/dialog~DialogDefinition#position} property in a definition passed to the {@link module:ui/dialog/dialog~Dialog#show `Dialog#show()`} method, for instance:
 
 ```js
-import { DialogViewPosition } from 'ckeditor5/src/ui.js';
+import { DialogViewPosition } from 'ckeditor5';
 
 // ...
 
@@ -852,7 +859,7 @@ The framework offers built-in classes that help manage keystrokes and focus in t
 The {@link module:utils/focustracker~FocusTracker `FocusTracker`} class can observe some HTML elements and determine if one of them is focused either by the user (clicking, typing) or using the `HTMLElement.focus()` DOM method.
 
 ```js
-import { FocusTracker } from '@ckeditor/ckeditor5-utils';
+import { FocusTracker } from 'ckeditor5';
 
 // More imports.
 // ...
@@ -888,7 +895,7 @@ Learn more about the focus tracker class in the {@link framework/deep-dive/focus
 The {@link module:utils/keystrokehandler~KeystrokeHandler `KeystrokeHandler`} listens to the keystroke events fired by an HTML element or any of its descendants. It executes pre-defined actions when the keystroke is pressed. Usually, each [view](#views) creates its keystroke handler instance. It takes care of the keystrokes fired by the elements the view has rendered.
 
 ```js
-import { KeystrokeHandler } from '@ckeditor/ckeditor5-utils';
+import { KeystrokeHandler } from 'ckeditor5';
 
 // More imports.
 // ...
@@ -941,7 +948,7 @@ keystrokeHandler.set( 'Ctrl+A', ( keyEvtData ) => {
 
 Pressing <kbd>Ctrl</kbd>+<kbd>A</kbd> will log:
 
-```
+```plain
 "A high priority listener."
 ```
 

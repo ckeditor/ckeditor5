@@ -23,22 +23,20 @@ To upload an image, use the image toolbar button {@icon @ckeditor/ckeditor5-core
 	These demos in this guide present a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
-### Installation
+## Installation
 
-<info-box>
-	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
-</info-box>
-
-Using the URL of an image, the user may paste it into the editor. To enable this option, install the `ImageInsert` plugin and add the `insertImage` toolbar item to the toolbar. It replaces the standard `uploadImage` button.
+Using the URL of an image, the user may paste it into the editor. To enable this option, install the `ImageInsert` plugin and add the `insertImage` toolbar item to the toolbar (it replaces the standard `uploadImage` button).
 
 ```js
-import { ImageInsert } from '@ckeditor/ckeditor5-image';
+import { ClassicEditor, Image, ImageInsert } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ /* ... */ , ImageInsert ],
-		toolbar: [ /* ... */ , 'insertImage' ]
+		plugins: [ Image, ImageInsert, /* ... */  ],
+		toolbar: [ 'insertImage', /* ... */  ]
 	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 This will add a new **Insert image** dropdown {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Insert image} in the toolbar.
@@ -58,12 +56,14 @@ You can paste an image URL directly into the editor content, and it will be auto
 The {@link module:image/autoimage~AutoImage} plugin recognizes image links in the pasted content and embeds them shortly after they are injected into the document to speed up the editing. Accepted image extensions are: `jpg`, `jpeg`, `png`, `gif`, and `ico`. Use the following code to enable the plugin in your editor. There is no toolbar configuration for this feature.
 
 ```js
-import { AutoImage } from '@ckeditor/ckeditor5-image';
+import { ClassicEditor, Image, AutoImage } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ /* ... */ , AutoImage ]
+		plugins: [ /* ... */ , Image, AutoImage ]
 	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box>
@@ -76,11 +76,13 @@ If the automatic embedding was unexpected, for instance when the link was meant 
 
 The {@link module:image/image~Image} plugin registers:
 
+* The `'insertImage'` toolbar dropdown component that aggregates all image insert methods available in the current editor setup.
+* The `'insertImageViaUrl'` toolbar button that opens a modal dialog to let you insert an image by specifying the image URL.
 * The {@link module:image/image/insertimagecommand~InsertImageCommand `'insertImage'` command} that accepts a source (for example a URL) of an image to insert.
 
 The {@link module:image/imageupload~ImageUpload} plugin registers:
 
-* The `'uploadImage'` button that opens the native file browser to let you upload a file directly from your disk (to use in the {@link features/images-overview#image-contextual-toolbar image toolbar}).
+* The `'uploadImage'` toolbar button that opens the native file browser to let you upload a file directly from your disk (to use in the {@link features/images-overview#image-contextual-toolbar image toolbar}).
 * The {@link module:image/imageupload/uploadimagecommand~UploadImageCommand `'uploadImage'` command} that accepts the file to upload.
 
 <info-box>

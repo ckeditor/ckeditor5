@@ -110,7 +110,7 @@ describe( 'CKBoxUI', () => {
 			button = editor.ui.componentFactory.create( 'ckbox' );
 		} );
 
-		testButton( ButtonView );
+		testButton( ButtonView, 'Open file manager' );
 
 		it( 'should enable tooltips for the #buttonView', () => {
 			expect( button.tooltip ).to.be.true;
@@ -122,32 +122,26 @@ describe( 'CKBoxUI', () => {
 			button = editor.ui.componentFactory.create( 'menuBar:ckbox' );
 		} );
 
-		testButton( MenuBarMenuListItemButtonView );
+		testButton( MenuBarMenuListItemButtonView, 'File' );
 	} );
 
 	describe( 'InsertImageUI integration', () => {
 		it( 'should create CKBox button in split button dropdown button', () => {
-			mockAssetManagerIntegration();
+			mockAnotherIntegration();
 
-			const spy = sinon.spy( editor.ui.componentFactory, 'create' );
 			const dropdown = editor.ui.componentFactory.create( 'insertImage' );
 			const dropdownButton = dropdown.buttonView.actionView;
 
 			expect( dropdownButton ).to.be.instanceOf( ButtonView );
 			expect( dropdownButton.withText ).to.be.false;
 			expect( dropdownButton.icon ).to.equal( icons.imageAssetManager );
-
-			expect( spy.calledTwice ).to.be.true;
-			expect( spy.firstCall.args[ 0 ] ).to.equal( 'insertImage' );
-			expect( spy.secondCall.args[ 0 ] ).to.equal( 'ckbox' );
-			expect( spy.firstCall.returnValue ).to.equal( dropdown.buttonView.actionView );
+			expect( dropdownButton.label ).to.equal( 'Insert image with file manager' );
 		} );
 
 		it( 'should create CKBox button in dropdown panel', () => {
-			mockAssetManagerIntegration();
+			mockAnotherIntegration();
 
 			const dropdown = editor.ui.componentFactory.create( 'insertImage' );
-			const spy = sinon.spy( editor.ui.componentFactory, 'create' );
 
 			dropdown.isOpen = true;
 
@@ -157,16 +151,34 @@ describe( 'CKBoxUI', () => {
 			expect( buttonView ).to.be.instanceOf( ButtonView );
 			expect( buttonView.withText ).to.be.true;
 			expect( buttonView.icon ).to.equal( icons.imageAssetManager );
+			expect( buttonView.label ).to.equal( 'Insert with file manager' );
+		} );
 
-			expect( spy.calledOnce ).to.be.true;
-			expect( spy.firstCall.args[ 0 ] ).to.equal( 'ckbox' );
-			expect( spy.firstCall.returnValue ).to.equal( buttonView );
+		it( 'should create CKBox button in menu bar', () => {
+			mockAnotherIntegration();
+
+			const submenu = editor.ui.componentFactory.create( 'menuBar:insertImage' );
+			const buttonView = submenu.panelView.children.first.items.first.children.first;
+
+			expect( buttonView ).to.be.instanceOf( MenuBarMenuListItemButtonView );
+			expect( buttonView.withText ).to.be.true;
+			expect( buttonView.icon ).to.equal( icons.imageAssetManager );
+			expect( buttonView.label ).to.equal( 'With file manager' );
+		} );
+
+		it( 'should create CKBox button in menu bar - only integration', () => {
+			const buttonView = editor.ui.componentFactory.create( 'menuBar:insertImage' );
+
+			expect( buttonView ).to.be.instanceOf( MenuBarMenuListItemButtonView );
+			expect( buttonView.withText ).to.be.true;
+			expect( buttonView.icon ).to.equal( icons.imageAssetManager );
+			expect( buttonView.label ).to.equal( 'Image' );
 		} );
 
 		it( 'should bind to #isImageSelected', () => {
 			const insertImageUI = editor.plugins.get( 'ImageInsertUI' );
 
-			mockAssetManagerIntegration();
+			mockAnotherIntegration();
 
 			const dropdown = editor.ui.componentFactory.create( 'insertImage' );
 
@@ -186,7 +198,7 @@ describe( 'CKBoxUI', () => {
 		} );
 
 		it( 'should close dropdown on execute', () => {
-			mockAssetManagerIntegration();
+			mockAnotherIntegration();
 
 			const dropdown = editor.ui.componentFactory.create( 'insertImage' );
 
@@ -203,7 +215,7 @@ describe( 'CKBoxUI', () => {
 		} );
 	} );
 
-	function testButton( Component ) {
+	function testButton( Component, label ) {
 		it( 'should add the "ckbox" component to the factory if the "ckbox" command exists', () => {
 			expect( button ).to.be.instanceOf( Component );
 		} );
@@ -225,7 +237,7 @@ describe( 'CKBoxUI', () => {
 		} );
 
 		it( 'should set a #label of the #buttonView', () => {
-			expect( button.label ).to.equal( 'Open file manager' );
+			expect( button.label ).to.equal( label );
 		} );
 
 		it( 'should set an #icon of the #buttonView', () => {
@@ -244,7 +256,7 @@ describe( 'CKBoxUI', () => {
 		} );
 	}
 
-	function mockAssetManagerIntegration() {
+	function mockAnotherIntegration() {
 		const insertImageUI = editor.plugins.get( 'ImageInsertUI' );
 		const observable = new Model( { isEnabled: true } );
 
@@ -259,6 +271,13 @@ describe( 'CKBoxUI', () => {
 				return button;
 			},
 			formViewCreator() {
+				const button = new ButtonView( editor.locale );
+
+				button.label = 'bar';
+
+				return button;
+			},
+			menuBarButtonViewCreator() {
 				const button = new ButtonView( editor.locale );
 
 				button.label = 'bar';
