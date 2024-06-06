@@ -4,9 +4,7 @@ order: 10
 menu-title: Overview
 meta-title: Getting started with CKEditor 5 | CKEditor 5 documentation
 meta-description: Learn how to install, integrate, configure, and develop CKEditor 5. Browse through the API documentation and online samples.
-modified_at: 2024-05-06
 ---
-<!-- replace this and all other getting started modified at dates to releae date on release -->
 
 # Getting started with CKEditor&nbsp;5
 
