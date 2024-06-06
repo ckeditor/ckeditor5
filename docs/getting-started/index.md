@@ -10,7 +10,7 @@ modified_at: 2024-05-06
 
 # Getting started with CKEditor&nbsp;5
 
-CKEditor&nbsp;5 is a flexible editing framework that provides every type of WYSIWYG editing solution imaginable. From editors similar to Google Docs and Medium to Notion, Slack, or Twitter-like applications, all is possible within a single editing framework. It is an ultra-modern JavaScript rich-text editor with MVC architecture, custom data model, and virtual DOM, written from scratch in TypeScript. Find out the most convenient way to start using it!
+CKEditor&nbsp;5 is a flexible editing framework that provides every type of WYSIWYG editing solution imaginable. From editors similar to Google Docs and Medium to Notion, Slack, or Twitter-like applications, all is possible within a single editing framework. It is a modern JavaScript rich-text editor with MVC architecture, custom data model, and virtual DOM, written from scratch in TypeScript with excellent support for modern bundlers. Find out the most convenient way to start using it!
 
 <span class="navigation-hint_mobile">
 	<info-box>
