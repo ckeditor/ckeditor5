@@ -58,6 +58,7 @@ For example, to use Polish, import `'ckeditor5/translations/pl.js'` and pass the
 ```js
 import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
 import { TableOfContents } from 'ckeditor5-premium-features';
+
 import coreTranslations from 'ckeditor5/translations/pl.js';
 import commercialTranslations from 'ckeditor5-premium-features/translations/pl.js';
 
@@ -102,6 +103,7 @@ To use different language than the default one (English), you need to load the e
 <script type="module">
 import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
 import { TableOfContents } from 'ckeditor5-premium-features';
+
 import coreTranslations from 'ckeditor5/translations/pl.js';
 import commercialTranslations from 'ckeditor5-premium-features/translations/pl.js';
 
