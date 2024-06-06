@@ -47,7 +47,7 @@ import {
 	CloudServices,
 	Image,
 	ImageUpload
-	} from 'ckeditor5';
+} from 'ckeditor5';
 
 import { EasyImage } from 'ckeditor5-premium-features';
 
