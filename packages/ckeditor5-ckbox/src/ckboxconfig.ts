@@ -165,6 +165,12 @@ export interface CKBoxConfig {
 	 * extensions match those listed in the array. Assets whose file
 	 * extensions are not listed in the choosableFileExtensions array are
 	 * automatically disabled within the CKBox interface.
+	 *
+	 * ```ts
+	 * const ckboxConfig = {
+	 *		choosableFileExtensions: ['jpg', 'png']
+	 * };
+	 * ```
 	 */
 	choosableFileExtensions?: Array<string>;
 }
@@ -188,6 +194,18 @@ export type CKBoxCategories = {
 	 * This option takes an object with categories and icons that should be used instead
 	 * of the default ones. Categories can be defined using either their name or id.
 	 * Icons should be defined as strings containing the SVG images, or as React components.
+	 *
+	 * ```ts
+	 * const ckboxConfig = {
+	 * 		categories: {
+	 * 				icons: {
+	 * 					Images: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path ... /></svg>',
+	 * 					// Category can be referenced by ID
+	 * 					// 'fdf2a647-b67f-4a6c-b692-5ba1dc1ed87b': '<svg...'
+	 * 				}
+	 * 		}
+	 * }
+	 * ```
 	 */
 	icons: {
 		[ key: string ]: string;
