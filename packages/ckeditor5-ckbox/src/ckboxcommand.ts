@@ -19,7 +19,6 @@ import type {
 	CKBoxAssetImageDefinition,
 	CKBoxAssetLinkAttributesDefinition,
 	CKBoxAssetLinkDefinition,
-	CKBoxDialog,
 	CKBoxRawAssetDefinition
 } from './ckboxconfig.js';
 
