@@ -44,7 +44,7 @@ import type { EditorConfig } from './editorconfig.js';
 
 declare global {
 	// eslint-disable-next-line no-var
-	var CKEDITOR_IS_TEST_ENV: string;
+	var CKEDITOR_GLOBAL_LICENSE_KEY: string;
 }
 
 /**
@@ -673,8 +673,8 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 		let licenseKey = this.config.get( 'licenseKey' );
 		const distributionChannel = ( window as any )[ ' CKE_DISTRIBUTION' ] || 'sh';
 
-		if ( !licenseKey && window.CKEDITOR_IS_TEST_ENV ) {
-			this.config.set( 'licenseKey', licenseKey = 'GPL' );
+		if ( !licenseKey && window.CKEDITOR_GLOBAL_LICENSE_KEY ) {
+			this.config.set( 'licenseKey', licenseKey = window.CKEDITOR_GLOBAL_LICENSE_KEY );
 		}
 
 		if ( !licenseKey ) {
