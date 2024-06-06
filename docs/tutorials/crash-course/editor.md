@@ -31,6 +31,7 @@ Open the `src/main.js` file and add the following code:
 ```js
 // Import the editor.
 import { ClassicEditor } from 'ckeditor5';
+
 // Import the styles.
 import 'ckeditor5/ckeditor5.css';
 

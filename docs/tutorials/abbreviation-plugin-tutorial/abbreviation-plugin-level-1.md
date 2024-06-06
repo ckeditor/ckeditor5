@@ -114,6 +114,7 @@ import {
 	Bold,
 	Italic
 } from 'ckeditor5';
+
 import 'ckeditor5/ckeditor5.css';
 
 import Abbreviation from './abbreviation/abbreviation';					// ADDED
@@ -335,6 +336,7 @@ import {
 	Bold,
 	Italic
 } from 'ckeditor5';
+
 import 'ckeditor5/ckeditor5.css';
 
 import Abbreviation from './abbreviation/abbreviation';
