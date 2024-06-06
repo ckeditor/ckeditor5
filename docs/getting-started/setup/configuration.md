@@ -8,9 +8,9 @@ toc-limit: 1
 modified_at: 2024-06-06
 ---
 
-# Configuring CKEditor&nbsp;5 features
+# Configuring CKEditor&nbsp;5
 
-The editor's user interface is mostly dependent on the editor types. Functionality of the editor is provided by specialized features. Some of these features are only available with certain editor types. They are accessible via a configurable toolbar or keyboard shortcuts. All of these elements can most easily be configured in [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs). This guide will explain these configuration options. 
+The editor's user interface is mostly dependent on the editor types. Functionality of the editor is provided by specialized features. Some of these features are only available with certain editor types. They are accessible via a configurable toolbar or keyboard shortcuts. All of these elements can most easily be configured with [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs). This guide will explain these configuration options. 
 
 ## Configuring editor types
 
