@@ -42,6 +42,7 @@ Now you can import all the modules from the `ckeditor5` and `ckeditor5-premium-f
 ```js
 import { ClassicEditor, Essentials, Bold, Italic, Paragraph, Mention } from 'ckeditor5';
 import { FormatPainter, SlashCommand } from 'ckeditor5-premium-features';
+
 import 'ckeditor5/ckeditor5.css';
 import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 

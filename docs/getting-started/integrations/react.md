@@ -61,6 +61,7 @@ Use the `<CKEditor>` component inside your project. The below example shows how 
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
 import { SlashCommand } from 'ckeditor5-premium-features';
+
 import 'ckeditor5/ckeditor5.css';
 import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 import './App.css';
@@ -123,6 +124,7 @@ The [`@ckeditor/ckeditor5-react`](https://www.npmjs.com/package/@ckeditor/ckedit
 ```jsx
 import { ClassicEditor, Context, Bold, Essentials, Italic, Paragraph, ContextWatchdog } from 'ckeditor5';
 import { CKEditor, CKEditorContext } from '@ckeditor/ckeditor5-react';
+
 import 'ckeditor5/ckeditor5.css';
 
 function App() {
@@ -186,6 +188,7 @@ If you use the {@link framework/document-editor document (decoupled) editor}, yo
 import { useCallback, useState } from 'react';
 import { DecoupledEditor, Bold, Essentials, Italic, Paragraph } from 'ckeditor5';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
+
 import 'ckeditor5/ckeditor5.css';
 
 function App() {

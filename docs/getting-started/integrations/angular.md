@@ -151,6 +151,7 @@ Then, import the editor in your Angular component and assign it to a `public` pr
 import { Component } from '@angular/core';
 import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
 import { SlashCommand } from 'ckeditor5-premium-features';
+
 import 'ckeditor5/ckeditor5.css';
 import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 
@@ -195,6 +196,7 @@ import { Component } from '@angular/core';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
 import { SlashCommand } from 'ckeditor5-premium-features';
+
 import 'ckeditor5/ckeditor5.css';
 import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 
@@ -569,6 +571,7 @@ If you want to use the {@link framework/document-editor document (decoupled) edi
 import { Component } from '@angular/core';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { DecoupledEditor, Essentials, Italic, Paragraph, Bold, Undo } from 'ckeditor5';
+
 import 'ckeditor5/ckeditor5.css';
 
 @Component( {

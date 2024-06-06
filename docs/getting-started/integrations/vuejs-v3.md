@@ -77,25 +77,26 @@ The following example showcases a single–file component with open-source and p
 <script>
 import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
 import { SlashCommand } from 'ckeditor5-premium-features';
+
 import 'ckeditor5/ckeditor5.css';
 import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 
 export default {
-    name: 'app',
-    data() {
-        return {
-            editor: ClassicEditor,
-            editorData: '<p>Hello from CKEditor 5 in Vue!</p>',
-            editorConfig: {
-              plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo ],
-              toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+	name: 'app',
+	data() {
+		return {
+			editor: ClassicEditor,
+			editorData: '<p>Hello from CKEditor 5 in Vue!</p>',
+			editorConfig: {
+			  plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo ],
+			  toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 			  licenseKey: '<YOUR_LICENSE_KEY>',
-              mention: { 
-                  // Mention configuration
-              },
-            },
-        };
-    }
+			  mention: { 
+				  // Mention configuration
+			  },
+			},
+		};
+	}
 }
 </script>
 ```
@@ -113,25 +114,26 @@ If you do not want the CKEditor&nbsp;5 component to be enabled globally, you can
 
 <script>
 import { ClassicEditor, Bold, Essentials, Italic, Paragraph, Undo } from 'ckeditor5';
-import CKEditor from '@ckeditor/ckeditor5-vue'
+import CKEditor from '@ckeditor/ckeditor5-vue';
+
 import 'ckeditor5/ckeditor5.css';
 import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 
 export default {
-    name: 'app',
+	name: 'app',
 	components: {
 		ckeditor: CKEditor.component
 	},
-    data() {
-        return {
-            editor: ClassicEditor,
-            editorData: '<p>Hello from CKEditor 5 in Vue!</p>',
-            editorConfig: {
-              plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
-              toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
-            }
-        };
-    }
+	data() {
+		return {
+			editor: ClassicEditor,
+			editorData: '<p>Hello from CKEditor 5 in Vue!</p>',
+			editorConfig: {
+			  plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
+			  toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
+			}
+		};
+	}
 }
 </script>
 ```
@@ -436,9 +438,9 @@ export default {
 			editorData: '<p>Hola desde CKEditor 5 en Vue!</p>',
 			editorConfig: {
 				toolbar: {
-                    items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-                },
-                plugins: [ Bold, Essentials, Italic, Paragraph ],
+					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+				},
+				plugins: [ Bold, Essentials, Italic, Paragraph ],
 				translations: [ coreTranslations, commercialTranslations ]
 			}
 		};
