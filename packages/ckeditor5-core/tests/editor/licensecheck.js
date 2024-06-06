@@ -229,13 +229,13 @@ describe( 'Editor - license check', () => {
 			} );
 
 			it( 'should block if license key is missing (outside of CKEditor testing environment)', () => {
-				window.CKEDITOR_IS_TEST_ENV = undefined;
+				window.CKEDITOR_GLOBAL_LICENSE_KEY = undefined;
 				const editor = new TestEditor( {} );
 
 				sinon.assert.calledWithMatch( showErrorStub, 'noLicense' );
 				expect( editor.isReadOnly ).to.be.true;
 
-				window.CKEDITOR_IS_TEST_ENV = true;
+				window.CKEDITOR_GLOBAL_LICENSE_KEY = 'GPL';
 			} );
 		} );
 
