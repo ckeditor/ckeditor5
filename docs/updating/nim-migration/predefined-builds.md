@@ -772,6 +772,8 @@ If you are using the predefined builds from npm, follow the steps below:
 
 ## Migration steps: CDN
 
+One notable difference between the old and new CDN builds is that the former uses `<script>` tags while the later uses `<script type="module">` tag, which behaves differently in some cases. For more information, see this [MDN page explaining differences between modules and standard scripts](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules#other_differences_between_modules_and_standard_scripts).
+
 If you are using the predefined builds from npm, follow the steps below:
 
 1. Start by removing `<script>` tags containing the old build.
@@ -780,7 +782,7 @@ If you are using the predefined builds from npm, follow the steps below:
 	<script src="https://cdn.ckeditor.com/ckeditor5/<VERSION>/classic/ckeditor.js"></script>
 	```
 
-2. Next, add `<link>` tags to include the editor's CSS files and the `<script type="importmap">` tag to map the package names to the build URLs.
+2. Add `<link>` tags to include the editor's CSS files and the `<script type="importmap">` tag to map the package names to the build URLs.
 
 	2.1 If you use the open-source editor only:
 
@@ -815,7 +817,7 @@ If you are using the predefined builds from npm, follow the steps below:
 	</script>
 	```
 
-3. Open the file, in which you initialize the editor. Then, replace the old `<script>` tag containing the initialization code depending on the build you used.
+3. Replace the old `<script>` tag containing the initialization code depending on the build you used.
 
 	<details>
 	<summary>Classic editor</summary>
