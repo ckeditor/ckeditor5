@@ -16,7 +16,8 @@ const parseArguments = require( './utils/parsearguments' );
 const { CKEDITOR5_ROOT_PATH, CDN_S3_BUCKET, S3_COPY_ARGS } = require( './utils/constants' );
 const cliArguments = parseArguments( process.argv.slice( 2 ) );
 
-const { version } = require( upath.join( CKEDITOR5_ROOT_PATH, './package.json' ) );
+const { version: packageJsonVersion } = require( upath.join( CKEDITOR5_ROOT_PATH, './package.json' ) );
+const version = cliArguments.nightly ? 'nightly' : packageJsonVersion;
 
 const tasks = new Listr( [
 	{
@@ -26,9 +27,7 @@ const tasks = new Listr( [
 				`aws s3 cp ./release_cdn/ s3://${ CDN_S3_BUCKET }/ckeditor5/${ version }/ ${ S3_COPY_ARGS }`,
 				{ verbosity: 'error' }
 			);
-		},
-		// CDN should not be updated on nightly releases.
-		skip: cliArguments.nightly
+		}
 	}
 ] );
 

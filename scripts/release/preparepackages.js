@@ -202,7 +202,7 @@ const tasks = new Listr( [
 						await fs.copy( './dist/translations', './release_cdn/translations/' );
 						await fs.copy( './dist/browser', './release_zip/ckeditor5/' );
 						await fs.copy( './dist/translations', './release_zip/ckeditor5/translations/' );
-						// TODO: copy sample.html and README to /release_zip
+						await fs.copy( './scripts/assets/zip', './release_zip/' );
 
 						await fs.ensureDir( './release_cdn/zip' );
 						await tools.shExec(
