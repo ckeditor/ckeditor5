@@ -41,7 +41,7 @@ If you are using the DLL build, follow the steps below:
 	</script>
 	```
 
-	2.2 If you use features from our commercial offering:
+	2.2 If you use features from our commercial offer:
 
 	```html
 	<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
@@ -74,7 +74,7 @@ If you are using the DLL build, follow the steps below:
 	</script>
 	```
 
-	3.2 If you use features from our commercial offering:
+	3.2 If you use features from our commercial offer:
 
 	```html
 	<script type="module">

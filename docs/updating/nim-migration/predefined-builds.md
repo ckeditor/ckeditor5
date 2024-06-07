@@ -42,7 +42,7 @@ If you are using predefined builds from npm, follow the steps below:
 	npm install ckeditor5
 	```
 
-3. (Optional) If you are using features from our commercial offering, you should also install the `ckeditor5-premium-feature' package.
+3. (Optional) If you are using features from our commercial offer, you should also install the `ckeditor5-premium-feature' package.
 
 	```bash
 	npm install ckeditor5-premium-feature
@@ -801,7 +801,7 @@ One notable difference between the old and new CDN builds is that the former use
 	</script>
 	```
 
-	2.2 If you use features from our commercial offering:
+	2.2 If you use features from our commercial offer:
 
 	```html
 	<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
