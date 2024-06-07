@@ -58,7 +58,7 @@ describe( 'SpecialCharactersView', () => {
 
 				// Mock the character category button is focused.
 				view.focusTracker.isFocused = true;
-				view.focusTracker.focusedElement = view.categoriesView._dropdownView.fieldView.buttonView.element;
+				view.focusTracker.focusedElement = view.categoriesView.element;
 
 				// Spy the next view which in this case is the grid view
 				const stub = sinon.stub( view.gridView, 'focus' );
