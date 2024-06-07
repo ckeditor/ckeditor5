@@ -10,7 +10,11 @@ modified_at: 2024-06-06
 
 # Configuring CKEditor&nbsp;5
 
-The editor's user interface is mostly dependent on the editor types. Functionality of the editor is provided by specialized features. Some of these features are only available with certain editor types. They are accessible via a configurable toolbar or keyboard shortcuts. All of these elements can most easily be configured with [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs). This guide will explain these configuration options. 
+The editor's user interface is mostly dependent on the editor types. Functionality of the editor is provided by specialized features, accessible via a configurable toolbar or keyboard shortcuts. Some of these features are only available with certain editor types. This guide will explain the configuration of these options.
+
+<info-box>
+	All of these elements can most easily be configured with [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs).
+</info-box>
 
 ## Configuring editor types
 
@@ -30,7 +34,7 @@ ClassicEditor // Editor type declaration.
 	.catch( /* ... */ );
 ```
 
-You can learn more and see a more advanced code sample in the [COnfiguring editor setting](#configuring-editor-settings) section of this guide.
+You can learn more and see a more advanced code sample in the [Configuring editor setting](#configuring-editor-settings) section of this guide.
 
 ### Classic editor
 
@@ -40,17 +44,15 @@ See an {@link examples/builds/classic-editor example of the classic editor} in a
 
 ### Inline editor
 
-Inline editor comes with a floating toolbar that becomes visible when the editor is focused (for example, by clicking it).
+Inline editor comes with a floating toolbar that becomes visible when the editor is focused (for example, by clicking it). A common scenario for using inline editor is offering users the possibility to edit content (such as headings and other small areas) in its real location on a web page instead of doing it in a separate administration section.
 
 See an {@link examples/builds/inline-editor example of the classic editor} in action.
 
-### Balloon editor
+### Balloon editor and balloon block editor
 
 Balloon editor is similar to inline editor. The difference between them is that the {@link getting-started/setup/toolbar#block-toolbar toolbar appears in a balloon} next to the selection (when the selection is not empty).
 
 See an {@link examples/builds/balloon-editor example of the classic editor} in action.
-
-### Balloon block editor
 
 Balloon block is essentially the balloon editor with an extra block toolbar which can be accessed using the button attached to the editable content area and following the selection in the document. The toolbar gives an access to additional, block–level editing features.
 
@@ -58,11 +60,19 @@ See an {@link examples/builds/balloon-block-editor example of the classic editor
 
 ### Decoupled editor (document)
 
-The document editor is focused on rich-text editing experience similar to the native word processors. It works best for creating documents which are usually later printed or exported to PDF files.
+The document editor is focused on rich-text editing experience similar to that of large editing packages such as Google Docs or Microsoft Word. It works best for creating documents which are usually later printed or exported to PDF files.
 
 See an {@link examples/builds/document-editor example of the classic editor} in action.
 
-<!-- ### Multi-root editor -->
+### Multi-root editor
+
+Multi-root editor is an editor type that features multiple, separate editable areas. The main difference between using a multi-root editor and using multiple separate editors is the fact that in a multi-root editor all editable areas belong to the same editor instance share the same configuration, toolbar and the undo stack, and produce one document.
+
+See an {@link examples/builds/multi-root-editor example of the multi-root editor} in action.
+
+<info-box>
+	At this time, the multi-root editor is not yet available via the Builder.
+</info-box>
 
 ## Adding features
 
@@ -85,7 +95,7 @@ ClassicEditor
 
 Note that some features may require more than one plugin to run, as shown above. This granular approach lets the integrators adjust available features to their specific needs. It is done during the setup and [Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs) is the easiest way to choose all needed features.
 
-### Adding premium features
+## Adding premium features
 
 CKEditor&nbsp;5 premium features are imported in the same way. However, the have their own package, named `ckeditor5-premium-features`, to import from. These also {@link getting-started/setup/license-key-and-activation require a license}. Please see an example below, adding the PDF export feature and configuring it.
 
