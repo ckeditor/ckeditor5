@@ -233,7 +233,7 @@ That is all the code you need to see a bare-bone editor running in your web brow
 
 ### Installing premium features from CDN
 
-Just like with open source features, start by attaching a link to style sheets. They contain all styles for the editor's UI and content. The styles are in two separate style sheets &ndash; for open-source and premium plugins. You can also include your styles if you like. Refer to the content styles guide for more information.
+Just like with open-source features, start by attaching a link to style sheets. They contain all styles for the editor's UI and content. The styles are in two separate style sheets &ndash; for open-source and premium plugins. You can also include your styles if you like. Refer to the content styles guide for more information.
 
 ```html
 <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
