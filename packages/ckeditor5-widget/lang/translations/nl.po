@@ -52,3 +52,7 @@ msgstr "Beweeg het invoerteken om het mogelijk te maken direct voor een widget t
 msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that moves the caret after a widget."
 msgid "Move the caret to allow typing directly after a widget"
 msgstr "Beweeg het invoerteken om het mogelijk te maken direct achter een widget te typen"
+
+msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that moves selection from a nested editable area back to the parent widget."
+msgid "Move focus from an editable area back to the parent widget"
+msgstr ""

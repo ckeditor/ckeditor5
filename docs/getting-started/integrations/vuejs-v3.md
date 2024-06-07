@@ -78,8 +78,8 @@ The following example showcases a single–file component with open-source and p
 import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
 import { SlashCommand } from 'ckeditor5-premium-features';
 
-import 'ckeditor5/index.css';
-import 'ckeditor5-premium-features/index.css';
+import 'ckeditor5/ckeditor5.css';
+import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 
 export default {
     name: 'app',
@@ -116,8 +116,8 @@ If you do not want the CKEditor&nbsp;5 component to be enabled globally, you can
 import { ClassicEditor, Bold, Essentials, Italic, Paragraph, Undo } from 'ckeditor5';
 import CKEditor from '@ckeditor/ckeditor5-vue'
 
-import 'ckeditor5/index.css';
-import 'ckeditor5-premium-features/index.css';
+import 'ckeditor5/ckeditor5.css';
+import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 
 export default {
     name: 'app',
@@ -378,7 +378,7 @@ Since accessing the editor toolbar is not possible until after the editor instan
 	import { DecoupledEditor, Bold, Essentials, Italic, Paragraph, Undo } from 'ckeditor5';
 	import CKEditor from '@ckeditor/ckeditor5-vue'
 
-	import 'ckeditor5/index.css'
+	import 'ckeditor5/ckeditor5.css'
 
 	export default {
 		name: 'app',
