@@ -40,7 +40,7 @@ All that with virtually zero server setup.
 
 ## Configuration
 
-To make enabling image upload in CKEditor&nbsp;5 a breeze, by default all builds include the {@link module:easy-image/easyimage~EasyImage `EasyImage` plugin}. It integrates with the Easy Image service provided by [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/). Enabling it is straightforward and the results are immediate:
+To make enabling image upload in CKEditor&nbsp;5 a breeze, the {@link module:easy-image/easyimage~EasyImage `EasyImage` plugin} integrates with the Easy Image service provided by [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/). Enabling it is straightforward and the results are immediate:
 
 1. Follow the [Easy Image &ndash; Quick start guide](https://ckeditor.com/docs/cs/latest/guides/easy-image/quick-start.html) to set up an account.
 2. Configure CKEditor&nbsp;5 (see {@link module:cloud-services/cloudservicesconfig~CloudServicesConfig `CloudServicesConfig`}):

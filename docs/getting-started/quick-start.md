@@ -4,7 +4,7 @@ order: 10
 menu-title: Quick start
 meta-title: Quick start | CKEditor 5 documentation
 meta-description: Learn the fastest way to install and use CKEditor 5 - the powerful, rich text WYSIWYG editor in your web application using npm or CDN.
-modified_at: 2024-05-06
+modified_at: 2024-06-06
 ---
 
 # Quick start
@@ -40,14 +40,15 @@ Now you can import all the modules from the `ckeditor5` and `ckeditor5-premium-f
 **Importing and registering UI translations is optional for American English.** To use the editor in any other language, use imported translations, as shown in the {@link getting-started/setup/ui-language setup section}.
 
 ```js
-import { ClassicEditor, Essentials, Bold, Italic, Paragraph } from 'ckeditor5';
+import { ClassicEditor, Essentials, Bold, Italic, Paragraph, Mention } from 'ckeditor5';
 import { FormatPainter, SlashCommand } from 'ckeditor5-premium-features';
+
 import 'ckeditor5/ckeditor5.css';
 import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Essentials, Bold, Italic, Paragraph, FormatPainter, SlashCommand ],
+		plugins: [ Essentials, Bold, Italic, Paragraph, Mention, FormatPainter, SlashCommand ],
 		toolbar: {
 			items: [ 'undo', 'redo', '|', 'bold', 'italic', 'formatPainter' ]
 		},
@@ -119,7 +120,7 @@ In the following script tag, import the desired plugins and add them to the `plu
 			plugins: [
 				Essentials, GeneralHtmlSupport, Bold, Italic,
 				PasteFromOffice, PasteFromOfficeEnhanced, Paragraph
-				],
+			],
 			toolbar: {
 				items: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 			},
@@ -160,7 +161,9 @@ Your final page should look similar to the one below.
 			{
 				"imports": {
 					"ckeditor5": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.js",
-					"ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/"
+					"ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/",
+					"ckeditor5-premium-features": "https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.js",
+					"ckeditor5-premium-features/": "https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/"
 				}
 			}
 		</script>
@@ -174,7 +177,7 @@ Your final page should look similar to the one below.
 				Italic,
 				PasteFromOffice,
 				Paragraph
-				} from 'ckeditor5';
+			} from 'ckeditor5';
 			import { PasteFromOfficeEnhanced } from 'ckeditor5-premium-features';
 
 			ClassicEditor
@@ -182,7 +185,7 @@ Your final page should look similar to the one below.
 					plugins: [
 						Essentials, GeneralHtmlSupport, Bold, Italic,
 						PasteFromOffice, PasteFromOfficeEnhanced, Paragraph
-						],
+					],
 					toolbar: {
 						items: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 					},

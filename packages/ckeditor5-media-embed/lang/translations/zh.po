@@ -45,6 +45,10 @@ msgctxt "Toolbar button tooltip for the Media Embed feature."
 msgid "Insert media"
 msgstr "插入影音"
 
+msgctxt "Label describing type of the inserted content (e.g. 'insert media')."
+msgid "Media"
+msgstr ""
+
 msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
 msgid "Media toolbar"
 msgstr "影音工具"

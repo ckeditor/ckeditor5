@@ -29,9 +29,9 @@ Below is a sample toolbar with a basic set of features. Toolbar items can be eas
 	Toolbar configuration is a strict UI-related setting. Removing a toolbar item does not remove the feature from the editor internals. If your goal with the toolbar configuration is to remove features, the right solution is to also remove their respective plugins. Check the {@link getting-started/setup/configuration#removing-features removing features} guide for more information.
 </info-box>
 
-In the builds that contain toolbars, an optimal default toolbar set is defined for it. You may need a different toolbar arrangement, though, and this can be achieved through configuration.
+The toolbar offers a flexible arrangement, achieved through configuration. Please note, that using [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs) makes this task significantly easier.
 
-Each editor may have a different toolbar configuration scheme, so check its documentation. In any case, the following example may give you a general idea:
+The following example may give you a general idea:
 
 ```js
 ClassicEditor

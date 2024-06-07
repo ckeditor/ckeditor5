@@ -85,9 +85,13 @@ msgctxt "The label for the upload image from computer toolbar button."
 msgid "Upload image from computer"
 msgstr "Subir imagen desde el ordenador"
 
-msgctxt "The label for the upload image from computer menu bar button."
+msgctxt "The label for the upload image from computer menu bar button (standalone button)."
 msgid "Image from computer"
 msgstr "Imagen del ordenador"
+
+msgctxt "The label for the upload image from computer menu bar button (inside 'Image' menu)."
+msgid "From computer"
+msgstr ""
 
 msgctxt "The label for the replace image by upload from computer toolbar button."
 msgid "Replace image from computer"
@@ -133,17 +137,21 @@ msgctxt "The accessibility label of the image resize dropdown for screen readers
 msgid "Image resize list"
 msgstr "Listado para redimensionar imagen"
 
-msgctxt "The label of the form submit button if the image source URL input has no value."
-msgid "Insert"
-msgstr "Insertar"
-
-msgctxt "The label of the form submit button if the image source URL input has a value."
-msgid "Update"
-msgstr "Actualizar"
-
 msgctxt "The input label for the Insert image via URL form."
 msgid "Insert image via URL"
 msgstr "Insertar imagen vía URL"
+
+msgctxt "The label for the insert image via url dropdown button."
+msgid "Insert via URL"
+msgstr ""
+
+msgctxt "The label for the insert image via url menu bar button (standalone button)."
+msgid "Image via URL"
+msgstr ""
+
+msgctxt "The label for the insert image via url menu bar button (inside 'Image' menu)."
+msgid "Via URL"
+msgstr ""
 
 msgctxt "The input label for the Insert image via URL form for a pre-existing image."
 msgid "Update image URL"
@@ -176,3 +184,7 @@ msgstr "Carga de imagen completa"
 msgctxt "Aria status message indicating that an error has occurred during image upload. Example: 'Error during image upload'."
 msgid "Error during image upload"
 msgstr "Error durante la carga de la imagen"
+
+msgctxt "Label for the widget inserted by the image feature (as in 'insert image')"
+msgid "Image"
+msgstr ""

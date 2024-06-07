@@ -367,11 +367,11 @@ Finally, we add our balloon and the form view to the `init()` method.
 ```js
 // abbreviation/abbreviationui.js
 
-import { 
+import {
 	ButtonView,
 	ContextualBalloon,						// ADDED
 	Plugin
-	} from 'ckeditor5';
+} from 'ckeditor5';
 import FormView from './abbreviationview';	// ADDED
 
 export default class AbbreviationUI extends Plugin {

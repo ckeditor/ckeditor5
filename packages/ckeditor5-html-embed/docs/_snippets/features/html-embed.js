@@ -37,36 +37,21 @@ const initialData =
 	<p><a href="http://eepurl.com/c3zRPr"><img alt="Join newsletter" src="https://img.shields.io/badge/join-newsletter-00cc99.svg" /></a>&nbsp;<a href="https://twitter.com/ckeditor"><img alt="Follow twitter" src="https://img.shields.io/badge/follow-twitter-00cc99.svg" /></a></p>
 </div>
 
-<p>The classic editor build for CKEditor 5. Read more about the <a href="https://ckeditor.com/docs/ckeditor5/latest/installation/legacy-getting-started/predefined-builds.html#classic-editor"><strong>classic editor build</strong></a> and see the <a href="https://ckeditor.com/docs/ckeditor5/latest/examples/builds/classic-editor.html"><strong>demo</strong></a>.</p>
+<p>The classic editor type for CKEditor 5. See a <a href="https://ckeditor.com/docs/ckeditor5/latest/examples/builds/classic-editor.html"><strong>classic editor example demo</strong></a>.</p>
 
-<figure class="image"><img src="https://c.cksource.com/a/1/img/npm/ckeditor5-build-classic.png" alt="CKEditor 5 classic editor build screenshot"></figure>
+<figure class="image"><img src="https://c.cksource.com/a/1/img/npm/ckeditor5-build-classic.png" alt="CKEditor 5 classic editor type screenshot"></figure>
 
 <h2>Documentation</h2>
 <p>See:</p>
 <ul>
-	<li><a href="https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/installation.html">Installation</a> for how to install this package and what it contains.</li>
-	<li><a href="https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/editor-lifecycle.html">Editor lifecycle</a> for how to create an editor and interact with it.</li>
-	<li><a href="https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/configuration.html">Configuration</a> for how to configure the editor.</li>
+	<li><a href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/installation/quick-start.html">Installation</a> for how to install this package and what it contains.</li>
+	<li><a href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-lifecycle.html">Editor lifecycle</a> for how to create an editor and interact with it.</li>
+	<li><a href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/configuration.html">Configuration</a> for how to configure the editor.</li>
 </ul>
 
 <h2>Quick start</h2>
 <p>First, install the build from npm:</p>
-<pre><code class="language-plaintext">npm&nbsp;install&nbsp;--save&nbsp;@ckeditor/ckeditor5-build-classic</code></pre>
-<p>And use it in your website:</p>
-<pre><code class="language-html">&lt;div id="editor">
-	&lt;p>This is the editor content.&lt;/p>
-&lt;/div>
-&lt;script src="./node_modules/@ckeditor/ckeditor5-build-classic/build/ckeditor.js">&lt;/script>
-&lt;script>
-	ClassicEditor
-		.create( document.querySelector( '#editor' ) )
-		.then( editor => {
-			window.editor = editor;
-		} )
-		.catch( error => {
-			console.error( 'There was a problem initializing the editor.', error );
-		} );
-&lt;/script></code></pre>
+<pre><code class="language-plaintext">npm&nbsp;install&nbsp;ckeditor5</code></pre>
 
 <h2>License</h2>
 <p>Licensed under the terms of <a href="http://www.gnu.org/licenses/gpl.html" rel="nofollow">GNU General Public License Version 2 or later</a>. For full details about the license, please check the <code>LICENSE.md</code> file or <a href="https://ckeditor.com/legal/ckeditor-oss-license" rel="nofollow">https://ckeditor.com/legal/ckeditor-oss-license</a>.</p>
