@@ -195,7 +195,7 @@ All premium features are available as a separate package. You can install it the
 npm install ckeditor5-premium-features
 ```
 
-Now you can import all the modules from both the `ckeditor5` and `ckeditor5-premium-features` packages. Additionally, you have to import CSS styles separately.
+Now, you can import all the modules from both the `ckeditor5` and `ckeditor5-premium-features` packages. Additionally, you have to import CSS styles separately.
 
 ```js
 import { ClassicEditor, Essentials, Bold, Italic, Paragraph, Font } from 'ckeditor5';
