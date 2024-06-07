@@ -2,8 +2,9 @@
 category: nim-migration
 order: 40
 menu-title: Migrating from DLL builds
-meta-title: Migrating from DLL builds to new installation methods
+meta-title: Migrating from DLL builds to new installation methods | CKEditor 5 documentation
 meta-description: Learn how to upgrade from DLL builds to the new installation methods.
+modified_at: 2024-06-06
 ---
 
 # Migrating from DLL builds
