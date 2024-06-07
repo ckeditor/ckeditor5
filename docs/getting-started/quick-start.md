@@ -14,6 +14,7 @@ CKEditor&nbsp;5 is a powerful, rich text editor you can embed in your web applic
 ## Using CKEditor&nbsp;5 Builder
 
 Check out our [interactive Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs) to quickly get a taste of CKEditor&nbsp;5. It offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs. You can easily select:
+
 * editor type,
 * the features you need,
 * the preferred framework (React, Angular, Vue or Vanilla JS),
@@ -104,10 +105,7 @@ In the following script tag, import the desired plugins, add them to the `plugin
 
 	ClassicEditor
 		.create( document.querySelector( '#editor' ), {
-			plugins: [
-				Essentials, Bold, Italic,
-				Font, Paragraph
-			],
+			plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
 			toolbar: {
 				items: [
 					'undo', 'redo', '|', 'bold', 'italic', '|',
@@ -165,10 +163,7 @@ Your final page should look similar to the one below.
 
 			ClassicEditor
 				.create( document.querySelector( '#editor' ), {
-					plugins: [
-						Essentials, Bold, Italic,
-						Font, Paragraph
-					],
+					plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
 					toolbar: {
 						items: [
 							'undo', 'redo', '|', 'bold', 'italic', '|',
@@ -208,7 +203,8 @@ ClassicEditor
 		toolbar: {
 			items: [
 				'undo', 'redo', '|', 'bold', 'italic', '|',
-				'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|', 'formatPainter'
+				'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+				'formatPainter'
 			]
 		},
 		licenseKey: 'your-license-key'
@@ -273,14 +269,12 @@ In the following script tag, import the desired plugins and add them to the `plu
 
 	ClassicEditor
 		.create( document.querySelector( '#editor' ), {
-			plugins: [
-				Essentials, Bold, Italic,
-				Font, Paragraph, FormatPainter
-			],
+			plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
 			toolbar: {
 				items: [
 					'undo', 'redo', '|', 'bold', 'italic', '|',
-					'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|', 'formatPainter'
+					'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+					'formatPainter'
 				]
 			},
 			licenseKey: 'your-license-key'
@@ -340,10 +334,7 @@ Your final page should look similar to the one below.
 
 			ClassicEditor
 				.create( document.querySelector( '#editor' ), {
-					plugins: [
-						Essentials, Bold, Italic,
-						Font, Paragraph, FormatPainter
-					],
+					plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
 					toolbar: {
 						items: [
 							'undo', 'redo', '|', 'bold', 'italic', '|',
