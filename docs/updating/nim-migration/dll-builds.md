@@ -9,15 +9,15 @@ modified_at: 2024-06-06
 
 # Migrating from DLL builds
 
-DLL are webpack-specific builds that register CKEditor&nbsp;5 and its plugins in a globally scoped variable `CKEditor5`. This variable could then be used to create the editor instance.
+DLLs are webpack-specific builds that register CKEditor&nbsp;5 and its plugins in a globally scoped variable `CKEditor5`. This variable could then be used to create the editor instance.
 
 Since the new installation methods do not rely on global variables, migrating from the DLL builds to the new installation methods should mostly be a matter of changing the way you import CKEditor&nbsp;5 and its plugins.
 
-Other notable difference is that DLLs uses `<script>` tags while the new CDN build uses `<script type="module">` tag, which behave differently in some cases. For more information, see this [MDN page explaining the differences between modules and standard scripts](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules#other_differences_between_modules_and_standard_scripts).
+Other notable difference is that DLLs use the `<script>` tags while the new CDN build uses the `<script type="module">` tag, which behave differently in some cases. For more information, see this [MDN page explaining the differences between modules and standard scripts](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules#other_differences_between_modules_and_standard_scripts).
 
 ## Prerequisites
 
-Before you start, follow the usual upgrade path to update your project to use the latest version of CKEditor&nbsp;5. This will rule out any problems that may be caused by upgrading from an outdated version of CKEditor&nbsp;5.
+Before you start, follow the usual upgrade path to update your project to use the latest version of CKEditor&nbsp;5. This will rule out any problems that may be caused by upgrading from an outdated version of the editor.
 
 ## Migration steps
 
@@ -42,7 +42,7 @@ If you are using the DLL build, follow the steps below:
 	</script>
 	```
 
-	2.2 If you use features from our commercial offering:
+	2.2 If you use features from our commercial offer:
 
 	```html
 	<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
@@ -79,11 +79,11 @@ If you are using the DLL build, follow the steps below:
 
 	```html
 	<script type="module">
-	import { ClassicEditor, Essentials, Bold, Italic, Paragraph } from 'ckeditor5';
+	import { ClassicEditor, Essentials, Bold, Italic, Paragraph, Mention } from 'ckeditor5';
 	import { SlashCommand } from 'ckeditor5-premium-features';
 
 	ClassicEditor.create( document.querySelector( '#editor' ), {
-		plugins: [ Essentials, Bold, Italic, Paragraph, SlashCommand ],
+		plugins: [ Essentials, Bold, Italic, Paragraph, Mention, SlashCommand ],
 		toolbar: { /* ... */ },
 		licenseKey: '<LICENSE_KEY>',
 	} );
