@@ -8,15 +8,15 @@ meta-description: Learn how to upgrade from DLL builds to the new installation m
 
 # Migrating from DLL builds
 
-DLL are webpack-specific builds that register CKEditor 5 and its plugins to the globally scoped variable called `CKEditor5`. This variables could then be used to create the editor instance.
+DLL are webpack-specific builds that register CKEditor 5 and its plugins in a globally scoped variable `CKEditor5`. This variable could then be used to create the editor instance.
 
-Because the new installation methods do not rely on global variables, the migration from DLL builds to the new installation methods should mostly be a matter of changing the way you import CKEditor 5 and its plugins.
+Since the new installation methods do not rely on global variables, migrating from the DLL builds to the new installation methods should mostly be a matter of changing the way you import CKEditor 5 and its plugins.
 
-Other notable difference is that DLLs uses `<script>` tags while the new CDN build uses `<script type="module">` tag, which behaves differently in some cases. For more information, see this [MDN page explaining differences between modules and standard scripts](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules#other_differences_between_modules_and_standard_scripts).
+Other notable difference is that DLLs uses `<script>` tags while the new CDN build uses `<script type="module">` tag, which behave differently in some cases. For more information, see this [MDN page explaining the differences between modules and standard scripts](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules#other_differences_between_modules_and_standard_scripts).
 
 ## Prerequisites
 
-Before you start, follow the usual upgrade path to update your project to use the latest version of CKEditor 5. This will rule out any issues that might be caused by upgrading from outdated version of CKEditor 5.
+Before you start, follow the usual upgrade path to update your project to use the latest version of CKEditor 5. This will rule out any problems that may be caused by upgrading from an outdated version of CKEditor 5.
 
 ## Migration steps
 
@@ -26,7 +26,7 @@ If you are using the DLL build, follow the steps below:
 
 2. Add `<link>` tags to include the editor's CSS files and the `<script type="importmap">` tag to map the package names to the build URLs.
 
-	2.1 If you use the open-source editor only:
+	2.1 If you only use the open-source editor:
 
 	```html
 	<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
@@ -59,9 +59,9 @@ If you are using the DLL build, follow the steps below:
 	</script>
 	```
 
-3. Replace the old `<script>` tag containing the initialization code with the `<script type="module">` tag. In it, you can import the editor and plugins from the `ckeditor5` and `ckeditor5-premium-features` packages instead of relying on the global `CKEditor5` variable.
+3. Replace the old `<script>` tag that contains the initialization code with the `<script type="module">` tag. In it, you can import the editor and plugins from the `ckeditor5` and `ckeditor5-premium-features` packages instead of relying on the global `CKEditor5` variable.
 
-	3.1 If you use the open-source editor only:
+	3.1 If you only use the open-source editor:
 
 	```html
 	<script type="module">

@@ -8,19 +8,21 @@ meta-description: Learn how to upgrade from predefined builds to the new install
 
 # Migrating from predefined builds
 
-Until now, the predefined builds were the easiest way to get started with CKEditor 5. They provided a ready-to-use editor with a set of plugins and a default configuration. However, they had some limitations, like the inability to customize the editor by adding or removing plugins.
+Until now, the predefined builds were the easiest way to get started with CKEditor 5. They provided an out-of-the-box editor with a set of plugins and a default configuration. However, they had some limitations, such as the inability to customize the editor by adding or removing plugins.
 
-This is now solved by the new installation methods, which allow you to fully customize the editor, regardless of whether you use npm packages or browser builds.
+This is now solved by the new installation methods, which allow you to fully customize the editor, whether you use npm packages or browser builds.
 
-Migrating from the predefined builds to the new installation methods should mostly be a matter of copying and pasting the code from below to replace the old code. The code to copy depends on the build and distribution method you used.
+Migrating from the predefined builds to the new installation methods should mostly be a matter of copying and pasting the code below to replace the old code. The code to copy depends on the build and distribution method you used.
 
 ## Prerequisites
 
-Before you start, follow the usual upgrade path to update your project to use the latest version of CKEditor 5. This will rule out any issues that might be caused by upgrading from outdated version of CKEditor 5.
+Before you start, follow the usual upgrade path to update your project to use the latest version of CKEditor 5. This will rule out any problems that may be caused by upgrading from an outdated version of CKEditor 5.
 
-## Migration steps: npm
+## Migration steps
 
-If you are using the predefined builds from npm, follow the steps below:
+### npm
+
+If you are using predefined builds from npm, follow the steps below:
 
 1. Start by uninstalling the old build package. It can be identified by the `@ckeditor/ckeditor5-build-` prefix. For example, if you were using the `@ckeditor/ckeditor5-build-classic` package, you should uninstall it.
 
@@ -40,13 +42,13 @@ If you are using the predefined builds from npm, follow the steps below:
 	npm install ckeditor5
 	```
 
-3. (Optional) If you use features from our commercial offering, you should also install the `ckeditor5-premium-feature` package.
+3. (Optional) If you are using features from our commercial offering, you should also install the `ckeditor5-premium-feature' package.
 
 	```bash
 	npm install ckeditor5-premium-feature
 	```
 
-4. Open the file, in which you initialize the editor. Then, replace the import statement and the initialization code depending on the build you used.
+4. Open the file where you initialized the editor. Then replace the import statement and the initialization code depending on the build you are using.
 
 	<details>
 	<summary>Classic editor</summary>
@@ -768,15 +770,15 @@ If you are using the predefined builds from npm, follow the steps below:
 	```
 	</details>
 
-5. Unlike when using predefined builds, now you are free to customize the editor by adding or removing plugins. However, before you do that, test the editor to ensure that it works as expected.
+5. Unlike when using predefined builds, you are now free to customize the editor by adding or removing plugins. However, before you do this, you should test the editor to make sure it works as expected.
 
-## Migration steps: CDN
+### CDN
 
-One notable difference between the old and new CDN builds is that the former uses `<script>` tags while the later uses `<script type="module">` tag, which behaves differently in some cases. For more information, see this [MDN page explaining differences between modules and standard scripts](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules#other_differences_between_modules_and_standard_scripts).
+If you are using the predefined builds from CDN, follow the steps below.
 
-If you are using the predefined builds from npm, follow the steps below:
+One notable difference between the old and new CDN builds is that the former uses `<script>` tags while the latter uses `<script type="module">` tags, which behave differently in some cases. For more information, see this [MDN page explaining the differences between modules and standard scripts](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules#other_differences_between_modules_and_standard_scripts).
 
-1. Start by removing `<script>` tags containing the old build.
+1. Start by removing the `<script>` tags that contain the old build.
 
 	```html
 	<script src="https://cdn.ckeditor.com/ckeditor5/<VERSION>/classic/ckeditor.js"></script>
@@ -784,7 +786,7 @@ If you are using the predefined builds from npm, follow the steps below:
 
 2. Add `<link>` tags to include the editor's CSS files and the `<script type="importmap">` tag to map the package names to the build URLs.
 
-	2.1 If you use the open-source editor only:
+	2.1 If you only use the open-source editor:
 
 	```html
 	<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
@@ -817,7 +819,7 @@ If you are using the predefined builds from npm, follow the steps below:
 	</script>
 	```
 
-3. Replace the old `<script>` tag containing the initialization code depending on the build you used.
+3. Replace the old `<script>` tag, which contains the initialization code, depending on the build you are using.
 
 	<details>
 	<summary>Classic editor</summary>
@@ -1832,3 +1834,5 @@ If you are using the predefined builds from npm, follow the steps below:
 	</script>
 	```
 	</details>
+
+5. Unlike when using predefined builds, you are now free to customize the editor by adding or removing plugins. However, before you do this, you should test the editor to make sure it works as expected.

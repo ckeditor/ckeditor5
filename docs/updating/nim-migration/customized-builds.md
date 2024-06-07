@@ -10,15 +10,15 @@ meta-description: Learn how to upgrade from customized builds to the new install
 
 Migrating from customized builds to the new installation methods should mostly be a matter of changing the way you import CKEditor 5 and its plugins.
 
-Regardless of whether you used our old Online Builder or created a custom build from source using webpack or Vite, the new installation methods allow you to build and run the editor with any bundler or JavaScript meta-framework you like. This means that by the end of the migration you can remove the CKEditor-specific webpack or Vite setup from your project if you already use other bundler to build your project.
+Regardless of whether you used our old Online Builder or created a custom build from source using webpack or Vite, the new installation methods allow you to build and run the editor with any bundler or JavaScript meta-framework you like. This means that by the end of the migration, you can remove the CKEditor-specific webpack or Vite setup from your project if you already use another bundler to build your project.
 
 <info-box warning>
-At this time, the new installation methods do not support {@link framework/how-tos#how-to-customize-the-ckeditor-5-icons customization of the CKEditor 5 icons}. This feature will be added in future releases.
+Currently, the new installation methods do not support {@link framework/how-tos#how-to-customize-the-ckeditor-5-icons customization of the CKEditor 5 icons}. This feature will be added in a future releases.
 </info-box>
 
 ## Prerequisites
 
-Before you start, follow the usual upgrade path to update your project to use the latest version of CKEditor 5. This will rule out any issues that might be caused by upgrading from outdated version of CKEditor 5.
+Before you start, follow the usual upgrade path to update your project to use the latest version of CKEditor 5. This will rule out any problems that may be caused by upgrading from an outdated version of CKEditor 5.
 
 ## Migration steps
 
@@ -32,13 +32,13 @@ If you are using the customized build, follow the steps below:
 	npm install ckeditor5
 	```
 
-3. (Optional) If you use features from our commercial offering, you should also install the `ckeditor5-premium-feature` package.
+3. (Optional) If you are using features from our commercial offering, you should also install the `ckeditor5-premium-feature` package.
 
 	```bash
 	npm install ckeditor5-premium-feature
 	```
 
-4. Open the file, in which you initialize the editor. Then, replace the import statements, to import the editor and open-source plugins from the `ckeditor5` package and the commercial plugins from the `ckeditor5-premium-features` package.
+4. Open the file where you initialized the editor. Then replace the import statements to import the editor and the open-source plugins from the `ckeditor5` package and the commercial plugins from the `ckeditor5-premium-features` package.
 
 	```js
 	import { ClassicEditor, Essentials, Bold, Italic, Paragraph } from 'ckeditor5';
