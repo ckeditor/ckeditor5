@@ -16,7 +16,7 @@ The editor's user interface is mostly dependent on the editor types. Functionali
 
 There are six ready-made editor types (see below) available for CKEditor&nbsp;5. They offer different functional approach to editing as well as different UI solutions. Editor types are imported from the main `ckeditor5` package, the same way features are imported, as shown in the {@link getting-started/quick-start Quick start} guide.
 
-Other, custom-taylored editor types can be made using the {@link framework/index CKEditor&nbsp;5 Framework}.
+Other, custom-taylored editor types can be made using the {@link framework/external-ui CKEditor&nbsp;5 Framework}.
 
 For example, this code will import the classic editor type and some basic text formatting plugins. It also provides configuration of the {@link getting-started/setup/toolbar main editor toolbar}.
 
