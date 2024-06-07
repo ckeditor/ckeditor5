@@ -90,6 +90,10 @@ Then, you need to attach the script with the JavaScript code. To simplify import
 
 Once you have added the import map, you can access the editor and its plugins using the `ckeditor5` specifier.
 
+<info-box warning>
+	You must run your code on a local server to use import maps. Opening the HTML file directly in your browser will trigger security rules. These rules (CORS policy) ensure loading modules from the same source. So, set up a local server, like `nginx`, `caddy`, `http-server`, to serve your files over HTTP or HTTPS.
+</info-box>
+
 In the following script tag, import the desired plugins, add them to the `plugins` array, and add toolbar items where applicable. Note that both script tags (this and previous) have the appropriate `type` values.
 
 ```html
