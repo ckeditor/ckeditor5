@@ -18,8 +18,6 @@ modified_at: 2024-04-25
 
 This page focuses on describing the usage of the multi-root editor in React applications. If you would like to use a different type of editor, you can find more information {@link getting-started/integrations/react here}.
 
-The easiest way to use multi-root CKEditor&nbsp;5 in your React application is by using the {@link getting-started/legacy-getting-started/predefined-builds#multi-root-editor multi-root rich text editor build}.
-
 <info-box hint>
 	The multi-root editors in React is supported since version 6.2.0 of this package.
 
@@ -28,12 +26,12 @@ The easiest way to use multi-root CKEditor&nbsp;5 in your React application is b
 
 ## Quick start
 
-This guide assumes you already have a React project. If you want to create a new one, you can use the [`create-react-app`](https://create-react-app.dev/) CLI. It allows you to create and customize your project with templates. For example, you can set up your project with TypeScript support.
+This guide assumes you already have a React project. If you want to create a new one, you can use the [Vite](https://vitejs.dev/guide/) CLI. It allows you to create and customize your project with templates. For example, you can set up your project with TypeScript support.
 
-Install the [CKEditor&nbsp;5 WYSIWYG editor package for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) and the {@link getting-started/legacy-getting-started/predefined-builds#multi-root-editor multi-root editor build}. Assuming that you picked [`@ckeditor/ckeditor5-build-multi-root`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-multi-root):
+Install the [CKEditor&nbsp;5 WYSIWYG editor package for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) and the {@link getting-started/legacy-getting-started/predefined-builds#multi-root-editor multi-root editor type}. Assuming that you picked the Multi Root Editor:
 
 ```bash
-npm install --save @ckeditor/ckeditor5-react @ckeditor/ckeditor5-build-multi-root
+npm install ckeditor5 @ckeditor/ckeditor5-react
 ```
 
 Use the `useMultiRootEditor` hook inside your project:
@@ -41,9 +39,8 @@ Use the `useMultiRootEditor` hook inside your project:
 ```tsx
 // App.jsx / App.tsx
 
-import React from 'react';
+import { MultiRootEditor } from 'ckeditor5';
 import { useMultiRootEditor } from '@ckeditor/ckeditor5-react';
-import MultiRootEditor from '@ckeditor/ckeditor5-build-multi-root';
 
 const App = () => {
 	const editorProps = {
@@ -58,14 +55,18 @@ const App = () => {
 	};
 
 	const {
-		editor, toolbarElement, editableElements,
-		data, setData,
-		attributes, setAttributes
+		editor,
+		toolbarElement,
+		editableElements,
+		data,
+		setData,
+		attributes,
+		setAttributes
 	} = useMultiRootEditor( editorProps );
 
 	return (
 		<div className="App">
-			<h2>Using CKEditor&nbsp;5 multi-root build in React</h2>
+			<h2>Using CKEditor&nbsp;5 multi-root editor in React</h2>
 
 			{ toolbarElement }
 
@@ -96,8 +97,8 @@ The `useMultiRootEditor` hook supports the following properties:
 * `onFocus: Function` &ndash; It is called when the editor was focused. See the {@link module:engine/view/document~Document#event:focus `editor.editing.view.document#focus`} event.
 * `onError: Function` &ndash; It is called when the editor has crashed during the initialization or during the runtime. It receives two arguments: the error instance and the error details.
   Error details is an object that contains two properties:
-	* `phase: 'initialization'|'runtime'` &ndash; Informs when the error has occurred (during the editor or context initialization, or after the initialization).
-	* `willEditorRestart: Boolean` &ndash; When `true`, it means that the editor component will restart itself.
+  * `phase: 'initialization'|'runtime'` &ndash; Informs when the error has occurred (during the editor or context initialization, or after the initialization).
+  * `willEditorRestart: Boolean` &ndash; When `true`, it means that the editor component will restart itself.
 
 The editor event callbacks (`onChange`, `onBlur`, `onFocus`) receive two arguments:
 
