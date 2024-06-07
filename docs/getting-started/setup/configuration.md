@@ -4,7 +4,7 @@ menu-title: Configuring the editor
 meta-title: Configuring editor features and types | CKEditor 5 documentation
 meta-description: Learn how to configure CKEditor 5.
 order: 30
-toc-limit: 1
+toc-limit: 2
 modified_at: 2024-06-06
 ---
 
@@ -40,11 +40,15 @@ You can learn more and see a more advanced code sample in the [Configuring edito
 
 Classic editor is what most users traditionally learnt to associate with a rich-text editor &ndash; a toolbar with an editing area placed in a specific position on the page, usually as a part of a form that you use to submit some content to the server.
 
+{@img assets/img/editor-type-classic.png 800 Classic editor type.}
+
 See an {@link examples/builds/classic-editor example of the classic editor} in action.
 
 ### Inline editor
 
 Inline editor comes with a floating toolbar that becomes visible when the editor is focused (for example, by clicking it). A common scenario for using inline editor is offering users the possibility to edit content (such as headings and other small areas) in its real location on a web page instead of doing it in a separate administration section.
+
+{@img assets/img/editor-type-inline.png 800 Inline editor type.}
 
 See an {@link examples/builds/inline-editor example of the classic editor} in action.
 
@@ -52,9 +56,13 @@ See an {@link examples/builds/inline-editor example of the classic editor} in ac
 
 Balloon editor is similar to inline editor. The difference between them is that the {@link getting-started/setup/toolbar#block-toolbar toolbar appears in a balloon} next to the selection (when the selection is not empty).
 
+{@img assets/img/editor-type-balloon.png 800 Balloon editor type.}
+
 See an {@link examples/builds/balloon-editor example of the classic editor} in action.
 
 Balloon block is essentially the balloon editor with an extra block toolbar which can be accessed using the button attached to the editable content area and following the selection in the document. The toolbar gives an access to additional, block–level editing features.
+
+{@img assets/img/editor-type-balloon-block.png 800 Balloon block editor type.}
 
 See an {@link examples/builds/balloon-block-editor example of the classic editor} in action.
 
@@ -62,11 +70,15 @@ See an {@link examples/builds/balloon-block-editor example of the classic editor
 
 The document editor is focused on rich-text editing experience similar to that of large editing packages such as Google Docs or Microsoft Word. It works best for creating documents which are usually later printed or exported to PDF files.
 
+{@img assets/img/editor-type-document.png 800 Document editor type.}
+
 See an {@link examples/builds/document-editor example of the classic editor} in action.
 
 ### Multi-root editor
 
 Multi-root editor is an editor type that features multiple, separate editable areas. The main difference between using a multi-root editor and using multiple separate editors is the fact that in a multi-root editor all editable areas belong to the same editor instance share the same configuration, toolbar and the undo stack, and produce one document.
+
+{@img assets/img/editor-type-multi-root.png 800 Multi-root editor type.}
 
 See an {@link examples/builds/multi-root-editor example of the multi-root editor} in action.
 
