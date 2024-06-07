@@ -68,7 +68,7 @@ That is all the code you need to see a bare-bone editor running in your web brow
 
 CDN is an alternative method of running CKEditor 5. You can start using it in just a few steps and with a few tags.
 
-Start by attaching a link to style sheets. They contain all styles for the editor's UI and content. You can also include your styles if you like. Refer to the content styles guide for more information.
+Start by attaching a link to style sheets. They contain all styles for the editor's UI and content. You can also include your styles if you like. Refer to the {@link getting-started/integrations/css#styling-the-published-content content styles} guide for more information.
 
 ```html
 <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
