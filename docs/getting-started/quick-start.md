@@ -89,7 +89,7 @@ Then, you need to attach the script with the JavaScript code. To simplify import
 
 Once you have added the import map, you can access the editor and its plugins using the `ckeditor5` specifier.
 
-In the following script tag, import the desired plugins and add them to the `plugins` array and add toolbar items where applicable. Note that both script tags (this and previous) have the appropriate `type` values.
+In the following script tag, import the desired plugins, add them to the `plugins` array, and add toolbar items where applicable. Note that both script tags (this and previous) have the appropriate `type` values.
 
 ```html
 <script type="module">
