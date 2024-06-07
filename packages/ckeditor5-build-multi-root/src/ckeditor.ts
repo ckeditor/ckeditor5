@@ -33,7 +33,6 @@ import {
 } from '@ckeditor/ckeditor5-image';
 import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
 import { Link } from '@ckeditor/ckeditor5-link';
-import { List, ListProperties, TodoList } from '@ckeditor/ckeditor5-list';
 import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
 import { Mention } from '@ckeditor/ckeditor5-mention';
 import { PageBreak } from '@ckeditor/ckeditor5-page-break';
@@ -105,8 +104,6 @@ class Editor extends MultiRootEditorBase {
 		IndentBlock,
 		Italic,
 		Link,
-		List,
-		ListProperties,
 		MediaEmbed,
 		Mention,
 		MentionCustomization,
@@ -129,7 +126,6 @@ class Editor extends MultiRootEditorBase {
 		TableProperties,
 		TableToolbar,
 		TextTransformation,
-		TodoList,
 		TrackChanges,
 		TrackChangesData,
 		Underline,
@@ -162,8 +158,6 @@ class Editor extends MultiRootEditorBase {
 		'fontBackgroundColor',
 		'|',
 		'alignment',
-		'bulletedList',
-		'numberedList',
 		'outdent',
 		'indent',
 		'pageBreak',
@@ -190,11 +184,6 @@ class Editor extends MultiRootEditorBase {
 		fontSize: NumericFontSizeConfig,
 		language: 'en',
 		codeBlock: CodeBlockConfiguration,
-		list: {
-			properties: {
-				startIndex: true
-			}
-		},
 		link: {
 			defaultProtocol: 'https://'
 		},
@@ -209,8 +198,7 @@ class Editor extends MultiRootEditorBase {
 				extraPlugins: [
 					Autoformat,
 					Bold,
-					Italic,
-					List
+					Italic
 				]
 			}
 		},
