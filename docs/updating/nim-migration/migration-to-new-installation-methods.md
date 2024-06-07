@@ -17,6 +17,10 @@ With the introduction of the new installation methods, we have greatly simplifie
 
 This guide will show you how to migrate your project from the old installation methods to one of the new ones. First, let's take a look at what the new editor installation looks like to better understand what has changed.
 
+## FAQ
+
+//TODO
+
 ## New installation methods
 
 We have reduced the number of possible installation methods to just two: **npm packages and browser builds**. Unlike before, both methods no longer require you to add dozens of individual packages or JavaScript bundles to get the editor up and running. Instead, you can import the editor and all our open source plugins from `ckeditor5` and the premium features from `ckeditor5-premium-feature`.
@@ -99,6 +103,10 @@ There are a few things that stand out in both examples compared to the old insta
 Additionally, you no longer need to maintain a CKEditor&nbsp;5-specific webpack or Vite configuration and can use CKEditor&nbsp;5 with any modern bundler or JavaScript meta-framework.
 
 The setups we presented above are what you should aim for when migrating your project to the new installation methods.
+
+## Sunset of old installation methods and deprecation timelines
+
+//TODO
 
 ## Migrating from the old installation methods
 
