@@ -2,14 +2,14 @@
 category: nim-migration
 order: 20
 menu-title: Migrating from predefined builds
-meta-title: Migrating from predefined builds to new installation methods
+meta-title: Migrating from predefined builds to new installation methods | CKEditor5 documentation
 meta-description: Learn how to upgrade from predefined builds to the new installation methods.
 modified_at: 2024-06-06
 ---
 
 # Migrating from predefined builds
 
-Until now, the predefined builds were the easiest way to get started with CKEditor 5. They provided an out-of-the-box editor with a set of plugins and a default configuration. However, they had some limitations, such as the inability to customize the editor by adding or removing plugins.
+Until now, the predefined builds were the easiest way to get started with CKEditor&nbsp;5. They provided an out-of-the-box editor with a set of plugins and a default configuration. However, they had some limitations, such as the inability to customize the editor by adding or removing plugins.
 
 This is now solved by the new installation methods, which allow you to fully customize the editor, whether you use npm packages or browser builds.
 
@@ -17,7 +17,7 @@ Migrating from the predefined builds to the new installation methods should most
 
 ## Prerequisites
 
-Before you start, follow the usual upgrade path to update your project to use the latest version of CKEditor 5. This will rule out any problems that may be caused by upgrading from an outdated version of CKEditor 5.
+Before you start, follow the usual upgrade path to update your project to use the latest version of CKEditor&nbsp;5. This will rule out any problems that may be caused by upgrading from an outdated version of CKEditor&nbsp;5.
 
 ## Migration steps
 

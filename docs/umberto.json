@@ -757,13 +757,13 @@
 					"name": "New installation methods",
 					"id": "nim-migration",
 					"slug": "nim-migration",
-					"order": 8
+					"order": 10
 				},
 				{
 					"name": "CKEditor 4 migration",
 					"id": "ckeditor4-migration",
 					"slug": "ckeditor4",
-					"order": 10
+					"order": 20
 				},
 				{
 					"name": "Update guides",
