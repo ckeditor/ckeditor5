@@ -11,7 +11,7 @@ modified_at: 2024-06-06
 
 Until now, the predefined builds were the easiest way to get started with CKEditor&nbsp;5. They provided an out-of-the-box editor with a set of plugins and a default configuration. However, they had some limitations, such as the inability to customize the editor by adding or removing plugins.
 
-This is now solved by the new installation methods, which allow you to fully customize the editor, whether you use npm packages or browser builds.
+The new installation methods solve this problem. They allow you to fully customize the editor, whether you use npm packages or browser builds.
 
 Migrating from the predefined builds to the new installation methods should mostly be a matter of copying and pasting the code below to replace the old code. The code to copy depends on the build and distribution method you used.
 
@@ -43,7 +43,7 @@ If you are using predefined builds from npm, follow the steps below:
 	npm install ckeditor5
 	```
 
-3. (Optional) If you are using features from our commercial offering, you should also install the `ckeditor5-premium-feature' package.
+3. (Optional) If you are using features from our commercial offer, you should also install the `ckeditor5-premium-feature' package.
 
 	```bash
 	npm install ckeditor5-premium-feature
@@ -777,7 +777,7 @@ If you are using predefined builds from npm, follow the steps below:
 
 If you are using the predefined builds from CDN, follow the steps below.
 
-One notable difference between the old and new CDN builds is that the former uses `<script>` tags while the latter uses `<script type="module">` tags, which behave differently in some cases. For more information, see this [MDN page explaining the differences between modules and standard scripts](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules#other_differences_between_modules_and_standard_scripts).
+One notable difference between the old and new CDN builds is that the former uses the `<script>` tags while the latter uses the `<script type="module">` tags, which behave differently in some cases. For more information, see this [MDN page explaining the differences between modules and standard scripts](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules#other_differences_between_modules_and_standard_scripts).
 
 1. Start by removing the `<script>` tags that contain the old build.
 
@@ -785,7 +785,7 @@ One notable difference between the old and new CDN builds is that the former use
 	<script src="https://cdn.ckeditor.com/ckeditor5/<VERSION>/classic/ckeditor.js"></script>
 	```
 
-2. Add `<link>` tags to include the editor's CSS files and the `<script type="importmap">` tag to map the package names to the build URLs.
+2. Add the `<link>` tags to include the editor's CSS files and the `<script type="importmap">` tag to map the package names to the build URLs.
 
 	2.1 If you only use the open-source editor:
 
@@ -802,7 +802,7 @@ One notable difference between the old and new CDN builds is that the former use
 	</script>
 	```
 
-	2.2 If you use features from our commercial offering:
+	2.2 If you use features from our commercial offer:
 
 	```html
 	<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
@@ -1548,7 +1548,7 @@ One notable difference between the old and new CDN builds is that the former use
 	<summary>Superbuild</summary>
 
 	<info-box warning>
-		Please note that the snippet below does not include plugins for {@link features/math-equations Math equations and chemical formulas} and {@link features/spelling-and-grammar-checking Spelling, grammar, and punctuation checking} which were part of the old superbuild.
+		Please note that the snippet below does not include plugins for the {@link features/math-equations Math equations and chemical formulas} and {@link features/spelling-and-grammar-checking Spelling, grammar, and punctuation checking} features which were part of the old superbuild.
 
 		Please [contact us](https://ckeditor.com/contact/) if you require these features in the CDN distribution.
 	</info-box>

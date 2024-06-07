@@ -75,7 +75,7 @@ If you are using the DLL build, follow the steps below:
 	</script>
 	```
 
-	3.2 If you use features from our commercial offering:
+	3.2 If you use features from our commercial offer:
 
 	```html
 	<script type="module">
