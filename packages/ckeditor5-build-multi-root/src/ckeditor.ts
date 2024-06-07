@@ -6,6 +6,7 @@
 import { MultiRootEditor as MultiRootEditorBase } from '@ckeditor/ckeditor5-editor-multi-root';
 
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
+import { Autosave } from '@ckeditor/ckeditor5-autosave';
 import { AnnotationsUIs, Comments, WideSidebar } from '@ckeditor/ckeditor5-comments';
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
@@ -79,6 +80,7 @@ class Editor extends MultiRootEditorBase {
 		AnnotationsUIs,
 		Autoformat,
 		BlockQuote,
+		Autosave,
 		Bold,
 		CloudServices,
 		Comments,
