@@ -95,7 +95,7 @@ There are a few things that stand out in both examples compared to the old insta
 2. CSS files are imported separately from the JavaScript files, which improves performance and allows you to more easily customize or remove the default editor styles.
 3. Translations are imported as JavaScript objects and passed to the editor instance, instead of using side-effect imports (`import '...'`) that rely on the global state.
 
-Additionally, you no longer need to maintain a CKEditor-specific webpack configuration and can use CKEditor 5 with any bundler or JavaScript meta-framework.
+Additionally, you no longer need to maintain a CKEditor-specific webpack or Vite configuration and can use CKEditor 5 with any modern bundler or JavaScript meta-framework.
 
 The setups we presented above are what you should aim for when migrating your project to the new installation methods.
 
