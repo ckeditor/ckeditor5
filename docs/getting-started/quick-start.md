@@ -34,15 +34,18 @@ Now you can import all the modules from the `ckeditor5` package. Additionally, y
 **Importing and registering UI translations is optional for American English.** To use the editor in any other language, use imported translations, as shown in the {@link getting-started/setup/ui-language setup section}.
 
 ```js
-import { ClassicEditor, Essentials, Bold, Italic, Paragraph, Mention } from 'ckeditor5';
+import { ClassicEditor, Essentials, Bold, Italic, Font, Paragraph } from 'ckeditor5';
 
 import 'ckeditor5/ckeditor5.css';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Essentials, Bold, Italic, Paragraph ],
+		plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
 		toolbar: {
-			items: [ 'undo', 'redo', '|', 'bold', 'italic' ]
+			items: [
+				'undo', 'redo', '|', 'bold', 'italic', '|',
+				'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+			]
 		}
 	} )
 	.then( /* ... */ )
@@ -96,7 +99,7 @@ In the following script tag, import the desired plugins and add them to the `plu
 		GeneralHtmlSupport,
 		Bold,
 		Italic,
-		PasteFromOffice,
+		Font,
 		Paragraph
 	} from 'ckeditor5';
 
@@ -104,10 +107,13 @@ In the following script tag, import the desired plugins and add them to the `plu
 		.create( document.querySelector( '#editor' ), {
 			plugins: [
 				Essentials, GeneralHtmlSupport, Bold, Italic,
-				PasteFromOffice, Paragraph
+				Font, Paragraph
 			],
 			toolbar: {
-				items: [ 'undo', 'redo', '|', 'bold', 'italic' ]
+				items: [
+					'undo', 'redo', '|', 'bold', 'italic', '|',
+					'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+				]
 			}
 		} )
 		.then( /* ... */ )
@@ -155,7 +161,7 @@ Your final page should look similar to the one below.
 				GeneralHtmlSupport,
 				Bold,
 				Italic,
-				PasteFromOffice,
+				Font,
 				Paragraph
 			} from 'ckeditor5';
 
@@ -163,12 +169,14 @@ Your final page should look similar to the one below.
 				.create( document.querySelector( '#editor' ), {
 					plugins: [
 						Essentials, GeneralHtmlSupport, Bold, Italic,
-						PasteFromOffice, Paragraph
+						Font, Paragraph
 					],
 					toolbar: {
-						items: [ 'undo', 'redo', '|', 'bold', 'italic' ]
-					},
-					licenseKey: 'your-license-key'
+						items: [
+							'undo', 'redo', '|', 'bold', 'italic', '|',
+							'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+						]
+					}
 				} )
 				.then( /* ... */ )
 				.catch( /* ... */ );
@@ -200,7 +208,10 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Essentials, Bold, Italic, Paragraph, Font, FormatPainter ],
 		toolbar: {
-			items: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|', 'formatPainter' ]
+			items: [
+				'undo', 'redo', '|', 'bold', 'italic', '|',
+				'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|', 'formatPainter'
+			]
 		},
 		licenseKey: 'your-license-key'
 	} )
@@ -269,7 +280,10 @@ In the following script tag, import the desired plugins and add them to the `plu
 				Font, Paragraph, FormatPainter
 			],
 			toolbar: {
-				items: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|', 'formatPainter' ]
+				items: [
+					'undo', 'redo', '|', 'bold', 'italic', '|',
+					'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|', 'formatPainter'
+				]
 			},
 			licenseKey: 'your-license-key'
 		} )
@@ -333,7 +347,10 @@ Your final page should look similar to the one below.
 						Font, Paragraph, FormatPainter
 					],
 					toolbar: {
-						items: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|', 'formatPainter' ]
+						items: [
+							'undo', 'redo', '|', 'bold', 'italic', '|',
+							'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|', 'formatPainter'
+						]
 					},
 					licenseKey: 'your-license-key'
 				} )
