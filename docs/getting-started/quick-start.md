@@ -96,7 +96,6 @@ In the following script tag, import the desired plugins, add them to the `plugin
 	import {
 		ClassicEditor,
 		Essentials,
-		GeneralHtmlSupport,
 		Bold,
 		Italic,
 		Font,
@@ -106,7 +105,7 @@ In the following script tag, import the desired plugins, add them to the `plugin
 	ClassicEditor
 		.create( document.querySelector( '#editor' ), {
 			plugins: [
-				Essentials, GeneralHtmlSupport, Bold, Italic,
+				Essentials, Bold, Italic,
 				Font, Paragraph
 			],
 			toolbar: {
@@ -158,7 +157,6 @@ Your final page should look similar to the one below.
 			import {
 				ClassicEditor,
 				Essentials,
-				GeneralHtmlSupport,
 				Bold,
 				Italic,
 				Font,
@@ -168,7 +166,7 @@ Your final page should look similar to the one below.
 			ClassicEditor
 				.create( document.querySelector( '#editor' ), {
 					plugins: [
-						Essentials, GeneralHtmlSupport, Bold, Italic,
+						Essentials, Bold, Italic,
 						Font, Paragraph
 					],
 					toolbar: {
@@ -276,7 +274,7 @@ In the following script tag, import the desired plugins and add them to the `plu
 	ClassicEditor
 		.create( document.querySelector( '#editor' ), {
 			plugins: [
-				Essentials, GeneralHtmlSupport, Bold, Italic,
+				Essentials, Bold, Italic,
 				Font, Paragraph, FormatPainter
 			],
 			toolbar: {
@@ -343,7 +341,7 @@ Your final page should look similar to the one below.
 			ClassicEditor
 				.create( document.querySelector( '#editor' ), {
 					plugins: [
-						Essentials, GeneralHtmlSupport, Bold, Italic,
+						Essentials, Bold, Italic,
 						Font, Paragraph, FormatPainter
 					],
 					toolbar: {
