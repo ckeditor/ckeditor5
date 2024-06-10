@@ -91,7 +91,7 @@ msgstr "Obraz z komputera"
 
 msgctxt "The label for the upload image from computer menu bar button (inside 'Image' menu)."
 msgid "From computer"
-msgstr ""
+msgstr "Z komputera"
 
 msgctxt "The label for the replace image by upload from computer toolbar button."
 msgid "Replace image from computer"
@@ -143,15 +143,15 @@ msgstr "Wstaw obraz z adresu URL"
 
 msgctxt "The label for the insert image via url dropdown button."
 msgid "Insert via URL"
-msgstr ""
+msgstr "Wstaw przez URL"
 
 msgctxt "The label for the insert image via url menu bar button (standalone button)."
 msgid "Image via URL"
-msgstr ""
+msgstr "Obraz przez URL"
 
 msgctxt "The label for the insert image via url menu bar button (inside 'Image' menu)."
 msgid "Via URL"
-msgstr ""
+msgstr "Przez URL"
 
 msgctxt "The input label for the Insert image via URL form for a pre-existing image."
 msgid "Update image URL"
@@ -187,4 +187,4 @@ msgstr "Błąd podczas przesyłania obrazu"
 
 msgctxt "Label for the widget inserted by the image feature (as in 'insert image')"
 msgid "Image"
-msgstr ""
+msgstr "Obraz"

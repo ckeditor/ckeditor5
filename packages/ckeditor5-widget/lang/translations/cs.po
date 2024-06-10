@@ -55,4 +55,4 @@ msgstr "Přesuňte stříšku pro umožnění psaní přímo před widget"
 
 msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that moves selection from a nested editable area back to the parent widget."
 msgid "Move focus from an editable area back to the parent widget"
-msgstr ""
+msgstr "Přesunout zaměření z upravitelné oblasti zpět na nadřazený widget"
