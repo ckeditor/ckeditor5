@@ -8,13 +8,13 @@ order: 10
 
 # Getting and setting data
 
-CKEditor 5 allows you to retrieve the data from and save it to your server (or to your system in general) in various ways. In this guide, you can learn about the available options along with their pros and cons.
+CKEditor&nbsp;5 allows you to retrieve the data from and save it to your server (or to your system in general) in various ways. In this guide, you can learn about the available options along with their pros and cons.
 
 ## Autosaving
 
 One of the best ways to enhance the user experience in saving editor data is by providing an autosave functionality. This ensures users do not need to remember to save their data, and it prevents your system from being flooded with save events since the save action will be debounced.
 
-The autosave feature we provide automatically saves the data (e.g., sends it to the server) when needed. Please refer to the {@link features/autosave Autosave} guide for details.
+We provide and autosave feature that automatically saves the data (for example sends it to the server) when needed. Please refer to the {@link features/autosave Autosave} guide for details.
 
 ## Initializing the editor with data
 
@@ -42,11 +42,11 @@ ClassicEditor
 
 The {@link module:core/editor/editorconfig~EditorConfig.initialData `initialData`} property will initialize the editor with the provided data, overriding the content provided at the HTML level.
 
-If you are setting up the editor with integrations like {@link getting-started/installation/react/react React}, consult the documentation for additional properties provided to initialize the data.
+If you are setting up the editor with integrations like {@link getting-started/integrations/react React}, consult the documentation for additional properties provided to initialize the data.
 
 ## Getting the editor data with `getData()`
 
-If the editor content needs to be retrieved on demand for any reason, like for sending it to the server through an Ajax call, use the `getData()` method:
+If the editor content needs to be retrieved on demand for any reason, such as for sending it to the server through an Ajax call, use the `getData()` method:
 
 ```js
 const data = editor.getData();
@@ -81,7 +81,7 @@ The {@link module:core/editor/editor~Editor.getData getData()} method may accept
 
 ## Replacing the editor data with `setData()`
 
-In some scenarios you wish to replace the editor content on demand with new data. For this operation use the `setData()` method:
+In some scenarios you may wish to replace the editor content on demand with new data. For this operation use the `setData()` method:
 
 ```js
 editor.setData( '<p>Some text.</p>' );
@@ -197,7 +197,6 @@ ClassicEditor
 	Enabling the `updateSourceElementOnDestroy` option in your configuration might have some security implications, depending on the plugins you use. While the editing view is secured, there might be some unsafe content in the data output, so enable this option only if you know what you are doing. Be especially careful when using the Markdown, General HTML Support, and HTML embed features.
 </info-box>
 
-
 ## Alerting users exiting the page
 
 An additional concern when integrating the editor into your website is that the user may mistakenly leave before saving the data. This problem is automatically handled by the {@link features/autosave autosave feature}, but if you do not use it and instead choose different integration methods, you should consider handling these two scenarios:
@@ -218,7 +217,6 @@ The example below shows how all these mechanisms can be used together to enable 
 
 ```js
 // Note: We need to build the editor from source.
-// We cannot use existing builds in this case.
 import { ClassicEditor, PendingActions } from 'ckeditor5';
 
 let isDirty = false;
