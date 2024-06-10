@@ -64,7 +64,7 @@ See an {@link examples/builds/balloon-block-editor example of the classic editor
 
 ## Decoupled editor (document)
 
-The document editor is focused on rich-text editing experience similar to that of large editing packages such as Google Docs or Microsoft Word. It works best for creating documents which are usually later printed or exported to PDF files.
+The document editor focuses on a rich-text editing experience similar to large editing packages such as Google Docs or Microsoft Word. It works best for creating documents, which are usually later printed or exported to PDF files.
 
 {@img assets/img/editor-type-document.png 800 Document editor type.}
 
