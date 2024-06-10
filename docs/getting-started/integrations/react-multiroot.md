@@ -28,7 +28,7 @@ This page focuses on describing the usage of the multi-root editor in React appl
 
 This guide assumes you already have a React project. If you want to create a new one, you can use the [Vite](https://vitejs.dev/guide/) CLI. It allows you to create and customize your project with templates. For example, you can set up your project with TypeScript support.
 
-Install the [CKEditor&nbsp;5 WYSIWYG editor package for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) and the {@link examples/builds/multi-root-editor multi-root editor type}.
+Install the [CKEditor&nbsp;5 WYSIWYG editor package for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) and the {@link getting-started/setup/editor-types#multi-root-editor multi-root editor type}.
 
 ```bash
 npm install ckeditor5 @ckeditor/ckeditor5-react
@@ -39,8 +39,10 @@ Use the `useMultiRootEditor` hook inside your project:
 ```tsx
 // App.jsx / App.tsx
 
-import { MultiRootEditor } from 'ckeditor5';
+import { MultiRootEditor, Bold, Essentials, Italic, Paragraph } from 'ckeditor5';
 import { useMultiRootEditor } from '@ckeditor/ckeditor5-react';
+
+import 'ckeditor5/ckeditor5.css';
 
 const App = () => {
 	const editorProps = {
@@ -50,7 +52,10 @@ const App = () => {
 			content: '<p>Hello from CKEditor&nbsp;5 multi-root!</p>'
 		},
 		config: {
-			// your editor config
+			plugins: [ Essentials, Bold, Italic, Paragraph ],
+			toolbar: {
+				items: [ 'undo', 'redo', '|', 'bold', 'italic' ]
+			},
 		}
 	};
 
