@@ -19,7 +19,8 @@ import {
 	MenuBarMenuListItemButtonView,
 	SplitButtonView,
 	ToolbarSeparatorView,
-	type DropdownView
+	type DropdownView,
+	registerMenuBarItem
 } from 'ckeditor5/src/ui.js';
 
 import markerIcon from './../theme/icons/marker.svg';
@@ -266,9 +267,58 @@ export default class HighlightUI extends Plugin {
 	private _addMenuBarButton( options: Array<HighlightOption> ) {
 		const editor = this.editor;
 		const t = editor.t;
+		const command: HighlightCommand = editor.commands.get( 'highlight' )!;
+
+		// TODO remove before merge
+		registerMenuBarItem(
+			editor.ui.componentFactory,
+			editor.locale,
+			'menuBar:highlight2',
+			{
+				type: 'submenu',
+				properties: {
+					label: t( 'Highlight 2' ),
+					icon: getIconForType( 'marker' )
+				},
+				afterCreate: ( menuView: MenuBarMenuView ) => {
+					menuView.buttonView.iconView.fillColor = 'transparent';
+				},
+				children: [
+					...options.map( o => {
+						return {
+							type: 'button' as const,
+							properties: {
+								label: o.title,
+								icon: getIconForType( o.type )
+							},
+							onExecute: () => {
+								editor.execute( 'highlight', { value: o.model } );
+								editor.editing.view.focus();
+							},
+							afterCreate: ( buttonView: ButtonView ) => {
+								buttonView.bind( 'isOn' ).to( command, 'value', value => value === o.model );
+								buttonView.bind( 'ariaChecked' ).to( buttonView, 'isOn' );
+								buttonView.iconView.bind( 'fillColor' )
+									.to( buttonView, 'isOn', value => value ? 'transparent' : o.color );
+							}
+						};
+					} ),
+					{
+						type: 'button' as const,
+						properties: {
+							label: t( 'Remove highlight' ),
+							icon: icons.eraser
+						},
+						onExecute: () => {
+							editor.execute( 'highlight', { value: null } );
+							editor.editing.view.focus();
+						}
+					}
+				]
+			}
+		);
 
 		editor.ui.componentFactory.add( 'menuBar:highlight', locale => {
-			const command: HighlightCommand = editor.commands.get( 'highlight' )!;
 			const menuView = new MenuBarMenuView( locale );
 
 			menuView.buttonView.set( {

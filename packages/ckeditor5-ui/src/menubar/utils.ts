@@ -8,7 +8,7 @@
  */
 
 import MenuBarMenuListItemView from './menubarmenulistitemview.js';
-import type MenuBarMenuView from './menubarmenuview.js';
+import MenuBarMenuView from './menubarmenuview.js';
 import type {
 	default as MenuBarView,
 	MenuBarConfig,
@@ -27,7 +27,7 @@ import clickOutsideHandler from '../bindings/clickoutsidehandler.js';
 import type { ButtonExecuteEvent } from '../button/button.js';
 import type ComponentFactory from '../componentfactory.js';
 import type { FocusableView } from '../focuscycler.js';
-import type { Editor } from '@ckeditor/ckeditor5-core';
+import type { Command, Editor } from '@ckeditor/ckeditor5-core';
 import {
 	logWarning,
 	type Locale,
@@ -35,6 +35,11 @@ import {
 	type PositioningFunction
 } from '@ckeditor/ckeditor5-utils';
 import { cloneDeep } from 'lodash-es';
+import type ButtonView from '../button/buttonview.js';
+import MenuBarMenuButtonView from './menubarmenubuttonview.js';
+import type View from '../view.js';
+import MenuBarMenuListView from './menubarmenulistview.js';
+import MenuBarMenuListItemButtonView from './menubarmenulistitembuttonview.js';
 
 const NESTED_PANEL_HORIZONTAL_OFFSET = 5;
 
@@ -977,6 +982,82 @@ export function processMenuBarConfig( {
 	localizeMenuLabels( configClone, locale );
 
 	return configClone;
+}
+
+export type MenuItemDefinition = MenuButtonDefinition | MenuSubmenuDefinition;
+
+export type MenuButtonDefinition = {
+	type: 'button';
+	properties: object & { readonly [ K in keyof MenuBarMenuListItemButtonView ]?: unknown };
+	onExecute: ( () => void );
+	afterCreate?: ( ( buttonView: MenuBarMenuListItemButtonView ) => void );
+};
+
+export type MenuSubmenuDefinition = {
+	type: 'submenu';
+	properties: object & { readonly [ K in keyof MenuBarMenuListItemButtonView ]?: unknown };
+	children: Array<MenuItemDefinition>;
+	afterCreate?: ( ( menuView: MenuBarMenuView ) => void );
+};
+
+export function registerMenuBarItem(
+	componentFactory: ComponentFactory,
+	locale: Locale,
+	name: string,
+	definition: MenuItemDefinition
+): void {
+	componentFactory.add( name, () => {
+		return createMenuItem( locale, definition );
+	} );
+}
+
+function createMenuItem( locale: Locale, definition: MenuItemDefinition ): MenuBarMenuListItemButtonView | MenuBarMenuView {
+	if ( definition.type == 'button' ) {
+		return createButton( locale, definition );
+	}
+	else { // definition.type == 'submenu'
+		return createSubmenu( locale, definition );
+	}
+}
+
+function createButton( locale: Locale, definition: MenuButtonDefinition ): MenuBarMenuListItemButtonView {
+	const buttonView = new MenuBarMenuListItemButtonView( locale );
+
+	buttonView.set( definition.properties );
+
+	buttonView.on( 'execute', definition.onExecute );
+
+	if ( definition.afterCreate ) {
+		definition.afterCreate( buttonView );
+	}
+
+	return buttonView;
+}
+
+function createSubmenu( locale: Locale, definition: MenuSubmenuDefinition ): MenuBarMenuView {
+	const menuView = new MenuBarMenuView( locale );
+	const listView = new MenuBarMenuListView( locale );
+
+	menuView.buttonView.set( definition.properties );
+
+	if ( definition.afterCreate ) {
+		definition.afterCreate( menuView );
+	}
+
+	for ( const submenuItem of definition.children.map( d => createMenuItem( locale, d ) ) ) {
+		const listItemView = new MenuBarMenuListItemView( locale, menuView );
+
+		if ( listItemView instanceof MenuBarMenuListItemButtonView ) {
+			submenuItem.delegate( 'execute' ).to( menuView );
+		}
+
+		listItemView.children.add( submenuItem );
+		listView.items.add( listItemView );
+	}
+
+	menuView.panelView.children.add( listView );
+
+	return menuView;
 }
 
 /**
