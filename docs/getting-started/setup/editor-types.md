@@ -18,7 +18,7 @@ There are six ready-made editor types (see below) available for CKEditor&nbsp;5.
 
 Other custom-tailored editor types can be made using the {@link framework/external-ui CKEditor&nbsp;5 Framework}.
 
-For example, this code will import the classic editor type and some basic text formatting plugins. It also provides configuration of the {@link getting-started/setup/toolbar main editor toolbar}.
+For example, this code will import the classic editor type and some essential text formatting plugins. It also provides the configuration of the {@link getting-started/setup/toolbar main editor toolbar}.
 
 ```js
 import { ClassicEditor, Bold, Italic, Link } from 'ckeditor5'; // Imports.
