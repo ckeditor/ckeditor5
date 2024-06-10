@@ -69,7 +69,7 @@ That is all the code you need to see a bare-bone editor running in your web brow
 
 CDN is an alternative method of running CKEditor 5. You can start using it in just a few steps and with a few tags.
 
-Start by attaching a link to style sheets. They contain all styles for the editor's UI and content. You can also include your styles if you like. Refer to the {@link getting-started/integrations/css#styling-the-published-content content styles} guide for more information.
+Start by attaching a link to style sheets. They contain all styles for the editor's UI and content. You can also include your styles if you like. Refer to the {@link getting-started/setup/css#styling-the-published-content content styles} guide for more information.
 
 ```html
 <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
@@ -91,7 +91,7 @@ Then, you need to attach the script with the JavaScript code. To simplify import
 Once you have added the import map, you can access the editor and its plugins using the `ckeditor5` specifier.
 
 <info-box warning>
-	You must run your code on a local server to use import maps. Opening the HTML file directly in your browser will trigger security rules. These rules (CORS policy) ensure loading modules from the same source. So, set up a local server, like `nginx`, `caddy`, `http-server`, to serve your files over HTTP or HTTPS.
+	You must run your code on a local server to use import maps. Opening the HTML file directly in your browser will trigger security rules. These rules (CORS policy) ensure loading modules from the same source. Therefore, set up a local server, like `nginx`, `caddy`, `http-server`, to serve your files over HTTP or HTTPS.
 </info-box>
 
 In the following script tag, import the desired plugins, add them to the `plugins` array, and add toolbar items where applicable. Note that both script tags (this and previous) have the appropriate `type` values.
