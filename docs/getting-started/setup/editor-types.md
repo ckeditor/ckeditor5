@@ -56,7 +56,7 @@ Balloon editor is similar to inline editor. The difference between them is that 
 
 See an {@link examples/builds/balloon-editor example of the classic editor} in action.
 
-Balloon block is essentially the balloon editor with an extra block toolbar which can be accessed using the button attached to the editable content area and following the selection in the document. The toolbar gives an access to additional, block–level editing features.
+Balloon block is essentially the balloon editor with an extra block toolbar, which can be accessed using the button attached to the editable content area and following the selection in the document. The toolbar gives access to additional block–level editing features.
 
 {@img assets/img/editor-type-balloon-block.png 800 Balloon block editor type.}
 
