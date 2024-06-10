@@ -8,7 +8,7 @@
  */
 
 import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
-import { env } from '@ckeditor/ckeditor5-utils';
+import { DomEmitterMixin, env } from '@ckeditor/ckeditor5-utils';
 
 import InsertTextCommand, { type InsertTextCommandOptions } from './inserttextcommand.js';
 import InsertTextObserver, { type ViewDocumentInsertTextEvent } from './inserttextobserver.js';
@@ -25,10 +25,11 @@ import {
 	type ViewDocumentCompositionStartEvent,
 	type ViewDocumentCompositionEndEvent,
 	type ViewDocumentKeyDownEvent,
-	type ViewDocumentMutationsEvent
+	type ViewDocumentMutationsEvent, DocumentChangeEvent
 } from '@ckeditor/ckeditor5-engine';
 
 import { debounce } from 'lodash-es';
+import EditContextObserver from '@ckeditor/ckeditor5-engine/src/view/observer/editcontextobserver.js';
 
 /**
  * Handles text input coming from the keyboard or other input methods.
@@ -38,6 +39,21 @@ export default class Input extends Plugin {
 	 * The queue of `insertText` command executions that are waiting for the DOM to get updated after beforeinput event.
 	 */
 	private _compositionQueue!: CompositionQueue;
+
+	/**
+	 * TODO
+	 */
+	private _previousEditBlock: Element | null = null;
+
+	/**
+	 * TODO
+	 */
+	private _editContext: any = null;
+
+	/**
+	 * TODO
+	 */
+	private _domEmitter = new ( DomEmitterMixin() )();
 
 	/**
 	 * @inheritDoc
@@ -59,6 +75,7 @@ export default class Input extends Plugin {
 		this._compositionQueue = new CompositionQueue( editor );
 
 		view.addObserver( InsertTextObserver );
+		view.addObserver( EditContextObserver );
 
 		// TODO The above default configuration value should be defined using editor.config.define() once it's fixed.
 		const insertTextCommand = new InsertTextCommand( editor, editor.config.get( 'typing.undoStep' ) || 20 );
@@ -282,6 +299,88 @@ export default class Input extends Plugin {
 				// @if CK_DEBUG_TYPING // 	console.groupEnd();
 				// @if CK_DEBUG_TYPING // }
 			}, { priority: 'lowest' } );
+		}
+
+		// The EditContext support starts here.
+		if ( env.features.isEditContextSupported ) {
+			this.listenTo<DocumentChangeEvent>( model.document, 'change', () => {
+				const changes = model.document.differ.getChanges();
+				const selection = model.document.selection;
+				const selectionParent = selection.getFirstPosition()!.parent as Element;
+				let updateEditBlock = false;
+
+				if ( selectionParent != this._previousEditBlock ) {
+					updateEditBlock = true;
+				} else {
+					for ( const change of changes ) {
+						if ( change.type != 'insert' && change.type != 'remove' ) {
+							continue;
+						}
+
+						if ( change.position.parent != this._previousEditBlock ) {
+							updateEditBlock = true;
+						}
+					}
+				}
+
+				if ( !updateEditBlock ) {
+					return;
+				}
+
+				const text = Array.from( selectionParent.getChildren() )
+					.reduce( ( rangeText, element ) => rangeText + ( element.is( '$text' ) ? element.data : ' ' ), '' );
+
+				const editableElement = editor.editing.view.document.selection.editableElement;
+
+				this._previousEditBlock = selectionParent;
+
+				if ( !editableElement ) {
+					// TODO
+				} else {
+					const domElement = editor.editing.view.domConverter.mapViewToDom( editableElement );
+
+					if ( !this._editContext ) {
+						this._editContext = new ( window as any ).EditContext();
+
+						if ( !domElement.editContext ) {
+							domElement.editContext = this._editContext;
+						}
+
+						this._domEmitter.listenTo( this._editContext, 'textupdate', ( evt, domEvent ) => {
+							console.log(
+								`The user entered the text: ${ _escapeTextNodeData( domEvent.text ) } ` +
+								`at [${ domEvent.updateRangeStart } - ${ domEvent.updateRangeEnd }] offset.` +
+								`Selection: [${ domEvent.selectionStart } - ${ domEvent.selectionEnd }] offset`
+							);
+
+							editor.execute( 'insertText', {
+								text: domEvent.text,
+								selection: model.createSelection(
+									model.createRange(
+										model.createPositionAt( this._previousEditBlock, domEvent.updateRangeStart ),
+										model.createPositionAt( this._previousEditBlock, domEvent.updateRangeEnd )
+									)
+								)
+							} );
+						} );
+					}
+					else if ( !domElement.editContext ) {
+						domElement.editContext = this._editContext;
+					}
+
+					// TODO this probably should be granular
+
+					if ( this._editContext.text != text ) {
+						console.log( 'update text', text );
+						this._editContext.updateText( 0, this._editContext.text.length, text );
+					}
+
+					this._editContext.updateSelection(
+						modelSelection.getFirstPosition()!.offset,
+						modelSelection.getLastPosition()!.offset
+					);
+				}
+			}, { priority: 'lowest' } ); // TODO describe: after changed DOM
 		}
 	}
 
@@ -521,3 +620,12 @@ type InsertTextCommandLiveOptions = {
 	text?: string;
 	selectionRanges?: Array<LiveRange>;
 };
+
+function _escapeTextNodeData( text ) {
+	const escapedText = text
+		.replace( /&/g, '&amp;' )
+		.replace( /\u00A0/g, '&nbsp;' )
+		.replace( /\u2060/g, '&NoBreak;' );
+
+	return `"${ escapedText }"`;
+}

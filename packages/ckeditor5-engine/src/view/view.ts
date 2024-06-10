@@ -304,12 +304,6 @@ export default class View extends /* #__PURE__ */ ObservableMixin() {
 		this._renderer.markToSync( 'attributes', viewRoot );
 		this._renderer.domDocuments.add( domRoot.ownerDocument );
 
-		if ( env.features.isEditContextSupported ) {
-			( domRoot as any ).editContext = new ( window as any ).EditContext( {
-				text: 'This is a test' // TODO Update text in context on selection change.
-			} );
-		}
-
 		viewRoot.on<ViewNodeChangeEvent>( 'change:children', ( evt, node ) => this._renderer.markToSync( 'children', node ) );
 		viewRoot.on<ViewNodeChangeEvent>( 'change:attributes', ( evt, node ) => this._renderer.markToSync( 'attributes', node ) );
 		viewRoot.on<ViewNodeChangeEvent>( 'change:text', ( evt, node ) => this._renderer.markToSync( 'text', node ) );
