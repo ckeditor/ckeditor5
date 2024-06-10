@@ -72,7 +72,7 @@ See an {@link examples/builds/document-editor example of the classic editor} in 
 
 ## Multi-root editor
 
-Multi-root editor is an editor type that features multiple, separate editable areas. The main difference between using a multi-root editor and using multiple separate editors is the fact that in a multi-root editor all editable areas belong to the same editor instance share the same configuration, toolbar and the undo stack, and produce one document.
+The multi-root editor is an editor type that features multiple, separate editable areas. The main difference between using a multi-root editor and using multiple separate editors is the fact that in a multi-root editor, the editors are "connected." All editable areas of the same editor instance share the same configuration, toolbar, undo stack, and produce one document.
 
 {@img assets/img/editor-type-multi-root.png 800 Multi-root editor type.}
 
