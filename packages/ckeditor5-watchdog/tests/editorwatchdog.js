@@ -420,10 +420,10 @@ describe( 'EditorWatchdog', () => {
 				} );
 			} );
 
-			const newCommentsRepository = watchdog.editor.plugins.get( 'CommentsRepository' );
+			const restoredCommentThreads = watchdog.editor.plugins.get( 'CommentsRepository' ).getCommentThreads();
 
-			expect( newCommentsRepository.getCommentThreads().length ).to.be.equal( 1 );
-			expect( newCommentsRepository.getCommentThreads()[ 0 ].threadId ).to.be.equal( 't1' );
+			expect( restoredCommentThreads.length ).to.be.equal( 1 );
+			expect( restoredCommentThreads[ 0 ].threadId ).to.be.equal( 't1' );
 		} );
 
 		it( 'should support suggestions', async () => {
@@ -465,10 +465,10 @@ describe( 'EditorWatchdog', () => {
 				} );
 			} );
 
-			const newTrackChanges = watchdog.editor.plugins.get( 'TrackChanges' );
+			const restoredSuggestions = watchdog.editor.plugins.get( 'TrackChanges' ).getSuggestions();
 
-			expect( newTrackChanges.getSuggestions().length ).to.equal( 1 );
-			expect( newTrackChanges.getSuggestions()[ 0 ] ).to.deep.equal( suggestionData );
+			expect( restoredSuggestions.length ).to.equal( 1 );
+			expect( restoredSuggestions[ 0 ] ).to.deep.equal( suggestionData );
 		} );
 
 		it( 'should support comment data created by another plugins', async () => {
