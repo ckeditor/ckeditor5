@@ -34,7 +34,7 @@ ClassicEditor // Editor type declaration.
 
 ## Classic editor
 
-Classic editor is what most users traditionally learnt to associate with a rich-text editor &ndash; a toolbar with an editing area placed in a specific position on the page, usually as a part of a form that you use to submit some content to the server.
+Classic editor is what most users traditionally learned to associate with a rich-text editor &ndash; a toolbar with an editing area placed in a specific position on the page, usually as a part of a form that you use to submit some content to the server.
 
 {@img assets/img/editor-type-classic.png 800 Classic editor type.}
 
