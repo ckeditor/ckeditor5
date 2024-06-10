@@ -8,7 +8,7 @@ modified_at: 2024-06-06
 ---
 # Editor types
 
-The editor's user interface is mostly dependent on the editor types. Functionality of the editor is provided by specialized features, accessible via a configurable toolbar or keyboard shortcuts. Some of these features are only available with certain editor types.
+The editor's user interface is dependent on the editor types. The editor provides functionality through specialized features accessible via a configurable toolbar or keyboard shortcuts. Some of these features are only available with certain editor types.
 
 <info-box>
 	All of these elements can most easily be configured with [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs).
