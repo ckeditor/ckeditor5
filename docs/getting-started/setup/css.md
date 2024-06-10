@@ -85,7 +85,7 @@ There are two ways to obtain the content styles:
 * From the `npm` packages, in the `dist/ckeditor5-content.css` and `ckeditor5-premium-features-content.css` location.
 * From our CDN, `https://cdn.ckeditor.com/ckeditor5/`
 
-Below is an example with dummy paths showing how to load the `ckeditor5-content.css` (and `ckeditor5-premium-features-content.css`, if needed) file on the publishing side.
+Below is an example with placeholder paths showing how to load the `ckeditor5-content.css` (and `ckeditor5-premium-features-content.css`, if needed) file on the publishing side.
 
 ```html
 <link rel="stylesheet" href="path/to/assets/ckeditor5-content.css">
@@ -97,7 +97,7 @@ Below is an example with dummy paths showing how to load the `ckeditor5-content.
 <link rel="stylesheet" href="path/to/assets/styles.css">
 ```
 
-The final setup depends on how your application is structured. As mentioned earlier, you can use our CDN, or your JS bundler already creates and serves combined stylesheets. Choose the solution that works best for your case.
+The final setup depends on how your application is structured. As mentioned earlier, you can use our CDN, or your JS bundler already creates and serves combined style sheets. Choose the solution that works best for your case.
 
 <info-box warning>
 	**Important!**
@@ -113,7 +113,7 @@ The `ckeditor5` package distributes three style sheets:
 * `ckeditor5-content.css` &ndash; only content styles,
 * `ckeditor5-editor.css` &ndash; only editor styles.
 
-The same is true for `ckeditor5-premium-features` package, but the filenames are different:
+The same is true for the `ckeditor5-premium-features` package, but the filenames are different:
 
 * `ckeditor5-premium-features.css` &ndash; combined editor and content styles,
 * `ckeditor5-premium-features-content.css` &ndash; only content styles,
