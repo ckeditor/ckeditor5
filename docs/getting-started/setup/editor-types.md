@@ -42,7 +42,7 @@ See an {@link examples/builds/classic-editor example of the classic editor} in a
 
 ## Inline editor
 
-Inline editor comes with a floating toolbar that becomes visible when the editor is focused (for example, by clicking it). A common scenario for using inline editor is offering users the possibility to edit content (such as headings and other small areas) in its real location on a web page instead of doing it in a separate administration section.
+The inline editor comes with a floating toolbar that becomes visible when the editor is focused (for example, by clicking it). A common scenario for using the inline editor is offering users the possibility to edit content (such as headings and other small areas) in its real location on a web page instead of doing it in a separate administration section.
 
 {@img assets/img/editor-type-inline.png 800 Inline editor type.}
 
