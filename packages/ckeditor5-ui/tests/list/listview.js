@@ -53,6 +53,22 @@ describe( 'ListView', () => {
 		it( 'creates #_focusCycler instance', () => {
 			expect( view._focusCycler ).to.be.instanceOf( FocusCycler );
 		} );
+
+		it( 'allow to specify tag', () => {
+			const view = new ListView( null, 'ol' );
+
+			view.render();
+
+			expect( view.element.tagName ).to.equal( 'OL' );
+		} );
+
+		it( 'element with `ul` tag is created by default', () => {
+			const view = new ListView( null, 'ul' );
+
+			view.render();
+
+			expect( view.element.tagName ).to.equal( 'UL' );
+		} );
 	} );
 
 	describe( 'render()', () => {

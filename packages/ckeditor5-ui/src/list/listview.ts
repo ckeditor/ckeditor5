@@ -87,7 +87,7 @@ export default class ListView extends View<HTMLUListElement> implements Dropdown
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale?: Locale ) {
+	constructor( locale?: Locale, tag?: string ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
@@ -115,7 +115,7 @@ export default class ListView extends View<HTMLUListElement> implements Dropdown
 		this.set( 'role', undefined );
 
 		this.setTemplate( {
-			tag: 'ul',
+			tag: tag || 'ul',
 
 			attributes: {
 				class: [
