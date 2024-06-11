@@ -7,7 +7,7 @@ modified_at: 2023-02-06
 # Integrating from source using Vite
 
 <info-box warning>
-	⚠️  This is a legacy guide kept for users' convenience. If you are looking for current CKEditor 5 installation instructions, please refer to the newest version of the {@link getting-started/quick-start CKEditor&nbsp;5 Quick Start} guide. <!-- Refer to migration guide -->
+	⚠️  This is a legacy guide kept for users' convenience. If you want to learn more about these changes, please refer to the {@link updating/nim-migration/migration-to-new-installation-methods Migrating to new installation methods} guide.
 </info-box>
 
 This scenario allows you to fully control the building process of CKEditor&nbsp;5. This means that you will not actually use the builds anymore, but instead build CKEditor from source directly into your project. This integration method gives you full control over which features will be included and how Vite will be configured.
