@@ -46,7 +46,7 @@ The inline editor comes with a floating toolbar that becomes visible when the ed
 
 {@img assets/img/editor-type-inline.png 800 Inline editor type.}
 
-See an {@link examples/builds/inline-editor example of the classic editor} in action.
+See an {@link examples/builds/inline-editor example of the inline editor} in action.
 
 ## Balloon editor and balloon block editor
 
@@ -54,13 +54,13 @@ Balloon editor is similar to inline editor. The difference between them is that 
 
 {@img assets/img/editor-type-balloon.png 800 Balloon editor type.}
 
-See an {@link examples/builds/balloon-editor example of the classic editor} in action.
+See an {@link examples/builds/balloon-editor example of the balloon editor} in action.
 
 Balloon block is essentially the balloon editor with an extra block toolbar, which can be accessed using the button attached to the editable content area and following the selection in the document. The toolbar gives access to additional block–level editing features.
 
 {@img assets/img/editor-type-balloon-block.png 800 Balloon block editor type.}
 
-See an {@link examples/builds/balloon-block-editor example of the classic editor} in action.
+See an {@link examples/builds/balloon-block-editor example of the balloon block editor} in action.
 
 ## Decoupled editor (document)
 
@@ -68,7 +68,7 @@ The document editor focuses on a rich-text editing experience similar to large e
 
 {@img assets/img/editor-type-document.png 800 Document editor type.}
 
-See an {@link examples/builds/document-editor example of the classic editor} in action.
+See an {@link examples/builds/document-editor example of the document editor} in action.
 
 ## Multi-root editor
 
