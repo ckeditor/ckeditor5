@@ -10,10 +10,6 @@ modified_at: 2023-02-06
 	⚠️  This is a legacy guide kept for users' convenience. If you are looking for current CKEditor 5 installation instructions, please refer to the newest version of the {@link getting-started/quick-start CKEditor&nbsp;5 Quick Start} guide. <!-- Refer to migration guide -->
 </info-box>
 
-<info-box>
-	Before you move on, remember that CKEditor&nbsp;5 integration with Vite is still in the experimental phase. Most features available with webpack are available with Vite, but not all. Vite does not produce translation files, so you are limited to one language &ndash; English. Similarly, it does not build DLL-compatible files. You cannot create a DLL plugin like our package generator. Also, Vite process styles with other application styles. It causes an issue with Export to Word/PDF where styles are not automatically collected.
-</info-box>
-
 This scenario allows you to fully control the building process of CKEditor&nbsp;5. This means that you will not actually use the builds anymore, but instead build CKEditor from source directly into your project. This integration method gives you full control over which features will be included and how Vite will be configured.
 
 ## Scaffolding Vite project

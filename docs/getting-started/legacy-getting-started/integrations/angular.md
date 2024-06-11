@@ -23,14 +23,6 @@ CKEditor&nbsp;5 consists of the {@link getting-started/legacy-getting-started/pr
 
 Currently, the CKEditor&nbsp;5 component for Angular supports integrating CKEditor&nbsp;5 only via builds. Integrating {@link getting-started/advanced/integrating-from-source-webpack CKEditor&nbsp;5 built from source} is not possible yet due to the lack of ability to [adjust webpack configuration in `angular-cli`](https://github.com/angular/angular-cli/issues/10618).
 
-<info-box>
-	While there is no support to integrate CKEditor&nbsp;5 from source yet, you can still {@link getting-started/legacy-getting-started/quick-start-other#customizing-builds create a custom build of CKEditor&nbsp;5} and include it in your Angular application.
-</info-box>
-
-<info-box hint>
-	Starting from version 6.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link getting-started/setup/typescript-support TypeScript support}.
-</info-box>
-
 ## Supported Angular versions
 
 Because of the breaking changes in the Angular library output format, the `@ckeditor/ckeditor5-angular` package is released in the following versions to support various Angular ecosystems:

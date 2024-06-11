@@ -19,10 +19,6 @@ order: 50
 	</a>
 </p>
 
-<info-box>
-	**Important**: This guide is about the CKEditor&nbsp;5 integration with Vue.js 3+. To learn more about the integration with Vue.js 2.x, check out the {@link getting-started/integrations/vuejs-v2 "Rich text editor component for Vue.js 2.x"} guide.
-</info-box>
-
 CKEditor&nbsp;5 consists of the {@link getting-started/legacy-getting-started/predefined-builds ready-to-use editor builds} and the {@link framework/index CKEditor&nbsp;5 Framework} upon which the builds are based.
 
 The easiest way to use CKEditor&nbsp;5 in your Vue.js application is by choosing one of the {@link getting-started/legacy-getting-started/predefined-builds#available-builds rich text editor builds} and simply passing it to the configuration of the Vue.js component. Read more about this solution in the [Quick start](#quick-start) section of this guide.
