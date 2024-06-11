@@ -8,17 +8,17 @@ order: 10
 
 # Getting and setting data
 
-CKEditor&nbsp;5 allows you to retrieve the data from and save it to your server (or to your system in general) in various ways. In this guide, you can learn about the available options along with their pros and cons.
+In CKEditor&nbsp;5 there are several ways to load and save data. In this guide, you can learn about the available options and their advantages and disadvantages.
 
 ## Autosaving
 
-One of the best ways to enhance the user experience in saving editor data is by providing an autosave functionality. This ensures users do not need to remember to save their data, and it prevents your system from being flooded with save events since the save action will be debounced.
+One of the best ways to improve the user experience is to automatically save editor data as it changes. This ensures that users do not have to remember to save their data and prevents work loss.
 
 We provide and autosave feature that automatically saves the data (for example sends it to the server) when needed. Please refer to the {@link features/autosave Autosave} guide for details.
 
 ## Initializing the editor with data
 
-By default, the editor is initialized with the content of the element on which it is initialized:
+By default, the editor has the content of the DOM element on which it was initialized on.
 
 ```html
 <div id="editor">
@@ -27,7 +27,7 @@ By default, the editor is initialized with the content of the element on which i
 </div>
 ```
 
-If you have the data in the JavaScript layer or cannot alter the HTML, the editor’s API provides the `initialData` configuration property. This allows you to provide the content during the initialization of the editor:
+However, if you cannot alter the HTML or you load the data asynchronously using JavaScript, you can use the `initialData` configuration property to set the initial state of the editor.
 
 ```js
 ClassicEditor
@@ -46,7 +46,7 @@ If you are setting up the editor with integrations like {@link getting-started/i
 
 ## Getting the editor data with `getData()`
 
-If the editor content needs to be retrieved on demand for any reason, such as for sending it to the server through an Ajax call, use the `getData()` method:
+You can use the `getData()` method, if you need to get the editor content on demand, such as for sending it to the server using JavaScript APIs.
 
 ```js
 const data = editor.getData();
