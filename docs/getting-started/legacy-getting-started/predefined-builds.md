@@ -9,7 +9,7 @@ modified_at: 2022-07-12
 # Predefined CKEditor&nbsp;5 builds
 
 <info-box warning>
-	⚠️  This is a legacy guide kept for users' convenience. If you want to learn more about these changes, please refer to the {@link updating/nim-migration/migration-to-new-installation-methods Migrating to new installation methods} guide.
+	⚠️  This is a legacy guide kept for users' convenience. If you want to learn more about these changes, please refer to the {@link updating/nim-migration/predefined builds Migrating from predefined builds} guide.
 </info-box>
 
 ## Overview

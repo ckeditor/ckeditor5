@@ -9,7 +9,7 @@ modified_at: 2022-02-21
 # CKEditor 5 DLL builds for CKEditor 5 Collaboration Features
 
 <info-box warning>
-	⚠️  This is a legacy guide kept for users' convenience after the introduction of {@link updating/nim-migration/migration-to-new-installation-methods new installation methods}. If you want to learn more about these changes, please refer to the {@link updating/nim-migration/migration-to-new-installation-methods Migrating to new installation methods} guide.
+	⚠️  This is a legacy guide kept for users' convenience after the introduction of {@link updating/nim-migration/migration-to-new-installation-methods new installation methods}. If you want to learn more about these changes, please refer to the {@link updating/nim-migration/dll-builds Migrating from DLL builds} guide.
 </info-box>
 
 This guide discusses using a DLL build together with CKEditor&nbsp;5 Collaboration Features and is supplemental to the {@link getting-started/advanced/dll-builds CKEditor&nbsp;5 DLL builds guide}. Make sure to read the {@link getting-started/advanced/dll-builds base guide} first before proceeding.
