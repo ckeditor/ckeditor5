@@ -7,7 +7,7 @@ modified_at: 2023-02-06
 # Integrating from source using Vite
 
 <info-box warning>
-	⚠️  This is a legacy guide kept for users' convenience. If you are looking for current CKEditor 5 installation instructions, please refer to the newest version of the {@link getting-started/quick-start CKEditor 5 Quick Start} guide.
+	⚠️  This is a legacy guide kept for users' convenience. If you are looking for current CKEditor 5 installation instructions, please refer to the newest version of the {@link getting-started/quick-start CKEditor&nbsp;5 Quick Start} guide. <!-- Refer to migration guide -->
 </info-box>
 
 <info-box>
