@@ -7,7 +7,7 @@ order: 90
 # Extending features
 
 <info-box warning>
-	This is a legacy guide kept for users' convenience. If you are looking for current CKEditor 5 installation instructions, please refer to the newest version of the {@link getting-started/quick-start CKEditor 5 Quick Start} guide.
+	⚠️  This is a legacy guide kept for users' convenience. If you are looking for current CKEditor 5 installation instructions, please refer to the newest version of the {@link getting-started/quick-start CKEditor 5 Quick Start} guide.
 </info-box>
 
 The editor has a lot of ready-made features. However, there is always room for more! You can make use of the API exposed by the editor and its plugins, and extend the editor using the {@link module:core/plugin~PluginInterface plugin interface} like this:

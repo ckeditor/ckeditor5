@@ -10,7 +10,7 @@ order: 20
 # Angular rich text editor component
 
 <info-box warning>
-	This is a legacy guide kept for users' convenience. If you are looking for current CKEditor 5 Angular integration, please refer to the newest version of the {@link getting-started/integrations/angular CKEditor 5 integration} guide.
+	⚠️  This is a legacy guide kept for users' convenience. If you are looking for current CKEditor 5 Angular integration, please refer to the newest version of the {@link getting-started/integrations/angular CKEditor 5 integration} guide.
 </info-box>
 
 <p>
