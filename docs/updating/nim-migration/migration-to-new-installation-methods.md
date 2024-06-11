@@ -179,19 +179,19 @@ The setups we presented above are what you should aim for when migrating your pr
 
 ### Feature comparison
 
-Here's a visual comparison of the features available in the new and old installation methods:
+Here's a visual comparison of the features available in the new npm and CDN builds and the old installation methods:
 
-| Feature                                       | npm build | CDN build | Predefined builds | Custom build | DLL builds |
-|-----------------------------------------------|-----------|-----------|-------------------|--------------|------------|
-| No build step                                 | 🟥        | 🟩        | 🟩                | 🟥           | 🟩         |
-| Works with any bundler or metaframework       | 🟩        | 🟥        | 🟥                | 🟥           | 🟥         |
-| Plugin customization                          | 🟩        | 🟩        | 🟥                | 🟩           | 🟩         |
-| Style customization                           | 🟩        | 🟩        | 🟥                | 🟨           | 🟥         |
-| Icon customization                            | 🟥 \[1\]  | 🟥 \[1\]  | 🟥                | 🟩           | 🟥         |
-| Doesn't rely on global state                  | 🟩        | 🟩        | 🟥                | 🟥           | 🟥         |
-| Provides editor- and content-only stylesheets | 🟩        | 🟩        | 🟥                | 🟥           | 🟥         |
-| CSS separate from JavaScript                  | 🟩        | 🟩        | 🟥                | 🟨           | 🟥         |
-| Can be optimized to reduce bundle size        | 🟩        | 🟥        | 🟥                | 🟩           | 🟩         |
+| Feature                                       | npm build | CDN build | Predefined builds | Custom builds | DLL builds |
+|-----------------------------------------------|-----------|-----------|-------------------|---------------|------------|
+| No build step                                 | 🟥        | 🟩        | 🟩                | 🟥            | 🟩         |
+| Works with any bundler or metaframework       | 🟩        | 🟥        | 🟥                | 🟥            | 🟥         |
+| Plugin customization                          | 🟩        | 🟩        | 🟥                | 🟩            | 🟩         |
+| Style customization                           | 🟩        | 🟩        | 🟥                | 🟨            | 🟥         |
+| Icon customization                            | 🟥 \[1\]  | 🟥 \[1\]  | 🟥                | 🟩            | 🟥         |
+| Doesn't rely on global state                  | 🟩        | 🟩        | 🟥                | 🟥            | 🟥         |
+| Provides editor- and content-only stylesheets | 🟩        | 🟩        | 🟥                | 🟥            | 🟥         |
+| CSS separate from JavaScript                  | 🟩        | 🟩        | 🟥                | 🟨            | 🟥         |
+| Can be optimized to reduce bundle size        | 🟩        | 🟥        | 🟥                | 🟩            | 🟩         |
 
 1. Support for customizing icons is planned for future releases. See this [GitHub issue](https://github.com/ckeditor/ckeditor5/issues/16546) for more information.
 
