@@ -55,4 +55,4 @@ msgstr "移動插入符號，以便在小工具後直接輸入"
 
 msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that moves selection from a nested editable area back to the parent widget."
 msgid "Move focus from an editable area back to the parent widget"
-msgstr ""
+msgstr "將焦點從可編輯區域移回上層小工具"
