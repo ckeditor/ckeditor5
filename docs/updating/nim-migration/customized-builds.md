@@ -36,7 +36,7 @@ If you are using the customized build, follow the steps below:
 3. (Optional) If you are using premium features from our commercial offer, you should also install the `ckeditor5-premium-features` package.
 
 	```bash
-	npm install ckeditor5-premium-feature
+	npm install ckeditor5-premium-features
 	```
 
 4. Open the file where you initialized the editor. Then, replace the import statements to import the editor and all the open-source plugins from the `ckeditor5` package and the commercial plugins from the `ckeditor5-premium-features` package only.
