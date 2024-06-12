@@ -278,7 +278,39 @@ Here is a visual comparison of the features available in the new npm and CDN bui
 
 ## Sunset of old installation methods and deprecation timelines
 
-//TODO
+With the release of version 42.0.0, we have decided to deprecate older methods of setting up CKEditor&nbsp;5. The new experience introduced in v42.0.0 is far superior to previous versions.
+
+However, we understand that migrating to a new setup, even when easy, requires planning and work allocation. We would rather not block anyone from receiving bug fixes and improvements due to a blocked update path. Therefore, we will support all existing methods according to the timelines below.
+
+### Deprecation of predefined builds and custom builds
+
+The setup methods, which were “webpack-first” or provided predefined editors without the possibility of extending them.
+
+Supported until **end of Q1 (March), 2025**.
+
+What will we sunset on this date:
+
+1. The documentation for predefined builds, superbuild, and custom builds will be removed.
+2. New versions of predefined builds packages will not be published to npm.
+3. New versions of npm packages published after this date won’t have the `src` directory. It won’t be possible to import files from those destinations, `dist` will become the main folder.
+4. Deprecation of `@ckeditor/ckeditor5-dev-translations` package, as it won’t be needed anymore.
+5. We will update our environment to target ES2022 or newer, thus dropping the support for webpack 4.
+
+### Deprecation of DLLs
+
+This is an advanced setup method that we provided, that was used to dynamically create the editor, and its config on the browsers side. As this will be provided out-of-the-box with our browser builds, this method will also be deprecated. As DLLs are used in complex CMSes, the timeline is significantly longer.
+
+Supported until **end of 2025**.
+
+What will we sunset on this date:
+
+1. The documentation for DLLs will be removed.
+2. New versions of npm packages published after this date won’t have `build` directory. It won’t be possible to import files from those destinations.
+
+<info-box>
+	If any of the points or plans above worries you, reach out to our support or inform us via the [GitHub issue tracker](https://github.com/ckeditor/ckeditor5/issues/new?assignees=&labels=type:question&projects=&template=8-question.md&title=). We are open to discussing the timelines, or potential cases that you would need us to support.
+</info-box>
+
 
 ## Migrating from the old installation methods
 
