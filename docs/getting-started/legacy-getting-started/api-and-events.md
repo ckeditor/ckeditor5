@@ -7,7 +7,7 @@ order: 80
 # API and events
 
 <info-box warning>
-	 ⚠️ This is a legacy guide kept for users' convenience. If you want to learn more about these changes, please refer to the {@link updating/nim-migration/migration-to-new-installation-methods Migrating to new installation methods} guide.
+	 ⚠️ We changed installation methods, and this legacy guide is kept for users' convenience.If you want to learn more about these changes, please refer to the {@link updating/nim-migration/migration-to-new-installation-methods Migrating to new installation methods} guide.
 </info-box>
 
 CKEditor 5 API allows developers to interact with the editor and its plugins to create new behaviors. Through the event system, you can tailor reactions to specific actions that are happening.

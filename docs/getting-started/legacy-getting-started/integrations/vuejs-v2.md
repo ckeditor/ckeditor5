@@ -10,7 +10,7 @@ order: 40
 # Vue.js 2.x rich text editor component
 
 <info-box warning>
-	⚠️  This is a legacy guide kept for users' convenience. If you are looking for current CKEditor 5 Vue 2 integration, please refer to the newest version of the {@link getting-started/integrations/vuejs-v2 CKEditor&nbsp;5 integration} guide.
+	⚠️  We changed installation methods, and this legacy guide is kept for users' convenience.If you are looking for current CKEditor 5 Vue 2 integration, please refer to the newest version of the {@link getting-started/integrations/vuejs-v2 CKEditor&nbsp;5 integration} guide.
 </info-box>
 
 <p>
