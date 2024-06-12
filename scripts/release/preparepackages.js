@@ -26,7 +26,7 @@ const updatePackageEntryPoint = require( './utils/updatepackageentrypoint' );
 const prepareDllBuildsCallback = require( './utils/preparedllbuildscallback' );
 const buildCKEditor5BuildsCallback = require( './utils/buildckeditor5buildscallback' );
 const getListrOptions = require( './utils/getlistroptions' );
-const { PACKAGES_DIRECTORY, RELEASE_DIRECTORY } = require( './utils/constants' );
+const { PACKAGES_DIRECTORY, RELEASE_DIRECTORY, RELEASE_CDN_DIRECTORY, RELEASE_ZIP_DIRECTORY } = require( './utils/constants' );
 
 const cliArguments = parseArguments( process.argv.slice( 2 ) );
 
@@ -198,19 +198,20 @@ const tasks = new Listr( [
 				{
 					title: 'Preparing CDN files.',
 					task: async () => {
-						await fs.copy( './dist/browser', './release_cdn/' );
-						await fs.copy( './dist/translations', './release_cdn/translations/' );
-						await fs.copy( './dist/browser', './release_zip/ckeditor5/' );
-						await fs.copy( './dist/translations', './release_zip/ckeditor5/translations/' );
-						await fs.copy( './scripts/assets/zip', './release_zip/' );
+						await fs.copy( './dist/browser', `./${ RELEASE_CDN_DIRECTORY }/` );
+						await fs.copy( './dist/translations', `./${ RELEASE_CDN_DIRECTORY }/translations/` );
+						await fs.copy( './dist/browser', `./${ RELEASE_ZIP_DIRECTORY }/ckeditor5/` );
+						await fs.copy( './dist/translations', `./${ RELEASE_ZIP_DIRECTORY }/ckeditor5/translations/` );
+						await fs.copy( './scripts/assets/zip', `./${ RELEASE_ZIP_DIRECTORY }/` );
 
-						await fs.ensureDir( './release_cdn/zip' );
+						await fs.ensureDir( `./${ RELEASE_CDN_DIRECTORY }/zip` );
 						await tools.shExec(
-							`cd release_zip && zip -r ../release_cdn/zip/ckeditor5-${ latestVersion }.zip ./*`,
+							`cd ${ RELEASE_ZIP_DIRECTORY } \
+							&& zip -r ../${ RELEASE_CDN_DIRECTORY }/zip/ckeditor5-${ latestVersion }.zip ./*`,
 							{ verbosity: 'error' }
 						);
 
-						await fs.copy( './build', './release_cdn/dll/ckeditor5-dll/' );
+						await fs.copy( './build', `./${ RELEASE_CDN_DIRECTORY }/dll/ckeditor5-dll/` );
 					}
 				}
 			], taskOptions );

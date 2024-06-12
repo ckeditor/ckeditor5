@@ -13,6 +13,10 @@ const PACKAGES_DIRECTORY = 'packages';
 
 const RELEASE_DIRECTORY = 'release';
 
+const RELEASE_CDN_DIRECTORY = 'release-cdn';
+
+const RELEASE_ZIP_DIRECTORY = 'release-zip';
+
 const CKEDITOR5_ROOT_PATH = upath.join( __dirname, '..', '..', '..' );
 
 const CKEDITOR5_COMMERCIAL_PATH = upath.resolve( CKEDITOR5_ROOT_PATH, 'external', 'ckeditor5-commercial' );
@@ -30,6 +34,8 @@ const CDN_S3_BUCKET = 'ckeditor-cdn-prod-files';
 module.exports = {
 	PACKAGES_DIRECTORY,
 	RELEASE_DIRECTORY,
+	RELEASE_CDN_DIRECTORY,
+	RELEASE_ZIP_DIRECTORY,
 	CKEDITOR5_ROOT_PATH,
 	CKEDITOR5_COMMERCIAL_PATH,
 	CKEDITOR5_INDEX,

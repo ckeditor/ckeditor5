@@ -28,8 +28,8 @@ mrgit.json
 
 # Prepared files to publish to npm and cdn.
 /release/
-/release_zip/
-/release_cdn/
+/release-zip/
+/release-cdn/
 *.zip
 
 # Ignore yalc
