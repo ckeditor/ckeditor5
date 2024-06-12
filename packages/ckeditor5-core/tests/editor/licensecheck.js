@@ -6,6 +6,7 @@
 /* globals window, console, Response, globalThis, btoa */
 
 import { releaseDate, crc32 } from '@ckeditor/ckeditor5-utils';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 import Editor from '../../src/editor/editor.js';
 import testUtils from '../../tests/_utils/utils.js';
 
@@ -186,19 +187,21 @@ describe( 'Editor - license check', () => {
 			} );
 
 			describe( 'GPL license', () => {
-				it( 'should block if disctribution channel is cloud', () => {
+				it( 'should block if distribution channel is cloud', () => {
 					setChannel( 'cloud' );
 
-					const editor = new TestEditor( {} );
+					const licenseKey = 'GPL';
+					const editor = new TestEditor( { licenseKey } );
 
 					sinon.assert.calledWithMatch( showErrorStub, 'distributionChannel' );
 					expect( editor.isReadOnly ).to.be.true;
 				} );
 
-				it( 'should not block if disctribution channel is not cloud', () => {
+				it( 'should not block if distribution channel is not cloud', () => {
 					setChannel( 'xyz' );
 
-					const editor = new TestEditor( {} );
+					const licenseKey = 'GPL';
+					const editor = new TestEditor( { licenseKey } );
 
 					sinon.assert.notCalled( showErrorStub );
 					expect( editor.isReadOnly ).to.be.false;
@@ -208,6 +211,35 @@ describe( 'Editor - license check', () => {
 			function setChannel( channel ) {
 				window[ ' CKE_DISTRIBUTION' ] = channel;
 			}
+		} );
+
+		describe( 'GPL check', () => {
+			it( 'should not throw if license key is GPL', () => {
+				const licenseKey = 'GPL';
+
+				expect( () => {
+					// eslint-disable-next-line no-new
+					new TestEditor( { licenseKey } );
+				} ).to.not.throw();
+			} );
+
+			it( 'should not throw if license key is missing (CKEditor testing environment)', () => {
+				expect( () => {
+					// eslint-disable-next-line no-new
+					new TestEditor( {} );
+				} ).to.not.throw();
+			} );
+
+			it( 'should throw if license key is missing (outside of CKEditor testing environment)', () => {
+				window.CKEDITOR_GLOBAL_LICENSE_KEY = undefined;
+
+				expect( () => {
+					// eslint-disable-next-line no-new
+					new TestEditor( {} );
+				} ).to.throw( CKEditorError, 'editor-license-key-missing' );
+
+				window.CKEDITOR_GLOBAL_LICENSE_KEY = 'GPL';
+			} );
 		} );
 
 		describe( 'trial check', () => {

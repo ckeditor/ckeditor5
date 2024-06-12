@@ -42,6 +42,11 @@ import Accessibility from '../accessibility.js';
 import type { LoadedPlugins, PluginConstructor } from '../plugin.js';
 import type { EditorConfig } from './editorconfig.js';
 
+declare global {
+	// eslint-disable-next-line no-var
+	var CKEDITOR_GLOBAL_LICENSE_KEY: string;
+}
+
 /**
  * The class representing a basic, generic editor.
  *
@@ -307,6 +312,8 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 		this.config.define( 'plugins', availablePlugins );
 		this.config.define( this._context._getEditorConfig() );
 
+		checkLicenseKeyIsDefined( this.config );
+
 		this.plugins = new PluginCollection<Editor>( this, availablePlugins, this._context.plugins );
 
 		this.locale = this._context.locale;
@@ -343,6 +350,24 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 		this.keystrokes.listenTo( this.editing.view.document );
 
 		this.accessibility = new Accessibility( this );
+
+		// Checks if the license key is defined and throws an error if it is not.
+		function checkLicenseKeyIsDefined( config: Config<EditorConfig> ) {
+			let licenseKey = config.get( 'licenseKey' );
+
+			if ( !licenseKey && window.CKEDITOR_GLOBAL_LICENSE_KEY ) {
+				config.set( 'licenseKey', licenseKey = window.CKEDITOR_GLOBAL_LICENSE_KEY );
+			}
+
+			if ( !licenseKey ) {
+				/**
+				 * The license key is missing.
+				 *
+				 * @error editor-license-key-missing
+				 */
+				throw new CKEditorError( 'editor-license-key-missing' );
+			}
+		}
 	}
 
 	/**
@@ -665,12 +690,10 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	 * @internal
 	 */
 	private _verifyLicenseKey() {
-		const licenseKey = this.config.get( 'licenseKey' );
+		const licenseKey = this.config.get( 'licenseKey' )!;
 		const distributionChannel = ( window as any )[ ' CKE_DISTRIBUTION' ] || 'sh';
 
-		if ( !licenseKey ) {
-			// TODO: For now, we don't block the editor if a licence key is not provided. GPL is assumed.
-
+		if ( licenseKey == 'GPL' ) {
 			if ( distributionChannel == 'cloud' ) {
 				blockEditor( this, 'distributionChannel' );
 			}

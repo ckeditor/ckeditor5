@@ -83,6 +83,20 @@ describe( 'PoweredBy', () => {
 				expect( editor.ui.poweredBy._balloonView ).to.be.instanceOf( BalloonPanelView );
 			} );
 
+			it( 'should create the balloon when license is `GPL`', async () => {
+				const editor = await createEditor( element, {
+					licenseKey: 'GPL'
+				} );
+
+				expect( editor.ui.poweredBy._balloonView ).to.be.null;
+
+				focusEditor( editor );
+
+				expect( editor.ui.poweredBy._balloonView ).to.be.instanceOf( BalloonPanelView );
+
+				await editor.destroy();
+			} );
+
 			it( 'should not create the balloon when a white-label license key is configured', async () => {
 				const editor = await createEditor( element, {
 					licenseKey: 'foo.eyJ3aGl0ZUxhYmVsIjp0cnVlLCJleHAiOjIyMDg5ODg4MDB9.bar'
