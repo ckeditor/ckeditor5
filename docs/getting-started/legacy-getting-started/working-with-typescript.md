@@ -13,7 +13,7 @@ modified_at: 2023-04-03
 # TypeScript support in CKEditor&nbsp;5
 
 <info-box warning>
-	⚠️  We changed installation methods, and this legacy guide is kept for users' convenience.If you are looking for current CKEditor 5 installation instructions, please refer to the newest version of the {@link getting-started/setup/typescript-support TypeScript support in CKEditor 5} guide.
+	⚠️  We changed installation methods and this legacy guide is kept for users' convenience.If you are looking for current CKEditor 5 installation instructions, please refer to the newest version of the {@link getting-started/setup/typescript-support TypeScript support in CKEditor 5} guide.
 </info-box>
 
 CKEditor&nbsp;5 is built using TypeScript and has native type definitions. All the official packages and builds distributed using NPM and CDN contain type definitions. Custom builds produced by the **online builder** and **DLL** versions of packages provided by CKEditor&nbsp;5 do not provide built-in types yet.

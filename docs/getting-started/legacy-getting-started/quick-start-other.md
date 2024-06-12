@@ -8,7 +8,7 @@ modified_at: 2022-03-15
 # Customized installation
 
 <info-box warning>
-	⚠️  We changed installation methods, and this legacy guide is kept for users' convenience.If you want to learn more about these changes, please refer to the {@link updating/nim-migration/customized-builds Migrating from customized builds} guide.
+	⚠️  We changed installation methods and this legacy guide is kept for users' convenience.If you want to learn more about these changes, please refer to the {@link updating/nim-migration/customized-builds Migrating from customized builds} guide.
 </info-box>
 
 ## Introduction
