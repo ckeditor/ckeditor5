@@ -21,6 +21,12 @@ See the demo of the placeholder feature:
 
 ## Installation
 
+<info-box info>
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in legacy setup} guide if you use an older version of CKEditor&nbsp;5.
+</info-box>
+
 The editor placeholder feature does not require a separate plugin installation. It does, however, require configuring the editor before use. There are two different ways of configuring the editor placeholder text:
 
 ### Using the `placeholder` attribute of a textarea
