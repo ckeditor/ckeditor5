@@ -25,7 +25,7 @@ Before you start, follow the usual upgrade path to update your project to use th
 
 If you are using predefined builds from npm, follow the steps below:
 
-1. Start by uninstalling the old build package. It can be identified by the `@ckeditor/ckeditor5-build-` prefix. For example, if you were using the `@ckeditor/ckeditor5-build-classic` package, you should uninstall it with the right command from the ones listed here:
+1. Start by uninstalling the old build package. It can be identified by the `@ckeditor/ckeditor5-build-` prefix. For example, if you were using the `@ckeditor/ckeditor5-build-classic` package, you should uninstall it. Below is the command to uninstall all predefined builds.
 
 	```bash
 	npm uninstall \

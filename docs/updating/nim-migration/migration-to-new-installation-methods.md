@@ -254,7 +254,7 @@ Here is a visual comparison of the features available in the new npm and CDN bui
 			<td>❌</td>
 		</tr>
 		<tr>
-			<td>CSS separate from JavaScript</td>
+			<td>Style sheets separate from JavaScript</td>
 			<td>✅</td>
 			<td>✅</td>
 			<td>❌</td>
@@ -293,5 +293,11 @@ After you have updated your custom plugins, you can proceed with migrating your 
 * {@link updating/nim-migration/predefined-builds Migrating from predefined builds}
 * {@link updating/nim-migration/customized-builds Migrating from customized builds}
 * {@link updating/nim-migration/dll-builds Migrating from DLL builds}
+
+Finally, if you use our React, Vue or Angular integrations, you also need to update them:
+
+* Update the `@ckeditor/ckeditor5-react` package to version `^8.0.0`. Please refer to the [package's changelog](https://github.com/ckeditor/ckeditor5-react/blob/master/CHANGELOG.md), because of the minor breaking change introduced in this version.
+* Update the `@ckeditor/ckeditor5-vue` package to version `^6.0.0`.
+* Update the `@ckeditor/ckeditor5-angular` package to version `^8.0.0`.
 
 If you encounter any issues during the migration process, please refer to this [GitHub issue containing common errors](https://github.com/ckeditor/ckeditor5/issues/16511). If your issue is not listed there, feel free to open a new issue in our [GitHub repository](https://github.com/ckeditor/ckeditor5/issues/new/choose).
