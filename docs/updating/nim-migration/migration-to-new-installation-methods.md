@@ -181,19 +181,100 @@ The setups we presented above are what you should aim for when migrating your pr
 
 Here is a visual comparison of the features available in the new npm and CDN builds and the old installation methods:
 
-| Feature                                        | npm build | CDN build | Predefined builds | Custom builds | DLL builds |
-|------------------------------------------------|-----------|-----------|-------------------|---------------|------------|
-| No build step                                  | ❌        | ✅        | ✅                | ❌            | ✅         |
-| Works with any bundler or meta-framework       | ✅        | ❌        | ❌                | ❌            | ❌         |
-| Plugin customization                           | ✅        | ✅        | ❌                | ✅            | ✅         |
-| Style customization                            | ✅        | ✅        | ❌                | ⚠            | ❌         |
-| Icon customization                             | ❌ \[1\]  | ❌ \[1\]  | ❌                | ✅            | ❌         |
-| Does not rely on global state                  | ✅        | ✅        | ❌                | ❌            | ❌         |
-| Provides editor- and content-only style sheets | ✅        | ✅        | ❌                | ❌            | ❌         |
-| CSS separate from JavaScript                   | ✅        | ✅        | ❌                | ⚠            | ❌         |
-| Can be optimized to reduce bundle size         | ✅        | ❌        | ❌                | ✅            | ✅         |
+<table>
+	<thead>
+		<tr>
+			<th rowspan="2" style="text-align: center; vertical-align: middle;">Installation methods</th>
+			<th colspan="2">New methods</th>
+			<th colspan="3">Legacy methods</th>
+		</tr>
+		<tr>
+			<th>npm</th>
+			<th>CDN</th>
+			<th>Predefined</th>
+			<th>Custom</th>
+			<th>DLL</th>
+		</tr>
+	</thead>
+	<tbody style="text-align: center; vertical-align: middle;">
+		<tr>
+			<td>No build step</td>
+			<td>❌</td>
+			<td>✅</td>
+			<td>✅</td>
+			<td>❌</td>
+			<td>✅</td>
+		</tr>
+		<tr>
+			<td>Works with any bundler or metaframework</td>
+			<td>✅</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
+		</tr>
+		<tr>
+			<td>Plugin customization</td>
+			<td>✅</td>
+			<td>✅</td>
+			<td>❌</td>
+			<td>✅</td>
+			<td>✅</td>
+		</tr>
+		<tr>
+			<td>Style customization</td>
+			<td>✅</td>
+			<td>✅</td>
+			<td>❌</td>
+			<td>⚠️ [2]</td>
+			<td>❌</td>
+		</tr>
+		<tr>
+			<td>Icon customization</td>
+			<td>⚠️ [1]</td>
+			<td>⚠️ [1]</td>
+			<td>❌</td>
+			<td>✅</td>
+			<td>❌</td>
+		</tr>
+		<tr>
+			<td>Does not rely on global state</td>
+			<td>✅</td>
+			<td>✅</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
+		</tr>
+		<tr>
+			<td>Provides editor- and content-only stylesheets</td>
+			<td>✅</td>
+			<td>✅</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
+		</tr>
+		<tr>
+			<td>CSS separate from JavaScript</td>
+			<td>✅</td>
+			<td>✅</td>
+			<td>❌</td>
+			<td>⚠️ [3]</td>
+			<td>❌</td>
+		</tr>
+		<tr>
+			<td>Can be optimized to reduce bundle size</td>
+			<td>✅</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>✅</td>
+			<td>✅</td>
+		</tr>
+	</tbody>
+</table>
 
 1. Support for customizing icons is planned for future releases. See this [GitHub issue](https://github.com/ckeditor/ckeditor5/issues/16546) for more information.
+2. Style customization is partially supported via webpack configuration.
+3. CSS can be separated from JavaScript using custom webpack configuration.
 
 ## Sunset of old installation methods and deprecation timelines
 
