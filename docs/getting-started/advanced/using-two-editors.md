@@ -6,7 +6,7 @@ order: 10
 # Using two different editors
 
 <info-box warning>
-	⚠️  We changed installation methods and this legacy guide is kept for users' convenience.If you want to learn more about these changes, please refer to the {@link updating/nim-migration/migration-to-new-installation-methods Migrating to new installation methods} guide.
+	⚠️  We changed installation methods and this legacy guide is kept for users' convenience. If you want to learn more about these changes, please refer to the {@link updating/nim-migration/migration-to-new-installation-methods Migrating to new installation methods} guide.
 </info-box>
 
 The ability to use two or more types of rich text editors on one page is a common requirement. For instance, you may want to use the classic editor next to a couple of inline editors.

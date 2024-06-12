@@ -11,7 +11,7 @@ modified_at: 2022-06-27
 # Quick start
 
 <info-box warning>
-	⚠️  We changed installation methods and this legacy guide is kept for users' convenience.If you are looking for current CKEditor 5 installation instructions, please refer to the newest version of the {@link getting-started/quick-start CKEditor&nbsp;5 Quick Start} guide.
+	⚠️  We changed installation methods and this legacy guide is kept for users' convenience. If you are looking for current CKEditor 5 installation instructions, please refer to the newest version of the {@link getting-started/quick-start CKEditor&nbsp;5 Quick Start} guide.
 </info-box>
 
 ## Introduction
