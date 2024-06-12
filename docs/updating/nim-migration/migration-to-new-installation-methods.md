@@ -97,7 +97,7 @@ It may seem strange to show the webpack configuration in an example of the old i
 
 ## New installation methods
 
-In the new installation methods we have reduced the number of possible paths to just two: **npm packages and browser builds**. Unlike before, both methods no longer require you to add dozens of individual packages or JavaScript bundles to get the editor up and running. Instead, you can import the editor and all our open source plugins from the `ckeditor5` package and the premium features from `ckeditor5-premium-feature`. You also need not to worry about webpack or Vite configurations, as the new installation methods are designed to work out-of-the-box with any modern bundler or JavaScript meta-framework.
+In the new installation methods we have reduced the number of possible paths to just two: **npm packages and browser builds**. Unlike before, both methods no longer require you to add dozens of individual packages or JavaScript bundles to get the editor up and running. Instead, you can import the editor and all our open source plugins from the `ckeditor5` package and the premium features from `ckeditor5-premium-features`. You also need not to worry about webpack or Vite configurations, as the new installation methods are designed to work out-of-the-box with any modern bundler or JavaScript meta-framework.
 
 ### npm packages
 
