@@ -33,7 +33,7 @@ If you are using the customized build, follow the steps below:
 	npm install ckeditor5
 	```
 
-3. (Optional) If you are using features from our commercial offer, you should also install the `ckeditor5-premium-feature` package.
+3. (Optional) If you are using premium features from our commercial offer, you should also install the `ckeditor5-premium-features` package.
 
 	```bash
 	npm install ckeditor5-premium-feature

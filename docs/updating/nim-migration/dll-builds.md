@@ -25,7 +25,7 @@ If you are using the DLL build, follow the steps below:
 
 1. Remove the `<script>` tags that load the CKEditor&nbsp;5 DLL builds from your project.
 
-2. Add `<link>` tags to include the editor's CSS files and the `<script type="importmap">` tag to map the package names to the build URLs.
+2. Add the `<link>` tags to include the editor's CSS files and the `<script type="importmap">` tag to map the package names to the build URLs.
 
 	2.1 If you only use the open-source editor:
 
@@ -42,7 +42,7 @@ If you are using the DLL build, follow the steps below:
 	</script>
 	```
 
-	2.2 If you use features from our commercial offer:
+	2.2 If you also use premium features from our commercial offer:
 
 	```html
 	<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
@@ -75,7 +75,7 @@ If you are using the DLL build, follow the steps below:
 	</script>
 	```
 
-	3.2 If you use features from our commercial offer:
+	3.2 If you also use premium features from our commercial offer:
 
 	```html
 	<script type="module">
@@ -92,7 +92,7 @@ If you are using the DLL build, follow the steps below:
 
 ## Example
 
-Below is the comparison before and after the migration.
+Below is the comparison of the editor configuration before and after the migration.
 
 <details>
 <summary>Before</summary>

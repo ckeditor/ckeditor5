@@ -9,7 +9,7 @@ modified_at: 2024-06-06
 
 # Migrating from predefined builds
 
-Until now, the predefined builds were the easiest way to get started with CKEditor&nbsp;5. They provided an out-of-the-box editor with a set of plugins and a default configuration. However, they had some limitations, such as the inability to customize the editor by adding or removing plugins.
+Before version 42.0.0, the predefined builds were the easiest way to get started with CKEditor&nbsp;5. They provided an out-of-the-box editor with a predefined set of plugins and a default configuration. However, they had limitations, such as the inability to customize the editor by adding or removing plugins.
 
 The new installation methods solve this problem. They allow you to fully customize the editor, whether you use npm packages or browser builds.
 
@@ -25,7 +25,7 @@ Before you start, follow the usual upgrade path to update your project to use th
 
 If you are using predefined builds from npm, follow the steps below:
 
-1. Start by uninstalling the old build package. It can be identified by the `@ckeditor/ckeditor5-build-` prefix. For example, if you were using the `@ckeditor/ckeditor5-build-classic` package, you should uninstall it.
+1. Start by uninstalling the old build package. It can be identified by the `@ckeditor/ckeditor5-build-` prefix. For example, if you were using the `@ckeditor/ckeditor5-build-classic` package, you should uninstall it with the right command from the ones listed here:
 
 	```bash
 	npm uninstall \
@@ -43,10 +43,10 @@ If you are using predefined builds from npm, follow the steps below:
 	npm install ckeditor5
 	```
 
-3. (Optional) If you are using features from our commercial offer, you should also install the `ckeditor5-premium-feature' package.
+3. (Optional) If you are using premium features from our commercial offer, you should also install the `ckeditor5-premium-features` package.
 
 	```bash
-	npm install ckeditor5-premium-feature
+	npm install ckeditor5-premium-features
 	```
 
 4. Open the file where you initialized the editor. Then replace the import statement and the initialization code depending on the build you are using.
@@ -802,7 +802,7 @@ One notable difference between the old and new CDN builds is that the former use
 	</script>
 	```
 
-	2.2 If you use features from our commercial offer:
+	2.2 If you also use premium features from our commercial offer:
 
 	```html
 	<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
@@ -1548,7 +1548,7 @@ One notable difference between the old and new CDN builds is that the former use
 	<summary>Superbuild</summary>
 
 	<info-box warning>
-		Please note that the snippet below does not include plugins for the {@link features/math-equations Math equations and chemical formulas} and {@link features/spelling-and-grammar-checking Spelling, grammar, and punctuation checking} features which were part of the old superbuild.
+		Please note that the snippet below does not include plugins for the {@link features/math-equations math equations and chemical formulas} and {@link features/spelling-and-grammar-checking spelling, grammar, and punctuation checking} features which were part of the old superbuild.
 
 		Please [contact us](https://ckeditor.com/contact/) if you require these features in the CDN distribution.
 	</info-box>
