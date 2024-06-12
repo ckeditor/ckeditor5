@@ -206,7 +206,7 @@ Here is a visual comparison of the features available in the new npm and CDN bui
 			<td>✅</td>
 		</tr>
 		<tr>
-			<td>Works with any bundler or metaframework</td>
+			<td>Works with any bundler or meta-framework</td>
 			<td>✅</td>
 			<td>❌</td>
 			<td>❌</td>
@@ -246,7 +246,7 @@ Here is a visual comparison of the features available in the new npm and CDN bui
 			<td>❌</td>
 		</tr>
 		<tr>
-			<td>Provides editor- and content-only stylesheets</td>
+			<td>Provides editor- and content-only style sheets</td>
 			<td>✅</td>
 			<td>✅</td>
 			<td>❌</td>
