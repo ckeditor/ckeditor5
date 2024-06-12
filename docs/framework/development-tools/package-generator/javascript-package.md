@@ -246,7 +246,7 @@ Npm supports some special [life cycle scripts](https://docs.npmjs.com/cli/v7/usi
 
 This script creates npm and browser builds of your plugin.
 <info-box warning>
-	If during the package creation the `--installation-method` flag had value `current`, script creates npm and browser build only without CKEditor&nbsp;5's legacy installation methods.
+	If during the package creation the `--installation-methods` flag value was set to `current` the script creates npm and browser build only without CKEditor&nbsp;5's legacy installation methods.
 </info-box>
 
 ## How to change ESLint configuration

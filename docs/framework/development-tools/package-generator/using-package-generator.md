@@ -37,9 +37,9 @@ Available modifiers for the command are:
 
 ## Choosing the method
 
-Currently package can be generated in one of two modes of supported installation methods of CKEditor&nbsp;5 :
-* By setting `current` value for flag `--installation-methods` the package will only support the current installation methods. This approach makes it easier to create CKEditor&nbsp;5 plugin at the cost of not supporting the old installation methods.
-* By setting `current-and-legacy` value for flag `--installation-methods`, package generator creates bundles for both the current installation methods and {@link getting-started/legacy-getting-started/quick-start legacy installation methods}.
+Currently, a package can be generated in one of two modes of supported installation methods for CKEditor&nbsp;5 :
+* The package will only support the current installation methods if the value for the `--installation-methods` flag is set to `current`. This approach makes it easier to create CKEditor&nbsp;5 plugin at the cost of not supporting the old installation methods.
+* The package generator creates bundles for both the current installation methods and {@link getting-started/legacy-getting-started/quick-start legacy installation methods} if the value for the `--installation-methods` flag is set to `current-and-legacy`.
 
 ## Using the package
 
