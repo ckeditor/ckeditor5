@@ -103,9 +103,8 @@ export default class PoweredBy extends /* #__PURE__ */ DomEmitterMixin() {
 		const forceVisible = editor.config.get( 'ui.poweredBy.forceVisible' );
 
 		if ( !forceVisible ) {
-			const licenseKey = editor.config.get( 'licenseKey' );
-			const isGpl = licenseKey && licenseKey == 'GPL';
-			const licenseContent = licenseKey && !isGpl && parseBase64EncodedObject( licenseKey.split( '.' )[ 1 ] );
+			const licenseKey = editor.config.get( 'licenseKey' )!;
+			const licenseContent = licenseKey != 'GPL' && parseBase64EncodedObject( licenseKey.split( '.' )[ 1 ] );
 
 			if ( licenseContent && licenseContent.whiteLabel ) {
 				return;
