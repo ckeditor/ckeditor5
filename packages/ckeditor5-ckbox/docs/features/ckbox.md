@@ -80,7 +80,7 @@ Finally, add {@link module:ckbox/ckbox~CKBox} to your plugin list and toolbar, a
 ```js
 import { ClassicEditor, Image, ImageUpload, PictureEditing, CKBox, CKBoxImageEdit, CloudServices } from 'ckeditor5';
 
-ClassicEdito
+ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Image, PictureEditing, ImageUpload, CloudServices, CKBox, CKBoxImageEdit, /* ... */ ],
 		toolbar: [ 'ckbox', 'ckboxImageEdit', /* ... */ ], // Depending on your preference.
