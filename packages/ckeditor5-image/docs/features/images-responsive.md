@@ -68,10 +68,4 @@ Regardless of the original file format, the responsive versions will be served a
 
 ## Installation
 
-<info-box info>
-	⚠️ **New import paths**
-
-	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in legacy setup} guide if you use an older version of CKEditor&nbsp;5.
-</info-box>
-
 For detailed information on how to configure and use CKBox, please refer to the {@link features/ckbox#installation CKBox file manager} installation guide.
