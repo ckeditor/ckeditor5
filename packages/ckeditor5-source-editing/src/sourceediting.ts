@@ -12,7 +12,6 @@
 import { type Editor, Plugin, PendingActions } from 'ckeditor5/src/core.js';
 import { ButtonView, MenuBarMenuListItemButtonView, type Dialog } from 'ckeditor5/src/ui.js';
 import { CKEditorError, createElement, ElementReplacer } from 'ckeditor5/src/utils.js';
-import { formatHtml } from './utils/formathtml.js';
 
 import '../theme/sourceediting.css';
 import sourceEditingIcon from '../theme/icons/source-editing.svg';
@@ -437,18 +436,125 @@ export default class SourceEditing extends Plugin {
 }
 
 /**
- * Formats the content for a better readability.
+ * Formats the input source code by adding appropriate indentation to specific HTML elements.
  *
- * For a non-HTML source the unchanged input string is returned.
- *
- * @param input Input string to check.
+ * @param input - The input source code to be formatted.
+ * @returns The formatted source code with added indentation.
  */
 function formatSource( input: string ): string {
-	if ( !isHtml( input ) ) {
-		return input;
-	}
+	const elementsToFormat: Array<ElementToFormat> = [
+		{ name: 'ul', isIndented: true, isInline: false },
+		{ name: 'ul', isIndented: true, isInline: false },
+		{ name: 'ol', isIndented: true, isInline: false },
+		{ name: 'div', isIndented: true, isInline: false },
+		{ name: 'aside', isIndented: true, isInline: false },
+		{ name: 'table', isIndented: true, isInline: false },
+		{ name: 'thead', isIndented: true, isInline: false },
+		{ name: 'tbody', isIndented: true, isInline: false },
+		{ name: 'tr', isIndented: true, isInline: false },
+		{ name: 'tfoot', isIndented: true, isInline: false },
+		{ name: 'blockquote', isIndented: true, isInline: false },
+		{ name: 'figure', isIndented: true, isInline: false },
+		{ name: 'dl', isIndented: true, isInline: false },
+		{ name: 'br', isIndented: true, isInline: false },
+		{ name: 'p', isIndented: false, isInline: false },
+		{ name: 'h2', isIndented: false, isInline: false },
+		{ name: 'h3', isIndented: false, isInline: false },
+		{ name: 'h4', isIndented: false, isInline: false },
+		{ name: 'h5', isIndented: false, isInline: false },
+		{ name: 'h6', isIndented: false, isInline: false },
+		{ name: 'a', isIndented: false, isInline: true },
+		{ name: 'li', isIndented: false, isInline: false },
+		{ name: 'dt', isIndented: false, isInline: false },
+		{ name: 'dd', isIndented: false, isInline: false },
+		{ name: 'span', isIndented: false, isInline: true },
+		{ name: 'sup', isIndented: false, isInline: true },
+		{ name: 'sub', isIndented: false, isInline: true },
+		{ name: 'strong', isIndented: false, isInline: true },
+		{ name: 'i', isIndented: false, isInline: true },
+		{ name: 'cite', isIndented: false, isInline: true },
+		{ name: 'em', isIndented: false, isInline: true },
+		{ name: 'img', isIndented: false, isInline: true },
+		{ name: 'abbr', isIndented: false, isInline: true },
+		{ name: 'onesite-phone', isIndented: false, isInline: true },
+		{ name: 'onesite-fax', isIndented: false, isInline: true },
+		{ name: 'onesite-ref', isIndented: false, isInline: true },
+		{ name: 'onesite-spa', isIndented: false, isInline: true },
+		{ name: 'onesite-interactive-table', isIndented: false, isInline: true },
+		{ name: 'iframe', isIndented: false, isInline: false },
+		{ name: 'svg', isIndented: false, isInline: true },
+		{ name: 'caption', isIndented: false, isInline: false },
+		{ name: 'figcaption', isIndented: false, isInline: false },
+		{ name: 'hr', isIndented: false, isInline: false },
+		{ name: 'q', isIndented: false, isInline: true },
+		{ name: 'small', isIndented: false, isInline: true },
+		{ name: 'td', isIndented: false, isInline: false },
+		{ name: 'th', isIndented: false, isInline: false }
+	];
+	const elementNamesToFormat = elementsToFormat.map( element => element.name ).join( '|' );
 
-	return formatHtml( input );
+	const lines = input
+		.replace(
+			new RegExp(
+				`</?( ${ elementNamesToFormat })( .*?)?>|</( ${ elementNamesToFormat })>`,
+				'g'
+			),
+			( match, p1, p3 ) => {
+				const elementToFormat = elementsToFormat.find(
+					element => element.name === p1 || element.name === p3
+				);
+				if ( elementToFormat ) {
+					if ( elementToFormat.isIndented ) {
+						return `${ match }\n`;
+					} else if ( match.startsWith( '</' ) && !elementToFormat.isInline ) {
+						return `${ match }\n`;
+					}
+				}
+				return match;
+			}
+		)
+		// Divide input string into lines.
+		.split( '\n' );
+	let indentCount = 0;
+	const indentChar = '    ';
+	const indentLine = function( line: string, indentCount: number ): string {
+		// https://github.com/ckeditor/ckeditor5/issues/10698.
+		return `${ indentChar.repeat( Math.max( 0, indentCount ) ) }${ line }`;
+	};
+
+	lines.forEach( ( line, index ) => {
+		const openingTagMatch = line.match( /<(\w+)[^>]*>/g );
+		const closingTagMatch = line.match( /<\/(\w+)>/g );
+		if ( openingTagMatch ) {
+			openingTagMatch.forEach( openingTag => {
+				const tagNameMatch = openingTag.match( /<(\w+)/ );
+				const tagName = tagNameMatch ? tagNameMatch[ 1 ] : null;
+				const elementToFormat = elementsToFormat.find( element => element.name === tagName );
+				if ( elementToFormat && elementToFormat.isIndented ) {
+					lines[ index ] = indentLine( line, indentCount );
+					indentCount++;
+				} else {
+					lines[ index ] = indentLine( line, indentCount );
+				}
+			} );
+		} else if ( closingTagMatch ) {
+			closingTagMatch.forEach( closingTag => {
+				const tagNameMatch = closingTag.match( /<\/(\w+)>/ );
+				const tagName = tagNameMatch ? tagNameMatch[ 1 ] : null;
+				const elementToFormat = elementsToFormat.find( element => element.name === tagName );
+				if ( elementToFormat && elementToFormat.isIndented ) {
+					indentCount--;
+				}
+				lines[ index ] = indentLine( line, indentCount );
+			} );
+		} else {
+			lines[ index ] = indentLine( line, indentCount );
+		}
+	} );
+
+	return lines
+		.filter( line => line.length )
+		.join( '\n' );
 }
 
 /**
@@ -458,4 +564,25 @@ function formatSource( input: string ): string {
  */
 function isHtml( input: string ): boolean {
 	return input.startsWith( '<' );
+}
+
+/**
+ * Element to be formatted.
+ */
+interface ElementToFormat {
+
+	/**
+	 *  Element name.
+	 */
+	name: string;
+
+	/**
+	 *  Flag indicating whether element is indented.
+	 */
+	isIndented: boolean;
+
+	/**
+	 *  Flag indicating whether element is inline.
+	 */
+	isInline: boolean;
 }
