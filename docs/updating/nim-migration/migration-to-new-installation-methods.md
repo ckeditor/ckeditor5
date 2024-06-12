@@ -9,7 +9,7 @@ modified_at: 2024-06-06
 
 # Migrating to new installation methods
 
-In this guide, we will explore the new installation methods introduced in CKEditor&nbsp;5 v42.0.0. These methods make CKEditor&nbsp;5 much easier to use by reducing the number of possible installation paths and removing most of the limitations of the old methods. Links to migration guides for specific installation methods can be found at the end of this document.
+In this guide, we will explore the new installation methods introduced in CKEditor&nbsp;5 v42.0.0. These methods make CKEditor&nbsp;5 much easier to use by reducing the number of possible installation paths and removing most of the limitations of the old methods. Links to migration guides for specific installation methods can be found in the table of contents on the left <span class="navigation-hint_mobile">or under the **main menu button in the upper-left corner** on mobile </span>and at the end of this document.
 
 Let's start by comparing the new installation methods to the old ones to better understand what has changed.
 
@@ -17,7 +17,7 @@ Let's start by comparing the new installation methods to the old ones to better 
 
 Prior to version 42.0.0, there were several ways to install CKEditor&nbsp;5, each with its own limitations and quirks that made it difficult or impossible to use in certain scenarios. It was also difficult for us to properly document all possible setups without making the documentation overly complex, as these setups were so different from each other.
 
-Here is the code example showing one of the possible setups using the old installation methods.
+Here is a code example showing one of the possible setups using the old installation methods:
 
 ```js
 // webpack.config.js
@@ -93,17 +93,17 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 } );
 ```
 
-It may seem unfair to show the webpack configuration in an example of the old installation methods, but for many it was a necessary part of the setup to handle translations, CSS, and SVG files. This setup could be even more complex if you wanted to use TypeScript.
+It may seem strange to show the webpack configuration in an example of the old installation methods, but for many it was a necessary part of the setup to handle translations, CSS, and SVG files. This setup could be even more complex if you wanted to use TypeScript.
 
 ## New installation methods
 
-In the new installation methods we have reduced the number of possible paths to just two: **npm packages and browser builds**. Unlike before, both methods no longer require you to add dozens of individual packages or JavaScript bundles to get the editor up and running. Instead, you can import the editor and all our open source plugins from `ckeditor5` and the premium features from `ckeditor5-premium-feature`. You also don't need to worry about webpack or Vite configurations, as the new installation methods are designed to work out-of-the-box with any modern bundler or JavaScript meta-framework.
+In the new installation methods we have reduced the number of possible paths to just two: **npm packages and browser builds**. Unlike before, both methods no longer require you to add dozens of individual packages or JavaScript bundles to get the editor up and running. Instead, you can import the editor and all our open source plugins from the `ckeditor5` package and the premium features from `ckeditor5-premium-feature`. You also need not to worry about webpack or Vite configurations, as the new installation methods are designed to work out-of-the-box with any modern bundler or JavaScript meta-framework.
 
 ### npm packages
 
 The new npm packages are the recommended way to install CKEditor&nbsp;5 if you use a module bundler like Vite or webpack or one of the popular JavaScript meta-frameworks.
 
-This is how the new npm setup looks like when using the open-source and commercial features and translations:
+This is what the new npm setup looks like when using the open-source and commercial features and translations:
 
 ```js
 import { ClassicEditor, Essentials, Bold, Italic, Paragraph, Mention } from 'ckeditor5';
@@ -130,7 +130,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 
 The browser builds are a great way to use CKEditor&nbsp;5 if you do not use a module bundler. The browser builds are available as JavaScript modules and can be loaded directly in the browser using the `<script type="module">` tag.
 
-Here is the same setup as above, but using the browser builds:
+Here is the same editor setup as above, but using the browser builds:
 
 ```html
 <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
@@ -170,7 +170,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 
 There are a few things that stand out in both examples compared to the old installation methods:
 
-1. Everything is imported from the `ckeditor5` and `ckeditor5-premium-features` packages. In the browser, this is done using [importmaps](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap), which maps the package names to the build URLs.
+1. Everything is imported from the `ckeditor5` and `ckeditor5-premium-features` packages only. In the browser, this is done using [importmaps](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap), which maps the package names to the build URLs.
 2. CSS files are imported separately from the JavaScript files, which improves performance and allows you to more easily customize or remove the default editor styles.
 3. Translations are imported as JavaScript objects and passed to the editor instance, instead of using side-effect imports (`import '...'`) that rely on the global state.
 4. You no longer need to maintain a CKEditor&nbsp;5-specific webpack or Vite configuration and can use CKEditor&nbsp;5 with any modern bundler or JavaScript meta-framework.
@@ -179,19 +179,19 @@ The setups we presented above are what you should aim for when migrating your pr
 
 ### Feature comparison
 
-Here's a visual comparison of the features available in the new npm and CDN builds and the old installation methods:
+Here is a visual comparison of the features available in the new npm and CDN builds and the old installation methods:
 
-| Feature                                       | npm build | CDN build | Predefined builds | Custom builds | DLL builds |
-|-----------------------------------------------|-----------|-----------|-------------------|---------------|------------|
-| No build step                                 | 🟥        | 🟩        | 🟩                | 🟥            | 🟩         |
-| Works with any bundler or metaframework       | 🟩        | 🟥        | 🟥                | 🟥            | 🟥         |
-| Plugin customization                          | 🟩        | 🟩        | 🟥                | 🟩            | 🟩         |
-| Style customization                           | 🟩        | 🟩        | 🟥                | 🟨            | 🟥         |
-| Icon customization                            | 🟥 \[1\]  | 🟥 \[1\]  | 🟥                | 🟩            | 🟥         |
-| Doesn't rely on global state                  | 🟩        | 🟩        | 🟥                | 🟥            | 🟥         |
-| Provides editor- and content-only stylesheets | 🟩        | 🟩        | 🟥                | 🟥            | 🟥         |
-| CSS separate from JavaScript                  | 🟩        | 🟩        | 🟥                | 🟨            | 🟥         |
-| Can be optimized to reduce bundle size        | 🟩        | 🟥        | 🟥                | 🟩            | 🟩         |
+| Feature                                        | npm build | CDN build | Predefined builds | Custom builds | DLL builds |
+|------------------------------------------------|-----------|-----------|-------------------|---------------|------------|
+| No build step                                  | ❌        | ✅        | ✅                | ❌            | ✅         |
+| Works with any bundler or meta-framework       | ✅        | ❌        | ❌                | ❌            | ❌         |
+| Plugin customization                           | ✅        | ✅        | ❌                | ✅            | ✅         |
+| Style customization                            | ✅        | ✅        | ❌                | ⚠            | ❌         |
+| Icon customization                             | ❌ \[1\]  | ❌ \[1\]  | ❌                | ✅            | ❌         |
+| Does not rely on global state                  | ✅        | ✅        | ❌                | ❌            | ❌         |
+| Provides editor- and content-only style sheets | ✅        | ✅        | ❌                | ❌            | ❌         |
+| CSS separate from JavaScript                   | ✅        | ✅        | ❌                | ⚠            | ❌         |
+| Can be optimized to reduce bundle size         | ✅        | ❌        | ❌                | ✅            | ✅         |
 
 1. Support for customizing icons is planned for future releases. See this [GitHub issue](https://github.com/ckeditor/ckeditor5/issues/16546) for more information.
 
@@ -203,7 +203,7 @@ Here's a visual comparison of the features available in the new npm and CDN buil
 
 To migrate your project to the new installation methods, you can follow the instructions below.
 
-If you maintain custom plugins for CKEditor 5, you need to update them first.
+If you maintain custom plugins for CKEditor&nbsp;5, you need to update them first.
 
 * {@link updating/nim-migration/custom-plugins Migrating custom plugins}
 
@@ -213,4 +213,4 @@ After you have updated your custom plugins, you can proceed with migrating your 
 * {@link updating/nim-migration/customized-builds Migrating from customized builds}
 * {@link updating/nim-migration/dll-builds Migrating from DLL builds}
 
-If you encounter any issues during the migration process, please refer to this [GitHub issue containing common errors](https://github.com/ckeditor/ckeditor5/issues/16511). If your issue is not listed there, feel free to open a new issue in our [GitHub repository](https://github.com/ckeditor/ckeditor5).
+If you encounter any issues during the migration process, please refer to this [GitHub issue containing common errors](https://github.com/ckeditor/ckeditor5/issues/16511). If your issue is not listed there, feel free to open a new issue in our [GitHub repository](https://github.com/ckeditor/ckeditor5/issues/new/choose).
