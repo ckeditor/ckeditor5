@@ -12,6 +12,7 @@
 import { type Editor, Plugin, PendingActions } from 'ckeditor5/src/core.js';
 import { ButtonView, MenuBarMenuListItemButtonView, type Dialog } from 'ckeditor5/src/ui.js';
 import { CKEditorError, createElement, ElementReplacer } from 'ckeditor5/src/utils.js';
+import { formatHtml } from './utils/formathtml.js';
 
 import '../theme/sourceediting.css';
 import sourceEditingIcon from '../theme/icons/source-editing.svg';
@@ -518,7 +519,6 @@ function formatSource( input: string ): string {
 	let indentCount = 0;
 	const indentChar = '    ';
 	const indentLine = function( line: string, indentCount: number ): string {
-		// https://github.com/ckeditor/ckeditor5/issues/10698.
 		return `${ indentChar.repeat( Math.max( 0, indentCount ) ) }${ line }`;
 	};
 
@@ -555,15 +555,6 @@ function formatSource( input: string ): string {
 	return lines
 		.filter( line => line.length )
 		.join( '\n' );
-}
-
-/**
- * Checks, if the document source is HTML. It is sufficient to just check the first character from the document data.
- *
- * @param input Input string to check.
- */
-function isHtml( input: string ): boolean {
-	return input.startsWith( '<' );
 }
 
 /**
