@@ -344,12 +344,12 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 		this.conversion.addAlias( 'dataDowncast', this.data.downcastDispatcher );
 		this.conversion.addAlias( 'editingDowncast', this.editing.downcastDispatcher );
 
-		this._verifyLicenseKey();
-
 		this.keystrokes = new EditingKeystrokeHandler( this );
 		this.keystrokes.listenTo( this.editing.view.document );
 
 		this.accessibility = new Accessibility( this );
+
+		verifyLicenseKey( this );
 
 		// Checks if the license key is defined and throws an error if it is not.
 		function checkLicenseKeyIsDefined( config: Config<EditorConfig> ) {
@@ -366,6 +366,170 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				 * @error editor-license-key-missing
 				 */
 				throw new CKEditorError( 'editor-license-key-missing' );
+			}
+		}
+
+		function verifyLicenseKey( editor: Editor ) {
+			const licenseKey = editor.config.get( 'licenseKey' )!;
+			const distributionChannel = ( window as any )[ ' CKE_DISTRIBUTION' ] || 'sh';
+
+			if ( licenseKey == 'GPL' ) {
+				if ( distributionChannel == 'cloud' ) {
+					blockEditor( 'distributionChannel' );
+				}
+
+				return;
+			}
+
+			const encodedPayload = getPayload( licenseKey );
+
+			if ( !encodedPayload ) {
+				blockEditor( 'invalid' );
+
+				return;
+			}
+
+			const licensePayload = parseBase64EncodedObject( encodedPayload );
+
+			if ( !licensePayload ) {
+				blockEditor( 'invalid' );
+
+				return;
+			}
+
+			if ( !hasAllRequiredFields( licensePayload ) ) {
+				blockEditor( 'invalid' );
+
+				return;
+			}
+
+			if ( licensePayload.distributionChannel && !toArray( licensePayload.distributionChannel ).includes( distributionChannel ) ) {
+				blockEditor( 'distributionChannel' );
+
+				return;
+			}
+
+			if ( crc32( getCrcInputData( licensePayload ) ) != licensePayload.vc.toLowerCase() ) {
+				blockEditor( 'invalid' );
+
+				return;
+			}
+
+			const expirationDate = new Date( licensePayload.exp * 1000 );
+
+			if ( expirationDate < releaseDate ) {
+				blockEditor( 'expired' );
+
+				return;
+			}
+
+			const licensedHosts: Array<string> | undefined = licensePayload.licensedHosts;
+
+			if ( licensedHosts ) {
+				const hostname = window.location.hostname;
+				const willcards = licensedHosts
+					.filter( val => val.slice( 0, 1 ) === '*' )
+					.map( val => val.slice( 1 ) );
+
+				const isHostnameMatched = licensedHosts.some( licensedHost => licensedHost === hostname );
+				const isWillcardMatched = willcards.some( willcard => willcard === hostname.slice( -willcard.length ) );
+
+				if ( !isWillcardMatched && !isHostnameMatched ) {
+					blockEditor( 'domainLimit' );
+
+					return;
+				}
+			}
+
+			if ( licensePayload.licenseType === 'trial' && licensePayload.exp * 1000 < Date.now() ) {
+				blockEditor( 'trialLimit' );
+
+				return;
+			}
+
+			if ( licensePayload.licenseType === 'trial' || licensePayload.licenseType === 'development' ) {
+				const licenseType: 'trial' | 'development' = licensePayload.licenseType;
+
+				console.info(
+					`You are using the ${ licenseType } version of CKEditor 5 with limited usage. ` +
+					'Make sure you will not use it in the production environment.'
+				);
+
+				const timerId = setTimeout( () => {
+					blockEditor( `${ licenseType }Limit` );
+				}, 600000 /* 10 minutes */ );
+
+				editor.on( 'destroy', () => {
+					clearTimeout( timerId );
+				} );
+			}
+
+			if ( licensePayload.usageEndpoint ) {
+				editor.once<EditorReadyEvent>( 'ready', () => {
+					const telemetry = editor._getTelemetryData();
+
+					const request = {
+						requestId: uid(),
+						requestTime: Math.round( Date.now() / 1000 ),
+						license: licenseKey,
+						telemetry
+					};
+
+					editor._sendUsageRequest( licensePayload.usageEndpoint, request ).then( response => {
+						const { status, message } = response;
+
+						if ( message ) {
+							console.warn( message );
+						}
+
+						if ( status != 'ok' ) {
+							blockEditor( 'usageLimit' );
+						}
+					}, () => {
+						/**
+						 * Your license key cannot be validated because of a network issue.
+						 * Please make sure that your setup does not block the request.
+						 *
+						 * @error license-key-validaton-endpoint-not-reachable
+						 * @param {String} url The URL that was attempted to reach.
+						 */
+						logError( 'license-key-validaton-endpoint-not-reachable', { url: licensePayload.usageEndpoint } );
+					} );
+				}, { priority: 'high' } );
+			}
+
+			function getPayload( licenseKey: string ): string | null {
+				const parts = licenseKey.split( '.' );
+
+				if ( parts.length != 3 ) {
+					return null;
+				}
+
+				return parts[ 1 ];
+			}
+
+			function blockEditor( reason: LicenseErrorReason ) {
+				editor.enableReadOnlyMode( Symbol( 'invalidLicense' ) );
+				editor._showLicenseError( reason );
+			}
+
+			function hasAllRequiredFields( licensePayload: Record<string, unknown> ) {
+				const requiredFields = [ 'exp', 'jti', 'vc' ];
+
+				return requiredFields.every( field => field in licensePayload );
+			}
+
+			/**
+			 * Returns an array of values that are used to calculate the CRC32 checksum.
+			 */
+			function getCrcInputData( licensePayload: Record<string, unknown> ): CRCData {
+				const keysToCheck = Object.getOwnPropertyNames( licensePayload ).sort();
+
+				const filteredValues = keysToCheck
+					.filter( key => key != 'vc' && licensePayload[ key ] != null )
+					.map( key => licensePayload[ key ] );
+
+				return [ ...filteredValues ] as CRCData;
 			}
 		}
 	}
@@ -681,177 +845,6 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 		return {
 			editorVersion: globalThis.CKEDITOR_VERSION
 		};
-	}
-
-	/**
-	 * Performs basic license key check. Enables the editor's read-only mode if the license key's validation period has expired
-	 * or the license key format is incorrect.
-	 *
-	 * @internal
-	 */
-	private _verifyLicenseKey() {
-		const licenseKey = this.config.get( 'licenseKey' )!;
-		const distributionChannel = ( window as any )[ ' CKE_DISTRIBUTION' ] || 'sh';
-
-		if ( licenseKey == 'GPL' ) {
-			if ( distributionChannel == 'cloud' ) {
-				blockEditor( this, 'distributionChannel' );
-			}
-
-			return;
-		}
-
-		const encodedPayload = getPayload( licenseKey );
-
-		if ( !encodedPayload ) {
-			blockEditor( this, 'invalid' );
-
-			return;
-		}
-
-		const licensePayload = parseBase64EncodedObject( encodedPayload );
-
-		if ( !licensePayload ) {
-			blockEditor( this, 'invalid' );
-
-			return;
-		}
-
-		if ( !hasAllRequiredFields( licensePayload ) ) {
-			blockEditor( this, 'invalid' );
-
-			return;
-		}
-
-		if ( licensePayload.distributionChannel && !toArray( licensePayload.distributionChannel ).includes( distributionChannel ) ) {
-			blockEditor( this, 'distributionChannel' );
-
-			return;
-		}
-
-		if ( crc32( getCrcInputData( licensePayload ) ) != licensePayload.vc.toLowerCase() ) {
-			blockEditor( this, 'invalid' );
-
-			return;
-		}
-
-		const expirationDate = new Date( licensePayload.exp * 1000 );
-
-		if ( expirationDate < releaseDate ) {
-			blockEditor( this, 'expired' );
-
-			return;
-		}
-
-		const licensedHosts: Array<string> | undefined = licensePayload.licensedHosts;
-
-		if ( licensedHosts ) {
-			const hostname = window.location.hostname;
-			const willcards = licensedHosts
-				.filter( val => val.slice( 0, 1 ) === '*' )
-				.map( val => val.slice( 1 ) );
-
-			const isHostnameMatched = licensedHosts.some( licensedHost => licensedHost === hostname );
-			const isWillcardMatched = willcards.some( willcard => willcard === hostname.slice( -willcard.length ) );
-
-			if ( !isWillcardMatched && !isHostnameMatched ) {
-				blockEditor( this, 'domainLimit' );
-
-				return;
-			}
-		}
-
-		if ( licensePayload.licenseType === 'trial' && licensePayload.exp * 1000 < Date.now() ) {
-			blockEditor( this, 'trialLimit' );
-
-			return;
-		}
-
-		if ( licensePayload.licenseType === 'trial' || licensePayload.licenseType === 'development' ) {
-			const licenseType: 'trial' | 'development' = licensePayload.licenseType;
-
-			console.info(
-				`You are using the ${ licenseType } version of CKEditor 5 with limited usage. ` +
-				'Make sure you will not use it in the production environment.'
-			);
-
-			const timerId = setTimeout( () => {
-				blockEditor( this, `${ licenseType }Limit` );
-			}, 600000 /* 10 minutes */ );
-
-			this.on( 'destroy', () => {
-				clearTimeout( timerId );
-			} );
-		}
-
-		if ( licensePayload.usageEndpoint ) {
-			this.once<EditorReadyEvent>( 'ready', () => {
-				const telemetry = this._getTelemetryData();
-
-				const request = {
-					requestId: uid(),
-					requestTime: Math.round( Date.now() / 1000 ),
-					license: licenseKey,
-					telemetry
-				};
-
-				this._sendUsageRequest( licensePayload.usageEndpoint, request ).then( response => {
-					const { status, message } = response;
-
-					if ( message ) {
-						console.warn( message );
-					}
-
-					if ( status != 'ok' ) {
-						blockEditor( this, 'usageLimit' );
-					}
-				}, () => {
-					/**
-			 		 * Your license key cannot be validated because of a network issue.
-					 * Please make sure that your setup does not block the request.
-					 *
-					 * @error license-key-validaton-endpoint-not-reachable
-					 * @param {String} url The URL that was attempted to reach.
-					 */
-					logError( 'license-key-validaton-endpoint-not-reachable', { url: licensePayload.usageEndpoint } );
-				} );
-			}, { priority: 'high' } );
-		}
-
-		function getPayload( licenseKey: string ): string | null {
-			const parts = licenseKey.split( '.' );
-
-			if ( parts.length != 3 ) {
-				return null;
-			}
-
-			return parts[ 1 ];
-		}
-
-		function blockEditor( editor: Editor, reason: LicenseErrorReason ) {
-			editor._showLicenseError( reason );
-
-			editor.enableReadOnlyMode( Symbol( 'invalidLicense' ) );
-		}
-
-		function hasAllRequiredFields( licensePayload: Record<string, unknown> ) {
-			const requiredFields = [ 'exp', 'jti', 'vc' ];
-
-			return requiredFields.every( field => field in licensePayload );
-		}
-
-		/**
-		 * Returns an array of values that are used to calculate the CRC32 checksum.
-		 */
-		function getCrcInputData( licensePayload: Record<string, unknown> ): CRCData {
-			const keysToCheck = Object.getOwnPropertyNames( licensePayload ).sort();
-
-			const filteredValues = keysToCheck
-				.filter( key => key != 'vc' && licensePayload[ key ] != null )
-				.map( key => licensePayload[ key ] );
-
-			return [ ...filteredValues ] as CRCData;
-		}
 	}
 
 	/**
