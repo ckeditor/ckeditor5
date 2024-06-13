@@ -70,7 +70,7 @@ If you are using the DLL build, follow the steps below:
 
 	ClassicEditor.create( document.querySelector( '#editor' ), {
 		plugins: [ Essentials, Bold, Italic, Paragraph ],
-		toolbar: { /* ... */ }
+		toolbar: [ /* ... */ ]
 	} );
 	</script>
 	```
