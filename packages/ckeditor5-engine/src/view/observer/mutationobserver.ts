@@ -287,7 +287,7 @@ function sameNodes( child1: ViewNode, child2: ViewNode ) {
  */
 export type ViewDocumentMutationsEvent = {
 	name: 'mutations';
-	args: [ MutationsEventData ];
+	args: [ data: MutationsEventData ];
 };
 
 /**
@@ -301,6 +301,14 @@ export type MutationsEventData = {
  * A single entry in {@link ~MutationsEventData} mutations array.
  */
 export type MutationData = {
+
+	/**
+	 * Type of mutation detected.
+	 */
 	type: ChangeType;
+
+	/**
+	 * The view node related to the detected mutation.
+	 */
 	node: ViewNode;
 };

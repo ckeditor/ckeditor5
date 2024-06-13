@@ -234,8 +234,8 @@ export default class View extends /* #__PURE__ */ ObservableMixin() {
 			mutations.forEach( mutation => this._renderer.markToSync( mutation.type, mutation.node ) );
 		}, { priority: 'low' } );
 
-		// At this point we have "dirty DOM" (changed) and de-synched view (which has not been changed).
-		// In order to "reset DOM" we render the view again.
+		// After all mutated nodes were marked to sync we can trigger view to DOM synchronization
+		// to make sure the DOM structure matches the view.
 		this.listenTo<ViewDocumentMutationsEvent>( this.document, 'mutations', () => {
 			this.forceRender();
 		}, { priority: 'lowest' } );
