@@ -111,7 +111,7 @@ import { ClassicEditor, Essentials, Bold, Italic, Paragraph, Mention } from 'cke
 import { FormatPainter, SlashCommand } from 'ckeditor5-premium-features';
 
 import coreTranslations from 'ckeditor5/translations/pl.js';
-import commercialTranslations from 'ckeditor5-premium-features/translations/pl.js';
+import premiumFeaturesTranslations from 'ckeditor5-premium-features/translations/pl.js';
 
 import 'ckeditor5/ckeditor5.css';
 import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
@@ -123,7 +123,7 @@ ClassicEditor
 		licenseKey: '<LICENSE_KEY>',
 		translations: [
 			coreTranslations,
-			commercialTranslations
+			premiumFeaturesTranslations
 		]
 	} );
 ```
@@ -154,7 +154,7 @@ import { ClassicEditor, Essentials, Bold, Italic, Paragraph, Mention } from 'cke
 import { FormatPainter, SlashCommand } from 'ckeditor5-premium-features';
 
 import coreTranslations from 'ckeditor5/translations/pl.js';
-import commercialTranslations from 'ckeditor5-premium-features/translations/pl.js';
+import premiumFeaturesTranslations from 'ckeditor5-premium-features/translations/pl.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -163,7 +163,7 @@ ClassicEditor
 		licenseKey: '<LICENSE_KEY>',
 		translations: [
 			coreTranslations,
-			commercialTranslations
+			premiumFeaturesTranslations
 		]
 	} );
 </script>
