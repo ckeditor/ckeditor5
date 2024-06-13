@@ -83,14 +83,15 @@ import { Mention } from '@ckeditor/ckeditor5-mention';
 import { FormatPainter } from '@ckeditor/ckeditor5-format-painter';
 import { SlashCommand } from '@ckeditor/ckeditor5-slash-command';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Essentials, Bold, Italic, Paragraph, Mention, FormatPainter, SlashCommand ],
-	toolbar: { /* ... */ },
-	licenseKey: '<LICENSE_KEY>',
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Essentials, Bold, Italic, Paragraph, Mention, FormatPainter, SlashCommand ],
+		toolbar: [ /* ... */ ],
+		licenseKey: '<LICENSE_KEY>',
 
-	// This value must be kept in sync with the language defined in webpack.config.js.
-	language: 'en'
-} );
+		// This value must be kept in sync with the language defined in webpack.config.js.
+		language: 'en'
+	} );
 ```
 
 It may seem strange to show the webpack configuration in an example of the old installation methods, but for many it was a necessary part of the setup to handle translations, CSS, and SVG files. This setup could be even more complex if you wanted to use TypeScript.
@@ -115,15 +116,16 @@ import commercialTranslations from 'ckeditor5-premium-features/translations/pl.j
 import 'ckeditor5/ckeditor5.css';
 import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Essentials, Bold, Italic, Paragraph, Mention, FormatPainter, SlashCommand ],
-	toolbar: { /* ... */ },
-	licenseKey: '<LICENSE_KEY>',
-	translations: [
-		coreTranslations,
-		commercialTranslations
-	]
-} );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Essentials, Bold, Italic, Paragraph, Mention, FormatPainter, SlashCommand ],
+		toolbar: [ /* ... */ ],
+		licenseKey: '<LICENSE_KEY>',
+		translations: [
+			coreTranslations,
+			commercialTranslations
+		]
+	} );
 ```
 
 ### Browser builds
@@ -154,15 +156,16 @@ import { FormatPainter, SlashCommand } from 'ckeditor5-premium-features';
 import coreTranslations from 'ckeditor5/translations/pl.js';
 import commercialTranslations from 'ckeditor5-premium-features/translations/pl.js';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Essentials, Bold, Italic, Paragraph, Mention, FormatPainter, SlashCommand ],
-	toolbar: { /* ... */ },
-	licenseKey: '<LICENSE_KEY>',
-	translations: [
-		coreTranslations,
-		commercialTranslations
-	]
-} );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Essentials, Bold, Italic, Paragraph, Mention, FormatPainter, SlashCommand ],
+		toolbar: [ /* ... */ ],
+		licenseKey: '<LICENSE_KEY>',
+		translations: [
+			coreTranslations,
+			commercialTranslations
+		]
+	} );
 </script>
 ```
 
