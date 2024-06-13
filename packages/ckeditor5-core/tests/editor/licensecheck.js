@@ -7,6 +7,7 @@
 
 import { releaseDate, crc32 } from '@ckeditor/ckeditor5-utils';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import Editor from '../../src/editor/editor.js';
 import testUtils from '../../tests/_utils/utils.js';
 
@@ -582,6 +583,54 @@ describe( 'Editor - license check', () => {
 			sinon.assert.calledWithMatch( warnStub, 'bar' );
 			sinon.assert.calledWithMatch( showErrorStub, 'usageLimit' );
 			expect( editor.isReadOnly ).to.be.true;
+		} );
+	} );
+
+	describe( 'license errors', () => {
+		let clock;
+
+		beforeEach( () => {
+			clock = sinon.useFakeTimers( { toFake: [ 'setTimeout' ] } );
+		} );
+
+		const testCases = [
+			{ reason: 'invalid', error: 'invalid-license-key' },
+			{ reason: 'expired', error: 'license-key-expired' },
+			{ reason: 'domainLimit', error: 'license-key-domain-limit' },
+			{ reason: 'featureNotAllowed', error: 'license-key-feature-not-allowed', pluginName: 'PluginABC' },
+			{ reason: 'trialLimit', error: 'license-key-trial-limit' },
+			{ reason: 'developmentLimit', error: 'license-key-development-limit' },
+			{ reason: 'usageLimit', error: 'license-key-usage-limit' },
+			{ reason: 'distributionChannel', error: 'license-key-distribution-channel' }
+		];
+
+		for ( const testCase of testCases ) {
+			const { reason, error, pluginName } = testCase;
+			const expectedData = pluginName ? { pluginName } : undefined;
+
+			it( `should throw \`${ error }\` error`, () => {
+				const editor = new TestEditor( { licenseKey: 'GPL' } );
+
+				editor._showLicenseError( reason, pluginName );
+
+				expectToThrowCKEditorError( () => clock.tick( 1 ), error, editor, expectedData );
+			} );
+		}
+
+		it( 'should throw error only once', () => {
+			const editor = new TestEditor( { licenseKey: 'GPL' } );
+
+			editor._showLicenseError( 'invalid' );
+
+			try {
+				clock.tick( 1 );
+			} catch ( e ) {
+				// Do nothing.
+			}
+
+			editor._showLicenseError( 'invalid' );
+
+			expect( () => clock.tick( 1 ) ).to.not.throw();
 		} );
 	} );
 } );

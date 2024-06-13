@@ -857,17 +857,95 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * @internal
 	 */
-	/* istanbul ignore next -- @preserve */
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	private _showLicenseError( reason: LicenseErrorReason, featureName?: string ) {
+	private _showLicenseError( reason: LicenseErrorReason, pluginName?: string ) {
 		// Make sure the error thrown is unhandled.
 		setTimeout( () => {
-			/**
-			 * TODO: consider error kinds for each reason.
-			 *
-			 * @error todo-specify-this-error-code
-			 */
-			throw new CKEditorError( 'todo-specify-this-error-code', null );
+			if ( reason == 'invalid' ) {
+				/**
+				 * Invalid license key. Please contact our customer support at https://ckeditor.com/contact/.
+				 *
+				 * @error invalid-license-key
+				 */
+				throw new CKEditorError( 'invalid-license-key', this );
+			}
+
+			if ( reason == 'expired' ) {
+				/**
+				 * Your license key has expired. Please renew your license at https://ckeditor.com/TODO/.
+				 *
+				 * @error license-key-expired
+				 */
+				throw new CKEditorError( 'license-key-expired', this );
+			}
+
+			if ( reason == 'domainLimit' ) {
+				/**
+				 * The hostname is not allowed by your license. Please update your license configuration at https://ckeditor.com/TODO/.
+				 *
+				 * @error license-key-domain-limit
+				 */
+				throw new CKEditorError( 'license-key-domain-limit', this );
+			}
+
+			if ( reason == 'featureNotAllowed' ) {
+				/**
+				 * The plugin is not allowed by your license.
+				 *
+				 * Please check your license or contact support at https://ckeditor.com/contact/ for more information.
+				 *
+				 * @error license-key-feature-not-allowed
+				 * @param {String} pluginName
+				 */
+				throw new CKEditorError( 'license-key-feature-not-allowed', this, { pluginName } );
+			}
+
+			if ( reason == 'trialLimit' ) {
+				/**
+				 * You have exhausted the trial usage limit. Restart the editor.
+				 *
+				 * Please contact our customer support to get full access at https://ckeditor.com/contact/.
+				 *
+				 * @error license-key-trial-limit
+				 */
+				throw new CKEditorError( 'license-key-trial-limit', this );
+			}
+
+			if ( reason == 'developmentLimit' ) {
+				/**
+				 * You have reached the development usage limit. Restart the editor.
+				 *
+				 * Please contact our customer support to get full access at https://ckeditor.com/contact/.
+				 *
+				 * @error license-key-development-limit
+				 */
+				throw new CKEditorError( 'license-key-development-limit', this );
+			}
+
+			if ( reason == 'usageLimit' ) {
+				/**
+				 * The editor usage limit has been reached.
+				 *
+				 * Visit Contact support to extend the limit at https://ckeditor.com/contact/.
+				 *
+				 * @error license-key-usage-limit
+				 */
+				throw new CKEditorError( 'license-key-usage-limit', this );
+			}
+
+			if ( reason == 'distributionChannel' ) {
+				/**
+				 * The usage is not valid for this distribution channel.
+				 *
+				 * Please check your installation or contact support at https://ckeditor.com/contact/ for more information.
+				 *
+				 * @error license-key-distribution-channel
+				 */
+				throw new CKEditorError( 'license-key-distribution-channel', this );
+			}
+
+			/* istanbul ignore next -- @preserve */
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			const unreachable: never = reason;
 		}, 0 );
 
 		this._showLicenseError = () => {};
