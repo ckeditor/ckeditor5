@@ -524,7 +524,7 @@ Add the dropdown to the toolbar:
 // main.js
 
 import {
-	ClassicEdito,
+	ClassicEditor,
 	Bold,
 	Italic,
 	Essentials,

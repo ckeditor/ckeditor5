@@ -120,7 +120,7 @@ ClassicEditor
 		translations: [
 			coreTranslations,
 			commercialTranslations
-			]
+		]
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
