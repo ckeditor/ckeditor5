@@ -26,6 +26,7 @@ React lets you build user interfaces out of individual pieces called components.
 ### Using CKEditor&nbsp;5 Builder
 
 The easiest way to use CKEditor&nbsp;5 in your React application is by configuring it with [CKEditor&nbsp;5 Builder](https://ckeditor.com/builder?redirect=docs) and integrating it with your application. Builder offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs. You can easily select:
+
 * the features you need,
 * the preferred framework (React, Angular, Vue or Vanilla JS),
 * the preferred distribution method.
@@ -185,36 +186,46 @@ The `CKEditorContext` component supports the following properties:
 If you use the {@link framework/document-editor document (decoupled) editor}, you need to {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create add the toolbar to the DOM manually}:
 
 ```jsx
-import { useCallback, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { DecoupledEditor, Bold, Essentials, Italic, Paragraph } from 'ckeditor5';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 
 import 'ckeditor5/ckeditor5.css';
 
 function App() {
-	const [ editorToolbarRef, setEditorToolbarRef ] = useState( null );
-	const [ editorRef, setEditorRef ] = useState( null );
+	const editorToolbarRef = useRef( null );
+	const [ isMounted, setMounted ] = useState( false );
+	
+	useEffect( () => {
+		setMounted( true );
 
-	const isLayoutReady = useCallback( () => {
-		return [ editorRef, editorToolbarRef ].every( Boolean );
-	}, [ editorRef, editorToolbarRef ] );
+		return () => {
+			setMounted( false );
+		};
+	}, [] );
 
 	return (
 		<div>
-			<div ref={ setEditorToolbarRef }></div>
-			<div ref={ setEditorRef }>
-				{ isLayoutReady() && (
+			<div ref={ editorToolbarRef }></div>
+			<div>
+				{ isMounted && (
 					<CKEditor
-						onReady={ ( editor ) => {
-							[ ...editorToolbarRef.children ].forEach( child => child.remove() );
-							editorToolbarRef.appendChild( editor.ui.view.toolbar.element );
-						}}
 						editor={ DecoupledEditor }
 						data='<p>Hello from CKEditor 5 decoupled editor!</p>'
 						config={ {
 							plugins: [ Bold, Italic, Paragraph, Essentials ],
 							toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 						} }
+						onReady={ ( editor ) => {
+							if ( editorToolbarRef.current ) { 
+								editorToolbarRef.current.appendChild( editor.ui.view.toolbar.element );
+							}
+						}}
+						onAfterDestroy={ ( editor ) => {
+							if ( editorToolbarRef.current ) {
+								Array.from( editorToolbarRef.current.children ).forEach( child => child.remove() );
+							}
+						}}
 					/>
 				) }
 			</div>
