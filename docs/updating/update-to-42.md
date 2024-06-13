@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 42.x | CKEditor 5 Documentation
 menu-title: Update to v42.x
 order: 82
-modified_at: 2024-06-06
+modified_at: 2024-06-13
 ---
 
 # Update to CKEditor&nbsp;5 v42.x
@@ -18,8 +18,26 @@ modified_at: 2024-06-06
 
 _Released on June xx, 2024._
 
-For the entire list of changes introduced in version 41.3.0, see the [release notes for CKEditor&nbsp;5 v42.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v42.0.0).
+For the entire list of changes introduced in version 42.0.0, see the [release notes for CKEditor&nbsp;5 v42.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v42.0.0).
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v42.0.0.
 
-### First title
+### New installation methods
+
+This release introduces new installation methods. We simplified dependency management, made CKEditor bundler-agnostic, and improves startup performance through separate CSS distribution.
+
+Read more about the details in the {@link updating/nim-migration/migration-to-new-installation-methods migration guides}. These guides provide step-by-step instructions and examples to help you seamlessly transition to the new installation methods.
+
+Our old installation methods are still supported, but we put them on the deprecation path. You can learn more about this and the {@link updating/nim-migration/migration-to-new-installation-methods#sunset-of-old-installation-methods-and-deprecation-timelines deprecation timelines} section.
+
+#### JavaScript target changed
+
+The predefined and DLL builds are targeting the ES2022 syntax to make use of native support for class fields and methods.
+
+#### Removal of superbuild and predefined builds from the CDN
+
+We have stopped publishing superbuild and predefined builds to our CDN. Predefined builds can still be accessed as a npm package. If someone wishes to use our CDN with new versions of the editor, we recommend migration to the new installation methods <internal link to hash new installation method.>
+
+#### Deprecation of the Vite plugin
+
+We have deprecated the Vite plugin, [`@ckeditor/vite-plugin-ckeditor5`](https://www.npmjs.com/package/@ckeditor/vite-plugin-ckeditor5), as it remained experimental and did not fully support features like translations handling. The newly introduced installation methods resolve these issues with Vite, allowing for a smoother setup without the need for additional plugins.
