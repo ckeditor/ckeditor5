@@ -62,6 +62,7 @@ export function formatHtml( input: string ): string {
 		{ name: 'td', isVoid: false },
 		{ name: 'th', isVoid: false },
 		{ name: 'thead', isVoid: false },
+		{ name: 'tfoot', isVoid: false },
 		{ name: 'tr', isVoid: false },
 		{ name: 'ul', isVoid: false }
 	];
