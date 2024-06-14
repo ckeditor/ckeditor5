@@ -86,6 +86,12 @@ function newLinePadding(
 		return '\n';
 	}
 
+	// Do not add padding between inline container elements.
+	if ( ( element.is( 'containerElement' ) && element.getCustomProperty( '$inlineContainer' ) ) ||
+		( previous.is( 'containerElement' ) && previous.getCustomProperty( '$inlineContainer' ) ) ) {
+		return '';
+	}
+
 	// Add empty lines between container elements.
 	return '\n\n';
 }
