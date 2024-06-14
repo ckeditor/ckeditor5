@@ -140,9 +140,9 @@ Once you have updated all the imports, it's time to build and validate the bundl
 
 2. Inspect the imports at the top of the `dist/index.js` file.
 
-   1. If you have chosen to only support the new installation methods, you should only see imports from `ckeditor5` (not from `ckeditor5/src/*`) and optionally from other external dependencies.
+   * If you have chosen to only support the new installation methods, you should only see imports from `ckeditor5` (not from `ckeditor5/src/*`) and optionally from other external dependencies.
 
-   2. If you have chosen to provide backwards compatibility with the old installation methods, you should see your CKEditor imports rewritten to end with `/dist/index.js`. For example, imports from `ckeditor5/src/core.js` should be rewritten to `@ckeditor/ckeditor5-core/dist/index.js`. You may also see imports from other external dependencies if you have used any, but they should not be modified.
+   * If you have chosen to provide backwards compatibility with the old installation methods, you should see your CKEditor imports rewritten to end with `/dist/index.js`. For example, imports from `ckeditor5/src/core.js` should be rewritten to `@ckeditor/ckeditor5-core/dist/index.js`. You may also see imports from other external dependencies if you have used any, but they should not be modified.
 
 3. Repeat the above step for the `dist/browser/index.js` file, but this time you should only see imports from `ckeditor5` or `ckeditor5-premium-features`. All other imports including external dependencies should be bundled with the plugin
 
