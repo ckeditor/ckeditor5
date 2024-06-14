@@ -42,7 +42,7 @@ The main changes we have introduced in the new package generator are:
 
 ### Add missing file extensions in imports
 
-Next, as required by the JavaScript modules (ESM), you must add the missing file extensions to all files in the `src', `tests', and `sample' folders during import. 
+Next, as required by the JavaScript modules (ESM), you must add the missing file extensions to all files in the `src`, `tests`, and `sample` folders during import. 
 
 ```diff
 - import { Plugin } from 'ckeditor5/src/core';
@@ -171,7 +171,7 @@ import '<PACKAGE_NAME/index.css';
 import pluginTranslations from '<PACKAGE_NAME>/translations/<LANGUAGE>.js';
 ```
 
-If you decided to provide backwards compatibility with the old installation methods, the code can be imported using the package name followed by `dist/index.js'. The styles and translations can be imported in the same way as above.
+If you decided to provide backwards compatibility with the old installation methods, the code can be imported using the package name followed by `dist/index.js`. The styles and translations can be imported in the same way as above.
 
 ```js
 // Importing the plugin code.
