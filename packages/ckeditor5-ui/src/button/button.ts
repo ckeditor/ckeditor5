@@ -156,13 +156,6 @@ export default interface Button {
 	class: string | undefined;
 
 	/**
-	 * (Optional) The ARIA property reflected by the `aria-checked` DOM attribute used by assistive technologies.
-	 *
-	 * @observable
-	 */
-	ariaChecked?: boolean | undefined;
-
-	/**
 	 * (Optional) The ARIA property reflected by the `aria-label` DOM attribute used by assistive technologies.
 	 *
 	 * @observable

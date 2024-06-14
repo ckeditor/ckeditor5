@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, Event */
+/* global document, Event, KeyboardEvent */
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import {
@@ -871,6 +871,63 @@ describe( 'MenuBarView utils', () => {
 				sinon.assert.calledOnce( closeSpy );
 			} );
 		} );
+
+		describe( 'trackKeyboardFocusInteraction', () => {
+			it( 'should reset the keyboard focus interaction flag of the menu bar when #isOpen changes', () => {
+				const menuA = getMenuByLabel( menuBarView, 'A' );
+
+				menuA.isOpen = true;
+				menuBarView.hadKeyboardFocusInteraction = true;
+				menuBarView.isOpen = false;
+
+				expect( menuBarView.hadKeyboardFocusInteraction ).to.be.false;
+			} );
+
+			it( 'should set keyboard focus interaction flag of the menu bar when a key is pressed', () => {
+				const menuA = getMenuByLabel( menuBarView, 'A' );
+
+				menuA.isOpen = true;
+
+				expect( menuBarView.hadKeyboardFocusInteraction ).to.be.false;
+
+				menuA.element.dispatchEvent( new KeyboardEvent( 'keydown', { keyCode: keyCodes.arrowdown } ) );
+				menuA.element.dispatchEvent( new Event( 'focus', { keyCode: keyCodes.arrowdown } ) );
+
+				expect( menuBarView.hadKeyboardFocusInteraction ).to.be.true;
+
+				menuA.element.dispatchEvent( new KeyboardEvent( 'keyup', { keyCode: keyCodes.arrowdown } ) );
+
+				expect( menuBarView.hadKeyboardFocusInteraction ).to.be.true;
+			} );
+
+			it( 'should not set keyboard focus interaction flag of the menu bar when a keyup fires before focus', () => {
+				const menuA = getMenuByLabel( menuBarView, 'A' );
+
+				menuA.isOpen = true;
+
+				expect( menuBarView.hadKeyboardFocusInteraction ).to.be.false;
+
+				menuA.element.dispatchEvent( new KeyboardEvent( 'keydown', { keyCode: keyCodes.arrowdown } ) );
+				menuA.element.dispatchEvent( new KeyboardEvent( 'keyup', { keyCode: keyCodes.arrowdown } ) );
+				menuA.element.dispatchEvent( new Event( 'focus', { keyCode: keyCodes.arrowdown } ) );
+
+				expect( menuBarView.hadKeyboardFocusInteraction ).to.be.false;
+			} );
+
+			it( 'should not set keyboard focus interaction flag of the menu bar when a keydown fires before focus', () => {
+				const menuA = getMenuByLabel( menuBarView, 'A' );
+
+				menuA.isOpen = true;
+
+				expect( menuBarView.hadKeyboardFocusInteraction ).to.be.false;
+
+				menuA.element.dispatchEvent( new Event( 'focus', { keyCode: keyCodes.arrowdown } ) );
+				menuA.element.dispatchEvent( new KeyboardEvent( 'keydown', { keyCode: keyCodes.arrowdown } ) );
+				menuA.element.dispatchEvent( new KeyboardEvent( 'keyup', { keyCode: keyCodes.arrowdown } ) );
+
+				expect( menuBarView.hadKeyboardFocusInteraction ).to.be.false;
+			} );
+		} );
 	} );
 
 	describe( 'MenuBarMenuBehaviors', () => {
@@ -942,7 +999,7 @@ describe( 'MenuBarView utils', () => {
 							{
 								label: 'A', isOpen: true, isFocused: false,
 								items: [
-									{ label: 'A#1', isFocused: true }
+									{ label: 'A#1', isFocused: false }
 								]
 							}
 

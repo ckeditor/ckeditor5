@@ -32,6 +32,7 @@ export default class SuperscriptUI extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 		const t = editor.locale.t;
+		const command = editor.commands.get( SUPERSCRIPT )!;
 		const createButton = getButtonCreator( {
 			editor,
 			commandName: SUPERSCRIPT,
@@ -43,7 +44,6 @@ export default class SuperscriptUI extends Plugin {
 		// Add superscript button to feature components.
 		editor.ui.componentFactory.add( SUPERSCRIPT, () => {
 			const buttonView = createButton( ButtonView );
-			const command = editor.commands.get( SUPERSCRIPT )!;
 
 			buttonView.set( {
 				tooltip: true
@@ -56,7 +56,15 @@ export default class SuperscriptUI extends Plugin {
 		} );
 
 		editor.ui.componentFactory.add( 'menuBar:' + SUPERSCRIPT, () => {
-			return createButton( MenuBarMenuListItemButtonView );
+			const buttonView = createButton( MenuBarMenuListItemButtonView );
+
+			buttonView.set( {
+				role: 'menuitemcheckbox'
+			} );
+
+			buttonView.bind( 'isOn' ).to( command, 'value' );
+
+			return buttonView;
 		} );
 	}
 }

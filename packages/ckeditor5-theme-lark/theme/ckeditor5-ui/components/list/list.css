@@ -25,7 +25,7 @@
 	cursor: default;
 	min-width: 12em;
 
-	& > .ck-button {
+	& > .ck-button:not(.ck-list-item-button) {
 		min-height: unset;
 		width: 100%;
 		border-radius: 0;
@@ -59,7 +59,7 @@
 				background: var(--ck-color-list-button-on-background-focus);
 			}
 
-			&:focus:not(.ck-switchbutton):not(.ck-disabled) {
+			&:focus:not(.ck-disabled) {
 				border-color: var(--ck-color-base-background);
 			}
 		}

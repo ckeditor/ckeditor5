@@ -31,6 +31,7 @@ export default class StrikethroughUI extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
+		const command = editor.commands.get( STRIKETHROUGH )!;
 		const t = editor.locale.t;
 		const createButton = getButtonCreator( {
 			editor,
@@ -44,7 +45,6 @@ export default class StrikethroughUI extends Plugin {
 		// Add strikethrough button to feature components.
 		editor.ui.componentFactory.add( STRIKETHROUGH, () => {
 			const buttonView = createButton( ButtonView );
-			const command = editor.commands.get( STRIKETHROUGH )!;
 
 			buttonView.set( {
 				tooltip: true
@@ -57,7 +57,15 @@ export default class StrikethroughUI extends Plugin {
 		} );
 
 		editor.ui.componentFactory.add( 'menuBar:' + STRIKETHROUGH, () => {
-			return createButton( MenuBarMenuListItemButtonView );
+			const buttonView = createButton( MenuBarMenuListItemButtonView );
+
+			buttonView.set( {
+				role: 'menuitemcheckbox'
+			} );
+
+			buttonView.bind( 'isOn' ).to( command, 'value' );
+
+			return buttonView;
 		} );
 	}
 }

@@ -163,6 +163,32 @@ export const MenuBarBehaviors = {
 			callback: () => menuBarView.close(),
 			contextElements: () => menuBarView.children.map( child => child.element! )
 		} );
+	},
+
+	/**
+	 * Tracks the keyboard focus interaction on the menu bar view. It is used to determine if the nested items
+	 * of the menu bar should render focus rings after first interaction with the keyboard.
+	 */
+	trackKeyboardFocusInteraction( menuBarView: MenuBarView ): void {
+		let isKeyPressed: boolean = false;
+
+		menuBarView.on<ObservableChangeEvent<boolean>>( 'change:isOpen', () => {
+			menuBarView.hadKeyboardFocusInteraction = false;
+		} );
+
+		menuBarView.listenTo( menuBarView.element!, 'keydown', () => {
+			isKeyPressed = true;
+		}, { useCapture: true } );
+
+		menuBarView.listenTo( menuBarView.element!, 'keyup', () => {
+			isKeyPressed = false;
+		}, { useCapture: true } );
+
+		menuBarView.listenTo( menuBarView.element!, 'focus', () => {
+			if ( isKeyPressed && !menuBarView.hadKeyboardFocusInteraction ) {
+				menuBarView.hadKeyboardFocusInteraction = true;
+			}
+		}, { useCapture: true } );
 	}
 };
 
@@ -216,7 +242,10 @@ export const MenuBarMenuBehaviors = {
 	openOnButtonClick( menuView: MenuBarMenuView ): void {
 		menuView.buttonView.on<ButtonExecuteEvent>( 'execute', () => {
 			menuView.isOpen = true;
-			menuView.panelView.focus();
+
+			if ( menuView.parentMenuView ) {
+				menuView.panelView.focus();
+			}
 		} );
 	},
 
@@ -226,10 +255,6 @@ export const MenuBarMenuBehaviors = {
 	toggleOnButtonClick( menuView: MenuBarMenuView ): void {
 		menuView.buttonView.on<ButtonExecuteEvent>( 'execute', () => {
 			menuView.isOpen = !menuView.isOpen;
-
-			if ( menuView.isOpen ) {
-				menuView.panelView.focus();
-			}
 		} );
 	},
 
