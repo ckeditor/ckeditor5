@@ -9,7 +9,9 @@ modified_at: 2024-06-06
 
 # Migrating custom plugins
 
-If you have created custom plugins for CKEditor&nbsp;5, you will need to adjust them to make them work with the new installation methods. The migration process is slightly different depending on whether you only want to support the new installation methods or also maintain backwards compatibility with the old installation methods.
+If you have created and published custom plugins for CKEditor&nbsp;5, you will need to adjust them to make them work with the new installation methods. The migration process is slightly different depending on whether you only want to support the new installation methods or also maintain backwards compatibility with the old installation methods.
+
+You do not need to follow this guide if your custom plugins are used directly in your project and are not separate packages. In such cases, you can update the plugins along with the projects that use them.
 
 <info-box warning>
 	This migration guide assumes that you have created a custom plugin using our {@link framework/development-tools/package-generator/using-package-generator package generator}. If you created your plugin in a different way, you will need to adjust the steps accordingly.
@@ -40,7 +42,7 @@ The main changes we have introduced in the new package generator are:
 
 ### Add missing file extensions in imports
 
-Next, add the missing file extensions in imports to all files in the `src`, `tests`, and `sample` folders. 
+Next, as required by the JavaScript modules (ESM), you must add the missing file extensions to all files in the `src', `tests', and `sample' folders during import. 
 
 ```diff
 - import { Plugin } from 'ckeditor5/src/core';
@@ -63,7 +65,7 @@ If you run the following command, the `ckeditor5-rules/require-file-extensions-i
 npm run lint -- --fix
 ```
 
-### Remove imports from the `src` folders
+### Remove `src` folders from the import paths
 
 For some time now, we have strongly discouraged importing from the `src` folder of the `@ckeditor/ckeditor5-*` packages. Instead, you should import from the package roots because they provide better TypeScript support and because the `src` folders will be removed in the future. Importing from the `src` folder of the `ckeditor5` package is still allowed (e.g. `ckeditor5/src/core.js`) as it's needed for DLL build support.
 
@@ -88,7 +90,7 @@ If you run the following command, the `ckeditor5-rules/allow-imports-only-from-m
 npm run lint
 ```
 
-### Remove imports from the `theme` folders
+### Remove `theme` folders from the import paths
 
 The same rule applies to the `theme` folder in the `@ckeditor/ckeditor5-*` packages. If you need to use icons from this folder, you can likely import them from the package root.
 
@@ -147,3 +149,39 @@ Once you have updated all the imports, it's time to build and validate the bundl
 3. Repeat the above step for the `dist/browser/index.js` file, but this time you should only see imports from `ckeditor5` or `ckeditor5-premium-features`. All other imports including external dependencies should be bundled with the plugin
 
 If you see imports in the second or third step that are not explicitly mentioned, check where the imports come from in the source code and if they have been updated according to the above migration steps. If this is the case and the imports in the generated bundle are still incorrect, please create a new issue in the [CKEditor 5 repository](https://github.com/ckeditor/ckeditor5/issues/new/choose).
+
+## How to use your plugin in new installation methods?
+
+How your plugin is used in the new installation methods depends on whether you have chosen to support the new installation methods only or also provide backwards compatibility with the old installation methods.
+
+If you support the new installation methods only:
+
+* The code can be imported from the package root.
+* If your plugin contains styles, they can be imported using the package name followed by `/index.css` (`import '<PLUGIN_NAME>/index.css'`).
+* If your plugin provides translations, they can be imported using the package name followed by `/translations/<LANGUAGE>.js` (`import '<PLUGIN_NAME>/translations/<LANGUAGE>.js'`).
+
+```js
+// Importing the plugin code.
+import { /* Plugin code */ } from '<PACKAGE_NAME>';
+
+// Optionally importing the styles.
+import '<PACKAGE_NAME/index.css';
+
+// Optionally importing the translations.
+import pluginTranslations from '<PACKAGE_NAME>/translations/<LANGUAGE>.js';
+```
+
+If you decided to provide backwards compatibility with the old installation methods, the code can be imported using the package name followed by `dist/index.js'. The styles and translations can be imported in the same way as above.
+
+```js
+// Importing the plugin code.
+import { /* Plugin code */ } from '<PACKAGE_NAME>/dist/index.js';
+
+// Optionally importing the styles.
+import '<PACKAGE_NAME/index.css';
+
+// Optionally importing the translations.
+import pluginTranslations from '<PACKAGE_NAME>/translations/<LANGUAGE>.js';
+```
+
+The `/dist/index.js` part of the path will be removed in the future when support for the old installation methods is dropped.
