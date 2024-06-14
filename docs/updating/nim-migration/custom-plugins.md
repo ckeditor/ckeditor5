@@ -9,7 +9,7 @@ modified_at: 2024-06-06
 
 # Migrating custom plugins
 
-If you have created custom plugins for CKEditor&nbsp;5, you will need to adjust them to make them work with the new installation methods. The migration process is slightly different depending on whether you only want to support the new installation methods or also maintain backwards compatibility with the old installation methods.
+If you have created custom plugins for CKEditor&nbsp;5, you will need to adjust them to make them work with the new installation methods. The migration process is slightly different depending on whether you only want to support the new installation methods or also maintain backward compatibility with the old installation methods.
 
 <info-box warning>
 	This migration guide assumes that you have created a custom plugin using our {@link framework/development-tools/package-generator/using-package-generator package generator}. If you created your plugin in a different way, you will need to adjust the steps accordingly.
@@ -21,15 +21,15 @@ Before you start, follow the usual upgrade path to update your plugin to use the
 
 ## Migration steps
 
-### Create a new project using package generator
+### Create a new project using the package generator
 
-To ensure that all the dependencies are up-to-date and that the build process is correct, we recommend that you:
+To ensure that all the dependencies are up-to-date and that the build process is correct, we recommend the following steps:
 
 1. Create a new project using the package generator following the {@link framework/development-tools/package-generator/using-package-generator package generator guide}.
 2. Copy the `src`, `tests`, and `sample` folders of your plugin into the new project.
 3. Re-add all the external `dependencies`, `devDependencies`, and `peerDependencies` specific to your plugin to the `package.json` file.
 
-When you run the CLI, you will be asked to choose whether you want to support only the new installation methods or provide backward compatibility with the old installation methods. Choose the option that best suits your needs, but be aware that the latter option will generate additional files and code that you will need to update or remove later. However, you should consider this if your plugin is used in projects outside your control that may still use the old installation methods, for example if your plugin is open-source.
+When you run the CLI, you will be asked to choose whether you want to support the new installation methods only or provide backward compatibility with the old installation methods. Choose the option that best suits your needs, but be aware that the latter option will generate additional files and code that you will need to update or remove later. You should consider the legacy option if your plugin is used in projects outside your control that may still use the old installation methods, for example if your plugin is open-source.
 
 The main changes we have introduced in the new package generator are:
 
@@ -65,7 +65,7 @@ npm run lint -- --fix
 
 ### Remove imports from the `src` folders
 
-For some time now, we have strongly discouraged importing from the `src` folder of the `@ckeditor/ckeditor5-*` packages. Instead, you should import from the package roots because they provide better TypeScript support and because the `src` folders will be removed in the future. Importing from the `src` folder of the `ckeditor5` package is still allowed (e.g. `ckeditor5/src/core.js`) as it's needed for DLL build support.
+For some time now, we have strongly discouraged importing from the `src` folder of the `@ckeditor/ckeditor5-*` packages. Instead, you should import from the package roots because they provide better TypeScript support and because the `src` folders will be removed in the future. Importing from the `src` folder of the `ckeditor5` package is still allowed (for example `ckeditor5/src/core.js`) as it is needed for DLL build support.
 
 ```js
 // ❌
@@ -78,7 +78,7 @@ import { Plugin } from '@ckeditor/ckeditor5-core';
 import { Plugin } from 'ckeditor5/src/core.js';
 ```
 
-Note that the names of the exports may differ between the `src` and the package root. In the above example, the named `Plugin` import from `@ckeditor/ckeditor5-core/src/plugin.js` will be exported under the same name from `@ckeditor/ckeditor5-core` and `ckeditor5/src/core.js`, but this is not guaranteed. In cases where the names don't match, you will need to modify the import accordingly.
+Note that the names of the exports may differ between the `src` folder and the package root. In the above example, the named `Plugin` import from `@ckeditor/ckeditor5-core/src/plugin.js` will be exported under the same name from `@ckeditor/ckeditor5-core` and `ckeditor5/src/core.js`, but this is not guaranteed. In cases where the names do not match, you will need to modify the import accordingly.
 
 There may also be cases where something you imported from the `src` folder is not exported from the package root. In such cases, please create a new issue in the [CKEditor 5 repository](https://github.com/ckeditor/ckeditor5/issues/new/choose) so we can consider adding the missing exports.
 
@@ -130,7 +130,7 @@ If you have chosen to only support the new installation methods in the package g
 
 ## Generate and validate the bundle
 
-Once you have updated all the imports, it's time to build and validate the bundle for the new installation methods.
+Once you have updated all the imports, it is time to build and validate the bundle for the new installation methods.
 
 1. Build the plugin with the following command. It will create the `dist` folder with the plugin bundles for the new installation methods.
 
@@ -140,9 +140,9 @@ Once you have updated all the imports, it's time to build and validate the bundl
 
 2. Inspect the imports at the top of the `dist/index.js` file.
 
-   * If you have chosen to only support the new installation methods, you should only see imports from `ckeditor5` (not from `ckeditor5/src/*`) and optionally from other external dependencies.
+	* If you have chosen to only support the new installation methods, you should only see imports from `ckeditor5` (not from `ckeditor5/src/*`) and optionally from other external dependencies.
 
-   * If you have chosen to provide backwards compatibility with the old installation methods, you should see your CKEditor imports rewritten to end with `/dist/index.js`. For example, imports from `ckeditor5/src/core.js` should be rewritten to `@ckeditor/ckeditor5-core/dist/index.js`. You may also see imports from other external dependencies if you have used any, but they should not be modified.
+	* If you have chosen to provide backward compatibility with the old installation methods, you should see your CKEditor imports rewritten to end with `/dist/index.js`. For example, imports from `ckeditor5/src/core.js` should be rewritten to `@ckeditor/ckeditor5-core/dist/index.js`. You may also see imports from other external dependencies if you have used any, but they should not be modified.
 
 3. Repeat the above step for the `dist/browser/index.js` file, but this time you should only see imports from `ckeditor5` or `ckeditor5-premium-features`. All other imports including external dependencies should be bundled with the plugin
 
