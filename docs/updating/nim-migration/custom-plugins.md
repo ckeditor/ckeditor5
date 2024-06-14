@@ -152,7 +152,7 @@ If you see imports in the second or third step that are not explicitly mentioned
 
 ## How to use your plugin in new installation methods?
 
-How your plugin is used in the new installation methods depends on whether you have chosen to support the new installation methods only or also provide backwards compatibility with the old installation methods.
+How your plugin is used in the new installation methods depends on whether you have chosen to support the new installation methods only or also provide backward compatibility with the old installation methods.
 
 If you support the new installation methods only:
 
@@ -171,7 +171,7 @@ import '<PACKAGE_NAME/index.css';
 import pluginTranslations from '<PACKAGE_NAME>/translations/<LANGUAGE>.js';
 ```
 
-If you decided to provide backwards compatibility with the old installation methods, the code can be imported using the package name followed by `dist/index.js'. The styles and translations can be imported in the same way as above.
+If you decided to provide backward compatibility with the old installation methods, the code can be imported using the package name followed by `dist/index.js'. The styles and translations can be imported in the same way as above.
 
 ```js
 // Importing the plugin code.
