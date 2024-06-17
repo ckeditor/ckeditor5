@@ -8,4 +8,28 @@ modified_at: 2024-06-06
 
 # Packages in the legacy setup
 
-Starting with version 42.0.0, we introduced new installation methods. We changed the format of import paths. This guide will help you learn how to import packages using legacy methods.
+Starting with CKEditor&nbsp;5 v42.0.0, we introduced new installation methods. We changed the way plugins are shipped and hence the format of the import paths. This guide will help you learn how to import packages using legacy methods.
+
+## Old vs new import methods
+
+Before version 42.0.0, the plugins were imported from individual packages, like this:
+
+```js
+// Each individual feature has its own package.
+import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
+import { Bold, Code } from '@ckeditor/ckeditor5-basic-styles';
+import { AIAssistant } from '@ckeditor/ckeditor5-ai';
+```
+
+Please note, that some features consist of more than one subfeature, like the basic font styles in the example above. All of these are imported from the same package.
+
+The new installation methods introduced two main packages, namely `ckeditor5` for open-source plugins, and `ckeditor5-premium-plugins` for premium features. Now, all plugins are only imported from the corresponding packages, like this:
+
+```js
+import { Autoformat, Bold, Code } from 'ckeditor5'; 		//Open-source features.
+import { AIAssistant } from 'ckeditor5-premium-plugins';	//Premium features.
+```
+
+## Finding individual packages
+
+If you do not wish to {@link updating/nim-migration/migration-to-new-installation-methods migrate to new isntallation mehtods} yet, you can still use individual imports to load CKEditor&nbsp;5 plugins. You can find the names of individual packages in the {@link framework/architecture/plugins#plugins-and-html-output Plugins and HTML output} guide.
