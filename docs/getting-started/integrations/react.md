@@ -258,7 +258,7 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 // More imports...
 
 import coreTranslations from 'ckeditor5/translations/es.js';
-import commercialTranslations from 'ckeditor5-premium-features/translations/es.js';
+import premiumFeaturesTranslations from 'ckeditor5-premium-features/translations/es.js';
 
 // Style sheets imports...
 
@@ -267,7 +267,7 @@ function App() {
 		<CKEditor
 			editor={ ClassicEditor }
 			config={ {
-				translations: [ coreTranslations, commercialTranslations ],
+				translations: [ coreTranslations, premiumFeaturesTranslations ],
 				initialData: '<p>Hola desde CKEditor 5 en React!</p>',
 			} }
 		/>

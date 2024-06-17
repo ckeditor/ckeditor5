@@ -60,7 +60,7 @@ import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
 import { TableOfContents } from 'ckeditor5-premium-features';
 
 import coreTranslations from 'ckeditor5/translations/pl.js';
-import commercialTranslations from 'ckeditor5-premium-features/translations/pl.js';
+import premiumFeaturesTranslations from 'ckeditor5-premium-features/translations/pl.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -74,7 +74,7 @@ ClassicEditor
 		},
 		translations: [
 			coreTranslations,
-			commercialTranslations
+			premiumFeaturesTranslations
 		]
 	} )
 	.then( /* ... */ )
@@ -105,7 +105,7 @@ import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
 import { TableOfContents } from 'ckeditor5-premium-features';
 
 import coreTranslations from 'ckeditor5/translations/pl.js';
-import commercialTranslations from 'ckeditor5-premium-features/translations/pl.js';
+import premiumFeaturesTranslations from 'ckeditor5-premium-features/translations/pl.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -119,7 +119,7 @@ ClassicEditor
 		},
 		translations: [
 			coreTranslations,
-			commercialTranslations
+			premiumFeaturesTranslations
 		]
 	} )
 	.then( /* ... */ )
