@@ -702,7 +702,7 @@ export type EditorDestroyEvent = {
  * This error is thrown when trying to pass a `<textarea>` element to a `create()` function of an editor class.
  *
  * The only editor type which can be initialized on `<textarea>` elements is
- * the {@glink getting-started/legacy/installation-methods/predefined-builds#classic-editor classic editor}.
+ * the {@glink getting-started/setup/editor-types#classic-editor classic editor}.
  * This editor hides the passed element and inserts its own UI next to it. Other types of editors reuse the passed element as their root
  * editable element and therefore `<textarea>` is not appropriate for them. Use a `<div>` or another text container instead:
  *
