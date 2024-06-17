@@ -21,7 +21,7 @@ import { Bold, Code } from '@ckeditor/ckeditor5-basic-styles';
 import { AIAssistant } from '@ckeditor/ckeditor5-ai';
 ```
 
-Please note, that some features consist of more than one subfeature, like the basic font styles in the example above. All of these are imported from the same package.
+Please note, that some packages contain more than one feature, like in the case of the `basic-styles` package above.
 
 The new installation methods introduced two main packages, namely `ckeditor5` for open-source plugins, and `ckeditor5-premium-plugins` for premium features. Now, all plugins are only imported from the corresponding packages, like this:
 
