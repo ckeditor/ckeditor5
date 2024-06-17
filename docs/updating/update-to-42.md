@@ -40,4 +40,4 @@ We have stopped publishing the superbuild and predefined builds to our CDN. Pred
 
 #### Deprecation of the Vite plugin
 
-We have deprecated the Vite plugin, [`@ckeditor/vite-plugin-ckeditor5`](https://www.npmjs.com/package/@ckeditor/vite-plugin-ckeditor5), as it remained experimental and did not fully support features such as translations handling. The newly introduced installation methods resolve these issues with Vite, allowing for a smoother setup without the need for additional plugins.
+We have deprecated the Vite plugin, [`@ckeditor/vite-plugin-ckeditor5`](https://www.npmjs.com/package/@ckeditor/vite-plugin-ckeditor5), as it remained experimental and did not fully support features such as translations handling. The newly introduced installation methods resolve this issues, as they work with any bundler out-of-the-box.
