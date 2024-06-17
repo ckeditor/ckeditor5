@@ -9,11 +9,9 @@
 
 /* globals DOMParser */
 
-import BasicHtmlWriter from './basichtmlwriter.js';
 import DomConverter from '../view/domconverter.js';
 
 import type DataProcessor from './dataprocessor.js';
-import type HtmlWriter from './htmlwriter.js';
 import type ViewDocument from '../view/document.js';
 import type ViewDocumentFragment from '../view/documentfragment.js';
 import type { MatcherPattern } from '../view/matcher.js';
@@ -43,12 +41,6 @@ export default class XmlDataProcessor implements DataProcessor {
 	 */
 	public domConverter: DomConverter;
 
-	/**
-	 * A basic HTML writer instance used to convert DOM elements to an XML string.
-	 * There is no need to use a dedicated XML writer because the basic HTML writer works well in this case.
-	 */
-	public htmlWriter: HtmlWriter;
-
 	public skipComments: boolean = true;
 
 	/**
@@ -62,7 +54,6 @@ export default class XmlDataProcessor implements DataProcessor {
 		this.namespaces = options.namespaces || [];
 		this.domParser = new DOMParser();
 		this.domConverter = new DomConverter( document, { renderingMode: 'data' } );
-		this.htmlWriter = new BasicHtmlWriter();
 	}
 
 	/**
@@ -76,8 +67,10 @@ export default class XmlDataProcessor implements DataProcessor {
 		const domFragment = this.domConverter.viewToDom( viewFragment );
 
 		// Convert DOM DocumentFragment to XML output.
-		// There is no need to use dedicated for XML serializing method because BasicHtmlWriter works well in this case.
-		return this.htmlWriter.getHtml( domFragment );
+    	const doc = document.implementation.createHTMLDocument( '' );
+    	const container = doc.createElement( 'div' );
+    	container.appendChild( domFragment );
+    	return this._xmlSerializer.serializeToString(container);
 	}
 
 	/**
