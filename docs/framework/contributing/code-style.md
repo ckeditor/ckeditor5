@@ -1077,7 +1077,7 @@ This rule forces all `declare module '@ckeditor/ckeditor5-core'` to be defined i
 
 ### Importing from modules: `ckeditor5-rules/allow-imports-only-from-main-package-entry-point`
 
-This rule ensures that all imports from `@ckeditor/*` packages are done through the main package entry points. This is required for the editor types to work properly and to ease migration to the installation methods introduced in CKEditor&nbsp;5 version 42.0.0.
+This rule ensures that all imports from the `@ckeditor/*` packages are done through the main package entry points. This is required for the editor types to work properly and to ease migration to the installation methods introduced in CKEditor&nbsp;5 v42.0.0.
 
 👎&nbsp; Example of an incorrect code for this rule:
 
@@ -1160,12 +1160,12 @@ import AlignmentEditing from './alignmentediting';
 
 ### Mandatory file extensions in imports: `ckeditor5-rules/require-file-extensions-in-imports`
 
-As required by the [ECMAScript (ESM)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) standard, all imports and re-exports must include a file extension. If they do not include it, this rule will try to automatically detect the correct file extension. In two cases this is impossible:
+As required by the [ECMAScript (ESM)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) standard, all imports and re-exports must include a file extension. If they do not include it, this rule will try to automatically detect the correct file extension. It is impossible in these two cases:
 
 * The file extension is different that `.ts`, `.js`, or `.json`.
 * The file does not exist in the file system.
 
-The second case is common in the documentation, because its pieces are in different directories and repositories. These pieces are merged during the build step, but before that, the imports are technically invalid.
+The second case is common for the documentation files, because its pieces are located in different directories and repositories. These pieces are merged during the build step, but before that, the imports are technically invalid.
 
 In such cases, you must add the file extension manually. Imports with file extensions are not validated.
 
