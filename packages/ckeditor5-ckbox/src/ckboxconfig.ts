@@ -222,14 +222,14 @@ export interface CKBoxViewConfig {
 
 	/**
 	 * Sets the ID of the folder that will be opened on startup. This option can be paired
-	 * with setting view.openLastView to false to enforce CKBox to always open in a given
+	 * with setting `view.openLastView` to `false` to enforce CKBox to always open in a given
 	 * folder at startup.
 	 */
 	startupFolderId?: string;
 
 	/**
 	 * Sets the ID of the category that will be opened on startup. This option can be paired
-	 * with setting view.openLastView to `false` to enforce CKBox to always open in a given
+	 * with setting `view.openLastView` to `false` to enforce CKBox to always open in a given
 	 * category at startup. If `view.startupCategoryId` is passed along with the
 	 * `view.startupFolderId` option, CKBox will prioritize opening category view on the startup.
 	 */
