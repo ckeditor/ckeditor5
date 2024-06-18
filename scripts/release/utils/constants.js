@@ -10,12 +10,11 @@
 const upath = require( 'upath' );
 
 const PACKAGES_DIRECTORY = 'packages';
-
 const RELEASE_DIRECTORY = 'release';
 
-const RELEASE_CDN_DIRECTORY = 'release-cdn';
-
-const RELEASE_ZIP_DIRECTORY = 'release-zip';
+const RELEASE_CDN_DIRECTORY = upath.join( RELEASE_DIRECTORY, 'cdn' );
+const RELEASE_NPM_DIRECTORY = upath.join( RELEASE_DIRECTORY, 'npm' );
+const RELEASE_ZIP_DIRECTORY = upath.join( RELEASE_DIRECTORY, 'zip' );
 
 const CKEDITOR5_ROOT_PATH = upath.join( __dirname, '..', '..', '..' );
 
@@ -35,6 +34,7 @@ module.exports = {
 	PACKAGES_DIRECTORY,
 	RELEASE_DIRECTORY,
 	RELEASE_CDN_DIRECTORY,
+	RELEASE_NPM_DIRECTORY,
 	RELEASE_ZIP_DIRECTORY,
 	CKEDITOR5_ROOT_PATH,
 	CKEDITOR5_COMMERCIAL_PATH,

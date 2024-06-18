@@ -26,7 +26,13 @@ const updatePackageEntryPoint = require( './utils/updatepackageentrypoint' );
 const prepareDllBuildsCallback = require( './utils/preparedllbuildscallback' );
 const buildCKEditor5BuildsCallback = require( './utils/buildckeditor5buildscallback' );
 const getListrOptions = require( './utils/getlistroptions' );
-const { PACKAGES_DIRECTORY, RELEASE_DIRECTORY, RELEASE_CDN_DIRECTORY, RELEASE_ZIP_DIRECTORY } = require( './utils/constants' );
+const {
+	PACKAGES_DIRECTORY,
+	RELEASE_DIRECTORY,
+	RELEASE_CDN_DIRECTORY,
+	RELEASE_ZIP_DIRECTORY,
+	RELEASE_NPM_DIRECTORY
+} = require( './utils/constants' );
 
 const cliArguments = parseArguments( process.argv.slice( 2 ) );
 
@@ -76,6 +82,12 @@ const tasks = new Listr( [
 		title: 'Preparation phase.',
 		task: ( _, task ) => {
 			return task.newListr( [
+				{
+					title: 'Creating the release directory.',
+					task: () => {
+						return fs.mkdirSync( RELEASE_DIRECTORY );
+					}
+				},
 				{
 					title: 'Updating "version" value.',
 					task: () => {
@@ -166,7 +178,7 @@ const tasks = new Listr( [
 					title: 'Copying CKEditor 5 packages to the release directory.',
 					task: () => {
 						return releaseTools.prepareRepository( {
-							outputDirectory: RELEASE_DIRECTORY,
+							outputDirectory: RELEASE_NPM_DIRECTORY,
 							packagesDirectory: PACKAGES_DIRECTORY,
 							rootPackageJson: getCKEditor5PackageJson(),
 							packagesToCopy: cliArguments.packages
@@ -177,7 +189,7 @@ const tasks = new Listr( [
 					title: 'Updating entries in `package.json`.',
 					task: ( ctx, task ) => {
 						return releaseTools.executeInParallel( {
-							packagesDirectory: RELEASE_DIRECTORY,
+							packagesDirectory: RELEASE_NPM_DIRECTORY,
 							listrTask: task,
 							taskToExecute: updatePackageEntryPoint,
 							concurrency: cliArguments.concurrency
@@ -188,30 +200,45 @@ const tasks = new Listr( [
 					title: 'Preparing DLL builds.',
 					task: ( ctx, task ) => {
 						return releaseTools.executeInParallel( {
-							packagesDirectory: RELEASE_DIRECTORY,
+							packagesDirectory: RELEASE_NPM_DIRECTORY,
 							listrTask: task,
 							taskToExecute: prepareDllBuildsCallback,
-							concurrency: cliArguments.concurrency
+							concurrency: cliArguments.concurrency,
+							taskOptions: {
+								RELEASE_CDN_DIRECTORY
+							}
 						} );
 					}
 				},
 				{
 					title: 'Preparing CDN files.',
 					task: async () => {
+						// Complete the DLL build by adding the root, `ckeditor5` package.
+						await fs.copy( `${ RELEASE_NPM_DIRECTORY }/ckeditor5/build`, `./${ RELEASE_CDN_DIRECTORY }/dll/ckeditor5-dll/` );
+
+						// CKEditor 5 CDN.
 						await fs.copy( './dist/browser', `./${ RELEASE_CDN_DIRECTORY }/` );
 						await fs.copy( './dist/translations', `./${ RELEASE_CDN_DIRECTORY }/translations/` );
+
+						// CKEditor 5 ZIP.
 						await fs.copy( './dist/browser', `./${ RELEASE_ZIP_DIRECTORY }/ckeditor5/` );
 						await fs.copy( './dist/translations', `./${ RELEASE_ZIP_DIRECTORY }/ckeditor5/translations/` );
 						await fs.copy( './scripts/assets/zip', `./${ RELEASE_ZIP_DIRECTORY }/` );
 
 						await fs.ensureDir( `./${ RELEASE_CDN_DIRECTORY }/zip` );
 						await tools.shExec(
-							`cd ${ RELEASE_ZIP_DIRECTORY } \
-							&& zip -r ../${ RELEASE_CDN_DIRECTORY }/zip/ckeditor5-${ latestVersion }.zip ./*`,
-							{ verbosity: 'error' }
+							`zip -r ../../${ RELEASE_CDN_DIRECTORY }/zip/ckeditor5-${ latestVersion }.zip ./*`,
+							{ verbosity: 'error', cwd: RELEASE_ZIP_DIRECTORY }
 						);
+					},
+					skip: () => {
+						// When preparing a non-stable release, skip building CDNs.
+						// Right now, we only provide CDN for stable releases.
+						if ( cliArguments.nightly || cliArguments.nightlyAlpha ) {
+							return true;
+						}
 
-						await fs.copy( './build', `./${ RELEASE_CDN_DIRECTORY }/dll/ckeditor5-dll/` );
+						return false;
 					}
 				}
 			], taskOptions );
@@ -222,12 +249,18 @@ const tasks = new Listr( [
 		task: ( _, task ) => {
 			return task.newListr( [
 				{
-					title: 'Removing files that will not be published.',
+					title: 'Removing files that will not be published to npm.',
 					task: () => {
 						return releaseTools.cleanUpPackages( {
-							packagesDirectory: RELEASE_DIRECTORY,
+							packagesDirectory: RELEASE_NPM_DIRECTORY,
 							packageJsonFieldsToRemove: defaults => [ ...defaults, 'engines' ]
 						} );
+					}
+				},
+				{
+					title: 'Removing ZIP source.',
+					task: () => {
+						return fs.remove( RELEASE_ZIP_DIRECTORY );
 					}
 				},
 				{

@@ -9,9 +9,11 @@
 
 /**
  * @param {String} packagePath
+ * @param {Object} options
+ * @param {String} options.RELEASE_CDN_DIRECTORY
  * @returns {Promise}
  */
-module.exports = async function prepareDllBuildsCallback( packagePath ) {
+module.exports = async function prepareDllBuildsCallback( packagePath, { RELEASE_CDN_DIRECTORY } ) {
 	const fs = require( 'fs-extra' );
 	const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
 	const upath = require( 'upath' );
@@ -30,7 +32,7 @@ module.exports = async function prepareDllBuildsCallback( packagePath ) {
 	} );
 
 	const dllPackageName = packageJson.name.replace( '@ckeditor/ckeditor5-', '' );
-	const dllReleasePath = './release-cdn/dll/' + dllPackageName;
+	const dllReleasePath = `./${ RELEASE_CDN_DIRECTORY }/dll/` + dllPackageName;
 
 	await fs.ensureDir( dllReleasePath );
 
