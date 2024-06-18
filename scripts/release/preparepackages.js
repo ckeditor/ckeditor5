@@ -233,8 +233,8 @@ const tasks = new Listr( [
 					},
 					skip: () => {
 						// When preparing a non-stable release, skip building CDNs.
-						// Right now, we only provide CDN for stable releases.
-						if ( cliArguments.nightly || cliArguments.nightlyAlpha ) {
+						// Right now, we only provide CDN for stable and nightly releases.
+						if ( cliArguments.nightlyAlpha ) {
 							return true;
 						}
 
