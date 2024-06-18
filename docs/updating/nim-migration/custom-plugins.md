@@ -112,10 +112,6 @@ If you run the following command, the `ckeditor5-rules/allow-imports-only-from-m
 npm run lint
 ```
 
-### Run eslint
-
-Run the `npm run lint` command to see if there are any remaining problems that need to be fixed.
-
 ### Update imports to the `ckeditor5` package
 
 <info-box error>
@@ -129,6 +125,16 @@ If you have chosen to only support the new installation methods in the package g
 - import { ButtonView } from 'ckeditor5/src/ui.js';
 + import { Plugin, ButtonView } from 'ckeditor5';
 ```
+
+If you run the following command, the `ckeditor5-rules/no-legacy-imports` eslint rule will list all the places where you need to update the imports.
+
+```bash
+npm run lint
+```
+
+### Run eslint
+
+Run the `npm run lint` command to see if there are any remaining problems that need to be fixed.
 
 ## Generate and validate the bundle
 
