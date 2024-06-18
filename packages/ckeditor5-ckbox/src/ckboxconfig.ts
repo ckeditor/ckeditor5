@@ -139,31 +139,31 @@ export interface CKBoxConfig {
 	language?: string;
 
 	/**
-	 * This option allows opening CKBox in dialog mode. It takes a boolean value or
-	 * a configuration object with the following attributes:
+	 * This option allows opening CKBox in dialog mode. It takes a a configuration object with
+	 * the width and height attributes.
 	 */
-	dialog?: CKBoxDialog;
+	dialog?: CKBoxDialogConfig;
 
 	/**
 	 * Allows setting custom icons for categories.
 	 */
-	categories?: CKBoxCategories;
+	categories?: CKBoxCategoriesConfig;
 
 	/**
 	 * Configures the view of CKBox.
 	 */
-	view?: CKBoxView;
+	view?: CKBoxViewConfig;
 
 	/**
 	 * Configures when dialog should be minimized and hidden.
 	 */
-	upload?: CKBoxUpload;
+	upload?: CKBoxUploadConfig;
 
 	/**
 	 * Specifies the file extensions considered valid for user interaction. Whith this
 	 * option developers can restrict user interaction to only those assets whose file
 	 * extensions match those listed in the array. Assets whose file
-	 * extensions are not listed in the choosableFileExtensions array are
+	 * extensions are not listed in the `choosableFileExtensions` array are
 	 * automatically disabled within the CKBox interface.
 	 *
 	 * ```ts
@@ -175,7 +175,7 @@ export interface CKBoxConfig {
 	choosableFileExtensions?: Array<string>;
 }
 
-export type CKBoxDialog = {
+export interface CKBoxDialogConfig {
 
 	/**
 	 * The dialog width in pixels.
@@ -186,9 +186,9 @@ export type CKBoxDialog = {
 	 * The dialog height in pixels.
 	 */
 	height: number;
-};
+}
 
-export type CKBoxCategories = {
+export interface CKBoxCategoriesConfig {
 
 	/**
 	 * This option takes an object with categories and icons that should be used instead
@@ -207,25 +207,25 @@ export type CKBoxCategories = {
 	 * }
 	 * ```
 	 */
-	icons: {
+	icons?: {
 		[ key: string ]: string;
 	};
-};
+}
 
-export type CKBoxView = {
+export interface CKBoxViewConfig {
 
 	/**
-	 * If it is set to false the last view visited by the user will not be reopened on
+	 * If it is set to `false` the last view visited by the user will not be reopened on
 	 * the next startup.
 	 */
-	openLastView: boolean;
+	openLastView?: boolean;
 
 	/**
 	 * Sets the ID of the folder that will be opened on startup. This option can be paired
 	 * with setting view.openLastView to false to enforce CKBox to always open in a given
 	 * folder at startup.
 	 */
-	startupFolderId: string;
+	startupFolderId?: string;
 
 	/**
 	 * Sets the ID of the category that will be opened on startup. This option can be paired
@@ -233,16 +233,16 @@ export type CKBoxView = {
 	 * category at startup. If `view.startupCategoryId` is passed along with the
 	 * `view.startupFolderId` option, CKBox will prioritize opening category view on the startup.
 	 */
-	startupCategoryId: string;
+	startupCategoryId?: string;
 
 	/**
 	 * Sets whether to hide the ‘Maximize’ button. By default, the button is shown and enabling
 	 * this option will hide it.
 	 */
-	hideMaximizeButton: boolean;
-};
+	hideMaximizeButton?: boolean;
+}
 
-export type CKBoxUpload = {
+export interface CKBoxUploadConfig {
 
 	/**
 	 * Sets timeout (in milliseconds) after which upload components (dialog and indicator) are
@@ -250,7 +250,7 @@ export type CKBoxUpload = {
 	 *
 	 * Read more: https://ckeditor.com/docs/ckbox/latest/guides/configuration/configuration-options.html#uploadcomponentshidetimeout
 	 */
-	componentsHideTimeout: number;
+	componentsHideTimeout?: number;
 
 	/**
 	 * Sets timeout (in milliseconds) after which upload dialog is minimized once upload is
@@ -259,8 +259,8 @@ export type CKBoxUpload = {
 	 *
 	 * Read more: https://ckeditor.com/docs/ckbox/latest/guides/configuration/configuration-options.html#uploaddialogminimizetimeout
 	 */
-	dialogMinimizeTimeout: number;
-};
+	dialogMinimizeTimeout?: number;
+}
 
 /**
  * Asset definition.

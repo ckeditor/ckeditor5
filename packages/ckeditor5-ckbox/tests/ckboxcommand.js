@@ -230,7 +230,7 @@ describe( 'CKBoxCommand', () => {
 						view: {
 							openLastView: true,
 							startupFolderId: 'id',
-							startupCategoryId: 'id',
+							startupCategoryId: 'id2',
 							hideMaximizeButton: false
 						},
 						upload: {
@@ -259,7 +259,7 @@ describe( 'CKBoxCommand', () => {
 				expect( options.categories.icons ).to.have.property( 'key', 'svg' );
 				expect( options.view ).to.have.property( 'openLastView', true );
 				expect( options.view ).to.have.property( 'startupFolderId', 'id' );
-				expect( options.view ).to.have.property( 'startupCategoryId', 'id' );
+				expect( options.view ).to.have.property( 'startupCategoryId', 'id2' );
 				expect( options.view ).to.have.property( 'hideMaximizeButton', false );
 				expect( options.upload ).to.have.property( 'componentsHideTimeout', 3000 );
 				expect( options.upload ).to.have.property( 'dialogMinimizeTimeout', 5000 );

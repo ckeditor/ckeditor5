@@ -166,18 +166,18 @@ export default class CKBoxCommand extends Command {
 				width: dialog && dialog.width,
 				height: dialog && dialog.height
 			},
-			categories: {
-				icons: categories && categories.icons
+			categories: categories && {
+				icons: categories.icons
 			},
-			view: {
-				openLastView: view && view.openLastView,
-				startupFolderId: view && view.startupFolderId,
-				startupCategoryId: view && view.startupCategoryId,
-				hideMaximizeButton: view && view.hideMaximizeButton
+			view: view && {
+				openLastView: view.openLastView,
+				startupFolderId: view.startupFolderId,
+				startupCategoryId: view.startupCategoryId,
+				hideMaximizeButton: view.hideMaximizeButton
 			},
-			upload: {
-				componentsHideTimeout: upload && upload.componentsHideTimeout,
-				dialogMinimizeTimeout: upload && upload.dialogMinimizeTimeout
+			upload: upload && {
+				componentsHideTimeout: upload.componentsHideTimeout,
+				dialogMinimizeTimeout: upload.dialogMinimizeTimeout
 			}
 		};
 	}
