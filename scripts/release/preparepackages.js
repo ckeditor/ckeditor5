@@ -227,6 +227,9 @@ const tasks = new Listr( [
 					task: ( ctx, task ) => {
 						return releaseTools.executeInParallel( {
 							packagesDirectory: RELEASE_DIRECTORY,
+							packagesDirectoryFilter: packageDirectory => {
+								return upath.basename( packageDirectory ).startsWith( 'ckeditor5' );
+							},
 							listrTask: task,
 							taskToExecute: prepareDllBuildsCallback,
 							concurrency: cliArguments.concurrency,
