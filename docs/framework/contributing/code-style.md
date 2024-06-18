@@ -1172,22 +1172,15 @@ The second case is common in the documentation, because its pieces are in differ
 
 In such cases, you must add the file extension manually. Imports with file extensions are not validated.
 
-### Importing SVG files from other packages: `ckeditor5-rules/no-cross-package-svg-imports`
+### No legacy imports
 
-To ensure that all SVG icons are properly converted to JavaScript strings at build time, all icons must be imported either from the package's own `theme` folder or as a JavaScript object from another package. Importing from another package's `theme` folder is not allowed.
+This rule ensures that imports are done using the {@link updating/nim-migration/migration-to-new-installation-methods new installation methods}. All imports should be done using either the `ckeditor5` package to get the editor core and all open-source plugins, or `ckeditor5-premium-features` to get the premium features.
 
-👎  Example of incorrect SVG import:
+```diff
+- import { Plugin } from 'ckeditor5/src/core.js';
+- import { Plugin } from '@ckeditor/ckeditor5-core';
++ import { Plugin } from 'ckeditor5';
 
-```js
-import CheckIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
-```
-
-👍 Examples of correct SVG imports:
-
-```js
-import CheckIcon from './../theme/icons/check.svg';
-```
-
-```js
-import { icons } from 'ckeditor5';
+- import { AIAssistant } from '@ckeditor/ckeditor5-ai';
++ import { AIAssistant } from 'ckeditor5-premium-features';
 ```
