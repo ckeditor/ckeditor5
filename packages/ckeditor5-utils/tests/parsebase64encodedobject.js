@@ -27,4 +27,10 @@ describe( 'parseBase64EncodedObject', () => {
 
 		expect( parseBase64EncodedObject( encoded ) ).to.be.null;
 	} );
+
+	it( 'should use base64Safe variant of encoding', () => {
+		const encoded = 'eyJmb28iOiJhYmNkZW/n+Glqa2xtbm8ifQ==';
+
+		expect( parseBase64EncodedObject( encoded ) ).to.deep.equal( { foo: 'abcdeoçøijklmno' } );
+	} );
 } );

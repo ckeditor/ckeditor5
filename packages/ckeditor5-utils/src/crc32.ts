@@ -51,7 +51,7 @@ export default function crc32( inputData: CRCData ): string {
 	const crcTable: Array<number> = makeCrcTable();
 	let crc: number = 0 ^ ( -1 );
 
-	// Convert data to a single string
+	// Convert data to a single string.
 	const dataString: string = dataArray.map( item => {
 		if ( Array.isArray( item ) ) {
 			return item.join( '' );
@@ -60,13 +60,13 @@ export default function crc32( inputData: CRCData ): string {
 		return String( item );
 	} ).join( '' );
 
-	// Calculate the CRC for the resulting string
+	// Calculate the CRC for the resulting string.
 	for ( let i = 0; i < dataString.length; i++ ) {
 		const byte: number = dataString.charCodeAt( i );
 		crc = ( crc >>> 8 ) ^ crcTable[ ( crc ^ byte ) & 0xFF ];
 	}
 
-	crc = ( crc ^ ( -1 ) ) >>> 0; // Force unsigned integer
+	crc = ( crc ^ ( -1 ) ) >>> 0; // Force unsigned integer.
 
 	return crc.toString( 16 ).padStart( 8, '0' );
 }

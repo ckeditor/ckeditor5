@@ -111,7 +111,7 @@ describe( 'Editor - license check', () => {
 
 		describe( 'distribution channel check', () => {
 			afterEach( () => {
-				delete window[ ' CKE_DISTRIBUTION' ];
+				delete window[ 'CKE_DISTRIBUTION ' ];
 			} );
 
 			it( 'should not block if distribution channel match', () => {
@@ -210,7 +210,7 @@ describe( 'Editor - license check', () => {
 			} );
 
 			function setChannel( channel ) {
-				window[ ' CKE_DISTRIBUTION' ] = channel;
+				window[ 'CKE_DISTRIBUTION ' ] = channel;
 			}
 		} );
 
@@ -283,7 +283,7 @@ describe( 'Editor - license check', () => {
 
 				const editor = new TestEditor( { licenseKey } );
 
-				sinon.assert.calledWithMatch( showErrorStub, 'trialLimit' );
+				sinon.assert.calledWithMatch( showErrorStub, 'expired' );
 				expect( editor.isReadOnly ).to.be.true;
 
 				dateNow.restore();

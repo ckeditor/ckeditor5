@@ -44,7 +44,7 @@ import type { EditorConfig } from './editorconfig.js';
 
 declare global {
 	// eslint-disable-next-line no-var
-	var CKEDITOR_GLOBAL_LICENSE_KEY: string;
+	var CKEDITOR_GLOBAL_LICENSE_KEY: string | undefined;
 }
 
 /**
@@ -356,12 +356,13 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 			let licenseKey = config.get( 'licenseKey' );
 
 			if ( !licenseKey && window.CKEDITOR_GLOBAL_LICENSE_KEY ) {
-				config.set( 'licenseKey', licenseKey = window.CKEDITOR_GLOBAL_LICENSE_KEY );
+				licenseKey = window.CKEDITOR_GLOBAL_LICENSE_KEY;
+				config.set( 'licenseKey', licenseKey );
 			}
 
 			if ( !licenseKey ) {
 				/**
-				 * The license key is missing.
+				 * The licenseKey is missing. Add your license or 'GPL' string to the editor config.
 				 *
 				 * @error editor-license-key-missing
 				 */
@@ -371,7 +372,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 		function verifyLicenseKey( editor: Editor ) {
 			const licenseKey = editor.config.get( 'licenseKey' )!;
-			const distributionChannel = ( window as any )[ ' CKE_DISTRIBUTION' ] || 'sh';
+			const distributionChannel = ( window as any )[ 'CKE_DISTRIBUTION ' ] || 'sh';
 
 			if ( licenseKey == 'GPL' ) {
 				if ( distributionChannel == 'cloud' ) {
@@ -428,11 +429,11 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 			if ( licensedHosts ) {
 				const hostname = window.location.hostname;
 				const willcards = licensedHosts
-					.filter( val => val.slice( 0, 1 ) === '*' )
-					.map( val => val.slice( 1 ) );
+					.filter( val => val.startsWith( '*' ) )
+					.map( val => val.substring( 1 ) );
 
 				const isHostnameMatched = licensedHosts.some( licensedHost => licensedHost === hostname );
-				const isWillcardMatched = willcards.some( willcard => willcard === hostname.slice( -willcard.length ) );
+				const isWillcardMatched = willcards.some( willcard => hostname.endsWith( willcard ) );
 
 				if ( !isWillcardMatched && !isHostnameMatched ) {
 					blockEditor( 'domainLimit' );
@@ -442,7 +443,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 			}
 
 			if ( licensePayload.licenseType === 'trial' && licensePayload.exp * 1000 < Date.now() ) {
-				blockEditor( 'trialLimit' );
+				blockEditor( 'expired' );
 
 				return;
 			}
@@ -457,7 +458,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 				const timerId = setTimeout( () => {
 					blockEditor( `${ licenseType }Limit` );
-				}, 600000 /* 10 minutes */ );
+				}, 600000 );
 
 				editor.on( 'destroy', () => {
 					clearTimeout( timerId );
@@ -519,9 +520,6 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				return requiredFields.every( field => field in licensePayload );
 			}
 
-			/**
-			 * Returns an array of values that are used to calculate the CRC32 checksum.
-			 */
 			function getCrcInputData( licensePayload: Record<string, unknown> ): CRCData {
 				const keysToCheck = Object.getOwnPropertyNames( licensePayload ).sort();
 
@@ -529,7 +527,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 					.filter( key => key != 'vc' && licensePayload[ key ] != null )
 					.map( key => licensePayload[ key ] );
 
-				return [ ...filteredValues ] as CRCData;
+				return filteredValues as CRCData;
 			}
 		}
 	}
@@ -847,11 +845,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 		};
 	}
 
-	/**
-	 * @internal
-	 */
 	private _showLicenseError( reason: LicenseErrorReason, pluginName?: string ) {
-		// Make sure the error thrown is unhandled.
 		setTimeout( () => {
 			if ( reason == 'invalid' ) {
 				/**
@@ -944,9 +938,6 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 		this._showLicenseError = () => {};
 	}
 
-	/**
-	 * @internal
-	 */
 	private async _sendUsageRequest( endpoint: string, request: unknown ) {
 		const response = await fetch( new URL( endpoint ), {
 			method: 'POST',
