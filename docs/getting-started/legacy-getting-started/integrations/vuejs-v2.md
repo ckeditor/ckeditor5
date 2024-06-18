@@ -1,13 +1,13 @@
 ---
 menu-title: Vue.js 2.x
-meta-title: Vue.js 2.x rich text editor component | CKEditor 5 documentation
+meta-title: Vue.js 2.x rich text editor component | Legacy CKEditor 5 documentation
 category: legacy-integrations
 order: 40
 ---
 
 {@snippet installation/integrations/framework-integration}
 
-# Vue.js 2.x rich text editor component
+# Vue.js 2.x rich text editor component &ndash; Legacy guide
 
 <info-box warning>
 	⚠️  We changed installation methods and this legacy guide is kept for users' convenience. If you are looking for current CKEditor 5 Vue 2 integration, please refer to the newest version of the {@link getting-started/integrations/vuejs-v2 CKEditor&nbsp;5 integration} guide.

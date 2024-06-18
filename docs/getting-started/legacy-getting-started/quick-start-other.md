@@ -1,11 +1,12 @@
 ---
 category: installation-methods
-meta-title: Customized installation | CKEditor 5 documentation
+menu-title: Customized installation
+meta-title: Customized installation | Legacy CKEditor 5 documentation
 order: 30
 modified_at: 2022-03-15
 ---
 
-# Customized installation
+# Customized installation &ndash; Legacy guide
 
 <info-box warning>
 	⚠️  We changed installation methods and this legacy guide is kept for users' convenience. If you want to learn more about these changes, please refer to the {@link updating/nim-migration/customized-builds Migrating from customized builds} guide.
