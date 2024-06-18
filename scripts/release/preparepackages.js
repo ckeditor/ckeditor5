@@ -223,7 +223,7 @@ const tasks = new Listr( [
 						// CKEditor 5 ZIP.
 						await fs.copy( './dist/browser', `./${ RELEASE_ZIP_DIRECTORY }/ckeditor5/` );
 						await fs.copy( './dist/translations', `./${ RELEASE_ZIP_DIRECTORY }/ckeditor5/translations/` );
-						await fs.copy( './scripts/assets/zip', `./${ RELEASE_ZIP_DIRECTORY }/` );
+						await fs.copy( './scripts/release/assets/zip', `./${ RELEASE_ZIP_DIRECTORY }/` );
 
 						await fs.ensureDir( `./${ RELEASE_CDN_DIRECTORY }/zip` );
 						await tools.shExec(
