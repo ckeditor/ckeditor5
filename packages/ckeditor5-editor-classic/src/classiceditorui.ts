@@ -15,9 +15,7 @@ import {
 	_initMenuBar,
 	type DialogViewMoveToEvent,
 	type Dialog,
-	type EditorUIReadyEvent,
-	type EditorUIView,
-	type MenuBarView
+	type EditorUIReadyEvent
 } from 'ckeditor5/src/ui.js';
 import {
 	enablePlaceholder,

@@ -15,7 +15,8 @@ import {
 	EditorUI,
 	normalizeToolbarConfig,
 	type EditorUIReadyEvent,
-	type EditorUIUpdateEvent
+	type EditorUIUpdateEvent,
+	_initMenuBar
 } from 'ckeditor5/src/ui.js';
 
 import { enablePlaceholder } from 'ckeditor5/src/engine.js';
@@ -97,6 +98,11 @@ export default class InlineEditorUI extends EditorUI {
 
 		this._initPlaceholder();
 		this._initToolbar();
+
+		if ( view.menuBarView ) {
+			_initMenuBar( editor, view.menuBarView );
+		}
+
 		this.fire<EditorUIReadyEvent>( 'ready' );
 	}
 

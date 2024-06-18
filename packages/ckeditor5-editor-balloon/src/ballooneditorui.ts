@@ -13,6 +13,7 @@ import {
 
 import {
 	EditorUI,
+	_initMenuBar,
 	type EditorUIReadyEvent
 } from 'ckeditor5/src/ui.js';
 
@@ -86,6 +87,11 @@ export default class BalloonEditorUI extends EditorUI {
 		editingView.attachDomRoot( editableElement );
 
 		this._initPlaceholder();
+
+		// if ( true ) {
+		// 	_initMenuBar( editor, view.editable.menuBarView );
+		// }
+
 		this.fire<EditorUIReadyEvent>( 'ready' );
 	}
 

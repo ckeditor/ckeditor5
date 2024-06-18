@@ -11,6 +11,8 @@ import { EditorUIView, InlineEditableUIView } from 'ckeditor5/src/ui.js';
 import type { Locale } from 'ckeditor5/src/utils.js';
 import type { EditingView } from 'ckeditor5/src/engine.js';
 
+import '../theme/ballooneditor.css';
+
 /**
  * Contextual editor UI view. Uses the {@link module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView}.
  */

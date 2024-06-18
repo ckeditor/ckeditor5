@@ -31,6 +31,7 @@ import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit.js';
 const toPx = toUnit( 'px' );
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import View from '../../../src/view.js';
 
 /* global document, window, Event */
 
@@ -215,6 +216,10 @@ describe( 'BalloonToolbar', () => {
 		addToolbarSpy.lastCall.args[ 1 ].afterBlur();
 
 		sinon.assert.calledOnce( hidePanelSpy );
+	} );
+
+	it( 'should set balloon content as toolbarView if there is no menu bar', () => {
+		expect( balloonToolbar.balloonContentView ).to.equal( balloonToolbar.toolbarView );
 	} );
 
 	describe( 'pluginName', () => {
@@ -821,6 +826,46 @@ describe( 'BalloonToolbar', () => {
 
 					return editor.destroy();
 				} );
+		} );
+	} );
+
+	describe( 'with menu bar', () => {
+		let menuBarEditorElement, menuBarEditor, menuBarBalloonToolbar;
+
+		beforeEach( () => {
+			menuBarEditorElement = document.createElement( 'div' );
+			document.body.appendChild( menuBarEditorElement );
+
+			return ClassicTestEditor
+				.create( menuBarEditorElement, {
+					plugins: [ Paragraph, Bold, Italic, BalloonToolbar, HorizontalLine, TableEditing ],
+					balloonToolbar: [ 'bold', 'italic' ],
+					menuBar: { isVisible: true }
+				} )
+				.then( e => {
+					menuBarEditor = e;
+					menuBarBalloonToolbar = menuBarEditor.plugins.get( BalloonToolbar );
+
+					// Focus the engine.
+					e.editing.view.document.isFocused = true;
+					e.editing.view.getDomRoot().focus();
+
+					// Remove all selection ranges from DOM before testing.
+					window.getSelection().removeAllRanges();
+				} );
+		} );
+
+		afterEach( () => {
+			menuBarEditorElement.remove();
+
+			return menuBarEditor.destroy();
+		} );
+
+		it( 'should set balloon content as view with both toolbar and menu bar', () => {
+			expect( menuBarBalloonToolbar.balloonContentView ).to.be.instanceOf( View );
+
+			expect( menuBarBalloonToolbar.balloonContentView.template.children[ 0 ] ).to.equal( menuBarBalloonToolbar.menuBarView );
+			expect( menuBarBalloonToolbar.balloonContentView.template.children[ 1 ] ).to.equal( menuBarBalloonToolbar.toolbarView );
 		} );
 	} );
 

@@ -59,6 +59,8 @@ export default class BalloonEditor extends /* #__PURE__ */ ElementApiMixin( Edit
 
 		super( config );
 
+		this.config.define( 'menuBar.isVisible', false );
+
 		if ( this.config.get( 'initialData' ) === undefined ) {
 			this.config.set( 'initialData', getInitialData( sourceElementOrData ) );
 		}
