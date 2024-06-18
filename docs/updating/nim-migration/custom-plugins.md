@@ -33,6 +33,8 @@ To ensure that all the dependencies are up-to-date and that the build process is
 
 When you run the CLI, you will be asked to choose whether you want to support the new installation methods only or provide backward compatibility with the old installation methods. Choose the option that best suits your needs, but be aware that the latter option will generate additional files and code that you will need to update or remove later. You should consider the legacy option if your plugin is used in projects outside your control that may still use the old installation methods, for example if your plugin is open-source.
 
+You can learn more about the differences between the code written for the new and old installation methods in the {@link tutorials/supporting-multiple-versions Version compatibility of custom plugins} guide.
+
 The main changes we have introduced in the new package generator are:
 
 * Making the generated package a valid ECMAScript module,
