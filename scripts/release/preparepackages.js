@@ -79,7 +79,7 @@ const tasks = new Listr( [
 		}
 	},
 	{
-		title: 'Creating the release directory.',
+		title: 'Create the release directory.',
 		task: async () => {
 			await fs.emptyDir( RELEASE_DIRECTORY );
 		}
