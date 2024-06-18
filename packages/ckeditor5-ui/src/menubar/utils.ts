@@ -772,6 +772,7 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 				items: [
 					'menuBar:mediaEmbed',
 					'menuBar:insertTemplate',
+					'menuBar:specialCharacters',
 					'menuBar:blockQuote',
 					'menuBar:codeBlock',
 					'menuBar:htmlEmbed'

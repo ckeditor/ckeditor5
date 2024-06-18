@@ -226,7 +226,7 @@ In this example, you remove the premium collaboration features and several other
 				// Be careful with enabling previews
 				// https://ckeditor.com/docs/ckeditor5/latest/features/html-embed.html#content-previews
 				htmlEmbed: {
-					showPreviews: true
+					showPreviews: false
 				},
 				// https://ckeditor.com/docs/ckeditor5/latest/features/link.html#custom-link-attributes-decorators
 				link: {
