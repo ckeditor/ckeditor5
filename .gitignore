@@ -26,11 +26,8 @@ mrgit.json
 .idea
 .vscode
 
-# Prepared files to publish to npm and cdn.
+# Prepared files to publish to npm.
 /release/
-/release-zip/
-/release-cdn/
-*.zip
 
 # Ignore yalc
 .yalc
