@@ -79,15 +79,15 @@ const tasks = new Listr( [
 		}
 	},
 	{
+		title: 'Creating the release directory.',
+		task: async () => {
+			await fs.emptyDir( RELEASE_DIRECTORY );
+		}
+	},
+	{
 		title: 'Preparation phase.',
 		task: ( _, task ) => {
 			return task.newListr( [
-				{
-					title: 'Creating the release directory.',
-					task: () => {
-						return fs.mkdirSync( RELEASE_DIRECTORY );
-					}
-				},
 				{
 					title: 'Updating "version" value.',
 					task: () => {
