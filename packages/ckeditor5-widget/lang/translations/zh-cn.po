@@ -55,4 +55,4 @@ msgstr "移动插入符，以允许在小组件之后直接输入文字"
 
 msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that moves selection from a nested editable area back to the parent widget."
 msgid "Move focus from an editable area back to the parent widget"
-msgstr ""
+msgstr "将焦点从可编辑区域移回父窗口小组件"

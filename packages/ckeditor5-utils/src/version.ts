@@ -25,7 +25,7 @@ declare global {
 if ( globalThis.CKEDITOR_VERSION ) {
 	/**
 	 * The best solution to avoid this error is migrating your CKEditor&nbsp;5 instance to
-	 * {@glink updating/new-installation-methods new installation methods}.
+	 * {@glink updating/nim-migration/migration-to-new-installation-methods new installation methods}.
 	 *
 	 * Mentioned below are predefined builds, which are a deprecated installation method. The solutions
 	 * provided are kept here for legacy support only.

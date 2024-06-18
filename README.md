@@ -9,16 +9,16 @@ CKEditor&nbsp;5 [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg
 [![Join newsletter](https://img.shields.io/badge/join-newsletter-00cc99.svg)](http://eepurl.com/c3zRPr)
 [![Follow Twitter](https://img.shields.io/badge/follow-twitter-00cc99.svg)](https://twitter.com/ckeditor)
 
-CKEditor&nbsp;5 is an ultra-modern JavaScript rich-text editor with MVC architecture, a custom data model, and virtual DOM. It is written from scratch in TypeScript and has excellent webpack and Vite support. It provides every type of WYSIWYG editing solution imaginable with extensive collaboration support. From editors similar to Google Docs and Medium to Slack or Twitter-like applications, all is possible within a single editing framework. As a market leader, it is constantly expanded and updated.
+CKEditor&nbsp;5 is a modern JavaScript rich-text editor with MVC architecture, custom data model, and virtual DOM, written from scratch in TypeScript with excellent support for modern bundlers. It provides every type of WYSIWYG editing solution imaginable with extensive collaboration support. From editors similar to Google Docs and Medium to Slack or Twitter-like applications, all is possible within a single editing framework. As a market leader, it is constantly expanded and updated.
 
-![A composition of screenshots presenting various features of CKEditor&nbsp;5 rich text editor](https://user-images.githubusercontent.com/1099479/179190754-f4aaf2b3-21cc-49c4-a454-8de4a00cc70e.jpg)
+![A composition of screenshots presenting various features of CKEditor&nbsp;5 rich text editor](https://raw.githubusercontent.com/ckeditor/ckeditor5/master/docs/assets/img/CKEditor-5.png)
 
 ## Table of contents
 
 - [CKEditor 5 ](#ckeditor5-)
 	- [Table of contents](#table-of-contents)
 	- [Quick start](#quick-start)
-		- [CKEditor 5 builder](#ckeditor5-builder)
+		- [CKEditor 5 Builder](#ckeditor5-builder)
 		- [TypeScript support](#typescript-support)
 		- [CKEditor 5 advanced installation](#ckeditor5-advanced-installation)
 			- [CKEditor 5 Framework](#ckeditor5-framework)
@@ -33,11 +33,11 @@ CKEditor&nbsp;5 is an ultra-modern JavaScript rich-text editor with MVC architec
 
 ## Quick start
 
-### CKEditor&nbsp;5 builder
-
-The easiest way to start using CKEditor&nbsp;5 with all the features you need is to prepare a customized build with the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs). All you need to do is choose the preferred editor type as a base, add all the required plugins, and download the ready-to-use package.
-
 Refer to the [Quick Start](https://ckeditor.com/docs/ckeditor5/latest/getting-started/installation/quick-start.html) guide to learn more about CKEditor&nbsp;5 installation.
+
+### CKEditor&nbsp;5 Builder
+
+The easiest way to start using CKEditor&nbsp;5 with all the features you need is to prepare a customized setup with the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder). All you need to do is choose the preferred editor type as a base, add all the required plugins, and download the ready-to-use package.
 
 ### TypeScript support
 
@@ -46,13 +46,13 @@ CKEditor&nbsp;5 is a TypeScript project. Starting from v37.0.0, it offers native
 ### CKEditor&nbsp;5 advanced installation
 
 For more advanced users or those who need to integrate CKEditor&nbsp;5 with their applications, we prepared integrations with popular JavaScript frameworks:
-  * [Angular](https://ckeditor.com/docs/ckeditor5/latest/getting-started/installation/angular.html)
-  * [React](https://ckeditor.com/docs/ckeditor5/latest/getting-started/installation/react/react.html)
-  * [Vue](https://ckeditor.com/docs/ckeditor5/latest/getting-started/installation/vuejs-v3.html)
+* [Angular](https://ckeditor.com/docs/ckeditor5/latest/getting-started/installation/angular.html)
+* [React](https://ckeditor.com/docs/ckeditor5/latest/getting-started/installation/react/react.html)
+* [Vue](https://ckeditor.com/docs/ckeditor5/latest/getting-started/installation/vuejs-v3.html)
 
 #### CKEditor&nbsp;5 Framework
 
-CKEditor&nbsp;5 builds allow you to quickly and easily initialize one of the many types of editors in your application. At the same time, CKEditor&nbsp;5 is also a framework for creating custom-made rich text editing solutions.
+CKEditor&nbsp;5 is also a framework for creating custom-made rich text editing solutions.
 
 To find out how to start building your editor from scratch go to the [CKEditor&nbsp;5 Framework overview](https://ckeditor.com/docs/ckeditor5/latest/framework/index.html) section of the CKEditor&nbsp;5 documentation.
 

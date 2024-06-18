@@ -26,6 +26,12 @@ Put the caret anywhere inside the table to open the table toolbar. Click the tab
 
 ## Installation
 
+<info-box info>
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
+</info-box>
+
 After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
@@ -74,7 +80,7 @@ You can use these specific configuration options to define customized color pale
 * {@link module:table/tableconfig~TableConfig#tableCellProperties `tableCellProperties.backgroundColors`} &ndash; Defines the color palette for cell background.
 
 <info-box>
-	These configuration options **do not** impact the {@link getting-started/setup/getting-and-setting-data#setting-the-editor-data-with-setdata data loaded into the editor}. This means that they do not limit or filter the colors in the data. They are used only in the user interface allowing users to pick colors in a more convenient way.
+	These configuration options **do not** impact the {@link getting-started/setup/getting-and-setting-data#replacing-the-editor-data-with-setdata data loaded into the editor}. This means that they do not limit or filter the colors in the data. They are used only in the user interface allowing users to pick colors in a more convenient way.
 </info-box>
 
 For instance, to define the same color palette for all border and background configurations, use the following code snippet:
@@ -209,7 +215,7 @@ The same will be applied to new tables and cells if they are inserted into the e
 Read more about all supported properties for the {@link module:table/tableconfig~TablePropertiesOptions table} and {@link module:table/tableconfig~TableCellPropertiesOptions table cell} features in their API documentation.
 
 <info-box>
-	The default table and table cell styles **do** impact the {@link getting-started/setup/getting-and-setting-data#setting-the-editor-data-with-setdata data loaded into the editor}. Default properties will not be kept in the editor model.
+	The default table and table cell styles **do** impact the {@link getting-started/setup/getting-and-setting-data#replacing-the-editor-data-with-setdata data loaded into the editor}. Default properties will not be kept in the editor model.
 </info-box>
 
 ## Common API

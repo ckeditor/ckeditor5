@@ -40,7 +40,7 @@ All that with virtually zero server setup.
 
 ## Configuration
 
-To make enabling image upload in CKEditor&nbsp;5 a breeze, by default all builds include the {@link module:easy-image/easyimage~EasyImage `EasyImage` plugin}. It integrates with the Easy Image service provided by [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/). Enabling it is straightforward and the results are immediate:
+To make enabling image upload in CKEditor&nbsp;5 a breeze, the {@link module:easy-image/easyimage~EasyImage `EasyImage` plugin} integrates with the Easy Image service provided by [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/). Enabling it is straightforward and the results are immediate:
 
 1. Follow the [Easy Image &ndash; Quick start guide](https://ckeditor.com/docs/cs/latest/guides/easy-image/quick-start.html) to set up an account.
 2. Configure CKEditor&nbsp;5 (see {@link module:cloud-services/cloudservicesconfig~CloudServicesConfig `CloudServicesConfig`}):
@@ -119,6 +119,12 @@ The `srcset` attribute specifies the image variants dedicated for the various sc
 The variety of the image sizes in the `srcset` attribute allows the web browser to choose the best one for the particular screen size. As a result, it loads faster and with less data transferred. See the detailed [Easy Image service documentation](https://ckeditor.com/docs/cs/latest/guides/easy-image/service-details.html) to learn more about responsive images and other features offered by the service.
 
 ## Installation
+
+<info-box info>
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
+</info-box>
 
 This package is part of our open-source aggregate package.
 
