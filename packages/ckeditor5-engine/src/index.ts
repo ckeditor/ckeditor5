@@ -160,6 +160,7 @@ export { default as DomEventObserver } from './view/observer/domeventobserver.js
 export { default as MouseObserver } from './view/observer/mouseobserver.js';
 export { default as TabObserver } from './view/observer/tabobserver.js';
 export { default as FocusObserver } from './view/observer/focusobserver.js';
+export { default as CompositionObserver } from './view/observer/compositionobserver.js';
 
 export { default as DowncastWriter } from './view/downcastwriter.js';
 export { default as UpcastWriter } from './view/upcastwriter.js';

@@ -72,48 +72,6 @@ export default class CompositionObserver extends DomEventObserver<'compositionst
 		// @if CK_DEBUG_TYPING // 	console.groupEnd();
 		// @if CK_DEBUG_TYPING // }
 	}
-
-	// /**
-	//  * @inheritDoc
-	//  */
-	// TODO should we observe editContext compositionstart/end events?
-	// public override observe( domElement: HTMLElement | EventTarget ): void {
-	// 	super.observe( domElement );
-	//
-	// 	if ( 'editContext' in domElement && isEventTarget( domElement.editContext ) ) {
-	// 		super.observe( domElement.editContext );
-	//
-	// 		// TODO This is a PoC.
-	// 		this.listenTo( domElement.editContext, 'textupdate', ( eventInfo, domEvent ) => {
-	// 			console.log(
-	// 				`The user entered the text: ${ _escapeTextNodeData( domEvent.text ) } ` +
-	// 				`at [${ domEvent.updateRangeStart } - ${ domEvent.updateRangeEnd }] offset.` +
-	// 				`Selection: [${ domEvent.selectionStart } - ${ domEvent.selectionEnd }] offset`
-	// 			);
-	//
-	// 			const parent = this.document.selection.getFirstPosition()!.parent;
-	// 			const parentElement = parent.is( 'element' ) ? parent : parent.parent;
-	//
-	// 			this.document.fire( 'insertText', new DomEventData( this.view, {}, {
-	// 				text: domEvent.text,
-	// 				selection: this.view.createSelection(
-	// 					this.view.createRangeIn( parentElement )
-	// 				)
-	// 			} ) );
-	// 		} );
-	// 	}
-	// }
-	//
-	// /**
-	//  * @inheritDoc
-	//  */
-	// public override stopObserving( domElement: HTMLElement | EventTarget ): void {
-	// 	super.stopObserving( domElement );
-	//
-	// 	if ( 'editContext' in domElement && isEventTarget( domElement.editContext ) ) {
-	// 		super.stopObserving( domElement.editContext );
-	// 	}
-	// }
 }
 
 export interface CompositionEventData extends DomEventData<CompositionEvent> {

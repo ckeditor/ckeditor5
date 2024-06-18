@@ -15,6 +15,7 @@ import InsertTextObserver, { type ViewDocumentInsertTextEvent } from './insertte
 
 import {
 	LiveRange,
+	CompositionObserver,
 	type Model,
 	type Mapper,
 	type Element,
@@ -25,11 +26,12 @@ import {
 	type ViewDocumentCompositionStartEvent,
 	type ViewDocumentCompositionEndEvent,
 	type ViewDocumentKeyDownEvent,
-	type ViewDocumentMutationsEvent, DocumentChangeEvent
+	type ViewDocumentMutationsEvent,
+	type DocumentChangeEvent,
+	type Selection
 } from '@ckeditor/ckeditor5-engine';
 
 import { debounce } from 'lodash-es';
-import EditContextObserver from '@ckeditor/ckeditor5-engine/src/view/observer/editcontextobserver.js';
 
 /**
  * Handles text input coming from the keyboard or other input methods.
@@ -44,6 +46,11 @@ export default class Input extends Plugin {
 	 * TODO
 	 */
 	private _previousEditBlock: Element | null = null;
+
+	/**
+	 * TODO
+	 */
+	private _previousSelection: Selection | null = null;
 
 	/**
 	 * TODO
@@ -75,7 +82,6 @@ export default class Input extends Plugin {
 		this._compositionQueue = new CompositionQueue( editor );
 
 		view.addObserver( InsertTextObserver );
-		view.addObserver( EditContextObserver );
 
 		// TODO The above default configuration value should be defined using editor.config.define() once it's fixed.
 		const insertTextCommand = new InsertTextCommand( editor, editor.config.get( 'typing.undoStep' ) || 20 );
@@ -93,7 +99,7 @@ export default class Input extends Plugin {
 
 			// Flush queue on the next beforeinput event because it could happen
 			// that the mutation observer does not notice the DOM change in time.
-			if ( ( env.isAndroid || env.features.isEditContextSupported ) && view.document.isComposing ) {
+			if ( env.isAndroid && view.document.isComposing ) {
 				this._compositionQueue.flush( 'next beforeinput' );
 			}
 
@@ -113,7 +119,7 @@ export default class Input extends Plugin {
 
 			// Typing in English on Android is firing composition events for the whole typed word.
 			// We need to check the target range text to only apply the difference.
-			if ( env.isAndroid || env.features.isEditContextSupported ) {
+			if ( env.isAndroid ) {
 				const selectedText = Array.from( modelRanges[ 0 ].getItems() ).reduce( ( rangeText, node ) => {
 					return rangeText + ( node.is( '$textProxy' ) ? node.data : '' );
 				}, '' );
@@ -153,7 +159,7 @@ export default class Input extends Plugin {
 			// and we could apply changes to the model and verify if the DOM is valid.
 			// The browser applies changes to the DOM not immediately on beforeinput event.
 			// We just wait for mutation observer to notice changes or as a fallback a timeout.
-			if ( ( env.isAndroid || env.features.isEditContextSupported ) && view.document.isComposing ) {
+			if ( env.isAndroid && view.document.isComposing ) {
 				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 				// @if CK_DEBUG_TYPING // 	console.log( `%c[Input]%c Queue insertText:%c "${ commandData.text }"%c ` +
 				// @if CK_DEBUG_TYPING // 		`[${ commandData.selection.getFirstPosition().path }]-` +
@@ -223,7 +229,7 @@ export default class Input extends Plugin {
 		}
 
 		// Apply composed changes to the model.
-		if ( env.isAndroid || env.features.isEditContextSupported ) {
+		if ( env.isAndroid ) {
 			// Apply changes to the model as they are applied to the DOM by the browser.
 			// On beforeinput event, the DOM is not yet modified. We wait for detected mutations to apply model changes.
 			this.listenTo<ViewDocumentMutationsEvent>( view.document, 'mutations', ( evt, { mutations } ) => {
@@ -311,6 +317,8 @@ export default class Input extends Plugin {
 
 				if ( selectionParent != this._previousEditBlock ) {
 					updateEditBlock = true;
+				} else if ( this._previousSelection && !this._previousSelection.isEqual( selection ) ) {
+					updateEditBlock = true;
 				} else {
 					for ( const change of changes ) {
 						if ( change.type != 'insert' && change.type != 'remove' ) {
@@ -330,51 +338,85 @@ export default class Input extends Plugin {
 				const text = Array.from( selectionParent.getChildren() )
 					.reduce( ( rangeText, element ) => rangeText + ( element.is( '$text' ) ? element.data : ' ' ), '' );
 
-				const editableElement = editor.editing.view.document.selection.editableElement;
+				// const editableElement = editor.editing.view.document.selection.editableElement;
+				const editableElement = editor.editing.view.document.selection.getFirstPosition()!.root as ViewElement;
 
 				this._previousEditBlock = selectionParent;
+				this._previousSelection = model.createSelection( selection );
 
 				if ( !editableElement ) {
 					// TODO
+					throw new Error( 'Should not be possible' );
 				} else {
 					const domElement = editor.editing.view.domConverter.mapViewToDom( editableElement );
 
 					if ( !this._editContext ) {
 						this._editContext = new ( window as any ).EditContext();
 
-						if ( !domElement.editContext ) {
-							domElement.editContext = this._editContext;
+						if ( !( domElement as any ).editContext ) {
+							// TODO this does not work for figcaption or td - DOM throws that it is not supported
+							// https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/editContext#possible_elements
+							( domElement as any ).editContext = this._editContext;
+							// The above won't work for nested editables (contenteditable=false & tabindex=-1 is blocking it)
+							// On Android it falls back to the beforeinput insertCompositionText and handles typing but without EditContext.
+
+							// TODO add stopObserving
+							editor.editing.view.getObserver( CompositionObserver ).observe( this._editContext );
 						}
 
-						this._domEmitter.listenTo( this._editContext, 'textupdate', ( evt, domEvent ) => {
+						this._domEmitter.listenTo( this._editContext, 'textupdate', ( evt, domEvent: any ) => {
+							// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+							// @if CK_DEBUG_TYPING // 	console.group( `%c[Input]%c EditContext "textupdate".`,
+							// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', 'font-weight: bold'
+							// @if CK_DEBUG_TYPING // 	);
+							// @if CK_DEBUG_TYPING // }
+
 							console.log(
 								`The user entered the text: ${ _escapeTextNodeData( domEvent.text ) } ` +
 								`at [${ domEvent.updateRangeStart } - ${ domEvent.updateRangeEnd }] offset.` +
 								`Selection: [${ domEvent.selectionStart } - ${ domEvent.selectionEnd }] offset`
 							);
 
-							editor.execute( 'insertText', {
+							const commandData = {
 								text: domEvent.text,
 								selection: model.createSelection(
 									model.createRange(
-										model.createPositionAt( this._previousEditBlock, domEvent.updateRangeStart ),
-										model.createPositionAt( this._previousEditBlock, domEvent.updateRangeEnd )
+										model.createPositionAt( this._previousEditBlock!, domEvent.updateRangeStart ),
+										model.createPositionAt( this._previousEditBlock!, domEvent.updateRangeEnd )
 									)
 								)
-							} );
+							};
+
+							// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+							// @if CK_DEBUG_TYPING // 	console.log( `%c[Input]%c Execute insertText:%c "${ commandData.text }"%c ` +
+							// @if CK_DEBUG_TYPING // 		`[${ commandData.selection.getFirstPosition().path }]-` +
+							// @if CK_DEBUG_TYPING // 		`[${ commandData.selection.getLastPosition().path }]`,
+							// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', 'font-weight: bold', 'color: blue', ''
+							// @if CK_DEBUG_TYPING // 	);
+							// @if CK_DEBUG_TYPING // }
+
+							editor.execute( 'insertText', commandData );
+
+							// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+							// @if CK_DEBUG_TYPING // 	console.groupEnd();
+							// @if CK_DEBUG_TYPING // }
 						} );
 					}
-					else if ( !domElement.editContext ) {
-						domElement.editContext = this._editContext;
+					else if ( !( domElement as any ).editContext ) {
+						( domElement as any ).editContext = this._editContext;
 					}
 
 					// TODO this probably should be granular
 
 					if ( this._editContext.text != text ) {
-						console.log( 'update text', text );
+						console.log( 'EditContext update text', text );
 						this._editContext.updateText( 0, this._editContext.text.length, text );
 					}
 
+					console.log( 'EditContext update selection',
+						modelSelection.getFirstPosition()!.offset,
+						modelSelection.getLastPosition()!.offset
+					);
 					this._editContext.updateSelection(
 						modelSelection.getFirstPosition()!.offset,
 						modelSelection.getLastPosition()!.offset
@@ -621,7 +663,7 @@ type InsertTextCommandLiveOptions = {
 	selectionRanges?: Array<LiveRange>;
 };
 
-function _escapeTextNodeData( text ) {
+function _escapeTextNodeData( text: string ) {
 	const escapedText = text
 		.replace( /&/g, '&amp;' )
 		.replace( /\u00A0/g, '&nbsp;' )
