@@ -302,12 +302,6 @@ const tasks = new Listr( [
 					}
 				},
 				{
-					title: 'Removing ZIP source.',
-					task: () => {
-						return fs.remove( RELEASE_ZIP_DIRECTORY );
-					}
-				},
-				{
 					title: 'Removing local typings.',
 					task: () => {
 						return tools.shExec( 'yarn run release:clean', { async: true, verbosity: 'silent' } );
