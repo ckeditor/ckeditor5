@@ -34,12 +34,12 @@ describe( 'viewToPlainText()', () => {
 		);
 	} );
 
-	it( 'should not put empty line before or after the inline container element', () => {
+	it( 'should not put empty line before or after the element with `dataPipeline:transparentRendering` property', () => {
 		const viewString = 'Abc <container:h1>Header</container:h1> xyz';
 		const expectedText = 'Abc Header xyz';
 
 		const view = parseView( viewString );
-		view.getChild( 1 )._setCustomProperty( '$inlineContainer', true );
+		view.getChild( 1 )._setCustomProperty( 'dataPipeline:transparentRendering', true );
 
 		const text = viewToPlainText( view );
 

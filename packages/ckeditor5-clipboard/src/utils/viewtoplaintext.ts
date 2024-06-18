@@ -86,9 +86,9 @@ function newLinePadding(
 		return '\n';
 	}
 
-	// Do not add padding between inline container elements.
-	if ( ( element.is( 'containerElement' ) && element.getCustomProperty( '$inlineContainer' ) ) ||
-		( previous.is( 'containerElement' ) && previous.getCustomProperty( '$inlineContainer' ) ) ) {
+	// Do not add padding around the elements that won't be rendered.
+	if ( ( element.is( 'element' ) && element.getCustomProperty( 'dataPipeline:transparentRendering' ) ) ||
+		( previous.is( 'element' ) && previous.getCustomProperty( 'dataPipeline:transparentRendering' ) ) ) {
 		return '';
 	}
 
