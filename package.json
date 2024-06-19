@@ -202,6 +202,7 @@
     "changelog": "node ./scripts/release/changelog.js",
     "release:prepare-packages": "node ./scripts/release/preparepackages.js",
     "release:publish-packages": "node ./scripts/release/publishpackages.js",
+    "release:deploy-cdn": "node ./scripts/release/deploycdn.js",
     "release:lint-packages": "node ./scripts/release/validatepackages.js",
     "release:switch-latest": "node ./scripts/release/switchlatest.js",
     "release:clean": "node ./scripts/release/clean.js",

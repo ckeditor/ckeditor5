@@ -10,6 +10,7 @@
 'use strict';
 
 const upath = require( 'upath' );
+const fs = require( 'fs-extra' );
 const { EventEmitter } = require( 'events' );
 const releaseTools = require( '@ckeditor/ckeditor5-dev-release-tools' );
 const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
@@ -25,7 +26,13 @@ const updatePackageEntryPoint = require( './utils/updatepackageentrypoint' );
 const prepareDllBuildsCallback = require( './utils/preparedllbuildscallback' );
 const buildCKEditor5BuildsCallback = require( './utils/buildckeditor5buildscallback' );
 const getListrOptions = require( './utils/getlistroptions' );
-const { PACKAGES_DIRECTORY, RELEASE_DIRECTORY } = require( './utils/constants' );
+const {
+	PACKAGES_DIRECTORY,
+	RELEASE_DIRECTORY,
+	RELEASE_CDN_DIRECTORY,
+	RELEASE_ZIP_DIRECTORY,
+	RELEASE_NPM_DIRECTORY
+} = require( './utils/constants' );
 
 const cliArguments = parseArguments( process.argv.slice( 2 ) );
 
@@ -72,8 +79,40 @@ const tasks = new Listr( [
 		}
 	},
 	{
+		title: 'Check the release directory.',
+		task: async ( ctx, task ) => {
+			const isAvailable = await fs.exists( RELEASE_DIRECTORY );
+
+			if ( !isAvailable ) {
+				return fs.ensureDir( RELEASE_DIRECTORY );
+			}
+
+			const isEmpty = ( await fs.readdir( RELEASE_DIRECTORY ) ).length === 0;
+
+			if ( isEmpty ) {
+				return Promise.resolve();
+			}
+
+			// Do not ask when running on CI.
+			if ( cliArguments.ci ) {
+				return fs.emptyDir( RELEASE_DIRECTORY );
+			}
+
+			const shouldContinue = await task.prompt( {
+				type: 'Confirm',
+				message: 'The release directory must be empty. Continue and remove all files?'
+			} );
+
+			if ( !shouldContinue ) {
+				return Promise.reject( 'Aborting as requested.' );
+			}
+
+			return fs.emptyDir( RELEASE_DIRECTORY );
+		}
+	},
+	{
 		title: 'Preparation phase.',
-		task: ( _, task ) => {
+		task: ( ctx, task ) => {
 			return task.newListr( [
 				{
 					title: 'Updating "version" value.',
@@ -117,7 +156,7 @@ const tasks = new Listr( [
 	},
 	{
 		title: 'Compilation phase.',
-		task: ( _, task ) => {
+		task: ( ctx, task ) => {
 			return task.newListr( [
 				{
 					title: 'Preparing the "ckeditor5" package files.',
@@ -188,10 +227,65 @@ const tasks = new Listr( [
 					task: ( ctx, task ) => {
 						return releaseTools.executeInParallel( {
 							packagesDirectory: RELEASE_DIRECTORY,
+							packagesDirectoryFilter: packageDirectory => {
+								return upath.basename( packageDirectory ).startsWith( 'ckeditor5' );
+							},
 							listrTask: task,
 							taskToExecute: prepareDllBuildsCallback,
-							concurrency: cliArguments.concurrency
+							concurrency: cliArguments.concurrency,
+							taskOptions: {
+								RELEASE_CDN_DIRECTORY
+							}
 						} );
+					}
+				},
+				{
+					title: 'Moving packages to npm release directory.',
+					task: async () => {
+						const movePromises = ( await fs.readdir( RELEASE_DIRECTORY ) )
+							.filter( packageSlug => packageSlug.startsWith( 'ckeditor5' ) )
+							.map( packageSlug => {
+								return fs.move(
+									upath.join( RELEASE_DIRECTORY, packageSlug ),
+									upath.join( RELEASE_NPM_DIRECTORY, packageSlug )
+								);
+							} );
+
+						return Promise.all( movePromises );
+					}
+				},
+				{
+					title: 'Preparing CDN files.',
+					task: async () => {
+						// Complete the DLL build by adding the root, `ckeditor5` package.
+						await fs.copy( `${ RELEASE_NPM_DIRECTORY }/ckeditor5/build`, `./${ RELEASE_CDN_DIRECTORY }/dll/ckeditor5-dll/` );
+
+						// CKEditor 5 CDN.
+						await fs.copy( './dist/browser', `./${ RELEASE_CDN_DIRECTORY }/` );
+						await fs.copy( './dist/translations', `./${ RELEASE_CDN_DIRECTORY }/translations/` );
+
+						// CKEditor 5 ZIP.
+						await fs.copy( './dist/browser', `./${ RELEASE_ZIP_DIRECTORY }/ckeditor5/` );
+						await fs.copy( './dist/translations', `./${ RELEASE_ZIP_DIRECTORY }/ckeditor5/translations/` );
+						await fs.copy( './scripts/release/assets/zip', `./${ RELEASE_ZIP_DIRECTORY }/` );
+
+						await fs.ensureDir( `./${ RELEASE_CDN_DIRECTORY }/zip` );
+
+						const zipName = cliArguments.nightly ? 'ckeditor5-nightly' : `ckeditor5-${ latestVersion }`;
+
+						await tools.shExec(
+							`zip -r ../../${ RELEASE_CDN_DIRECTORY }/zip/${ zipName }.zip ./*`,
+							{ verbosity: 'error', cwd: RELEASE_ZIP_DIRECTORY }
+						);
+					},
+					skip: () => {
+						// When preparing a non-stable release, skip building CDNs.
+						// Right now, we only provide CDN for stable and nightly releases.
+						if ( cliArguments.nightlyAlpha ) {
+							return true;
+						}
+
+						return false;
 					}
 				}
 			], taskOptions );
@@ -199,13 +293,13 @@ const tasks = new Listr( [
 	},
 	{
 		title: 'Clean up phase.',
-		task: ( _, task ) => {
+		task: ( ctx, task ) => {
 			return task.newListr( [
 				{
-					title: 'Removing files that will not be published.',
+					title: 'Removing files that will not be published to npm.',
 					task: () => {
 						return releaseTools.cleanUpPackages( {
-							packagesDirectory: RELEASE_DIRECTORY,
+							packagesDirectory: RELEASE_NPM_DIRECTORY,
 							packageJsonFieldsToRemove: defaults => [ ...defaults, 'engines' ]
 						} );
 					}
