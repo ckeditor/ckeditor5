@@ -270,8 +270,11 @@ const tasks = new Listr( [
 						await fs.copy( './scripts/release/assets/zip', `./${ RELEASE_ZIP_DIRECTORY }/` );
 
 						await fs.ensureDir( `./${ RELEASE_CDN_DIRECTORY }/zip` );
+
+						const zipName = cliArguments.nightly ? 'ckeditor5-nightly' : `ckeditor5-${ latestVersion }`;
+
 						await tools.shExec(
-							`zip -r ../../${ RELEASE_CDN_DIRECTORY }/zip/ckeditor5-${ latestVersion }.zip ./*`,
+							`zip -r ../../${ RELEASE_CDN_DIRECTORY }/zip/${ zipName }.zip ./*`,
 							{ verbosity: 'error', cwd: RELEASE_ZIP_DIRECTORY }
 						);
 					},
