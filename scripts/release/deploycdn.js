@@ -22,7 +22,7 @@ const version = cliArguments.nightly ? 'nightly' : packageJsonVersion;
 
 const tasks = new Listr( [
 	{
-		title: 'Upload files to CDN',
+		title: 'Upload files to CDN.',
 		task: () => {
 			return tools.shExec(
 				`aws s3 cp ./${ RELEASE_CDN_DIRECTORY }/ s3://${ CDN_S3_BUCKET }/ckeditor5/${ version }/ ${ S3_COPY_ARGS }`,
