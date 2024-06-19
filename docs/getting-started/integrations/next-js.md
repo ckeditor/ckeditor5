@@ -23,7 +23,7 @@ The easiest way to use CKEditor&nbsp;5 in your Next.js application is configurin
 * the preferred framework (React, Angular, Vue or Vanilla JS),
 * the preferred distribution method.
 
-You get ready-to-use code tailored to your needs! You can take the output from the builder, specifically the npm React snippet, and follow the npm path below. Just replace the content of the `components/custom-editor.js` file. The snippet may contain client-side hooks, so don't forget about adding the `'use client'` directive.
+You get ready-to-use code tailored to your needs! You can take the output from the builder, specifically the npm React snippet, and follow the npm path below. Just replace the content of the `components/custom-editor.js` file. The snippet may contain client-side hooks, so don't forget about adding the `'use client'` directive in the case of the App Router.
 
 ## Setting up the project
 
