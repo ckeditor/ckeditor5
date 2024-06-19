@@ -307,6 +307,7 @@ workflows:
               only:
                 - master
                 - stable
+                - release
 
   nightly:
     when: << pipeline.parameters.isNightly >>
