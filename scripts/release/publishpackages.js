@@ -15,7 +15,7 @@ const { provideToken } = require( '@ckeditor/ckeditor5-dev-release-tools/lib/uti
 const { Listr } = require( 'listr2' );
 const validateDependenciesVersions = require( './utils/validatedependenciesversions' );
 const parseArguments = require( './utils/parsearguments' );
-const { CKEDITOR5_ROOT_PATH, RELEASE_DIRECTORY } = require( './utils/constants' );
+const { CKEDITOR5_ROOT_PATH, RELEASE_NPM_DIRECTORY } = require( './utils/constants' );
 const getListrOptions = require( './utils/getlistroptions' );
 
 const cliArguments = parseArguments( process.argv.slice( 2 ) );
@@ -30,7 +30,7 @@ const tasks = new Listr( [
 		title: 'Validating CKEditor 5 packages.',
 		task: () => {
 			return validateDependenciesVersions( {
-				packagesDirectory: RELEASE_DIRECTORY,
+				packagesDirectory: RELEASE_NPM_DIRECTORY,
 				version: latestVersion
 			} );
 		}
@@ -39,7 +39,7 @@ const tasks = new Listr( [
 		title: 'Publishing packages.',
 		task: async ( _, task ) => {
 			return releaseTools.publishPackages( {
-				packagesDirectory: RELEASE_DIRECTORY,
+				packagesDirectory: RELEASE_NPM_DIRECTORY,
 				npmOwner: 'ckeditor',
 				npmTag: cliArguments.npmTag,
 				listrTask: task,
