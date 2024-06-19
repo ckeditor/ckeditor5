@@ -17,6 +17,7 @@ const { CKEDITOR5_ROOT_PATH, CDN_S3_BUCKET, S3_COPY_ARGS, RELEASE_CDN_DIRECTORY 
 const cliArguments = parseArguments( process.argv.slice( 2 ) );
 
 const { version: packageJsonVersion } = require( upath.join( CKEDITOR5_ROOT_PATH, './package.json' ) );
+const getListrOptions = require( './utils/getlistroptions' );
 const version = cliArguments.nightly ? 'nightly' : packageJsonVersion;
 
 const tasks = new Listr( [
@@ -29,7 +30,7 @@ const tasks = new Listr( [
 			);
 		}
 	}
-] );
+], getListrOptions( cliArguments ) );
 
 ( async () => {
 	try {
