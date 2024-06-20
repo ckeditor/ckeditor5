@@ -164,6 +164,7 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 
 	/**
 	 * Aria-pressed attribute of element. It is calculated based on {@link #isToggleable isToggleable} and {@link #role}.
+	 * It's set to true if the button is on and the role is not checkable.
 	 *
 	 * @readonly
 	 * @internal
@@ -172,6 +173,7 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 
 	/**
 	 * Aria-checked attribute of element. It is calculated based on {@link #isToggleable isToggleable} and {@link #role}.
+	 * It's set to true if the button is on and the role is checkable.
 	 *
 	 * @readonly
 	 * @internal
