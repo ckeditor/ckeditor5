@@ -56,6 +56,11 @@
 		}
 	}
 
+	/*
+	 * Top level menu buttons are styled differently when focused or active.
+	 * They should be highlighted after clicking, without looking at keyboard focus interaction.
+	 * It's because it should indicate that the menu might be opened after pressing the arrow down keyboard button.
+	 */
 	& .ck-menu-bar__menu_top-level > .ck-list-item-button,
 	&.ck-menu-bar_keyboard-focus-interaction .ck-list-item-button {
 		&:focus,

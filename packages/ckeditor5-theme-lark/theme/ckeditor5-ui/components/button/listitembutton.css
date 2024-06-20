@@ -12,7 +12,7 @@
 		color: inherit;
 	}
 
-	/**
+	/*
 	 * `.ck-on` class and background styling is overridden for `ck-button` in many places.
 	 * This is a workaround to make sure that the background is not overridden and uses similar
 	 * selector specificity as the other overrides.
