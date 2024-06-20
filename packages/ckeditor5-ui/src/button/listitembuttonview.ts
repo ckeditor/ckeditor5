@@ -4,7 +4,7 @@
  */
 
 /**
- * @module ui/button/buttonlistitemview
+ * @module ui/button/listitembuttonview
  */
 
 import type { ObservableChangeEvent, Locale } from '@ckeditor/ckeditor5-utils';
