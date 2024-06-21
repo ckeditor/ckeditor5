@@ -14,18 +14,19 @@ const { Listr } = require( 'listr2' );
 const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
 const parseArguments = require( './utils/parsearguments' );
 const { CKEDITOR5_ROOT_PATH, CDN_S3_BUCKET, S3_COPY_ARGS, RELEASE_CDN_DIRECTORY } = require( './utils/constants' );
-const cliArguments = parseArguments( process.argv.slice( 2 ) );
-
-const { version: packageJsonVersion } = require( upath.join( CKEDITOR5_ROOT_PATH, './package.json' ) );
+const getCdnVersion = require( './utils/getcdnversion' );
 const getListrOptions = require( './utils/getlistroptions' );
-const version = cliArguments.nightly ? 'nightly' : packageJsonVersion;
+
+const cliArguments = parseArguments( process.argv.slice( 2 ) );
+const { version: packageJsonVersion } = require( upath.join( CKEDITOR5_ROOT_PATH, './package.json' ) );
+const cdnVersion = getCdnVersion( cliArguments, packageJsonVersion );
 
 const tasks = new Listr( [
 	{
 		title: 'Upload files to CDN.',
 		task: () => {
 			return tools.shExec(
-				`aws s3 cp ./${ RELEASE_CDN_DIRECTORY }/ s3://${ CDN_S3_BUCKET }/ckeditor5/${ version }/ ${ S3_COPY_ARGS }`,
+				`aws s3 cp ./${ RELEASE_CDN_DIRECTORY }/ s3://${ CDN_S3_BUCKET }/ckeditor5/${ cdnVersion }/ ${ S3_COPY_ARGS }`,
 				{ verbosity: 'error' }
 			);
 		}
