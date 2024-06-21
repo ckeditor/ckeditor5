@@ -18,7 +18,3 @@
 .ck[class*="ck-heading_heading"] {
 	font-weight: bold;
 }
-
-.ck.ck-list__item > .ck-button[class*="ck-heading_heading"] .ck-button__label {
-	line-height: var(--ck-font-size-large);
-}
