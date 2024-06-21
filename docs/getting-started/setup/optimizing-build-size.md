@@ -128,3 +128,308 @@ import tableTranslations from '@ckeditor/ckeditor5-table/dist/translations/<LANG
 As with styles, the rule of thumb is to import translations from all the individual packages from which you import the editor features. For example, if you import the `Bold` feature from the `@ckeditor/ckeditor5-basic-styles/dist/index.js` package, you should also import the translations from the `@ckeditor/ckeditor5-basic-styles/translations/<LANGUAGE>.js` file.
 
 Some plugins may not have translations. In such cases, you do not need to import translations for them.
+
+## The result
+
+Let's see how the build size changes after applying the above optimizations to a sample project with `ClassicEditor` and a variety of free and premium features and Polish translations.
+
+<details>
+<summary>Code before optimization</summary>
+
+```js
+	import {
+	ClassicEditor,
+	Essentials,
+	CKFinderUploadAdapter,
+	Autoformat,
+	Bold,
+	Italic,
+	BlockQuote,
+	CKBox,
+	CKFinder,
+	EasyImage,
+	Heading,
+	Image,
+	ImageCaption,
+	ImageStyle,
+	ImageToolbar,
+	ImageUpload,
+	PictureEditing,
+	Indent,
+	Link,
+	List,
+	MediaEmbed,
+	Paragraph,
+	PasteFromOffice,
+	Table,
+	TableToolbar,
+	TextTransformation,
+	CloudServices,
+	Mention
+} from 'ckeditor5';
+
+import { CaseChange, SlashCommand } from 'ckeditor5-premium-features';
+
+import coreTranslations from 'ckeditor5/translations/pl.js';
+import commercialTranslations from 'ckeditor5-premium-features/translations/pl.js';
+
+import 'ckeditor5/ckeditor5.css';
+import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
+
+ClassicEditor.create( document.querySelector( '#editor' ) as HTMLElement, {
+	plugins: [
+		Essentials,
+		CKFinderUploadAdapter,
+		Autoformat,
+		Bold,
+		Italic,
+		BlockQuote,
+		CKBox,
+		CKFinder,
+		CloudServices,
+		EasyImage,
+		Heading,
+		Image,
+		ImageCaption,
+		ImageStyle,
+		ImageToolbar,
+		ImageUpload,
+		Indent,
+		Link,
+		List,
+		MediaEmbed,
+		Paragraph,
+		PasteFromOffice,
+		PictureEditing,
+		Table,
+		TableToolbar,
+		TextTransformation,
+		Mention,
+
+		CaseChange,
+		SlashCommand
+	],
+	licenseKey: '<LICENSE_KEY>', // Replace this with your license key.
+	toolbar: {
+		items: [
+			'undo', 'redo',
+			'|', 'heading',
+			'|', 'bold', 'italic',
+			'|', 'link', 'uploadImage', 'insertTable', 'blockQuote', 'mediaEmbed',
+			'|', 'bulletedList', 'numberedList', 'outdent', 'indent', 'caseChange'
+		]
+	},
+	image: {
+		toolbar: [
+			'imageStyle:inline',
+			'imageStyle:block',
+			'imageStyle:side',
+			'|',
+			'toggleImageCaption',
+			'imageTextAlternative'
+		]
+	},
+	table: {
+		contentToolbar: [
+			'tableColumn',
+			'tableRow',
+			'mergeTableCells'
+		]
+	},
+	translations: [
+		coreTranslations,
+		commercialTranslations
+	],
+	language: 'pl'
+} );
+```
+</details>
+
+<details>
+<summary>Code after optimization</summary>
+
+```js
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/dist/index.js';
+import { Essentials } from '@ckeditor/ckeditor5-essentials/dist/index.js';
+import { CKFinderUploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder/dist/index.js';
+import { Autoformat } from '@ckeditor/ckeditor5-autoformat/dist/index.js';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles/dist/index.js';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote/dist/index.js';
+import { CKBox } from '@ckeditor/ckeditor5-ckbox/dist/index.js';
+import { CKFinder } from '@ckeditor/ckeditor5-ckfinder/dist/index.js';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services/dist/index.js';
+import { EasyImage } from '@ckeditor/ckeditor5-easy-image/dist/index.js';
+import { Heading } from '@ckeditor/ckeditor5-heading/dist/index.js';
+import { Image, ImageCaption, ImageStyle, ImageToolbar, ImageUpload, PictureEditing } from '@ckeditor/ckeditor5-image/dist/index.js';
+import { Indent } from '@ckeditor/ckeditor5-indent/dist/index.js';
+import { Link } from '@ckeditor/ckeditor5-link/dist/index.js';
+import { List } from '@ckeditor/ckeditor5-list/dist/index.js';
+import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed/dist/index.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/dist/index.js';
+import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office/dist/index.js';
+import { Table, TableToolbar } from '@ckeditor/ckeditor5-table/dist/index.js';
+import { TextTransformation } from '@ckeditor/ckeditor5-typing/dist/index.js';
+import { Mention } from '@ckeditor/ckeditor5-mention/dist/index.js';
+import { CaseChange } from '@ckeditor/ckeditor5-case-change/dist/index.js';
+import { SlashCommand } from '@ckeditor/ckeditor5-slash-command/dist/index.js';
+
+import clipboardTranslations from '@ckeditor/ckeditor5-clipboard/dist/translations/pl.js';
+import coreTranslations from '@ckeditor/ckeditor5-core/dist/translations/pl.js';
+import enterTranslations from '@ckeditor/ckeditor5-enter/dist/translations/pl.js';
+import selectAllTranslations from '@ckeditor/ckeditor5-select-all/dist/translations/pl.js';
+import uiTranslations from '@ckeditor/ckeditor5-ui/dist/translations/pl.js';
+import undoTranslations from '@ckeditor/ckeditor5-undo/dist/translations/pl.js';
+import uploadTranslations from '@ckeditor/ckeditor5-upload/dist/translations/pl.js';
+import widgetTranslations from '@ckeditor/ckeditor5-widget/dist/translations/pl.js';
+import autoformatTranslations from '@ckeditor/ckeditor5-autoformat/dist/translations/pl.js';
+import basicStylesTranslations from '@ckeditor/ckeditor5-basic-styles/dist/translations/pl.js';
+import blockQuoteTranslations from '@ckeditor/ckeditor5-block-quote/dist/translations/pl.js';
+import ckboxTranslations from '@ckeditor/ckeditor5-ckbox/dist/translations/pl.js';
+import ckfinderTranslations from '@ckeditor/ckeditor5-ckfinder/dist/translations/pl.js';
+import headingTranslations from '@ckeditor/ckeditor5-heading/dist/translations/pl.js';
+import imageTranslations from '@ckeditor/ckeditor5-image/dist/translations/pl.js';
+import indentTranslations from '@ckeditor/ckeditor5-indent/dist/translations/pl.js';
+import linkTranslations from '@ckeditor/ckeditor5-link/dist/translations/pl.js';
+import listTranslations from '@ckeditor/ckeditor5-list/dist/translations/pl.js';
+import mediaEmbedTranslations from '@ckeditor/ckeditor5-media-embed/dist/translations/pl.js';
+import tableTranslations from '@ckeditor/ckeditor5-table/dist/translations/pl.js';
+import caseChangeTranslations from '@ckeditor/ckeditor5-case-change/dist/translations/pl.js';
+import slashCommandTranslations from '@ckeditor/ckeditor5-slash-command/dist/translations/pl.js';
+
+import '@ckeditor/ckeditor5-theme-lark/dist/index.css';
+import '@ckeditor/ckeditor5-clipboard/dist/index.css';
+import '@ckeditor/ckeditor5-core/dist/index.css';
+import '@ckeditor/ckeditor5-engine/dist/index.css';
+import '@ckeditor/ckeditor5-enter/dist/index.css';
+import '@ckeditor/ckeditor5-paragraph/dist/index.css';
+import '@ckeditor/ckeditor5-select-all/dist/index.css';
+import '@ckeditor/ckeditor5-typing/dist/index.css';
+import '@ckeditor/ckeditor5-ui/dist/index.css';
+import '@ckeditor/ckeditor5-undo/dist/index.css';
+import '@ckeditor/ckeditor5-upload/dist/index.css';
+import '@ckeditor/ckeditor5-utils/dist/index.css';
+import '@ckeditor/ckeditor5-watchdog/dist/index.css';
+import '@ckeditor/ckeditor5-widget/dist/index.css';
+import '@ckeditor/ckeditor5-editor-classic/dist/index.css';
+import '@ckeditor/ckeditor5-essentials/dist/index.css';
+import '@ckeditor/ckeditor5-adapter-ckfinder/dist/index.css';
+import '@ckeditor/ckeditor5-autoformat/dist/index.css';
+import '@ckeditor/ckeditor5-basic-styles/dist/index.css';
+import '@ckeditor/ckeditor5-block-quote/dist/index.css';
+import '@ckeditor/ckeditor5-ckbox/dist/index.css';
+import '@ckeditor/ckeditor5-ckfinder/dist/index.css';
+import '@ckeditor/ckeditor5-cloud-services/dist/index.css';
+import '@ckeditor/ckeditor5-easy-image/dist/index.css';
+import '@ckeditor/ckeditor5-heading/dist/index.css';
+import '@ckeditor/ckeditor5-image/dist/index.css';
+import '@ckeditor/ckeditor5-indent/dist/index.css';
+import '@ckeditor/ckeditor5-link/dist/index.css';
+import '@ckeditor/ckeditor5-list/dist/index.css';
+import '@ckeditor/ckeditor5-media-embed/dist/index.css';
+import '@ckeditor/ckeditor5-paragraph/dist/index.css';
+import '@ckeditor/ckeditor5-paste-from-office/dist/index.css';
+import '@ckeditor/ckeditor5-table/dist/index.css';
+import '@ckeditor/ckeditor5-typing/dist/index.css';
+import '@ckeditor/ckeditor5-mention/dist/index.css';
+import '@ckeditor/ckeditor5-case-change/dist/index.css';
+import '@ckeditor/ckeditor5-slash-command/dist/index.css';
+
+ClassicEditor.create( document.querySelector( '#editor' ) as HTMLElement, {
+	plugins: [
+		Essentials,
+		CKFinderUploadAdapter,
+		Autoformat,
+		Bold,
+		Italic,
+		BlockQuote,
+		CKBox,
+		CKFinder,
+		CloudServices,
+		EasyImage,
+		Heading,
+		Image,
+		ImageCaption,
+		ImageStyle,
+		ImageToolbar,
+		ImageUpload,
+		Indent,
+		Link,
+		List,
+		MediaEmbed,
+		Paragraph,
+		PasteFromOffice,
+		PictureEditing,
+		Table,
+		TableToolbar,
+		TextTransformation,
+		Mention,
+
+		CaseChange,
+		SlashCommand
+	],
+	licenseKey: '<LICENSE_KEY>', // Replace this with your license key.
+	toolbar: {
+		items: [
+			'undo', 'redo',
+			'|', 'heading',
+			'|', 'bold', 'italic',
+			'|', 'link', 'uploadImage', 'insertTable', 'blockQuote', 'mediaEmbed',
+			'|', 'bulletedList', 'numberedList', 'outdent', 'indent', 'caseChange'
+		]
+	},
+	image: {
+		toolbar: [
+			'imageStyle:inline',
+			'imageStyle:block',
+			'imageStyle:side',
+			'|',
+			'toggleImageCaption',
+			'imageTextAlternative'
+		]
+	},
+	table: {
+		contentToolbar: [
+			'tableColumn',
+			'tableRow',
+			'mergeTableCells'
+		]
+	},
+	translations: [
+		clipboardTranslations,
+		coreTranslations,
+		enterTranslations,
+		selectAllTranslations,
+		uiTranslations,
+		undoTranslations,
+		uploadTranslations,
+		widgetTranslations,
+		autoformatTranslations,
+		basicStylesTranslations,
+		blockQuoteTranslations,
+		ckboxTranslations,
+		ckfinderTranslations,
+		headingTranslations,
+		imageTranslations,
+		indentTranslations,
+		linkTranslations,
+		listTranslations,
+		mediaEmbedTranslations,
+		tableTranslations,
+		caseChangeTranslations,
+		slashCommandTranslations,
+	],
+	language: 'pl'
+} );
+```
+</details>
+
+The build size of the project before and after the optimizations is as follows:
+
+|                    	| Before optimization 	| After optimization 	| Improvement 	|
+|--------------------	|---------------------	|--------------------	|-------------	|
+| JavaScript         	| 1,248.02 kB         	| 1,029.01 kB        	| -17.55%     	|
+| CSS                	| 340.45 kB           	| 172.84 kB          	| -49.23%     	|
+| JavaScript gzipped 	| 343.56 kB           	| 288.84 kB          	| -15.93%     	|
+| CSS gzipped        	| 46.16 kB            	| 28.71 kB           	| -37.80%     	|
+
+In summary, with the above optimizations, we managed to reduce the total build size by `386,62 kB`  (`72.17 kB` gzipped), which is ~80% of the original size. These results will vary depending on the features you use.
