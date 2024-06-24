@@ -26,6 +26,7 @@ const updatePackageEntryPoint = require( './utils/updatepackageentrypoint' );
 const prepareDllBuildsCallback = require( './utils/preparedllbuildscallback' );
 const buildCKEditor5BuildsCallback = require( './utils/buildckeditor5buildscallback' );
 const getListrOptions = require( './utils/getlistroptions' );
+const getCdnVersion = require( './utils/getcdnversion' );
 const {
 	PACKAGES_DIRECTORY,
 	RELEASE_DIRECTORY,
@@ -271,7 +272,8 @@ const tasks = new Listr( [
 
 						await fs.ensureDir( `./${ RELEASE_CDN_DIRECTORY }/zip` );
 
-						const zipName = cliArguments.nightly ? 'ckeditor5-nightly' : `ckeditor5-${ latestVersion }`;
+						const cdnVersion = getCdnVersion( cliArguments, latestVersion );
+						const zipName = `ckeditor5-${ cdnVersion }`;
 
 						await tools.shExec(
 							`zip -r ../../${ RELEASE_CDN_DIRECTORY }/zip/${ zipName }.zip ./*`,
