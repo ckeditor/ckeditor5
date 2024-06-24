@@ -26,7 +26,7 @@ import { /* ... */ } from 'ckeditor5';
 import { /* ... */ } from 'ckeditor5-premium-features';
 ```
 
-These two packages export all the editor features, and most of them are tree-shakeable. However, there is some code that may be added to the build even if it is not used. To ensure that the unused code is not imported, you can import the editor features directly from the packages that contain them.
+These two packages export all the editor features, and most are tree-shakeable. However, some code may be added to the build even if it is not used. To ensure that the unused code is not imported, you can import the editor features directly from the packages that contain them.
 
 For example, if you are using the classic editor type with the bold, italic, and table features, you can change the imports like this:
 
