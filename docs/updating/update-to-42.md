@@ -16,7 +16,7 @@ modified_at: 2024-06-06
 
 ## Update to CKEditor&nbsp;5 v42.0.0
 
-_Released on June 18, 2024._
+_Released on June 26, 2024._
 
 For the entire list of changes introduced in version 42.0.0, see the [release notes for CKEditor&nbsp;5 v42.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v42.0.0).
 
