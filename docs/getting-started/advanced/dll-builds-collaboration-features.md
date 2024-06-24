@@ -1,6 +1,6 @@
 ---
 menu-title: DLL builds for Collaboration Features
-meta-title: CKEditor 5 DLL builds for CKEditor 5 Collaboration Features | Legacy CKEditor 5 documentation
+meta-title: DLL builds for Collaboration Features | Legacy CKEditor 5 documentation
 category: alternative-setups
 order: 30
 modified_at: 2022-02-21
