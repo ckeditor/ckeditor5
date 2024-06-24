@@ -317,15 +317,15 @@ What we will sunset on this date:
 
 To migrate your project to the new installation methods, you can follow the instructions below.
 
-First, proceed with migrating your project, depending on the old installation method you are using.
+First, if you maintain any CKEditor&nbsp;5 custom plugins as separate packages, whether in a monorepo setup or published to npm, you need to migrate them:
+
+* {@link updating/nim-migration/custom-plugins Migrating custom plugins}.
+
+Second, proceed with migrating your project, depending on the old installation method you are using.
 
 * {@link updating/nim-migration/predefined-builds Migrating from predefined builds}.
 * {@link updating/nim-migration/customized-builds Migrating from customized builds}.
 * {@link updating/nim-migration/dll-builds Migrating from DLL builds}.
-
-Second, if you maintain any CKEditor&nbsp;5 custom plugins **and publish them to npm** for you need to update them as well:
-
-* {@link updating/nim-migration/custom-plugins Migrating custom plugins}.
 
 Finally, if you use our React, Vue or Angular integrations, you also need to update them:
 
