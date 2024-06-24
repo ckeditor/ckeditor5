@@ -94,11 +94,11 @@ ClassicEditor
 	} );
 ```
 
-It may seem strange to show the webpack configuration in an example of the old installation methods, but for many it was a necessary part of the setup to handle translations, CSS, and SVG files. This setup could be even more complex if you wanted to use TypeScript.
+It may seem strange to show the webpack configuration in an example of the old installation methods, but it was a necessary part of the setup to handle translations, CSS, and SVG files. This setup could be even more complex if you wanted to use TypeScript.
 
 ## New installation methods
 
-In the new installation methods we have reduced the number of possible paths to just two: **npm packages and browser builds**. Unlike before, both methods no longer require you to add dozens of individual packages or JavaScript bundles to get the editor up and running. Instead, you can import the editor and all our open source plugins from the `ckeditor5` package and the premium features from `ckeditor5-premium-features`. You also need not to worry about webpack or Vite configurations, as the new installation methods are designed to work out-of-the-box with any modern bundler or JavaScript meta-framework.
+In the new installation methods we have reduced the number of possible paths to just two: **npm packages and browser builds**. Unlike before, both methods no longer require you to add dozens of individual packages or JavaScript bundles to get the editor up and running. Instead, you can import the editor and all our open source plugins from the `ckeditor5` package and the premium features from `ckeditor5-premium-features`. You also do not need to worry about a specific webpack or Vite configurations, as the new installation methods are designed to work out-of-the-box with any modern bundler or JavaScript meta-framework like Next.js.
 
 ### npm packages
 
@@ -130,7 +130,7 @@ ClassicEditor
 
 ### Browser builds
 
-The browser builds are a great way to use CKEditor&nbsp;5 if you do not use a module bundler. The browser builds are available as JavaScript modules and can be loaded directly in the browser using the `<script type="module">` tag.
+The browser builds are a great way to use CKEditor&nbsp;5 if you do not want to build JavaScript with a module bundler. The browser builds are available as JavaScript modules and can be loaded directly in the browser using the `<script type="module">` tag.
 
 Here is the same editor setup as above, but using the browser builds:
 
@@ -176,7 +176,7 @@ There are a few things that stand out in both examples compared to the old insta
 1. Everything is imported from the `ckeditor5` and `ckeditor5-premium-features` packages only. In the browser, this is done using [importmaps](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap), which maps the package names to the build URLs.
 2. CSS files are imported separately from the JavaScript files, which improves performance and allows you to more easily customize or remove the default editor styles.
 3. Translations are imported as JavaScript objects and passed to the editor instance, instead of using side-effect imports (`import '...'`) that rely on the global state.
-4. You no longer need to maintain a CKEditor&nbsp;5-specific webpack or Vite configuration and can use CKEditor&nbsp;5 with any modern bundler or JavaScript meta-framework.
+4. You no longer need to maintain a CKEditor&nbsp;5-specific webpack or Vite configuration, and can use CKEditor&nbsp;5 with any modern bundler or JavaScript meta-framework.
 
 The setups we presented above are what you should aim for when migrating your project to the new installation methods.
 
@@ -209,7 +209,7 @@ Here is a visual comparison of the features available in the new npm and CDN bui
 			<td>✅</td>
 		</tr>
 		<tr>
-			<td>Works with any bundler or meta-framework</td>
+			<td>Can be used with any modern bundler</td>
 			<td>✅</td>
 			<td>❌</td>
 			<td>✅</td>
@@ -229,13 +229,13 @@ Here is a visual comparison of the features available in the new npm and CDN bui
 			<td>✅</td>
 			<td>✅</td>
 			<td>❌</td>
-			<td>⚠️ [2]</td>
+			<td>⚠️ <sup>[2]</sup></td>
 			<td>❌</td>
 		</tr>
 		<tr>
 			<td>Icon customization</td>
-			<td>⚠️ [1]</td>
-			<td>⚠️ [1]</td>
+			<td>⚠️ <sup>[1]</sup></td>
+			<td>⚠️ <sup>[1]</sup></td>
 			<td>❌</td>
 			<td>✅</td>
 			<td>❌</td>
@@ -261,7 +261,7 @@ Here is a visual comparison of the features available in the new npm and CDN bui
 			<td>✅</td>
 			<td>✅</td>
 			<td>❌</td>
-			<td>⚠️ [3]</td>
+			<td>⚠️<sup>[3]</sup></td>
 			<td>❌</td>
 		</tr>
 		<tr>
@@ -275,9 +275,9 @@ Here is a visual comparison of the features available in the new npm and CDN bui
 	</tbody>
 </table>
 
-1. Support for customizing icons is planned for future releases. See this [GitHub issue](https://github.com/ckeditor/ckeditor5/issues/16546) for more information.
-2. Style customization is partially supported via webpack configuration.
-3. CSS can be separated from JavaScript using custom webpack configuration.
+\[1\] Support for customizing icons is planned for future releases. See this [GitHub issue](https://github.com/ckeditor/ckeditor5/issues/16546) for more information.
+\[2\] Style customization is partially supported via webpack configuration.
+\[3\] CSS can be separated from JavaScript using custom webpack configuration.
 
 ## Sunset of old installation methods and deprecation timelines
 
@@ -317,15 +317,15 @@ What we will sunset on this date:
 
 To migrate your project to the new installation methods, you can follow the instructions below.
 
-If you maintain custom plugins for CKEditor&nbsp;5, you need to update them first.
+First, if you maintain any CKEditor&nbsp;5 custom plugins as separate packages, whether in a monorepo setup or published to npm, you need to migrate them:
 
-* {@link updating/nim-migration/custom-plugins Migrating custom plugins}
+* {@link updating/nim-migration/custom-plugins Migrating custom plugins}.
 
-After you have updated your custom plugins, you can proceed with migrating your project, depending on the old installation method you are using.
+Second, proceed with migrating your project, depending on the old installation method you are using.
 
-* {@link updating/nim-migration/predefined-builds Migrating from predefined builds}
-* {@link updating/nim-migration/customized-builds Migrating from customized builds}
-* {@link updating/nim-migration/dll-builds Migrating from DLL builds}
+* {@link updating/nim-migration/predefined-builds Migrating from predefined builds}.
+* {@link updating/nim-migration/customized-builds Migrating from customized builds}.
+* {@link updating/nim-migration/dll-builds Migrating from DLL builds}.
 
 Finally, if you use our React, Vue or Angular integrations, you also need to update them:
 
@@ -334,3 +334,14 @@ Finally, if you use our React, Vue or Angular integrations, you also need to upd
 * Update the `@ckeditor/ckeditor5-angular` package to version `^8.0.0`.
 
 If you encounter any issues during the migration process, please refer to this [GitHub issue containing common errors](https://github.com/ckeditor/ckeditor5/issues/16511). If your issue is not listed there, feel free to open a new issue in our [GitHub repository](https://github.com/ckeditor/ckeditor5/issues/new/choose).
+
+<style>
+	table tbody td sup {
+		top: -0.5em;
+		position: relative;
+		font-size: 75%;
+		line-height: 0;
+		vertical-align: baseline;
+	}
+</style>
+
