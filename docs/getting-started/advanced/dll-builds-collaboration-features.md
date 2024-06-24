@@ -101,7 +101,7 @@ Below is an example of an integration:
 			CKEditor5.paragraph.Paragraph,
 			CKEditor5.pasteFromOffice.PasteFromOffice,
 			CKEditor5.table.Table,
-			CKEditor5.table.TableToolbar
+			CKEditor5.table.TableToolbar,
 			CKEditor5.cloudServices.CloudServices,
 			CKEditor5.comments.Comments,
 			CKEditor5.trackChanges.TrackChanges,
