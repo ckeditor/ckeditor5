@@ -7,9 +7,9 @@ modified_at: 2024-06-06
 
 # Optimizing build size
 
-By default, the CKEditor&nbsp;5 packages are well optimized and the vast majority of the code is tree-shakeable, meaning that most of the unused (or "dead") code is removed during the build process. However, there are some additional steps you can take to further optimize the build size, as the default installation methods were designed to be as developer-friendly as possible, not necessarily to produce the smallest possible build.
+By default, the CKEditor&nbsp;5 packages are well-optimized. Most of the code is tree-shakeable, meaning that most unused (or "dead") code is removed during the build process. However, there are additional steps you can take to further optimize the build size, as the default installation methods were designed to be as developer-friendly as possible, not necessarily to produce the smallest possible build.
 
-Note that the build size optimization is only possible when using the npm build and module bundler. The CDN build cannot be optimized this way, as it is intended to include all plugins, features and styles.
+The build size optimization is only possible when using the npm build and module bundler. The CDN build cannot be optimized this way, as it is intended to include all plugins, features, and styles.
 
 ## How to optimize the build size
 
@@ -17,7 +17,7 @@ To optimize the build size, you only need to make a few changes to the way you i
 
 ### Code imports
 
-The first step in the process of optimizing build size is to import only the editor features you need, as adding more plugins to the editor configuration will increase build size.
+The first step in optimizing build size is to import only the editor features you need, as adding more plugins to the editor configuration will increase build size.
 
 The next step is to change the way you import the editor features. Currently, you are probably importing them from the following packages:
 
@@ -28,7 +28,7 @@ import { /* ... */ } from 'ckeditor5-premium-features';
 
 These two packages export all the editor features, and most of them are tree-shakeable. However, there is some code that may be added to the build even if it is not used. To ensure that the unused code is not imported, you can import the editor features directly from the packages that contain them.
 
-For example, if you are using the classic editor type with the bold, italic and table features, you can change the imports like this:
+For example, if you are using the classic editor type with the bold, italic, and table features, you can change the imports like this:
 
 ```diff
 - import { ClassicEditor, Bold, Italic and Table } from 'ckeditor5';
@@ -75,7 +75,7 @@ import '@ckeditor/ckeditor5-watchdog/dist/index.css';
 import '@ckeditor/ckeditor5-widget/dist/index.css';
 ```
 
-Then, import the styles for the plugins that you use. For example, if you use the bold, italic and table features, you can import just the styles for those features:
+Then, import the styles for the plugins that you use. For example, if you use the bold, italic, and table features, you can import just the styles for those features:
 
 ```js
 // Import the styles for the features that you use.
@@ -86,7 +86,7 @@ import '@ckeditor/ckeditor5-table/dist/index.css';
 
 When it comes to plugin styles, the rule of thumb is to import the styles from all the individual packages from which you import the editor features. For example, if you import the bold feature from `@ckeditor/ckeditor5-basic-styles/dist/index.js`, you should also import `@ckeditor/ckeditor5-basic-styles/dist/index.css`.
 
-You may notice that some plugin style sheets are empty. This is intentional, as some plugins do not have styles now, but may have them in the future. Adding the imports now will ensure that you do not accidentally miss some styles if this happens. Importing empty style sheets does not increase the build size.
+You may notice that some plugin style sheets are empty. This is intentional, as some plugins do not have styles now but may have them in the future. Adding the imports now will ensure that you do not accidentally miss some styles if this happens. Importing empty style sheets does not increase the build size.
 
 If you use separate editor and content styles, as described in the {@link getting-started/setup/css Editor and content styles} guide, you can still add `-content` and `-editor` suffixes to the style paths:
 
@@ -144,7 +144,7 @@ Some plugins may not have translations. In such cases, you do not need to import
 
 ## The result
 
-Let's see how the build size changes after applying the above optimizations to a sample project with classic editor and a variety of free and premium features and Polish translations.
+Let's see how the build size changes after applying the above optimizations to a sample project with the classic editor, free and premium features, plus Polish translations.
 
 <details>
 <summary>Code before optimization</summary>
