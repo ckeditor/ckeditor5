@@ -119,4 +119,4 @@ The same is true for the `ckeditor5-premium-features` package, but the filenames
 * `ckeditor5-premium-features-content.css` &ndash; only content styles,
 * `ckeditor5-premium-features-editor.css` &ndash; only editor styles.
 
-Content styles include styles for **all** plugins of the editor. If you want to optimize the size of the style sheet, as you may be using minimal set of plugins, read our optimization guide. <!-- TODO link to guide -->
+However, these style sheets include styles for **all** editor plugins. If you want to optimize the size of the style sheet, to only include styles for the plugins you use, you can follow the {@link getting-started/setup/optimizing-build-size#styles Optimizing build size} guide.

@@ -88,6 +88,19 @@ When it comes to plugin styles, the rule of thumb is to import the styles from a
 
 You may notice that some plugin style sheets are empty. This is intentional, as some plugins do not have styles now, but may have them in the future. Adding the imports now will ensure that you do not accidentally miss some styles if this happens. Importing empty style sheets does not increase the build size.
 
+If you use separate editor and content styles, as described in the {@link getting-started/setup/css Editor and content styles} guide, you can still add `-content` and `-editor` suffixes to the style paths:
+
+```js
+// All styles
+import '@ckeditor/ckeditor5-clipboard/dist/index.css';
+
+// Content styles
+import '@ckeditor/ckeditor5-clipboard/dist/index-content.css';
+
+// Editor styles
+import '@ckeditor/ckeditor5-clipboard/dist/index-editor.css';
+```
+
 ### Translations
 
 By default, the editor comes with American English translations, so if you use it, you do not need to import any additional translations, thus reducing the size of the build.
