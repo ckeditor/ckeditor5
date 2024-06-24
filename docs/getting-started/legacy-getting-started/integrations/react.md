@@ -1,11 +1,11 @@
 ---
 menu-title: React
-meta-title: React rich text editor component | CKEditor 5 documentation
+meta-title: React rich text editor component | Legacy CKEditor 5 documentation
 category: legacy-integrations
 order: 30
 ---
 
-{@snippet installation/integrations/framework-integration}
+{@snippet installation/integrations/framework-integration} &ndash; Legacy guide
 
 # React rich text editor component
 

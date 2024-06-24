@@ -1,10 +1,11 @@
 ---
 category: installation-methods
-meta-title: Extending features | CKEditor 5 documentation
+menu-title: Extending features
+meta-title: Extending features | Legacy CKEditor 5 documentation
 order: 90
 ---
 
-# Extending features
+# Extending features &ndash; Legacy guide
 
 <info-box warning>
 	⚠️  We changed installation methods and this legacy guide is kept for users' convenience. If you are looking for current CKEditor 5 installation instructions, please refer to the newest version of the {@link getting-started/setup/configuration Configuring features} guide.

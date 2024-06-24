@@ -1,14 +1,11 @@
 ---
-# Scope:
-# * Explain what content styles are and how to use them.
-# * Offer developers a way to obtain the editor content styles.
-
 category: advanced
-meta-title: Content styles | CKEditor 5 documentation
+menu-title: Content styles
+meta-title: Content styles | Legacy CKEditor 5 documentation
 order: 30
 ---
 
-# Content styles
+# Content styles &ndash; Legacy guide
 
 <info-box warning>
 	⚠️  We changed installation methods and this legacy guide is kept for users' convenience. If you are looking for current CKEditor 5 installation instructions, please refer to the newest version of the {@link getting-started/setup/css Editor and content styles} guide.

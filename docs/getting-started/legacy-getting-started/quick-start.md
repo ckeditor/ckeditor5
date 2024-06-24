@@ -1,14 +1,12 @@
 ---
-# Scope:
-# - Guidance on all possible installation options.
-
 category: installation-methods
-meta-title: Quick start | CKEditor 5 documentation
+menu-title: Quick start
+meta-title: Quick start | Legacy CKEditor 5 documentation
 order: 10
 modified_at: 2022-06-27
 ---
 
-# Quick start
+# Quick start &ndash; Legacy guide
 
 <info-box warning>
 	⚠️  We changed installation methods and this legacy guide is kept for users' convenience. If you are looking for current CKEditor 5 installation instructions, please refer to the newest version of the {@link getting-started/quick-start CKEditor&nbsp;5 Quick Start} guide.

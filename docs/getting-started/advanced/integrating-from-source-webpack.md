@@ -1,10 +1,11 @@
 ---
 category: alternative-setups
-meta-title: Integrating CKEditor 5 from source using Webpack | CKEditor 5 documentation
+menu-title: Integrating from source using webpack
+meta-title: Integrating CKEditor 5 from source using Webpack | Legacy CKEditor 5 documentation
 order: 10
 ---
 
-# Integrating from source using webpack
+# Integrating from source using webpack &ndash; Legacy guide
 
 <info-box warning>
 	⚠️  We changed installation methods and this legacy guide is kept for users' convenience. If you want to learn more about these changes, please refer to the {@link updating/nim-migration/migration-to-new-installation-methods Migrating to new installation methods} guide.
