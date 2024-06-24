@@ -79,7 +79,7 @@ export default class TableEditing extends Plugin {
 
 		schema.register( 'table', {
 			inheritAllFrom: '$blockObject',
-			allowAttributes: [ 'headingRows', 'headingColumns' ]
+			allowAttributes: [ 'headingRows', 'headingColumns', 'footerRows' ]
 		} );
 
 		schema.register( 'tableRow', {
@@ -104,7 +104,7 @@ export default class TableEditing extends Plugin {
 		conversion.for( 'editingDowncast' ).elementToStructure( {
 			model: {
 				name: 'table',
-				attributes: [ 'headingRows' ]
+				attributes: [ 'headingRows', 'footerRows' ]
 			},
 			view: downcastTable( tableUtils, {
 				asWidget: true,
@@ -114,7 +114,7 @@ export default class TableEditing extends Plugin {
 		conversion.for( 'dataDowncast' ).elementToStructure( {
 			model: {
 				name: 'table',
-				attributes: [ 'headingRows' ]
+				attributes: [ 'headingRows', 'footerRows' ]
 			},
 			view: downcastTable( tableUtils, {
 				additionalSlots: this._additionalSlots
@@ -204,7 +204,7 @@ export default class TableEditing extends Plugin {
 		injectTableCellParagraphPostFixer( model );
 
 		this.listenTo( model.document, 'change:data', () => {
-			tableHeadingsRefreshHandler( model, editor.editing );
+			tableHeadingsRefreshHandler( model, editor.editing, tableUtils );
 			tableCellRefreshHandler( model, editor.editing );
 		} );
 	}
