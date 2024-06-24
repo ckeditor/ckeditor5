@@ -277,15 +277,6 @@ const tasks = new Listr( [
 							`zip -r ../../${ RELEASE_CDN_DIRECTORY }/zip/${ zipName }.zip ./*`,
 							{ verbosity: 'error', cwd: RELEASE_ZIP_DIRECTORY }
 						);
-					},
-					skip: () => {
-						// When preparing a non-stable release, skip building CDNs.
-						// Right now, we only provide CDN for stable and nightly releases.
-						if ( cliArguments.nightlyAlpha ) {
-							return true;
-						}
-
-						return false;
 					}
 				}
 			], taskOptions );
