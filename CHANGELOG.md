@@ -43,6 +43,10 @@ Finally, detailed [migration guides](https://ckeditor.com/docs/ckeditor5/latest/
 
 We value your input, so please share your experiences, ask questions, and provide feedback to help us refine these changes. Join us in this exciting new chapter for CKEditor 5 and let’s make the developer experience as smooth and enjoyable as possible.
 
+#### Removal of superbuild and predefined builds from the CDN
+
+We have stopped publishing the superbuild and predefined builds to our CDN. Predefined builds can still be accessed as an npm package. If you want to keep using our CDN with new versions of the editor, we recommend [migrating to the new installation methods](https://ckeditor.com/docs/ckeditor5/latest/updating/nim-migration/migration-to-new-installation-methods.html#browser-builds).
+
 #### Other updates
 
 We are excited to announce a major update to our premium **Export to Word** feature, delivering significantly improved quality with multiple enhancements and bug fixes. This release also brings a substantial reduction in the conversion time. Export to Word v2 is an opt-in feature right now, and to use it you need to slightly change the editor’s configuration. Detailed information can be found [in the documentation](https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-word.html#export-to-word-v2).
