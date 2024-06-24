@@ -1,6 +1,6 @@
 ---
 menu-title: DLL builds
-meta-title: CKEditor 5 DLL builds | Legacy CKEditor 5 documentation
+meta-title: DLL builds | Legacy CKEditor 5 documentation
 category: alternative-setups
 order: 20
 modified_at: 2022-02-22
