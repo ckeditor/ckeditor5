@@ -27,6 +27,7 @@ import {
 
 import type { Editor } from '@ckeditor/ckeditor5-core';
 import type { ViewDocumentLayoutChangedEvent, ViewScrollToTheSelectionEvent } from '@ckeditor/ckeditor5-engine';
+import type { MenuBarConfigAddedGroup, MenuBarConfigAddedItem, MenuBarConfigAddedMenu } from '../menubar/menubarview.js';
 
 /**
  * A class providing the minimal interface that is required to successfully bootstrap any editor UI.
@@ -121,6 +122,11 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 	 * All available & focusable toolbars.
 	 */
 	private _focusableToolbarDefinitions: Array<FocusableToolbarDefinition> = [];
+
+	/**
+	 * All additional menu bar items, groups or menus that have their default location defined.
+	 */
+	private _defaultConfigExpansion: Array<MenuBarConfigAddedItem | MenuBarConfigAddedGroup | MenuBarConfigAddedMenu> = [];
 
 	/**
 	 * Creates an instance of the editor UI class.
@@ -297,6 +303,22 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 		}
 
 		this._focusableToolbarDefinitions.push( { toolbarView, options } );
+	}
+
+	/**
+	 * Stores default location config for given menu bar item.
+	 */
+	public setDefaultMenuBarItemLocation(
+		config: MenuBarConfigAddedItem | MenuBarConfigAddedGroup | MenuBarConfigAddedMenu
+	): void {
+		this._defaultConfigExpansion.push( config );
+	}
+
+	/**
+	 * Returns all default location configs for menu bar items.
+	 */
+	public getCustomMenuBarItemsLocations(): Array<MenuBarConfigAddedItem | MenuBarConfigAddedGroup | MenuBarConfigAddedMenu> {
+		return this._defaultConfigExpansion;
 	}
 
 	/**

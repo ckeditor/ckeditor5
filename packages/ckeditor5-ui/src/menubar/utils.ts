@@ -21,7 +21,8 @@ import type {
 	MenuBarConfigAddedGroup,
 	MenuBarConfigAddedMenu,
 	MenuBarConfigAddedPosition,
-	NormalizedMenuBarConfigObject
+	NormalizedMenuBarConfigObject,
+	MenuBarConfigAddedItem
 } from './menubarview.js';
 import clickOutsideHandler from '../bindings/clickoutsidehandler.js';
 import type { ButtonExecuteEvent } from '../button/button.js';
@@ -40,6 +41,7 @@ import MenuBarMenuButtonView from './menubarmenubuttonview.js';
 import type View from '../view.js';
 import MenuBarMenuListView from './menubarmenulistview.js';
 import MenuBarMenuListItemButtonView from './menubarmenulistitembuttonview.js';
+import type EditorUI from '../editorui/editorui.js';
 
 const NESTED_PANEL_HORIZONTAL_OFFSET = 5;
 
@@ -967,17 +969,18 @@ export function normalizeMenuBarConfig( config: Readonly<MenuBarConfig> ): Norma
 export function processMenuBarConfig( {
 	normalizedConfig,
 	locale,
-	componentFactory
+	ui
 }: {
 	normalizedConfig: NormalizedMenuBarConfigObject;
 	locale: Locale;
-	componentFactory: ComponentFactory;
+	ui: EditorUI;
 } ): NormalizedMenuBarConfigObject {
 	const configClone = cloneDeep( normalizedConfig ) as NormalizedMenuBarConfigObject;
 
-	handleRemovals( normalizedConfig, configClone );
-	handleAdditions( normalizedConfig, configClone );
-	purgeUnavailableComponents( normalizedConfig, configClone, componentFactory );
+	handleAdditions( normalizedConfig, configClone, ui.getCustomMenuBarItemsLocations() );
+	handleConfigRemovals( normalizedConfig, configClone );
+	handleConfigAdditions( normalizedConfig, configClone );
+	purgeUnavailableComponents( normalizedConfig, configClone, ui.componentFactory );
 	purgeEmptyMenus( normalizedConfig, configClone );
 	localizeMenuLabels( configClone, locale );
 
@@ -1047,10 +1050,7 @@ function createSubmenu( locale: Locale, definition: MenuSubmenuDefinition ): Men
 	for ( const submenuItem of definition.children.map( d => createMenuItem( locale, d ) ) ) {
 		const listItemView = new MenuBarMenuListItemView( locale, menuView );
 
-		if ( listItemView instanceof MenuBarMenuListItemButtonView ) {
-			submenuItem.delegate( 'execute' ).to( menuView );
-		}
-
+		submenuItem.delegate( 'execute' ).to( menuView );
 		listItemView.children.add( submenuItem );
 		listView.items.add( listItemView );
 	}
@@ -1065,7 +1065,7 @@ function createSubmenu( locale: Locale, definition: MenuSubmenuDefinition ): Men
  * individual items, groups, or entire menus. For each removed item, a warning is logged if the item
  * was not found in the configuration.
  */
-function handleRemovals(
+function handleConfigRemovals(
 	originalConfig: NormalizedMenuBarConfigObject,
 	config: NormalizedMenuBarConfigObject
 ) {
@@ -1134,14 +1134,25 @@ function handleRemovals(
  * Handles the `config.menuBar.addItems` configuration. It allows for adding menus, groups, and items at arbitrary
  * positions in the menu bar. If the position does not exist, a warning is logged.
  */
-function handleAdditions(
+function handleConfigAdditions(
 	originalConfig: NormalizedMenuBarConfigObject,
 	config: NormalizedMenuBarConfigObject
 ) {
-	const itemsToBeAdded = config.addItems;
-	const successFullyAddedItems: typeof itemsToBeAdded = [];
+	handleAdditions( originalConfig, config, config.addItems );
+}
 
-	for ( const itemToAdd of itemsToBeAdded ) {
+/**
+ * Adds provided items to config. It allows for adding menus, groups, and items at arbitrary
+ * positions in the menu bar. If the position does not exist, a warning is logged.
+ */
+function handleAdditions(
+	originalConfig: NormalizedMenuBarConfigObject,
+	config: NormalizedMenuBarConfigObject,
+	items: Array<MenuBarConfigAddedItem | MenuBarConfigAddedGroup | MenuBarConfigAddedMenu>
+) {
+	const successFullyAddedItems: typeof items = [];
+
+	for ( const itemToAdd of items ) {
 		const relation = getRelationFromPosition( itemToAdd.position );
 		const relativeId = getRelativeIdFromPosition( itemToAdd.position );
 
@@ -1223,7 +1234,7 @@ function handleAdditions(
 		}
 	}
 
-	for ( const addedItemConfig of itemsToBeAdded ) {
+	for ( const addedItemConfig of items ) {
 		if ( !successFullyAddedItems.includes( addedItemConfig ) ) {
 			/**
 			 * There was a problem processing the configuration of the menu bar. The configured item could not be added
@@ -1570,7 +1581,7 @@ export function _initMenuBar( editor: Editor, menuBarView: MenuBarView ): void {
 
 	const normalizedMenuBarConfig = normalizeMenuBarConfig( editor.config.get( 'menuBar' ) || {} );
 
-	menuBarView.fillFromConfig( normalizedMenuBarConfig, editor.ui.componentFactory );
+	menuBarView.fillFromConfig( normalizedMenuBarConfig, editor.ui );
 
 	editor.keystrokes.set( 'Esc', ( data, cancel ) => {
 		if ( menuBarViewElement.contains( editor.ui.focusTracker.focusedElement ) ) {

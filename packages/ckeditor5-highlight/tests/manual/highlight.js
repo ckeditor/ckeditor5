@@ -18,14 +18,7 @@ ClassicEditor
 		],
 		// TODO remove before merge
 		menuBar: {
-			// isVisible: true
-			isVisible: true,
-			addItems: [
-				{
-					item: 'menuBar:highlight2',
-					position: 'after:menuBar:highlight'
-				}
-			]
+			isVisible: true
 		}
 	} )
 	.then( editor => {

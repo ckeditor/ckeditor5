@@ -318,6 +318,11 @@ export default class HighlightUI extends Plugin {
 			}
 		);
 
+		this.editor.ui.setDefaultMenuBarItemLocation( {
+			item: 'menuBar:highlight2',
+			position: 'after:menuBar:highlight'
+		} );
+
 		editor.ui.componentFactory.add( 'menuBar:highlight', locale => {
 			const menuView = new MenuBarMenuView( locale );
 
