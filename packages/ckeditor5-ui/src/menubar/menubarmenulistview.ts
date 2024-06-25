@@ -32,14 +32,14 @@ export default class MenuBarMenuListView extends ListView {
 		super( locale );
 
 		this.role = 'menu';
-		this.items.on( 'change', this._preallocateCheckSpacerInItemsIfNeeded.bind( this ) );
+		this.items.on( 'change', this._setItemsCheckSpace.bind( this ) );
 	}
 
 	/**
 	 * This method adds empty space if there is any toggleable item in the list.
 	 * It makes the list properly aligned.
 	 */
-	private _preallocateCheckSpacerInItemsIfNeeded() {
+	private _setItemsCheckSpace() {
 		const hasAnyToggleableItem = (
 			Array
 				.from( this.items )
