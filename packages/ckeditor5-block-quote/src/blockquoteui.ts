@@ -33,7 +33,6 @@ export default class BlockQuoteUI extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
-		const command: BlockQuoteCommand = editor.commands.get( 'blockQuote' )!;
 
 		editor.ui.componentFactory.add( 'blockQuote', () => {
 			const buttonView = this._createButton( ButtonView );
@@ -42,13 +41,18 @@ export default class BlockQuoteUI extends Plugin {
 				tooltip: true
 			} );
 
-			// Bind button model to command.
-			buttonView.bind( 'isOn' ).to( command, 'value' );
-
 			return buttonView;
 		} );
 
-		editor.ui.componentFactory.add( 'menuBar:blockQuote', () => this._createButton( MenuBarMenuListItemButtonView ) );
+		editor.ui.componentFactory.add( 'menuBar:blockQuote', () => {
+			const buttonView = this._createButton( MenuBarMenuListItemButtonView );
+
+			buttonView.set( {
+				role: 'menuitemcheckbox'
+			} );
+
+			return buttonView;
+		} );
 	}
 
 	/**
@@ -68,6 +72,7 @@ export default class BlockQuoteUI extends Plugin {
 		} );
 
 		view.bind( 'isEnabled' ).to( command, 'isEnabled' );
+		view.bind( 'isOn' ).to( command, 'value' );
 
 		// Execute the command.
 		this.listenTo( view, 'execute', () => {
