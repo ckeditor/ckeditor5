@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 42.x | CKEditor 5 Documentation
 menu-title: Update to v42.x
 order: 82
-modified_at: 2024-06-06
+modified_at: 2024-06-25
 ---
 
 # Update to CKEditor&nbsp;5 v42.x

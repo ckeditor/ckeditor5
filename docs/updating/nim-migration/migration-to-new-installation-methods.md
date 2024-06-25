@@ -4,7 +4,7 @@ order: 10
 menu-title: Migrating to new installation methods
 meta-title: Migrating to new installation methods | CKEditor5 documentation
 meta-description: Learn how to upgrade your CKEditor5 project to the new installation methods.
-modified_at: 2024-06-06
+modified_at: 2024-06-25
 ---
 
 # Migrating to new installation methods

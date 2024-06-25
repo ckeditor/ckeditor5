@@ -2,7 +2,7 @@
 category: setup
 meta-title: Editor lifecycle | CKEditor 5 documentation
 order: 20
-modified_at: 2024-06-06
+modified_at: 2024-06-25
 ---
 
 # Editor lifecycle

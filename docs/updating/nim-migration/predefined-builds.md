@@ -4,7 +4,7 @@ order: 20
 menu-title: Migrating from predefined builds
 meta-title: Migrating from predefined builds to new installation methods | CKEditor5 documentation
 meta-description: Learn how to upgrade from predefined builds to the new installation methods.
-modified_at: 2024-06-06
+modified_at: 2024-06-25
 ---
 
 # Migrating from predefined builds

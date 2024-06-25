@@ -4,7 +4,7 @@ menu-title: Editor types
 meta-title: Editor types | CKEditor 5 documentation
 meta-description: Learn about available editor types.
 order: 25
-modified_at: 2024-06-06
+modified_at: 2024-06-25
 ---
 # Editor types
 

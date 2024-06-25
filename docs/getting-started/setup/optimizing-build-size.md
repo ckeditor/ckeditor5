@@ -2,7 +2,7 @@
 category: setup
 meta-title: Optimizing build size | CKEditor 5 documentation
 order: 120
-modified_at: 2024-06-06
+modified_at: 2024-06-25
 ---
 
 # Optimizing build size

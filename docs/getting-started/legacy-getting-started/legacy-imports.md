@@ -2,7 +2,7 @@
 category: legacy
 order: 10
 meta-title: Imports in the legacy setup | Legacy CKEditor 5 documentation
-modified_at: 2024-06-06
+modified_at: 2024-06-25
 ---
 
 # Imports in the legacy setup
