@@ -19,8 +19,7 @@ import {
 	MenuBarMenuListItemButtonView,
 	SplitButtonView,
 	ToolbarSeparatorView,
-	type DropdownView,
-	registerMenuBarItem
+	type DropdownView
 } from 'ckeditor5/src/ui.js';
 
 import markerIcon from './../theme/icons/marker.svg';
