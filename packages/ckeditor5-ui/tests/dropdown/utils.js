@@ -944,7 +944,7 @@ describe( 'utils', () => {
 					] );
 
 					for ( const item of listItems ) {
-						expect( item.children.first.hasReservedCheckHolderSpace ).to.be.true;
+						expect( item.children.first.hasCheckSpace ).to.be.true;
 					}
 				} );
 
@@ -961,7 +961,7 @@ describe( 'utils', () => {
 					] );
 
 					for ( const item of listItems ) {
-						expect( item.children.first.hasReservedCheckHolderSpace ).to.be.false;
+						expect( item.children.first.hasCheckSpace ).to.be.false;
 					}
 				} );
 

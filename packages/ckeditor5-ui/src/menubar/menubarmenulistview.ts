@@ -54,7 +54,7 @@ export default class MenuBarMenuListView extends ListView {
 			const listButtonView = pickListButtonMenuViewIfPresent( item );
 
 			if ( listButtonView ) {
-				listButtonView.hasReservedCheckHolderSpace = hasAnyToggleableItem;
+				listButtonView.hasCheckSpace = hasAnyToggleableItem;
 			}
 		} );
 	}

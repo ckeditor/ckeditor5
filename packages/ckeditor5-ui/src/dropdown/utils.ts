@@ -560,7 +560,7 @@ function bindViewCollectionItemsToDefinitions(
 		const hasAnyCheckboxOnList = listItemButtons.some( button => button.isToggleable );
 
 		listItemButtons.forEach( item => {
-			item.hasReservedCheckHolderSpace = hasAnyCheckboxOnList;
+			item.hasCheckSpace = hasAnyCheckboxOnList;
 		} );
 	} );
 

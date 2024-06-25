@@ -28,8 +28,8 @@ describe( 'ListItemButtonView', () => {
 			expect( view ).to.be.instanceOf( ButtonView );
 		} );
 
-		it( 'should initialize with hasReservedCheckHolderSpace set to false', () => {
-			expect( view.hasReservedCheckHolderSpace ).to.be.false;
+		it( 'should initialize with hasCheckSpace set to false', () => {
+			expect( view.hasCheckSpace ).to.be.false;
 		} );
 
 		it( 'should initialize with isToggleable set to false', () => {
@@ -64,7 +64,7 @@ describe( 'ListItemButtonView', () => {
 		} );
 	} );
 
-	describe( '_shouldRenderCheckHolder', () => {
+	describe( '_hasCheck', () => {
 		const possibleRenderStates = [
 			{ isToggleable: false, checkHolderSpace: false, rendered: false },
 			{ isToggleable: false, checkHolderSpace: true, rendered: true },
@@ -74,10 +74,10 @@ describe( 'ListItemButtonView', () => {
 
 		for ( const { isToggleable, checkHolderSpace, rendered } of possibleRenderStates ) {
 			it(
-				`should render checkbox holder when isToggleable=${ isToggleable } and hasReservedCheckHolderSpace=${ checkHolderSpace }`,
+				`should render checkbox holder when isToggleable=${ isToggleable } and hasCheckSpace=${ checkHolderSpace }`,
 				() => {
 					view.isToggleable = isToggleable;
-					view.hasReservedCheckHolderSpace = checkHolderSpace;
+					view.hasCheckSpace = checkHolderSpace;
 
 					expect( !!view.element.querySelector( '.ck-list-item-button__check-holder' ) ).to.be.equal( rendered );
 				}

@@ -28,7 +28,7 @@ export default class ListItemButtonView extends ButtonView {
 	 *
 	 * @observable
 	 */
-	declare public hasReservedCheckHolderSpace: boolean;
+	declare public hasCheckSpace: boolean;
 
 	/**
 	 * The flag that indicates if the button should render a check holder.
@@ -37,7 +37,7 @@ export default class ListItemButtonView extends ButtonView {
 	 * @readonly
 	 * @observable
 	 */
-	declare public _shouldRenderCheckHolder: boolean;
+	declare public _hasCheck: boolean;
 
 	/**
 	 * Holds the view for the check icon of a button list item.
@@ -51,8 +51,8 @@ export default class ListItemButtonView extends ButtonView {
 		super( locale, labelView );
 
 		this.set( {
-			hasReservedCheckHolderSpace: false,
-			_shouldRenderCheckHolder: this.isToggleable
+			hasCheckSpace: false,
+			_hasCheck: this.isToggleable
 		} );
 
 		const bind = this.bindTemplate;
@@ -66,10 +66,10 @@ export default class ListItemButtonView extends ButtonView {
 			}
 		} );
 
-		this.bind( '_shouldRenderCheckHolder' ).to(
-			this, 'hasReservedCheckHolderSpace',
+		this.bind( '_hasCheck' ).to(
+			this, 'hasCheckSpace',
 			this, 'isToggleable',
-			( hasReservedCheckHolderSpace, isToggleable ) => hasReservedCheckHolderSpace || isToggleable
+			( hasCheckSpace, isToggleable ) => hasCheckSpace || isToggleable
 		);
 	}
 
@@ -79,7 +79,7 @@ export default class ListItemButtonView extends ButtonView {
 	public override render(): void {
 		super.render();
 
-		if ( this._shouldRenderCheckHolder ) {
+		if ( this._hasCheck ) {
 			this.children.add( this._checkIconHolderView, 0 );
 		}
 
@@ -95,7 +95,7 @@ export default class ListItemButtonView extends ButtonView {
 			.to( this, 'isOn', value => this.isToggleable && value );
 
 		this.on<ObservableChangeEvent<boolean>>(
-			'change:_shouldRenderCheckHolder',
+			'change:_hasCheck',
 			( evt, propertyName, shouldRenderCheckHolder ) => {
 				const { children, _checkIconHolderView } = this;
 
