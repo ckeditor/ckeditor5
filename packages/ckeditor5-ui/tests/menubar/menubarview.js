@@ -106,11 +106,11 @@ describe( 'MenuBarView', () => {
 				expect( menuBarView.template.attributes[ 'aria-label' ] ).to.include.members( [ 'Editor menu bar' ] );
 			} );
 
-			it( 'has `hadKeyboardFocusInteraction` bound to proper class name', () => {
-				menuBarView.hadKeyboardFocusInteraction = true;
+			it( 'has `isFocusBorderEnabled` bound to proper class name', () => {
+				menuBarView.isFocusBorderEnabled = true;
 				menuBarView.render();
 
-				expect( menuBarView.element.classList.contains( 'ck-menu-bar_keyboard-focus-interaction' ) ).to.be.true;
+				expect( menuBarView.element.classList.contains( 'ck-menu-bar_focus-border-enabled' ) ).to.be.true;
 			} );
 		} );
 
@@ -2060,7 +2060,7 @@ describe( 'MenuBarView', () => {
 		} );
 
 		it( 'should add a behavior that tracks if user performed keyboard focus interaction', () => {
-			const spy = sinon.spy( MenuBarBehaviors, 'trackKeyboardFocusInteraction' );
+			const spy = sinon.spy( MenuBarBehaviors, 'enableFocusHighlightOnInteraction' );
 
 			menuBarView.render();
 

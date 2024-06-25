@@ -60,7 +60,7 @@ export default class MenuBarView extends View implements FocusableView {
 	 *
 	 * @observable
 	 */
-	declare public hadKeyboardFocusInteraction: boolean;
+	declare public isFocusBorderEnabled: boolean;
 
 	/**
 	 * A list of {@link module:ui/menubar/menubarmenuview~MenuBarMenuView} instances registered in the menu bar.
@@ -82,7 +82,7 @@ export default class MenuBarView extends View implements FocusableView {
 
 		this.set( {
 			isOpen: false,
-			hadKeyboardFocusInteraction: false
+			isFocusBorderEnabled: false
 		} );
 
 		this._setupIsOpenUpdater();
@@ -100,7 +100,7 @@ export default class MenuBarView extends View implements FocusableView {
 				class: [
 					'ck',
 					'ck-menu-bar',
-					bind.if( 'hadKeyboardFocusInteraction', 'ck-menu-bar_keyboard-focus-interaction' )
+					bind.if( 'isFocusBorderEnabled', 'ck-menu-bar_focus-border-enabled' )
 				],
 				'aria-label': t( 'Editor menu bar' ),
 				role: 'menubar'
@@ -143,7 +143,7 @@ export default class MenuBarView extends View implements FocusableView {
 		MenuBarBehaviors.closeMenuWhenAnotherOnTheSameLevelOpens( this );
 		MenuBarBehaviors.focusCycleMenusOnArrows( this );
 		MenuBarBehaviors.closeOnClickOutside( this );
-		MenuBarBehaviors.trackKeyboardFocusInteraction( this );
+		MenuBarBehaviors.enableFocusHighlightOnInteraction( this );
 	}
 
 	/**

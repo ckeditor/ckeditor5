@@ -169,12 +169,24 @@ export const MenuBarBehaviors = {
 	 * Tracks the keyboard focus interaction on the menu bar view. It is used to determine if the nested items
 	 * of the menu bar should render focus rings after first interaction with the keyboard.
 	 */
-	trackKeyboardFocusInteraction( menuBarView: MenuBarView ): void {
+	enableFocusHighlightOnInteraction( menuBarView: MenuBarView ): void {
 		let isKeyPressed: boolean = false;
 
-		menuBarView.on<ObservableChangeEvent<boolean>>( 'change:isOpen', () => {
-			menuBarView.hadKeyboardFocusInteraction = false;
+		menuBarView.on<ObservableChangeEvent<boolean>>( 'change:isOpen', ( _, evt, isOpen ) => {
+			if ( !isOpen ) {
+				menuBarView.isFocusBorderEnabled = false;
+
+				// Reset the flag when the menu bar is closed, menu items tend to intercept `keyup` event
+				// and sometimes, after pressing `enter` on focused item, `isKeyPressed` stuck in `true` state.
+				isKeyPressed = false;
+			}
 		} );
+
+		menuBarView.listenTo( menuBarView.element!, 'click', () => {
+			if ( menuBarView.isOpen && menuBarView.element!.matches( ':focus-within' ) ) {
+				menuBarView.isFocusBorderEnabled = true;
+			}
+		}, { useCapture: true } );
 
 		menuBarView.listenTo( menuBarView.element!, 'keydown', () => {
 			isKeyPressed = true;
@@ -185,8 +197,8 @@ export const MenuBarBehaviors = {
 		}, { useCapture: true } );
 
 		menuBarView.listenTo( menuBarView.element!, 'focus', () => {
-			if ( isKeyPressed && !menuBarView.hadKeyboardFocusInteraction ) {
-				menuBarView.hadKeyboardFocusInteraction = true;
+			if ( isKeyPressed && !menuBarView.isFocusBorderEnabled ) {
+				menuBarView.isFocusBorderEnabled = true;
 			}
 		}, { useCapture: true } );
 	}
@@ -1526,6 +1538,7 @@ export function _initMenuBar( editor: Editor, menuBarView: MenuBarView ): void {
 
 	editor.keystrokes.set( 'Alt+F9', ( data, cancel ) => {
 		if ( !menuBarViewElement.contains( editor.ui.focusTracker.focusedElement ) ) {
+			menuBarView.isFocusBorderEnabled = true;
 			menuBarView!.focus();
 			cancel();
 		}
