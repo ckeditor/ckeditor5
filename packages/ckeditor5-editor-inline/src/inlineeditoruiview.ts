@@ -37,11 +37,6 @@ export default class InlineEditorUIView extends EditorUIView {
 	public readonly toolbar: ToolbarView;
 
 	/**
-	 * Menu bar view instance.
-	 */
-	public readonly menuBarView?: MenuBarView;
-
-	/**
 	 * The offset from the top edge of the web browser's viewport which makes the
 	 * UI become sticky. The default value is `0`, which means that the UI becomes
 	 * sticky when its upper edge touches the top of the page viewport.

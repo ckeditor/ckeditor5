@@ -37,9 +37,6 @@ import type {
 } from '@ckeditor/ckeditor5-engine';
 
 import { debounce, type DebouncedFunc } from 'lodash-es';
-import MenuBarView from '../../menubar/menubarview.js';
-import View from '../../view.js';
-import { _initMenuBar } from '../../menubar/utils.js';
 
 const toPx = /* #__PURE__ */ toUnit( 'px' );
 
@@ -52,17 +49,7 @@ export default class BalloonToolbar extends Plugin {
 	/**
 	 * The toolbar view displayed in the balloon.
 	 */
-	public readonly balloonContentView: View & { maxWidth?: any };
-
-	/**
-	 * The toolbar view displayed in the balloon.
-	 */
 	public readonly toolbarView: ToolbarView;
-
-	/**
-	 * The toolbar view displayed in the balloon.
-	 */
-	public readonly menuBarView?: MenuBarView;
 
 	/**
 	 * Tracks the focus of the {@link module:ui/editorui/editorui~EditorUI#getEditableElement editable element}
@@ -142,32 +129,6 @@ export default class BalloonToolbar extends Plugin {
 		this._balloon = editor.plugins.get( ContextualBalloon );
 		this._fireSelectionChangeDebounced = debounce( () => this.fire( '_selectionChangeDebounced' ), 200 );
 
-		const menuBarConfig = editor.config.get( 'menuBar' )!;
-
-		if ( menuBarConfig && menuBarConfig.isVisible ) {
-			this.menuBarView = new MenuBarView( editor.locale );
-			this.menuBarView.render();
-
-			// Wait for all plugins to init.
-			editor.ui.once<EditorUIReadyEvent>( 'ready', () => {
-				_initMenuBar( editor, this.menuBarView! );
-			} );
-
-			this.balloonContentView = new View( editor.locale );
-			this.balloonContentView.setTemplate( {
-				tag: 'div',
-				attributes: {
-					style: {
-						maxWidth: this.balloonContentView.bindTemplate.to( 'maxWidth' )
-					}
-				},
-				children: [ this.menuBarView!, this.toolbarView ]
-			} );
-		}
-		else {
-			this.balloonContentView = this.toolbarView;
-		}
-
 		// The appearance of the BalloonToolbar method is event–driven.
 		// It is possible to stop the #show event and this prevent the toolbar from showing up.
 		this.decorate( 'show' );
@@ -218,7 +179,7 @@ export default class BalloonToolbar extends Plugin {
 					// The max-width equals 90% of the editable's width for the best user experience.
 					// The value keeps the balloon very close to the boundaries of the editable and limits the cases
 					// when the balloon juts out from the editable element it belongs to.
-					this.balloonContentView.maxWidth = toPx( entry.contentRect.width * .9 );
+					this.toolbarView.maxWidth = toPx( entry.contentRect.width * .9 );
 				} );
 			} );
 		}
@@ -270,7 +231,7 @@ export default class BalloonToolbar extends Plugin {
 		const schema = editor.model.schema;
 
 		// Do not add the toolbar to the balloon stack twice.
-		if ( this._balloon.hasView( this.balloonContentView ) ) {
+		if ( this._balloon.hasView( this.toolbarView ) ) {
 			return;
 		}
 
@@ -298,7 +259,7 @@ export default class BalloonToolbar extends Plugin {
 
 		// Add the toolbar to the common editor contextual balloon.
 		this._balloon.add( {
-			view: this.balloonContentView,
+			view: this.toolbarView,
 			position: this._getBalloonPositionData(),
 			balloonClassName: 'ck-toolbar-container'
 		} );
@@ -308,9 +269,9 @@ export default class BalloonToolbar extends Plugin {
 	 * Hides the toolbar.
 	 */
 	public hide(): void {
-		if ( this._balloon.hasView( this.balloonContentView ) ) {
+		if ( this._balloon.hasView( this.toolbarView ) ) {
 			this.stopListening( this.editor.ui, 'update' );
-			this._balloon.remove( this.balloonContentView );
+			this._balloon.remove( this.toolbarView );
 		}
 	}
 
@@ -374,10 +335,6 @@ export default class BalloonToolbar extends Plugin {
 		this._fireSelectionChangeDebounced.cancel();
 		this.toolbarView.destroy();
 		this.focusTracker.destroy();
-
-		if ( this.menuBarView ) {
-			this.menuBarView.destroy();
-		}
 
 		if ( this._resizeObserver ) {
 			this._resizeObserver.destroy();

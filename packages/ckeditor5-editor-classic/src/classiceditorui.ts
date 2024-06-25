@@ -12,7 +12,6 @@ import {
 	EditorUI,
 	DialogView,
 	normalizeToolbarConfig,
-	_initMenuBar,
 	type DialogViewMoveToEvent,
 	type Dialog,
 	type EditorUIReadyEvent
@@ -118,7 +117,7 @@ export default class ClassicEditorUI extends EditorUI {
 		this._initToolbar();
 
 		if ( view.menuBarView ) {
-			_initMenuBar( editor, view.menuBarView );
+			this._initMenuBar( view.menuBarView );
 		}
 
 		this._initDialogPluginIntegration();
