@@ -24,9 +24,11 @@ import '../../theme/components/button/listitembutton.css';
  */
 export default class ListItemButtonView extends ButtonView {
 	/**
-	 * Holds the view for the check icon of a button list item.
+	 * Indicates whether the button view has reserved space for a check holder.
+	 *
+	 * @observable
 	 */
-	private readonly _checkIconHolderView = new CheckIconHolderView();
+	declare public hasReservedCheckHolderSpace: boolean;
 
 	/**
 	 * The flag that indicates if the button should render a check holder.
@@ -38,11 +40,9 @@ export default class ListItemButtonView extends ButtonView {
 	declare public _shouldRenderCheckHolder: boolean;
 
 	/**
-	 * Indicates whether the button view has reserved space for a check holder.
-	 *
-	 * @observable
+	 * Holds the view for the check icon of a button list item.
 	 */
-	declare public hasReservedCheckHolderSpace: boolean;
+	private readonly _checkIconHolderView = new CheckIconHolderView();
 
 	/**
 	 * @inheritDoc
@@ -111,11 +111,6 @@ export default class ListItemButtonView extends ButtonView {
 
 export class CheckIconHolderView extends View {
 	/**
-	 * The view for the check icon of the button list item.
-	 */
-	private readonly _checkIconView: IconView = this._createCheckIconView();
-
-	/**
 	 * Collection of child views.
 	 */
 	public readonly children: ViewCollection<View>;
@@ -124,6 +119,11 @@ export class CheckIconHolderView extends View {
 	 * Indicates whether the button is in the "on" state.
 	 */
 	declare public isOn: boolean;
+
+	/**
+	 * The view for the check icon of the button list item.
+	 */
+	private readonly _checkIconView: IconView = this._createCheckIconView();
 
 	/**
 	 * @inheritDoc
