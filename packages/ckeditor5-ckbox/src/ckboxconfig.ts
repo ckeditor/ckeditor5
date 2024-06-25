@@ -139,7 +139,7 @@ export interface CKBoxConfig {
 	language?: string;
 
 	/**
-	 * This option allows opening CKBox in dialog mode. It takes a a configuration object with
+	 * This option allows opening CKBox in dialog mode. It takes a configuration object with
 	 * the width and height attributes.
 	 */
 	dialog?: CKBoxDialogConfig;

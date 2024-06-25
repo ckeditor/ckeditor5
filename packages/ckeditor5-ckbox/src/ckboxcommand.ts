@@ -146,10 +146,10 @@ export default class CKBoxCommand extends Command {
 		const editor = this.editor;
 		const ckboxConfig = editor.config.get( 'ckbox' )!;
 
-		const dialog = ckboxConfig.dialog!;
-		const categories = ckboxConfig.categories!;
-		const view = ckboxConfig.view!;
-		const upload = ckboxConfig.upload!;
+		const dialog = ckboxConfig.dialog;
+		const categories = ckboxConfig.categories;
+		const view = ckboxConfig.view;
+		const upload = ckboxConfig.upload;
 
 		return {
 			theme: ckboxConfig.theme,
