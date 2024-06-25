@@ -44,17 +44,17 @@ export default class MenuBarMenuListView extends ListView {
 			Array
 				.from( this.items )
 				.some( item => {
-					const maybeListButtonView = pickListButtonMenuViewIfPresent( item );
+					const listButtonView = pickListButtonMenuViewIfPresent( item );
 
-					return maybeListButtonView && maybeListButtonView.isToggleable;
+					return listButtonView && listButtonView.isToggleable;
 				} )
 		);
 
 		this.items.forEach( item => {
-			const maybeListButtonView = pickListButtonMenuViewIfPresent( item );
+			const listButtonView = pickListButtonMenuViewIfPresent( item );
 
-			if ( maybeListButtonView ) {
-				maybeListButtonView.hasReservedCheckHolderSpace = hasAnyToggleableItem;
+			if ( listButtonView ) {
+				listButtonView.hasReservedCheckHolderSpace = hasAnyToggleableItem;
 			}
 		} );
 	}
