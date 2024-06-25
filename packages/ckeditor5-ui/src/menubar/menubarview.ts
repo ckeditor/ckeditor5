@@ -55,7 +55,8 @@ export default class MenuBarView extends View implements FocusableView {
 
 	/**
 	 * Indicates whether the menu bar has been interacted with using the keyboard.
-	 * It's useful for showing focus outlines only when the keyboard is used.
+	 *
+	 * It is useful for showing focus outlines only when the keyboard is used.
 	 *
 	 * @observable
 	 */
