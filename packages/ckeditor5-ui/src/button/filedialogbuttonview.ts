@@ -41,8 +41,28 @@ import ListItemButtonView from './listitembuttonview.js';
 export default class FileDialogButtonView extends FileDialogViewMixin( ButtonView ) {}
 
 /**
- * Represents a view for a button in the file dialog list item.
- * Extends the `ListItemButtonView` class and includes the `FileDialogViewMixin`.
+ * The file dialog button view used in a lists.
+ *
+ * This component provides a button that opens the native file selection dialog.
+ * It can be used to implement the UI of a file upload feature.
+ *
+* ```ts
+ * const view = new FileDialogListItemButtonView( locale );
+ *
+ * view.set( {
+ * 	acceptedType: 'image/*',
+ * 	allowMultipleFiles: true
+ * 	label: t( 'Insert image' ),
+ * 	icon: imageIcon,
+ * 	tooltip: true
+ * } );
+ *
+ * view.on( 'done', ( evt, files ) => {
+ * 	for ( const file of Array.from( files ) ) {
+ * 		console.log( 'Selected file', file );
+ * 	}
+ * } );
+ * ```
  */
 export class FileDialogListItemButtonView extends FileDialogViewMixin( ListItemButtonView ) {}
 
