@@ -291,9 +291,10 @@ export default class HighlightUI extends Plugin {
 					isToggleable: true
 				} );
 
+				buttonView.iconView.fillColor = option.color;
+
 				buttonView.delegate( 'execute' ).to( menuView );
 				buttonView.bind( 'isOn' ).to( command, 'value', value => value === option.model );
-				buttonView.iconView.bind( 'fillColor' ).to( buttonView, 'isOn', value => value ? 'transparent' : option.color );
 
 				buttonView.on( 'execute', () => {
 					editor.execute( 'highlight', { value: option.model } );

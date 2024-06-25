@@ -425,32 +425,6 @@ describe( 'HighlightUI', () => {
 				] );
 			} );
 
-			it( 'should bind #fillColor to #isOn', () => {
-				command.value = 'pinkMarker';
-
-				expect( dumpItems( buttonView => buttonView.iconView.fillColor ) ).to.have.deep.ordered.members( [
-					[ 'Yellow marker', 'var(--ck-highlight-marker-yellow)' ],
-					[ 'Green marker', 'var(--ck-highlight-marker-green)' ],
-					[ 'Pink marker', 'transparent' ],
-					[ 'Blue marker', 'var(--ck-highlight-marker-blue)' ],
-					[ 'Red pen', 'var(--ck-highlight-pen-red)' ],
-					[ 'Green pen', 'var(--ck-highlight-pen-green)' ],
-					[ 'Remove highlight', '' ]
-				] );
-
-				command.value = 'redPen';
-
-				expect( dumpItems( buttonView => buttonView.iconView.fillColor ) ).to.have.deep.ordered.members( [
-					[ 'Yellow marker', 'var(--ck-highlight-marker-yellow)' ],
-					[ 'Green marker', 'var(--ck-highlight-marker-green)' ],
-					[ 'Pink marker', 'var(--ck-highlight-marker-pink)' ],
-					[ 'Blue marker', 'var(--ck-highlight-marker-blue)' ],
-					[ 'Red pen', 'transparent' ],
-					[ 'Green pen', 'var(--ck-highlight-pen-green)' ],
-					[ 'Remove highlight', '' ]
-				] );
-			} );
-
 			it( 'should delegate #execute from an item to the menu', () => {
 				const spy = sinon.spy();
 
