@@ -100,7 +100,7 @@ export default class AccessibilityHelp extends Plugin {
 		} );
 
 		view.on( 'execute', () => this._toggleDialog() );
-		view.bind( 'isOn' ).to( dialog, 'isOpen', isOpen => isOpen && dialog.id === 'accessibilityHelp' );
+		view.bind( 'isOn' ).to( dialog, 'id', id => id === 'accessibilityHelp' );
 
 		return view;
 	}
