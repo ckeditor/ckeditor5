@@ -545,6 +545,8 @@ function bindViewCollectionItemsToDefinitions(
 ) {
 	// List item checkboxes have a reserved space for the check icon, so we need to know if there are any checkboxes in the list
 	// to adjust the layout accordingly. It'd look weird if the items on the list were not aligned horizontally.
+	//
+	// Possible theoretical performance problem if many items are added one by one, as this will be called for each item.
 	listItems.on( 'change', () => {
 		// Filter-map. Check all items, leave only these that have buttons and return the buttons.
 		const listItemButtons = [ ...listItems ].reduce<Array<ListItemButtonView>>( ( acc, item ) => {
