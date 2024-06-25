@@ -162,6 +162,22 @@ createEditor( 'style', {
 	reversed: false
 } );
 
+createEditor( 'exclude-ol', {
+	styles: {
+		exclude: [ 'ol' ]
+	},
+	startIndex: true,
+	reversed: true
+} );
+
+createEditor( 'exclude-ul', {
+	styles: {
+		exclude: [ 'ul' ]
+	},
+	startIndex: true,
+	reversed: true
+} );
+
 createEditor( 'style-attribute', {
 	styles: { useAttribute: true },
 	startIndex: false,

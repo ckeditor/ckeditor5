@@ -107,6 +107,11 @@ export default class ListPropertiesView extends View {
 	public readonly focusCycler: FocusCycler;
 
 	/**
+	 * When set `true` display style view, otherwise it's not visible.
+	 */
+	private _isStyleVisible: boolean;
+
+	/**
 	 * Creates an instance of the list properties view.
 	 *
 	 * @param locale The {@link module:core/editor/editor~Editor#locale} instance.
@@ -119,10 +124,11 @@ export default class ListPropertiesView extends View {
 	 */
 	constructor(
 		locale: Locale,
-		{ enabledProperties, styleButtonViews, styleGridAriaLabel }: {
+		{ enabledProperties, styleButtonViews, styleGridAriaLabel, isStyleVisible }: {
 			enabledProperties: ListPropertiesConfig;
 			styleButtonViews: Array<ButtonView> | null;
 			styleGridAriaLabel: string;
+			isStyleVisible: boolean;
 		}
 	) {
 		super( locale );
@@ -147,9 +153,11 @@ export default class ListPropertiesView extends View {
 			}
 		} );
 
+		this._isStyleVisible = isStyleVisible;
+
 		// The rendering of the styles grid is conditional. When there is no styles grid, the view will render without collapsible
 		// for numbered list properties, hence simplifying the layout.
-		if ( enabledProperties.styles ) {
+		if ( this._isStyleVisible ) {
 			this.stylesView = this._createStylesView( styleButtonViews!, styleGridAriaLabel );
 			this.children.add( this.stylesView );
 		} else {
@@ -317,7 +325,7 @@ export default class ListPropertiesView extends View {
 		}
 
 		// When there are some style buttons, pack the numbered list properties into a collapsible to separate them.
-		if ( enabledProperties.styles ) {
+		if ( this._isStyleVisible ) {
 			this.additionalPropertiesCollapsibleView = new CollapsibleView( this.locale, numberedPropertyViews );
 
 			this.additionalPropertiesCollapsibleView.set( {

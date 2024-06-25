@@ -139,4 +139,30 @@ export interface ListPropertiesStyleConfig {
 	 * @default false
 	 */
 	useAttribute?: boolean;
+
+	/**
+	 * Turn off style feature for the given list type.
+	 *
+	 * ```ts
+	 * {
+	 * 	list: {
+	 * 		properties: {
+	 * 			styles: {
+	 * 				exclude: [ 'ul' ]
+	 * 			},
+	 *
+	 * 			// ...
+	 * 		}
+	 * 	},
+	 *
+	 * 	// ...
+	 * }
+	 * ```
+	 *
+	 * **Note**: This configuration works only with
+	 * {@link module:list/listproperties~ListProperties list properties}.
+	 *
+	 * @default []
+	 */
+	exclude?: Array<'ul' | 'ol'>;
 }

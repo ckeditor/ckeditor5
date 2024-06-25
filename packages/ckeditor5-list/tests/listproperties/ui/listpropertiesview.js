@@ -41,7 +41,8 @@ describe( 'ListPropertiesView', () => {
 				new ButtonView( locale ),
 				new ButtonView( locale )
 			],
-			styleGridAriaLabel: 'Foo'
+			styleGridAriaLabel: 'Foo',
+			isStyleVisible: true
 		} );
 
 		view.render();
@@ -329,7 +330,8 @@ describe( 'ListPropertiesView', () => {
 							new ButtonView( locale ),
 							new ButtonView( locale )
 						],
-						styleGridAriaLabel: 'Foo'
+						styleGridAriaLabel: 'Foo',
+						isStyleVisible: true
 					} );
 
 					const spyView = sinon.spy( view.focusTracker, 'add' );
@@ -355,7 +357,8 @@ describe( 'ListPropertiesView', () => {
 							new ButtonView( locale ),
 							new ButtonView( locale )
 						],
-						styleGridAriaLabel: 'Foo'
+						styleGridAriaLabel: 'Foo',
+						isStyleVisible: true
 					} );
 
 					const spyStylesView = sinon.spy( view.stylesView.focusTracker, 'add' );
