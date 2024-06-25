@@ -15,11 +15,7 @@ ClassicEditor
 		plugins: [ ArticlePluginSet, Highlight ],
 		toolbar: [
 			'heading', '|', 'highlight', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
-		],
-		// TODO remove before merge
-		menuBar: {
-			isVisible: true
-		}
+		]
 	} )
 	.then( editor => {
 		window.editor = editor;
