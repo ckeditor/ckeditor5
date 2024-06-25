@@ -28,7 +28,7 @@ import clickOutsideHandler from '../bindings/clickoutsidehandler.js';
 import type { ButtonExecuteEvent } from '../button/button.js';
 import type ComponentFactory from '../componentfactory.js';
 import type { FocusableView } from '../focuscycler.js';
-import type { Command, Editor } from '@ckeditor/ckeditor5-core';
+import type { Editor } from '@ckeditor/ckeditor5-core';
 import {
 	logWarning,
 	type Locale,
@@ -36,12 +36,8 @@ import {
 	type PositioningFunction
 } from '@ckeditor/ckeditor5-utils';
 import { cloneDeep } from 'lodash-es';
-import type ButtonView from '../button/buttonview.js';
-import MenuBarMenuButtonView from './menubarmenubuttonview.js';
-import type View from '../view.js';
 import MenuBarMenuListView from './menubarmenulistview.js';
 import MenuBarMenuListItemButtonView from './menubarmenulistitembuttonview.js';
-import type EditorUI from '../editorui/editorui.js';
 
 const NESTED_PANEL_HORIZONTAL_OFFSET = 5;
 
@@ -969,18 +965,20 @@ export function normalizeMenuBarConfig( config: Readonly<MenuBarConfig> ): Norma
 export function processMenuBarConfig( {
 	normalizedConfig,
 	locale,
-	ui
+	componentFactory,
+	extraItems
 }: {
 	normalizedConfig: NormalizedMenuBarConfigObject;
 	locale: Locale;
-	ui: EditorUI;
+	componentFactory: ComponentFactory;
+	extraItems: Array<MenuBarConfigAddedItem | MenuBarConfigAddedGroup | MenuBarConfigAddedMenu>;
 } ): NormalizedMenuBarConfigObject {
 	const configClone = cloneDeep( normalizedConfig ) as NormalizedMenuBarConfigObject;
 
-	handleAdditions( normalizedConfig, configClone, ui.getCustomMenuBarItemsLocations() );
+	handleAdditions( normalizedConfig, configClone, extraItems );
 	handleConfigRemovals( normalizedConfig, configClone );
 	handleConfigAdditions( normalizedConfig, configClone );
-	purgeUnavailableComponents( normalizedConfig, configClone, ui.componentFactory );
+	purgeUnavailableComponents( normalizedConfig, configClone, componentFactory );
 	purgeEmptyMenus( normalizedConfig, configClone );
 	localizeMenuLabels( configClone, locale );
 
@@ -1151,6 +1149,10 @@ function handleAdditions(
 	items: Array<MenuBarConfigAddedItem | MenuBarConfigAddedGroup | MenuBarConfigAddedMenu>
 ) {
 	const successFullyAddedItems: typeof items = [];
+
+	if ( items.length == 0 ) {
+		return;
+	}
 
 	for ( const itemToAdd of items ) {
 		const relation = getRelationFromPosition( itemToAdd.position );
@@ -1581,7 +1583,7 @@ export function _initMenuBar( editor: Editor, menuBarView: MenuBarView ): void {
 
 	const normalizedMenuBarConfig = normalizeMenuBarConfig( editor.config.get( 'menuBar' ) || {} );
 
-	menuBarView.fillFromConfig( normalizedMenuBarConfig, editor.ui );
+	menuBarView.fillFromConfig( normalizedMenuBarConfig, editor.ui.componentFactory, editor.ui.getCustomMenuBarItemsLocations() );
 
 	editor.keystrokes.set( 'Esc', ( data, cancel ) => {
 		if ( menuBarViewElement.contains( editor.ui.focusTracker.focusedElement ) ) {

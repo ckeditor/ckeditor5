@@ -126,7 +126,7 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 	/**
 	 * All additional menu bar items, groups or menus that have their default location defined.
 	 */
-	private _defaultConfigExpansion: Array<MenuBarConfigAddedItem | MenuBarConfigAddedGroup | MenuBarConfigAddedMenu> = [];
+	private _extraMenuBarItems: Array<MenuBarConfigAddedItem | MenuBarConfigAddedGroup | MenuBarConfigAddedMenu> = [];
 
 	/**
 	 * Creates an instance of the editor UI class.
@@ -308,17 +308,20 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 	/**
 	 * Stores default location config for given menu bar item.
 	 */
-	public setDefaultMenuBarItemLocation(
+	public addMenuBarItem(
 		config: MenuBarConfigAddedItem | MenuBarConfigAddedGroup | MenuBarConfigAddedMenu
 	): void {
-		this._defaultConfigExpansion.push( config );
+		this._extraMenuBarItems.push( config );
 	}
 
 	/**
 	 * Returns all default location configs for menu bar items.
+	 *
+	 * @internal
 	 */
 	public getCustomMenuBarItemsLocations(): Array<MenuBarConfigAddedItem | MenuBarConfigAddedGroup | MenuBarConfigAddedMenu> {
-		return this._defaultConfigExpansion;
+		// TODO remove this method when _initMenuBar is moved here.
+		return this._extraMenuBarItems;
 	}
 
 	/**

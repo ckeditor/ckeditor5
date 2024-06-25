@@ -318,7 +318,7 @@ export default class HighlightUI extends Plugin {
 			}
 		);
 
-		this.editor.ui.setDefaultMenuBarItemLocation( {
+		this.editor.ui.addMenuBarItem( {
 			item: 'menuBar:highlight2',
 			position: 'after:menuBar:highlight'
 		} );

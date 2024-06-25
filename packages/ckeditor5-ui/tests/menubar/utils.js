@@ -8,6 +8,7 @@
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import {
 	Locale,
+	ObservableMixin,
 	keyCodes,
 	wait
 } from '@ckeditor/ckeditor5-utils';
@@ -18,7 +19,10 @@ import {
 	MenuBarMenuView,
 	MenuBarView,
 	normalizeMenuBarConfig,
-	DefaultMenuBarItems
+	DefaultMenuBarItems,
+	MenuBarMenuListItemButtonView,
+	MenuBarMenuListView,
+	MenuBarMenuListItemView
 } from '../../src/index.js';
 import {
 	barDump,
@@ -26,8 +30,10 @@ import {
 	getItemByLabel,
 	getMenuByLabel
 } from './_utils/utils.js';
-import { MenuBarMenuViewPanelPositioningFunctions, _initMenuBar } from '../../src/menubar/utils.js';
+import { MenuBarMenuViewPanelPositioningFunctions, _initMenuBar, registerMenuBarItem } from '../../src/menubar/utils.js';
 import ClassicTestEditor, { ClassicTestEditorUI } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 describe( 'MenuBarView utils', () => {
 	const locale = new Locale();
@@ -1662,52 +1668,264 @@ describe( 'MenuBarView utils', () => {
 				stopPropagation: sinon.spy()
 			} );
 		}
-		class MenuBarTestEditor extends ClassicTestEditor {
-			constructor( sourceElementOrData, config ) {
-				super( sourceElementOrData, config );
+	} );
 
-				const menuBarEditorUIView = new MenuBarEditorUIView( this.locale, this.editing.view, sourceElementOrData );
-				this.ui = new MenuBarEditorUI( this, menuBarEditorUIView );
-			}
-		}
+	describe( 'registerMenuBarItem()', () => {
+		const locale = new Locale();
+		let factory;
 
-		class MenuBarEditorUI extends ClassicTestEditorUI {
-			init() {
-				super.init();
+		beforeEach( () => {
+			factory = new ComponentFactory( {} );
+		} );
 
-				_initMenuBar( this.editor, this.view.menuBarView );
-			}
-		}
+		it( 'can register simple button with label', () => {
+			let x = 0;
 
-		class MenuBarEditorUIView extends EditorUIView {
-			constructor(
-				locale,
-				editingView,
-				editableElement
-			) {
-				super( locale );
+			registerMenuBarItem( factory, locale, 'menuBar:incrementX', {
+				type: 'button',
+				properties: {
+					label: 'Button1'
+				},
+				onExecute: ( () => { x += 1; } )
+			} );
 
-				this.menuBarView = new MenuBarView( locale );
-				this.main = this.createCollection();
-				this.editable = new InlineEditableUIView( locale, editingView, editableElement );
+			const button = factory.create( 'menuBar:incrementX' );
 
-				this.menuBarView.extendTemplate( {
-					attributes: {
-						class: [
-							'ck-reset_all',
-							'ck-rounded-corners'
-						],
-						dir: locale.uiLanguageDirection
+			expect( button ).to.be.instanceOf( MenuBarMenuListItemButtonView );
+			expect( button.label ).to.equal( 'Button1' );
+
+			expect( x ).to.equal( 0 );
+			button.fire( 'execute' );
+			expect( x ).to.equal( 1 );
+			button.fire( 'execute' );
+			expect( x ).to.equal( 2 );
+		} );
+
+		it( 'can register button with binding', () => {
+			const observable = new Observable( { shouldBeOn: false } );
+
+			registerMenuBarItem( factory, locale, 'menuBar:isOn', {
+				type: 'button',
+				properties: {},
+				onExecute: () => {},
+				afterCreate: ( buttonView => buttonView.bind( 'isOn' ).to( observable, 'shouldBeOn' ) )
+			} );
+
+			const button = factory.create( 'menuBar:isOn' );
+
+			expect( button ).to.be.instanceOf( MenuBarMenuListItemButtonView );
+
+			expect( button.isOn ).to.equal( false );
+			observable.shouldBeOn = true;
+			expect( button.isOn ).to.equal( true );
+		} );
+
+		it( 'can register submenu', () => {
+			registerMenuBarItem( factory, locale, 'menuBar:submenu1', {
+				type: 'submenu',
+				properties: {
+					label: 'Submenu1'
+				},
+				children: [
+					{
+						type: 'button',
+						properties: {
+							label: 'Button1'
+						},
+						onExecute: () => {}
+					},
+					{
+						type: 'button',
+						properties: {
+							label: 'Button2'
+						},
+						onExecute: () => {}
 					}
-				} );
-			}
+				]
 
-			render() {
-				super.render();
+			} );
 
-				this.registerChild( this.menuBarView );
-				this.registerChild( this.editable );
+			const submenu = factory.create( 'menuBar:submenu1' );
+
+			expect( submenu ).to.be.instanceOf( MenuBarMenuView );
+			expect( submenu.buttonView.label ).to.equal( 'Submenu1' );
+
+			const list = submenu.panelView.children.first;
+
+			expect( list ).to.be.instanceOf( MenuBarMenuListView );
+
+			expect( list.items.get( 0 ) ).to.be.instanceOf( MenuBarMenuListItemView );
+			expect( list.items.get( 0 ).children.first ).to.be.instanceOf( MenuBarMenuListItemButtonView );
+			expect( list.items.get( 0 ).children.first.label ).to.equal( 'Button1' );
+
+			expect( list.items.get( 1 ) ).to.be.instanceOf( MenuBarMenuListItemView );
+			expect( list.items.get( 1 ).children.first ).to.be.instanceOf( MenuBarMenuListItemButtonView );
+			expect( list.items.get( 1 ).children.first.label ).to.equal( 'Button2' );
+		} );
+
+		it( 'can register nested submenu with binding', () => {
+			const observable = new Observable( { shouldBeEnabled: false } );
+
+			registerMenuBarItem( factory, locale, 'menuBar:submenu1', {
+				type: 'submenu',
+				properties: {
+					label: 'Submenu1'
+				},
+				children: [
+					{
+						type: 'button',
+						properties: {
+							label: 'Button1'
+						},
+						onExecute: () => {}
+					},
+					{
+						type: 'submenu',
+						properties: {
+							label: 'Submenu2'
+						},
+						children: [
+							{
+								type: 'button',
+								properties: {
+									label: 'Button2_1'
+								},
+								onExecute: () => {}
+							},
+							{
+								type: 'button',
+								properties: {
+									label: 'Button2_2'
+								},
+								onExecute: () => {}
+							}
+						],
+						afterCreate: menu => menu.bind( 'isEnabled' ).to( observable, 'shouldBeEnabled' )
+					}
+				]
+
+			} );
+
+			const submenu = factory.create( 'menuBar:submenu1' );
+
+			const list = submenu.panelView.children.first;
+			const nestedSubmenu = list.items.get( 1 ).children.first;
+
+			expect( nestedSubmenu ).to.be.instanceOf( MenuBarMenuView );
+			expect( nestedSubmenu.buttonView.label ).to.equal( 'Submenu2' );
+
+			const nestedList = nestedSubmenu.panelView.children.first;
+
+			expect( nestedList ).to.be.instanceOf( MenuBarMenuListView );
+
+			expect( nestedList.items.get( 0 ).children.first.label ).to.equal( 'Button2_1' );
+			expect( nestedList.items.get( 1 ).children.first.label ).to.equal( 'Button2_2' );
+
+			expect( nestedSubmenu.isEnabled ).to.equal( false );
+			observable.shouldBeEnabled = true;
+			expect( nestedSubmenu.isEnabled ).to.equal( true );
+		} );
+
+		class Observable extends ObservableMixin() {
+			constructor( properties ) {
+				super();
+
+				if ( properties ) {
+					this.set( properties );
+				}
 			}
 		}
 	} );
+
+	it( 'should be able to handle custom menu bar item addition', async () => {
+		const editorElement = document.body.appendChild( document.createElement( 'div' ) );
+		let menuBarEditor, menuBarView;
+
+		class MenuItemPlugin extends Plugin {
+			init() {
+				this.editor.ui.componentFactory.add( 'menuBar:customItem', locale => {
+					const buttonView = new MenuBarMenuListItemButtonView( locale );
+
+					buttonView.set( {
+						label: 'Custom Button'
+					} );
+
+					return buttonView;
+				} );
+
+				this.editor.ui.addMenuBarItem( { item: 'menuBar:customItem', position: 'start:help' } );
+			}
+		}
+
+		await MenuBarTestEditor.create( editorElement, {
+			plugins: [ Essentials, MenuItemPlugin ],
+			menuBar: { isVisible: true }
+		} ).then( editor => {
+			menuBarEditor = editor;
+			menuBarView = editor.ui.view.menuBarView;
+
+			document.body.appendChild( menuBarView.element );
+		} );
+
+		const helpMenu = menuBarView.menus.find( menu => menu.buttonView.label == 'Help' );
+
+		helpMenu.isOpen = true;
+
+		const list = helpMenu.panelView.children.first;
+
+		expect( list.items.get( 0 ).children.first ).to.be.instanceOf( MenuBarMenuListItemButtonView );
+		expect( list.items.get( 0 ).children.first.label ).to.equal( 'Custom Button' );
+
+		editorElement.remove();
+		menuBarEditor.ui.destroy();
+		menuBarView.element.remove();
+	} );
+
+	class MenuBarTestEditor extends ClassicTestEditor {
+		constructor( sourceElementOrData, config ) {
+			super( sourceElementOrData, config );
+
+			const menuBarEditorUIView = new MenuBarEditorUIView( this.locale, this.editing.view, sourceElementOrData );
+			this.ui = new MenuBarEditorUI( this, menuBarEditorUIView );
+		}
+	}
+
+	class MenuBarEditorUI extends ClassicTestEditorUI {
+		init() {
+			super.init();
+
+			_initMenuBar( this.editor, this.view.menuBarView );
+		}
+	}
+
+	class MenuBarEditorUIView extends EditorUIView {
+		constructor(
+			locale,
+			editingView,
+			editableElement
+		) {
+			super( locale );
+
+			this.menuBarView = new MenuBarView( locale );
+			this.main = this.createCollection();
+			this.editable = new InlineEditableUIView( locale, editingView, editableElement );
+
+			this.menuBarView.extendTemplate( {
+				attributes: {
+					class: [
+						'ck-reset_all',
+						'ck-rounded-corners'
+					],
+					dir: locale.uiLanguageDirection
+				}
+			} );
+		}
+
+		render() {
+			super.render();
+
+			this.registerChild( this.menuBarView );
+			this.registerChild( this.editable );
+		}
+	}
 } );
