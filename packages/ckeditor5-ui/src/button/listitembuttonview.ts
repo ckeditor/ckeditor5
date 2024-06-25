@@ -99,9 +99,9 @@ export default class ListItemButtonView extends ButtonView {
 			( evt, propertyName, shouldRenderCheckHolder ) => {
 				const { children, _checkIconHolderView } = this;
 
-				if ( shouldRenderCheckHolder && !children.has( _checkIconHolderView ) ) {
+				if ( shouldRenderCheckHolder ) {
 					children.add( _checkIconHolderView, 0 );
-				} else if ( !shouldRenderCheckHolder && children.has( _checkIconHolderView ) ) {
+				} else if ( !shouldRenderCheckHolder ) {
 					children.remove( _checkIconHolderView );
 				}
 			}
