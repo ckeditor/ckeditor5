@@ -28,6 +28,7 @@ import {
 	type ViewDocumentKeyDownEvent,
 	type ViewDocumentMutationsEvent,
 	type DocumentChangeEvent,
+	type MapperModelToViewPositionEvent,
 	type Selection
 } from '@ckeditor/ckeditor5-engine';
 
@@ -338,71 +339,34 @@ export default class Input extends Plugin {
 				const text = Array.from( selectionParent.getChildren() )
 					.reduce( ( rangeText, element ) => rangeText + ( element.is( '$text' ) ? element.data : ' ' ), '' );
 
-				// const editableElement = editor.editing.view.document.selection.editableElement;
-				const editableElement = editor.editing.view.document.selection.getFirstPosition()!.root as ViewElement;
+				const editableElement = editor.editing.view.document.selection.editableElement;
+
+				// TODO EditContext does not accept figcaption or td - DOM throws that it is not supported
+				// https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/editContext#possible_elements
+				// The figcaption or td/th won't work (nested editables, contenteditable=false & tabindex=-1 is blocking it).
+				// Using dedicated div element as edit context host.
+				// On Android it falls back to the beforeinput insertCompositionText and handles typing but without EditContext.
+				const editContextHostElement = getEditContextHostElement( editableElement );
 
 				this._previousEditBlock = selectionParent;
 				this._previousSelection = model.createSelection( selection );
 
-				if ( !editableElement ) {
+				if ( !editContextHostElement ) {
 					// TODO
 					throw new Error( 'Should not be possible' );
 				} else {
-					const domElement = editor.editing.view.domConverter.mapViewToDom( editableElement );
+					const domElement = editor.editing.view.domConverter.mapViewToDom( editContextHostElement );
 
 					if ( !this._editContext ) {
-						this._editContext = new ( window as any ).EditContext();
+						this._editContext = this._createEditContext();
 
-						if ( !( domElement as any ).editContext ) {
-							// TODO this does not work for figcaption or td - DOM throws that it is not supported
-							// https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/editContext#possible_elements
-							( domElement as any ).editContext = this._editContext;
-							// The above won't work for nested editables (contenteditable=false & tabindex=-1 is blocking it)
-							// On Android it falls back to the beforeinput insertCompositionText and handles typing but without EditContext.
-
-							// TODO add stopObserving
-							editor.editing.view.getObserver( CompositionObserver ).observe( this._editContext );
-						}
-
-						this._domEmitter.listenTo( this._editContext, 'textupdate', ( evt, domEvent: any ) => {
-							// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-							// @if CK_DEBUG_TYPING // 	console.group( `%c[Input]%c EditContext "textupdate".`,
-							// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', 'font-weight: bold'
-							// @if CK_DEBUG_TYPING // 	);
-							// @if CK_DEBUG_TYPING // }
-
-							console.log(
-								`The user entered the text: ${ _escapeTextNodeData( domEvent.text ) } ` +
-								`at [${ domEvent.updateRangeStart } - ${ domEvent.updateRangeEnd }] offset.` +
-								`Selection: [${ domEvent.selectionStart } - ${ domEvent.selectionEnd }] offset`
-							);
-
-							const commandData = {
-								text: domEvent.text,
-								selection: model.createSelection(
-									model.createRange(
-										model.createPositionAt( this._previousEditBlock!, domEvent.updateRangeStart ),
-										model.createPositionAt( this._previousEditBlock!, domEvent.updateRangeEnd )
-									)
-								)
-							};
-
-							// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-							// @if CK_DEBUG_TYPING // 	console.log( `%c[Input]%c Execute insertText:%c "${ commandData.text }"%c ` +
-							// @if CK_DEBUG_TYPING // 		`[${ commandData.selection.getFirstPosition().path }]-` +
-							// @if CK_DEBUG_TYPING // 		`[${ commandData.selection.getLastPosition().path }]`,
-							// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', 'font-weight: bold', 'color: blue', ''
-							// @if CK_DEBUG_TYPING // 	);
-							// @if CK_DEBUG_TYPING // }
-
-							editor.execute( 'insertText', commandData );
-
-							// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-							// @if CK_DEBUG_TYPING // 	console.groupEnd();
-							// @if CK_DEBUG_TYPING // }
-						} );
+						( domElement as any ).editContext = this._editContext;
 					}
 					else if ( !( domElement as any ).editContext ) {
+						for ( const domElement of this._editContext.attachedElements() ) {
+							( domElement as any ).editContext = null;
+						}
+
 						( domElement as any ).editContext = this._editContext;
 					}
 
@@ -423,6 +387,23 @@ export default class Input extends Plugin {
 					);
 				}
 			}, { priority: 'lowest' } ); // TODO describe: after changed DOM
+
+			editor.editing.mapper.on<MapperModelToViewPositionEvent>( 'modelToViewPosition', ( evt, data ) => {
+				const mapper = data.mapper;
+
+				if ( data.viewPosition ) {
+					return;
+				}
+
+				const viewElement = mapper.toViewElement( data.modelPosition.parent as Element );
+				const editContextHostElement = getEditContextHostElement( viewElement );
+
+				if ( !editContextHostElement || editContextHostElement == viewElement ) {
+					return;
+				}
+
+				data.viewPosition = mapper.findPositionIn( editContextHostElement, data.modelPosition.offset );
+			} );
 		}
 	}
 
@@ -433,6 +414,67 @@ export default class Input extends Plugin {
 		super.destroy();
 
 		this._compositionQueue.destroy();
+
+		if ( this._editContext ) {
+			this.editor.editing.view.getObserver( CompositionObserver ).stopObserving( this._editContext );
+			this._domEmitter.stopListening( this._editContext );
+
+			for ( const domElement of this._editContext.attachedElements() ) {
+				( domElement as any ).editContext = null;
+			}
+		}
+	}
+
+	/**
+	 * TODO
+	 */
+	private _createEditContext() {
+		const editor = this.editor;
+		const model = editor.model;
+
+		const editContext = new ( window as any ).EditContext();
+
+		editor.editing.view.getObserver( CompositionObserver ).observe( editContext );
+
+		this._domEmitter.listenTo( editContext, 'textupdate', ( evt, domEvent: any ) => {
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.group( `%c[Input]%c EditContext "textupdate".`,
+			// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', 'font-weight: bold'
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // }
+
+			console.log(
+				`The user entered the text: ${ _escapeTextNodeData( domEvent.text ) } ` +
+				`at [${ domEvent.updateRangeStart } - ${ domEvent.updateRangeEnd }] offset.` +
+				`Selection: [${ domEvent.selectionStart } - ${ domEvent.selectionEnd }] offset`
+			);
+
+			const commandData = {
+				text: domEvent.text,
+				selection: model.createSelection(
+					model.createRange(
+						model.createPositionAt( this._previousEditBlock!, domEvent.updateRangeStart ),
+						model.createPositionAt( this._previousEditBlock!, domEvent.updateRangeEnd )
+					)
+				)
+			};
+
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.log( `%c[Input]%c Execute insertText:%c "${ commandData.text }"%c ` +
+			// @if CK_DEBUG_TYPING // 		`[${ commandData.selection.getFirstPosition().path }]-` +
+			// @if CK_DEBUG_TYPING // 		`[${ commandData.selection.getLastPosition().path }]`,
+			// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', 'font-weight: bold', 'color: blue', ''
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // }
+
+			editor.execute( 'insertText', commandData );
+
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.groupEnd();
+			// @if CK_DEBUG_TYPING // }
+		} );
+
+		return editContext;
 	}
 }
 
@@ -670,4 +712,21 @@ function _escapeTextNodeData( text: string ) {
 		.replace( /\u2060/g, '&NoBreak;' );
 
 	return `"${ escapedText }"`;
+}
+
+/**
+ * TODO
+ */
+function getEditContextHostElement( viewElement?: ViewElement | null ) {
+	if ( !viewElement || viewElement.childCount == 0 || !viewElement.is( 'editableElement' ) ) {
+		return viewElement;
+	}
+
+	const viewFirstChildElement = viewElement.getChild( 0 )!;
+
+	if ( !viewFirstChildElement.is( 'element' ) || !viewFirstChildElement.getAttribute( 'data-ck-editcontext' ) ) {
+		return viewElement;
+	}
+
+	return viewFirstChildElement;
 }

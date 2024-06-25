@@ -386,6 +386,15 @@ export default class DowncastWriter {
 			editableElement._unsafeAttributesToRender.push( ...options.renderUnsafeAttributes );
 		}
 
+		// TODO maybe this should be in the widget/utils toWidgetEditable() helper.
+		if ( name != 'div' ) {
+			// TODO make it more generic and without inline styles
+			editableElement._appendChild( new ContainerElement( this.document, 'div', {
+				'data-ck-editcontext': true,
+				style: 'outline: none;'
+			} ) );
+		}
+
 		return editableElement;
 	}
 

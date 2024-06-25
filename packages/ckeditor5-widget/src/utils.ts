@@ -285,21 +285,26 @@ export function toWidgetEditable(
 		label?: string;
 	} = {}
 ): ViewEditableElement {
+	const firstChild = editable.getChild( 0 );
+	const editContextHost = firstChild && firstChild.is( 'element' ) && firstChild.getAttribute( 'data-ck-editcontext' ) ?
+		firstChild :
+		editable;
+
 	writer.addClass( [ 'ck-editor__editable', 'ck-editor__nested-editable' ], editable );
 
 	writer.setAttribute( 'role', 'textbox', editable );
-	writer.setAttribute( 'tabindex', '-1', editable );
+	writer.setAttribute( 'tabindex', '-1', editContextHost );
 
 	if ( options.label ) {
 		writer.setAttribute( 'aria-label', options.label, editable );
 	}
 
 	// Set initial contenteditable value.
-	writer.setAttribute( 'contenteditable', editable.isReadOnly ? 'false' : 'true', editable );
+	writer.setAttribute( 'contenteditable', editable.isReadOnly ? 'false' : 'true', editContextHost );
 
 	// Bind the contenteditable property to element#isReadOnly.
 	editable.on<ObservableChangeEvent<boolean>>( 'change:isReadOnly', ( evt, property, is ) => {
-		writer.setAttribute( 'contenteditable', is ? 'false' : 'true', editable );
+		writer.setAttribute( 'contenteditable', is ? 'false' : 'true', editContextHost );
 	} );
 
 	editable.on<ObservableChangeEvent<boolean>>( 'change:isFocused', ( evt, property, is ) => {

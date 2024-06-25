@@ -7,6 +7,8 @@
  * @module utils/dom/iseventtarget
  */
 
+/* global window */
+
 import isNode from './isnode.js';
 import isWindow from './iswindow.js';
 
@@ -22,12 +24,6 @@ export default function isEventTarget( obj: any ): obj is EventTarget {
 		return true;
 	}
 
-	// Check if obj is an instance of the EditContext.
-	if ( obj.attachedElements && typeof obj.attachedElements == 'function' ) {
-		const defaultView = obj.attachedElements()[ 0 ].ownerDocument.defaultView;
-
-		return obj instanceof defaultView.EventTarget;
-	}
-
-	return false;
+	// TODO this is safe for EditContext (it's created from window.EditContext) but unsure for other cases.
+	return obj instanceof window.EventTarget;
 }
