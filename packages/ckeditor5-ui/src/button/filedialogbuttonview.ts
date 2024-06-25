@@ -67,10 +67,11 @@ export default class FileDialogButtonView extends FileDialogViewMixin( ButtonVie
 export class FileDialogListItemButtonView extends FileDialogViewMixin( ListItemButtonView ) {}
 
 /**
- * Mixin function that enhances a base class with file dialog functionality.
- * This mixin is used to create the `FileDialogView` class, which is a view component
- * that includes a button and a hidden file input. When the button is clicked, the file dialog is opened.
- * The mixin adds properties and methods to the base class to handle file selection and rendering.
+ * Mixin function that enhances a base button view class with file dialog functionality. It is used
+ * to create a button view class that opens the native select file dialog when clicked.
+ *
+ * The enhanced view includes a button and a hidden file input. When the button is clicked, the file dialog is opened.
+ * The mixin adds properties and methods to the base class to handle the file selection.
  *
  * @param view The base class to be enhanced with file dialog functionality.
  * @returns A new class that extends the base class and includes the file dialog functionality.
