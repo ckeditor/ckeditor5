@@ -319,7 +319,7 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 	 *
 	 * @internal
 	 */
-	public getCustomMenuBarItemsLocations(): Array<MenuBarConfigAddedItem | MenuBarConfigAddedGroup | MenuBarConfigAddedMenu> {
+	public getExtraMenuBarItems(): Array<MenuBarConfigAddedItem | MenuBarConfigAddedGroup | MenuBarConfigAddedMenu> {
 		// TODO remove this method when _initMenuBar is moved here.
 		return this._extraMenuBarItems;
 	}

@@ -974,8 +974,8 @@ export function processMenuBarConfig( {
 	const configClone = cloneDeep( normalizedConfig ) as NormalizedMenuBarConfigObject;
 
 	handleAdditions( normalizedConfig, configClone, extraItems );
-	handleConfigRemovals( normalizedConfig, configClone );
-	handleConfigAdditions( normalizedConfig, configClone );
+	handleRemovals( normalizedConfig, configClone );
+	handleAdditions( normalizedConfig, configClone, configClone.addItems );
 	purgeUnavailableComponents( normalizedConfig, configClone, componentFactory );
 	purgeEmptyMenus( normalizedConfig, configClone );
 	localizeMenuLabels( configClone, locale );
@@ -988,7 +988,7 @@ export function processMenuBarConfig( {
  * individual items, groups, or entire menus. For each removed item, a warning is logged if the item
  * was not found in the configuration.
  */
-function handleConfigRemovals(
+function handleRemovals(
 	originalConfig: NormalizedMenuBarConfigObject,
 	config: NormalizedMenuBarConfigObject
 ) {
@@ -1051,17 +1051,6 @@ function handleConfigRemovals(
 			} );
 		}
 	}
-}
-
-/**
- * Handles the `config.menuBar.addItems` configuration. It allows for adding menus, groups, and items at arbitrary
- * positions in the menu bar. If the position does not exist, a warning is logged.
- */
-function handleConfigAdditions(
-	originalConfig: NormalizedMenuBarConfigObject,
-	config: NormalizedMenuBarConfigObject
-) {
-	handleAdditions( originalConfig, config, config.addItems );
 }
 
 /**
@@ -1508,7 +1497,7 @@ export function _initMenuBar( editor: Editor, menuBarView: MenuBarView ): void {
 
 	const normalizedMenuBarConfig = normalizeMenuBarConfig( editor.config.get( 'menuBar' ) || {} );
 
-	menuBarView.fillFromConfig( normalizedMenuBarConfig, editor.ui.componentFactory, editor.ui.getCustomMenuBarItemsLocations() );
+	menuBarView.fillFromConfig( normalizedMenuBarConfig, editor.ui.componentFactory, editor.ui.getExtraMenuBarItems() );
 
 	editor.keystrokes.set( 'Esc', ( data, cancel ) => {
 		if ( menuBarViewElement.contains( editor.ui.focusTracker.focusedElement ) ) {
