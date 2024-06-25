@@ -115,10 +115,13 @@ export default class ListPropertiesUI extends Plugin {
 			} ) );
 		}
 
+		const isOrderedListStyleExcluded = excludedListTypes && excludedListTypes.includes( 'ol' );
+		const isStyleVisible = propertiesConfig.styles && !isOrderedListStyleExcluded || false;
+
 		// Note: When this plugin does not register the "numberedList" dropdown due to properties configuration,
 		// a simple button will be still registered under the same name by ListUI as a fallback. This should happen
 		// in most editor configuration because the List plugin automatically requires ListUI.
-		if ( propertiesConfig.styles || propertiesConfig.startIndex || propertiesConfig.reversed ) {
+		if ( isStyleVisible || propertiesConfig.startIndex || propertiesConfig.reversed ) {
 			const styleDefinitions = [
 				{
 					label: t( 'Toggle the decimal list style' ),
@@ -160,9 +163,6 @@ export default class ListPropertiesUI extends Plugin {
 			const buttonLabel = t( 'Numbered List' );
 			const styleGridAriaLabel = t( 'Numbered list styles toolbar' );
 			const commandName = 'numberedList';
-
-			const isExcluded = excludedListTypes && excludedListTypes.includes( 'ol' );
-			const isStyleVisible = propertiesConfig.styles && !isExcluded || false;
 
 			editor.ui.componentFactory.add( commandName, getDropdownViewCreator( {
 				editor,

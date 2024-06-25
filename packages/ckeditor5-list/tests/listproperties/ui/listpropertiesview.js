@@ -140,6 +140,30 @@ describe( 'ListPropertiesView', () => {
 					view.destroy();
 				} );
 
+				it( 'should have no #stylesView when "isStyleVisible" is `false`', () => {
+					const view = new ListPropertiesView( locale, {
+						enabledProperties: {
+							startIndex: true,
+							reversed: true,
+							styles: {
+								useAttribute: true
+							}
+						},
+						styleButtonViews: [
+							new ButtonView( locale )
+						],
+						styleGridAriaLabel: 'Foo',
+						isStyleVisible: false
+					} );
+
+					view.render();
+
+					expect( view.stylesView ).to.be.null;
+					expect( view.element.classList.contains( 'ck-list-properties_without-styles' ) ).to.be.true;
+
+					view.destroy();
+				} );
+
 				it( 'should not use CollapsibleView for #startIndexFieldView and #reversedSwitchButtonView', () => {
 					const view = new ListPropertiesView( locale, {
 						enabledProperties: {

@@ -95,6 +95,97 @@ describe( 'ListPropertiesUI', () => {
 					} );
 				} );
 
+				it( 'should not register a dropdown as "bulletedList" in the component factory when `ul` list ' +
+					'is excluded', () => {
+					return withEditor( {
+						styles: {
+							exclude: [ 'ul' ]
+						},
+						startIndex: true,
+						reversed: true
+					}, editor => {
+						const componentFactory = editor.ui.componentFactory;
+
+						expect( componentFactory.has( 'bulletedList' ) ).to.be.false;
+					} );
+				} );
+
+				it( 'should register a dropdown as "numberedList" in the component factory when `ol` list ' +
+					'is excluded but startIndex is enabled', () => {
+					return withEditor( {
+						styles: {
+							exclude: [ 'ol' ]
+						},
+						startIndex: true,
+						reversed: false
+					}, editor => {
+						const componentFactory = editor.ui.componentFactory;
+
+						expect( componentFactory.has( 'numberedList' ) ).to.be.true;
+					} );
+				} );
+
+				it( 'should register a dropdown as "numberedList" in the component factory when `ol` list ' +
+					'is excluded but reversed is enabled', () => {
+					return withEditor( {
+						styles: {
+							exclude: [ 'ol' ]
+						},
+						startIndex: false,
+						reversed: true
+					}, editor => {
+						const componentFactory = editor.ui.componentFactory;
+
+						expect( componentFactory.has( 'numberedList' ) ).to.be.true;
+					} );
+				} );
+
+				it( 'should register a dropdown as "numberedList" in the component factory when `ol` list ' +
+					'is excluded but other features is enabled', () => {
+					return withEditor( {
+						styles: {
+							exclude: [ 'ol' ]
+						},
+						startIndex: true,
+						reversed: true
+					}, editor => {
+						const componentFactory = editor.ui.componentFactory;
+
+						expect( componentFactory.has( 'numberedList' ) ).to.be.true;
+					} );
+				} );
+
+				it( 'should not register a dropdown as "numberedList" in the component factory when `ol` list ' +
+					'is excluded and other features are not enabled as well', () => {
+					return withEditor( {
+						styles: {
+							exclude: [ 'ol' ]
+						},
+						startIndex: false,
+						reversed: false
+					}, editor => {
+						const componentFactory = editor.ui.componentFactory;
+
+						expect( componentFactory.has( 'numberedList' ) ).to.be.false;
+					} );
+				} );
+
+				it( 'should not register a dropdown as "numberedList" and "bulletedList" in the component ' +
+					'factory when `ol` and `ul` list are excluded (other features are not enabled as well)', () => {
+					return withEditor( {
+						styles: {
+							exclude: [ 'ol', 'ul' ]
+						},
+						startIndex: false,
+						reversed: false
+					}, editor => {
+						const componentFactory = editor.ui.componentFactory;
+
+						expect( componentFactory.has( 'numberedList' ) ).to.be.false;
+						expect( componentFactory.has( 'bulletedList' ) ).to.be.false;
+					} );
+				} );
+
 				for ( const property of [ 'styles', 'startIndex', 'reversed' ] ) {
 					const listPropertiesConfig = {
 						styles: false,
@@ -436,6 +527,33 @@ describe( 'ListPropertiesUI', () => {
 							const listPropertiesView = numberedListDropdown.panelView.children.first;
 
 							expect( listPropertiesView.stylesView ).to.be.instanceOf( View );
+							expect( listPropertiesView.startIndexFieldView ).to.be.instanceOf( LabeledFieldView );
+							expect( listPropertiesView.reversedSwitchButtonView ).to.be.instanceOf( SwitchButtonView );
+
+							numberedListDropdown.element.remove();
+						} );
+					} );
+
+					it( 'should not have styles grid when `ol` is excluded in the config (other features are enabled)', () => {
+						return withEditor( {
+							styles: {
+								exclude: [ 'ol' ]
+							},
+							startIndex: true,
+							reversed: true
+						}, editor => {
+							const numberedListDropdown = editor.ui.componentFactory.create( 'numberedList' );
+
+							numberedListDropdown.render();
+							document.body.appendChild( numberedListDropdown.element );
+
+							// Trigger lazy init.
+							numberedListDropdown.isOpen = true;
+							numberedListDropdown.isOpen = false;
+
+							const listPropertiesView = numberedListDropdown.panelView.children.first;
+
+							expect( listPropertiesView.stylesView ).to.be.null;
 							expect( listPropertiesView.startIndexFieldView ).to.be.instanceOf( LabeledFieldView );
 							expect( listPropertiesView.reversedSwitchButtonView ).to.be.instanceOf( SwitchButtonView );
 
@@ -880,6 +998,42 @@ describe( 'ListPropertiesUI', () => {
 						const componentFactory = editor.ui.componentFactory;
 
 						expect( componentFactory.has( 'menuBar:numberedList' ) ).to.be.false;
+					} );
+				} );
+
+				it( 'should not register a menu as "menuBar:bulletedList" in the component factory when `ul` list is excluded', () => {
+					return withEditor( { styles: {
+						exclude: [ 'ul' ]
+					} }, editor => {
+						const componentFactory = editor.ui.componentFactory;
+
+						expect( componentFactory.has( 'menuBar:bulletedList' ) ).to.be.false;
+					} );
+				} );
+
+				it( 'should not register a dropdown as "menuBar:numberedList" in the component factory when `ol` list is excluded', () => {
+					return withEditor( {
+						styles: {
+							exclude: [ 'ol' ]
+						},
+						startIndex: false,
+						reversed: false
+					}, editor => {
+						const componentFactory = editor.ui.componentFactory;
+
+						expect( componentFactory.has( 'menuBar:numberedList' ) ).to.be.false;
+					} );
+				} );
+
+				it( 'should not register a menu as "menuBar:bulletedList" in the component factory when `ul` and ' +
+					'`ol` list is excluded', () => {
+					return withEditor( { styles: {
+						exclude: [ 'ul', 'ol' ]
+					} }, editor => {
+						const componentFactory = editor.ui.componentFactory;
+
+						expect( componentFactory.has( 'menuBar:numberedList' ) ).to.be.false;
+						expect( componentFactory.has( 'menuBar:bulletedList' ) ).to.be.false;
 					} );
 				} );
 			} );
