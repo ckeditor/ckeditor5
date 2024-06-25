@@ -9,7 +9,7 @@
 	&,
 	&.ck-on {
 		background: var(--ck-color-list-background);
-		color: inherit;
+		color: var(--ck-color-text);
 	}
 
 	/*
@@ -24,7 +24,7 @@
 		background: var(--ck-color-list-button-hover-background);
 
 		&:not(.ck-disabled) {
-			color: var(--ck-color-list-button-hover-text);
+			color: var(--ck-color-text);
 		}
 	}
 }
