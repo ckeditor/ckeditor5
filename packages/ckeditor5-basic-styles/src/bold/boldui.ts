@@ -30,7 +30,6 @@ export default class BoldUI extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 		const t = editor.locale.t;
-		const command = editor.commands.get( BOLD )!;
 		const createButton = getButtonCreator( {
 			editor,
 			commandName: BOLD,
@@ -48,21 +47,9 @@ export default class BoldUI extends Plugin {
 				tooltip: true
 			} );
 
-			buttonView.bind( 'isOn' ).to( command, 'value' );
-
 			return buttonView;
 		} );
 
-		editor.ui.componentFactory.add( 'menuBar:' + BOLD, () => {
-			const buttonView = createButton( MenuBarMenuListItemButtonView );
-
-			buttonView.set( {
-				role: 'menuitemcheckbox'
-			} );
-
-			buttonView.bind( 'isOn' ).to( command, 'value' );
-
-			return buttonView;
-		} );
+		editor.ui.componentFactory.add( 'menuBar:' + BOLD, () => createButton( MenuBarMenuListItemButtonView ) );
 	}
 }

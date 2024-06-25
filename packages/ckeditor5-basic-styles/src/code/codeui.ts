@@ -33,8 +33,6 @@ export default class CodeUI extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
-		const command = editor.commands.get( CODE )!;
-
 		const t = editor.locale.t;
 		const createButton = getButtonCreator( {
 			editor,
@@ -52,22 +50,9 @@ export default class CodeUI extends Plugin {
 				tooltip: true
 			} );
 
-			// Bind button model to command.
-			buttonView.bind( 'isOn' ).to( command, 'value' );
-
 			return buttonView;
 		} );
 
-		editor.ui.componentFactory.add( 'menuBar:' + CODE, () => {
-			const buttonView = createButton( MenuBarMenuListItemButtonView );
-
-			buttonView.set( {
-				role: 'menuitemcheckbox'
-			} );
-
-			buttonView.bind( 'isOn' ).to( command, 'value' );
-
-			return buttonView;
-		} );
+		editor.ui.componentFactory.add( 'menuBar:' + CODE, () => createButton( MenuBarMenuListItemButtonView ) );
 	}
 }

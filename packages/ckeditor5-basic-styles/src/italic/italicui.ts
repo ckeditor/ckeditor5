@@ -31,7 +31,6 @@ export default class ItalicUI extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
-		const command = editor.commands.get( ITALIC )!;
 		const t = editor.locale.t;
 		const createButton = getButtonCreator( {
 			editor,
@@ -50,21 +49,9 @@ export default class ItalicUI extends Plugin {
 				tooltip: true
 			} );
 
-			buttonView.bind( 'isOn' ).to( command, 'value' );
-
 			return buttonView;
 		} );
 
-		editor.ui.componentFactory.add( 'menuBar:' + ITALIC, () => {
-			const buttonView = createButton( MenuBarMenuListItemButtonView );
-
-			buttonView.set( {
-				role: 'menuitemcheckbox'
-			} );
-
-			buttonView.bind( 'isOn' ).to( command, 'value' );
-
-			return buttonView;
-		} );
+		editor.ui.componentFactory.add( 'menuBar:' + ITALIC, () => createButton( MenuBarMenuListItemButtonView ) );
 	}
 }
