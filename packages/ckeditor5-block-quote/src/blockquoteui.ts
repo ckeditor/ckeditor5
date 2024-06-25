@@ -9,7 +9,6 @@
 
 import { Plugin, icons } from 'ckeditor5/src/core.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
-import type BlockQuoteCommand from './blockquotecommand.js';
 
 import '../theme/blockquote.css';
 
