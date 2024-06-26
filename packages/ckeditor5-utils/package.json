@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-utils",
-  "version": "41.4.2",
+  "version": "42.0.0",
   "description": "Miscellaneous utilities used by CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -15,10 +15,10 @@
     "lodash-es": "4.17.21"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-build-classic": "41.4.2",
-    "@ckeditor/ckeditor5-editor-classic": "41.4.2",
-    "@ckeditor/ckeditor5-core": "41.4.2",
-    "@ckeditor/ckeditor5-engine": "41.4.2",
+    "@ckeditor/ckeditor5-build-classic": "42.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "42.0.0",
+    "@ckeditor/ckeditor5-core": "42.0.0",
+    "@ckeditor/ckeditor5-engine": "42.0.0",
     "@types/lodash-es": "^4.17.6",
     "typescript": "5.0.4"
   },
