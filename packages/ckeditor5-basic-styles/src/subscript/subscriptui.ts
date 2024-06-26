@@ -42,16 +42,7 @@ export default class SubscriptUI extends Plugin {
 		} );
 
 		// Add subscript button to feature components.
-		editor.ui.componentFactory.add( SUBSCRIPT, () => {
-			const buttonView = createButton( ButtonView );
-
-			buttonView.set( {
-				tooltip: true
-			} );
-
-			return buttonView;
-		} );
-
+		editor.ui.componentFactory.add( SUBSCRIPT, () => createButton( ButtonView ) );
 		editor.ui.componentFactory.add( 'menuBar:' + SUBSCRIPT, () => createButton( MenuBarMenuListItemButtonView ) );
 	}
 }

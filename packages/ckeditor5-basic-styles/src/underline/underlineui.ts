@@ -42,16 +42,7 @@ export default class UnderlineUI extends Plugin {
 		} );
 
 		// Add bold button to feature components.
-		editor.ui.componentFactory.add( UNDERLINE, () => {
-			const buttonView = createButton( ButtonView );
-
-			buttonView.set( {
-				tooltip: true
-			} );
-
-			return buttonView;
-		} );
-
+		editor.ui.componentFactory.add( UNDERLINE, () => createButton( ButtonView ) );
 		editor.ui.componentFactory.add( 'menuBar:' + UNDERLINE, () => createButton( MenuBarMenuListItemButtonView ) );
 	}
 }

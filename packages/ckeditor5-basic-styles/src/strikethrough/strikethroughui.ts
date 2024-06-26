@@ -42,16 +42,7 @@ export default class StrikethroughUI extends Plugin {
 		} );
 
 		// Add strikethrough button to feature components.
-		editor.ui.componentFactory.add( STRIKETHROUGH, () => {
-			const buttonView = createButton( ButtonView );
-
-			buttonView.set( {
-				tooltip: true
-			} );
-
-			return buttonView;
-		} );
-
+		editor.ui.componentFactory.add( STRIKETHROUGH, () => createButton( ButtonView ) );
 		editor.ui.componentFactory.add( 'menuBar:' + STRIKETHROUGH, () => createButton( MenuBarMenuListItemButtonView ) );
 	}
 }

@@ -42,16 +42,7 @@ export default class ItalicUI extends Plugin {
 		} );
 
 		// Add bold button to feature components.
-		editor.ui.componentFactory.add( ITALIC, () => {
-			const buttonView = createButton( ButtonView );
-
-			buttonView.set( {
-				tooltip: true
-			} );
-
-			return buttonView;
-		} );
-
+		editor.ui.componentFactory.add( ITALIC, () => createButton( ButtonView ) );
 		editor.ui.componentFactory.add( 'menuBar:' + ITALIC, () => createButton( MenuBarMenuListItemButtonView ) );
 	}
 }

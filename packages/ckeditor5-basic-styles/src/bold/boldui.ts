@@ -40,16 +40,7 @@ export default class BoldUI extends Plugin {
 		} );
 
 		// Add bold button to feature components.
-		editor.ui.componentFactory.add( BOLD, () => {
-			const buttonView = createButton( ButtonView );
-
-			buttonView.set( {
-				tooltip: true
-			} );
-
-			return buttonView;
-		} );
-
+		editor.ui.componentFactory.add( BOLD, () => createButton( ButtonView ) );
 		editor.ui.componentFactory.add( 'menuBar:' + BOLD, () => createButton( MenuBarMenuListItemButtonView ) );
 	}
 }

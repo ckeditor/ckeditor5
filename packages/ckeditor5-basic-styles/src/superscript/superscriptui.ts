@@ -41,16 +41,7 @@ export default class SuperscriptUI extends Plugin {
 		} );
 
 		// Add superscript button to feature components.
-		editor.ui.componentFactory.add( SUPERSCRIPT, () => {
-			const buttonView = createButton( ButtonView );
-
-			buttonView.set( {
-				tooltip: true
-			} );
-
-			return buttonView;
-		} );
-
+		editor.ui.componentFactory.add( SUPERSCRIPT, () => createButton( ButtonView ) );
 		editor.ui.componentFactory.add( 'menuBar:' + SUPERSCRIPT, () => createButton( MenuBarMenuListItemButtonView ) );
 	}
 }

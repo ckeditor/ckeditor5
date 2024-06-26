@@ -9,7 +9,7 @@
 
 import type { Editor, Plugin } from 'ckeditor5/src/core.js';
 import type AttributeCommand from './attributecommand.js';
-import { ListItemButtonView, type ButtonView, type MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
+import { MenuBarMenuListItemButtonView, type ButtonView } from 'ckeditor5/src/ui.js';
 
 /**
  * Returns a function that creates a (toolbar or menu bar) button for a basic style feature.
@@ -38,9 +38,13 @@ export function getButtonCreator( {
 		view.bind( 'isEnabled' ).to( command, 'isEnabled' );
 		view.bind( 'isOn' ).to( command, 'value' );
 
-		if ( view instanceof ListItemButtonView ) {
+		if ( view instanceof MenuBarMenuListItemButtonView ) {
 			view.set( {
 				role: 'menuitemcheckbox'
+			} );
+		} else {
+			view.set( {
+				tooltip: true
 			} );
 		}
 
