@@ -150,6 +150,46 @@ describe( 'MenuBarView utils', () => {
 				);
 			} );
 
+			it( 'should focus hovered menu if `isFocusBorderEnabled`', () => {
+				menuBarView.isFocusBorderEnabled = true;
+
+				getMenuByLabel( menuBarView, 'A' ).buttonView.fire( 'mouseenter' );
+				expect( barDump( menuBarView ) ).to.deep.equal(
+					[
+						{
+							label: 'A', isOpen: false, isFocused: true,
+							items: []
+						},
+						{
+							label: 'B', isOpen: false, isFocused: false,
+							items: []
+						},
+						{
+							label: 'C', isOpen: false, isFocused: false,
+							items: []
+						}
+					]
+				);
+
+				getMenuByLabel( menuBarView, 'B' ).buttonView.fire( 'mouseenter' );
+				expect( barDump( menuBarView ) ).to.deep.equal(
+					[
+						{
+							label: 'A', isOpen: false, isFocused: false,
+							items: []
+						},
+						{
+							label: 'B', isOpen: false, isFocused: true,
+							items: []
+						},
+						{
+							label: 'C', isOpen: false, isFocused: false,
+							items: []
+						}
+					]
+				);
+			} );
+
 			describe( 'if the bar is already open', () => {
 				it( 'should toggle menus and move focus while moving the mouse (top-level menu -> top-level menu)', () => {
 					const menuA = getMenuByLabel( menuBarView, 'A' );
