@@ -455,7 +455,7 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 				];
 
 				// Singletons don't have $text children.
-				const singletons = [ 'input', 'embed', 'mergeTag' ];
+				const singletons = [ 'input', 'embed', 'mergeField' ];
 
 				for ( const name of elements ) {
 					it( `should work for the <${ name }> element`, () => {

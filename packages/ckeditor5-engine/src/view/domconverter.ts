@@ -182,7 +182,7 @@ export default class DomConverter {
 			'td', 'tfoot', 'th', 'thead', 'tr', 'ul'
 		];
 		this.inlineObjectElements = [
-			'object', 'iframe', 'input', 'button', 'textarea', 'select', 'option', 'video', 'embed', 'audio', 'img', 'canvas', 'mergeTag'
+			'object', 'iframe', 'input', 'button', 'textarea', 'select', 'option', 'video', 'embed', 'audio', 'img', 'canvas', 'mergeField'
 		];
 		this.unsafeElements = [ 'script', 'style' ];
 

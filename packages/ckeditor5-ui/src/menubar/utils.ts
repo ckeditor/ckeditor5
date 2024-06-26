@@ -490,9 +490,9 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
  * 				]
  * 			},
  * 			{
- * 				groupId: 'previewMergeTags',
+ * 				groupId: 'previewMergeFields',
  * 				items: [
- * 					'menuBar:previewMergeTags'
+ * 					'menuBar:previewMergeFields'
  * 				]
  * 			},
  * 			{
@@ -521,7 +521,7 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
  * 				items: [
  * 					'menuBar:link',
  * 					'menuBar:comment',
- * 					'menuBar:insertMergeTag'
+ * 					'menuBar:insertMergeField'
  * 				]
  * 			},
  * 			{
@@ -745,9 +745,9 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 				]
 			},
 			{
-				groupId: 'previewMergeTags',
+				groupId: 'previewMergeFields',
 				items: [
-					'menuBar:previewMergeTags'
+					'menuBar:previewMergeFields'
 				]
 			},
 			{
@@ -776,7 +776,7 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 				items: [
 					'menuBar:link',
 					'menuBar:comment',
-					'menuBar:insertMergeTag'
+					'menuBar:insertMergeField'
 				]
 			},
 			{
