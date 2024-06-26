@@ -96,12 +96,12 @@ export default class ListItemButtonView extends ButtonView {
 
 		this.on<ObservableChangeEvent<boolean>>(
 			'change:_hasCheck',
-			( evt, propertyName, shouldRenderCheckHolder ) => {
+			( evt, propertyName, hasCheck ) => {
 				const { children, _checkIconHolderView } = this;
 
-				if ( shouldRenderCheckHolder ) {
+				if ( hasCheck ) {
 					children.add( _checkIconHolderView, 0 );
-				} else if ( !shouldRenderCheckHolder ) {
+				} else {
 					children.remove( _checkIconHolderView );
 				}
 			}
