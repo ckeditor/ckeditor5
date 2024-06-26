@@ -13,7 +13,6 @@ import {
 
 import {
 	EditorUI,
-	_initMenuBar,
 	type EditorUIReadyEvent,
 	type InlineEditableUIView
 } from 'ckeditor5/src/ui.js';
@@ -85,7 +84,7 @@ export default class MultiRootEditorUI extends EditorUI {
 		}
 
 		this._initToolbar();
-		_initMenuBar( this.editor, this.view.menuBarView );
+		this._initMenuBar( this.view.menuBarView! );
 		this.fire<EditorUIReadyEvent>( 'ready' );
 	}
 

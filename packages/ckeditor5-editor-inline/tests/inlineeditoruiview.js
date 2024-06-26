@@ -18,6 +18,7 @@ import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver.js'
 const toPx = toUnit( 'px' );
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { MenuBarView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'InlineEditorUIView', () => {
 	let locale, view, editingView, editingViewRoot;
@@ -113,6 +114,42 @@ describe( 'InlineEditorUIView', () => {
 				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Rich Text Editor. Editing area: main' );
 
 				view.destroy();
+			} );
+		} );
+
+		describe( '#menuBarView', () => {
+			it( 'is not created', () => {
+				expect( view.menuBarView ).to.be.undefined;
+			} );
+		} );
+	} );
+
+	describe( 'with menu bar', () => {
+		let viewWithMenuBar;
+		testUtils.createSinonSandbox();
+
+		beforeEach( () => {
+			viewWithMenuBar = new InlineEditorUIView( locale, editingView, undefined, { useMenuBar: true } );
+			viewWithMenuBar.editable.name = editingViewRoot.rootName;
+			viewWithMenuBar.render();
+		} );
+
+		afterEach( () => {
+			viewWithMenuBar.destroy();
+		} );
+
+		describe( '#menuBarView', () => {
+			it( 'is created', () => {
+				expect( viewWithMenuBar.menuBarView ).to.be.instanceof( MenuBarView );
+			} );
+
+			it( 'is given a locale object', () => {
+				expect( viewWithMenuBar.menuBarView.locale ).to.equal( locale );
+			} );
+
+			it( 'is put into the "panel.content" collection', () => {
+				expect( viewWithMenuBar.panel.content.get( 0 ) ).to.equal( viewWithMenuBar.menuBarView );
+				expect( viewWithMenuBar.panel.content.get( 1 ) ).to.equal( viewWithMenuBar.toolbar );
 			} );
 		} );
 	} );

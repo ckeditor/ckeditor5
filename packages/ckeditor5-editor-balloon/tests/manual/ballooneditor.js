@@ -24,7 +24,8 @@ function initEditors() {
 				toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
 				image: {
 					toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative' ]
-				}
+				},
+				menuBar: { isVisible: true }
 			} )
 			.then( editor => {
 				console.log( `${ selector } has been initialized`, editor );

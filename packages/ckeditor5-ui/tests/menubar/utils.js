@@ -26,7 +26,7 @@ import {
 	getItemByLabel,
 	getMenuByLabel
 } from './_utils/utils.js';
-import { MenuBarMenuViewPanelPositioningFunctions, _initMenuBar } from '../../src/menubar/utils.js';
+import { MenuBarMenuViewPanelPositioningFunctions } from '../../src/menubar/utils.js';
 import ClassicTestEditor, { ClassicTestEditorUI } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 describe( 'MenuBarView utils', () => {
@@ -1675,7 +1675,7 @@ describe( 'MenuBarView utils', () => {
 			init() {
 				super.init();
 
-				_initMenuBar( this.editor, this.view.menuBarView );
+				this._initMenuBar( this.view.menuBarView );
 			}
 		}
 

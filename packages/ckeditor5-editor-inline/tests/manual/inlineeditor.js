@@ -22,7 +22,8 @@ function initEditors() {
 			.create( document.querySelector( selector ), {
 				image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 				plugins: [ ArticlePluginSet ],
-				toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ]
+				toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
+				menuBar: { isVisible: true }
 			} )
 			.then( editor => {
 				console.log( `${ selector } has been initialized`, editor );

@@ -362,6 +362,7 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 		editor = await InlineEditor.create( editorElement, {
 			plugins: [ Paragraph, Image, ImageToolbar, ImageCaption ],
 			toolbar: [ 'imageTextAlternative' ],
+			menuBar: { isVisible: true },
 			image: {
 				toolbar: [ 'toggleImageCaption' ]
 			}

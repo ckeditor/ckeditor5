@@ -56,6 +56,8 @@ export default class InlineEditor extends /* #__PURE__ */ ElementApiMixin( Edito
 
 		super( config );
 
+		this.config.define( 'menuBar.isVisible', false );
+
 		if ( this.config.get( 'initialData' ) === undefined ) {
 			this.config.set( 'initialData', getInitialData( sourceElementOrData ) );
 		}
@@ -69,8 +71,11 @@ export default class InlineEditor extends /* #__PURE__ */ ElementApiMixin( Edito
 
 		const shouldToolbarGroupWhenFull = !this.config.get( 'toolbar.shouldNotGroupWhenFull' );
 
+		const menuBarConfig = this.config.get( 'menuBar' )!;
+
 		const view = new InlineEditorUIView( this.locale, this.editing.view, this.sourceElement, {
-			shouldToolbarGroupWhenFull
+			shouldToolbarGroupWhenFull,
+			useMenuBar: menuBarConfig.isVisible
 		} );
 		this.ui = new InlineEditorUI( this, view );
 

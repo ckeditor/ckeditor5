@@ -26,9 +26,9 @@ You can easily remove some presets or add more items, including menu items for c
 
 ## Enabling the menu bar
 
-The menu bar is currently available in the {@link module:editor-classic/classiceditor~ClassicEditor Classic editor}, {@link module:editor-decoupled/decouplededitor~DecoupledEditor Decoupled editor}, and {@link module:editor-multi-root/multirooteditor~MultiRootEditor Multi-root editor}.
+The menu bar is available in all editor types. Usage will vary depending on used editor type.
 
-### Classic editor
+### Classic editor and Inline editor
 
 The menu bar is disabled by default. To make it available in your editor, set the `config.menuBar.isVisible` property to `true`. This will turn on the menu bar with a default set of features. The menu bar is located right above the editor toolbar.
 
@@ -42,9 +42,9 @@ ClassicEditor
 	} );
 ```
 
-### Decoupled editor
+### Decoupled editor, Balloon editor and Multi-root editor
 
-When using the Decoupled editor, you will need to insert the menu bar in a desired place yourself. The menu bar HTML element is available under the `editor.ui.menuBarView.element` property.
+When using the Decoupled, Balloon or Multi-root editor, you will need to insert the menu bar in a desired place yourself. The menu bar HTML element is available under the `editor.ui.menuBarView.element` property.
 
 ```html
 	<div id="menuBarContainer"></div>

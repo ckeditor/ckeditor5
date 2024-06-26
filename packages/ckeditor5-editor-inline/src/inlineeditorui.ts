@@ -97,6 +97,11 @@ export default class InlineEditorUI extends EditorUI {
 
 		this._initPlaceholder();
 		this._initToolbar();
+
+		if ( view.menuBarView ) {
+			this._initMenuBar( view.menuBarView );
+		}
+
 		this.fire<EditorUIReadyEvent>( 'ready' );
 	}
 
