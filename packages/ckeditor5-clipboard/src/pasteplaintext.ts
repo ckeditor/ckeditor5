@@ -81,7 +81,7 @@ export default class PastePlainText extends Plugin {
 }
 
 /**
- * Returns true if specified `documentFragment` represents the unformatted inline content.
+ * Returns true if specified `documentFragment` represents an unformatted inline content.
  */
 function isUnformattedInlineContent( documentFragment: DocumentFragment, model: Model ): boolean {
 	const range = model.createRangeIn( documentFragment );
@@ -93,7 +93,7 @@ function isUnformattedInlineContent( documentFragment: DocumentFragment, model: 
 
 		const attributeKeys = Array.from( child.getAttributeKeys() );
 
-		if ( attributeKeys.length !== 0 && attributeKeys.find( key => model.schema.getAttributeProperties( key ).isFormatting ) ) {
+		if ( attributeKeys.find( key => model.schema.getAttributeProperties( key ).isFormatting ) ) {
 			return false;
 		}
 	}
