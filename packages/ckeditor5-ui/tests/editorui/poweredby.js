@@ -17,6 +17,7 @@ import { Rect, global } from '@ckeditor/ckeditor5-utils';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { generateKey } from '@ckeditor/ckeditor5-core/tests/editor/licensecheck.js';
 
 describe( 'PoweredBy', () => {
 	let editor, element;
@@ -98,8 +99,9 @@ describe( 'PoweredBy', () => {
 			} );
 
 			it( 'should not create the balloon when a white-label license key is configured', async () => {
+				const { licenseKey } = generateKey( { whiteLabel: true } );
 				const editor = await createEditor( element, {
-					licenseKey: 'foo.eyJ3aGl0ZUxhYmVsIjp0cnVlLCJleHAiOjIyMDg5ODg4MDB9.bar'
+					licenseKey
 				} );
 
 				expect( editor.ui.poweredBy._balloonView ).to.be.null;
@@ -112,8 +114,9 @@ describe( 'PoweredBy', () => {
 			} );
 
 			it( 'should create the balloon when a white-label license key is configured and `forceVisible` is set to true', async () => {
+				const { licenseKey } = generateKey( { whiteLabel: true } );
 				const editor = await createEditor( element, {
-					licenseKey: 'foo.eyJ3aGl0ZUxhYmVsIjp0cnVlLCJleHAiOjIyMDg5ODg4MDB9.bar',
+					licenseKey,
 					ui: {
 						poweredBy: {
 							forceVisible: true
@@ -131,8 +134,9 @@ describe( 'PoweredBy', () => {
 			} );
 
 			it( 'should create the balloon when a non-white-label license key is configured', async () => {
+				const { licenseKey } = generateKey();
 				const editor = await createEditor( element, {
-					licenseKey: 'foo.eyJhYmMiOjEsImV4cCI6MjIwODk4ODgwMH0.bar'
+					licenseKey
 				} );
 
 				expect( editor.ui.poweredBy._balloonView ).to.be.null;

@@ -641,7 +641,7 @@ function wait( time ) {
 	} );
 }
 
-function generateKey( options = {} ) {
+export function generateKey( options = {} ) {
 	const {
 		isExpired = false,
 		jtiExist = true,
@@ -664,7 +664,7 @@ function generateKey( options = {} ) {
 
 	const payload = {};
 
-	[ 'licensedHosts', 'licenseType', 'usageEndpoint', 'distributionChannel' ].forEach( prop => {
+	[ 'licensedHosts', 'licenseType', 'usageEndpoint', 'distributionChannel', 'whiteLabel' ].forEach( prop => {
 		if ( prop in options ) {
 			payload[ prop ] = options[ prop ];
 		}
