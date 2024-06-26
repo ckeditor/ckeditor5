@@ -61,14 +61,15 @@ export default class PoweredBy extends Badge {
 	}
 
 	/**
-	 * TODO
+	 * Creates a "powered by" badge content.
 	 */
 	protected override _createBadgeContent(): View<HTMLElement> {
 		return new PoweredByView( this.editor.locale, this._getNormalizedConfig().label );
 	}
 
 	/**
-	 * TODO
+	 * Returns the normalized configuration for the "powered by" badge.
+	 * It takes the user configuration into account and falls back to the default one.
 	 */
 	protected override _getNormalizedConfig(): Required<PoweredByConfig> {
 		const badgeConfig = super._getNormalizedConfig();
@@ -92,7 +93,7 @@ export default class PoweredBy extends Badge {
  */
 class PoweredByView extends View<HTMLDivElement> {
 	/**
-	 * Created an instance of the "powered by" view.
+	 * Creates an instance of the "powered by" view.
 	 *
 	 * @param locale The localization services instance.
 	 * @param label The label text.

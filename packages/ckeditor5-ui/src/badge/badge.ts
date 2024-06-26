@@ -38,7 +38,7 @@ export default abstract class Badge extends /* #__PURE__ */ DomEmitterMixin() {
 	protected readonly editor: Editor;
 
 	/**
-	 * A reference to the balloon panel hosting and positioning the "powered by" link and logo.
+	 * A reference to the balloon panel hosting and positioning the badge content.
 	 */
 	private _balloonView: BalloonPanelView | null = null;
 
@@ -80,7 +80,7 @@ export default abstract class Badge extends /* #__PURE__ */ DomEmitterMixin() {
 
 		if ( balloon ) {
 			// Balloon gets destroyed by the body collection.
-			// The powered by view gets destroyed by the balloon.
+			// The badge view gets destroyed by the balloon.
 			balloon.unpin();
 			this._balloonView = null;
 		}
@@ -90,7 +90,7 @@ export default abstract class Badge extends /* #__PURE__ */ DomEmitterMixin() {
 	}
 
 	/**
-	 * Enables "powered by" label once the editor (ui) is ready.
+	 * Enables badge label once the editor (ui) is ready.
 	 */
 	protected _handleEditorReady(): void {
 		const editor = this.editor;
@@ -99,7 +99,7 @@ export default abstract class Badge extends /* #__PURE__ */ DomEmitterMixin() {
 			return;
 		}
 
-		// No view means no body collection to append the powered by balloon to.
+		// No view means no body collection to append the badge balloon to.
 		if ( !editor.ui.view ) {
 			return;
 		}
@@ -128,7 +128,7 @@ export default abstract class Badge extends /* #__PURE__ */ DomEmitterMixin() {
 	}
 
 	/**
-	 * TODO
+	 * Returns normalized configuration for the badge.
 	 */
 	protected _getNormalizedConfig(): BadgeConfig {
 		return {
@@ -140,17 +140,17 @@ export default abstract class Badge extends /* #__PURE__ */ DomEmitterMixin() {
 	}
 
 	/**
-	 * TODO
+	 * Creates the badge content.
 	 */
 	protected abstract _createBadgeContent(): View<HTMLElement>;
 
 	/**
-	 * TODO
+	 * Enables the badge feature.
 	 */
 	protected abstract _isEnabled(): boolean;
 
 	/**
-	 * Attempts to display the balloon with the "powered by" view.
+	 * Attempts to display the balloon with the badge view.
 	 */
 	private _showBalloon(): void {
 		const attachOptions = this._getBalloonAttachOptions();
@@ -167,7 +167,7 @@ export default abstract class Badge extends /* #__PURE__ */ DomEmitterMixin() {
 	}
 
 	/**
-	 * Hides the "powered by" balloon if already visible.
+	 * Hides the badge balloon if already visible.
 	 */
 	private _hideBalloon(): void {
 		if ( this._balloonView ) {
@@ -177,7 +177,7 @@ export default abstract class Badge extends /* #__PURE__ */ DomEmitterMixin() {
 
 	/**
 	 * Creates an instance of the {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView balloon panel}
-	 * with the "powered by" view inside ready for positioning.
+	 * with the badge view inside ready for positioning.
 	 */
 	private _createBalloonView(): BalloonPanelView {
 		const editor = this.editor;
@@ -197,7 +197,7 @@ export default abstract class Badge extends /* #__PURE__ */ DomEmitterMixin() {
 	}
 
 	/**
-	 * TODO
+	 * Returns the options for attaching the balloon to the focused editable element.
 	 */
 	private _getBalloonAttachOptions(): Partial<PositionOptions> | null {
 		if ( !this._lastFocusedEditableElement ) {
@@ -237,7 +237,7 @@ export default abstract class Badge extends /* #__PURE__ */ DomEmitterMixin() {
 		if ( editableEditorElements.includes( focusedElement ) ) {
 			this._lastFocusedEditableElement = focusedElement;
 		} else {
-			// If it's none of the editable element, then the focus is somewhere in the UI. Let's display powered by
+			// If it's none of the editable element, then the focus is somewhere in the UI. Let's display the badge
 			// over the first element then.
 			this._lastFocusedEditableElement = editableEditorElements[ 0 ]!;
 		}
