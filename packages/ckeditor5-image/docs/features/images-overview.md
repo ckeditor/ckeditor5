@@ -28,7 +28,7 @@ The base image feature does not support any user interface for inserting or mana
 
 ## Image features
 
-The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) package contains multiple plugins that implement various image-related features. The {@link module:image/image~Image `Image`} plugin is at the core of the ecosystem. Available in all {@link installation/getting-started/predefined-builds ready-to-use editor builds}, it provides the basic support for block and inline images. There are many other features that extend the editor's capabilities:
+The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) package contains multiple plugins that implement various image-related features. The {@link module:image/image~Image `Image`} plugin is at the core of the ecosystem. It provides the basic support for block and inline images. There are many other features that extend the editor's capabilities:
 
 * The [contextual toolbar](#image-contextual-toolbar) available on mouse click gives access to image features.
 * {@link features/images-captions Image captions} allow adding descriptive text under the image.
@@ -40,162 +40,9 @@ The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckedit
 * The {@link features/ckbox CKBox management platform} provides support for {@link features/images-responsive responsive images} in CKEditor&nbsp;5. Responsive images will display correctly on any viewport, enhancing the accessibility, reach, and user experience.
 * CKBox also provides basic editing capabilities, like cropping, resizing, rotating, and flipping right from the image contextual toolbar.
 
-The availability of these plugins varies in different {@link installation/getting-started/predefined-builds predefined editor builds} but the most important ones are present in all builds as presented in the table below:
-
-<figure class="table">
-	<table style="text-align: center">
-		<thead>
-			<tr>
-				<th rowspan="2" colspan="2" style="vertical-align: middle">Image feature (plugin)</th>
-				<th colspan="6">Predefined editor build</th>
-			</tr>
-			<tr>
-				<th>{@link installation/getting-started/predefined-builds#classic-editor Classic}</th>
-				<th>{@link installation/getting-started/predefined-builds#inline-editor Inline}</th>
-				<th>{@link installation/getting-started/predefined-builds#balloon-editor Balloon}</th>
-				<th>{@link installation/getting-started/predefined-builds#balloon-block-editor Balloon block}</th>
-				<th>{@link installation/getting-started/predefined-builds#document-editor Document}</th>
-				<th>{@link installation/getting-started/predefined-builds#superbuild Superbuild}</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<th rowspan="2" style="vertical-align: middle">{@link module:image/image~Image}</th>
-				<th>{@link module:image/imageblock~ImageBlock}</th>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-			</tr>
-			<tr>
-				<th>{@link module:image/imageinline~ImageInline}</th>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-			</tr>
-			<tr>
-				<th colspan="2">{@link module:image/imagetoolbar~ImageToolbar}</th>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-			</tr>
-			<tr>
-				<th colspan="2">{@link module:image/imagecaption~ImageCaption}</th>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-			</tr>
-			<tr>
-				<th colspan="2">{@link module:image/imagestyle~ImageStyle}</th>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-			</tr>
-			<tr>
-				<th colspan="2">{@link module:image/imagetextalternative~ImageTextAlternative}</th>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-			</tr>
-			<tr>
-				<th colspan="2">{@link module:image/imageupload~ImageUpload}</th>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-			</tr>
-			<tr>
-				<th colspan="2">{@link module:image/pictureediting~PictureEditing}</th>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-			</tr>
-			<tr>
-				<th colspan="2">{@link module:image/imageresize~ImageResize}</th>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>✅</td>
-				<td>✅</td>
-			</tr>
-			<tr>
-				<th colspan="2">{@link module:link/linkimage~LinkImage}</th>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>✅</td>
-			</tr>
-			<tr>
-				<th colspan="2">{@link module:image/imageinsert~ImageInsert}</th>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>✅</td>
-			</tr>
-			<tr>
-				<th colspan="2">{@link module:image/autoimage~AutoImage}</th>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>✅</td>
-			</tr>
-			<tr>
-				<th colspan="2">{@link module:ckbox/ckbox~CKBox}</th>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-			</tr>
-		</tbody>
-	</table>
-</figure>
-
-<info-box>
-	You can add more image features to your editor using the [online builder](https://ckeditor.com/ckeditor-5/online-builder/) or {@link features/images-installation manually by customizing your editor build}.
-</info-box>
-
-## Image insert dropdown
-
-The toolbar button for the image feature is configurable and provides access to selected methods of inserting images into content, such as {@link features/image-upload uploading images from your computer}, adding images from {@link features/using-file-managers file managers} or {@link features/images-inserting inserting images via URL}.
-
-{@img assets/img/image_insert_dropdown.png 772 Image insert dropdown in the main editor toolbar.}
-
-You can learn more about the toolbar dropdown configuration in the {@link features/images-installation#configuring-the-toolbar-dropdown installation guide}.
-
 ## Image contextual toolbar
 
-The {@link module:image/imagetoolbar~ImageToolbar} plugin available in all editor builds introduces a contextual toolbar for images. The toolbar appears when an image is selected and can be configured to contain any buttons you want. Usually, these will be image-related options such as the {@link features/images-text-alternative text alternative} button, the {@link features/images-captions image caption} button, and {@link features/images-styles image styles} buttons. The toolbar can also host the image editing button introduced by the {@link features/ckbox CKBox asset manager}. Shown below is an example contextual toolbar with an extended set of buttons.
+The {@link module:image/imagetoolbar~ImageToolbar} plugin introduces a contextual toolbar for images. The toolbar appears when an image is selected and can be configured to contain any buttons you want. Usually, these will be image-related options such as the {@link features/images-text-alternative text alternative} button, the {@link features/images-captions image caption} button, and {@link features/images-styles image styles} buttons. The toolbar can also host the image editing button introduced by the {@link features/ckbox CKBox asset manager}. Shown below is an example contextual toolbar with an extended set of buttons.
 
 {@img assets/img/toolbar-items.png 402 An extended contextual toolbar.}
 
@@ -208,9 +55,11 @@ ClassicEditor
 			toolbar: [ 'toggleImageCaption', 'imageTextAlternative', 'ckboxImageEdit' ]
 		}
 	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
-Refer to the {@link features/images-installation image installation} guide for more details on configuring the features available in the toolbar and to the {@link updating/update-to-29#image-toolbar toolbar section} of the Migration to v29.x guide, as important changes were introduced in that version. You can also check the {@link features/toolbar editor toolbar} guide.
+Refer to the {@link features/images-installation image installation} guide for more details on configuring the features available in the toolbar and to the {@link updating/update-to-29#image-toolbar toolbar section} of the Migration to v29.x guide, as important changes were introduced in that version. You can also check the {@link getting-started/setup/toolbar editor toolbar} guide.
 
 See the common API of image-related features such as {@link module:image/imagestyle~ImageStyle}, {@link module:image/imageresize~ImageResize}, and {@link module:link/linkimage~LinkImage} to learn more about available image toolbar buttons.
 

@@ -21,26 +21,6 @@ Use these sample documents to test pasting from Microsoft Office Word and Excel:
 
 To test pasting from Office, download the sample documents and open them in Microsoft Office applications. Then, copy the content and paste it into the editor below.
 
-<!-- <div class="tabs" id="snippet-paste-from-office">
-	<ul class="tabs__list" role="tablist">
-		<li class="tabs__list__tab ">
-			<a aria-controls="tab-basic" aria-selected="false" href="#demo-tab-basic" id="demo-tab-basic" role="tab" class="tabs__list__tab-text">Basic paste from Office</a>
-		</li>
-		<li class="tabs__list__tab enhanced-editor-tab tabs__list__tab_selected">
-			<a aria-controls="tab-enhanced" aria-selected="true" href="#demo-tab-enhanced" id="demo-tab-enhanced" role="tab" class="tabs__list__tab-text"><span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature"><span class="tree__item__badge__text">Premium feature</span></span>&nbsp;Paste from Office enhanced</a>
-		</li>
-	</ul>
-<div role="tabpanel" aria-labelledby="tab-basic" class="tabs__panel">
-
-{@snippet features/paste-from-office-demo-basic}
-
-</div>
-<div role="tabpanel" aria-labelledby="tab-enhanced" class="tabs__panel enhanced-editor-panel tabs__panel_selected">
-
-{@snippet features/paste-from-office-demo-enhanced}
-
-</div>
-</div> -->
 {@snippet features/paste-from-office}
 
 <info-box info>
@@ -54,7 +34,7 @@ Refer to the {@link features/paste-from-office-enhanced#content-formatting-suppo
 ## Additional feature information
 
 <info-box info>
-	The Paste from Office plugin only preserves content formatting and structures that are included in your CKEditor&nbsp;5 build. This means that you may need to add missing features such as font color or text alignment to your build. Read more in the [Automatic content filtering](#automatic-content-filtering) section below.
+	The Paste from Office plugin only preserves content formatting and structures that are included in your CKEditor&nbsp;5 setup. This means that you may need to add missing features such as font color or text alignment. Read more in the [Automatic content filtering](#automatic-content-filtering) section below.
 </info-box>
 
 Thanks to the paste from Office feature, you can copy and paste Microsoft Word documents into CKEditor&nbsp;5 and maintain basic text styling, heading levels, links, lists, tables, and images.
@@ -87,31 +67,23 @@ This means that if you did not enable, for instance, {@link features/font font f
 ## Installation
 
 <info-box info>
-	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}. The installation instructions are for developers interested in building their own custom rich-text editor.
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-paste-from-office`](https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office) package:
-
-```bash
-npm install --save @ckeditor/ckeditor5-paste-from-office
-```
-
-Then add the {@link module:paste-from-office/pastefromoffice~PasteFromOffice `PasteFromOffice`} plugin to your plugin list:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office';
+import { ClassicEditor, PasteFromOffice } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ PasteFromOffice, Bold, /* ... */ ]
+		plugins: [ PasteFromOffice, /* ... */ ]
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
-
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
-</info-box>
 
 ## Known issues
 

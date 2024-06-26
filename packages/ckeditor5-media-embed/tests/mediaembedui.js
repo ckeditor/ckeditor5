@@ -3,18 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global Event */
-
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import MediaEmbed from '../src/mediaembed.js';
 import MediaEmbedUI from '../src/mediaembedui.js';
-import MediaFormView from '../src/ui/mediaformview.js';
-import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 import mediaIcon from '../theme/icons/media.svg';
+import { ButtonView, DialogViewPosition, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'MediaEmbedUI', () => {
-	let editorElement, editor, dropdown, button, form;
+	let editorElement, editor, button;
 
 	beforeEach( () => {
 		editorElement = global.document.createElement( 'div' );
@@ -35,21 +32,11 @@ describe( 'MediaEmbedUI', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-				dropdown = editor.ui.componentFactory.create( 'mediaEmbed' );
-				button = dropdown.buttonView;
-
-				dropdown.render();
-				global.document.body.appendChild( dropdown.element );
-
-				dropdown.isOpen = true;
-				dropdown.isOpen = false;
-
-				form = dropdown.panelView.children.get( 0 );
+				button = editor.ui.componentFactory.create( 'mediaEmbed' );
 			} );
 	} );
 
 	afterEach( () => {
-		dropdown.element.remove();
 		editorElement.remove();
 
 		return editor.destroy();
@@ -59,218 +46,194 @@ describe( 'MediaEmbedUI', () => {
 		expect( MediaEmbedUI.pluginName ).to.equal( 'MediaEmbedUI' );
 	} );
 
-	it( 'should add the "mediaEmbed" component to the factory', () => {
-		expect( dropdown ).to.be.instanceOf( DropdownView );
-	} );
-
 	it( 'should allow creating two instances', () => {
 		let secondInstance;
 
 		expect( function createSecondInstance() {
 			secondInstance = editor.ui.componentFactory.create( 'mediaEmbed' );
 		} ).not.to.throw();
-		expect( dropdown ).to.not.equal( secondInstance );
+		expect( button ).to.not.equal( secondInstance );
 	} );
 
-	describe( 'dropdown', () => {
-		it( 'should bind #isEnabled to the command', () => {
-			const command = editor.commands.get( 'mediaEmbed' );
+	describe( 'toolbar button', () => {
+		testButton( 'Insert media', ButtonView );
 
-			expect( dropdown.isEnabled ).to.be.true;
+		it( 'should enable tooltips for the #buttonView', () => {
+			expect( button.tooltip ).to.be.true;
+		} );
+	} );
 
-			command.isEnabled = false;
-			expect( dropdown.isEnabled ).to.be.false;
+	describe( 'menuBar button', () => {
+		beforeEach( () => {
+			button = editor.ui.componentFactory.create( 'menuBar:mediaEmbed' );
 		} );
 
-		it( 'should add a form to the panelView#children collection', () => {
-			expect( dropdown.panelView.children.length ).to.equal( 1 );
-			expect( dropdown.panelView.children.get( 0 ) ).to.be.instanceOf( MediaFormView );
+		testButton( 'Media', MenuBarMenuListItemButtonView );
+	} );
+
+	describe( 'dialog', () => {
+		let form, dialog;
+
+		beforeEach( () => {
+			button.fire( 'execute' );
+			dialog = editor.plugins.get( 'Dialog' );
+			form = editor.plugins.get( 'MediaEmbedUI' )._formView;
 		} );
 
-		describe( 'button', () => {
-			it( 'should set a #label of the #buttonView', () => {
-				expect( dropdown.buttonView.label ).to.equal( 'Insert media' );
-			} );
+		it( 'has two action buttons', () => {
+			expect( dialog.view.actionsView.children ).to.have.length( 2 );
+			expect( dialog.view.actionsView.children.get( 0 ).label ).to.equal( 'Cancel' );
+			expect( dialog.view.actionsView.children.get( 1 ).label ).to.equal( 'Accept' );
+		} );
 
-			it( 'should set an #icon of the #buttonView', () => {
-				expect( dropdown.buttonView.icon ).to.equal( mediaIcon );
-			} );
+		it( 'should be open as modal', () => {
+			expect( dialog.view.isModal ).to.be.true;
+		} );
 
-			it( 'should enable tooltips for the #buttonView', () => {
-				expect( dropdown.buttonView.tooltip ).to.be.true;
-			} );
+		it( 'should be open at screen center', () => {
+			expect( dialog.view.position ).to.be.equal( DialogViewPosition.SCREEN_CENTER );
+		} );
 
-			describe( '#open event', () => {
-				it( 'executes the actions with the "low" priority', () => {
-					const spy = sinon.spy();
-					const selectSpy = sinon.spy( form.urlInputView.fieldView, 'select' );
+		testSubmit( 'Accept button', () => {
+			const acceptButton = dialog.view.actionsView.children.get( 1 );
 
-					button.on( 'open', () => {
-						spy();
-					} );
+			acceptButton.fire( 'execute' );
+		} );
 
-					button.fire( 'open' );
-					sinon.assert.callOrder( spy, selectSpy );
-				} );
+		testSubmit( 'Form submit (enter key)', () => {
+			form.fire( 'submit' );
+		} );
 
-				it( 'should update form\'s #url', () => {
-					const command = editor.commands.get( 'mediaEmbed' );
+		function testSubmit( suiteName, action ) {
+			describe( suiteName, () => {
+				it( 'checks if the form is valid', () => {
+					const spy = sinon.spy( form, 'isValid' );
 
-					button.fire( 'open' );
-					expect( form.url ).to.equal( '' );
+					action();
 
-					command.value = 'foo';
-					button.fire( 'open' );
-					expect( form.url ).to.equal( 'foo' );
-				} );
-
-				it( 'should select the content of the input', () => {
-					const spy = sinon.spy( form.urlInputView.fieldView, 'select' );
-
-					button.fire( 'open' );
 					sinon.assert.calledOnce( spy );
 				} );
 
-				it( 'should disable CSS transitions to avoid unnecessary animations (and then enable them again)', () => {
-					const disableCssTransitionsSpy = sinon.spy( form, 'disableCssTransitions' );
-					const enableCssTransitionsSpy = sinon.spy( form, 'enableCssTransitions' );
-					const selectSpy = sinon.spy( form.urlInputView.fieldView, 'select' );
+				it( 'executes the command and closes the UI (if the form is valid)', async () => {
+					const commandSpy = sinon.spy( editor.commands.get( 'mediaEmbed' ), 'execute' );
 
-					button.fire( 'open' );
+					// The form is invalid.
+					form.url = 'https://invalid/url';
 
-					sinon.assert.callOrder( disableCssTransitionsSpy, selectSpy, enableCssTransitionsSpy );
+					action();
+
+					sinon.assert.notCalled( commandSpy );
+
+					expect( dialog.id ).to.be.equal( 'mediaEmbed' );
+
+					// The form is valid.
+					form.url = 'https://valid/url';
+					action();
+
+					sinon.assert.calledOnce( commandSpy );
+					sinon.assert.calledWithExactly( commandSpy, 'https://valid/url' );
+
+					await wait( 10 );
+
+					expect( dialog.id ).to.be.null;
+				} );
+			} );
+		}
+
+		describe( 'Cancel button', () => {
+			let cancelButton;
+
+			beforeEach( () => {
+				cancelButton = dialog.view.actionsView.children.get( 0 );
+			} );
+
+			it( 'closes the UI', async () => {
+				cancelButton.fire( 'execute' );
+
+				await wait( 10 );
+
+				expect( dialog.id ).to.be.null;
+			} );
+		} );
+
+		describe( 'form', () => {
+			it( 'should trim URL input value', () => {
+				form.urlInputView.fieldView.element.value = '   ';
+				form.urlInputView.fieldView.fire( 'input' );
+
+				expect( form.mediaURLInputValue ).to.equal( '' );
+
+				form.urlInputView.fieldView.element.value = '   test   ';
+				form.urlInputView.fieldView.fire( 'input' );
+
+				expect( form.mediaURLInputValue ).to.equal( 'test' );
+			} );
+
+			it( 'should implement the CSS transition disabling feature', () => {
+				expect( form.disableCssTransitions ).to.be.a( 'function' );
+			} );
+
+			describe( 'validators', () => {
+				it( 'check the empty URL', () => {
+					form.url = '';
+					expect( form.isValid() ).to.be.false;
+
+					form.url = 'https://valid/url';
+					expect( form.isValid() ).to.be.true;
+				} );
+
+				it( 'check the supported media', () => {
+					form.url = 'https://invalid/url';
+					expect( form.isValid() ).to.be.false;
+
+					form.url = 'https://valid/url';
+					expect( form.isValid() ).to.be.true;
 				} );
 			} );
 		} );
-
-		describe( '#submit event', () => {
-			it( 'checks if the form is valid', () => {
-				const spy = sinon.spy( form, 'isValid' );
-
-				dropdown.fire( 'submit' );
-
-				sinon.assert.calledOnce( spy );
-			} );
-
-			it( 'executes the command and closes the UI (if the form is valid)', async () => {
-				const viewFocusSpy = sinon.spy( editor.editing.view, 'focus' );
-				const commandSpy = sinon.spy( editor.commands.get( 'mediaEmbed' ), 'execute' );
-				const updateSpy = sinon.spy( editor.ui, 'update' );
-
-				// The form is invalid.
-				form.url = 'https://invalid/url';
-				dropdown.isOpen = true;
-				form.urlInputView.fieldView.element.dispatchEvent( new Event( 'focus' ) );
-
-				dropdown.fire( 'submit' );
-
-				sinon.assert.notCalled( commandSpy );
-				sinon.assert.notCalled( viewFocusSpy );
-
-				expect( dropdown.isOpen ).to.be.true;
-				expect( updateSpy ).to.be.calledOnce;
-
-				// The form is valid.
-				form.url = 'https://valid/url';
-				dropdown.fire( 'submit' );
-				form.urlInputView.fieldView.element.dispatchEvent( new Event( 'blur' ) );
-
-				sinon.assert.calledOnce( commandSpy );
-				sinon.assert.calledWithExactly( commandSpy, 'https://valid/url' );
-				sinon.assert.calledOnce( viewFocusSpy );
-
-				await wait( 10 );
-
-				expect( dropdown.isOpen ).to.be.false;
-				expect( updateSpy ).to.be.calledTwice;
-			} );
-		} );
-
-		describe( '#change:isOpen event', () => {
-			it( 'resets form status', () => {
-				const spy = sinon.spy( form, 'resetFormStatus' );
-
-				dropdown.fire( 'change:isOpen' );
-
-				sinon.assert.calledOnce( spy );
-			} );
-		} );
-
-		describe( '#cancel event', () => {
-			it( 'closes the UI', async () => {
-				const viewFocusSpy = sinon.spy( editor.editing.view, 'focus' );
-
-				dropdown.isOpen = true;
-				form.urlInputView.fieldView.element.dispatchEvent( new Event( 'focus' ) );
-
-				dropdown.fire( 'cancel' );
-				form.urlInputView.fieldView.element.dispatchEvent( new Event( 'blur' ) );
-
-				sinon.assert.calledOnce( viewFocusSpy );
-
-				await wait( 10 );
-
-				expect( dropdown.isOpen ).to.be.false;
-			} );
-		} );
 	} );
 
-	describe( 'form', () => {
-		it( 'delegates #submit to the dropdown', done => {
-			dropdown.once( 'submit', () => done() );
-
-			form.fire( 'submit' );
+	function testButton( label, expectedType ) {
+		it( 'should add the "mediaEmbed" component to the factory', () => {
+			expect( button ).to.be.instanceOf( expectedType );
 		} );
 
-		it( 'delegates #cancel to the dropdown', done => {
-			dropdown.once( 'submit', () => done() );
-
-			form.fire( 'submit' );
-		} );
-
-		it( 'binds urlInputView#isEnabled to command#isEnabled', () => {
+		it( 'should bind #isEnabled to the command', () => {
 			const command = editor.commands.get( 'mediaEmbed' );
 
-			expect( form.urlInputView.isEnabled ).to.be.true;
+			expect( button.isEnabled ).to.be.true;
 
 			command.isEnabled = false;
-			expect( form.urlInputView.isEnabled ).to.be.false;
+			expect( button.isEnabled ).to.be.false;
 		} );
 
-		it( 'should trim URL input value', () => {
-			form.urlInputView.fieldView.element.value = '   ';
-			form.urlInputView.fieldView.fire( 'input' );
-
-			expect( form.mediaURLInputValue ).to.equal( '' );
-
-			form.urlInputView.fieldView.element.value = '   test   ';
-			form.urlInputView.fieldView.fire( 'input' );
-
-			expect( form.mediaURLInputValue ).to.equal( 'test' );
+		it( 'should set a #label of the #buttonView', () => {
+			expect( button.label ).to.equal( label );
 		} );
 
-		it( 'should implement the CSS transition disabling feature', () => {
-			expect( form.disableCssTransitions ).to.be.a( 'function' );
+		it( 'should set an #icon of the #buttonView', () => {
+			expect( button.icon ).to.equal( mediaIcon );
 		} );
 
-		describe( 'validators', () => {
-			it( 'check the empty URL', () => {
-				form.url = '';
-				expect( form.isValid() ).to.be.false;
+		it( 'should open media embed dialog', () => {
+			const dialogPlugin = editor.plugins.get( 'Dialog' );
+			expect( dialogPlugin.id ).to.be.null;
 
-				form.url = 'https://valid/url';
-				expect( form.isValid() ).to.be.true;
-			} );
+			button.fire( 'execute' );
 
-			it( 'check the supported media', () => {
-				form.url = 'https://invalid/url';
-				expect( form.isValid() ).to.be.false;
-
-				form.url = 'https://valid/url';
-				expect( form.isValid() ).to.be.true;
-			} );
+			expect( dialogPlugin.id ).to.equal( 'mediaEmbed' );
 		} );
-	} );
+
+		it( 'should hide media embed dialog on second click', () => {
+			const dialogPlugin = editor.plugins.get( 'Dialog' );
+			expect( dialogPlugin.id ).to.be.null;
+
+			button.fire( 'execute' );
+			button.fire( 'execute' );
+
+			expect( dialogPlugin.id ).to.be.null;
+		} );
+	}
 } );
 
 function wait( time ) {

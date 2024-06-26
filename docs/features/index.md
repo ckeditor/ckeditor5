@@ -17,7 +17,7 @@ CKEditor&nbsp;5 has many features, and the number is constantly growing. You can
 
 ## Using CKEditor&nbsp;5 features
 
-Most of the editor features are accessible from a {@link features/toolbar highly configurable toolbar} (in fact, there are {@link features/blocktoolbar two of those}) offering buttons and dropdowns. Some features also have a dedicated contextual toolbar. You can also execute plenty of actions with {@link features/accessibility#keyboard-shortcuts keyboard shortcuts}.  CKEditor&nbsp;5 offers a dedicated {@link features/accessibility#displaying-keyboard-shortcuts-in-the-editor accessibility help dialog} that displays a list of all available keyboard shortcuts in a dialog. It can be opened by pressing <kbd>Alt</kbd> + <kbd>0</kbd> (on Windows) or <kbd>Option</kbd> + <kbd>0</kbd> (on macOS) or via toolbar. The entire user interface comes with a {@link features/ui-language multitude of translations} and it supports Right-to-Left (RTL) languages.
+Most of the editor features are accessible from a {@link getting-started/setup/toolbar highly configurable toolbar} (in fact, there are {@link getting-started/setup/toolbar#block-toolbar two of those}) offering buttons and dropdowns. Some features also have a dedicated contextual toolbar. You can also execute plenty of actions with {@link features/accessibility keyboard shortcuts}.  CKEditor&nbsp;5 offers a dedicated {@link features/accessibility#displaying-keyboard-shortcuts-in-the-editor accessibility help dialog} that displays a list of all available keyboard shortcuts in a dialog. It can be opened by pressing <kbd>Alt</kbd> + <kbd>0</kbd> (on Windows) or <kbd>Option</kbd> + <kbd>0</kbd> (on macOS) or via toolbar. The entire user interface comes with a {@link getting-started/setup/ui-language multitude of translations} and it supports Right-to-Left (RTL) languages.
 
 ## CKEditor&nbsp;5 WYSIWYG editor features and functions
 
@@ -31,7 +31,7 @@ The {@link features/font font feature} provides support for using different font
 
 {@link features/headings Headings} {@icon @ckeditor/ckeditor5-core/theme/icons/heading1.svg Heading 1} (with configurable levels and styles) and the {@link features/text-alignment text alignment feature} {@icon @ckeditor/ckeditor5-core/theme/icons/align-left.svg Align Left} help organize the structure of the document.
 
-You can apply most of these formatting options from the {@link features/toolbar toolbar} or on the go, as you type, thanks to the {@link features/autoformat autoformatting feature} that employs Markdown syntax. You can remove them with the {@link features/remove-format remove format feature} {@icon @ckeditor/ckeditor5-remove-format/theme/icons/remove-format.svg Remove Format}.
+You can apply most of these formatting options from the {@link getting-started/setup/toolbar toolbar} or on the go, as you type, thanks to the {@link features/autoformat autoformatting feature} that employs Markdown syntax. You can remove them with the {@link features/remove-format remove format feature} {@icon @ckeditor/ckeditor5-remove-format/theme/icons/remove-format.svg Remove Format}.
 
 {@img assets/img/features-basic-formatting.png 800 CKEditor&nbsp;5 formatting features.}
 
@@ -105,7 +105,7 @@ Keep full control of your work. Be safe and never lose anything thanks to the {@
 
 ### Customizable user experience
 
-Work as you like it &ndash; choose a user interface approach from {@link installation/getting-started/predefined-builds several predefined builds}, add features to your build or remove them with the [online builder](https://ckeditor.com/ckeditor-5/online-builder/), or use the {@link installation/advanced/dll-builds DLL builds}. Then tailor the user interface to your needs with a customizable {@link features/toolbar editor toolbar}, arranging feature buttons, dropdowns, and other items in whatever way you need.
+Work as you like it &ndash; choose a user interface approach from several predefined layouts, add features to your preset or remove them with the [Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs), or use the {@link getting-started/advanced/dll-builds DLL builds}. Then tailor the user interface to your needs with a customizable {@link getting-started/setup/toolbar editor toolbar}, arranging feature buttons, dropdowns, and other items in whatever way you need.
 
 {@img assets/img/full-toolbar.png 938 CKEditor&nbsp;5 customizable UI.}
 
@@ -121,22 +121,12 @@ The editor supports {@link features/paste-plain-text pasting plain text} and {@l
 
 If you want to migrate from CKEditor 4 to CKEditor&nbsp;5, check the {@link updating/migration-from-ckeditor-4 migration guide}.
 
-## Feature availability
-
-Predefined {@link installation/getting-started/predefined-builds CKEditor&nbsp;5 builds} have plenty of these features available out-of-the-box, like {@link features/autoformat autoformatting} or {@link features/accessibility#keyboard-shortcuts keyboard support}.
-
-However, you need to include some presented features manually in your CKEditor&nbsp;5 build, for example, the {@link features/markdown Markdown processor} which outputs Markdown instead of HTML. You can add these plugins to a custom build with the [CKEditor&nbsp;5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
-
-You can refer to the {@link installation/getting-started/predefined-builds#list-of-plugins-included-in-the-ckeditor-5-predefined-builds full list of features available in each build} for details.
-
-We also offer the flexibility of the {@link installation/advanced/dll-builds DLL builds}. They enable the addition of new plugins into an existing build without the need to rebuild the installation.
-
 ## Feature examples
 
 We present each rich-text editor feature on a separate page. It includes one or more working demos showcasing a feature along with some customization ideas that you can use in your implementation.
 
 <info-box>
-	**In most feature demos the number of features enabled is limited** to make the exposed piece of functionality stand out more, as shown in the screenshots above. But in your CKEditor&nbsp;5 WYSIWYG editor implementation you are free to choose and combine any features you like from those available. You can achieve this by using the [CKEditor&nbsp;5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
+	**In most feature demos the number of features enabled is limited** to make the exposed piece of functionality stand out more, as shown in the screenshots above. But in your CKEditor&nbsp;5 WYSIWYG editor implementation you are free to choose and combine any features you like from those available. You can achieve this by using the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs).
 </info-box>
 
 ## Why does the editor filter out content (styles, classes, elements)

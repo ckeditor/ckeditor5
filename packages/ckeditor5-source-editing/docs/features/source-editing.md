@@ -24,20 +24,16 @@ You can also use one of the many CKEditor&nbsp;5 features available in the toolb
 
 ## Installation
 
-<info-box>
-	Currently, the source editing mode is supported in the {@link examples/builds/classic-editor classic editor}. The source editing feature can be used with {@link features/collaboration CKEditor&nbsp;5 collaboration features} except for {@link features/real-time-collaboration CKEditor&nbsp;5 real-time collaboration}. If you would like to use the real-time collaboration mode and, for some reason, you would like to also enable source editing, please [contact us](https://ckeditor.com/contact/).
+<info-box info>
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-source-editing`](https://www.npmjs.com/package/@ckeditor/ckeditor5-source-editing) package:
-
-```bash
-npm install --save @ckeditor/ckeditor5-source-editing
-```
-
-And add it to your plugin list configuration:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
+import { ClassicEditor, SourceEditing } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -51,8 +47,7 @@ ClassicEditor
 To utilize the Markdown source editing mode just add the {@link features/markdown Markdown output} plugin to the editor.
 
 ```js
-import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
-import { Markdown } from '@ckeditor/ckeditor5-markdown-gfm';
+import { ClassicEditor, SourceEditing, Markdown } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -62,10 +57,6 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
-
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
-</info-box>
 
 ## Limitations and incompatibilities
 

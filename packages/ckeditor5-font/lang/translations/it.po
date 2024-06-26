@@ -55,4 +55,4 @@ msgstr "Colore di sfondo caratteri"
 
 msgctxt "Title of a color picker section containing the colors currently used in the document."
 msgid "Document colors"
-msgstr "Colori del docmento"
+msgstr "Colori del documento"

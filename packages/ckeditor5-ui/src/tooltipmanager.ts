@@ -8,7 +8,7 @@
  */
 
 import View from './view.js';
-import BalloonPanelView, { generatePositions } from './panel/balloon/balloonpanelview.js';
+import BalloonPanelView from './panel/balloon/balloonpanelview.js';
 import type { EditorUIUpdateEvent } from './editorui/editorui.js';
 
 import {
@@ -83,7 +83,7 @@ const BALLOON_CLASS = 'ck-tooltip';
  * **Note**: This class is a singleton. All editor instances re-use the same instance loaded by
  * {@link module:ui/editorui/editorui~EditorUI} of the first editor.
  */
-export default class TooltipManager extends DomEmitterMixin() {
+export default class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 	/**
 	 * The view rendering text of the tooltip.
 	 */
@@ -98,7 +98,7 @@ export default class TooltipManager extends DomEmitterMixin() {
 	 * A set of default {@link module:utils/dom/position~PositioningFunction positioning functions} used by the `TooltipManager`
 	 * to pin tooltips in different positions.
 	 */
-	public static defaultBalloonPositions = generatePositions( {
+	public static defaultBalloonPositions = /* #__PURE__ */ BalloonPanelView.generatePositions( {
 		heightOffset: 5,
 		sideOffset: 13
 	} );
@@ -307,7 +307,15 @@ export default class TooltipManager extends DomEmitterMixin() {
 		}
 
 		this._unpinTooltip();
-		this._pinTooltipDebounced( elementWithTooltipAttribute, getTooltipData( elementWithTooltipAttribute ) );
+
+		// The tooltip should be pinned immediately when the element gets focused using keyboard.
+		// If it is focused using the mouse, the tooltip should be pinned after a delay to prevent flashing.
+		// See https://github.com/ckeditor/ckeditor5/issues/16383
+		if ( evt.name === 'focus' && !elementWithTooltipAttribute.matches( ':hover' ) ) {
+			this._pinTooltip( elementWithTooltipAttribute, getTooltipData( elementWithTooltipAttribute ) );
+		} else {
+			this._pinTooltipDebounced( elementWithTooltipAttribute, getTooltipData( elementWithTooltipAttribute ) );
+		}
 	}
 
 	/**
@@ -407,6 +415,14 @@ export default class TooltipManager extends DomEmitterMixin() {
 
 		this.tooltipTextView.text = text;
 
+		this.balloonPanelView.class = [ BALLOON_CLASS, cssClass ]
+			.filter( className => className )
+			.join( ' ' );
+
+		// Ensure that all changes to the tooltip are set before pinning it.
+		// Setting class or text after pinning can cause the tooltip to be pinned in the wrong position.
+		// It happens especially often when tooltip has class modified (like adding `ck-tooltip_multi-line`).
+		// See https://github.com/ckeditor/ckeditor5/issues/16365
 		this.balloonPanelView.pin( {
 			target: targetDomElement,
 			positions: TooltipManager.getPositioningFunctions( position )
@@ -421,10 +437,6 @@ export default class TooltipManager extends DomEmitterMixin() {
 		} );
 
 		this._mutationObserver!.attach( targetDomElement );
-
-		this.balloonPanelView.class = [ BALLOON_CLASS, cssClass ]
-			.filter( className => className )
-			.join( ' ' );
 
 		// Start responding to changes in editor UI or content layout. For instance, when collaborators change content
 		// and a contextual toolbar attached to a content starts to move (and so should move the tooltip).

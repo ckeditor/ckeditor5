@@ -63,12 +63,12 @@ export const DialogViewPosition = {
 	EDITOR_BELOW_CENTER: 'editor-below-center'
 } as const;
 
-const toPx = toUnit( 'px' );
+const toPx = /* #__PURE__ */ toUnit( 'px' );
 
 /**
  * A dialog view class.
  */
-export default class DialogView extends DraggableViewMixin( View ) implements DraggableView {
+export default class DialogView extends /* #__PURE__ */ DraggableViewMixin( View ) implements DraggableView {
 	/**
 	 * A collection of the child views inside of the dialog.
 	 * A dialog can have 3 optional parts: header, content, and actions.

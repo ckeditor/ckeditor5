@@ -25,6 +25,31 @@ You can type the "@" character to invoke the mention autocomplete UI. The demo b
 
 You can read more about possible implementations of the mention feature in a [dedicated blog post](https://ckeditor.com/blog/mentions-in-ckeditor-5-feature-of-the-month/).
 
+## Installation
+
+<info-box info>
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
+</info-box>
+
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+
+```js
+import { ClassicEditor, Mention } from 'ckeditor5';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Mention, /* ... */ ],
+		mention: {
+			// Configuration.
+			// ...
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
 ## Configuration
 
 The minimal configuration of the mention feature requires defining a {@link module:mention/mentionconfig~MentionFeed `feed`} and a {@link module:mention/mentionconfig~MentionFeed `marker`}. You can also define the `minimumCharacters` parameter, setting the number of letters after which the autocomplete panel will show up. Moreover, feed items' IDs may include whitespaces.
@@ -230,8 +255,8 @@ ClassicEditor
 			]
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 The string that you specify in this property will be displayed in the editor when a mention is created.
@@ -499,39 +524,6 @@ The mention feature uses the power of [CSS variables](https://developer.mozilla.
 ### Comments with mentions
 
 It is possible to configure the Mentions feature to work with the {@link features/comments Comments feature}. Here you can find {@link features/annotations-custom-configuration#comment-editor-configuration detailed guidance on that matter}.
-
-## Installation
-
-<info-box info>
-	This feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
-</info-box>
-
-To add this feature to your editor, install the [`@ckeditor/ckeditor5-mention`](https://www.npmjs.com/package/@ckeditor/ckeditor5-mention) package:
-
-```bash
-npm install --save @ckeditor/ckeditor5-mention
-```
-
-Then add `Mention` to your plugin list and {@link module:mention/mentionconfig~MentionConfig  configure} the feature:
-
-```js
-import { Mention } from '@ckeditor/ckeditor5-mention';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Mention, /* ... */ ],
-		mention: {
-			// Configuration.
-			// ...
-		}
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
-```
-
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
-</info-box>
 
 ## Related features
 

@@ -19,6 +19,28 @@ Select the text you want to highlight. Then use the highlight toolbar button {@i
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
+## Installation
+
+<info-box info>
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
+</info-box>
+
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+
+```js
+import { ClassicEditor, Highlight } from 'ckeditor5';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Highlight, /* ... */ ],
+		toolbar: [ 'highlight', /* ... */ ]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
 ## Configuring the highlight options
 
 The highlight feature comes with flexible configuration options.
@@ -168,36 +190,6 @@ Then, update the classes in the style sheet so the content corresponds to the UI
 ```
 
 {@snippet features/custom-highlight-colors-inline}
-
-## Installation
-
-<info-box info>
-	The highlight feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
-</info-box>
-
-To add this feature to your editor, install the [`@ckeditor/ckeditor5-highlight`](https://www.npmjs.com/package/@ckeditor/ckeditor5-highlight) package:
-
-```bash
-npm install --save @ckeditor/ckeditor5-highlight
-```
-
-And add it to your plugin list and the toolbar configuration:
-
-```js
-import { Highlight } from '@ckeditor/ckeditor5-highlight';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Highlight, /* ... */ ],
-		toolbar: [ 'highlight', /* ... */ ]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
-```
-
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
-</info-box>
 
 ## Related features
 

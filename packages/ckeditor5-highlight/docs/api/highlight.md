@@ -18,8 +18,10 @@ See the {@link features/highlight highlight feature guide} and the {@link module
 
 ## Installation
 
+This package is part of our open-source aggregate package.
+
 ```bash
-npm install --save @ckeditor/ckeditor5-highlight
+npm install ckeditor5
 ```
 
 ## Contribute

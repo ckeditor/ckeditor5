@@ -7,7 +7,7 @@ order: 50
 
 # Base64 image upload adapter
 
-The Base64 image upload adapter converts inserted images into [Base64-encoded strings](https://en.wikipedia.org/wiki/Base64) in the {@link installation/getting-started/getting-and-setting-data editor output}. The images are stored with other content in the database without any server-side processing.
+The Base64 image upload adapter converts inserted images into [Base64-encoded strings](https://en.wikipedia.org/wiki/Base64) in the {@link getting-started/setup/getting-and-setting-data editor output}. The images are stored with other content in the database without any server-side processing.
 
 <info-box warning>
     Remember that while `Base64` upload is an easy solution, it is also highly inefficient. The image file is kept as data in the database, generating a much heavier data load and higher transfer. `Base64` images are never cached by the browser so loading and saving such data will always be slower.
@@ -30,19 +30,15 @@ Use the editor below to see the adapter in action. Open the web browser console 
 ## Installation
 
 <info-box info>
-	This feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-First, install the [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package:
-
-```plaintext
-npm install --save @ckeditor/ckeditor5-upload
-```
-
-Add the {@link module:upload/adapters/base64uploadadapter~Base64UploadAdapter `Base64UploadAdapter`} to your plugin list:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { Base64UploadAdapter } from '@ckeditor/ckeditor5-upload';
+import { ClassicEditor, Base64UploadAdapter } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -54,10 +50,6 @@ ClassicEditor
 ```
 
 Once enabled in the plugin list, the Base64 image upload adapter works out–of–the–box without any additional configuration.
-
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
-</info-box>
 
 ## Configuration
 
