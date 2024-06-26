@@ -24,6 +24,7 @@ import {
 	type Element,
 	type SelectionChangeRangeEvent
 } from 'ckeditor5/src/engine.js';
+import { ClipboardPipeline, type ClipboardContentInsertionEvent } from 'ckeditor5/src/clipboard.js';
 
 import type { ListEditing } from '@ckeditor/ckeditor5-list';
 
@@ -201,6 +202,31 @@ export default class CodeBlockEditing extends Plugin {
 			// Pass the view fragment to the default clipboardInput handler.
 			data.content = rawSnippetTextToViewDocumentFragment( writer, text );
 		} );
+
+		if ( editor.plugins.has( 'ClipboardPipeline' ) ) {
+			// Elements may have a plain textual representation (hence be present in the 'text/plain' data transfer),
+			// but not be allowed in the code block.
+			// Filter them out before inserting the content to the model.
+			editor.plugins.get( ClipboardPipeline ).on<ClipboardContentInsertionEvent>( 'contentInsertion', ( evt, data ) => {
+				const model = editor.model;
+				const selection = model.document.selection;
+
+				if ( !selection.anchor!.parent.is( 'element', 'codeBlock' ) ) {
+					return;
+				}
+
+				model.change( writer => {
+					const contentRange = writer.createRangeIn( data.content );
+
+					for ( const item of [ ...contentRange.getItems() ] ) {
+						// Remove all nodes disallowed in the code block.
+						if ( item.is( 'node' ) && !schema.checkChild( selection.anchor!, item ) ) {
+							writer.remove( item );
+						}
+					}
+				} );
+			} );
+		}
 
 		// Make sure multi–line selection is always wrapped in a code block when `getSelectedContent()`
 		// is used (e.g. clipboard copy). Otherwise, only the raw text will be copied to the clipboard and,

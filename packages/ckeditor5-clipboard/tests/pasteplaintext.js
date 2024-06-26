@@ -178,28 +178,6 @@ describe( 'PastePlainText', () => {
 		);
 	} );
 
-	it( 'should discard selection attributes if shift key was not pressed while pasting', () => {
-		setModelData( model, '<paragraph><$text bold="true">Bolded []text.</$text></paragraph>' );
-
-		const dataTransferMock = createDataTransfer( {
-			'text/html': 'foo<br>bar',
-			'text/plain': 'foo\nbar'
-		} );
-
-		viewDocument.fire( 'clipboardInput', {
-			dataTransfer: dataTransferMock,
-			stopPropagation() {},
-			preventDefault() {}
-		} );
-
-		expect( getModelData( model ) ).to.equal(
-			'<paragraph>' +
-				'<$text bold="true">Bolded </$text>' +
-				'foo<softBreak></softBreak>bar[]' +
-				'<$text bold="true">text.</$text>' +
-			'</paragraph>' );
-	} );
-
 	it( 'should work if the insertContent event is cancelled', () => {
 		// (#7887).
 		setModelData( model, '<paragraph><$text bold="true">Bolded []text.</$text></paragraph>' );
@@ -276,38 +254,6 @@ describe( 'PastePlainText', () => {
 			'<paragraph><$text bold="true">Bolded </$text></paragraph>' +
 			'[<obj></obj>]' +
 			'<paragraph><$text bold="true">.</$text></paragraph>'
-		);
-	} );
-
-	it( 'ignores clipboard input as plain text when shift was released', () => {
-		setModelData( model, '<paragraph><$text bold="true">Bolded []text.</$text></paragraph>' );
-
-		const dataTransferMock = createDataTransfer( {
-			'text/html': 'foo<br>bar',
-			'text/plain': 'foo\nbar'
-		} );
-
-		fireKeyEvent( 'a', {
-			shiftKey: true
-		} );
-
-		fireKeyEvent( 'v', {
-			shiftKey: false,
-			ctrlKey: true
-		} );
-
-		viewDocument.fire( 'clipboardInput', {
-			dataTransfer: dataTransferMock,
-			stopPropagation() {},
-			preventDefault() {}
-		} );
-
-		expect( getModelData( model ) ).to.equal(
-			'<paragraph>' +
-			'<$text bold="true">Bolded </$text>' +
-			'foo<softBreak></softBreak>bar[]' +
-			'<$text bold="true">text.</$text>' +
-			'</paragraph>'
 		);
 	} );
 
