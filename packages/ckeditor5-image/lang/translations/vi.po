@@ -91,7 +91,7 @@ msgstr "Hình ảnh từ máy tính"
 
 msgctxt "The label for the upload image from computer menu bar button (inside 'Image' menu)."
 msgid "From computer"
-msgstr ""
+msgstr "Từ máy tính"
 
 msgctxt "The label for the replace image by upload from computer toolbar button."
 msgid "Replace image from computer"
@@ -143,15 +143,15 @@ msgstr "Chèn ảnh từ URL"
 
 msgctxt "The label for the insert image via url dropdown button."
 msgid "Insert via URL"
-msgstr ""
+msgstr "Chèn bằng URL"
 
 msgctxt "The label for the insert image via url menu bar button (standalone button)."
 msgid "Image via URL"
-msgstr ""
+msgstr "Hình ảnh bằng URL"
 
 msgctxt "The label for the insert image via url menu bar button (inside 'Image' menu)."
 msgid "Via URL"
-msgstr ""
+msgstr "Bằng URL"
 
 msgctxt "The input label for the Insert image via URL form for a pre-existing image."
 msgid "Update image URL"
@@ -187,4 +187,4 @@ msgstr "Xảy ra lỗi trong quá trình tải hình ảnh lên"
 
 msgctxt "Label for the widget inserted by the image feature (as in 'insert image')"
 msgid "Image"
-msgstr ""
+msgstr "Hình ảnh"

@@ -1,14 +1,15 @@
 ---
 category: legacy-integrations
-meta-title: CKEditor 5 integrations overview | CKEditor 5 documentation
+menu-title: CKEditor 5 integrations
+meta-title: CKEditor 5 integrations overview | Legacy CKEditor 5 documentation
 order: 10
 menu-title: Overview
 ---
 
-# CKEditor&nbsp;5 integrations
+# CKEditor&nbsp;5 integrations &ndash; Legacy guide
 
 <info-box warning>
-	This is a legacy guide kept for users' convenience. If you are looking for current CKEditor 5 framework integrations, please refer to the newest version of the integration guides in the installation section.
+	⚠️  We changed installation methods and this legacy guide is kept for users' convenience. If you are looking for current CKEditor 5 framework integrations, please refer to the newest version of the integration guides in the installation section.
 </info-box>
 
 CKEditor&nbsp;5 is framework agnostic and can be integrated with any JavaScript framework. CKEditor&nbsp;5 is a native JavaScript rich-text editing component written in TypeScript. It does not require any uncommon techniques or technologies to be used. Therefore, unless the framework you use has really atypical limitations, CKEditor&nbsp;5 is compatible with it. Native integrations with the most popular libraries will save you time and effort.

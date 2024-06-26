@@ -33,12 +33,6 @@ module.exports = {
 	},
 	overrides: [
 		{
-			files: [ './packages/*/src/**/*.ts' ],
-			rules: {
-				'ckeditor5-rules/no-cross-package-svg-imports': 'error'
-			}
-		},
-		{
 			files: [ '**/tests/**/*.@(js|ts)' ],
 			rules: {
 				'no-unused-expressions': 'off',

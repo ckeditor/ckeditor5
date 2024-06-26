@@ -1,26 +1,23 @@
 ---
 category: alternative-setups
-meta-title: Integrating CKEditor 5 from source using Webpack | CKEditor 5 documentation
+menu-title: Integrating from source using webpack
+meta-title: Integrating CKEditor 5 from source using Webpack | Legacy CKEditor 5 documentation
 order: 10
 ---
 
-# Integrating from source using webpack
+# Integrating from source using webpack &ndash; Legacy guide
 
 <info-box warning>
-	This is a legacy guide kept for users' convenience. If you are looking for current CKEditor 5 installation instructions, please refer to the newest version of the {@link getting-started/quick-start CKEditor 5 Quick Start} guide.
+	⚠️  We changed installation methods and this legacy guide is kept for users' convenience. If you want to learn more about these changes, please refer to the {@link updating/nim-migration/migration-to-new-installation-methods Migrating to new installation methods} guide.
 </info-box>
 
-<info-box>
-	CKEditor&nbsp;5 is currently built using [webpack@5](https://webpack.js.org/). All builds, examples and demos are generated using this bundler. It should also be possible to build CKEditor&nbsp;5 using other bundlers (if they are configured properly), such as [Rollup](https://github.com/rollup/rollup) or [Browserify](http://browserify.org/), but these setups are not officially supported yet. However, there is integration for {@link getting-started/advanced/integrating-from-source-vite Vite}. It is still in an experimental phase and supports a limited number of features. For example, the [`@ckeditor/ckeditor5-dev-translations`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations) that allows localizing the editor is only available for webpack. More work on this subject will be done in the future.
+CKEditor&nbsp;5 is currently built using [webpack@5](https://webpack.js.org/). All builds, examples and demos are generated using this bundler. It should also be possible to build CKEditor&nbsp;5 using other bundlers (if they are configured properly), such as [Rollup](https://github.com/rollup/rollup) or [Browserify](http://browserify.org/), but these setups are not officially supported yet. However, there is integration for {@link getting-started/advanced/integrating-from-source-vite Vite}. It is still in an experimental phase and supports a limited number of features. For example, the [`@ckeditor/ckeditor5-dev-translations`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations) that allows localizing the editor is only available for webpack. More work on this subject will be done in the future.
 
-	Therefore, a prerequisite to this guide is that you are using webpack as your build tool.
-</info-box>
+Therefore, a prerequisite to this guide is that you are using webpack as your build tool.
 
 This scenario allows you to fully control the building process of CKEditor&nbsp;5. This means that you will not actually use the builds anymore, but instead build CKEditor&nbsp;5 from the source directly into your project. This integration method gives you full control over which features will be included and how webpack will be configured.
 
-<info-box>
-	You can achieve similar results to what this method allows by {@link getting-started/legacy-getting-started/quick-start-other#building-the-editor-from-source customizing an existing build} and integrating your custom build. This will give faster build times (since CKEditor&nbsp;5 will be built once and committed), however, it requires maintaining a separate repository and installing the code from that repository into your project (for example, by publishing a new npm package or using tools like [Lerna](https://github.com/lerna/lerna)). This makes it less convenient than the method described in this scenario.
-</info-box>
+You can achieve similar results to what this method allows by {@link getting-started/legacy-getting-started/quick-start-other#building-the-editor-from-source customizing an existing build} and integrating your custom build. This will give faster build times (since CKEditor&nbsp;5 will be built once and committed), however, it requires maintaining a separate repository and installing the code from that repository into your project (for example, by publishing a new npm package or using tools like [Lerna](https://github.com/lerna/lerna)). This makes it less convenient than the method described in this scenario.
 
 First of all, you need to install the source packages that you will use in your existing project. If you base your integration on one of the existing builds, you can take them from that build's `package.json` file (see, for example, [classic build's `package.json`](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-build-classic/package.json)). At this moment you can choose the editor type and the features you want. Keep in mind, however, that all packages (excluding `@ckeditor/ckeditor5-dev-*`) must have the same version as the base editor package.
 

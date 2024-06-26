@@ -2,7 +2,7 @@
 category: setup
 menu-title: TypeScript support
 meta-title: TypeScript support | CKEditor 5 documentation
-modified_at: 2024-05-06
+modified_at: 2024-06-25
 order: 100
 ---
 
@@ -81,6 +81,7 @@ import {
   Plugin,
   ButtonView
 } from 'ckeditor5';
+
 import 'ckeditor5/ckeditor5.css';
 
 declare module '@ckeditor/ckeditor5-core' {

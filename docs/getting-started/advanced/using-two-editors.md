@@ -1,12 +1,13 @@
 ---
 category: advanced
-meta-title: Using two different editors | CKEditor 5 documentation
+menu-title: Using two different editors
+meta-title: Using two different editors | Legacy CKEditor 5 documentation
 order: 10
 ---
-# Using two different editors
+# Using two different editors &ndash; Legacy guide
 
 <info-box warning>
-	This is a legacy guide kept for users' convenience. If you are looking for current CKEditor 5 installation instructions, please refer to the newest version of the {@link getting-started/quick-start CKEditor 5 Quick Start} guide.
+	⚠️  We changed installation methods and this legacy guide is kept for users' convenience. If you want to learn more about these changes, please refer to the {@link updating/nim-migration/migration-to-new-installation-methods Migrating to new installation methods} guide.
 </info-box>
 
 The ability to use two or more types of rich text editors on one page is a common requirement. For instance, you may want to use the classic editor next to a couple of inline editors.

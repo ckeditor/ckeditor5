@@ -1,17 +1,14 @@
 ---
-# Scope:
-# * Explain what content styles are and how to use them.
-# * Offer developers a way to obtain the editor content styles.
-
 category: advanced
-meta-title: Content styles | CKEditor 5 documentation
+menu-title: Content styles
+meta-title: Content styles | Legacy CKEditor 5 documentation
 order: 30
 ---
 
-# Content styles
+# Content styles &ndash; Legacy guide
 
 <info-box warning>
-	This is a legacy guide kept for users' convenience. If you are looking for current CKEditor 5 installation instructions, please refer to the newest version of the {@link getting-started/quick-start CKEditor 5 Quick Start} guide.
+	⚠️  We changed installation methods and this legacy guide is kept for users' convenience. If you are looking for current CKEditor 5 installation instructions, please refer to the newest version of the {@link getting-started/setup/css Editor and content styles} guide.
 </info-box>
 
 Some {@link features/index core editor features} bring additional CSS to control the look of the content they produce. Take, for example, the {@link features/images-overview image feature} that needs special content styles to render images and their captions in the content. Or the {@link module:block-quote/blockquote~BlockQuote block quote} feature that displays quotes in italics with a subtle border on the side.

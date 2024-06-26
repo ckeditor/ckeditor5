@@ -26,6 +26,7 @@ React lets you build user interfaces out of individual pieces called components.
 ### Using CKEditor&nbsp;5 Builder
 
 The easiest way to use CKEditor&nbsp;5 in your React application is by configuring it with [CKEditor&nbsp;5 Builder](https://ckeditor.com/builder?redirect=docs) and integrating it with your application. Builder offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs. You can easily select:
+
 * the features you need,
 * the preferred framework (React, Angular, Vue or Vanilla JS),
 * the preferred distribution method.
@@ -64,7 +65,6 @@ import { SlashCommand } from 'ckeditor5-premium-features';
 
 import 'ckeditor5/ckeditor5.css';
 import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
-import './App.css';
 
 function App() {
 	return (
@@ -129,33 +129,33 @@ import 'ckeditor5/ckeditor5.css';
 
 function App() {
   return (
-    <CKEditorContext context={ Context } contextWatchdog={ ContextWatchdog }>
-      <CKEditor
-        editor={ ClassicEditor }
-        config={ {
-          plugins: [ Essentials, Bold, Italic, Paragraph ],
-          toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-        } }
-        data='<p>Hello from the first editor working with the context!</p>'
-        onReady={ ( editor ) => {
-          // You can store the "editor" and use when it is needed.
-          console.log( 'Editor 1 is ready to use!', editor );
-        } }
-      />
+	<CKEditorContext context={ Context } contextWatchdog={ ContextWatchdog }>
+	  <CKEditor
+		editor={ ClassicEditor }
+		config={ {
+		  plugins: [ Essentials, Bold, Italic, Paragraph ],
+		  toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+		} }
+		data='<p>Hello from the first editor working with the context!</p>'
+		onReady={ ( editor ) => {
+		  // You can store the "editor" and use when it is needed.
+		  console.log( 'Editor 1 is ready to use!', editor );
+		} }
+	  />
 
-      <CKEditor
-        editor={ ClassicEditor }
-        config={ {
-          plugins: [ Essentials, Bold, Italic, Paragraph ],
-          toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-        } }
-        data='<p>Hello from the second editor working with the context!</p>'
-        onReady={ ( editor ) => {
-          // You can store the "editor" and use when it is needed.
-          console.log( 'Editor 2 is ready to use!', editor );
-        } }
-      />
-    </CKEditorContext>
+	  <CKEditor
+		editor={ ClassicEditor }
+		config={ {
+		  plugins: [ Essentials, Bold, Italic, Paragraph ],
+		  toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+		} }
+		data='<p>Hello from the second editor working with the context!</p>'
+		onReady={ ( editor ) => {
+		  // You can store the "editor" and use when it is needed.
+		  console.log( 'Editor 2 is ready to use!', editor );
+		} }
+	  />
+	</CKEditorContext>
   );
 }
 
@@ -185,36 +185,46 @@ The `CKEditorContext` component supports the following properties:
 If you use the {@link framework/document-editor document (decoupled) editor}, you need to {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create add the toolbar to the DOM manually}:
 
 ```jsx
-import { useCallback, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { DecoupledEditor, Bold, Essentials, Italic, Paragraph } from 'ckeditor5';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 
 import 'ckeditor5/ckeditor5.css';
 
 function App() {
-	const [ editorToolbarRef, setEditorToolbarRef ] = useState( null );
-	const [ editorRef, setEditorRef ] = useState( null );
+	const editorToolbarRef = useRef( null );
+	const [ isMounted, setMounted ] = useState( false );
+	
+	useEffect( () => {
+		setMounted( true );
 
-	const isLayoutReady = useCallback( () => {
-		return [ editorRef, editorToolbarRef ].every( Boolean );
-	}, [ editorRef, editorToolbarRef ] );
+		return () => {
+			setMounted( false );
+		};
+	}, [] );
 
 	return (
 		<div>
-			<div ref={ setEditorToolbarRef }></div>
-			<div ref={ setEditorRef }>
-				{ isLayoutReady() && (
+			<div ref={ editorToolbarRef }></div>
+			<div>
+				{ isMounted && (
 					<CKEditor
-						onReady={ ( editor ) => {
-							[ ...editorToolbarRef.children ].forEach( child => child.remove() );
-							editorToolbarRef.appendChild( editor.ui.view.toolbar.element );
-						}}
 						editor={ DecoupledEditor }
 						data='<p>Hello from CKEditor 5 decoupled editor!</p>'
 						config={ {
 							plugins: [ Bold, Italic, Paragraph, Essentials ],
 							toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 						} }
+						onReady={ ( editor ) => {
+							if ( editorToolbarRef.current ) { 
+								editorToolbarRef.current.appendChild( editor.ui.view.toolbar.element );
+							}
+						}}
+						onAfterDestroy={ ( editor ) => {
+							if ( editorToolbarRef.current ) {
+								Array.from( editorToolbarRef.current.children ).forEach( child => child.remove() );
+							}
+						}}
 					/>
 				) }
 			</div>
@@ -248,7 +258,7 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 // More imports...
 
 import coreTranslations from 'ckeditor5/translations/es.js';
-import commercialTranslations from 'ckeditor5-premium-features/translations/es.js';
+import premiumFeaturesTranslations from 'ckeditor5-premium-features/translations/es.js';
 
 // Style sheets imports...
 
@@ -257,7 +267,7 @@ function App() {
 		<CKEditor
 			editor={ ClassicEditor }
 			config={ {
-				translations: [ coreTranslations, commercialTranslations ],
+				translations: [ coreTranslations, premiumFeaturesTranslations ],
 				initialData: '<p>Hola desde CKEditor 5 en React!</p>',
 			} }
 		/>

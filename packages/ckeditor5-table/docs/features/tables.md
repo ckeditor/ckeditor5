@@ -66,7 +66,7 @@ While table nesting is fully functional, the Markdown code generated with the {@
 
 ## Table contextual toolbar
 
-The {@link module:table/tabletoolbar~TableToolbar} plugin available in all editor builds introduces a contextual toolbar for table. The toolbar appears when a table or a cell is selected and contains various table-related buttons. These would typically include add or remove columns {@icon @ckeditor/ckeditor5-table/theme/icons/table-column.svg Table column} and rows {@icon @ckeditor/ckeditor5-table/theme/icons/table-row.svg Table row} and merge or split cells {@icon @ckeditor/ckeditor5-table/theme/icons/table-merge-cell.svg Table cell}. If these features are configured, the toolbar will also contain buttons for captions {@icon @ckeditor/ckeditor5-core/theme/icons/caption.svg Table caption} and table {@icon @ckeditor/ckeditor5-table/theme/icons/table-properties.svg Table properties} and cell {@icon @ckeditor/ckeditor5-table/theme/icons/table-cell-properties.svg Cell properties} properties.
+The {@link module:table/tabletoolbar~TableToolbar} plugin introduces a contextual toolbar for table. The toolbar appears when a table or a cell is selected and contains various table-related buttons. These would typically include add or remove columns {@icon @ckeditor/ckeditor5-table/theme/icons/table-column.svg Table column} and rows {@icon @ckeditor/ckeditor5-table/theme/icons/table-row.svg Table row} and merge or split cells {@icon @ckeditor/ckeditor5-table/theme/icons/table-merge-cell.svg Table cell}. If these features are configured, the toolbar will also contain buttons for captions {@icon @ckeditor/ckeditor5-core/theme/icons/caption.svg Table caption} and table {@icon @ckeditor/ckeditor5-table/theme/icons/table-properties.svg Table properties} and cell {@icon @ckeditor/ckeditor5-table/theme/icons/table-cell-properties.svg Cell properties} properties.
 
 {@img assets/img/table-toolbar.png 569 An extended contextual toolbar.}
 
@@ -180,6 +180,12 @@ The above model structure will be rendered to the data and to the editing view a
 </info-box>
 
 ## Installation
+
+<info-box info>
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
+</info-box>
 
 After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 

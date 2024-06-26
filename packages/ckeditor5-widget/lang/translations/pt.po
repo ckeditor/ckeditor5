@@ -55,4 +55,4 @@ msgstr "Mover o ponto de inserção para permitir escrever diretamente após um 
 
 msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that moves selection from a nested editable area back to the parent widget."
 msgid "Move focus from an editable area back to the parent widget"
-msgstr ""
+msgstr "Deslocar o foco de uma área editável de volta para o widget principal"

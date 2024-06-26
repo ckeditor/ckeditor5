@@ -9,12 +9,12 @@
 
 import CKEditorError from './ckeditorerror.js';
 
-const version = '41.4.2';
+const version = '42.0.0';
 
 export default version;
 
 // The second argument is not a month. It is `monthIndex` and starts from `0`.
-export const releaseDate = new Date( 2024, 4, 17 );
+export const releaseDate = new Date( 2024, 5, 26 );
 
 declare global {
 	// eslint-disable-next-line no-var
@@ -25,7 +25,7 @@ declare global {
 if ( globalThis.CKEDITOR_VERSION ) {
 	/**
 	 * The best solution to avoid this error is migrating your CKEditor&nbsp;5 instance to
-	 * {@glink updating/new-installation-methods new installation methods}.
+	 * {@glink updating/nim-migration/migration-to-new-installation-methods new installation methods}.
 	 *
 	 * Mentioned below are predefined builds, which are a deprecated installation method. The solutions
 	 * provided are kept here for legacy support only.

@@ -1,16 +1,16 @@
 ---
 menu-title: Angular
-meta-title: Angular rich text editor component | CKEditor 5 documentation
+meta-title: Angular rich text editor component | Legacy CKEditor 5 documentation
 category: legacy-integrations
 order: 20
 ---
 
 {@snippet installation/integrations/framework-integration}
 
-# Angular rich text editor component
+# Angular rich text editor component &ndash; Legacy guide
 
 <info-box warning>
-	This is a legacy guide kept for users' convenience. If you are looking for current CKEditor 5 Angular integration, please refer to the newest version of the {@link getting-started/integrations/angular CKEditor 5 integration} guide.
+	⚠️  We changed installation methods and this legacy guide is kept for users' convenience. If you are looking for current CKEditor 5 Angular integration, please refer to the newest version of the {@link getting-started/integrations/angular CKEditor&nbsp;5 integration} guide.
 </info-box>
 
 <p>
@@ -22,14 +22,6 @@ order: 20
 CKEditor&nbsp;5 consists of the {@link getting-started/legacy-getting-started/predefined-builds ready-to-use editor builds} and the {@link framework/index CKEditor&nbsp;5 Framework} upon which the builds are based.
 
 Currently, the CKEditor&nbsp;5 component for Angular supports integrating CKEditor&nbsp;5 only via builds. Integrating {@link getting-started/advanced/integrating-from-source-webpack CKEditor&nbsp;5 built from source} is not possible yet due to the lack of ability to [adjust webpack configuration in `angular-cli`](https://github.com/angular/angular-cli/issues/10618).
-
-<info-box>
-	While there is no support to integrate CKEditor&nbsp;5 from source yet, you can still {@link getting-started/legacy-getting-started/quick-start-other#customizing-builds create a custom build of CKEditor&nbsp;5} and include it in your Angular application.
-</info-box>
-
-<info-box hint>
-	Starting from version 6.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link getting-started/setup/typescript-support TypeScript support}.
-</info-box>
 
 ## Supported Angular versions
 

@@ -1,13 +1,14 @@
 ---
 category: installation-methods
-meta-title: API and events | CKEditor 5 documentation
+menu-title: API and events
+meta-title: API and events | Legacy CKEditor 5 documentation
 order: 80
 ---
 
-# API and events
+# API and events &ndash; Legacy guide
 
 <info-box warning>
-	This is a legacy guide kept for users' convenience. If you are looking for current CKEditor 5 installation instructions, please refer to the newest version of the {@link getting-started/quick-start CKEditor 5 Quick Start} guide.
+	 ⚠️ We changed installation methods and this legacy guide is kept for users' convenience. If you want to learn more about these changes, please refer to the {@link updating/nim-migration/migration-to-new-installation-methods Migrating to new installation methods} guide.
 </info-box>
 
 CKEditor 5 API allows developers to interact with the editor and its plugins to create new behaviors. Through the event system, you can tailor reactions to specific actions that are happening.

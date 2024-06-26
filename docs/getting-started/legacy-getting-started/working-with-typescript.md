@@ -4,27 +4,19 @@
 # * List and clarify the things that need attention when using TypeScript.
 
 category: legacy
-order: 40
+order: 85
 menu-title: TypeScript legacy support
-meta-title: TypeScript legacy support | CKEditor 5 documentation
+meta-title: TypeScript legacy support | Legacy CKEditor 5 documentation
 modified_at: 2023-04-03
 ---
 
-# TypeScript support in CKEditor&nbsp;5
+# TypeScript support in CKEditor&nbsp;5 &ndash; Legacy guide
 
 <info-box warning>
-	This is a legacy guide kept for users' convenience. If you are looking for current CKEditor 5 installation instructions, please refer to the newest version of the {@link getting-started/quick-start CKEditor 5 Quick Start} guide.
+	⚠️  We changed installation methods and this legacy guide is kept for users' convenience. If you are looking for current CKEditor 5 installation instructions, please refer to the newest version of the {@link getting-started/setup/typescript-support TypeScript support in CKEditor 5} guide.
 </info-box>
 
 CKEditor&nbsp;5 is built using TypeScript and has native type definitions. All the official packages and builds distributed using NPM and CDN contain type definitions. Custom builds produced by the **online builder** and **DLL** versions of packages provided by CKEditor&nbsp;5 do not provide built-in types yet.
-
-<info-box hint>
-	Using TypeScript is just an option. If you do not need its features, you can continue using CKEditor&nbsp;5 in JavaScript.
-</info-box>
-
-<info-box warning>
-	Starting with the v37.0.0 release, CKEditor&nbsp;5 has built-in type definitions. If you used type definitions created by the community, you will need to replace them with native types. Check the {@link updating/update-to-37 Update to v37.0.0} guide.
-</info-box>
 
 ## Why use CKEditor&nbsp;5 with TypeScript
 

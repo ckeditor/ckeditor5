@@ -1,16 +1,16 @@
 ---
 menu-title: React
-meta-title: React rich text editor component | CKEditor 5 documentation
+meta-title: React rich text editor component | Legacy CKEditor 5 documentation
 category: legacy-integrations
 order: 30
 ---
 
-{@snippet installation/integrations/framework-integration}
+{@snippet installation/integrations/framework-integration} &ndash; Legacy guide
 
 # React rich text editor component
 
 <info-box warning>
-	This is a legacy guide kept for users' convenience. If you are looking for current CKEditor 5 Angular integration, please refer to the newest version of the {@link getting-started/integrations/react CKEditor 5 integration} guide.
+	⚠️  We changed installation methods and this legacy guide is kept for users' convenience. If you are looking for current CKEditor 5 React integration, please refer to the newest version of the {@link getting-started/integrations/react CKEditor&nbsp;5 integration} guide.
 </info-box>
 
 <p>
@@ -22,10 +22,6 @@ order: 30
 CKEditor&nbsp;5 consists of {@link getting-started/legacy-getting-started/predefined-builds ready-to-use editor builds} and {@link framework/index CKEditor&nbsp;5 Framework} upon which the builds are based.
 
 The easiest way to use CKEditor&nbsp;5 in your React application is by choosing one of the {@link getting-started/legacy-getting-started/predefined-builds#available-builds rich text editor builds}. Additionally, it is also possible to integrate [CKEditor&nbsp;5 built from source](#integrating-ckeditor-5-built-from-source) into your application. You can also use a customized editor built by using [CKEditor&nbsp;5 online builder](https://ckeditor.com/ckeditor-5/online-builder/) in any React application.
-
-<info-box hint>
-	Starting from version 6.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link getting-started/setup/typescript-support TypeScript support}.
-</info-box>
 
 ## Quick start
 

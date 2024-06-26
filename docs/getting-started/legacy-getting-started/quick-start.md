@@ -1,27 +1,19 @@
 ---
-# Scope:
-# - Guidance on all possible installation options.
-
 category: installation-methods
-meta-title: Quick start | CKEditor 5 documentation
+menu-title: Quick start
+meta-title: Quick start | Legacy CKEditor 5 documentation
 order: 10
 modified_at: 2022-06-27
 ---
 
-# Quick start
+# Quick start &ndash; Legacy guide
 
 <info-box warning>
-	This is a legacy guide kept for users' convenience. If you are looking for current CKEditor 5 installation instructions, please refer to the newest version of the {@link getting-started/quick-start CKEditor 5 Quick Start} guide.
+	⚠️  We changed installation methods and this legacy guide is kept for users' convenience. If you are looking for current CKEditor 5 installation instructions, please refer to the newest version of the {@link getting-started/quick-start CKEditor&nbsp;5 Quick Start} guide.
 </info-box>
 
 ## Introduction
 In this guide, you will find the quickest and easiest way to run ready-to-use CKEditor&nbsp;5 with minimal effort &ndash; by running the editor from [CDN](https://cdn.ckeditor.com/).
-
-<info-box>
-	Please bear in mind that the CDN solution only offers {@link getting-started/legacy-getting-started/predefined-builds ready-to-use predefined editor builds}, hence it is not possible to add new plugins and all the features available in the editor are preset.
-
-	Should you need a more flexible solution, consider using the {@link getting-started/legacy-getting-started/quick-start-other#creating-custom-builds-with-online-builder Online builder} or try {@link getting-started/legacy-getting-started/quick-start-other#building-the-editor-from-source building the editor from source}.
-</info-box>
 
 ## Running a simple editor
 

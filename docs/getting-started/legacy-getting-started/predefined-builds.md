@@ -1,15 +1,15 @@
 ---
 menu-title: Predefined builds
-meta-title: Predefined builds | CKEditor 5 documentation
+meta-title: Predefined builds | Legacy CKEditor 5 documentation
 category: installation-methods
 order: 20
 modified_at: 2022-07-12
 ---
 
-# Predefined CKEditor&nbsp;5 builds
+# Predefined CKEditor&nbsp;5 builds &ndash; Legacy guide
 
 <info-box warning>
-	This is a legacy guide kept for users' convenience. If you are looking for current CKEditor 5 installation instructions, please refer to the newest version of the {@link getting-started/quick-start CKEditor 5 Quick Start} guide.
+	⚠️  We changed installation methods and this legacy guide is kept for users' convenience. If you want to learn more about these changes, please refer to the {@link updating/nim-migration/predefined-builds Migrating from predefined builds} guide.
 </info-box>
 
 ## Overview
@@ -18,14 +18,13 @@ Predefined CKEditor&nbsp;5 builds are a set of ready-to-use rich text editors. E
 
 The following CKEditor&nbsp;5 builds are currently available:
 
- * [Classic editor](#classic-editor)
- * [Inline editor](#inline-editor)
- * [Balloon editor](#balloon-editor)
- * [Balloon block editor](#balloon-block-editor)
- * [Document editor](#document-editor)
- * [Multi-root editor](#multi-root-editor)
- * [Superbuild](#superbuild)
-
+* [Classic editor](#classic-editor)
+* [Inline editor](#inline-editor)
+* [Balloon editor](#balloon-editor)
+* [Balloon block editor](#balloon-block-editor)
+* [Document editor](#document-editor)
+* [Multi-root editor](#multi-root-editor)
+* [Superbuild](#superbuild)
 
 ## Basic information
 
@@ -114,15 +113,13 @@ During its initialization the editor hides the used editable element on the page
 
 In CKEditor&nbsp;5 the concept of the "boxed" editor was reinvented:
 
- * The toolbar is now always visible when the user scrolls the page down.
- * The editor content is now placed inline in the page (without the surrounding `<iframe>` element). It is now much easier to style it.
- * By default the editor now grows automatically with the content.
+* The toolbar is now always visible when the user scrolls the page down.
+* The editor content is now placed inline in the page (without the surrounding `<iframe>` element). It is now much easier to style it.
+* By default the editor now grows automatically with the content.
 
 {@img assets/img/editor-classic.png 778 Screenshot of a classic editor.}
 
 To try it out online, check the {@link examples/builds/classic-editor classic editor example}.
-
-#### Installation example
 
 In your HTML page add an element that CKEditor&nbsp;5 should replace:
 
@@ -192,8 +189,6 @@ A common scenario for using inline editor is offering users the possibility to e
 
 To try it out online, check the {@link examples/builds/inline-editor inline editor example}.
 
-#### Installation example
-
 In your HTML page add an element that CKEditor&nbsp;5 should make editable:
 
 ```html
@@ -260,8 +255,6 @@ Balloon editor is similar to inline editor. The difference between them is that 
 
 To try it out online, check the {@link examples/builds/balloon-editor balloon editor example}.
 
-#### Installation example
-
 In your HTML page add an element that CKEditor&nbsp;5 should make editable:
 
 ```html
@@ -327,8 +320,6 @@ Balloon block is essentially the [balloon editor](#balloon-editor) with an extra
 {@img assets/img/editor-balloon-block.png 813 Screenshot of a balloon block toolbar editor.}
 
 To try it out online, check the {@link examples/builds/balloon-block-editor balloon block editor example}.
-
-#### Installation example
 
 In your HTML page add an element that CKEditor&nbsp;5 should make editable:
 
@@ -397,8 +388,6 @@ The document editor is focused on rich-text editing experience similar to the na
 {@img assets/img/editor-document.png 843 Screenshot of the user interface of the document editor.}
 
 To try it out online, check the {@link examples/builds/document-editor document editor example}.
-
-#### Installation example
 
 Load the document editor build (here, the [CDN](https://cdn.ckeditor.com/) location is used):
 
@@ -481,8 +470,6 @@ The main difference between using a multi-root editor and using multiple separat
 {@img assets/img/editor-multi-root.png 924 Screenshot of a multi-root editor.}
 
 To try it out online, check the {@link examples/builds/multi-root-editor multi-root editor example}.
-
-#### Installation example
 
 In your HTML page add an element that CKEditor&nbsp;5 should make editable:
 
@@ -678,7 +665,6 @@ Full code example:
 </html>
 ```
 
-
 ### Superbuild
 
 The superbuild, available instantly from the CDN, is a pre-configured package that offers access to almost all available plugins and all predefined editor types.
@@ -689,15 +675,13 @@ The superbuild, available instantly from the CDN, is a pre-configured package th
 	For customized and efficient solutions in a production environment, we strongly advise using the {@link getting-started/legacy-getting-started/quick-start-other#creating-custom-builds-with-online-builder online builder} approach or {@link getting-started/legacy-getting-started/quick-start-other#building-the-editor-from-source building the editor from source}. You can also try out other predefined builds instead.
 </info-box>
 
-#### Installation example
-
  To learn how to use the superbuild, refer to the {@link getting-started/legacy-getting-started/quick-start#running-a-full-featured-editor-from-cdn CDN installation quick start guide}.
 
 ## List of plugins included in the CKEditor&nbsp;5 predefined builds
 
 The table below presents the list of all plugins included in various builds. <!-- update each release -->
 
-<figure class="table">
+<figure style="overflow: auto; margin: 1.5em 0;">
 	<table border="1" cellpadding="1" cellspacing="1">
 		<tbody>
 			<tr>

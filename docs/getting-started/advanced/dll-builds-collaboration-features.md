@@ -1,22 +1,18 @@
 ---
-menu-title: DLL builds for CKEditor 5 Collaboration Features
-meta-title: CKEditor 5 DLL builds for CKEditor 5 Collaboration Features | CKEditor 5 documentation
+menu-title: DLL builds for Collaboration Features
+meta-title: DLL builds for Collaboration Features | Legacy CKEditor 5 documentation
 category: alternative-setups
 order: 30
 modified_at: 2022-02-21
 ---
 
-# CKEditor 5 DLL builds for CKEditor 5 Collaboration Features
+# CKEditor 5 DLL builds for CKEditor 5 Collaboration Features &ndash; Legacy guide
 
 <info-box warning>
-	This is a legacy guide kept for users' convenience. If you are looking for current CKEditor 5 installation instructions, please refer to the newest version of the {@link getting-started/quick-start CKEditor 5 Quick Start} guide.
+	⚠️  We changed installation methods and this legacy guide is kept for users' convenience. If you want to learn more about these changes, please refer to the {@link updating/nim-migration/dll-builds Migrating from DLL builds} guide.
 </info-box>
 
-<info-box>
-	This guide discusses using a DLL build together with CKEditor&nbsp;5 Collaboration Features and is supplemental to the {@link getting-started/advanced/dll-builds CKEditor&nbsp;5 DLL builds guide}.
-
-	Make sure to read the {@link getting-started/advanced/dll-builds base guide} first before proceeding.
-</info-box>
+This guide discusses using a DLL build together with CKEditor&nbsp;5 Collaboration Features and is supplemental to the {@link getting-started/advanced/dll-builds CKEditor&nbsp;5 DLL builds guide}. Make sure to read the {@link getting-started/advanced/dll-builds base guide} first before proceeding.
 
 ## Anatomy of a DLL build with CKEditor&nbsp;5 collaboration features
 
@@ -105,7 +101,7 @@ Below is an example of an integration:
 			CKEditor5.paragraph.Paragraph,
 			CKEditor5.pasteFromOffice.PasteFromOffice,
 			CKEditor5.table.Table,
-			CKEditor5.table.TableToolbar
+			CKEditor5.table.TableToolbar,
 			CKEditor5.cloudServices.CloudServices,
 			CKEditor5.comments.Comments,
 			CKEditor5.trackChanges.TrackChanges,

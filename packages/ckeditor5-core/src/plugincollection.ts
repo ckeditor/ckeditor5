@@ -365,13 +365,13 @@ export default class PluginCollection<TContext extends object>
 			 * in the plugin name or simply because that plugin is not a part of this build.
 			 *
 			 * Predefined builds are a deprecated solution and we strongly advise
-			 * {@glink updating/new-installation-methods migrating to new installation methods}.
+			 * {@glink updating/nim-migration/migration-to-new-installation-methods migrating to new installation methods}.
 			 *
 			 * **If you see this warning when using one of the editor creators directly** (not a build), then it means
 			 * that you tried loading plugins by name. However, unlike CKEditor 4, CKEditor 5 does not implement a "plugin loader".
 			 * This means that CKEditor 5 does not know where to load the plugin modules from. Therefore, you need to
-			 * provide each plugin through a reference (as a constructor function). Check out the examples in
-			 * {@glink getting-started/legacy/advanced/alternative-setups/integrating-from-source-webpack "Building from source"}.
+			 * provide each plugin through a reference (as a constructor function). Check out the examples in the
+			 * {@glink getting-started/installation/quick-start Quick start} guide.
 			 *
 			 * @error plugincollection-plugin-not-found
 			 * @param plugin The name of the plugin which could not be loaded.
@@ -592,7 +592,7 @@ export default class PluginCollection<TContext extends object>
 			 * or specified in {@link module:core/editor/editor~Editor.builtinPlugins `Editor.builtinPlugins`}.
 			 *
 			 * Predefined builds are a deprecated solution and we strongly advise
-			 * {@glink updating/new-installation-methods migrating to new installation methods}.
+			 * {@glink updating/nim-migration/migration-to-new-installation-methods migrating to new installation methods}.
 			 *
 			 * The second option is that your `node_modules/` directory contains duplicated versions of the same
 			 * CKEditor 5 packages. Normally, on clean installations, npm deduplicates packages in `node_modules/`, so
