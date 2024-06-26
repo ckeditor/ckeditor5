@@ -127,6 +127,20 @@ describe( 'CodeBlockUI', () => {
 			languagesListView = subMenu.panelView.children.first;
 		} );
 
+		it( 'has proper menu item role on button', () => {
+			expect( subMenu.buttonView.role ).to.be.equal( 'menuitem' );
+		} );
+
+		it( 'sets item\'s aria-checked attribute depending on the value of the CodeBlockCommand', () => {
+			const { element } = languagesListView.items.get( 2 ).children.first;
+
+			expect( element.getAttribute( 'aria-checked' ) ).to.be.equal( 'false' );
+
+			command.value = 'cs';
+
+			expect( element.getAttribute( 'aria-checked' ) ).to.be.equal( 'true' );
+		} );
+
 		it( 'has isEnabled bound to command\'s isEnabled', () => {
 			command.isEnabled = true;
 			expect( subMenu ).to.have.property( 'isEnabled', true );

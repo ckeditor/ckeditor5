@@ -60,7 +60,9 @@ export default class ShowBlocksUI extends Plugin {
 		const t = locale.t;
 
 		view.set( {
-			label: t( 'Show blocks' )
+			label: t( 'Show blocks' ),
+			isToggleable: true,
+			role: 'menuitemcheckbox'
 		} );
 
 		view.bind( 'isEnabled' ).to( command );

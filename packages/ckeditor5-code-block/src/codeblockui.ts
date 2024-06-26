@@ -98,8 +98,10 @@ export default class CodeBlockUI extends Plugin {
 			const menuView = new MenuBarMenuView( locale );
 
 			menuView.buttonView.set( {
+				role: 'menuitem',
 				label: t( 'Code block' ),
-				icon: icons.codeBlock
+				icon: icons.codeBlock,
+				isToggleable: true
 			} );
 
 			menuView.bind( 'isEnabled' ).to( command );
@@ -115,7 +117,7 @@ export default class CodeBlockUI extends Plugin {
 				const buttonView = new MenuBarMenuListItemButtonView( locale );
 
 				buttonView.bind( ...Object.keys( definition.model ) as Array<keyof MenuBarMenuListItemButtonView> ).to( definition.model );
-				buttonView.bind( 'ariaChecked' ).to( buttonView, 'isOn' );
+				buttonView.set( 'isToggleable', true );
 				buttonView.delegate( 'execute' ).to( menuView );
 
 				buttonView.on( 'execute', () => {

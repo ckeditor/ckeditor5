@@ -308,7 +308,7 @@ describe( 'TableCaptionEditing', () => {
 								'</tr>' +
 							'</tbody>' +
 						'</table>' +
-						'<figcaption class="ck-editor__editable ck-editor__nested-editable" ' +
+						'<figcaption aria-placeholder="Enter table caption" class="ck-editor__editable ck-editor__nested-editable" ' +
 								'contenteditable="true" data-placeholder="Enter table caption" role="textbox" tabindex="-1">' +
 							'Foo caption' +
 						'</figcaption>' +

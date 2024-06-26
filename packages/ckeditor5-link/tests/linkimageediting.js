@@ -519,6 +519,7 @@ describe( 'LinkImageEditing', () => {
 									'<img alt="alt text" src="/assets/sample.png"></img>' +
 								'</a>' +
 								'<figcaption aria-label="Caption for image: alt text" ' +
+									'aria-placeholder="Enter image caption" ' +
 									'class="ck-editor__editable ck-editor__nested-editable" ' +
 									'contenteditable="true" data-placeholder="Enter image caption" role="textbox" tabindex="-1">' +
 										'Foo Bar.' +

@@ -54,7 +54,15 @@ export default class BoldUI extends Plugin {
 		} );
 
 		editor.ui.componentFactory.add( 'menuBar:' + BOLD, () => {
-			return createButton( MenuBarMenuListItemButtonView );
+			const buttonView = createButton( MenuBarMenuListItemButtonView );
+
+			buttonView.set( {
+				role: 'menuitemcheckbox'
+			} );
+
+			buttonView.bind( 'isOn' ).to( command, 'value' );
+
+			return buttonView;
 		} );
 	}
 }

@@ -215,6 +215,7 @@ describe( 'SourceEditing', () => {
 				expect( button ).to.be.instanceOf( Component );
 				expect( button.isEnabled ).to.be.true;
 				expect( button.isOn ).to.be.false;
+				expect( button.isToggleable ).to.be.true;
 				expect( button.label ).to.equal( label );
 			} );
 

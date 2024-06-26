@@ -259,16 +259,21 @@ export default class ColorGridsFragmentView extends View {
 		if ( this.documentColorsCount ) {
 			// Create a label for document colors.
 			const bind = Template.bind( this.documentColors, this.documentColors );
-			const label = new LabelView( this.locale );
-			label.text = this._documentColorsLabel;
-			label.extendTemplate( {
+			const label = new View( this.locale );
+			label.setTemplate( {
+				tag: 'span',
 				attributes: {
 					class: [
 						'ck',
 						'ck-color-grid__label',
 						bind.if( 'isEmpty', 'ck-hidden' )
 					]
-				}
+				},
+				children: [
+					{
+						text: this._documentColorsLabel
+					}
+				]
 			} );
 			this.items.add( label );
 			this.documentColorsGrid = this._createDocumentColorsGrid();

@@ -435,6 +435,122 @@ describe( 'placeholder', () => {
 			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.true;
 			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
+
+		describe( 'aria', () => {
+			it( 'should set `aria-placeholder` attribute to nearest element with `contenteditable=true`', () => {
+				setData( view, '<div contenteditable="true"><div>{another div}</div></div>' );
+
+				const parent = viewRoot.getChild( 0 );
+				const child = parent.getChild( 0 );
+
+				child.placeholder = 'foo bar';
+				enablePlaceholder( {
+					view,
+					element: child
+				} );
+
+				expect( parent.getAttribute( 'aria-placeholder' ) ).to.be.equal( 'foo bar' );
+			} );
+
+			it( 'should not set `aria-placeholder` attribute to nearest element with `contenteditable=false`', () => {
+				setData( view, '<div contenteditable="false"><div>{another div}</div></div>' );
+
+				const parent = viewRoot.getChild( 0 );
+				const child = parent.getChild( 0 );
+
+				child.placeholder = 'foo bar';
+				enablePlaceholder( {
+					view,
+					element: child
+				} );
+
+				expect( parent.getAttribute( 'aria-placeholder' ) ).to.be.undefined;
+			} );
+
+			it( 'should join placeholders to `aria-placeholder`', () => {
+				setData(
+					view,
+					'<div contenteditable="true">' +
+						'<div>{another div 1}</div>' +
+						'<div>{another div 2}</div>' +
+					'</div>'
+				);
+
+				const parent = viewRoot.getChild( 0 );
+				const child1 = parent.getChild( 0 );
+				const child2 = parent.getChild( 1 );
+
+				child1.placeholder = ' Hello World...! ';
+				child2.placeholder = 'Helloooo!!... ';
+
+				enablePlaceholder( {
+					view,
+					element: child1
+				} );
+
+				enablePlaceholder( {
+					view,
+					element: child2
+				} );
+
+				expect( parent.getAttribute( 'aria-placeholder' ) ).to.be.equal( 'Hello World!, Helloooo!!' );
+			} );
+
+			it( '`contenteditable=true` is checked in multiple parent elements in current element', () => {
+				setData(
+					view,
+					'<div contenteditable="true">' +
+						'Child' +
+					'</div>'
+				);
+
+				const element = viewRoot.getChild( 0 );
+
+				element.placeholder = 'foo bar';
+				enablePlaceholder( {
+					view,
+					element
+				} );
+
+				expect( element.getAttribute( 'aria-placeholder' ) ).to.be.equal( 'foo bar' );
+			} );
+
+			it( '`contenteditable=true` is checked in multiple parent elements', () => {
+				setData(
+					view,
+					'<div contenteditable="true">' +
+						'<div>' +
+							'<div contenteditable="false">' +
+								'<div>' +
+									'<div>Child</div>' +
+								'</div>' +
+							'</div>' +
+						'</div>' +
+					'</div>'
+				);
+
+				const parent = viewRoot.getChild( 0 );
+				const child = getViewNodeByPath( [ 0, 0, 0, 0, 0 ] );
+
+				child.placeholder = 'foo bar';
+				enablePlaceholder( {
+					view,
+					element: child
+				} );
+
+				expect( parent.getAttribute( 'aria-placeholder' ) ).to.be.equal( 'foo bar' );
+			} );
+
+			function getViewNodeByPath( relativePath ) {
+				let node = viewRoot;
+
+				for ( const index of relativePath ) {
+					node = node.getChild( index );
+				}
+
+				return node;
+			}
+		} );
 	} );
 
 	describe( 'disablePlaceholder', () => {

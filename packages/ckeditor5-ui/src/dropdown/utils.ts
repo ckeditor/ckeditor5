@@ -560,7 +560,9 @@ function bindViewCollectionItemsToDefinitions(
 
 			if ( def.type === 'button' ) {
 				buttonView = new ButtonView( locale );
-				buttonView.bind( 'ariaChecked' ).to( buttonView, 'isOn' );
+				buttonView.set( {
+					isToggleable: true
+				} );
 			} else {
 				buttonView = new SwitchButtonView( locale );
 			}

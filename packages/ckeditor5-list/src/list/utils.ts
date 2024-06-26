@@ -36,9 +36,16 @@ export function createUIComponents(
 		return buttonView;
 	} );
 
-	editor.ui.componentFactory.add( `menuBar:${ commandName }`, () =>
-		_createButton( MenuBarMenuListItemButtonView, editor, commandName, label, icon )
-	);
+	editor.ui.componentFactory.add( `menuBar:${ commandName }`, () => {
+		const buttonView = _createButton( MenuBarMenuListItemButtonView, editor, commandName, label, icon );
+
+		buttonView.set( {
+			role: 'menuitemcheckbox',
+			isToggleable: true
+		} );
+
+		return buttonView;
+	} );
 }
 
 /**

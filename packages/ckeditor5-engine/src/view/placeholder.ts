@@ -260,7 +260,76 @@ function updateDocumentPlaceholders( doc: Document, writer: DowncastWriter ): bo
 		}
 	}
 
-	return wasViewModified;
+	const wasAriaLiveModified = updateContentEditableAriaPlaceholders( doc );
+
+	return wasAriaLiveModified || wasViewModified;
+}
+
+/**
+ * Assigns the `aria-placeholder` attribute to the closest `contenteditable` ancestor of any placeholder present in the document.
+ *
+ * 	* If no such ancestor exists, the `aria-placeholder` attribute is not set.
+ * 	* If more than one placeholder is assigned to a single `contenteditable` ancestor, the text from both elements is concatenated.
+ *
+ * @param doc Editor document.
+ * @returns Returns true if any modifications were made to the view document.
+ */
+function updateContentEditableAriaPlaceholders( doc: Document ) {
+	// Group all placeholders by nearest `contenteditable` ancestor.
+	const placeholders = documentPlaceholders.get( doc )!;
+	const contentEditablePlaceholders = Array
+		.from( placeholders.entries() )
+		.reduce<Map<Element, Array<PlaceholderConfig>>>(
+			( acc, [ element, placeholderConfig ] ) => {
+				const maybeContentEditable = tryLookupForNearestContentEditable( element );
+
+				if ( !maybeContentEditable ) {
+					return acc;
+				}
+
+				if ( !acc.has( maybeContentEditable ) ) {
+					acc.set( maybeContentEditable, [] );
+				}
+
+				acc.get( maybeContentEditable )!.push( placeholderConfig );
+				return acc;
+			},
+			new Map()
+		);
+
+	// Apply `aria-placeholder` attribute to found `contenteditable` ancestors.
+	let wasAriaPlaceholderModified = false;
+
+	for ( const [ contentEditable, placeholders ] of contentEditablePlaceholders ) {
+		const joinedPlaceholders = placeholders
+			.map( placeholder => placeholder.text.replace( /[.]+/g, '' ).trim() )
+			.join( ', ' );
+
+		if ( contentEditable.getAttribute( 'aria-placeholder' ) !== joinedPlaceholders ) {
+			contentEditable._setAttribute( 'aria-placeholder', joinedPlaceholders );
+			wasAriaPlaceholderModified = true;
+		}
+	}
+
+	return wasAriaPlaceholderModified;
+}
+
+/**
+ * Tries to find the nearest ancestor of a given element that has the `contenteditable` attribute.
+ *
+ * 	* If no `contenteditable` ancestor is found, the function will return `null`.
+ *
+ * @param element The element for which to find the nearest `contenteditable` ancestor.
+ * @returns The nearest `contenteditable` ancestor if found, otherwise `null`.
+ */
+function tryLookupForNearestContentEditable( element: Element ): Element | null {
+	const hasContentEditable = ( element: Element ) => element.getAttribute( 'contenteditable' ) === 'true';
+
+	if ( hasContentEditable( element ) ) {
+		return element;
+	}
+
+	return element.findAncestor( hasContentEditable );
 }
 
 /**

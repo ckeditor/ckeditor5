@@ -105,8 +105,12 @@ export default class FontSizeUI extends Plugin {
 				const listItemView = new MenuBarMenuListItemView( locale, menuView );
 				const buttonView = new MenuBarMenuListItemButtonView( locale );
 
+				buttonView.set( {
+					role: 'menuitemradio',
+					isToggleable: true
+				} );
+
 				buttonView.bind( ...Object.keys( definition.model ) as Array<keyof MenuBarMenuListItemButtonView> ).to( definition.model );
-				buttonView.bind( 'ariaChecked' ).to( buttonView, 'isOn' );
 				buttonView.delegate( 'execute' ).to( menuView );
 
 				buttonView.on( 'execute', () => {

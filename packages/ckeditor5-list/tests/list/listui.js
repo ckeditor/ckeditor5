@@ -108,6 +108,14 @@ describe( 'ListUI', () => {
 			numberedListButton = editor.ui.componentFactory.create( 'menuBar:numberedList' );
 		} );
 
+		it( 'should set proper `role` and `isToggleable` attributes', () => {
+			expect( bulletedListButton.role ).to.be.equal( 'menuitemcheckbox' );
+			expect( numberedListButton.role ).to.be.equal( 'menuitemcheckbox' );
+
+			expect( bulletedListButton.isToggleable ).to.be.true;
+			expect( numberedListButton.isToggleable ).to.be.true;
+		} );
+
 		it( 'should set up buttons for bulleted list and numbered list', () => {
 			expect( bulletedListButton ).to.be.instanceOf( MenuBarMenuListItemButtonView );
 			expect( numberedListButton ).to.be.instanceOf( MenuBarMenuListItemButtonView );

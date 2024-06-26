@@ -357,6 +357,14 @@ describe( 'FontSizeUI', () => {
 				command.value = 'small';
 				expect( buttonSmall.isOn ).to.be.true;
 			} );
+
+			it( 'button has proper `aria-checked` attribute set when active', () => {
+				expect( buttonSmall.element.getAttribute( 'aria-checked' ) ).to.be.equal( 'false' );
+
+				command.value = 'small';
+
+				expect( buttonSmall.element.getAttribute( 'aria-checked' ) ).to.be.equal( 'true' );
+			} );
 		} );
 	} );
 } );

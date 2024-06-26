@@ -45,15 +45,6 @@ describe( 'Underline', () => {
 		} );
 
 		testButton();
-
-		it( 'should bind `isOn` to underline command', () => {
-			const command = editor.commands.get( 'underline' );
-
-			expect( underlineView.isOn ).to.be.false;
-
-			command.value = true;
-			expect( underlineView.isOn ).to.be.true;
-		} );
 	} );
 
 	describe( 'menu bar button', () => {
@@ -109,6 +100,18 @@ describe( 'Underline', () => {
 
 			expect( wasHandled ).to.be.true;
 			expect( spy.calledOnce ).to.be.true;
+		} );
+
+		it( 'should bind `isOn` to `command`.`value`', () => {
+			const command = editor.commands.get( 'underline' );
+
+			command.value = true;
+
+			expect( underlineView.isOn ).to.be.true;
+
+			command.value = false;
+
+			expect( underlineView.isOn ).to.be.false;
 		} );
 	}
 } );

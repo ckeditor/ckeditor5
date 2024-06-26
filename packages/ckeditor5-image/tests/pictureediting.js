@@ -1046,6 +1046,7 @@ describe( 'PictureEditing', () => {
 								'</picture>' +
 								'<figcaption ' +
 									'aria-label="Caption for the image" ' +
+									'aria-placeholder="Enter image caption" ' +
 									'class="ck-editor__editable ck-editor__nested-editable" ' +
 									'contenteditable="true" ' +
 									'data-placeholder="Enter image caption" ' +
@@ -1219,6 +1220,7 @@ describe( 'PictureEditing', () => {
 								'</picture>' +
 								'<figcaption ' +
 									'aria-label="Caption for the image" ' +
+									'aria-placeholder="Enter image caption" ' +
 									'class="ck-editor__editable ck-editor__nested-editable" ' +
 									'contenteditable="true" ' +
 									'data-placeholder="Enter image caption" ' +
@@ -1384,6 +1386,7 @@ describe( 'PictureEditing', () => {
 									'<img src="/assets/sample.png"></img>' +
 									'<figcaption ' +
 										'aria-label="Caption for the image" ' +
+										'aria-placeholder="Enter image caption" ' +
 										'class="ck-editor__editable ck-editor__nested-editable" ' +
 										'contenteditable="true" ' +
 										'data-placeholder="Enter image caption" ' +
@@ -1431,6 +1434,7 @@ describe( 'PictureEditing', () => {
 									'</a>' +
 									'<figcaption ' +
 										'aria-label="Caption for the image" ' +
+										'aria-placeholder="Enter image caption" ' +
 										'class="ck-editor__editable ck-editor__nested-editable" ' +
 										'contenteditable="true" ' +
 										'data-placeholder="Enter image caption" ' +
@@ -1474,6 +1478,7 @@ describe( 'PictureEditing', () => {
 									'<img src="/assets/sample.png"></img>' +
 									'<figcaption ' +
 										'aria-label="Caption for the image" ' +
+										'aria-placeholder="Enter image caption" ' +
 										'class="ck-editor__editable ck-editor__nested-editable" ' +
 										'contenteditable="true" ' +
 										'data-placeholder="Enter image caption" ' +

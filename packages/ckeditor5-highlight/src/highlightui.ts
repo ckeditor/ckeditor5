@@ -286,12 +286,13 @@ export default class HighlightUI extends Plugin {
 
 				buttonView.set( {
 					label: option.title,
-					icon: getIconForType( option.type )
+					icon: getIconForType( option.type ),
+					role: 'menuitemradio',
+					isToggleable: true
 				} );
 
 				buttonView.delegate( 'execute' ).to( menuView );
 				buttonView.bind( 'isOn' ).to( command, 'value', value => value === option.model );
-				buttonView.bind( 'ariaChecked' ).to( buttonView, 'isOn' );
 				buttonView.iconView.bind( 'fillColor' ).to( buttonView, 'isOn', value => value ? 'transparent' : option.color );
 
 				buttonView.on( 'execute', () => {

@@ -75,7 +75,10 @@ window.attachTourBalloon = function( { target, text, editor, tippyOptions } ) {
 		interactive: true,
 		theme: 'light-border',
 		zIndex: 1,
-		appendTo: () => document.body
+		appendTo: () => document.body,
+		aria: {
+			content: 'describedby'
+		}
 	}, tippyOptions );
 
 	const tooltip = window.umberto.createTooltip( target, content, options );

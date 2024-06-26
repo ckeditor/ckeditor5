@@ -45,15 +45,6 @@ describe( 'ItalicUI', () => {
 		} );
 
 		testButton();
-
-		it( 'should bind `isOn` to italic command', () => {
-			const command = editor.commands.get( 'italic' );
-
-			expect( italicView.isOn ).to.be.false;
-
-			command.value = true;
-			expect( italicView.isOn ).to.be.true;
-		} );
 	} );
 
 	describe( 'menu bar button', () => {
@@ -62,6 +53,20 @@ describe( 'ItalicUI', () => {
 		} );
 
 		testButton();
+
+		it( 'should create button with `menuitemcheckbox` role', () => {
+			expect( italicView.role ).to.equal( 'menuitemcheckbox' );
+		} );
+
+		it( 'should bind `isOn` to `aria-checked` attribute', () => {
+			italicView.render();
+
+			italicView.isOn = true;
+			expect( italicView.element.getAttribute( 'aria-checked' ) ).to.be.equal( 'true' );
+
+			italicView.isOn = false;
+			expect( italicView.element.getAttribute( 'aria-checked' ) ).to.be.equal( 'false' );
+		} );
 	} );
 
 	function testButton() {
@@ -109,6 +114,18 @@ describe( 'ItalicUI', () => {
 
 			expect( wasHandled ).to.be.true;
 			expect( spy.calledOnce ).to.be.true;
+		} );
+
+		it( 'should bind `isOn` to `command`.`value`', () => {
+			const command = editor.commands.get( 'italic' );
+
+			command.value = true;
+
+			expect( italicView.isOn ).to.be.true;
+
+			command.value = false;
+
+			expect( italicView.isOn ).to.be.false;
 		} );
 	}
 } );
