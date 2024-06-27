@@ -24,10 +24,10 @@ Use the toolbar dropdown to style a heading. You can also type one or more `#` c
 By default, this feature is configured to support `<h2>`, `<h3>`, and `<h4>` elements which are named: "Heading 1," "Heading 2," and "Heading 3," respectively. The rationale behind starting from `<h2>` is that `<h1>` should be reserved for the {@link features/title page's main title} and the page content will usually start from `<h2>`.
 
 <info-box hint>
-	Support for adding a document title is provided through the {@link module:heading/title~Title} plugin. This plugin is optional and needs to be {@link installation/plugins/installing-plugins added to your editor build}. When it is enabled, a `<h1>` element pasted into the editor will be rendered as the {@link features/title document title}.
+	Support for adding a document title is provided through the {@link module:heading/title~Title} plugin. When it is enabled, a `<h1>` element pasted into the editor will be rendered as the {@link features/title document title}.
 </info-box>
 
-By default, when your editor build does not include the title plugin, an `<h1>` element pasted into the rich-text editor is converted to `<h2>` ("Heading 1").
+By default, when your editor preset does not include the title plugin, an `<h1>` element pasted into the rich-text editor is converted to `<h2>` ("Heading 1").
 
 <info-box hint>
 	You can read more about why the editor should not create `<h1>` elements for content headings in the [Headings section of Editor Recommendations](http://ckeditor.github.io/editor-recommendations/features/headings.html).
@@ -38,6 +38,36 @@ By default, when your editor build does not include the title plugin, an `<h1>` 
 The heading feature lets you also use a set of heading buttons instead of the dropdown list. The toolbar buttons are configurable, and it is possible to include a paragraph button, too. Compare the heading toolbar dropdown from the demo above with the heading buttons below to check the functionality and usability of this variation.
 
 {@snippet features/heading-buttons}
+
+## Installation
+
+<info-box info>
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
+</info-box>
+
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+
+```js
+import { ClassicEditor, Heading } from 'ckeditor5';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Heading, /* ... */ ],
+		toolbar: [ 'heading', /* ... */ ]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+### Installation with toolbar heading buttons
+
+To configure the toolbar buttons for styling text as headings and paragraphs, you need to import the following into your plugin list and configuration:
+
+```js
+import { ClassicEditor, HeadingButtonsUI, ParagraphButtonUI } from 'ckeditor5';
+```
 
 ## Configuration
 
@@ -145,49 +175,9 @@ ClassicEditor
 		}
 	} )
 	.then( /* ... */ )
-    .catch( /* ... */ );
-```
-{@snippet features/custom-heading-buttons}
-
-
-## Installation
-
-<info-box info>
-	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}. The installation instructions are for developers interested in building their own, custom editor.
-</info-box>
-
-To add this feature to your editor install the [`@ckeditor/ckeditor5-heading`](https://www.npmjs.com/package/@ckeditor/ckeditor5-heading) package:
-
-```
-npm install --save @ckeditor/ckeditor5-heading
-```
-
-And add it to your plugin list and toolbar configuration:
-
-```js
-import { Heading } from '@ckeditor/ckeditor5-heading';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Heading, /* ... */ ],
-		toolbar: [ 'heading', /* ... */ ]
-	} )
-	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
-
-### Installation with toolbar heading buttons
-
-To configure the toolbar buttons for styling text as headings and paragraphs, you need to import the following into your plugin list and configuration:
-
-```js
-import { HeadingButtonsUI } from '@ckeditor/ckeditor5-heading';
-import { ParagraphButtonUI } from '@ckeditor/ckeditor5-paragraph';
-```
-
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
-</info-box>
+{@snippet features/custom-heading-buttons}
 
 ## Related features
 

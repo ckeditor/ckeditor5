@@ -26,14 +26,12 @@ You may also use the {@link features/general-html-support General HTML support} 
 
 ## What happened to the `contents.css` file? How do I style the content of the editor?
 
-There is no such thing as the `contents.css` file anymore. This is because in CKEditor&nbsp;5 the features bring their own content styles. These are by default included in the JavaScript build and {@link framework/theme-customization#styles-processing-and-bundling loaded by the style loader}. It optimizes the size of the builds as the styles of unused features are simply excluded.
-
-You can find the full list of editor content styles in the {@link installation/advanced/content-styles content styles} guide. You can also {@link installation/advanced/integrating-from-source-webpack#option-extracting-css extract all CSS} brought by CKEditor&nbsp;5 (both content and UI) into a separate file when creating a custom editor build.
+There is no such thing as the `contents.css` file anymore. This is because in CKEditor&nbsp;5 the features bring their own content styles, {@link getting-started/setup/css provided via CSS files}.
 
 ## Where are the `editor.insertHtml()` and `editor.insertText()` methods? How to insert some content?
 
-Refer to {@link examples/how-tos#how-to-insert-some-content-into-the-editor this CKEditor&nbsp;5 How-to question}.
+Refer to {@link framework/how-tos#how-to-insert-some-content-into-the-editor this CKEditor&nbsp;5 How-to question}.
 
 ## What happened to the global `window.CKEDITOR`? How to list all instances of the editor?
 
-Refer to {@link examples/how-tos#how-to-list-all-instances-of-the-editor this CKEditor&nbsp;5 How-to question}.
+Refer to {@link framework/how-tos#how-to-list-all-instances-of-the-editor this CKEditor&nbsp;5 How-to question}.

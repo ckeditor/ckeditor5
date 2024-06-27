@@ -510,7 +510,7 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
  * 			{
  * 				groupId: 'insertMainWidgets',
  * 				items: [
- * 					'menuBar:uploadImage',
+ * 					'menuBar:insertImage',
  * 					'menuBar:ckbox',
  * 					'menuBar:ckfinder',
  * 					'menuBar:insertTable'
@@ -527,6 +527,7 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
  * 			{
  * 				groupId: 'insertMinorWidgets',
  * 				items: [
+ * 					'menuBar:mediaEmbed',
  * 					'menuBar:insertTemplate',
  * 					'menuBar:blockQuote',
  * 					'menuBar:codeBlock',
@@ -614,6 +615,7 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
  * 				items: [
  * 					'menuBar:bulletedList',
  * 					'menuBar:numberedList',
+ * 					'menuBar:multiLevelList',
  * 					'menuBar:todoList'
  * 				]
  * 			},
@@ -765,7 +767,7 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 			{
 				groupId: 'insertMainWidgets',
 				items: [
-					'menuBar:uploadImage',
+					'menuBar:insertImage',
 					'menuBar:ckbox',
 					'menuBar:ckfinder',
 					'menuBar:insertTable'
@@ -782,7 +784,9 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 			{
 				groupId: 'insertMinorWidgets',
 				items: [
+					'menuBar:mediaEmbed',
 					'menuBar:insertTemplate',
+					'menuBar:specialCharacters',
 					'menuBar:blockQuote',
 					'menuBar:codeBlock',
 					'menuBar:htmlEmbed'
@@ -869,6 +873,7 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 				items: [
 					'menuBar:bulletedList',
 					'menuBar:numberedList',
+					'menuBar:multiLevelList',
 					'menuBar:todoList'
 				]
 			},
@@ -910,7 +915,6 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 				items: [
 					'menuBar:trackChanges',
 					'menuBar:commentsArchive'
-
 				]
 			}
 		]

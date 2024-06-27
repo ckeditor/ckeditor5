@@ -9,7 +9,6 @@
 
 import {
 	Editor,
-	Context,
 	secureSourceElement,
 	type EditorConfig,
 	type EditorReadyEvent
@@ -24,8 +23,6 @@ import {
 	type DecoratedMethodEvent
 } from 'ckeditor5/src/utils.js';
 
-import { ContextWatchdog, EditorWatchdog } from 'ckeditor5/src/watchdog.js';
-
 import MultiRootEditorUI from './multirooteditorui.js';
 import MultiRootEditorUIView from './multirooteditoruiview.js';
 
@@ -38,7 +35,7 @@ import {
 } from 'ckeditor5/src/engine.js';
 
 /**
- * The {@glink installation/getting-started/predefined-builds#multi-root-editor multi-root editor} implementation.
+ * The multi-root editor implementation.
  *
  * The multi-root editor provides multiple inline editable elements and a toolbar. All editable areas are controlled by one editor
  * instance, which means that they share common configuration, document ID, or undo stack.
@@ -50,22 +47,6 @@ import {
  * {@link module:editor-multi-root/multirooteditor~MultiRootEditor.create `MultiRootEditor.create()`} method.
  *
  * Note that you will need to attach the editor toolbar to your web page manually, in a desired place, after the editor is initialized.
- *
- * # Multi-root editor and multi-root editor build
- *
- * The multi-root editor can be used directly from source (if you installed the
- * [`@ckeditor/ckeditor5-editor-multi-root`](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-multi-root) package)
- * but it is also available in the
- * {@glink installation/getting-started/predefined-builds#multi-root-editor multi-root editor build}.
- *
- * {@glink installation/getting-started/predefined-builds Builds} are ready-to-use editors with plugins bundled in.
- *
- * When using the editor from source you need to take care of loading all plugins by yourself
- * (through the {@link module:core/editor/editorconfig~EditorConfig#plugins `config.plugins`} option).
- * Using the editor from source gives much better flexibility and allows for easier customization.
- *
- * Read more about initializing the editor from source or as a build in
- * {@link module:editor-multi-root/multirooteditor~MultiRootEditor.create `MultiRootEditor.create()`}.
  */
 export default class MultiRootEditor extends Editor {
 	/**
@@ -856,18 +837,6 @@ export default class MultiRootEditor extends Editor {
 	 * See the {@link module:core/editor/editorconfig~EditorConfig editor configuration documentation} to learn more about
 	 * customizing plugins, toolbar and more.
 	 *
-	 * # Using the editor from source
-	 *
-	 * The code samples listed in the previous sections of this documentation assume that you are using an
-	 * {@glink installation/getting-started/predefined-builds editor build}
-	 * (for example – `@ckeditor/ckeditor5-build-multi-root`).
-	 *
-	 * If you want to use the multi-root editor from source (`@ckeditor/ckeditor5-editor-multi-root-editor/src/multirooteditor`),
-	 * you need to define the list of
-	 * {@link module:core/editor/editorconfig~EditorConfig#plugins plugins to be initialized} and
-	 * {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar items}. Read more about using the editor from
-	 * source in the {@glink installation/advanced/alternative-setups/integrating-from-source-webpack dedicated guide}.
-	 *
 	 * @param sourceElementsOrData The DOM elements that will be the source for the created editor
 	 * or the editor's initial data. The editor will initialize multiple roots with names according to the keys in the passed object.
 	 *
@@ -913,27 +882,6 @@ export default class MultiRootEditor extends Editor {
 			);
 		} );
 	}
-
-	/**
-	 * The {@link module:core/context~Context} class.
-	 *
-	 * Exposed as static editor field for easier access in editor builds.
-	 */
-	public static Context = Context;
-
-	/**
-	 * The {@link module:watchdog/editorwatchdog~EditorWatchdog} class.
-	 *
-	 * Exposed as static editor field for easier access in editor builds.
-	 */
-	public static EditorWatchdog = EditorWatchdog;
-
-	/**
-	 * The {@link module:watchdog/contextwatchdog~ContextWatchdog} class.
-	 *
-	 * Exposed as static editor field for easier access in editor builds.
-	 */
-	public static ContextWatchdog = ContextWatchdog;
 
 	/**
 	 * @internal

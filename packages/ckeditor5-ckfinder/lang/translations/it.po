@@ -21,10 +21,6 @@ msgctxt "Toolbar button tooltip for inserting an image or file via a CKFinder fi
 msgid "Insert image or file"
 msgstr "Inserisci immagine o file"
 
-msgctxt "The label for the button that opens the dialog for inserting an image or file via a CKFinder from the application menu bar."
-msgid "Image or file"
-msgstr "Immagine o file"
-
 msgctxt "Error message displayed when inserting a resized version of an image failed."
 msgid "Could not obtain resized image URL."
 msgstr "Non è stato possibile ottenere l'URL dell'immagine ridimensionata."

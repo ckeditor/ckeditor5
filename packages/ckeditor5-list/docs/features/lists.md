@@ -34,12 +34,6 @@ You can also use Markdown code recognized by the {@link features/autoformat auto
 
 Besides the basic functionality of creating ordered and unordered lists, CKEditor&nbsp;5 offers formatting tools that let you control the lists. You can enable features such as more styles for list markers, setting the start index, or reversing the list order separately or all at once. Check out the individual demos below or see all list properties working together in the {@link examples/builds/full-featured-editor full-featured editor example}.
 
-<info-box info>
-	The {@link module:list/listproperties~ListProperties list properties feature} is enabled by default in the {@link installation/getting-started/predefined-builds#document-editor document editor build}.
-
-	See the [list properties installation section](#list-properties-2) to learn how to enable these in your editor.
-</info-box>
-
 ### List styles
 
 The list style feature introduces some more styles for the list item markers. When {@link module:list/listconfig~ListPropertiesConfig#styles enabled}, it adds 3 styles for unordered lists and 6 styles for ordered lists to choose from. The user will be able to set or change the list style via the dropdown. It opens when you click the arrow next to the appropriate list button in the toolbar.
@@ -80,24 +74,20 @@ Click the second list and use the ordered list {@icon @ckeditor/ckeditor5-core/t
 
 ## Installation
 
+<info-box info>
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
+</info-box>
+
 The `List` plugin provides the {@link features/lists ordered (numbered) and unordered (bulleted) features} for CKEditor&nbsp;5. {@link features/lists#list-properties Additional list properties}, such as list marker styles, start index, or reversed list order, are provided by the `ListProperties` plugin.
 
 ### List feature
 
-<info-box info>
-	The list feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}. The installation instructions are for developers interested in building their own, custom rich text editor.
-</info-box>
-
-To add this feature to your editor, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:
-
-```
-npm install --save @ckeditor/ckeditor5-list
-```
-
-Then add the `List` plugin to your plugin list and the toolbar configuration:
+After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { List } from '@ckeditor/ckeditor5-list';
+import { List } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -110,22 +100,12 @@ ClassicEditor
 
 ### List properties
 
-<info-box info>
-	The {@link module:list/listproperties~ListProperties list properties feature} is enabled by default in the {@link installation/getting-started/predefined-builds#document-editor document editor build}.
-</info-box>
-
-To enable the list properties feature for ordered and unordered lists, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:
-
-```
-npm install --save @ckeditor/ckeditor5-list
-```
-
-Then add the `ListProperties` plugin to your plugin list and configure the toolbar.
+After {@link getting-started/quick-start installing the editor}, add `ListProperties` to your plugin list and toolbar configuration:
 
 To enable selected sub-features of the list properties, add their configuration to your editor. Set `true` for each feature you want to enable:
 
 ```js
-import { ListProperties } from '@ckeditor/ckeditor5-list';
+import { ListProperties } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
