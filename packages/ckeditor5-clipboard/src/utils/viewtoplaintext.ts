@@ -86,6 +86,14 @@ function newLinePadding(
 		return '\n';
 	}
 
+	// Do not add padding around the elements that won't be rendered.
+	if (
+		element.is( 'element' ) && element.getCustomProperty( 'dataPipeline:transparentRendering' ) ||
+		previous.is( 'element' ) && previous.getCustomProperty( 'dataPipeline:transparentRendering' )
+	) {
+		return '';
+	}
+
 	// Add empty lines between container elements.
 	return '\n\n';
 }

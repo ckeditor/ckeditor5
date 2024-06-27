@@ -1690,6 +1690,37 @@ describe( 'CodeBlockEditing', () => {
 			sinon.assert.calledOnce( contentInsertionSpy );
 		} );
 
+		it( 'should filter out the disallowed element from pasted content', () => {
+			setModelData( model, '<codeBlock language="css">f[o]o</codeBlock>' );
+
+			const clipboardPlugin = editor.plugins.get( ClipboardPipeline );
+			const contentInsertionSpy = sinon.spy();
+
+			clipboardPlugin.on( 'contentInsertion', contentInsertionSpy );
+			clipboardPlugin.on( 'contentInsertion', ( evt, data ) => {
+				model.change( writer => {
+					const fragment = writer.createDocumentFragment();
+					const element = writer.createElement( 'paragraph' );
+					writer.append( element, fragment );
+					data.content = fragment;
+				} );
+			}, { priority: 'high' } );
+
+			const dataTransferMock = {
+				getData: sinon.stub().withArgs( 'text/plain' ).returns( 'bar\nbaz\n' )
+			};
+
+			viewDoc.fire( 'clipboardInput', {
+				dataTransfer: dataTransferMock,
+				stop: sinon.spy()
+			} );
+
+			expect( getModelData( model ) ).to.equal( '<codeBlock language="css">f[]o</codeBlock>' );
+
+			// Make sure that ClipboardPipeline was not interrupted.
+			sinon.assert.calledOnce( contentInsertionSpy );
+		} );
+
 		describe( 'getSelectedContent()', () => {
 			it( 'should not engage when there is nothing selected', () => {
 				setModelData( model, '<codeBlock language="css">fo[]o<softBreak></softBreak>bar</codeBlock>' );
