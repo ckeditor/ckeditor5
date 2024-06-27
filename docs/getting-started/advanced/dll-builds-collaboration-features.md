@@ -1,12 +1,12 @@
 ---
-menu-title: DLL builds for Collaboration Features
+menu-title: (Legacy) DLL builds for Collaboration Features
 meta-title: DLL builds for Collaboration Features | Legacy CKEditor 5 documentation
 category: alternative-setups
 order: 30
 modified_at: 2022-02-21
 ---
 
-# CKEditor 5 DLL builds for CKEditor 5 Collaboration Features &ndash; Legacy guide
+# (Legacy) CKEditor 5 DLL builds for CKEditor 5 Collaboration Features
 
 <info-box warning>
 	⚠️  We changed installation methods and this legacy guide is kept for users' convenience. If you want to learn more about these changes, please refer to the {@link updating/nim-migration/dll-builds Migrating from DLL builds} guide.

@@ -1,10 +1,10 @@
 ---
 category: advanced
-menu-title: Using two different editors
+menu-title: (Legacy) Using two different editors
 meta-title: Using two different editors | Legacy CKEditor 5 documentation
 order: 10
 ---
-# Using two different editors &ndash; Legacy guide
+# (Legacy) Using two different editors
 
 <info-box warning>
 	⚠️  We changed installation methods and this legacy guide is kept for users' convenience. If you want to learn more about these changes, please refer to the {@link updating/nim-migration/migration-to-new-installation-methods Migrating to new installation methods} guide.
