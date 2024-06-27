@@ -258,7 +258,7 @@ function fixTargetRanges( mapper: Mapper, schema: Schema, view: View ): GetCallb
 	return ( evt, data ) => {
 		// The Renderer is disabled while composing on non-android browsers, so we can't be sure that target ranges
 		// could be properly mapped to view and model because the DOM and view tree drifted apart.
-		if ( view.document.isComposing && !env.isAndroid ) {
+		if ( view.document.isComposing && !env.isAndroid && !env.features.isEditContextSupported ) {
 			return;
 		}
 

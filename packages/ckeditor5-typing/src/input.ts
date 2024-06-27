@@ -8,13 +8,14 @@
  */
 
 import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
-import { env } from '@ckeditor/ckeditor5-utils';
+import { DomEmitterMixin, env, global } from '@ckeditor/ckeditor5-utils';
 
 import InsertTextCommand, { type InsertTextCommandOptions } from './inserttextcommand.js';
 import InsertTextObserver, { type ViewDocumentInsertTextEvent } from './inserttextobserver.js';
 
 import {
 	LiveRange,
+	CompositionObserver,
 	type Model,
 	type Mapper,
 	type Element,
@@ -25,7 +26,10 @@ import {
 	type ViewDocumentCompositionStartEvent,
 	type ViewDocumentCompositionEndEvent,
 	type ViewDocumentKeyDownEvent,
-	type ViewDocumentMutationsEvent
+	type ViewDocumentMutationsEvent,
+	type DocumentChangeEvent,
+	type MapperModelToViewPositionEvent,
+	type Selection
 } from '@ckeditor/ckeditor5-engine';
 
 import { debounce } from 'lodash-es';
@@ -38,6 +42,26 @@ export default class Input extends Plugin {
 	 * The queue of `insertText` command executions that are waiting for the DOM to get updated after beforeinput event.
 	 */
 	private _compositionQueue!: CompositionQueue;
+
+	/**
+	 * TODO
+	 */
+	private _lastEditBlock: Element | null = null;
+
+	/**
+	 * TODO
+	 */
+	private _lastSelection: Selection | null = null;
+
+	/**
+	 * TODO
+	 */
+	private _editContext: any = null;
+
+	/**
+	 * TODO
+	 */
+	private _domEmitter = new ( DomEmitterMixin() )();
 
 	/**
 	 * @inheritDoc
@@ -283,6 +307,134 @@ export default class Input extends Plugin {
 				// @if CK_DEBUG_TYPING // }
 			}, { priority: 'lowest' } );
 		}
+
+		// The EditContext support starts here.
+		if ( env.features.isEditContextSupported ) {
+			this.listenTo<DocumentChangeEvent>( model.document, 'change', () => {
+				const changes = model.document.differ.getChanges();
+				const selection = model.document.selection;
+				const selectionParent = selection.getFirstPosition()!.parent as Element;
+				let updateEditBlock = false;
+
+				if ( selectionParent != this._lastEditBlock ) {
+					updateEditBlock = true;
+				} else if ( this._lastSelection && !this._lastSelection.isEqual( selection ) ) {
+					updateEditBlock = true;
+				} else {
+					for ( const change of changes ) {
+						if ( change.type != 'insert' && change.type != 'remove' ) {
+							continue;
+						}
+
+						if ( change.position.parent != this._lastEditBlock ) {
+							updateEditBlock = true;
+						}
+					}
+				}
+
+				if ( !updateEditBlock ) {
+					return;
+				}
+
+				const text = Array.from( selectionParent.getChildren() )
+					.reduce( ( rangeText, element ) => rangeText + ( element.is( '$text' ) ? element.data : ' ' ), '' );
+
+				const editableElement = editor.editing.view.document.selection.editableElement;
+
+				// TODO EditContext does not accept figcaption or td - DOM throws that it is not supported
+				// https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/editContext#possible_elements
+				// The figcaption or td/th won't work (nested editables, contenteditable=false & tabindex=-1 is blocking it).
+				// Using dedicated div element as edit context host.
+				// On Android it falls back to the beforeinput insertCompositionText and handles typing but without EditContext.
+				const editContextHostElement = getEditContextHostElement( editableElement );
+
+				this._lastEditBlock = selectionParent;
+				this._lastSelection = model.createSelection( selection );
+
+				if ( !editContextHostElement ) {
+					// TODO
+					throw new Error( 'Should not be possible' );
+				}
+
+				const domElement = editor.editing.view.domConverter.mapViewToDom( editContextHostElement );
+
+				if ( !domElement ) {
+					// TODO
+					throw new Error( 'We do not have DOM element' );
+				}
+
+				if ( !this._editContext ) {
+					this._editContext = this._createEditContext();
+
+					( domElement as any ).editContext = this._editContext;
+				}
+				else if ( !( domElement as any ).editContext ) {
+					for ( const domElement of this._editContext.attachedElements() ) {
+						( domElement as any ).editContext = null;
+					}
+
+					( domElement as any ).editContext = this._editContext;
+				}
+
+				const viewRoot = editor.editing.view.document.selection.getFirstPosition()!.root as ViewElement;
+				const domRoot = editor.editing.view.domConverter.mapViewToDom( viewRoot );
+
+				if ( domRoot ) {
+					// TODO this must be updated to page zoom
+					this._editContext.updateControlBounds( domRoot.getBoundingClientRect() );
+				} else {
+					// TODO
+					throw new Error( 'No DOM root' );
+				}
+
+				// TODO this probably should be granular
+
+				if ( this._editContext.text != text ) {
+					console.log( 'EditContext update text', text );
+					this._editContext.updateText( 0, this._editContext.text.length, text );
+				}
+
+				const modelSelectionStartOffset = modelSelection.getFirstPosition()!.offset;
+				const modelSelectionEndOffset = modelSelection.getLastPosition()!.offset;
+
+				if (
+					this._editContext.selectionStart != modelSelectionStartOffset ||
+					this._editContext.selectionEnd != modelSelectionEndOffset
+				) {
+					console.log( 'EditContext update selection', modelSelectionStartOffset, modelSelectionEndOffset );
+					this._editContext.updateSelection( modelSelectionStartOffset, modelSelectionEndOffset );
+
+					const viewSelectionRange = editor.editing.view.document.selection.getFirstRange();
+
+					if ( viewSelectionRange ) {
+						const domSelectionRange = editor.editing.view.domConverter.viewRangeToDom( viewSelectionRange );
+
+						// TODO this must be updated to page zoom
+						this._editContext.updateSelectionBounds( domSelectionRange.getBoundingClientRect() );
+					} else {
+						// TODO
+						console.warn( 'No dom selection range' );
+					}
+				}
+			}, { priority: 'lowest' } ); // TODO describe: after changed DOM
+
+			editor.editing.mapper.on<MapperModelToViewPositionEvent>( 'modelToViewPosition', ( evt, data ) => {
+				const mapper = data.mapper;
+
+				if ( data.viewPosition ) {
+					return;
+				}
+
+				const viewElement = mapper.toViewElement( data.modelPosition.parent as Element );
+				const editContextHostElement = getEditContextHostElement( viewElement );
+
+				if ( !editContextHostElement || editContextHostElement == viewElement ) {
+					return;
+				}
+
+				data.viewPosition = mapper.findPositionIn( editContextHostElement, data.modelPosition.offset );
+			} );
+		}
 	}
 
 	/**
@@ -292,6 +444,98 @@ export default class Input extends Plugin {
 		super.destroy();
 
 		this._compositionQueue.destroy();
+
+		if ( this._editContext ) {
+			this.editor.editing.view.getObserver( CompositionObserver ).stopObserving( this._editContext );
+			this._domEmitter.stopListening( this._editContext );
+
+			for ( const domElement of this._editContext.attachedElements() ) {
+				( domElement as any ).editContext = null;
+			}
+		}
+	}
+
+	/**
+	 * TODO
+	 */
+	private _createEditContext() {
+		const editor = this.editor;
+		const model = editor.model;
+
+		const editContext = new ( window as any ).EditContext();
+
+		editor.editing.view.getObserver( CompositionObserver ).observe( editContext );
+
+		this._domEmitter.listenTo( editContext, 'textupdate', ( evt, domEvent: any ) => {
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.group( `%c[Input]%c EditContext "textupdate".`,
+			// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', 'font-weight: bold'
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // }
+
+			console.log(
+				`The user entered the text: ${ _escapeTextNodeData( domEvent.text ) } ` +
+				`at [${ domEvent.updateRangeStart } - ${ domEvent.updateRangeEnd }] offset.` +
+				`Selection: [${ domEvent.selectionStart } - ${ domEvent.selectionEnd }] offset`
+			);
+
+			const commandData = {
+				text: domEvent.text,
+				selection: model.createSelection(
+					model.createRange(
+						model.createPositionAt( this._lastEditBlock!, domEvent.updateRangeStart ),
+						model.createPositionAt( this._lastEditBlock!, domEvent.updateRangeEnd )
+					)
+				)
+			};
+
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.log( `%c[Input]%c Execute insertText:%c "${ commandData.text }"%c ` +
+			// @if CK_DEBUG_TYPING // 		`[${ commandData.selection.getFirstPosition().path }]-` +
+			// @if CK_DEBUG_TYPING // 		`[${ commandData.selection.getLastPosition().path }]`,
+			// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', 'font-weight: bold', 'color: blue', ''
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // }
+
+			editor.execute( 'insertText', commandData );
+
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.groupEnd();
+			// @if CK_DEBUG_TYPING // }
+		} );
+
+		this._domEmitter.listenTo( editContext, 'characterboundsupdate', ( evt, domEvent: any ) => {
+			console.log( 'EditContext characterboundsupdate event', domEvent.rangeStart, domEvent.rangeEnd );
+
+			const modelRange = model.createRange(
+				model.createPositionAt( this._lastEditBlock!, domEvent.rangeStart ),
+				model.createPositionAt( this._lastEditBlock!, domEvent.rangeEnd )
+			);
+
+			const charBounds = [];
+
+			for ( const item of modelRange.getItems( { singleCharacters: true, shallow: true } ) ) {
+				if ( !item.is( '$textProxy' ) ) {
+					continue;
+				}
+
+				const modelRange = model.createRangeOn( item );
+				const viewRange = editor.editing.mapper.toViewRange( modelRange );
+				const domRange = editor.editing.view.domConverter.viewRangeToDom( viewRange );
+
+				charBounds.push( domRange.getBoundingClientRect() );
+			}
+
+			console.log( 'EditContext call updateCharacterBounds:', domEvent.rangeStart, charBounds );
+			editContext.updateCharacterBounds( domEvent.rangeStart, charBounds );
+		} );
+
+		this._domEmitter.listenTo( editContext, 'textformatupdate', ( evt, domEvent: any ) => {
+			// TODO
+			console.log( 'EditContext textformatupdate event', domEvent.getTextFormats() );
+		} );
+
+		return editContext;
 	}
 }
 
@@ -521,3 +765,29 @@ type InsertTextCommandLiveOptions = {
 	text?: string;
 	selectionRanges?: Array<LiveRange>;
 };
+
+function _escapeTextNodeData( text: string ) {
+	const escapedText = text
+		.replace( /&/g, '&amp;' )
+		.replace( /\u00A0/g, '&nbsp;' )
+		.replace( /\u2060/g, '&NoBreak;' );
+
+	return `"${ escapedText }"`;
+}
+
+/**
+ * TODO
+ */
+function getEditContextHostElement( viewElement?: ViewElement | null ) {
+	if ( !viewElement || viewElement.childCount == 0 || !viewElement.is( 'editableElement' ) ) {
+		return viewElement;
+	}
+
+	const viewFirstChildElement = viewElement.getChild( 0 )!;
+
+	if ( !viewFirstChildElement.is( 'element' ) || !viewFirstChildElement.getAttribute( 'data-ck-editcontext' ) ) {
+		return viewElement;
+	}
+
+	return viewFirstChildElement;
+}

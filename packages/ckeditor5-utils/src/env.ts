@@ -97,6 +97,11 @@ export interface EnvFeaturesType {
 	 * [in Unicode Standard Annex #44](https://www.unicode.org/reports/tr44/#GC_Values_Table).
 	 */
 	readonly isRegExpUnicodePropertySupported: boolean;
+
+	/**
+	 * TODO
+	 */
+	readonly isEditContextSupported: boolean;
 }
 
 /**
@@ -126,7 +131,8 @@ const env: EnvType = {
 	},
 
 	features: {
-		isRegExpUnicodePropertySupported: /* #__PURE__ */ isRegExpUnicodePropertySupported()
+		isRegExpUnicodePropertySupported: /* #__PURE__ */ isRegExpUnicodePropertySupported(),
+		isEditContextSupported: /* #__PURE__ */ isEditContextSupported()
 	}
 };
 
@@ -224,6 +230,13 @@ export function isRegExpUnicodePropertySupported(): boolean {
 	}
 
 	return isSupported;
+}
+
+/**
+ * TODO
+ */
+export function isEditContextSupported(): boolean {
+	return 'EditContext' in global.window && typeof global.window.EditContext == 'function';
 }
 
 /**
