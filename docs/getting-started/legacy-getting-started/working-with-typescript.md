@@ -5,12 +5,12 @@
 
 category: legacy
 order: 85
-menu-title: TypeScript legacy support
-meta-title: TypeScript legacy support | Legacy CKEditor 5 documentation
+menu-title: (Legacy) TypeScript support
+meta-title: TypeScript support | Legacy CKEditor 5 documentation
 modified_at: 2023-04-03
 ---
 
-# TypeScript support in CKEditor&nbsp;5 &ndash; Legacy guide
+# (Legacy) TypeScript support in CKEditor&nbsp;5
 
 <info-box warning>
 	⚠️  We changed installation methods and this legacy guide is kept for users' convenience. If you are looking for current CKEditor 5 installation instructions, please refer to the newest version of the {@link getting-started/setup/typescript-support TypeScript support in CKEditor 5} guide.

@@ -1,18 +1,19 @@
 ---
 category: installation-methods
-menu-title: Quick start
+menu-title: (Legacy) Quick start
 meta-title: Quick start | Legacy CKEditor 5 documentation
 order: 10
 modified_at: 2022-06-27
 ---
 
-# Quick start &ndash; Legacy guide
+# (Legacy) Quick start
 
 <info-box warning>
 	⚠️  We changed installation methods and this legacy guide is kept for users' convenience. If you are looking for current CKEditor 5 installation instructions, please refer to the newest version of the {@link getting-started/quick-start CKEditor&nbsp;5 Quick Start} guide.
 </info-box>
 
 ## Introduction
+
 In this guide, you will find the quickest and easiest way to run ready-to-use CKEditor&nbsp;5 with minimal effort &ndash; by running the editor from [CDN](https://cdn.ckeditor.com/).
 
 ## Running a simple editor
@@ -99,7 +100,6 @@ Because the superbuild contains a lot of plugins, you may need to remove the plu
 ### Sample implementation
 
 In this example, you remove the premium collaboration features and several other plugins that require credentials to work. You need to do this, otherwise, the editor will throw an error.
-
 
 ```html
 <!DOCTYPE html>
