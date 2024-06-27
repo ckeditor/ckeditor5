@@ -17,7 +17,7 @@ import { Rect, global } from '@ckeditor/ckeditor5-utils';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { generateKey } from '@ckeditor/ckeditor5-core/tests/editor/licensecheck.js';
+import generateKey from '@ckeditor/ckeditor5-core/tests/_utils/generatelicensekey.js';
 
 describe( 'PoweredBy', () => {
 	let editor, element;
