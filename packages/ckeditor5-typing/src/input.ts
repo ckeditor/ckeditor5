@@ -8,7 +8,7 @@
  */
 
 import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
-import { DomEmitterMixin, env } from '@ckeditor/ckeditor5-utils';
+import { DomEmitterMixin, env, global } from '@ckeditor/ckeditor5-utils';
 
 import InsertTextCommand, { type InsertTextCommandOptions } from './inserttextcommand.js';
 import InsertTextObserver, { type ViewDocumentInsertTextEvent } from './inserttextobserver.js';
@@ -46,12 +46,12 @@ export default class Input extends Plugin {
 	/**
 	 * TODO
 	 */
-	private _previousEditBlock: Element | null = null;
+	private _lastEditBlock: Element | null = null;
 
 	/**
 	 * TODO
 	 */
-	private _previousSelection: Selection | null = null;
+	private _lastSelection: Selection | null = null;
 
 	/**
 	 * TODO
@@ -316,9 +316,9 @@ export default class Input extends Plugin {
 				const selectionParent = selection.getFirstPosition()!.parent as Element;
 				let updateEditBlock = false;
 
-				if ( selectionParent != this._previousEditBlock ) {
+				if ( selectionParent != this._lastEditBlock ) {
 					updateEditBlock = true;
-				} else if ( this._previousSelection && !this._previousSelection.isEqual( selection ) ) {
+				} else if ( this._lastSelection && !this._lastSelection.isEqual( selection ) ) {
 					updateEditBlock = true;
 				} else {
 					for ( const change of changes ) {
@@ -326,7 +326,7 @@ export default class Input extends Plugin {
 							continue;
 						}
 
-						if ( change.position.parent != this._previousEditBlock ) {
+						if ( change.position.parent != this._lastEditBlock ) {
 							updateEditBlock = true;
 						}
 					}
@@ -348,43 +348,73 @@ export default class Input extends Plugin {
 				// On Android it falls back to the beforeinput insertCompositionText and handles typing but without EditContext.
 				const editContextHostElement = getEditContextHostElement( editableElement );
 
-				this._previousEditBlock = selectionParent;
-				this._previousSelection = model.createSelection( selection );
+				this._lastEditBlock = selectionParent;
+				this._lastSelection = model.createSelection( selection );
 
 				if ( !editContextHostElement ) {
 					// TODO
 					throw new Error( 'Should not be possible' );
+				}
+
+				const domElement = editor.editing.view.domConverter.mapViewToDom( editContextHostElement );
+
+				if ( !domElement ) {
+					// TODO
+					throw new Error( 'We do not have DOM element' );
+				}
+
+				if ( !this._editContext ) {
+					this._editContext = this._createEditContext();
+
+					( domElement as any ).editContext = this._editContext;
+				}
+				else if ( !( domElement as any ).editContext ) {
+					for ( const domElement of this._editContext.attachedElements() ) {
+						( domElement as any ).editContext = null;
+					}
+
+					( domElement as any ).editContext = this._editContext;
+				}
+
+				const viewRoot = editor.editing.view.document.selection.getFirstPosition()!.root as ViewElement;
+				const domRoot = editor.editing.view.domConverter.mapViewToDom( viewRoot );
+
+				if ( domRoot ) {
+					// TODO this must be updated to page zoom
+					this._editContext.updateControlBounds( domRoot.getBoundingClientRect() );
 				} else {
-					const domElement = editor.editing.view.domConverter.mapViewToDom( editContextHostElement );
+					// TODO
+					throw new Error( 'No DOM root' );
+				}
 
-					if ( !this._editContext ) {
-						this._editContext = this._createEditContext();
+				// TODO this probably should be granular
 
-						( domElement as any ).editContext = this._editContext;
+				if ( this._editContext.text != text ) {
+					console.log( 'EditContext update text', text );
+					this._editContext.updateText( 0, this._editContext.text.length, text );
+				}
+
+				const modelSelectionStartOffset = modelSelection.getFirstPosition()!.offset;
+				const modelSelectionEndOffset = modelSelection.getLastPosition()!.offset;
+
+				if (
+					this._editContext.selectionStart != modelSelectionStartOffset ||
+					this._editContext.selectionEnd != modelSelectionEndOffset
+				) {
+					console.log( 'EditContext update selection', modelSelectionStartOffset, modelSelectionEndOffset );
+					this._editContext.updateSelection( modelSelectionStartOffset, modelSelectionEndOffset );
+
+					const viewSelectionRange = editor.editing.view.document.selection.getFirstRange();
+
+					if ( viewSelectionRange ) {
+						const domSelectionRange = editor.editing.view.domConverter.viewRangeToDom( viewSelectionRange );
+
+						// TODO this must be updated to page zoom
+						this._editContext.updateSelectionBounds( domSelectionRange.getBoundingClientRect() );
+					} else {
+						// TODO
+						console.warn( 'No dom selection range' );
 					}
-					else if ( !( domElement as any ).editContext ) {
-						for ( const domElement of this._editContext.attachedElements() ) {
-							( domElement as any ).editContext = null;
-						}
-
-						( domElement as any ).editContext = this._editContext;
-					}
-
-					// TODO this probably should be granular
-
-					if ( this._editContext.text != text ) {
-						console.log( 'EditContext update text', text );
-						this._editContext.updateText( 0, this._editContext.text.length, text );
-					}
-
-					console.log( 'EditContext update selection',
-						modelSelection.getFirstPosition()!.offset,
-						modelSelection.getLastPosition()!.offset
-					);
-					this._editContext.updateSelection(
-						modelSelection.getFirstPosition()!.offset,
-						modelSelection.getLastPosition()!.offset
-					);
 				}
 			}, { priority: 'lowest' } ); // TODO describe: after changed DOM
 
@@ -453,8 +483,8 @@ export default class Input extends Plugin {
 				text: domEvent.text,
 				selection: model.createSelection(
 					model.createRange(
-						model.createPositionAt( this._previousEditBlock!, domEvent.updateRangeStart ),
-						model.createPositionAt( this._previousEditBlock!, domEvent.updateRangeEnd )
+						model.createPositionAt( this._lastEditBlock!, domEvent.updateRangeStart ),
+						model.createPositionAt( this._lastEditBlock!, domEvent.updateRangeEnd )
 					)
 				)
 			};
@@ -472,6 +502,37 @@ export default class Input extends Plugin {
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.groupEnd();
 			// @if CK_DEBUG_TYPING // }
+		} );
+
+		this._domEmitter.listenTo( editContext, 'characterboundsupdate', ( evt, domEvent: any ) => {
+			console.log( 'EditContext characterboundsupdate event', domEvent.rangeStart, domEvent.rangeEnd );
+
+			const modelRange = model.createRange(
+				model.createPositionAt( this._lastEditBlock!, domEvent.rangeStart ),
+				model.createPositionAt( this._lastEditBlock!, domEvent.rangeEnd )
+			);
+
+			const charBounds = [];
+
+			for ( const item of modelRange.getItems( { singleCharacters: true, shallow: true } ) ) {
+				if ( !item.is( '$textProxy' ) ) {
+					continue;
+				}
+
+				const modelRange = model.createRangeOn( item );
+				const viewRange = editor.editing.mapper.toViewRange( modelRange );
+				const domRange = editor.editing.view.domConverter.viewRangeToDom( viewRange );
+
+				charBounds.push( domRange.getBoundingClientRect() );
+			}
+
+			console.log( 'EditContext call updateCharacterBounds:', domEvent.rangeStart, charBounds );
+			editContext.updateCharacterBounds( domEvent.rangeStart, charBounds );
+		} );
+
+		this._domEmitter.listenTo( editContext, 'textformatupdate', ( evt, domEvent: any ) => {
+			// TODO
+			console.log( 'EditContext textformatupdate event', domEvent.getTextFormats() );
 		} );
 
 		return editContext;
