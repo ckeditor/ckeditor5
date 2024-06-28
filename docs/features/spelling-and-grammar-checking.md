@@ -169,6 +169,7 @@ After signing up for a [trial or paid version](https://ckeditor.com/contact/), y
 Add the following configuration to your editor:
 
 ```js
+import { ClassicEditor } from 'ckeditor5';
 import WProofreader from '@webspellchecker/wproofreader-ckeditor5/src/wproofreader';
 
 ClassicEditor
@@ -191,6 +192,7 @@ After signing up for a [trial or paid version](https://ckeditor.com/contact/), y
 You will need to add the following configuration to your editor:
 
 ```js
+import { ClassicEditor } from 'ckeditor5';
 import WProofreader from '@webspellchecker/wproofreader-ckeditor5/src/wproofreader';
 
 ClassicEditor
