@@ -24,7 +24,7 @@ Available paths:
 ## Creating custom builds with online builder
 
 <info-box warning>
-	The old online builder was deprecated in favour of the new [builder](https://ckeditor.com/ckeditor-5/builder?redir=docs) with live preview and new installation methods setup. We encourage the {@link updating/nim-migration/customized-builds migration to the new methods}.
+	The old online builder was deprecated in favour of the new [Builder](https://ckeditor.com/ckeditor-5/builder?redir=docs) with live preview and new installation methods setup. We encourage the {@link updating/nim-migration/customized-builds migration to the new methods}.
 	If you still want to use the old setup, check the [updating packages](#updating-packages) section on how to update packages in the setup you have from the old online builder.
 </info-box>
 
