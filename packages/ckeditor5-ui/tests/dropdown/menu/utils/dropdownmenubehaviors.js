@@ -123,7 +123,7 @@ describe( 'Menu Behaviors', () => {
 				otherMenu.isOpen = true;
 				nestedMenuListItem.fire( 'mouseenter' );
 
-				expect( nestedMenuListItem.flatItemOrNestedMenuView.isOpen ).to.be.true;
+				expect( nestedMenuListItem.childView.isOpen ).to.be.true;
 			} );
 
 			it( 'should focus hovered item only if any other menu was open and it\'s listView had focus', () => {

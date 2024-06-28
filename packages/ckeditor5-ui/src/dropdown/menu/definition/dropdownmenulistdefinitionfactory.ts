@@ -10,9 +10,9 @@
 import { once } from 'lodash-es';
 
 import DropdownMenuListItemView from '../dropdownmenulistitemview.js';
-import { isDropdownMenuObjectDefinition } from './dropdownmenudefinitionguards.js';
+import { isDropdownMenuItemDefinition, isDropdownMenuObjectDefinition } from './dropdownmenudefinitionguards.js';
 
-import type DropdownMenuListItemButtonView from '../dropdownmenulistitembuttonview.js';
+import DropdownMenuListItemButtonView from '../dropdownmenulistitembuttonview.js';
 import type DropdownMenuListView from '../dropdownmenulistview.js';
 import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 import type { DropdownNestedMenuListItemView } from '../typings.js';
@@ -56,6 +56,13 @@ export class DropdownMenuListDefinitionFactory {
 		this._createMenuViewInstance = createMenuViewInstance;
 		this._listView = listView;
 		this._lazyInitializeSubMenus = lazyInitializeSubMenus;
+	}
+
+	/**
+	 * The locale of the dropdown menu list.
+	 */
+	private get locale() {
+		return this._listView.locale!;
 	}
 
 	/**
@@ -105,7 +112,7 @@ export class DropdownMenuListDefinitionFactory {
 				targetParentMenuView
 			);
 
-			return new DropdownMenuListItemView( this._listView.locale!, targetParentMenuView, menuOrFlatItem );
+			return new DropdownMenuListItemView( this.locale, targetParentMenuView, menuOrFlatItem );
 		} );
 
 		if ( targetParentMenuView ) {
@@ -131,6 +138,15 @@ export class DropdownMenuListDefinitionFactory {
 	) {
 		if ( isDropdownMenuObjectDefinition( child ) ) {
 			return this._appendMenuToParentUsingObjectDefinition( child, parentMenuView );
+		}
+
+		if ( isDropdownMenuItemDefinition( child ) ) {
+			const flatItem = new DropdownMenuListItemButtonView( this.locale, child.label );
+
+			flatItem.icon = child.icon;
+			flatItem.on( 'execute', child.onExecute );
+
+			return flatItem;
 		}
 
 		return this._recursiveAssignMenuChildrenParents( child, parentMenuView );

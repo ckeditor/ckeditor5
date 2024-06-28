@@ -14,19 +14,47 @@ import type DropdownMenuView from '../dropdownmenuview.js';
  * Represents the definition of a dropdown menu.
  */
 export type DropdownMenuDefinition = {
+
+	/**
+	 * The name of the dropdown menu.
+	 */
 	menu: string;
+
+	/**
+	 * The children of the dropdown menu.
+	 */
 	children: Array<DropdownMenuChildDefinition>;
 };
 
 /**
- * Represents an array of dropdown menu definitions.
+ * Represents the definition of a dropdown menu item.
  */
-export type DropdownMenuDefinitions = Array<DropdownMenuDefinition>;
+/**
+ * Represents the definition of a dropdown menu item.
+ */
+export type DropdownMenuItemDefinition = {
+
+	/**
+	 * The name of the dropdown menu item.
+	 */
+	label: string;
+
+	/**
+	 * The icon associated with the dropdown menu item.
+	 */
+	icon?: string | undefined;
+
+	/**
+	 * The function to be executed when the dropdown menu item is selected.
+	 */
+	onExecute: VoidFunction;
+};
 
 /**
  * Represents a child definition of a dropdown menu.
  */
 export type DropdownMenuChildDefinition =
 	| DropdownMenuDefinition
+	| DropdownMenuItemDefinition
 	| DropdownMenuView
 	| DropdownMenuListItemButtonView;

@@ -414,6 +414,34 @@ describe( 'DropdownMenuRootListView', () => {
 		} );
 
 		describe( 'appendMenuChildrenAt()', () => {
+			it( 'should append flat menu items using definition only', () => {
+				const onExecuteSpy = sinon.spy();
+				const rootListView = createRootListWithDefinition(
+					{
+						menu: 'Hello World',
+						children: []
+					}
+				);
+
+				rootListView.factory.appendMenuChildrenAt(
+					[
+						{
+							label: 'Baz',
+							onExecute: onExecuteSpy
+						}
+					],
+					findMenuTreeMenuViewByLabel( 'Hello World', rootListView.tree )
+				);
+
+				const insertedChild = findMenuTreeItemByLabel( 'Baz', rootListView.tree.children[ 0 ] );
+
+				expect( insertedChild.search.raw ).to.be.equal( 'Baz' );
+				expect( onExecuteSpy ).not.to.be.called;
+
+				insertedChild.item.fire( 'execute' );
+				expect( onExecuteSpy ).to.be.calledOnce;
+			} );
+
 			it( 'should append flat menu items to the menu', () => {
 				const rootListView = createRootListWithDefinition(
 					{

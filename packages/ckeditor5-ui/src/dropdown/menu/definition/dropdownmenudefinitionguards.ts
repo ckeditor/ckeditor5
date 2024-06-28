@@ -7,7 +7,7 @@
  * @module ui/dropdown/menu/definition/dropdownmenudefinitionguards
  */
 
-import type { DropdownMenuDefinition } from './dropdownmenudefinitiontypings.js';
+import type { DropdownMenuDefinition, DropdownMenuItemDefinition } from './dropdownmenudefinitiontypings.js';
 
 /**
  * Checks if the given object is a valid DropdownMenuDefinition.
@@ -17,3 +17,12 @@ import type { DropdownMenuDefinition } from './dropdownmenudefinitiontypings.js'
  */
 export const isDropdownMenuObjectDefinition = ( obj: any ): obj is DropdownMenuDefinition =>
 	!!obj && typeof obj === 'object' && 'menu' in obj && 'children' in obj;
+
+/**
+ * Checks if the given object is a valid DropdownMenuItemDefinition.
+ *
+ * @param obj - The object to be checked.
+ * @returns A boolean indicating whether the object is a DropdownMenuItemDefinition.
+ */
+export const isDropdownMenuItemDefinition = ( obj: any ): obj is DropdownMenuItemDefinition =>
+	!!obj && typeof obj === 'object' && 'label' in obj && 'onExecute' in obj;
