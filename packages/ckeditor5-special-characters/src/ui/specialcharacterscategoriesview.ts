@@ -85,6 +85,7 @@ export default class SpecialCharactersCategoriesView extends View {
 				model: new ViewModel( {
 					name,
 					label,
+					role: 'menuitemradio',
 					withText: true
 				} )
 			};

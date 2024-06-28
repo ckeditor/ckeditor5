@@ -41,6 +41,10 @@ describe( 'Dialog', () => {
 		expect( Dialog.pluginName ).to.equal( 'Dialog' );
 	} );
 
+	it( 'should initialize with isOpen=false', () => {
+		expect( dialogPlugin.isOpen ).to.be.false;
+	} );
+
 	it( 'should add keystroke accessibility info', () => {
 		expect( editor.accessibility.keystrokeInfos.get( 'navigation' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
 			label: 'Move focus in and out of an active dialog window',

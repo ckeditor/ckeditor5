@@ -14,7 +14,6 @@ import ToolbarView from '../toolbar/toolbarview.js';
 import ListView from '../list/listview.js';
 import ListItemView from '../list/listitemview.js';
 import ListSeparatorView from '../list/listseparatorview.js';
-import ButtonView from '../button/buttonview.js';
 import SplitButtonView from './button/splitbuttonview.js';
 import SwitchButtonView from '../button/switchbuttonview.js';
 import ViewCollection from '../viewcollection.js';
@@ -25,6 +24,7 @@ import type { default as View, UIViewRenderEvent } from '../view.js';
 import type { ButtonExecuteEvent } from '../button/button.js';
 import type Model from '../model.js';
 import type DropdownButton from './button/dropdownbutton.js';
+import type ButtonView from '../button/buttonview.js';
 import type { FocusableView } from '../focuscycler.js';
 import type { FalsyValue } from '../template.js';
 
@@ -39,7 +39,9 @@ import {
 
 import '../../theme/components/dropdown/toolbardropdown.css';
 import '../../theme/components/dropdown/listdropdown.css';
+
 import ListItemGroupView from '../list/listitemgroupview.js';
+import ListItemButtonView from '../button/listitembuttonview.js';
 
 /**
  * A helper for creating dropdowns. It creates an instance of a {@link module:ui/dropdown/dropdownview~DropdownView dropdown},
@@ -541,6 +543,27 @@ function bindViewCollectionItemsToDefinitions(
 	definitions: Collection<ListDropdownItemDefinition>,
 	locale: Locale
 ) {
+	// List item checkboxes have a reserved space for the check icon, so we need to know if there are any checkboxes in the list
+	// to adjust the layout accordingly. It'd look weird if the items on the list were not aligned horizontally.
+	//
+	// Possible theoretical performance problem if many items are added one by one, as this will be called for each item.
+	listItems.on( 'change', () => {
+		// Filter-map. Check all items, leave only these that have buttons and return the buttons.
+		const listItemButtons = [ ...listItems ].reduce<Array<ListItemButtonView>>( ( acc, item ) => {
+			if ( item instanceof ListItemView && item.children.first instanceof ListItemButtonView ) {
+				acc.push( item.children.first );
+			}
+
+			return acc;
+		}, [] );
+
+		const hasAnyCheckboxOnList = listItemButtons.some( button => button.isToggleable );
+
+		listItemButtons.forEach( item => {
+			item.hasCheckSpace = hasAnyCheckboxOnList;
+		} );
+	} );
+
 	listItems.bindTo( definitions ).using( def => {
 		if ( def.type === 'separator' ) {
 			return new ListSeparatorView( locale );
@@ -555,12 +578,16 @@ function bindViewCollectionItemsToDefinitions(
 
 			return groupView;
 		} else if ( def.type === 'button' || def.type === 'switchbutton' ) {
+			const isToggleable = def.model.role === 'menuitemcheckbox' || def.model.role === 'menuitemradio';
 			const listItemView = new ListItemView( locale );
-			let buttonView;
+
+			let buttonView: ButtonView;
 
 			if ( def.type === 'button' ) {
-				buttonView = new ButtonView( locale );
-				buttonView.bind( 'ariaChecked' ).to( buttonView, 'isOn' );
+				buttonView = new ListItemButtonView( locale );
+				buttonView.set( {
+					isToggleable
+				} );
 			} else {
 				buttonView = new SwitchButtonView( locale );
 			}

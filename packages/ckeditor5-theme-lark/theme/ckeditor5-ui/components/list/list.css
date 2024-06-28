@@ -25,7 +25,7 @@
 	cursor: default;
 	min-width: 12em;
 
-	& > .ck-button {
+	& > .ck-button:not(.ck-list-item-button) {
 		min-height: unset;
 		width: 100%;
 		border-radius: 0;
@@ -64,7 +64,7 @@
 				background: var(--ck-color-list-button-on-background-focus);
 			}
 
-			&:focus:not(.ck-switchbutton):not(.ck-disabled) {
+			&:focus:not(.ck-disabled) {
 				border-color: var(--ck-color-base-background);
 			}
 		}
@@ -76,7 +76,7 @@
 
 	/* It's unnecessary to change the background/text of a switch toggle; it has different ways
 	of conveying its state (like the switcher) */
-	& > .ck-switchbutton {
+	& > .ck-button.ck-switchbutton {
 		&.ck-on {
 			background: var(--ck-color-list-background);
 			color: inherit;
