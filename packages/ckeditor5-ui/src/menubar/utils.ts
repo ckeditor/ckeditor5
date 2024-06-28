@@ -8,7 +8,7 @@
  */
 
 import MenuBarMenuListItemView from './menubarmenulistitemview.js';
-import type { DeepReadonly, Editor } from '@ckeditor/ckeditor5-core';
+import type { Editor } from '@ckeditor/ckeditor5-core';
 import type MenuBarMenuView from './menubarmenuview.js';
 import type {
 	default as MenuBarView,
@@ -37,6 +37,13 @@ import {
 import { cloneDeep } from 'lodash-es';
 
 const NESTED_PANEL_HORIZONTAL_OFFSET = 5;
+
+type DeepReadonly<T> = Readonly<{
+	[K in keyof T]:
+		T[K] extends string ? Readonly<T[K]>
+			: T[K] extends Array<infer A> ? Readonly<Array<DeepReadonly<A>>>
+				: DeepReadonly<T[K]>;
+}>;
 
 /**
  * Behaviors of the {@link module:ui/menubar/menubarview~MenuBarView} component.
