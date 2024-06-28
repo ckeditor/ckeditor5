@@ -1,0 +1,11 @@
+/*
+ * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+.ck.ck-dropdown-menu__menu__panel {
+	position: absolute;
+	max-height: 60vh;
+	overflow-y: auto;
+	z-index: calc(var(--ck-z-panel) + 1);
+}
