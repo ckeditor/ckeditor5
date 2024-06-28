@@ -5,26 +5,26 @@
 
 /* globals document */
 
-import SpecialCahractersView from '../../src/ui/specialcharactersview.js';
-import SpecialCharactersNavigationView from '../../src/ui/specialcharactersnavigationview.js';
+import SpecialCharactersView from '../../src/ui/specialcharactersview.js';
 import CharacterGridView from '../../src/ui/charactergridview.js';
 import CharacterInfoView from '../../src/ui/characterinfoview.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import SpecialCharactersCategoriesView from '../../src/ui/specialcharacterscategoriesview.js';
 
-describe( 'SpecialCahractersView', () => {
-	let view, navigationView, gridView, infoView, locale;
+describe( 'SpecialCharactersView', () => {
+	let view, categoriesView, gridView, infoView, locale;
 
 	beforeEach( () => {
 		locale = {
 			t: val => val
 		};
 
-		navigationView = new SpecialCharactersNavigationView( locale, new Map( [
+		categoriesView = new SpecialCharactersCategoriesView( locale, new Map( [
 			[ 'groupA', 'labelA' ]
 		] ) );
 		gridView = new CharacterGridView( locale );
 		infoView = new CharacterInfoView( locale );
-		view = new SpecialCahractersView( locale, navigationView, gridView, infoView );
+		view = new SpecialCharactersView( locale, categoriesView, gridView, infoView );
 		view.render();
 		document.body.appendChild( view.element );
 	} );
@@ -35,10 +35,10 @@ describe( 'SpecialCahractersView', () => {
 	} );
 
 	describe( 'constructor()', () => {
-		it( '#items contains character category button and grid view', () => {
-			expect( view.items.get( 0 ) ).to.equal( navigationView.groupDropdownView.buttonView );
-			expect( view.items.get( 1 ) ).to.equal( gridView );
+		it( '#items contains categories view and grid view', () => {
 			expect( view.items.length ).to.equal( 2 );
+			expect( view.items.get( 0 ) ).to.equal( categoriesView );
+			expect( view.items.get( 1 ) ).to.equal( gridView );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/pull/12319#issuecomment-1231779819
@@ -58,7 +58,7 @@ describe( 'SpecialCahractersView', () => {
 
 				// Mock the character category button is focused.
 				view.focusTracker.isFocused = true;
-				view.focusTracker.focusedElement = view.navigationView.groupDropdownView.buttonView.element;
+				view.focusTracker.focusedElement = view.categoriesView.element;
 
 				// Spy the next view which in this case is the grid view
 				const stub = sinon.stub( view.gridView, 'focus' );
@@ -82,7 +82,7 @@ describe( 'SpecialCahractersView', () => {
 				view.focusTracker.focusedElement = view.gridView.element;
 
 				// Spy the previous view which in this case is the character category button
-				const spy = sinon.spy( view.navigationView.groupDropdownView.buttonView, 'focus' );
+				const spy = sinon.spy( view.categoriesView._dropdownView.fieldView.buttonView, 'focus' );
 
 				view.keystrokes.press( keyEvtData );
 				sinon.assert.calledOnce( keyEvtData.preventDefault );
@@ -93,8 +93,8 @@ describe( 'SpecialCahractersView', () => {
 	} );
 
 	describe( 'focus()', () => {
-		it( 'focuses the navigation view', () => {
-			const spy = sinon.spy( navigationView, 'focus' );
+		it( 'focuses the categoriesView view', () => {
+			const spy = sinon.spy( categoriesView, 'focus' );
 
 			view.focus();
 

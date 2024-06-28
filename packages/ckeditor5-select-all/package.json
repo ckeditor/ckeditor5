@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-select-all",
-  "version": "41.4.2",
+  "version": "42.0.0",
   "description": "Select all feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -13,19 +13,19 @@
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "41.4.2",
-    "@ckeditor/ckeditor5-utils": "41.4.2",
-    "@ckeditor/ckeditor5-ui": "41.4.2"
+    "@ckeditor/ckeditor5-core": "42.0.0",
+    "@ckeditor/ckeditor5-utils": "42.0.0",
+    "@ckeditor/ckeditor5-ui": "42.0.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "41.4.2",
-    "@ckeditor/ckeditor5-engine": "41.4.2",
-    "@ckeditor/ckeditor5-essentials": "41.4.2",
-    "@ckeditor/ckeditor5-heading": "41.4.2",
-    "@ckeditor/ckeditor5-image": "41.4.2",
-    "@ckeditor/ckeditor5-paragraph": "41.4.2",
-    "@ckeditor/ckeditor5-table": "41.4.2",
-    "@ckeditor/ckeditor5-editor-classic": "41.4.2",
+    "@ckeditor/ckeditor5-basic-styles": "42.0.0",
+    "@ckeditor/ckeditor5-engine": "42.0.0",
+    "@ckeditor/ckeditor5-essentials": "42.0.0",
+    "@ckeditor/ckeditor5-heading": "42.0.0",
+    "@ckeditor/ckeditor5-image": "42.0.0",
+    "@ckeditor/ckeditor5-paragraph": "42.0.0",
+    "@ckeditor/ckeditor5-table": "42.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "42.0.0",
     "typescript": "5.0.4",
     "webpack": "^5.58.1",
     "webpack-cli": "^4.9.0"

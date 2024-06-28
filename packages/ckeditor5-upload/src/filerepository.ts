@@ -153,7 +153,7 @@ export default class FileRepository extends Plugin {
 			 * it means that you did not configure any of the upload adapters available by default in those builds.
 			 *
 			 * Predefined builds are a deprecated solution and we strongly advise
-			 * {@glink updating/new-installation-methods migrating to new installation methods}.
+			 * {@glink updating/nim-migration/migration-to-new-installation-methods migrating to new installation methods}.
 			 *
 			 * See the {@glink features/images/image-upload/image-upload comprehensive "Image upload overview"} to learn which upload
 			 * adapters are available in the builds and how to configure them.

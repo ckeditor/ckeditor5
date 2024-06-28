@@ -11,9 +11,9 @@ const { existsSync, readdirSync } = require( 'fs' );
 const { execSync } = require( 'child_process' );
 const { join } = require( 'upath' );
 const { red, green } = require( 'chalk' );
-const { RELEASE_DIRECTORY } = require( './utils/constants' );
+const { RELEASE_NPM_DIRECTORY } = require( './utils/constants' );
 
-const releaseDirectory = join( process.cwd(), RELEASE_DIRECTORY );
+const releaseDirectory = join( process.cwd(), RELEASE_NPM_DIRECTORY );
 
 if ( !existsSync( releaseDirectory ) ) {
 	console.log( red( 'The "release" directory does not exist.' ) );
