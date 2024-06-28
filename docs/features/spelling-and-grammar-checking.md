@@ -103,7 +103,7 @@ import WProofreader from '@webspellchecker/wproofreader-ckeditor5/src/wproofread
 
 ClassicEditor
 	.create( editorElement, {
-		plugins: [ WProofreader, /* ...], */
+		plugins: [ WProofreader, /* ...], */ ]
 		toolbar: [ 'wproofreader', /* ... */ ]
 	} )
 	.then( /* ... */ )
