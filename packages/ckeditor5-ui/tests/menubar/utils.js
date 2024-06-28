@@ -18,7 +18,8 @@ import {
 	MenuBarMenuView,
 	MenuBarView,
 	normalizeMenuBarConfig,
-	DefaultMenuBarItems
+	DefaultMenuBarItems,
+	MenuBarMenuListItemButtonView
 } from '../../src/index.js';
 import {
 	barDump,
@@ -28,6 +29,8 @@ import {
 } from './_utils/utils.js';
 import { MenuBarMenuViewPanelPositioningFunctions, _initMenuBar } from '../../src/menubar/utils.js';
 import ClassicTestEditor, { ClassicTestEditorUI } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 describe( 'MenuBarView utils', () => {
 	const locale = new Locale();
@@ -1790,52 +1793,97 @@ describe( 'MenuBarView utils', () => {
 				stopPropagation: sinon.spy()
 			} );
 		}
-		class MenuBarTestEditor extends ClassicTestEditor {
-			constructor( sourceElementOrData, config ) {
-				super( sourceElementOrData, config );
-
-				const menuBarEditorUIView = new MenuBarEditorUIView( this.locale, this.editing.view, sourceElementOrData );
-				this.ui = new MenuBarEditorUI( this, menuBarEditorUIView );
-			}
-		}
-
-		class MenuBarEditorUI extends ClassicTestEditorUI {
-			init() {
-				super.init();
-
-				_initMenuBar( this.editor, this.view.menuBarView );
-			}
-		}
-
-		class MenuBarEditorUIView extends EditorUIView {
-			constructor(
-				locale,
-				editingView,
-				editableElement
-			) {
-				super( locale );
-
-				this.menuBarView = new MenuBarView( locale );
-				this.main = this.createCollection();
-				this.editable = new InlineEditableUIView( locale, editingView, editableElement );
-
-				this.menuBarView.extendTemplate( {
-					attributes: {
-						class: [
-							'ck-reset_all',
-							'ck-rounded-corners'
-						],
-						dir: locale.uiLanguageDirection
-					}
-				} );
-			}
-
-			render() {
-				super.render();
-
-				this.registerChild( this.menuBarView );
-				this.registerChild( this.editable );
-			}
-		}
 	} );
+
+	it( 'should be able to handle custom menu bar item addition', async () => {
+		const editorElement = document.body.appendChild( document.createElement( 'div' ) );
+		let menuBarEditor, menuBarView;
+
+		class MenuItemPlugin extends Plugin {
+			init() {
+				this.editor.ui.componentFactory.add( 'menuBar:customItem', locale => {
+					const buttonView = new MenuBarMenuListItemButtonView( locale );
+
+					buttonView.set( {
+						label: 'Custom Button'
+					} );
+
+					return buttonView;
+				} );
+
+				this.editor.ui.addMenuBarItem( { item: 'menuBar:customItem', position: 'start:help' } );
+			}
+		}
+
+		await MenuBarTestEditor.create( editorElement, {
+			plugins: [ Essentials, MenuItemPlugin ],
+			menuBar: { isVisible: true }
+		} ).then( editor => {
+			menuBarEditor = editor;
+			menuBarView = editor.ui.view.menuBarView;
+
+			document.body.appendChild( menuBarView.element );
+		} );
+
+		const helpMenu = menuBarView.menus.find( menu => menu.buttonView.label == 'Help' );
+
+		helpMenu.isOpen = true;
+
+		const list = helpMenu.panelView.children.first;
+
+		expect( list.items.get( 0 ).children.first ).to.be.instanceOf( MenuBarMenuListItemButtonView );
+		expect( list.items.get( 0 ).children.first.label ).to.equal( 'Custom Button' );
+
+		editorElement.remove();
+		menuBarEditor.ui.destroy();
+		menuBarView.element.remove();
+	} );
+
+	class MenuBarTestEditor extends ClassicTestEditor {
+		constructor( sourceElementOrData, config ) {
+			super( sourceElementOrData, config );
+
+			const menuBarEditorUIView = new MenuBarEditorUIView( this.locale, this.editing.view, sourceElementOrData );
+			this.ui = new MenuBarEditorUI( this, menuBarEditorUIView );
+		}
+	}
+
+	class MenuBarEditorUI extends ClassicTestEditorUI {
+		init() {
+			super.init();
+
+			_initMenuBar( this.editor, this.view.menuBarView );
+		}
+	}
+
+	class MenuBarEditorUIView extends EditorUIView {
+		constructor(
+			locale,
+			editingView,
+			editableElement
+		) {
+			super( locale );
+
+			this.menuBarView = new MenuBarView( locale );
+			this.main = this.createCollection();
+			this.editable = new InlineEditableUIView( locale, editingView, editableElement );
+
+			this.menuBarView.extendTemplate( {
+				attributes: {
+					class: [
+						'ck-reset_all',
+						'ck-rounded-corners'
+					],
+					dir: locale.uiLanguageDirection
+				}
+			} );
+		}
+
+		render() {
+			super.render();
+
+			this.registerChild( this.menuBarView );
+			this.registerChild( this.editable );
+		}
+	}
 } );

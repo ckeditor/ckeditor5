@@ -34,6 +34,7 @@ import {
 const EVENT_NAME_DELEGATES = [ 'mouseenter', 'arrowleft', 'arrowright', 'change:isOpen' ] as const;
 
 import '../../theme/components/menubar/menubar.css';
+import type EditorUI from '../editorui/editorui.js';
 
 /**
  * The application menu bar component. It brings a set of top-level menus (and sub-menus) that can be used
@@ -117,12 +118,17 @@ export default class MenuBarView extends View implements FocusableView {
 	 * See the {@link module:core/editor/editorconfig~EditorConfig#menuBar menu bar} in the editor
 	 * configuration reference to learn how to configure the menu bar.
 	 */
-	public fillFromConfig( config: NormalizedMenuBarConfigObject, componentFactory: ComponentFactory ): void {
+	public fillFromConfig(
+		config: NormalizedMenuBarConfigObject,
+		componentFactory: ComponentFactory,
+		extraItems: Array<MenuBarConfigAddedItem | MenuBarConfigAddedGroup | MenuBarConfigAddedMenu> = []
+	): void {
 		const locale = this.locale!;
 		const processedConfig = processMenuBarConfig( {
 			normalizedConfig: config,
 			locale,
-			componentFactory
+			componentFactory,
+			extraItems
 		} );
 
 		const topLevelCategoryMenuViews = processedConfig.items.map( menuDefinition => this._createMenu( {
