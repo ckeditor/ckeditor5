@@ -64,20 +64,28 @@ You can use this feature in the rich-text editor in two different ways:
 
 ## Installation
 
+<info-box info>
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
+</info-box>
+
 After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import { ClassicEditor, CKFinder } from 'ckeditor5';
+import { ClassicEditor, CKFinder, CKFinderUploadAdapter } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ CKFinder, /* ... */ ],
-	toolbar: [ 'ckfinder', 'uploadImage', /* ... */ ], // Depending on your preference.
-	ckfinder: {
-		// Feature configuration.
-		// ...
-	}
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ CKFinder, CKFinderUploadAdapter, /* ... */ ],
+		toolbar: [ 'ckfinder', 'uploadImage', /* ... */ ], // Depending on your preference.
+		ckfinder: {
+			// Feature configuration.
+			// ...
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Configuration
@@ -91,20 +99,22 @@ This feature can upload images automatically to the server (for example, when th
 Assuming that you [installed the CKFinder PHP server-side connector](https://ckeditor.com/docs/ckfinder/ckfinder3-php/quickstart.html#quickstart_installation_folders) (and it is available under `https://example.com/ckfinder/`), use the following [quick upload](https://ckeditor.com/docs/ckfinder/ckfinder3-php/commands.html#command_quick_upload) command URL to enable the image upload:
 
 ```js
-import { CKFinder } from 'ckeditor5';
+import { ClassicEditor, CKFinder, CKFinderUploadAdapter } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ CKFinder, /* ... */ ],
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ CKFinder, CKFinderUploadAdapter, /* ... */ ],
 
-	// Enable the insert image button in the toolbar.
-	toolbar: [ 'uploadImage', /* ... */ ],
+		// Enable the insert image button in the toolbar.
+		toolbar: [ 'uploadImage', /* ... */ ],
 
-	ckfinder: {
-		// Upload the images to the server using the CKFinder QuickUpload command.
-		uploadUrl: 'https://example.com/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images&responseType=json'
-		}
-	} )
-.then( /* ... */ );
+		ckfinder: {
+			// Upload the images to the server using the CKFinder QuickUpload command.
+			uploadUrl: 'https://example.com/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images&responseType=json'
+			}
+		} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 See the **[demo of the image upload only](#image-upload-only)**.
@@ -129,25 +139,27 @@ Then:
 	* You can define [`options.language`](https://ckeditor.com/docs/ckfinder/ckfinder3/#!/api/CKFinder.Config-cfg-language) to set the UI language of CKFinder. By default, it will be set to the UI language of the editor.
 
 ```js
-import { CKFinder } from 'ckeditor5';
+import { ClassicEditor, CKFinder, CKFinderUploadAdapter } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ CKFinder, /* ... */ ],
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ CKFinder, CKFinderUploadAdapter, /* ... */ ],
 
-	// Enable the CKFinder button in the toolbar.
-	toolbar: [ 'ckfinder', /* ... */ ]
+		// Enable the CKFinder button in the toolbar.
+		toolbar: [ 'ckfinder', /* ... */ ]
 
-	ckfinder: {
-		// Upload the images to the server using the CKFinder QuickUpload command.
-		uploadUrl: 'https://example.com/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images&responseType=json',
+		ckfinder: {
+			// Upload the images to the server using the CKFinder QuickUpload command.
+			uploadUrl: 'https://example.com/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images&responseType=json',
 
-		// Define the CKFinder configuration (if necessary).
-		options: {
-			resourceType: 'Images'
+			// Define the CKFinder configuration (if necessary).
+			options: {
+				resourceType: 'Images'
+			}
 		}
-	}
-} )
-.then( /* ... */ );
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 See the **[demo of the full integration](#full-integration)**.
@@ -159,17 +171,19 @@ You can change the way CKFinder opens using the {@link module:ckfinder/ckfinderc
 By default, the file manager opens as a modal. To open it in a new pop-up window, set the configuration value to `popup`:
 
 ```js
-import { CKFinder } from 'ckeditor5';
+import { ClassicEditor, CKFinder, CKFinderUploadAdapter } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ CKFinder, /* ... */ ],
-	toolbar: [ 'ckfinder', /* ... */ ]
-	ckfinder: {
-		// Open the file manager in the pop-up window.
-		openerMethod: 'popup'
-	}
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ CKFinder, CKFinderUploadAdapter, /* ... */ ],
+		toolbar: [ 'ckfinder', /* ... */ ]
+		ckfinder: {
+			// Open the file manager in the pop-up window.
+			openerMethod: 'popup'
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ### Configuring allowed file types

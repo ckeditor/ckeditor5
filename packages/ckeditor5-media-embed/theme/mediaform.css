@@ -10,13 +10,19 @@
 	align-items: flex-start;
 	flex-direction: row;
 	flex-wrap: nowrap;
+	width: 400px;
 
 	& .ck-labeled-field-view {
 		display: inline-block;
+		width: 100%;
 	}
 
 	& .ck-label {
 		display: none;
+	}
+
+	& .ck-input {
+		width: 100%;
 	}
 
 	@mixin ck-media-phone {

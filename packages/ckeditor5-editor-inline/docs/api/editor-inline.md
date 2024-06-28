@@ -12,7 +12,7 @@ The inline editor implementation for CKEditor&nbsp;5. See the {@link examples/bu
 
 This package contains the {@link module:editor-inline/inlineeditor~InlineEditor} class. Follow there to learn more about this type of editor and how to initialize it.
 
-This package contains the source version of the inline editor. This editor implementation is also available in the [inline build](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-inline). Read more about {@link getting-started/index CKEditor&nbsp;5 builds}.
+This package contains the source version of the inline editor. Read more about {@link getting-started/setup/editor-types CKEditor&nbsp;5 editor types}.
 
 ## Installation
 

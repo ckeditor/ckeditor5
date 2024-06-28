@@ -177,7 +177,7 @@ A simple yet efficient strategy for adopting CKEditor&nbsp;5 into existing syste
 
 The first aspect that changed with CKEditor&nbsp;5 is its installation procedure. It became much more modern with the introduction of modular patterns, UMD, npm, etc. Refer to the {@link getting-started/index Getting started} section to explore all available installation and integration options.
 
-The API for integrating CKEditor with your pages changed, too. Check the {@link getting-started/legacy-getting-started/editor-lifecycle Editor lifecycle} and {@link getting-started/setup/getting-and-setting-data Getting and setting data} articles for an introduction to this topic.
+The API for integrating CKEditor with your pages changed, too. Check the {@link getting-started/setup/editor-lifecycle Editor lifecycle} and {@link getting-started/setup/getting-and-setting-data Getting and setting data} articles for an introduction to this topic.
 
 ### Custom plugins
 
@@ -221,7 +221,7 @@ CKEditor&nbsp;5 is a great, modern editing framework so migrating is a fantastic
 
 ## Support
 
-If you are missing any particular features or settings, feel free to {@link support/index#reporting-issues-2 report an issue}. Search the [issues section in the repository](https://github.com/ckeditor/ckeditor5/issues) first. The feature you are after may have already been reported &ndash; you can support it by upvoting the issue with &nbsp;👍. Be as precise as possible, explaining the exact use case, the context where you use the editor, and the expected behavior.
+If you are missing any particular features or settings, feel free to {@link support/index#reporting-issues report an issue}. Search the [issues section in the repository](https://github.com/ckeditor/ckeditor5/issues) first. The feature you are after may have already been reported &ndash; you can support it by upvoting the issue with &nbsp;👍. Be as precise as possible, explaining the exact use case, the context where you use the editor, and the expected behavior.
 
 The {@link updating/ckeditor4-troubleshooting Troubleshooting migration from CKEditor 4} article answers some frequently asked questions about the migration.
 

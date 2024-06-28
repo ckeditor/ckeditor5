@@ -27,9 +27,3 @@ CKEditor&nbsp;5 is a configurable framework created with collaboration in mind. 
 ## Advanced configuration &ndash; CKEditor&nbsp;5 Framework examples
 
 {@link framework/index CKEditor&nbsp;5 Framework} is a highly flexible and universal platform that provides a set of components allowing you to create any kind of rich text editor. It enables the integrators to build different, custom-tailored editing solutions with {@link examples/custom-ui custom UI} or {@link examples/theme-customization a theme} that suit their specific needs. It also provides tools for the creating and integrating of {@link examples/framework/data-from-external-source some user-made}, {@link examples/framework/content-placeholder custom features} and for customizing {@link examples/chat-with-mentions existing ones}. See how CKEditor 5 can integrate a {@link examples/framework/using-react-in-a-widget React library} to enrich both the contents and the editing experience. And witness the flexibility of the UI in the {@link examples/custom/bottom-toolbar-editor toolbar-oriented example}.
-
-**Related links**
-
- * {@link tutorials/index CKEditor&nbsp;5 tutorials} &ndash; A set of easy-to-follow, clear, and informative guides that will help you tailor the editor to your needs.
- * {@link features/index CKEditor&nbsp;5 features} &ndash; Learn more about the available CKEditor&nbsp;5 features.
- * {@link framework/index CKEditor&nbsp;5 Framework} &ndash; Learn how to work with CKEditor&nbsp;5 Framework, customize it, create your own plugins and custom editors, change the UI, or even bring your own UI to the editor.

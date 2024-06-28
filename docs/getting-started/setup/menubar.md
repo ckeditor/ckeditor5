@@ -3,7 +3,7 @@ title: Menu bar
 category: setup
 meta-title: Menu bar | CKEditor 5 Documentation
 modified_at: 2024-05-13
-order: 30
+order: 50
 classes: main__content--no-toc
 toc: false
 ---
@@ -12,7 +12,7 @@ toc: false
 
 The menu bar is a user interface component that gives you access to all features provided by the editor, organized in menus and categories. This familiar experience popular in large editing desktop and online packages improves usability of the editor.
 
-As the menu bar gathers all the editor features, the toolbar can be simple and tidy, providing only the most essential and commonly used features. This is especially welcome in heavily-featured editor integrations. 
+As the menu bar gathers all the editor features, the toolbar can be simple and tidy, providing only the most essential and commonly used features. This is especially welcome in heavily-featured editor integrations.
 
 For your convenience, the menu bar provides a {@link module:ui/menubar/utils#DefaultMenuBarItems default preset structure}, based on the plugins loaded in the editor. However, you can arrange it to suit your needs, remove unnecessary items, as well as add menu items related to your custom features.
 
@@ -26,7 +26,7 @@ You can easily remove some presets or add more items, including menu items for c
 
 ## Enabling the menu bar
 
-The menu bar is currently only available in the {@link module:editor-classic/classiceditor~ClassicEditor Classic editor} and {@link module:editor-decoupled/decouplededitor~DecoupledEditor Decoupled editor}.
+The menu bar is currently available in the {@link module:editor-classic/classiceditor~ClassicEditor Classic editor}, {@link module:editor-decoupled/decouplededitor~DecoupledEditor Decoupled editor}, and {@link module:editor-multi-root/multirooteditor~MultiRootEditor Multi-root editor}.
 
 ### Classic editor
 

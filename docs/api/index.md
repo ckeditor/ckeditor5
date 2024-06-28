@@ -19,8 +19,8 @@ meta-title: CKEditor 5 API | CKEditor 5 documentation
 ## Documentation
 
 * {@link framework/index CKEditor&nbsp;5 Framework} &ndash; Learn how to develop with CKEditor&nbsp;5 Framework, customize it and create plugins.
-* {@link getting-started/index Installing CKEditor&nbsp;5} &ndash; Learn how to install, integrate and configure CKEditor&nbsp;5 builds. More complex aspects, like creating custom builds, are explained here, too.
-* {@link features/index Features} &ndash; Learn about some of the features included in CKEditor&nbsp;5 builds.
+* {@link getting-started/index Installing CKEditor&nbsp;5} &ndash; Learn how to install, integrate and configure CKEditor&nbsp;5.
+* {@link features/index Features} &ndash; Learn about the features available in CKEditor&nbsp;5.
 
 ## Contribute
 

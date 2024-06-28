@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-cloud-services",
-  "version": "41.4.2",
+  "version": "42.0.0",
   "description": "CKEditor 5's Cloud Services integration layer.",
   "keywords": [
     "ckeditor",
@@ -12,14 +12,14 @@
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
-    "ckeditor5": "41.4.2"
+    "ckeditor5": "42.0.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-core": "41.4.2",
+    "@ckeditor/ckeditor5-core": "42.0.0",
     "@ckeditor/ckeditor5-dev-utils": "^40.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "41.4.2",
-    "@ckeditor/ckeditor5-theme-lark": "41.4.2",
-    "@ckeditor/ckeditor5-utils": "41.4.2",
+    "@ckeditor/ckeditor5-editor-classic": "42.0.0",
+    "@ckeditor/ckeditor5-theme-lark": "42.0.0",
+    "@ckeditor/ckeditor5-utils": "42.0.0",
     "typescript": "5.0.4",
     "webpack": "^5.58.1",
     "webpack-cli": "^4.9.0"

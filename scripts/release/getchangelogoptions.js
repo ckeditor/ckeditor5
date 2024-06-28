@@ -21,16 +21,20 @@ module.exports = function getChangelogOptions( cliArguments ) {
 				return 'https://www.npmjs.com/package/ckeditor5';
 			}
 
+			if ( name === 'ckeditor5-collaboration' ) {
+				return 'https://www.npmjs.com/package/ckeditor5-collaboration';
+			}
+
+			if ( name === 'ckeditor5-premium-feature' || name === 'premium-feature' ) {
+				return 'https://www.npmjs.com/package/ckeditor5-premium-feature';
+			}
+
 			if ( name === 'build-*' ) {
 				return 'https://www.npmjs.com/search?q=keywords%3Ackeditor5-build%20maintainer%3Ackeditor';
 			}
 
 			if ( name === 'editor-*' ) {
 				return 'https://www.npmjs.com/search?q=keywords%3Ackeditor5-editor%20maintainer%3Ackeditor';
-			}
-
-			if ( name === 'letters' ) {
-				return 'https://www.npmjs.com/package/@ckeditor/letters';
 			}
 
 			return 'https://www.npmjs.com/package/@ckeditor/ckeditor5-' + name;

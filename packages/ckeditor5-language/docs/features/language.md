@@ -26,16 +26,24 @@ The text part language feature implements the [WCAG 3.1.2 Language of Parts](htt
 
 ## Installation
 
+<info-box info>
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
+</info-box>
+
 After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
 import { ClassicEditor, TextPartLanguage } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ TextPartLanguage, /* ... */ ],
-	toolbar: [ 'textPartLanguage', /* ... */ ]
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ TextPartLanguage, /* ... */ ],
+		toolbar: [ 'textPartLanguage', /* ... */ ]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Configuring available languages
@@ -45,19 +53,21 @@ To modify the list of available languages displayed in the language dropdown use
 The example below shows the configuration used for the [demo](#demo) above:
 
 ```js
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	// More of editor's configuration.
-	// ...
-	language: {
-		textPartLanguage: [
-			{ title: 'Arabic', languageCode: 'ar' },
-			{ title: 'French', languageCode: 'fr' },
-			{ title: 'Hebrew', languageCode: 'he' },
-			{ title: 'Spanish', languageCode: 'es' }
-		]
-	}
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		// More of editor's configuration.
+		// ...
+		language: {
+			textPartLanguage: [
+				{ title: 'Arabic', languageCode: 'ar' },
+				{ title: 'French', languageCode: 'fr' },
+				{ title: 'Hebrew', languageCode: 'he' },
+				{ title: 'Spanish', languageCode: 'es' }
+			]
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Related features

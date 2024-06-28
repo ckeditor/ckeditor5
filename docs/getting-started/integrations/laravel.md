@@ -11,7 +11,12 @@ As a pure JavaScript/TypeScript application, CKEditor&nbsp;5 will work inside an
 
 ## Using CKEditor&nbsp;5 Builder
 
-The easiest way to use CKEditor&nbsp;5 in your Laravel project is preparing an editor preset with [CKEditor&nbsp;5 Builder](https://ckeditor.com/builder?redirect=preset) and including it into your project.
+The easiest way to use CKEditor&nbsp;5 in your Laravel project is preparing an editor preset with [CKEditor&nbsp;5 Builder](https://ckeditor.com/builder?redirect=preset) and including it into your project. It offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs. You can easily select:
+* the features you need,
+* the preferred framework (React, Angular, Vue or Vanilla JS),
+* the preferred distribution method.
+
+You get ready-to-use code tailored to your needs!
 
 ## Setting up the project
 
@@ -80,7 +85,14 @@ const editorConfig = {
 	initialData: "<h2>Congratulations on setting up CKEditor 5! 🎉</h2>"
 };
 
-ClassicEditor.create(document.querySelector('#editor'), editorConfig);
+ClassicEditor
+	.create( document.querySelector( '#editor' ), editorConfig )
+	.then( editor => {
+		console.log( editor );
+	} )
+	.catch( error => {
+		console.error( error );
+	} );
 ```
 
 Then, modify the `welcome.blade.php` file in the `resources/views` directory to include the CKEditor&nbsp;5 scripts. All necessary scripts and links are in the HTML snippet from CKEditor&nbsp;5 Builder. You can copy and paste them into your template. It should look similar to the one below:
@@ -91,15 +103,15 @@ Then, modify the `welcome.blade.php` file in the `resources/views` directory to 
 <head>
 	<meta charset="UTF-8">
 	<title>CKE5 in Laravel</title>
-	<link rel="stylesheet" href="<CDN_LINK>/ckeditor5/dist/styles.css" />
-	<link rel="stylesheet" href="<CDN_LINK>/ckeditor5-premium-features/dist/index.css" />
+	<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
+	<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
 	<script type="importmap">
 		{
 			"imports": {
-				"ckeditor5": "<CDN_LINK>/ckeditor5/index.min.js",
-				"ckeditor5/": "<CDN_LINK>/ckeditor5/",
-				"ckeditor5-premium-features": "<CDN_LINK>/ckeditor5-premium-features/index.min.js",
-				"ckeditor5-premium-features/": "<CDN_LINK>/ckeditor5-premium-features/"
+				"ckeditor5": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.js",
+				"ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/",
+				"ckeditor5-premium-features": "https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.js",
+				"ckeditor5-premium-features/": "https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/"
 			}
 		}
 	</script>

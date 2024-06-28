@@ -11,7 +11,7 @@ import { View, FocusCycler, type ViewCollection, type FocusableView } from 'cked
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
 import type CharacterGridView from './charactergridview.js';
 import type CharacterInfoView from './characterinfoview.js';
-import type SpecialCharactersNavigationView from './specialcharactersnavigationview.js';
+import type SpecialCharactersCategoriesView from './specialcharacterscategoriesview.js';
 
 /**
  * A view that glues pieces of the special characters dropdown panel together:
@@ -42,9 +42,9 @@ export default class SpecialCharactersView extends View<HTMLDivElement> {
 	protected readonly _focusCycler: FocusCycler;
 
 	/**
-	 * An instance of the `SpecialCharactersNavigationView`.
+	 * An instance of the `SpecialCharactersCategoriesView`.
 	 */
-	public navigationView: SpecialCharactersNavigationView;
+	public categoriesView: SpecialCharactersCategoriesView;
 
 	/**
 	 * An instance of the `CharacterGridView`.
@@ -61,13 +61,13 @@ export default class SpecialCharactersView extends View<HTMLDivElement> {
 	 */
 	constructor(
 		locale: Locale,
-		navigationView: SpecialCharactersNavigationView,
+		categoriesView: SpecialCharactersCategoriesView,
 		gridView: CharacterGridView,
 		infoView: CharacterInfoView
 	) {
 		super( locale );
 
-		this.navigationView = navigationView;
+		this.categoriesView = categoriesView;
 		this.gridView = gridView;
 		this.infoView = infoView;
 		this.items = this.createCollection();
@@ -87,7 +87,7 @@ export default class SpecialCharactersView extends View<HTMLDivElement> {
 		this.setTemplate( {
 			tag: 'div',
 			children: [
-				this.navigationView,
+				this.categoriesView,
 				this.gridView,
 				this.infoView
 			],
@@ -98,7 +98,7 @@ export default class SpecialCharactersView extends View<HTMLDivElement> {
 			}
 		} );
 
-		this.items.add( this.navigationView.groupDropdownView.buttonView );
+		this.items.add( this.categoriesView );
 		this.items.add( this.gridView );
 	}
 
@@ -108,7 +108,7 @@ export default class SpecialCharactersView extends View<HTMLDivElement> {
 	public override render(): void {
 		super.render();
 
-		this.focusTracker.add( this.navigationView.groupDropdownView.buttonView.element! );
+		this.focusTracker.add( this.categoriesView.element! );
 		this.focusTracker.add( this.gridView.element! );
 
 		// Start listening for the keystrokes coming from #element.
@@ -129,6 +129,6 @@ export default class SpecialCharactersView extends View<HTMLDivElement> {
 	 * Focuses the first focusable in {@link #items}.
 	 */
 	public focus(): void {
-		this.navigationView.focus();
+		this._focusCycler.focusFirst();
 	}
 }

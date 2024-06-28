@@ -22,6 +22,12 @@ Use the special characters toolbar button {@icon @ckeditor/ckeditor5-special-cha
 
 ## Installation
 
+<info-box info>
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
+</info-box>
+
 After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
@@ -29,11 +35,13 @@ After {@link getting-started/quick-start installing the editor}, add the feature
 // The other provide a basic set of special characters.
 import { ClassicEditor, SpecialCharacters, SpecialCharactersEssentials } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ SpecialCharacters, SpecialCharactersEssentials, /* ... */ ],
-	toolbar: [ 'specialCharacters', /* ... */ ],
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ SpecialCharacters, SpecialCharactersEssentials, /* ... */ ],
+		toolbar: [ 'specialCharacters', /* ... */ ],
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Configuration
@@ -59,15 +67,17 @@ function SpecialCharactersEmoji( editor ) {
 	], { label: 'Emoticons' } );
 }
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [
-		SpecialCharacters, SpecialCharactersEssentials, SpecialCharactersEmoji,
-		// More plugins.
-		// ...
-	],
-	toolbar: [ 'specialCharacters', /* ... */ ],
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [
+			SpecialCharacters, SpecialCharactersEssentials, SpecialCharactersEmoji,
+			// More plugins.
+			// ...
+		],
+		toolbar: [ 'specialCharacters', /* ... */ ],
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 After adding the above plugin to the editor configuration, the new category will become available in the special characters dropdown.
@@ -99,16 +109,18 @@ function SpecialCharactersExtended( editor ) {
 	] );
 }
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [
-		SpecialCharacters, SpecialCharactersEssentials, SpecialCharactersExtended,
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [
+			SpecialCharacters, SpecialCharactersEssentials, SpecialCharactersExtended,
 
-		// More plugins.
-		// ...
-	],
-	toolbar: [ 'specialCharacters', /* ... */ ],
-} )
-.then( /* ... */ );
+			// More plugins.
+			// ...
+		],
+		toolbar: [ 'specialCharacters', /* ... */ ],
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box>
@@ -137,16 +149,18 @@ For example, you can limit the categories to "Mathematical" and "Currency" only 
 ```js
 import { ClassicEditor, SpecialCharacters, SpecialCharactersCurrency, SpecialCharactersMathematical } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [
-		SpecialCharacters, SpecialCharactersCurrency, SpecialCharactersMathematical,
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [
+			SpecialCharacters, SpecialCharactersCurrency, SpecialCharactersMathematical,
 
-		// More plugins.
-		// ...
-	],
-	toolbar: [ 'specialCharacters', /* ... */ ],
-} )
-.then( /* ... */ );
+			// More plugins.
+			// ...
+		],
+		toolbar: [ 'specialCharacters', /* ... */ ],
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 Below you can see a demo based on the example shown above. After clicking the special characters toolbar button {@icon @ckeditor/ckeditor5-special-characters/theme/icons/specialcharacters.svg Special characters}, you can see that it contains fewer categories compared to the other editors on this page.
@@ -160,19 +174,21 @@ The order of categories in the UI is determined by the order in which they were 
 The categories order can be customized using the {@link module:special-characters/specialcharactersconfig~SpecialCharactersConfig#order `order`} array.
 
 ```js
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ SpecialCharacters, SpecialCharactersEssentials, ... ],
-	specialCharacters: {
-		order: [
-			'Text',
-			'Latin',
-			'Mathematical',
-			'Currency',
-			'Arrows'
-		]
-	}
-} )
-	.then( ... );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ SpecialCharacters, SpecialCharactersEssentials, ... ],
+		specialCharacters: {
+			order: [
+				'Text',
+				'Latin',
+				'Mathematical',
+				'Currency',
+				'Arrows'
+			]
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Common API

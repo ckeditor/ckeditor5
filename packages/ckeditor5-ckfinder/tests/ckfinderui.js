@@ -65,7 +65,7 @@ describe( 'CKFinderUI', () => {
 			button = editor.ui.componentFactory.create( 'menuBar:ckfinder' );
 		} );
 
-		testButton( 'Image or file' );
+		testButton( 'File' );
 
 		it( 'should add the "ckfinder" component to the factory', () => {
 			expect( button ).to.be.instanceOf( MenuBarMenuListItemButtonView );
@@ -74,27 +74,21 @@ describe( 'CKFinderUI', () => {
 
 	describe( 'InsertImageUI integration', () => {
 		it( 'should create CKFinder button in split button dropdown button', () => {
-			mockAssetManagerIntegration();
+			mockAnotherIntegration();
 
-			const spy = sinon.spy( editor.ui.componentFactory, 'create' );
 			const dropdown = editor.ui.componentFactory.create( 'insertImage' );
 			const dropdownButton = dropdown.buttonView.actionView;
 
 			expect( dropdownButton ).to.be.instanceOf( ButtonView );
 			expect( dropdownButton.withText ).to.be.false;
 			expect( dropdownButton.icon ).to.equal( icons.imageAssetManager );
-
-			expect( spy.calledTwice ).to.be.true;
-			expect( spy.firstCall.args[ 0 ] ).to.equal( 'insertImage' );
-			expect( spy.secondCall.args[ 0 ] ).to.equal( 'ckfinder' );
-			expect( spy.firstCall.returnValue ).to.equal( dropdown.buttonView.actionView );
+			expect( dropdownButton.label ).to.equal( 'Insert image with file manager' );
 		} );
 
 		it( 'should create CKFinder button in dropdown panel', () => {
-			mockAssetManagerIntegration();
+			mockAnotherIntegration();
 
 			const dropdown = editor.ui.componentFactory.create( 'insertImage' );
-			const spy = sinon.spy( editor.ui.componentFactory, 'create' );
 
 			dropdown.isOpen = true;
 
@@ -104,16 +98,34 @@ describe( 'CKFinderUI', () => {
 			expect( buttonView ).to.be.instanceOf( ButtonView );
 			expect( buttonView.withText ).to.be.true;
 			expect( buttonView.icon ).to.equal( icons.imageAssetManager );
+			expect( buttonView.label ).to.equal( 'Insert with file manager' );
+		} );
 
-			expect( spy.calledOnce ).to.be.true;
-			expect( spy.firstCall.args[ 0 ] ).to.equal( 'ckfinder' );
-			expect( spy.firstCall.returnValue ).to.equal( buttonView );
+		it( 'should create CKFinder button in menu bar', () => {
+			mockAnotherIntegration();
+
+			const submenu = editor.ui.componentFactory.create( 'menuBar:insertImage' );
+			const buttonView = submenu.panelView.children.first.items.first.children.first;
+
+			expect( buttonView ).to.be.instanceOf( MenuBarMenuListItemButtonView );
+			expect( buttonView.withText ).to.be.true;
+			expect( buttonView.icon ).to.equal( icons.imageAssetManager );
+			expect( buttonView.label ).to.equal( 'With file manager' );
+		} );
+
+		it( 'should create CKFinder button in menu bar - only integration', () => {
+			const buttonView = editor.ui.componentFactory.create( 'menuBar:insertImage' );
+
+			expect( buttonView ).to.be.instanceOf( MenuBarMenuListItemButtonView );
+			expect( buttonView.withText ).to.be.true;
+			expect( buttonView.icon ).to.equal( icons.imageAssetManager );
+			expect( buttonView.label ).to.equal( 'Image' );
 		} );
 
 		it( 'should bind to #isImageSelected', () => {
 			const insertImageUI = editor.plugins.get( 'ImageInsertUI' );
 
-			mockAssetManagerIntegration();
+			mockAnotherIntegration();
 
 			const dropdown = editor.ui.componentFactory.create( 'insertImage' );
 
@@ -133,7 +145,7 @@ describe( 'CKFinderUI', () => {
 		} );
 
 		it( 'should close dropdown on execute', () => {
-			mockAssetManagerIntegration();
+			mockAnotherIntegration();
 
 			const dropdown = editor.ui.componentFactory.create( 'insertImage' );
 
@@ -182,7 +194,7 @@ describe( 'CKFinderUI', () => {
 		} );
 	}
 
-	function mockAssetManagerIntegration() {
+	function mockAnotherIntegration() {
 		const insertImageUI = editor.plugins.get( 'ImageInsertUI' );
 		const observable = new Model( { isEnabled: true } );
 
@@ -197,6 +209,13 @@ describe( 'CKFinderUI', () => {
 				return button;
 			},
 			formViewCreator() {
+				const button = new ButtonView( editor.locale );
+
+				button.label = 'bar';
+
+				return button;
+			},
+			menuBarButtonViewCreator() {
 				const button = new ButtonView( editor.locale );
 
 				button.label = 'bar';
