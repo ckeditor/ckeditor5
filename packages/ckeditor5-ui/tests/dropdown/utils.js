@@ -118,7 +118,45 @@ describe( 'utils', () => {
 				} );
 
 				afterEach( () => {
+					if ( dropdownView.element ) {
+						dropdownView.element.remove();
+					}
+				} );
+
+				it( 'uses `getNestedDropdownElements` to determine if the click was outside the dropdown', () => {
+					const buttonA = document.body.appendChild(
+						document.createElement( 'button' )
+					);
+
+					const buttonB = document.body.appendChild(
+						document.createElement( 'button' )
+					);
+
+					const getNestedDropdownElementsSpy = sinon.spy( () => [ buttonA ] );
+
 					dropdownView.element.remove();
+					dropdownView = createDropdown( locale, undefined, {
+						getNestedDropdownElements: getNestedDropdownElementsSpy
+					} );
+
+					dropdownView.render();
+					dropdownView.isOpen = true;
+
+					buttonA.dispatchEvent( new Event( 'mousedown', {
+						bubbles: true
+					} ) );
+
+					expect( dropdownView.isOpen ).to.be.true;
+
+					buttonB.dispatchEvent( new Event( 'mousedown', {
+						bubbles: true
+					} ) );
+
+					expect( dropdownView.isOpen ).to.be.false;
+					sinon.assert.calledTwice( getNestedDropdownElementsSpy );
+
+					buttonA.remove();
+					buttonB.remove();
 				} );
 
 				it( 'listens to view#isOpen and reacts to DOM events (valid target)', () => {
@@ -248,6 +286,34 @@ describe( 'utils', () => {
 				afterEach( () => {
 					dropdownView.element.remove();
 					externalFocusableElement.remove();
+				} );
+
+				it( 'uses `getNestedDropdownElements` to determine if the blur was outside the dropdown', async () => {
+					const getNestedDropdownElementsSpy = sinon.spy( () => [ global.document.activeElement ] );
+
+					dropdownView.element.remove();
+					dropdownView = createDropdown( locale, undefined, {
+						getNestedDropdownElements: getNestedDropdownElementsSpy
+					} );
+
+					dropdownView.render();
+					dropdownView.panelView.element.appendChild( focusableDropdownChild );
+					document.body.appendChild( dropdownView.element );
+
+					dropdownView.isOpen = true;
+					focusableDropdownChild.dispatchEvent( new Event( 'focus' ) );
+
+					expect( dropdownView.focusTracker.isFocused, 'isFocused' ).to.be.true;
+					expect( dropdownView.isOpen, 'isOpen' ).to.be.true;
+
+					focusableDropdownChild.dispatchEvent( new Event( 'blur' ) );
+					externalFocusableElement.dispatchEvent( new Event( 'focus' ) );
+
+					// FocusTracker reacts to blur with a timeout.
+					await wait( 10 );
+
+					expect( dropdownView.isOpen, 'isOpen' ).to.be.true;
+					expect( getNestedDropdownElementsSpy ).to.be.calledTwice;
 				} );
 
 				it( 'should close the dropdown when the focus was in the #panelView but it went somewhere else', async () => {
