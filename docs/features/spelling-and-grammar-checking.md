@@ -82,28 +82,21 @@ The spell and grammar check is compliant with Web Content Accessibility Guidelin
 	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-<info-box info>
-	This is a premium feature that requires a commercial license. If you do not have one yet, please [contact us](https://ckeditor.com/contact/).
-</info-box>
-
-<info-box warning>
-	We are working with our partners to update this package to work with our new installation methods. Meanwhile, if you use or plan to use this package, please continue to use our legacy installation methods which are still supported.
-</info-box>
-
 WProofreader is delivered as a CKEditor&nbsp;5 plugin, so you can combine it into an editor preset just like other features. To add this feature to your rich-text editor, install the [`@webspellchecker/wproofreader-ckeditor5`](https://www.npmjs.com/package/@webspellchecker/wproofreader-ckeditor5) package:
 
 ```
 npm install --save @webspellchecker/wproofreader-ckeditor5
 ```
 
-Then, add it to your plugin list and the toolbar configuration:
+Then, add it to your plugin list and the toolbar configuration. Please note, that unlike native CKEditor&nbsp;5 plugins, this one is imported from its own package:
 
 ```js
+import { ClassicEditor } from 'ckeditor5';
 import WProofreader from '@webspellchecker/wproofreader-ckeditor5/src/wproofreader';
 
 ClassicEditor
 	.create( editorElement, {
-		plugins: [ WProofreader, /* ...], */
+		plugins: [ WProofreader, /* ...], */ ]
 		toolbar: [ 'wproofreader', /* ... */ ]
 	} )
 	.then( /* ... */ )

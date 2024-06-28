@@ -61,23 +61,16 @@ If you visit a page using MathType with your mobile device, the handwriting inte
 	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-<info-box>
-	This is an additionally payable feature. [Contact us](https://ckeditor.com/contact/?sales=true#contact-form) to receive an offer tailored to your needs.
-</info-box>
-
-<info-box warning>
-	We are working with our partners to update this package to work with our new installation methods. Meanwhile, if you use or plan to use this package, please continue to use our legacy installation methods which are still supported.
-</info-box>
-
 MathType is delivered as a CKEditor&nbsp;5 plugin, so it can be combined into an editor preset just like other features. To add this feature to your editor, install the [`@wiris/mathtype-ckeditor5`](https://www.npmjs.com/package/@wiris/mathtype-ckeditor5) package:
 
 ```bash
 npm install --save @wiris/mathtype-ckeditor5
 ```
 
-Then add it to your plugin list and the toolbar configuration:
+Then add it to your plugin list and the toolbar configuration. Please note, that unlike native CKEditor&nbsp;5 plugins, this one is imported from its own package:
 
 ```js
+import { ClassicEditor } from 'ckeditor5';
 import MathType from '@wiris/mathtype-ckeditor5';
 
 ClassicEditor
