@@ -72,7 +72,7 @@ export const DropdownRootMenuBehaviors = {
 
 			for ( const menuView of menus ) {
 				const isListItemContainingMenu = pathLeaf instanceof DropdownMenuListItemView &&
-					pathLeaf.flatItemOrNestedMenuView === menuView;
+					pathLeaf.childView === menuView;
 
 				menuView.isOpen = ( evt.path.includes( menuView ) || isListItemContainingMenu ) && menuView.isEnabled;
 			}

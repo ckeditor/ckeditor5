@@ -206,9 +206,9 @@ export class DropdownMenuListDefinitionFactory {
 			menuOrFlatItemView.parentMenuView = parentMenuView;
 			menuOrFlatItemView.menuItems.forEach( menuListItem => {
 				if ( menuListItem instanceof DropdownMenuListItemView &&
-						menuListItem.flatItemOrNestedMenuView instanceof DropdownMenuView ) {
+						menuListItem.childView instanceof DropdownMenuView ) {
 					this._recursiveAssignMenuChildrenParents(
-						menuListItem.flatItemOrNestedMenuView,
+						menuListItem.childView,
 						menuOrFlatItemView
 					);
 				}

@@ -64,25 +64,25 @@ export function createTreeFromDropdownMenuView( menu: DropdownMenuViewLike ): Dr
 				return [];
 			}
 
-			const { flatItemOrNestedMenuView } = item;
+			const { childView } = item;
 
-			if ( flatItemOrNestedMenuView instanceof DropdownMenuView ) {
+			if ( childView instanceof DropdownMenuView ) {
 				return [
 					{
 						type: 'Menu',
-						search: createTextSearchMetadata( flatItemOrNestedMenuView.buttonView.label ),
-						children: createTreeFromDropdownMenuView( flatItemOrNestedMenuView ).children,
-						menu: flatItemOrNestedMenuView
+						search: createTextSearchMetadata( childView.buttonView.label ),
+						children: createTreeFromDropdownMenuView( childView ).children,
+						menu: childView
 					}
 				];
 			}
 
-			if ( flatItemOrNestedMenuView instanceof DropdownMenuListItemButtonView ) {
+			if ( childView instanceof DropdownMenuListItemButtonView ) {
 				return [
 					{
 						type: 'Item',
-						search: createTextSearchMetadata( flatItemOrNestedMenuView.label ),
-						item: flatItemOrNestedMenuView
+						search: createTextSearchMetadata( childView.label ),
+						item: childView
 					}
 				];
 			}

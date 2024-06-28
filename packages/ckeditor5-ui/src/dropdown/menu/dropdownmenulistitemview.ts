@@ -22,19 +22,19 @@ export default class DropdownMenuListItemView extends ListItemView {
 	/**
 	 * The view representing either a flat item or a nested menu in a dropdown menu list item.
 	 */
-	public readonly flatItemOrNestedMenuView: DropdownMenuView | DropdownMenuListItemButtonView;
+	public readonly childView: DropdownMenuView | DropdownMenuListItemButtonView;
 
 	constructor(
 		locale: Locale,
 		parentMenuView: DropdownMenuView | null,
-		flatItemOrNestedMenuView: DropdownMenuView | DropdownMenuListItemButtonView
+		childView: DropdownMenuView | DropdownMenuListItemButtonView
 	) {
 		super( locale );
 
 		const bind = this.bindTemplate;
 
-		this.flatItemOrNestedMenuView = flatItemOrNestedMenuView;
-		this.children.add( flatItemOrNestedMenuView );
+		this.childView = childView;
+		this.children.add( childView );
 
 		this.extendTemplate( {
 			attributes: {
@@ -50,8 +50,8 @@ export default class DropdownMenuListItemView extends ListItemView {
 		if ( parentMenuView ) {
 			this.delegate( 'mouseenter' ).to( parentMenuView );
 
-			if ( flatItemOrNestedMenuView instanceof DropdownMenuListItemButtonView ) {
-				flatItemOrNestedMenuView.delegate( 'execute' ).to( parentMenuView, 'item:execute' );
+			if ( childView instanceof DropdownMenuListItemButtonView ) {
+				childView.delegate( 'execute' ).to( parentMenuView, 'item:execute' );
 			}
 		}
 	}

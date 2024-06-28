@@ -199,14 +199,14 @@ export default class DropdownMenuRootListView extends DropdownMenuListView {
 		} );
 
 		this.items.on<CollectionAddEvent<DropdownMenuListItemView>>( 'add', ( evt, item ) => {
-			const { flatItemOrNestedMenuView } = item;
+			const { childView } = item;
 
 			// Add additional CSS class to the panel view if it's a dropdown menu.
-			if ( flatItemOrNestedMenuView instanceof DropdownMenuView ) {
-				flatItemOrNestedMenuView.panelView.class = this._menuPanelClass;
+			if ( childView instanceof DropdownMenuView ) {
+				childView.panelView.class = this._menuPanelClass;
 			}
 
-			flatItemOrNestedMenuView.delegate( ...DropdownMenuView.DELEGATED_EVENTS ).to( this, name => `menu:${ name }` );
+			childView.delegate( ...DropdownMenuView.DELEGATED_EVENTS ).to( this, name => `menu:${ name }` );
 		} );
 	}
 
