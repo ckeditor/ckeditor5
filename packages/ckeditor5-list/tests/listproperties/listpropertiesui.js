@@ -95,11 +95,11 @@ describe( 'ListPropertiesUI', () => {
 					} );
 				} );
 
-				it( 'should not register a dropdown as "bulletedList" in the component factory when `ul` list ' +
+				it( 'should not register a dropdown as "bulletedList" in the component factory when `bulleted` list ' +
 					'is excluded', () => {
 					return withEditor( {
 						styles: {
-							exclude: [ 'ul' ]
+							exclude: [ 'bulleted' ]
 						},
 						startIndex: true,
 						reversed: true
@@ -110,11 +110,11 @@ describe( 'ListPropertiesUI', () => {
 					} );
 				} );
 
-				it( 'should register a dropdown as "numberedList" in the component factory when `ol` list ' +
+				it( 'should register a dropdown as "numberedList" in the component factory when `numbered` list ' +
 					'is excluded but startIndex is enabled', () => {
 					return withEditor( {
 						styles: {
-							exclude: [ 'ol' ]
+							exclude: [ 'numbered' ]
 						},
 						startIndex: true,
 						reversed: false
@@ -125,11 +125,11 @@ describe( 'ListPropertiesUI', () => {
 					} );
 				} );
 
-				it( 'should register a dropdown as "numberedList" in the component factory when `ol` list ' +
+				it( 'should register a dropdown as "numberedList" in the component factory when `numbered` list ' +
 					'is excluded but reversed is enabled', () => {
 					return withEditor( {
 						styles: {
-							exclude: [ 'ol' ]
+							exclude: [ 'numbered' ]
 						},
 						startIndex: false,
 						reversed: true
@@ -140,11 +140,11 @@ describe( 'ListPropertiesUI', () => {
 					} );
 				} );
 
-				it( 'should register a dropdown as "numberedList" in the component factory when `ol` list ' +
+				it( 'should register a dropdown as "numberedList" in the component factory when `numbered` list ' +
 					'is excluded but other features is enabled', () => {
 					return withEditor( {
 						styles: {
-							exclude: [ 'ol' ]
+							exclude: [ 'numbered' ]
 						},
 						startIndex: true,
 						reversed: true
@@ -155,11 +155,11 @@ describe( 'ListPropertiesUI', () => {
 					} );
 				} );
 
-				it( 'should not register a dropdown as "numberedList" in the component factory when `ol` list ' +
+				it( 'should not register a dropdown as "numberedList" in the component factory when `numbered` list ' +
 					'is excluded and other features are not enabled as well', () => {
 					return withEditor( {
 						styles: {
-							exclude: [ 'ol' ]
+							exclude: [ 'numbered' ]
 						},
 						startIndex: false,
 						reversed: false
@@ -171,10 +171,10 @@ describe( 'ListPropertiesUI', () => {
 				} );
 
 				it( 'should not register a dropdown as "numberedList" and "bulletedList" in the component ' +
-					'factory when `ol` and `ul` list are excluded (other features are not enabled as well)', () => {
+					'factory when `numbered` and `bulleted` list are excluded (other features are not enabled as well)', () => {
 					return withEditor( {
 						styles: {
-							exclude: [ 'ol', 'ul' ]
+							exclude: [ 'numbered', 'bulleted' ]
 						},
 						startIndex: false,
 						reversed: false
@@ -534,10 +534,10 @@ describe( 'ListPropertiesUI', () => {
 						} );
 					} );
 
-					it( 'should not have styles grid when `ol` is excluded in the config (other features are enabled)', () => {
+					it( 'should not have styles grid when `numbered` is excluded in the config (other features are enabled)', () => {
 						return withEditor( {
 							styles: {
-								exclude: [ 'ol' ]
+								exclude: [ 'numbered' ]
 							},
 							startIndex: true,
 							reversed: true
@@ -1001,9 +1001,10 @@ describe( 'ListPropertiesUI', () => {
 					} );
 				} );
 
-				it( 'should not register a menu as "menuBar:bulletedList" in the component factory when `ul` list is excluded', () => {
+				it( 'should not register a menu as "menuBar:bulletedList" in the component factory when `bulleted` ' +
+					'list is excluded', () => {
 					return withEditor( { styles: {
-						exclude: [ 'ul' ]
+						exclude: [ 'bulleted' ]
 					} }, editor => {
 						const componentFactory = editor.ui.componentFactory;
 
@@ -1011,10 +1012,11 @@ describe( 'ListPropertiesUI', () => {
 					} );
 				} );
 
-				it( 'should not register a dropdown as "menuBar:numberedList" in the component factory when `ol` list is excluded', () => {
+				it( 'should not register a dropdown as "menuBar:numberedList" in the component factory when ' +
+					'`numbered` list is excluded', () => {
 					return withEditor( {
 						styles: {
-							exclude: [ 'ol' ]
+							exclude: [ 'numbered' ]
 						},
 						startIndex: false,
 						reversed: false
@@ -1025,10 +1027,10 @@ describe( 'ListPropertiesUI', () => {
 					} );
 				} );
 
-				it( 'should not register a menu as "menuBar:bulletedList" in the component factory when `ul` and ' +
-					'`ol` list is excluded', () => {
+				it( 'should not register a menu as "menuBar:bulletedList" in the component factory when `bulleted` and ' +
+					'`numbered` list is excluded', () => {
 					return withEditor( { styles: {
-						exclude: [ 'ul', 'ol' ]
+						exclude: [ 'bulleted', 'numbered' ]
 					} }, editor => {
 						const componentFactory = editor.ui.componentFactory;
 

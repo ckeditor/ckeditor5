@@ -62,7 +62,7 @@ export default class ListPropertiesUI extends Plugin {
 		const t = editor.locale.t;
 		const propertiesConfig = editor.config.get( 'list.properties' )!;
 		const excludedListTypes = typeof propertiesConfig.styles === 'object' && propertiesConfig.styles.exclude;
-		const isUnorderedListStyleExcluded = excludedListTypes && excludedListTypes.includes( 'ul' );
+		const isUnorderedListStyleExcluded = excludedListTypes && excludedListTypes.includes( 'bulleted' );
 
 		// Note: When this plugin does not register the "bulletedList" dropdown due to properties configuration,
 		// a simple button will be still registered under the same name by ListUI as a fallback. This should happen
@@ -115,7 +115,7 @@ export default class ListPropertiesUI extends Plugin {
 			} ) );
 		}
 
-		const isOrderedListStyleExcluded = excludedListTypes && excludedListTypes.includes( 'ol' );
+		const isOrderedListStyleExcluded = excludedListTypes && excludedListTypes.includes( 'numbered' );
 		const isStyleVisible = propertiesConfig.styles && !isOrderedListStyleExcluded || false;
 
 		// Note: When this plugin does not register the "numberedList" dropdown due to properties configuration,

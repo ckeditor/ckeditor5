@@ -164,5 +164,5 @@ export interface ListPropertiesStyleConfig {
 	 *
 	 * @default []
 	 */
-	exclude?: Array<'ul' | 'ol'>;
+	exclude?: Array<'bulleted' | 'numbered'>;
 }
