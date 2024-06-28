@@ -24,6 +24,7 @@ export type { default as Button, ButtonExecuteEvent } from './button/button.js';
 export type { default as ButtonLabel } from './button/buttonlabel.js';
 export { default as ButtonView } from './button/buttonview.js';
 export { default as ButtonLabelView } from './button/buttonlabelview.js';
+export { default as ButtonLabelWithHighlightView } from './button/buttonlabelwithhighlightview.js';
 export { default as SwitchButtonView } from './button/switchbuttonview.js';
 export { default as ListItemButtonView } from './button/listitembuttonview.js';
 export { default as FileDialogButtonView, FileDialogListItemButtonView } from './button/filedialogbuttonview.js';
@@ -59,6 +60,7 @@ export * from './dropdown/menu/events.js';
 export { default as DropdownMenuView } from './dropdown/menu/dropdownmenuview.js';
 export { default as DropdownMenuListView } from './dropdown/menu/dropdownmenulistview.js';
 export { default as DropdownMenuListItemView } from './dropdown/menu/dropdownmenulistitemview.js';
+export { default as DropdownMenuListFilteredView } from './dropdown/menu/filterview/dropdownmenulistfilteredview.js';
 export { default as DropdownMenuListItemButtonView } from './dropdown/menu/dropdownmenulistitembuttonview.js';
 export type { DropdownMenuDefinition, DropdownMenuItemDefinition } from './dropdown/menu/dropdownmenufactory.js';
 
@@ -88,6 +90,7 @@ export { default as TextareaView, type TextareaViewUpdateEvent } from './textare
 export { default as IframeView } from './iframe/iframeview.js';
 
 export { default as LabelView } from './label/labelview.js';
+export { default as LabelWithHighlightView } from './label/labelwithhighlightview.js';
 
 export { type LabeledFieldViewCreator, default as LabeledFieldView } from './labeledfield/labeledfieldview.js';
 export * from './labeledfield/utils.js';
