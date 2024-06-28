@@ -34,7 +34,8 @@ Learn more about Mermaid syntax and usage in a [dedicated article](https://ckedi
 After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
-import Mermaid from '@ckeditor/ckeditor5-mermaid/src/mermaid';
+import { ClassicEditor } from 'ckeditor5';
+import { Mermaid } from '@ckeditor/ckeditor5-mermaid';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
