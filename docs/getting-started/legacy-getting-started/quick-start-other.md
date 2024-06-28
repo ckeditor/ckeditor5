@@ -23,110 +23,10 @@ Available paths:
 
 ## Creating custom builds with online builder
 
-Although the CKEditor&nbsp;5 WYSIWYG editor comes with handy {@link getting-started/legacy-getting-started/predefined-builds predefined builds}, sometimes you need more flexibility. A need for more customized editors arises. Some of the reasons for creating custom builds are:
-
-* Adding {@link framework/architecture/plugins plugin-driven features} not included in the existing builds.
-* Removing unnecessary features present in a build.
-* Designing a {@link getting-started/setup/toolbar customized toolbar experience}.
-* Changing the {@link getting-started/legacy-getting-started/predefined-builds#available-builds editor type build}.
-* Changing the {@link getting-started/setup/ui-language localization language} of the editor.
-
-The [online builder](https://ckeditor.com/ckeditor-5/online-builder/) is an application that lets you design and download custom CKEditor&nbsp;5 builds. It allows you to create your bundles with your desired editor type, toolbar, and plugins in a few easy steps through a simple and intuitive UI.
-
-### Choosing the editor type
-
-The following editor types are currently available to choose from:
-
-* {@link getting-started/legacy-getting-started/predefined-builds#classic-editor Classic editor}
-* {@link getting-started/legacy-getting-started/predefined-builds#inline-editor Inline editor}
-* {@link getting-started/legacy-getting-started/predefined-builds#balloon-editor Balloon editor}
-* {@link getting-started/legacy-getting-started/predefined-builds#balloon-block-editor Balloon block editor}
-* {@link getting-started/legacy-getting-started/predefined-builds#document-editor Document editor}
-
- Refer to the predefined builds documentation and {@link examples/index examples} to check what kind of WYSIWYG editor suits your needs best. Once you choose the desired editor type, select it to move to the next step.
-
- For clarity, this guide will use the classic build as an example.
-
- {@img assets/img/online-builder-01-editor-type-choice.png 778 Editor type selection.}
-
-### Choosing plugins
-
-The basic build comes with a predefined set of plugins grouped in a bar at the top of the page. Take a moment to check these options out. You can freely remove the ones unnecessary in your build.
-
-{@img assets/img/online-builder-02-predefined-plugins.png 778 Predefined plugins. Feel free to remove unneeded ones.}
-
-Below the top bar with preselected plugins, you will find a sizable collection of features. You can add them to your custom build. Choose the ones that best suit your needs. Some plugins may not work well with others or may require dependencies. Online builder will provide information in such cases.
-
-{@img assets/img/online-builder-03-plugin-choice.png 778 Predefined plugins. Some plugins to choose from.}
-
-<info-box hint>
-	Some plugins require other plugins to work. These dependencies are mentioned in the **Requires plugins** section of the description box for each plugin. If this section is not present, the plugin does not need any other plugin to work.
-
-	Some of these plugins are **premium features** which require an additional license to run. They are marked with an appropriate <span class="tree__item__badge tree__item__badge_premium"><span class="tree__item__badge__text">Premium feature</span></span> badge.
+<info-box warning>
+	The old online builder was deprecated in favour of the new [Builder](https://ckeditor.com/ckeditor-5/builder?redir=docs) with live preview and new installation methods setup. We encourage the {@link updating/nim-migration/customized-builds migration to the new methods}.
+	If you still want to use the old setup, check the [updating packages](#updating-packages) section on how to update packages in the setup you have from the old online builder.
 </info-box>
-
-Once you have chosen all the desired plugins, press the **Next step** button on the top right.
-
-### Toolbar composition
-
-The next step allows you to compose the toolbar. A simple drag-and-drop workspace allows adding buttons (representing the plugins chosen in the previous step) to the toolbar. You may also change the order of the buttons and dropdowns and group them accordingly. Online builder allows you to create a multiline toolbar layout, too. Just drag any button below the already placed ones to create a new toolbar line.
-
-{@img assets/img/online-builder-04-toolbar-configurator.gif 753 The toolbar drag-and-drop configurator.}
-
-Some buttons are pre-placed on the layout and thus grayed out in the workspace with available toolbar items. If you want to remove any buttons from your toolbar setup, drag them back to the upper workspace.
-
-Once you finish designing the toolbar, press the **Next step** button on the top right.
-
-### Choosing the default language
-
-Scroll the list of available languages and check the one you want to be the default language of your editor build.
-
-{@img assets/img/online-builder-05-language-selection.png 367 Language selector list.}
-
-<info-box hint>
-	All other languages will still be available in the `translations` folder.
-</info-box>
-
-### Download the customized build
-
-This is as simple as it gets: just press the **Start** button to download your customized package.
-
-Now you have two options: to [customize your build](#customizing-builds) or [run it](#running-the-editor) in a browser.
-
-## Customizing builds
-
-Every build comes with a default set of features and their default configuration. Although the builds try to fit many use cases, you may still need to adjust them in some integrations. The following modifications are possible:
-
-* You can override the default **configuration of features** (for example, define different image styles or heading levels).
-* You can change the default **toolbar configuration** (for example, remove the undo and redo buttons).
-* You can also **remove features** (plugins).
-
-Read more in the {@link getting-started/setup/configuration Configuration guide}.
-
-A build may not provide all the necessary features. You may also want to create an optimized one with limited functionality. In such cases, customize the build or create a new one.
-
-A build is a simple npm package (usually developed in a Git repository) with a predefined list of dependencies. You can generate distribution files through the build process using that repository.
-
-Some of the reasons for creating custom builds are:
-
-* Adding features not included in the existing builds, either from a third party or custom-developed.
-* Removing unnecessary features present in a build.
-* Changing the {@link getting-started/setup/editor-lifecycle#creating-an-editor-with-create editor creator}.
-* Changing the {@link framework/theme-customization editor theme}.
-* Changing the {@link getting-started/setup/ui-language localization language} of the editor.
-* Enabling bug fixes that are still not a part of any public release.
-
-<info-box hint>
-	If you are looking for an easy way to create a custom build of CKEditor&nbsp;5, check the [online builder](https://ckeditor.com/ckeditor-5/online-builder/). It allows you to create a custom build through a simple and intuitive UI.
-</info-box>
-
-### Requirements
-
-To start developing CKEditor&nbsp;5 you will require:
-
-* [Node.js](https://nodejs.org/en/) 18.0.0+
-* [npm](https://www.npmjs.com) 5.7.1+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
-* [Git](https://git-scm.com/)
 
 ### Build anatomy
 
@@ -157,6 +57,23 @@ Then, you can add missing dependencies (that is, packages you want to add to you
 ```bash
 npm install @ckeditor/ckeditor5-alignment
 ```
+
+### Updating packages
+
+1. Open the folder from the old online builder.
+2. Open the `package.json` file.
+3. Update all CKEditor packages in the `dependencies` (`@ckeditor/ckeditor5-*`) to the latest version. For example:
+	```diff
+	- "@ckeditor/ckeditor5-basic-styles": "39.0.2",
+	+ "@ckeditor/ckeditor5-basic-styles": "42.0.0",
+	```
+
+	Make sure all packages have **the same version**, you will run into errors in the runtime otherwise.
+
+5. Run `npm update` in the root dir.
+6. Run `npm run build` in the root dir.
+
+The updated build file is ready in `build/ckeditor.js`.
 
 ### Updating build configuration
 
