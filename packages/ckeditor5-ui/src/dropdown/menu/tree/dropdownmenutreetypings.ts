@@ -7,7 +7,6 @@
  * @module ui/dropdown/menu/tree/dropdownmenutreetypings
  */
 
-import type { Increment } from '@ckeditor/ckeditor5-core';
 import type DropdownMenuView from '../dropdownmenuview.js';
 import type DropdownMenuListItemButtonView from '../dropdownmenulistitembuttonview.js';
 
@@ -43,9 +42,18 @@ type WithTreeEntryType<K extends string> = {
 };
 
 /**
- * The maximum depth of a dropdown menu tree.
+ * The maximum depth of a dropdown menu tree. MaxDropdownTreeMenuDepth is the maximum depth of a dropdown menu tree,
+ * it is used to prevent the dropdown menu tree from exceeding the maximum depth in the type system.
  */
 type MaxDropdownTreeMenuDepth = 6;
+
+/**
+ * It prevents TS from throwing an error when the depth of the dropdown menu tree is exceeded.
+ */
+type IncrementDropdownTreeDepth<N extends number> = [
+	1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+	...Array<number>
+][N];
 
 /**
  * Represents a flat item in a dropdown menu tree.
@@ -70,7 +78,9 @@ export type DropdownMenuViewsNestedTree<
 	& WithTreeSearchMetadata
 	& {
 		menu: DropdownMenuView;
-		children: MaxDropdownTreeMenuDepth extends Level ? never : Array<DropdownMenuViewsTreeChildItem<Extend, Increment<Level>>>;
+		children: MaxDropdownTreeMenuDepth extends Level
+			? never
+			: Array<DropdownMenuViewsTreeChildItem<Extend, IncrementDropdownTreeDepth<Level>>>;
 	};
 
 /**
