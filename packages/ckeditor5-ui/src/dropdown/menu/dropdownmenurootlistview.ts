@@ -12,7 +12,7 @@ import { compact } from 'lodash-es';
 import type { CollectionAddEvent } from '@ckeditor/ckeditor5-utils';
 import type DropdownMenuListItemView from './dropdownmenulistitemview.js';
 import type { Editor } from '@ckeditor/ckeditor5-core';
-import type { DropdownMenuDefinitions } from './definition/dropdownmenudefinitiontypings.js';
+import type { DropdownMenuDefinition } from './definition/dropdownmenudefinitiontypings.js';
 import type {
 	DropdownMenuExecuteItemEvent,
 	DropdownMenuChangeIsOpenEvent,
@@ -35,6 +35,11 @@ import { flattenDropdownMenuTree } from './tree/dropdownmenutreeflattenutils.js'
  * 	{
  * 		menu: 'Menu 1',
  * 		children: [
+ * 			{
+ * 				label: 'Menu item defined object definition',
+ * 				icon: 'your-icon',
+ * 				onExecute: () => { ... }
+ * 			},
  * 			new DropdownMenuListItemButtonView( locale, 'Item' ),
  * 			new ListSeparatorView( locale ),
  * 			{
@@ -90,7 +95,7 @@ export default class DropdownMenuRootListView extends DropdownMenuListView {
 	 */
 	constructor(
 		editor: Editor,
-		definitions?: DropdownMenuDefinitions,
+		definitions?: Array<DropdownMenuDefinition>,
 		options: DropdownMenuRootListViewAttributes = {}
 	) {
 		super( editor.locale );
