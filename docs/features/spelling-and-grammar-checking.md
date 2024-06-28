@@ -92,7 +92,7 @@ Then, add it to your plugin list and the toolbar configuration. Please note, tha
 
 ```js
 import { ClassicEditor } from 'ckeditor5';
-import WProofreader from '@webspellchecker/wproofreader-ckeditor5/src/wproofreader';
+import { WProofreader } from '@webspellchecker/wproofreader-ckeditor5';
 
 ClassicEditor
 	.create( editorElement, {
@@ -170,7 +170,7 @@ Add the following configuration to your editor:
 
 ```js
 import { ClassicEditor } from 'ckeditor5';
-import WProofreader from '@webspellchecker/wproofreader-ckeditor5/src/wproofreader';
+import { WProofreader } from '@webspellchecker/wproofreader-ckeditor5';
 
 ClassicEditor
 	.create( editorElement, {
@@ -193,7 +193,7 @@ You will need to add the following configuration to your editor:
 
 ```js
 import { ClassicEditor } from 'ckeditor5';
-import WProofreader from '@webspellchecker/wproofreader-ckeditor5/src/wproofreader';
+import { WProofreader } from '@webspellchecker/wproofreader-ckeditor5';
 
 ClassicEditor
 	.create( editorElement, {

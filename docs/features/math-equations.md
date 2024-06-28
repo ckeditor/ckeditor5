@@ -71,7 +71,7 @@ Then add it to your plugin list and the toolbar configuration. Please note, that
 
 ```js
 import { ClassicEditor } from 'ckeditor5';
-import MathType from '@wiris/mathtype-ckeditor5';
+import { MathType } from '@wiris/mathtype-ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
