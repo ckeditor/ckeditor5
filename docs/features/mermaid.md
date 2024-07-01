@@ -35,7 +35,9 @@ After {@link getting-started/quick-start installing the editor}, add the feature
 
 ```js
 import { ClassicEditor } from 'ckeditor5';
-import { Mermaid } from '@ckeditor/ckeditor5-mermaid';
+import { Mermaid } from '@ckeditor/ckeditor5-mermaid/dist/index.js';
+
+import '@ckeditor/ckeditor5-mermaid/dist/index.css';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

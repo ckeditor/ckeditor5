@@ -94,6 +94,8 @@ Then, add it to your plugin list and the toolbar configuration. Please note, tha
 import { ClassicEditor } from 'ckeditor5';
 import { WProofreader } from '@webspellchecker/wproofreader-ckeditor5';
 
+import '@webspellchecker/wproofreader-ckeditor5/index.css';
+
 ClassicEditor
 	.create( editorElement, {
 		plugins: [ WProofreader, /* ...], */ ]
