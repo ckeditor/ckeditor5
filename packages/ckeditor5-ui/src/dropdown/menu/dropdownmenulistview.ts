@@ -53,6 +53,7 @@ export default class DropdownMenuListView extends ListView {
 
 		this.role = 'menu';
 		this.set( {
+			_isScrollable: false,
 			isVisible: true,
 			isFocusBorderEnabled: false
 		} );

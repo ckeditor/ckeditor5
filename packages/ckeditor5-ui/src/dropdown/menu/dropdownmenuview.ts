@@ -294,11 +294,16 @@ export default class DropdownMenuView extends View implements FocusableView {
 	 * Adds the panel view to the editor's body and sets up event listeners.
 	 */
 	private _addToEditorBody() {
-		const { panelView, buttonView, keystrokes, editor } = this;
+		const {
+			panelView, listView, buttonView,
+			keystrokes, editor
+		} = this;
+
 		const { ui } = editor;
 		const { body } = ui.view;
 
 		if ( !body.has( panelView ) ) {
+			listView.checkIfScrollable();
 			body.add( panelView );
 			ui.focusTracker.add( panelView.element! );
 			keystrokes.listenTo( panelView.element! );

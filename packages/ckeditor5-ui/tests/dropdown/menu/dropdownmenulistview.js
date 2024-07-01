@@ -3,11 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
+/* global document, Event */
 
+import { global } from '@ckeditor/ckeditor5-utils';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { DropdownMenuFactory } from '../../../src/dropdown/menu/dropdownmenufactory.js';
-import { ListView, DropdownMenuListView, DropdownMenuView } from '../../../src/index.js';
+import { ListView, DropdownMenuListView, DropdownMenuView, ListItemView } from '../../../src/index.js';
 
 import { createMockLocale, createMockMenuDefinition } from './_utils/dropdowntreemock.js';
 import {
@@ -45,6 +46,84 @@ describe( 'DropdownMenuListView', () => {
 
 		it( 'should have #role set', () => {
 			expect( listView.role ).to.equal( 'menu' );
+		} );
+
+		it( 'should have #isFocusBorderEnabled set to false', () => {
+			expect( listView.isFocusBorderEnabled ).to.be.false;
+		} );
+
+		it( 'should bind #isFocusBorderEnabled to proper class name', () => {
+			listView.render();
+
+			listView.isFocusBorderEnabled = true;
+			expect( listView.element.classList.contains( 'ck-dropdown-menu_focus-border-enabled' ) ).to.be.true;
+
+			listView.isFocusBorderEnabled = false;
+			expect( listView.element.classList.contains( 'ck-dropdown-menu_focus-border-enabled' ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'scrolling', () => {
+		beforeEach( () => {
+			listView.render();
+			document.body.append( listView.element );
+		} );
+
+		afterEach( () => {
+			listView.element.remove();
+		} );
+
+		it( 'should have #_isScrollable set to false', () => {
+			expect( listView._isScrollable ).to.be.false;
+		} );
+
+		it( 'should bind #_isScrollable to proper class name', () => {
+			listView._isScrollable = true;
+			expect( listView.element.classList.contains( 'ck-dropdown-menu_scrollable' ) ).to.be.true;
+
+			listView._isScrollable = false;
+			expect( listView.element.classList.contains( 'ck-dropdown-menu_scrollable' ) ).to.be.false;
+		} );
+
+		it( 'should check if scrollable after render', () => {
+			listView.element.remove();
+			listView = new DropdownMenuListView( locale );
+
+			const checkIfScrollableSpy = sinon.spy( listView, 'checkIfScrollable' );
+
+			expect( checkIfScrollableSpy ).not.to.be.called;
+			listView.render();
+			expect( checkIfScrollableSpy ).to.be.calledOnce;
+		} );
+
+		it( 'should set _isScrollable to true if scrollHeight is greater than clientHeight', () => {
+			listView.element.style.height = '9999px';
+			listView.checkIfScrollable();
+			expect( listView._isScrollable ).to.be.true;
+
+			listView.element.style.height = '9px';
+			listView.checkIfScrollable();
+			expect( listView._isScrollable ).to.be.false;
+		} );
+
+		it( 'should call checkIfScrollable on resize event', () => {
+			const checkIfScrollableSpy = sinon.spy( listView, 'checkIfScrollable' );
+
+			global.window.dispatchEvent( new Event( 'resize' ) );
+
+			expect( checkIfScrollableSpy ).to.be.calledOnce;
+		} );
+
+		it( 'should call checkIfScrollable on items list change', () => {
+			const checkIfScrollableSpy = sinon.spy( listView, 'checkIfScrollable' );
+
+			listView.items.add( new ListItemView() );
+
+			expect( checkIfScrollableSpy ).to.be.calledOnce;
+
+			listView.items.remove( listView.items.get( 0 ) );
+
+			expect( checkIfScrollableSpy ).to.be.calledTwice;
 		} );
 	} );
 
