@@ -82,24 +82,19 @@ The spell and grammar check is compliant with Web Content Accessibility Guidelin
 	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-<info-box info>
-	This is a premium feature that requires a commercial license. If you do not have one yet, please [contact us](https://ckeditor.com/contact/).
-</info-box>
-
-<info-box warning>
-	We are working with our partners to update this package to work with our new installation methods. Meanwhile, if you use or plan to use this package, please continue to use our legacy installation methods which are still supported.
-</info-box>
-
 WProofreader is delivered as a CKEditor&nbsp;5 plugin, so you can combine it into an editor preset just like other features. To add this feature to your rich-text editor, install the [`@webspellchecker/wproofreader-ckeditor5`](https://www.npmjs.com/package/@webspellchecker/wproofreader-ckeditor5) package:
 
 ```
 npm install --save @webspellchecker/wproofreader-ckeditor5
 ```
 
-Then, add it to your plugin list and the toolbar configuration:
+Then, add it to your plugin list and the toolbar configuration. Please note, that unlike native CKEditor&nbsp;5 plugins, this one is imported from its own package. Also, that this import is different than the standard CKEditor&nbsp;5 plugins import:
 
 ```js
-import WProofreader from '@webspellchecker/wproofreader-ckeditor5/src/wproofreader';
+import { ClassicEditor } from 'ckeditor5';
+import { WProofreader } from '@webspellchecker/wproofreader-ckeditor5';
+
+import '@webspellchecker/wproofreader-ckeditor5/index.css';
 
 ClassicEditor
 	.create( editorElement, {
@@ -110,63 +105,6 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-When you try to build CKEditor&nbsp;5 from source with WProofreader included, you need to adjust the example `webpack.config.js` provided in the {@link getting-started/legacy-getting-started/quick-start-other#building-the-editor-from-source building from source guide}. It needs to also allow including icons and styling from the WProofreader package. There are two ways to do this.
-
-The first configuration option is simpler:
-
-```js
-	///[...]
-	module: {
-		rules: [
-			{
-                test: /\.svg$/,
-
-                use: [ 'raw-loader' ]
-            },
-            {
-                test: /\.css$/,
-
-                use: [
-                    {
-						loader: 'style-loader',
-						///[...]
-					}
-				]
-			}
-			///[...]
-		]
-	}
-```
-However, this approach can affect `.svg` and `.css` files included from outside of CKEditor&nbsp;5-related packages.
-
-Therefore, the best option is to use another configuration solution. This one will only load `.svg` and `.css` files imported from CKEditor&nbsp;5-related packages:
-
-```js
-	// ...
-	module: {
-		rules: [
-			{
-				test: /ckeditor5([^\/\\]+)?[\/\\]theme[\/\\]icons[\/\\][^\/\\]+\.svg$/,
-
-				use: [ 'raw-loader' ]
-			},
-			{
-				test: /ckeditor5([^\/\\]+)?[\/\\]theme[/\\].+\.css$/,
-
-				use: [
-					{
-						loader: 'style-loader',
-						// ...
-					}
-				]
-			}
-			// ...
-		]
-	}
-```
-
-With this modification to the `webpack.config.js`, it is possible to build CKEditor&nbsp;5 from source with WProofreader included.
-
 At this step, you need to provide a proper configuration. You can use WProofreader either as a [cloud solution](#wproofreader-cloud) or [hosted on your server](#wproofreader-on-premises) (on-premises or in a private cloud).
 
 ### WProofreader Cloud
@@ -176,7 +114,10 @@ After signing up for a [trial or paid version](https://ckeditor.com/contact/), y
 Add the following configuration to your editor:
 
 ```js
-import WProofreader from '@webspellchecker/wproofreader-ckeditor5/src/wproofreader';
+import { ClassicEditor } from 'ckeditor5';
+import { WProofreader } from '@webspellchecker/wproofreader-ckeditor5';
+
+import '@webspellchecker/wproofreader-ckeditor5/index.css';
 
 ClassicEditor
 	.create( editorElement, {
@@ -198,7 +139,10 @@ After signing up for a [trial or paid version](https://ckeditor.com/contact/), y
 You will need to add the following configuration to your editor:
 
 ```js
-import WProofreader from '@webspellchecker/wproofreader-ckeditor5/src/wproofreader';
+import { ClassicEditor } from 'ckeditor5';
+import { WProofreader } from '@webspellchecker/wproofreader-ckeditor5';
+
+import '@webspellchecker/wproofreader-ckeditor5/index.css';
 
 ClassicEditor
 	.create( editorElement, {
