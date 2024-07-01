@@ -189,6 +189,14 @@ describe( 'DropdownMenuRootListView', () => {
 
 			sinon.assert.calledOnceWithExactly( spy, rootListView );
 		} );
+
+		it( 'should add a behavior that tracks if user performed keyboard focus interaction', () => {
+			const spy = sinon.spy( DropdownRootMenuBehaviors, 'enableFocusHighlightOnInteraction' );
+
+			rootListView.render();
+
+			sinon.assert.calledOnceWithExactly( spy, rootListView );
+		} );
 	} );
 
 	describe( 'events', () => {
@@ -268,6 +276,59 @@ describe( 'DropdownMenuRootListView', () => {
 		} );
 	} );
 
+	describe( 'isFocusBorderEnabled', () => {
+		it( 'should bind changes in `isFocusBorderEnabled` to every submenu menu', () => {
+			const rootListView = createRootListWithDefinition(
+				createMockMenuDefinition()
+			);
+
+			expect( rootListView.menus.some( menu => menu.listView.isFocusBorderEnabled ) ).to.be.false;
+
+			rootListView.isFocusBorderEnabled = true;
+
+			expect( rootListView.menus.every( menu => menu.listView.isFocusBorderEnabled ) ).to.be.true;
+		} );
+
+		it( 'should set `isFocusBorderEnabled` to every submenu added via appendChildren()', () => {
+			const rootListView = createRootListWithDefinition( [] );
+
+			rootListView.isFocusBorderEnabled = true;
+			rootListView.factory.appendChildren( [
+				createMockMenuDefinition( 'Menu 1' ),
+				createMockMenuDefinition( 'Menu 2' )
+			] );
+
+			expect( rootListView.menus.every( menu => menu.listView.isFocusBorderEnabled ) ).to.be.true;
+		} );
+
+		it( 'should set `isFocusBorderEnabled` to reused menu instance', () => {
+			const rootListView = createRootListWithDefinition(
+				[
+					{
+						menu: 'Tralala',
+						children: [ new DropdownMenuView( editor, 'Hello World 1' ) ]
+					},
+					{
+						menu: 'Tralala',
+						children: [ new DropdownMenuView( editor, 'Hello World 2' ) ]
+					}
+				]
+			);
+
+			rootListView.isFocusBorderEnabled = true;
+			rootListView.factory.appendChild(
+				{
+					menu: 'Menu Root',
+					children: [ new DropdownMenuView( editor, 'Hello World 3' ) ]
+				}
+			);
+
+			const menus = rootListView.menus.filter( menu => menu.listView.isFocusBorderEnabled ).length;
+
+			expect( menus ).to.be.equal( 6 );
+		} );
+	} );
+
 	describe( 'menuPanelClass', () => {
 		it( 'should append `menuPanelClass` to every added submenu via constructor definition', () => {
 			const rootListView = createRootListWithDefinition(
@@ -300,7 +361,7 @@ describe( 'DropdownMenuRootListView', () => {
 			expect( menus ).to.be.equal( 2 );
 		} );
 
-		it( 'should append `menuPanelClass` to reusing menu instance', () => {
+		it( 'should append `menuPanelClass` to reused menu instance', () => {
 			const rootListView = createRootListWithDefinition(
 				[
 					{

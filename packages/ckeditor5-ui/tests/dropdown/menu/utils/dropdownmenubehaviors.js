@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, Event */
+/* global document, Event, KeyboardEvent */
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
@@ -93,6 +93,14 @@ describe( 'Menu Behaviors', () => {
 			beforeEach( () => {
 				menuView = treeNodeByLabel( 'Menu 1' ).menu;
 				otherMenu = treeNodeByLabel( 'Menu 2' ).menu;
+			} );
+
+			it( 'should focus hovered menu', () => {
+				const spyFocus = sinon.spy( menuView.buttonView.element, 'focus' );
+
+				menuView.buttonView.fire( 'mouseenter' );
+
+				expect( spyFocus ).to.be.calledOnce;
 			} );
 
 			it( 'should close other menu on hover menu button item', () => {
@@ -197,6 +205,94 @@ describe( 'Menu Behaviors', () => {
 				menuView.element.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 				clock.tick( 10 );
 				expect( menuView.isOpen ).to.be.true;
+			} );
+		} );
+
+		describe( 'enableFocusHighlightOnInteraction', () => {
+			it( 'should set proper isFocusBorderEnabled when #isOpen changes', () => {
+				const menuA = treeNodeByLabel( 'Menu 1' ).menu;
+
+				menuA.isOpen = true;
+				rootListView.isFocusBorderEnabled = true;
+
+				// should set isFocusBorderEnabled to false
+				rootListView.isOpen = false;
+
+				expect( rootListView.isFocusBorderEnabled ).to.be.false;
+			} );
+
+			it( 'should set proper isFocusBorderEnabled when a key is pressed', () => {
+				const menuA = treeNodeByLabel( 'Menu 1' ).menu;
+
+				menuA.isOpen = true;
+				menuA.buttonView.focus();
+
+				expect( rootListView.isFocusBorderEnabled ).to.be.false;
+
+				menuA.element.dispatchEvent( new KeyboardEvent( 'keydown', { keyCode: keyCodes.arrowdown } ) );
+				menuA.element.dispatchEvent( new Event( 'focus', { keyCode: keyCodes.arrowdown } ) );
+
+				expect( rootListView.isFocusBorderEnabled ).to.be.true;
+
+				menuA.element.dispatchEvent( new KeyboardEvent( 'keyup', { keyCode: keyCodes.arrowdown } ) );
+
+				expect( rootListView.isFocusBorderEnabled ).to.be.true;
+			} );
+
+			it( 'should set proper isFocusBorderEnabled when a keyup fires before focus', () => {
+				const menuA = treeNodeByLabel( 'Menu 1' ).menu;
+
+				menuA.isOpen = true;
+				menuA.buttonView.focus();
+
+				expect( rootListView.isFocusBorderEnabled ).to.be.false;
+
+				menuA.element.dispatchEvent( new KeyboardEvent( 'keydown', { keyCode: keyCodes.arrowdown } ) );
+				menuA.element.dispatchEvent( new KeyboardEvent( 'keyup', { keyCode: keyCodes.arrowdown } ) );
+				menuA.element.dispatchEvent( new Event( 'focus', { keyCode: keyCodes.arrowdown } ) );
+
+				expect( rootListView.isFocusBorderEnabled ).to.be.false;
+			} );
+
+			it( 'should set proper isFocusBorderEnabled when a keydown fires before focus', () => {
+				const menuA = treeNodeByLabel( 'Menu 1' ).menu;
+
+				menuA.isOpen = true;
+				menuA.buttonView.focus();
+
+				expect( rootListView.isFocusBorderEnabled ).to.be.false;
+
+				menuA.element.dispatchEvent( new Event( 'focus', { keyCode: keyCodes.arrowdown } ) );
+				menuA.element.dispatchEvent( new KeyboardEvent( 'keydown', { keyCode: keyCodes.arrowdown } ) );
+				menuA.element.dispatchEvent( new KeyboardEvent( 'keyup', { keyCode: keyCodes.arrowdown } ) );
+
+				expect( rootListView.isFocusBorderEnabled ).to.be.false;
+			} );
+
+			it( 'should set proper isFocusBorderEnabled when a clicked and focused item on opened menu', () => {
+				const clock = sinon.useFakeTimers();
+
+				sinon.stub( rootListView.element, 'matches' ).withArgs( ':focus-within' ).returns( true	);
+
+				const menuA = treeNodeByLabel( 'Menu 1' ).menu;
+
+				menuA.isOpen = true;
+				menuA.buttonView.focus();
+
+				expect( rootListView.isFocusBorderEnabled ).to.be.false;
+
+				menuA.buttonView.element.dispatchEvent( new Event( 'click' ) );
+
+				expect( rootListView.isFocusBorderEnabled ).to.be.true;
+
+				menuA.isOpen = false;
+				clock.tick( 1000 );
+
+				expect( rootListView.isFocusBorderEnabled ).to.be.false;
+
+				menuA.buttonView.element.dispatchEvent( new Event( 'click' ) );
+
+				expect( rootListView.isFocusBorderEnabled ).to.be.false;
 			} );
 		} );
 
