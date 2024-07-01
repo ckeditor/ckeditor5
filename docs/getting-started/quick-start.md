@@ -11,6 +11,13 @@ modified_at: 2024-06-25
 
 CKEditor&nbsp;5 is a powerful, rich text editor you can embed in your web application. This guide will show you the fastest way to start using it.
 
+You have a couple of methods to pick from:
+
+* [CKEditor 5 Builder](#using-ckeditor-5-builder) for the smoothest setup with live preview, and multiple integration options.
+* [With npm](#installing-ckeditor-5-using-npm) where you integrate with JavaScript packages and build the editor with your bundler.
+* [With CDN](#installing-ckeditor-5-from-cdn) where you use our cloud-distributed CDN in a no-build setup.
+* [With a provided JavaScript file](#installing-ckeditor-5-from-a-file) where you simply download the setup and copy files to your project.
+
 ## Using CKEditor&nbsp;5 Builder
 
 Check out our [interactive Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs) to quickly get a taste of CKEditor&nbsp;5. It offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs. You can easily select:
@@ -181,6 +188,24 @@ Your final page should look similar to the one below.
 	</body>
 </html>
 ```
+
+## Installing CKEditor&nbsp;5 from a file
+
+If you don't want to build your project using npm, and you cannot rely on the CDN delivery, you can download CKEditor 5 with all its plugins.
+
+1. <a href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/zip/ckeditor5-{@var ckeditor5-version}.zip" download>Download the ZIP file with the latest CKEditor 5 distribution.</a>
+2. Extract the .zip file into a dedicated directory inside your project. It is recommended to include the editor version in the directory name to ensure proper cache invalidation once a new version of CKEditor 5 is installed.
+
+Included files:
+
+* `index.html`: a sample with a working editor.
+* `ckeditor5/ckeditor5.js` – The ready-to-use editor ESM bundle, containing the editor and all plugins. [Recommended build]
+* `ckeditor5/ckeditor.js.map` – The source map for the editor ESM bundle.
+* `ckeditor5/ckeditor5.umd.js` – The ready-to-use editor UMD bundle, containing the editor and all plugins. [Secondary build]
+* `ckeditor5/ckeditor5.umd.js.map` – The source map for the editor UMD bundle.
+* `ckeditor5/*.css` – The style sheets for the editor, use `ckeditor5.css` in most cases, {@link getting-started/setup/css read more about other files}.
+* `translations/` – The editor UI translations (see {@link getting-started/setup/ui-language Setting the UI language}).
+* `README.md` and `LICENSE.md`.
 
 ## Installing premium features
 
@@ -353,6 +378,28 @@ Your final page should look similar to the one below.
 	</body>
 </html>
 ```
+
+### Installing premium features from a file
+
+1. <a href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/zip/ckeditor5-premium-features-{@var ckeditor5-version}.zip" download>Download the ZIP file with the latest CKEditor 5 distribution and premium features.</a>
+2. Extract the .zip file into a dedicated directory inside your project. It is recommended to include the editor version in the directory name to ensure proper cache invalidation once a new version of CKEditor 5 is installed.
+
+Included files:
+
+* `index.html`: a sample with a working editor.
+* `ckeditor5` directory:
+	* `ckeditor5.js` – The ready-to-use editor ESM bundle, containing the editor and all plugins. [Recommended build]
+	* `ckeditor.js.map` – The source map for the editor ESM bundle.
+	* `ckeditor5.umd.js` – The ready-to-use editor UMD bundle, containing the editor and all plugins. [Secondary build]
+	* `ckeditor5.umd.js.map` – The source map for the editor UMD bundle.
+	* `*.css` – The style sheets for the editor, use `ckeditor5.css` in most cases, {@link getting-started/setup/css read more about other files}.
+	* `translations/` – The editor UI translations (see {@link getting-started/setup/ui-language Setting the UI language}).
+* `ckeditor5-premium-features` directory:
+	* `ckeditor5-premium-features.js` – ESM bundle of premium features.  [Recommended build]
+	* `ckeditor5-premium-features.umd.js` – UMD bundle of premium features, containing the editor and all plugins. [Secondary build]
+	* `*.css` – The style sheets for the premium features, use `ckeditor5-premium-features.css` in most cases, {@link getting-started/setup/css read more about other files}.
+	* `translations/` – The premium features UI translations (see {@link getting-started/setup/ui-language Setting the UI language}).
+* `README.md` and `LICENSE.md` files.
 
 ### Obtaining a license key
 
