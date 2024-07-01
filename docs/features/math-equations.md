@@ -67,11 +67,11 @@ MathType is delivered as a CKEditor&nbsp;5 plugin, so it can be combined into an
 npm install --save @wiris/mathtype-ckeditor5
 ```
 
-Then add it to your plugin list and the toolbar configuration. Please note, that unlike native CKEditor&nbsp;5 plugins, this one is imported from its own package:
+Then add it to your plugin list and the toolbar configuration. Please note, that unlike native CKEditor&nbsp;5 plugins, this one is imported from its own package. Please note, that this import is different than the standard CKEditor&nbsp;5 plugins import:
 
 ```js
 import { ClassicEditor } from 'ckeditor5';
-import { MathType } from '@wiris/mathtype-ckeditor5';
+import MathType from '@wiris/mathtype-ckeditor5/dist/index.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
