@@ -8,7 +8,7 @@
 import { global } from '@ckeditor/ckeditor5-utils';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { DropdownMenuFactory } from '../../../src/dropdown/menu/dropdownmenufactory.js';
-import { ListView, DropdownMenuListView, DropdownMenuView, ListItemView } from '../../../src/index.js';
+import { ListView, DropdownMenuListView, DropdownMenuView, ListItemView, DropdownMenuListItemButtonView } from '../../../src/index.js';
 
 import { createMockLocale, createMockMenuDefinition } from './_utils/dropdowntreemock.js';
 import {
@@ -60,6 +60,28 @@ describe( 'DropdownMenuListView', () => {
 
 			listView.isFocusBorderEnabled = false;
 			expect( listView.element.classList.contains( 'ck-dropdown-menu_focus-border-enabled' ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'hasCheckSpace', () => {
+		it( 'should assign icon space if appended toggleable item', () => {
+			factory.appendChildren( [
+				new DropdownMenuListItemButtonView( locale, 'Foo' ),
+				new DropdownMenuListItemButtonView( locale, 'Bar' )
+			] );
+
+			expect( listView.items ).to.have.length( 2 );
+			expect( [ ...listView.items ].some( item => item.childView.hasCheckSpace ) ).to.be.false;
+
+			const toggleableButton = new DropdownMenuListItemButtonView( locale, 'Buz' );
+
+			toggleableButton.isToggleable = true;
+			factory.appendChildren( [
+				toggleableButton
+			] );
+
+			expect( listView.items ).to.have.length( 3 );
+			expect( [ ...listView.items ].every( item => item.childView.hasCheckSpace ) ).to.be.true;
 		} );
 	} );
 
