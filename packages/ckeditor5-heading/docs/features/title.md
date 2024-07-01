@@ -24,15 +24,23 @@ The title plugin lets you move from the title to the body element using the <kbd
 
 ## Installation
 
+<info-box info>
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
+</info-box>
+
 After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
 import { ClassicEditor, Title } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Title, /* ... */ ]
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Title, /* ... */ ]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Placeholder integration
@@ -42,14 +50,16 @@ The title plugin is integrated with the {@link features/editor-placeholder place
 To change the title placeholder, use the {@link module:heading/title~TitleConfig#placeholder `title.placeholder`} configuration option. For instance:
 
 ```js
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Title, /* ... */ ],
-	title: {
-		placeholder: 'My custom placeholder for the title'
-	},
-	placeholder: 'My custom placeholder for the body'
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Title, /* ... */ ],
+		title: {
+			placeholder: 'My custom placeholder for the title'
+		},
+		placeholder: 'My custom placeholder for the body'
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## HTML structure

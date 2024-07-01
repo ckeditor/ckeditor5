@@ -1,12 +1,7 @@
 ---
-# Scope:
-# * Guide developers through the Content Security Policy directives that have an impact on the editor.
-# * List the recommended Content Security Policy settings.
-# * List the strictest working Content Security Policy settings.
-
 category: setup
 meta-title: Content Security Policy | CKEditor 5 documentation
-order: 90
+order: 110
 ---
 
 # Content Security Policy

@@ -11,7 +11,12 @@ As a pure JavaScript/TypeScript application, CKEditor&nbsp;5 will work inside an
 
 ## Using CKEditor&nbsp;5 Builder
 
-The easiest way to use CKEditor&nbsp;5 in your .NET project is preparing an editor preset with [CKEditor&nbsp;5 Builder](https://ckeditor.com/builder?redirect=docs) and including it into your project.
+The easiest way to use CKEditor&nbsp;5 in your .NET project is preparing an editor preset with [CKEditor&nbsp;5 Builder](https://ckeditor.com/builder?redirect=docs) and including it into your project. Builder offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs. You can easily select:
+* the features you need,
+* the preferred framework (React, Angular, Vue or Vanilla JS),
+* the preferred distribution method.
+
+You get ready-to-use code tailored to your needs!
 
 ## Setting up the project
 
@@ -43,41 +48,48 @@ Inside the file, paste the JavaScript code from CKEditor&nbsp;5 Builder. The cod
 
 ```js
 import {
-    ClassicEditor,
-    AccessibilityHelp,
-    Autosave,
-    Bold,
-    Essentials,
-    Italic,
-    Mention,
-    Paragraph,
-    SelectAll,
-    Undo
+	ClassicEditor,
+	AccessibilityHelp,
+	Autosave,
+	Bold,
+	Essentials,
+	Italic,
+	Mention,
+	Paragraph,
+	SelectAll,
+	Undo
 } from 'ckeditor5';
 import { SlashCommand } from 'ckeditor5-premium-features';
 
 const editorConfig = {
-    toolbar: {
-        items: ['undo', 'redo', '|', 'selectAll', '|', 'bold', 'italic', '|', 'accessibilityHelp'],
-        shouldNotGroupWhenFull: false
-    },
-    placeholder: 'Type or paste your content here!',
-    plugins: [AccessibilityHelp, Autosave, Bold, Essentials, Italic, Mention, Paragraph, SelectAll, SlashCommand, Undo],
-    licenseKey: '<YOUR_LICENSE_KEY>',
-    mention: {
-        feeds: [
-            {
-                marker: '@',
-                feed: [
-                    /* See: https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html */
-                ]
-            }
-        ]
-    },
-    initialData: "<h2>Congratulations on setting up CKEditor 5! 🎉</h2>"
+	toolbar: {
+		items: ['undo', 'redo', '|', 'selectAll', '|', 'bold', 'italic', '|', 'accessibilityHelp'],
+		shouldNotGroupWhenFull: false
+	},
+	placeholder: 'Type or paste your content here!',
+	plugins: [AccessibilityHelp, Autosave, Bold, Essentials, Italic, Mention, Paragraph, SelectAll, SlashCommand, Undo],
+	licenseKey: '<YOUR_LICENSE_KEY>',
+	mention: {
+		feeds: [
+			{
+				marker: '@',
+				feed: [
+					/* See: https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html */
+				]
+			}
+		]
+	},
+	initialData: "<h2>Congratulations on setting up CKEditor 5! 🎉</h2>"
 };
 
-ClassicEditor.create(document.querySelector('#editor'), editorConfig);
+ClassicEditor
+	.create( document.querySelector( '#editor' ), editorConfig )
+	.then( editor => {
+		console.log( editor );
+	} )
+	.catch( error => {
+		console.error( error );
+	} );
 ```
 
 Then, modify the `Index.cshtml` file in the `Pages` directory to include the CKEditor 5 scripts. All necessary scripts and links are in the HTML snippet from CKEditor&nbsp;5 Builder. You can copy and paste them into your template. It should look similar to the one below:
@@ -86,24 +98,24 @@ Then, modify the `Index.cshtml` file in the `Pages` directory to include the CKE
 @page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+	ViewData["Title"] = "Home page";
 }
 
 <div class="text-center">
-    <div id="editor"></div>
-    <link rel="stylesheet" href="<CDN_LINK>/ckeditor5/dist/styles.css" />
-	<link rel="stylesheet" href="<CDN_LINK>/ckeditor5-premium-features/dist/index.css" />
-    <script type="importmap">
+	<div id="editor"></div>
+	<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
+	<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
+	<script type="importmap">
 		{
 			"imports": {
-                "ckeditor5": "<CDN_LINK>/ckeditor5/index.min.js",
-                "ckeditor5/": "<CDN_LINK>/ckeditor5/",
-                "ckeditor5-premium-features": "<CDN_LINK>/ckeditor5-premium-features/index.min.js",
-                "ckeditor5-premium-features/": "<CDN_LINK>/ckeditor5-premium-features/"
+				"ckeditor5": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.js",
+				"ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/",
+				"ckeditor5-premium-features": "https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.js",
+				"ckeditor5-premium-features/": "https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/"
 			}
 		}
-    </script>
-    <script type="module" src="assets/vendor/ckeditor.js"></script>
+	</script>
+	<script type="module" src="assets/vendor/ckeditor.js"></script>
 </div>
 ```
 

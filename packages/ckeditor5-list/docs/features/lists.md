@@ -74,6 +74,12 @@ Click the second list and use the ordered list {@icon @ckeditor/ckeditor5-core/t
 
 ## Installation
 
+<info-box info>
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
+</info-box>
+
 The `List` plugin provides the {@link features/lists ordered (numbered) and unordered (bulleted) features} for CKEditor&nbsp;5. {@link features/lists#list-properties Additional list properties}, such as list marker styles, start index, or reversed list order, are provided by the `ListProperties` plugin.
 
 ### List feature
@@ -83,11 +89,13 @@ After {@link getting-started/quick-start installing the editor}, add the feature
 ```js
 import { List } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ List, /* ... */ ],
-	toolbar: [ 'bulletedList', 'numberedList', /* ... */ ]
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ List, /* ... */ ],
+		toolbar: [ 'bulletedList', 'numberedList', /* ... */ ]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ### List properties
@@ -99,18 +107,20 @@ To enable selected sub-features of the list properties, add their configuration 
 ```js
 import { ListProperties } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ ListProperties, /* ... */ ],
-	toolbar: [ 'bulletedList', 'numberedList', /* ... */ ],
-	list: {
-		properties: {
-			styles: true,
-			startIndex: true,
-			reversed: true
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ ListProperties, /* ... */ ],
+		toolbar: [ 'bulletedList', 'numberedList', /* ... */ ],
+		list: {
+			properties: {
+				styles: true,
+				startIndex: true,
+				reversed: true
+			}
 		}
-	}
-} )
-.then( /* ... */ );
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box warning>

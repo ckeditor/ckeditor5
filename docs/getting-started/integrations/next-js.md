@@ -17,7 +17,13 @@ CKEditor&nbsp;5 does not support server-side rendering yet, but you can integrat
 
 ## Using CKEditor&nbsp;5 Builder
 
-The easiest way to use CKEditor&nbsp;5 in your Next.js application is configuring it with [CKEditor&nbsp;5 Builder](https://ckeditor.com/builder?redirect=docs) and integrating it with your project.
+The easiest way to use CKEditor&nbsp;5 in your Next.js application is configuring it with [CKEditor&nbsp;5 Builder](https://ckeditor.com/builder?redirect=docs) and integrating it with your project. Builder offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs. You can easily select:
+
+* the features you need,
+* the preferred framework (React, Angular, Vue or Vanilla JS),
+* the preferred distribution method.
+
+You get ready-to-use code tailored to your needs! You can take the output from the builder, specifically the npm React snippet, and follow the npm path below. Just replace the content of the `components/custom-editor.js` file. The snippet may contain client-side hooks, so don't forget about adding the `'use client'` directive in the case of the App Router.
 
 ## Setting up the project
 
@@ -54,28 +60,28 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
 import { SlashCommand } from 'ckeditor5-premium-features';
 
-import 'ckeditor5/index.css';
-import 'ckeditor5-premium-features/index.css';
+import 'ckeditor5/ckeditor5.css';
+import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 
 function CustomEditor() {
-    return (
-        <CKEditor
-            editor={ ClassicEditor }
-            config={ {
-                toolbar: {
-                    items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-                },
-                plugins: [
-                    Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
-                ],
-                licenseKey: '<YOUR_LICENSE_KEY>',
-                mention: { 
-                    // Mention configuration
-                },
-                initialData: '<p>Hello from CKEditor 5 in React!</p>'
-            } }
-        />
-    );
+	return (
+		<CKEditor
+			editor={ ClassicEditor }
+			config={ {
+				toolbar: {
+					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+				},
+				plugins: [
+					Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
+				],
+				licenseKey: '<YOUR_LICENSE_KEY>',
+				mention: { 
+					// Mention configuration
+				},
+				initialData: '<p>Hello from CKEditor 5 in React!</p>'
+			} }
+		/>
+	);
 }
 
 export default CustomEditor;
@@ -95,11 +101,17 @@ const CustomEditor = dynamic( () => import( '@/components/custom-editor' ), { ss
 
 function Home() {
   return (
-    <CustomEditor />
+	<CustomEditor />
   );
 }
 
 export default Home;
 ```
 
-You can run your project now. If you chose `create-next-app`, type `npm run dev` to see your application in the browser. If you have trouble seeing the editor, remember that the Next.js project ships with CSS files that can interfere with the editor. You can remove them or add your styling. Also, pay attention to the import path - this guide uses the [default import alias](https://nextjs.org/docs/app/building-your-application/configuring/absolute-imports-and-module-aliases) (@). If you did not configure it, change the path appropriately.
+You can run your project now. If you chose `create-next-app`, type `npm run dev` to see your application in the browser.
+
+<info-box warning>
+If you have trouble seeing the editor, remember that the Next.js project ships with CSS files that can interfere with the editor. You can remove them or add your styling.
+</info-box>
+
+Also, pay attention to the import path - this guide uses the [default import alias](https://nextjs.org/docs/app/building-your-application/configuring/absolute-imports-and-module-aliases) (@). If you did not configure it, change the path appropriately.

@@ -43,6 +43,11 @@
 		   https://github.com/ckeditor/ckeditor5-heading/issues/63 */
 		padding: var(--ck-list-button-padding);
 
+		& .ck-button__label {
+			/* https://github.com/ckeditor/ckeditor5-heading/issues/63 */
+			line-height: calc(var(--ck-line-height-base) * var(--ck-font-size-base));
+		}
+
 		&:active {
 			box-shadow: none;
 		}

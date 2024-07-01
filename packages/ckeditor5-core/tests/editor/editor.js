@@ -20,6 +20,8 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 import testUtils from '../../tests/_utils/utils.js';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import Accessibility from '../../src/accessibility.js';
+import EditorWatchdog from '@ckeditor/ckeditor5-watchdog/src/editorwatchdog.js';
+import ContextWatchdog from '@ckeditor/ckeditor5-watchdog/src/contextwatchdog.js';
 
 class TestEditor extends Editor {
 	static create( config ) {
@@ -1345,6 +1347,20 @@ describe( 'Editor', () => {
 				testUtils.sinon.assert.calledOnce( spy );
 				testUtils.sinon.assert.calledWith( spy, options );
 			} );
+		} );
+	} );
+
+	describe( 'static fields', () => {
+		it( 'Editor.Context', () => {
+			expect( Editor.Context ).to.equal( Context );
+		} );
+
+		it( 'Editor.EditorWatchdog', () => {
+			expect( Editor.EditorWatchdog ).to.equal( EditorWatchdog );
+		} );
+
+		it( 'Editor.ContextWatchdog', () => {
+			expect( Editor.ContextWatchdog ).to.equal( ContextWatchdog );
 		} );
 	} );
 } );
