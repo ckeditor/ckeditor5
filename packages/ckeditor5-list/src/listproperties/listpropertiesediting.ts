@@ -259,7 +259,7 @@ function createAttributeStrategies( enabledProperties: ListPropertiesConfig ) {
 	const listPropertiesStyles = enabledProperties.styles;
 
 	if ( listPropertiesStyles ) {
-		// The array of type lists which have `useAttribute` set on true.
+		// The array of list types which have `useAttribute` set on true.
 		const useAttributeListTypes = getUseAttributesListTypes( listPropertiesStyles );
 
 		strategies.push( {
