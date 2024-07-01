@@ -96,12 +96,12 @@ describe( 'ListPropertiesUI', () => {
 				} );
 
 				it( 'should not register a dropdown as "bulletedList" in the component factory when `bulleted` list ' +
-					'is excluded', () => {
+					'is disabled', () => {
 					return withEditor( {
 						styles: {
-							exclude: [ 'bulleted' ]
+							bulleted: false
 						},
-						startIndex: true,
+						startIndex: false,
 						reversed: true
 					}, editor => {
 						const componentFactory = editor.ui.componentFactory;
@@ -111,10 +111,10 @@ describe( 'ListPropertiesUI', () => {
 				} );
 
 				it( 'should register a dropdown as "numberedList" in the component factory when `numbered` list ' +
-					'is excluded but startIndex is enabled', () => {
+					'is disabled but startIndex is enabled', () => {
 					return withEditor( {
 						styles: {
-							exclude: [ 'numbered' ]
+							numbered: false
 						},
 						startIndex: true,
 						reversed: false
@@ -126,10 +126,10 @@ describe( 'ListPropertiesUI', () => {
 				} );
 
 				it( 'should register a dropdown as "numberedList" in the component factory when `numbered` list ' +
-					'is excluded but reversed is enabled', () => {
+					'is disabled but reversed is enabled', () => {
 					return withEditor( {
 						styles: {
-							exclude: [ 'numbered' ]
+							numbered: false
 						},
 						startIndex: false,
 						reversed: true
@@ -141,10 +141,10 @@ describe( 'ListPropertiesUI', () => {
 				} );
 
 				it( 'should register a dropdown as "numberedList" in the component factory when `numbered` list ' +
-					'is excluded but other features is enabled', () => {
+					'is disabled but other features is enabled', () => {
 					return withEditor( {
 						styles: {
-							exclude: [ 'numbered' ]
+							numbered: false
 						},
 						startIndex: true,
 						reversed: true
@@ -156,10 +156,10 @@ describe( 'ListPropertiesUI', () => {
 				} );
 
 				it( 'should not register a dropdown as "numberedList" in the component factory when `numbered` list ' +
-					'is excluded and other features are not enabled as well', () => {
+					'is disabled and other features are not enabled as well', () => {
 					return withEditor( {
 						styles: {
-							exclude: [ 'numbered' ]
+							numbered: false
 						},
 						startIndex: false,
 						reversed: false
@@ -171,10 +171,11 @@ describe( 'ListPropertiesUI', () => {
 				} );
 
 				it( 'should not register a dropdown as "numberedList" and "bulletedList" in the component ' +
-					'factory when `numbered` and `bulleted` list are excluded (other features are not enabled as well)', () => {
+					'factory when `numbered` and `bulleted` list are disabled (other features are not enabled as well)', () => {
 					return withEditor( {
 						styles: {
-							exclude: [ 'numbered', 'bulleted' ]
+							numbered: false,
+							bulleted: false
 						},
 						startIndex: false,
 						reversed: false
@@ -534,10 +535,10 @@ describe( 'ListPropertiesUI', () => {
 						} );
 					} );
 
-					it( 'should not have styles grid when `numbered` is excluded in the config (other features are enabled)', () => {
+					it( 'should not have styles grid when `numbered` is disabled in the config (other features are enabled)', () => {
 						return withEditor( {
 							styles: {
-								exclude: [ 'numbered' ]
+								numbered: false
 							},
 							startIndex: true,
 							reversed: true
@@ -1002,9 +1003,9 @@ describe( 'ListPropertiesUI', () => {
 				} );
 
 				it( 'should not register a menu as "menuBar:bulletedList" in the component factory when `bulleted` ' +
-					'list is excluded', () => {
+					'list is disabled', () => {
 					return withEditor( { styles: {
-						exclude: [ 'bulleted' ]
+						bulleted: false
 					} }, editor => {
 						const componentFactory = editor.ui.componentFactory;
 
@@ -1013,10 +1014,10 @@ describe( 'ListPropertiesUI', () => {
 				} );
 
 				it( 'should not register a dropdown as "menuBar:numberedList" in the component factory when ' +
-					'`numbered` list is excluded', () => {
+					'`numbered` list is disabled', () => {
 					return withEditor( {
 						styles: {
-							exclude: [ 'numbered' ]
+							numbered: false
 						},
 						startIndex: false,
 						reversed: false
@@ -1028,9 +1029,10 @@ describe( 'ListPropertiesUI', () => {
 				} );
 
 				it( 'should not register a menu as "menuBar:bulletedList" in the component factory when `bulleted` and ' +
-					'`numbered` list is excluded', () => {
+					'`numbered` list are disabled', () => {
 					return withEditor( { styles: {
-						exclude: [ 'bulleted', 'numbered' ]
+						numbered: false,
+						bulleted: false
 					} }, editor => {
 						const componentFactory = editor.ui.componentFactory;
 

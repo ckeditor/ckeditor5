@@ -40,7 +40,7 @@ import listStyleLowerLatinIcon from '../../theme/icons/liststylelowerlatin.svg';
 import listStyleUpperLatinIcon from '../../theme/icons/liststyleupperlatin.svg';
 
 import '../../theme/liststyles.css';
-import type { ListPropertiesConfig } from '../listconfig.js';
+import type { ListPropertiesConfig, ListPropertiesStyleConfig } from '../listconfig.js';
 
 /**
  * The list properties UI plugin. It introduces the extended `'bulletedList'` and `'numberedList'` toolbar
@@ -61,13 +61,17 @@ export default class ListPropertiesUI extends Plugin {
 		const editor = this.editor;
 		const t = editor.locale.t;
 		const propertiesConfig = editor.config.get( 'list.properties' )!;
-		const excludedListTypes = typeof propertiesConfig.styles === 'object' && propertiesConfig.styles.exclude;
-		const isUnorderedListStyleExcluded = excludedListTypes && excludedListTypes.includes( 'bulleted' );
+
+		const listPropertiesStyles = propertiesConfig.styles;
+		const isListStylesVisible = typeof listPropertiesStyles === 'boolean' && listPropertiesStyles;
+		const bulletedListStyle = typeof listPropertiesStyles === 'object' &&
+			( listPropertiesStyles as ListPropertiesStyleConfig ).bulleted;
+		const isBulletedListStyleVisible = isListStylesVisible || ( bulletedListStyle === undefined ? true : bulletedListStyle );
 
 		// Note: When this plugin does not register the "bulletedList" dropdown due to properties configuration,
 		// a simple button will be still registered under the same name by ListUI as a fallback. This should happen
 		// in most editor configuration because the List plugin automatically requires ListUI.
-		if ( propertiesConfig.styles && !isUnorderedListStyleExcluded ) {
+		if ( isBulletedListStyleVisible ) {
 			const styleDefinitions = [
 				{
 					label: t( 'Toggle the disc list style' ),
@@ -115,13 +119,14 @@ export default class ListPropertiesUI extends Plugin {
 			} ) );
 		}
 
-		const isOrderedListStyleExcluded = excludedListTypes && excludedListTypes.includes( 'numbered' );
-		const isStyleVisible = propertiesConfig.styles && !isOrderedListStyleExcluded || false;
+		const numberedListStyle = typeof listPropertiesStyles === 'object' &&
+			( listPropertiesStyles as ListPropertiesStyleConfig ).numbered;
+		const isNumberedListStyleVisible = isListStylesVisible || ( numberedListStyle === undefined ? true : !!numberedListStyle );
 
 		// Note: When this plugin does not register the "numberedList" dropdown due to properties configuration,
 		// a simple button will be still registered under the same name by ListUI as a fallback. This should happen
 		// in most editor configuration because the List plugin automatically requires ListUI.
-		if ( isStyleVisible || propertiesConfig.startIndex || propertiesConfig.reversed ) {
+		if ( isNumberedListStyleVisible || propertiesConfig.startIndex || propertiesConfig.reversed ) {
 			const styleDefinitions = [
 				{
 					label: t( 'Toggle the decimal list style' ),
@@ -172,12 +177,12 @@ export default class ListPropertiesUI extends Plugin {
 				buttonIcon: icons.numberedList,
 				styleGridAriaLabel,
 				styleDefinitions,
-				isStyleVisible
+				isStyleVisible: isNumberedListStyleVisible
 			} ) );
 
 			// Menu bar menu does not display list start index or reverse UI. If there are no styles enabled,
 			// the menu makes no sense and should be omitted.
-			if ( isStyleVisible ) {
+			if ( isNumberedListStyleVisible ) {
 				editor.ui.componentFactory.add( `menuBar:${ commandName }`, getMenuBarStylesMenuCreator( {
 					editor,
 					propertiesConfig,
@@ -185,7 +190,7 @@ export default class ListPropertiesUI extends Plugin {
 					buttonLabel,
 					styleGridAriaLabel,
 					styleDefinitions,
-					isStyleVisible
+					isStyleVisible: isNumberedListStyleVisible
 				} ) );
 			}
 		}

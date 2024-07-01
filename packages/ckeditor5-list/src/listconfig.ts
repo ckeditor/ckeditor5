@@ -86,7 +86,7 @@ export interface ListPropertiesConfig {
 	 *
 	 * @default true
 	 */
-	styles?: boolean | ListPropertiesStyleConfig;
+	styles?: boolean | ListPropertiesStyleConfig | ListPropertiesUseAttributeConfig;
 
 	/**
 	 * When set, the list start index feature will be enabled. It allows changing the `start` HTML attribute of the numbered lists. As a
@@ -110,6 +110,61 @@ export interface ListPropertiesConfig {
 }
 
 export interface ListPropertiesStyleConfig {
+
+	/**
+	 * Disable style feature for the `numbered` list type.
+	 *
+	 * ```ts
+	 * {
+	 * 	list: {
+	 * 		properties: {
+	 * 			styles: {
+	 * 				numbered: false
+	 * 			},
+	 *
+	 * 			// ...
+	 * 		}
+	 * 	},
+	 *
+	 * 	// ...
+	 * }
+	 * ```
+	 *
+	 * **Note**: This configuration works only with
+	 * {@link module:list/listproperties~ListProperties list properties}.
+	 *
+	 * @default true
+	 */
+	numbered?: boolean | ListPropertiesUseAttributeConfig;
+
+	/**
+	 * Disable style feature for the `bulleted` list type.
+	 *
+	 * ```ts
+	 * {
+	 * 	list: {
+	 * 		properties: {
+	 * 			styles: {
+	 * 				bulleted: false
+	 * 			},
+	 *
+	 * 			// ...
+	 * 		}
+	 * 	},
+	 *
+	 * 	// ...
+	 * }
+	 * ```
+	 *
+	 * **Note**: This configuration works only with
+	 * {@link module:list/listproperties~ListProperties list properties}.
+	 *
+	 * @default true
+	 */
+	bulleted?: boolean | ListPropertiesUseAttributeConfig;
+}
+
+export interface ListPropertiesUseAttributeConfig {
 
 	/**
 	 * When set `true`, the list style feature will use the `type` attribute of `<ul>` and `<ol>` elements instead of the `list-style-type`
@@ -139,30 +194,4 @@ export interface ListPropertiesStyleConfig {
 	 * @default false
 	 */
 	useAttribute?: boolean;
-
-	/**
-	 * Turn off style feature for the given list type.
-	 *
-	 * ```ts
-	 * {
-	 * 	list: {
-	 * 		properties: {
-	 * 			styles: {
-	 * 				exclude: [ 'ul' ]
-	 * 			},
-	 *
-	 * 			// ...
-	 * 		}
-	 * 	},
-	 *
-	 * 	// ...
-	 * }
-	 * ```
-	 *
-	 * **Note**: This configuration works only with
-	 * {@link module:list/listproperties~ListProperties list properties}.
-	 *
-	 * @default []
-	 */
-	exclude?: Array<'bulleted' | 'numbered'>;
 }

@@ -162,17 +162,17 @@ createEditor( 'style', {
 	reversed: false
 } );
 
-createEditor( 'exclude-ol', {
+createEditor( 'numbered-false', {
 	styles: {
-		exclude: [ 'ol' ]
+		numbered: false
 	},
 	startIndex: true,
 	reversed: true
 } );
 
-createEditor( 'exclude-ul', {
+createEditor( 'bulleted-false', {
 	styles: {
-		exclude: [ 'ul' ]
+		bulleted: false
 	},
 	startIndex: true,
 	reversed: true
@@ -182,6 +182,32 @@ createEditor( 'style-attribute', {
 	styles: { useAttribute: true },
 	startIndex: false,
 	reversed: false
+} );
+
+createEditor( 'style-attribute-bulleted-true', {
+	styles: {
+		numbered: {
+			useAttribute: false
+		},
+		bulleted: {
+			useAttribute: true
+		}
+	},
+	startIndex: true,
+	reversed: true
+} );
+
+createEditor( 'style-attribute-numbered-true', {
+	styles: {
+		numbered: {
+			useAttribute: true
+		},
+		bulleted: {
+			useAttribute: false
+		}
+	},
+	startIndex: true,
+	reversed: true
 } );
 
 createEditor( 'none', {
