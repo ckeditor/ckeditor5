@@ -293,6 +293,7 @@ describe( 'Menu Behaviors', () => {
 				menuA.buttonView.element.dispatchEvent( new Event( 'click' ) );
 
 				expect( rootListView.isFocusBorderEnabled ).to.be.false;
+				clock.restore();
 			} );
 		} );
 

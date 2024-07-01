@@ -991,6 +991,7 @@ describe( 'MenuBarView utils', () => {
 				menuA.buttonView.element.dispatchEvent( new Event( 'click' ) );
 
 				expect( menuBarView.isFocusBorderEnabled ).to.be.false;
+				clock.restore();
 			} );
 		} );
 	} );
