@@ -5,7 +5,5 @@
 
 .ck.ck-dropdown-menu__menu__panel {
 	position: absolute;
-	max-height: 60vh;
-	overflow-y: auto;
 	z-index: calc(var(--ck-z-panel) + 1);
 }

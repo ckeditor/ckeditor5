@@ -7,7 +7,7 @@
  * @module ui/dropdown/menu/dropdownmenulistview
  */
 
-import type { Locale } from '@ckeditor/ckeditor5-utils';
+import { global, type Locale } from '@ckeditor/ckeditor5-utils';
 import type { DropdownMenuViewsRootTree } from './tree/dropdownmenutreetypings.js';
 
 import ListView from '../../list/listview.js';
@@ -24,6 +24,24 @@ export default class DropdownMenuListView extends ListView {
 	declare public isVisible: boolean;
 
 	/**
+	 * Indicates whether the dropdown has been interacted with using the keyboard.
+	 *
+	 * It is useful for showing focus outlines while hovering over the dropdown menu when
+	 * interaction with the keyboard was detected.
+	 *
+	 * @observable
+	 */
+	declare public isFocusBorderEnabled: boolean;
+
+	/**
+	 * Indicates whether the list is scrollable.
+	 *
+	 * @internal
+	 * @readonly
+	 */
+	declare public _isScrollable: boolean;
+
+	/**
 	 * Creates an instance of the dropdown menu list view.
 	 *
 	 * @param locale The localization services instance.
@@ -34,16 +52,25 @@ export default class DropdownMenuListView extends ListView {
 		const bind = this.bindTemplate;
 
 		this.role = 'menu';
-		this.set( 'isVisible', true );
+		this.set( {
+			isVisible: true,
+			isFocusBorderEnabled: false
+		} );
 
 		this.extendTemplate( {
 			attributes: {
 				class: [
 					'ck-dropdown-menu',
-					bind.if( 'isVisible', 'ck-hidden', value => !value )
+					bind.if( 'isVisible', 'ck-hidden', value => !value ),
+					bind.if( 'isFocusBorderEnabled', 'ck-dropdown-menu_focus-border-enabled' ),
+					bind.if( '_isScrollable', 'ck-dropdown-menu_scrollable' )
 				]
 			}
 		} );
+
+		// We need to listen on window resize event and update scrollable flag..
+		this.listenTo( global.window, 'resize', () => this.checkIfScrollable() );
+		this.items.on( 'change', () => this.checkIfScrollable() );
 	}
 
 	/**
@@ -58,11 +85,32 @@ export default class DropdownMenuListView extends ListView {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public override render(): void {
+		super.render();
+		this.checkIfScrollable();
+	}
+
+	/**
 	 * Walks over the dropdown menu views using the specified walkers.
 	 *
 	 * @param walkers The walkers to use.
 	 */
 	public walk( walkers: DropdownMenuViewsTreeWalkers ): void {
 		walkOverDropdownMenuTreeItems( walkers, this.tree );
+	}
+
+	/**
+	 * Updates the `_isScrollable` flag based on the current list height.
+	 *
+	 * @internal
+	 */
+	public checkIfScrollable(): void {
+		const listWrapper = this.element;
+
+		if ( listWrapper ) {
+			this._isScrollable = Math.max( listWrapper.scrollHeight, listWrapper.clientHeight ) > window.innerHeight * 0.8;
+		}
 	}
 }

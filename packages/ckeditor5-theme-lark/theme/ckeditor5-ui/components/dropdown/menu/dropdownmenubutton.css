@@ -15,15 +15,6 @@
 	padding: var(--ck-list-button-padding);
 	border-radius: 0;
 
-	&:focus {
-		border-color: transparent;
-		box-shadow: none;
-
-		&:not(.ck-on) {
-			background: var(--ck-color-button-default-hover-background);
-		}
-	}
-
 	& > .ck-button__label {
 		flex-grow: 1;
 		overflow: hidden;
@@ -32,11 +23,6 @@
 
 	&.ck-disabled > .ck-button__label {
 		@mixin ck-disabled;
-	}
-
-	/* Spacing in buttons that miss the icon. */
-	&.ck-icon-spacing:not(:has(.ck-button__icon)) > .ck-button__label {
-		margin-left: calc(var(--ck-icon-size) - var(--ck-spacing-small));
 	}
 
 	& > .ck-dropdown-menu__menu__button__arrow {

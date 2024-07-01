@@ -7,7 +7,7 @@
  * @module ui/dropdown/menu/utils/dropdownmenubehaviors
  */
 
-import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
+import { global, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 import type DropdownMenuView from '../dropdownmenuview.js';
 import type { FocusableView } from '../../../focuscycler.js';
 import type {
@@ -24,6 +24,9 @@ import clickOutsideHandler from '../../../bindings/clickoutsidehandler.js';
 const hasMenuViewFocus = ( menuView: DropdownMenuView ) =>
 	menuView.panelView.element!.contains( document.activeElement ) ||
 		menuView.element!.contains( document.activeElement );
+
+const hasFocusedMenuItem = ( rootList: DropdownMenuRootListView ) =>
+	!!document.activeElement && rootList.menus.find( hasMenuViewFocus );
 
 export const DropdownRootMenuBehaviors = {
 	/**
@@ -53,22 +56,7 @@ export const DropdownRootMenuBehaviors = {
 			const [ pathLeaf ] = evt.path;
 			const { menus } = rootList;
 
-			const isAnyOtherAlreadyOpen = !!document.activeElement && menus.some(
-				menuView => (
-					menuView !== evt.source &&
-					menuView.isOpen &&
-					hasMenuViewFocus( menuView )
-				)
-			);
-
-			// Make focus and keyboard feel a bit better. Basically dropdown search input is still focused during hovering
-			// menu items. This is not super intuitive when user opens any menu entry using click. In that situation
-			// input loses its focus and newly opened menu entry gets it. The problem is that if user closes
-			// newly opened menu, e.g by hovering into another one, the whole dropdown will close due to focus loss.
-			// Check implementation of closeDropdownOnBlur to further information.
-			if ( isAnyOtherAlreadyOpen ) {
-				( evt.source as FocusableView ).focus();
-			}
+			( evt.source as FocusableView ).focus();
 
 			for ( const menuView of menus ) {
 				const isListItemContainingMenu = pathLeaf instanceof DropdownMenuListItemView &&
@@ -127,6 +115,47 @@ export const DropdownRootMenuBehaviors = {
 				)
 				.filter( Boolean )
 		} );
+	},
+
+	/**
+	 * Tracks the keyboard focus interaction on the dropdown menu view. It is used to determine if the nested items
+	 * of the dropdown menu should render focus rings after first interaction with the keyboard.
+	 */
+	enableFocusHighlightOnInteraction( rootList: DropdownMenuRootListView ): void {
+		let isKeyPressed: boolean = false;
+
+		rootList.on<ObservableChangeEvent<boolean>>( 'change:isOpen', ( _, evt, isOpen ) => {
+			if ( !isOpen && !hasFocusedMenuItem( rootList ) ) {
+				rootList.isFocusBorderEnabled = false;
+
+				// Reset the flag when the dropdown menu is closed, menu items tend to intercept `keyup` event
+				// and sometimes, after pressing `enter` on focused item, `isKeyPressed` stuck in `true` state.
+				isKeyPressed = false;
+			}
+		} );
+
+		// After clicking dropdown menu list item the focus is moved to the newly opened submenu.
+		// We need to enable focus border for the submenu items because after pressing arrow down it will
+		// focus second item instead of first which is not super intuitive.
+		rootList.listenTo( global.document, 'click', () => {
+			if ( rootList.isOpen && hasFocusedMenuItem( rootList ) ) {
+				rootList.isFocusBorderEnabled = true;
+			}
+		}, { useCapture: true } );
+
+		rootList.listenTo( global.document, 'keydown', () => {
+			isKeyPressed = true;
+		}, { useCapture: true } );
+
+		rootList.listenTo( global.document, 'keyup', () => {
+			isKeyPressed = false;
+		}, { useCapture: true } );
+
+		rootList.listenTo( global.document, 'focus', () => {
+			if ( isKeyPressed && hasFocusedMenuItem( rootList ) ) {
+				rootList.isFocusBorderEnabled = true;
+			}
+		}, { useCapture: true } );
 	}
 };
 

@@ -252,9 +252,14 @@ export default class DropdownMenuView extends View implements FocusableView {
 		this.panelView.delegate( ...DropdownMenuView.DELEGATED_EVENTS ).to( this );
 		this.on<ObservableChangeEvent<DropdownMenuView | null>>( 'change:parentMenuView', ( evt, name, parentMenuView ) => {
 			if ( parentMenuView ) {
+				// Ensure that modification of the parent menu class and focus border state is propagated to the child views.
 				this.panelView.unbind( 'class' );
 				this.panelView.bind( 'class' ).to( parentMenuView.panelView, 'class' );
 
+				this.listView.unbind( 'isFocusBorderEnabled' );
+				this.listView.bind( 'isFocusBorderEnabled' ).to( parentMenuView.listView, 'isFocusBorderEnabled' );
+
+				// Delegate events to the parent menu.
 				this.delegate( ...DropdownMenuView.DELEGATED_EVENTS ).to( parentMenuView );
 				DropdownMenuBehaviors.closeOnParentClose( this, parentMenuView );
 			}

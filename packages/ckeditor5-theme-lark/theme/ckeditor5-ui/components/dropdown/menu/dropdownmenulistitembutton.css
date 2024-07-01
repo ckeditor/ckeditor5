@@ -20,17 +20,4 @@
 		margin-left: calc(-1 * var(--ck-spacing-small));
 		margin-right: var(--ck-spacing-small);
 	}
-
-	/*
-		* Hovered items automatically get focused. Default focus styles look odd
-		* while moving across a huge list of items so let's get rid of them
-		*/
-	&:focus {
-		border-color: transparent;
-		box-shadow: none;
-
-		&:not(.ck-on) {
-			background: var(--ck-color-button-default-hover-background);
-		}
-	}
 }

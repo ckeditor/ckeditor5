@@ -128,6 +128,7 @@ export default class DropdownMenuRootListView extends DropdownMenuListView {
 		DropdownRootMenuBehaviors.closeMenuWhenAnotherOnTheSameLevelOpens( this );
 		DropdownRootMenuBehaviors.closeOnClickOutside( this );
 		DropdownRootMenuBehaviors.closeWhenOutsideElementFocused( this );
+		DropdownRootMenuBehaviors.enableFocusHighlightOnInteraction( this );
 	}
 
 	/**
@@ -204,9 +205,14 @@ export default class DropdownMenuRootListView extends DropdownMenuListView {
 		this.items.on<CollectionAddEvent<DropdownMenuListItemView>>( 'add', ( evt, item ) => {
 			const { childView } = item;
 
-			// Add additional CSS class to the panel view if it's a dropdown menu.
+			// Forward the root menu class and focus border state to the child views.
 			if ( childView instanceof DropdownMenuView ) {
+				// It's static property so it's safe to set it directly without bind.
 				childView.panelView.class = this._menuPanelClass;
+
+				// `isFocusBorderEnabled` is controllable by the root menu depending on interaction so
+				// it must be propagated.
+				childView.listView.bind( 'isFocusBorderEnabled' ).to( this, 'isFocusBorderEnabled' );
 			}
 
 			childView.delegate( ...DropdownMenuView.DELEGATED_EVENTS ).to( this, name => `menu:${ name }` );
