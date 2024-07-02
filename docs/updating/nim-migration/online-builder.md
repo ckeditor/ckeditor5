@@ -28,134 +28,134 @@ If you do not want to have a build process or use our CDN build, you can downloa
 If you decide to use the npm package, you can either use our new interactive [Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs) to create a new build, or you can update your existing project from the legacy Online Builder. **We recommend using the new interactive Builder**, but if you want to keep your existing build, you can follow the steps below.
 
 1. Follow the steps in the {@link updating/nim-migration/customized-builds Migrating from customized builds} guide.
-	
+
 2. Once this is done, remove the old `build` folder and run the following command to create a new build of CKEditor&nbsp;5.
 
-		```bash
-		npm run build
-		```
+```bash
+npm run build
+```
 
 3. There should be three files in the new `build` folder:
 
-			* `ckeditor.d.ts`,
-			* `ckeditor.js`,
-			* `ckeditor.js.map`.
+   * `ckeditor.d.ts`,
+   * `ckeditor.js`,
+   * `ckeditor.js.map`.
 
-		Now you can start to remove some unused webpack plugins and update the `webpack.config.js` file.
+	Now you can start to remove some unused webpack plugins and update the `webpack.config.js` file.
 
 4. Uninstall the following `devDependencies`:
 
-		```bash
-		npm uninstall \
-			@ckeditor/ckeditor5-dev-translations \
-			@ckeditor/ckeditor5-dev-utils \
-			@ckeditor/ckeditor5-theme-lark\
-			css-loader \
-			postcss \
-			postcss-loader \
-			raw-loader \
-			style-loader \
-			terser-webpack-plugin
-		```
+```bash
+npm uninstall \
+@ckeditor/ckeditor5-dev-translations \
+@ckeditor/ckeditor5-dev-utils \
+@ckeditor/ckeditor5-theme-lark\
+css-loader \
+postcss \
+postcss-loader \
+raw-loader \
+style-loader \
+terser-webpack-plugin
+```
 
 5. Install the following packages:
 
-		```bash
-		npm install --save-dev \
-			css-loader \
-			css-minimizer-webpack-plugin \
-			mini-css-extract-plugin \
-			terser-webpack-plugin
-		```
+```bash
+npm install --save-dev \
+css-loader \
+css-minimizer-webpack-plugin \
+mini-css-extract-plugin \
+terser-webpack-plugin
+```
 
 6. Update the `webpack.config.js` file:
 
-		```js
-		'use strict';
+```js
+'use strict';
 
-		/* eslint-env node */
+/* eslint-env node */
 
-		const path = require( 'path' );
-		const TerserWebpackPlugin = require( 'terser-webpack-plugin' );
-		const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
-		const CssMinimizerPlugin = require( 'css-minimizer-webpack-plugin' );
+const path = require( 'path' );
+const TerserWebpackPlugin = require( 'terser-webpack-plugin' );
+const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
+const CssMinimizerPlugin = require( 'css-minimizer-webpack-plugin' );
 
-		module.exports = {
-			devtool: 'source-map',
-			performance: { hints: false },
+module.exports = {
+devtool: 'source-map',
+performance: { hints: false },
 
-			entry: path.resolve( __dirname, 'src', 'ckeditor.ts' ),
+entry: path.resolve( __dirname, 'src', 'ckeditor.ts' ),
 
-			output: {
-				// The name under which the editor will be exported.
-				library: 'ClassicEditor',
+output: {
+	// The name under which the editor will be exported.
+	library: 'ClassicEditor',
 
-				path: path.resolve( __dirname, 'build' ),
-				filename: 'ckeditor.js',
-				libraryTarget: 'umd',
-				libraryExport: 'default'
+	path: path.resolve( __dirname, 'build' ),
+	filename: 'ckeditor.js',
+	libraryTarget: 'umd',
+	libraryExport: 'default'
+},
+
+optimization: {
+	minimize: true,
+	minimizer: [
+		new CssMinimizerPlugin(),
+		new TerserWebpackPlugin( {
+			terserOptions: {
+				output: {
+					// Preserve CKEditor&nbsp;5 license comments.
+					comments: /^!/
+				}
 			},
+			extractComments: false
+		} )
+	]
+},
 
-			optimization: {
-				minimize: true,
-				minimizer: [
-					new CssMinimizerPlugin(),
-					new TerserWebpackPlugin( {
-						terserOptions: {
-							output: {
-								// Preserve CKEditor&nbsp;5 license comments.
-								comments: /^!/
-							}
-						},
-						extractComments: false
-					} )
-				]
-			},
+plugins: [
+	new MiniCssExtractPlugin( {
+		filename: 'ckeditor.css'
+	} ),
+],
 
-			plugins: [
-				new MiniCssExtractPlugin( {
-					filename: 'ckeditor.css'
-				} ),
-			],
+resolve: {
+	extensions: [ '.ts', '.js', '.json' ]
+},
 
-			resolve: {
-				extensions: [ '.ts', '.js', '.json' ]
-			},
-
-			module: {
-				rules: [
-					{
-						test: /\.ts$/,
-						use: 'ts-loader'
-					},
-					{
-						test: /\.css$/i,
-						use: [ MiniCssExtractPlugin.loader, 'css-loader' ]
-					}
-				]
-			}
-		};
-		```
+module: {
+	rules: [
+		{
+			test: /\.ts$/,
+			use: 'ts-loader'
+		},
+		{
+			test: /\.css$/i,
+			use: [ MiniCssExtractPlugin.loader, 'css-loader' ]
+		}
+	]
+}
+};
+```
 
 7. Add the following line to the `sample/index.html` file before other CSS files:
-	
-		```html
-		<link rel="stylesheet" type="text/css" href="../build/ckeditor.css">
-		```
+
+```html
+<link rel="stylesheet" type="text/css" href="../build/ckeditor.css">
+```
 
 8. Delete the old `build` folder and run the following command to create a new build of CKEditor&nbsp;5.
 
-		```bash
-		npm run build
-		```
+```bash
+npm run build
+```
 
 9. There should be five files in the new `build` folder:
 
-		* `ckeditor.css`,
-		* `ckeditor.css.map`,
-		* `ckeditor.d.ts`,
-		* `ckeditor.js`,
-		* `ckeditor.js.map`.
+   * `ckeditor.css`,
+   * `ckeditor.css.map`,
+   * `ckeditor.d.ts`,
+   * `ckeditor.js`,
+   * `ckeditor.js.map`.
 
 The new build has two more files because the CSS is now separated from the JavaScript file, which should improve performance compared to the old approach. When updating your project that uses the `build` folder, remember to import this new CSS file as well.
 
