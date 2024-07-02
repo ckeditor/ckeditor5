@@ -17,7 +17,7 @@ If you do not want a build process, you can either use our CDN build or download
 
 ## CDN build
 
-The CDN build is a good option if you want to quickly add CKEditor&nbsp;5 to your website without having to install any dependencies or set up a build process. We recommend using our new interactive [Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs) to customize the build to your needs. Then, in the `Installation` section of the Builder you can select the `Cloud (CDN)` option to learn how to add the editor to your website.
+The CDN build is a good option to quickly add CKEditor&nbsp;5 to your website without installing any dependencies or setting up a build process. We recommend using our new interactive [Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs) to customize the build to your needs. Then, in the `Installation` section of the Builder, you can select the `Cloud (CDN)` option to learn how to add the editor to your website.
 
 ## ZIP archive
 
