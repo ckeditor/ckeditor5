@@ -11,6 +11,8 @@ import DomEventObserver from './domeventobserver.js';
 import type View from '../view.js';
 import type DomEventData from './domeventdata.js';
 
+// @if CK_DEBUG_TYPING // const { _debouncedLine } = require( '../../dev-utils/utils.js' );
+
 /**
  * {@link module:engine/view/document~Document#event:compositionstart Compositionstart},
  * {@link module:engine/view/document~Document#event:compositionupdate compositionupdate} and
@@ -58,6 +60,7 @@ export default class CompositionObserver extends DomEventObserver<'compositionst
 	 */
 	public onDomEvent( domEvent: CompositionEvent ): void {
 		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	_debouncedLine();
 		// @if CK_DEBUG_TYPING // 	console.group( `%c[CompositionObserver]%c ${ domEvent.type }`, 'color: green', '' );
 		// @if CK_DEBUG_TYPING // }
 

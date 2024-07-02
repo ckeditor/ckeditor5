@@ -15,7 +15,7 @@ import { StylesProcessor } from '../../../src/view/stylesmap.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'MutationObserver', () => {
-	let view, domRoot, viewDocument, viewRoot, mutationObserver, domWrapper, spyRenderedMarkToSync;
+	let view, domRoot, viewDocument, viewRoot, mutationObserver, domWrapper, spyRenderedMarkToSync, spyForceRender, mutationsEventData;
 
 	testUtils.createSinonSandbox();
 
@@ -36,7 +36,12 @@ describe( 'MutationObserver', () => {
 		viewRoot._appendChild( parse( '<container:p>foo</container:p><container:p>bar</container:p>' ) );
 		view.forceRender();
 
-		spyRenderedMarkToSync = sinon.spy( mutationObserver.renderer, 'markToSync' );
+		spyRenderedMarkToSync = sinon.spy( view._renderer, 'markToSync' );
+		spyForceRender = sinon.spy( view, 'forceRender' );
+
+		viewDocument.on( 'mutations', ( evt, { mutations } ) => {
+			mutationsEventData = mutations;
+		} );
 	} );
 
 	afterEach( () => {
@@ -143,6 +148,11 @@ describe( 'MutationObserver', () => {
 
 		expectDomEditorNotToChange();
 		sinon.assert.calledOnceWithExactly( spyRenderedMarkToSync, 'text', viewRoot.getChild( 0 ).getChild( 0 ) );
+		sinon.assert.calledOnce( spyForceRender );
+
+		expect( mutationsEventData ).to.deep.equal( [
+			{ type: 'text', node: viewRoot.getChild( 0 ).getChild( 0 ) }
+		] );
 	} );
 
 	// https://github.com/ckeditor/ckeditor5/issues/12759.
@@ -152,6 +162,7 @@ describe( 'MutationObserver', () => {
 		mutationObserver.flush();
 
 		sinon.assert.notCalled( spyRenderedMarkToSync );
+		sinon.assert.notCalled( spyForceRender );
 	} );
 
 	// https://github.com/ckeditor/ckeditor5/issues/12759.
@@ -165,6 +176,7 @@ describe( 'MutationObserver', () => {
 		mutationObserver.flush();
 
 		sinon.assert.notCalled( spyRenderedMarkToSync );
+		sinon.assert.notCalled( spyForceRender );
 	} );
 
 	// https://github.com/ckeditor/ckeditor5/issues/12759.
@@ -178,6 +190,7 @@ describe( 'MutationObserver', () => {
 		mutationObserver.flush();
 
 		sinon.assert.notCalled( spyRenderedMarkToSync );
+		sinon.assert.notCalled( spyForceRender );
 	} );
 
 	it( 'should be able to observe multiple roots', () => {
@@ -189,6 +202,7 @@ describe( 'MutationObserver', () => {
 		// Render additional root (first editor has been rendered in the beforeEach function).
 		view.forceRender();
 		spyRenderedMarkToSync.resetHistory();
+		spyForceRender.resetHistory();
 
 		domRoot.childNodes[ 0 ].childNodes[ 0 ].data = 'foom';
 		domAdditionalRoot.childNodes[ 0 ].childNodes[ 0 ].data = 'foom';
@@ -198,6 +212,12 @@ describe( 'MutationObserver', () => {
 		sinon.assert.calledTwice( spyRenderedMarkToSync );
 		sinon.assert.calledWithExactly( spyRenderedMarkToSync, 'text', viewRoot.getChild( 0 ).getChild( 0 ) );
 		sinon.assert.calledWithExactly( spyRenderedMarkToSync, 'text', viewAdditionalRoot.getChild( 0 ).getChild( 0 ) );
+		sinon.assert.calledOnce( spyForceRender );
+
+		expect( mutationsEventData ).to.deep.equal( [
+			{ type: 'text', node: viewRoot.getChild( 0 ).getChild( 0 ) },
+			{ type: 'text', node: viewAdditionalRoot.getChild( 0 ).getChild( 0 ) }
+		] );
 	} );
 
 	it( 'should do nothing if there were no mutations', () => {
@@ -205,6 +225,7 @@ describe( 'MutationObserver', () => {
 
 		expectDomEditorNotToChange();
 		sinon.assert.notCalled( spyRenderedMarkToSync );
+		sinon.assert.notCalled( spyForceRender );
 	} );
 
 	it( 'should handle children mutation if the mutation occurred in the inline filler', () => {
@@ -226,6 +247,11 @@ describe( 'MutationObserver', () => {
 
 		sinon.assert.calledOnce( spyRenderedMarkToSync );
 		sinon.assert.calledWithExactly( spyRenderedMarkToSync, 'children', selection.getFirstPosition().parent );
+		sinon.assert.calledOnce( spyForceRender );
+
+		expect( mutationsEventData ).to.deep.equal( [
+			{ type: 'children', node: selection.getFirstPosition().parent }
+		] );
 	} );
 
 	// https://github.com/ckeditor/ckeditor5/issues/692 Scenario 1.
@@ -251,6 +277,11 @@ describe( 'MutationObserver', () => {
 
 		sinon.assert.calledOnce( spyRenderedMarkToSync );
 		sinon.assert.calledWithExactly( spyRenderedMarkToSync, 'children', selection.getFirstPosition().parent );
+		sinon.assert.calledOnce( spyForceRender );
+
+		expect( mutationsEventData ).to.deep.equal( [
+			{ type: 'children', node: selection.getFirstPosition().parent }
+		] );
 	} );
 
 	// https://github.com/ckeditor/ckeditor5/issues/692 Scenario 3.
@@ -276,6 +307,11 @@ describe( 'MutationObserver', () => {
 
 		sinon.assert.calledOnce( spyRenderedMarkToSync );
 		sinon.assert.calledWithExactly( spyRenderedMarkToSync, 'children', selection.getFirstPosition().parent );
+		sinon.assert.calledOnce( spyForceRender );
+
+		expect( mutationsEventData ).to.deep.equal( [
+			{ type: 'children', node: selection.getFirstPosition().parent }
+		] );
 	} );
 
 	// https://github.com/ckeditor/ckeditor5/issues/692 Scenario 2.
@@ -301,6 +337,11 @@ describe( 'MutationObserver', () => {
 
 		sinon.assert.calledOnce( spyRenderedMarkToSync );
 		sinon.assert.calledWithExactly( spyRenderedMarkToSync, 'children', selection.getFirstPosition().parent );
+		sinon.assert.calledOnce( spyForceRender );
+
+		expect( mutationsEventData ).to.deep.equal( [
+			{ type: 'children', node: selection.getFirstPosition().parent }
+		] );
 	} );
 
 	it( 'should ignore mutation with bogus br inserted on the end of the empty paragraph', () => {
@@ -308,6 +349,7 @@ describe( 'MutationObserver', () => {
 
 		view.forceRender();
 		spyRenderedMarkToSync.resetHistory();
+		spyForceRender.resetHistory();
 
 		const domP = domRoot.childNodes[ 2 ];
 		domP.appendChild( document.createElement( 'br' ) );
@@ -315,6 +357,7 @@ describe( 'MutationObserver', () => {
 		mutationObserver.flush();
 
 		sinon.assert.notCalled( spyRenderedMarkToSync );
+		sinon.assert.notCalled( spyForceRender );
 	} );
 
 	it( 'should ignore mutation with bogus br inserted on the end of the paragraph with text', () => {
@@ -322,6 +365,7 @@ describe( 'MutationObserver', () => {
 
 		view.forceRender();
 		spyRenderedMarkToSync.resetHistory();
+		spyForceRender.resetHistory();
 
 		const domP = domRoot.childNodes[ 2 ];
 		domP.appendChild( document.createElement( 'br' ) );
@@ -329,13 +373,15 @@ describe( 'MutationObserver', () => {
 		mutationObserver.flush();
 
 		sinon.assert.notCalled( spyRenderedMarkToSync );
+		sinon.assert.notCalled( spyForceRender );
 	} );
 
 	it( 'should ignore mutation with bogus br inserted on the end of the paragraph while processing text mutations', () => {
-		viewRoot._appendChild( parse( '<container:p>foo</container:p>' ) );
+		viewRoot._appendChild( parse( '<container:p>abc</container:p>' ) );
 
 		view.forceRender();
 		spyRenderedMarkToSync.resetHistory();
+		spyForceRender.resetHistory();
 
 		const domP = domRoot.childNodes[ 2 ];
 		domP.childNodes[ 0 ].data = 'foo ';
@@ -344,7 +390,12 @@ describe( 'MutationObserver', () => {
 		mutationObserver.flush();
 
 		sinon.assert.calledOnce( spyRenderedMarkToSync );
-		sinon.assert.calledWithExactly( spyRenderedMarkToSync, 'text', viewRoot.getChild( 0 ).getChild( 0 ) );
+		sinon.assert.calledWithExactly( spyRenderedMarkToSync, 'text', viewRoot.getChild( 2 ).getChild( 0 ) );
+		sinon.assert.calledOnce( spyForceRender );
+
+		expect( mutationsEventData ).to.deep.equal( [
+			{ type: 'text', node: viewRoot.getChild( 2 ).getChild( 0 ) }
+		] );
 	} );
 
 	it( 'should ignore child mutations which resulted in no changes – when element contains elements', () => {
@@ -352,6 +403,7 @@ describe( 'MutationObserver', () => {
 
 		view.forceRender();
 		spyRenderedMarkToSync.resetHistory();
+		spyForceRender.resetHistory();
 
 		const domP = domRoot.childNodes[ 2 ];
 		const domY = document.createElement( 'y' );
@@ -361,6 +413,7 @@ describe( 'MutationObserver', () => {
 		mutationObserver.flush();
 
 		sinon.assert.notCalled( spyRenderedMarkToSync );
+		sinon.assert.notCalled( spyForceRender );
 	} );
 
 	// This case is more tricky than the previous one because DOMConverter will return a different
@@ -381,13 +434,19 @@ describe( 'MutationObserver', () => {
 
 		sinon.assert.calledOnce( spyRenderedMarkToSync );
 		sinon.assert.calledWithExactly( spyRenderedMarkToSync, 'children', viewP2 );
+		sinon.assert.calledOnce( spyForceRender );
+
+		expect( mutationsEventData ).to.deep.equal( [
+			{ type: 'children', node: viewP2 }
+		] );
 	} );
 
 	it( 'should not ignore mutation with br inserted not on the end of the paragraph', () => {
-		viewRoot._appendChild( parse( '<container:p>foo</container:p>' ) );
+		viewRoot._appendChild( parse( '<container:p>abc</container:p>' ) );
 
 		view.forceRender();
 		spyRenderedMarkToSync.resetHistory();
+		spyForceRender.resetHistory();
 
 		const domP = domRoot.childNodes[ 2 ];
 		domP.insertBefore( document.createElement( 'br' ), domP.childNodes[ 0 ] );
@@ -395,7 +454,12 @@ describe( 'MutationObserver', () => {
 		mutationObserver.flush();
 
 		sinon.assert.calledOnce( spyRenderedMarkToSync );
-		sinon.assert.calledWithExactly( spyRenderedMarkToSync, 'children', viewRoot.getChild( 0 ) );
+		sinon.assert.calledWithExactly( spyRenderedMarkToSync, 'children', viewRoot.getChild( 2 ) );
+		sinon.assert.calledOnce( spyForceRender );
+
+		expect( mutationsEventData ).to.deep.equal( [
+			{ type: 'children', node: viewRoot.getChild( 2 ) }
+		] );
 	} );
 
 	it( 'should not ignore mutation inserting element different than br on the end of the empty paragraph', () => {
@@ -403,6 +467,7 @@ describe( 'MutationObserver', () => {
 
 		view.forceRender();
 		spyRenderedMarkToSync.resetHistory();
+		spyForceRender.resetHistory();
 
 		const domP = domRoot.childNodes[ 2 ];
 		domP.appendChild( document.createElement( 'span' ) );
@@ -411,6 +476,11 @@ describe( 'MutationObserver', () => {
 
 		sinon.assert.calledOnce( spyRenderedMarkToSync );
 		sinon.assert.calledWithExactly( spyRenderedMarkToSync, 'children', viewRoot.getChild( 2 ) );
+		sinon.assert.calledOnce( spyForceRender );
+
+		expect( mutationsEventData ).to.deep.equal( [
+			{ type: 'children', node: viewRoot.getChild( 2 ) }
+		] );
 	} );
 
 	it( 'should not ignore mutation inserting element different than br on the end of the paragraph with text', () => {
@@ -418,6 +488,7 @@ describe( 'MutationObserver', () => {
 
 		view.forceRender();
 		spyRenderedMarkToSync.resetHistory();
+		spyForceRender.resetHistory();
 
 		const domP = domRoot.childNodes[ 2 ];
 		domP.appendChild( document.createElement( 'span' ) );
@@ -426,6 +497,11 @@ describe( 'MutationObserver', () => {
 
 		sinon.assert.calledOnce( spyRenderedMarkToSync );
 		sinon.assert.calledWithExactly( spyRenderedMarkToSync, 'children', viewRoot.getChild( 2 ) );
+		sinon.assert.calledOnce( spyForceRender );
+
+		expect( mutationsEventData ).to.deep.equal( [
+			{ type: 'children', node: viewRoot.getChild( 2 ) }
+		] );
 	} );
 
 	describe( 'UIElement integration', () => {
@@ -452,6 +528,7 @@ describe( 'MutationObserver', () => {
 			renderStub.reset();
 			view.on( 'render', renderStub );
 			spyRenderedMarkToSync.resetHistory();
+			spyForceRender.resetHistory();
 		} );
 
 		it( 'should not collect text mutations from UIElement', () => {
@@ -460,6 +537,7 @@ describe( 'MutationObserver', () => {
 			mutationObserver.flush();
 
 			sinon.assert.notCalled( spyRenderedMarkToSync );
+			sinon.assert.notCalled( spyForceRender );
 		} );
 
 		it( 'should not cause a render from UIElement', () => {
@@ -477,6 +555,7 @@ describe( 'MutationObserver', () => {
 			mutationObserver.flush();
 
 			sinon.assert.notCalled( spyRenderedMarkToSync );
+			sinon.assert.notCalled( spyForceRender );
 		} );
 
 		it( 'should not cause a render when UIElement gets a child', () => {
@@ -510,6 +589,7 @@ describe( 'MutationObserver', () => {
 			renderStub.reset();
 			view.on( 'render', renderStub );
 			spyRenderedMarkToSync.resetHistory();
+			spyForceRender.resetHistory();
 		} );
 
 		it( 'should not collect text mutations from RawElement', () => {
@@ -518,6 +598,7 @@ describe( 'MutationObserver', () => {
 			mutationObserver.flush();
 
 			sinon.assert.notCalled( spyRenderedMarkToSync );
+			sinon.assert.notCalled( spyForceRender );
 		} );
 
 		it( 'should not cause a render from RawElement', () => {
@@ -535,6 +616,7 @@ describe( 'MutationObserver', () => {
 			mutationObserver.flush();
 
 			sinon.assert.notCalled( spyRenderedMarkToSync );
+			sinon.assert.notCalled( spyForceRender );
 		} );
 
 		it( 'should not cause a render when RawElement gets a child', () => {

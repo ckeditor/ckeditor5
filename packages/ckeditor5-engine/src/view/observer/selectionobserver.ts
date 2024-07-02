@@ -11,6 +11,7 @@
 
 import Observer from './observer.js';
 import MutationObserver from './mutationobserver.js';
+import FocusObserver from './focusobserver.js';
 import { env } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunc } from 'lodash-es';
 
@@ -18,7 +19,9 @@ import type View from '../view.js';
 import type DocumentSelection from '../documentselection.js';
 import type DomConverter from '../domconverter.js';
 import type Selection from '../selection.js';
-import FocusObserver from './focusobserver.js';
+import type { ViewDocumentCompositionStartEvent } from './compositionobserver.js';
+
+// @if CK_DEBUG_TYPING // const { _debouncedLine } = require( '../../dev-utils/utils.js' );
 
 type DomSelection = globalThis.Selection;
 
@@ -128,7 +131,7 @@ export default class SelectionObserver extends Observer {
 
 			// Make sure that model selection is up-to-date at the end of selecting process.
 			// Sometimes `selectionchange` events could arrive after the `mouseup` event and that selection could be already outdated.
-			this._handleSelectionChange( null, domDocument );
+			this._handleSelectionChange( domDocument );
 
 			this.document.isSelecting = false;
 
@@ -155,10 +158,11 @@ export default class SelectionObserver extends Observer {
 
 		this.listenTo( domDocument, 'selectionchange', ( evt, domEvent ) => {
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	_debouncedLine();
 			// @if CK_DEBUG_TYPING // 	const domSelection = domDocument.defaultView!.getSelection();
-			// @if CK_DEBUG_TYPING // 	console.group( '%c[SelectionObserver]%c selectionchange', 'color:green', ''
+			// @if CK_DEBUG_TYPING // 	console.group( '%c[SelectionObserver]%c selectionchange', 'color: green', ''
 			// @if CK_DEBUG_TYPING // 	);
-			// @if CK_DEBUG_TYPING // 	console.info( '%c[SelectionObserver]%c DOM Selection:', 'font-weight:bold;color:green', '',
+			// @if CK_DEBUG_TYPING // 	console.info( '%c[SelectionObserver]%c DOM Selection:', 'font-weight: bold; color: green', '',
 			// @if CK_DEBUG_TYPING // 		{ node: domSelection!.anchorNode, offset: domSelection!.anchorOffset },
 			// @if CK_DEBUG_TYPING // 		{ node: domSelection!.focusNode, offset: domSelection!.focusOffset }
 			// @if CK_DEBUG_TYPING // 	);
@@ -169,7 +173,7 @@ export default class SelectionObserver extends Observer {
 			if ( this.document.isComposing && !env.isAndroid ) {
 				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 				// @if CK_DEBUG_TYPING // 	console.info( '%c[SelectionObserver]%c Selection change ignored (isComposing)',
-				// @if CK_DEBUG_TYPING // 		'font-weight:bold;color:green', ''
+				// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green', ''
 				// @if CK_DEBUG_TYPING // 	);
 				// @if CK_DEBUG_TYPING // 	console.groupEnd();
 				// @if CK_DEBUG_TYPING // }
@@ -177,7 +181,7 @@ export default class SelectionObserver extends Observer {
 				return;
 			}
 
-			this._handleSelectionChange( domEvent, domDocument );
+			this._handleSelectionChange( domDocument );
 
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.groupEnd();
@@ -187,6 +191,27 @@ export default class SelectionObserver extends Observer {
 			// using their mouse).
 			this._documentIsSelectingInactivityTimeoutDebounced();
 		} );
+
+		// Update the model DocumentSelection just after the Renderer and the SelectionObserver are locked.
+		// We do this synchronously (without waiting for the `selectionchange` DOM event) as browser updates
+		// the DOM selection (but not visually) to span the text that is under composition and could be replaced.
+		this.listenTo<ViewDocumentCompositionStartEvent>( this.view.document, 'compositionstart', () => {
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	const domSelection = domDocument.defaultView!.getSelection();
+			// @if CK_DEBUG_TYPING // 	console.group( '%c[SelectionObserver]%c update selection on compositionstart', 'color: green', ''
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // 	console.info( '%c[SelectionObserver]%c DOM Selection:', 'font-weight: bold; color: green', '',
+			// @if CK_DEBUG_TYPING // 		{ node: domSelection!.anchorNode, offset: domSelection!.anchorOffset },
+			// @if CK_DEBUG_TYPING // 		{ node: domSelection!.focusNode, offset: domSelection!.focusOffset }
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // }
+
+			this._handleSelectionChange( domDocument );
+
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.groupEnd();
+			// @if CK_DEBUG_TYPING // }
+		}, { priority: 'lowest' } );
 
 		this._documents.add( domDocument );
 	}
@@ -222,10 +247,9 @@ export default class SelectionObserver extends Observer {
 	 * a selection changes and fires {@link module:engine/view/document~Document#event:selectionChange} event on every change
 	 * and {@link module:engine/view/document~Document#event:selectionChangeDone} when a selection stop changing.
 	 *
-	 * @param domEvent DOM event.
 	 * @param domDocument DOM document.
 	 */
-	private _handleSelectionChange( domEvent: unknown, domDocument: Document ) {
+	private _handleSelectionChange( domDocument: Document ) {
 		if ( !this.isEnabled ) {
 			return;
 		}
@@ -286,7 +310,7 @@ export default class SelectionObserver extends Observer {
 
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.info( '%c[SelectionObserver]%c Fire selection change:',
-			// @if CK_DEBUG_TYPING // 		'font-weight:bold;color:green', '',
+			// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green', '',
 			// @if CK_DEBUG_TYPING // 		newViewSelection.getFirstRange()
 			// @if CK_DEBUG_TYPING // 	);
 			// @if CK_DEBUG_TYPING // }

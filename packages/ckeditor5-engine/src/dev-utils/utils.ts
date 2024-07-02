@@ -13,6 +13,8 @@
 
 /* globals console */
 
+// @if CK_DEBUG_TYPING // const { debounce } = require( 'lodash-es' );
+
 /**
  * Helper function, converts a map to the 'key1="value1" key2="value1"' format.
  *
@@ -88,3 +90,10 @@ export function logDocument( document: any, version: any ): void {
 		console.log( 'Tree log unavailable for given version: ' + version );
 	}
 }
+
+// @if CK_DEBUG_TYPING // export const _debouncedLine = debounce( () => {
+// @if CK_DEBUG_TYPING // 	console.log(
+// @if CK_DEBUG_TYPING // 		'%c───────────────────────────────────────────────────────────────────────────────────────────────────────',
+// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: red'
+// @if CK_DEBUG_TYPING // 	);
+// @if CK_DEBUG_TYPING // }, 300 );

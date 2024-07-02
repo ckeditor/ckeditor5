@@ -5632,29 +5632,6 @@ describe( 'Renderer', () => {
 	} );
 
 	describe( 'Blocking rendering while composing (IME)', () => {
-		it( 'should call #render() as soon as the user end composition in the document', () => {
-			const viewDocument = new ViewDocument( new StylesProcessor() );
-			const selection = new DocumentSelection();
-			const domConverter = new DomConverter( viewDocument, { renderingMode: 'editing' } );
-			const renderer = new Renderer( domConverter, selection );
-
-			renderer.domDocuments.add( document );
-
-			const renderSpy = sinon.spy( renderer, 'render' );
-
-			expect( renderer.isComposing ).to.be.false;
-
-			renderer.isComposing = true;
-
-			sinon.assert.notCalled( renderSpy );
-
-			renderer.isComposing = false;
-
-			sinon.assert.calledOnce( renderSpy );
-
-			viewDocument.destroy();
-		} );
-
 		describe( 'render()', () => {
 			let viewRoot, domRoot;
 
@@ -6136,6 +6113,34 @@ describe( 'Renderer', () => {
 			expect( domRoot.childNodes[ 0 ].tagName ).to.equal( 'B' );
 			expect( domRoot.childNodes[ 0 ].childNodes.length ).to.equal( 1 );
 			expect( domRoot.childNodes[ 0 ].childNodes[ 0 ].data ).to.equal( 'bar' );
+		} );
+
+		it( 'should not update text on Android if only NBSPs are changed while composing', () => {
+			testUtils.sinon.stub( env, 'isAndroid' ).value( true );
+
+			const viewText = new ViewText( viewDocument, 'foo  bar' );
+			viewRoot._appendChild( viewText );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].data ).to.equal( 'foo \u00A0bar' );
+
+			// Browser modified NBSP while composing.
+			renderer.isComposing = true;
+			domRoot.childNodes[ 0 ].data = 'foo\u00A0 bar';
+			renderer._updateText( viewText, {} );
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].data ).to.equal( 'foo\u00A0 bar' );
+
+			// Rendering after composition.
+			renderer.isComposing = false;
+			renderer._updateText( viewText, {} );
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].data ).to.equal( 'foo \u00A0bar' );
 		} );
 	} );
 
