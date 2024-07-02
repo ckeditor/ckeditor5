@@ -29,7 +29,7 @@ If you decide to use the npm package, you can either use our new interactive [Bu
 
 1. Follow the steps in the {@link updating/nim-migration/customized-builds Migrating from customized builds} guide.
 	
-2. Once this is done, remove the old `build' folder and run the following command to create a new build of CKEditor&nbsp;5.
+2. Once this is done, remove the old `build` folder and run the following command to create a new build of CKEditor&nbsp;5.
 
 		```bash
 		npm run build
