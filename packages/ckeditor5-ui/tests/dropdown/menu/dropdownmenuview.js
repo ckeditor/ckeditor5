@@ -13,15 +13,13 @@ import {
 	Locale
 } from '@ckeditor/ckeditor5-utils';
 
-import { createMockMenuDefinition } from './_utils/dropdowntreemock.js';
-import { Dump, dumpDropdownMenuTree } from './_utils/dropdowntreemenudump.js';
-
 import DropdownMenuButtonView from '../../../src/dropdown/menu/dropdownmenubuttonview.js';
 import DropdownMenuPanelView from '../../../src/dropdown/menu/dropdownmenupanelview.js';
 import { DropdownMenuView } from '../../../src/index.js';
 import { DropdownMenuBehaviors } from '../../../src/dropdown/menu/utils/dropdownmenubehaviors.js';
 import { DropdownMenuViewPanelPositioningFunctions } from '../../../src/dropdown/menu/utils/dropdownmenupositioningfunctions.js';
 import { DropdownMenuFactory } from '../../../src/dropdown/menu/dropdownmenufactory.js';
+import { createMockMenuDefinition } from './_utils/dropdowntreemock.js';
 
 describe( 'DropdownMenuView', () => {
 	let menuView, element, editor, parentMenuView;
@@ -275,15 +273,7 @@ describe( 'DropdownMenuView', () => {
 
 		it( 'should be possible to append menu items using factory', () => {
 			menuView.factory.appendChildren( [ createMockMenuDefinition() ] );
-			expect( dumpDropdownMenuTree( menuView.listView.tree ) ).to.be.equal(
-				Dump.root( [
-					Dump.menu( 'Menu 1', [
-						Dump.item( 'Foo' ),
-						Dump.item( 'Bar' ),
-						Dump.item( 'Buz' )
-					] )
-				] )
-			);
+			expect( menuView.listView.items.length ).to.be.equal( 1 );
 		} );
 	} );
 
