@@ -13,7 +13,7 @@ There are three installation methods you can migrate to from the legacy Online B
 
 The npm package is the most flexible and powerful way to install CKEditor&nbsp;5. It allows you to create a custom build of the editor with only the features you need, thus significantly reducing the final size of the build. However, you will need a JavaScript bundler or meta-framework to create such a build.
 
-If you do not want to have a build process, you can either use our CDN build or download the ZIP archive. Both of these include the editor and all plugins, so you can use all the features of CKEditor&nbsp;5 without setting up a build process.
+If you do not want a build process, you can either use our CDN build or download the ZIP archive. Both of these include the editor and all plugins, so you can use all the features of CKEditor&nbsp;5 without setting up a build process.
 
 ## CDN build
 
