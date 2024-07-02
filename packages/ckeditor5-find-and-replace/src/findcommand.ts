@@ -78,7 +78,7 @@ export default class FindCommand extends Command {
 		findCallback = ( ...args ) => {
 			const result = oldCallback( ...args );
 
-			if ( result && !Array.isArray( result ) ) {
+			if ( result && 'searchText' in result ) {
 				callbackSearchText = result.searchText;
 			}
 
