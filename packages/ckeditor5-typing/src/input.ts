@@ -239,6 +239,10 @@ export default class Input extends Plugin {
 			} );
 
 			// Trigger mutations check after the composition completes to fix all DOM changes that got ignored during composition.
+			// On Android the Renderer is not disabled while composing. While updating DOM nodes we ignore some changes
+			// that are not that important (like NBSP vs plain space character) and could break the composition flow.
+			// After composition is completed we trigger additional `mutations` event for elements affected by the composition
+			// so the Renderer can adjust the DOM to the expected structure without breaking the composition.
 			this.listenTo<ViewDocumentCompositionEndEvent>( view.document, 'compositionend', () => {
 				const mutations: Array<MutationData> = [];
 
@@ -268,7 +272,16 @@ export default class Input extends Plugin {
 			}, { priority: 'lowest' } );
 		} else {
 			// After composition end we need to verify if there are no left-overs.
-			// Listening at the lowest priority so after the InsertTextObserver added above.
+			// Listening at the lowest priority so after the `InsertTextObserver` added above (all composed text
+			// should already be applied to the model, view, and DOM).
+			// On non-Android the `Renderer` is blocked while user is composing but the `MutationObserver` still collects
+			// mutated nodes and fires `mutations` events.
+			// Those events are recorded by the `Renderer` but not applied to the DOM while composing.
+			// We need to trigger those checks (and fixes) once again but this time without specifying the exact mutations
+			// since they are already recorded by the `Renderer`.
+			// It in the most cases just clears the internal record of mutated text nodes
+			// since all changes should already be applied to the DOM.
+			// This is especially needed when user cancels composition, so we can clear nodes marked to sync.
 			this.listenTo<ViewDocumentCompositionEndEvent>( view.document, 'compositionend', () => {
 				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 				// @if CK_DEBUG_TYPING // 	console.group( '%c[Input]%c Force render after composition end.',
