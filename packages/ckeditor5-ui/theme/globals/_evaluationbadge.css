@@ -23,6 +23,7 @@
 
 	& .ck.ck-evaluation-badge {
 		line-height: var(--ck-evaluation-badge-line-height);
+		padding: var(--ck-powered-by-padding-vertical) var(--ck-powered-by-padding-horizontal);
 
 		& .ck-evaluation-badge__label {
 			font-size: 7.5px;
