@@ -8,7 +8,7 @@
  */
 
 import type { Editor } from '@ckeditor/ckeditor5-core';
-import type { DropdownMenuDefinition } from '../definition/dropdownmenudefinitiontypings.js';
+import type { DropdownMenuDefinition } from '../dropdownmenufactory.js';
 import type FilteredView from '../../../search/filteredview.js';
 
 import { filterDropdownMenuTreeByRegExp, type DropdownMenuSearchResult } from '../tree/dropdownmenutreefilterutils.js';
