@@ -38,7 +38,7 @@ import ListItemButtonView from './listitembuttonview.js';
  * } );
  * ```
  */
-export default class FileDialogButtonView extends FileDialogViewMixin( ButtonView ) {}
+export default class FileDialogButtonView extends /* #__PURE__ */ FileDialogViewMixin( ButtonView ) {}
 
 /**
  * The file dialog button view used in a lists.
@@ -64,7 +64,7 @@ export default class FileDialogButtonView extends FileDialogViewMixin( ButtonVie
  * } );
  * ```
  */
-export class FileDialogListItemButtonView extends FileDialogViewMixin( ListItemButtonView ) {}
+export class FileDialogListItemButtonView extends /* #__PURE__ */ FileDialogViewMixin( ListItemButtonView ) {}
 
 /**
  * Mixin function that enhances a base button view class with file dialog functionality. It is used
