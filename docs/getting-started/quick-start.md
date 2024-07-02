@@ -17,6 +17,7 @@ You have a few methods to choose from:
 * [Using npm](#installing-ckeditor-5-using-npm) where you use a JavaScript packages and build the editor with a bundler.
 * [Using CDN](#installing-ckeditor-5-from-cdn) where you use our cloud-distributed CDN in a no-build setup.
 * [Using a provided JavaScript file](#installing-ckeditor-5-from-a-file) where you download the ready-to-run file and copy them to your project.
+* Choosing one of the pre-made integrations with popular frameworks (see table of contents for details).
 
 ## Using CKEditor&nbsp;5 Builder
 
