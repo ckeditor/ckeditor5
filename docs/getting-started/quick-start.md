@@ -208,7 +208,7 @@ Files included in the .zip archive:
 * `translations/` &ndash; The editor UI translations (see the {@link getting-started/setup/ui-language Setting the UI language} guide).
 * The `README.md` and `LICENSE.md` files.
 
-Copy these files to your project directory. You may use the CDN configuration as an example. You can also refer to framework integration guides for sample implementations.
+Copy these files to your project directory. You may use the [CDN configuration](#installing-ckeditor-5-from-cdn) as an example. You can also refer to framework integration guides for sample implementations.
 
 ## Installing premium features
 
@@ -404,7 +404,7 @@ Files in the .zip archive:
 	* `translations/` &ndash; The premium features UI translations.
 * The `README.md` and `LICENSE.md` files.
 
-Copy these files to your project directory. You may use the CDN configuration as an example. You can also refer to framework integration guides for sample implementations.
+Copy these files to your project directory. You may use the [CDN configuration](#installing-premium-features-from-cdn) as an example. You can also refer to framework integration guides for sample implementations.
 
 ### Obtaining a license key
 
