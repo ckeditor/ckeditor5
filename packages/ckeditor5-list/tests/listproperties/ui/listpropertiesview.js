@@ -41,7 +41,8 @@ describe( 'ListPropertiesView', () => {
 				new ButtonView( locale ),
 				new ButtonView( locale )
 			],
-			styleGridAriaLabel: 'Foo'
+			styleGridAriaLabel: 'Foo',
+			isStyleVisible: true
 		} );
 
 		view.render();
@@ -129,6 +130,30 @@ describe( 'ListPropertiesView', () => {
 							new ButtonView( locale )
 						],
 						styleGridAriaLabel: 'Foo'
+					} );
+
+					view.render();
+
+					expect( view.stylesView ).to.be.null;
+					expect( view.element.classList.contains( 'ck-list-properties_without-styles' ) ).to.be.true;
+
+					view.destroy();
+				} );
+
+				it( 'should have no #stylesView when "isStyleVisible" is `false`', () => {
+					const view = new ListPropertiesView( locale, {
+						enabledProperties: {
+							startIndex: true,
+							reversed: true,
+							styles: {
+								useAttribute: true
+							}
+						},
+						styleButtonViews: [
+							new ButtonView( locale )
+						],
+						styleGridAriaLabel: 'Foo',
+						isStyleVisible: false
 					} );
 
 					view.render();
@@ -329,7 +354,8 @@ describe( 'ListPropertiesView', () => {
 							new ButtonView( locale ),
 							new ButtonView( locale )
 						],
-						styleGridAriaLabel: 'Foo'
+						styleGridAriaLabel: 'Foo',
+						isStyleVisible: true
 					} );
 
 					const spyView = sinon.spy( view.focusTracker, 'add' );
@@ -355,7 +381,8 @@ describe( 'ListPropertiesView', () => {
 							new ButtonView( locale ),
 							new ButtonView( locale )
 						],
-						styleGridAriaLabel: 'Foo'
+						styleGridAriaLabel: 'Foo',
+						isStyleVisible: true
 					} );
 
 					const spyStylesView = sinon.spy( view.stylesView.focusTracker, 'add' );

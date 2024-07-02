@@ -95,6 +95,98 @@ describe( 'ListPropertiesUI', () => {
 					} );
 				} );
 
+				it( 'should not register a dropdown as "bulletedList" in the component factory when `bulleted` list ' +
+					'is disabled', () => {
+					return withEditor( {
+						styles: {
+							bulleted: false
+						},
+						startIndex: false,
+						reversed: true
+					}, editor => {
+						const componentFactory = editor.ui.componentFactory;
+
+						expect( componentFactory.has( 'bulletedList' ) ).to.be.false;
+					} );
+				} );
+
+				it( 'should register a dropdown as "numberedList" in the component factory when `numbered` list ' +
+					'is disabled but startIndex is enabled', () => {
+					return withEditor( {
+						styles: {
+							numbered: false
+						},
+						startIndex: true,
+						reversed: false
+					}, editor => {
+						const componentFactory = editor.ui.componentFactory;
+
+						expect( componentFactory.has( 'numberedList' ) ).to.be.true;
+					} );
+				} );
+
+				it( 'should register a dropdown as "numberedList" in the component factory when `numbered` list ' +
+					'is disabled but reversed is enabled', () => {
+					return withEditor( {
+						styles: {
+							numbered: false
+						},
+						startIndex: false,
+						reversed: true
+					}, editor => {
+						const componentFactory = editor.ui.componentFactory;
+
+						expect( componentFactory.has( 'numberedList' ) ).to.be.true;
+					} );
+				} );
+
+				it( 'should register a dropdown as "numberedList" in the component factory when `numbered` list ' +
+					'is disabled but other features is enabled', () => {
+					return withEditor( {
+						styles: {
+							numbered: false
+						},
+						startIndex: true,
+						reversed: true
+					}, editor => {
+						const componentFactory = editor.ui.componentFactory;
+
+						expect( componentFactory.has( 'numberedList' ) ).to.be.true;
+					} );
+				} );
+
+				it( 'should not register a dropdown as "numberedList" in the component factory when `numbered` list ' +
+					'is disabled and other features are not enabled as well', () => {
+					return withEditor( {
+						styles: {
+							numbered: false
+						},
+						startIndex: false,
+						reversed: false
+					}, editor => {
+						const componentFactory = editor.ui.componentFactory;
+
+						expect( componentFactory.has( 'numberedList' ) ).to.be.false;
+					} );
+				} );
+
+				it( 'should not register a dropdown as "numberedList" and "bulletedList" in the component ' +
+					'factory when `numbered` and `bulleted` list are disabled (other features are not enabled as well)', () => {
+					return withEditor( {
+						styles: {
+							numbered: false,
+							bulleted: false
+						},
+						startIndex: false,
+						reversed: false
+					}, editor => {
+						const componentFactory = editor.ui.componentFactory;
+
+						expect( componentFactory.has( 'numberedList' ) ).to.be.false;
+						expect( componentFactory.has( 'bulletedList' ) ).to.be.false;
+					} );
+				} );
+
 				for ( const property of [ 'styles', 'startIndex', 'reversed' ] ) {
 					const listPropertiesConfig = {
 						styles: false,
@@ -436,6 +528,33 @@ describe( 'ListPropertiesUI', () => {
 							const listPropertiesView = numberedListDropdown.panelView.children.first;
 
 							expect( listPropertiesView.stylesView ).to.be.instanceOf( View );
+							expect( listPropertiesView.startIndexFieldView ).to.be.instanceOf( LabeledFieldView );
+							expect( listPropertiesView.reversedSwitchButtonView ).to.be.instanceOf( SwitchButtonView );
+
+							numberedListDropdown.element.remove();
+						} );
+					} );
+
+					it( 'should not have styles grid when `numbered` is disabled in the config (other features are enabled)', () => {
+						return withEditor( {
+							styles: {
+								numbered: false
+							},
+							startIndex: true,
+							reversed: true
+						}, editor => {
+							const numberedListDropdown = editor.ui.componentFactory.create( 'numberedList' );
+
+							numberedListDropdown.render();
+							document.body.appendChild( numberedListDropdown.element );
+
+							// Trigger lazy init.
+							numberedListDropdown.isOpen = true;
+							numberedListDropdown.isOpen = false;
+
+							const listPropertiesView = numberedListDropdown.panelView.children.first;
+
+							expect( listPropertiesView.stylesView ).to.be.null;
 							expect( listPropertiesView.startIndexFieldView ).to.be.instanceOf( LabeledFieldView );
 							expect( listPropertiesView.reversedSwitchButtonView ).to.be.instanceOf( SwitchButtonView );
 
@@ -880,6 +999,45 @@ describe( 'ListPropertiesUI', () => {
 						const componentFactory = editor.ui.componentFactory;
 
 						expect( componentFactory.has( 'menuBar:numberedList' ) ).to.be.false;
+					} );
+				} );
+
+				it( 'should not register a menu as "menuBar:bulletedList" in the component factory when `bulleted` ' +
+					'list is disabled', () => {
+					return withEditor( { styles: {
+						bulleted: false
+					} }, editor => {
+						const componentFactory = editor.ui.componentFactory;
+
+						expect( componentFactory.has( 'menuBar:bulletedList' ) ).to.be.false;
+					} );
+				} );
+
+				it( 'should not register a dropdown as "menuBar:numberedList" in the component factory when ' +
+					'`numbered` list is disabled', () => {
+					return withEditor( {
+						styles: {
+							numbered: false
+						},
+						startIndex: false,
+						reversed: false
+					}, editor => {
+						const componentFactory = editor.ui.componentFactory;
+
+						expect( componentFactory.has( 'menuBar:numberedList' ) ).to.be.false;
+					} );
+				} );
+
+				it( 'should not register a menu as "menuBar:bulletedList" in the component factory when `bulleted` and ' +
+					'`numbered` list are disabled', () => {
+					return withEditor( { styles: {
+						numbered: false,
+						bulleted: false
+					} }, editor => {
+						const componentFactory = editor.ui.componentFactory;
+
+						expect( componentFactory.has( 'menuBar:numberedList' ) ).to.be.false;
+						expect( componentFactory.has( 'menuBar:bulletedList' ) ).to.be.false;
 					} );
 				} );
 			} );

@@ -162,10 +162,52 @@ createEditor( 'style', {
 	reversed: false
 } );
 
+createEditor( 'numbered-false', {
+	styles: {
+		numbered: false
+	},
+	startIndex: true,
+	reversed: true
+} );
+
+createEditor( 'bulleted-false', {
+	styles: {
+		bulleted: false
+	},
+	startIndex: true,
+	reversed: true
+} );
+
 createEditor( 'style-attribute', {
 	styles: { useAttribute: true },
 	startIndex: false,
 	reversed: false
+} );
+
+createEditor( 'style-attribute-bulleted-true', {
+	styles: {
+		numbered: {
+			useAttribute: false
+		},
+		bulleted: {
+			useAttribute: true
+		}
+	},
+	startIndex: true,
+	reversed: true
+} );
+
+createEditor( 'style-attribute-numbered-true', {
+	styles: {
+		numbered: {
+			useAttribute: true
+		},
+		bulleted: {
+			useAttribute: false
+		}
+	},
+	startIndex: true,
+	reversed: true
 } );
 
 createEditor( 'none', {
