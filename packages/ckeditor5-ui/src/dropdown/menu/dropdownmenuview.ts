@@ -252,9 +252,14 @@ export default class DropdownMenuView extends View implements FocusableView {
 		this.panelView.delegate( ...DropdownMenuView.DELEGATED_EVENTS ).to( this );
 		this.on<ObservableChangeEvent<DropdownMenuView | null>>( 'change:parentMenuView', ( evt, name, parentMenuView ) => {
 			if ( parentMenuView ) {
+				// Ensure that modification of the parent menu class and focus border state is propagated to the child views.
 				this.panelView.unbind( 'class' );
 				this.panelView.bind( 'class' ).to( parentMenuView.panelView, 'class' );
 
+				this.listView.unbind( 'isFocusBorderEnabled' );
+				this.listView.bind( 'isFocusBorderEnabled' ).to( parentMenuView.listView, 'isFocusBorderEnabled' );
+
+				// Delegate events to the parent menu.
 				this.delegate( ...DropdownMenuView.DELEGATED_EVENTS ).to( parentMenuView );
 				DropdownMenuBehaviors.closeOnParentClose( this, parentMenuView );
 			}
@@ -289,11 +294,16 @@ export default class DropdownMenuView extends View implements FocusableView {
 	 * Adds the panel view to the editor's body and sets up event listeners.
 	 */
 	private _addToEditorBody() {
-		const { panelView, buttonView, keystrokes, editor } = this;
+		const {
+			panelView, listView, buttonView,
+			keystrokes, editor
+		} = this;
+
 		const { ui } = editor;
 		const { body } = ui.view;
 
 		if ( !body.has( panelView ) ) {
+			listView.checkIfScrollable();
 			body.add( panelView );
 			ui.focusTracker.add( panelView.element! );
 			keystrokes.listenTo( panelView.element! );

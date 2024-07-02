@@ -1,0 +1,17 @@
+/*
+ * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+.ck-dropdown-menu {
+	/*
+	 * This style is set in additional class because `overflow-y: auto` truncates focus border
+	 * when the panel is scrollable. Most of the dropdowns are relatively small and don't need
+	 * scrolling, so we don't want to apply this style to all dropdowns but only to those that
+	 * are large enough to require scrolling.
+	 */
+	&.ck-dropdown-menu_scrollable {
+		max-height: 60vh;
+		overflow-y: auto;
+	}
+}

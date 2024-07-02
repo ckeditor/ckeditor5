@@ -9,38 +9,29 @@
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 
-import ButtonView from '../../button/buttonview.js';
+import ListItemButtonView from '../../button/listitembuttonview.js';
 
 import '../../../theme/components/dropdown/menu/dropdownmenulistitembutton.css';
 
 /**
  * Represents a view for a button in a dropdown menu list item.
  */
-export default class DropdownMenuListItemButtonView extends ButtonView {
-	/**
-	 * Determines whether space should be allocated for an icon if it is missing.
-	 */
-	declare public addIconSpace: boolean;
-
+export default class DropdownMenuListItemButtonView extends ListItemButtonView {
 	constructor( locale: Locale, label?: string ) {
 		super( locale );
-
-		const bind = this.bindTemplate;
 
 		this.set( {
 			withText: true,
 			withKeystroke: true,
 			tooltip: false,
 			role: 'menuitem',
-			addIconSpace: false,
 			label
 		} );
 
 		this.extendTemplate( {
 			attributes: {
 				class: [
-					'ck-dropdown-menu__menu__item__button',
-					bind.if( 'addIconSpace', 'ck-icon-spacing' )
+					'ck-dropdown-menu__menu__item__button'
 				]
 			}
 		} );

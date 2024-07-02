@@ -3,6 +3,37 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+@import "../../../../mixins/_focus.css";
+@import "../../../../mixins/_shadow.css";
+
+.ck.ck-dropdown-menu {
+	& .ck-list-item-button {
+		&:focus,
+		&:active {
+			border-color: transparent;
+			box-shadow: none;
+		}
+
+		&.ck-on:not(.ck-disabled) {
+			&, &:hover {
+				color: var(--ck-color-button-on-color);
+			}
+		}
+	}
+
+	&.ck-dropdown-menu_focus-border-enabled .ck-list-item-button {
+		&:focus,
+		&:active {
+			/* Fix truncated shadows due to rendering order. */
+			position: relative;
+			z-index: 2;
+
+			@mixin ck-focus-ring;
+			@mixin ck-box-shadow var(--ck-focus-outer-shadow);
+		}
+	}
+}
+
 .ck.ck-dropdown-menu__menu {
 	/* Enable font size inheritance, which allows fluid UI scaling. */
 	font-size: inherit;
