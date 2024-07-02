@@ -225,8 +225,8 @@ export default class CKBoxUtils extends Plugin {
 		function fetchCategories( offset: number ): Promise<{ totalCount: number; items: Array<AvailableCategory> }> {
 			const categoryUrl = new URL( 'categories', serviceOrigin );
 
-			categoryUrl.searchParams.set( 'limit', ITEMS_PER_REQUEST.toString() );
-			categoryUrl.searchParams.set( 'offset', offset.toString() );
+			categoryUrl.searchParams.set( 'limit', String( ITEMS_PER_REQUEST ) );
+			categoryUrl.searchParams.set( 'offset', String( offset ) );
 			categoryUrl.searchParams.set( 'workspaceId', workspaceId );
 
 			return sendHttpRequest( {
