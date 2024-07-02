@@ -28,7 +28,8 @@
     "sourceMap": true,
     "allowJs": true,
     "moduleResolution": "node",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true
   },
   "include": [
     "./typings/"

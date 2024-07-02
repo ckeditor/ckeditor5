@@ -316,7 +316,16 @@ describe( 'FontFamilyUI', () => {
 				expect( buttonArial.isOn ).to.be.false;
 
 				command.value = 'Arial, Helvetica, sans-serif';
+
 				expect( buttonArial.isOn ).to.be.true;
+			} );
+
+			it( 'sets item\'s element aria-checked attribute depending on the value of the CodeBlockCommand', () => {
+				expect( buttonArial.element.getAttribute( 'aria-checked' ) ).to.be.equal( 'false' );
+
+				command.value = 'Arial, Helvetica, sans-serif';
+
+				expect( buttonArial.element.getAttribute( 'aria-checked' ) ).to.be.equal( 'true' );
 			} );
 		} );
 	} );

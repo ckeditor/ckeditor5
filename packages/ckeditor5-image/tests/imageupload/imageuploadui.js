@@ -23,7 +23,7 @@ import { icons } from 'ckeditor5/src/core.js';
 import { createNativeFileMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { MenuBarMenuListItemFileDialogButtonView } from '@ckeditor/ckeditor5-ui';
+import { MenuBarMenuListItemButtonView, MenuBarMenuListItemFileDialogButtonView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'ImageUploadUI', () => {
 	let editor, model, editorElement, fileRepository, button;
@@ -69,21 +69,29 @@ describe( 'ImageUploadUI', () => {
 	} );
 
 	describe( 'toolbar button', () => {
-		beforeEach( () => {
-			button = editor.ui.componentFactory.create( 'imageUpload' );
+		describe( 'uploadImage', () => {
+			beforeEach( () => {
+				button = editor.ui.componentFactory.create( 'uploadImage' );
+			} );
+
+			testButton( 'uploadImage', 'Upload image from computer', ButtonView );
+
+			it( 'should have tooltip', () => {
+				expect( button.tooltip ).to.be.true;
+			} );
 		} );
 
-		testButton( 'uploadImage', 'Upload image from computer', ButtonView );
+		// Check backward compatibility.
+		describe( 'imageUpload', () => {
+			beforeEach( () => {
+				button = editor.ui.componentFactory.create( 'imageUpload' );
+			} );
 
-		it( 'should register imageUpload button as an alias for uploadImage button', () => {
-			const buttonCreator = editor.ui.componentFactory._components.get( 'uploadImage'.toLowerCase() );
-			const buttonAliasCreator = editor.ui.componentFactory._components.get( 'imageUpload'.toLowerCase() );
+			testButton( 'uploadImage', 'Upload image from computer', ButtonView );
 
-			expect( buttonCreator.callback ).to.equal( buttonAliasCreator.callback );
-		} );
-
-		it( 'should have tooltip', () => {
-			expect( button.tooltip ).to.be.true;
+			it( 'should have tooltip', () => {
+				expect( button.tooltip ).to.be.true;
+			} );
 		} );
 	} );
 
@@ -95,29 +103,22 @@ describe( 'ImageUploadUI', () => {
 		testButton( 'uploadImage', 'Image from computer', MenuBarMenuListItemFileDialogButtonView );
 	} );
 
-	describe( 'InsertImageUI integration', () => {
+	describe( 'InsertImageUI toolbar integration', () => {
 		it( 'should create FileDialogButtonView in split button dropdown button', () => {
-			mockAssetManagerIntegration();
+			mockAnotherIntegration();
 
-			const spy = sinon.spy( editor.ui.componentFactory, 'create' );
 			const dropdown = editor.ui.componentFactory.create( 'insertImage' );
 			const dropdownButton = dropdown.buttonView.actionView;
 
 			expect( dropdownButton ).to.be.instanceOf( FileDialogButtonView );
 			expect( dropdownButton.withText ).to.be.false;
 			expect( dropdownButton.icon ).to.equal( icons.imageUpload );
-
-			expect( spy.calledTwice ).to.be.true;
-			expect( spy.firstCall.args[ 0 ] ).to.equal( 'insertImage' );
-			expect( spy.secondCall.args[ 0 ] ).to.equal( 'uploadImage' );
-			expect( spy.firstCall.returnValue ).to.equal( dropdown.buttonView.actionView );
 		} );
 
 		it( 'should create FileDialogButtonView in dropdown panel', () => {
-			mockAssetManagerIntegration();
+			mockAnotherIntegration();
 
 			const dropdown = editor.ui.componentFactory.create( 'insertImage' );
-			const spy = sinon.spy( editor.ui.componentFactory, 'create' );
 
 			dropdown.isOpen = true;
 
@@ -127,16 +128,12 @@ describe( 'ImageUploadUI', () => {
 			expect( buttonView ).to.be.instanceOf( FileDialogButtonView );
 			expect( buttonView.withText ).to.be.true;
 			expect( buttonView.icon ).to.equal( icons.imageUpload );
-
-			expect( spy.calledOnce ).to.be.true;
-			expect( spy.firstCall.args[ 0 ] ).to.equal( 'uploadImage' );
-			expect( spy.firstCall.returnValue ).to.equal( buttonView );
 		} );
 
 		it( 'should bind to #isImageSelected', () => {
 			const insertImageUI = editor.plugins.get( 'ImageInsertUI' );
 
-			mockAssetManagerIntegration();
+			mockAnotherIntegration();
 
 			const dropdown = editor.ui.componentFactory.create( 'insertImage' );
 
@@ -156,7 +153,7 @@ describe( 'ImageUploadUI', () => {
 		} );
 
 		it( 'should close dropdown on execute', () => {
-			mockAssetManagerIntegration();
+			mockAnotherIntegration();
 
 			const dropdown = editor.ui.componentFactory.create( 'insertImage' );
 
@@ -173,7 +170,31 @@ describe( 'ImageUploadUI', () => {
 		} );
 	} );
 
-	function mockAssetManagerIntegration() {
+	describe( 'InsertImageUI menu bar integration', () => {
+		it( 'should create FileDialogButtonView in insert image submenu', () => {
+			mockAnotherIntegration();
+
+			const submenu = editor.ui.componentFactory.create( 'menuBar:insertImage' );
+
+			button = submenu.panelView.children.first.items.first.children.first;
+
+			expect( button ).to.be.instanceOf( MenuBarMenuListItemFileDialogButtonView );
+			expect( button.withText ).to.be.true;
+			expect( button.icon ).to.equal( icons.imageUpload );
+			expect( button.label ).to.equal( 'From computer' );
+		} );
+
+		it( 'should create FileDialogButtonView in insert image submenu - only integration', () => {
+			button = editor.ui.componentFactory.create( 'menuBar:insertImage' );
+
+			expect( button ).to.be.instanceOf( MenuBarMenuListItemFileDialogButtonView );
+			expect( button.withText ).to.be.true;
+			expect( button.icon ).to.equal( icons.imageUpload );
+			expect( button.label ).to.equal( 'Image' );
+		} );
+	} );
+
+	function mockAnotherIntegration() {
 		const insertImageUI = editor.plugins.get( 'ImageInsertUI' );
 		const observable = new Model( { isEnabled: true } );
 
@@ -191,6 +212,13 @@ describe( 'ImageUploadUI', () => {
 				const button = new ButtonView( editor.locale );
 
 				button.label = 'bar';
+
+				return button;
+			},
+			menuBarButtonViewCreator() {
+				const button = new MenuBarMenuListItemButtonView( editor.locale );
+
+				button.label = 'menu foo';
 
 				return button;
 			}

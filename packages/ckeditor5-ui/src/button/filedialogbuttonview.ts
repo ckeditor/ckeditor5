@@ -11,7 +11,8 @@ import View from '../view.js';
 import ButtonView from './buttonview.js';
 import type { ButtonExecuteEvent } from './button.js';
 
-import type { Locale } from '@ckeditor/ckeditor5-utils';
+import type { Constructor, Locale, Mixed } from '@ckeditor/ckeditor5-utils';
+import ListItemButtonView from './listitembuttonview.js';
 
 /**
  * The file dialog button view.
@@ -37,18 +38,125 @@ import type { Locale } from '@ckeditor/ckeditor5-utils';
  * } );
  * ```
  */
-export default class FileDialogButtonView extends ButtonView {
+export default class FileDialogButtonView extends FileDialogViewMixin( ButtonView ) {}
+
+/**
+ * The file dialog button view used in a lists.
+ *
+ * This component provides a button that opens the native file selection dialog.
+ * It can be used to implement the UI of a file upload feature.
+ *
+* ```ts
+ * const view = new FileDialogListItemButtonView( locale );
+ *
+ * view.set( {
+ * 	acceptedType: 'image/*',
+ * 	allowMultipleFiles: true
+ * 	label: t( 'Insert image' ),
+ * 	icon: imageIcon,
+ * 	tooltip: true
+ * } );
+ *
+ * view.on( 'done', ( evt, files ) => {
+ * 	for ( const file of Array.from( files ) ) {
+ * 		console.log( 'Selected file', file );
+ * 	}
+ * } );
+ * ```
+ */
+export class FileDialogListItemButtonView extends FileDialogViewMixin( ListItemButtonView ) {}
+
+/**
+ * Mixin function that enhances a base button view class with file dialog functionality. It is used
+ * to create a button view class that opens the native select file dialog when clicked.
+ *
+ * The enhanced view includes a button and a hidden file input. When the button is clicked, the file dialog is opened.
+ * The mixin adds properties and methods to the base class to handle the file selection.
+ *
+ * @param view The base class to be enhanced with file dialog functionality.
+ * @returns A new class that extends the base class and includes the file dialog functionality.
+ */
+function FileDialogViewMixin<Base extends Constructor<ButtonView>>( view: Base ): Mixed<Base, FileDialogButtonViewBase> {
+	abstract class FileDialogView extends view implements FileDialogButtonViewBase {
+		/**
+		 * The button view of the component.
+		 *
+		 * @deprecated
+		 */
+		public buttonView: ButtonView;
+
+		/**
+		 * A hidden `<input>` view used to execute file dialog.
+		 */
+		private _fileInputView: FileInputView;
+
+		/**
+		 * Accepted file types. Can be provided in form of file extensions, media type or one of:
+		 * * `audio/*`,
+		 * * `video/*`,
+		 * * `image/*`.
+		 *
+		 * @observable
+		 */
+		declare public acceptedType: string;
+
+		/**
+		 * Indicates if multiple files can be selected. Defaults to `true`.
+		 *
+		 * @observable
+		 */
+		declare public allowMultipleFiles: boolean;
+
+		/**
+		 * @inheritDoc
+		 */
+		constructor( ...args: Array<any> ) {
+			super( ...args );
+
+			// For backward compatibility.
+			this.buttonView = this;
+
+			this._fileInputView = new FileInputView( this.locale );
+			this._fileInputView.bind( 'acceptedType' ).to( this );
+			this._fileInputView.bind( 'allowMultipleFiles' ).to( this );
+
+			this._fileInputView.delegate( 'done' ).to( this );
+
+			this.on<ButtonExecuteEvent>( 'execute', () => {
+				this._fileInputView.open();
+			} );
+
+			this.extendTemplate( {
+				attributes: {
+					class: 'ck-file-dialog-button'
+				}
+			} );
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public override render(): void {
+			super.render();
+
+			this.children.add( this._fileInputView );
+		}
+	}
+
+	return FileDialogView as any;
+}
+
+/**
+ * Represents the base view for a file dialog button component.
+ */
+type FileDialogButtonViewBase = View & {
+
 	/**
 	 * The button view of the component.
 	 *
 	 * @deprecated
 	 */
-	public buttonView: ButtonView;
-
-	/**
-	 * A hidden `<input>` view used to execute file dialog.
-	 */
-	private _fileInputView: FileInputView;
+	buttonView: ButtonView;
 
 	/**
 	 * Accepted file types. Can be provided in form of file extensions, media type or one of:
@@ -58,50 +166,15 @@ export default class FileDialogButtonView extends ButtonView {
 	 *
 	 * @observable
 	 */
-	declare public acceptedType: string;
+	acceptedType: string;
 
 	/**
 	 * Indicates if multiple files can be selected. Defaults to `true`.
 	 *
 	 * @observable
 	 */
-	declare public allowMultipleFiles: boolean;
-
-	/**
-	 * @inheritDoc
-	 */
-	constructor( locale?: Locale ) {
-		super( locale );
-
-		// For backward compatibility.
-		this.buttonView = this;
-
-		this._fileInputView = new FileInputView( locale );
-		this._fileInputView.bind( 'acceptedType' ).to( this );
-		this._fileInputView.bind( 'allowMultipleFiles' ).to( this );
-
-		this._fileInputView.delegate( 'done' ).to( this );
-
-		this.on<ButtonExecuteEvent>( 'execute', () => {
-			this._fileInputView.open();
-		} );
-
-		this.extendTemplate( {
-			attributes: {
-				class: 'ck-file-dialog-button'
-			}
-		} );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public override render(): void {
-		super.render();
-
-		this.children.add( this._fileInputView );
-	}
-}
+	allowMultipleFiles: boolean;
+};
 
 /**
  * The hidden file input view class.

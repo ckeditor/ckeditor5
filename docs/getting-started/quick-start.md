@@ -1,19 +1,28 @@
 ---
 category: installation
 order: 10
-menu-title: Quick Start
-meta-title: Quick Start | CKEditor 5 documentation
+menu-title: Quick start
+meta-title: Quick start | CKEditor 5 documentation
 meta-description: Learn the fastest way to install and use CKEditor 5 - the powerful, rich text WYSIWYG editor in your web application using npm or CDN.
-modified_at: 2024-05-06
+modified_at: 2024-06-25
 ---
 
-# Quick Start
+# Quick start
 
 CKEditor&nbsp;5 is a powerful, rich text editor you can embed in your web application. This guide will show you the fastest way to start using it.
+
+You have a few methods to choose from:
+
+* [Using CKEditor&nbsp;5 Builder](#using-ckeditor-5-builder) for the smoothest setup with live preview and multiple integration options.
+* [Using npm](#installing-ckeditor-5-using-npm) where you use a JavaScript package and build the editor with a bundler.
+* [Using CDN](#installing-ckeditor-5-from-cdn), where you use our cloud-distributed CDN in a no-build setup.
+* [Using a provided JavaScript file](#installing-ckeditor-5-from-a-file) where you download the ready-to-run file and copy them to your project.
+* Choosing one of the pre-made integrations with popular frameworks (see table of contents for details).
 
 ## Using CKEditor&nbsp;5 Builder
 
 Check out our [interactive Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs) to quickly get a taste of CKEditor&nbsp;5. It offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs. You can easily select:
+
 * editor type,
 * the features you need,
 * the preferred framework (React, Angular, Vue or Vanilla JS),
@@ -29,33 +38,30 @@ First, install the necessary package. The command below will install the main CK
 npm install ckeditor5
 ```
 
-All premium features are available as a separate package. You can install it the same as the open-source one.
-
-```bash
-npm install ckeditor5-premium-features
-```
-
-Now you can import all the modules from the `ckeditor5` and `ckeditor5-premium-features` packages. Additionally, you have to import CSS styles separately. Please note the {@link module:essentials/essentials~Essentials `Essentials`} plugin including all essential editing features.
+Now, you can import all the modules from the `ckeditor5` package. Additionally, you have to import CSS styles separately. Please note the {@link module:essentials/essentials~Essentials `Essentials`} plugin, including all essential editing features.
 
 **Importing and registering UI translations is optional for American English.** To use the editor in any other language, use imported translations, as shown in the {@link getting-started/setup/ui-language setup section}.
 
 ```js
-import { ClassicEditor, Essentials, Bold, Italic, Paragraph } from 'ckeditor5';
-import { FormatPainter, SlashCommand } from 'ckeditor5-premium-features';
-import 'ckeditor5/index.css';
-import 'ckeditor5-premium-features/index.css';
+import { ClassicEditor, Essentials, Bold, Italic, Font, Paragraph } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Essentials, Bold, Italic, Paragraph, FormatPainter, SlashCommand ],
-	toolbar: {
-		items: [ 'undo', 'redo', '|', 'bold', 'italic', 'formatPainter' ]
-	},
-	licenseKey: 'your-license-key'
-} )
-.then( /* ... */ );
+import 'ckeditor5/ckeditor5.css';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
+		toolbar: {
+			items: [
+				'undo', 'redo', '|', 'bold', 'italic', '|',
+				'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+			]
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
-Pass the imported plugins inside the configuration to the {@link module:editor-classic/classiceditor~ClassicEditor#create `create()`} method and add toolbar items where applicable. Please note, that to use premium features, you need to activate them with a proper license key, mentioned in the final section of this guide.
+Pass the imported plugins inside the configuration to the {@link module:editor-classic/classiceditor~ClassicEditor#create `create()`} method and add toolbar items where applicable.
 
 The first argument in the `create()` function is a DOM element for the editor placement, so you need to add it to your HTML page.
 
@@ -69,15 +75,12 @@ That is all the code you need to see a bare-bone editor running in your web brow
 
 ## Installing CKEditor&nbsp;5 from CDN
 
-CDN is an alternative method of running CKEditor 5. You can start using it in just a few steps and with a few tags.
+CDN is an alternative method of running CKEditor&nbsp;5. You can start using it in just a few steps and with a few tags.
 
-Start by attaching a link to style sheets. They contain all styles for the editor's UI and content. The styles are in two style sheets &ndash; for open-source and premium plugins. You can also include your styles if you like. Refer to the content styles guide for more information.
+Start by attaching a link to style sheets. They contain all styles for the editor's UI and content. You can also include your styles if you like. Refer to the {@link getting-started/setup/css#styling-the-published-content content styles} guide for more information.
 
 ```html
-<link rel="stylesheet" href="<CDN_LINK>/ckeditor5/dist/styles.css" />
-
-<!-- If you are using premium features: -->
-<link rel="stylesheet" href="<CDN_LINK>/ckeditor5-premium-features/dist/index.css" />
+<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
 ```
 
 Then, you need to attach the script with the JavaScript code. To simplify imports, you can use the feature available in browsers &ndash; the [import map](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap). It allows us to map an easy-to-remember specifier (like `ckeditor5`) to the full URL of the file from the CDN. We use this browser feature to share an editor engine code between plugins.
@@ -86,43 +89,44 @@ Then, you need to attach the script with the JavaScript code. To simplify import
 <script type="importmap">
 	{
 		"imports": {
-			"ckeditor5": "<CDN_LINK>/ckeditor5/index.min.js",
-			"ckeditor5/": "<CDN_LINK>/ckeditor5/",
-			"ckeditor5-premium-features": "<CDN_LINK>/ckeditor5-premium-features/index.min.js",
-			"ckeditor5-premium-features/": "<CDN_LINK>/ckeditor5-premium-features/"
+			"ckeditor5": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.js",
+			"ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/"
 		}
 	}
 </script>
 ```
 
-Once you have added the import map, you can access the editor and its plugins using the `ckeditor5` specifier. If you want to use premium features, import them from the `ckeditor5-premium-features` package. Please note, that to use premium features, you need to activate them with a proper license key, mentioned in the final section of this guide.
+Once you have added the import map, you can access the editor and its plugins using the `ckeditor5` specifier.
 
-In the following script tag, import the desired plugins and add them to the `plugins` array and add toolbar items where applicable. Note that both script tags (this and previous) have the appropriate `type` values.
+<info-box warning>
+	You must run your code on a local server to use import maps. Opening the HTML file directly in your browser will trigger security rules. These rules (CORS policy) ensure loading modules from the same source. Therefore, set up a local server, like `nginx`, `caddy`, `http-server`, to serve your files over HTTP or HTTPS.
+</info-box>
+
+In the following script tag, import the desired plugins, add them to the `plugins` array, and add toolbar items where applicable. Note that both script tags (this and previous) have the appropriate `type` values.
 
 ```html
 <script type="module">
 	import {
 		ClassicEditor,
 		Essentials,
-		GeneralHtmlSupport,
 		Bold,
 		Italic,
-		PasteFromOffice,
+		Font,
 		Paragraph
 	} from 'ckeditor5';
-	import { PasteFromOfficeEnhanced } from 'ckeditor5-premium-features';
 
-	ClassicEditor.create( document.querySelector( '#editor' ), {
-		plugins: [
-			Essentials, GeneralHtmlSupport, Bold, Italic,
-			PasteFromOffice, PasteFromOfficeEnhanced, Paragraph
-			],
-		toolbar: {
-			items: [ 'undo', 'redo', '|', 'bold', 'italic' ]
-		},
-		licenseKey: 'your-license-key'
-	} )
-	.then( /* ... */ );
+	ClassicEditor
+		.create( document.querySelector( '#editor' ), {
+			plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
+			toolbar: {
+				items: [
+					'undo', 'redo', '|', 'bold', 'italic', '|',
+					'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+				]
+			}
+		} )
+		.then( /* ... */ )
+		.catch( /* ... */ );
 </script>
 ```
 
@@ -143,9 +147,7 @@ Your final page should look similar to the one below.
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>CKEditor 5 - Quick start CDN</title>
-		<link rel="stylesheet" href="<CDN_LINK>/ckeditor5/dist/styles.css" />
-		<!-- If you are using premium features: -->
-		<link rel="stylesheet" href="<CDN_LINK>/ckeditor5-premium-features/dist/index.css" />
+		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
 	</head>
 	<body>
 		<div id="editor">
@@ -155,41 +157,256 @@ Your final page should look similar to the one below.
 		<script type="importmap">
 			{
 				"imports": {
-					"ckeditor5": "<CDN_LINK>/ckeditor5/dist/browser/index.js",
-    				"ckeditor5/": "<CDN_LINK>/ckeditor5/dist/"
+					"ckeditor5": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.js",
+					"ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/"
 				}
 			}
 		</script>
-		
+
 		<script type="module">
 			import {
 				ClassicEditor,
 				Essentials,
-				GeneralHtmlSupport,
 				Bold,
 				Italic,
-				PasteFromOffice,
+				Font,
 				Paragraph
-				} from 'ckeditor5';
-			import { PasteFromOfficeEnhanced } from 'ckeditor5-premium-features';
+			} from 'ckeditor5';
 
-			ClassicEditor.create( document.querySelector( '#editor' ), {
-				plugins: [
-					Essentials, GeneralHtmlSupport, Bold, Italic,
-					PasteFromOffice, PasteFromOfficeEnhanced, Paragraph
-					],
-				toolbar: {
-					items: [ 'undo', 'redo', '|', 'bold', 'italic' ]
-				},
-				licenseKey: 'your-license-key'
-			} )
-			.then( /* ... */ );
+			ClassicEditor
+				.create( document.querySelector( '#editor' ), {
+					plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
+					toolbar: {
+						items: [
+							'undo', 'redo', '|', 'bold', 'italic', '|',
+							'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+						]
+					}
+				} )
+				.then( /* ... */ )
+				.catch( /* ... */ );
 		</script>
 	</body>
 </html>
 ```
 
-## Obtaining a license key
+## Installing CKEditor&nbsp;5 from a file
+
+If you do not want to build your project using npm, and you cannot rely on the CDN delivery, you can download ready-to-run files with CKEditor&nbsp;5 and all its plugins.
+
+1. <a href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/zip/ckeditor5-{@var ckeditor5-version}.zip">Download the .zip file with the latest CKEditor&nbsp;5 distribution.</a>
+2. Extract the .zip file into a dedicated directory inside your project. It is recommended to include the editor version in the directory name to ensure proper cache invalidation once a new version of CKEditor&nbsp;5 is installed.
+
+Files included in the .zip archive:
+
+* `index.html` &ndash; A sample with working editor.
+* `ckeditor5/ckeditor5.js` &ndash; The ready-to-use editor ESM bundle contains the editor and all plugins. [Recommended build]
+* `ckeditor5/ckeditor.js.map` &ndash; The source map for the editor ESM bundle.
+* `ckeditor5/ckeditor5.umd.js` &ndash; The ready-to-use editor UMD bundle contains the editor and all plugins. [Secondary build]
+* `ckeditor5/ckeditor5.umd.js.map` &ndash; The source map for the editor UMD bundle.
+* `ckeditor5/*.css` &ndash; The style sheets for the editor. You will use `ckeditor5.css` in most cases. Read about other files in the {@link getting-started/setup/css Editor and content styles} guide.
+* `translations/` &ndash; The editor UI translations (see the {@link getting-started/setup/ui-language Setting the UI language} guide).
+* The `README.md` and `LICENSE.md` files.
+
+Copy these files to your project directory. You may use the [CDN configuration](#installing-ckeditor-5-from-cdn) as an example. You can also refer to framework integration guides for sample implementations.
+
+## Installing premium features
+
+### Installing premium features using npm
+
+All premium features are available as a separate package. You can install it the same as the open-source one.
+
+```bash
+npm install ckeditor5-premium-features
+```
+
+Now, you can import all the modules from both the `ckeditor5` and `ckeditor5-premium-features` packages. Additionally, you have to import CSS styles separately.
+
+```js
+import { ClassicEditor, Essentials, Bold, Italic, Paragraph, Font } from 'ckeditor5';
+import { FormatPainter } from 'ckeditor5-premium-features';
+
+import 'ckeditor5/ckeditor5.css';
+import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Essentials, Bold, Italic, Paragraph, Font, FormatPainter ],
+		toolbar: {
+			items: [
+				'undo', 'redo', '|', 'bold', 'italic', '|',
+				'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+				'formatPainter'
+			]
+		},
+		licenseKey: 'your-license-key'
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+Pass the imported plugins inside the configuration to the {@link module:editor-classic/classiceditor~ClassicEditor#create `create()`} method and add toolbar items where applicable. Please note, that to use premium features, you need to activate them with a proper license key, mentioned in the final section of this guide.
+
+The first argument in the `create()` function is a DOM element for the editor placement, so you need to add it to your HTML page.
+
+```html
+<div id="editor">
+	<p>Hello from CKEditor 5!</p>
+</div>
+```
+
+That is all the code you need to see a bare-bone editor running in your web browser.
+
+### Installing premium features from CDN
+
+Just like with open-source features, start by attaching a link to style sheets. They contain all styles for the editor's UI and content. The styles are in two separate style sheets &ndash; for open-source and premium plugins. You can also include your styles if you like. Refer to the content styles guide for more information.
+
+```html
+<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
+
+<!-- If you are using premium features: -->
+<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
+```
+
+Then, you need to attach the script with the JavaScript code. To simplify imports, you can use the feature available in browsers &ndash; the [import map](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap). It allows us to map an easy-to-remember specifier (like `ckeditor5`) to the full URL of the file from the CDN. We use this browser feature to share an editor engine code between plugins.
+
+```html
+<script type="importmap">
+	{
+		"imports": {
+			"ckeditor5": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.js",
+			"ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/",
+			"ckeditor5-premium-features": "https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.js",
+			"ckeditor5-premium-features/": "https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/"
+		}
+	}
+</script>
+```
+
+Once you have added the import map, you can access the editor and its plugins using the `ckeditor5` specifier. Import them from the `ckeditor5-premium-features` package. Please note that to use premium features, you need to activate them with a proper license key, as mentioned in the final section of this guide.
+
+In the following script tag, import the desired plugins and add them to the `plugins` array and add toolbar items where applicable. Note that both script tags (this and previous) have the appropriate `type` values.
+
+```html
+<script type="module">
+	import {
+		ClassicEditor,
+		Essentials,
+		Bold,
+		Italic,
+		Font,
+		Paragraph
+	} from 'ckeditor5';
+	import { FormatPainter } from 'ckeditor5-premium-features';
+
+	ClassicEditor
+		.create( document.querySelector( '#editor' ), {
+			plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
+			toolbar: {
+				items: [
+					'undo', 'redo', '|', 'bold', 'italic', '|',
+					'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+					'formatPainter'
+				]
+			},
+			licenseKey: 'your-license-key'
+		} )
+		.then( /* ... */ )
+		.catch( /* ... */ );
+</script>
+```
+
+Lastly, add a tag for the editor to attach to.
+
+```html
+<div id="editor">
+	<p>Hello from CKEditor 5!</p>
+</div>
+```
+
+Your final page should look similar to the one below.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>CKEditor 5 - Quick start CDN</title>
+		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
+		<!-- If you are using premium features: -->
+		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
+	</head>
+	<body>
+		<div id="editor">
+			<p>Hello from CKEditor 5!</p>
+		</div>
+
+		<script type="importmap">
+			{
+				"imports": {
+					"ckeditor5": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.js",
+					"ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/",
+					"ckeditor5-premium-features": "https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.js",
+					"ckeditor5-premium-features/": "https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/"
+				}
+			}
+		</script>
+
+		<script type="module">
+			import {
+				ClassicEditor,
+				Essentials,
+				Bold,
+				Italic,
+				Font,
+				Paragraph
+			} from 'ckeditor5';
+			import { FormatPainter } from 'ckeditor5-premium-features';
+
+			ClassicEditor
+				.create( document.querySelector( '#editor' ), {
+					plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
+					toolbar: {
+						items: [
+							'undo', 'redo', '|', 'bold', 'italic', '|',
+							'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|', 'formatPainter'
+						]
+					},
+					licenseKey: 'your-license-key'
+				} )
+				.then( /* ... */ )
+				.catch( /* ... */ );
+		</script>
+	</body>
+</html>
+```
+
+### Installing premium features from a file
+
+1. <a href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/zip/ckeditor5-premium-features-{@var ckeditor5-version}.zip">Download the .zip file with the latest CKEditor&nbsp;5 distribution and premium features.</a>
+2. Extract the .zip file into a dedicated directory inside your project. It is recommended to include the editor version in the directory name to ensure proper cache invalidation once a new version of CKEditor&nbsp;5 is installed.
+
+Files in the .zip archive:
+
+* `index.html` &ndash; A sample file with a working editor.
+* The `ckeditor5` directory:
+	* `ckeditor5.js` &ndash; The ready-to-use editor ESM bundle contains the editor and all plugins. [Recommended build]
+	* `ckeditor.js.map` &ndash; The source map for the editor ESM bundle.
+	* `ckeditor5.umd.js` &ndash; The ready-to-use editor UMD bundle contains the editor and all plugins. [Secondary build]
+	* `ckeditor5.umd.js.map` &ndash; The source map for the editor UMD bundle.
+	* `*.css` &ndash; The style sheets for the editor, use `ckeditor5.css` in most cases. Read about other files in the {@link getting-started/setup/css Editor and content styles} guide.
+	* `translations/` &ndash; The editor UI translations (see the {@link getting-started/setup/ui-language Setting the UI language} guide).
+* The `ckeditor5-premium-features` directory:
+	* `ckeditor5-premium-features.js` &ndash; ESM bundle of premium features.  [Recommended build]
+	* `ckeditor5-premium-features.umd.js` &ndash; UMD bundle of premium features contains the editor and all plugins. [Secondary build]
+	* `*.css` &ndash; The style sheets for the premium features. You will use `ckeditor5-premium-features.css` in most cases.
+	* `translations/` &ndash; The premium features UI translations.
+* The `README.md` and `LICENSE.md` files.
+
+Copy these files to your project directory. You may use the [CDN configuration](#installing-premium-features-from-cdn) as an example. You can also refer to framework integration guides for sample implementations.
+
+### Obtaining a license key
 
 To activate CKEditor&nbsp;5 premium features, you will need a commercial license. The easiest way to get one is to sign up for the [CKEditor Premium Features 30-day free trial](https://orders.ckeditor.com/trial/premium-features) to test the premium features.
 

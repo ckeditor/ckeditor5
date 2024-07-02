@@ -15,7 +15,7 @@ You will build an "external data fetch" feature that allows users to insert a pr
 	If you want to see the final product of this tutorial before you plunge in, check out the [demo](#demo).
 </info-box>
 
-## Before you start ⚠️
+## Before you start
 
 This guide assumes that you are familiar with the widgets concept introduced in the {@link tutorials/widgets/implementing-a-block-widget Implementing a block widget} and {@link tutorials/widgets/implementing-an-inline-widget Implementing an inline widget} tutorials. The tutorial also references various concepts concerning the {@link framework/architecture/intro CKEditor&nbsp;5 architecture}.
 
@@ -23,148 +23,22 @@ This guide assumes that you are familiar with the widgets concept introduced in 
 
 The overall project structure will be similar to one described in the {@link tutorials/widgets/implementing-an-inline-widget#bootstrapping-the-project Bootstrapping the project} section of the "Implementing an inline widget" tutorial.
 
-First, install the required dependencies:
+The easiest way to set up your project is to grab the starter files from the [GitHub repository for this tutorial](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/data-from-external-source). We gathered all the necessary dependencies there, including some CKEditor&nbsp;5 packages and other files needed to start the editor.
+
+The editor has already been created in the `main.js` file with some basic plugins. All you need to do is clone the repository, navigate to the [starter-files directory](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/data-from-external-source/starter-files), run the `npm install` command, and you can start coding right away.
 
 ```bash
-npm install --save \
-	css-loader@5 \
-	postcss-loader@4 \
-	raw-loader@4 \
-	style-loader@2 \
-	webpack@5 \
-	webpack-cli@4 \
-	@ckeditor/ckeditor5-basic-styles \
-	@ckeditor/ckeditor5-core \
-	@ckeditor/ckeditor5-dev-utils \
-	@ckeditor/ckeditor5-editor-classic \
-	@ckeditor/ckeditor5-essentials \
-	@ckeditor/ckeditor5-heading \
-	@ckeditor/ckeditor5-list \
-	@ckeditor/ckeditor5-paragraph \
-	@ckeditor/ckeditor5-theme-lark \
-	@ckeditor/ckeditor5-ui \
-	@ckeditor/ckeditor5-utils \
-	@ckeditor/ckeditor5-widget
+git clone https://github.com/ckeditor/ckeditor5-tutorials-examples
+cd ckeditor5-tutorials-examples/data-from-external-source/starter-files
+
+npm install
+npm run dev
 ```
 
-Create a minimal webpack configuration:
+First, lets define the `ExternalDataWidget` plugin. The project structure should be as follows:
 
-```js
-// webpack.config.js
-
-'use strict';
-
-const path = require( 'path' );
-const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
-
-module.exports = {
-	entry: './app.js',
-
-	output: {
-		path: path.resolve( __dirname, 'dist' ),
-		filename: 'bundle.js'
-	},
-
-	module: {
-		rules: [
-			{
-				test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
-				use: [ 'raw-loader' ]
-			},
-			{
-				test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
-				use: [
-					{
-						loader: 'style-loader',
-						options: {
-							injectType: 'singletonStyleTag',
-							attributes: {
-								'data-cke': true
-							}
-						}
-					},
-					'css-loader',
-					{
-						loader: 'postcss-loader',
-						options: {
-							postcssOptions: styles.getPostCssConfig( {
-								themeImporter: {
-									themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-								},
-								minify: true
-							} )
-						}
-					}
-				]
-			}
-		]
-	},
-
-	// Useful for debugging.
-	devtool: 'source-map',
-
-	// By default webpack logs warnings if the bundle is bigger than 200kb.
-	performance: { hints: false }
-};
-```
-
-Add an `index.html` page:
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>CKEditor 5 Framework – Implementing a simple widget</title>
-	</head>
-	<body>
-		<div id="editor">
-			<p>Editor content goes here.</p>
-		</div>
-
-		<script src="dist/bundle.js"></script>
-	</body>
-</html>
-```
-
-The application entry point (`app.js`):
-
-
-```js
-// app.js
-
-import { ClassicEditor, Bold, Italic, Essentials, Heading, List, Paragraph } from 'ckeditor5';
-
-import ExternalDataWidget from './external-data-widget/externaldatawidget';
-
-import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, ExternalDataWidget ],
-		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'undo', 'redo' ]
-	} )
-	.then( editor => {
-		console.log( 'Editor was initialized', editor );
-
-		CKEditorInspector.attach( 'editor', editor );
-
-		// Expose for playing in the console.
-		window.editor = editor;
-	} )
-	.catch( error => {
-		console.error( error.stack );
-	} );
-```
-
-
-Before building the project you still need to define the `ExternalDataWidget` plugin. The project structure should be as follows:
-
-```
-├── app.js
-├── dist
-│   ├── bundle.js
-│   └── bundle.js.map
+```plain
+├── main.js
 ├── index.html
 ├── node_modules
 ├── package.json
@@ -175,12 +49,8 @@ Before building the project you still need to define the `ExternalDataWidget` pl
 │   ├── externaldatawidgetui.js
 │   └── theme
 │       └── externaldatawidget.css
-│
-│   ... the rest of the plugin files goes here as well.
-│
-└── webpack.config.js
+└── ...
 ```
-
 
 You can see that the external data widget feature follows an established plugin structure: the master (glue) plugin (`external-data-widget/externaldatawidget.js`), the "editing" (`external-data-widget/externaldatawidgetediting.js`), and the "UI" (`external-data-widget/externaldatawidgetui.js`) parts.
 
@@ -229,17 +99,42 @@ export default class ExternalDataWidgetEditing extends Plugin {
 }
 ```
 
-At this stage you can build the project and open it in the browser to verify if it is building correctly.
+Finally, you need to load the `ExternalDataWidget` plugin in your `main.js` file:
 
-Use the `./node_modules/.bin/webpack --mode development` command in the root folder of the widget to build the project.
+```js
+// main.js
 
-After the build is completed, open `index.html` in your browser to check if all is correct at this stage.
+import { ClassicEditor, Bold, Italic, Essentials, Heading, List, Paragraph } from 'ckeditor5';
+import ExternalDataWidget from './external-data-widget/externaldatawidget';
+import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
+
+import 'ckeditor5/ckeditor5.css';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, ExternalDataWidget ],
+		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'undo', 'redo' ]
+	} )
+	.then( editor => {
+		console.log( 'Editor was initialized', editor );
+
+		CKEditorInspector.attach( { editor: 'editor' } );
+
+		// Expose for playing in the console.
+		window.editor = editor;
+	} )
+	.catch( error => {
+		console.error( error.stack );
+	} );
+```
+
+At this stage you can run the project and open it in the browser to verify if it is loading correctly.
 
 ## The model and the view layers
 
 The external data widget feature will be {@link module:engine/model/schema~SchemaItemDefinition defined as an inline} (text-like) element so it will be inserted into other editor blocks that allow text, like `<paragraph>`. The external data widget will also have a `data-resource-url` attribute. This means that the model representation of the external data widget will look like this:
 
-```
+```html
 <paragraph>
 	External value: <externalElement data-resource-url="RESOURCE_URL"></externalElement>.
 </paragraph>
@@ -300,10 +195,8 @@ The HTML structure (data output) of the converter will be a `<span>` with a `dat
 ```js
 // external-data-widget/externaldatawidgetediting.js
 
-import { Plugin } from 'ckeditor5';
-
 // ADDED 2 imports
-import { Widget, toWidget } from 'ckeditor5';
+import { Plugin, Widget, toWidget } from 'ckeditor5';
 
 import './theme/externaldatawidget.css';
 
@@ -402,7 +295,7 @@ The {@link framework/architecture/core-editor-architecture#commands command} for
 ```js
 // external-data-widget/externaldatawidgetcommand.js
 
-import { Command } from ckeditor5';
+import { Command } from 'ckeditor5';
 
 // example external data source url
 const RESOURCE_URL = 'https://api2.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT';
@@ -526,7 +419,7 @@ class ExternalDataWidgetUI extends Plugin {
 Add the {@link module:ui/button/buttonview~ButtonView} to the toolbar:
 
 ```js
-// app.js
+// main.js
 
 import {
 	ClassicEditor,
@@ -569,7 +462,6 @@ In this tutorial we will use an external API that provides a current Bitcoin rat
 The data will be fetched every 10 seconds. Each instance of the widget will be updated at the same time. To achieve that, we need to modify the `ExternalDataWidgetEditing` class.
 
 ```js
-
 class ExternalDataWidgetEditing extends Plugin {
 	//
 	constructor( editor ) {
@@ -673,7 +565,6 @@ class ExternalDataWidgetEditing extends Plugin {
 
 The editor content traversal can be a challenging process. The presented method is sufficient when there is relatively little content. Otherwise, a `WeakMap` will be a better option.
 
-
 ## Demo
 
 You can see the external data widget implementation in action in the editor below.
@@ -682,214 +573,12 @@ You can see the external data widget implementation in action in the editor belo
 
 ## Final solution
 
-The following code snippet contains the complete implementation of the `ExternalDataWidget` plugin (and all of its dependencies) and the code needed to run the editor. You can paste it into the `app.js` file and it will run out–of–the–box (excluded the Bitcoin logo):
+If you got lost at any point in the tutorial or want to go straight to the solution, there is a repository with the [final project](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/data-from-external-source/final-project) available.
 
-```js
+```bash
+git clone https://github.com/ckeditor/ckeditor5-tutorials-examples
+cd ckeditor5-tutorials-examples/data-from-external-source/final-project
 
-import {
-	ClassicEditor,
-	Bold,
-	Italic,
-	Command,
-	Plugin,
-	Essentials,
-	Heading,
-	List,
-	Paragraph,
-	ButtonView,
-	Widget,
-	toWidget
-} from 'ckeditor5';
-
-const BitcoinLogoIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" preserveAspectRatio="xMidYMid" viewBox="0 0 1 1"><path d="M63.036 39.741c-4.274 17.143-21.637 27.576-38.782 23.301C7.116 58.768-3.317 41.404.959 24.262 5.23 7.117 22.594-3.317 39.734.957c17.144 4.274 27.576 21.64 23.302 38.784z" style="fill:#f7931a" transform="scale(.01563)"/><path d="M46.1 27.441c.638-4.258-2.604-6.547-7.037-8.074l1.438-5.768-3.511-.875-1.4 5.616c-.923-.23-1.871-.447-2.813-.662l1.41-5.653-3.51-.875-1.438 5.766c-.764-.174-1.514-.346-2.242-.527l.004-.018-4.842-1.209-.934 3.75s2.605.597 2.55.634c1.422.355 1.679 1.296 1.636 2.042l-3.94 15.801c-.174.432-.615 1.08-1.61.834.036.051-2.551-.637-2.551-.637l-1.743 4.019 4.569 1.139c.85.213 1.683.436 2.503.646l-1.453 5.834 3.507.875 1.439-5.772c.958.26 1.888.5 2.798.726l-1.434 5.745 3.51.875 1.454-5.823c5.987 1.133 10.489.676 12.384-4.739 1.527-4.36-.076-6.875-3.226-8.515 2.294-.529 4.022-2.038 4.483-5.155zM38.08 38.69c-1.085 4.36-8.426 2.003-10.806 1.412l1.928-7.729c2.38.594 10.012 1.77 8.878 6.317zm1.086-11.312c-.99 3.966-7.1 1.951-9.082 1.457l1.748-7.01c1.982.494 8.365 1.416 7.334 5.553z" style="fill:#fff" transform="scale(.01563)"/></svg>';
-
-const RESOURCE_URL = 'https://api2.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT';
-
-class ExternalDataWidgetCommand extends Command {
-	execute() {
-		const editor = this.editor;
-		const selection = editor.model.document.selection;
-
-		editor.model.change( writer => {
-			const externalWidget = writer.createElement(
-				'externalElement', {
-					...Object.fromEntries( selection.getAttributes() ),
-					'data-resource-url': RESOURCE_URL
-				}
-			);
-
-			editor.model.insertObject( externalWidget, null, null, {
-				setSelection: 'on'
-			} );
-		} );
-	}
-
-	refresh() {
-		const model = this.editor.model;
-		const selection = model.document.selection;
-
-		const isAllowed = model.schema.checkChild( selection.focus.parent, 'externalElement' );
-
-		this.isEnabled = isAllowed;
-	}
-}
-
-class ExternalDataWidget extends Plugin {
-	static get requires() {
-		return [ ExternalDataWidgetEditing, ExternalDataWidgetUI ];
-	}
-}
-
-class ExternalDataWidgetUI extends Plugin {
-	init() {
-		const editor = this.editor;
-		const externalWidgetCommand = editor.commands.get( 'external' );
-
-		editor.ui.componentFactory.add( 'external', locale => {
-			const button = new ButtonView( locale );
-
-			button.set( {
-				label: 'Bitcoin rate',
-				tooltip: true,
-				withText: false,
-				icon: BitcoinLogoIcon
-			} );
-
-			button.bind( 'isEnabled' ).to( externalWidgetCommand );
-
-			button.on( 'execute', () => {
-				editor.execute( 'external' );
-				editor.editing.view.focus();
-			} );
-
-			return button;
-		} );
-	}
-}
-
-class ExternalDataWidgetEditing extends Plugin {
-	constructor( editor ) {
-		super( editor );
-
-		this.intervalId = this._intervalFetch();
-
-		this.externalDataValue = '';
-	}
-
-	static get requires() {
-		return [ Widget ];
-	}
-
-	destroy() {
-		clearInterval( this.intervalId );
-	}
-
-	init() {
-		this._defineSchema();
-		this._defineConverters();
-		this._updateWidgetData();
-
-		this.editor.commands.add( 'external', new ExternalDataWidgetCommand( this.editor ) );
-	}
-
-	_intervalFetch() {
-		return setInterval( () => this._updateWidgetData(), 10000 ); // set time interval to 10s
-	}
-
-	async _updateWidgetData( externalUrl = RESOURCE_URL ) {
-		try {
-			const response = await fetch( externalUrl );
-			const data = await response.json();
-			const updateTime = new Date( data.closeTime );
-			const parsedData = '$' + Number( data.lastPrice ).toFixed( 2 ) + ' - ' + updateTime.toLocaleString();
-
-			this.externalDataValue = parsedData;
-
-			const rootElement = this.editor.model.document.getRoot();
-
-			for ( const { item } of this.editor.model.createRangeIn( rootElement ) ) {
-				if ( item.is( 'element', 'externalElement' ) ) {
-					this.editor.editing.reconvertItem( item );
-				}
-			}
-		} catch ( error ) {
-			console.error( error );
-		}
-	}
-
-	_defineSchema() {
-		const schema = this.editor.model.schema;
-
-		schema.register( 'externalElement', {
-			inheritAllFrom: '$inlineObject',
-			allowAttributes: [ 'data-resource-url' ]
-		} );
-	}
-
-	_defineConverters() {
-		const editor = this.editor;
-
-		editor.conversion.for( 'upcast' ).elementToElement( {
-			view: {
-				name: 'span',
-				attributes: [ 'data-resource-url' ]
-			},
-			model: ( viewElement, { writer } ) => {
-				const externalUrl = viewElement.getAttribute( 'data-resource-url' );
-
-				return writer.createElement( 'externalElement', {
-					'data-resource-url': externalUrl
-				} );
-			}
-		} );
-
-		editor.conversion.for( 'dataDowncast' ).elementToElement( {
-			model: 'externalElement',
-			view: ( modelElement, { writer } ) => {
-				return writer.createEmptyElement( 'span', {
-					'data-resource-url': modelElement.getAttribute( 'data-resource-url' )
-				} );
-			}
-		} );
-
-		editor.conversion.for( 'editingDowncast' ).elementToElement( {
-			model: 'externalElement',
-			view: ( modelElement, { writer } ) => {
-				const externalValueToShow = this.externalDataValue;
-
-				const externalDataPreviewElement = writer.createRawElement( 'span', null, function( domElement ) {
-					domElement.classList.add( 'external-data-widget' );
-					domElement.textContent = externalValueToShow || 'Fetching data...';
-
-					if ( externalValueToShow ) {
-						domElement.classList.add( 'external-data-widget-bounce' );
-						setTimeout( () => domElement.classList.remove( 'external-data-widget-bounce' ), 1100 );
-					}
-				} );
-
-				const externalWidgetContainer = writer.createContainerElement( 'span', null, externalDataPreviewElement );
-
-				return toWidget( externalWidgetContainer, writer, {
-					label: 'External widget'
-				} );
-			}
-		} );
-	}
-}
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, ExternalDataWidget ],
-		toolbar: [ 'external', '|', 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'undo', 'redo' ]
-	} )
-	.then( editor => {
-		console.log( 'Editor was initialized', editor );
-
-		// Expose for playing in the console.
-		window.editor = editor;
-	} )
-	.catch( error => {
-		console.error( error.stack );
-	} );
-
+npm install
+npm run dev
 ```

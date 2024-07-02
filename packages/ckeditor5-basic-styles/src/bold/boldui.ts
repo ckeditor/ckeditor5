@@ -30,7 +30,6 @@ export default class BoldUI extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 		const t = editor.locale.t;
-		const command = editor.commands.get( BOLD )!;
 		const createButton = getButtonCreator( {
 			editor,
 			commandName: BOLD,
@@ -41,20 +40,7 @@ export default class BoldUI extends Plugin {
 		} );
 
 		// Add bold button to feature components.
-		editor.ui.componentFactory.add( BOLD, () => {
-			const buttonView = createButton( ButtonView );
-
-			buttonView.set( {
-				tooltip: true
-			} );
-
-			buttonView.bind( 'isOn' ).to( command, 'value' );
-
-			return buttonView;
-		} );
-
-		editor.ui.componentFactory.add( 'menuBar:' + BOLD, () => {
-			return createButton( MenuBarMenuListItemButtonView );
-		} );
+		editor.ui.componentFactory.add( BOLD, () => createButton( ButtonView ) );
+		editor.ui.componentFactory.add( 'menuBar:' + BOLD, () => createButton( MenuBarMenuListItemButtonView ) );
 	}
 }

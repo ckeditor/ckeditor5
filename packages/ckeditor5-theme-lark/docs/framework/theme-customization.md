@@ -136,18 +136,19 @@ Depending on your setup method, you can either import a style sheet into your `j
 ```js
 import { ClassicEditor } from 'ckeditor5';
 
-import 'ckeditor5/index.css';
+import 'ckeditor5/ckeditor5.css';
+
 // Override the default styles.
 import 'custom.css';
 
-ClassicEditor.create( /* ... */ )
-.then( editor => {
-	console.log( editor );
-} )
-.catch( err => {
-	console.error( err.stack );
-} );
-
+ClassicEditor
+	.create( /* ... */ )
+	.then( editor => {
+		console.log( editor );
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
 ```
 
 Or import it via the `link` in `html` in the CDN setup:

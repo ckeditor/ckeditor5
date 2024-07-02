@@ -176,6 +176,15 @@ describe( 'FindCommand', () => {
 				);
 			} );
 
+			it( 'sets proper searchText state value', () => {
+				editor.setData( '<p>foo 🐛 bar</p>' );
+
+				const { results } = command.execute( '🐛' );
+
+				expect( results.length ).to.equal( 1 );
+				expect( command._state.searchText ).to.equal( '🐛' );
+			} );
+
 			describe( 'options.matchCase', () => {
 				it( 'set to true doesn\'t match differently cased string', () => {
 					editor.setData( '<p>foo bAr</p>' );
@@ -365,6 +374,35 @@ describe( 'FindCommand', () => {
 
 					expect( results ).to.be.lengthOf( 1 );
 				} );
+			} );
+		} );
+
+		describe( 'with callback passed', () => {
+			it( 'sets returned searchText attribute to the object result', () => {
+				const findAndReplaceUtils = editor.plugins.get( 'FindAndReplaceUtils' );
+
+				setData( model, '<paragraph>[]Foo bar baz. Bam bar bom.</paragraph>' );
+
+				const searchText = 'bar';
+				const { results } = command.execute( ( ...args ) => ( {
+					results: findAndReplaceUtils.findByTextCallback( searchText, {} )( ...args ),
+					searchText
+				} ) );
+
+				expect( results.length ).to.equal( 2 );
+				expect( command._state.searchText ).to.equal( searchText );
+			} );
+
+			it( 'sets empty searchText if array is returned', () => {
+				const findAndReplaceUtils = editor.plugins.get( 'FindAndReplaceUtils' );
+
+				setData( model, '<paragraph>[]Foo bar baz. Bam bar bom.</paragraph>' );
+
+				const searchText = 'bar';
+				const { results } = command.execute( findAndReplaceUtils.findByTextCallback( searchText, {} ) );
+
+				expect( results.length ).to.equal( 2 );
+				expect( command._state.searchText ).to.equal( '' );
 			} );
 		} );
 

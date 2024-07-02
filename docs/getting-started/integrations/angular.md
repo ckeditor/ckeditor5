@@ -152,8 +152,8 @@ import { Component } from '@angular/core';
 import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
 import { SlashCommand } from 'ckeditor5-premium-features';
 
-import 'ckeditor5/index.css';
-import 'ckeditor5-premium-features/index.css';
+import 'ckeditor5/ckeditor5.css';
+import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 
 @Component( {
 	selector: 'app-root',
@@ -170,7 +170,7 @@ export class AppComponent {
 			Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
 		],
 		licenseKey: '<YOUR_LICENSE_KEY>',
-		mention: { 
+		mention: {
 			// Mention configuration
 		}
 	}
@@ -197,8 +197,8 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
 import { SlashCommand } from 'ckeditor5-premium-features';
 
-import 'ckeditor5/index.css';
-import 'ckeditor5-premium-features/index.css';
+import 'ckeditor5/ckeditor5.css';
+import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 
 @Component( {
 	selector: 'app-root',
@@ -216,7 +216,7 @@ export class AppComponent {
 			Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
 		],
 		licenseKey: '<YOUR_LICENSE_KEY>',
-		mention: { 
+		mention: {
 			// Mention configuration
 		}
 	}
@@ -237,7 +237,7 @@ The following `@Input` properties are supported by the CKEditor&nbsp;5 rich text
 
 ### `editor` (required)
 
-The {@link getting-started/legacy-getting-started/editor-lifecycle `Editor`} which provides the static {@link module:core/editor/editor~Editor.create `create()`} method to create an instance of the editor:
+The {@link getting-started/setup/editor-lifecycle `Editor`} which provides the static {@link module:core/editor/editor~Editor.create `create()`} method to create an instance of the editor:
 
 ```html
 <ckeditor [editor]="Editor"></ckeditor>
@@ -572,7 +572,7 @@ import { Component } from '@angular/core';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { DecoupledEditor, Essentials, Italic, Paragraph, Bold, Undo } from 'ckeditor5';
 
-import 'ckeditor5/index.css';
+import 'ckeditor5/ckeditor5.css';
 
 @Component( {
 	selector: 'app-root',
@@ -591,7 +591,7 @@ export class AppComponent {
 	public onReady( editor: DecoupledEditor ): void {
 		const element = editor.ui.getEditableElement()!;
 		const parent = element.parentElement!;
-  
+
 		parent.insertBefore(
 			editor.ui.view.toolbar.element!,
 			element
@@ -632,7 +632,7 @@ import { ClassicEditor } from 'ckeditor5';
 // More imports...
 
 import coreTranslations from 'ckeditor5/translations/es.js';
-import commercialTranslations from 'ckeditor5-premium-features/translations/es.js';
+import premiumFeaturesTranslations from 'ckeditor5-premium-features/translations/es.js';
 
 // style sheets imports...
 
@@ -646,7 +646,7 @@ export class AppComponent {
 	title = 'angular';
 	public Editor = ClassicEditor;
 	public config = {
-		translations: [ coreTranslations, commercialTranslations ]
+		translations: [ coreTranslations, premiumFeaturesTranslations ]
 	}
 }
 ```

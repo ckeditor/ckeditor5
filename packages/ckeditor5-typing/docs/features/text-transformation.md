@@ -65,15 +65,23 @@ You may find interesting details and usage examples in the [Automatic text trans
 
 ## Installation
 
+<info-box info>
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
+</info-box>
+
 After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
 import { ClassicEditor, TextTransformation } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ TextTransformation, /* ... */ ],
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ TextTransformation, /* ... */ ],
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Configuring transformations
@@ -91,21 +99,23 @@ By using the options defined below you can extend, limit, or override this list:
 For instance, to use the transformations from the "quotes" and "typography" groups and to turn `CKE` into `CKEditor`, you can use the `transformations.include` property like this:
 
 ```js
-ClassicEditor.create( editorElement, {
-	typing: {
-		transformations: {
-			include: [
-				// Use only the 'quotes' and 'typography' groups.
-				'quotes',
-				'typography',
+ClassicEditor
+	.create( editorElement, {
+		typing: {
+			transformations: {
+				include: [
+					// Use only the 'quotes' and 'typography' groups.
+					'quotes',
+					'typography',
 
-				// Plus some custom transformation.
-				{ from: 'CKE', to: 'CKEditor' }
-			],
+					// Plus some custom transformation.
+					{ from: 'CKE', to: 'CKEditor' }
+				],
+			}
 		}
-	}
-} )
-.then( /* ... */ );
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ### Example: Using `transformations.remove` and `extra`
@@ -113,46 +123,48 @@ ClassicEditor.create( editorElement, {
 Another example, removing some transformations and adding some extra ones:
 
 ```js
-ClassicEditor.create( editorElement, {
-	typing: {
-		transformations: {
-			remove: [
-				// Do not use the transformations from the
-				// 'symbols' and 'quotes' groups.
-				'symbols',
-				'quotes',
+ClassicEditor
+	.create( editorElement, {
+		typing: {
+			transformations: {
+				remove: [
+					// Do not use the transformations from the
+					// 'symbols' and 'quotes' groups.
+					'symbols',
+					'quotes',
 
-				// As well as the following transformations.
-				'arrowLeft',
-				'arrowRight'
-			],
+					// As well as the following transformations.
+					'arrowLeft',
+					'arrowRight'
+				],
 
-			extra: [
-				// Add some custom transformations, for example, for emojis.
-				{ from: ':)', to: '🙂' },
-				{ from: ':+1:', to: '👍' },
-				{ from: ':tada:', to: '🎉' },
+				extra: [
+					// Add some custom transformations, for example, for emojis.
+					{ from: ':)', to: '🙂' },
+					{ from: ':+1:', to: '👍' },
+					{ from: ':tada:', to: '🎉' },
 
-				// You can also define patterns using regular expressions.
-				// Note: The pattern must end with `$` and all its fragments must be wrapped
-				// with capturing groups.
-				// The following rule replaces ` "foo"` with ` «foo»`.
-				{
-					from: /(^|\s)(")([^"]*)(")$/,
-					to: [ null, '«', null, '»' ]
-				},
+					// You can also define patterns using regular expressions.
+					// Note: The pattern must end with `$` and all its fragments must be wrapped
+					// with capturing groups.
+					// The following rule replaces ` "foo"` with ` «foo»`.
+					{
+						from: /(^|\s)(")([^"]*)(")$/,
+						to: [ null, '«', null, '»' ]
+					},
 
-				// Finally, you can define `to` as a callback.
-				// This (naive) rule will auto-capitalize the first word after a period, question mark, or an exclamation mark.
-				{
-					from: /([.?!] )([a-z])$/,
-					to: matches => [ null, matches[ 1 ].toUpperCase() ]
-				}
-			],
+					// Finally, you can define `to` as a callback.
+					// This (naive) rule will auto-capitalize the first word after a period, question mark, or an exclamation mark.
+					{
+						from: /([.?!] )([a-z])$/,
+						to: matches => [ null, matches[ 1 ].toUpperCase() ]
+					}
+				],
+			}
 		}
-	}
-} )
-.then( /* ... */ );
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 You can read more about the format of transformation rules in {@link module:typing/typingconfig~TextTransformationDescription}.

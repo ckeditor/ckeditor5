@@ -12,6 +12,8 @@
 	"Replace with file manager": "The label for the replace image with the file manager toolbar button with visible label in insert image dropdown.",
 	"Insert image with file manager": "The label for the insert image with the file manager toolbar button.",
 	"Replace image with file manager": "The label for the replace image with the file manager toolbar button.",
+	"File": "The label for a button that opens a file manager in order to insert a file.",
+	"With file manager": "The label for the insert image with the file manager menu bar button (inside 'Insert' menu)",
 	"Toggle caption off": "The button label for the object (e.g. image, table) toolbar for hiding the attached caption.",
 	"Toggle caption on": "The button label for the object (e.g. image, table) toolbar for showing the attached caption.",
 	"Content editing keystrokes": "Accessibility help dialog category header text for keystrokes related to content creation.",

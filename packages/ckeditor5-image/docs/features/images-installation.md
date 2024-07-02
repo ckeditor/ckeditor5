@@ -7,24 +7,34 @@ order: 15
 modified_at: 2021-06-17
 ---
 
+# Installation
+
+<info-box info>
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
+</info-box>
+
 After {@link getting-started/quick-start installing the editor},  add the {@link features/images-overview#image-features subfeatures that you need} to your plugin list and to the editor toolbar:
 
 ```js
 import {
-    ClassicEditor,
-    Image,
-    ImageCaption,
-    ImageResize,
-    ImageStyle,
-    ImageToolbar,
-    LinkImage
+	ClassicEditor,
+	Image,
+	ImageCaption,
+	ImageResize,
+	ImageStyle,
+	ImageToolbar,
+	LinkImage
 } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Image, ImageToolbar, ImageCaption, ImageStyle, ImageResize, LinkImage ],
-	toolbar: [ 'insertImage', /* ... */ ],
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Image, ImageToolbar, ImageCaption, ImageStyle, ImageResize, LinkImage ],
+		toolbar: [ 'insertImage', /* ... */ ],
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Configuring the toolbar dropdown
@@ -34,11 +44,13 @@ The Image feature comes with the unified image insert dropdown component {@icon 
 ```js
 import { ClassicEditor, Image } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Image ],
-	toolbar: [ 'insertImage', /* ... */ ]
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Image ],
+		toolbar: [ 'insertImage', /* ... */ ]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 The feature is pre-configured to include the following image insertion methods:
@@ -54,18 +66,20 @@ If you need to limit the methods included in the dropdown (apart from not instal
 ```js
 import { ClassicEditor, Image } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Image ],
-	toolbar: [ 'insertImage', /* ... */ ],
-	image: {
-		insert: {
-			// This is the default configuration, you do not need to provide
-			// this configuration key if the list content and order reflects your needs.
-			integrations: [ 'upload', 'assetManager', 'url' ]
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Image ],
+		toolbar: [ 'insertImage', /* ... */ ],
+		image: {
+			insert: {
+				// This is the default configuration, you do not need to provide
+				// this configuration key if the list content and order reflects your needs.
+				integrations: [ 'upload', 'assetManager', 'url' ]
+			}
 		}
-	}
-} )
-.then( /* ... */ );
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Configuring the contextual image toolbar
@@ -74,36 +88,38 @@ You also need to configure the desired contextual image toolbar items. Notice th
 
 ```js
 import {
-    ClassicEditor,
-    Image,
-    ImageCaption,
-    ImageResize,
-    ImageStyle,
-    ImageToolbar,
-    LinkImage
+	ClassicEditor,
+	Image,
+	ImageCaption,
+	ImageResize,
+	ImageStyle,
+	ImageToolbar,
+	LinkImage
 } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Image, ImageToolbar, ImageCaption, ImageStyle, ImageResize, LinkImage ],
-	toolbar: [ 'insertImage', /* ... */ ],
-	image: {
-		toolbar: [
-			'imageStyle:block',
-			'imageStyle:side',
-			'|',
-			'toggleImageCaption',
-			'imageTextAlternative',
-			'|',
-			'linkImage'
-		],
-		insert: {
-			// If this setting is omitted, the editor defaults to 'block'.
-			// See explanation below.
-			type: 'auto'
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Image, ImageToolbar, ImageCaption, ImageStyle, ImageResize, LinkImage ],
+		toolbar: [ 'insertImage', /* ... */ ],
+		image: {
+			toolbar: [
+				'imageStyle:block',
+				'imageStyle:side',
+				'|',
+				'toggleImageCaption',
+				'imageTextAlternative',
+				'|',
+				'linkImage'
+			],
+			insert: {
+				// If this setting is omitted, the editor defaults to 'block'.
+				// See explanation below.
+				type: 'auto'
+			}
 		}
-	}
-} )
-.then( /* ... */ );
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Inline and block images
@@ -149,13 +165,14 @@ By default, if the `image.insert.type` configuration is not specified, all image
 If you wish to modify this behavior, the `type` setting in the editor configuration can be used:
 
 ```js
-ClassicEditor.create( element, {
-	image: {
-		insert: {
-			type: 'auto'
+ClassicEditor
+	.create( element, {
+		image: {
+			insert: {
+				type: 'auto'
+			}
 		}
-	}
-} );
+	} );
 ```
 
 The `type` setting accepts the following three values:
