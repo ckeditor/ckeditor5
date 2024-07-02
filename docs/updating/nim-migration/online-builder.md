@@ -21,7 +21,7 @@ The CDN build is a good option to quickly add CKEditor&nbsp;5 to your website wi
 
 ## ZIP archive
 
-If you do not want to have a build process or use our CDN build, you can download the ZIP archive from the [CKEditor&nbsp;5 download page](https://ckeditor.com/ckeditor-5/download/#zip). This archive contains the editor build with all of its plugins, which you can extract and include on your website.
+If you do not want to have a build process or use our CDN build, you can download the ZIP archive from the [CKEditor&nbsp;5 download page](https://ckeditor.com/ckeditor-5/download/#zip). This archive contains the editor build with all its plugins, which you can extract and include on your website.
 
 ## npm package
 
