@@ -159,6 +159,6 @@ If you decide to use the npm package, you can either use our new interactive [Bu
 
 The new build has two more files because the CSS is now separated from the JavaScript file, which should improve performance compared to the old approach. When updating your project that uses the `build` folder, remember to import this new CSS file as well.
 
-Additionally, both the JavaScript and CSS files are now minified, which should also improve performance.
+Additionally, both the JavaScript and CSS files are now minified, potentially improving performance.
 
 If you want to further optimize the build even, you can follow the steps from the {@link getting-started/setup/optimizing-build-size Optimizing build size} guide.
