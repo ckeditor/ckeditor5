@@ -399,7 +399,7 @@ Files in the .zip archive:
 	* `translations/` &ndash; The editor UI translations (see the {@link getting-started/setup/ui-language Setting the UI language} guide).
 * The `ckeditor5-premium-features` directory:
 	* `ckeditor5-premium-features.js` &ndash; ESM bundle of premium features.  [Recommended build]
-	* `ckeditor5-premium-features.umd.js` &ndash; UMD bundle of premium features, containing the editor and all plugins. [Secondary build]
+	* `ckeditor5-premium-features.umd.js` &ndash; UMD bundle of premium features contains the editor and all plugins. [Secondary build]
 	* `*.css` &ndash; The style sheets for the premium features. You will use `ckeditor5-premium-features.css` in most cases.
 	* `translations/` &ndash; The premium features UI translations.
 * The `README.md` and `LICENSE.md` files.
