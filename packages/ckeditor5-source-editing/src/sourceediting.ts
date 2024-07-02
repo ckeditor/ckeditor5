@@ -464,6 +464,8 @@ function formatSource( input: string ): string {
 	];
 	const elementNamesToFormat = elementsToFormat.map( element => element.name ).join( '|' );
 
+	let lastElementType = '';
+
 	const lines = input
 		.replace(
 			new RegExp(
@@ -475,10 +477,23 @@ function formatSource( input: string ): string {
 					element => element.name === p1 || element.name === p3
 				);
 				if ( elementToFormat ) {
+					let modifiedMatch = match;
+					// Check if the current element is 'isIndented' and the last seen element was 'isInline'
+					if ( elementToFormat.isIndented && lastElementType === 'isInline' ) {
+						modifiedMatch = `\n${ match }`;
+					}
+					// Update lastElementType based on the current element
+					if ( elementToFormat.isInline ) {
+						lastElementType = 'isInline';
+					} else if ( elementToFormat.isIndented ) {
+						lastElementType = 'isIndented';
+					} else {
+						lastElementType = '';
+					}
 					if ( elementToFormat.isIndented ) {
-						return `${ match }\n`;
+						return `${ modifiedMatch }\n`;
 					} else if ( match.startsWith( '</' ) && !elementToFormat.isInline ) {
-						return `${ match }\n`;
+						return `${ modifiedMatch }\n`;
 					}
 				}
 				return match;
