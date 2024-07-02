@@ -23,7 +23,7 @@ import { DropdownRootMenuBehaviors } from './utils/dropdownmenubehaviors.js';
 import DropdownMenuView from './dropdownmenuview.js';
 import DropdownMenuListView from './dropdownmenulistview.js';
 
-import { flattenDropdownMenuTree } from './tree/dropdownmenutreeflattenutils.js';
+import { walkOverDropdownMenuTreeItems } from './tree/dropdownmenutreewalker.js';
 
 /**
  * Represents the root list view of a dropdown menu.
@@ -154,15 +154,13 @@ export default class DropdownMenuRootListView extends DropdownMenuListView {
 		const { tree, _cachedMenus } = this;
 
 		if ( !_cachedMenus ) {
-			const result = flattenDropdownMenuTree( tree ).flatMap( ( { node } ) => {
+			this._cachedMenus = [];
+
+			walkOverDropdownMenuTreeItems( node => {
 				if ( node.type === 'Menu' ) {
-					return [ node.menu ];
+					this._cachedMenus!.push( node.menu );
 				}
-
-				return [];
-			} );
-
-			this._cachedMenus = result;
+			}, tree );
 		}
 
 		return this._cachedMenus!;
@@ -174,17 +172,6 @@ export default class DropdownMenuRootListView extends DropdownMenuListView {
 	public close(): void {
 		this.menus.forEach( menuView => {
 			menuView.isOpen = false;
-		} );
-	}
-
-	/**
-	 * Ensures that all menus are preloaded.
-	 *
-	 * 	* It's helpful used together with some search functions where menu must be preloaded before searching.
-	 */
-	public preloadAllMenus(): void {
-		this.menus.forEach( menuView => {
-			menuView.isPendingLazyInitialization = false;
 		} );
 	}
 
