@@ -249,7 +249,8 @@ describe( 'ListEditing - converters - data pipeline', () => {
 			);
 		} );
 
-		it( 'clears incorrect elements', () => {
+		// See https://github.com/ckeditor/ckeditor5/issues/16450.
+		it( 'does not clear incorrect elements (text inside ul/ol should not be removed)', () => {
 			test.data(
 				'<ul>' +
 					'x' +
@@ -260,14 +261,20 @@ describe( 'ListEditing - converters - data pipeline', () => {
 				'</ul>' +
 				'<p>c</p>',
 
+				'<paragraph>x</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">a</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a01" listType="bulleted">b</paragraph>' +
+				'<paragraph>xxx</paragraph>' +
+				'<paragraph>x</paragraph>' +
 				'<paragraph>c</paragraph>',
 
+				'<p>x</p>' +
 				'<ul>' +
 					'<li>a</li>' +
 					'<li>b</li>' +
 				'</ul>' +
+				'<p>xxx</p>' +
+				'<p>x</p>' +
 				'<p>c</p>'
 			);
 		} );
@@ -2076,6 +2083,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 			);
 		} );
 
+		// See https://github.com/ckeditor/ckeditor5/issues/16450.
 		it( 'mixed lists deep structure, white spaces, incorrect content, empty items', () => {
 			test.data(
 				'<p>foo</p>' +
@@ -2122,7 +2130,8 @@ describe( 'ListEditing - converters - data pipeline', () => {
 				'<p>bar</p>',
 
 				'<paragraph>foo</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a07" listType="bulleted">1</paragraph>' +
+				'<paragraph>xxx</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a07" listType="bulleted">1xxx</paragraph>' +
 				'<paragraph listIndent="1" listItemId="a04" listType="bulleted"></paragraph>' +
 				'<paragraph listIndent="2" listItemId="a00" listType="bulleted"></paragraph>' +
 				'<paragraph listIndent="2" listItemId="a01" listType="bulleted">1.1.2</paragraph>' +
@@ -2130,11 +2139,10 @@ describe( 'ListEditing - converters - data pipeline', () => {
 				'<paragraph listIndent="2" listItemId="a03" listType="numbered">1.1.4</paragraph>' +
 				'<paragraph listIndent="1" listItemId="a06" listType="bulleted"></paragraph>' +
 				'<paragraph listIndent="2" listItemId="a05" listType="bulleted">1.2.1</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a07" listType="bulleted">xxx</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a08" listType="bulleted">2</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a10" listType="bulleted"></paragraph>' +
-				'<paragraph listIndent="1" listItemId="a0d" listType="numbered">' +
-					'3<$text bold="true">.</$text>1' +
-				'</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a10" listType="bulleted">xxx</paragraph>' +
+				'<paragraph listIndent="1" listItemId="a0d" listType="numbered">3<$text bold="true">.</$text>1</paragraph>' +
 				'<paragraph listIndent="2" listItemId="a0b" listType="bulleted">3.1.1</paragraph>' +
 				'<paragraph listIndent="3" listItemId="a09" listType="numbered">3.1.1.1</paragraph>' +
 				'<paragraph listIndent="3" listItemId="a0a" listType="bulleted">3.1.1.2</paragraph>' +
@@ -2142,44 +2150,59 @@ describe( 'ListEditing - converters - data pipeline', () => {
 				'<paragraph listIndent="0" listItemId="a10" listType="bulleted">xxx</paragraph>' +
 				'<paragraph listIndent="1" listItemId="a0e" listType="bulleted">3.2</paragraph>' +
 				'<paragraph listIndent="1" listItemId="a0f" listType="bulleted">3.3</paragraph>' +
+				'<paragraph>xxx</paragraph>' +
 				'<paragraph>bar</paragraph>',
 
 				'<p>foo</p>' +
+				'<p>xxx</p>' +
 				'<ul>' +
 					'<li>' +
-						'1' +
+						'<p>1xxx</p>' +
 						'<ul>' +
-							'<li>' +
-								'&nbsp;' +
-								'<ul><li>&nbsp;</li><li>1.1.2</li></ul>' +
-								'<ol><li>1.1.3</li><li>1.1.4</li></ol>' +
+							'<li>&nbsp;' +
+								'<ul>' +
+									'<li>&nbsp;</li>' +
+									'<li>1.1.2</li>' +
+								'</ul>' +
+								'<ol>' +
+									'<li>1.1.3</li>' +
+									'<li>1.1.4</li>' +
+								'</ol>' +
 							'</li>' +
-							'<li>' +
-								'&nbsp;' +
-								'<ul><li>1.2.1</li></ul>' +
+							'<li>&nbsp;' +
+								'<ul>' +
+									'<li>1.2.1</li>' +
+								'</ul>' +
 							'</li>' +
 						'</ul>' +
+						'<p>xxx</p>' +
 					'</li>' +
 					'<li>2</li>' +
 					'<li>' +
-						'<p>&nbsp;</p>' +
+						'<p>xxx</p>' +
 						'<ol>' +
-							'<li>' +
-								'3<strong>.</strong>1' +
+							'<li>3<strong>.</strong>1' +
 								'<ul>' +
-									'<li>' +
-										'3.1.1' +
-										'<ol><li>3.1.1.1</li></ol>' +
-										'<ul><li>3.1.1.2</li></ul>' +
+									'<li>3.1.1' +
+										'<ol>' +
+											'<li>3.1.1.1</li>' +
+										'</ol>' +
+										'<ul>' +
+											'<li>3.1.1.2</li>' +
+										'</ul>' +
 									'</li>' +
 									'<li>3.1.2</li>' +
 								'</ul>' +
 							'</li>' +
 						'</ol>' +
 						'<p>xxx</p>' +
-						'<ul><li>3.2</li><li>3.3</li></ul>' +
+						'<ul>' +
+							'<li>3.2</li>' +
+							'<li>3.3</li>' +
+						'</ul>' +
 					'</li>' +
 				'</ul>' +
+				'<p>xxx</p>' +
 				'<p>bar</p>'
 			);
 		} );

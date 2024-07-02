@@ -238,7 +238,8 @@ describe( 'ListEditing (multiBlock=false) - converters - data pipeline', () => {
 			);
 		} );
 
-		it( 'clears incorrect elements', () => {
+		// See https://github.com/ckeditor/ckeditor5/issues/16450.
+		it( 'does not clear incorrect elements', () => {
 			test.data(
 				'<ul>' +
 					'x' +
@@ -249,14 +250,20 @@ describe( 'ListEditing (multiBlock=false) - converters - data pipeline', () => {
 				'</ul>' +
 				'<p>c</p>',
 
+				'<paragraph>x</paragraph>' +
 				'<listItem listIndent="0" listItemId="a00" listType="bulleted">a</listItem>' +
 				'<listItem listIndent="0" listItemId="a01" listType="bulleted">b</listItem>' +
+				'<paragraph>xxx</paragraph>' +
+				'<paragraph>x</paragraph>' +
 				'<paragraph>c</paragraph>',
 
+				'<p>x</p>' +
 				'<ul>' +
 					'<li>a</li>' +
 					'<li>b</li>' +
 				'</ul>' +
+				'<p>xxx</p>' +
+				'<p>x</p>' +
 				'<p>c</p>'
 			);
 		} );
@@ -1540,6 +1547,7 @@ describe( 'ListEditing (multiBlock=false) - converters - data pipeline', () => {
 			);
 		} );
 
+		// See https://github.com/ckeditor/ckeditor5/issues/16450.
 		it( 'mixed lists deep structure, white spaces, incorrect content, empty items', () => {
 			test.data(
 				'<p>foo</p>' +
@@ -1586,7 +1594,8 @@ describe( 'ListEditing (multiBlock=false) - converters - data pipeline', () => {
 				'<p>bar</p>',
 
 				'<paragraph>foo</paragraph>' +
-				'<listItem listIndent="0" listItemId="a07" listType="bulleted">1</listItem>' +
+				'<paragraph>xxx</paragraph>' +
+				'<listItem listIndent="0" listItemId="a07" listType="bulleted">1xxx</listItem>' +
 				'<listItem listIndent="1" listItemId="a04" listType="bulleted"></listItem>' +
 				'<listItem listIndent="2" listItemId="a00" listType="bulleted"></listItem>' +
 				'<listItem listIndent="2" listItemId="a01" listType="bulleted">1.1.2</listItem>' +
@@ -1594,21 +1603,24 @@ describe( 'ListEditing (multiBlock=false) - converters - data pipeline', () => {
 				'<listItem listIndent="2" listItemId="a03" listType="numbered">1.1.4</listItem>' +
 				'<listItem listIndent="1" listItemId="a06" listType="bulleted"></listItem>' +
 				'<listItem listIndent="2" listItemId="a05" listType="bulleted">1.2.1</listItem>' +
-				'<listItem listIndent="0" listItemId="a08" listType="bulleted">2</listItem>' +
-				'<listItem listIndent="0" listItemId="a10" listType="bulleted"></listItem>' +
-				'<listItem listIndent="1" listItemId="a0d" listType="numbered">3<$text bold="true">.</$text>1</listItem>' +
-				'<listItem listIndent="2" listItemId="a0b" listType="bulleted">3.1.1</listItem>' +
-				'<listItem listIndent="3" listItemId="a09" listType="numbered">3.1.1.1</listItem>' +
-				'<listItem listIndent="3" listItemId="a0a" listType="bulleted">3.1.1.2</listItem>' +
-				'<listItem listIndent="2" listItemId="a0c" listType="bulleted">3.1.2</listItem>' +
 				'<listItem listIndent="0" listItemId="a11" listType="bulleted">xxx</listItem>' +
+				'<listItem listIndent="0" listItemId="a08" listType="bulleted">2</listItem>' +
+				'<paragraph>xxx</paragraph>' +
+				'<listItem listIndent="0" listItemId="a0d" listType="numbered">3<$text bold="true">.</$text>1</listItem>' +
+				'<listItem listIndent="1" listItemId="a0b" listType="bulleted">3.1.1</listItem>' +
+				'<listItem listIndent="2" listItemId="a09" listType="numbered">3.1.1.1</listItem>' +
+				'<listItem listIndent="2" listItemId="a0a" listType="bulleted">3.1.1.2</listItem>' +
+				'<listItem listIndent="1" listItemId="a0c" listType="bulleted">3.1.2</listItem>' +
+				'<listItem listIndent="0" listItemId="a10" listType="bulleted">xxx</listItem>' +
 				'<listItem listIndent="1" listItemId="a0e" listType="bulleted">3.2</listItem>' +
 				'<listItem listIndent="1" listItemId="a0f" listType="bulleted">3.3</listItem>' +
+				'<paragraph>xxx</paragraph>' +
 				'<paragraph>bar</paragraph>',
 
 				'<p>foo</p>' +
+				'<p>xxx</p>' +
 				'<ul>' +
-					'<li>1' +
+					'<li>1xxx' +
 						'<ul>' +
 							'<li>&nbsp;' +
 								'<ul>' +
@@ -1627,24 +1639,26 @@ describe( 'ListEditing (multiBlock=false) - converters - data pipeline', () => {
 							'</li>' +
 						'</ul>' +
 					'</li>' +
+					'<li>xxx</li>' +
 					'<li>2</li>' +
-					'<li>&nbsp;' +
-						'<ol>' +
-							'<li>3<strong>.</strong>1' +
+				'</ul>' +
+				'<p>xxx</p>' +
+				'<ol>' +
+					'<li>3<strong>.</strong>1' +
+						'<ul>' +
+							'<li>3.1.1' +
+								'<ol>' +
+									'<li>3.1.1.1</li>' +
+								'</ol>' +
 								'<ul>' +
-									'<li>3.1.1' +
-										'<ol>' +
-											'<li>3.1.1.1</li>' +
-										'</ol>' +
-										'<ul>' +
-											'<li>3.1.1.2</li>' +
-										'</ul>' +
-									'</li>' +
-									'<li>3.1.2</li>' +
+									'<li>3.1.1.2</li>' +
 								'</ul>' +
 							'</li>' +
-						'</ol>' +
+							'<li>3.1.2</li>' +
+						'</ul>' +
 					'</li>' +
+				'</ol>' +
+				'<ul>' +
 					'<li>xxx' +
 						'<ul>' +
 							'<li>3.2</li>' +
@@ -1652,6 +1666,7 @@ describe( 'ListEditing (multiBlock=false) - converters - data pipeline', () => {
 						'</ul>' +
 					'</li>' +
 				'</ul>' +
+				'<p>xxx</p>' +
 				'<p>bar</p>'
 			);
 		} );
