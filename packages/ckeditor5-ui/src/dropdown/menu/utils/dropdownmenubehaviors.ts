@@ -132,7 +132,7 @@ export const DropdownRootMenuBehaviors = {
 
 export const DropdownMenuBehaviors = {
 	/**
-	 * Open the menu on the right arrow key press. This allows for navigating to sub-menus using the keyboard.
+	 * Open the menu on the right arrow key press (left, in RTL mode). This allows for navigating to sub-menus using the keyboard.
 	 */
 	openOnArrowRightKey( menuView: DropdownMenuView ): void {
 		const keystroke = menuView.locale!.uiLanguageDirection === 'rtl' ? 'arrowleft' : 'arrowright';
@@ -152,7 +152,8 @@ export const DropdownMenuBehaviors = {
 	},
 
 	/**
-	 * Toggles the menu on its button click. This behavior is analogous to {@link module:ui/dropdown/dropdownview~DropdownView}.
+     * Opens the menu on its button click as well as enter and space keys press (if the button is focused).
+     * This behavior is analogous to {@link module:ui/dropdown/dropdownview~DropdownView}.
 	 */
 	openOnButtonClick( menuView: DropdownMenuView ): void {
 		menuView.buttonView.on<ButtonExecuteEvent>( 'execute', () => {
@@ -164,7 +165,7 @@ export const DropdownMenuBehaviors = {
 	},
 
 	/**
-	 * Closes the menu on the right left key press. This allows for navigating to sub-menus using the keyboard.
+	 * Closes the menu on the left key press (right, in RTL mode). This allows for navigating to sub-menus using the keyboard.
 	 */
 	closeOnArrowLeftKey( menuView: DropdownMenuView ): void {
 		const keystroke = menuView.locale!.uiLanguageDirection === 'rtl' ? 'arrowright' : 'arrowleft';

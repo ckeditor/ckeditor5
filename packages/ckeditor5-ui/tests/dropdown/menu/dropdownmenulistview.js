@@ -6,7 +6,7 @@
 /* global document */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { DropdownMenuListDefinitionFactory } from '../../../src/dropdown/menu/definition/dropdownmenulistdefinitionfactory.js';
+import { DropdownMenuFactory } from '../../../src/dropdown/menu/dropdownmenufactory.js';
 import { ListView, DropdownMenuListView, DropdownMenuView } from '../../../src/index.js';
 
 import { createMockLocale, createMockMenuDefinition } from './_utils/dropdowntreemock.js';
@@ -26,7 +26,7 @@ describe( 'DropdownMenuListView', () => {
 
 		locale = createMockLocale();
 		listView = new DropdownMenuListView( locale );
-		factory = new DropdownMenuListDefinitionFactory( {
+		factory = new DropdownMenuFactory( {
 			createMenuViewInstance: ( ...args ) => new DropdownMenuView( editor, ...args ),
 			listView
 		} );

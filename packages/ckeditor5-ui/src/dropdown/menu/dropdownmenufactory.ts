@@ -4,30 +4,25 @@
  */
 
 /**
- * @module ui/dropdown/menu/definition/dropdownmenulistdefinitionfactory
+ * @module ui/dropdown/menu/dropdownmenufactory
  */
 
 import { once } from 'lodash-es';
 
-import DropdownMenuListItemView from '../dropdownmenulistitemview.js';
-import { isDropdownMenuItemDefinition, isDropdownMenuObjectDefinition } from './dropdownmenudefinitionguards.js';
+import DropdownMenuListItemView from './dropdownmenulistitemview.js';
 
-import DropdownMenuListItemButtonView from '../dropdownmenulistitembuttonview.js';
-import type DropdownMenuListView from '../dropdownmenulistview.js';
+import DropdownMenuListItemButtonView from './dropdownmenulistitembuttonview.js';
+import type DropdownMenuListView from './dropdownmenulistview.js';
 import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
-import type { DropdownNestedMenuListItemView } from '../typings.js';
-import type {
-	DropdownMenuChildDefinition,
-	DropdownMenuDefinition
-} from './dropdownmenudefinitiontypings.js';
+import type { DropdownNestedMenuListItemView } from './typings.js';
 
-import DropdownMenuView from '../dropdownmenuview.js';
-import ListSeparatorView from '../../../list/listseparatorview.js';
+import DropdownMenuView from './dropdownmenuview.js';
+import ListSeparatorView from '../../list/listseparatorview.js';
 
 /**
  * Represents a factory for creating instances of the dropdown menu list views from definition.
  */
-export class DropdownMenuListDefinitionFactory {
+export class DropdownMenuFactory {
 	/**
 	 * Factory function for creating instances of the dropdown menu view.
 	 * This property is readonly.
@@ -51,7 +46,7 @@ export class DropdownMenuListDefinitionFactory {
 			createMenuViewInstance,
 			listView,
 			lazyInitializeSubMenus = false
-		}: DropdownMenuListDefinitionFactoryOptions
+		}: DropdownMenuFactoryOptions
 	) {
 		this._createMenuViewInstance = createMenuViewInstance;
 		this._listView = listView;
@@ -247,7 +242,7 @@ type DropdownMenuViewFactory = ( label: string, parentMenuView?: DropdownMenuVie
 /**
  * Represents the attributes required to initialize a `DropdownMenuListDefinitionConstructor`.
  */
-type DropdownMenuListDefinitionFactoryOptions = {
+type DropdownMenuFactoryOptions = {
 
 	/**
 	 * A factory function that creates an instance of the dropdown menu view.
@@ -264,3 +259,72 @@ type DropdownMenuListDefinitionFactoryOptions = {
 	 */
 	lazyInitializeSubMenus?: boolean;
 };
+
+/**
+ * Represents the definition of a dropdown menu.
+ */
+export type DropdownMenuDefinition = {
+
+	/**
+	 * The name of the dropdown menu.
+	 */
+	menu: string;
+
+	/**
+	 * The children of the dropdown menu.
+	 */
+	children: Array<DropdownMenuChildDefinition>;
+};
+
+/**
+ * Represents the definition of a dropdown menu item.
+ */
+/**
+ * Represents the definition of a dropdown menu item.
+ */
+export type DropdownMenuItemDefinition = {
+
+	/**
+	 * The name of the dropdown menu item.
+	 */
+	label: string;
+
+	/**
+	 * The icon associated with the dropdown menu item.
+	 */
+	icon?: string | undefined;
+
+	/**
+	 * The function to be executed when the dropdown menu item is selected.
+	 */
+	onExecute: VoidFunction;
+};
+
+/**
+ * Represents a child definition of a dropdown menu.
+ */
+export type DropdownMenuChildDefinition =
+	| DropdownMenuDefinition
+	| DropdownMenuItemDefinition
+	| DropdownMenuView
+	| DropdownMenuListItemButtonView;
+
+/**
+ * Checks if the given object is a valid DropdownMenuDefinition.
+ *
+ * @param obj The object to be checked.
+ * @returns A boolean indicating whether the object is a valid DropdownMenuDefinition.
+ */
+export function isDropdownMenuObjectDefinition( obj: any ): obj is DropdownMenuDefinition {
+	return !!obj && typeof obj === 'object' && 'menu' in obj && 'children' in obj;
+}
+
+/**
+ * Checks if the given object is a valid DropdownMenuItemDefinition.
+ *
+ * @param obj - The object to be checked.
+ * @returns A boolean indicating whether the object is a DropdownMenuItemDefinition.
+ */
+export function isDropdownMenuItemDefinition( obj: any ): obj is DropdownMenuItemDefinition {
+	return !!obj && typeof obj === 'object' && 'label' in obj && 'onExecute' in obj;
+}
