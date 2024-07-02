@@ -8,6 +8,7 @@
  */
 
 import MenuBarMenuListItemView from './menubarmenulistitemview.js';
+import type { Editor } from '@ckeditor/ckeditor5-core';
 import type MenuBarMenuView from './menubarmenuview.js';
 import type {
 	default as MenuBarView,
@@ -27,7 +28,6 @@ import clickOutsideHandler from '../bindings/clickoutsidehandler.js';
 import type { ButtonExecuteEvent } from '../button/button.js';
 import type ComponentFactory from '../componentfactory.js';
 import type { FocusableView } from '../focuscycler.js';
-import type { Editor } from '@ckeditor/ckeditor5-core';
 import {
 	logWarning,
 	type Locale,
