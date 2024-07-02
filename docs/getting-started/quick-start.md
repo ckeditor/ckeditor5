@@ -191,7 +191,7 @@ Your final page should look similar to the one below.
 
 ## Installing CKEditor&nbsp;5 from a file
 
-If you do not want to build your project using npm, and you cannot rely on the CDN delivery, you can simply download CKEditor&nbsp;5 with all its plugins.
+If you do not want to build your project using npm, and you cannot rely on the CDN delivery, you can download ready-to-run files with CKEditor&nbsp;5 and all its plugins.
 
 1. <a href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/zip/ckeditor5-{@var ckeditor5-version}.zip">Download the .zip file with the latest CKEditor&nbsp;5 distribution.</a>
 2. Extract the .zip file into a dedicated directory inside your project. It is recommended to include the editor version in the directory name to ensure proper cache invalidation once a new version of CKEditor&nbsp;5 is installed.
