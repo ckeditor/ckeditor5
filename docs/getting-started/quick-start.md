@@ -146,7 +146,7 @@ Your final page should look similar to the one below.
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>CKEditor ;5 - Quick start CDN</title>
+		<title>CKEditor 5 - Quick start CDN</title>
 		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
 	</head>
 	<body>
