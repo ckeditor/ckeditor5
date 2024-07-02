@@ -12,18 +12,16 @@ import { compact } from 'lodash-es';
 import type { CollectionAddEvent } from '@ckeditor/ckeditor5-utils';
 import type DropdownMenuListItemView from './dropdownmenulistitemview.js';
 import type { Editor } from '@ckeditor/ckeditor5-core';
-import type { DropdownMenuDefinition } from './definition/dropdownmenudefinitiontypings.js';
 import type {
 	DropdownMenuExecuteItemEvent,
 	DropdownMenuChangeIsOpenEvent,
 	DropdownMenuSubmenuChangeEvent
 } from './events.js';
 
-import DropdownMenuListView from './dropdownmenulistview.js';
-
-import { DropdownMenuListDefinitionFactory } from './definition/dropdownmenulistdefinitionfactory.js';
+import { DropdownMenuFactory, type DropdownMenuDefinition } from './dropdownmenufactory.js';
 import { DropdownRootMenuBehaviors } from './utils/dropdownmenubehaviors.js';
 import DropdownMenuView from './dropdownmenuview.js';
+import DropdownMenuListView from './dropdownmenulistview.js';
 
 import { flattenDropdownMenuTree } from './tree/dropdownmenutreeflattenutils.js';
 
@@ -72,7 +70,7 @@ export default class DropdownMenuRootListView extends DropdownMenuListView {
 	/**
 	 * The factory used to create the dropdown menu list based on definition.
 	 */
-	public readonly factory: DropdownMenuListDefinitionFactory;
+	public readonly factory: DropdownMenuFactory;
 
 	/**
 	 * The CSS class to be applied to the menu panel.
@@ -105,7 +103,7 @@ export default class DropdownMenuRootListView extends DropdownMenuListView {
 		} );
 
 		this.editor = editor;
-		this.factory = new DropdownMenuListDefinitionFactory( {
+		this.factory = new DropdownMenuFactory( {
 			createMenuViewInstance: ( ...args ) => new DropdownMenuView( editor, ...args ),
 			listView: this,
 			lazyInitializeSubMenus: options.lazyInitializeSubMenus

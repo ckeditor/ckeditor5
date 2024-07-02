@@ -60,7 +60,7 @@ export { default as DropdownMenuView } from './dropdown/menu/dropdownmenuview.js
 export { default as DropdownMenuListView } from './dropdown/menu/dropdownmenulistview.js';
 export { default as DropdownMenuListItemView } from './dropdown/menu/dropdownmenulistitemview.js';
 export { default as DropdownMenuListItemButtonView } from './dropdown/menu/dropdownmenulistitembuttonview.js';
-export type { DropdownMenuDefinition } from './dropdown/menu/definition/dropdownmenudefinitiontypings.js';
+export type { DropdownMenuDefinition, DropdownMenuItemDefinition } from './dropdown/menu/dropdownmenufactory.js';
 
 export { default as EditorUI, type EditorUIReadyEvent, type EditorUIUpdateEvent } from './editorui/editorui.js';
 export { default as EditorUIView } from './editorui/editoruiview.js';

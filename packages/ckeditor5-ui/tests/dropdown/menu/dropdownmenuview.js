@@ -21,7 +21,7 @@ import DropdownMenuPanelView from '../../../src/dropdown/menu/dropdownmenupanelv
 import { DropdownMenuView } from '../../../src/index.js';
 import { DropdownMenuBehaviors } from '../../../src/dropdown/menu/utils/dropdownmenubehaviors.js';
 import { DropdownMenuViewPanelPositioningFunctions } from '../../../src/dropdown/menu/utils/dropdownmenupositioningfunctions.js';
-import { DropdownMenuListDefinitionFactory } from '../../../src/dropdown/menu/definition/dropdownmenulistdefinitionfactory.js';
+import { DropdownMenuFactory } from '../../../src/dropdown/menu/dropdownmenufactory.js';
 
 describe( 'DropdownMenuView', () => {
 	let menuView, element, editor, parentMenuView;
@@ -269,8 +269,8 @@ describe( 'DropdownMenuView', () => {
 	} );
 
 	describe( 'factory', () => {
-		it( 'returns instance of DropdownMenuListDefinitionFactory', () => {
-			expect( menuView.factory ).to.be.instanceOf( DropdownMenuListDefinitionFactory );
+		it( 'returns instance of DropdownMenuFactory', () => {
+			expect( menuView.factory ).to.be.instanceOf( DropdownMenuFactory );
 		} );
 
 		it( 'should be possible to append menu items using factory', () => {

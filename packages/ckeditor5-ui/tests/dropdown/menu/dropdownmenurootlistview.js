@@ -23,7 +23,7 @@ import {
 	createMockMenuDefinition
 } from './_utils/dropdowntreemock.js';
 
-import { DropdownMenuListDefinitionFactory } from '../../../src/dropdown/menu/definition/dropdownmenulistdefinitionfactory.js';
+import { DropdownMenuFactory } from '../../../src/dropdown/menu/dropdownmenufactory.js';
 import {
 	findMenuTreeMenuViewByLabel,
 	findMenuTreeItemByLabel,
@@ -369,8 +369,8 @@ describe( 'DropdownMenuRootListView', () => {
 	} );
 
 	describe( 'factory', () => {
-		it( 'returns instance of DropdownMenuListDefinitionFactory', () => {
-			expect( rootListView.factory ).to.be.instanceOf( DropdownMenuListDefinitionFactory );
+		it( 'returns instance of DropdownMenuFactory', () => {
+			expect( rootListView.factory ).to.be.instanceOf( DropdownMenuFactory );
 		} );
 
 		describe( 'appendChildren()', () => {

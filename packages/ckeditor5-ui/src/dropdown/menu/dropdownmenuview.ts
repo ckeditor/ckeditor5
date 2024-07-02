@@ -28,7 +28,7 @@ import { DropdownMenuBehaviors } from './utils/dropdownmenubehaviors.js';
 
 import View from '../../view.js';
 import DropdownMenuPanelView, { type DropdownMenuPanelPosition } from './dropdownmenupanelview.js';
-import { DropdownMenuListDefinitionFactory } from './definition/dropdownmenulistdefinitionfactory.js';
+import { DropdownMenuFactory } from './dropdownmenufactory.js';
 
 import '../../../theme/components/dropdown/menu/dropdownmenu.css';
 
@@ -191,10 +191,10 @@ export default class DropdownMenuView extends View implements FocusableView {
 	}
 
 	/**
-	 * The factory property returns a `DropdownMenuListDefinitionFactory` instance.
+	 * The factory property returns a `DropdownMenuFactory` instance.
 	 * It creates a factory object that can be used to create instances of `DropdownMenuView`.
 	 */
-	public get factory(): DropdownMenuListDefinitionFactory {
+	public get factory(): DropdownMenuFactory {
 		if ( this.isPendingLazyInitialization ) {
 			/**
 			 * Access menu factory on lazy menu is not possible.
@@ -204,7 +204,7 @@ export default class DropdownMenuView extends View implements FocusableView {
 			throw new CKEditorError( 'cannot-access-factory-on-lazy-loaded-menu' );
 		}
 
-		return new DropdownMenuListDefinitionFactory( {
+		return new DropdownMenuFactory( {
 			createMenuViewInstance: ( ...args ) => new DropdownMenuView( this.editor, ...args ),
 			listView: this.listView
 		} );
