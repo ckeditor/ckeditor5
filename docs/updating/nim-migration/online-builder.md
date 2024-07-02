@@ -161,4 +161,4 @@ The new build has two more files because the CSS is now separated from the JavaS
 
 Additionally, both the JavaScript and CSS files are now minified, potentially improving performance.
 
-If you want to further optimize the build even, you can follow the steps from the {@link getting-started/setup/optimizing-build-size Optimizing build size} guide.
+If you want to optimize the build further, follow the steps from the {@link getting-started/setup/optimizing-build-size Optimizing build size} guide.
