@@ -200,7 +200,7 @@ If you do not want to build your project using npm, and you cannot rely on the C
 Files included in the .zip archive:
 
 * `index.html` &ndash; A sample with working editor.
-* `ckeditor5/ckeditor5.js` &ndash; The ready-to-use editor ESM bundle, containing the editor and all plugins. [Recommended build]
+* `ckeditor5/ckeditor5.js` &ndash; The ready-to-use editor ESM bundle contains the editor and all plugins. [Recommended build]
 * `ckeditor5/ckeditor.js.map` &ndash; The source map for the editor ESM bundle.
 * `ckeditor5/ckeditor5.umd.js` &ndash; The ready-to-use editor UMD bundle, containing the editor and all plugins. [Secondary build]
 * `ckeditor5/ckeditor5.umd.js.map` &ndash; The source map for the editor UMD bundle.
