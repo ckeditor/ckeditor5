@@ -8,6 +8,7 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 import DropdownMenuRootListView from '../../../src/dropdown/menu/dropdownmenurootlistview.js';
+import { getTotalDropdownMenuTreeFlatItemsCount } from '../../../src/dropdown/menu/tree/dropdownmenutreeflattenutils.js';
 import { DropdownRootMenuBehaviors } from '../../../src/dropdown/menu/utils/dropdownmenubehaviors.js';
 import {
 	DropdownMenuListItemButtonView,
@@ -329,6 +330,44 @@ describe( 'DropdownMenuRootListView', () => {
 		} );
 	} );
 
+	describe( 'walk()', () => {
+		it( 'should properly walk through the tree', () => {
+			const rootListView = createRootListWithDefinition( [
+				createMockMenuDefinition( 'Menu 1' ),
+				createMockMenuDefinition( 'Menu 2' )
+			] );
+
+			const tracking = {
+				entered: [],
+				left: []
+			};
+
+			const trackedWalkers = {
+				enter: ( { node } ) => {
+					tracking.entered.push( node.search.raw );
+				},
+				leave: ( { node } ) => {
+					tracking.left.unshift( node.search.raw );
+				}
+			};
+
+			rootListView.walk(
+				{
+					Item: trackedWalkers,
+					Menu: trackedWalkers
+				}
+			);
+
+			expect( tracking.entered ).to.be.deep.equal( [
+				'Menu 1', 'Foo', 'Bar', 'Buz', 'Menu 2', 'Foo', 'Bar', 'Buz'
+			] );
+
+			expect( tracking.left ).to.be.deep.equal( [
+				'Menu 2', 'Buz', 'Bar', 'Foo', 'Menu 1', 'Buz', 'Bar', 'Foo'
+			] );
+		} );
+	} );
+
 	describe( 'factory', () => {
 		it( 'returns instance of DropdownMenuFactory', () => {
 			expect( rootListView.factory ).to.be.instanceOf( DropdownMenuFactory );
@@ -631,6 +670,39 @@ describe( 'DropdownMenuRootListView', () => {
 
 				expect( oldMenus ).not.to.be.equal( rootListView.menus );
 			} );
+		} );
+	} );
+
+	describe( 'preloadAllMenus()', () => {
+		it( 'should initialize all lazy collapsed menus', () => {
+			const rootListView = createRootListWithDefinition(
+				[
+					createMockMenuDefinition( 'Hello World' ),
+					createMockMenuDefinition( 'Hello World 2' )
+				],
+				{
+					lazyInitializeSubMenus: true
+				}
+			);
+
+			const prevFlatItems = getTotalDropdownMenuTreeFlatItemsCount( rootListView.tree );
+
+			rootListView.walk( {
+				Menu: ( { node } ) => {
+					expect( node.menu.isPendingLazyInitialization ).to.be.true;
+				}
+			} );
+
+			rootListView.preloadAllMenus();
+			rootListView.walk( {
+				Menu: ( { node } ) => {
+					expect( node.menu.isPendingLazyInitialization ).to.be.false;
+				}
+			} );
+
+			const flatItems = getTotalDropdownMenuTreeFlatItemsCount( rootListView.tree );
+
+			expect( prevFlatItems ).not.to.be.equal( flatItems );
 		} );
 	} );
 

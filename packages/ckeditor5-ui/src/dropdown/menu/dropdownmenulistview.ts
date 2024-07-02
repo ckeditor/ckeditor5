@@ -12,6 +12,7 @@ import type { DropdownMenuViewsRootTree } from './tree/dropdownmenutreetypings.j
 
 import ListView from '../../list/listview.js';
 import { createTreeFromDropdownMenuView } from './tree/dropdownmenutreecreateutils.js';
+import { walkOverDropdownMenuTreeItems, type DropdownMenuViewsTreeWalkers } from './tree/dropdownmenutreewalker.js';
 
 /**
  * Represents a dropdown menu list view.
@@ -54,5 +55,14 @@ export default class DropdownMenuListView extends ListView {
 		return createTreeFromDropdownMenuView( {
 			menuItems: [ ...this.items ]
 		} );
+	}
+
+	/**
+	 * Walks over the dropdown menu views using the specified walkers.
+	 *
+	 * @param walkers The walkers to use.
+	 */
+	public walk( walkers: DropdownMenuViewsTreeWalkers ): void {
+		walkOverDropdownMenuTreeItems( walkers, this.tree );
 	}
 }
