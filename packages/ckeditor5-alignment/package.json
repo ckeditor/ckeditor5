@@ -13,11 +13,13 @@
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
+    "@ckeditor/ckeditor5-core": "42.0.0",
+    "@ckeditor/ckeditor5-ui": "42.0.0",
+    "@ckeditor/ckeditor5-utils": "42.0.0",
     "ckeditor5": "42.0.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-block-quote": "42.0.0",
-    "@ckeditor/ckeditor5-core": "42.0.0",
     "@ckeditor/ckeditor5-dev-utils": "^40.0.0",
     "@ckeditor/ckeditor5-editor-classic": "42.0.0",
     "@ckeditor/ckeditor5-engine": "42.0.0",
