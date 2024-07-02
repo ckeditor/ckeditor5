@@ -96,15 +96,14 @@ describe( 'Model', () => {
 			expect( schema.checkChild( [ '$documentFragment' ], '$block' ) ).to.be.true;
 		} );
 
-		it( 'registers $marker to the schema', () => {
-			model.document.createRoot( '$anywhere', 'anywhere' );
-			schema.register( 'anything' );
+		it( 'registers $marker to the schema and allows it in all registered elements', () => {
+			schema.register( '$otherRoot' );
 
 			expect( schema.isRegistered( '$marker' ) ).to.be.true;
 			expect( schema.checkChild( [ '$root' ], '$marker' ) ).to.be.true;
 			expect( schema.checkChild( [ '$block' ], '$marker' ) ).to.be.true;
-			expect( schema.checkChild( [ '$anywhere' ], '$marker' ) ).to.be.true;
-			expect( schema.checkChild( [ 'anything' ], '$marker' ) ).to.be.true;
+			expect( schema.checkChild( [ '$otherRoot' ], '$marker' ) ).to.be.true;
+			expect( schema.checkChild( [ 'foo' ], '$marker' ) ).to.be.false;
 		} );
 	} );
 

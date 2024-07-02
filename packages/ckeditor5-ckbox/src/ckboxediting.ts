@@ -140,13 +140,12 @@ export default class CKBoxEditing extends Plugin {
 			schema.extend( 'imageInline', { allowAttributes: [ 'ckboxImageId', 'ckboxLinkId' ] } );
 		}
 
-		schema.addAttributeCheck( ( context, attributeName ) => {
-			const isLink = !!context.last.getAttribute( 'linkHref' );
-
-			if ( !isLink && attributeName === 'ckboxLinkId' ) {
+		schema.addAttributeCheck( context => {
+			// Don't allow `ckboxLinkId` on elements which do not have `linkHref` attribute.
+			if ( !context.last.getAttribute( 'linkHref' ) ) {
 				return false;
 			}
-		} );
+		}, 'ckboxLinkId' );
 	}
 
 	/**

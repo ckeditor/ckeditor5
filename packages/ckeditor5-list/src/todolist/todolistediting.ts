@@ -85,17 +85,14 @@ export default class TodoListEditing extends Plugin {
 
 		model.schema.extend( '$listItem', { allowAttributes: 'todoListChecked' } );
 
-		model.schema.addAttributeCheck( ( context, attributeName ) => {
+		model.schema.addAttributeCheck( context => {
 			const item = context.last;
 
-			if ( attributeName != 'todoListChecked' ) {
-				return;
-			}
-
+			// Don't allow `todoListChecked` attribute on elements which are not todo list items.
 			if ( !item.getAttribute( 'listItemId' ) || item.getAttribute( 'listType' ) != 'todo' ) {
 				return false;
 			}
-		} );
+		}, 'todoListChecked' );
 
 		editor.conversion.for( 'upcast' ).add( dispatcher => {
 			// Upcast of to-do list item is based on a checkbox at the beginning of a <li> to keep compatibility with markdown input.
