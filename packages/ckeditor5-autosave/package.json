@@ -13,11 +13,12 @@
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
-    "ckeditor5": "42.0.1",
+    "@ckeditor/ckeditor5-core": "42.0.0",
+    "@ckeditor/ckeditor5-utils": "42.0.0",
+    "ckeditor5": "42.0.0",
     "lodash-es": "4.17.21"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-core": "42.0.1",
     "@ckeditor/ckeditor5-dev-utils": "^40.0.0",
     "@ckeditor/ckeditor5-editor-classic": "42.0.1",
     "@ckeditor/ckeditor5-paragraph": "42.0.1",

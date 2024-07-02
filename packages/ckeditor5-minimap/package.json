@@ -13,14 +13,17 @@
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
-    "ckeditor5": "42.0.1"
+    "@ckeditor/ckeditor5-core": "42.0.0",
+    "@ckeditor/ckeditor5-engine": "42.0.0",
+    "@ckeditor/ckeditor5-ui": "42.0.0",
+    "@ckeditor/ckeditor5-utils": "42.0.0",
+    "ckeditor5": "42.0.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-alignment": "42.0.1",
-    "@ckeditor/ckeditor5-basic-styles": "42.0.1",
-    "@ckeditor/ckeditor5-cloud-services": "42.0.1",
-    "@ckeditor/ckeditor5-code-block": "42.0.1",
-    "@ckeditor/ckeditor5-core": "42.0.1",
+    "@ckeditor/ckeditor5-alignment": "42.0.0",
+    "@ckeditor/ckeditor5-basic-styles": "42.0.0",
+    "@ckeditor/ckeditor5-cloud-services": "42.0.0",
+    "@ckeditor/ckeditor5-code-block": "42.0.0",
     "@ckeditor/ckeditor5-dev-utils": "^40.0.0",
     "@ckeditor/ckeditor5-easy-image": "42.0.1",
     "@ckeditor/ckeditor5-editor-decoupled": "42.0.1",
