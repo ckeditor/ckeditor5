@@ -24,7 +24,10 @@ import {
  * @param documentFragment Document fragment on which transform images.
  * @param rtfData The RTF data from which images representation will be used.
  */
-export function replaceImagesSourceWithBase64( documentFragment: ViewDocumentFragment, rtfData: string ): void {
+export function replaceImagesSourceWithBase64(
+	documentFragment: ViewDocumentFragment,
+	rtfData: string
+): void {
 	if ( !documentFragment.childCount ) {
 		return;
 	}
@@ -32,14 +35,25 @@ export function replaceImagesSourceWithBase64( documentFragment: ViewDocumentFra
 	const upcastWriter = new UpcastWriter( documentFragment.document );
 	const shapesIds = findAllShapesIds( documentFragment, upcastWriter );
 
-	removeAllImgElementsRepresentingShapes( shapesIds, documentFragment, upcastWriter );
+	removeAllImgElementsRepresentingShapes(
+		shapesIds,
+		documentFragment,
+		upcastWriter
+	);
 	insertMissingImgs( shapesIds, documentFragment, upcastWriter );
 	removeAllShapeElements( documentFragment, upcastWriter );
 
-	const images = findAllImageElementsWithLocalSource( documentFragment, upcastWriter );
+	const images = findAllImageElementsWithLocalSource(
+		documentFragment,
+		upcastWriter
+	);
 
 	if ( images.length ) {
-		replaceImagesFileSourceWithInlineRepresentation( images, extractImageDataFromRtf( rtfData ), upcastWriter );
+		replaceImagesFileSourceWithInlineRepresentation(
+			images,
+			extractImageDataFromRtf( rtfData ),
+			upcastWriter
+		);
 	}
 }
 
@@ -51,9 +65,14 @@ export function replaceImagesSourceWithBase64( documentFragment: ViewDocumentFra
  * @returns Base64 representation of a given HEX string.
  */
 export function _convertHexToBase64( hexString: string ): string {
-	return btoa( hexString.match( /\w{2}/g )!.map( char => {
-		return String.fromCharCode( parseInt( char, 16 ) );
-	} ).join( '' ) );
+	return btoa(
+		hexString
+			.match( /\w{2}/g )!
+			.map( char => {
+				return String.fromCharCode( parseInt( char, 16 ) );
+			} )
+			.join( '' )
+	);
 }
 
 /**
@@ -63,7 +82,10 @@ export function _convertHexToBase64( hexString: string ): string {
  * @param documentFragment Document fragment from which to extract shape ids.
  * @returns Array of shape ids.
  */
-function findAllShapesIds( documentFragment: ViewDocumentFragment, writer: UpcastWriter ): Array<string> {
+function findAllShapesIds(
+	documentFragment: ViewDocumentFragment,
+	writer: UpcastWriter
+): Array<string> {
 	const range = writer.createRangeIn( documentFragment );
 
 	const shapeElementsMatcher = new Matcher( {
@@ -125,13 +147,21 @@ function removeAllImgElementsRepresentingShapes(
 	const imgs = [];
 
 	for ( const value of range ) {
-		if ( value.item.is( 'element' ) && imageElementsMatcher.match( value.item ) ) {
+		if (
+			value.item.is( 'element' ) &&
+			imageElementsMatcher.match( value.item )
+		) {
 			const el = value.item;
-			const shapes = el.getAttribute( 'v:shapes' ) ? el.getAttribute( 'v:shapes' )!.split( ' ' ) : [];
+			const shapes = el.getAttribute( 'v:shapes' ) ?
+				el.getAttribute( 'v:shapes' )!.split( ' ' ) :
+				[];
 
-			if ( shapes.length && shapes.every( shape => shapesIds.indexOf( shape ) > -1 ) ) {
+			if (
+				shapes.length &&
+				shapes.every( shape => shapesIds.indexOf( shape ) > -1 )
+			) {
 				imgs.push( el );
-			// Shapes may also have empty source while content is paste in some browsers (Safari).
+				// Shapes may also have empty source while content is paste in some browsers (Safari).
 			} else if ( !el.getAttribute( 'src' ) ) {
 				imgs.push( el );
 			}
@@ -148,7 +178,10 @@ function removeAllImgElementsRepresentingShapes(
  *
  * @param documentFragment Document fragment from which to remove shape elements.
  */
-function removeAllShapeElements( documentFragment: ViewDocumentFragment, writer: UpcastWriter ) {
+function removeAllShapeElements(
+	documentFragment: ViewDocumentFragment,
+	writer: UpcastWriter
+) {
 	const range = writer.createRangeIn( documentFragment );
 
 	const shapeElementsMatcher = new Matcher( {
@@ -158,7 +191,10 @@ function removeAllShapeElements( documentFragment: ViewDocumentFragment, writer:
 	const shapes = [];
 
 	for ( const value of range ) {
-		if ( value.type == 'elementStart' && shapeElementsMatcher.match( value.item as ViewElement ) ) {
+		if (
+			value.type == 'elementStart' &&
+			shapeElementsMatcher.match( value.item as ViewElement )
+		) {
 			shapes.push( value.item as ViewElement );
 		}
 	}
@@ -171,13 +207,20 @@ function removeAllShapeElements( documentFragment: ViewDocumentFragment, writer:
 /**
  * Inserts `img` tags if there is none after a shape.
  */
-function insertMissingImgs( shapeIds: Array<string>, documentFragment: ViewDocumentFragment, writer: UpcastWriter ) {
+function insertMissingImgs(
+	shapeIds: Array<string>,
+	documentFragment: ViewDocumentFragment,
+	writer: UpcastWriter
+) {
 	const range = writer.createRangeIn( documentFragment );
 
 	const shapes: Array<ViewElement> = [];
 
 	for ( const value of range ) {
-		if ( value.type == 'elementStart' && value.item.is( 'element', 'v:shape' ) ) {
+		if (
+			value.type == 'elementStart' &&
+			value.item.is( 'element', 'v:shape' )
+		) {
 			const id = value.item.getAttribute( 'id' )!;
 
 			if ( shapeIds.includes( id ) ) {
@@ -204,7 +247,10 @@ function insertMissingImgs( shapeIds: Array<string>, documentFragment: ViewDocum
 		writer.insertChild( shape.index! + 1, img, shape.parent! );
 	}
 
-	function containsMatchingImg( nodes: Iterable<ViewNode>, id: string ): boolean {
+	function containsMatchingImg(
+		nodes: Iterable<ViewNode>,
+		id: string
+	): boolean {
 		for ( const node of nodes ) {
 			/* istanbul ignore else -- @preserve */
 			if ( node.is( 'element' ) ) {
@@ -250,7 +296,10 @@ function findAllImageElementsWithLocalSource(
 	const imgs = [];
 
 	for ( const value of range ) {
-		if ( value.item.is( 'element' ) && imageElementsMatcher.match( value.item ) ) {
+		if (
+			value.item.is( 'element' ) &&
+			imageElementsMatcher.match( value.item )
+		) {
 			if ( value.item.getAttribute( 'src' )!.startsWith( 'file://' ) ) {
 				imgs.push( value.item );
 			}
@@ -269,13 +318,19 @@ function findAllImageElementsWithLocalSource(
  * * hex Image representation in HEX format.
  * * type Type of image, `image/png` or `image/jpeg`.
  */
-function extractImageDataFromRtf( rtfData: string ): Array<{ hex: string; type: string }> {
+function extractImageDataFromRtf(
+	rtfData: string
+): Array<{ hex: string; type: string }> {
 	if ( !rtfData ) {
 		return [];
 	}
 
-	const regexPictureHeader = /{\\pict[\s\S]+?\\bliptag-?\d+(\\blipupi-?\d+)?({\\\*\\blipuid\s?[\da-fA-F]+)?[\s}]*?/;
-	const regexPicture = new RegExp( '(?:(' + regexPictureHeader.source + '))([\\da-fA-F\\s]+)\\}', 'g' );
+	const regexPictureHeader =
+		/{\\pict[\s\S]+?\\bliptag-?\d+(\\blipupi-?\d+)?({\\\*\\blipuid\s?[\da-fA-F]+)?[\s}]*?/;
+	const regexPicture = new RegExp(
+		'(?:(' + regexPictureHeader.source + '))([\\da-fA-F\\s]+)\\}',
+		'g'
+	);
 	const images = rtfData.match( regexPicture );
 	const result = [];
 
@@ -291,7 +346,59 @@ function extractImageDataFromRtf( rtfData: string ): Array<{ hex: string; type: 
 
 			if ( imageType ) {
 				result.push( {
-					hex: image.replace( regexPictureHeader, '' ).replace( /[^\da-fA-F]/g, '' ),
+					hex: image
+						.replace( regexPictureHeader, '' )
+						.replace( /[^\da-fA-F]/g, '' ),
+					type: imageType
+				} );
+			}
+		}
+	}
+
+	if ( result.length === 0 ) {
+		return extractImageDataFromRtfForWps( rtfData );
+	}
+
+	return result;
+}
+
+/**
+ * paste for wps
+ * Extracts all images HEX representations from a given RTF data.
+ *
+ * @param rtfData The RTF data from which to extract images HEX representation.
+ * @returns Array of found HEX representations. Each array item is an object containing:
+ *
+ * * hex Image representation in HEX format.
+ * * type Type of image, `image/png` or `image/jpeg`.
+ */
+function extractImageDataFromRtfForWps(
+	rtfData: string
+): Array<{ hex: string; type: string }> {
+	const regexPictureHeader =
+		/{\\pict[\s\S]+?(\\bliptag-?\d+)?(\\blipupi-?\d+)?({\\\*\\blipuid\s?[\da-fA-F]+)[\s}]*?/;
+	const regexPicture = new RegExp(
+		'(?:(' + regexPictureHeader.source + '))([\\da-fA-F\\s]+)\\}',
+		'g'
+	);
+	const images = rtfData.match( regexPicture );
+	const result = [];
+
+	if ( images ) {
+		for ( const image of images ) {
+			let imageType: string | false = false;
+
+			if ( image.includes( '\\pngblip' ) ) {
+				imageType = 'image/png';
+			} else if ( image.includes( '\\jpegblip' ) ) {
+				imageType = 'image/jpeg';
+			}
+
+			if ( imageType ) {
+				result.push( {
+					hex: image
+						.replace( regexPictureHeader, '' )
+						.replace( /[^\da-fA-F]/g, '' ),
 					type: imageType
 				} );
 			}
@@ -316,7 +423,9 @@ function replaceImagesFileSourceWithInlineRepresentation(
 	// Assume there is an equal amount of image elements and images HEX sources so they can be matched accordingly based on existing order.
 	if ( imageElements.length === imagesHexSources.length ) {
 		for ( let i = 0; i < imageElements.length; i++ ) {
-			const newSrc = `data:${ imagesHexSources[ i ].type };base64,${ _convertHexToBase64( imagesHexSources[ i ].hex ) }`;
+			const newSrc = `data:${
+				imagesHexSources[ i ].type
+			};base64,${ _convertHexToBase64( imagesHexSources[ i ].hex ) }`;
 			writer.setAttribute( 'src', newSrc, imageElements[ i ] );
 		}
 	}
