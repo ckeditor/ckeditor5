@@ -67,7 +67,7 @@ The first argument in the `create()` function is a DOM element for the editor pl
 
 ```html
 <div id="editor">
-	<p>Hello from CKEditor&nbsp;5!</p>
+	<p>Hello from CKEditor 5!</p>
 </div>
 ```
 
@@ -134,7 +134,7 @@ Lastly, add a tag for the editor to attach to.
 
 ```html
 <div id="editor">
-	<p>Hello from CKEditor&nbsp;5!</p>
+	<p>Hello from CKEditor 5!</p>
 </div>
 ```
 
@@ -146,12 +146,12 @@ Your final page should look similar to the one below.
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>CKEditor&nbsp;5 - Quick start CDN</title>
+		<title>CKEditor ;5 - Quick start CDN</title>
 		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
 	</head>
 	<body>
 		<div id="editor">
-			<p>Hello from CKEditor&nbsp;5!</p>
+			<p>Hello from CKEditor 5!</p>
 		</div>
 
 		<script type="importmap">
@@ -208,6 +208,8 @@ Files included in the .zip archive:
 * `translations/` &ndash; The editor UI translations (see the {@link getting-started/setup/ui-language Setting the UI language} guide).
 * The `README.md` and `LICENSE.md` files.
 
+Copy these files to your project directory. You may use the CDN configuration as an example. You can also refer to framework integration guides for sample implementations.
+
 ## Installing premium features
 
 ### Installing premium features using npm
@@ -249,7 +251,7 @@ The first argument in the `create()` function is a DOM element for the editor pl
 
 ```html
 <div id="editor">
-	<p>Hello from CKEditor&nbsp;5!</p>
+	<p>Hello from CKEditor 5!</p>
 </div>
 ```
 
@@ -318,7 +320,7 @@ Lastly, add a tag for the editor to attach to.
 
 ```html
 <div id="editor">
-	<p>Hello from CKEditor&nbsp;5!</p>
+	<p>Hello from CKEditor 5!</p>
 </div>
 ```
 
@@ -330,14 +332,14 @@ Your final page should look similar to the one below.
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>CKEditor&nbsp;5 - Quick start CDN</title>
+		<title>CKEditor 5 - Quick start CDN</title>
 		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
 		<!-- If you are using premium features: -->
 		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
 	</head>
 	<body>
 		<div id="editor">
-			<p>Hello from CKEditor&nbsp;5!</p>
+			<p>Hello from CKEditor 5!</p>
 		</div>
 
 		<script type="importmap">
@@ -401,6 +403,8 @@ Files in the .zip archive:
 	* `*.css` &ndash; The style sheets for the premium features. You will use `ckeditor5-premium-features.css` in most cases.
 	* `translations/` &ndash; The premium features UI translations.
 * The `README.md` and `LICENSE.md` files.
+
+Copy these files to your project directory. You may use the CDN configuration as an example. You can also refer to framework integration guides for sample implementations.
 
 ### Obtaining a license key
 
