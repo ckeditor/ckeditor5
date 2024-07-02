@@ -41,7 +41,7 @@ describe( 'Menu Behaviors', () => {
 			rootListView.render();
 			document.body.appendChild( rootListView.element );
 
-			tree = rootListView.tree;
+			tree = rootListView.items;
 		} );
 
 		afterEach( () => {
@@ -53,7 +53,7 @@ describe( 'Menu Behaviors', () => {
 			let menuView;
 
 			beforeEach( () => {
-				menuView = treeNodeByLabel( 'Menu 1' ).menu;
+				menuView = treeNodeByLabel( 'Menu 1' );
 				menuView.isOpen = true;
 			} );
 
@@ -91,8 +91,8 @@ describe( 'Menu Behaviors', () => {
 			let menuView, otherMenu;
 
 			beforeEach( () => {
-				menuView = treeNodeByLabel( 'Menu 1' ).menu;
-				otherMenu = treeNodeByLabel( 'Menu 2' ).menu;
+				menuView = treeNodeByLabel( 'Menu 1' );
+				otherMenu = treeNodeByLabel( 'Menu 2' );
 			} );
 
 			it( 'should close other menu on hover menu button item', () => {
@@ -117,7 +117,7 @@ describe( 'Menu Behaviors', () => {
 				menuInstance.menuItems.add( nestedMenuListItem );
 				rootListView.factory.appendMenuChildrenAt(
 					[ menuInstance ],
-					treeNodeByLabel( 'Menu 2' ).menu
+					treeNodeByLabel( 'Menu 2' )
 				);
 
 				otherMenu.isOpen = true;
@@ -183,7 +183,7 @@ describe( 'Menu Behaviors', () => {
 			let menuView;
 
 			beforeEach( () => {
-				menuView = treeNodeByLabel( 'Menu 1' ).menu;
+				menuView = treeNodeByLabel( 'Menu 1' );
 				menuView.isOpen = true;
 			} );
 
@@ -220,7 +220,7 @@ describe( 'Menu Behaviors', () => {
 				editor.locale.uiLanguageDirection = uiDirection;
 				createBasicMenuRootListView( editor.locale );
 
-				menuView = treeNodeByLabel( 'Menu 1' ).menu;
+				menuView = treeNodeByLabel( 'Menu 1' );
 			} );
 
 			describe( `openOnArrowRightKey (${ uiDirection.toUpperCase() })`, () => {
@@ -277,10 +277,10 @@ describe( 'Menu Behaviors', () => {
 					] )
 				] );
 
-				tree = rootListView.tree;
+				tree = rootListView.items;
 
-				const grandParentMenuView = treeNodeByLabel( 'Menu 1' ).menu;
-				const nestedMenuView = treeNodeByLabel( 'Menu 1.1' ).menu;
+				const grandParentMenuView = treeNodeByLabel( 'Menu 1' );
+				const nestedMenuView = treeNodeByLabel( 'Menu 1.1' );
 
 				grandParentMenuView.isOpen = true;
 				nestedMenuView.isOpen = true;
@@ -300,14 +300,14 @@ describe( 'Menu Behaviors', () => {
 			beforeEach( createBasicMenuRootListView );
 
 			it( 'should open menu on button click', () => {
-				const menuView = treeNodeByLabel( 'Menu 1' ).menu;
+				const menuView = treeNodeByLabel( 'Menu 1' );
 
 				menuView.buttonView.fire( 'execute' );
 				expect( menuView.isOpen ).to.be.true;
 			} );
 
 			it( 'should not open menu on button click if disabled', () => {
-				const menuView = treeNodeByLabel( 'Menu 1' ).menu;
+				const menuView = treeNodeByLabel( 'Menu 1' );
 
 				menuView.isEnabled = false;
 				menuView.buttonView.fire( 'execute' );
@@ -315,7 +315,7 @@ describe( 'Menu Behaviors', () => {
 			} );
 
 			it( 'should not close menu on button click if already open', () => {
-				const menuView = treeNodeByLabel( 'Menu 1' ).menu;
+				const menuView = treeNodeByLabel( 'Menu 1' );
 
 				menuView.isOpen = true;
 				menuView.buttonView.fire( 'execute' );
@@ -330,7 +330,7 @@ describe( 'Menu Behaviors', () => {
 				createMockMenuDefinition( 'Menu 2' )
 			] );
 
-			tree = rootListView.tree;
+			tree = rootListView.items;
 		}
 
 		function treeNodeByLabel( label ) {
