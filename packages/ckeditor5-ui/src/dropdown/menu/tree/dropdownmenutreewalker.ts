@@ -12,7 +12,6 @@ import type { DropdownMenusViewsTreeNode } from './dropdownmenutreetypings.js';
 /**
  * Walks over the tree of dropdown menu items and invokes the provided walker for each node.
  *
- * @template Extend The type of additional data that can be passed to the walkers.
  * @param walker The walker to be invoked for each node.
  * @param root The root node of the dropdown menu tree.
  */
