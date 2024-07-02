@@ -11,12 +11,12 @@ modified_at: 2024-06-25
 
 CKEditor&nbsp;5 is a powerful, rich text editor you can embed in your web application. This guide will show you the fastest way to start using it.
 
-You have a couple of methods to pick from:
+You have a few methods to choose from:
 
 * [Using CKEditor&nbsp;5 Builder](#using-ckeditor-5-builder) for the smoothest setup with live preview, and multiple integration options.
-* [Using npm](#installing-ckeditor-5-using-npm) where you integrate with JavaScript packages and build the editor with your bundler.
+* [Using npm](#installing-ckeditor-5-using-npm) where you use a JavaScript packages and build the editor with a bundler.
 * [Using CDN](#installing-ckeditor-5-from-cdn) where you use our cloud-distributed CDN in a no-build setup.
-* [Using a provided JavaScript file](#installing-ckeditor-5-from-a-file) where you simply download the setup and copy files to your project.
+* [Using a provided JavaScript file](#installing-ckeditor-5-from-a-file) where you download the ready-to-run file and copy them to your project.
 
 ## Using CKEditor&nbsp;5 Builder
 
