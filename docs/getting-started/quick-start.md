@@ -393,7 +393,7 @@ Files in the .zip archive:
 * The `ckeditor5` directory:
 	* `ckeditor5.js` &ndash; The ready-to-use editor ESM bundle contains the editor and all plugins. [Recommended build]
 	* `ckeditor.js.map` &ndash; The source map for the editor ESM bundle.
-	* `ckeditor5.umd.js` &ndash; The ready-to-use editor UMD bundle, containing the editor and all plugins. [Secondary build]
+	* `ckeditor5.umd.js` &ndash; The ready-to-use editor UMD bundle contains the editor and all plugins. [Secondary build]
 	* `ckeditor5.umd.js.map` &ndash; The source map for the editor UMD bundle.
 	* `*.css` &ndash; The style sheets for the editor, use `ckeditor5.css` in most cases. Read about other files in the {@link getting-started/setup/css Editor and content styles} guide.
 	* `translations/` &ndash; The editor UI translations (see the {@link getting-started/setup/ui-language Setting the UI language} guide).
