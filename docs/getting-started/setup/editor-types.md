@@ -79,5 +79,5 @@ The multi-root editor is an editor type that features multiple, separate editabl
 See an {@link examples/builds/multi-root-editor example of the multi-root editor} in action.
 
 <info-box>
-	At this time, the multi-root editor is not yet available via the Builder.
+	At this time, the multi-root editor is not yet available via the [Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs).
 </info-box>
