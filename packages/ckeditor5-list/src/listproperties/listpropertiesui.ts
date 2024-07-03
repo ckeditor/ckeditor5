@@ -40,7 +40,8 @@ import listStyleLowerLatinIcon from '../../theme/icons/liststylelowerlatin.svg';
 import listStyleUpperLatinIcon from '../../theme/icons/liststyleupperlatin.svg';
 
 import '../../theme/liststyles.css';
-import type { ListPropertiesConfig, ListPropertiesStyleConfig } from '../listconfig.js';
+import { getNormalizedConfig, type NormalizedListPropertiesConfig } from './utils/config.js';
+import { type ListType } from '../list/listediting.js';
 
 /**
  * The list properties UI plugin. It introduces the extended `'bulletedList'` and `'numberedList'` toolbar
@@ -61,17 +62,13 @@ export default class ListPropertiesUI extends Plugin {
 		const editor = this.editor;
 		const t = editor.locale.t;
 		const propertiesConfig = editor.config.get( 'list.properties' )!;
-
-		const listPropertiesStyles = propertiesConfig.styles;
-		const isListStylesVisible = typeof listPropertiesStyles === 'boolean' && listPropertiesStyles;
-		const bulletedListStyle = typeof listPropertiesStyles === 'object' &&
-			( listPropertiesStyles as ListPropertiesStyleConfig ).bulleted;
-		const isBulletedListStyleVisible = isListStylesVisible || ( bulletedListStyle === undefined ? true : bulletedListStyle );
+		const normalizedConfig = getNormalizedConfig( propertiesConfig );
+		const listTypes = normalizedConfig.listTypes;
 
 		// Note: When this plugin does not register the "bulletedList" dropdown due to properties configuration,
 		// a simple button will be still registered under the same name by ListUI as a fallback. This should happen
 		// in most editor configuration because the List plugin automatically requires ListUI.
-		if ( isBulletedListStyleVisible ) {
+		if ( listTypes.includes( 'bulleted' ) ) {
 			const styleDefinitions = [
 				{
 					label: t( 'Toggle the disc list style' ),
@@ -98,35 +95,29 @@ export default class ListPropertiesUI extends Plugin {
 
 			editor.ui.componentFactory.add( commandName, getDropdownViewCreator( {
 				editor,
-				propertiesConfig,
+				propertiesConfig: normalizedConfig,
 				parentCommandName: commandName,
 				buttonLabel,
 				buttonIcon: icons.bulletedList,
 				styleGridAriaLabel,
-				styleDefinitions,
-				isStyleVisible: true
+				styleDefinitions
 			} ) );
 
 			// Add the menu bar item for bulleted list.
 			editor.ui.componentFactory.add( `menuBar:${ commandName }`, getMenuBarStylesMenuCreator( {
 				editor,
-				propertiesConfig,
+				propertiesConfig: normalizedConfig,
 				parentCommandName: commandName,
 				buttonLabel,
 				styleGridAriaLabel,
-				styleDefinitions,
-				isStyleVisible: true
+				styleDefinitions
 			} ) );
 		}
-
-		const numberedListStyle = typeof listPropertiesStyles === 'object' &&
-			( listPropertiesStyles as ListPropertiesStyleConfig ).numbered;
-		const isNumberedListStyleVisible = isListStylesVisible || ( numberedListStyle === undefined ? true : !!numberedListStyle );
 
 		// Note: When this plugin does not register the "numberedList" dropdown due to properties configuration,
 		// a simple button will be still registered under the same name by ListUI as a fallback. This should happen
 		// in most editor configuration because the List plugin automatically requires ListUI.
-		if ( isNumberedListStyleVisible || propertiesConfig.startIndex || propertiesConfig.reversed ) {
+		if ( listTypes.includes( 'numbered' ) || propertiesConfig.startIndex || propertiesConfig.reversed ) {
 			const styleDefinitions = [
 				{
 					label: t( 'Toggle the decimal list style' ),
@@ -171,26 +162,24 @@ export default class ListPropertiesUI extends Plugin {
 
 			editor.ui.componentFactory.add( commandName, getDropdownViewCreator( {
 				editor,
-				propertiesConfig,
+				propertiesConfig: normalizedConfig,
 				parentCommandName: commandName,
 				buttonLabel,
 				buttonIcon: icons.numberedList,
 				styleGridAriaLabel,
-				styleDefinitions,
-				isStyleVisible: isNumberedListStyleVisible
+				styleDefinitions
 			} ) );
 
 			// Menu bar menu does not display list start index or reverse UI. If there are no styles enabled,
 			// the menu makes no sense and should be omitted.
-			if ( isNumberedListStyleVisible ) {
+			if ( listTypes.includes( 'numbered' ) ) {
 				editor.ui.componentFactory.add( `menuBar:${ commandName }`, getMenuBarStylesMenuCreator( {
 					editor,
-					propertiesConfig,
+					propertiesConfig: normalizedConfig,
 					parentCommandName: commandName,
 					buttonLabel,
 					styleGridAriaLabel,
-					styleDefinitions,
-					isStyleVisible: isNumberedListStyleVisible
+					styleDefinitions
 				} ) );
 			}
 		}
@@ -218,17 +207,15 @@ function getDropdownViewCreator( {
 	buttonLabel,
 	buttonIcon,
 	styleGridAriaLabel,
-	styleDefinitions,
-	isStyleVisible
+	styleDefinitions
 }: {
 	editor: Editor;
-	propertiesConfig: Readonly<ListPropertiesConfig>;
+	propertiesConfig: NormalizedListPropertiesConfig;
 	parentCommandName: string;
 	buttonLabel: string;
 	buttonIcon: string;
 	styleGridAriaLabel: string;
 	styleDefinitions: Array<StyleDefinition>;
-	isStyleVisible: boolean;
 } ) {
 	const parentCommand = editor.commands.get( parentCommandName )!;
 
@@ -261,8 +248,7 @@ function getDropdownViewCreator( {
 				dropdownView,
 				parentCommandName,
 				styleGridAriaLabel,
-				styleDefinitions,
-				isStyleVisible
+				styleDefinitions
 			} );
 
 			dropdownView.panelView.children.add( listPropertiesView );
@@ -351,21 +337,20 @@ function createListPropertiesView( {
 	dropdownView,
 	parentCommandName,
 	styleDefinitions,
-	styleGridAriaLabel,
-	isStyleVisible
+	styleGridAriaLabel
 }: {
 	editor: Editor;
-	propertiesConfig: Readonly<ListPropertiesConfig>;
+	propertiesConfig: NormalizedListPropertiesConfig;
 	dropdownView: DropdownView;
 	parentCommandName: string;
 	styleDefinitions: Array<StyleDefinition>;
 	styleGridAriaLabel: string;
-	isStyleVisible: boolean;
 } ) {
 	const locale = editor.locale;
 	const enabledProperties = {
 		...propertiesConfig
 	};
+	const listType = parentCommandName.replace( 'List', '' ) as ListType;
 
 	if ( parentCommandName != 'numberedList' ) {
 		enabledProperties.startIndex = false;
@@ -374,7 +359,7 @@ function createListPropertiesView( {
 
 	let styleButtonViews = null;
 
-	if ( isStyleVisible ) {
+	if ( propertiesConfig.listTypes.includes( listType ) ) {
 		const listStyleCommand: LegacyListStyleCommand | ListStyleCommand = editor.commands.get( 'listStyle' )!;
 
 		const styleButtonCreator = getStyleButtonCreator( {
@@ -392,11 +377,10 @@ function createListPropertiesView( {
 	const listPropertiesView = new ListPropertiesView( locale, {
 		styleGridAriaLabel,
 		enabledProperties,
-		styleButtonViews,
-		isStyleVisible
+		styleButtonViews
 	} );
 
-	if ( isStyleVisible ) {
+	if ( propertiesConfig.listTypes.includes( listType ) ) {
 		// Accessibility: focus the first active style when opening the dropdown.
 		focusChildOnDropdownOpen( dropdownView, () => {
 			return listPropertiesView.stylesView!.children.find( ( child: any ) => child.isOn );
@@ -437,7 +421,6 @@ function createListPropertiesView( {
  * @param parentCommandName Name of the list command.
  * @param buttonLabel Label of the menu button.
  * @param styleGridAriaLabel ARIA label of the styles grid.
- * @param styleDefinitions Array of available styles for processed list type.
  */
 function getMenuBarStylesMenuCreator(
 	{
@@ -446,16 +429,14 @@ function getMenuBarStylesMenuCreator(
 		parentCommandName,
 		buttonLabel,
 		styleGridAriaLabel,
-		styleDefinitions,
-		isStyleVisible
+		styleDefinitions
 	}: {
 		editor: Editor;
-		propertiesConfig: Readonly<ListPropertiesConfig>;
+		propertiesConfig: NormalizedListPropertiesConfig;
 		parentCommandName: 'bulletedList' | 'numberedList';
 		buttonLabel: string;
 		styleGridAriaLabel: string;
 		styleDefinitions: Array<StyleDefinition>;
-		isStyleVisible: boolean;
 	}
 ) {
 	return ( locale: Locale ) => {
@@ -478,8 +459,7 @@ function getMenuBarStylesMenuCreator(
 				startIndex: false,
 				reversed: false
 			},
-			styleButtonViews,
-			isStyleVisible
+			styleButtonViews
 		} );
 
 		listPropertiesView.delegate( 'execute' ).to( menuView );

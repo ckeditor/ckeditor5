@@ -126,34 +126,8 @@ describe( 'ListPropertiesView', () => {
 							startIndex: true,
 							reversed: true
 						},
-						styleButtonViews: [
-							new ButtonView( locale )
-						],
+						styleButtonViews: [],
 						styleGridAriaLabel: 'Foo'
-					} );
-
-					view.render();
-
-					expect( view.stylesView ).to.be.null;
-					expect( view.element.classList.contains( 'ck-list-properties_without-styles' ) ).to.be.true;
-
-					view.destroy();
-				} );
-
-				it( 'should have no #stylesView when "isStyleVisible" is `false`', () => {
-					const view = new ListPropertiesView( locale, {
-						enabledProperties: {
-							startIndex: true,
-							reversed: true,
-							styles: {
-								useAttribute: true
-							}
-						},
-						styleButtonViews: [
-							new ButtonView( locale )
-						],
-						styleGridAriaLabel: 'Foo',
-						isStyleVisible: false
 					} );
 
 					view.render();
@@ -170,9 +144,7 @@ describe( 'ListPropertiesView', () => {
 							startIndex: true,
 							reversed: true
 						},
-						styleButtonViews: [
-							new ButtonView( locale )
-						],
+						styleButtonViews: [],
 						styleGridAriaLabel: 'Foo'
 					} );
 
@@ -215,9 +187,7 @@ describe( 'ListPropertiesView', () => {
 						enabledProperties: {
 							startIndex: true
 						},
-						styleButtonViews: [
-							new ButtonView( locale )
-						],
+						styleButtonViews: [],
 						styleGridAriaLabel: 'Foo'
 					} );
 
@@ -240,9 +210,7 @@ describe( 'ListPropertiesView', () => {
 						enabledProperties: {
 							reversed: true
 						},
-						styleButtonViews: [
-							new ButtonView( locale )
-						],
+						styleButtonViews: [],
 						styleGridAriaLabel: 'Foo'
 					} );
 
@@ -403,10 +371,7 @@ describe( 'ListPropertiesView', () => {
 							startIndex: true,
 							reversed: true
 						},
-						styleButtonViews: [
-							new ButtonView( locale ),
-							new ButtonView( locale )
-						],
+						styleButtonViews: [],
 						styleGridAriaLabel: 'Foo'
 					} );
 
@@ -426,10 +391,7 @@ describe( 'ListPropertiesView', () => {
 							startIndex: true,
 							reversed: true
 						},
-						styleButtonViews: [
-							new ButtonView( locale ),
-							new ButtonView( locale )
-						],
+						styleButtonViews: [],
 						styleGridAriaLabel: 'Foo'
 					} );
 
@@ -612,9 +574,7 @@ describe( 'ListPropertiesView', () => {
 					startIndex: true,
 					reversed: true
 				},
-				styleButtonViews: [
-					new ButtonView( locale )
-				],
+				styleButtonViews: [],
 				styleGridAriaLabel: 'Foo'
 			} );
 
@@ -635,9 +595,7 @@ describe( 'ListPropertiesView', () => {
 				enabledProperties: {
 					reversed: true
 				},
-				styleButtonViews: [
-					new ButtonView( locale )
-				],
+				styleButtonViews: [],
 				styleGridAriaLabel: 'Foo'
 			} );
 

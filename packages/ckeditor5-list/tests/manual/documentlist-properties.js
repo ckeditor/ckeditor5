@@ -99,6 +99,9 @@ const config = {
 	htmlEmbed: {
 		showPreviews: true,
 		sanitizeHtml: html => ( { html, hasChange: false } )
+	},
+	menuBar: {
+		isVisible: true
 	}
 };
 
@@ -164,7 +167,7 @@ createEditor( 'style', {
 
 createEditor( 'numbered-false', {
 	styles: {
-		numbered: false
+		listTypes: 'bulleted'
 	},
 	startIndex: true,
 	reversed: true
@@ -172,7 +175,7 @@ createEditor( 'numbered-false', {
 
 createEditor( 'bulleted-false', {
 	styles: {
-		bulleted: false
+		listTypes: 'numbered'
 	},
 	startIndex: true,
 	reversed: true
@@ -182,32 +185,6 @@ createEditor( 'style-attribute', {
 	styles: { useAttribute: true },
 	startIndex: false,
 	reversed: false
-} );
-
-createEditor( 'style-attribute-bulleted-true', {
-	styles: {
-		numbered: {
-			useAttribute: false
-		},
-		bulleted: {
-			useAttribute: true
-		}
-	},
-	startIndex: true,
-	reversed: true
-} );
-
-createEditor( 'style-attribute-numbered-true', {
-	styles: {
-		numbered: {
-			useAttribute: true
-		},
-		bulleted: {
-			useAttribute: false
-		}
-	},
-	startIndex: true,
-	reversed: true
 } );
 
 createEditor( 'none', {
