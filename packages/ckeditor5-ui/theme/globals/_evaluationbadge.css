@@ -4,7 +4,8 @@
  */
 
 :root {
-	--ck-evaluation-badge-line-height: 10px;
+	--ck-evaluation-badge-font-size: 7.5px;
+	--ck-evaluation-badge-line-height: 7.5px;
 	--ck-evaluation-badge-padding-vertical: 2px;
 	--ck-evaluation-badge-padding-horizontal: 4px;
 	--ck-evaluation-badge-text-color: hsl(0, 0%, 31%);
@@ -23,10 +24,10 @@
 
 	& .ck.ck-evaluation-badge {
 		line-height: var(--ck-evaluation-badge-line-height);
-		padding: var(--ck-powered-by-padding-vertical) var(--ck-powered-by-padding-horizontal);
+		padding: var(--ck-evaluation-badge-padding-vertical) var(--ck-evaluation-badge-padding-horizontal);
 
 		& .ck-evaluation-badge__label {
-			font-size: 7.5px;
+			font-size: var(--ck-evaluation-badge-font-size);
 			letter-spacing: -.2px;
 			padding-left: 2px;
 			text-transform: uppercase;
