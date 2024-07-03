@@ -61,7 +61,7 @@ export type DropdownMenuViewsNestedTree<Extend = unknown> =
 	& WithTreeSearchMetadata
 	& {
 		menu: DropdownMenuView;
-		children: DropdownMenuViewsTreeChildItem<Extend>;
+		children: Array<DropdownMenuViewsTreeChildItem<Extend>>;
 	};
 
 /**
