@@ -395,20 +395,6 @@ describe( 'ListPropertiesEditing', () => {
 				expect( command.isStyleTypeSupported( 'lower-latin' ) ).to.be.true;
 				expect( command.isStyleTypeSupported( 'upper-latin' ) ).to.be.true;
 			} );
-
-			it( 'should register `listStyle` command with support for `decimal-leading-zero` when only bulleted list ' +
-				'set `useAttribute` on true.', async () => {
-				const editor = await VirtualTestEditor.create( {
-					plugins: [ Paragraph, ListPropertiesEditing, UndoEditing ],
-					list: {
-						properties: { styles: { bulleted: { useAttribute: true } }, startIndex: false, reversed: false }
-					}
-				} );
-
-				const command = editor.commands.get( 'listStyle' );
-
-				expect( command.isStyleTypeSupported( 'decimal-leading-zero' ) ).to.be.true;
-			} );
 		} );
 
 		describe( 'conversion', () => {
@@ -517,90 +503,6 @@ describe( 'ListPropertiesEditing', () => {
 					` ) );
 
 					expect( editor.getData() ).to.equal( '<ol><li>Foo</li></ol>' );
-				} );
-
-				describe( 'bulleted list have `useAttribute` set on `true` (numbered on `false`)', () => {
-					let editor, model;
-
-					beforeEach( async () => {
-						editor = await VirtualTestEditor.create( {
-							plugins: [ Paragraph, ListPropertiesEditing, UndoEditing ],
-							list: {
-								properties: {
-									styles: {
-										bulleted: {
-											useAttribute: true
-										},
-										numbered: {
-											useAttribute: false
-										}
-									},
-									startIndex: false,
-									reversed: false
-								}
-							}
-						} );
-
-						model = editor.model;
-					} );
-
-					it( 'should downcast to `type` attribute (bulleted, circle)', () => {
-						setData( model, modelList( `
-							* Foo {style:circle}
-						` ) );
-
-						expect( editor.getData() ).to.equal( '<ul type="circle"><li>Foo</li></ul>' );
-					} );
-
-					it( 'should not downcast to `type` attribute (numbered, decimal)', () => {
-						setData( model, modelList( `
-							# Foo {style:decimal}
-						` ) );
-
-						expect( editor.getData() ).to.equal( '<ol style="list-style-type:decimal;"><li>Foo</li></ol>' );
-					} );
-				} );
-
-				describe( 'numbered list have `useAttribute` set on `true` (bulleted on `false`)', () => {
-					let editor, model;
-
-					beforeEach( async () => {
-						editor = await VirtualTestEditor.create( {
-							plugins: [ Paragraph, ListPropertiesEditing, UndoEditing ],
-							list: {
-								properties: {
-									styles: {
-										numbered: {
-											useAttribute: true
-										},
-										bulleted: {
-											useAttribute: false
-										}
-									},
-									startIndex: false,
-									reversed: false
-								}
-							}
-						} );
-
-						model = editor.model;
-					} );
-
-					it( 'should downcast to `type` attribute (bulleted, circle)', () => {
-						setData( model, modelList( `
-							* Foo {style:circle}
-						` ) );
-
-						expect( editor.getData() ).to.equal( '<ul style="list-style-type:circle;"><li>Foo</li></ul>' );
-					} );
-
-					it( 'should not downcast to `type` attribute (numbered, decimal)', () => {
-						setData( model, modelList( `
-							# Foo {style:decimal}
-						` ) );
-
-						expect( editor.getData() ).to.equal( '<ol type="1"><li>Foo</li></ol>' );
-					} );
 				} );
 			} );
 		} );

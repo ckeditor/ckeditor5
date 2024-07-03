@@ -41,7 +41,7 @@ import {
 } from '../list/utils/model.js';
 
 import type { ListIndentCommandAfterExecuteEvent } from '../list/listindentcommand.js';
-import type { ListPropertiesConfig, ListPropertiesStyleConfig, ListPropertiesUseAttributeConfig } from '../listconfig.js';
+import type { ListPropertiesConfig } from '../listconfig.js';
 
 const DEFAULT_LIST_TYPE = 'default';
 
@@ -256,11 +256,9 @@ export interface AttributeStrategy {
  */
 function createAttributeStrategies( enabledProperties: ListPropertiesConfig ) {
 	const strategies: Array<AttributeStrategy> = [];
-	const listPropertiesStyles = enabledProperties.styles;
 
-	if ( listPropertiesStyles ) {
-		// The array of list types which have `useAttribute` set on true.
-		const useAttributeListTypes = getUseAttributesListTypes( listPropertiesStyles );
+	if ( enabledProperties.styles ) {
+		const useAttribute = typeof enabledProperties.styles == 'object' && enabledProperties.styles.useAttribute;
 
 		strategies.push( {
 			attributeName: 'listStyle',
@@ -270,7 +268,7 @@ function createAttributeStrategies( enabledProperties: ListPropertiesConfig ) {
 			addCommand( editor ) {
 				let supportedTypes = getAllSupportedStyleTypes();
 
-				if ( useAttributeListTypes.includes( 'numbered' ) ) {
+				if ( useAttribute ) {
 					supportedTypes = supportedTypes.filter( styleType => !!getTypeAttributeFromListStyleType( styleType ) );
 				}
 
@@ -301,9 +299,6 @@ function createAttributeStrategies( enabledProperties: ListPropertiesConfig ) {
 
 			setAttributeOnDowncast( writer, listStyle, element ) {
 				if ( listStyle && listStyle !== DEFAULT_LIST_TYPE ) {
-					const listType = typeof listStyle === 'string' && getListTypeFromListStyleType( listStyle );
-					const useAttribute = listType && useAttributeListTypes.includes( listType );
-
 					if ( useAttribute ) {
 						const value = getTypeAttributeFromListStyleType( listStyle as string );
 
@@ -408,41 +403,6 @@ function createAttributeStrategies( enabledProperties: ListPropertiesConfig ) {
 	}
 
 	return strategies;
-}
-
-/**
- * Return an array with list types which have `useAttribute` set on `true`.
- *
- * @internal
- */
-function getUseAttributesListTypes(
-	listPropertiesStyles: boolean | ListPropertiesStyleConfig | ListPropertiesUseAttributeConfig
-): Array<string> {
-	const isStylePropertiesObject = typeof listPropertiesStyles == 'object';
-	const bulletedListStyle = isStylePropertiesObject && ( listPropertiesStyles as ListPropertiesStyleConfig ).bulleted;
-	const numberedListStyle = isStylePropertiesObject && ( listPropertiesStyles as ListPropertiesStyleConfig ).numbered;
-
-	const listPropertiesStylesUseAttribute =
-		isStylePropertiesObject && ( listPropertiesStyles as ListPropertiesUseAttributeConfig ).useAttribute;
-	const bulletedListStyleUseAttribute = typeof bulletedListStyle === 'object' && bulletedListStyle.useAttribute;
-	const numberedListStyleUseAttribute = typeof numberedListStyle === 'object' && numberedListStyle.useAttribute;
-
-	const useAttribute = typeof listPropertiesStylesUseAttribute === 'boolean' && listPropertiesStylesUseAttribute;
-	const useAttributeListTypes = [];
-
-	if ( useAttribute ) {
-		return [ 'bulleted', 'numbered' ];
-	}
-
-	if ( bulletedListStyleUseAttribute ) {
-		useAttributeListTypes.push( 'bulleted' );
-	}
-
-	if ( numberedListStyleUseAttribute ) {
-		useAttributeListTypes.push( 'numbered' );
-	}
-
-	return useAttributeListTypes;
 }
 
 declare module '../list/listediting' {
