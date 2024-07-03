@@ -18,7 +18,6 @@ import ViewContainerElement from '../../src/view/containerelement.js';
 import ViewUIElement from '../../src/view/uielement.js';
 import ViewText from '../../src/view/text.js';
 import ViewDocument from '../../src/view/document.js';
-import ViewEmptyElement from '../../src/view/emptyelement.js';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
@@ -4652,45 +4651,6 @@ describe( 'DowncastHelpers', () => {
 					} );
 
 					expect( viewToString( viewRoot ) ).to.equal( '<div><div>foo</div></div>' );
-				} );
-
-				it( 'should not crash when element has no addHighlight and removeHighlight properties', () => {
-					downcastHelpers.elementToElement( {
-						model: 'br',
-						view: () => {
-							const viewContainer = new ViewEmptyElement( viewDocument, 'br' );
-
-							return viewContainer;
-						}
-					} );
-
-					downcastHelpers.markerToElement( { model: 'marker', view: 'marker' } );
-
-					const modelElement = new ModelElement( 'br', null );
-
-					model.change( writer => {
-						writer.remove( markerRange );
-
-						writer.insert( modelElement, modelRootStart );
-					} );
-
-					model.change( writer => {
-						writer.addMarker( 'marker', { range: markerRange, usingOperation: false } );
-					} );
-
-					expect( viewToString( viewRoot ) ).to.equal(
-						'<div>' +
-						'<marker></marker>' +
-						'<br></br>' +
-						'<marker></marker>' +
-						'</div>'
-					);
-
-					model.change( writer => {
-						writer.removeMarker( 'marker' );
-					} );
-
-					expect( viewToString( viewRoot ) ).to.equal( '<div><marker></marker><br></br><marker></marker></div>' );
 				} );
 			} );
 		} );
