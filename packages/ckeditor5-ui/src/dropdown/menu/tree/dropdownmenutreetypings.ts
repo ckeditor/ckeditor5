@@ -42,20 +42,6 @@ type WithTreeEntryType<K extends string> = {
 };
 
 /**
- * The maximum depth of a dropdown menu tree. MaxDropdownTreeMenuDepth is the maximum depth of a dropdown menu tree,
- * it is used to prevent the dropdown menu tree from exceeding the maximum depth in the type system.
- */
-type MaxDropdownTreeMenuDepth = 6;
-
-/**
- * It prevents TS from throwing an error when the depth of the dropdown menu tree is exceeded.
- */
-type IncrementDropdownTreeDepth<N extends number> = [
-	1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-	...Array<number>
-][N];
-
-/**
  * Represents a flat item in a dropdown menu tree.
  */
 export type DropdownMenuViewsTreeFlatItem<Extend = unknown> =
@@ -69,29 +55,21 @@ export type DropdownMenuViewsTreeFlatItem<Extend = unknown> =
 /**
  * Represents a nested menu entry in a dropdown menu tree.
  */
-export type DropdownMenuViewsNestedTree<
-	Extend = unknown,
-	Level extends number = 0
-> =
+export type DropdownMenuViewsNestedTree<Extend = unknown> =
 	& Extend
 	& WithTreeEntryType<'Menu'>
 	& WithTreeSearchMetadata
 	& {
 		menu: DropdownMenuView;
-		children: MaxDropdownTreeMenuDepth extends Level
-			? never
-			: Array<DropdownMenuViewsTreeChildItem<Extend, IncrementDropdownTreeDepth<Level>>>;
+		children: DropdownMenuViewsTreeChildItem<Extend>;
 	};
 
 /**
  * Represents a child item in a dropdown menu tree.
  */
-export type DropdownMenuViewsTreeChildItem<
-	Extend = unknown,
-	Level extends number = 0
-> =
+export type DropdownMenuViewsTreeChildItem<Extend = unknown> =
 	| DropdownMenuViewsTreeFlatItem<Extend>
-	| DropdownMenuViewsNestedTree<Extend, Level>;
+	| DropdownMenuViewsNestedTree<Extend>;
 
 /**
  * Represents the root entry of a dropdown menu tree.
@@ -105,11 +83,8 @@ export type DropdownMenuViewsRootTree<Extend = unknown> =
 /**
  * Represents all possible types of nodes in a dropdown menu tree.
  */
-export type DropdownMenusViewsTreeNode<
-	Extend = unknown,
-	Level extends number = 0
-> =
-	| DropdownMenuViewsTreeChildItem<Extend, Level>
+export type DropdownMenusViewsTreeNode<Extend = unknown> =
+	| DropdownMenuViewsTreeChildItem<Extend>
 	| DropdownMenuViewsRootTree<Extend>;
 
 /**
