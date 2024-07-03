@@ -239,7 +239,7 @@ describe( 'ListEditing (multiBlock=false) - converters - data pipeline', () => {
 		} );
 
 		// See https://github.com/ckeditor/ckeditor5/issues/16450.
-		it( 'does not clear incorrect elements', () => {
+		it( 'does not clear incorrect nodes within <ul>', () => {
 			test.data(
 				'<ul>' +
 					'x' +
@@ -265,6 +265,52 @@ describe( 'ListEditing (multiBlock=false) - converters - data pipeline', () => {
 				'<p>xxx</p>' +
 				'<p>x</p>' +
 				'<p>c</p>'
+			);
+		} );
+
+		// See https://github.com/ckeditor/ckeditor5/issues/16450.
+		it( 'does not clear incorrect nodes and elements within <ul>', () => {
+			test.data(
+				'<p>0</p>' +
+				'<ul>' +
+					'<strong>x</strong>y' +
+					'<li>a</li>' +
+					'<p>z</p>' +
+					'<li>b</li>' +
+					'<p>z1</p>' +
+					'<p>z2</p>' +
+					'<li>c</li>' +
+					'x' +
+				'</ul>' +
+				'<p>1</p>',
+
+				'<paragraph>0</paragraph>' +
+				'<paragraph><$text bold="true">x</$text>y</paragraph>' +
+				'<listItem listIndent="0" listItemId="a00" listType="bulleted">a</listItem>' +
+				'<paragraph>z</paragraph>' +
+				'<listItem listIndent="0" listItemId="a01" listType="bulleted">b</listItem>' +
+				'<paragraph>z1</paragraph>' +
+				'<paragraph>z2</paragraph>' +
+				'<listItem listIndent="0" listItemId="a02" listType="bulleted">c</listItem>' +
+				'<paragraph>x</paragraph>' +
+				'<paragraph>1</paragraph>',
+
+				'<p>0</p>' +
+				'<p><strong>x</strong>y</p>' +
+				'<ul>' +
+					'<li>a</li>' +
+				'</ul>' +
+				'<p>z</p>' +
+				'<ul>' +
+					'<li>b</li>' +
+				'</ul>' +
+				'<p>z1</p>' +
+				'<p>z2</p>' +
+				'<ul>' +
+					'<li>c</li>' +
+				'</ul>' +
+				'<p>x</p>' +
+				'<p>1</p>'
 			);
 		} );
 
