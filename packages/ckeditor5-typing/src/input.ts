@@ -8,7 +8,7 @@
  */
 
 import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
-import { DomEmitterMixin, env, global } from '@ckeditor/ckeditor5-utils';
+import { DomEmitterMixin, env } from '@ckeditor/ckeditor5-utils';
 
 import InsertTextCommand, { type InsertTextCommandOptions } from './inserttextcommand.js';
 import InsertTextObserver, { type ViewDocumentInsertTextEvent } from './inserttextobserver.js';
@@ -447,6 +447,20 @@ export default class Input extends Plugin {
 
 				data.viewPosition = mapper.findPositionIn( editContextHostElement, data.modelPosition.offset );
 			} );
+
+			editor.conversion.for( 'editingDowncast' ).markerToHighlight( {
+				model: 'ime',
+				view: data => {
+					const idx = data.markerName.split( ':' )[ 1 ];
+
+					return {
+						classes: [ 'ck-input-composition' ],
+						attributes: {
+							'data-ime': idx
+						}
+					};
+				}
+			} );
 		}
 	}
 
@@ -544,8 +558,31 @@ export default class Input extends Plugin {
 		} );
 
 		this._domEmitter.listenTo( editContext, 'textformatupdate', ( evt, domEvent: any ) => {
-			// TODO
-			console.log( 'EditContext textformatupdate event', domEvent.getTextFormats() );
+			const textFormats = domEvent.getTextFormats();
+
+			console.log( 'EditContext textformatupdate event', textFormats );
+			// TODO domEvent.underlineStyle and domEvent.underlineThickness
+
+			model.change( writer => {
+				const markers = Array.from( model.markers.getMarkersGroup( 'ime' ) );
+
+				for ( const [ idx, format ] of textFormats.entries() ) {
+					const range = model.createRange(
+						model.createPositionAt( this._lastEditBlock!, format.rangeStart ),
+						model.createPositionAt( this._lastEditBlock!, format.rangeEnd )
+					);
+
+					if ( idx >= markers.length ) {
+						writer.addMarker( `ime:${ idx }`, { range, usingOperation: false, affectsData: false } );
+					} else {
+						writer.updateMarker( `ime:${ idx }`, { range } );
+					}
+				}
+
+				for ( let idx = textFormats.length; idx < markers.length; idx++ ) {
+					writer.removeMarker( `ime:${ idx }` );
+				}
+			} );
 		} );
 
 		return editContext;
