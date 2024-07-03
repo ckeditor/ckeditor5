@@ -3,6 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import { type ArrayOrItem } from 'ckeditor5/src/utils.js';
+import { type ListType } from './list/listediting.js';
+
 /**
  * @module list/listconfig
  */
@@ -86,7 +89,7 @@ export interface ListPropertiesConfig {
 	 *
 	 * @default true
 	 */
-	styles?: boolean | ListPropertiesStyleConfig | ListPropertiesUseAttributeConfig;
+	styles?: boolean | ListPropertiesStyleConfig | ArrayOrItem<ListType>;
 
 	/**
 	 * When set, the list start index feature will be enabled. It allows changing the `start` HTML attribute of the numbered lists. As a
@@ -112,33 +115,7 @@ export interface ListPropertiesConfig {
 export interface ListPropertiesStyleConfig {
 
 	/**
-	 * Disable style feature for the `numbered` list type.
-	 *
-	 * ```ts
-	 * {
-	 * 	list: {
-	 * 		properties: {
-	 * 			styles: {
-	 * 				numbered: false
-	 * 			},
-	 *
-	 * 			// ...
-	 * 		}
-	 * 	},
-	 *
-	 * 	// ...
-	 * }
-	 * ```
-	 *
-	 * **Note**: This configuration works only with
-	 * {@link module:list/listproperties~ListProperties list properties}.
-	 *
-	 * @default true
-	 */
-	numbered?: boolean | ListPropertiesUseAttributeConfig;
-
-	/**
-	 * Disable style feature for the `bulleted` list type.
+	 * Disable style feature for the given list type.
 	 *
 	 * ```ts
 	 * {
@@ -156,15 +133,13 @@ export interface ListPropertiesStyleConfig {
 	 * }
 	 * ```
 	 *
+     *
 	 * **Note**: This configuration works only with
 	 * {@link module:list/listproperties~ListProperties list properties}.
 	 *
-	 * @default true
+	 * @default ['bulleted','numbered']
 	 */
-	bulleted?: boolean | ListPropertiesUseAttributeConfig;
-}
-
-export interface ListPropertiesUseAttributeConfig {
+	listTypes?: ArrayOrItem<ListType>;
 
 	/**
 	 * When set `true`, the list style feature will use the `type` attribute of `<ul>` and `<ol>` elements instead of the `list-style-type`
