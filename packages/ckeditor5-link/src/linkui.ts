@@ -98,9 +98,19 @@ export default class LinkUI extends Plugin {
 		// Renders a fake visual selection marker on a collapsed selection.
 		editor.conversion.for( 'editingDowncast' ).markerToElement( {
 			model: VISUAL_SELECTION_MARKER_NAME,
-			view: {
-				name: 'span',
-				classes: [ 'ck-fake-link-selection', 'ck-fake-link-selection_collapsed' ]
+			view: ( data, { writer } ) => {
+				if ( !data.markerRange.isCollapsed ) {
+					return null;
+				}
+
+				const markerElement = writer.createUIElement( 'span' );
+
+				writer.addClass(
+					[ 'ck-fake-link-selection', 'ck-fake-link-selection_collapsed' ],
+					markerElement
+				);
+
+				return markerElement;
 			}
 		} );
 

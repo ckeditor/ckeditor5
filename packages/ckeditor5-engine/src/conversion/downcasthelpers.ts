@@ -1914,7 +1914,9 @@ function removeHighlight( highlightDescriptor: HighlightDescriptor | HighlightDe
 				// if element.is( 'containerElement' ).
 				const removeHighlightCallback = element.getCustomProperty( 'removeHighlight' ) as RemoveHighlightCallback;
 
-				removeHighlightCallback( element, descriptor.id!, conversionApi.writer );
+				if ( removeHighlightCallback ) {
+					removeHighlightCallback( element, descriptor.id!, conversionApi.writer );
+				}
 			}
 		}
 
