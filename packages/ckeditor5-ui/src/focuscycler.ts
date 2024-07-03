@@ -9,10 +9,10 @@
 
 import {
 	isVisible,
+	EmitterMixin,
 	type ArrayOrItem,
 	type FocusTracker,
-	type KeystrokeHandler,
-	EmitterMixin
+	type KeystrokeHandler
 } from '@ckeditor/ckeditor5-utils';
 
 import type View from './view.js';
@@ -115,6 +115,9 @@ export default class FocusCycler extends /* #__PURE__ */ EmitterMixin() {
 		focusables: ViewCollection<FocusableView>;
 		focusTracker: FocusTracker;
 		keystrokeHandler?: KeystrokeHandler;
+		keystrokeHandlerOptions?: {
+			filter?: ( keyEvtData: KeyboardEvent ) => boolean;
+		};
 		actions?: FocusCyclerActions;
 	} ) {
 		super();
@@ -134,9 +137,10 @@ export default class FocusCycler extends /* #__PURE__ */ EmitterMixin() {
 
 				for ( const keystroke of actions ) {
 					options.keystrokeHandler.set( keystroke, ( data, cancel ) => {
+						console.log( '[a11y] FC', keystroke, methodName );
 						this[ methodName as keyof FocusCyclerActions ]();
 						cancel();
-					} );
+					}, options.keystrokeHandlerOptions );
 				}
 			}
 		}

@@ -94,7 +94,10 @@ export default class KeystrokeHandler {
 	public set(
 		keystroke: string | ReadonlyArray<string | number>,
 		callback: ( ev: KeyboardEvent, cancel: () => void ) => void,
-		options: { readonly priority?: PriorityString } = {}
+		options: {
+			readonly priority?: PriorityString;
+			filter?: ( keyEvtData: KeyboardEvent ) => boolean;
+		} = {}
 	): void {
 		const keyCode = parseKeystroke( keystroke );
 		const priority = options.priority;
@@ -102,6 +105,10 @@ export default class KeystrokeHandler {
 		// Execute the passed callback on KeystrokeHandler#_keydown.
 		// TODO: https://github.com/ckeditor/ckeditor5-utils/issues/144
 		this._listener.listenTo( this._listener, '_keydown:' + keyCode, ( evt, keyEvtData: KeyboardEvent ) => {
+			if ( options.filter && !options.filter( keyEvtData ) ) {
+				return;
+			}
+
 			callback( keyEvtData, () => {
 				// Stop the event in the DOM: no listener in the web page
 				// will be triggered by this event.
