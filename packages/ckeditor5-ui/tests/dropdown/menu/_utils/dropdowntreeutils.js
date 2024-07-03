@@ -125,13 +125,19 @@ export function findMenuTreeItemByLabel( label, tree ) {
 export function findAllMenusTreeItemsByLabel( label, tree ) {
 	const foundMenus = [];
 
-	const lookup = node => {
-		if ( node.search && node.search.raw === label ) {
+	const lookup = ( { node } ) => {
+		if ( node.search.raw === label ) {
 			foundMenus.push( node );
 		}
 	};
 
-	walkOverDropdownMenuTreeItems( lookup, tree );
+	walkOverDropdownMenuTreeItems(
+		{
+			Item: lookup,
+			Menu: lookup
+		},
+		tree
+	);
 
 	return foundMenus;
 }
