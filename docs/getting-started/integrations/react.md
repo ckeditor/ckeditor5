@@ -26,6 +26,7 @@ React lets you build user interfaces out of individual pieces called components.
 ### Using CKEditor&nbsp;5 Builder
 
 The easiest way to use CKEditor&nbsp;5 in your React application is by configuring it with [CKEditor&nbsp;5 Builder](https://ckeditor.com/builder?redirect=docs) and integrating it with your application. Builder offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs. You can easily select:
+
 * the features you need,
 * the preferred framework (React, Angular, Vue or Vanilla JS),
 * the preferred distribution method.
@@ -62,9 +63,8 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
 import { SlashCommand } from 'ckeditor5-premium-features';
 
-import 'ckeditor5/index.css';
-import 'ckeditor5-premium-features/index.css';
-import './App.css';
+import 'ckeditor5/ckeditor5.css';
+import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 
 function App() {
 	return (
@@ -122,40 +122,40 @@ The editor event callbacks (`onChange`, `onBlur`, `onFocus`) receive two argumen
 The [`@ckeditor/ckeditor5-react`](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) package provides a ready-to-use component for the {@link features/context-and-collaboration-features context feature} that is useful when used together with some {@link features/collaboration CKEditor&nbsp;5 collaboration features}.
 
 ```jsx
-import { ClassicEditor, Context, Bold, Essentials, Italic, Paragraph } from 'ckeditor5';
+import { ClassicEditor, Context, Bold, Essentials, Italic, Paragraph, ContextWatchdog } from 'ckeditor5';
 import { CKEditor, CKEditorContext } from '@ckeditor/ckeditor5-react';
 
-import 'ckeditor5/index.css';
+import 'ckeditor5/ckeditor5.css';
 
 function App() {
   return (
-    <CKEditorContext context={ Context }>
-      <CKEditor
-        editor={ ClassicEditor }
-        config={ {
-          plugins: [ Essentials, Bold, Italic, Paragraph ],
-          toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-        } }
-        data='<p>Hello from the first editor working with the context!</p>'
-        onReady={ ( editor ) => {
-          // You can store the "editor" and use when it is needed.
-          console.log( 'Editor 1 is ready to use!', editor );
-        } }
-      />
+	<CKEditorContext context={ Context } contextWatchdog={ ContextWatchdog }>
+	  <CKEditor
+		editor={ ClassicEditor }
+		config={ {
+		  plugins: [ Essentials, Bold, Italic, Paragraph ],
+		  toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+		} }
+		data='<p>Hello from the first editor working with the context!</p>'
+		onReady={ ( editor ) => {
+		  // You can store the "editor" and use when it is needed.
+		  console.log( 'Editor 1 is ready to use!', editor );
+		} }
+	  />
 
-      <CKEditor
-        editor={ ClassicEditor }
-        config={ {
-          plugins: [ Essentials, Bold, Italic, Paragraph ],
-          toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-        } }
-        data='<p>Hello from the second editor working with the context!</p>'
-        onReady={ ( editor ) => {
-          // You can store the "editor" and use when it is needed.
-          console.log( 'Editor 2 is ready to use!', editor );
-        } }
-      />
-    </CKEditorContext>
+	  <CKEditor
+		editor={ ClassicEditor }
+		config={ {
+		  plugins: [ Essentials, Bold, Italic, Paragraph ],
+		  toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+		} }
+		data='<p>Hello from the second editor working with the context!</p>'
+		onReady={ ( editor ) => {
+		  // You can store the "editor" and use when it is needed.
+		  console.log( 'Editor 2 is ready to use!', editor );
+		} }
+	  />
+	</CKEditorContext>
   );
 }
 
@@ -165,6 +165,7 @@ export default App;
 The `CKEditorContext` component supports the following properties:
 
 * `context` (required) &ndash; {@link module:core/context~Context The CKEditor&nbsp;5 context class}.
+* `contextWatchdog` (required) &ndash; {@link module:watchdog/contextwatchdog~ContextWatchdog The Watchdog context class}.
 * `config` &ndash; The CKEditor&nbsp;5 context configuration.
 * `isLayoutReady` &ndash; A property that delays the context creation when set to `false`. It creates the context and the editor children once it is `true` or unset. Useful when the CKEditor&nbsp;5 annotations or a presence list are used.
 * `id` &ndash; The context ID. When this property changes, the component restarts the context with its editor and reinitializes it based on the current configuration.
@@ -184,36 +185,46 @@ The `CKEditorContext` component supports the following properties:
 If you use the {@link framework/document-editor document (decoupled) editor}, you need to {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create add the toolbar to the DOM manually}:
 
 ```jsx
-import { useCallback, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { DecoupledEditor, Bold, Essentials, Italic, Paragraph } from 'ckeditor5';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 
-import 'ckeditor5/index.css';
+import 'ckeditor5/ckeditor5.css';
 
 function App() {
-	const [ editorToolbarRef, setEditorToolbarRef ] = useState( null );
-	const [ editorRef, setEditorRef ] = useState( null );
+	const editorToolbarRef = useRef( null );
+	const [ isMounted, setMounted ] = useState( false );
+	
+	useEffect( () => {
+		setMounted( true );
 
-	const isLayoutReady = useCallback( () => {
-		return [ editorRef, editorToolbarRef ].every( Boolean );
-	}, [ editorRef, editorToolbarRef ] );
+		return () => {
+			setMounted( false );
+		};
+	}, [] );
 
 	return (
 		<div>
-			<div ref={ setEditorToolbarRef }></div>
-			<div ref={ setEditorRef }>
-				{ isLayoutReady() && (
+			<div ref={ editorToolbarRef }></div>
+			<div>
+				{ isMounted && (
 					<CKEditor
-						onReady={ ( editor ) => {
-							[ ...editorToolbarRef.children ].forEach( child => child.remove() );
-							editorToolbarRef.appendChild( editor.ui.view.toolbar.element );
-						}}
 						editor={ DecoupledEditor }
 						data='<p>Hello from CKEditor 5 decoupled editor!</p>'
 						config={ {
 							plugins: [ Bold, Italic, Paragraph, Essentials ],
 							toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 						} }
+						onReady={ ( editor ) => {
+							if ( editorToolbarRef.current ) { 
+								editorToolbarRef.current.appendChild( editor.ui.view.toolbar.element );
+							}
+						}}
+						onAfterDestroy={ ( editor ) => {
+							if ( editorToolbarRef.current ) {
+								Array.from( editorToolbarRef.current.children ).forEach( child => child.remove() );
+							}
+						}}
 					/>
 				) }
 			</div>
@@ -247,7 +258,7 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 // More imports...
 
 import coreTranslations from 'ckeditor5/translations/es.js';
-import commercialTranslations from 'ckeditor5-premium-features/translations/es.js';
+import premiumFeaturesTranslations from 'ckeditor5-premium-features/translations/es.js';
 
 // Style sheets imports...
 
@@ -256,7 +267,7 @@ function App() {
 		<CKEditor
 			editor={ ClassicEditor }
 			config={ {
-				translations: [ coreTranslations, commercialTranslations ],
+				translations: [ coreTranslations, premiumFeaturesTranslations ],
 				initialData: '<p>Hola desde CKEditor 5 en React!</p>',
 			} }
 		/>

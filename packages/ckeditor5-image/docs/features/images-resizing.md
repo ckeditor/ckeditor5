@@ -43,12 +43,14 @@ You can configure resizing images by handles in two different ways in the CKEdit
 ```js
 import { ClassicEditor, Image, ImageResizeEditing, ImageResizeHandles } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Image, ImageResizeEditing, ImageResizeHandles, /* ... */ ],
-	// More of editor's configuration.
-	// ...
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Image, ImageResizeEditing, ImageResizeHandles, /* ... */ ],
+		// More of editor's configuration.
+		// ...
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 Both ways enable resize handles by default.
@@ -312,17 +314,25 @@ When using the {@link features/ckbox CKBox file manager} service, it produces se
 
 ## Installation
 
+<info-box info>
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
+</info-box>
+
 To enable it you need to install the {@link module:image/imageresize~ImageResize} plugin, which contains **all** needed features (`ImageResizeEditing`, `ImageResizeHandles`, `ImageResizeButtons`):
 
 ```js
 import { ClassicEditor, Image, ImageResize } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Image, ImageResize, /* ... */ ],
-	// More of editor's configuration.
-	// ...
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Image, ImageResize, /* ... */ ],
+		// More of editor's configuration.
+		// ...
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Common API

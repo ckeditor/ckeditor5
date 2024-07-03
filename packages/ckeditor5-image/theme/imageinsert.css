@@ -4,6 +4,9 @@
  */
 
 .ck.ck-image-insert-url {
+	width: 400px;
+	padding: var(--ck-spacing-large) var(--ck-spacing-large) 0;
+
 	& .ck-image-insert-url__action-row {
 		display: grid;
 		grid-template-columns: repeat(2, 1fr);

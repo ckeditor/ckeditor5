@@ -20,16 +20,24 @@ Use the indent {@icon @ckeditor/ckeditor5-core/theme/icons/indent.svg Indent} or
 
 ## Installation
 
+<info-box info>
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
+</info-box>
+
 After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
 import { ClassicEditor, Indent, IndentBlock } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Indent, IndentBlock, /* ... */ ],
-	toolbar: [ 'outdent', 'indent', /* ... */ ]
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Indent, IndentBlock, /* ... */ ],
+		toolbar: [ 'outdent', 'indent', /* ... */ ]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Configuring the block indentation feature
@@ -47,17 +55,19 @@ You can change that value to, for example, `1em`:
 ```js
 import { ClassicEditor, Indent } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Indent, /* ... */ ],
-	toolbar: {
-		items: [ 'heading', '|', 'outdent', 'indent', '|', 'bulletedList', 'numberedList', '|', 'undo', 'redo' ]
-	},
-	indentBlock: {
-		offset: 1,
-		unit: 'em'
-	}
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Indent, /* ... */ ],
+		toolbar: {
+			items: [ 'heading', '|', 'outdent', 'indent', '|', 'bulletedList', 'numberedList', '|', 'undo', 'redo' ]
+		},
+		indentBlock: {
+			offset: 1,
+			unit: 'em'
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ### Using CSS classes
@@ -69,20 +79,22 @@ Here is how you can configure the block indentation feature to set indentation b
 ```js
 import { ClassicEditor, Indent, IndentBlock } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Indent, IndentBlock, /* ... */ ],
-	toolbar: {
-		items: [ 'heading', '|', 'outdent', 'indent', '|', 'bulletedList', 'numberedList', '|', 'undo', 'redo' ]
-	},
-	indentBlock: {
-		classes: [
-			'custom-block-indent-a', // First step - smallest indentation.
-			'custom-block-indent-b',
-			'custom-block-indent-c'  // Last step - biggest indentation.
-		]
-	}
-} )
-.then( /* ... */ );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Indent, IndentBlock, /* ... */ ],
+		toolbar: {
+			items: [ 'heading', '|', 'outdent', 'indent', '|', 'bulletedList', 'numberedList', '|', 'undo', 'redo' ]
+		},
+		indentBlock: {
+			classes: [
+				'custom-block-indent-a', // First step - smallest indentation.
+				'custom-block-indent-b',
+				'custom-block-indent-c'  // Last step - biggest indentation.
+			]
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 Using classes instead of fixed units (`px` or `em`) has another advantage &ndash; you retain control over what indentation levels are used in the documents. For instance, you can limit indentation to 2 or 3 different levels and there is no way the users can go beyond that. In the example above, the `.custom-block-indent-c` class level is the maximum allowed indentation value. This should help keep your content clean and predictable.

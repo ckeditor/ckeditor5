@@ -8,7 +8,7 @@
  */
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
-import FileDialogButtonView from '../button/filedialogbuttonview.js';
+import { FileDialogListItemButtonView } from '../button/filedialogbuttonview.js';
 
 import '../../theme/components/menubar/menubarmenulistitembutton.css';
 
@@ -17,7 +17,7 @@ import '../../theme/components/menubar/menubarmenulistitembutton.css';
  *
  * This component provides a button that opens the native file selection dialog.
  */
-export default class MenuBarMenuListItemFileDialogButtonView extends FileDialogButtonView {
+export default class MenuBarMenuListItemFileDialogButtonView extends FileDialogListItemButtonView {
 	/**
 	 * Creates an instance of the menu bar list button view.
 	 *

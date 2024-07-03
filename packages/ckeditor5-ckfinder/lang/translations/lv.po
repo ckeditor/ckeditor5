@@ -21,10 +21,6 @@ msgctxt "Toolbar button tooltip for inserting an image or file via a CKFinder fi
 msgid "Insert image or file"
 msgstr "Ievietot attēlu vai failu"
 
-msgctxt "The label for the button that opens the dialog for inserting an image or file via a CKFinder from the application menu bar."
-msgid "Image or file"
-msgstr "Attēls vai fails"
-
 msgctxt "Error message displayed when inserting a resized version of an image failed."
 msgid "Could not obtain resized image URL."
 msgstr "Nevarēja iegūt mērogotā attēla adresi."

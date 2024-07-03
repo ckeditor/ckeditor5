@@ -852,6 +852,10 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 			return;
 		}
 
+		// Our approach to interleaving space character with NBSP might differ with the one implemented by the browser.
+		// Avoid modifying the text node in the DOM if only NBSPs and spaces are interchanged.
+		// We should avoid DOM modifications while composing to avoid breakage of composition.
+		// See: https://github.com/ckeditor/ckeditor5/issues/13994.
 		if ( env.isAndroid && this.isComposing && actualText.replace( /\u00A0/g, ' ' ) == expectedText.replace( /\u00A0/g, ' ' ) ) {
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Text node ignore NBSP changes while composing: ' +

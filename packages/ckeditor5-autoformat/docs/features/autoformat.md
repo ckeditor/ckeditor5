@@ -46,16 +46,24 @@ The following {@link features/basic-styles basic styles} inline formatting optio
 
 ## Installation
 
+<info-box info>
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
+</info-box>
+
 After {@link getting-started/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
 ```js
 import { ClassicEditor, Autoformat } from 'ckeditor5';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Autoformat, /* ... */ ],
-	toolbar: [ /* ... */ ]
-} )
-.then( /* ... */ );
+ClassicEditor.
+	create( document.querySelector( '#editor' ), {
+		plugins: [ Autoformat, /* ... */ ],
+		toolbar: [ /* ... */ ]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box hint>

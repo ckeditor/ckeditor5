@@ -42,18 +42,21 @@ The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckedit
 
 ## Image contextual toolbar
 
-The {@link module:image/imagetoolbar~ImageToolbar} plugin available in all editor builds introduces a contextual toolbar for images. The toolbar appears when an image is selected and can be configured to contain any buttons you want. Usually, these will be image-related options such as the {@link features/images-text-alternative text alternative} button, the {@link features/images-captions image caption} button, and {@link features/images-styles image styles} buttons. The toolbar can also host the image editing button introduced by the {@link features/ckbox CKBox asset manager}. Shown below is an example contextual toolbar with an extended set of buttons.
+The {@link module:image/imagetoolbar~ImageToolbar} plugin introduces a contextual toolbar for images. The toolbar appears when an image is selected and can be configured to contain any buttons you want. Usually, these will be image-related options such as the {@link features/images-text-alternative text alternative} button, the {@link features/images-captions image caption} button, and {@link features/images-styles image styles} buttons. The toolbar can also host the image editing button introduced by the {@link features/ckbox CKBox asset manager}. Shown below is an example contextual toolbar with an extended set of buttons.
 
 {@img assets/img/toolbar-items.png 402 An extended contextual toolbar.}
 
 The image toolbar is configurable using the {@link module:image/imageconfig~ImageConfig#styles `config.image.toolbar`} property. For instance, to display the caption toggle, text alternative and editing buttons, use the following configuration:
 
 ```js
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	image: {
-		toolbar: [ 'toggleImageCaption', 'imageTextAlternative', 'ckboxImageEdit' ]
-	}
-} )
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		image: {
+			toolbar: [ 'toggleImageCaption', 'imageTextAlternative', 'ckboxImageEdit' ]
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 Refer to the {@link features/images-installation image installation} guide for more details on configuring the features available in the toolbar and to the {@link updating/update-to-29#image-toolbar toolbar section} of the Migration to v29.x guide, as important changes were introduced in that version. You can also check the {@link getting-started/setup/toolbar editor toolbar} guide.

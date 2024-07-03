@@ -562,6 +562,28 @@ describe( 'TooltipManager', () => {
 
 			sinon.assert.calledTwice( pinSpy );
 		} );
+
+		// Ensure that all changes to the tooltip are set before pinning it due to positioning issues.
+		// See https://github.com/ckeditor/ckeditor5/issues/16365
+		it( 'should set proper class to ballonPanelView before the tooltip is shown', () => {
+			const { balloonPanelView } = tooltipManager;
+
+			elements.a.dataset.ckeTooltipClass = 'ck-tooltip_multi-line';
+			elements.a.dataset.ckeTooltipText = 'Hello World';
+
+			pinSpy.restore();
+
+			// Ensure all changes has been applied to DOM before pinning.
+			const pinStub = sinon.stub( balloonPanelView, 'pin' ).callsFake( () => {
+				expect( tooltipManager.tooltipTextView.element.innerText ).to.equal( 'Hello World' );
+				expect( balloonPanelView.element.classList.contains( 'ck-tooltip_multi-line' ) ).to.be.true;
+			} );
+
+			utils.dispatchMouseEnter( elements.a );
+			utils.waitForTheTooltipToShow( clock );
+
+			expect( pinStub ).to.be.calledOnce;
+		} );
 	} );
 
 	describe( 'hiding tooltips', () => {

@@ -169,7 +169,6 @@ export class AriaLiveAnnouncerRegionView extends View {
 		this.setTemplate( {
 			tag: 'div',
 			attributes: {
-				role: 'region',
 				'aria-live': politeness,
 				'aria-relevant': 'additions'
 			},
