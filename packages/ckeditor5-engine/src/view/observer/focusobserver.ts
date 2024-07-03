@@ -26,7 +26,7 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 	/**
 	 * Identifier of the timeout currently used by focus listener to delay rendering execution.
 	 */
-	private _renderTimeoutId!: ReturnType<typeof setTimeout>;
+	private _renderTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
 	/**
 	 * Set to `true` if the document is in the process of setting the focus.
@@ -104,7 +104,7 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 		// Using `view.change()` instead of `view.forceRender()` to prevent double rendering
 		// in a situation where `selectionchange` already caused selection change.
 		this._renderTimeoutId = setTimeout( () => {
-			this._renderTimeoutId = 0;
+			this._renderTimeoutId = null;
 			this.flush();
 			this.view.change( () => {} );
 		}, 50 );
@@ -132,7 +132,7 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 	private _clearTimeout(): void {
 		if ( this._renderTimeoutId ) {
 			clearTimeout( this._renderTimeoutId );
-			this._renderTimeoutId = 0;
+			this._renderTimeoutId = null;
 		}
 	}
 }
