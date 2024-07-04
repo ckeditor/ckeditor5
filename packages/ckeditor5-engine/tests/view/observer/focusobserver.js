@@ -191,6 +191,46 @@ describe( 'FocusObserver', () => {
 
 			expect( viewDocument.isFocused ).to.be.false;
 		} );
+
+		it( 'should set isFocused to true on beforeinput after 50ms', () => {
+			expect( viewDocument.isFocused ).to.be.false;
+
+			observer.onDomEvent( { type: 'beforeinput', target: domMain } );
+			expect( viewDocument.isFocused ).to.be.false;
+
+			clock.tick( 50 );
+			expect( viewDocument.isFocused ).to.be.true;
+		} );
+
+		it( 'should set isFocused to true on beforeinput after flush', () => {
+			expect( viewDocument.isFocused ).to.be.false;
+
+			observer.onDomEvent( { type: 'beforeinput', target: domMain } );
+			expect( viewDocument.isFocused ).to.be.false;
+
+			observer.flush();
+			expect( viewDocument.isFocused ).to.be.true;
+		} );
+
+		it( 'should not set isFocused to true on beforeinput on other element after 50ms', () => {
+			expect( viewDocument.isFocused ).to.be.false;
+
+			observer.onDomEvent( { type: 'beforeinput', target: document } );
+			expect( viewDocument.isFocused ).to.be.false;
+
+			clock.tick( 50 );
+			expect( viewDocument.isFocused ).to.be.true;
+		} );
+
+		it( 'should not set isFocused to true on beforeinput on focused document after 50ms', () => {
+			viewDocument.isFocused = true;
+
+			observer.onDomEvent( { type: 'beforeinput', target: document } );
+			expect( viewDocument.isFocused ).to.be.true;
+
+			clock.tick( 50 );
+			expect( viewDocument.isFocused ).to.be.true;
+		} );
 	} );
 
 	describe( 'handle _isFocusChanging property of the document', () => {

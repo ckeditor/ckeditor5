@@ -183,6 +183,7 @@ export type {
 	ViewDocumentCompositionEndEvent
 } from './view/observer/compositionobserver.js';
 export type { ViewDocumentInputEvent } from './view/observer/inputobserver.js';
+export type { ViewDocumentMutationsEvent, MutationData } from './view/observer/mutationobserver.js';
 export type { ViewDocumentKeyDownEvent, ViewDocumentKeyUpEvent, KeyEventData } from './view/observer/keyobserver.js';
 export type { ViewDocumentLayoutChangedEvent } from './view/document.js';
 export type {

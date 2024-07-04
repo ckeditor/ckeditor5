@@ -105,6 +105,13 @@ describe( 'MenuBarView', () => {
 			it( 'should have an aria-label attribute', () => {
 				expect( menuBarView.template.attributes[ 'aria-label' ] ).to.include.members( [ 'Editor menu bar' ] );
 			} );
+
+			it( 'has `isFocusBorderEnabled` bound to proper class name', () => {
+				menuBarView.isFocusBorderEnabled = true;
+				menuBarView.render();
+
+				expect( menuBarView.element.classList.contains( 'ck-menu-bar_focus-border-enabled' ) ).to.be.true;
+			} );
 		} );
 
 		describe( '#isOpen', () => {
@@ -2046,6 +2053,14 @@ describe( 'MenuBarView', () => {
 
 		it( 'should add a behavior that closes the bar when the user clicked somewhere outside of it', () => {
 			const spy = sinon.spy( MenuBarBehaviors, 'closeOnClickOutside' );
+
+			menuBarView.render();
+
+			sinon.assert.calledOnceWithExactly( spy, menuBarView );
+		} );
+
+		it( 'should add a behavior that tracks if user performed keyboard focus interaction', () => {
+			const spy = sinon.spy( MenuBarBehaviors, 'enableFocusHighlightOnInteraction' );
 
 			menuBarView.render();
 

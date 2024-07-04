@@ -120,13 +120,13 @@ describe( 'SpecialCharactersCategoriesView', () => {
 			it( 'have basic properties', () => {
 				expect( groupDropdownView.listView.items
 					.map( item => {
-						const { name, label, withText } = item.children.first;
+						const { name, label, role, withText } = item.children.first;
 
-						return { name, label, withText };
+						return { name, label, role, withText };
 					} ) )
 					.to.deep.equal( [
-						{ name: 'groupA', label: 'labelA', withText: true },
-						{ name: 'groupB', label: 'labelB', withText: true }
+						{ name: 'groupA', label: 'labelA', role: 'menuitemradio', withText: true },
+						{ name: 'groupB', label: 'labelB', role: 'menuitemradio', withText: true }
 					] );
 			} );
 		} );

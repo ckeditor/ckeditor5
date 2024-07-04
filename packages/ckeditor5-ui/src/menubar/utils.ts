@@ -56,24 +56,28 @@ export const MenuBarBehaviors = {
 	 */
 	toggleMenusAndFocusItemsOnHover( menuBarView: MenuBarView ): void {
 		menuBarView.on<MenuBarMenuMouseEnterEvent>( 'menu:mouseenter', evt => {
-			// This works only when the menu bar has already been open and the user hover over the menu bar.
-			if ( !menuBarView.isOpen ) {
+			// This behavior should be activated when one of condition is present:
+			// 1. The user opened any submenu of menubar and hover over items in the menu bar.
+			// 2. The user focused whole menubar using keyboard interaction and enabled focus borders and hover over items in the menu bar.
+			if ( !menuBarView.isFocusBorderEnabled && !menuBarView.isOpen ) {
 				return;
 			}
 
-			for ( const menuView of menuBarView.menus ) {
-				// @if CK_DEBUG_MENU_BAR // const wasOpen = menuView.isOpen;
+			if ( menuBarView.isOpen ) {
+				for ( const menuView of menuBarView.menus ) {
+					// @if CK_DEBUG_MENU_BAR // const wasOpen = menuView.isOpen;
 
-				const pathLeaf = evt.path[ 0 ];
-				const isListItemContainingMenu = pathLeaf instanceof MenuBarMenuListItemView && pathLeaf.children.first === menuView;
+					const pathLeaf = evt.path[ 0 ];
+					const isListItemContainingMenu = pathLeaf instanceof MenuBarMenuListItemView && pathLeaf.children.first === menuView;
 
-				menuView.isOpen = ( evt.path.includes( menuView ) || isListItemContainingMenu ) && menuView.isEnabled;
+					menuView.isOpen = ( evt.path.includes( menuView ) || isListItemContainingMenu ) && menuView.isEnabled;
 
-				// @if CK_DEBUG_MENU_BAR // if ( wasOpen !== menuView.isOpen ) {
-				// @if CK_DEBUG_MENU_BAR // console.log( '[BEHAVIOR] toggleMenusAndFocusItemsOnHover(): Toggle',
-				// @if CK_DEBUG_MENU_BAR // 	logMenu( menuView ), 'isOpen', menuView.isOpen
-				// @if CK_DEBUG_MENU_BAR // );
-				// @if CK_DEBUG_MENU_BAR // }
+					// @if CK_DEBUG_MENU_BAR // if ( wasOpen !== menuView.isOpen ) {
+					// @if CK_DEBUG_MENU_BAR // console.log( '[BEHAVIOR] toggleMenusAndFocusItemsOnHover(): Toggle',
+					// @if CK_DEBUG_MENU_BAR // 	logMenu( menuView ), 'isOpen', menuView.isOpen
+					// @if CK_DEBUG_MENU_BAR // );
+					// @if CK_DEBUG_MENU_BAR // }
+				}
 			}
 
 			( evt.source as FocusableView ).focus();
@@ -163,6 +167,47 @@ export const MenuBarBehaviors = {
 			callback: () => menuBarView.close(),
 			contextElements: () => menuBarView.children.map( child => child.element! )
 		} );
+	},
+
+	/**
+	 * Tracks the keyboard focus interaction on the menu bar view. It is used to determine if the nested items
+	 * of the menu bar should render focus rings after first interaction with the keyboard.
+	 */
+	enableFocusHighlightOnInteraction( menuBarView: MenuBarView ): void {
+		let isKeyPressed: boolean = false;
+
+		menuBarView.on<ObservableChangeEvent<boolean>>( 'change:isOpen', ( _, evt, isOpen ) => {
+			if ( !isOpen ) {
+				menuBarView.isFocusBorderEnabled = false;
+
+				// Reset the flag when the menu bar is closed, menu items tend to intercept `keyup` event
+				// and sometimes, after pressing `enter` on focused item, `isKeyPressed` stuck in `true` state.
+				isKeyPressed = false;
+			}
+		} );
+
+		// After clicking menu bar list item the focus is moved to the newly opened submenu.
+		// We need to enable focus border for the submenu items because after pressing arrow down it will
+		// focus second item instead of first which is not super intuitive.
+		menuBarView.listenTo( menuBarView.element!, 'click', () => {
+			if ( menuBarView.isOpen && menuBarView.element!.matches( ':focus-within' ) ) {
+				menuBarView.isFocusBorderEnabled = true;
+			}
+		}, { useCapture: true } );
+
+		menuBarView.listenTo( menuBarView.element!, 'keydown', () => {
+			isKeyPressed = true;
+		}, { useCapture: true } );
+
+		menuBarView.listenTo( menuBarView.element!, 'keyup', () => {
+			isKeyPressed = false;
+		}, { useCapture: true } );
+
+		menuBarView.listenTo( menuBarView.element!, 'focus', () => {
+			if ( isKeyPressed ) {
+				menuBarView.isFocusBorderEnabled = true;
+			}
+		}, { useCapture: true } );
 	}
 };
 
@@ -216,7 +261,10 @@ export const MenuBarMenuBehaviors = {
 	openOnButtonClick( menuView: MenuBarMenuView ): void {
 		menuView.buttonView.on<ButtonExecuteEvent>( 'execute', () => {
 			menuView.isOpen = true;
-			menuView.panelView.focus();
+
+			if ( menuView.parentMenuView ) {
+				menuView.panelView.focus();
+			}
 		} );
 	},
 
@@ -226,10 +274,6 @@ export const MenuBarMenuBehaviors = {
 	toggleOnButtonClick( menuView: MenuBarMenuView ): void {
 		menuView.buttonView.on<ButtonExecuteEvent>( 'execute', () => {
 			menuView.isOpen = !menuView.isOpen;
-
-			if ( menuView.isOpen ) {
-				menuView.panelView.focus();
-			}
 		} );
 	},
 
@@ -740,9 +784,9 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 				]
 			},
 			{
-				groupId: 'restrictedEditingException',
+				groupId: 'restrictedEditing',
 				items: [
-					'menuBar:restrictedEditingException'
+					'menuBar:restrictedEditing'
 				]
 			}
 		]
@@ -787,9 +831,9 @@ export const DefaultMenuBarItems: DeepReadonly<MenuBarConfigObject[ 'items' ]> =
 				]
 			},
 			{
-				groupId: 'restrictedEditing',
+				groupId: 'restrictedEditingException',
 				items: [
-					'menuBar:restrictedEditing'
+					'menuBar:restrictedEditingException'
 				]
 			}
 		]
@@ -1501,6 +1545,7 @@ export function _initMenuBar( editor: Editor, menuBarView: MenuBarView ): void {
 
 	editor.keystrokes.set( 'Alt+F9', ( data, cancel ) => {
 		if ( !menuBarViewElement.contains( editor.ui.focusTracker.focusedElement ) ) {
+			menuBarView.isFocusBorderEnabled = true;
 			menuBarView!.focus();
 			cancel();
 		}

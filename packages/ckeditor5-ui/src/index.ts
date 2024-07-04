@@ -25,7 +25,8 @@ export type { default as ButtonLabel } from './button/buttonlabel.js';
 export { default as ButtonView } from './button/buttonview.js';
 export { default as ButtonLabelView } from './button/buttonlabelview.js';
 export { default as SwitchButtonView } from './button/switchbuttonview.js';
-export { default as FileDialogButtonView } from './button/filedialogbuttonview.js';
+export { default as ListItemButtonView } from './button/listitembuttonview.js';
+export { default as FileDialogButtonView, FileDialogListItemButtonView } from './button/filedialogbuttonview.js';
 
 export { default as CollapsibleView } from './collapsible/collapsibleview.js';
 

@@ -121,29 +121,6 @@ export function listItemUpcastConverter(): GetCallback<UpcastElementEvent> {
 }
 
 /**
- * Returns the upcast converter for the `<ul>` and `<ol>` view elements that cleans the input view of garbage.
- * This is mostly to clean whitespaces from between the `<li>` view elements inside the view list element. However,
- * incorrect data can also be cleared if the view was incorrect.
- *
- * @internal
- */
-export function listUpcastCleanList(): GetCallback<UpcastElementEvent> {
-	return ( evt, data, conversionApi ) => {
-		if ( !conversionApi.consumable.test( data.viewItem, { name: true } ) ) {
-			return;
-		}
-
-		const viewWriter = new UpcastWriter( data.viewItem.document );
-
-		for ( const child of Array.from( data.viewItem.getChildren() ) ) {
-			if ( !isListItemView( child ) && !isListView( child ) ) {
-				viewWriter.remove( child );
-			}
-		}
-	};
-}
-
-/**
  * Returns a model document change:data event listener that triggers conversion of related items if needed.
  *
  * @internal
