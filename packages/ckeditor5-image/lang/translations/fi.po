@@ -91,7 +91,7 @@ msgstr "Tietokoneen kuva"
 
 msgctxt "The label for the upload image from computer menu bar button (inside 'Image' menu)."
 msgid "From computer"
-msgstr ""
+msgstr "Tietokoneelta"
 
 msgctxt "The label for the replace image by upload from computer toolbar button."
 msgid "Replace image from computer"
@@ -143,15 +143,15 @@ msgstr "Liitä kuva URL-koodin kautta"
 
 msgctxt "The label for the insert image via url dropdown button."
 msgid "Insert via URL"
-msgstr ""
+msgstr "Lisää URL-osoitteesta"
 
 msgctxt "The label for the insert image via url menu bar button (standalone button)."
 msgid "Image via URL"
-msgstr ""
+msgstr "Kuva URL-osoitteesta"
 
 msgctxt "The label for the insert image via url menu bar button (inside 'Image' menu)."
 msgid "Via URL"
-msgstr ""
+msgstr "URL-osoitteesta"
 
 msgctxt "The input label for the Insert image via URL form for a pre-existing image."
 msgid "Update image URL"
@@ -187,4 +187,4 @@ msgstr "Virhe kuvaa ladattaessa"
 
 msgctxt "Label for the widget inserted by the image feature (as in 'insert image')"
 msgid "Image"
-msgstr ""
+msgstr "Kuva"

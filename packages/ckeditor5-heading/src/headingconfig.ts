@@ -73,47 +73,14 @@ export interface HeadingConfig {
 /**
  * Heading option descriptor.
  */
-export type HeadingOption = HeadingElementOption | HeadingParagraphOption | HeadingCustomElementOption;
+export type HeadingOption = HeadingElementOption | HeadingParagraphOption;
 
 export interface HeadingElementOption {
 
 	/**
 	 * Name of the model element to convert.
 	 */
-	model: 'heading1' | 'heading2' | 'heading3' | 'heading4' | 'heading5' | 'heading6';
-
-	/**
-	 * Definition of a view element to convert from/to.
-	 */
-	view: ViewElementDefinition;
-
-	/**
-	 * The user-readable title of the option.
-	 */
-	title: string;
-
-	/**
-	 * The class which will be added to the dropdown item representing this option.
-	 */
-	class: string;
-
-	/**
-	 * Icon used by {@link module:heading/headingbuttonsui~HeadingButtonsUI}. It can be omitted when using the default configuration.
-	 */
-	icon?: string;
-
-	/**
-	 * An array with all matched elements that the view-to-model conversion should also accept.
-	 */
-	upcastAlso?: ArrayOrItem<ViewElementDefinition | MatcherPattern>;
-}
-
-export interface HeadingCustomElementOption {
-
-	/**
-	 * Name of the model element to convert.
-	 */
-	model: `heading${ string }`;
+	model: 'heading1' | 'heading2' | 'heading3' | 'heading4' | 'heading5' | 'heading6' | `heading${ string }` & Record<never, never>;
 
 	/**
 	 * Definition of a view element to convert from/to.

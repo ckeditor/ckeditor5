@@ -14,11 +14,13 @@ import { startsWithFiller } from '../filler.js';
 import { isEqualWith } from 'lodash-es';
 
 import type DomConverter from '../domconverter.js';
-import type Renderer from '../renderer.js';
 import type View from '../view.js';
 import type ViewElement from '../element.js';
 import type ViewNode from '../node.js';
 import type ViewText from '../text.js';
+import type { ChangeType } from '../document.js';
+
+// @if CK_DEBUG_TYPING // const { _debouncedLine } = require( '../../dev-utils/utils.js' );
 
 /**
  * Mutation observer's role is to watch for any DOM changes inside the editor that weren't
@@ -36,11 +38,6 @@ export default class MutationObserver extends Observer {
 	 * Reference to the {@link module:engine/view/view~View#domConverter}.
 	 */
 	public readonly domConverter: DomConverter;
-
-	/**
-	 * Reference to the {@link module:engine/view/view~View#_renderer}.
-	 */
-	public readonly renderer: Renderer;
 
 	/**
 	 * Native mutation observer config.
@@ -70,7 +67,6 @@ export default class MutationObserver extends Observer {
 		};
 
 		this.domConverter = view.domConverter;
-		this.renderer = view._renderer;
 
 		this._domElements = new Set();
 		this._mutationObserver = new window.MutationObserver( this._onMutations.bind( this ) );
@@ -205,11 +201,10 @@ export default class MutationObserver extends Observer {
 		// Now we build the list of mutations to mark elements. We did not do it earlier to avoid marking the
 		// same node multiple times in case of duplication.
 
-		let hasMutations = false;
+		const mutations: Array<MutationData> = [];
 
 		for ( const textNode of mutatedTextNodes ) {
-			hasMutations = true;
-			this.renderer.markToSync( 'text', textNode );
+			mutations.push( { type: 'text', node: textNode } );
 		}
 
 		for ( const viewElement of elementsWithMutatedChildren ) {
@@ -220,22 +215,20 @@ export default class MutationObserver extends Observer {
 			// It may happen that as a result of many changes (sth was inserted and then removed),
 			// both elements haven't really changed. #1031
 			if ( !isEqualWith( viewChildren, newViewChildren, sameNodes ) ) {
-				hasMutations = true;
-				this.renderer.markToSync( 'children', viewElement );
+				mutations.push( { type: 'children', node: viewElement } );
 			}
 		}
 
 		// In case only non-relevant mutations were recorded it skips the event and force render (#5600).
-		if ( hasMutations ) {
+		if ( mutations.length ) {
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	_debouncedLine();
 			// @if CK_DEBUG_TYPING // 	console.group( '%c[MutationObserver]%c Mutations detected',
-			// @if CK_DEBUG_TYPING // 		'font-weight:bold;color:green', ''
+			// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green', 'font-weight: bold'
 			// @if CK_DEBUG_TYPING // 	);
 			// @if CK_DEBUG_TYPING // }
 
-			// At this point we have "dirty DOM" (changed) and de-synched view (which has not been changed).
-			// In order to "reset DOM" we render the view again.
-			this.view.forceRender();
+			this.document.fire<ViewDocumentMutationsEvent>( 'mutations', { mutations } );
 
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.groupEnd();
@@ -282,3 +275,40 @@ function sameNodes( child1: ViewNode, child2: ViewNode ) {
 	// Not matching types.
 	return false;
 }
+
+/**
+ * Event fired on DOM mutations detected.
+ *
+ * This event is introduced by {@link module:engine/view/observer/mutationobserver~MutationObserver} and available
+ * by default in all editor instances (attached by {@link module:engine/view/view~View}).
+ *
+ * @eventName module:engine/view/document~Document#mutations
+ * @param data Event data containing detailed information about the event.
+ */
+export type ViewDocumentMutationsEvent = {
+	name: 'mutations';
+	args: [ data: MutationsEventData ];
+};
+
+/**
+ * The value of {@link ~ViewDocumentMutationsEvent}.
+ */
+export type MutationsEventData = {
+	mutations: Array<MutationData>;
+};
+
+/**
+ * A single entry in {@link ~MutationsEventData} mutations array.
+ */
+export type MutationData = {
+
+	/**
+	 * Type of mutation detected.
+	 */
+	type: ChangeType;
+
+	/**
+	 * The view node related to the detected mutation.
+	 */
+	node: ViewNode;
+};

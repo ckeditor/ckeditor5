@@ -1077,19 +1077,16 @@ This rule forces all `declare module '@ckeditor/ckeditor5-core'` to be defined i
 
 ### Importing from modules: `ckeditor5-rules/allow-imports-only-from-main-package-entry-point`
 
-<info-box warning>
-  This rule should only be used on `.ts` files.
-</info-box>
-
-As explained in the description of the `allow-declare-module-only-in-augmentation-file` rule, information about available plugins, configuration and commands is only available in the editor types when data from modules is imported from the main entry point.
-
-This rule forces all imports from `@ckeditor/*` packages to be done through the main entry point.
+This rule ensures that all imports from the `@ckeditor/*` packages are done through the main package entry points. This is required for the editor types to work properly and to ease migration to the installation methods introduced in CKEditor&nbsp;5 v42.0.0.
 
 👎&nbsp; Example of an incorrect code for this rule:
 
 ```ts
 // Importing from the `/src/` folder is not allowed.
 import Table from '@ckeditor/ckeditor5-table/src/table';
+
+// Importing from the `/theme/` folder is not allowed.
+import BoldIcon from '@ckeditor/ckeditor5-core/theme/icons/bold.svg';
 ```
 
 👍&nbsp; Examples of correct code for this rule:
@@ -1163,31 +1160,35 @@ import AlignmentEditing from './alignmentediting';
 
 ### Mandatory file extensions in imports: `ckeditor5-rules/require-file-extensions-in-imports`
 
-As required by the [ECMAScript (ESM)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) standard, all imports must include a file extension. If the import does not include it, this rule will try to automatically detect the correct file extension. In two cases this is impossible:
+As required by the [ECMAScript (ESM)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) standard, all imports and re-exports must include a file extension. If they do not include it, this rule will try to automatically detect the correct file extension. It is impossible in these two cases:
 
-* The imported file has an extension different from `.ts`, `.js`, or `.json`.
-* The imported file does not exist in the file system.
+* The file extension is different that `.ts`, `.js`, or `.json`.
+* The file does not exist in the file system.
 
-The second case is common in the documentation, because its pieces are in different directories and repositories. These pieces are merged during the build step, but before that, the imports are technically invalid.
+The second case is common for the documentation files, because its pieces are located in different directories and repositories. These pieces are merged during the build step, but before that, the imports are technically invalid.
 
 In such cases, you must add the file extension manually. Imports with file extensions are not validated.
 
-### Importing SVG files from other packages: `ckeditor5-rules/no-cross-package-svg-imports`
+### No legacy imports
 
-To ensure that all SVG icons are properly converted to JavaScript strings at build time, all icons must be imported either from the package's own `theme` folder or as a JavaScript object from another package. Importing from another package's `theme` folder is not allowed.
+This rule ensures that imports are done using the {@link updating/nim-migration/migration-to-new-installation-methods new installation methods}. All imports should be done using either the `ckeditor5` package to get the editor core and all open-source plugins, or `ckeditor5-premium-features` to get the premium features.
 
-👎  Example of incorrect SVG import:
+👎&nbsp; Examples of an incorrect code for this rule:
 
 ```js
-import CheckIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
+// Import from `ckeditor5/src/*`.
+import { Plugin } from 'ckeditor5/src/core.js';
+
+// Import from individual open-source package.
+import { Plugin } from '@ckeditor/ckeditor5-core';
+
+// Import from individual premium package.
+import { AIAssistant } from '@ckeditor/ckeditor5-ai';
 ```
 
-👍 Examples of correct SVG imports:
+👍&nbsp; Examples of correct code for this rule:
 
 ```js
-import CheckIcon from './../theme/icons/check.svg';
-```
-
-```js
-import { icons } from 'ckeditor5';
+import { Plugin } from 'ckeditor5';
+import { AIAssistant } from 'ckeditor5-premium-features';
 ```

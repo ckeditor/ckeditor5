@@ -86,7 +86,7 @@
 		"builds/guides/integration/advanced-setup.html#creating-super-builds": "installation/advanced/using-two-editors.html#creating-super-builds",
 		"builds/guides/integration/basic-api.html": "getting-started/setup/editor-lifecycle.html",
 		"builds/guides/integration/configuration.html": "installationlegacy-/getting-started/configuration.html",
-		"builds/guides/integration/content-styles.html": "installation/legacy/advanced/content-styles.html",
+		"builds/guides/integration/content-styles.html": "getting-started/setup/css.html",
 		"builds/guides/integration/csp.html": "installation/advanced/csp.html",
 		"builds/guides/integration/features-html-output-overview.html": "framework/architecture/plugins.html#plugins-and-html-output",
 		"builds/guides/integration/frameworks/angular.html": "getting-started/installation/angular.html",
@@ -251,8 +251,9 @@
 		"framework/quick-start.html": "framework/index.html",
 		"framework/plugins/creating-simple-plugin-timestamp.html": "framework/tutorials/creating-simple-plugin-timestamp.html",
 		"framework/guides/plugins/creating-simple-plugin.html": "framework/tutorials/creating-simple-plugin-timestamp.html",
+		"framework/guides/deep-dive/ui/theme-customization.html": "framework/deep-dive/ui/theme-customization.html",
 		"installation/advanced/advanced-setup.html": "installation/legacy-getting-started/quick-start-other.html",
-		"installation/advanced/alternative-setups/integrating-from-source.html": "installation/advanced/alternative-setups/integrating-from-source-webpack.html",
+		"installation/advanced/alternative-setups/integrating-from-source.html": "getting-started/legacy/advanced/alternative-setups/integrating-from-source-webpack.html",
 		"installation/advanced/alternative-setups/predefined-builds.html": "installation/legacy-getting-started/predefined-builds.html",
 		"installation/advanced/features-html-output-overview.html": "framework/architecture/plugins.html#plugins-and-html-output",
 		"installation/advanced/plugins.html": "framework/architecture/plugins.html",
@@ -754,16 +755,22 @@
 			"slug": "updating",
 			"categories": [
 				{
+					"name": "New installation methods",
+					"id": "nim-migration",
+					"slug": "nim-migration",
+					"order": 10
+				},
+				{
 					"name": "CKEditor 4 migration",
 					"id": "ckeditor4-migration",
 					"slug": "ckeditor4",
-					"order": 10
+					"order": 20
 				},
 				{
 					"name": "Update guides",
 					"id": "update-guides",
 					"slug": "guides",
-					"order": 60
+					"order": 40
 				}
 			]
 		},

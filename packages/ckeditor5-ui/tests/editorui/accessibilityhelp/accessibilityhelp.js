@@ -112,6 +112,18 @@ describe( 'AccessibilityHelp', () => {
 				it( 'should set keystroke in the model', () => {
 					expect( button.keystroke ).to.equal( featureKeystroke );
 				} );
+
+				it( 'should set isOn=true if dialog is visible', () => {
+					button.fire( 'execute' );
+
+					expect( dialogPlugin.id ).to.be.equal( 'accessibilityHelp' );
+					expect( button.isOn ).to.be.true;
+
+					button.fire( 'execute' );
+
+					expect( dialogPlugin.id ).to.be.null;
+					expect( button.isOn ).to.be.false;
+				} );
 			}
 		} );
 
@@ -202,7 +214,7 @@ describe( 'AccessibilityHelp', () => {
 		it( 'should create #contentView', () => {
 			expect( plugin.contentView ).to.be.null;
 
-			plugin._showDialog();
+			plugin._toggleDialog();
 
 			expect( plugin.contentView ).to.be.instanceof( AccessibilityHelpContentView );
 		} );

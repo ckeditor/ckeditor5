@@ -371,7 +371,6 @@ Since accessing the editor toolbar is not possible until after the editor instan
 
 <script>
 	import { DecoupledEditor, Bold, Essentials, Italic, Paragraph, Undo } from 'ckeditor5';
-
 	import 'ckeditor5/ckeditor5.css'
 
 	export default {
@@ -421,7 +420,7 @@ import { ClassicEditor, Bold, Essentials, Italic, Paragraph } from 'ckeditor5';
 // More imports...
 
 import coreTranslations from 'ckeditor5/translations/es.js';
-import commercialTranslations from 'ckeditor5-premium-features/translations/es.js';
+import premiumFeaturesTranslations from 'ckeditor5-premium-features/translations/es.js';
 
 // Style sheets imports...
 
@@ -436,7 +435,7 @@ export default {
                     items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
                 },
                 plugins: [ Bold, Essentials, Italic, Paragraph ],
-				translations: [ coreTranslations, commercialTranslations ]
+				translations: [ coreTranslations, premiumFeaturesTranslations ]
 			}
 		};
 	}

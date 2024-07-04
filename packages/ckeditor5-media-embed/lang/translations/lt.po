@@ -47,7 +47,7 @@ msgstr "Įterpkite media"
 
 msgctxt "Label describing type of the inserted content (e.g. 'insert media')."
 msgid "Media"
-msgstr ""
+msgstr "Medija"
 
 msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
 msgid "Media toolbar"

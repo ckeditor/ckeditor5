@@ -55,4 +55,4 @@ msgstr "Beweeg het invoerteken om het mogelijk te maken direct achter een widget
 
 msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that moves selection from a nested editable area back to the parent widget."
 msgid "Move focus from an editable area back to the parent widget"
-msgstr ""
+msgstr "De focus van een bewerkbaar gebied terug naar de bovenliggende widget verplaatsen"
