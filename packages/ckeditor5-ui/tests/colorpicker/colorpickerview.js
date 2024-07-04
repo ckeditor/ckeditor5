@@ -397,6 +397,8 @@ describe( 'ColorPickerView', () => {
 			view.render();
 
 			expect( view.isValid() ).to.be.true;
+
+			view.destroy();
 		} );
 	} );
 
