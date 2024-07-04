@@ -25,8 +25,24 @@ const tasks = new Listr( [
 	{
 		title: 'Upload files to CDN.',
 		task: () => {
+			tools.shExec(
+				`aws s3 cp ./${ RELEASE_CDN_DIRECTORY }/ s3://${ CDN_S3_BUCKET }/ckeditor5/${ cdnVersion }/ ${ S3_COPY_ARGS } \
+				 --exclude "*" --include "*.js" --content-type 'text/javascript; charset=utf-8'`,
+				{ verbosity: 'error' }
+			);
+			tools.shExec(
+				`aws s3 cp ./${ RELEASE_CDN_DIRECTORY }/ s3://${ CDN_S3_BUCKET }/ckeditor5/${ cdnVersion }/ ${ S3_COPY_ARGS } \
+				 --exclude "*" --include "*.css" --content-type 'text/css; charset=utf-8'`,
+				{ verbosity: 'error' }
+			);
+			tools.shExec(
+				`aws s3 cp ./${ RELEASE_CDN_DIRECTORY }/ s3://${ CDN_S3_BUCKET }/ckeditor5/${ cdnVersion }/ ${ S3_COPY_ARGS } \
+				 --exclude "*" --include "*.zip" --content-type 'application/zip'`,
+				{ verbosity: 'error' }
+			);
 			return tools.shExec(
-				`aws s3 cp ./${ RELEASE_CDN_DIRECTORY }/ s3://${ CDN_S3_BUCKET }/ckeditor5/${ cdnVersion }/ ${ S3_COPY_ARGS }`,
+				`aws s3 cp ./${ RELEASE_CDN_DIRECTORY }/ s3://${ CDN_S3_BUCKET }/ckeditor5/${ cdnVersion }/ ${ S3_COPY_ARGS } \
+				--exclude "*" --include "*.map" --content-type 'application/json; charset=utf-8'`,
 				{ verbosity: 'error' }
 			);
 		}
