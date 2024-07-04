@@ -42,7 +42,7 @@ import {
 
 import type { ListIndentCommandAfterExecuteEvent } from '../list/listindentcommand.js';
 import type { ListPropertiesConfig } from '../listconfig.js';
-import { getNormalizedConfig } from './utils/config.js';
+import { getNormalizedConfig, getNormalizedStyles } from './utils/config.js';
 
 const DEFAULT_LIST_TYPE = 'default';
 
@@ -257,10 +257,10 @@ export interface AttributeStrategy {
  */
 function createAttributeStrategies( enabledProperties: ListPropertiesConfig ) {
 	const strategies: Array<AttributeStrategy> = [];
-	const normalizedConfig = getNormalizedConfig( enabledProperties );
+	const normalizedStyles = getNormalizedStyles( enabledProperties.styles );
 
 	if ( enabledProperties.styles ) {
-		const useAttribute = typeof enabledProperties.styles == 'object' && normalizedConfig.useAttribute;
+		const useAttribute = normalizedStyles.useAttribute;
 
 		strategies.push( {
 			attributeName: 'listStyle',

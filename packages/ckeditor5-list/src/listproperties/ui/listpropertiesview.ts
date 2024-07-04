@@ -28,9 +28,8 @@ import {
 	type Locale
 } from 'ckeditor5/src/utils.js';
 
-import type { ListPropertiesConfig } from '../../listconfig.js';
-
 import '../../../theme/listproperties.css';
+import type { NormalizedListPropertiesConfig } from '../utils/config.js';
 
 /**
  * The list properties view to be displayed in the list dropdown.
@@ -120,7 +119,7 @@ export default class ListPropertiesView extends View {
 	constructor(
 		locale: Locale,
 		{ enabledProperties, styleButtonViews, styleGridAriaLabel }: {
-			enabledProperties: ListPropertiesConfig;
+			enabledProperties: NormalizedListPropertiesConfig;
 			styleButtonViews: Array<ButtonView> | null;
 			styleGridAriaLabel: string;
 		}
@@ -302,7 +301,7 @@ export default class ListPropertiesView extends View {
 	 * @param enabledProperties An object containing the configuration of enabled list property names
 	 * (see {@link #constructor}).
 	 */
-	private _addNumberedListPropertyViews( enabledProperties: ListPropertiesConfig ) {
+	private _addNumberedListPropertyViews( enabledProperties: NormalizedListPropertiesConfig ) {
 		const t = this.locale.t;
 		const numberedPropertyViews = [];
 

@@ -16,8 +16,10 @@ describe( 'ListProperties - utils - config', () => {
 			};
 
 			expect( getNormalizedConfig( config ) ).to.deep.equal( {
-				listTypes: [ 'numbered', 'bulleted' ],
-				useAttribute: true,
+				styles: {
+					listTypes: [ 'numbered', 'bulleted' ],
+					useAttribute: true
+				},
 				startIndex: false,
 				reversed: false
 			} );
@@ -32,8 +34,10 @@ describe( 'ListProperties - utils - config', () => {
 			};
 
 			expect( getNormalizedConfig( config ) ).to.deep.equal( {
-				listTypes: [ 'numbered' ],
-				useAttribute: true,
+				styles: {
+					listTypes: [ 'numbered' ],
+					useAttribute: true
+				},
 				startIndex: false,
 				reversed: false
 			} );
@@ -48,8 +52,10 @@ describe( 'ListProperties - utils - config', () => {
 			};
 
 			expect( getNormalizedConfig( config ) ).to.deep.equal( {
-				listTypes: [ 'bulleted' ],
-				useAttribute: true,
+				styles: {
+					listTypes: [ 'bulleted' ],
+					useAttribute: true
+				},
 				startIndex: false,
 				reversed: false
 			} );
@@ -64,8 +70,10 @@ describe( 'ListProperties - utils - config', () => {
 			};
 
 			expect( getNormalizedConfig( config ) ).to.deep.equal( {
-				listTypes: [],
-				useAttribute: true,
+				styles: {
+					listTypes: [],
+					useAttribute: true
+				},
 				startIndex: false,
 				reversed: false
 			} );
@@ -79,8 +87,10 @@ describe( 'ListProperties - utils - config', () => {
 			};
 
 			expect( getNormalizedConfig( config ) ).to.deep.equal( {
-				listTypes: [ 'numbered' ],
-				useAttribute: false,
+				styles: {
+					listTypes: [ 'numbered' ],
+					useAttribute: false
+				},
 				startIndex: false,
 				reversed: false
 			} );
@@ -92,8 +102,10 @@ describe( 'ListProperties - utils - config', () => {
 			};
 
 			expect( getNormalizedConfig( config ) ).to.deep.equal( {
-				listTypes: [ 'bulleted', 'numbered' ],
-				useAttribute: false,
+				styles: {
+					listTypes: [ 'bulleted', 'numbered' ],
+					useAttribute: false
+				},
 				startIndex: false,
 				reversed: false
 			} );
@@ -105,8 +117,10 @@ describe( 'ListProperties - utils - config', () => {
 			};
 
 			expect( getNormalizedConfig( config ) ).to.deep.equal( {
-				listTypes: [],
-				useAttribute: false,
+				styles: {
+					listTypes: [],
+					useAttribute: false
+				},
 				startIndex: false,
 				reversed: false
 			} );
@@ -118,8 +132,10 @@ describe( 'ListProperties - utils - config', () => {
 			};
 
 			expect( getNormalizedConfig( config ) ).to.deep.equal( {
-				listTypes: [ 'numbered' ],
-				useAttribute: false,
+				styles: {
+					listTypes: [ 'numbered' ],
+					useAttribute: false
+				},
 				startIndex: false,
 				reversed: false
 			} );
@@ -131,8 +147,10 @@ describe( 'ListProperties - utils - config', () => {
 			};
 
 			expect( getNormalizedConfig( config ) ).to.deep.equal( {
-				listTypes: [ 'bulleted' ],
-				useAttribute: false,
+				styles: {
+					listTypes: [ 'bulleted' ],
+					useAttribute: false
+				},
 				startIndex: false,
 				reversed: false
 			} );
@@ -146,8 +164,10 @@ describe( 'ListProperties - utils - config', () => {
 			};
 
 			expect( getNormalizedConfig( config ) ).to.deep.equal( {
-				listTypes: [ 'bulleted', 'numbered' ],
-				useAttribute: true,
+				styles: {
+					listTypes: [ 'bulleted', 'numbered' ],
+					useAttribute: true
+				},
 				startIndex: false,
 				reversed: false
 			} );
@@ -159,8 +179,10 @@ describe( 'ListProperties - utils - config', () => {
 			};
 
 			expect( getNormalizedConfig( config ) ).to.deep.equal( {
-				listTypes: [],
-				useAttribute: false,
+				styles: {
+					listTypes: [],
+					useAttribute: false
+				},
 				startIndex: false,
 				reversed: false
 			} );
@@ -172,8 +194,10 @@ describe( 'ListProperties - utils - config', () => {
 			};
 
 			expect( getNormalizedConfig( config ) ).to.deep.equal( {
-				listTypes: [ 'bulleted', 'numbered' ],
-				useAttribute: false,
+				styles: {
+					listTypes: [ 'bulleted', 'numbered' ],
+					useAttribute: false
+				},
 				startIndex: false,
 				reversed: false
 			} );
@@ -185,8 +209,10 @@ describe( 'ListProperties - utils - config', () => {
 			};
 
 			expect( getNormalizedConfig( config ) ).to.deep.equal( {
-				listTypes: [ 'bulleted' ],
-				useAttribute: false,
+				styles: {
+					listTypes: [ 'bulleted' ],
+					useAttribute: false
+				},
 				startIndex: false,
 				reversed: false
 			} );
@@ -198,8 +224,10 @@ describe( 'ListProperties - utils - config', () => {
 			};
 
 			expect( getNormalizedConfig( config ) ).to.deep.equal( {
-				listTypes: [ 'numbered' ],
-				useAttribute: false,
+				styles: {
+					listTypes: [ 'numbered' ],
+					useAttribute: false
+				},
 				startIndex: false,
 				reversed: false
 			} );
@@ -213,8 +241,10 @@ describe( 'ListProperties - utils - config', () => {
 			};
 
 			expect( getNormalizedConfig( config ) ).to.deep.equal( {
-				listTypes: [ 'bulleted', 'numbered' ],
-				useAttribute: false,
+				styles: {
+					listTypes: [ 'bulleted', 'numbered' ],
+					useAttribute: false
+				},
 				startIndex: true,
 				reversed: true
 			} );

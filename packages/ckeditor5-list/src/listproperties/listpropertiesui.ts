@@ -41,7 +41,7 @@ import listStyleUpperLatinIcon from '../../theme/icons/liststyleupperlatin.svg';
 
 import '../../theme/liststyles.css';
 import { getNormalizedConfig, type NormalizedListPropertiesConfig } from './utils/config.js';
-import { type ListType } from '../list/listediting.js';
+import { type ListType } from '../listconfig.js';
 
 /**
  * The list properties UI plugin. It introduces the extended `'bulletedList'` and `'numberedList'` toolbar
@@ -63,7 +63,7 @@ export default class ListPropertiesUI extends Plugin {
 		const t = editor.locale.t;
 		const propertiesConfig = editor.config.get( 'list.properties' )!;
 		const normalizedConfig = getNormalizedConfig( propertiesConfig );
-		const listTypes = normalizedConfig.listTypes;
+		const listTypes = normalizedConfig.styles.listTypes;
 
 		// Note: When this plugin does not register the "bulletedList" dropdown due to properties configuration,
 		// a simple button will be still registered under the same name by ListUI as a fallback. This should happen
@@ -359,7 +359,7 @@ function createListPropertiesView( {
 
 	let styleButtonViews = null;
 
-	if ( propertiesConfig.listTypes.includes( listType ) ) {
+	if ( propertiesConfig.styles.listTypes.includes( listType ) ) {
 		const listStyleCommand: LegacyListStyleCommand | ListStyleCommand = editor.commands.get( 'listStyle' )!;
 
 		const styleButtonCreator = getStyleButtonCreator( {
@@ -380,7 +380,7 @@ function createListPropertiesView( {
 		styleButtonViews
 	} );
 
-	if ( propertiesConfig.listTypes.includes( listType ) ) {
+	if ( propertiesConfig.styles.listTypes.includes( listType ) ) {
 		// Accessibility: focus the first active style when opening the dropdown.
 		focusChildOnDropdownOpen( dropdownView, () => {
 			return listPropertiesView.stylesView!.children.find( ( child: any ) => child.isOn );

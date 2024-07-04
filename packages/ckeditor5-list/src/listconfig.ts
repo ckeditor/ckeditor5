@@ -4,7 +4,6 @@
  */
 
 import { type ArrayOrItem } from 'ckeditor5/src/utils.js';
-import { type ListType } from './list/listediting.js';
 
 /**
  * @module list/listconfig
@@ -115,15 +114,15 @@ export interface ListPropertiesConfig {
 export interface ListPropertiesStyleConfig {
 
 	/**
-	 * Disable style feature for the given list type.
+	 * Enable style feature for the given list type only.
 	 *
 	 * ```ts
 	 * {
 	 * 	list: {
 	 * 		properties: {
 	 * 			styles: {
-	 * 				bulleted: false
-	 * 			},
+	 * 				listTypes: 'numbered'
+	 * 			}
 	 *
 	 * 			// ...
 	 * 		}
@@ -170,3 +169,5 @@ export interface ListPropertiesStyleConfig {
 	 */
 	useAttribute?: boolean;
 }
+
+export type ListType = 'numbered' | 'bulleted';
