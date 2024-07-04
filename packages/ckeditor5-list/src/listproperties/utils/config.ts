@@ -20,9 +20,9 @@ import { type ListType } from '../../list/listediting.js';
  * 	styles: {
  * 		listTypes: [ 'bulleted', 'numbered' ],
  * 		useAttribute: false
- * 	}
+ * 	},
  * 	startIndex: true,
- * 	reversed: true,
+ * 	reversed: true
  * }
  * ```
  *
@@ -33,7 +33,7 @@ export function getNormalizedConfig( config: ListPropertiesConfig ): NormalizedL
 	const { startIndex, reversed, styles } = config;
 
 	return {
-		styles: getNormalizedStyles( styles ),
+		styles: getNormalizedStylesConfig( styles ),
 		startIndex: startIndex || false,
 		reversed: reversed || false
 	};
@@ -53,7 +53,7 @@ export function getNormalizedConfig( config: ListPropertiesConfig ): NormalizedL
  * @param config The list properties styles.
  * @returns An object with normalized list properties styles.
  */
-export function getNormalizedStyles( styles: ListPropertiesStyles ): NormalizedListPropertiesStyles {
+function getNormalizedStylesConfig( styles: ListPropertiesStyles ): NormalizedListPropertiesStyles {
 	const normalizedConfig = {
 		listTypes: [ 'bulleted', 'numbered' ] as Array<ListType>,
 		useAttribute: false
@@ -82,7 +82,7 @@ export function getNormalizedStyles( styles: ListPropertiesStyles ): NormalizedL
 type ListPropertiesStyles = boolean | ListPropertiesStyleConfig | ArrayOrItem<ListType> | undefined;
 
 /**
-* Normanlized list properties config.
+* Normalized list properties config.
 */
 export type NormalizedListPropertiesConfig = {
 	styles: {
@@ -94,7 +94,7 @@ export type NormalizedListPropertiesConfig = {
 };
 
 /**
-* Normanlized list properties config.
+* Normalized list properties config.
 */
 export type NormalizedListPropertiesStyles = {
 	listTypes: Array<ListType>;

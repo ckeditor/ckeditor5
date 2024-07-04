@@ -41,7 +41,7 @@ import listStyleUpperLatinIcon from '../../theme/icons/liststyleupperlatin.svg';
 
 import '../../theme/liststyles.css';
 import { getNormalizedConfig, type NormalizedListPropertiesConfig } from './utils/config.js';
-import { type ListType } from '../listconfig.js';
+import { type ListPropertiesStyleType } from '../listconfig.js';
 
 /**
  * The list properties UI plugin. It introduces the extended `'bulletedList'` and `'numberedList'` toolbar
@@ -350,7 +350,7 @@ function createListPropertiesView( {
 	const enabledProperties = {
 		...propertiesConfig
 	};
-	const listType = parentCommandName.replace( 'List', '' ) as ListType;
+	const listType = parentCommandName.replace( 'List', '' ) as ListPropertiesStyleType;
 
 	if ( parentCommandName != 'numberedList' ) {
 		enabledProperties.startIndex = false;

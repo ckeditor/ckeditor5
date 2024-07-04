@@ -88,7 +88,7 @@ export interface ListPropertiesConfig {
 	 *
 	 * @default true
 	 */
-	styles?: boolean | ListPropertiesStyleConfig | ArrayOrItem<ListType>;
+	styles?: boolean | ListPropertiesStyleConfig | ArrayOrItem<ListPropertiesStyleType>;
 
 	/**
 	 * When set, the list start index feature will be enabled. It allows changing the `start` HTML attribute of the numbered lists. As a
@@ -138,7 +138,7 @@ export interface ListPropertiesStyleConfig {
 	 *
 	 * @default ['bulleted','numbered']
 	 */
-	listTypes?: ArrayOrItem<ListType>;
+	listTypes?: ArrayOrItem<ListPropertiesStyleType>;
 
 	/**
 	 * When set `true`, the list style feature will use the `type` attribute of `<ul>` and `<ol>` elements instead of the `list-style-type`
@@ -170,4 +170,4 @@ export interface ListPropertiesStyleConfig {
 	useAttribute?: boolean;
 }
 
-export type ListType = 'numbered' | 'bulleted';
+export type ListPropertiesStyleType = 'numbered' | 'bulleted';
