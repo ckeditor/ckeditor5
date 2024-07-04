@@ -83,10 +83,13 @@ const tasks = new Listr( [
 	},
 	{
 		title: 'Checking if packages that returned 409 errors were uploaded correctly.',
-		task: async () => {
+		task: async ( _, task ) => {
 			return releaseTools.verifyPackagesPublishedCorrectly( {
 				packagesDirectory: RELEASE_NPM_DIRECTORY,
-				version: latestVersion
+				version: latestVersion,
+				onSuccess: text => {
+					task.output = text;
+				}
 			} );
 		}
 	},
