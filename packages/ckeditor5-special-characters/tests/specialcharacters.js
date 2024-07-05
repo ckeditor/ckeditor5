@@ -11,14 +11,16 @@ import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
 import SpecialCharacters from '../src/specialcharacters.js';
 import SpecialCharactersMathematical from '../src/specialcharactersmathematical.js';
 import SpecialCharactersArrows from '../src/specialcharactersarrows.js';
-import SpecialCharactersNavigationView from '../src/ui/specialcharactersnavigationview.js';
 import CharacterGridView from '../src/ui/charactergridview.js';
 import CharacterInfoView from '../src/ui/characterinfoview.js';
 import specialCharactersIcon from '../theme/icons/specialcharacters.svg';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
+import SpecialCharactersCategoriesView from '../src/ui/specialcharacterscategoriesview.js';
+import { Dialog } from '@ckeditor/ckeditor5-ui';
+import SpecialCharactersView from '../src/ui/specialcharactersview.js';
 
 describe( 'SpecialCharacters', () => {
-	let editor, element, command, plugin;
+	let editor, element, command, plugin, button, dialog;
 
 	beforeEach( () => {
 		element = document.createElement( 'div' );
@@ -36,6 +38,7 @@ describe( 'SpecialCharacters', () => {
 				editor = newEditor;
 				command = editor.commands.get( 'insertText' );
 				plugin = editor.plugins.get( SpecialCharacters );
+				dialog = editor.plugins.get( 'Dialog' );
 			} );
 	} );
 
@@ -46,157 +49,173 @@ describe( 'SpecialCharacters', () => {
 	} );
 
 	it( 'should require proper plugins', () => {
-		expect( SpecialCharacters.requires ).to.deep.equal( [ Typing ] );
+		expect( SpecialCharacters.requires ).to.deep.equal( [ Typing, Dialog ] );
 	} );
 
 	it( 'should be named', () => {
 		expect( SpecialCharacters.pluginName ).to.equal( 'SpecialCharacters' );
 	} );
 
-	describe( 'init()', () => {
-		describe( '"specialCharacters" dropdown', () => {
-			let dropdown;
+	describe( 'toolbar button', () => {
+		beforeEach( () => {
+			button = editor.ui.componentFactory.create( 'specialCharacters' );
+		} );
+
+		it( 'should have a tooltip', () => {
+			expect( button.tooltip ).to.be.true;
+		} );
+
+		testButton();
+	} );
+
+	describe( 'menu bar button', () => {
+		beforeEach( () => {
+			button = editor.ui.componentFactory.create( 'menuBar:specialCharacters' );
+		} );
+
+		testButton();
+	} );
+
+	function testButton() {
+		it( 'should get basic properties', () => {
+			expect( button.label ).to.equal( 'Special characters' );
+			expect( button.icon ).to.equal( specialCharactersIcon );
+		} );
+
+		it( 'should bind #isEnabled to the command', () => {
+			expect( button.isEnabled ).to.be.true;
+
+			command.isEnabled = false;
+			expect( button.isEnabled ).to.be.false;
+			command.isEnabled = true;
+		} );
+
+		it( 'should open special characters dialog when pressed', () => {
+			button.fire( 'execute' );
+
+			expect( dialog.id == 'specialCharacters' );
+		} );
+
+		it( 'should close dialog when pressed when dialog opened', () => {
+			button.fire( 'execute' );
+			button.fire( 'execute' );
+
+			expect( dialog.id == null );
+		} );
+	}
+
+	describe( 'dialog', () => {
+		let button, dialogContent;
+
+		beforeEach( () => {
+			button = editor.ui.componentFactory.create( 'specialCharacters' );
+			button.fire( 'execute' );
+			dialogContent = dialog.view.contentView.children.first;
+		} );
+
+		afterEach( () => {
+			button.destroy();
+		} );
+
+		it( 'has content of type SpecialCharactersView', () => {
+			expect( dialogContent ).to.be.instanceOf( SpecialCharactersView );
+		} );
+
+		it( 'has a categories view', () => {
+			expect( dialogContent.categoriesView ).to.be.instanceOf( SpecialCharactersCategoriesView );
+		} );
+
+		it( 'the categories dropdown contains the "All" special category', () => {
+			const groupDropdownView = dialogContent.categoriesView._dropdownView.fieldView;
+
+			groupDropdownView.isOpen = true;
+
+			const listView = groupDropdownView.panelView.children.first;
+
+			// "Mathematical" and "Arrows" are provided by other plugins. "All" is being added by SpecialCharacters itself.
+			expect( listView.items.length ).to.equal( 3 );
+			expect( listView.items.first.children.first.label ).to.equal( 'All' );
+		} );
+
+		it( 'has a grid view', () => {
+			expect( dialogContent.gridView ).to.be.instanceOf( CharacterGridView );
+		} );
+
+		it( 'has a character info view', () => {
+			expect( dialogContent.infoView ).to.be.instanceOf( CharacterInfoView );
+		} );
+
+		it( 'executes a command and doesn\'t focus the editor', () => {
+			const grid = dialogContent.gridView;
+			const executeSpy = sinon.stub( editor, 'execute' );
+			const focusSpy = sinon.stub( editor.editing.view, 'focus' );
+
+			grid.tiles.get( 2 ).fire( 'execute' );
+
+			sinon.assert.calledOnce( executeSpy );
+			sinon.assert.notCalled( focusSpy );
+			sinon.assert.calledWithExactly( executeSpy.firstCall, 'insertText', {
+				text: '≤'
+			} );
+		} );
+
+		describe( 'grid view', () => {
+			let grid;
 
 			beforeEach( () => {
-				dropdown = editor.ui.componentFactory.create( 'specialCharacters' );
-				dropdown.render();
-				document.body.appendChild( dropdown.element );
-
-				dropdown.isOpen = true; // Dropdown is lazy loaded, so needs to be open to be verified (#6175).
+				grid = dialogContent.gridView;
 			} );
 
-			afterEach( () => {
-				dropdown.element.remove();
-				dropdown.destroy();
+			it( 'has default contents', () => {
+				expect( grid.tiles ).to.have.length.greaterThan( 10 );
 			} );
 
-			it( 'has a navigation view', () => {
-				expect( dropdown.panelView.children.first.navigationView ).to.be.instanceOf( SpecialCharactersNavigationView );
+			it( 'is updated when categories view fires #execute', () => {
+				const categoriesView = dialogContent.categoriesView;
+
+				expect( grid.tiles.get( 0 ).label ).to.equal( '<' );
+				categoriesView._dropdownView.fieldView.fire( new EventInfo( { name: 'Arrows' }, 'execute' ) );
+
+				expect( grid.tiles.get( 0 ).label ).to.equal( '←' );
+			} );
+		} );
+
+		describe( 'character info view', () => {
+			let grid, characterInfo;
+
+			beforeEach( () => {
+				grid = dialogContent.gridView;
+				characterInfo = dialogContent.infoView;
 			} );
 
-			it( 'a navigation contains the "All" special category', () => {
-				const groupDropdownView = dropdown.panelView.children.first.navigationView.groupDropdownView;
+			it( 'is empty when the dropdown was shown', () => {
+				// dropdown.fire( 'change:isOpen' );
 
-				groupDropdownView.isOpen = true;
-
-				const listView = groupDropdownView.panelView.children.first;
-
-				// "Mathematical" and "Arrows" are provided by other plugins. "All" is being added by SpecialCharacters itself.
-				expect( listView.items.length ).to.equal( 3 );
-				expect( listView.items.first.children.first.label ).to.equal( 'All' );
+				expect( characterInfo.character ).to.equal( null );
+				expect( characterInfo.name ).to.equal( null );
+				expect( characterInfo.code ).to.equal( '' );
 			} );
 
-			it( 'has a grid view', () => {
-				expect( dropdown.panelView.children.first.gridView ).to.be.instanceOf( CharacterGridView );
+			it( 'is updated when the tile fires #mouseover', () => {
+				const tile = grid.tiles.get( 0 );
+
+				tile.fire( 'mouseover' );
+
+				expect( tile.label ).to.equal( '<' );
+				expect( characterInfo.character ).to.equal( '<' );
+				expect( characterInfo.name ).to.equal( 'Less-than sign' );
+				expect( characterInfo.code ).to.equal( 'U+003c' );
 			} );
 
-			it( 'has a character info view', () => {
-				expect( dropdown.panelView.children.first.infoView ).to.be.instanceOf( CharacterInfoView );
-			} );
+			it( 'is updated when the tile fires #focus', () => {
+				const tile = grid.tiles.get( 0 );
 
-			describe( '#buttonView', () => {
-				it( 'should get basic properties', () => {
-					expect( dropdown.buttonView.label ).to.equal( 'Special characters' );
-					expect( dropdown.buttonView.icon ).to.equal( specialCharactersIcon );
-					expect( dropdown.buttonView.tooltip ).to.be.true;
-				} );
+				tile.fire( 'focus' );
 
-				it( 'should bind #isEnabled to the command', () => {
-					expect( dropdown.isEnabled ).to.be.true;
-
-					command.isEnabled = false;
-					expect( dropdown.isEnabled ).to.be.false;
-					command.isEnabled = true;
-				} );
-			} );
-
-			it( 'executes a command and focuses the editing view', () => {
-				const grid = dropdown.panelView.children.get( 0 ).gridView;
-				const executeSpy = sinon.stub( editor, 'execute' );
-				const focusSpy = sinon.stub( editor.editing.view, 'focus' );
-
-				grid.tiles.get( 2 ).fire( 'execute' );
-
-				sinon.assert.calledOnce( executeSpy );
-				sinon.assert.calledOnce( focusSpy );
-				sinon.assert.calledWithExactly( executeSpy.firstCall, 'insertText', {
-					text: '≤'
-				} );
-			} );
-
-			describe( 'grid view', () => {
-				let grid;
-
-				beforeEach( () => {
-					grid = dropdown.panelView.children.get( 0 ).gridView;
-				} );
-
-				it( 'delegates #execute to the dropdown', () => {
-					const spy = sinon.spy();
-
-					dropdown.on( 'execute', spy );
-					grid.fire( 'execute', { name: 'foo' } );
-
-					sinon.assert.calledOnce( spy );
-				} );
-
-				it( 'has default contents', () => {
-					expect( grid.tiles ).to.have.length.greaterThan( 10 );
-				} );
-
-				it( 'is updated when navigation view fires #execute', () => {
-					const navigation = dropdown.panelView.children.first.navigationView;
-
-					expect( grid.tiles.get( 0 ).label ).to.equal( '<' );
-					navigation.groupDropdownView.fire( new EventInfo( { name: 'Arrows' }, 'execute' ) );
-
-					expect( grid.tiles.get( 0 ).label ).to.equal( '←' );
-				} );
-			} );
-
-			describe( 'character info view', () => {
-				let grid, characterInfo;
-
-				beforeEach( () => {
-					grid = dropdown.panelView.children.first.gridView;
-					characterInfo = dropdown.panelView.children.first.infoView;
-				} );
-
-				it( 'is empty when the dropdown was shown', () => {
-					dropdown.fire( 'change:isOpen' );
-
-					expect( characterInfo.character ).to.equal( null );
-					expect( characterInfo.name ).to.equal( null );
-					expect( characterInfo.code ).to.equal( '' );
-				} );
-
-				it( 'is updated when the tile fires #mouseover', () => {
-					const tile = grid.tiles.get( 0 );
-
-					tile.fire( 'mouseover' );
-
-					expect( tile.label ).to.equal( '<' );
-					expect( characterInfo.character ).to.equal( '<' );
-					expect( characterInfo.name ).to.equal( 'Less-than sign' );
-					expect( characterInfo.code ).to.equal( 'U+003c' );
-				} );
-
-				it( 'is updated when the tile fires #focus', () => {
-					const tile = grid.tiles.get( 0 );
-
-					tile.fire( 'focus' );
-
-					expect( tile.label ).to.equal( '<' );
-					expect( characterInfo.character ).to.equal( '<' );
-					expect( characterInfo.name ).to.equal( 'Less-than sign' );
-					expect( characterInfo.code ).to.equal( 'U+003c' );
-				} );
-			} );
-
-			it( 'is not fully initialized when not open', () => {
-				// (#6175)
-				const uninitializedDropdown = editor.ui.componentFactory.create( 'specialCharacters' );
-				expect( uninitializedDropdown.panelView.children.length ).to.equal( 0 );
+				expect( tile.label ).to.equal( '<' );
+				expect( characterInfo.character ).to.equal( '<' );
+				expect( characterInfo.name ).to.equal( 'Less-than sign' );
+				expect( characterInfo.code ).to.equal( 'U+003c' );
 			} );
 		} );
 	} );

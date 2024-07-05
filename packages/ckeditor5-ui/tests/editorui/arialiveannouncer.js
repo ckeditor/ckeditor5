@@ -56,7 +56,7 @@ describe( 'AriaLiveAnnouncer', () => {
 			expect( firstRegion.politeness ).to.equal( 'polite' );
 			expect( firstRegion.element.parentNode ).to.equal( announcer.view.element );
 
-			expect( firstRegion.element.getAttribute( 'role' ) ).to.equal( 'region' );
+			expect( firstRegion.element.getAttribute( 'role' ) ).to.be.null;
 			expect( firstRegion.element.getAttribute( 'aria-live' ) ).to.equal( 'polite' );
 			expect( firstRegion.element.querySelector( 'li' ).innerHTML ).to.equal( 'bar' );
 		} );
@@ -73,7 +73,7 @@ describe( 'AriaLiveAnnouncer', () => {
 			expect( firstRegion.politeness ).to.equal( 'polite' );
 			expect( firstRegion.element.parentNode ).to.equal( announcer.view.element );
 
-			expect( firstRegion.element.getAttribute( 'role' ) ).to.equal( 'region' );
+			expect( firstRegion.element.getAttribute( 'role' ) ).to.be.null;
 			expect( firstRegion.element.getAttribute( 'aria-live' ) ).to.equal( 'polite' );
 			expect( firstRegion.element.querySelector( 'li:last-child' ).innerHTML ).to.equal( 'baz' );
 		} );
@@ -188,6 +188,6 @@ describe( 'AriaLiveAnnouncerRegionView', () => {
 	} );
 
 	function queryAllMessages() {
-		return [ ...announcerRegionView.element.querySelectorAll( 'div[role="region"] ul li' ) ].map( element => element.innerHTML );
+		return [ ...announcerRegionView.element.querySelectorAll( 'div[aria-live] ul li' ) ].map( element => element.innerHTML );
 	}
 } );

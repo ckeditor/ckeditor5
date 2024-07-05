@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, Event */
+/* global document, Event, KeyboardEvent */
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import {
@@ -27,7 +27,7 @@ import {
 	getItemByLabel,
 	getMenuByLabel
 } from './_utils/utils.js';
-import { MenuBarMenuViewPanelPositioningFunctions, _initMenuBar } from '../../src/menubar/utils.js';
+import { MenuBarMenuViewPanelPositioningFunctions } from '../../src/menubar/utils.js';
 import ClassicTestEditor, { ClassicTestEditorUI } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Plugin } from '@ckeditor/ckeditor5-core';
@@ -143,6 +143,46 @@ describe( 'MenuBarView utils', () => {
 						},
 						{
 							label: 'B', isOpen: false, isFocused: false,
+							items: []
+						},
+						{
+							label: 'C', isOpen: false, isFocused: false,
+							items: []
+						}
+					]
+				);
+			} );
+
+			it( 'should focus hovered menu if `isFocusBorderEnabled`', () => {
+				menuBarView.isFocusBorderEnabled = true;
+
+				getMenuByLabel( menuBarView, 'A' ).buttonView.fire( 'mouseenter' );
+				expect( barDump( menuBarView ) ).to.deep.equal(
+					[
+						{
+							label: 'A', isOpen: false, isFocused: true,
+							items: []
+						},
+						{
+							label: 'B', isOpen: false, isFocused: false,
+							items: []
+						},
+						{
+							label: 'C', isOpen: false, isFocused: false,
+							items: []
+						}
+					]
+				);
+
+				getMenuByLabel( menuBarView, 'B' ).buttonView.fire( 'mouseenter' );
+				expect( barDump( menuBarView ) ).to.deep.equal(
+					[
+						{
+							label: 'A', isOpen: false, isFocused: false,
+							items: []
+						},
+						{
+							label: 'B', isOpen: false, isFocused: true,
 							items: []
 						},
 						{
@@ -874,6 +914,88 @@ describe( 'MenuBarView utils', () => {
 				sinon.assert.calledOnce( closeSpy );
 			} );
 		} );
+
+		describe( 'enableFocusHighlightOnInteraction', () => {
+			it( 'should set proper isFocusBorderEnabled when #isOpen changes', () => {
+				const menuA = getMenuByLabel( menuBarView, 'A' );
+
+				menuA.isOpen = true;
+				menuBarView.isFocusBorderEnabled = true;
+				menuBarView.isOpen = false;
+
+				expect( menuBarView.isFocusBorderEnabled ).to.be.false;
+			} );
+
+			it( 'should set proper isFocusBorderEnabled when a key is pressed', () => {
+				const menuA = getMenuByLabel( menuBarView, 'A' );
+
+				menuA.isOpen = true;
+
+				expect( menuBarView.isFocusBorderEnabled ).to.be.false;
+
+				menuA.element.dispatchEvent( new KeyboardEvent( 'keydown', { keyCode: keyCodes.arrowdown } ) );
+				menuA.element.dispatchEvent( new Event( 'focus', { keyCode: keyCodes.arrowdown } ) );
+
+				expect( menuBarView.isFocusBorderEnabled ).to.be.true;
+
+				menuA.element.dispatchEvent( new KeyboardEvent( 'keyup', { keyCode: keyCodes.arrowdown } ) );
+
+				expect( menuBarView.isFocusBorderEnabled ).to.be.true;
+			} );
+
+			it( 'should set proper isFocusBorderEnabled when a keyup fires before focus', () => {
+				const menuA = getMenuByLabel( menuBarView, 'A' );
+
+				menuA.isOpen = true;
+
+				expect( menuBarView.isFocusBorderEnabled ).to.be.false;
+
+				menuA.element.dispatchEvent( new KeyboardEvent( 'keydown', { keyCode: keyCodes.arrowdown } ) );
+				menuA.element.dispatchEvent( new KeyboardEvent( 'keyup', { keyCode: keyCodes.arrowdown } ) );
+				menuA.element.dispatchEvent( new Event( 'focus', { keyCode: keyCodes.arrowdown } ) );
+
+				expect( menuBarView.isFocusBorderEnabled ).to.be.false;
+			} );
+
+			it( 'should set proper isFocusBorderEnabled when a keydown fires before focus', () => {
+				const menuA = getMenuByLabel( menuBarView, 'A' );
+
+				menuA.isOpen = true;
+
+				expect( menuBarView.isFocusBorderEnabled ).to.be.false;
+
+				menuA.element.dispatchEvent( new Event( 'focus', { keyCode: keyCodes.arrowdown } ) );
+				menuA.element.dispatchEvent( new KeyboardEvent( 'keydown', { keyCode: keyCodes.arrowdown } ) );
+				menuA.element.dispatchEvent( new KeyboardEvent( 'keyup', { keyCode: keyCodes.arrowdown } ) );
+
+				expect( menuBarView.isFocusBorderEnabled ).to.be.false;
+			} );
+
+			it( 'should set proper isFocusBorderEnabled when a clicked and focused item on opened menu', () => {
+				const clock = sinon.useFakeTimers();
+
+				sinon.stub( menuBarView.element, 'matches' ).withArgs( ':focus-within' ).returns( true	);
+
+				const menuA = getMenuByLabel( menuBarView, 'A' );
+
+				menuA.isOpen = true;
+
+				expect( menuBarView.isFocusBorderEnabled ).to.be.false;
+
+				menuA.buttonView.element.dispatchEvent( new Event( 'click' ) );
+
+				expect( menuBarView.isFocusBorderEnabled ).to.be.true;
+
+				menuA.isOpen = false;
+				clock.tick( 1000 );
+
+				expect( menuBarView.isFocusBorderEnabled ).to.be.false;
+
+				menuA.buttonView.element.dispatchEvent( new Event( 'click' ) );
+
+				expect( menuBarView.isFocusBorderEnabled ).to.be.false;
+			} );
+		} );
 	} );
 
 	describe( 'MenuBarMenuBehaviors', () => {
@@ -945,7 +1067,7 @@ describe( 'MenuBarView utils', () => {
 							{
 								label: 'A', isOpen: true, isFocused: false,
 								items: [
-									{ label: 'A#1', isFocused: true }
+									{ label: 'A#1', isFocused: false }
 								]
 							}
 
@@ -1594,6 +1716,12 @@ describe( 'MenuBarView utils', () => {
 				menuBarEditorUI.focusTracker.focusedElement = domRoot;
 			} );
 
+			it( 'should enable focus border once focused using keyboard', () => {
+				expect( menuBarView.isFocusBorderEnabled ).to.be.false;
+				pressAltF9( menuBarEditor );
+				expect( menuBarView.isFocusBorderEnabled ).to.be.true;
+			} );
+
 			it( 'should focus the menu bar when the focus is in the editing root', () => {
 				const spy = testUtils.sinon.spy( menuBarView, 'focus' );
 
@@ -1665,6 +1793,53 @@ describe( 'MenuBarView utils', () => {
 				stopPropagation: sinon.spy()
 			} );
 		}
+		class MenuBarTestEditor extends ClassicTestEditor {
+			constructor( sourceElementOrData, config ) {
+				super( sourceElementOrData, config );
+
+				const menuBarEditorUIView = new MenuBarEditorUIView( this.locale, this.editing.view, sourceElementOrData );
+				this.ui = new MenuBarEditorUI( this, menuBarEditorUIView );
+			}
+		}
+
+		class MenuBarEditorUI extends ClassicTestEditorUI {
+			init() {
+				super.init();
+
+				this._initMenuBar( this.view.menuBarView );
+			}
+		}
+
+		class MenuBarEditorUIView extends EditorUIView {
+			constructor(
+				locale,
+				editingView,
+				editableElement
+			) {
+				super( locale );
+
+				this.menuBarView = new MenuBarView( locale );
+				this.main = this.createCollection();
+				this.editable = new InlineEditableUIView( locale, editingView, editableElement );
+
+				this.menuBarView.extendTemplate( {
+					attributes: {
+						class: [
+							'ck-reset_all',
+							'ck-rounded-corners'
+						],
+						dir: locale.uiLanguageDirection
+					}
+				} );
+			}
+
+			render() {
+				super.render();
+
+				this.registerChild( this.menuBarView );
+				this.registerChild( this.editable );
+			}
+		}
 	} );
 
 	it( 'should be able to handle custom menu bar item addition', async () => {
@@ -1724,7 +1899,7 @@ describe( 'MenuBarView utils', () => {
 		init() {
 			super.init();
 
-			_initMenuBar( this.editor, this.view.menuBarView );
+			this._initMenuBar( this.editor, this.view.menuBarView );
 		}
 	}
 
