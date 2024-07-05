@@ -82,21 +82,21 @@ import 'ckeditor5/ckeditor5.css';
 import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 
 export default {
-    name: 'app',
-    data() {
-        return {
-            editor: ClassicEditor,
-            editorData: '<p>Hello from CKEditor 5 in Vue!</p>',
-            editorConfig: {
-              plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo ],
-              toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+	name: 'app',
+	data() {
+		return {
+			editor: ClassicEditor,
+			editorData: '<p>Hello from CKEditor 5 in Vue!</p>',
+			editorConfig: {
+			  plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo ],
+			  toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 			  licenseKey: '<YOUR_LICENSE_KEY>',
-              mention: { 
-                  // Mention configuration
-              },
-            },
-        };
-    }
+			  mention: { 
+				  // Mention configuration
+			  },
+			},
+		};
+	}
 }
 </script>
 ```
@@ -114,26 +114,26 @@ If you do not want the CKEditor&nbsp;5 component to be enabled globally, you can
 
 <script>
 import { ClassicEditor, Bold, Essentials, Italic, Paragraph, Undo } from 'ckeditor5';
-import CKEditor from '@ckeditor/ckeditor5-vue'
+import CKEditor from '@ckeditor/ckeditor5-vue';
 
 import 'ckeditor5/ckeditor5.css';
 import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 
 export default {
-    name: 'app',
+	name: 'app',
 	components: {
 		ckeditor: CKEditor.component
 	},
-    data() {
-        return {
-            editor: ClassicEditor,
-            editorData: '<p>Hello from CKEditor 5 in Vue!</p>',
-            editorConfig: {
-              plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
-              toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
-            }
-        };
-    }
+	data() {
+		return {
+			editor: ClassicEditor,
+			editorData: '<p>Hello from CKEditor 5 in Vue!</p>',
+			editorConfig: {
+			  plugins: [ Bold, Essentials, Italic, Paragraph, Undo ],
+			  toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
+			}
+		};
+	}
 }
 </script>
 ```
@@ -377,7 +377,6 @@ Since accessing the editor toolbar is not possible until after the editor instan
 <script>
 	import { DecoupledEditor, Bold, Essentials, Italic, Paragraph, Undo } from 'ckeditor5';
 	import CKEditor from '@ckeditor/ckeditor5-vue'
-
 	import 'ckeditor5/ckeditor5.css'
 
 	export default {
@@ -427,7 +426,7 @@ import { ClassicEditor, Bold, Essentials, Italic, Paragraph } from 'ckeditor5';
 // More imports...
 
 import coreTranslations from 'ckeditor5/translations/es.js';
-import commercialTranslations from 'ckeditor5-premium-features/translations/es.js';
+import premiumFeaturesTranslations from 'ckeditor5-premium-features/translations/es.js';
 
 // Style sheets imports...
 
@@ -439,10 +438,10 @@ export default {
 			editorData: '<p>Hola desde CKEditor 5 en Vue!</p>',
 			editorConfig: {
 				toolbar: {
-                    items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-                },
-                plugins: [ Bold, Essentials, Italic, Paragraph ],
-				translations: [ coreTranslations, commercialTranslations ]
+					items: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+				},
+				plugins: [ Bold, Essentials, Italic, Paragraph ],
+				translations: [ coreTranslations, premiumFeaturesTranslations ]
 			}
 		};
 	}

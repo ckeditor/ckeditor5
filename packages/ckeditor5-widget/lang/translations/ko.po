@@ -55,4 +55,4 @@ msgstr "위젯 바로 뒤에 입력할 수 있도록 삽입 기호 이동"
 
 msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that moves selection from a nested editable area back to the parent widget."
 msgid "Move focus from an editable area back to the parent widget"
-msgstr ""
+msgstr "포커스를 편집 가능 영역에서 부모위젯으로 옮기기"

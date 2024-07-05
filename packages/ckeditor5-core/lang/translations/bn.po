@@ -75,7 +75,7 @@ msgstr "ফাইল"
 
 msgctxt "The label for the insert image with the file manager menu bar button (inside 'Insert' menu)"
 msgid "With file manager"
-msgstr ""
+msgstr "ফাইল ম্যানেজার সহ"
 
 msgctxt "The button label for the object (e.g. image, table) toolbar for hiding the attached caption."
 msgid "Toggle caption off"

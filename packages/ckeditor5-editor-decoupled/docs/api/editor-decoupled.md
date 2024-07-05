@@ -12,7 +12,7 @@ The decoupled editor implementation for CKEditor&nbsp;5. See the {@link examples
 
 This package contains the {@link module:editor-decoupled/decouplededitor~DecoupledEditor} class. Follow there to learn more about this type of editor and how to initialize it.
 
-This package contains the source version of the decoupled editor. This editor implementation is also available in the [decoupled build](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-decoupled). Read more about {@link getting-started/index CKEditor&nbsp;5 builds}.
+This package contains the source version of the decoupled editor. Read more about {@link getting-started/setup/editor-types CKEditor&nbsp;5 editor types}.
 
 ## Installation
 

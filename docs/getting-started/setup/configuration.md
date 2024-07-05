@@ -4,10 +4,16 @@ menu-title: Configuring features
 meta-title: Configuring editor features | CKEditor 5 documentation
 meta-description: Learn how to configure CKEditor 5.
 order: 30
-modified_at: 2024-05-06
+modified_at: 2024-06-25
 ---
 
 # Configuring CKEditor&nbsp;5 features
+
+The functionality of CKEditor&nbsp;5 is provided by specialized features, accessible via a configurable toolbar or keyboard shortcuts. Some of these features are only available with certain {@link getting-started/setup/editor-types editor types}.
+
+<info-box>
+	All of these elements can most easily be configured with [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs).
+</info-box>
 
 ## Adding features
 
@@ -32,7 +38,7 @@ Note that some features may require more than one plugin to run, as shown above.
 
 ### Adding premium features
 
-CKEditor&nbsp;5 premium features are imported in the same way. However, the have their own package, named `ckeditor5-premium-features`, to import from. These also {@link getting-started/setup/license-key-and-activation require a license}. Please see an example below, adding the PDF export feature and configuring it.
+CKEditor&nbsp;5 premium features are imported in the same way. However, they have their own package, named `ckeditor5-premium-features`, to import from. These also {@link getting-started/setup/license-key-and-activation require a license}. Please see an example below, adding the PDF export feature and configuring it.
 
 ```js
 import { ClassicEditor } from 'ckeditor5';
@@ -66,7 +72,7 @@ ClassicEditor
 
 ## Configuring editor settings
 
-When integrating an editor into your application, you can customize its features by passing a JavaScript object with configuration options to the {@link module:core/editor/editor~Editor.create `create()`} method. These settings, defined in the {@link module:core/editor/editor~Editor.create `EditorConfig`}, allow for extensive customization of the editor's functionality. Remember that customization depends on the editor setup and plugins loaded. The sample snippet below shows configuration of the toolbar, the headers feature and font family and color picker settings:
+When integrating an editor into your application, you can customize its features by passing a JavaScript object with configuration options to the {@link module:core/editor/editor~Editor.create `create()`} method. These settings, defined in the {@link module:core/editor/editor~Editor.create `EditorConfig`}, allow for extensive customization of the editor's functionality. Remember that customization depends on the editor setup and plugins loaded. The sample snippet below shows the configuration of the toolbar, the headers feature, font family, and color picker settings:
 
 ```js
 import { ClassicEditor, Heading, BlockQuote, Bold, Italic, Font, Link, List } from 'ckeditor5';

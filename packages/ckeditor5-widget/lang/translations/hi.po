@@ -55,4 +55,4 @@ msgstr "किसी विजेट के ठीक आगे टाइप क
 
 msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that moves selection from a nested editable area back to the parent widget."
 msgid "Move focus from an editable area back to the parent widget"
-msgstr ""
+msgstr "एक एडिटेबल एरिया से पेरेंट विजेट पर फ़ोकस वापिस लाएँ"
