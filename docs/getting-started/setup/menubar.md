@@ -69,6 +69,51 @@ The menu bar can be configured using the {@link module:core/editor/editorconfig~
 	Before adding a feature to the menu bar, make sure the plugin for that feature is added in the editor configuration.
 </info-box>
 
+## Menu bar components in custom plugins
+
+To add menu bar components in a custom plugin, follow these steps:
+
+1. Add the Menu Bar Component: Use the `editor.ui.componentFactory` to register your custom component.
+1. Implement the Component Logic: Define the behavior and appearance of your component.
+1. Use `editor.ui.addMenuBarItem()` method so your component won't require adding to editor config. Follow the same convention as in `config.menuBar.addItems`.
+
+Here's an example of a custom plugin that adds a button to the menu bar:
+
+```js
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+
+class MyCustomPlugin extends Plugin {
+	init() {
+		const editor = this.editor;
+
+		// Register the toolbar button
+		editor.ui.componentFactory.add('myCustomButton', locale => {
+			const view = new ButtonView(locale);
+
+			view.set({
+				label: 'My Custom Button',
+				withText: true,
+				tooltip: true
+			});
+
+			// Execute a command when the button is clicked
+			view.on('execute', () => {
+				editor.execute('myCustomCommand');
+			});
+
+			return view;
+		});
+
+		// Register your component in preferred default position
+		editor.ui.addMenuBarItem( {
+			item: 'myCustomButton',
+			position: 'after:menuBar:bold'
+		} );
+    }
+}
+```
+
 ## Contribute
 
 The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-ui](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-ui).
