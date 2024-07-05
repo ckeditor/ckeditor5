@@ -48,7 +48,7 @@ const tasks = new Listr( [
 			return tools.shExec(
 				`aws s3 cp ./${ RELEASE_CDN_DIRECTORY }/ s3://${ CDN_S3_BUCKET }/ckeditor5/${ cdnVersion }/ ${ S3_COPY_ARGS } \
 				--exclude "*" --include "*.map" --content-type 'application/json; charset=utf-8'`,
-				{ verbosity: 'error' }
+				{ verbosity: 'error', async: true }
 			);
 		}
 	}
