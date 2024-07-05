@@ -24,21 +24,26 @@ const cdnVersion = getCdnVersion( cliArguments, packageJsonVersion );
 const tasks = new Listr( [
 	{
 		title: 'Upload files to CDN.',
-		task: () => {
-			tools.shExec(
+		task: async () => {
+			await tools.shExec(
 				`aws s3 cp ./${ RELEASE_CDN_DIRECTORY }/ s3://${ CDN_S3_BUCKET }/ckeditor5/${ cdnVersion }/ ${ S3_COPY_ARGS } \
 				 --exclude "*" --include "*.js" --content-type 'text/javascript; charset=utf-8'`,
-				{ verbosity: 'error' }
+				{ verbosity: 'error', async: true }
 			);
-			tools.shExec(
+			await tools.shExec(
+				`aws s3 cp ./${ RELEASE_CDN_DIRECTORY }/ s3://${ CDN_S3_BUCKET }/ckeditor5/${ cdnVersion }/ ${ S3_COPY_ARGS } \
+				 --exclude "*" --include "*.ts" --content-type 'application/typescript; charset=utf-8'`,
+				{ verbosity: 'error', async: true }
+			);
+			await tools.shExec(
 				`aws s3 cp ./${ RELEASE_CDN_DIRECTORY }/ s3://${ CDN_S3_BUCKET }/ckeditor5/${ cdnVersion }/ ${ S3_COPY_ARGS } \
 				 --exclude "*" --include "*.css" --content-type 'text/css; charset=utf-8'`,
-				{ verbosity: 'error' }
+				{ verbosity: 'error', async: true }
 			);
-			tools.shExec(
+			await tools.shExec(
 				`aws s3 cp ./${ RELEASE_CDN_DIRECTORY }/ s3://${ CDN_S3_BUCKET }/ckeditor5/${ cdnVersion }/ ${ S3_COPY_ARGS } \
 				 --exclude "*" --include "*.zip" --content-type 'application/zip'`,
-				{ verbosity: 'error' }
+				{ verbosity: 'error', async: true }
 			);
 			return tools.shExec(
 				`aws s3 cp ./${ RELEASE_CDN_DIRECTORY }/ s3://${ CDN_S3_BUCKET }/ckeditor5/${ cdnVersion }/ ${ S3_COPY_ARGS } \
