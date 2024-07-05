@@ -398,6 +398,28 @@ describe( 'EditorUI', () => {
 		} );
 	} );
 
+	describe( 'addMenuBarItem()', () => {
+		it( 'should add element to array', () => {
+			const ui = new EditorUI( editor );
+
+			expect( ui._extraMenuBarItems ).to.have.lengthOf( 0 );
+
+			ui.addMenuBarItem( {
+				item: 'foo',
+				position: 'after:bar'
+			} );
+
+			expect( ui._extraMenuBarItems ).to.have.lengthOf( 1 );
+
+			ui.addMenuBarItem( {
+				item: 'foo2',
+				position: 'after:bar'
+			} );
+
+			expect( ui._extraMenuBarItems ).to.have.lengthOf( 2 );
+		} );
+	} );
+
 	describe( 'View#scrollToTheSelection integration', () => {
 		it( 'should listen to View#scrollToTheSelection and inject the offset values into the event', async () => {
 			const editorElement = document.createElement( 'div' );
