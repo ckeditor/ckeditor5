@@ -88,22 +88,22 @@ class MyCustomPlugin extends Plugin {
 		const editor = this.editor;
 
 		// Register the toolbar button
-		editor.ui.componentFactory.add('myCustomButton', locale => {
+		editor.ui.componentFactory.add( 'myCustomButton', locale => {
 			const view = new ButtonView(locale);
 
-			view.set({
+			view.set( {
 				label: 'My Custom Button',
 				withText: true,
 				tooltip: true
-			});
+			} );
 
 			// Execute a command when the button is clicked
-			view.on('execute', () => {
+			view.on( 'execute', () => {
 				editor.execute('myCustomCommand');
-			});
+			} );
 
 			return view;
-		});
+		} );
 
 		// Register your component in preferred default position
 		editor.ui.addMenuBarItem( {
