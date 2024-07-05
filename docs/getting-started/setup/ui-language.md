@@ -3,7 +3,7 @@ category: setup
 menu-title: UI language
 meta-title: Setting the UI language | CKEditor 5 Documentation
 order: 60
-modified_at: 2024-05-06
+modified_at: 2024-06-25
 ---
 
 {@snippet features/build-ui-language-source}
@@ -58,8 +58,9 @@ For example, to use Polish, import `'ckeditor5/translations/pl.js'` and pass the
 ```js
 import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
 import { TableOfContents } from 'ckeditor5-premium-features';
+
 import coreTranslations from 'ckeditor5/translations/pl.js';
-import commercialTranslations from 'ckeditor5-premium-features/translations/pl.js';
+import premiumFeaturesTranslations from 'ckeditor5-premium-features/translations/pl.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -73,7 +74,7 @@ ClassicEditor
 		},
 		translations: [
 			coreTranslations,
-			commercialTranslations
+			premiumFeaturesTranslations
 		]
 	} )
 	.then( /* ... */ )
@@ -88,6 +89,7 @@ To use different language than the default one (English), you need to load the e
 
 ```html
 <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css">
+<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css">
 
 <script type="importmap">
 {
@@ -102,8 +104,9 @@ To use different language than the default one (English), you need to load the e
 <script type="module">
 import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
 import { TableOfContents } from 'ckeditor5-premium-features';
+
 import coreTranslations from 'ckeditor5/translations/pl.js';
-import commercialTranslations from 'ckeditor5-premium-features/translations/pl.js';
+import premiumFeaturesTranslations from 'ckeditor5-premium-features/translations/pl.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -117,8 +120,8 @@ ClassicEditor
 		},
 		translations: [
 			coreTranslations,
-			commercialTranslations
-			]
+			premiumFeaturesTranslations
+		]
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );

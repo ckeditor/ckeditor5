@@ -32,7 +32,7 @@ import {
 	Link,
 	Mention,
 	Paragraph
-	} from 'ckeditor5';
+} from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '.chat__editor' ), {

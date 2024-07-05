@@ -55,4 +55,4 @@ msgstr "Perkelkite žymeklį, kad būtų galima rašyti iškart po valdiklio"
 
 msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that moves selection from a nested editable area back to the parent widget."
 msgid "Move focus from an editable area back to the parent widget"
-msgstr ""
+msgstr "Perkelti fokusą iš redaguojamos srities atgal į pagrindinį valdiklį"

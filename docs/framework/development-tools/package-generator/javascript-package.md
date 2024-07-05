@@ -49,7 +49,7 @@ An overview of the project's directory structure:
 ```
 
 <info-box warning>
-	(*) This file is not available if the plugin was generated with the `--use-only-new-installation-methods` flag.
+	(*) This file is not available if the plugin was generated with the `current` value of the `--installation-methods` flag.
 </info-box>
 
 Guides for developing some of the files:
@@ -144,7 +144,7 @@ npm run build:dist
 ### `dll:build` (*)
 
 <info-box warning>
-	This script is not available if the plugin was generated with the `--use-only-new-installation-methods` flag.
+	This script is not available if the plugin was generated with the `current` value of the `--installation-methods` flag.
 </info-box>
 
 Creates a DLL-compatible package build which can be loaded into an editor using {@link getting-started/advanced/dll-builds DLL builds}.
@@ -162,7 +162,7 @@ npm run dll:build -- --watch
 ### `dll:serve` (*)
 
 <info-box warning>
-	This script is not available if the plugin was generated with the `--use-only-new-installation-methods` flag.
+	This script is not available if the plugin was generated with the `current` value of the `--installation-methods` flag.
 </info-box>
 
 Creates a simple HTTP server (without the live-reload mechanism) that allows verifying whether the DLL build of the package is compatible with the CKEditor&nbsp;5 {@link getting-started/advanced/dll-builds DLL builds}.
@@ -245,9 +245,8 @@ Npm supports some special [life cycle scripts](https://docs.npmjs.com/cli/v7/usi
 * `prepare` &ndash; Triggers during package creation and before publishing.
 
 This script creates npm and browser builds of your plugin.
-
 <info-box warning>
-	If during the package creation the `--use-only-new-installation-methods` flag was used, script creates npm and browser build only without CKEditor&nbsp;5's legacy installation methods.
+	If during the package creation the `--installation-methods` flag value was set to `current` the script creates npm and browser build only without CKEditor&nbsp;5's legacy installation methods.
 </info-box>
 
 ## How to change ESLint configuration

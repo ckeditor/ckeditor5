@@ -429,7 +429,7 @@ The `ImageStyle` plugin provides a set of default styles depending on the loaded
 
 ## Installation
 
-This feature is enabled by default. If your integrations uses a custom editor build, check out the {@link features/images-installation image feature installation guide} to learn how to enable this feature.
+Check out the {@link features/images-installation image feature installation guide} to learn how to enable this feature.
 
 ## Common API
 

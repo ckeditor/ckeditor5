@@ -346,6 +346,7 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 
 		this.editor.keystrokes.set( 'Alt+F9', ( data, cancel ) => {
 			if ( !menuBarViewElement.contains( this.editor.ui.focusTracker.focusedElement ) ) {
+				menuBarView.isFocusBorderEnabled = true;
 				menuBarView!.focus();
 				cancel();
 			}

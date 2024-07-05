@@ -231,6 +231,12 @@ describe( 'TextPartLanguageUI', () => {
 				sinon.assert.calledOnce( focusSpy );
 			} );
 
+			it( 'should have menuitem role set on definition items', () => {
+				const items = getListViewItems( menuView.panelView.children.first );
+
+				expect( items.every( item => item.children.first.role === 'menuitemradio' ) ).to.be.true;
+			} );
+
 			describe( 'listview', () => {
 				it( 'should have properties set', () => {
 					// Trigger lazy init.
@@ -269,6 +275,24 @@ describe( 'TextPartLanguageUI', () => {
 						false,
 						true,
 						false
+					] );
+				} );
+
+				it( 'should have `aria-checked` attribute assigned to items', () => {
+					// Trigger lazy init.
+					menuView.isOpen = true;
+
+					setData( editor.model, '<paragraph>[<$text language="fr:ltr">te]xt</$text></paragraph>' );
+
+					const listView = menuView.panelView.children.first;
+					const attributes = getListViewItems( listView )
+						.map( item => item.children.first.element.getAttribute( 'aria-checked' ) );
+
+					expect( attributes ).to.deep.equal( [
+						'false',
+						'false',
+						'true',
+						'false'
 					] );
 				} );
 			} );

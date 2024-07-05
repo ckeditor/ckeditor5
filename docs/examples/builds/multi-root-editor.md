@@ -22,7 +22,20 @@ Check out the {@link getting-started/quick-start Quick start} guide to learn mor
 <summary>View editor configuration script</summary>
 
 ```js
-import MultiRootEditor from 'ckeditor5';
+import {
+	MultiRootEditor,
+	Essentials,
+	Bold,
+	Italic,
+	Heading,
+	Link,
+	Table,
+	MediaEmbed,
+	List,
+	Indent
+} from 'ckeditor5';
+
+import 'ckeditor5/ckeditor5.css';
 
 MultiRootEditor
 	.create(
@@ -35,20 +48,23 @@ MultiRootEditor
 		},
 		// Editor configration:
 		{
-			cloudServices: {
-				// This example includes the Easy Image feature.
-				// Provide correct configuration values to use it.
-				tokenUrl: 'https://example.com/cs-token-endpoint',
-				uploadUrl: 'https://your-organization-id.cke-cs.com/easyimage/upload/'
-				// Read more about Easy Image - https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/easy-image.html.
-				// For other image upload methods see the guide - https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html.
-			},
+			plugins: [
+				Essentials,
+				Heading,
+				Bold,
+				Italic,
+				Link,
+				Table,
+				MediaEmbed,
+				List,
+				Indent
+			],
 			toolbar: {
 				items: [
 					'undo', 'redo',
 					'|', 'heading',
 					'|', 'bold', 'italic',
-					'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed',
+					'|', 'link', 'insertTable', 'mediaEmbed',
 					'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 				]
 			}
@@ -73,7 +89,6 @@ MultiRootEditor
 	.catch( error => {
 		console.error( 'There was a problem initializing the editor.', error );
 	} );
-
 ```
 
 </details>
@@ -88,17 +103,21 @@ MultiRootEditor
 	contenteditable="true" + contenteditable="false" elements
 	is required to provide proper caret handling when
 	using arrow keys at the start and end of an editable area.
-	
+
 	You can skip them if you don't want to move the
 	caret between editable areas using arrow keys.
-!--> 
+!-->
 <div contenteditable="true">
 	<div contenteditable="false">
-		<div id="header">
-			Header content is inserted here.
+		<div class="editor">
+			<div id="header">
+				Header content is inserted here.
+			</div>
 		</div>
-		<div id="content">
-			Main content is inserted here.
+		<div class="editor">
+			<div id="content">
+				Main content is inserted here.
+			</div>
 		</div>
 		<div class="boxes">
 			<div class="box box-left editor">
@@ -116,12 +135,19 @@ MultiRootEditor
 </div>
 
 <style>
-	.box {
-		width: 50%;
+	.editor {
+		border: #ccced1 1px solid;
+		margin-top: 10px;
 	}
 
-	.box-left {
-		margin-right: 10px;
+	.boxes {
+		margin-top: 10px;
+		display: flex;
+	}
+
+	.box {
+		margin-top: 0px;
+		width: 50%;
 	}
 
 	/*
@@ -131,6 +157,10 @@ MultiRootEditor
 	*/
 	.box .ck-editor__editable {
 		height: 100%;
+	}
+
+	.box-left {
+		margin-right: 10px;
 	}
 
 	/*

@@ -249,7 +249,7 @@ export default class SpecialCharacters extends Plugin {
 	/**
 	 * Creates a button for for menu bar that will show special characetrs dialog.
 	 */
-	private _createDialogButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
+	private _createDialogButton<T extends typeof ButtonView>( ButtonClass: T ): InstanceType<T> {
 		const editor = this.editor;
 		const locale = editor.locale;
 		const buttonView = new ButtonClass( editor.locale ) as InstanceType<T>;

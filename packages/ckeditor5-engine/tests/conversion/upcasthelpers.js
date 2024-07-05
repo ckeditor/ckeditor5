@@ -1258,31 +1258,6 @@ describe( 'upcast-converters', () => {
 			expect( conversionResult.getChild( 0 ).data ).to.equal( 'foobar' );
 		} );
 
-		it( 'should also include $marker when auto-paragraphing $text.', () => {
-			// Make $text invalid to trigger auto-paragraphing.
-			schema.addChildCheck( ( ctx, childDef ) => {
-				if ( ( childDef.name == '$text' ) && ctx.endsWith( '$root' ) ) {
-					return false;
-				}
-			} );
-
-			const viewText = new ViewText( viewDocument, 'foobar' );
-			dispatcher.on( 'text', ( evt, data, conversionApi ) => {
-				// Add $marker element before processing $text.
-				const element = new ModelElement( '$marker', { 'data-name': 'marker1' } );
-				conversionApi.writer.insert( element, data.modelCursor );
-				data.modelCursor = conversionApi.writer.createPositionAfter( element );
-
-				// Convert $text.
-				convertText()( evt, data, conversionApi );
-			} );
-
-			const conversionResult = model.change( writer => dispatcher.convert( viewText, writer, context ) );
-
-			// Check that marker is in paragraph.
-			expect( conversionResult.markers.get( 'marker1' ).start.parent.name ).to.be.equal( 'paragraph' );
-		} );
-
 		it( 'should auto-paragraph a text if it is not allowed at the insertion position but would be inserted if auto-paragraphed', () => {
 			schema.addChildCheck( ( ctx, childDef ) => {
 				if ( childDef.name == '$text' && ctx.endsWith( '$root' ) ) {

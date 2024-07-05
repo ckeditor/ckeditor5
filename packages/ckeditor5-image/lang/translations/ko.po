@@ -91,7 +91,7 @@ msgstr "컴퓨터에서 이미지 가져오기"
 
 msgctxt "The label for the upload image from computer menu bar button (inside 'Image' menu)."
 msgid "From computer"
-msgstr ""
+msgstr "컴퓨터에서"
 
 msgctxt "The label for the replace image by upload from computer toolbar button."
 msgid "Replace image from computer"
@@ -143,15 +143,15 @@ msgstr "URL로 이미지 삽입"
 
 msgctxt "The label for the insert image via url dropdown button."
 msgid "Insert via URL"
-msgstr ""
+msgstr "URL 버튼으로 이미지 삽입"
 
 msgctxt "The label for the insert image via url menu bar button (standalone button)."
 msgid "Image via URL"
-msgstr ""
+msgstr "URL 메뉴를 통한 이미지 삽입"
 
 msgctxt "The label for the insert image via url menu bar button (inside 'Image' menu)."
 msgid "Via URL"
-msgstr ""
+msgstr "이미지 메뉴에서 URL을 통한 이미지 삽입"
 
 msgctxt "The input label for the Insert image via URL form for a pre-existing image."
 msgid "Update image URL"
@@ -187,4 +187,4 @@ msgstr "이미지 업로드 중에 오류 발생"
 
 msgctxt "Label for the widget inserted by the image feature (as in 'insert image')"
 msgid "Image"
-msgstr ""
+msgstr "이미지 삽입 기능으로 삽입된 위젯"

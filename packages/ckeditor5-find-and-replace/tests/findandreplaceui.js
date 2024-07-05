@@ -122,6 +122,10 @@ describe( 'FindAndReplaceUI', () => {
 					} );
 
 					testButton();
+
+					it( 'should have proper role set', () => {
+						expect( button.role ).to.be.equal( 'menuitemcheckbox' );
+					} );
 				} );
 
 				function testButton() {
@@ -137,6 +141,16 @@ describe( 'FindAndReplaceUI', () => {
 							button.fire( 'execute' );
 
 							sinon.assert.callOrder( disableCssTransitionsSpy, selectSpy, enableCssTransitionsSpy );
+						} );
+
+						it( 'should be bound to dialog id', () => {
+							dialogPlugin.id = 'findAndReplace';
+
+							expect( button.isOn ).to.be.true;
+
+							dialogPlugin.id = null;
+
+							expect( button.isOn ).to.be.false;
 						} );
 
 						it( 'the form should be reset', () => {

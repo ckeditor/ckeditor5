@@ -55,4 +55,4 @@ msgstr "キャレットを移動させて、ウィジェットの直後から入
 
 msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that moves selection from a nested editable area back to the parent widget."
 msgid "Move focus from an editable area back to the parent widget"
-msgstr ""
+msgstr "編集可能エリアから親ウィジェットへフォーカスを戻す"

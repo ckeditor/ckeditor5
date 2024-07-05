@@ -55,4 +55,4 @@ msgstr "Mou el punt d'inserció per a permetre l'escriptura immediatament despr�
 
 msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that moves selection from a nested editable area back to the parent widget."
 msgid "Move focus from an editable area back to the parent widget"
-msgstr ""
+msgstr "Torna a moure el focus des d'una àrea editable al giny principal"

@@ -107,24 +107,25 @@ Finally, you need to load the `ExternalDataWidget` plugin in your `main.js` file
 import { ClassicEditor, Bold, Italic, Essentials, Heading, List, Paragraph } from 'ckeditor5';
 import ExternalDataWidget from './external-data-widget/externaldatawidget';
 import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
+
 import 'ckeditor5/ckeditor5.css';
 
 ClassicEditor
-    .create( document.querySelector( '#editor' ), {
-        plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, ExternalDataWidget ],
-        toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'undo', 'redo' ]
-    } )
-    .then( editor => {
-        console.log( 'Editor was initialized', editor );
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, ExternalDataWidget ],
+		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'undo', 'redo' ]
+	} )
+	.then( editor => {
+		console.log( 'Editor was initialized', editor );
 
-        CKEditorInspector.attach( { editor: 'editor' } );
+		CKEditorInspector.attach( { editor: 'editor' } );
 
-        // Expose for playing in the console.
-        window.editor = editor;
-    } )
-    .catch( error => {
-        console.error( error.stack );
-    } );
+		// Expose for playing in the console.
+		window.editor = editor;
+	} )
+	.catch( error => {
+		console.error( error.stack );
+	} );
 ```
 
 At this stage you can run the project and open it in the browser to verify if it is loading correctly.

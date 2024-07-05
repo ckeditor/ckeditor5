@@ -4,7 +4,8 @@
  */
 
 import { Locale } from '@ckeditor/ckeditor5-utils';
-import { FileDialogButtonView, MenuBarMenuListItemFileDialogButtonView } from '../../src/index.js';
+import { MenuBarMenuListItemFileDialogButtonView } from '../../src/index.js';
+import { FileDialogListItemButtonView } from '../../src/button/filedialogbuttonview.js';
 
 describe( 'MenuBarMenuListItemFileDialogButtonView', () => {
 	let buttonView, locale;
@@ -20,7 +21,7 @@ describe( 'MenuBarMenuListItemFileDialogButtonView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should inherit from FileDialogButtonView', () => {
-			expect( buttonView ).to.be.instanceOf( FileDialogButtonView );
+			expect( buttonView ).to.be.instanceOf( FileDialogListItemButtonView );
 		} );
 
 		it( 'should set #withText', () => {
