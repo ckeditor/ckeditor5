@@ -28,7 +28,7 @@ Because of the breaking changes in the Angular library output format, the `@cked
 <table>
   <thead>
 	<tr>
-	 <th>CKEditor&nbsp;5&nbsp;version</th>
+	 <th>CKEditor&nbsp;5&nbsp; Angular component version</th>
 	 <th>Angular&nbsp;version</th>
 	 <th>Details</th>
 	</tr>
@@ -38,12 +38,22 @@ Because of the breaking changes in the Angular library output format, the `@cked
 	 <td colspan="3">Actively supported versions</td>
 	</tr>
 	<tr>
-	 <td><code>^6</code></td>
+	 <td><code>^8</code></td>
 	 <td><code>13+</code></td>
-	 <td>Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v37.0.0">37</a> or higher.</td>
+	 <td>Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v42.0.0">42</a> or higher.</td>
 	</tr>
 	<tr>
 	 <td colspan="3">Past releases (no longer maintained)</td>
+	</tr>
+	<tr>
+	 <td><code>^7</code></td>
+	 <td><code>13+</code></td>
+	 <td>Changes in peer dependencies (<a href="https://github.com/ckeditor/ckeditor5-angular/issues/376">issue</a>). Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v37.0.0">37</a> or higher.</td>
+	</tr>
+	<tr>
+	 <td><code>^6</code></td>
+	 <td><code>13+</code></td>
+	 <td>Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v37.0.0">37</a> or higher.</td>
 	</tr>
 	<tr>
 	 <td><code>^5</code></td>
