@@ -219,9 +219,6 @@
     ],
     "**/*.css": [
       "stylelint --quiet --allow-empty-input"
-    ],
-    "**/(*.{js,ts,css}|package.json)": [
-      "ckeditor5-dev-dependency-checker --quiet"
     ]
   },
   "eslintIgnore": [
