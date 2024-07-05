@@ -51,8 +51,7 @@ export interface EditorConfig {
 	 *
 	 * **Note:** This configuration works only for simple plugins which utilize the
 	 * {@link module:core/plugin~PluginInterface plugin interface} and have no dependencies. To extend a
-	 * build with complex features, create a
-	 * {@glink getting-started/legacy/installation-methods/quick-start-other#creating-custom-builds-with-online-builder custom build}.
+	 * build with complex features, try [CKEditr 5 Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs).
 	 *
 	 * **Note:** Make sure you include the new features in you toolbar configuration. Learn more
 	 * about the {@glink getting-started/setup/toolbar toolbar setup}.

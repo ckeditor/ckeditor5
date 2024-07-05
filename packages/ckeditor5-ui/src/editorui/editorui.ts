@@ -27,7 +27,13 @@ import {
 
 import type { Editor } from '@ckeditor/ckeditor5-core';
 import type { ViewDocumentLayoutChangedEvent, ViewScrollToTheSelectionEvent } from '@ckeditor/ckeditor5-engine';
-import type { MenuBarConfigAddedGroup, MenuBarConfigAddedItem, MenuBarConfigAddedMenu } from '../menubar/menubarview.js';
+import type {
+	default as MenuBarView,
+	MenuBarConfigAddedGroup,
+	MenuBarConfigAddedItem,
+	MenuBarConfigAddedMenu
+} from '../menubar/menubarview.js';
+import { normalizeMenuBarConfig } from '../menubar/utils.js';
 
 /**
  * A class providing the minimal interface that is required to successfully bootstrap any editor UI.
@@ -315,16 +321,6 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 	}
 
 	/**
-	 * Returns all default location configs for menu bar items.
-	 *
-	 * @internal
-	 */
-	public getExtraMenuBarItems(): Array<MenuBarConfigAddedItem | MenuBarConfigAddedGroup | MenuBarConfigAddedMenu> {
-		// TODO remove this method when _initMenuBar is moved here.
-		return this._extraMenuBarItems;
-	}
-
-	/**
 	 * Stores all editable elements used by the editor instance.
 	 *
 	 * @deprecated
@@ -345,6 +341,35 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 			{ editorUI: this } );
 
 		return this._editableElementsMap;
+	}
+
+	/**
+	 * Initializes menu bar.
+	 */
+	protected _initMenuBar( menuBarView: MenuBarView ): void {
+		const menuBarViewElement = menuBarView.element!;
+
+		this.focusTracker.add( menuBarViewElement );
+		this.editor.keystrokes.listenTo( menuBarViewElement );
+
+		const normalizedMenuBarConfig = normalizeMenuBarConfig( this.editor.config.get( 'menuBar' ) || {} );
+
+		menuBarView.fillFromConfig( normalizedMenuBarConfig, this.componentFactory, this._extraMenuBarItems );
+
+		this.editor.keystrokes.set( 'Esc', ( data, cancel ) => {
+			if ( menuBarViewElement.contains( this.editor.ui.focusTracker.focusedElement ) ) {
+				this.editor.editing.view.focus();
+				cancel();
+			}
+		} );
+
+		this.editor.keystrokes.set( 'Alt+F9', ( data, cancel ) => {
+			if ( !menuBarViewElement.contains( this.editor.ui.focusTracker.focusedElement ) ) {
+				menuBarView.isFocusBorderEnabled = true;
+				menuBarView!.focus();
+				cancel();
+			}
+		} );
 	}
 
 	/**

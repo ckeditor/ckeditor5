@@ -28,11 +28,6 @@ export default class DecoupledEditorUIView extends EditorUIView {
 	public readonly toolbar: ToolbarView;
 
 	/**
-	 * Menu bar view instance.
-	 */
-	public readonly menuBarView: MenuBarView;
-
-	/**
 	 * The editable of the decoupled editor UI.
 	 */
 	public readonly editable: InlineEditableUIView;
@@ -104,6 +99,6 @@ export default class DecoupledEditorUIView extends EditorUIView {
 	public override render(): void {
 		super.render();
 
-		this.registerChild( [ this.menuBarView, this.toolbar, this.editable ] );
+		this.registerChild( [ this.menuBarView!, this.toolbar, this.editable ] );
 	}
 }

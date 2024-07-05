@@ -27,11 +27,6 @@ export default class MultiRootEditorUIView extends EditorUIView {
 	public readonly toolbar: ToolbarView;
 
 	/**
-	 * Menu bar view instance.
-	 */
-	public readonly menuBarView: MenuBarView;
-
-	/**
 	 * Editable elements used by the multi-root editor UI.
 	 */
 	public readonly editables: Record<string, InlineEditableUIView>;
@@ -167,6 +162,6 @@ export default class MultiRootEditorUIView extends EditorUIView {
 
 		this.registerChild( Object.values( this.editables ) );
 		this.registerChild( this.toolbar );
-		this.registerChild( this.menuBarView );
+		this.registerChild( this.menuBarView! );
 	}
 }
