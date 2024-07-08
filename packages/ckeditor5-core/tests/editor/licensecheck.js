@@ -531,7 +531,7 @@ describe( 'Editor - license check', () => {
 
 			sinon.assert.calledOnce( fetchStub );
 			sinon.assert.calledWithMatch(
-				errorStub, 'license-key-validaton-endpoint-not-reachable', { 'url': 'https://ckeditor.com' } );
+				errorStub, 'license-key-validation-endpoint-not-reachable', { 'url': 'https://ckeditor.com' } );
 			expect( editor.isReadOnly ).to.be.false;
 		} );
 
