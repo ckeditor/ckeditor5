@@ -122,6 +122,6 @@ export { default as MenuBarMenuListView } from './menubar/menubarmenulistview.js
 export { default as MenuBarMenuListItemView } from './menubar/menubarmenulistitemview.js';
 export { default as MenuBarMenuListItemButtonView } from './menubar/menubarmenulistitembuttonview.js';
 export { default as MenuBarMenuListItemFileDialogButtonView } from './menubar/menubarmenulistitemfiledialogbuttonview.js';
-export { normalizeMenuBarConfig, DefaultMenuBarItems, _initMenuBar } from './menubar/utils.js';
+export { normalizeMenuBarConfig, DefaultMenuBarItems } from './menubar/utils.js';
 
 import './augmentation.js';

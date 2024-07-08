@@ -246,7 +246,7 @@ export default class BalloonToolbar extends Plugin {
 			return;
 		}
 
-		// Don not show the toolbar when all components inside are disabled
+		// Do not show the toolbar when all components inside are disabled
 		// see https://github.com/ckeditor/ckeditor5-ui/issues/269.
 		if ( Array.from( this.toolbarView.items ).every( ( item: any ) => item.isEnabled !== undefined && !item.isEnabled ) ) {
 			return;

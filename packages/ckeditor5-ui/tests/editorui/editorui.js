@@ -10,13 +10,13 @@ import ToolbarView from '../../src/toolbar/toolbarview.js';
 import TooltipManager from '../../src/tooltipmanager.js';
 import PoweredBy from '../../src/editorui/poweredby.js';
 import AriaLiveAnnouncer from '../../src/arialiveannouncer.js';
+import { EditorUIView, InlineEditableUIView, MenuBarView } from '../../src/index.js';
+
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-
 import { Editor } from '@ckeditor/ckeditor5-core';
-
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import ClassicTestEditor, { ClassicTestEditorUI } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 /* global document, console */
 
@@ -478,492 +478,643 @@ describe( 'EditorUI', () => {
 	} );
 
 	describe( 'Focus handling and navigation between editable areas and editor toolbars', () => {
-		describe( 'addToolbar()', () => {
-			let locale, toolbar;
+		describe( 'toolbar', () => {
+			describe( 'addToolbar()', () => {
+				let locale, toolbar;
 
-			beforeEach( () => {
-				ui = new EditorUI( editor );
-				locale = { t: val => val };
-				toolbar = new ToolbarView( locale );
-			} );
-
-			describe( 'for a ToolbarView that has already been rendered', () => {
-				it( 'adds ToolbarView#element to the EditorUI#focusTracker', () => {
-					const spy = testUtils.sinon.spy( ui.focusTracker, 'add' );
-					toolbar.render();
-
-					ui.addToolbar( toolbar );
-
-					sinon.assert.calledOnce( spy );
+				beforeEach( () => {
+					ui = new EditorUI( editor );
+					locale = { t: val => val };
+					toolbar = new ToolbarView( locale );
 				} );
 
-				it( 'adds ToolbarView#element to Editor#keystokeHandler', () => {
-					const spy = sinon.spy( editor.keystrokes, 'listenTo' );
-					toolbar.render();
-
-					ui.addToolbar( toolbar );
-
-					sinon.assert.calledOnce( spy );
-				} );
-			} );
-
-			describe( 'for a toolbar that has not been yet rendered', () => {
-				it( 'delayes changes to EditorUI#focusTracker and Editor#keystokeHandler until the toolbar gets rendered', async () => {
-					const spy = sinon.spy( editor.keystrokes, 'listenTo' );
-					const spy2 = testUtils.sinon.spy( ui.focusTracker, 'add' );
-
-					ui.addToolbar( toolbar );
-
-					await new Promise( resolve => {
-						toolbar.once( 'render', () => {
-							sinon.assert.calledOnce( spy );
-							sinon.assert.calledOnce( spy2 );
-
-							resolve();
-						} );
-
+				describe( 'for a ToolbarView that has already been rendered', () => {
+					it( 'adds ToolbarView#element to the EditorUI#focusTracker', () => {
+						const spy = testUtils.sinon.spy( ui.focusTracker, 'add' );
 						toolbar.render();
+
+						ui.addToolbar( toolbar );
+
+						sinon.assert.calledOnce( spy );
+					} );
+
+					it( 'adds ToolbarView#element to Editor#keystokeHandler', () => {
+						const spy = sinon.spy( editor.keystrokes, 'listenTo' );
+						toolbar.render();
+
+						ui.addToolbar( toolbar );
+
+						sinon.assert.calledOnce( spy );
 					} );
 				} );
-			} );
 
-			it( 'adds toolbar to the `_focusableToolbarDefinitions` array', () => {
-				ui.addToolbar( toolbar );
+				describe( 'for a toolbar that has not been yet rendered', () => {
+					it( 'delayes changes to EditorUI#focusTracker and Editor#keystokeHandler until the toolbar gets rendered', async () => {
+						const spy = sinon.spy( editor.keystrokes, 'listenTo' );
+						const spy2 = testUtils.sinon.spy( ui.focusTracker, 'add' );
 
-				expect( ui._focusableToolbarDefinitions.length ).to.equal( 1 );
-			} );
+						ui.addToolbar( toolbar );
 
-			it( 'adds toolbar to the `_focusableToolbarDefinitions` array with passed options', () => {
-				ui.addToolbar( toolbar, { isContextual: true } );
+						await new Promise( resolve => {
+							toolbar.once( 'render', () => {
+								sinon.assert.calledOnce( spy );
+								sinon.assert.calledOnce( spy2 );
 
-				expect( ui._focusableToolbarDefinitions.length ).to.equal( 1 );
-				expect( ui._focusableToolbarDefinitions[ 0 ].options ).to.not.be.undefined;
-			} );
-		} );
+								resolve();
+							} );
 
-		describe( 'Focusing toolbars on Alt+F10 key press', () => {
-			let locale, visibleToolbar, invisibleToolbar, visibleContextualToolbar, toolbarWithSetupAndCleanup;
-			let editingArea;
-			let visibleSpy, visibleContextualSpy, invisibleSpy, toolbarWithSetupAndCleanupSpy;
-
-			beforeEach( () => {
-				locale = { t: val => val };
-
-				visibleToolbar = new ToolbarView( locale );
-				visibleToolbar.ariaLabel = 'visible';
-				visibleToolbar.render();
-				document.body.appendChild( visibleToolbar.element );
-
-				visibleContextualToolbar = new ToolbarView( locale );
-				visibleContextualToolbar.ariaLabel = 'visible contextual';
-				visibleContextualToolbar.render();
-				document.body.appendChild( visibleContextualToolbar.element );
-
-				invisibleToolbar = new ToolbarView( locale );
-				invisibleToolbar.ariaLabel = 'invisible contextual';
-				invisibleToolbar.render();
-
-				toolbarWithSetupAndCleanup = new ToolbarView( locale );
-				toolbarWithSetupAndCleanup.ariaLabel = 'with before focus';
-				toolbarWithSetupAndCleanup.render();
-
-				ui.addToolbar( visibleToolbar );
-				ui.addToolbar( visibleContextualToolbar, { isContextual: true } );
-				ui.addToolbar( invisibleToolbar );
-
-				// E.g. a contextual balloon toolbar.
-				ui.addToolbar( toolbarWithSetupAndCleanup, {
-					beforeFocus: () => {
-						document.body.appendChild( toolbarWithSetupAndCleanup.element );
-					},
-					afterBlur: () => {
-						toolbarWithSetupAndCleanup.element.remove();
-					}
+							toolbar.render();
+						} );
+					} );
 				} );
 
-				editingArea = document.createElement( 'div' );
-				document.body.appendChild( editingArea );
+				it( 'adds toolbar to the `_focusableToolbarDefinitions` array', () => {
+					ui.addToolbar( toolbar );
 
-				ui.setEditableElement( 'main', editingArea );
-				ui.fire( 'ready' );
-
-				// Let's start with the editing root already focused.
-				ui.focusTracker.isFocused = true;
-				ui.focusTracker.focusedElement = editingArea;
-
-				visibleSpy = sinon.spy( visibleToolbar, 'focus' ).named( 'visible' );
-				visibleContextualSpy = sinon.spy( visibleContextualToolbar, 'focus' ).named( 'visibleContextual' );
-				invisibleSpy = sinon.spy( invisibleToolbar, 'focus' ).named( 'invisible' );
-				toolbarWithSetupAndCleanupSpy = sinon.spy( toolbarWithSetupAndCleanup, 'focus' ).named( 'withSetupAndCleanup' );
-			} );
-
-			afterEach( () => {
-				visibleToolbar.element.remove();
-				visibleContextualToolbar.element.remove();
-				toolbarWithSetupAndCleanup.element.remove();
-
-				editingArea.remove();
-
-				visibleToolbar.destroy();
-				visibleContextualToolbar.destroy();
-				invisibleToolbar.destroy();
-				toolbarWithSetupAndCleanup.destroy();
-			} );
-
-			it( 'should do nothing if no focusable toolbar was found', () => {
-				visibleContextualToolbar.element.remove();
-				visibleToolbar.element.remove();
-				toolbarWithSetupAndCleanup.element.style.display = 'none';
-
-				pressAltF10();
-
-				sinon.assert.notCalled( visibleContextualSpy );
-				sinon.assert.notCalled( visibleContextualSpy );
-				sinon.assert.notCalled( toolbarWithSetupAndCleanupSpy );
-				sinon.assert.notCalled( invisibleSpy );
-			} );
-
-			it( 'should do nothing if no toolbars were registered', () => {
-				const editor = new Editor();
-				const ui = editor.ui = new EditorUI( editor );
-				const editingArea = document.createElement( 'div' );
-				document.body.appendChild( editingArea );
-
-				ui.setEditableElement( 'main', editingArea );
-				ui.fire( 'ready' );
-
-				expect( () => {
-					pressAltF10( editor );
-				} ).to.not.throw();
-
-				editingArea.remove();
-				editor.destroy();
-				ui.destroy();
-			} );
-
-			it( 'should do nothing if the toolbar is already focused and there is nowhere else for the focus to go ' +
-				'(a toolbar without beforeFocus() / afterBlur())',
-			() => {
-				visibleToolbar.element.remove();
-				toolbarWithSetupAndCleanup.element.style.display = 'none';
-
-				pressAltF10();
-				ui.focusTracker.focusedElement = visibleContextualToolbar.element;
-
-				sinon.assert.calledOnce( visibleContextualSpy );
-
-				pressAltF10();
-				sinon.assert.calledOnce( visibleContextualSpy );
-				sinon.assert.notCalled( visibleSpy );
-				sinon.assert.notCalled( toolbarWithSetupAndCleanupSpy );
-				sinon.assert.notCalled( invisibleSpy );
-
-				expect( visibleContextualToolbar.element.parentNode ).to.equal( document.body );
-			} );
-
-			it( 'should do nothing if the toolbar is already focused and there is nowhere else for the focus to go ' +
-				'(a toolbar with beforeFocus() / afterBlur())',
-			() => {
-				visibleToolbar.element.remove();
-				visibleContextualToolbar.element.style.display = 'none';
-
-				pressAltF10();
-				ui.focusTracker.focusedElement = toolbarWithSetupAndCleanup.element;
-
-				sinon.assert.calledOnce( toolbarWithSetupAndCleanupSpy );
-
-				pressAltF10();
-				sinon.assert.calledOnce( toolbarWithSetupAndCleanupSpy );
-				sinon.assert.notCalled( visibleSpy );
-				sinon.assert.notCalled( visibleContextualSpy );
-				sinon.assert.notCalled( invisibleSpy );
-
-				expect( toolbarWithSetupAndCleanup.element.parentNode ).to.equal( document.body );
-			} );
-
-			it( 'should focus the first focusable toolbar (and pick the contextual one first)', () => {
-				pressAltF10();
-
-				sinon.assert.calledOnce( visibleContextualSpy );
-				sinon.assert.notCalled( visibleSpy );
-				sinon.assert.notCalled( invisibleSpy );
-			} );
-
-			it( 'should focus the next focusable toolbar', () => {
-				pressAltF10();
-				ui.focusTracker.focusedElement = visibleContextualToolbar.element;
-
-				pressAltF10();
-				ui.focusTracker.focusedElement = visibleToolbar.element;
-
-				sinon.assert.callOrder( visibleContextualSpy, visibleSpy );
-				sinon.assert.notCalled( invisibleSpy );
-			} );
-
-			it( 'should navigate across focusable toolbars and go back to the first one respecting priorities', () => {
-				pressAltF10();
-				ui.focusTracker.focusedElement = visibleContextualToolbar.element;
-
-				pressAltF10();
-				ui.focusTracker.focusedElement = visibleToolbar.element;
-
-				pressAltF10();
-				ui.focusTracker.focusedElement = toolbarWithSetupAndCleanup.element;
-
-				pressAltF10();
-				ui.focusTracker.focusedElement = visibleContextualToolbar.element;
-
-				sinon.assert.callOrder( visibleContextualSpy, visibleSpy, toolbarWithSetupAndCleanupSpy, visibleContextualSpy );
-				sinon.assert.notCalled( invisibleSpy );
-			} );
-
-			it( 'should avoid race betwen toolbars with beforeFocus()/afterBlur()', () => {
-				const secondToolbarWithSetupAndCleanup = new ToolbarView( locale );
-				secondToolbarWithSetupAndCleanup.ariaLabel = 'second with before focus';
-				secondToolbarWithSetupAndCleanup.render();
-
-				visibleToolbar.element.style.display = 'none';
-
-				const secondToolbarWithSetupAndCleanupSpy = sinon.spy( secondToolbarWithSetupAndCleanup, 'focus' )
-					.named( 'secondWithSetupAndCleanup' );
-
-				ui.addToolbar( secondToolbarWithSetupAndCleanup, {
-					beforeFocus: () => {
-						document.body.appendChild( secondToolbarWithSetupAndCleanup.element );
-					},
-					afterBlur: () => {
-						secondToolbarWithSetupAndCleanup.element.remove();
-					}
+					expect( ui._focusableToolbarDefinitions.length ).to.equal( 1 );
 				} );
 
-				// ----------------------------------------
+				it( 'adds toolbar to the `_focusableToolbarDefinitions` array with passed options', () => {
+					ui.addToolbar( toolbar, { isContextual: true } );
 
-				pressAltF10();
-				ui.focusTracker.focusedElement = visibleContextualToolbar.element;
-
-				pressAltF10();
-				ui.focusTracker.focusedElement = toolbarWithSetupAndCleanup.element;
-
-				pressAltF10();
-				ui.focusTracker.focusedElement = secondToolbarWithSetupAndCleanup.element;
-
-				pressAltF10();
-				ui.focusTracker.focusedElement = visibleContextualToolbar.element;
-
-				pressAltF10();
-				ui.focusTracker.focusedElement = toolbarWithSetupAndCleanup.element;
-
-				sinon.assert.callOrder(
-					visibleContextualSpy,
-					toolbarWithSetupAndCleanupSpy,
-					secondToolbarWithSetupAndCleanupSpy,
-					visibleContextualSpy,
-					toolbarWithSetupAndCleanupSpy
-				);
-
-				sinon.assert.notCalled( invisibleSpy );
-
-				// ----------------------------------------
-
-				secondToolbarWithSetupAndCleanup.element.remove();
+					expect( ui._focusableToolbarDefinitions.length ).to.equal( 1 );
+					expect( ui._focusableToolbarDefinitions[ 0 ].options ).to.not.be.undefined;
+				} );
 			} );
 
-			// https://github.com/ckeditor/ckeditor5/issues/12339
-			it( 'should work if the focus was already in the toolbar (e.g. a user clicked an item)', () => {
-				ui.focusTracker.focusedElement = visibleContextualToolbar.element;
+			describe( 'Focusing toolbars on Alt+F10 key press', () => {
+				let locale, visibleToolbar, invisibleToolbar, visibleContextualToolbar, toolbarWithSetupAndCleanup;
+				let editingArea;
+				let visibleSpy, visibleContextualSpy, invisibleSpy, toolbarWithSetupAndCleanupSpy;
 
-				pressAltF10();
-				ui.focusTracker.focusedElement = visibleToolbar.element;
+				beforeEach( () => {
+					locale = { t: val => val };
 
-				sinon.assert.calledOnce( visibleSpy );
-				sinon.assert.notCalled( visibleContextualSpy );
+					visibleToolbar = new ToolbarView( locale );
+					visibleToolbar.ariaLabel = 'visible';
+					visibleToolbar.render();
+					document.body.appendChild( visibleToolbar.element );
+
+					visibleContextualToolbar = new ToolbarView( locale );
+					visibleContextualToolbar.ariaLabel = 'visible contextual';
+					visibleContextualToolbar.render();
+					document.body.appendChild( visibleContextualToolbar.element );
+
+					invisibleToolbar = new ToolbarView( locale );
+					invisibleToolbar.ariaLabel = 'invisible contextual';
+					invisibleToolbar.render();
+
+					toolbarWithSetupAndCleanup = new ToolbarView( locale );
+					toolbarWithSetupAndCleanup.ariaLabel = 'with before focus';
+					toolbarWithSetupAndCleanup.render();
+
+					ui.addToolbar( visibleToolbar );
+					ui.addToolbar( visibleContextualToolbar, { isContextual: true } );
+					ui.addToolbar( invisibleToolbar );
+
+					// E.g. a contextual balloon toolbar.
+					ui.addToolbar( toolbarWithSetupAndCleanup, {
+						beforeFocus: () => {
+							document.body.appendChild( toolbarWithSetupAndCleanup.element );
+						},
+						afterBlur: () => {
+							toolbarWithSetupAndCleanup.element.remove();
+						}
+					} );
+
+					editingArea = document.createElement( 'div' );
+					document.body.appendChild( editingArea );
+
+					ui.setEditableElement( 'main', editingArea );
+					ui.fire( 'ready' );
+
+					// Let's start with the editing root already focused.
+					ui.focusTracker.isFocused = true;
+					ui.focusTracker.focusedElement = editingArea;
+
+					visibleSpy = sinon.spy( visibleToolbar, 'focus' ).named( 'visible' );
+					visibleContextualSpy = sinon.spy( visibleContextualToolbar, 'focus' ).named( 'visibleContextual' );
+					invisibleSpy = sinon.spy( invisibleToolbar, 'focus' ).named( 'invisible' );
+					toolbarWithSetupAndCleanupSpy = sinon.spy( toolbarWithSetupAndCleanup, 'focus' ).named( 'withSetupAndCleanup' );
+				} );
+
+				afterEach( () => {
+					visibleToolbar.element.remove();
+					visibleContextualToolbar.element.remove();
+					toolbarWithSetupAndCleanup.element.remove();
+
+					editingArea.remove();
+
+					visibleToolbar.destroy();
+					visibleContextualToolbar.destroy();
+					invisibleToolbar.destroy();
+					toolbarWithSetupAndCleanup.destroy();
+				} );
+
+				it( 'should do nothing if no focusable toolbar was found', () => {
+					visibleContextualToolbar.element.remove();
+					visibleToolbar.element.remove();
+					toolbarWithSetupAndCleanup.element.style.display = 'none';
+
+					pressAltF10();
+
+					sinon.assert.notCalled( visibleContextualSpy );
+					sinon.assert.notCalled( visibleContextualSpy );
+					sinon.assert.notCalled( toolbarWithSetupAndCleanupSpy );
+					sinon.assert.notCalled( invisibleSpy );
+				} );
+
+				it( 'should do nothing if no toolbars were registered', () => {
+					const editor = new Editor();
+					const ui = editor.ui = new EditorUI( editor );
+					const editingArea = document.createElement( 'div' );
+					document.body.appendChild( editingArea );
+
+					ui.setEditableElement( 'main', editingArea );
+					ui.fire( 'ready' );
+
+					expect( () => {
+						pressAltF10( editor );
+					} ).to.not.throw();
+
+					editingArea.remove();
+					editor.destroy();
+					ui.destroy();
+				} );
+
+				it( 'should do nothing if the toolbar is already focused and there is nowhere else for the focus to go ' +
+					'(a toolbar without beforeFocus() / afterBlur())',
+				() => {
+					visibleToolbar.element.remove();
+					toolbarWithSetupAndCleanup.element.style.display = 'none';
+
+					pressAltF10();
+					ui.focusTracker.focusedElement = visibleContextualToolbar.element;
+
+					sinon.assert.calledOnce( visibleContextualSpy );
+
+					pressAltF10();
+					sinon.assert.calledOnce( visibleContextualSpy );
+					sinon.assert.notCalled( visibleSpy );
+					sinon.assert.notCalled( toolbarWithSetupAndCleanupSpy );
+					sinon.assert.notCalled( invisibleSpy );
+
+					expect( visibleContextualToolbar.element.parentNode ).to.equal( document.body );
+				} );
+
+				it( 'should do nothing if the toolbar is already focused and there is nowhere else for the focus to go ' +
+					'(a toolbar with beforeFocus() / afterBlur())',
+				() => {
+					visibleToolbar.element.remove();
+					visibleContextualToolbar.element.style.display = 'none';
+
+					pressAltF10();
+					ui.focusTracker.focusedElement = toolbarWithSetupAndCleanup.element;
+
+					sinon.assert.calledOnce( toolbarWithSetupAndCleanupSpy );
+
+					pressAltF10();
+					sinon.assert.calledOnce( toolbarWithSetupAndCleanupSpy );
+					sinon.assert.notCalled( visibleSpy );
+					sinon.assert.notCalled( visibleContextualSpy );
+					sinon.assert.notCalled( invisibleSpy );
+
+					expect( toolbarWithSetupAndCleanup.element.parentNode ).to.equal( document.body );
+				} );
+
+				it( 'should focus the first focusable toolbar (and pick the contextual one first)', () => {
+					pressAltF10();
+
+					sinon.assert.calledOnce( visibleContextualSpy );
+					sinon.assert.notCalled( visibleSpy );
+					sinon.assert.notCalled( invisibleSpy );
+				} );
+
+				it( 'should focus the next focusable toolbar', () => {
+					pressAltF10();
+					ui.focusTracker.focusedElement = visibleContextualToolbar.element;
+
+					pressAltF10();
+					ui.focusTracker.focusedElement = visibleToolbar.element;
+
+					sinon.assert.callOrder( visibleContextualSpy, visibleSpy );
+					sinon.assert.notCalled( invisibleSpy );
+				} );
+
+				it( 'should navigate across focusable toolbars and go back to the first one respecting priorities', () => {
+					pressAltF10();
+					ui.focusTracker.focusedElement = visibleContextualToolbar.element;
+
+					pressAltF10();
+					ui.focusTracker.focusedElement = visibleToolbar.element;
+
+					pressAltF10();
+					ui.focusTracker.focusedElement = toolbarWithSetupAndCleanup.element;
+
+					pressAltF10();
+					ui.focusTracker.focusedElement = visibleContextualToolbar.element;
+
+					sinon.assert.callOrder( visibleContextualSpy, visibleSpy, toolbarWithSetupAndCleanupSpy, visibleContextualSpy );
+					sinon.assert.notCalled( invisibleSpy );
+				} );
+
+				it( 'should avoid race betwen toolbars with beforeFocus()/afterBlur()', () => {
+					const secondToolbarWithSetupAndCleanup = new ToolbarView( locale );
+					secondToolbarWithSetupAndCleanup.ariaLabel = 'second with before focus';
+					secondToolbarWithSetupAndCleanup.render();
+
+					visibleToolbar.element.style.display = 'none';
+
+					const secondToolbarWithSetupAndCleanupSpy = sinon.spy( secondToolbarWithSetupAndCleanup, 'focus' )
+						.named( 'secondWithSetupAndCleanup' );
+
+					ui.addToolbar( secondToolbarWithSetupAndCleanup, {
+						beforeFocus: () => {
+							document.body.appendChild( secondToolbarWithSetupAndCleanup.element );
+						},
+						afterBlur: () => {
+							secondToolbarWithSetupAndCleanup.element.remove();
+						}
+					} );
+
+					// ----------------------------------------
+
+					pressAltF10();
+					ui.focusTracker.focusedElement = visibleContextualToolbar.element;
+
+					pressAltF10();
+					ui.focusTracker.focusedElement = toolbarWithSetupAndCleanup.element;
+
+					pressAltF10();
+					ui.focusTracker.focusedElement = secondToolbarWithSetupAndCleanup.element;
+
+					pressAltF10();
+					ui.focusTracker.focusedElement = visibleContextualToolbar.element;
+
+					pressAltF10();
+					ui.focusTracker.focusedElement = toolbarWithSetupAndCleanup.element;
+
+					sinon.assert.callOrder(
+						visibleContextualSpy,
+						toolbarWithSetupAndCleanupSpy,
+						secondToolbarWithSetupAndCleanupSpy,
+						visibleContextualSpy,
+						toolbarWithSetupAndCleanupSpy
+					);
+
+					sinon.assert.notCalled( invisibleSpy );
+
+					// ----------------------------------------
+
+					secondToolbarWithSetupAndCleanup.element.remove();
+				} );
+
+				// https://github.com/ckeditor/ckeditor5/issues/12339
+				it( 'should work if the focus was already in the toolbar (e.g. a user clicked an item)', () => {
+					ui.focusTracker.focusedElement = visibleContextualToolbar.element;
+
+					pressAltF10();
+					ui.focusTracker.focusedElement = visibleToolbar.element;
+
+					sinon.assert.calledOnce( visibleSpy );
+					sinon.assert.notCalled( visibleContextualSpy );
+				} );
 			} );
-		} );
 
-		describe( 'Restoring focus on Esc key press', () => {
-			let locale, visibleToolbarA, visibleToolbarB, editingAreaA, editingAreaB, nonEngineEditingArea, invisibleEditingArea;
-			let editingFocusSpy, editingAreaASpy, editingAreaBSpy, nonEngineEditingAreaSpy, invisibleEditingAreaSpy;
+			describe( 'Restoring focus on Esc key press', () => {
+				let locale, visibleToolbarA, visibleToolbarB, editingAreaA, editingAreaB, nonEngineEditingArea, invisibleEditingArea;
+				let editingFocusSpy, editingAreaASpy, editingAreaBSpy, nonEngineEditingAreaSpy, invisibleEditingAreaSpy;
 
-			beforeEach( () => {
-				locale = { t: val => val };
+				beforeEach( () => {
+					locale = { t: val => val };
 
-				visibleToolbarA = new ToolbarView( locale );
-				visibleToolbarA.ariaLabel = 'visible A';
-				visibleToolbarA.render();
-				document.body.appendChild( visibleToolbarA.element );
+					visibleToolbarA = new ToolbarView( locale );
+					visibleToolbarA.ariaLabel = 'visible A';
+					visibleToolbarA.render();
+					document.body.appendChild( visibleToolbarA.element );
 
-				visibleToolbarB = new ToolbarView( locale );
-				visibleToolbarB.ariaLabel = 'visible B';
-				visibleToolbarB.render();
-				document.body.appendChild( visibleToolbarB.element );
+					visibleToolbarB = new ToolbarView( locale );
+					visibleToolbarB.ariaLabel = 'visible B';
+					visibleToolbarB.render();
+					document.body.appendChild( visibleToolbarB.element );
 
-				ui.addToolbar( visibleToolbarA );
-				ui.addToolbar( visibleToolbarB );
+					ui.addToolbar( visibleToolbarA );
+					ui.addToolbar( visibleToolbarB );
 
-				editingAreaA = document.createElement( 'div' );
-				editingAreaB = document.createElement( 'div' );
-				nonEngineEditingArea = document.createElement( 'div' );
-				invisibleEditingArea = document.createElement( 'div' );
+					editingAreaA = document.createElement( 'div' );
+					editingAreaB = document.createElement( 'div' );
+					nonEngineEditingArea = document.createElement( 'div' );
+					invisibleEditingArea = document.createElement( 'div' );
 
-				editingAreaA.setAttribute( 'id', 'A' );
-				editingAreaB.setAttribute( 'id', 'B' );
-				nonEngineEditingArea.setAttribute( 'id', 'non-engine' );
-				invisibleEditingArea.setAttribute( 'id', 'invisible' );
+					editingAreaA.setAttribute( 'id', 'A' );
+					editingAreaB.setAttribute( 'id', 'B' );
+					nonEngineEditingArea.setAttribute( 'id', 'non-engine' );
+					invisibleEditingArea.setAttribute( 'id', 'invisible' );
 
-				document.body.appendChild( editingAreaA );
-				document.body.appendChild( editingAreaB );
-				document.body.appendChild( nonEngineEditingArea );
-				document.body.appendChild( invisibleEditingArea );
+					document.body.appendChild( editingAreaA );
+					document.body.appendChild( editingAreaB );
+					document.body.appendChild( nonEngineEditingArea );
+					document.body.appendChild( invisibleEditingArea );
 
-				// Simulate e.g. a hidden source area.
-				invisibleEditingArea.style.display = 'none';
+					// Simulate e.g. a hidden source area.
+					invisibleEditingArea.style.display = 'none';
 
-				editor.model.document.createRoot( '$root', 'invisible' );
-				editor.model.document.createRoot( '$root', 'areaA' );
-				editor.model.document.createRoot( '$root', 'areaB' );
-				editor.editing.view.attachDomRoot( invisibleEditingArea, 'invisible' );
-				editor.editing.view.attachDomRoot( editingAreaA, 'areaA' );
-				editor.editing.view.attachDomRoot( editingAreaB, 'areaB' );
+					editor.model.document.createRoot( '$root', 'invisible' );
+					editor.model.document.createRoot( '$root', 'areaA' );
+					editor.model.document.createRoot( '$root', 'areaB' );
+					editor.editing.view.attachDomRoot( invisibleEditingArea, 'invisible' );
+					editor.editing.view.attachDomRoot( editingAreaA, 'areaA' );
+					editor.editing.view.attachDomRoot( editingAreaB, 'areaB' );
 
-				ui.setEditableElement( 'invisible', invisibleEditingArea );
-				ui.setEditableElement( 'areaA', editingAreaA );
-				ui.setEditableElement( 'areaB', editingAreaB );
-				ui.setEditableElement( 'nonEngine', nonEngineEditingArea );
-				ui.fire( 'ready' );
+					ui.setEditableElement( 'invisible', invisibleEditingArea );
+					ui.setEditableElement( 'areaA', editingAreaA );
+					ui.setEditableElement( 'areaB', editingAreaB );
+					ui.setEditableElement( 'nonEngine', nonEngineEditingArea );
+					ui.fire( 'ready' );
 
-				// Let's start with the editing root "A" already focused.
-				ui.focusTracker.isFocused = true;
-				ui.focusTracker.focusedElement = editingAreaA;
+					// Let's start with the editing root "A" already focused.
+					ui.focusTracker.isFocused = true;
+					ui.focusTracker.focusedElement = editingAreaA;
 
-				editingFocusSpy = sinon.spy( editor.editing.view, 'focus' );
-				editingAreaASpy = sinon.spy( editingAreaA, 'focus' );
-				editingAreaBSpy = sinon.spy( editingAreaB, 'focus' );
-				nonEngineEditingAreaSpy = sinon.spy( nonEngineEditingArea, 'focus' );
-				invisibleEditingAreaSpy = sinon.spy( invisibleEditingArea, 'focus' );
-			} );
+					editingFocusSpy = sinon.spy( editor.editing.view, 'focus' );
+					editingAreaASpy = sinon.spy( editingAreaA, 'focus' );
+					editingAreaBSpy = sinon.spy( editingAreaB, 'focus' );
+					nonEngineEditingAreaSpy = sinon.spy( nonEngineEditingArea, 'focus' );
+					invisibleEditingAreaSpy = sinon.spy( invisibleEditingArea, 'focus' );
+				} );
 
-			afterEach( () => {
-				visibleToolbarA.element.remove();
-				visibleToolbarB.element.remove();
+				afterEach( () => {
+					visibleToolbarA.element.remove();
+					visibleToolbarB.element.remove();
 
-				editingAreaA.remove();
-				editingAreaB.remove();
-				nonEngineEditingArea.remove();
-				invisibleEditingArea.remove();
+					editingAreaA.remove();
+					editingAreaB.remove();
+					nonEngineEditingArea.remove();
+					invisibleEditingArea.remove();
 
-				visibleToolbarA.destroy();
-				visibleToolbarB.destroy();
-			} );
+					visibleToolbarA.destroy();
+					visibleToolbarB.destroy();
+				} );
 
-			it( 'should do nothing if no toolbar is focused', () => {
-				expect( () => {
+				it( 'should do nothing if no toolbar is focused', () => {
+					expect( () => {
+						pressEsc();
+					} ).to.not.throw();
+				} );
+
+				it( 'should return focus back to the editing view if it came from there', () => {
+					// Catches the `There is no selection in any editable to focus.` warning.
+					sinon.stub( console, 'warn' );
+
+					ui.focusTracker.focusedElement = editor.editing.view.getDomRoot();
+
+					pressAltF10();
+					ui.focusTracker.focusedElement = visibleToolbarA.element;
+
 					pressEsc();
-				} ).to.not.throw();
-			} );
 
-			it( 'should return focus back to the editing view if it came from there', () => {
-				// Catches the `There is no selection in any editable to focus.` warning.
-				sinon.stub( console, 'warn' );
-
-				ui.focusTracker.focusedElement = editor.editing.view.getDomRoot();
-
-				pressAltF10();
-				ui.focusTracker.focusedElement = visibleToolbarA.element;
-
-				pressEsc();
-
-				sinon.assert.calledOnce( editingFocusSpy );
-				sinon.assert.notCalled( editingAreaASpy );
-				sinon.assert.notCalled( editingAreaBSpy );
-				sinon.assert.notCalled( nonEngineEditingAreaSpy );
-				sinon.assert.notCalled( invisibleEditingAreaSpy );
-			} );
-
-			it( 'should return focus back to the last focused editing area that does not belong to the editing view', () => {
-				ui.focusTracker.focusedElement = nonEngineEditingArea;
-
-				pressAltF10();
-				ui.focusTracker.focusedElement = visibleToolbarA.element;
-
-				pressEsc();
-
-				sinon.assert.calledOnce( nonEngineEditingAreaSpy );
-				sinon.assert.notCalled( editingAreaASpy );
-				sinon.assert.notCalled( editingAreaBSpy );
-				sinon.assert.notCalled( invisibleEditingAreaSpy );
-			} );
-
-			it( 'should return focus back to the last focused editing area after navigating across multiple toolbars', () => {
-				// Catches the `There is no selection in any editable to focus.` warning.
-				sinon.stub( console, 'warn' );
-
-				ui.focusTracker.focusedElement = editingAreaB;
-
-				pressAltF10();
-				ui.focusTracker.focusedElement = visibleToolbarA.element;
-
-				pressAltF10();
-				ui.focusTracker.focusedElement = visibleToolbarB.element;
-
-				pressEsc();
-
-				sinon.assert.calledOnce( editingFocusSpy );
-				sinon.assert.notCalled( editingAreaBSpy );
-				sinon.assert.notCalled( editingAreaASpy );
-				sinon.assert.notCalled( nonEngineEditingAreaSpy );
-				sinon.assert.notCalled( invisibleEditingAreaSpy );
-			} );
-
-			it( 'should focus the first editing area if the focus went straight to the toolbar without focusing any editing areas', () => {
-				// Catches the `There is no selection in any editable to focus.` warning.
-				sinon.stub( console, 'warn' );
-
-				ui.focusTracker.focusedElement = visibleToolbarA.element;
-
-				pressEsc();
-
-				sinon.assert.calledOnce( editingFocusSpy );
-				sinon.assert.notCalled( editingAreaASpy );
-				sinon.assert.notCalled( editingAreaBSpy );
-				sinon.assert.notCalled( nonEngineEditingAreaSpy );
-				sinon.assert.notCalled( invisibleEditingAreaSpy );
-			} );
-
-			it( 'should clean up after a focused toolbar that had afterBlur() defined in options', () => {
-				// Catches the `There is no selection in any editable to focus.` warning.
-				sinon.stub( console, 'warn' );
-
-				const toolbarWithCallbacks = new ToolbarView( locale );
-				toolbarWithCallbacks.ariaLabel = 'with callbacks';
-				toolbarWithCallbacks.render();
-
-				// E.g. a contextual balloon toolbar.
-				ui.addToolbar( toolbarWithCallbacks, {
-					beforeFocus: () => {
-						document.body.appendChild( toolbarWithCallbacks.element );
-					},
-					afterBlur: () => {
-						toolbarWithCallbacks.element.remove();
-					}
+					sinon.assert.calledOnce( editingFocusSpy );
+					sinon.assert.notCalled( editingAreaASpy );
+					sinon.assert.notCalled( editingAreaBSpy );
+					sinon.assert.notCalled( nonEngineEditingAreaSpy );
+					sinon.assert.notCalled( invisibleEditingAreaSpy );
 				} );
 
-				pressAltF10();
-				ui.focusTracker.focusedElement = visibleToolbarA.element;
+				it( 'should return focus back to the last focused editing area that does not belong to the editing view', () => {
+					ui.focusTracker.focusedElement = nonEngineEditingArea;
 
-				pressAltF10();
-				ui.focusTracker.focusedElement = visibleToolbarB.element;
+					pressAltF10();
+					ui.focusTracker.focusedElement = visibleToolbarA.element;
 
-				pressAltF10();
-				ui.focusTracker.focusedElement = toolbarWithCallbacks.element;
+					pressEsc();
 
-				pressEsc();
-				sinon.assert.calledOnce( editingFocusSpy );
-				sinon.assert.notCalled( editingAreaASpy );
-				sinon.assert.notCalled( editingAreaBSpy );
-				sinon.assert.notCalled( nonEngineEditingAreaSpy );
-				sinon.assert.notCalled( invisibleEditingAreaSpy );
+					sinon.assert.calledOnce( nonEngineEditingAreaSpy );
+					sinon.assert.notCalled( editingAreaASpy );
+					sinon.assert.notCalled( editingAreaBSpy );
+					sinon.assert.notCalled( invisibleEditingAreaSpy );
+				} );
+
+				it( 'should return focus back to the last focused editing area after navigating across multiple toolbars', () => {
+					// Catches the `There is no selection in any editable to focus.` warning.
+					sinon.stub( console, 'warn' );
+
+					ui.focusTracker.focusedElement = editingAreaB;
+
+					pressAltF10();
+					ui.focusTracker.focusedElement = visibleToolbarA.element;
+
+					pressAltF10();
+					ui.focusTracker.focusedElement = visibleToolbarB.element;
+
+					pressEsc();
+
+					sinon.assert.calledOnce( editingFocusSpy );
+					sinon.assert.notCalled( editingAreaBSpy );
+					sinon.assert.notCalled( editingAreaASpy );
+					sinon.assert.notCalled( nonEngineEditingAreaSpy );
+					sinon.assert.notCalled( invisibleEditingAreaSpy );
+				} );
+
+				it( 'should focus the first editing area if the focus went straight to the toolbar' +
+					'without focusing any editing areas', () => {
+					// Catches the `There is no selection in any editable to focus.` warning.
+					sinon.stub( console, 'warn' );
+
+					ui.focusTracker.focusedElement = visibleToolbarA.element;
+
+					pressEsc();
+
+					sinon.assert.calledOnce( editingFocusSpy );
+					sinon.assert.notCalled( editingAreaASpy );
+					sinon.assert.notCalled( editingAreaBSpy );
+					sinon.assert.notCalled( nonEngineEditingAreaSpy );
+					sinon.assert.notCalled( invisibleEditingAreaSpy );
+				} );
+
+				it( 'should clean up after a focused toolbar that had afterBlur() defined in options', () => {
+					// Catches the `There is no selection in any editable to focus.` warning.
+					sinon.stub( console, 'warn' );
+
+					const toolbarWithCallbacks = new ToolbarView( locale );
+					toolbarWithCallbacks.ariaLabel = 'with callbacks';
+					toolbarWithCallbacks.render();
+
+					// E.g. a contextual balloon toolbar.
+					ui.addToolbar( toolbarWithCallbacks, {
+						beforeFocus: () => {
+							document.body.appendChild( toolbarWithCallbacks.element );
+						},
+						afterBlur: () => {
+							toolbarWithCallbacks.element.remove();
+						}
+					} );
+
+					pressAltF10();
+					ui.focusTracker.focusedElement = visibleToolbarA.element;
+
+					pressAltF10();
+					ui.focusTracker.focusedElement = visibleToolbarB.element;
+
+					pressAltF10();
+					ui.focusTracker.focusedElement = toolbarWithCallbacks.element;
+
+					pressEsc();
+					sinon.assert.calledOnce( editingFocusSpy );
+					sinon.assert.notCalled( editingAreaASpy );
+					sinon.assert.notCalled( editingAreaBSpy );
+					sinon.assert.notCalled( nonEngineEditingAreaSpy );
+					sinon.assert.notCalled( invisibleEditingAreaSpy );
+				} );
 			} );
 		} );
+
+		describe( 'menu bar', () => {
+			let editorElement, menuBarView, menuBarEditor, menuBarEditorUI, domRoot;
+
+			beforeEach( async () => {
+				editorElement = document.body.appendChild( document.createElement( 'div' ) );
+
+				await MenuBarTestEditor.create( editorElement ).then( editor => {
+					menuBarEditor = editor;
+					menuBarEditorUI = menuBarEditor.ui;
+					menuBarView = menuBarEditorUI.view.menuBarView;
+
+					document.body.appendChild( menuBarView.element );
+				} );
+
+				domRoot = menuBarEditor.editing.view.domRoots.get( 'main' );
+			} );
+
+			afterEach( () => {
+				editorElement.remove();
+				menuBarEditorUI.destroy();
+				menuBarView.element.remove();
+			} );
+
+			describe( 'Focusing menu bar on Alt+F9 key press', () => {
+				beforeEach( () => {
+					menuBarEditorUI.focusTracker.isFocused = true;
+					menuBarEditorUI.focusTracker.focusedElement = domRoot;
+				} );
+
+				it( 'should enable focus border once focused using keyboard', () => {
+					expect( menuBarView.isFocusBorderEnabled ).to.be.false;
+					pressAltF9( menuBarEditor );
+					expect( menuBarView.isFocusBorderEnabled ).to.be.true;
+				} );
+
+				it( 'should focus the menu bar when the focus is in the editing root', () => {
+					const spy = testUtils.sinon.spy( menuBarView, 'focus' );
+
+					pressAltF9( menuBarEditor );
+
+					sinon.assert.calledOnce( spy );
+				} );
+
+				it( 'should do nothing if the menu bar is already focused', () => {
+					const domRootFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
+					const menuBarFocusSpy = testUtils.sinon.spy( menuBarView, 'focus' );
+
+					// Focus the toolbar.
+					pressAltF9( menuBarEditor );
+					menuBarEditorUI.focusTracker.focusedElement = menuBarView.element;
+
+					// Try Alt+F9 again.
+					pressAltF9( menuBarEditor );
+
+					sinon.assert.calledOnce( menuBarFocusSpy );
+					sinon.assert.notCalled( domRootFocusSpy );
+				} );
+			} );
+
+			describe( 'Restoring focus on Esc key press', () => {
+				beforeEach( () => {
+					menuBarEditorUI.focusTracker.isFocused = true;
+					menuBarEditorUI.focusTracker.focusedElement = domRoot;
+				} );
+
+				it( 'should move the focus back from the main toolbar to the editing root', () => {
+					const domRootFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
+					const menuBarFocusSpy = testUtils.sinon.spy( menuBarView, 'focus' );
+
+					// Focus the menu bar.
+					pressAltF9( menuBarEditor );
+					menuBarEditorUI.focusTracker.focusedElement = menuBarView.element;
+
+					pressEsc( menuBarEditor );
+
+					// sinon.assert.calledOnce( domRootFocusSpy );
+					sinon.assert.callOrder( menuBarFocusSpy, domRootFocusSpy );
+				} );
+
+				it( 'should do nothing if it was pressed when menu bar was not focused', () => {
+					const domRootFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
+					const menuBarFocusSpy = testUtils.sinon.spy( menuBarView, 'focus' );
+
+					pressEsc( menuBarEditor );
+
+					sinon.assert.notCalled( domRootFocusSpy );
+					sinon.assert.notCalled( menuBarFocusSpy );
+				} );
+			} );
+
+			class MenuBarTestEditor extends ClassicTestEditor {
+				constructor( sourceElementOrData, config ) {
+					super( sourceElementOrData, config );
+
+					const menuBarEditorUIView = new MenuBarEditorUIView( this.locale, this.editing.view, sourceElementOrData );
+					this.ui = new MenuBarEditorUI( this, menuBarEditorUIView );
+				}
+			}
+
+			class MenuBarEditorUI extends ClassicTestEditorUI {
+				init() {
+					super.init();
+
+					this._initMenuBar( this.view.menuBarView );
+				}
+			}
+
+			class MenuBarEditorUIView extends EditorUIView {
+				constructor(
+					locale,
+					editingView,
+					editableElement
+				) {
+					super( locale );
+
+					this.menuBarView = new MenuBarView( locale );
+					this.main = this.createCollection();
+					this.editable = new InlineEditableUIView( locale, editingView, editableElement );
+
+					this.menuBarView.extendTemplate( {
+						attributes: {
+							class: [
+								'ck-reset_all',
+								'ck-rounded-corners'
+							],
+							dir: locale.uiLanguageDirection
+						}
+					} );
+				}
+
+				render() {
+					super.render();
+
+					this.registerChild( this.menuBarView );
+					this.registerChild( this.editable );
+				}
+			}
+		} );
+
+		function pressAltF9( specificEditor ) {
+			specificEditor.keystrokes.press( {
+				keyCode: keyCodes.f9,
+				altKey: true,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			} );
+		}
 
 		function pressAltF10( specificEditor ) {
 			( specificEditor || editor ).keystrokes.press( {
