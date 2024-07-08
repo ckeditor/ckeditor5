@@ -12,17 +12,18 @@ As a pure JavaScript/TypeScript application, CKEditor&nbsp;5 will work inside an
 ## Using CKEditor&nbsp;5 Builder
 
 The easiest way to use CKEditor&nbsp;5 in your .NET project is preparing an editor preset with [CKEditor&nbsp;5 Builder](https://ckeditor.com/builder?redirect=docs) and including it into your project. Builder offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs. You can easily select:
+
 * the features you need,
 * the preferred framework (React, Angular, Vue or Vanilla JS),
 * the preferred distribution method.
 
 You get ready-to-use code tailored to your needs!
 
-## Setting up the project
-
-For the purpose of this guide, we will use a basic ASP.NET Core project created with `dotnet new webapp`. You can refer to the [ASP.NET Core documentation](https://learn.microsoft.com/en-us/aspnet/core/getting-started/?view=aspnetcore-7.0) to learn how to set up a project in the framework.
+## Ingegrating using .zip
 
 ## Integrating from CDN
+
+For the purpose of this guide, we will use a basic ASP.NET Core project created with `dotnet new webapp`. You can refer to the [ASP.NET Core documentation](https://learn.microsoft.com/en-us/aspnet/core/getting-started/?view=aspnetcore-7.0) to learn how to set up a project in the framework.
 
 Once the project has been prepared, create an `assets/vendor/ckeditor5.js` file in the existing `wwwroot` directory in your app. Your folder structure should resemble this one:
 
@@ -34,7 +35,7 @@ Once the project has been prepared, create an `assets/vendor/ckeditor5.js` file 
 ├── wwwroot
 │   ├── assets
 |      ├── vendor
-|          └── ckeditor.js
+|          └── ckeditor5.js
 │   ├── css
 │   ├── js
 │   ├── lib
@@ -115,7 +116,7 @@ Then, modify the `Index.cshtml` file in the `Pages` directory to include the CKE
 			}
 		}
 	</script>
-	<script type="module" src="assets/vendor/ckeditor.js"></script>
+	<script type="module" src="assets/vendor/ckeditor5.js"></script>
 </div>
 ```
 

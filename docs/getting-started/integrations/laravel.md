@@ -12,17 +12,18 @@ As a pure JavaScript/TypeScript application, CKEditor&nbsp;5 will work inside an
 ## Using CKEditor&nbsp;5 Builder
 
 The easiest way to use CKEditor&nbsp;5 in your Laravel project is preparing an editor preset with [CKEditor&nbsp;5 Builder](https://ckeditor.com/builder?redirect=preset) and including it into your project. It offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs. You can easily select:
+
 * the features you need,
 * the preferred framework (React, Angular, Vue or Vanilla JS),
 * the preferred distribution method.
 
 You get ready-to-use code tailored to your needs!
 
-## Setting up the project
-
-This guide assumes you have a Laravel project. You can create a basic Laravel project using [Composer](https://getcomposer.org/). Refer to the [Laravel documentation](https://laravel.com/docs/10.x/installation) to learn how to set up a project in the framework.
+## Ingegrating using .zip
 
 ## Integrating from CDN
+
+This guide assumes you have a Laravel project. You can create a basic Laravel project using [Composer](https://getcomposer.org/). Refer to the [Laravel documentation](https://laravel.com/docs/10.x/installation) to learn how to set up a project in the framework.
 
 Once the project has been prepared, create an `assets/vendor/ckeditor5.js` file in the existing `public` directory in your app. Your folder structure should resemble this one:
 
@@ -34,7 +35,7 @@ Once the project has been prepared, create an `assets/vendor/ckeditor5.js` file 
 ├── public
 │   ├── assets
 |      ├── vendor
-|          └── ckeditor.js
+|          └── ckeditor5.js
 │   ├── .htaccess
 │   ├── favicon.ico
 │   ├── index.php
@@ -115,7 +116,7 @@ Then, modify the `welcome.blade.php` file in the `resources/views` directory to 
 			}
 		}
 	</script>
-	<script type="module" src="{{ URL::asset('assets/vendor/ckeditor.js') }}"></script>
+	<script type="module" src="{{ URL::asset('assets/vendor/ckeditor5.js') }}"></script>
 </head>
 <body>
     <div id="editor"></div>
