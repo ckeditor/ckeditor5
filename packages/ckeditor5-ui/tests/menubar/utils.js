@@ -1868,8 +1868,6 @@ describe( 'MenuBarView utils', () => {
 		} ).then( editor => {
 			menuBarEditor = editor;
 			menuBarView = editor.ui.view.menuBarView;
-
-			document.body.appendChild( menuBarView.element );
 		} );
 
 		const helpMenu = menuBarView.menus.find( menu => menu.buttonView.label == 'Help' );
@@ -1883,7 +1881,6 @@ describe( 'MenuBarView utils', () => {
 
 		editorElement.remove();
 		menuBarEditor.ui.destroy();
-		menuBarView.element.remove();
 	} );
 
 	class MenuBarTestEditor extends ClassicTestEditor {
@@ -1899,7 +1896,7 @@ describe( 'MenuBarView utils', () => {
 		init() {
 			super.init();
 
-			this._initMenuBar( this.editor, this.view.menuBarView );
+			this._initMenuBar( this.view.menuBarView );
 		}
 	}
 
