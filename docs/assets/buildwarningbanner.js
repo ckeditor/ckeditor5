@@ -13,5 +13,5 @@ if ( window.location.host === 'ckeditor5.github.io' ) {
 		`Nightly documentation ahead. Switch to the <a href="${ stableUrl }?source=nightly">stable editor documentation</a>.`
 	);
 } else if ( window.location.href.includes( '/legacy/' ) ) {
-	window.umberto.showWarningBanner( 'You are in the legacy documentation.' );
+	window.umberto.showWarningBanner( 'You are reading the legacy documentation.' );
 }
