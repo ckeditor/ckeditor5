@@ -82,7 +82,7 @@ const tasks = new Listr( [
 		retry: 3
 	},
 	{
-		title: 'Checking if packages that returned 409 errors were uploaded correctly.',
+		title: 'Checking if packages that returned E409 error code were uploaded correctly.',
 		task: async ( _, task ) => {
 			return releaseTools.verifyPackagesPublishedCorrectly( {
 				packagesDirectory: RELEASE_NPM_DIRECTORY,
