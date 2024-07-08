@@ -24,8 +24,7 @@ function initEditors() {
 				toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
 				image: {
 					toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative' ]
-				},
-				menuBar: { isVisible: true }
+				}
 			} )
 			.then( editor => {
 				console.log( `${ selector } has been initialized`, editor );
@@ -33,6 +32,9 @@ function initEditors() {
 
 				window.editors[ selector ] = editor;
 				window.editables.push( editor.editing.view.document.getRoot() );
+
+				const editorNumber = selector.split( '-' )[ 1 ];
+				document.querySelector( `#menubar-container-${ editorNumber }` ).appendChild( editor.ui.view.menuBarView.element );
 
 				const observer = createObserver();
 
@@ -52,7 +54,11 @@ function initEditors() {
 
 function destroyEditors() {
 	for ( const selector in window.editors ) {
-		window.editors[ selector ].destroy().then( () => {
+		const editor = window.editors[ selector ];
+
+		editor.destroy().then( () => {
+			editor.ui.view.menuBarView.element.remove();
+
 			console.log( `${ selector } was destroyed.` );
 		} );
 	}
