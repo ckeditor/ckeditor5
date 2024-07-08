@@ -30,7 +30,7 @@ The menu bar is available in all editor types. Usage will vary depending on used
 
 ### Classic editor and Inline editor
 
-The menu bar is disabled by default. To make it available in your editor, set the `config.menuBar.isVisible` property to `true`. This will turn on the menu bar with a default set of features. The menu bar is located right above the editor toolbar.
+The menu bar is disabled by default. To make it available in your editor, set the {@link module:ui/menubar/menubarview~MenuBarConfig `config.menuBar.isVisible`} property to `true`. This will turn on the menu bar with a default set of features. The menu bar is located right above the editor toolbar.
 
 ```js
 ClassicEditor
@@ -42,9 +42,9 @@ ClassicEditor
 	} );
 ```
 
-### Decoupled editor, Balloon editor and Multi-root editor
+### Other editor types
 
-When using the Decoupled, Balloon or Multi-root editor, you will need to insert the menu bar in a desired place yourself. The menu bar HTML element is available under the `editor.ui.menuBarView.element` property.
+When using the Decoupled, Balloon or Multi-root editor, you will need to insert the menu bar in a desired place yourself. The menu bar HTML element is available under the {@link module:ui/editorui/editoruiview~EditorUIView#menuBarView `editor.ui.view.menuBarView.element`} property.
 
 ```html
 	<div id="menuBarContainer"></div>
@@ -69,15 +69,14 @@ The menu bar can be configured using the {@link module:core/editor/editorconfig~
 	Before adding a feature to the menu bar, make sure the plugin for that feature is added in the editor configuration.
 </info-box>
 
-## Menu bar components in custom plugins
+## Adding custom buttons to the menu bar
 
-To add menu bar components in a custom plugin, follow these steps:
+To add custom buttons or other components to the menu bar, follow these steps:
 
-1. Add the Menu Bar Component: Use the `editor.ui.componentFactory` to register your custom component.
-1. Implement the Component Logic: Define the behavior and appearance of your component.
-1. Use `editor.ui.addMenuBarItem()` method so your component won't require adding to editor config. Follow the same convention as in `config.menuBar.addItems`.
+1. Create a new UI component using {@link module:ui/componentfactory~ComponentFactory `editor.ui.componentFactory`}. Define its behavior and appearance.
+1. Use {@link module:ui/editorui/editorui~EditorUI#addMenuBarItem `editor.ui.addMenuBarItem()`} method to add your component to the menu bar at a desired position.
 
-Here's an example of a custom plugin that adds a button to the menu bar:
+Here's an example of a custom plugin that adds a button to the menu bar inside the "Format" menu, after the "Bold" button:
 
 ```js
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -87,8 +86,8 @@ class MyCustomPlugin extends Plugin {
 	init() {
 		const editor = this.editor;
 
-		// Register the toolbar button
-		editor.ui.componentFactory.add( 'myCustomButton', locale => {
+		// Register the toolbar button.
+		editor.ui.componentFactory.add( 'menuBar:myCustomButton', locale => {
 			const view = new ButtonView(locale);
 
 			view.set( {
@@ -97,7 +96,7 @@ class MyCustomPlugin extends Plugin {
 				tooltip: true
 			} );
 
-			// Execute a command when the button is clicked
+			// Execute a command when the button is clicked.
 			view.on( 'execute', () => {
 				editor.execute('myCustomCommand');
 			} );
@@ -105,9 +104,9 @@ class MyCustomPlugin extends Plugin {
 			return view;
 		} );
 
-		// Register your component in preferred default position
+		// Add your component in the preferred position.
 		editor.ui.addMenuBarItem( {
-			item: 'myCustomButton',
+			item: 'menuBar:myCustomButton',
 			position: 'after:menuBar:bold'
 		} );
     }
