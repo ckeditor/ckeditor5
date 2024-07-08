@@ -83,7 +83,7 @@ Because of the breaking changes in the Angular library output format, the `@cked
 	<tr>
 	 <td><code>^1</code></td>
 	 <td><code>5.x&nbsp;-&nbsp;8.x</code></td>
-	 <td>Angular versions are no longer maintained.</td>
+	 <td>Angular versions no longer maintained.</td>
 	</tr>
   </tbody>
 </table>
