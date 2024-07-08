@@ -1,9 +1,16 @@
 Changelog
 =========
 
-## [42.0.1](https://github.com/ckeditor/ckeditor5/compare/v42.0.0...v42.0.1) (July 8, 2024)
+## [42.0.1](https://github.com/ckeditor/ckeditor5/compare/v42.0.0...v42.0.1) (July 9, 2024)
 
-Internal changes only (updated dependencies, documentation, etc.).
+We are happy to announce the release of CKEditor 5 v42.0.1.
+
+### Release highlights
+
+This is a patch release that fixes issues with `ckeditor5-editor.css` and other editor-only stylesheets that contained extra newline characters causing incorrect syntax.
+
+If you maintain custom CKEditor 5 plugins and [migrated them to the new package generator](https://ckeditor.com/docs/ckeditor5/latest/updating/nim-migration/custom-plugins.html), you should update [`@ckeditor/ckeditor5-dev-build-tools`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-build-tools) to the latest version to avoid this problem in your plugin.
+
 
 ### Released packages
 
