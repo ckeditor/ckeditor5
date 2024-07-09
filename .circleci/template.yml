@@ -183,7 +183,12 @@ jobs:
             fi
       - run:
           name: Trigger CKEditor 5 release job
-          command: node scripts/ci/trigger-ckeditor5-continuous-integration.js -r ckeditor/ckeditor5 -c $CIRCLE_SHA1 -b $CIRCLE_BRANCH
+          command: |
+            export CKE5_GITHUB_REPOSITORY_SLUG=$( INTEGRATION_CI_ORGANIZATION )/$( INTEGRATION_CI_REPOSITORY )
+            export CKE5_GITHUB_TRIGGER_REPOSITORY_SLUG=$( CIRCLE_PROJECT_USERNAME )/$( CIRCLE_PROJECT_REPONAME )
+            export CKE5_GITHUB_RELEASE_BRANCH="release"
+
+            ckeditor5-dev-ci-trigger-circle-build
 
   cke5_trigger_uber_ci:
     machine: true
@@ -193,7 +198,11 @@ jobs:
       - bootstrap_repository_command
       - run:
           name: Trigger the Uber CI
-          command: node scripts/ci/trigger-ckeditor5-continuous-integration.js -r ckeditor/ckeditor5 -c $CIRCLE_SHA1
+          command: |
+            export CKE5_GITHUB_REPOSITORY_SLUG=$( INTEGRATION_CI_ORGANIZATION )/$( INTEGRATION_CI_REPOSITORY )
+            export CKE5_GITHUB_TRIGGER_REPOSITORY_SLUG=$( CIRCLE_PROJECT_USERNAME )/$( CIRCLE_PROJECT_REPONAME )
+  
+            ckeditor5-dev-ci-trigger-circle-build
 
   release_prepare:
     machine: true
