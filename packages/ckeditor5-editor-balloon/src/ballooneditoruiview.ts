@@ -23,7 +23,7 @@ export default class BalloonEditorUIView extends EditorUIView {
 	/**
 	 * Menu bar view instance.
 	 */
-	declare public menuBarView: MenuBarView;
+	public override menuBarView: MenuBarView;
 
 	/**
 	 * Creates an instance of the balloon editor UI view.

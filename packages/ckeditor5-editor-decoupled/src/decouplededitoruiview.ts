@@ -104,6 +104,6 @@ export default class DecoupledEditorUIView extends EditorUIView {
 	public override render(): void {
 		super.render();
 
-		this.registerChild( [ this.menuBarView!, this.toolbar, this.editable ] );
+		this.registerChild( [ this.menuBarView, this.toolbar, this.editable ] );
 	}
 }

@@ -167,6 +167,6 @@ export default class MultiRootEditorUIView extends EditorUIView {
 
 		this.registerChild( Object.values( this.editables ) );
 		this.registerChild( this.toolbar );
-		this.registerChild( this.menuBarView! );
+		this.registerChild( this.menuBarView );
 	}
 }
