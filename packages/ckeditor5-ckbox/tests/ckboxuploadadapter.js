@@ -996,7 +996,7 @@ describe( 'CKBoxUploadAdapter', () => {
 				for ( const { testName, workspaceId, tokenClaims } of testData ) {
 					it( testName, async () => {
 						TokenMock.initialToken = createToken( tokenClaims );
-						ckboxUtils._token.refreshToken();
+						( await ckboxUtils._token ).refreshToken();
 
 						sinonXHR.respondWith( 'GET', /\/categories/, [
 							200,
@@ -1035,9 +1035,9 @@ describe( 'CKBoxUploadAdapter', () => {
 			} );
 
 			describe( 'defaultUploadWorkspaceId is defined', () => {
-				it( 'should use the default workspace', () => {
+				it( 'should use the default workspace', async () => {
 					TokenMock.initialToken = createToken( { auth: { ckbox: { workspaces: [ 'workspace1', 'workspace2' ] } } } );
-					ckboxUtils._token.refreshToken();
+					( await ckboxUtils._token ).refreshToken();
 
 					sinonXHR.respondWith( 'GET', /\/categories/, [
 						200,
@@ -1075,9 +1075,9 @@ describe( 'CKBoxUploadAdapter', () => {
 						} );
 				} );
 
-				it( 'should use the default workspace when the user is superadmin', () => {
+				it( 'should use the default workspace when the user is superadmin', async () => {
 					TokenMock.initialToken = createToken( { auth: { ckbox: { role: 'superadmin' } } } );
-					ckboxUtils._token.refreshToken();
+					( await ckboxUtils._token ).refreshToken();
 
 					sinonXHR.respondWith( 'GET', /\/categories/, [
 						200,
@@ -1115,11 +1115,11 @@ describe( 'CKBoxUploadAdapter', () => {
 						} );
 				} );
 
-				it( 'should throw an error when default workspace is not listed in the token', () => {
+				it( 'should throw an error when default workspace is not listed in the token', async () => {
 					sinon.stub( console, 'error' );
 
 					TokenMock.initialToken = createToken( { auth: { ckbox: { workspaces: [ 'workspace1', 'workspace2' ] } } } );
-					ckboxUtils._token.refreshToken();
+					( await ckboxUtils._token ).refreshToken();
 
 					sinonXHR.respondWith( 'GET', /\/categories/, [
 						200,
@@ -1137,9 +1137,9 @@ describe( 'CKBoxUploadAdapter', () => {
 						.then( () => {
 							throw new Error( 'Expected to be rejected.' );
 						}, err => {
-							expect( console.error.callCount ).to.equal( 1 );
+							expect( console.error.callCount ).to.equal( 2 );
 							expect( console.error.firstCall.args[ 0 ] ).to.match( /^ckbox-access-default-workspace-error/ );
-							expect( err ).to.equal( 'Cannot access default workspace.' );
+							expect( err ).to.equal( 'Cannot determine a category for the uploaded file.' );
 						} );
 				} );
 			} );
