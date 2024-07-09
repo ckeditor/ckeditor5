@@ -20,17 +20,17 @@ import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import generateKey from '@ckeditor/ckeditor5-core/tests/_utils/generatelicensekey.js';
 
 describe( 'EvaluationBadge', () => {
-	let editor, element, trialLicenseKey;
+	let editor, element, developmentLicenseKey;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
-		trialLicenseKey = generateKey( { licenseType: 'trial' } ).licenseKey;
+		developmentLicenseKey = generateKey( { licenseType: 'development' } ).licenseKey;
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
 		editor = await createEditor( element, {
 			plugins: [ SourceEditing ],
-			licenseKey: trialLicenseKey
+			licenseKey: developmentLicenseKey
 		} );
 
 		testUtils.sinon.stub( editor.editing.view.getDomRoot(), 'getBoundingClientRect' ).returns( {
@@ -64,7 +64,7 @@ describe( 'EvaluationBadge', () => {
 		describe( 'balloon creation', () => {
 			it( 'should not throw if there is no view in EditorUI', () => {
 				expect( () => {
-					const editor = new Editor( { licenseKey: trialLicenseKey } );
+					const editor = new Editor( { licenseKey: developmentLicenseKey } );
 
 					editor.model.document.createRoot();
 					editor.ui = new EditorUI( editor );
@@ -89,8 +89,17 @@ describe( 'EvaluationBadge', () => {
 			} );
 
 			it( 'should create the balloon when license type is `trial`', async () => {
+				const { licenseKey, todayTimestamp } = generateKey( {
+					licenseType: 'trial',
+					isExpired: false,
+					daysAfterExpiration: -1
+				} );
+
+				const today = todayTimestamp;
+				const dateNow = sinon.stub( Date, 'now' ).returns( today );
+
 				const editor = await createEditor( element, {
-					licenseKey: trialLicenseKey
+					licenseKey
 				} );
 
 				expect( editor.ui.evaluationBadge._balloonView ).to.be.null;
@@ -106,12 +115,13 @@ describe( 'EvaluationBadge', () => {
 				);
 
 				await editor.destroy();
+
+				dateNow.restore();
 			} );
 
 			it( 'should create the balloon when license type is `development`', async () => {
-				const devLicenseKey = generateKey( { licenseType: 'development' } ).licenseKey;
 				const editor = await createEditor( element, {
-					licenseKey: devLicenseKey
+					licenseKey: developmentLicenseKey
 				} );
 
 				expect( editor.ui.evaluationBadge._balloonView ).to.be.null;
@@ -130,7 +140,7 @@ describe( 'EvaluationBadge', () => {
 			} );
 
 			it( 'should not depend on white-label', async () => {
-				const { licenseKey } = generateKey( { whiteLabel: true, licenseType: 'trial' } );
+				const { licenseKey } = generateKey( { whiteLabel: true, licenseType: 'development' } );
 				const editor = await createEditor( element, {
 					licenseKey
 				} );
@@ -478,7 +488,7 @@ describe( 'EvaluationBadge', () => {
 		it( 'should position the badge to the left right if the UI language is RTL (and powered-by is on the left)', async () => {
 			const editor = await createEditor( element, {
 				language: 'ar',
-				licenseKey: trialLicenseKey
+				licenseKey: developmentLicenseKey
 			} );
 
 			testUtils.sinon.stub( editor.ui.getEditableElement( 'main' ), 'getBoundingClientRect' ).returns( {
@@ -550,7 +560,7 @@ describe( 'EvaluationBadge', () => {
 						side: 'left'
 					}
 				},
-				licenseKey: trialLicenseKey
+				licenseKey: developmentLicenseKey
 			} );
 
 			testUtils.sinon.stub( editor.ui.getEditableElement( 'main' ), 'getBoundingClientRect' ).returns( {
@@ -596,7 +606,7 @@ describe( 'EvaluationBadge', () => {
 						position: 'border'
 					}
 				},
-				licenseKey: trialLicenseKey
+				licenseKey: developmentLicenseKey
 			} );
 
 			testUtils.sinon.stub( editor.ui.getEditableElement( 'main' ), 'getBoundingClientRect' ).returns( {
@@ -642,7 +652,7 @@ describe( 'EvaluationBadge', () => {
 						position: 'inside'
 					}
 				},
-				licenseKey: trialLicenseKey
+				licenseKey: developmentLicenseKey
 			} );
 
 			testUtils.sinon.stub( editor.ui.getEditableElement( 'main' ), 'getBoundingClientRect' ).returns( {
@@ -688,7 +698,7 @@ describe( 'EvaluationBadge', () => {
 						position: 'border'
 					}
 				},
-				licenseKey: trialLicenseKey
+				licenseKey: developmentLicenseKey
 			} );
 
 			const domRoot = editor.editing.view.getDomRoot();
@@ -722,7 +732,7 @@ describe( 'EvaluationBadge', () => {
 						position: 'inside'
 					}
 				},
-				licenseKey: trialLicenseKey
+				licenseKey: developmentLicenseKey
 			} );
 
 			rootRect = new Rect( { top: 0, left: 0, width: 400, right: 400, bottom: 200, height: 200 } );
@@ -907,7 +917,7 @@ describe( 'EvaluationBadge', () => {
 					position: 'inside'
 				}
 			},
-			licenseKey: trialLicenseKey
+			licenseKey: developmentLicenseKey
 		} );
 
 		setData( editor.model, '<heading2>foo[]bar</heading2>' );
