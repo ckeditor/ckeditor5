@@ -19,11 +19,13 @@ The easiest way to use CKEditor&nbsp;5 in your .NET project is preparing an edit
 
 You get ready-to-use code tailored to your needs!
 
-## Ingegrating using .zip
+## Setting up the project
+
+For the purpose of these guides, we will use a basic ASP.NET Core project created with `dotnet new webapp`. You can refer to the [ASP.NET Core documentation](https://learn.microsoft.com/en-us/aspnet/core/getting-started/?view=aspnetcore-7.0) to learn how to set up a project in the framework.
+
+## Ingegrating using ZIP
 
 ## Integrating from CDN
-
-For the purpose of this guide, we will use a basic ASP.NET Core project created with `dotnet new webapp`. You can refer to the [ASP.NET Core documentation](https://learn.microsoft.com/en-us/aspnet/core/getting-started/?view=aspnetcore-7.0) to learn how to set up a project in the framework.
 
 Once the project has been prepared, create an `assets/vendor/ckeditor5.js` file in the existing `wwwroot` directory in your app. Your folder structure should resemble this one:
 

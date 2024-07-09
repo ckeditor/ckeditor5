@@ -19,11 +19,13 @@ The easiest way to use CKEditor&nbsp;5 in your Laravel project is preparing an e
 
 You get ready-to-use code tailored to your needs!
 
-## Ingegrating using .zip
+## Setting up the project
+
+These guides assume you have a Laravel project. You can create a basic Laravel project using [Composer](https://getcomposer.org/). Refer to the [Laravel documentation](https://laravel.com/docs/10.x/installation) to learn how to set up a project in the framework.
+
+## Ingegrating using ZIP
 
 ## Integrating from CDN
-
-This guide assumes you have a Laravel project. You can create a basic Laravel project using [Composer](https://getcomposer.org/). Refer to the [Laravel documentation](https://laravel.com/docs/10.x/installation) to learn how to set up a project in the framework.
 
 Once the project has been prepared, create an `assets/vendor/ckeditor5.js` file in the existing `public` directory in your app. Your folder structure should resemble this one:
 
