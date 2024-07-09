@@ -85,6 +85,7 @@ All available Angular versions are [listed on npm](https://www.npmjs.com/package
 ### Using CKEditor&nbsp;5 Builder
 
 The easiest way to use CKEditor 5 in your Angular application is by configuring it with [CKEditor&nbsp;5 Builder](https://ckeditor.com/builder?redirect=docs) and integrating it with your application. Builder offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs. You can easily select:
+
 * the features you need,
 * the preferred framework (React, Angular, Vue or Vanilla JS),
 * the preferred distribution method.
@@ -169,7 +170,7 @@ export class AppComponent {
 		plugins: [
 			Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
 		],
-		licenseKey: '<YOUR_LICENSE_KEY>',
+		licenseKey: 'your-license-key',
 		mention: {
 			// Mention configuration
 		}
@@ -215,7 +216,7 @@ export class AppComponent {
 		plugins: [
 			Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
 		],
-		licenseKey: '<YOUR_LICENSE_KEY>',
+		licenseKey: 'your-license-key',
 		mention: {
 			// Mention configuration
 		}

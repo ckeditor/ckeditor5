@@ -77,7 +77,7 @@ function App() {
 				plugins: [
 					Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
 				],
-				licenseKey: '<YOUR_LICENSE_KEY>',
+				licenseKey: 'your-license-key',
 				mention: { 
 					// Mention configuration
 				},
