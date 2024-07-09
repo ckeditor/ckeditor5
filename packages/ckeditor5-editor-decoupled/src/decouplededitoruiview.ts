@@ -33,6 +33,11 @@ export default class DecoupledEditorUIView extends EditorUIView {
 	public readonly editable: InlineEditableUIView;
 
 	/**
+	 * Menu bar view instance.
+	 */
+	public override menuBarView: MenuBarView;
+
+	/**
 	 * Creates an instance of the decoupled editor UI view.
 	 *
 	 * @param locale The {@link module:core/editor/editor~Editor#locale} instance.
