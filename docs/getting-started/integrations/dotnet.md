@@ -23,7 +23,7 @@ You get ready-to-use code tailored to your needs!
 
 For the purpose of these guides, we will use a basic ASP.NET Core project created with `dotnet new webapp`. You can refer to the [ASP.NET Core documentation](https://learn.microsoft.com/en-us/aspnet/core/getting-started/?view=aspnetcore-7.0) to learn how to set up a project in the framework.
 
-## Ingegrating using ZIP
+## Integrating using ZIP
 
 ## Integrating from CDN
 
