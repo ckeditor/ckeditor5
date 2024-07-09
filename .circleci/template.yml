@@ -182,7 +182,7 @@ jobs:
               circleci-agent step halt
             fi
       - run:
-          name: Trigger the Uber CI
+          name: Trigger CKEditor 5 release job
           command: node scripts/ci/trigger-ckeditor5-continuous-integration.js -r ckeditor/ckeditor5 -c $CIRCLE_SHA1 -b $CIRCLE_BRANCH
 
   cke5_trigger_uber_ci:
