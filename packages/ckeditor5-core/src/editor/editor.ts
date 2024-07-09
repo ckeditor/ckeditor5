@@ -492,10 +492,10 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 						 * Your license key cannot be validated because of a network issue.
 						 * Please make sure that your setup does not block the request.
 						 *
-						 * @error license-key-validaton-endpoint-not-reachable
+						 * @error license-key-validation-endpoint-not-reachable
 						 * @param {String} url The URL that was attempted to reach.
 						 */
-						logError( 'license-key-validaton-endpoint-not-reachable', { url: licensePayload.usageEndpoint } );
+						logError( 'license-key-validation-endpoint-not-reachable', { url: licensePayload.usageEndpoint } );
 					} );
 				}, { priority: 'high' } );
 			}

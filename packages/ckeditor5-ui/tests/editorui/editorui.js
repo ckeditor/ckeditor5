@@ -9,6 +9,7 @@ import ComponentFactory from '../../src/componentfactory.js';
 import ToolbarView from '../../src/toolbar/toolbarview.js';
 import TooltipManager from '../../src/tooltipmanager.js';
 import PoweredBy from '../../src/editorui/poweredby.js';
+import EvaluationBadge from '../../src/editorui/evaluationbadge.js';
 import AriaLiveAnnouncer from '../../src/arialiveannouncer.js';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
@@ -53,6 +54,10 @@ describe( 'EditorUI', () => {
 
 		it( 'should create #poweredBy', () => {
 			expect( ui.poweredBy ).to.be.instanceOf( PoweredBy );
+		} );
+
+		it( 'should create #evaluationBadge', () => {
+			expect( ui.evaluationBadge ).to.be.instanceOf( EvaluationBadge );
 		} );
 
 		it( 'should create the aria live announcer instance', () => {
@@ -174,6 +179,14 @@ describe( 'EditorUI', () => {
 
 		it( 'should destroy #poweredBy', () => {
 			const destroySpy = sinon.spy( ui.poweredBy, 'destroy' );
+
+			ui.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
+		} );
+
+		it( 'should destroy #evaluationBadge', () => {
+			const destroySpy = sinon.spy( ui.evaluationBadge, 'destroy' );
 
 			ui.destroy();
 
