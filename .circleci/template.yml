@@ -186,6 +186,7 @@ jobs:
           command: |
             export CKE5_GITHUB_REPOSITORY_SLUG=$( INTEGRATION_CI_ORGANIZATION )/$( INTEGRATION_CI_REPOSITORY )
             export CKE5_GITHUB_TRIGGER_REPOSITORY_SLUG=$( CIRCLE_PROJECT_USERNAME )/$( CIRCLE_PROJECT_REPONAME )
+            export CKE5_COMMIT_SHA1=$CIRCLE_SHA1
             export CKE5_GITHUB_RELEASE_BRANCH="release"
 
             ckeditor5-dev-ci-trigger-circle-build
@@ -201,6 +202,7 @@ jobs:
           command: |
             export CKE5_GITHUB_REPOSITORY_SLUG=$( INTEGRATION_CI_ORGANIZATION )/$( INTEGRATION_CI_REPOSITORY )
             export CKE5_GITHUB_TRIGGER_REPOSITORY_SLUG=$( CIRCLE_PROJECT_USERNAME )/$( CIRCLE_PROJECT_REPONAME )
+            export CKE5_COMMIT_SHA1=$CIRCLE_SHA1
   
             ckeditor5-dev-ci-trigger-circle-build
 
