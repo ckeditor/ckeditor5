@@ -68,7 +68,7 @@ const editorConfig = {
 	},
 	placeholder: 'Type or paste your content here!',
 	plugins: [AccessibilityHelp, Autosave, Bold, Essentials, Italic, Mention, Paragraph, SelectAll, SlashCommand, Undo],
-	licenseKey: '<YOUR_LICENSE_KEY>',
+	licenseKey: 'your-license-key',
 	mention: {
 		feeds: [
 			{
