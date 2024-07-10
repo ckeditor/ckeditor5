@@ -65,6 +65,16 @@ describe( 'BodyCollection', () => {
 			expect( el.classList.contains( 'ck-reset_all' ) ).to.be.true;
 		} );
 
+		it( 'sets the role attirbute', () => {
+			const body = new BodyCollection( locale );
+
+			body.attachToDom();
+
+			const el = body.bodyCollectionContainer;
+
+			expect( el.getAttribute( 'role' ) ).to.equal( 'application' );
+		} );
+
 		it( 'sets the right dir attribute to the body region (LTR)', () => {
 			const body = new BodyCollection( locale );
 

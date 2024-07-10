@@ -580,6 +580,36 @@ describe( 'FocusCycler', () => {
 			sinon.assert.calledOnce( keyEvtData.preventDefault );
 			sinon.assert.calledOnce( keyEvtData.stopPropagation );
 		} );
+
+		it( 'should support keystroke handler filtering', () => {
+			const keystrokeHandler = new KeystrokeHandler();
+
+			cycler = new FocusCycler( {
+				focusables, focusTracker, keystrokeHandler,
+				actions: {
+					focusPrevious: [ 'arrowup', 'arrowleft' ]
+				},
+				keystrokeHandlerOptions: {
+					filter: evt => evt.foo
+				}
+			} );
+
+			const keyEvtData = {
+				keyCode: keyCodes.arrowleft,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+
+			const spy = sinon.spy( cycler, 'focusPrevious' );
+
+			keystrokeHandler.press( keyEvtData );
+
+			sinon.assert.notCalled( spy );
+
+			keyEvtData.foo = true;
+			keystrokeHandler.press( keyEvtData );
+			sinon.assert.calledOnce( spy );
+		} );
 	} );
 
 	describe( 'isViewWithFocusCycler', () => {

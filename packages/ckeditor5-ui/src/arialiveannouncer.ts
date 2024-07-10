@@ -110,10 +110,6 @@ export default class AriaLiveAnnouncer {
 			this.view.regionViews.add( politenessRegionView );
 		}
 
-		if ( announcement ) {
-			console.log( `[a11y] AriaLiveAnnouncer: "${ announcement }".` );
-		}
-
 		politenessRegionView.announce( {
 			announcement,
 			isUnsafeHTML
