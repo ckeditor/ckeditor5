@@ -313,6 +313,46 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 
 	/**
 	 * Registers an extra menu bar element, which could be a single item, a group of items, or a menu containing groups.
+	 *
+	 * ```ts
+	 * // Register a new menu bar item.
+	 * ui.extendMenuBar( {
+	 *   item: 'menuBar:customFunctionButton',
+	 *   position: 'after:menuBar:bold'
+	 * } );
+	 * ```
+	 *
+	 * ```ts
+	 * // Register a new menu bar group.
+	 * ui.extendMenuBar( {
+	 *   group: {
+	 *     groupId: 'customGroup',
+	 *     items: [
+	 *       'menuBar:customFunctionButton'
+	 *     ]
+	 *   },
+	 *   position: 'start:help'
+	 * } );
+	 * ```
+	 *
+	 * ```ts
+	 * // Register a new menu bar menu.
+	 * ui.extendMenuBar( {
+	 *   menu: {
+	 *     menuId: 'customMenu',
+	 *     label: 'customMenu',
+	 *     groups: [
+	 *       {
+	 *         groupId: 'customGroup',
+	 *         items: [
+	 *           'menuBar:customFunctionButton'
+	 *         ]
+	 *       }
+	 *     ]
+	 *   },
+	 *   position: 'after:help'
+	 * } );
+	 * ```
 	 */
 	public extendMenuBar(
 		config: MenuBarConfigAddedItem | MenuBarConfigAddedGroup | MenuBarConfigAddedMenu
