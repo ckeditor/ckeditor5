@@ -402,21 +402,21 @@ describe( 'EditorUI', () => {
 		it( 'should add element to array', () => {
 			const ui = new EditorUI( editor );
 
-			expect( ui._extraMenuBarItems ).to.have.lengthOf( 0 );
+			expect( ui._extraMenuBarElements ).to.have.lengthOf( 0 );
 
 			ui.extendMenuBar( {
 				item: 'foo',
 				position: 'after:bar'
 			} );
 
-			expect( ui._extraMenuBarItems ).to.have.lengthOf( 1 );
+			expect( ui._extraMenuBarElements ).to.have.lengthOf( 1 );
 
 			ui.extendMenuBar( {
 				item: 'foo2',
 				position: 'after:bar'
 			} );
 
-			expect( ui._extraMenuBarItems ).to.have.lengthOf( 2 );
+			expect( ui._extraMenuBarElements ).to.have.lengthOf( 2 );
 		} );
 	} );
 
