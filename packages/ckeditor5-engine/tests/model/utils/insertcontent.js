@@ -882,6 +882,20 @@ describe( 'DataController utils', () => {
 					);
 				} );
 
+				it( 'inserts object + text + object', () => {
+					setData( model, '<paragraph>foo[]</paragraph>' );
+
+					const affectedRange = insertHelper( '<blockWidget></blockWidget>foo<blockWidget></blockWidget>' );
+
+					expect( getData( model ) ).to.equal(
+						'<paragraph>foo</paragraph><blockWidget></blockWidget><paragraph>foo</paragraph>[<blockWidget></blockWidget>]'
+					);
+
+					expect( stringify( root, affectedRange ) ).to.equal(
+						'<paragraph>foo</paragraph>[<blockWidget></blockWidget><paragraph>foo</paragraph><blockWidget></blockWidget>]'
+					);
+				} );
+
 				it( 'inserts text + object (at the end)', () => {
 					setData( model, '<paragraph>foo[]</paragraph>' );
 					const affectedRange = insertHelper( 'xxx<blockWidget></blockWidget>' );
