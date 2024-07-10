@@ -323,6 +323,8 @@ describe( 'MenuBarView', () => {
 					}
 				]
 			);
+
+			menuBarView.destroy();
 		} );
 
 		describe( 'config normalization and clean-up', () => {

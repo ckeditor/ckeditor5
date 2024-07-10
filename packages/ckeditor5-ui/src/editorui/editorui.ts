@@ -312,7 +312,7 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 	}
 
 	/**
-	 * Stores default location config for given menu bar item.
+	 * Registers an extra menu bar item.
 	 */
 	public addMenuBarItem(
 		config: MenuBarConfigAddedItem | MenuBarConfigAddedGroup | MenuBarConfigAddedMenu
