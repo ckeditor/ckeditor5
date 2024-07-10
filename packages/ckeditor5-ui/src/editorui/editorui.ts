@@ -316,15 +316,13 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 	 *
 	 * ```ts
 	 * // Register a new menu bar item.
-	 * ui.extendMenuBar( {
+	 * editor.ui.extendMenuBar( {
 	 *   item: 'menuBar:customFunctionButton',
 	 *   position: 'after:menuBar:bold'
 	 * } );
-	 * ```
 	 *
-	 * ```ts
 	 * // Register a new menu bar group.
-	 * ui.extendMenuBar( {
+	 * editor.ui.extendMenuBar( {
 	 *   group: {
 	 *     groupId: 'customGroup',
 	 *     items: [
@@ -333,11 +331,9 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 	 *   },
 	 *   position: 'start:help'
 	 * } );
-	 * ```
 	 *
-	 * ```ts
 	 * // Register a new menu bar menu.
-	 * ui.extendMenuBar( {
+	 * editor.ui.extendMenuBar( {
 	 *   menu: {
 	 *     menuId: 'customMenu',
 	 *     label: 'customMenu',
