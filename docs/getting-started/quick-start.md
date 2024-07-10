@@ -390,14 +390,14 @@ Your final page should look similar to the one below.
 Files in the ZIP archive:
 
 * `index.html` &ndash; A sample file with a working editor.
-* The `ckeditor5` directory:
+* The `ckeditor5/` directory:
 	* `ckeditor5.js` &ndash; The ready-to-use editor ESM bundle contains the editor and all plugins. [Recommended build]
 	* `ckeditor.js.map` &ndash; The source map for the editor ESM bundle.
 	* `ckeditor5.umd.js` &ndash; The ready-to-use editor UMD bundle contains the editor and all plugins. [Secondary build]
 	* `ckeditor5.umd.js.map` &ndash; The source map for the editor UMD bundle.
 	* `*.css` &ndash; The style sheets for the editor, use `ckeditor5.css` in most cases. Read about other files in the {@link getting-started/setup/css Editor and content styles} guide.
 	* `translations/` &ndash; The editor UI translations (see the {@link getting-started/setup/ui-language Setting the UI language} guide).
-* The `ckeditor5-premium-features` directory:
+* The `ckeditor5-premium-features/` directory:
 	* `ckeditor5-premium-features.js` &ndash; ESM bundle of premium features.  [Recommended build]
 	* `ckeditor5-premium-features.umd.js` &ndash; UMD bundle of premium features contains the editor and all plugins. [Secondary build]
 	* `*.css` &ndash; The style sheets for the premium features. You will use `ckeditor5-premium-features.css` in most cases.
