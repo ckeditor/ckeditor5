@@ -74,7 +74,7 @@ The menu bar can be configured using the {@link module:core/editor/editorconfig~
 To add custom buttons or other components to the menu bar, follow these steps:
 
 1. Create a new UI component using {@link module:ui/componentfactory~ComponentFactory `editor.ui.componentFactory`}. Define its behavior and appearance.
-1. Use {@link module:ui/editorui/editorui~EditorUI#addMenuBarItem `editor.ui.addMenuBarItem()`} method to add your component to the menu bar at a desired position.
+1. Use {@link module:ui/editorui/editorui~EditorUI#extendMenuBar `editor.ui.extendMenuBar()`} method to add your component to the menu bar at a desired position.
 
 Here's an example of a custom plugin that adds a button to the menu bar inside the "Format" menu, after the "Bold" button:
 
@@ -105,7 +105,7 @@ class MyCustomPlugin extends Plugin {
 		} );
 
 		// Add your component in the preferred position.
-		editor.ui.addMenuBarItem( {
+		editor.ui.extendMenuBar( {
 			item: 'menuBar:myCustomButton',
 			position: 'after:menuBar:bold'
 		} );

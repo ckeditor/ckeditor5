@@ -398,20 +398,20 @@ describe( 'EditorUI', () => {
 		} );
 	} );
 
-	describe( 'addMenuBarItem()', () => {
+	describe( 'extendMenuBar()', () => {
 		it( 'should add element to array', () => {
 			const ui = new EditorUI( editor );
 
 			expect( ui._extraMenuBarItems ).to.have.lengthOf( 0 );
 
-			ui.addMenuBarItem( {
+			ui.extendMenuBar( {
 				item: 'foo',
 				position: 'after:bar'
 			} );
 
 			expect( ui._extraMenuBarItems ).to.have.lengthOf( 1 );
 
-			ui.addMenuBarItem( {
+			ui.extendMenuBar( {
 				item: 'foo2',
 				position: 'after:bar'
 			} );

@@ -132,7 +132,7 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 	/**
 	 * All additional menu bar items, groups or menus that have their default location defined.
 	 */
-	private _extraMenuBarItems: Array<MenuBarConfigAddedItem | MenuBarConfigAddedGroup | MenuBarConfigAddedMenu> = [];
+	private _extraMenuBarElements: Array<MenuBarConfigAddedItem | MenuBarConfigAddedGroup | MenuBarConfigAddedMenu> = [];
 
 	/**
 	 * Creates an instance of the editor UI class.
@@ -312,12 +312,12 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 	}
 
 	/**
-	 * Registers an extra menu bar item.
+	 * Registers an extra menu bar element, which could be a single item, a group of items, or a menu containing groups.
 	 */
-	public addMenuBarItem(
+	public extendMenuBar(
 		config: MenuBarConfigAddedItem | MenuBarConfigAddedGroup | MenuBarConfigAddedMenu
 	): void {
-		this._extraMenuBarItems.push( config );
+		this._extraMenuBarElements.push( config );
 	}
 
 	/**
@@ -354,7 +354,7 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 
 		const normalizedMenuBarConfig = normalizeMenuBarConfig( this.editor.config.get( 'menuBar' ) || {} );
 
-		menuBarView.fillFromConfig( normalizedMenuBarConfig, this.componentFactory, this._extraMenuBarItems );
+		menuBarView.fillFromConfig( normalizedMenuBarConfig, this.componentFactory, this._extraMenuBarElements );
 
 		this.editor.keystrokes.set( 'Esc', ( data, cancel ) => {
 			if ( menuBarViewElement.contains( this.editor.ui.focusTracker.focusedElement ) ) {
