@@ -26,6 +26,8 @@ import {
 } from './_utils/utils.js';
 import { MenuBarMenuViewPanelPositioningFunctions, processMenuBarConfig } from '../../src/menubar/utils.js';
 
+/* globals console */
+
 describe( 'MenuBarView utils', () => {
 	const locale = new Locale();
 	let factory;
@@ -1539,6 +1541,73 @@ describe( 'MenuBarView utils', () => {
 
 			menuBarView.element.remove();
 		} );
+
+		it( 'should correctly process extra menu bar items', () => {
+			const menuBarView = new MenuBarView( locale );
+			menuBarView.render();
+			document.body.appendChild( menuBarView.element );
+
+			menuBarView.fillFromConfig( normalizeMenuBarConfig( {
+				items: [
+					{
+						menuId: 'A',
+						label: 'A',
+						groups: [
+							{
+								groupId: 'A1',
+								items: [
+									'A#1',
+									{
+										menuId: 'AA',
+										label: 'AA',
+										groups: [
+											{
+												groupId: 'AA1',
+												items: [
+													'AA#1'
+												]
+											}
+										]
+									}
+								]
+							}
+						]
+					}
+				]
+			} ),
+			factory,
+			[
+				{
+					item: 'B#1',
+					position: 'after:A#1'
+				}
+			] );
+
+			const menuA = getMenuByLabel( menuBarView, 'A' );
+
+			menuA.isOpen = true;
+
+			const menuAA = getMenuByLabel( menuBarView, 'AA' );
+
+			menuAA.isOpen = true;
+
+			expect( barDump( menuBarView ) ).to.deep.equal(
+				[
+					{
+						label: 'A', isOpen: true, isFocused: false,
+						items: [
+							{ label: 'A#1', isFocused: false },
+							{ label: 'B#1', isFocused: false },
+							{ label: 'AA', isFocused: false, isOpen: true, items: [
+								{ label: 'AA#1', isFocused: false }
+							] }
+						]
+					}
+				]
+			);
+
+			menuBarView.element.remove();
+		} );
 	} );
 
 	describe( 'MenuBarMenuViewPanelPositioningFunctions', () => {
@@ -1714,6 +1783,8 @@ describe( 'MenuBarView utils', () => {
 		} );
 
 		it( 'should not add an extra item if it\'s not registered in component factory', () => {
+			sinon.stub( console, 'warn' );
+
 			const extraItems = [
 				{
 					item: 'Z#1',
@@ -1729,6 +1800,8 @@ describe( 'MenuBarView utils', () => {
 		} );
 
 		it( 'should not add an extra item if postition is incorrect', () => {
+			sinon.stub( console, 'warn' );
+
 			const extraItems = [
 				{
 					item: 'B#1',
