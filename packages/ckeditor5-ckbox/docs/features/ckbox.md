@@ -69,6 +69,8 @@ The easiest way to load the CKBox library is to include the `<script>` tag loadi
 <script src="https://cdn.ckbox.io/ckbox/2.4.0/ckbox.js"></script>
 ```
 
+Please note, that while using the `latest` call instead of a version number is available, it is not advised. The latest version may bring breaking changes that will stall your CKBox integration.
+
 The CKBox feature requires one of the following plugins to be loaded to work correctly:
 
 * {@link module:image/imageblock~ImageBlock The `ImageBlock` feature}
@@ -238,8 +240,6 @@ Also, make sure to include the translation file after loading the CKBox library:
 <script src="https://cdn.ckbox.io/ckbox/2.4.0/ckbox.js"></script>
 <script src="https://cdn.ckbox.io/ckbox/2.4.0/translations/es.js"></script>
 ```
-
-Please note, that while using the `latest` call instead of a version number is available, it is not advised. The latest version may bring breaking changes that will stall your CKBox integration.
 
 ### Providing the token URL
 
