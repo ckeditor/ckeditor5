@@ -51,8 +51,8 @@
     "@ckeditor/ckeditor5-paste-from-office": "39.0.0",
     "@ckeditor/ckeditor5-table": "39.0.0",
     "@ckeditor/ckeditor5-typing": "39.0.0",
-    "@flockjay/ckeditor5-video": "https://github.com/Flockjay/ckeditor5-video.git#31e93ba51e56ecb02786c9d3a82e5651e1a7fe49",
-    "@flockjay/ckeditor5-audio": "https://github.com/Flockjay/ckeditor5-audio.git#df9ccab57290233e4e7be3b77a8078f90953786a",
+    "@flockjay/ckeditor5-video": "https://github.com/Flockjay/ckeditor5-video.git#c0bb8176169b2d2446ee073ce0622973352619b4",
+    "@flockjay/ckeditor5-audio": "https://github.com/Flockjay/ckeditor5-audio.git#45ca690b280f8b1eb9a8abad18997a0356bd975d",
     "@phudak/ckeditor5-emoji": "^1.1.1"
   },
   "devDependencies": {
