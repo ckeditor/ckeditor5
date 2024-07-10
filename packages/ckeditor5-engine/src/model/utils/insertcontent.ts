@@ -353,15 +353,6 @@ class Insertion {
 		// If the real end was after the last auto paragraph then update relevant properties.
 		if ( positionAfterNode.isAfter( positionAfterLastNode ) ) {
 			this._lastNode = node;
-
-			/* istanbul ignore if -- @preserve */
-			if ( this.position.parent != node || !this.position.isAtEnd ) {
-				// Algorithm's correctness check. We should never end up here but it's good to know that we did.
-				// At this point the insertion position should be at the end of the last auto paragraph.
-				// Note: This error is documented in other place in this file.
-				throw new CKEditorError( 'insertcontent-invalid-insertion-position', this );
-			}
-
 			this.position = positionAfterNode;
 			this._setAffectedBoundaries( this.position );
 		}
