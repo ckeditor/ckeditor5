@@ -27,8 +27,13 @@ import {
 
 import type { Editor } from '@ckeditor/ckeditor5-core';
 import type { ViewDocumentLayoutChangedEvent, ViewScrollToTheSelectionEvent } from '@ckeditor/ckeditor5-engine';
+import type {
+	default as MenuBarView,
+	MenuBarConfigAddedGroup,
+	MenuBarConfigAddedItem,
+	MenuBarConfigAddedMenu
+} from '../menubar/menubarview.js';
 import { normalizeMenuBarConfig } from '../menubar/utils.js';
-import type MenuBarView from '../menubar/menubarview.js';
 
 /**
  * A class providing the minimal interface that is required to successfully bootstrap any editor UI.
@@ -123,6 +128,11 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 	 * All available & focusable toolbars.
 	 */
 	private _focusableToolbarDefinitions: Array<FocusableToolbarDefinition> = [];
+
+	/**
+	 * All additional menu bar items, groups or menus that have their default location defined.
+	 */
+	private _extraMenuBarElements: Array<MenuBarConfigAddedItem | MenuBarConfigAddedGroup | MenuBarConfigAddedMenu> = [];
 
 	/**
 	 * Creates an instance of the editor UI class.
@@ -302,6 +312,51 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 	}
 
 	/**
+	 * Registers an extra menu bar element, which could be a single item, a group of items, or a menu containing groups.
+	 *
+	 * ```ts
+	 * // Register a new menu bar item.
+	 * editor.ui.extendMenuBar( {
+	 *   item: 'menuBar:customFunctionButton',
+	 *   position: 'after:menuBar:bold'
+	 * } );
+	 *
+	 * // Register a new menu bar group.
+	 * editor.ui.extendMenuBar( {
+	 *   group: {
+	 *     groupId: 'customGroup',
+	 *     items: [
+	 *       'menuBar:customFunctionButton'
+	 *     ]
+	 *   },
+	 *   position: 'start:help'
+	 * } );
+	 *
+	 * // Register a new menu bar menu.
+	 * editor.ui.extendMenuBar( {
+	 *   menu: {
+	 *     menuId: 'customMenu',
+	 *     label: 'customMenu',
+	 *     groups: [
+	 *       {
+	 *         groupId: 'customGroup',
+	 *         items: [
+	 *           'menuBar:customFunctionButton'
+	 *         ]
+	 *       }
+	 *     ]
+	 *   },
+	 *   position: 'after:help'
+	 * } );
+	 * ```
+	 */
+	public extendMenuBar(
+		config: MenuBarConfigAddedItem | MenuBarConfigAddedGroup | MenuBarConfigAddedMenu
+	): void {
+		this._extraMenuBarElements.push( config );
+	}
+
+	/**
 	 * Stores all editable elements used by the editor instance.
 	 *
 	 * @deprecated
@@ -335,7 +390,7 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 
 		const normalizedMenuBarConfig = normalizeMenuBarConfig( this.editor.config.get( 'menuBar' ) || {} );
 
-		menuBarView.fillFromConfig( normalizedMenuBarConfig, this.componentFactory );
+		menuBarView.fillFromConfig( normalizedMenuBarConfig, this.componentFactory, this._extraMenuBarElements );
 
 		this.editor.keystrokes.set( 'Esc', ( data, cancel ) => {
 			if ( menuBarViewElement.contains( this.editor.ui.focusTracker.focusedElement ) ) {

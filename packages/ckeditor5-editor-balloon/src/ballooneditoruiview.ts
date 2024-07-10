@@ -21,6 +21,11 @@ export default class BalloonEditorUIView extends EditorUIView {
 	public readonly editable: InlineEditableUIView;
 
 	/**
+	 * Menu bar view instance.
+	 */
+	public override menuBarView: MenuBarView;
+
+	/**
 	 * Creates an instance of the balloon editor UI view.
 	 *
 	 * @param locale The {@link module:core/editor/editor~Editor#locale} instance.
@@ -63,6 +68,6 @@ export default class BalloonEditorUIView extends EditorUIView {
 		super.render();
 
 		this.registerChild( this.editable );
-		this.registerChild( this.menuBarView! );
+		this.registerChild( this.menuBarView );
 	}
 }

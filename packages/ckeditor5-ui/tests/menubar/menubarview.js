@@ -284,6 +284,49 @@ describe( 'MenuBarView', () => {
 			menuBarView.destroy();
 		} );
 
+		it( 'should correctly process extra menu bar items', () => {
+			const locale = new Locale();
+			const menuBarView = new MenuBarView( locale );
+
+			menuBarView.fillFromConfig( normalizeMenuBarConfig( {
+				items: [
+					{
+						menuId: 'A',
+						label: 'A',
+						groups: [
+							{
+								groupId: 'A1',
+								items: [
+									'item1'
+								]
+							}
+						]
+					}
+				]
+			} ),
+			factory,
+			[
+				{
+					item: 'item2',
+					position: 'after:item1'
+				}
+			] );
+
+			expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal(
+				[
+					{
+						label: 'A', isOpen: true, isFocused: false,
+						items: [
+							{ label: 'item1', isFocused: false },
+							{ label: 'item2', isFocused: false }
+						]
+					}
+				]
+			);
+
+			menuBarView.destroy();
+		} );
+
 		describe( 'config normalization and clean-up', () => {
 			describe( 'user config', () => {
 				beforeEach( () => {
