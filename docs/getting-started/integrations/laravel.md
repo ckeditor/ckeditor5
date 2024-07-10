@@ -28,7 +28,7 @@ These guides assume you have a Laravel project. You can create a basic Laravel p
 Integrating the CKEditor 5 using ZIP is probably the quickest method to include a rich text editor in your application.
 
 <info-box>
-	Our new Builder does not provide ZIP output yet - but it will in the future. In the meantime, you can use one of the ZIP packages provided [here](https://ckeditor.com/ckeditor-5/download/#zip).
+	Our new Builder does not provide ZIP output yet - but it will in the future. In the meantime, you can use one of the generic ZIP packages provided [here](https://ckeditor.com/ckeditor-5/download/#zip).
 </info-box>
 
 After downloading and unpacking the ZIP archive, copy the `ckeditor5.js` and `ckeditor5.css` files in the `public/assets/vendor/` directory. The folder structure of your app should resemble this one.
