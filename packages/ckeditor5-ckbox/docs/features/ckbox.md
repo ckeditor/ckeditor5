@@ -236,7 +236,7 @@ Also, make sure to include the translation file after loading the CKBox library:
 
 ```html
 <script src="https://cdn.ckbox.io/ckbox/latest/ckbox.js"></script>
-<script src="https://cdn.ckbox.io/CKBox/1.2.1/translations/es.js"></script>
+<script src="https://cdn.ckbox.io/ckbox/latest/translations/es.js"></script>
 ```
 
 ### Providing the token URL

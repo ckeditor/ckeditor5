@@ -170,7 +170,7 @@ export class AppComponent {
 		plugins: [
 			Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
 		],
-		licenseKey: 'your-license-key',
+		licenseKey: '<YOUR_LICENSE_KEY>',
 		mention: {
 			// Mention configuration
 		}
@@ -216,7 +216,7 @@ export class AppComponent {
 		plugins: [
 			Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo
 		],
-		licenseKey: 'your-license-key',
+		licenseKey: '<YOUR_LICENSE_KEY>',
 		mention: {
 			// Mention configuration
 		}

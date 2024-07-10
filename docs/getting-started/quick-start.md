@@ -239,7 +239,7 @@ ClassicEditor
 				'formatPainter'
 			]
 		},
-		licenseKey: 'your-license-key'
+		licenseKey: '<YOUR_LICENSE_KEY>'
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -309,7 +309,7 @@ In the following script tag, import the desired plugins and add them to the `plu
 					'formatPainter'
 				]
 			},
-			licenseKey: 'your-license-key'
+			licenseKey: '<YOUR_LICENSE_KEY>'
 		} )
 		.then( /* ... */ )
 		.catch( /* ... */ );
@@ -373,7 +373,7 @@ Your final page should look similar to the one below.
 							'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|', 'formatPainter'
 						]
 					},
-					licenseKey: 'your-license-key'
+					licenseKey: '<YOUR_LICENSE_KEY>'
 				} )
 				.then( /* ... */ )
 				.catch( /* ... */ );
