@@ -235,9 +235,11 @@ ClassicEditor
 Also, make sure to include the translation file after loading the CKBox library:
 
 ```html
-<script src="https://cdn.ckbox.io/ckbox/latest/ckbox.js"></script>
-<script src="https://cdn.ckbox.io/ckbox/latest/translations/es.js"></script>
+<script src="https://cdn.ckbox.io/ckbox/2.0.0/ckbox.js"></script>
+<script src="https://cdn.ckbox.io/ckbox/2.0.0/translations/es.js"></script>
 ```
+
+Please note, that while using the `latest` call instead of a version number is available, it is not advised. The latest version may bring breaking changes that will stall your CKBox integration.
 
 ### Providing the token URL
 
