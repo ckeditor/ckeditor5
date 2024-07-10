@@ -179,6 +179,19 @@ function getCodeLineTextNodeAtPosition( position: Position ): Text | null {
 		nodeAtPosition = position.nodeBefore;
 	}
 
+	// <codeBlock>foo <inlineElement></inlineElement>^</codeBlock>
+	// <codeBlock><inlineElement></inlineElement>^</codeBlock>
+	if ( nodeAtPosition && nodeAtPosition.is( 'element' ) && !nodeAtPosition.is( 'element', 'softBreak' ) ) {
+		while ( nodeAtPosition.previousSibling !== null && !nodeAtPosition.previousSibling.is( 'element', 'softBreak' ) ) {
+			nodeAtPosition = nodeAtPosition.previousSibling;
+		}
+
+		// <codeBlock><inlineElement></inlineElement>^</codeBlock>
+		if ( nodeAtPosition.is( 'element' ) ) {
+			return null;
+		}
+	}
+
 	// <codeBlock>^</codeBlock>
 	// <codeBlock>foo^<softBreak></softBreak>bar</codeBlock>
 	if ( !nodeAtPosition || nodeAtPosition.is( 'element', 'softBreak' ) ) {

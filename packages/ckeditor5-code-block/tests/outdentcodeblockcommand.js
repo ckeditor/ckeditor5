@@ -132,6 +132,30 @@ describe( 'OutdentCodeBlockCommand', () => {
 			expect( outdentCommand.isEnabled ).to.be.false;
 		} );
 
+		it( 'should not break with inline elements at the end of line', () => {
+			model.schema.register( 'inlineElement', {
+				allowWhere: '$text'
+			} );
+
+			setModelData( model, '<codeBlock language="foo">foo<inlineElement></inlineElement>[]</codeBlock>' );
+
+			expect( model.change( writer => {
+				writer.insertText( '    	    ', model.document.getRoot().getChild( 0 ), 0 );
+			} ) ).to.not.throw;
+		} );
+
+		it( 'should not break with only the inline elements in line', () => {
+			model.schema.register( 'inlineElement', {
+				allowWhere: '$text'
+			} );
+
+			setModelData( model, '<codeBlock language="foo"><inlineElement></inlineElement>[]</codeBlock>' );
+
+			expect( model.change( writer => {
+				writer.insertText( '    	    ', model.document.getRoot().getChild( 0 ), 0 );
+			} ) ).to.not.throw;
+		} );
+
 		describe( 'config.codeBlock.indentSequence', () => {
 			it( 'should be respected (#1)', () => {
 				return ModelTestEditor
