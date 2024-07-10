@@ -91,7 +91,7 @@ export default {
 			editorConfig: {
 			  plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo ],
 			  toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
-			  licenseKey: 'your-license-key',
+			  licenseKey: '<YOUR_LICENSE_KEY>',
 			  mention: { 
 				  // Mention configuration
 			  },
