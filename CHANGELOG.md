@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## [42.0.1](https://github.com/ckeditor/ckeditor5/compare/v42.0.0...v42.0.1) (July 9, 2024)
+## [42.0.1](https://github.com/ckeditor/ckeditor5/compare/v42.0.0...v42.0.1) (July 11, 2024)
 
 We are happy to announce the release of CKEditor 5 v42.0.1.
 
