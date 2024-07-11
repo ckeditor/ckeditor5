@@ -198,7 +198,7 @@ function getCodeLineTextNodeAtPosition( position: Position ): Text | null {
 
 	// If there is a node at the position, find the first node at the beginning of the line.
 	if ( nodeAtPosition && !nodeAtPosition.is( 'element', 'softBreak' ) ) {
-		while ( nodeAtPosition.previousSibling !== null && !nodeAtPosition.previousSibling.is( 'element', 'softBreak' ) ) {
+		while ( nodeAtPosition.previousSibling && !nodeAtPosition.previousSibling.is( 'element', 'softBreak' ) ) {
 			nodeAtPosition = nodeAtPosition.previousSibling;
 		}
 	}
