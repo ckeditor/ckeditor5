@@ -195,7 +195,7 @@ Your final page should look similar to the one below.
 If you do not want to build your project using npm and cannot rely on the CDN delivery, you can download ready-to-run files with CKEditor&nbsp;5 and all its plugins.
 
 1. <a href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/zip/ckeditor5-{@var ckeditor5-version}.zip">Download the ZIP archive with the latest CKEditor&nbsp;5 distribution.</a>
-2. Extract the ZIP archive into a dedicated directory inside your project. Include the editor version in the directory name to ensure proper cache invalidation whenever you install a new version of CKEditor&nbsp;5.
+2. Extract the ZIP archive into a dedicated directory inside your project (for example, `vendor/`). Include the editor version in the directory name to ensure proper cache invalidation whenever you install a new version of CKEditor&nbsp;5.
 
 Files included in the ZIP archive:
 
@@ -207,8 +207,6 @@ Files included in the ZIP archive:
 * `ckeditor5/*.css` &ndash; The style sheets for the editor. You will use `ckeditor5.css` in most cases. Read about other files in the {@link getting-started/setup/css Editor and content styles} guide.
 * `translations/` &ndash; The editor UI translations (see the {@link getting-started/setup/ui-language Setting the UI language} guide).
 * The `README.md` and `LICENSE.md` files.
-
-Copy files to your project directory (e.g., to a `vendor/` directory).
 
 The easiest way to see the editor in action is to serve the `index.html` file via an HTTP server.
 
@@ -393,7 +391,7 @@ Your final page should look similar to the one below.
 ### Installing premium features from a ZIP file
 
 1. <a href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/zip/ckeditor5-premium-features-{@var ckeditor5-version}.zip">Download the ZIP archive with the latest CKEditor&nbsp;5 distribution and premium features.</a>
-2. Extract the ZIP archive into a dedicated directory inside your project. Include the editor version in the directory name to ensure proper cache invalidation whenever you install a new version of CKEditor&nbsp;5.
+2. Extract the ZIP archive into a dedicated directory inside your project (for example, `vendor/`). Include the editor version in the directory name to ensure proper cache invalidation whenever you install a new version of CKEditor&nbsp;5.
 
 Files in the ZIP archive:
 
@@ -411,8 +409,6 @@ Files in the ZIP archive:
   * `*.css` &ndash; The style sheets for the premium features. You will use `ckeditor5-premium-features.css` in most cases.
   * `translations/` &ndash; The premium features UI translations.
 * The `README.md` and `LICENSE.md` files.
-
-Copy files to your project directory (e.g., to a `vendor/` directory).
 
 The easiest way to see the editor in action is to serve the `index.html` file via an HTTP server.
 
