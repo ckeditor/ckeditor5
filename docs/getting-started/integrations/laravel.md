@@ -23,109 +23,6 @@ You get ready-to-use code tailored to your needs!
 
 These guides assume you have a Laravel project. You can create a basic Laravel project using [Composer](https://getcomposer.org/). Refer to the [Laravel documentation](https://laravel.com/docs/10.x/installation) to learn how to set up a project in the framework.
 
-## Integrating using ZIP
-
-Integrating the CKEditor 5 using ZIP is probably the quickest method to include a rich text editor in your application.
-
-<info-box>
-	Our new Builder does not provide ZIP output yet - but it will in the future. In the meantime, you can use one of the generic ZIP packages provided [here](https://ckeditor.com/ckeditor-5/download/#zip).
-</info-box>
-
-After downloading and unpacking the ZIP archive, copy the `ckeditor5.js` and `ckeditor5.css` files in the `public/assets/vendor/` directory. The folder structure of your app should resemble this one.
-
-```plain
-├── app
-├── bootstrap
-├── config
-├── database
-├── public
-│   ├── assets
-|      ├── vendor
-|          ├── ckeditor5.js
-|          └── ckeditor5.css
-│   ├── .htaccess
-│   ├── favicon.ico
-│   ├── index.php
-│   └── robots.txt
-├── resources
-│   ├── views
-|      ├── welcome.blade.php
-|      └── ...
-├── routes
-└── ...
-```
-
-Having all the dependencies of CKEditor&nbsp;5, modify the `welcome.blade.php` file in the `resources/views` directory to import them. All the necessary markup is in the HTML file from the ZIP archive - `index.html`. You can copy and paste it into your template. Pay attention to the paths of the import map and CSS link - they should reflect your folder structure. The template should look similar to the one below:
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>CKEditor 5 - Quick start ZIP</title>
-		<link rel="stylesheet" href="../../assets/vendor/ckeditor5.css">
-        <style>
-            .main-container {
-                width: 795px;
-                margin-left: auto;
-                margin-right: auto;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="main-container">
-            <div id="editor">
-                <p>Hello from CKEditor 5!</p>
-            </div>
-		</div>
-		<script type="importmap">
-			{
-				"imports": {
-					"ckeditor5": "../../assets/vendor/ckeditor5.js",
-					"ckeditor5/": "../../assets/vendor/"
-				}
-			}
-		</script>
-        <script type="module">
-            import {
-                ClassicEditor,
-                Essentials,
-                Paragraph,
-                Bold,
-                Italic,
-                Font
-            } from 'ckeditor5';
-
-            ClassicEditor
-                .create( document.querySelector( '#editor' ), {
-                    plugins: [ Essentials, Paragraph, Bold, Italic, Font ],
-                    toolbar: [
-						'undo', 'redo', '|', 'bold', 'italic', '|',
-						'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
-					]
-                } )
-                .then( editor => {
-                    window.editor = editor;
-                } )
-                .catch( error => {
-                    console.error( error );
-                } );
-        </script>
-        <!-- A friendly reminder to run on a server, remove this during the integration. -->
-        <script>
-		        window.onload = function() {
-		            if ( window.location.protocol === "file:" ) {
-		                alert( "This sample requires an HTTP server. Please serve this file with a web server." );
-		            }
-		        };
-		</script>
-    </body>
-</html>
-```
-
-Finally, in the root directory of your Laravel project, run `php artisan serve` to see the app in action.
-
 ## Integrating from CDN
 
 Once the project has been prepared, create an `assets/vendor/ckeditor5.js` file in the existing `public` directory in your app. Your folder structure should resemble this one:
@@ -224,6 +121,107 @@ Then, modify the `welcome.blade.php` file in the `resources/views` directory to 
 <body>
     <div id="editor"></div>
 </body>
+</html>
+```
+
+Finally, in the root directory of your Laravel project, run `php artisan serve` to see the app in action.
+
+## Integrating using ZIP
+
+<info-box>
+	Our new CKEditor&nbsp;5 Builder does not provide ZIP output yet - but it will in the future. In the meantime, you can use one of the generic ZIP packages provided [here](https://ckeditor.com/ckeditor-5/download/#zip).
+</info-box>
+
+After downloading and unpacking the ZIP archive, copy the `ckeditor5.js` and `ckeditor5.css` files in the `public/assets/vendor/` directory. The folder structure of your app should resemble this one.
+
+```plain
+├── app
+├── bootstrap
+├── config
+├── database
+├── public
+│   ├── assets
+|      ├── vendor
+|          ├── ckeditor5.js
+|          └── ckeditor5.css
+│   ├── .htaccess
+│   ├── favicon.ico
+│   ├── index.php
+│   └── robots.txt
+├── resources
+│   ├── views
+|      ├── welcome.blade.php
+|      └── ...
+├── routes
+└── ...
+```
+
+Having all the dependencies of CKEditor&nbsp;5, modify the `welcome.blade.php` file in the `resources/views` directory to import them. All the necessary markup is in the HTML file from the ZIP archive - `index.html`. You can copy and paste it into your template. Pay attention to the paths of the import map and CSS link - they should reflect your folder structure. The template should look similar to the one below:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>CKEditor 5 - Quick start ZIP</title>
+		<link rel="stylesheet" href="../../assets/vendor/ckeditor5.css">
+        <style>
+            .main-container {
+                width: 795px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="main-container">
+            <div id="editor">
+                <p>Hello from CKEditor 5!</p>
+            </div>
+		</div>
+		<script type="importmap">
+			{
+				"imports": {
+					"ckeditor5": "../../assets/vendor/ckeditor5.js",
+					"ckeditor5/": "../../assets/vendor/"
+				}
+			}
+		</script>
+        <script type="module">
+            import {
+                ClassicEditor,
+                Essentials,
+                Paragraph,
+                Bold,
+                Italic,
+                Font
+            } from 'ckeditor5';
+
+            ClassicEditor
+                .create( document.querySelector( '#editor' ), {
+                    plugins: [ Essentials, Paragraph, Bold, Italic, Font ],
+                    toolbar: [
+						'undo', 'redo', '|', 'bold', 'italic', '|',
+						'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+					]
+                } )
+                .then( editor => {
+                    window.editor = editor;
+                } )
+                .catch( error => {
+                    console.error( error );
+                } );
+        </script>
+        <!-- A friendly reminder to run on a server, remove this during the integration. -->
+        <script>
+		        window.onload = function() {
+		            if ( window.location.protocol === "file:" ) {
+		                alert( "This sample requires an HTTP server. Please serve this file with a web server." );
+		            }
+		        };
+		</script>
+    </body>
 </html>
 ```
 
