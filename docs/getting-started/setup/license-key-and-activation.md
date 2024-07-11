@@ -88,7 +88,7 @@ ClassicEditor
 		plugins: [ /* ... */ ],
 
 		// Provide the licence key.
-		licenseKey: 'your-license-key',
+		licenseKey: '<YOUR_LICENSE_KEY>',
 
 		// Display the feature UI element in the toolbar.
 		toolbar: [ /* ... */ ],

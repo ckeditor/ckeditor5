@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-upload",
-  "version": "42.0.0",
+  "version": "42.0.1",
   "description": "Upload feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -12,8 +12,8 @@
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "42.0.0",
-    "@ckeditor/ckeditor5-utils": "42.0.0"
+    "@ckeditor/ckeditor5-core": "42.0.1",
+    "@ckeditor/ckeditor5-utils": "42.0.1"
   },
   "devDependencies": {
     "typescript": "5.0.4",

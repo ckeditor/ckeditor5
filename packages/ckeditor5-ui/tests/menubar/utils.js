@@ -24,7 +24,9 @@ import {
 	getItemByLabel,
 	getMenuByLabel
 } from './_utils/utils.js';
-import { MenuBarMenuViewPanelPositioningFunctions } from '../../src/menubar/utils.js';
+import { MenuBarMenuViewPanelPositioningFunctions, processMenuBarConfig } from '../../src/menubar/utils.js';
+
+/* globals console */
 
 describe( 'MenuBarView utils', () => {
 	const locale = new Locale();
@@ -1667,6 +1669,144 @@ describe( 'MenuBarView utils', () => {
 			expect( normalizedConfig.removeItems ).to.be.an( 'array' ).that.deep.equals( config.removeItems );
 			expect( normalizedConfig.isVisible ).to.be.false;
 			expect( normalizedConfig.isUsingDefaultConfig ).to.be.true;
+		} );
+	} );
+
+	describe( 'processMenuBarConfig with extra items', () => {
+		let normalizedConfig;
+
+		beforeEach( () => {
+			normalizedConfig = normalizeMenuBarConfig( {
+				items: [
+					{
+						menuId: 'A',
+						label: 'A',
+						groups: [
+							{
+								groupId: 'A1',
+								items: [
+									'A#1'
+								]
+							},
+							{
+								groupId: 'A2',
+								items: [
+									'C#1'
+								]
+							}
+						]
+					}
+				],
+				removeItems: [ 'C#1' ]
+			} );
+		} );
+
+		it( 'should add an extra item in requested position', () => {
+			const extraItems = [
+				{
+					item: 'B#1',
+					position: 'after:A#1'
+				}
+			];
+			const processedConfig = processMenuBarConfig( { normalizedConfig, locale, componentFactory: factory, extraItems } );
+
+			expect( processedConfig.items[ 0 ].groups[ 0 ].items ).to.have.length( 2 );
+			expect( processedConfig.items[ 0 ].groups[ 0 ].items[ 0 ] ).to.equal( 'A#1' );
+			expect( processedConfig.items[ 0 ].groups[ 0 ].items[ 1 ] ).to.equal( 'B#1' );
+		} );
+
+		it( 'should not add an extra item if it\'s not registered in component factory', () => {
+			sinon.stub( console, 'warn' );
+
+			const extraItems = [
+				{
+					item: 'Z#1',
+					position: 'after:A#1'
+				}
+			];
+			const processedConfig = processMenuBarConfig( { normalizedConfig, locale, componentFactory: factory, extraItems } );
+
+			expect( processedConfig.items ).to.have.length( 1 );
+			expect( processedConfig.items[ 0 ].groups ).to.have.length( 1 );
+			expect( processedConfig.items[ 0 ].groups[ 0 ].items ).to.have.length( 1 );
+			expect( processedConfig.items[ 0 ].groups[ 0 ].items[ 0 ] ).to.equal( 'A#1' );
+		} );
+
+		it( 'should not add an extra item if postition is incorrect', () => {
+			sinon.stub( console, 'warn' );
+
+			const extraItems = [
+				{
+					item: 'B#1',
+					position: 'after:Z#1'
+				}
+			];
+			const processedConfig = processMenuBarConfig( { normalizedConfig, locale, componentFactory: factory, extraItems } );
+
+			expect( processedConfig.items ).to.have.length( 1 );
+			expect( processedConfig.items[ 0 ].groups ).to.have.length( 1 );
+			expect( processedConfig.items[ 0 ].groups[ 0 ].items ).to.have.length( 1 );
+			expect( processedConfig.items[ 0 ].groups[ 0 ].items[ 0 ] ).to.equal( 'A#1' );
+		} );
+
+		it( 'should add an extra item to a group that has other items removed', () => {
+			const extraItems = [
+				{
+					item: 'B#1',
+					position: 'after:C#1'
+				}
+			];
+			const processedConfig = processMenuBarConfig( { normalizedConfig, locale, componentFactory: factory, extraItems } );
+
+			expect( processedConfig.items[ 0 ].groups ).to.have.length( 2 );
+			expect( processedConfig.items[ 0 ].groups[ 0 ].items ).to.have.length( 1 );
+			expect( processedConfig.items[ 0 ].groups[ 1 ].items ).to.have.length( 1 );
+			expect( processedConfig.items[ 0 ].groups[ 0 ].items[ 0 ] ).to.equal( 'A#1' );
+			expect( processedConfig.items[ 0 ].groups[ 1 ].items[ 0 ] ).to.equal( 'B#1' );
+		} );
+
+		it( 'should add an extra group in requested position', () => {
+			const extraItems = [
+				{
+					group: {
+						groupId: 'B1',
+						items: [
+							'B#1'
+						]
+					},
+					position: 'after:A1'
+				}
+			];
+			const processedConfig = processMenuBarConfig( { normalizedConfig, locale, componentFactory: factory, extraItems } );
+
+			expect( processedConfig.items[ 0 ].groups ).to.have.length( 2 );
+			expect( processedConfig.items[ 0 ].groups[ 0 ].items[ 0 ] ).to.equal( 'A#1' );
+			expect( processedConfig.items[ 0 ].groups[ 1 ].items[ 0 ] ).to.equal( 'B#1' );
+		} );
+
+		it( 'should add an extra menu in requested position', () => {
+			const extraItems = [
+				{
+					menu: {
+						menuId: 'B',
+						label: 'B',
+						groups: [
+							{
+								groupId: 'B1',
+								items: [
+									'B#1'
+								]
+							}
+						]
+					},
+					position: 'after:A'
+				}
+			];
+			const processedConfig = processMenuBarConfig( { normalizedConfig, locale, componentFactory: factory, extraItems } );
+
+			expect( processedConfig.items ).to.have.length( 2 );
+			expect( processedConfig.items[ 0 ].groups[ 0 ].items[ 0 ] ).to.equal( 'A#1' );
+			expect( processedConfig.items[ 1 ].groups[ 0 ].items[ 0 ] ).to.equal( 'B#1' );
 		} );
 	} );
 
