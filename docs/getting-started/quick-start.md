@@ -16,7 +16,7 @@ You have a few methods to choose from:
 * [Using CKEditor&nbsp;5 Builder](#using-ckeditor-5-builder) for the smoothest setup with live preview and multiple integration options.
 * [Using npm](#installing-ckeditor-5-using-npm), where you use a JavaScript package and build the editor with a bundler.
 * [Using CDN](#installing-ckeditor-5-from-cdn), where you use our cloud-distributed CDN in a no-build setup.
-* [Using a provided JavaScript ZIP file](#installing-ckeditor-5-from-a-zip-file), where you download the ready-to-run files and copy them to your project.
+* [Using a ZIP file](#installing-ckeditor-5-from-a-zip-file), where you download the ready-to-run files and copy them to your project.
 * Choosing one of the pre-made integrations with popular frameworks (see table of contents for details).
 
 ## Using CKEditor&nbsp;5 Builder
@@ -208,7 +208,15 @@ Files included in the ZIP archive:
 * `translations/` &ndash; The editor UI translations (see the {@link getting-started/setup/ui-language Setting the UI language} guide).
 * The `README.md` and `LICENSE.md` files.
 
-Copy these files to your project directory. You may use the [CDN configuration](#installing-ckeditor-5-from-cdn) as an example. You can also refer to framework integration guides for sample implementations.
+Copy necessary files to your project directory (e.g., to a `vendor/` directory).
+
+The easiest way to see the editor in action is to serve the `index.html` file via an HTTP server.
+
+<info-box warning>
+	You must run your code on a local server to use import maps. Opening the HTML file directly in your browser will trigger security rules. These rules (CORS policy) ensure loading modules from the same source. Therefore, set up a local server, like `nginx`, `caddy`, `http-server`, to serve your files over HTTP or HTTPS.
+</info-box>
+
+All three installation methods - npm, CDN, ZIP - work similarly. So, you can also use the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder/) with a ZIP archive. Create a custom preset with the Builder and combine it with the editor loaded from ZIP files.
 
 ## Installing premium features
 
@@ -404,7 +412,15 @@ Files in the ZIP archive:
   * `translations/` &ndash; The premium features UI translations.
 * The `README.md` and `LICENSE.md` files.
 
-Copy these files to your project directory. You may use the [CDN configuration](#installing-premium-features-from-cdn) as an example. You can also refer to framework integration guides for sample implementations.
+Copy necessary files to your project directory (e.g., to a `vendor/` directory).
+
+The easiest way to see the editor in action is to serve the `index.html` file via an HTTP server.
+
+<info-box warning>
+	You must run your code on a local server to use import maps. Opening the HTML file directly in your browser will trigger security rules. These rules (CORS policy) ensure loading modules from the same source. Therefore, set up a local server, like `nginx`, `caddy`, `http-server`, to serve your files over HTTP or HTTPS.
+</info-box>
+
+All three installation methods - npm, CDN, ZIP - work similarly. So, you can also use the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder/) with a ZIP archive. Create a custom preset with the Builder and combine it with the editor loaded from ZIP files.
 
 ### Obtaining a license key
 
