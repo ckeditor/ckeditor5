@@ -16,7 +16,7 @@ You have a few methods to choose from:
 * [Using CKEditor&nbsp;5 Builder](#using-ckeditor-5-builder) for the smoothest setup with live preview and multiple integration options.
 * [Using npm](#installing-ckeditor-5-using-npm) where you use a JavaScript package and build the editor with a bundler.
 * [Using CDN](#installing-ckeditor-5-from-cdn), where you use our cloud-distributed CDN in a no-build setup.
-* [Using a provided JavaScript file](#installing-ckeditor-5-from-a-file) where you download the ready-to-run file and copy them to your project.
+* [Using a provided JavaScript file](#installing-ckeditor-5-from-a-zip-file) where you download the ready-to-run file and copy them to your project.
 * Choosing one of the pre-made integrations with popular frameworks (see table of contents for details).
 
 ## Using CKEditor&nbsp;5 Builder
@@ -391,17 +391,17 @@ Files in the ZIP archive:
 
 * `index.html` &ndash; A sample with a working editor.
 * The `ckeditor5/` directory:
-	* `ckeditor5.js` &ndash; The ready-to-use editor ESM bundle contains the editor and all plugins. [Recommended build]
-	* `ckeditor.js.map` &ndash; The source map for the editor ESM bundle.
-	* `ckeditor5.umd.js` &ndash; The ready-to-use editor UMD bundle contains the editor and all plugins. [Secondary build]
-	* `ckeditor5.umd.js.map` &ndash; The source map for the editor UMD bundle.
-	* `*.css` &ndash; The style sheets for the editor, use `ckeditor5.css` in most cases. Read about other files in the {@link getting-started/setup/css Editor and content styles} guide.
-	* `translations/` &ndash; The editor UI translations (see the {@link getting-started/setup/ui-language Setting the UI language} guide).
-* The `ckeditor5-premium-features/` directory:
-	* `ckeditor5-premium-features.js` &ndash; ESM bundle of premium features.  [Recommended build]
-	* `ckeditor5-premium-features.umd.js` &ndash; UMD bundle of premium features contains the editor and all plugins. [Secondary build]
-	* `*.css` &ndash; The style sheets for the premium features. You will use `ckeditor5-premium-features.css` in most cases.
-	* `translations/` &ndash; The premium features UI translations.
+  * `ckeditor5.js` &ndash; The ready-to-use editor ESM bundle contains the editor and all plugins. [Recommended build]
+  * `ckeditor.js.map` &ndash; The source map for the editor ESM bundle.
+  * `ckeditor5.umd.js` &ndash; The ready-to-use editor UMD bundle contains the editor and all plugins. [Secondary build]
+  * `ckeditor5.umd.js.map` &ndash; The source map for the editor UMD bundle.
+  * `*.css` &ndash; The style sheets for the editor, use `ckeditor5.css` in most cases. Read about other files in the {@link getting-started/setup/css Editor and content styles} guide.
+  * `translations/` &ndash; The editor UI translations (see the {@link getting-started/setup/ui-language Setting the UI language} guide).
+  * The `ckeditor5-premium-features/` directory:
+  * `ckeditor5-premium-features.js` &ndash; ESM bundle of premium features.  [Recommended build]
+  * `ckeditor5-premium-features.umd.js` &ndash; UMD bundle of premium features contains the editor and all plugins. [Secondary build]
+  * `*.css` &ndash; The style sheets for the premium features. You will use `ckeditor5-premium-features.css` in most cases.
+  * `translations/` &ndash; The premium features UI translations.
 * The `README.md` and `LICENSE.md` files.
 
 Copy these files to your project directory. You may use the [CDN configuration](#installing-premium-features-from-cdn) as an example. You can also refer to framework integration guides for sample implementations.
