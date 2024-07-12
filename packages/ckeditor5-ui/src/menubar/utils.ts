@@ -1099,7 +1099,7 @@ function createSubmenu( locale: Locale, definition: MenuSubmenuDefinition ): Men
 	for ( const submenuItem of definition.children.map( d => createMenuItem( locale, d ) ) ) {
 		const listItemView = new MenuBarMenuListItemView( locale, menuView );
 
-		if ( listItemView instanceof MenuBarMenuListItemButtonView ) {
+		if ( submenuItem instanceof MenuBarMenuListItemButtonView ) {
 			submenuItem.delegate( 'execute' ).to( menuView );
 		}
 
