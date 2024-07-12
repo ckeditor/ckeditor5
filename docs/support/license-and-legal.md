@@ -2,9 +2,10 @@
 # Scope:
 # * Clarify copyright and license conditions.
 
-category: support
-meta-title: License and legal | CKEditor 5 Documentation
-order: 20
+category: licensing
+meta-title: Editor license | CKEditor 5 Documentation
+menu-title: Editor license
+order: 10
 ---
 
 # License and legal

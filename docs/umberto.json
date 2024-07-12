@@ -440,6 +440,12 @@
 					"order": 40
 				},
 				{
+					"name": "Licensing",
+					"id": "licensing",
+					"slug": "licensing",
+					"order": 50
+				},
+				{
 					"name": "Legacy installation methods",
 					"id": "legacy",
 					"slug": "legacy",
@@ -778,15 +784,7 @@
 			"name": "Support",
 			"id": "support",
 			"navigationIncludeIndex": true,
-			"slug": "support",
-			"categories": [
-				{
-					"name": "Licensing and activation",
-					"id": "licensing",
-					"slug": "licensing",
-					"order": 20
-				}
-			]
+			"slug": "support"
 		}
 	]
 }

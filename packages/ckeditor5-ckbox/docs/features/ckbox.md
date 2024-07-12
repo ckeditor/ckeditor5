@@ -15,10 +15,7 @@ badges: [ premium ]
 CKBox is a dedicated asset manager supporting file and image upload. The CKBox feature lets you easily upload various files and insert images and links to other files into your content. It also offers image conversion and optimization capabilities and provides a {@link features/images-responsive responsive images mechanism} for CKEditor&nbsp;5.
 
 <info-box>
-	This is a premium feature and you need a subscription to use it. You can [purchase it here](https://ckeditor.com/pricing/) for your open-source CKEditor implementation. [Contact us](https://ckeditor.com/contact/?sales=true#contact-form) if:
-	* CKEditor commercial license is needed for your application.
-	* You need the **on-premises (self-hosted)** version of the service.
-	* You have other licensing questions.
+	This is a premium feature and you need a subscription to use it. Find out which {@link getting-started/setup/plans available commercial plans} include it.
 
 	You can also sign up for the [CKEditor Premium Features 30-day free trial](https://orders.ckeditor.com/trial/premium-features) to test the feature.
 </info-box>
