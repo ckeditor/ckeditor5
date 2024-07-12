@@ -13,8 +13,6 @@ import {
 	wait
 } from '@ckeditor/ckeditor5-utils';
 import {
-	EditorUIView,
-	InlineEditableUIView,
 	ComponentFactory,
 	MenuBarMenuView,
 	MenuBarView,
@@ -30,8 +28,13 @@ import {
 	getItemByLabel,
 	getMenuByLabel
 } from './_utils/utils.js';
-import { MenuBarMenuViewPanelPositioningFunctions, _initMenuBar, registerMenuBarItem } from '../../src/menubar/utils.js';
-import ClassicTestEditor, { ClassicTestEditorUI } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import {
+	MenuBarMenuViewPanelPositioningFunctions,
+	registerMenuBarItem,
+	processMenuBarConfig
+} from '../../src/menubar/utils.js';
+
+/* globals console */
 
 describe( 'MenuBarView utils', () => {
 	const locale = new Locale();
@@ -1677,6 +1680,144 @@ describe( 'MenuBarView utils', () => {
 		} );
 	} );
 
+	describe( 'processMenuBarConfig with extra items', () => {
+		let normalizedConfig;
+
+		beforeEach( () => {
+			normalizedConfig = normalizeMenuBarConfig( {
+				items: [
+					{
+						menuId: 'A',
+						label: 'A',
+						groups: [
+							{
+								groupId: 'A1',
+								items: [
+									'A#1'
+								]
+							},
+							{
+								groupId: 'A2',
+								items: [
+									'C#1'
+								]
+							}
+						]
+					}
+				],
+				removeItems: [ 'C#1' ]
+			} );
+		} );
+
+		it( 'should add an extra item in requested position', () => {
+			const extraItems = [
+				{
+					item: 'B#1',
+					position: 'after:A#1'
+				}
+			];
+			const processedConfig = processMenuBarConfig( { normalizedConfig, locale, componentFactory: factory, extraItems } );
+
+			expect( processedConfig.items[ 0 ].groups[ 0 ].items ).to.have.length( 2 );
+			expect( processedConfig.items[ 0 ].groups[ 0 ].items[ 0 ] ).to.equal( 'A#1' );
+			expect( processedConfig.items[ 0 ].groups[ 0 ].items[ 1 ] ).to.equal( 'B#1' );
+		} );
+
+		it( 'should not add an extra item if it\'s not registered in component factory', () => {
+			sinon.stub( console, 'warn' );
+
+			const extraItems = [
+				{
+					item: 'Z#1',
+					position: 'after:A#1'
+				}
+			];
+			const processedConfig = processMenuBarConfig( { normalizedConfig, locale, componentFactory: factory, extraItems } );
+
+			expect( processedConfig.items ).to.have.length( 1 );
+			expect( processedConfig.items[ 0 ].groups ).to.have.length( 1 );
+			expect( processedConfig.items[ 0 ].groups[ 0 ].items ).to.have.length( 1 );
+			expect( processedConfig.items[ 0 ].groups[ 0 ].items[ 0 ] ).to.equal( 'A#1' );
+		} );
+
+		it( 'should not add an extra item if postition is incorrect', () => {
+			sinon.stub( console, 'warn' );
+
+			const extraItems = [
+				{
+					item: 'B#1',
+					position: 'after:Z#1'
+				}
+			];
+			const processedConfig = processMenuBarConfig( { normalizedConfig, locale, componentFactory: factory, extraItems } );
+
+			expect( processedConfig.items ).to.have.length( 1 );
+			expect( processedConfig.items[ 0 ].groups ).to.have.length( 1 );
+			expect( processedConfig.items[ 0 ].groups[ 0 ].items ).to.have.length( 1 );
+			expect( processedConfig.items[ 0 ].groups[ 0 ].items[ 0 ] ).to.equal( 'A#1' );
+		} );
+
+		it( 'should add an extra item to a group that has other items removed', () => {
+			const extraItems = [
+				{
+					item: 'B#1',
+					position: 'after:C#1'
+				}
+			];
+			const processedConfig = processMenuBarConfig( { normalizedConfig, locale, componentFactory: factory, extraItems } );
+
+			expect( processedConfig.items[ 0 ].groups ).to.have.length( 2 );
+			expect( processedConfig.items[ 0 ].groups[ 0 ].items ).to.have.length( 1 );
+			expect( processedConfig.items[ 0 ].groups[ 1 ].items ).to.have.length( 1 );
+			expect( processedConfig.items[ 0 ].groups[ 0 ].items[ 0 ] ).to.equal( 'A#1' );
+			expect( processedConfig.items[ 0 ].groups[ 1 ].items[ 0 ] ).to.equal( 'B#1' );
+		} );
+
+		it( 'should add an extra group in requested position', () => {
+			const extraItems = [
+				{
+					group: {
+						groupId: 'B1',
+						items: [
+							'B#1'
+						]
+					},
+					position: 'after:A1'
+				}
+			];
+			const processedConfig = processMenuBarConfig( { normalizedConfig, locale, componentFactory: factory, extraItems } );
+
+			expect( processedConfig.items[ 0 ].groups ).to.have.length( 2 );
+			expect( processedConfig.items[ 0 ].groups[ 0 ].items[ 0 ] ).to.equal( 'A#1' );
+			expect( processedConfig.items[ 0 ].groups[ 1 ].items[ 0 ] ).to.equal( 'B#1' );
+		} );
+
+		it( 'should add an extra menu in requested position', () => {
+			const extraItems = [
+				{
+					menu: {
+						menuId: 'B',
+						label: 'B',
+						groups: [
+							{
+								groupId: 'B1',
+								items: [
+									'B#1'
+								]
+							}
+						]
+					},
+					position: 'after:A'
+				}
+			];
+			const processedConfig = processMenuBarConfig( { normalizedConfig, locale, componentFactory: factory, extraItems } );
+
+			expect( processedConfig.items ).to.have.length( 2 );
+			expect( processedConfig.items[ 0 ].groups[ 0 ].items[ 0 ] ).to.equal( 'A#1' );
+			expect( processedConfig.items[ 1 ].groups[ 0 ].items[ 0 ] ).to.equal( 'B#1' );
+		} );
+	} );
+
 	function initMenuBar( locale, config ) {
 		const menuBarView = new MenuBarView( locale );
 		menuBarView.render();
@@ -1851,161 +1992,6 @@ describe( 'MenuBarView utils', () => {
 				if ( properties ) {
 					this.set( properties );
 				}
-			}
-		}
-	} );
-
-	describe( 'Focus handling and navigation between editing root and menu bar', () => {
-		let editorElement, menuBarView, menuBarEditor, menuBarEditorUI, domRoot;
-
-		beforeEach( async () => {
-			editorElement = document.body.appendChild( document.createElement( 'div' ) );
-
-			await MenuBarTestEditor.create( editorElement ).then( editor => {
-				menuBarEditor = editor;
-				menuBarEditorUI = menuBarEditor.ui;
-				menuBarView = menuBarEditorUI.view.menuBarView;
-
-				document.body.appendChild( menuBarView.element );
-			} );
-
-			domRoot = menuBarEditor.editing.view.domRoots.get( 'main' );
-		} );
-
-		afterEach( () => {
-			editorElement.remove();
-			menuBarEditorUI.destroy();
-			menuBarView.element.remove();
-		} );
-
-		describe( 'Focusing menu bar on Alt+F9 key press', () => {
-			beforeEach( () => {
-				menuBarEditorUI.focusTracker.isFocused = true;
-				menuBarEditorUI.focusTracker.focusedElement = domRoot;
-			} );
-
-			it( 'should enable focus border once focused using keyboard', () => {
-				expect( menuBarView.isFocusBorderEnabled ).to.be.false;
-				pressAltF9( menuBarEditor );
-				expect( menuBarView.isFocusBorderEnabled ).to.be.true;
-			} );
-
-			it( 'should focus the menu bar when the focus is in the editing root', () => {
-				const spy = testUtils.sinon.spy( menuBarView, 'focus' );
-
-				pressAltF9( menuBarEditor );
-
-				sinon.assert.calledOnce( spy );
-			} );
-
-			it( 'should do nothing if the menu bar is already focused', () => {
-				const domRootFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
-				const menuBarFocusSpy = testUtils.sinon.spy( menuBarView, 'focus' );
-
-				// Focus the toolbar.
-				pressAltF9( menuBarEditor );
-				menuBarEditorUI.focusTracker.focusedElement = menuBarView.element;
-
-				// Try Alt+F9 again.
-				pressAltF9( menuBarEditor );
-
-				sinon.assert.calledOnce( menuBarFocusSpy );
-				sinon.assert.notCalled( domRootFocusSpy );
-			} );
-		} );
-
-		describe( 'Restoring focus on Esc key press', () => {
-			beforeEach( () => {
-				menuBarEditorUI.focusTracker.isFocused = true;
-				menuBarEditorUI.focusTracker.focusedElement = domRoot;
-			} );
-
-			it( 'should move the focus back from the main toolbar to the editing root', () => {
-				const domRootFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
-				const menuBarFocusSpy = testUtils.sinon.spy( menuBarView, 'focus' );
-
-				// Focus the menu bar.
-				pressAltF9( menuBarEditor );
-				menuBarEditorUI.focusTracker.focusedElement = menuBarView.element;
-
-				pressEsc( menuBarEditor );
-
-				// sinon.assert.calledOnce( domRootFocusSpy );
-				sinon.assert.callOrder( menuBarFocusSpy, domRootFocusSpy );
-			} );
-
-			it( 'should do nothing if it was pressed when menu bar was not focused', () => {
-				const domRootFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
-				const menuBarFocusSpy = testUtils.sinon.spy( menuBarView, 'focus' );
-
-				pressEsc( menuBarEditor );
-
-				sinon.assert.notCalled( domRootFocusSpy );
-				sinon.assert.notCalled( menuBarFocusSpy );
-			} );
-		} );
-
-		function pressAltF9( specificEditor ) {
-			specificEditor.keystrokes.press( {
-				keyCode: keyCodes.f9,
-				altKey: true,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			} );
-		}
-
-		function pressEsc( specificEditor ) {
-			specificEditor.keystrokes.press( {
-				keyCode: keyCodes.esc,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			} );
-		}
-		class MenuBarTestEditor extends ClassicTestEditor {
-			constructor( sourceElementOrData, config ) {
-				super( sourceElementOrData, config );
-
-				const menuBarEditorUIView = new MenuBarEditorUIView( this.locale, this.editing.view, sourceElementOrData );
-				this.ui = new MenuBarEditorUI( this, menuBarEditorUIView );
-			}
-		}
-
-		class MenuBarEditorUI extends ClassicTestEditorUI {
-			init() {
-				super.init();
-
-				_initMenuBar( this.editor, this.view.menuBarView );
-			}
-		}
-
-		class MenuBarEditorUIView extends EditorUIView {
-			constructor(
-				locale,
-				editingView,
-				editableElement
-			) {
-				super( locale );
-
-				this.menuBarView = new MenuBarView( locale );
-				this.main = this.createCollection();
-				this.editable = new InlineEditableUIView( locale, editingView, editableElement );
-
-				this.menuBarView.extendTemplate( {
-					attributes: {
-						class: [
-							'ck-reset_all',
-							'ck-rounded-corners'
-						],
-						dir: locale.uiLanguageDirection
-					}
-				} );
-			}
-
-			render() {
-				super.render();
-
-				this.registerChild( this.menuBarView );
-				this.registerChild( this.editable );
 			}
 		}
 	} );

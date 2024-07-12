@@ -13,8 +13,7 @@ import {
 
 import {
 	EditorUI,
-	type EditorUIReadyEvent,
-	_initMenuBar
+	type EditorUIReadyEvent
 } from 'ckeditor5/src/ui.js';
 
 import { enablePlaceholder } from 'ckeditor5/src/engine.js';
@@ -81,7 +80,7 @@ export default class DecoupledEditorUI extends EditorUI {
 
 		this._initPlaceholder();
 		this._initToolbar();
-		_initMenuBar( editor, this.view.menuBarView );
+		this._initMenuBar( this.view.menuBarView! );
 		this.fire<EditorUIReadyEvent>( 'ready' );
 	}
 

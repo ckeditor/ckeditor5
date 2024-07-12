@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-html-embed",
-  "version": "42.0.0",
+  "version": "42.0.1",
   "description": "HTML embed feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -13,21 +13,21 @@
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
-    "ckeditor5": "42.0.0"
+    "ckeditor5": "42.0.1"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "42.0.0",
-    "@ckeditor/ckeditor5-core": "42.0.0",
+    "@ckeditor/ckeditor5-basic-styles": "42.0.1",
+    "@ckeditor/ckeditor5-core": "42.0.1",
     "@ckeditor/ckeditor5-dev-utils": "^40.0.0",
-    "@ckeditor/ckeditor5-clipboard": "42.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "42.0.0",
-    "@ckeditor/ckeditor5-engine": "42.0.0",
-    "@ckeditor/ckeditor5-media-embed": "42.0.0",
-    "@ckeditor/ckeditor5-paragraph": "42.0.0",
-    "@ckeditor/ckeditor5-table": "42.0.0",
-    "@ckeditor/ckeditor5-ui": "42.0.0",
-    "@ckeditor/ckeditor5-theme-lark": "42.0.0",
-    "@ckeditor/ckeditor5-widget": "42.0.0",
+    "@ckeditor/ckeditor5-clipboard": "42.0.1",
+    "@ckeditor/ckeditor5-editor-classic": "42.0.1",
+    "@ckeditor/ckeditor5-engine": "42.0.1",
+    "@ckeditor/ckeditor5-media-embed": "42.0.1",
+    "@ckeditor/ckeditor5-paragraph": "42.0.1",
+    "@ckeditor/ckeditor5-table": "42.0.1",
+    "@ckeditor/ckeditor5-ui": "42.0.1",
+    "@ckeditor/ckeditor5-theme-lark": "42.0.1",
+    "@ckeditor/ckeditor5-widget": "42.0.1",
     "lodash-es": "^4.17.15",
     "sanitize-html": "^2.1.0",
     "typescript": "5.0.4",

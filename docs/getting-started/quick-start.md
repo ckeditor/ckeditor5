@@ -14,9 +14,9 @@ CKEditor&nbsp;5 is a powerful, rich text editor you can embed in your web applic
 You have a few methods to choose from:
 
 * [Using CKEditor&nbsp;5 Builder](#using-ckeditor-5-builder) for the smoothest setup with live preview and multiple integration options.
-* [Using npm](#installing-ckeditor-5-using-npm) where you use a JavaScript package and build the editor with a bundler.
+* [Using npm](#installing-ckeditor-5-using-npm), where you use a JavaScript package and build the editor with a bundler.
 * [Using CDN](#installing-ckeditor-5-from-cdn), where you use our cloud-distributed CDN in a no-build setup.
-* [Using a provided JavaScript file](#installing-ckeditor-5-from-a-file) where you download the ready-to-run file and copy them to your project.
+* [Using a ZIP file](#installing-ckeditor-5-from-a-zip-file), where you download the ready-to-run files and copy them to your project.
 * Choosing one of the pre-made integrations with popular frameworks (see table of contents for details).
 
 ## Using CKEditor&nbsp;5 Builder
@@ -190,16 +190,16 @@ Your final page should look similar to the one below.
 </html>
 ```
 
-## Installing CKEditor&nbsp;5 from a file
+## Installing CKEditor&nbsp;5 from a ZIP file
 
-If you do not want to build your project using npm, and you cannot rely on the CDN delivery, you can download ready-to-run files with CKEditor&nbsp;5 and all its plugins.
+If you do not want to build your project using npm and cannot rely on the CDN delivery, you can download ready-to-run files with CKEditor&nbsp;5 and all its plugins.
 
-1. <a href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/zip/ckeditor5-{@var ckeditor5-version}.zip">Download the .zip file with the latest CKEditor&nbsp;5 distribution.</a>
-2. Extract the .zip file into a dedicated directory inside your project. It is recommended to include the editor version in the directory name to ensure proper cache invalidation once a new version of CKEditor&nbsp;5 is installed.
+1. <a href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/zip/ckeditor5-{@var ckeditor5-version}.zip">Download the ZIP archive with the latest CKEditor&nbsp;5 distribution.</a>
+2. Extract the ZIP archive into a dedicated directory inside your project (for example, `vendor/`). Include the editor version in the directory name to ensure proper cache invalidation whenever you install a new version of CKEditor&nbsp;5.
 
-Files included in the .zip archive:
+Files included in the ZIP archive:
 
-* `index.html` &ndash; A sample with working editor.
+* `index.html` &ndash; A sample with a working editor.
 * `ckeditor5/ckeditor5.js` &ndash; The ready-to-use editor ESM bundle contains the editor and all plugins. [Recommended build]
 * `ckeditor5/ckeditor.js.map` &ndash; The source map for the editor ESM bundle.
 * `ckeditor5/ckeditor5.umd.js` &ndash; The ready-to-use editor UMD bundle contains the editor and all plugins. [Secondary build]
@@ -208,7 +208,13 @@ Files included in the .zip archive:
 * `translations/` &ndash; The editor UI translations (see the {@link getting-started/setup/ui-language Setting the UI language} guide).
 * The `README.md` and `LICENSE.md` files.
 
-Copy these files to your project directory. You may use the [CDN configuration](#installing-ckeditor-5-from-cdn) as an example. You can also refer to framework integration guides for sample implementations.
+The easiest way to see the editor in action is to serve the `index.html` file via an HTTP server.
+
+<info-box warning>
+	You must run your code on a local server to use import maps. Opening the HTML file directly in your browser will trigger security rules. These rules (CORS policy) ensure loading modules from the same source. Therefore, set up a local server, like `nginx`, `caddy`, `http-server`, to serve your files over HTTP or HTTPS.
+</info-box>
+
+All three installation methods &ndash; npm, CDN, ZIP &ndash; work similarly. So, you can also use the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder/) with a ZIP archive. Create a custom preset with the Builder and combine it with the editor loaded from ZIP files.
 
 ## Installing premium features
 
@@ -239,7 +245,7 @@ ClassicEditor
 				'formatPainter'
 			]
 		},
-		licenseKey: 'your-license-key'
+		licenseKey: '<YOUR_LICENSE_KEY>'
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -309,7 +315,7 @@ In the following script tag, import the desired plugins and add them to the `plu
 					'formatPainter'
 				]
 			},
-			licenseKey: 'your-license-key'
+			licenseKey: '<YOUR_LICENSE_KEY>'
 		} )
 		.then( /* ... */ )
 		.catch( /* ... */ );
@@ -373,7 +379,7 @@ Your final page should look similar to the one below.
 							'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|', 'formatPainter'
 						]
 					},
-					licenseKey: 'your-license-key'
+					licenseKey: '<YOUR_LICENSE_KEY>'
 				} )
 				.then( /* ... */ )
 				.catch( /* ... */ );
@@ -382,29 +388,35 @@ Your final page should look similar to the one below.
 </html>
 ```
 
-### Installing premium features from a file
+### Installing premium features from a ZIP file
 
-1. <a href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/zip/ckeditor5-premium-features-{@var ckeditor5-version}.zip">Download the .zip file with the latest CKEditor&nbsp;5 distribution and premium features.</a>
-2. Extract the .zip file into a dedicated directory inside your project. It is recommended to include the editor version in the directory name to ensure proper cache invalidation once a new version of CKEditor&nbsp;5 is installed.
+1. <a href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/zip/ckeditor5-premium-features-{@var ckeditor5-version}.zip">Download the ZIP archive with the latest CKEditor&nbsp;5 distribution and premium features.</a>
+2. Extract the ZIP archive into a dedicated directory inside your project (for example, `vendor/`). Include the editor version in the directory name to ensure proper cache invalidation whenever you install a new version of CKEditor&nbsp;5.
 
-Files in the .zip archive:
+Files in the ZIP archive:
 
-* `index.html` &ndash; A sample file with a working editor.
-* The `ckeditor5` directory:
-	* `ckeditor5.js` &ndash; The ready-to-use editor ESM bundle contains the editor and all plugins. [Recommended build]
-	* `ckeditor.js.map` &ndash; The source map for the editor ESM bundle.
-	* `ckeditor5.umd.js` &ndash; The ready-to-use editor UMD bundle contains the editor and all plugins. [Secondary build]
-	* `ckeditor5.umd.js.map` &ndash; The source map for the editor UMD bundle.
-	* `*.css` &ndash; The style sheets for the editor, use `ckeditor5.css` in most cases. Read about other files in the {@link getting-started/setup/css Editor and content styles} guide.
-	* `translations/` &ndash; The editor UI translations (see the {@link getting-started/setup/ui-language Setting the UI language} guide).
-* The `ckeditor5-premium-features` directory:
-	* `ckeditor5-premium-features.js` &ndash; ESM bundle of premium features.  [Recommended build]
-	* `ckeditor5-premium-features.umd.js` &ndash; UMD bundle of premium features contains the editor and all plugins. [Secondary build]
-	* `*.css` &ndash; The style sheets for the premium features. You will use `ckeditor5-premium-features.css` in most cases.
-	* `translations/` &ndash; The premium features UI translations.
+* `index.html` &ndash; A sample with a working editor.
+* The `ckeditor5/` directory:
+  * `ckeditor5.js` &ndash; The ready-to-use editor ESM bundle contains the editor and all plugins. [Recommended build]
+  * `ckeditor.js.map` &ndash; The source map for the editor ESM bundle.
+  * `ckeditor5.umd.js` &ndash; The ready-to-use editor UMD bundle contains the editor and all plugins. [Secondary build]
+  * `ckeditor5.umd.js.map` &ndash; The source map for the editor UMD bundle.
+  * `*.css` &ndash; The style sheets for the editor, use `ckeditor5.css` in most cases. Read about other files in the {@link getting-started/setup/css Editor and content styles} guide.
+  * `translations/` &ndash; The editor UI translations (see the {@link getting-started/setup/ui-language Setting the UI language} guide).
+  * The `ckeditor5-premium-features/` directory:
+  * `ckeditor5-premium-features.js` &ndash; ESM bundle of premium features.  [Recommended build]
+  * `ckeditor5-premium-features.umd.js` &ndash; UMD bundle of premium features contains the editor and all plugins. [Secondary build]
+  * `*.css` &ndash; The style sheets for the premium features. You will use `ckeditor5-premium-features.css` in most cases.
+  * `translations/` &ndash; The premium features UI translations.
 * The `README.md` and `LICENSE.md` files.
 
-Copy these files to your project directory. You may use the [CDN configuration](#installing-premium-features-from-cdn) as an example. You can also refer to framework integration guides for sample implementations.
+The easiest way to see the editor in action is to serve the `index.html` file via an HTTP server.
+
+<info-box warning>
+	You must run your code on a local server to use import maps. Opening the HTML file directly in your browser will trigger security rules. These rules (CORS policy) ensure loading modules from the same source. Therefore, set up a local server, like `nginx`, `caddy`, `http-server`, to serve your files over HTTP or HTTPS.
+</info-box>
+
+All three installation methods &ndash; npm, CDN, ZIP &ndash; work similarly. So, you can also use the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder/) with a ZIP archive. Create a custom preset with the Builder and combine it with the editor loaded from ZIP files.
 
 ### Obtaining a license key
 
