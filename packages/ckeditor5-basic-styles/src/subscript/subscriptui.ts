@@ -32,6 +32,7 @@ export default class SubscriptUI extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 		const t = editor.locale.t;
+
 		const createButton = getButtonCreator( {
 			editor,
 			commandName: SUBSCRIPT,
@@ -41,22 +42,7 @@ export default class SubscriptUI extends Plugin {
 		} );
 
 		// Add subscript button to feature components.
-		editor.ui.componentFactory.add( SUBSCRIPT, () => {
-			const buttonView = createButton( ButtonView );
-			const command = editor.commands.get( SUBSCRIPT )!;
-
-			buttonView.set( {
-				tooltip: true
-			} );
-
-			// Bind button model to command.
-			buttonView.bind( 'isOn' ).to( command, 'value' );
-
-			return buttonView;
-		} );
-
-		editor.ui.componentFactory.add( 'menuBar:' + SUBSCRIPT, () => {
-			return createButton( MenuBarMenuListItemButtonView );
-		} );
+		editor.ui.componentFactory.add( SUBSCRIPT, () => createButton( ButtonView ) );
+		editor.ui.componentFactory.add( 'menuBar:' + SUBSCRIPT, () => createButton( MenuBarMenuListItemButtonView ) );
 	}
 }

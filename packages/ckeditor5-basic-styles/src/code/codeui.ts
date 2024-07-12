@@ -43,22 +43,7 @@ export default class CodeUI extends Plugin {
 		} );
 
 		// Add code button to feature components.
-		editor.ui.componentFactory.add( CODE, () => {
-			const buttonView = createButton( ButtonView );
-			const command = editor.commands.get( CODE )!;
-
-			buttonView.set( {
-				tooltip: true
-			} );
-
-			// Bind button model to command.
-			buttonView.bind( 'isOn' ).to( command, 'value' );
-
-			return buttonView;
-		} );
-
-		editor.ui.componentFactory.add( 'menuBar:' + CODE, () => {
-			return createButton( MenuBarMenuListItemButtonView );
-		} );
+		editor.ui.componentFactory.add( CODE, () => createButton( ButtonView ) );
+		editor.ui.componentFactory.add( 'menuBar:' + CODE, () => createButton( MenuBarMenuListItemButtonView ) );
 	}
 }
