@@ -1,11 +1,11 @@
 ---
 category: advanced
-menu-title: Content styles
+menu-title: (Legacy) Content styles
 meta-title: Content styles | Legacy CKEditor 5 documentation
 order: 30
 ---
 
-# Content styles &ndash; Legacy guide
+# (Legacy) Content styles
 
 <info-box warning>
 	⚠️  We changed installation methods and this legacy guide is kept for users' convenience. If you are looking for current CKEditor 5 installation instructions, please refer to the newest version of the {@link getting-started/setup/css Editor and content styles} guide.

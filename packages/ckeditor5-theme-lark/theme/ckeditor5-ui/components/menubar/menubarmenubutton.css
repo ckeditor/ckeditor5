@@ -66,20 +66,6 @@
 	&:not(.ck-menu-bar__menu_top-level) .ck-menu-bar__menu__button {
 		border-radius: 0;
 
-		&:focus {
-			border-color: transparent;
-			box-shadow: none;
-
-			&:not(.ck-on) {
-				background: var(--ck-color-button-default-hover-background);
-			}
-		}
-
-		/* Spacing in buttons that miss the icon. */
-		&:not(:has(.ck-button__icon)) > .ck-button__label {
-			margin-left: calc(var(--ck-icon-size) - var(--ck-spacing-small));
-		}
-
 		& > .ck-menu-bar__menu__button__arrow {
 			width: var(--ck-dropdown-arrow-size);
 

@@ -37,13 +37,13 @@ If you need to find the package name in the legacy methods to import plugins fro
 
 1. Look for the feature in our {@link features/index features section}.
 2. There are two options:
-    1. Via the plugins documentation:
+    1. Via the plugins' documentation:
         1. Go to the {@link framework/architecture/plugins#plugins-and-html-output plugins and HTML output} guide.
         2. Find the plugin name there.
         3. The source file path will show you the package name.
 			{@img assets/img/legacy-import-1.png Screenshot of package name in the path.}
     2. Or via the API documentation:
-        1. Go to the {@link api/index API doccumentation}.
+        1. Go to the {@link api/index API documentation}.
         2. Search for the plugin's name and navigate to its pages.
         3. On the page of the package, you will see a chip with the link to the npm repository.
 			{@img assets/img/legacy-import-2.png Screenshot of npm link in the API documentation.}

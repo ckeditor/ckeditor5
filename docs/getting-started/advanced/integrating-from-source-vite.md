@@ -1,11 +1,11 @@
 ---
 category: alternative-setups
-menu-title: Integrating from source using Vite
+menu-title: (Legacy) Integrating from source using Vite
 meta-title: Integrating CKEditor 5 from source using Vite | Legacy CKEditor 5 documentation
 order: 15
 modified_at: 2023-02-06
 ---
-# Integrating from source using Vite &ndash; Legacy guide
+# (Legacy) Integrating from source using Vite
 
 <info-box warning>
 	⚠️  We changed installation methods and this legacy guide is kept for users' convenience. If you want to learn more about these changes, please refer to the {@link updating/nim-migration/migration-to-new-installation-methods Migrating to new installation methods} guide.

@@ -372,6 +372,36 @@ describe( 'ColorPickerView', () => {
 		} );
 	} );
 
+	describe( 'isValid()', () => {
+		let hexInputElement;
+
+		beforeEach( () => {
+			hexInputElement = view.hexInputRow.inputView.fieldView.element;
+		} );
+
+		it( 'should return true for a valid color', () => {
+			hexInputElement.value = '#000';
+
+			expect( view.isValid() ).to.be.true;
+		} );
+
+		it( 'should return false for an invalid color', () => {
+			hexInputElement.value = 'Foo Bar';
+
+			expect( view.isValid() ).to.be.false;
+		} );
+
+		it( 'should return true if the hex input is not shown', () => {
+			const view = new ColorPickerView( locale, { format: 'hex', hideInput: true } );
+
+			view.render();
+
+			expect( view.isValid() ).to.be.true;
+
+			view.destroy();
+		} );
+	} );
+
 	describe( 'color property', () => {
 		it( 'should be initialized with a proper value', () => {
 			expect( view.color ).to.be.equal( '' );

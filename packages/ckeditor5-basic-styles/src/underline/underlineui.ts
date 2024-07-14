@@ -31,7 +31,6 @@ export default class UnderlineUI extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
-		const command = editor.commands.get( UNDERLINE )!;
 		const t = editor.locale.t;
 		const createButton = getButtonCreator( {
 			editor,
@@ -43,20 +42,7 @@ export default class UnderlineUI extends Plugin {
 		} );
 
 		// Add bold button to feature components.
-		editor.ui.componentFactory.add( UNDERLINE, () => {
-			const buttonView = createButton( ButtonView );
-
-			buttonView.set( {
-				tooltip: true
-			} );
-
-			buttonView.bind( 'isOn' ).to( command, 'value' );
-
-			return buttonView;
-		} );
-
-		editor.ui.componentFactory.add( 'menuBar:' + UNDERLINE, () => {
-			return createButton( MenuBarMenuListItemButtonView );
-		} );
+		editor.ui.componentFactory.add( UNDERLINE, () => createButton( ButtonView ) );
+		editor.ui.componentFactory.add( 'menuBar:' + UNDERLINE, () => createButton( MenuBarMenuListItemButtonView ) );
 	}
 }

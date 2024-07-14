@@ -1,11 +1,11 @@
 ---
 category: installation-methods
-menu-title: API and events
+menu-title: (Legacy) API and events
 meta-title: API and events | Legacy CKEditor 5 documentation
 order: 80
 ---
 
-# API and events &ndash; Legacy guide
+# (Legacy) API and events
 
 <info-box warning>
 	 ⚠️ We changed installation methods and this legacy guide is kept for users' convenience. If you want to learn more about these changes, please refer to the {@link updating/nim-migration/migration-to-new-installation-methods Migrating to new installation methods} guide.

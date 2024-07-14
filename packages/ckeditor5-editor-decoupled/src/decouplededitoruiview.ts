@@ -28,14 +28,14 @@ export default class DecoupledEditorUIView extends EditorUIView {
 	public readonly toolbar: ToolbarView;
 
 	/**
-	 * Menu bar view instance.
-	 */
-	public readonly menuBarView: MenuBarView;
-
-	/**
 	 * The editable of the decoupled editor UI.
 	 */
 	public readonly editable: InlineEditableUIView;
+
+	/**
+	 * Menu bar view instance.
+	 */
+	public override menuBarView: MenuBarView;
 
 	/**
 	 * Creates an instance of the decoupled editor UI view.
