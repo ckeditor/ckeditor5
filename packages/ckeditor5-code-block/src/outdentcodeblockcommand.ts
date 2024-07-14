@@ -169,19 +169,44 @@ function getLastOutdentableSequenceRange( model: Model, position: Position, sequ
 	);
 }
 
+// For given position, find the closest position that is at the beginning of a line.
+// Beginning of a line is after a `softBreak` element or at the beginning of a code block.
+// Then, return a text node that is at the beginning of the line.
+// Even though code block doesn't allow other elements than `<softBreak>`, some features may overwrite this rule,
+// so they are taken into account.
+//
+// <codeBlock>foobar^</codeBlock>                         ->   <codeBlock>^[foobar]</codeBlock>
+// <codeBlock>foo<softBreak />bar^</codeBlock>            ->   <codeBlock>foo<softBreak />^[bar]</codeBlock>
+// <codeBlock>foo^<softBreak />bar</codeBlock>            ->   <codeBlock>^[foo]<softBreak />bar</codeBlock>
+// <codeBlock><element />^</codeBlock>                    ->   null
+// <codeBlock>^<element /></codeBlock>                    ->   null
+// <codeBlock>^</codeBlock>                               ->   null
+// <codeBlock>foo<softBreak />^<element /></codeBlock>    ->   null
+// <codeBlock>foo^<element /></codeBlock>                 ->   <codeBlock>^[foo]<element /></codeBlock>
+// <codeBlock>foo<element />^</codeBlock>                 ->   <codeBlock>^[foo]<element /></codeBlock>
+// <codeBlock>foo<element />bar^</codeBlock>              ->   <codeBlock>^[foo]<element />bar</codeBlock>
+// <codeBlock>foo<element />bar<element />^</codeBlock>   ->   <codeBlock>^[foo]<element />bar<element /></codeBlock>
+// <codeBlock>foo<element />bar<element /><softBreak />baz^</codeBlock>
+//                                                        -> <codeBlock>foo<element />bar<element /><softBreak />^[baz]</codeBlock>
 function getCodeLineTextNodeAtPosition( position: Position ): Text | null {
-	// Positions start before each text node (code line). Get the node corresponding to the position.
 	let nodeAtPosition = position.parent.getChild( position.index );
 
-	// <codeBlock>foo^</codeBlock>
-	// <codeBlock>foo^<softBreak></softBreak>bar</codeBlock>
-	if ( !nodeAtPosition || nodeAtPosition.is( 'element', 'softBreak' ) ) {
+	// If position is at the end of the line, there is no node, so get the previous one.
+	if ( !nodeAtPosition ) {
 		nodeAtPosition = position.nodeBefore;
 	}
 
-	// <codeBlock>^</codeBlock>
-	// <codeBlock>foo^<softBreak></softBreak>bar</codeBlock>
-	if ( !nodeAtPosition || nodeAtPosition.is( 'element', 'softBreak' ) ) {
+	// If there is a node at the position, find the first node at the beginning of the line.
+	if ( nodeAtPosition && !nodeAtPosition.is( 'element', 'softBreak' ) ) {
+		while ( nodeAtPosition.previousSibling && !nodeAtPosition.previousSibling.is( 'element', 'softBreak' ) ) {
+			nodeAtPosition = nodeAtPosition.previousSibling;
+		}
+	}
+
+	// If a line is empty or there's an element at the beginning of the line, return null.
+	// Even though code block doesn't allow other elements than `<softBreak>`, some features may overwrite this rule,
+	// so we need to check for any element, not only `<softBreak>`.
+	if ( !nodeAtPosition || nodeAtPosition.is( 'element' ) ) {
 		return null;
 	}
 

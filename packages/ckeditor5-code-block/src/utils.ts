@@ -216,21 +216,27 @@ export function getIndentOutdentPositions( model: Model ): Array<Position> {
 	} );
 
 	for ( const { item } of walker ) {
-		if ( !item.is( '$textProxy' ) ) {
+		let node = item.is( '$textProxy' ) ? item.textNode : item;
+		const parent = node.parent;
+
+		if ( !parent!.is( 'element', 'codeBlock' ) || node.is( 'element', 'softBreak' ) ) {
 			continue;
 		}
 
-		const { parent, startOffset } = item.textNode;
-
-		if ( !parent!.is( 'element', 'codeBlock' ) ) {
-			continue;
+		// For each item in code block, move backwards until the beginning of the line it is in is found.
+		while ( node.previousSibling && !node.previousSibling.is( 'element', 'softBreak' ) ) {
+			node = node.previousSibling;
 		}
 
-		const leadingWhiteSpaces = getLeadingWhiteSpaces( item.textNode );
-		// Make sure the position is after all leading whitespaces in the text node.
-		const position = model.createPositionAt( parent, startOffset! + leadingWhiteSpaces.length );
+		// Take the leading white spaces into account (only for text nodes).
+		const startOffset = !node.is( '$text' ) ? node.startOffset! : node.startOffset! + getLeadingWhiteSpaces( node ).length;
+		const position = model.createPositionAt( parent, startOffset );
 
-		positions.push( position );
+		// Do not add the same position twice. Unfortunately using set doesn't deduplicate positions because
+		// they are different objects.
+		if ( positions.every( pos => !pos.isEqual( position ) ) ) {
+			positions.push( position );
+		}
 	}
 
 	return positions;
