@@ -10,6 +10,7 @@
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import UploadcareUI from './uploadcareui.js';
+import UploadcareEditing from './uploadcareediting.js';
 
 /**
  * Uploadcare plugin that allows you to use the Uploadcare features.
@@ -19,7 +20,7 @@ export default class Uploadcare extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ UploadcareUI ] as const;
+		return [ UploadcareEditing, UploadcareUI ] as const;
 	}
 
 	/**

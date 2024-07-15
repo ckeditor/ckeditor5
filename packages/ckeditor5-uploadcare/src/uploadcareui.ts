@@ -63,6 +63,11 @@ export default class UploadcareUI extends Plugin {
 	public init(): void {
 		const { editor } = this;
 		const { t } = editor;
+		const uploadcareCommand = editor.commands.get( 'uploadcare' );
+
+		if ( !uploadcareCommand ) {
+			return;
+		}
 
 		this._dialog = editor.plugins.get( Dialog );
 
@@ -78,7 +83,7 @@ export default class UploadcareUI extends Plugin {
 
 			this.listenTo<ButtonExecuteEvent>( dropdown, 'execute', evt => {
 				const { _type } = evt.source;
-				const form = new UploadcareFormView( locale, _type );
+				const form = new UploadcareFormView( locale );
 
 				this._dialog.show( {
 					id: 'uploadCare',
@@ -86,10 +91,10 @@ export default class UploadcareUI extends Plugin {
 					title: t( 'Uploadcare' ),
 					content: form,
 					onShow: () => {
-						form.init();
+						uploadcareCommand.execute( _type );
 					},
 					onHide: () => {
-						form.done();
+						uploadcareCommand.fire( 'uploadcare:close' );
 					}
 				} );
 			} );
