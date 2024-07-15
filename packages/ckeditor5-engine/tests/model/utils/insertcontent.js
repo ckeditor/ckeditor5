@@ -1754,15 +1754,15 @@ describe( 'DataController utils', () => {
 				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 1 ] );
 			} );
 
-			it( 'should create marker after inserting imageInline and paragraph inside existing paragraph', () => {
+			it( 'should create marker after inserting paragraph with imageInline and text inside existing paragraph', () => {
 				// <paragraph>F[]oo</paragraph>
-				// {<imageInline></imageInline><paragraph>ba}r</paragraph>
+				// {<paragraph><imageInline></imageInline>ba}r</paragraph>
 				//
 				// <paragraph>F{<imageInline></imageInline>ba}roo</paragraph>
 				setData( model, '<paragraph>F[]oo</paragraph>' );
 
-				insertHelper( '<imageInline></imageInline><paragraph>bar</paragraph>', {
-					'marker-a': { start: [ 0 ], end: [ 1, 2 ] }
+				insertHelper( '<paragraph><imageInline></imageInline>bar</paragraph>', {
+					'marker-a': { start: [ 0 ], end: [ 0, 3 ] }
 				} );
 
 				const expectedMarker = model.markers.get( 'marker-a' );
@@ -1771,6 +1771,44 @@ describe( 'DataController utils', () => {
 
 				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 1 ] );
 				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 4 ] );
+			} );
+
+			it( 'should create marker after inserting paragraph with imageInline and another paragraph inside existing paragraph', () => {
+				// <paragraph>F[]oo</paragraph>
+				// {<paragraph><imageInline></imageInline></paragraph><paragraph>ba}r</paragraph>
+				//
+				// <paragraph>F{<imageInline></imageInline></paragraph><paragraph>ba}roo</paragraph>
+				setData( model, '<paragraph>F[]oo</paragraph>' );
+
+				insertHelper( '<paragraph><imageInline></imageInline></paragraph><paragraph>bar</paragraph>', {
+					'marker-a': { start: [ 0 ], end: [ 1, 2 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>F<imageInline></imageInline></paragraph><paragraph>bar[]oo</paragraph>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 1 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1, 2 ] );
+			} );
+
+			it( 'should create marker after inserting imageInline and paragraph inside existing paragraph', () => {
+				// <paragraph>F[]oo</paragraph>
+				// {<imageInline></imageInline><paragraph>ba}r</paragraph>
+				//
+				// <paragraph>F{<imageInline></imageInline></paragraph><paragraph>ba}roo</paragraph>
+				setData( model, '<paragraph>F[]oo</paragraph>' );
+
+				insertHelper( '<imageInline></imageInline><paragraph>bar</paragraph>', {
+					'marker-a': { start: [ 0 ], end: [ 1, 2 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>F<imageInline></imageInline></paragraph><paragraph>bar[]oo</paragraph>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 1 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1, 2 ] );
 			} );
 
 			it( 'should create marker which starts in paragraph and ends inside the beginning of next paragraph', () => {
@@ -1796,7 +1834,7 @@ describe( 'DataController utils', () => {
 				// <paragraph>Foo[]</paragraph>
 				// {<imageInline></imageInline><paragraph>ba}r</paragraph>
 				//
-				// <paragraph>Foo{<imageInline></imageInline>ba}r</paragraph>
+				// <paragraph>Foo{<imageInline></imageInline></paragraph><paragraph>ba}r</paragraph>
 				setData( model, '<paragraph>Foo[]</paragraph>' );
 
 				insertHelper( '<imageInline></imageInline><paragraph>bar</paragraph>', {
@@ -1805,10 +1843,10 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( getData( model ) ).to.equal( '<paragraph>Foo<imageInline></imageInline>bar[]</paragraph>' );
+				expect( getData( model ) ).to.equal( '<paragraph>Foo<imageInline></imageInline></paragraph><paragraph>bar[]</paragraph>' );
 
 				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 3 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 6 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1, 2 ] );
 			} );
 
 			it( 'should create marker from imageInline and part of text from the next paragraph after inserting at he beginning',
@@ -1816,7 +1854,7 @@ describe( 'DataController utils', () => {
 					// <paragraph>[]Foo</paragraph>
 					// {<imageInline></imageInline><paragraph>ba}r</paragraph>
 					//
-					// <paragraph>{<imageInline></imageInline>ba}rFoo</paragraph>
+					// <paragraph>{<imageInline></imageInline></paragraph><paragraph>ba}rFoo</paragraph>
 					setData( model, '<paragraph>[]Foo</paragraph>' );
 
 					insertHelper( '<imageInline></imageInline><paragraph>bar</paragraph>', {
@@ -1826,10 +1864,10 @@ describe( 'DataController utils', () => {
 					const expectedMarker = model.markers.get( 'marker-a' );
 
 					expect( getData( model ) )
-						.to.equal( '<paragraph><imageInline></imageInline>bar[]Foo</paragraph>' );
+						.to.equal( '<paragraph><imageInline></imageInline></paragraph><paragraph>bar[]Foo</paragraph>' );
 
 					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 0 ] );
-					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 3 ] );
+					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1, 2 ] );
 				} );
 
 			it.skip( 'should create marker on imageInline and part of paragraph text after inserting next to paragraph', () => {

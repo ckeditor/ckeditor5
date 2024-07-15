@@ -353,6 +353,15 @@ class Insertion {
 		// If the real end was after the last auto paragraph then update relevant properties.
 		if ( positionAfterNode.isAfter( positionAfterLastNode ) ) {
 			this._lastNode = node;
+
+			/* istanbul ignore if -- @preserve */
+			if ( this.position.parent != node || !this.position.isAtEnd ) {
+				// Algorithm's correctness check. We should never end up here but it's good to know that we did.
+				// At this point the insertion position should be at the end of the last auto paragraph.
+				// Note: This error is documented in other place in this file.
+				throw new CKEditorError( 'insertcontent-invalid-insertion-position', this );
+			}
+
 			this.position = positionAfterNode;
 			this._setAffectedBoundaries( this.position );
 		}
@@ -404,30 +413,28 @@ class Insertion {
 		// * If they are not allowed in any of the selection ancestors, they could be either autoparagraphed or totally removed.
 		if ( this.schema.isObject( node ) ) {
 			this._handleObject( node as Element );
+		} else {
+			// Try to find a place for the given node.
 
-			return;
-		}
-
-		// Try to find a place for the given node.
-
-		// Check if a node can be inserted in the given position or it would be accepted if a paragraph would be inserted.
-		// Inserts the auto paragraph if it would allow for insertion.
-		let isAllowed = this._checkAndAutoParagraphToAllowedPosition( node );
-
-		if ( !isAllowed ) {
-			// Split the position.parent's branch up to a point where the node can be inserted.
-			// If it isn't allowed in the whole branch, then of course don't split anything.
-			isAllowed = this._checkAndSplitToAllowedPosition( node );
+			// Check if a node can be inserted in the given position or it would be accepted if a paragraph would be inserted.
+			// Inserts the auto paragraph if it would allow for insertion.
+			let isAllowed = this._checkAndAutoParagraphToAllowedPosition( node );
 
 			if ( !isAllowed ) {
-				this._handleDisallowedNode( node );
+				// Split the position.parent's branch up to a point where the node can be inserted.
+				// If it isn't allowed in the whole branch, then of course don't split anything.
+				isAllowed = this._checkAndSplitToAllowedPosition( node );
 
-				return;
+				if ( !isAllowed ) {
+					this._handleDisallowedNode( node );
+
+					return;
+				}
 			}
-		}
 
-		// Add node to the current temporary DocumentFragment.
-		this._appendToFragment( node );
+			// Add node to the current temporary DocumentFragment.
+			this._appendToFragment( node );
+		}
 
 		// Store the first and last nodes for easy access for merging with sibling nodes.
 		if ( !this._firstNode ) {

@@ -418,6 +418,9 @@ export default class Schema extends /* #__PURE__ */ ObservableMixin() {
 		return def.allowAttributes.includes( attributeName );
 	}
 
+	public checkMerge( position: Position ): boolean;
+	public checkMerge( baseElement: Element, elementToMerge: Element ): boolean;
+
 	/**
 	 * Checks whether the given element (`elementToMerge`) can be merged with the specified base element (`positionOrBaseElement`).
 	 *
@@ -432,7 +435,11 @@ export default class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * @param positionOrBaseElement The position or base element to which the `elementToMerge` will be merged.
 	 * @param elementToMerge The element to merge. Required if `positionOrBaseElement` is an element.
 	 */
-	public checkMerge( positionOrBaseElement: Position | Element, elementToMerge: Element ): boolean {
+	public checkMerge( positionOrBaseElement: Position | Element, elementToMerge?: Element ): boolean {
+		if ( elementToMerge && this.isLimit( elementToMerge ) ) {
+			return false;
+		}
+
 		if ( positionOrBaseElement instanceof Position ) {
 			const nodeBefore = positionOrBaseElement.nodeBefore;
 			const nodeAfter = positionOrBaseElement.nodeAfter;
@@ -464,7 +471,11 @@ export default class Schema extends /* #__PURE__ */ ObservableMixin() {
 			return this.checkMerge( nodeBefore, nodeAfter );
 		}
 
-		for ( const child of elementToMerge.getChildren() ) {
+		if ( this.isLimit( positionOrBaseElement ) ) {
+			return false;
+		}
+
+		for ( const child of elementToMerge!.getChildren() ) {
 			if ( !this.checkChild( positionOrBaseElement, child ) ) {
 				return false;
 			}
